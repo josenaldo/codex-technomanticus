@@ -153,5 +153,36 @@ class TestFrontmatter(unittest.TestCase):
         self.assertFalse(links[0]["in_frontmatter"])
 
 
+class TestMarkdownLinks(unittest.TestCase):
+    def test_extracts_internal_md_link(self):
+        text = "veja [a nota](Notas/Outra.md)\n"
+        links = cw.extract_markdown_links(text)
+        self.assertEqual(len(links), 1)
+        self.assertEqual(links[0]["target"], "Notas/Outra.md")
+        self.assertEqual(links[0]["type"], "markdown")
+        self.assertEqual(links[0]["alias"], "a nota")
+
+    def test_extracts_internal_md_link_with_anchor(self):
+        text = "[seção](Notas/X.md#parte-2)\n"
+        links = cw.extract_markdown_links(text)
+        self.assertEqual(links[0]["target"], "Notas/X.md")
+        self.assertEqual(links[0]["anchor"], "parte-2")
+
+    def test_ignores_http_urls(self):
+        text = "[google](https://google.com) e [mail](mailto:x@y) e [intra](Notas/X.md)\n"
+        links = cw.extract_markdown_links(text)
+        self.assertEqual([l["target"] for l in links], ["Notas/X.md"])
+
+    def test_ignores_pure_anchor(self):
+        text = "[topo](#topo)\n"
+        links = cw.extract_markdown_links(text)
+        self.assertEqual(links, [])
+
+    def test_ignores_link_inside_code_fence(self):
+        text = "```\n[x](Notas/Y.md)\n```\n[z](Notas/W.md)\n"
+        links = cw.extract_markdown_links(text)
+        self.assertEqual([l["target"] for l in links], ["Notas/W.md"])
+
+
 if __name__ == "__main__":
     unittest.main()

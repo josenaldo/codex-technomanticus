@@ -64,6 +64,45 @@ def extract_wikilinks_clean(text: str) -> list[dict]:
     return links
 
 
+MD_LINK_RE = re.compile(r"\[([^\]\n]+)\]\(([^)\s]+)\)")
+URL_SCHEME_RE = re.compile(r"^(https?:|mailto:|tel:|ftp:|data:)", re.IGNORECASE)
+
+
+def extract_markdown_links(text: str) -> list[dict]:
+    """Extrai links markdown internos `[t](caminho.md[#anchor])`.
+
+    Ignora URLs externas (http/https/mailto/tel/ftp/data), anchors puros (#x)
+    e links dentro de code fences/inline code.
+    """
+    cleaned = strip_code_fences(text)
+    fm_range = find_frontmatter_range(text)
+    results: list[dict] = []
+    for lineno, line in enumerate(cleaned.splitlines(), start=1):
+        for m in MD_LINK_RE.finditer(line):
+            label, dest = m.group(1), m.group(2)
+            if URL_SCHEME_RE.match(dest):
+                continue
+            if dest.startswith("#"):
+                continue
+            anchor: str | None = None
+            target = dest
+            if "#" in dest:
+                target, anchor = dest.split("#", 1)
+            if not target.endswith(".md"):
+                continue
+            in_fm = fm_range is not None and fm_range[0] <= lineno <= fm_range[1]
+            results.append({
+                "line": lineno,
+                "raw": m.group(0),
+                "target": target,
+                "alias": label,
+                "anchor": anchor,
+                "type": "markdown",
+                "in_frontmatter": in_fm,
+            })
+    return results
+
+
 def extract_wikilinks(text: str) -> list[dict]:
     """Extrai wikilinks (e embeds) de um texto. Retorna lista de Link (sem 'file').
 
