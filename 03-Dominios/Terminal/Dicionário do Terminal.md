@@ -139,15 +139,50 @@ Operação contextual sugerida pelo LSP — refactoring, fix automático, import
 
 Veja também: [[04 - LazyVim tour]], [[09 - LSP no Neovim]].
 
+### Diagnostic
+Mensagem de problema (erro, warning, info, hint) emitida por um language server ou linter sobre um arquivo. Em Neovim: rendered como sign no gutter, virtual text inline, underline. Listada via `:lopen` ou Telescope `<leader>xd`.
+
+Veja também: [[09 - LSP no Neovim]].
+
 ### Format on save
 Comportamento (default no LazyVim) de rodar o formatter (conform.nvim no LazyVim) automaticamente ao salvar (`:w`). Toggle: `<leader>uf`.
 
 Veja também: [[04 - LazyVim tour]], [[09 - LSP no Neovim]].
 
+### Formatter
+Ferramenta que reformata código segundo regras (prettier, ruff, gofmt, stylua…). Em LazyVim moderno, dispatcher é conform.nvim. Acionado em `:w` (format on save) ou explicitamente via `<leader>cf`.
+
+Veja também: [[09 - LSP no Neovim]].
+
+### Language server
+Processo separado que implementa a Language Server Protocol pra uma linguagem específica (ex: `ts_ls` pra TypeScript, `lua_ls` pra Lua, `rust_analyzer` pra Rust). Editor é cliente; server responde requests sobre o código (hover, definition, refactor).
+
+Veja também: [[09 - LSP no Neovim]].
+
+### Linter
+Ferramenta que analisa código por padrões problemáticos sem necessariamente quebrar build (eslint, ruff, shellcheck…). Em LazyVim, dispatcher é nvim-lint. Diagnostics aparecem no mesmo flow do LSP.
+
+Veja também: [[09 - LSP no Neovim]].
+
 ### LSP
 Language Server Protocol — protocolo cliente/servidor que dá a editores recursos como go-to-definition, hover, completions, diagnostics, formatting. Implementado em Neovim via cliente built-in (`vim.lsp`) e `nvim-lspconfig`. Servers são instalados via Mason.
 
 Veja também: [[04 - LazyVim tour]], [[09 - LSP no Neovim]].
+
+### Mason
+Plugin de Neovim que gerencia instalação/atualização de language servers, formatters, linters e DAP adapters. `:Mason` abre TUI. Bundle do LazyVim.
+
+Veja também: [[09 - LSP no Neovim]], [[13 - Snippets e DAP]].
+
+### nvim-cmp
+Engine de completion pra Neovim. Aceita múltiplas sources (LSP, buffer, path, snippet). Renderiza popup em insert mode. Bundle do LazyVim.
+
+Veja também: [[09 - LSP no Neovim]].
+
+### nvim-lspconfig
+Plugin que provê configs padronizadas pra ~200 language servers em Neovim. Em LazyVim, customização via `opts.servers.<nome> = { settings = {...} }`.
+
+Veja também: [[09 - LSP no Neovim]].
 
 ## Avançado
 
