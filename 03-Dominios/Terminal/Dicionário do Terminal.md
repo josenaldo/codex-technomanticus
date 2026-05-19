@@ -30,6 +30,16 @@ Como usar este glossário:
 
 ## Vim / Neovim core
 
+### Modal editing
+Modelo de edição em que o editor opera em modos distintos (normal, insert, visual, command…); cada modo redefine o significado das teclas. É a base de Vim/Neovim e o que permite tratar edição como uma linguagem de comandos.
+
+Veja também: [[01 - Modal editing]], [[02 - Motions, operadores e text objects]].
+
+### Modo
+Um dos estados internos do Neovim que define como as teclas são interpretadas. Os modos principais são: normal (comandos), insert (digitar), visual (selecionar), command-line (`:`), terminal (REPL embutido).
+
+Veja também: [[01 - Modal editing]].
+
 ## Ecossistema LazyVim
 
 ## LSP & dev
