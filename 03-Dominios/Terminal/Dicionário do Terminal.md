@@ -115,3 +115,13 @@ Language Server Protocol — protocolo cliente/servidor que dá a editores recur
 Veja também: [[04 - LazyVim tour]], [[09 - LSP no Neovim]].
 
 ## Avançado
+
+### init.lua
+Arquivo principal de configuração do Neovim moderno (sucessor do `init.vim` em Vimscript). Localização: `~/.config/nvim/init.lua`. No LazyVim, é minimal — apenas faz `require("config.lazy")` que carrega o bootstrap.
+
+Veja também: [[05 - Lua para Neovim]], [[06 - Estrutura de config]].
+
+### Lua
+Linguagem de scripting embutida em Neovim (via LuaJIT — Lua 5.1-compatible). Substitui Vimscript pra config moderna. Tipos minimal (nil, boolean, number, string, table, function), 1-indexed em tabelas, truthiness peculiar (`0` é truthy).
+
+Veja também: [[05 - Lua para Neovim]].
