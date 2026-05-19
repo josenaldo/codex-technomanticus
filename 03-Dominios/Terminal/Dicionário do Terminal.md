@@ -30,6 +30,16 @@ Como usar este glossário:
 
 ## Vim / Neovim core
 
+### Buffer
+Representação em memória de um arquivo aberto no Neovim. Independente de windows e tabs — N buffers podem estar abertos sem nenhum visível, e o mesmo buffer pode aparecer em várias windows.
+
+Veja também: [[03 - Edição e navegação]].
+
+### Jump list
+Pilha de saltos que o Neovim mantém para cada window. Comandos como `gd`, `*`, `}`, `/` empurram a posição. Navegar: `<C-o>` (back), `<C-i>` (forward). Listar: `:jumps`.
+
+Veja também: [[03 - Edição e navegação]].
+
 ### Modal editing
 Modelo de edição em que o editor opera em modos distintos (normal, insert, visual, command…); cada modo redefine o significado das teclas. É a base de Vim/Neovim e o que permite tratar edição como uma linguagem de comandos.
 
@@ -54,6 +64,11 @@ Veja também: [[02 - Motions, operadores e text objects]].
 Região textual delimitada semanticamente (palavra, parágrafo, par de delimitadores, tag HTML…). Acessada por prefixos `i` (inner — só o conteúdo) ou `a` (around — inclui delimitadores). Ex: `ci"` muda o conteúdo entre aspas; `da{` deleta o bloco `{ }` inteiro.
 
 Veja também: [[02 - Motions, operadores e text objects]], [[12 - Treesitter avançado]].
+
+### Undotree
+Estrutura em árvore (não linear) que o Neovim mantém para desfazer/refazer. Cada `u` volta no tempo; mas se você edita após um undo, cria um novo ramo. Plugin `undotree.nvim` (LazyVim Extra) navega visualmente; comandos `:earlier`/`:later` movem por tempo (`:earlier 5m`).
+
+Veja também: [[03 - Edição e navegação]].
 
 ## Ecossistema LazyVim
 
