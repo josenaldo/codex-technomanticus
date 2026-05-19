@@ -221,6 +221,11 @@ Veja também: [[09 - LSP no Neovim]].
 
 ## Avançado
 
+### DAP
+Debug Adapter Protocol — protocolo open source (Microsoft) que padroniza comunicação entre editores e debuggers. Em Neovim: `nvim-dap` (cliente) + adapter por linguagem (instalável via Mason). UI: `nvim-dap-ui`.
+
+Veja também: [[13 - Snippets e DAP]].
+
 ### init.lua
 Arquivo principal de configuração do Neovim moderno (sucessor do `init.vim` em Vimscript). Localização: `~/.config/nvim/init.lua`. No LazyVim, é minimal — apenas faz `require("config.lazy")` que carrega o bootstrap.
 
@@ -230,3 +235,13 @@ Veja também: [[05 - Lua para Neovim]], [[06 - Estrutura de config]].
 Linguagem de scripting embutida em Neovim (via LuaJIT — Lua 5.1-compatible). Substitui Vimscript pra config moderna. Tipos minimal (nil, boolean, number, string, table, function), 1-indexed em tabelas, truthiness peculiar (`0` é truthy).
 
 Veja também: [[05 - Lua para Neovim]].
+
+### LuaSnip
+Snippet engine pra Neovim, escrita em Lua. Suporta snippets em Lua puro (mais expressivo) e em formato VS Code JSON (mais portável, pacotes como `friendly-snippets`). Integra com `nvim-cmp`.
+
+Veja também: [[13 - Snippets e DAP]].
+
+### Snippet
+Trecho de código parametrizável que expande a partir de um trigger. Tabstops (`$1`, `$2`, `$0`) permitem navegação ordenada entre campos editáveis. Em Neovim moderno: LuaSnip (engine) + friendly-snippets (catálogo VS Code-style).
+
+Veja também: [[13 - Snippets e DAP]].
