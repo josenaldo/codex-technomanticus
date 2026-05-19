@@ -301,5 +301,39 @@ class TestAmbiguousAndFuzzy(unittest.TestCase):
         self.assertEqual(broken["candidates"], [])
 
 
+class TestAnchorValidation(unittest.TestCase):
+    def test_anchor_validation_existing_and_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {
+                "Nota.md": "# Topo\n\n## Introdução\n\nconteúdo\n## Outra Seção\n",
+            })
+            idx = cw.index_vault(vault)
+
+            ok_link = {
+                "file": "origem.md", "line": 1, "raw": "[[Nota#Introdução]]",
+                "target": "Nota", "alias": None, "anchor": "Introdução",
+                "type": "wikilink", "in_frontmatter": False,
+            }
+            self.assertIsNone(cw.resolve_link(ok_link, idx, vault_root=vault))
+
+            bad_link = {**ok_link, "anchor": "Inexistente", "raw": "[[Nota#Inexistente]]"}
+            broken = cw.resolve_link(bad_link, idx, vault_root=vault)
+            self.assertEqual(broken["reason"], "anchor_not_found")
+            self.assertIn("Introdução", broken["candidates"])
+
+    def test_anchor_validation_slug_form(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {
+                "Nota.md": "# Topo\n\n## Intro & Visão Geral\n",
+            })
+            idx = cw.index_vault(vault)
+            link = {
+                "file": "x.md", "line": 1, "raw": "[[Nota#intro-visão-geral]]",
+                "target": "Nota", "alias": None, "anchor": "intro-visão-geral",
+                "type": "wikilink", "in_frontmatter": False,
+            }
+            self.assertIsNone(cw.resolve_link(link, idx, vault_root=vault))
+
+
 if __name__ == "__main__":
     unittest.main()

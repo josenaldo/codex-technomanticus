@@ -183,6 +183,41 @@ def index_vault(vault_root: Path) -> dict:
     }
 
 
+HEADER_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$")
+
+
+def slugify_header(text: str) -> str:
+    """Slug compatível com Obsidian/Quartz: lowercase, espaços->-, remove markdown.
+
+    Mantém letras acentuadas (Quartz não transliterate por default).
+    """
+    text = text.strip().lower()
+    text = re.sub(r"[*_`]+", "", text)
+    text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
+    text = re.sub(r"\s+", "-", text)
+    return text.strip("-")
+
+
+def get_section_anchors(file_path: Path) -> list[str]:
+    """Retorna lista de headers (texto cru) de um arquivo .md."""
+    try:
+        text = file_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return []
+    headers: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        if FENCE_RE.match(line.lstrip()):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        m = HEADER_RE.match(line)
+        if m:
+            headers.append(m.group(1).strip())
+    return headers
+
+
 def find_candidates(target: str, index: dict, n: int = 5, cutoff: float = 0.6) -> list[str]:
     """Sugestões fuzzy via difflib sobre basenames + relpaths."""
     pool = list(index["files_by_basename"].keys()) + list(index["files_by_relpath"])
@@ -203,48 +238,65 @@ def find_candidates(target: str, index: dict, n: int = 5, cutoff: float = 0.6) -
     return out[:n]
 
 
-def resolve_link(link: dict, index: dict) -> dict | None:
+def resolve_link(link: dict, index: dict, vault_root: Path | None = None) -> dict | None:
     target = link["target"]
     target_norm = target[:-3] if target.endswith(".md") else target
+
+    resolved_path: str | None = None
 
     if "/" in target_norm or target.endswith(".md"):
         candidate_rel = target_norm + ".md"
         if candidate_rel in index["files_by_relpath"]:
-            return None
-        if target_norm in index["folders_with_index"]:
-            return None
-        all_folder_paths = {p for paths in index["folders"].values() for p in paths}
-        if target_norm in all_folder_paths:
-            inside = sorted(
-                p for p in index["files_by_relpath"] if p.startswith(target_norm + "/")
-            )
-            return {**link, "reason": "folder_without_index", "candidates": inside[:10]}
+            resolved_path = candidate_rel
+        elif target_norm in index["folders_with_index"]:
+            resolved_path = target_norm + "/index.md"
+        else:
+            all_folder_paths = {p for paths in index["folders"].values() for p in paths}
+            if target_norm in all_folder_paths:
+                inside = sorted(
+                    p for p in index["files_by_relpath"] if p.startswith(target_norm + "/")
+                )
+                return {**link, "reason": "folder_without_index", "candidates": inside[:10]}
 
-    matches = index["files_by_basename"].get(target_norm, [])
-    if len(matches) == 1:
-        return None
-    if len(matches) > 1:
-        return {**link, "reason": "ambiguous", "candidates": matches}
+    if resolved_path is None:
+        matches = index["files_by_basename"].get(target_norm, [])
+        if len(matches) == 1:
+            resolved_path = matches[0]
+        elif len(matches) > 1:
+            return {**link, "reason": "ambiguous", "candidates": matches}
 
-    folder_paths = index["folders"].get(target_norm, [])
-    if folder_paths:
-        with_index = [p for p in folder_paths if p in index["folders_with_index"]]
-        if len(with_index) == 1:
-            return None
-        if len(with_index) > 1:
-            return {**link, "reason": "ambiguous", "candidates": with_index}
-        inside: list[str] = []
-        for fp in folder_paths:
-            inside.extend(
-                p for p in index["files_by_relpath"] if p.startswith(fp + "/")
-            )
-        return {**link, "reason": "folder_without_index", "candidates": sorted(inside)[:10]}
+    if resolved_path is None:
+        folder_paths = index["folders"].get(target_norm, [])
+        if folder_paths:
+            with_index = [p for p in folder_paths if p in index["folders_with_index"]]
+            if len(with_index) == 1:
+                resolved_path = with_index[0] + "/index.md"
+            elif len(with_index) > 1:
+                return {**link, "reason": "ambiguous", "candidates": with_index}
+            else:
+                inside: list[str] = []
+                for fp in folder_paths:
+                    inside.extend(
+                        p for p in index["files_by_relpath"] if p.startswith(fp + "/")
+                    )
+                return {**link, "reason": "folder_without_index",
+                        "candidates": sorted(inside)[:10]}
 
-    return {
-        **link,
-        "reason": "target_not_found",
-        "candidates": find_candidates(target_norm, index),
-    }
+    if resolved_path is None:
+        return {**link, "reason": "target_not_found",
+                "candidates": find_candidates(target_norm, index)}
+
+    if link["anchor"] and vault_root is not None:
+        headers = get_section_anchors(vault_root / resolved_path)
+        wanted = link["anchor"]
+        ok = (
+            wanted in headers
+            or slugify_header(wanted) in {slugify_header(h) for h in headers}
+        )
+        if not ok:
+            return {**link, "reason": "anchor_not_found", "candidates": headers[:10]}
+
+    return None
 
 
 def main(argv: list[str] | None = None) -> int:
