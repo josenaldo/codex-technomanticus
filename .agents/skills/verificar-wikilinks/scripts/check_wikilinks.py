@@ -9,9 +9,45 @@ Aplica a regra do Quartz: [[Pasta]] é quebrado se a pasta não tiver index.md.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 IGNORED_DIRS = {".git", ".obsidian", "node_modules", ".agents", ".quartz-cache"}
+
+WIKILINK_RE = re.compile(r"(?P<embed>!?)\[\[(?P<body>[^\[\]\n]+?)\]\]")
+
+
+def extract_wikilinks(text: str) -> list[dict]:
+    """Extrai wikilinks (e embeds) de um texto. Retorna lista de Link (sem 'file').
+
+    NÃO trata code fences nem frontmatter — isso fica em camadas posteriores.
+    """
+    results: list[dict] = []
+    for lineno, line in enumerate(text.splitlines(), start=1):
+        for m in WIKILINK_RE.finditer(line):
+            body = m.group("body")
+            anchor: str | None = None
+            alias: str | None = None
+
+            if "|" in body:
+                target_part, alias = body.split("|", 1)
+            else:
+                target_part = body
+            if "#" in target_part:
+                target, anchor = target_part.split("#", 1)
+            else:
+                target = target_part
+
+            results.append({
+                "line": lineno,
+                "raw": m.group(0),
+                "target": target.strip(),
+                "alias": alias.strip() if alias is not None else None,
+                "anchor": anchor.strip() if anchor is not None else None,
+                "type": "embed" if m.group("embed") == "!" else "wikilink",
+                "in_frontmatter": False,
+            })
+    return results
 
 
 def auto_detect_vault_root(start: Path) -> Path:

@@ -64,5 +64,48 @@ class TestIndexVault(unittest.TestCase):
                 cw.auto_detect_vault_root(Path(tmp) / "Notas")
 
 
+class TestExtractWikilinks(unittest.TestCase):
+    def test_simple_target(self):
+        links = cw.extract_wikilinks("foo [[Anatomia]] bar\n")
+        self.assertEqual(len(links), 1)
+        self.assertEqual(links[0]["target"], "Anatomia")
+        self.assertIsNone(links[0]["alias"])
+        self.assertIsNone(links[0]["anchor"])
+        self.assertEqual(links[0]["type"], "wikilink")
+        self.assertEqual(links[0]["line"], 1)
+        self.assertEqual(links[0]["raw"], "[[Anatomia]]")
+
+    def test_alias_preserved(self):
+        links = cw.extract_wikilinks("[[Anatomia|LLM]]\n")
+        self.assertEqual(links[0]["target"], "Anatomia")
+        self.assertEqual(links[0]["alias"], "LLM")
+
+    def test_anchor_extracted(self):
+        links = cw.extract_wikilinks("[[Nota#Seção]]\n")
+        self.assertEqual(links[0]["target"], "Nota")
+        self.assertEqual(links[0]["anchor"], "Seção")
+
+    def test_anchor_with_alias(self):
+        links = cw.extract_wikilinks("[[Nota#Seção|atalho]]\n")
+        self.assertEqual(links[0]["target"], "Nota")
+        self.assertEqual(links[0]["anchor"], "Seção")
+        self.assertEqual(links[0]["alias"], "atalho")
+
+    def test_folder_target(self):
+        links = cw.extract_wikilinks("[[pasta/Sub]]\n")
+        self.assertEqual(links[0]["target"], "pasta/Sub")
+
+    def test_embed_md_detected(self):
+        links = cw.extract_wikilinks("![[Trecho]]\n")
+        self.assertEqual(links[0]["type"], "embed")
+        self.assertEqual(links[0]["target"], "Trecho")
+
+    def test_multiple_links_one_line_distinct_positions(self):
+        links = cw.extract_wikilinks("[[A]] e [[B]]\n")
+        self.assertEqual([l["target"] for l in links], ["A", "B"])
+        self.assertEqual(links[0]["line"], 1)
+        self.assertEqual(links[1]["line"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()
