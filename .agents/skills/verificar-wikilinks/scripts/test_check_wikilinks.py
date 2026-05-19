@@ -184,5 +184,41 @@ class TestMarkdownLinks(unittest.TestCase):
         self.assertEqual([l["target"] for l in links], ["Notas/W.md"])
 
 
+class TestResolveExact(unittest.TestCase):
+    def _link(self, target, type_="wikilink", anchor=None):
+        return {
+            "file": "origem.md", "line": 1, "raw": f"[[{target}]]",
+            "target": target, "alias": None, "anchor": anchor,
+            "type": type_, "in_frontmatter": False,
+        }
+
+    def test_resolves_exact_basename(self):
+        idx = {
+            "files_by_basename": {"Anatomia": ["Notas/Anatomia.md"]},
+            "files_by_relpath": {"Notas/Anatomia.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        self.assertIsNone(cw.resolve_link(self._link("Anatomia"), idx))
+
+    def test_resolves_target_with_explicit_path(self):
+        idx = {
+            "files_by_basename": {"Sub": ["Pasta/Sub.md"]},
+            "files_by_relpath": {"Pasta/Sub.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        self.assertIsNone(cw.resolve_link(self._link("Pasta/Sub"), idx))
+
+    def test_resolves_target_with_md_extension(self):
+        idx = {
+            "files_by_basename": {"A": ["A.md"]},
+            "files_by_relpath": {"A.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        self.assertIsNone(cw.resolve_link(self._link("A.md"), idx))
+
+
 if __name__ == "__main__":
     unittest.main()

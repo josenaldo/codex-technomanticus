@@ -182,6 +182,29 @@ def index_vault(vault_root: Path) -> dict:
     }
 
 
+def resolve_link(link: dict, index: dict) -> dict | None:
+    """Aplica regras do Quartz e retorna None se OK; Broken dict se quebrado.
+
+    Ordem de tentativa:
+    1. Path explícito (contém '/' ou termina em .md) -> match em files_by_relpath.
+    2. Basename exato -> match único em files_by_basename.
+    3. Senão: caminho de quebra (próximas tasks).
+    """
+    target = link["target"]
+    target_norm = target[:-3] if target.endswith(".md") else target
+
+    if "/" in target_norm:
+        candidate_rel = target_norm + ".md"
+        if candidate_rel in index["files_by_relpath"]:
+            return None
+
+    matches = index["files_by_basename"].get(target_norm, [])
+    if len(matches) == 1:
+        return None
+
+    return {**link, "reason": "target_not_found", "candidates": []}
+
+
 def main(argv: list[str] | None = None) -> int:
     raise NotImplementedError
 
