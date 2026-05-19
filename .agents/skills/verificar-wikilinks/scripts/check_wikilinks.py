@@ -15,6 +15,32 @@ from pathlib import Path
 IGNORED_DIRS = {".git", ".obsidian", "node_modules", ".agents", ".quartz-cache"}
 
 WIKILINK_RE = re.compile(r"(?P<embed>!?)\[\[(?P<body>[^\[\]\n]+?)\]\]")
+INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
+FENCE_RE = re.compile(r"^(```|~~~)")
+
+
+def strip_code_fences(text: str) -> str:
+    """Substitui o conteúdo de code fences e inline code por espaços (preserva linhas).
+
+    Mantém o número de linhas para que `line` em extract_wikilinks continue correto.
+    """
+    out_lines: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        if FENCE_RE.match(line.lstrip()):
+            in_fence = not in_fence
+            out_lines.append("")
+            continue
+        if in_fence:
+            out_lines.append("")
+        else:
+            out_lines.append(INLINE_CODE_RE.sub(lambda m: " " * len(m.group(0)), line))
+    return "\n".join(out_lines)
+
+
+def extract_wikilinks_clean(text: str) -> list[dict]:
+    """Igual a extract_wikilinks, mas após mascarar code fences e inline code."""
+    return extract_wikilinks(strip_code_fences(text))
 
 
 def extract_wikilinks(text: str) -> list[dict]:

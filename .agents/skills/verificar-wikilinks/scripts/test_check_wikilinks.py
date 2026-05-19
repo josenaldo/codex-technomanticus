@@ -107,5 +107,25 @@ class TestExtractWikilinks(unittest.TestCase):
         self.assertEqual(links[1]["line"], 1)
 
 
+class TestCodeFences(unittest.TestCase):
+    def test_ignores_wikilink_in_fenced_block(self):
+        text = "antes\n```\n[[NaoExtrai]]\n```\ndepois [[Extrai]]\n"
+        links = cw.extract_wikilinks_clean(text)
+        targets = [l["target"] for l in links]
+        self.assertEqual(targets, ["Extrai"])
+
+    def test_ignores_wikilink_in_inline_code(self):
+        text = "use `[[Sintaxe]]` literalmente e [[De Verdade]]\n"
+        links = cw.extract_wikilinks_clean(text)
+        targets = [l["target"] for l in links]
+        self.assertEqual(targets, ["De Verdade"])
+
+    def test_tilde_fences_also_work(self):
+        text = "~~~\n[[Skip]]\n~~~\n[[Keep]]\n"
+        links = cw.extract_wikilinks_clean(text)
+        targets = [l["target"] for l in links]
+        self.assertEqual(targets, ["Keep"])
+
+
 if __name__ == "__main__":
     unittest.main()
