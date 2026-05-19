@@ -304,7 +304,7 @@ CHANGELOG.md no repo da skill. Permite rollback se nova versão regridir.
 - [[11 - Skills e instructions como contexto]]
 - [[15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT]]
 - [[14 - Context engineering na prática — setup completo]]
-- [[Agentes de Codificação/index|Agentes de Codificação]]
+- [[Agentes de Codificação]]
 - [[02 - Os três primitivos — Tools, Resources, Prompts]]
 
 ## Referências

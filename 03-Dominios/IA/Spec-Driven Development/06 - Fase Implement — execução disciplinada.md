@@ -157,7 +157,7 @@ T2 (test setup) ─┘
 T5 (notification) (paralela com T3 e T4)
 ```
 
-Em [[09 - SDD com agentes — coordinator/implementor/validator|multi-agent SDD]], o coordinator dispara sub-agentes em paralelo. Em time pequeno, vira distribuição entre devs ou múltiplas sessões do mesmo dev.
+Em [[09 - SDD com agentes — coordinator, implementor, validator|multi-agent SDD]], o coordinator dispara sub-agentes em paralelo. Em time pequeno, vira distribuição entre devs ou múltiplas sessões do mesmo dev.
 
 ## Quando o agente não sabe
 
@@ -193,7 +193,7 @@ Padrões aceitáveis quando o agente está incerto:
 
 - [[05 - Fase Design e Plan — arquitetura e decomposição]]
 - [[07 - Fase Validate — spec como contrato executável]]
-- [[09 - SDD com agentes — coordinator/implementor/validator]]
+- [[09 - SDD com agentes — coordinator, implementor, validator]]
 - [[Context Engineering|10 - Structured state tracking]]
 - [[Agentes de Codificação|03 - O comprehension gate]]
 

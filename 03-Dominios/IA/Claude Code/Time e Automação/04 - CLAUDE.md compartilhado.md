@@ -198,7 +198,7 @@ Seja conciso. Um CLAUDE.md longo demais vira ruído — o agente dilui atenção
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Configuração/01 - CLAUDE.md|01 - CLAUDE.md]] — estrutura detalhada do arquivo
+- [[03-Dominios/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — estrutura detalhada do arquivo
 - [[03-Dominios/IA/Claude Code/Skills e MCP/08 - Skills em time|08 - Skills em time]] — catálogo de skills no repo
 - [[03-Dominios/IA/Claude Code/Time e Automação/07 - Onboarding de time|07 - Onboarding de time]] — usar CLAUDE.md no processo de onboarding
 - [[03-Dominios/IA/Claude Code/Time e Automação/index|Time e Automação]] — índice do galho

@@ -220,7 +220,7 @@ Padrão recomendado: **comece com Spec Kit** (open source, testa a metodologia),
 
 ## Veja também
 
-- [[09 - SDD com agentes — coordinator/implementor/validator]]
+- [[09 - SDD com agentes — coordinator, implementor, validator]]
 - [[10 - Integração com context engineering — specs como contexto persistente]]
 - [[11 - Guia de implementação SDD — do zero ao projeto]]
 - [[Agentes de Codificação|11 - Comparativo — qual ferramenta para qual tarefa]]

@@ -251,7 +251,7 @@ Validation é proporcional ao nível de rigor adotado. Forçar gates de spec-as-
 ## Veja também
 
 - [[06 - Fase Implement — execução disciplinada]]
-- [[09 - SDD com agentes — coordinator/implementor/validator]]
+- [[09 - SDD com agentes — coordinator, implementor, validator]]
 - [[10 - Integração com context engineering — specs como contexto persistente]]
 - [[Context Engineering|12 - Guardrails determinísticos]]
 - [[Segurança e Guardrails]]

@@ -205,5 +205,5 @@ Plugins são carregados automaticamente em todos os projetos. Útil para skills 
 - [[03-Dominios/IA/Claude Code/Skills e MCP/01 - Anatomia de uma skill|01 - Anatomia de uma skill]] — estrutura e frontmatter
 - [[03-Dominios/IA/Claude Code/Skills e MCP/02 - Skills de processo vs domínio|02 - Skills de processo vs domínio]] — ciclos de vida diferentes
 - [[03-Dominios/IA/Claude Code/Skills e MCP/03 - Criar sua primeira skill|03 - Criar sua primeira skill]] — criar antes de distribuir
-- [[03-Dominios/IA/Claude Code/Configuração/01 - CLAUDE.md|01 - CLAUDE.md]] — onde documentar o catálogo de skills
+- [[03-Dominios/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — onde documentar o catálogo de skills
 - [[03-Dominios/IA/Claude Code/Skills e MCP/index|Skills e MCP]] — índice do galho

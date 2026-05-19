@@ -149,7 +149,7 @@ graph TD
     T6 --> T7
 ```
 
-Tasks formam um **DAG** (directed acyclic graph). Algumas paralelizáveis; outras sequenciais. Em [[09 - SDD com agentes — coordinator/implementor/validator|multi-agent SDD]], esse DAG é o input do coordinator.
+Tasks formam um **DAG** (directed acyclic graph). Algumas paralelizáveis; outras sequenciais. Em [[09 - SDD com agentes — coordinator, implementor, validator|multi-agent SDD]], esse DAG é o input do coordinator.
 
 ## LLM no Plan — onde ajuda
 
@@ -215,7 +215,7 @@ Agente carrega spec + plan + tasks como **contexto base** em toda sessão de imp
 
 - [[04 - Fase Specify — definindo outcomes e constraints]]
 - [[06 - Fase Implement — execução disciplinada]]
-- [[09 - SDD com agentes — coordinator/implementor/validator]]
+- [[09 - SDD com agentes — coordinator, implementor, validator]]
 - [[Context Engineering|10 - Structured state tracking]]
 
 ## Referências

@@ -74,7 +74,7 @@ Escolher o modelo errado pode significar:
 **Forças:** Contexto mais longo (2M experimental), multimodal nativo (áudio, vídeo, imagem), integração GCP, preço competitivo.
 **Fraquezas:** Menos consistente em coding puro que Claude, ecossistema de tools menos maduro.
 
-#### Open-Weight (ver detalhes em [[06 - Modelos chineses]])
+#### Open-Weight (ver detalhes em [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]])
 
 | Modelo        | Origem              | Parâmetros           | Licença       | Melhor para                     |
 | ------------- | ------------------- | -------------------- | ------------- | ------------------------------- |

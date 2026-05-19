@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-05-13
+updated: 2026-05-19
 type: glossary
 status: seedling
 aliases:
@@ -21,7 +21,7 @@ publish: true
 
 >[!info]- Como usar:
 >- Cada verbete é um `###` dentro de uma `##` temática.
->- Linkar: [[Dicionário de IA#RAG]]
+>- Linkar: [[Dicionário de IA#RAG (Retrieval-Augmented Generation)]]
 >- Adicionar termos: use a skill /verbete (auto-pesquisa se faltar definição).
 >- Os bullets `- TODO:` em cada seção são candidatos a verbetes; 
 >	- promova conforme estudar.

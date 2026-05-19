@@ -71,7 +71,7 @@ Agentes podem iterar sem fazer progresso real:
 - Reescrever o mesmo arquivo várias vezes
 - Loops de "verificar → ajustar → verificar" sem critério de parada
 
-O ciclo é autorreforçante: mais contexto → qualidade de raciocínio cai ([[Context Engineering/03 - Context rot e atenção diluída|context rot]]) → mais tentativas falhas → mais tokens no histórico.
+O ciclo é autorreforçante: mais contexto → qualidade de raciocínio cai ([[03 - Context rot e atenção diluída|context rot]]) → mais tentativas falhas → mais tokens no histórico.
 
 Sem [[15 - Orçamento e hard limits|kill switches]], um rabbit hole pode queimar 200K+ tokens em uma única sessão.
 

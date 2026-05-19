@@ -191,7 +191,7 @@ No GitHub Actions, a chave fica em `Settings > Secrets > Actions`. Nunca em `.en
 ## Veja também
 
 - [[03-Dominios/IA/Claude Code/Hooks e Guardrails/01 - Sistema de hooks|01 - Sistema de hooks]] — arquitetura de hooks de segurança
-- [[03-Dominios/IA/Claude Code/Hooks e Guardrails/02 - Hook de validação|02 - Hook de validação]] — implementação de hooks bloqueadores
+- [[03-Dominios/IA/Claude Code/Hooks e Guardrails|Hooks e Guardrails]] — implementação de hooks bloqueadores
 - [[03-Dominios/IA/Claude Code/Time e Automação/02 - CI-CD com GitHub Actions|02 - CI/CD com GitHub Actions]] — permissões em CI
 - [[03-Dominios/IA/Claude Code/Time e Automação/04 - CLAUDE.md compartilhado|04 - CLAUDE.md compartilhado]] — política de permissões no repo
 - [[03-Dominios/IA/Claude Code/Time e Automação/index|Time e Automação]] — índice do galho

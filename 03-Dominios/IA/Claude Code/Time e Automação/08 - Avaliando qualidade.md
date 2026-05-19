@@ -235,5 +235,5 @@ Se o time quer entender saúde da adoção, alguns indicadores:
 - [[03-Dominios/IA/Claude Code/Time e Automação/04 - CLAUDE.md compartilhado|04 - CLAUDE.md compartilhado]] — convenções que ajudam o agente a acertar
 - [[03-Dominios/IA/Claude Code/Time e Automação/06 - Segurança organizacional|06 - Segurança organizacional]] — limites que reduzem risco
 - [[03-Dominios/IA/Claude Code/Time e Automação/07 - Onboarding de time|07 - Onboarding de time]] — como o time desenvolve calibração compartilhada
-- [[03-Dominios/IA/Claude Code/Workflows/07 - Code review com agente|07 - Code review com agente]] — usar o próprio agente para revisar
+- [[03-Dominios/IA/Claude Code/Workflows/05 - Code review|05 - Code review]] — usar o próprio agente para revisar
 - [[03-Dominios/IA/Claude Code/Time e Automação/index|Time e Automação]] — índice do galho

@@ -32,7 +32,7 @@ Este galho cobre cada peça da camada de configuração, com receitas prontas pa
 3. [[03-Dominios/IA/Claude Code/Configuração/03 - CLAUDE.md receitas|03 - CLAUDE.md — receitas para Node, Python, Go, monorepos]]
 4. [[03-Dominios/IA/Claude Code/Configuração/04 - settings.json|04 - settings.json — permissões, comportamentos, env vars]]
 5. [[03-Dominios/IA/Claude Code/Configuração/05 - Permissions|05 - Permissions — allow/deny por ferramenta e por comando]]
-6. [[03-Dominios/IA/Claude Code/Configuração/06 - Aliases e slash commands|06 - Aliases e slash commands customizados]]
+6. [[03-Dominios/IA/Claude Code/Configuração/06 - Slash commands customizados|06 - Slash commands customizados]]
 7. [[03-Dominios/IA/Claude Code/Configuração/07 - Pasta .claude|07 - A pasta .claude — estrutura completa]]
 8. [[03-Dominios/IA/Claude Code/Configuração/08 - Armadilhas de configuração|08 - Armadilhas de configuração — erros comuns e como evitar]]
 
