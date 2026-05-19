@@ -9,8 +9,11 @@ Aplica a regra do Quartz: [[Pasta]] é quebrado se a pasta não tiver index.md.
 
 from __future__ import annotations
 
+import argparse
 import difflib
+import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 IGNORED_DIRS = {".git", ".obsidian", "node_modules", ".agents", ".quartz-cache"}
@@ -303,8 +306,101 @@ def resolve_link(link: dict, index: dict, vault_root: Path | None = None) -> dic
     return None
 
 
+def scan_folder(target: Path, vault_root: Path) -> dict:
+    """Varre todos os .md da pasta-alvo, extrai links e resolve.
+
+    Retorna dict no formato definido na spec (campos: scanned_at, vault_root,
+    target_folder, stats, broken, warnings).
+    """
+    target = target.resolve()
+    vault_root = vault_root.resolve()
+
+    if not target.is_dir():
+        raise FileNotFoundError(f"target folder not found: {target}")
+
+    index = index_vault(vault_root)
+    broken: list[dict] = []
+    warnings: list[dict] = []
+    files_scanned = 0
+    links_total = 0
+
+    for path in sorted(target.rglob("*.md")):
+        if any(part in IGNORED_DIRS for part in path.relative_to(vault_root).parts):
+            continue
+        rel = path.relative_to(vault_root).as_posix()
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            warnings.append({"file": rel, "msg": f"unreadable: {exc.__class__.__name__}"})
+            continue
+        files_scanned += 1
+
+        all_links = extract_wikilinks_clean(text) + extract_markdown_links(text)
+
+        for link in all_links:
+            link["file"] = rel
+            links_total += 1
+            result = resolve_link(link, index, vault_root=vault_root)
+            if result is not None:
+                broken.append(result)
+
+    by_reason: dict[str, int] = {}
+    for b in broken:
+        by_reason[b["reason"]] = by_reason.get(b["reason"], 0) + 1
+
+    return {
+        "scanned_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "vault_root": vault_root.as_posix(),
+        "target_folder": target.relative_to(vault_root).as_posix(),
+        "stats": {
+            "files_scanned": files_scanned,
+            "links_total": links_total,
+            "links_broken": len(broken),
+            "by_reason": by_reason,
+        },
+        "broken": broken,
+        "warnings": warnings,
+    }
+
+
+def _parse_args(argv: list[str]) -> argparse.Namespace:
+    p = argparse.ArgumentParser(
+        prog="check_wikilinks",
+        description="Detecta wikilinks/links markdown quebrados (regra Quartz).",
+    )
+    p.add_argument("target", help="pasta-alvo dentro do vault")
+    p.add_argument("--vault-root", default=None,
+                   help="raiz do vault (auto-detecta via .obsidian/ se omitido)")
+    p.add_argument("--output", default=None,
+                   help="caminho do JSON de saída (default: /tmp/wikilinks-report-<ts>.json)")
+    p.add_argument("--respect-public-only", action="store_true",
+                   help="ignora arquivos cujo path resolve fora do repo público")
+    return p.parse_args(argv)
+
+
 def main(argv: list[str] | None = None) -> int:
-    raise NotImplementedError
+    args = _parse_args(argv if argv is not None else [])
+    target = Path(args.target).resolve()
+    if args.vault_root:
+        vault_root = Path(args.vault_root).resolve()
+    else:
+        vault_root = auto_detect_vault_root(target)
+
+    if args.output:
+        out_path = Path(args.output)
+    else:
+        ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+        out_path = Path(f"/tmp/wikilinks-report-{ts}.json")
+
+    try:
+        report = scan_folder(target, vault_root)
+    except FileNotFoundError as exc:
+        print(f"error: {exc}", flush=True)
+        return 2
+
+    out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(out_path)
+    return 0
 
 
 if __name__ == "__main__":

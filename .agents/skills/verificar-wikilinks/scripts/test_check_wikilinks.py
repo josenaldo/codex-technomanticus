@@ -367,5 +367,38 @@ class TestMarkdownBrokenPath(unittest.TestCase):
         self.assertIsNone(cw.resolve_link(link, idx))
 
 
+class TestScanAndCLI(unittest.TestCase):
+    def test_scan_folder_detects_moc_bug(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {
+                "MOC/index.md": "# MOC\n\n[[Anatomia]] [[Existente]]\n",
+                "MOC/Anatomia/01.md": "# 01\n",        # pasta sem index.md
+                "MOC/Existente.md": "# Existente\n",
+            })
+            report = cw.scan_folder(vault / "MOC", vault_root=vault)
+            self.assertEqual(report["stats"]["files_scanned"], 3)
+            self.assertEqual(report["stats"]["links_broken"], 1)
+            self.assertEqual(report["stats"]["by_reason"]["folder_without_index"], 1)
+            self.assertEqual(report["broken"][0]["target"], "Anatomia")
+
+    def test_cli_writes_json_to_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {
+                "MOC/index.md": "# MOC\n[[Sem]]\n",
+            })
+            out = Path(tmp) / "report.json"
+            rc = cw.main([
+                str(vault / "MOC"),
+                "--vault-root", str(vault),
+                "--output", str(out),
+            ])
+            self.assertEqual(rc, 0)
+            self.assertTrue(out.exists())
+            import json
+            data = json.loads(out.read_text())
+            self.assertEqual(data["stats"]["links_broken"], 1)
+            self.assertEqual(data["target_folder"], "MOC")
+
+
 if __name__ == "__main__":
     unittest.main()
