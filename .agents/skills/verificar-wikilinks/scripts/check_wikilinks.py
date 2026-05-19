@@ -183,24 +183,41 @@ def index_vault(vault_root: Path) -> dict:
 
 
 def resolve_link(link: dict, index: dict) -> dict | None:
-    """Aplica regras do Quartz e retorna None se OK; Broken dict se quebrado.
-
-    Ordem de tentativa:
-    1. Path explícito (contém '/' ou termina em .md) -> match em files_by_relpath.
-    2. Basename exato -> match único em files_by_basename.
-    3. Senão: caminho de quebra (próximas tasks).
-    """
     target = link["target"]
     target_norm = target[:-3] if target.endswith(".md") else target
 
-    if "/" in target_norm:
+    if "/" in target_norm or target.endswith(".md"):
         candidate_rel = target_norm + ".md"
         if candidate_rel in index["files_by_relpath"]:
             return None
+        if target_norm in index["folders_with_index"]:
+            return None
+        all_folder_paths = {p for paths in index["folders"].values() for p in paths}
+        if target_norm in all_folder_paths:
+            inside = sorted(
+                p for p in index["files_by_relpath"] if p.startswith(target_norm + "/")
+            )
+            return {**link, "reason": "folder_without_index", "candidates": inside[:10]}
 
     matches = index["files_by_basename"].get(target_norm, [])
     if len(matches) == 1:
         return None
+    if len(matches) > 1:
+        return {**link, "reason": "ambiguous", "candidates": matches}
+
+    folder_paths = index["folders"].get(target_norm, [])
+    if folder_paths:
+        with_index = [p for p in folder_paths if p in index["folders_with_index"]]
+        if len(with_index) == 1:
+            return None
+        if len(with_index) > 1:
+            return {**link, "reason": "ambiguous", "candidates": with_index}
+        inside: list[str] = []
+        for fp in folder_paths:
+            inside.extend(
+                p for p in index["files_by_relpath"] if p.startswith(fp + "/")
+            )
+        return {**link, "reason": "folder_without_index", "candidates": sorted(inside)[:10]}
 
     return {**link, "reason": "target_not_found", "candidates": []}
 

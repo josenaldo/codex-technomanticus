@@ -220,5 +220,44 @@ class TestResolveExact(unittest.TestCase):
         self.assertIsNone(cw.resolve_link(self._link("A.md"), idx))
 
 
+class TestResolveFolder(unittest.TestCase):
+    def _link(self, target):
+        return {
+            "file": "MOC.md", "line": 1, "raw": f"[[{target}]]",
+            "target": target, "alias": None, "anchor": None,
+            "type": "wikilink", "in_frontmatter": False,
+        }
+
+    def test_folder_with_index_resolves(self):
+        idx = {
+            "files_by_basename": {"index": ["Pasta/index.md"]},
+            "files_by_relpath": {"Pasta/index.md"},
+            "folders": {"Pasta": ["Pasta"]},
+            "folders_with_index": {"Pasta"},
+        }
+        self.assertIsNone(cw.resolve_link(self._link("Pasta"), idx))
+
+    def test_folder_without_index_breaks(self):
+        idx = {
+            "files_by_basename": {"A": ["Pasta/A.md"]},
+            "files_by_relpath": {"Pasta/A.md"},
+            "folders": {"Pasta": ["Pasta"]},
+            "folders_with_index": set(),
+        }
+        broken = cw.resolve_link(self._link("Pasta"), idx)
+        self.assertIsNotNone(broken)
+        self.assertEqual(broken["reason"], "folder_without_index")
+        self.assertIn("Pasta/A.md", broken["candidates"])
+
+    def test_nested_folder_path_with_index_resolves(self):
+        idx = {
+            "files_by_basename": {"index": ["A/B/index.md"]},
+            "files_by_relpath": {"A/B/index.md"},
+            "folders": {"B": ["A/B"]},
+            "folders_with_index": {"A/B"},
+        }
+        self.assertIsNone(cw.resolve_link(self._link("A/B"), idx))
+
+
 if __name__ == "__main__":
     unittest.main()
