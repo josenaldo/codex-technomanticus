@@ -55,6 +55,16 @@ Tecla "prefixo" pra atalhos custom. Default Neovim: `\`. Em LazyVim: `<Space>`. 
 
 Veja também: [[06 - Estrutura de config]], [[08 - Customizando LazyVim]].
 
+### Macro
+Sequência de teclas gravada e replicável em Neovim. Gravar: `q<reg>` + teclas + `q`. Replay: `@<reg>` (uma vez), `@@` (último), `N@<reg>` (N vezes). O macro é um register editável — `:put a` mostra/edita.
+
+Veja também: [[10 - Registers, marks, macros]].
+
+### Mark
+Posição salva (linha + coluna) em um buffer. Locais (`a`-`z`, scope buffer) ou globais (`A`-`Z`, persistem entre arquivos e sessões). Criar: `m<letra>`. Saltar: `'<letra>` (linha) ou `` `<letra> `` (linha+coluna). Listar: `:marks`.
+
+Veja também: [[10 - Registers, marks, macros]].
+
 ### Modal editing
 Modelo de edição em que o editor opera em modos distintos (normal, insert, visual, command…); cada modo redefine o significado das teclas. É a base de Vim/Neovim e o que permite tratar edição como uma linguagem de comandos.
 
@@ -74,6 +84,11 @@ Veja também: [[02 - Motions, operadores e text objects]].
 Comando que age sobre um alvo definido por motion ou text object. Operadores principais: `d` (delete), `c` (change), `y` (yank), `v` (visual), `>`/`<` (indent), `gu`/`gU` (case).
 
 Veja também: [[02 - Motions, operadores e text objects]].
+
+### Register
+"Clipboard" nomeado do Vim. Yank/delete/change escrevem em registers; paste lê. Classes: named (`a`-`z`), numbered (`0`-`9`, histórico), system (`+`/`*`), expression (`=`), search (`/`), command (`:`), black hole (`_`). Listar: `:reg`.
+
+Veja também: [[10 - Registers, marks, macros]].
 
 ### Text object
 Região textual delimitada semanticamente (palavra, parágrafo, par de delimitadores, tag HTML…). Acessada por prefixos `i` (inner — só o conteúdo) ou `a` (around — inclui delimitadores). Ex: `ci"` muda o conteúdo entre aspas; `da{` deleta o bloco `{ }` inteiro.
