@@ -119,10 +119,11 @@ def extract_wikilinks(text: str) -> list[dict]:
             anchor: str | None = None
             alias: str | None = None
 
-            if "|" in body:
-                target_part, alias = body.split("|", 1)
+            unescaped_body = body.replace("\\|", "|")
+            if "|" in unescaped_body:
+                target_part, alias = unescaped_body.split("|", 1)
             else:
-                target_part = body
+                target_part = unescaped_body
             if "#" in target_part:
                 target, anchor = target_part.split("#", 1)
             else:

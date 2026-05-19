@@ -106,6 +106,14 @@ class TestExtractWikilinks(unittest.TestCase):
         self.assertEqual(links[0]["line"], 1)
         self.assertEqual(links[1]["line"], 1)
 
+    def test_escaped_pipe_in_table_treated_as_alias_separator(self):
+        # Em tabelas markdown, `|` precisa ser escapado como `\|`.
+        # O parser deve tratar `\|` como o separador alias/target (não como literal).
+        links = cw.extract_wikilinks("[[Anatomia dos LLMs\\|17 - Evaluation]]\n")
+        self.assertEqual(len(links), 1)
+        self.assertEqual(links[0]["target"], "Anatomia dos LLMs")
+        self.assertEqual(links[0]["alias"], "17 - Evaluation")
+
 
 class TestCodeFences(unittest.TestCase):
     def test_ignores_wikilink_in_fenced_block(self):
