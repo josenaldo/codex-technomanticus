@@ -30,5 +30,39 @@ class TestHarness(unittest.TestCase):
             self.assertTrue((vault / ".obsidian").exists())
 
 
+class TestIndexVault(unittest.TestCase):
+    def test_indexes_basenames_relpaths_folders_and_folders_with_index(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {
+                "Notas/A.md": "# A\n",
+                "Notas/B.md": "# B\n",
+                "Notas/Sub/index.md": "# Sub\n",
+                "Notas/Outra/C.md": "# C\n",   # pasta SEM index
+                ".agents/skills/x.md": "ignore",  # deve ser ignorado
+            })
+            idx = cw.index_vault(vault)
+
+            self.assertIn("A", idx["files_by_basename"])
+            self.assertEqual(idx["files_by_basename"]["A"], ["Notas/A.md"])
+            self.assertIn("Notas/A.md", idx["files_by_relpath"])
+            self.assertNotIn(".agents/skills/x.md", idx["files_by_relpath"])
+
+            self.assertIn("Sub", idx["folders"])
+            self.assertIn("Notas/Sub", idx["folders_with_index"])
+            self.assertNotIn("Notas/Outra", idx["folders_with_index"])
+
+    def test_auto_detect_vault_root_climbs_to_obsidian(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {"Notas/A.md": "# A\n"})
+            detected = cw.auto_detect_vault_root(vault / "Notas")
+            self.assertEqual(detected, vault)
+
+    def test_auto_detect_raises_when_no_obsidian(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "Notas").mkdir()
+            with self.assertRaises(FileNotFoundError):
+                cw.auto_detect_vault_root(Path(tmp) / "Notas")
+
+
 if __name__ == "__main__":
     unittest.main()
