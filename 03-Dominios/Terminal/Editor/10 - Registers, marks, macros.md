@@ -397,7 +397,7 @@ Editar o macro como texto evita regravar do zero — valioso quando o macro tem 
 
 ---
 
-## Vocabulário
+## Em inglês
 
 | PT-BR | EN |
 |---|---|
