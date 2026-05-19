@@ -335,5 +335,37 @@ class TestAnchorValidation(unittest.TestCase):
             self.assertIsNone(cw.resolve_link(link, idx, vault_root=vault))
 
 
+class TestMarkdownBrokenPath(unittest.TestCase):
+    def test_markdown_link_internal_broken(self):
+        idx = {
+            "files_by_basename": {"Existente": ["Notas/Existente.md"]},
+            "files_by_relpath": {"Notas/Existente.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        link = {
+            "file": "origem.md", "line": 5,
+            "raw": "[t](Notas/Nao Existe.md)",
+            "target": "Notas/Nao Existe.md", "alias": "t", "anchor": None,
+            "type": "markdown", "in_frontmatter": False,
+        }
+        broken = cw.resolve_link(link, idx)
+        self.assertEqual(broken["reason"], "markdown_broken_path")
+
+    def test_markdown_link_internal_resolves(self):
+        idx = {
+            "files_by_basename": {"Existente": ["Notas/Existente.md"]},
+            "files_by_relpath": {"Notas/Existente.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        link = {
+            "file": "x.md", "line": 1, "raw": "[t](Notas/Existente.md)",
+            "target": "Notas/Existente.md", "alias": "t", "anchor": None,
+            "type": "markdown", "in_frontmatter": False,
+        }
+        self.assertIsNone(cw.resolve_link(link, idx))
+
+
 if __name__ == "__main__":
     unittest.main()

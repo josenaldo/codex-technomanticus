@@ -241,6 +241,7 @@ def find_candidates(target: str, index: dict, n: int = 5, cutoff: float = 0.6) -
 def resolve_link(link: dict, index: dict, vault_root: Path | None = None) -> dict | None:
     target = link["target"]
     target_norm = target[:-3] if target.endswith(".md") else target
+    is_markdown = link["type"] == "markdown"
 
     resolved_path: str | None = None
 
@@ -283,6 +284,9 @@ def resolve_link(link: dict, index: dict, vault_root: Path | None = None) -> dic
                         "candidates": sorted(inside)[:10]}
 
     if resolved_path is None:
+        if is_markdown:
+            return {**link, "reason": "markdown_broken_path",
+                    "candidates": find_candidates(target_norm, index)}
         return {**link, "reason": "target_not_found",
                 "candidates": find_candidates(target_norm, index)}
 
