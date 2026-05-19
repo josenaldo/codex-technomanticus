@@ -115,6 +115,24 @@ class TestExtractWikilinks(unittest.TestCase):
         self.assertEqual(links[0]["alias"], "17 - Evaluation")
 
 
+class TestResolveTargetWithMdInBasename(unittest.TestCase):
+    def test_resolves_target_whose_basename_contains_md(self):
+        # Arquivo real: "16 - Skills e SKILL.md.md" → basename = "16 - Skills e SKILL.md"
+        # Wikilink `[[16 - Skills e SKILL.md]]` deve bater por basename, não strip .md
+        idx = {
+            "files_by_basename": {"16 - Skills e SKILL.md": ["x/16 - Skills e SKILL.md.md"]},
+            "files_by_relpath": {"x/16 - Skills e SKILL.md.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        link = {
+            "file": "y.md", "line": 1, "raw": "[[16 - Skills e SKILL.md]]",
+            "target": "16 - Skills e SKILL.md", "alias": None, "anchor": None,
+            "type": "wikilink", "in_frontmatter": False,
+        }
+        self.assertIsNone(cw.resolve_link(link, idx))
+
+
 class TestCodeFences(unittest.TestCase):
     def test_ignores_wikilink_in_fenced_block(self):
         text = "antes\n```\n[[NaoExtrai]]\n```\ndepois [[Extrai]]\n"

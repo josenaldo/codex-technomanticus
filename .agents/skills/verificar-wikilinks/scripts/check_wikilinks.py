@@ -252,6 +252,13 @@ def resolve_link(link: dict, index: dict, vault_root: Path | None = None) -> dic
 
     resolved_path: str | None = None
 
+    # Tenta match exato com `.md` no basename antes do strip
+    # (cobre arquivos cujo título contém ".md", ex: "16 - SKILL.md.md")
+    if target.endswith(".md") and not is_markdown:
+        verbatim_matches = index["files_by_basename"].get(target, [])
+        if len(verbatim_matches) == 1:
+            resolved_path = verbatim_matches[0]
+
     if "/" in target_norm or target.endswith(".md"):
         candidate_rel = target_norm + ".md"
         if candidate_rel in index["files_by_relpath"]:
