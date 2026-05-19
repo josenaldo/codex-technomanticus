@@ -85,6 +85,11 @@ Comando que age sobre um alvo definido por motion ou text object. Operadores pri
 
 Veja também: [[02 - Motions, operadores e text objects]].
 
+### Quickfix list
+Lista global de "lugares pra ir" no Neovim (resultados de grep, compile errors, LSP references, TODOs…). Editável em massa via `:cdo <cmd>`. Comandos: `:copen` (abre), `:cnext`/`:cprev` (navega), `:cc N` (item N). Em LazyVim: `]q`/`[q` é keymap default.
+
+Veja também: [[11 - Workflow avançado]].
+
 ### Register
 "Clipboard" nomeado do Vim. Yank/delete/change escrevem em registers; paste lê. Classes: named (`a`-`z`), numbered (`0`-`9`, histórico), system (`+`/`*`), expression (`=`), search (`/`), command (`:`), black hole (`_`). Listar: `:reg`.
 
