@@ -3,7 +3,7 @@ title: "Terminal"
 type: moc
 publish: true
 created: 2026-05-18
-updated: 2026-05-18
+updated: 2026-05-19
 status: growing
 progresso: andamento
 tags:
@@ -24,7 +24,7 @@ Esta trilha cobre o ecossistema TUI/keyboard-first pra trabalho de desenvolvimen
 
 ### Galhos
 
-- Editor — galho 1 (planejado): Neovim + LazyVim (modal editing, plugins, LSP)
+- [[03-Dominios/Terminal/Editor/index|Editor]] — galho 1: Neovim + LazyVim (modal editing, plugins, LSP, Treesitter, DAP)
 - Shell — galho 2 (planejado): Zsh + Oh-My-Zsh + Powerlevel10k
 - Multiplexer — galho 3 (planejado): Zellij
 - TUIs de Dev — galho 4 (planejado): Lazygit, Lazydocker
