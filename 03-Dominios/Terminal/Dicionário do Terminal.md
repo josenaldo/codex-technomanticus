@@ -97,10 +97,30 @@ Distribuição Neovim opinada mantida por Folke Lemaitre. Bundle inclui Telescop
 
 Veja também: [[04 - LazyVim tour]], [[08 - Customizando LazyVim]].
 
+### Lazy-loading
+Carregar um plugin apenas quando necessário (em evento, comando, filetype ou tecla específica), ao invés de no startup. Reduz tempo de boot. Em lazy.nvim: campos `event`, `cmd`, `ft`, `keys` na plugin spec.
+
+Veja também: [[07 - lazy.nvim]].
+
+### lazy.nvim
+Plugin manager moderno do Neovim mantido por Folke Lemaitre. Usa Lua DSL pra spec de plugins. Recursos: lazy-loading nativo, lockfile (`lazy-lock.json`), profiling, UI interativa (`:Lazy`).
+
+Veja também: [[07 - lazy.nvim]].
+
 ### neo-tree
 Plugin de file explorer (árvore de arquivos lateral) que LazyVim usa como default. Atalho `<leader>e`. Suporta operações sobre arquivos (add, delete, rename, copy/paste) por keymaps dentro da árvore.
 
 Veja também: [[04 - LazyVim tour]].
+
+### Plugin manager
+Ferramenta que instala, atualiza e carrega plugins do Neovim. Os principais: lazy.nvim (atual, em LazyVim), packer.nvim (legado), vim-plug (legado, Vimscript). LazyVim usa lazy.nvim por default.
+
+Veja também: [[07 - lazy.nvim]], [[04 - LazyVim tour]].
+
+### Plugin spec
+Descrição de um plugin em formato tabela Lua, usada pelo lazy.nvim. Campos comuns: URL/source, `opts` (config passada ao setup), `config` (callback de init custom), `event`/`cmd`/`ft`/`keys` (triggers de lazy-load), `dependencies`.
+
+Veja também: [[07 - lazy.nvim]], [[08 - Customizando LazyVim]].
 
 ### Telescope
 Plugin de fuzzy finder pra Neovim. Em LazyVim, atalhos principais: `<leader>ff` (find files), `<leader>fg` (live grep), `<leader>,` (buffers), `<leader>fh` (help). Pode mandar resultados pra quickfix com `<C-q>`.
