@@ -30,6 +30,11 @@ Como usar este glossário:
 
 ## Vim / Neovim core
 
+### Autocmd
+Comando que dispara automaticamente em eventos do Neovim (salvar arquivo, abrir buffer, mudar tipo, etc.). Em Lua: `vim.api.nvim_create_autocmd`. Agrupados em `augroup` pra evitar duplicação ao recarregar config.
+
+Veja também: [[06 - Estrutura de config]].
+
 ### Buffer
 Representação em memória de um arquivo aberto no Neovim. Independente de windows e tabs — N buffers podem estar abertos sem nenhum visível, e o mesmo buffer pode aparecer em várias windows.
 
@@ -39,6 +44,16 @@ Veja também: [[03 - Edição e navegação]].
 Pilha de saltos que o Neovim mantém para cada window. Comandos como `gd`, `*`, `}`, `/` empurram a posição. Navegar: `<C-o>` (back), `<C-i>` (forward). Listar: `:jumps`.
 
 Veja também: [[03 - Edição e navegação]].
+
+### Keymap
+Mapeamento de uma sequência de teclas pra uma ação. Em Neovim moderno: `vim.keymap.set(mode, lhs, rhs, opts)`. Opções comuns: `desc` (descrição visível em which-key), `silent`, `noremap` (default true em vim.keymap.set).
+
+Veja também: [[06 - Estrutura de config]], [[08 - Customizando LazyVim]].
+
+### Leader key
+Tecla "prefixo" pra atalhos custom. Default Neovim: `\`. Em LazyVim: `<Space>`. Configurada com `vim.g.mapleader = " "` ANTES de plugins carregarem.
+
+Veja também: [[06 - Estrutura de config]], [[08 - Customizando LazyVim]].
 
 ### Modal editing
 Modelo de edição em que o editor opera em modos distintos (normal, insert, visual, command…); cada modo redefine o significado das teclas. É a base de Vim/Neovim e o que permite tratar edição como uma linguagem de comandos.
