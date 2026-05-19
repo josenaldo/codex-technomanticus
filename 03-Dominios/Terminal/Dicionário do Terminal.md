@@ -107,6 +107,11 @@ Veja também: [[03 - Edição e navegação]].
 
 ## Ecossistema LazyVim
 
+### AST
+Abstract Syntax Tree — árvore sintática abstrata. Representação hierárquica da estrutura de um código por um parser. Em Neovim, fornecida por Treesitter por linguagem; viabiliza highlight preciso, text objects estruturais e navegação por nó.
+
+Veja também: [[12 - Treesitter avançado]].
+
 ### Distribuição
 Preset de configuração de Neovim que combina um conjunto de plugins, opções e keymaps. Exemplos: LazyVim, LunarVim, AstroNvim, NvChad, kickstart.nvim. Diferente de Neovim "vanilla", onde tudo é configurado do zero.
 
@@ -142,10 +147,20 @@ Descrição de um plugin em formato tabela Lua, usada pelo lazy.nvim. Campos com
 
 Veja também: [[07 - lazy.nvim]], [[08 - Customizando LazyVim]].
 
+### Query
+Pattern em Tree-sitter (sintaxe S-expression em arquivos `.scm`) que casa contra a AST. Usada pra definir highlights, text objects, captures custom. Composta de patterns, captures (`@nome`) e predicates (`#match?`, `#any-of?`).
+
+Veja também: [[12 - Treesitter avançado]].
+
 ### Telescope
 Plugin de fuzzy finder pra Neovim. Em LazyVim, atalhos principais: `<leader>ff` (find files), `<leader>fg` (live grep), `<leader>,` (buffers), `<leader>fh` (help). Pode mandar resultados pra quickfix com `<C-q>`.
 
 Veja também: [[04 - LazyVim tour]], [[11 - Workflow avançado]].
+
+### Treesitter
+Biblioteca de parsing incremental (do GitHub). No Neovim, integrada via `nvim-treesitter` — gera AST por linguagem em tempo real, usada pra highlight preciso, text objects estruturais (`af`, `ic`), navegação por nó. Parsers instaláveis via `:TSInstall <lang>`.
+
+Veja também: [[12 - Treesitter avançado]].
 
 ### which-key
 Plugin de descoberta de keymaps. Após pressionar uma key prefix (ex: `<leader>`), espera ~1s e mostra popup com os keymaps disponíveis e o que fazem. Atalho `<leader>sk` no LazyVim faz search-keymap.
