@@ -259,5 +259,47 @@ class TestResolveFolder(unittest.TestCase):
         self.assertIsNone(cw.resolve_link(self._link("A/B"), idx))
 
 
+class TestAmbiguousAndFuzzy(unittest.TestCase):
+    def _link(self, target):
+        return {
+            "file": "x.md", "line": 1, "raw": f"[[{target}]]",
+            "target": target, "alias": None, "anchor": None,
+            "type": "wikilink", "in_frontmatter": False,
+        }
+
+    def test_ambiguous_target_lists_candidates(self):
+        idx = {
+            "files_by_basename": {"Notas": ["A/Notas.md", "B/Notas.md"]},
+            "files_by_relpath": {"A/Notas.md", "B/Notas.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        broken = cw.resolve_link(self._link("Notas"), idx)
+        self.assertEqual(broken["reason"], "ambiguous")
+        self.assertEqual(sorted(broken["candidates"]), ["A/Notas.md", "B/Notas.md"])
+
+    def test_fuzzy_suggestion_on_typo(self):
+        idx = {
+            "files_by_basename": {"Anatomia dos LLMs": ["Notas/Anatomia dos LLMs.md"]},
+            "files_by_relpath": {"Notas/Anatomia dos LLMs.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        broken = cw.resolve_link(self._link("Anatonia dos LLMs"), idx)
+        self.assertEqual(broken["reason"], "target_not_found")
+        self.assertIn("Notas/Anatomia dos LLMs.md", broken["candidates"])
+
+    def test_target_not_found_no_close_match(self):
+        idx = {
+            "files_by_basename": {"Zebra": ["x/Zebra.md"]},
+            "files_by_relpath": {"x/Zebra.md"},
+            "folders": {},
+            "folders_with_index": set(),
+        }
+        broken = cw.resolve_link(self._link("Mongoloide Cósmico"), idx)
+        self.assertEqual(broken["reason"], "target_not_found")
+        self.assertEqual(broken["candidates"], [])
+
+
 if __name__ == "__main__":
     unittest.main()

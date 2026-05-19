@@ -9,6 +9,7 @@ Aplica a regra do Quartz: [[Pasta]] é quebrado se a pasta não tiver index.md.
 
 from __future__ import annotations
 
+import difflib
 import re
 from pathlib import Path
 
@@ -182,6 +183,26 @@ def index_vault(vault_root: Path) -> dict:
     }
 
 
+def find_candidates(target: str, index: dict, n: int = 5, cutoff: float = 0.6) -> list[str]:
+    """Sugestões fuzzy via difflib sobre basenames + relpaths."""
+    pool = list(index["files_by_basename"].keys()) + list(index["files_by_relpath"])
+    matches = difflib.get_close_matches(target, pool, n=n, cutoff=cutoff)
+    resolved: list[str] = []
+    for m in matches:
+        if m in index["files_by_relpath"]:
+            resolved.append(m)
+        else:
+            paths = index["files_by_basename"].get(m, [])
+            resolved.extend(paths)
+    seen: set[str] = set()
+    out: list[str] = []
+    for p in resolved:
+        if p not in seen:
+            seen.add(p)
+            out.append(p)
+    return out[:n]
+
+
 def resolve_link(link: dict, index: dict) -> dict | None:
     target = link["target"]
     target_norm = target[:-3] if target.endswith(".md") else target
@@ -219,7 +240,11 @@ def resolve_link(link: dict, index: dict) -> dict | None:
             )
         return {**link, "reason": "folder_without_index", "candidates": sorted(inside)[:10]}
 
-    return {**link, "reason": "target_not_found", "candidates": []}
+    return {
+        **link,
+        "reason": "target_not_found",
+        "candidates": find_candidates(target_norm, index),
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
