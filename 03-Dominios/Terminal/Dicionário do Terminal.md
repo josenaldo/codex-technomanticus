@@ -117,11 +117,6 @@ Preset de configuração de Neovim que combina um conjunto de plugins, opções 
 
 Veja também: [[04 - LazyVim tour]], [[08 - Customizando LazyVim]].
 
-### LazyVim
-Distribuição Neovim opinada mantida por Folke Lemaitre. Bundle inclui Telescope (fuzzy), neo-tree (explorer), which-key, lazy.nvim (plugin manager), LSP stack (mason + nvim-lspconfig + nvim-cmp + conform). Filosofia: "use defaults; customize on top".
-
-Veja também: [[04 - LazyVim tour]], [[08 - Customizando LazyVim]].
-
 ### Lazy-loading
 Carregar um plugin apenas quando necessário (em evento, comando, filetype ou tecla específica), ao invés de no startup. Reduz tempo de boot. Em lazy.nvim: campos `event`, `cmd`, `ft`, `keys` na plugin spec.
 
@@ -131,6 +126,11 @@ Veja também: [[07 - lazy.nvim]].
 Plugin manager moderno do Neovim mantido por Folke Lemaitre. Usa Lua DSL pra spec de plugins. Recursos: lazy-loading nativo, lockfile (`lazy-lock.json`), profiling, UI interativa (`:Lazy`).
 
 Veja também: [[07 - lazy.nvim]].
+
+### LazyVim
+Distribuição Neovim opinada mantida por Folke Lemaitre. Bundle inclui Telescope (fuzzy), neo-tree (explorer), which-key, lazy.nvim (plugin manager), LSP stack (mason + nvim-lspconfig + nvim-cmp + conform). Filosofia: "use defaults; customize on top".
+
+Veja também: [[04 - LazyVim tour]], [[08 - Customizando LazyVim]].
 
 ### neo-tree
 Plugin de file explorer (árvore de arquivos lateral) que LazyVim usa como default. Atalho `<leader>e`. Suporta operações sobre arquivos (add, delete, rename, copy/paste) por keymaps dentro da árvore.

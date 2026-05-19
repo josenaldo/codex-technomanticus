@@ -57,7 +57,7 @@ Esse galho cobre o editor end-to-end: filosofia modal, motions e text objects (I
 ## Versões assumidas
 
 - **Neovim:** 0.10+ stable (features 0.11+ marcadas explicitamente nas notas)
-- **LazyVim:** versão de 2026-05-19 (verificar `:Lazy` na sessão de execução; declarar exata em pass final)
+- **LazyVim:** versão `main` em 2026-05-19 — verificar `:Lazy` na sua instalação pra confirmar o commit corrente
 - **lazy.nvim:** latest
 - **LuaJIT:** bundled com Neovim (Lua 5.1-compatible)
 
