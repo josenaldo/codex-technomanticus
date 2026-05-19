@@ -400,5 +400,39 @@ class TestScanAndCLI(unittest.TestCase):
             self.assertEqual(data["target_folder"], "MOC")
 
 
+class TestPolish(unittest.TestCase):
+    def test_nested_wikilink_marked_malformed(self):
+        text = "[[a [[b]] c]]\n"
+        links = cw.extract_wikilinks_clean(text)
+        offenders = [l for l in links if "[" in l["target"] or "]" in l["target"]]
+        idx = {
+            "files_by_basename": {}, "files_by_relpath": set(),
+            "folders": {}, "folders_with_index": set(),
+        }
+        if offenders:
+            broken = cw.resolve_link(offenders[0], idx)
+            self.assertEqual(broken["reason"], "malformed")
+
+    def test_encoding_error_recorded_as_warning(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {"MOC/ok.md": "# ok\n"})
+            bad = vault / "MOC" / "bin.md"
+            bad.write_bytes(b"\xff\xfe\x00invalid utf-8 \x80")
+            report = cw.scan_folder(vault / "MOC", vault_root=vault)
+            self.assertTrue(any(w["file"].endswith("bin.md") for w in report["warnings"]))
+
+    def test_respect_public_only_filters_outside(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            vault = make_vault(Path(tmp), {"MOC/index.md": "# MOC\n[[Inexistente]]\n"})
+            out = Path(tmp) / "r.json"
+            rc = cw.main([
+                str(vault / "MOC"),
+                "--vault-root", str(vault),
+                "--output", str(out),
+                "--respect-public-only",
+            ])
+            self.assertEqual(rc, 0)
+
+
 if __name__ == "__main__":
     unittest.main()

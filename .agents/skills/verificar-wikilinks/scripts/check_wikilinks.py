@@ -246,6 +246,9 @@ def resolve_link(link: dict, index: dict, vault_root: Path | None = None) -> dic
     target_norm = target[:-3] if target.endswith(".md") else target
     is_markdown = link["type"] == "markdown"
 
+    if "[" in target or "]" in target:
+        return {**link, "reason": "malformed", "candidates": []}
+
     resolved_path: str | None = None
 
     if "/" in target_norm or target.endswith(".md"):
@@ -329,10 +332,15 @@ def scan_folder(target: Path, vault_root: Path) -> dict:
             continue
         rel = path.relative_to(vault_root).as_posix()
         try:
-            text = path.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError) as exc:
+            raw_bytes = path.read_bytes()
+        except OSError as exc:
             warnings.append({"file": rel, "msg": f"unreadable: {exc.__class__.__name__}"})
             continue
+        try:
+            text = raw_bytes.decode("utf-8")
+        except UnicodeDecodeError:
+            warnings.append({"file": rel, "msg": "encoding error, decoded with replace"})
+            text = raw_bytes.decode("utf-8", errors="replace")
         files_scanned += 1
 
         all_links = extract_wikilinks_clean(text) + extract_markdown_links(text)
@@ -397,6 +405,21 @@ def main(argv: list[str] | None = None) -> int:
     except FileNotFoundError as exc:
         print(f"error: {exc}", flush=True)
         return 2
+
+    if args.respect_public_only:
+        public_root = vault_root
+        report["broken"] = [
+            b for b in report["broken"]
+            if not any(
+                not (public_root / c).resolve().is_relative_to(public_root)
+                for c in b.get("candidates", [])
+            )
+        ]
+        report["stats"]["links_broken"] = len(report["broken"])
+        by_reason: dict[str, int] = {}
+        for b in report["broken"]:
+            by_reason[b["reason"]] = by_reason.get(b["reason"], 0) + 1
+        report["stats"]["by_reason"] = by_reason
 
     out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(out_path)
