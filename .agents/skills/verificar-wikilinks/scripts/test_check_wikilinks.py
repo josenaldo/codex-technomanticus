@@ -127,5 +127,31 @@ class TestCodeFences(unittest.TestCase):
         self.assertEqual(targets, ["Keep"])
 
 
+class TestFrontmatter(unittest.TestCase):
+    def test_marks_wikilink_in_frontmatter(self):
+        text = (
+            "---\n"
+            "related:\n"
+            "  - \"[[Outra Nota]]\"\n"
+            "---\n"
+            "# corpo\n"
+            "[[Externa]]\n"
+        )
+        links = cw.extract_wikilinks_clean(text)
+        by_target = {l["target"]: l for l in links}
+        self.assertTrue(by_target["Outra Nota"]["in_frontmatter"])
+        self.assertFalse(by_target["Externa"]["in_frontmatter"])
+
+    def test_no_frontmatter_means_all_false(self):
+        text = "# título\n[[X]]\n"
+        links = cw.extract_wikilinks_clean(text)
+        self.assertFalse(links[0]["in_frontmatter"])
+
+    def test_frontmatter_must_start_at_line_one(self):
+        text = "preâmbulo\n---\nfoo: [[Y]]\n---\n"
+        links = cw.extract_wikilinks_clean(text)
+        self.assertFalse(links[0]["in_frontmatter"])
+
+
 if __name__ == "__main__":
     unittest.main()

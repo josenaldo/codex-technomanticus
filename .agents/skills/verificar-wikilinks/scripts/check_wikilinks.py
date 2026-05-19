@@ -38,9 +38,30 @@ def strip_code_fences(text: str) -> str:
     return "\n".join(out_lines)
 
 
+def find_frontmatter_range(text: str) -> tuple[int, int] | None:
+    """Detecta YAML frontmatter (---\\n ... \\n---). Retorna (start, end) 1-based.
+
+    Apenas reconhece se '---' está na primeira linha (linha 1) e há um '---' depois.
+    """
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return None
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            return (1, i + 1)
+    return None
+
+
 def extract_wikilinks_clean(text: str) -> list[dict]:
-    """Igual a extract_wikilinks, mas após mascarar code fences e inline code."""
-    return extract_wikilinks(strip_code_fences(text))
+    """Extrai wikilinks após mascarar code fences/inline; marca in_frontmatter."""
+    fm_range = find_frontmatter_range(text)
+    links = extract_wikilinks(strip_code_fences(text))
+    if fm_range is not None:
+        fm_start, fm_end = fm_range
+        for link in links:
+            if fm_start <= link["line"] <= fm_end:
+                link["in_frontmatter"] = True
+    return links
 
 
 def extract_wikilinks(text: str) -> list[dict]:
