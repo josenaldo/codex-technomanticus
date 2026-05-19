@@ -40,6 +40,21 @@ Um dos estados internos do Neovim que define como as teclas são interpretadas. 
 
 Veja também: [[01 - Modal editing]].
 
+### Motion
+Comando que move o cursor em modo normal (ex: `w`, `e`, `gg`, `f<x>`). Em Vim, motions são "substantivos" que combinam com operadores ("verbos") para formar comandos. Ex: `dw` = delete + word.
+
+Veja também: [[02 - Motions, operadores e text objects]].
+
+### Operador
+Comando que age sobre um alvo definido por motion ou text object. Operadores principais: `d` (delete), `c` (change), `y` (yank), `v` (visual), `>`/`<` (indent), `gu`/`gU` (case).
+
+Veja também: [[02 - Motions, operadores e text objects]].
+
+### Text object
+Região textual delimitada semanticamente (palavra, parágrafo, par de delimitadores, tag HTML…). Acessada por prefixos `i` (inner — só o conteúdo) ou `a` (around — inclui delimitadores). Ex: `ci"` muda o conteúdo entre aspas; `da{` deleta o bloco `{ }` inteiro.
+
+Veja também: [[02 - Motions, operadores e text objects]], [[12 - Treesitter avançado]].
+
 ## Ecossistema LazyVim
 
 ## LSP & dev
