@@ -72,6 +72,46 @@ Veja também: [[03 - Edição e navegação]].
 
 ## Ecossistema LazyVim
 
+### Distribuição
+Preset de configuração de Neovim que combina um conjunto de plugins, opções e keymaps. Exemplos: LazyVim, LunarVim, AstroNvim, NvChad, kickstart.nvim. Diferente de Neovim "vanilla", onde tudo é configurado do zero.
+
+Veja também: [[04 - LazyVim tour]], [[08 - Customizando LazyVim]].
+
+### LazyVim
+Distribuição Neovim opinada mantida por Folke Lemaitre. Bundle inclui Telescope (fuzzy), neo-tree (explorer), which-key, lazy.nvim (plugin manager), LSP stack (mason + nvim-lspconfig + nvim-cmp + conform). Filosofia: "use defaults; customize on top".
+
+Veja também: [[04 - LazyVim tour]], [[08 - Customizando LazyVim]].
+
+### neo-tree
+Plugin de file explorer (árvore de arquivos lateral) que LazyVim usa como default. Atalho `<leader>e`. Suporta operações sobre arquivos (add, delete, rename, copy/paste) por keymaps dentro da árvore.
+
+Veja também: [[04 - LazyVim tour]].
+
+### Telescope
+Plugin de fuzzy finder pra Neovim. Em LazyVim, atalhos principais: `<leader>ff` (find files), `<leader>fg` (live grep), `<leader>,` (buffers), `<leader>fh` (help). Pode mandar resultados pra quickfix com `<C-q>`.
+
+Veja também: [[04 - LazyVim tour]], [[11 - Workflow avançado]].
+
+### which-key
+Plugin de descoberta de keymaps. Após pressionar uma key prefix (ex: `<leader>`), espera ~1s e mostra popup com os keymaps disponíveis e o que fazem. Atalho `<leader>sk` no LazyVim faz search-keymap.
+
+Veja também: [[04 - LazyVim tour]].
+
 ## LSP & dev
+
+### Code action
+Operação contextual sugerida pelo LSP — refactoring, fix automático, import, etc. Em LazyVim: `<leader>ca` lista as code actions disponíveis na linha/cursor atual.
+
+Veja também: [[04 - LazyVim tour]], [[09 - LSP no Neovim]].
+
+### Format on save
+Comportamento (default no LazyVim) de rodar o formatter (conform.nvim no LazyVim) automaticamente ao salvar (`:w`). Toggle: `<leader>uf`.
+
+Veja também: [[04 - LazyVim tour]], [[09 - LSP no Neovim]].
+
+### LSP
+Language Server Protocol — protocolo cliente/servidor que dá a editores recursos como go-to-definition, hover, completions, diagnostics, formatting. Implementado em Neovim via cliente built-in (`vim.lsp`) e `nvim-lspconfig`. Servers são instalados via Mason.
+
+Veja também: [[04 - LazyVim tour]], [[09 - LSP no Neovim]].
 
 ## Avançado
