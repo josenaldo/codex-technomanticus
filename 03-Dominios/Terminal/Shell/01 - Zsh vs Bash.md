@@ -188,6 +188,40 @@ done
 
 No Zsh, `$lista` não é dividido em palavras por espaço por default. O loop itera **uma vez** com a string inteira. Para obter o comportamento Bash, ative `setopt SH_WORD_SPLIT` ou use `${=lista}` para expansão explícita com splitting.
 
+### Bloco do `~/.zshrc` que só funciona em Zsh
+
+As diferenças acima aparecem de forma concentrada num `~/.zshrc` real. O bloco abaixo usa apenas construções Zsh-nativas — nenhuma delas funciona em Bash sem adaptação:
+
+```zsh
+# ~/.zshrc — trechos que só existem em Zsh
+
+# AUTO_CD: digitar só o nome do diretório entra nele (sem `cd`)
+setopt AUTO_CD
+
+# EXTENDED_GLOB: libera negação (^), exclusão (~) e qualifiers de glob
+setopt EXTENDED_GLOB
+
+# Arrays 1-indexed: arr[1] é o primeiro item (em Bash seria arr[0])
+local -a frutas
+frutas=(maçã pera uva)
+print $frutas[1]    # maçã
+
+# Case conversion via flag de expansão: (L) lowercase, (U) uppercase
+local nome="Zsh"
+print ${(L)nome}    # zsh
+print ${(U)nome}    # ZSH
+
+# Globbing recursivo nativo — sem precisar de `shopt -s globstar`
+# (.N) = só arquivos regulares, sem erro se nenhum for encontrado
+print -l **/*.md(.N)
+
+# Sem word splitting por default: $lista é tratada como string única
+lista="a b c"
+for x in $lista; do print "[$x]"; done    # imprime "[a b c]" (um item)
+```
+
+Cada linha marcada com comentário seria inválida ou produziria resultado diferente em Bash — são as mesmas diferenças das subseções anteriores, agora em contexto de configuração.
+
 ---
 
 ## Armadilhas
