@@ -1,7 +1,7 @@
 ---
 title: "Dicionário do Terminal"
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-20
 type: glossary
 status: seedling
 aliases: []
@@ -247,4 +247,19 @@ Trecho de código parametrizável que expande a partir de um trigger. Tabstops (
 Veja também: [[13 - Snippets e DAP]].
 
 ## Shell / Zsh / OMZ
+
+### Builtin
+Comando implementado diretamente pelo shell (não é binário externo no `$PATH`). Em Zsh: `setopt`, `bindkey`, `zstyle`, `compinit`, `print`, `read`, `typeset`. Mais rápido que comando externo; semântica integrada ao shell.
+
+Veja também: [[01 - Zsh vs Bash]], [[02 - Zsh essencial]].
+
+### POSIX
+Portable Operating System Interface — padrão IEEE que define APIs e comportamento de shell mínimos. Bash é mais próximo do POSIX por default; Zsh estende livremente mas oferece `emulate sh|bash|ksh` quando precisa de compat.
+
+Veja também: [[01 - Zsh vs Bash]].
+
+### Shell
+Interpretador de comandos de um sistema Unix-like. Pode ser interativo (lê `.zshrc`, edita linha) ou não-interativo (script). A família Bourne agrupa sh, ksh, bash e zsh — sintaxe próxima mas extensões e defaults divergem.
+
+Veja também: [[01 - Zsh vs Bash]].
 
