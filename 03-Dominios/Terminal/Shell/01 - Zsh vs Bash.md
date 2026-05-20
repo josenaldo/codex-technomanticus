@@ -39,12 +39,14 @@ Essa distinção é importante: configurações no `~/.zshrc` não se aplicam a 
 
 ```
 sh (1979, Stephen Bourne, Bell Labs)
-  └─ ksh (1983, David Korn, AT&T)
-       ├─ bash (1989, Brian Fox, GNU Project)
-       └─ zsh (1990, Paul Falstad, Princeton)
+  ├─ ksh (1983, David Korn, AT&T) — extensão de sh com programmability e funções
+  ├─ bash (1989, Brian Fox, GNU Project) — replacement free de sh; incorpora ideias de ksh e csh
+  └─ zsh (1990, Paul Falstad, Princeton) — escrito do zero; inspirado por sh, ksh, csh e tcsh
 ```
 
-Zsh surgiu em 1990, criado por Paul Falstad como estudante em Princeton. A sintaxe base vem da família Bourne (sh/ksh), mas Zsh incorporou ideias de csh para arrays e globbing, e adicionou funcionalidades próprias — completion programável, prompt expansions, ZLE (Zsh Line Editor).
+A família Bourne começa com **sh** (Bourne shell, 1979). Depois vêm **ksh** (KornShell, 1983) — extensão de sh com programmability e funções — e **bash** (GNU Bash, 1989) — replacement free do sh original, escrito por Brian Fox para o GNU Project, que incorporou ideias de ksh e csh sem ser descendente direto de ksh. **zsh** (1990) foi escrito do zero por Paul Falstad como estudante em Princeton, com inspiração de sh, ksh, csh e tcsh. Bash e ksh são, portanto, irmãos que descendem de sh — não pai e filho.
+
+Zsh incorporou ideias de csh para arrays e globbing, e adicionou funcionalidades próprias — completion programável, prompt expansions, ZLE (Zsh Line Editor).
 
 ### POSIX como mínimo comum
 
@@ -156,7 +158,7 @@ Um alias ou função que usa `${var,,}` copiado do Bash produz `bad substitution
 #### 4. Globbing recursivo
 
 ```zsh
-# Zsh — globbing recursivo nativo (EXTENDED_GLOB ou ** nativo)
+# Zsh — ** é glob recursivo nativo, sem precisar de setopt
 ls **/*.ts         # todos os .ts em subdiretórios, sem opt adicional
 
 # Bash — requer shopt
@@ -164,7 +166,7 @@ shopt -s globstar
 ls **/*.ts
 ```
 
-No Zsh, `**` é tratado como glob recursivo por default em versões modernas. No Bash pré-4.0, `**` não existe; em Bash 4.0+, precisa de `shopt -s globstar`.
+No Zsh, `**` é glob recursivo nativo desde os anos 90 — não requer nenhum `setopt`. `EXTENDED_GLOB` é uma feature independente que ativa padrões como `^pattern` (negação), `~pattern` (exclusão) e `pattern#`/`pattern##`; não tem relação com `**`. No Bash pré-4.0, `**` não existe; em Bash 4.0+, precisa de `shopt -s globstar`.
 
 #### 5. Word splitting: a diferença mais silenciosa
 
