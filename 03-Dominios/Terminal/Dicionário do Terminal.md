@@ -245,3 +245,6 @@ Veja também: [[13 - Snippets e DAP]].
 Trecho de código parametrizável que expande a partir de um trigger. Tabstops (`$1`, `$2`, `$0`) permitem navegação ordenada entre campos editáveis. Em Neovim moderno: LuaSnip (engine) + friendly-snippets (catálogo VS Code-style).
 
 Veja também: [[13 - Snippets e DAP]].
+
+## Shell / Zsh / OMZ
+
