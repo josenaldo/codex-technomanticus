@@ -201,7 +201,7 @@ export EDITOR=nvim    # com export: subprocessos (git, etc.) enxergam
 ```zsh
 typeset -r CONST=42        # readonly — qualquer tentativa de mudar gera erro
 typeset -U PATH            # unique — remove duplicatas ao fazer PATH=$PATH:...
-local var                  # scope de função (equivalente a typeset -L)
+local var                  # scope de função (equivalente a typeset sem flags)
 ```
 
 `typeset -U PATH` é especialmente útil em `.zshrc` para evitar que o `$PATH` cresça com duplicatas a cada reload.
@@ -253,7 +253,7 @@ setopt NO_BEEP
 # Sugere correção quando comando não existe
 setopt CORRECT
 
-# Substituição em prompt (necessário pra muitos temas)
+# Substituição em prompt — já ativo por default em shells interativos modernos; incluído por explicitidade
 setopt PROMPT_SUBST
 
 # Sincroniza histórico entre sessões simultâneas
