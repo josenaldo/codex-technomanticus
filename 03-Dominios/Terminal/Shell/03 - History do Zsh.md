@@ -100,11 +100,11 @@ fc -e nvim       # força o editor (sobrepõe $EDITOR)
 fc -e nvim 42    # edita o evento de número 42
 ```
 
-**`fc <substring>`**
-Re-executa o comando mais recente que contenha a substring (sem abrir editor).
+**`fc <string>`**
+Re-executa o comando mais recente que **começa com** a string (sem abrir editor). Comportamento equivalente ao `!str` do history expansion — prefixo, não substring. Para busca por conteúdo (contém), use `!?str?`.
 
 ```zsh
-fc git           # re-executa o último comando que começa/contém "git"
+fc git           # re-executa o último comando que começa com "git"
 ```
 
 > [!note]
@@ -262,7 +262,7 @@ fc -l -20 -1              # os últimos 20 comandos numerados
 **Causa:** editar `~/.zsh_history` manualmente (ex: para remover um comando com credencial) enquanto outra sessão Zsh está aberta e usando `SHARE_HISTORY`.
 **Sintoma:** ao fechar a sessão ativa, ela reescreve o `HISTFILE` a partir do seu estado em memória, sobrescrevendo as edições manuais.
 **Detectar:** comparar o arquivo depois de fechar a sessão com o que você editou.
-**Solução:** fechar todas as sessões Zsh antes de editar manualmente. Ou usar `fc -p ~/.zsh_history` para recarregar o arquivo na sessão ativa após editar.
+**Solução:** fechar todas as sessões Zsh antes de editar manualmente. Ou usar `fc -R ~/.zsh_history` para recarregar o arquivo na sessão ativa após editar.
 
 ---
 
@@ -277,7 +277,7 @@ fc -l -20 -1              # os últimos 20 comandos numerados
 
 ### 4. Atuin sobrescrevendo `Ctrl-R` sem clareza
 
-**Causa:** instalar atuin (ferramenta de history syncronizado e pesquisável) em um shell que já tem `history-substring-search` ou outro plugin bindando `Ctrl-R`.
+**Causa:** instalar atuin (ferramenta de history sincronizado e pesquisável) em um shell que já tem `history-substring-search` ou outro plugin bindando `Ctrl-R`.
 **Sintoma:** `Ctrl-R` abre a TUI do atuin em vez do search nativo, ou — pior — nenhum dos dois funciona porque os widgets do ZLE se sobrescrevem silenciosamente.
 **Detectar:** `bindkey | grep '^"\\C-r"'` mostra qual widget está bindado para `Ctrl-R`.
 **Solução:** escolher apenas uma ferramenta de search de history por vez. Atuin registra seu widget via shell hook de inicialização; desabilitar com `ATUIN_NOBIND=true` no `~/.zshrc` antes do `eval "$(atuin init zsh)"` permite carregar o atuin sem bindar o `Ctrl-R`.
