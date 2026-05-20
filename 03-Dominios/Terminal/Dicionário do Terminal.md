@@ -1,7 +1,7 @@
 ---
 title: "Dicionário do Terminal"
 created: 2026-05-19
-updated: 2026-05-21
+updated: 2026-05-20
 type: glossary
 status: seedling
 aliases: []
@@ -273,6 +273,16 @@ Registro persistente de comandos digitados, gravado em `HISTFILE` (default `~/.z
 
 Veja também: [[03 - History do Zsh]].
 
+### Oh-My-Zsh
+Framework de config pra Zsh: clonado em `~/.oh-my-zsh/`, sourced no `.zshrc`, fornece um loader de plugins (`plugins=(...)`) + 300+ plugins embarcados + 150+ temas. Não substitui o Zsh — é overlay. Pasta `custom/` é o terreno do usuário (plugins/themes próprios, overrides).
+
+Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[10 - Plugins, themes e custom no OMZ]].
+
+### Plugin (OMZ)
+Unidade de funcionalidade para Oh-My-Zsh: pasta com `<nome>.plugin.zsh` em `~/.oh-my-zsh/plugins/<nome>/` (embarcado) ou `~/.oh-my-zsh/custom/plugins/<nome>/` (custom). Carregado adicionando `<nome>` ao array `plugins=(...)` no `.zshrc`. Pode trazer aliases, funções e completion (`_<comando>`).
+
+Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[10 - Plugins, themes e custom no OMZ]].
+
 ### POSIX
 Portable Operating System Interface — padrão IEEE que define APIs e comportamento de shell mínimos. Bash é mais próximo do POSIX por default; Zsh estende livremente mas oferece `emulate sh|bash|ksh` quando precisa de compat.
 
@@ -287,4 +297,14 @@ Veja também: [[02 - Zsh essencial]], [[03 - History do Zsh]].
 Interpretador de comandos de um sistema Unix-like. Pode ser interativo (lê `.zshrc`, edita linha) ou não-interativo (script). A família Bourne agrupa sh, ksh, bash e zsh — sintaxe próxima mas extensões e defaults divergem.
 
 Veja também: [[01 - Zsh vs Bash]].
+
+### Zsh-autosuggestions
+Plugin (`zsh-users/zsh-autosuggestions`) que sugere comandos enquanto você digita, em cinza inline, baseado no history. Aceitar com `→` (right-arrow) ou `Ctrl-F`. Frequentemente usado junto com history extended + `Ctrl-R`.
+
+Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[03 - History do Zsh]].
+
+### Zsh-syntax-highlighting
+Plugin (`zsh-users/zsh-syntax-highlighting`) que colore comandos enquanto você digita: verde se válido, vermelho se inválido, amarelo pra aliases, azul pra paths. Alternativa mais rápida: `fast-syntax-highlighting`. **Regra crítica:** deve ser o último plugin no array `plugins=(...)` — senão perde highlight de comandos adicionados por plugins posteriores.
+
+Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]].
 
