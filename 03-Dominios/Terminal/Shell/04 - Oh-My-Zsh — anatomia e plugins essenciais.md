@@ -144,10 +144,9 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 Colore comandos enquanto você digita, antes de pressionar Enter:
 - **Verde** — comando válido (existe no `$PATH` ou é builtin)
 - **Vermelho** — comando inválido (não encontrado)
-- **Amarelo** — alias
-- **Azul** — path existente
+- **Underline** — path existente no filesystem
 
-O efeito imediato é capturar typos antes de executar. Se o comando ficou vermelho, tem erro de digitação.
+O efeito imediato é capturar typos antes de executar. Se o comando ficou vermelho, tem erro de digitação. Cores específicas de aliases, globbing e expressões variam por tema/config; o highlighter default não distingue aliases de comandos normais com cor separada.
 
 **Por que deve ser o último plugin:** o plugin funciona envolvendo (wrapping) widgets ZLE. Se sourced antes de outros plugins que registram widgets com `zle -N`, ele não captura esses widgets e perde o highlight em comandos adicionados por eles. Em Zsh 5.8+, usa `add-zle-hook-widget`, então os hooks rodam na ordem de registro — zsh-syntax-highlighting deve registrar por último.
 
@@ -261,7 +260,13 @@ Em inglês: **source the file** (executar/recarregar o arquivo de config no shel
 
 ### (1) Double-load: `fast-syntax-highlighting` + `zsh-syntax-highlighting`
 
-Os dois plugins envolvem os mesmos widgets ZLE. Usar ambos no array `plugins=(...)` resulta em conflito: cores quebradas, highlight incorreto, ou lentidão. **Solução:** escolha apenas um.
+**Causa:** os dois plugins envolvem os mesmos widgets ZLE. Foram projetados como alternativas, não como complementos.
+
+**Sintoma:** cores quebradas, highlight incorreto ou lentidão perceptível ao digitar.
+
+**Como detectar:** verificar o array `plugins=(...)` no `.zshrc` — se ambos aparecerem simultaneamente, o conflito está confirmado.
+
+**Solução:** escolha apenas um. Remova o outro do array e do `custom/plugins/` se estiver clonado.
 
 ```zsh
 # ERRADO — conflito garantido
@@ -280,7 +285,13 @@ plugins=(
 
 ### (2) `zsh-syntax-highlighting` não é o último plugin
 
-Se `zsh-syntax-highlighting` não for o último no array, plugins carregados depois dele que registram novos widgets ZLE não terão seus comandos coloridos corretamente. O highlight deixa de funcionar para tudo adicionado por esses plugins posteriores.
+**Causa:** o plugin funciona envolvendo widgets ZLE no momento em que é sourced. Plugins carregados depois podem registrar novos widgets que o syntax-highlighter não captura.
+
+**Sintoma:** highlight deixa de funcionar para comandos ou funcionalidades introduzidas por plugins listados após `zsh-syntax-highlighting` no array.
+
+**Como detectar:** testar um alias ou builtin adicionado por um plugin posterior — se ficar sem cor ou vermelho (inválido), a ordem está errada.
+
+**Solução:** mover `zsh-syntax-highlighting` para o último lugar no array.
 
 ```zsh
 # ERRADO
@@ -300,11 +311,21 @@ plugins=(
 
 ### (3) `zsh-autocomplete` conflita com o fluxo de completion padrão
 
-O plugin `zsh-autocomplete` sobrepõe `_omz_completion` e redefine o comportamento de Tab. Rodar simultaneamente com `fzf-tab` resulta em comportamento imprevisível — os dois competem pelo controle do mesmo mecanismo. Além disso, ao migrar para `fzf-tab` depois de ter usado `zsh-autocomplete`, pode ser necessário rodar `compinit` manualmente ou remover o cache em `~/.zcompdump`.
+**Causa:** `zsh-autocomplete` substitui o comportamento default de Tab e várias widgets de completion do compsys, conflitando com o setup default do OMZ e com `fzf-tab` se ambos estiverem ativos.
+
+**Sintoma:** Tab deixa de funcionar como esperado; menu de completion some, duplica ou exibe entradas misturadas. Ao usar `fzf-tab` e `zsh-autocomplete` juntos, os dois competem pelo controle do mesmo mecanismo.
+
+**Como detectar:** `zle -l | grep complete` — ver múltiplos widgets conflitantes registrados. `omz plugin list` confirma quais plugins estão ativos.
+
+**Solução:** escolha apenas um entre `zsh-autocomplete` e `fzf-tab`. Ao migrar para `fzf-tab` depois de ter usado `zsh-autocomplete`, remova o cache `~/.zcompdump` e recarregue o shell para forçar regeneração pelo `compinit`.
 
 ### (4) Bracketed-paste quebra com URLs e aspas
 
-Em alguns terminais, o `bracketed-paste-magic` (ativo por default no OMZ) transforma colagem de texto com aspas ou URLs em sequências de escape inesperadas. Sintoma: colar `https://example.com?foo=bar&baz=1` vira lixo no prompt.
+**Causa:** o `bracketed-paste-magic` (ativo por default no OMZ) processa o texto colado para escapar caracteres especiais, mas interpreta erroneamente aspas e caracteres de URL como sequências de escape.
+
+**Sintoma:** colar `https://example.com?foo=bar&baz=1` vira lixo no prompt — caracteres parecem escapados ou a linha fica corrompida.
+
+**Como detectar:** colar uma URL com `&` ou `?` no prompt e observar se o resultado diverge do texto copiado.
 
 **Solução:** adicionar antes do `source` do OMZ no `.zshrc`:
 
@@ -314,9 +335,13 @@ DISABLE_MAGIC_FUNCTIONS="true"
 
 ### (5) NVM/SDKMan tornam o shell lento
 
-`nvm` e ferramentas similares carregam scripts pesados no `.zshrc`, aumentando o tempo de abertura de um novo terminal de ~100ms para vários segundos. Isso não é culpa do OMZ, mas aparece como "OMZ lento".
+**Causa:** `nvm` e ferramentas similares carregam scripts pesados no startup, executando scripts de centenas de linhas toda vez que um terminal abre.
 
-**Mitigação:** lazy-load — só carrega o NVM quando `node` é chamado pela primeira vez:
+**Sintoma:** tempo de abertura de um novo terminal passa de ~100ms para vários segundos. Parece culpa do OMZ, mas o gargalo é o script de inicialização do NVM/SDKMan.
+
+**Como detectar:** `time zsh -i -c exit` antes e depois de comentar a linha de source do NVM no `.zshrc`. Se o tempo cair drasticamente, o culpado é o NVM.
+
+**Solução:** lazy-load — só carrega o NVM quando `node` é chamado pela primeira vez:
 
 ```zsh
 # Lazy-load NVM — não carrega no startup
@@ -330,34 +355,35 @@ node() {
 
 ## Em inglês
 
-| Português | Inglês |
-|---|---|
-| framework de shell | shell framework |
-| recarregar (o arquivo) | source (the file) — `source ~/.zshrc` |
-| atalho | shortcut |
-| atualizar | update |
-| conflito de plugins | plugin conflict |
-| tema | theme |
-| personalização | customization |
-| carregador de plugins | plugin loader / plugin manager |
-| sugestão inline | inline suggestion |
-| realce de sintaxe | syntax highlighting |
+- **framework de shell** — *shell framework*. "Oh-My-Zsh is a shell framework built on top of Zsh."
+- **recarregar (o arquivo)** — *source (the file)*. "Source your `.zshrc` to apply changes without restarting the terminal."
+- **atalho** — *shortcut*. "The plugin adds a shortcut for `git status`."
+- **atualizar** — *update*. "Run `omz update` to update Oh-My-Zsh and its plugins."
+- **conflito de plugins** — *plugin conflict*. "Using both syntax highlighters causes a plugin conflict."
+- **tema** — *theme*. "Powerlevel10k is the most customizable theme in the OMZ ecosystem."
+- **personalização** — *customization*. "Put your customizations in the `custom/` folder so they survive updates."
+- **carregador de plugins** — *plugin loader / plugin manager*. "OMZ ships its own plugin loader — no external plugin manager needed."
+- **sugestão inline** — *inline suggestion*. "The plugin shows an inline suggestion in gray as you type."
+- **realce de sintaxe** — *syntax highlighting*. "Syntax highlighting colors commands before you press Enter."
 
 ## Veja também
 
-- `[[02 - Zsh essencial]]`
-- `[[03 - History do Zsh]]` — plugin `history-substring-search`
-- `[[05 - Powerlevel10k]]` — theme primário
-- `[[08 - Completion system (compsys)]]` — conflito `zsh-autocomplete` aprofundado
-- `[[10 - Plugins, themes e custom no OMZ]]` — escrever seu plugin
-- `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
-- `[[Dicionário do Terminal#Oh-My-Zsh|Oh-My-Zsh]]`, `[[Dicionário do Terminal#Plugin (OMZ)|plugin]]`, `[[Dicionário do Terminal#Zsh-autosuggestions|zsh-autosuggestions]]`, `[[Dicionário do Terminal#Zsh-syntax-highlighting|zsh-syntax-highlighting]]`
+- [[02 - Zsh essencial]]
+- [[03 - History do Zsh]] — plugin `history-substring-search`
+- [[05 - Powerlevel10k]] — theme primário
+- [[08 - Completion system (compsys)]] — conflito `zsh-autocomplete` aprofundado
+- [[10 - Plugins, themes e custom no OMZ]] — escrever seu plugin
+- [[03-Dominios/Terminal/Shell/index|MOC do galho]]
+- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[Dicionário do Terminal#Oh-My-Zsh|Oh-My-Zsh]], [[Dicionário do Terminal#Plugin (OMZ)|plugin]], [[Dicionário do Terminal#Zsh-autosuggestions|zsh-autosuggestions]], [[Dicionário do Terminal#Zsh-syntax-highlighting|zsh-syntax-highlighting]]
 
 ## Referências
 
 - [Oh-My-Zsh — repositório oficial](https://github.com/ohmyzsh/ohmyzsh)
 - [Oh-My-Zsh wiki — lista de plugins](https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins)
+- [Oh-My-Zsh FAQ](https://github.com/ohmyzsh/ohmyzsh/wiki/FAQ)
 - [zsh-autosuggestions — zsh-users](https://github.com/zsh-users/zsh-autosuggestions)
 - [zsh-syntax-highlighting — zsh-users](https://github.com/zsh-users/zsh-syntax-highlighting)
+- [fast-syntax-highlighting — zdharma-continuum](https://github.com/zdharma-continuum/fast-syntax-highlighting)
 - [zsh-autocomplete — marlonrichert](https://github.com/marlonrichert/zsh-autocomplete)
 - [awesome-zsh-plugins](https://github.com/unixorn/awesome-zsh-plugins)

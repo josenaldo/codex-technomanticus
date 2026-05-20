@@ -304,7 +304,7 @@ Plugin (`zsh-users/zsh-autosuggestions`) que sugere comandos enquanto você digi
 Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[03 - History do Zsh]].
 
 ### Zsh-syntax-highlighting
-Plugin (`zsh-users/zsh-syntax-highlighting`) que colore comandos enquanto você digita: verde se válido, vermelho se inválido, amarelo pra aliases, azul pra paths. Alternativa mais rápida: `fast-syntax-highlighting`. **Regra crítica:** deve ser o último plugin no array `plugins=(...)` — senão perde highlight de comandos adicionados por plugins posteriores.
+Plugin (`zsh-users/zsh-syntax-highlighting`) que colore comandos enquanto você digita: verde pra comandos válidos, vermelho pra inválidos, underline pra paths existentes. Cores específicas de aliases e outros elementos variam por tema/config — o highlighter default não distingue aliases de comandos normais com cor separada. Alternativa mais rápida: `fast-syntax-highlighting`. **Regra crítica:** deve ser o último plugin no array `plugins=(...)` — senão perde highlight de comandos adicionados por plugins posteriores.
 
 Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]].
 
