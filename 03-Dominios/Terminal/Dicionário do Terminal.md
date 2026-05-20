@@ -1,7 +1,7 @@
 ---
 title: "Dicionário do Terminal"
 created: 2026-05-19
-updated: 2026-05-20
+updated: 2026-05-21
 type: glossary
 status: seedling
 aliases: []
@@ -258,10 +258,20 @@ Comando implementado diretamente pelo shell (não é binário externo no `$PATH`
 
 Veja também: [[01 - Zsh vs Bash]], [[02 - Zsh essencial]].
 
+### fc
+Builtin do Zsh ("fix command") que lista (`fc -l`) ou edita (`fc` puro abre `$EDITOR` com o último comando) entradas do history. `fc <substring>` re-executa o último comando que casa com a substring.
+
+Veja também: [[03 - History do Zsh]].
+
 ### Function (shell)
 Bloco nomeado de comandos executável como se fosse comando. Sintaxe Zsh: `f() { ... }` ou `function f { ... }`. Aceita parâmetros (`$1`, `$@`), variáveis `local`, e `return <código>`. Diferente de alias: tem lógica.
 
 Veja também: [[02 - Zsh essencial]].
+
+### History
+Registro persistente de comandos digitados, gravado em `HISTFILE` (default `~/.zsh_history`). Configurado por `HISTSIZE`/`SAVEHIST` + opts (`SHARE_HISTORY`, `EXTENDED_HISTORY`, `HIST_IGNORE_ALL_DUPS`, `HIST_VERIFY`). Acessado via `history`, `Ctrl-R`, `!!`, `!$`, `fc`.
+
+Veja também: [[03 - History do Zsh]].
 
 ### POSIX
 Portable Operating System Interface — padrão IEEE que define APIs e comportamento de shell mínimos. Bash é mais próximo do POSIX por default; Zsh estende livremente mas oferece `emulate sh|bash|ksh` quando precisa de compat.
