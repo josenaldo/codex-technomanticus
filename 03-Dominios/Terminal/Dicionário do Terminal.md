@@ -248,15 +248,30 @@ Veja também: [[13 - Snippets e DAP]].
 
 ## Shell / Zsh / OMZ
 
+### Alias
+Atalho que expande pra outra string antes da execução. Zsh tem 3 tipos: regular (`alias gco='git checkout'`), global (`alias -g G='| grep'`, expande em qualquer posição), e suffix (`alias -s md=nvim`, dispara pelo sufixo do arquivo).
+
+Veja também: [[02 - Zsh essencial]].
+
 ### Builtin
 Comando implementado diretamente pelo shell (não é binário externo no `$PATH`). Em Zsh: `setopt`, `bindkey`, `zstyle`, `compinit`, `print`, `read`, `typeset`. Mais rápido que comando externo; semântica integrada ao shell.
 
 Veja também: [[01 - Zsh vs Bash]], [[02 - Zsh essencial]].
 
+### Function (shell)
+Bloco nomeado de comandos executável como se fosse comando. Sintaxe Zsh: `f() { ... }` ou `function f { ... }`. Aceita parâmetros (`$1`, `$@`), variáveis `local`, e `return <código>`. Diferente de alias: tem lógica.
+
+Veja também: [[02 - Zsh essencial]].
+
 ### POSIX
 Portable Operating System Interface — padrão IEEE que define APIs e comportamento de shell mínimos. Bash é mais próximo do POSIX por default; Zsh estende livremente mas oferece `emulate sh|bash|ksh` quando precisa de compat.
 
 Veja também: [[01 - Zsh vs Bash]].
+
+### Setopt
+Builtin do Zsh que ativa/desativa opções do shell. `setopt EXTENDED_GLOB` liga, `unsetopt` desliga, `setopt` sozinho lista as ativas. Opts comuns: `AUTO_CD`, `EXTENDED_GLOB`, `INTERACTIVE_COMMENTS`, `NO_BEEP`, `CORRECT`, `PROMPT_SUBST`, `SHARE_HISTORY`.
+
+Veja também: [[02 - Zsh essencial]], [[03 - History do Zsh]].
 
 ### Shell
 Interpretador de comandos de um sistema Unix-like. Pode ser interativo (lê `.zshrc`, edita linha) ou não-interativo (script). A família Bourne agrupa sh, ksh, bash e zsh — sintaxe próxima mas extensões e defaults divergem.
