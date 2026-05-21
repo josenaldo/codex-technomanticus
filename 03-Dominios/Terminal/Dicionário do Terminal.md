@@ -417,6 +417,16 @@ Pane que aparece sobreposto ao grid de outros panes, sem ocupar espaço deles. P
 
 Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
 
+### KDL
+Cuddly Document Language — linguagem de configuração declarativa com sintaxe humana (sem aspas obrigatórias na maioria das chaves, comentários nativos, suporte a tipos básicos e children). Usada pela config e pelos layouts do Zellij.
+
+Veja também: [[05 - Layouts declarativos em KDL]].
+
+### Layout (Zellij)
+Definição declarativa em KDL de tabs, panes, splits, cwd, comandos de auto-start. Arquivo `.kdl` em `~/.config/zellij/layouts/`. Carregado via `default_layout "<nome>"` no config ou ad-hoc com `zellij --layout <nome>`.
+
+Veja também: [[05 - Layouts declarativos em KDL]].
+
 ### Mode (Zellij)
 Estado modal do Zellij — controla quais keybindings estão ativas. 9 modos default: normal (input vai pro shell), locked (passthrough), pane, tab, resize, scroll, search, session, move. Entrar via `Ctrl-<letra>`; sair via ESC ou repetir o atalho.
 
