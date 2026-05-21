@@ -335,6 +335,11 @@ Função registrada no ZLE (`zle -N <name>`) que pode ser bindada a uma sequênc
 
 Veja também: [[06 - Keybindings práticos]], [[07 - ZLE]].
 
+### ZLE
+Zsh Line Editor — o editor de linha embutido no Zsh, responsável por receber teclas, manter o buffer da linha sendo editada, e dispatchar widgets (ações). Tudo que `bindkey` mapeia é executado pelo ZLE. Hooks: `zle-line-init`, `zle-keymap-select`, `zle-line-finish`.
+
+Veja também: [[06 - Keybindings práticos]], [[07 - ZLE]].
+
 ### Zsh-autosuggestions
 Plugin (`zsh-users/zsh-autosuggestions`) que sugere comandos enquanto você digita, em cinza inline, baseado no history. Aceitar com `→` (right-arrow) ou `Ctrl-F`. Frequentemente usado junto com history extended + `Ctrl-R`.
 
