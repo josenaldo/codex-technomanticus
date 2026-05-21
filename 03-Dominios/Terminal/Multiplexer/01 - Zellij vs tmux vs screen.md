@@ -56,7 +56,7 @@ A diferença fundamental para "abrir várias abas no emulador de terminal":
 | Config | KDL declarativo | arquivo `.tmux.conf` (DSL própria) | `.screenrc` (sintaxe arcaica) |
 | Sessions persistentes | Sim | Sim | Sim |
 | Plugin system | WASM (sandbox, multilíngue) | TPM (shell scripts, centenas de plugins) | Não |
-| Performance | Boa (Rust) | Excelente (C) | Excelente (C) |
+| Performance | Boa, geralmente (Rust) | Excelente (C) | Excelente (C) |
 | Ubiquidade em servidores | Baixa | Alta (frequentemente pré-instalado) | Muito alta (sempre instalado) |
 | Maturidade | Jovem (~5 anos) | Maduro (18+ anos) | Muito maduro (38+ anos) |
 | Público-alvo primário | Dev workstation local | Uso geral, servidores remotos | Sysadmin, servidores embedded |
@@ -69,7 +69,7 @@ A barra inferior do Zellij mostra, em tempo real, os atalhos disponíveis para o
 
 **2. Modos discoverable**
 
-Zellij organiza ações em modos nomeados: `Normal`, `Locked`, `Resize`, `Pane`, `Tab`, `Scroll`, `Search`, `EnterSearch`, `RenameTab`, `RenamePane`, `Session`, `Move`, `Prompt`, `Tmux`. Cada modo tem um conjunto específico de atalhos exibidos na status bar — o "modelo mental" é explícito.
+Zellij organiza ações em 9 modos canônicos: `normal`, `locked`, `pane`, `tab`, `resize`, `scroll`, `search`, `session`, `move`. Cada modo tem um conjunto específico de atalhos exibidos na status bar — o "modelo mental" é explícito. Há também modos derivados (`RenameTab`, `RenamePane`, `EnterSearch`) que entram automaticamente em ações específicas; a nota 03 cobre os 9 canônicos em detalhe.
 
 **3. Defaults sensatos**
 
@@ -142,7 +142,7 @@ sudo mv zellij /usr/local/bin/
 
 # Verificar versão
 zellij --version
-# zellij 0.44.1
+# zellij 0.44.x
 
 # Opção 2: via cargo (requer Rust toolchain)
 cargo install --locked zellij
@@ -187,7 +187,8 @@ zellij delete-all-sessions
 | Entrar modo Tab | `Ctrl t` |
 | Entrar modo Session | `Ctrl o` |
 | Detach da sessão | `Ctrl o` → `d` |
-| Sair (fechar pane) | `Ctrl q` |
+| Quit (mata sessão inteira) | `Ctrl q` |
+| Fechar pane focado | `Ctrl p` → `x` |
 
 ### Side-by-side com tmux (transição)
 
@@ -196,7 +197,7 @@ A coexistência entre Zellij e tmux no mesmo ambiente é simples e recomendada n
 - **tmux para SSH remoto**: mantenha tmux nos servidores; use Zellij só na workstation local
 - **Zellij para dev local**: layouts KDL por projeto, sessions nomeadas, status bar com hints
 - **Tmux mode**: se os keybindings do Zellij desorientam, ative o modo Tmux que replica o modelo de prefixo
-- **Sem conflito de server**: os dois podem rodar simultâneamente — são processos independentes
+- **Sem conflito de server**: os dois podem rodar simultaneamente — são processos independentes
 
 ```bash
 # Zellij com tmux keybindings (modo compatibilidade)
@@ -242,7 +243,7 @@ zellij --config-dir ~/.config/zellij-tmux
 
 **Como detectar:** o atalho não chega ao Neovim — a status bar do Zellij muda de modo ao invés de o editor reagir.
 
-**Solução:** usar o modo `Locked` do Zellij (`Ctrl g` pra entrar/sair) quando precisar passar atalhos diretamente ao aplicativo interno. Ou reconfigurara os keybindings do Zellij pra usar prefixos que não colidam, como `Ctrl b` (padrão tmux) via tmux mode.
+**Solução:** usar o modo `Locked` do Zellij (`Ctrl g` pra entrar/sair) quando precisar passar atalhos diretamente ao aplicativo interno. Ou reconfigurar os keybindings do Zellij pra usar prefixos que não colidam, como `Ctrl b` (padrão tmux) via tmux mode.
 
 ---
 
@@ -264,7 +265,7 @@ zellij --config-dir ~/.config/zellij-tmux
 
 **Sintoma:** procurar equivalente ao `tmux-resurrect` (salvar/restaurar sessões) ou ao `tmux-continuum` (autosave) e não encontrar solução madura equivalente para o Zellij.
 
-**Como detectar:** buscar no repositório oficial da comunidade — https://github.com/zellij-org/zellij/wiki/Third-Party-Plugins — e notar que a lista é curta comparada ao TPM.
+**Como detectar:** buscar no repositório oficial da comunidade — https://github.com/zellij-org/awesome-zellij — e notar que a lista é curta comparada ao TPM.
 
 **Solução:** aceitar que o Zellij tem ecosystem jovem e complementar com funcionalidades nativas (layouts KDL, sessions built-in) onde possível. Contribuir com plugins WASM se necessário — o modelo WASM é mais acessível que os shell scripts do TPM. Para funcionalidades críticas que só existem no tmux, considerar usar tmux para esse caso de uso específico.
 
