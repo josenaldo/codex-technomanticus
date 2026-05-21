@@ -273,6 +273,16 @@ Registro persistente de comandos digitados, gravado em `HISTFILE` (default `~/.z
 
 Veja também: [[03 - History do Zsh]].
 
+### Instant prompt
+Mecanismo do Powerlevel10k que cacheia o prompt renderizado e o exibe ANTES de `~/.zshrc` terminar de carregar. Acelera startup percebido. Configurado por `POWERLEVEL9K_INSTANT_PROMPT` (`verbose`/`quiet`/`off`). O bloco do instant prompt deve ficar no TOPO do `.zshrc`.
+
+Veja também: [[05 - Powerlevel10k]].
+
+### Nerdfont
+Família de fonts patched (Nerd Fonts) com glyphs adicionais — ícones de Git, Linux distros, dev tools, devicons. Powerlevel10k recomenda **MesloLGS NF**. Sem nerdfont configurada no terminal, ícones do prompt aparecem como `□` ou `?`.
+
+Veja também: [[05 - Powerlevel10k]].
+
 ### Oh-My-Zsh
 Framework de config pra Zsh: clonado em `~/.oh-my-zsh/`, sourced no `.zshrc`, fornece um loader de plugins (`plugins=(...)`) + 300+ plugins embarcados + 150+ temas. Não substitui o Zsh — é overlay. Pasta `custom/` é o terreno do usuário (plugins/themes próprios, overrides).
 
@@ -288,6 +298,16 @@ Portable Operating System Interface — padrão IEEE que define APIs e comportam
 
 Veja também: [[01 - Zsh vs Bash]].
 
+### Powerlevel10k
+Theme externo pra Zsh por Roman Perepelitsa (romkatv/powerlevel10k). Oferece prompt rico configurável (status git, exit code, tempo de comando), `instant prompt` pra startup rápido, wizard `p10k configure`. Em modo manutenção desde 2024-07 — funcional, mas não evolui ativamente.
+
+Veja também: [[05 - Powerlevel10k]].
+
+### Prompt
+Texto exibido pelo shell antes de aceitar comando, configurado pelas variáveis `PROMPT` (left) e `RPROMPT` (right). Suporta sequências de escape (`%n` user, `%~` cwd, `%F{color}` cor). Themes (Powerlevel10k, Starship, Pure) substituem `PROMPT` com lógica rica.
+
+Veja também: [[05 - Powerlevel10k]], [[10 - Plugins, themes e custom no OMZ]].
+
 ### Setopt
 Builtin do Zsh que ativa/desativa opções do shell. `setopt EXTENDED_GLOB` liga, `unsetopt` desliga, `setopt` sozinho lista as ativas. Opts comuns: `AUTO_CD`, `EXTENDED_GLOB`, `INTERACTIVE_COMMENTS`, `NO_BEEP`, `CORRECT`, `PROMPT_SUBST`, `SHARE_HISTORY`.
 
@@ -297,6 +317,11 @@ Veja também: [[02 - Zsh essencial]], [[03 - History do Zsh]].
 Interpretador de comandos de um sistema Unix-like. Pode ser interativo (lê `.zshrc`, edita linha) ou não-interativo (script). A família Bourne agrupa sh, ksh, bash e zsh — sintaxe próxima mas extensões e defaults divergem.
 
 Veja também: [[01 - Zsh vs Bash]].
+
+### Transient prompt
+Recurso do Powerlevel10k que "encolhe" prompts antigos quando você executa novos comandos, liberando espaço visual. Configurado por `POWERLEVEL9K_TRANSIENT_PROMPT` (`same-dir`/`always`/`off`).
+
+Veja também: [[05 - Powerlevel10k]].
 
 ### Zsh-autosuggestions
 Plugin (`zsh-users/zsh-autosuggestions`) que sugere comandos enquanto você digita, em cinza inline, baseado no history. Aceitar com `→` (right-arrow) ou `Ctrl-F`. Frequentemente usado junto com history extended + `Ctrl-R`.
