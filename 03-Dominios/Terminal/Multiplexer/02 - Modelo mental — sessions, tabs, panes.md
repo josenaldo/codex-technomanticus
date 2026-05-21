@@ -58,8 +58,11 @@ O server do Zellij é iniciado automaticamente na primeira invocação de `zelli
 # Verificar se o server está rodando
 ps aux | grep zellij
 
-# Matar todas as sessions (e o server junto, se não houver mais clients)
+# Matar todas as sessions com SIGKILL (e o server junto, se não houver mais clients)
 zellij kill-all-sessions
+
+# Remover graciosamente todas as sessions (coberto em nota 04)
+zellij delete-all-sessions
 ```
 
 Não é necessário iniciar o server manualmente. Ele sobe junto com `zellij` ou `zellij -s <nome>`.
@@ -250,15 +253,15 @@ Use este guia para decidir qual nível usar:
 
 ---
 
-### (3) Achar que floating pane sobrevive de forma diferente dos outros panes
+### (3) Achar que floating pane sobrevive ao detach de forma diferente
 
-**Causa:** o visual de "janela flutuante" remete a janelas do OS, que têm comportamento de minimize/hide. Isso induz a assumir que um floating pane pode ser "escondido" e recuperado.
+**Causa:** floating é só uma escolha de layout (renderização sobreposta), não um lifecycle separado.
 
-**Sintoma:** fechar o floating pane esperando recuperar o processo depois, e descobrir que o processo terminou (SIGTERM).
+**Sintoma:** você espera que ao reanexar a session, floating pane apareça "minimizado" ou em estado diferente do split.
 
-**Como detectar:** tentar reabrir o floating pane (`Ctrl-p w`) e notar que abre um shell novo (sem o estado anterior).
+**Como detectar:** detach (`Ctrl-o d`) com floating aberto; reattach e olhar layout.
 
-**Solução:** tratar floating pane como qualquer outro pane: fechar = processo termina. Para "guardar" um trabalho em andamento, use `detach` da session inteira (`Ctrl-o d`) — isso preserva todos os panes, incluindo floating.
+**Solução:** floating volta exatamente onde estava — mesma posição, mesmo tamanho. Lifecycle idêntico ao split. Não existe "suspended floating" nativo.
 
 ---
 
@@ -270,7 +273,7 @@ Use este guia para decidir qual nível usar:
 
 **Como detectar:** `Ctrl-p s` muda o layout estruturalmente. Sair requer outro `Ctrl-p s` (toggle).
 
-**Solução:** para zoom/fullscreen temporário em Zellij, use o modo Pane com `Ctrl-p z` (fullscreen toggle do pane ativo) — isso expande 1 pane sem reorganizar o layout. Stacked é para agrupamento permanente de panes relacionados.
+**Solução:** para zoom/fullscreen temporário em Zellij, use o modo Pane com `Ctrl-p f` (toggle fullscreen do pane focado) — isso expande 1 pane sem reorganizar o layout. Stacked é para agrupamento permanente de panes relacionados.
 
 ---
 
