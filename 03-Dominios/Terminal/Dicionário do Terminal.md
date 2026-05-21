@@ -402,8 +402,33 @@ Veja também: [[08 - Completion system (compsys)]].
 
 ## Multiplexer / Zellij
 
+### Floating pane
+Pane que aparece sobreposto ao grid de outros panes, sem ocupar espaço deles. Pode ser movido e redimensionado livremente. Útil pra terminal extra temporário (e.g. consultar `man` enquanto outro pane roda código).
+
+Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
+
 ### Multiplexer
 Programa que divide 1 terminal em múltiplas sessions, tabs e panes que sobrevivem a detach (desconexão do emulador). Server roda em background; cliente anexa/desanexa via `attach`/`detach`. Exemplos: Zellij, tmux, screen.
 
 Veja também: [[01 - Zellij vs tmux vs screen]].
+
+### Pane
+Divisão interna de uma tab Zellij, rodando um shell ou comando. 3 tipos: split (ocupa grid), floating (sobreposto), stacked (empilhado). Pane ativa recebe input; outras seguem rodando.
+
+Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
+
+### Session (Zellij)
+Container nomeado de uma instância Zellij. Sobrevive a detach (fechar emulador, SSH drop). Contém N tabs, cada uma com N panes. Criar com `zellij -s <nome>`; listar com `zellij ls`; anexar com `zellij attach <nome>`.
+
+Veja também: [[02 - Modelo mental — sessions, tabs, panes]], [[04 - Sessões persistentes — detach, attach, gerenciamento]].
+
+### Stacked pane
+Modo de empilhamento de panes onde 1 é expandido e os outros aparecem só como barra de título (minimizados). Útil pra agrupar múltiplos logs/jobs com apenas 1 em foco.
+
+Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
+
+### Tab (Zellij)
+Agrupamento horizontal de panes dentro de uma session Zellij. Cada tab tem layout próprio. Mostra nome na barra superior. Diferente de tab do emulador (kitty/wezterm) — tabs Zellij vivem dentro da session.
+
+Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
 
