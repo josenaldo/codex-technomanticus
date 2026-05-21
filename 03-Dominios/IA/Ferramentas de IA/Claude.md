@@ -700,7 +700,6 @@ On the tooling side, Claude Code is the agent surface — filesystem, git, and M
 
 - [Anthropic Academy](https://www.anthropic.com/learn)
 - [Claude Course (Alan Nichols)](https://www.youtube.com/watch?v=WLZqPonSrK0)
-- [[Claude Course]]
 
 ## Deep dives — Anthropic research e design decisions
 
