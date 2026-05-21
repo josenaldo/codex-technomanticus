@@ -268,7 +268,7 @@ stty -ixon   # adicionar no .zshrc antes de qualquer bindkey ^S
 
 **Solução — plugin `zsh-vim-mode`:**
 ```zsh
-# custom plugin: zsh-users/zsh-vim-mode (ou jeffreytse/zsh-vi-mode)
+# custom plugin: jeffreytse/zsh-vi-mode (ou softmoth/zsh-vim-mode)
 # muda a cor/forma do cursor por modo
 ```
 
