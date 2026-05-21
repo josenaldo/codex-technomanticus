@@ -47,7 +47,7 @@ Naming convention (obrigatório): nome da pasta = nome do arquivo (sem extensão
 - Plugin completion: função `_<comando>` em arquivo separado dentro da pasta + `fpath+=(${0:h})` no topo do `.plugin.zsh`
 - Inicialização: source de configs, registro de widgets, bindkey
 
-**Loading:** adicionar `<nome>` ao array `plugins=(...)` no `.zshrc`. OMZ procura primeiro em `$ZSH/plugins/<nome>/` (embarcado), depois em `$ZSH/custom/plugins/<nome>/` (custom) — custom **vence** se nomes coincidem (override).
+**Loading:** adicionar `<nome>` ao array `plugins=(...)` no `.zshrc`. OMZ tenta carregar de `$ZSH_CUSTOM/plugins/<nome>/` primeiro; se não encontrar, cai pro `$ZSH/plugins/<nome>/` (embarcado). É por isso que custom **vence** override de plugins embarcados com o mesmo nome.
 
 ---
 
@@ -89,13 +89,14 @@ Naming convention (obrigatório): nome da pasta = nome do arquivo (sem extensão
 **Git info no prompt** (via plugin OMZ `git` ou `vcs_info`):
 
 ```zsh
-# PROMPT que usa a função git_prompt_info do plugin git
+# PROMPT que mostra branch atual
+# Requer plugin 'git' em plugins=(...) — git_prompt_info é função dele
 PROMPT='%F{cyan}%~%f $(git_prompt_info)%# '
 ```
 
 `git_prompt_info` é uma função do plugin `git` embarcado no OMZ — retorna a branch atual com delimitadores configuráveis via `ZSH_THEME_GIT_PROMPT_PREFIX`/`ZSH_THEME_GIT_PROMPT_SUFFIX`.
 
-**Loading:** setar `ZSH_THEME="<nome>"` no `.zshrc` (sem `.zsh-theme`). OMZ procura primeiro em `$ZSH/themes/`, depois em `$ZSH/custom/themes/` — custom **vence**.
+**Loading:** setar `ZSH_THEME="<nome>"` no `.zshrc` (sem `.zsh-theme`). OMZ tenta carregar de `$ZSH_CUSTOM/themes/<nome>.zsh-theme` primeiro; se não encontrar, cai pro `$ZSH/themes/<nome>.zsh-theme` (embarcado). É por isso que custom **vence** override.
 
 ---
 
@@ -110,7 +111,7 @@ P10k é mais que um `.zsh-theme` — tem instant prompt (precisa estar no TOPO d
 - **Custom local:** fica em `~/.oh-my-zsh/custom/`. Vincular ao seu repo de dotfiles (symlink ou stow).
 - **PR upstream pro OMZ:** se for útil pra muitos, abrir PR em `ohmyzsh/ohmyzsh` seguindo `CONTRIBUTING.md`.
 - **Repo próprio:** criar repo git `<usuario>/<plugin-name>` com README explicando install (`git clone ... custom/plugins/<nome>`).
-- **Plugin managers que entendem repos:** zinit, antibody, zplug — permitem source de plugins direto do GitHub sem clone manual (galho 5 — Dotfiles).
+- **Plugin managers que entendem repos:** zinit, zplug, antibody (arquivado em 2021 — prefira zinit ou zplug em novos setups) — permitem source de plugins direto do GitHub sem clone manual (galho 5 — Dotfiles).
 
 ---
 
@@ -221,6 +222,7 @@ Plugin `mytool` com completion própria:
 
 ```zsh
 # Adiciona a pasta do plugin ao fpath pra que `_mytool` seja encontrado pelo compinit
+# ${0:h} = dirname do arquivo atual (modifier Zsh "head")
 fpath+=(${0:h})
 ```
 
