@@ -427,6 +427,11 @@ Definição declarativa em KDL de tabs, panes, splits, cwd, comandos de auto-sta
 
 Veja também: [[05 - Layouts declarativos em KDL]].
 
+### Locked mode
+Modo do Zellij que desliga todos os keybindings internos — input vai direto pro app no pane ativo. Útil pra Emacs, Helix, apps que usam Ctrl-letra. Atalho default: `Ctrl-g` (entra e sai).
+
+Veja também: [[06 - Modos avançados, plugins e copy-mode]].
+
 ### Mode (Zellij)
 Estado modal do Zellij — controla quais keybindings estão ativas. 9 modos default: normal (input vai pro shell), locked (passthrough), pane, tab, resize, scroll, search, session, move. Entrar via `Ctrl-<letra>`; sair via ESC ou repetir o atalho.
 
@@ -441,6 +446,16 @@ Veja também: [[01 - Zellij vs tmux vs screen]].
 Divisão interna de uma tab Zellij, rodando um shell ou comando. 3 tipos: split (ocupa grid), floating (sobreposto), stacked (empilhado). Pane ativa recebe input; outras seguem rodando.
 
 Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
+
+### Pipe API
+Interface bidirecional Zellij ↔ plugin pra comunicação assíncrona via "pipes" nomeados. Plugin pode emitir (`pipe()`) e receber (`PipeMessage` event); scripts shell externos podem injetar mensagens com `zellij action pipe`.
+
+Veja também: [[06 - Modos avançados, plugins e copy-mode]].
+
+### Plugin (Zellij)
+Módulo WASM que estende Zellij (status bar, navegador entre Neovim/Zellij, plugins de produtividade, etc.). Sandbox capability-based: plugin declara permissões; user aprova na primeira carga. Lifecycle: `load`/`update`/`render`. Multilang (Rust, Zig, Go, AssemblyScript).
+
+Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 
 ### Session (Zellij)
 Container nomeado de uma instância Zellij. Sobrevive a detach (fechar emulador, SSH drop). Contém N tabs, cada uma com N panes. Criar com `zellij -s <nome>`; listar com `zellij ls`; anexar com `zellij attach <nome>`.
@@ -461,4 +476,9 @@ Veja também: [[03 - Modos básicos e keybindings essenciais]], [[06 - Modos ava
 Agrupamento horizontal de panes dentro de uma session Zellij. Cada tab tem layout próprio. Mostra nome na barra superior. Diferente de tab do emulador (kitty/wezterm) — tabs Zellij vivem dentro da session.
 
 Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
+
+### Tmux compat mode
+Modo de configuração do Zellij (`default_mode "tmux"`) que ativa keybindings tmux-like (prefixo `Ctrl-b`, `c` novo tab, `%` split, etc.). Útil pra migração; tradeoff: perde discoverabilidade dos modos.
+
+Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 
