@@ -3,7 +3,7 @@ title: "Shell"
 type: moc
 publish: true
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-21
 status: growing
 progresso: andamento
 tags:
@@ -55,9 +55,9 @@ Esse galho cobre o shell end-to-end: fundamentos do Zsh e diferenças do Bash, h
 
 ## Versões assumidas
 
-- **Zsh:** 5.9+ (Ubuntu/Linux bundle) — versão capturada no Task 0
-- **Oh-My-Zsh:** `master` em ~maio/2026 (commit declarado em pass final)
-- **Powerlevel10k:** `master` 2024-07 (commit declarado em pass final) — projeto em modo manutenção
+- **Zsh:** 5.9 (Ubuntu/Linux bundle)
+- **Oh-My-Zsh:** `master` commit `cb64103` (2026-05-18)
+- **Powerlevel10k:** `master` commit `2b7da93` (2024-07-01) — projeto em modo manutenção desde 2024-07
 - Plugins externos: versões `master` em 2026-05-19
 
 ## Veja também
