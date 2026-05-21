@@ -27,7 +27,7 @@ Esta trilha cobre o ecossistema TUI/keyboard-first pra trabalho de desenvolvimen
 - [[03-Dominios/Terminal/Editor/index|Editor]] — galho 1: Neovim + LazyVim (modal editing, plugins, LSP, Treesitter, DAP)
 - [[03-Dominios/Terminal/Shell/index|Shell]] — galho 2: Zsh + Oh-My-Zsh + Powerlevel10k (config, plugins, completion, ZLE)
 - [[03-Dominios/Terminal/Multiplexer/index|Multiplexer]] — galho 3: Zellij (sessions, layouts KDL, plugins WASM)
-- TUIs de Dev — galho 4 (planejado): Lazygit, Lazydocker
+- [[03-Dominios/Terminal/TUIs/index|TUIs de Dev]] — galho 4: Lazygit + Lazydocker (operações, config, debugging)
 - Dotfiles — galho 5 (planejado): gerenciamento de configs e sync
 - CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, eza, zoxide…
 - Workflow — galho 7 (planejado): playbooks cross-tool
