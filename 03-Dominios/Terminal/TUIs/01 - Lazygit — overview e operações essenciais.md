@@ -210,7 +210,7 @@ Lazygit abre no repositório da pasta atual. Se a pasta não for um repo git, of
 - **Causa:** `editPreset` ou `editor` não configurado no `~/.config/lazygit/config.yml`, e Lazygit não detectou o `$EDITOR` corretamente.
 - **Sintoma:** pressionar `e` em Files não faz nada visível, ou abre editor errado.
 - **Como detectar:** tentar com `e` e observar se o command log exibe algum erro; checar `echo $EDITOR` no shell.
-- **Solução:** definir `os.editPreset: "nvim"` (ou `"vscode"`, `"goland"`, etc.) no config — detalhes em [[04 - Lazygit — config e customização]].
+- **Solução:** definir `os.editPreset: "nvim"` (ou `"vscode"`, `"zed"`, etc.) no config — detalhes em [[04 - Lazygit — config e customização]].
 
 ---
 

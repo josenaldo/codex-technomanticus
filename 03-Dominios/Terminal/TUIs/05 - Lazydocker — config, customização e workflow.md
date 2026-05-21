@@ -211,7 +211,7 @@ Configuração de ambiente de desenvolvimento com Zellij:
 
 1. **Layout Zellij com dois panes:** Lazydocker à esquerda, dev server (ex: `npm run dev`) à direita
 2. **Lazydocker sempre visível:** `Enter` em container → Tab `Logs` → auto-tail ativo
-3. **Restart on demand:** foco no pane Lazydocker, selecionar serviço, `r` (restart) ou `R` (rebuild)
+3. **Restart on demand:** foco no pane Lazydocker, selecionar serviço, `r` (restart) ou `R` (restart options — menu)
 4. **Monitorar CPU/mem:** Tab `Stats` no container de interesse pra detectar memory leaks
 
 Esse padrão elimina alternar entre terminais pra `docker logs -f` e `docker restart`.
