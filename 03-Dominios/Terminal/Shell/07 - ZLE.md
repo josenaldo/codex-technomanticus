@@ -215,7 +215,7 @@ Limpa a tela e imprime os últimos 10 comandos do history antes de restaurar o p
 ```zsh
 clear-and-history() {
   clear
-  print -l ${(@)history[1,10]}
+  fc -ln -10
   zle reset-prompt
 }
 zle -N clear-and-history
@@ -271,7 +271,7 @@ bindkey '^X^E' my-composite-widget
 # Listar todos os widgets registrados (builtin + custom)
 zle -la
 
-# Listar apenas widgets custom (user-defined)
+# Lista widgets sem os originais substituídos (builtins + custom)
 zle -la | grep -v '^[.]'
 
 # Ver o que está bindado a uma tecla específica
