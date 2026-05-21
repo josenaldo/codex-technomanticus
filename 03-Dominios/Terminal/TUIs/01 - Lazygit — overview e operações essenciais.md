@@ -34,7 +34,7 @@ aliases:
 
 ### Layout dos painéis
 
-Lazygit usa 3 colunas no layout padrão. A coluna esquerda tem 5 painéis empilhados (selecionados por `]`/`[` ou pelo número da aba); a coluna direita é a main view (diff, conteúdo do commit, hunk view); a borda inferior exibe o command log.
+Lazygit usa 3 colunas no layout padrão. A coluna esquerda tem 5 painéis empilhados (acessados pelas teclas `1`–`5`); dentro de cada painel, `]`/`[` trocam as abas disponíveis (e.g. Branches tem abas Local, Remotes, Tags, Reflog); a coluna direita é a main view (diff, conteúdo do commit, hunk view); a borda inferior exibe o command log.
 
 ```text
 ┌──────────────────┬──────────────────────────────────────┐
@@ -47,8 +47,8 @@ Lazygit usa 3 colunas no layout padrão. A coluna esquerda tem 5 painéis empilh
 │ 4 Commits        │                                      │
 ├──────────────────┤                                      │
 │ 5 Stash          │                                      │
-└──────────────────┴──────────────────────────────────────┘
-│ Command log (borda inferior)                            │
+├──────────────────┴──────────────────────────────────────┤
+│ Command log: $ git status                               │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -58,7 +58,9 @@ O **command log** (borda inferior) exibe cada comando `git` que Lazygit executa 
 
 | Tecla | Ação |
 |---|---|
-| `]` / `[` | Próximo / anterior painel (também sub-tabs dentro de Branches: Tags, Remotes, Reflog) |
+| `1` / `2` / `3` / `4` / `5` | Pula diretamente para o painel (Status / Files / Branches / Commits / Stash) |
+| `0` | Foca a main view (diff, output) |
+| `]` / `[` | Próxima / anterior **aba** dentro do painel ativo (e.g. Branches → Local → Remotes → Tags → Reflog) |
 | `j` / `k` | Desce / sobe dentro do painel ativo |
 | `<enter>` | Entra na visualização detalhada (diff, commits do branch, arquivos do commit…) |
 | `<esc>` | Cancela ação ou volta da visualização detalhada |
@@ -77,7 +79,7 @@ O **command log** (borda inferior) exibe cada comando `git` que Lazygit executa 
 | Files | `c` | Commit das mudanças staged |
 | Files | `A` | Amend no último commit |
 | Files | `d` | Opções de discard (confirma antes de apagar) |
-| Files | `D` | Reset working tree (discard all) |
+| Files | `D` | Abre menu de opções de reset (soft / mixed / hard / nuke working tree) |
 | Files | `s` | Stash all changes |
 | Files | `S` | Ver opções de stash |
 | Files | `e` | Editar arquivo no editor externo |
@@ -149,7 +151,7 @@ go install github.com/jesseduffield/lazygit@latest
 sudo pacman -S lazygit
 ```
 
-Versão atual no ambiente: **0.61.1** (commit d167063, 2026-04-13).
+(Referência: Lazygit 0.61+; keybindings podem variar em versões mais antigas.)
 
 ### Primeira execução
 
@@ -162,7 +164,7 @@ Lazygit abre no repositório da pasta atual. Se a pasta não for um repo git, of
 
 ### Workflow primeira vez (5 minutos)
 
-1. `]` e `[` percorrem os 5 painéis — observar que o conteúdo da main view muda
+1. Teclas `1`–`5` saltam entre os 5 painéis; `]`/`[` trocam abas dentro do painel ativo — observar que o conteúdo da main view muda
 2. `?` no painel Files mostra os atalhos disponíveis naquele contexto
 3. Edite um arquivo no seu editor normalmente (ou `e` dentro do Lazygit pra abrir no editor configurado)
 4. `j`/`k` no painel Files navega entre os arquivos modificados
