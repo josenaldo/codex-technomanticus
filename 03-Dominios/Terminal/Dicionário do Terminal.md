@@ -484,6 +484,11 @@ Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 
 ## TUIs de Dev / Lazygit / Lazydocker
 
+### Cherry-pick
+Copiar 1 ou mais commits de uma branch pra outra. No Lazygit: painel Commits, `C` (uppercase) na branch origem → checkout destino → `V` (uppercase) paste. Conflitos tratados como merge conflict normal.
+
+Veja também: [[03 - Lazygit — operações intermediárias]].
+
 ### Command log
 Painel inferior do Lazygit que exibe cada comando git executado pela TUI. Útil pra aprender que comando shell equivale a uma ação visual e debuggar quando algo não funciona.
 
@@ -499,6 +504,16 @@ Abrir shell interativo dentro de container rodando. Default key `E` (executa `/b
 
 Veja também: [[02 - Lazydocker — overview e operações comuns]], [[05 - Lazydocker — config, customização e workflow]].
 
+### Hunk
+Bloco contíguo de mudanças num diff git — várias linhas próximas marcadas como `+`/`-`. Lazygit permite stage hunk-por-hunk (`enter` em arquivo no painel Files + `space`) ou linha-por-linha (`a` na staging view alterna pra modo linha). Diff tools chamam isso de "chunk" também.
+
+Veja também: [[03 - Lazygit — operações intermediárias]].
+
+### Interactive rebase
+`git rebase -i <base>` com UI Lazygit. Painel Commits: `i` (todos os commits da branch) ou `e` em commit específico (a partir daquele commit). Cada commit ganha ação: `s` squash, `f` fixup, `d` drop, `e` edit, `r` reword. Reordenar com `<c-k>`/`<c-j>`. `m` → Continue após marcar as ações.
+
+Veja também: [[03 - Lazygit — operações intermediárias]].
+
 ### Lazydocker
 TUI Docker em Go por Jesse Duffield. Painéis: Project, Services, Containers, Images, Volumes, Networks; com tabs Logs/Config/Stats por seleção. Auto-detecta `docker-compose.yml` no cwd. Config YAML em `~/.config/lazydocker/config.yml`.
 
@@ -508,6 +523,11 @@ Veja também: [[02 - Lazydocker — overview e operações comuns]], [[05 - Lazy
 TUI git em Go por Jesse Duffield. Painéis keyboard-first pra status, files, branches, commits, stash. Operações por painel com atalhos contextuais; `?` mostra help. Config YAML em `~/.config/lazygit/config.yml`.
 
 Veja também: [[01 - Lazygit — overview e operações essenciais]], [[04 - Lazygit — config e customização]].
+
+### Reflog
+Log de movimentos de HEAD (commits, checkouts, resets, rebases). No Lazygit: aba Reflog no painel Branches (`3`), acessada via `]`/`[`. Útil pra recuperar branch deletada ou desfazer reset acidental. Não cobre changes uncommitted (não há reflog do working tree).
+
+Veja também: [[03 - Lazygit — operações intermediárias]].
 
 ### TUI
 Terminal User Interface — UI keyboard-first dentro do terminal, com painéis, scroll, cores, mouse opcional. Diferente de CLI (entrada e saída por linha) e GUI (gráfica). Exemplos: Lazygit, Lazydocker, htop, neomutt, ranger.
