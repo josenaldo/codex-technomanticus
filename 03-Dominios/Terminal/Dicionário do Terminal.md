@@ -400,3 +400,5 @@ Builtin do Zsh que customiza estilos de subsistemas (completion, prompts, vcs_in
 
 Veja também: [[08 - Completion system (compsys)]].
 
+## Multiplexer / Zellij
+
