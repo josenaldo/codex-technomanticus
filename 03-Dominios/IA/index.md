@@ -20,7 +20,7 @@ progresso: andamento
 
 # IA — Formação Engenheiro de IA
 
-Em 2026, IA deixou de ser especialização e virou **literacia básica** para qualquer senior dev. Coding agents fazem parte do dia a dia em times sérios; features de IA aparecem em praticamente todo projeto novo. Este domínio **é a formação completa** — programa estruturado de **10 trilhas atomizadas** + 4 sendas transversais que cobrem desde "o que é um LLM" até "como construir MCP server seguro e passar em auditoria de EU AI Act". Cada trilha é independente e completa; juntas, formam a stack de competências que diferencia engenheiros que **usam** IA dos que **dominam** IA.
+Em 2026, IA deixou de ser especialização e virou **literacia básica** para qualquer senior dev. Coding agents fazem parte do dia a dia em times sérios; features de IA aparecem em praticam##ente todo projeto novo. Este domínio **é a formação completa** — programa estruturado de **10 trilhas atomizadas** + 4 sendas transversais que cobrem desde "o que é um LLM" até "como construir MCP server seguro e passar em auditoria de EU AI Act". Cada trilha é independente e completa; juntas, formam a stack de competências que diferencia engenheiros que **usam** IA dos que **dominam** IA.
 
 > [!info] Como usar este portal
 >
@@ -159,7 +159,7 @@ Setas sólidas = pré-requisito recomendado. Tracejadas = relação complementar
 
 ### Núcleo da formação (sequencial)
 
-#### Trilha 1 — [[Anatomia dos LLMs]] (17 notas)
+#### Trilha 1 — [[Anatomia dos LLMs/index|Anatomia dos LLMs]] (17 notas)
 
 > *"Antes de orquestrar agentes, entenda os blocos."*
 
@@ -167,7 +167,7 @@ Tokens, atenção, modelos em produção (incluindo chineses), APIs, pricing, re
 
 **Quando ler:** sempre. É o alicerce.
 
-#### Trilha 2 — [[Anatomia de Agents]] (9 notas)
+#### Trilha 2 — [[Anatomia de Agents/index|Anatomia de Agents]] (9 notas)
 
 > *"Agents são LLM + tools + loop com autonomia."*
 
@@ -175,7 +175,7 @@ O que define agent (vs chat, RAG, workflow), loop ReAct, native tool use, design
 
 **Quando ler:** após Trilha 1. Fundamentos genéricos antes de coding agents específicos.
 
-#### Trilha 3 — [[Agentes de Codificação]] (18 notas)
+#### Trilha 3 — [[Agentes de Codificação/index|Agentes de Codificação]] (18 notas)
 
 > *"De autocomplete a agentes autônomos — o panorama das ferramentas."*
 
@@ -186,7 +186,7 @@ Filosofia (vibe vs disciplina, comprehension gate), os players (Cursor, Claude C
 > [!tip] Aprofundamento
 > Quer ir além do overview comparativo? [[03-Dominios/IA/Claude Code/index|Trilha Claude Code]] cobre em profundidade: mental model, configuração, hooks, skills/MCP, workflows e automação em 6 galhos (~50 notas).
 
-#### Trilha 4 — [[Economia de Tokens]] (20 notas)
+#### Trilha 4 — [[Economia de Tokens/index|Economia de Tokens]] (20 notas)
 
 > *"Cada token custa dinheiro — entenda como gastar menos sem perder qualidade."*
 
@@ -194,7 +194,7 @@ Em 5 blocos: o problema, reduzir input (caching, pruning, compression, compactio
 
 **Quando ler:** após Trilha 3 — para parar de queimar dinheiro.
 
-#### Trilha 5 — [[Context Engineering]] (16 notas)
+#### Trilha 5 — [[Context Engineering/index|Context Engineering]] (16 notas)
 
 > *"A disciplina que substituiu prompt engineering."*
 
@@ -202,7 +202,7 @@ Em 5 blocos: fundamentos (context rot, 4 pilares), arquitetura (pipelines, camad
 
 **Quando ler:** após Trilha 1, paralelo a Trilhas 2-3. Karpathy: *"the load-bearing skill of 2026"*.
 
-#### Trilha 6 — [[Spec-Driven Development]] (12 notas)
+#### Trilha 6 — [[Spec-Driven Development/index|Spec-Driven Development]] (12 notas)
 
 > *"Specs como contrato executável — resposta da indústria ao tech debt do vibe coding."*
 
@@ -210,7 +210,7 @@ O problema do vibe coding (Veracode 45%), pipeline (Specify → Plan → Tasks �
 
 **Quando ler:** após Trilha 5. Spec é a camada superior do contexto.
 
-#### Trilha 7 — [[Segurança e Guardrails]] (12 notas)
+#### Trilha 7 — [[Segurança e Guardrails/index|Segurança e Guardrails]] (12 notas)
 
 > *"Código gerado por IA é untrusted por padrão. Defesa em profundidade não é opcional."*
 

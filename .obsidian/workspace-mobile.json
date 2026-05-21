@@ -112,7 +112,7 @@
         "state": {
           "type": "backlink",
           "state": {
-            "file": "03-Domínios/Empreendedorismo/Indie Hacker 101/02 - O conceito de enough — Company of One.md",
+            "file": "03-Dominios/IA/index.md",
             "collapseAll": false,
             "extraContext": false,
             "sortOrder": "alphabetical",
@@ -153,12 +153,23 @@
           "icon": "lucide-list",
           "title": "Sumário"
         }
+      },
+      {
+        "id": "c90f13bbe374bf8f",
+        "type": "leaf",
+        "state": {
+          "type": "copilot-chat-view",
+          "state": {},
+          "icon": "message-square",
+          "title": "Copilot"
+        }
       }
     ],
     "currentTab": 0
   },
   "left-ribbon": {
     "hiddenItems": {
+      "obsidian-git:Open Git source control": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -175,6 +186,16 @@
   },
   "active": "8c59943ad5e99a5b",
   "lastOpenFiles": [
+    "03-Dominios/IA/Context Engineering/index.md",
+    "03-Dominios/IA/index.md",
+    "03-Dominios/IA/Economia de Tokens/index.md",
+    "03-Dominios/IA/Claude Code/index.md",
+    "03-Dominios/IA/Agentes de Codificação/index.md",
+    "Agentes de Codificação.md",
+    "03-Dominios/IA/Anatomia dos LLMs/index.md",
+    "03-Dominios/IA/Anatomia de Agents/index.md",
+    "Anatomia dos LLMs.md",
+    "04-Sendas/index.md",
     "docs/superpowers/specs/2026-05-05-dashboards-apocrypha-design.md",
     "docs/superpowers/plans/2026-05-05-dashboards-apocrypha-execution.md",
     "03-Dominios/TypeScript/index.md",
@@ -198,19 +219,9 @@
     "03-Dominios/React/TanStack Query.md",
     "03-Dominios/React/TanStack Form.md",
     "03-Dominios/React/React Hook Form.md",
-    "03-Dominios/React/React Data Table.md",
-    "03-Dominios/React/React Admin.md",
-    "03-Dominios/React/Next.js.md",
-    "03-Dominios/React/MUI.md",
-    "03-Dominios/React/Mantine.md",
-    "03-Dominios/React/index.md",
     "03-Dominios/React/Charts",
     "03-Dominios/React",
-    "03-Dominios/Python/Python.md",
-    "03-Dominios/Python/Python Backend.md",
-    "03-Dominios/Python/Instalando Anaconda no Ubuntu.md",
     "03-Dominios/Python",
-    "03-Dominios/Node/index.md",
     "03-Dominios/Node",
     "03-Dominios/JavaScript/Frontend/TypeScript com React",
     "03-Dominios/JavaScript/Frontend",
