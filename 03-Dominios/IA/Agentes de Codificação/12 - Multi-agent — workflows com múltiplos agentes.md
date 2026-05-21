@@ -109,6 +109,7 @@ Ferramentas como Kimi K2.6 e Devin são otimizadas para orquestração hierárqu
 
 - [[05 - Claude Code — terminal-first agent]] — sessões paralelas com tmux
 - [[06 - GitHub Copilot e Copilot Agents]] — agentes em pipeline no GitHub
+- [[03-Dominios/IA/Claude Code/Workflows/index|Workflows — Claude Code]] — padrões de multi-agent, sub-agents e sessões paralelas especificamente no Claude Code
 - [[16 - O loop agentic — plan, act, observe]] — o ciclo interno de cada agente
 
 ## Referências

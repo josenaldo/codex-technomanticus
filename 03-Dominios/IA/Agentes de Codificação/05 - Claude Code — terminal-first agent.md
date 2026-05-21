@@ -193,6 +193,7 @@ Claude Code suporta MCP servers nativamente:
 
 ## Veja também
 
+- [[03-Dominios/IA/Claude Code/index|Trilha Claude Code]] — aprofundamento completo em 6 galhos: mental model, configuração, hooks, skills/MCP, workflows e automação
 - [[04 - Cursor — AI-native IDE]] — alternativa IDE para quem prefere GUI
 - [[10 - OpenCode — o harness open source]] — alternativa open-source
 - [[15 - MCP — o protocolo universal]] — como estender o Claude Code com ferramentas

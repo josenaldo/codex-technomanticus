@@ -1,9 +1,9 @@
 ---
-title: "O problema — por que tokens custam dinheiro"
+title: O problema — por que tokens custam dinheiro
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
-status: seedling
+status: evergreen
 publish: true
 tags:
   - economia-tokens
@@ -12,6 +12,7 @@ tags:
 aliases:
   - Token economics
   - Por que tokens custam
+progresso: feito
 ---
 
 # O problema — por que tokens custam dinheiro
@@ -58,7 +59,7 @@ Output é 3-6x mais caro que input porque:
 
 - Cada token de output requer um forward pass completo pelo modelo
 - A geração é **sequencial** (autoregressive) — não pode ser paralelizada
-- O KV cache cresce com cada token gerado, consumindo mais memória
+- O [[Dicionário de IA#KV cache|KV cache]] cresce com cada token gerado, consumindo mais memória
 
 | Provider/Modelo   | Input $/MTok | Output $/MTok | Ratio |
 | ----------------- | ------------ | ------------- | ----- |

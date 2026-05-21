@@ -68,6 +68,7 @@ Da disciplina técnica à decisão de negócio: budget, hard limits, auditoria, 
 - [[18 - Playbook de economia — checklist completo]] — checklist consolidado, ordem de aplicação
 - [[19 - Planos e tiers — Max, Pro, API, Enterprise]] — quando faz sentido cada modalidade
 - [[20 - O futuro — tokens cada vez mais baratos]] — Moore-like trend, commoditização, implicações
+- [[21 - Hacks de trincheira — Claude, Gemini e Copilot em 2026]] — manobras específicas por provedor
 
 ## Rotas alternativas
 

@@ -75,7 +75,7 @@ Exemplo:
 ## Veja também
 - [[01 - O problema — por que tokens custam dinheiro]]
 - [[09 - Model routing — modelo certo para a tarefa]]
-- [[20 - O futuro dos LLMs — tendências 2026-2027]] (Trilha 1)
+- [[15 - O futuro dos LLMs — tendências 2026-2027]] (Trilha 1)
 
 ## Referências
 - **Artificial Analysis** — *Token Price Trends* (2026). Dados históricos.

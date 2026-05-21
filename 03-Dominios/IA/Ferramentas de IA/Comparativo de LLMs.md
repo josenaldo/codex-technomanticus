@@ -695,14 +695,14 @@ Padrões frequentes em times escolhendo e migrando entre LLMs em 2026.
 
 ## Veja também
 
-- [[Anatomia dos LLMs/index|LLMs]] — fundamentos técnicos
+- [[Anatomia dos LLMs|LLMs]] — fundamentos técnicos
 - [[Claude]] — ecossistema Anthropic
 - [[GitHub Copilot]] — assistente integrado ao IDE
 - [[Codex]] — agent cloud da OpenAI
 - [[Gemini]] — família Google
-- [[Context Engineering/index|Context Engineering]] — que funciona cross-model
-- [[Anatomia de Agents/index|Agents]] — padrões de agent independente de modelo1
-- [[RAG e Vector Databases/index|RAG e Vector Databases]]
+- [[Context Engineering]] — que funciona cross-model
+- [[Anatomia de Agents|Agents]] — padrões de agent independente de modelo1
+- [[RAG e Vector Databases]]
 - [[03-Dominios/IA/MCP/index|Model Context Protocol]]
 - [[03-Dominios/IA/index|Inteligência Artificial]]
 - [[Senda IA]]

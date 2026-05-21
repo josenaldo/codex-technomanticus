@@ -121,7 +121,7 @@ contracts/auth.test.yml  ← deriva da spec, executável
 - Drift impossível por construção
 - Auditoria trivial (spec é o registro)
 - Compliance fica mais barato (Lean 4-style verification possível — ver [[Context Engineering|12 - Guardrails determinísticos]])
-- Multiagent SDD funciona naturalmente ([[09 - SDD com agentes — coordinator/implementor/validator]])
+- Multiagent SDD funciona naturalmente ([[09 - SDD com agentes — coordinator, implementor, validator]])
 
 **Limitações:**
 - Stack precisa suportar geração / templating

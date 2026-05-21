@@ -48,11 +48,19 @@ Sem sub-agente: o pai faria a busca diretamente, e o output completo do `grep` (
 
 | Caso | Por que sub-agente compensa |
 |---|---|
-| **Pesquisa em codebase** | Output bruto é grande, resultado útil é pequeno |
-| **Análise de logs longos** | Logs são one-shot; não precisam ficar no histórico |
-| **Validação em paralelo** | 3 sub-agentes verificam aspectos diferentes simultaneamente |
-| **Code review especializado** | Sub-agente "security" + "performance" + "style" rodam em paralelo |
-| **Sumarização antes de prosseguir** | Filho lê 50K tokens, devolve resumo de 500 |
+| **Pesquisa em codebase** | Output bruto é grande, resultado útil é pequeno | Use sub-agente **Explore** |
+| **Análise de logs longos** | Logs são one-shot; não precisam ficar no histórico | Use sub-agente **Explore** |
+| **Escrita de código** | Exige raciocínio e ferramentas de escrita | Use sub-agente **General-purpose** |
+| **Validação em paralelo** | 3 sub-agentes verificam aspectos diferentes simultaneamente | Misture conforme a necessidade |
+
+## Estratégia de Custo: Explore vs General-purpose
+
+Em ferramentas como Claude Code, a escolha do tipo de sub-agente (através do parâmetro `subagent_type`) tem impacto direto no billing:
+
+1.  **Explore (O Olheiro):** É configurado como read-only e otimizado para navegação. Use-o para vasculhar a codebase, ler documentação extensiva ou analisar logs. Por não ter permissão de escrita e possuir um conjunto menor de ferramentas, ele tende a ser mais rápido e barato.
+2.  **General-purpose (O Arquiteto):** Possui o conjunto completo de ferramentas (incluindo escrita e bash). Deve ser reservado para quando você precisa que o sub-agente de fato resolva um problema, implemente uma lógica ou corrija um bug em isolamento.
+
+**Regra de Ouro:** Se a tarefa começa com "Encontre...", "Leia...", ou "Onde está...", delegue para um sub-agente do tipo **Explore**.
 
 ## Casos onde NÃO compensa
 

@@ -104,7 +104,7 @@ Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da
 
 ## Domínio de JavaScript
 
-- [[JavaScript]]
+- [[03-Dominios/JavaScript/index]]
 - **Core:** [[JavaScript Fundamentals]] · [[TypeScript]] · [[Testes em JavaScript]]
 - **Backend:** [[Node.js]]
 - **Frontend:** [[React]] · [[React Red Flag Manual]] · [[HTML e CSS]] · [[Bootstrap]] · [[Material UI]] · [[03-Dominios/React/Mantine]]

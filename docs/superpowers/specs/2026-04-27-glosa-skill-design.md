@@ -11,7 +11,7 @@ publish: false
 
 ## 1. Contexto e motivação
 
-O Codex Technomanticus cresce como commonplace book pessoal — cada vez mais notas em [[IA]], [[Arquitetura]], [[JavaScript]], etc. Mas há uma lacuna: **artigos lidos não viram nada**. Hoje o fluxo é:
+O Codex Technomanticus cresce como commonplace book pessoal — cada vez mais notas em [[IA]], [[Arquitetura]], [[03-Dominios/JavaScript/index]], etc. Mas há uma lacuna: **artigos lidos não viram nada**. Hoje o fluxo é:
 
 1. Achar um link interessante → cola em `00 - Inbox/Entradas.md`
 2. Ler o artigo no navegador

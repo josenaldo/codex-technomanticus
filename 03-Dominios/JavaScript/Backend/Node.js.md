@@ -1,7 +1,7 @@
 ---
 title: "Node.js"
 created: 2026-04-01
-updated: 2026-04-11
+updated: 2026-05-13
 type: concept
 status: evergreen
 tags:
@@ -45,445 +45,63 @@ Em entrevistas, o que diferencia um senior em Node.js:
 
 ### Arquitetura
 
-```text
-┌──────────────────────────────────┐
-│    Seu código JavaScript         │
-├──────────────────────────────────┤
-│    Node.js APIs (fs, http, ...)  │
-├──────────────────────────────────┤
-│    Node Bindings (C++)           │
-├──────────────────────────────────┤
-│    V8 Engine   │   libuv          │
-│    (JS → ASM)  │   (event loop,  │
-│                │    I/O, threads) │
-├──────────────────────────────────┤
-│    OS (Linux, macOS, Windows)    │
-└──────────────────────────────────┘
-```
-
-- **V8** — engine JavaScript do Chrome. Compila JS para código nativo via JIT.
-- **libuv** — biblioteca C que provê event loop, thread pool, file I/O, networking, timers cross-platform.
-- **Node bindings** — pontes C++ entre JS e APIs do OS.
-- **Single-threaded event loop** — seu código JS roda em uma thread. I/O é delegado.
-- **Thread pool (libuv)** — 4 threads default (configurável via `UV_THREADPOOL_SIZE`). Usada para filesystem, DNS, crypto, compression.
+> [!nota] Migrado para galho próprio
+> A anatomia interna do runtime — V8, libuv, thread pool — foi expandida em [[03-Dominios/Node/Runtime e Event Loop/index]]. Veja em particular [[02 - V8, libuv e thread pool]] (componentes), [[01 - Single-thread e non-blocking I-O]] (modelo), e [[07 - I-O assíncrono - kernel vs thread pool]] (onde o paralelismo verdadeiro mora).
 
 ### Single-threaded com non-blocking I/O
 
-**Chave do modelo Node:** I/O **não bloqueia** a thread JS. O Node delega ao OS (via libuv) e registra um callback. Quando o I/O completa, o callback é enfileirado no event loop.
-
-```javascript
-// Thread 1 (main) executa isso
-fs.readFile('big.txt', (err, data) => {
-    console.log('done');  // callback quando I/O completar
-});
-console.log('continuando');  // imprime ANTES de "done"
-```
-
-**Consequência:** uma única thread pode gerenciar milhares de conexões simultâneas — o que seria custoso com um modelo thread-per-request tradicional.
+> [!nota] Migrado para galho próprio
+> O modelo single-thread + non-blocking I/O foi expandido em [[01 - Single-thread e non-blocking I-O]] dentro do galho [[03-Dominios/Node/Runtime e Event Loop/index]].
 
 ### Event loop phases — detalhado
 
-Ver também [[JavaScript Fundamentals]] (seção event loop). Resumo das fases do libuv:
-
-```
-   ┌───────────────────────────┐
-┌─►│           timers          │  setTimeout, setInterval
-│  └─────────────┬─────────────┘
-│  ┌─────────────┴─────────────┐
-│  │     pending callbacks     │  I/O errors retidos
-│  └─────────────┬─────────────┘
-│  ┌─────────────┴─────────────┐
-│  │       idle, prepare       │  interno
-│  └─────────────┬─────────────┘    ┌───────────────┐
-│  ┌─────────────┴─────────────┐    │   incoming:   │
-│  │           poll            │◄───┤ connections,  │
-│  └─────────────┬─────────────┘    │   data, etc.  │
-│  ┌─────────────┴─────────────┐    └───────────────┘
-│  │           check           │  setImmediate
-│  └─────────────┬─────────────┘
-│  ┌─────────────┴─────────────┐
-└──┤      close callbacks      │  'close' events
-   └───────────────────────────┘
-```
-
-**Entre cada fase** — microtasks: `process.nextTick` (prioridade máxima), depois Promise callbacks.
-
-**`setImmediate` vs `setTimeout(fn, 0)`:**
-
-```javascript
-// Em contexto I/O, setImmediate roda primeiro
-fs.readFile('file', () => {
-    setTimeout(() => console.log('timeout'), 0);
-    setImmediate(() => console.log('immediate'));
-    // → 'immediate' primeiro (próxima fase após poll)
-});
-
-// Fora de I/O, ordem é imprevisível
-setTimeout(() => console.log('timeout'), 0);
-setImmediate(() => console.log('immediate'));
-```
-
-**`process.nextTick` vs `queueMicrotask` vs `setImmediate`:**
-
-| Função | Quando roda |
-| --- | --- |
-| `process.nextTick` | **Antes** do próximo event loop iteration. Prioridade máxima. |
-| `queueMicrotask` | Após código síncrono, entre fases. Como Promise.then. |
-| `setImmediate` | Na fase `check` do próximo iteration. |
-| `setTimeout(fn, 0)` | Na fase `timers` quando o tempo passar (>= 1ms). |
-
-**Cuidado com `process.nextTick`:** recursão em `nextTick` pode **bloquear o event loop** (nunca avança para próxima fase).
+> [!nota] Migrado para galho próprio
+> As fases do event loop foram expandidas em [[03-Dominios/Node/Runtime e Event Loop/index]]. Veja em particular [[04 - As fases do event loop]] (ciclo libuv), [[05 - Microtasks - nextTick, queueMicrotask, Promise.then]] (microtasks), e [[06 - Macrotasks e timers - setTimeout, setInterval, setImmediate]] (timers).
 
 ### Worker Threads, cluster, child_process — as 3 formas de paralelismo
 
-| | Worker Threads | Cluster | child_process |
-| --- | --- | --- | --- |
-| **Uso** | CPU-bound tasks | Escalar HTTP server por CPU | Executar processo externo |
-| **Memória** | Separada, mensagens via postMessage | Separada, IPC | Separada, stdio |
-| **Criação** | Rápida (~ms) | Lenta (novo processo) | Lenta (novo processo) |
-| **Compartilhamento** | SharedArrayBuffer | Via IPC | Via stdio/IPC |
-| **Use case** | Image processing, crypto, ML | Servidor web escalado | Rodar comando shell |
-
-**Worker Threads — para CPU-bound:**
-
-```typescript
-// worker.ts
-import { parentPort, workerData } from 'node:worker_threads';
-
-const result = heavyComputation(workerData);
-parentPort?.postMessage(result);
-
-// main.ts
-import { Worker } from 'node:worker_threads';
-
-function runWorker(data: any) {
-    return new Promise((resolve, reject) => {
-        const worker = new Worker('./worker.js', { workerData: data });
-        worker.on('message', resolve);
-        worker.on('error', reject);
-        worker.on('exit', code => {
-            if (code !== 0) reject(new Error(`Worker stopped with code ${code}`));
-        });
-    });
-}
-
-const result = await runWorker({ input: 'heavy' });
-```
-
-**Cluster — para escalar HTTP:**
-
-```typescript
-import cluster from 'node:cluster';
-import os from 'node:os';
-
-if (cluster.isPrimary) {
-    const numCPUs = os.cpus().length;
-    for (let i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
-    cluster.on('exit', (worker) => {
-        console.log(`Worker ${worker.process.pid} died, restarting`);
-        cluster.fork();
-    });
-} else {
-    // Worker process
-    startServer();
-}
-```
-
-**Em produção moderna:** cluster nativo é menos usado. Orchestradores (Kubernetes, PM2) fazem melhor: restart automático, rolling updates, health checks.
-
-**`child_process` — executar comandos:**
-
-```typescript
-import { exec, spawn, fork } from 'node:child_process';
-import { promisify } from 'node:util';
-
-// exec — buffer completo do output
-const execP = promisify(exec);
-const { stdout } = await execP('git log --oneline -5');
-
-// spawn — streaming
-const proc = spawn('ffmpeg', ['-i', 'input.mp4', 'output.webm']);
-proc.stdout.on('data', chunk => process.stdout.write(chunk));
-proc.on('close', code => console.log(`exited ${code}`));
-
-// fork — child Node.js com IPC
-const child = fork('./worker.js');
-child.send({ type: 'work', data: ... });
-child.on('message', msg => console.log(msg));
-```
+> [!nota] Migrado para galho próprio
+> As 3 ferramentas de paralelismo foram expandidas em [[03-Dominios/Node/Paralelismo/index]] (galho 2). Veja em particular [[02 - As 3 ferramentas - Worker Threads, Cluster, child_process]] (visão geral comparativa), [[03 - Worker Threads - fundamentos]] (Worker Threads), [[07 - Cluster - escalando HTTP por CPU]] (Cluster), [[08 - child_process com exec e spawn]] (rodar comandos externos) e [[09 - child_process com fork - Node child com IPC]] (Node child isolado). Decision tree completa em [[11 - Decision tree - qual ferramenta para qual problema]].
 
 ### Frameworks
 
-| Framework | Estilo | Use case |
-| --- | --- | --- |
-| Express | Minimalista, middleware-based | APIs simples, prototipagem |
-| NestJS | Opinativo, inspirado em Angular/Spring | Apps enterprise, microserviços |
-| Fastify | Performance-first, schema-based | APIs de alta performance |
-| Hono | Ultralight, edge-first | Serverless, edge computing |
-
-**NestJS** é o mais próximo do Spring Boot em filosofia: DI, decorators, módulos, guards, interceptors.
+> [!nota] Migrado para galho próprio
+> Os 4 frameworks principais foram expandidos em [[03-Dominios/Node/Frameworks e arquitetura/index]] (galho 4). Veja em particular [[01 - Os 4 frameworks - Express, NestJS, Fastify, Hono]] (visão geral comparativa), [[02 - Express idiomático]] (Express moderno), [[03 - NestJS - fundamentos]] (DI + módulos), [[05 - Fastify - schema-first, plugins, performance]] (Fastify) e [[06 - Hono e edge runtimes]] (edge-first).
 
 ### Error Handling
 
-```typescript
-// Express middleware de erro
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  logger.error(err.stack);
-  res.status(500).json({
-    type: "https://api.example.com/errors/internal",
-    title: "Internal Server Error",
-    status: 500,
-    detail: err.message
-  });
-});
-
-// Async error handling (Express não captura automaticamente)
-const asyncHandler = (fn: Function) =>
-  (req: Request, res: Response, next: NextFunction) =>
-    Promise.resolve(fn(req, res, next)).catch(next);
-
-app.get("/users/:id", asyncHandler(async (req, res) => {
-  const user = await userService.findById(req.params.id);
-  if (!user) throw new NotFoundError("User not found");
-  res.json(user);
-}));
-```
+> [!nota] Migrado para galho próprio
+> Error handling estruturado (Problem Details RFC 7807) foi expandido em [[08 - Error handling estruturado]] no galho [[03-Dominios/Node/Frameworks e arquitetura/index]], com implementação em todos os 4 frameworks principais.
 
 ### Streams — deep dive
 
-Streams são a **abstração fundamental** de Node.js para processar dados em chunks, sem carregar tudo em memória. Essencial para arquivos grandes, network, stdout/stdin.
-
-**4 tipos de streams:**
-
-| Tipo | Uso | Exemplo |
-| --- | --- | --- |
-| **Readable** | Fonte de dados | `fs.createReadStream`, `process.stdin`, HTTP response |
-| **Writable** | Destino de dados | `fs.createWriteStream`, `process.stdout`, HTTP request |
-| **Duplex** | Ambos (separados) | TCP socket |
-| **Transform** | Duplex que transforma | zlib, crypto, parsers |
-
-**API moderna — `stream/promises` + `pipeline`:**
-
-```typescript
-import { createReadStream, createWriteStream } from 'node:fs';
-import { pipeline } from 'node:stream/promises';
-import { Transform } from 'node:stream';
-
-// Pipeline correto — fecha tudo, propaga erros
-await pipeline(
-    createReadStream('input.csv'),
-    new Transform({
-        transform(chunk, encoding, callback) {
-            const processed = processChunk(chunk.toString());
-            callback(null, processed);
-        }
-    }),
-    createWriteStream('output.csv')
-);
-// Se qualquer stream errar, pipeline propaga e fecha tudo
-```
-
-**Por que `pipeline` e não `.pipe()`:**
-
-```typescript
-// RUIM — .pipe() não propaga erros
-source.pipe(transform).pipe(destination);
-// se transform falha, destination fica aberto, vazamento
-
-// BOM — pipeline lida com cleanup e errors
-await pipeline(source, transform, destination);
-```
+> [!nota] Migrado para galho próprio
+> Os 4 tipos de stream foram expandidos em [[03-Dominios/Node/Streams/index]] (galho 3). Veja em particular [[02 - Os 4 tipos - Readable, Writable, Duplex, Transform]] (visão geral comparativa), [[03 - Readable streams]] (Readable detalhado), [[04 - Writable streams]] (Writable detalhado) e [[05 - Duplex e Transform]] (Duplex vs Transform).
 
 ### Backpressure
 
-Quando o consumer é mais lento que o producer, o buffer enche. Streams do Node gerenciam isso automaticamente se você usa `pipe`/`pipeline` ou respeita `drain`:
-
-```typescript
-// Manual — respeitar drain
-function writeMany(writable: NodeJS.WritableStream) {
-    let i = 1_000_000;
-    function write() {
-        let ok = true;
-        while (i > 0 && ok) {
-            ok = writable.write(`${i}\n`);
-            i--;
-        }
-        if (i > 0) {
-            writable.once('drain', write);  // retoma quando buffer esvaziar
-        } else {
-            writable.end();
-        }
-    }
-    write();
-}
-```
+> [!nota] Migrado para galho próprio
+> Backpressure como mecânica explícita foi expandido em [[06 - Backpressure]] no galho [[03-Dominios/Node/Streams/index]].
 
 ### Web Streams vs Node streams
 
-Node suporta **Web Streams** (padrão universal) desde v18:
-
-```typescript
-import { Readable } from 'node:stream';
-
-// Web Stream → Node Stream
-const webStream = new ReadableStream({ start(controller) { /* ... */ } });
-const nodeStream = Readable.fromWeb(webStream);
-
-// Node Stream → Web Stream
-const web = Readable.toWeb(nodeReadable);
-
-// Fetch retorna Web Stream
-const response = await fetch('https://example.com/big.json');
-const reader = response.body!.getReader();
-while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    process(value);
-}
-```
-
-**Em 2026:** Web Streams são mais portáveis (funcionam em browser, Deno, Bun, Cloudflare Workers). Use quando possível.
+> [!nota] Migrado para galho próprio
+> Interop Node ↔ Web Streams foi expandido em [[09 - Web Streams - interop com padrão universal]] no galho [[03-Dominios/Node/Streams/index]].
 
 ### Stream patterns
 
-**Transform stream — line parser:**
-
-```typescript
-import { Transform } from 'node:stream';
-
-class LineParser extends Transform {
-    private buffer = '';
-
-    _transform(chunk: Buffer, encoding: string, callback: Function) {
-        this.buffer += chunk.toString();
-        const lines = this.buffer.split('\n');
-        this.buffer = lines.pop() || '';  // última linha pode estar incompleta
-        for (const line of lines) {
-            this.push(line);
-        }
-        callback();
-    }
-
-    _flush(callback: Function) {
-        if (this.buffer) this.push(this.buffer);
-        callback();
-    }
-}
-
-await pipeline(
-    createReadStream('big.csv'),
-    new LineParser(),
-    new Transform({
-        objectMode: true,
-        transform(line, enc, cb) {
-            const parsed = parseCSV(line);
-            cb(null, JSON.stringify(parsed) + '\n');
-        }
-    }),
-    createWriteStream('out.jsonl')
-);
-```
-
-**Async iteration de streams:**
-
-```typescript
-// Modern — for await of
-async function processLines(path: string) {
-    const stream = createReadStream(path, { encoding: 'utf8' });
-    let buffer = '';
-    for await (const chunk of stream) {
-        buffer += chunk;
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-            await processLine(line);  // processa sequencialmente
-        }
-    }
-}
-```
+> [!nota] Migrado para galho próprio
+> Padrões práticos (line parser, CSV → JSONL, fetch streaming, multipart, tee) foram expandidos em [[10 - Padrões práticos]] no galho [[03-Dominios/Node/Streams/index]]. Decision tree e armadilhas em [[12 - Armadilhas, regras práticas, cheatsheet]].
 
 ### npm e Package Management
 
-- **package.json:** dependências, scripts, metadata
-- **package-lock.json:** lock de versões exatas (comitar no git!)
-- **Semantic versioning:** `^1.2.3` = compatível com 1.x.x, `~1.2.3` = compatível com 1.2.x
-- **npm vs yarn vs pnpm vs bun:** em 2026, **pnpm é o mais eficiente** (hard links), **bun** tem instalação mais rápida, **npm** é o padrão default
+> [!nota] Migrado para galho próprio
+> Package managers, semver e ecossistema npm foram expandidos em [[03-Dominios/Node/Tooling e ecossistema moderno/index]] (galho 7). Veja em particular [[01 - Package managers - npm, pnpm, yarn e bun]] (comparativo dos 4 gerenciadores: npm v10, pnpm v9, yarn v4 Berry, bun v1.1+) e [[02 - Semver e gerenciamento de dependências]] (versionamento semântico, lockfiles e estratégias de atualização automatizada com Renovate/Dependabot).
 
 ### Node moderno — features que você deveria usar
 
-**TypeScript nativo (Node 22.18+):**
-
-```bash
-node --experimental-strip-types app.ts
-# Node 24+ estável
-```
-
-Sem precisar de `tsx`, `ts-node`, `swc-node`. Type stripping — remove tipos, roda JS puro.
-
-**Built-in test runner:**
-
-```typescript
-// test.ts
-import { test, describe } from 'node:test';
-import assert from 'node:assert/strict';
-
-describe('math', () => {
-    test('add', () => {
-        assert.equal(2 + 2, 4);
-    });
-
-    test('divide', (t) => {
-        t.skip('wip');
-    });
-});
-```
-
-```bash
-node --test
-node --test --watch
-node --test-reporter=spec
-```
-
-Competitivo com Vitest para projetos simples. Para Testing Library, ainda use Vitest/Jest. Ver [[Testes em JavaScript]].
-
-**Watch mode nativo:**
-
-```bash
-node --watch app.js
-# substitui nodemon
-```
-
-**Env file loading:**
-
-```bash
-node --env-file=.env app.js
-# carrega .env automaticamente, sem dotenv
-```
-
-**`--import` para pré-carregamento:**
-
-```bash
-node --import ./register-hooks.mjs app.mjs
-```
-
-**Sea (Single Executable Apps):**
-
-```bash
-node --experimental-sea-config sea-config.json
-# compila seu app em um único binário standalone
-```
-
-**`fs/promises`, `stream/promises`, `timers/promises`:** versões Promise-based dos módulos core.
-
-```typescript
-import { readFile } from 'node:fs/promises';
-import { setTimeout } from 'node:timers/promises';
-
-const data = await readFile('file.txt', 'utf8');
-await setTimeout(1000);  // delay
-```
+> [!nota] Migrado para galho próprio
+> As features modernas do Node foram expandidas em [[03-Dominios/Node/Tooling e ecossistema moderno/index]] (galho 7). Veja em particular [[04 - TypeScript nativo - strip types e integração]] (`--experimental-strip-types` no Node 22.18+), [[05 - Built-in test runner - node-test]] (`node:test` com mock e watch), [[06 - DX flags modernos - watch, env-file e import]] (`--watch`, `--env-file`), [[07 - Single Executable Apps (SEA)]] e [[08 - Promise-based core APIs]] (`fs/promises`, `timers/promises`, `stream/promises`).
 
 ## Quando usar
 
@@ -494,7 +112,7 @@ await setTimeout(1000);  // delay
 
 ## Armadilhas comuns
 
-- **Blocking the event loop:** operações CPU-intensive na thread principal (crypto sync, JSON.parse de payloads enormes). Usar Worker Threads.
+- **Blocking the event loop:** Sintomas, causas e diagnóstico em [[10 - Bloqueio do event loop - sintomas e causas]] e [[11 - Diagnóstico do event loop]] (galho [[03-Dominios/Node/Runtime e Event Loop/index]]).
 - **Unhandled promise rejections:** promises sem `.catch()` ou try/catch em async. Configurar `process.on('unhandledRejection')`.
 - **Callback hell:** aninhar callbacks. Usar async/await.
 - **Memory leaks:** event listeners não removidos, closures que retêm referências grandes, caches sem TTL.
@@ -564,56 +182,8 @@ Problemas recorrentes em aplicações Node.js — equivalentes aos problemas de 
 
 ### Connection pool exausto
 
-**Sintoma:** requests travam, timeout no banco de dados.
-
-**Com knex/pg-pool:**
-
-```typescript
-// knexfile.ts
-export default {
-  pool: {
-    min: 2,
-    max: 10,
-    acquireTimeoutMillis: 30000,  // timeout para adquirir conexão
-    idleTimeoutMillis: 10000,     // liberar idle connections
-  },
-  // Detectar leaks (dev)
-  afterCreate: (conn, done) => {
-    console.log('Connection created');
-    done(null, conn);
-  }
-};
-```
-
-**Com Prisma:**
-
-```typescript
-// schema.prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // connection_limit é via URL: ?connection_limit=10&pool_timeout=30
-}
-```
-
-**Causa comum em Node:** não fechar transações. Diferente de Java (que tem `@Transactional`), em Node você gerencia manualmente:
-
-```typescript
-// RUIM — conexão nunca devolvida se der erro
-const trx = await knex.transaction();
-await trx('patients').insert(data);
-// se der throw aqui, trx nunca fecha
-
-// BOM — try/catch com rollback
-const trx = await knex.transaction();
-try {
-  await trx('patients').insert(data);
-  await trx.commit();
-} catch (err) {
-  await trx.rollback();
-  throw err;
-}
-```
+> [!nota] Migrado para galho próprio
+> Configuração, diagnóstico e anti-padrões de connection pool foram expandidos em [[03-Dominios/Node/Observability e produção/index]]: [[11 - Connection pool tuning]].
 
 ### N+1 queries
 
@@ -656,102 +226,23 @@ const doctors = await prisma.doctor.findMany({
 
 ### Event loop blocking
 
-**Sintoma:** latência de todas as requests sobe; o servidor "trava" por instantes.
-
-**Causa:** operação CPU-intensive na thread principal (JSON.parse de payload grande, crypto sync, regex complexa).
-
-**Diagnóstico:**
-
-```typescript
-// Detectar event loop lag
-import { monitorEventLoopDelay } from 'perf_hooks';
-
-const h = monitorEventLoopDelay({ resolution: 50 });
-h.enable();
-
-// Exportar para métricas
-setInterval(() => {
-  console.log(`Event loop p99: ${h.percentile(99) / 1e6}ms`);
-  h.reset();
-}, 10000);
-```
-
-**Soluções:**
-- `Worker Threads` para CPU-bound tasks
-- `child_process.fork()` para processos isolados
-- Cluster mode (`pm2`, `node cluster`) para usar múltiplos cores
-- Streaming para processar dados grandes em chunks
+> [!nota] Migrado para galho próprio
+> Sintomas, causas e ferramentas de diagnóstico foram expandidos em [[03-Dominios/Node/Runtime e Event Loop/index]]: [[10 - Bloqueio do event loop - sintomas e causas]] e [[11 - Diagnóstico do event loop]].
 
 ### Memory leak
 
-**Diagnóstico:**
-
-```bash
-# Iniciar com inspector
-node --inspect app.js
-
-# Chrome DevTools → chrome://inspect → Heap Snapshot
-# Comparar 2 snapshots separados por tempo → objetos que só crescem
-
-# Ou via CLI
-node --expose-gc -e "global.gc(); console.log(process.memoryUsage())"
-```
-
-**Causas comuns:**
-- Event listeners não removidos (`emitter.on` sem `emitter.off`)
-- Closures que capturam objetos grandes
-- Cache em memória sem TTL (`Map` que só cresce)
-- Timers não limpos (`setInterval` sem `clearInterval`)
-
-```typescript
-// RUIM — leak clássico
-const cache = new Map();  // cresce para sempre
-
-// BOM — com TTL
-import { LRUCache } from 'lru-cache';
-const cache = new LRUCache({ max: 1000, ttl: 1000 * 60 * 5 }); // 5 min
-```
+> [!nota] Migrado para galho próprio
+> Diagnóstico, causas comuns e técnicas de detecção foram expandidos em [[03-Dominios/Node/Observability e produção/index]]: [[08 - Detecção e diagnóstico de memory leaks]].
 
 ### Graceful shutdown
 
-```typescript
-// Express
-const server = app.listen(3000);
-
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, draining...');
-  server.close(() => {  // para de aceitar novas, espera em andamento
-    // fechar conexões de banco, Redis, etc.
-    prisma.$disconnect();
-    process.exit(0);
-  });
-
-  // força saída após timeout
-  setTimeout(() => process.exit(1), 30000);
-});
-
-// NestJS — built-in
-app.enableShutdownHooks();  // dispara onModuleDestroy nos providers
-```
+> [!nota] Migrado para galho próprio
+> Padrão completo para Express e NestJS, com tratamento de conexões e timeout de força, foi expandido em [[03-Dominios/Node/Observability e produção/index]]: [[09 - Graceful shutdown profundo]].
 
 ### Circuit breaker
 
-```typescript
-// Com opossum
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(callExternalService, {
-  timeout: 3000,           // timeout de 3s
-  errorThresholdPercentage: 50,  // abre após 50% de falhas
-  resetTimeout: 30000,     // tenta half-open após 30s
-});
-
-breaker.fallback(() => ({ cached: true, data: getCachedData() }));
-
-breaker.on('open', () => metrics.increment('circuit.open'));
-
-const result = await breaker.fire(requestData);
-```
+> [!nota] Migrado para galho próprio
+> Implementação com opossum, estados (closed/open/half-open) e padrões de fallback foram expandidos em [[03-Dominios/Node/Observability e produção/index]]: [[10 - Circuit breaker e fallback com opossum]].
 
 → Para comparação cross-stack: [[System Design]] (seção Problemas comuns em produção)
 
@@ -766,6 +257,15 @@ const result = await breaker.fire(requestData);
 
 ## Veja também
 
+- [[03-Dominios/Node/Runtime e Event Loop/index]] — galho 1 da trilha Node Senior; deep dive do motor (single-thread, libuv, fases, microtasks, async/await, bloqueio, diagnóstico)
+- [[03-Dominios/Node/Paralelismo/index]] — galho 2 da trilha Node Senior; as 3 ferramentas de paralelismo (Worker Threads, Cluster, child_process), SharedArrayBuffer/Atomics, pool de workers, decision tree
+- [[03-Dominios/Node/Streams/index]] — galho 3 da trilha Node Senior; abstração fundamental para processar dados em chunks (4 tipos, backpressure, pipeline, async iter, Web Streams, padrões práticos)
+- [[03-Dominios/Node/Frameworks e arquitetura/index]] — galho 4 da trilha Node Senior; os 4 frameworks principais (Express, NestJS, Fastify, Hono), patterns transversais e arquitetura
+- [[03-Dominios/Node/Observability e produção/index]] — galho 5 da trilha Node Senior; logs, métricas, traces, profiling, SLOs, dashboards, alertas e checklists de produção
+- [[03-Dominios/Node/ORMs e banco de dados/index]] — galho 6 da trilha Node Senior; os 4 ORMs principais (Sequelize, Prisma, TypeORM, Drizzle), N+1, migrations, transações, decision tree
+- [[03-Dominios/Node/Tooling e ecossistema moderno/index]] — galho 7 da trilha Node Senior; package managers (npm, pnpm, yarn, Bun), semver, ESM vs CJS, TypeScript nativo, test runner nativo, DX flags, SEA e Bun como runtime
+- [[03-Dominios/Node/Segurança/index|Segurança]] — galho 8 da trilha Node Senior; supply chain, segredos, validação, JWT, OAuth 2.0, RBAC, rate limiting, Helmet.js e OWASP Top 10
+- [[03-Dominios/Node/Integrações/index]] — galho 9 da trilha Node Senior; PostgreSQL, Redis, BullMQ, Kafka, gRPC, GraphQL, WebSockets, HTTP clients e padrões de resiliência
 - [[JavaScript Fundamentals]] — linguagem, event loop, async
 - [[TypeScript]] — tipagem em Node
 - [[Testes em JavaScript]] — Vitest, MSW, built-in test runner

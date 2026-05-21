@@ -85,7 +85,7 @@ Leia o arquivo. Se já existe um `### <Termo>` (case-insensitive, ignorando acen
 
 5c. **Compor proposta:**
 
-- **Definição**: 1 a 3 frases, no idioma do glossário, estilo conciso e direto. Não acadêmico-prolixo. Sem citações no corpo.
+- **Definição**: 1 a 3 frases, no idioma do glossário (respeitando `lang:`), estilo conciso e direto. Mantenha termos técnicos em inglês apenas quando consolidados no mercado (ex: embeddings, tokens, fine-tuning). Não acadêmico-prolixo. Sem citações no corpo.
 - **Seção sugerida**: lê todas as `## H2` do arquivo + escolhe a melhor com base no significado do termo. Se nenhuma se encaixa bem, propõe criar nova seção.
 - **Fonte consultada**: link, nome do paper, ou "conhecimento geral" — pra mostrar no relatório (não vai no corpo da definição).
 
@@ -192,7 +192,7 @@ Skill:
 Usuário: /verbete reranking ao dicionário de IA
 
 Skill:
-1. Localiza Dicionário de IA.md (lang: en)
+1. Localiza Dicionário de IA.md (lang: pt)
 2. Verifica que "reranking" não existe ainda
 3. Pesquisa (conhecimento geral suficiente)
 4. Apresenta:
@@ -201,9 +201,10 @@ Skill:
    Glossário: Dicionário de IA
    Seção sugerida: RAG and Vector Databases
    Definição proposta:
-     A second-stage scoring step in retrieval pipelines that re-orders an initial
-     candidate set using a more expensive model (typically a cross-encoder) to
-     improve the quality of the top-K results passed to the LLM.
+     Uma etapa de pontuação de segundo estágio em pipelines de recuperação que
+     reordena um conjunto inicial de candidatos usando um modelo mais caro (tipicamente
+     um cross-encoder) para melhorar a qualidade dos principais resultados (top-K)
+     passados para o LLM.
 
    Fonte consultada: conhecimento geral
 

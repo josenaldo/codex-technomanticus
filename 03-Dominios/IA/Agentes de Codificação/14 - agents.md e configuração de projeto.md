@@ -163,6 +163,7 @@ AGENTS.md              ← fonte de verdade
 - [[04 - Cursor — AI-native IDE]] — .cursorrules em detalhe
 - [[05 - Claude Code — terminal-first agent]] — CLAUDE.md em detalhe
 - [[02 - Vibe coding vs engenharia disciplinada]] — por que configuração importa
+- [[03-Dominios/IA/Claude Code/Configuração/index|Configuração — Claude Code]] — aprofundamento em CLAUDE.md, settings.json, permissions e hierarquia de configuração
 
 ## Referências
 

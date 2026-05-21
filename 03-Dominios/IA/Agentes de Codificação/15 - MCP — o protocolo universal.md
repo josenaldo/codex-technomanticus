@@ -147,6 +147,7 @@ server.resource(
 - [[05 - Claude Code — terminal-first agent]] — MCP em Claude Code
 - [[16 - O loop agentic — plan, act, observe]] — como tools MCP se encaixam no loop
 - [[11 - Comparativo — qual ferramenta para qual tarefa]] — quais ferramentas suportam MCP
+- [[03-Dominios/IA/Claude Code/Skills e MCP/index|Skills e MCP — Claude Code]] — como usar MCP servers no Claude Code e criar servers customizados
 
 ## Referências
 

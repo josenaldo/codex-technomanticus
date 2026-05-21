@@ -183,6 +183,9 @@ Filosofia (vibe vs disciplina, comprehension gate), os players (Cursor, Claude C
 
 **Quando ler:** após Trilhas 1-2. Onde a teoria vira prática diária.
 
+> [!tip] Aprofundamento
+> Quer ir além do overview comparativo? [[03-Dominios/IA/Claude Code/index|Trilha Claude Code]] cobre em profundidade: mental model, configuração, hooks, skills/MCP, workflows e automação em 6 galhos (~50 notas).
+
 #### Trilha 4 — [[Economia de Tokens]] (20 notas)
 
 > *"Cada token custa dinheiro — entenda como gastar menos sem perder qualidade."*

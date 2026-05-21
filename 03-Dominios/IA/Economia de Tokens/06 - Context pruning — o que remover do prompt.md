@@ -34,21 +34,32 @@ aliases:
 | Tool definitions                       | ✅ Se tools são necessárias       | Manter (comprimir schemas)            |
 | Arquivo inteiro (500 linhas)           | ❌ Se só 20 linhas são relevantes | **Enviar só as linhas relevantes**    |
 | Histórico de 50 turns                  | ❌ Turns antigos                  | **Sumarizar** blocos antigos          |
-| Output longo de ferramenta             | ❌ Se 90% é irrelevante           | **Truncar** para info essencial       |
+| Output longo de ferramenta             | ❌ Se 90% é irrelevante           | **Filtrar via RTK** ou truncar        |
 | Erros de compilação (full stack trace) | ❌ Stack completo                 | **Filtrar** para as linhas relevantes |
+| Instruções de projeto (CLAUDE.md)      | ⚠️ Se estiver muito grande        | **Manter enxuto**, apenas o essencial |
+| Arquivos abertos (Git uncommitted)     | ⚠️ Se forem irrelevantes          | **Commitar/Fechar** arquivos          |
 | Arquivo de lock (package-lock.json)    | ❌ Nunca relevante                | **Excluir** via .cursorignore         |
-| node_modules/                          | ❌ Nunca relevante                | **Excluir** via .gitignore            |
 
 ### Técnicas de pruning
 
 #### 1. Retrieval seletivo (em vez de arquivo inteiro)
 
 ```
-❌ Ruim: "Aqui está todo o auth.service.ts (500 linhas)"
+❌ Ruim: "Aqui está todo o auth.service.ts (500 lines)"
 ✅ Bom:  "Aqui estão as linhas 45-78 de auth.service.ts (função validateToken)"
 ```
+Use `read_file` com `offset` e `limit` sempre que possível.
 
-#### 2. Sumarização de histórico
+#### 2. Filtragem Dinâmica com RTK
+O **RTK** (Runtime Tool Kit) permite interceptar comandos como `git status`, `git log` ou `grep` e filtrar sua saída antes que ela chegue ao LLM.
+*   `git status` (cru) → pode listar 50 arquivos irrelevantes.
+*   `rtk git status` → lista apenas os arquivos que importam para o contexto atual.
+
+#### 3. Higiene de Projeto e Git
+*   **CLAUDE.md:** Instruções de projeto são enviadas em cada turno. Se o seu `CLAUDE.md` tem 500 linhas de histórico do projeto, você está perdendo tokens. Mantenha-o focado em *regras de engenharia*.
+*   **Commits frequentes:** Agentes costumam "olhar" para o `git status` e arquivos modificados. Se você tem 20 arquivos alterados mas está trabalhando em apenas 1, o agente pode acabar lendo contexto desnecessário. Commite ou faça stash do que não é relevante para a tarefa atual.
+
+#### 4. Sumarização de histórico
 
 ```
 ❌ Ruim: Reenviar 40 turns completos (200k tokens)

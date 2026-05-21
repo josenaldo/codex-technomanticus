@@ -259,7 +259,7 @@ async def rag_query(question: str, user_id: str, filters: dict = None):
 
 ## Quando subir para padrões avançados
 
-Sinais que indicam mudança ([[11 - Padrões avançados]]):
+Sinais que indicam mudança ([[11 - Padrões avançados — Graph RAG, Agentic RAG, multi-hop|11 - Padrões avançados]]):
 
 - Multi-hop queries falhando consistentemente → Multi-hop ou Agentic
 - Domínio com entidades fortes → Graph RAG

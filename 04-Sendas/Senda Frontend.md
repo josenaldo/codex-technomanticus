@@ -23,7 +23,7 @@ tags:
 ## Sequência
 
 1. [[03-Dominios/Frontend/index|Frontend (engenharia)]]
-2. [[JavaScript|JavaScript]]
+2. [[03-Dominios/JavaScript/index|JavaScript]]
 3. [[03-Dominios/TypeScript/index|TypeScript]]
 4. [[03-Dominios/React/index|React]]
 5. [[MUI|Material UI (MUI)]]

@@ -1,9 +1,9 @@
 ---
-title: "Anatomia do gasto — input, output e reasoning"
+title: Anatomia do gasto — input, output e reasoning
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-05-08
 type: concept
-status: seedling
+status: evergreen
 publish: true
 tags:
   - economia-tokens
@@ -13,113 +13,98 @@ aliases:
   - Input vs output tokens
   - Reasoning tokens cost
   - Token breakdown
+progresso: feito
 ---
 
 # Anatomia do gasto — input, output e reasoning
 
 > [!abstract] TL;DR
-> O custo de uma chamada de LLM se decompõe em três categorias: input tokens (prompt, histórico, tools — mais baratos), output tokens (resposta gerada — 3-6x mais caros), e reasoning tokens (pensamento interno em modelos de reasoning — cobrados como output mas invisíveis). Para controlar custos, é preciso monitorar cada categoria separadamente. A maioria dos desperdícios está em input inflado (contexto desnecessário) e output desnecessariamente verboso.
+> Uma chamada de LLM tem três faturas distintas: **input** (processado no prefill, parcialmente cacheável), **output** (gerado token a token, 3–10× mais caro) e **reasoning** (tokens invisíveis cobrados como output). A maior alavanca de custo raramente está onde o desenvolvedor procura primeiro.
 
-## O que é
+Cada categoria tem preço, comportamento de cache e armadilha próprios. Ignorar essa anatomia é o caminho mais curto para otimizar o lugar errado — comprimir o prompt quando o problema real está no reasoning, ou tentar reduzir output quando 94% do input já está sendo servido do cache por 10% do preço.
 
-Cada chamada de API retorna metadados de uso que decompõem o consumo:
+## As Três Dimensões do Custo
+
+### 1. Input Tokens: O "Prefill"
+Input é cobrado pelo processamento inicial de todos os tokens enviados. Em 2026, o custo de input é altamente dependente da **[[Dicionário de IA#Prompt caching|estratégia de caching]]**.
+
+- **Static Input (Cache Hit):** Instruções de sistema, schemas de tools e documentação de referência. Custam ~10% do preço base se estiverem no início do prompt.
+- **Dynamic Input (Cache Miss):** Histórico de conversa recente e arquivos recém-modificados. Custam 100% do preço e "esquentam" o cache para a próxima chamada.
+- **A Ordem Importa:** O cache de prefixo funciona em cascata. Qualquer mudança no meio do prompt invalida todos os tokens que vêm *depois* dele no cache.
+
+### 2. Output Tokens: O "Decode"
+Output é o custo de geração token-a-token. É a parte mais cara (3-10x o input) porque exige passagens sequenciais pela GPU e consome banda de memória ([[Dicionário de IA#memory bandwidth bottleneck|memory bandwidth bottleneck]]).
+
+- **Texto Visível:** A resposta final que o usuário lê.
+- **Tool Calls:** Estruturas JSON invisíveis para o usuário mas processadas como output.
+
+### 3. Reasoning Tokens: O "Pensamento Invisível"
+Introduzidos em modelos como o1, o3, o4 e Claude 4 "Thinking", são tokens gerados internamente para [[Dicionário de IA#Chain-of-Thought (CoT)|Chain-of-Thought (CoT)]], auto-correção e planejamento.
+
+- **Faturamento:** Quase todos os provedores cobram [[Dicionário de IA#Reasoning tokens|reasoning tokens]] pelo **preço de output**, mesmo que eles não apareçam na resposta final.
+- **Amplificação:** Um modelo pode gerar 50k reasoning tokens para produzir uma resposta de 200 tokens. Sem um [[Dicionário de IA#Thinking budget|`thinking_budget`]] configurado, uma tarefa simples pode custar $2.00 em vez de $0.02.
+- **Dedução de Limites:** Reasoning tokens contam para o seu `max_completion_tokens`. Se o modelo "pensar" demais, ele pode ficar sem espaço para a resposta final (o erro de "Thinking limit reached").
+- **Risco em Agentes:** Em fluxos multi-turno, reasoning ocorre em *cada* iteração do loop. Com 10 turnos e 50k tokens de reasoning por turno, o custo de reasoning sozinho pode ultrapassar 500k tokens — mais do que o contexto inteiro de um modelo de geração anterior.
+
+---
+
+## Métricas de Eficiência (2026 Standard)
+
+Para uma engenharia de custos madura, não basta olhar o total. Use estas métricas:
+
+| Métrica                         | Fórmula                                     | Meta (Target)              |
+| :------------------------------ | :------------------------------------------ | :------------------------- |
+| **Cache Hit Ratio (CHR)**       | `cache_read_tokens / total_input_tokens`    | > 85%                      |
+| **Signal-to-Noise Ratio (SNR)** | `final_output / (reasoning + tool_calls)`   | > 0.2 (Depende da tarefa)  |
+| **Token-to-Action (TTA)**       | `total_tokens / número_de_tasks_concluídas` | Diminuir ao longo do tempo |
+| **Reasoning Overhead**          | `reasoning_tokens / final_output_tokens`    | < 10x para tarefas simples |
+
+---
+
+## Anatomia de uma Chamada Moderna (Exemplo)
 
 ```json
 {
   "usage": {
-    "input_tokens": 45000,
-    "output_tokens": 3200,
-    "cache_read_input_tokens": 30000,
-    "cache_creation_input_tokens": 0
+    "prompt_tokens": 125000,           // Total de input
+    "prompt_cache_hit_tokens": 118000, // 94% de economia no input!
+    "completion_tokens": 15000,        // Total gerado
+    "completion_tokens_details": {
+       "reasoning_tokens": 14200,      // O modelo pensou MUITO
+       "accepted_prediction_tokens": 0 // Speculative decoding (se usado)
+    }
   }
 }
 ```
 
-Em modelos de reasoning (o4, Claude Thinking):
+Neste cenário:
+- O **Input** foi quase grátis devido ao cache.
+- O **Custo Real** foi dominado pelo **Reasoning**.
+- **Ação:** Otimizar o sistema de "Thinking" (ex: reduzir `/effort`) traria mais ROI do que diminuir o prompt.
 
-```json
-{
-  "usage": {
-    "input_tokens": 12000,
-    "output_tokens": 2000,
-    "reasoning_tokens": 18000
-  }
-}
-```
+---
 
-## Como funciona
-
-### O que conta como input tokens
-
-| Componente                              | Tokens típicos | Cacheable?       |
-| --------------------------------------- | -------------- | ---------------- |
-| System prompt                           | 500-3000       | ✅ Sim            |
-| CLAUDE.md / .cursorrules                | 500-2000       | ✅ Sim            |
-| Tool definitions (schemas)              | 1000-5000      | ✅ Sim            |
-| Histórico de conversa                   | 5000-200000+   | ⚠️ Parcial        |
-| Arquivos inseridos                      | 1000-50000     | ⚠️ Parcial        |
-| Tool results (respostas de ferramentas) | 500-10000/tool | ❌ Geralmente não |
-
-### O que conta como output tokens
-
-| Componente           | Tokens típicos | Controlável?                  |
-| -------------------- | -------------- | ----------------------------- |
-| Resposta de texto    | 500-5000       | ✅ Via max_tokens e instruções |
-| Tool calls (JSON)    | 100-500/call   | ⚠️ Parcial                     |
-| Reasoning/thinking   | 1000-100000    | ✅ Via thinking budget         |
-| Explicações verbosas | 500-3000       | ✅ Via instruções concisas     |
-
-### Mapa de custos por componente
+## Estrutura de Gasto em Agentes (Ciclo de Vida)
 
 ```mermaid
-pie title "Distribuição típica de custo em sessão agentic"
-    "Contexto acumulado (input)" : 35
-    "Tool definitions (input)" : 10
-    "Arquivos/código (input)" : 15
-    "Output do modelo" : 25
-    "Reasoning tokens" : 10
-    "Retries/erros" : 5
+graph TD
+    A[System Prompt + Tools] -->|Cache Hit| B(90% Desconto)
+    C[Arquivos + Histórico Antigo] -->|Cache Hit| B
+    D[Nova Mensagem + Histórico Recente] -->|Cache Miss| E(100% Custo)
+    F[Reasoning/CoT] -->|Generated| G(300% Custo)
+    H[Resposta Final] -->|Generated| G
 ```
 
-### Exemplo real: decomposição de uma sessão
+## Armadilhas Técnicas
 
-Claude Sonnet 4.6, sessão de 30 turns para implementar uma feature:
-
-| Turn      | Input                            | Output | Custo acumulado   |
-| --------- | -------------------------------- | ------ | ----------------- |
-| 1         | 5k (system + tools + task)       | 2k     | $0.045            |
-| 5         | 25k (+ histórico + tool results) | 3k     | $0.12             |
-| 10        | 60k                              | 4k     | $0.24             |
-| 20        | 140k                             | 5k     | $0.50             |
-| 30        | 200k+                            | 6k     | $0.69 (esta turn) |
-| **Total** | —                                | —      | **~$6.50**        |
-
-Note que o turn 30 custa 15x mais que o turn 1 — mesmo que a tarefa seja simples — porque o contexto acumulado infla o input.
-
-### Fórmula de custo
-
-```
-Custo_total = Σ(turn_n):
-  (input_tokens_n × preço_input / 1M)
-  + (output_tokens_n × preço_output / 1M)
-  + (reasoning_tokens_n × preço_output / 1M)
-  - (cache_read_tokens_n × desconto_cache × preço_input / 1M)
-```
-
-## Armadilhas
-
-- **Ignorar reasoning tokens** — em modelos o4/Claude Thinking, os reasoning tokens podem ser 5-50x o output visível. Se você monitora só `output_tokens`, perde a maior parte do custo.
-- **"Input é barato, não preciso otimizar"** — $3/MTok × 200k tokens = $0.60 por chamada. Em 100 chamadas/dia = $60/dia só de input.
-- **Não decompor o gasto** — sem saber QUAL componente do input está consumindo mais, otimização é às cegas.
-- **Confundir cache read com economia** — cache_read_input_tokens custam ~10% do preço normal. Se o cache miss rate é alto, a economia é menor que esperado.
+1. **A Maldição do Histórico:** Em sessões longas, o custo de *prefill* (input) do histórico cresce de forma quadrática se não for compactado. O cache mitiga o preço, mas não a latência.
+2. **Context Density vs Retrieval:** Encher o contexto de arquivos "só por garantia" degrada o SNR. O modelo gera mais tokens de reasoning tentando separar o sinal do ruído.
+3. **[[Dicionário de IA#Speculative decoding|Speculative Decoding]]:** Alguns provedores usam modelos menores para prever tokens comuns (como `if`, `else`). Isso acelera a resposta, mas nem sempre reduz o custo (verifique a política do provedor).
+4. **Tool Definition Inflation:** Schemas JSON verbosos são "veneno" de contexto. Cada campo desnecessário é cobrado em cada turno da conversa.
 
 ## Veja também
 
-- [[01 - O problema — por que tokens custam dinheiro]] — contexto geral
-- [[04 - Monitoramento — ccusage, Langfuse, dashboards]] — como medir cada componente
-- [[06 - Context pruning — o que remover do prompt]] — como reduzir input
+- [[05 - Prompt caching na prática]] — detalhamento técnico do prefill caching
+- [[13 - Respostas concisas — controlar output tokens]] — estratégias para SNR alto
+- [[14 - Thinking budget — controlar reasoning tokens]] — como domar o custo de CoT
 
-## Referências
-
-- **Anthropic** — *Usage API Documentation* (2026). Campos de resposta.
-- **OpenAI** — *Token Usage Guide* (2026). Decomposição de uso.

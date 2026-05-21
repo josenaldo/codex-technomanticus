@@ -31,15 +31,20 @@ aliases:
 
 - [ ] **Prompt caching:** mover conteúdo estático para início do prompt + `cache_control`
 - [ ] **Context pruning:** configurar .cursorignore, excluir node_modules/dist/coverage
+- [ ] **Higiene de sessão:** usar `/clear` ao trocar de tarefa e `/compact` proativo quando o contexto passar de ~100k
+- [ ] **Interface de economia:** instalar **Serena** (redução agressiva) e usar `/statusline` para monitorar uso em tempo real
 - [ ] **Respostas concisas:** adicionar instruções de concisão no system prompt
 - [ ] **Modelo correto:** usar budget model para autocomplete, mid-tier para coding
 
 ### Fase 2: Otimizações estruturais
 
-- [ ] **Compactação de histórico:** ativar/configurar context compaction
+- [ ] **Compactação de histórico:** ativar/configurar context compaction automática
+- [ ] **Filtragem de output:** usar **RTK** (Ex: `rtk git status`) para filtrar saídas verbosas de ferramentas
+- [ ] **Sub-agentes eficientes:** delegar para sub-agente `Explore` (read-only) em buscas e `general-purpose` apenas para escrita/lógica
 - [ ] **Tool compression:** comprimir descriptions de tools
 - [ ] **Thinking budget:** limitar thinking tokens por tipo de tarefa
-- [ ] **Retrieval seletivo:** enviar trechos de arquivo, não arquivos inteiros
+- [ ] **Retrieval seletivo:** enviar trechos de arquivo (usando offset/limit), não arquivos inteiros
+- [ ] **Higiene de projeto:** manter `CLAUDE.md` enxuto e evitar deixar muitos arquivos abertos/sem commit no Git
 
 ### Fase 3: Ajuste fino
 
@@ -53,6 +58,7 @@ aliases:
 - [ ] Revisar dashboard semanalmente
 - [ ] Ajustar budget trimestralmente
 - [ ] Atualizar tabela de preços quando providers mudam pricing
+- [ ] Aplicar [[21 - Hacks de trincheira — Claude, Gemini e Copilot em 2026|hacks específicos do motor]] em uso
 - [ ] Treinar time em práticas de economia
 
 ## Impacto acumulado estimado

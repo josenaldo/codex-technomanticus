@@ -154,7 +154,7 @@ Detalhes em [[09 - Evaluation de RAG]].
 
 > [!tip] Devolver "não sei" é feature, não falha
 > RAG-bom é melhor que RAG-tudo-respondendo. Condições para "não sei":
-> - Reranker top-1 score <0.6 ([[07 - Reranking]])
+> - Reranker top-1 score <0.6 ([[07 - Reranking — Cohere, Voyage, cross-encoders|07 - Reranking]])
 > - Contexto não cobre a pergunta semanticamente
 > - Pergunta fora do escopo do dataset
 
