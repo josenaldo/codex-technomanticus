@@ -21,7 +21,7 @@ aliases:
 # Layouts declarativos em KDL
 
 > [!abstract] TL;DR
-> Layouts Zellij são arquivos KDL que descrevem tabs/panes/splits/cwd/comando. KDL é uma linguagem declarativa: nó { propriedade=valor; child }. `default_layout = "<nome>"` no config aplica auto; `zellij --layout <nome>` aplica ad-hoc. Layouts vivem em `~/.config/zellij/layouts/<nome>.kdl`. Versioná-los nos dotfiles = setup repetível.
+> Layouts Zellij são arquivos KDL que descrevem tabs/panes/splits/cwd/comando. KDL é uma linguagem declarativa: nó propriedade=valor { child }. `default_layout "<nome>"` no config aplica auto; `zellij --layout <nome>` aplica ad-hoc. Layouts vivem em `~/.config/zellij/layouts/<nome>.kdl`. Versioná-los nos dotfiles = setup repetível.
 
 ---
 
@@ -57,7 +57,7 @@ pane cwd="~/repos/myproj"
 Destaques de sintaxe:
 - Sem aspas obrigatórias em valores simples (`size=10`, `borderless=true`).
 - Comentários de linha (`//`) e bloco (`/* */`) são nativos — ausentes em JSON.
-- Booleans em KDL puro usam `#true`/`#false`, mas o Zellij aceita `true`/`false` sem `#`.
+- Booleans são `true`/`false` (KDL v1, que o Zellij usa). KDL v2 introduziu `#true`/`#false`, mas o Zellij ainda segue v1.
 - Sem vírgulas entre propriedades — separação por espaço.
 
 ### Estrutura de layout Zellij
@@ -297,11 +297,14 @@ Cada mudança nos layouts entra num commit nos dotfiles. Novo ambiente = clone +
 # Verificar se o arquivo existe com o nome correto
 ls ~/.config/zellij/layouts/
 
-# Validar a instalação do Zellij e o caminho das configs
+# Verificar paths de config dir, cache dir e versão do Zellij
 zellij setup --check
 ```
 
-**Solução:** confirmar que o arquivo está em `~/.config/zellij/layouts/<nome>.kdl`; usar `default_layout "<nome>"` (sem `.kdl`) no config; abrir o arquivo e validar a sintaxe KDL manualmente (indentação, chaves balanceadas, aspas fechadas).
+> [!warning] `zellij setup --check` não valida sintaxe KDL
+> O comando verifica apenas paths de config dir, cache dir e versão instalada — não parseia layouts. Para validar a sintaxe do arquivo KDL, abra-o num editor com syntax highlighting (LSP de KDL, se disponível, ou highlight básico no Vim/VS Code) e/ou rode `zellij --layout <nome>` e observe o erro no stderr.
+
+**Solução:** confirmar que o arquivo está em `~/.config/zellij/layouts/<nome>.kdl`; usar `default_layout "<nome>"` (sem `.kdl`) no config; abrir o arquivo KDL num editor com syntax highlighting (LSP de KDL, se disponível, ou highlight básico no Vim/VS Code) e/ou rodar `zellij --layout <nome>` e observar o erro no stderr.
 
 ---
 

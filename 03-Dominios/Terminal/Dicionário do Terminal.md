@@ -418,7 +418,7 @@ Pane que aparece sobreposto ao grid de outros panes, sem ocupar espaço deles. P
 Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
 
 ### KDL
-Cuddly Document Language — linguagem de configuração declarativa com sintaxe humana (sem aspas obrigatórias na maioria das chaves, comentários nativos, suporte a tipos básicos e children). Usada pela config e pelos layouts do Zellij.
+KDL Document Language — linguagem de configuração declarativa com sintaxe humana (sem aspas obrigatórias na maioria das chaves, comentários nativos, suporte a tipos básicos e children). Usada pela config e pelos layouts do Zellij.
 
 Veja também: [[05 - Layouts declarativos em KDL]].
 
