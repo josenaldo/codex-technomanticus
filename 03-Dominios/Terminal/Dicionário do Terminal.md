@@ -296,7 +296,7 @@ Array com diretórios onde Zsh procura funções autoload — incluindo funçõe
 Veja também: [[08 - Completion system (compsys)]].
 
 ### Glob qualifier
-Sufixo entre parênteses pós-fixado a um glob, filtra por atributo do arquivo. Exemplos: `(.)` (regular files), `(/)` (dirs), `(N)` (null glob), `(L+N)` (size > N), `(mh-N)` (modificado em N horas), `(om[1,5])` (ordenar por mtime, 5 mais recentes). Requer `EXTENDED_GLOB`.
+Sufixo entre parênteses pós-fixado a um glob, filtra por atributo do arquivo. Exemplos: `(.)` (regular files), `(/)` (dirs), `(N)` (null glob), `(L+N)` (size > N), `(mh-N)` (modificado em N horas), `(om[1,5])` (ordenar por mtime, 5 mais recentes). Feature nativa do globbing — não requer `EXTENDED_GLOB` (que cobre apenas `^`, `~`, `#`, `##`, alternation).
 
 Veja também: [[09 - Globbing avançado e parameter expansion]].
 

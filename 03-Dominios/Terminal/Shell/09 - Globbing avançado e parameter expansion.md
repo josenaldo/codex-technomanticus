@@ -51,7 +51,7 @@ Requer `setopt EXTENDED_GLOB`. Não é ativado por default em Zsh vanilla (nem p
 
 ### Glob qualifiers `(...)`
 
-Pós-fixados ao padrão; filtram por atributo do arquivo. Requer `EXTENDED_GLOB`.
+Pós-fixados ao padrão; filtram por atributo do arquivo. **Não** requerem `EXTENDED_GLOB` — são feature nativa do globbing do Zsh.
 
 | Qualifier | Match |
 |---|---|
@@ -188,7 +188,7 @@ echo ${(j:,:)items}         # alpha,beta,gamma
 
 ### 1. `EXTENDED_GLOB` esquecido
 
-**Causa:** `EXTENDED_GLOB` não é ativado por default em Zsh vanilla. OMZ não o liga automaticamente. Qualquer padrão com `^`, `~` ou qualifiers requer a opção ativa.
+**Causa:** `EXTENDED_GLOB` não é ativado por default em Zsh vanilla. OMZ não o liga automaticamente. Qualquer padrão com `^`, `~`, `#`, `##` ou alternation `(p1|p2)` requer a opção ativa. Glob qualifiers `(...)` NÃO precisam — funcionam vanilla.
 
 **Sintoma:** `zsh: bad pattern: ^*.bak` ou erro similar ao tentar usar negação ou qualifiers.
 
