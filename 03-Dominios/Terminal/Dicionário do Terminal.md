@@ -265,6 +265,21 @@ Comando implementado diretamente pelo shell (não é binário externo no `$PATH`
 
 Veja também: [[01 - Zsh vs Bash]], [[02 - Zsh essencial]].
 
+### Compdef
+Builtin do Zsh (`compdef <function> <command>`) que registra uma função de completion para um comando. Exemplo: `compdef _git mygit` faz `mygit` completar com a lógica de `_git`. Útil pra binários sem completion própria ou aliases.
+
+Veja também: [[08 - Completion system (compsys)]].
+
+### Compinit
+Builtin do Zsh que inicializa o completion system. Lê `fpath`, indexa funções `_<comando>`, gera `~/.zcompdump` (cache compilado). Setup canônico: `autoload -Uz compinit && compinit`. Variações: `-i` (ignora arquivos inseguros), `-C` (pula security check, mais rápido).
+
+Veja também: [[08 - Completion system (compsys)]].
+
+### Compsys
+Sistema de completion programável do Zsh. Cada comando pode ter função `_<comando>` no `fpath` que define como completar. Inicializado por `compinit`; customizado por `zstyle`; troubleshooting com `compaudit`.
+
+Veja também: [[08 - Completion system (compsys)]].
+
 ### fc
 Builtin do Zsh ("fix command") que lista (`fc -l`) ou edita (`fc` puro abre `$EDITOR` com o último comando) entradas do history. `fc <substring>` re-executa o último comando que casa com a substring.
 
@@ -274,6 +289,11 @@ Veja também: [[03 - History do Zsh]].
 Bloco nomeado de comandos executável como se fosse comando. Sintaxe Zsh: `f() { ... }` ou `function f { ... }`. Aceita parâmetros (`$1`, `$@`), variáveis `local`, e `return <código>`. Diferente de alias: tem lógica.
 
 Veja também: [[02 - Zsh essencial]].
+
+### Fpath
+Array com diretórios onde Zsh procura funções autoload — incluindo funções de completion (`_<comando>`). OMZ adiciona `$ZSH/plugins/*/` e `$ZSH/completions/`. Ordem importa: primeiro no fpath, primeiro encontrado.
+
+Veja também: [[08 - Completion system (compsys)]].
 
 ### History
 Registro persistente de comandos digitados, gravado em `HISTFILE` (default `~/.zsh_history`). Configurado por `HISTSIZE`/`SAVEHIST` + opts (`SHARE_HISTORY`, `EXTENDED_HISTORY`, `HIST_IGNORE_ALL_DUPS`, `HIST_VERIFY`). Acessado via `history`, `Ctrl-R`, `!!`, `!$`, `fc`.
@@ -349,4 +369,9 @@ Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[03 - Histo
 Plugin (`zsh-users/zsh-syntax-highlighting`) que colore comandos enquanto você digita: verde pra comandos válidos, vermelho pra inválidos, underline pra paths existentes. Cores específicas de aliases e outros elementos variam por tema/config — o highlighter default não distingue aliases de comandos normais com cor separada. Alternativa mais rápida: `fast-syntax-highlighting`. **Regra crítica:** deve ser o último plugin no array `plugins=(...)` — senão perde highlight de comandos adicionados por plugins posteriores.
 
 Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]].
+
+### Zstyle
+Builtin do Zsh que customiza estilos de subsistemas (completion, prompts, vcs_info, etc.). Sintaxe: `zstyle '<context>' '<style>' '<value>'`. No completion: `zstyle ':completion:*' menu select` ativa menu navegável; `matcher-list 'm:{a-z}={A-Za-z}'` ativa case-insensitive.
+
+Veja também: [[08 - Completion system (compsys)]].
 
