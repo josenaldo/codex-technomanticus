@@ -365,6 +365,11 @@ Interpretador de comandos de um sistema Unix-like. Pode ser interativo (lê `.zs
 
 Veja também: [[01 - Zsh vs Bash]].
 
+### Theme (custom OMZ)
+Theme próprio de Oh-My-Zsh, arquivo `~/.oh-my-zsh/custom/themes/<nome>.zsh-theme`. Define `PROMPT` (left) e `RPROMPT` (right) usando prompt expansion (`%F{...}`, `%K{...}`, `%n`, `%~`, `%#`). Ativado com `ZSH_THEME="<nome>"` no `.zshrc`. Powerlevel10k é theme externo (não-OMZ-customizado) — vive em `~/powerlevel10k/` e é sourced direto.
+
+Veja também: [[10 - Plugins, themes e custom no OMZ]], [[05 - Powerlevel10k]].
+
 ### Transient prompt
 Recurso do Powerlevel10k que "encolhe" prompts antigos quando você executa novos comandos, liberando espaço visual. Configurado por `POWERLEVEL9K_TRANSIENT_PROMPT` (`same-dir`/`always`/`off`).
 
