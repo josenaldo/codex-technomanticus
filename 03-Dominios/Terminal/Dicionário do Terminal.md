@@ -1,7 +1,7 @@
 ---
 title: "Dicionário do Terminal"
 created: 2026-05-19
-updated: 2026-05-20
+updated: 2026-05-21
 type: glossary
 status: seedling
 aliases: []
@@ -46,9 +46,11 @@ Pilha de saltos que o Neovim mantém para cada window. Comandos como `gd`, `*`, 
 Veja também: [[03 - Edição e navegação]].
 
 ### Keymap
-Mapeamento de uma sequência de teclas pra uma ação. Em Neovim moderno: `vim.keymap.set(mode, lhs, rhs, opts)`. Opções comuns: `desc` (descrição visível em which-key), `silent`, `noremap` (default true em vim.keymap.set).
+**Em Neovim:** mapeamento de uma sequência de teclas pra uma ação. Em Neovim moderno: `vim.keymap.set(mode, lhs, rhs, opts)`. Opções comuns: `desc` (descrição visível em which-key), `silent`, `noremap` (default true em vim.keymap.set).
 
-Veja também: [[06 - Estrutura de config]], [[08 - Customizando LazyVim]].
+**Em Zsh (ZLE):** conjunto nomeado de bindings de tecla → widget. Keymaps disponíveis: `main` (alias do default), `emacs`, `viins` (vi insert), `vicmd` (vi normal), `command` (vi `:`). Selecionado por `bindkey -e` (emacs, default) ou `bindkey -v` (vi). Binding em keymap específico: `bindkey -M vicmd '<seq>' <widget>`.
+
+Veja também: [[06 - Estrutura de config]], [[06 - Keybindings práticos]].
 
 ### Leader key
 Tecla "prefixo" pra atalhos custom. Default Neovim: `\`. Em LazyVim: `<Space>`. Configurada com `vim.g.mapleader = " "` ANTES de plugins carregarem.
@@ -253,6 +255,11 @@ Atalho que expande pra outra string antes da execução. Zsh tem 3 tipos: regula
 
 Veja também: [[02 - Zsh essencial]].
 
+### Bindkey
+Builtin do Zsh que mapeia sequências de tecla a widgets do ZLE. Sintaxe: `bindkey '<seq>' <widget>` (define), `bindkey -r '<seq>'` (remove), `bindkey -M <keymap> ...` (em keymap específico). Aceita modo emacs (`bindkey -e`, default) ou vi (`bindkey -v`).
+
+Veja também: [[06 - Keybindings práticos]], [[07 - ZLE]].
+
 ### Builtin
 Comando implementado diretamente pelo shell (não é binário externo no `$PATH`). Em Zsh: `setopt`, `bindkey`, `zstyle`, `compinit`, `print`, `read`, `typeset`. Mais rápido que comando externo; semântica integrada ao shell.
 
@@ -322,6 +329,11 @@ Veja também: [[01 - Zsh vs Bash]].
 Recurso do Powerlevel10k que "encolhe" prompts antigos quando você executa novos comandos, liberando espaço visual. Configurado por `POWERLEVEL9K_TRANSIENT_PROMPT` (`same-dir`/`always`/`off`).
 
 Veja também: [[05 - Powerlevel10k]].
+
+### Widget
+Função registrada no ZLE (`zle -N <name>`) que pode ser bindada a uma sequência de tecla via `bindkey`. Widgets builtin: `self-insert`, `beginning-of-line`, `backward-kill-word`, `history-incremental-search-backward`. Custom: função Zsh + `zle -N`.
+
+Veja também: [[06 - Keybindings práticos]], [[07 - ZLE]].
 
 ### Zsh-autosuggestions
 Plugin (`zsh-users/zsh-autosuggestions`) que sugere comandos enquanto você digita, em cinza inline, baseado no history. Aceitar com `→` (right-arrow) ou `Ctrl-F`. Frequentemente usado junto com history extended + `Ctrl-R`.
