@@ -48,7 +48,7 @@ Esse galho cobre o multiplexer end-to-end: por que Zellij e quando tmux ainda ga
 
 ## Versões assumidas
 
-- **Zellij:** `<VERSAO_ZELLIJ>` (capturada no pré-flight)
+- **Zellij:** 0.44.1
 - Plugins externos: versões `master` em 2026-05-21
 
 ## Veja também
