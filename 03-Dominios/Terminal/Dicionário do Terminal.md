@@ -407,6 +407,11 @@ Pane que aparece sobreposto ao grid de outros panes, sem ocupar espaço deles. P
 
 Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
 
+### Mode (Zellij)
+Estado modal do Zellij — controla quais keybindings estão ativas. 9 modos default: normal (input vai pro shell), locked (passthrough), pane, tab, resize, scroll, search, session, move. Entrar via `Ctrl-<letra>`; sair via ESC ou repetir o atalho.
+
+Veja também: [[03 - Modos básicos e keybindings essenciais]].
+
 ### Multiplexer
 Programa que divide 1 terminal em múltiplas sessions, tabs e panes que sobrevivem a detach (desconexão do emulador). Server roda em background; cliente anexa/desanexa via `attach`/`detach`. Exemplos: Zellij, tmux, screen.
 
@@ -426,6 +431,11 @@ Veja também: [[02 - Modelo mental — sessions, tabs, panes]], [[04 - Sessões 
 Modo de empilhamento de panes onde 1 é expandido e os outros aparecem só como barra de título (minimizados). Útil pra agrupar múltiplos logs/jobs com apenas 1 em foco.
 
 Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
+
+### Status bar
+Barra de informações na borda inferior do Zellij que mostra modo ativo, tabs abertas e atalhos disponíveis. Implementada como plugin (default ativo). Pode ser substituída por plugins custom como zjstatus.
+
+Veja também: [[03 - Modos básicos e keybindings essenciais]], [[06 - Modos avançados, plugins e copy-mode]].
 
 ### Tab (Zellij)
 Agrupamento horizontal de panes dentro de uma session Zellij. Cada tab tem layout próprio. Mostra nome na barra superior. Diferente de tab do emulador (kitty/wezterm) — tabs Zellij vivem dentro da session.
