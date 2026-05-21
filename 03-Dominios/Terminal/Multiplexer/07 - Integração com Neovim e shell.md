@@ -80,7 +80,7 @@ vim-zellij-navigator é um bridge bidirecional que unifica navegação entre spl
 ```lua
 -- ~/.config/nvim/lua/plugins/vim-zellij-navigator.lua
 {
-  "hiasr/vim-zellij-navigator.nvim",
+  "hiasr/vim-zellij-navigator",
   config = function()
     require("vim-zellij-navigator").setup()
   end,
@@ -276,7 +276,13 @@ zellij action write-chars $'\n'
 ```
 
 > [!tip] Alternativa com Pipe API
-> Para scripts que precisam de comunicação mais estruturada (não apenas keystrokes), considerar o Pipe API com um plugin intermediário. O `room` (tab switcher do galho 06) já suporta `zellij action pipe --plugin room -- focus-tab <nome>`, que é mais determinístico que `write-chars`.
+> Para scripts que precisam de comunicação mais estruturada (não apenas keystrokes), considerar o Pipe API com um plugin intermediário. O `room` (tab switcher do galho 06) pode suportar comunicação via pipe — porém a sintaxe exata depende da pipe API implementada pelo plugin; verifique o README antes de usar: https://github.com/rvcas/room
+>
+> ```bash
+> # hipotético — sintaxe exata depende da pipe API do plugin room; verifique o README:
+> # https://github.com/rvcas/room
+> zellij action pipe --plugin room -- focus-tab <nome>
+> ```
 
 ---
 
@@ -287,6 +293,8 @@ zellij action write-chars $'\n'
 **Causa:** Comandos `zellij action` inferem a session atual pelo ambiente (`$ZELLIJ_SESSION_NAME`). Rodar de fora do Zellij (em terminal comum, em script de CI, em cron) falha silenciosamente ou com erro "no active session".
 
 **Sintoma:** Script roda sem erros aparentes mas nada acontece no Zellij; ou: `Error: There was a problem serializing or deserializing data to/from zellij`.
+
+**Como detectar:** Rodar `echo $ZELLIJ_SESSION_NAME` no contexto em que o script é executado; se vazio ou indefinido, o ambiente não está dentro de uma session ativa. Confirmar também com `zellij list-sessions`.
 
 **Solução:** Verificar `$ZELLIJ_SESSION_NAME` antes de executar; ou usar `zellij action --session <nome>` para especificar explicitamente (verificar sintaxe na versão instalada com `zellij action --help`).
 
@@ -300,6 +308,8 @@ zellij action write-chars $'\n'
 
 **Sintoma:** `Ctrl-hjkl` no Zellij move entre panes corretamente, mas ao entrar no Neovim, as teclas são enviadas como input em vez de navegar splits.
 
+**Como detectar:** Dentro do Neovim, rodar `:checkhealth vim-zellij-navigator` (se disponível) ou `:map <C-h>` — se o mapeamento não existir ou não chamar o navigator, o lado Lua não está instalado. Verificar também a versão com `:Lazy show vim-zellij-navigator` (se usar lazy.nvim).
+
 **Solução:** Verificar versão do vim-zellij-navigator. Se < 0.2.0: instalar o plugin Lua no Neovim e um dos plugins de navegação compatíveis listados no README. Se >= 0.2.0: o lado Neovim é desnecessário — conferir se o `move_mod` no KDL está correto.
 
 **Label:** `vim-zellij-navigator`, `Neovim`, `split`, `plugin`
@@ -312,6 +322,8 @@ zellij action write-chars $'\n'
 
 **Sintoma:** `checktime` nunca roda ao mudar de pane; buffers ficam desatualizados mesmo com o [[Dicionário do Terminal#Autocmd|autocmd]] de `FocusGained` configurado.
 
+**Como detectar:** Rodar `printf '\e[?1004h'` no terminal e mudar o foco da janela — se o emulador suportar, deve imprimir `^[[I` ao receber foco e `^[[O` ao perder. Dentro do Neovim, adicionar temporariamente `vim.api.nvim_create_autocmd("FocusGained", { callback = function() print("focus!") end })` e verificar se a mensagem aparece ao mudar de pane.
+
 **Solução:** Usar emulador que suporta focus events — kitty, WezTerm, foot ou Alacritty (com `enable_focus_reporting = true` no config). Testar com: `printf '\e[?1004h'` e mudar o foco da janela; o terminal deve imprimir `^[[I` ao receber foco.
 
 **Label:** `focus events`, `FocusGained`, `emulador`, `escape sequence`
@@ -323,6 +335,8 @@ zellij action write-chars $'\n'
 **Causa:** Em Bash/Zsh, `"\n"` dentro de aspas duplas é literal `\n` (barra + n), não newline. `zellij action write-chars "\n"` envia a string `\n` ao pane.
 
 **Sintoma:** O comando aparece no pane mas não é executado — fica esperando Enter.
+
+**Como detectar:** Observar o pane de destino: se o texto do comando aparece mas o prompt não retorna (shell aguarda Enter), o newline não foi enviado. Confirmar rodando `printf '%s' "$(printf '\n')" | xxd` para ver se o byte `0a` (newline) está presente na string usada.
 
 **Solução:** Usar ANSI-C quoting: `$'\n'` (expande para newline real em Bash e Zsh). Alternativas: `zellij action write 10` (byte decimal de newline) ou `printf '\n' | zellij action write-chars /dev/stdin` (se a versão suportar stdin).
 
@@ -343,6 +357,8 @@ zellij action write-chars "\n"
 **Causa:** [[Dicionário do Terminal#Autocmd|Autocmd]] configurado em eventos de alta frequência (`CursorMoved`, `TextChanged`) chama `vim.fn.system("zellij action pipe ...")` de forma síncrona — cada chamada faz um fork de processo.
 
 **Sintoma:** Neovim fica lento ao editar; CPU sobe; digitação tem lag.
+
+**Como detectar:** Rodar `:profile start /tmp/nvim-profile.log | profile func * | profile file *` no Neovim, editar por alguns segundos, rodar `:profile stop`, e analisar o log para ver quais autocmds consomem mais tempo. Alternativamente, monitorar o processo com `top` ou `htop` — picos de CPU durante digitação indicam forks excessivos.
 
 **Solução:** Usar debounce com `vim.defer_fn` (100-500ms) e limitar triggers a eventos esparsos: `BufEnter`, `ModeChanged`, `FocusGained`. Para atualizações de branch git, `BufWritePost` é suficiente (git branch muda menos que o cursor).
 
@@ -373,6 +389,8 @@ vim.api.nvim_create_autocmd("ModeChanged", {
 **Causa:** O plugin WASM do vim-zellij-navigator carrega as opções de configuração (`move_mod`, `resize_mod`, etc.) do **primeiro** `MessagePlugin` executado na session. Se as 4 direções têm configs diferentes (por exemplo, uma sem `move_mod`), a config da direção pressionada primeiro vira o padrão pra session inteira.
 
 **Sintoma:** Navegação funciona de forma inconsistente — algumas direções aplicam o mod correto, outras não.
+
+**Como detectar:** Comparar os 4 blocos `MessagePlugin` no `config.kdl` lado a lado; se algum tiver opções diferentes dos demais (campo ausente, valor diferente), esse é o problema. Testar: pressionar cada direção sequencialmente numa session nova e observar se o comportamento muda dependendo de qual foi a primeira usada.
 
 **Solução:** Manter as opções de configuração idênticas nos 4 binds (`h`, `j`, `k`, `l`). O README do plugin indica explicitamente que "the plugin loads with the configuration of the first executed command".
 
