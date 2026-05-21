@@ -402,6 +402,16 @@ Veja também: [[08 - Completion system (compsys)]].
 
 ## Multiplexer / Zellij
 
+### Attach
+Reconectar a uma session Zellij em background. Comando: `zellij attach <nome>` ou `zellij attach --create <nome>` (idempotente — cria se não existir). Múltiplos clients podem anexar à mesma session simultaneamente (input replicado).
+
+Veja também: [[04 - Sessões persistentes — detach, attach, gerenciamento]].
+
+### Detach
+Desconectar de uma session Zellij sem matar — server segue rodando, panes seguem executando comandos. Keybinding: `Ctrl-o d` (modo Session + tecla d). Não é destrutivo; reconectar via `zellij attach`.
+
+Veja também: [[04 - Sessões persistentes — detach, attach, gerenciamento]].
+
 ### Floating pane
 Pane que aparece sobreposto ao grid de outros panes, sem ocupar espaço deles. Pode ser movido e redimensionado livremente. Útil pra terminal extra temporário (e.g. consultar `man` enquanto outro pane roda código).
 
