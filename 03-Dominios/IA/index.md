@@ -1,5 +1,5 @@
 ---
-title: "IA — Formação Engenheiro de IA"
+title: IA — Formação Engenheiro de IA
 type: moc
 publish: true
 tags:
@@ -15,6 +15,7 @@ aliases:
   - Domínio IA
   - Formação Engenheiro de IA
   - AI Engineer Path
+progresso: andamento
 ---
 
 # IA — Formação Engenheiro de IA

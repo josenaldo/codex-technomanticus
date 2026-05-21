@@ -8,31 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "a4969ecb28dff2a1",
+            "id": "8c59943ad5e99a5b",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "03-Domínios/Empreendedorismo/Indie Hacker 101/02 - O conceito de enough — Company of One.md",
+                "file": "03-Dominios/IA/index.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "02 - O conceito de enough — Company of One"
-            }
-          },
-          {
-            "id": "845c6a7829b2767b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "03-Domínios/Empreendedorismo/Indie Hacker 101/Dicionário do Indie Hacker.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Dicionário do Indie Hacker"
+              "title": "index"
             }
           }
         ]
@@ -180,16 +166,61 @@
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
       "markdown-importer:Open format converter": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "templater-obsidian:Templater": false,
+      "obsidian42-brat:BRAT": false,
+      "terminal:Open terminal": false,
+      "copilot:Open Copilot Chat": false
     }
   },
-  "active": "a4969ecb28dff2a1",
+  "active": "8c59943ad5e99a5b",
   "lastOpenFiles": [
-    "03-Domínios/Empreendedorismo/Indie Hacker 101/Dicionário do Indie Hacker.md",
-    "03-Domínios/Empreendedorismo/Indie Hacker 101/02 - O conceito de enough — Company of One.md",
-    "03-Domínios/Empreendedorismo/Indie Hacker 101/01 - Bootstrapping vs venture capital.md",
-    "Untitled.canvas",
-    "Aprendizado/Communicating Trade-offs.md",
-    "Aprendizado/Claude Course.md"
+    "docs/superpowers/specs/2026-05-05-dashboards-apocrypha-design.md",
+    "docs/superpowers/plans/2026-05-05-dashboards-apocrypha-execution.md",
+    "03-Dominios/TypeScript/index.md",
+    "03-Dominios/TypeScript",
+    "03-Dominios/RPA/Untitled 7.png",
+    "03-Dominios/RPA/Untitled 6.png",
+    "03-Dominios/RPA/Untitled 5.png",
+    "03-Dominios/RPA/Untitled 1 4.png",
+    "03-Dominios/RPA/Untitled 1 3.png",
+    "03-Dominios/RPA/RPA.md",
+    "03-Dominios/RPA/Identifying Use Cases for Creating Bots.md",
+    "03-Dominios/RPA/Getting Started withRobotic Process Automation (RPA).md",
+    "03-Dominios/RPA/Did You Know that RPA is Simple, yet Powerful, When Compared to Traditional Automation.md",
+    "03-Dominios/RPA/Building Your First Automation Bot.md",
+    "03-Dominios/RPA",
+    "03-Dominios/React/Charts/Recharts.md",
+    "03-Dominios/React/Charts/Lightweight Charts.md",
+    "03-Dominios/React/Charts/index.md",
+    "03-Dominios/React/Charts/ApexCharts.md",
+    "03-Dominios/React/Ícones.md",
+    "03-Dominios/React/TanStack Query.md",
+    "03-Dominios/React/TanStack Form.md",
+    "03-Dominios/React/React Hook Form.md",
+    "03-Dominios/React/React Data Table.md",
+    "03-Dominios/React/React Admin.md",
+    "03-Dominios/React/Next.js.md",
+    "03-Dominios/React/MUI.md",
+    "03-Dominios/React/Mantine.md",
+    "03-Dominios/React/index.md",
+    "03-Dominios/React/Charts",
+    "03-Dominios/React",
+    "03-Dominios/Python/Python.md",
+    "03-Dominios/Python/Python Backend.md",
+    "03-Dominios/Python/Instalando Anaconda no Ubuntu.md",
+    "03-Dominios/Python",
+    "03-Dominios/Node/index.md",
+    "03-Dominios/Node",
+    "03-Dominios/JavaScript/Frontend/TypeScript com React",
+    "03-Dominios/JavaScript/Frontend",
+    "03-Dominios/JavaScript/Core",
+    "03-Dominios/JavaScript/Backend",
+    "03-Dominios/Java/Backend/Kafka/Untitled 4.png",
+    "03-Dominios/Infraestrutura/Untitled.png",
+    "03-Dominios/Infraestrutura/Untitled 2.png",
+    "03-Dominios/Infraestrutura/Untitled 1.png",
+    "03-Dominios/Arquitetura/Event Storming/Untitled 3.png",
+    "Untitled.canvas"
   ]
 }
