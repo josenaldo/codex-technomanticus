@@ -285,15 +285,15 @@ Builtin do Zsh ("fix command") que lista (`fc -l`) ou edita (`fc` puro abre `$ED
 
 Veja também: [[03 - History do Zsh]].
 
-### Function (shell)
-Bloco nomeado de comandos executável como se fosse comando. Sintaxe Zsh: `f() { ... }` ou `function f { ... }`. Aceita parâmetros (`$1`, `$@`), variáveis `local`, e `return <código>`. Diferente de alias: tem lógica.
-
-Veja também: [[02 - Zsh essencial]].
-
 ### Fpath
 Array com diretórios onde Zsh procura funções autoload — incluindo funções de completion (`_<comando>`). OMZ adiciona `$ZSH/plugins/*/` e `$ZSH/completions/`. Ordem importa: primeiro no fpath, primeiro encontrado.
 
 Veja também: [[08 - Completion system (compsys)]].
+
+### Function (shell)
+Bloco nomeado de comandos executável como se fosse comando. Sintaxe Zsh: `f() { ... }` ou `function f { ... }`. Aceita parâmetros (`$1`, `$@`), variáveis `local`, e `return <código>`. Diferente de alias: tem lógica.
+
+Veja também: [[02 - Zsh essencial]].
 
 ### History
 Registro persistente de comandos digitados, gravado em `HISTFILE` (default `~/.zsh_history`). Configurado por `HISTSIZE`/`SAVEHIST` + opts (`SHARE_HISTORY`, `EXTENDED_HISTORY`, `HIST_IGNORE_ALL_DUPS`, `HIST_VERIFY`). Acessado via `history`, `Ctrl-R`, `!!`, `!$`, `fc`.

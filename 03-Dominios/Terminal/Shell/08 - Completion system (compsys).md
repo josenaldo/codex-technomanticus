@@ -43,7 +43,7 @@ O compsys é um sistema **programável**: cada comando pode ter uma função `_<
 Builtin que inicializa o compsys:
 
 - Lê `fpath`, indexa funções `_<*>`
-- Gera/atualiza `~/.zcompdump` (cache binário compilado)
+- Gera/atualiza `~/.zcompdump` (cache de texto com as funções indexadas; Zsh pode compilá-lo em `~/.zcompdump.zwc` via `zcompile` para carregamento mais rápido)
 - Roda em modo "security check" por default (verifica permissões dos dirs em fpath)
 
 Setup canônico (já feito por OMZ; documentado aqui pra contexto):
@@ -172,7 +172,7 @@ compaudit
 
 **.zcompdump corrompido (após mudança de plugins, atualização do OMZ, adição de fpath):**
 
-```bash
+```zsh
 rm ~/.zcompdump*
 compinit
 ```
@@ -193,7 +193,7 @@ Opções para acelerar:
 
 **`compaudit` reclamando de permissões:**
 
-```bash
+```zsh
 compaudit | xargs chmod g-w,o-w
 ```
 
@@ -213,7 +213,7 @@ Decisão antes de adotar um dos dois: escolha uma estratégia (default OMZ, `fzf
 
 ### 1. `.zcompdump` órfão após instalar plugin
 
-**Causa:** `compinit` gera um cache binário (`~/.zcompdump`) que indexa funções de completion disponíveis no fpath no momento em que rodou. Quando um novo plugin é instalado e adiciona novas funções `_<comando>` ao fpath, o cache antigo ainda não conhece essas funções.
+**Causa:** `compinit` gera um cache de texto (`~/.zcompdump`) que indexa funções de completion disponíveis no fpath no momento em que rodou. Quando um novo plugin é instalado e adiciona novas funções `_<comando>` ao fpath, o cache antigo ainda não conhece essas funções.
 
 **Sintoma:** `_<comando>` existe no fpath mas Tab não produz completion para esse comando. Funciona como se a função não existisse.
 
@@ -245,7 +245,7 @@ Decisão antes de adotar um dos dois: escolha uma estratégia (default OMZ, `fzf
 
 **Solução:** Corrigir as permissões diretamente:
 
-```bash
+```zsh
 compaudit | xargs chmod g-w,o-w
 ```
 
@@ -262,7 +262,7 @@ Alternativa temporária (não recomendada como fix permanente): `compinit -i` pa
 **Como detectar:**
 
 ```bash
-zsh -i -c exit -x 2>&1 | grep compinit | wc -l
+zsh -x -i -c exit 2>&1 | grep compinit | wc -l
 ```
 
 Se o resultado for maior que 1, há chamadas duplicadas.
