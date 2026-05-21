@@ -484,6 +484,11 @@ Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 
 ## TUIs de Dev / Lazygit / Lazydocker
 
+### Bisect (Lazygit)
+UI visual do `git bisect` no Lazygit. Painel Commits, `b` em commit → escolhe Good/Bad. Lazygit faz checkout do commit do meio; você testa; marca; em ~log₂(N) iterações identifica a regressão. "Reset bisect" aborta e retorna ao HEAD original.
+
+Veja também: [[06 - Lazygit — operações avançadas]].
+
 ### Cherry-pick
 Copiar 1 ou mais commits de uma branch pra outra. No Lazygit: painel Commits, `C` (uppercase) na branch origem → checkout destino → `V` (uppercase) paste. Conflitos tratados como merge conflict normal.
 
@@ -493,6 +498,11 @@ Veja também: [[03 - Lazygit — operações intermediárias]].
 Painel inferior do Lazygit que exibe cada comando git executado pela TUI. Útil pra aprender que comando shell equivale a uma ação visual e debuggar quando algo não funciona.
 
 Veja também: [[01 - Lazygit — overview e operações essenciais]].
+
+### Custom command (Lazygit)
+Atalho YAML no `config.yml` mapeando key → shell command. Schema: `key`, `command`, `context`, `description`, `output`, `prompts`. Placeholders Go template como `{{ .CheckedOutBranch.Name }}`. Viabiliza force-push with lease, conventional commits, fast PR creation, branch creation com prefixo.
+
+Veja também: [[06 - Lazygit — operações avançadas]], [[04 - Lazygit — config e customização]].
 
 ### Docker-compose
 Orquestrador multi-container Docker. Define services em `docker-compose.yml` (ou `compose.yaml`). Comando: `docker compose up/down/logs/exec`. Lazydocker auto-detecta o arquivo no cwd e agrupa containers como services.
@@ -538,3 +548,8 @@ Veja também: [[03 - Lazygit — operações intermediárias]].
 Terminal User Interface — UI keyboard-first dentro do terminal, com painéis, scroll, cores, mouse opcional. Diferente de CLI (entrada e saída por linha) e GUI (gráfica). Exemplos: Lazygit, Lazydocker, htop, neomutt, ranger.
 
 Veja também: [[01 - Lazygit — overview e operações essenciais]].
+
+### Worktree
+Múltiplos working dirs do mesmo repo git, cada um em branch própria. Comando: `git worktree add <path> <branch>`. No Lazygit: `w` em Branches abre opções de worktree pra criar/listar/switch. Útil pra hotfix sem stash do trabalho atual; preferir paths irmãos (`../myproj-hotfix`) aos filhos.
+
+Veja também: [[06 - Lazygit — operações avançadas]].
