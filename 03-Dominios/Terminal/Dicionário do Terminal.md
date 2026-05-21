@@ -482,3 +482,5 @@ Modo de configuração do Zellij (`default_mode "tmux"`) que ativa keybindings t
 
 Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 
+## TUIs de Dev / Lazygit / Lazydocker
+
