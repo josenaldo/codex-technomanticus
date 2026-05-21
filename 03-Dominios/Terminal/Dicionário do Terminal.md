@@ -280,20 +280,25 @@ Sistema de completion programável do Zsh. Cada comando pode ter função `_<com
 
 Veja também: [[08 - Completion system (compsys)]].
 
+### Extended glob
+Padrões adicionais de globbing do Zsh ativados por `setopt EXTENDED_GLOB`: `^pat` (negação), `~pat` (exclusão), `(p1|p2)` (alternation), `pat#`/`pat##` (zero/um ou mais). Glob qualifiers `(...)` NÃO precisam de `EXTENDED_GLOB` — são feature nativa do globbing do Zsh.
+
+Veja também: [[09 - Globbing avançado e parameter expansion]], [[02 - Zsh essencial]].
+
 ### fc
 Builtin do Zsh ("fix command") que lista (`fc -l`) ou edita (`fc` puro abre `$EDITOR` com o último comando) entradas do history. `fc <substring>` re-executa o último comando que casa com a substring.
 
 Veja também: [[03 - History do Zsh]].
 
-### Extended glob
-Padrões adicionais de globbing do Zsh ativados por `setopt EXTENDED_GLOB`: `^pat` (negação), `~pat` (exclusão), `(p1|p2)` (alternation), `pat#`/`pat##` (zero/um ou mais). Pré-requisito pra usar glob qualifiers.
-
-Veja também: [[09 - Globbing avançado e parameter expansion]], [[02 - Zsh essencial]].
-
 ### Fpath
 Array com diretórios onde Zsh procura funções autoload — incluindo funções de completion (`_<comando>`). OMZ adiciona `$ZSH/plugins/*/` e `$ZSH/completions/`. Ordem importa: primeiro no fpath, primeiro encontrado.
 
 Veja também: [[08 - Completion system (compsys)]].
+
+### Function (shell)
+Bloco nomeado de comandos executável como se fosse comando. Sintaxe Zsh: `f() { ... }` ou `function f { ... }`. Aceita parâmetros (`$1`, `$@`), variáveis `local`, e `return <código>`. Diferente de alias: tem lógica.
+
+Veja também: [[02 - Zsh essencial]].
 
 ### Glob qualifier
 Sufixo entre parênteses pós-fixado a um glob, filtra por atributo do arquivo. Exemplos: `(.)` (regular files), `(/)` (dirs), `(N)` (null glob), `(L+N)` (size > N), `(mh-N)` (modificado em N horas), `(om[1,5])` (ordenar por mtime, 5 mais recentes). Feature nativa do globbing — não requer `EXTENDED_GLOB` (que cobre apenas `^`, `~`, `#`, `##`, alternation).
@@ -304,11 +309,6 @@ Veja também: [[09 - Globbing avançado e parameter expansion]].
 Geração de nomes de arquivo a partir de padrões (`*`, `?`, `[abc]`, `**/`). Zsh tem extensões poderosas (EXTENDED_GLOB) que substituem dezenas de combinações `find`/`grep` por one-liners. Apoiado por glob qualifiers pra filtrar por atributos do arquivo.
 
 Veja também: [[09 - Globbing avançado e parameter expansion]].
-
-### Function (shell)
-Bloco nomeado de comandos executável como se fosse comando. Sintaxe Zsh: `f() { ... }` ou `function f { ... }`. Aceita parâmetros (`$1`, `$@`), variáveis `local`, e `return <código>`. Diferente de alias: tem lógica.
-
-Veja também: [[02 - Zsh essencial]].
 
 ### History
 Registro persistente de comandos digitados, gravado em `HISTFILE` (default `~/.zsh_history`). Configurado por `HISTSIZE`/`SAVEHIST` + opts (`SHARE_HISTORY`, `EXTENDED_HISTORY`, `HIST_IGNORE_ALL_DUPS`, `HIST_VERIFY`). Acessado via `history`, `Ctrl-R`, `!!`, `!$`, `fc`.
@@ -330,15 +330,15 @@ Framework de config pra Zsh: clonado em `~/.oh-my-zsh/`, sourced no `.zshrc`, fo
 
 Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[10 - Plugins, themes e custom no OMZ]].
 
-### Plugin (OMZ)
-Unidade de funcionalidade para Oh-My-Zsh: pasta com `<nome>.plugin.zsh` em `~/.oh-my-zsh/plugins/<nome>/` (embarcado) ou `~/.oh-my-zsh/custom/plugins/<nome>/` (custom). Carregado adicionando `<nome>` ao array `plugins=(...)` no `.zshrc`. Pode trazer aliases, funções e completion (`_<comando>`).
-
-Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[10 - Plugins, themes e custom no OMZ]].
-
 ### Parameter expansion
 Expansão do valor de variáveis com transformações inline. Sintaxe: `${var:-default}` (default), `${var//pat/repl}` (replace global), `${var##pre}` (remove prefix longo), `${(L)var}` (lowercase), `${(s:.:)var}` (split). Zsh estende a sintaxe de Bash com flags `(L)/(U)/(C)/(s:x:)/(j:x:)/(@)/(P)/(k)/(v)`.
 
 Veja também: [[09 - Globbing avançado e parameter expansion]].
+
+### Plugin (OMZ)
+Unidade de funcionalidade para Oh-My-Zsh: pasta com `<nome>.plugin.zsh` em `~/.oh-my-zsh/plugins/<nome>/` (embarcado) ou `~/.oh-my-zsh/custom/plugins/<nome>/` (custom). Carregado adicionando `<nome>` ao array `plugins=(...)` no `.zshrc`. Pode trazer aliases, funções e completion (`_<comando>`).
+
+Veja também: [[04 - Oh-My-Zsh — anatomia e plugins essenciais]], [[10 - Plugins, themes e custom no OMZ]].
 
 ### POSIX
 Portable Operating System Interface — padrão IEEE que define APIs e comportamento de shell mínimos. Bash é mais próximo do POSIX por default; Zsh estende livremente mas oferece `emulate sh|bash|ksh` quando precisa de compat.
