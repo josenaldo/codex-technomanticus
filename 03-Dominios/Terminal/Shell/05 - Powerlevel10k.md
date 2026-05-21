@@ -21,7 +21,7 @@ aliases:
 # Powerlevel10k
 
 > [!abstract] TL;DR
-> Powerlevel10k é um theme externo pra Zsh com prompt rico (status git, tempo de comando, exit code, etc.) e o famoso `instant prompt`. Configurado pelo wizard `p10k configure` ou editando `~/.p10k.zsh`. Em modo manutenção desde 2024 (autor saiu da Google), mas plugin segue funcional.
+> Powerlevel10k é um theme externo pra Zsh com prompt rico (status git, tempo de comando, exit code, etc.) e o famoso `instant prompt`. Configurado pelo wizard `p10k configure` ou editando `~/.p10k.zsh`. Em modo manutenção desde 2024 (atividade do autor caiu drasticamente), mas plugin segue funcional.
 
 ---
 
@@ -344,7 +344,7 @@ O segmento `vcs` exibe símbolos para cada estado do repositório:
 
 ### Armadilha 1 — P10k em modo manutenção desde julho de 2024
 
-**Causa:** Roman Perepelitsa, o autor original, foi trabalhar na Google em outro projeto. O repositório passou para manutenção comunitária focada em patches críticos apenas.
+**Causa:** O autor reduziu drasticamente a atividade no projeto. O suporte do autor ficou muito limitado; contributors ocasionais fazem fixes pontuais, mas o projeto não evolui ativamente.
 
 **Sintoma:** PRs e issues ficam sem resposta; bugs conhecidos não têm previsão de fix; sem novas features.
 
