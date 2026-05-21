@@ -208,10 +208,11 @@ Carregadas do galho 2 e do CLAUDE.md/memórias:
   - Pipe API (mensagens bidirecionais Zellij ↔ plugin)
   - Permissões (`permissions`, capability-based)
   - Lifecycle (`load`, `update`, `render`)
-- 2-3 plugins concretos (verificar no Step 1 da nota — provavelmente):
+- 2-3 plugins concretos. Candidatos prováveis (sujeitos a verificação no Step 1 da nota — URL retorna 200, último commit recente, README ainda lista features citadas):
   - **zjstatus** (dj95/zjstatus) — status bar customizável
-  - **harpoon-zellij** (caso exista; senão substituir) — navegação rápida
-  - **vim-zellij-navigator** (hiasr/vim-zellij-navigator) — bridge Neovim ↔ Zellij
+  - **room** (rvcas/room) ou similar — gerenciador de panes/tabs
+  - **vim-zellij-navigator** (hiasr/vim-zellij-navigator) — mencionado brevemente aqui como exemplo de plugin; cobertura profunda fica pra nota 07
+  - Se algum não passar verificação, substituir por outro com mesma categoria
 - Configurar e debuggar plugin (`zellij action launch-plugin`).
 
 **07 — Integração com Neovim e shell**
@@ -227,7 +228,7 @@ Carregadas do galho 2 e do CLAUDE.md/memórias:
 Cada nota começa com **Step 1: Pesquisa-âncora** — WebFetch em paralelo de docs canônicas, capturar exemplos e sintaxe antes de escrever.
 
 - **Todas:** https://zellij.dev/documentation/
-- **01:** https://zellij.dev/about/, https://github.com/tmux/tmux, comparações em posts canônicos (verificar)
+- **01:** https://zellij.dev/about/, https://github.com/tmux/tmux. Posts comparativos opcionais — só citar se forem canônicos e verificáveis; preferir docs oficiais como base.
 - **02:** https://zellij.dev/documentation/sessions, https://zellij.dev/documentation/panes
 - **03:** https://zellij.dev/documentation/keybindings
 - **04:** https://zellij.dev/documentation/commands
