@@ -484,3 +484,17 @@ Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 
 ## TUIs de Dev / Lazygit / Lazydocker
 
+### Command log
+Painel inferior do Lazygit que exibe cada comando git executado pela TUI. Útil pra aprender que comando shell equivale a uma ação visual e debuggar quando algo não funciona.
+
+Veja também: [[01 - Lazygit — overview e operações essenciais]].
+
+### Lazygit
+TUI git em Go por Jesse Duffield. Painéis keyboard-first pra status, files, branches, commits, stash. Operações por painel com atalhos contextuais; `?` mostra help. Config YAML em `~/.config/lazygit/config.yml`.
+
+Veja também: [[01 - Lazygit — overview e operações essenciais]], [[04 - Lazygit — config e customização]].
+
+### TUI
+Terminal User Interface — UI keyboard-first dentro do terminal, com painéis, scroll, cores, mouse opcional. Diferente de CLI (entrada e saída por linha) e GUI (gráfica). Exemplos: Lazygit, Lazydocker, htop, neomutt, ranger.
+
+Veja também: [[01 - Lazygit — overview e operações essenciais]].
