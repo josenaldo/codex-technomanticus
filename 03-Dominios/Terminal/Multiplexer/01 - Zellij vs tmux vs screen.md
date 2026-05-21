@@ -181,14 +181,14 @@ zellij delete-all-sessions
 
 | Ação | Tecla |
 |---|---|
-| Novo pane (dividir vertical) | `Alt n` |
+| Novo pane (dividir vertical) | `Alt-n` |
 | Navegar entre panes | `Alt ←↑↓→` |
-| Entrar modo Pane | `Ctrl p` |
-| Entrar modo Tab | `Ctrl t` |
-| Entrar modo Session | `Ctrl o` |
-| Detach da sessão | `Ctrl o` → `d` |
-| Quit (mata sessão inteira) | `Ctrl q` |
-| Fechar pane focado | `Ctrl p` → `x` |
+| Entrar modo Pane | `Ctrl-p` |
+| Entrar modo Tab | `Ctrl-t` |
+| Entrar modo Session | `Ctrl-o` |
+| Detach da sessão | `Ctrl-o` → `d` |
+| Quit (mata sessão inteira) | `Ctrl-q` |
+| Fechar pane focado | `Ctrl-p` → `x` |
 
 ### Side-by-side com tmux (transição)
 
@@ -196,17 +196,13 @@ A coexistência entre Zellij e tmux no mesmo ambiente é simples e recomendada n
 
 - **tmux para SSH remoto**: mantenha tmux nos servidores; use Zellij só na workstation local
 - **Zellij para dev local**: layouts KDL por projeto, sessions nomeadas, status bar com hints
-- **Tmux mode**: se os keybindings do Zellij desorientam, ative o modo Tmux que replica o modelo de prefixo
+- **Tmux mode**: se os keybindings do Zellij desorientam, ative o modo Tmux que replica o modelo de prefixo — cobertura completa em [[06 - Zellij keybindings e tmux mode]]
 - **Sem conflito de server**: os dois podem rodar simultaneamente — são processos independentes
 
-```bash
-# Zellij com tmux keybindings (modo compatibilidade)
-# No config.kdl:
-# keybinds { tmux { ... } }
-# Ou via --config-dir flag apontando pra layout com tmux mode
-
-# Alternativa rápida: iniciar direto no modo Tmux
-zellij --config-dir ~/.config/zellij-tmux
+```kdl
+# Zellij com tmux keybindings — ver nota 06 pra cobertura completa
+# No ~/.config/zellij/config.kdl:
+default_mode "tmux"
 ```
 
 ## Armadilhas
@@ -239,11 +235,11 @@ zellij --config-dir ~/.config/zellij-tmux
 
 **Causa:** Zellij usa letras como `p`, `t`, `n`, `d`, `h`, `j`, `k`, `l` nos seus modos de controle (Pane, Tab, etc.), que colidem com os keybindings normais do Vim/Neovim quando você está editando dentro de um pane.
 
-**Sintoma:** pressionar `Ctrl p` dentro do Neovim abre o modo Pane do Zellij em vez de executar a ação do plugin (ex: Telescope). O Zellij intercepta a tecla antes do pane.
+**Sintoma:** pressionar `Ctrl-p` dentro do Neovim abre o modo Pane do Zellij em vez de executar a ação do plugin (ex: Telescope). O Zellij intercepta a tecla antes do pane.
 
 **Como detectar:** o atalho não chega ao Neovim — a status bar do Zellij muda de modo ao invés de o editor reagir.
 
-**Solução:** usar o modo `Locked` do Zellij (`Ctrl g` pra entrar/sair) quando precisar passar atalhos diretamente ao aplicativo interno. Ou reconfigurar os keybindings do Zellij pra usar prefixos que não colidam, como `Ctrl b` (padrão tmux) via tmux mode.
+**Solução:** usar o modo `Locked` do Zellij (`Ctrl-g` pra entrar/sair) quando precisar passar atalhos diretamente ao aplicativo interno. Ou reconfigurar os keybindings do Zellij pra usar prefixos que não colidam, como `Ctrl-b` (padrão tmux) via tmux mode.
 
 ---
 
