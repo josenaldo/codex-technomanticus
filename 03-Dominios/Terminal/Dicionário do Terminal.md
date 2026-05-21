@@ -489,6 +489,21 @@ Painel inferior do Lazygit que exibe cada comando git executado pela TUI. Útil 
 
 Veja também: [[01 - Lazygit — overview e operações essenciais]].
 
+### Docker-compose
+Orquestrador multi-container Docker. Define services em `docker-compose.yml` (ou `compose.yaml`). Comando: `docker compose up/down/logs/exec`. Lazydocker auto-detecta o arquivo no cwd e agrupa containers como services.
+
+Veja também: [[02 - Lazydocker — overview e operações comuns]], [[07 - Lazydocker — debugging avançado e docker-compose]].
+
+### Exec (Lazydocker)
+Abrir shell interativo dentro de container rodando. Default key `E` (executa `/bin/sh`). Pra shell custom (`bash`, `zsh`), usar `customCommands` no config (nota 05) ou flag de imagem.
+
+Veja também: [[02 - Lazydocker — overview e operações comuns]], [[05 - Lazydocker — config, customização e workflow]].
+
+### Lazydocker
+TUI Docker em Go por Jesse Duffield. Painéis: Project, Services, Containers, Images, Volumes, Networks; com tabs Logs/Config/Stats por seleção. Auto-detecta `docker-compose.yml` no cwd. Config YAML em `~/.config/lazydocker/config.yml`.
+
+Veja também: [[02 - Lazydocker — overview e operações comuns]], [[05 - Lazydocker — config, customização e workflow]].
+
 ### Lazygit
 TUI git em Go por Jesse Duffield. Painéis keyboard-first pra status, files, branches, commits, stash. Operações por painel com atalhos contextuais; `?` mostra help. Config YAML em `~/.config/lazygit/config.yml`.
 
