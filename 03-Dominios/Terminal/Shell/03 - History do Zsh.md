@@ -304,7 +304,7 @@ fc -l -20 -1              # os últimos 20 comandos numerados
 ## Veja também
 
 - [[02 - Zsh essencial]] — `setopt` é pré-requisito para entender as opts de history
-- [[04 - Oh-My-Zsh — anatomia e plugins essenciais]] — plugin `history-substring-search` expande o `Ctrl-R`
+- [[06 - Keybindings práticos]] — plugin `history-substring-search` expande o `Ctrl-R`
 - [[06 - Keybindings práticos]] — bindar `Ctrl-R` custom e gerenciar conflitos de widget
 - [[03-Dominios/Terminal/Shell/index|MOC do galho Shell]]
 - [[Dicionário do Terminal#History|History]], [[Dicionário do Terminal#fc|fc]]

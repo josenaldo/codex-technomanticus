@@ -74,8 +74,8 @@ Quando o `.zshrc` executa `source "$ZSH/oh-my-zsh.sh"`, a ordem interna simplifi
 2. **Source `lib/*`** — carrega helpers, defaults de history, completion, etc.
 3. **`compinit`** — inicializa o sistema de completion do Zsh
 4. **Loop sobre `plugins=(...)`** — para cada nome:
-   - Procura `$ZSH/plugins/<nome>/<nome>.plugin.zsh` (embarcado)
-   - Fallback: `$ZSH_CUSTOM/plugins/<nome>/<nome>.plugin.zsh` (custom)
+   - Procura `$ZSH_CUSTOM/plugins/<nome>/<nome>.plugin.zsh` (custom) primeiro
+   - Fallback: `$ZSH/plugins/<nome>/<nome>.plugin.zsh` (embarcado). É por isso que custom **vence** override.
    - Source o arquivo encontrado
 5. **Source do tema** — carrega o `.zsh-theme` configurado em `ZSH_THEME`
 6. **Customizações do usuário** — o que vier depois do `source` no `.zshrc`

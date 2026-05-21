@@ -200,7 +200,7 @@ As diferenças acima aparecem de forma concentrada num `~/.zshrc` real. O bloco 
 # AUTO_CD: digitar só o nome do diretório entra nele (sem `cd`)
 setopt AUTO_CD
 
-# EXTENDED_GLOB: libera negação (^), exclusão (~) e qualifiers de glob
+# EXTENDED_GLOB: libera negação (^), exclusão (~), alternation (p1|p2), # e ## (qualifiers funcionam sem ele)
 setopt EXTENDED_GLOB
 
 # Arrays 1-indexed: arr[1] é o primeiro item (em Bash seria arr[0])

@@ -22,7 +22,7 @@ aliases:
 
 ## TL;DR
 
-Globbing avançado do Zsh substitui dezenas de `find -X` por one-liners. `EXTENDED_GLOB` liga negação (`^`), exclusão (`~`), e qualifiers `(.)/(/)/(N)/(L+N)/(om[N])`. Parameter expansion vai além de `${var:-default}` com flags `(L)/(U)/(s:.:)/(@)` que evitam pipe pra `sed`/`awk`. Use diariamente.
+Globbing avançado do Zsh substitui dezenas de `find -X` por one-liners. `EXTENDED_GLOB` liga negação (`^`), exclusão (`~`), `#`/`##` e alternation `(p1|p2)`. Glob qualifiers `(.)/(/)/(N)/(L+N)/(om[N])` funcionam sem `EXTENDED_GLOB` — são feature nativa do globbing. Parameter expansion vai além de `${var:-default}` com flags `(L)/(U)/(s:.:)/(@)` que evitam pipe pra `sed`/`awk`. Use diariamente.
 
 ---
 
