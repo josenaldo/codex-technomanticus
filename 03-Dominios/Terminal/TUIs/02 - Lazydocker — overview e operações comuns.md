@@ -19,7 +19,7 @@ aliases:
 # Lazydocker — overview e operações comuns
 
 > [!abstract] TL;DR
-> Lazydocker é uma TUI Docker em Go por Jesse Duffield (mesmo autor de Lazygit). Painéis: Project (top-left), Services/Containers, Images, Volumes, Networks (left); Logs/Config/Stats (right). `space` start/stop, `r` restart, `E` exec shell, `m` logs, `s` stop, `p` pause. Vence pra dev local com docker-compose — dashboard ao vivo de CPU/mem por container. Substitui `docker ps`/`docker logs -f` pra workflow interativo.
+> Lazydocker é uma TUI Docker em Go por Jesse Duffield (mesmo autor de Lazygit). Painéis: Project (top-left), Services/Containers, Images, Volumes, Networks (left); Logs/Config/Stats (right). `s` stop, `r` restart, `E` exec shell, `m` logs full screen, `p` pause. Vence pra dev local com docker-compose — dashboard ao vivo de CPU/mem por container. Substitui `docker ps`/`docker logs -f` pra workflow interativo.
 
 ## O que é / Como funciona
 
