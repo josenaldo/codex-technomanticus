@@ -50,8 +50,8 @@ Esse galho cobre as duas TUIs juntas porque compartilham filosofia (keyboard-fir
 
 ## Versões assumidas
 
-- **Lazygit:** `<VERSAO_LAZYGIT>` (capturada no pré-flight)
-- **Lazydocker:** `<VERSAO_LAZYDOCKER>` (capturada no pré-flight)
+- **Lazygit:** 0.61.1
+- **Lazydocker:** 0.24.4
 
 ## Veja também
 
