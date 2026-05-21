@@ -220,16 +220,16 @@ Keybindings verificadas no `default.kdl` do Zellij:
 
 ## Em inglês
 
-- **modal** — describes software that operates in distinct modes; each mode redefines what keys do.
-- **mode** — a named state in which specific keybindings are active; in Zellij, entered via `Ctrl-<letter>`.
-- **keybinding** — the assignment of a key sequence to an action.
-- **shortcut** — colloquial for a keybinding that triggers an action quickly.
-- **chord** — a combination of keys pressed simultaneously or in sequence (e.g., `Ctrl-b n` in tmux).
-- **discoverability** — the ability to learn available actions from the interface itself; Zellij's status bar makes keybindings discoverable without memorization.
-- **status bar** — the bottom bar in Zellij that shows the current mode and available keybindings.
-- **passthrough** — sending input directly to the application inside a pane, bypassing multiplexer keybindings; activated in Locked mode.
-- **muscle memory** — automatic execution of key sequences without conscious thought, built through repetition.
-- **cheatsheet** — a concise reference card listing key sequences and their actions.
+- **modal** — *modal*. "modo de software que opera em estados distintos onde as teclas têm significado diferente."
+- **mode** — *mode*. "estado que define como o input é interpretado; no Zellij, ativado via `Ctrl-<letra>`."
+- **keybinding** — *keybinding*. "associação de uma combinação de teclas com uma ação."
+- **shortcut** — *shortcut*. "atalho de teclado pra uma ação; uso coloquial de keybinding."
+- **chord** — *chord*. "sequência de teclas pressionadas em ordem pra ativar um comando (ex.: `Ctrl-b n` no tmux)."
+- **discoverability** — *discoverability*. "qualidade de uma UI de mostrar suas opções disponíveis sem precisar decorar; o status bar do Zellij é projetado pra isso."
+- **status bar** — *status bar*. "barra inferior do Zellij que exibe o modo atual e os keybindings disponíveis."
+- **passthrough** — *passthrough*. "modo onde o input passa direto pro app dentro do pane sem ser interceptado pelo multiplexer; ativado no modo Locked."
+- **muscle memory** — *muscle memory*. "memória motora dos atalhos adquirida pela repetição, sem esforço consciente."
+- **cheatsheet** — *cheatsheet*. "tabela de referência rápida listando sequências de teclas e suas ações."
 
 ---
 
