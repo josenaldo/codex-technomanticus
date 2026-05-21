@@ -196,7 +196,7 @@ A coexistência entre Zellij e tmux no mesmo ambiente é simples e recomendada n
 
 - **tmux para SSH remoto**: mantenha tmux nos servidores; use Zellij só na workstation local
 - **Zellij para dev local**: layouts KDL por projeto, sessions nomeadas, status bar com hints
-- **Tmux mode**: se os keybindings do Zellij desorientam, ative o modo Tmux que replica o modelo de prefixo — cobertura completa em [[06 - Zellij keybindings e tmux mode]]
+- **Tmux mode**: se os keybindings do Zellij desorientam, ative o modo Tmux que replica o modelo de prefixo — cobertura completa em [[06 - Modos avançados, plugins e copy-mode]]
 - **Sem conflito de server**: os dois podem rodar simultaneamente — são processos independentes
 
 ```kdl
