@@ -499,6 +499,11 @@ Orquestrador multi-container Docker. Define services em `docker-compose.yml` (ou
 
 Veja também: [[02 - Lazydocker — overview e operações comuns]], [[07 - Lazydocker — debugging avançado e docker-compose]].
 
+### Editor preset
+Preset YAML do Lazygit (`os.editPreset`) que define como abrir arquivos no editor configurado. Built-ins suportados: `nvim`, `vim`, `nvim-remote`, `lvim`, `emacs`, `nano`, `micro`, `vscode`, `sublime`, `bbedit`, `kakoune`, `helix`, `xcode`, `zed`, `acme`. Para editor não listado, usar `os.edit` / `os.editAtLine` com placeholders `{{filename}}` e `{{line}}`.
+
+Veja também: [[04 - Lazygit — config e customização]].
+
 ### Exec (Lazydocker)
 Abrir shell interativo dentro de container rodando. Default key `E` (executa `/bin/sh`). Pra shell custom (`bash`, `zsh`), usar `customCommands` no config (nota 05) ou flag de imagem.
 
