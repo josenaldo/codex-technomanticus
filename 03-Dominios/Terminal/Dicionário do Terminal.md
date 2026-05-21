@@ -402,3 +402,8 @@ Veja também: [[08 - Completion system (compsys)]].
 
 ## Multiplexer / Zellij
 
+### Multiplexer
+Programa que divide 1 terminal em múltiplas sessions, tabs e panes que sobrevivem a detach (desconexão do emulador). Server roda em background; cliente anexa/desanexa via `attach`/`detach`. Exemplos: Zellij, tmux, screen.
+
+Veja também: [[01 - Zellij vs tmux vs screen]].
+
