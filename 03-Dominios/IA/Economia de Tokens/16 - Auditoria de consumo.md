@@ -1,7 +1,7 @@
 ---
 title: "Auditoria de consumo"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-05-22
 type: concept
 status: seedling
 publish: true
@@ -127,6 +127,7 @@ graph TD
 - [[15 - Orçamento e hard limits]]
 - [[17 - ROI de IA — quando o agente vale o custo]]
 - [[18 - Playbook de economia — checklist completo]]
+- [[22 - Caso real — Auditoria de 47M tokens em maio 2026]] — este workflow aplicado a um caso pessoal de 32 dias
 
 ## Referências
 

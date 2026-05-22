@@ -1,7 +1,7 @@
 ---
 title: "Hacks de trincheira — Claude, Gemini e Copilot em 2026"
 created: 2026-05-08
-updated: 2026-05-11
+updated: 2026-05-22
 type: concept
 status: seedling
 publish: true
@@ -50,6 +50,9 @@ Ative o `/statusline` no Claude Code para ver tokens, custo, modelo e status do 
 ## 🔬 Caso Real: Auditoria de Projeto MedEspecialista API (Maio 2026)
 
 > Sessão de otimização aplicada em um projeto Node.js real com 1.900+ testes e histórico extenso de sessões. As ações abaixo foram executadas em sequência após análise com `rtk gain` e `ccusage blocks --breakdown`.
+
+> [!info] Caso correlato
+> Para uma auditoria de uso pessoal cross-projeto (47.2M tokens em 32 dias, foco em hook RTK, model routing e subagentes), ver [[22 - Caso real — Auditoria de 47M tokens em maio 2026]].
 
 ### Diagnóstico pré-otimização
 
@@ -194,3 +197,4 @@ Nunca dispare o "Agent Mode" (que sai editando arquivos) sem antes rodar um "Pla
 - [[09 - Model routing — modelo certo para a tarefa]]
 - [[10 - Sub-agentes especializados]]
 - [[05 - Prompt caching na prática]]
+- [[22 - Caso real — Auditoria de 47M tokens em maio 2026]] — segundo caso real, com ângulo de uso pessoal cross-projeto

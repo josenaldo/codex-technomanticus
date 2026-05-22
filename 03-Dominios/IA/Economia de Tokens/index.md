@@ -7,7 +7,7 @@ tags:
   - ia
   - moc
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-05-22
 ---
 
 # Economia de Tokens
@@ -58,9 +58,9 @@ Output e reasoning também custam — e são onde mais gente esquece de olhar.
 - [[13 - Respostas concisas — controlar output tokens]] — `max_tokens`, system prompts, instruções
 - [[14 - Thinking budget — controlar reasoning tokens]] — extended thinking não é grátis
 
-### Bloco 5 — Governança e Operação (6 notas)
+### Bloco 5 — Governança e Operação (8 notas)
 
-Da disciplina técnica à decisão de negócio: budget, hard limits, auditoria, ROI, planos, futuro.
+Da disciplina técnica à decisão de negócio: budget, hard limits, auditoria, ROI, planos, futuro, casos reais.
 
 - [[15 - Orçamento e hard limits]] — `max_tokens`, spending caps, kill switches em sessões
 - [[16 - Auditoria de consumo]] — investigação causal, top offenders, cadência de revisão
@@ -69,6 +69,7 @@ Da disciplina técnica à decisão de negócio: budget, hard limits, auditoria, 
 - [[19 - Planos e tiers — Max, Pro, API, Enterprise]] — quando faz sentido cada modalidade
 - [[20 - O futuro — tokens cada vez mais baratos]] — Moore-like trend, commoditização, implicações
 - [[21 - Hacks de trincheira — Claude, Gemini e Copilot em 2026]] — manobras específicas por provedor
+- [[22 - Caso real — Auditoria de 47M tokens em maio 2026]] — diagnóstico aplicado: 5 vetores e plano por ROI
 
 ## Rotas alternativas
 

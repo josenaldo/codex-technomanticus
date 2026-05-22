@@ -3,7 +3,7 @@ title: "Pergaminhos"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-05-21
+updated: 2026-05-22
 status: seedling
 tags:
   - moc
@@ -21,7 +21,6 @@ Esta pasta agrupa a antessala do conhecimento — material ainda não fichado, a
 ## Conteúdo
 
 - [[avaliar]] — pauta de itens a avaliar antes de fichar
-- [[Economizar claude]] — anotações sobre uso eficiente de tokens com Claude
 - [[entradas]] — fluxo bruto de entradas e ideias capturadas
 
 ## Subpastas
