@@ -553,3 +553,6 @@ Veja também: [[01 - Lazygit — overview e operações essenciais]].
 Múltiplos working dirs do mesmo repo git, cada um em branch própria. Comando: `git worktree add <path> <branch>`. No Lazygit: `w` em Branches abre opções de worktree pra criar/listar/switch. Útil pra hotfix sem stash do trabalho atual; preferir paths irmãos (`../myproj-hotfix`) aos filhos.
 
 Veja também: [[06 - Lazygit — operações avançadas]].
+
+## Dotfiles
+
