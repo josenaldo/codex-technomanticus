@@ -1,7 +1,7 @@
 ---
 title: "Dicionário do Terminal"
 created: 2026-05-19
-updated: 2026-05-21
+updated: 2026-05-22
 type: glossary
 status: seedling
 aliases: []
@@ -560,6 +560,16 @@ Veja também: [[06 - Lazygit — operações avançadas]].
 Arquivo de configuração de aplicação cujo nome começa com `.` (oculto no `ls` por default), tipicamente em `$HOME` ou `~/.config/`. Exemplos: `~/.zshrc`, `~/.gitconfig`, `~/.config/nvim/init.lua`. Versionar dotfiles permite setup repetível, sync entre máquinas e history de mudanças.
 
 Veja também: [[01 - Princípios — o que são dotfiles e por que versionar]].
+
+### Stow
+GNU stow — gerenciador de symlinks declarativos pra dotfiles. Estrutura: 1 pasta por "package" no repo; `stow <pkg>` cria symlinks no home replicando a estrutura. Comandos: `stow` (aplicar), `stow -D` (unstow), `stow -R` (restow), `stow -n` (dry-run), `stow --adopt` (adota file existente do home pro repo). Simples, sem state file, mas sem templates ou cross-OS automático.
+
+Veja também: [[04 - GNU stow — symlinks declarativos]].
+
+### Symlink
+Symbolic link — arquivo no filesystem que aponta para outro path (arquivo ou diretório). Criado com `ln -s <alvo> <link>`. Inspecionar: `ls -la` (mostra `link -> alvo`). Editar via symlink edita o arquivo alvo. Remover o symlink não afeta o alvo. Base do funcionamento do stow.
+
+Veja também: [[04 - GNU stow — symlinks declarativos]].
 
 ### WSL
 Windows Subsystem for Linux — execução de Linux dentro de Windows via WSL2 (com kernel completo). Filesystem cross-OS: `/mnt/c/` é Windows visto do WSL; `\\wsl$\Ubuntu\` é WSL visto do Windows. I/O entre os dois é lento — trabalhar em `/home/` por padrão. Interop via `cmd.exe`, `powershell.exe`, `clip.exe`.
