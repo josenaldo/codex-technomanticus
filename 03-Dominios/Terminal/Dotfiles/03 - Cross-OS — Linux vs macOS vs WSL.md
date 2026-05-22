@@ -309,40 +309,75 @@ pwd | clip.exe
 
 ## Armadilhas
 
-> [!danger] Dotfile com `/home/<user>` hardcoded falha em macOS
-> **Causa:** macOS usa `/Users/<user>` como home; qualquer path `/home/algo` simplesmente não existe.
-> **Sintoma:** comandos falham com "No such file or directory" em macOS, mas funcionam perfeitamente em Linux.
-> **Como detectar:** `grep -r '/home/' ~/dotfiles/` — qualquer hit é candidato ao problema.
-> **Solução:** substituir todo `/home/<user>` por `$HOME` ou `~`.
+### (1) Dotfile com `/home/<user>` hardcoded falha em macOS
 
-> [!danger] `sed -i 's/a/b/' file` quebra em macOS sem warning visível
-> **Causa:** o BSD sed exige que `-i` receba um argumento (sufixo do backup) — mesmo que vazio.
-> **Sintoma:** em Linux funciona; em macOS o comando cria um arquivo chamado literalmente `s/a/b/` e não edita o original.
-> **Como detectar:** rodar o script em macOS e verificar o diretório — aparece um arquivo com nome estranho.
-> **Solução:** usar `sed -i.bak 's/a/b/' file` (funciona em GNU e BSD) ou instalar `gnu-sed` via brew.
+**Causa:** macOS usa `/Users/<user>` como home; qualquer path `/home/algo` simplesmente não existe.
 
-> [!warning] Brew path errado em Apple Silicon vs Intel
-> **Causa:** Homebrew mudou o prefix de `/usr/local/` para `/opt/homebrew/` no Apple Silicon (M1+).
-> **Sintoma:** apps instalados via brew não estão no PATH; `which brew` retorna nothing ou path errado.
-> **Como detectar:** `arch` mostra `arm64` (Apple Silicon) ou `x86_64` (Intel); `which brew` confirma o prefix.
-> **Solução:** usar `eval "$(brew shellenv)"` no lugar de hardcodar o PATH — o brew já sabe onde está.
+**Sintoma:** comandos falham com "No such file or directory" em macOS, mas funcionam perfeitamente em Linux.
 
-> [!danger] WSL — I/O em `/mnt/c/` é 10x mais lento que em `/home/`
-> **Causa:** o acesso ao filesystem Windows pelo WSL2 passa pelo protocolo 9P, que tem overhead significativo de IPC.
-> **Sintoma:** `npm install` em `/mnt/c/projeto` leva 5 minutos; o mesmo comando em `/home/<user>/projeto` leva 30 segundos.
-> **Como detectar:** comparar o tempo de operações pesadas de I/O nos dois locais — a diferença é imediata.
-> **Solução:** trabalhar sempre em `/home/<user>/`; usar `/mnt/c/` apenas pra acessar arquivos Windows pontuais.
+**Como detectar:** `grep -r '/home/' ~/dotfiles/` — qualquer hit é candidato ao problema.
 
-> [!caution] Versionar shell rc do WSL como `linux.zsh` perde as especificidades
-> **Causa:** WSL é tecnicamente Linux, mas tem particularidades únicas — interop com Windows, clipboard via `clip.exe`, paths via `wslpath`.
-> **Sintoma:** `linux.zsh` é sourcejado no WSL, mas não tem as configs de interop; ou configs de interop entram no `linux.zsh` e quebram em Linux puro.
-> **Como detectar:** testar o mesmo `linux.zsh` em uma VM Linux real — os comandos Windows não existem lá.
-> **Solução:** detectar WSL separadamente (`grep -qi microsoft /proc/version`) e manter um `wsl.zsh` dedicado.
+**Solução:** substituir todo `/home/<user>` por `$HOME` ou `~`.
 
-> [!tip] macOS bash antigo pode quebrar scripts modernos
-> **Causa:** o bash do macOS é 3.2 (2007) por restrição de licença; arrays associativos (`declare -A`) foram adicionados no bash 4.
-> **Sintoma:** script com `declare -A mapa` funciona no Linux (bash 5.x) e falha no macOS com "syntax error".
-> **Solução:** ou instalar bash moderno via `brew install bash`, ou migrar o script para zsh, ou evitar features de bash 4+.
+---
+
+### (2) `sed -i 's/a/b/' file` quebra em macOS sem warning visível
+
+**Causa:** o BSD sed exige que `-i` receba um argumento (sufixo do backup) — mesmo que vazio.
+
+**Sintoma:** em Linux funciona; em macOS o comando cria um arquivo chamado literalmente `s/a/b/` e não edita o original.
+
+**Como detectar:** rodar o script em macOS e verificar o diretório — aparece um arquivo com nome estranho.
+
+**Solução:** usar `sed -i.bak 's/a/b/' file` (funciona em GNU e BSD) ou instalar `gnu-sed` via brew.
+
+---
+
+### (3) Brew path errado em Apple Silicon vs Intel
+
+**Causa:** Homebrew mudou o prefix de `/usr/local/` para `/opt/homebrew/` no Apple Silicon (M1+).
+
+**Sintoma:** apps instalados via brew não estão no PATH; `which brew` retorna nothing ou path errado.
+
+**Como detectar:** `arch` mostra `arm64` (Apple Silicon) ou `x86_64` (Intel); `which brew` confirma o prefix.
+
+**Solução:** usar `eval "$(brew shellenv)"` no lugar de hardcodar o PATH — o brew já sabe onde está.
+
+---
+
+### (4) WSL — I/O em `/mnt/c/` é 10x mais lento que em `/home/`
+
+**Causa:** o acesso ao filesystem Windows pelo WSL2 passa pelo protocolo 9P, que tem overhead significativo de IPC.
+
+**Sintoma:** `npm install` em `/mnt/c/projeto` leva 5 minutos; o mesmo comando em `/home/<user>/projeto` leva 30 segundos.
+
+**Como detectar:** comparar o tempo de operações pesadas de I/O nos dois locais — a diferença é imediata.
+
+**Solução:** trabalhar sempre em `/home/<user>/`; usar `/mnt/c/` apenas pra acessar arquivos Windows pontuais.
+
+---
+
+### (5) Versionar shell rc do WSL como `linux.zsh` perde as especificidades
+
+**Causa:** WSL é tecnicamente Linux, mas tem particularidades únicas — interop com Windows, clipboard via `clip.exe`, paths via `wslpath`.
+
+**Sintoma:** `linux.zsh` é sourcejado no WSL, mas não tem as configs de interop; ou configs de interop entram no `linux.zsh` e quebram em Linux puro.
+
+**Como detectar:** testar o mesmo `linux.zsh` em uma VM Linux real — os comandos Windows não existem lá.
+
+**Solução:** detectar WSL separadamente (`grep -qi microsoft /proc/version`) e manter um `wsl.zsh` dedicado.
+
+---
+
+### (6) macOS bash antigo pode quebrar scripts modernos
+
+**Causa:** o bash do macOS é 3.2 (2007) por restrição de licença; arrays associativos (`declare -A`) foram adicionados no bash 4.
+
+**Sintoma:** script com `declare -A mapa` funciona no Linux (bash 5.x) e falha no macOS com "syntax error".
+
+**Como detectar:** rodar `bash --version` no macOS — se mostrar 3.x, o ambiente é afetado.
+
+**Solução:** ou instalar bash moderno via `brew install bash`, ou migrar o script para zsh, ou evitar features de bash 4+.
 
 ## Em inglês
 
