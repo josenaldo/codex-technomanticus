@@ -69,7 +69,7 @@ Marcar arquivos em `.gitattributes` e commitar normalmente:
 
 ```bash
 cat >> .gitattributes <<'EOF'
-secrets/* filter=git-crypt diff=git-crypt diff=git-crypt
+secrets/* filter=git-crypt diff=git-crypt
 *.key filter=git-crypt diff=git-crypt
 EOF
 

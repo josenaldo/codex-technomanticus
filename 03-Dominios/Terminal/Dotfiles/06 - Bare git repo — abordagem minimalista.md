@@ -218,7 +218,8 @@ dotfiles -c status.showUntrackedFiles=normal status
 
 ## Armadilhas
 
-**`git status` direto em `$HOME` lista milhares de arquivos**
+### (1) `git status` direto em `$HOME` lista milhares de arquivos
+
 **Causa:** `git status` padrão em `$HOME` não usa o alias `dotfiles` — ignora a configuração de `showUntrackedFiles no` do repo bare.
 **Sintoma:** terminal trava ou imprime scroll infinito de arquivos não rastreados ao rodar `git status` no home.
 **Como detectar:** rodar `git status` diretamente em `$HOME` (sem alias).
@@ -226,7 +227,8 @@ dotfiles -c status.showUntrackedFiles=normal status
 
 ---
 
-**`dotfiles status` esconde arquivos novos que deveriam ser versionados**
+### (2) `dotfiles status` esconde arquivos novos que deveriam ser versionados
+
 **Causa:** `status.showUntrackedFiles no` é global para o alias — oculta tudo que não está rastreado, incluindo arquivos que você esqueceu de adicionar.
 **Sintoma:** cria `~/.config/nvim/plugin.lua`, esquece de rastrear, descobre meses depois.
 **Como detectar:** `dotfiles -c status.showUntrackedFiles=normal status` lista todos os untracked temporariamente.
@@ -234,7 +236,8 @@ dotfiles -c status.showUntrackedFiles=normal status
 
 ---
 
-**Checkout em máquina nova falha por arquivo pré-existente**
+### (3) Checkout em máquina nova falha por arquivo pré-existente
+
 **Causa:** git se recusa a sobrescrever arquivos do home que já existem e divergem do repo — comportamento de segurança padrão.
 **Sintoma:** mensagem `error: The following untracked working tree files would be overwritten by checkout`.
 **Como detectar:** a própria mensagem de erro lista os arquivos conflitantes.
@@ -242,7 +245,8 @@ dotfiles -c status.showUntrackedFiles=normal status
 
 ---
 
-**Whitelist `.gitignore` com ordem errada silencia arquivos**
+### (4) Whitelist `.gitignore` com ordem errada silencia arquivos
+
 **Causa:** no gitignore, `!arquivo` dentro de uma pasta ignorada só funciona se a pasta pai foi explicitamente liberada antes. O git não libera children de diretórios ignorados implicitamente.
 **Sintoma:** `dotfiles add ~/.config/nvim/init.lua` não adiciona o arquivo — parece sumir.
 **Como detectar:** `dotfiles check-ignore -v ~/.config/nvim/init.lua` mostra qual regra no `.gitignore` está bloqueando o path e em qual linha.
@@ -250,7 +254,8 @@ dotfiles -c status.showUntrackedFiles=normal status
 
 ---
 
-**Bare repo (`$HOME/.dotfiles/`) rastreado por engano em outro repo**
+### (5) Bare repo (`$HOME/.dotfiles/`) rastreado por engano em outro repo
+
 **Causa:** se você tem outro repo git cobrindo `$HOME` (ex: uma tentativa anterior com outra ferramenta), ele pode enxergar `~/.dotfiles/` como diretório não rastreado e oferecer adicioná-lo.
 **Sintoma:** `git status` em outro repo mostra `~/.dotfiles/` como untracked.
 **Como detectar:** `git status` no repo B lista `.dotfiles/` como novo diretório.
@@ -258,7 +263,8 @@ dotfiles -c status.showUntrackedFiles=normal status
 
 ---
 
-**Alias não persiste após reinicialização**
+### (6) Alias não persiste após reinicialização
+
 **Causa:** o alias foi criado só na sessão atual, sem ser salvo no `~/.zshrc`.
 **Sintoma:** `dotfiles: command not found` ao abrir novo terminal.
 **Como detectar:** abrir novo terminal e rodar `dotfiles status`.
@@ -282,6 +288,7 @@ dotfiles -c status.showUntrackedFiles=normal status
 - [[01 - Princípios — o que são dotfiles e por que versionar]] — pré-req
 - [[04 - GNU stow — symlinks declarativos]] — alternativa com symlinks
 - [[05 - chezmoi — manager completo com templates]] — alternativa completa com templates e secrets
+- [[07 - Secrets em dotfiles — git-crypt, age, sops]] — secrets e arquivos sensíveis em dotfiles
 - [[08 - Bootstrap — máquina nova zero-to-ready]] — bootstrap com bare repo
 - [[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]
 - [[03-Dominios/Terminal/index|Trilha Terminal]]

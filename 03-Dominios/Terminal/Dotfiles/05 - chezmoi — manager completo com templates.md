@@ -193,6 +193,7 @@ sudo apt-get install -y bat ripgrep fd-find
 {{- else if eq .chezmoi.os "darwin" -}}
 brew install bat ripgrep fd
 {{- end }}
+```
 
 ### Comparativo com stow
 

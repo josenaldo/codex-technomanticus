@@ -317,6 +317,7 @@ Para lógica mais elaborada de cross-OS, [[05 - chezmoi — manager completo com
 - [[02 - Anatomia — estrutura típica e XDG Base Directory]] — pré-requisito: entender paths XDG antes de estruturar packages
 - [[05 - chezmoi — manager completo com templates]] — alternativa com templates e cross-OS automático
 - [[06 - Bare git repo — abordagem minimalista]] — alternativa sem dependência externa
+- [[07 - Secrets em dotfiles — git-crypt, age, sops]] — secrets e arquivos sensíveis em dotfiles
 - [[08 - Bootstrap — máquina nova zero-to-ready]] — usa stow no script de bootstrap
 - [[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]
 - [[03-Dominios/Terminal/index|Trilha Terminal]]
