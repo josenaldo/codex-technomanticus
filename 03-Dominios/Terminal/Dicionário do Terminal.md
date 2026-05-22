@@ -561,6 +561,11 @@ Arquivo de configuração de aplicação cujo nome começa com `.` (oculto no `l
 
 Veja também: [[01 - Princípios — o que são dotfiles e por que versionar]].
 
+### WSL
+Windows Subsystem for Linux — execução de Linux dentro de Windows via WSL2 (com kernel completo). Filesystem cross-OS: `/mnt/c/` é Windows visto do WSL; `\\wsl$\Ubuntu\` é WSL visto do Windows. I/O entre os dois é lento — trabalhar em `/home/` por padrão. Interop via `cmd.exe`, `powershell.exe`, `clip.exe`.
+
+Veja também: [[03 - Cross-OS — Linux vs macOS vs WSL]].
+
 ### XDG Base Directory
 Spec freedesktop.org que define paths padronizados pra configs (`$XDG_CONFIG_HOME` → `~/.config/`), dados (`$XDG_DATA_HOME` → `~/.local/share/`), cache (`$XDG_CACHE_HOME` → `~/.cache/`) e state (`$XDG_STATE_HOME` → `~/.local/state/`). Apps modernos respeitam; legados (bash, git, ssh) tipicamente ignoram.
 
