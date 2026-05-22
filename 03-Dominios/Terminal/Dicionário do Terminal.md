@@ -556,3 +556,7 @@ Veja também: [[06 - Lazygit — operações avançadas]].
 
 ## Dotfiles
 
+### Dotfile
+Arquivo de configuração de aplicação cujo nome começa com `.` (oculto no `ls` por default), tipicamente em `$HOME` ou `~/.config/`. Exemplos: `~/.zshrc`, `~/.gitconfig`, `~/.config/nvim/init.lua`. Versionar dotfiles permite setup repetível, sync entre máquinas e history de mudanças.
+
+Veja também: [[01 - Princípios — o que são dotfiles e por que versionar]].
