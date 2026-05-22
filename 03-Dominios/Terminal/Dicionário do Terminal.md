@@ -566,6 +566,11 @@ Abordagem minimalista de versionar dotfiles usando só git: `git init --bare $HO
 
 Veja também: [[06 - Bare git repo — abordagem minimalista]].
 
+### Bootstrap
+Script idempotente que provisiona máquina nova zero-to-ready em 1 comando. Etapas típicas: detectar OS, instalar package manager (Homebrew em macOS), instalar deps (`brew bundle`/`apt`), clonar dotfiles, aplicar (stow/chezmoi/bare). Sempre com `set -euo pipefail` + verificações de estado antes de cada operação destrutiva.
+
+Veja também: [[08 - Bootstrap — máquina nova zero-to-ready]].
+
 ### chezmoi
 Manager de dotfiles em Go com state machine declarativo. Source em `~/.local/share/chezmoi/`; `chezmoi apply` aplica diff. Features: templates (Go), encryption nativa (age/gpg), scripts (`run_once_`), cross-OS automático. Workflow: `chezmoi edit`, `chezmoi diff`, `chezmoi apply`, `chezmoi update`.
 
@@ -580,6 +585,16 @@ Veja também: [[01 - Princípios — o que são dotfiles e por que versionar]].
 Ferramenta que encripta transparentemente files no git, marcados em `.gitattributes` (`file filter=git-crypt diff=git-crypt`). GPG-based; usa AES-256 CTR. Comandos: `git-crypt init`, `git-crypt add-gpg-user <email>`, `git-crypt unlock`, `git-crypt export-key`. Integra com workflow git normal — files plaintext localmente, ciphertext no repo.
 
 Veja também: [[07 - Secrets em dotfiles — git-crypt, age, sops]].
+
+### Idempotente
+Propriedade de operação que produz o mesmo resultado se executada N vezes. Em bootstrap: rodar `bash bootstrap.sh` 2x não quebra (pula etapas já completas). Implementação: `if ! command -v ... >/dev/null; then ...`; ou ferramentas com idempotência nativa (`brew bundle`, chezmoi state machine).
+
+Veja também: [[08 - Bootstrap — máquina nova zero-to-ready]].
+
+### Provisioning
+Automação de setup inicial de uma máquina (deps, configs, services). Pode ser single-machine (script bash) ou fleet (Ansible, Salt, Puppet). Pra dev individual no terminal, bootstrap em shell + Brewfile resolve sem overhead de Ansible.
+
+Veja também: [[08 - Bootstrap — máquina nova zero-to-ready]].
 
 ### Secret (dotfiles)
 Credencial ou informação sensível em arquivos de config: API tokens, SSH/GPG private keys, OAuth refresh tokens, DB credentials. Versionar plaintext = vazar pro histórico git permanentemente. Soluções: encryption (git-crypt, age, sops), ou excluir do repo (`.gitignore`) + setup manual em cada máquina. Regra: commitar plaintext UMA vez = rotação obrigatória.
