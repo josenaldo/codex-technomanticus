@@ -556,6 +556,11 @@ Veja também: [[06 - Lazygit — operações avançadas]].
 
 ## Dotfiles
 
+### age
+Ferramenta de encryption moderna (2019+) por Filippo Valsorda. Alternativa simples ao GPG, com ssh-key based (`-R ~/.ssh/id_ed25519.pub`) ou X25519 keys próprias (`age1...`). Gerar key: `age-keygen -o ~/.age/key.txt`. Encriptar: `age -e -r <recipient> -o out.age in.txt`. Decriptar: `age --decrypt -i ~/.age/key.txt out.age`.
+
+Veja também: [[07 - Secrets em dotfiles — git-crypt, age, sops]].
+
 ### Bare repo (dotfiles)
 Abordagem minimalista de versionar dotfiles usando só git: `git init --bare $HOME/.dotfiles` cria repo separado; `--work-tree=$HOME` rastreia files no home. Alias `dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'` no shell. Vantagens: zero ferramentas extras; portabilidade total. Desvantagens: sem templates, sem secrets, sem cross-OS automático.
 
@@ -570,6 +575,21 @@ Veja também: [[05 - chezmoi — manager completo com templates]].
 Arquivo de configuração de aplicação cujo nome começa com `.` (oculto no `ls` por default), tipicamente em `$HOME` ou `~/.config/`. Exemplos: `~/.zshrc`, `~/.gitconfig`, `~/.config/nvim/init.lua`. Versionar dotfiles permite setup repetível, sync entre máquinas e history de mudanças.
 
 Veja também: [[01 - Princípios — o que são dotfiles e por que versionar]].
+
+### git-crypt
+Ferramenta que encripta transparentemente files no git, marcados em `.gitattributes` (`file filter=git-crypt diff=git-crypt`). GPG-based; usa AES-256 CTR. Comandos: `git-crypt init`, `git-crypt add-gpg-user <email>`, `git-crypt unlock`, `git-crypt export-key`. Integra com workflow git normal — files plaintext localmente, ciphertext no repo.
+
+Veja também: [[07 - Secrets em dotfiles — git-crypt, age, sops]].
+
+### Secret (dotfiles)
+Credencial ou informação sensível em arquivos de config: API tokens, SSH/GPG private keys, OAuth refresh tokens, DB credentials. Versionar plaintext = vazar pro histórico git permanentemente. Soluções: encryption (git-crypt, age, sops), ou excluir do repo (`.gitignore`) + setup manual em cada máquina. Regra: commitar plaintext UMA vez = rotação obrigatória.
+
+Veja também: [[07 - Secrets em dotfiles — git-crypt, age, sops]].
+
+### sops
+Secrets OPerationS (Mozilla, hoje CNCF) — encryption YAML/JSON-aware. Encripta VALORES preservando estrutura (chaves visíveis); permite multi-backend (age, GPG, AWS/GCP/Azure KMS, HashiCorp Vault). Comandos: `sops -e -i file.yaml` (encripta in-place), `sops -d file.yaml` (decripta pra stdout), `sops file.yaml` (editar). Config via `.sops.yaml` no repo.
+
+Veja também: [[07 - Secrets em dotfiles — git-crypt, age, sops]].
 
 ### Stow
 GNU stow — gerenciador de symlinks declarativos pra dotfiles. Estrutura: 1 pasta por "package" no repo; `stow <pkg>` cria symlinks no home replicando a estrutura. Comandos: `stow` (aplicar), `stow -D` (unstow), `stow -R` (restow), `stow -n` (dry-run), `stow --adopt` (adota file existente do home pro repo). Simples, sem state file, mas sem templates ou cross-OS automático.
