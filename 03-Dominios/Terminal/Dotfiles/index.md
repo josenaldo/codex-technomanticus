@@ -49,10 +49,10 @@ Esse galho parte do zero (o que são dotfiles, por que versionar) até workflows
 
 ## Versões assumidas
 
-- **GNU stow:** `<VERSAO_STOW>` (capturada no pré-flight)
-- **chezmoi:** `<VERSAO_CHEZMOI>` (capturada no pré-flight)
-- **git:** `<VERSAO_GIT>` (capturada no pré-flight)
-- **OS de referência:** `<OS_REF>`
+- **GNU stow:** não instalado localmente (notas pesquisadas em docs oficiais)
+- **chezmoi:** não instalado localmente (notas pesquisadas em docs oficiais)
+- **git:** 2.43.0
+- **OS de referência:** Ubuntu 24.04 LTS (Noble Numbat)
 
 ## Veja também
 
