@@ -68,7 +68,7 @@ Máquina nova (novo emprego, reinstalação, container de dev) fica idêntica em
 Edita o `.zshrc` no laptop, commita, dá pull no desktop. Ambos ficam idênticos sem copiar arquivo manualmente.
 
 **3. Histórico de mudanças**
-"Por que está quebrando agora?" → `git log ~/.zshrc` mostra exatamente o que mudou e quando. Reverter uma mudança ruim vira `git revert` ou `git checkout`.
+"Por que está quebrando agora?" → dentro do repo de dotfiles, `git log -- zsh/.zshrc` (ou path relativo ao arquivo) mostra exatamente o que mudou e quando. Reverter uma mudança ruim vira `git revert` ou `git checkout`.
 
 **4. Backup natural**
 O repo remoto (GitHub, GitLab, Codeberg) é backup automático. Disco falhou? Clone o repo e rode o bootstrap.
