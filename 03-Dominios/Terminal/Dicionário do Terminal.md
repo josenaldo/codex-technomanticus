@@ -556,6 +556,11 @@ Veja também: [[06 - Lazygit — operações avançadas]].
 
 ## Dotfiles
 
+### chezmoi
+Manager de dotfiles em Go com state machine declarativo. Source em `~/.local/share/chezmoi/`; `chezmoi apply` aplica diff. Features: templates (Go), encryption nativa (age/gpg), scripts (`run_once_`), cross-OS automático. Workflow: `chezmoi edit`, `chezmoi diff`, `chezmoi apply`, `chezmoi update`.
+
+Veja também: [[05 - chezmoi — manager completo com templates]].
+
 ### Dotfile
 Arquivo de configuração de aplicação cujo nome começa com `.` (oculto no `ls` por default), tipicamente em `$HOME` ou `~/.config/`. Exemplos: `~/.zshrc`, `~/.gitconfig`, `~/.config/nvim/init.lua`. Versionar dotfiles permite setup repetível, sync entre máquinas e history de mudanças.
 
@@ -570,6 +575,11 @@ Veja também: [[04 - GNU stow — symlinks declarativos]].
 Symbolic link — arquivo no filesystem que aponta para outro path (arquivo ou diretório). Criado com `ln -s <alvo> <link>`. Inspecionar: `ls -la` (mostra `link -> alvo`). Editar via symlink edita o arquivo alvo. Remover o symlink não afeta o alvo. Base do funcionamento do stow.
 
 Veja também: [[04 - GNU stow — symlinks declarativos]].
+
+### Template (dotfiles)
+Arquivo com placeholders renderizados em apply-time. chezmoi usa Go template syntax — `{{ .chezmoi.os }}`, `{{ .email }}`, `{{ if ... }}`. Permite single source funcionar cross-OS (`if eq .chezmoi.os "darwin"`) ou por hostname/user. Arquivos `.tmpl` no source são processados antes de serem copiados para o target.
+
+Veja também: [[05 - chezmoi — manager completo com templates]].
 
 ### WSL
 Windows Subsystem for Linux — execução de Linux dentro de Windows via WSL2 (com kernel completo). Filesystem cross-OS: `/mnt/c/` é Windows visto do WSL; `\\wsl$\Ubuntu\` é WSL visto do Windows. I/O entre os dois é lento — trabalhar em `/home/` por padrão. Interop via `cmd.exe`, `powershell.exe`, `clip.exe`.
