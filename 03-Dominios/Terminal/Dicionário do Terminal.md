@@ -482,6 +482,11 @@ Modo de configuração do Zellij (`default_mode "tmux"`) que ativa keybindings t
 
 Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 
+### WASM
+WebAssembly — formato binário portátil e sandboxed pra rodar código compilado em browsers e em runtimes standalone (wasmtime, Wasmer). No contexto do terminal, é a tecnologia que o Zellij usa pra plugins: módulos `.wasm` compilados de Rust/Zig/Go/AssemblyScript, executados num sandbox capability-based. Vantagem: linguagem-agnóstico e seguro por default (sem syscalls não autorizadas).
+
+Veja também: [[Dicionário do Terminal#Plugin (Zellij)]].
+
 ## TUIs de Dev / Lazygit / Lazydocker
 
 ### Bisect (Lazygit)
