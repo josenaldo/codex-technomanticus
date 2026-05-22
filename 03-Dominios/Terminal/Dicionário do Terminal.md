@@ -640,3 +640,6 @@ Veja também: [[03 - Cross-OS — Linux vs macOS vs WSL]].
 Spec freedesktop.org que define paths padronizados pra configs (`$XDG_CONFIG_HOME` → `~/.config/`), dados (`$XDG_DATA_HOME` → `~/.local/share/`), cache (`$XDG_CACHE_HOME` → `~/.cache/`) e state (`$XDG_STATE_HOME` → `~/.local/state/`). Apps modernos respeitam; legados (bash, git, ssh) tipicamente ignoram.
 
 Veja também: [[02 - Anatomia — estrutura típica e XDG Base Directory]].
+
+## CLI Utils
+
