@@ -668,6 +668,11 @@ Env var pra tema de syntax highlight do bat. Lista temas disponíveis com `bat -
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
 
+### cheatsheet
+Folha de uso prático curta e runnable — comandos comuns com 1-3 linhas de contexto cada. Diferente de manpage (referência exaustiva) e tldr (community-driven, genérica): cheatsheet é local + customizável. Ferramenta `cheat` mantém em `~/.config/cheat/cheatsheets/personal/`; também há cheat.sh (online). Útil pra workflows pessoais repetitivos.
+
+Veja também: [[09 - tldr e cheat — docs práticas em fluxo]].
+
 ### E2E encryption (history sync)
 Encryption fim-a-fim aplicada ao histórico de shell antes de sincronizar com servidor remoto. Chave gerada localmente no setup; servidor armazena só bytes encriptados. Modelo do atuin: ainda confia que cliente é honesto; self-host elimina trust de third-party. Não substitui `secrets_filter` (filtrar antes de armazenar é a defesa primária).
 
@@ -772,6 +777,11 @@ Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]].
 Pager que aplica syntax highlight ao output antes de mostrar (vs less puro). bat é syntax pager genérico; delta é syntax pager especializado pra git diff. Ambos usam engine syntect (port do Sublime grammars pra Rust). Trade-off: cores vs performance em arquivos enormes.
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]], [[10 - delta — pager moderno pra git diff]].
+
+### tldr-pages
+Repo comunitário de pages curtas (uma tela, 5-10 exemplos por comando) — github.com/tldr-pages/tldr. Cliente CLI (`tldr`, `tealdeer`, etc.) baixa pages e cacheia local. Cobertura: comandos populares (git, docker, kubectl, tar). Incompleto pra ferramentas obscuras. Traduções por voluntários (PT-BR, ES, etc.) podem estar desatualizadas vs inglês.
+
+Veja também: [[09 - tldr e cheat — docs práticas em fluxo]].
 
 ### TTY detection
 Detecção, pelo programa, se stdout é um terminal interativo ou um pipe/redirecionamento. APIs típicas: `isatty(1)` em C, `[ -t 1 ]` em shell. Ferramentas modernas (bat, eza, fzf) usam TTY detection pra decidir defaults (cores, paginação, header) — em pipe viram modo "plano" pra preservar scripts.
