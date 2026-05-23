@@ -688,6 +688,11 @@ Nome do binário do fd em Debian/Ubuntu (pacote `fd-find`), por colisão com dae
 
 Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]].
 
+### frecency
+Métrica de ranking que combina **frequency** (quantas vezes algo foi acessado) e **recency** (quão recente foi o último acesso). Pontuação decai com o tempo, mantendo "ativos recentes" no topo. Usada por zoxide pra pastas, atuin pra comandos do histórico, e historicamente por Firefox/Awesome Bar pra URLs.
+
+Veja também: [[05 - zoxide — cd inteligente com frecency]], [[06 - atuin — history shell com SQLite e sync]].
+
 ### fuzzy finder
 Ferramenta interativa de match aproximado em listas — recebe linhas pelo stdin, mostra TUI com filtro em tempo real, emite seleção no stdout. fzf é o canônico no shell; Telescope é o equivalente integrado ao Neovim. Foco no fluxo: substitui `grep | head | escolher` por seleção visual rápida.
 
@@ -702,6 +707,11 @@ Veja também: [[01 - fzf — fuzzy finder universal]], [[12 - Stack interativo �
 Comportamento de ferramentas modernas (rg, fd, eza --git) que respeitam `.gitignore` por padrão, pulando arquivos ignorados pelo git. Vantagem: output focado em código relevante. Armadilha: pode esconder arquivos que você quer ver (use `--no-ignore` em rg, `-I` em fd).
 
 Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[04 - eza — ls moderno]].
+
+### init script (shell)
+Trecho de código shell que uma ferramenta (zoxide, atuin, fzf, starship) injeta no `.zshrc`/`.bashrc`/`config.fish` pra ativar funções, widgets, completion e bindings. Tipicamente via `eval "$(<tool> init <shell>)"`. Ordem importa: init scripts que mexem em widgets devem vir DEPOIS do plugin manager.
+
+Veja também: [[05 - zoxide — cd inteligente com frecency]], [[06 - atuin — history shell com SQLite e sync]], [[12 - Stack interativo — fzf zoxide atuin]].
 
 ### MANPAGER
 Env var que define qual pager o `man` usa pra renderizar manpages. Receita comum com bat: `export MANPAGER="sh -c 'col -bx | bat -l man -p'"`. O `col -bx` remove backspaces antigos antes do bat aplicar highlight. Resultado: `man find` com cores e busca interativa.
@@ -732,3 +742,8 @@ Veja também: [[03 - bat — cat moderno com syntax highlight]], [[10 - delta �
 Detecção, pelo programa, se stdout é um terminal interativo ou um pipe/redirecionamento. APIs típicas: `isatty(1)` em C, `[ -t 1 ]` em shell. Ferramentas modernas (bat, eza, fzf) usam TTY detection pra decidir defaults (cores, paginação, header) — em pipe viram modo "plano" pra preservar scripts.
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
+### zoxide
+cd inteligente em Rust baseado em frecency. Mantém DB local de pastas visitadas; `z foo` pula direto pro match mais frecente; `zi foo` abre fzf interativo com candidatos rankeados. Sucessor de `autojump` e `z.sh` — mais rápido, DB mais robusta. Não sincroniza entre máquinas por padrão.
+
+Veja também: [[05 - zoxide — cd inteligente com frecency]], [[12 - Stack interativo — fzf zoxide atuin]].
