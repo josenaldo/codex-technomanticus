@@ -668,6 +668,11 @@ Env var pra tema de syntax highlight do bat. Lista temas disponíveis com `bat -
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
 
+### btop
+Monitor de sistema TUI moderno em C++ — gráficos coloridos pra CPU/RAM/disk/network, mouse-aware, themes customizáveis. Sucessor espiritual de bashtop/bpytop (mesma família). Config persistente em `~/.config/btop/btop.conf`. Modo `--tty_on` pra ssh com bandwidth limitado. Resource overhead maior que htop (~20-50MB RAM).
+
+Veja também: [[11 - Monitores e disco — btop htop dust]].
+
 ### cheatsheet
 Folha de uso prático curta e runnable — comandos comuns com 1-3 linhas de contexto cada. Diferente de manpage (referência exaustiva) e tldr (community-driven, genérica): cheatsheet é local + customizável. Ferramenta `cheat` mantém em `~/.config/cheat/cheatsheets/personal/`; também há cheat.sh (online). Útil pra workflows pessoais repetitivos.
 
@@ -677,6 +682,11 @@ Veja também: [[09 - tldr e cheat — docs práticas em fluxo]].
 Pager moderno especializado em git diff/show/log/blame, com syntax highlight (engine syntect, igual bat), side-by-side opcional, navegação por n/N entre hunks, hyperlinks OSC 8 em terminais que suportam. Configurado no `~/.gitconfig` (`[core] pager = delta`, `[interactive] diffFilter`, `[delta] features = ...`). Standalone também funciona (`diff a b | delta`).
 
 Veja também: [[10 - delta — pager moderno pra git diff]].
+
+### dust
+du moderno em Rust por bootandy — visualização em árvore por tamanho com barras horizontais coloridas. Default mostra top N maiores (~30); `-n` ajusta; `-d` limita profundidade; `-X <nome>` pula pastas/arquivos; `-e <regex>` inclui só matches; `-z <size>` min-size. Não respeita `.gitignore` por padrão — em projetos com `node_modules`/`target` precisa `-X` repetido pra cada um.
+
+Veja também: [[11 - Monitores e disco — btop htop dust]].
 
 ### E2E encryption (history sync)
 Encryption fim-a-fim aplicada ao histórico de shell antes de sincronizar com servidor remoto. Chave gerada localmente no setup; servidor armazena só bytes encriptados. Modelo do atuin: ainda confia que cliente é honesto; self-host elimina trust de third-party. Não substitui `secrets_filter` (filtrar antes de armazenar é a defesa primária).
@@ -737,6 +747,11 @@ Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[04 - eza —
 Sincronização de comandos shell entre máquinas. Naive: arquivo plano sync via dropbox/git (vaza secrets, sem dedup). atuin faz direito: SQLite + protocolo dedicado + E2E encryption. Trade-off: dependência de servidor (atuin.sh hosted ou self-hosted). Comandos sincados ficam disponíveis em todas as máquinas com a mesma key.
 
 Veja também: [[06 - atuin — history shell com SQLite e sync]].
+
+### htop
+Monitor clássico de processos com TUI; desenvolvido desde 2004, ubíquo em servidores Linux. F-keys (F2 setup, F3 search, F5 tree, F9 kill, F10 quit). Footprint mínimo (~5MB RAM). Filtros por user/command. Config em `~/.config/htop/htoprc`. Ainda recomendado pra ssh em servidor minimalista — btop é overkill em conexão lenta.
+
+Veja também: [[11 - Monitores e disco — btop htop dust]].
 
 ### init script (shell)
 Trecho de código shell que uma ferramenta (zoxide, atuin, fzf, starship) injeta no `.zshrc`/`.bashrc`/`config.fish` pra ativar funções, widgets, completion e bindings. Tipicamente via `eval "$(<tool> init <shell>)"`. Ordem importa: init scripts que mexem em widgets devem vir DEPOIS do plugin manager.
