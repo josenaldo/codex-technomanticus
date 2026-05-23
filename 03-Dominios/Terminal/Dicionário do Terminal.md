@@ -648,6 +648,16 @@ Linguagem de filtro do fzf que estende fuzzy match com âncoras e operadores: `^
 
 Veja também: [[01 - fzf — fuzzy finder universal]].
 
+### fd
+find moderno escrito em Rust por sharkdp. Respeita `.gitignore` por padrão, ignora hidden por padrão, paralelo, output colorido. Flags principais: `-t f` (só files), `-e <ext>` (extensão), `-H` (hidden), `-I` (ignora gitignore), `-x <cmd>` (executa por item), `-X <cmd>` (batch).
+
+Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]].
+
+### fdfind
+Nome do binário do fd em Debian/Ubuntu (pacote `fd-find`), por colisão com daemon antigo `fd` do BIND. Solução comum: alias `alias fd=fdfind` ou symlink em `~/.local/bin/fd`. Scripts portáveis devem detectar ambos via `command -v fd || command -v fdfind`.
+
+Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]].
+
 ### fuzzy finder
 Ferramenta interativa de match aproximado em listas — recebe linhas pelo stdin, mostra TUI com filtro em tempo real, emite seleção no stdout. fzf é o canônico no shell; Telescope é o equivalente integrado ao Neovim. Foco no fluxo: substitui `grep | head | escolher` por seleção visual rápida.
 
@@ -658,7 +668,22 @@ Env var com flags default aplicadas em toda invocação do fzf (a menos que sobr
 
 Veja também: [[01 - fzf — fuzzy finder universal]], [[12 - Stack interativo — fzf zoxide atuin]].
 
+### gitignore-aware
+Comportamento de ferramentas modernas (rg, fd, eza --git) que respeitam `.gitignore` por padrão, pulando arquivos ignorados pelo git. Vantagem: output focado em código relevante. Armadilha: pode esconder arquivos que você quer ver (use `--no-ignore` em rg, `-I` em fd).
+
+Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[04 - eza — ls moderno]].
+
 ### preview window (fzf)
 Painel auxiliar do fzf que renderiza preview do item highlighted (arquivo, branch, processo). Configurado via `--preview '<cmd>'` com substituições `{}` (item inteiro), `{1}` (campo 1), etc. Layout via `--preview-window=right:60%:wrap`. Comum usar `bat --color=always {}` pra arquivos.
 
 Veja também: [[01 - fzf — fuzzy finder universal]], [[03 - bat — cat moderno com syntax highlight]].
+
+### ripgrep
+grep moderno em Rust por BurntSushi. Recursivo por padrão, gitignore-aware, smart-case, regex Rust (não PCRE), paralelo. Flags principais: `-t <tipo>`, `-F` (literal), `-P` (PCRE2 se compilado), `-A/-B/-C` (context), `--json` (saída estruturada), `--no-ignore`.
+
+Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[13 - Pipeline JSON e YAML — jq yq fzf]].
+
+### smart-case
+Modo de matching onde query lowercase vira case-insensitive automaticamente; query com qualquer maiúscula vira case-sensitive. Usado por ripgrep, fzf, atuin. Atalho ergonômico — você só especifica `-s`/`-i` quando precisa override.
+
+Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]].
