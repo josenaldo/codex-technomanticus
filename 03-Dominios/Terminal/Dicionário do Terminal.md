@@ -643,3 +643,22 @@ Veja também: [[02 - Anatomia — estrutura típica e XDG Base Directory]].
 
 ## CLI Utils
 
+### extended search syntax (fzf)
+Linguagem de filtro do fzf que estende fuzzy match com âncoras e operadores: `^prefix` (começa com), `suffix$` (termina com), `'exato` (substring exata sem fuzzy), `!negar` (exclui), `a b` (E lógico), `a | b` (OU lógico). Combina com fuzzy default quando não há modificador.
+
+Veja também: [[01 - fzf — fuzzy finder universal]].
+
+### fuzzy finder
+Ferramenta interativa de match aproximado em listas — recebe linhas pelo stdin, mostra TUI com filtro em tempo real, emite seleção no stdout. fzf é o canônico no shell; Telescope é o equivalente integrado ao Neovim. Foco no fluxo: substitui `grep | head | escolher` por seleção visual rápida.
+
+Veja também: [[01 - fzf — fuzzy finder universal]], [[12 - Stack interativo — fzf zoxide atuin]].
+
+### FZF_DEFAULT_OPTS
+Env var com flags default aplicadas em toda invocação do fzf (a menos que sobrescritas localmente). Lugar típico pra configurar layout (`--height`, `--layout=reverse`), bordas (`--border`), preview default (`--preview-window`). Aplicar também em `FZF_CTRL_R_OPTS`, `FZF_CTRL_T_OPTS`, `FZF_ALT_C_OPTS` pra customizar por binding.
+
+Veja também: [[01 - fzf — fuzzy finder universal]], [[12 - Stack interativo — fzf zoxide atuin]].
+
+### preview window (fzf)
+Painel auxiliar do fzf que renderiza preview do item highlighted (arquivo, branch, processo). Configurado via `--preview '<cmd>'` com substituições `{}` (item inteiro), `{1}` (campo 1), etc. Layout via `--preview-window=right:60%:wrap`. Comum usar `bat --color=always {}` pra arquivos.
+
+Veja também: [[01 - fzf — fuzzy finder universal]], [[03 - bat — cat moderno com syntax highlight]].
