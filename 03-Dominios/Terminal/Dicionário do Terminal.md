@@ -658,10 +658,25 @@ Env var pra tema de syntax highlight do bat. Lista temas disponíveis com `bat -
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
 
+### exa (legado)
+ls moderno original em Rust por Benjamin Sago; arquivado em agosto de 2023. Sucessor é eza (fork comunitário ativo). Tutoriais antigos referenciam exa; novos installs devem usar eza diretamente. Flags são quase 100% compat — migração trivial.
+
+Veja também: [[04 - eza — ls moderno]].
+
 ### extended search syntax (fzf)
 Linguagem de filtro do fzf que estende fuzzy match com âncoras e operadores: `^prefix` (começa com), `suffix$` (termina com), `'exato` (substring exata sem fuzzy), `!negar` (exclui), `a b` (E lógico), `a | b` (OU lógico). Combina com fuzzy default quando não há modificador.
 
 Veja também: [[01 - fzf — fuzzy finder universal]].
+
+### eza
+ls moderno em Rust; fork ativo do exa (arquivado em agosto de 2023). Cores por tipo, ícones (com Nerd Font), modo árvore (`--tree`), status git inline (`--git`), color-scale (`--color-scale=size|age`). Sintaxe parcial-compat com ls(1) — algumas flags diferem.
+
+Veja também: [[04 - eza — ls moderno]].
+
+### EZA_COLORS
+Env var pra customizar cores do eza; sintaxe própria (NÃO compatível com `LS_COLORS` do GNU dircolors). Formato chave=código (ex: `di=34;01:fi=32`). Chaves específicas do eza em `eza --color-help` ou na doc oficial. Coexiste com `LS_COLORS` (uma por ferramenta).
+
+Veja também: [[04 - eza — ls moderno]].
 
 ### fd
 find moderno escrito em Rust por sharkdp. Respeita `.gitignore` por padrão, ignora hidden por padrão, paralelo, output colorido. Flags principais: `-t f` (só files), `-e <ext>` (extensão), `-H` (hidden), `-I` (ignora gitignore), `-x <cmd>` (executa por item), `-X <cmd>` (batch).
