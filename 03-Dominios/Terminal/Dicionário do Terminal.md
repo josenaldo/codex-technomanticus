@@ -728,6 +728,11 @@ Trecho de código shell que uma ferramenta (zoxide, atuin, fzf, starship) injeta
 
 Veja também: [[05 - zoxide — cd inteligente com frecency]], [[06 - atuin — history shell com SQLite e sync]], [[12 - Stack interativo — fzf zoxide atuin]].
 
+### jq
+Processor JSON com DSL própria — pipeline de filtros (`|`), seleção (`select`), transformação (`map`), agregação (`reduce`). Lê JSON do stdin, escreve JSON do stdout. Streaming-friendly (processa input-por-input). Filtros: `.foo`, `.[]`, `.[0]`, `.foo?` (opcional). Funções: `select`, `map`, `reduce`, `keys`, `to_entries`. Hedged: jq 1.7+; verifique localmente.
+
+Veja também: [[07 - jq — processor JSON com DSL]], [[13 - Pipeline JSON e YAML — jq yq fzf]].
+
 ### MANPAGER
 Env var que define qual pager o `man` usa pra renderizar manpages. Receita comum com bat: `export MANPAGER="sh -c 'col -bx | bat -l man -p'"`. O `col -bx` remove backspaces antigos antes do bat aplicar highlight. Resultado: `man find` com cores e busca interativa.
 
@@ -738,10 +743,20 @@ Painel auxiliar do fzf que renderiza preview do item highlighted (arquivo, branc
 
 Veja também: [[01 - fzf — fuzzy finder universal]], [[03 - bat — cat moderno com syntax highlight]].
 
+### raw output (jq -r)
+Flag do jq (`-r` ou `--raw-output`) que emite strings JSON sem aspas externas. Essencial pra pipar pra `cd`, `ssh`, `xargs` — sem `-r`, `"alice"` chega literal com aspas e o consumer falha. Manter sem `-r` apenas quando o consumer espera JSON válido (outro jq, yq, parser).
+
+Veja também: [[07 - jq — processor JSON com DSL]].
+
 ### ripgrep
 grep moderno em Rust por BurntSushi. Recursivo por padrão, gitignore-aware, smart-case, regex Rust (não PCRE), paralelo. Flags principais: `-t <tipo>`, `-F` (literal), `-P` (PCRE2 se compilado), `-A/-B/-C` (context), `--json` (saída estruturada), `--no-ignore`.
 
 Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[13 - Pipeline JSON e YAML — jq yq fzf]].
+
+### slurp (jq -s)
+Flag do jq (`-s` ou `--slurp`) que agrupa TODOS os inputs num único array antes de processar. Útil pra agregar múltiplos JSON documents (`jq -s 'add' a.json b.json`). Cuidado em streams gigantes — carrega tudo na memória; pra agregação em stream prefira `reduce` que é incremental.
+
+Veja também: [[07 - jq — processor JSON com DSL]].
 
 ### smart-case
 Modo de matching onde query lowercase vira case-insensitive automaticamente; query com qualquer maiúscula vira case-sensitive. Usado por ripgrep, fzf, atuin. Atalho ergonômico — você só especifica `-s`/`-i` quando precisa override.
