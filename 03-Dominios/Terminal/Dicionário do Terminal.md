@@ -673,6 +673,11 @@ Folha de uso prático curta e runnable — comandos comuns com 1-3 linhas de con
 
 Veja também: [[09 - tldr e cheat — docs práticas em fluxo]].
 
+### delta
+Pager moderno especializado em git diff/show/log/blame, com syntax highlight (engine syntect, igual bat), side-by-side opcional, navegação por n/N entre hunks, hyperlinks OSC 8 em terminais que suportam. Configurado no `~/.gitconfig` (`[core] pager = delta`, `[interactive] diffFilter`, `[delta] features = ...`). Standalone também funciona (`diff a b | delta`).
+
+Veja também: [[10 - delta — pager moderno pra git diff]].
+
 ### E2E encryption (history sync)
 Encryption fim-a-fim aplicada ao histórico de shell antes de sincronizar com servidor remoto. Chave gerada localmente no setup; servidor armazena só bytes encriptados. Modelo do atuin: ainda confia que cliente é honesto; self-host elimina trust de third-party. Não substitui `secrets_filter` (filtrar antes de armazenar é a defesa primária).
 
@@ -747,6 +752,11 @@ Veja também: [[07 - jq — processor JSON com DSL]], [[13 - Pipeline JSON e YAM
 Env var que define qual pager o `man` usa pra renderizar manpages. Receita comum com bat: `export MANPAGER="sh -c 'col -bx | bat -l man -p'"`. O `col -bx` remove backspaces antigos antes do bat aplicar highlight. Resultado: `man find` com cores e busca interativa.
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
+### OSC 8
+Escape sequence ANSI (Operating System Command 8) que define hyperlinks clicáveis em terminais que suportam. Formato: `ESC ] 8 ; ; URL BEL texto ESC ] 8 ; ; BEL`. Terminais com suporte: kitty, wezterm, recent gnome-terminal, recent iTerm. Em terminais sem suporte aparece como texto literal corrompido.
+
+Veja também: [[10 - delta — pager moderno pra git diff]].
 
 ### preview window (fzf)
 Painel auxiliar do fzf que renderiza preview do item highlighted (arquivo, branch, processo). Configurado via `--preview '<cmd>'` com substituições `{}` (item inteiro), `{1}` (campo 1), etc. Layout via `--preview-window=right:60%:wrap`. Comum usar `bat --color=always {}` pra arquivos.
