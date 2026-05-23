@@ -643,6 +643,11 @@ Veja também: [[02 - Anatomia — estrutura típica e XDG Base Directory]].
 
 ## CLI Utils
 
+### anchors e aliases (YAML)
+Mecanismo YAML pra reusar nós: `&name` define anchor; `*name` referencia (alias). Útil em config DRY (definir defaults uma vez, referenciar em vários lugares). Comportamento ao processar com yq: tipicamente expandido por default (anchor vira valor duplicado no output); preservação depende de impl e flags.
+
+Veja também: [[08 - yq — processor YAML e as duas implementações]].
+
 ### atuin
 history shell em SQLite com fuzzy search e sync opcional E2E-encrypted (self-host ou atuin.sh). Cada comando registra cwd, exit code, duração, hostname. Substitui binding nativo do Ctrl-R por TUI rica. Config em `~/.config/atuin/config.toml` (search mode, secrets_filter, auto_sync).
 
@@ -772,6 +777,21 @@ Veja também: [[03 - bat — cat moderno com syntax highlight]], [[10 - delta �
 Detecção, pelo programa, se stdout é um terminal interativo ou um pipe/redirecionamento. APIs típicas: `isatty(1)` em C, `[ -t 1 ]` em shell. Ferramentas modernas (bat, eza, fzf) usam TTY detection pra decidir defaults (cores, paginação, header) — em pipe viram modo "plano" pra preservar scripts.
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
+### YAML multi-doc
+Múltiplos documentos YAML em um arquivo, separados por `---` (e opcionalmente `...` no fim de cada). Comum em manifests Kubernetes (vários resources num arquivo) e CI configs. Processar com yq Go: `yq eval-all` itera todos. Com yq Python: usar `--slurp` pra agregar em array. Splitter clássico: `csplit` ou `yq -s '.[]'`.
+
+Veja também: [[08 - yq — processor YAML e as duas implementações]].
+
+### yq (Go)
+Impl yq de Mike Farah, em Go. Default em Homebrew e snap. Sintaxe própria (estilo jq mas ≠). Preserva comments melhor que Python; suporte rico a multi-doc (`eval-all`); in-place nativo (`-i`). Output default = YAML. Versão `v4.x+`. Padrão em fluxos Kubernetes, kustomize, helm.
+
+Veja também: [[08 - yq — processor YAML e as duas implementações]], [[13 - Pipeline JSON e YAML — jq yq fzf]].
+
+### yq (Python/kislyuk)
+Impl yq de Andrey Kislyuk, em Python — wrappa jq nativo. Default em `pip install yq` e em alguns Debian/Ubuntu. Sintaxe **idêntica a jq** (boa pra quem já usa jq). Output default = JSON (use `-y` pra YAML). Versão `3.x+`. Menos comum em fluxos k8s/helm; comum em pipelines onde já se usa jq pesado.
+
+Veja também: [[08 - yq — processor YAML e as duas implementações]].
 
 ### zoxide
 cd inteligente em Rust baseado em frecency. Mantém DB local de pastas visitadas; `z foo` pula direto pro match mais frecente; `zi foo` abre fzf interativo com candidatos rankeados. Sucessor de `autojump` e `z.sh` — mais rápido, DB mais robusta. Não sincroniza entre máquinas por padrão.
