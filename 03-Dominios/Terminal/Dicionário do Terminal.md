@@ -643,6 +643,21 @@ Veja também: [[02 - Anatomia — estrutura típica e XDG Base Directory]].
 
 ## CLI Utils
 
+### bat
+cat moderno em Rust por sharkdp, com syntax highlight (engine syntect), line numbers, integração git (changes inline), paginação automática via less. TTY-aware: em pipe vira cat puro. Configurável via `BAT_THEME`, `BAT_PAGER`, `BAT_STYLE`. Comum como preview do fzf e como `MANPAGER`.
+
+Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
+### batcat
+Nome do binário do bat em Debian/Ubuntu (pacote `bat`), por colisão com `bacula-console` antigo. Solução comum: alias `alias bat=batcat` ou symlink em `~/.local/bin/bat`. Scripts portáveis devem detectar ambos via `command -v bat || command -v batcat`.
+
+Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
+### BAT_THEME
+Env var pra tema de syntax highlight do bat. Lista temas disponíveis com `bat --list-themes`. Defaults úteis: `Monokai Extended` (fundo escuro), `GitHub` (fundo claro), `Dracula`, `OneHalfDark`/`OneHalfLight`. Compatível com temas customizados de Sublime/TextMate.
+
+Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
 ### extended search syntax (fzf)
 Linguagem de filtro do fzf que estende fuzzy match com âncoras e operadores: `^prefix` (começa com), `suffix$` (termina com), `'exato` (substring exata sem fuzzy), `!negar` (exclui), `a b` (E lógico), `a | b` (OU lógico). Combina com fuzzy default quando não há modificador.
 
@@ -673,6 +688,11 @@ Comportamento de ferramentas modernas (rg, fd, eza --git) que respeitam `.gitign
 
 Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[04 - eza — ls moderno]].
 
+### MANPAGER
+Env var que define qual pager o `man` usa pra renderizar manpages. Receita comum com bat: `export MANPAGER="sh -c 'col -bx | bat -l man -p'"`. O `col -bx` remove backspaces antigos antes do bat aplicar highlight. Resultado: `man find` com cores e busca interativa.
+
+Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
 ### preview window (fzf)
 Painel auxiliar do fzf que renderiza preview do item highlighted (arquivo, branch, processo). Configurado via `--preview '<cmd>'` com substituições `{}` (item inteiro), `{1}` (campo 1), etc. Layout via `--preview-window=right:60%:wrap`. Comum usar `bat --color=always {}` pra arquivos.
 
@@ -687,3 +707,13 @@ Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[13 - Pipelin
 Modo de matching onde query lowercase vira case-insensitive automaticamente; query com qualquer maiúscula vira case-sensitive. Usado por ripgrep, fzf, atuin. Atalho ergonômico — você só especifica `-s`/`-i` quando precisa override.
 
 Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]].
+
+### syntax pager
+Pager que aplica syntax highlight ao output antes de mostrar (vs less puro). bat é syntax pager genérico; delta é syntax pager especializado pra git diff. Ambos usam engine syntect (port do Sublime grammars pra Rust). Trade-off: cores vs performance em arquivos enormes.
+
+Veja também: [[03 - bat — cat moderno com syntax highlight]], [[10 - delta — pager moderno pra git diff]].
+
+### TTY detection
+Detecção, pelo programa, se stdout é um terminal interativo ou um pipe/redirecionamento. APIs típicas: `isatty(1)` em C, `[ -t 1 ]` em shell. Ferramentas modernas (bat, eza, fzf) usam TTY detection pra decidir defaults (cores, paginação, header) — em pipe viram modo "plano" pra preservar scripts.
+
+Veja também: [[03 - bat — cat moderno com syntax highlight]].
