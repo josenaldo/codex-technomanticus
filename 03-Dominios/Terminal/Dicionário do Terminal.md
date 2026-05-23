@@ -643,6 +643,11 @@ Veja também: [[02 - Anatomia — estrutura típica e XDG Base Directory]].
 
 ## CLI Utils
 
+### atuin
+history shell em SQLite com fuzzy search e sync opcional E2E-encrypted (self-host ou atuin.sh). Cada comando registra cwd, exit code, duração, hostname. Substitui binding nativo do Ctrl-R por TUI rica. Config em `~/.config/atuin/config.toml` (search mode, secrets_filter, auto_sync).
+
+Veja também: [[06 - atuin — history shell com SQLite e sync]], [[12 - Stack interativo — fzf zoxide atuin]].
+
 ### bat
 cat moderno em Rust por sharkdp, com syntax highlight (engine syntect), line numbers, integração git (changes inline), paginação automática via less. TTY-aware: em pipe vira cat puro. Configurável via `BAT_THEME`, `BAT_PAGER`, `BAT_STYLE`. Comum como preview do fzf e como `MANPAGER`.
 
@@ -657,6 +662,11 @@ Veja também: [[03 - bat — cat moderno com syntax highlight]].
 Env var pra tema de syntax highlight do bat. Lista temas disponíveis com `bat --list-themes`. Defaults úteis: `Monokai Extended` (fundo escuro), `GitHub` (fundo claro), `Dracula`, `OneHalfDark`/`OneHalfLight`. Compatível com temas customizados de Sublime/TextMate.
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
+### E2E encryption (history sync)
+Encryption fim-a-fim aplicada ao histórico de shell antes de sincronizar com servidor remoto. Chave gerada localmente no setup; servidor armazena só bytes encriptados. Modelo do atuin: ainda confia que cliente é honesto; self-host elimina trust de third-party. Não substitui `secrets_filter` (filtrar antes de armazenar é a defesa primária).
+
+Veja também: [[06 - atuin — history shell com SQLite e sync]].
 
 ### exa (legado)
 ls moderno original em Rust por Benjamin Sago; arquivado em agosto de 2023. Sucessor é eza (fork comunitário ativo). Tutoriais antigos referenciam exa; novos installs devem usar eza diretamente. Flags são quase 100% compat — migração trivial.
@@ -707,6 +717,11 @@ Veja também: [[01 - fzf — fuzzy finder universal]], [[12 - Stack interativo �
 Comportamento de ferramentas modernas (rg, fd, eza --git) que respeitam `.gitignore` por padrão, pulando arquivos ignorados pelo git. Vantagem: output focado em código relevante. Armadilha: pode esconder arquivos que você quer ver (use `--no-ignore` em rg, `-I` em fd).
 
 Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]], [[04 - eza — ls moderno]].
+
+### history sync
+Sincronização de comandos shell entre máquinas. Naive: arquivo plano sync via dropbox/git (vaza secrets, sem dedup). atuin faz direito: SQLite + protocolo dedicado + E2E encryption. Trade-off: dependência de servidor (atuin.sh hosted ou self-hosted). Comandos sincados ficam disponíveis em todas as máquinas com a mesma key.
+
+Veja também: [[06 - atuin — history shell com SQLite e sync]].
 
 ### init script (shell)
 Trecho de código shell que uma ferramenta (zoxide, atuin, fzf, starship) injeta no `.zshrc`/`.bashrc`/`config.fish` pra ativar funções, widgets, completion e bindings. Tipicamente via `eval "$(<tool> init <shell>)"`. Ordem importa: init scripts que mexem em widgets devem vir DEPOIS do plugin manager.
