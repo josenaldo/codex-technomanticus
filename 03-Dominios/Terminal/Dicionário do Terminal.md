@@ -860,6 +860,11 @@ Modo do Zellij/tmux que esconde UI auxiliar (status bar, tabs bar) pra maximizar
 
 Veja também: [[02 - Anatomia da sessão de trabalho]].
 
+### gh CLI
+CLI oficial do GitHub. Subcomandos relevantes pra workflow: `gh pr list`, `gh pr checkout <num>`, `gh pr review`, `gh pr comment`. Permite fluxo de review sem sair do terminal.
+
+Veja também: [[05 - Code review no terminal]].
+
 ### keyboard-first
 Modelo de interação onde teclado é primário pra navegação/edição/comando; mouse é opcional. Origem em editores modais (vi/Emacs) e tradição Unix. Vale pra texto/código/navegação repetitiva; não vale pra graphics, ER design, browsing visual. Ganho real é consistência e ergonomia, não velocidade pura.
 
@@ -869,6 +874,11 @@ Veja também: [[01 - Filosofia keyboard-first — quando vale e quando não]].
 Sessão Zellij/tmux com nome humano (`zellij -s projeto`) que sobrevive desconexão SSH, sleep, exit do emulator. Use pra projeto contínuo. Oposto de [[Dicionário do Terminal#ephemeral session|ephemeral session]].
 
 Veja também: [[02 - Anatomia da sessão de trabalho]], [[04 - Setup matinal e tear-down]].
+
+### PR checkout
+Operação `gh pr checkout <num>` que cria branch local correspondendo a um PR aberto e faz checkout nela. Exige working tree limpo (ou worktree).
+
+Veja também: [[05 - Code review no terminal]], [[07 - Worktrees + Zellij paralelos]].
 
 ### RSI
 Repetitive Strain Injury — lesão por esforço repetitivo, comum em devs por digitação intensa. Manifestações: dor/formigamento em pulso, cotovelo, antebraço. Prevenção: pausas, alongamentos, postura, teclado ergonômico, CapsLock→Ctrl. Ignorar até doer é a armadilha clássica.
