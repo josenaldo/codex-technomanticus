@@ -870,6 +870,11 @@ Modelo de interação onde teclado é primário pra navegação/edição/comando
 
 Veja também: [[01 - Filosofia keyboard-first — quando vale e quando não]].
 
+### leader key
+Tecla "raiz" que abre namespace de atalhos custom. Permite combinações infinitas sem usar Ctrl/Alt/Shift. Defaults comuns: `<Space>` (nvim/LazyVim), `Ctrl-G` (Zellij), `Ctrl-B` (tmux; muitos rebindam pra `Ctrl-A`).
+
+Veja também: [[06 - Ergonomia das mãos]].
+
 ### named session
 Sessão Zellij/tmux com nome humano (`zellij -s projeto`) que sobrevive desconexão SSH, sleep, exit do emulator. Use pra projeto contínuo. Oposto de [[Dicionário do Terminal#ephemeral session|ephemeral session]].
 
