@@ -900,3 +900,8 @@ Encerramento intencional da sessão de trabalho. Decide entre detach (`zellij d`
 
 Veja também: [[04 - Setup matinal e tear-down]].
 
+### worktree
+Funcionalidade nativa do git (`git worktree add <path> <branch>`) que permite múltiplos working trees do mesmo repo em pastas separadas. Cada worktree tem branch e estado independentes; `.git/` é compartilhado. Útil pra multi-task sem stash. Não-trivial com `node_modules` ou DBs locais.
+
+Veja também: [[07 - Worktrees + Zellij paralelos]].
+
