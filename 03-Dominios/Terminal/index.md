@@ -3,9 +3,9 @@ title: "Terminal"
 type: moc
 publish: true
 created: 2026-05-18
-updated: 2026-05-21
+updated: 2026-05-24
 status: growing
-progresso: andamento
+progresso: completo
 tags:
   - terminal
   - moc
@@ -16,7 +16,7 @@ aliases:
 # Terminal
 
 > [!abstract] TL;DR
-> Trilha do ambiente de trabalho no terminal: editor (Neovim/LazyVim), shell (Zsh/p10k), multiplexer (Zellij), TUIs (Lazygit/Lazydocker), dotfiles, CLI utils e playbooks de workflow. 7 galhos, ~57 notas distribuídas em 3 fases (Iniciado → Adepto → Magus) por galho. Cada galho é implementado em sessão própria — esta nota é o roadmap interativo da trilha.
+> Trilha do ambiente de trabalho no terminal: editor (Neovim/LazyVim), shell (Zsh/p10k), multiplexer (Zellij), TUIs (Lazygit/Lazydocker), dotfiles, CLI utils e playbooks de workflow. 7 galhos completos, ~67 notas distribuídas em 3 fases (Iniciado → Adepto → Magus) por galho + capstones. Trilha fechada — cada galho é referência consultável.
 
 Esta trilha cobre o ecossistema TUI/keyboard-first pra trabalho de desenvolvimento no terminal. Cada galho é fechado em si mesmo (Iniciado + Adepto + Magus na mesma execução) e nasce em uma sessão dedicada com spec e plano próprios.
 
@@ -30,7 +30,7 @@ Esta trilha cobre o ecossistema TUI/keyboard-first pra trabalho de desenvolvimen
 - [[03-Dominios/Terminal/TUIs/index|TUIs de Dev]] — galho 4: Lazygit + Lazydocker (operações, config, debugging)
 - [[03-Dominios/Terminal/Dotfiles/index|Dotfiles]] — galho 5: princípios, ferramentas (stow/chezmoi/bare), secrets, bootstrap, sync
 - [[03-Dominios/Terminal/CLI Utils/index|CLI Utils]] — galho 6: substituições modernas de utilitários UNIX (cat/ls/grep/find/du/top) + fluxo interativo (fzf/zoxide/atuin) + processamento estruturado (jq/yq)
-- Workflow — galho 7 (planejado): playbooks cross-tool
+- [[03-Dominios/Terminal/Workflow/index|Workflow]] — galho 7: playbooks cross-tool (onboarding, review, worktrees, refactoring) + meta-práticas (filosofia keyboard-first, ergonomia, transições de contexto) + capstone (anatomia de um dia)
 
 ### Fases de aprendizado
 
