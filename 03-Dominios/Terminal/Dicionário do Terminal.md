@@ -850,13 +850,33 @@ Veja também: [[12 - Stack interativo — fzf zoxide atuin]], [[06 - atuin — h
 
 ## Workflow
 
+### ephemeral session
+Sessão Zellij/tmux sem nome (ID anônimo) que some ao detach final ou kill. Use pra one-shot tasks; pra trabalho contínuo prefira [[Dicionário do Terminal#named session|named session]].
+
+Veja também: [[02 - Anatomia da sessão de trabalho]].
+
+### focus mode
+Modo do Zellij/tmux que esconde UI auxiliar (status bar, tabs bar) pra maximizar área de código. Útil em deep work, pair-programming, screencast.
+
+Veja também: [[02 - Anatomia da sessão de trabalho]].
+
 ### keyboard-first
 Modelo de interação onde teclado é primário pra navegação/edição/comando; mouse é opcional. Origem em editores modais (vi/Emacs) e tradição Unix. Vale pra texto/código/navegação repetitiva; não vale pra graphics, ER design, browsing visual. Ganho real é consistência e ergonomia, não velocidade pura.
 
 Veja também: [[01 - Filosofia keyboard-first — quando vale e quando não]].
 
+### named session
+Sessão Zellij/tmux com nome humano (`zellij -s projeto`) que sobrevive desconexão SSH, sleep, exit do emulator. Use pra projeto contínuo. Oposto de [[Dicionário do Terminal#ephemeral session|ephemeral session]].
+
+Veja também: [[02 - Anatomia da sessão de trabalho]], [[04 - Setup matinal e tear-down]].
+
 ### RSI
 Repetitive Strain Injury — lesão por esforço repetitivo, comum em devs por digitação intensa. Manifestações: dor/formigamento em pulso, cotovelo, antebraço. Prevenção: pausas, alongamentos, postura, teclado ergonômico, CapsLock→Ctrl. Ignorar até doer é a armadilha clássica.
 
 Veja também: [[06 - Ergonomia das mãos]].
+
+### sessão de trabalho
+Container persistente de tabs/panes/processos no terminal. Composta por: session (raiz) > tabs (áreas visíveis) > panes (splits dentro de tab) + layout opcional. Zellij/tmux atuam como window manager do terminal.
+
+Veja também: [[02 - Anatomia da sessão de trabalho]].
 
