@@ -773,6 +773,11 @@ Escape sequence ANSI (Operating System Command 8) que define hyperlinks clicáve
 
 Veja também: [[10 - delta — pager moderno pra git diff]].
 
+### pipefail
+Opção do shell bash/zsh (`set -o pipefail`) que faz o exit code de um pipeline refletir falha em QUALQUER estágio, não só no último. Sem pipefail: `cmd_falha | jq` retorna sucesso (jq não falhou). Com pipefail: pipeline propaga erro. Combinar com `set -euo pipefail` (errexit + nounset + pipefail) como prelude padrão de scripts robustos.
+
+Veja também: [[13 - Pipeline JSON e YAML — jq yq fzf]].
+
 ### preview window (fzf)
 Painel auxiliar do fzf que renderiza preview do item highlighted (arquivo, branch, processo). Configurado via `--preview '<cmd>'` com substituições `{}` (item inteiro), `{1}` (campo 1), etc. Layout via `--preview-window=right:60%:wrap`. Comum usar `bat --color=always {}` pra arquivos.
 
@@ -812,6 +817,11 @@ Veja também: [[09 - tldr e cheat — docs práticas em fluxo]].
 Detecção, pelo programa, se stdout é um terminal interativo ou um pipe/redirecionamento. APIs típicas: `isatty(1)` em C, `[ -t 1 ]` em shell. Ferramentas modernas (bat, eza, fzf) usam TTY detection pra decidir defaults (cores, paginação, header) — em pipe viram modo "plano" pra preservar scripts.
 
 Veja também: [[03 - bat — cat moderno com syntax highlight]].
+
+### xargs -r
+Flag GNU do `xargs` (também `--no-run-if-empty`) que evita executar o comando quando a lista de entrada é vazia. Default do xargs: executa comando sem args mesmo em lista vazia — semantics indefinida (`ls` lista cwd; `rm` falha). Sempre usar em scripts. macOS pode precisar `--no-run-if-empty` (BSD xargs).
+
+Veja também: [[13 - Pipeline JSON e YAML — jq yq fzf]].
 
 ### YAML multi-doc
 Múltiplos documentos YAML em um arquivo, separados por `---` (e opcionalmente `...` no fim de cada). Comum em manifests Kubernetes (vários resources num arquivo) e CI configs. Processar com yq Go: `yq eval-all` itera todos. Com yq Python: usar `--slurp` pra agregar em array. Splitter clássico: `csplit` ou `yq -s '.[]'`.
