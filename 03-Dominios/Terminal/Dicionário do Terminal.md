@@ -850,6 +850,16 @@ Veja também: [[12 - Stack interativo — fzf zoxide atuin]], [[06 - atuin — h
 
 ## Workflow
 
+### context switching cost
+Custo cognitivo de alternar entre tarefas/contextos. Estimado em 10-30min de "reaquecimento" pra retomar tarefa cognitivamente exigente. Mitigação: blocos longos, políticas explícitas, fechamento limpo de contextos.
+
+Veja também: [[09 - Transições de contexto]].
+
+### deep work
+Atividade focada e cognitivamente exigente sustentada por 1-4h, produzindo valor único. Termo cunhado por Cal Newport. Oposto: [[Dicionário do Terminal#shallow task|shallow task]].
+
+Veja também: [[09 - Transições de contexto]].
+
 ### ephemeral session
 Sessão Zellij/tmux sem nome (ID anônimo) que some ao detach final ou kill. Use pra one-shot tasks; pra trabalho contínuo prefira [[Dicionário do Terminal#named session|named session]].
 
@@ -899,6 +909,16 @@ Veja também: [[06 - Ergonomia das mãos]].
 Container persistente de tabs/panes/processos no terminal. Composta por: session (raiz) > tabs (áreas visíveis) > panes (splits dentro de tab) + layout opcional. Zellij/tmux atuam como window manager do terminal.
 
 Veja também: [[02 - Anatomia da sessão de trabalho]].
+
+### shallow task
+Atividade logística/repetitiva (emails, tickets pequenos, sync) tipicamente reativa. Cumulativa em horas; baixa profundidade cognitiva por unidade. Oposto: [[Dicionário do Terminal#deep work|deep work]].
+
+Veja também: [[09 - Transições de contexto]].
+
+### switching cost
+Sinônimo curto pra [[Dicionário do Terminal#context switching cost|context switching cost]].
+
+Veja também: [[09 - Transições de contexto]].
 
 ### tear-down
 Encerramento intencional da sessão de trabalho. Decide entre detach (`zellij d`, preserva estado) e kill (`zellij k <nome>`, descarta). Hábito que reduz acúmulo de sessões zombies e perda de contexto entre dias. Oposto: setup matinal.
