@@ -832,3 +832,8 @@ Veja também: [[08 - yq — processor YAML e as duas implementações]].
 cd inteligente em Rust baseado em frecency. Mantém DB local de pastas visitadas; `z foo` pula direto pro match mais frecente; `zi foo` abre fzf interativo com candidatos rankeados. Sucessor de `autojump` e `z.sh` — mais rápido, DB mais robusta. Não sincroniza entre máquinas por padrão.
 
 Veja também: [[05 - zoxide — cd inteligente com frecency]], [[12 - Stack interativo — fzf zoxide atuin]].
+
+### zsh widget
+Função zsh registrada via `zle -N <nome>` pra responder a uma keypress (binding via `bindkey '^R' <nome>`). zoxide, atuin, fzf usam widgets pra inserir/sobrescrever Ctrl-R, Ctrl-T, Alt-C. Conflitos surgem quando duas ferramentas tentam definir o mesmo widget. Order matters: o último init wins.
+
+Veja também: [[12 - Stack interativo — fzf zoxide atuin]], [[06 - atuin — history shell com SQLite e sync]].
