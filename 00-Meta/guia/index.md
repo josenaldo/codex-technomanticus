@@ -26,6 +26,7 @@ Esta pasta reúne a documentação prática do vault — desde como começar a u
 - [[Dicionario de Magia Tecnomante]] — vocabulário interno e metáforas do vault
 - [[Manutenção do vault]] — rotinas de manutenção e higiene
 - [[Publicação]] — fluxo de publicação via Quartz v4
+- [[skills]] — catálogo das skills do vault (slash commands)
 - [[Wikilinks e MOCs]] — convenções de links e Maps of Content
 - [[workflow]] — fluxo de trabalho diário de captura e refino
 
