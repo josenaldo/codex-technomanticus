@@ -1,7 +1,7 @@
 ---
 title: "Dicionário do Terminal"
 created: 2026-05-19
-updated: 2026-05-22
+updated: 2026-05-24
 type: glossary
 status: seedling
 aliases: []
