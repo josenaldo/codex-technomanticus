@@ -29,7 +29,7 @@ Esta trilha cobre o ecossistema TUI/keyboard-first pra trabalho de desenvolvimen
 - [[03-Dominios/Terminal/Multiplexer/index|Multiplexer]] — galho 3: Zellij (sessions, layouts KDL, plugins WASM)
 - [[03-Dominios/Terminal/TUIs/index|TUIs de Dev]] — galho 4: Lazygit + Lazydocker (operações, config, debugging)
 - [[03-Dominios/Terminal/Dotfiles/index|Dotfiles]] — galho 5: princípios, ferramentas (stow/chezmoi/bare), secrets, bootstrap, sync
-- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, eza, zoxide…
+- [[03-Dominios/Terminal/CLI Utils/index|CLI Utils]] — galho 6: substituições modernas de utilitários UNIX (cat/ls/grep/find/du/top) + fluxo interativo (fzf/zoxide/atuin) + processamento estruturado (jq/yq)
 - Workflow — galho 7 (planejado): playbooks cross-tool
 
 ### Fases de aprendizado
