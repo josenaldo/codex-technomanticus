@@ -847,3 +847,8 @@ Veja também: [[05 - zoxide — cd inteligente com frecency]], [[12 - Stack inte
 Função zsh registrada via `zle -N <nome>` pra responder a uma keypress (binding via `bindkey '^R' <nome>`). zoxide, atuin, fzf usam widgets pra inserir/sobrescrever Ctrl-R, Ctrl-T, Alt-C. Conflitos surgem quando duas ferramentas tentam definir o mesmo widget. Order matters: o último init wins.
 
 Veja também: [[12 - Stack interativo — fzf zoxide atuin]], [[06 - atuin — history shell com SQLite e sync]].
+
+## Workflow
+
+<!-- Verbetes preenchidos task a task durante implementação do galho 7. -->
+
