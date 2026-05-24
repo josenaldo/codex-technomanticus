@@ -880,3 +880,8 @@ Container persistente de tabs/panes/processos no terminal. Composta por: session
 
 Veja também: [[02 - Anatomia da sessão de trabalho]].
 
+### tear-down
+Encerramento intencional da sessão de trabalho. Decide entre detach (`zellij d`, preserva estado) e kill (`zellij k <nome>`, descarta). Hábito que reduz acúmulo de sessões zombies e perda de contexto entre dias. Oposto: setup matinal.
+
+Veja também: [[04 - Setup matinal e tear-down]].
+
