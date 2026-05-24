@@ -885,6 +885,11 @@ Operação `gh pr checkout <num>` que cria branch local correspondendo a um PR a
 
 Veja também: [[05 - Code review no terminal]], [[07 - Worktrees + Zellij paralelos]].
 
+### quickfix
+Lista global do Neovim de "localizações" (file:line:col + texto). Populada por `:grep`, `:make`, LSP diagnostics, Telescope. Navegada por `:cnext`/`:cprev`/`:copen`. Editada em lote por `:cdo <cmd>` (cada match) ou `:cfdo <cmd>` (cada arquivo). Essencial pra refactor multi-arquivo.
+
+Veja também: [[08 - Refactoring multi-arquivo]].
+
 ### RSI
 Repetitive Strain Injury — lesão por esforço repetitivo, comum em devs por digitação intensa. Manifestações: dor/formigamento em pulso, cotovelo, antebraço. Prevenção: pausas, alongamentos, postura, teclado ergonômico, CapsLock→Ctrl. Ignorar até doer é a armadilha clássica.
 
