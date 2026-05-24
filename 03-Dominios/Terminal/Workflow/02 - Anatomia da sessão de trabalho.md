@@ -210,7 +210,7 @@ Para `myproj` com alice trabalhando em 3 features simultâneas: `zellij -s feat/
 - [[04 - Setup matinal e tear-down]]
 - [[07 - Worktrees + Zellij paralelos]]
 - [[03-Dominios/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes|Modelo mental Multiplexer]]
-- [[03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
+- [[03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento|Sessões persistentes (galho 3)]]
 - [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
 - [[03-Dominios/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#named session|named session]]

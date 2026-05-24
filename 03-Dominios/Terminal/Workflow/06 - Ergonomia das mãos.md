@@ -169,8 +169,8 @@ Critério simples: se não usou 3x nos últimos 7 dias, remova o mapeamento.
 
 - [[01 - Filosofia keyboard-first — quando vale e quando não]]
 - [[09 - Transições de contexto]]
-- [[03-Dominios/Terminal/Editor/02 - Motions e operadores|Motions Vim (galho 1)]]
-- [[03-Dominios/Terminal/Shell/06 - ZLE — Zsh Line Editor|ZLE (galho 2)]]
+- [[03-Dominios/Terminal/Editor/02 - Motions, operadores e text objects|Motions Vim (galho 1)]]
+- [[03-Dominios/Terminal/Shell/07 - ZLE|ZLE (galho 2)]]
 - [[03-Dominios/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais|Keybindings Zellij (galho 3)]]
 - [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
 - [[03-Dominios/Terminal/index|Trilha Terminal]]

@@ -156,7 +156,7 @@ gh pr comment <num> --body "Falta cobrir caso X"
 - [[03 - Onboarding em projeto novo]]
 - [[07 - Worktrees + Zellij paralelos]]
 - [[08 - Refactoring multi-arquivo]]
-- [[03-Dominios/Terminal/TUIs/01 - Lazygit — overview|Lazygit overview (galho 4)]]
+- [[03-Dominios/Terminal/TUIs/01 - Lazygit — overview e operações essenciais|Lazygit overview (galho 4)]]
 - [[03-Dominios/Terminal/TUIs/03 - Lazygit — operações intermediárias|Lazygit intermediário (galho 4)]]
 - [[03-Dominios/Terminal/CLI Utils/10 - delta — pager moderno pra git diff|delta (galho 6)]]
 - [[03-Dominios/Terminal/Workflow/index|MOC do galho]]

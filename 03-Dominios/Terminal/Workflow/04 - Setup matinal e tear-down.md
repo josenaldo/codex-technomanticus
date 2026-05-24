@@ -168,7 +168,7 @@ Prefixo da máquina deixa claro onde a sessão vive ao ler `zellij ls` de qualqu
 - [[02 - Anatomia da sessão de trabalho]]
 - [[07 - Worktrees + Zellij paralelos]]
 - [[09 - Transições de contexto]]
-- [[03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
+- [[03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento|Sessões persistentes (galho 3)]]
 - [[03-Dominios/Terminal/Multiplexer/05 - Layouts declarativos em KDL|Layouts KDL (galho 3)]]
 - [[03-Dominios/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync|atuin (galho 6)]]
 - [[03-Dominios/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
