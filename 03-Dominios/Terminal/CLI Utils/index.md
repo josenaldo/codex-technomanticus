@@ -71,19 +71,19 @@ Galho parte do zero (sem assumir uso prévio) até workflows compostos. Iniciado
 
 Capturadas no pré-flight da execução:
 
-- **fzf:** `<VERSAO_FZF>`
+- **fzf:** `0.4x+` (não instalado no sistema de referência)
 - **ripgrep:** `14.1.0` (sistema de referência: Ubuntu 24.04)
 - **fd:** `9.0.0` (binário `fdfind` em Debian/Ubuntu)
-- **bat:** `<VERSAO_BAT>` (binário `batcat` em Debian/Ubuntu)
-- **eza:** `<VERSAO_EZA>`
-- **zoxide:** `<VERSAO_ZOXIDE>`
-- **atuin:** `<VERSAO_ATUIN>`
+- **bat:** `0.24+` (não instalado no sistema de referência; binário `batcat` em Debian/Ubuntu)
+- **eza:** `0.18+` (não instalado no sistema de referência)
+- **zoxide:** `0.9+` (não instalado no sistema de referência)
+- **atuin:** `18+` (não instalado no sistema de referência)
 - **jq:** `1.7` (sistema de referência: Ubuntu 24.04)
-- **yq:** `<VERSAO_YQ>` (especificar Go ou Python)
-- **delta:** `<VERSAO_DELTA>`
-- **btop:** `<VERSAO_BTOP>`
+- **yq:** `4.x+` (Go, de mikefarah; não instalado no sistema de referência) ou `3.x+` (Python, de kislyuk)
+- **delta:** `0.19+` (não instalado no sistema de referência)
+- **btop:** `1.3+` (não instalado no sistema de referência)
 - **htop:** `3.3.0` (sistema de referência: Ubuntu 24.04)
-- **dust:** `<VERSAO_DUST>`
+- **dust:** `1.2+` (não instalado no sistema de referência)
 - **OS de referência:** Ubuntu 24.04.4 LTS
 
 Versões nas notas são hedged ("0.4x+; verifique localmente") pra envelhecer bem.
