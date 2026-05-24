@@ -850,6 +850,11 @@ Veja também: [[12 - Stack interativo — fzf zoxide atuin]], [[06 - atuin — h
 
 ## Workflow
 
+### capstone
+Nota-síntese ao final de um galho/trilha que NÃO re-explica conceitos; compõe-os. Tese-em-ato. Padrão: cenário → fluxo → decisões em bifurcações. Assume galhos anteriores dominados.
+
+Veja também: [[10 - Sessão ideal — anatomia de um dia keyboard-first]].
+
 ### context switching cost
 Custo cognitivo de alternar entre tarefas/contextos. Estimado em 10-30min de "reaquecimento" pra retomar tarefa cognitivamente exigente. Mitigação: blocos longos, políticas explícitas, fechamento limpo de contextos.
 
