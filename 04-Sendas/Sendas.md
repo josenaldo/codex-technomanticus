@@ -6,7 +6,7 @@ publish: true
 
 # Sendas
 
-Caminhos curatoriais que sequenciam notas de [[03-Domínios]] em trilhas de estudo orientadas a um objetivo. Sendas não contêm conhecimento próprio — apontam pra Domínios via wikilinks.
+Caminhos curatoriais que sequenciam notas de [[03-Dominios]] em trilhas de estudo orientadas a um objetivo. Sendas não contêm conhecimento próprio — apontam pra Domínios via wikilinks.
 
 ## Sendas disponíveis
 
@@ -26,7 +26,7 @@ Caminhos curatoriais que sequenciam notas de [[03-Domínios]] em trilhas de estu
 
 - [[Mestres Jedi]] — desenvolvedores e referências (em `00-Meta/mestres/`)
 - [[Cursos completos]], [[Courses]] — catálogo de cursos (em `00-Meta/recursos/`)
-- [[RPA]] — Robotic Process Automation (em `03-Domínios/RPA/`)
+- [[RPA]] — Robotic Process Automation (em `03-Dominios/RPA/`)
 - [[Brag Document]] — registro de conquistas profissionais (em `00-Meta/recursos/`)
 
 ---

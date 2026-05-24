@@ -11,7 +11,7 @@ publish: false
 
 ## 1. Contexto e motivação
 
-O Codex Technomanticus organiza o conhecimento em quatro zonas operacionais (`01-Pergaminhos`, `02-Glosas`, `03-Domínios`, `04-Sendas`). O pipeline declarado é **pergaminho → glosa → nota de domínio**, mas a transição **glosa → domínio** nunca foi formalizada: como uma glosa "vira" parte do corpus, qual o vínculo entre ela e a nota resultante, qual o ciclo de vida de uma glosa após a promoção, e como o repositório de glosas se mantém legível quando crescer pra centenas/milhares de fichamentos.
+O Codex Technomanticus organiza o conhecimento em quatro zonas operacionais (`01-Pergaminhos`, `02-Glosas`, `03-Dominios`, `04-Sendas`). O pipeline declarado é **pergaminho → glosa → nota de domínio**, mas a transição **glosa → domínio** nunca foi formalizada: como uma glosa "vira" parte do corpus, qual o vínculo entre ela e a nota resultante, qual o ciclo de vida de uma glosa após a promoção, e como o repositório de glosas se mantém legível quando crescer pra centenas/milhares de fichamentos.
 
 Hoje, em 2026-05-04, o vault tem **uma única glosa** — momento ideal pra desenhar o pipeline limpo, com estrutura de pastas, frontmatter e skills antes que o uso real introduza débito.
 
@@ -62,13 +62,13 @@ Entregar:
 | **Voz** | Situada (TL;DR de uma fonte específica, citações, comentário pessoal) | Idiomática do vault (atemporal, integrativa) |
 | **Datada** | Sim (campo `read`) | Vagamente (`created`/`updated`, mas o conteúdo é atemporal) |
 | **Fontes** | Uma única — o material original | Múltiplas (incluindo glosas, observação, experiência) |
-| **Pasta** | `02-Glosas/` | `03-Domínios/<X>/` |
+| **Pasta** | `02-Glosas/` | `03-Dominios/<X>/` |
 
-A regra: **glosa não vira nota; ela alimenta nota.** Quando o tema merece consolidação no corpus, o usuário cria uma nota nova em `03-Domínios/`, com voz própria, citando a(s) glosa(s) como fontes.
+A regra: **glosa não vira nota; ela alimenta nota.** Quando o tema merece consolidação no corpus, o usuário cria uma nota nova em `03-Dominios/`, com voz própria, citando a(s) glosa(s) como fontes.
 
 ### 4.2 Vínculo bidirecional
 
-- **Da glosa pra nota:** campo `promovida_em: ["[[03-Domínios/X/Nota]]", ...]` (lista — uma glosa pode alimentar múltiplas notas).
+- **Da glosa pra nota:** campo `promovida_em: ["[[03-Dominios/X/Nota]]", ...]` (lista — uma glosa pode alimentar múltiplas notas).
 - **Da nota pra glosa:** seção `## Fontes` no corpo da nota, com wikilinks pras glosas alimentadoras.
 
 Razão pra duplicação: ambos os lados precisam ser navegáveis no Obsidian. A glosa "sabe" pra onde foi promovida; a nota "sabe" suas fontes. Atualização de ambos é responsabilidade das skills (não do usuário manualmente).
@@ -247,14 +247,14 @@ arquivar se idade_inativa > 30 dias
 1. Lê a glosa: extrai `title`, `tags`, `TL;DR`.
 2. **Sugere domínio destino** com base nas tags da glosa (heurística: cada tag mapeia opcionalmente pra um domínio; tag mais específica vence). Apresenta sugestão; usuário confirma ou escolhe outro domínio interativamente.
 3. **Sugere nome da nota.** Default: derivar do `title` da glosa simplificado pro conceito principal. Pede confirmação; usuário pode digitar outro.
-4. **Verifica se a nota já existe** em `03-Domínios/<X>/<Nome>.md`. Se sim: pergunta se quer (a) anexar a glosa às fontes da nota existente, (b) escolher outro nome, (c) cancelar.
+4. **Verifica se a nota já existe** em `03-Dominios/<X>/<Nome>.md`. Se sim: pergunta se quer (a) anexar a glosa às fontes da nota existente, (b) escolher outro nome, (c) cancelar.
 5. **Cria a nota** usando `Template - Nota.md` (caminho absoluto resolvido), com:
    - Frontmatter: `progresso: andamento`, `status: seedling`, tags = (tags-da-glosa ∪ tags-do-domínio), `created`/`updated` = hoje.
    - `## O que é` pré-populada com a TL;DR da glosa entre comentários: `<!-- ponto de partida da glosa: ... -->`.
    - `## Fontes` populada com `[[02-Glosas/Promovidas/<ano>/<slug>|título-da-glosa]]`.
    - Outras seções (`## Como funciona`, `## Quando usar`, etc.) ficam vazias com seus comentários originais.
 6. **Move a glosa** de `02-Glosas/<slug>.md` pra `02-Glosas/Promovidas/<ano-atual>/<slug>.md`.
-7. **Atualiza frontmatter da glosa**: `promovida_em: ["[[03-Domínios/<X>/<Nome>]]"]`. Atualiza `updated` pra hoje.
+7. **Atualiza frontmatter da glosa**: `promovida_em: ["[[03-Dominios/<X>/<Nome>]]"]`. Atualiza `updated` pra hoje.
 8. **Atualiza `progresso`** da glosa pra `feito` (se ainda estiver `andamento`).
 9. Reporta: caminhos dos dois arquivos modificados/criados.
 
@@ -277,7 +277,7 @@ arquivar se idade_inativa > 30 dias
 2. Lista as candidatas (slug + título + tags + status). Usuário **seleciona**: default todas marcadas; pode tirar.
 3. Lê o conteúdo de cada selecionada (TL;DR + pontos-chave).
 4. **Sugere domínio + nome da nota** baseado nas tags comuns (interseção das tags das glosas).
-5. **Cria nota** em `03-Domínios/<X>/<Nome>.md`:
+5. **Cria nota** em `03-Dominios/<X>/<Nome>.md`:
    - Frontmatter idêntico a `/promover-glosa` (progresso, status, tags consolidadas).
    - Conteúdo: skeleton com seções padrão `## O que é`, `## Como funciona`, etc., **vazias com comentários** (não tenta gerar a síntese textual — voz própria do usuário).
    - `## Fontes` populada com wikilinks pras N glosas selecionadas.
@@ -467,7 +467,7 @@ A spec é considerada implementada quando:
 - [ ] As 4 skills criadas em `.claude/skills/<nome>/SKILL.md` com SKILL frontmatter completo (`name`, `description`).
 - [ ] Subpasta `00-Meta/guia/pipeline/` criada com 5 arquivos preenchidos.
 - [ ] `00-Meta/guia/sendas-e-dominios.md` deletado.
-- [ ] Validação manual: criar uma glosa de teste, rodar `/promover-glosa`, verificar que (a) glosa moveu pra `Promovidas/<ano>/`, (b) nota nasceu em `03-Domínios/X/Y.md` com `## Fontes` correto, (c) `promovida_em` da glosa atualizado.
+- [ ] Validação manual: criar uma glosa de teste, rodar `/promover-glosa`, verificar que (a) glosa moveu pra `Promovidas/<ano>/`, (b) nota nasceu em `03-Dominios/X/Y.md` com `## Fontes` correto, (c) `promovida_em` da glosa atualizado.
 - [ ] Validação manual: rodar `/arquivar-glosas` numa glosa de teste com `updated` antiga, verificar movimento pra `Arquivadas/`.
 - [ ] Validação manual: rodar `/acordar-glosas` na glosa arquivada, verificar volta pra raiz e reset de `progresso`.
 - [ ] Validação manual: rodar `/sintetizar-glosas` com 2+ glosas, verificar que nota é criada com todas as fontes e cada glosa foi movida.

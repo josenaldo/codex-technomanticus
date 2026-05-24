@@ -36,7 +36,7 @@
 - **Sem testes automatizados.** Dashboards são markdown + queries Dataview. Validação é visual no Obsidian (renderiza? colunas batem? totais batem com sample manual?).
 - **Sem TDD.** Não aplicável.
 - **Commits frequentes.** Cada task termina com 1 commit. Mensagens em português; **NÃO usar `Co-Authored-By: Claude`**.
-- **Caracteres especiais nos paths.** `03-Domínios`, etc. — preservar acentos (e o nome `Dashboard - O que estudar hoje.md` tem espaços + traço).
+- **Caracteres especiais nos paths.** `03-Dominios`, etc. — preservar acentos (e o nome `Dashboard - O que estudar hoje.md` tem espaços + traço).
 - **Desktop-only:** dashboards não funcionam no Android. Documentar no README.
 - **Hoje é 2026-05-05.**
 - **Vault público NÃO é tocado.** Restrição absoluta.
@@ -100,7 +100,7 @@ Sem commit nesta task — só verificação.
 
 ```bash
 cd ~/repos/personal/codex-technomanticus-apocrypha
-ls -d 00-Meta 02-Glosas 03-Domínios 04-Sendas 2>&1
+ls -d 00-Meta 02-Glosas 03-Dominios 04-Sendas 2>&1
 test ! -e Codex && echo "Codex ausente — ok pra criar" || echo "Codex já existe — investigar antes"
 ```
 
@@ -117,12 +117,12 @@ ln -s ../codex-technomanticus Codex
 
 ```bash
 ls -la Codex
-ls Codex/03-Domínios | head -5
+ls Codex/03-Dominios | head -5
 ```
 
 Expected:
 - `ls -la Codex` mostra `Codex -> ../codex-technomanticus`.
-- `ls Codex/03-Domínios` lista pastas de domínio do público (Arquitetura, JavaScript, IA, etc.).
+- `ls Codex/03-Dominios` lista pastas de domínio do público (Arquitetura, JavaScript, IA, etc.).
 
 Se `ls Codex/...` der "No such file", o symlink está dangling — verificar layout e posição relativa.
 
@@ -295,19 +295,19 @@ TABLE WITHOUT ID
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "abandonado")) AS "Abandonadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
-FROM "Codex/03-Domínios"
+FROM "Codex/03-Dominios"
 GROUP BY true
 ```
 
 ## Por domínio
 
 ```dataviewjs
-const pages = dv.pages('"Codex/03-Domínios"');
+const pages = dv.pages('"Codex/03-Dominios"');
 
 const groups = {};
 for (const p of pages) {
   const parts = p.file.folder.split("/");
-  const idx = parts.indexOf("03-Domínios");
+  const idx = parts.indexOf("03-Dominios");
   if (idx === -1 || !parts[idx + 1]) continue;
   const dominio = parts[idx + 1];
   if (!groups[dominio]) groups[dominio] = { feito: 0, andamento: 0, pausado: 0, abandonado: 0, pendente: 0 };
@@ -333,7 +333,7 @@ const sendas = dv.pages('"Codex/04-Sendas"');
 const rows = [];
 for (const senda of sendas) {
   const targets = senda.file.outlinks
-    .filter(l => l.path && l.path.includes("03-Domínios/"))
+    .filter(l => l.path && l.path.includes("03-Dominios/"))
     .map(l => dv.page(l.path))
     .filter(p => p);
 
@@ -367,10 +367,10 @@ Se aparecer "No results" em algum bloco: provavelmente o symlink não resolve OU
 
 - [ ] **Step 4: Smoke test cruzado**
 
-Pegar 1 domínio (ex: `JavaScript`). Contar manualmente notas em `Codex/03-Domínios/JavaScript/` (ou `~/repos/personal/codex-technomanticus/03-Domínios/JavaScript/`):
+Pegar 1 domínio (ex: `JavaScript`). Contar manualmente notas em `Codex/03-Dominios/JavaScript/` (ou `~/repos/personal/codex-technomanticus/03-Dominios/JavaScript/`):
 
 ```bash
-find ~/repos/personal/codex-technomanticus/03-Domínios/JavaScript -name "*.md" | wc -l
+find ~/repos/personal/codex-technomanticus/03-Dominios/JavaScript -name "*.md" | wc -l
 ```
 
 Confirmar que a soma das colunas (Feitas+Andamento+Pausadas+Abandonadas+Pendentes) na linha JavaScript do dashboard bate com esse número (ou difere por arquivos `index.md`/`README.md` excluíveis — usar julgamento).
@@ -450,7 +450,7 @@ dv.table(["Item", "Senda(s)", "Dias desde update"], rows);
 Callouts `[!convite]` em notas que pertencem a sendas onde já existe pelo menos uma nota com `progresso ∈ {andamento, feito}`.
 
 ```dataviewjs
-const allNotes = dv.pages('"Codex/03-Domínios"');
+const allNotes = dv.pages('"Codex/03-Dominios"');
 const activeNotePaths = new Set();
 for (const n of allNotes) {
   const prog = n.progresso ?? "pendente";
@@ -465,7 +465,7 @@ const activeSendas = sendas.filter(s =>
 const rows = [];
 for (const senda of activeSendas) {
   for (const link of senda.file.outlinks) {
-    if (!link.path || !link.path.includes("03-Domínios/")) continue;
+    if (!link.path || !link.path.includes("03-Dominios/")) continue;
     const note = dv.page(link.path);
     if (!note) continue;
 
@@ -494,7 +494,7 @@ Abrir `Dashboard - O que estudar hoje.md`. Confirmar:
 - Bloco 1 ("Em andamento") renderiza tabela com 3 colunas (Item, Senda(s), Dias desde update). Pode estar vazio se não houver itens com `progresso: andamento` agora — checar manualmente:
 
 ```bash
-grep -l "progresso: andamento" ~/repos/personal/codex-technomanticus/03-Domínios -r 2>/dev/null | head
+grep -l "progresso: andamento" ~/repos/personal/codex-technomanticus/03-Dominios -r 2>/dev/null | head
 grep -l "progresso: andamento" ~/repos/personal/codex-technomanticus/02-Glosas -r 2>/dev/null | head
 ```
 
@@ -503,7 +503,7 @@ Se houver matches no grep mas a tabela estiver vazia: investigar (possível prob
 - Bloco 2 ("Convites em sendas ativas") renderiza tabela. Pode estar vazio se não houver callouts `[!convite]` em sendas ativas — confirmar manualmente:
 
 ```bash
-grep -r "\[!convite\]" ~/repos/personal/codex-technomanticus/03-Domínios | head
+grep -r "\[!convite\]" ~/repos/personal/codex-technomanticus/03-Dominios | head
 ```
 
 - [ ] **Step 3: Smoke test do bloco 1**

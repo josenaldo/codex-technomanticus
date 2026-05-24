@@ -560,7 +560,7 @@ Notas com mais "shelf life" — fundamentos teóricos, princípios de defesa em 
 ```dataview
 TABLE
   length(rows.file.path) AS "Notas"
-FROM "03-Domínios/IA"
+FROM "03-Dominios/IA"
 WHERE type != "moc"
 GROUP BY file.folder
 SORT file.folder

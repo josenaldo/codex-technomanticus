@@ -16,7 +16,7 @@ Regras práticas de como escrever notas no Codex. O objetivo é que qualquer not
 
 ## Atomicidade — uma ideia por nota
 
-Cada nota em `03-Domínios/` cobre **uma única ideia evergreen**. Se você está descrevendo dois conceitos relacionados, faça duas notas e linke uma na outra.
+Cada nota em `03-Dominios/` cobre **uma única ideia evergreen**. Se você está descrevendo dois conceitos relacionados, faça duas notas e linke uma na outra.
 
 Sinais de que a nota deveria virar duas:
 

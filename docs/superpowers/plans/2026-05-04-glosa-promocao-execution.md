@@ -39,7 +39,7 @@
 - **Sem testes unitários.** Skills são markdown declarativo; "testar" significa criar glosas-teste e rodar a skill (Task 15).
 - **Sem TDD.** Não aplicável a este tipo de código (Markdown+procedimento). Validação é manual.
 - **Commits frequentes.** Cada task termina com 1 commit. Mensagens em português, estilo dos commits recentes (`feat:`, `docs:`, `chore:`). **NÃO usar `Co-Authored-By: Claude`** (preferência do usuário).
-- **Caracteres especiais nos paths.** `00-Meta`, `03-Domínios`, `Validação`, etc. — preserve acentos.
+- **Caracteres especiais nos paths.** `00-Meta`, `03-Dominios`, `Validação`, etc. — preserve acentos.
 - **Hoje é 2026-05-04.**
 - **Apocrypha NÃO é tocado.** Restrição absoluta.
 
@@ -356,7 +356,7 @@ O Codex Technomanticus é um grimório vivo: o conhecimento entra como link brut
 |---|---|---|
 | 1. Pergaminhos | `01-Pergaminhos/` | Captura inicial: inbox, links soltos, ideias cruas. |
 | 2. Glosas | `02-Glosas/` | Fichamentos de materiais externos consumidos. |
-| 3. Domínios | `03-Domínios/` | Corpus do conhecimento. **Centro gravitacional do vault**. |
+| 3. Domínios | `03-Dominios/` | Corpus do conhecimento. **Centro gravitacional do vault**. |
 | 4. Sendas | `04-Sendas/` | Mapas curatoriais — fluxogramas de leitura sobre os domínios. |
 
 ## Pipeline de alimentação
@@ -581,12 +581,12 @@ Body padrão:
 
 Glosa **alimenta** notas de domínio; ela mesma não vira nota. Quando o tema merece consolidação:
 
-- **Glosa → Nota (1→1):** `/promover-glosa <slug>` cria uma nota nova em `03-Domínios/X/` com a TL;DR como ponto de partida e a glosa em `## Fontes`.
+- **Glosa → Nota (1→1):** `/promover-glosa <slug>` cria uma nota nova em `03-Dominios/X/` com a TL;DR como ponto de partida e a glosa em `## Fontes`.
 - **N glosas → 1 nota:** `/sintetizar-glosas tag:<X>` cria uma nota sintetizando várias glosas (ela prepara o esqueleto com `## Fontes` populada; você escreve a síntese).
 
 Em ambos os casos:
 - A glosa é **movida** pra `Promovidas/<ano>/`.
-- O frontmatter da glosa ganha `promovida_em: ["[[03-Domínios/X/Nome]]"]`.
+- O frontmatter da glosa ganha `promovida_em: ["[[03-Dominios/X/Nome]]"]`.
 - A nota nasce com `progresso: andamento` e `status: seedling` (ponto de partida — você amadurece depois).
 
 ## Manutenção do repositório
@@ -657,7 +657,7 @@ tags:
 
 # Domínios — corpus do conhecimento
 
-A zona `03-Domínios/` é o **centro gravitacional do vault**. Cada domínio é uma estante coerente sobre um tema, com vocabulário próprio, ferramental próprio, comunidade própria. Notas de domínio são amadurecidas, sintetizadas, idiomáticas do vault.
+A zona `03-Dominios/` é o **centro gravitacional do vault**. Cada domínio é uma estante coerente sobre um tema, com vocabulário próprio, ferramental próprio, comunidade própria. Notas de domínio são amadurecidas, sintetizadas, idiomáticas do vault.
 
 ## Modelo de organização (estantes)
 
@@ -814,9 +814,9 @@ Lista plana ordenada. Use quando a senda é direta e não precisa de fases.
 ```markdown
 ## Sequência
 
-1. [[03-Domínios/Frontend/index|Frontend (engenharia)]]
-2. [[03-Domínios/JavaScript/JavaScript|JavaScript]]
-3. [[03-Domínios/TypeScript/index|TypeScript]]
+1. [[03-Dominios/Frontend/index|Frontend (engenharia)]]
+2. [[03-Dominios/JavaScript/JavaScript|JavaScript]]
+3. [[03-Dominios/TypeScript/index|TypeScript]]
 ...
 ```
 
@@ -827,12 +827,12 @@ Estrutura em fases. Use quando a senda tem etapas conceituais distintas.
 ```markdown
 ## Fase 0 — Cultura e intuição
 
-1. [[03-Domínios/IA/O que é IA]]
-2. [[03-Domínios/IA/LLMs vs ML clássico]]
+1. [[03-Dominios/IA/O que é IA]]
+2. [[03-Dominios/IA/LLMs vs ML clássico]]
 
 ## Fase 1 — Fundamentos
 
-1. [[03-Domínios/IA/Tokenização]]
+1. [[03-Dominios/IA/Tokenização]]
 ...
 ```
 
@@ -840,7 +840,7 @@ Estrutura em fases. Use quando a senda tem etapas conceituais distintas.
 
 Toda senda tem um bloco `## Progresso` no fim, populado por queries Dataview que agregam o `progresso` das notas referenciadas. Vide `00-Meta/templates/trail.md`.
 
-A primeira tabela mostra cada nota referenciada com seu status atual (`pendente`, `andamento`, `feito`, etc.), com display em formato `Pasta/Arquivo` (caminho relativo a `03-Domínios/`). A segunda tabela ("Resumo") mostra contagens.
+A primeira tabela mostra cada nota referenciada com seu status atual (`pendente`, `andamento`, `feito`, etc.), com display em formato `Pasta/Arquivo` (caminho relativo a `03-Dominios/`). A segunda tabela ("Resumo") mostra contagens.
 
 No site Quartz, esse bloco aparece como markdown bruto (Quartz não roda Dataview). Tracking é experiência local do Obsidian.
 
@@ -927,7 +927,7 @@ Use `Write` tool. Conteúdo:
 ```markdown
 ---
 name: promover-glosa
-description: Promove uma glosa em `02-Glosas/` para uma nota nova em `03-Domínios/`. Cria a nota usando Template - Nota, popula `## Fontes` com wikilink pra glosa, move a glosa pra `02-Glosas/Promovidas/<ano>/`, e atualiza o frontmatter da glosa com `promovida_em`. Use quando o usuário invocar `/promover-glosa <slug>`, falar em "promover glosa", "criar nota a partir dessa glosa", "esta glosa merece nota", ou pedir explicitamente pra fazer essa transição.
+description: Promove uma glosa em `02-Glosas/` para uma nota nova em `03-Dominios/`. Cria a nota usando Template - Nota, popula `## Fontes` com wikilink pra glosa, move a glosa pra `02-Glosas/Promovidas/<ano>/`, e atualiza o frontmatter da glosa com `promovida_em`. Use quando o usuário invocar `/promover-glosa <slug>`, falar em "promover glosa", "criar nota a partir dessa glosa", "esta glosa merece nota", ou pedir explicitamente pra fazer essa transição.
 ---
 
 # Skill: promover-glosa
@@ -966,17 +966,17 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
    - `promovida_em` (lista atual; se já tiver itens, será incrementada).
 
 3. **Sugerir domínio destino.** Heurística:
-   - Mapear cada tag pra um domínio candidato olhando `03-Domínios/`. Ex.: tag `react` → `03-Domínios/React/`. Tag `validacao` → `03-Domínios/Frontend/Validação/`.
+   - Mapear cada tag pra um domínio candidato olhando `03-Dominios/`. Ex.: tag `react` → `03-Dominios/React/`. Tag `validacao` → `03-Dominios/Frontend/Validação/`.
    - Apresentar a sugestão com a tag correspondente. Se múltiplas tags casam com domínios diferentes, listar todas e pedir escolha.
    - Permitir o usuário corrigir/digitar outro caminho.
 
 4. **Sugerir nome da nota.** Default: derivar do `title` da glosa. Ex.: glosa "DESIGN.md — A format specification for describing a visual identity to coding agents — google-labs-code" → sugerir `DESIGN.md` ou `Design Spec for AI Agents`. Pedir confirmação.
 
-5. **Verificar se a nota já existe** em `03-Domínios/<X>/<Nome>.md`:
+5. **Verificar se a nota já existe** em `03-Dominios/<X>/<Nome>.md`:
    - Se SIM: perguntar (a) anexar a glosa às fontes da nota existente, (b) escolher outro nome, (c) cancelar.
    - Se NÃO: prosseguir.
 
-6. **Criar a nota nova** com `Write` tool em `03-Domínios/<X>/<Nome>.md`. Conteúdo:
+6. **Criar a nota nova** com `Write` tool em `03-Dominios/<X>/<Nome>.md`. Conteúdo:
 
    ```markdown
    ---
@@ -1038,7 +1038,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
    Se a glosa já estava em `02-Glosas/Promovidas/<ano>/`, NÃO mover de novo (idempotência).
 
 8. **Atualizar frontmatter da glosa** com `Edit` tool:
-   - `promovida_em`: append `[[03-Domínios/<X>/<Nome>]]` (lista cresce; preserva itens anteriores).
+   - `promovida_em`: append `[[03-Dominios/<X>/<Nome>]]` (lista cresce; preserva itens anteriores).
    - `updated`: hoje.
    - `progresso`: se atual é `andamento`, mudar pra `feito`.
 
@@ -1046,7 +1046,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 
    ```
    Glosa promovida: <slug>.
-   Nota criada: 03-Domínios/<X>/<Nome>.md
+   Nota criada: 03-Dominios/<X>/<Nome>.md
    Glosa movida pra: 02-Glosas/Promovidas/<ano>/<slug>.md
    ```
 
@@ -1054,7 +1054,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 
    ```
    Glosa <slug> já estava em Promovidas/<ano>/.
-   Nova nota criada: 03-Domínios/<X>/<Nome>.md
+   Nova nota criada: 03-Dominios/<X>/<Nome>.md
    Glosa agora referencia <N> notas.
    ```
 
@@ -1064,7 +1064,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 |---|---|
 | Glosa não existe | Erro claro com sugestão de listar glosas existentes |
 | Glosa já em Promovidas/ | Append em `promovida_em`, não move; cria nota normalmente |
-| Domínio destino não existe | Pergunta se cria. Se sim, criar `03-Domínios/<X>/index.md` mínimo antes de criar a nota |
+| Domínio destino não existe | Pergunta se cria. Se sim, criar `03-Dominios/<X>/index.md` mínimo antes de criar a nota |
 | Nota já existe | Perguntar (a) anexar fonte, (b) outro nome, (c) cancelar |
 | Conflito de nome em Promovidas | Avisar e abortar (nome de arquivo é único por construção) |
 | Tags da glosa não mapeiam pra nenhum domínio | Listar TODOS os domínios disponíveis e pedir escolha |
@@ -1164,7 +1164,7 @@ Cria UMA nota nova de domínio sintetizando VÁRIAS glosas relacionadas a um tem
 
 5. **Verificar se a nota já existe.** Mesma lógica de `/promover-glosa`.
 
-6. **Criar a nota nova** em `03-Domínios/<X>/<Nome>.md`:
+6. **Criar a nota nova** em `03-Dominios/<X>/<Nome>.md`:
 
    ```markdown
    ---
@@ -1224,7 +1224,7 @@ Cria UMA nota nova de domínio sintetizando VÁRIAS glosas relacionadas a um tem
 9. **Reportar ao usuário:**
 
    ```
-   Síntese criada: 03-Domínios/<X>/<Nome>.md (<N> fontes)
+   Síntese criada: 03-Dominios/<X>/<Nome>.md (<N> fontes)
    Glosas movidas pra Promovidas/<ano>/:
      - <slug-1>
      - <slug-2>
@@ -1560,11 +1560,11 @@ Acompanhar fluxo interativo:
 - Skill move glosa pra `Promovidas/2026/`.
 
 Validar:
-- Nota criada em `03-Domínios/<X>/<Nome>.md`.
+- Nota criada em `03-Dominios/<X>/<Nome>.md`.
 - Frontmatter da nota: `progresso: andamento`, `status: seedling`.
 - Seção `## Fontes` da nota tem wikilink pra glosa.
 - Glosa em `02-Glosas/Promovidas/2026/2026-test-1.md`.
-- Frontmatter da glosa: `promovida_em: ["[[03-Domínios/<X>/<Nome>]]"]`, `updated: hoje`, `progresso: feito`.
+- Frontmatter da glosa: `promovida_em: ["[[03-Dominios/<X>/<Nome>]]"]`, `updated: hoje`, `progresso: feito`.
 
 - [ ] **Step 3: Testar `/sintetizar-glosas`**
 
@@ -1618,7 +1618,7 @@ Validar:
 Apagar todas as glosas e notas de teste criadas:
 - `02-Glosas/2026-test-arquivar.md`
 - `02-Glosas/Promovidas/2026/2026-test-1.md`, `2026-test-2.md`, `2026-test-3.md`
-- Notas de domínio criadas pelas skills (em `03-Domínios/<X>/`)
+- Notas de domínio criadas pelas skills (em `03-Dominios/<X>/`)
 
 ```bash
 # Listar pra confirmar antes de remover
@@ -1626,7 +1626,7 @@ git status
 
 # Reverter (não commitado ainda):
 git checkout -- <files-to-revert>
-git clean -fd "02-Glosas/" "03-Domínios/"
+git clean -fd "02-Glosas/" "03-Dominios/"
 ```
 
 Não commit. Esta task é apenas validação.
@@ -1669,7 +1669,7 @@ Sem `TBD` / `TODO` / "implement later". Tasks 11-14 contêm SKILL.md completos c
 ### Type consistency
 
 - `progresso` valores: `pendente | andamento | feito | pausado | abandonado` — consistente em templates, glosas, notas, e descrições de skill.
-- `promovida_em`: lista de wikilinks `[[03-Domínios/X/Y]]` — consistente em todas as referências.
+- `promovida_em`: lista de wikilinks `[[03-Dominios/X/Y]]` — consistente em todas as referências.
 - Estrutura de pastas: `02-Glosas/Promovidas/<ano>/`, `02-Glosas/Arquivadas/<ano>/` — consistente em descrições e operações `git mv`.
 - Critério temporal: `max(updated, mtime) > 30 dias` — consistente em spec, em Task 13.
 - Skills: nomes `promover-glosa`, `sintetizar-glosas`, `arquivar-glosas`, `acordar-glosas` — consistentes em todas as referências.

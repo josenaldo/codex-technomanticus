@@ -179,7 +179,7 @@ TABLE
   title AS "Título",
   status AS "Status",
   join(tags, ", ") AS "Tags"
-FROM "03-Domínios/IA/Anatomia de Agents"
+FROM "03-Dominios/IA/Anatomia de Agents"
 WHERE type != "moc"
 SORT file.name ASC
 ```

@@ -1,7 +1,7 @@
 ---
 name: promover-glosa
 description: >
-   Promove uma glosa em `02-Glosas/` para uma nota nova em `03-Domínios/`. Cria a nota usando Template - Nota, popula `## Fontes` com wikilink pra glosa, move a glosa pra `02-Glosas/Promovidas/<ano>/`, e atualiza o frontmatter da glosa com `promovida_em`. Use quando o usuário invocar `/promover-glosa <slug>`, falar em "promover glosa", "criar nota a partir dessa glosa", "esta glosa merece nota", ou pedir explicitamente pra fazer essa transição.
+   Promove uma glosa em `02-Glosas/` para uma nota nova em `03-Dominios/`. Cria a nota usando Template - Nota, popula `## Fontes` com wikilink pra glosa, move a glosa pra `02-Glosas/Promovidas/<ano>/`, e atualiza o frontmatter da glosa com `promovida_em`. Use quando o usuário invocar `/promover-glosa <slug>`, falar em "promover glosa", "criar nota a partir dessa glosa", "esta glosa merece nota", ou pedir explicitamente pra fazer essa transição.
 ---
 
 # Skill: promover-glosa
@@ -40,17 +40,17 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
    - `promovida_em` (lista atual; se já tiver itens, será incrementada).
 
 3. **Sugerir domínio destino.** Heurística:
-   - Mapear cada tag pra um domínio candidato olhando `03-Domínios/`. Ex.: tag `react` → `03-Domínios/React/`. Tag `validacao` → `03-Domínios/Frontend/Validação/`.
+   - Mapear cada tag pra um domínio candidato olhando `03-Dominios/`. Ex.: tag `react` → `03-Dominios/React/`. Tag `validacao` → `03-Dominios/Frontend/Validação/`.
    - Apresentar a sugestão com a tag correspondente. Se múltiplas tags casam com domínios diferentes, listar todas e pedir escolha.
    - Permitir o usuário corrigir/digitar outro caminho.
 
 4. **Sugerir nome da nota.** Default: derivar do `title` da glosa. Ex.: glosa "DESIGN.md — A format specification for describing a visual identity to coding agents — google-labs-code" → sugerir `DESIGN.md` ou `Design Spec for AI Agents`. Pedir confirmação.
 
-5. **Verificar se a nota já existe** em `03-Domínios/<X>/<Nome>.md`:
+5. **Verificar se a nota já existe** em `03-Dominios/<X>/<Nome>.md`:
    - Se SIM: perguntar (a) anexar a glosa às fontes da nota existente, (b) escolher outro nome, (c) cancelar.
    - Se NÃO: prosseguir.
 
-6. **Criar a nota nova** com `Write` tool em `03-Domínios/<X>/<Nome>.md`. Conteúdo:
+6. **Criar a nota nova** com `Write` tool em `03-Dominios/<X>/<Nome>.md`. Conteúdo:
 
    ```markdown
    ---
@@ -112,7 +112,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
    Se a glosa já estava em `02-Glosas/Promovidas/<ano>/`, NÃO mover de novo (idempotência).
 
 8. **Atualizar frontmatter da glosa** com `Edit` tool:
-   - `promovida_em`: append `[[03-Domínios/<X>/<Nome>]]` (lista cresce; preserva itens anteriores).
+   - `promovida_em`: append `[[03-Dominios/<X>/<Nome>]]` (lista cresce; preserva itens anteriores).
    - `updated`: hoje.
    - `progresso`: se atual é `andamento`, mudar pra `feito`.
 
@@ -120,7 +120,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 
    ```
    Glosa promovida: <slug>.
-   Nota criada: 03-Domínios/<X>/<Nome>.md
+   Nota criada: 03-Dominios/<X>/<Nome>.md
    Glosa movida pra: 02-Glosas/Promovidas/<ano>/<slug>.md
    ```
 
@@ -128,7 +128,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 
    ```
    Glosa <slug> já estava em Promovidas/<ano>/.
-   Nova nota criada: 03-Domínios/<X>/<Nome>.md
+   Nova nota criada: 03-Dominios/<X>/<Nome>.md
    Glosa agora referencia <N> notas.
    ```
 
@@ -138,7 +138,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 | -------------------------------------------- | --------------------------------------------------------------------------------------- |
 | Glosa não existe                             | Erro claro com sugestão de listar glosas existentes                                     |
 | Glosa já em Promovidas/                      | Append em `promovida_em`, não move; cria nota normalmente                               |
-| Domínio destino não existe                   | Pergunta se cria. Se sim, criar `03-Domínios/<X>/index.md` mínimo antes de criar a nota |
+| Domínio destino não existe                   | Pergunta se cria. Se sim, criar `03-Dominios/<X>/index.md` mínimo antes de criar a nota |
 | Nota já existe                               | Perguntar (a) anexar fonte, (b) outro nome, (c) cancelar                                |
 | Conflito de nome em Promovidas               | Avisar e abortar (nome de arquivo é único por construção)                               |
 | Tags da glosa não mapeiam pra nenhum domínio | Listar TODOS os domínios disponíveis e pedir escolha                                    |

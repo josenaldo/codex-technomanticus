@@ -22,7 +22,7 @@ Este vault é um caderno digital de desenvolvimento (commonplace book) organizad
 00-Meta/         meta-linguagem do codex (templates, guia, dicionário, mestres)
 01-Pergaminhos/  links brutos e recursos incipientes
 02-Glosas/       fichamentos de artigos lidos (uma ficha por leitura)
-03-Domínios/     conhecimento integrado e evergreen, organizado por área
+03-Dominios/     conhecimento integrado e evergreen, organizado por área
 04-Sendas/       caminhos curatoriais que sequenciam Domínios pra estudo
 ```
 
@@ -63,7 +63,7 @@ Cada arquivo é uma ficha de leitura: TL;DR + Pontos-chave + Citações + Meu co
 
 Detalhes do fluxo em [[workflow]].
 
-## `03-Domínios/` — conhecimento evergreen
+## `03-Dominios/` — conhecimento evergreen
 
 Notas atômicas, organizadas por área. Cada pasta tem um MOC (ex: `Java/Java.md`) que serve de índice.
 

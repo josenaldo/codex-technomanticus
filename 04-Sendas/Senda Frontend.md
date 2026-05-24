@@ -58,10 +58,10 @@ tags:
 
 ```dataview
 TABLE WITHOUT ID
-  link(file.path, regexreplace(file.folder, "^03-Domínios/", "") + "/" + file.name) AS "Nota",
+  link(file.path, regexreplace(file.folder, "^03-Dominios/", "") + "/" + file.name) AS "Nota",
   default(progresso, "pendente") AS "Status"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 SORT file.folder ASC, file.name ASC
 ```
 
@@ -75,6 +75,6 @@ TABLE WITHOUT ID
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 GROUP BY true
 ```

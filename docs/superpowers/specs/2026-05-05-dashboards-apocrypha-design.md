@@ -61,7 +61,7 @@ codex-technomanticus-apocrypha/
 ├── 00-Meta/
 ├── 01-Pergaminhos/
 ├── 02-Glosas/
-├── 03-Domínios/
+├── 03-Dominios/
 ├── 04-Sendas/
 └── Codex          → ../codex-technomanticus    (symlink)
 ```
@@ -79,7 +79,7 @@ git commit -m "chore: symlink relativo pro vault público"
 
 Caminhos resultantes vistos pelo Obsidian do apocrypha:
 
-- `Codex/03-Domínios/...`
+- `Codex/03-Dominios/...`
 - `Codex/02-Glosas/...`
 - `Codex/04-Sendas/...`
 
@@ -129,12 +129,12 @@ codex-technomanticus-apocrypha/
 │       └── Dashboard - Cross-glosa.md
 ├── 01-Pergaminhos/                        ← (existente, não tocado)
 ├── 02-Glosas/                             ← (existente, próprias do apocrypha — não confundir com Codex/02-Glosas/)
-├── 03-Domínios/                           ← (existente, não tocado)
+├── 03-Dominios/                           ← (existente, não tocado)
 ├── 04-Sendas/                             ← (existente, não tocado)
 └── Codex                                  ← symlink (versionado)
 ```
 
-**Atenção à coexistência:** o apocrypha tem `02-Glosas/`, `03-Domínios/`, etc. próprias na raiz (conteúdo privado do vault). As queries Dataview dos dashboards leem **especificamente** `Codex/02-Glosas/`, `Codex/03-Domínios/`, etc. — namespaceadas pelo prefixo do symlink. Não há mistura entre conteúdo público (via `Codex/`) e privado (na raiz do apocrypha).
+**Atenção à coexistência:** o apocrypha tem `02-Glosas/`, `03-Dominios/`, etc. próprias na raiz (conteúdo privado do vault). As queries Dataview dos dashboards leem **especificamente** `Codex/02-Glosas/`, `Codex/03-Dominios/`, etc. — namespaceadas pelo prefixo do symlink. Não há mistura entre conteúdo público (via `Codex/`) e privado (na raiz do apocrypha).
 
 Frontmatter padrão dos dashboards:
 
@@ -163,19 +163,19 @@ TABLE WITHOUT ID
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "abandonado")) AS "Abandonadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
-FROM "Codex/03-Domínios"
+FROM "Codex/03-Dominios"
 GROUP BY true
 ```
 
 ### 6.2 Bloco — Por domínio
 
 ```dataviewjs
-const pages = dv.pages('"Codex/03-Domínios"');
+const pages = dv.pages('"Codex/03-Dominios"');
 
 const groups = {};
 for (const p of pages) {
   const parts = p.file.folder.split("/");
-  const idx = parts.indexOf("03-Domínios");
+  const idx = parts.indexOf("03-Dominios");
   if (idx === -1 || !parts[idx + 1]) continue;
   const dominio = parts[idx + 1];
   if (!groups[dominio]) groups[dominio] = { feito: 0, andamento: 0, pausado: 0, abandonado: 0, pendente: 0 };
@@ -193,7 +193,7 @@ rows.sort((a, b) => parseInt(b[6]) - parseInt(a[6]));
 dv.table(["Domínio", "Feitas", "Andamento", "Pausadas", "Abandonadas", "Pendentes", "% feito"], rows);
 ```
 
-O domínio é inferido do path (primeira pasta sob `03-Domínios/`). Sub-domínios não aparecem como linha separada — ficam agregados sob o domínio raiz. Sub-domínios desejados como linha podem ser adicionados ajustando a lógica de extração; fora do MVP.
+O domínio é inferido do path (primeira pasta sob `03-Dominios/`). Sub-domínios não aparecem como linha separada — ficam agregados sob o domínio raiz. Sub-domínios desejados como linha podem ser adicionados ajustando a lógica de extração; fora do MVP.
 
 ### 6.3 Bloco — Por senda
 
@@ -203,7 +203,7 @@ const sendas = dv.pages('"Codex/04-Sendas"');
 const rows = [];
 for (const senda of sendas) {
   const targets = senda.file.outlinks
-    .filter(l => l.path && l.path.includes("03-Domínios/"))
+    .filter(l => l.path && l.path.includes("03-Dominios/"))
     .map(l => dv.page(l.path))
     .filter(p => p);
 
@@ -274,7 +274,7 @@ A função `daysSince` é defensiva por dois motivos práticos: (1) `dv.date()` 
 Convites são callouts `[!convite]` dentro de notas de domínio (vide spec 05-03 §6.4). Dataview não indexa callouts diretamente; precisa-se ler o conteúdo bruto via `dv.io.load`.
 
 ```dataviewjs
-const allNotes = dv.pages('"Codex/03-Domínios"');
+const allNotes = dv.pages('"Codex/03-Dominios"');
 const activeNotePaths = new Set();
 for (const n of allNotes) {
   const prog = n.progresso ?? "pendente";
@@ -289,7 +289,7 @@ const activeSendas = sendas.filter(s =>
 const rows = [];
 for (const senda of activeSendas) {
   for (const link of senda.file.outlinks) {
-    if (!link.path || !link.path.includes("03-Domínios/")) continue;
+    if (!link.path || !link.path.includes("03-Dominios/")) continue;
     const note = dv.page(link.path);
     if (!note) continue;
 
@@ -454,7 +454,7 @@ A executar na **sessão dedicada do apocrypha** (não nesta sessão do público)
    cd codex-technomanticus-apocrypha/Apocrypha
    ln -s ../codex-technomanticus Codex
    ```
-3. **Validar resolução:** abrir Obsidian no apocrypha; confirmar que `Codex/` aparece como pasta navegável e expõe `02-Glosas/`, `03-Domínios/`, `04-Sendas/`.
+3. **Validar resolução:** abrir Obsidian no apocrypha; confirmar que `Codex/` aparece como pasta navegável e expõe `02-Glosas/`, `03-Dominios/`, `04-Sendas/`.
 4. **Criar pasta** `00-Meta/dashboards/`.
 5. **Criar os 3 arquivos de dashboard** com o frontmatter padrão e os blocos das §§6, 7, 8.
 6. **Criar nota de operação** `00-Meta/README.md` com:
@@ -479,7 +479,7 @@ A executar na **sessão dedicada do apocrypha** (não nesta sessão do público)
 
 ## 13. Trabalhos subsequentes
 
-- **Suporte mobile via Mirror** — script que copia `codex-technomanticus/{02-Glosas,03-Domínios,04-Sendas}` pra `Codex-mirror/` versionado, sincronizável via GitSync. Quando "estudar hoje no commute" virar dor.
+- **Suporte mobile via Mirror** — script que copia `codex-technomanticus/{02-Glosas,03-Dominios,04-Sendas}` pra `Codex-mirror/` versionado, sincronizável via GitSync. Quando "estudar hoje no commute" virar dor.
 - **"O que estudar hoje?" prescritivo** — modelo de ordem global e prioridade (sub-spec). Quando a heurística atual incomodar.
 - **Campo `concluido_em`** no público pra habilitar dashboard de velocidade temporal. Sub-spec leve no público.
 - **Histogramas/gráficos** (cadência de promoção mensal, glosas arquivadas por época). Quando a leitura analítica frequente justificar o esforço de visualização.

@@ -132,7 +132,7 @@ TABLE
   title AS "Título",
   status AS "Status",
   join(tags, ", ") AS "Tags"
-FROM "03-Domínios/IA/Economia de Tokens"
+FROM "03-Dominios/IA/Economia de Tokens"
 WHERE type != "moc"
 SORT file.name ASC
 ```

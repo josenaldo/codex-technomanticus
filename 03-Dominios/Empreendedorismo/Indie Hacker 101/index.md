@@ -126,7 +126,7 @@ TABLE
   title AS "Título",
   status AS "Status",
   join(tags, ", ") AS "Tags"
-FROM "03-Domínios/Empreendedorismo/Indie Hacker 101"
+FROM "03-Dominios/Empreendedorismo/Indie Hacker 101"
 WHERE type != "moc"
 SORT file.name ASC
 ```

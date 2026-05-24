@@ -32,7 +32,7 @@ Como conectar notas no Codex. O valor de um vault não está nas notas isoladas 
 
 ### Sem path absoluto
 
-Prefira `[[Spring Boot]]` em vez de `[[03-Domínios/Java/Spring Boot]]`. Obsidian resolve por filename, e wikilinks com path quebram quando você reorganiza pastas.
+Prefira `[[Spring Boot]]` em vez de `[[03-Dominios/Java/Spring Boot]]`. Obsidian resolve por filename, e wikilinks com path quebram quando você reorganiza pastas.
 
 Exceção: quando há **dois arquivos com o mesmo nome** em pastas diferentes. Aí o path resolve a ambiguidade. Em geral, evite duplicar nomes — renomeie um dos dois.
 
@@ -72,7 +72,7 @@ Um MOC é um índice curatorial de uma área. Não é tabela de conteúdo gerada
 
 | Tipo            | Localização          | Função                                                              |
 | --------------- | -------------------- | ------------------------------------------------------------------- |
-| MOC de Domínio  | `03-Domínios/X/X.md` | Mapa estático da área: que conceitos existem, organizados por tema. |
+| MOC de Domínio  | `03-Dominios/X/X.md` | Mapa estático da área: que conceitos existem, organizados por tema. |
 | Senda           | `04-Sendas/Senda <Tema>.md` | Trilha sequencial pra atender objetivo (estudo, prep entrevista). Tem ordem. |
 
 **A diferença essencial:** MOC de Domínio responde "o que existe sobre X?". Senda responde "em que ordem estudo X pra alcançar Y?".
@@ -93,7 +93,7 @@ Um bom MOC tem:
 ````markdown
 ```dataview
 LIST
-FROM "03-Domínios/Java"
+FROM "03-Dominios/Java"
 WHERE type != "moc"
 SORT file.name ASC
 ```
@@ -101,7 +101,7 @@ SORT file.name ASC
 
 ### MOC desatualizado mente
 
-A maior armadilha de MOC é virar fóssil. Quando você cria uma nota nova em `03-Domínios/Java/`, **o MOC `Java.md` precisa ser atualizado** ou ele estará escondendo conteúdo. Por isso o bloco Dataview no fim ajuda — ele lista o que está lá fisicamente, mesmo que o MOC manual não cite.
+A maior armadilha de MOC é virar fóssil. Quando você cria uma nota nova em `03-Dominios/Java/`, **o MOC `Java.md` precisa ser atualizado** ou ele estará escondendo conteúdo. Por isso o bloco Dataview no fim ajuda — ele lista o que está lá fisicamente, mesmo que o MOC manual não cite.
 
 Rotina de revisão de MOCs em [[Manutenção do vault]].
 

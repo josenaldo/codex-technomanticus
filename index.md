@@ -58,7 +58,7 @@ O conteúdo flui em cinco zonas numeradas, do bruto ao curatorial:
 - **`00-Meta/`** — meta-linguagem do codex: `guia/` (8 arquivos cobrindo estrutura, fluxo, convenções, manutenção, publicação, decisões e dicionário), `templates/` Templater, `mestres/` (referências de devs)
 - **`01-Pergaminhos/`** — links brutos coletados (`entradas.md`), wishlist (`avaliar.md`), recursos incipientes (Brag Document, listas de cursos)
 - **`02-Glosas/`** — fichamentos de artigos lidos (uma ficha por leitura, formato `<ano>-<slug>.md`)
-- **`03-Domínios/`** — conhecimento integrado e evergreen, organizado por área (Java, IA, Arquitetura, Entrevistas, etc.)
+- **`03-Dominios/`** — conhecimento integrado e evergreen, organizado por área (Java, IA, Arquitetura, Entrevistas, etc.)
 - **`04-Sendas/`** — caminhos curatoriais que sequenciam Domínios pra atender objetivos (Senda Entrevistas, Senda Frontend, etc.)
 
 Detalhes em [[Como usar este vault]] e [[workflow]].
@@ -77,7 +77,7 @@ Limitação atual: só artigos web (HTML). PDFs, YouTube, podcasts, redes sociai
 
 ## Ritual de navegação
 
-Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da pasta). Se estiver chegando agora, comece por esses portais.
+Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da pasta). Se estiver chegando agora, comece por esses portais.
 
 > Veja também [[Como usar este vault]] e [[Senda Entrevistas]].
 
@@ -149,7 +149,7 @@ Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da
 
 ## Domínio de Inglês
 
-- Notas de estudo de inglês para entrevistas internacionais (em `03-Domínios/Inglês/`)
+- Notas de estudo de inglês para entrevistas internacionais (em `03-Dominios/Inglês/`)
 
 ## Domínio de Entrevistas
 

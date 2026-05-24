@@ -100,7 +100,7 @@ Possível skill futura: `/daily-resumo-mensal <ano>-<mês>` que sumariza o mês 
 Daily note funciona como **inbox temporal**:
 
 - Capturou um link interessante → pode ir pra `01-Pergaminhos/entradas.md` (público) e depois virar glosa via `/glosa`.
-- Anotou um insight de estudo → pode virar nota em `03-Domínios/<X>/` (público).
+- Anotou um insight de estudo → pode virar nota em `03-Dominios/<X>/` (público).
 - Decisão técnica importante → vira nota dedicada (ADR ou similar).
 - Reflexão pessoal → fica na daily mesmo (apocrypha é o lar dela).
 
@@ -110,7 +110,7 @@ Skill futura possível: `/daily-promover` que pesca um trecho marcado da daily e
 
 ### Integração com Codex (público)
 
-A daily note pode citar wikilinks de notas públicas: `[[Senda IA]]`, `[[03-Domínios/React/MUI]]`, `[[02-Glosas/2026-design-md-spec-coding-agents]]`. Backlinks dessas notas mostrariam **quando** elas foram tocadas no journal. Útil pra "que dia trabalhei em X?".
+A daily note pode citar wikilinks de notas públicas: `[[Senda IA]]`, `[[03-Dominios/React/MUI]]`, `[[02-Glosas/2026-design-md-spec-coding-agents]]`. Backlinks dessas notas mostrariam **quando** elas foram tocadas no journal. Útil pra "que dia trabalhei em X?".
 
 Pra isso, o apocrypha precisa ter acesso de leitura ao público (resolvido pela cross-vault awareness, vide topo deste arquivo).
 

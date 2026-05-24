@@ -118,7 +118,7 @@ TABLE
   title AS "Título",
   status AS "Status",
   join(tags, ", ") AS "Tags"
-FROM "03-Domínios/IA/Segurança e Guardrails"
+FROM "03-Dominios/IA/Segurança e Guardrails"
 WHERE type != "moc"
 SORT file.name ASC
 ```

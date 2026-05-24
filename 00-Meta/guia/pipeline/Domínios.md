@@ -12,7 +12,7 @@ tags:
 
 # Domínios — corpus do conhecimento
 
-A zona `03-Domínios/` é o **centro gravitacional do vault**. Cada domínio é uma estante coerente sobre um tema, com vocabulário próprio, ferramental próprio, comunidade própria. Notas de domínio são amadurecidas, sintetizadas, idiomáticas do vault.
+A zona `03-Dominios/` é o **centro gravitacional do vault**. Cada domínio é uma estante coerente sobre um tema, com vocabulário próprio, ferramental próprio, comunidade própria. Notas de domínio são amadurecidas, sintetizadas, idiomáticas do vault.
 
 ## Modelo de organização (estantes)
 

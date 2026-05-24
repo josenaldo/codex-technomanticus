@@ -40,9 +40,9 @@ Lista plana ordenada. Use quando a senda é direta e não precisa de fases.
 ```markdown
 ## Sequência
 
-1. [[03-Domínios/Frontend/index|Frontend (engenharia)]]
-2. [[03-Domínios/JavaScript/JavaScript|JavaScript]]
-3. [[03-Domínios/TypeScript/index|TypeScript]]
+1. [[03-Dominios/Frontend/index|Frontend (engenharia)]]
+2. [[03-Dominios/JavaScript/JavaScript|JavaScript]]
+3. [[03-Dominios/TypeScript/index|TypeScript]]
 ...
 ```
 
@@ -53,12 +53,12 @@ Estrutura em fases. Use quando a senda tem etapas conceituais distintas.
 ```markdown
 ## Fase 0 — Cultura e intuição
 
-1. [[03-Domínios/IA/O que é IA]]
-2. [[03-Domínios/IA/LLMs vs ML clássico]]
+1. [[03-Dominios/IA/O que é IA]]
+2. [[03-Dominios/IA/LLMs vs ML clássico]]
 
 ## Fase 1 — Fundamentos
 
-1. [[03-Domínios/IA/Tokenização]]
+1. [[03-Dominios/IA/Tokenização]]
 ...
 ```
 
@@ -66,7 +66,7 @@ Estrutura em fases. Use quando a senda tem etapas conceituais distintas.
 
 Toda senda tem um bloco `## Progresso` no fim, populado por queries Dataview que agregam o `progresso` das notas referenciadas. Vide `00-Meta/templates/trail.md`.
 
-A primeira tabela mostra cada nota referenciada com seu status atual (`pendente`, `andamento`, `feito`, etc.), com display em formato `Pasta/Arquivo` (caminho relativo a `03-Domínios/`). A segunda tabela ("Resumo") mostra contagens.
+A primeira tabela mostra cada nota referenciada com seu status atual (`pendente`, `andamento`, `feito`, etc.), com display em formato `Pasta/Arquivo` (caminho relativo a `03-Dominios/`). A segunda tabela ("Resumo") mostra contagens.
 
 No site Quartz, esse bloco aparece como markdown bruto (Quartz não roda Dataview). Tracking é experiência local do Obsidian.
 

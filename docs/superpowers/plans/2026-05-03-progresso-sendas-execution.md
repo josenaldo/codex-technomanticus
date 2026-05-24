@@ -22,11 +22,11 @@
 | `00-Meta/templates/Template - Nota.md` | Modify | Adicionar `progresso: pendente` no frontmatter; seção opcional `## Aprofundamento` com exemplo comentado. |
 | `00-Meta/templates/Template - Glosa.md` | Modify | Adicionar `progresso: feito` no frontmatter (glosa nasce já lida — vide nota na Task 4). |
 | `00-Meta/templates/trail.md` | Modify (substituir) | Substituir conteúdo pelo template canônico de senda (frontmatter completo, formas minimal/structured, bloco dataview). |
-| `03-Domínios/Frontend/index.md` | Create | Estante de engenharia frontend (disciplina cross-tech). |
-| `03-Domínios/React/index.md` | Create | Estante React. |
-| `03-Domínios/TypeScript/index.md` | Create | Estante TypeScript. |
-| `03-Domínios/<outras estantes>/index.md` | Create (conforme auditoria) | Estantes adicionais necessárias pelo piloto (CSS, HTML, etc.). |
-| `03-Domínios/<estantes>/<notas-stub>.md` | Create (conforme auditoria) | Notas-stub mapeadas a partir do conteúdo da Senda Frontend atual. |
+| `03-Dominios/Frontend/index.md` | Create | Estante de engenharia frontend (disciplina cross-tech). |
+| `03-Dominios/React/index.md` | Create | Estante React. |
+| `03-Dominios/TypeScript/index.md` | Create | Estante TypeScript. |
+| `03-Dominios/<outras estantes>/index.md` | Create (conforme auditoria) | Estantes adicionais necessárias pelo piloto (CSS, HTML, etc.). |
+| `03-Dominios/<estantes>/<notas-stub>.md` | Create (conforme auditoria) | Notas-stub mapeadas a partir do conteúdo da Senda Frontend atual. |
 | `04-Sendas/Senda Frontend.md` | Modify (reescrever) | Reescrever no template canônico, apenas wikilinks ordenados, com bloco dataview. |
 
 ### Repo `codex-technomanticus-site` (Quartz)
@@ -90,7 +90,7 @@ Este documento define como notas, domínios e sendas se relacionam no Codex.
 |---|---|
 | `01-Pergaminhos/` | Captura inicial: inbox, links soltos, ideias cruas. |
 | `02-Glosas/` | Fichamentos de materiais externos consumidos. |
-| `03-Domínios/` | Corpus do conhecimento. **Centro gravitacional do vault**. Notas amadurecidas, organizadas por domínio. |
+| `03-Dominios/` | Corpus do conhecimento. **Centro gravitacional do vault**. Notas amadurecidas, organizadas por domínio. |
 | `04-Sendas/` | Mapas de leitura. Wikilinks ordenados pra notas dos domínios. **Apenas isso**. |
 
 **Pipeline de alimentação:** pergaminho → glosa → nota de domínio.
@@ -315,7 +315,7 @@ Conteúdo final do arquivo (com Templater):
 ---
 type: trail
 title: "Senda <% tp.file.title %>"
-domain: "[[03-Domínios/<Domínio>/index]]"
+domain: "[[03-Dominios/<Domínio>/index]]"
 maturity: minimal
 status: active
 publish: true
@@ -331,7 +331,7 @@ tags:
 
 ## Pré-requisitos
 
-- [[03-Domínios/<Outro Domínio>/<nota>]]
+- [[03-Dominios/<Outro Domínio>/<nota>]]
 
 ## Sequência
 
@@ -340,9 +340,9 @@ Versão MINIMAL (lista plana ordenada). Use esta forma se a senda é direta
 e não precisa ser dividida em fases.
 -->
 
-1. [[03-Domínios/<Domínio>/<Nota A>]]
-2. [[03-Domínios/<Domínio>/<Nota B>]]
-3. [[03-Domínios/<Domínio>/<Nota C>]]
+1. [[03-Dominios/<Domínio>/<Nota A>]]
+2. [[03-Dominios/<Domínio>/<Nota B>]]
+3. [[03-Dominios/<Domínio>/<Nota C>]]
 
 <!--
 Versão STRUCTURED (com fases). Comente a "## Sequência" acima e descomente
@@ -350,12 +350,12 @@ o bloco abaixo. Atualize o frontmatter pra `maturity: structured`.
 
 ## Fase 0 — <Tema>
 
-1. [[03-Domínios/<Domínio>/<Nota A>]]
-2. [[03-Domínios/<Domínio>/<Nota B>]]
+1. [[03-Dominios/<Domínio>/<Nota A>]]
+2. [[03-Dominios/<Domínio>/<Nota B>]]
 
 ## Fase 1 — <Tema>
 
-1. [[03-Domínios/<Domínio>/<Nota C>]]
+1. [[03-Dominios/<Domínio>/<Nota C>]]
 -->
 
 ## Progresso
@@ -365,7 +365,7 @@ TABLE WITHOUT ID
   file.link AS "Nota",
   default(progresso, "pendente") AS "Status"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 SORT file.name ASC
 ```
 
@@ -379,7 +379,7 @@ TABLE WITHOUT ID
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 GROUP BY true
 ```
 ````
@@ -472,22 +472,22 @@ git commit -m "feat(callouts): adiciona estilo do callout 'convite'"
 ## Task 6: Criar estante `Frontend/` (engenharia)
 
 **Files:**
-- Create: `03-Domínios/Frontend/index.md`
+- Create: `03-Dominios/Frontend/index.md`
 
 - [ ] **Step 1: Verificar se a pasta já existe**
 
 ```bash
-ls "/home/josenaldo/repos/personal/codex-technomanticus/03-Domínios/Frontend/" 2>/dev/null
+ls "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/Frontend/" 2>/dev/null
 ```
 Expected: erro ("No such file or directory") ou pasta vazia. Se houver conteúdo legado, **parar e alinhar com o usuário**.
 
 - [ ] **Step 2: Criar a pasta e o `index.md`**
 
 ```bash
-mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Domínios/Frontend"
+mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/Frontend"
 ```
 
-Escrever `03-Domínios/Frontend/index.md`:
+Escrever `03-Dominios/Frontend/index.md`:
 
 ```markdown
 ---
@@ -513,9 +513,9 @@ Estante de **engenharia frontend** — disciplina cross-tecnologia. Cobre arquit
 
 > [!info] O que **não** está aqui
 > Tecnologias específicas têm estantes próprias:
-> - Linguagens e libs: [[03-Domínios/JavaScript/index|JavaScript]], [[03-Domínios/TypeScript/index|TypeScript]], [[03-Domínios/HTML/index|HTML]], [[03-Domínios/CSS/index|CSS]]
-> - Frameworks/UI: [[03-Domínios/React/index|React]], (futuras: Vue, Svelte, HTMX)
-> - Tooling: [[03-Domínios/Ferramentas/index|Ferramentas]] (Vite, bundlers, monorepos)
+> - Linguagens e libs: [[03-Dominios/JavaScript/index|JavaScript]], [[03-Dominios/TypeScript/index|TypeScript]], [[03-Dominios/HTML/index|HTML]], [[03-Dominios/CSS/index|CSS]]
+> - Frameworks/UI: [[03-Dominios/React/index|React]], (futuras: Vue, Svelte, HTMX)
+> - Tooling: [[03-Dominios/Ferramentas/index|Ferramentas]] (Vite, bundlers, monorepos)
 >
 > Aqui mora o que **é frontend mesmo quando trocamos a tecnologia**.
 
@@ -538,7 +538,7 @@ Abrir a nota no Obsidian. Verificar:
 
 ```bash
 cd /home/josenaldo/repos/personal/codex-technomanticus
-git add "03-Domínios/Frontend/index.md"
+git add "03-Dominios/Frontend/index.md"
 git commit -m "feat(domínios): cria estante Frontend (engenharia)"
 ```
 
@@ -547,15 +547,15 @@ git commit -m "feat(domínios): cria estante Frontend (engenharia)"
 ## Task 7: Criar estante `React/`
 
 **Files:**
-- Create: `03-Domínios/React/index.md`
+- Create: `03-Dominios/React/index.md`
 
 - [ ] **Step 1: Criar a pasta e o `index.md`**
 
 ```bash
-mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Domínios/React"
+mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/React"
 ```
 
-Escrever `03-Domínios/React/index.md`:
+Escrever `03-Dominios/React/index.md`:
 
 ```markdown
 ---
@@ -585,8 +585,8 @@ Estante de React: a biblioteca, seu ecossistema, frameworks que rodam sobre ela 
 ## Veja também
 
 - [[Senda Frontend]]
-- [[03-Domínios/JavaScript/index|JavaScript]]
-- [[03-Domínios/TypeScript/index|TypeScript]]
+- [[03-Dominios/JavaScript/index|JavaScript]]
+- [[03-Dominios/TypeScript/index|TypeScript]]
 ```
 
 - [ ] **Step 2: Validar no Obsidian**
@@ -596,7 +596,7 @@ Abrir e verificar renderização.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Domínios/React/index.md"
+git add "03-Dominios/React/index.md"
 git commit -m "feat(domínios): cria estante React"
 ```
 
@@ -605,15 +605,15 @@ git commit -m "feat(domínios): cria estante React"
 ## Task 8: Criar estante `TypeScript/`
 
 **Files:**
-- Create: `03-Domínios/TypeScript/index.md`
+- Create: `03-Dominios/TypeScript/index.md`
 
 - [ ] **Step 1: Criar a pasta e o `index.md`**
 
 ```bash
-mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Domínios/TypeScript"
+mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/TypeScript"
 ```
 
-Escrever `03-Domínios/TypeScript/index.md`:
+Escrever `03-Dominios/TypeScript/index.md`:
 
 ```markdown
 ---
@@ -641,7 +641,7 @@ Estante de TypeScript: tipos, generics, inferência, type narrowing, utility typ
 
 ## Veja também
 
-- [[03-Domínios/JavaScript/index|JavaScript]]
+- [[03-Dominios/JavaScript/index|JavaScript]]
 - [[Senda Frontend]]
 ```
 
@@ -650,7 +650,7 @@ Estante de TypeScript: tipos, generics, inferência, type narrowing, utility typ
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Domínios/TypeScript/index.md"
+git add "03-Dominios/TypeScript/index.md"
 git commit -m "feat(domínios): cria estante TypeScript"
 ```
 
@@ -677,8 +677,8 @@ Catalogar:
 Saída esperada: tabela com colunas:
 | Item original | Tipo | Destino sugerido |
 |---|---|---|
-| React (heading + links docs) | heading | `03-Domínios/React/index.md` (já existe) — adicionar links no convite |
-| TanStack Query (subheading + links profy.dev) | nota nova | `03-Domínios/React/TanStack Query.md` |
+| React (heading + links docs) | heading | `03-Dominios/React/index.md` (já existe) — adicionar links no convite |
+| TanStack Query (subheading + links profy.dev) | nota nova | `03-Dominios/React/TanStack Query.md` |
 | ... | ... | ... |
 
 - [ ] **Step 2: Apresentar a tabela ao usuário e iterar**
@@ -716,9 +716,9 @@ git commit -m "docs(plano): mapeamento da Senda Frontend pra novas estantes"
 ## Task 10: Criar estantes adicionais identificadas na auditoria
 
 **Files:**
-- Create: `03-Domínios/HTML/index.md` (se necessário)
-- Create: `03-Domínios/CSS/index.md` (se necessário)
-- Create: outras `03-Domínios/<X>/index.md` conforme Task 9
+- Create: `03-Dominios/HTML/index.md` (se necessário)
+- Create: `03-Dominios/CSS/index.md` (se necessário)
+- Create: outras `03-Dominios/<X>/index.md` conforme Task 9
 
 > **Esta task é condicional**: só rode se a auditoria da Task 9 identificou estantes adicionais necessárias.
 
@@ -727,7 +727,7 @@ git commit -m "docs(plano): mapeamento da Senda Frontend pra novas estantes"
 Padrão (substituir `<X>`, descrição, aliases conforme apropriado):
 
 ```bash
-mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Domínios/<X>"
+mkdir -p "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/<X>"
 ```
 
 Conteúdo:
@@ -764,7 +764,7 @@ tags:
 - [ ] **Step 3: Commit (uma estante por commit OU agrupado)**
 
 ```bash
-git add "03-Domínios/<X>/index.md"
+git add "03-Dominios/<X>/index.md"
 git commit -m "feat(domínios): cria estante <X>"
 ```
 
@@ -773,7 +773,7 @@ git commit -m "feat(domínios): cria estante <X>"
 ## Task 11: Criar notas-stub conforme mapeamento
 
 **Files:**
-- Create: várias notas em `03-Domínios/<estantes>/<conceito>.md`
+- Create: várias notas em `03-Dominios/<estantes>/<conceito>.md`
 
 > Use o mapeamento da Task 9. Cada conceito identificado vira uma nota-stub.
 
@@ -844,7 +844,7 @@ Abrir 2-3 notas-stub criadas. Verificar:
 Sugestão: uma estante por commit, agrupando notas relacionadas.
 
 ```bash
-git add "03-Domínios/React/"
+git add "03-Dominios/React/"
 git commit -m "feat(domínios/react): notas-stub de TanStack, NextJS, MUI, ..."
 ```
 
@@ -872,7 +872,7 @@ Usar o `00-Meta/templates/trail.md` (atualizado na Task 4) como base. Preencher:
 ---
 type: trail
 title: "Senda Frontend"
-domain: "[[03-Domínios/Frontend/index]]"
+domain: "[[03-Dominios/Frontend/index]]"
 maturity: minimal
 status: active
 publish: true
@@ -895,12 +895,12 @@ tags:
 
 <!-- Ordem aproximada — ajustar conforme prioridade de estudo -->
 
-1. [[03-Domínios/Frontend/index]]
-2. [[03-Domínios/HTML/index]]            <!-- omitir se HTML não foi criado -->
-3. [[03-Domínios/CSS/index]]             <!-- omitir se CSS não foi criado -->
-4. [[03-Domínios/JavaScript/index|JavaScript]]
-5. [[03-Domínios/TypeScript/index]]
-6. [[03-Domínios/React/index]]
+1. [[03-Dominios/Frontend/index]]
+2. [[03-Dominios/HTML/index]]            <!-- omitir se HTML não foi criado -->
+3. [[03-Dominios/CSS/index]]             <!-- omitir se CSS não foi criado -->
+4. [[03-Dominios/JavaScript/index|JavaScript]]
+5. [[03-Dominios/TypeScript/index]]
+6. [[03-Dominios/React/index]]
 7. <demais notas-stub criadas na Task 11, em ordem>
 
 ## Progresso
@@ -910,7 +910,7 @@ TABLE WITHOUT ID
   file.link AS "Nota",
   default(progresso, "pendente") AS "Status"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 SORT file.name ASC
 ```
 
@@ -924,7 +924,7 @@ TABLE WITHOUT ID
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 GROUP BY true
 ```
 ```
@@ -953,7 +953,7 @@ git commit -m "refactor(senda/frontend): aplica template canônico + dataview de
 ## Task 13: Aplicar `progresso` real nas notas referenciadas
 
 **Files:**
-- Modify: várias notas em `03-Domínios/<estantes>/` (criadas nas Tasks 6-11)
+- Modify: várias notas em `03-Dominios/<estantes>/` (criadas nas Tasks 6-11)
 
 > Esta task popula o estado real do usuário — interativa.
 
@@ -975,7 +975,7 @@ Para cada nota com valor diferente do default:
 
 ```bash
 # Exemplo (ajuste o caminho e valor):
-# Editar o frontmatter de "03-Domínios/React/TanStack Query.md"
+# Editar o frontmatter de "03-Dominios/React/TanStack Query.md"
 # trocar `progresso: pendente` por `progresso: andamento`
 ```
 
@@ -988,7 +988,7 @@ Abrir Senda Frontend. O resumo numérico deve mostrar contagens não-zeradas em 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Domínios/"
+git add "03-Dominios/"
 git commit -m "feat(progresso): aplica estado real nas notas da Senda Frontend"
 ```
 
@@ -1098,6 +1098,6 @@ Sem `TBD` / `TODO` / "implement later". Tasks 9-11 são interativas por natureza
 - `status` da senda: `active | done | archived` (separado do `status` da nota: `seedling | budding | evergreen`). ✓
 - Frontmatter de `index.md` de domínio: `type: moc`, `publish: true`. ✓
 - Frontmatter de senda: `type: trail`, `publish: true`. ✓
-- Caminhos consistentes: `03-Domínios/<X>/index.md`, `00-Meta/templates/...`, `00-Meta/guia/...`. ✓
+- Caminhos consistentes: `03-Dominios/<X>/index.md`, `00-Meta/templates/...`, `00-Meta/guia/...`. ✓
 
 Plano íntegro.

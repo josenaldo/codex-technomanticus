@@ -84,7 +84,7 @@ Ferramentas mudam **rápido**. Versões, pricing, capabilities movem trimestralm
 TABLE
   title AS "Título",
   status AS "Status"
-FROM "03-Domínios/IA/Ferramentas de IA"
+FROM "03-Dominios/IA/Ferramentas de IA"
 WHERE type != "moc"
 SORT file.name ASC
 ```

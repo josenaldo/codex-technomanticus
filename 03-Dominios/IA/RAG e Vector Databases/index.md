@@ -138,7 +138,7 @@ TABLE
   title AS "Título",
   status AS "Status",
   join(tags, ", ") AS "Tags"
-FROM "03-Domínios/IA/RAG e Vector Databases"
+FROM "03-Dominios/IA/RAG e Vector Databases"
 WHERE type != "moc"
 SORT file.name ASC
 ```

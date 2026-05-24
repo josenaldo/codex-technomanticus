@@ -204,7 +204,7 @@ TABLE
   title AS "Título",
   status AS "Status",
   join(tags, ", ") AS "Tags"
-FROM "03-Domínios/IA/Anatomia dos LLMs"
+FROM "03-Dominios/IA/Anatomia dos LLMs"
 WHERE type != "moc"
 SORT file.name ASC
 ```

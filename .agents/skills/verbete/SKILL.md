@@ -46,7 +46,7 @@ Se o termo é ambíguo (ex.: "agent" pode ser IA ou vendas), peça contexto ante
 Estratégia em ordem de prioridade:
 
 1. **Hint explícito do usuário** (ex.: "ao dicionário de IA"): faça `grep -l "type: glossary"` em todo o vault, então filtre por `title:` ou filename matching o hint (case-insensitive, sem acento).
-2. **Domínio inferido pelo CWD**: se o usuário está em `03-Domínios/<X>/`, procure `type: glossary` na mesma pasta.
+2. **Domínio inferido pelo CWD**: se o usuário está em `03-Dominios/<X>/`, procure `type: glossary` na mesma pasta.
 3. **Sem hint nem CWD útil**: liste todos os arquivos com `type: glossary` no vault e pergunte ao usuário.
 
 Comando de descoberta:
@@ -222,7 +222,7 @@ Skill:
 Usuário: /verbete LoRA
 
 Skill:
-1. Localiza glossário (CWD em 03-Domínios/IA/)
+1. Localiza glossário (CWD em 03-Dominios/IA/)
 2. Pesquisa LoRA
 3. Apresenta:
 

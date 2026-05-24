@@ -23,5 +23,5 @@ Estante de TypeScript: tipos, generics, inferência, type narrowing, utility typ
 
 ## Veja também
 
-- [[03-Domínios/JavaScript/index|JavaScript]]
+- [[03-Dominios/JavaScript/index|JavaScript]]
 - [[Senda Frontend]]

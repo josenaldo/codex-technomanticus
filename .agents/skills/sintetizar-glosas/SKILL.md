@@ -50,7 +50,7 @@ Cria UMA nota nova de domínio sintetizando VÁRIAS glosas relacionadas a um tem
 
 5. **Verificar se a nota já existe.** Mesma lógica de `/promover-glosa`.
 
-6. **Criar a nota nova** em `03-Domínios/<X>/<Nome>.md`:
+6. **Criar a nota nova** em `03-Dominios/<X>/<Nome>.md`:
 
    ```markdown
    ---
@@ -110,7 +110,7 @@ Cria UMA nota nova de domínio sintetizando VÁRIAS glosas relacionadas a um tem
 9. **Reportar ao usuário:**
 
    ```
-   Síntese criada: 03-Domínios/<X>/<Nome>.md (<N> fontes)
+   Síntese criada: 03-Dominios/<X>/<Nome>.md (<N> fontes)
    Glosas movidas pra Promovidas/<ano>/:
      - <slug-1>
      - <slug-2>

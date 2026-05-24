@@ -122,7 +122,7 @@ TABLE
   title AS "Título",
   status AS "Status",
   join(tags, ", ") AS "Tags"
-FROM "03-Domínios/IA/Context Engineering"
+FROM "03-Dominios/IA/Context Engineering"
 WHERE type != "moc"
 SORT file.name ASC
 ```

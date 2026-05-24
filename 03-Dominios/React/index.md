@@ -36,5 +36,5 @@ Estante de React: a biblioteca, seu ecossistema, frameworks que rodam sobre ela 
 ## Veja também
 
 - [[Senda Frontend]]
-- [[03-Domínios/JavaScript/index|JavaScript]]
+- [[03-Dominios/JavaScript/index|JavaScript]]
 - [[03-Dominios/TypeScript/index|TypeScript]]
