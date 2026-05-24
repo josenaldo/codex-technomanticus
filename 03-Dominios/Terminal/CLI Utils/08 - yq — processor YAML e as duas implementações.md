@@ -18,7 +18,7 @@ aliases:
   - yq Python
 ---
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > yq processa YAML/JSON/XML — mas existem **duas implementações populares com sintaxe diferente**: Mike Farah (Go, default em Homebrew) e kislyuk (Python, wrappa jq). Confundir as duas é o footgun central — exemplos da web frequentemente não rodam por serem da outra impl. Detectar versão: `yq --version`. Receita segura pra Go: usar sintaxe própria. Pra Python: sintaxe = jq mas operando em YAML.
 
 ## O que é / Como funciona
@@ -153,30 +153,78 @@ Em times e projetos: **fixar uma implementação e documentar**. Misturar as dua
 
 ## Armadilhas
 
-**Confundir as duas impls — receita não funciona.** Copiar exemplo da web sem checar qual yq. Sintoma: comando dá erro de sintaxe; output inesperado. Como detectar: `yq --version` — Go fala `v4.x.x` (com `v`); Python fala `3.x.x` (sem `v`). Solução: sempre prefaciar receitas internas com `[yq Go]` ou `[yq Python]`. Usar a impl que o time padronizou. Em scripts CI, validar versão antes de rodar.
+### (1) Confundir as duas impls — receita não funciona
 
-**Preservação de comments difere.** Edição in-place pode descartar comments dependendo de impl e versão. Sintoma: comments somem após `yq -i ...`. Como detectar: diff antes/depois mostra perda. Solução: yq Go preserva melhor; verificar versão recente. Para comments críticos, considerar ferramentas dedicadas (`ruamel.yaml` em Python).
+**Causa:** copiar exemplo da web sem checar qual yq está instalado.
 
-**Multi-doc (`---`) suporte diferente entre impls.** YAML multi-doc é comum em k8s/CI. Sintoma: comando que funciona em arquivo single-doc falha em multi-doc. Como detectar: `yq '.name' multidoc.yaml` — Go retorna múltiplos valores; Python varia. Solução: yq Go usa `eval-all`; yq Python usa `--slurp`. Documentar abordagem por impl no projeto.
+**Sintoma:** comando dá erro de sintaxe; output inesperado.
 
-**Anchors e aliases YAML — comportamento opaco.** `&anchor` e `*alias` permitem reuso de nós; yq tipicamente expande no parse. Sintoma: output não tem mais `&`/`*` — YAML "perde" estrutura de reuso. Como detectar: input tem `&base` e `*base`; output só tem valores duplicados. Solução: se precisa preservar anchors, ler doc da impl (ex: flags específicas em yq Go). Aceitar expansão como comportamento default na maioria dos pipelines.
+**Como detectar:** `yq --version` — Go fala `v4.x.x` (com `v`); Python fala `3.x.x` (sem `v`).
 
-**Instalar acidentalmente a impl errada.** `apt install yq` em Debian instala Python (kislyuk); `brew install yq` instala Go; `pip install yq` instala Python. Sintoma: scripts copiados pra outra máquina falham; sintaxe esperada não bate. Como detectar: comparar `yq --version` entre máquinas. Solução: documentar qual impl em README/dotfiles. Para Go em Debian: baixar binário direto do GitHub Releases ou usar snap (`snap install yq`).
+**Solução:** sempre prefaciar receitas internas com `[yq Go]` ou `[yq Python]`. Usar a impl que o time padronizou. Em scripts CI, validar versão antes de rodar.
 
-**yq Python output default = JSON, não YAML.** kislyuk converte YAML→JSON internamente para usar jq; output default é JSON. Sintoma: rodar `yq '.foo' file.yaml` retorna JSON — surpreende quem esperava YAML. Como detectar: output entre `{}`/`""`/`[]` puros, sem indentação YAML. Solução: usar flag `-y` (yaml output): `yq -y '.foo' file.yaml`. Em yq Go não é necessário.
+### (2) Preservação de comments difere entre impls
+
+**Causa:** edição in-place pode descartar comments dependendo de impl e versão.
+
+**Sintoma:** comments somem após `yq -i ...`.
+
+**Como detectar:** diff antes/depois mostra perda.
+
+**Solução:** yq Go preserva melhor; verificar versão recente. Para comments críticos, considerar ferramentas dedicadas (`ruamel.yaml` em Python).
+
+### (3) Multi-doc (`---`) com suporte diferente entre impls
+
+**Causa:** YAML multi-doc é comum em k8s/CI; cada impl trata de forma diferente.
+
+**Sintoma:** comando que funciona em arquivo single-doc falha em multi-doc.
+
+**Como detectar:** `yq '.name' multidoc.yaml` — Go retorna múltiplos valores; Python varia.
+
+**Solução:** yq Go usa `eval-all`; yq Python usa `--slurp`. Documentar abordagem por impl no projeto.
+
+### (4) Anchors e aliases YAML — comportamento opaco
+
+**Causa:** `&anchor` e `*alias` permitem reuso de nós; yq tipicamente expande no parse.
+
+**Sintoma:** output não tem mais `&`/`*` — YAML "perde" estrutura de reuso.
+
+**Como detectar:** input tem `&base` e `*base`; output só tem valores duplicados.
+
+**Solução:** se precisa preservar anchors, ler doc da impl (ex: flags específicas em yq Go). Aceitar expansão como comportamento default na maioria dos pipelines.
+
+### (5) Instalar acidentalmente a impl errada
+
+**Causa:** `apt install yq` em Debian instala Python (kislyuk); `brew install yq` instala Go; `pip install yq` instala Python.
+
+**Sintoma:** scripts copiados pra outra máquina falham; sintaxe esperada não bate.
+
+**Como detectar:** comparar `yq --version` entre máquinas.
+
+**Solução:** documentar qual impl em README/dotfiles. Para Go em Debian: baixar binário direto do GitHub Releases ou usar snap (`snap install yq`).
+
+### (6) yq Python output default = JSON, não YAML
+
+**Causa:** kislyuk converte YAML→JSON internamente para usar jq; output default é JSON.
+
+**Sintoma:** rodar `yq '.foo' file.yaml` retorna JSON — surpreende quem esperava YAML.
+
+**Como detectar:** output entre `{}`/`""`/`[]` puros, sem indentação YAML.
+
+**Solução:** usar flag `-y` (yaml output): `yq -y '.foo' file.yaml`. Em yq Go não é necessário.
 
 ## Em inglês
 
-- implementation (implementação) / implementation — "There are two incompatible implementations of yq."
-- fork / fork — "kislyuk/yq is a fork-adjacent project, not a fork of mikefarah/yq."
-- multi-document / multi-documento — "Kubernetes manifests often use multi-document YAML files."
-- anchor (âncora) / anchor — "YAML anchors (`&name`) define reusable nodes."
-- alias / alias — "An alias (`*name`) references a previously defined anchor."
-- in-place edit / in-place edit — "yq Go supports in-place editing via `-i`; yq Python does not."
-- parser / parser — "Each implementation has its own YAML parser with different behavior."
-- conversion (conversão) / conversion — "yq Go handles YAML-to-JSON conversion natively."
-- preserve (preservar) / preserve — "yq Go preserves comments better than yq Python."
-- expand (expandir) / expand — "Both implementations expand anchors and aliases by default."
+- **implementação** — *implementation*. "Existem duas implementations incompatíveis de yq: Mike Farah (Go) e kislyuk (Python)."
+- **derivação** — *fork*. "kislyuk/yq é um projeto fork-adjacent, não um fork direto de mikefarah/yq."
+- **multi-documento** — *multi-document*. "Manifestos Kubernetes frequentemente usam multi-document YAML separado por `---`."
+- **âncora** — *anchor*. "YAML anchors (`&name`) definem nós reutilizáveis no documento."
+- **apelido** — *alias*. "Um alias (`*name`) referencia um anchor previamente definido no documento."
+- **edição in-place** — *in-place edit*. "yq Go suporta in-place editing via `-i`; yq Python não tem equivalente nativo."
+- **analisador** — *parser*. "Cada implementation tem seu próprio YAML parser com comportamento diferente para anchors e multi-doc."
+- **conversão** — *conversion*. "yq Go realiza YAML-to-JSON conversion nativamente com `yq -o json`."
+- **preservação** — *preserve*. "yq Go preserves comments YAML melhor que yq Python na maioria dos casos."
+- **expansão** — *expand*. "Ambas as implementations expandem anchors e aliases por default ao processar o YAML."
 
 ## Veja também
 

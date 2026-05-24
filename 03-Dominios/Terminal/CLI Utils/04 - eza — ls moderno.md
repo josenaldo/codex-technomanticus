@@ -19,7 +19,7 @@ aliases:
 
 # eza — ls moderno
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > eza é ls moderno em Rust — fork ativo do exa (arquivado em agosto 2023). Cores por tipo, ícones (com Nerd Font), modo árvore (`--tree`), status git inline (`--git`), color-scale por tamanho/idade. Configurável via `EZA_COLORS` (sintaxe diferente de `LS_COLORS`). Substitui `ls` pra inspeção visual rápida; mantém compat com ls(1) só parcialmente.
 
 ## O que é / Como funciona
@@ -120,11 +120,23 @@ Versão hedged: eza 0.18+; verifique `eza --version` localmente.
 
 ### (1) Ícones aparecendo como `?` ou quadrados
 
-Ativar `--icons` sem Nerd Font configurada no emulador de terminal resulta em glyphs do Unicode Private Use Area (PUA) que o terminal não sabe renderizar. Sintoma: `eza --icons` mostra `□` ou `?` onde deveriam estar os ícones. Como detectar: trocar temporariamente a fonte do terminal para DejaVu Sans Mono (sem Nerd Font) — se os ícones quebram, confirma que eram Nerd Font. Solução: instalar Nerd Font (MesloLGS NF, FiraCode NF, JetBrainsMono NF) e configurar no emulador de terminal (kitty, WezTerm, Alacritty, etc.). Ver verbete [[Dicionário do Terminal#Nerdfont|Nerdfont]].
+**Causa:** ativar `--icons` sem Nerd Font configurada no emulador de terminal resulta em glyphs do Unicode Private Use Area (PUA) que o terminal não sabe renderizar.
+
+**Sintoma:** `eza --icons` mostra `□` ou `?` onde deveriam estar os ícones.
+
+**Como detectar:** trocar temporariamente a fonte do terminal para DejaVu Sans Mono (sem Nerd Font) — se os ícones quebram, confirma que eram Nerd Font.
+
+**Solução:** instalar Nerd Font (MesloLGS NF, FiraCode NF, JetBrainsMono NF) e configurar no emulador de terminal (kitty, WezTerm, Alacritty, etc.). Ver verbete [[Dicionário do Terminal#Nerdfont|Nerd Font]].
 
 ### (2) `alias ls=eza` quebra scripts que esperam flags ls(1) clássicos
 
-Scripts de CI, Makefiles ou automações podem usar `ls -la` esperando o formato exato do GNU ls — parsing de output fixo, flags específicas, separadores de coluna. eza tem layout de output diferente. Sintoma: script funciona em CI (sem alias) e falha localmente (com alias ativo). Como detectar: testar o script com `\ls -la` (backslash bypassa alias) — se funciona, o alias é o culpado. Solução: limitar alias ao contexto interativo:
+**Causa:** scripts de CI, Makefiles ou automações podem usar `ls -la` esperando o formato exato do GNU ls — parsing de output fixo, flags específicas, separadores de coluna. eza tem layout de output diferente.
+
+**Sintoma:** script funciona em CI (sem alias) e falha localmente (com alias ativo).
+
+**Como detectar:** testar o script com `\ls -la` (backslash bypassa alias) — se funciona, o alias é o culpado.
+
+**Solução:** limitar alias ao contexto interativo:
 
 ```bash
 if [[ -t 1 ]]; then
@@ -136,7 +148,13 @@ Ou preservar `ls` puro e usar nome diferente (`alias l=eza`) para o eza.
 
 ### (3) `--git` lento em repos grandes
 
-A flag `--git` busca o status git de cada arquivo individualmente. Em monorepos com milhares de arquivos, isso custa tempo perceptível. Sintoma: `eza -l --git` claramente mais lento que `eza -l` no mesmo diretório. Como detectar: `time eza -l --git` vs `time eza -l` — diferença >1s é sinal. Solução: remover `--git` do alias `ll` default e criar alias específico pra quando precisar:
+**Causa:** a flag `--git` busca o status git de cada arquivo individualmente. Em monorepos com milhares de arquivos, isso custa tempo perceptível.
+
+**Sintoma:** `eza -l --git` claramente mais lento que `eza -l` no mesmo diretório.
+
+**Como detectar:** `time eza -l --git` vs `time eza -l` — diferença >1s é sinal.
+
+**Solução:** remover `--git` do alias `ll` default e criar alias específico pra quando precisar:
 
 ```bash
 alias ll='eza -l --group-directories-first'
@@ -145,30 +163,48 @@ alias llg='eza -l --git --group-directories-first'
 
 ### (4) Ordenação default ≠ ls com group-dirs-first
 
-Aliases que ativam `--group-directories-first` por padrão produzem ordem visual diferente do `ls` clássico (diretórios primeiro, depois arquivos, cada grupo em ordem alfabética). Quem alterna entre os dois pode se perder. Sintoma: ordem de listagem confusa ao comparar `eza` e `ls` lado a lado. Como detectar: `eza` vs `ls` no mesmo diretório — diretórios em posição diferente. Solução: decidir convenção (group-dirs-first é a mais comum) e documentar nos dotfiles para consistência.
+**Causa:** aliases que ativam `--group-directories-first` por padrão produzem ordem visual diferente do `ls` clássico (diretórios primeiro, depois arquivos, cada grupo em ordem alfabética). Quem alterna entre os dois pode se perder.
+
+**Sintoma:** ordem de listagem confusa ao comparar `eza` e `ls` lado a lado.
+
+**Como detectar:** `eza` vs `ls` no mesmo diretório — diretórios em posição diferente.
+
+**Solução:** decidir convenção (group-dirs-first é a mais comum) e documentar nos dotfiles para consistência.
 
 ### (5) `EZA_COLORS` ≠ `LS_COLORS` (sintaxe diferente)
 
-Copiar o valor de `LS_COLORS` (gerado pelo `dircolors`) para `EZA_COLORS` não funciona — as chaves são distintas. eza usa chaves próprias (`di`, `fi`, `ex`, `ur`, `gm`, etc.); ls usa chaves do GNU dircolors (`di`, `fi`, `ex`, `bd`, `cd`, etc.) com superposição parcial mas sem compat total. Sintoma: cores não aplicam ou aplicam errado após copiar `LS_COLORS`. Como detectar: `echo $LS_COLORS` vs `echo $EZA_COLORS` — formatos parecem iguais mas chaves divergem em campos específicos. Solução: ler `eza --color-help` para as chaves válidas do eza e montar `EZA_COLORS` separadamente.
+**Causa:** copiar o valor de `LS_COLORS` (gerado pelo `dircolors`) para `EZA_COLORS` não funciona — as chaves são distintas. eza usa chaves próprias (`di`, `fi`, `ex`, `ur`, `gm`, etc.); ls usa chaves do GNU dircolors com superposição parcial mas sem compat total.
+
+**Sintoma:** cores não aplicam ou aplicam errado após copiar `LS_COLORS`.
+
+**Como detectar:** `echo $LS_COLORS` vs `echo $EZA_COLORS` — formatos parecem iguais mas chaves divergem em campos específicos.
+
+**Solução:** ler `eza --color-help` para as chaves válidas do eza e montar `EZA_COLORS` separadamente.
 
 ### (6) eza vs exa — confundir documentação antiga
 
-Muitos tutoriais publicados antes de agosto de 2023 referenciam `exa` — instalação via `brew install exa`, `apt install exa`, etc. O projeto está arquivado; o pacote pode estar desatualizado ou ausente. Sintoma: `brew install exa` falha ou instala versão antiga de 2022; binário não tem features novas. Como detectar: `exa --version` mostrando data de 2022 ou anterior confirma que é o projeto arquivado. Solução: instalar sempre eza (`brew install eza`, `cargo install eza`, `apt install eza` em Ubuntu 24.04+). As flags são quase 100% compatíveis — migração trivial.
+**Causa:** muitos tutoriais publicados antes de agosto de 2023 referenciam `exa` — instalação via `brew install exa`, `apt install exa`, etc. O projeto exa está arquivado; o pacote pode estar desatualizado ou ausente.
+
+**Sintoma:** `brew install exa` falha ou instala versão antiga de 2022; binário não tem features novas.
+
+**Como detectar:** `exa --version` mostrando data de 2022 ou anterior confirma que é o projeto arquivado.
+
+**Solução:** instalar sempre eza (`brew install eza`, `cargo install eza`, `apt install eza` em Ubuntu 24.04+). As flags são quase 100% compatíveis — migração trivial.
 
 ## Em inglês
 
 Termos técnicos que aparecem ao ler docs e fóruns sobre eza:
 
-- **listing** / listing — listagem de arquivos no terminal
-- **long format** / long format — formato longo com metadados: permissões, owner, tamanho, data
-- **hidden file** / hidden file — arquivo oculto cujo nome começa com `.`
-- **tree view** / tree view — visualização hierárquica em forma de árvore
-- **git status** / git status — estado de cada arquivo em relação ao repositório git
-- **icons** / icons — ícones por tipo de arquivo (requer Nerd Font)
-- **color scale** / color scale — gradiente de cor proporcional a tamanho ou idade
-- **fork** / fork — projeto derivado de outro, mantido de forma independente
-- **archived** / archived — projeto sem manutenção ativa, congelado no tempo
-- **lexicographic** (lexicográfico) / lexicographic — ordenação por valor de caractere, como em dicionário
+- **listagem** — *listing*. "eza produz uma listing colorida por tipo de arquivo, com metadados opcionais."
+- **formato longo** — *long format*. "O long format (`eza -l`) exibe permissões, owner, tamanho e data de modificação."
+- **arquivo oculto** — *hidden file*. "Hidden files têm nome começando com `.`; visíveis com `eza -a`."
+- **visualização em árvore** — *tree view*. "A tree view (`eza --tree`) exibe o diretório de forma hierárquica recursiva."
+- **status git** — *git status*. "A flag `--git` adiciona uma coluna de git status inline por arquivo."
+- **ícones** — *icons*. "eza suporta icons por tipo de arquivo quando uma Nerd Font está configurada no terminal."
+- **escala de cores** — *color scale*. "O color scale aplica gradiente de cor proporcional ao tamanho ou idade do arquivo."
+- **derivação** — *fork*. "eza é um fork ativo do exa, que foi arquivado em agosto de 2023."
+- **arquivado** — *archived*. "O projeto exa está archived — sem novos releases ou correções de segurança."
+- **lexicográfico** — *lexicographic*. "Lexicographic sort ordena por valor de caractere Unicode, como em dicionário."
 
 ## Veja também
 
@@ -179,7 +215,7 @@ Termos técnicos que aparecem ao ler docs e fóruns sobre eza:
 - [[Dicionário do Terminal#eza|eza]]
 - [[Dicionário do Terminal#exa (legado)|exa (legado)]]
 - [[Dicionário do Terminal#EZA_COLORS|EZA_COLORS]]
-- [[Dicionário do Terminal#Nerdfont|Nerdfont]]
+- [[Dicionário do Terminal#Nerdfont|Nerd Font]]
 - [[Dicionário do Terminal#gitignore-aware|gitignore-aware]] — `--git-ignore` em eza
 
 ## Referências

@@ -18,7 +18,7 @@ aliases:
 
 # jq — processor JSON com DSL
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > jq é processor JSON com DSL própria — pipeline de filtros (`|`), seleção (`select`), transformação (`map`), agregação (`reduce`). Lê JSON do stdin, escreve JSON do stdout. Flag `-r` emite strings sem aspas (essencial pra pipar pra `cd`/`ssh`); `-s` agrupa inputs num array; `-e` retorna exit não-zero quando filtro vazio. Essencial pra qualquer fluxo com API REST ou kubectl.
 
 ## O que é / Como funciona
@@ -170,30 +170,78 @@ rg --json 'TODO' | jq 'select(.type=="match") | .data.path.text' | sort -u
 
 ## Armadilhas
 
-**`-r` faltando — strings com aspas quebram pipe.** Sem `-r`, jq emite strings JSON com aspas (`"alice"` em vez de `alice`). Sintoma: `cd "$(jq '.path' file)"` recebe `"/home/alice"` com aspas literais e falha com "No such file". Como detectar: output visível tem aspas ao redor do valor. Solução: quando consumer é texto (`cd`, `ssh`, `xargs`, variável shell), SEMPRE use `-r`. Omita `-r` apenas quando o consumer espera JSON válido (outro jq, yq, parser).
+### (1) `-r` faltando — strings com aspas quebram pipe
 
-**`select` vs `map` confundidos.** `select(cond)` filtra — mantém o item se `cond` for true, descarta se false. `map(f)` transforma — aplica `f` a cada item e retorna array do mesmo tamanho. Sintoma: "queria filtrar mas transformou" ou vice-versa. Como detectar: `select` retorna o item original ou nada; `map` retorna SEMPRE array com resultado de `f`. Solução: mnemonic — `select` = `WHERE`; `map` = `SELECT` (SQL). Combinado: `.users | map(select(.active))` — filter dentro de transform.
+**Causa:** sem `-r`, jq emite strings JSON com aspas (`"alice"` em vez de `alice`).
 
-**`null` em chave faltante vs erro.** `.foo` em objeto sem a chave `foo` retorna `null` silenciosamente. `.foo.bar` quando `.foo` é `null` retorna ERROR: `Cannot index null with string "bar"`. Sintoma: stack trace no meio de um pipeline. Como detectar: checar se objeto pode não ter a chave em questão. Solução: operador opcional `?` — `.foo?.bar?` retorna `null` em vez de errar. Alternativa: `if .foo then .foo.bar else null end`. Ou `select(.foo) | .foo.bar` filtra antes de acessar.
+**Sintoma:** `cd "$(jq '.path' file)"` recebe `"/home/alice"` com aspas literais e falha com "No such file".
 
-**Números float vs int — perda de precisão.** jq trata todos números como float64 (IEEE 754). Inteiros grandes (Twitter/X IDs, timestamps em nanosegundos) perdem precisão. Sintoma: ID `123456789012345678` vira `123456789012345700` no output. Como detectar: comparar byte-a-byte o input vs output de `.`. Solução: preservar IDs grandes como string no JSON original; ou usar `gojq` (implementação Go) que suporta bigint nativo.
+**Como detectar:** output visível tem aspas ao redor do valor.
 
-**UTF-8 BOM no input quebra parser.** Alguns Windows tools (PowerShell Export-Csv, Excel) prefixam BOM (`EF BB BF`) em JSON. jq não tolera BOM — falha imediatamente. Sintoma: `parse error (Invalid numeric literal at EOF at line 1, column 4)` mesmo com JSON válido. Como detectar: `xxd file.json | head -1` mostra `efbb bf7b` no início. Solução: strip BOM antes de pipar — `sed '1s/^\xef\xbb\xbf//' file.json | jq ...` ou `iconv -f UTF-8-BOM -t UTF-8 file.json | jq ...`.
+**Solução:** quando consumer é texto (`cd`, `ssh`, `xargs`, variável shell), SEMPRE use `-r`. Omita `-r` apenas quando o consumer espera JSON válido (outro jq, yq, parser).
 
-**`-s` slurp em stream gigante engole memória.** `-s` agrupa TODO o input num único array antes de iniciar o processamento — em streams de log ou arquivos gigantes, tenta carregar tudo na RAM. Sintoma: OOM killer mata jq, ou processo trava com memória subindo monotonicamente. Como detectar: `ps aux | grep jq` mostra %MEM crescendo. Solução: processar sem `-s` — pipas filtros linha a linha. Quando precisa de agregação sobre stream, use `reduce` que é incremental: `jq -n 'reduce inputs as $x (0; . + $x.value)' big.ndjson`.
+### (2) `select` vs `map` confundidos
+
+**Causa:** `select(cond)` filtra — mantém o item se `cond` for true, descarta se false. `map(f)` transforma — aplica `f` a cada item e retorna array do mesmo tamanho.
+
+**Sintoma:** "queria filtrar mas transformou" ou vice-versa.
+
+**Como detectar:** `select` retorna o item original ou nada; `map` retorna SEMPRE array com resultado de `f`.
+
+**Solução:** mnemonic — `select` = `WHERE`; `map` = `SELECT` (SQL). Combinado: `.users | map(select(.active))` — filter dentro de transform.
+
+### (3) `null` em chave faltante vs erro
+
+**Causa:** `.foo` em objeto sem a chave `foo` retorna `null` silenciosamente. `.foo.bar` quando `.foo` é `null` retorna ERROR: `Cannot index null with string "bar"`.
+
+**Sintoma:** stack trace no meio de um pipeline.
+
+**Como detectar:** checar se objeto pode não ter a chave em questão.
+
+**Solução:** operador opcional `?` — `.foo?.bar?` retorna `null` em vez de errar. Alternativa: `if .foo then .foo.bar else null end`. Ou `select(.foo) | .foo.bar` filtra antes de acessar.
+
+### (4) Números float vs int — perda de precisão
+
+**Causa:** jq trata todos números como float64 (IEEE 754). Inteiros grandes (Twitter/X IDs, timestamps em nanosegundos) perdem precisão.
+
+**Sintoma:** ID `123456789012345678` vira `123456789012345700` no output.
+
+**Como detectar:** comparar byte-a-byte o input vs output de `.`.
+
+**Solução:** preservar IDs grandes como string no JSON original; ou usar `gojq` (implementação Go) que suporta bigint nativo.
+
+### (5) UTF-8 BOM no input quebra parser
+
+**Causa:** alguns Windows tools (PowerShell Export-Csv, Excel) prefixam BOM (`EF BB BF`) em JSON. jq não tolera BOM — falha imediatamente.
+
+**Sintoma:** `parse error (Invalid numeric literal at EOF at line 1, column 4)` mesmo com JSON válido.
+
+**Como detectar:** `xxd file.json | head -1` mostra `efbb bf7b` no início.
+
+**Solução:** strip BOM antes de pipar — `sed '1s/^\xef\xbb\xbf//' file.json | jq ...` ou `iconv -f UTF-8-BOM -t UTF-8 file.json | jq ...`.
+
+### (6) `-s` slurp em stream gigante engole memória
+
+**Causa:** `-s` agrupa TODO o input num único array antes de iniciar o processamento — em streams de log ou arquivos gigantes, tenta carregar tudo na RAM.
+
+**Sintoma:** OOM killer mata jq, ou processo trava com memória subindo monotonicamente.
+
+**Como detectar:** `ps aux | grep jq` mostra %MEM crescendo.
+
+**Solução:** processar sem `-s` — pipas filtros linha a linha. Quando precisa de agregação sobre stream, use `reduce` que é incremental: `jq -n 'reduce inputs as $x (0; . + $x.value)' big.ndjson`.
 
 ## Em inglês
 
-- **filter pipeline / pipeline de filtros** — cadeia de filtros onde output de um vira input do próximo via `|`
-- **identity / identidade** — filtro `.` que repassa o input inalterado
-- **raw output / raw output** — modo `-r` que emite strings sem aspas JSON externas
-- **slurp / slurp** — modo `-s` que lê todos inputs e agrupa num array único
-- **select / select** — função que mantém ou descarta valores baseada em condição
-- **map / map** — função que transforma cada elemento do array aplicando um filtro
-- **reduce / reduce** — fold que acumula N valores em 1 resultado via função
-- **exit code / código de saída** — status retornado ao shell ao terminar; `-e` torna exit code significativo
-- **projection / projeção** — construção de objeto com subconjunto de campos (ex: `map({id, name})`)
-- **interpolation / interpolação** — embedding de expressão dentro de string via `"\(.expr)"`
+- **pipeline de filtros** — *filter pipeline*. "jq modela processamento JSON como um filter pipeline onde output de um filtro vira input do próximo via `|`."
+- **identidade** — *identity*. "O filtro identity (`.`) repassa o input sem modificar — útil para pretty-print."
+- **saída bruta** — *raw output*. "raw output (`-r`) emite strings sem aspas JSON externas, essencial para pipar para `cd` ou `ssh`."
+- **slurp** — *slurp*. "O modo slurp (`-s`) lê todos os inputs e agrupa num array único antes de processar."
+- **select** — *select*. "A função select mantém ou descarta valores baseada em condição booleana."
+- **map** — *map*. "A função map transforma cada elemento do array aplicando um filtro e retorna array do mesmo tamanho."
+- **reduce** — *reduce*. "reduce é o fold que acumula N valores em 1 resultado via função incremental."
+- **código de saída** — *exit code*. "exit code é o status retornado ao shell; com `-e`, jq torna o exit code semanticamente significativo."
+- **projeção** — *projection*. "projection constrói objeto com subconjunto de campos, como em `map({id, name})`."
+- **interpolação** — *interpolation*. "string interpolation embute expressões dentro de strings via `\"\\(.expr)\"`."
 
 ## Veja também
 

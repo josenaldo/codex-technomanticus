@@ -17,7 +17,7 @@ aliases:
 
 # bat — cat moderno com syntax highlight
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > bat é cat moderno com syntax highlight, line numbers, integração git (changes inline). Detecta TTY: em pipe vira cat puro (preserva scripts); em terminal mostra highlight + paginação. Configurável via `BAT_THEME`, `BAT_PAGER`, `BAT_STYLE`. Usado como preview do fzf e como `MANPAGER`. Em Debian/Ubuntu o binário se chama `batcat`.
 
 ## O que é / Como funciona
@@ -138,27 +138,63 @@ Versão hedged: bat 0.24+; verifique `bat --version` localmente.
 
 ### (1) Aliasing `cat=bat` quebra scripts que dependem de cat-strict
 
-**Sintoma:** script funciona localmente, falha em container/CI (ou produz saída inesperada). **Como detectar:** `[ -t 1 ] && echo "é TTY" || echo "é pipe"` no script revela o contexto; bat em CI sem TTY pode detectar errado dependendo da versão. **Solução:** evitar `alias cat=bat` global. Usar `alias bat=batcat` (Debian) ou função wrapper `bcat()`. Reservar `cat` puro para scripts — a TTY detection do bat, embora boa, não é idêntica ao cat POSIX em todos os edge cases.
+**Causa:** a TTY detection do bat, embora boa, não é idêntica ao cat POSIX em todos os edge cases; alias global expõe scripts a comportamento inesperado.
+
+**Sintoma:** script funciona localmente, falha em container/CI (ou produz saída inesperada).
+
+**Como detectar:** `[ -t 1 ] && echo "é TTY" || echo "é pipe"` no script revela o contexto; bat em CI sem TTY pode detectar errado dependendo da versão.
+
+**Solução:** evitar `alias cat=bat` global. Usar `alias bat=batcat` (Debian) ou função wrapper `bcat()`. Reservar `cat` puro para scripts.
 
 ### (2) `BAT_PAGER=less` sem `-R` perde cores
 
-**Sintoma:** paginação exibe `^[[31m...` literal em vez de cores — lixo visual no terminal. **Como detectar:** `echo $BAT_PAGER` mostra `less` sem flags. **Solução:** `export BAT_PAGER="less -R"`. O `-R` instrui o less a interpretar escape sequences ANSI em vez de exibi-las literalmente. O default do bat já define `less -R`, mas qualquer customização manual que omita `-R` quebra as cores.
+**Causa:** qualquer customização manual de `BAT_PAGER` que omita `-R` faz o less exibir escape sequences literalmente em vez de interpretá-las.
+
+**Sintoma:** paginação exibe `^[[31m...` literal em vez de cores — lixo visual no terminal.
+
+**Como detectar:** `echo $BAT_PAGER` mostra `less` sem flags.
+
+**Solução:** `export BAT_PAGER="less -R"`. O `-R` instrui o less a interpretar escape sequences ANSI em vez de exibi-las literalmente. O default do bat já define `less -R`.
 
 ### (3) Binários abrindo no pager e travando terminal
 
-**Sintoma:** terminal cheio de caracteres de controle; necessita `reset` para restaurar. **Como detectar:** executar `bat arquivo.png` ou `bat executavel` — bat exibe warning mas `bat -A` em binário grande vira bagunça. **Solução:** confiar no warning default do bat para binários; usar `xxd` ou `hexdump` para inspecionar conteúdo binário real. Nunca usar `bat -A` em arquivos cujo tipo é desconhecido.
+**Causa:** bat não bloqueia abertura de binários por padrão; `bat -A` em arquivo binário grande injeta sequências de controle não-renderizáveis no terminal.
+
+**Sintoma:** terminal cheio de caracteres de controle; necessita `reset` para restaurar.
+
+**Como detectar:** executar `bat arquivo.png` ou `bat executavel` — bat exibe warning mas `bat -A` em binário grande vira bagunça.
+
+**Solução:** confiar no warning default do bat para binários; usar `xxd` ou `hexdump` para inspecionar conteúdo binário real. Nunca usar `bat -A` em arquivos cujo tipo é desconhecido.
 
 ### (4) `batcat` vs `bat` em Debian/Ubuntu
 
-**Sintoma:** `bat: command not found` mesmo após `apt install bat`; `batcat` funciona. **Como detectar:** `which bat` falha; `which batcat` resolve. **Causa:** o pacote `bat` no apt Debian/Ubuntu instala o binário como `batcat` por colisão histórica com `bacula-console`. **Solução:** `alias bat=batcat` no `.zshrc`, ou symlink `ln -s /usr/bin/batcat ~/.local/bin/bat`. Scripts portáveis devem detectar ambos: `command -v bat || command -v batcat`.
+**Causa:** o pacote `bat` no apt Debian/Ubuntu instala o binário como `batcat` por colisão histórica com `bacula-console`.
+
+**Sintoma:** `bat: command not found` mesmo após `apt install bat`; `batcat` funciona.
+
+**Como detectar:** `which bat` falha; `which batcat` resolve.
+
+**Solução:** `alias bat=batcat` no `.zshrc`, ou symlink `ln -s /usr/bin/batcat ~/.local/bin/bat`. Scripts portáveis devem detectar ambos: `command -v bat || command -v batcat`.
 
 ### (5) Tema escuro/claro descalibrado com o terminal
 
-**Sintoma:** texto quase invisível — letras claras sobre fundo claro, ou escuras sobre escuro. **Como detectar:** abrir qualquer arquivo conhecido e verificar legibilidade. **Solução:** combinar o tema bat com o tema do terminal. Sugestões: `Monokai Extended` ou `Dracula` para fundo escuro; `GitHub` ou `OneHalfLight` para fundo claro. Escolher interativamente: `bat --list-themes | fzf --preview "bat --theme={} README.md"`.
+**Causa:** o tema do bat não foi combinado com o tema de fundo do emulador de terminal (escuro vs claro).
+
+**Sintoma:** texto quase invisível — letras claras sobre fundo claro, ou escuras sobre escuro.
+
+**Como detectar:** abrir qualquer arquivo conhecido e verificar legibilidade.
+
+**Solução:** combinar o tema bat com o tema do terminal. Sugestões: `Monokai Extended` ou `Dracula` para fundo escuro; `GitHub` ou `OneHalfLight` para fundo claro. Escolher interativamente: `bat --list-themes | fzf --preview "bat --theme={} README.md"`.
 
 ### (6) `MANPAGER` configurado errado quebra `man`
 
-**Sintoma:** `man find` exibe `_b___b_o___o_l___l_d` com underscores excessivos em vez de texto bold. **Como detectar:** abrir qualquer manpage após configurar `MANPAGER`. **Causa:** receitas simplificadas omitem `col -bx`, deixando backspaces literais da formatação man antiga chegarem ao bat. **Solução:** usar a receita oficial completa:
+**Causa:** receitas simplificadas omitem `col -bx`, deixando backspaces literais da formatação man antiga chegarem ao bat.
+
+**Sintoma:** `man find` exibe `_b___b_o___o_l___l_d` com underscores excessivos em vez de texto bold.
+
+**Como detectar:** abrir qualquer manpage após configurar `MANPAGER`.
+
+**Solução:** usar a receita oficial completa:
 
 ```bash
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
@@ -170,16 +206,16 @@ O `col -bx` processa e remove os backspaces antes do bat aplicar o highlight.
 
 Termos técnicos que aparecem ao ler docs e fóruns sobre bat:
 
-- **syntax highlighting** / syntax highlighting — colorização de código por estrutura sintática
-- **pager** / pager — programa que pagina output longo no terminal (ex: `less`)
-- **TTY (terminal)** / TTY (terminal) — teletype; identifica se stdout é terminal interativo
-- **env var** / environment variable — variável de ambiente herdada por processos filhos
-- **theme** / theme — conjunto de cores aplicado ao syntax highlight
-- **line numbers** / line numbers — numeração de linhas exibida na margem esquerda
-- **paging** / paging (paginação) — divisão de output em páginas navegáveis
-- **binary content** / binary content — conteúdo não-textual (binários, imagens, executáveis)
-- **escape sequence** / escape sequence — sequência ANSI para cores e formatação no terminal (`ESC[...m`)
-- **manpage** / manpage — página de manual do sistema Unix (`man <comando>`)
+- **realce de sintaxe** — *syntax highlighting*. "bat usa syntax highlighting via syntect para colorizar código por estrutura sintática."
+- **paginador** — *pager*. "Um pager como `less` divide output longo em páginas navegáveis no terminal."
+- **TTY (terminal)** — *TTY (terminal)*. "bat detecta se stdout é um TTY interativo para decidir se aplica cores e paginação."
+- **variável de ambiente** — *environment variable*. "BAT_THEME e BAT_PAGER são environment variables que configuram o bat."
+- **tema** — *theme*. "O theme define o conjunto de cores aplicado ao syntax highlight; escolha com `bat --list-themes`."
+- **numeração de linhas** — *line numbers*. "bat exibe line numbers na margem esquerda em modo terminal; em pipe são suprimidas."
+- **paginação** — *paging*. "bat aplica paging automático via less quando o output excede a altura do terminal."
+- **conteúdo binário** — *binary content*. "bat exibe warning ao abrir binary content; use `xxd` ou `hexdump` para inspeção real."
+- **sequência de escape** — *escape sequence*. "Escape sequences ANSI (`ESC[...m`) codificam cores; `less -R` é necessário para interpretá-las."
+- **página de manual** — *manpage*. "bat pode ser configurado como MANPAGER para exibir manpages com syntax highlight."
 
 ## Veja também
 

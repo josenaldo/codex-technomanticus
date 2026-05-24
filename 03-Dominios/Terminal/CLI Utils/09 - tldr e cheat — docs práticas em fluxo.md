@@ -19,7 +19,7 @@ aliases:
   - tldr-pages
 ---
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > tldr-pages é coleção comunitária de pages curtas (1 tela, comandos de exemplo); `cheat` é cheatsheet local + customizável (você cria/edita pra workflows próprios). Complementam man — man tem invariantes e edge cases; tldr/cheat respondem "como uso isso AGORA". Múltiplos clientes tldr (tealdeer em Rust é rápido); cheat tem versão Go ativa (Python é legado descontinuado).
 
 ## O que é / Como funciona

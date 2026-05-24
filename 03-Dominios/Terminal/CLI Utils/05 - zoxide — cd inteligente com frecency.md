@@ -166,30 +166,78 @@ Após importar, confirmar com `zoxide query --list` que os paths chegaram.
 
 ## Armadilhas
 
-**Init script ordering errado quebra `z`** — `eval "$(zoxide init zsh)"` colocado ANTES do plugin manager (oh-my-zsh, zinit, prezto) causa problema: o plugin manager pode sobrescrever o widget ou função definida pelo zoxide. Sintoma: `z` não funciona, conflita com outro alias, ou gera "command not found". Como detectar: `which z` mostra função de outro plugin ou builtin. Solução: colocar o `eval` no **fim** do `.zshrc`, depois de tudo que mexe em widgets, aliases e funções.
+### (1) Init script ordering errado quebra `z`
 
-**`zi` sem fzf instalado falha silenciosamente** — `zi` depende de fzf no PATH; sem ele, o comportamento varia entre versões (erro obscuro ou saída vazia). Sintoma: `zi` não abre o menu interativo. Como detectar: `command -v fzf` retorna vazio. Solução: instalar fzf antes de usar `zi` (dependência soft — `z` puro funciona sem fzf).
+**Causa:** `eval "$(zoxide init zsh)"` colocado ANTES do plugin manager (oh-my-zsh, zinit, prezto) causa problema: o plugin manager pode sobrescrever o widget ou função definida pelo zoxide.
 
-**Match surpresa em substring curta** — `z d` casa qualquer pasta cujo path contém `d`, podendo incluir centenas de resultados num monorepo. Sintoma: pula pra pasta inesperada. Como detectar: `zoxide query d --list` mostra os candidatos rankeados. Solução: usar substring mais específica (`z docs` em vez de `z d`), ou compor (`z docs api`).
+**Sintoma:** `z` não funciona, conflita com outro alias, ou gera "command not found".
 
-**DB não migra entre máquinas** — `~/.local/share/zoxide/db.zo` é local; ao trocar de máquina ou configurar nova, começa do zero. Sintoma: `z` precisa "aprender de novo" e falha em pastas não visitadas. Como detectar: `zoxide query --list` vazio em máquina recém-configurada. Solução: sincronizar `db.zo` via Syncthing/Resilio entre máquinas com estrutura de pastas similar; ou aceitar cold start (uma semana de uso normal reconstrói o útil).
+**Como detectar:** `which z` mostra função de outro plugin ou builtin.
 
-**Conflito com aliases `cd` em containers e CI** — em ambientes minimalistas sem zoxide, scripts que invocam `cd foo` diretamente falham se o alias `cd` → zoxide não existe. Sintoma: script funciona local, quebra em CI/container limpo. Como detectar: rodar o script em container sem zoxide instalado. Solução: scripts portáveis devem usar paths absolutos ou checar `command -v zoxide` antes de assumir `z`/`cd` com zoxide.
+**Solução:** colocar o `eval` no **fim** do `.zshrc`, depois de tudo que mexe em widgets, aliases e funções.
 
-**`_ZO_DATA_DIR` customizado quebrando portabilidade do init** — mudar `_ZO_DATA_DIR` sem garantir que todas as máquinas exportam a mesma variável faz o zoxide procurar o DB no lugar errado. Sintoma: `zoxide query --list` vazio mesmo após uso intenso, ou banco "duplicado" em dois lugares. Como detectar: `echo $_ZO_DATA_DIR` em cada máquina — divergência = problema. Solução: se customizar, exportar `_ZO_DATA_DIR` **antes** do `eval "$(zoxide init ...)"` no `.zshrc`, e documentar no repo de dotfiles.
+### (2) `zi` sem fzf instalado falha silenciosamente
+
+**Causa:** `zi` depende de fzf no PATH; sem ele, o comportamento varia entre versões (erro obscuro ou saída vazia).
+
+**Sintoma:** `zi` não abre o menu interativo.
+
+**Como detectar:** `command -v fzf` retorna vazio.
+
+**Solução:** instalar fzf antes de usar `zi` (dependência soft — `z` puro funciona sem fzf).
+
+### (3) Match surpresa em substring curta
+
+**Causa:** `z d` casa qualquer pasta cujo path contém `d`, podendo incluir centenas de resultados num monorepo.
+
+**Sintoma:** pula pra pasta inesperada.
+
+**Como detectar:** `zoxide query d --list` mostra os candidatos rankeados.
+
+**Solução:** usar substring mais específica (`z docs` em vez de `z d`), ou compor (`z docs api`).
+
+### (4) DB não migra entre máquinas
+
+**Causa:** `~/.local/share/zoxide/db.zo` é local; ao trocar de máquina ou configurar nova, começa do zero.
+
+**Sintoma:** `z` precisa "aprender de novo" e falha em pastas não visitadas.
+
+**Como detectar:** `zoxide query --list` vazio em máquina recém-configurada.
+
+**Solução:** sincronizar `db.zo` via Syncthing/Resilio entre máquinas com estrutura de pastas similar; ou aceitar cold start (uma semana de uso normal reconstrói o útil).
+
+### (5) Conflito com aliases `cd` em containers e CI
+
+**Causa:** em ambientes minimalistas sem zoxide, scripts que invocam `cd foo` diretamente falham se o alias `cd` → zoxide não existe.
+
+**Sintoma:** script funciona local, quebra em CI/container limpo.
+
+**Como detectar:** rodar o script em container sem zoxide instalado.
+
+**Solução:** scripts portáveis devem usar paths absolutos ou checar `command -v zoxide` antes de assumir `z`/`cd` com zoxide.
+
+### (6) `_ZO_DATA_DIR` customizado quebrando portabilidade do init
+
+**Causa:** mudar `_ZO_DATA_DIR` sem garantir que todas as máquinas exportam a mesma variável faz o zoxide procurar o DB no lugar errado.
+
+**Sintoma:** `zoxide query --list` vazio mesmo após uso intenso, ou banco "duplicado" em dois lugares.
+
+**Como detectar:** `echo $_ZO_DATA_DIR` em cada máquina — divergência = problema.
+
+**Solução:** se customizar, exportar `_ZO_DATA_DIR` **antes** do `eval "$(zoxide init ...)"` no `.zshrc`, e documentar no repo de dotfiles.
 
 ## Em inglês
 
-- **frecency** / frecency — métrica híbrida de frequency + recency; base do algoritmo de ranking do zoxide
-- **frequency** (frequência) / frequency — quantas vezes uma pasta foi visitada; um dos dois fatores do frecency
-- **recency** / recency — quão recente foi o último acesso; o outro fator do frecency
-- **init script** / init script — trecho de shell injetado pelo `eval "$(zoxide init <shell>)"` que define `z`, `zi` e hooks
-- **substring match** / substring match — correspondência parcial; `z foo` casa qualquer path que contenha "foo"
-- **database (DB)** / database — arquivo `db.zo` onde zoxide persiste pastas visitadas e seus scores
-- **ranking** / ranking — ordenação de candidatos por score frecency; maior score = posição mais alta
-- **widget** / widget — função registrada no ZLE; init scripts de zoxide/fzf/atuin registram widgets e os bindkeiam
-- **shell function** / shell function — `z` e `zi` são definidos como funções shell (não binários) pelo init script
-- **fuzzy** / fuzzy — modo de matching aproximado; `zi` usa fzf com matching fuzzy sobre os candidatos do banco
+- **frecência** — *frecency*. "frecency é métrica híbrida de frequency + recency; base do algoritmo de ranking do zoxide."
+- **frequência** — *frequency*. "frequency mede quantas vezes uma pasta foi visitada; um dos dois fatores do frecency."
+- **recência** — *recency*. "recency mede quão recente foi o último acesso à pasta; o outro fator do frecency."
+- **script de inicialização** — *init script*. "O init script é injetado pelo `eval \"$(zoxide init <shell>)\"` e define `z`, `zi` e os hooks de navegação."
+- **correspondência por substring** — *substring match*. "substring match significa que `z foo` casa qualquer path que contenha \"foo\"."
+- **banco de dados (DB)** — *database*. "O database `db.zo` é onde zoxide persiste pastas visitadas e seus scores de frecency."
+- **classificação** — *ranking*. "O ranking ordena candidatos por score frecency; maior score = posição mais alta no resultado."
+- **widget** — *widget*. "Um widget é uma função registrada no ZLE; init scripts de zoxide/fzf/atuin registram widgets e os bindkeiam."
+- **função shell** — *shell function*. "z` e `zi` são definidos como shell functions (não binários) pelo init script do zoxide."
+- **fuzzy** — *fuzzy*. "Modo fuzzy de matching aproximado; `zi` usa fzf com fuzzy matching sobre os candidatos do banco."
 
 ## Veja também
 

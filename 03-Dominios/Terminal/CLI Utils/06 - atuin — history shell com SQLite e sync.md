@@ -19,7 +19,7 @@ aliases:
 
 # atuin — history shell com SQLite e sync
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > atuin reescreve o history do shell em SQLite local, com fuzzy search interativa via Ctrl-R, stats (top comandos, dias mais ativos), e sync opcional E2E-encrypted (self-host ou atuin.sh). Cada comando registra cwd, exit code, duração, hostname — context muito mais rico que `~/.zsh_history`. Init script substitui o binding do Ctrl-R.
 
 ## O que é / Como funciona
@@ -142,30 +142,78 @@ atuin --version
 
 ## Armadilhas
 
-**`atuin import` no shell errado** — rodar `atuin import bash` quando o history é do Zsh (ou vice-versa) resulta em "no history found" ou zero entradas importadas. Como detectar: `echo $SHELL` e `echo $HISTFILE`. Solução: usar o subcomando correspondente ao shell real, ou `atuin import auto` que detecta automaticamente. Re-importar não gera duplicatas (deduplicação por hash).
+### (1) `atuin import` no shell errado
 
-**Sync com atuin.sh = confiar em third-party** — mesmo com E2E encryption, o modelo de trust assume que o cliente binário (baixado da atuin.sh) é honesto. Sintoma: preocupação de privacidade mesmo "E2E encrypted". Como detectar: leia o threat model na documentação. Solução: **self-host** o servidor atuin (Docker; setup simples) se confiança de third-party é problema. E2E continua valendo mesmo no self-host.
+**Causa:** rodar `atuin import bash` quando o history é do Zsh (ou vice-versa) resulta em "no history found" ou zero entradas importadas.
 
-**Secrets viajando no sync** — `secrets_filter` e `history_filter` não configurados: tokens de API e senhas presentes em comandos viram parte do history e sincronizam para o servidor. Sintoma: `aws s3 cp ... AKIA...` aparece no `atuin history list`. Como detectar: `atuin history list | grep -iE 'token|key|secret|password'`. Solução: configurar `history_filter` com regex para os formatos de chave da sua stack. Para deletar entradas já existentes: `atuin history list | grep AKIA | xargs -I{} atuin history delete "{}"`
+**Sintoma:** zero entradas importadas; `atuin history list` vazio após o import.
 
-**SQLite lock em uso concorrente intenso** — muitos shells abertos escrevendo no banco simultaneamente. Sintoma: erros esporádicos "database is locked" no terminal. Como detectar: logs em `~/.local/share/atuin/` com lock errors. Solução: versões recentes do atuin lidam bem com concorrência; se persistir, verifique atualizações. Em casos extremos, reduza shells concorrentes ou use `daemon.enabled = true` (atuin daemon serializa as escritas).
+**Como detectar:** `echo $SHELL` e `echo $HISTFILE`.
 
-**Reset acidental (`atuin history delete`) sem backup** — comando destrutivo executado sem entender o escopo; apaga entradas do history local; se não houver sync ativo, perda permanente. Como detectar antes: `atuin stats` zerado após a operação. Solução: SEMPRE fazer backup de `~/.local/share/atuin/history.db` antes de operações destrutivas. Se sync estava ativo, `atuin sync` baixa o history do servidor.
+**Solução:** usar o subcomando correspondente ao shell real, ou `atuin import auto` que detecta automaticamente. Re-importar não gera duplicatas (deduplicação por hash).
 
-**Binding Ctrl-R conflita com plugins Zsh** — plugins como `zsh-autosuggestions`, `fzf`, ou `oh-my-zsh` podem redefinir Ctrl-R; se o `eval "$(atuin init zsh)"` vem antes deles no `.zshrc`, o binding do atuin é sobrescrito. Sintoma: Ctrl-R abre o history clássico (não a TUI do atuin). Como detectar: `bindkey | grep '\\^R'` — mostra o widget atual. Solução: mover `eval "$(atuin init zsh)"` para o **fim** do `.zshrc`, depois de todos os plugins que mexem em bindkey.
+### (2) Sync sem self-host = confiar em third-party
+
+**Causa:** mesmo com E2E encryption, o modelo de trust assume que o cliente binário (baixado da atuin.sh) é honesto.
+
+**Sintoma:** preocupação de privacidade mesmo "E2E encrypted".
+
+**Como detectar:** leia o threat model na documentação.
+
+**Solução:** **self-host** o servidor atuin (Docker; setup simples) se confiança de third-party é problema. E2E continua valendo mesmo no self-host.
+
+### (3) Secrets viajando no sync
+
+**Causa:** `secrets_filter` e `history_filter` não configurados: tokens de API e senhas presentes em comandos viram parte do history e sincronizam para o servidor.
+
+**Sintoma:** `aws s3 cp ... AKIA...` aparece no `atuin history list`.
+
+**Como detectar:** `atuin history list | grep -iE 'token|key|secret|password'`.
+
+**Solução:** configurar `history_filter` com regex para os formatos de chave da sua stack. Para deletar entradas já existentes: `atuin history list | grep AKIA | xargs -I{} atuin history delete "{}"`
+
+### (4) SQLite lock em uso concorrente intenso
+
+**Causa:** muitos shells abertos escrevendo no banco simultaneamente.
+
+**Sintoma:** erros esporádicos "database is locked" no terminal.
+
+**Como detectar:** logs em `~/.local/share/atuin/` com lock errors.
+
+**Solução:** versões recentes do atuin lidam bem com concorrência; se persistir, verifique atualizações. Em casos extremos, reduza shells concorrentes ou use `daemon.enabled = true` (atuin daemon serializa as escritas).
+
+### (5) Reset acidental sem backup
+
+**Causa:** `atuin history delete` é comando destrutivo executado sem entender o escopo; apaga entradas do history local; se não houver sync ativo, perda permanente.
+
+**Sintoma:** `atuin stats` zerado após a operação.
+
+**Como detectar:** verificar antes de rodar qualquer operação destrutiva que os dados estão sincronizados ou backupeados.
+
+**Solução:** SEMPRE fazer backup de `~/.local/share/atuin/history.db` antes de operações destrutivas. Se sync estava ativo, `atuin sync` baixa o history do servidor.
+
+### (6) Binding Ctrl-R conflita com plugins Zsh
+
+**Causa:** plugins como `zsh-autosuggestions`, `fzf`, ou `oh-my-zsh` podem redefinir Ctrl-R; se o `eval "$(atuin init zsh)"` vem antes deles no `.zshrc`, o binding do atuin é sobrescrito.
+
+**Sintoma:** Ctrl-R abre o history clássico (não a TUI do atuin).
+
+**Como detectar:** `bindkey | grep '\\^R'` — mostra o widget atual.
+
+**Solução:** mover `eval "$(atuin init zsh)"` para o **fim** do `.zshrc`, depois de todos os plugins que mexem em bindkey.
 
 ## Em inglês
 
-- shell history / shell history — registro de comandos executados no shell
-- search mode / search mode — modo de busca configurável (prefix, fulltext, fuzzy)
-- end-to-end encryption / end-to-end encryption — criptografia fim-a-fim; dados encriptados antes de sair do cliente
-- self-host / self-host — hospedar o próprio servidor em infra controlada
-- stats / stats — estatísticas de uso (top comandos, frequência, dias ativos)
-- exit code / exit code — código de saída de um processo; `0` = sucesso, outros = erro
-- working directory (cwd) / working directory — diretório de trabalho no momento do comando
-- sync / sync — sincronização de dados entre múltiplas máquinas
-- filter / filter — regra de exclusão ou inclusão; aqui: comandos que NÃO devem ser armazenados
-- regex / regex — expressão regular usada para casamento de padrões em strings
+- **histórico do shell** — *shell history*. "atuin reescreve o shell history em SQLite com contexto rico por entrada."
+- **modo de busca** — *search mode*. "O search mode configura como a query casa comandos: prefix, fulltext ou fuzzy."
+- **criptografia fim-a-fim** — *end-to-end encryption*. "end-to-end encryption garante que o servidor só vê bytes encriptados; a chave fica no cliente."
+- **servidor próprio** — *self-host*. "self-host significa rodar o servidor atuin em infra própria, eliminando dependência de third-party."
+- **estatísticas** — *stats*. "stats agrega top comandos, frequência de uso e dias mais ativos do seu shell history."
+- **código de saída** — *exit code*. "exit code é o status retornado por um processo; `0` = sucesso, outros = erro."
+- **diretório de trabalho** — *working directory*. "atuin registra o working directory (cwd) de cada comando executado."
+- **sincronização** — *sync*. "sync distribui o histórico entre múltiplas máquinas via servidor atuin, com E2E encryption."
+- **filtro** — *filter*. "history_filter define regex de comandos que NÃO devem ser armazenados no banco."
+- **expressão regular** — *regex*. "regex (expressão regular) é usada em history_filter para casar padrões de secrets e senhas."
 
 ## Veja também
 
