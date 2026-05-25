@@ -15,7 +15,7 @@ publish: true
 
 # Codex
 
-> Codex é a aposta da OpenAI em **coding agent cloud-based**: diferente de Claude Code ou Copilot (que rodam no seu IDE local), Codex opera em um sandbox na nuvem, recebe tarefas em linguagem natural, executa num ambiente isolado com seu repo clonado, e retorna um PR. Para um senior dev, o valor de Codex é diferente do uso diário: **tasks paralelas, trabalho assíncrono, e separação de concerns** — você descreve o que precisa, fecha o laptop, e volta horas depois com PRs prontos para review. Esta nota cobre o que Codex é em 2026 (muito diferente do "Codex 2021" original que era só o modelo), como usar, trade-offs, e quando faz sentido adotar. Para comparação com outras ferramentas, ver [[Comparativo de LLMs]]; para o padrão de agents em geral, [[Anatomia de Agents|Agents]].
+> Codex é a aposta da OpenAI em **[[Dicionário de IA#Coding agent|coding agent]] cloud-based**: diferente de [[Dicionário de IA#Claude Code|Claude Code]] ou Copilot (que rodam no seu IDE local), Codex opera em um sandbox na nuvem, recebe tarefas em linguagem natural, executa num ambiente isolado com seu repo clonado, e retorna um PR. Para um senior dev, o valor de Codex é diferente do uso diário: **tasks paralelas, trabalho assíncrono, e separação de concerns** — você descreve o que precisa, fecha o laptop, e volta horas depois com PRs prontos para review. Esta nota cobre o que Codex é em 2026 (muito diferente do "Codex 2021" original que era só o modelo), como usar, trade-offs, e quando faz sentido adotar. Para comparação com outras ferramentas, ver [[Comparativo de LLMs]]; para o padrão de agents em geral, [[Anatomia de Agents|Agents]].
 
 ## O que é
 
@@ -27,7 +27,7 @@ publish: true
 - **Executar em sandbox cloud isolado** — containers efêmeros com acesso ao repo.
 - **Clonar e modificar repositórios GitHub** (com OAuth).
 - **Rodar testes, builds, linters** no sandbox.
-- **Abrir PRs automaticamente** com descrição gerada.
+- **[[Dicionário de IA#PR-driven workflow|Abrir PRs automaticamente]]** com descrição gerada.
 - **Processar múltiplas tasks em paralelo** — 5, 10, 20 tarefas simultâneas.
 - **Codex Skills** — instruções reutilizáveis via `AGENTS.md`.
 - **Integração com ChatGPT app** — pode ser invocado direto do app principal.
@@ -444,7 +444,7 @@ Cada task Codex roda em container isolado. Pipeline típico:
 3. **Repo clone:** shallow clone do branch especificado.
 4. **Dependency install:** detecta package manager (npm, pip, go mod, cargo) e instala deps.
 5. **AGENTS.md read:** parser injeta instructions no context.
-6. **Agent loop:** ReAct-style com tools do sandbox.
+6. **Agent loop:** [[Dicionário de IA#ReAct|ReAct]]-style com tools do sandbox.
 7. **Test run:** se configurado, roda testes.
 8. **Commit + PR:** push do branch e abertura de PR com descrição gerada.
 9. **Container destroy:** tudo efêmero.

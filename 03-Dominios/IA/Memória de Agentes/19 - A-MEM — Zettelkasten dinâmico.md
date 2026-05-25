@@ -33,7 +33,7 @@ aliases:
 
 ## Problema
 
-Sistemas de memória anteriores tratam o histórico do agente de duas formas dominantes, e ambas têm limites claros. A primeira é o *memory stream* descrito em [[18 - Generative Agents (Park, Stanford 2023)|18 - Generative Agents]]: memórias são adicionadas em sequência, recuperadas por uma combinação de *recency*, importância e similarity, e nunca se reorganizam. A segunda é o RAG vetorial puro discutido em [[04 - RAG vs memória de longo prazo]] e em [[05 - Beyond RAG - quando RAG não basta]]: cada memória vira um vetor isolado em um índice, e a relação entre elas só existe implicitamente, no espaço de embeddings.
+Sistemas de memória anteriores tratam o histórico do agente de duas formas dominantes, e ambas têm limites claros. A primeira é o *memory stream* descrito em [[18 - Generative Agents (Park, Stanford 2023)|18 - Generative Agents]]: memórias são adicionadas em sequência, recuperadas por uma combinação de *recency*, importância e similarity, e nunca se reorganizam. A segunda é o [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vetorial puro discutido em [[04 - RAG vs memória de longo prazo]] e em [[05 - Beyond RAG - quando RAG não basta]]: cada memória vira um vetor isolado em um índice, e a relação entre elas só existe implicitamente, no espaço de embeddings.
 
 O que falta nas duas abordagens é **organização emergente**. Não há mecanismo para que duas memórias reconheçam uma à outra como parte de um mesmo tópico, nem para que uma memória antiga seja *atualizada* quando uma observação posterior muda o que ela significa. A-MEM ataca exatamente esse vácuo.
 
@@ -41,7 +41,7 @@ O que falta nas duas abordagens é **organização emergente**. Não há mecanis
 
 O paper propõe um sistema que combina três ideias:
 
-1. **Estrutura Zettelkasten para cada memória.** Em vez de armazenar o conteúdo bruto, o sistema gera, via LLM, uma nota estruturada com atributos: *contextual description*, *keywords*, *tags*, *category* e *timestamp*. Isso é diretamente análogo ao formato fichado que Luhmann usava em suas caixas de fichas (*Zettelkästen*).
+1. **Estrutura Zettelkasten para cada memória.** Em vez de armazenar o conteúdo bruto, o sistema gera, via [[Dicionário de IA#LLM (Large Language Model)|LLM]], uma nota estruturada com atributos: *contextual description*, *keywords*, *tags*, *category* e *timestamp*. Isso é diretamente análogo ao formato fichado que Luhmann usava em suas caixas de fichas (*Zettelkästen*).
 2. **Linkagem dinâmica baseada em similarity semântica.** Ao inserir uma nota nova, o sistema analisa o conjunto existente, identifica notas relacionadas e cria links explícitos entre elas. A rede de memória cresce como um grafo, não como uma lista.
 3. ***Memory evolution*.** Esta é a contribuição mais distinta. Inserir uma nota nova pode disparar **atualização das representações de notas antigas** — descrição, keywords ou tags são reescritas à luz do novo contexto. A memória deixa de ser *append-only* e passa a ser *revisable*.
 
@@ -73,7 +73,7 @@ O fluxo de inserção tem quatro etapas, todas mediadas por LLM:
 - **Link** — links bidirecionais são materializados entre a nova nota e as candidatas selecionadas.
 - **Evolve** — para cada nota antiga ligada, o modelo decide se há razão para reescrever campos da nota antiga (por exemplo, expandir a descrição ou refinar as tags). É aqui que A-MEM se distingue de tudo que existia antes.
 
-A recuperação, na hora da consulta, combina similarity de embeddings com travessia dos links — semelhante ao que se faz em grafos de conhecimento, mas com a estrutura sendo construída pelo próprio agente em runtime.
+A recuperação, na hora da consulta, combina similarity de [[Dicionário de IA#embedding|embeddings]] com travessia dos links — semelhante ao que se faz em grafos de conhecimento, mas com a estrutura sendo construída pelo próprio agente em runtime.
 
 **Inspiração explícita em Luhmann.** O paper cita Niklas Luhmann e o Zettelkasten como referência central. A novidade declarada não é o formato fichado em si — Luhmann já usava algo equivalente em papel —, mas **automatizar via LLM o trabalho de linkagem e revisão** que ele fazia manualmente, fichinha por fichinha, ao longo de décadas.
 

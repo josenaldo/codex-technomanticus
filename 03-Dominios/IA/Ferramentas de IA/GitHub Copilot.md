@@ -14,7 +14,7 @@ publish: true
 
 # GitHub Copilot
 
-> Copilot foi o primeiro coding assistant de IA que um dev normal podia usar em produção. Lançado em 2021, em 2026 virou um ecossistema completo: completions no editor, chat contextual, agent mode, workspace para features multi-arquivo, integração nativa com Pull Requests, GitHub Actions, e Issues. Se você vive no GitHub, Copilot é onde a IA aparece sem você precisar trocar de janela. Esta nota cobre as capabilities, como configurar bem (skills, instructions, chat modes), workflows reais, e quando usar Copilot em vez de (ou junto com) Claude Code. Para fundamentos de LLMs ver [[Anatomia dos LLMs|LLMs]]; para comparação geral ver [[Comparativo de LLMs]].
+> Copilot foi o primeiro [[Dicionário de IA#Coding agent|coding assistant]] de IA que um dev normal podia usar em produção. Lançado em 2021, em 2026 virou um ecossistema completo: completions no editor, chat contextual, agent mode, workspace para features multi-arquivo, integração nativa com Pull Requests, GitHub Actions, e Issues. Se você vive no GitHub, Copilot é onde a IA aparece sem você precisar trocar de janela. Esta nota cobre as capabilities, como configurar bem (skills, instructions, chat modes), workflows reais, e quando usar Copilot em vez de (ou junto com) Claude Code. Para fundamentos de LLMs ver [[Anatomia dos LLMs|LLMs]]; para comparação geral ver [[Comparativo de LLMs]].
 
 ## O que é
 
@@ -105,7 +105,7 @@ Modo mais autônomo. Copilot itera em uma task — lê código, edita, roda coma
 - Refactors amplos
 - Bug fixes que exigem investigação
 
-**Guardrails:** confirmação antes de ações destrutivas, auto-approve configurável por comando, `max_steps` implícito.
+**[[Dicionário de IA#Guardrail|Guardrails]]:** confirmação antes de ações destrutivas, auto-approve configurável por comando, `max_steps` implícito.
 
 ### 5. Copilot Workspace
 
@@ -313,7 +313,7 @@ Estudantes verificados e manutenedores de projetos OSS populares têm acesso gra
 - **Customização profunda** (skills, subagents, hooks, memory).
 - **CLI puro** para workflows terminal-first.
 - **Worktrees e isolation** nativas (Claude Code).
-- **Controle fino sobre contexto** (MCP servers, context management).
+- **Controle fino sobre contexto** ([[Dicionário de IA#MCP (Model Context Protocol)|MCP]] servers, context management).
 
 ### Stack típica que se mostra produtiva
 

@@ -28,9 +28,9 @@ aliases:
 > 1. **AGENTS.md** existente ou disposto a criar (ver [[Context Engineering|11 - Skills e instructions como contexto]])
 > 2. **Repositório git** ativo (specs vão versionadas)
 > 3. **Pipeline CI mínimo** (vai precisar de gates)
-> 4. **Pelo menos um agente configurado** (Claude Code, Cursor, Kiro)
+> 4. **Pelo menos um agente configurado** ([[Dicionário de IA#Claude Code|Claude Code]], [[Dicionário de IA#Cursor|Cursor]], Kiro)
 > 5. **Time de acordo** — SDD não funciona com adoção parcial, todo mundo segue
-> 6. **Prompt caching ativo** ([[Economia de Tokens|05 - Prompt caching na prática]]) — specs são prefix cacheável ideal
+> 6. **[[Dicionário de IA#Prompt caching|Prompt caching]] ativo** ([[Economia de Tokens|05 - Prompt caching na prática]]) — specs são prefix cacheável ideal
 
 ## Semana 0 — Decisão de adoção
 

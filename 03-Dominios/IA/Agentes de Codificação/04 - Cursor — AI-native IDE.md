@@ -18,11 +18,11 @@ aliases:
 # Cursor — AI-native IDE
 
 > [!abstract] TL;DR
-> Cursor é um fork do VS Code que transforma o editor em um ambiente AI-native — não é uma extensão, é a arquitetura inteira reprojetada para IA. Composer faz edições multi-file coerentes, Agent Mode planeja e executa autonomamente, Background Agents trabalham enquanto você faz outra coisa, e .cursorrules define o "sistema operacional" do AI no seu projeto. Em 2026, é considerado o padrão da indústria para codificação agentic em IDE.
+> [[Dicionário de IA#Cursor|Cursor]] é um fork do VS Code que transforma o editor em um ambiente AI-native — não é uma extensão, é a arquitetura inteira reprojetada para IA. Composer faz edições multi-file coerentes, Agent Mode planeja e executa autonomamente, Background Agents trabalham enquanto você faz outra coisa, e .cursorrules define o "sistema operacional" do AI no seu projeto. Em 2026, é considerado o padrão da indústria para codificação agentic em IDE.
 
 ## O que é
 
-**Cursor** é um IDE AI-native baseado no VS Code que integra capacidades de LLM diretamente na experiência de edição. Diferente de extensões como Copilot que se plugam ao VS Code, Cursor é um fork que controla o editor inteiro — permitindo interações mais profundas entre AI e código.
+**Cursor** é um IDE AI-native baseado no VS Code que integra capacidades de [[Dicionário de IA#LLM (Large Language Model)|LLM]] diretamente na experiência de edição. Diferente de extensões como Copilot que se plugam ao VS Code, Cursor é um fork que controla o editor inteiro — permitindo interações mais profundas entre AI e código.
 
 ## Por que importa
 
@@ -123,7 +123,7 @@ coverage/
 *.log
 ```
 
-Exclui diretórios irrelevantes do contexto AI, economizando tokens e melhorando qualidade.
+Exclui diretórios irrelevantes do contexto AI, economizando [[Dicionário de IA#Token|tokens]] e melhorando qualidade.
 
 ## Armadilhas
 

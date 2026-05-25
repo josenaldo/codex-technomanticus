@@ -16,7 +16,7 @@ tags:
 # Hooks para segurança — commits, push force, rm -rf
 
 > [!abstract] TL;DR
-> Segurança com hooks vai além de guardrails individuais: é uma estratégia em camadas que cobre o fluxo de trabalho inteiro — desde bloquear comandos destrutivos até proteger o histórico git, controlar o que pode ser commitado, e detectar commits com credenciais. A diferença entre guardrails (bloquear ações) e segurança (política sistêmica para o fluxo completo).
+> Segurança com hooks vai além de [[Dicionário de IA#Guardrail|guardrails]] individuais: é uma estratégia em camadas que cobre o fluxo de trabalho inteiro — desde bloquear comandos destrutivos até proteger o histórico git, controlar o que pode ser commitado, e detectar commits com credenciais. A diferença entre guardrails (bloquear ações) e segurança (política sistêmica para o fluxo completo).
 
 ## A diferença entre guardrail e segurança
 
@@ -238,7 +238,7 @@ Não confie em uma única camada. Combine:
 
 ## Armadilhas
 
-**Falsa sensação de segurança**: hooks protegem contra ações do agente. Não protegem contra você mesmo executando comandos no terminal. Os hooks são uma política para o Claude Code, não para o shell.
+**Falsa sensação de segurança**: hooks protegem contra ações do agente. Não protegem contra você mesmo executando comandos no terminal. Os hooks são uma política para o [[Dicionário de IA#Claude Code|Claude Code]], não para o shell.
 
 **Hooks commitados no projeto**: se você commitar um hook que bloqueia `git commit`, pode criar uma situação impossível. Hooks de projeto devem ser revisados pelo time.
 

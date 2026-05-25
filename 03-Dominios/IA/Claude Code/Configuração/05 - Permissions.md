@@ -15,7 +15,7 @@ tags:
 # Permissions — allow/deny, glob patterns, tool rules
 
 > [!abstract] TL;DR
-> Permissions controlam quais tool calls o Claude Code executa automaticamente vs. quais precisam de confirmação. A sintaxe é `"NomeTool(argumento)"` no array `allow` ou `deny` de `settings.json`. Glob patterns com `*` funcionam para caminhos e argumentos de Bash. Deny sempre prevalece sobre allow.
+> Permissions controlam quais [[Dicionário de IA#tool call|tool calls]] o [[Dicionário de IA#Claude Code|Claude Code]] executa automaticamente vs. quais precisam de confirmação. A sintaxe é `"NomeTool(argumento)"` no array `allow` ou `deny` de `settings.json`. Glob patterns com `*` funcionam para caminhos e argumentos de Bash. Deny sempre prevalece sobre allow.
 
 ## O que é
 

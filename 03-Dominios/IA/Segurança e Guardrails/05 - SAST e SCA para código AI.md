@@ -49,7 +49,7 @@ Os dois são **complementares**. Times pulam SCA pensando "uso só libs famosas"
 
 ## Rule prioritization para AI code
 
-Veracode e DryRun mostram que LLMs **falham consistentemente** em algumas classes:
+Veracode e DryRun mostram que [[Dicionário de IA#LLM (Large Language Model)|LLMs]] **falham consistentemente** em algumas classes:
 
 | CWE | Vulnerabilidade | Por que LLMs falham |
 |---|---|---|

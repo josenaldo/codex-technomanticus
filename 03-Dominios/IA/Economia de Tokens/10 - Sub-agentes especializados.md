@@ -20,7 +20,7 @@ aliases:
 # Sub-agentes especializados
 
 > [!abstract] TL;DR
-> Sub-agente é um agente filho invocado pelo agente pai com **contexto limpo e foco estreito**. O ganho não está em rodar mais barato — está em isolar contexto: o filho não carrega o histórico inflado do pai, faz seu trabalho com 5-20K tokens, e devolve só o resultado relevante. Diferente de [[09 - Model routing — modelo certo para a tarefa|model routing]] (que escolhe modelo por tarefa), sub-agentes existem mesmo com o mesmo modelo — o ganho vem da **arquitetura de contexto**.
+> [[Dicionário de IA#subagent|Sub-agente]] é um [[Dicionário de IA#Agent|agente]] filho invocado pelo agente pai com **contexto limpo e foco estreito**. O ganho não está em rodar mais barato — está em isolar contexto: o filho não carrega o histórico inflado do pai, faz seu trabalho com 5-20K [[Dicionário de IA#Token|tokens]], e devolve só o resultado relevante. Diferente de [[09 - Model routing — modelo certo para a tarefa|model routing]] (que escolhe modelo por tarefa), sub-agentes existem mesmo com o mesmo modelo — o ganho vem da **arquitetura de contexto**.
 
 ## Sub-agente vs model routing — não confundir
 

@@ -20,7 +20,7 @@ aliases:
 # Orçamento e hard limits
 
 > [!abstract] TL;DR
-> Orçamento sem limite técnico é dependência de disciplina humana — e humanos esquecem. A camada inferior é budget (planejamento estatístico), a camada superior são **hard limits** (corte automático): `max_tokens` por chamada, caps mensais no provider, kill switches que abortam sessões fora do esperado. Sem hard limits, uma única chamada com `max_tokens` aberto ou um agente em loop pode queimar o budget de um mês em horas.
+> Orçamento sem limite técnico é dependência de disciplina humana — e humanos esquecem. A camada inferior é budget (planejamento estatístico), a camada superior são **hard limits** (corte automático): `max_tokens` por chamada, caps mensais no provider, kill switches que abortam sessões fora do esperado. Sem hard limits, uma única chamada com `max_tokens` aberto ou um [[Dicionário de IA#Agent|agente]] em loop pode queimar o budget de um mês em horas.
 
 ## Duas camadas: orçamento vs hard limit
 
@@ -105,7 +105,7 @@ Agentes em loop são o cenário mais perigoso — o gasto não é por chamada, �
 
 | Dimensão | Exemplo de limite | Ação |
 |---|---|---|
-| **Tokens por sessão** | 500K input | Abortar |
+| **[[Dicionário de IA#Token\|Tokens]] por sessão** | 500K input | Abortar |
 | **Iterações** | 50 turnos sem completar tarefa | Abortar + log |
 | **Tempo** | 30 min de sessão | Pausar para revisão humana |
 

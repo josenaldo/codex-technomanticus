@@ -15,7 +15,7 @@ tags:
 # Code review com Claude Code
 
 > [!abstract] TL;DR
-> Claude Code pode fazer code review de três formas: revisar o diff atual (staged changes), revisar um arquivo específico, ou revisar um PR inteiro via `gh pr diff`. O review é mais útil quando você especifica os critérios — sem critérios, o agente lista observações genéricas de estilo. Com critérios específicos, encontra bugs reais e violações das convenções do projeto.
+> [[Dicionário de IA#Claude Code|Claude Code]] pode fazer code review de três formas: revisar o diff atual (staged changes), revisar um arquivo específico, ou revisar um PR inteiro via `gh pr diff`. O review é mais útil quando você especifica os critérios — sem critérios, o agente lista observações genéricas de estilo. Com critérios específicos, encontra bugs reais e violações das convenções do projeto.
 
 ## Review do diff atual
 
@@ -51,7 +51,7 @@ Para revisão mais profunda de um arquivo antes de merge:
    os casos de erro?"
 ```
 
-## Review de PR via GitHub CLI
+## Review de [[Dicionário de IA#PR-driven workflow|PR]] via GitHub CLI
 
 ```bash
 # Revisa o PR atual comparando com a branch base

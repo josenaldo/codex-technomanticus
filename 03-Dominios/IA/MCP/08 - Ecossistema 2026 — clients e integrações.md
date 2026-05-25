@@ -18,7 +18,7 @@ aliases:
 # Ecossistema 2026 — clients e integrações
 
 > [!abstract] TL;DR
-> MCP virou padrão **inter-vendor** em 2025-2026. Suporte nativo: Claude Desktop, Claude Code, Cursor, Windsurf, Cline, Aider, Zed, Copilot Studio (Microsoft), ChatGPT Desktop (OpenAI), Codex, Gemini Code Assist (Google). Ecossistema de servers passa de 3000+ entradas no Awesome MCP Servers. Hosting managed disponível (Smithery, Anthropic-hosted beta). Em 2026, MCP é **infrastructure-grade** — não experimento.
+> [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] virou padrão **inter-vendor** em 2025-2026. Suporte nativo: Claude Desktop, [[Dicionário de IA#Claude Code|Claude Code]], Cursor, Windsurf, Cline, Aider, Zed, Copilot Studio (Microsoft), ChatGPT Desktop (OpenAI), Codex, Gemini Code Assist (Google). Ecossistema de servers passa de 3000+ entradas no Awesome MCP Servers. Hosting managed disponível (Smithery, Anthropic-hosted beta). Em 2026, MCP é **infrastructure-grade** — não experimento.
 
 ## Os clients que falam MCP
 
@@ -137,7 +137,7 @@ Anthropic está oferecendo MCP hosting em beta para servers oficiais.
 
 ### Cloudflare Workers MCP
 
-Deploy de MCP server em CF Workers — cold start <50ms, free tier generoso.
+Deploy de [[Dicionário de IA#MCP server|MCP server]] em CF Workers — cold start <50ms, free tier generoso.
 
 ## Standardization e governance
 

@@ -16,11 +16,11 @@ tags:
 # Como o agente decide — confiança, raciocínio, iteração
 
 > [!abstract] TL;DR
-> Claude Code usa raciocínio antes de agir — mesmo quando você não vê. O system prompt, CLAUDE.md e o histórico da sessão moldam cada decisão. A qualidade do prompt afeta diretamente a qualidade das decisões: "adicione auth" gera uma decisão muito mais incerta que "adicione JWT auth ao middleware Express em src/middleware/auth.ts, seguindo o padrão de src/middleware/logger.ts". Explicar o *porquê* frequentemente produz resultados melhores que especificar o *como*.
+> Claude Code usa raciocínio antes de agir — mesmo quando você não vê. O [[Dicionário de IA#system prompt|system prompt]], CLAUDE.md e o histórico da sessão moldam cada decisão. A qualidade do prompt afeta diretamente a qualidade das decisões: "adicione auth" gera uma decisão muito mais incerta que "adicione JWT auth ao middleware Express em src/middleware/auth.ts, seguindo o padrão de src/middleware/logger.ts". Explicar o *porquê* frequentemente produz resultados melhores que especificar o *como*.
 
 ## O que é
 
-Cada tool call que Claude Code executa é precedida por raciocínio: o agente decide *o que fazer* antes de *fazer*. Esse processo usa:
+Cada tool call que [[Dicionário de IA#Claude Code|Claude Code]] executa é precedida por raciocínio: o [[Dicionário de IA#Agent|agente]] decide *o que fazer* antes de *fazer*. Esse processo usa:
 
 1. **Contexto de sistema**: instruções built-in do Claude Code (como se comportar, quais tools usar, como pedir confirmação)
 2. **CLAUDE.md**: suas instruções de projeto (convenções, restrições, preferências)

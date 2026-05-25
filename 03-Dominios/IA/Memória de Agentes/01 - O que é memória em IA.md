@@ -22,11 +22,11 @@ aliases:
 
 ## O que é
 
-Quando alguém em 2026 diz que um agente "tem memória", o termo carrega ambiguidade. Há pelo menos três coisas distintas chamadas de memória no contexto de LLMs, e confundi-las é a fonte mais comum de erro arquitetural na hora de desenhar um sistema. Distinguir os três tipos é o primeiro passo para entender qualquer discussão técnica do campo.
+Quando alguém em 2026 diz que um agente "tem memória", o termo carrega ambiguidade. Há pelo menos três coisas distintas chamadas de memória no contexto de [[Dicionário de IA#LLM (Large Language Model)|LLMs]], e confundi-las é a fonte mais comum de erro arquitetural na hora de desenhar um sistema. Distinguir os três tipos é o primeiro passo para entender qualquer discussão técnica do campo.
 
-1. **Memória in-context.** É o conteúdo do prompt da chamada atual: system message, mensagens anteriores da conversa em curso, documentos colados, resultados de tools. Vive dentro da janela de contexto e é totalmente efêmera — termina no instante em que a chamada termina. Quando você pergunta "lembra do que falamos ontem?" e o ChatGPT parece lembrar, é porque a interface injetou o histórico no prompt. O modelo em si não lembra de nada; ele apenas lê o que recebe.
+1. **Memória in-context.** É o conteúdo do prompt da chamada atual: system message, mensagens anteriores da conversa em curso, documentos colados, resultados de tools. Vive dentro da [[Dicionário de IA#Context window|janela de contexto]] e é totalmente efêmera — termina no instante em que a chamada termina. Quando você pergunta "lembra do que falamos ontem?" e o ChatGPT parece lembrar, é porque a interface injetou o histórico no prompt. O modelo em si não lembra de nada; ele apenas lê o que recebe.
 
-2. **Memória persistente.** Informação preservada entre chamadas e sessões em um substrato externo ao modelo: arquivos markdown, banco vetorial, grafo de conhecimento, banco relacional, log estruturado. O agente lê e escreve nesse substrato via tools ou via injeção de trechos no prompt. É **este** o foco da trilha "Memória de Agentes". Quando este vault fala em "memória de agentes", "agent memory" ou "agentic memory", está sempre falando deste tipo.
+2. **Memória persistente.** Informação preservada entre chamadas e sessões em um substrato externo ao modelo: arquivos markdown, [[Dicionário de IA#vector database|banco vetorial]], grafo de conhecimento, banco relacional, log estruturado. O agente lê e escreve nesse substrato via tools ou via injeção de trechos no prompt. É **este** o foco da trilha "Memória de Agentes". Quando este vault fala em "memória de agentes", "agent memory" ou "agentic memory", está sempre falando deste tipo.
 
 3. **Memória parametrizada.** Informação "absorvida" pelos pesos do modelo durante pré-treino ou fine-tuning. É o que faz o LLM "saber" que Paris é capital da França sem que ninguém precise contar. Praticamente imutável após o treino — atualizar exige novo treino, com custo proibitivo na prática. Não é o que esta trilha discute, mas vale ter o nome para não confundir com os outros dois.
 
@@ -47,7 +47,7 @@ A ideia central é simples e merece ser repetida porque costuma demorar para "ca
 A arquitetura genérica que aparece em praticamente todos os sistemas modernos pode ser resumida num loop write-manage-read, formalização proposta no survey de 2026 de Du:
 
 - **Write.** O agente decide o que vale guardar de cada interação: fatos sobre o usuário, decisões tomadas, resumos de longas conversas, observações sobre o ambiente.
-- **Manage.** Memória que só cresce vira lixo. O sistema precisa compactar (resumir entradas redundantes), indexar (criar embeddings, links, tags), conectar (cruzar referências entre entradas) e esquecer (descartar o que envelheceu mal). Esta é a etapa que mais separa um sistema profissional de um log bruto.
+- **Manage.** Memória que só cresce vira lixo. O sistema precisa compactar (resumir entradas redundantes), indexar (criar [[Dicionário de IA#embedding|embeddings]], links, tags), conectar (cruzar referências entre entradas) e esquecer (descartar o que envelheceu mal). Esta é a etapa que mais separa um sistema profissional de um log bruto.
 - **Read.** Quando uma nova interação começa, o agente recupera o que é relevante — por busca vetorial, por wikilinks, por consulta a grafo, por leitura direta de markdown — e injeta no prompt da próxima chamada.
 
 ```mermaid
@@ -75,7 +75,7 @@ Vale registrar uma referência foundational: em 2023, Park e colegas (Stanford) 
 
 - **Tasks one-shot.** Se cada execução é independente, não há acumulação que justifique a infraestrutura.
 - **Dados sensíveis sem proteção adequada.** Memória persistente é, por definição, dado pessoal armazenado — vira responsabilidade LGPD/GDPR. Sem governance clara, é risco maior que valor.
-- Quando **RAG sobre docs fixos resolve.** Se o conhecimento já está num corpus estável e o problema é só "achar o trecho certo", retrieval clássico basta. A distinção é central e está detalhada em [[04 - RAG vs memória de longo prazo]].
+- Quando **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] sobre docs fixos resolve.** Se o conhecimento já está num corpus estável e o problema é só "achar o trecho certo", retrieval clássico basta. A distinção é central e está detalhada em [[04 - RAG vs memória de longo prazo]].
 - Quando o **custo de manutenção excede o valor.** Memória profissional exige lint, governance, observabilidade, esquecimento deliberado. Sem orçamento para isso, a memória apodrece e contamina respostas futuras.
 
 ## Armadilhas comuns

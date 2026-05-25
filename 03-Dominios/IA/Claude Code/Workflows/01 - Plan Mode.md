@@ -15,11 +15,11 @@ tags:
 # Plan Mode — planejar antes de agir
 
 > [!abstract] TL;DR
-> Plan Mode faz o agente produzir um plano de implementação antes de escrever qualquer código. Ative com `Shift+Tab` ou `--plan`. O plano expõe o raciocínio do agente — você aprova, corrige ou redireciona antes de o agente agir. Para tarefas com mais de 3 arquivos envolvidos, Plan Mode quase sempre economiza iterações.
+> [[Dicionário de IA#planning|Plan Mode]] faz o agente produzir um plano de implementação antes de escrever qualquer código. Ative com `Shift+Tab` ou `--plan`. O plano expõe o raciocínio do agente — você aprova, corrige ou redireciona antes de o agente agir. Para tarefas com mais de 3 arquivos envolvidos, Plan Mode quase sempre economiza iterações.
 
 ## O que é
 
-Em modo normal, o agente age: recebe a tarefa, raciocina internamente, executa tool calls. O raciocínio é invisível.
+Em modo normal, o [[Dicionário de IA#Agent|agente]] age: recebe a tarefa, raciocina internamente, executa [[Dicionário de IA#tool call|tool calls]]. O raciocínio é invisível.
 
 Em Plan Mode, o agente para antes de agir e exibe o plano:
 - quais arquivos vai ler
@@ -140,7 +140,7 @@ claude "atualiza dependências desatualizadas"
 
 **Aprovar sem ler**: o valor do Plan Mode está em revisar o plano. Se você aprova automaticamente, está pagando o custo extra sem o benefício.
 
-**Plan Mode para tarefas triviais**: `Shift+Tab → "corrija o typo na linha 42"` desperdiça tokens para gerar um plano para uma mudança óbvia.
+**Plan Mode para tarefas triviais**: `Shift+Tab → "corrija o typo na linha 42"` desperdiça [[Dicionário de IA#Token|tokens]] para gerar um plano para uma mudança óbvia.
 
 **Não corrigir suposições erradas**: se o agente assume que você usa Jest mas você usa Vitest, corrija no plano. Deixar passar gera código errado que custa mais para consertar.
 

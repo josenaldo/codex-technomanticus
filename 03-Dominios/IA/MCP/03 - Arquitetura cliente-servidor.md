@@ -18,7 +18,7 @@ aliases:
 # Arquitetura cliente-servidor
 
 > [!abstract] TL;DR
-> MCP usa modelo **cliente-servidor** sobre **JSON-RPC 2.0**. Três transports: **stdio** (subprocesso local, mais comum), **HTTP+SSE** (remoto, multi-user), e **WebSocket** (bidirecional, casos específicos). Lifecycle típico: client conecta → discovery (list_tools/resources/prompts) → operações → close. Cada client (Claude Desktop, Cursor, Claude Code) tem mecanismo próprio de configurar servers — geralmente via JSON config file.
+> [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] usa modelo **cliente-servidor** sobre **JSON-RPC 2.0**. Três transports: **[[Dicionário de IA#transport (stdio, SSE, HTTP)|stdio]]** (subprocesso local, mais comum), **HTTP+SSE** (remoto, multi-user), e **WebSocket** (bidirecional, casos específicos). Lifecycle típico: client conecta → discovery (list_tools/resources/prompts) → operações → close. Cada client (Claude Desktop, Cursor, [[Dicionário de IA#Claude Code|Claude Code]]) tem mecanismo próprio de configurar servers — geralmente via JSON config file.
 
 ## O modelo cliente-servidor
 
@@ -27,8 +27,8 @@ graph LR
     C["MCP Client<br/>(Claude Desktop,<br/>Cursor, Claude Code)"] -->|"JSON-RPC over<br/>stdio / HTTP+SSE"| S["MCP Server<br/>(Postgres, Slack,<br/>filesystem...)"]
 ```
 
-- **Client**: aplicação que usa LLM (Claude Desktop, Cursor)
-- **Server**: aplicação que expõe tools/resources/prompts
+- **[[Dicionário de IA#MCP client|Client]]**: aplicação que usa [[Dicionário de IA#LLM (Large Language Model)|LLM]] (Claude Desktop, Cursor)
+- **[[Dicionário de IA#MCP server|Server]]**: aplicação que expõe tools/resources/prompts
 - **Protocol**: JSON-RPC 2.0 sobre transport escolhido
 
 ## Os 3 transports

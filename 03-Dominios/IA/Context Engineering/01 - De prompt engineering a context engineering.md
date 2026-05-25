@@ -31,8 +31,8 @@ graph LR
 
 | Era | Foco | Métrica de sucesso |
 |---|---|---|
-| **Prompt engineering** | Wording, few-shot examples, técnicas de raciocínio | Resposta correta numa caixa de chat |
-| **RAG** | Recuperar documentos relevantes | Top-k de qualidade |
+| **[[Dicionário de IA#prompt engineering\|Prompt engineering]]** | Wording, few-shot examples, técnicas de raciocínio | Resposta correta numa caixa de chat |
+| **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)\|RAG]]** | Recuperar documentos relevantes | Top-k de qualidade |
 | **Context engineering** | Montar dinamicamente o ambiente do modelo | Agente robusto em sessões longas |
 | **Context as architecture** | Tratar contexto como sistema versionado, governado | Reprodutibilidade, auditoria |
 
@@ -42,10 +42,10 @@ Context engineering é a **disciplina de decidir** o que entra na janela de cont
 
 Cinco fontes de contexto que coexistem:
 
-1. **System prompt / instructions** — quem o agente é, regras
+1. **[[Dicionário de IA#system prompt|System prompt / instructions]]** — quem o agente é, regras
 2. **Memória persistente** — `CLAUDE.md`, `AGENTS.md`, fatos do usuário
 3. **Histórico de conversa** — o que foi dito até agora
-4. **Tool definitions** — schemas das ferramentas disponíveis
+4. **[[Dicionário de IA#tool definition|Tool definitions]]** — schemas das ferramentas disponíveis
 5. **Retrieval dinâmico** — documentos, código, dados buscados durante a tarefa
 
 > [!quote] Karpathy (junho de 2025)
@@ -71,7 +71,7 @@ Um prompt bem escrito não resolve nenhum desses problemas. Context engineering,
 |---|---|
 | CPU | LLM (faz a "computação") |
 | RAM | Janela de contexto |
-| Disco | Memória persistente (arquivos, vector store) |
+| Disco | Memória persistente (arquivos, [[Dicionário de IA#vector store\|vector store]]) |
 | Sistema operacional | Você (decide o que carregar quando) |
 | Cache | Prompt caching ([[Economia de Tokens]]) |
 | Page faults | Just-in-time retrieval ([[06 - Dynamic retrieval beyond RAG]]) |

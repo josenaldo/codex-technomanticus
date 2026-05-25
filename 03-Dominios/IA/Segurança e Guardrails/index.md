@@ -12,10 +12,10 @@ updated: 2026-05-02
 
 # Segurança e Guardrails
 
-Código gerado por IA tem **45% de risco em testes de segurança** (Veracode 2025). Não é "vai melhorar com modelo maior" — Veracode mostrou: tamanho do modelo **não correlaciona** com segurança. Slopsquat virou vetor real de supply chain. Cursor/Claude wipou banco de produção em 9 segundos quando descuidado. EU AI Act torna-se obrigatório em agosto de 2026. Esta trilha mapeia: **(1) o problema** (vulnerabilidades sistemáticas, slopsquat, alucinações), **(2) defesa em profundidade** (pirâmide de validação, SAST/SCA, sandboxing, prompting), **(3) processo** (review humano, testes imutáveis, métricas), **(4) compliance** (AI Act, GDPR, roadmap de adoção).
+Código gerado por IA tem **45% de risco em testes de segurança** (Veracode 2025). Não é "vai melhorar com modelo maior" — Veracode mostrou: tamanho do modelo **não correlaciona** com segurança. Slopsquat virou vetor real de supply chain. Cursor/Claude wipou banco de produção em 9 segundos quando descuidado. EU AI Act torna-se obrigatório em agosto de 2026. Esta trilha mapeia: **(1) o problema** (vulnerabilidades sistemáticas, slopsquat, [[Dicionário de IA#Hallucination|alucinações]]), **(2) defesa em profundidade** (pirâmide de validação, SAST/SCA, sandboxing, prompting), **(3) processo** (review humano, testes imutáveis, métricas), **(4) compliance** (AI Act, GDPR, roadmap de adoção).
 
 > [!info] Pré-requisitos
-> Recomendado ter passado por [[Agentes de Codificação]] (Trilha 2 — para entender ferramentas), [[Context Engineering]] (Trilha 4 — para guardrails determinísticos), e [[Spec-Driven Development]] (Trilha 5 — para validação contínua). Esta trilha é a **camada final** que protege o que as outras trilhas constroem.
+> Recomendado ter passado por [[Agentes de Codificação]] (Trilha 2 — para entender ferramentas), [[Context Engineering]] (Trilha 4 — para [[Dicionário de IA#Guardrail|guardrails]] determinísticos), e [[Spec-Driven Development]] (Trilha 5 — para validação contínua). Esta trilha é a **camada final** que protege o que as outras trilhas constroem.
 
 > [!warning] Esta trilha é tempo-sensitive
 > Datas críticas: **EU AI Act totalmente aplicável em 2 de agosto de 2026**. Fim de suporte de Amazon Q Developer em 30 de abril de 2027. Pesquisa de slopsquat e vulnerabilities **muda mensalmente**. Verificar fontes recentes ao adotar.

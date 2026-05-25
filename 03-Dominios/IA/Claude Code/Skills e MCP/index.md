@@ -23,9 +23,9 @@ aliases:
 
 ## Sobre este galho
 
-Skills são arquivos de instrução que ensinam o agente a seguir um processo específico — TDD, code review, debugging. MCP (Model Context Protocol) são servidores que dão ao agente acesso a ferramentas externas — bancos de dados, APIs, browsers.
+Skills são arquivos de instrução que ensinam o [[Dicionário de IA#Agent|agente]] a seguir um processo específico — TDD, code review, debugging. [[Dicionário de IA#MCP (Model Context Protocol)|MCP (Model Context Protocol)]] são servidores que dão ao agente acesso a ferramentas externas — bancos de dados, APIs, browsers.
 
-Juntos, skills e MCP transformam o Claude Code genérico em um agente especialista do seu projeto, stack e processo.
+Juntos, skills e MCP transformam o [[Dicionário de IA#Claude Code|Claude Code]] genérico em um agente especialista do seu projeto, stack e processo.
 
 ## Notas
 

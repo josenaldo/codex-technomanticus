@@ -19,7 +19,7 @@ aliases:
 # MCP remoto — HTTP + SSE para times
 
 > [!abstract] TL;DR
-> stdio é simples mas **single-user**. Para times compartilharem MCP server, use **HTTP + SSE** (Server-Sent Events). Setup: server roda como serviço (Docker, K8s, ou managed), client conecta via URL com auth. Adiciona overhead de TLS, auth, deployment, mas habilita: server compartilhado, rate limit centralizado, audit log unificado, atualizações sem update no client. Em 2026, padrão para servers internos enterprise.
+> [[Dicionário de IA#transport (stdio, SSE, HTTP)|stdio]] é simples mas **single-user**. Para times compartilharem [[Dicionário de IA#MCP server|MCP server]], use **HTTP + SSE** (Server-Sent Events). Setup: server roda como serviço (Docker, K8s, ou managed), client conecta via URL com auth. Adiciona overhead de TLS, auth, deployment, mas habilita: server compartilhado, rate limit centralizado, audit log unificado, atualizações sem update no client. Em 2026, padrão para servers internos enterprise.
 
 ## Quando partir para HTTP+SSE
 

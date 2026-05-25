@@ -102,7 +102,7 @@ Cada papel tem **contexto isolado** — implementor 1 não vê o histórico do 2
 
 | Sem CIV | Com CIV |
 |---|---|
-| Um agente faz tudo, contexto inflado | Cada agente tem foco estreito |
+| Um [[Dicionário de IA#Agent\|agente]] faz tudo, contexto inflado | Cada agente tem foco estreito |
 | Tasks sequenciais → tempo total alto | Paralelismo onde DAG permite |
 | Validation = "olhômetro" do humano | Validation = agente independente automatizado |
 | Drift detectado tarde | Drift detectado por task |
@@ -167,7 +167,7 @@ Coordinator
 
 ### Specialist subagents (Kiro)
 
-Em vez de implementors genéricos, **subagents especializados**:
+Em vez de implementors genéricos, **[[Dicionário de IA#subagent|subagents]] especializados**:
 
 - `security-reviewer`
 - `api-contract-validator`
@@ -188,7 +188,7 @@ Implementor → Test validator → Security validator → Style validator → Ap
 
 | Stack | Como fazer CIV |
 |---|---|
-| **Claude Code (single tool)** | `Task` tool com `subagent_type` para sub-agentes; orchestration manual no main thread |
+| **[[Dicionário de IA#Claude Code\|Claude Code]] (single tool)** | `Task` tool com `subagent_type` para sub-agentes; orchestration manual no main thread |
 | **LangGraph** | StateGraph com nodes coordinator/implementor/validator |
 | **Kiro** | Specs + steering + custom subagents nativos |
 | **OpenAI Swarm** | Handoffs entre roles |

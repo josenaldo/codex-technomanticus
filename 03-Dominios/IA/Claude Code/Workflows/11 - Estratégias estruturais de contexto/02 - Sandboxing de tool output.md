@@ -22,7 +22,7 @@ aliases:
 # Sandboxing de tool output — interceptar antes de poluir o contexto
 
 > [!abstract] TL;DR
-> Cada tool call do Claude Code (`Bash`, `Read`, MCP) injeta o resultado no contexto. Um snapshot de Playwright custa ~56k tokens. Vinte issues do GitHub custam ~59k. Um log de access pode passar de 45k. Sandboxing de tool output intercepta esses resultados *antes* que cheguem ao contexto, persiste o bruto em SQLite local, e devolve ao agente apenas um resumo + um *handle* pra consultar depois. O ganho típico de 15–25% de redução em sessões dominadas por tool calls vorazes, sem perda de informação acessível.
+> Cada [[Dicionário de IA#tool call|tool call]] do [[Dicionário de IA#Claude Code|Claude Code]] (`Bash`, `Read`, [[Dicionário de IA#MCP (Model Context Protocol)|MCP]]) injeta o resultado no contexto. Um snapshot de Playwright custa ~56k [[Dicionário de IA#Token|tokens]]. Vinte issues do GitHub custam ~59k. Um log de access pode passar de 45k. Sandboxing de tool output intercepta esses resultados *antes* que cheguem ao contexto, persiste o bruto em SQLite local, e devolve ao agente apenas um resumo + um *handle* pra consultar depois. O ganho típico de 15–25% de redução em sessões dominadas por tool calls vorazes, sem perda de informação acessível.
 
 ## O que é
 
@@ -96,7 +96,7 @@ A regra é: **o LLM deve programar a análise, não computar a análise**. Toda 
 └─────────────────┘
 ```
 
-O SQLite local usa FTS5 (full-text search) ou BM25 pra recuperar trechos por relevância quando o agente chama a tool de busca.
+O SQLite local usa FTS5 (full-text search) ou [[Dicionário de IA#BM25|BM25]] pra recuperar trechos por relevância quando o agente chama a tool de busca.
 
 ## Quando usar
 

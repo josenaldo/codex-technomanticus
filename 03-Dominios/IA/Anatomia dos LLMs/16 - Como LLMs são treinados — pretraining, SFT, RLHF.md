@@ -21,7 +21,7 @@ aliases:
 # Como LLMs são treinados — pretraining, SFT, RLHF
 
 > [!abstract] TL;DR
-> O pipeline canônico tem **quatro estágios** que explicam quase todo o comportamento que você vê na API. **Pretraining** "decora a internet" (predict next token, custo de centenas de milhões em compute). **SFT** ensina formato de assistente. **RLHF** alinha com preferências humanas. **Constitutional AI** (Anthropic) reduz dependência de labelers via princípios escritos. Saber esse pipeline explica por que modelos são bajuladores, recusam tarefas inofensivas, e por que fine-tuning posterior muda menos do que você espera.
+> O pipeline canônico tem **quatro estágios** que explicam quase todo o comportamento que você vê na API. **Pretraining** "decora a internet" (predict next token, custo de centenas de milhões em compute). **SFT** ensina formato de assistente. **RLHF** alinha com preferências humanas. **Constitutional AI** (Anthropic) reduz dependência de labelers via princípios escritos. Saber esse pipeline explica por que modelos são bajuladores, recusam tarefas inofensivas, e por que [[Dicionário de IA#fine-tuning|fine-tuning]] posterior muda menos do que você espera.
 
 ## O pipeline em uma imagem
 
@@ -40,7 +40,7 @@ Cada estágio adiciona uma camada de comportamento. **Não substitui** a anterio
 
 | Aspecto | Detalhe |
 |---|---|
-| **Dados** | Trilhões de tokens (web, livros, código, papers) |
+| **Dados** | Trilhões de [[Dicionário de IA#Token\|tokens]] (web, livros, código, papers) |
 | **Objetivo** | Dado N tokens, prever o N+1 |
 | **Resultado** | Modelo "sabe" quase tudo sobre linguagem, fatos comuns, código — mas **não sabe ajudar** |
 | **Custo** | Dezenas a centenas de milhões de dólares em GPU-anos |
@@ -156,7 +156,7 @@ Se modelo recusa tarefa inofensiva, system prompt explicando contexto resolve em
 
 ### 4. Knowledge cutoff é fixo
 
-O modelo só sabe o que estava nos dados de pretraining + uma pequena janela de SFT. Para info recente: RAG ou tool use (web search). Não tem como o modelo "saber" o que não viu.
+O modelo só sabe o que estava nos dados de pretraining + uma pequena janela de SFT. Para info recente: [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] ou [[Dicionário de IA#tool use|tool use]] (web search). Não tem como o modelo "saber" o que não viu.
 
 ### 5. Modelos diferentes têm pós-training diferente
 

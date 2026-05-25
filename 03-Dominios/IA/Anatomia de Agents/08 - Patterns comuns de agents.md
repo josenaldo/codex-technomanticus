@@ -19,7 +19,7 @@ aliases:
 # Patterns comuns de agents
 
 > [!abstract] TL;DR
-> Agents na prática se cristalizaram em **6 patterns** repetíveis: tool-using assistant (read-only Q&A), coding agent (Claude Code/Cursor — operam no filesystem), cloud agent (Codex/Devin — sandbox cloud), RAG agent (busca dinâmica + síntese), multi-agent orchestration (CrewAI/LangGraph/AutoGen), e workflow híbrido (workflow + chamadas LLM disfarçado de agent). Reconhecer o pattern certo é meio caminho — implementar o pattern errado é fonte clássica de over-engineering.
+> Agents na prática se cristalizaram em **6 patterns** repetíveis: tool-using assistant (read-only Q&A), coding agent (Claude Code/Cursor — operam no filesystem), cloud agent (Codex/Devin — sandbox cloud), [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] agent (busca dinâmica + síntese), multi-agent orchestration (CrewAI/LangGraph/AutoGen), e workflow híbrido (workflow + chamadas LLM disfarçado de agent). Reconhecer o pattern certo é meio caminho — implementar o pattern errado é fonte clássica de over-engineering.
 
 ## Os 6 patterns
 
@@ -41,7 +41,7 @@ Agent único com **ferramentas read-only**, usado para Q&A e análise.
 
 **Tools:** `web_search`, `read_url`, `read_doc`, `query_db`.
 
-**Guardrails:** nenhum crítico porque tools são safe.
+**[[Dicionário de IA#Guardrail|Guardrails]]:** nenhum crítico porque tools são safe.
 
 **Quando usar:** task de pesquisa, exploração, sem ações destrutivas.
 

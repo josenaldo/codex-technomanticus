@@ -28,11 +28,11 @@ aliases:
 
 | Framework | Linguagem | Forte em | Quando usar |
 |---|---|---|---|
-| **Claude Agent SDK** | Python | Integração nativa Claude, MCP | Comprometido com Claude |
+| **Claude Agent SDK** | Python | Integração nativa Claude, [[Dicionário de IA#MCP (Model Context Protocol)\|MCP]] | Comprometido com Claude |
 | **LangChain / LangGraph** | Python, JS | Ecossistema enorme, workflows complexos | Múltiplas integrações + state graph |
 | **CrewAI** | Python | Multi-agent role-based | Protótipos multi-agent |
 | **AutoGen** | Python | Conversational multi-agent | Pesquisa, experimental |
-| **Pydantic AI** | Python | Type-safe, structured outputs | Times type-first |
+| **Pydantic AI** | Python | Type-safe, [[Dicionário de IA#structured output\|structured outputs]] | Times type-first |
 | **Vercel AI SDK** | TypeScript | Frontend Next.js/React + LLM | SPA/webapp com IA |
 | **Sem framework** | Qualquer | Controle total, debug fácil | Time experiente, use case estável |
 
@@ -55,7 +55,7 @@ result = agent.run("Pesquise X e sintetize")
 ```
 
 **Prós:**
-- Integração nativa com Claude (tool use otimizado)
+- Integração nativa com Claude ([[Dicionário de IA#tool use|tool use]] otimizado)
 - Observabilidade built-in
 - Suporte nativo a MCP
 

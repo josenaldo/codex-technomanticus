@@ -23,7 +23,7 @@ aliases:
 
 ## O que é
 
-Arquivos de configuração de agentes são **system prompts persistentes** que residem no repositório e são lidos automaticamente pelo agente a cada sessão. Cada ferramenta tem seu formato:
+Arquivos de configuração de agentes são **[[Dicionário de IA#system prompt|system prompts]] persistentes** que residem no repositório e são lidos automaticamente pelo agente a cada sessão. Cada ferramenta tem seu formato:
 
 | Ferramenta     | Arquivo                           | Localização     |
 | -------------- | --------------------------------- | --------------- |
@@ -39,9 +39,9 @@ Arquivos de configuração de agentes são **system prompts persistentes** que r
 | ---------------------------------------- | -------------------------------------- |
 | Código em estilo genérico                | Código no padrão do time               |
 | Imports e estrutura inconsistentes       | Imports e estrutura padronizados       |
-| Agente pode fazer ações perigosas        | Agente tem guardrails explícitos       |
+| Agente pode fazer ações perigosas        | Agente tem [[Dicionário de IA#Guardrail\|guardrails]] explícitos       |
 | Re-explicar contexto a cada sessão       | Contexto auto-carregado                |
-| Mais iterações de correção (mais tokens) | Acerta mais na primeira (menos tokens) |
+| Mais iterações de correção (mais [[Dicionário de IA#Token\|tokens]]) | Acerta mais na primeira (menos tokens) |
 
 ## Como funciona
 

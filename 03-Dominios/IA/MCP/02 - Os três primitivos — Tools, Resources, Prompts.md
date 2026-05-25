@@ -18,7 +18,7 @@ aliases:
 # Os três primitivos — Tools, Resources, Prompts
 
 > [!abstract] TL;DR
-> MCP define **três tipos** de capability que servers expõem: **Tools** (funções executáveis com side-effects, query_db, send_email), **Resources** (dados leitáveis estáticos ou dinâmicos, files, schemas), e **Prompts** (templates parametrizáveis para tarefas comuns). Cada primitivo tem semântica diferente — confundir os três é o erro de design mais comum. **Tools modificam, Resources informam, Prompts parametrizam.**
+> [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] define **três tipos** de capability que servers expõem: **[[Dicionário de IA#tools (MCP)|Tools]]** (funções executáveis com side-effects, query_db, send_email), **[[Dicionário de IA#resources (MCP)|Resources]]** (dados leitáveis estáticos ou dinâmicos, files, schemas), e **[[Dicionário de IA#prompts (MCP)|Prompts]]** (templates parametrizáveis para tarefas comuns). Cada primitivo tem semântica diferente — confundir os três é o erro de design mais comum. **Tools modificam, Resources informam, Prompts parametrizam.**
 
 ## A tríade
 
@@ -55,7 +55,7 @@ def send_slack_message(channel: str, message: str) -> bool:
 
 **Características:**
 - Pode ter **side-effects** (mudar estado)
-- LLM **chama explicitamente**: "preciso enviar mensagem"
+- [[Dicionário de IA#LLM (Large Language Model)|LLM]] **chama explicitamente**: "preciso enviar mensagem"
 - Schema de input/output
 - Tipicamente requer auth/permission
 

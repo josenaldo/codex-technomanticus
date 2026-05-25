@@ -20,7 +20,7 @@ aliases:
 # Técnicas de prompting — zero-shot, few-shot, CoT, ToT
 
 > [!abstract] TL;DR
-> Prompt engineering virou subset de context engineering em 2026, mas as **técnicas básicas continuam fundamentais**: **zero-shot** (instrução direta sem exemplos), **few-shot** (instrução + 2-5 exemplos), **chain-of-thought** (CoT — peça raciocínio passo-a-passo), **self-consistency** (gera N respostas, vota), **tree of thoughts** (ToT — explora múltiplos caminhos), **role prompting** (você é X). Cada técnica tem caso de uso específico. **Default sensato em 2026:** zero-shot estruturado para tarefas simples; few-shot quando formato importa; CoT quando precisa raciocínio complexo (em modelos sem extended thinking).
+> [[Dicionário de IA#prompt engineering|Prompt engineering]] virou subset de context engineering em 2026, mas as **técnicas básicas continuam fundamentais**: **zero-shot** (instrução direta sem exemplos), **[[Dicionário de IA#few-shot prompting|few-shot]]** (instrução + 2-5 exemplos), **[[Dicionário de IA#Chain-of-Thought (CoT)|chain-of-thought]]** (CoT — peça raciocínio passo-a-passo), **self-consistency** (gera N respostas, vota), **tree of thoughts** (ToT — explora múltiplos caminhos), **role prompting** (você é X). Cada técnica tem caso de uso específico. **Default sensato em 2026:** zero-shot estruturado para tarefas simples; few-shot quando formato importa; CoT quando precisa raciocínio complexo (em modelos sem extended thinking).
 
 ## Zero-shot — direto ao ponto
 
@@ -59,7 +59,7 @@ Pergunta: João tem 5 maçãs. Comeu 2 e comprou mais 3. Quantas tem agora?
 Pense passo a passo antes de responder.
 ```
 
-LLM gera raciocínio explícito antes da resposta. Resultados em problemas matemáticos/lógicos sobem 20-50%.
+[[Dicionário de IA#LLM (Large Language Model)|LLM]] gera raciocínio explícito antes da resposta. Resultados em problemas matemáticos/lógicos sobem 20-50%.
 
 **Variantes:**
 
@@ -126,7 +126,7 @@ Responda em JSON:
 }
 ```
 
-Em 2026, prefira **structured outputs nativos**:
+Em 2026, prefira **[[Dicionário de IA#structured output|structured outputs]] nativos**:
 
 ```python
 # OpenAI / Anthropic structured outputs
@@ -165,7 +165,7 @@ graph TD
 
 ## System prompt — onde a mágica acontece
 
-System prompt é a alavanca **mais poderosa**. Persistente, peso desproporcional.
+[[Dicionário de IA#system prompt|System prompt]] é a alavanca **mais poderosa**. Persistente, peso desproporcional.
 
 ### Estrutura típica
 

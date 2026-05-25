@@ -52,7 +52,7 @@ A cada sessão (ou turno significativo), o agente recarrega:
 | **Histórico recente da sessão** | sob demanda | variável |
 | **Código relevante** | JIT via tools | variável |
 
-A combinação cabe em <10K tokens, deixando janela ampla para reasoning + código.
+A combinação cabe em <10K tokens, deixando [[Dicionário de IA#Context window|janela]] ampla para reasoning + código.
 
 ## Test-first dentro do SDD
 

@@ -32,7 +32,7 @@ aliases:
 
 ## Problema
 
-Como agents podem exibir comportamento social crível ao longo de muitas interações? LLMs sozinhos não conseguem sustentar continuidade — o context window é finito e, mesmo dentro dele, não há mecanismo para distinguir o que importa do que é ruído. Pedir a um agent que "se lembre" de eventos relevantes de horas ou dias atrás esbarra em duas dificuldades: o histórico bruto não cabe no contexto, e cabendo, o LLM não consegue priorizar — trata tudo de forma uniforme.
+Como agents podem exibir comportamento social crível ao longo de muitas interações? LLMs sozinhos não conseguem sustentar continuidade — o context window é finito e, mesmo dentro dele, não há mecanismo para distinguir o que importa do que é ruído. Pedir a um agent que "se lembre" de eventos relevantes de horas ou dias atrás esbarra em duas dificuldades: o histórico bruto não cabe no contexto, e cabendo, o [[Dicionário de IA#LLM (Large Language Model)|LLM]] não consegue priorizar — trata tudo de forma uniforme.
 
 Mesmo soluções de retrieval simples (busca por similaridade vetorial sobre um log de interações passadas) falham em capturar o que torna um comportamento "vivo". Park et al. argumentam que falta a "alma" — a capacidade de **refletir** sobre o passado para extrair padrões abstratos, e de **planejar** o futuro a partir desses padrões. Sem reflexão, o agent é reativo; sem planejamento, é desorganizado. O paper propõe que a combinação dos três (memória, reflexão, planejamento) é o que produz believability.
 
@@ -42,7 +42,7 @@ A contribuição central é uma **arquitetura cognitiva em três partes** que op
 
 1. **Memory stream.** Um log cronológico de tudo que o agent percebe — observações do mundo, ações próprias, falas trocadas com outros agents. Cada entrada carrega timestamp, descrição em linguagem natural, score de **importance** atribuído pelo LLM (escala 1-10, dado em tempo de ingestão) e timestamp de último acesso. É um substrato denso, append-only, em texto.
 2. **Reflection.** Periodicamente, o agent gera "thoughts" de alto nível a partir de memórias recentes. Reflexões viram novas entradas no memory stream — recursivamente, podem ser fonte para reflexões futuras, formando uma **árvore de abstração**. Reflexão é o mecanismo que transforma fatos brutos em insights generalizáveis ("Klaus tende a focar em pesquisa quando está estressado").
-3. **Planning.** O agent planeja o dia em alto nível ao acordar (granularidade de horas) e refina recursivamente em planos mais finos (minutos, ações concretas) ao longo do tempo. Re-planeja em resposta a eventos que invalidam o plano vigente.
+3. **[[Dicionário de IA#planning|Planning]].** O agent planeja o dia em alto nível ao acordar (granularidade de horas) e refina recursivamente em planos mais finos (minutos, ações concretas) ao longo do tempo. Re-planeja em resposta a eventos que invalidam o plano vigente.
 
 A combinação desses três componentes, mediada por um mecanismo de **retrieval scoring** sofisticado, produz agents que mantêm consistência longitudinal sem precisar de fine-tuning ou modelos especializados — apenas LLM calls coreografados.
 
@@ -65,7 +65,7 @@ O coração técnico do paper está em como decidir, num dado instante, **quais 
 
 - **Recency.** Decay exponencial sobre o tempo desde o último acesso. Eventos recentes pesam mais — modela a intuição de que memórias frescas são mais salientes.
 - **Importance.** Score 1-10 atribuído pelo LLM no momento da ingestão. Eventos mundanos ("comi cereal") recebem nota baixa; eventos significativos ("rompi com meu parceiro") recebem nota alta. Esse score é fixo após criação.
-- **Relevance.** Cosine similarity entre o embedding da memória e o embedding da query atual (o que o agent está tentando fazer agora).
+- **Relevance.** Cosine similarity entre o [[Dicionário de IA#embedding|embedding]] da memória e o embedding da query atual (o que o agent está tentando fazer agora).
 
 O score final é a soma ponderada dos três (normalizados). O agent recupera as top-N memórias por esse score combinado e as injeta no prompt da próxima decisão. A elegância está no fato de que cada sinal isoladamente é fraco — recency sozinha esquece o que importou ontem; importance sozinha ignora contexto situacional; relevance sozinha não diferencia novo de antigo. Combinados, capturam algo próximo do que humanos chamam de "memória contextual".
 
@@ -105,7 +105,7 @@ O agent gera um plano grosso para o dia ao acordar (5-8 itens), traduzido em lin
 ## Por que importa para a trilha
 
 - **Cunhou o vocabulário** que toda a literatura subsequente usa: memory stream, reflection, retrieval com recency + importance + relevance, believability como métrica. Sem esse vocabulário, é impossível ler a literatura recente de agentic memory.
-- **Conexão direta com [[03 - Taxonomia da memória (episódica, semântica, procedural)]].** O memory stream é uma instância clara de memória episódica de longo prazo — log de eventos com timestamps. As reflexões são o mecanismo de **transição** de episódica para semântica: extraem padrões generalizáveis a partir de eventos concretos. O paper antecipa, na prática, a divisão taxonômica que a literatura formalizaria depois.
+- **Conexão direta com [[03 - Taxonomia da memória (episódica, semântica, procedural)]].** O memory stream é uma instância clara de [[Dicionário de IA#episodic memory|memória episódica]] de longo prazo — log de eventos com timestamps. As reflexões são o mecanismo de **transição** de episódica para [[Dicionário de IA#semantic memory|semântica]]: extraem padrões generalizáveis a partir de eventos concretos. O paper antecipa, na prática, a divisão taxonômica que a literatura formalizaria depois.
 - **Inspiração arquitetural para [[19 - A-MEM — Zettelkasten dinâmico]].** A-MEM evolui o conceito ampliando para um Zettelkasten dinâmico — em vez de log + reflexão, propõe uma estrutura de notas interlinkadas que se reorganizam. A relação direta de descendência intelectual está reconhecida no próprio paper do A-MEM.
 - **Compara com [[06 - O LLM Wiki Pattern (gist do Karpathy)|06 - LLM Wiki Pattern]].** Park ataca o problema de memória com **simulação social** — agents num mundo virtual, mecanismo de retrieval probabilístico. [[Andrej Karpathy|Karpathy]] ataca o mesmo problema com **pragmatismo de wiki** — markdown interlinkado, schema explícito, humano na curadoria. Ambos resolvem o gap "LLM esquece"; estilos arquiteturais radicalmente diferentes. Lê-los em sequência ilumina o espaço de design.
 - **Ponte para [[08 - Arquitetura de um sistema de memória]].** O vocabulário arquitetural usado nessa nota da trilha é informado diretamente por Park et al. — entender o paper original deixa a arquitetura genérica muito mais legível.

@@ -18,7 +18,7 @@ tags:
 
 ## O que é
 
-A context window é o espaço de tokens que o modelo processa em cada chamada à API. É finita (~200k tokens nos modelos Claude mais recentes). Tudo que está dentro dela é "visível" para o agente. O que está fora não existe para ele.
+A [[Dicionário de IA#Context window|context window]] é o espaço de [[Dicionário de IA#Token|tokens]] que o modelo processa em cada chamada à API. É finita (~200k tokens nos modelos Claude mais recentes). Tudo que está dentro dela é "visível" para o agente. O que está fora não existe para ele.
 
 Em Claude Code, a context window acumula ao longo da sessão:
 
@@ -28,13 +28,13 @@ Chamada 2: [system prompt] + [CLAUDE.md] + [turn 1] + [tool result 1] + [turn 2]
 Chamada 3: [system prompt] + [CLAUDE.md] + [turn 1] + [tool result 1] + [turn 2] + [tool result 2] + [turn 3]
 ```
 
-Cada iteração do loop agentic adiciona mais tokens.
+Cada iteração do [[Dicionário de IA#agentic loop|loop agentic]] adiciona mais tokens.
 
 ## O que entra no contexto
 
 | Componente | Tokens típicos | Notas |
 |------------|---------------|-------|
-| System prompt (Claude Code) | ~2.000–5.000 | Fixo por sessão |
+| [[Dicionário de IA#system prompt\|System prompt]] (Claude Code) | ~2.000–5.000 | Fixo por sessão |
 | CLAUDE.md global | Variável | Lido no início |
 | CLAUDE.md do projeto | Variável | Lido no início |
 | Mensagens do usuário | Variável | Cada turn |
@@ -59,7 +59,7 @@ Input tokens = dinheiro. Em uma sessão que acumula 150k tokens de contexto e te
 
 ### Qualidade
 
-Com contexto saturado (próximo do limite), o modelo começa a "perder" detalhes do início da sessão. Uma instrução dada no turn 1 pode ser esquecida no turn 40. Isso é [[03-Dominios/IA/Claude Code/Mental Model/06 - Compaction|compaction]] em ação — mas compaction tem custo de fidelidade.
+Com contexto saturado (próximo do limite), o modelo começa a "perder" detalhes do início da sessão. Uma instrução dada no turn 1 pode ser esquecida no turn 40. Isso é [[03-Dominios/IA/Claude Code/Mental Model/06 - Compaction|compaction]] em ação — mas [[Dicionário de IA#context compaction|compaction]] tem custo de fidelidade.
 
 ### Velocidade
 

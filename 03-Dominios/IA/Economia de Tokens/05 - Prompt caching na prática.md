@@ -18,11 +18,11 @@ aliases:
 # Prompt caching na prática
 
 > [!abstract] TL;DR
-> Prompt caching armazena a computação (KV cache) de partes estáticas do prompt (system, docs, tools) entre chamadas, cobrando 10-50% do preço normal na releitura. É a otimização com melhor retorno por esforço — desconto de 50-90% na parte estática do input com mudança mínima de código. Para maximizar: mova conteúdo estático para o início do prompt, use `cache_control` (Anthropic), e monitore o cache hit rate.
+> [[Dicionário de IA#Prompt caching|Prompt caching]] armazena a computação ([[Dicionário de IA#KV cache|KV cache]]) de partes estáticas do prompt (system, docs, tools) entre chamadas, cobrando 10-50% do preço normal na releitura. É a otimização com melhor retorno por esforço — desconto de 50-90% na parte estática do input com mudança mínima de código. Para maximizar: mova conteúdo estático para o início do prompt, use `cache_control` (Anthropic), e monitore o [[Dicionário de IA#Cache hit rate|cache hit rate]].
 
 ## O que é
 
-Quando você envia um prompt para a API, o modelo precisa processar cada token do input (fase prefill). Prompt caching permite pular essa computação para tokens que já foram processados em chamadas anteriores — desde que o prefixo seja idêntico.
+Quando você envia um prompt para a API, o modelo precisa processar cada [[Dicionário de IA#Token|token]] do input (fase prefill). Prompt caching permite pular essa computação para tokens que já foram processados em chamadas anteriores — desde que o prefixo seja idêntico.
 
 ## Como funciona
 

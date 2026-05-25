@@ -21,7 +21,7 @@ aliases:
 # O loop ReAct e native tool use
 
 > [!abstract] TL;DR
-> **ReAct** (Reasoning + Acting), introduzido por Yao et al. em 2022, virou o padrão mental de agents. Combina raciocínio (*"thoughts"*) com ações (tool calls) e observações em loop. Em 2026, ninguém mais formata ReAct textualmente — LLMs modernos têm **native tool use** (Anthropic, OpenAI, Google), e o loop é gerenciado pelo SDK. **Mas o mental model é o mesmo.** Um agent é um while loop que termina quando o LLM diz "acabei" (`end_turn`) ou bate `max_steps`.
+> **[[Dicionário de IA#ReAct|ReAct]]** (Reasoning + Acting), introduzido por Yao et al. em 2022, virou o padrão mental de agents. Combina raciocínio (*"thoughts"*) com ações (tool calls) e observações em loop. Em 2026, ninguém mais formata ReAct textualmente — LLMs modernos têm **[[Dicionário de IA#tool use|native tool use]]** (Anthropic, OpenAI, Google), e o loop é gerenciado pelo SDK. **Mas o mental model é o mesmo.** Um agent é um while loop que termina quando o LLM diz "acabei" (`end_turn`) ou bate `max_steps`.
 
 ## ReAct — o padrão original
 
@@ -123,7 +123,7 @@ LLMs modernos podem retornar **múltiplas tool calls** num mesmo turno. Vantagem
 
 ### 2. Chain-of-thought entrelaçado
 
-Em modelos com **extended thinking** (Claude 4+), o reasoning fica em block separado, **invisível** ao próximo turno mas usado pelo modelo para decisão.
+Em modelos com **extended thinking** (Claude 4+), o [[Dicionário de IA#Chain-of-Thought (CoT)|reasoning]] fica em block separado, **invisível** ao próximo turno mas usado pelo modelo para decisão.
 
 ### 3. Self-correction
 

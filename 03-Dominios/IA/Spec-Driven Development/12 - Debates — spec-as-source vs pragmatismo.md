@@ -31,7 +31,7 @@ aliases:
 **Onde a crítica acerta:**
 - A fase Specify lembra waterfall em nome
 - O hábito de "spec antes de código" é genuinamente uma volta a princípios pré-agile
-- Times que aplicam mal SDD viram waterfall com markdown
+- Times que aplicam mal [[Dicionário de IA#Spec-driven development|SDD]] viram waterfall com markdown
 
 **Onde a crítica erra:**
 - Specs em SDD são **incrementais por feature**, não documentos gigantes
@@ -155,7 +155,7 @@ Casos reais onde SDD piorou:
 
 ## Posição honesta de fechamento
 
-SDD não é "a metodologia certa para todos". É **uma resposta calibrada** ao tech debt do vibe coding em **contextos específicos**:
+SDD não é "a metodologia certa para todos". É **uma resposta calibrada** ao tech debt do [[Dicionário de IA#vibe coding|vibe coding]] em **contextos específicos**:
 - Time pequeno-médio
 - Código com vida útil >meses
 - Disposição a 2-4 semanas de adoção

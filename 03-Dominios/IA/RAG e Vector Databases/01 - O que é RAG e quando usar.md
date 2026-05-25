@@ -18,7 +18,7 @@ aliases:
 # O que é RAG e quando usar
 
 > [!abstract] TL;DR
-> **RAG (Retrieval-Augmented Generation)** combina dois passos: **retrieval** (busca trechos relevantes em uma base de conhecimento) + **generation** (LLM gera resposta usando esses trechos como contexto). O resultado: LLM que "parece" conhecer seus dados em runtime, sem treinar nada. Barato, flexível, com **capacidade chave: citar fontes**. Em 2026, quase toda aplicação séria com LLM tem RAG no meio do caminho — porque LLMs conhecem muita coisa, mas não conhecem **seus dados** (docs internas, políticas, base de clientes, histórico do paciente).
+> **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG (Retrieval-Augmented Generation)]]** combina dois passos: **[[Dicionário de IA#retrieval|retrieval]]** (busca trechos relevantes em uma base de conhecimento) + **generation** ([[Dicionário de IA#LLM (Large Language Model)|LLM]] gera resposta usando esses trechos como contexto). O resultado: LLM que "parece" conhecer seus dados em runtime, sem treinar nada. Barato, flexível, com **capacidade chave: citar fontes**. Em 2026, quase toda aplicação séria com LLM tem RAG no meio do caminho — porque LLMs conhecem muita coisa, mas não conhecem **seus dados** (docs internas, políticas, base de clientes, histórico do paciente).
 
 ## A definição operacional
 
@@ -39,7 +39,7 @@ LLMs têm **knowledge cutoff** e **não conhecem seus dados**. Soluções:
 
 | Abordagem | Custo | Frescor | Citação |
 |---|---|---|---|
-| **Fine-tuning** | Alto (treino) | Stale (precisa retreinar) | ❌ |
+| **[[Dicionário de IA#fine-tuning\|Fine-tuning]]** | Alto (treino) | Stale (precisa retreinar) | ❌ |
 | **Long context** | Alto (tokens) | Limitado pela janela | ⚠️ Frágil |
 | **RAG** | Baixo | Atualizar = re-indexar | ✅ Direto |
 
@@ -105,13 +105,13 @@ graph LR
     C["3. Reranking<br/>(refina top-k)"] --> D
 ```
 
-**RAG não é sobre vector DB** — é sobre **retrieval quality**. Vector DB virou commodity. Onde a qualidade vive: chunking, hybrid search, reranking.
+**RAG não é sobre vector DB** — é sobre **retrieval quality**. Vector DB virou commodity. Onde a qualidade vive: [[Dicionário de IA#chunking|chunking]], [[Dicionário de IA#hybrid search|hybrid search]], [[Dicionário de IA#reranking|reranking]].
 
 ## O que diferencia um senior em RAG
 
 > [!tip]
 > 1. Sabe que **RAG não é sobre vector DB** — é sobre retrieval quality
-> 2. Nunca usa pure vector search em produção — hybrid (BM25 + vector) com reranker é o padrão
+> 2. Nunca usa pure vector search em produção — hybrid ([[Dicionário de IA#BM25|BM25]] + vector) com reranker é o padrão
 > 3. Trata chunking com seriedade — chunks ruins = RAG ruim
 > 4. Mede **retrieval quality separado de generation quality**
 > 5. Conhece armadilhas: tabela de conteúdos em vez de conteúdo, chunks sem metadata

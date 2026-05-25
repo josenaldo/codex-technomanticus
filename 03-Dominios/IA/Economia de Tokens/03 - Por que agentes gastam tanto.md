@@ -43,7 +43,7 @@ Equipes costumam subestimar o custo de workflows multi-step por 3 a 5× quando n
 ### 2. Tool definitions infladas
 
 
-Tool descriptions são re-enviadas no system prompt **a cada turno**. Um conjunto típico de 15 ferramentas com schemas detalhados consome 5-15K tokens. Em pipelines com MCP, metadados de ferramentas chegam a consumir 40-50% da context window. Multiplicado por 30 turnos: 150-450K tokens só em definição de tools — antes de o agente fazer qualquer coisa útil.
+Tool descriptions são re-enviadas no system prompt **a cada turno**. Um conjunto típico de 15 ferramentas com schemas detalhados consome 5-15K tokens. Em pipelines com [[Dicionário de IA#MCP (Model Context Protocol)|MCP]], metadados de ferramentas chegam a consumir 40-50% da [[Dicionário de IA#Context window|context window]]. Multiplicado por 30 turnos: 150-450K tokens só em definição de tools — antes de o agente fazer qualquer coisa útil.
 
 Ver [[07 - Compressão de tool definitions]].
 

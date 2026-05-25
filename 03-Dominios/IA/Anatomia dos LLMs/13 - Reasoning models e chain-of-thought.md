@@ -29,7 +29,7 @@ aliases:
 - **Visíveis** — exibidos ao usuário (Claude Thinking com `thinking` habilitado)
 - **Ocultos** — processados internamente mas não incluídos no response (OpenAI o-series)
 
-O conceito evolui do **chain-of-thought prompting** (2022), que descobriu que pedir ao modelo "pense passo a passo" melhorava resultados. Reasoning models incorporam isso no treinamento via reinforcement learning.
+O conceito evolui do **[[Dicionário de IA#Chain-of-Thought (CoT)|chain-of-thought prompting]]** (2022), que descobriu que pedir ao modelo "pense passo a passo" melhorava resultados. Reasoning models incorporam isso no treinamento via reinforcement learning.
 
 ## Por que importa
 
@@ -151,8 +151,8 @@ Exemplo: pedir para refatorar um módulo de autenticação.
 ## Armadilhas
 
 - **"Sempre usar reasoning"** — para tarefas simples, reasoning é desperdício. Autocomplete com o4 em vez de GPT-4.1 Nano é pagar 40x mais pelo mesmo resultado.
-- **Não limitar o thinking budget** — sem limite, o modelo pode "pensar" por 100k+ tokens em problemas difíceis. Use `budget_tokens` para controlar.
-- **"Reasoning tokens são baratos"** — não. São cobrados como output tokens (a tier mais cara). 50k tokens de pensamento no Claude Opus = $1.25 só em thinking.
+- **Não limitar o [[Dicionário de IA#Thinking budget|thinking budget]]** — sem limite, o modelo pode "pensar" por 100k+ tokens em problemas difíceis. Use `budget_tokens` para controlar.
+- **"[[Dicionário de IA#Reasoning tokens|Reasoning tokens]] são baratos"** — não. São cobrados como output tokens (a tier mais cara). 50k tokens de pensamento no Claude Opus = $1.25 só em thinking.
 - **Confundir CoT com reasoning nativo** — adicionar "pense passo a passo" em um modelo que já faz reasoning internamente gera overhead sem benefício.
 - **Ignorar reasoning tokens no monitoramento** — se você monitora só `output_tokens`, os `reasoning_tokens` ocultos (OpenAI) ficam invisíveis na análise de custos.
 

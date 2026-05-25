@@ -19,7 +19,7 @@ aliases:
 # Memory em agents
 
 > [!abstract] TL;DR
-> Agents precisam **lembrar** entre passos. Três tipos coexistem: **short-term** (working memory carregada no prompt, limitada pela context window, descarta ao terminar), **long-term** (persistente entre sessões, em arquivo/DB/vector store), e **structured state** (NOTES.md, TODO.md). Compactação é essencial — context cresce, atenção dilui ([[Context Engineering|03 - Context rot e atenção diluída]]). Para deep dive em sistemas avançados (MemGPT, Letta, Mem0, Zep), ver a trilha [[Memória de Agentes]].
+> Agents precisam **lembrar** entre passos. Três tipos coexistem: **short-term** ([[Dicionário de IA#working memory|working memory]] carregada no prompt, limitada pela context window, descarta ao terminar), **long-term** (persistente entre sessões, em arquivo/DB/[[Dicionário de IA#vector store|vector store]]), e **structured state** (NOTES.md, TODO.md). Compactação é essencial — context cresce, atenção dilui ([[Context Engineering|03 - Context rot e atenção diluída]]). Para deep dive em sistemas avançados (MemGPT, Letta, Mem0, Zep), ver a trilha [[Memória de Agentes]].
 
 ## Os 3 tipos
 
@@ -58,7 +58,7 @@ O histórico da conversa atual. Cresce a cada turno.
 
 ## Long-term memory — o que persiste
 
-Info que sobrevive entre sessões. Várias estratégias:
+Info que sobrevive entre sessões em [[Dicionário de IA#long-term memory|long-term memory]]. Várias estratégias:
 
 ### File-based (markdown)
 
@@ -137,7 +137,7 @@ graph TB
 
 ## Para deep dive
 
-A trilha [[Memória de Agentes]] tem 24 notas dedicadas: taxonomia (episódica, semântica, procedural), implementações (OpenKB, MemGPT/Letta, Mem0, Zep, Graphiti, Generative Agents Stanford), comparativo crítico, guia de implementação.
+A trilha [[Memória de Agentes]] tem 24 notas dedicadas: taxonomia ([[Dicionário de IA#episodic memory|episódica]], [[Dicionário de IA#semantic memory|semântica]], procedural), implementações (OpenKB, MemGPT/Letta, Mem0, Zep, Graphiti, Generative Agents Stanford), comparativo crítico, guia de implementação.
 
 ## Veja também
 

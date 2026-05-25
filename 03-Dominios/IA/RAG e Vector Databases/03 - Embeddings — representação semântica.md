@@ -18,7 +18,7 @@ aliases:
 # Embeddings — representação semântica
 
 > [!abstract] TL;DR
-> **Embedding** é a representação vetorial de texto (ou outro dado) como array de números, tipicamente 256-3072 dimensões. Textos com significado similar ficam próximos nesse espaço. Modelos modernos (OpenAI text-embedding-3, Voyage 3, Cohere Embed v4) têm propriedades específicas: matryoshka (truncar dimensões preserva qualidade), domain-specific (legal, código), multilingue. Custo é baixo: $0.02-$0.13/M tokens. **A escolha do modelo de embedding é decisão arquitetural** — você fica casado com ele para o lifecycle do índice.
+> **[[Dicionário de IA#embedding|Embedding]]** é a representação vetorial de texto (ou outro dado) como array de números, tipicamente 256-3072 dimensões. Textos com significado similar ficam próximos nesse espaço. Modelos modernos (OpenAI text-embedding-3, Voyage 3, Cohere Embed v4) têm propriedades específicas: matryoshka (truncar dimensões preserva qualidade), domain-specific (legal, código), multilingue. Custo é baixo: $0.02-$0.13/M tokens. **A escolha do [[Dicionário de IA#embedding model|modelo de embedding]] é decisão arquitetural** — você fica casado com ele para o lifecycle do índice.
 
 ## A intuição
 
@@ -38,7 +38,7 @@ graph LR
     B --> C["Vetor denso<br/>(256-3072 dims)"]
 ```
 
-Embedding model é tipicamente um **transformer encoder-only** (BERT-style) treinado para que textos similares produzam vetores próximos. Diferente do LLM (decoder-only) que gera texto.
+[[Dicionário de IA#embedding model|Embedding model]] é tipicamente um **[[Dicionário de IA#transformer|transformer]] encoder-only** (BERT-style) treinado para que textos similares produzam vetores próximos. Diferente do [[Dicionário de IA#LLM (Large Language Model)|LLM]] (decoder-only) que gera texto.
 
 ## Modelos populares (2026)
 
@@ -90,7 +90,7 @@ Operações como `king - man + woman ≈ queen` funcionam (parcialmente) em mode
 | **Dense** | 256-4000 | Maioria dos valores não-zero |
 | **Sparse** | dim do vocabulário (~30K) | Maioria zero, semelhante a TF-IDF |
 
-Sparse (SPLADE, ELSER): bom para keyword exact match. Dense: bom para semântica. **Hybrid usa os dois** (ver [[06 - Retrieval — hybrid search, BM25, query rewriting]]).
+Sparse (SPLADE, ELSER): bom para keyword exact match. [[Dicionário de IA#dense retrieval|Dense]]: bom para semântica. **[[Dicionário de IA#hybrid search|Hybrid]] usa os dois** (ver [[06 - Retrieval — hybrid search, BM25, query rewriting]]).
 
 ## Decisões arquiteturais
 
@@ -133,7 +133,7 @@ Default: 1024-1536. Reduza para 256-768 em escala alta com matryoshka.
 3M × $0.13/M = $0.39/mês query
 ```
 
-Embedding é **barato**. Não é onde o custo do RAG vive.
+Embedding é **barato**. Não é onde o custo do [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vive.
 
 ## Embeddings multimodais
 

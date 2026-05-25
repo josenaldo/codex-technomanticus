@@ -97,7 +97,7 @@ e crédito processado em até 5 dias úteis.
 A spec deve ser:
 
 - **Legível por humano** — é o contrato que o time entende
-- **Legível por LLM** — agente vai consumi-la como contexto
+- **Legível por [[Dicionário de IA#LLM (Large Language Model)|LLM]]** — agente vai consumi-la como contexto
 - **Não-ambígua o suficiente** — frases declarativas, números concretos, listas pontuais
 - **Não-código** — não é UML, não é JSON, não é regex (em geral)
 

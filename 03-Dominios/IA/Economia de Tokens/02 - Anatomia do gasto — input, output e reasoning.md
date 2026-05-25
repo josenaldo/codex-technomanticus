@@ -36,7 +36,7 @@ Input é cobrado pelo processamento inicial de todos os tokens enviados. Em 2026
 Output é o custo de geração token-a-token. É a parte mais cara (3-10x o input) porque exige passagens sequenciais pela GPU e consome banda de memória ([[Dicionário de IA#memory bandwidth bottleneck|memory bandwidth bottleneck]]).
 
 - **Texto Visível:** A resposta final que o usuário lê.
-- **Tool Calls:** Estruturas JSON invisíveis para o usuário mas processadas como output.
+- **[[Dicionário de IA#tool call|Tool Calls]]:** Estruturas JSON invisíveis para o usuário mas processadas como output.
 
 ### 3. Reasoning Tokens: O "Pensamento Invisível"
 Introduzidos em modelos como o1, o3, o4 e Claude 4 "Thinking", são tokens gerados internamente para [[Dicionário de IA#Chain-of-Thought (CoT)|Chain-of-Thought (CoT)]], auto-correção e planejamento.
@@ -100,7 +100,7 @@ graph TD
 1. **A Maldição do Histórico:** Em sessões longas, o custo de *prefill* (input) do histórico cresce de forma quadrática se não for compactado. O cache mitiga o preço, mas não a latência.
 2. **Context Density vs Retrieval:** Encher o contexto de arquivos "só por garantia" degrada o SNR. O modelo gera mais tokens de reasoning tentando separar o sinal do ruído.
 3. **[[Dicionário de IA#Speculative decoding|Speculative Decoding]]:** Alguns provedores usam modelos menores para prever tokens comuns (como `if`, `else`). Isso acelera a resposta, mas nem sempre reduz o custo (verifique a política do provedor).
-4. **Tool Definition Inflation:** Schemas JSON verbosos são "veneno" de contexto. Cada campo desnecessário é cobrado em cada turno da conversa.
+4. **[[Dicionário de IA#tool definition|Tool Definition]] Inflation:** Schemas JSON verbosos são "veneno" de contexto. Cada campo desnecessário é cobrado em cada turno da conversa.
 
 ## Veja também
 

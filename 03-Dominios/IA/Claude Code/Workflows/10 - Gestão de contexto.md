@@ -16,7 +16,7 @@ tags:
 # Gestão de contexto — qualidade em sessões longas
 
 > [!abstract] TL;DR
-> Sessões longas degradam a qualidade das decisões do agente — não porque o Claude fica "cansado", mas porque o contexto acumula ruído e o agente pondera conversas antigas junto com as novas. O sinal de alerta é o agente fazendo escolhas inconsistentes com decisões recentes. Gestão de contexto ativa (commits frequentes + /compact + sessions novas) mantém a qualidade estável.
+> Sessões longas degradam a qualidade das decisões do [[Dicionário de IA#Agent|agente]] — não porque o Claude fica "cansado", mas porque o [[Dicionário de IA#Context window|contexto]] acumula ruído e o agente pondera conversas antigas junto com as novas. O sinal de alerta é o agente fazendo escolhas inconsistentes com decisões recentes. Gestão de contexto ativa (commits frequentes + [[Dicionário de IA#context compaction|/compact]] + sessions novas) mantém a qualidade estável.
 
 ## Por que o contexto degrada
 
@@ -48,7 +48,7 @@ O comando `/compact` sumariza a sessão atual em um resumo comprimido, descartan
 ```
 Quando usar /compact:
 - Depois de um commit significativo ("salvei o estado, posso compactar")
-- Quando o contexto ultrapassar ~50% da janela
+- Quando o contexto ultrapassar ~50% da janela de [[Dicionário de IA#Token|tokens]]
 - Quando a tarefa muda de assunto (debugging → nova feature)
 - Quando você perceber sinais de degradação
 ```

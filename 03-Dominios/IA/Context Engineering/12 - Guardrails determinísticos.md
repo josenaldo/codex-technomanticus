@@ -19,7 +19,7 @@ aliases:
 # Guardrails determinísticos
 
 > [!abstract] TL;DR
-> O grande shift de 2026: **substituir LLMs julgando LLMs por código determinístico**. Filtros de entrada por regex, validadores de saída por schema, kill paths por exception, escalações por threshold numérico. Salesforce, Anthropic, players enterprise convergiram: probabilístico onde precisa, determinístico onde dá. O agente vive dentro de uma **control plane** — uma camada rígida que intercepta inputs e outputs antes de tocar sistemas reais. A regra: se você consegue escrever uma regra, escreva uma regra; LLM julgando vira incidente.
+> O grande shift de 2026: **substituir [[Dicionário de IA#LLM (Large Language Model)|LLMs]] julgando LLMs por código determinístico**. Filtros de entrada por regex, validadores de saída por schema, kill paths por exception, escalações por threshold numérico. Salesforce, Anthropic, players enterprise convergiram: probabilístico onde precisa, determinístico onde dá. O agente vive dentro de uma **control plane** — uma camada rígida que intercepta inputs e outputs antes de tocar sistemas reais. A regra: se você consegue escrever uma regra, escreva uma regra; LLM julgando vira incidente.
 
 ## A virada de 2026
 
@@ -62,7 +62,7 @@ Filtragem de entrada **antes** do prompt chegar ao modelo:
 | **Topic filtering** | Classificador determinístico | Blacklist de domínios fora do escopo |
 | **Length caps** | `len(input) > N` | Recusar inputs absurdamente longos |
 | **Rate limiting** | Token bucket por usuário | Bloquear flood |
-| **Prompt injection signatures** | Regex + ML model | Detectar "ignore previous instructions" |
+| **[[Dicionário de IA#prompt injection\|Prompt injection]] signatures** | Regex + ML model | Detectar "ignore previous instructions" |
 | **Allowlist de tools** | Lookup table | Só certas tools por tipo de usuário |
 
 ## Post-LLM guardrails
@@ -75,7 +75,7 @@ Validação de saída **antes** dela acionar sistema real:
 | **Range checks** | `if value > MAX:` | Pagamento > R$ 10K → human review |
 | **Tool whitelist** | Lookup | Só `read_file`, nunca `rm -rf` |
 | **Citation requirement** | Regex match em docs | Resposta precisa citar source |
-| **Hallucination detection** | Cross-check com KB | Função citada existe no codebase? |
+| **[[Dicionário de IA#Hallucination\|Hallucination]] detection** | Cross-check com KB | Função citada existe no codebase? |
 | **Numerical sanity** | Asserts | Soma deve dar 100% |
 
 ## Kill paths e escalações

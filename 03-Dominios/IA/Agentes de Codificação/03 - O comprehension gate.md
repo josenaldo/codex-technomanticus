@@ -1,5 +1,5 @@
 ---
-title: "O comprehension gate"
+title: O comprehension gate
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
@@ -13,12 +13,13 @@ aliases:
   - Comprehension gate
   - Portão de compreensão
   - Code review AI
+progress: in progress
 ---
 
 # O comprehension gate
 
 > [!abstract] TL;DR
-> O comprehension gate é a regra de ouro do desenvolvimento assistido por IA: se você não consegue explicar por que uma mudança foi feita, ela não deve ser mergeada. Não importa se o código passa nos testes, se o agente confia na mudança, ou se parece funcionar. Se o humano não compreende o "porquê" de cada alteração, o codebase acumula código fantasma — funcional mas incompreensível — que eventualmente se torna impossível de manter.
+> O [[Dicionário de IA#Comprehension gate|comprehension gate]] é a regra de ouro do desenvolvimento assistido por IA: se você não consegue explicar por que uma mudança foi feita, ela não deve ser mergeada. Não importa se o código passa nos testes, se o [[Dicionário de IA#Coding agent|agente]] confia na mudança, ou se parece funcionar. Se o humano não compreende o "porquê" de cada alteração, o codebase acumula código fantasma — funcional mas incompreensível — que eventualmente se torna impossível de manter.
 
 ## O que é
 

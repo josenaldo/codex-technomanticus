@@ -20,7 +20,7 @@ aliases:
 # Planning — plan-then-execute, dynamic, hierarchical
 
 > [!abstract] TL;DR
-> Para tarefas complexas, agents se beneficiam de **planejamento explícito** antes de executar. Três estratégias: **plan-then-execute** (gera plano em markdown, revisa, depois executa — mais controlável), **dynamic** (decide próximo passo a cada iteração — mais flexível, padrão de ReAct puro), e **hierarchical** (plano alto-nível com sub-planos). Pattern recomendado em coding agents: sempre pedir plano em markdown antes de tocar código em features não-triviais. Esse padrão **elimina a maior parte** dos *"o agent foi fazer outra coisa"*.
+> Para tarefas complexas, agents se beneficiam de **[[Dicionário de IA#planning|planejamento explícito]]** antes de executar. Três estratégias: **plan-then-execute** (gera plano em markdown, revisa, depois executa — mais controlável), **dynamic** (decide próximo passo a cada iteração — mais flexível, padrão de [[Dicionário de IA#ReAct|ReAct]] puro), e **hierarchical** (plano alto-nível com sub-planos). Pattern recomendado em coding agents: sempre pedir plano em markdown antes de tocar código em features não-triviais. Esse padrão **elimina a maior parte** dos *"o agent foi fazer outra coisa"*.
 
 ## As 3 estratégias
 

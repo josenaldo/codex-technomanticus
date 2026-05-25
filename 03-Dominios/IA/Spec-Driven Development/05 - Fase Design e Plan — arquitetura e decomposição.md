@@ -51,7 +51,7 @@ Misturar volta a ser tentador — *"a spec deveria dizer que usa Postgres"*. Nã
 **Constraint atendida:** NFR de "0 perda de evento".
 ```
 
-Decisões registradas com **razão** evitam que a próxima sessão do agente as reverta sem motivo.
+Decisões registradas com **razão** evitam que a próxima sessão do [[Dicionário de IA#Agent|agente]] as reverta sem motivo.
 
 ### 2. Stack e dependências
 

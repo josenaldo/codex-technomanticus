@@ -79,7 +79,7 @@ Sessão 5: agente lê plan.md (D2: idempotency via outbox) → ainda usa outbox
 → consistência por construção
 ```
 
-A spec é **memória externa** que sobrevive a context window resets, agentes diferentes, sessões cruzadas.
+A spec é **memória externa** que sobrevive a [[Dicionário de IA#Context window|context window]] resets, agentes diferentes, sessões cruzadas.
 
 ## Drift de spec = drift de contexto
 
@@ -193,7 +193,7 @@ Mês 3+: Spec-as-source (se domínio permite)
 | Métrica | SDD | Context Engineering | Combinada |
 |---|---|---|---|
 | Drift entre spec e código | <5% | — | — |
-| Cache hit rate | — | >70% | Depende de spec estável |
+| [[Dicionário de IA#Cache hit rate\|Cache hit rate]] | — | >70% | Depende de spec estável |
 | Tokens por feature | — | -40% baseline | Com SDD: -50% (spec evita re-explorações) |
 | % AC com teste | 100% | — | Reforça consistência |
 | Sessões que perdem contexto | — | -70% | -90% com SDD anchored |

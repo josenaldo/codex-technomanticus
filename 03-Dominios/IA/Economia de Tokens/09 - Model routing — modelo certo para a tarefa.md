@@ -18,7 +18,7 @@ aliases:
 # Model routing — modelo certo para a tarefa
 
 > [!abstract] TL;DR
-> Model routing direciona cada tarefa para o modelo com melhor custo-benefício: budget para autocomplete, mid-tier para coding diário, flagship para raciocínio complexo. Isso reduz custos em 30-70% sem degradar qualidade perceptível. A implementação mais simples é manual (escolher modelo por tarefa). A mais sofisticada usa classificadores que avaliam complexidade em tempo real.
+> Model routing direciona cada tarefa para o modelo com melhor custo-benefício: budget para autocomplete, mid-tier para coding diário, [[Dicionário de IA#flagship model|flagship]] para raciocínio complexo. Isso reduz custos em 30-70% sem degradar qualidade perceptível. A implementação mais simples é manual (escolher modelo por tarefa). A mais sofisticada usa classificadores que avaliam complexidade em tempo real.
 
 ## Como funciona
 

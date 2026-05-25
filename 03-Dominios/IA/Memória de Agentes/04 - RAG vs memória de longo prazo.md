@@ -29,15 +29,15 @@ aliases:
 >
 > O resultado: o LLM "parece" saber sobre os dados, mas na verdade está apenas lendo os trechos injetados em runtime. Nada é "aprendido" — cada chamada parte do zero, busca no índice e descarta o contexto ao final.
 >
-> Para profundidade real (chunking, hybrid search, reranking, evaluation), leia [[RAG e Vector Databases]].
+> Para profundidade real (chunking, [[Dicionário de IA#hybrid search|hybrid search]], [[Dicionário de IA#reranking|reranking]], evaluation), leia [[RAG e Vector Databases]].
 
 ## O que é
 
 A confusão entre RAG e memória aparece porque os dois envolvem "buscar coisas para o LLM ler". A diferença está em **quem escreve**, **quando escreve** e **como o conteúdo evolui**.
 
-**RAG (Retrieval-Augmented Generation)** foi formalizado por [Lewis et al. (2020)](https://arxiv.org/abs/2005.11401) como uma arquitetura que combina um modelo gerador com um retriever sobre um corpus indexado. Na prática moderna, RAG significa: documentos são preparados offline (chunking, embedding, indexação em vector DB), e em runtime cada pergunta dispara uma busca por similaridade, com os chunks mais relevantes sendo injetados no prompt. O modelo **lê** esses chunks e gera a resposta, mas **não modifica** o corpus. O conteúdo da base é estável até que um humano decida re-indexar.
+**[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG (Retrieval-Augmented Generation)]]** foi formalizado por [Lewis et al. (2020)](https://arxiv.org/abs/2005.11401) como uma arquitetura que combina um modelo gerador com um retriever sobre um corpus indexado. Na prática moderna, RAG significa: documentos são preparados offline ([[Dicionário de IA#chunking|chunking]], [[Dicionário de IA#embedding|embedding]], indexação em [[Dicionário de IA#vector database|vector DB]]), e em runtime cada pergunta dispara uma busca por similaridade, com os chunks mais relevantes sendo injetados no prompt. O modelo **lê** esses chunks e gera a resposta, mas **não modifica** o corpus. O conteúdo da base é estável até que um humano decida re-indexar.
 
-**Memória de longo prazo** opera no sentido oposto: a representação é **escrita pelo próprio LLM** (ou por um pipeline orquestrado em torno dele) a partir das interações. O ciclo canônico é **write-manage-read** — o agente decide o que vale a pena registrar, faz manutenção (deduplicação, resolução de contradições, consolidação) e lê quando precisa. Essa representação persiste entre sessões e evolui sem intervenção humana direta. Pode ser armazenada em wikis (ver [[06 - O LLM Wiki Pattern (gist do Karpathy)]]), grafos de conhecimento, vector DBs próprios ou combinações híbridas.
+**[[Dicionário de IA#long-term memory|Memória de longo prazo]]** opera no sentido oposto: a representação é **escrita pelo próprio [[Dicionário de IA#LLM (Large Language Model)|LLM]]** (ou por um pipeline orquestrado em torno dele) a partir das interações. O ciclo canônico é **write-manage-read** — o agente decide o que vale a pena registrar, faz manutenção (deduplicação, resolução de contradições, consolidação) e lê quando precisa. Essa representação persiste entre sessões e evolui sem intervenção humana direta. Pode ser armazenada em wikis (ver [[06 - O LLM Wiki Pattern (gist do Karpathy)]]), grafos de conhecimento, vector DBs próprios ou combinações híbridas.
 
 A distinção essencial: **RAG injeta conhecimento que já existia; memória constrói conhecimento novo.** Um sistema de RAG sobre a documentação de um produto não fica "mais inteligente" com o uso — ele só fica desatualizado se ninguém re-indexar. Um sistema de memória, por construção, fica diferente a cada interação significativa.
 
@@ -91,7 +91,7 @@ Nada impede combinar os dois. Um agent de suporte técnico pode usar RAG sobre a
 > Estas armadilhas aparecem em quase todo projeto onde alguém tentou "adicionar memória" sem distinguir os conceitos.
 
 - **Confiar que RAG = memória.** RAG é stateless por chamada. Se a base não muda como consequência da interação, não há memória — há consulta. Sistemas que prometem "memória via RAG" sem um passo de write deliberado estão entregando log indexado.
-- **Tentar fazer RAG sobre histórico de conversa cumulativo.** Conforme as conversas se acumulam, o vector DB cresce indefinidamente, embeddings ficam ruidosos, retrieval começa a trazer trechos irrelevantes ou contraditórios, e o custo cresce linearmente sem ganho de qualidade. Histórico bruto não é uma boa unidade de retrieval — é matéria-prima para extração.
+- **Tentar fazer RAG sobre histórico de conversa cumulativo.** Conforme as conversas se acumulam, o vector DB cresce indefinidamente, embeddings ficam ruidosos, [[Dicionário de IA#retrieval|retrieval]] começa a trazer trechos irrelevantes ou contraditórios, e o custo cresce linearmente sem ganho de qualidade. Histórico bruto não é uma boa unidade de retrieval — é matéria-prima para extração.
 - **Implementar "memória" mas fazer só RAG sobre logs.** Falta o manage-step. Sem consolidação, deduplicação e resolução de contradições, o sistema vira um arquivo de logs com search por similaridade. Funciona em demos, falha em produção quando o usuário muda de opinião ou quando dois episódios divergem.
 - **Ignorar que sistemas reais misturam os dois.** Mem0 combina vetorial + grafo + extração. basic-memory junta wiki estruturada com search RAG-like. Tratar a escolha como binária ("ou RAG ou memória") é falsa dicotomia. A pergunta real é: para cada tipo de informação, qual substrato e qual ciclo de escrita?
 

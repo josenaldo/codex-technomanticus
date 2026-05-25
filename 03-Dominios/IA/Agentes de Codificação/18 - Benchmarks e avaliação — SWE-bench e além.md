@@ -18,7 +18,7 @@ aliases:
 # Benchmarks e avaliação — SWE-bench e além
 
 > [!abstract] TL;DR
-> SWE-bench é o benchmark de referência para avaliar agentes de codificação — mede a capacidade de resolver issues reais de repositórios open-source. Em maio de 2026, os melhores agentes resolvem ~72% das issues na versão Verified (um subconjunto curado). Mas benchmarks são guias, não verdade — o mesmo modelo com scaffolding diferente pode ter scores muito diferentes. Para o engenheiro individual, o que importa é performance no SEU codebase, não no SWE-bench.
+> SWE-bench é o benchmark de referência para avaliar [[Dicionário de IA#Coding agent|agentes de codificação]] — mede a capacidade de resolver issues reais de repositórios open-source. Em maio de 2026, os melhores agentes resolvem ~72% das issues na versão Verified (um subconjunto curado). Mas benchmarks são guias, não verdade — o mesmo modelo com scaffolding diferente pode ter scores muito diferentes. Para o engenheiro individual, o que importa é performance no SEU codebase, não no SWE-bench.
 
 ## O que é
 
@@ -82,7 +82,7 @@ aliases:
 3. **Meça o que importa:**
    - Taxa de resolução (resolve sem ajuda?)
    - Qualidade do código (segue seus padrões?)
-   - Custo (quantos tokens gastou?)
+   - Custo (quantos [[Dicionário de IA#Token|tokens]] gastou?)
    - Tempo (quanto tempo levou?)
 4. **Compare ferramentas no seu contexto** — SWE-bench diz que Opus > GPT-5, mas no SEU projeto com SEU stack, pode ser diferente
 

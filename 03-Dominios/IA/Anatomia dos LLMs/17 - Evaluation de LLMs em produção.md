@@ -21,7 +21,7 @@ aliases:
 # Evaluation de LLMs em produção
 
 > [!abstract] TL;DR
-> LLM em produção sem evaluation é aposta. Não é tradeoff — é dívida. **Práticas mínimas:** golden set de 30-100 exemplos representativos rodado a cada mudança de prompt/modelo; **LLM-as-judge** para tarefas subjetivas (com cuidado de viés); **traces e observabilidade** instrumentando toda chamada (tokens, latência, custo, taxa de erro); **A/B test** em produção com métricas de negócio. Sem isso, "prompt engineering" vira superstição — mudou prompt, ninguém sabe se melhorou.
+> LLM em produção sem evaluation é aposta. Não é tradeoff — é dívida. **Práticas mínimas:** golden set de 30-100 exemplos representativos rodado a cada mudança de prompt/modelo; **LLM-as-judge** para tarefas subjetivas (com cuidado de viés); **[[Dicionário de IA#tracing|traces]] e [[Dicionário de IA#Observability|observabilidade]]** instrumentando toda chamada (tokens, latência, custo, taxa de erro); **A/B test** em produção com métricas de negócio. Sem isso, "prompt engineering" vira superstição — mudou prompt, ninguém sabe se melhorou.
 
 ## Por que eval é diferente em LLMs
 
@@ -85,7 +85,7 @@ Cada pilar resolve uma pergunta diferente. **Maturidade real é ter os 4.**
 |---|---|
 | **Classificação** | Equality (`actual.category == expected.category`) |
 | **Extração estruturada** | Equality + schema valid |
-| **Geração de texto** | Embedding similarity (cosine) > threshold |
+| **Geração de texto** | [[Dicionário de IA#embedding\|Embedding]] similarity (cosine) > threshold |
 | **Geração de código** | Test pass + linter pass |
 | **Resumo / criatividade** | LLM-as-judge (Pilar 2) |
 
@@ -161,10 +161,10 @@ def llm_as_judge(question, expected, actual):
 
 | Ferramenta | Forte em |
 |---|---|
-| **Langfuse** | Open source, self-hostable, rico em features |
+| **[[Dicionário de IA#Langfuse\|Langfuse]]** | Open source, self-hostable, rico em features |
 | **LangSmith** | Integração nativa LangChain |
 | **Helicone** | Proxy + analytics, bom pra times sem instrumentação |
-| **Arize Phoenix** | Sessions com timeline, debugging |
+| **[[Dicionário de IA#Arize Phoenix\|Arize Phoenix]]** | Sessions com timeline, debugging |
 | **Braintrust** | Eval-first, comparação de versions |
 
 **Pattern recomendado:**

@@ -21,7 +21,7 @@ aliases:
 # Permissões e sandboxing
 
 > [!abstract] TL;DR
-> Agente AI precisa rodar comandos, ler arquivos, fazer chamadas de rede — exatamente os privilégios que atacante quer. **Least privilege** + **sandboxing** é como você roda agentes sem permitir que um prompt errado destrua produção. Em 2026, Cursor com Claude wipou banco de produção em **9 segundos** — o caso é cautionary tale citado por toda documentação de sandboxing. Anthropic aposta em OS-level sandboxing (bubblewrap/Seatbelt) com filesystem + network isolation. Defense in depth é mandatório: app-level + OS-level + infra-level.
+> [[Dicionário de IA#Agent|Agente]] AI precisa rodar comandos, ler arquivos, fazer chamadas de rede — exatamente os privilégios que atacante quer. **Least privilege** + **sandboxing** é como você roda agentes sem permitir que um prompt errado destrua produção. Em 2026, Cursor com Claude wipou banco de produção em **9 segundos** — o caso é cautionary tale citado por toda documentação de sandboxing. Anthropic aposta em OS-level sandboxing (bubblewrap/Seatbelt) com filesystem + network isolation. Defense in depth é mandatório: app-level + OS-level + infra-level.
 
 ## A tragédia que define o problema
 

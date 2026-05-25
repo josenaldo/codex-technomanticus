@@ -15,7 +15,7 @@ tags:
 # CLAUDE.md compartilhado — o que vai no repo, o que fica local
 
 > [!abstract] TL;DR
-> CLAUDE.md no repo é contrato do projeto: diz ao agente quais são as convenções, proibições, e workflows que todo dev precisa seguir. O `~/.claude/CLAUDE.md` global é preferência pessoal: estilo individual, projetos pessoais, configurações que não fazem sentido para o time. A regra simples é: se todos no time deveriam seguir, vai no repo. Se só você segue, fica no seu global.
+> CLAUDE.md no repo é contrato do projeto: diz ao [[Dicionário de IA#Agent|agente]] quais são as convenções, proibições, e workflows que todo dev precisa seguir. O `~/.claude/CLAUDE.md` global é preferência pessoal: estilo individual, projetos pessoais, configurações que não fazem sentido para o time. A regra simples é: se todos no time deveriam seguir, vai no repo. Se só você segue, fica no seu global.
 
 ## A hierarquia de CLAUDE.md
 
@@ -146,7 +146,7 @@ Um CLAUDE.md desatualizado é pior do que nenhum: instrui o agente a seguir prá
 
 - Time adotou nova convenção → adicionar
 - Time abandonou uma prática → remover (não comentar, não marcar como obsoleto)
-- Novo MCP server configurado para o projeto → documentar
+- Novo [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] server configurado para o projeto → documentar
 - Nova skill criada → adicionar ao catálogo
 - Regra que o agente violou → adicionar nas restrições
 

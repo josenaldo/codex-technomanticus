@@ -26,8 +26,8 @@ Skills (do Agent Skills do Claude e padrões equivalentes) podem ser entendidas 
 ## Pontos a desenvolver
 
 - Diferença entre prompting ad-hoc e skill formalizada
-- Quando criar uma skill vs estender o system prompt
-- Como skills se relacionam com técnicas de prompting (few-shot, CoT, ToT)
+- Quando criar uma skill vs estender o [[Dicionário de IA#system prompt|system prompt]]
+- Como skills se relacionam com técnicas de prompting ([[Dicionário de IA#few-shot prompting|few-shot]], [[Dicionário de IA#Chain-of-Thought (CoT)|CoT]], ToT)
 - Skills como contexto carregado vs context engineering tradicional
 - Anatomia do `SKILL.md` e descoberta automática
 

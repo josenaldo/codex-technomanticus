@@ -49,7 +49,7 @@ Tool calls com sintaxe errada disparando retry automático. Sintoma: 2-3 turnos 
 
 ### 4. Reasoning excessivo em tarefa simples
 
-Extended thinking ligado para responder "qual é a capital de França?". Sintoma: reasoning_tokens >> output_tokens em queries triviais.
+Extended thinking ligado para responder "qual é a capital de França?". Sintoma: [[Dicionário de IA#Reasoning tokens|reasoning_tokens]] >> output_tokens em queries triviais.
 
 ### 5. Modelo errado para a tarefa
 
@@ -78,9 +78,9 @@ graph TD
 
 ### Passo a passo prático
 
-1. **Filtrar** — top 1% de sessões por custo (Langfuse: order by cost desc, Phoenix: sort by tokens)
+1. **Filtrar** — top 1% de sessões por custo ([[Dicionário de IA#Langfuse|Langfuse]]: order by cost desc, Phoenix: sort by tokens)
 2. **Amostrar** — 5-10 sessões representativas
-3. **Drill-down** — abrir trace, ver turno-a-turno: quantos tokens, qual tool, qual output
+3. **Drill-down** — abrir [[Dicionário de IA#trace|trace]], ver turno-a-turno: quantos [[Dicionário de IA#Token|tokens]], qual tool, qual output
 4. **Identificar** — em que turno o gasto explode? Por quê?
 5. **Categorizar** — qual dos 7 padrões acima?
 6. **Fix** — código, prompt, config
@@ -91,7 +91,7 @@ graph TD
 | Ferramenta | Forte em |
 |---|---|
 | **Langfuse** | Trace search, filtros por custo, comparação de versões |
-| **Arize Phoenix** | Sessions com timeline visual, fácil drill-down |
+| **[[Dicionário de IA#Arize Phoenix\|Arize Phoenix]]** | Sessions com timeline visual, fácil drill-down |
 | **LangSmith** | Filtros por tags, integração nativa LangChain |
 | **Helicone** | Proxy + analytics; bom para teams sem instrumentação |
 | **ccusage** (CLI) | Quick audit de Claude Code local |
@@ -110,7 +110,7 @@ graph TD
 - [ ] Top 10 sessões por custo identificadas
 - [ ] Cada sessão classificada em pelo menos 1 dos 7 padrões
 - [ ] Pelo menos 2 fixes priorizados
-- [ ] Cache hit rate medido e comparado com mês anterior
+- [ ] [[Dicionário de IA#Cache hit rate|Cache hit rate]] medido e comparado com mês anterior
 - [ ] Distribuição de modelo por tipo de tarefa revisada
 - [ ] Relatório curto (1 página) compartilhado com stakeholders
 

@@ -18,7 +18,7 @@ aliases:
 # Chunking — onde 50% da qualidade vive
 
 > [!abstract] TL;DR
-> Chunks ruins = RAG ruim, sem recuperação possível. **Chunking é onde 50% da qualidade vive** — vector DB é commodity, embeddings são commodity, retrieval algorithms são commodity. Como você quebra o texto define o que vai ser encontrado. Estratégias do mais simples ao mais sofisticado: fixed size, recursive, semantic, structure-aware, contextual chunks (Anthropic 2024). Default razoável: 512-1024 tokens com 10-20% overlap, structure-aware quando possível. **Investigue chunks gerados antes de seguir** — visualize amostras, valide manualmente.
+> Chunks ruins = [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] ruim, sem recuperação possível. **[[Dicionário de IA#chunking|Chunking]] é onde 50% da qualidade vive** — vector DB é commodity, [[Dicionário de IA#embedding|embeddings]] são commodity, [[Dicionário de IA#retrieval|retrieval]] algorithms são commodity. Como você quebra o texto define o que vai ser encontrado. Estratégias do mais simples ao mais sofisticado: fixed size, recursive, semantic, structure-aware, contextual chunks (Anthropic 2024). Default razoável: 512-1024 tokens com 10-20% overlap, structure-aware quando possível. **Investigue chunks gerados antes de seguir** — visualize amostras, valide manualmente.
 
 ## A regra de ouro
 

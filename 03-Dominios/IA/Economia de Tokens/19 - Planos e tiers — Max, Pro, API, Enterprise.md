@@ -18,7 +18,7 @@ aliases:
 # Planos e tiers — Max, Pro, API, Enterprise
 
 > [!abstract] TL;DR
-> Providers oferecem múltiplos modelos de cobrança: pay-per-token (API), assinatura flat-rate (Pro/Max), e enterprise. Para dev solo que usa agentes 4h+/dia, planos flat-rate (Claude Max $100/mês, ChatGPT Plus $20/mês) geralmente são mais baratos que API pura. Para times e automação, API com routing é mais flexível. A decisão depende de volume, previsibilidade, e controle necessário.
+> Providers oferecem múltiplos modelos de cobrança: [[Dicionário de IA#cost per token|pay-per-token]] (API), assinatura flat-rate (Pro/Max), e enterprise. Para dev solo que usa [[Dicionário de IA#Agent|agentes]] 4h+/dia, planos flat-rate (Claude Max $100/mês, ChatGPT Plus $20/mês) geralmente são mais baratos que API pura. Para times e automação, API com routing é mais flexível. A decisão depende de volume, previsibilidade, e controle necessário.
 
 ## Comparativo de modelos de cobrança
 

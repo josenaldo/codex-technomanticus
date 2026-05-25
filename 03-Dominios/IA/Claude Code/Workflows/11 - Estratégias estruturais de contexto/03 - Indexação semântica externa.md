@@ -25,11 +25,11 @@ aliases:
 # Indexação semântica externa — vector DB como contexto persistente
 
 > [!abstract] TL;DR
-> A cada tarefa, o agente tende a redescobrir o codebase: `Grep`, `Read`, `Grep`, `Read`. Em monorepo grande, isso queima 50k–200k tokens só pra "achar onde está". Indexação semântica externa parte o codebase em chunks, gera embeddings, guarda num vector DB, e expõe via MCP uma tool de `search_code(query)` que devolve só os trechos relevantes. O agente faz **uma** busca em vez de 30 grep+read, com 5%–10% do custo de tokens. Requer infra externa (API de embedding + vector DB) e disciplina de re-indexação.
+> A cada tarefa, o agente tende a redescobrir o codebase: `Grep`, `Read`, `Grep`, `Read`. Em monorepo grande, isso queima 50k–200k [[Dicionário de IA#Token|tokens]] só pra "achar onde está". Indexação semântica externa parte o codebase em [[Dicionário de IA#chunking|chunks]], gera [[Dicionário de IA#embedding|embeddings]], guarda num [[Dicionário de IA#vector database|vector DB]], e expõe via [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] uma tool de `search_code(query)` que devolve só os trechos relevantes. O agente faz **uma** busca em vez de 30 grep+read, com 5%–10% do custo de tokens. Requer infra externa (API de embedding + vector DB) e disciplina de re-indexação.
 
 ## O que é
 
-Aplicação clássica de RAG (Retrieval-Augmented Generation) ao codebase: transformar o repositório inteiro em um índice vetorial consultável, externo ao contexto do agente.
+Aplicação clássica de [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG (Retrieval-Augmented Generation)]] ao codebase: transformar o repositório inteiro em um índice vetorial consultável, externo ao contexto do agente.
 
 Em vez de o Claude Code:
 

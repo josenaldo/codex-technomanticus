@@ -16,7 +16,7 @@ tags:
 # Avaliando qualidade do output — quando confiar, quando revisar
 
 > [!abstract] TL;DR
-> Claude Code produz código que vai de excelente a sutilmente quebrado, e o nível de confiança depende do tipo de tarefa, do contexto fornecido, e do quanto você consegue verificar o resultado. Tarefas mecânicas e bem especificadas merecem mais autonomia; mudanças que afetam regra de negócio, dados, ou produção exigem revisão linha a linha. A calibração não é estática — ela melhora à medida que você acumula evidência de onde o agente acerta e onde erra.
+> [[Dicionário de IA#Claude Code|Claude Code]] produz código que vai de excelente a sutilmente quebrado, e o nível de confiança depende do tipo de tarefa, do contexto fornecido, e do quanto você consegue verificar o resultado. Tarefas mecânicas e bem especificadas merecem mais autonomia; mudanças que afetam regra de negócio, dados, ou produção exigem revisão linha a linha. A calibração não é estática — ela melhora à medida que você acumula evidência de onde o agente acerta e onde erra.
 
 ## A gradação de confiança
 
@@ -94,7 +94,7 @@ Verificação:
 5. Integração: a feature interage corretamente com o resto do sistema?
 ```
 
-Tests passing não é suficiente — o agente pode ter escrito testes incompletos. Manual testing complementa.
+Tests passing não é suficiente — o [[Dicionário de IA#Agent|agente]] pode ter escrito testes incompletos. Manual testing complementa.
 
 ### Bug fix
 

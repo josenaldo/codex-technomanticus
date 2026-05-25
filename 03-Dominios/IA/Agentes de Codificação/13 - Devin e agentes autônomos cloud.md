@@ -26,7 +26,7 @@ aliases:
 
 1. Recebem uma tarefa (issue, spec, instrução)
 2. Criam um ambiente isolado (container/VM)
-3. Planejam e executam sem interação humana
+3. [[Dicionário de IA#planning|Planejam]] e executam sem interação humana
 4. Entregam resultado (PR, artefato, relatório)
 
 Devin da Cognition Labs foi o primeiro a ganhar atenção massiva em 2024. Desde então, GitHub Copilot Agents, Factory AI, e outros entraram no espaço.

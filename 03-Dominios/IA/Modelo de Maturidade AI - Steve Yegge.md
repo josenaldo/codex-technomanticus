@@ -98,9 +98,9 @@ O desenvolvedor muda o centro do trabalho: em vez de pedir implementação diret
 
 ### Estágio 6: O Operador de Agente
 
-A IA ganha acesso ao repositório e a ferramentas: ler arquivos, editar, rodar testes, investigar falhas, consultar docs, produzir diffs. O desenvolvedor deixa de interagir apenas por chat e passa a conduzir um loop agentico.
+A IA ganha acesso ao repositório e a ferramentas: ler arquivos, editar, rodar testes, investigar falhas, consultar docs, produzir diffs. O desenvolvedor deixa de interagir apenas por chat e passa a conduzir um [[Dicionário de IA#agentic loop|loop agentico]].
 
-**Ferramentas típicas:** Claude Code, Cursor agent mode, GitHub Copilot Agents, Codex CLI, Aider, OpenCode.
+**Ferramentas típicas:** [[Dicionário de IA#Claude Code|Claude Code]], [[Dicionário de IA#Cursor|Cursor]] agent mode, GitHub Copilot Agents, Codex CLI, [[Dicionário de IA#Aider|Aider]], OpenCode.
 
 **Conexões internas:** [[03-Dominios/IA/Agentes de Codificação/index|Agentes de Codificação]], [[03-Dominios/IA/Anatomia de Agents/index|Anatomia de Agents]], [[03-Dominios/IA/MCP/index|MCP]].
 
@@ -202,7 +202,7 @@ Em estágios baixos, o risco está em aceitar uma resposta errada. Em estágios 
 
 Riscos recorrentes:
 
-- **alucinação de APIs e dependências**;
+- **[[Dicionário de IA#Hallucination|alucinação]] de APIs e dependências**;
 - **alterações fora do escopo**;
 - **testes que confirmam implementação errada**;
 - **remoção silenciosa de guardrails**;
@@ -280,7 +280,7 @@ Construa infraestrutura de maturidade:
 
 ## Relação com Vibe Coding
 
-O termo "vibe coding", popularizado por [[Andrej Karpathy]], descreve um modo de programar em que o humano guia a IA por intenção, aceita sugestões e deixa o modelo carregar boa parte da implementação. Isso se conecta ao modelo de Yegge, mas há uma diferença importante:
+O termo "[[Dicionário de IA#vibe coding|vibe coding]]", popularizado por [[Andrej Karpathy]], descreve um modo de programar em que o humano guia a IA por intenção, aceita sugestões e deixa o modelo carregar boa parte da implementação. Isso se conecta ao modelo de Yegge, mas há uma diferença importante:
 
 - **vibe coding ingênuo:** confiar no fluxo, aceitar patches plausíveis e corrigir por tentativa;
 - **vibe coding disciplinado:** usar IA intensamente, mas com specs, testes, revisão, contexto e guardrails.

@@ -22,9 +22,9 @@ aliases:
 
 ## O que é
 
-O **Transformer** é a arquitetura de rede neural introduzida por Vaswani et al. em 2017 no paper *"Attention Is All You Need"*. Antes dele, modelos de linguagem usavam RNNs (Recurrent Neural Networks) que processavam texto sequencialmente — uma palavra por vez, da esquerda para a direita. Isso era lento e perdia informação em distâncias longas.
+O **[[Dicionário de IA#transformer|Transformer]]** é a arquitetura de rede neural introduzida por Vaswani et al. em 2017 no paper *"Attention Is All You Need"*. Antes dele, modelos de linguagem usavam RNNs (Recurrent Neural Networks) que processavam texto sequencialmente — uma palavra por vez, da esquerda para a direita. Isso era lento e perdia informação em distâncias longas.
 
-O Transformer substituiu a recorrência por **atenção** — um mecanismo que permite processar todos os tokens de uma sequência **em paralelo**, calculando a relação de cada token com todos os outros.
+O Transformer substituiu a recorrência por **[[Dicionário de IA#attention|atenção]]** — um mecanismo que permite processar todos os tokens de uma sequência **em paralelo**, calculando a relação de cada token com todos os outros.
 
 ## Por que importa
 
@@ -104,7 +104,7 @@ O cálculo Q·Kᵀ compara cada token com todos os outros:
 | 100.000            | 10.000.000.000    | 10.000x        |
 | 1.000.000          | 1.000.000.000.000 | 1.000.000x     |
 
-É por isso que contextos de 1M tokens exigem hardware especializado e otimizações como **FlashAttention**, **paged attention**, e **KV cache**.
+É por isso que contextos de 1M tokens exigem hardware especializado e otimizações como **FlashAttention**, **paged attention**, e **[[Dicionário de IA#KV cache|KV cache]]**.
 
 ### Otimizações modernas (2026)
 
@@ -145,7 +145,7 @@ Cada camada combina:
 - **"Atenção = compreensão"** — atenção é correlação estatística. O modelo pode dar peso alto a um token por razões estatísticas, não semânticas.
 - **Ignorar o custo quadrático** — duplicar o contexto quadruplica o custo de atenção. É por isso que context engineering importa tanto.
 - **"Flash Attention muda a qualidade"** — não. FlashAttention é matematicamente equivalente à atenção padrão. Só reorganiza a computação para ser mais eficiente em hardware.
-- **Confundir parâmetros com atenção** — os pesos das camadas feed-forward (não a atenção) é onde o "conhecimento factual" do modelo reside. Atenção é o mecanismo de busca/organização.
+- **Confundir [[Dicionário de IA#parameters / weights|parâmetros]] com atenção** — os pesos das camadas feed-forward (não a atenção) é onde o "conhecimento factual" do modelo reside. Atenção é o mecanismo de busca/organização.
 
 ## Veja também
 

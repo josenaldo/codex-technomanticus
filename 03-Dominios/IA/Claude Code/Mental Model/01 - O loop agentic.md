@@ -17,14 +17,14 @@ tags:
 
 ## O que é
 
-Um chatbot responde e para. Um agente responde e age — e continua agindo até concluir.
+Um chatbot responde e para. Um [[Dicionário de IA#Agent|agente]] responde e age — e continua agindo até concluir.
 
-O loop agentic do Claude Code tem quatro fases:
+O [[Dicionário de IA#agentic loop|loop agentic]] do [[Dicionário de IA#Claude Code|Claude Code]] tem quatro fases:
 
 | Fase | O que acontece |
 |------|----------------|
 | **Plan** | O agente lê a tarefa, o contexto (CLAUDE.md, histórico), e decide qual tool usar |
-| **Act** | Executa uma tool call: Read, Edit, Bash, Grep, etc. |
+| **Act** | Executa uma [[Dicionário de IA#tool call\|tool call]]: Read, Edit, Bash, Grep, etc. |
 | **Observe** | Lê o output da tool. O output entra no contexto. |
 | **Iterate** | Com base no que observou, decide a próxima ação — ou conclui |
 
@@ -76,7 +76,7 @@ claude -p "task" --max-turns 20
 
 **O loop é determinístico dentro do contexto.** Se o agente travou ou tomou uma decisão errada, muitas vezes é porque faltou contexto — CLAUDE.md não menciona um padrão, ou a estrutura do projeto é incomum. Adicione contexto, não instruções.
 
-**Iterações custam tokens.** Cada tool call e seu output entram no contexto. Uma sessão com 50 tool calls é muito mais cara que uma com 10. Pedidos mais focados = menos iterações = menor custo.
+**Iterações custam [[Dicionário de IA#Token|tokens]].** Cada tool call e seu output entram no contexto. Uma sessão com 50 tool calls é muito mais cara que uma com 10. Pedidos mais focados = menos iterações = menor custo.
 
 ## Armadilhas
 
@@ -84,7 +84,7 @@ claude -p "task" --max-turns 20
 
 **Suposições silenciosas**: o agente assumiu algo errado no passo 1 e nunca corrigiu. Causa: contexto insuficiente. Solução: CLAUDE.md com convenções do projeto.
 
-**Corrida de edições**: o agente edita um arquivo baseado no que leu em loop anterior, mas o arquivo mudou no meio. Pouco comum em uso interativo, mas pode acontecer com subagents paralelos.
+**Corrida de edições**: o agente edita um arquivo baseado no que leu em loop anterior, mas o arquivo mudou no meio. Pouco comum em uso interativo, mas pode acontecer com [[Dicionário de IA#subagent|subagents]] paralelos.
 
 ## Veja também
 

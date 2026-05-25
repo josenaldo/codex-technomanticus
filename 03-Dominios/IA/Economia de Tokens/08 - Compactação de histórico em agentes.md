@@ -17,7 +17,7 @@ aliases:
 # Compactação de histórico em agentes
 
 > [!abstract] TL;DR
-> Em sessões longas, o histórico cresce até explodir o contexto e o custo. Compactação substitui turns antigos por resumos densos. Claude Code faz isso automaticamente via `/compact`. Para agentes custom, use rolling summarization ou anchored state documents. Mantém os últimos 5-10 turns completos e sumariza o resto.
+> Em sessões longas, o histórico cresce até explodir o contexto e o custo. [[Dicionário de IA#context compaction|Compactação]] substitui turns antigos por resumos densos. [[Dicionário de IA#Claude Code|Claude Code]] faz isso automaticamente via `/compact`. Para [[Dicionário de IA#Agent|agentes]] custom, use rolling summarization ou anchored state documents. Mantém os últimos 5-10 turns completos e sumariza o resto.
 
 ## Como funciona
 

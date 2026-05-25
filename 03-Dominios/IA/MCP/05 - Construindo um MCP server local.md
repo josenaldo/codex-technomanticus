@@ -18,7 +18,7 @@ aliases:
 # Construindo um MCP server local
 
 > [!abstract] TL;DR
-> Construir MCP server é simples: SDK Python ou TypeScript + decorators + ~50 linhas de código. Use stdio (subprocess local) para começar. Defina tools com schema Pydantic/Zod, retorne tipos estruturados, escreva descrições claras (60% do trabalho — ver [[Anatomia de Agents|03 - Tool design — princípios e categorias]]). Teste com **MCP Inspector** antes de plugar em client real. Para algo public, considere semver, docs, examples. Para algo interno, basta o essencial.
+> Construir [[Dicionário de IA#MCP server|MCP server]] é simples: [[Dicionário de IA#SDK|SDK]] Python ou TypeScript + decorators + ~50 linhas de código. Use stdio (subprocess local) para começar. Defina tools com schema Pydantic/Zod, retorne tipos estruturados, escreva descrições claras (60% do trabalho — ver [[Anatomia de Agents|03 - Tool design — princípios e categorias]]). Teste com **MCP Inspector** antes de plugar em client real. Para algo public, considere semver, docs, examples. Para algo interno, basta o essencial.
 
 ## Setup mínimo (Python)
 
@@ -353,7 +353,7 @@ Documente changes em CHANGELOG.
 | Métrica | Alvo |
 |---|---|
 | **Tools por server** | 5-15 |
-| **Latência tool call** | <100ms (local) |
+| **Latência [[Dicionário de IA#tool call\|tool call]]** | <100ms (local) |
 | **Tokens em tool description** | 50-300 |
 | **Tokens em output médio** | <2K |
 | **% testes passando antes de release** | 100% |

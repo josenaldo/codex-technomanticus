@@ -16,7 +16,7 @@ tags:
 # Criar sua primeira skill — walkthrough prático
 
 > [!abstract] TL;DR
-> O walkthrough mais útil é criar uma skill para um processo que você já executa manualmente. Escolha algo repetitivo: code review, deploy checklist, ou como você quer que o agente aborde testes no projeto. Este guia cria uma skill de code review do zero, passo a passo, e explica cada decisão.
+> O walkthrough mais útil é criar uma skill para um processo que você já executa manualmente. Escolha algo repetitivo: code review, deploy checklist, ou como você quer que o [[Dicionário de IA#Agent|agente]] aborde testes no projeto. Este guia cria uma skill de code review do zero, passo a passo, e explica cada decisão.
 
 ## Escolha o processo certo para começar
 

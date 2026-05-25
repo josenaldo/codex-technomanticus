@@ -12,10 +12,10 @@ updated: 2026-05-02
 
 # Agentes de Codificação
 
-Em 2026, ferramentas de codificação AI evoluíram de "autocomplete de uma linha" para agentes autônomos que planejam, executam, testam e iteram sobre codebases inteiros. Mas a ferramenta é só metade da equação — a outra metade é saber COMO usá-la. Esta trilha mapeia todo o ecossistema: da filosofia (vibe coding vs disciplina) às ferramentas (Cursor, Claude Code, Copilot, harnesses open source), passando por protocolos (MCP), padrões de trabalho (loop agentic, multi-agent), e governança (comprehension gate, human-in-the-loop).
+Em 2026, ferramentas de codificação AI evoluíram de "autocomplete de uma linha" para agentes autônomos que planejam, executam, testam e iteram sobre codebases inteiros. Mas a ferramenta é só metade da equação — a outra metade é saber COMO usá-la. Esta trilha mapeia todo o ecossistema: da filosofia ([[Dicionário de IA#vibe coding|vibe coding]] vs disciplina) às ferramentas ([[Dicionário de IA#Cursor|Cursor]], [[Dicionário de IA#Claude Code|Claude Code]], Copilot, harnesses open source), passando por protocolos ([[Dicionário de IA#MCP (Model Context Protocol)|MCP]]), padrões de trabalho ([[Dicionário de IA#agentic loop|loop agentic]], multi-agent), e governança ([[Dicionário de IA#Comprehension gate|comprehension gate]], human-in-the-loop).
 
 > [!info] Pré-requisitos
-> Recomendado ter lido a [[Anatomia dos LLMs]] (Trilha 1), especialmente notas sobre tokens, context window, e APIs.
+> Recomendado ter lido a [[Anatomia dos LLMs]] (Trilha 1), especialmente notas sobre [[Dicionário de IA#Token|tokens]], [[Dicionário de IA#Context window|context window]], e APIs.
 
 > [!tip] Como usar esta trilha
 > Leia sequencialmente se está começando. Se já usa ferramentas AI, pule para a rota que resolve seu problema atual.

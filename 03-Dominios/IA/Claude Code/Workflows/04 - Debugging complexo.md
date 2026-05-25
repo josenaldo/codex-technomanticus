@@ -15,7 +15,7 @@ tags:
 # Debugging complexo — diagnosticar, não só corrigir
 
 > [!abstract] TL;DR
-> O erro mais comum ao debugar com Claude Code é pedir a correção antes de ter a causa raiz. O agente aplica um fix plausível que resolve o sintoma mas não o problema real. O padrão correto: descreva o comportamento observado vs. esperado, deixe o agente formar e testar hipóteses, confirme a causa antes de aceitar o fix.
+> O erro mais comum ao debugar com [[Dicionário de IA#Claude Code|Claude Code]] é pedir a correção antes de ter a causa raiz. O [[Dicionário de IA#Agent|agente]] aplica um fix plausível que resolve o sintoma mas não o problema real. O padrão correto: descreva o comportamento observado vs. esperado, deixe o agente formar e testar hipóteses, confirme a causa antes de aceitar o fix.
 
 ## O anti-padrão
 
@@ -106,7 +106,7 @@ Fix:"
 
 ## Debugging com testes
 
-A abordagem mais robusta: escreva um teste que reproduz o bug antes de corrigir.
+A abordagem mais robusta: escreva um [[Dicionário de IA#TDD with AI|teste que reproduz o bug]] antes de corrigir.
 
 ```
 "Antes de corrigir, escreva um teste em tests/services/pricing.test.ts

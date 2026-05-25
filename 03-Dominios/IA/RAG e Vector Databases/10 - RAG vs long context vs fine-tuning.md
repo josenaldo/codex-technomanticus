@@ -18,7 +18,7 @@ aliases:
 # RAG vs long context vs fine-tuning
 
 > [!abstract] TL;DR
-> Três caminhos para fazer LLM "saber seus dados": **RAG** (busca em runtime), **long context** (joga tudo no prompt), **fine-tuning** (treina modelo). Não competem — resolvem problemas diferentes. Long context vence em corpus pequeno e estável. RAG vence em corpus grande, dinâmico, com requisito de citação. Fine-tuning vence em mudar **comportamento**, não conhecimento. **Híbridos são comuns:** fine-tuning de tom + RAG de fatos é padrão maduro em 2026.
+> Três caminhos para fazer [[Dicionário de IA#LLM (Large Language Model)|LLM]] "saber seus dados": **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]]** (busca em runtime), **long context** (joga tudo no prompt), **[[Dicionário de IA#fine-tuning|fine-tuning]]** (treina modelo). Não competem — resolvem problemas diferentes. Long context vence em corpus pequeno e estável. RAG vence em corpus grande, dinâmico, com requisito de citação. Fine-tuning vence em mudar **comportamento**, não conhecimento. **Híbridos são comuns:** fine-tuning de tom + RAG de fatos é padrão maduro em 2026.
 
 ## A confusão comum
 
@@ -37,7 +37,7 @@ Não é "ou", é "qual problema você tem".
 |---|---|---|---|
 | **O que muda** | Adiciona conhecimento | Adiciona conhecimento | Muda comportamento + estilo |
 | **Custo upfront** | Baixo (indexar) | Zero | Alto (treino) |
-| **Custo por query** | Médio (retrieval + tokens) | Alto (muitos tokens) | Baixo |
+| **Custo por query** | Médio ([[Dicionário de IA#retrieval\|retrieval]] + tokens) | Alto (muitos tokens) | Baixo |
 | **Frescor** | Atualizar = re-indexar | Mudar prompt | Re-treinar |
 | **Citação** | Direta | Frágil | Não suporta |
 | **Multi-tenant** | Filtrar por user_id | Difícil | Modelo por tenant é caro |
@@ -70,7 +70,7 @@ graph TD
 >
 > Conta cresce → muda para RAG.
 
-❌ **Cuidado com context rot:** janela de 1M tokens não significa qualidade em 1M tokens (ver [[Context Engineering|03 - Context rot e atenção diluída]]).
+❌ **Cuidado com context rot:** [[Dicionário de IA#Context window|janela]] de 1M tokens não significa qualidade em 1M tokens (ver [[Context Engineering|03 - Context rot e atenção diluída]]).
 
 ## RAG — quando vence
 

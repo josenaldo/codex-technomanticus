@@ -38,9 +38,9 @@ graph LR
 
 ## Por que isso muda tudo para agentes
 
-Para humanos, "spec é a fonte da verdade" pode soar burocrático. Para LLMs, é **a única forma de obter previsibilidade**:
+Para humanos, "spec é a fonte da verdade" pode soar burocrático. Para [[Dicionário de IA#LLM (Large Language Model)|LLMs]], é **a única forma de obter previsibilidade**:
 
-- Sem spec, o agente preenche ambiguidade com **alucinação plausível**
+- Sem spec, o agente preenche ambiguidade com **[[Dicionário de IA#Hallucination|alucinação plausível]]**
 - Com spec, o agente preenche ambiguidade **consultando a spec**
 - Sem spec, validação é "olhômetro humano"
 - Com spec, validação é **regra mecânica**

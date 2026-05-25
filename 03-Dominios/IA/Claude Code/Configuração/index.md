@@ -21,7 +21,7 @@ aliases:
 
 ## Sobre este galho
 
-Claude Code sem configuração é como um dev sem contexto de projeto — ele funciona, mas gera código genérico que não segue seus padrões. CLAUDE.md é o arquivo que transforma o agente genérico em especialista do seu projeto. settings.json controla o que ele pode e não pode fazer. Permissions define granularidade de acesso.
+[[Dicionário de IA#Claude Code|Claude Code]] sem configuração é como um dev sem contexto de projeto — ele funciona, mas gera código genérico que não segue seus padrões. CLAUDE.md é o arquivo que transforma o [[Dicionário de IA#Agent|agente]] genérico em especialista do seu projeto. settings.json controla o que ele pode e não pode fazer. Permissions define granularidade de acesso.
 
 Este galho cobre cada peça da camada de configuração, com receitas prontas para projetos reais.
 

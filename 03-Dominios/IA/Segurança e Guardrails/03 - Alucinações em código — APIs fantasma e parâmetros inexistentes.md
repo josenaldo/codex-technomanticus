@@ -19,7 +19,7 @@ aliases:
 # Alucinações em código — APIs fantasma e parâmetros inexistentes
 
 > [!abstract] TL;DR
-> Além de [[02 - Slopsquatting — o ataque via alucinação|alucinar pacotes]], LLMs alucinam **dentro do código**: chamam métodos que não existem, passam parâmetros inventados, importam funções de módulos que não as exportam, criam tipos que ninguém declarou. Diferente de slopsquatting (vetor de ataque externo), essas alucinações são **bugs internos** que parecem código bom até alguém rodar. Detecção: type checker, linter, test, e — em projetos sérios — schema validation. O problema não é "o modelo é burro" — é que **plausibilidade visual ≠ correção semântica**.
+> Além de [[02 - Slopsquatting — o ataque via alucinação|alucinar pacotes]], [[Dicionário de IA#LLM (Large Language Model)|LLMs]] [[Dicionário de IA#Hallucination|alucinam]] **dentro do código**: chamam métodos que não existem, passam parâmetros inventados, importam funções de módulos que não as exportam, criam tipos que ninguém declarou. Diferente de slopsquatting (vetor de ataque externo), essas alucinações são **bugs internos** que parecem código bom até alguém rodar. Detecção: type checker, linter, test, e — em projetos sérios — schema validation. O problema não é "o modelo é burro" — é que **plausibilidade visual ≠ correção semântica**.
 
 ## Os 5 tipos de alucinação em código
 

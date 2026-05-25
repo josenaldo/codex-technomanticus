@@ -16,7 +16,7 @@ tags:
 # Compondo skills e MCP — agentes especializados
 
 > [!abstract] TL;DR
-> Skills e MCP servers são complementares: skills ensinam o agente *como* trabalhar; MCP servers dão ao agente *acesso* ao que ele precisa para trabalhar. Um agente especializado para um domínio específico combina as duas coisas: uma skill que define o processo e os MCP servers que expõem os sistemas necessários. A composição acontece na sessão, não em código.
+> Skills e [[Dicionário de IA#MCP server|MCP servers]] são complementares: skills ensinam o [[Dicionário de IA#Agent|agente]] *como* trabalhar; MCP servers dão ao agente *acesso* ao que ele precisa para trabalhar. Um agente especializado para um domínio específico combina as duas coisas: uma skill que define o processo e os MCP servers que expõem os sistemas necessários. A composição acontece na sessão, não em código.
 
 ## Por que compor em vez de usar separado
 
@@ -174,7 +174,7 @@ Adicionar MCP servers sem necessidade aumenta a superfície de ataque e o overhe
 
 ## Armadilhas
 
-**Skill que descreve o processo sem instrução sobre os sistemas**: "verifique o banco" sem especificar qual tool MCP usar leva o agente a tentar acesso via Bash — que pode estar bloqueado por guardrails.
+**Skill que descreve o processo sem instrução sobre os sistemas**: "verifique o banco" sem especificar qual tool MCP usar leva o agente a tentar acesso via Bash — que pode estar bloqueado por [[Dicionário de IA#Guardrail|guardrails]].
 
 **MCP server de produção com skill que permite mutações**: uma skill de "atualizar dados" + MCP de produção é uma combinação perigosa. Garanta que o MCP server aponta para o ambiente certo para o workflow da skill.
 

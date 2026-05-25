@@ -19,7 +19,7 @@ aliases:
 # A pirâmide de validação AI
 
 > [!abstract] TL;DR
-> Nenhuma camada sozinha protege contra os 45% de [[01 - Código gerado por IA é untrusted|código inseguro]] e [[02 - Slopsquatting — o ataque via alucinação|supply chain attacks]]. A solução é **defesa em profundidade** estruturada como pirâmide: na base, **automação massiva** (linters, type checkers, SAST escalando para milhares de PRs); no meio, **guardrails determinísticos** ([[Context Engineering|12 - Guardrails determinísticos]]) que param classes de ataque conhecidas; no topo, **human oversight** focado nos poucos casos que merecem revisão humana profunda. Triângulo invertido onde tem o problema.
+> Nenhuma camada sozinha protege contra os 45% de [[01 - Código gerado por IA é untrusted|código inseguro]] e [[02 - Slopsquatting — o ataque via alucinação|supply chain attacks]]. A solução é **defesa em profundidade** estruturada como pirâmide: na base, **automação massiva** (linters, type checkers, SAST escalando para milhares de PRs); no meio, **[[Dicionário de IA#Guardrail|guardrails]] determinísticos** ([[Context Engineering|12 - Guardrails determinísticos]]) que param classes de ataque conhecidas; no topo, **human oversight** focado nos poucos casos que merecem revisão humana profunda. Triângulo invertido onde tem o problema.
 
 ## A pirâmide
 
@@ -74,7 +74,7 @@ Quando automação genérica não basta — regras **específicas do projeto**:
 
 Ver [[Context Engineering|12 - Guardrails determinísticos]] para fundamento.
 
-**Critério:** regras **codificáveis**. Se você consegue escrever a regra, escreva a regra. Não delegue julgamento determinístico para LLM.
+**Critério:** regras **codificáveis**. Se você consegue escrever a regra, escreva a regra. Não delegue julgamento determinístico para [[Dicionário de IA#LLM (Large Language Model)|LLM]].
 
 ## Camada 3 — Human oversight (1-5%)
 

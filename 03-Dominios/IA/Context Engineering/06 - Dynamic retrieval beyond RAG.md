@@ -19,7 +19,7 @@ aliases:
 # Dynamic retrieval beyond RAG
 
 > [!abstract] TL;DR
-> RAG clássico (recuperar top-k docs antes do prompt) virou o **andar térreo** do retrieval moderno. Em 2026, agentes operam num espectro: de **pre-indexed** (vector DB pronto) até **just-in-time** (chamar API/tool durante a tarefa). O agente carrega *identifiers* leves (paths, queries, links) e **decide em runtime** o que buscar. Bypass de stale indexing, contexto mais limpo, mais alinhado com o estado real do mundo. Claude Code é o exemplo de referência: `glob`/`grep`/`read_file` substituem indexar o código inteiro.
+> [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] clássico (recuperar top-k docs antes do prompt) virou o **andar térreo** do [[Dicionário de IA#retrieval|retrieval]] moderno. Em 2026, agentes operam num espectro: de **pre-indexed** ([[Dicionário de IA#vector database|vector DB]] pronto) até **just-in-time** (chamar API/tool durante a tarefa). O agente carrega *identifiers* leves (paths, queries, links) e **decide em runtime** o que buscar. Bypass de stale indexing, contexto mais limpo, mais alinhado com o estado real do mundo. Claude Code é o exemplo de referência: `glob`/`grep`/`read_file` substituem indexar o código inteiro.
 
 ## O espectro
 

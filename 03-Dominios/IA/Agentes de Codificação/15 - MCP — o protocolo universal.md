@@ -18,23 +18,23 @@ aliases:
 # MCP — o protocolo universal
 
 > [!abstract] TL;DR
-> O Model Context Protocol (MCP) é um padrão aberto criado pela Anthropic que define como agentes AI se conectam com ferramentas externas (bancos de dados, APIs, file systems, browsers). É o "USB da IA" — uma interface universal que permite que qualquer agente use qualquer ferramenta sem integração custom. Em 2026, Claude Code, Cursor, Gemini CLI e harnesses open source suportam MCP. Saber configurar MCP servers é a skill que transforma um agente genérico em um agente específico para o seu projeto.
+> O [[Dicionário de IA#MCP (Model Context Protocol)|Model Context Protocol (MCP)]] é um padrão aberto criado pela Anthropic que define como agentes AI se conectam com ferramentas externas (bancos de dados, APIs, file systems, browsers). É o "USB da IA" — uma interface universal que permite que qualquer agente use qualquer ferramenta sem integração custom. Em 2026, Claude Code, Cursor, Gemini CLI e harnesses open source suportam MCP. Saber configurar MCP servers é a skill que transforma um agente genérico em um agente específico para o seu projeto.
 
 ## O que é
 
 **MCP** é um protocolo de comunicação entre:
 
 - **Host** — o agente AI (Claude Code, Cursor, etc.)
-- **Server** — uma ferramenta ou serviço (PostgreSQL, GitHub, browser, etc.)
-- **Client** — a ponte entre host e server (geralmente embutida no host)
+- **[[Dicionário de IA#MCP server|Server]]** — uma ferramenta ou serviço (PostgreSQL, GitHub, browser, etc.)
+- **[[Dicionário de IA#MCP client|Client]]** — a ponte entre host e server (geralmente embutida no host)
 
 O protocolo define três primitivas:
 
 | Primitiva     | O que faz                         | Exemplo                                     |
 | ------------- | --------------------------------- | ------------------------------------------- |
-| **Tools**     | Ações que o modelo pode invocar   | `read_file`, `execute_sql`, `search_github` |
-| **Resources** | Dados que o modelo pode ler       | Schemas de BD, documentação, configs        |
-| **Prompts**   | Templates de prompt pré-definidos | `analyze-pr`, `explain-error`               |
+| **[[Dicionário de IA#tools (MCP)\|Tools]]**     | Ações que o modelo pode invocar   | `read_file`, `execute_sql`, `search_github` |
+| **[[Dicionário de IA#resources (MCP)\|Resources]]** | Dados que o modelo pode ler       | Schemas de BD, documentação, configs        |
+| **[[Dicionário de IA#prompts (MCP)\|Prompts]]**   | Templates de prompt pré-definidos | `analyze-pr`, `explain-error`               |
 
 ## Por que importa
 

@@ -18,7 +18,7 @@ aliases:
 # Human-in-the-loop — quando (não) confiar
 
 > [!abstract] TL;DR
-> Human-in-the-loop (HITL) é o modelo de supervisão onde o humano autoriza ações do agente em pontos críticos. Em 2026, a questão não é "sempre supervisionar ou nunca" — é calibrar ONDE no loop colocar o humano. Ações de leitura são seguras para auto-approve. Edições em código de negócio precisam de review. Ações em produção (deploy, delete, git push) precisam de aprovação explícita SEMPRE. A arte é eliminar approval fatigue sem sacrificar segurança.
+> Human-in-the-loop (HITL) é o modelo de supervisão onde o humano autoriza ações do [[Dicionário de IA#Agent|agente]] em pontos críticos. Em 2026, a questão não é "sempre supervisionar ou nunca" — é calibrar ONDE no [[Dicionário de IA#agentic loop|loop]] colocar o humano. Ações de leitura são seguras para auto-approve. Edições em código de negócio precisam de review. Ações em produção (deploy, delete, git push) precisam de aprovação explícita SEMPRE. A arte é eliminar approval fatigue sem sacrificar segurança.
 
 ## O que é
 

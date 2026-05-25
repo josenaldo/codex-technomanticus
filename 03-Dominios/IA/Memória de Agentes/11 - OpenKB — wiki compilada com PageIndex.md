@@ -25,7 +25,7 @@ aliases:
 
 ## O que é
 
-OpenKB se apresenta como "Open LLM Knowledge Base": um sistema de CLI que transforma documentos em uma wiki estruturada, interlinkada e mantida por LLM. A ideia é a mesma família conceitual do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]]: em vez de fazer RAG tradicional sobre chunks a cada pergunta, o sistema **compila conhecimento uma vez** em páginas persistentes — resumos, conceitos, cross-links e índice — e usa essa wiki como substrato de consulta e evolução.
+OpenKB se apresenta como "Open LLM Knowledge Base": um sistema de CLI que transforma documentos em uma wiki estruturada, interlinkada e mantida por [[Dicionário de IA#LLM (Large Language Model)|LLM]]. A ideia é a mesma família conceitual do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]]: em vez de fazer [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] tradicional sobre [[Dicionário de IA#chunking|chunks]] a cada pergunta, o sistema **compila conhecimento uma vez** em páginas persistentes — resumos, conceitos, cross-links e índice — e usa essa wiki como substrato de consulta e evolução.
 
 A arquitetura padrão criada por `openkb init` é deliberadamente legível:
 
@@ -43,7 +43,7 @@ O ponto arquitetural mais interessante é que OpenKB não tenta ser apenas "Obsi
 ## Por que importa
 
 - **É o [[Andrej Karpathy|Karpathy]] pattern empacotado como CLI instalável.** `pip install openkb`, `openkb init`, `openkb add`, `openkb query`, `openkb chat` deixam o pattern acessível sem escrever a própria engine.
-- **Resolve melhor documentos longos que o wiki pattern mínimo.** PageIndex reduz o problema de contexto longo, contexto podre e sumarização rasa em PDFs grandes. Para pesquisa bibliográfica, relatórios e livros, isso é vantagem real.
+- **Resolve melhor documentos longos que o wiki pattern mínimo.** PageIndex reduz o problema de [[Dicionário de IA#Context window|contexto longo]], contexto podre e sumarização rasa em PDFs grandes. Para pesquisa bibliográfica, relatórios e livros, isso é vantagem real.
 - **Mantém o resultado em markdown.** A wiki final é auditável por humano, versionável em Git e compatível com Obsidian, preservando o argumento de [[07 - Por que Obsidian e markdown como substrato]].
 - **Tem sessão interativa persistida.** `openkb chat` mantém histórico multi-turn retomável por `--resume`, lista sessões e permite exportar transcript para `wiki/explorations/`.
 - **Evita vector DB externo.** A proposta de PageIndex é retrieval raciocinado/vectorless; isso reduz infra, embora não elimine custo de LLM nem complexidade de indexação.

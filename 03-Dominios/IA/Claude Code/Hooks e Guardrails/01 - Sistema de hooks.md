@@ -15,7 +15,7 @@ tags:
 # Sistema de hooks — visão geral do lifecycle
 
 > [!abstract] TL;DR
-> Hooks são shell scripts que o Claude Code executa em pontos determinísticos do seu ciclo de operação. Existem 4 tipos: PreToolUse (antes de uma tool call), PostToolUse (depois), Notification (quando o agente precisa de atenção), e Stop (quando a sessão termina). Hooks transformam Claude Code de "agente que pede permissão" em "agente com políticas programáticas".
+> Hooks são shell scripts que o [[Dicionário de IA#Claude Code|Claude Code]] executa em pontos determinísticos do seu ciclo de operação. Existem 4 tipos: PreToolUse (antes de uma [[Dicionário de IA#tool call|tool call]]), PostToolUse (depois), Notification (quando o agente precisa de atenção), e Stop (quando a sessão termina). Hooks transformam Claude Code de "agente que pede permissão" em "agente com políticas programáticas".
 
 ## O que são hooks
 
@@ -49,7 +49,7 @@ Executa **antes** de uma tool call. Pode:
 - Logar a intenção
 - Solicitar aprovação humana
 
-Caso de uso principal: guardrails, validação de comandos perigosos, auditoria.
+Caso de uso principal: [[Dicionário de IA#Guardrail|guardrails]], validação de comandos perigosos, auditoria.
 
 ### PostToolUse
 

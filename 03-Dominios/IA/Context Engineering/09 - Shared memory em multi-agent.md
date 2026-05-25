@@ -20,7 +20,7 @@ aliases:
 # Shared memory em multi-agent
 
 > [!abstract] TL;DR
-> Quando múltiplos agentes colaboram, o estado precisa **viajar** entre eles — sem inflar o contexto de cada um. Três padrões dominam em 2026: **handoff** (passa contexto serializado, modelo OpenAI Swarm), **shared memory** (estrutura mutável compartilhada, modelo LangGraph), e **message queue** (eventos publicados, modelo enterprise). Cada um faz trade-off diferente entre coordenação, latência e fidelidade. A regra que une todos: **resumir** o estado no handoff, não passar histórico bruto.
+> Quando múltiplos [[Dicionário de IA#Agent|agentes]] colaboram, o estado precisa **viajar** entre eles — sem inflar o contexto de cada um. Três padrões dominam em 2026: **handoff** (passa contexto serializado, modelo OpenAI Swarm), **shared memory** (estrutura mutável compartilhada, modelo LangGraph), e **message queue** (eventos publicados, modelo enterprise). Cada um faz trade-off diferente entre coordenação, latência e fidelidade. A regra que une todos: **resumir** o estado no handoff, não passar histórico bruto.
 
 ## O problema
 

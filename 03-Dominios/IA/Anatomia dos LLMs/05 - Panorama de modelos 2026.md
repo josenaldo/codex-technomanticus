@@ -22,10 +22,10 @@ aliases:
 
 ## O que é
 
-O panorama de modelos é o mapa de quem compete com quem no mercado de LLMs. Em 2026, a diferenciação deixou de ser apenas "qual modelo é mais inteligente" e passou a incluir:
+O panorama de modelos é o mapa de quem compete com quem no mercado de [[Dicionário de IA#LLM (Large Language Model)|LLMs]]. Em 2026, a diferenciação deixou de ser apenas "qual modelo é mais inteligente" e passou a incluir:
 
 - **Eficiência** — custo por tarefa resolvida, não custo por token
-- **Agentic capability** — capacidade de operar como agente autônomo (tool use, planejamento, multi-step)
+- **Agentic capability** — capacidade de operar como agente autônomo ([[Dicionário de IA#tool use|tool use]], planejamento, multi-step)
 - **Especialização** — modelos otimizados para código, raciocínio, multimodal, ou agentes
 
 ## Por que importa
@@ -60,7 +60,7 @@ Escolher o modelo errado pode significar:
 | Claude Sonnet 4.6 | Mid-tier | 200k    | $3.00        | $15.00        | Codificação diária, agents           |
 | Claude Haiku 4.5  | Budget   | 200k    | $1.00        | $5.00         | Rápido, tarefas simples              |
 
-**Forças:** Melhor reasoning para código, Claude Code (terminal agent), prompt caching maduro, 128k output tokens no Opus.
+**Forças:** Melhor reasoning para código, Claude Code (terminal agent), [[Dicionário de IA#Prompt caching|prompt caching]] maduro, 128k output tokens no Opus.
 **Fraquezas:** Mais caro token por token, menos modelos no lineup.
 
 #### Google DeepMind
@@ -131,7 +131,7 @@ graph TD
 
 - **"O benchmark mais alto = o melhor"** — benchmarks medem cenários controlados. Performance real depende do seu tipo de código, linguagem, e workflow.
 - **Vendor lock-in** — construir toda a stack ao redor de um provider. Se o preço sobe ou o modelo degrada, a migração é dolorosa. Use abstrações.
-- **Ignorar o mid-tier** — a maioria das tarefas de codificação não precisa de flagship. Claude Sonnet ou GPT-4.1 resolvem 90% dos casos a metade do custo.
+- **Ignorar o mid-tier** — a maioria das tarefas de codificação não precisa de [[Dicionário de IA#flagship model|flagship]]. Claude Sonnet ou GPT-4.1 resolvem 90% dos casos a metade do custo.
 - **"Open-weight é pior"** — DeepSeek V4 compete com flagships em coding e reasoning. Qwen 3.6 lidera em agentic. O gap fechou significativamente.
 
 ## Veja também

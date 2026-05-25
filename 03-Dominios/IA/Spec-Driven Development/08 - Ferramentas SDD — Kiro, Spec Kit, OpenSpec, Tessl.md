@@ -34,7 +34,7 @@ aliases:
 
 ## GitHub Spec Kit — o padrão open source
 
-Lançado em 2025, mantido pelo GitHub (MIT-licensed). 88k stars + 129 releases até abril de 2026. Suporte a **28+ AI coding agents** (Copilot, Claude Code, Gemini CLI, Cursor, Windsurf, etc.).
+Lançado em 2025, mantido pelo GitHub (MIT-licensed). 88k stars + 129 releases até abril de 2026. Suporte a **28+ [[Dicionário de IA#Coding agent|AI coding agents]]** (Copilot, [[Dicionário de IA#Claude Code|Claude Code]], Gemini CLI, [[Dicionário de IA#Cursor|Cursor]], Windsurf, etc.).
 
 ### Workflow de 4 fases
 
@@ -192,7 +192,7 @@ graph TD
 | Spec Kit + Claude Code | ✅✅ | Claude Code suporta nativamente |
 | Spec Kit + Cursor | ✅ | Via prompts; menos integrado |
 | Kiro + Spec Kit | ⚠️ | Sobreposição; escolha um |
-| OpenSpec + Aider | ✅ | npm + Aider dão pra coexistir |
+| OpenSpec + [[Dicionário de IA#Aider\|Aider]] | ✅ | npm + Aider dão pra coexistir |
 | Kiro + AGENTS.md | ✅ | Steering files + AGENTS.md complementam |
 
 ## Custo de adoção

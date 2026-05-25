@@ -48,9 +48,9 @@ O ciclo **sugestão → assistência → autonomia** está se completando:
 **Sinais concretos (2026):**
 
 - Devin opera em sandbox isolada sem intervenção humana
-- Claude Code e Cursor executam sessões de 50+ steps com tool use
+- Claude Code e Cursor executam sessões de 50+ steps com [[Dicionário de IA#tool use|tool use]]
 - GitHub Copilot Agents resolvem issues diretamente
-- O conceito de "comprehension gate" — se o humano não entende a mudança, não faz merge
+- O conceito de "[[Dicionário de IA#Comprehension gate|comprehension gate]]" — se o humano não entende a mudança, não faz merge
 
 ### Tendência 2 — Contexto infinito
 
@@ -126,7 +126,7 @@ graph LR
 | **"IA substitui devs"**            | Sim, para tarefas repetitivas de implementação | Não, aumenta demanda por arquitetos e revisores       |
 | **"Scaling laws acabaram"**        | Sim, retornos decrescentes em pré-treino bruto | Não, test-time compute (reasoning) é a nova fronteira |
 | **"Open-weight alcançou closed"**  | Sim, em coding e reasoning específico          | Não, em capability geral e safety                     |
-| **"Context infinito elimina RAG"** | Sim, para bases pequenas-médias                | Não, para bilhões de documentos e custo               |
+| **"Context infinito elimina [[Dicionário de IA#RAG (Retrieval-Augmented Generation)\|RAG]]"** | Sim, para bases pequenas-médias                | Não, para bilhões de documentos e custo               |
 
 ## Armadilhas
 

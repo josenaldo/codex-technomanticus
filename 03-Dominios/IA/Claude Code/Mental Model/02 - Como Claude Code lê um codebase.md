@@ -20,7 +20,7 @@ tags:
 
 IDEs como VS Code ou IntelliJ mantêm um índice persistente do projeto: árvore de arquivos, referências de símbolos, call graph. Esse índice é construído uma vez e mantido atualizado em background.
 
-Claude Code **não tem esse índice**. Cada sessão começa do zero. O agente constrói seu entendimento do projeto **incrementalmente**, usando tools para explorar o que é relevante para a tarefa atual.
+[[Dicionário de IA#Claude Code|Claude Code]] **não tem esse índice**. Cada sessão começa do zero. O [[Dicionário de IA#Agent|agente]] constrói seu entendimento do projeto **incrementalmente**, usando tools para explorar o que é relevante para a tarefa atual.
 
 Isso é uma escolha de design: o agente pode trabalhar em qualquer projeto sem configuração prévia, e o "índice" é sempre preciso (ele leu o arquivo agora, não há defasagem).
 
@@ -64,7 +64,7 @@ O agente não lê tudo — lê o mínimo necessário para a tarefa. Isso mantém
 
 **CLAUDE.md é o maior multiplicador de produtividade.** Um CLAUDE.md bem escrito reduz a exploração inicial, previne erros de convenção, e faz cada sessão começar no nível certo de contexto.
 
-**Pedidos vagos + sem CLAUDE.md = sessões longas.** O agente precisa descobrir tudo sozinho. Com projetos grandes isso significa muitos Greps e Reads antes de chegar ao trabalho real.
+**Pedidos vagos + sem CLAUDE.md = sessões longas.** O agente precisa descobrir tudo sozinho. Com projetos grandes isso significa muitos Greps e Reads antes de chegar ao trabalho real — e mais [[Dicionário de IA#Token|tokens]] consumidos.
 
 **O agente lê seletivamente.** Não assuma que ele "leu tudo". Se há uma convenção importante que o agente não deveria inferir, documente no CLAUDE.md.
 

@@ -188,7 +188,7 @@ jobs:
 ```
 
 > [!tip] LLM critic como gate auxiliar
-> O *último* gate frequentemente é um LLM rodando como **critic** — não como decisor, mas como sinalizador. Compara spec vs implementação e flag inconsistências semânticas que regex não pega.
+> O *último* gate frequentemente é um [[Dicionário de IA#LLM (Large Language Model)|LLM]] rodando como **critic** — não como decisor, mas como sinalizador. Compara spec vs implementação e flag inconsistências semânticas que regex não pega.
 
 ## Living-spec workflow
 

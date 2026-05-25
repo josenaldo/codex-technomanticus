@@ -20,7 +20,7 @@ aliases:
 # ROI de IA — quando o agente vale o custo
 
 > [!abstract] TL;DR
-> A pergunta certa não é "quanto custa o agente?" — é "quanto custa **não** ter o agente?". ROI de IA se mede comparando custo de tokens vs custo de hora de engenheiro economizada, ajustado por qualidade e risco. A hora de um senior brasileiro ($30-60) compra ~10K-30K tokens de Sonnet — significa que se um agente economiza 1h por dia, ele paga $1000+/mês de tokens. Mas vanity metrics (uso, frequência) podem mascarar valor real (defeitos evitados, tempo recuperado).
+> A pergunta certa não é "quanto custa o [[Dicionário de IA#Agent|agente]]?" — é "quanto custa **não** ter o agente?". ROI de IA se mede comparando [[Dicionário de IA#cost per token|custo de tokens]] vs custo de hora de engenheiro economizada, ajustado por qualidade e risco. A hora de um senior brasileiro ($30-60) compra ~10K-30K [[Dicionário de IA#Token|tokens]] de Sonnet — significa que se um agente economiza 1h por dia, ele paga $1000+/mês de tokens. Mas vanity metrics (uso, frequência) podem mascarar valor real (defeitos evitados, tempo recuperado).
 
 ## A equação básica
 
@@ -90,7 +90,7 @@ Investimento inicial inclui: setup de ferramentas, treinamento, ajustes de proce
 ## Quando IA NÃO vale a pena
 
 - **Qualidade crítica** com revisão custosa — o tempo de revisão pode anular a economia (medical, finance, infra crítica).
-- **Domínio muito específico** sem dados suficientes para o modelo entender — o agente alucina mais do que ajuda.
+- **Domínio muito específico** sem dados suficientes para o modelo entender — o agente [[Dicionário de IA#Hallucination|alucina]] mais do que ajuda.
 - **Time pequeno e codebase pequena** — o overhead de configuração não amortiza.
 - **Problema mal-definido** — IA acelera escrita, mas não substitui clareza de spec ([[Spec-Driven Development]]).
 - **Métricas instáveis** — se você não consegue medir o ganho, está apostando, não investindo.

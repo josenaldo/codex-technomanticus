@@ -23,7 +23,7 @@ aliases:
 
 ## O que é
 
-A diferença entre dense e MoE está em **quantos parâmetros são ativados durante a inferência**:
+A diferença entre dense e MoE está em **quantos [[Dicionário de IA#parameters / weights|parâmetros]] são ativados durante a [[Dicionário de IA#inference|inferência]]**:
 
 - **Dense:** 100% dos parâmetros participam do processamento de cada token
 - **MoE (Sparse):** Apenas 10-25% dos parâmetros são ativados por token, selecionados dinamicamente por um "roteador"
@@ -119,7 +119,7 @@ O maior desafio técnico do MoE é garantir que os experts sejam usados de forma
 | API cloud (não self-hosting)     | **MoE indiretamente** — os melhores modelos de API já são MoE |
 | Self-hosting com GPU limitada    | **Dense** — modelos de 7B-14B cabem em uma GPU                |
 | Self-hosting com cluster de GPUs | **MoE** — melhor qualidade/custo                              |
-| Fine-tuning simples              | **Dense** — processo mais estável e documentado               |
+| [[Dicionário de IA#fine-tuning\|Fine-tuning]] simples              | **Dense** — processo mais estável e documentado               |
 | Fine-tuning avançado             | **MoE** — possível mas requer expertise extra                 |
 | Máxima qualidade por token       | **MoE flagship** — DeepSeek V4, GPT-5.4                       |
 | Máxima previsibilidade           | **Dense** — comportamento mais uniforme                       |
@@ -128,7 +128,7 @@ O maior desafio técnico do MoE é garantir que os experts sejam usados de forma
 
 - **"MoE é melhor em tudo"** — MoE troca complexidade de treinamento e memória total por eficiência de inferência. Para modelos pequenos (<14B), dense é mais simples e eficiente.
 - **Confundir parâmetros totais com ativos** — "esse modelo tem 600B de parâmetros" não significa que ele é 8x melhor que um de 70B. Compare parâmetros ativos.
-- **"Self-hosting MoE é fácil porque ativa poucos parâmetros"** — falso. Todos os parâmetros precisam estar na memória. A economia é em compute, não em VRAM.
+- **"Self-hosting MoE é fácil porque ativa poucos parâmetros"** — falso. Todos os parâmetros precisam estar na [[Dicionário de IA#memory bandwidth bottleneck|memória]]. A economia é em compute, não em VRAM.
 - **Ignorar a qualidade do router** — um router mal treinado pode direcionar tokens para experts subótimos, degradando a qualidade abaixo de um dense menor.
 
 ## Veja também

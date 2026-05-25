@@ -18,18 +18,18 @@ publish: true
 
 ## Indispensáveis
 
-- **[Simon Willison's Weblog](https://simonwillison.net)** — blog pessoal — Cobertura diária em tempo real de ferramentas e agentes. Pragmático, hands-on, sem hype. Cunhou termos como "prompt injection", "AI slop" e "agentic engineering". Provavelmente o blog mais influente sobre AI-assisted dev hoje.
+- **[Simon Willison's Weblog](https://simonwillison.net)** — blog pessoal — Cobertura diária em tempo real de ferramentas e agentes. Pragmático, hands-on, sem hype. Cunhou termos como "[[Dicionário de IA#prompt injection|prompt injection]]", "AI slop" e "agentic engineering". Provavelmente o blog mais influente sobre AI-assisted dev hoje.
 - **[Latent Space](https://www.latent.space)** (swyx) — newsletter + podcast — Newsletter de AI engineering de referência. Entrevistas com fundadores e engenheiros, deep dives em ferramentas, comentários de mercado.
 - **[Anthropic Engineering](https://www.anthropic.com/engineering)** — blog corporativo — O post "Building Effective Agents" virou referência canônica para padrões de design de agentes. Documentação do Claude Code é tratada como literatura técnica séria pelo ecossistema.
 
 ## Vozes individuais
 
-- **[Armin Ronacher](https://lucumr.pocoo.org)** — blog pessoal — Criador do Flask. Posts longos e opinativos sobre LLMs em produção.
+- **[Armin Ronacher](https://lucumr.pocoo.org)** — blog pessoal — Criador do Flask. Posts longos e opinativos sobre [[Dicionário de IA#LLM (Large Language Model)|LLMs]] em produção.
 - **[Thorsten Ball](https://registerspill.thorstenball.com/)** — blog pessoal — Escreveu "How to build an agent" em ~400 linhas, melhor walkthrough "agentes não são mágica" que existe.
 - **[Sourcegraph blog](https://sourcegraph.com/blog)** (Steve Yegge) — blog corporativo — Posts polêmicos como "Revenge of the junior developer" e "Death of the stubborn developer". Útil para calibrar expectativas e narrativas.
 - **[Hamel Husain](https://hamel.dev)** — blog pessoal — Referência em evals e LLMOps, área pouco coberta com profundidade.
 - **[Eugene Yan](https://eugeneyan.com)** — blog pessoal — "Patterns for Building LLM-based Systems & Products" é leitura obrigatória.
-- **[Ahead of AI](https://magazine.sebastianraschka.com)** (Sebastian Raschka) — newsletter — Mais lado pesquisa/fine-tuning, mas excelente.
+- **[Ahead of AI](https://magazine.sebastianraschka.com)** (Sebastian Raschka) — newsletter — Mais lado pesquisa/[[Dicionário de IA#fine-tuning|fine-tuning]], mas excelente.
 - **[The Pragmatic Engineer](https://newsletter.pragmaticengineer.com)** (Gergely Orosz) — newsletter — Não é puramente AI, mas tem cobertura forte de como AI engineering está mudando hiring e estrutura de times.
 
 ## Repositórios curados

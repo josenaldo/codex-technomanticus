@@ -31,7 +31,7 @@ aliases:
 | O que está no contexto                 | Precisa?                         | Ação                                  |
 | -------------------------------------- | -------------------------------- | ------------------------------------- |
 | System prompt + regras                 | ✅ Sempre                         | Manter (cachear)                      |
-| Tool definitions                       | ✅ Se tools são necessárias       | Manter (comprimir schemas)            |
+| [[Dicionário de IA#tool definition\|Tool definitions]]                       | ✅ Se tools são necessárias       | Manter (comprimir schemas)            |
 | Arquivo inteiro (500 linhas)           | ❌ Se só 20 linhas são relevantes | **Enviar só as linhas relevantes**    |
 | Histórico de 50 turns                  | ❌ Turns antigos                  | **Sumarizar** blocos antigos          |
 | Output longo de ferramenta             | ❌ Se 90% é irrelevante           | **Filtrar via RTK** ou truncar        |
@@ -66,7 +66,7 @@ O **RTK** (Runtime Tool Kit) permite interceptar comandos como `git status`, `gi
 ✅ Bom:  Sumarizar turns 1-30 em 1k tokens + manter turns 31-40 completos
 ```
 
-Agentes como Claude Code fazem isso automaticamente com "context compaction".
+[[Dicionário de IA#Agent|Agentes]] como Claude Code fazem isso automaticamente com "[[Dicionário de IA#context compaction|context compaction]]".
 
 #### 3. Truncamento de tool outputs
 

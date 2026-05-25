@@ -19,7 +19,7 @@ aliases:
 # Fine-tuning vs prompting vs RAG
 
 > [!abstract] TL;DR
-> Três técnicas para adaptar um LLM ao seu caso de uso: **prompting** (instruções no contexto — custo zero, efeito imediato), **RAG** (busca e injeta informação relevante no contexto — custo moderado, dados sempre atualizados), e **fine-tuning** (retreina o modelo nos seus dados — custo alto, muda o comportamento do modelo). Em 2026, a maioria dos engenheiros resolve 95% dos problemas com prompting + RAG. Fine-tuning é reservado para tarefas de alta especialização com volume massivo.
+> Três técnicas para adaptar um LLM ao seu caso de uso: **prompting** (instruções no contexto — custo zero, efeito imediato), **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]]** (busca e injeta informação relevante no contexto — custo moderado, dados sempre atualizados), e **[[Dicionário de IA#fine-tuning|fine-tuning]]** (retreina o modelo nos seus dados — custo alto, muda o comportamento do modelo). Em 2026, a maioria dos engenheiros resolve 95% dos problemas com prompting + RAG. Fine-tuning é reservado para tarefas de alta especialização com volume massivo.
 
 ## O que é
 
@@ -78,7 +78,7 @@ graph LR
 
 | Vantagem                                | Limitação                                    |
 | --------------------------------------- | -------------------------------------------- |
-| Dados sempre atualizados (just-in-time) | Requer infraestrutura (vector DB, indexação) |
+| Dados sempre atualizados (just-in-time) | Requer infraestrutura ([[Dicionário de IA#vector store\|vector DB]], indexação) |
 | Escala para milhões de documentos       | Qualidade depende do retriever               |
 | Não precisa retreinar o modelo          | Aumenta input tokens (custo)                 |
 | Citações e rastreabilidade              | Retrieval errado → alucinação com confiança  |
@@ -170,7 +170,7 @@ graph TD
 ## Armadilhas
 
 - **"Fine-tuning é sempre melhor"** — é o mais caro e menos flexível. Use apenas quando prompting + RAG comprovadamente falham.
-- **RAG sem avaliação do retriever** — se o retriever puxa documentos irrelevantes, o modelo alucina com confiança, citando fontes erradas.
+- **RAG sem avaliação do retriever** — se o retriever puxa documentos irrelevantes, o modelo [[Dicionário de IA#Hallucination|alucina]] com confiança, citando fontes erradas.
 - **"Prompting não escala"** — com context engineering disciplinado (caching, state files, context pruning), prompting escala para a maioria dos casos.
 - **Fine-tuning com poucos dados** — menos de 1000 exemplos de alta qualidade geralmente não produz melhoria significativa. O modelo pode memorizar em vez de generalizar.
 - **Combinar errado** — RAG + fine-tuning pode degradar se o modelo fine-tuned ignora o contexto retrieved em favor do "conhecimento" aprendido.

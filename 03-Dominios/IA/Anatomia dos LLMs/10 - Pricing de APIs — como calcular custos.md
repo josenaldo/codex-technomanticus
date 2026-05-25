@@ -22,7 +22,7 @@ aliases:
 
 ## O que é
 
-O modelo de pricing de LLM APIs é **pay-per-token**: você paga proporcionalmente à quantidade de tokens processados (input) e gerados (output) em cada chamada. Não há cobrança por tempo de sessão, número de chamadas, ou storage.
+O modelo de pricing de LLM APIs é **pay-per-[[Dicionário de IA#Token|token]]**: você paga proporcionalmente à quantidade de tokens processados (input) e gerados (output) em cada chamada. Não há cobrança por tempo de sessão, número de chamadas, ou storage.
 
 ## Por que importa
 
@@ -64,8 +64,8 @@ Custo = (input_tokens × preço_input / 1M) + (output_tokens × preço_output / 
 
 | Mecanismo                  | Desconto típico | Como funciona                                                                   |
 | -------------------------- | --------------- | ------------------------------------------------------------------------------- |
-| **Prompt caching**         | 50-90% no input | Partes estáticas do prompt (system, docs) são cacheadas entre chamadas          |
-| **Batch API**              | ~50% em tudo    | Enviar tasks em lote para processamento assíncrono (SLA de horas, não segundos) |
+| **[[Dicionário de IA#Prompt caching\|Prompt caching]]**         | 50-90% no input | Partes estáticas do prompt (system, docs) são cacheadas entre chamadas          |
+| **[[Dicionário de IA#batch API\|Batch API]]**              | ~50% em tudo    | Enviar tasks em lote para processamento assíncrono (SLA de horas, não segundos) |
 | **Commitment plans**       | 20-40%          | Comprometer volume mensal com o provider                                        |
 | **Provedor intermediário** | Variável        | Together, Fireworks, Groq oferecem modelos open-weight com markup menor         |
 
@@ -75,7 +75,7 @@ Custo = (input_tokens × preço_input / 1M) + (output_tokens × preço_output / 
 | -------------------------- | ----------------------------------------------------------------------------------------------------- |
 | **Tool definitions**       | Schemas JSON de ferramentas são input tokens — 10 tools podem consumir 2-5k tokens por chamada        |
 | **Histórico acumulado**    | Cada turn do agente reenvia todo o histórico. Turn 50 inclui turns 1-49 como input                    |
-| **Reasoning tokens**       | Modelos de reasoning (o4, Claude Thinking) geram tokens internos de "pensamento" cobrados como output |
+| **[[Dicionário de IA#Reasoning tokens\|Reasoning tokens]]**       | Modelos de reasoning (o4, Claude Thinking) geram tokens internos de "pensamento" cobrados como output |
 | **Retries**                | Se o agente erra e tenta de novo, paga-se duas vezes                                                  |
 | **Contexto desnecessário** | Arquivos inteiros no prompt quando só 20 linhas eram relevantes                                       |
 

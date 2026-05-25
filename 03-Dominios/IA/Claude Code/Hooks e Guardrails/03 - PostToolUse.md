@@ -16,7 +16,7 @@ tags:
 # PostToolUse — automação pós-ação
 
 > [!abstract] TL;DR
-> PostToolUse executa depois de qualquer tool call completar. Diferente do PreToolUse (que decide se executa), o PostToolUse reage ao resultado. Usos principais: auto-lint depois de edições de arquivo, notificações de ações, logging de resultados, e disparar ações secundárias dependentes. O hook não pode desfazer a tool call — só reagir a ela.
+> PostToolUse executa depois de qualquer [[Dicionário de IA#tool call|tool call]] completar. Diferente do PreToolUse (que decide se executa), o PostToolUse reage ao resultado. Usos principais: auto-lint depois de edições de arquivo, notificações de ações, logging de resultados, e disparar ações secundárias dependentes. O hook não pode desfazer a tool call — só reagir a ela.
 
 ## Como funciona
 

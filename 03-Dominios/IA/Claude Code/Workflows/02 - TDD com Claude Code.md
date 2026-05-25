@@ -15,11 +15,11 @@ tags:
 # TDD com Claude Code — test-first workflow
 
 > [!abstract] TL;DR
-> TDD com Claude Code funciona melhor quando você instrui o agente a seguir o ciclo Red/Green/Refactor explicitamente — não quando você espera que ele faça isso sozinho. O padrão: peça os testes primeiro, rode-os para confirmar falha, depois peça a implementação. O agente tende a escrever testes e implementação juntos se não for guiado.
+> [[Dicionário de IA#TDD with AI|TDD]] com [[Dicionário de IA#Claude Code|Claude Code]] funciona melhor quando você instrui o agente a seguir o ciclo Red/Green/Refactor explicitamente — não quando você espera que ele faça isso sozinho. O padrão: peça os testes primeiro, rode-os para confirmar falha, depois peça a implementação. O agente tende a escrever testes e implementação juntos se não for guiado.
 
 ## O problema padrão
 
-Sem instrução explícita, o agente tende a:
+Sem instrução explícita, o [[Dicionário de IA#Agent|agente]] tende a:
 
 1. Ler o código existente
 2. Implementar a feature

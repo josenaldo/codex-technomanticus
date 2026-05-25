@@ -15,14 +15,14 @@ tags:
 # Refactoring pesado — mudanças grandes sem perder controle
 
 > [!abstract] TL;DR
-> Refactoring pesado com Claude Code requer 3 precauções: cobertura de testes antes de começar, atomização das mudanças em commits pequenos, e gestão ativa do contexto (sessões longas acumulam confusão). O padrão: Plan Mode para mapear o escopo, TDD como rede de segurança, commits frequentes para pontos de retorno.
+> Refactoring pesado com [[Dicionário de IA#Claude Code|Claude Code]] requer 3 precauções: cobertura de testes antes de começar, atomização das mudanças em commits pequenos, e gestão ativa do contexto (sessões longas acumulam confusão). O padrão: [[Dicionário de IA#planning|Plan Mode]] para mapear o escopo, [[Dicionário de IA#TDD with AI|TDD]] como rede de segurança, commits frequentes para pontos de retorno.
 
 ## O problema de refactors grandes
 
 Sem estrutura, um refactor grande com Claude Code tende a:
 
 - Fazer muitas mudanças ao mesmo tempo, tornando o diff incompreensível
-- Perder o contexto da intenção original à medida que a sessão cresce
+- Perder o [[Dicionário de IA#Context window|contexto]] da intenção original à medida que a sessão cresce
 - Quebrar comportamento existente sem um teste avisando
 - Resultar num estado intermediário que não funciona nem compila
 
@@ -112,7 +112,7 @@ usar a versão async. Confirme com os testes que o comportamento
 
 Refactors longos são onde o contexto do agente mais se degrada. Estratégias:
 
-**Commit e /compact periodicamente:**
+**Commit e [[Dicionário de IA#context compaction|/compact]] periodicamente:**
 ```
 "Commitamos a extração de PricingService. Vou fazer /compact
 antes de continuar para o próximo passo."

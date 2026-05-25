@@ -22,7 +22,7 @@ progresso: feito
 
 ## O que é
 
-A **economia de tokens** é a disciplina de entender, medir, prever e otimizar o gasto de tokens em workflows com LLMs. É a interseção de três áreas:
+A **economia de [[Dicionário de IA#Token|tokens]]** é a disciplina de entender, medir, prever e otimizar o gasto de tokens em workflows com [[Dicionário de IA#LLM (Large Language Model)|LLMs]]. É a interseção de três áreas:
 
 1. **Engenharia** — como a arquitetura do prompt/contexto afeta consumo
 2. **Finanças** — como tokens se traduzem em custo real
@@ -32,7 +32,7 @@ A **economia de tokens** é a disciplina de entender, medir, prever e otimizar o
 
 Sem controle de tokens:
 
-- Uma sessão de 1h com um agente pode custar $5-25 sem que você perceba
+- Uma sessão de 1h com um [[Dicionário de IA#Agent|agente]] pode custar $5-25 sem que você perceba
 - Um agente rodando em CI/CD 24/7 pode gerar faturas de $1000+/mês
 - 70% dos tokens gastos podem ser desperdício (contexto irrelevante, retries, verbosidade)
 
@@ -74,7 +74,7 @@ Output é 3-6x mais caro que input porque:
 | Vilão                    | % típico do gasto | Descrição                                              |
 | ------------------------ | ----------------- | ------------------------------------------------------ |
 | **Contexto acumulado**   | 30-40%            | Histórico que cresce a cada turn do agente             |
-| **Tool definitions**     | 5-15%             | Schemas JSON de ferramentas reenviados em cada chamada |
+| **[[Dicionário de IA#tool definition\|Tool definitions]]**     | 5-15%             | Schemas JSON de ferramentas reenviados em cada chamada |
 | **Respostas verbosas**   | 10-20%            | Modelo gera mais texto do que necessário               |
 | **Retries e erros**      | 10-25%            | Agente erra, tenta de novo, paga dobrado               |
 | **Contexto irrelevante** | 10-20%            | Arquivos inteiros no prompt quando 20 linhas bastavam  |
@@ -92,13 +92,13 @@ Engenheiro usando Claude Sonnet 4.6 com agente de coding (8h):
 | **Total sem otimização** | **70** | —           | —            | **$24.90** |
 | **Total com otimização** | **70** | —           | —            | **~$8-12** |
 
-A diferença de 2-3x vem de: prompt caching, context pruning, model routing, e respostas concisas.
+A diferença de 2-3x vem de: [[Dicionário de IA#Prompt caching|prompt caching]], context pruning, model routing, e respostas concisas.
 
 ## A regra de Pareto dos tokens
 
 > **80% da economia vem de 3 técnicas:**
 >
-> 1. Prompt caching (tokens estáticos não reprocessados)
+> 1. [[Dicionário de IA#Prompt caching|Prompt caching]] (tokens estáticos não reprocessados)
 > 2. Context pruning (remover o irrelevante)
 > 3. Model routing (usar budget model quando possível)
 

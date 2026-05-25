@@ -24,10 +24,10 @@ aliases:
 
 Um **harness de codificação** é o "esqueleto" em volta do LLM que providencia:
 
-- **Tool use** — ler/escrever arquivos, executar comandos, buscar na web
+- **[[Dicionário de IA#tool use|Tool use]]** — ler/escrever arquivos, executar comandos, buscar na web
 - **Context management** — decidir quais arquivos incluir, sumarizar histórico
 - **UI** — interface de terminal ou web para interação
-- **Guardrails** — permissões, confirmações, hooks
+- **[[Dicionário de IA#Guardrail|Guardrails]]** — permissões, confirmações, hooks
 
 O modelo é plugável — você escolhe qual LLM usar por baixo.
 
@@ -93,8 +93,8 @@ O harness gerencia o loop:
 
 1. Recebe input do usuário
 2. Monta contexto (arquivos, histórico, tools)
-3. Envia para o LLM
-4. Parseia a resposta (texto ou tool call)
+3. Envia para o [[Dicionário de IA#LLM (Large Language Model)|LLM]]
+4. Parseia a resposta (texto ou [[Dicionário de IA#tool call|tool call]])
 5. Executa tools e retroalimenta o loop
 
 ## Comparativo com ferramentas proprietárias

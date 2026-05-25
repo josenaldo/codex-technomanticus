@@ -103,7 +103,7 @@ AIAD = bugs originados em PRs com ai-generated / total bugs
 |---|---|---|
 | LOC adicionadas/dia | Mais código ≠ mais valor | Features completas/sprint |
 | % de PRs com IA | Uso ≠ valor | AIAD + qualidade líquida |
-| Tokens consumidos | Uso ≠ valor | Horas economizadas validadas |
+| [[Dicionário de IA#Token\|Tokens]] consumidos | Uso ≠ valor | Horas economizadas validadas |
 | % de tests passing | Pode estar testando errado | Defect escape rate |
 | Velocity (story points) | Inflado quando "easy" | Cycle time real |
 

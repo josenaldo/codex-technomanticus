@@ -22,7 +22,7 @@ aliases:
 
 ## O que é
 
-**Tokenização** é o processo de converter texto bruto (strings de caracteres) em sequências de **tokens** — unidades numéricas que o modelo realmente processa. Cada token é mapeado para um ID inteiro no vocabulário do modelo.
+**Tokenização** é o processo de converter texto bruto (strings de caracteres) em sequências de **[[Dicionário de IA#Token|tokens]]** — unidades numéricas que o modelo realmente processa. Cada token é mapeado para um ID inteiro no vocabulário do modelo.
 
 Um token **não é** uma palavra. Dependendo do tokenizador:
 
@@ -35,7 +35,7 @@ O vocabulário típico de um LLM moderno tem entre **32.000 e 200.000 tokens**.
 
 ## Por que importa
 
-Tokens são a unidade de **tudo** em LLMs:
+Tokens são a unidade de **tudo** em [[Dicionário de IA#LLM (Large Language Model)|LLMs]]:
 
 1. **Custo** — APIs cobram por milhão de tokens (input e output separadamente)
 2. **Limite de contexto** — a janela de contexto é medida em tokens, não em palavras ou caracteres

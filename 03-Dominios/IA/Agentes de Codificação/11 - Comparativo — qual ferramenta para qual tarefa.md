@@ -30,9 +30,9 @@ Um guia de decisão prático para escolher a ferramenta AI de codificação cert
 
 | Capacidade                | 🥇 Melhor           | 🥈 Segundo            | 🥉 Terceiro   |
 | ------------------------- | ------------------ | -------------------- | ------------ |
-| **Autocomplete inline**   | Copilot            | Cursor Tab           | Continue     |
-| **Chat sobre código**     | Claude Code        | Cursor Chat          | Copilot Chat |
-| **Edição multi-file**     | Cursor Composer    | Claude Code          | Aider        |
+| **Autocomplete inline**   | Copilot            | Cursor Tab           | [[Dicionário de IA#Continue\|Continue]]     |
+| **Chat sobre código**     | [[Dicionário de IA#Claude Code\|Claude Code]]        | [[Dicionário de IA#Cursor\|Cursor]] Chat          | Copilot Chat |
+| **Edição multi-file**     | Cursor Composer    | Claude Code          | [[Dicionário de IA#Aider\|Aider]]        |
 | **Reasoning/debugging**   | Claude Code (Opus) | Cursor (Opus)        | Gemini CLI   |
 | **CI/CD automation**      | Copilot Agents     | Claude Code headless | —            |
 | **Model choice**          | OpenCode/Aider     | Cursor               | Gemini CLI   |

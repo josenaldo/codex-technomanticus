@@ -19,7 +19,7 @@ tags:
 
 ## O que é uma skill
 
-Uma skill não é código — é instrução estruturada. Quando você invoca `/minha-skill`, o Claude Code lê o arquivo Markdown da skill e o incorpora no contexto antes de responder. O agente então segue aquelas instruções no restante da sessão.
+Uma skill não é código — é instrução estruturada. Quando você invoca `/minha-skill`, o [[Dicionário de IA#Claude Code|Claude Code]] lê o arquivo Markdown da skill e o incorpora no contexto antes de responder. O agente então segue aquelas instruções no restante da sessão.
 
 A diferença para um prompt solto no chat: a skill é versionada, compartilhável, e invocável pelo nome. É um processo documentado como artefato que o time pode evoluir.
 
@@ -125,7 +125,7 @@ O agente não "executa" a skill — ele a lê como instrução e a aplica. Se a 
 
 ## Armadilhas
 
-**Skills muito longas**: o agente lê a skill inteira, consumindo tokens de contexto. Skills acima de 500 linhas começam a competir com o contexto do codebase. Prefira skills focadas e pequenas.
+**Skills muito longas**: o agente lê a skill inteira, consumindo [[Dicionário de IA#Token|tokens]] de contexto. Skills acima de 500 linhas começam a competir com o contexto do codebase. Prefira skills focadas e pequenas.
 
 **Instruções ambíguas**: "escreva código limpo" não instrui — o agente não sabe o que você considera limpo. "Prefira composição de funções puras a classes com estado" instrui.
 

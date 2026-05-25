@@ -26,11 +26,11 @@ aliases:
 
 Esta nota apresenta **dois caminhos práticos** para sair do conceitual e ter uma base de memória de agente rodando no mesmo dia. O **Caminho A** é didático: monta a estrutura mínima descrita no [[06 - O LLM Wiki Pattern (gist do Karpathy)|gist do Karpathy]], escreve o `CLAUDE.md` à mão e roda as primeiras operações (`ingest`, `query`, `lint`) com Claude Code. Ele ensina o pattern por dentro — quem termina o Caminho A entende exatamente por que cada peça existe.
 
-O **Caminho B** é direto: instala [[13 - basic-memory — MCP nativo Obsidian|basic-memory]], aponta para um vault Obsidian e em poucos minutos tem Claude lendo e escrevendo markdown estruturado via MCP. Pula a etapa de schema porque a ferramenta já traz convenções razoáveis. Útil para quem quer testar o pattern em um problema real antes de investir tempo em customização.
+O **Caminho B** é direto: instala [[13 - basic-memory — MCP nativo Obsidian|basic-memory]], aponta para um vault Obsidian e em poucos minutos tem Claude lendo e escrevendo markdown estruturado via [[Dicionário de IA#MCP (Model Context Protocol)|MCP]]. Pula a etapa de schema porque a ferramenta já traz convenções razoáveis. Útil para quem quer testar o pattern em um problema real antes de investir tempo em customização.
 
 ## Por que importa
 
-Sem implementação, o conhecimento das notas anteriores (RAG, taxonomia, panorama, comparativos) fica abstrato. A diferença entre ler sobre o LLM Wiki Pattern e ter uma `wiki/` com 20 páginas geradas, lintada e versionada é qualitativa — só na prática aparecem os atritos reais (drift, contradições, índice desatualizado, schema vago).
+Sem implementação, o conhecimento das notas anteriores ([[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]], taxonomia, panorama, comparativos) fica abstrato. A diferença entre ler sobre o LLM Wiki Pattern e ter uma `wiki/` com 20 páginas geradas, lintada e versionada é qualitativa — só na prática aparecem os atritos reais (drift, contradições, índice desatualizado, schema vago).
 
 Os dois caminhos foram escolhidos por terem **barreira de entrada baixa**: 30 minutos para o Caminho A, 10 minutos para o Caminho B. Esse custo cabe em uma sessão única e produz material para experimentar antes de decidir investir em framework de produção como [[15 - Mem0 — vetorial + grafo|Mem0]], [[14 - Letta (ex-MemGPT)|Letta]] ou [[16 - Zep e Graphiti — knowledge graph temporal|Zep]]. Em outras palavras: este guia é o **primeiro experimento controlado** antes de escolhas arquiteturais maiores.
 
@@ -57,7 +57,7 @@ my-llm-wiki/
 └── README.md
 ```
 
-A intuição é simples: `raw/` é o **acervo** (fontes que entram no sistema e nunca são editadas pelo agente); `wiki/` é o **conhecimento processado** (páginas interlinkadas que o LLM mantém). O `CLAUDE.md` na raiz é o contrato que ensina o agente como operar entre os dois.
+A intuição é simples: `raw/` é o **acervo** (fontes que entram no sistema e nunca são editadas pelo agente); `wiki/` é o **conhecimento processado** (páginas interlinkadas que o [[Dicionário de IA#LLM (Large Language Model)|LLM]] mantém). O `CLAUDE.md` na raiz é o contrato que ensina o agente como operar entre os dois.
 
 ### Passos
 
@@ -128,7 +128,7 @@ Pontos de atenção no schema:
 
    Para isolamento, prefira ambiente virtual ou Docker (ver [[13 - basic-memory — MCP nativo Obsidian|13 - basic-memory]] para alternativas).
 
-2. **Configurar MCP server** no Claude Desktop ou Claude Code. Edite o arquivo de configuração MCP do cliente e adicione:
+2. **Configurar [[Dicionário de IA#MCP server|MCP server]]** no Claude Desktop ou Claude Code. Edite o arquivo de configuração MCP do cliente e adicione:
 
    ```json
    {
@@ -163,7 +163,7 @@ Quem começa pelo Caminho B e sente atrito no schema costuma migrar parte do tra
 
 Os dois caminhos cobrem casos de uso individuais e bem delimitados. Sinais claros de que vale escalar para framework de produção:
 
-- **Volume cresce além de ~500 documentos:** busca textual simples começa a degradar; considere hybrid search (BM25 + vector). Implementações de referência em [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]].
+- **Volume cresce além de ~500 documentos:** busca textual simples começa a degradar; considere [[Dicionário de IA#hybrid search|hybrid search]] ([[Dicionário de IA#BM25|BM25]] + vector). Implementações de referência em [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]].
 - **Multi-user concorrente:** vários agentes ou usuários escrevendo na mesma base exigem governance, locking e merge — território de [[15 - Mem0 — vetorial + grafo|Mem0]], [[14 - Letta (ex-MemGPT)|Letta]] e [[16 - Zep e Graphiti — knowledge graph temporal|Zep]].
 - **Tasks de alto custo:** quando cada query custa caro (em latência ou tokens), entram tiering, caching e evaluation sistemática.
 - **Compliance:** data residency, audit logs, retenção formal — Zep e Graphiti são mais sólidos nesse eixo.

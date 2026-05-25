@@ -20,7 +20,7 @@ aliases:
 # Vector databases — pgvector, Pinecone, Qdrant
 
 > [!abstract] TL;DR
-> Vector DB armazena `(chunk_text, embedding, metadata)` e responde queries de similaridade rapidamente. Em 2026, ele é **commodity** — onde a qualidade do RAG vive é em chunking, retrieval, reranking. **Default sensato:** pgvector se já usa Postgres (o que abrange a maioria); Pinecone para serverless; Qdrant para self-hosted moderno; Weaviate para hybrid built-in. Custo: $0-200/mês para a maioria das aplicações. Performance é raramente o gargalo — com índice HNSW, query <100ms é trivial até 10M vetores.
+> [[Dicionário de IA#vector database|Vector DB]] armazena `(chunk_text, embedding, metadata)` e responde queries de similaridade rapidamente. Em 2026, ele é **commodity** — onde a qualidade do [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vive é em [[Dicionário de IA#chunking|chunking]], [[Dicionário de IA#retrieval|retrieval]], [[Dicionário de IA#reranking|reranking]]. **Default sensato:** pgvector se já usa Postgres (o que abrange a maioria); Pinecone para serverless; Qdrant para self-hosted moderno; Weaviate para [[Dicionário de IA#hybrid search|hybrid]] built-in. Custo: $0-200/mês para a maioria das aplicações. Performance é raramente o gargalo — com índice HNSW, query <100ms é trivial até 10M vetores.
 
 ## O que vector DB faz
 
@@ -162,7 +162,7 @@ results = client.search(
 
 ## Weaviate — hybrid built-in
 
-Forte em **hybrid search nativo** (vector + BM25 sem precisar configurar).
+Forte em **[[Dicionário de IA#hybrid search|hybrid search]] nativo** (vector + [[Dicionário de IA#BM25|BM25]] sem precisar configurar).
 
 ```python
 client.query.get("Chunk", ["text"]).with_hybrid(
@@ -220,7 +220,7 @@ Default: **HNSW** com parâmetros padrão. Tune apenas se houver problema concre
 
 - **Vector DB sem metadata indexada** — não consegue filtrar com performance
 - **Index sem HNSW** — query lenta sem necessidade
-- **Trocar de DB sem re-indexar** — formato de embedding pode mudar
+- **Trocar de DB sem re-indexar** — formato de [[Dicionário de IA#embedding|embedding]] pode mudar
 - **Pinecone para 10K vetores** — overengineered, pgvector basta
 - **pgvector para 100M vetores em uma tabela** — split por shard ou troque
 - **Sem backup do DB** — re-indexar 1M chunks custa horas e $$$

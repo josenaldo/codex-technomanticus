@@ -19,7 +19,7 @@ aliases:
 # Evaluation de RAG
 
 > [!abstract] TL;DR
-> RAG sem evaluation é aposta. Métricas fundamentais: **context precision** (chunks recuperados são relevantes?), **context recall** (chunks relevantes foram recuperados?), **faithfulness** (resposta é fiel ao contexto?), **answer relevance** (resposta atende à pergunta?). **Crucial:** medir retrieval **separado** de generation. Se retrieval falha, generation não salva. Tools: Ragas (mais popular), TruLens, DeepEval. Golden set de 30-100 perguntas com gabarito é o mínimo.
+> [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] sem evaluation é aposta. Métricas fundamentais: **context precision** (chunks recuperados são relevantes?), **context recall** (chunks relevantes foram recuperados?), **faithfulness** (resposta é fiel ao contexto?), **answer relevance** (resposta atende à pergunta?). **Crucial:** medir [[Dicionário de IA#retrieval|retrieval]] **separado** de generation. Se retrieval falha, generation não salva. Tools: Ragas (mais popular), TruLens, DeepEval. Golden set de 30-100 perguntas com gabarito é o mínimo.
 
 ## A regra fundamental
 
@@ -27,9 +27,9 @@ aliases:
 
 Resposta ruim em RAG tem **5 causas possíveis**:
 
-1. Chunk relevante **não existe** no corpus (parse/chunk ruim)
+1. [[Dicionário de IA#chunking|Chunk]] relevante **não existe** no corpus (parse/chunk ruim)
 2. Chunk relevante existe mas **não foi recuperado** (retrieval ruim)
-3. Chunk recuperado mas **rerank baixou** (rerank ruim)
+3. Chunk recuperado mas **[[Dicionário de IA#reranking|rerank]] baixou** (rerank ruim)
 4. Chunks corretos mas **prompt não usou** (generation ruim)
 5. Generation **complementou com knowledge** (faithfulness ruim)
 
@@ -76,7 +76,7 @@ Para cada afirmação na resposta, verifique se ela é
 suportada pelos chunks fornecidos. Output: 0-1.
 ```
 
-Score abaixo de 0.9 = LLM está complementando com conhecimento próprio.
+Score abaixo de 0.9 = [[Dicionário de IA#LLM (Large Language Model)|LLM]] está complementando com conhecimento próprio.
 
 ### 4. Answer relevance
 
@@ -170,8 +170,8 @@ Ragas usa LLM-as-judge internamente. Custo: $0.05-0.20/exemplo (depende do model
 | **Ragas** | Mais popular, métricas canônicas |
 | **TruLens** | Tracing + eval integrados |
 | **DeepEval** | Pytest-style, fácil em CI |
-| **Phoenix (Arize)** | Tracing visual + eval |
-| **Langfuse** | Observabilidade + eval em prod |
+| **[[Dicionário de IA#Arize Phoenix\|Phoenix (Arize)]]** | Tracing visual + eval |
+| **[[Dicionário de IA#Langfuse\|Langfuse]]** | Observabilidade + eval em prod |
 
 ## Pipeline de eval em CI
 

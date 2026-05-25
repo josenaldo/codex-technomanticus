@@ -66,17 +66,17 @@ Quem publica score em LongMemEval está se sujeitando a uma comparação públic
 
 Há o impulso, em qualquer tema novo, de aplicar a solução em todo lugar. Memória persistente para agentes é solução boa para um conjunto de problemas, não para todos. Casos onde **não vale a pena**:
 
-- **Tarefas one-shot.** Se o agente vai responder uma pergunta e nunca mais será chamado, RAG ou prompt direto bastam. Adicionar memória persistente é over-engineering.
+- **Tarefas one-shot.** Se o agente vai responder uma pergunta e nunca mais será chamado, [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] ou prompt direto bastam. Adicionar memória persistente é over-engineering.
 - **Dados sensíveis sem proteção.** Memória persistente sobre conversas com usuários vira risco LGPD/GDPR. Sem política clara de retenção, anonimização e *right to be forgotten*, memória de agentes em produto B2C tem custo regulatório que pode dominar qualquer ganho de UX.
 - **Baixo orçamento de manutenção.** Wiki/KG sem lint, sem revisão e sem política de descarte vira lixo em 6 meses. Notas órfãs, links quebrados, contradições acumuladas. Sistema de memória **não cuida sozinho do próprio jardim**.
 - **Equipes que não dominam observabilidade.** Memória sem trace é debug impossível. Quando o agente "lembra errado" de algo, é preciso conseguir reconstruir o caminho — qual evento gerou qual nota, qual retrieval trouxe qual contexto, qual edição do agente alterou qual estado. Equipes sem essa cultura vão sofrer mais do que ganhar.
-- **Volume de uso que não justifica.** Sistema de memória adiciona dependências (vector store, KG, possivelmente Neo4j ou Chroma), CI, testes, monitoring. Em produto pequeno com poucos usuários, esse custo de infraestrutura pode dominar.
+- **Volume de uso que não justifica.** Sistema de memória adiciona dependências ([[Dicionário de IA#vector store|vector store]], KG, possivelmente Neo4j ou Chroma), CI, testes, monitoring. Em produto pequeno com poucos usuários, esse custo de infraestrutura pode dominar.
 
 ### 5. Custo computacional escondido
 
 Os números de "ganho de tokens" e "redução de latência" comparam, em geral, **agente com memória contra agente com janela cheia**. Mas a operação da própria camada de memória tem custo que costuma ficar fora dessa comparação.
 
-- **Cada interação com memory layer costuma adicionar uma LLM call extra.** Mem0 faz extract; A-MEM faz evolve; Letta faz self-edit; MemPalace decide drawer. **Infra-LLM** — LLM chamando LLM por baixo, com custo monetário e de latência.
+- **Cada interação com memory layer costuma adicionar uma [[Dicionário de IA#LLM (Large Language Model)|LLM]] call extra.** Mem0 faz extract; A-MEM faz evolve; Letta faz self-edit; MemPalace decide drawer. **Infra-LLM** — LLM chamando LLM por baixo, com custo monetário e de latência.
 - **Em escala, multiplica custo por 2-5x facilmente.** Um agente que faz 1 chamada por interação passa a fazer 2-5 se a memória ativa fizer extract no write, evolve em background e rerank no read.
 - **Latência sobe.** Memory ops adicionam tipicamente **200-500ms** por interação. Em UX síncrona (chat), é visível. Em backend batch, é absorvível.
 - **Comparações de "ganho de tokens" ignoram custo das operações de memória.** Tokens para extrair um fato, sumarizar uma sessão e indexar embeddings, somados, costumam ser comparáveis aos tokens economizados na janela. Comparação honesta inclui os dois lados.
@@ -85,7 +85,7 @@ Os números de "ganho de tokens" e "redução de latência" comparam, em geral, 
 
 A premissa intuitiva é: mais memória → melhores respostas. Na prática, **memória mal curada** pode produzir o oposto.
 
-- Quando o retrieval traz contexto irrelevante, o LLM gasta atenção em distrações e degrada a resposta. Em casos extremos, contexto enganador leva a alucinação dirigida — o modelo segue uma pista falsa fornecida pelo próprio sistema de memória.
+- Quando o retrieval traz contexto irrelevante, o LLM gasta atenção em distrações e degrada a resposta. Em casos extremos, contexto enganador leva a [[Dicionário de IA#Hallucination|alucinação]] dirigida — o modelo segue uma pista falsa fornecida pelo próprio sistema de memória.
 - O fenômeno *lost-in-the-middle* (ver [[02 - O problema das janelas de contexto]]) continua aplicável **dentro do retrieved context**. Se o retrieval traz 10 chunks e o relevante está no meio, a atenção do modelo cai. Sistemas de memória que retornam top-k grandes sem reranking vão sofrer disso.
 - Curadoria, lint, política de aposentadoria de notas e priorização de retrieval **não são opcionais** em sistemas de memória maduros. Sem isso, o sistema cresce até virar ruído.
 

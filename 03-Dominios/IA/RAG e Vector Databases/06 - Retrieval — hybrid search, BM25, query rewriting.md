@@ -20,11 +20,11 @@ aliases:
 # Retrieval — hybrid search, BM25, query rewriting
 
 > [!abstract] TL;DR
-> Pure vector search é o **default ingênuo**. Em produção, ninguém ganha. Padrão profissional em 2026: **hybrid search (BM25 + vector) + query rewriting + reranking**. BM25 pega exact match (nomes, IDs, termos técnicos); vector pega semântica. Combinados via Reciprocal Rank Fusion (RRF). Query rewriting (incluindo HyDE) transforma a pergunta do usuário em queries melhores. Pesquisa mostra: hybrid bate pure vector em ~95% dos casos.
+> Pure vector search é o **default ingênuo**. Em produção, ninguém ganha. Padrão profissional em 2026: **[[Dicionário de IA#hybrid search|hybrid search]] ([[Dicionário de IA#BM25|BM25]] + vector) + query rewriting + [[Dicionário de IA#reranking|reranking]]**. BM25 pega exact match (nomes, IDs, termos técnicos); vector pega semântica. Combinados via Reciprocal Rank Fusion (RRF). Query rewriting (incluindo HyDE) transforma a pergunta do usuário em queries melhores. Pesquisa mostra: hybrid bate pure vector em ~95% dos casos.
 
 ## Por que pure vector falha
 
-Vector embeddings perdem em casos específicos:
+Vector [[Dicionário de IA#embedding|embeddings]] perdem em casos específicos:
 
 | Caso | Por que vector falha |
 |---|---|
@@ -187,7 +187,7 @@ Retrieve top-50 → Rerank → top-5 ao prompt
 
 Por quê:
 
-- **Top-5 do retrieval direto** perde recall
+- **Top-5 do [[Dicionário de IA#retrieval|retrieval]] direto** perde recall
 - **Top-50 reraqueado** combina recall (do top-50) com precision (do reranker)
 - **Top-50 sem rerank** mete ruído no prompt
 

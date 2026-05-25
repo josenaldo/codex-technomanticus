@@ -18,7 +18,7 @@ aliases:
 # Compressão de tool definitions
 
 > [!abstract] TL;DR
-> Tool definitions (schemas JSON que descrevem ferramentas disponíveis para o agente) consomem 500-5000 tokens por chamada e são reenviadas em CADA request. Com 10 tools, isso pode significar 3-5k tokens de input "invisíveis" que custam dinheiro a cada turn. Comprimir descriptions, remover campos opcionais redundantes, e limitar o número de tools ativas pode reduzir esse custo em 50-70% sem degradar a capacidade do agente.
+> [[Dicionário de IA#tool definition|Tool definitions]] (schemas JSON que descrevem ferramentas disponíveis para o agente) consomem 500-5000 [[Dicionário de IA#Token|tokens]] por chamada e são reenviadas em CADA request. Com 10 tools, isso pode significar 3-5k tokens de input "invisíveis" que custam dinheiro a cada turn. Comprimir descriptions, remover campos opcionais redundantes, e limitar o número de tools ativas pode reduzir esse custo em 50-70% sem degradar a capacidade do [[Dicionário de IA#Agent|agente]].
 
 ## O que é
 

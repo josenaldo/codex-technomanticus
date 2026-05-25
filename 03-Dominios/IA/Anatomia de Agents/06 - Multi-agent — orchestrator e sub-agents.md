@@ -19,7 +19,7 @@ aliases:
 # Multi-agent — orchestrator e sub-agents
 
 > [!abstract] TL;DR
-> Para tarefas grandes, um **agent orchestrator** delega para **sub-agents especializados**. Cada sub-agent tem contexto pequeno e focado, falhas localizadas não contaminam o todo, paralelização vira possível, e cada sub-agent pode usar modelo diferente (Haiku para Explorer, Sonnet para Implementer, Opus para Reviewer). Custo: overhead de coordenação, handoff é onde info se perde, debugging mais complexo. **Single agent bem desenhado > multi-agent confuso.** Use sub-agents quando tarefa não cabe num contexto só, ou quando especialização claramente ajuda.
+> Para tarefas grandes, um **[[Dicionário de IA#orchestrator-worker|agent orchestrator]]** delega para **[[Dicionário de IA#subagent|sub-agents]] especializados**. Cada sub-agent tem contexto pequeno e focado, falhas localizadas não contaminam o todo, paralelização vira possível, e cada sub-agent pode usar modelo diferente (Haiku para Explorer, Sonnet para Implementer, Opus para Reviewer). Custo: overhead de coordenação, handoff é onde info se perde, debugging mais complexo. **Single agent bem desenhado > multi-agent confuso.** Use sub-agents quando tarefa não cabe num contexto só, ou quando especialização claramente ajuda.
 
 ## A premissa
 

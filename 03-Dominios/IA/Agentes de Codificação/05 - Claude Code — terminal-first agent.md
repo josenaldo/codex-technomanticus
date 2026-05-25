@@ -18,7 +18,7 @@ aliases:
 # Claude Code — terminal-first agent
 
 > [!abstract] TL;DR
-> Claude Code é o agente de terminal da Anthropic — roda no CLI, indexa o codebase inteiro, executa comandos, e itera autonomamente até resolver o problema. É o agente com melhor reasoning para código em 2026, ideal para debugging complexo, refactoring pesado, e workflows de CI/CD. O sistema de hooks e permissions dá controle granular sobre o que o agente pode fazer. Skills (SKILL.md) e CLAUDE.md são os arquivos de configuração que transformam o agente genérico em um especialista do seu projeto.
+> [[Dicionário de IA#Claude Code|Claude Code]] é o agente de terminal da Anthropic — roda no CLI, indexa o codebase inteiro, executa comandos, e itera autonomamente até resolver o problema. É o agente com melhor reasoning para código em 2026, ideal para debugging complexo, refactoring pesado, e workflows de CI/CD. O sistema de hooks e permissions dá controle granular sobre o que o agente pode fazer. Skills (SKILL.md) e CLAUDE.md são os arquivos de configuração que transformam o agente genérico em um especialista do seu projeto.
 
 ## O que é
 
@@ -28,8 +28,8 @@ aliases:
 
 - **Melhor reasoning** do mercado para código (Claude Opus/Sonnet são líderes em SWE-bench)
 - **Terminal-native** — integra perfeitamente em workflows de devs que vivem no terminal
-- **Extensível via MCP** — conecta com qualquer ferramenta via Model Context Protocol
-- **Hooks** — permitem automação e guardrails programáticos
+- **Extensível via [[Dicionário de IA#MCP (Model Context Protocol)|MCP]]** — conecta com qualquer ferramenta via Model Context Protocol
+- **Hooks** — permitem automação e [[Dicionário de IA#Guardrail|guardrails]] programáticos
 
 ## Como funciona
 

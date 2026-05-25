@@ -128,7 +128,7 @@ Cuidados em [[Anatomia dos LLMs|17 - Evaluation de LLMs em produção]].
 ### Trace review humana
 
 > [!tip] O eval mais valioso
-> *"Invista 1-2h/semana lendo traces de produção. Você vai encontrar bugs que nenhum eval automatizado pega."*
+> *"Invista 1-2h/semana lendo [[Dicionário de IA#tracing|traces]] de produção. Você vai encontrar bugs que nenhum eval automatizado pega."*
 
 Padrão: amostragem aleatória de 10-20 traces/semana. Catalogue erros não cobertos por golden set → adicionar.
 
@@ -146,11 +146,11 @@ Quando bug é encontrado em produção:
 
 | Tool | Forte em |
 |---|---|
-| **Langfuse** | Open source, traces + golden sets |
+| **[[Dicionário de IA#Langfuse\|Langfuse]]** | Open source, traces + golden sets |
 | **LangSmith** | Integração LangChain, eval pipelines |
 | **Braintrust** | Eval-first, comparação de versions |
 | **Helicone** | Proxy + analytics |
-| **Arize Phoenix** | Sessions com timeline |
+| **[[Dicionário de IA#Arize Phoenix\|Arize Phoenix]]** | Sessions com timeline |
 | **OpenAI Evals** | Framework open source |
 
 ## Cadência recomendada

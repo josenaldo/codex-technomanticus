@@ -26,12 +26,12 @@ O Claude 4.x introduziu custos explícitos para o "monólogo interno" (thinking 
 
 ### 1. O "Thinking Budget" (/effort)
 Para tarefas de baixo valor (escrever testes, documentar código, converter tipos), use o comando `/effort low`.
-*   **O Hack:** Isso limita o número de tokens de raciocínio que o modelo gera. Em tarefas mecânicas, o raciocínio profundo é desperdício de dinheiro.
+*   **O Hack:** Isso limita o número de [[Dicionário de IA#Reasoning tokens|tokens de raciocínio]] que o modelo gera. Em tarefas mecânicas, o raciocínio profundo é desperdício de dinheiro.
 
 ### 2. Caveman Protocol (Protocolo Homem das Cavernas)
 Adicione no topo do seu `CLAUDE.md`:
 > "Responda como um homem das cavernas. Sem polidez, sem explicações inúteis. Apenas o código e resultados essenciais."
-*   **Impacto:** Reduz tokens de saída (os mais caros) em até 70%. Ideal para fix de lint e refactorings rápidos.
+*   **Impacto:** Reduz [[Dicionário de IA#Completion tokens|tokens de saída]] (os mais caros) em até 70%. Ideal para fix de lint e refactorings rápidos.
 
 ### 3. RTK (Rust Token Killer)
 Integre o RTK como um hook de terminal. Ele comprime a saída de ferramentas como `git diff` e `npm install` antes de serem enviadas ao Claude.
@@ -58,7 +58,7 @@ Ative o `/statusline` no Claude Code para ver tokens, custo, modelo e status do 
 
 | Indicador | Valor observado | Problema |
 | :--- | :--- | :--- |
-| Cache hit rate (sessões recentes) | 15–63% (média ~40%) | Alto; instável demais — sinal de contexto não estático |
+| [[Dicionário de IA#Cache hit rate\|Cache hit rate]] (sessões recentes) | 15–63% (média ~40%) | Alto; instável demais — sinal de contexto não estático |
 | Maior arquivo de memória | 299 linhas / 35 KB | Carregado em toda sessão; continha histórico de commits e contagem de testes progressiva |
 | `effortLevel` global | `"xhigh"` | Forçava raciocínio estendido até em tarefas mecânicas (lint, boilerplate) |
 | Entradas em permissions.allow (local) | 25 | Incluía 3 one-offs de sessões antigas com paths hardcoded |
@@ -155,7 +155,7 @@ Diferente do Claude, o Gemini permite "congelar" 1M de tokens no cache por até 
 *   **O Hack:** Se você vai trabalhar o dia todo no mesmo projeto, ative o cache persistente. Você paga uma taxa de "escrita" e uma pequena taxa de "aluguel" por hora, mas economiza 90% em cada pergunta feita ao longo do dia.
 
 ### 2. XML Scoping
-O Gemini responde melhor a tags XML do que a Markdown para instruções complexas em janelas de contexto grandes.
+O Gemini responde melhor a tags XML do que a Markdown para instruções complexas em [[Dicionário de IA#Context window|janelas de contexto]] grandes.
 *   **O Hack:** Envolva contextos diferentes em tags: `<legacy_code>`, `<new_requirements>`, `<constraints>`. Isso reduz a taxa de alucinação e, consequentemente, a necessidade de re-prompts caros para correção.
 
 ### 3. Flash-Lite Sandwich
@@ -176,7 +176,7 @@ Configure o `.github/copilot-exclusion` para bloquear pastas de `build/`, `node_
 
 ### 2. Modular Rules (.cursor/rules/)
 Não use um arquivo de regras global gigante. Use regras escopadas por extensão ou pasta.
-*   **O Hack:** Se você está editando um CSS, o Copilot não precisa carregar as regras de arquitetura do backend. Regras modulares garantem que o prompt de sistema seja o menor possível.
+*   **O Hack:** Se você está editando um CSS, o Copilot não precisa carregar as regras de arquitetura do backend. Regras modulares garantem que o [[Dicionário de IA#system prompt|prompt de sistema]] seja o menor possível.
 
 ### 3. Plan Mode antes do Agent Mode
 Nunca dispare o "Agent Mode" (que sai editando arquivos) sem antes rodar um "Plan Mode".

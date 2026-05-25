@@ -27,7 +27,7 @@ aliases:
 > [!quote] Chroma Research (jul 2025)
 > *"Across all experiments, model performance consistently degrades with increasing input length."*
 
-Chroma testou 18 modelos de fronteira (GPT-4.1, Claude Sonnet, Gemini, Llama, etc.) variando o tamanho do input em uma versão estendida do needle-in-a-haystack. **Todos os 18** mostraram queda de qualidade conforme o input crescia. Não é defeito de um provider — é propriedade da arquitetura transformer.
+Chroma testou 18 modelos de fronteira (GPT-4.1, Claude Sonnet, Gemini, Llama, etc.) variando o tamanho do input em uma versão estendida do needle-in-a-haystack. **Todos os 18** mostraram queda de qualidade conforme o input crescia. Não é defeito de um provider — é propriedade da arquitetura [[Dicionário de IA#transformer|transformer]].
 
 ## Os três mecanismos
 
@@ -45,7 +45,7 @@ Modelos lembram bem o que está no início (system prompt) e no fim (última men
 
 ### 2. Attention dilution
 
-Atenção em transformers é **quadrática**: 100K tokens significam 10 bilhões de pares de relações para o modelo considerar. Não há como "atender bem" a tudo — o sinal se dilui.
+[[Dicionário de IA#attention|Atenção]] em transformers é **quadrática**: 100K tokens significam 10 bilhões de pares de relações para o modelo considerar. Não há como "atender bem" a tudo — o sinal se dilui.
 
 ```
 Tokens   | Pares de atenção
@@ -80,7 +80,7 @@ Conteúdo **semanticamente similar mas irrelevante** ativa neurônios competindo
 ## Onde context rot mais aparece
 
 - **Sessões longas de agente** (200+ turnos): histórico inflado
-- **RAG com top-k alto**: muitos documentos competem por atenção
+- **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] com top-k alto**: muitos documentos competem por atenção
 - **Tool definitions infladas**: schemas detalhados consomem atenção
 - **Logs concatenados**: stack traces e outputs verbosos
 - **Multi-agent com contexto compartilhado**: cada agente vê o estado de todos

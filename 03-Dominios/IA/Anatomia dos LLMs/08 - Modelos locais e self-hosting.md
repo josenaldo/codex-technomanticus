@@ -23,7 +23,7 @@ aliases:
 
 ## O que é
 
-**Self-hosting** é rodar um LLM na sua própria máquina ou infraestrutura, em vez de usar APIs de terceiros (OpenAI, Anthropic, Google). Em 2026, duas ferramentas dominam:
+**Self-hosting** é rodar um [[Dicionário de IA#LLM (Large Language Model)|LLM]] na sua própria máquina ou infraestrutura, em vez de usar APIs de terceiros (OpenAI, Anthropic, Google). Em 2026, duas ferramentas dominam:
 
 - **Ollama** — foco em simplicidade, experiência de desenvolvedor, prototipagem
 - **vLLM** — foco em throughput, produção, múltiplos usuários concorrentes
@@ -35,7 +35,7 @@ aliases:
 | **Privacidade**         | Código e dados nunca saem da máquina                |
 | **Custo a longo prazo** | Com volume alto, self-hosting pode ser mais barato  |
 | **Soberania**           | Sem dependência de providers, sem rate limits       |
-| **Customização**        | Fine-tuning e quantização sob controle total        |
+| **Customização**        | [[Dicionário de IA#fine-tuning\|Fine-tuning]] e quantização sob controle total        |
 | **Latência**            | Sem latência de rede (mas depende do hardware)      |
 | **Aprendizado**         | Entender como LLMs realmente funcionam "por dentro" |
 
@@ -43,7 +43,7 @@ aliases:
 
 ### Hardware necessário
 
-A regra de ouro: **VRAM é o recurso limitante**. O modelo inteiro (todos os parâmetros, incluindo experts em MoE) precisa caber na VRAM.
+A regra de ouro: **VRAM é o recurso limitante**. O modelo inteiro (todos os [[Dicionário de IA#parameters / weights|parâmetros]], incluindo experts em MoE) precisa caber na VRAM.
 
 | Modelo             | Parâmetros | VRAM (FP16) | VRAM (INT4 quantizado) | GPU recomendada      |
 | ------------------ | ---------- | ----------- | ---------------------- | -------------------- |

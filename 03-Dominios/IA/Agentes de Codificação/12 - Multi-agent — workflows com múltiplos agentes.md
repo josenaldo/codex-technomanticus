@@ -26,7 +26,7 @@ aliases:
 
 1. **Pipeline** — um agente gera, outro revisa/corrige
 2. **Paralelo** — agentes trabalham em partes diferentes simultaneamente
-3. **Hierárquico** — um "orquestrador" delega para sub-agentes especializados
+3. **Hierárquico** — um "[[Dicionário de IA#orchestrator-worker|orquestrador]]" delega para [[Dicionário de IA#subagent|sub-agentes]] especializados
 
 ## Por que importa
 
@@ -101,7 +101,7 @@ Ferramentas como Kimi K2.6 e Devin são otimizadas para orquestração hierárqu
 ## Armadilhas
 
 - **Conflitos de edição** — dois agentes editando o mesmo arquivo é receita para corrupção. Use branches ou módulos separados.
-- **Custo multiplicado** — 3 agentes paralelos = 3x o custo de tokens. Certifique-se de que o ganho de produtividade justifica.
+- **Custo multiplicado** — 3 agentes paralelos = 3x o custo de [[Dicionário de IA#Token|tokens]]. Certifique-se de que o ganho de produtividade justifica.
 - **Coerência comprometida** — agentes paralelos não compartilham contexto. O agente do frontend pode tomar decisões inconsistentes com o backend.
 - **"Mais agentes = mais rápido"** — só é verdade se as tarefas são verdadeiramente independentes. Dependências serializantes neutralizam o ganho.
 

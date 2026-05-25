@@ -19,7 +19,7 @@ aliases:
 # Reranking — Cohere, Voyage, cross-encoders
 
 > [!abstract] TL;DR
-> Reranker é um modelo que **refina o ranking** dos top-N do retrieve. Diferente de embeddings (bi-encoders, embedam query e doc separadamente), rerankers são **cross-encoders** — analisam query+doc juntos, com atenção total entre eles. Resultado: ranking muito mais preciso, ao custo de latência (cada par requer 1 forward pass). Padrão: retrieve top-50, rerank → top-5. Modelos: Cohere Rerank (default), Voyage Rerank, BGE Reranker (open source). **Skip rerank = ruído no prompt.**
+> Reranker é um modelo que **refina o ranking** dos top-N do retrieve. Diferente de [[Dicionário de IA#embedding|embeddings]] (bi-encoders, embedam query e doc separadamente), rerankers são **cross-encoders** — analisam query+doc juntos, com atenção total entre eles. Resultado: ranking muito mais preciso, ao custo de latência (cada par requer 1 forward pass). Padrão: [[Dicionário de IA#retrieval|retrieve]] top-50, [[Dicionário de IA#reranking|rerank]] → top-5. Modelos: Cohere Rerank (default), Voyage Rerank, BGE Reranker (open source). **Skip rerank = ruído no prompt.**
 
 ## Por que rerankers existem
 

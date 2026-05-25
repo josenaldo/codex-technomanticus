@@ -19,7 +19,7 @@ aliases:
 # Níveis de rigor — spec-first, spec-anchored, spec-as-source
 
 > [!abstract] TL;DR
-> SDD não é binário. Há um **espectro de rigor** entre vibe coding (zero spec) e spec-as-source (spec gera código). A escolha depende do projeto: protótipo pode viver sem; produto crítico precisa de spec viva. Quatro níveis nomeáveis: **Vibe** (sem spec), **Spec-first/static** (escreveu uma vez, não mantém), **Spec-anchored/living** (mantida em sincronia com código), **Spec-as-source** (spec é fonte, código é gerado). A indústria em 2026 separou ferramentas em duas categorias: *static-spec* (estruturam upfront) e *living-spec* (mantêm sincronia contínua) — Augment Code, Martin Fowler.
+> SDD não é binário. Há um **espectro de rigor** entre [[Dicionário de IA#vibe coding|vibe coding]] (zero spec) e spec-as-source (spec gera código). A escolha depende do projeto: protótipo pode viver sem; produto crítico precisa de spec viva. Quatro níveis nomeáveis: **Vibe** (sem spec), **Spec-first/static** (escreveu uma vez, não mantém), **Spec-anchored/living** (mantida em sincronia com código), **Spec-as-source** (spec é fonte, código é gerado). A indústria em 2026 separou ferramentas em duas categorias: *static-spec* (estruturam upfront) e *living-spec* (mantêm sincronia contínua) — Augment Code, Martin Fowler.
 
 ## O espectro
 
@@ -72,7 +72,7 @@ src/login/               ← código vive depois
 **Limitações:**
 - Drift inevitável após primeira feature shippada
 - Time esquece de atualizar
-- LLM em sessões posteriores usa spec stale
+- [[Dicionário de IA#LLM (Large Language Model)|LLM]] em sessões posteriores usa spec stale
 
 **Ferramentas típicas:** Notion + revisão pré-PR, GitHub Issues estruturadas.
 

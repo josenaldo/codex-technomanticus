@@ -16,10 +16,10 @@ aliases:
 
 # Anatomia de Agents
 
-Agents são o nível mais alto de abstração em aplicações com LLM em 2026. A diferença entre um chatbot e um agent é a mesma entre uma função pura e um programa inteiro: agents **raciocinam, decidem, usam ferramentas, observam resultados, e iteram** até terminar a tarefa. Esta trilha cobre os **fundamentos genéricos** de agents — o ciclo, tools, memory, planning, multi-agent, frameworks, patterns, evaluation. Para coding agents específicos (Cursor, Claude Code, Copilot), ver [[Agentes de Codificação]]. Para memória avançada (MemGPT, Letta), ver [[Memória de Agentes]].
+Agents são o nível mais alto de abstração em aplicações com [[Dicionário de IA#LLM (Large Language Model)|LLM]] em 2026. A diferença entre um chatbot e um agent é a mesma entre uma função pura e um programa inteiro: agents **raciocinam, decidem, usam ferramentas, observam resultados, e iteram** até terminar a tarefa. Esta trilha cobre os **fundamentos genéricos** de agents — o ciclo, tools, memory, [[Dicionário de IA#planning|planning]], multi-agent, frameworks, patterns, evaluation. Para coding agents específicos (Cursor, Claude Code, Copilot), ver [[Agentes de Codificação]]. Para memória avançada (MemGPT, Letta), ver [[Memória de Agentes]].
 
 > [!info] Pré-requisitos
-> Recomendado ter lido [[Anatomia dos LLMs]] (Trilha 1) — especialmente sobre tool use ([[Anatomia dos LLMs|09 - APIs de LLM — anatomia de uma chamada]]). Esta trilha é o **fundamento genérico** sobre o qual outras trilhas se especializam.
+> Recomendado ter lido [[Anatomia dos LLMs]] (Trilha 1) — especialmente sobre [[Dicionário de IA#tool use|tool use]] ([[Anatomia dos LLMs|09 - APIs de LLM — anatomia de uma chamada]]). Esta trilha é o **fundamento genérico** sobre o qual outras trilhas se especializam.
 
 > [!warning] Over-engineering é o pior risco
 > A maior parte das tarefas que parece "precisar de agent" funciona melhor como **workflow determinístico**. *"Use workflows when you can, agents when you must"* — Anthropic. Esta trilha enfatiza tanto **quando usar** quanto **quando não usar**.
@@ -130,7 +130,7 @@ Anatomia de Agents é o **núcleo conceitual** — outras trilhas aplicam esses 
 ## How to explain in English
 
 > [!quote] Short pitch
-> *"Agents are LLM systems with tools and a decision loop. They reason about what to do, call tools, observe results, and iterate until done. The mature posture: use workflows whenever possible, agents when dynamic decision-making is genuinely required. Every production agent needs max_steps, observability, and guardrails for destructive actions — those are not optional."*
+> *"Agents are LLM systems with tools and a decision loop. They reason about what to do, call tools, observe results, and iterate until done. The mature posture: use workflows whenever possible, agents when dynamic decision-making is genuinely required. Every production agent needs max_steps, [[Dicionário de IA#Observability|observability]], and [[Dicionário de IA#Guardrail|guardrails]] for destructive actions — those are not optional."*
 
 ### Phrases to use
 

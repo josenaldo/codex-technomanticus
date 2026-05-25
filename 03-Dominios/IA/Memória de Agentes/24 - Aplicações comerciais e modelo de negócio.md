@@ -93,8 +93,8 @@ Os três modelos não são exclusivos: é comum combinar dois (produto digital c
 
 | Objeção | Resposta típica |
 | --- | --- |
-| "Já uso ChatGPT" | ChatGPT faz **RAG sobre suas notas** ou mantém memória de sessão limitada, mas perde continuidade estruturada entre sessões. LLM Wiki é **construção ativa** de uma base mantida pelo agente, com schema explícito. Ver [[04 - RAG vs memória de longo prazo]]. |
-| "Tenho Notion / Confluence" | Notion e Confluence são **editores** — humanos escrevem, humanos lêem. No LLM Wiki, **o LLM mantém a base** seguindo regras explícitas em `CLAUDE.md`. Diferença de tipo, não de UI. |
+| "Já uso ChatGPT" | ChatGPT faz **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)\|RAG]] sobre suas notas** ou mantém memória de sessão limitada, mas perde continuidade estruturada entre sessões. LLM Wiki é **construção ativa** de uma base mantida pelo agente, com schema explícito. Ver [[04 - RAG vs memória de longo prazo]]. |
+| "Tenho Notion / Confluence" | Notion e Confluence são **editores** — humanos escrevem, humanos lêem. No LLM Wiki, **o [[Dicionário de IA#LLM (Large Language Model)\|LLM]] mantém a base** seguindo regras explícitas em `CLAUDE.md`. Diferença de tipo, não de UI. |
 | "Vai ficar obsoleto rápido" | Substrato é Markdown puro em pastas — formato com 20+ anos de longevidade. Ferramentas mudam; conteúdo sobrevive a frameworks. Ver [[07 - Por que Obsidian e markdown como substrato]]. |
 | "Posso fazer sozinho" | Pode. Pode também aprender SQL — mas DBA existe. Mesma lógica: implementação genérica é fácil; **implementação adaptada ao seu domínio** com armadilhas conhecidas é onde a curva custa caro. |
 | "É hype, vai passar" | Não é só viralidade: surveys acadêmicos consolidados (ver [[20 - Surveys e estado da arte 2026]]), ICLR Workshop dedicado e múltiplas implementações independentes com benchmarks comparáveis (ver [[21 - Comparativo crítico (LongMemEval)]]). Existe hype real **e** progresso real — [[22 - Críticas, limitações e armadilhas]] separa um do outro. |

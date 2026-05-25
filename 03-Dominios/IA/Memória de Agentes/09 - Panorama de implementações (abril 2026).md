@@ -41,14 +41,14 @@ A trilha trata cada implementação relevante em nota própria a partir da [[10 
 
 | Implementação | Família | Substrato | LongMemEval | Custo | Maturidade | Quando usar |
 |---|---|---|---|---|---|---|
-| LLM-knowledge-base (Wendel) | Karpathy-inspired | Markdown + Python (`kb/`) | n/a | self-host | beta | implementação direta do gist, em PT, com hybrid search (BM25 + RRF) e healing automático |
+| LLM-knowledge-base (Wendel) | Karpathy-inspired | Markdown + Python (`kb/`) | n/a | self-host | beta | implementação direta do gist, em PT, com [[Dicionário de IA#hybrid search\|hybrid search]] ([[Dicionário de IA#BM25\|BM25]] + RRF) e healing automático |
 | OpenKB | Karpathy-inspired | Markdown wiki + PageIndex | n/a | self-host (Apache-2.0) | alpha | compilar corpus documental longo em wiki markdown; PageIndex para PDFs longos; chat com sessões persistidas |
 | graphify | Karpathy-inspired | Knowledge graph (NetworkX, sem embeddings) | n/a | self-host (MIT) | beta | mixed-media (código, docs, vídeo, imagem); skill nativa para Claude Code/Cursor/Codex |
-| basic-memory | Karpathy-inspired | Markdown + SQLite | n/a | open-source (AGPL-3.0) | estável | melhor integração markdown via MCP server; arquivos legíveis em Obsidian |
+| basic-memory | Karpathy-inspired | Markdown + SQLite | n/a | open-source (AGPL-3.0) | estável | melhor integração markdown via [[Dicionário de IA#MCP (Model Context Protocol)\|MCP]] server; arquivos legíveis em Obsidian |
 | Letta (ex-MemGPT) | Production | Hierarchical (RAM/disco, paginação) | não publicado | freemium / cloud paga | estável | self-editing memory, herdeiro do MemGPT, ecossistema maduro |
 | Mem0 | Production | Vetor + grafo | ≈ 93,4% (auto-reportado) | tiers freemium | estável | rede ampla de integrações (LangChain, LangGraph, CrewAI, LlamaIndex, AutoGen, Agno e outras — verificar lista atual) |
 | Zep/Graphiti | Production | Knowledge graph temporal (bi-temporal) | + 18,5% sobre full-context com GPT-4o | tiers cloud | estável | enterprise, audit trail, raciocínio temporal |
-| MemPalace | Production | Memory palace + SQLite | 96,6% R@5 raw / ≥ 99% com LLM reranking | grátis local | recente (abr/2026) | local-first, MCP, sem cloud obrigatório |
+| MemPalace | Production | Memory palace + SQLite | 96,6% R@5 raw / ≥ 99% com LLM [[Dicionário de IA#reranking\|reranking]] | grátis local | recente (abr/2026) | local-first, [[Dicionário de IA#MCP (Model Context Protocol)\|MCP]], sem cloud obrigatório |
 | Cognee | Production | Pipeline modular (KG + vetor) | não publicado | open-source + cloud | em consolidação | quando se quer pipeline ETL de memória declarativo |
 | LangMem | Production | Plug-in para LangChain/LangGraph | não publicado | open-source | em consolidação | quando o stack já é LangChain |
 | SuperMemory | Production | Vetor + UI proprietária | não publicado | SaaS | em consolidação | uso pessoal com interface pronta |
@@ -59,7 +59,7 @@ A trilha trata cada implementação relevante em nota própria a partir da [[10 
 
 ## Detalhes contextuais sobre LongMemEval
 
-**LongMemEval** é o benchmark padrão da indústria para avaliar memória de longo prazo em LLM agents. Foi proposto em ICLR 2025 e o repositório oficial é `github.com/xiaowu0162/LongMemEval`. Ele isola cinco capacidades de memória — *information extraction*, *multi-session reasoning*, *temporal reasoning*, *knowledge updates* e *abstention* — em um conjunto de tarefas com histórico longo de sessões. É a referência preferida quando o objetivo é comparar implementações de forma minimamente justa.
+**LongMemEval** é o benchmark padrão da indústria para avaliar memória de longo prazo em [[Dicionário de IA#LLM (Large Language Model)|LLM]] agents. Foi proposto em ICLR 2025 e o repositório oficial é `github.com/xiaowu0162/LongMemEval`. Ele isola cinco capacidades de memória — *information extraction*, *multi-session reasoning*, *temporal reasoning*, *knowledge updates* e *abstention* — em um conjunto de tarefas com histórico longo de sessões. É a referência preferida quando o objetivo é comparar implementações de forma minimamente justa.
 
 Três observações importantes ao ler scores:
 

@@ -26,7 +26,7 @@ aliases:
 |---|---|---|
 | **Escopo** | Projeto inteiro | Tarefa específica |
 | **Carregamento** | Sempre, no contexto base | Sob demanda |
-| **Tamanho** | 1-3K tokens | 200 tokens a 5K cada |
+| **Tamanho** | 1-3K [[Dicionário de IA#Token\|tokens]] | 200 tokens a 5K cada |
 | **Conteúdo** | Convenções, build, security | Como fazer X específico |
 | **Reutilização** | Por projeto | Cross-project |
 
@@ -238,7 +238,7 @@ skill install my-skill
 | Acessado | Por nome | Por copy-paste |
 | Triggered | Auto pelo client | Manual |
 
-Skills são **prompt templates evoluídos** — com discovery, versioning, e distribuição.
+Skills são **[[Dicionário de IA#prompt template|prompt templates]] evoluídos** — com discovery, versioning, e distribuição.
 
 ## Decisão: skill vs AGENTS.md vs hardcoded prompt
 

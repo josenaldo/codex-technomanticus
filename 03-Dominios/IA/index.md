@@ -117,9 +117,9 @@ Inteligência Artificial (campo amplo, 1950+)
 > 1. **Entende a hierarquia IA → ML → DL → GenAI → LLMs** e sabe em qual nível um problema vive. Nem tudo que parece "IA" precisa de LLM.
 > 2. **Pensa em economia de tokens e latência como pensa em queries SQL.** Prompt eficiente, caching, modelo certo, batch vs streaming.
 > 3. **Sabe quando NÃO usar LLM.** Classificação simples com regex, regras de negócio determinísticas, validação — LLM é overkill.
-> 4. **Distingue prompt engineering, context engineering, RAG e fine-tuning** — escolhe a ferramenta certa antes de escrever código.
+> 4. **Distingue prompt engineering, context engineering, [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] e fine-tuning** — escolhe a ferramenta certa antes de escrever código.
 > 5. **Trata outputs de LLM como input não confiável** — valida, testa, tem fallback, não confia em JSON "parece certo".
-> 6. **Entende limitações reais** — alucinação, knowledge cutoff, context rot, não-determinismo — e desenha sistemas que sobrevivem a elas.
+> 6. **Entende limitações reais** — [[Dicionário de IA#Hallucination|alucinação]], knowledge cutoff, context rot, não-determinismo — e desenha sistemas que sobrevivem a elas.
 > 7. **Pratica evaluation sistemática.** Golden sets, regression tests, métricas — não "rodei 5 testes manuais".
 > 8. **Pensa em segurança:** prompt injection, data leakage, PII em logs, jailbreaks, supply chain (slopsquatting).
 > 9. **Domina pelo menos uma stack a fundo** (Claude Code + MCP + skills) em vez de ser "ok em tudo, expert em nada".
@@ -206,7 +206,7 @@ Em 5 blocos: fundamentos (context rot, 4 pilares), arquitetura (pipelines, camad
 
 > *"Specs como contrato executável — resposta da indústria ao tech debt do vibe coding."*
 
-O problema do vibe coding (Veracode 45%), pipeline (Specify → Plan → Tasks → Implement → Validate), ferramentas (Kiro, Spec Kit, OpenSpec, Tessl), prática (multi-agent CIV, integração, roadmap, debates).
+O problema do [[Dicionário de IA#vibe coding|vibe coding]] (Veracode 45%), pipeline (Specify → Plan → Tasks → Implement → Validate), ferramentas (Kiro, Spec Kit, OpenSpec, Tessl), prática (multi-agent CIV, integração, roadmap, debates).
 
 **Quando ler:** após Trilha 5. Spec é a camada superior do contexto.
 

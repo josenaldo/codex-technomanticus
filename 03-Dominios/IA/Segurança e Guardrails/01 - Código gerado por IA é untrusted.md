@@ -61,7 +61,7 @@ A "OWASP Top 10" inteira está representada. **Não há classe segura.**
 
 ### 1. Dados de treino contaminados
 
-LLMs aprenderam de código real. Código real público tem vulnerabilidades. O modelo não distingue o seguro do inseguro — reproduz o **plausível**, e plausível inclui inseguro.
+[[Dicionário de IA#LLM (Large Language Model)|LLMs]] aprenderam de código real. Código real público tem vulnerabilidades. O modelo não distingue o seguro do inseguro — reproduz o **plausível**, e plausível inclui inseguro.
 
 ### 2. Defaults inseguros são padrões "antigos"
 
@@ -81,7 +81,7 @@ LLM otimiza por probabilidade de output ser **plausível** ao usuário comum. "F
 |---|---|
 | Aprende com feedback | Aprende com retraining (lento) |
 | Pode aplicar heurística "não confio nesse input" | Não tem framework adversarial |
-| Pergunta quando não sabe | Inventa (hallucination) |
+| Pergunta quando não sabe | Inventa ([[Dicionário de IA#Hallucination\|hallucination]]) |
 | Erros são pontuais | Erros são **sistemáticos** (mesmo CWE em milhares de samples) |
 | 1 dev → 1 PR/dia | 1 dev × LLM → 50 PRs/dia |
 

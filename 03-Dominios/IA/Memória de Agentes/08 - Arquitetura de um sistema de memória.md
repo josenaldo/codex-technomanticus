@@ -23,7 +23,7 @@ aliases:
 
 ## O que é
 
-A "arquitetura de um sistema de memória" não é uma arquitetura específica — é o conjunto de componentes que **toda** implementação tem em alguma forma, ainda que disfarçada. Quando se compara o LLM Wiki de [[Andrej Karpathy|Karpathy]], o servidor MCP `basic-memory`, o tier system de Letta, o grafo temporal do Zep, o retrieval vetorial do Mem0 e a metáfora espacial do MemPalace, parece à primeira vista que cada um implementa algo radicalmente diferente. Não é o caso. Por baixo da superfície, todos resolvem as mesmas cinco perguntas: o que entra, como organizar, como buscar, como manter e quais são as regras.
+A "arquitetura de um sistema de memória" não é uma arquitetura específica — é o conjunto de componentes que **toda** implementação tem em alguma forma, ainda que disfarçada. Quando se compara o LLM Wiki de [[Andrej Karpathy|Karpathy]], o servidor [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] `basic-memory`, o tier system de Letta, o grafo temporal do Zep, o retrieval vetorial do Mem0 e a metáfora espacial do MemPalace, parece à primeira vista que cada um implementa algo radicalmente diferente. Não é o caso. Por baixo da superfície, todos resolvem as mesmas cinco perguntas: o que entra, como organizar, como buscar, como manter e quais são as regras.
 
 Esse mapa arquitetural genérico é o vocabulário com o qual a trilha discute implementações específicas. As notas sobre cada ferramenta concreta — [[09 - Panorama de implementações (abril 2026)|panorama]], [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]], [[14 - Letta (ex-MemGPT)|Letta]], [[13 - basic-memory — MCP nativo Obsidian|basic-memory]], entre outras — vão se referir constantemente a esses cinco componentes. Sem o mapa, comparar implementações vira disputa de marca; com o mapa, vira conversa técnica.
 
@@ -74,19 +74,19 @@ Os cinco componentes funcionam assim:
 
 ### 1. Ingestão (write)
 
-Decide o que entra na memória. As perguntas relevantes são: **o que filtrar**, **em que granularidade**, **quando processar** e **quem decide**. Em sistemas como o LLM Wiki, a ingestão é orquestrada por humano que decide quais fontes brutas alimentam a wiki — o LLM compila, mas o humano cura. Em sistemas conversacionais como Mem0 e Letta, a ingestão é majoritariamente automática: o agente extrai fatos de cada turno e decide o que persistir.
+Decide o que entra na memória. As perguntas relevantes são: **o que filtrar**, **em que granularidade**, **quando processar** e **quem decide**. Em sistemas como o LLM Wiki, a ingestão é orquestrada por humano que decide quais fontes brutas alimentam a wiki — o [[Dicionário de IA#LLM (Large Language Model)|LLM]] compila, mas o humano cura. Em sistemas conversacionais como Mem0 e Letta, a ingestão é majoritariamente automática: o [[Dicionário de IA#Agent|agente]] extrai fatos de cada turno e decide o que persistir.
 
-A granularidade é talvez a decisão mais subestimada. Gravar conversas inteiras é fácil mas inútil para retrieval; extrair fatos atômicos é caro mas alimenta busca precisa; armazenar resumos perde nuance. Cada implementação faz uma escolha aqui, e essa escolha governa muito do que vem depois. Sistemas que ingerem tudo sem filtro entram em colapso de sinal/ruído em poucas semanas — gravar tudo é gravar nada.
+A granularidade é talvez a decisão mais subestimada. Gravar conversas inteiras é fácil mas inútil para [[Dicionário de IA#retrieval|retrieval]]; extrair fatos atômicos é caro mas alimenta busca precisa; armazenar resumos perde nuance. Cada implementação faz uma escolha aqui, e essa escolha governa muito do que vem depois. Sistemas que ingerem tudo sem filtro entram em colapso de sinal/ruído em poucas semanas — gravar tudo é gravar nada.
 
 ### 2. Indexação
 
-Como organizar o que foi ingerido. Os eixos comuns são: **vetorial** (embeddings + similarity search), **grafo** (entidades e relações explícitas, com travessia), **hierárquico** (tiers de memória, RAM/disk), e **espacial** (memory palace, organização por loci). Implementações reais costumam combinar: Zep usa grafo temporal, Mem0 mistura vetorial e relacional, Letta organiza em tiers explícitos de tamanho.
+Como organizar o que foi ingerido. Os eixos comuns são: **vetorial** ([[Dicionário de IA#embedding|embeddings]] + similarity search), **grafo** (entidades e relações explícitas, com travessia), **hierárquico** (tiers de memória, RAM/disk), e **espacial** (memory palace, organização por loci). Implementações reais costumam combinar: Zep usa grafo temporal, Mem0 mistura vetorial e relacional, Letta organiza em tiers explícitos de tamanho.
 
 A decisão central é o trade-off entre **custo de write** e **custo de read**. Indexação rica (embeddings + grafo + hierarquia) gasta no momento da escrita para tornar a leitura barata e precisa; indexação minimalista (só append em arquivo) é trivial no write mas joga toda a complexidade para o read. Não há resposta universal — depende da assimetria entre frequência de ingestão e frequência de query no caso de uso.
 
 ### 3. Retrieval (read)
 
-Como buscar quando o agente precisa. Os padrões consolidados são: **similarity search** (cosine ou dot product sobre embeddings), **graph traversal** (seguir arestas a partir de entidades mencionadas), **hybrid search** (BM25 lexical combinado com vetor semântico) e **reranking** (segundo passo que reordena top-N por relevância semântica fina). Decisões importantes: tamanho do top-k, query rewriting (transformar a pergunta antes de buscar), e se há ou não cache de resultados.
+Como buscar quando o agente precisa. Os padrões consolidados são: **similarity search** (cosine ou dot product sobre embeddings), **graph traversal** (seguir arestas a partir de entidades mencionadas), **[[Dicionário de IA#hybrid search|hybrid search]]** ([[Dicionário de IA#BM25|BM25]] lexical combinado com vetor semântico) e **[[Dicionário de IA#reranking|reranking]]** (segundo passo que reordena top-N por relevância semântica fina). Decisões importantes: tamanho do top-k, query rewriting (transformar a pergunta antes de buscar), e se há ou não cache de resultados.
 
 Retrieval é onde a maior parte do esforço de pesquisa acadêmica se concentra — porque é mensurável: dá para benchmarkar com LongMemEval e ver número subindo. É também onde mais se exagera. Um retrieval excelente sobre uma memória mal mantida produz respostas precisamente erradas; um retrieval mediano sobre uma memória bem curada produz respostas certas. A nota [[21 - Comparativo crítico (LongMemEval)|comparativo crítico]] explora essa assimetria.
 
@@ -106,9 +106,9 @@ A observação contraintuitiva, e que aparece em quase toda implementação madu
 
 Du et al. (2026) propõem uma classificação ortogonal aos cinco componentes — em vez de "o que cada sistema tem", olham para "como cada sistema resolve a memória de longo prazo". Cinco mecanismos emergem como dominantes na literatura:
 
-1. **Context-resident compression.** Compactar o histórico dentro do próprio contexto da chamada — resumir turnos antigos, manter só fatos essenciais. Sem armazenamento externo. Limite: o que cabe no context window.
+1. **Context-resident compression.** Compactar o histórico dentro do próprio contexto da chamada — resumir turnos antigos, manter só fatos essenciais. Sem armazenamento externo. Limite: o que cabe no [[Dicionário de IA#Context window|context window]].
 
-2. **Retrieval-augmented stores.** Armazenamento externo (vector DB, grafo, arquivos) acessado via query no momento da inferência — RAG-like. A maior parte das implementações comerciais (Mem0, Zep, basic-memory) cai aqui.
+2. **Retrieval-augmented stores.** Armazenamento externo ([[Dicionário de IA#vector database|vector DB]], grafo, arquivos) acessado via query no momento da inferência — [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]]-like. A maior parte das implementações comerciais (Mem0, Zep, basic-memory) cai aqui.
 
 3. **Reflective self-improvement.** O agente reflete sobre a própria memória e a refina ativamente — extrai padrões, consolida insights, abstrai princípios. Origem em Park et al. (2023) com o ciclo observation/reflection/planning das generative agents.
 

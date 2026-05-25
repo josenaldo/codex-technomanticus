@@ -19,7 +19,7 @@ aliases:
 # O que é um agent
 
 > [!abstract] TL;DR
-> Um **AI agent** é um sistema que combina um LLM (cérebro), um conjunto de **ferramentas** (mãos), e um **loop de execução** com autonomia de decisão. Dado um objetivo, o agent decide sozinho o que fazer em cada passo: qual tool chamar, com quais argumentos, quando pedir mais informação, quando terminar. Isso é o que distingue agent de chat, de pipeline RAG, e de workflow hardcoded. **Autonomia de decisão no loop é o que define um agent.**
+> Um **AI agent** é um sistema que combina um [[Dicionário de IA#LLM (Large Language Model)|LLM]] (cérebro), um conjunto de **ferramentas** (mãos), e um **loop de execução** com autonomia de decisão. Dado um objetivo, o agent decide sozinho o que fazer em cada passo: qual tool chamar, com quais argumentos, quando pedir mais informação, quando terminar. Isso é o que distingue agent de chat, de pipeline RAG, e de workflow hardcoded. **Autonomia de decisão no loop é o que define um agent.**
 
 ## A definição operacional
 
@@ -86,13 +86,13 @@ Exemplos: research assistant, coding agent (Claude Code, Cursor), debugging agen
 > [!tip]
 > 1. Sabe quando NÃO usar agent
 > 2. Desenha tools como APIs de verdade: descrições claras, tipos, erros úteis, sem sobreposição
-> 3. Sempre define `max_steps` e guardrails
+> 3. Sempre define `max_steps` e [[Dicionário de IA#Guardrail|guardrails]]
 > 4. Trata ações destrutivas com human-in-the-loop
-> 5. Instrumenta tudo: cada tool call, input, output, latência, custo
+> 5. Instrumenta tudo: cada [[Dicionário de IA#tool call|tool call]], input, output, latência, custo
 > 6. Entende que agents falham de formas novas
-> 7. Decompõe em sub-agents quando a tarefa é complexa
+> 7. Decompõe em [[Dicionário de IA#subagent|sub-agents]] quando a tarefa é complexa
 > 8. Mede resultado, não processo
-> 9. Pratica prompt injection defense
+> 9. Pratica [[Dicionário de IA#prompt injection|prompt injection]] defense
 > 10. Tem evaluation de agent, não só de LLM
 
 ## A pergunta de teste

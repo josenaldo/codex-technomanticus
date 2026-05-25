@@ -21,7 +21,7 @@ aliases:
 # Caso real — Auditoria de 47M tokens em maio 2026
 
 > [!abstract] TL;DR
-> Auditoria de uso pessoal em maio de 2026: **47.2M tokens em 32 dias, 73.3% em Opus 4.7**. Cinco vetores de gasto identificados via `ccusage blocks` e `rtk gain`: hook RTK desligado em quase todas as sessões (sangrando ~2.1M tokens), sessões de 8h+ sem `/clear`, abuso de `general-purpose` em buscas simples, default invertido para Opus em vez de Sonnet, e contexto >150k em 85% do uso. Fix mais barato e maior impacto: reativar o hook RTK no `settings.json`. Plano por ROI fecha a economia projetada em ~60-80% sem perda de capacidade.
+> Auditoria de uso pessoal em maio de 2026: **47.2M [[Dicionário de IA#Token|tokens]] em 32 dias, 73.3% em Opus 4.7**. Cinco vetores de gasto identificados via `ccusage blocks` e `rtk gain`: hook RTK desligado em quase todas as sessões (sangrando ~2.1M tokens), sessões de 8h+ sem `/clear`, abuso de `general-purpose` em buscas simples, default invertido para Opus em vez de Sonnet, e contexto >150k em 85% do uso. Fix mais barato e maior impacto: reativar o hook RTK no `settings.json`. Plano por ROI fecha a economia projetada em ~60-80% sem perda de capacidade.
 
 ## Contexto
 
@@ -42,7 +42,7 @@ Auditoria executada em **maio de 2026** sobre meu uso pessoal do [[03-Dominios/I
 | Distribuição por modelo | 73.3% Opus 4.7 | Invertido em relação ao policy declarada |
 | Comandos Bash totais | 23.908 | Volume normal pra uso intenso |
 | Comandos via RTK | 65 (0.3%) | **Hook desligado em quase todas as sessões** |
-| Subagentes (% do uso) | 54% | `general-purpose` sozinho = 8% |
+| [[Dicionário de IA#subagent\|Subagentes]] (% do uso) | 54% | `general-purpose` sozinho = 8% |
 | Subagentes `superpowers:*` | 19% | Skills carregam instruções pesadas |
 | Sessões com contexto >150k | 85% | Sessões longas sem `/clear` |
 

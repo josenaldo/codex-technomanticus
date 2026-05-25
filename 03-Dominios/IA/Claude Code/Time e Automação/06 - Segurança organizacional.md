@@ -22,9 +22,9 @@ tags:
 
 O risco não é o modelo fazer algo malicioso por conta própria. O risco é:
 
-1. **Acesso excessivo**: agente com MCP apontando para banco de produção pode executar qualquer SQL
-2. **Propagação de prompt injection**: um arquivo de código pode conter instrução para o agente fazer algo fora do escopo
-3. **Automação sem revisão**: `--no-permission-prompts` em CI sem `--allowedTools` restrito deixa o agente livre
+1. **Acesso excessivo**: agente com [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] apontando para banco de produção pode executar qualquer SQL
+2. **Propagação de [[Dicionário de IA#prompt injection|prompt injection]]**: um arquivo de código pode conter instrução para o agente fazer algo fora do escopo
+3. **Automação sem revisão**: `--no-permission-prompts` em CI sem `--allowedTools` restrito deixa o [[Dicionário de IA#Agent|agente]] livre
 4. **Credenciais expostas**: API keys em prompts, logs, ou arquivos temporários que o agente gera
 
 ## Política de permissões
@@ -180,7 +180,7 @@ No GitHub Actions, a chave fica em `Settings > Secrets > Actions`. Nunca em `.en
 
 ## Armadilhas
 
-**"O modelo não faria isso"**: o modelo faz o que o contexto indica. Se o contexto permite, e a tarefa parece exigir, ele vai. Não confie em autocontrole do modelo — configure guardrails.
+**"O modelo não faria isso"**: o modelo faz o que o contexto indica. Se o contexto permite, e a tarefa parece exigir, ele vai. Não confie em autocontrole do modelo — configure [[Dicionário de IA#Guardrail|guardrails]].
 
 **MCP de produção "só para testar"**: uma vez configurado, o MCP está disponível em qualquer sessão. Um novo dev ou um prompt mal formulado pode consultar ou modificar produção sem querer.
 

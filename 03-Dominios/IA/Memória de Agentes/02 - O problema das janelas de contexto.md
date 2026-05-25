@@ -23,7 +23,7 @@ aliases:
 
 ## O que é
 
-Janela de contexto é o número de tokens que um LLM processa em uma única chamada, somando entrada (system prompt, histórico, documentos, tool results) e saída gerada. Tudo que o modelo "sabe" sobre a tarefa em curso vive ali; nada além disso é considerado. Quando a janela enche, o conteúdo mais antigo é truncado ou descartado pelo orquestrador antes da próxima chamada.
+[[Dicionário de IA#Context window|Janela de contexto]] é o número de [[Dicionário de IA#Token|tokens]] que um [[Dicionário de IA#LLM (Large Language Model)|LLM]] processa em uma única chamada, somando entrada (system prompt, histórico, documentos, tool results) e saída gerada. Tudo que o modelo "sabe" sobre a tarefa em curso vive ali; nada além disso é considerado. Quando a janela enche, o conteúdo mais antigo é truncado ou descartado pelo orquestrador antes da próxima chamada.
 
 Em abril de 2026 os limites declarados pelos principais provedores são, em ordem de grandeza:
 
@@ -48,15 +48,15 @@ Os quatro problemas abaixo se manifestam em ordem crescente de sutileza. Os dois
 
 ### 1. Custo linear em tokens
 
-Cada token enviado e cada token gerado é cobrado. Para Claude Opus 4.7, em abril de 2026, a tabela oficial cita aproximadamente **$5 por milhão de tokens de input** e **$25 por milhão de tokens de output**. Modelos de Sonnet e Haiku ficam abaixo, e há descontos relevantes via prompt caching e batch processing — mas o custo nominal segue linear no tamanho do prompt.
+Cada token enviado e cada token gerado é cobrado. Para Claude Opus 4.7, em abril de 2026, a tabela oficial cita aproximadamente **$5 por milhão de tokens de input** e **$25 por milhão de tokens de output**. Modelos de Sonnet e Haiku ficam abaixo, e há descontos relevantes via [[Dicionário de IA#Prompt caching|prompt caching]] e batch processing — mas o custo nominal segue linear no tamanho do prompt.
 
 Em números arredondados: encher uma janela de 1M tokens de input em Opus custa cerca de **$5 por requisição** (sem cache). Para um chat eventual, é trivial. Para um app com volume — milhares de usuários, várias chamadas por sessão — vira fatura proibitiva rapidamente. Memória externa existe, em parte, exatamente para evitar enviar o mesmo histórico repetido a cada turno.
 
 ### 2. Latência de prefill
 
-Antes do primeiro token de saída, o modelo precisa processar todo o input — etapa chamada **prefill**. O TTFT (*time to first token*) é dominado por esse custo quando o prompt é longo. Attention tradicional é **O(n²)** em memória e compute em relação ao tamanho do contexto, então prompts grandes não escalam linearmente em latência: escalam pior.
+Antes do primeiro token de saída, o modelo precisa processar todo o input — etapa chamada **prefill**. O TTFT (*time to first token*) é dominado por esse custo quando o prompt é longo. [[Dicionário de IA#attention|Attention]] tradicional é **O(n²)** em memória e compute em relação ao tamanho do contexto, então prompts grandes não escalam linearmente em latência: escalam pior.
 
-Otimizações como **FlashAttention**, **paged attention**, kernels customizados e técnicas de KV-cache mitigam constantes e melhoram throughput, mas não eliminam a complexidade assintótica. Em janelas de centenas de milhares a milhões de tokens, é normal o usuário esperar dezenas de segundos antes do primeiro caractere aparecer. Para aplicações conversacionais, isso é fatal de UX. Para aplicações batch, é apenas caro.
+Otimizações como **FlashAttention**, **paged attention**, kernels customizados e técnicas de [[Dicionário de IA#KV cache|KV-cache]] mitigam constantes e melhoram throughput, mas não eliminam a complexidade assintótica. Em janelas de centenas de milhares a milhões de tokens, é normal o usuário esperar dezenas de segundos antes do primeiro caractere aparecer. Para aplicações conversacionais, isso é fatal de UX. Para aplicações batch, é apenas caro.
 
 ### 3. Lost in the middle
 

@@ -18,7 +18,7 @@ aliases:
 # Aider — o pair programmer de terminal
 
 > [!abstract] TL;DR
-> Aider é uma ferramenta open-source (Apache 2.0) de terminal que funciona como pair programmer AI com foco em Git. Cada mudança vira um commit automático com mensagem descritiva. É model-agnostic (traz sua própria API key), suporta edição multi-file, e gera um "repository map" semântico para dar contexto ao LLM. Em 2026, é a escolha preferida de devs seniors que valorizam auditabilidade, controle granular, e independência de vendor.
+> [[Dicionário de IA#Aider|Aider]] é uma ferramenta open-source (Apache 2.0) de terminal que funciona como pair programmer AI com foco em Git. Cada mudança vira um commit automático com mensagem descritiva. É model-agnostic (traz sua própria API key), suporta edição multi-file, e gera um "repository map" semântico para dar contexto ao LLM. Em 2026, é a escolha preferida de devs seniors que valorizam auditabilidade, controle granular, e independência de vendor.
 
 ## O que é
 
@@ -35,7 +35,7 @@ Para devs que querem IA sem abrir mão de controle:
 
 - Cada mudança é um commit — reversível com `git revert`
 - Escolha livre de modelo — troque de provider sem trocar de ferramenta
-- Transparência total — veja exatamente o que o LLM vê e o que ele muda
+- Transparência total — veja exatamente o que o [[Dicionário de IA#LLM (Large Language Model)|LLM]] vê e o que ele muda
 
 ## Como funciona
 

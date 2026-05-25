@@ -18,7 +18,7 @@ aliases:
 # Casos comuns no mercado
 
 > [!abstract] TL;DR
-> Em 2026, MCP virou padrão em **5 categorias** de uso: (1) **dev tools internos** (codebase, internal APIs), (2) **integrações cross-tool** (mesmo server, múltiplos clients), (3) **agents corporativos** (workflows internos), (4) **assistentes pessoais** (vault, calendar, email), (5) **distribuição de capabilities** (publicar server público). Esta nota dá exemplos concretos por categoria + boas práticas. Reconhecer o caso certo é metade do trabalho.
+> Em 2026, [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] virou padrão em **5 categorias** de uso: (1) **dev tools internos** (codebase, internal APIs), (2) **integrações cross-tool** (mesmo server, múltiplos clients), (3) **[[Dicionário de IA#Agent|agents]] corporativos** (workflows internos), (4) **assistentes pessoais** (vault, calendar, email), (5) **distribuição de capabilities** (publicar server público). Esta nota dá exemplos concretos por categoria + boas práticas. Reconhecer o caso certo é metade do trabalho.
 
 ## Caso 1 — Dev tools internos
 
@@ -26,11 +26,11 @@ aliases:
 
 ### Setup
 
-- MCP server interno expondo APIs/serviços críticos
+- [[Dicionário de IA#MCP server|MCP server]] interno expondo APIs/serviços críticos
 - Hospedado internamente (HTTP+SSE em K8s)
 - Auth via SSO corporativo (OAuth 2.1)
 - Audit log para compliance
-- Devs configuram nos seus clients (Claude Code, Cursor)
+- Devs configuram nos seus clients ([[Dicionário de IA#Claude Code|Claude Code]], Cursor)
 
 ### Tools típicas
 

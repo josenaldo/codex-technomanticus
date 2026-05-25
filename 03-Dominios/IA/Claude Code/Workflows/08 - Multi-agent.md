@@ -16,7 +16,7 @@ tags:
 # Multi-agent — coordenar múltiplos agentes
 
 > [!abstract] TL;DR
-> Multi-agent em Claude Code é o padrão de ter um agente orquestrador que define o plano e despacha sub-agents para executar partes independentes. O orquestrador não executa código — gerencia. Cada sub-agent executa em contexto limpo com escopo bem definido. O valor: tarefas em paralelo com contexto isolado, sem a degradação de uma sessão monolítica longa.
+> Multi-agent em [[Dicionário de IA#Claude Code|Claude Code]] é o padrão de ter um [[Dicionário de IA#orchestrator-worker|agente orquestrador]] que define o plano e despacha [[Dicionário de IA#subagent|sub-agents]] para executar partes independentes. O orquestrador não executa código — gerencia. Cada sub-agent executa em contexto limpo com escopo bem definido. O valor: tarefas em paralelo com contexto isolado, sem a degradação de uma sessão monolítica longa.
 
 ## Papéis no sistema multi-agent
 

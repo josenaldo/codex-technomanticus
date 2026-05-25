@@ -34,7 +34,7 @@ Sem um benchmark padrão, comparações entre sistemas de memória viram anedota
 A consequência prática é que o **score sozinho não basta**. Precisa vir acompanhado de:
 
 - **Modelo base usado** (gpt-4o-mini, gpt-4o, Claude Sonnet, etc.)
-- **Modo de avaliação** (raw retrieval × hybrid com reranking)
+- **Modo de avaliação** (raw retrieval × hybrid com [[Dicionário de IA#reranking|reranking]])
 - **Versão do benchmark** (v3, v4, etc.)
 - **Quem reportou** (autoria do paper × terceiro independente)
 - **Reprodutibilidade** (existe scaffolding público para reexecutar?)
@@ -67,7 +67,7 @@ Quatro detalhes operacionais explicam a maior parte das discrepâncias quando se
 
 **Score depende fortemente do modelo base.** O caso Zep é o exemplo canônico: o paper `arxiv:2501.13956` §4.3.2 Tabela 2 reporta **63,8% com gpt-4o-mini** e **71,2% com gpt-4o** — quase oito pontos absolutos só pela troca de modelo, sem mudança no sistema de memória. Comparar Zep-com-gpt-4o-mini contra Mem0-com-gpt-4o (ou contra MemPalace, que reporta com modelos mais capazes) é, literalmente, *apples to oranges*. O ganho relativo do Zep sobre o baseline gpt-4o sem memória é de **+18,5% relativo (≈11 pontos absolutos)** — número que vale a pena memorizar para evitar a confusão com a métrica absoluta.
 
-**Score depende do modo: raw vs hybrid.** "Raw" refere-se a retrieval direto do store. "Hybrid" envolve uma camada extra (LLM reranking, expansão de query, fusão com keyword search). O salto MemPalace 96,6% → 98,4% é precisamente esse: ativando o pipeline hybrid v4. Não é necessariamente trapaça — é uma escolha arquitetural válida — mas comparar 98,4% hybrid de um sistema com 93,4% raw de outro embute uma comparação injusta.
+**Score depende do modo: raw vs hybrid.** "Raw" refere-se a retrieval direto do store. "Hybrid" envolve uma camada extra ([[Dicionário de IA#LLM (Large Language Model)|LLM]] reranking, expansão de query, fusão com keyword search). O salto MemPalace 96,6% → 98,4% é precisamente esse: ativando o pipeline hybrid v4. Não é necessariamente trapaça — é uma escolha arquitetural válida — mas comparar 98,4% hybrid de um sistema com 93,4% raw de outro embute uma comparação injusta.
 
 **Score depende da versão do benchmark.** "v4" do MemPalace difere do conjunto de queries usado em reports anteriores. LongMemEval, como qualquer benchmark vivo, recebe atualizações; ler o número sem o sufixo de versão é arriscado.
 
@@ -107,7 +107,7 @@ LongMemEval é melhor que nada — mas é benchmark, não oráculo. Há cenário
 - **Workload muito específico** (financeiro real-time, código, multimodal): rodar **benchmark próprio** com queries do domínio é mais informativo que qualquer score genérico.
 - **Casos multimodal**. LongMemEval é text-only. Se o sistema vai indexar imagens, áudio ou vídeo, o score não captura o caso.
 - **Casos que exigem temporal reasoning específico**. Zep "perde" no número agregado mas brilha em temporal — workloads com bitemporalidade pesada (when-was-true × when-was-known) escolhem Zep apesar do score.
-- **Q&A sobre docs estáveis**. Se o caso é literalmente "responder perguntas sobre uma base de documentação que não muda", **RAG bem feito basta** (ver [[04 - RAG vs memória de longo prazo|04]]) — não há razão para adicionar memória de agente.
+- **Q&A sobre docs estáveis**. Se o caso é literalmente "responder perguntas sobre uma base de documentação que não muda", **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] bem feito basta** (ver [[04 - RAG vs memória de longo prazo|04]]) — não há razão para adicionar memória de agente.
 - **Conversas curtas**. LongMemEval mede *long-term*. Em chat de janela única, o benchmark não diferencia bem os sistemas.
 
 ## Armadilhas comuns

@@ -21,7 +21,7 @@ aliases:
 # Estrutura `.claude/` lazy-load — carga inicial enxuta, resto sob demanda
 
 > [!abstract] TL;DR
-> A cada `claude` aberto, o Claude Code lê CLAUDE.md, `.claude/` e tudo que o `.claudeignore` *não* exclui. Em projetos com docs históricas e CLAUDE.md inflado, isso queima 8k–15k tokens *antes* da primeira pergunta. A solução estrutural é separar o que precisa estar visível no startup (instruções de comportamento, comandos diários, armadilhas críticas) do que pode estar disponível mas não carregado (sessões antigas, decisões, ADRs). Tudo continua acessível por menção explícita — só não custa nada até ser pedido.
+> A cada `claude` aberto, o [[Dicionário de IA#Claude Code|Claude Code]] lê CLAUDE.md, `.claude/` e tudo que o `.claudeignore` *não* exclui. Em projetos com docs históricas e CLAUDE.md inflado, isso queima 8k–15k [[Dicionário de IA#Token|tokens]] *antes* da primeira pergunta. A solução estrutural é separar o que precisa estar visível no startup (instruções de comportamento, comandos diários, armadilhas críticas) do que pode estar disponível mas não carregado (sessões antigas, decisões, ADRs). Tudo continua acessível por menção explícita — só não custa nada até ser pedido.
 
 ## O que é
 
@@ -134,7 +134,7 @@ Se CLAUDE.md + `.claude/` somam >5k tokens em um projeto de tamanho médio, há 
 
 **`.claudeignore` mal configurado bloqueando arquivos legítimos**. Se você ignora `docs/` inteiro, mas o agente precisa ler um ADR específico que você mencionou, ele vai falhar. `.claudeignore` afeta também leitura sob demanda — teste depois de configurar.
 
-**Cache miss em prompt cache**. CLAUDE.md grande mas estável é melhor do que CLAUDE.md pequeno mas mutável: o prompt cache da Anthropic só ativa quando o início do contexto é idêntico entre chamadas. Se você fica trocando CLAUDE.md de sessão pra sessão, anula o desconto de cache (~$0.30/MTok vs $3/MTok). Estabilidade > tamanho.
+**Cache miss em [[Dicionário de IA#Prompt caching|prompt cache]]**. CLAUDE.md grande mas estável é melhor do que CLAUDE.md pequeno mas mutável: o prompt cache da Anthropic só ativa quando o início do contexto é idêntico entre chamadas. Se você fica trocando CLAUDE.md de sessão pra sessão, anula o desconto de cache (~$0.30/MTok vs $3/MTok). Estabilidade > tamanho.
 
 **Atualizar `.claude/COMMON_MISTAKES.md` toda hora**. Se vira diário de bugs, perde o efeito (e quebra cache). Limite a bugs que custaram >1h pra debugar. Se passou de 10–15 itens, é hora de arquivar os mais antigos.
 

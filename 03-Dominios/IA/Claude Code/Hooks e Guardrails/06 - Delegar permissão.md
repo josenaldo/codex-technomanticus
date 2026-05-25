@@ -16,11 +16,11 @@ tags:
 # Delegar permissão a outro LLM — pattern meta-agente
 
 > [!abstract] TL;DR
-> Em vez de regras fixas de allow/block, você pode delegar a decisão de permissão a outro LLM. O hook chama um segundo Claude via `claude --print`, passa o comando como contexto, e usa a resposta para bloquear ou aprovar. É o pattern meta-agente: um agente supervisiona o outro. Útil quando a lógica de segurança é contextual demais para ser reduzida a regex.
+> Em vez de regras fixas de allow/block, você pode delegar a decisão de permissão a outro [[Dicionário de IA#LLM (Large Language Model)|LLM]]. O hook chama um segundo Claude via `claude --print`, passa o comando como contexto, e usa a resposta para bloquear ou aprovar. É o pattern meta-agente: um agente supervisiona o outro. Útil quando a lógica de segurança é contextual demais para ser reduzida a regex.
 
 ## Por que delegar a um LLM
 
-Guardrails baseados em padrões têm um limite: o que é perigoso depende do contexto. `rm -rf dist/` é rotina. `rm -rf src/` é catastrófico. Um regex que bloqueia um bloqueia o outro.
+[[Dicionário de IA#Guardrail|Guardrails]] baseados em padrões têm um limite: o que é perigoso depende do contexto. `rm -rf dist/` é rotina. `rm -rf src/` é catastrófico. Um regex que bloqueia um bloqueia o outro.
 
 Um LLM supervisor pode raciocinar sobre o contexto:
 - O comando está removendo um diretório de build ou código fonte?
@@ -185,9 +185,9 @@ Escolha fail-open (mais produtivo) ou fail-closed (mais seguro) baseado no ambie
 
 **Confiar cegamente na resposta do meta-agente**: LLMs podem cometer erros de avaliação. Use o meta-agente como camada adicional, não como substituto completo dos guardrails baseados em padrões.
 
-**Prompt injection via comando**: um atacante que controla o conteúdo do comando pode tentar manipular o meta-agente. Escape o conteúdo do comando antes de incluir no prompt, ou trate o output do meta-agente como dado não confiável.
+**[[Dicionário de IA#prompt injection|Prompt injection]] via comando**: um atacante que controla o conteúdo do comando pode tentar manipular o meta-agente. Escape o conteúdo do comando antes de incluir no prompt, ou trate o output do meta-agente como dado não confiável.
 
-**Recursão**: se o meta-agente chama `claude --print`, que dispara hooks, que chamam o meta-agente — você tem recursão infinita. Certifique-se de que o subagente não herda os hooks que o dispararam (use `--no-hooks` se disponível, ou desabilite via variável de ambiente).
+**Recursão**: se o meta-agente chama `claude --print`, que dispara hooks, que chamam o meta-agente — você tem recursão infinita. Certifique-se de que o [[Dicionário de IA#subagent|subagente]] não herda os hooks que o dispararam (use `--no-hooks` se disponível, ou desabilite via variável de ambiente).
 
 **Custo invisível**: o meta-agente corre na conta da API do projeto. Em equipes, isso pode escalar rapidamente se cada dev tiver o hook habilitado globalmente.
 

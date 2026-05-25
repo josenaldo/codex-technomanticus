@@ -18,7 +18,7 @@ aliases:
 # MCP servers oficiais e populares
 
 > [!abstract] TL;DR
-> Em 2026, o ecossistema MCP tem **milhares de servers** disponíveis. Antes de criar próprio, **busque no Awesome MCP Servers** — chance alta de já existir. Categorias principais: filesystem/git, databases, dev tools (GitHub, Linear, Jira), comunicação (Slack, email), browsers (Playwright), busca (web, docs), observabilidade (Sentry, Datadog), AI (Anthropic, OpenAI, Hugging Face). Reuso vence build em 90% dos casos.
+> Em 2026, o ecossistema [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] tem **milhares de servers** disponíveis. Antes de criar próprio, **busque no Awesome MCP Servers** — chance alta de já existir. Categorias principais: filesystem/git, databases, dev tools (GitHub, Linear, Jira), comunicação (Slack, email), browsers (Playwright), busca (web, docs), observabilidade (Sentry, Datadog), AI (Anthropic, OpenAI, Hugging Face). Reuso vence build em 90% dos casos.
 
 ## Onde achar
 
@@ -122,7 +122,7 @@ aliases:
 
 ## Servers que vale instalar (defaults sensatos)
 
-Para **dev fullstack** usando Claude Code/Cursor:
+Para **dev fullstack** usando [[Dicionário de IA#Claude Code|Claude Code]]/Cursor:
 
 ```json
 {
@@ -159,7 +159,7 @@ Antes de instalar:
 > Server third-party tem **acesso ao agent**. Risco real:
 >
 > - Server malicioso lê seus arquivos
-> - Server faz prompt injection
+> - Server faz [[Dicionário de IA#prompt injection|prompt injection]]
 > - Server exfiltra credentials
 > - Server reporta atividade
 >

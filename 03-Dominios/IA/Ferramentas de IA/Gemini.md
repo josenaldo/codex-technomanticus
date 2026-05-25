@@ -15,7 +15,7 @@ publish: true
 
 # Gemini
 
-> Gemini é a aposta do Google em LLMs, e em 2026 é o modelo mais multimodal e o único com context window de 2M tokens. Para um fullstack senior, Gemini é relevante principalmente em três casos: (1) quando o problema envolve imagem, áudio ou vídeo nativamente; (2) quando você precisa processar documentos gigantes em uma única chamada; (3) quando sua stack já vive no Google Cloud. Fora desses casos, Claude e GPT costumam oferecer experiência melhor em coding interativo. Esta nota cobre os modelos, ferramentas (Gemini CLI, Code Assist, Vertex AI), diferenciais, limitações, e como encaixar Gemini na sua stack. Para comparação detalhada ver [[Comparativo de LLMs]].
+> Gemini é a aposta do Google em [[Dicionário de IA#LLM (Large Language Model)|LLMs]], e em 2026 é o modelo mais multimodal e o único com [[Dicionário de IA#Context window|context window]] de 2M tokens. Para um fullstack senior, Gemini é relevante principalmente em três casos: (1) quando o problema envolve imagem, áudio ou vídeo nativamente; (2) quando você precisa processar documentos gigantes em uma única chamada; (3) quando sua stack já vive no Google Cloud. Fora desses casos, Claude e GPT costumam oferecer experiência melhor em coding interativo. Esta nota cobre os modelos, ferramentas (Gemini CLI, Code Assist, Vertex AI), diferenciais, limitações, e como encaixar Gemini na sua stack. Para comparação detalhada ver [[Comparativo de LLMs]].
 
 ## O que é
 
@@ -44,13 +44,13 @@ Posicionamento:
 
 1. **Usa Gemini onde ele brilha** — multimodal, contexto gigante, grounding — e outros modelos no resto.
 2. **Escolhe Vertex AI em enterprise** por governance e data residency.
-3. **Aproveita grounding com Google Search** em vez de montar RAG quando a fonte é web pública.
+3. **Aproveita grounding com Google Search** em vez de montar [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] quando a fonte é web pública.
 4. **Usa multimodal real** (não só "imagem anexada") — combina texto + imagem + vídeo em um único prompt.
 5. **Domina `GEMINI.md`** — análogo a CLAUDE.md, usado pelo Gemini CLI e Code Assist.
 6. **Conhece o pricing Vertex AI vs API direta** — pode ser confuso.
 7. **Usa Gemini 2.5 Flash como workhorse** de triagem com custo agressivo.
 8. **Entende limitações do 2M window** — context rot real em tasks difíceis.
-9. **Integra MCP** quando possível (suporte crescente em 2026).
+9. **Integra [[Dicionário de IA#MCP (Model Context Protocol)|MCP]]** quando possível (suporte crescente em 2026).
 10. **Mede antes de migrar** — não assume "Gemini > X" baseado em benchmarks públicos.
 
 ## Modelos Gemini — família 2.5
@@ -117,7 +117,7 @@ Gemini 2.5 Pro suporta até 2M tokens — o maior público entre principais LLMs
 
 ### 3. Grounding com Google Search
 
-Capability única de consultar Google Search durante a geração, citando URLs na resposta. Elimina alucinação em fatos atuais e permite respostas com informação mais recente que o cutoff do modelo.
+Capability única de consultar Google Search durante a geração, citando URLs na resposta. Elimina [[Dicionário de IA#Hallucination|alucinação]] em fatos atuais e permite respostas com informação mais recente que o cutoff do modelo.
 
 ```python
 response = client.generate_content(

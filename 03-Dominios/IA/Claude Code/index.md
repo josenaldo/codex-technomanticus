@@ -20,7 +20,7 @@ aliases:
 > [!abstract] TL;DR
 > Trilha Claude Code em 6 galhos: Mental Model, Configuração, Hooks e Guardrails, Skills e MCP, Workflows, Time e Automação. Cobre desde como o agente realmente funciona até CI/CD, multi-agent e governança de time.
 
-Claude Code é o agente de terminal da Anthropic — e usá-lo bem é diferente de apenas rodar comandos. Esta trilha cobre o que um senior dev precisa saber para ir além do básico: entender o loop agentic, configurar o agente para o seu projeto, programar guardrails com hooks, criar skills modulares, trabalhar com padrões avançados (TDD, multi-agent, sessões paralelas) e escalar o uso para times e pipelines de CI/CD.
+[[Dicionário de IA#Claude Code|Claude Code]] é o [[Dicionário de IA#Coding agent|agente de terminal]] da Anthropic — e usá-lo bem é diferente de apenas rodar comandos. Esta trilha cobre o que um senior dev precisa saber para ir além do básico: entender o [[Dicionário de IA#agentic loop|loop agentic]], configurar o agente para o seu projeto, programar [[Dicionário de IA#Guardrail|guardrails]] com hooks, criar skills modulares, trabalhar com padrões avançados (TDD, multi-agent, sessões paralelas) e escalar o uso para times e pipelines de CI/CD.
 
 > [!tip] Por onde começar?
 >
@@ -37,7 +37,7 @@ Claude Code é o agente de terminal da Anthropic — e usá-lo bem é diferente 
 - [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — galho 1: o loop agentic, como o agente lê código, tool use, context window, modos de operação, compaction, custo e decisão
 - [[03-Dominios/IA/Claude Code/Configuração/index|Configuração]] — galho 2: hierarquia de configuração, CLAUDE.md, settings.json, permissions, aliases e armadilhas
 - [[03-Dominios/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — galho 3: lifecycle de hooks, PreToolUse, PostToolUse, Stop, guardrails, meta-agente, segurança, debugging
-- [[03-Dominios/IA/Claude Code/Skills e MCP/index|Skills e MCP]] — galho 4: anatomia de skills, criar skills, MCP servers essenciais, criar MCP customizado, composição, versionamento em time
+- [[03-Dominios/IA/Claude Code/Skills e MCP/index|Skills e MCP]] — galho 4: anatomia de skills, criar skills, [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] servers essenciais, criar MCP customizado, composição, versionamento em time
 - [[03-Dominios/IA/Claude Code/Workflows/index|Workflows]] — galho 5: Plan Mode, TDD, refactoring pesado, debugging, code review, sessões paralelas, sub-agents, multi-agent, prompting, gestão de contexto
 - [[03-Dominios/IA/Claude Code/Time e Automação/index|Time e Automação]] — galho 6: headless mode, CI/CD, dispatch, CLAUDE.md compartilhado, custo, segurança organizacional, onboarding, qualidade de output
 

@@ -47,7 +47,7 @@ A partir de agosto de 2026, **descumprir não é "boas práticas"** — é multa
 
 ## Para code generation especificamente
 
-Empresa usando LLM para gerar código tem que documentar:
+Empresa usando [[Dicionário de IA#LLM (Large Language Model)|LLM]] para gerar código tem que documentar:
 
 | O quê | Como armazenar |
 |---|---|

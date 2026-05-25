@@ -20,7 +20,7 @@ tags:
 
 ## A distinção fundamental
 
-**Skills de processo** ensinam o agente *como fazer* algo:
+**Skills de processo** ensinam o [[Dicionário de IA#Agent|agente]] *como fazer* algo:
 - "Para implementar uma feature, siga: teste → implementação → refactor"
 - "Para revisar código, verifique: segurança, performance, legibilidade, testes"
 - "Para debugar, comece pela reprodução mínima"

@@ -16,7 +16,7 @@ tags:
 # Controle de custo — monitoramento, limites, ccusage
 
 > [!abstract] TL;DR
-> Cada invocação de Claude Code consome tokens — e tokens custam dinheiro. Sem visibilidade, o custo cresce silenciosamente até surpreender no final do mês. A ferramenta `ccusage` agrega o uso por projeto e sessão. Para automações em CI/CD, `--max-turns` e `timeout` são os controles primários. Para o time, o custo por PR pode ser previsto e gerenciado com prompts e contexto bem dimensionados.
+> Cada invocação de [[Dicionário de IA#Claude Code|Claude Code]] consome [[Dicionário de IA#Token|tokens]] — e tokens custam dinheiro. Sem visibilidade, o custo cresce silenciosamente até surpreender no final do mês. A ferramenta `ccusage` agrega o uso por projeto e sessão. Para automações em CI/CD, `--max-turns` e `timeout` são os controles primários. Para o time, o custo por PR pode ser previsto e gerenciado com prompts e contexto bem dimensionados.
 
 ## Como o custo se acumula
 
@@ -25,7 +25,7 @@ Cada chamada ao modelo cobra tokens de input (prompt + histórico + contexto de 
 - **Sessão interativa**: cada mensagem acrescenta ao histórico — conversas longas ficam caras exponencialmente
 - **Headless**: custo por invocação é mais previsível, mas invocações em loop somam rápido
 - **Tool calls**: cada tool call que retorna resultado grande (ex.: `cat` de arquivo longo) infla o input da próxima mensagem
-- **Cache**: o modelo mantém cache de contexto — re-invocar dentro de 5 minutos reusa partes do contexto e reduz custo
+- **Cache**: o modelo mantém [[Dicionário de IA#Prompt caching|cache de contexto]] — re-invocar dentro de 5 minutos reusa partes do contexto e reduz custo
 
 ## ccusage — visualizando o consumo
 
@@ -177,7 +177,7 @@ Se o time usa API keys individuais, a Anthropic Console mostra uso agregado por 
 
 **Sessão interativa para tarefas repetitivas**: se você repete a mesma análise toda manhã, escreva um script com `claude -p` ao invés de fazer a mesma sessão interativa — o resultado é mais previsível e o custo é mensurável.
 
-**Cache frio em CI**: se o job de CI roda o agente esporadicamente, cada chamada começa sem cache. Agrupar análises em uma só invocação (em vez de múltiplas invocações por arquivo) pode ser mais eficiente.
+**Cache frio em CI**: se o job de CI roda o agente esporadicamente, cada chamada começa sem [[Dicionário de IA#Cache hit rate|cache]]. Agrupar análises em uma só invocação (em vez de múltiplas invocações por arquivo) pode ser mais eficiente.
 
 ## Veja também
 

@@ -16,7 +16,7 @@ tags:
 # PreToolUse — interceptar e validar antes de executar
 
 > [!abstract] TL;DR
-> PreToolUse é o hook que executa antes de qualquer tool call. É o ponto de controle principal do Claude Code: intercepta, valida, e pode bloquear. Exit code 0 = aprovado, exit code não-zero = bloqueado. O agente recebe o resultado do hook e decide como proceder. É onde guardrails, auditoria e aprovação humana são implementados.
+> PreToolUse é o hook que executa antes de qualquer [[Dicionário de IA#tool call|tool call]]. É o ponto de controle principal do [[Dicionário de IA#Claude Code|Claude Code]]: intercepta, valida, e pode bloquear. Exit code 0 = aprovado, exit code não-zero = bloqueado. O agente recebe o resultado do hook e decide como proceder. É onde [[Dicionário de IA#Guardrail|guardrails]], auditoria e aprovação humana são implementados.
 
 ## Como funciona
 

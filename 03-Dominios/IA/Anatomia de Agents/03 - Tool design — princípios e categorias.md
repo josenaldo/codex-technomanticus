@@ -19,7 +19,7 @@ aliases:
 # Tool design — princípios e categorias
 
 > [!abstract] TL;DR
-> Tools são o que transforma um LLM em agent. **Tool design é 60% do trabalho** — descrição confusa = agent confuso. Princípios: nome claro e único, descrição como API docstring, inputs tipados com schema, outputs compactos e estruturados, erros informativos, sem sobreposição, idempotência quando possível. Categorias: read-only, write local, write external, interactive, meta. Tools destrutivas SEMPRE têm human-in-the-loop ou sandboxing.
+> Tools são o que transforma um [[Dicionário de IA#LLM (Large Language Model)|LLM]] em agent. **Tool design é 60% do trabalho** — descrição confusa = agent confuso. Princípios: nome claro e único, descrição como API docstring, inputs tipados com schema, outputs compactos e estruturados, erros informativos, sem sobreposição, idempotência quando possível. Categorias: read-only, write local, write external, interactive, meta. Tools destrutivas SEMPRE têm human-in-the-loop ou sandboxing.
 
 ## A regra fundamental
 
@@ -173,7 +173,7 @@ Padrão essencial para [[Economia de Tokens|07 - Compressão de tool definitions
 |---|---|
 | **Tools por agent** | 5-15 (acima → confusão) |
 | **Tokens médios em output de tool** | <2K |
-| **% tool calls com erro corrigido pelo agent** | >70% |
+| **% [[Dicionário de IA#tool call\|tool calls]] com erro corrigido pelo agent** | >70% |
 | **% tool calls que precisaram retry** | <10% |
 
 ## Veja também

@@ -31,7 +31,7 @@ aliases:
 >
 > ❌ *"Não use SQL concatenation"* — pode evitar SQL e ainda criar XSS, SSRF, command injection
 >
-> ❌ *Listar 50 regras no system prompt* — atenção dilui ([[Context Engineering|03 - Context rot e atenção diluída]])
+> ❌ *Listar 50 regras no [[Dicionário de IA#system prompt|system prompt]]* — atenção dilui ([[Context Engineering|03 - Context rot e atenção diluída]])
 >
 > ❌ *"Pense em segurança antes de escrever"* — não muda significantemente a saída
 

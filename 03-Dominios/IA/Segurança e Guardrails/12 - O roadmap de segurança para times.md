@@ -170,7 +170,7 @@ Lockfile verification:
 - Network proxy filtrante
 - Git: deny de `--force`, `reset --hard`
 - DB: confirmar zero acesso a prod
-- Audit log de todas as ações do agente
+- Audit log de todas as ações do [[Dicionário de IA#Agent|agente]]
 
 Considerar: rodar agente em container Docker para isolation extra.
 

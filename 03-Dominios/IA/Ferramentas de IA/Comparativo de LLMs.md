@@ -14,7 +14,7 @@ publish: true
 
 # Comparativo de LLMs
 
-> "Qual LLM devo usar?" é a pergunta que todo senior fullstack responde dezenas de vezes por ano. Esta nota é um framework de decisão prático, destilado de literatura técnica, post-mortems públicos, e benchmarks independentes. **Não existe "o melhor LLM"** — existe o melhor para cada combinação de (task, restrições de custo, restrições de latência, stack, compliance). Esta nota dá: uma matriz de decisão prática, trade-offs reais (não marketing), e critérios para escolher entre Claude, GPT, Gemini e ferramentas derivadas em 2026. Para notas individuais, ver [[Claude]], [[GitHub Copilot]], [[Codex]], [[Gemini]]. Para fundamentos de LLMs em geral, [[Anatomia dos LLMs|LLMs]].
+> "Qual [[Dicionário de IA#LLM (Large Language Model)|LLM]] devo usar?" é a pergunta que todo senior fullstack responde dezenas de vezes por ano. Esta nota é um framework de decisão prático, destilado de literatura técnica, post-mortems públicos, e benchmarks independentes. **Não existe "o melhor LLM"** — existe o melhor para cada combinação de (task, restrições de custo, restrições de latência, stack, compliance). Esta nota dá: uma matriz de decisão prática, trade-offs reais (não marketing), e critérios para escolher entre Claude, GPT, Gemini e ferramentas derivadas em 2026. Para notas individuais, ver [[Claude]], [[GitHub Copilot]], [[Codex]], [[Gemini]]. Para fundamentos de LLMs em geral, [[Anatomia dos LLMs|LLMs]].
 
 ## A pergunta errada e a pergunta certa
 
@@ -24,7 +24,7 @@ publish: true
 
 Antes de responder a primeira, é necessário esclarecer:
 
-1. **Task:** coding interativo? Classificação em volume? Chatbot? RAG? Multimodal?
+1. **Task:** coding interativo? Classificação em volume? Chatbot? [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]]? Multimodal?
 2. **Custo tolerável:** $0.001 por chamada ou $0.30?
 3. **Latência:** tempo real (< 500ms) ou async (minutos)?
 4. **Stack existente:** já usa GCP? AWS? GitHub? Nenhum?
@@ -37,7 +37,7 @@ Só depois dessas respostas faz sentido recomendar algo.
 
 | Família | Empresa | Modelos principais | Context max | Força definidora |
 | --- | --- | --- | --- | --- |
-| **Claude** | Anthropic | Opus 4.x, Sonnet 4.6, Haiku 4.5 | 1M tokens | Raciocínio profundo, código, tool use consistente, safety |
+| **Claude** | Anthropic | Opus 4.x, Sonnet 4.6, Haiku 4.5 | 1M tokens | Raciocínio profundo, código, [[Dicionário de IA#tool use\|tool use]] consistente, safety |
 | **GPT** | OpenAI | GPT-4.1, GPT-4o, o1, o3 | 1M tokens (dependendo) | Ecossistema amplo, multimodal, voice, integração enterprise |
 | **Gemini** | Google DeepMind | 2.5 Pro, 2.5 Flash, 2.5 Flash-Lite | 1M-2M tokens | Multimodal nativo, contexto gigante, integração Google Cloud |
 
@@ -207,9 +207,9 @@ Para tasks sensíveis: sempre prompt injection defense + output filtering + huma
 | **Codex (OpenAI)** | GPT-4.1, o1, o3 | Agent cloud async | Paralelização, PR automation | Não interativo |
 | **Gemini CLI** | Gemini 2.5 | CLI | Multimodal, grounding, contexto 2M | Ecosistema menor |
 | **Gemini Code Assist** | Gemini | IDE extension | Integração GCP | Menos features que Copilot |
-| **Aider** | Múltiplos (user escolhe) | CLI | Open source, controle fino | Requer config |
+| **[[Dicionário de IA#Aider\|Aider]]** | Múltiplos (user escolhe) | CLI | Open source, controle fino | Requer config |
 | **Cline** | Múltiplos | VS Code extension | Open source, flexível | Menos polido que Claude Code |
-| **Continue** | Múltiplos | VS Code/JetBrains | Open source, multi-model | Maturidade variável |
+| **[[Dicionário de IA#Continue\|Continue]]** | Múltiplos | VS Code/JetBrains | Open source, multi-model | Maturidade variável |
 
 ### Frameworks de agent
 
@@ -651,7 +651,7 @@ Padrões frequentes em times escolhendo e migrando entre LLMs em 2026.
 
 **Padrão observado:** feature tem acurácia ~85%. Time decide fine-tuning para chegar a 95%. Custo de fine-tuning + tempo de setup + complexidade operacional altos. Alternativa típica (melhorar prompting, structured outputs, few-shot, RAG) chega a 92-94% sem tuning.
 
-**Lição:** exaurir prompting/RAG antes de considerar fine-tuning.
+**Lição:** exaurir prompting/RAG antes de considerar [[Dicionário de IA#fine-tuning|fine-tuning]].
 
 ## Exercícios hands-on
 

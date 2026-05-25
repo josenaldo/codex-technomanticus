@@ -17,11 +17,11 @@ tags:
 # MCP servers essenciais — postgres, github, filesystem, browser
 
 > [!abstract] TL;DR
-> Anthropic e a comunidade mantêm MCP servers prontos para os casos de uso mais comuns. Para o dev típico, quatro servers cobrem quase tudo: postgres para banco de dados, github para repositórios e issues, filesystem para acesso granular a arquivos, e puppeteer/playwright para automação de browser. Esta nota cobre configuração e quando usar cada um.
+> Anthropic e a comunidade mantêm [[Dicionário de IA#MCP server|MCP servers]] prontos para os casos de uso mais comuns. Para o dev típico, quatro servers cobrem quase tudo: postgres para banco de dados, github para repositórios e issues, filesystem para acesso granular a arquivos, e puppeteer/playwright para automação de browser. Esta nota cobre configuração e quando usar cada um.
 
 ## @modelcontextprotocol/server-postgres
 
-**Para que serve**: rodar queries SQL diretas no banco a partir do Claude Code, sem precisar de terminal.
+**Para que serve**: rodar queries SQL diretas no banco a partir do [[Dicionário de IA#Claude Code|Claude Code]], sem precisar de terminal.
 
 **Instalação**: não precisa instalar globalmente — o `npx` busca na primeira invocação.
 

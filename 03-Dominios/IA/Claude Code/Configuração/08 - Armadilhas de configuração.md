@@ -15,7 +15,7 @@ tags:
 # Armadilhas de configuração — o que dá errado e como evitar
 
 > [!abstract] TL;DR
-> Os erros de configuração mais comuns do Claude Code se dividem em três categorias: permissões erradas (o agente para a cada passo, ou faz coisas perigosas sem perguntar), CLAUDE.md ineficaz (contexto ausente ou confuso), e problemas de segurança (secrets no git). Este note documenta cada armadilha com diagnóstico e solução.
+> Os erros de configuração mais comuns do [[Dicionário de IA#Claude Code|Claude Code]] se dividem em três categorias: permissões erradas (o agente para a cada passo, ou faz coisas perigosas sem perguntar), CLAUDE.md ineficaz (contexto ausente ou confuso), e problemas de segurança (secrets no git). Este note documenta cada armadilha com diagnóstico e solução.
 
 ## Armadilhas de permissão
 

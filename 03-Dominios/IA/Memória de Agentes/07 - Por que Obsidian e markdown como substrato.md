@@ -19,7 +19,7 @@ aliases:
 # Por que Obsidian e markdown como substrato
 
 > [!abstract] TL;DR
-> Markdown + Obsidian é o substrato natural para memória de agentes em 2026. As razões são concretas: o conteúdo é humano-legível (e quem opera o agente pode revisar o que o LLM escreveu sem ferramenta especializada), versionável em git (diff, blame, rollback gratuitos), portável (zero vendor lock-in), e o grafo emerge sozinho via wikilinks. Obsidian funciona como IDE — graph view, backlinks, dataview — sem ser pesado. O ponto-chave: o **mesmo formato** é lido e escrito tanto por humano quanto por LLM. O servidor MCP `basic-memory` é evidência prática: ele expõe um vault Obsidian para o LLM sem conversão de formato. Quando o substrato é o mesmo, a colaboração humano↔agente para de exigir tradução.
+> Markdown + Obsidian é o substrato natural para memória de agentes em 2026. As razões são concretas: o conteúdo é humano-legível (e quem opera o agente pode revisar o que o LLM escreveu sem ferramenta especializada), versionável em git (diff, blame, rollback gratuitos), portável (zero vendor lock-in), e o grafo emerge sozinho via wikilinks. Obsidian funciona como IDE — graph view, backlinks, dataview — sem ser pesado. O ponto-chave: o **mesmo formato** é lido e escrito tanto por humano quanto por LLM. O servidor [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] `basic-memory` é evidência prática: ele expõe um vault Obsidian para o [[Dicionário de IA#LLM (Large Language Model)|LLM]] sem conversão de formato. Quando o substrato é o mesmo, a colaboração humano↔agente para de exigir tradução.
 
 ## O que é
 

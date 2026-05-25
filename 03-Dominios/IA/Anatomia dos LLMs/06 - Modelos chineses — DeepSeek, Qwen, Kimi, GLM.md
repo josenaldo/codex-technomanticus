@@ -32,7 +32,7 @@ O ecossistema chinês de LLMs open-weight amadureceu em 2025-2026 a ponto de ofe
 
 ## Por que importa
 
-- **Custo** — modelos chineses open-weight via API (Together, Fireworks, SiliconFlow) custam 5x–20x menos que flagships ocidentais
+- **Custo** — modelos chineses open-weight via API (Together, Fireworks, SiliconFlow) custam 5x–20x menos que [[Dicionário de IA#flagship model|flagships]] ocidentais
 - **Soberania** — licenças MIT/Apache permitem uso irrestrito, sem dependência de vendor
 - **Self-hosting** — VRAM requirements são otimizados via MoE, viabilizando rodar localmente
 - **Competição** — a qualidade desses modelos força Anthropic, OpenAI e Google a baixar preços
@@ -47,7 +47,7 @@ O ecossistema chinês de LLMs open-weight amadureceu em 2025-2026 a ponto de ofe
 | **Contexto**        | 128k–163k tokens                                         |
 | **Licença**         | MIT                                                      |
 | **Força principal** | Raciocínio matemático, coding defensivo, lógica complexa |
-| **Self-hosting**    | Viável com multi-GPU (otimizado para MoE inference)      |
+| **Self-hosting**    | Viável com multi-GPU (otimizado para MoE [[Dicionário de IA#inference\|inference]])      |
 
 DeepSeek se destacou por publicar papers detalhados sobre suas técnicas de treinamento, incluindo **Multi-Head Latent Attention (MLA)** e **DeepSeekMoE** — inovações que influenciaram toda a indústria.
 
@@ -69,7 +69,7 @@ DeepSeek se destacou por publicar papers detalhados sobre suas técnicas de trei
 
 Qwen é o modelo chinês mais versátil. A série 3.6 trouxe melhorias significativas em:
 
-- **Agentic coding** — melhor que DeepSeek em workflows com tool use
+- **Agentic coding** — melhor que DeepSeek em workflows com [[Dicionário de IA#tool use|tool use]]
 - **Contexto longo** — 1M tokens com boa retenção
 - **Multimodal** — visão nativa permite debugging visual
 

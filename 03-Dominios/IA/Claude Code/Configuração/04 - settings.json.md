@@ -15,7 +15,7 @@ tags:
 # settings.json — permissões, comportamentos, env vars
 
 > [!abstract] TL;DR
-> `settings.json` é o arquivo de configuração estruturada do Claude Code — controla permissões (allow/deny de tools e comandos), comportamentos globais, variáveis de ambiente e hooks. Existe em três locais: global (`~/.claude/`), projeto (`.claude/`) e local (`.claude/settings.local.json`). A maioria dos projetos precisa no mínimo configurar permissões de Bash.
+> `settings.json` é o arquivo de configuração estruturada do [[Dicionário de IA#Claude Code|Claude Code]] — controla permissões (allow/deny de tools e comandos), comportamentos globais, variáveis de ambiente e hooks. Existe em três locais: global (`~/.claude/`), projeto (`.claude/`) e local (`.claude/settings.local.json`). A maioria dos projetos precisa no mínimo configurar permissões de Bash.
 
 ## O que é
 

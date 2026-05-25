@@ -26,7 +26,7 @@ aliases:
 
 O insight central de [[Andrej Karpathy|Karpathy]] é uma analogia com compiladores. Artigos brutos — PDFs, papers, posts, transcrições — são como _source code_: úteis, mas verbosos, redundantes, contextualmente implícitos, organizados para humanos e não para consulta rápida. O LLM atua como _compilador_: lê esse material e o "compila" numa wiki estruturada de páginas em markdown interlinkadas, otimizada para retrieval e síntese. A wiki é o _executable_ — o artefato que você efetivamente consulta no dia a dia.
 
-A diferença crucial em relação a [[05 - Beyond RAG - quando RAG não basta|RAG]] é direcional: em RAG o LLM **lê** documentos estáticos a cada query, recuperando trechos por similaridade vetorial. No LLM Wiki o LLM **escreve** o knowledge base — ele sintetiza, cruza referências, atualiza páginas existentes quando novas fontes entram, e mantém um catálogo navegável. RAG resolve "achar a passagem certa"; o LLM Wiki resolve "manter um corpo de conhecimento que cresce e se reorganiza sozinho".
+A diferença crucial em relação a [[05 - Beyond RAG - quando RAG não basta|RAG]] é direcional: em [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] o [[Dicionário de IA#LLM (Large Language Model)|LLM]] **lê** documentos estáticos a cada query, recuperando trechos por similaridade vetorial. No LLM Wiki o LLM **escreve** o knowledge base — ele sintetiza, cruza referências, atualiza páginas existentes quando novas fontes entram, e mantém um catálogo navegável. RAG resolve "achar a passagem certa"; o LLM Wiki resolve "manter um corpo de conhecimento que cresce e se reorganiza sozinho".
 
 Há três papéis bem definidos. O **humano** cura as fontes (decide o que entra no raw) e dá direção estratégica (o que pesquisar, o que aprofundar). O **LLM** faz o trabalho de _bookkeeping_: ler, resumir, criar páginas de entidade, atualizar índices, identificar contradições. A **wiki** é o artefato que compõe — cada nova fonte ingerida não substitui o que já existe, ela enriquece, estende e refina. É essa propriedade de composição que diferencia o pattern de um repositório passivo de notas.
 
@@ -104,7 +104,7 @@ A wiki pessoal de Karpathy num único tópico de pesquisa cresceu para cerca de 
 - **Confiança cega em LLM-generated content.** O humano precisa revisar páginas críticas, especialmente nas primeiras semanas, antes que erros silenciosos virem citações em outras páginas e contaminem a wiki inteira.
 - **Esperar que funcione "out of the box".** O pattern requer iteração no schema com base no que o LLM erra. As primeiras versões do schema sempre têm lacunas; refiná-lo é parte do trabalho.
 - **Confundir o pattern com RAG.** Wiki **escrita** pelo LLM é categoricamente diferente de wiki **lida** pelo LLM. A escrita é o ponto. Quem implementa "RAG sobre uma pasta de markdown" e chama isso de LLM Wiki perde o que torna o pattern interessante.
-- **Escalar `index.md` além do limite do contexto.** O `index.md` único funciona até 100-200 páginas. Acima disso, ele estoura o contexto do LLM em uma leitura — e aí precisa de busca real (BM25, vetorial, ou grafo de entidades) para não perder cobertura.
+- **Escalar `index.md` além do limite do contexto.** O `index.md` único funciona até 100-200 páginas. Acima disso, ele estoura o [[Dicionário de IA#Context window|contexto]] do LLM em uma leitura — e aí precisa de busca real ([[Dicionário de IA#BM25|BM25]], vetorial, ou grafo de entidades) para não perder cobertura.
 
 ## Veja também
 

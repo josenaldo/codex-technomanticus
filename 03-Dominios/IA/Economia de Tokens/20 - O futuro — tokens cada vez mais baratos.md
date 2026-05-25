@@ -17,7 +17,7 @@ aliases:
 # O futuro — tokens cada vez mais baratos
 
 > [!abstract] TL;DR
-> O preço por token caiu ~100x entre 2023 e 2026, e a tendência continua. MoE, quantização, chips especializados, e competição entre providers aceleram a queda. Em 2027, modelos mid-tier de hoje serão commodities ultrabaratas. Mas volume de uso sobe ainda mais rápido — agentes consomem 10-100x mais tokens que chat. O gasto total pode SUBIR mesmo com preço por token caindo. A economia de tokens continuará sendo essencial.
+> O preço por [[Dicionário de IA#Token|token]] caiu ~100x entre 2023 e 2026, e a tendência continua. MoE, quantização, chips especializados, e competição entre providers aceleram a queda. Em 2027, modelos mid-tier de hoje serão commodities ultrabaratas. Mas volume de uso sobe ainda mais rápido — [[Dicionário de IA#Agent|agentes]] consomem 10-100x mais tokens que chat. O gasto total pode SUBIR mesmo com preço por token caindo. A economia de tokens continuará sendo essencial.
 
 ## Como funciona
 
@@ -39,7 +39,7 @@ aliases:
 |-------|---------|
 | **MoE (Mixture of Experts)** | Menos computação por token (ativa <20% dos parâmetros) |
 | **Quantização (INT4/INT8)** | Mesmo modelo, 2-4x menos memória GPU |
-| **Chips especializados** | Groq, TPUs, Trainium — hardware otimizado para inferência |
+| **Chips especializados** | Groq, TPUs, Trainium — hardware otimizado para [[Dicionário de IA#inference\|inferência]] |
 | **Competição** | DeepSeek, Qwen forçam queda de preço global |
 | **Escala** | Mais usuários = melhor utilização de hardware |
 
@@ -62,7 +62,7 @@ Exemplo:
 | O que muda | O que NÃO muda |
 |------------|---------------|
 | Preço por token cai | Output continua sendo ~5x mais caro que input |
-| Modelos mid-tier viram commodity | Flagship sempre terá premium |
+| Modelos mid-tier viram commodity | [[Dicionário de IA#flagship model\|Flagship]] sempre terá premium |
 | Contexto fica maior e mais barato | Contexto irrelevante ainda dilui qualidade |
 | Caching fica padrão | Pruning ainda será necessário |
 

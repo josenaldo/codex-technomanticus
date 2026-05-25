@@ -14,11 +14,11 @@ publish: true
 
 # Claude
 
-> Claude é uma das três famílias de LLM dominantes em 2026 (junto com GPT e Gemini), com diferenciais técnicos concretos: qualidade de raciocínio em tarefas longas, tool use consistente, contexto de 1M tokens com retenção razoável (não só "no benchmark"), Claude Agent SDK limpo, e ecossistema maduro de MCP, skills e subagents. Para muitos workloads de coding e agents, é a escolha default em times sérios. Esta nota é a trilha completa: modelos, API, ferramentas (Claude Code, Desktop, web), como operar em produção, e como adotar progressivamente. Para fundamentos de LLMs em geral ver [[Anatomia dos LLMs|LLMs]]; para comparação com outros modelos ver [[Comparativo de LLMs]].
+> Claude é uma das três famílias de LLM dominantes em 2026 (junto com GPT e Gemini), com diferenciais técnicos concretos: qualidade de raciocínio em tarefas longas, [[Dicionário de IA#tool use|tool use]] consistente, contexto de 1M tokens com retenção razoável (não só "no benchmark"), Claude Agent SDK limpo, e ecossistema maduro de [[Dicionário de IA#MCP (Model Context Protocol)|MCP]], skills e [[Dicionário de IA#subagent|subagents]]. Para muitos workloads de coding e agents, é a escolha default em times sérios. Esta nota é a trilha completa: modelos, API, ferramentas (Claude Code, Desktop, web), como operar em produção, e como adotar progressivamente. Para fundamentos de LLMs em geral ver [[Anatomia dos LLMs|LLMs]]; para comparação com outros modelos ver [[Comparativo de LLMs]].
 
 ## O que é
 
-**Claude** é a família de Large Language Models da **Anthropic** — empresa fundada em 2021 por ex-pesquisadores da OpenAI (Dario e Daniela Amodei entre os fundadores). Anthropic se posiciona como "AI safety company": treina modelos com foco em **Constitutional AI** (alinhamento via princípios escritos) e investe pesado em evaluation, red-teaming e research sobre comportamento de LLMs.
+**Claude** é a família de [[Dicionário de IA#LLM (Large Language Model)|Large Language Models]] da **Anthropic** — empresa fundada em 2021 por ex-pesquisadores da OpenAI (Dario e Daniela Amodei entre os fundadores). Anthropic se posiciona como "AI safety company": treina modelos com foco em **Constitutional AI** (alinhamento via princípios escritos) e investe pesado em evaluation, red-teaming e research sobre comportamento de LLMs.
 
 Em 2026, Claude é reconhecido como um dos top 2-3 LLMs no mundo, especialmente forte em:
 
@@ -26,7 +26,7 @@ Em 2026, Claude é reconhecido como um dos top 2-3 LLMs no mundo, especialmente 
 - **Código** — escrita, review, refactor, debugging
 - **Contexto longo** — processar codebases inteiras, livros, contratos
 - **Tool use** — chamar funções com inputs corretos
-- **Honestidade** — admitir não saber, evitar alucinação
+- **Honestidade** — admitir não saber, evitar [[Dicionário de IA#Hallucination|alucinação]]
 - **Safety** — recusar requisições prejudiciais sem ser chato
 
 O ecossistema Claude em 2026 tem cinco superfícies principais:
@@ -40,13 +40,13 @@ O ecossistema Claude em 2026 tem cinco superfícies principais:
 ## O que diferencia um senior usando Claude
 
 1. **Escolhe o modelo certo por task** (Opus para complexo, Sonnet para diário, Haiku para bulk).
-2. **Usa prompt caching em system prompts grandes** — economia típica de 50-90%.
+2. **Usa [[Dicionário de IA#Prompt caching|prompt caching]] em system prompts grandes** — economia típica de 50-90%.
 3. **Pin versioning em produção** (`claude-sonnet-4-6-20260315`), não alias.
 4. **Extended thinking conscientemente** — sabe quando o overhead vale a pena.
 5. **Tool use com schemas rigorosos** e fallback para re-ask em erro.
 6. **Claude Code com CLAUDE.md bem feito** e skills customizadas por projeto.
 7. **MCP servers locais** (filesystem, git, postgres) configurados no Claude Desktop.
-8. **Mede custo por feature** via console da Anthropic ou Langfuse.
+8. **Mede custo por feature** via console da Anthropic ou [[Dicionário de IA#Langfuse|Langfuse]].
 9. **Conhece guardrails:** constitutional AI, trust & safety, refuse patterns.
 10. **Usa Agent SDK para automação complexa**, não reinventa a roda com LangChain.
 
@@ -274,7 +274,7 @@ Benefícios:
 
 ### Batch API
 
-Para tasks não-urgentes em volume, Batch API processa até 50% mais barato com latência de minutos a horas.
+Para tasks não-urgentes em volume, [[Dicionário de IA#batch API|Batch API]] processa até 50% mais barato com latência de minutos a horas.
 
 ```python
 batch = client.messages.batches.create(

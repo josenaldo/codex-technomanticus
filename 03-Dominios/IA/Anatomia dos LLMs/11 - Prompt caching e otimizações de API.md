@@ -22,7 +22,7 @@ aliases:
 
 ## O que é
 
-**Prompt caching** é um mecanismo em que o provider armazena a representação computada (KV cache) de partes do prompt que se repetem entre chamadas. Na segunda chamada com o mesmo prefixo, o modelo pula a fase de "prefill" desses tokens, economizando compute e cobrando menos.
+**[[Dicionário de IA#Prompt caching|Prompt caching]]** é um mecanismo em que o provider armazena a representação computada ([[Dicionário de IA#KV cache|KV cache]]) de partes do prompt que se repetem entre chamadas. Na segunda chamada com o mesmo prefixo, o modelo pula a fase de "prefill" desses tokens, economizando compute e cobrando menos.
 
 ## Por que importa
 
@@ -199,7 +199,7 @@ Depois (economiza ~60% dos tokens de tool definitions):
 | Otimização                     | Redução de custo           | Esforço |
 | ------------------------------ | -------------------------- | ------- |
 | Prompt caching (system + docs) | 30-50% do total            | Baixo   |
-| Batch API para tarefas offline | 50% nessas tarefas         | Baixo   |
+| [[Dicionário de IA#batch API\|Batch API]] para tarefas offline | 50% nessas tarefas         | Baixo   |
 | Model routing                  | 40-60% nas tarefas simples | Médio   |
 | Compressão de tools            | 5-10% do input             | Baixo   |
 | Compactação de histórico       | 20-40% em sessões longas   | Médio   |
@@ -207,7 +207,7 @@ Depois (economiza ~60% dos tokens de tool definitions):
 
 ## Armadilhas
 
-- **"Caching resolve tudo"** — só funciona para partes estáticas do prompt. Se cada chamada tem contexto completamente diferente, cache hit rate é zero.
+- **"Caching resolve tudo"** — só funciona para partes estáticas do prompt. Se cada chamada tem contexto completamente diferente, [[Dicionário de IA#Cache hit rate|cache hit rate]] é zero.
 - **TTL de 5 minutos** — no Anthropic, o cache expira em 5 minutos sem uso. Em workflows com pausas longas (esperar CI, review), o cache frio é recomputado.
 - **Custo de escrita do cache** — na Anthropic, a primeira chamada custa 25% a mais. Se o padrão de uso é chamada única sem reuso, caching é mais caro.
 - **Comprimir demais as tools** — tool descriptions muito curtas podem confundir o modelo sobre quando e como usar a ferramenta. Encontre o equilíbrio.

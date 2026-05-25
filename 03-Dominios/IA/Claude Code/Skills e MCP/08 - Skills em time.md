@@ -16,7 +16,7 @@ tags:
 # Skills em time — versionar, manter, compartilhar
 
 > [!abstract] TL;DR
-> Skills em `.claude/skills/` são versionadas junto ao código — qualquer dev que clona o repo tem acesso imediato. O desafio não é técnico: é manter as skills atualizadas conforme o projeto evolui e garantir que o time as conhece e as usa. Skills desatualizadas são ativamente prejudiciais: o agente segue um processo que o projeto abandonou.
+> Skills em `.claude/skills/` são versionadas junto ao código — qualquer dev que clona o repo tem acesso imediato. O desafio não é técnico: é manter as skills atualizadas conforme o projeto evolui e garantir que o time as conhece e as usa. Skills desatualizadas são ativamente prejudiciais: o [[Dicionário de IA#Agent|agente]] segue um processo que o projeto abandonou.
 
 ## Por que versionar no repo
 
@@ -52,7 +52,7 @@ Comparando com `~/.claude/skills/` (global, pessoal):
   settings.json
 ```
 
-Subpastas por tipo tornam o catálogo legível. Claude Code encontra skills em qualquer nível dentro de `.claude/skills/`.
+Subpastas por tipo tornam o catálogo legível. [[Dicionário de IA#Claude Code|Claude Code]] encontra skills em qualquer nível dentro de `.claude/skills/`.
 
 ## Ciclo de vida de uma skill
 

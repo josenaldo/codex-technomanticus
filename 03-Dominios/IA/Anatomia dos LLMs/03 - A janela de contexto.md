@@ -22,7 +22,7 @@ aliases:
 
 ## O que é
 
-A **janela de contexto** (context window) é a quantidade máxima de tokens que um LLM consegue "ver" simultaneamente durante uma interação. Ela engloba **tudo**:
+A **[[Dicionário de IA#Context window|janela de contexto]]** (context window) é a quantidade máxima de [[Dicionário de IA#Token|tokens]] que um [[Dicionário de IA#LLM (Large Language Model)|LLM]] consegue "ver" simultaneamente durante uma interação. Ela engloba **tudo**:
 
 - System prompt e instruções
 - Histórico de mensagens
@@ -58,7 +58,7 @@ graph LR
 | -------------------- | ------------------------------------------------------- | ------------------------------------------- |
 | **Input tokens**     | Tudo que você envia: prompt, histórico, contexto, tools | Mais barato (ex: $3/MTok no Claude Sonnet)  |
 | **Output tokens**    | Tudo que o modelo gera: resposta, tool calls, reasoning | Mais caro (ex: $15/MTok no Claude Sonnet)   |
-| **Reasoning tokens** | Tokens internos de "pensamento" em modelos de reasoning | Cobrados como output, invisíveis ao usuário |
+| **[[Dicionário de IA#Reasoning tokens\|Reasoning tokens]]** | Tokens internos de "pensamento" em modelos de reasoning | Cobrados como output, invisíveis ao usuário |
 
 ### Janelas de contexto em 2026
 
@@ -94,7 +94,7 @@ graph TD
     F --> H[Turn 11: 20k tokens reset]
 ```
 
-Ferramentas como Claude Code e Cursor implementam **compactação automática** — quando o contexto se aproxima do limite, resumem o histórico e reiniciam com um contexto menor mas denso.
+Ferramentas como Claude Code e Cursor implementam **[[Dicionário de IA#context compaction|compactação automática]]** — quando o contexto se aproxima do limite, resumem o histórico e reiniciam com um contexto menor mas denso.
 
 ## Quando usar / quando não usar
 

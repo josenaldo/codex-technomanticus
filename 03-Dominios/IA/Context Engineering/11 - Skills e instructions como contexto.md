@@ -90,7 +90,7 @@ Brief description of what the project is and what the agent should help with.
 | | Instructions (`AGENTS.md`) | Skills |
 |---|---|---|
 | **Escopo** | Projeto inteiro | Tarefa específica |
-| **Tamanho** | 1-3K tokens | 200 tokens a 5K cada |
+| **Tamanho** | 1-3K [[Dicionário de IA#Token\|tokens]] | 200 tokens a 5K cada |
 | **Quando carregado** | Sempre, como contexto base | Quando a tarefa ativa |
 | **Exemplo** | "Use TypeScript strict mode" | "Como debugar regression de latência" |
 | **Atualização** | Raro, mudança importante | Iterativa, conforme aprende |

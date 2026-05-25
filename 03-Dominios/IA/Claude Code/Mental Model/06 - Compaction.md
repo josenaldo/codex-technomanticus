@@ -18,7 +18,7 @@ tags:
 
 ## O que é
 
-Quando a context window se aproxima do limite, o Claude Code pode compactar a sessão: em vez de ter o histórico completo de tool calls, mensagens e outputs, o contexto passa a ter um **summary** desse histórico seguido pelas mensagens mais recentes em forma completa.
+Quando a [[Dicionário de IA#Context window|context window]] se aproxima do limite, o [[Dicionário de IA#Claude Code|Claude Code]] pode [[Dicionário de IA#context compaction|compactar]] a sessão: em vez de ter o histórico completo de tool calls, mensagens e outputs, o contexto passa a ter um **summary** desse histórico seguido pelas mensagens mais recentes em forma completa.
 
 ```
 Antes da compaction:

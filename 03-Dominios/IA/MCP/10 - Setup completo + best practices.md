@@ -19,7 +19,7 @@ aliases:
 # Setup completo + best practices
 
 > [!abstract] TL;DR
-> Esta nota fecha a trilha com checklist end-to-end para construir e operar MCP servers em produção. Stack base: Python SDK + Pydantic + FastMCP + uvx para distribuição. Roadmap de 4 fases × ~1 semana cada. Best practices distiladas: tool design rigoroso, schemas tipados, audit log, versioning semver, MCP Inspector na CI. **Investimento total: ~4 semanas para server interno production-ready.**
+> Esta nota fecha a trilha com checklist end-to-end para construir e operar [[Dicionário de IA#MCP server|MCP servers]] em produção. Stack base: Python [[Dicionário de IA#SDK|SDK]] + Pydantic + FastMCP + uvx para distribuição. Roadmap de 4 fases × ~1 semana cada. Best practices distiladas: tool design rigoroso, schemas tipados, audit log, versioning semver, MCP Inspector na CI. **Investimento total: ~4 semanas para server interno production-ready.**
 
 ## Stack recomendada (2026)
 
@@ -186,7 +186,7 @@ logger.info(json.dumps(log_entry))
 - [ ] Rate limiting (slowapi ou custom)
 - [ ] Health check endpoint
 - [ ] Métricas exportadas (Prometheus, Datadog)
-- [ ] Tracing (OpenTelemetry)
+- [ ] [[Dicionário de IA#tracing|Tracing]] (OpenTelemetry)
 
 ### Pattern de tool com auth
 
@@ -339,7 +339,7 @@ Logs estruturados → ship to Loki/CloudWatch para analysis.
 | **Tools por server** | 5-15 |
 | **Tokens em descrição de tool** | 50-300 |
 | **Tokens em output médio** | <2K |
-| **Latência tool call (stdio)** | <100ms |
+| **Latência [[Dicionário de IA#tool call\|tool call]] (stdio)** | <100ms |
 | **Latência tool call (HTTP)** | <500ms |
 | **Uptime (HTTP server)** | >99.9% |
 | **Audit log coverage** | 100% |

@@ -114,7 +114,7 @@ Rodar pytest tests/test_transactions.py
 |---|---|---|---|
 | Diff legível | ✅ | ⚠️ | ❌ |
 | Git-friendly | ✅ | ✅ | ❌ |
-| LLM lê bem | ✅ | ✅ | ❌ |
+| [[Dicionário de IA#LLM (Large Language Model)\|LLM]] lê bem | ✅ | ✅ | ❌ |
 | LLM escreve bem | ✅ | ⚠️ (escapes) | ❌ |
 | Custo de setup | 0 | 0 | Alto |
 | Debug humano | ✅ | ⚠️ | ❌ |
@@ -166,7 +166,7 @@ Skills são **conhecimento reusável**; structured state é **memória de execu�
 
 - **Múltiplos usuários compartilhando o mesmo agente** — precisa de DB
 - **Escala alta de queries** — leitura sequencial de arquivos é lenta
-- **Search semântico** — vector store necessário
+- **Search semântico** — [[Dicionário de IA#vector store|vector store]] necessário
 - **Compliance/auditoria** — DB com log estruturado é mais defensável
 
 ## Anti-patterns

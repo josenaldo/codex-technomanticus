@@ -18,7 +18,7 @@ aliases:
 # Respostas concisas — controlar output tokens
 
 > [!abstract] TL;DR
-> Output tokens são 3-6x mais caros que input. Modelos são verbosos por default — geram explicações, preambles, e reformulações desnecessárias. Instruções como "seja conciso", max_tokens apropriado, e format constraints (JSON em vez de markdown) reduzem output em 40-70%. A técnica mais eficaz: diga ao modelo o que NÃO gerar.
+> [[Dicionário de IA#Completion tokens|Output tokens]] são 3-6x mais caros que input. Modelos são verbosos por default — geram explicações, preambles, e reformulações desnecessárias. Instruções como "seja conciso", max_tokens apropriado, e format constraints (JSON em vez de markdown) reduzem output em 40-70%. A técnica mais eficaz: diga ao modelo o que NÃO gerar.
 
 ## Como funciona
 
@@ -26,10 +26,10 @@ aliases:
 
 | Técnica | Redução | Exemplo |
 |---------|---------|---------|
-| **"Seja conciso"** no system prompt | 20-30% | "Responda de forma direta, sem preâmbulos" |
+| **"Seja conciso"** no [[Dicionário de IA#system prompt\|system prompt]] | 20-30% | "Responda de forma direta, sem preâmbulos" |
 | **max_tokens adequado** | Limita o máximo | 2048 em vez de default |
 | **Format constraints** | 30-50% | "Responda apenas com o código, sem explicação" |
-| **Structured output (JSON)** | 40-60% | JSON schema force formato mínimo |
+| **[[Dicionário de IA#structured output\|Structured output]] (JSON)** | 40-60% | JSON schema force formato mínimo |
 | **"Não explique, apenas faça"** | 30-50% | Evita verbose explanations |
 
 ### Exemplos

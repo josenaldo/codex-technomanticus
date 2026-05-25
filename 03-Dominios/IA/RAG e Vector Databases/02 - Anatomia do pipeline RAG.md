@@ -18,7 +18,7 @@ aliases:
 # Anatomia do pipeline RAG
 
 > [!abstract] TL;DR
-> Pipeline RAG tem **duas fases**: indexing (offline, uma vez por documento) e query (online, cada pergunta). Indexing: parse → chunk → embed → store. Query: rewrite → embed → retrieve → rerank → generate. Cada passo é uma oportunidade de melhorar OU destruir qualidade. Saber onde cada peça encaixa é pré-requisito para debugar quando a resposta vier ruim.
+> Pipeline [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] tem **duas fases**: indexing (offline, uma vez por documento) e query (online, cada pergunta). Indexing: parse → chunk → embed → store. Query: rewrite → embed → retrieve → rerank → generate. Cada passo é uma oportunidade de melhorar OU destruir qualidade. Saber onde cada peça encaixa é pré-requisito para debugar quando a resposta vier ruim.
 
 ## As duas fases
 
@@ -83,7 +83,7 @@ Detalhes em [[06 - Retrieval — hybrid search, BM25, query rewriting]].
 
 ### 6. Embed (query)
 
-Mesmo modelo do indexing. **Crucial** que seja o mesmo — embeddings de modelos diferentes não são comparáveis.
+Mesmo modelo do indexing. **Crucial** que seja o mesmo — [[Dicionário de IA#embedding|embeddings]] de modelos diferentes não são comparáveis.
 
 ### 7. Retrieve — similarity search
 
@@ -95,7 +95,7 @@ ORDER BY embedding <=> query_embedding
 LIMIT 50;
 ```
 
-Em produção: **hybrid retrieval** (BM25 + vector). Pure vector vence em ~70% dos casos; hybrid vence em ~95%.
+Em produção: **[[Dicionário de IA#hybrid search|hybrid retrieval]]** ([[Dicionário de IA#BM25|BM25]] + vector). Pure vector vence em ~70% dos casos; hybrid vence em ~95%.
 
 ### 8. Rerank — refinar top-k
 
@@ -139,7 +139,7 @@ graph TB
     P7["Prompt sem regras"] --> S7["LLM ignora contexto"]
 ```
 
-Eval **separa retrieval de generation** ([[09 - Evaluation de RAG]]) — sem isso, você não sabe onde está o problema.
+Eval **separa [[Dicionário de IA#retrieval|retrieval]] de generation** ([[09 - Evaluation de RAG]]) — sem isso, você não sabe onde está o problema.
 
 ## Latência típica
 

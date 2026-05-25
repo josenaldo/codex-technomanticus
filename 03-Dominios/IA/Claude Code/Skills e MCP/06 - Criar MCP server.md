@@ -16,7 +16,7 @@ tags:
 # Criar MCP server — quando e como
 
 > [!abstract] TL;DR
-> Crie um MCP server quando o projeto tem ferramentas internas, APIs privadas, ou dados estruturados que nenhum server existente acessa. O custo mínimo de criar um server é baixo: um arquivo TypeScript com 50-100 linhas que expõe uma ou duas tools. O SDK oficial do MCP cuida do protocolo; você cuida só da lógica de negócio.
+> Crie um [[Dicionário de IA#MCP server|MCP server]] quando o projeto tem ferramentas internas, APIs privadas, ou dados estruturados que nenhum server existente acessa. O custo mínimo de criar um server é baixo: um arquivo TypeScript com 50-100 linhas que expõe uma ou duas tools. O [[Dicionário de IA#SDK|SDK]] oficial do MCP cuida do protocolo; você cuida só da lógica de negócio.
 
 ## Quando criar vs reutilizar
 
@@ -141,7 +141,7 @@ A conexão `pool` persiste enquanto o server está rodando — não reabre a cad
 
 ## Expondo resources
 
-Resources são dados somente leitura que o agente pode consultar como referência:
+[[Dicionário de IA#resources (MCP)|Resources]] são dados somente leitura que o agente pode consultar como referência:
 
 ```typescript
 import {

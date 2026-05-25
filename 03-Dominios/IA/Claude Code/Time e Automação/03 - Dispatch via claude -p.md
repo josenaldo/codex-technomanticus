@@ -16,7 +16,7 @@ tags:
 # Dispatch via `claude -p` — casos de uso e padrões
 
 > [!abstract] TL;DR
-> `claude -p` (ou `claude --print`) é a interface de dispatch: um processo externo invoca o agente com um prompt, captura o output, e age sobre ele. Além de CI/CD, esse padrão aparece em scripts de manutenção, hooks de git que consultam o modelo, e em orquestradores que coordenam múltiplos agentes. A chave é tratar `claude -p` como qualquer outro processo CLI que lê stdin, escreve stdout, e retorna exit code.
+> `claude -p` (ou `claude --print`) é a interface de dispatch: um processo externo invoca o [[Dicionário de IA#Agent|agente]] com um prompt, captura o output, e age sobre ele. Além de CI/CD, esse padrão aparece em scripts de manutenção, hooks de git que consultam o modelo, e em orquestradores que coordenam múltiplos agentes. A chave é tratar `claude -p` como qualquer outro processo CLI que lê stdin, escreve stdout, e retorna exit code.
 
 ## O padrão básico de dispatch
 
@@ -241,7 +241,7 @@ EOF
 
 **Capturar stderr junto com stdout**: se o script usa `RESULTADO=$(claude -p ...)`, erros internos do agente vão para stderr e não aparecem em `$RESULTADO`. Separe os canais ou redirecione stderr para log separado.
 
-**Contexto grande demais em loop**: se você faz `cat arquivo | claude -p` em loop para dezenas de arquivos grandes, cada chamada pode exceder o limite de contexto. Adicione verificação de tamanho antes de passar para o agente.
+**Contexto grande demais em loop**: se você faz `cat arquivo | claude -p` em loop para dezenas de arquivos grandes, cada chamada pode exceder o [[Dicionário de IA#Context window|limite de contexto]]. Adicione verificação de tamanho antes de passar para o agente.
 
 ## Veja também
 

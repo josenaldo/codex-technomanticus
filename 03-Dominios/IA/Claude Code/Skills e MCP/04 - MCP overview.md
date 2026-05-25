@@ -16,7 +16,7 @@ tags:
 # MCP — Model Context Protocol overview para dev
 
 > [!abstract] TL;DR
-> MCP (Model Context Protocol) é o protocolo padrão que permite ao Claude Code acessar ferramentas externas: bancos de dados, APIs, browsers, sistemas de arquivo. Um MCP server expõe capabilities (tools, resources, prompts) que o agente pode invocar como se fossem tools nativas. Para o dev que usa Claude Code, MCP é o que faz o agente ter acesso ao contexto que está fora do código.
+> MCP (Model Context Protocol) é o protocolo padrão que permite ao [[Dicionário de IA#Claude Code|Claude Code]] acessar ferramentas externas: bancos de dados, APIs, browsers, sistemas de arquivo. Um [[Dicionário de IA#MCP server|MCP server]] expõe capabilities (tools, resources, prompts) que o agente pode invocar como se fossem tools nativas. Para o dev que usa Claude Code, MCP é o que faz o agente ter acesso ao contexto que está fora do código.
 
 ## O problema que o MCP resolve
 
@@ -32,14 +32,14 @@ Antes do MCP, a única opção era invocar esses sistemas via Bash, com output d
 
 ## Como o MCP funciona
 
-Um MCP server é um processo que roda localmente (ou remotamente) e expõe um conjunto de tools, resources e prompts via um protocolo padrão (JSON-RPC sobre stdio ou HTTP/SSE).
+Um MCP server é um processo que roda localmente (ou remotamente) e expõe um conjunto de [[Dicionário de IA#tools (MCP)|tools]], [[Dicionário de IA#resources (MCP)|resources]] e [[Dicionário de IA#prompts (MCP)|prompts]] via um protocolo padrão (JSON-RPC sobre stdio ou HTTP/SSE).
 
 ```
 Claude Code ←→ MCP Client ←→ MCP Server ←→ Sistema externo
                 (embutido)    (seu processo)  (Postgres, GitHub...)
 ```
 
-O Claude Code tem um MCP client embutido. Quando você configura um MCP server no `settings.json`, o client inicia o server e expõe suas capabilities ao agente.
+O Claude Code tem um [[Dicionário de IA#MCP client|MCP client]] embutido. Quando você configura um MCP server no `settings.json`, o client inicia o server e expõe suas capabilities ao agente.
 
 ## Os três tipos de capability MCP
 

@@ -12,13 +12,13 @@ updated: 2026-05-22
 
 # Economia de Tokens
 
-Em 2026, tokens são a unidade econômica da engenharia assistida por IA. Cada chamada de API, cada turno de agente, cada chain-of-thought interno consome tokens — e tokens custam dinheiro real. Engenheiros que ignoram essa economia descobrem do jeito difícil: faturas de quatro dígitos, contas pessoais inflando, ou times que param de usar a ferramenta porque o ROI virou negativo. Esta trilha mapeia o ciclo completo: por que tokens custam, por que agentes amplificam o gasto, quais técnicas reduzem input/output/reasoning, qual arquitetura escolher, como impor hard limits, como auditar desperdício, e quando o agente realmente vale o custo.
+Em 2026, [[Dicionário de IA#Token|tokens]] são a unidade econômica da engenharia assistida por IA. Cada chamada de API, cada turno de [[Dicionário de IA#Agent|agente]], cada [[Dicionário de IA#Chain-of-Thought (CoT)|chain-of-thought]] interno consome tokens — e tokens custam dinheiro real. Engenheiros que ignoram essa economia descobrem do jeito difícil: faturas de quatro dígitos, contas pessoais inflando, ou times que param de usar a ferramenta porque o ROI virou negativo. Esta trilha mapeia o ciclo completo: por que tokens custam, por que agentes amplificam o gasto, quais técnicas reduzem input/output/reasoning, qual arquitetura escolher, como impor hard limits, como auditar desperdício, e quando o agente realmente vale o custo.
 
 > [!info] Pré-requisitos
 > Recomendado ter lido a [[Anatomia dos LLMs]] (Trilha 1), especialmente [[02 - Tokens e tokenização]], [[10 - Pricing de APIs — como calcular custos]] e [[11 - Prompt caching e otimizações de API]]. Se já trabalha com [[Agentes de Codificação]] (Trilha 2), as notas sobre compactação, sub-agentes e tool compression vão ressoar imediatamente.
 
 > [!warning] Preços e ferramentas mudam rápido
-> Os preços, planos e ferramentas (ccusage, Langfuse, etc.) refletem o estado de **maio de 2026**. Tabelas de pricing mudam a cada trimestre — verifique sempre a documentação oficial antes de decidir arquitetura.
+> Os preços, planos e ferramentas (ccusage, [[Dicionário de IA#Langfuse|Langfuse]], etc.) refletem o estado de **maio de 2026**. Tabelas de pricing mudam a cada trimestre — verifique sempre a documentação oficial antes de decidir arquitetura.
 
 ## Comece por aqui
 
@@ -37,7 +37,7 @@ Antes de otimizar, é preciso entender por que custa, por que agentes custam mai
 
 A maior parte do custo está no input. Quatro técnicas que cortam tokens antes deles entrarem no modelo.
 
-- [[05 - Prompt caching na prática]] — KV cache reuse, 90% de desconto em prefixos repetidos
+- [[05 - Prompt caching na prática]] — [[Dicionário de IA#KV cache|KV cache]] reuse, 90% de desconto em prefixos repetidos
 - [[06 - Context pruning — o que remover do prompt]] — sinal vs ruído, pruning estático e dinâmico
 - [[07 - Compressão de tool definitions]] — schemas inflam contexto, como enxugá-los
 - [[08 - Compactação de histórico em agentes]] — summarization, sliding window, compactação automática

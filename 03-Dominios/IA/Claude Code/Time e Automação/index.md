@@ -23,7 +23,7 @@ aliases:
 
 ## Sobre este galho
 
-Claude Code foi projetado para escalar além do uso individual. Headless mode permite execução sem interação humana — ideal para CI/CD. O sistema de permissões e hooks viabiliza políticas organizacionais. CLAUDE.md compartilhado no repo garante que todos no time trabalhem com o mesmo contexto.
+[[Dicionário de IA#Claude Code|Claude Code]] foi projetado para escalar além do uso individual. Headless mode permite execução sem interação humana — ideal para CI/CD. O sistema de permissões e hooks viabiliza políticas organizacionais. CLAUDE.md compartilhado no repo garante que todos no time trabalhem com o mesmo [[Dicionário de IA#Context window|contexto]].
 
 Este galho cobre o que um tech lead ou engenheiro de plataforma precisa saber para introduzir Claude Code de forma sustentável num time.
 

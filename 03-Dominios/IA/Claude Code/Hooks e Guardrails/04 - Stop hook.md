@@ -16,7 +16,7 @@ tags:
 # Stop hook — notificação, logging, cleanup
 
 > [!abstract] TL;DR
-> O Stop hook executa quando a sessão do Claude Code termina — seja por conclusão natural, por timeout, ou por interrupção do usuário. É o hook de encerramento. Casos de uso: notificar que o trabalho foi concluído, criar um sumário da sessão, fazer cleanup de arquivos temporários, e registrar métricas de uso.
+> O Stop hook executa quando a sessão do [[Dicionário de IA#Claude Code|Claude Code]] termina — seja por conclusão natural, por timeout, ou por interrupção do usuário. É o hook de encerramento. Casos de uso: notificar que o trabalho foi concluído, criar um sumário da sessão, fazer cleanup de arquivos temporários, e registrar métricas de uso.
 
 ## Quando o Stop hook executa
 

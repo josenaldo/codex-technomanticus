@@ -16,11 +16,11 @@ tags:
 # Prompting para Claude Code — comunicar tarefas com precisão
 
 > [!abstract] TL;DR
-> Prompts vagos produzem implementações que "funcionam" mas não fazem o que você queria. A diferença entre um prompt eficaz e um ineficaz está em especificar: o que você sabe (contexto relevante), o que você quer (comportamento esperado), e o que não quer (restrições). O agente toma decisões para preencher lacunas — sua job é minimizar as lacunas.
+> Prompts vagos produzem implementações que "funcionam" mas não fazem o que você queria. A diferença entre um prompt eficaz e um ineficaz está em especificar: o que você sabe (contexto relevante), o que você quer (comportamento esperado), e o que não quer (restrições). O [[Dicionário de IA#Agent|agente]] toma decisões para preencher lacunas — sua job é minimizar as lacunas.
 
 ## O que o agente faz com um prompt
 
-Quando você dá uma instrução ao Claude Code, o agente:
+Quando você dá uma instrução ao [[Dicionário de IA#Claude Code|Claude Code]], o agente:
 
 1. Lê o CLAUDE.md para entender o contexto do projeto
 2. Examina os arquivos relevantes para entender o estado atual

@@ -16,7 +16,7 @@ tags:
 # Sub-agents e dispatch — delegar tarefas
 
 > [!abstract] TL;DR
-> Claude Code pode usar sub-agents para executar tarefas em paralelo com contexto isolado. Em vez de uma sessão longa acumulando contexto de múltiplas tarefas, você despacha agentes especializados: cada um recebe o contexto mínimo para sua tarefa, executa, e retorna o resultado. O benefício principal não é velocidade — é qualidade: agente com contexto limpo toma decisões melhores.
+> [[Dicionário de IA#Claude Code|Claude Code]] pode usar [[Dicionário de IA#subagent|sub-agents]] para executar tarefas em paralelo com contexto isolado. Em vez de uma sessão longa acumulando contexto de múltiplas tarefas, você despacha agentes especializados: cada um recebe o contexto mínimo para sua tarefa, executa, e retorna o resultado. O benefício principal não é velocidade — é qualidade: agente com [[Dicionário de IA#Context window|contexto]] limpo toma decisões melhores.
 
 ## O problema de contexto acumulado
 
@@ -78,7 +78,7 @@ claude --print "analise src/services/ e liste todos os endpoints sem autenticaç
        --output-format json
 ```
 
-## Padrão orquestrador/sub-agent
+## Padrão [[Dicionário de IA#orchestrator-worker|orquestrador]]/sub-agent
 
 ### Orquestrador define o plano
 

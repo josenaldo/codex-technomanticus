@@ -18,7 +18,7 @@ aliases:
 # O que é MCP e por que importa
 
 > [!abstract] TL;DR
-> **MCP (Model Context Protocol)** é o "USB-C para agents de IA". Antes dele, cada integração entre LLM e sistema externo (banco de dados, filesystem, Jira, Slack) era reinventar a roda — cada cliente (Claude, Cursor, Copilot) tinha seu próprio formato de plugin. MCP, lançado pela Anthropic em **novembro de 2024** e adotado em 2025-2026 por OpenAI, Google, Microsoft, é a padronização dessa conexão. Em 2026, **se você está construindo aplicação com agents, MCP é infraestrutura básica, como HTTP**.
+> **[[Dicionário de IA#MCP (Model Context Protocol)|MCP (Model Context Protocol)]]** é o "USB-C para agents de IA". Antes dele, cada integração entre [[Dicionário de IA#LLM (Large Language Model)|LLM]] e sistema externo (banco de dados, filesystem, Jira, Slack) era reinventar a roda — cada cliente (Claude, Cursor, Copilot) tinha seu próprio formato de plugin. MCP, lançado pela Anthropic em **novembro de 2024** e adotado em 2025-2026 por OpenAI, Google, Microsoft, é a padronização dessa conexão. Em 2026, **se você está construindo aplicação com agents, MCP é infraestrutura básica, como HTTP**.
 
 ## A premissa
 
@@ -71,9 +71,9 @@ MCP define 3 tipos de coisas que servers podem expor:
 
 | Primitivo | O que é | Exemplo |
 |---|---|---|
-| **Tools** | Funções executáveis (write) | `query_database`, `send_email` |
-| **Resources** | Dados leitáveis (read) | Arquivos, schemas, documentos |
-| **Prompts** | Templates parametrizáveis | "Explain this code", "Summarize doc" |
+| **[[Dicionário de IA#tools (MCP)\|Tools]]** | Funções executáveis (write) | `query_database`, `send_email` |
+| **[[Dicionário de IA#resources (MCP)\|Resources]]** | Dados leitáveis (read) | Arquivos, schemas, documentos |
+| **[[Dicionário de IA#prompts (MCP)\|Prompts]]** | Templates parametrizáveis | "Explain this code", "Summarize doc" |
 
 Detalhamento em [[02 - Os três primitivos — Tools, Resources, Prompts]].
 
@@ -113,7 +113,7 @@ Você não "usa HTTP" como decisão — você usa porque é o padrão. Mesmo com
 | Lifecycle | App-bound | Server-independent |
 | Auth | Custom | Padronizado |
 
-Function calling resolve o problema "modelo chama função no meu código". MCP resolve "qualquer modelo chama função em qualquer servidor padrão".
+[[Dicionário de IA#function calling|Function calling]] resolve o problema "modelo chama função no meu código". MCP resolve "qualquer modelo chama função em qualquer servidor padrão".
 
 ## O que diferencia um senior em MCP
 
@@ -123,7 +123,7 @@ Function calling resolve o problema "modelo chama função no meu código". MCP 
 > 3. **Implementa MCP servers que parecem APIs** — descrições claras, schemas precisos
 > 4. **Pratica least privilege** — server só expõe o que é necessário
 > 5. **Conhece o stdio vs HTTP+SSE trade-off** — local vs remoto
-> 6. **Trata segurança seriamente** — MCP é vetor de prompt injection
+> 6. **Trata segurança seriamente** — MCP é vetor de [[Dicionário de IA#prompt injection|prompt injection]]
 > 7. **Versiona MCP servers** — semver, breaking changes documentados
 > 8. **Sabe debugar** com MCP Inspector
 > 9. **Aproveita Awesome MCP Servers** — não reinventa o que existe

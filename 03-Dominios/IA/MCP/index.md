@@ -15,7 +15,7 @@ aliases:
 
 # MCP — Model Context Protocol
 
-**MCP** é o "USB-C para agents de IA": padrão aberto para conectar LLMs a sistemas externos. Lançado pela Anthropic em novembro de 2024, virou padrão de facto em 2025-2026 com adoção de OpenAI, Google, Microsoft, Cursor, Windsurf, e ecossistema de **3000+ servers** em Awesome MCP Servers. Em 2026, **MCP é infrastructure-grade** — não experimento. Se você está construindo aplicação com agents, MCP é tão essencial quanto HTTP.
+**[[Dicionário de IA#MCP (Model Context Protocol)|MCP]]** é o "USB-C para [[Dicionário de IA#Agent|agents]] de IA": padrão aberto para conectar [[Dicionário de IA#LLM (Large Language Model)|LLMs]] a sistemas externos. Lançado pela Anthropic em novembro de 2024, virou padrão de facto em 2025-2026 com adoção de OpenAI, Google, Microsoft, Cursor, Windsurf, e ecossistema de **3000+ servers** em Awesome MCP Servers. Em 2026, **MCP é infrastructure-grade** — não experimento. Se você está construindo aplicação com agents, MCP é tão essencial quanto HTTP.
 
 > [!info] Pré-requisitos
 > Recomendado ter passado por [[Anatomia de Agents]] (Trilha 2 — fundamentos de tools) e [[Agentes de Codificação]] (visão prática). Para construção de servers, helps ter Python ou TypeScript.
@@ -62,7 +62,7 @@ Visão de mercado e patterns reusáveis.
 ## Rotas alternativas
 
 ### Rota prática (vou usar MCP hoje)
-*"Quero plugar Claude Code com Postgres + GitHub"*
+*"Quero plugar [[Dicionário de IA#Claude Code|Claude Code]] com Postgres + GitHub"*
 
 [[01 - O que é MCP e por que importa]] → [[04 - MCP servers oficiais e populares]] → [[03 - Arquitetura cliente-servidor]] → [[07 - Segurança em MCP]]
 

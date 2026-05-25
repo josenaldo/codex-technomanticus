@@ -25,7 +25,7 @@ aliases:
 
 | Aspecto | Prompt caching | Semantic caching |
 |---|---|---|
-| O que cacheia | KV cache do prefixo | Resposta final |
+| O que cacheia | [[Dicionário de IA#KV cache\|KV cache]] do prefixo | Resposta final |
 | Onde mora | Provider (Anthropic, OpenAI) | Sua infra (Redis, vector DB) |
 | Hit | Mesmo prefixo, query nova | Query similar, resposta reusada |
 | Custo eliminado | 90% do input do prefixo | 100% da chamada |
@@ -47,8 +47,8 @@ graph TD
 
 ### Componentes
 
-1. **Embedding model** — converte query em vetor (ex: `text-embedding-3-small`, $0.02/M tokens)
-2. **Vector DB** — armazena pares `(embedding, resposta)` (Redis Stack, Pinecone, Weaviate, Qdrant)
+1. **[[Dicionário de IA#embedding model|Embedding model]]** — converte query em vetor (ex: `text-embedding-3-small`, $0.02/M tokens)
+2. **[[Dicionário de IA#vector store|Vector DB]]** — armazena pares `(embedding, resposta)` (Redis Stack, Pinecone, Weaviate, Qdrant)
 3. **Threshold de similaridade** — cosine similarity típico: 0.92-0.98 (mais alto = menos hits, menos falsos positivos)
 4. **TTL** — expiração para invalidar respostas estaladas
 

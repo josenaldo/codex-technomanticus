@@ -20,7 +20,7 @@ aliases:
 # Memória agentica — self-editing memory
 
 > [!abstract] TL;DR
-> O agente não recebe memória — ele **escolhe** o que lembrar. Self-editing memory é o padrão onde o LLM tem ferramentas explícitas para escrever, ler e podar a própria memória durante o reasoning. O paper MemGPT (2023) inaugurou o campo; em 2026, Letta (sua evolução) virou referência, junto com Mem0 e Zep. O modelo arquitetural: **LLM como sistema operacional** que gerencia uma hierarquia de memórias (core/recall/archival) via tool calls.
+> O agente não recebe memória — ele **escolhe** o que lembrar. Self-editing memory é o padrão onde o [[Dicionário de IA#LLM (Large Language Model)|LLM]] tem ferramentas explícitas para escrever, ler e podar a própria memória durante o reasoning. O paper MemGPT (2023) inaugurou o campo; em 2026, Letta (sua evolução) virou referência, junto com Mem0 e Zep. O modelo arquitetural: **LLM como sistema operacional** que gerencia uma hierarquia de memórias (core/recall/archival) via tool calls.
 
 ## A premissa
 
@@ -48,7 +48,7 @@ graph TB
 > [!quote] MemGPT paper (2023)
 > *"We propose treating context windows as a constrained memory resource and design a system inspired by traditional OS hierarchies."*
 
-O modelo invoca tool calls como `core_memory_replace`, `archival_memory_insert`, `archival_memory_search` durante o reasoning loop — exatamente como um OS faria operações de RAM/disk.
+O modelo invoca [[Dicionário de IA#tool call|tool calls]] como `core_memory_replace`, `archival_memory_insert`, `archival_memory_search` durante o reasoning loop — exatamente como um OS faria operações de RAM/disk.
 
 ## Letta — a evolução
 

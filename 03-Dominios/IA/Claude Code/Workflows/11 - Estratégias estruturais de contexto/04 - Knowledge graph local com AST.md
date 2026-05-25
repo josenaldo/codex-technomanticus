@@ -25,7 +25,7 @@ aliases:
 # Knowledge graph local com AST — blast-radius em vez de re-leitura
 
 > [!abstract] TL;DR
-> Em review e refactoring multi-arquivo, a pergunta dominante é "o que essa mudança impacta?". A resposta exige percorrer chamadas, herança, imports e testes — leitura caríssima em tokens. Knowledge graph local resolve isso parsing o codebase com Tree-sitter, armazenando funções/classes/imports como **nós** e chamadas/herança/cobertura como **arestas** em SQLite, e expondo via MCP queries de blast-radius. O agente lê o **grafo da mudança**, não o **código completo**. Reduções relatadas de 5×–50× em tarefas de review, dependendo do tamanho do monorepo.
+> Em review e refactoring multi-arquivo, a pergunta dominante é "o que essa mudança impacta?". A resposta exige percorrer chamadas, herança, imports e testes — leitura caríssima em [[Dicionário de IA#Token|tokens]]. Knowledge graph local resolve isso parsing o codebase com Tree-sitter, armazenando funções/classes/imports como **nós** e chamadas/herança/cobertura como **arestas** em SQLite, e expondo via [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] queries de blast-radius. O agente lê o **grafo da mudança**, não o **código completo**. Reduções relatadas de 5×–50× em tarefas de review, dependendo do tamanho do monorepo.
 
 ## O que é
 

@@ -18,7 +18,7 @@ aliases:
 # Windsurf e Cascade
 
 > [!abstract] TL;DR
-> Windsurf (by Codeium, agora adquirida pela OpenAI) é um IDE AI-native que compete com Cursor, posicionado como alternativa com pricing mais agressivo e foco em "flows" — workflows onde humano e IA trabalham em sinergia fluida. Cascade é o motor agentic do Windsurf, capaz de edição multi-file e execução de comandos. Em 2026, é uma opção sólida mas com ecossistema e comunidade menores que Cursor.
+> Windsurf (by Codeium, agora adquirida pela OpenAI) é um IDE AI-native que compete com [[Dicionário de IA#Cursor|Cursor]], posicionado como alternativa com pricing mais agressivo e foco em "flows" — workflows onde humano e IA trabalham em sinergia fluida. Cascade é o motor agentic do Windsurf, capaz de edição multi-file e execução de comandos. Em 2026, é uma opção sólida mas com ecossistema e comunidade menores que Cursor.
 
 ## O que é
 

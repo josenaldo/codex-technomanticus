@@ -38,7 +38,7 @@ Quanto mais alto na pirâmide, **mais volátil**. Quanto mais baixo, **mais est�
 
 **Conteúdo:**
 
-- System prompt do agente ("você é um assistente de…")
+- [[Dicionário de IA#system prompt|System prompt]] do agente ("você é um assistente de…")
 - `AGENTS.md` / `CLAUDE.md` ([[11 - Skills e instructions como contexto]])
 - Specs executáveis ([[Spec-Driven Development]])
 - Regras de negócio, políticas, compliance
@@ -58,7 +58,7 @@ Quanto mais alto na pirâmide, **mais volátil**. Quanto mais baixo, **mais est�
 - Histórico cumulativo de interações importantes
 - Knowledge base do domínio
 
-**Onde mora:** vector store, banco de dados, arquivos `.md` indexados.
+**Onde mora:** [[Dicionário de IA#vector store|vector store]], banco de dados, arquivos `.md` indexados.
 
 **Inserção no contexto:** **selecionada por relevância**. Vector search + filtros temporais. Top-k pequeno (3-10 itens).
 
@@ -96,7 +96,7 @@ Quanto mais alto na pirâmide, **mais volátil**. Quanto mais baixo, **mais est�
 
 **Conteúdo:**
 
-- Chain-of-thought interno
+- [[Dicionário de IA#Chain-of-Thought (CoT)|Chain-of-thought]] interno
 - Resultados de tools que foram úteis para uma decisão e perdem valor depois
 - Reasoning passo-a-passo
 - Hipóteses que o agente testou

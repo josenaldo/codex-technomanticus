@@ -37,8 +37,8 @@ graph TB
 
 **Pergunta:** *"Como falar com o modelo nesta interação específica?"*
 
-- Wording, exemplos few-shot, formatos de output, tokens de controle
-- Técnicas: chain-of-thought, role-play, structured output (JSON mode)
+- Wording, exemplos [[Dicionário de IA#few-shot prompting|few-shot]], formatos de output, tokens de controle
+- Técnicas: [[Dicionário de IA#Chain-of-Thought (CoT)|chain-of-thought]], role-play, [[Dicionário de IA#structured output|structured output]] (JSON mode)
 - Escopo: uma chamada de API
 
 **Quando basta:** chatbot simples, tarefas one-shot, exploração inicial.
@@ -82,8 +82,8 @@ graph TB
 
 **Implementações:**
 
-- System prompts no nível organizacional
-- Guardrails determinísticos ([[12 - Guardrails determinísticos]])
+- [[Dicionário de IA#system prompt|System prompts]] no nível organizacional
+- [[Dicionário de IA#Guardrail|Guardrails]] determinísticos ([[12 - Guardrails determinísticos]])
 - Routing rules baseadas em intent classification
 
 ## Camada 4 — Specification engineering
@@ -116,7 +116,7 @@ graph TB
 
 Coexiste outro framing complementar, focado nas **ações** sobre o contexto em si:
 
-- **Write** — persistir contexto importante em vector store ou DB
+- **Write** — persistir contexto importante em [[Dicionário de IA#vector store|vector store]] ou DB
 - **Select** — usar RAG para carregar só os tokens mais relevantes
 - **Compress** — sumarizar, compactar
 - **Isolate** — particionar contexto entre subsistemas em vez de empilhar tudo

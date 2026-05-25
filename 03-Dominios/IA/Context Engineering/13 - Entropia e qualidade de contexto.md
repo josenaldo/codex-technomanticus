@@ -28,7 +28,7 @@ Pergunta antiga: "Como cabo mais informação no contexto?"
 Pergunta nova:   "Como aumento o sinal por token?"
 ```
 
-A primeira pergunta levou ao crescimento de janelas (1M, 2M tokens). A segunda levou a context engineering.
+A primeira pergunta levou ao crescimento de janelas (1M, 2M [[Dicionário de IA#Token|tokens]]). A segunda levou a context engineering.
 
 ## High-entropy vs low-entropy
 
@@ -61,7 +61,7 @@ Significa: o problema de qualidade de contexto não se resolve adicionando mais 
 
 ### 1. Redundância
 
-Mesma informação em múltiplas formas: documentação + comentário no código + system prompt repetindo. O modelo não ganha nada com a 3ª repetição — perde atenção.
+Mesma informação em múltiplas formas: documentação + comentário no código + [[Dicionário de IA#system prompt|system prompt]] repetindo. O modelo não ganha nada com a 3ª repetição — perde atenção.
 
 **Mitigação:** deduplicar antes de injetar. Hash de chunks, similarity threshold.
 
@@ -74,7 +74,7 @@ Informação **plausível** mas irrelevante. O modelo é puxado por similaridade
 >
 > Modelo confunde e responde a errada com confiança.
 
-**Mitigação:** filtragem agressiva no retrieval (não top-k cego). Re-rank com LLM para alta-stakes. Validação de output.
+**Mitigação:** filtragem agressiva no [[Dicionário de IA#retrieval|retrieval]] (não top-k cego). Re-rank com LLM para alta-stakes. Validação de output.
 
 ### 3. Stale data
 

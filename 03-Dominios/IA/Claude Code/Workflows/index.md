@@ -21,7 +21,7 @@ aliases:
 
 ## Sobre este galho
 
-A diferença entre quem usa e quem domina Claude Code está nos workflows. Usar Plan Mode antes de implementar reduz iterações e custo. TDD com Claude Code produz código mais confiável. Sessões paralelas com worktrees multiplicam throughput. Multi-agent distribui tarefas independentes.
+A diferença entre quem usa e quem domina [[Dicionário de IA#Claude Code|Claude Code]] está nos workflows. Usar [[Dicionário de IA#planning|Plan Mode]] antes de implementar reduz iterações e custo. [[Dicionário de IA#TDD with AI|TDD]] com Claude Code produz código mais confiável. Sessões paralelas com worktrees multiplicam throughput. [[Dicionário de IA#orchestrator-worker|Multi-agent]] distribui tarefas independentes.
 
 Este galho é o mais prático da trilha — cada nota é um padrão aplicável no dia seguinte.
 

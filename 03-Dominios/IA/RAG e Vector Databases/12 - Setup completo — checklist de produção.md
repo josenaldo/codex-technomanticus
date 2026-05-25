@@ -19,7 +19,7 @@ aliases:
 # Setup completo — checklist de produção
 
 > [!abstract] TL;DR
-> Esta nota fecha a trilha com o checklist end-to-end para colocar RAG em produção. Stack base: pgvector + Cohere Rerank + Sonnet + Ragas + Langfuse. Roadmap: 4 fases × 2 semanas. Saída: RAG funcional com observabilidade, evaluation em CI, fallback, citação obrigatória, custo previsível. Pular fases = retrabalho. **Investimento total: ~6-8 semanas part-time.**
+> Esta nota fecha a trilha com o checklist end-to-end para colocar [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] em produção. Stack base: pgvector + Cohere Rerank + Sonnet + Ragas + [[Dicionário de IA#Langfuse|Langfuse]]. Roadmap: 4 fases × 2 semanas. Saída: RAG funcional com observabilidade, evaluation em CI, fallback, citação obrigatória, custo previsível. Pular fases = retrabalho. **Investimento total: ~6-8 semanas part-time.**
 
 ## Stack recomendada (2026)
 
@@ -64,13 +64,13 @@ gantt
 
 - [ ] Coletar documentos representativos (start: 100-1000)
 - [ ] Parser que extrai texto preservando estrutura
-- [ ] Chunking recursivo (500-1000 tokens, 10% overlap)
+- [ ] [[Dicionário de IA#chunking|Chunking]] recursivo (500-1000 tokens, 10% overlap)
 - [ ] Validação manual de 10 amostras de chunks
 - [ ] Postgres com extension `vector` instalada
 - [ ] Schema com `chunks` table + `documents` table + metadata JSONB
 - [ ] Index HNSW em embedding column
 - [ ] Script de indexação idempotente
-- [ ] Embedding via OpenAI text-embedding-3-large
+- [ ] [[Dicionário de IA#embedding|Embedding]] via OpenAI text-embedding-3-large
 - [ ] Top-k vector search funcionando
 - [ ] Generation com Sonnet 4.6 + system prompt restritivo
 - [ ] Citação `[N]` no output
@@ -81,13 +81,13 @@ Demo funcional. Performance ainda tosca, mas ciclo completo end-to-end.
 
 ## Fase 2 — Quality (semanas 3-4)
 
-**Objetivo:** subir qualidade do retrieval.
+**Objetivo:** subir qualidade do [[Dicionário de IA#retrieval|retrieval]].
 
 ### Checklist
 
-- [ ] BM25 search (Postgres `ts_vector` ou Elasticsearch)
-- [ ] Hybrid retrieval com Reciprocal Rank Fusion (RRF)
-- [ ] Cohere Rerank em top-50 → top-5
+- [ ] [[Dicionário de IA#BM25|BM25]] search (Postgres `ts_vector` ou Elasticsearch)
+- [ ] [[Dicionário de IA#hybrid search|Hybrid retrieval]] com Reciprocal Rank Fusion (RRF)
+- [ ] Cohere [[Dicionário de IA#reranking|Rerank]] em top-50 → top-5
 - [ ] Query rewriting com LLM (system prompt curto, modelo barato)
 - [ ] HyDE para queries vagas (opcional)
 - [ ] Metadata filtering (data, tipo, tenant)

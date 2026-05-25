@@ -20,7 +20,7 @@ tags:
 
 ## O que é headless mode
 
-No modo interativo padrão, Claude Code abre um REPL onde você digita prompts e o agente responde enquanto a sessão persiste. Em headless mode:
+No modo interativo padrão, [[Dicionário de IA#Claude Code|Claude Code]] abre um REPL onde você digita prompts e o agente responde enquanto a sessão persiste. Em headless mode:
 
 - O prompt é passado como argumento ou via stdin
 - O agente executa e termina (processo único, sem loop)
@@ -60,7 +60,7 @@ claude --print --no-permission-prompts "Refatora o módulo de autenticação"
 ```
 
 > [!warning]
-> `--no-permission-prompts` faz o agente executar sem nenhuma confirmação humana. Use apenas em ambientes controlados com guardrails configurados via hooks. Sem guardrails, o agente pode modificar qualquer arquivo ou executar qualquer comando.
+> `--no-permission-prompts` faz o agente executar sem nenhuma confirmação humana. Use apenas em ambientes controlados com [[Dicionário de IA#Guardrail|guardrails]] configurados via hooks. Sem guardrails, o agente pode modificar qualquer arquivo ou executar qualquer comando.
 
 ## Passando contexto via stdin
 
@@ -117,7 +117,7 @@ fi
 
 **Headless**: você invoca `claude --print` de um script externo. O agente tem suas próprias tools nativas. Sem REPL.
 
-**Subagente** (via API ou Agent SDK): outro processo invoca o modelo com contexto específico. Mais controle sobre ferramentas e contexto, mas requer código Python/TypeScript para orquestrar.
+**[[Dicionário de IA#subagent|Subagente]]** (via API ou Agent SDK): outro processo invoca o modelo com contexto específico. Mais controle sobre ferramentas e contexto, mas requer código Python/TypeScript para orquestrar.
 
 Para automação simples (CI/CD, scripts), headless é suficiente. Para orquestração complexa (múltiplos agentes em paralelo, handoffs), use o Agent SDK.
 
@@ -132,7 +132,7 @@ RESPOSTA=$(claude --print "..." 2>/dev/null)  # Só a resposta
 claude --print "..." > resposta.txt 2> logs.txt  # Separados
 ```
 
-**Max-turns sem limite em tarefa longa**: uma tarefa aberta sem `--max-turns` pode rodar indefinidamente, consumindo tokens e dinheiro. Defina um limite conservador para automações.
+**Max-turns sem limite em tarefa longa**: uma tarefa aberta sem `--max-turns` pode rodar indefinidamente, consumindo [[Dicionário de IA#Token|tokens]] e dinheiro. Defina um limite conservador para automações.
 
 **API key não disponível no ambiente CI**: a key precisa estar em `ANTHROPIC_API_KEY` no ambiente. Configure como secret no sistema de CI.
 

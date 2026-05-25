@@ -12,7 +12,7 @@ updated: 2026-05-02
 
 # Spec-Driven Development
 
-A resposta direta da indústria, em 2025-2026, ao tech debt do **vibe coding**. Não é "voltar a waterfall" — é reconhecer que LLMs **precisam de contrato explícito** para gerar código previsível. Specs viram source of truth, código vira artefato derivado e validado. Pipeline canônico em 4 fases (Specify → Plan → Tasks → Implement) com validação contínua. GitHub Spec Kit virou padrão open source; Kiro é a aposta da Amazon; OpenSpec brilha em brownfield. Esta trilha mapeia o problema, o método, as ferramentas, e o pragmatismo de adoção — incluindo quando **não** usar SDD.
+A resposta direta da indústria, em 2025-2026, ao tech debt do **[[Dicionário de IA#vibe coding|vibe coding]]**. Não é "voltar a waterfall" — é reconhecer que [[Dicionário de IA#LLM (Large Language Model)|LLMs]] **precisam de contrato explícito** para gerar código previsível. Specs viram source of truth, código vira artefato derivado e validado. Pipeline canônico em 4 fases (Specify → Plan → Tasks → Implement) com validação contínua. GitHub Spec Kit virou padrão open source; Kiro é a aposta da Amazon; OpenSpec brilha em brownfield. Esta trilha mapeia o problema, o método, as ferramentas, e o pragmatismo de adoção — incluindo quando **não** usar SDD.
 
 > [!info] Pré-requisitos
 > Recomendado ter passado por [[Agentes de Codificação]] (Trilha 2 — para entender o problema concreto), [[Economia de Tokens]] (Trilha 3 — pra entender o custo do retrabalho), e idealmente [[Context Engineering]] (Trilha 4 — specs são camada de contexto). SDD opera no topo dessas disciplinas.
@@ -103,7 +103,7 @@ Adoção concreta semana-a-semana e debate honesto sobre limites.
 - [[Agentes de Codificação]] — onde SDD aterra na prática (Cursor, Claude Code, Kiro)
 - [[Context Engineering]] — specs como camada de contexto persistente; CIV é arquitetura de contexto distribuída
 - [[Economia de Tokens]] — SDD reduz custo via menos retrabalho e cache hit alto
-- [[Segurança e Guardrails]] — SDD + guardrails determinísticos = defesa em profundidade
+- [[Segurança e Guardrails]] — SDD + [[Dicionário de IA#Guardrail|guardrails]] determinísticos = defesa em profundidade
 
 ## Todas as notas
 

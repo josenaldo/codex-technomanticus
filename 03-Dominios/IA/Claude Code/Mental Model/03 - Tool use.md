@@ -17,7 +17,7 @@ tags:
 
 ## O que é
 
-Claude Code não tem acesso direto ao sistema de arquivos ou ao shell — ele usa tools. Uma tool call é: o modelo decide que precisa de informação ou quer executar uma ação, gera um bloco JSON com o nome da tool e os parâmetros, o runtime executa, e retorna o output para o modelo.
+[[Dicionário de IA#Claude Code|Claude Code]] não tem acesso direto ao sistema de arquivos ou ao shell — ele usa [[Dicionário de IA#tool use|tools]]. Uma [[Dicionário de IA#tool call|tool call]] é: o modelo decide que precisa de informação ou quer executar uma ação, gera um bloco JSON com o nome da tool e os parâmetros, o runtime executa, e retorna o output para o modelo.
 
 ## Tools principais
 
@@ -51,7 +51,7 @@ O `Bash` é onipotente. Com ele o agente pode rodar testes, instalar pacotes, ch
 
 | Tool | Uso |
 |------|-----|
-| `Agent` | Despacha subagente com tarefa isolada |
+| `Agent` | Despacha [[Dicionário de IA#subagent\|subagente]] com tarefa isolada |
 | `WebFetch` | Fetch de URL |
 | `WebSearch` | Busca na web |
 | `TodoWrite` | Cria lista de tarefas para a sessão |

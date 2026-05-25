@@ -18,7 +18,7 @@ tags:
 
 ## O que é
 
-CLAUDE.md é um arquivo Markdown lido no início de cada sessão do Claude Code. É a única forma de dar contexto persistente ao agente sobre o seu projeto — sem ele, o agente age com suposições genéricas.
+CLAUDE.md é um arquivo Markdown lido no início de cada sessão do [[Dicionário de IA#Claude Code|Claude Code]]. É a única forma de dar contexto persistente ao agente sobre o seu projeto — sem ele, o agente age com suposições genéricas.
 
 **Por que importa:** o agente não tem memória entre sessões. O CLAUDE.md é a memória externa — o que você coloca lá, o agente sabe em toda sessão nova.
 
@@ -94,7 +94,7 @@ Os comandos que o agente vai precisar rodar com frequência. Com eles documentad
 
 ### Seção 6: O que evitar / restrições
 
-Guardrails em linguagem natural — o que o agente não deve fazer, mesmo que tecnicamente possível. Esta seção previne muitos erros.
+[[Dicionário de IA#Guardrail|Guardrails]] em linguagem natural — o que o agente não deve fazer, mesmo que tecnicamente possível. Esta seção previne muitos erros.
 
 ```markdown
 ## Restrições

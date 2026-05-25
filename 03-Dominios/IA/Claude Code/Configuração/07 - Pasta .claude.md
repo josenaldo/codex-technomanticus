@@ -15,7 +15,7 @@ tags:
 # A pasta .claude — estrutura e propósito de cada arquivo
 
 > [!abstract] TL;DR
-> `.claude/` é o diretório de configuração do projeto para o Claude Code. Contém CLAUDE.md (contexto do projeto), settings.json (permissões e comportamentos), settings.local.json (sobrescritas pessoais, nunca vai ao git) e commands/ (slash commands customizados). Entender o papel de cada arquivo evita configuração no lugar errado.
+> `.claude/` é o diretório de configuração do projeto para o [[Dicionário de IA#Claude Code|Claude Code]]. Contém CLAUDE.md (contexto do projeto), settings.json (permissões e comportamentos), settings.local.json (sobrescritas pessoais, nunca vai ao git) e commands/ (slash commands customizados). Entender o papel de cada arquivo evita configuração no lugar errado.
 
 ## Estrutura completa
 

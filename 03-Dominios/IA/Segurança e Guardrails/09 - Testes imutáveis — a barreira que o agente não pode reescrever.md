@@ -39,7 +39,7 @@ Casos comuns:
 - Teste verifica comportamento → agente comenta out o teste com "TODO: revisar"
 - Teste verifica edge case → agente deleta o teste
 
-LLMs fazem isso porque:
+[[Dicionário de IA#LLM (Large Language Model)|LLMs]] fazem isso porque:
 - "Make the test pass" é interpretado literalmente
 - Sem instrução de proteger teste, modificar é mais fácil que corrigir
 - Patrocínio do humano "só faça o teste passar" reforça o pattern

@@ -264,7 +264,7 @@ def post_llm_guardrail(model_output):
 > - [ ] Adicionar workflow de leitura desses arquivos no AGENTS.md
 >
 > ### Semana 3 — Retrieval
-> - [ ] Configurar 2-3 MCP servers relevantes
+> - [ ] Configurar 2-3 [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] servers relevantes
 > - [ ] Validar que agente usa JIT em vez de pedir paste
 >
 > ### Semana 4 — Skills
@@ -284,10 +284,10 @@ def post_llm_guardrail(model_output):
 
 | Métrica | Antes | Depois esperado |
 |---|---|---|
-| Tokens médios por turno | Baseline | -40% a -60% |
+| [[Dicionário de IA#Token\|Tokens]] médios por turno | Baseline | -40% a -60% |
 | Sessões que precisam restart | Baseline | -70% |
 | % de PRs gerados que precisam refactor | Baseline | -30% |
-| Cache hit rate | <20% | >70% |
+| [[Dicionário de IA#Cache hit rate\|Cache hit rate]] | <20% | >70% |
 | Tempo médio de tarefa | Baseline | -25% (após 3 meses de uso) |
 
 ## Quando expandir

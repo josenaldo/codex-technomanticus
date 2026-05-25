@@ -100,7 +100,7 @@ Equivalente ao CLAUDE.md e .cursorrules para Copilot:
 | **Autocomplete**       | ★★★★★      | ★★★★    | ★★              |
 | **Reasoning**          | ★★★        | ★★★★    | ★★★★★           |
 | **Multi-file**         | ★★★        | ★★★★★   | ★★★★            |
-| **GitHub integration** | ★★★★★      | ★★      | ★★★ (MCP)       |
+| **GitHub integration** | ★★★★★      | ★★      | ★★★ ([[Dicionário de IA#MCP (Model Context Protocol)\|MCP]])       |
 | **Enterprise**         | ★★★★★      | ★★★     | ★★★             |
 | **CI/CD native**       | ★★★★★      | ★       | ★★★★ (headless) |
 | **Custo**              | $10-39/mês | $20/mês | Usage-based     |

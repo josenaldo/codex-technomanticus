@@ -19,7 +19,7 @@ tags:
 
 ## O que é
 
-Slash commands built-in (`/compact`, `/clear`, `/help`) são do Claude Code. Commands customizados são seus — criados na pasta `.claude/commands/` do projeto ou em `~/.claude/commands/` (global).
+Slash commands built-in (`/compact`, `/clear`, `/help`) são do [[Dicionário de IA#Claude Code|Claude Code]]. Commands customizados são seus — criados na pasta `.claude/commands/` do projeto ou em `~/.claude/commands/` (global).
 
 ```
 .claude/

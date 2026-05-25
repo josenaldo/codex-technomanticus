@@ -17,7 +17,7 @@ aliases:
 # Batch API — economia em volume
 
 > [!abstract] TL;DR
-> Batch APIs permitem enviar lotes de requests para processamento assíncrono com ~50% de desconto. SLA de entrega é horas (não segundos). Ideal para geração de testes em massa, documentação, migrações, e qualquer tarefa que não precisa de resposta em tempo real.
+> [[Dicionário de IA#batch API|Batch APIs]] permitem enviar lotes de requests para processamento assíncrono com ~50% de desconto. SLA de entrega é horas (não segundos). Ideal para geração de testes em massa, documentação, migrações, e qualquer tarefa que não precisa de resposta em tempo real.
 
 ## Como funciona
 
@@ -61,7 +61,7 @@ aliases:
 
 - **SLA de horas** — não use para nada que precise de resposta imediata.
 - **Debugging difícil** — se uma request do lote falha, identificar e reprocessar é mais complexo.
-- **Não combinar com caching** — batch requests geralmente não se beneficiam de prompt caching.
+- **Não combinar com caching** — batch requests geralmente não se beneficiam de [[Dicionário de IA#Prompt caching|prompt caching]].
 
 ## Veja também
 - [[09 - Model routing — modelo certo para a tarefa]]

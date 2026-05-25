@@ -18,7 +18,7 @@ aliases:
 # Thinking budget — controlar reasoning tokens
 
 > [!abstract] TL;DR
-> Modelos de reasoning (Claude Thinking, o4) geram tokens internos de "pensamento" cobrados como output — a tier mais cara. Sem limite, podem gastar 50k+ tokens pensando em um problema simples. Use `thinking.budget_tokens` para limitar: 5k para tarefas moderadas, 20k para complexas, 50k+ só quando necessário. Não ativar thinking para tarefas simples é a melhor economia.
+> Modelos de reasoning (Claude Thinking, o4) geram [[Dicionário de IA#Reasoning tokens|tokens internos de "pensamento"]] cobrados como output — a tier mais cara. Sem limite, podem gastar 50k+ [[Dicionário de IA#Token|tokens]] pensando em um problema simples. Use [[Dicionário de IA#Thinking budget|`thinking.budget_tokens`]] para limitar: 5k para tarefas moderadas, 20k para complexas, 50k+ só quando necessário. Não ativar thinking para tarefas simples é a melhor economia.
 
 ## Como funciona
 

@@ -23,7 +23,7 @@ aliases:
 # Padrões avançados — Graph RAG, Agentic RAG, multi-hop
 
 > [!abstract] TL;DR
-> RAG vanilla resolve ~80% dos casos. Para os 20% restantes, padrões avançados: **Multi-hop RAG** (resposta requer juntar 2+ chunks via passos sequenciais), **Graph RAG** (Microsoft, indexa entidades e relações em knowledge graph para queries complexas), **Agentic RAG** (agent decide iterativamente quando/o que buscar) e **Vectorless / Tree RAG** (PageIndex, navegação hierárquica por documento). **Custo cresce significativamente** — só use quando RAG simples falha. Default: tente Hybrid + Rerank antes de partir para complexidade.
+> [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vanilla resolve ~80% dos casos. Para os 20% restantes, padrões avançados: **Multi-hop RAG** (resposta requer juntar 2+ chunks via passos sequenciais), **Graph RAG** (Microsoft, indexa entidades e relações em knowledge graph para queries complexas), **Agentic RAG** ([[Dicionário de IA#Agent|agent]] decide iterativamente quando/o que buscar) e **Vectorless / Tree RAG** (PageIndex, navegação hierárquica por documento). **Custo cresce significativamente** — só use quando RAG simples falha. Default: tente [[Dicionário de IA#hybrid search|Hybrid]] + [[Dicionário de IA#reranking|Rerank]] antes de partir para complexidade.
 
 ## Quando RAG vanilla falha
 
@@ -32,8 +32,8 @@ Sintomas que indicam padrão avançado:
 - Pergunta requer juntar **2+ chunks de docs diferentes** (multi-hop)
 - Pergunta sobre **relacionamentos** ("quais empresas são fornecedoras de X que estão na Europa?")
 - Pergunta exige **exploração** ("encontre todos os pacientes com sintoma Y após 2024")
-- Single retrieval **não cobre** mesmo com hybrid+rerank
-- Documento é longo e estruturado, mas chunking destrói a hierarquia (contratos, relatórios, manuais)
+- Single [[Dicionário de IA#retrieval|retrieval]] **não cobre** mesmo com hybrid+rerank
+- Documento é longo e estruturado, mas [[Dicionário de IA#chunking|chunking]] destrói a hierarquia (contratos, relatórios, manuais)
 
 ## Multi-hop RAG
 
@@ -180,7 +180,7 @@ Detalhes em [[Context Engineering|06 - Dynamic retrieval beyond RAG]].
 
 ## Vectorless / Tree RAG (PageIndex)
 
-Em documentos longos e estruturados, a falha nem sempre é "preciso de mais embeddings"; muitas vezes é "o chunking destruiu o mapa do documento". **PageIndex** organiza o documento como uma árvore tipo table of contents e usa o LLM para navegar essa árvore por raciocínio. A pergunta deixa de ser "quais chunks são parecidos com a query?" e vira "qual ramo do documento contém a informação relevante?".
+Em documentos longos e estruturados, a falha nem sempre é "preciso de mais [[Dicionário de IA#embedding|embeddings]]"; muitas vezes é "o chunking destruiu o mapa do documento". **PageIndex** organiza o documento como uma árvore tipo table of contents e usa o LLM para navegar essa árvore por raciocínio. A pergunta deixa de ser "quais chunks são parecidos com a query?" e vira "qual ramo do documento contém a informação relevante?".
 
 ```mermaid
 graph TD

@@ -46,7 +46,7 @@ Antes de detalhar request e response, vale entender o que acontece **do lado do 
 | 2. Load Balancer     | ~2ms         | Routing geográfico, health checks, escolha do cluster de GPU                                   |
 | 3. Tokenization      | ~3ms         | Texto vira IDs de tokens (BPE/SentencePiece). É aqui que `Token Count × $/1k` é calculado      |
 | 4. Model Router      | ~1ms         | Escolhe qual cluster atende (small/large/MoE/embedding) — model-version routing acontece aqui  |
-| 5. **Inference Engine** | **300–800ms** | Prefill (paralelo) + Decode (autoregressivo, token a token) + Attention + GPU compute     |
+| 5. **[[Dicionário de IA#inference\|Inference Engine]]** | **300–800ms** | Prefill (paralelo) + Decode (autoregressivo, token a token) + Attention + GPU compute     |
 | 6. Post-Processing   | ~5ms         | Safety filters, format validation, stop sequences                                              |
 | 7. Response & Billing | ~5ms        | Serialização JSON (ou stream SSE), cálculo final de custo, logging                             |
 
@@ -99,11 +99,11 @@ Três implicações práticas pro que vem a seguir neste artigo:
 | ------------- | ----------- | ------------------------------------------- | ----------------------------------------------- |
 | `model`       | Sim         | Qual modelo usar                            | Nenhum (metadata)                               |
 | `messages`    | Sim         | Array de mensagens com roles                | **Principal consumidor** de input tokens        |
-| `system`      | Não*        | Instruções de sistema                       | Input tokens (cacheable)                        |
+| `system`      | Não*        | [[Dicionário de IA#system prompt\|Instruções de sistema]]                       | Input tokens (cacheable)                        |
 | `max_tokens`  | Sim†        | Limite máximo de output                     | Limita output tokens (e custo)                  |
-| `temperature` | Não         | Criatividade (0=determinístico, 1=criativo) | Nenhum                                          |
+| `temperature` | Não         | [[Dicionário de IA#temperature\|Criatividade]] (0=determinístico, 1=criativo) | Nenhum                                          |
 | `top_p`       | Não         | Nucleus sampling                            | Nenhum                                          |
-| `tools`       | Não         | Definições de ferramentas                   | **Consumidor oculto** — schemas JSON são tokens |
+| `tools`       | Não         | [[Dicionário de IA#tool definition\|Definições de ferramentas]]                   | **Consumidor oculto** — schemas JSON são tokens |
 | `tool_choice` | Não         | Forçar ou sugerir uso de tool               | Nenhum                                          |
 | `stop`        | Não         | Sequências que param a geração              | Nenhum                                          |
 | `stream`      | Não         | Habilitar streaming SSE                     | Nenhum                                          |

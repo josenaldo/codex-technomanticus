@@ -19,7 +19,7 @@ tags:
 
 ## O que é
 
-O modo de operação define como Claude Code equilibra autonomia e controle do usuário. Mais autonomia = menos interrupções mas mais risco. Mais controle = mais segurança mas mais fricção.
+O modo de operação define como [[Dicionário de IA#Claude Code|Claude Code]] equilibra autonomia e controle do usuário. Mais autonomia = menos interrupções mas mais risco. Mais controle = mais segurança mas mais fricção.
 
 ## Modo 1: Interativo (padrão)
 
@@ -44,7 +44,7 @@ Shift+Tab    # toggle plan mode on/off
 /plan        # ativa plan mode explicitamente
 ```
 
-O agente **planeja mas não executa**. Mostra o que faria — quais arquivos editaria, quais comandos rodaria — sem tocar em nada. Você revisa e aprova antes de executar.
+O [[Dicionário de IA#Agent|agente]] **[[Dicionário de IA#planning|planeja]] mas não executa**. Mostra o que faria — quais arquivos editaria, quais comandos rodaria — sem tocar em nada. Você revisa e aprova antes de executar.
 
 **Quando usar:** tarefas de refactoring grande, antes de dar autonomia ao agente, quando quer revisar a estratégia antes da implementação.
 
@@ -93,7 +93,7 @@ Com essas permissões, o agente roda testes, lint, e build sem pedir confirmaç�
 
 **Quando usar:** tarefas bem definidas em projetos conhecidos, pair programming acelerado, contexto onde você confia no agente.
 
-**Risco:** o agente executa mais sem supervisão. Combine com hooks para guardrails.
+**Risco:** o agente executa mais sem supervisão. Combine com hooks para [[Dicionário de IA#Guardrail|guardrails]].
 
 ## Modo 4: Headless
 

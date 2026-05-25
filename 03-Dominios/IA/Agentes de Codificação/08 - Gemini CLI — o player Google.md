@@ -26,7 +26,7 @@ aliases:
 
 ## Por que importa
 
-- **Contexto ultra-longo** — 1M-2M tokens permite processar codebases inteiros sem RAG
+- **Contexto ultra-longo** — 1M-2M [[Dicionário de IA#Token|tokens]] permite processar codebases inteiros sem RAG
 - **Multimodal** — pode analisar screenshots, diagramas UML, e wireframes como input
 - **Preço** — Gemini Flash é 6x mais barato que Claude Sonnet para input
 
@@ -36,7 +36,7 @@ aliases:
 
 | Feature                   | Gemini CLI    | Claude Code               | Cursor            |
 | ------------------------- | ------------- | ------------------------- | ----------------- |
-| **Contexto máximo**       | 2M tokens     | 200k (Sonnet) / 1M (Opus) | 200k-1M           |
+| **[[Dicionário de IA#Context window\|Contexto máximo]]**       | 2M tokens     | 200k (Sonnet) / 1M (Opus) | 200k-1M           |
 | **Multimodal**            | ✅ Nativo      | ⚠️ Limitado                | ⚠️ Limitado        |
 | **Custo (input/MTok)**    | $0.50 (Flash) | $3.00 (Sonnet)            | Depende do modelo |
 | **Reasoning para código** | ★★★★          | ★★★★★                     | ★★★★              |

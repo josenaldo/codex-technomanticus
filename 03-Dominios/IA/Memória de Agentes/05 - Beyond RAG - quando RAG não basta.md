@@ -23,13 +23,13 @@ aliases:
 
 ## O que é
 
-"Beyond RAG" é o framing que ganhou tração em 2026 para descrever os limites estruturais de Retrieval-Augmented Generation. RAG, formalizado por [Lewis et al. (2020)](https://arxiv.org/abs/2005.11401), é uma técnica madura: a maioria das aplicações sérias com LLM em produção tem alguma forma de RAG no meio do caminho — index, retrieve, augment. Funciona bem para Q&A sobre manuais, busca em base de conhecimento, citação em bots de suporte, sistemas regulatórios. Nesses casos, RAG é a ferramenta certa, e empilhar memória ativa em cima é over-engineering.
+"Beyond RAG" é o framing que ganhou tração em 2026 para descrever os limites estruturais de [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|Retrieval-Augmented Generation]]. RAG, formalizado por [Lewis et al. (2020)](https://arxiv.org/abs/2005.11401), é uma técnica madura: a maioria das aplicações sérias com [[Dicionário de IA#LLM (Large Language Model)|LLM]] em produção tem alguma forma de RAG no meio do caminho — index, retrieve, augment. Funciona bem para Q&A sobre manuais, busca em base de conhecimento, citação em bots de suporte, sistemas regulatórios. Nesses casos, RAG é a ferramenta certa, e empilhar memória ativa em cima é over-engineering.
 
 A virada de discurso veio quando [[Andrej Karpathy]] publicou o "LLM Wiki Pattern" em 3 de abril de 2026 — uma arquitetura em que o próprio LLM **escreve e mantém** uma wiki em markdown, dispensando vector DB. A cobertura da [VentureBeat](https://venturebeat.com/data/karpathy-shares-llm-knowledge-base-architecture-that-bypasses-rag-with-an) usou explicitamente "bypasses RAG", e o [post de Plaban Nayak no Level Up Coding](https://levelup.gitconnected.com/beyond-rag-how-andrej-karpathys-llm-wiki-pattern-builds-knowledge-that-actually-compounds-31a08528665e) consolidou o vocabulário "Beyond RAG" para descrever a categoria de problemas em que retrieval passivo não dá conta. Daí a importância de mapear, com precisão, **onde** RAG deixa de bastar — sem cair no oposto, que é tratar tudo como problema de memória ativa.
 
 ## Por que importa
 
-Primeiro, **evita over-engineering**. É comum ver times empilhando camadas de RAG (hybrid search, reranking, query rewriting, multi-hop retrieval) quando o problema real não é de retrieval — é de escrita. Nenhuma dessas camadas resolve continuidade entre sessões, porque continuidade não é "achar o trecho certo"; é "ter um trecho que existe a partir do uso anterior".
+Primeiro, **evita over-engineering**. É comum ver times empilhando camadas de RAG ([[Dicionário de IA#hybrid search|hybrid search]], [[Dicionário de IA#reranking|reranking]], query rewriting, multi-hop [[Dicionário de IA#retrieval|retrieval]]) quando o problema real não é de retrieval — é de escrita. Nenhuma dessas camadas resolve continuidade entre sessões, porque continuidade não é "achar o trecho certo"; é "ter um trecho que existe a partir do uso anterior".
 
 Segundo, **ajuda a reconhecer quando o caso pede wiki ativa em vez de biblioteca passiva**. A pergunta diagnóstica é simples: o conteúdo da base **deve mudar como consequência da interação**? Se sim, RAG sozinho não basta — falta o passo de write deliberado. Se não, RAG provavelmente é suficiente, e camadas adicionais só aumentam custo.
 
@@ -45,7 +45,7 @@ graph LR
 
 ### 1. Multi-session continuity
 
-O usuário volta no dia seguinte e espera que o agente "lembre" do que foi discutido. RAG não lembra: cada chamada é stateless. Se o histórico de conversa estiver indexado em um vector DB, o sistema até recupera trechos antigos por similaridade — mas isso não é continuidade, é arqueologia. Continuidade implica que algumas conclusões foram **consolidadas** (preferências, decisões fechadas, contexto de projeto), e que o agente as trata como dadas, não como resultado de retrieval em runtime.
+O usuário volta no dia seguinte e espera que o agente "lembre" do que foi discutido. RAG não lembra: cada chamada é stateless. Se o histórico de conversa estiver indexado em um [[Dicionário de IA#vector database|vector DB]], o sistema até recupera trechos antigos por similaridade — mas isso não é continuidade, é arqueologia. Continuidade implica que algumas conclusões foram **consolidadas** (preferências, decisões fechadas, contexto de projeto), e que o agente as trata como dadas, não como resultado de retrieval em runtime.
 
 Exemplo concreto: um tutor digital descobre na sessão 1 que o aluno tem dificuldade com derivadas parciais. Na sessão 2, o tutor deveria **abrir** o assunto com essa informação no estado mental, não esperar que uma similarity search traga de volta um chunk de log. Para um assistente que se torna mais útil com uso, RAG sobre logs é fundamentalmente cego — falta o passo de extração e consolidação que define o que vale a pena lembrar. Ver [[02 - O problema das janelas de contexto]] para o porquê de contexto longo não resolver isso sozinho.
 

@@ -15,7 +15,7 @@ tags:
 # Onboarding de time — introduzir Claude Code sem caos
 
 > [!abstract] TL;DR
-> Introduzir Claude Code num time não é só instalar a CLI — é definir convenções, treinar uso responsável, e estabelecer feedback loops. A adoção falha quando cada dev usa de forma diferente e o agente produz output inconsistente. A adoção tem sucesso quando o time desenvolve hábitos compartilhados: quais skills usar, quando confiar no agente, quando revisar manualmente.
+> Introduzir [[Dicionário de IA#Claude Code|Claude Code]] num time não é só instalar a CLI — é definir convenções, treinar uso responsável, e estabelecer feedback loops. A adoção falha quando cada dev usa de forma diferente e o [[Dicionário de IA#Agent|agente]] produz output inconsistente. A adoção tem sucesso quando o time desenvolve hábitos compartilhados: quais skills usar, quando confiar no agente, quando revisar manualmente.
 
 ## Os três estágios de adoção
 
@@ -35,7 +35,7 @@ Antes de introduzir Claude Code no time, prepare o ambiente:
 
 1. **CLAUDE.md do projeto** com convenções, arquitetura, comandos
 2. **Pelo menos 2-3 skills** que cobrem workflows comuns (review, deploy, debugging)
-3. **MCP servers** essenciais configurados (DB staging, GitHub)
+3. **[[Dicionário de IA#MCP (Model Context Protocol)|MCP]] servers** essenciais configurados (DB staging, GitHub)
 4. **Hooks de guardrail** para operações destrutivas
 5. **Política de permissões** documentada
 

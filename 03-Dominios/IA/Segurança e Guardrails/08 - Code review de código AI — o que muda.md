@@ -19,7 +19,7 @@ aliases:
 # Code review de código AI — o que muda
 
 > [!abstract] TL;DR
-> Code review de código gerado por IA **não é o mesmo** de código humano. Volume é maior (5-10x), velocidade é maior, viés do reviewer é diferente (aceita demais por inércia), e classes de defeito são diferentes (alucinações + vulnerabilidades sistemáticas). A regra: **delegue o que máquina faz para [[04 - A pirâmide de validação AI|automação]]**, e **foque humano** em arquitetura, intent, e mudanças cross-cutting. Esta nota apresenta o checklist específico, os red flags, e o anti-pattern do "approve fadigado" que está mascarando débito em todo lugar em 2026.
+> Code review de código gerado por IA **não é o mesmo** de código humano. Volume é maior (5-10x), velocidade é maior, viés do reviewer é diferente (aceita demais por inércia), e classes de defeito são diferentes ([[Dicionário de IA#Hallucination|alucinações]] + vulnerabilidades sistemáticas). A regra: **delegue o que máquina faz para [[04 - A pirâmide de validação AI|automação]]**, e **foque humano** em arquitetura, intent, e mudanças cross-cutting. Esta nota apresenta o checklist específico, os red flags, e o anti-pattern do "approve fadigado" que está mascarando débito em todo lugar em 2026.
 
 ## Por que review tradicional falha
 
@@ -53,7 +53,7 @@ Humano **só vê** o que **precisa** de julgamento humano. Se PR fica em camadas
 
 > *"Esse código atende ao 'porquê' da feature?"*
 
-LLM atende ao "o quê" tipicamente bem (especialmente com [[Spec-Driven Development|02 - O que é Spec-Driven Development|spec]]). Atende ao "porquê" tipicamente mal — não tem visão estratégica do produto.
+[[Dicionário de IA#LLM (Large Language Model)|LLM]] atende ao "o quê" tipicamente bem (especialmente com [[Spec-Driven Development|02 - O que é Spec-Driven Development|spec]]). Atende ao "porquê" tipicamente mal — não tem visão estratégica do produto.
 
 Pergunte:
 - Esse approach faz sentido para o negócio?
@@ -127,7 +127,7 @@ Se você está checando isso manualmente, está **gastando humano em automação
 > - **API calls com parâmetros não documentados** ([[03 - Alucinações em código — APIs fantasma e parâmetros inexistentes|alucinação]])
 > - **Mudança "drive-by" em arquivo não relacionado** — drift
 > - **Justificativa vaga**: "fix bug" sem dizer qual
-> - **Resposta do autor "o agente fez"** quando perguntado sobre escolha — sem comprehension gate
+> - **Resposta do autor "o agente fez"** quando perguntado sobre escolha — sem [[Dicionário de IA#Comprehension gate|comprehension gate]]
 
 ## Checklist de review para AI PR
 

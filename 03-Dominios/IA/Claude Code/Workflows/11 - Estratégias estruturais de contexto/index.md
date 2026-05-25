@@ -20,13 +20,13 @@ aliases:
 # Estratégias estruturais de contexto
 
 > [!abstract] TL;DR
-> Sub-galho do galho Workflows. Quatro abordagens estruturais (não-táticas) para reduzir consumo de contexto em sessões do Claude Code: lazy-load de `.claude/`, sandboxing de tool output, indexação semântica externa e knowledge graph local com AST. As táticas em [[03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]] (leituras cirúrgicas, `/compact`, filtros de output) cobrem o uso do dia-a-dia; este sub-galho cobre decisões arquiteturais que mudam *como* o codebase é apresentado ao agente.
+> Sub-galho do galho Workflows. Quatro abordagens estruturais (não-táticas) para reduzir consumo de [[Dicionário de IA#Token|tokens]] em sessões do [[Dicionário de IA#Claude Code|Claude Code]]: lazy-load de `.claude/`, sandboxing de tool output, indexação semântica externa e knowledge graph local com AST. As táticas em [[03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]] (leituras cirúrgicas, `/compact`, filtros de output) cobrem o uso do dia-a-dia; este sub-galho cobre decisões arquiteturais que mudam *como* o codebase é apresentado ao agente.
 
 ## Por que um sub-galho separado
 
 Existe uma diferença qualitativa entre **gestão tática** de contexto (que você aplica em toda sessão) e **arquitetura de contexto** (que você decide uma vez e vive com a consequência por meses).
 
-- **Tático** — `Read` com `offset` e `limit`, `Bash` com `| tail`, `/compact` no momento certo, CLAUDE.md enxuto. Cobertura: [[03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]] e [[03-Dominios/IA/Claude Code/Workflows/10 - Gestão de contexto|10 - Gestão de contexto]].
+- **Tático** — `Read` com `offset` e `limit`, `Bash` com `| tail`, [[Dicionário de IA#context compaction|`/compact`]] no momento certo, CLAUDE.md enxuto. Cobertura: [[03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]] e [[03-Dominios/IA/Claude Code/Workflows/10 - Gestão de contexto|10 - Gestão de contexto]].
 - **Estrutural** — decisões sobre *como o projeto se apresenta* ao agente: o que carrega por default, o que vira tool externa, o que mora em índice vetorial, o que é mediado por grafo. Cobertura: este sub-galho.
 
 A diferença importa porque os ganhos compõem: bom layout estrutural reduz a base sobre a qual as táticas operam.

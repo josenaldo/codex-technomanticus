@@ -52,7 +52,7 @@ graph TD
 Não cobertos com profundidade aqui (ver outras trilhas):
 
 - **Cursor** — coberto em [[Agentes de Codificação|04 - Cursor — AI-native IDE]]
-- **Aider** — coberto em [[Agentes de Codificação|09 - Aider — o pair programmer de terminal]]
+- **[[Dicionário de IA#Aider|Aider]]** — coberto em [[Agentes de Codificação|09 - Aider — o pair programmer de terminal]]
 - **OpenCode** — coberto em [[Agentes de Codificação|10 - OpenCode — o harness open source]]
 - **Windsurf** — coberto em [[Agentes de Codificação|07 - Windsurf e Cascade]]
 - **Devin** — coberto em [[Agentes de Codificação|13 - Devin e agentes autônomos cloud]]

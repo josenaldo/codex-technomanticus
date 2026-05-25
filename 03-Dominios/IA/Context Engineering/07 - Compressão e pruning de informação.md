@@ -19,7 +19,7 @@ aliases:
 # Compressão e pruning de informação
 
 > [!abstract] TL;DR
-> Em sessões longas, a janela de contexto satura — não pelo limite hard, mas pela [[03 - Context rot e atenção diluída|atenção diluída]]. As duas técnicas centrais para combater isso: **compressão** (resumir o que ainda é relevante) e **pruning** (remover ativamente o que não é mais). Anthropic implementou *compaction* nativa no Claude Code — ela preserva decisões arquiteturais e bugs em aberto, e descarta tool outputs redundantes. A boa notícia: as técnicas são as mesmas que [[Economia de Tokens|reduzem custo]]. Você ganha qualidade *e* dinheiro.
+> Em sessões longas, a [[Dicionário de IA#Context window|janela de contexto]] satura — não pelo limite hard, mas pela [[03 - Context rot e atenção diluída|atenção diluída]]. As duas técnicas centrais para combater isso: **compressão** (resumir o que ainda é relevante) e **pruning** (remover ativamente o que não é mais). Anthropic implementou *compaction* nativa no Claude Code — ela preserva decisões arquiteturais e bugs em aberto, e descarta tool outputs redundantes. A boa notícia: as técnicas são as mesmas que [[Economia de Tokens|reduzem custo]]. Você ganha qualidade *e* dinheiro.
 
 ## Compressão vs pruning vs eviction
 
@@ -38,7 +38,7 @@ A maioria dos sistemas robustos combina os três.
 
 ### Como Claude Code implementa
 
-1. Quando a janela aproxima do limite, dispara compactação
+1. Quando a janela aproxima do limite, dispara [[Dicionário de IA#context compaction|compactação]]
 2. Envia o histórico para o próprio modelo com prompt de sumarização
 3. Modelo gera resumo preservando:
    - Decisões arquiteturais

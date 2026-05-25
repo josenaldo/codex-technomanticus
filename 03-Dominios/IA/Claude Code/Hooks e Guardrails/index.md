@@ -18,7 +18,7 @@ aliases:
 # Hooks e Guardrails — Claude Code
 
 > [!abstract] TL;DR
-> Galho 3 da trilha Claude Code. Cobre o sistema de hooks (lifecycle, PreToolUse, PostToolUse, Stop), guardrails para bloquear ações perigosas, delegação de permissão a outro LLM, segurança e como testar hooks. Hooks são o sistema nervoso do Claude Code — sem eles, você está dando autonomia sem controle.
+> Galho 3 da trilha [[Dicionário de IA#Claude Code|Claude Code]]. Cobre o sistema de hooks (lifecycle, PreToolUse, PostToolUse, Stop), [[Dicionário de IA#Guardrail|guardrails]] para bloquear ações perigosas, delegação de permissão a outro [[Dicionário de IA#LLM (Large Language Model)|LLM]], segurança e como testar hooks. Hooks são o sistema nervoso do Claude Code — sem eles, você está dando autonomia sem controle.
 
 ## Sobre este galho
 

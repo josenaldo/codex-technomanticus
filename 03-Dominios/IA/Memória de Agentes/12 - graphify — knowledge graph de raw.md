@@ -25,7 +25,7 @@ aliases:
 
 `graphify` é uma versão **graph-based** do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]]. Em vez de compilar uma wiki em markdown a partir do `/raw`, como [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]] faz, o repositório constrói um grafo `NetworkX`, clusteriza com **Leiden community detection** e exporta artefatos consumíveis pelo assistente de código. O posicionamento como sucessor explícito do `/raw` aparece literalmente no README — "Andrej Karpathy keeps a `/raw` folder where he drops papers, tweets, screenshots, and notes. graphify is the answer to that problem".
 
-O foco é **mixed-media**, não só markdown: código (extração AST via tree-sitter em cerca de 25 linguagens), documentos, papers, imagens (Claude vision), áudio e vídeo (transcritos localmente com `faster-whisper`). É instalado como **skill** do assistente de código — `/graphify` no Claude Code/Cursor/Gemini CLI/Aider/Antigravity, `$graphify` no Codex — e roda em cima de qualquer pasta. Licença MIT, pacote PyPI `graphifyy` (com duplo y; o pacote `graphify` no PyPI é de outro projeto).
+O foco é **mixed-media**, não só markdown: código (extração AST via tree-sitter em cerca de 25 linguagens), documentos, papers, imagens (Claude vision), áudio e vídeo (transcritos localmente com `faster-whisper`). É instalado como **skill** do assistente de código — `/graphify` no [[Dicionário de IA#Claude Code|Claude Code]]/Cursor/Gemini CLI/Aider/Antigravity, `$graphify` no Codex — e roda em cima de qualquer pasta. Licença MIT, pacote PyPI `graphifyy` (com duplo y; o pacote `graphify` no PyPI é de outro projeto).
 
 ## Por que importa
 
@@ -49,11 +49,11 @@ graph LR
 
 O README descreve o pipeline em três passes:
 
-1. **AST pass — determinístico, local, sem LLM.** `tree-sitter` extrai estrutura de código: classes, funções, imports, call graph (cross-file em todas as linguagens suportadas), docstrings e comentários de rationale. Instantâneo, não consome tokens.
+1. **AST pass — determinístico, local, sem [[Dicionário de IA#LLM (Large Language Model)|LLM]].** `tree-sitter` extrai estrutura de código: classes, funções, imports, call graph (cross-file em todas as linguagens suportadas), docstrings e comentários de rationale. Instantâneo, não consome tokens.
 2. **Audio/video pass — local.** Vídeos e áudios são transcritos com `faster-whisper`, usando *prompt* domain-aware derivado dos *god nodes* do corpus (segundo o README, melhora reconhecimento de termos técnicos). Transcrições ficam em cache em `graphify-out/transcripts/`. Áudio nunca sai da máquina.
 3. **Semantic pass — LLM em paralelo.** Subagentes (Claude por padrão, ou outro modelo conforme a plataforma) processam docs, papers, imagens e transcrições para extrair conceitos, relacionamentos e design rationale. Os resultados são fundidos em um grafo `NetworkX`, clusterizado com **Leiden community detection** e exportado.
 
-O clustering é **topológico, não baseado em embeddings** — o README é explícito: "Clustering is graph-topology-based — no embeddings". Edges semânticas (`semantically_similar_to`) extraídas pelo LLM e marcadas `INFERRED` já estão no grafo e influenciam a detecção de comunidade diretamente, eliminando dependência de vector DB.
+O clustering é **topológico, não baseado em [[Dicionário de IA#embedding|embeddings]]** — o README é explícito: "Clustering is graph-topology-based — no embeddings". Edges semânticas (`semantically_similar_to`) extraídas pelo LLM e marcadas `INFERRED` já estão no grafo e influenciam a detecção de comunidade diretamente, eliminando dependência de [[Dicionário de IA#vector database|vector DB]].
 
 ## Anatomia técnica
 
@@ -68,7 +68,7 @@ Os itens abaixo refletem o estado público do README de `safishamsi/graphify` em
 - **Watch mode.** `graphify watch ./src` faz auto-rebuild conforme arquivos mudam. Para código, AST é instantâneo; para docs/papers, o sistema notifica que há re-pass semântico pendente — o disparo do LLM fica explícito. `graphify hook install` adiciona git hook que rebuilda no commit e no branch switch.
 - **Token efficiency claim.** "**71.5x fewer tokens per query vs reading raw files**" — citação direta do README, **auto-reportada** pelo autor. Útil como ordem de grandeza, não como número auditado.
 - **Team-friendly.** `graphify-out/` é projetado para commit no repositório — um teammate roda `/graphify .`, comita, e os outros recebem `GRAPH_REPORT.md` no `git pull`. `.graphifyignore` (sintaxe de `.gitignore`) exclui paths. O README sugere `.gitignore` para `manifest.json` (mtime-based, inválido pós-clone) e `cost.json` (tracking local).
-- **Comandos avançados.** `graphify clone <github-url>` clona repo público e roda pipeline; `graphify merge-graphs g1.json g2.json ...` combina grafos cross-repo, taggeando cada nó pela origem; `graphify --mcp` ou `python -m graphify.serve graph.json` expõe MCP server com `query_graph`, `get_node`, `get_neighbors`, `shortest_path`. Exportação para Neo4j via `--neo4j`.
+- **Comandos avançados.** `graphify clone <github-url>` clona repo público e roda pipeline; `graphify merge-graphs g1.json g2.json ...` combina grafos cross-repo, taggeando cada nó pela origem; `graphify --mcp` ou `python -m graphify.serve graph.json` expõe [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] server com `query_graph`, `get_node`, `get_neighbors`, `shortest_path`. Exportação para Neo4j via `--neo4j`.
 - **Stack e licença.** Python 3.10+, MIT, via `uv tool install graphifyy`, `pipx install graphifyy` ou `pip install graphifyy`. Extras `[video]`, `[office]`, `[ocr]`.
 
 ## Quando usar / quando não usar

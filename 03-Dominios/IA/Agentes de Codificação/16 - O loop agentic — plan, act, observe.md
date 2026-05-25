@@ -22,7 +22,7 @@ aliases:
 
 ## O que é
 
-O **loop agentic** (também chamado de padrão ReAct — Reasoning + Acting) é o ciclo fundamental que todo agente AI executa:
+O **[[Dicionário de IA#agentic loop|loop agentic]]** (também chamado de padrão [[Dicionário de IA#ReAct|ReAct]] — Reasoning + Acting) é o ciclo fundamental que todo agente AI executa:
 
 ```mermaid
 graph TD
@@ -63,7 +63,7 @@ O modelo analisa:
 
 #### 2. ACT — a execução
 
-O modelo emite um **tool call** — uma invocação estruturada de ferramenta:
+O modelo emite um **[[Dicionário de IA#tool call|tool call]]** — uma invocação estruturada de ferramenta:
 
 ```json
 {
@@ -118,7 +118,7 @@ Cada iteração acumula contexto:
 | **Loop infinito**        | Plan    | Agente repete a mesma ação sem progresso         | Configurar max_iterations   |
 | **Tool errada**          | Plan    | Usa bash para algo que read_file resolveria      | Melhorar tool descriptions  |
 | **Interpretação errada** | Observe | "O teste passou" quando na verdade falhou        | Verificar parsing de output |
-| **Contexto perdido**     | Plan    | Esquece o que já fez em turns anteriores         | Compactação de contexto     |
+| **Contexto perdido**     | Plan    | Esquece o que já fez em turns anteriores         | [[Dicionário de IA#context compaction\|Compactação de contexto]]     |
 | **Scope creep**          | Plan    | Começa a "melhorar" coisas que não foram pedidas | Proibições no CLAUDE.md     |
 
 ## Na prática: otimizando o loop

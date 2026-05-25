@@ -16,11 +16,11 @@ tags:
 # Testando e debugando hooks
 
 > [!abstract] TL;DR
-> Hooks que não são testados não são confiáveis. Um guardrail que você acha que bloqueia `rm -rf` mas na prática não bloqueia é pior que não ter guardrail — dá falsa confiança. Esta nota cobre como testar hooks manualmente, como escrever testes automatizados para hooks, como debugar hooks que não disparam, e armadilhas comuns de hooks que parecem funcionar mas falham em casos reais.
+> Hooks que não são testados não são confiáveis. Um [[Dicionário de IA#Guardrail|guardrail]] que você acha que bloqueia `rm -rf` mas na prática não bloqueia é pior que não ter guardrail — dá falsa confiança. Esta nota cobre como testar hooks manualmente, como escrever testes automatizados para hooks, como debugar hooks que não disparam, e armadilhas comuns de hooks que parecem funcionar mas falham em casos reais.
 
 ## Teste manual — simular input de hook
 
-A forma mais rápida: passar o JSON que o Claude Code passaria para o hook diretamente.
+A forma mais rápida: passar o JSON que o [[Dicionário de IA#Claude Code|Claude Code]] passaria para o hook diretamente.
 
 ```bash
 # Teste básico: verificar se o hook bloqueia force push

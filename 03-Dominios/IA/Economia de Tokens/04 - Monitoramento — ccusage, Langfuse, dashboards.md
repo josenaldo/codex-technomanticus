@@ -20,7 +20,7 @@ aliases:
 # Monitoramento — ccusage, Langfuse, dashboards
 
 > [!abstract] TL;DR
-> Monitorar tokens é o passo zero da economia — sem dados, otimização é adivinhação. Em 2026, o ecossistema de [[Dicionário de IA#Observability|observability]] de LLMs cobre desde o terminal do dev até produção enterprise: **ccusage** (CLI local para Claude Code, 4800+ stars), **Helicone** (proxy fácil, em maintenance mode após aquisição pela Mintlify), **Langfuse** (observability open-source com tracing profundo, evals e prompt management), **Arize Phoenix** (alternativa OSS construída sobre OpenTelemetry), e **OpenTelemetry GenAI** (padrão emergente para portabilidade cross-vendor). O mínimo viável é logar `usage.input_tokens` + `usage.output_tokens` de cada chamada e somar por dia/projeto.
+> Monitorar tokens é o passo zero da economia — sem dados, otimização é adivinhação. Em 2026, o ecossistema de [[Dicionário de IA#Observability|observability]] de LLMs cobre desde o terminal do dev até produção enterprise: **ccusage** (CLI local para Claude Code, 4800+ stars), **Helicone** (proxy fácil, em maintenance mode após aquisição pela Mintlify), **[[Dicionário de IA#Langfuse|Langfuse]]** (observability open-source com tracing profundo, evals e prompt management), **[[Dicionário de IA#Arize Phoenix|Arize Phoenix]]** (alternativa OSS construída sobre OpenTelemetry), e **[[Dicionário de IA#OpenTelemetry GenAI|OpenTelemetry GenAI]]** (padrão emergente para portabilidade cross-vendor). O mínimo viável é logar `usage.input_tokens` + `usage.output_tokens` de cada chamada e somar por dia/projeto.
 
 ## O que é
 
@@ -118,8 +118,8 @@ Trace (representa uma "tarefa" do usuário)
     └── Span (formatação e pós-processamento)
 ```
 
-- **Trace**: representa a solicitação completa, do início ao fim
-- **Span**: qualquer operação intermediária (busca, transformação, preparação de prompt)
+- **[[Dicionário de IA#trace|Trace]]**: representa a solicitação completa, do início ao fim
+- **[[Dicionário de IA#span|Span]]**: qualquer operação intermediária (busca, transformação, preparação de prompt)
 - **Generation**: subclasse de Span que rastreia especificamente chamadas a LLMs — inclui tokens de input/output e custo calculado automaticamente (OpenAI e Anthropic out-of-the-box)
 
 ```python
@@ -205,9 +205,9 @@ Monitorar sem alertas é como ter um dashboard que ninguém olha. Para produçã
 | ----------------------------------- | ---------------------------- | ---------------------------------------- | ------------------------------------- |
 | Custo/hora                          | >2× baseline das últimas 24h | Investigar loop de agente ou retry storm |                                       |
 | Latência p95                        | >2× baseline ou >30s         | Checar sobrecarga do provider            |                                       |
-| [[Dicionário de IA#Cache hit rate   | Cache hit rate]]             | Cai abaixo de 40%                        | Revisar estrutura e posição do prompt |
+| [[Dicionário de IA#Cache hit rate\|Cache hit rate]]                 | Cai abaixo de 40%                        | Revisar estrutura e posição do prompt |
 | Taxa de erro                        | >5% em janela de 5 minutos   | Checar rate limits ou outage             |                                       |
-| [[Dicionário de IA#Reasoning tokens | Reasoning tokens]] por call  | >50k em tarefas simples                  | Ajustar `thinking_budget`             |
+| [[Dicionário de IA#Reasoning tokens\|Reasoning tokens]] por call    | >50k em tarefas simples                  | Ajustar `thinking_budget`             |
 
 **Anomaly detection vs threshold fixo:** ferramentas como Braintrust e Langfuse usam baseline dinâmico — aprendem o padrão normal e alertam desvios. Mais eficaz que thresholds estáticos para detectar gradual cost creep (aumento lento e contínuo de custos que nenhum threshold fixo captura).
 

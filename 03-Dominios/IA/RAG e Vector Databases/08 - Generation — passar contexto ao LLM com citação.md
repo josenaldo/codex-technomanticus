@@ -18,7 +18,7 @@ aliases:
 # Generation — passar contexto ao LLM com citação
 
 > [!abstract] TL;DR
-> Geração é onde RAG vira **resposta com citação**. Estrutura padrão de prompt: trechos delimitados + pergunta + regras explícitas (citar trecho usado, devolver "não sei" se contexto não cobre). Citação não é nice-to-have — é a feature que diferencia RAG de chatbot. Cuidado com **faithfulness**: LLM pode misturar contexto com conhecimento próprio. Padrões: structured output com source ID, system prompt restritivo, validação de citação no post-processing.
+> Geração é onde [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vira **resposta com citação**. Estrutura padrão de prompt: trechos delimitados + pergunta + regras explícitas (citar trecho usado, devolver "não sei" se contexto não cobre). Citação não é nice-to-have — é a feature que diferencia RAG de chatbot. Cuidado com **faithfulness**: [[Dicionário de IA#LLM (Large Language Model)|LLM]] pode misturar contexto com conhecimento próprio. Padrões: [[Dicionário de IA#structured output|structured output]] com source ID, [[Dicionário de IA#system prompt|system prompt]] restritivo, validação de citação no post-processing.
 
 ## A estrutura do prompt
 
@@ -139,12 +139,12 @@ Modos comuns de falha:
 | **Inferência não-suportada** | Contexto diz "FastAPI suporta async". LLM diz "FastAPI é mais rápido que Flask" (não no contexto) |
 | **Generalização** | Contexto sobre v3, LLM responde sobre todas as versões |
 | **Citação errada** | Cita [2] mas info está em [1] |
-| **Halucinação total** | Inventa info não presente em nenhum chunk |
+| **[[Dicionário de IA#Hallucination\|Halucinação]] total** | Inventa info não presente em nenhum chunk |
 
 Mitigações:
 
 - **System prompt restritivo** (acima)
-- **Reduzir temperature** (0 ou 0.2 para tarefas factuais)
+- **Reduzir [[Dicionário de IA#temperature|temperature]]** (0 ou 0.2 para tarefas factuais)
 - **Validação automática** (LLM-as-judge: a resposta usa info do contexto?)
 - **Estimativa de confidence** (LLM declara confidence)
 

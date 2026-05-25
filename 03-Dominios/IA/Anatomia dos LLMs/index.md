@@ -15,7 +15,7 @@ aliases:
 
 # Anatomia dos LLMs
 
-LLMs são a infraestrutura central da engenharia de software assistida por IA em 2026. Mas usar um LLM sem entender como ele funciona é como dirigir sem saber que o carro tem freio — funciona até o momento em que não funciona. Esta trilha percorre a anatomia completa: de como texto vira números (tokens) até por que uma sessão de agente custa $25 e como pagar $5. Cobre arquitetura, modelos em produção (incluindo o ecossistema chinês), APIs, pricing, treino, evaluation, e as técnicas que determinam se você gasta dinheiro ou queima dinheiro.
+[[Dicionário de IA#LLM (Large Language Model)|LLMs]] são a infraestrutura central da engenharia de software assistida por IA em 2026. Mas usar um LLM sem entender como ele funciona é como dirigir sem saber que o carro tem freio — funciona até o momento em que não funciona. Esta trilha percorre a anatomia completa: de como texto vira números (tokens) até por que uma sessão de agente custa $25 e como pagar $5. Cobre arquitetura, modelos em produção (incluindo o ecossistema chinês), APIs, pricing, treino, evaluation, e as técnicas que determinam se você gasta dinheiro ou queima dinheiro.
 
 > [!info] Pré-requisitos
 > Nenhum. Esta trilha é o ponto de entrada da [[03-Dominios/IA/index|Formação Engenheiro de IA]]. Começa do zero e constrói progressivamente.
@@ -24,13 +24,13 @@ LLMs são a infraestrutura central da engenharia de software assistida por IA em
 > Os preços e versões de modelos mencionados refletem o estado de **maio de 2026**. Este campo muda a cada trimestre. Verifique sempre a documentação oficial do provider antes de tomar decisões de arquitetura.
 
 > [!tip] O que diferencia um senior em LLMs
-> 1. Tem modelo mental correto de tokenização e estima tokens de cabeça (~4 chars/token EN, ~3 PT-BR, mais para código)
+> 1. Tem modelo mental correto de tokenização e estima [[Dicionário de IA#Token|tokens]] de cabeça (~4 chars/token EN, ~3 PT-BR, mais para código)
 > 2. Distingue pretraining, SFT e RLHF — sabe explicar por que um modelo recusa/aceita certos prompts
-> 3. Entende attention e context window de forma prática — sabe por que "lost in the middle" acontece
-> 4. Usa `temperature`, `top_p`, `top_k` com intenção, não como mágica
-> 5. Desenha prompts que retornam JSON válido consistentemente via structured outputs + validação + retry
+> 3. Entende [[Dicionário de IA#attention|attention]] e context window de forma prática — sabe por que "lost in the middle" acontece
+> 4. Usa [[Dicionário de IA#temperature|`temperature`]], [[Dicionário de IA#top-p|`top_p`]], [[Dicionário de IA#top-k|`top_k`]] com intenção, não como mágica
+> 5. Desenha prompts que retornam JSON válido consistentemente via [[Dicionário de IA#structured output|structured outputs]] + validação + retry
 > 6. Sabe quando usar streaming vs não (UX vs facilidade de parsing)
-> 7. Aplica prompt caching corretamente e mede impacto em custo
+> 7. Aplica [[Dicionário de IA#Prompt caching|prompt caching]] corretamente e mede impacto em custo
 > 8. Faz **tiering** de modelos — roteia para Haiku/Flash o que der, escala para Opus/GPT-5 o necessário
 > 9. Mede tudo: tokens in/out, latência, custo, taxa de erro
 > 10. Trata LLM como **fonte não-confiável** — valida, faz retry, tem fallback, não confia em "parece ok"

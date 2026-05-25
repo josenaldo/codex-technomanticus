@@ -25,7 +25,7 @@ aliases:
 
 ## O que é
 
-A taxonomia clássica vem do psicólogo Endel Tulving. Em 1972, ele distinguiu **memória episódica** — lembrança de eventos específicos vividos pelo sujeito, marcados no tempo e no contexto — de **memória semântica** — conhecimento factual sobre o mundo, descontextualizado e atemporal. Mais tarde a literatura cognitiva incorporou a **memória procedural** (saber como executar habilidades, frequentemente sem acesso consciente ao "como") e a **working memory** (espaço de trabalho de curtíssimo prazo, popularizado pelo modelo de Baddeley).
+A taxonomia clássica vem do psicólogo Endel Tulving. Em 1972, ele distinguiu **[[Dicionário de IA#episodic memory|memória episódica]]** — lembrança de eventos específicos vividos pelo sujeito, marcados no tempo e no contexto — de **[[Dicionário de IA#semantic memory|memória semântica]]** — conhecimento factual sobre o mundo, descontextualizado e atemporal. Mais tarde a literatura cognitiva incorporou a **memória procedural** (saber como executar habilidades, frequentemente sem acesso consciente ao "como") e a **[[Dicionário de IA#working memory|working memory]]** (espaço de trabalho de curtíssimo prazo, popularizado pelo modelo de Baddeley).
 
 Em IA, esse vocabulário foi importado por extensão metafórica. Quando um paper de 2026 fala em "memória episódica do agente", está apropriando o termo de Tulving para descrever um log cronológico de interações; "memória semântica" costuma referir-se a fatos consolidados num grafo, knowledge base ou páginas de wiki. A correspondência é frouxa — sistemas reais não respeitam fronteiras conceituais com precisão — mas a metáfora pegou porque resolve um problema prático: dá nomes diferentes para coisas que, embora todas se chamem "memória", têm padrões de uso radicalmente distintos.
 
@@ -67,7 +67,7 @@ Em IA, é frequentemente sub-discutida. O exemplo mais visível em 2026 são os 
 
 O espaço de trabalho da chamada atual: tudo dentro da janela de contexto naquele instante. Efêmera por definição — quando a chamada termina, o conteúdo se desfaz. Limitada pela capacidade da janela e pelos fenômenos discutidos em [[02 - O problema das janelas de contexto]].
 
-Em IA, working memory é o prompt atual. Episódico, semântico e procedural só influenciam a chamada se forem **carregados** para a working memory na hora certa — via injeção no prompt ou via tool calls. Por isso os outros três são tipicamente **long-term memory**: vivem em substrato persistente e entram na working memory apenas quando recuperados. A separação working/long-term é ortogonal à de Tulving: qualquer tipo pode ser working ou long-term, dependendo de estar ou não dentro da janela atual.
+Em IA, working memory é o prompt atual. Episódico, semântico e procedural só influenciam a chamada se forem **carregados** para a working memory na hora certa — via injeção no prompt ou via tool calls. Por isso os outros três são tipicamente **[[Dicionário de IA#long-term memory|long-term memory]]**: vivem em substrato persistente e entram na working memory apenas quando recuperados. A separação working/long-term é ortogonal à de Tulving: qualquer tipo pode ser working ou long-term, dependendo de estar ou não dentro da janela atual.
 
 ```mermaid
 graph TD
@@ -90,7 +90,7 @@ graph TD
 
 **Quando NÃO forçar:**
 
-- **Implementações reais misturam tipos.** Um memory stream pode ser indexado por embeddings semânticos. Uma página de wiki pode ter log de revisões. Um skill pode incluir exemplos episódicos. Querer pureza categorial gera mais discussão do que clareza.
+- **Implementações reais misturam tipos.** Um memory stream pode ser indexado por [[Dicionário de IA#embedding|embeddings]] semânticos. Uma página de wiki pode ter log de revisões. Um skill pode incluir exemplos episódicos. Querer pureza categorial gera mais discussão do que clareza.
 - **Casos simples não precisam da distinção.** Cache de respostas, chat curto, automação one-shot pedem código, não taxonomia. Importar Tulving para resolver um cache é overengineering.
 - **Quando a complexidade excede o valor.** Em sistemas pequenos, três caixas viram três pastas vazias e três políticas redundantes. A taxonomia paga em sistemas que vão evoluir; em scripts de fim de semana, atrapalha.
 

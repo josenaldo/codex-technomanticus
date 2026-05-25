@@ -16,7 +16,7 @@ tags:
 # CI/CD com GitHub Actions
 
 > [!abstract] TL;DR
-> Claude Code em GitHub Actions significa rodar `claude --print` como step de um workflow. Os casos de uso mais úteis são: code review automático em PRs, geração de changelog, verificação de regressões, e análise de cobertura de testes. A configuração é simples — API key como secret, step com headless mode, output capturado e postado como comentário.
+> [[Dicionário de IA#Claude Code|Claude Code]] em GitHub Actions significa rodar `claude --print` como step de um workflow. Os casos de uso mais úteis são: code review automático em PRs, geração de changelog, verificação de regressões, e análise de cobertura de testes. A configuração é simples — API key como secret, step com headless mode, output capturado e postado como comentário.
 
 ## Configuração básica
 
@@ -177,7 +177,7 @@ steps:
 
 ## Controle de permissões no CI
 
-Em CI, sempre use `--allowedTools` para restringir o que o agente pode fazer:
+Em CI, sempre use `--allowedTools` para restringir o que o [[Dicionário de IA#Agent|agente]] pode fazer:
 
 | Caso de uso | Tools necessárias |
 |-------------|-------------------|
@@ -203,7 +203,7 @@ Nunca deixe o agente com acesso irrestrito em CI. O pipeline tem acesso ao códi
       "..."
 ```
 
-`--max-turns` controla quantas tool calls o agente faz (cada uma consome tokens). `timeout-minutes` é o limite de tempo do job inteiro.
+`--max-turns` controla quantas tool calls o agente faz (cada uma consome [[Dicionário de IA#Token|tokens]]). `timeout-minutes` é o limite de tempo do job inteiro.
 
 ## Armadilhas
 
@@ -211,7 +211,7 @@ Nunca deixe o agente com acesso irrestrito em CI. O pipeline tem acesso ao códi
 
 **Uso de `--no-permission-prompts` sem `--allowedTools`**: o agente pode fazer qualquer coisa no checkout. Sempre combine as duas flags.
 
-**Diff muito grande para o contexto**: PRs com centenas de arquivos modificados vão exceder o contexto do modelo. Filtre para arquivos relevantes antes de passar para o agente.
+**Diff muito grande para o contexto**: PRs com centenas de arquivos modificados vão exceder o [[Dicionário de IA#Context window|contexto do modelo]]. Filtre para arquivos relevantes antes de passar para o agente.
 
 **Custo por PR**: cada análise custa tokens. Com muitos PRs por dia, o custo pode surpreender. Adicione condicional para rodar só em PRs de certas branches ou acima de determinado tamanho.
 

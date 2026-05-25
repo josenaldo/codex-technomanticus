@@ -19,7 +19,7 @@ tags:
 
 ## O que é
 
-Claude Code agrega configuração de múltiplos locais para construir o contexto de cada sessão. A ordem de precedência é:
+[[Dicionário de IA#Claude Code|Claude Code]] agrega configuração de múltiplos locais para construir o contexto de cada sessão. A ordem de precedência é:
 
 ```
 [sistema] → [global] → [projeto] → [local]
@@ -33,7 +33,7 @@ Configurações mais específicas sobrescrevem as genéricas. O que está no `.c
 
 ### Camada 1: Sistema (built-in)
 
-O system prompt padrão do Claude Code — comportamento base, quais tools usar, como pedir confirmação, como estruturar respostas. Você não edita isso diretamente.
+O [[Dicionário de IA#system prompt|system prompt]] padrão do Claude Code — comportamento base, quais tools usar, como pedir confirmação, como estruturar respostas. Você não edita isso diretamente.
 
 ### Camada 2: Global (`~/.claude/`)
 
@@ -138,7 +138,7 @@ System prompt + CLAUDE.mds combinados + settings resolvidos
 | Stack e convenções do projeto | `.claude/CLAUDE.md` |
 | Arquivos-chave do projeto | `.claude/CLAUDE.md` |
 | Comandos de desenvolvimento do projeto | `.claude/settings.json` |
-| Guardrails do projeto | `.claude/settings.json` |
+| [[Dicionário de IA#Guardrail\|Guardrails do projeto]] | `.claude/settings.json` |
 | Sobrescrita temporária pessoal | `.claude/settings.local.json` |
 | Slash commands do projeto | `.claude/commands/` |
 

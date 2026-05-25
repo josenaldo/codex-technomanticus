@@ -41,11 +41,11 @@ Cada caixa é decisão de engenharia, não wishful thinking. Frameworks comercia
 
 | Fonte | Origem | Volume típico | Como entra |
 |---|---|---|---|
-| **System / instructions** | `AGENTS.md`, system prompt | 1-5K tokens | Início, persistente |
-| **Memória persistente** | Vector store, DB, file system | Variável | Selecionada por relevância |
+| **System / instructions** | `AGENTS.md`, [[Dicionário de IA#system prompt\|system prompt]] | 1-5K tokens | Início, persistente |
+| **Memória persistente** | [[Dicionário de IA#vector store\|Vector store]], DB, file system | Variável | Selecionada por relevância |
 | **Histórico da conversa** | Estado da sessão | Cresce ao longo do tempo | Compactado se necessário |
-| **Retrieval dinâmico** | Tools, MCP servers, APIs | Sob demanda | Just-in-time |
-| **Tool definitions** | Schemas de funções disponíveis | 2-15K tokens | Cacheável |
+| **Retrieval dinâmico** | Tools, [[Dicionário de IA#MCP (Model Context Protocol)\|MCP]] servers, APIs | Sob demanda | Just-in-time |
+| **[[Dicionário de IA#tool definition\|Tool definitions]]** | Schemas de funções disponíveis | 2-15K tokens | Cacheável |
 
 A pipeline decide para cada turno: *quanto* de cada fonte entra, *em que posição*, *com que compressão*.
 

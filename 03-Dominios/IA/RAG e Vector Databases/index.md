@@ -16,7 +16,7 @@ aliases:
 
 # RAG e Vector Databases
 
-Em 2026, quase toda aplicação séria com LLM tem **RAG no meio do caminho**. LLMs conhecem muita coisa, mas não conhecem **seus dados** — docs internas, políticas, base de clientes, histórico do paciente. RAG resolve isso injetando dados específicos no contexto em runtime, com **citação de fonte** como capacidade-chave. Esta trilha cobre o ciclo completo: do conceito ao setup de produção, passando por embeddings, chunking, vector DBs, retrieval, reranking, evaluation e padrões avançados (Graph RAG, Agentic RAG, PageIndex/vectorless RAG).
+Em 2026, quase toda aplicação séria com [[Dicionário de IA#LLM (Large Language Model)|LLM]] tem **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] no meio do caminho**. LLMs conhecem muita coisa, mas não conhecem **seus dados** — docs internas, políticas, base de clientes, histórico do paciente. RAG resolve isso injetando dados específicos no contexto em runtime, com **citação de fonte** como capacidade-chave. Esta trilha cobre o ciclo completo: do conceito ao setup de produção, passando por [[Dicionário de IA#embedding|embeddings]], [[Dicionário de IA#chunking|chunking]], [[Dicionário de IA#vector database|vector DBs]], [[Dicionário de IA#retrieval|retrieval]], [[Dicionário de IA#reranking|reranking]], evaluation e padrões avançados (Graph RAG, Agentic RAG, PageIndex/vectorless RAG).
 
 > [!info] Pré-requisitos
 > Recomendado ter lido [[Anatomia dos LLMs]] (Trilha 1) — especialmente sobre context window e API. [[Context Engineering]] complementa fortemente (Bloco 2 de retrieval). Para RAG agentic avançado, ver [[Anatomia de Agents]].

@@ -54,8 +54,8 @@ graph LR
 
 | Fase        | O que faz                                     | Bottleneck              | Métrica    |
 | ----------- | --------------------------------------------- | ----------------------- | ---------- |
-| **Prefill** | Processa todos os input tokens, cria KV cache | **Compute** (FLOPs)     | TTFT       |
-| **Decode**  | Gera tokens autoregressivamente, um por vez   | **Memória** (bandwidth) | TPOT / ITL |
+| **Prefill** | Processa todos os input tokens, cria [[Dicionário de IA#KV cache\|KV cache]] | **Compute** (FLOPs)     | TTFT       |
+| **Decode**  | Gera tokens autoregressivamente, um por vez   | **Memória** ([[Dicionário de IA#memory bandwidth bottleneck\|bandwidth]]) | TPOT / ITL |
 
 ### Métricas de performance
 
@@ -108,9 +108,9 @@ data: {"type":"message_stop"}
 | --------------------------- | --------------------------------------------------------------------- | ---------------------------------------------- |
 | **Prefix caching**          | Reutiliza KV cache de prefixos comuns                                 | TTFT -50-85%                                   |
 | **FlashAttention 3**        | Computação de atenção I/O-aware                                       | 2-4x mais rápido                               |
-| **Speculative decoding**    | Modelo "draft" gera tokens rápido, modelo principal verifica em batch | Throughput 2-3x                                |
+| **[[Dicionário de IA#Speculative decoding\|Speculative decoding]]**    | Modelo "draft" gera tokens rápido, modelo principal verifica em batch | Throughput 2-3x                                |
 | **Quantização (INT8/INT4)** | Reduz tamanho dos pesos                                               | TPOT -30-50%, mais batches                     |
-| **Inferência desagregada**  | Prefill e decode em GPUs separadas                                    | TTFT e throughput otimizados independentemente |
+| **[[Dicionário de IA#inference\|Inferência desagregada]]**  | Prefill e decode em GPUs separadas                                    | TTFT e throughput otimizados independentemente |
 
 ### Inferência desagregada: a fronteira
 

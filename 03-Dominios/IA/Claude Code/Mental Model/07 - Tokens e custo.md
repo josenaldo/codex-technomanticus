@@ -19,11 +19,11 @@ tags:
 
 ## O que é
 
-Claude Code usa a API da Anthropic para processar cada turno da sessão. Cada chamada à API tem um custo baseado em:
+[[Dicionário de IA#Claude Code|Claude Code]] usa a API da Anthropic para processar cada turno da sessão. Cada chamada à API tem um [[Dicionário de IA#cost per token|custo]] baseado em:
 
-- **Input tokens**: tudo no contexto quando o modelo é chamado
+- **Input [[Dicionário de IA#Token|tokens]]**: tudo no contexto quando o modelo é chamado
 - **Output tokens**: o que o modelo gera (resposta + parâmetros de tool calls)
-- **Cache read tokens**: tokens que bateram no prompt cache (muito mais baratos)
+- **Cache read tokens**: tokens que bateram no [[Dicionário de IA#Prompt caching|prompt cache]] (muito mais baratos)
 
 Preços de referência (Claude Sonnet 4.x, ordem de grandeza):
 - Input: ~$3/MTok
@@ -136,9 +136,9 @@ O ccusage é a fonte de verdade para o seu uso real.
 
 **Ignorar o custo até a fatura chegar**: configure alertas de uso na Anthropic Console.
 
-**Subagents multiplicam custo**: cada subagent (`Agent` tool) é uma sessão separada com seu próprio contexto. O custo é multiplicado pelo número de subagents.
+**[[Dicionário de IA#subagent|Subagents]] multiplicam custo**: cada subagent (`Agent` tool) é uma sessão separada com seu próprio contexto. O custo é multiplicado pelo número de subagents.
 
-**Cache hit rate baixo**: o prompt cache é ativado quando o início do contexto (system prompt + CLAUDE.md) é idêntico entre chamadas. Mudar o CLAUDE.md frequentemente anula o benefício de cache.
+**[[Dicionário de IA#Cache hit rate|Cache hit rate]] baixo**: o prompt cache é ativado quando o início do contexto (system prompt + CLAUDE.md) é idêntico entre chamadas. Mudar o CLAUDE.md frequentemente anula o benefício de cache.
 
 ## Veja também
 

@@ -16,7 +16,7 @@ tags:
 # Sessões paralelas — tmux + worktrees
 
 > [!abstract] TL;DR
-> Claude Code pode rodar múltiplas sessões simultâneas em worktrees git diferentes — cada agente trabalha numa branch isolada sem interferir nos arquivos do outro. O setup padrão usa `git worktree add` para criar cópias de trabalho e `tmux` (ou múltiplos terminais) para rodar sessões em paralelo. Ideal para: implementar features independentes simultaneamente, ou trabalhar numa feature enquanto outra está em review.
+> [[Dicionário de IA#Claude Code|Claude Code]] pode rodar múltiplas sessões simultâneas em worktrees git diferentes — cada [[Dicionário de IA#Agent|agente]] trabalha numa branch isolada sem interferir nos arquivos do outro. O setup padrão usa `git worktree add` para criar cópias de trabalho e `tmux` (ou múltiplos terminais) para rodar sessões em paralelo. Ideal para: implementar features independentes simultaneamente, ou trabalhar numa feature enquanto outra está em review.
 
 ## O problema de sessões únicas
 

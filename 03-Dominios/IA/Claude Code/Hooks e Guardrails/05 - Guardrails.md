@@ -16,11 +16,11 @@ tags:
 # Guardrails — bloquear comandos destrutivos
 
 > [!abstract] TL;DR
-> Guardrails são PreToolUse hooks que bloqueiam ações destrutivas ou de alto risco antes de executar. São a diferença entre usar Claude Code com auto mode de forma segura ou com risco real de perda de dados. A configuração global (~/.claude/settings.json) garante que os guardrails se aplicam em todos os projetos.
+> [[Dicionário de IA#Guardrail|Guardrails]] são PreToolUse hooks que bloqueiam ações destrutivas ou de alto risco antes de executar. São a diferença entre usar [[Dicionário de IA#Claude Code|Claude Code]] com auto mode de forma segura ou com risco real de perda de dados. A configuração global (~/.claude/settings.json) garante que os guardrails se aplicam em todos os projetos.
 
 ## Por que guardrails são necessários
 
-Em modo automático, o Claude Code executa tool calls sem pedir confirmação. Isso é produtivo — mas significa que um mal-entendimento pode resultar em:
+Em modo automático, o Claude Code executa [[Dicionário de IA#tool call|tool calls]] sem pedir confirmação. Isso é produtivo — mas significa que um mal-entendimento pode resultar em:
 
 - `rm -rf` em diretório errado
 - `git push --force` que sobrescreve o trabalho de outros

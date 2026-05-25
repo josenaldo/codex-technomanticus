@@ -17,11 +17,11 @@ aliases:
 # Mental Model — Claude Code
 
 > [!abstract] TL;DR
-> Galho 1 da trilha Claude Code. Cobre como o agente realmente funciona internamente: loop agentic, leitura de codebase, tool use, context window, modos de operação, compaction, custo e tomada de decisão. Pré-requisito recomendado para todos os outros galhos.
+> Galho 1 da trilha Claude Code. Cobre como o agente realmente funciona internamente: [[Dicionário de IA#agentic loop|loop agentic]], leitura de codebase, [[Dicionário de IA#tool use|tool use]], context window, modos de operação, [[Dicionário de IA#context compaction|compaction]], custo e tomada de decisão. Pré-requisito recomendado para todos os outros galhos.
 
 ## Sobre este galho
 
-Entender o mental model do Claude Code muda como você usa a ferramenta. Saber que o agente não indexa o codebase como uma IDE, mas navega com grep/glob/find, explica por que um CLAUDE.md bem escrito importa tanto. Saber como a context window se comporta explica por que sessões longas ficam mais lentas e custosas.
+Entender o mental model do [[Dicionário de IA#Claude Code|Claude Code]] muda como você usa a ferramenta. Saber que o [[Dicionário de IA#Agent|agente]] não indexa o codebase como uma IDE, mas navega com grep/glob/find, explica por que um CLAUDE.md bem escrito importa tanto. Saber como a [[Dicionário de IA#Context window|context window]] se comporta explica por que sessões longas ficam mais lentas e custosas.
 
 Este galho constrói o mapa mental que torna os outros galhos legíveis.
 

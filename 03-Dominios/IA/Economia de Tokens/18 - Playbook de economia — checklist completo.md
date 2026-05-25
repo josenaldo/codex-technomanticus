@@ -29,7 +29,7 @@ aliases:
 
 ### Fase 1: Quick wins (impacto imediato)
 
-- [ ] **Prompt caching:** mover conteúdo estático para início do prompt + `cache_control`
+- [ ] **[[Dicionário de IA#Prompt caching|Prompt caching]]:** mover conteúdo estático para início do prompt + `cache_control`
 - [ ] **Context pruning:** configurar .cursorignore, excluir node_modules/dist/coverage
 - [ ] **Higiene de sessão:** usar `/clear` ao trocar de tarefa e `/compact` proativo quando o contexto passar de ~100k
 - [ ] **Interface de economia:** instalar **Serena** (redução agressiva) e usar `/statusline` para monitorar uso em tempo real
@@ -38,17 +38,17 @@ aliases:
 
 ### Fase 2: Otimizações estruturais
 
-- [ ] **Compactação de histórico:** ativar/configurar context compaction automática
+- [ ] **Compactação de histórico:** ativar/configurar [[Dicionário de IA#context compaction|context compaction]] automática
 - [ ] **Filtragem de output:** usar **RTK** (Ex: `rtk git status`) para filtrar saídas verbosas de ferramentas
 - [ ] **Sub-agentes eficientes:** delegar para sub-agente `Explore` (read-only) em buscas e `general-purpose` apenas para escrita/lógica
 - [ ] **Tool compression:** comprimir descriptions de tools
-- [ ] **Thinking budget:** limitar thinking tokens por tipo de tarefa
+- [ ] **[[Dicionário de IA#Thinking budget|Thinking budget]]:** limitar thinking tokens por tipo de tarefa
 - [ ] **Retrieval seletivo:** enviar trechos de arquivo (usando offset/limit), não arquivos inteiros
 - [ ] **Higiene de projeto:** manter `CLAUDE.md` enxuto e evitar deixar muitos arquivos abertos/sem commit no Git
 
 ### Fase 3: Ajuste fino
 
-- [ ] **Batch API:** usar para tarefas assíncronas em volume
+- [ ] **[[Dicionário de IA#batch API|Batch API]]:** usar para tarefas assíncronas em volume
 - [ ] **Semantic caching:** cachear respostas para perguntas frequentes
 - [ ] **Model cascading:** implementar fallback budget → standard → flagship
 - [ ] **Orçamento:** definir budget mensal com alertas
