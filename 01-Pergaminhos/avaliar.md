@@ -24,17 +24,9 @@
 
 # Tópicos a ver
 
-- Técnicas de Refatoração de código
+**Primeiro, Temporal.** Você mesmo nomeou. E a curiosidade aqui é legítima, porque Temporal não é "mais uma ferramenta" — é uma classe de pensamento sobre execução durável que muda como você modela problemas. Mesmo sem oportunidade imediata de usar em produção, vale uma exploração lateral: rodar localmente, modelar um workflow do MedEspecialista ou do EstudeMe como exercício, ler o livro do Maxim Fateev se sair. Você já lida com agentes paralelos via Claude Code e worktrees, e o overlap conceitual entre orquestração de agentes e orquestração de workflows é maior do que aparenta. Acho que rende inclusive um artigo em português, no estilo do que você já vem escrevendo sobre context engineering e token economy — "execução durável aplicada a workflows de agentes" é um tema que ninguém tá escrevendo bem em PT-BR ainda.
 
-- Clean code
-
-- Clean architecture
-
-- SOLID
-
-- DDD
-
-- TDD
+**Segundo, e mais subtilmente, o gap de healthcare formal.** Você tem healthcare por adjacência via MedEspecialista, mas educação médica não é healthcare clínico. Se essa direção te interessa de verdade — e a sua aplicação à parceria Anthropic sinaliza que sim — vale considerar como construir essa adjacência: HL7/FHIR como leitura formal, projetos open-source no espaço (existe um ecossistema HAPI FHIR robusto em Java), ou eventualmente um cliente que te exponha a integração clínica real. Você não precisa virar especialista em integração hospitalar, mas ter um nó mínimo de competência ali abre uma faixa de mercado que hoje está fechada pra você.
 
 # Livros
 
