@@ -1,7 +1,7 @@
 ---
 title: "APIs de LLM — anatomia de uma chamada"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-05-25
 type: concept
 status: seedling
 publish: true
@@ -33,6 +33,28 @@ Cada chamada é **stateless** — o modelo não "lembra" interações anteriores
 - **Agentes** — ferramentas como Claude Code e Cursor constroem requests complexos por baixo dos panos. Entender a anatomia ajuda a configurá-los melhor.
 
 ## Como funciona
+
+### A jornada completa de uma chamada (~400ms)
+
+Antes de detalhar request e response, vale entender o que acontece **do lado do servidor** entre o `POST` sair da sua máquina e a resposta começar a streamar de volta. Toda chamada percorre sete estágios — e ~95% do tempo de espera está concentrado em apenas um deles.
+
+![[jornada-completa-chamada-api-llm.jpeg]]
+
+| Estágio              | Tempo típico | O que rola                                                                                     |
+| -------------------- | ------------ | ---------------------------------------------------------------------------------------------- |
+| 1. API Gateway       | ~5ms         | TLS termination, auth (API key), rate limiting — onde o billing começa                         |
+| 2. Load Balancer     | ~2ms         | Routing geográfico, health checks, escolha do cluster de GPU                                   |
+| 3. Tokenization      | ~3ms         | Texto vira IDs de tokens (BPE/SentencePiece). É aqui que `Token Count × $/1k` é calculado      |
+| 4. Model Router      | ~1ms         | Escolhe qual cluster atende (small/large/MoE/embedding) — model-version routing acontece aqui  |
+| 5. **Inference Engine** | **300–800ms** | Prefill (paralelo) + Decode (autoregressivo, token a token) + Attention + GPU compute     |
+| 6. Post-Processing   | ~5ms         | Safety filters, format validation, stop sequences                                              |
+| 7. Response & Billing | ~5ms        | Serialização JSON (ou stream SSE), cálculo final de custo, logging                             |
+
+Três implicações práticas pro que vem a seguir neste artigo:
+
+- **Tokenização (estágio 3) acontece antes da inferência** — por isso `tools` e mensagens longas no `messages` aumentam o custo *antes* mesmo do modelo gerar qualquer coisa.
+- **Inference engine (estágio 5) domina a latência** — otimizações como [[11 - Prompt caching e otimizações de API|prompt caching]] e [[12 - Streaming, batching e latência|streaming]] atacam exatamente essa fase.
+- **Billing começa no estágio 1** — toda request autenticada conta, mesmo que falhe depois. Por isso `usage` no response é o seu único termômetro confiável.
 
 ### Anatomia do Request
 
