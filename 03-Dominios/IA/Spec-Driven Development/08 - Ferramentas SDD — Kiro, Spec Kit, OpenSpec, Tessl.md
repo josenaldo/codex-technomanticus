@@ -24,13 +24,13 @@ aliases:
 
 ## O panorama em uma tabela
 
-| Ferramenta | Categoria | Forte em | Stack | Modelo |
-|---|---|---|---|---|
-| **GitHub Spec Kit** | Static-spec, CLI | Greenfield, multi-agent | Python | Open source (MIT) |
-| **OpenSpec** | Static-spec, CLI | Brownfield, npm-friendly | TypeScript | Open source |
-| **Kiro** | Living-spec, IDE+CLI | Full-stack, AWS-aligned | Multi (rodando Claude) | Pago, da AWS |
-| **Tessl** | Living-spec, plataforma | Spec-as-source agressivo | Multi | Pago |
-| **BMAD** | Agentic framework | Brownfield large-scale | Multi | Open source |
+| Ferramenta          | Categoria               | Forte em                 | Stack                  | Modelo            |
+| ------------------- | ----------------------- | ------------------------ | ---------------------- | ----------------- |
+| **GitHub Spec Kit** | Static-spec, CLI        | Greenfield, multi-agent  | Python                 | Open source (MIT) |
+| **OpenSpec**        | Static-spec, CLI        | Brownfield, npm-friendly | TypeScript             | Open source       |
+| **Kiro**            | Living-spec, IDE+CLI    | Full-stack, AWS-aligned  | Multi (rodando Claude) | Pago, da AWS      |
+| **Tessl**           | Living-spec, plataforma | Spec-as-source agressivo | Multi                  | Pago              |
+| **BMAD**            | Agentic framework       | Brownfield large-scale   | Multi                  | Open source       |
 
 ## GitHub Spec Kit — o padrão open source
 
