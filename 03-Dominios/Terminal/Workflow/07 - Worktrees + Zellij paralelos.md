@@ -123,20 +123,35 @@ Worktrees com data antiga e sem sessão Zellij ativa são candidatas a remoção
 
 ## Armadilhas
 
-1. **`git worktree remove` sem checar trabalho não-comitado** `#perda-de-dados` `#cuidado`
-   Causa: hábito de "limpar" sem verificar. Sintoma: mudanças não-comitadas e não-stashed desaparecem sem aviso. Como detectar: `git -C <path> status` antes do remove. Solução: o git por padrão recusa `remove` em working tree dirty — isso é proteção nativa. Usar `--force` SÓ após verificação manual explícita.
+1. **`git worktree remove` sem checar trabalho não-comitado**
+   - **Causa:** hábito de "limpar" sem verificar.
+   - **Sintoma:** mudanças não-comitadas e não-stashed desaparecem sem aviso.
+   - **Como detectar:** `git -C <path> status` antes do remove.
+   - **Solução:** o git por padrão recusa `remove` em working tree dirty — isso é proteção nativa. Usar `--force` SÓ após verificação manual explícita.
 
-2. **`node_modules` duplicado em N worktrees** `#disco` `#performance`
-   Causa: cada worktree precisa de `npm install` próprio. Sintoma: disco enche rapidamente; instalações lentas a cada novo worktree. Como detectar: `du -sh ~/repos/myproj-*/node_modules`. Solução: monorepos com pnpm ou Yarn workspaces + content-addressable store compartilham dependências. Caso contrário, aceite o custo ou prefira stash.
+2. **`node_modules` duplicado em N worktrees**
+   - **Causa:** cada worktree precisa de `npm install` próprio.
+   - **Sintoma:** disco enche rapidamente; instalações lentas a cada novo worktree.
+   - **Como detectar:** `du -sh ~/repos/myproj-*/node_modules`.
+   - **Solução:** monorepos com pnpm ou Yarn workspaces + content-addressable store compartilham dependências. Caso contrário, aceite o custo ou prefira stash.
 
-3. **DB local compartilhada gera conflito de estado** `#banco-de-dados` `#conflito`
-   Causa: Postgres em `localhost:5432` único; worktree A roda migration X, worktree B roda migration Y. Sintoma: schema inconsistente, bugs "aleatórios" difíceis de reproduzir. Como detectar: mismatch entre schema esperado pela app e schema real. Solução: Docker Compose com portas diferentes por worktree, ou disciplina de uma worktree por vez interagindo com a DB local.
+3. **DB local compartilhada gera conflito de estado**
+   - **Causa:** Postgres em `localhost:5432` único; worktree A roda migration X, worktree B roda migration Y.
+   - **Sintoma:** schema inconsistente, bugs "aleatórios" difíceis de reproduzir.
+   - **Como detectar:** mismatch entre schema esperado pela app e schema real.
+   - **Solução:** Docker Compose com portas diferentes por worktree, ou disciplina de uma worktree por vez interagindo com a DB local.
 
-4. **Branch checked out em dois worktrees ao mesmo tempo** `#git` `#erro`
-   Causa: git proíbe ter a mesma branch em dois worktrees simultâneos. Sintoma: `git worktree add` falha com "branch X is already checked out at...". Como detectar: mensagem de erro explícita. Solução: cada worktree recebe sua própria branch. Para acesso read-only a uma branch em outro worktree, use detached HEAD: `git worktree add -d ~/repos/myproj-readonly main`.
+4. **Branch checked out em dois worktrees ao mesmo tempo**
+   - **Causa:** git proíbe ter a mesma branch em dois worktrees simultâneos.
+   - **Sintoma:** `git worktree add` falha com "branch X is already checked out at...".
+   - **Como detectar:** mensagem de erro explícita.
+   - **Solução:** cada worktree recebe sua própria branch. Para acesso read-only a uma branch em outro worktree, use detached HEAD: `git worktree add -d ~/repos/myproj-readonly main`.
 
-5. **Esquecer `prune` após deletar pasta manualmente** `#git` `#limpeza`
-   Causa: apagou a pasta do worktree diretamente com `rm -rf` em vez de usar o comando git. Sintoma: `git worktree list` mostra entradas "prunable" ou exibe warnings em operações git. Como detectar: `git worktree list` — entradas com caminho inexistente aparecem com aviso. Solução: preferir sempre `git worktree remove <path>`. Se já apagou manualmente: `git worktree prune` limpa as referências órfãs.
+5. **Esquecer `prune` após deletar pasta manualmente**
+   - **Causa:** apagou a pasta do worktree diretamente com `rm -rf` em vez de usar o comando git.
+   - **Sintoma:** `git worktree list` mostra entradas "prunable" ou exibe warnings em operações git.
+   - **Como detectar:** `git worktree list` — entradas com caminho inexistente aparecem com aviso.
+   - **Solução:** preferir sempre `git worktree remove <path>`. Se já apagou manualmente: `git worktree prune` limpa as referências órfãs.
 
 ---
 

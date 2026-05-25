@@ -142,13 +142,29 @@ Prefixo da máquina deixa claro onde a sessão vive ao ler `zellij ls` de qualqu
 
 ## Armadilhas
 
-1. **`zellij k` com trabalho não salvo** — Causa: hábito de "limpar" sessões antigas sem verificar o estado atual. Sintoma: edits abertos no nvim somem; pane com processo importante é destruído. Como detectar: antes de qualquer kill, fazer `zellij a <nome>` e checar tabs visualmente. Solução: detach como default; kill somente após attach + confirmação visual de que nada está aberto.
+1. **`zellij k` com trabalho não salvo**
+   - **Causa:** hábito de "limpar" sessões antigas sem verificar o estado atual.
+   - **Sintoma:** edits abertos no nvim somem; pane com processo importante é destruído.
+   - **Como detectar:** antes de qualquer kill, fazer `zellij a <nome>` e checar tabs visualmente.
+   - **Solução:** detach como default; kill somente após attach + confirmação visual de que nada está aberto.
 
-2. **Layout KDL com auto-start de comandos pesados** — Causa: querer "tudo pronto em 1 comando" no layout. Sintoma: `npm run dev`, `docker compose up` e servidor de banco iniciando simultaneamente trava o laptop no boot da sessão. Como detectar: spike de CPU imediatamente ao rodar `work myproj`. Solução: layout define apenas nomes de tabs e panes vazios; comandos pesados são iniciados manualmente na tab correta.
+2. **Layout KDL com auto-start de comandos pesados**
+   - **Causa:** querer "tudo pronto em 1 comando" no layout.
+   - **Sintoma:** `npm run dev`, `docker compose up` e servidor de banco iniciando simultaneamente trava o laptop no boot da sessão.
+   - **Como detectar:** spike de CPU imediatamente ao rodar `work myproj`.
+   - **Solução:** layout define apenas nomes de tabs e panes vazios; comandos pesados são iniciados manualmente na tab correta.
 
-3. **Nomes de sessão genéricos que conflitam** — Causa: sempre usar `zellij -s work` ou `zellij -s dev` sem considerar projetos paralelos. Sintoma: `zellij a work` abre estado de outro projeto da semana passada. Como detectar: `zellij ls` mostra `work` mas você não lembra o que estava nessa sessão. Solução: usar o slug do repo como nome (`myproj`, `alice-api`) ou `<projeto>-<feature>` quando trabalhando em branches paralelas.
+3. **Nomes de sessão genéricos que conflitam**
+   - **Causa:** sempre usar `zellij -s work` ou `zellij -s dev` sem considerar projetos paralelos.
+   - **Sintoma:** `zellij a work` abre estado de outro projeto da semana passada.
+   - **Como detectar:** `zellij ls` mostra `work` mas você não lembra o que estava nessa sessão.
+   - **Solução:** usar o slug do repo como nome (`myproj`, `alice-api`) ou `<projeto>-<feature>` quando trabalhando em branches paralelas.
 
-4. **Sessões esquecidas acumulando RAM** — Causa: fechar o laptop direto sem detach explícito (ou com detach mas nunca fazendo kill depois). Sintoma: após meses, `zellij ls` lista dezenas de sessões; `top` mostra zellij consumindo 1 GB+ de RAM. Como detectar: `zellij ls | wc -l` acima de 10 é sinal de acúmulo. Solução: ritual de sexta-feira — listar sessões, retomar e fazer kill nas que não voltam na próxima semana.
+4. **Sessões esquecidas acumulando RAM**
+   - **Causa:** fechar o laptop direto sem detach explícito (ou com detach mas nunca fazendo kill depois).
+   - **Sintoma:** após meses, `zellij ls` lista dezenas de sessões; `top` mostra zellij consumindo 1 GB+ de RAM.
+   - **Como detectar:** `zellij ls | wc -l` acima de 10 é sinal de acúmulo.
+   - **Solução:** ritual de sexta-feira — listar sessões, retomar e fazer kill nas que não voltam na próxima semana.
 
 ## Em inglês
 

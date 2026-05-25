@@ -144,17 +144,41 @@ Atalhos repetidos viram automáticos em 2-4 semanas de uso deliberado. Estratég
 
 ## Armadilhas
 
-1. **Confundir "estar ocupado" com deep work** — `[causa]` Muitas tasks pequenas dão sensação de produtividade. `[sintoma]` Ao fim do dia, 8h trabalhadas e nada importante avançou. `[detecção]` Escrever ao final do dia: "o que avancei substancialmente?" — se a lista é só tasks pequenas, foi shallow. `[solução]` Bloquear 2-4h/dia explicitamente pra deep work. Calendário; comunicar ao time; desligar notificações.
+1. **Confundir "estar ocupado" com deep work**
+   - **Causa:** muitas tasks pequenas dão sensação de produtividade.
+   - **Sintoma:** ao fim do dia, 8h trabalhadas e nada importante avançou.
+   - **Como detectar:** escrever ao final do dia: "o que avancei substancialmente?" — se a lista é só tasks pequenas, foi shallow.
+   - **Solução:** bloquear 2-4h/dia explicitamente pra deep work. Calendário; comunicar ao time; desligar notificações.
 
-2. **Deep work sem mudança visível de contexto** — `[causa]` "Vou começar deep" sem ritual de entrada — mesma tab, mesma sessão, sem focus mode. `[sintoma]` Mente fica saltando pra emails e Slack nos primeiros 10min. `[detecção]` Notar urgência de checar Slack em menos de 10min de "deep work". `[solução]` Abrir nova sessão Zellij nomeada + ativar focus mode. Sinal claro pro cérebro de que o modo mudou.
+2. **Deep work sem mudança visível de contexto**
+   - **Causa:** "Vou começar deep" sem ritual de entrada — mesma tab, mesma sessão, sem focus mode.
+   - **Sintoma:** mente fica saltando pra emails e Slack nos primeiros 10min.
+   - **Como detectar:** notar urgência de checar Slack em menos de 10min de "deep work".
+   - **Solução:** abrir nova sessão Zellij nomeada + ativar focus mode. Sinal claro pro cérebro de que o modo mudou.
 
-3. **Confundir descanso com mais shallow tasks** — `[causa]` "Vou descansar respondendo emails". `[sintoma]` Cansaço cumulativo; deep work do bloco 2 começa já comprometido. `[detecção]` Energia ao fim do dia abaixo do esperado, apesar de "pouco trabalho pesado". `[solução]` Pausa real = away from keyboard. Caminhar, alongar, água. Não "checagem rápida".
+3. **Confundir descanso com mais shallow tasks**
+   - **Causa:** "Vou descansar respondendo emails".
+   - **Sintoma:** cansaço cumulativo; deep work do bloco 2 começa já comprometido.
+   - **Como detectar:** energia ao fim do dia abaixo do esperado, apesar de "pouco trabalho pesado".
+   - **Solução:** pausa real = away from keyboard. Caminhar, alongar, água. Não "checagem rápida".
 
-4. **Não fechar contextos — abrir do zero cada vez** — `[causa]` Sem ritual de tear-down (cf. nota 04). `[sintoma]` Segunda-feira reconstruindo mentalmente o que sexta deixou; 30-60min perdidos. `[detecção]` Ao começar o dia, sentir que está "achando o lugar" em vez de continuar de onde parou. `[solução]` Scratch file por projeto + `:mksession` no nvim + detach Zellij. Próximo dia: abrir tudo, contexto reconstrói em minutos.
+4. **Não fechar contextos — abrir do zero cada vez**
+   - **Causa:** sem ritual de tear-down (cf. nota 04).
+   - **Sintoma:** segunda-feira reconstruindo mentalmente o que sexta deixou; 30-60min perdidos.
+   - **Como detectar:** ao começar o dia, sentir que está "achando o lugar" em vez de continuar de onde parou.
+   - **Solução:** scratch file por projeto + `:mksession` no nvim + detach Zellij. Próximo dia: abrir tudo, contexto reconstrói em minutos.
 
-5. **Atender cada DM durante deep work** — `[causa]` "Vai ser rápido". `[sintoma]` Bloco de deep work fragmentado em intervalos de 5 minutos efetivos; switching cost acumulado. `[detecção]` Contar quantas vezes abriu Slack/DM durante o bloco. `[solução]` DND (do not disturb) explícito durante o bloco. Comunicar ao time: "estou em deep work até X horas". Emergências reais vão por canal de emergência — não DM casual.
+5. **Atender cada DM durante deep work**
+   - **Causa:** "Vai ser rápido".
+   - **Sintoma:** bloco de deep work fragmentado em intervalos de 5 minutos efetivos; switching cost acumulado.
+   - **Como detectar:** contar quantas vezes abriu Slack/DM durante o bloco.
+   - **Solução:** DND (do not disturb) explícito durante o bloco. Comunicar ao time: "estou em deep work até X horas". Emergências reais vão por canal de emergência — não DM casual.
 
-6. **Usar sessão efêmera pra deep work** — `[causa]` Abrir Zellij sem nomear a sessão. `[sintoma]` Estado da sessão perdido após fechar o emulator ou reboot. `[detecção]` Tentar reconectar uma sessão de ontem e não encontrar. `[solução]` Sempre nomear sessões de deep work: `zellij -s myproj-core`. Sessões efêmeras são pra tasks descartáveis.
+6. **Usar sessão efêmera pra deep work**
+   - **Causa:** abrir Zellij sem nomear a sessão.
+   - **Sintoma:** estado da sessão perdido após fechar o emulator ou reboot.
+   - **Como detectar:** tentar reconectar uma sessão de ontem e não encontrar.
+   - **Solução:** sempre nomear sessões de deep work: `zellij -s myproj-core`. Sessões efêmeras são pra tasks descartáveis.
 
 ## Em inglês
 

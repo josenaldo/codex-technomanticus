@@ -140,28 +140,44 @@ Critério simples: se não usou 3x nos últimos 7 dias, remova o mapeamento.
 
 ## Armadilhas
 
-1. **CapsLock→Ctrl quebra em algumas ferramentas** — Causa: software que detecta CapsLock por nome de tecla (raro, mas existe em certos apps de terminal ou jogos). Sintoma: uma app específica não aceita o Ctrl remapeado. Como detectar: quase nunca ocorre — se acontecer, questione "essa app é crítica pro meu trabalho?". Solução: revert seletivo via config por-app, ou aceitar o trade-off (CapsLock real ainda acessível via `Shift-CapsLock` em alguns layouts). `[ergonomia]` `[teclado]`
+1. **CapsLock→Ctrl quebra em algumas ferramentas**
+   - **Causa:** software que detecta CapsLock por nome de tecla (raro, mas existe em certos apps de terminal ou jogos).
+   - **Sintoma:** uma app específica não aceita o Ctrl remapeado.
+   - **Como detectar:** quase nunca ocorre — se acontecer, questione "essa app é crítica pro meu trabalho?".
+   - **Solução:** revert seletivo via config por-app, ou aceitar o trade-off (CapsLock real ainda acessível via `Shift-CapsLock` em alguns layouts).
 
-2. **Custom keybindings pesadas no leader space** — Causa: querer mapear absolutamente tudo. Sintoma: 30+ keymaps em `keymaps.lua`; frequentemente você não lembra o que existe. Como detectar: abrir o arquivo e contar entradas — mais de 20 é sinal de alerta. Solução: princípio "10+ uses/dia ou não entra"; revisão a cada 3 meses pra remover o que não usou. `[config]` `[nvim]`
+2. **Custom keybindings pesadas no leader space**
+   - **Causa:** querer mapear absolutamente tudo.
+   - **Sintoma:** 30+ keymaps em `keymaps.lua`; frequentemente você não lembra o que existe.
+   - **Como detectar:** abrir o arquivo e contar entradas — mais de 20 é sinal de alerta.
+   - **Solução:** princípio "10+ uses/dia ou não entra"; revisão a cada 3 meses pra remover o que não usou.
 
-3. **Atalhos conflitam entre nvim e Zellij** — Causa: `Ctrl-H` em nvim (vim-tmux-navigator) navega pra pane esquerdo, mas Zellij captura o combo antes do nvim receber. Sintoma: atalho funciona em um contexto, falha misteriosamente em outro. Como detectar: qualquer keybinding "que às vezes funciona" é candidata. Solução: estabelecer ordem de precedência (multiplexer geralmente captura antes do editor); o plugin `vim-zellij-navigator` resolve o caso específico nvim+Zellij. `[conflito]` `[zellij]`
+3. **Atalhos conflitam entre nvim e Zellij**
+   - **Causa:** `Ctrl-H` em nvim (vim-tmux-navigator) navega pra pane esquerdo, mas Zellij captura o combo antes do nvim receber.
+   - **Sintoma:** atalho funciona em um contexto, falha misteriosamente em outro.
+   - **Como detectar:** qualquer keybinding "que às vezes funciona" é candidata.
+   - **Solução:** estabelecer ordem de precedência (multiplexer geralmente captura antes do editor); o plugin `vim-zellij-navigator` resolve o caso específico nvim+Zellij.
 
-4. **Trabalhar em maratona sem pausa** — Causa: estado de flow ("não posso parar agora"). Sintoma: após semanas/meses, dor cotidiana no pulso, antebraço ou cotovelo que aparece no fim do dia e some com repouso — esse padrão é warning precoce de RSI. Como detectar: qualquer dor pós-trabalho recorrente. Solução: Pomodoro é não-negociável; configurar timer visível no status bar do Zellij ou usar app dedicado. `[saúde]` `[RSI]`
+4. **Trabalhar em maratona sem pausa**
+   - **Causa:** estado de flow ("não posso parar agora").
+   - **Sintoma:** após semanas/meses, dor cotidiana no pulso, antebraço ou cotovelo que aparece no fim do dia e some com repouso — esse padrão é warning precoce de RSI.
+   - **Como detectar:** qualquer dor pós-trabalho recorrente.
+   - **Solução:** Pomodoro é não-negociável; configurar timer visível no status bar do Zellij ou usar app dedicado.
 
 ---
 
 ## Em inglês
 
-- **ergonomia** — *ergonomics*. "Ergonomics is the science of designing tools and workflows to fit the human body."
-- **leader key** — *leader key*. "In Vim, the leader key opens a custom namespace so you avoid modifier-heavy chords."
-- **tecla prefixo** — *prefix key*. "Tmux uses a prefix key (Ctrl-B by default) before every pane and window command."
-- **tecla modificadora** — *modifier key*. "Ctrl, Alt, and Shift are modifier keys — they change the meaning of the next key pressed."
-- **mapeamento de tecla** — *keybinding / key mapping*. "Setting a keybinding for 'find file' saves dozens of keystrokes per session."
-- **mapa de teclas** — *keymap*. "Your keymap is the full table of custom bindings loaded by the editor on startup."
-- **lesão por esforço repetitivo** — *RSI (Repetitive Strain Injury)*. "RSI is one of the most common occupational injuries among software developers."
-- **postura** — *posture*. "Neutral wrist posture means your forearm and hand form a straight line while typing."
-- **pulso neutro** — *neutral wrist*. "A neutral wrist position reduces tension on the tendons that pass through the carpal tunnel."
-- **memória muscular** — *muscle memory*. "After two weeks of daily use, the remapped CapsLock feels completely natural — that's muscle memory."
+- **ergonomia** — *ergonomics*. "A ergonomia é a ciência de adaptar ferramentas e fluxos de trabalho ao corpo humano."
+- **leader key** — *leader key*. "No Vim, a leader key abre um namespace custom de atalhos sem usar Ctrl/Alt/Shift."
+- **tecla prefixo** — *prefix key*. "tmux usa uma prefix key (Ctrl-B por default) antes de cada comando de pane ou window."
+- **tecla modificadora** — *modifier key*. "Ctrl, Alt e Shift são modifier keys — mudam o significado da próxima tecla."
+- **mapeamento de tecla** — *keybinding / key mapping*. "Configurar um keybinding pra 'find file' poupa dezenas de teclas por sessão."
+- **mapa de teclas** — *keymap*. "O keymap é a tabela completa de atalhos custom carregados pelo editor no startup."
+- **lesão por esforço repetitivo** — *RSI (Repetitive Strain Injury)*. "RSI é uma das lesões ocupacionais mais comuns entre devs."
+- **postura** — *posture*. "Postura neutra do pulso significa antebraço e mão formando uma linha reta ao digitar."
+- **pulso neutro** — *neutral wrist*. "Pulso neutro reduz tensão nos tendões que passam pelo túnel do carpo."
+- **memória muscular** — *muscle memory*. "Após duas semanas usando o CapsLock remapeado, o gesto vira memória muscular."
 
 ---
 

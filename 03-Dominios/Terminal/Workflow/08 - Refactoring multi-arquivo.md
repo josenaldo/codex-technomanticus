@@ -149,20 +149,35 @@ Dentro do nvim, você pode também rodar `:grep OldName` de novo — se o quickf
 
 ## Armadilhas
 
-1. **`:cdo s/X/Y/g` sem flag `c`** `[produtividade-falsa]`
-   Querer "terminar logo" leva a rodar `:cdo s/X/Y/g` sem confirmação. O resultado: todos os matches são trocados inclusive false positives (comentários com o nome em contexto diferente, strings que coincidem por acaso). Como detectar: rodar `:grep OldName` antes e ver no `:copen` se há matches suspeitos. Solução: **sempre usar flag `c`** em refactor não-trivial. O custo de confirmar um a um é baixo; o custo de reverter edições em 20 arquivos é alto.
+1. **`:cdo s/X/Y/g` sem flag `c`**
+   - **Causa:** querer "terminar logo" leva a rodar `:cdo s/X/Y/g` sem confirmação.
+   - **Sintoma:** todos os matches são trocados inclusive false positives (comentários com o nome em contexto diferente, strings que coincidem por acaso).
+   - **Como detectar:** rodar `:grep OldName` antes e ver no `:copen` se há matches suspeitos.
+   - **Solução:** **sempre usar flag `c`** em refactor não-trivial. O custo de confirmar um a um é baixo; o custo de reverter edições em 20 arquivos é alto.
 
-2. **Match em contexto indesejado** `[busca-ingenua]`
-   `rg "name"` encontra `oldname`, `filename`, `username` — qualquer substring. Sintoma: variáveis não relacionadas são renomeadas, comentários explicativos ficam errados. Como detectar: examinar os matches no `:copen` antes de rodar `:cdo`. Solução: usar word boundary `\b` no rg: `rg "\bOldName\b"`. Ou ainda melhor: usar LSP rename quando o símbolo é reconhecido pelo language server.
+2. **Match em contexto indesejado**
+   - **Causa:** `rg "name"` encontra `oldname`, `filename`, `username` — qualquer substring.
+   - **Sintoma:** variáveis não relacionadas são renomeadas, comentários explicativos ficam errados.
+   - **Como detectar:** examinar os matches no `:copen` antes de rodar `:cdo`.
+   - **Solução:** usar word boundary `\b` no rg: `rg "\bOldName\b"`. Ou ainda melhor: usar LSP rename quando o símbolo é reconhecido pelo language server.
 
-3. **Mudanças invalidam matches subsequentes** `[cdo-instavel]`
-   O quickfix carrega a lista de matches uma única vez. Se a primeira substituição muda o número de linhas do arquivo, os matches seguintes para aquele arquivo podem apontar para linhas deslocadas. Sintoma: algumas substituições aplicam no lugar certo, outras "pulam" ou aplicam em linha errada. Como detectar: é sutil — percebe-se lendo cada confirmação com atenção. Solução: usar `:cfdo` (por arquivo) em vez de `:cdo` (por match) é mais robusto. Ou recarregar o quickfix entre batches: rodar `:grep` novamente após cada rodada parcial.
+3. **Mudanças invalidam matches subsequentes**
+   - **Causa:** o quickfix carrega a lista de matches uma única vez; se a primeira substituição muda o número de linhas do arquivo, os matches seguintes para aquele arquivo podem apontar para linhas deslocadas.
+   - **Sintoma:** algumas substituições aplicam no lugar certo, outras "pulam" ou aplicam em linha errada.
+   - **Como detectar:** é sutil — percebe-se lendo cada confirmação com atenção.
+   - **Solução:** usar `:cfdo` (por arquivo) em vez de `:cdo` (por match) é mais robusto. Ou recarregar o quickfix entre batches: rodar `:grep` novamente após cada rodada parcial.
 
-4. **LSP rename não cobre refs cross-language** `[lsp-escopo-limitado]`
-   LSP rename só conhece a linguagem configurada no buffer ativo. Ao renomear uma função TypeScript, o tsserver atualiza todos os `.ts`/`.tsx`, mas referências em `package.json`, arquivos `.yaml` de CI, schemas JSON ou documentação `.md` que mencionam o nome antigo ficam intocadas. Como detectar: após LSP rename, rodar `rg "OldName" --stats` — se aparecem matches, são os residuais cross-language. Solução: LSP rename pra símbolos + rg + quickfix pra varredura residual em configs e docs.
+4. **LSP rename não cobre refs cross-language**
+   - **Causa:** LSP rename só conhece a linguagem configurada no buffer ativo; ao renomear uma função TypeScript, referências em `package.json`, arquivos `.yaml` de CI, schemas JSON ou documentação `.md` ficam intocadas.
+   - **Sintoma:** após LSP rename, o nome antigo ainda aparece em configs e docs.
+   - **Como detectar:** após LSP rename, rodar `rg "OldName" --stats` — se aparecem matches, são os residuais cross-language.
+   - **Solução:** LSP rename pra símbolos + rg + quickfix pra varredura residual em configs e docs.
 
-5. **Não ter baseline antes do refactor** `[sem-net]`
-   Começar um refactor de larga escala com working tree sujo ou sem commit recente. Sintoma: `:cdo` em escala ampla falha no meio, ou você percebe que foi longe demais, e reverter arquivo a arquivo manualmente é miserável. Como detectar: `git status` antes de começar — se há modificações não commitadas, pause. Solução: criar um commit pequeno antes do refactor: `git commit -m "chore: pre-refactor checkpoint"`. Se tudo der errado, `git reset --hard HEAD` resolve em segundos.
+5. **Não ter baseline antes do refactor**
+   - **Causa:** começar um refactor de larga escala com working tree sujo ou sem commit recente.
+   - **Sintoma:** `:cdo` em escala ampla falha no meio, ou você percebe que foi longe demais, e reverter arquivo a arquivo manualmente é miserável.
+   - **Como detectar:** `git status` antes de começar — se há modificações não commitadas, pause.
+   - **Solução:** criar um commit pequeno antes do refactor: `git commit -m "chore: pre-refactor checkpoint"`. Se tudo der errado, `git reset --hard HEAD` resolve em segundos.
 
 ---
 
