@@ -16,8 +16,9 @@
 
 - **Sem `Co-Authored-By`** em commits (preferência do usuário).
 - **Mensagens** em conventional commits, escopo `enriquecer-nota`.
-- A skill existe em DOIS locais idênticos: `.claude/skills/enriquecer-nota/` (canônico) e
-  `.agents/skills/enriquecer-nota/` (espelho). Autora-se no canônico e espelha-se no fim (Task 6).
+- **CORREÇÃO (descoberto na execução):** `.claude/skills` é um **symlink** para `../.agents/skills`.
+  Existe UMA cópia só (em `.agents/skills/`); escrever via `.claude/skills/...` ou `.agents/skills/...`
+  atinge o mesmo arquivo. **Não há mirror a fazer — Task 6 foi cancelada.**
 - Estamos na branch default (`main`) → a execução começa criando uma branch (Task 0).
 
 ## File Structure
@@ -28,7 +29,7 @@
 | `.claude/skills/enriquecer-nota/references/lentes.md` | Define as 4 lentes + higiene baseline + schema do candidato |
 | `.claude/skills/enriquecer-nota/references/critico.md` | Prompt do subagente crítico: I/O, rubrica por fase, formato de saída |
 | `.claude/skills/enriquecer-nota/references/proveniencia.md` | Regras de fonte: quais lentes exigem, o que conta, como registrar |
-| `.agents/skills/enriquecer-nota/**` | Espelho idêntico do canônico (sincronizado na Task 6) |
+| `.agents/skills/enriquecer-nota/**` | Local REAL dos arquivos. `.claude/skills` é symlink → `../.agents/skills`; sem mirror (Task 6 cancelada) |
 | `00-Meta/guia/skills.md` | Catálogo: atualizar a descrição de "cinco fases" → modelo de lentes (Task 7) |
 
 **Schema canônico do candidato** (usado em `lentes.md`, `critico.md`, `SKILL.md` — manter idêntico):
@@ -538,30 +539,12 @@ git commit -m "docs(guia): update enriquecer-nota catalog entry for v2 lens mode
 
 ---
 
-## Task 6: Espelhar para `.agents/skills/`
+## Task 6: ~~Espelhar para `.agents/skills/`~~ — CANCELADA
 
-**Files:**
-- Sync: `.agents/skills/enriquecer-nota/` ← `.claude/skills/enriquecer-nota/`
-
-- [ ] **Step 1: Copiar o diretório canônico por cima do espelho**
-
-```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus
-rm -rf .agents/skills/enriquecer-nota
-cp -r .claude/skills/enriquecer-nota .agents/skills/enriquecer-nota
-```
-
-- [ ] **Step 2: Verificar que ficaram idênticos**
-
-Run: `diff -r .claude/skills/enriquecer-nota .agents/skills/enriquecer-nota && echo IDENTICAL`
-Expected: `IDENTICAL` (sem saída de diff).
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add .agents/skills/enriquecer-nota
-git commit -m "chore(enriquecer-nota): mirror v2 skill to .agents"
-```
+`.claude/skills` é um symlink para `../.agents/skills`. Não existem duas cópias — é o mesmo
+diretório por dois caminhos. Qualquer escrita feita nas Tasks 1-4 via `.claude/skills/...` já gravou
+no local real `.agents/skills/...`. Mirror seria redundante e o `rm -rf` apagaria a única cópia.
+**Nada a fazer aqui.**
 
 ---
 
@@ -597,13 +580,14 @@ Verifique:
 Run:
 ```bash
 cd /home/josenaldo/repos/personal/codex-technomanticus
-test -f .claude/skills/enriquecer-nota/references/lentes.md && \
-test -f .claude/skills/enriquecer-nota/references/critico.md && \
-test -f .claude/skills/enriquecer-nota/references/proveniencia.md && \
-diff -r .claude/skills/enriquecer-nota .agents/skills/enriquecer-nota && \
+test -L .claude/skills && \
+test -f .agents/skills/enriquecer-nota/references/lentes.md && \
+test -f .agents/skills/enriquecer-nota/references/critico.md && \
+test -f .agents/skills/enriquecer-nota/references/proveniencia.md && \
+test -f .agents/skills/enriquecer-nota/SKILL.md && \
 echo "ALL OK"
 ```
-Expected: `ALL OK`.
+Expected: `ALL OK` (confirma o symlink intacto + os 4 arquivos no local real).
 
 - [ ] **Step 4: Registrar resultado do dry-run**
 
