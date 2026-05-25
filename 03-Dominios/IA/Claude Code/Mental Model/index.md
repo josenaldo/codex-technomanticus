@@ -35,6 +35,7 @@ Este galho constrói o mapa mental que torna os outros galhos legíveis.
 6. [[03-Dominios/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction — gerenciando contextos longos]]
 7. [[03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo — como sessões consomem recursos]]
 8. [[03-Dominios/IA/Claude Code/Mental Model/08 - Como o agente decide|08 - Como o agente decide — confiança, raciocínio, iteração]]
+9. [[03-Dominios/IA/Claude Code/Mental Model/09 - O harness como terceira camada|09 - O harness como terceira camada — código, testes, harness]]
 
 ## Veja também
 
