@@ -1,5 +1,5 @@
 ---
-title: "De autocomplete a agentes autônomos"
+title: De autocomplete a agentes autônomos
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
@@ -13,8 +13,8 @@ aliases:
   - Evolução do AI coding
   - Autocomplete vs agentes
   - Coding agents evolution
+progresso: feito
 ---
-
 # De autocomplete a agentes autônomos
 
 > [!abstract] TL;DR

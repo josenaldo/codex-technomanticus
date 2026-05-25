@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-05-19
+updated: 2026-05-24
 type: glossary
 status: seedling
 aliases:
@@ -47,6 +47,9 @@ O ciclo iterativo fundamental de um agente de IA, composto por etapas de percep�
 ### Coding agent
 Um agente especializado em tarefas de engenharia de software — leitura, escrita e modificação de código, execução de comandos de shell, execução de testes e iteração até que um objetivo seja alcançado. Exemplos incluem Claude Code, Cursor, Aider e Continue.
 
+### vibe coding
+Gerar software descrevendo a intenção em linguagem natural a um LLM e aceitando o código produzido com pouca ou nenhuma revisão, guiando ajustes por prompts de follow-up até "funcionar". Termo cunhado por Andrej Karpathy em fevereiro de 2025; eficaz para protótipos e projetos descartáveis, mas acumula tech debt e risco de segurança em produção.
+
 - TODO: Aider
 - TODO: Claude Code
 - TODO: Continue
@@ -58,6 +61,9 @@ Um agente especializado em tarefas de engenharia de software — leitura, escrit
 
 ### Chain-of-Thought (CoT)
 Uma técnica de prompting que instrui o modelo a produzir etapas de raciocínio intermediárias antes de fornecer uma resposta final — tipicamente acionada por frases como "pense passo a passo". O CoT melhora a precisão em tarefas de múltiplas etapas, mas aumenta a contagem de tokens de saída, e em modelos de raciocínio estendido (extended-thinking), alimenta diretamente a geração de tokens de raciocínio.
+
+### Comprehension gate
+Um checkpoint em um fluxo agêntico onde o agente precisa demonstrar que compreendeu a tarefa, plano ou contexto antes de ter permissão para prosseguir — tipicamente reformulando os requisitos com as próprias palavras, listando edge cases ou respondendo a perguntas de verificação. Serve para flagrar mal-entendidos cedo, antes que o agente gaste tokens e turnos executando sobre uma premissa errada.
 
 ### Context window
 O número máximo de tokens que um modelo pode considerar em uma única chamada de inferência, incluindo o system prompt, input do usuário, turnos anteriores, definições de ferramentas e a resposta sendo gerada. Exceder esse limite força o truncamento, sumarização ou compactação.
