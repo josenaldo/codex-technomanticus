@@ -92,7 +92,7 @@ Skills que atuam sobre notas já existentes em `03-Dominios/` — refinando cont
 
 ### `/enriquecer-nota [path] [instrução]`
 
-Enriquece uma nota do vault em cinco fases: **identificar alvo → analisar → planejar → confirmar → executar**. Nunca edita sem confirmação prévia.
+Enriquece uma nota com **lentes selecionáveis** (profundidade, lacunas, novidade com fonte, conexões), filtradas por um **subagente crítico calibrado pela fase** da nota. 7 fases: **identificar alvo → escolher lentes → analisar → criticar → planejar → executar → reportar**. Nunca edita sem confirmação; reescritas aparecem como diff.
 
 - Adiciona wikilinks para termos já presentes no dicionário do domínio, cria verbetes ausentes (via `/verbete`), busca referências externas e atualiza frontmatter.
 - **Sem `path`:** pergunta qual nota enriquecer. **Com `path`:** usa o arquivo indicado (relativo à raiz do vault).
