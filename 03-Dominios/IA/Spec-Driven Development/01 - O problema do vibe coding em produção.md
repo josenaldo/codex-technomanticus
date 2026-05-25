@@ -23,7 +23,7 @@ aliases:
 
 ## A definição que se popularizou
 
-O termo *vibe coding* foi cunhado por Karpathy (fev 2025) para descrever um modo casual de codificar com IA: você descreve a intenção em linguagem natural, aceita o que o modelo entrega, e itera por feedback. Para protótipos, é libertador. Para produção, é o caminho mais rápido para tech debt acumulado.
+O termo *vibe coding* foi cunhado por [[Andrej Karpathy|Karpathy]] (fev 2025) para descrever um modo casual de codificar com IA: você descreve a intenção em linguagem natural, aceita o que o modelo entrega, e itera por feedback. Para protótipos, é libertador. Para produção, é o caminho mais rápido para tech debt acumulado.
 
 ```mermaid
 graph LR

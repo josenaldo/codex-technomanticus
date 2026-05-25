@@ -280,7 +280,7 @@ Construa infraestrutura de maturidade:
 
 ## Relação com Vibe Coding
 
-O termo "vibe coding", popularizado por Andrej Karpathy, descreve um modo de programar em que o humano guia a IA por intenção, aceita sugestões e deixa o modelo carregar boa parte da implementação. Isso se conecta ao modelo de Yegge, mas há uma diferença importante:
+O termo "vibe coding", popularizado por [[Andrej Karpathy]], descreve um modo de programar em que o humano guia a IA por intenção, aceita sugestões e deixa o modelo carregar boa parte da implementação. Isso se conecta ao modelo de Yegge, mas há uma diferença importante:
 
 - **vibe coding ingênuo:** confiar no fluxo, aceitar patches plausíveis e corrigir por tentativa;
 - **vibe coding disciplinado:** usar IA intensamente, mas com specs, testes, revisão, contexto e guardrails.

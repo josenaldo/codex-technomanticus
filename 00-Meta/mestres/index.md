@@ -3,7 +3,7 @@ title: "Mestres"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-05-21
+updated: 2026-05-25
 status: seedling
 tags:
   - moc
@@ -20,6 +20,7 @@ Esta pasta agrupa perfis enxutos de pessoas cujo trabalho é citado recorrenteme
 
 ## Conteúdo
 
+- [[Andrej Karpathy]] — referência internacional em IA, deep learning e educação em LLMs
 - [[Bruno Souza]] — referência brasileira em Java e comunidade
 - [[Eduardo Mendes (Dunossauro)]] — referência brasileira em Python
 - [[Elemar Júnior]] — referência brasileira em .NET e arquitetura

@@ -24,7 +24,7 @@ aliases:
 
 ## O que é
 
-Esta nota é uma análise crítica do estado da arte em memória de agentes em abril de 2026. Ela **não é "anti-memória de agentes"** — é **pró-rigor**. As notas anteriores da trilha mostram avanços reais: o gist do Karpathy reorganizou o vocabulário público ([[06 - O LLM Wiki Pattern (gist do Karpathy)|06 - O LLM Wiki Pattern]]), Generative Agents abriu o caminho de reflexão e recuperação por relevância ([[18 - Generative Agents (Park, Stanford 2023)|18 - Generative Agents]]) e os surveys de 2026 ([[20 - Surveys e estado da arte 2026|20 - Surveys]]) deram vocabulário comum ao campo. Tudo isso é progresso real e merece ser citado com convicção.
+Esta nota é uma análise crítica do estado da arte em memória de agentes em abril de 2026. Ela **não é "anti-memória de agentes"** — é **pró-rigor**. As notas anteriores da trilha mostram avanços reais: o gist do [[Andrej Karpathy|Karpathy]] reorganizou o vocabulário público ([[06 - O LLM Wiki Pattern (gist do Karpathy)|06 - O LLM Wiki Pattern]]), Generative Agents abriu o caminho de reflexão e recuperação por relevância ([[18 - Generative Agents (Park, Stanford 2023)|18 - Generative Agents]]) e os surveys de 2026 ([[20 - Surveys e estado da arte 2026|20 - Surveys]]) deram vocabulário comum ao campo. Tudo isso é progresso real e merece ser citado com convicção.
 
 O que esta nota faz é a contrapartida: **reconhecer avanços e ressalvas no mesmo discurso**. Quem cita só os números altos perde credibilidade quando alguém da audiência leu o paper crítico; quem cita os números altos **e** as ressalvas já partiu da posição de quem leu mais a fundo.
 

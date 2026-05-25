@@ -23,7 +23,7 @@ aliases:
 
 ## O que é
 
-A "arquitetura de um sistema de memória" não é uma arquitetura específica — é o conjunto de componentes que **toda** implementação tem em alguma forma, ainda que disfarçada. Quando se compara o LLM Wiki de Karpathy, o servidor MCP `basic-memory`, o tier system de Letta, o grafo temporal do Zep, o retrieval vetorial do Mem0 e a metáfora espacial do MemPalace, parece à primeira vista que cada um implementa algo radicalmente diferente. Não é o caso. Por baixo da superfície, todos resolvem as mesmas cinco perguntas: o que entra, como organizar, como buscar, como manter e quais são as regras.
+A "arquitetura de um sistema de memória" não é uma arquitetura específica — é o conjunto de componentes que **toda** implementação tem em alguma forma, ainda que disfarçada. Quando se compara o LLM Wiki de [[Andrej Karpathy|Karpathy]], o servidor MCP `basic-memory`, o tier system de Letta, o grafo temporal do Zep, o retrieval vetorial do Mem0 e a metáfora espacial do MemPalace, parece à primeira vista que cada um implementa algo radicalmente diferente. Não é o caso. Por baixo da superfície, todos resolvem as mesmas cinco perguntas: o que entra, como organizar, como buscar, como manter e quais são as regras.
 
 Esse mapa arquitetural genérico é o vocabulário com o qual a trilha discute implementações específicas. As notas sobre cada ferramenta concreta — [[09 - Panorama de implementações (abril 2026)|panorama]], [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]], [[14 - Letta (ex-MemGPT)|Letta]], [[13 - basic-memory — MCP nativo Obsidian|basic-memory]], entre outras — vão se referir constantemente a esses cinco componentes. Sem o mapa, comparar implementações vira disputa de marca; com o mapa, vira conversa técnica.
 

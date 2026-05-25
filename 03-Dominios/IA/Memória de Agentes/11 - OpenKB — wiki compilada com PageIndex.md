@@ -42,7 +42,7 @@ O ponto arquitetural mais interessante é que OpenKB não tenta ser apenas "Obsi
 
 ## Por que importa
 
-- **É o Karpathy pattern empacotado como CLI instalável.** `pip install openkb`, `openkb init`, `openkb add`, `openkb query`, `openkb chat` deixam o pattern acessível sem escrever a própria engine.
+- **É o [[Andrej Karpathy|Karpathy]] pattern empacotado como CLI instalável.** `pip install openkb`, `openkb init`, `openkb add`, `openkb query`, `openkb chat` deixam o pattern acessível sem escrever a própria engine.
 - **Resolve melhor documentos longos que o wiki pattern mínimo.** PageIndex reduz o problema de contexto longo, contexto podre e sumarização rasa em PDFs grandes. Para pesquisa bibliográfica, relatórios e livros, isso é vantagem real.
 - **Mantém o resultado em markdown.** A wiki final é auditável por humano, versionável em Git e compatível com Obsidian, preservando o argumento de [[07 - Por que Obsidian e markdown como substrato]].
 - **Tem sessão interativa persistida.** `openkb chat` mantém histórico multi-turn retomável por `--resume`, lista sessões e permite exportar transcript para `wiki/explorations/`.

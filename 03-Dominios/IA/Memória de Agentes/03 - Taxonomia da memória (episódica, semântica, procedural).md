@@ -55,7 +55,7 @@ O exemplo canônico é o **memory stream** de Park et al. em "Generative Agents"
 
 Atemporal, factual e descontextualizada. Não importa **quando** alguém aprendeu que Paris é capital da França — o fato é tratado como verdade estável, sem âncora temporal. Em IA, manifesta-se como knowledge graph, base estruturada de fatos, páginas de wiki ou notas zettelkasten.
 
-O exemplo no qual a trilha mais investe é o **LLM Wiki Pattern** proposto por Karpathy ([[06 - O LLM Wiki Pattern (gist do Karpathy)]]): cada conceito vira página de markdown, com título, definição, links para outras páginas, atualizada quando o entendimento evolui. Outro exemplo é o **A-MEM** ([[19 - A-MEM — Zettelkasten dinâmico]]), em que o agente cria notas atômicas e as conecta dinamicamente. Entrada semântica típica: "LLM Wiki Pattern é um padrão proposto por Karpathy em abril/2026".
+O exemplo no qual a trilha mais investe é o **LLM Wiki Pattern** proposto por [[Andrej Karpathy|Karpathy]] ([[06 - O LLM Wiki Pattern (gist do Karpathy)]]): cada conceito vira página de markdown, com título, definição, links para outras páginas, atualizada quando o entendimento evolui. Outro exemplo é o **A-MEM** ([[19 - A-MEM — Zettelkasten dinâmico]]), em que o agente cria notas atômicas e as conecta dinamicamente. Entrada semântica típica: "LLM Wiki Pattern é um padrão proposto por Karpathy em abril/2026".
 
 ### Memória procedural — "para fazer X, ..."
 

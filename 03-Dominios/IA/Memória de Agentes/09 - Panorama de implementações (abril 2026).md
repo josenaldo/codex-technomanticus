@@ -88,7 +88,7 @@ flowchart TD
     Q6 -->|não| BM
 ```
 
-O fluxograma é heurístico, não normativo. Existem casos legítimos de combinar duas ferramentas — por exemplo, basic-memory para o vault pessoal e Mem0 para um agente em produção — e existem casos em que nenhuma das opções serve e o melhor é construir uma solução custom seguindo o gist do Karpathy. O ponto é eliminar paralisia: dado um caso de uso, o fluxograma aponta um candidato razoável de partida.
+O fluxograma é heurístico, não normativo. Existem casos legítimos de combinar duas ferramentas — por exemplo, basic-memory para o vault pessoal e Mem0 para um agente em produção — e existem casos em que nenhuma das opções serve e o melhor é construir uma solução custom seguindo o gist do [[Andrej Karpathy|Karpathy]]. O ponto é eliminar paralisia: dado um caso de uso, o fluxograma aponta um candidato razoável de partida.
 
 ## Quando NÃO usar implementação pronta
 

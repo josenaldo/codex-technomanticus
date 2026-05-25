@@ -24,7 +24,7 @@ aliases:
 
 ## O que é
 
-O insight central de Karpathy é uma analogia com compiladores. Artigos brutos — PDFs, papers, posts, transcrições — são como _source code_: úteis, mas verbosos, redundantes, contextualmente implícitos, organizados para humanos e não para consulta rápida. O LLM atua como _compilador_: lê esse material e o "compila" numa wiki estruturada de páginas em markdown interlinkadas, otimizada para retrieval e síntese. A wiki é o _executable_ — o artefato que você efetivamente consulta no dia a dia.
+O insight central de [[Andrej Karpathy|Karpathy]] é uma analogia com compiladores. Artigos brutos — PDFs, papers, posts, transcrições — são como _source code_: úteis, mas verbosos, redundantes, contextualmente implícitos, organizados para humanos e não para consulta rápida. O LLM atua como _compilador_: lê esse material e o "compila" numa wiki estruturada de páginas em markdown interlinkadas, otimizada para retrieval e síntese. A wiki é o _executable_ — o artefato que você efetivamente consulta no dia a dia.
 
 A diferença crucial em relação a [[05 - Beyond RAG - quando RAG não basta|RAG]] é direcional: em RAG o LLM **lê** documentos estáticos a cada query, recuperando trechos por similaridade vetorial. No LLM Wiki o LLM **escreve** o knowledge base — ele sintetiza, cruza referências, atualiza páginas existentes quando novas fontes entram, e mantém um catálogo navegável. RAG resolve "achar a passagem certa"; o LLM Wiki resolve "manter um corpo de conhecimento que cresce e se reorganiza sozinho".
 

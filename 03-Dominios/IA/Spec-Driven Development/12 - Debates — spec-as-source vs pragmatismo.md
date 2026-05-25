@@ -161,7 +161,7 @@ SDD não é "a metodologia certa para todos". É **uma resposta calibrada** ao t
 - Disposição a 2-4 semanas de adoção
 - Domínio modelável
 
-Em outros contextos (protótipos, exploração, hackathons), use o que funciona. Karpathy chamou vibe coding de "libertador" para um público específico — ele estava certo. **A virtude está na escolha, não no dogma.**
+Em outros contextos (protótipos, exploração, hackathons), use o que funciona. [[Andrej Karpathy|Karpathy]] chamou vibe coding de "libertador" para um público específico — ele estava certo. **A virtude está na escolha, não no dogma.**
 
 ## A contribuição duradoura do SDD
 

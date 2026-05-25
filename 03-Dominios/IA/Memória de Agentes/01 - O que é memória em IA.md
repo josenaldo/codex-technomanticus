@@ -94,7 +94,7 @@ Vale registrar uma referência foundational: em 2023, Park e colegas (Stanford) 
 - [[02 - O problema das janelas de contexto]] — o problema técnico que motiva tudo
 - [[03 - Taxonomia da memória (episódica, semântica, procedural)]] — vocabulário fundamental
 - [[04 - RAG vs memória de longo prazo]] — distinção crucial
-- [[06 - O LLM Wiki Pattern (gist do Karpathy)]] — abordagem de Karpathy
+- [[06 - O LLM Wiki Pattern (gist do Karpathy)]] — abordagem de [[Andrej Karpathy|Karpathy]]
 - [[18 - Generative Agents (Park, Stanford 2023)]] — paper foundational
 
 ## Referências

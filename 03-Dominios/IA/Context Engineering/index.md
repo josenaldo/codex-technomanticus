@@ -12,7 +12,7 @@ updated: 2026-05-02
 
 # Context Engineering
 
-Em 2026, prompt engineering é o jardim de infância. A disciplina real que separa demos de produtos é **context engineering**: o ambiente informacional inteiro que cerca o LLM — system prompts, retrieved docs, tool definitions, memória persistente, histórico, scratchpad. Karpathy resumiu: *"o LLM é a CPU, a janela de contexto é a RAM, e você é o sistema operacional"*. Anthropic chamou de "load-bearing skill" do ano. Esta trilha mapeia o campo: dos fundamentos teóricos (context rot, atenção quadrática) à arquitetura (pipelines, camadas, retrieval), à memória (self-editing, shared, structured) e à produção (guardrails, qualidade, setup completo).
+Em 2026, prompt engineering é o jardim de infância. A disciplina real que separa demos de produtos é **context engineering**: o ambiente informacional inteiro que cerca o LLM — system prompts, retrieved docs, tool definitions, memória persistente, histórico, scratchpad. [[Andrej Karpathy|Karpathy]] resumiu: *"o LLM é a CPU, a janela de contexto é a RAM, e você é o sistema operacional"*. Anthropic chamou de "load-bearing skill" do ano. Esta trilha mapeia o campo: dos fundamentos teóricos (context rot, atenção quadrática) à arquitetura (pipelines, camadas, retrieval), à memória (self-editing, shared, structured) e à produção (guardrails, qualidade, setup completo).
 
 > [!info] Pré-requisitos
 > Recomendado ter lido [[Anatomia dos LLMs]] (Trilha 1) — especialmente [[03 - A janela de contexto]], [[04 - Atenção e o mecanismo transformer]] e [[11 - Prompt caching e otimizações de API]]. [[Agentes de Codificação]] (Trilha 2) e [[Economia de Tokens]] (Trilha 3) são contexto direto: os ganhos de redução de tokens vêm em grande parte de bom context engineering.

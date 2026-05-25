@@ -65,7 +65,7 @@ Um prompt bem escrito não resolve nenhum desses problemas. Context engineering,
 
 ## A analogia do sistema operacional
 
-Karpathy popularizou o framing em 2025:
+[[Andrej Karpathy|Karpathy]] popularizou o framing em 2025:
 
 | Componente clássico | Equivalente em LLM agent |
 |---|---|

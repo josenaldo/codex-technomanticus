@@ -41,7 +41,7 @@ Os dois caminhos foram escolhidos por terem **barreira de entrada baixa**: 30 mi
 
 ### Estrutura inicial
 
-A estrutura mínima espelha a separação **raw imutável** vs. **wiki mantida pelo LLM** descrita por Karpathy:
+A estrutura mínima espelha a separação **raw imutável** vs. **wiki mantida pelo LLM** descrita por [[Andrej Karpathy|Karpathy]]:
 
 ```text
 my-llm-wiki/

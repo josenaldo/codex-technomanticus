@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-05-24
+updated: 2026-05-25
 type: glossary
 status: seedling
 aliases:
@@ -48,7 +48,7 @@ O ciclo iterativo fundamental de um agente de IA, composto por etapas de percep�
 Um agente especializado em tarefas de engenharia de software — leitura, escrita e modificação de código, execução de comandos de shell, execução de testes e iteração até que um objetivo seja alcançado. Exemplos incluem Claude Code, Cursor, Aider e Continue.
 
 ### vibe coding
-Gerar software descrevendo a intenção em linguagem natural a um LLM e aceitando o código produzido com pouca ou nenhuma revisão, guiando ajustes por prompts de follow-up até "funcionar". Termo cunhado por Andrej Karpathy em fevereiro de 2025; eficaz para protótipos e projetos descartáveis, mas acumula tech debt e risco de segurança em produção.
+Gerar software descrevendo a intenção em linguagem natural a um LLM e aceitando o código produzido com pouca ou nenhuma revisão, guiando ajustes por prompts de follow-up até "funcionar". Termo cunhado por [[Andrej Karpathy]] em fevereiro de 2025; eficaz para protótipos e projetos descartáveis, mas acumula tech debt e risco de segurança em produção.
 
 - TODO: Aider
 - TODO: Claude Code
@@ -77,6 +77,9 @@ Um bloco de instruções enviado pelo desenvolvedor no início de cada chamada d
 - TODO: prompt template
 
 ## LLMs Anatomy
+
+### Hallucination
+A geração, por um LLM, de conteúdo plausível mas factualmente incorreto ou inventado — referências inexistentes, APIs e funções que não existem, fatos falsos apresentados com confiança. Não é um defeito pontual e sim uma consequência direta do objetivo de treino (prever o próximo token mais provável, não verificar a verdade); por isso não se elimina, apenas se mitiga — via RAG, verificação externa, guardrails e revisão humana. Em geração de código, manifesta-se sobretudo como chamadas a bibliotecas inexistentes e edge cases silenciosamente ignorados.
 
 ### KV cache
 Uma técnica de otimização para inferência de Transformers que armazena os vetores Key (K) e Value (V) dos tokens anteriores na memória da GPU. Isso evita cálculos redundantes durante a geração autorregressiva, reduzindo a complexidade computacional de $O(N^2)$ para $O(N)$ por novo token, mas aumenta significativamente o uso de VRAM conforme o comprimento da sequência cresce.

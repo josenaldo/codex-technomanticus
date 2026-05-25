@@ -200,7 +200,7 @@ Em 5 blocos: o problema, reduzir input (caching, pruning, compression, compactio
 
 Em 5 blocos: fundamentos (context rot, 4 pilares), arquitetura (pipelines, camadas, JIT retrieval, compressão), memória e estado (self-editing, multi-agent, structured files, AGENTS.md), produção (guardrails, entropia, setup), prompting e skills (técnicas, SKILL.md marketplace).
 
-**Quando ler:** após Trilha 1, paralelo a Trilhas 2-3. Karpathy: *"the load-bearing skill of 2026"*.
+**Quando ler:** após Trilha 1, paralelo a Trilhas 2-3. [[Andrej Karpathy|Karpathy]]: *"the load-bearing skill of 2026"*.
 
 #### Trilha 6 — [[03-Dominios/IA/Spec-Driven Development/index|Spec-Driven Development]] (12 notas)
 

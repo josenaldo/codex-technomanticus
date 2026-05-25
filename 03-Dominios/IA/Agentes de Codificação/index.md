@@ -100,7 +100,7 @@ Como configurar, como funciona o loop, quando confiar, e como medir.
 | ------------------------------------------ | ------------ | ----------- |
 | *Anthropic — Claude Code Documentation*    | Docs oficial | Blocos 2, 4 |
 | *Cursor — Documentation*                   | Docs oficial | Bloco 2     |
-| *Karpathy — Vibe Coding*                   | Post         | Bloco 1     |
+| *[[Andrej Karpathy\|Karpathy]] — Vibe Coding*                   | Post         | Bloco 1     |
 | *Plus8Soft — The Comprehension Gate*       | Artigo       | Bloco 1     |
 | *Yao et al. — ReAct: Reasoning and Acting* | Paper        | Bloco 4     |
 | *Anthropic — MCP Specification*            | Spec         | Bloco 3     |

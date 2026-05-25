@@ -33,7 +33,7 @@ A escolha de substrato é uma decisão arquitetural de longa duração — uma v
 
 Em sistemas de memória que **evoluem por anos**, esses fatores são amplificados. Um vault que cresce devagar mas continuamente acumula valor exponencial — e qualquer fricção (não conseguir abrir num editor, não ter histórico, não conseguir migrar) compõe junto com o valor. Escolher mal é pesadelo de migração; escolher bem é uma decisão que se paga sozinha.
 
-O gist de Karpathy explicita markdown como escolha deliberada, não acidental. A frase canônica é "Obsidian is the IDE; the LLM is the programmer; the wiki is the codebase" — e o paralelo com código-fonte não é decorativo. Código-fonte vive em arquivos texto justamente pelas mesmas razões: legibilidade, diff em git, portabilidade, ausência de lock-in. Conhecimento mantido por LLM herda os mesmos requisitos.
+O gist de [[Andrej Karpathy|Karpathy]] explicita markdown como escolha deliberada, não acidental. A frase canônica é "Obsidian is the IDE; the LLM is the programmer; the wiki is the codebase" — e o paralelo com código-fonte não é decorativo. Código-fonte vive em arquivos texto justamente pelas mesmas razões: legibilidade, diff em git, portabilidade, ausência de lock-in. Conhecimento mantido por LLM herda os mesmos requisitos.
 
 ## Como funciona — vantagens enumeradas
 
