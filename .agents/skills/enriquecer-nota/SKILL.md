@@ -78,7 +78,7 @@ Despacha UMA vez o subagente de `references/critico.md` via Agent tool (`subagen
 passando: `fase`, `nota` (título + corpo) e os candidatos de conteúdo (`tipo: adicao|reescrita` das
 lentes profundidade/lacunas/novidade). Candidatos de Conexões e a higiene **não** vão ao crítico.
 
-Recebe `sobreviventes` (com novidade/profundidade/justificativa/confiança) e `descartados` (com motivo).
+Recebe `sobreviventes` (com novidade/profundidade/justificativa/confianca) e `descartados` (com motivo). O orquestrador **mantém o pool completo de candidatos em memória**; após a resposta do crítico, faz merge dos `sobreviventes` de volta nos candidatos por `id` para recuperar `lente`, `tipo`, `local` e `antes` — campos que o crítico não devolve mas que a Fase 6 usa.
 
 ## Fase 5 — Plano
 

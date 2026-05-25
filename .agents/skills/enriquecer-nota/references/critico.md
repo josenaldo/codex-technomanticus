@@ -17,6 +17,8 @@ candidatos:                  # SÓ tipo adicao|reescrita das lentes profundidade
   - ...
 ```
 
+> Para candidatos `tipo: reescrita`, inclua também o campo `antes` no objeto enviado — o crítico não o usa para pontuar, mas o orquestrador precisa que ele seja preservado para a Fase 6.
+
 ## Rubrica por fase (corta se...)
 
 | Fase                | Corta o candidato se... |
@@ -36,6 +38,8 @@ Para cada candidato, pontue de 0 a 3:
 
 Mantenha (`keep`) apenas candidatos com `novidade >= 2` **e** `profundidade >= 2` para a fase dada.
 Descarte (`drop`) o resto, com motivo de 1 linha.
+
+**Exceção — `lente: lacunas`:** novidade é secundária (essa lente cobre lacunas estruturais, não novidade). Mantenha se `profundidade >= 2`, mesmo que `novidade < 2`. Candidatos rasos (`profundidade < 2`) continuam descartados.
 
 ## Saída (formato exato — devolva só isto)
 
