@@ -48,18 +48,18 @@ A diferença fundamental para "abrir várias abas no emulador de terminal":
 
 ### Os 3 concorrentes
 
-| Critério | Zellij | tmux | screen |
-|---|---|---|---|
-| Ano de lançamento | ~2021 (v0.1.0 em 2021) | 2007 | 1987 |
-| Versão atual (2026) | 0.44.x | 3.5.x | 5.0.x |
-| Discoverabilidade | Alta — status bar exibe atalhos contextuais | Baixa — requer decorar prefixo + tecla | Muito baixa — interface mínima |
-| Config | KDL declarativo | arquivo `.tmux.conf` (DSL própria) | `.screenrc` (sintaxe arcaica) |
-| Sessions persistentes | Sim | Sim | Sim |
-| Plugin system | WASM (sandbox, multilíngue) | TPM (shell scripts, centenas de plugins) | Não |
-| Performance | Boa, geralmente (Rust) | Excelente (C) | Excelente (C) |
-| Ubiquidade em servidores | Baixa | Alta (frequentemente pré-instalado) | Muito alta (sempre instalado) |
-| Maturidade | Jovem (~5 anos) | Maduro (18+ anos) | Muito maduro (38+ anos) |
-| Público-alvo primário | Dev workstation local | Uso geral, servidores remotos | Sysadmin, servidores embedded |
+| Critério                 | Zellij                                                       | tmux                                     | screen                         |
+| ------------------------ | ------------------------------------------------------------ | ---------------------------------------- | ------------------------------ |
+| Ano de lançamento        | ~2021 (v0.1.0 em 2021)                                       | 2007                                     | 1987                           |
+| Versão atual (2026)      | 0.44.x                                                       | 3.5.x                                    | 5.0.x                          |
+| Discoverabilidade        | Alta — status bar exibe atalhos contextuais                  | Baixa — requer decorar prefixo + tecla   | Muito baixa — interface mínima |
+| Config                   | KDL declarativo                                              | arquivo `.tmux.conf` (DSL própria)       | `.screenrc` (sintaxe arcaica)  |
+| Sessions persistentes    | Sim                                                          | Sim                                      | Sim                            |
+| Plugin system            | [[Dicionário do Terminal#WASM\|WASM]] (sandbox, multilíngue) | TPM (shell scripts, centenas de plugins) | Não                            |
+| Performance              | Boa, geralmente (Rust)                                       | Excelente (C)                            | Excelente (C)                  |
+| Ubiquidade em servidores | Baixa                                                        | Alta (frequentemente pré-instalado)      | Muito alta (sempre instalado)  |
+| Maturidade               | Jovem (~5 anos)                                              | Maduro (18+ anos)                        | Muito maduro (38+ anos)        |
+| Público-alvo primário    | Dev workstation local                                        | Uso geral, servidores remotos            | Sysadmin, servidores embedded  |
 
 ### Diferenciais do Zellij
 
@@ -105,7 +105,7 @@ layout {
 
 **5. Plugin system em WASM**
 
-Plugins são módulos WebAssembly — isolados em sandbox, sem acesso irrestrito ao sistema, e podem ser escritos em Rust (suporte oficial) ou outras linguagens que compilam para WASM (iniciativas da comunidade). A própria UI do Zellij (status bar, tab bar) é implementada como plugins internos.
+Plugins são módulos WebAssembly — isolados em sandbox, sem acesso irrestrito ao sistema, e podem ser escritos em Rust (suporte oficial) ou outras linguagens que compilam para [[Dicionário do Terminal#WASM|WASM]] (iniciativas da comunidade). A própria UI do Zellij (status bar, tab bar) é implementada como plugins internos.
 
 **6. "Tmux mode" opcional**
 
@@ -122,7 +122,7 @@ Para quem quer migrar gradualmente ou prefere o modelo de keybindings do tmux, Z
 ### Público-alvo de cada
 
 **Zellij:**
-Desenvolvedor usando workstation local, dotfiles modernos, prefere aprender sem decorar atalhos, quer layouts declarativos versionados, confortável com ferramentas novas.
+Desenvolvedor usando workstation local, [[Dicionário do Terminal#dotfile|dotfiles]] modernos, prefere aprender sem decorar atalhos, quer layouts declarativos versionados, confortável com ferramentas novas.
 
 **tmux:**
 Qualquer pessoa que trabalha frequentemente em servidores remotos via SSH, equipes que precisam de plugin ecosystem maduro, quem já tem config estabelecida e não quer migrar.

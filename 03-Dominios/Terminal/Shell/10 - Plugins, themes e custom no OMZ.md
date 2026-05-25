@@ -18,7 +18,6 @@ aliases:
   - Plugins custom OMZ
   - Themes custom OMZ
 ---
-
 # Plugins, themes e custom no OMZ
 
 ## TL;DR
