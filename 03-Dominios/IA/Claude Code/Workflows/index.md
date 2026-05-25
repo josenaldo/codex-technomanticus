@@ -3,7 +3,7 @@ title: "Workflows — Claude Code"
 type: moc
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
+updated: 2026-05-22
 status: seedling
 tags:
   - claude-code
@@ -37,6 +37,7 @@ Este galho é o mais prático da trilha — cada nota é um padrão aplicável n
 8. [[03-Dominios/IA/Claude Code/Workflows/08 - Multi-agent|08 - Multi-agent — coordenar agentes em paralelo]]
 9. [[03-Dominios/IA/Claude Code/Workflows/09 - Prompting para Claude Code|09 - Prompting para Claude Code — comunicar tarefas com precisão]]
 10. [[03-Dominios/IA/Claude Code/Workflows/10 - Gestão de contexto|10 - Gestão de contexto em sessões longas]]
+11. [[03-Dominios/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|11 - Estratégias estruturais de contexto]] — sub-galho com 4 notas: lazy-load de `.claude/`, sandboxing de tool output, indexação semântica externa, knowledge graph local com AST
 
 ## Veja também
 
