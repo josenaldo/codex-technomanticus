@@ -4,3 +4,9 @@
 
 # Obsidian plugin secrets (API keys, TLS private keys)
 .obsidian/plugins/obsidian-local-rest-api/data.json
+
+# Obsidian local UI state
+.obsidian/workspace.json
+
+__pycache__/
+*.pyc

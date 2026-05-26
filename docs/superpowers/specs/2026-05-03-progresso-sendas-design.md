@@ -11,7 +11,7 @@ publish: false
 
 ## 1. Contexto e motivação
 
-O Codex Technomanticus organiza o conhecimento em quatro zonas operacionais (`01-Pergaminhos`, `02-Glosas`, `03-Domínios`, `04-Sendas`). As **Sendas** são, conceitualmente, mapas de leitura sobre os Domínios — caminhos curatoriais que sequenciam notas de domínio em trilhas de estudo orientadas a um objetivo.
+O Codex Technomanticus organiza o conhecimento em quatro zonas operacionais (`01-Pergaminhos`, `02-Glosas`, `03-Dominios`, `04-Sendas`). As **Sendas** são, conceitualmente, mapas de leitura sobre os Domínios — caminhos curatoriais que sequenciam notas de domínio em trilhas de estudo orientadas a um objetivo.
 
 Hoje, ao percorrer uma senda, o usuário não tem visibilidade de **onde está**: o que já foi estudado, o que está em curso, o que pausou, o que ainda é horizonte. A Senda IA tem 19 KB de conteúdo (fases, checkpoints, notas de apoio); a Senda Java tem 23 KB. Quando o usuário retoma o estudo depois de algumas semanas, refaz o trabalho de localização.
 
@@ -42,7 +42,7 @@ Entregar:
 - Bloco dataview de agregação na senda (versões `minimal` e `structured`).
 - CSS do callout `convite` no `codex-technomanticus-site`.
 - Migração da Senda Frontend ao novo formato (piloto).
-- Criação das **estantes mínimas** que o piloto precisa referenciar — `03-Domínios/Frontend/` (engenharia), `React/`, `TypeScript/`, e demais conforme §10.2 — com notas-stub. Não inclui migração das notas existentes em `03-Domínios/JavaScript/Frontend/` para essas estantes (vide §13).
+- Criação das **estantes mínimas** que o piloto precisa referenciar — `03-Dominios/Frontend/` (engenharia), `React/`, `TypeScript/`, e demais conforme §10.2 — com notas-stub. Não inclui migração das notas existentes em `03-Dominios/JavaScript/Frontend/` para essas estantes (vide §13).
 - Atualização de `docs/apocrypha-pendencias.md` com itens deferred.
 
 ### Fora de escopo (trabalho subsequente)
@@ -63,7 +63,7 @@ Entregar:
 |---|---|
 | `01-Pergaminhos/` | Captura inicial: inbox, links soltos, ideias cruas. |
 | `02-Glosas/` | Fichamentos de materiais externos consumidos. |
-| `03-Domínios/` | Corpus do conhecimento. **Centro gravitacional do vault**. Notas amadurecidas, organizadas por domínio. |
+| `03-Dominios/` | Corpus do conhecimento. **Centro gravitacional do vault**. Notas amadurecidas, organizadas por domínio. |
 | `04-Sendas/` | Mapas de leitura. Wikilinks ordenados pra notas dos domínios. **Apenas isso**. |
 
 **Pipeline de alimentação**: pergaminho → glosa → nota de domínio. Materiais externos consumidos viram glosas; glosas amadurecem e dão origem a notas de domínio.
@@ -101,7 +101,7 @@ Modelo adotado:
 
 Sendas atravessam estantes naturalmente: `Senda Frontend`, por exemplo, é fluxograma transversal cruzando `JavaScript/` (core), `HTML/`, `CSS/`, `React/`, `TypeScript/`, `Frontend/` (engenharia), `Ferramentas/`.
 
-**Implicação pra esta spec**: a reorganização completa dos domínios atuais (especialmente migrar `03-Domínios/JavaScript/Backend/` e `03-Domínios/JavaScript/Frontend/` pras novas estantes) é **trabalho separado** — pode virar spec própria. Esta spec faz **o mínimo necessário pro piloto rodar**: cria as estantes que a Senda Frontend piloto vai referenciar, com notas-stub, sem migrar tudo o que já existe em `JavaScript/Frontend/`. A migração completa dessas notas é trabalho subsequente, vide §13.
+**Implicação pra esta spec**: a reorganização completa dos domínios atuais (especialmente migrar `03-Dominios/JavaScript/Backend/` e `03-Dominios/JavaScript/Frontend/` pras novas estantes) é **trabalho separado** — pode virar spec própria. Esta spec faz **o mínimo necessário pro piloto rodar**: cria as estantes que a Senda Frontend piloto vai referenciar, com notas-stub, sem migrar tudo o que já existe em `JavaScript/Frontend/`. A migração completa dessas notas é trabalho subsequente, vide §13.
 
 ### 4.4 Materiais externos: o convite
 
@@ -141,7 +141,7 @@ A ausência do campo é tratada como `pendente` nas queries dataview (`default(p
 
 ### 5.3 Onde aplica
 
-- **Notas de `03-Domínios/`**: sim. Toda nota de domínio é candidata a estudo.
+- **Notas de `03-Dominios/`**: sim. Toda nota de domínio é candidata a estudo.
 - **Glosas em `02-Glosas/`**: sim. Glosa nasce com `progresso: andamento` (o ato de glosar é "estou consumindo este material"); evolui pra `feito` quando a leitura termina.
 - **Pergaminhos em `01-Pergaminhos/`**: não. Pergaminho é captura inicial, não conhecimento para estudo.
 - **Sendas em `04-Sendas/`**: não. Senda agrega; não tem progresso próprio. (O `status: active | done | archived` da senda continua sendo metadado de senda, separado.)
@@ -164,7 +164,7 @@ Substitui `00-Meta/templates/trail.md`:
 ---
 type: trail
 title: "Senda <Nome>"
-domain: "[[03-Domínios/<Domínio>/index]]"
+domain: "[[03-Dominios/<Domínio>/index]]"
 maturity: minimal      # ou: structured
 status: active         # active | done | archived (metadado de senda, não de progresso)
 publish: true
@@ -186,21 +186,21 @@ tags:
 
 <!-- Versão minimal: lista plana ordenada -->
 
-1. [[03-Domínios/<Domínio>/<Nota A>]]
-2. [[03-Domínios/<Domínio>/<Nota B>]]
-3. [[03-Domínios/<Domínio>/<Nota C>]]
+1. [[03-Dominios/<Domínio>/<Nota A>]]
+2. [[03-Dominios/<Domínio>/<Nota B>]]
+3. [[03-Dominios/<Domínio>/<Nota C>]]
 
 <!-- Versão structured: substituir "## Sequência" pelos blocos abaixo -->
 
 <!--
 ## Fase 0 — <Tema>
 
-1. [[03-Domínios/<Domínio>/<Nota A>]]
-2. [[03-Domínios/<Domínio>/<Nota B>]]
+1. [[03-Dominios/<Domínio>/<Nota A>]]
+2. [[03-Dominios/<Domínio>/<Nota B>]]
 
 ## Fase 1 — <Tema>
 
-1. [[03-Domínios/<Domínio>/<Nota C>]]
+1. [[03-Dominios/<Domínio>/<Nota C>]]
 -->
 
 ## Progresso
@@ -211,7 +211,7 @@ tags:
 Regras:
 
 - A senda escolhe **uma** das duas formas (`Sequência` plana ou `Fases`) conforme `maturity`.
-- Apenas wikilinks pra notas de `03-Domínios/`. Sem links externos, código, exercícios.
+- Apenas wikilinks pra notas de `03-Dominios/`. Sem links externos, código, exercícios.
 - Texto livre permitido apenas em "Pré-requisitos" e descrição inicial.
 
 ### 6.2 Atualizações em outros templates
@@ -239,7 +239,7 @@ TABLE WITHOUT ID
   file.link AS "Nota",
   default(progresso, "pendente") AS "Status"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 SORT file.name ASC
 ```
 
@@ -253,7 +253,7 @@ TABLE WITHOUT ID
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 GROUP BY true
 ```
 ````
@@ -321,23 +321,23 @@ A Senda Frontend é escolhida como piloto porque o usuário está estudando fron
 
 Senda Frontend tem 4.1 KB e é **100% conteúdo "ofensivo"**: o arquivo é um sumário interno (`[[#React]]`, `[[#Frameworks]]`, etc., wikilinks pra headings do próprio arquivo) seguido de seções com links externos pros sites/artigos/docs (React, TanStack, NextJS, MUI, Mantine, etc.). **Zero wikilinks pra notas de domínio**.
 
-Pelo modelo de estantes (§4.3), a Senda Frontend é **transversal**: aponta pra notas em múltiplos domínios — `JavaScript/` (core), `TypeScript/`, `HTML/`, `CSS/`, `React/`, `Frontend/` (engenharia), `Ferramentas/`. Essas estantes ainda não existem nesse formato; o conhecimento frontend hoje está principalmente em `03-Domínios/JavaScript/Frontend/` (subpasta agrupadora a desfazer no trabalho subsequente §13).
+Pelo modelo de estantes (§4.3), a Senda Frontend é **transversal**: aponta pra notas em múltiplos domínios — `JavaScript/` (core), `TypeScript/`, `HTML/`, `CSS/`, `React/`, `Frontend/` (engenharia), `Ferramentas/`. Essas estantes ainda não existem nesse formato; o conhecimento frontend hoje está principalmente em `03-Dominios/JavaScript/Frontend/` (subpasta agrupadora a desfazer no trabalho subsequente §13).
 
 ### 10.2 Migração
 
 Em ordem:
 
 1. **Criar estantes mínimas** que a senda piloto vai referenciar:
-   - `03-Domínios/Frontend/` (engenharia frontend, disciplina)
-   - `03-Domínios/React/`
-   - `03-Domínios/TypeScript/`
-   - `03-Domínios/HTML/` (se a senda abordar)
-   - `03-Domínios/CSS/` (se a senda abordar)
+   - `03-Dominios/Frontend/` (engenharia frontend, disciplina)
+   - `03-Dominios/React/`
+   - `03-Dominios/TypeScript/`
+   - `03-Dominios/HTML/` (se a senda abordar)
+   - `03-Dominios/CSS/` (se a senda abordar)
    Cada estante nasce com seu próprio `index.md` (ou `README.md`, conforme padrão do vault). **Não** migrar agora as notas existentes em `JavaScript/Frontend/` para essas estantes — isso é trabalho subsequente (§13).
 2. **Auditoria do conteúdo atual da senda**: enumerar os ~30 links externos e ~15 seções da Senda Frontend, mapear cada um pra qual estante nova ele pertencerá (React vai pra `React/`, padrões frontend vão pra `Frontend/`, etc.).
 3. **Criar notas-stub** nas estantes apropriadas: para cada conceito identificado, uma nota mínima (frontmatter + esqueleto). Notas nascem como `status: seedling` com `progresso: pendente`.
 4. **Mover links externos pra callouts `[!convite]`** dentro das notas de domínio correspondentes.
-5. **Reescrever a Senda Frontend** seguindo o template canônico (§6.1) — apenas wikilinks ordenados pras notas das estantes. `maturity: minimal` na primeira versão; evolui pra `structured` quando o usuário identificar fases naturais. Frontmatter `domain` aponta pro domínio principal da senda — `[[03-Domínios/Frontend/index]]`.
+5. **Reescrever a Senda Frontend** seguindo o template canônico (§6.1) — apenas wikilinks ordenados pras notas das estantes. `maturity: minimal` na primeira versão; evolui pra `structured` quando o usuário identificar fases naturais. Frontmatter `domain` aponta pro domínio principal da senda — `[[03-Dominios/Frontend/index]]`.
 6. **Adicionar bloco dataview de progresso** (§6.3).
 7. **Aplicar `progresso` em notas referenciadas** com base no estado real do usuário — `andamento` no que está estudando, `pendente` no resto.
 8. **Validar**: abrir no Obsidian, verificar agregação. Construir o site (Quartz), verificar renderização e CSS do callout.
@@ -346,7 +346,7 @@ Nota: a migração da Senda Frontend é, na prática, **mais criação de domín
 
 ### 10.3 Critério de sucesso do piloto
 
-- Senda Frontend tem apenas wikilinks pra notas de `03-Domínios/Frontend/`.
+- Senda Frontend tem apenas wikilinks pra notas de `03-Dominios/Frontend/`.
 - Bloco dataview no Obsidian mostra contagens corretas.
 - Nenhum link externo na senda; todos migrados a callouts `[!convite]` nas notas de domínio.
 - Site Quartz renderiza a senda sem expor o bloco dataview ao visitante; callouts `[!convite]` têm estilo dedicado.
@@ -361,7 +361,7 @@ Em ordem (independências entre passos permitem paralelismo, mas a ordem abaixo 
 3. Atualizar `Template - Nota.md` com `progresso: pendente` e seção `## Aprofundamento`.
 4. Atualizar `Template - Glosa.md` com `progresso: andamento`.
 5. Documentar a convenção `[!convite]` em `00-Meta/guia/`.
-6. Aplicar piloto na Senda Frontend (§10) — inclui criar `03-Domínios/Frontend/` se a decisão de §10.2 passo 1 for criar domínio dedicado.
+6. Aplicar piloto na Senda Frontend (§10) — inclui criar `03-Dominios/Frontend/` se a decisão de §10.2 passo 1 for criar domínio dedicado.
 7. Adicionar CSS do callout `[!convite]` no `codex-technomanticus-site`.
 8. Verificar renderização do site após próximo deploy.
 9. Self-review: abrir a Senda Frontend no Obsidian, confirmar agregação correta.
@@ -380,7 +380,7 @@ Em ordem (independências entre passos permitem paralelismo, mas a ordem abaixo 
 
 Em ordem de prioridade aproximada (não vinculante):
 
-1. **Reorganização completa dos domínios JavaScript** (modelo §4.3): migrar `03-Domínios/JavaScript/Backend/` pra novo `03-Domínios/Node/` (ou `Backend/`); migrar `03-Domínios/JavaScript/Frontend/` pras estantes específicas (`React/`, `Vue/`, etc., `Frontend/` disciplina); `JavaScript/` fica só com Core. Criar estantes faltantes (`HTML/`, `CSS/` se ainda não existirem em escala). Pode virar spec própria.
+1. **Reorganização completa dos domínios JavaScript** (modelo §4.3): migrar `03-Dominios/JavaScript/Backend/` pra novo `03-Dominios/Node/` (ou `Backend/`); migrar `03-Dominios/JavaScript/Frontend/` pras estantes específicas (`React/`, `Vue/`, etc., `Frontend/` disciplina); `JavaScript/` fica só com Core. Criar estantes faltantes (`HTML/`, `CSS/` se ainda não existirem em escala). Pode virar spec própria.
 2. **Skill `/migrar-senda <nome>`**: automatiza a auditoria + migração de uma senda existente ao novo formato. Identifica conteúdo "ofensivo" (texto, links externos, exercícios), sugere quebra em notas atômicas nas estantes corretas, aplica template canônico. Reduz custo de migrar as 9 sendas restantes.
 3. **Refatoração da Senda IA**: trabalho dedicado, provavelmente uma sessão inteira. Volume grande de conteúdo factual a mover pro domínio IA.
 4. **Dashboard agregado no apocrypha**: visão consolidada de progresso cross-senda. Vide `docs/apocrypha-pendencias.md`.
@@ -397,7 +397,7 @@ A spec é considerada implementada quando:
 - [ ] Documentação de modelo conceitual e convenção `[!convite]` em `00-Meta/guia/`.
 - [ ] Senda Frontend reescrita seguindo template canônico, sem conteúdo "ofensivo".
 - [ ] Bloco dataview de progresso na Senda Frontend rendendo agregação correta no Obsidian.
-- [ ] Notas de `03-Domínios/Frontend/` referenciadas pela senda têm o campo `progresso` com valor real (não placeholder).
+- [ ] Notas de `03-Dominios/Frontend/` referenciadas pela senda têm o campo `progresso` com valor real (não placeholder).
 - [ ] CSS do callout `[!convite]` aplicado no `codex-technomanticus-site` e validado em build local ou após deploy.
 - [ ] Site renderiza a Senda Frontend sem expor bloco dataview; callouts `[!convite]` aparecem com estilo dedicado.
 - [ ] `docs/apocrypha-pendencias.md` e `docs/perguntas-abertas.md` atualizados com itens deferred (já feito em sessão).

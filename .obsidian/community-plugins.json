@@ -1,5 +1,4 @@
 [
-  "obsidian-local-images-plus",
   "open-in-terminal",
   "templater-obsidian",
   "quickadd",
@@ -9,6 +8,7 @@
   "obsidian-code-block-enhancer",
   "slash-complete",
   "terminal",
+  "copilot",
   "obsidian-git",
-  "copilot"
+  "obsidian-local-images-plus"
 ]

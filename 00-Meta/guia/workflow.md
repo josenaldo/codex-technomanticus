@@ -24,7 +24,7 @@ Pergaminhos → Glosas → Domínios → Sendas
 1. **Captura.** Você acha um link interessante → cola em `01-Pergaminhos/entradas.md`, sob uma seção temática (`# Tema`).
 2. **Destilação.** Lê o artigo → invoca `/glosa <url>` → ficha aparece em `02-Glosas/<ano>-<slug>.md`.
 3. **Limpeza automática.** A skill `/glosa` remove o link de `01-Pergaminhos/entradas.md` se ele estava lá.
-4. **Integração** (opcional, sob demanda). Se um artigo merece estudo profundo, você o relê e extrai notas atômicas pra `03-Domínios/<área>/`.
+4. **Integração** (opcional, sob demanda). Se um artigo merece estudo profundo, você o relê e extrai notas atômicas pra `03-Dominios/<área>/`.
 5. **Curadoria** (opcional). Pra preparar entrevista ou estudo focado, você sequencia notas de Domínios numa Senda em `04-Sendas/Senda <Tema>.md`.
 
 A integração e curadoria não são obrigatórias — uma Glosa pode viver sozinha. Só promova o conteúdo quando ele realmente vai ser estudado ou referenciado.

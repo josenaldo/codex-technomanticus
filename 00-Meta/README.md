@@ -60,4 +60,4 @@ Notas sobre desenvolvedores, engenheiros e educadores que influenciam a prática
 
 - [[Como usar este vault]] — comece aqui se chegou agora
 - [[workflow]] — como o material flui entre as zonas
-- [[index|Codex Technomanticus]] — portal de entrada do grimório
+- [[Codex/00-Meta/guia/pipeline/index|Codex Technomanticus]] — portal de entrada do grimório

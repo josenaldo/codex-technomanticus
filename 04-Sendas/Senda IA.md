@@ -19,7 +19,7 @@ publish: true
 > [!info] Esta senda vs Formação Engenheiro de IA
 > **Esta senda** é um **roadmap pessoal** com fases mensais, projetos hands-on e checkpoints. É o "como eu estudaria do zero".
 >
-> A **[[03-Domínios/IA/index|Formação Engenheiro de IA]]** é um **curriculum de leitura** com 8 trilhas atomizadas + 4 sendas transversais (Praticante, Arquiteto, Líder Técnico, Open Source). É a "biblioteca de referência".
+> A **[[03-Dominios/IA/index|Formação Engenheiro de IA]]** é um **curriculum de leitura** com 8 trilhas atomizadas + 4 sendas transversais (Praticante, Arquiteto, Líder Técnico, Open Source). É a "biblioteca de referência".
 >
 > As duas se complementam: use **esta senda** para definir o que estudar quando; use a **Formação** como fonte de notas detalhadas em cada fase.
 
@@ -67,7 +67,7 @@ Mês 12+   | Fase 6: Especialização
 
 ### Notas de apoio
 
-- [[03-Domínios/IA/index|Inteligência Artificial]] — seção "O que é" e "Hierarquia dos conceitos"
+- [[03-Dominios/IA/index|Inteligência Artificial]] — seção "O que é" e "Hierarquia dos conceitos"
 - [[Comparativo de LLMs]] — para escolher qual ferramenta usar
 
 ### Checkpoint
@@ -104,7 +104,7 @@ Mês 12+   | Fase 6: Especialização
 
 ### Notas de apoio (Fase 1)
 
-- [[03-Domínios/IA/index|Inteligência Artificial]] — trilha completa de conceitos
+- [[03-Dominios/IA/index|Inteligência Artificial]] — trilha completa de conceitos
 - [[Anatomia dos LLMs|LLMs]] — fundamentos de arquitetura
 
 ### Checkpoint da Fase 1
@@ -195,10 +195,11 @@ Mês 12+   | Fase 6: Especialização
 
 ### Notas de apoio (Fase 3)
 
-- [[RAG e Vector Databases]] — trilha completa atomizada (12 notas)
+- [[RAG e Vector Databases]] — trilha completa atomizada (13 notas)
 - [[RAG e Vector Databases|03 - Embeddings — representação semântica]] — embeddings deep dive
 - [[RAG e Vector Databases|04 - Chunking — onde 50% da qualidade vive]] — chunking estratégias
 - [[RAG e Vector Databases|06 - Retrieval — hybrid search, BM25, query rewriting]] — hybrid retrieval
+- [[RAG e Vector Databases|13 - PageIndex — RAG vectorless por árvore de documentos]] — retrieval para documentos longos sem vector DB
 - [[Anatomia dos LLMs|LLMs]] — embeddings, context window
 
 ### Checkpoint da Fase 3
@@ -415,12 +416,12 @@ Isso é um portfolio forte. Acompanhe cada repo com README que explica decisões
 
 ## Veja também
 
-- [[03-Domínios/IA/index|IA]] — portal do domínio
-- [[03-Domínios/IA/index|Formação Engenheiro de IA]] — curriculum estruturado em 8 trilhas + 4 sendas transversais
+- [[03-Dominios/IA/index|IA]] — portal do domínio
+- [[03-Dominios/IA/index|Formação Engenheiro de IA]] — curriculum estruturado em 8 trilhas + 4 sendas transversais
 - **Trilhas atomizadas:**
     - [[Anatomia dos LLMs]] · [[Anatomia de Agents]] · [[Agentes de Codificação]]
     - [[Economia de Tokens]] · [[Context Engineering]] · [[Spec-Driven Development]] · [[Segurança e Guardrails]]
     - [[Memória de Agentes]]
-- **Notas conceituais:** [[03-Domínios/IA/index|Inteligência Artificial]] · [[Context Engineering]] · [[RAG e Vector Databases]] · [[MCP]]
+- **Notas conceituais:** [[03-Dominios/IA/index|Inteligência Artificial]] · [[Context Engineering]] · [[RAG e Vector Databases]] · [[MCP]]
 - **Ferramentas:** [[Claude]] · [[GitHub Copilot]] · [[Codex]] · [[Gemini]] · [[Comparativo de LLMs]]
 - **Sendas relacionadas:** [[Senda Entrevistas]]

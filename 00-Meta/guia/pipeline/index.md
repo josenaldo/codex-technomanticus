@@ -21,7 +21,7 @@ O Codex Technomanticus é um grimório vivo: o conhecimento entra como link brut
 |---|---|---|
 | 1. Pergaminhos | `01-Pergaminhos/` | Captura inicial: inbox, links soltos, ideias cruas. |
 | 2. Glosas | `02-Glosas/` | Fichamentos de materiais externos consumidos. |
-| 3. Domínios | `03-Domínios/` | Corpus do conhecimento. **Centro gravitacional do vault**. |
+| 3. Domínios | `03-Dominios/` | Corpus do conhecimento. **Centro gravitacional do vault**. |
 | 4. Sendas | `04-Sendas/` | Mapas curatoriais — fluxogramas de leitura sobre os domínios. |
 
 ## Pipeline de alimentação

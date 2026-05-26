@@ -3,7 +3,6 @@ title: Codex Technomanticus
 type: moc
 publish: true
 ---
-
 # Codex Technomanticus
 
 ## Grimório Tecnomântico do Arquimago Multiplanar
@@ -59,7 +58,7 @@ O conteúdo flui em cinco zonas numeradas, do bruto ao curatorial:
 - **`00-Meta/`** — meta-linguagem do codex: `guia/` (8 arquivos cobrindo estrutura, fluxo, convenções, manutenção, publicação, decisões e dicionário), `templates/` Templater, `mestres/` (referências de devs)
 - **`01-Pergaminhos/`** — links brutos coletados (`entradas.md`), wishlist (`avaliar.md`), recursos incipientes (Brag Document, listas de cursos)
 - **`02-Glosas/`** — fichamentos de artigos lidos (uma ficha por leitura, formato `<ano>-<slug>.md`)
-- **`03-Domínios/`** — conhecimento integrado e evergreen, organizado por área (Java, IA, Arquitetura, Entrevistas, etc.)
+- **`03-Dominios/`** — conhecimento integrado e evergreen, organizado por área (Java, IA, Arquitetura, Entrevistas, etc.)
 - **`04-Sendas/`** — caminhos curatoriais que sequenciam Domínios pra atender objetivos (Senda Entrevistas, Senda Frontend, etc.)
 
 Detalhes em [[Como usar este vault]] e [[workflow]].
@@ -78,7 +77,7 @@ Limitação atual: só artigos web (HTML). PDFs, YouTube, podcasts, redes sociai
 
 ## Ritual de navegação
 
-Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da pasta). Se estiver chegando agora, comece por esses portais.
+Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da pasta). Se estiver chegando agora, comece por esses portais.
 
 > Veja também [[Como usar este vault]] e [[Senda Entrevistas]].
 
@@ -93,22 +92,22 @@ Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da
 
 - [[Arquitetura]]
 - [[Arquitetura de Software]] · [[System Design]] · [[Design Patterns]] · [[API Design]]
-- **Mensageria:** [[Mensageria]] · [[Event Streaming]] · [[Kafka]] · [[RabbitMQ]] · [[BullMQ]]
+- **Mensageria:** [[Mensageria]] · [[Event Streaming]] · [[03-Dominios/Java/Backend/Kafka/Kafka]] · [[RabbitMQ]] · [[BullMQ]]
 - [[Event Storming]] · [[Gateway de Pagamento]]
 
 ## Domínio de Java
 
 - [[Java]]
 - **Core:** [[Java Fundamentals]] · [[Java Concurrency]] · [[Certificação Java OCP]] · [[Helsinki MOOC - Guia de Revisão]]
-- **Backend:** [[Spring Boot]] · [[Spring Data JPA]] · [[Spring Security]] · [[Kafka]] · [[Testes em Java]] · [[gRPC e Go]]
+- **Backend:** [[Spring Boot]] · [[Spring Data JPA]] · [[Spring Security]] · [[03-Dominios/Java/Backend/Kafka/Kafka]] · [[Testes em Java]] · [[gRPC e Go]]
 - **Frontend:** [[JavaFX]]
 
 ## Domínio de JavaScript
 
-- [[JavaScript]]
+- [[03-Dominios/JavaScript/index]]
 - **Core:** [[JavaScript Fundamentals]] · [[TypeScript]] · [[Testes em JavaScript]]
 - **Backend:** [[Node.js]]
-- **Frontend:** [[React]] · [[React Red Flag Manual]] · [[HTML e CSS]] · [[Bootstrap]] · [[Material UI]] · [[Mantine]]
+- **Frontend:** [[React]] · [[React Red Flag Manual]] · [[HTML e CSS]] · [[Bootstrap]] · [[Material UI]] · [[03-Dominios/React/Mantine]]
 - **Revisão:** [[Full Stack Open - Guia de Revisão]]
 
 ## Domínio de Python
@@ -124,8 +123,8 @@ Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da
 
 ## Domínio de Inteligência Artificial
 
-- [[03-Domínios/IA/index|IA]] — portal do domínio com 10 trilhas + overview + ferramentas
-- **[[03-Domínios/IA/index|Formação Engenheiro de IA]]** — programa estruturado: 10 trilhas + 4 sendas transversais (Praticante, Arquiteto, Líder Técnico, Open Source)
+- [[03-Dominios/IA/index|IA]] — portal do domínio com 10 trilhas + overview + ferramentas
+- **[[03-Dominios/IA/index|Formação Engenheiro de IA]]** — programa estruturado: 10 trilhas + 4 sendas transversais (Praticante, Arquiteto, Líder Técnico, Open Source)
 - **Trilhas atomizadas:**
     - [[Anatomia dos LLMs]] (17 notas) — fundamentos: tokens, atenção, modelos, APIs, treino, evaluation
     - [[Anatomia de Agents]] (9 notas) — fundamentos genéricos: ciclo, tools, memory, planning, multi-agent
@@ -135,10 +134,10 @@ Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da
     - [[Spec-Driven Development]] (12 notas) — Specify→Plan→Tasks→Implement, Kiro, Spec Kit
     - [[Segurança e Guardrails]] (12 notas) — SAST, sandbox, slopsquat, EU AI Act
     - [[Memória de Agentes]] (23 notas) — Letta, Mem0, Zep, Generative Agents, A-MEM
-    - [[RAG e Vector Databases]] (12 notas) — embeddings, chunking, retrieval, reranking, evaluation
+    - [[RAG e Vector Databases]] (13 notas) — embeddings, chunking, retrieval, reranking, evaluation
     - [[MCP]] (10 notas) — Model Context Protocol, servers, segurança, ecossistema
-- **Overview:** [[03-Domínios/IA/index|Inteligência Artificial]] — portal panorâmico do campo
-- **Ferramentas:** [[Ferramentas de IA/index|Ferramentas de IA]] — [[Claude]] · [[GitHub Copilot]] · [[Codex]] · [[Gemini]] · [[Comparativo de LLMs]]
+- **Overview:** [[03-Dominios/IA/index|Inteligência Artificial]] — portal panorâmico do campo
+- **Ferramentas:** [[03-Dominios/IA/Ferramentas de IA/index|Ferramentas de IA]] — [[Claude]] · [[GitHub Copilot]] · [[Codex]] · [[Gemini]] · [[Comparativo de LLMs]]
 
 ## Domínio de Infraestrutura
 
@@ -150,7 +149,7 @@ Cada Domínio em `03-Domínios/` tem um portal de entrada (MOC com mesmo nome da
 
 ## Domínio de Inglês
 
-- Notas de estudo de inglês para entrevistas internacionais (em `03-Domínios/Inglês/`)
+- Notas de estudo de inglês para entrevistas internacionais (em `03-Dominios/Inglês/`)
 
 ## Domínio de Entrevistas
 

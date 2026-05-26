@@ -75,12 +75,12 @@ Body padrão:
 
 Glosa **alimenta** notas de domínio; ela mesma não vira nota. Quando o tema merece consolidação:
 
-- **Glosa → Nota (1→1):** `/promover-glosa <slug>` cria uma nota nova em `03-Domínios/X/` com a TL;DR como ponto de partida e a glosa em `## Fontes`.
+- **Glosa → Nota (1→1):** `/promover-glosa <slug>` cria uma nota nova em `03-Dominios/X/` com a TL;DR como ponto de partida e a glosa em `## Fontes`.
 - **N glosas → 1 nota:** `/sintetizar-glosas tag:<X>` cria uma nota sintetizando várias glosas (ela prepara o esqueleto com `## Fontes` populada; você escreve a síntese).
 
 Em ambos os casos:
 - A glosa é **movida** pra `Promovidas/<ano>/`.
-- O frontmatter da glosa ganha `promovida_em: ["[[03-Domínios/X/Nome]]"]`.
+- O frontmatter da glosa ganha `promovida_em: ["[[03-Dominios/X/Nome]]"]`.
 - A nota nasce com `progresso: andamento` e `status: seedling` (ponto de partida — você amadurece depois).
 
 ## Manutenção do repositório
@@ -106,7 +106,7 @@ Cada skill pede confirmação antes de mover ou criar arquivos. Detalhes complet
 
 ## Ver também
 
-- [[index|Pipeline do Codex]]
+- [[Codex/00-Meta/guia/pipeline/index|Pipeline do Codex]]
 - [[Pergaminhos]]
 - [[Domínios]]
 - [[Sendas]]

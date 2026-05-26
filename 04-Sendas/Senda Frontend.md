@@ -1,7 +1,7 @@
 ---
 type: trail
-title: "Senda Frontend"
-domain: "[[03-Domínios/Frontend/index]]"
+title: Senda Frontend
+domain: "[[03-Dominios/Frontend/index]]"
 maturity: minimal
 status: active
 publish: true
@@ -22,33 +22,33 @@ tags:
 
 ## Sequência
 
-1. [[03-Domínios/Frontend/index|Frontend (engenharia)]]
-2. [[03-Domínios/JavaScript/JavaScript|JavaScript]]
-3. [[03-Domínios/TypeScript/index|TypeScript]]
-4. [[03-Domínios/React/index|React]]
-5. [[03-Domínios/React/MUI|Material UI (MUI)]]
-6. [[03-Domínios/React/Mantine|Mantine]]
-7. [[03-Domínios/React/Ícones|Ícones em React]]
-8. [[03-Domínios/React/TanStack Query|TanStack Query]]
-9. [[03-Domínios/React/TanStack Form|TanStack Form]]
-10. [[03-Domínios/React/React Hook Form|React Hook Form]]
-11. [[03-Domínios/React/Next.js|Next.js]]
-12. [[03-Domínios/Frontend/Validação/index|Validação no Frontend]]
-13. [[03-Domínios/Frontend/Validação/Zod|Zod]]
-14. [[03-Domínios/Frontend/Validação/Yup|Yup]]
-15. [[03-Domínios/Frontend/Validação/Joi|Joi]]
-16. [[03-Domínios/Frontend/Networking/index|Networking no Frontend]]
-17. [[03-Domínios/Frontend/Networking/Axios|Axios]]
-18. [[03-Domínios/Frontend/Networking/Fetch|Fetch API]]
-19. [[03-Domínios/React/React Data Table|React Data Table Component]]
-20. [[03-Domínios/React/React Admin|React Admin]]
-21. [[03-Domínios/React/Charts/index|Charts em React]]
-22. [[03-Domínios/React/Charts/Lightweight Charts|TradingView Lightweight Charts]]
-23. [[03-Domínios/React/Charts/ApexCharts|ApexCharts]]
-24. [[03-Domínios/React/Charts/Recharts|Recharts]]
-25. [[03-Domínios/Frontend/Debugging|Frontend Debugging]]
-26. [[03-Domínios/Ferramentas/Vite|Vite]]
-27. [[03-Domínios/Ferramentas/Monorepos|Monorepos]]
+1. [[03-Dominios/Frontend/index|Frontend (engenharia)]]
+2. [[03-Dominios/JavaScript/index|JavaScript]]
+3. [[03-Dominios/TypeScript/index|TypeScript]]
+4. [[03-Dominios/React/index|React]]
+5. [[MUI|Material UI (MUI)]]
+6. [[03-Dominios/React/Mantine|Mantine]]
+7. [[Ícones|Ícones em React]]
+8. [[TanStack Query|TanStack Query]]
+9. [[TanStack Form|TanStack Form]]
+10. [[React Hook Form|React Hook Form]]
+11. [[Next.js|Next.js]]
+12. [[03-Dominios/Frontend/Validação/index|Validação no Frontend]]
+13. [[Zod|Zod]]
+14. [[Yup|Yup]]
+15. [[Joi|Joi]]
+16. [[03-Dominios/Frontend/Networking/index|Networking no Frontend]]
+17. [[Axios|Axios]]
+18. [[Fetch|Fetch API]]
+19. [[React Data Table|React Data Table Component]]
+20. [[React Admin|React Admin]]
+21. [[03-Dominios/React/Charts/index|Charts em React]]
+22. [[Lightweight Charts|TradingView Lightweight Charts]]
+23. [[ApexCharts|ApexCharts]]
+24. [[Recharts|Recharts]]
+25. [[Debugging|Frontend Debugging]]
+26. [[Vite|Vite]]
+27. [[Monorepos|Monorepos]]
 
 ## Trilhas relacionadas
 
@@ -58,10 +58,10 @@ tags:
 
 ```dataview
 TABLE WITHOUT ID
-  link(file.path, regexreplace(file.folder, "^03-Domínios/", "") + "/" + file.name) AS "Nota",
+  link(file.path, regexreplace(file.folder, "^03-Dominios/", "") + "/" + file.name) AS "Nota",
   default(progresso, "pendente") AS "Status"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 SORT file.folder ASC, file.name ASC
 ```
 
@@ -75,6 +75,6 @@ TABLE WITHOUT ID
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pausado")) AS "Pausadas",
   length(filter(rows, (r) => default(r.progresso, "pendente") = "pendente")) AS "Pendentes"
 FROM outgoing([[]])
-WHERE file.path != this.file.path AND contains(file.path, "03-Domínios/")
+WHERE file.path != this.file.path AND contains(file.path, "03-Dominios/")
 GROUP BY true
 ```

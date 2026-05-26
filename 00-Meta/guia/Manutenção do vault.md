@@ -73,7 +73,7 @@ Identificar candidatas a `evergreen`:
 
 ```dataview
 LIST
-FROM "03-Domínios"
+FROM "03-Dominios"
 WHERE status = "seedling"
   AND file.mtime < date(today) - dur(30 days)
 SORT file.mtime ASC

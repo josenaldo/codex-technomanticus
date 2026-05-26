@@ -52,5 +52,5 @@ A skill `/glosa` cobre apenas artigos web (HTML). PDF, vídeo, podcast, tweets f
 
 ## Ver também
 
-- [[index|Pipeline do Codex]]
+- [[Codex/00-Meta/guia/pipeline/index|Pipeline do Codex]]
 - [[Glosas]]

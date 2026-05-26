@@ -11,7 +11,7 @@ publish: false
 
 ## 1. Contexto e motivação
 
-O Codex Technomanticus cresce como commonplace book pessoal — cada vez mais notas em [[IA]], [[Arquitetura]], [[JavaScript]], etc. Mas há uma lacuna: **artigos lidos não viram nada**. Hoje o fluxo é:
+O Codex Technomanticus cresce como commonplace book pessoal — cada vez mais notas em [[IA]], [[Arquitetura]], [[03-Dominios/JavaScript/index]], etc. Mas há uma lacuna: **artigos lidos não viram nada**. Hoje o fluxo é:
 
 1. Achar um link interessante → cola em `00 - Inbox/Entradas.md`
 2. Ler o artigo no navegador
@@ -32,7 +32,7 @@ A skill é a peça que fecha o loop: tira o atrito de "fichar" e torna o gesto n
 
 Entregar:
 
-1. Um vault reorganizado em 5 zonas numeradas (`00-Meta`, `01-Pergaminhos`, `02-Glosas`, `03-Domínios`, `04-Sendas`) que reflete o pipeline cognitivo do commonplace book
+1. Um vault reorganizado em 5 zonas numeradas (`00-Meta`, `01-Pergaminhos`, `02-Glosas`, `03-Dominios`, `04-Sendas`) que reflete o pipeline cognitivo do commonplace book
 2. Uma skill `/glosa <url>` que, dado um link, gera um fichamento estruturado em `02-Glosas/<ano>-<slug>.md` e remove o link de `01-Pergaminhos/entradas.md` se ele estava lá
 
 Tudo entregue em duas fases independentes:
@@ -120,7 +120,7 @@ codex-technomanticus/
 │   └── avaliar.md                     # ex "00 - Inbox/Avaliar.md"
 ├── 02-Glosas/                         # NOVO, vazio (populado por /glosa)
 │   └── .gitkeep
-├── 03-Domínios/
+├── 03-Dominios/
 │   ├── Arquitetura/
 │   ├── Ferramentas/
 │   ├── Fundamentos/
@@ -150,8 +150,8 @@ codex-technomanticus/
 | `Aprendizado/RPA/`                  | `04-Sendas/rpa/`                              |
 | `00 - Inbox/Entradas.md`            | `01-Pergaminhos/entradas.md`                  |
 | `00 - Inbox/Avaliar.md`             | `01-Pergaminhos/avaliar.md`                   |
-| `00 - Inbox/entradas/inglês.md`     | `03-Domínios/Inglês/Inglês — entradas.md`    |
-| `Arquitetura/` … `Python/`          | `03-Domínios/Arquitetura/` … `03-Domínios/Python/` |
+| `00 - Inbox/entradas/inglês.md`     | `03-Dominios/Inglês/Inglês — entradas.md`    |
+| `Arquitetura/` … `Python/`          | `03-Dominios/Arquitetura/` … `03-Dominios/Python/` |
 
 ## 6. Template da Glosa
 
@@ -327,9 +327,9 @@ Todos os movimentos via `git mv` pra preservar histórico:
 7. `rmdir Aprendizado` (vazia agora)
 8. `git mv "00 - Inbox/Entradas.md" 01-Pergaminhos/entradas.md`
 9. `git mv "00 - Inbox/Avaliar.md" 01-Pergaminhos/avaliar.md`
-10. `git mv "00 - Inbox/entradas/inglês.md" "03-Domínios/Inglês/Inglês — entradas.md"`
+10. `git mv "00 - Inbox/entradas/inglês.md" "03-Dominios/Inglês/Inglês — entradas.md"`
 11. `rmdir "00 - Inbox/entradas" "00 - Inbox"`
-12. `git mv Arquitetura 03-Domínios/Arquitetura` (e idem pras outras 9 pastas de domínio: Ferramentas, Fundamentos, Go, IA, Infraestrutura, Inglês, Java, JavaScript, Python)
+12. `git mv Arquitetura 03-Dominios/Arquitetura` (e idem pras outras 9 pastas de domínio: Ferramentas, Fundamentos, Go, IA, Infraestrutura, Inglês, Java, JavaScript, Python)
 13. Criar `02-Glosas/.gitkeep`, `04-Sendas/senda-frontend/.gitkeep`
 14. Criar `00-Meta/workflow.md` (conteúdo: explicação das 5 zonas + descrição do fluxo `/glosa`)
 15. Criar `00-Meta/templates/Template - Glosa.md` (versão Templater do template seção 6)

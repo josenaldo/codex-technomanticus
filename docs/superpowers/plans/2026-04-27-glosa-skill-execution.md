@@ -85,7 +85,7 @@ Não commit — só audit.
 
 **Files:**
 
-- Create: `00-Meta/`, `01-Pergaminhos/`, `02-Glosas/`, `03-Domínios/`, `04-Sendas/` (diretórios)
+- Create: `00-Meta/`, `01-Pergaminhos/`, `02-Glosas/`, `03-Dominios/`, `04-Sendas/` (diretórios)
 - Create: `02-Glosas/.gitkeep`, `04-Sendas/senda-frontend/.gitkeep`
 
 - [ ] **Step 1: Criar diretórios top-level**
@@ -93,7 +93,7 @@ Não commit — só audit.
 Run:
 
 ```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus && mkdir -p 00-Meta 01-Pergaminhos 02-Glosas 03-Domínios 04-Sendas/senda-frontend
+cd /home/josenaldo/repos/personal/codex-technomanticus && mkdir -p 00-Meta 01-Pergaminhos 02-Glosas 03-Dominios 04-Sendas/senda-frontend
 ```
 
 - [ ] **Step 2: Criar gitkeeps para pastas vazias**
@@ -109,7 +109,7 @@ cd /home/josenaldo/repos/personal/codex-technomanticus && touch 02-Glosas/.gitke
 Run:
 
 ```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus && ls -d 00-Meta 01-Pergaminhos 02-Glosas 03-Domínios 04-Sendas 04-Sendas/senda-frontend
+cd /home/josenaldo/repos/personal/codex-technomanticus && ls -d 00-Meta 01-Pergaminhos 02-Glosas 03-Dominios 04-Sendas 04-Sendas/senda-frontend
 ```
 
 Expected: 6 linhas, todas existindo.
@@ -256,7 +256,7 @@ Expected: sucesso silencioso. Se falhar com "directory not empty", investigue an
 
 - Move: `00 - Inbox/Entradas.md` → `01-Pergaminhos/entradas.md`
 - Move: `00 - Inbox/Avaliar.md` → `01-Pergaminhos/avaliar.md`
-- Move: `00 - Inbox/entradas/inglês.md` → `03-Domínios/Inglês/Inglês — entradas.md` (decisão da spec §11.2, default)
+- Move: `00 - Inbox/entradas/inglês.md` → `03-Dominios/Inglês/Inglês — entradas.md` (decisão da spec §11.2, default)
 
 - [ ] **Step 1: Mover Entradas.md (renomeando pra lowercase)**
 
@@ -288,12 +288,12 @@ NÃO remova `00 - Inbox/` ainda — fica para o Task A7.
 
 ---
 
-### Task A7: Migrar 10 pastas de domínio → `03-Domínios/` + finalizar Inglês entradas
+### Task A7: Migrar 10 pastas de domínio → `03-Dominios/` + finalizar Inglês entradas
 
 **Files:**
 
-- Move: `Arquitetura/`, `Ferramentas/`, `Fundamentos/`, `Go/`, `IA/`, `Infraestrutura/`, `Inglês/`, `Java/`, `JavaScript/`, `Python/` → `03-Domínios/<nome>/`
-- Move: `00 - Inbox/entradas/inglês.md` → `03-Domínios/Inglês/Inglês — entradas.md`
+- Move: `Arquitetura/`, `Ferramentas/`, `Fundamentos/`, `Go/`, `IA/`, `Infraestrutura/`, `Inglês/`, `Java/`, `JavaScript/`, `Python/` → `03-Dominios/<nome>/`
+- Move: `00 - Inbox/entradas/inglês.md` → `03-Dominios/Inglês/Inglês — entradas.md`
 - Cleanup: `00 - Inbox/`
 
 - [ ] **Step 1: Mover as 10 pastas de domínio**
@@ -301,24 +301,24 @@ NÃO remova `00 - Inbox/` ainda — fica para o Task A7.
 Run cada um sequencialmente:
 
 ```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Arquitetura 03-Domínios/Arquitetura
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Ferramentas 03-Domínios/Ferramentas
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Fundamentos 03-Domínios/Fundamentos
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Go 03-Domínios/Go
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv IA 03-Domínios/IA
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Infraestrutura 03-Domínios/Infraestrutura
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Inglês 03-Domínios/Inglês
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Java 03-Domínios/Java
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv JavaScript 03-Domínios/JavaScript
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Python 03-Domínios/Python
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Arquitetura 03-Dominios/Arquitetura
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Ferramentas 03-Dominios/Ferramentas
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Fundamentos 03-Dominios/Fundamentos
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Go 03-Dominios/Go
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv IA 03-Dominios/IA
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Infraestrutura 03-Dominios/Infraestrutura
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Inglês 03-Dominios/Inglês
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Java 03-Dominios/Java
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv JavaScript 03-Dominios/JavaScript
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Python 03-Dominios/Python
 ```
 
 - [ ] **Step 2: Mover `inglês.md` que estava em `00 - Inbox/entradas/`**
 
-Agora que `03-Domínios/Inglês/` existe:
+Agora que `03-Dominios/Inglês/` existe:
 
 ```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv "00 - Inbox/entradas/inglês.md" "03-Domínios/Inglês/Inglês — entradas.md"
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv "00 - Inbox/entradas/inglês.md" "03-Dominios/Inglês/Inglês — entradas.md"
 ```
 
 - [ ] **Step 3: Cleanup `00 - Inbox/`**
@@ -336,10 +336,10 @@ Expected: silencioso. Se falhar, investigue (algum arquivo escondido tipo `.DS_S
 Run:
 
 ```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus && ls 03-Domínios/ && echo "---" && ls -la "00 - Inbox" 2>&1 | head -2
+cd /home/josenaldo/repos/personal/codex-technomanticus && ls 03-Dominios/ && echo "---" && ls -la "00 - Inbox" 2>&1 | head -2
 ```
 
-Expected: 10 pastas de domínio em `03-Domínios/`; `ls 00 - Inbox` retorna "No such file or directory".
+Expected: 10 pastas de domínio em `03-Dominios/`; `ls 00 - Inbox` retorna "No such file or directory".
 
 ---
 
@@ -376,7 +376,7 @@ Este vault é organizado em **5 zonas** que refletem o pipeline cognitivo de um 
 00-Meta/         meta-linguagem do codex (templates, guia, recursos, mestres)
 01-Pergaminhos/  links brutos coletados, ainda não processados
 02-Glosas/       fichamentos de artigos lidos
-03-Domínios/     conhecimento integrado e evergreen, organizado por área
+03-Dominios/     conhecimento integrado e evergreen, organizado por área
 04-Sendas/       caminhos curatoriais que sequenciam Domínios pra estudo
 ```
 
@@ -385,7 +385,7 @@ Este vault é organizado em **5 zonas** que refletem o pipeline cognitivo de um 
 1. **Captura.** Você acha um link interessante → cola em `01-Pergaminhos/entradas.md`, sob uma seção temática (`# Tema`)
 2. **Destilação.** Lê o artigo → invoca `/glosa <url>` → ficha aparece em `02-Glosas/<ano>-<slug>.md`
 3. **Limpeza automática.** A skill `/glosa` remove o link de `01-Pergaminhos/entradas.md` se ele estava lá
-4. **Integração** (opcional, sob demanda). Se um artigo merece estudo profundo, você o relê e extrai notas atômicas pra `03-Domínios/<área>/`
+4. **Integração** (opcional, sob demanda). Se um artigo merece estudo profundo, você o relê e extrai notas atômicas pra `03-Dominios/<área>/`
 5. **Curadoria** (opcional). Pra preparar entrevista ou estudo focado, você sequencia notas de Domínios numa Senda em `04-Sendas/<nome-da-senda>/`
 
 ## Skill `/glosa`
@@ -546,7 +546,7 @@ Pergaminhos é zona de captura: links chegam aqui, são processados (viram Glosa
 
 Cada arquivo é uma ficha de leitura: TL;DR + Pontos-chave + Citações + Meu comentário + Ver também. Filename: `<ano>-<slug>.md`. Populado pela skill `/glosa` (ou manualmente via Templater).
 
-### `03-Domínios/` — conhecimento evergreen
+### `03-Dominios/` — conhecimento evergreen
 
 Notas atômicas, organizadas por área:
 
@@ -646,13 +646,13 @@ Expected: `Nenhuma referência antiga restante`. Se ainda houver matches, repita
 Run:
 
 ```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus && ls -d 00-Meta 01-Pergaminhos 02-Glosas 03-Domínios 04-Sendas && \
+cd /home/josenaldo/repos/personal/codex-technomanticus && ls -d 00-Meta 01-Pergaminhos 02-Glosas 03-Dominios 04-Sendas && \
   echo "---" && \
   ls 00-Meta/ && \
   echo "---" && \
   ls 01-Pergaminhos/ && \
   echo "---" && \
-  ls 03-Domínios/ && \
+  ls 03-Dominios/ && \
   echo "---" && \
   ls 04-Sendas/
 ```
@@ -661,7 +661,7 @@ Expected:
 - 5 diretórios top-level encontrados
 - `00-Meta/`: `guia`, `mestres`, `recursos`, `templates`, `workflow.md`
 - `01-Pergaminhos/`: `avaliar.md`, `entradas.md`
-- `03-Domínios/`: 10 pastas (`Arquitetura`, `Ferramentas`, `Fundamentos`, `Go`, `IA`, `Infraestrutura`, `Inglês`, `Java`, `JavaScript`, `Python`)
+- `03-Dominios/`: 10 pastas (`Arquitetura`, `Ferramentas`, `Fundamentos`, `Go`, `IA`, `Infraestrutura`, `Inglês`, `Java`, `JavaScript`, `Python`)
 - `04-Sendas/`: pelo menos `rpa`, `trilha-entrevistas`, `senda-frontend`
 
 - [ ] **Step 2: Confirmar que pastas antigas sumiram**
@@ -757,7 +757,7 @@ Zonas:
 - 00-Meta/ (guia, templates, recursos, mestres, workflow)
 - 01-Pergaminhos/ (links brutos: entradas.md, avaliar.md)
 - 02-Glosas/ (fichamentos — vazio, populado pela skill /glosa)
-- 03-Domínios/ (10 pastas de conhecimento evergreen)
+- 03-Dominios/ (10 pastas de conhecimento evergreen)
 - 04-Sendas/ (trilha-entrevistas, rpa, senda-frontend)
 EOF
 )"
