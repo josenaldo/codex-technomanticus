@@ -3,7 +3,7 @@ title: "Fundamentos"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-05-21
+updated: 2026-05-26
 status: seedling
 tags:
   - moc
@@ -28,6 +28,7 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 - [[Banco de dados]] — modelagem, SQL, normalização, índices
 - [[Redes e Protocolos]] — TCP/IP, HTTP, modelo OSI
 - [[Testes]] — testes unitários, integração, TDD, mocks
+- [[O programa como teoria]] — programação como construção de teoria (Naur); por que o entendimento mora nas pessoas, não no código
 
 ## Veja também
 

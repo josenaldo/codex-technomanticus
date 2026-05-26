@@ -8,7 +8,7 @@ tags:
   - mestre
   - formacao-ia
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-05-26
 aliases:
   - IA
   - Inteligência Artificial
@@ -430,6 +430,12 @@ Fontes que aparecem em ≥2 trilhas — biblioteca essencial:
 
 - [[Claude]] · [[GitHub Copilot]] · [[Codex]] · [[Gemini]] · [[Comparativo de LLMs]]
 
+## O Lado Sombrio da IA
+
+[[03-Dominios/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]] — galho crítico, fora das 10 trilhas, que cataloga os **custos humanos, cognitivos e sociais** da IA: o que ela cobra além do que aparece nas métricas de velocidade. Complementa a formação (que ensina a *usar* IA) e se distingue de [[Segurança e Guardrails]] (risco técnico) por focar no impacto humano e sistêmico.
+
+- [[Débito cognitivo]] — erosão do entendimento compartilhado em nível de projeto
+
 ## How to explain in English
 
 > [!quote] Short pitch (30s)
@@ -553,6 +559,7 @@ Notas com mais "shelf life" — fundamentos teóricos, princípios de defesa em 
 
 - **Trilhas:** [[Anatomia dos LLMs]] · [[Anatomia de Agents]] · [[Agentes de Codificação]] · [[Economia de Tokens]] · [[Context Engineering]] · [[Spec-Driven Development]] · [[Segurança e Guardrails]] · [[Memória de Agentes]] · [[RAG e Vector Databases]] · [[MCP]]
 - **Ferramentas:** [[03-Dominios/IA/Ferramentas de IA/index|Ferramentas de IA]]
+- **Crítica:** [[03-Dominios/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]]
 - **Sendas relacionadas:** [[Senda IA]] · [[Senda Entrevistas]]
 
 ## Estatísticas

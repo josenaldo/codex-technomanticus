@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-05-25
+updated: 2026-05-26
 type: glossary
 status: seedling
 aliases:
@@ -100,6 +100,17 @@ Um prompt parametrizado com placeholders preenchidos em tempo de execução com 
 
 ### system prompt
 Um bloco de instruções enviado pelo desenvolvedor no início de cada chamada de API para configurar o comportamento, personalidade, limitações e contexto do modelo. Diferente das mensagens do usuário, o system prompt é tipicamente estático e re-enviado integralmente a cada turno — tornando-o um vetor de custo constante em sessões agenticas.
+
+## Human Factors and AI Risks
+
+### Débito cognitivo
+A erosão, ao longo do tempo, do entendimento compartilhado de uma equipe sobre o que um sistema faz, por que as decisões foram tomadas e como mudá-lo. Diferente do débito técnico (que vive no código) e da carga cognitiva (momentânea), é uma propriedade de nível de projeto: o código pode estar limpo e os testes passando enquanto a [[O programa como teoria|teoria do sistema]] se perde da mente das pessoas. Acelerado pela geração de código via IA, que produz estrutura mais rápido do que o entendimento consegue estabilizar. Termo desenvolvido por Margaret-Anne Storey (2026), apoiado em Peter Naur. Ver [[Débito cognitivo]].
+
+- TODO: débito de compreensão (comprehension debt)
+- TODO: rendição cognitiva (cognitive surrender)
+- TODO: deskilling
+- TODO: psicose da IA (AI psychosis)
+- TODO: tokenmaxxing
 
 ## LLMs Anatomy
 
