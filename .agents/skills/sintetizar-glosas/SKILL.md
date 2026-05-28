@@ -59,7 +59,7 @@ Cria UMA nota nova de domínio sintetizando VÁRIAS glosas relacionadas a um tem
    updated: <hoje YYYY-MM-DD>
    type: concept
    status: seedling
-   progresso: andamento
+   progress: in_progress
    tags:
      - <tags-consolidadas-das-glosas>
    publish: true
