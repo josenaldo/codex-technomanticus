@@ -27,12 +27,16 @@ A propriedade aplica-se **apenas a notas consumíveis** — notas que têm um ci
 **Tipos consumíveis** (recebem `progress`):
 - `glosa` — fichamento de artigo
 - `concept` — nota conceitual (Template - Nota, Template - Interview Note)
-- `lesson` — aula (canal Lucy no apocrypha)
-- `workbook` — caderno de exercícios (canal Lucy no apocrypha)
+- `lesson`, `workbook` — aula e caderno de exercícios (canal Lucy no apocrypha)
+- `lesson-workbook` — caderno de exercícios de aula (GCA)
+- `community-session`, `community-workbook` — sessões e workbooks de comunidade (GCA)
+- `mock-interview`, `mock-interview-script`, `mock-interview-coaching-log` — material de mock interview (GCA)
+
+A regra "todo material consumível de mentoria recebe `progress`" cobre tanto Lucy quanto GCA sem distinção.
 
 **Tipos não consumíveis** (não recebem `progress`):
 - `moc`, `glossary`, `reference` (Mestre), `how-to`, `til`, `dashboard`
-- `trail`/`senda` — já tem `status: active` próprio do ciclo de senda; não duplicar
+- `trail`/`senda`, `trail-index`, `roadmap`, `todo-list` — índices/planos/listas vivas; usam outros campos (`status: active|seedling`, etc.)
 
 ### Conjunto de estados
 
@@ -88,9 +92,11 @@ Cutover completo. Sem alias `progresso` na transição. Notas, skills e dashboar
 
 ### Apocrypha (`codex-technomanticus-apocrypha`)
 
-- **21 notas** com frontmatter `progresso:` (20 `pendente`, 1 `andamento`)
+- **21 notas** com frontmatter `progresso:` (20 `pendente`, 1 `andamento`); 15 delas em `03-Dominios/Ingles/Lucy/` (lessons e workbooks)
+- **GCA**: 36 notas em `03-Dominios/Inglês/GCA/` cobrindo tipos consumíveis (`community-*`, `lesson*`, `mock-interview*`) — nenhuma tem `progresso:` hoje; todas recebem `progress: backlog` (regra "Lucy + GCA seguem o mesmo esquema" confirmada pelo usuário)
+- 4 notas raiz do GCA são não consumíveis (`index.md` trail-index, `Roadmap.md` roadmap, `Tarefas.md` todo-list, `Entradas.md` sem frontmatter): não recebem
 - **3 templates próprios**: `Template - Nota.md`, `Template - Glosa.md` (ambos com o campo); `trail.md` (sem o campo, **não adicionar**)
-- **Templates Lucy** (`00-Meta/templates/Lucy/Lucy - *.md`): avaliar na execução; se forem templates de `lesson`/`workbook`, recebem o campo
+- **Templates Lucy** (`00-Meta/templates/Lucy/Lucy - *.md`): aplicar regra automática por `type:` — `Lucy - Processed.md` (provavelmente `lesson`) e `Lucy - Workbook.md` (provavelmente `workbook`) recebem; `Lucy - Ebook MOC.md` (`moc`) não recebe
 - **3 dashboards** com queries que dependem do campo:
   - `Dashboard - Progresso agregado.md`
   - `Dashboard - O que estudar hoje.md`
