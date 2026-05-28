@@ -50,14 +50,12 @@ graph LR
         B --> C["Código/docs<br>~30k tokens"]
         C --> D["Resposta do modelo<br>~5k tokens"]
     end
-    style A fill:#2d4a2d
-    style D fill:#4a2d2d
 ```
 
-| Tipo                 | Descrição                                               | Custo                                       |
-| -------------------- | ------------------------------------------------------- | ------------------------------------------- |
-| **Input tokens**     | Tudo que você envia: prompt, histórico, contexto, tools | Mais barato (ex: $3/MTok no Claude Sonnet)  |
-| **Output tokens**    | Tudo que o modelo gera: resposta, tool calls, reasoning | Mais caro (ex: $15/MTok no Claude Sonnet)   |
+| Tipo                                                        | Descrição                                               | Custo                                       |
+| ----------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------- |
+| **Input tokens**                                            | Tudo que você envia: prompt, histórico, contexto, tools | Mais barato (ex: $3/MTok no Claude Sonnet)  |
+| **Output tokens**                                           | Tudo que o modelo gera: resposta, tool calls, reasoning | Mais caro (ex: $15/MTok no Claude Sonnet)   |
 | **[[Dicionário de IA#Reasoning tokens\|Reasoning tokens]]** | Tokens internos de "pensamento" em modelos de reasoning | Cobrados como output, invisíveis ao usuário |
 
 ### Janelas de contexto em 2026
