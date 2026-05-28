@@ -4,7 +4,7 @@ created: <% tp.date.now("YYYY-MM-DD") %>
 updated: <% tp.date.now("YYYY-MM-DD") %>
 type: concept
 status: seedling
-progresso: pendente
+progress: backlog
 tags:
   -
 publish: false
