@@ -150,7 +150,7 @@ Avoid:
 
 Esse bloco isolado, no fim de qualquer prompt de geração de texto, sobe a qualidade do output mais que muita instrução elaborada.
 
-**Aviso importante:** essa lista vai ficar desatualizada. O conjunto de frases-bandeira evolui — algumas ficam famosas demais e modelos novos aprendem a evitá-las, outras novas surgem. Trate a lista como viva; revisite a cada release importante de modelo.
+Essa lista vai ficar desatualizada. O conjunto de frases-bandeira evolui — algumas ficam famosas demais e modelos novos aprendem a evitá-las, outras novas surgem. Trate a lista como viva; revisite a cada release importante de modelo.
 
 ## Quando esses padrões são OK
 
@@ -171,9 +171,7 @@ A diferença entre clichê e estrutura útil: **se a estrutura serve a uma audi�
 
 ## A meta-regra
 
-Não basta escrever bem o prompt — é preciso bloquear o que o modelo escreve por default. Os defaults são fortes; eles vêm do prior treinado em milhões de exemplos. Toda iteração de "está bom, mas tem cara de IA" deveria virar uma cláusula nova no Do-not list do próximo prompt.
-
-E sim — esta nota foi escrita evitando ativamente cada um dos padrões catalogados. Eat your own cooking.
+Os defaults do modelo vêm do prior treinado em milhões de exemplos e são fortes. Cada iteração de "está bom, mas tem cara de IA" vira cláusula nova no Do-not list do próximo prompt.
 
 ## Pitfall: bloquear demais e ficar sem voz
 

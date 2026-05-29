@@ -77,7 +77,7 @@ A diferença é cirúrgica: você está pedindo **metadata da inferência**, nã
 | **o3 / o4** (reasoning model) | "Final answer + assumptions + checkpoints + uncertainties + how to verify" | *"Think step-by-step"* (redundante, polui output) |
 | **DeepSeek R1** (reasoning model) | Mesmo padrão de audit trail; tag `<think>` é interna, não precisa pedir | Forçar CoT externo |
 | **Gemini Thinking** (reasoning model) | Audit trail; pode pedir resumo do "thinking" como parte do output | CoT explícito (sobrepõe ao modo de pensamento) |
-| **Claude com extended thinking** (4.5+) | Definir tempo de thinking; pedir resumo de checkpoints no output final | Pedir *"think step-by-step"* explicitamente — Claude já roda |
+| **Claude 4 (Opus/Sonnet) com extended thinking** | Definir tempo de thinking; pedir resumo de checkpoints no output final | Pedir *"think step-by-step"* explicitamente — Claude já roda |
 | **Modelos locais pequenos (7B-13B)** sem reasoning | CoT explícito + few-shot; modelos pequenos precisam da indução | Esperar audit trail rico — eles não geram |
 
 ## Pitfalls específicos de reasoning models
