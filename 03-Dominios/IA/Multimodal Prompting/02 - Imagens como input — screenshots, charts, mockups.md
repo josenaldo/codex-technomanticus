@@ -102,7 +102,7 @@ image_bytes = Path("mockup.png").read_bytes()
 image_b64 = base64.standard_b64encode(image_bytes).decode("utf-8")
 
 response = client.messages.create(
-    model="claude-sonnet-4-5",
+    model="claude-sonnet-4-6",
     max_tokens=1024,
     messages=[{
         "role": "user",

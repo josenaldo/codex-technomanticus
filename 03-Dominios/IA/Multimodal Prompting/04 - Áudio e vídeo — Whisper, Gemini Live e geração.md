@@ -1,5 +1,5 @@
 ---
-title: "04 - Áudio e vídeo — Whisper, Gemini Live, Sora-class"
+title: "04 - Áudio e vídeo — Whisper, Gemini Live e geração"
 created: 2026-05-28
 updated: 2026-05-28
 type: concept
@@ -19,10 +19,10 @@ aliases:
   - Gemini Live
 ---
 
-# 04 - Áudio e vídeo — Whisper, Gemini Live, Sora-class
+# 04 - Áudio e vídeo — Whisper, Gemini Live e geração
 
 > [!abstract] TL;DR
-> Áudio tem dois caminhos: transcrever com Whisper (barato, robusto, é o baseline padrão pra podcast/reunião) ou enviar direto pro modelo multimodal (Gemini Pro, GPT-4o, Claude voice — mais caro, preserva entonação e contexto sonoro). Vídeo é dominado pelo Gemini (até ~2h em alguns tiers, frames + áudio integrados). Geração de vídeo (Sora-class) sai do escopo desta nota mas é citada porque muda o que faz sentido transcrever. Tempo real (voz/vídeo bidirecional) usa APIs separadas: Gemini Live, GPT-4o Realtime, Claude voice mode. Use cases: resumo de reunião, Q&A em podcast, análise de code walkthrough, tutorial review.
+> Áudio tem dois caminhos: transcrever com Whisper (barato, robusto, é o baseline padrão pra podcast/reunião) ou enviar direto pro modelo multimodal (Gemini Pro, GPT-4o, Claude voice — mais caro, preserva entonação e contexto sonoro). Vídeo é dominado pelo Gemini (até ~2h em alguns tiers, frames + áudio integrados). Geração de vídeo (Sora, Veo, Runway) aparece só pra fechar o panorama — o foco da nota é input. Tempo real (voz/vídeo bidirecional) usa APIs separadas: Gemini Live, GPT-4o Realtime, Claude voice mode. Use cases: resumo de reunião, Q&A em podcast, análise de code walkthrough, tutorial review.
 
 ## Áudio — dois caminhos
 
@@ -65,7 +65,7 @@ Modelos multimodais aceitam áudio como input nativo. Diferença pra Whisper + t
 
 - **Gemini 2.x Pro / Flash** — áudio até ~8h em alguns tiers; cobra ~32 tokens por segundo (Pro) ou menos em Flash.
 - **GPT-4o** — áudio nativo via Realtime API ou chat completions com input de áudio.
-- **Claude voice (Anthropic)** — modo de voz lançado em 2025/2026; menos exposto via API pública, mais em produtos Anthropic.
+- **Claude voice (Anthropic)** — disponível em produtos Anthropic (claude.ai web/mobile/desktop), sem API pública estável até maio/2026; pra pipeline programático, siga com Whisper + Claude texto ou Gemini/GPT-4o nativos.
 
 Quando faz sentido pular Whisper:
 
@@ -186,7 +186,7 @@ Para vídeo curto (<20 MB), `Part.from_bytes(data=video_bytes, mime_type="video/
 
 OpenAI e Anthropic, em 2026, dependem de extração de frames externa (você extrai N frames com ffmpeg, manda como sequência de imagens). É possível, mas perde sincronia com áudio.
 
-## Sora-class e geração de vídeo
+## Geração de vídeo (Sora, Veo, Runway)
 
 Modelos como Sora (OpenAI), Veo (Google), Runway Gen-3 e Pika geram vídeo a partir de texto ou imagem. Fora do escopo desta nota (esta trilha é sobre **input**), mas afeta as decisões aqui:
 

@@ -40,7 +40,7 @@ Cada modalidade tem sua tabela de tokens, suas armadilhas e seu padrão de uso. 
 
 - [[02 - Imagens como input — screenshots, charts, mockups]] — tipos de tarefa (descrição, extração, comparação, debug, classificação), tokenização por provider, code Python real
 - [[03 - PDFs e documentos — extração e análise]] — PDF nativo (Claude, Gemini, OpenAI Files), estratégia página-a-página, híbrido com PageIndex
-- [[04 - Áudio e vídeo — Whisper, Gemini Live, Sora-class]] — transcrição barata vs input direto, voz em tempo real, vídeo nativo no Gemini
+- [[04 - Áudio e vídeo — Whisper, Gemini Live e geração]] — transcrição barata vs input direto, voz em tempo real, vídeo nativo no Gemini
 - [[05 - Tabelas e spreadsheets como input estruturado]] — três modos (texto, imagem, tool), pattern Pandas describe + sample, quando cada um ganha
 
 ### Bloco 3 — Técnica e controle (1 nota)

@@ -122,7 +122,7 @@ Em todos os outros casos, em 2026, o default deveria ser multimodal-native.
 
 ## O custo de fazer errado
 
-Caso concreto: um time analisava extratos bancários PDF com pipeline OCR + GPT-4. Acerto de 78% em valores. Migrou pra Claude Sonnet 4 com PDF nativo. Acerto subiu pra 96%, código caiu pra metade, erro silencioso virou erro detectável (modelo às vezes responde "não consigo ler essa região"). O preço por documento dobrou em token, mas o custo total (incluindo retrabalho manual) caiu 60%.
+Cenário típico: imagine um time analisando extratos bancários PDF com pipeline OCR + LLM-só-texto. Acerto em valores tende a ficar na faixa de 70-85% — número que parece bom até alguém auditar. Migrar pra modelo multimodal-native (PDF nativo no Claude, Gemini ou OpenAI Files) costuma subir esse acerto pra 95%+, porque preserva contexto visual (caixas, alinhamento de colunas, posição de campo) que o OCR linear perdia. O token por documento sobe; o custo agregado (incluindo retrabalho manual em erro silencioso) tende a cair porque erro silencioso vira erro detectável — modelo às vezes responde "não consigo ler essa região" em vez de chutar.
 
 A lição: medir custo por tarefa resolvida corretamente, não custo por token consumido.
 

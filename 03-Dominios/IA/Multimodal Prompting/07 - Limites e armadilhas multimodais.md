@@ -138,7 +138,7 @@ A mesma imagem com o mesmo prompt pode dar respostas diferentes em chamadas dist
 **Mitigação:**
 - `temperature: 0` quando o caso permite (extração, classificação).
 - Cross-check com chamadas múltiplas; resposta consistente em 3-de-3 é mais confiável.
-- Pin do modelo (use `claude-sonnet-4-5-2026-04-XX` em vez de alias) pra reduzir mudanças silenciosas.
+- Pin do modelo (use `claude-sonnet-4-6-AAAAMMDD` — Anthropic usa YYYYMMDD sem separadores, e.g. `claude-sonnet-4-6-20260415` — em vez de alias) pra reduzir mudanças silenciosas.
 
 ## 9. Falha em ler estado dinâmico
 

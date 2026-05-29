@@ -27,7 +27,7 @@ aliases:
 
 O provider trata o PDF como input nativo. Você manda os bytes do PDF, o modelo vê página por página com layout e texto preservados, e você não escreve nada além do prompt.
 
-- **Anthropic Claude** — até **100 páginas** ou 32 MB por chamada, com Sonnet 4.5+ e Opus 4+. Cada página vira ~1500-2000 tokens (combinação de imagem + texto extraído internamente). Suporta base64 e URL.
+- **Anthropic Claude** — até **100 páginas** ou 32 MB por chamada, na família Claude 4.x (Opus 4.6, Sonnet 4.6, Haiku 4.5). Cada página vira ~1500-2000 tokens (combinação de imagem + texto extraído internamente). Suporta base64 e URL.
 - **Google Gemini** — suporta PDFs muito grandes (até centenas de páginas em Gemini 2.x Pro). Tokenização por página similar a uma imagem (~258 tokens) + texto extraído.
 - **OpenAI** — via **Files API** (upload e referencia por `file_id`) ou Assistants/Responses API. PDF é convertido internamente em imagens + texto.
 
@@ -58,7 +58,7 @@ pdf_bytes = Path("contrato.pdf").read_bytes()
 pdf_b64 = base64.standard_b64encode(pdf_bytes).decode("utf-8")
 
 response = client.messages.create(
-    model="claude-sonnet-4-5",
+    model="claude-sonnet-4-6",
     max_tokens=2048,
     messages=[{
         "role": "user",

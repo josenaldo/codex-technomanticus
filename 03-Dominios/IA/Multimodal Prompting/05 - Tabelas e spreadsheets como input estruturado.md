@@ -146,7 +146,7 @@ client = anthropic.Anthropic()
 img_b64 = base64.standard_b64encode(Path("dashboard.png").read_bytes()).decode()
 
 response = client.messages.create(
-    model="claude-sonnet-4-5",
+    model="claude-sonnet-4-6",
     max_tokens=2048,
     messages=[{
         "role": "user",
@@ -260,7 +260,7 @@ Mistura assim:
 
 ```python
 response = client.messages.create(
-    model="claude-sonnet-4-5",
+    model="claude-sonnet-4-6",
     max_tokens=4096,
     messages=[{
         "role": "user",
