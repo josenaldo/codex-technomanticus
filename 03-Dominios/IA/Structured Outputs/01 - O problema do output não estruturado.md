@@ -18,7 +18,7 @@ aliases:
 # 01 - O problema do output não estruturado
 
 > [!abstract] TL;DR
-> LLMs são funções estocásticas com saída não tipada. Você pede JSON, vem markdown com ```` ```json ```` em volta, campo faltando, vírgula sobrando, chave alucinada que nunca foi pedida. Pedir JSON via prompt funciona em 95% dos casos — e o sistema quebra nos outros 5%. Estruturar output não é detalhe de UX, é a forma de recriar contrato de tipo na borda entre LLM e código. Esta nota explica por que o problema existe, por que ele é mais grave do que parece, e quando é OK conviver com texto livre.
+> LLMs são funções estocásticas com saída não tipada. Você pede JSON, vem markdown com ```` ```json ```` em volta, campo faltando, vírgula sobrando, chave alucinada que nunca foi pedida. Pedir JSON via prompt funciona em 95% dos casos. O sistema quebra nos outros 5%. Estruturar output não é detalhe de UX, é a forma de recriar contrato de tipo na borda entre LLM e código. Esta nota explica por que o problema existe, por que ele é mais grave do que parece, e quando é OK conviver com texto livre.
 
 ## O cenário real
 
@@ -44,11 +44,11 @@ Espero ter ajudado!
 
 Esse exemplo tem cinco problemas técnicos empilhados, e nenhum é raro:
 
-1. **Wrapper de markdown** — o JSON vem cercado de ```` ```json ```` apesar do prompt pedir "apenas". Seu parser quebra na primeira linha.
-2. **Texto em volta** — saudação antes, despedida depois. Você pode aparar, mas precisa de regex robusto.
-3. **Vírgula sobrando** — JSON estrito não aceita trailing comma. Python aceita; JS não. Seu serviço falha em ambiente diferente do dev.
-4. **Tipos errados** — `valor` veio como string formatada (`"R$ 1.234,56"`), não número. Você esperava `1234.56`. Operações aritméticas explodem.
-5. **Data ambígua** — `15/03/2026` é 15 de março (PT-BR) ou 3 de maio (EN-US)? Sem schema, qualquer um.
+1. **Wrapper de markdown**: o JSON vem cercado de ```` ```json ```` apesar do prompt pedir "apenas". Seu parser quebra na primeira linha.
+2. **Texto em volta**: saudação antes, despedida depois. Você pode aparar, mas precisa de regex robusto.
+3. **Vírgula sobrando**: JSON estrito não aceita trailing comma. Python aceita; JS não. Seu serviço falha em ambiente diferente do dev.
+4. **Tipos errados**: `valor` veio como string formatada (`"R$ 1.234,56"`), não número. Você esperava `1234.56`. Operações aritméticas explodem.
+5. **Data ambígua**: `15/03/2026` é 15 de março (PT-BR) ou 3 de maio (EN-US)? Sem schema, qualquer um.
 
 E em 1 em cada 200 execuções, ainda aparece a categoria mais perversa:
 
@@ -72,7 +72,7 @@ A causa raiz é a natureza do próprio LLM:
 - **A instrução compete com outras instruções.** Quanto mais coisas você pede no prompt, menor a probabilidade de cada uma ser respeitada. "Apenas JSON" entra na fila com "campos completos", "datas em ISO", "valores numéricos".
 - **Não há mecanismo de validação interna.** O modelo não roda um parser antes de emitir. Ele emite token por token; se na metade ele "lembrou" de explicar, ele explica.
 
-Resultado: dá pra subir a taxa de sucesso de 95% pra 99% afiando o prompt. Mas pra chegar nos 99.99% que pipeline de produção exige, você precisa de um mecanismo que **force** o modelo a aderir ao schema — não convença ele educadamente. Isso é structured outputs (notas 04-06).
+Resultado: dá pra subir a taxa de sucesso de 95% pra 99% afiando o prompt. Mas pra chegar nos 99.99% que pipeline de produção exige, você precisa de um mecanismo que **force** o modelo a aderir ao schema, não convença ele educadamente. Isso é structured outputs (notas 04-06).
 
 ## O custo de parsers defensivos
 
@@ -116,6 +116,7 @@ Esse parser existe em quase todo projeto LLM legado. Os problemas:
 - **Não resolve o problema de chave alucinada.** Você parsea com sucesso e passa adiante um objeto com campo a mais.
 - **Custo computacional.** Em pipelines de alta vazão, regex e múltiplos `json.loads` custam.
 
+
 Structured outputs eliminam essa categoria de código. Em vez de consertar a saída ruim, força o modelo a emitir saída boa.
 
 ## Quando o problema é crítico vs quando é OK
@@ -124,14 +125,14 @@ Nem todo uso de LLM precisa de structured output. Heurística:
 
 | Cenário | Output não estruturado é OK? |
 |---|---|
-| Resposta de chatbot mostrada ao humano | Sim — texto é o produto |
-| Brainstorming, drafts, exploração | Sim — estrutura atrapalha |
-| Sumarização que vai pra pessoa | Sim — markdown serve |
-| Fatura extraída pra ir pro banco | **Não** — precisa de schema |
-| Classificação que vira label em ML pipeline | **Não** — precisa de enum validado |
-| Decisão de roteamento de agente | **Não** — precisa de tipo confiável |
-| Resposta de função de tool (agente) | **Não** — precisa de schema |
-| Input pra outro LLM downstream | **Talvez** — depende se downstream parsea ou consome texto |
+| Resposta de chatbot mostrada ao humano | Sim, texto é o produto |
+| Brainstorming, drafts, exploração | Sim, estrutura atrapalha |
+| Sumarização que vai pra pessoa | Sim, markdown serve |
+| Fatura extraída pra ir pro banco | **Não**: precisa de schema |
+| Classificação que vira label em ML pipeline | **Não**: precisa de enum validado |
+| Decisão de roteamento de agente | **Não**: precisa de tipo confiável |
+| Resposta de função de tool (agente) | **Não**: precisa de schema |
+| Input pra outro LLM downstream | **Talvez**, depende se downstream parsea ou consome texto |
 
 A regra: **se o output vai ser consumido por código, structured. Se vai ser consumido por humano, livre.** Cinza só na fronteira (output que humano lê **e** sistema parsea — relatórios, dashboards). Nesses casos, normalmente vale gerar duas versões — uma livre pro humano, uma estruturada pro sistema — ou um structured com um campo `markdown_summary` dentro.
 

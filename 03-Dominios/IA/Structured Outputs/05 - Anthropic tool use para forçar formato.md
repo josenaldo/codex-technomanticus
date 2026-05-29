@@ -32,7 +32,7 @@ Vantagens dessa abordagem:
 - **Compõe naturalmente com agentes** — pipeline com tools reais + tool de finalização é trivial.
 - **Schema é JSON Schema completo** — sem subset arbitrário como strict mode.
 
-Desvantagem: aderência depende do treino do modelo, não de constrained decoding. Em Claude 4.x isso é altíssimo (>99% em medidas internas), mas não é 100% garantido por arquitetura. Sua aplicação ainda deve validar (ver [nota 07](07%20-%20Validação%20e%20retry%20—%20Pydantic,%20Zod.md)) e fazer retry quando algo escapar.
+Desvantagem: aderência depende do treino do modelo, não de constrained decoding. Em Claude 4.x isso é muito alto em benchmarks comunitários e observação prática, mas não é 100% garantido por arquitetura. Sua aplicação ainda deve validar (ver [nota 07](07%20-%20Validação%20e%20retry%20—%20Pydantic,%20Zod.md)) e fazer retry quando algo escapar.
 
 ## O padrão — Python SDK
 
@@ -163,7 +163,7 @@ const structuredOutput = toolUse.input as {
 
 Sem constrained decoding, a aderência depende do modelo. Observações empíricas (2026):
 
-- **Claude 4.x (Sonnet, Opus, Haiku)** — aderência consistente acima de 99.5% em schemas razoáveis. Falhas tendem a ser em schemas muito complexos ou descrições conflitantes.
+- **Claude 4.x (Sonnet, Opus, Haiku)** — aderência muito alta em schemas razoáveis na prática. Falhas tendem a ser em schemas muito complexos ou descrições conflitantes.
 - **Claude 3.5 Sonnet** — bom, mas com mais variação em schemas grandes (>30 campos).
 - **Claude 3 Opus / Sonnet (legados)** — funciona, com aderência menor em schemas com muitos enums simultâneos.
 
@@ -194,6 +194,8 @@ Tool use forçado funciona em:
 - **Claude 3.5 família** — Sonnet (incluindo `claude-3-5-sonnet-20241022`).
 - **Claude 4 família** — Sonnet, Opus, Haiku (todos suportam plenamente).
 - **Claude 4.5 família** — Sonnet (`claude-sonnet-4-5`), Haiku, e a linha de Opus 4.x.
+
+Anthropic aceita dois estilos de model ID: o **alias semântico** (`claude-sonnet-4-5`) sempre aponta pra versão atual da família, e o **alias datado/pinado** (`claude-sonnet-4-5-20250929`, `claude-3-5-sonnet-20241022`) fixa um snapshot pra reprodutibilidade em produção. Use o datado quando precisar de comportamento estável e versionado.
 
 Não suportado em modelos descontinuados (Claude 2, Claude Instant).
 

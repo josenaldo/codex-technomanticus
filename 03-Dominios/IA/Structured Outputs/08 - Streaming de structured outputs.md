@@ -18,7 +18,7 @@ aliases:
 # 08 - Streaming de structured outputs
 
 > [!abstract] TL;DR
-> Streaming clássico de texto funciona bem porque cada chunk é um pedaço válido por si só. Streaming de JSON estruturado tem o problema: um pedaço de JSON no meio (`{"answer": "Sim, mas`) não é parseável. Três caminhos resolvem: (1) streaming nativo de `tool_use` blocks da Anthropic, com `input_json_delta` parcial; (2) parsers de JSON parcial (`jsonrepair`, `partial-json`) que aceitam JSON incompleto e fecham o que falta; (3) emitir só campos completos pra UI, mantendo o JSON acumulando em buffer. Útil pra UX em chat e canvas longos; quase sempre dispensável em backend pipelines. Validação semântica acontece só no final.
+> Streaming clássico de texto funciona bem porque cada chunk é um pedaço válido por si só. Streaming de JSON estruturado tem o problema: um pedaço de JSON no meio (`{"answer": "Sim, mas`) não é parseável. Três caminhos resolvem: (1) streaming nativo de `tool_use` blocks da Anthropic, com `input_json_delta` parcial; (2) parsers de JSON parcial (`json-repair` em Python, `partial-json` em TS) que aceitam JSON incompleto e fecham o que falta; (3) emitir só campos completos pra UI, mantendo o JSON acumulando em buffer. Útil pra UX em chat e canvas longos; quase sempre dispensável em backend pipelines. Validação semântica acontece só no final.
 
 ## Por que streaming de JSON é diferente
 
@@ -88,15 +88,15 @@ O streaming nativo serve principalmente pra latência percebida (UI mostra "pens
 
 Libs que aceitam JSON incompleto e devolvem o objeto "fechado" no melhor esforço:
 
-### Python — `jsonrepair`
+### Python — `json-repair`
 
 ```python
-from jsonrepair import jsonrepair
+from json_repair import repair_json
 import json
 
 partial = '{"answer": "Sim, considerando o cenário", "confidence": "high'
 
-repaired = jsonrepair(partial)
+repaired = repair_json(partial)
 # '{"answer": "Sim, considerando o cenário", "confidence": "high"}'
 
 parsed = json.loads(repaired)
@@ -107,13 +107,13 @@ A lib fecha strings, arrays, objetos abertos. Útil pra mostrar estado parcial n
 
 ```python
 import json
-from jsonrepair import jsonrepair
+from json_repair import repair_json
 
 buffer = ""
 for chunk in stream:
     buffer += chunk
     try:
-        partial_obj = json.loads(jsonrepair(buffer))
+        partial_obj = json.loads(repair_json(buffer))
         render(partial_obj)  # atualiza UI
     except Exception:
         continue  # ignora estados que ainda não dá
@@ -122,13 +122,13 @@ for chunk in stream:
 ### TypeScript — `partial-json`
 
 ```typescript
-import { parse, ALL } from "partial-json";
+import { parse, Allow } from "partial-json";
 
 let buffer = "";
 for await (const chunk of stream) {
   buffer += chunk;
   try {
-    const partial = parse(buffer, ALL);
+    const partial = parse(buffer, Allow.ALL);
     render(partial);
   } catch {
     // estado intermediário inválido, espera próximo chunk
@@ -169,6 +169,8 @@ for chunk in stream:
 ```
 
 Funciona pra schemas planos. Pra schemas nested (arrays de objetos), precisa de parser mais sofisticado.
+
+Caminho 3 só vale a pena pra schemas planos; pra nested, combine Caminho 1 + Caminho 2.
 
 Pattern visual em UI:
 
@@ -246,7 +248,8 @@ Em React/Next.js, Vercel AI SDK tem `useObject` que abstrai streaming structured
 
 - **Anthropic** — *Streaming with tool use* ([docs](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)). Eventos `input_json_delta` e padrão de acumulação.
 - **OpenAI** — *Streaming responses* ([platform.openai.com/docs/api-reference/streaming](https://platform.openai.com/docs/api-reference/streaming)).
-- **josdejong/jsonrepair** — [GitHub](https://github.com/josdejong/jsonrepair).
+- **mangiucugna/json_repair** — [GitHub](https://github.com/mangiucugna/json_repair) (lib Python).
+- **josdejong/jsonrepair** — [GitHub](https://github.com/josdejong/jsonrepair) (equivalente JS/TS, não confundir com o pacote Python).
 - **promplate/partial-json-parser** — [GitHub](https://github.com/promplate/partial-json-parser).
 - **Vercel AI SDK** — *useObject docs* ([sdk.vercel.ai](https://sdk.vercel.ai/docs/ai-sdk-ui/object-generation)).
 
