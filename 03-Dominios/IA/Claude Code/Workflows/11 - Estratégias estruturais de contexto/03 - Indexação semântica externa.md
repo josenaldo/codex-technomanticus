@@ -1,6 +1,7 @@
 ---
 title: "Indexação semântica externa — vector DB como contexto persistente"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-22
 updated: 2026-05-22

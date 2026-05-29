@@ -3,6 +3,7 @@ title: "Dicionario de Magia Tecnomante"
 created: 2026-04-12
 updated: 2026-04-12
 type: concept
+progress: backlog
 status: evergreen
 tags:
   - ia

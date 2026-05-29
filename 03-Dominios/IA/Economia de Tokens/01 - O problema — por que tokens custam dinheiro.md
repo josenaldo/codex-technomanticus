@@ -12,7 +12,7 @@ tags:
 aliases:
   - Token economics
   - Por que tokens custam
-progresso: feito
+progress: done
 ---
 
 # O problema — por que tokens custam dinheiro

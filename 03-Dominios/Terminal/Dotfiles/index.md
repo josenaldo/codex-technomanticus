@@ -5,7 +5,6 @@ publish: true
 created: 2026-05-22
 updated: 2026-05-22
 status: growing
-progresso: andamento
 tags:
   - terminal
   - dotfiles

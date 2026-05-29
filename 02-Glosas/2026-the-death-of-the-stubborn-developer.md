@@ -7,6 +7,7 @@ site: Sourcegraph
 published:
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [chop, chat-oriented-programming, ai-coding-assistant, autonomous-agents, optionality]
 lang: en

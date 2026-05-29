@@ -3,6 +3,7 @@ title: "Tokens e tokenização"
 created: 2026-05-02
 updated: 2026-05-27
 type: concept
+progress: backlog
 status: growing
 publish: true
 tags:

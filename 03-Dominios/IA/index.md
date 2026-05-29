@@ -15,7 +15,6 @@ aliases:
   - Domínio IA
   - Formação Engenheiro de IA
   - AI Engineer Path
-progress: in_progress
 ---
 
 # IA — Formação Engenheiro de IA

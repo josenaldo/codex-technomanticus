@@ -3,6 +3,7 @@ title: "Generation — passar contexto ao LLM com citação"
 created: 2026-04-11
 updated: 2026-05-02
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

@@ -11,7 +11,7 @@ published: 2026-03-06
 read: 2026-05-05
 type: glosa
 status: lido
-progresso: andamento
+progress: in_progress
 tags:
   - glosa
   - artigo

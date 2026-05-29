@@ -1,6 +1,7 @@
 ---
 title: "Tokens e custo — como sessões consomem tokens na prática"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

@@ -5,7 +5,6 @@ updated: 2026-05-12
 type: moc
 status: growing
 publish: true
-progresso: andamento
 tags:
   - node
   - segurança

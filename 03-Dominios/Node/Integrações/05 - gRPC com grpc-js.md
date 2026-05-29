@@ -3,6 +3,7 @@ title: "gRPC com grpc-js"
 created: 2026-05-12
 updated: 2026-05-12
 type: concept
+progress: backlog
 status: growing
 publish: true
 tags:

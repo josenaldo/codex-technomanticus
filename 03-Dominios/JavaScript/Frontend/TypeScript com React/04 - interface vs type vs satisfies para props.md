@@ -3,6 +3,7 @@ title: "interface vs type vs satisfies para props"
 created: 2026-04-26
 updated: 2026-04-26
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags: [typescript, react, typescript-react, frontend, mental-model, props, interface, type, satisfies]

@@ -1,6 +1,7 @@
 ---
 title: "Permissions — allow/deny, glob patterns, tool rules"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

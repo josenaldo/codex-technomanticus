@@ -3,6 +3,7 @@ title: "ripgrep e fd — buscar conteúdo e nomes"
 created: 2026-05-22
 updated: 2026-05-22
 type: concept
+progress: backlog
 status: seedling
 publish: true
 fase: iniciado

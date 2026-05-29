@@ -5,7 +5,6 @@ publish: true
 created: 2026-05-04
 updated: 2026-05-13
 status: growing
-progresso: andamento
 tags:
   - node
   - moc

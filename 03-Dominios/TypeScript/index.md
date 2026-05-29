@@ -5,7 +5,6 @@ publish: true
 created: 2026-05-03
 updated: 2026-05-03
 status: seedling
-progresso: pendente
 tags:
   - typescript
   - moc

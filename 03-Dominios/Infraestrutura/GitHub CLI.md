@@ -3,6 +3,7 @@ title: "GitHub CLI"
 created: 2026-04-12
 updated: 2026-04-12
 type: concept
+progress: backlog
 status: evergreen
 tags:
   - infraestrutura

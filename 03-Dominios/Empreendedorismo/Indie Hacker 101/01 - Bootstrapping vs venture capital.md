@@ -15,7 +15,7 @@ aliases:
   - Bootstrap vs VC
   - Autofinanciamento
   - Bootstrapped business
-progresso: feito
+progress: done
 ---
 
 # Bootstrapping vs venture capital

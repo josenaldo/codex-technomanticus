@@ -4,7 +4,7 @@ created: 2026-05-02
 updated: 2026-05-09
 type: concept
 status: growing
-progresso: andamento
+progress: in_progress
 publish: true
 tags:
   - economia-tokens

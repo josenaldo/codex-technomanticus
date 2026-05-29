@@ -7,6 +7,7 @@ site: Kilo Blog
 published: 2026-04-28
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [open-source, vendor-lock-in, ai-coding-agents, agent-harness, kilo]
 lang: en

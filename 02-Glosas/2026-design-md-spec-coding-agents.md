@@ -10,7 +10,7 @@ created: 2026-04-27
 updated: 2026-05-04
 type: glosa
 status: lido
-progresso: andamento
+progress: in_progress
 promovida_em: []
 tags: [design-systems, design-tokens, coding-agents, specification]
 lang: en

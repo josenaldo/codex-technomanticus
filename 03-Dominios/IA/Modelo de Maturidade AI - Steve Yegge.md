@@ -4,7 +4,7 @@ created: 2026-05-05
 updated: 2026-05-06
 type: concept
 status: growing
-progresso: andamento
+progress: in_progress
 tags:
   - IA
   - EngenhariaDeSoftware

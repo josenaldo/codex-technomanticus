@@ -3,6 +3,7 @@ title: "delta — pager moderno pra git diff"
 created: 2026-05-22
 updated: 2026-05-22
 type: concept
+progress: backlog
 status: seedling
 publish: true
 fase: magus

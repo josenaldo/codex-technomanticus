@@ -4,7 +4,7 @@ created: 2026-05-02
 updated: 2026-05-08
 type: concept
 status: evergreen
-progresso: feito
+progress: done
 publish: true
 tags:
   - economia-tokens

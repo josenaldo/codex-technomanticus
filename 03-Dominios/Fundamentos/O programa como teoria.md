@@ -3,6 +3,7 @@ title: "O programa como teoria"
 created: 2026-05-26
 updated: 2026-05-26
 type: concept
+progress: backlog
 status: evergreen
 tags:
   - fundamentos

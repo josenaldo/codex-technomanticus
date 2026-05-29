@@ -5,7 +5,6 @@ publish: true
 created: 2026-05-18
 updated: 2026-05-24
 status: growing
-progresso: completo
 tags:
   - terminal
   - moc

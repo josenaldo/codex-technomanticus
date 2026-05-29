@@ -4,7 +4,7 @@ created: 2026-05-10
 updated: 2026-05-11
 type: concept
 status: seedling
-progresso: andamento
+progress: in_progress
 aliases:
   - Panorama ORMs Node
   - ORMs Node comparativo

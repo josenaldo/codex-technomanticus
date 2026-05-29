@@ -3,6 +3,7 @@ title: "Mantine"
 created: 2026-04-01
 updated: 2026-04-01
 type: concept
+progress: backlog
 status: seedling
 tags:
   - javascript

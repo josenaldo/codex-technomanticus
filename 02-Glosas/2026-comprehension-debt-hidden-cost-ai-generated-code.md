@@ -10,7 +10,7 @@ created: 2026-05-08
 updated: 2026-05-08
 type: glosa
 status: lido
-progresso: andamento
+progress: in_progress
 promovida_em: []
 tags: [comprehension-debt, ai-generated-code, code-review, software-engineering]
 lang: en

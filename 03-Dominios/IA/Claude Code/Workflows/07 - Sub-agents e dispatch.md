@@ -1,6 +1,7 @@
 ---
 title: "Sub-agents e dispatch — delegar tarefas"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

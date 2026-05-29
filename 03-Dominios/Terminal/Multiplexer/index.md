@@ -5,7 +5,6 @@ publish: true
 created: 2026-05-21
 updated: 2026-05-21
 status: growing
-progresso: andamento
 tags:
   - terminal
   - multiplexer

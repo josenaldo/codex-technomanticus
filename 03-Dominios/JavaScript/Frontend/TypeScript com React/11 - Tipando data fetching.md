@@ -3,6 +3,7 @@ title: "Tipando data fetching"
 created: 2026-04-26
 updated: 2026-04-26
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags: [typescript, react, typescript-react, frontend, data-fetching, react-query, tanstack, suspense, server-actions]

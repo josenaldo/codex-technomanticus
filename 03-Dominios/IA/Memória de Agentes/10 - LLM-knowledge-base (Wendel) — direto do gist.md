@@ -3,6 +3,7 @@ title: "LLM-knowledge-base (Wendel) — direto do gist"
 created: 2026-04-26
 updated: 2026-04-26
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

@@ -7,6 +7,7 @@ site: AgentField
 published: 2026-05-05
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [harness-orchestration, coding-agents, agent-membrane, verifiers, blast-radius]
 lang: en

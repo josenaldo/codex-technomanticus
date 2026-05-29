@@ -3,6 +3,7 @@ title: "Zsh essencial"
 created: 2026-05-20
 updated: 2026-05-20
 type: concept
+progress: backlog
 status: seedling
 publish: true
 fase: iniciado

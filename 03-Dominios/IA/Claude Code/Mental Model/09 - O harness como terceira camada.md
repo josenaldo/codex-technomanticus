@@ -1,6 +1,7 @@
 ---
 title: "O harness como terceira camada — código, testes, harness"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-25
 updated: 2026-05-25
