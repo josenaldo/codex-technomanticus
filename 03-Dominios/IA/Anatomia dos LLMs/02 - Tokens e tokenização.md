@@ -3,7 +3,7 @@ title: Tokens e tokenização
 created: 2026-05-02
 updated: 2026-05-27
 type: concept
-progress: backlog
+progress: done
 status: growing
 publish: true
 tags:
@@ -14,7 +14,6 @@ aliases:
   - Tokenization
   - BPE
   - Byte Pair Encoding
-progress: done
 ---
 # Tokens e tokenização
 
