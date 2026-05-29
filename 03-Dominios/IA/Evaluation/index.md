@@ -16,7 +16,7 @@ aliases:
 
 # Evaluation
 
-*"Sem evals, você está fazendo desenvolvimento por vibes."* A frase resume o estado da arte: qualquer sistema com LLM em produção que não tenha eval-driven development está iterando no escuro. Karpathy chama isso de *"vibe coding"*; Hamel Husain abre seu ensaio com a tese de que *"your AI product needs evals"*; Eugene Yan vai mais longe — *"evals are all you need"* — e argumenta que evals são a vantagem competitiva real, mais ainda que o prompt em si. Esta trilha é a **casa mestre** de eval no Codex: trata evaluation como uma disciplina contínua (não como teste de aceite no fim do projeto), e cobre desde a mentalidade (EDD — eval-driven development) até a operação em CI/CD e a especialização por tipo de sistema avaliado.
+Sem evals, desenvolvimento com LLM vira vibes: qualquer sistema com LLM em produção que não tenha eval-driven development está iterando no escuro. Karpathy chama isso de *"vibe coding"*; Hamel Husain, em *Your AI Product Needs Evals*, argumenta que sem evals você tem demo, não produto; Eugene Yan vai mais longe — *"evals are all you need"* — e defende que evals são a vantagem competitiva real, mais ainda que o prompt em si. Esta trilha é a **casa mestre** de eval no Codex: trata evaluation como uma disciplina contínua (não como teste de aceite no fim do projeto), e cobre desde a mentalidade (EDD — eval-driven development) até a operação em CI/CD e a especialização por tipo de sistema avaliado.
 
 > [!info] Pré-requisitos
 > [[Anatomia dos LLMs]] é suficiente. Familiaridade com [[AI Engineering Stack]] ajuda a entender onde a Evaluation Layer se encaixa, mas não é obrigatória.

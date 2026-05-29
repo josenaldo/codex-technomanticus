@@ -247,7 +247,7 @@ A regra: **todo bug em prod vira regression test permanente**.
 8. Bug nunca volta
 ```
 
-Hamel Husain chama isso de *"vacinar o sistema com seus próprios bugs"*. Em 6 meses, golden set acumula 50-100 bug regression tests. Em 12 meses, vira o ativo mais valioso do produto.
+É como vacinar o sistema com seus próprios bugs — paráfrase da postura defendida por Hamel Husain em *Your AI Product Needs Evals*. Em 6 meses, golden set acumula 50-100 bug regression tests. Em 12 meses, vira o ativo mais valioso do produto.
 
 ## Anti-patterns
 

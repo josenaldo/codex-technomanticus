@@ -20,7 +20,7 @@ aliases:
 # 01 - Eval-driven development — a disciplina
 
 > [!abstract] TL;DR
-> Eval-driven development (EDD) é o shift de *"rodei 3 vezes e olhei, parece bom"* pra **medição sistemática contínua**. A analogia com TDD é direta: TDD escreve teste antes do código; EDD escreve eval antes do prompt. O princípio operacional é *"evals first, prompts second"* — sem dataset e rubrica, qualquer mudança de prompt vira aposta. EDD se aplica a qualquer sistema repetível com LLM em produção; é overkill em one-shots, brainstorming e exploração inicial. Hamel Husain resume: *"se você não tem evals, você não tem produto — tem demo."*
+> Eval-driven development (EDD) é o shift de *"rodei 3 vezes e olhei, parece bom"* pra **medição sistemática contínua**. A analogia com TDD é direta: TDD escreve teste antes do código; EDD escreve eval antes do prompt. O princípio operacional é *"evals first, prompts second"* — sem dataset e rubrica, qualquer mudança de prompt vira aposta. EDD se aplica a qualquer sistema repetível com LLM em produção; é overkill em one-shots, brainstorming e exploração inicial. Parafraseando a tese de Hamel Husain em *Your AI Product Needs Evals*: sem evals você não tem produto, tem demo.
 
 ## O shift conceitual
 

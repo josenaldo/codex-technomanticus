@@ -61,7 +61,7 @@ Cada um responde a uma pergunta diferente:
 | **Promptfoo** | MIT | Self-host (CLI) | Eval-as-code, regression | YAML + CLI | Configuração declarativa, fácil em CI |
 | **Braintrust** | Commercial | SaaS (cloud) | Eval + observability comercial | SDK Python/TS | Comparação visual de versões |
 | **Langfuse** | MIT (core) | Self-host ou cloud | LLM Ops OSS | SDK Python/TS + UI | Traces + evals + datasets integrados |
-| **Patronus** | Commercial | SaaS + on-prem | Guardrails de produção | API + SDK | Lynx (hallucination detector), Glider (custom eval) |
+| **Patronus** | Commercial | SaaS + on-prem | Guardrails de produção | API + SDK | Lynx (hallucination detector), Glider (small open-weights judge model ~3B pra rubric scoring) |
 | **Phoenix** | Apache 2.0 | Self-host | ML-native eval + tracing | SDK + UI | OpenTelemetry compliant, multimodal |
 | **lm-eval-harness** | MIT | Self-host (script) | Benchmarks acadêmicos | CLI Python | 200+ benchmarks padronizados (MMLU, HumanEval, etc.) |
 
@@ -214,10 +214,10 @@ Limites:
 
 ## Patronus — guardrails e eval comercial
 
-Patronus aposta em **production guardrails** como nicho. Tem dois produtos centrais:
+Patronus aposta em **production guardrails** como nicho. Tem dois modelos de eval centrais, ambos open-weights e treinados pela própria Patronus:
 
 - **Lynx** — detector de hallucination especializado, roda inline em prod
-- **Glider** — eval customizável com domain experts
+- **Glider** — small judge model (~3B params) de propósito geral pra rubric-based scoring; substitui LLM-as-judge com modelo grande quando o custo/latência pesa
 
 ```python
 from patronus import Patronus
@@ -234,7 +234,7 @@ result = client.evaluate(
 )
 # {"hallucinated": False, "confidence": 0.92}
 
-# Custom eval
+# Judge genérico com rubrica
 result = client.evaluate(
     evaluator="glider",
     rubric_id="medical_compliance_v3",
@@ -245,7 +245,7 @@ result = client.evaluate(
 Forte em:
 
 - Guardrails em runtime (não só pre-deploy)
-- Modelos dedicados de eval (Lynx é small model treinado pra hallucination)
+- Modelos dedicados de eval (Lynx pra hallucination, Glider como judge barato)
 - Compliance pesado (healthcare, finance) — eval com SME
 - SLAs comerciais
 

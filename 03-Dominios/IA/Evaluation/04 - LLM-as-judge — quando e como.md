@@ -72,7 +72,7 @@ Output em JSON:
 
 def llm_judge(task, input_, output, criterion, anchors):
     response = client.messages.create(
-        model="claude-opus-4",  # judge >= modelo avaliado
+        model="claude-opus-4-6",  # judge >= modelo avaliado
         max_tokens=600,
         messages=[{
             "role": "user",
