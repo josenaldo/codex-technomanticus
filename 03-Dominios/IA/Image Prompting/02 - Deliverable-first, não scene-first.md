@@ -79,7 +79,7 @@ Hierarquia visual. Onde fica cada elemento. "Hero centro, título topo, info rod
 Linguagem visual. Paleta de cor (`dark mode`, `pastel`, `monochrome blue`), tipo de ilustração (`flat`, `isometric`, `3D rendered`, `watercolor`, `photorealistic`, `vector`), mood (`corporate-modern`, `playful`, `vintage`, `cyberpunk`). Quanto mais específico, melhor.
 
 ### Text
-Palavras exatas que devem aparecer, com posição e tamanho relativo. Em 2026, texto ainda é o ponto fraco da maioria dos modelos (Ideogram, Imagen 4 e FLUX lideram). Se texto é crítico, escolha modelo ou pré-aceite que vai rodar texto no Figma/Canva depois.
+Palavras exatas que devem aparecer, com posição e tamanho relativo. Em 2026, texto ainda é o ponto fraco da maioria dos modelos (Ideogram, Imagen 4 quando disponível e FLUX lideram). Se texto é crítico, escolha modelo ou pré-aceite que vai rodar texto no Figma/Canva depois.
 
 ### Constraints
 O que **não** pode aparecer. "Sem pessoas", "sem stock photo vibe", "sem texto borrado", "sem moldura/borda decorativa". Modelos respondem melhor a constraints explícitas que a tom geral.

@@ -141,7 +141,7 @@ Vaga (e não funciona bem): `colorful`, `nice colors`, `vibrant`.
 
 ## Camada 4: Texto
 
-A camada mais difícil em 2026 — modelos ainda erram. Ideogram, Imagen 3/4 e FLUX dev lideram; DALL-E 3 razoável; Midjourney fraco; SD 3.5 inconsistente.
+A camada mais difícil em 2026 — modelos ainda erram. Ideogram, Imagen 3 (e Imagen 4 quando disponível) e FLUX dev lideram; DALL-E 3 razoável; Midjourney fraco; SD 3.5 inconsistente.
 
 ### Como pedir texto
 
