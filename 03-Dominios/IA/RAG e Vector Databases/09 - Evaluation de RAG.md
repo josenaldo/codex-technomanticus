@@ -1,7 +1,7 @@
 ---
 title: "Evaluation de RAG"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-05-29
 type: concept
 status: seedling
 publish: true
@@ -20,6 +20,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] sem evaluation é aposta. Métricas fundamentais: **context precision** (chunks recuperados são relevantes?), **context recall** (chunks relevantes foram recuperados?), **faithfulness** (resposta é fiel ao contexto?), **answer relevance** (resposta atende à pergunta?). **Crucial:** medir [[Dicionário de IA#retrieval|retrieval]] **separado** de generation. Se retrieval falha, generation não salva. Tools: Ragas (mais popular), TruLens, DeepEval. Golden set de 30-100 perguntas com gabarito é o mínimo.
+
+> [!info] Trilha mestre
+> Esta nota é o deep-dive de evaluation **no contexto de RAG**. Pra disciplina geral de evaluation (golden datasets, rubrics, LLM-as-judge, frameworks 2026, eval em CI), veja a trilha [[Evaluation]].
 
 ## A regra fundamental
 
@@ -260,6 +263,7 @@ Maioria está em 0-1. Meta para 2026: nível 3.
 
 ## Veja também
 
+- [[Evaluation]]
 - [[02 - Anatomia do pipeline RAG]]
 - [[06 - Retrieval — hybrid search, BM25, query rewriting]]
 - [[07 - Reranking — Cohere, Voyage, cross-encoders]]
