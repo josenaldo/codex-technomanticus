@@ -173,6 +173,9 @@ O algoritmo que escolhe o próximo token a partir da distribuição de probabili
 ### embedding
 A representação de um token como um vetor denso de números reais em um espaço de alta dimensão, onde a proximidade geométrica captura similaridade semântica. É a primeira transformação após a tokenização — cada token vira um vetor que as camadas Transformer manipulam. O mesmo mecanismo embasa RAG e busca semântica, onde textos são comparados pela distância entre seus vetores.
 
+### Extended thinking
+Feature de modelos Claude 4 (Anthropic) que aloca um orçamento de tokens dedicado a raciocínio interno antes de produzir a resposta final. Configurado via parâmetro `thinking` na API com `budget_tokens`; o conteúdo do raciocínio fica em blocos `thinking` separados dos blocos de resposta. Análogo conceitual ao reasoning interno de o3/R1, mas com controle de orçamento explícito. Usado pra problemas que se beneficiam de deliberação mais longa sem o custo de sempre rodar reasoning. Ver [[Anatomia dos LLMs/13 - Reasoning models e chain-of-thought]] e [[Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought]].
+
 ### fine-tuning
 O processo de continuar o treino de um modelo pré-treinado em um conjunto de dados menor e específico para especializá-lo numa tarefa ou domínio, ajustando seus pesos. Contrasta com prompting (que não altera pesos); variantes eficientes como LoRA treinam apenas uma fração dos parâmetros para reduzir custo de memória e armazenamento.
 
@@ -330,11 +333,20 @@ Um banco de dados otimizado para armazenar embeddings e recuperar os vetores mai
 ### content filtering
 A inspeção e bloqueio de entradas ou saídas que violem políticas — conteúdo tóxico, ilegal, sexual ou perigoso — por meio de classificadores, listas ou modelos dedicados. É um tipo de guardrail aplicado nas bordas do pipeline, antes de o input chegar ao modelo ou de o output chegar ao usuário.
 
+### EU AI Act
+Regulamentação europeia (Regulation (EU) 2024/1689) que classifica sistemas de IA por nível de risco e impõe obrigações proporcionais: práticas proibidas (banimentos), alto risco (avaliação de conformidade, transparência, supervisão humana, logging), GPAI (modelos de propósito geral) e risco mínimo. Cronograma de aplicação escalonado: banimentos desde fevereiro de 2025, obrigações GPAI desde agosto de 2025, regime completo de alto risco em agosto de 2026. Multas até €35M ou 7% do faturamento global. Sistemas de LLM em produção precisam de tracing (Art. 12) e DPIA-equivalente quando processam dados pessoais. Ver [[Observability/08 - Privacy e PII em logs]] e [[Segurança e Guardrails/11 - Governance as architecture — EU AI Act, GDPR, licenças]].
+
+### GDPR
+General Data Protection Regulation (Regulation (EU) 2016/679), em vigor desde maio de 2018. Estabelece direitos do titular de dados (acesso, retificação, apagamento, portabilidade), bases legais pra tratamento (consentimento, legítimo interesse, etc.), princípios de minimização e finalidade, obrigação de DPIA (Art. 35) para tratamentos de alto risco, e papel do DPO. Multas até €20M ou 4% do faturamento global. Em sistemas LLM, atinge logs de prompts contendo PII, retenção de traces e treinamento de modelos com dados pessoais. Ver [[Observability/08 - Privacy e PII em logs]].
+
 ### Guardrail
 Uma restrição aplicada à entrada ou saída do LLM para impor requisitos de segurança, política ou qualidade — por exemplo, bloqueando informações de identificação pessoal (PII), filtrando conteúdo prejudicial, validando esquemas de saída estruturada ou recusando solicitações fora do tópico. Guardrails podem ser aplicados no modelo (fine-tuning, system prompt) ou no pipeline (pré/pós processamento).
 
 ### jailbreak
 Uma técnica de prompt que contorna os guardrails e o alinhamento de um modelo para induzi-lo a produzir conteúdo proibido — via role-play, ofuscação, instruções contraditórias ou cenários hipotéticos. É uma forma específica de ataque que explora a tensão entre seguir instruções e respeitar restrições.
+
+### LGPD
+Lei Geral de Proteção de Dados Pessoais (Lei 13.709/2018), em vigor desde setembro de 2020 no Brasil. Define dado pessoal sensível (Art. 5º II), direitos do titular (Art. 18), bases legais pra tratamento (Art. 7º), e obriga relatório de impacto à proteção de dados pessoais em tratamentos de alto risco. Fiscalizada pela ANPD (Autoridade Nacional de Proteção de Dados); multas até 2% do faturamento limitadas a R$50M por infração (Art. 52, II). Em sistemas LLM, atinge logs de prompts, traces, e treinamento. Ver [[Observability/08 - Privacy e PII em logs]].
 
 ### output validation
 A verificação programática da saída do modelo antes de usá-la — checagem de schema/JSON, tipos, faixas de valor, ausência de PII ou conformidade com regras de negócio. É um guardrail de pós-processamento que transforma a saída probabilística do LLM em algo confiável para sistemas downstream.
