@@ -34,7 +34,10 @@ Por que esse exemplo:
 > [!info] Este é um exemplo didático
 > Os valores abaixo são razoáveis pro exemplo, não prescrição universal. Adapte a defaults sensatos pro seu domínio.
 
-## Camada 1 — Purpose
+> [!note] Ordem de construção ≠ ordem canônica
+> Este recipe percorre as camadas em **ordem de construção** (qual decidir primeiro), não em ordem numérica canônica. Cada passo identifica também a camada canônica entre parênteses pra cross-reference com a [[01 - As 11 camadas — visão geral|nota 01]].
+
+## Passo 1 — Camada 1 (Purpose)
 
 ```yaml
 system_name: ai_weekly
@@ -55,7 +58,7 @@ not_in_scope:
 
 O `not_in_scope` é o que evita escopo elástico: o sistema vai **rejeitar** assuntos fora dessa caixa.
 
-## Camada 2 — Workflow vs Agent
+## Passo 2 — Camada 7 (Workflow vs Agent)
 
 **Decisão: workflow**, não agent.
 
@@ -63,7 +66,7 @@ Justificativa: o caminho é predizível — (1) coletar candidatos da semana, (2
 
 Forma concreta: **prompt chaining** (4 chamadas de LLM em sequência, cada uma com input estruturado da anterior). Padrão da Anthropic: "the path is fixed; chain LLM calls."
 
-## Camada 3 — Prompt Layer
+## Passo 3 — Camada 2 (Prompt Layer)
 
 System prompt (versão 1.0):
 
@@ -85,7 +88,7 @@ reasoning_style: conciso; evidência antes de afirmação
 
 Note: `forbidden_actions` aqui é **aspiracional** — esperamos que o modelo siga. A imposição real fica na Guardrail Layer.
 
-## Camada 4 — Context Layer
+## Passo 4 — Camada 3 (Context Layer)
 
 Context montado a cada execução semanal:
 
@@ -114,7 +117,7 @@ known_failure_modes:
 
 `known_failure_modes` no contexto força o modelo a se vigiar sobre esses pontos.
 
-## Camada 5 — Output Layer
+## Passo 5 — Camada 4 (Output Layer)
 
 ```yaml
 primary_format: markdown
@@ -145,7 +148,7 @@ Cada item da newsletter segue schema interno:
 }
 ```
 
-## Camada 6 — Retrieval Layer
+## Passo 6 — Camada 5 (Retrieval Layer)
 
 ```yaml
 use_retrieval_when:
@@ -162,7 +165,7 @@ missing_source_rule: se não há fonte primária verificável, item é descartad
 
 Implementação: RSS readers + arXiv API + web search via tool. Indexação simples por data (não precisa vector DB — janela é só 7 dias).
 
-## Camada 7 — Tool Layer
+## Passo 7 — Camada 6 (Tool Layer)
 
 ```yaml
 available_tools:
@@ -187,7 +190,7 @@ forbidden:
 tool_failure_behavior: retry 2x com backoff exponencial; em falha definitiva, log e continua (newsletter pode sair com -1 item)
 ```
 
-## Camada 8 — Evaluation Layer
+## Passo 8 — Camada 8 (Evaluation Layer)
 
 ```yaml
 success_criteria: herda do Purpose Layer
@@ -210,7 +213,7 @@ Aplicação: LLM-as-judge roda em todos os candidatos antes da newsletter sair. 
 
 Dataset de regression: 20 edições anteriores anotadas, comparadas a cada mudança de prompt.
 
-## Camada 9 — Guardrail Layer
+## Passo 9 — Camada 9 (Guardrail Layer)
 
 ```yaml
 allowed_without_approval:
@@ -235,7 +238,7 @@ escalation_rule: pausa, registra trace, notifica owner via Slack
 
 Implementação: middleware antes e depois da chamada do modelo, mais filtros no schema validator.
 
-## Camada 10 — Logging Layer
+## Passo 10 — Camada 10 (Logging Layer)
 
 Por execução semanal, registra um trace com:
 
@@ -259,7 +262,7 @@ Por execução semanal, registra um trace com:
 
 Implementação: OpenTelemetry GenAI semantic conventions + Langfuse.
 
-## Camada 11 — Improvement Layer
+## Passo 11 — Camada 11 (Improvement Layer)
 
 ```yaml
 review_cadence: após cada edição (curto) + revisão mensal (longo)

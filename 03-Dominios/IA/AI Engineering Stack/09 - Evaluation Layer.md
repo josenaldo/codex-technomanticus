@@ -22,7 +22,7 @@ aliases:
 
 ## O que é esta camada
 
-A Evaluation Layer é o **régua** do sistema. Mede qualidade do output de forma reproduzível — pra que mudanças (de prompt, modelo, retrieval) possam ser comparadas com objetividade.
+A Evaluation Layer é a **régua** do sistema. Mede qualidade do output de forma reproduzível — pra que mudanças (de prompt, modelo, retrieval) possam ser comparadas com objetividade.
 
 Template mínimo (adaptado do thread @hooeem):
 

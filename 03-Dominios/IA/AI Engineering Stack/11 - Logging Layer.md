@@ -8,6 +8,7 @@ progress: in_progress
 tags:
   - ai-engineering-stack
   - ia
+  - logging
   - observability
 publish: true
 aliases:
