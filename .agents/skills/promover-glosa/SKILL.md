@@ -25,7 +25,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 | ---------------------------- | --------------------------------------------------------------------------------------------- |
 | `/promover-glosa <slug>`     | Promove a glosa especificada (slug do nome de arquivo, sem extensão).                         |
 | `/promover-glosa <wikilink>` | Aceita wikilink (`[[<slug>]]` ou `[[02-Glosas/<slug>]]`).                                     |
-| `/promover-glosa`            | Modo interativo: lista glosas em raiz com `progress: done` ou `in_progress`|`done`, usuário escolhe. |
+| `/promover-glosa`            | Modo interativo: lista glosas em raiz com `progress: in_progress` ou `done`, usuário escolhe. |
 
 ## Fluxo de execução
 
@@ -114,7 +114,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 8. **Atualizar frontmatter da glosa** com `Edit` tool:
    - `promovida_em`: append `[[03-Dominios/<X>/<Nome>]]` (lista cresce; preserva itens anteriores).
    - `updated`: hoje.
-   - `progress`: se atual é `in_progress`|`done`, mudar pra `in_progress`|`done`.
+   - `progress`: se atual é `in_progress`, mudar pra `done`.
 
 9. **Reportar ao usuário:**
 
