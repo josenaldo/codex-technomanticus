@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-05-26
+updated: 2026-05-29
 type: glossary
 status: seedling
 aliases:
@@ -77,6 +77,9 @@ Gerar software descrevendo a intenção em linguagem natural a um LLM e aceitand
 
 ## Context Engineering
 
+### Audit trail (reasoning)
+Em reasoning models (o3, R1, Gemini Thinking), padrão de output em que o modelo entrega resposta final + checkpoints de raciocínio + suposições + incertezas + caminho de verificação, em vez de chain-of-thought verboso. Substitui o anti-padrão "think step by step", que virou ruído em modelos de raciocínio nativo. Ver [[Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought]].
+
 ### Chain-of-Thought (CoT)
 Uma técnica de prompting que instrui o modelo a produzir etapas de raciocínio intermediárias antes de fornecer uma resposta final — tipicamente acionada por frases como "pense passo a passo". O CoT melhora a precisão em tarefas de múltiplas etapas, mas aumenta a contagem de tokens de saída, e em modelos de raciocínio estendido (extended-thinking), alimenta diretamente a geração de tokens de raciocínio.
 
@@ -86,11 +89,23 @@ Um checkpoint em um fluxo agêntico onde o agente precisa demonstrar que compree
 ### context compaction
 A técnica de reduzir o tamanho do contexto ativo de uma sessão agêntica ao resumir ou descartar turnos antigos quando o context window se aproxima do limite, preservando o essencial para continuar a tarefa. Permite sessões longas sem estourar o limite, mas arrisca perder detalhes que pareciam irrelevantes no momento da compactação.
 
+### context rot
+Degradação mensurável da qualidade da saída de um LLM conforme o contexto de entrada cresce, observável **muito antes** do limite nominal da janela. O termo foi cunhado pela Chroma Research (2025) após testar 18 modelos frontier: todos perdem acurácia com o aumento dos tokens, alguns já com poucas centenas. Para coding agents é o principal modo de falha — agentes acumulam ruído em busca, exploração e backtracking, e cada turno seguinte sofre.
+
 ### Context window
 O número máximo de tokens que um modelo pode considerar em uma única chamada de inferência, incluindo o system prompt, input do usuário, turnos anteriores, definições de ferramentas e a resposta sendo gerada. Exceder esse limite força o truncamento, sumarização ou compactação.
 
+### Deliverable-first prompting
+Em geração de imagens, descrever o entregável (poster, infográfico, slide, mockup) carrega restrições implícitas — proporção, hierarquia visual, tipografia, layout — que descrever apenas a cena não carrega. Framing canônico do artigo "Become an AI Engineer" (@hooeem, capítulo #16). Ver [[Image Prompting/02 - Deliverable-first, não scene-first]].
+
+### effective context length
+O comprimento de contexto em que um LLM realmente mantém acurácia aceitável, distinto da janela **nominal** anunciada. Benchmarks como RULER (NVIDIA) e NoLiMa mostram que modelos com 128k-1M de spec sustentam, na prática, uma fração disso em tarefas multi-fato — por exemplo, Granite 3.1-8B com 128k nominal opera bem só até ~32k. Em 2026 virou métrica obrigatória para escolha de modelo em produção, já que "janela nominal" tornou-se número de marketing.
+
 ### few-shot prompting
 Uma técnica que inclui no prompt alguns exemplos resolvidos da tarefa (input → output) antes da consulta real, para que o modelo infira o padrão desejado via in-context learning. Contrasta com zero-shot (nenhum exemplo); melhora consistência e formato ao custo de mais tokens de entrada.
+
+### Multimodal prompting
+Prompting que combina texto com imagens, PDFs, áudio, vídeo ou tabelas como input. Em 2026, modelos de fronteira (Claude 4.x, GPT-5, Gemini 2.x) são multimodais nativos; o gargalo é o engenheiro ainda dar apenas texto, desperdiçando capacidade do modelo. Ver [[Multimodal Prompting]].
 
 ### prompt engineering
 A prática de projetar e refinar prompts — instruções, exemplos, estrutura e formato — para obter saídas mais precisas e confiáveis de um LLM sem alterar seus pesos. Inclui técnicas como Chain-of-Thought e few-shot e delimitação clara de papéis; é a camada de controle mais barata e imediata sobre o comportamento do modelo.
@@ -98,8 +113,43 @@ A prática de projetar e refinar prompts — instruções, exemplos, estrutura e
 ### prompt template
 Um prompt parametrizado com placeholders preenchidos em tempo de execução com dados variáveis (input do usuário, documentos recuperados, exemplos), separando a estrutura fixa do conteúdo dinâmico. Favorece reuso, versionamento e cache hit rate ao manter o prefixo estável entre chamadas.
 
+### Prompt versioning
+Tratar prompt como artefato versionado (não config string), com semver: major (breaking output format), minor (quality improvement), patch (typo). Cada trace registra qual versão produziu cada output, viabilizando rollback, A/B test e auditoria. Ver [[Observability/05 - Versionamento de prompts]] e [[Improvement Loop/03 - Prompt versioning — semver para prompts]].
+
 ### system prompt
 Um bloco de instruções enviado pelo desenvolvedor no início de cada chamada de API para configurar o comportamento, personalidade, limitações e contexto do modelo. Diferente das mensagens do usuário, o system prompt é tipicamente estático e re-enviado integralmente a cada turno — tornando-o um vetor de custo constante em sessões agenticas.
+
+### Sycophancy
+Tendência de LLM em concordar com a premissa do usuário, elogiar a pergunta, ou recuar quando o usuário discorda sem novo argumento. Mitigada via prompts anti-sycophancy explícitos — o mega-prompt do [[Andrej Karpathy|Karpathy]] é o exemplo canônico, instruindo o modelo a desafiar premissas e oferecer contra-evidência. Ver [[Prompt Engineering/04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy]].
+
+### Tells de IA
+Padrões linguísticos que denunciam output gerado por IA: "In today's fast-paced world", "It's important to note", "It's not X, it's Y" usado em excesso, em-dashes em flood, fechos motivacionais. Catalogados no artigo "Become an AI Engineer" (@hooeem, capítulo #8). Bloqueáveis via constraints declarativas no prompt. Ver [[Prompt Engineering/09 - Anti-patterns e tells de IA — o que evitar]].
+
+## Evaluation and Improvement Loop
+
+### A/B test de prompts
+Comparação controlada de duas versões de prompt sob o mesmo input, medindo qualidade via eval automático, feedback do usuário ou métrica de produto. A variância alta em LLM exige amostras maiores (frequentemente N=200+ por braço), e abordagem bayesiana costuma ser mais apropriada que frequentista para decidir promoção. Ver [[Improvement Loop/02 - A-B testing de prompts]].
+
+### Champion-challenger
+Padrão de deploy em que o tráfego é dividido (ex.: 90/10) entre o prompt em produção (champion) e o candidato (challenger), com critérios objetivos de promoção: eval score, golden subset, custo e latência. Permite iteração contínua sem big-bang releases. Ver [[Improvement Loop/04 - Champion-challenger em produção]].
+
+### DSPy
+Framework de Stanford (Khattab et al., arXiv 2310.03714) que trata prompts como programas compiláveis. Define Signatures (input/output), Modules (chamadas LM) e Compilers (BootstrapFewShot, MIPROv2) que otimizam prompts contra eval functions, eliminando boa parte do prompt-tuning manual. Ver [[Improvement Loop/05 - Auto-prompt optimization — DSPy e além]].
+
+### Eval-driven development (EDD)
+Disciplina que coloca evals antes do prompt — análoga a TDD para código. O lema é "evals first, prompts second": sem dataset de avaliação e critério objetivo, "melhorar o prompt" vira opinião. Ver [[Evaluation/01 - Eval-driven development — a disciplina]].
+
+### Eval gate
+Threshold em CI/CD: queda em eval score acima de X% bloqueia merge de PR. Pode falhar silenciosamente (warn) ou ruidosamente (block); a calibração depende da maturidade do dataset e da tolerância a regressões. Ver [[Evaluation/07 - Eval em CI-CD]] e [[Improvement Loop/07 - Eval gates em CI — quando bloquear merge]].
+
+### Golden dataset
+Conjunto canônico de pares input-output usado como referência para avaliar prompts e modelos. Construído por representatividade, edge cases e anti-tests; versionado em paralelo com os prompts para que regressões sejam rastreáveis. Ver [[Evaluation/02 - Golden datasets — como construir]].
+
+### LLM-as-judge
+Uso de outro LLM (frequentemente um modelo capaz como GPT-4 ou Claude) para avaliar outputs em critérios subjetivos onde anotação humana não escala. Vieses canônicos: positional, verbosity, self-preference. Mitigações: chain-of-thought judging, pairwise comparison, swap-judge consistency. Ver [[Evaluation/04 - LLM-as-judge — quando e como]].
+
+### Scoring rubric
+Critério estruturado para pontuar outputs em avaliação: objetivos (formato, presença de campos) e subjetivos (acurácia, utilidade). Escalas 1–5 anchored (com exemplos por nível) ou binárias pass/fail; inter-rater agreement medido via Cohen's kappa. Ver [[Evaluation/03 - Scoring rubrics e critérios]].
 
 ## Human Factors and AI Risks
 
@@ -150,6 +200,12 @@ Um gargalo de desempenho onde a velocidade de transferência de dados entre a me
 ### parameters / weights
 Os valores numéricos aprendidos durante o treino que definem o comportamento de uma rede neural — as conexões entre neurônios ajustadas para minimizar o erro. A contagem de parâmetros (bilhões a trilhões em LLMs) é uma medida grosseira de capacidade; na inferência eles ficam fixos e precisam ser lidos da memória a cada token, o que liga o tamanho do modelo ao memory bandwidth bottleneck.
 
+### prefill
+A primeira fase da inferência de um LLM, na qual o modelo processa o prompt inteiro de uma vez para construir o KV cache e preparar a geração. É **compute-bound** — o custo cresce quadraticamente com o tamanho do contexto, dominando o TTFT (time-to-first-token). Contrasta com o **decode**, fase token-a-token, que é memory-bandwidth-bound.
+
+### RoPE (Rotary Position Embedding)
+Esquema de codificação posicional em transformers que aplica rotações 2D aos vetores de query e key proporcionais à posição do token, em vez de somar embeddings posicionais aprendidos. Permite extrapolação relativa entre posições e é a base posicional de Llama, Qwen, Mistral e a maioria dos modelos open-weight modernos. Técnicas como YaRN e NTK-aware extension partem do RoPE para estender o contexto além do pretraining.
+
 ### sampling
 A escolha estocástica do próximo token a partir da distribuição de probabilidades do modelo, em vez de pegar sempre o mais provável. Parâmetros como temperature, top-k e top-p moldam quão aleatória ou conservadora é a seleção, controlando o trade-off entre diversidade e coerência da saída.
 
@@ -167,6 +223,12 @@ Também chamada nucleus sampling, restringe a escolha do próximo token ao menor
 
 ### transformer
 A arquitetura de rede neural introduzida em *Attention Is All You Need* (Vaswani et al., 2017) que substituiu as redes recorrentes ao processar todos os tokens de uma sequência em paralelo via o mecanismo de self-attention. É a base de praticamente todos os LLMs modernos, tipicamente na variante decoder-only. Empilha dezenas a centenas de camadas idênticas, cada uma combinando atenção multi-cabeça e redes feed-forward.
+
+### TTFT (time-to-first-token)
+Latência entre o envio de um request a um LLM e a chegada do primeiro token gerado. É dominada pela fase de **prefill**, cuja complexidade é quadrática no tamanho do contexto, e por isso cresce rápido com prompts longos. Métrica crítica em UX de chat e ferramentas interativas, distinta de **TPOT** (time-per-output-token), que mede o ritmo do streaming após o primeiro token.
+
+### YaRN
+*Yet another RoPE extensioN.* Método para estender a janela de contexto de modelos baseados em RoPE sem retrainar do zero. Combina escala de frequências por faixa (piecewise) com ajuste da temperatura da atenção; consegue 2–4x de extensão usando ~10x menos tokens de finetune que abordagens anteriores. É a técnica por trás de várias extensões de 32k → 128k+ em modelos Llama-derivados.
 
 ## MCP — Model Context Protocol
 
@@ -339,8 +401,14 @@ A unidade atômica que um modelo de linguagem lê e emite — tipicamente um fra
 ### function calling
 A capacidade de um LLM de produzir uma chamada estruturada (nome + argumentos em JSON) a uma função previamente declarada, em vez de texto livre, para que a aplicação a execute. É o mecanismo subjacente ao tool use; o termo enfatiza a interface estruturada exposta pelas APIs dos provedores.
 
+### JSON Schema
+Especificação (json-schema.org) usada como contrato para structured outputs em LLMs. Define `type`, `properties`, `required`, `enum`, `additionalProperties` etc.; OpenAI strict mode e Gemini structured output usam subsets dela, e Anthropic a consome via `tool input_schema`. Ver [[Structured Outputs/02 - JSON Schema como contrato]].
+
 ### SDK
 Um kit de desenvolvimento — biblioteca em uma linguagem específica (Python, TypeScript) — que abstrai as chamadas HTTP cruas à API de um provedor de LLM, oferecendo tipos, autenticação, streaming e tratamento de erros. Exemplos: o Anthropic SDK e o OpenAI SDK.
+
+### Strict mode (Structured Outputs)
+Modo do OpenAI Structured Outputs que garante aderência total ao JSON Schema (response_format com `strict: true`). Aceita apenas um subset limitado de features de JSON Schema — sem `additionalProperties: true`, com todas as properties em `required` — em troca de output garantidamente válido. Ver [[Structured Outputs/04 - OpenAI Structured Outputs — strict mode]].
 
 ### structured output
 Uma saída do modelo restrita a um formato verificável — tipicamente JSON conforme um schema declarado — em vez de texto livre, garantida por validação ou por decodificação restrita (constrained decoding). Torna a resposta do LLM consumível diretamente por código, sem parsing frágil.
@@ -350,3 +418,8 @@ A ação de um modelo de linguagem ao invocar uma ferramenta externa durante uma
 
 ### tool definition
 A especificação estruturada (tipicamente JSON Schema) que descreve para o modelo o nome, descrição e parâmetros aceitos de uma ferramenta disponível. Tool definitions são enviadas no system prompt a cada turno, tornando-se um custo fixo por chamada independentemente de quantas ferramentas são realmente usadas.
+
+## Fundamentos
+
+### heurística
+Uma regra prática ou função aproximada que guia a tomada de decisão e a busca por soluções quando o cálculo exato é inviável ou caro demais, trocando garantia de otimalidade por eficiência. Em IA clássica, aparece como função heurística que estima a distância até o objetivo em algoritmos de busca (ex.: A*, IDA*); em sistemas modernos, embasa regras de poda, decisões de agentes e atalhos de design em prompting.
