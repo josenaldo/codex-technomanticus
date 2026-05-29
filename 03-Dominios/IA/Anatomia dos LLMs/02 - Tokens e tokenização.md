@@ -1,5 +1,5 @@
 ---
-title: "Tokens e tokenização"
+title: Tokens e tokenização
 created: 2026-05-02
 updated: 2026-05-27
 type: concept
@@ -14,8 +14,8 @@ aliases:
   - Tokenization
   - BPE
   - Byte Pair Encoding
+progress: done
 ---
-
 # Tokens e tokenização
 
 > [!abstract] TL;DR
@@ -161,11 +161,11 @@ O modelo nunca vê caracteres; vê tokens. `"strawberry"` é fatiado em `st` + `
 Alguns tokens entram no vocabulário porque apareceram no corpus que treinou o **tokenizador**, mas quase nunca no corpus que treinou o **modelo** — ficam com embeddings sub-treinados. Invocá-los produz comportamento anômalo: alucinação, recusa ou texto sem sentido. O caso clássico é `SolidGoldMagikarp` (um nome de usuário do Reddit que sobreviveu na limpeza do vocabulário). Além de curiosidade, são uma superfície real de robustez e segurança.
 
 > [!example] O caso SolidGoldMagikarp
-> Em fevereiro de 2023, os pesquisadores Jessica Rumbelow e Matthew Watkins agruparam os embeddings de tokens do GPT-2/GPT-3 e encontraram um cluster bizarro: strings como ` SolidGoldMagikarp`, ` TheNitromeFan` e ` cloneembedreportprint`. Eram **nomes de usuário do subreddit r/counting** (onde as pessoas se revezam contando até o infinito), repetidos tantas vezes nos dados que treinaram o *tokenizador* que o BPE deu a cada um seu **próprio token dedicado**.
+> Em fevereiro de 2023, os pesquisadores Jessica Rumbelow e Matthew Watkins agruparam os embeddings de tokens do GPT-2/GPT-3 e encontraram um cluster bizarro: strings como `SolidGoldMagikarp`, `TheNitromeFan` e `cloneembedreportprint`. Eram **nomes de usuário do subreddit r/counting** (onde as pessoas se revezam contando até o infinito), repetidos tantas vezes nos dados que treinaram o *tokenizador* que o BPE deu a cada um seu **próprio token dedicado**.
 >
 > O problema: esses threads de contagem foram filtrados do corpus que treinou o *modelo*. O token existia no vocabulário, mas seu embedding ficou praticamente **no estado aleatório inicial** — nunca treinado. Pedir pro `text-davinci-003` repetir "SolidGoldMagikarp" fazia ele responder "distribute"; outros glitch tokens disparavam recusa, insulto ou texto sem nexo.
 >
-> O fenômeno sumiu nos modelos mais novos: o tokenizador atual quebra a palavra em cinco tokens normais (` Solid`, `Gold`, `Mag`, `ik`, `arp`), então não sobra um único embedding sub-treinado pra invocar.
+> O fenômeno sumiu nos modelos mais novos: o tokenizador atual quebra a palavra em cinco tokens normais (`Solid`, `Gold`, `Mag`, `ik`, `arp`), então não sobra um único embedding sub-treinado pra invocar.
 
 ## Armadilhas
 
