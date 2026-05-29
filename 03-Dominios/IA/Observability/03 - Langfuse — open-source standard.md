@@ -20,7 +20,7 @@ aliases:
 # 03 - Langfuse — open-source standard
 
 > [!abstract] TL;DR
-> Langfuse virou a referência OSS em LLM observability em 2026 — licença MIT, usado por 2.300+ empresas, bilhões de observações/mês. Arquitetura é PostgreSQL (metadados) + ClickHouse (traces de alto volume) + Next.js (UI), tudo open. Dois jeitos de rodar: **Cloud** (`cloud.langfuse.com`, free tier generoso, pago acima de 50k observações/mês) ou **self-hosted** (Docker Compose em 5 min; Helm pra produção). O API surface é mínimo: decorator `@observe()` em Python ou wrappers em JS/TS/integrações com LangChain/LlamaIndex/Vercel AI SDK. Features além de tracing: **prompt management versionado**, **datasets pra eval offline**, **evaluators built-in (LLM-as-judge)**. Escolha Langfuse quando quer OSS sério, time de 3+ pessoas, e quer manter dados (self-host) ou quer começar rápido sem trocar de stack depois (Cloud é o mesmo produto).
+> Langfuse virou referência OSS em LLM observability em 2026 — licença MIT, adoção significativa em times de produção, com SDK em múltiplas linguagens. Arquitetura é PostgreSQL (metadados) + ClickHouse (traces de alto volume) + Next.js (UI), tudo open. Dois jeitos de rodar: **Cloud** (`cloud.langfuse.com`, free tier generoso, pago acima de 50k observações/mês) ou **self-hosted** (Docker Compose em 5 min; Helm pra produção). O API surface é mínimo: decorator `@observe()` em Python ou wrappers em JS/TS/integrações com LangChain/LlamaIndex/Vercel AI SDK. Features além de tracing: **prompt management versionado**, **datasets pra eval offline**, **evaluators built-in (LLM-as-judge)**. Escolha Langfuse quando quer OSS sério, time de 3+ pessoas, e quer manter dados (self-host) ou quer começar rápido sem trocar de stack depois (Cloud é o mesmo produto).
 
 ## Por que Langfuse virou referência
 
@@ -30,7 +30,7 @@ Três fatores empilhados:
 2. **Cobertura horizontal** — tracing + prompts + datasets + evals em uma plataforma. Substitui 3-4 ferramentas separadas em times menores.
 3. **Integrações maduras** — Python decorator + JS/TS wrapper + integrações OOTB com LangChain, LlamaIndex, Vercel AI SDK, OpenAI/Anthropic/Google. Curva de adoção curta.
 
-Helicone tinha mais friction-light, mas entrou em maintenance mode em 2026. LangSmith é mais polido, mas closed source e proprietário. Phoenix é OSS puro mas mais focado em eval. Langfuse fica no meio: OSS, completo, com SDKs sólidos.
+Helicone é friction-light (integra mudando `base_url`), mas é proxy-only — não cobre prompt management e eval no mesmo produto. LangSmith é mais polido, mas closed source e proprietário. Phoenix é OSS puro mas mais focado em eval. Langfuse fica no meio: OSS, completo, com SDKs sólidos. (O ecossistema muda rápido — confira a trajetória atual de cada player antes de cravar a escolha.)
 
 ## Arquitetura
 
@@ -75,8 +75,8 @@ Exemplo concreto, ponta a ponta:
 ```python
 import os
 from anthropic import Anthropic
-from langfuse import Langfuse
-from langfuse.decorators import observe, langfuse_context
+from langfuse import Langfuse, observe  # v3 SDK; em v2 era `from langfuse.decorators import observe`
+from langfuse.decorators import langfuse_context
 
 os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-..."
 os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-..."
@@ -213,7 +213,7 @@ Aplica:
 Não aplica (ou tem alternativa melhor):
 
 - **Dev solo com Claude Code** — overkill; ccusage + planilha basta
-- **Quer só proxy "drop in"** — Helicone era isso, mas em maintenance mode; OpenLLMetry resolve com OTel direto
+- **Quer só proxy "drop in"** — Helicone resolve com mudança de `base_url`; OpenLLMetry resolve com OTel direto
 - **Já tem stack OTel madura (Datadog, Honeycomb)** — OpenLLMetry exporta pra eles direto, sem trazer outro backend
 
 ## Fontes

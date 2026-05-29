@@ -22,7 +22,7 @@ aliases:
 # 04 - Helicone, Phoenix, OpenLLMetry — alternativas
 
 > [!abstract] TL;DR
-> Langfuse é referência, mas três alternativas resolvem problemas específicos melhor: **Helicone** entrega tracing via proxy (mudou `base_url`, virou observability) — friction zero, em maintenance mode desde aquisição pela Mintlify em 2026, ainda útil em projeto legado; **Arize Phoenix** vem do mundo ML (não só LLM), forte em eval e integração nativa OpenTelemetry — bom pra time que já tem ML clássico em produção; **OpenLLMetry** não é backend, é coleção de instrumentações OTel-puras (Anthropic, OpenAI, etc.) que exportam pra **qualquer** backend OTel (Datadog, New Relic, Honeycomb, Grafana Tempo) — escolha quando já tem stack OTel madura e não quer trazer mais um produto. Decisão: ferramenta segue o gargalo — friction (Helicone), eval (Phoenix), reuso de stack (OpenLLMetry).
+> Langfuse é referência, mas três alternativas resolvem problemas específicos melhor: **Helicone** entrega tracing via proxy (mudou `base_url`, virou observability) — friction zero, OSS + cloud, ótimo quando o ganho é justamente não tocar SDK; **Arize Phoenix** vem do mundo ML (não só LLM), forte em eval e integração nativa OpenTelemetry — bom pra time que já tem ML clássico em produção; **OpenLLMetry** não é backend, é coleção de instrumentações OTel-puras (Anthropic, OpenAI, etc.) que exportam pra **qualquer** backend OTel (Datadog, New Relic, Honeycomb, Grafana Tempo) — escolha quando já tem stack OTel madura e não quer trazer mais um produto. Decisão: ferramenta segue o gargalo — friction (Helicone), eval (Phoenix), reuso de stack (OpenLLMetry). (Ecossistema muda rápido; verifique a trajetória atual de cada player antes de cravar a escolha pra greenfield.)
 
 ## Helicone — proxy-based
 
@@ -53,12 +53,16 @@ response = client.messages.create(
 - Cache semântico no edge (Cloudflare) — armazena respostas completas, redução adicional além de [[Dicionário de IA#Prompt caching|prompt caching]] do provider
 - AI Gateway: load balancing entre providers, failover, rate limiting
 
-**Status em 2026:** Mintlify adquiriu Helicone e moveu pra maintenance mode — suporte continua, novos recursos não. Pra projeto greenfield, considere alternativas. Pra projeto legado já em Helicone, manutenção contínua é viável.
+**Tradeoffs:**
+- Proxy adiciona um hop na rede — latência extra, mais um ponto de falha entre app e provider
+- Modelo proxy-only limita feature surface comparado a Langfuse/Phoenix (sem prompt registry nativo nem datasets de eval no mesmo plano)
+- Ecossistema de LLM observability muda rápido — confira trajetória atual (releases, atividade no GitHub, modelo de pricing) antes de cravar pra greenfield
 
-**Quando ainda escolher Helicone:**
-- Projeto legado já integrado
-- Precisa de proxy real (cache semântico no edge, failover entre providers)
+**Quando escolher Helicone:**
+- Precisa de proxy real (cache semântico no edge, failover entre providers, gateway)
+- Setup precisa ser literalmente zero-código (só mexer em `base_url`)
 - Time minúsculo onde nenhum SDK pode tocar (single-file Python ou Node)
+- Projeto legado já integrado
 
 ## Arize Phoenix — ML-native + OTel-first
 
@@ -159,7 +163,7 @@ def synthesize(question: str, sources: list[str]) -> str:
 | Ferramenta | Hosting | Modelo de integração | Custo | Forte em | Melhor para |
 |---|---|---|---|---|---|
 | **Langfuse** | OSS + Cloud | SDK proprietário + OTel import | Free self-host / freemium cloud | Cobertura horizontal (trace + prompts + evals) | Time de IA dedicado, OSS sério |
-| **Helicone** ⚠️ | Cloud + OSS | Proxy (base_url change) | Freemium | Friction zero, cache semântico edge | Projeto legado, time minúsculo |
+| **Helicone** | Cloud + OSS | Proxy (base_url change) | Freemium | Friction zero, cache semântico edge, gateway | Setup zero-código, proxy real |
 | **Arize Phoenix** | OSS (local + cloud) | OTel + auto-instrumentation | Free self-host / pago cloud | Eval nativo + ML observability + drift | Time com ML clássico em prod |
 | **OpenLLMetry** | Lib (sem backend) | OTel auto-instrumentation | Free (lib) + custo do backend escolhido | Reuso de stack existente | Stack OTel madura, time plataforma forte |
 
@@ -171,8 +175,8 @@ def synthesize(question: str, sources: list[str]) -> str:
 | "Quero começar em 5 min sem operar nada" | Langfuse Cloud |
 | "Já tenho Datadog/Honeycomb e não quero outra UI" | OpenLLMetry + seu backend |
 | "Time já faz ML clássico; quero observability unificada" | Arize Phoenix |
-| "Projeto legado já em Helicone" | Mantém Helicone até migração planejada |
-| "Quero proxy de verdade (cache, failover, gateway)" | Helicone (cautela: maintenance mode) ou Portkey, LiteLLM Gateway |
+| "Projeto legado já em Helicone" | Mantém Helicone |
+| "Quero proxy de verdade (cache, failover, gateway)" | Helicone, Portkey, ou LiteLLM Gateway |
 
 ## Combinações comuns
 
@@ -184,7 +188,7 @@ Stack não precisa ser monolítica. Padrões que aparecem em times médios:
 
 ## Fontes
 
-- **Helicone** — [Documentação](https://docs.helicone.ai) · [LLM Observability blog](https://www.helicone.ai/blog/llm-observability). Maintenance mode desde 2026.
+- **Helicone** — [Documentação](https://docs.helicone.ai) · [LLM Observability blog](https://www.helicone.ai/blog/llm-observability).
 - **Arize Phoenix** — [phoenix.arize.com](https://phoenix.arize.com) · [GitHub Arize-ai/phoenix](https://github.com/Arize-ai/phoenix) · [Docs](https://docs.arize.com/phoenix).
 - **OpenLLMetry** — [GitHub traceloop/openllmetry](https://github.com/traceloop/openllmetry) · [Docs Traceloop](https://www.traceloop.com/docs/openllmetry/introduction).
 - **OpenInference** — [GitHub Arize-ai/openinference](https://github.com/Arize-ai/openinference). Instrumentações OTel mantidas pela Arize, alternativa a OpenLLMetry pra alguns SDKs.

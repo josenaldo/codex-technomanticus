@@ -134,7 +134,7 @@ A partir desse atributo, dashboards passam a permitir queries como:
 | **PromptLayer** | SaaS | UI focada em prompt management; histórico rico | Outro produto pra operar |
 | **Braintrust Prompts** | SaaS | Forte integração com evals/CI gates | Pago; melhor em time com Braintrust já adotado |
 | **Registry caseiro em Git** | DIY | Source of truth no Git; review nativo; semver via tags | Falta UI, cache, A/B routing — você implementa |
-| **Helicone Prompts** ⚠️ | Cloud | Setup leve | Maintenance mode em 2026 |
+| **Helicone Prompts** | Cloud | Setup leve via proxy | Sem registry/eval no mesmo plano que Langfuse; depende do produto Helicone |
 
 Decisão pragmática: se já está em Langfuse, use Langfuse Prompts. Se já tem Git workflow forte e time pequeno, registry caseiro com tags semver + arquivo YAML/JSON resolve. Tools dedicadas (PromptLayer, Braintrust) brilham quando produto/PM-não-dev edita prompt sem PR.
 
