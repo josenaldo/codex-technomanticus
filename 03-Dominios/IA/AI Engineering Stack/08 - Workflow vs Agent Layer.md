@@ -47,7 +47,7 @@ Workflow não é "agent inferior" — é uma escolha arquitetural diferente, ger
 
 ## Onde aprofundar no Codex
 
-- **[[Anatomia de Agents/10 - Workflow vs Agent|10 - Workflow vs Agent]]** — discussão profunda (a ser publicada).
+- **[[Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um|10 - Workflow vs Agent]]** — discussão profunda (a ser publicada).
 - **[[Anatomia de Agents/08 - Patterns comuns de agents|Patterns comuns de agents]]** — orchestrator-worker, planning, ReAct.
 - **[[Spec-Driven Development]]** — workflows formalizados como spec executável.
 
