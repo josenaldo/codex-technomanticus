@@ -4,7 +4,7 @@ created: 2026-05-04
 updated: 2026-05-04
 type: concept
 status: seedling
-progresso: pendente
+progress: backlog
 tags:
   - frontend
   - networking

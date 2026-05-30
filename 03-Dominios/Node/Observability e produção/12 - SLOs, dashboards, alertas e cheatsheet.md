@@ -3,6 +3,7 @@ title: "SLOs, dashboards, alertas e cheatsheet"
 created: 2026-05-09
 updated: 2026-05-09
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

@@ -36,7 +36,7 @@ created: 2026-05-04
 updated: 2026-05-04
 type: concept
 status: seedling | budding | evergreen
-progresso: pendente | andamento | feito | pausado | abandonado
+progress: backlog | in_progress | done | paused | abandoned
 tags: [...]
 publish: true
 ---

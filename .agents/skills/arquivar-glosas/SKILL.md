@@ -1,7 +1,7 @@
 ---
 name: arquivar-glosas
 description: >
-   Move glosas inativas há mais de 30 dias em `02-Glosas/` raiz pra `02-Glosas/Arquivadas/<ano>/`. Inatividade = `hoje - max(updated, mtime) > 30 dias`. Aplica-se a TODAS as glosas na raiz, independente de `progresso`. Use quando o usuário invocar `/arquivar-glosas`, falar em "arquivar glosas antigas", "limpar glosas antigas", "arquivar glosas paradas".
+   Move glosas inativas há mais de 30 dias em `02-Glosas/` raiz pra `02-Glosas/Arquivadas/<ano>/`. Inatividade = `hoje - max(updated, mtime) > 30 dias`. Aplica-se a TODAS as glosas na raiz, independente de `progress`. Use quando o usuário invocar `/arquivar-glosas`, falar em "arquivar glosas antigas", "limpar glosas antigas", "arquivar glosas paradas".
 ---
 
 # Skill: arquivar-glosas
@@ -42,10 +42,10 @@ Sem argumentos. A skill é uma varredura.
 
    ```
    Candidatas a arquivar (>30 dias inativas):
-   1. <slug-1>  |  idade: 47d  |  tags: [react, ui]  |  progresso: feito
-   2. <slug-2>  |  idade: 95d  |  tags: [ai, rag]    |  progresso: andamento
+   1. <slug-1>  |  idade: 47d  |  tags: [react, ui]  |  progress: done
+   2. <slug-2>  |  idade: 95d  |  tags: [ai, rag]    |  progress: in_progress
    ...
-   N. <slug-N>  |  idade: 32d  |  tags: [...]        |  progresso: abandonado
+   N. <slug-N>  |  idade: 32d  |  tags: [...]        |  progress: abandoned
 
    Arquivar todas? (s)im / (n)ão / (e)scolher quais
    ```
@@ -88,7 +88,7 @@ Sem argumentos. A skill é uma varredura.
 ## Convenções
 
 - **Critério: `idade_inativa = hoje - max(updated, mtime) > 30d`.**
-- **Aplica-se a TUDO na raiz**, independente de `progresso` (`andamento`, `feito`, `abandonado` — todos são candidatos).
+- **Aplica-se a TUDO na raiz**, independente de `progress` (`in_progress`, `done`, `abandoned` — todos são candidatos).
 - **Confirmação humana obrigatória** antes de mover.
 - **`git mv`** pra preservar histórico.
 - **Atualiza `updated`** ao mover (registra o evento de arquivamento).

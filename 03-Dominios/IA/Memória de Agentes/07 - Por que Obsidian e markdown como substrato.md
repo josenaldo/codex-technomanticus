@@ -3,6 +3,7 @@ title: "Por que Obsidian e markdown como substrato"
 created: 2026-04-25
 updated: 2026-04-25
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

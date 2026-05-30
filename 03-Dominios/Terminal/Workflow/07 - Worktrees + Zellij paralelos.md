@@ -3,6 +3,7 @@ title: "Worktrees + Zellij paralelos"
 created: 2026-05-24
 updated: 2026-05-24
 type: concept
+progress: backlog
 status: seedling
 publish: true
 fase: adepto

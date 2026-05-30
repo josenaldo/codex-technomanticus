@@ -3,6 +3,7 @@ title: "Spring Data JPA"
 created: 2026-04-11
 updated: 2026-04-11
 type: concept
+progress: backlog
 status: evergreen
 tags:
   - java

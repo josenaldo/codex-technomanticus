@@ -7,6 +7,7 @@ site: AddyOsmani.com
 published: 2026-05-03
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [agent-skills, ai-coding-agents, sdlc, software-engineering, anti-rationalization]
 lang: en

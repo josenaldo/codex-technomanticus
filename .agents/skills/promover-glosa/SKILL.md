@@ -17,7 +17,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 ## Quando NÃO usar
 
 - Usuário quer consolidar VÁRIAS glosas em UMA nota: use `/sintetizar-glosas` em vez disso.
-- Usuário quer apenas marcar glosa como lida (`progresso: feito`): edição manual ou skill futura.
+- Usuário quer apenas marcar glosa como lida (`progress: done`): edição manual ou skill futura.
 
 ## Argumentos
 
@@ -25,13 +25,13 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 | ---------------------------- | --------------------------------------------------------------------------------------------- |
 | `/promover-glosa <slug>`     | Promove a glosa especificada (slug do nome de arquivo, sem extensão).                         |
 | `/promover-glosa <wikilink>` | Aceita wikilink (`[[<slug>]]` ou `[[02-Glosas/<slug>]]`).                                     |
-| `/promover-glosa`            | Modo interativo: lista glosas em raiz com `progresso: feito` ou `andamento`, usuário escolhe. |
+| `/promover-glosa`            | Modo interativo: lista glosas em raiz com `progress: in_progress` ou `done`, usuário escolhe. |
 
 ## Fluxo de execução
 
 1. **Resolver a glosa.**
    - Se argumento explícito: localizar arquivo em `02-Glosas/` (raiz) ou `02-Glosas/Promovidas/<ano>/`. Se não existir, abortar com erro.
-   - Se modo interativo: listar candidatas (em `02-Glosas/` raiz com `progresso` em `andamento` ou `feito`), apresentar pra escolha.
+   - Se modo interativo: listar candidatas (em `02-Glosas/` raiz com `progress` em `in_progress` ou `done`), apresentar pra escolha.
 
 2. **Ler a glosa** com `Read` tool. Extrair:
    - `title` (do frontmatter).
@@ -59,7 +59,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
    updated: <hoje YYYY-MM-DD>
    type: concept
    status: seedling
-   progresso: andamento
+   progress: in_progress
    tags:
      - <tags-da-glosa>
      - <tag-do-domínio se houver convenção>
@@ -114,7 +114,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 8. **Atualizar frontmatter da glosa** com `Edit` tool:
    - `promovida_em`: append `[[03-Dominios/<X>/<Nome>]]` (lista cresce; preserva itens anteriores).
    - `updated`: hoje.
-   - `progresso`: se atual é `andamento`, mudar pra `feito`.
+   - `progress`: se atual é `in_progress`, mudar pra `done`.
 
 9. **Reportar ao usuário:**
 
@@ -147,7 +147,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
 
 ## Convenções
 
-- **Nota nasce com `progresso: andamento` e `status: seedling`** — ponto de partida, não produto pronto.
+- **Nota nasce com `progress: in_progress` e `status: seedling`** — ponto de partida, não produto pronto.
 - **`updated` da glosa é atualizado** em toda interação.
 - **`git mv` em vez de `mv`** pra preservar histórico.
 - **Nunca deletar a glosa** — sempre mover (perda zero).

@@ -3,6 +3,7 @@ title: "Node-specific metrics: event loop lag, GC e heap"
 created: 2026-05-08
 updated: 2026-05-08
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

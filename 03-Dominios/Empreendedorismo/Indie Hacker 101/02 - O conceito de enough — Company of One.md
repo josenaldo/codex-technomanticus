@@ -16,7 +16,7 @@ aliases:
   - Enough
   - Minimum Viable Profit
   - MVPr
-progresso: andamento
+progress: in_progress
 ---
 
 # O conceito de "enough" — Company of One

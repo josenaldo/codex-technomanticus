@@ -7,6 +7,7 @@ site: X (Twitter)
 published: 2026-05-08
 read: 2026-05-08
 type: glosa
+progress: backlog
 status: lido
 tags: [trading, second-brain, n8n, automation, ai-analyst]
 lang: en

@@ -3,6 +3,7 @@ title: "bat — cat moderno com syntax highlight"
 created: 2026-05-22
 updated: 2026-05-22
 type: concept
+progress: backlog
 status: seedling
 publish: true
 fase: iniciado

@@ -3,6 +3,7 @@ title: "A tripla inferência - props, state, hooks"
 created: 2026-04-26
 updated: 2026-04-26
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags: [typescript, react, typescript-react, frontend, mental-model, jsx, inference]

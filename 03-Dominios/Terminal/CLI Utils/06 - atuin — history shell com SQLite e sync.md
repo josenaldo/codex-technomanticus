@@ -3,6 +3,7 @@ title: "atuin — history shell com SQLite e sync"
 created: 2026-05-22
 updated: 2026-05-22
 type: concept
+progress: backlog
 status: seedling
 publish: true
 fase: adepto

@@ -3,6 +3,7 @@ title: "Design Patterns"
 created: 2026-04-01
 updated: 2026-04-09
 type: concept
+progress: backlog
 status: evergreen
 tags:
   - arquitetura

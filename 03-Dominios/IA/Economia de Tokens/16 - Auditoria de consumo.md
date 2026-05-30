@@ -3,6 +3,7 @@ title: "Auditoria de consumo"
 created: 2026-05-02
 updated: 2026-05-22
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

@@ -31,7 +31,7 @@ created: 2026-04-27
 updated: 2026-05-04
 type: glosa
 status: lido
-progresso: andamento | feito | abandonado
+progress: in_progress | done | abandoned
 promovida_em: []
 tags: [...]
 lang: pt | en

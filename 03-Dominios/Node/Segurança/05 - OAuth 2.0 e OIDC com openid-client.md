@@ -3,6 +3,7 @@ title: "OAuth 2.0 e OIDC com openid-client"
 created: 2026-05-13
 updated: 2026-05-13
 type: concept
+progress: backlog
 status: growing
 publish: true
 tags:

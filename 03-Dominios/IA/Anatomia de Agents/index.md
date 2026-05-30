@@ -7,7 +7,7 @@ tags:
   - ia
   - moc
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-05-28
 aliases:
   - Agents
   - AI Agents
@@ -50,12 +50,13 @@ Quando um agent não basta, e que stack usar.
 - [[06 - Multi-agent — orchestrator e sub-agents]] — vantagens, padrões CIV, especialização por modelo
 - [[07 - Frameworks 2026]] — Claude Agent SDK, LangGraph, CrewAI, AutoGen, Pydantic AI, "sem framework"
 
-### Bloco 4 — Produção (2 notas)
+### Bloco 4 — Produção (3 notas)
 
-Reconhecer o pattern certo, medir o que importa.
+Reconhecer o pattern certo, medir o que importa, escolher a arquitetura certa.
 
 - [[08 - Patterns comuns de agents]] — 6 patterns canônicos, anti-patterns por confusão
 - [[09 - Evaluation de agents]] — métricas, golden set, trace review, regression tests
+- [[10 - Workflow vs Agent — quando usar cada um]] — decisão arquitetural, árvore de decisão, padrão híbrido
 
 ## Rotas alternativas
 
@@ -77,7 +78,7 @@ Reconhecer o pattern certo, medir o que importa.
 ### Rota cético (preciso entender antes de adotar)
 *"Tem hype demais, quero entender quando agent realmente vale"*
 
-[[01 - O que é um agent]] → [[08 - Patterns comuns de agents]] → [[Spec-Driven Development|12 - Debates — spec-as-source vs pragmatismo]]
+[[01 - O que é um agent]] → [[10 - Workflow vs Agent — quando usar cada um]] → [[08 - Patterns comuns de agents]] → [[Spec-Driven Development|12 - Debates — spec-as-source vs pragmatismo]]
 
 ## Como esta trilha se conecta
 

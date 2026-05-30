@@ -62,7 +62,7 @@ SKILL). Cada lente produz **candidatos** no schema abaixo.
 
 Independente das lentes, sempre roda um passe barato, apresentado em grupo próprio e **fora do crítico**:
 
-- **Frontmatter:** `status: seedling → growing`; `updated: → hoje`; `progresso: andamento` se ausente e aplicável.
+- **Frontmatter:** `status: seedling → growing`; `updated: → hoje`; `progress: in_progress` se ausente e aplicável.
   Nunca regride `growing`/`mature`.
 - **Typos / erros gramaticais óbvios** (correção cirúrgica).
 - **Estrutura:** TL;DR (`> [!abstract] TL;DR`) e parágrafo de introdução presentes? Se não, propor.

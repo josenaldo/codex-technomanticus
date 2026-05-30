@@ -1,6 +1,7 @@
 ---
 title: "Delegar permissão a outro LLM — pattern meta-agente"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

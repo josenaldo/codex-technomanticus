@@ -3,6 +3,7 @@ title: "Certificação Java OCP"
 created: 2026-04-10
 updated: 2026-04-10
 type: concept
+progress: backlog
 status: evergreen
 tags:
   - java

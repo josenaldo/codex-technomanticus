@@ -1,6 +1,7 @@
 ---
 title: "Segurança organizacional — o que nunca deixar o agente fazer"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

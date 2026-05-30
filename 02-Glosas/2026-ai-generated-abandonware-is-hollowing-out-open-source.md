@@ -7,6 +7,7 @@ site: LeadDev
 published: 2026-05-20
 read: 2026-05-25
 type: glosa
+progress: backlog
 status: lido
 tags: [open-source, ia-generativa, abandonware, manutencao-software, sustentabilidade-oss]
 lang: en

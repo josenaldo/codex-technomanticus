@@ -3,6 +3,7 @@ title: "I/O assíncrono: kernel vs thread pool"
 created: 2026-05-07
 updated: 2026-05-07
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

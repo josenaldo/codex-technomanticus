@@ -10,7 +10,7 @@ created: <% tp.date.now("YYYY-MM-DD") %>
 updated: <% tp.date.now("YYYY-MM-DD") %>
 type: glosa
 status: lido
-progresso: andamento
+progress: in_progress
 promovida_em: []
 tags:
   - 

@@ -7,6 +7,7 @@ site: Engineering Enablement
 published: 2026-04-22
 read: 2026-05-25
 type: glosa
+progress: backlog
 status: lido
 tags: [cognitive-debt, technical-debt, ai-development, shared-understanding, developer-productivity]
 lang: en

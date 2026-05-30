@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "03-Domínios/IA/index.md",
-                "mode": "source",
-                "source": false
+                "file": "03-Dominios/IA/Anatomia dos LLMs/03 - A janela de contexto.md",
+                "mode": "preview",
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "index"
+              "title": "03 - A janela de contexto"
             }
           },
           {
@@ -237,9 +237,6 @@
     "copilot",
     "04-Sendas",
     "03-Domínios/Java/Backend/Kafka/Untitled 4.png",
-    "03-Domínios/Java/Backend/Kafka/Kafka Concepts",
-    "03-Domínios/JavaScript/Frontend/TypeScript com React",
-    "03-Domínios/Java/Backend/Kafka",
     "03-Domínios/Arquitetura/Event Storming/Untitled 3.png",
     "03-Domínios/Arquitetura/Event Storming/Untitled 1 2.png",
     "03-Domínios/RPA/Untitled 7.png",
@@ -247,7 +244,6 @@
     "03-Domínios/RPA/Untitled 5.png",
     "03-Domínios/RPA/Untitled 1 4.png",
     "03-Domínios/RPA/Untitled 1 3.png",
-    "03-Domínios/Infraestrutura/Untitled.png",
-    "03-Domínios/Infraestrutura/Untitled 2.png"
+    "03-Domínios/Infraestrutura/Untitled.png"
   ]
 }

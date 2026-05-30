@@ -4,7 +4,6 @@ created: 2026-05-04
 updated: 2026-05-04
 type: moc
 status: seedling
-progresso: pendente
 tags:
   - frontend
   - validacao

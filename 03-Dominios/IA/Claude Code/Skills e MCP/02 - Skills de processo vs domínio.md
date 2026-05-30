@@ -1,6 +1,7 @@
 ---
 title: "Skills de processo vs skills de domínio"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

@@ -7,6 +7,7 @@ site: X (Twitter)
 published:
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [obsidian, second-brain, n8n, claude, knowledge-management]
 lang: en

@@ -3,6 +3,7 @@ title: "Globbing avançado e parameter expansion"
 created: 2026-05-19
 updated: 2026-05-21
 type: concept
+progress: backlog
 status: seedling
 publish: true
 fase: magus

@@ -1,6 +1,7 @@
 ---
 title: "PreToolUse — interceptar e validar antes de executar"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

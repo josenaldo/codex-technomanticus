@@ -7,6 +7,7 @@ site: AgentField
 published: 2026-04-29
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [harness, agent-orchestration, ai-agents, variance-absorption, membrane-engineering]
 lang: en

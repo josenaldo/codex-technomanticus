@@ -3,6 +3,7 @@ title: "Skills e Prompting"
 created: 2026-05-19
 updated: 2026-05-19
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

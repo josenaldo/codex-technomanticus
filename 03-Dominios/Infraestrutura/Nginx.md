@@ -3,6 +3,7 @@ title: "Nginx"
 created: 2026-04-01
 updated: 2026-04-11
 type: concept
+progress: backlog
 status: evergreen
 tags:
   - infraestrutura

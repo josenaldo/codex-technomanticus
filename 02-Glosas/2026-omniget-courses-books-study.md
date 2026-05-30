@@ -7,6 +7,7 @@ site: GitHub
 published: 2026-02-11
 read: 2026-05-06
 type: glosa
+progress: backlog
 status: lido
 tags: [desktop-app, course-downloader, study-tool, open-source, tauri]
 lang: en

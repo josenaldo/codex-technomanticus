@@ -1,6 +1,7 @@
 ---
 title: "Como Claude Code lê um codebase"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-13
 updated: 2026-05-13

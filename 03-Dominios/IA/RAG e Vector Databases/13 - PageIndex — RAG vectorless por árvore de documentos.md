@@ -3,6 +3,7 @@ title: "PageIndex — RAG vectorless por árvore de documentos"
 created: 2026-05-06
 updated: 2026-05-06
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

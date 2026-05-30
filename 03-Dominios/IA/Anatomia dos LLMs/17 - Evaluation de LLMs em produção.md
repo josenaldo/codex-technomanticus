@@ -1,8 +1,9 @@
 ---
 title: "Evaluation de LLMs em produção"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-05-29
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > LLM em produção sem evaluation é aposta. Não é tradeoff — é dívida. **Práticas mínimas:** golden set de 30-100 exemplos representativos rodado a cada mudança de prompt/modelo; **LLM-as-judge** para tarefas subjetivas (com cuidado de viés); **[[Dicionário de IA#tracing|traces]] e [[Dicionário de IA#Observability|observabilidade]]** instrumentando toda chamada (tokens, latência, custo, taxa de erro); **A/B test** em produção com métricas de negócio. Sem isso, "prompt engineering" vira superstição — mudou prompt, ninguém sabe se melhorou.
+
+> [!info] Trilha mestre
+> Esta nota é o deep-dive de evaluation **no contexto de LLMs em produção**. Pra disciplina geral de evaluation (golden datasets, rubrics, LLM-as-judge, frameworks 2026, eval em CI), veja a trilha [[Evaluation]].
 
 ## Por que eval é diferente em LLMs
 
@@ -259,6 +263,7 @@ def get_response(user_id, query):
 
 ## Veja também
 
+- [[Evaluation]]
 - [[16 - Como LLMs são treinados — pretraining, SFT, RLHF]]
 - [[Economia de Tokens|04 - Monitoramento — ccusage, Langfuse, dashboards]]
 - [[Segurança e Guardrails|10 - Métricas de qualidade AI — defect escape rate, rework ratio]]

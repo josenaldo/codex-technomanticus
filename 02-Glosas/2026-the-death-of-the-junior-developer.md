@@ -7,6 +7,7 @@ site: Sourcegraph Blog
 published:
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [chop, junior-developer, ai-coding, llm-programming, sourcegraph]
 lang: en

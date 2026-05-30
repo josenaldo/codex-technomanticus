@@ -5,7 +5,6 @@ publish: true
 created: 2026-05-19
 updated: 2026-05-19
 status: growing
-progresso: andamento
 tags:
   - terminal
   - editor

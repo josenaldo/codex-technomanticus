@@ -13,7 +13,7 @@ aliases:
   - Input vs output tokens
   - Reasoning tokens cost
   - Token breakdown
-progresso: feito
+progress: done
 ---
 
 # Anatomia do gasto — input, output e reasoning

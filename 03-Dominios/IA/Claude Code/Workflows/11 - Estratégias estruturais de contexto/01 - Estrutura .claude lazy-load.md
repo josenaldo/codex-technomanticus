@@ -1,6 +1,7 @@
 ---
 title: "Estrutura .claude/ lazy-load — carga inicial enxuta, resto sob demanda"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-22
 updated: 2026-05-22

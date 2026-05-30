@@ -3,6 +3,7 @@ title: "O futuro dos LLMs — tendências 2026-2027"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

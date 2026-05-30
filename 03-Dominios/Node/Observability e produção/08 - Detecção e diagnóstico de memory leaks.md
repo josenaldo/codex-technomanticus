@@ -8,7 +8,7 @@ tags:
   - performance
 type: note
 status: growing
-progresso: andamento
+progress: in_progress
 created: 2026-05-09
 updated: 2026-05-09
 publish: true

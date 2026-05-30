@@ -11,7 +11,7 @@ created: 2026-05-08
 updated: 2026-05-08
 type: glosa
 status: lido
-progresso: andamento
+progress: in_progress
 promovida_em: []
 tags:
   - cognitive-surrender

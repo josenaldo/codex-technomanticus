@@ -1,6 +1,7 @@
 ---
 title: "Knowledge graph local com AST — blast-radius em vez de re-leitura"
 type: concept
+progress: backlog
 publish: true
 created: 2026-05-22
 updated: 2026-05-22

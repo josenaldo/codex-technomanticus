@@ -4,7 +4,6 @@ created: 2026-05-17
 updated: 2026-05-17
 type: reference
 status: budding
-progresso: em-curso
 tags:
   - infraestrutura/linux
   - shell

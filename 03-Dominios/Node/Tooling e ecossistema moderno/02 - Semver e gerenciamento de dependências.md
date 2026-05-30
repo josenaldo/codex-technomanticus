@@ -4,7 +4,7 @@ created: 2026-05-13
 updated: 2026-05-13
 type: concept
 status: seedling
-progresso: andamento
+progress: in_progress
 publish: false
 tags:
   - node

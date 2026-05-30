@@ -3,6 +3,7 @@ title: "Redis e ioredis"
 created: 2026-05-12
 updated: 2026-05-12
 type: concept
+progress: backlog
 status: growing
 publish: true
 tags:

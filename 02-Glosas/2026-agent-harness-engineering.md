@@ -7,6 +7,7 @@ site: AddyOsmani.com
 published: 2026-04-19
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [agent-harness, coding-agents, harness-engineering, agents-md, ai-development]
 lang: en

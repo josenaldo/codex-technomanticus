@@ -1,7 +1,7 @@
 ---
 name: acordar-glosas
 description: >
-   Reativa glosas previamente arquivadas em `02-Glosas/Arquivadas/<ano>/`. Move pra raiz `02-Glosas/`, reseta `progresso: andamento`, atualiza `updated`. Aceita filtro por slug, tag, ou assunto. Use quando o usuário invocar `/acordar-glosas <criterio>` ou pedir pra "reativar glosas sobre X", "tirar glosas do arquivo", "acordar glosas pra estudar X".
+   Reativa glosas previamente arquivadas em `02-Glosas/Arquivadas/<ano>/`. Move pra raiz `02-Glosas/`, reseta `progress: in_progress`, atualiza `updated`. Aceita filtro por slug, tag, ou assunto. Use quando o usuário invocar `/acordar-glosas <criterio>` ou pedir pra "reativar glosas sobre X", "tirar glosas do arquivo", "acordar glosas pra estudar X".
 ---
 
 # Skill: acordar-glosas
@@ -62,13 +62,13 @@ Move glosas de `02-Glosas/Arquivadas/**` de volta pra raiz `02-Glosas/`, com con
    Verificar conflito: se `02-Glosas/<slug>.md` já existe na raiz, abortar com erro pra esta glosa específica e seguir com as demais.
 
 5. **Atualizar frontmatter de cada glosa acordada:**
-   - `progresso`: resetar pra `andamento`.
+   - `progress`: resetar pra `in_progress`.
    - `updated`: hoje.
 
 6. **Reportar ao usuário:**
 
    ```
-   Acordadas <N> glosas (movidas pra raiz com progresso: andamento):
+   Acordadas <N> glosas (movidas pra raiz com progress: in_progress):
      - <slug-1>
      - <slug-2>
      ...
@@ -93,7 +93,7 @@ Move glosas de `02-Glosas/Arquivadas/**` de volta pra raiz `02-Glosas/`, com con
 ## Convenções
 
 - **Skill atua APENAS em `Arquivadas/`** — `Promovidas/` é histórico imutável.
-- **Reset de `progresso: andamento`** ao acordar (assume que vai trabalhar).
+- **Reset de `progress: in_progress`** ao acordar (assume que vai trabalhar).
 - **`updated` atualizado** pra registrar evento.
 - **`git mv`** pra preservar histórico.
 - **Confirmação humana obrigatória.**

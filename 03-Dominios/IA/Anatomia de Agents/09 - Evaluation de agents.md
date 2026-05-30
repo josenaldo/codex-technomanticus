@@ -1,8 +1,9 @@
 ---
 title: "Evaluation de agents"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-05-29
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Agents são **harder de avaliar** que LLMs puros porque o processo é não-determinístico e tem múltiplos steps. **Métricas fundamentais:** task completion rate, steps per task, cost per task, latency, human intervention rate, error types. **Métodos:** golden set de tasks, LLM-as-judge para output aberto, trace review humana semanal (1-2h), regression tests acumulados. Sem evaluation, agent em produção é caixa preta. **"Olhei e tá bom" não escala.**
+
+> [!info] Trilha mestre
+> Esta nota é o deep-dive de evaluation **no contexto de agents**. Pra disciplina geral de evaluation (golden datasets, rubrics, LLM-as-judge, frameworks 2026, eval em CI), veja a trilha [[Evaluation]].
 
 ## Por que eval de agent é diferente
 
@@ -205,6 +209,7 @@ Diferente de eval pre-merge:
 
 ## Veja também
 
+- [[Evaluation]]
 - [[01 - O que é um agent]]
 - [[Anatomia dos LLMs|17 - Evaluation de LLMs em produção]]
 - [[Segurança e Guardrails|10 - Métricas de qualidade AI — defect escape rate, rework ratio]]

@@ -3,6 +3,7 @@ title: "Planning — plan-then-execute, dynamic, hierarchical"
 created: 2026-04-11
 updated: 2026-05-02
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

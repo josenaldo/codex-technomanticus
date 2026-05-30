@@ -5,7 +5,6 @@ publish: true
 created: 2026-05-12
 updated: 2026-05-12
 status: growing
-progresso: andamento
 tags:
   - node
   - integrações

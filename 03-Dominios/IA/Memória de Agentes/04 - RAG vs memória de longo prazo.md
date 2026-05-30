@@ -3,6 +3,7 @@ title: "RAG vs memória de longo prazo"
 created: 2026-04-25
 updated: 2026-04-25
 type: concept
+progress: backlog
 status: seedling
 publish: true
 tags:

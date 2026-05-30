@@ -7,6 +7,7 @@ site: Sourcegraph
 published: 2025-03-22
 read: 2026-05-26
 type: glosa
+progress: backlog
 status: lido
 tags: [vibe-coding, coding-agents, agent-fleets, junior-developer, ai-economics]
 lang: en

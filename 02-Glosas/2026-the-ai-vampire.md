@@ -7,6 +7,7 @@ site: Medium
 published: 2026-02-11
 read: 2026-05-25
 type: glosa
+progress: backlog
 status: lido
 tags: [ai-burnout, agentic-coding, developer-wellbeing, claude-code, value-capture]
 lang: en
