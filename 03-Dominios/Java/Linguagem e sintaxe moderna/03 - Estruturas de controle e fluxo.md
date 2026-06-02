@@ -96,7 +96,7 @@ switch (dia) {
 }
 ```
 
-Problemático: esquecer o `break` faz a execução escorregar para o próximo `case` silenciosamente. Ver [[#(1) Fall-through esquecendo `break` no switch clássico]].
+Problemático: esquecer o `break` faz a execução escorregar para o próximo `case` silenciosamente. Ver a armadilha **(1) Fall-through esquecendo `break`** abaixo.
 
 #### Switch expression (Java 14+, JEP 361)
 
@@ -170,7 +170,7 @@ for (int n : numeros) {
 }
 ```
 
-Restrição importante: **não é possível modificar a coleção subjacente durante a iteração** com for-each — isso lança `ConcurrentModificationException`. Ver [[#(3) Modificar coleção dentro de for-each]].
+Restrição importante: **não é possível modificar a coleção subjacente durante a iteração** com for-each — isso lança `ConcurrentModificationException`. Ver a armadilha **(3) Modificar coleção dentro de for-each** abaixo.
 
 #### `while`
 

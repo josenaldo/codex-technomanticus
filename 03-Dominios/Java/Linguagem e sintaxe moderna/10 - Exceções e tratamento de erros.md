@@ -358,7 +358,7 @@ public class GlobalExceptionHandler {
 }
 ```
 
-O `@RestControllerAdvice` é o gancho central para tratamento de exceções em APIs REST — tema aprofundado em [[09 - Spring Boot Web e REST APIs]] (Galho 9 Web). O formato `ProblemDetail` (RFC 9457) é o padrão moderno de resposta de erro em Spring Boot 3+.
+O `@RestControllerAdvice` é o gancho central para tratamento de exceções em APIs REST — tema aprofundado no Galho 9 (Web e APIs REST) da trilha. O formato `ProblemDetail` (RFC 9457) é o padrão moderno de resposta de erro em Spring Boot 3+.
 
 ## Armadilhas
 
