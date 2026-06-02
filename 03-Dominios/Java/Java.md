@@ -6,6 +6,9 @@ publish: true
 
 # Java
 
+> [!warning] Nota legada
+> Este MOC foi substituído por [[03-Dominios/Java/index|Java (índice central)]], reorganizado na trilha Java Senior de 18 galhos. Mantido por compatibilidade de wikilinks; não atualizar.
+
 Ecossistema Java: linguagem, frameworks, ferramentas e boas práticas.
 
 ## Core
