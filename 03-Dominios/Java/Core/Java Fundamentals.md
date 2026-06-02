@@ -1,7 +1,7 @@
 ---
 title: "Java Fundamentals"
 created: 2026-04-01
-updated: 2026-04-10
+updated: 2026-06-02
 type: concept
 progress: backlog
 status: evergreen
@@ -31,6 +31,9 @@ Em entrevistas, o que diferencia um senior em Java:
 ---
 
 ## JVM (Java Virtual Machine)
+
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 3 (JVM por dentro)). Por ora permanece aqui.
 
 A JVM é o ambiente de execução que faz Java portátil. Entender como ela funciona é o que diferencia um senior de um junior.
 
@@ -224,621 +227,71 @@ Custom ClassLoaders    → WARs em Tomcat, plugins, etc.
 
 ## Sintaxe básica e tipos
 
-### Tipos primitivos
-
-| Tipo      | Tamanho | Range      | Wrapper     | Default  |
-| --------- | ------- | ---------- | ----------- | -------- |
-| `byte`    | 8 bits  | -128 a 127 | `Byte`      | 0        |
-| `short`   | 16 bits | -32K a 32K | `Short`     | 0        |
-| `int`     | 32 bits | -2B a 2B   | `Integer`   | 0        |
-| `long`    | 64 bits | ±9.2×10¹⁸  | `Long`      | 0L       |
-| `float`   | 32 bits | ±3.4×10³⁸  | `Float`     | 0.0f     |
-| `double`  | 64 bits | ±1.7×10³⁰⁸ | `Double`    | 0.0      |
-| `char`    | 16 bits | Unicode    | `Character` | '\u0000' |
-| `boolean` | 1 bit   | true/false | `Boolean`   | false    |
-
-**Autoboxing:** conversão automática entre primitivo e wrapper. Cuidado em loops (cria objetos).
-
-### Igualdade
-
-- **`==`** compara referência (mesmo objeto na memória)
-- **`.equals()`** compara conteúdo (valor)
-- **String pool:** `"hello" == "hello"` → `true` (interned), mas `new String("hello") == "hello"` → `false`
-- **Contrato hashCode/equals:** se `a.equals(b)`, então `a.hashCode() == b.hashCode()`. Quebrar isso quebra HashMap.
-
-### Casting e promoção
-
-```java
-// Promoção automática (widening): sem perda
-int x = 10;
-long y = x;        // int → long OK
-double z = y;      // long → double OK
-
-// Casting explícito (narrowing): pode perder dados
-double d = 9.99;
-int i = (int) d;   // 9 (trunca, não arredonda)
-```
-
-### Variáveis e escopo
-
-- **Local:** dentro de método, sem valor default, deve ser inicializada
-- **Instance (campo):** dentro da classe, tem valor default (0, null, false)
-- **Static (classe):** compartilhada entre instâncias, acessada via `Class.field`
-- **`var` (Java 10+):** inferência de tipo local. `var list = new ArrayList<String>();`
-- **`final`:** valor não pode ser reatribuído (mas objetos mutáveis ainda podem ser alterados internamente)
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[02 - Tipos, variáveis e operadores]].
 
 ---
 
 ## Estruturas de controle
 
-### Condicionais
-
-```java
-// if-else
-if (age >= 18) {
-    status = "adult";
-} else if (age >= 13) {
-    status = "teen";
-} else {
-    status = "child";
-}
-
-// Ternário
-String status = age >= 18 ? "adult" : "minor";
-
-// Switch expression (Java 14+)
-String result = switch (day) {
-    case MONDAY, FRIDAY    -> "Work hard";
-    case SATURDAY, SUNDAY  -> "Rest";
-    default                -> "Normal day";
-};
-```
-
-### Loops
-
-```java
-// for clássico
-for (int i = 0; i < 10; i++) { ... }
-
-// for-each (enhanced for)
-for (String name : names) { ... }
-
-// while
-while (condition) { ... }
-
-// do-while (executa ao menos uma vez)
-do { ... } while (condition);
-
-// break e continue
-for (int i = 0; i < 100; i++) {
-    if (i == 50) break;       // sai do loop
-    if (i % 2 == 0) continue; // pula para próxima iteração
-}
-```
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[03 - Estruturas de controle e fluxo]].
 
 ---
 
 ## Strings
 
-Strings são **imutáveis** em Java. Toda operação retorna uma nova String.
-
-```java
-String s = "Hello";
-s.length();                    // 5
-s.charAt(0);                   // 'H'
-s.substring(0, 3);             // "Hel"
-s.toLowerCase();               // "hello"
-s.contains("ell");             // true
-s.indexOf("lo");               // 3
-s.replace("Hello", "Hi");     // "Hi"
-s.split(",");                  // String[]
-s.strip();                     // remove espaços (Java 11+)
-s.isBlank();                   // true se vazio ou só espaços (Java 11+)
-```
-
-**StringBuilder** — para concatenação em loops (mutável, mais eficiente):
-
-```java
-var sb = new StringBuilder();
-for (int i = 0; i < 1000; i++) {
-    sb.append(i).append(", ");
-}
-String result = sb.toString();
-// NÃO fazer: result += i; em loop (cria 1000 Strings)
-```
-
-**Formatted strings (Java 15+):**
-
-```java
-String msg = "Patient %s, age %d".formatted(name, age);
-// ou
-String msg = STR."Patient \{name}, age \{age}"; // String templates (preview Java 21+)
-```
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[04 - Strings e text blocks]].
 
 ---
 
 ## Arrays
 
-Coleções de tamanho fixo. Tipo definido em compile-time.
-
-```java
-// Declaração e inicialização
-int[] numbers = new int[5];          // [0, 0, 0, 0, 0]
-int[] primes = {2, 3, 5, 7, 11};    // literal
-String[] names = new String[3];      // [null, null, null]
-
-// Acesso
-primes[0];        // 2
-primes.length;    // 5 (propriedade, não método)
-
-// Multidimensional
-int[][] matrix = {
-    {1, 2, 3},
-    {4, 5, 6}
-};
-matrix[1][2];     // 6
-
-// Iterar
-for (int n : primes) { System.out.println(n); }
-
-// Utilitários
-Arrays.sort(numbers);
-Arrays.fill(numbers, 0);
-Arrays.copyOf(primes, 10);          // copia e expande
-Arrays.asList(primes);              // converte para List (tamanho fixo)
-List.of(1, 2, 3);                   // List imutável (Java 9+)
-```
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[05 - Arrays e varargs]].
 
 ---
 
 ## OOP em Java
 
-### Classes e objetos
-
-```java
-public class Patient {
-    // Campos (instance variables)
-    private String name;
-    private final LocalDate birthDate;
-    private static int count = 0;   // compartilhado entre instâncias
-
-    // Construtor
-    public Patient(String name, LocalDate birthDate) {
-        this.name = name;
-        this.birthDate = birthDate;
-        count++;
-    }
-
-    // Construtor sobrecarregado (overloaded)
-    public Patient(String name) {
-        this(name, LocalDate.now());  // chama outro construtor
-    }
-
-    // Métodos
-    public String getName() { return name; }
-    public int getAge() {
-        return Period.between(birthDate, LocalDate.now()).getYears();
-    }
-
-    // Método estático
-    public static int getCount() { return count; }
-}
-```
-
-### Modificadores de acesso
-
-| Modificador | Classe | Package | Subclass | Mundo |
-| ----------- | ------ | ------- | -------- | ----- |
-| `public`    | ✅      | ✅       | ✅        | ✅     |
-| `protected` | ✅      | ✅       | ✅        | ❌     |
-| (default)   | ✅      | ✅       | ❌        | ❌     |
-| `private`   | ✅      | ❌       | ❌        | ❌     |
-
-### Herança
-
-```java
-public class Doctor extends Patient {
-    private String specialty;
-
-    public Doctor(String name, LocalDate birthDate, String specialty) {
-        super(name, birthDate);   // chama construtor do pai
-        this.specialty = specialty;
-    }
-
-    @Override
-    public String toString() {    // sobrescreve método do pai
-        return "Dr. " + getName() + " (" + specialty + ")";
-    }
-}
-```
-
-**Regras de herança:**
-
-- Java suporta herança simples (uma superclass). Múltipla apenas via interfaces.
-- `final class` não pode ser estendida. `final method` não pode ser sobrescrito.
-- Construtores não são herdados — subclass deve chamar `super()`.
-
-### Overriding vs Overloading
-
-| Aspecto     | Overriding (sobrescrita)               | Overloading (sobrecarga)                   |
-| ----------- | -------------------------------------- | ------------------------------------------ |
-| Onde        | Subclass redefine método da superclass | Mesma classe, métodos com mesmo nome       |
-| Assinatura  | Mesma assinatura                       | Parâmetros diferentes (tipo ou quantidade) |
-| Retorno     | Mesmo tipo ou covariante (subtipo)     | Pode ser diferente                         |
-| Acesso      | Igual ou mais permissivo               | Qualquer                                   |
-| `@Override` | Obrigatório (por convenção)            | Não se aplica                              |
-| Binding     | Runtime (dynamic dispatch)             | Compile-time (static)                      |
-| `static`    | Não pode ser sobrescrito (hidden)      | Pode ser sobrecarregado                    |
-
-```java
-// Overloading — mesmo nome, parâmetros diferentes
-public double calculate(double price) { return price * 1.1; }
-public double calculate(double price, double discount) { return price * (1 - discount); }
-
-// Overriding — subclass redefine comportamento
-@Override
-public String toString() { return "Custom: " + name; }
-```
-
-### Classes abstratas vs Interfaces
-
-```java
-// Classe abstrata — pode ter estado e implementação
-public abstract class Notification {
-    protected String recipient;
-
-    public Notification(String recipient) {
-        this.recipient = recipient;
-    }
-
-    public abstract void send(String message); // subclass implementa
-
-    public void log(String message) {          // implementação compartilhada
-        System.out.println("Sent to " + recipient + ": " + message);
-    }
-}
-
-// Interface — contrato puro (Java 8+: pode ter default methods)
-public interface Sendable {
-    void send(String message);                  // abstrato
-
-    default void retry(String message, int times) {  // default method
-        for (int i = 0; i < times; i++) {
-            try { send(message); return; }
-            catch (Exception e) { /* retry */ }
-        }
-    }
-
-    static Sendable noOp() {                   // static method
-        return message -> {};
-    }
-}
-```
-
-**Quando usar:**
-
-- **Interface:** definir contrato. Uma classe pode implementar N interfaces.
-- **Classe abstrata:** compartilhar estado e implementação entre subclasses. Herança simples.
-
-### Enums
-
-```java
-public enum OrderStatus {
-    PENDING("Pendente"),
-    CONFIRMED("Confirmado"),
-    SHIPPED("Enviado"),
-    DELIVERED("Entregue"),
-    CANCELLED("Cancelado");
-
-    private final String label;
-
-    OrderStatus(String label) { this.label = label; }
-
-    public String getLabel() { return label; }
-
-    // Enum pode ter métodos
-    public boolean isFinal() {
-        return this == DELIVERED || this == CANCELLED;
-    }
-}
-
-// Uso
-OrderStatus status = OrderStatus.PENDING;
-OrderStatus.valueOf("PENDING");    // parse de String
-OrderStatus.values();              // todos os valores
-```
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[06 - Classes, objetos e encapsulamento]], [[07 - Herança e polimorfismo]], [[08 - Interfaces e classes abstratas]].
 
 ---
 
 ## Records (Java 16+)
 
-Classes imutáveis para dados — elimina boilerplate de equals/hashCode/toString/getters. **Feature essencial do Java moderno.**
-
-### Declaração
-
-```java
-// Um record define componentes imutáveis em uma linha
-public record Patient(Long id, String name, LocalDate birthDate, String email) {}
-
-// O compilador gera automaticamente:
-// - Construtor canônico: public Patient(Long id, String name, LocalDate birthDate, String email)
-// - Accessors: id(), name(), birthDate(), email() (sem "get" prefix!)
-// - equals() e hashCode() baseados em todos os componentes
-// - toString(): "Patient[id=42, name=Maria, birthDate=1985-03-15, email=...]"
-```
-
-### Validação no construtor compacto
-
-```java
-public record Patient(Long id, String name, LocalDate birthDate, String email) {
-    // Compact constructor — valida ou normaliza antes do assignment automático
-    public Patient {
-        Objects.requireNonNull(id, "id is required");
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("name is required");
-        }
-        if (birthDate != null && birthDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("birthDate cannot be in the future");
-        }
-        // Normalização — reassign é permitido no compact constructor
-        name = name.strip();
-        email = email != null ? email.toLowerCase() : null;
-    }
-}
-```
-
-### Métodos adicionais
-
-```java
-public record Money(BigDecimal amount, Currency currency) {
-    // Construtor secundário
-    public Money(double amount, String currencyCode) {
-        this(BigDecimal.valueOf(amount), Currency.getInstance(currencyCode));
-    }
-
-    // Métodos de negócio
-    public Money add(Money other) {
-        if (!this.currency.equals(other.currency)) {
-            throw new IllegalArgumentException("currency mismatch");
-        }
-        return new Money(this.amount.add(other.amount), this.currency);
-    }
-
-    public boolean isZero() {
-        return amount.compareTo(BigDecimal.ZERO) == 0;
-    }
-
-    // Static factory
-    public static Money zero(Currency currency) {
-        return new Money(BigDecimal.ZERO, currency);
-    }
-}
-```
-
-### Records implementam interfaces
-
-```java
-public interface Identifiable {
-    Long id();
-}
-
-public record Patient(Long id, String name) implements Identifiable {}
-// Record já implementa id() pelo accessor automático
-```
-
-### Record patterns (Java 21+)
-
-```java
-// Pattern matching desestruturando o record
-record Point(int x, int y) {}
-record Circle(Point center, double radius) {}
-
-Object shape = new Circle(new Point(0, 0), 5);
-
-// Desestruturação aninhada
-if (shape instanceof Circle(Point(int x, int y), double r)) {
-    System.out.println("Circle at (" + x + "," + y + ") radius " + r);
-}
-
-// Em switch
-String describe(Object obj) {
-    return switch (obj) {
-        case Circle(Point(int x, int y), double r)
-            when r > 10 -> "Big circle at " + x + "," + y;
-        case Circle(Point p, double r) -> "Small circle";
-        case Point(int x, int y) -> "Point at " + x + "," + y;
-        case null -> "nothing";
-        default -> "unknown";
-    };
-}
-```
-
-### Quando usar records
-
-**Ideais para:**
-
-- **DTOs** — request/response em APIs REST (elimina classes anêmicas)
-- **Value Objects (DDD)** — `Money`, `Email`, `CPF`, `Coordinates`
-- **Tuplas** — retornos multi-valor sem criar classe
-- **Projections** — em Spring Data JPA (`SELECT new Record(...)`)
-- **Dados imutáveis** em geral
-
-**NÃO são ideais quando:**
-
-- Você precisa de herança (records são `final`)
-- A classe tem lógica mutável
-- Você precisa de JavaBean convention (`getName()` em vez de `name()`) — alguns frameworks antigos assumem isso
-
-### Records em Spring Boot
-
-```java
-// DTO de request
-public record CreatePatientRequest(
-    @NotBlank String name,
-    @Email @NotBlank String email,
-    @Past @NotNull LocalDate birthDate
-) {}
-
-// DTO de response
-public record PatientResponse(Long id, String name, String email, int age) {
-    public static PatientResponse from(Patient patient) {
-        return new PatientResponse(
-            patient.getId(),
-            patient.getName(),
-            patient.getEmail(),
-            Period.between(patient.getBirthDate(), LocalDate.now()).getYears()
-        );
-    }
-}
-
-// Controller
-@PostMapping("/patients")
-public PatientResponse create(@Valid @RequestBody CreatePatientRequest req) {
-    Patient saved = service.create(req);
-    return PatientResponse.from(saved);
-}
-```
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[13 - Records e record patterns]].
 
 ---
 
 ## Sealed Classes (Java 17+)
 
-Controla **quem pode estender** uma classe/interface. Permite o compilador saber o conjunto **exaustivo** de subtipos.
-
-```java
-public sealed interface Shape permits Circle, Rectangle, Triangle {}
-
-public record Circle(double radius) implements Shape {}
-public record Rectangle(double width, double height) implements Shape {}
-public record Triangle(double base, double height) implements Shape {}
-
-// Exhaustive pattern matching — compilador exige tratar todos os casos
-double area(Shape shape) {
-    return switch (shape) {
-        case Circle c     -> Math.PI * c.radius() * c.radius();
-        case Rectangle r  -> r.width() * r.height();
-        case Triangle t   -> 0.5 * t.base() * t.height();
-        // Sem default! Compilador garante exaustividade
-    };
-}
-```
-
-**Modificadores dos subtipos:**
-
-- `final` — não pode ser estendido
-- `sealed` — só pode ser estendido pelo `permits` declarado
-- `non-sealed` — volta a ser aberto (qualquer um pode estender)
-
-**Uso prático:**
-
-- Algebraic Data Types (ADTs) no Java — hierarquias fechadas (`Result<T> = Success<T> | Failure`)
-- Domain modeling — "um pedido é um de {Draft, Confirmed, Shipped, Delivered, Cancelled}"
-- API design — garantir que subtipos sejam controlados
-
-```java
-// Result type usando sealed + records
-public sealed interface Result<T> permits Success, Failure {
-    record Success<T>(T value) implements Result<T> {}
-    record Failure<T>(String error) implements Result<T> {}
-
-    static <T> Result<T> ok(T value) { return new Success<>(value); }
-    static <T> Result<T> fail(String error) { return new Failure<>(error); }
-}
-
-// Uso com pattern matching
-Result<User> result = fetchUser(id);
-String message = switch (result) {
-    case Success<User>(User u) -> "Got " + u.name();
-    case Failure<User>(String err) -> "Error: " + err;
-};
-```
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[14 - Sealed classes e pattern matching]].
 
 ---
 
 ## Pattern Matching
 
-Evoluiu em várias versões. Hoje (Java 21+) é um dos pontos fortes do Java moderno.
-
-### instanceof pattern (Java 16)
-
-```java
-// Antes
-if (obj instanceof String) {
-    String s = (String) obj;
-    System.out.println(s.length());
-}
-
-// Com pattern
-if (obj instanceof String s) {
-    System.out.println(s.length());
-}
-
-// Em condição
-if (obj instanceof String s && !s.isBlank()) {
-    process(s);
-}
-```
-
-### Switch patterns (Java 21)
-
-```java
-String describe(Object obj) {
-    return switch (obj) {
-        case null            -> "null";
-        case Integer i when i < 0  -> "negative int: " + i;
-        case Integer i       -> "int: " + i;
-        case String s        -> "string of length " + s.length();
-        case int[] arr       -> "int array of length " + arr.length;
-        case List<?> list    -> "list with " + list.size() + " elements";
-        default              -> "something else";
-    };
-}
-```
-
-### Record patterns (Java 21)
-
-Ver seção [Records](#records-java-16) acima.
-
-### Primitive patterns (Java 23+)
-
-```java
-// Preview
-Object o = 42;
-switch (o) {
-    case int i  -> System.out.println("int: " + i);
-    case long l -> System.out.println("long: " + l);
-    // ...
-}
-```
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[14 - Sealed classes e pattern matching]].
 
 ---
 
 ## Annotations
 
-Metadata no código. Processadas em compile-time ou runtime.
-
-```java
-// Built-in
-@Override          // verifica que está sobrescrevendo
-@Deprecated        // marca como obsoleto
-@SuppressWarnings  // silencia warnings
-@FunctionalInterface // garante que interface tem 1 método abstrato
-
-// Custom annotation
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface NotEmpty {
-    String message() default "Field cannot be empty";
-}
-```
-
-**Em Spring:** `@Service`, `@Repository`, `@RestController`, `@Autowired`, `@Transactional` — annotations são o mecanismo principal de configuração.
-
-> **Fonte:** [O que são anotações no Java? (vídeo)](https://www.youtube.com/watch?v=d7oJwcGJWUk)
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[11 - Annotations]].
 
 ---
 
 ## Collections Framework
+
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 2). Por ora permanece aqui.
 
 ### Hierarquia
 
@@ -950,6 +403,9 @@ patients.stream().filter(Patient::isActive).toList();
 
 ## Lambdas e Interfaces Funcionais
 
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 2). Por ora permanece aqui.
+
 Introduzidas no Java 8. Lambdas são funções anônimas que implementam interfaces funcionais.
 
 ### Sintaxe
@@ -1013,6 +469,9 @@ Predicate<Patient> activeSenior = active.and(senior);
 ---
 
 ## Streams API
+
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 2). Por ora permanece aqui.
 
 Pipeline funcional para processar coleções. Introduzida no Java 8.
 
@@ -1131,6 +590,9 @@ Map<String, Long> topSpecialties = patients.stream()
 
 ## Date/Time API (Java 8+)
 
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 2). Por ora permanece aqui.
+
 Substituiu o problemático `Date`/`Calendar`. Imutável, thread-safe.
 
 ```java
@@ -1175,6 +637,9 @@ LocalDate firstDayOfMonth = today.withDayOfMonth(1);
 ---
 
 ## I/O (Arquivos)
+
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 2). Por ora permanece aqui.
 
 ### java.nio.file (moderno — preferir)
 
@@ -1225,179 +690,15 @@ try (var reader = new BufferedReader(new FileReader("data.csv"));
 
 ## Exceções
 
-Hierarquia: `Throwable` → `Error` (sistema, não tratar) e `Exception` (aplicação).
-
-```text
-Throwable
-  ├── Error (OutOfMemoryError, StackOverflowError, VirtualMachineError)
-  │   → não capturar — sistema está em estado inconsistente
-  └── Exception
-       ├── IOException, SQLException, InterruptedException, ...
-       │   → CHECKED — compilador obriga a tratar
-       └── RuntimeException
-            ├── NullPointerException
-            ├── IllegalArgumentException
-            ├── IllegalStateException
-            ├── IndexOutOfBoundsException
-            ├── ClassCastException
-            ├── ArithmeticException
-            └── ... → UNCHECKED — não precisa declarar
-```
-
-### Checked vs Unchecked: o debate eterno
-
-**Checked exceptions** foram uma inovação do Java que hoje é vista como erro de design por muitos (incluindo Rod Johnson, criador do Spring). Problemas:
-
-- **Poluição de assinatura** — `throws IOException, SQLException, ...` em toda a chain
-- **Vazam implementação** — interface de alto nível herda detalhes do DAO
-- **Difíceis em lambdas e streams** — `Consumer<T>` não declara checked exceptions
-- **Frequentemente ignoradas** — `catch (Exception e) {}` vazio para silenciar o compilador
-
-**Tendência moderna:** maioria das bibliotecas modernas (Spring, JPA, Reactor) usam **unchecked**. O próprio Java evoluiu — `java.io` em NIO.2 lança `UncheckedIOException` onde faz sentido.
-
-**Regra prática:**
-
-- **Checked** — apenas se o caller pode e deve recuperar da falha (raro)
-- **Unchecked** — default para tudo o mais
-
-### Try-catch-finally e try-with-resources
-
-```java
-// Try-with-resources — fecha automaticamente recursos que implementam AutoCloseable
-try (var reader = Files.newBufferedReader(Path.of("data.txt"));
-     var writer = Files.newBufferedWriter(Path.of("out.txt"))) {
-    String line;
-    while ((line = reader.readLine()) != null) {
-        writer.write(process(line));
-        writer.newLine();
-    }
-} catch (IOException e) {
-    log.error("Failed to process file", e);
-    throw new ProcessingException("File processing failed", e);  // preserva cause
-}
-// Recursos fechados automaticamente, mesmo em exceção
-```
-
-**Suppressed exceptions:** se o `close()` do recurso lançar durante cleanup após outra exceção, a segunda é **suprimida** (não substitui a original). Acessível via `throwable.getSuppressed()`.
-
-### Custom exceptions: boas práticas
-
-```java
-// Exceção de domínio com contexto rico
-public class PatientNotFoundException extends RuntimeException {
-    private final Long patientId;
-
-    public PatientNotFoundException(Long id) {
-        super("Patient not found: id=" + id);
-        this.patientId = id;
-    }
-
-    public Long getPatientId() { return patientId; }
-}
-
-// Exception chaining — preserve a causa original
-public class ServiceException extends RuntimeException {
-    public ServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-}
-
-try {
-    repository.save(patient);
-} catch (DataAccessException e) {
-    throw new ServiceException("Failed to save patient " + patient.getId(), e);
-}
-```
-
-**Regras:**
-
-- **Herdar de `RuntimeException`** para unchecked
-- **Mensagens úteis** — incluam o dado relevante (`id=42`, não apenas "not found")
-- **Preservar a cause** — nunca `throw new X("...")` descartando a original
-- **Exceções de domínio** no package do domínio, não em `util.exceptions`
-
-### Anti-patterns
-
-```java
-// RUIM — silenciar exceção
-try {
-    doSomething();
-} catch (Exception e) { }  // Swallow — bug escondido
-
-// RUIM — logar e throw
-try {
-    doSomething();
-} catch (Exception e) {
-    log.error("Error", e);
-    throw e;  // Loga 2x (aqui e em cima na stack)
-}
-// → Escolha: logar OU throw, não ambos. Se tratar, log. Se propagar, não log.
-
-// RUIM — catch genérico
-try {
-    doSomething();
-} catch (Throwable t) { ... }  // Captura Error também, muito amplo
-
-// RUIM — perder a cause
-try {
-    doSomething();
-} catch (IOException e) {
-    throw new RuntimeException("Failed");  // Cause perdida!
-}
-// BOM
-throw new RuntimeException("Failed", e);
-
-// RUIM — exception para controle de fluxo
-try {
-    Integer.parseInt(str);
-    return true;
-} catch (NumberFormatException e) {
-    return false;
-}
-// MELHOR
-return str.chars().allMatch(Character::isDigit);  // ou regex
-// (exceções são caras — o JIT não otimiza bem around them)
-```
-
-### Exceções em lambdas
-
-```java
-// RUIM — lambda com checked exception não compila
-list.forEach(f -> Files.readString(f));  // IOException não tratada
-
-// Workaround 1 — wrap em unchecked
-list.forEach(f -> {
-    try { return Files.readString(f); }
-    catch (IOException e) { throw new UncheckedIOException(e); }
-});
-
-// Workaround 2 — helper
-static <T, R> Function<T, R> unchecked(ThrowingFunction<T, R> fn) {
-    return t -> {
-        try { return fn.apply(t); }
-        catch (Exception e) { throw new RuntimeException(e); }
-    };
-}
-list.stream().map(unchecked(Files::readString)).toList();
-```
-
-### Em APIs REST
-
-Traduzir exceções de domínio para HTTP status codes via `@RestControllerAdvice`. Detalhes em [[API Design]] (RFC 9457 Problem Details) e [[Spring Boot]].
-
-> **Fontes:**
->
-> - [Java Exceptions — Baeldung](https://www.baeldung.com/java-exceptions)
-> - [Checked vs Unchecked — Baeldung](https://www.baeldung.com/java-checked-unchecked-exceptions)
-> - [Try-with-resources — Baeldung](https://www.baeldung.com/java-try-with-resources)
-> - [Sneaky throws — Baeldung](https://www.baeldung.com/java-sneaky-throws)
-> - [Chained exceptions — Baeldung](https://www.baeldung.com/java-chained-exceptions)
-> - [Exceptions performance — Baeldung](https://www.baeldung.com/java-exceptions-performance)
-> - [Pensando nas Exceptions do Java](https://insights.itexto.com.br/pensando-nas-exceptions-do-java-ou-por-que-elas-sao-assim/)
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[10 - Exceções e tratamento de erros]].
 
 ---
 
 ## Optional
+
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 2). Por ora permanece aqui.
 
 Wrapper para valores que podem ou não existir. Substitui `null`.
 
@@ -1422,35 +723,15 @@ patient.ifPresent(pat -> sendWelcomeEmail(pat));
 
 ## Generics
 
-Tipos parametrizados. Segurança de tipos em compile-time.
-
-```java
-// Classe genérica
-public class Result<T> {
-    private final T data;
-    private final String error;
-
-    public static <T> Result<T> ok(T data) { return new Result<>(data, null); }
-    public static <T> Result<T> fail(String error) { return new Result<>(null, error); }
-}
-
-// Bounded types
-public <T extends Comparable<T>> T max(T a, T b) {
-    return a.compareTo(b) >= 0 ? a : b;
-}
-
-// Wildcards
-List<? extends Number> numbers;  // leitura (producer) — pode ser List<Integer>, List<Double>
-List<? super Integer> sink;      // escrita (consumer) — pode ser List<Integer>, List<Number>
-```
-
-**PECS:** Producer Extends, Consumer Super.
-
-**Type erasure:** generics são removidos em runtime. `List<String>` e `List<Integer>` são o mesmo `List` em bytecode.
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[12 - Generics em profundidade]].
 
 ---
 
 ## Concorrência (visão geral)
+
+> [!info] Migra em galho futuro
+> Este tópico será expandido em galho próprio (Galho 4 (Concorrência e paralelismo)). Por ora permanece aqui.
 
 > **Deep dive:** [[Java Concurrency]] — Memory Model, happens-before, locks avançados, java.util.concurrent, Virtual Threads, Structured Concurrency, patterns e pitfalls.
 
@@ -1516,88 +797,8 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ## Features modernas por versão
 
-### Java 8 (2014) — A revolução
-
-- **Lambdas e interfaces funcionais** — `(x) -> x * 2`
-- **Streams API** — processamento funcional de coleções
-- **Optional** — alternativa a null
-- **Date/Time API** — `LocalDate`, `Instant`, `Duration`
-- **Default methods em interfaces** — evolução sem quebrar
-- **Method references** — `String::toUpperCase`
-
-### Java 9-10 (2017-2018)
-
-- **Modules (JPMS)** — modularização da JVM
-- **`List.of()`, `Set.of()`, `Map.of()`** — coleções imutáveis
-- **`var` (Java 10)** — inferência de tipo local
-- **`Optional.ifPresentOrElse()`, `Optional.or()`**
-- **`Stream.ofNullable()`, `Stream.takeWhile()`, `Stream.dropWhile()`**
-
-### Java 11-16 (2018-2021)
-
-- **`String.isBlank()`, `.strip()`, `.lines()`, `.repeat()`** (Java 11)
-- **`Files.readString()`, `Files.writeString()`** (Java 11)
-- **Switch expressions** (Java 14) — `switch` retorna valor
-- **Text blocks** (Java 15) — `"""multiline"""`
-- **Records** (Java 16) — `record Point(int x, int y) {}`
-- **Pattern matching for instanceof** (Java 16) — `if (obj instanceof String s)`
-- **`Stream.toList()`** (Java 16) — substitui `collect(Collectors.toList())`
-
-### Java 17 (2021, LTS)
-
-- **Sealed classes** — `sealed class Shape permits Circle, Rectangle`
-- **Pattern matching em switch** (preview)
-- **Remoção do Applet API e Security Manager**
-
-### Java 21 (2023, LTS)
-
-- **Virtual Threads** — threads leves para I/O-bound
-- **Record patterns** — `if (obj instanceof Point(int x, int y))`
-- **Pattern matching em switch** (final)
-- **Sequenced Collections** — `SequencedCollection`, `SequencedMap` com `getFirst()`, `getLast()`
-- **String templates** (preview) — `STR."Hello \{name}"`
-
-### Java 22 (2024)
-
-- **Unnamed variables and patterns** — `_` para variáveis/patterns não usados
-- **Statements before super()** — validar argumentos antes de chamar construtor pai
-- **Stream Gatherers** (preview) — operações intermediárias customizadas no Stream
-- **String templates** (preview revisto) — `STR."Hello \{name}"`
-- **Structured Concurrency** (preview) — grupo de tarefas como unidade atômica
-- **Scoped Values** (preview) — alternativa thread-safe a ThreadLocal
-- **Class-File API** (preview) — ler/escrever bytecode via API Java
-
-### Java 23 (Setembro 2024)
-
-- **Primitive types in patterns** (preview) — `case int i` em switch
-- **Module import declarations** (preview) — `import module java.base`
-- **Markdown em Javadoc** — blocos de código em Markdown nativamente
-- **Implicitly declared classes e main methods** (preview) — scripts Java sem `public class Main { ... }`
-- **Flexible Constructor Bodies** — evolução de "statements before super()"
-
-### Java 24 (Março 2025)
-
-- **Stream Gatherers** (final)
-- **Scoped Values** (final) — substitui ThreadLocal em Virtual Threads
-- **Ahead-of-Time Class Loading & Linking** (preview) — startup mais rápido
-- **Compact Object Headers** (experimental) — menos memória por objeto
-- **Generational Shenandoah GC** (experimental)
-
-### Java 25 (Setembro 2025, LTS)
-
-- **Structured Concurrency** (final)
-- **Primitive Patterns** (final)
-- **Module import declarations** (final)
-- **Compact Source Files and Instance Main Methods** (final) — Java para scripting
-- **PEM Encodings of Cryptographic Objects** — API moderna para keys/certs
-- **Stable Values** (preview) — imutabilidade deferred
-- Consolida vários previews acumulados desde Java 21
-
-> **Fontes:**
->
-> - [Java features desde JDK 8 ao 21](https://advancedweb.hu/a-categorized-list-of-all-java-and-jvm-features-since-jdk-8-to-21/)
-> - [Java Language Updates](https://docs.oracle.com/en/java/javase/21/language/index.html)
-> - [Java Evolved](https://javaevolved.github.io/)
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[15 - A evolução do Java (8 a 25)]].
 
 ---
 
@@ -1611,9 +812,9 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 - **`==` para comparar Strings:** usar `.equals()`. `==` funciona com literais por causa do pool, mas falha com `new String()`
 - **Parallel streams sem pensar:** ForkJoinPool compartilhado, poucos elementos = overhead > ganho
 
-## Na prática (da minha experiência)
+## Na prática
 
-> Com 20+ anos em Java, a linguagem evoluiu enormemente. No MedEspecialista, uso Java 21 com Records para DTOs (elimina boilerplate), Streams para transformações de dados, e CompletableFuture para chamadas paralelas a serviços externos. A migração para Virtual Threads reduziu a necessidade de tuning de thread pools em endpoints I/O-bound. No dia a dia, Collections e Streams são 80% do que uso — o outro 20% é concorrência e I/O.
+Em projetos enterprise com Java 21, Records são o padrão para DTOs — eliminam boilerplate de equals/hashCode/toString mantendo imutabilidade. Streams e lambdas cobrem a maior parte das transformações de dados; CompletableFuture é o padrão para orquestrar chamadas paralelas a serviços externos. A adoção de Virtual Threads (Java 21) elimina a necessidade de tuning fino de thread pools em endpoints I/O-bound, simplificando a operação de microserviços com alto volume de chamadas blocking. Collections e Streams representam a maior fatia do uso cotidiano; concorrência e I/O completam o quadro em integrações e processamento assíncrono.
 
 ## How to explain in English
 
@@ -1658,3 +859,4 @@ For concurrency, Virtual Threads in Java 21 are a game-changer. In traditional J
 - [[Design Patterns]]
 - [[03-Dominios/Java/Backend/Kafka/Kafka]]
 - [[JavaFX]]
+- [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (galho)]]
