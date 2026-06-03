@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-05-29
+updated: 2026-05-31
 type: glossary
 status: seedling
 aliases:
@@ -315,6 +315,9 @@ Um modelo treinado especificamente para converter texto em embeddings — vetore
 
 ### hybrid search
 Uma estratégia de recuperação que combina busca lexical (ex.: BM25) e busca densa (embeddings), fundindo os dois rankings para aproveitar tanto correspondência exata de termos quanto similaridade semântica. Costuma superar cada método isolado, sobretudo com termos raros ou jargão.
+
+### Lost in the Middle
+O fenômeno em que LLMs aproveitam melhor a informação no início e no fim do contexto e tendem a ignorar o que está no meio, formando uma curva de atenção em U. Tem impacto direto em RAG: um chunk relevante que caia no meio de um top-K longo pode ser desprezado mesmo tendo sido recuperado — daí a prática de posicionar os chunks de maior score nas pontas do contexto. Documentado por Liu et al. (2023).
 
 ### RAG (Retrieval-Augmented Generation)
 Uma técnica que fundamenta as respostas do LLM em documentos externos buscados no momento da consulta, reduzindo alucinações e permitindo atualizações de conhecimento sem necessidade de retreinamento. Um pipeline típico faz o embedding da consulta, recupera os top-K chunks relevantes de um vector store e os injeta no prompt.

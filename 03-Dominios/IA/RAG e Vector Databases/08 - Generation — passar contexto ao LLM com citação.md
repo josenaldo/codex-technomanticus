@@ -1,10 +1,10 @@
 ---
 title: "Generation — passar contexto ao LLM com citação"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-05-31
 type: concept
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - rag
@@ -42,6 +42,40 @@ Pergunta: {user_question}
 1. **Delimitação** — trechos numerados, separados
 2. **Regra de citação** — explícita
 3. **Regra de fallback** — "não sei" como opção válida
+
+## Construção de contexto — o elo entre retrieval e geração
+
+> [!warning] Retrieval certo ≠ resposta certa
+> Recuperar o documento certo **não garante** resposta certa. Quando o chunk correto está no contexto e a resposta ainda erra, o gargalo está *entre* recuperar e gerar — não é "o LLM alucinou, melhore o prompt". As 5 causas possíveis estão mapeadas em [[09 - Evaluation de RAG]]; aqui tratamos das três que vivem na construção do contexto.
+
+### Ordenação importa (Lost in the Middle)
+
+LLMs aproveitam melhor o que está no **início e no fim** do contexto e tendem a ignorar o meio — a [[Dicionário de IA#Lost in the Middle|curva de atenção em U]]. Um chunk relevante jogado no meio de um top-K longo pode ser desprezado mesmo tendo sido recuperado e bem ranqueado.
+
+- Posicione os chunks de **maior score nas pontas** do contexto, não no meio.
+- Poucos chunks bem ordenados > muitos chunks "na ordem crua do retrieval".
+
+### Menos é mais — ruído dilui evidência
+
+Empilhar o chunk certo junto com N chunks irrelevantes (ou desatualizados/conflitantes) **piora** a resposta. Não é [[Dicionário de IA#Hallucination|hallucination]] — é confusão de evidência: o modelo tem o material certo, mas afogado em ruído.
+
+- Priorize **precisão** sobre volume (ver `context_precision` em [[09 - Evaluation de RAG]]).
+- 3 chunks de alta relevância costumam bater 10 chunks "por garantia".
+
+### Extrair antes de gerar (extract-then-generate)
+
+Para queries difíceis, não passe chunks crus direto pro LLM. Insira uma etapa que **extrai os spans de suporte exatos** (as sentenças que de fato respondem à pergunta) e gere a resposta só a partir delas. Menos texto cru = menos espaço para o modelo improvisar.
+
+### Pipeline de geração robusto
+
+Quando a resposta exige juntar fatos espalhados em vários chunks, a geração vira um **fluxo multi-etapa**, não uma chamada única:
+
+```text
+retrieve → rerank → extrair evidência → resolver conflitos → gerar → verificar contra evidência
+```
+
+- **Resolver conflitos** — quando chunks discordam (ex.: versões diferentes da mesma doc), reconcilie antes de gerar (a regra 4 do system prompt restritivo, abaixo, é a semente disso).
+- **Verificar contra evidência** — checar se cada afirmação da resposta é suportada por algum trecho recuperado é o gate de faithfulness ([[09 - Evaluation de RAG]]). Frameworks como **Self-RAG** e **Corrective RAG (CRAG)** automatizam essa auto-checagem; o CRAG ainda dispara correção (ex.: nova busca) quando o retrieval vem fraco.
 
 ## Por que citação importa
 
@@ -266,3 +300,6 @@ Streaming é crucial para UX em RAG — usuário vê resposta começando imediat
 - **Anthropic** — *Citations API* (2024)
 - **Eugene Yan** — *Patterns for Building LLM-based Systems* (2024)
 - **OpenAI** — *Structured outputs guide* (2026)
+- **Liu et al.** — *Lost in the Middle: How Language Models Use Long Contexts* (arXiv 2307.03172, TACL 2024)
+- **Asai et al.** — *Self-RAG: Learning to Retrieve, Generate and Critique through Self-Reflection* (arXiv 2310.11511, 2023)
+- **Yan et al.** — *Corrective Retrieval Augmented Generation (CRAG)* (arXiv 2401.15884, 2024)
