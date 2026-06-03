@@ -106,7 +106,7 @@ O padrão canônico para criar e exibir uma janela Swing envolve três chamadas:
 Swing implementa uma arquitetura **Model-View-Controller** onde a renderização visual é delegada a um objeto `ComponentUI` por componente. Isso permite trocar o "tema" de toda a aplicação em tempo de execução sem recompilar:
 
 ```java
-UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); // lança exceções checked (UnsupportedLookAndFeelException etc.) — trate com try/catch em código real
 SwingUtilities.updateComponentTreeUI(frame);  // propaga a mudança para todos os filhos
 ```
 
