@@ -31,7 +31,7 @@ Esse modelo resolve problemas reais:
 
 - **Resize automático:** quando o usuário arrasta a borda da janela, o layout recalcula; com posicionamento absoluto, os componentes ficam presos onde foram colocados.
 - **DPI e fonte variável:** em telas de alta resolução ou com fontes maiores (acessibilidade), as dimensões preferidas dos componentes aumentam; o layout manager absorve essa variação.
-- **Look-and-feel diferente:** um `JButton` no Nimbus pode ser ligeiramente mais largo do que no Metal; o layout manager relayout é automático.
+- **Look-and-feel diferente:** um `JButton` no Nimbus pode ser ligeiramente mais largo do que no Metal; o recálculo de layout é automático.
 
 A API de configuração é direta:
 
@@ -47,7 +47,7 @@ frame.getContentPane().setLayout(new FlowLayout());
 
 ### `BorderLayout` / `FlowLayout` / `GridLayout` (os básicos)
 
-**`BorderLayout`** (padrão do content pane e de `JScrollPane`) divide o container em cinco zonas constantes: `NORTH`, `SOUTH`, `EAST`, `WEST` e `CENTER`. Todo espaço restante após alocar as bordas vai para `CENTER`. Ideal para a estrutura principal de uma janela: toolbar no `NORTH`, status bar no `SOUTH`, navegação lateral no `WEST`, conteúdo principal no `CENTER`.
+**`BorderLayout`** (padrão do content pane de `JFrame`/`JDialog`) divide o container em cinco zonas constantes: `NORTH`, `SOUTH`, `EAST`, `WEST` e `CENTER`. Todo espaço restante após alocar as bordas vai para `CENTER`. Ideal para a estrutura principal de uma janela: toolbar no `NORTH`, status bar no `SOUTH`, navegação lateral no `WEST`, conteúdo principal no `CENTER`.
 
 ```java
 JPanel main = new JPanel(new BorderLayout());
