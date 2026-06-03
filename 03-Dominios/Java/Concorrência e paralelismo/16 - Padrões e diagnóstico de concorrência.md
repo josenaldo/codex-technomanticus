@@ -455,7 +455,7 @@ Fechamento do galho: qual primitiva escolher para qual problema.
 | Desacoplar produção de consumo com backpressure | `BlockingQueue` + producer-consumer | `put` bloqueia se cheia; `take` bloqueia se vazia — backpressure automático |
 | Composição de operações assíncronas | `CompletableFuture` | Pipeline declarativo; `allOf` para fan-in; `orTimeout` para SLA |
 | I/O-bound em alta concorrência | Virtual Threads (`Executors.newVirtualThreadPerTaskExecutor()`) | Milhões de threads leves; código síncrono simples |
-| Grupo de tasks com ciclo de vida compartilhado | Structured Concurrency (`StructuredTaskScope`) | Cancelamento automático; error propagation; sem task orphans (GA Java 25) |
+| Grupo de tasks com ciclo de vida compartilhado | Structured Concurrency (`StructuredTaskScope`) | Cancelamento automático; error propagation; sem task orphans (preview no Java 25, exige `--enable-preview`) |
 | Contexto imutável por scope de execução | `ScopedValue` | Imutável, sem leak, eficiente com virtual threads (GA Java 25) |
 
 ## Veja também
