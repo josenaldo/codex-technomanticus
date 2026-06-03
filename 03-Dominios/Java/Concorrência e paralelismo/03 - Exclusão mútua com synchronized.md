@@ -209,7 +209,7 @@ Prefira `notifyAll()` a `notify()`: `notify()` acorda uma thread arbitrária —
 
 ### Contador thread-safe
 
-`ContadorSeguro` (definido em [[#Como funciona]]) com duas threads concorrentes:
+`ContadorSeguro` (definido acima, em "Como funciona") com duas threads concorrentes:
 
 ```java
 // Teste: duas threads incrementando 10.000 vezes cada
