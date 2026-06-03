@@ -22,7 +22,7 @@ aliases:
 # Sincronizadores
 
 > [!abstract] TL;DR
-> **Sincronizadores** são primitivas de coordenação de `java.util.concurrent` que permitem que threads aguardem umas às outras ou controlem acesso a recursos — sem precisar de `wait/notify` manual. `CountDownLatch` é **one-shot**: uma ou mais threads esperem N eventos acontecerem e não pode ser reiniciado. `CyclicBarrier` é **reutilizável**: N threads se esperam mutuamente num ponto de encontro e o ciclo recomeça automaticamente. `Semaphore` limita quantas threads acessam um recurso simultaneamente com um contador de _permits_. `Phaser` generaliza os dois anteriores com registro dinâmico de participantes e múltiplas fases. `Exchanger` faz handoff síncrono de objetos entre exatamente duas threads. Escolher o sincronizador certo elimina a necessidade de lógica frágil de `wait/notify` e torna a intenção de coordenação explícita no código.
+> **Sincronizadores** são primitivas de coordenação de `java.util.concurrent` que permitem que threads aguardem umas às outras ou controlem acesso a recursos — sem precisar de `wait/notify` manual. `CountDownLatch` é **one-shot**: uma ou mais threads esperam que N eventos aconteçam e não pode ser reiniciado. `CyclicBarrier` é **reutilizável**: N threads se esperam mutuamente num ponto de encontro e o ciclo recomeça automaticamente. `Semaphore` limita quantas threads acessam um recurso simultaneamente com um contador de _permits_. `Phaser` generaliza os dois anteriores com registro dinâmico de participantes e múltiplas fases. `Exchanger` faz handoff síncrono de objetos entre exatamente duas threads. Escolher o sincronizador certo elimina a necessidade de lógica frágil de `wait/notify` e torna a intenção de coordenação explícita no código.
 
 ## O que é
 

@@ -365,7 +365,7 @@ List<Integer> synced = Collections.synchronizedList(new ArrayList<>());
 
 // Opção 3: adicionar em batch quando possível
 List<Integer> batch = List.of(1, 2, 3, 4, 5);
-cowList.addAll(batch);  // uma única cópia para o batch inteiro
+data.addAll(batch);  // uma única cópia para o batch inteiro
 ```
 
 **Regra de bolso:** se leituras são 10x ou mais frequentes que escritas, `CopyOnWriteArrayList` é adequado. Se escritas são frequentes, escolha outra estrutura.

@@ -74,7 +74,7 @@ CompletableFuture<Void> cfRun =
 CompletableFuture<String> pronto =
     CompletableFuture.completedFuture("valor fixo");
 
-// Já completado com exceção (útil em testes)
+// Já completado com exceção (útil em testes) — failedFuture é Java 9+
 CompletableFuture<String> falhou =
     CompletableFuture.failedFuture(new RuntimeException("erro"));
 ```
@@ -118,7 +118,7 @@ CompletableFuture<List<Pedido>> certo =
     buscarUsuario(id).thenCompose(user -> buscarPedidos(user.getId()));
 
 // Encadeamento de múltiplos passos dependentes
-CompletableFuture<Decimal> total =
+CompletableFuture<BigDecimal> total =
     buscarUsuario(id)
         .thenCompose(user -> buscarPedidos(user.getId()))
         .thenCompose(pedidos -> calcularTotal(pedidos));
