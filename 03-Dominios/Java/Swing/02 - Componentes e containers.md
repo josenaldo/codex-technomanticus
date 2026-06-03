@@ -44,7 +44,7 @@ Os controles mais usados em formulários comuns:
 | `JLabel` | Rótulo estático de texto ou ícone; não é focável por padrão. |
 | `JTextField` | Campo de texto de linha única; ideal para entradas curtas. |
 | `JTextArea` | Área de texto multi-linha; não tem scroll próprio — requer `JScrollPane`. |
-| `JPasswordField` | Subclasse de `JTextField` que mascara a entrada; use `getPassword()` (retorna `char[]`) em vez de `getText()`. |
+| `JPasswordField` | Subclasse de `JTextField` que mascara a entrada; use `getPassword()` (retorna `char[]`) em vez de `getText()` — `getText()` está deprecated em `JPasswordField` justamente por devolver `String`. |
 
 `JLabel` aceita HTML simples como conteúdo (ex.: `new JLabel("<html><b>Nome:</b></html>")`) — útil para formatação leve, mas pode impactar performance se usado em excesso em listas ou tabelas.
 
@@ -227,7 +227,7 @@ O mesmo vale para `JList` e `JTable`.
 JList<String> list = new JList<>(new String[]{"Opção A", "Opção B"});
 ```
 
-**Fix:** usar `DefaultListModel<E>` (para `JList`) ou um `DefaultTableModel` / `AbstractTableModel` customizado (para `JTable`), que disparam os eventos corretos de `ListDataEvent`/`TableModelEvent` ao inserir, remover ou modificar dados. O assunto é detalhado em [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swing e os models]].
+**Fix:** usar `DefaultListModel<E>` (para `JList`), que dispara os eventos corretos de `ListDataEvent` ao inserir, remover ou modificar dados. Para `JTable`, o equivalente (`TableModel`) é tema de [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swing e os models]].
 
 ```java
 DefaultListModel<String> model = new DefaultListModel<>();
