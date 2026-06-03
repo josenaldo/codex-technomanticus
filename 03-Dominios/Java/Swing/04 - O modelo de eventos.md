@@ -29,7 +29,7 @@ aliases:
 O **delegation event model** (modelo de eventos por delegação) é o mecanismo pelo qual o Swing conecta a interação do usuário ao código da aplicação. O modelo define três papéis:
 
 - **Source (fonte)** — o componente ou objeto que detecta a interação e dispara o evento; exemplos: `JButton`, `JTextField`, `JSlider`.
-- **Event (evento)** — um objeto imutável criado pela fonte que descreve o que aconteceu; carrega informações como a fonte (`getSource()`), timestamp e dados específicos do evento. Exemplos: `ActionEvent`, `MouseEvent`, `KeyEvent`.
+- **Event (evento)** — um objeto **criado pelo framework** que descreve o que aconteceu (qual componente, coordenadas, tecla etc.); carrega informações como a fonte (`getSource()`), timestamp e dados específicos do evento. Exemplos: `ActionEvent`, `MouseEvent`, `KeyEvent`.
 - **Listener (ouvinte)** — objeto registrado na fonte que implementa uma interface de callback; quando o evento ocorre, a fonte itera sobre todos os listeners registrados e invoca o método correspondente.
 
 A mesma fonte pode ter múltiplos listeners; o mesmo listener pode estar registrado em múltiplas fontes. A separação entre quem gera o evento (componente) e quem o trata (listener) é a essência do padrão: o componente não precisa conhecer a lógica da aplicação.
@@ -104,7 +104,7 @@ btn.addActionListener(new ActionListener() {
 });
 ```
 
-Verbosa; só se justifica quando a lambda ficaria confusa por capturar muitas variáveis, ou ao usar interfaces não-funcionais.
+Na prática, lambdas (para listeners de método único) ou adapter classes cobrem quase todos os casos; classes anônimas são mais legado/verbosas.
 
 **Adapter class — para interfaces com múltiplos métodos:**
 
@@ -211,7 +211,7 @@ btnBuscar.addActionListener(e -> {
 
 ```java
 btnBuscar.addActionListener(e -> {
-    new SwingWorker<String, Void>() {
+    new SwingWorker<String, Void>() { // <String = resultado de doInBackground, Void = sem resultados intermediários via publish/process>
         @Override
         protected String doInBackground() {
             return servicoHttp.buscar(campoPesquisa.getText()); // fora da EDT
