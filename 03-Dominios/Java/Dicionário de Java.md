@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-02
+updated: 2026-06-03
 type: glossary
 status: growing
 publish: true
@@ -30,6 +30,16 @@ Como usar este glossário:
 
 ## A
 
+### ABA problem
+Anomalia em algoritmos lock-free onde um valor lido como A é alterado para B e de volta para A antes do CAS ser executado, fazendo o CAS ter sucesso incorretamente. A thread acredita que nada mudou, mas o estado intermediário pode ter corrompido invariantes. Solucionado com estampilhas de versão (ex: `AtomicStampedReference`).
+
+Veja também: [[06 - Atômicos e operações lock-free]].
+
+### Atomic (variável atômica)
+Variável que suporta operações de leitura, escrita e atualização compostas sem necessidade de `synchronized`, usando instruções CAS do hardware. O pacote `java.util.concurrent.atomic` oferece `AtomicInteger`, `AtomicLong`, `AtomicReference` e variantes. Garante atomicidade sem bloquear threads.
+
+Veja também: [[06 - Atômicos e operações lock-free]].
+
 ### Autoboxing
 Conversão automática entre tipos primitivos (ex: `int`) e seus wrappers (`Integer`) feita pelo compilador Java. O processo inverso — de wrapper para primitivo — chama-se *unboxing*. Pode causar `NullPointerException` e overhead de alocação se usado em laços intensivos.
 
@@ -37,12 +47,32 @@ Veja também: [[02 - Tipos, variáveis e operadores]].
 
 ## B
 
+### Barrier (CyclicBarrier)
+Ponto de sincronização onde um número fixo de threads deve se encontrar antes que qualquer uma prossiga. Ao contrário do `CountDownLatch`, o `CyclicBarrier` pode ser reutilizado após cada ciclo. Útil em algoritmos paralelos com fases distintas.
+
+Veja também: [[09 - Sincronizadores]].
+
+### BlockingQueue
+Interface de fila thread-safe que bloqueia o produtor quando a fila está cheia e o consumidor quando está vazia, sem necessidade de `wait/notify` manuais. Implementações incluem `ArrayBlockingQueue`, `LinkedBlockingQueue` e `SynchronousQueue`. Pedra angular do padrão produtor-consumidor.
+
+Veja também: [[07 - Concurrent collections]].
+
 ### Bytecode
 Representação intermediária compilada pelo `javac` a partir do código-fonte `.java`, gravada em arquivos `.class`. Não é código de máquina nativo: é executado (ou JIT-compilado) pela JVM, o que viabiliza o princípio WORA.
 
 Veja também: [[01 - O modelo da linguagem Java]].
 
 ## C
+
+### Carrier thread
+Thread da plataforma (OS thread) que executa uma virtual thread no modelo de virtual threads do Java. Uma virtual thread é montada sobre um carrier thread durante sua execução e desmontada ao bloquear, liberando o carrier para executar outra virtual thread.
+
+Veja também: [[12 - Virtual Threads e Project Loom]].
+
+### CAS (compare-and-swap)
+Instrução atômica de hardware que compara o valor atual de uma posição de memória com um valor esperado e, somente se forem iguais, substitui pelo novo valor — tudo em uma única operação indivisível. Base de todos os algoritmos lock-free em Java. Exposto pela API `Unsafe` e pelas classes `Atomic*`.
+
+Veja também: [[06 - Atômicos e operações lock-free]].
 
 ### Checked exception
 Exceção que o compilador obriga o desenvolvedor a declarar (`throws`) ou capturar (`try/catch`). Estende `Exception` (excluindo `RuntimeException`). Exemplos: `IOException`, `SQLException`. Usada quando o chamador pode se recuperar do erro.
@@ -54,7 +84,32 @@ Construtor especial de records que omite a lista de parâmetros (não repete a a
 
 Veja também: [[13 - Records e record patterns]].
 
+### CompletableFuture
+Implementação de `Future` e `CompletionStage` introduzida no Java 8 que permite compor operações assíncronas em pipelines fluentes (`thenApply`, `thenCompose`, `thenCombine`). Suporta execução em thread pools customizados, tratamento de erros e combinação de múltiplos estágios sem bloqueio.
+
+Veja também: [[10 - CompletableFuture e composição assíncrona]].
+
+### ConcurrentHashMap
+Implementação de `Map` altamente concorrente que usa segmentação interna (striping) e CAS para permitir leituras sem bloqueio e escritas com granularidade fina. Substituiu `Hashtable` e `Collections.synchronizedMap` em cenários de alta concorrência. Não permite chaves ou valores `null`.
+
+Veja também: [[07 - Concurrent collections]].
+
+### Condição de corrida (race condition)
+Defeito que ocorre quando o resultado de um programa depende da ordem de intercalação não-determinística de operações de múltiplas threads. Geralmente causada por acesso a estado compartilhado sem sincronização adequada. Difícil de reproduzir e depurar por ser sensível ao escalonamento do SO.
+
+Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### Contention
+Situação em que múltiplas threads disputam o mesmo lock ou recurso simultaneamente, forçando algumas a esperar. Alta contention degrada performance e pode eliminar os ganhos do paralelismo. Mitigada por locks de granularidade fina, estruturas lock-free ou particionamento de estado.
+
+Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
 ## D
+
+### Deadlock
+Estado em que duas ou mais threads se bloqueiam mutuamente, cada uma esperando um lock que a outra segura — criando uma espera circular sem saída. Nenhuma das threads progride indefinidamente. Prevenido por ordenação consistente de locks, uso de `tryLock` com timeout ou eliminação de lock aninhado.
+
+Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
 
 ### Default method
 Método com implementação definido em uma interface (palavra-chave `default`), introduzido no Java 8. Permite adicionar comportamento a interfaces sem quebrar classes que as implementam, viabilizando evolução retrocompatível de APIs.
@@ -78,6 +133,23 @@ Propriedade de um `switch` (expressão ou statement) que garante que todos os ca
 
 Veja também: [[14 - Sealed classes e pattern matching]].
 
+### Executor / ExecutorService
+Abstração do `java.util.concurrent` que desacopla a submissão de tarefas (`Runnable` ou `Callable`) de sua execução. `ExecutorService` estende `Executor` adicionando ciclo de vida (`shutdown`, `awaitTermination`) e suporte a `Future`. Preferido ao gerenciamento manual de threads.
+
+Veja também: [[08 - Executors e thread pools]].
+
+## F
+
+### Fork/join
+Framework introduzido no Java 7 (`ForkJoinPool`, `RecursiveTask`, `RecursiveAction`) que divide um problema em subproblemas menores (fork), resolve-os em paralelo e combina os resultados (join). Usa work-stealing para maximizar a utilização dos núcleos. Base dos parallel streams e do `CompletableFuture`.
+
+Veja também: [[15 - Parallel streams e fork-join]].
+
+### Future
+Interface que representa o resultado de uma operação assíncrona ainda em execução. Permite verificar se concluiu (`isDone`), cancelar (`cancel`) ou obter o resultado bloqueando (`get`). Limitada por não suportar composição; `CompletableFuture` supera essas limitações.
+
+Veja também: [[08 - Executors e thread pools]].
+
 ## G
 
 ### Generics
@@ -89,6 +161,13 @@ Veja também: [[12 - Generics em profundidade]].
 Condição booleana adicional (`when`) que refina um case de pattern matching. Permite combinar a verificação de tipo/estrutura com uma expressão lógica no mesmo braço do switch. Ex: `case Integer i when i > 0 -> ...`.
 
 Veja também: [[14 - Sealed classes e pattern matching]].
+
+## H
+
+### Happens-before
+Relação de ordenação definida pelo Java Memory Model (JMM) que garante que ações de uma thread sejam visíveis e ordenadas corretamente para outra thread. Não é ordem temporal: duas ações podem ocorrer em qualquer tempo, mas se A happens-before B, o efeito de A é garantidamente visível quando B ocorre. Estabelecida por `synchronized`, `volatile`, start/join de threads, entre outros.
+
+Veja também: [[11 - Java Memory Model em profundidade]].
 
 ## I
 
@@ -104,10 +183,37 @@ Veja também: [[02 - Tipos, variáveis e operadores]].
 
 ## L
 
+### Latch (CountDownLatch)
+Sincronizador de uso único que permite que uma ou mais threads aguardem até que um contador chegue a zero. O contador é decrementado por `countDown()` e a espera é feita com `await()`. Ideal para aguardar a conclusão de um conjunto de tarefas ou o início de um evento comum. Não pode ser reutilizado.
+
+Veja também: [[09 - Sincronizadores]].
+
+### Livelock
+Situação em que duas ou mais threads continuam executando (não bloqueadas) mas não progridem, pois cada uma reage à ação da outra em loop infinito — como duas pessoas que se desviam na mesma direção no corredor. Diferente do deadlock, as threads estão ativas mas inutilmente.
+
+Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### Lock-free
+Propriedade de um algoritmo ou estrutura de dados que garante progresso global mesmo se threads individuais forem preemptadas indefinidamente — ao menos uma thread sempre avança. Implementado com CAS e loops de retry sem `synchronized`. Reduz contention e risco de deadlock ao custo de maior complexidade.
+
+Veja também: [[06 - Atômicos e operações lock-free]].
+
 ### LTS
 Long-Term Support — versão do Java que recebe atualizações de segurança e correções por um período estendido (vários anos). Recomendada para produção. As principais versões LTS modernas são Java 8, 11, 17, 21 e 25.
 
 Veja também: [[01 - O modelo da linguagem Java]], [[15 - A evolução do Java (8 a 25)]].
+
+## M
+
+### Monitor (intrinsic lock)
+Mecanismo de sincronização intrínseco de todo objeto Java que combina exclusão mútua e comunicação via `wait/notify/notifyAll`. Cada objeto tem um lock implícito adquirido com `synchronized`. Ao entrar em um bloco `synchronized`, a thread adquire o monitor; ao sair, libera-o automaticamente.
+
+Veja também: [[03 - Exclusão mútua com synchronized]].
+
+### Mutual exclusion (exclusão mútua)
+Propriedade que garante que apenas uma thread por vez execute uma seção crítica de código que acessa estado compartilhado. Implementada em Java por `synchronized`, `ReentrantLock` ou semáforos com 1 permissão. Previne condições de corrida ao serializar o acesso.
+
+Veja também: [[03 - Exclusão mútua com synchronized]].
 
 ## O
 
@@ -133,6 +239,11 @@ Producer Extends, Consumer Super — regra mnemônica para uso de wildcards em G
 
 Veja também: [[12 - Generics em profundidade]].
 
+### Pinning
+Fenômeno em que uma virtual thread fica "presa" ao seu carrier thread durante um bloco `synchronized` ou chamada nativa, impedindo que o carrier execute outras virtual threads enquanto aguarda. Reduz a escalabilidade de virtual threads; mitigado substituindo `synchronized` por `ReentrantLock` ou eliminando bloqueios em seções críticas.
+
+Veja também: [[12 - Virtual Threads e Project Loom]].
+
 ### Polimorfismo
 Capacidade de um mesmo método ou referência se comportar de maneiras diferentes conforme o tipo real do objeto em tempo de execução. Em Java, é realizado principalmente por overriding + herança/interface. Permite escrever código genérico que opera sobre famílias de tipos.
 
@@ -157,20 +268,50 @@ Veja também: [[13 - Records e record patterns]], [[14 - Sealed classes e patter
 
 ## S
 
+### Safe publication (publicação segura)
+Conjunto de técnicas que garantem que um objeto construído por uma thread seja corretamente visível por outras threads sem objetos parcialmente inicializados. Alcançada via campos `final`, `volatile`, referências em coleções thread-safe ou blocos `synchronized`. Sem safe publication, outra thread pode ver o objeto em estado incompleto.
+
+Veja também: [[11 - Java Memory Model em profundidade]].
+
+### Scoped value
+Mecanismo final (permanente) do Java 25 para compartilhar dados imutáveis com threads descendentes sem passar parâmetros explicitamente, como alternativa segura e eficiente ao `ThreadLocal`. O valor é acessível apenas dentro de um escopo delimitado e não pode ser alterado após a ligação.
+
+Veja também: [[14 - Scoped values]].
+
 ### Sealed class
 Classe (ou interface) que restringe explicitamente quais subclasses (ou subinterfaces) podem estendê-la, usando a palavra-chave `sealed` e a cláusula `permits`. Permite ao compilador verificar exaustividade em switches e torna hierarquias fechadas e explicitamente documentadas.
 
 Veja também: [[14 - Sealed classes e pattern matching]].
+
+### Semaphore (semáforo)
+Sincronizador que controla o acesso a um recurso com um número limitado de permissões. Threads adquirem permissões com `acquire()` e as devolvem com `release()`; quando todas as permissões estão em uso, novos `acquire()` bloqueiam. Útil para limitar concorrência em pools de recursos ou seções com capacidade máxima.
+
+Veja também: [[09 - Sincronizadores]].
+
+### Starvation
+Situação em que uma thread nunca obtém acesso a um recurso porque outras threads de maior prioridade ou mais agressivas o monopolizam indefinidamente. A thread não está bloqueada em deadlock — continua elegível para execução — mas jamais é escalonada. Mitigada com políticas de lock fair (ex: `new ReentrantLock(true)`).
+
+Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
 
 ### String pool
 Área de memória (no heap, a partir do Java 7) onde a JVM armazena strings literais de forma deduplicada. Dois literais idênticos referenciam o mesmo objeto, economizando memória. Strings criadas com `new String(...)` não entram no pool automaticamente; `intern()` força a entrada.
 
 Veja também: [[04 - Strings e text blocks]].
 
+### Structured concurrency
+API de concorrência estruturada em preview no Java 25 (exige `--enable-preview`), que trata um conjunto de tarefas concorrentes como uma unidade coesa com ciclo de vida delimitado por um `StructuredTaskScope`. Garante que subtarefas são concluídas (ou canceladas) antes que o escopo seja fechado, simplificando o tratamento de erros e cancelamento.
+
+Veja também: [[13 - Structured concurrency]].
+
 ### Switch expression
 Forma moderna do `switch` (Java 14+) que é uma expressão — produz um valor — e usa a sintaxe de seta (`case X -> valor`). Elimina fall-through acidental, exige exaustividade e pode ser atribuído diretamente a uma variável.
 
 Veja também: [[03 - Estruturas de controle e fluxo]].
+
+### Synchronized
+Modificador Java que garante exclusão mútua e visibilidade de memória. Pode ser aplicado a métodos (bloqueia no objeto `this` ou na classe) ou a blocos (`synchronized(lock) { }`) que bloqueiam em um objeto arbitrário. A thread adquire o monitor ao entrar e o libera ao sair, mesmo em caso de exceção.
+
+Veja também: [[03 - Exclusão mútua com synchronized]].
 
 ## T
 
@@ -178,6 +319,11 @@ Veja também: [[03 - Estruturas de controle e fluxo]].
 Literal de string multilinha delimitado por `"""` (Java 15+). Preserva a indentação relativa, suporta interpolação futura e elimina concatenações e escapes desnecessários em strings longas como SQL, JSON ou HTML embutido.
 
 Veja também: [[04 - Strings e text blocks]].
+
+### Thread pool
+Conjunto de threads pré-criadas e reutilizáveis que executam tarefas submetidas a uma fila, evitando o custo de criar e destruir threads para cada tarefa. Em Java, provido por `ExecutorService` com implementações como `ThreadPoolExecutor`, `FixedThreadPool` e `ForkJoinPool`. Fundamental para escalabilidade de aplicações concorrentes.
+
+Veja também: [[08 - Executors e thread pools]].
 
 ### Try-with-resources
 Construção `try (Recurso r = ...)` que garante o fechamento automático de qualquer objeto `AutoCloseable` ao fim do bloco, mesmo em caso de exceção. Elimina o padrão `finally { r.close(); }` e torna o gerenciamento de recursos mais seguro e legível.
@@ -203,6 +349,16 @@ Mecanismo que permite declarar um método com número variável de argumentos do
 
 Veja também: [[05 - Arrays e varargs]].
 
+### Virtual thread
+Thread leve gerenciada pela JVM (não mapeada 1:1 com OS threads), GA no Java 21 (JEP 444). Permite criar milhões de threads com baixo overhead de memória, tornando o modelo thread-per-request viável em servidores de alta concorrência. Criadas via `Thread.ofVirtual()` ou `Executors.newVirtualThreadPerTaskExecutor()`.
+
+Veja também: [[12 - Virtual Threads e Project Loom]].
+
+### Volatile
+Modificador de campo que garante visibilidade imediata de escritas a todas as threads e proíbe reordenação de instruções ao redor da variável. Garante visibilidade e ordering, mas NÃO garante atomicidade composta: `volatile int i; i++` ainda é uma race condition pois envolve leitura-modificação-escrita não-atômica.
+
+Veja também: [[11 - Java Memory Model em profundidade]].
+
 ## W
 
 ### Wildcard
@@ -214,6 +370,11 @@ Veja também: [[12 - Generics em profundidade]].
 Write Once, Run Anywhere — princípio central do Java: o bytecode compilado roda em qualquer plataforma que possua uma JVM compatível, sem recompilação. Viabilizado pela camada de abstração da JVM entre o código e o hardware/SO.
 
 Veja também: [[01 - O modelo da linguagem Java]].
+
+### Work-stealing
+Estratégia de escalonamento do `ForkJoinPool` onde threads ociosas "roubam" tarefas da fila de outras threads sobrecarregadas. Reduz ociosidade e melhora o balanceamento dinâmico de carga em workloads irregulares. Cada worker mantém uma deque (fila dupla) de tarefas; o roubo ocorre pela extremidade oposta.
+
+Veja também: [[15 - Parallel streams e fork-join]].
 
 ## Y
 
