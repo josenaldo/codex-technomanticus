@@ -53,7 +53,7 @@ Para um desenvolvedor sênior, Swing aparece em dois contextos principais:
 
 Toda GUI Swing é construída sobre a hierarquia de classes do `java.awt`:
 
-```
+```text
 java.lang.Object
   └── java.awt.Component          // pintável, tem posição/tamanho, recebe eventos
       └── java.awt.Container      // pode conter outros Component
@@ -74,7 +74,7 @@ Toda hierarquia de componentes Swing precisa de um **top-level container** como 
 
 Internamente, cada top-level container possui um **root pane** (`JRootPane`) que organiza quatro camadas:
 
-```
+```text
 JFrame
   └── JRootPane
       ├── Glass Pane      (intercepta eventos; pintado sobre tudo)
