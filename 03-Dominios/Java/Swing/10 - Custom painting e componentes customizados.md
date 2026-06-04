@@ -108,14 +108,14 @@ g2.setRenderingHint(
 
 ### Double buffering (ligado por padrão no Swing — reduz flicker)
 
-O Swing ativa o double buffering automaticamente em todos os `JComponent`s. O mecanismo: antes de pintar, o Swing aloca um buffer de imagem fora-de-tela (`off-screen buffer`), deixa todo o ciclo `paint` (incluindo `paintComponent` → `paintBorder` → `paintChildren`) acontecer nesse buffer, e só então copia o resultado pronto para a tela em uma única operação.
+O double buffering está ativo por padrão e é gerenciado pelo `RepaintManager` (em plataformas com buffering nativo, o resultado prático é o mesmo: ausência de flickering). O mecanismo: antes de pintar, o Swing aloca um buffer de imagem fora-de-tela (`off-screen buffer`), deixa todo o ciclo `paint` (incluindo `paintComponent` → `paintBorder` → `paintChildren`) acontecer nesse buffer, e só então copia o resultado pronto para a tela em uma única operação.
 
 O efeito visível: **ausência de flickering**. Sem double buffering, cada etapa da paint chain seria visível individualmente — o fundo aparecia, depois o conteúdo, depois a borda — produzindo piscadas perceptíveis. Com o buffer, o usuário sempre vê o frame completo.
 
 O Javadoc de `JComponent` menciona `setDoubleBuffered(boolean)` para controlar esse comportamento, mas na prática não há motivo para desativá-lo. `isDoubleBuffered()` confirma se está ativo.
 
 > [!info] Não confundir com buffers explícitos de animação
-> O double buffering automático do Swing é gerenciado pelo `RepaintManager`. Para animações de alta frequência (jogos, visualizações que atualizam > 30 fps), pode ser necessário usar `BufferStrategy` (API do AWT de mais baixo nível) em vez do ciclo de repaint do Swing.
+> O double buffering automático do Swing é gerenciado pelo `RepaintManager`. Para animações de alta frequência (jogos, visualizações que atualizam > 30 fps), pode ser necessário usar `BufferStrategy` (API do AWT de mais baixo nível) em vez do ciclo de repaint do Swing. Vale notar que `BufferStrategy` pertence ao contexto de `Canvas` (AWT) e é incomum em Swing direto — em Swing, o padrão para animações é `javax.swing.Timer` + `repaint()`.
 
 ### `repaint(Rectangle)` vs `revalidate()`
 
