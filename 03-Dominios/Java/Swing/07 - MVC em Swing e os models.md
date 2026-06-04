@@ -79,7 +79,7 @@ void    removeTableModelListener(TableModelListener l);
 Os três níveis de implementação:
 
 - **`TableModel` (interface)** — você implementa **tudo**, inclusive a gestão de listeners. Raro.
-- **`AbstractTableModel`** — *"provides default implementations for most of the methods... It takes care of the management of listeners and provides some conveniences for generating `TableModelEvents`."* Você só precisa fornecer `getRowCount()`, `getColumnCount()` e `getValueAt(...)`. **É a escolha idiomática** para models customizados.
+- **`AbstractTableModel`** — *"provides default implementations for most of the methods... It takes care of the management of listeners and provides some conveniences for generating `TableModelEvents`."* Você só precisa fornecer `getRowCount()`, `getColumnCount()` e `getValueAt(...)`. **É a escolha idiomática** para models customizados. Para uma tabela **editável**, é preciso também sobrescrever `isCellEditable` (que por padrão retorna `false`) e `setValueAt`.
 - **`DefaultTableModel`** — armazenamento pronto baseado em `Vector`/`Object[][]`. Conveniente para protótipos, mas perde type-safety (tudo é `Object`) e não modela um domínio.
 
 ### `ListModel` / `AbstractListModel` / `DefaultListModel` e `ComboBoxModel`
