@@ -10,3 +10,7 @@
 
 __pycache__/
 *.pyc
+
+# Logs brutos dos crons (os relatórios .md ficam versionados)
+00-Meta/health-audits/.cron.log
+00-Meta/revisoes/.cron.log
