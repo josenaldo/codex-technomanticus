@@ -188,6 +188,7 @@ public static void main(String[] args) {
 ```
 
 Pontos de atenção:
+- Setar o L&F **antes** de criar qualquer componente (como no exemplo acima) é a exceção aceita pela Oracle à regra da EDT: nenhum componente Swing existe ainda, portanto não há acesso concorrente à árvore de componentes. Isso é diferente de trocar o L&F em runtime — neste caso a troca deve ocorrer na EDT e exige `SwingUtilities.updateComponentTreeUI` para propagar a mudança aos componentes já criados.
 - As quatro exceções checked (`ClassNotFoundException`, `InstantiationException`, `IllegalAccessException`, `UnsupportedLookAndFeelException`) **devem** ser tratadas — não use `catch (Exception e)` apenas para silenciar.
 - Se `getSystemLookAndFeelClassName()` falhar (L&F nativo ausente), o Swing usa Metal como fallback — isso não é erro fatal, mas vale logar.
 - Chamar `pack()` e `setVisible` após trocar o L&F garante que o layout seja recalculado para as dimensões do novo L&F.
