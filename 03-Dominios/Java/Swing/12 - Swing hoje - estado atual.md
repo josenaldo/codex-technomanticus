@@ -66,7 +66,7 @@ Qualitativamente, Swing segue sendo uma escolha defensável — às vezes a melh
 - **Zero dependência externa pesada.** Swing **vem no JDK**. Não há que adicionar JavaFX standalone, nem um runtime web, nem empacotar Chromium. Para um app pequeno que precisa só funcionar, isso é uma vantagem real.
 
 > [!info] Swing e SWT não são a mesma coisa
-> Ao citar IDEs, vale a precisão: **IntelliJ IDEA e NetBeans usam Swing**; **Eclipse usa SWT** (*Standard Widget Toolkit*), um toolkit de UI desktop-Java que, ao contrário do Swing, é **heavyweight** — usa *widgets* nativos do SO via JNI, na linha do antigo AWT. Os dois são "desktop em Java", mas com filosofias opostas (Swing lightweight, pintado em Java; SWT nativo). O ponto comum, para esta nota, é que **UIs de IDE de larga escala continuam sendo construídas em Java desktop** — Swing inclusive. É a evidência mais forte de que Swing aguenta complexidade real.
+> Ao citar IDEs, vale a precisão: **IntelliJ IDEA e NetBeans usam Swing**; **Eclipse usa SWT** (*Standard Widget Toolkit*), um toolkit de UI desktop-Java que, ao contrário do Swing, é **heavyweight** — usa *widgets* nativos do SO via JNI, na linha do antigo AWT. Os dois são "desktop em Java", mas com filosofias opostas (Swing lightweight, pintado em Java; SWT nativo). Um detalhe de precisão: o NetBeans é construído sobre a **NetBeans Platform**, um framework para aplicações Swing — sua UI é Swing via essa camada de plataforma, enquanto o IntelliJ usa Swing mais diretamente (com o JetBrains Runtime). O ponto comum, para esta nota, é que **UIs de IDE de larga escala continuam sendo construídas em Java desktop** — Swing inclusive. É a evidência mais forte de que Swing aguenta complexidade real.
 
 ### Onde Swing NÃO faz sentido
 
