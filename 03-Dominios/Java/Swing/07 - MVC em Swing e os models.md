@@ -330,5 +330,3 @@ public Object getValueAt(int row, int col) {
 - [How to Use Lists — The Java Tutorials (Oracle)](https://docs.oracle.com/javase/tutorial/uiswing/components/list.html)
 - [TableModel — Javadoc Java 21 (Oracle)](https://docs.oracle.com/en/java/javase/21/docs/api/java.desktop/javax/swing/table/TableModel.html)
 - [AbstractTableModel — Javadoc Java 21 (Oracle)](https://docs.oracle.com/en/java/javase/21/docs/api/java.desktop/javax/swing/table/AbstractTableModel.html)
-</content>
-</invoke>
