@@ -107,6 +107,8 @@ KeyStroke.getKeyStroke("DELETE")           // Delete
 KeyStroke.getKeyStroke("released DELETE")  // Delete ao soltar
 ```
 
+> As duas formas são equivalentes: `KeyStroke.getKeyStroke("ctrl S")` e `KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK)` produzem o mesmo `KeyStroke` — a diferença é apenas legibilidade (string) vs. segurança de compilação (constantes).
+
 ### Performance e responsividade
 
 Três eixos principais:
