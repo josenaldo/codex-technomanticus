@@ -1,7 +1,7 @@
 ---
 title: "Skills do vault (Codex)"
 created: 2026-05-24
-updated: 2026-05-24
+updated: 2026-06-03
 type: how-to
 status: seedling
 tags:
@@ -13,9 +13,9 @@ publish: false
 
 # Skills do vault (Codex)
 
-Catálogo das **14 skills** salvas em `.agents/skills/` — expostas ao Claude Code pelo symlink `.claude/skills → ../.agents/skills`. Dividem-se em dois grupos:
+Catálogo das **15 skills** salvas em `.agents/skills/` — expostas ao Claude Code pelo symlink `.claude/skills → ../.agents/skills`. Dividem-se em dois grupos:
 
-- **8 skills autorais** (PT-BR), construídas pro pipeline deste vault.
+- **9 skills autorais** (PT-BR), construídas pro pipeline deste vault.
 - **6 ferramentas de terceiros** (utilitários genéricos de Obsidian/web), versionadas no repo.
 
 Skills globais do Claude Code (Anthropic, superpowers) não estão aqui — só o que vive neste repositório.
@@ -31,6 +31,7 @@ Para o pipeline geral do vault, veja [[workflow]]. Para o mapa das zonas, [[Como
 | **Fichamento de leitura (Glosas)**     | `/glosa`, `/arquivar-glosas`, `/acordar-glosas`, `/promover-glosa`, `/sintetizar-glosas` | Captura → destilação → integração de artigos web            |
 | **Enriquecimento e manutenção**        | `/enriquecer-nota`, `/verificar-wikilinks`                                               | Refino de notas + higiene de links antes de publicar        |
 | **Glossários (transversal)**           | `/verbete`                                                                               | Adicionar termo a qualquer glossário do vault               |
+| **Revisão & Meta**                     | `/revisao-semanal`                                                                       | Relatório semanal (release notes) do trabalho no vault      |
 | **Ferramentas instaladas (terceiros)** | `defuddle`, `deadlink`, `obsidian-markdown`, `obsidian-bases`, `obsidian-cli`, `json-canvas` | Utilitários genéricos acionados sob demanda                 |
 
 ---
@@ -120,6 +121,26 @@ Adiciona um verbete a um glossário de domínio do vault.
 - **Localiza o glossário-alvo** pelo frontmatter `type: glossary`. Aceita hint (ex: "adiciona ao Dicionário de IA").
 - **Idempotente:** termo já existente → aborta sem modificar, mostra a definição atual.
 - **Usado por outras skills:** `/enriquecer-nota` delega a criação de verbetes ausentes aqui.
+
+---
+
+## Revisão & Meta
+
+Skill de observabilidade do próprio vault — não produz conhecimento, **resume** o que foi produzido. Roda automática por cron, mas o relatório é a *entrada* da reflexão do usuário, não a reflexão.
+
+### `/revisao-semanal`
+
+Gera um relatório semanal em **formato release notes** do que foi trabalhado no vault, gravado em `00-Meta/revisoes/<ano>/YYYY-Www.md` (sempre `publish: false` — meta privado, fora do site).
+
+- **Sinal primário:** `git log` + diffs do obsidian-git (não depende de daily notes). Janela **resiliente a gaps** — "desde o último relatório" (fallback 7 dias), então um sábado perdido é coberto pela semana seguinte.
+- **Ruído tratado:** commits `vault backup: <timestamp>` são ignorados como narrativa; o changelog vem dos arquivos alterados, agrupados por zona/domínio.
+- **Pesagem do sinal:** Glosas = o que leu/fichou; Domínios = o que produziu/integrou; notas diárias = trabalho do dia-a-dia; Sendas = só referência (não conta como aprendizado). **Nenhum domínio privilegiado.**
+- **4 lentes de insight:** 💡 conhecimento (conexões, sínteses possíveis), 🧗 dificuldades & retrabalho (churn, `fix`/`revert`, stash), ⚠️ alertas & dívidas (incompletude de conteúdo — **não** duplica auditoria estrutural), 🎯 conselhos & próximos passos (des-ancorado de domínio, lê `index.md` como "norte").
+- **Report-only:** NUNCA escreve em arquivos de conteúdo (ex: `01-Pergaminhos/entradas.md`). Conselhos vivem só no relatório; o usuário promove o que quiser manualmente.
+- **Agendada:** cron local de sábado via `00-Meta/scripts/revisao-semanal.sh` → `claude -p "/revisao-semanal"` headless. Também invocável manualmente.
+- **Quando usar:** "revisão da semana", "resumo do que trabalhei", "release notes da semana".
+
+Complementada pelo `00-Meta/scripts/health-audit.py` (auditoria estrutural — links, órfãs, frontmatter, skill drift), agendado na sexta. Veja [[Manutenção do vault]].
 
 ---
 
