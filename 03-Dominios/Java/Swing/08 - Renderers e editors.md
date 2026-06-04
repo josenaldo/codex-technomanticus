@@ -50,7 +50,7 @@ Component getTableCellRendererComponent(
 )
 ```
 
-O Javadoc do `ListCellRenderer` (Java 21) descreve explicitamente o rubber-stamp: a interface *"identifies components that can be used as 'rubber stamps' to paint the cells in a JList"*. O mesmo princípio vale para `JTable`: um **único** componente renderer é reconfigurado e reusado para pintar *cada* célula visível a cada repaint — não existe um componente separado por célula.
+O Javadoc do `ListCellRenderer` (Java 21) usa explicitamente o termo: a interface *"identifies components that can be used as 'rubber stamps' to paint the cells in a JList"*. O `TableCellRenderer` segue o mesmo padrão de reuso descrito nos tutoriais da Oracle, mas o Javadoc do `TableCellRenderer` em si não emprega o termo "rubber stamp". Em ambos os casos, um **único** componente renderer é reconfigurado e reusado para pintar *cada* célula visível a cada repaint — não existe um componente separado por célula.
 
 O que acontece internamente:
 
@@ -276,6 +276,8 @@ fireEditingStopped();   // sinaliza fim da edição; JTable chama getCellEditorV
 ```
 
 ## Em entrevista
+
+### Frase pronta (inglês)
 
 > "In Swing, `TableCellRenderer` and `TableCellEditor` are the two sides of a cell: the renderer is responsible for *displaying* a cell's value at all times, while the editor is a temporary component that takes over *only while the user is actively editing*. The key insight for the renderer is the rubber-stamp pattern — a single renderer instance is reused and reconfigured to paint every visible cell on every repaint, so it must never hold mutable state between calls and must never register listeners, since it's shared across all cells. The editor, on the other hand, is inserted into the table's component hierarchy only during editing and is removed when `stopCellEditing` is called; forgetting that call is the classic footgun — the user's input is silently discarded because the table never invokes `getCellEditorValue` and `setValueAt`."
 
