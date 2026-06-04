@@ -44,7 +44,7 @@ java.lang.Iterable
 
 ### Por que `Map` **não é** `Collection`
 
-A hierarquia consiste em duas árvores distintas: a de `Collection` e a de `Map`. Segundo a documentação oficial dos The Java Tutorials:
+A hierarquia consiste em duas árvores distintas: a de `Collection` e a de `Map`. Segundo a documentação oficial dos Java Tutorials:
 
 > "Note also that the hierarchy consists of two distinct trees — a Map is not a true Collection."
 

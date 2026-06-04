@@ -37,8 +37,8 @@ A anotação `@FunctionalInterface` instrui o compilador a verificar essa restri
 interface Transformador<T, R> {
     R transformar(T entrada);           // único método abstrato → SAM
 
-    default Transformador<T, T> identidade() {  // não conta para SAM
-        return t -> (T) t;
+    default <V> Transformador<T, V> andThen(Transformador<R, V> depois) {  // não conta para SAM
+        return entrada -> depois.transformar(this.transformar(entrada));
     }
 }
 ```
@@ -266,7 +266,7 @@ Resumo das quatro formas:
 
 ## Na prática
 
-Cenário: um sistema de pedidos onde `Order` tem `getStatus()`, `getCustomerName()` e `getTotal()`. Queremos filtrar pedidos pendentes, extrair nomes de clientes e imprimir.
+Cenário: um sistema de pedidos onde `Order` é um record com os accessors `status()`, `customerName()` e `total()`. Queremos filtrar pedidos pendentes, extrair nomes de clientes e imprimir.
 
 ```java
 import java.util.List;
