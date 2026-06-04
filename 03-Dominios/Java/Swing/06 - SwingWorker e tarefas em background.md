@@ -140,7 +140,7 @@ public final T get(long timeout, TimeUnit unit)
         throws InterruptedException, ExecutionException, TimeoutException
 ```
 
-`get` *"Waits if necessary for the computation to complete, and then retrieves its result."* O ponto crítico está no próprio Javadoc: *"calling `get` on the Event Dispatch Thread blocks all events, including repaints, from being processed until this `SwingWorker` is complete."* Logo, o lugar certo de chamar `get()` é **dentro de `done()`** — quando `done` roda, a tarefa já terminou, então `get()` retorna imediatamente sem bloquear. E `get()` é também onde a **exceção** lançada em `doInBackground` reaparece, embrulhada num `ExecutionException` (recupere a causa com `getCause()`).
+`get` *"Waits if necessary for the computation to complete, and then retrieves its result."* O ponto crítico está no próprio Javadoc: *"calling `get` on the Event Dispatch Thread blocks all events, including repaints, from being processed until this `SwingWorker` is complete."* Logo, o lugar certo de chamar `get()` é **dentro de `done()`** — quando `done` roda, a tarefa já terminou, então `get()` retorna imediatamente sem bloquear. E `get()` é também onde a **exceção** lançada em `doInBackground` reaparece, embrulhada num `ExecutionException` (recupere a causa com `getCause()`). Atenção: se o worker foi cancelado via `cancel(true)`, `done()` ainda é invocado, mas `get()` lança `CancellationException` — não `ExecutionException` —, portanto o `done()` idiomático trata os três casos: `InterruptedException`, `ExecutionException` e `CancellationException`.
 
 ### `javax.swing.Timer` (callbacks na EDT) vs `java.util.Timer` (thread própria)
 
