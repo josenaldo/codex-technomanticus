@@ -29,7 +29,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 
 ### Interfaces desktop
 
-5. Swing *(planejado)* — componentes, layout managers, EDT, MVC, estado atual de adoção
+5. [[03-Dominios/Java/Swing/index|Swing]] — componentes e containers, layout managers, modelo de eventos, EDT/SwingWorker, MVC/models, Look & Feel, custom painting, estado atual da API
 6. JavaFX *(planejado)* — scene graph, FXML, properties/binding, CSS, estado atual do projeto
 
 ### Fundamentos enterprise e Spring
