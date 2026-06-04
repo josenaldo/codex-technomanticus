@@ -138,7 +138,7 @@ List<Integer> sufixo = Stream.of(1, 2, 3, 10, 4, 5)
 
 Essas operações consomem o stream e produzem um valor concreto ou estrutura de dados.
 
-**`toList()`** *(Java 16)* — retorna uma `List<T>` **imutável** com os elementos na ordem de encontro. Equivalente a `collect(Collectors.toUnmodifiableList())`, mas mais conciso. Tentar adicionar/remover elementos depois lança `UnsupportedOperationException`.
+**`toList()`** *(Java 16)* — retorna uma `List<T>` **imutável** com os elementos na ordem de encontro. Semelhante a `collect(Collectors.toUnmodifiableList())`, mas mais conciso e com uma diferença importante: `toList()` **aceita elementos `null`**, enquanto `toUnmodifiableList()` os rejeita com `NullPointerException`. Tentar adicionar/remover elementos depois lança `UnsupportedOperationException`.
 
 ```java
 List<String> nomes = orders.stream()
