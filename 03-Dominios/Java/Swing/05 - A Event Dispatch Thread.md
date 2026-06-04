@@ -37,7 +37,7 @@ Essa é a **single-thread rule** do Swing. A formulação canônica da Oracle:
 
 > "All other Swing component methods must be invoked from the event dispatch thread. Programs that ignore this rule may function correctly most of the time, but are subject to unpredictable errors that are difficult to reproduce."
 
-Em palavras: o Swing **não é thread-safe**. Métodos como `setText`, `setEnabled`, `add`, `repaint` ou `revalidate` só podem ser chamados pela EDT. As exceções — métodos documentados como thread-safe, p. ex. `repaint()`, `revalidate()` e `invalidate()`, além dos próprios `invokeLater`/`invokeAndWait` — são a minoria explícita; tudo o mais é EDT-only.
+Em palavras: o Swing **não é thread-safe**. Métodos como `setText`, `setEnabled`, `add`, `repaint` ou `revalidate` só podem ser chamados pela EDT. As exceções — métodos documentados como thread-safe, p. ex. `repaint()` e `revalidate()` (que engloba a invalidação e agenda a repintura de forma segura), além dos próprios `invokeLater`/`invokeAndWait` — são a minoria explícita; tudo o mais é EDT-only.
 
 A EDT é uma das **três categorias de thread** que um programa Swing manipula, segundo o tutorial:
 
@@ -118,7 +118,7 @@ public static void invokeAndWait(Runnable doRun)
 | Execução | na EDT | na EDT |
 | Bloqueia o chamador? | Não (assíncrono) | Sim (síncrono) |
 | Exceções declaradas | nenhuma | `InterruptedException`, `InvocationTargetException` |
-| Chamar a partir da própria EDT? | OK (apenas reenfileira) | **Proibido** (lança `Error`) |
+| Chamar a partir da própria EDT? | OK (reenfileira — o `Runnable` só executa após o evento atual terminar) | **Proibido** (lança `Error`) |
 | Uso típico | atualizar UI a partir de background | esperar a UI atualizar antes de continuar |
 
 Sobre exceções dentro do `Runnable` no `invokeAndWait`: *"if the `Runnable.run` method throws an uncaught exception (on the event dispatching thread) it's caught and rethrown, as an `InvocationTargetException`, on the caller's thread."* — ou seja, o erro da tarefa chega ao chamador embrulhado; recupere a causa real com `getCause()`.
