@@ -2,6 +2,11 @@
 .tmp
 .tmp/*
 
+# Artefatos de renderização/automação (Playwright, screenshots de diagramas)
+.playwright-mcp/
+tokens-sample.png
+tokens-final.png
+
 # Obsidian plugin secrets (API keys, TLS private keys)
 .obsidian/plugins/obsidian-local-rest-api/data.json
 

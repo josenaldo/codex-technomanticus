@@ -1,0 +1,23 @@
+/* nós */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node polygon {
+    fill: var(--background-secondary) !important;
+    stroke: var(--interactive-accent) !important;
+}
+
+/* texto dos nós */
+.mermaid .nodeLabel {
+    color: var(--text-normal) !important;
+}
+
+/* arestas/linhas */
+.mermaid .edgePath .path {
+    stroke: var(--text-muted) !important;
+}
+
+/* clusters/subgraphs */
+.mermaid .cluster rect {
+    fill: var(--background-primary-alt) !important;
+    stroke: var(--background-modifier-border) !important;
+}

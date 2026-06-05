@@ -1,0 +1,143 @@
+/* =========================================================
+   Mermaid — herda as cores do tema ATIVO do Obsidian
+   (qualquer tema, claro ou escuro). Sem config por diagrama.
+
+   Estratégia: superfícies neutras + texto do tema = contraste
+   garantido; cor só como destaque (bordas, linhas, ramos),
+   usando as variáveis --color-* do Obsidian (que mudam com o
+   tema). O Mermaid gera estilos SEM !important, então estes
+   vencem.
+
+   NOTA: o snippet antigo "mermaid.css" foi abandonado porque
+   ficou preso num buffer do Zed. Este é o ativo.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1) FLOWCHART / GRAPH  (inclui look: handDrawn → <path>)
+   --------------------------------------------------------- */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon,
+.mermaid .node path {
+    fill: var(--background-secondary) !important;
+    stroke: var(--interactive-accent) !important;
+}
+
+.mermaid .node .label,
+.mermaid .node .nodeLabel,
+.mermaid .node text,
+.mermaid .node span,
+.mermaid .node p,
+.mermaid .nodeLabel {
+    color: var(--text-normal) !important;
+    fill: var(--text-normal) !important;
+}
+
+/* arestas + setas */
+.mermaid .edgePath .path,
+.mermaid .flowchart-link,
+.mermaid .edge path {
+    stroke: var(--text-muted) !important;
+}
+.mermaid marker path,
+.mermaid .arrowMarkerPath,
+.mermaid .arrowheadPath {
+    fill: var(--text-muted) !important;
+    stroke: var(--text-muted) !important;
+}
+
+/* rótulos de aresta (|Sim| |Não|) */
+.mermaid .edgeLabel,
+.mermaid .edgeLabel p,
+.mermaid .edgeLabel span {
+    color: var(--text-normal) !important;
+    background: var(--background-primary) !important;
+    fill: var(--background-primary) !important;
+}
+.mermaid .edgeLabel rect {
+    fill: var(--background-primary) !important;
+    opacity: 1 !important;
+}
+
+/* clusters / subgraphs */
+.mermaid .cluster rect,
+.mermaid .cluster path {
+    fill: var(--background-primary-alt) !important;
+    stroke: var(--background-modifier-border) !important;
+}
+.mermaid .cluster-label,
+.mermaid .cluster .nodeLabel,
+.mermaid .cluster text {
+    color: var(--text-normal) !important;
+    fill: var(--text-normal) !important;
+}
+
+/* =========================================================
+   2) MINDMAP
+   Fundo neutro + texto do tema (contraste garantido);
+   a cor da seção vai pro conector e pra borda.
+   ========================================================= */
+
+/* fundo de TODOS os nós (qualquer .section-N) → neutro */
+.mermaid g[class*="section-"] > path,
+.mermaid g[class*="section-"] > rect,
+.mermaid g[class*="section-"] > circle,
+.mermaid g[class*="section-"] > polygon,
+.mermaid .mindmap-node .node-bkg {
+    fill: var(--background-secondary) !important;
+    stroke: var(--interactive-accent) !important;
+}
+
+/* texto dos nós do mindmap */
+.mermaid g[class*="section-"] text,
+.mermaid g[class*="section-"] span,
+.mermaid .mindmap-node .nodeLabel,
+.mermaid .mindmap-node foreignObject * {
+    fill: var(--text-normal) !important;
+    color: var(--text-normal) !important;
+}
+
+/* raiz em destaque com o accent */
+.mermaid .section-root > path,
+.mermaid .section-root > rect,
+.mermaid .section-root > circle,
+.mermaid .section-root > polygon {
+    fill: var(--interactive-accent) !important;
+    stroke: var(--interactive-accent) !important;
+}
+.mermaid .section-root text,
+.mermaid .section-root span,
+.mermaid .section-root .nodeLabel {
+    fill: var(--text-on-accent) !important;
+    color: var(--text-on-accent) !important;
+}
+
+/* cor por ramo: conector (.section-edge-N) + sublinhado (.node-line)
+   usando a paleta do tema. Cicla a cada 8 seções. */
+.mermaid .section-edge-0, .mermaid .section-0 .node-line,
+.mermaid .section-edge-8, .mermaid .section-8 .node-line { stroke: var(--color-blue) !important; }
+
+.mermaid .section-edge-1, .mermaid .section-1 .node-line,
+.mermaid .section-edge-9, .mermaid .section-9 .node-line { stroke: var(--color-purple) !important; }
+
+.mermaid .section-edge-2, .mermaid .section-2 .node-line,
+.mermaid .section-edge-10, .mermaid .section-10 .node-line { stroke: var(--color-cyan) !important; }
+
+.mermaid .section-edge-3, .mermaid .section-3 .node-line,
+.mermaid .section-edge-11, .mermaid .section-11 .node-line { stroke: var(--color-green) !important; }
+
+.mermaid .section-edge-4, .mermaid .section-4 .node-line { stroke: var(--color-orange) !important; }
+.mermaid .section-edge-5, .mermaid .section-5 .node-line { stroke: var(--color-pink) !important; }
+.mermaid .section-edge-6, .mermaid .section-6 .node-line { stroke: var(--color-red) !important; }
+.mermaid .section-edge-7, .mermaid .section-7 .node-line { stroke: var(--color-yellow) !important; }
+
+/* borda do nó acompanha a cor do ramo (sobrescreve o accent acima) */
+.mermaid .section-0 > path, .mermaid .section-8 > path  { stroke: var(--color-blue) !important; }
+.mermaid .section-1 > path, .mermaid .section-9 > path  { stroke: var(--color-purple) !important; }
+.mermaid .section-2 > path, .mermaid .section-10 > path { stroke: var(--color-cyan) !important; }
+.mermaid .section-3 > path, .mermaid .section-11 > path { stroke: var(--color-green) !important; }
+.mermaid .section-4 > path { stroke: var(--color-orange) !important; }
+.mermaid .section-5 > path { stroke: var(--color-pink) !important; }
+.mermaid .section-6 > path { stroke: var(--color-red) !important; }
+.mermaid .section-7 > path { stroke: var(--color-yellow) !important; }

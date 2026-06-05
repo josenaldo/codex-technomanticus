@@ -191,6 +191,9 @@ O modelo mais capaz e topo de linha do catálogo de um provedor, posicionado aci
 ### foundation model
 Um modelo de grande escala treinado de forma auto-supervisionada em vastos volumes de dados não rotulados, projetado como base genérica e adaptável a muitas tarefas via fine-tuning ou prompting — em vez de treinado para uma única função. O termo, cunhado por Stanford em 2021, engloba LLMs (GPT, Claude), mas também modelos de visão e multimodais; a ideia central é a transferência: treina-se uma vez em escala e reaproveita-se em incontáveis aplicações downstream.
 
+### GQA (Grouped-Query Attention)
+Esquema de atenção em que grupos de query heads compartilham um mesmo par de vetores K/V, reduzindo o tamanho do [[Dicionário de IA#KV cache|KV cache]] em até ~8× (≈90% vs multi-head attention) com perda de qualidade quase nula. Fica entre a multi-head attention (um K/V por head) e a multi-query attention (MQA, um único K/V para todas as heads); variantes mais agressivas como a MLA (Multi-Head Latent Attention, da DeepSeek) comprimem K/V numa representação latente de baixo rank. É uma das otimizações arquiteturais que tornam janelas de contexto de 1M+ economicamente viáveis.
+
 ### Hallucination
 A geração, por um LLM, de conteúdo plausível mas factualmente incorreto ou inventado — referências inexistentes, APIs e funções que não existem, fatos falsos apresentados com confiança. Não é um defeito pontual e sim uma consequência direta do objetivo de treino (prever o próximo token mais provável, não verificar a verdade); por isso não se elimina, apenas se mitiga — via RAG, verificação externa, guardrails e revisão humana. Em geração de código, manifesta-se sobretudo como chamadas a bibliotecas inexistentes e edge cases silenciosamente ignorados.
 

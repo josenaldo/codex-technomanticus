@@ -124,3 +124,10 @@ https://github.com/VectifyAI/OpenKB
 https://github.com/shanraisshan/claude-code-best-practice
 https://github.com/FlorianBruniaux/claude-code-ultimate-guide
 https://github.com/shareAI-lab/learn-claude-code
+
+Git Learning
+https://learngitbranching.js.org/
+https://webutility.io/git-simulator-online
+https://gitmastery.me/
+https://gitlearn.io/
+https://devops-daily.com/games/git-concepts-simulator?ref=dailydev

@@ -1,5 +1,8 @@
 {
-  "cssTheme": "AnuPpuccin",
+  "cssTheme": "Obuntu",
   "accentColor": "#0b9b9d",
-  "theme": "obsidian"
+  "theme": "obsidian",
+  "enabledCssSnippets": [
+    "mermaid-tema"
+  ]
 }

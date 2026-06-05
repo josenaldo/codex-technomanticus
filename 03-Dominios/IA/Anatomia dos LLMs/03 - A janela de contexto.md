@@ -1,10 +1,10 @@
 ---
 title: "A janela de contexto"
 created: 2026-05-02
-updated: 2026-05-27
+updated: 2026-06-05
 type: concept
-progress: backlog
-status: seedling
+progress: in_progress
+status: growing
 publish: true
 tags:
   - anatomia-llm
@@ -37,6 +37,27 @@ Quando o total excede o limite, dados antigos são **silenciosamente descartados
 3. **Velocidade** — TTFT (time-to-first-token) cresce com o tamanho do contexto porque a fase de prefill processa todos os input tokens
 4. **Design de sistemas** — saber o tamanho do contexto determina se você precisa de RAG, memória persistente, ou sumarização
 
+As quatro contas que a janela cobra, num mapa só:
+
+```mermaid
+mindmap
+  root((A janela importa))
+    Custo em dinheiro
+      input é mais barato
+      output 3 a 5x mais caro
+      prompt caching e batch API
+    Velocidade
+      prefill quadrático infla o TTFT
+      decode dita a latência por token
+    Qualidade
+      context rot
+      lost in the middle
+    Design de sistema
+      RAG
+      memória persistente
+      sumarização
+```
+
 ## Como funciona
 ### Input tokens vs output tokens
 
@@ -62,7 +83,7 @@ A fase de prefill, ou prefilling, é quando o modelo processa todo o contexto de
 
 Esse processamento do contexto todo é caro computacionalmente porque a atenção — o mecanismo que permite o modelo entender relações entre tokens — precisa computar interações entre todos os tokens. Cada token precisa "olhar" para cada outro token, então quanto mais tokens no contexto, mais operações matemáticas precisam acontecer. Se você tem dez mil tokens no contexto, a atenção calcula relações de dez mil vezes dez mil. Portanto, o custo de atenção cresce **quadraticamente** com o número de tokens; é o que infla o [[Dicionário de IA#TTFT (time-to-first-token)|TTFT]] em prompts longos.
 
-Depois disso vem o **Decode** — geração token a token. A fase de decode é quando o modelo gera tokens um por um, sequencialmente. Depois que terminou o prefil e tem o cache de atenção montado, o modelo pega esse cache e começa: gera o primeiro token, depois o segundo, depois o terceiro, e assim vai até terminar a resposta.
+Depois disso vem o **Decode** — geração token a token. A fase de decode é quando o modelo gera tokens um por um, sequencialmente. Depois que terminou o prefill e tem o cache de atenção montado, o modelo pega esse cache e começa: gera o primeiro token, depois o segundo, depois o terceiro, e assim vai até terminar a resposta.
 
 O gargalo aqui é o **[[Dicionário de IA#KV cache|KV cache]]**: estrutura na VRAM que guarda os vetores K/V de cada token já visto. 
 
@@ -70,22 +91,39 @@ O gargalo aqui é o **[[Dicionário de IA#KV cache|KV cache]]**: estrutura na VR
   Lembra que na atenção cada token precisa "olhar" para todos os tokens anteriores? Para isso, cada token gera dois vetores: o K (key) e o V (value). Em vez de recalcular esses vetores de todos os tokens passados a cada novo token gerado, o modelo guarda eles prontos na VRAM. Esse armazenamento é o KV cache. É memória pura: "já calculei as keys e values desses mil tokens, deixa guardado aqui que vou reusar".
 
 > [!info] Por que é o gargalo? 
-> Porque a geração de tokens é sequencial. Você não consegue gerar o décimo token sem antes gerar o nono — são passos que precisam acontecer um após o outro. Na fase de prefil, o processamento era paralelizável, a GPU consegue fazer muita coisa de uma vez. Na decodificação, não. Cada passo depende do anterior. Portanto, o KV cache cresce **linearmente** com o contexto. Porém, a banda de memória da GPU é finita, logo é o [[Dicionário de IA#memory bandwidth bottleneck|gargalo de banda de memória]] que limita o throughput, não o compute.
+> Porque a geração de tokens é sequencial. Você não consegue gerar o décimo token sem antes gerar o nono — são passos que precisam acontecer um após o outro. Na fase de prefill, o processamento era paralelizável, a GPU consegue fazer muita coisa de uma vez. Na decodificação, não. Cada passo depende do anterior. Portanto, o KV cache cresce **linearmente** com o contexto. Porém, a banda de memória da GPU é finita, logo é o [[Dicionário de IA#memory bandwidth bottleneck|gargalo de banda de memória]] que limita o throughput, não o compute.
 
 > [!info] Por que cresce linearmente?
-> Cada token novo adiciona um par K/V ao cache. Mil tokens, mil pares. Dois mil tokens, dois mil pares. Cresce em linha reta com o contexto — diferente do prefil, que era quadrático. Isso é importante: o cache em si não explode, ele cresce de forma comportada.
+> Cada token novo adiciona um par K/V ao cache. Mil tokens, mil pares. Dois mil tokens, dois mil pares. Cresce em linha reta com o contexto — diferente do prefill, que era quadrático. Isso é importante: o cache em si não explode, ele cresce de forma comportada.
 > 
-> Agora o pulo do gato: o gargalo mudou de lugar. No prefil, o gargalo era compute — fazer as contas da atenção quadrática. No decode, o gargalo não é mais conta, é movimentação de dados. Para gerar cada token, a GPU precisa ler o KV cache inteiro da VRAM. Todo ele. A cada token.
+> Agora o pulo do gato: o gargalo mudou de lugar. No prefill, o gargalo era compute — fazer as contas da atenção quadrática. No decode, o gargalo não é mais conta, é movimentação de dados. Para gerar cada token, a GPU precisa ler o KV cache inteiro da VRAM. Todo ele. A cada token.
 > 
 > Por que isso é o problema. A GPU tem uma quantidade absurda de poder de cálculo (compute), mas a velocidade com que ela lê dados da memória — a memory bandwidth, banda de memória — é limitada. No decode você está gerando um token de cada vez, então tem pouca conta para fazer, mas precisa varrer o cache todo da memória a cada passo. A GPU fica ociosa esperando os dados chegarem da VRAM em vez de estar calculando. É como ter um chef rapidíssimo, mas que precisa atravessar o depósito inteiro para pegar cada ingrediente — o gargalo não é a velocidade dele cortando, é a caminhada até a despensa.
 
-E tem mais: cada novo token que você gera precisa de operações de atenção também, mas agora contra o cache que já existe. Então não é exatamente linear, mas é muito mais barato que o prefil porque você já tem o cache pronto. O verdadeiro gargalo é que a latência fica alta — demora muito tempo gerando token por token, mesmo que cada token individualmente seja rápido. É por isso que modelos rápidos como o 4o mini conseguem ser tão eficientes: eles otimizam essa fase de decode pesadamente.
+E tem mais: cada novo token que você gera precisa de operações de atenção também, mas agora contra o cache que já existe. Então não é exatamente linear, mas é muito mais barato que o prefill porque você já tem o cache pronto. O verdadeiro gargalo é que a latência fica alta — demora muito tempo gerando token por token, mesmo que cada token individualmente seja rápido. É por isso que modelos rápidos como o 4o mini conseguem ser tão eficientes: eles otimizam essa fase de decode pesadamente.
 
 Por isso é o gargalo de banda de memória que limita o throughput, não o compute. Quanto maior o contexto, maior o cache, mais dados para ler por token, mais lenta fica a geração. É exatamente o que torna o decode o gargalo de latência que comentamos antes.
 
-Faz sentido o encadeamento? Prefil = limitado por compute (quadrático); decode = limitado por banda de memória (cache linear, mas lido inteiro a cada token).
+Faz sentido o encadeamento? Prefill = limitado por compute (quadrático); decode = limitado por banda de memória (cache linear, mas lido inteiro a cada token).
 
-Por isso modelos de 1M+ não são só caros em dinheiro: são caros em VRAM e, em latência, pagam um pedágio quadrático no prefill que nenhum truque de prompt elimina.
+> [!info]- Como o KV cache linear é domado na arquitetura
+> O crescimento linear não conta a história toda: a *constante* dessa reta foi atacada no nível da **arquitetura**. **MQA** (Multi-Query Attention) faz todas as query heads compartilharem um único par K/V; **[[Dicionário de IA#GQA (Grouped-Query Attention)|GQA]]** usa grupos intermediários, cortando o KV cache em até ~8× (≈90% vs multi-head) com perda de qualidade quase nula e ~30–40% menos latência; **MLA** (Multi-Head Latent Attention, da DeepSeek) vai além, comprimindo K/V numa representação latente de baixo rank. É justamente isso que torna janelas de 1M economicamente viáveis — sem GQA/MLA, o KV cache de contexto longo estouraria a VRAM.
+
+Por isso modelos de 1M+ não são só caros em dinheiro: são caros em VRAM e, em latência, pagam um pedágio quadrático no prefill que nenhum truque de **prompt** elimina. A ressalva mora na palavra *prompt*: na camada de **serving** o pedágio é parcialmente mitigável — *chunked prefill* fatia o processamento para não travar requests de decode concorrentes, *prefill esparso* explora padrões de atenção para pular blocos, e o *prompt caching* elimina o reprocessamento de prefixos repetidos. O que nenhuma técnica na camada de prompt muda é a complexidade quadrática de base.
+
+Resumindo o contraste das duas fases num relance:
+
+```mermaid
+graph LR
+    subgraph PF["PREFILL"]
+        P0("o prompt inteiro<br/>de uma vez") --> P1["paralelizável"] --> P2["O(n²) · quadrático"] --> P3["compute-bound"] --> P4["define o TTFT"]
+    end
+    subgraph DC["DECODE"]
+        D0("um token<br/>por vez") --> D1["sequencial"] --> D2["KV cache O(n) · linear,<br/>lido inteiro a cada token"] --> D3["memory-bandwidth-bound"] --> D4["define a latência/token"]
+    end
+    PF -.-> DC
+```
+
 ### Janelas de contexto em 2026
 
 | Modelo            | Context window   | Output máximo | Nota                                    |
@@ -107,6 +145,35 @@ Por isso modelos de 1M+ não são só caros em dinheiro: são caros em VRAM e, e
 
 > [!abstract] Ideia central 
 > Aumentar a janela de contexto não é "de graça". Mesmo quando o modelo _cabe_ tudo na janela, a qualidade do que ele extrai do contexto cai conforme o contexto cresce — e cai de formas previsíveis, com posição e tamanho importando tanto quanto o conteúdo.
+
+O mapa abaixo organiza a seção: separa a **causa raiz** dos **sintomas** (por posição e por tamanho), de como se **mede** e de como se **mitiga**.
+
+```mermaid
+mindmap
+  root((Contexto grande degrada))
+    Causa raiz
+      Atenção diluída
+        softmax força a massa a somar 1
+        mais tokens, menos luz por token
+    Como se manifesta
+      Por POSIÇÃO
+        Lost in the Middle
+        recency bias no fim
+        attention sink no início
+      Por TAMANHO
+        context rot
+    Como se mede
+      janela efetiva menor que a nominal
+        RULER · NoLiMa · MRCR v2
+    Onde piora
+      Agentes
+        custo acumulado a cada turn
+        prefill quadrático
+    Como mitigar
+      curar mais do que encher
+      pôr o crítico nas pontas
+      compactação e RAG seletivo
+```
 
 ### "[[Dicionário de IA#Lost in the Middle|Lost in the middle]]" e [[Dicionário de IA#context rot|context rot]]
 
@@ -132,12 +199,12 @@ E tem uma nuance importante sobre quando cada padrão domina:
 > 
 > Ou seja: à medida que você enche a janela, o "início privilegiado" do padrão em U vai perdendo força. O que era uma vantagem (informação no começo) vira ponto cego.
 
-#### Porque o **[[Dicionário de IA#recency bias|recency bias]]** acontece?
+#### Por que o **[[Dicionário de IA#recency bias|recency bias]]** acontece?
 O recency bias não vem de um único mecanismo; ele emerge de como o transformer é treinado e estruturado:
 ##### 1. O objetivo de treino premia o local
-LLMs são treinados pra prever o próximo token. E o melhor preditor do próximo token quase sempre é... o token imediatamente anterior. Numa frase, a  palavra seguinte depende muito mais das últimas 5 palavras do que do parágrafo de 3 páginas atrás. O modelo aprende, por bilhões de exemplos, que proximidade = relevância na maioria dos casos. Isso vira um prior embutido nos pesos: na dúvida, olhe pro que está perto do fim.
+LLMs são treinados pra prever o próximo token. E o melhor preditor do próximo token quase sempre é... o token imediatamente anterior. Numa frase, a palavra seguinte depende muito mais das últimas 5 palavras do que do parágrafo de 3 páginas atrás. O modelo aprende, por bilhões de exemplos, que proximidade = relevância na maioria dos casos. Isso vira um prior embutido nos pesos: na dúvida, olhe pro que está perto do fim.
 ##### 2. A codificação posicional decai com a distância
-O modelo precisa de algum mecanismo pra saber onde cada token está. O esquema dominante hoje é o [[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]], que aplica rotações aos vetores de query/key proporcionais à posição. Uma propriedade do RoPE (e de variantes) é o decaimento de longo alcance: o produto interno entre tokens distantes tende a enfraquecer conforme a separação cresce. Resultado prático — tokens próximos da  posição atual têm "afinidade" posicional maior por construção.
+O modelo precisa de algum mecanismo pra saber onde cada token está. O esquema dominante hoje é o [[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]], que aplica rotações aos vetores de query/key proporcionais à posição. Uma propriedade do RoPE (e de variantes) é o decaimento de longo alcance: o produto interno entre tokens distantes tende a enfraquecer conforme a separação cresce. Resultado prático — tokens próximos da posição atual têm "afinidade" posicional maior por construção.
 ##### 3. A geração autorregressiva: o fim é o ponto de partida
 Quando o modelo gera o token N, ele está literalmente na posição N. A query que ele usa pra consultar a [[Dicionário de IA#attention|attention]] é a do último token. Então o contexto recente é o vizinho imediato daquilo que está sendo computado agora — espacialmente e semanticamente o ponto de ancoragem da próxima decisão.
 
@@ -152,62 +219,39 @@ Por que isso importa na prática
 É exatamente por isso que a engenharia de contexto recomenda:  
 - conteúdo estático no início (system prompt, schemas) — pega o attention sink e viabiliza [[Dicionário de IA#Prompt caching|prompt caching]];
 - a tarefa atual e as restrições críticas no fim — pega o recency bias;
-- nunca enterrar o que importa no meio — é onde a atenção é mais fraca.  
-#### Lost in the Middle = o fenômeno observável (a curva inteira)
+- nunca enterrar o que importa no meio — é onde a atenção é mais fraca.
 
-É uma **observação empírica de desempenho**: quando você mede a capacidade de um LLM de recuperar/usar uma informação em função de *onde* ela está no
-  contexto, o gráfico forma um **U**. Acurácia alta nas pontas (início e fim), vale no meio.
-
-  - **Nível:** comportamento mensurável, de fora pra dentro.
-  - **Origem:** Liu et al. (2023), testando recuperação de fatos em posições variadas.
-  - **O que afirma:** "informação no meio é negligenciada".
-  - **Escopo:** descreve as **duas** pontas + o vale. É o mapa completo.
-
-#### Recency bias = uma das causas (metade da curva)
-
-  É **um dos mecanismos** que produzem o lado **direito** (o fim) daquele U. O modelo dá mais peso aos tokens recentes por causa de como foi treinado
-  (prever o próximo token premia o local) e da codificação posicional ([[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]] decai com a
-  distância).
-
-  - **Nível:** viés mecanicista, de dentro pra fora.
-  - **O que afirma:** "o fim pesa mais".
-  - **Escopo:** explica só **uma ponta**.
-
-#### A relação completa
-
-  ```
-          acurácia
-            ▲
-            │ █                       █
-            │ █                       █
-            │  █                     █
-            │   █                   █
-            │     █      vale      █
-            │        █ _______ █
-            └──────────────────────────► posição
-              ↑          ↑           ↑
-           início       meio        fim
-          (attention   (negligen-  (recency
-            sink)       ciado)       bias)
-            └─────────┬──────────────┘
-                Lost in the Middle
-                (a curva em U inteira)
-  ```
-
-  | | Lost in the Middle | recency bias |
-  |---|---|---|
-  | **É um...** | fenômeno/observação | viés/mecanismo causal |
-  | **Cobre** | as duas pontas + vale | só o fim |
-  | **Responde** | "*o que* acontece?" | "*por que* o fim ganha?" |
-  | **Causa do outro lado** | — | o início vem do [[Dicionário de IA#attention sink\|attention sink]] |
-
-#### Resumindo em uma frase
-
-**Lost in the Middle** é o *sintoma* (a curva em U que você mede); **recency bias** e **attention sink** são as *causas* — um puxa o fim pra cima, o outro puxa o início. Juntos, deixam o meio relativamente abandonado.
-
-Na prática isso muda a ação: se você só pensa em "recency bias", você joga tudo importante no fim — e esquece que o **início também é privilegiado** (e ainda por cima é cacheável). Pensar em "Lost in the Middle" te lembra de usar **as duas pontas** e nunca enterrar o crítico no meio.
-
-Nota: no wikilink da tabela escapei a barra (\|) porque um | cru dentro de célula de tabela Markdown quebra a coluna — o Obsidian renderiza o alias certinho assim. Se quiser, posso jogar isso numa nota do vault (ex.: em 03-Dominios/IA/Anatomia dos LLMs/) em vez de só te devolver o markdown.
+> [!question]- Qual a diferença entre *Lost in the Middle*, *recency bias* e *attention sink*?
+> Os três falam de **posição no contexto**, mas em níveis diferentes: um é o *sintoma*, dois são as *causas*. Lado a lado:
+>
+> | | [[Dicionário de IA#Lost in the Middle\|Lost in the Middle]] | [[Dicionário de IA#recency bias\|recency bias]] | [[Dicionário de IA#attention sink\|attention sink]] |
+> |---|---|---|---|
+> | **O que é** | o *sintoma* observável (a curva em U inteira) | *causa* que favorece o **fim** | *causa* que favorece o **início** |
+> | **Nível** | comportamento mensurável (de fora pra dentro) | viés mecanicista (de dentro pra fora) | viés mecanicista (de dentro pra fora) |
+> | **Cobre** | as duas pontas **+ o vale** | só o fim | só o início |
+> | **Por quê** | — (é o que se mede, não a causa) | treino premia o local + [[Dicionário de IA#RoPE (Rotary Position Embedding)\|RoPE]] decai com a distância | o softmax precisa "escoar" massa de atenção em algum lugar, e os primeiros tokens viram o ralo |
+> | **Origem** | Liu et al. (2023) | — | Xiao et al. (2023), *StreamingLLM* |
+>
+> ```
+>         acurácia
+>           ▲
+>           │ █                        █
+>           │ █                        █
+>           │  █                      █
+>           │   █                    █
+>           │     █      vale      █
+>           │        █ ________ █
+>           └──────────────────────────► posição
+>             ↑           ↑           ↑
+>          início        meio        fim
+>        (attention    (negligen-   (recency
+>          sink)        ciado)       bias)
+>           └──────────┬────────────┘
+>             Lost in the Middle
+>             (a curva em U inteira)
+> ```
+>
+> **Em uma frase:** *Lost in the Middle* é o **sintoma** (a curva em U que você mede); *recency bias* e *attention sink* são as **causas** — um puxa o fim, o outro o início, e o meio fica abandonado. Na prática: **começo e fim são privilegiados** — nunca enterre o que importa no meio (e lembre que o começo, além de bom, é [[Dicionário de IA#Prompt caching\|cacheável]]).
 ### [[Dicionário de IA#attention|Atenção]] diluída — a causa de fundo
 
 Por que tudo isso acontece? A raiz está em como a atenção funciona. Para cada token gerado, o modelo distribui uma "massa de atenção" **fixa** entre todos os tokens do contexto (é a normalização do softmax — a soma sempre dá 1).
@@ -227,12 +271,36 @@ Até aqui falamos de _um_ contexto grande. Em **agentes**, o problema é dinâmi
 > [!tip] Por que isso justifica engenharia de contexto 
 > É exatamente por causa desses dois fatores combinados que técnicas como **compactação de contexto, sumarização de histórico, RAG seletivo e gestão de memória** não são luxo — são o que mantém um agente funcional e barato ao longo de uma sessão longa. Encher a janela "porque cabe" é o caminho mais rápido para um agente caro e impreciso.
 
+O catálogo de respostas — o que fazer, agrupado por objetivo:
+
+```mermaid
+mindmap
+  root((Toolbox de engenharia de contexto))
+    Reduzir o que entra
+      curadoria por relevância
+      RAG seletivo
+      sumarização de histórico
+    Gerir sessões longas
+      compactação automática
+      memória externa
+      state files
+    Posicionar bem
+      crítico nas pontas
+      estático no início para cachear
+    Pagar menos por token
+      prompt caching
+      batch API
+    Escolher o modelo certo
+      medir pela janela efetiva
+      GQA e MLA na arquitetura
+```
+
 ---
 
 > [!summary] Resumo em uma linha de cada conceito
 > 
 > - **Lost in the middle** → posição importa: meio do contexto é ponto cego.
-> - **Recency bias** → 
+> - **Recency bias** → quando a janela passa de ~50%, o modelo favorece o fim e abandona o início.
 > - **Context rot** → tamanho importa: degrada antes do limite anunciado.
 > - **Atenção diluída** → a causa raiz: massa de atenção fixa espalhada por mais tokens.
 > - **Custo acumulado** → em agentes, contexto cresce a cada turn, somando custo quadrático e degradação.
@@ -300,9 +368,15 @@ Ferramentas como Claude Code e Cursor implementam **[[Dicionário de IA#context 
 - **Liu et al.** — [*Lost in the Middle: How Language Models Use Long Contexts*](https://arxiv.org/abs/2307.03172) (Stanford, 2023). O paper que documentou o padrão U de atenção em contextos longos.
 - **Chroma Research** — [*Context Rot: How Increasing Input Tokens Impacts LLM Performance*](https://research.trychroma.com/context-rot) (2025). Estudo com 18 modelos frontier mostrando degradação bem antes do limite nominal e mudança do padrão U para recency bias.
 - **NVIDIA** — [*RULER: What's the Real Context Size of Your Long-Context Language Models?*](https://github.com/NVIDIA/RULER) (2024). Benchmark sintético que expôs o gap entre janela nominal e janela efetiva.
+- **Adobe Research / Modarressi et al.** — [*NoLiMa: Long-Context Evaluation Beyond Literal Matching*](https://arxiv.org/abs/2502.05167) (ICML 2025). Benchmark que remove a sobreposição lexical entre needle e haystack; a 32k, 10 de 12 modelos caem abaixo de 50% do baseline curto.
+- **Google DeepMind** — [*MRCR v2 — Multi-Round Coreference Resolution*](https://github.com/google-deepmind/eval_hub/tree/master/eval_hub/mrcr_v2). Benchmark sintético de recall multi-needle para medir generalização de comprimento em contexto longo.
+- **Red Hat** — [*Unlocking the Effective Context Length: Benchmarking the Granite-3.1-8b Model*](https://www.redhat.com/en/blog/unlocking-effective-context-length-benchmarking-granite-31-8b-model) (2025). Granite-3.1-8B tem 128k nominal mas mantém performance confiável só até ~32k.
 - **Peng et al.** — [*YaRN: Efficient Context Window Extension of Large Language Models*](https://arxiv.org/abs/2309.00071) (2023). Método de extensão de contexto via escala de frequências RoPE + temperatura da atenção.
 - **Morph** — [*KV Cache Explained: Why It's the Most Important Optimization in LLM Inference*](https://www.morphllm.com/kv-cache-explained). Mecânica de prefill, decode e KV cache em inferência de LLMs.
+- **Xiao et al.** — [*Efficient Streaming Language Models with Attention Sinks*](https://arxiv.org/abs/2309.17453) (ICLR 2024). Cunhou o conceito de *attention sink*: preservar os primeiros tokens recupera a performance em janelas deslizantes.
 - **The New Stack** — [*Anthropic makes a pricing change that matters for Claude's longest prompts*](https://thenewstack.io/claude-million-token-pricing/) (2025). Mudança do tier 200k em modelos Claude 4.6.
 - **Anthropic** — *Claude Model Card* (2026). Especificações de context window e output limits.
 - **OpenAI** — *API Reference — Models* (2026). Documentação de context windows por modelo.
 - **Google DeepMind** — *Gemini Technical Report* (2026). Detalhes da arquitetura de contexto longo.
+- **General Compute** — [*Multi-Query and Grouped-Query Attention: Shrinking the KV Cache*](https://www.generalcompute.com/blog/multi-query-grouped-query-attention). Redução do KV cache no nível arquitetural — MQA, GQA e MLA.
+- **elvex** — [*Reduce LLM Prefill Latency: Multi-Million Token Optimization*](https://www.elvex.com/blog/reduce-llm-prefill-latency-multi-million-token-inputs). Mitigações de prefill na camada de serving — chunked prefill e prefill esparso.
