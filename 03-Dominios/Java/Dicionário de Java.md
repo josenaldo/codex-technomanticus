@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-03
+updated: 2026-06-04
 type: glossary
 status: growing
 publish: true
@@ -72,6 +72,11 @@ Interface de fila thread-safe que bloqueia o produtor quando a fila está cheia 
 
 Veja também: [[07 - Concurrent collections]].
 
+### boxing / unboxing
+Conversão automática entre tipos primitivos (`int`, `long`, `double`…) e seus wrappers (`Integer`, `Long`, `Double`…): *boxing* empacota o primitivo num objeto; *unboxing* extrai o primitivo do wrapper. Feita implicitamente pelo compilador (autoboxing), mas introduz overhead de alocação e risco de `NullPointerException` em unboxing de referência `null`. Relevante em streams primitivos (`IntStream`), que evitam esse custo.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]].
+
 ### Bytecode
 Representação intermediária compilada pelo `javac` a partir do código-fonte `.java`, gravada em arquivos `.class`. Não é código de máquina nativo: é executado (ou JIT-compilado) pela JVM, o que viabiliza o princípio WORA.
 
@@ -104,10 +109,30 @@ Exceção que o compilador obriga o desenvolvedor a declarar (`throws`) ou captu
 
 Veja também: [[10 - Exceções e tratamento de erros]].
 
+### Collector (coletor)
+Objeto que encapsula uma estratégia de redução mutável para a operação terminal `collect` de uma `Stream`. Combina quatro funções: supplier (cria o container), accumulator (adiciona elemento), combiner (mescla containers paralelos) e finisher (transforma o resultado final). A fábrica `Collectors` fornece implementações prontas como `toList`, `groupingBy` e `joining`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/08 - Collectors e agrupamento|Collectors]].
+
+### Collections Framework
+Arquitetura unificada do Java para representar e manipular grupos de objetos, composta por interfaces (`Collection`, `List`, `Set`, `Queue`, `Map`), implementações concretas (`ArrayList`, `HashSet`, `HashMap`…) e algoritmos utilitários (`Collections.sort`). Introduzida no Java 2 e continuamente ampliada.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/01 - O Collections Framework|Collections Framework]].
+
 ### Compact constructor
 Construtor especial de records que omite a lista de parâmetros (não repete a assinatura) e executa antes da atribuição automática dos campos. Ideal para validação e normalização de dados sem boilerplate.
 
 Veja também: [[13 - Records e record patterns]].
+
+### Comparable
+Interface `java.lang.Comparable<T>` com método `compareTo(T o)` que define a *ordenação natural* de uma classe. Implementada pela própria classe cujos objetos serão ordenados. Usada implicitamente por `Collections.sort`, `TreeSet` e `TreeMap`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/06 - Comparable e Comparator|Comparable e Comparator]].
+
+### Comparator
+Interface funcional `java.util.Comparator<T>` com método `compare(T o1, T o2)` que define uma *ordenação externa* — separada da classe comparada. Permite múltiplas ordens para o mesmo tipo e compõe cadeias com `thenComparing`, `reversed` e métodos estáticos de fábrica como `Comparator.comparing`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/06 - Comparable e Comparator|Comparable e Comparator]].
 
 ### CompletableFuture
 Implementação de `Future` e `CompletionStage` introduzida no Java 8 que permite compor operações assíncronas em pipelines fluentes (`thenApply`, `thenCompose`, `thenCombine`). Suporta execução em thread pools customizados, tratamento de erros e combinação de múltiplos estágios sem bloqueio.
@@ -156,6 +181,11 @@ Modelo de eventos do AWT/Swing: a fonte (componente) notifica os listeners regis
 
 Veja também: [[03-Dominios/Java/Swing/04 - O modelo de eventos|Modelo de eventos]].
 
+### Deque
+Interface `java.util.Deque<E>` (double-ended queue) que permite inserção e remoção em ambas as extremidades. Estende `Queue` e é implementada por `ArrayDeque` (preferível a `Stack` e `LinkedList` para pilhas e filas). Métodos principais: `addFirst`/`addLast`, `pollFirst`/`pollLast`, `peekFirst`/`peekLast`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e filas|Listas, conjuntos e filas]].
+
 ### Document (modelo de texto)
 Model dos componentes de texto (`JTextField`, `JTextArea`): representa o conteúdo como sequência de caracteres com atributos, não como `String`. Edições disparam `DocumentEvent` e podem ser interceptadas via `DocumentListener` ou `DocumentFilter`.
 
@@ -165,6 +195,11 @@ Veja também: [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swin
 Técnica em que o desenho é feito num buffer fora da tela e copiado de uma vez para o display, eliminando flicker. Ativo por padrão em todos os componentes Swing, gerenciado automaticamente pelo `RepaintManager`.
 
 Veja também: [[03-Dominios/Java/Swing/10 - Custom painting e componentes customizados|Custom painting]].
+
+### Duration / Period
+Classes imutáveis do pacote `java.time` que representam quantidades de tempo. `Duration` mede intervalos baseados em segundos e nanossegundos (horas, minutos, segundos) e é adequada para tempo de máquina. `Period` mede intervalos em anos, meses e dias e é adequada para tempo humano/calendário. Ambas são criadas por métodos de fábrica e suportam aritmética de datas.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/11 - java.time — Date e Time API|java.time]].
 
 ## E
 
@@ -222,6 +257,11 @@ Veja também: [[08 - Executors e thread pools]].
 
 ## G
 
+### Gatherer (Stream Gatherers)
+API introduzida no Java 24 (JEP 485) que permite criar operações intermediárias customizadas para `Stream`, além das oferecidas nativamente. Um `Gatherer` define como acumular, transformar ou filtrar elementos com estado próprio, integrando-se ao pipeline de stream com o método `gather(gatherer)`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/15 - Collectors customizados e Gatherers|Gatherers]].
+
 ### Generics
 Mecanismo de parametrização de tipos que permite escrever classes, interfaces e métodos que operam sobre um tipo definido pelo chamador, com checagem em tempo de compilação. Elimina casts explícitos e detecta erros de tipo cedo. Ex: `List<String>`.
 
@@ -231,6 +271,11 @@ Veja também: [[12 - Generics em profundidade]].
 Layout manager mais flexível do Swing: posiciona componentes numa grade configurável via `GridBagConstraints` (gridx, gridy, weightx, weighty, fill, anchor). Poderoso para layouts complexos, mas verboso em comparação com alternativas como `MigLayout`.
 
 Veja também: [[03-Dominios/Java/Swing/03 - Layout managers|Layout managers]].
+
+### groupingBy
+Collector de `java.util.stream.Collectors` que agrupa os elementos de uma stream por uma função classificadora, produzindo um `Map<K, List<V>>`. Variantes `groupingBy(f, downstream)` permitem aplicar um segundo collector aos elementos de cada grupo (ex.: contar, somar, transformar).
+
+Veja também: [[03-Dominios/Java/Collections e Streams/08 - Collectors e agrupamento|Collectors]].
 
 ### Guard
 Condição booleana adicional (`when`) que refina um case de pattern matching. Permite combinar a verificação de tipo/estrutura com uma expressão lógica no mesmo braço do switch. Ex: `case Integer i when i > 0 -> ...`.
@@ -243,6 +288,11 @@ Veja também: [[14 - Sealed classes e pattern matching]].
 Relação de ordenação definida pelo Java Memory Model (JMM) que garante que ações de uma thread sejam visíveis e ordenadas corretamente para outra thread. Não é ordem temporal: duas ações podem ocorrer em qualquer tempo, mas se A happens-before B, o efeito de A é garantidamente visível quando B ocorre. Estabelecida por `synchronized`, `volatile`, start/join de threads, entre outros.
 
 Veja também: [[11 - Java Memory Model em profundidade]].
+
+### hashCode / equals (contrato)
+Contrato Java que exige consistência entre os dois métodos: objetos iguais (`equals` retorna `true`) devem ter o mesmo `hashCode`. A violação corrompeu estruturas baseadas em hash (`HashMap`, `HashSet`): o objeto pode ser inserido mas nunca encontrado. O inverso não é obrigado — dois objetos com mesmo `hashCode` podem ser desiguais (colisão normal).
+
+Veja também: [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]].
 
 ## I
 
@@ -261,6 +311,16 @@ Mecanismo de atalhos de teclado do Swing: `InputMap` mapeia `KeyStroke` para uma
 
 Veja também: [[03-Dominios/Java/Swing/11 - Action API, key bindings e performance|Action API]].
 
+### Instant
+Ponto no tempo com precisão de nanossegundos representado pelo número de segundos desde a época Unix (1970-01-01T00:00:00Z). Pertence ao pacote `java.time`. Imutável e compatível com `java.util.Date` via métodos de conversão. Ideal para timestamps de sistema independentes de fuso horário.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/11 - java.time — Date e Time API|java.time]].
+
+### interface funcional
+Interface com exatamente um método abstrato (SAM — Single Abstract Method), anotada opcionalmente com `@FunctionalInterface`. Permite que lambdas e method references sejam usados onde a interface é esperada. Exemplos: `Runnable`, `Comparator`, `Function`, `Predicate`, `Consumer`, `Supplier`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]].
+
 ### invokeLater / invokeAndWait
 `SwingUtilities.invokeLater` agenda um `Runnable` para execução na EDT de forma assíncrona; `SwingUtilities.invokeAndWait` faz o mesmo de forma síncrona, bloqueando até a conclusão. `invokeAndWait` não pode ser chamado a partir da própria EDT.
 
@@ -268,12 +328,22 @@ Veja também: [[03-Dominios/Java/Swing/05 - A Event Dispatch Thread|EDT]].
 
 ## J
 
+### java.nio.file (Path / Files)
+API moderna de I/O de arquivos introduzida no Java 7, que substitui `java.io.File`. `Path` representa um caminho no sistema de arquivos de forma imutável e portável; `Files` oferece métodos utilitários estáticos para leitura, escrita, cópia, movimentação, walk e observação de diretórios com suporte a streams e nio channels.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/12 - I-O moderno com java.nio.file|I/O moderno]].
+
 ### JComponent
 Classe-base da maioria dos componentes Swing (`J*`), que estende `Container` do AWT. Adiciona suporte a pluggable look-and-feel, double buffering, borders, tooltips, key bindings e painting otimizado.
 
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
 
 ## L
+
+### lambda
+Expressão anônima que implementa uma interface funcional na forma `(parâmetros) -> corpo`. Introduzida no Java 8, elimina a verbosidade de classes anônimas e habilita programação funcional — passagem de comportamento como argumento. Captura variáveis `final` ou *effectively final* do escopo externo.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]].
 
 ### Latch (CountDownLatch)
 Sincronizador de uso único que permite que uma ou mais threads aguardem até que um contador chegue a zero. O contador é decrementado por `countDown()` e a espera é feita com `await()`. Ideal para aguardar a conclusão de um conjunto de tarefas ou o início de um evento comum. Não pode ser reutilizado.
@@ -295,6 +365,11 @@ Situação em que duas ou mais threads continuam executando (não bloqueadas) ma
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
 
+### LocalDate / LocalDateTime
+Classes imutáveis de `java.time` que representam, respectivamente, uma data (ano-mês-dia) e uma combinação de data e hora, ambas sem informação de fuso horário. `LocalDate` é adequada para datas de calendário (aniversários, vencimentos); `LocalDateTime` para timestamps locais. Criadas por `LocalDate.now()`, `LocalDate.of(...)` e similares.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/11 - java.time — Date e Time API|java.time]].
+
 ### Lock-free
 Propriedade de um algoritmo ou estrutura de dados que garante progresso global mesmo se threads individuais forem preemptadas indefinidamente — ao menos uma thread sempre avança. Implementado com CAS e loops de retry sem `synchronized`. Reduz contention e risco de deadlock ao custo de maior complexidade.
 
@@ -311,6 +386,11 @@ Long-Term Support — versão do Java que recebe atualizações de segurança e 
 Veja também: [[01 - O modelo da linguagem Java]], [[15 - A evolução do Java (8 a 25)]].
 
 ## M
+
+### method reference
+Atalho sintático para lambdas que apenas delegam a um método existente, na forma `Classe::método` ou `objeto::método`. Quatro variantes: referência a método estático (`Integer::parseInt`), a método de instância via tipo (`String::toUpperCase`), a método de instância via objeto específico (`this::process`) e a construtor (`ArrayList::new`).
+
+Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]].
 
 ### Monitor (intrinsic lock)
 Mecanismo de sincronização intrínseco de todo objeto Java que combina exclusão mútua e comunicação via `wait/notify/notifyAll`. Cada objeto tem um lock implícito adquirido com `synchronized`. Ao entrar em um bloco `synchronized`, a thread adquire o monitor; ao sair, libera-o automaticamente.
@@ -330,6 +410,16 @@ Look and Feel vetorial bundled no JDK desde o Java 7, alternativa ao Metal padr�
 Veja também: [[03-Dominios/Java/Swing/09 - Look and Feel e temas|Look and Feel]].
 
 ## O
+
+### operação intermediária / terminal
+Classificação das operações de uma `Stream`. Operações *intermediárias* (ex.: `filter`, `map`, `sorted`) retornam uma nova stream e são *lazy* — não processam elementos até que uma operação terminal seja chamada. Operações *terminais* (ex.: `collect`, `forEach`, `count`, `reduce`) desencadeiam o processamento do pipeline e consomem a stream, que não pode ser reutilizada.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/05 - Introdução à Stream API|Stream API]].
+
+### Optional
+Container que pode ou não conter um valor não-nulo, introduzido no Java 8. Evita `NullPointerException` ao forçar o tratamento explícito da ausência de valor. Métodos principais: `isPresent`, `get`, `orElse`, `orElseGet`, `orElseThrow`, `map`, `flatMap`, `ifPresent`. Deve ser usado como tipo de retorno, nunca como campo ou parâmetro.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/10 - Optional|Optional]].
 
 ### Overloading
 Definição de múltiplos métodos com o mesmo nome mas assinaturas diferentes (quantidade ou tipos de parâmetros) em uma mesma classe. A resolução acontece em tempo de compilação com base nos tipos dos argumentos. Não deve ser confundido com overriding.
@@ -378,6 +468,11 @@ Funcionalidade completa de linguagem ou JVM incluída em uma versão do Java par
 
 Veja também: [[15 - A evolução do Java (8 a 25)]].
 
+### PriorityQueue
+Fila (`java.util.PriorityQueue<E>`) que entrega elementos na ordem definida pelo `Comparator` fornecido ou pela ordenação natural (`Comparable`). Internamente implementada como heap binário. Não garante ordem de iteração, apenas que `poll()` retorna sempre o menor (ou maior) elemento segundo o critério configurado.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e filas|Listas, conjuntos e filas]].
+
 ## R
 
 ### Record
@@ -417,10 +512,30 @@ Variação do MVC adotada pelo Swing: o model (dados) é separado do componente,
 
 Veja também: [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swing]].
 
+### SequencedCollection / SequencedMap
+Interfaces introduzidas no Java 21 (`java.util.SequencedCollection`, `java.util.SequencedMap`) que adicionam semântica de *ordem de encontro* garantida a coleções. Fornecem métodos uniformes `getFirst`, `getLast`, `addFirst`, `addLast`, `removeFirst`, `removeLast` e `reversed()`. Implementadas por `List`, `Deque`, `LinkedHashSet`, `LinkedHashMap` e `SortedSet`/`SortedMap`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/14 - SequencedCollection e SequencedMap|SequencedCollection]].
+
 ### Starvation
 Situação em que uma thread nunca obtém acesso a um recurso porque outras threads de maior prioridade ou mais agressivas o monopolizam indefinidamente. A thread não está bloqueada em deadlock — continua elegível para execução — mas jamais é escalonada. Mitigada com políticas de lock fair (ex: `new ReentrantLock(true)`).
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### Stream
+Sequência de elementos que suporta operações de agregação em pipeline, introduzida no Java 8 (`java.util.stream.Stream<T>`). Não armazena dados — processa elementos sob demanda a partir de uma fonte (coleção, array, I/O). Operações intermediárias são lazy; apenas uma operação terminal dispara a execução. Uma stream não pode ser reutilizada após consumida.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/05 - Introdução à Stream API|Stream API]].
+
+### stream lazy (avaliação preguiçosa)
+Característica das operações intermediárias de uma `Stream`: elas não processam elementos imediatamente ao serem declaradas, mas apenas quando uma operação terminal é chamada. Isso permite otimizações como *short-circuit* (ex.: `findFirst` interrompe o pipeline ao encontrar o primeiro resultado) e fusão de operações (loop fusion).
+
+Veja também: [[03-Dominios/Java/Collections e Streams/05 - Introdução à Stream API|Stream API]].
+
+### stream primitivo (IntStream)
+Especializações de `Stream` para tipos primitivos (`IntStream`, `LongStream`, `DoubleStream`) que evitam boxing/unboxing. Oferecem operações adicionais como `sum`, `average`, `min`, `max` e `summaryStatistics`. Obtidos via `mapToInt`, `mapToLong`, `mapToDouble` ou diretamente de `IntStream.range`, `Arrays.stream(int[])`.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]].
 
 ### String pool
 Área de memória (no heap, a partir do Java 7) onde a JVM armazena strings literais de forma deduplicada. Dois literais idênticos referenciam o mesmo objeto, economizando memória. Strings criadas com `new String(...)` não entram no pool automaticamente; `intern()` força a entrada.
@@ -463,6 +578,11 @@ Veja também: [[04 - Strings e text blocks]].
 Conjunto de threads pré-criadas e reutilizáveis que executam tarefas submetidas a uma fila, evitando o custo de criar e destruir threads para cada tarefa. Em Java, provido por `ExecutorService` com implementações como `ThreadPoolExecutor`, `FixedThreadPool` e `ForkJoinPool`. Fundamental para escalabilidade de aplicações concorrentes.
 
 Veja também: [[08 - Executors e thread pools]].
+
+### treeification
+Otimização interna do `HashMap` (e `LinkedHashMap`) introduzida no Java 8: quando um bucket acumula muitas entradas por colisões de `hashCode` (padrão: ≥ 8), a lista encadeada do bucket é convertida em uma árvore vermelho-preta, reduzindo o pior caso de buscas de O(n) para O(log n). O bucket é convertido de volta para lista se encolher abaixo do limiar.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]].
 
 ### Try-with-resources
 Construção `try (Recurso r = ...)` que garante o fechamento automático de qualquer objeto `AutoCloseable` ao fim do bloco, mesmo em caso de exceção. Elimina o padrão `finally { r.close(); }` e torna o gerenciamento de recursos mais seguro e legível.
