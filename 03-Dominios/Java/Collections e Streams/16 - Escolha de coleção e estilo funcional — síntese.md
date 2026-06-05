@@ -278,7 +278,7 @@ Qual nota consultar para qual problema:
 | Lambdas e interfaces funcionais | [[04 - Lambdas e interfaces funcionais]] |
 | Evitar `null` com `Optional` | [[10 - Optional]] |
 | Datas e horas (`java.time`) | [[11 - java.time — Date e Time API]] |
-| I/O de arquivos (`java.nio.file`) | [[12 - I/O moderno com java.nio.file]] |
+| I/O de arquivos (`java.nio.file`) | [[12 - I-O moderno com java.nio.file|I/O moderno com java.nio.file]] |
 | Compor funções / funções de alta ordem | [[13 - Composição funcional e funções de alta ordem]] |
 | Acesso pelas pontas (`getFirst`/`getLast`/`reversed`, Java 21) | [[14 - SequencedCollection e SequencedMap]] |
 | Coletor ou Gatherer customizado (Java 24) | [[15 - Collectors customizados e Gatherers]] |
