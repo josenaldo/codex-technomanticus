@@ -65,7 +65,7 @@ O Java Collections Framework foi projetado com três hierarquias paralelas (`Col
 
 ### `SequencedCollection` — métodos de ponta e `reversed()`
 
-A interface `SequencedCollection<E>` define sete métodos. O único abstrato é `reversed()`; os demais são `default` com implementações que lançam `UnsupportedOperationException` para mutação (portanto implementações imutáveis funcionam sem override extra):
+A interface `SequencedCollection<E>` define sete métodos — e no Java 21 **todos são `default`**, inclusive `reversed()`. `reversed()` é o **método-chave que cada implementação concreta fornece/sobrescreve** para devolver a view reversa adequada à sua estrutura; os demais métodos de mutação têm implementação `default` que lança `UnsupportedOperationException` (portanto implementações imutáveis funcionam sem override extra):
 
 ```java
 // Métodos default (implementação base via interface)
@@ -76,7 +76,7 @@ default void addLast(E e)        // insere e como novo último elemento
 default E    removeFirst()       // remove e retorna o primeiro elemento
 default E    removeLast()        // remove e retorna o último elemento
 
-// Método abstrato (toda implementação deve fornecer)
+// Método-chave (cada implementação concreta fornece/sobrescreve)
 SequencedCollection<E> reversed() // retorna view reversa ao vivo
 ```
 
@@ -99,7 +99,7 @@ for (String f : frutas.reversed()) {
 
 ### `SequencedSet` e `SequencedMap`
 
-**`SequencedSet<E>`** estende `SequencedCollection<E>` e `Set<E>`. A única diferença em relação a `SequencedCollection` é o tipo de retorno de `reversed()`, que aqui é `SequencedSet<E>` (covariância):
+**`SequencedSet<E>`** estende `SequencedCollection<E>` e `Set<E>`. A única diferença em relação a `SequencedCollection` é o tipo de retorno de `reversed()` — o método-chave que cada implementação concreta sobrescreve —, que aqui é `SequencedSet<E>` (covariância):
 
 ```java
 SequencedSet<E> reversed()   // retorna view reversa como SequencedSet
@@ -116,7 +116,7 @@ System.out.println(siglas.getLast());  // "JRE"
 siglas.reversed().forEach(System.out::println); // JRE → JDK → JVM
 ```
 
-**`SequencedMap<K,V>`** é análogo, mas na hierarquia de mapas. O único método abstrato é `reversed()`; os demais são `default`:
+**`SequencedMap<K,V>`** é análogo, mas na hierarquia de mapas. Aqui também todos os métodos são `default` no Java 21; `reversed()` é o método-chave que cada implementação concreta fornece/sobrescreve:
 
 ```java
 // Acesso às pontas
@@ -134,7 +134,7 @@ default SequencedSet<K>              sequencedKeySet()
 default SequencedCollection<V>       sequencedValues()
 default SequencedSet<Map.Entry<K,V>> sequencedEntrySet()
 
-// Método abstrato
+// Método-chave (cada implementação concreta fornece/sobrescreve)
 SequencedMap<K,V> reversed()
 ```
 

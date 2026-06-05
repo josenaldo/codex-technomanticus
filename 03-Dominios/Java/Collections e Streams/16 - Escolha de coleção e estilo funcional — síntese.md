@@ -132,6 +132,18 @@ O ponto de equilíbrio: use **funcional para descrever transformações de dados
 
 Quando o volume é grande e o trabalho por elemento é independente e CPU-bound, um `stream` pode virar `parallelStream()` para distribuir o processamento entre núcleos via fork-join. Mas paralelizar tem custo de coordenação, exige operações *stateless* e *associativas*, e frequentemente perde para o stream sequencial em volumes pequenos. Os critérios completos — quando vale, quando atrapalha, como medir — estão no Galho 4: ver [[03-Dominios/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join|Parallel streams]]. Aqui fica só o gancho: **paralelismo é uma otimização condicional, não um upgrade gratuito do pipeline.**
 
+### Recursos modernos a favor da decisão
+
+A árvore de coleção e o eixo stream-vs-loop são a base; mas Java 21–24 trouxe três recursos que **ampliam o espaço de decisão** sem mudar os princípios. Saber que eles existem evita escolhas piores por desconhecimento da plataforma.
+
+- **Acesso uniforme às pontas — [[14 - SequencedCollection e SequencedMap]] (Java 21).** Antes, "preciso do primeiro/último elemento" influenciava a escolha da coleção (uma `Deque` por causa do `peekFirst`/`peekLast`, por exemplo) ou forçava `get(size()-1)` propenso a *off-by-one*. Com `SequencedCollection`/`SequencedMap`, `getFirst()`/`getLast()`/`reversed()` viraram contrato comum a `List`, `Deque`, `LinkedHashSet`, `TreeMap` etc. Efeito na decisão: o acesso pelas pontas **deixa de ser um critério de desempate** entre estruturas — qualquer coleção ordenada o oferece de forma uniforme, e `reversed()` é uma *view* ao vivo (sem cópia). A escolha volta a ser pelo padrão de acesso dominante (índice, pertinência, ordem), não pela ergonomia de pegar a ponta.
+
+- **Customizar o pipeline quando o padrão não basta — [[15 - Collectors customizados e Gatherers]] (Gatherers GA no Java 24).** A decisão stream-vs-loop muitas vezes pendia para o loop justamente porque a operação desejada — janela deslizante, *scan* (soma/saldo acumulado), *fold* ordenado — não existia como operação intermediária de stream. Os **Gatherers** (`Stream.gather`, com fábricas `windowFixed`, `windowSliding`, `fold`, `scan`, `mapConcurrent`) fecham essa lacuna: passa a ser possível manter o estilo declarativo onde antes só o loop resolvia. Efeito na decisão: o argumento "tem que ser loop porque o stream não tem essa operação" enfraquece — mas só se o baseline do projeto for Java 24+. Sem isso, o critério antigo continua valendo.
+
+- **Compor a transformação em vez de aninhá-la — [[13 - Composição funcional e funções de alta ordem]].** Quando a escolha é o estilo funcional, a composição (`Function.andThen`/`compose`, `Predicate.and`/`or`) permite **nomear** etapas (`precificar = aplicarImposto.andThen(arredondar)`) e reusá-las entre pipelines, em vez de empilhar lambdas anônimas. Efeito na decisão: melhora o lado "legibilidade" do estilo funcional — desde que a composição não vire uma cadeia inline profunda, que reintroduz o problema de *debug* e stack traces opacos. Compor é a favor; aninhar sem nomear é contra.
+
+A leitura conjunta: esses recursos **não criam regras novas**, deslocam os pesos da decisão existente. Acesso às pontas some como critério de escolha de coleção; Gatherers reduzem os casos em que o loop vence o stream; composição reforça o estilo funcional quando aplicada com nome e parcimônia.
+
 ## Na prática
 
 **Cenário 1 — deduplicar e ordenar tags de pedidos.** Imagine um serviço que recebe `Order`s, cada um com uma lista de *tags*, e precisa devolver o conjunto de tags **únicas em ordem alfabética** para um filtro de UI.
@@ -175,6 +187,27 @@ Map<String, Integer> estoque = products.stream()
 int disponivel = estoque.getOrDefault(itemId, 0);
 ```
 
+**Cenário 4 — histórico de saldo e o N mais recente.** Imagine um serviço que registra os lançamentos de um `Customer` em ordem cronológica e precisa de duas coisas: (a) o **saldo acumulado a cada lançamento** (para um gráfico) e (b) acesso rápido ao **lançamento mais recente** e aos *N* últimos, em ordem inversa.
+
+- *Coleção:* `LinkedHashMap`/`List` preservando ordem de inserção — é a ordem cronológica. Como é uma coleção sequenciada (Java 21), o "mais recente" é `getLast()` e os últimos em ordem inversa saem de `reversed()` como *view*, sem cópia nem `sort`. Aqui o acesso pelas pontas **não decide** a estrutura (ver [[14 - SequencedCollection e SequencedMap]]): a ordem de inserção já era o requisito; as pontas vêm de graça.
+- *Estilo:* funcional para o saldo acumulado, **se** o baseline for Java 24+: o *scan* dos [[15 - Collectors customizados e Gatherers]] emite o parcial a cada elemento sem laço manual com variável de estado. Em baseline anterior, esse mesmo cálculo cai para um loop com acumulador — exatamente o caso em que "o stream não tem a operação" empurra para o imperativo.
+
+```java
+// (a) saldo acumulado por lançamento — Java 24+: scan mantém o estilo declarativo
+List<Long> saldoCorrente = lancamentos.stream()
+    .map(Lancamento::valor)
+    .gather(Gatherers.scan(() -> 0L, Long::sum))   // emite o acumulado a cada passo
+    .toList();
+
+// (b) lançamento mais recente e os 3 últimos em ordem inversa — sem cópia (view)
+Lancamento maisRecente = lancamentos.getLast();    // Java 21
+List<Lancamento> ultimos3 = lancamentos.reversed().stream()
+    .limit(3)
+    .toList();
+```
+
+A decisão combinada: a estrutura veio do requisito de ordem (não da ergonomia de ponta), e o estilo dependeu de uma feature de plataforma estar disponível — ilustrando que "qual baseline de Java?" é parte legítima da decisão de design, não um detalhe.
+
 ## Armadilhas
 
 ### (1) Escolher a coleção por hábito (`ArrayList`/`HashMap` sempre)
@@ -194,6 +227,18 @@ int disponivel = estoque.getOrDefault(itemId, 0);
 **O raciocínio errado:** "`LinkedList` é O(1) para inserir no início, então vou usar para ganhar performance" — ou trocar `ArrayList` por estruturas exóticas baseado em intuição de Big-O. Big-O ignora constantes e localidade de cache: na prática `LinkedList` quase sempre perde para `ArrayList` por *pointer chasing* e cache misses, mesmo onde a complexidade teórica favoreceria a lista ligada.
 
 **O raciocínio correto:** **meça antes de otimizar.** Comece com o default sensato (`ArrayList`/`HashMap`), defina a métrica que importa (latência? throughput? memória?) e só troque a estrutura com um benchmark concreto justificando. Otimização guiada por intuição de complexidade, sem medição, troca um problema real (legibilidade) por um ganho imaginário.
+
+### (4) Ignorar o custo de alocação do pipeline (e o de imutabilidade)
+
+**O raciocínio errado:** tratar o eixo stream-vs-loop como puramente estético ("qual fica mais bonito") e o eixo imutável-vs-mutável como dogma ("imutável é sempre melhor"), sem ver o custo de memória por trás de cada escolha.
+
+**O raciocínio correto:** os dois eixos têm um custo de **alocação** concreto que pesa em caminho quente.
+
+- *Stream vs loop — alocação intermediária.* Um pipeline de stream aloca objetos que o loop não aloca: o `Stream`/`Spliterator`, as instâncias de lambda (em geral reusadas, mas presentes), e — o mais caro — o *boxing* de primitivos quando se usa `Stream<Integer>` em vez de `IntStream`. Para uma transformação trivial executada milhões de vezes por segundo, essa pressão extra no *young gen* pode dominar o tempo. O loop, sem pipeline, não paga isso. **Em volume pequeno ou frequência baixa a diferença é irrelevante** e a clareza do stream vence; o trade-off só morde no *hot path*. Daí a regra recorrente desta nota: *meça antes de afirmar* — e, se for processar primitivos, prefira `IntStream`/`LongStream` (ver [[09 - Streams primitivos]]) para eliminar o boxing antes de pensar em abandonar o stream.
+
+- *Imutável vs mutável — cópia vs partilha.* Coleções imutáveis (`List.of`, `Map.of`, `Collectors.toUnmodifiableList`) comunicam intenção, são *thread-safe* por construção e seguras para compartilhar como retorno de método sem defensive copy. O custo: **toda "modificação" é uma nova alocação** — construir uma `List.of` derivada a cada passo, num laço quente, multiplica o lixo. Coleções mutáveis (um `ArrayList` que cresce *in place*) evitam essa alocação repetida, ao preço de exigir disciplina contra vazamento de referência mutável. A decisão: **imutável por padrão na fronteira** (o que sai de um método, o que vira chave de mapa), **mutável no acúmulo local quente** (o contêiner que você preenche dentro do método e só então expõe — eventualmente "congelando" com `Collections.unmodifiableList` ou `List.copyOf` na saída). Não é "imutável sempre"; é imutável onde a segurança paga o custo, mutável onde o custo não se justifica.
+
+O fio comum com as armadilhas anteriores: **alocação é um recurso, e escolher coleção e estilo é também escolher quanto lixo gerar.** O default continua sendo clareza; o ajuste por alocação é guiado por medição, não por intuição.
 
 ## Em entrevista
 
@@ -234,7 +279,9 @@ Qual nota consultar para qual problema:
 | Evitar `null` com `Optional` | [[10 - Optional]] |
 | Datas e horas (`java.time`) | [[11 - java.time — Date e Time API]] |
 | I/O de arquivos (`java.nio.file`) | [[12 - I/O moderno com java.nio.file]] |
-| Recursos modernos de coleções/funcional | notas 14/15 do galho |
+| Compor funções / funções de alta ordem | [[13 - Composição funcional e funções de alta ordem]] |
+| Acesso pelas pontas (`getFirst`/`getLast`/`reversed`, Java 21) | [[14 - SequencedCollection e SequencedMap]] |
+| Coletor ou Gatherer customizado (Java 24) | [[15 - Collectors customizados e Gatherers]] |
 
 ## Veja também
 
@@ -244,6 +291,9 @@ Qual nota consultar para qual problema:
 - [[05 - Introdução à Stream API]]
 - [[07 - Operações de Stream — intermediárias e terminais]]
 - [[08 - Collectors e agrupamento]]
+- [[13 - Composição funcional e funções de alta ordem]]
+- [[14 - SequencedCollection e SequencedMap]]
+- [[15 - Collectors customizados e Gatherers]]
 - [[03-Dominios/Java/Collections e Streams/index|Collections e Streams (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join|Parallel streams]]
