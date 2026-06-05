@@ -21,7 +21,6 @@ aliases:
 > A janela de contexto é o limite máximo de tokens que um LLM pode processar de uma vez — incluindo input (prompt, histórico, system instructions) E output (resposta gerada). Em 2026, janelas de 1M+ tokens são comuns nos modelos frontier, mas ter 1M de contexto não significa que o modelo é bom em usá-lo todo. Atenção degrada com distância, custo cresce linearmente, e contexto grande sem curadoria desperdiça dinheiro e qualidade.
 
 ## O que é
-
 A **[[Dicionário de IA#Context window|janela de contexto]]** (context window) é a quantidade máxima de [[Dicionário de IA#Token|tokens]] que um [[Dicionário de IA#LLM (Large Language Model)|LLM]] consegue "ver" simultaneamente durante uma interação. Ela engloba **tudo**:
 
 - System prompt e instruções
@@ -31,7 +30,6 @@ A **[[Dicionário de IA#Context window|janela de contexto]]** (context window) �
 - A resposta que o modelo está gerando
 
 Quando o total excede o limite, dados antigos são **silenciosamente descartados** (truncamento) ou a API retorna um erro.
-
 ## Por que importa
 
 1. **Custo direto** — cada token no contexto é cobrado como input token. Contexto de 100k tokens × $3/MTok = $0.30 por chamada
@@ -40,7 +38,6 @@ Quando o total excede o limite, dados antigos são **silenciosamente descartados
 4. **Design de sistemas** — saber o tamanho do contexto determina se você precisa de RAG, memória persistente, ou sumarização
 
 ## Como funciona
-
 ### Input tokens vs output tokens
 
 ```mermaid
@@ -59,7 +56,6 @@ graph LR
 | **[[Dicionário de IA#Reasoning tokens\|Reasoning tokens]]** | Tokens internos de "pensamento" em modelos de reasoning | Cobrados como output, invisíveis ao usuário |
 
 ### O custo real do contexto: prefill, decode e KV cache
-
 Por baixo do tampo, o tamanho do contexto cobra duas contas diferentes: a conta do **[[Dicionário de IA#prefill|Prefill]] (compute-bound)** e a conta da **Decode (memory-bound)**,
 
 A fase de prefill, ou prefilling, é quando o modelo processa todo o contexto de uma vez antes de gerar o primeiro token de resposta, o [[Dicionário de IA#TTFT (time-to-first-token)|TTFT (time-to-first-token)]]. Pense assim: você manda um prompt gigante com documentos, código, histórico de conversa — o modelo lê tudo isso, constrói uma representação interna chamada de cache de atenção, e só depois começa a gerar tokens de resposta.
@@ -105,15 +101,141 @@ Por isso modelos de 1M+ não são só caros em dinheiro: são caros em VRAM e, e
 > [!info] Pricing tier acima de 200k (legacy)
 > Modelos antigos da Anthropic (Sonnet 4.5 e anteriores) cobravam tarifa **long-context** para prompts >200k input: ~$6/MTok input e $22.50/MTok output, contra $3/$15 da faixa padrão. Opus 4.6 e Sonnet 4.6 (e Opus 4.7) entregam 1M **no preço base** desde outubro de 2025 — o multiplicador 2x foi removido. Pegadinha: no tier legacy, cobra-se **tudo** no preço premium, não só o excedente — um prompt de 201k input custa o dobro do de 199k.
 
-### Context window ≠ memória real
-
+## Por que contextos grandes degradam a performance
 > [!warning] Distinção crítica
-> Ter 1M de contexto **não** é a mesma coisa que ter 1M de "memória de trabalho efetiva". Na prática:
+> Ter 1M de contexto **não** é a mesma coisa que ter 1M de "memória de trabalho efetiva". 
 
-- **"Lost in the middle" e [[Dicionário de IA#context rot|context rot]]** — Stanford (2023) mostrou o padrão U: melhor recall no início e fim, pior no meio. **Chroma Research (2025)**, testando 18 modelos frontier, foi além e cunhou o termo **context rot** — degradação mensurável bem antes do limite (um modelo de 200k pode cair com 50k). O padrão U vale quando o contexto está **<50% cheio**; acima disso, **recency bias** domina (o modelo favorece o final, depois o meio, e ignora o início).
-- **[[Dicionário de IA#attention|Atenção]] diluída** — quanto mais tokens no contexto, mais a atenção se distribui, reduzindo a "resolução" com que o modelo enxerga cada pedaço
-- **Custo acumulado** — em agentes, o contexto cresce a cada turn. Uma sessão de 50 turns pode facilmente ultrapassar 200k tokens
+> [!abstract] Ideia central 
+> Aumentar a janela de contexto não é "de graça". Mesmo quando o modelo _cabe_ tudo na janela, a qualidade do que ele extrai do contexto cai conforme o contexto cresce — e cai de formas previsíveis, com posição e tamanho importando tanto quanto o conteúdo.
 
+### "[[Dicionário de IA#Lost in the Middle|Lost in the middle]]" e [[Dicionário de IA#context rot|context rot]]
+
+O ponto de partida é um achado da **Stanford (Liu et al., 2023)**, no paper _"Lost in the Middle"_. Eles colocaram a mesma informação relevante em diferentes posições de um contexto longo e mediram o quanto o modelo conseguia recuperar. O resultado foi o famoso **padrão em U**:
+
+- **Início do contexto** → recall alto (efeito de _primacy_)
+- **Meio do contexto** → recall despenca
+- **Final do contexto** → recall alto (efeito de _recency_)
+
+> [!note] O que isso significa na prática 
+> Se você enfia a informação crítica no meio de um prompt gigante, o modelo tende a "esquecer" dela — mesmo que ela esteja literalmente ali, dentro da janela. A informação não some; o modelo simplesmente presta menos atenção nela. A receita prática que sai disso: coloque o que mais importa **no começo ou no fim** do contexto.
+
+A **Chroma Research (2025)** foi além. Testando **18 modelos frontier**, eles mostraram que a degradação não depende só da _posição_ — depende do _tamanho total_ do contexto. Cunharam o termo **context rot** (apodrecimento de contexto): a qualidade cai de forma mensurável **bem antes** de você chegar no limite anunciado.
+
+> [!warning] O limite anunciado é marketing, não garantia Um modelo vendido com janela de 200k tokens pode já estar degradando perceptivelmente lá pelos **50k**. O número grande na ficha técnica diz onde o modelo _para de funcionar_, não onde ele _funciona bem_. São coisas diferentes.
+
+E tem uma nuance importante sobre quando cada padrão domina:
+
+> [!example] Posição × ocupação da janela
+> 
+> - **Contexto < 50% cheio** → vale o **padrão em U** (início e fim bons, meio ruim).
+> - **Contexto > 50% cheio** → o **[[Dicionário de IA#recency bias|recency bias]]** assume o controle: o modelo passa a favorecer fortemente o **final**, depois o meio, e tende a **ignorar o início**.
+> 
+> Ou seja: à medida que você enche a janela, o "início privilegiado" do padrão em U vai perdendo força. O que era uma vantagem (informação no começo) vira ponto cego.
+
+#### Porque o **[[Dicionário de IA#recency bias|recency bias]]** acontece?
+O recency bias não vem de um único mecanismo; ele emerge de como o transformer é treinado e estruturado:
+##### 1. O objetivo de treino premia o local
+LLMs são treinados pra prever o próximo token. E o melhor preditor do próximo token quase sempre é... o token imediatamente anterior. Numa frase, a  palavra seguinte depende muito mais das últimas 5 palavras do que do parágrafo de 3 páginas atrás. O modelo aprende, por bilhões de exemplos, que proximidade = relevância na maioria dos casos. Isso vira um prior embutido nos pesos: na dúvida, olhe pro que está perto do fim.
+##### 2. A codificação posicional decai com a distância
+O modelo precisa de algum mecanismo pra saber onde cada token está. O esquema dominante hoje é o [[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]], que aplica rotações aos vetores de query/key proporcionais à posição. Uma propriedade do RoPE (e de variantes) é o decaimento de longo alcance: o produto interno entre tokens distantes tende a enfraquecer conforme a separação cresce. Resultado prático — tokens próximos da  posição atual têm "afinidade" posicional maior por construção.
+##### 3. A geração autorregressiva: o fim é o ponto de partida
+Quando o modelo gera o token N, ele está literalmente na posição N. A query que ele usa pra consultar a [[Dicionário de IA#attention|attention]] é a do último token. Então o contexto recente é o vizinho imediato daquilo que está sendo computado agora — espacialmente e semanticamente o ponto de ancoragem da próxima decisão.
+
+##### 4. O "fim" também é favorecido por outro motivo (o lado U)
+Aqui vale separar duas coisas:
+
+- Recency bias propriamente dito = favorecimento do fim → os 3 mecanismos acima.
+- O começo também é favorecido (daí a curva em U do [[Dicionário de IA#Lost in the Middle|Lost in the Middle]]). Isso vem de outra fonte: [[Dicionário de IA#attention sink|attention sinks.]] Os primeiros tokens da sequência acumulam uma fração desproporcional da massa de atenção — funcionam como um "ralo" onde as cabeças de atenção despejam peso quando não têm nada específico pra olhar. Some isso ao recency bias e você tem as duas pontas fortes, meio fraco.
+
+Por que isso importa na prática
+
+É exatamente por isso que a engenharia de contexto recomenda:  
+- conteúdo estático no início (system prompt, schemas) — pega o attention sink e viabiliza [[Dicionário de IA#Prompt caching|prompt caching]];
+- a tarefa atual e as restrições críticas no fim — pega o recency bias;
+- nunca enterrar o que importa no meio — é onde a atenção é mais fraca.  
+#### Lost in the Middle = o fenômeno observável (a curva inteira)
+
+É uma **observação empírica de desempenho**: quando você mede a capacidade de um LLM de recuperar/usar uma informação em função de *onde* ela está no
+  contexto, o gráfico forma um **U**. Acurácia alta nas pontas (início e fim), vale no meio.
+
+  - **Nível:** comportamento mensurável, de fora pra dentro.
+  - **Origem:** Liu et al. (2023), testando recuperação de fatos em posições variadas.
+  - **O que afirma:** "informação no meio é negligenciada".
+  - **Escopo:** descreve as **duas** pontas + o vale. É o mapa completo.
+
+#### Recency bias = uma das causas (metade da curva)
+
+  É **um dos mecanismos** que produzem o lado **direito** (o fim) daquele U. O modelo dá mais peso aos tokens recentes por causa de como foi treinado
+  (prever o próximo token premia o local) e da codificação posicional ([[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]] decai com a
+  distância).
+
+  - **Nível:** viés mecanicista, de dentro pra fora.
+  - **O que afirma:** "o fim pesa mais".
+  - **Escopo:** explica só **uma ponta**.
+
+#### A relação completa
+
+  ```
+          acurácia
+            ▲
+            │ █                       █
+            │ █                       █
+            │  █                     █
+            │   █                   █
+            │     █      vale      █
+            │        █ _______ █
+            └──────────────────────────► posição
+              ↑          ↑           ↑
+           início       meio        fim
+          (attention   (negligen-  (recency
+            sink)       ciado)       bias)
+            └─────────┬──────────────┘
+                Lost in the Middle
+                (a curva em U inteira)
+  ```
+
+  | | Lost in the Middle | recency bias |
+  |---|---|---|
+  | **É um...** | fenômeno/observação | viés/mecanismo causal |
+  | **Cobre** | as duas pontas + vale | só o fim |
+  | **Responde** | "*o que* acontece?" | "*por que* o fim ganha?" |
+  | **Causa do outro lado** | — | o início vem do [[Dicionário de IA#attention sink\|attention sink]] |
+
+#### Resumindo em uma frase
+
+**Lost in the Middle** é o *sintoma* (a curva em U que você mede); **recency bias** e **attention sink** são as *causas* — um puxa o fim pra cima, o outro puxa o início. Juntos, deixam o meio relativamente abandonado.
+
+Na prática isso muda a ação: se você só pensa em "recency bias", você joga tudo importante no fim — e esquece que o **início também é privilegiado** (e ainda por cima é cacheável). Pensar em "Lost in the Middle" te lembra de usar **as duas pontas** e nunca enterrar o crítico no meio.
+
+Nota: no wikilink da tabela escapei a barra (\|) porque um | cru dentro de célula de tabela Markdown quebra a coluna — o Obsidian renderiza o alias certinho assim. Se quiser, posso jogar isso numa nota do vault (ex.: em 03-Dominios/IA/Anatomia dos LLMs/) em vez de só te devolver o markdown.
+### [[Dicionário de IA#attention|Atenção]] diluída — a causa de fundo
+
+Por que tudo isso acontece? A raiz está em como a atenção funciona. Para cada token gerado, o modelo distribui uma "massa de atenção" **fixa** entre todos os tokens do contexto (é a normalização do softmax — a soma sempre dá 1).
+
+> [!info] A analogia do holofote Imagine um holofote de brilho fixo iluminando um palco. Com 5 atores no palco, cada um recebe bastante luz. Com 500 atores, a mesma quantidade de luz se espalha — cada ator fica mais escuro. A atenção é esse holofote: quanto mais tokens no contexto, **menos "luz" sobra para cada pedaço individual**. A resolução com que o modelo enxerga cada trecho cai.
+
+Isso conecta diretamente com o "lost in the middle": não é que o modelo _decida_ ignorar o meio — é que, com a atenção espalhada por milhares de tokens, os trechos que não recebem reforço posicional (início/fim) simplesmente ficam abaixo do limiar de relevância.
+### Custo acumulado — o problema específico de agentes
+Até aqui falamos de _um_ contexto grande. Em **agentes**, o problema é dinâmico: o contexto **cresce a cada turn**. Cada ferramenta chamada, cada resultado retornado, cada raciocínio intermediário vai sendo empilhado no contexto da próxima iteração.
+
+> [!danger] A bola de neve 
+> Uma sessão de **50 turns** pode facilmente ultrapassar **200k tokens** de contexto acumulado. E aqui dois problemas se somam:
+> 
+> 1. **Custo de processamento** — lembre-se que o prefill cresce de forma quadrática com o tamanho do contexto. Contexto maior a cada turn = custo crescendo de forma acelerada.
+> 2. **Context rot** — quanto maior o acúmulo, mais o modelo sofre da degradação descrita acima. O agente fica literalmente mais "burro" no turn 50 do que estava no turn 5, mesmo tendo _mais_ informação.
+
+> [!tip] Por que isso justifica engenharia de contexto 
+> É exatamente por causa desses dois fatores combinados que técnicas como **compactação de contexto, sumarização de histórico, RAG seletivo e gestão de memória** não são luxo — são o que mantém um agente funcional e barato ao longo de uma sessão longa. Encher a janela "porque cabe" é o caminho mais rápido para um agente caro e impreciso.
+
+---
+
+> [!summary] Resumo em uma linha de cada conceito
+> 
+> - **Lost in the middle** → posição importa: meio do contexto é ponto cego.
+> - **Recency bias** → 
+> - **Context rot** → tamanho importa: degrada antes do limite anunciado.
+> - **Atenção diluída** → a causa raiz: massa de atenção fixa espalhada por mais tokens.
+> - **Custo acumulado** → em agentes, contexto cresce a cada turn, somando custo quadrático e degradação.
 ### Janela nominal vs janela efetiva
 
 Em 2026, a maioria dos modelos frontier anuncia 1M+ de contexto, mas benchmarks como **RULER** (NVIDIA), **NoLiMa** e **MRCR v2** mostram que a *janela efetiva* — onde o modelo realmente mantém acurácia — costuma ser **30–60 pontos** menor que a nominal em tarefas de recall multi-fato. Casos extremos:
@@ -122,7 +244,6 @@ Em 2026, a maioria dos modelos frontier anuncia 1M+ de contexto, mas benchmarks 
 - **Gemini 2.5 Pro**: 100% de recall até ~530k, queda a 99.7% em 1M (single-needle); cai mais em multi-needle.
 
 Regra prática: a partir de ~25–50% da janela nominal, prepare-se pra degradação mensurável, especialmente em tarefas com várias âncoras de informação. "1M de contexto" virou marketing — engenharia séria mede effective context length pra carga real, não decora o número da spec sheet.
-
 ### Como modelos estendem contexto além do pretraining
 
 Modelos não nascem com 1M de contexto: a maioria é pretrained em 4k–32k e depois **estendida** por técnicas que ajustam as **position embeddings**:

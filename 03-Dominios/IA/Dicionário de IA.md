@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-05-31
+updated: 2026-06-05
 type: glossary
 status: seedling
 aliases:
@@ -116,6 +116,9 @@ Um prompt parametrizado com placeholders preenchidos em tempo de execução com 
 ### Prompt versioning
 Tratar prompt como artefato versionado (não config string), com semver: major (breaking output format), minor (quality improvement), patch (typo). Cada trace registra qual versão produziu cada output, viabilizando rollback, A/B test e auditoria. Ver [[Observability/05 - Versionamento de prompts]] e [[Improvement Loop/03 - Prompt versioning — semver para prompts]].
 
+### recency bias
+A tendência de um LLM a dar mais peso à informação no fim do contexto (os tokens mais recentes) do que à que veio antes. Na prática de prompting e em agentes, instruções e dados colocados perto do final do prompt influenciam mais a saída — daí a recomendação de posicionar a tarefa atual e as restrições críticas no fim. É a contraparte "recente" do fenômeno [[Dicionário de IA#Lost in the Middle|Lost in the Middle]], que descreve a curva de atenção em U (pontas favorecidas, meio negligenciado).
+
 ### system prompt
 Um bloco de instruções enviado pelo desenvolvedor no início de cada chamada de API para configurar o comportamento, personalidade, limitações e contexto do modelo. Diferente das mensagens do usuário, o system prompt é tipicamente estático e re-enviado integralmente a cada turno — tornando-o um vetor de custo constante em sessões agenticas.
 
@@ -166,6 +169,9 @@ A erosão, ao longo do tempo, do entendimento compartilhado de uma equipe sobre 
 
 ### attention
 O mecanismo central do transformer que, para cada token, pondera a relevância de todos os outros tokens da sequência e agrega suas representações conforme esses pesos. É o que permite ao modelo capturar dependências de longo alcance; sua variante multi-cabeça (multi-head) aprende vários tipos de relação em paralelo, e seu custo $O(N^2)$ no comprimento da sequência motiva otimizações como o KV cache.
+
+### attention sink
+Os primeiros tokens de uma sequência, que acumulam uma fração desproporcional da massa de [[Dicionário de IA#attention|atenção]] mesmo sem carregarem significado relevante. Funcionam como um "ralo" onde as cabeças de atenção despejam peso quando não têm nada específico para focar — uma consequência do softmax, que obriga os pesos a somarem 1 e precisa de algum lugar para escoar. Descobertos por Xiao et al. (2023) no trabalho de *StreamingLLM*; preservar esses tokens iniciais é essencial para manter a qualidade em janelas deslizantes, e o fenômeno explica o lado "início" da curva em U do [[Dicionário de IA#Lost in the Middle|Lost in the Middle]] e o complemento do [[Dicionário de IA#recency bias|recency bias]].
 
 ### decoding strategy
 O algoritmo que escolhe o próximo token a partir da distribuição de probabilidades produzida pelo modelo a cada passo — greedy (sempre o mais provável), beam search, ou amostragem estocástica controlada por temperature, top-k e top-p. Determina o equilíbrio entre determinismo/precisão e diversidade/criatividade da saída.
