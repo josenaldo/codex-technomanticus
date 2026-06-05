@@ -28,7 +28,7 @@ aliases:
 
 **Concurrent collections** são implementações de coleções do Java prontas para uso concorrente. Elas fazem parte do pacote `java.util.concurrent` (introduzido no Java 5) e foram projetadas com granularidade de locking muito mais fina — ou sem locking algum — em comparação com as alternativas mais antigas baseadas em `Collections.synchronizedXxx(...)`.
 
-O framework [[Java Fundamentals]] define as interfaces `Map`, `List`, `Queue` e `Set`. As concurrent collections implementam essas mesmas interfaces, de modo que substituem as versões não thread-safe sem alterar o código cliente.
+O [[03-Dominios/Java/Collections e Streams/01 - O Collections Framework|Collections Framework]] define as interfaces `Map`, `List`, `Queue` e `Set`. As concurrent collections implementam essas mesmas interfaces, de modo que substituem as versões não thread-safe sem alterar o código cliente.
 
 > [!note] Escopo desta nota
 > Esta nota cobre as concurrent collections do `java.util.concurrent`. Para os tipos atômicos (`AtomicInteger`, `LongAdder`), veja [[06 - Atômicos e operações lock-free]]. Para `ExecutorService` e filas de tasks, veja [[08 - Executors e thread pools]]. Para `CountDownLatch`, `Semaphore` e similares, veja [[09 - Sincronizadores]].
@@ -396,7 +396,8 @@ data.addAll(batch);  // uma única cópia para o batch inteiro
 - [[06 - Atômicos e operações lock-free]]
 - [[08 - Executors e thread pools]]
 - [[09 - Sincronizadores]]
-- [[Java Fundamentals]]
+- [[03-Dominios/Java/Collections e Streams/01 - O Collections Framework|Collections Framework]]
+- [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]]
 - [[03-Dominios/Java/Concorrência e paralelismo/index|MOC do galho]]
 - [[03-Dominios/Java/index|Trilha Java]]
 - [[Java Concurrency]]

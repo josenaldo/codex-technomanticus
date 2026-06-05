@@ -46,7 +46,7 @@ long somaPar = lista.parallelStream()
     .sum();
 ```
 
-Esta nota cobre a camada de infraestrutura (fork/join) e a camada de alto nível (parallel streams). O pipeline de operações de stream em si — `map`, `filter`, `collect`, `reduce`, spliterators — pertence ao Galho 2 (Stream API); consulte [[Java Fundamentals]] para essa base.
+Esta nota cobre a camada de infraestrutura (fork/join) e a camada de alto nível (parallel streams). O pipeline de operações de stream em si — `map`, `filter`, `collect`, `reduce`, spliterators — é do Galho 2; consulte [[03-Dominios/Java/Collections e Streams/05 - Introdução à Stream API|Stream API]] e [[03-Dominios/Java/Collections e Streams/07 - Operações de Stream — intermediárias e terminais|Operações de Stream]] para essa base.
 
 ## Por que importa
 
@@ -447,7 +447,7 @@ try (ForkJoinPool pool = new ForkJoinPool(4)) {
 - [[08 - Executors e thread pools]]
 - [[10 - CompletableFuture e composição assíncrona]]
 - [[16 - Padrões e diagnóstico de concorrência]]
-- [[Java Fundamentals]]
+- [[03-Dominios/Java/Collections e Streams/07 - Operações de Stream — intermediárias e terminais|Operações de Stream]]
 - [[03-Dominios/Java/Concorrência e paralelismo/index|MOC do galho]]
 - [[03-Dominios/Java/index|Trilha Java]]
 - [[Java Concurrency]]
