@@ -60,13 +60,36 @@ graph LR
 
 ### O custo real do contexto: prefill, decode e KV cache
 
-Por baixo do tampo, o tamanho do contexto cobra duas contas diferentes:
+Por baixo do tampo, o tamanho do contexto cobra duas contas diferentes: a conta do **[[Dicionário de IA#prefill|Prefill]] (compute-bound)** e a conta da **Decode (memory-bound)**,
 
-- **[[Dicionário de IA#prefill|Prefill]] (compute-bound)** — fase em que o modelo "lê" o prompt inteiro. Custo de atenção cresce **quadraticamente** com o número de tokens; é o que infla o [[Dicionário de IA#TTFT (time-to-first-token)|TTFT (time-to-first-token)]] em prompts longos.
-- **Decode (memory-bound)** — geração token a token. O gargalo aqui é o **[[Dicionário de IA#KV cache|KV cache]]**: estrutura na VRAM que guarda os vetores K/V de cada token já visto. O KV cache cresce **linearmente** com o contexto, mas a banda de memória da GPU é finita — é o [[Dicionário de IA#memory bandwidth bottleneck|gargalo de banda de memória]] que limita o throughput, não o compute.
+A fase de prefill, ou prefilling, é quando o modelo processa todo o contexto de uma vez antes de gerar o primeiro token de resposta, o [[Dicionário de IA#TTFT (time-to-first-token)|TTFT (time-to-first-token)]]. Pense assim: você manda um prompt gigante com documentos, código, histórico de conversa — o modelo lê tudo isso, constrói uma representação interna chamada de cache de atenção, e só depois começa a gerar tokens de resposta.
+
+Esse processamento do contexto todo é caro computacionalmente porque a atenção — o mecanismo que permite o modelo entender relações entre tokens — precisa computar interações entre todos os tokens. Cada token precisa "olhar" para cada outro token, então quanto mais tokens no contexto, mais operações matemáticas precisam acontecer. Se você tem dez mil tokens no contexto, a atenção calcula relações de dez mil vezes dez mil. Portanto, o custo de atenção cresce **quadraticamente** com o número de tokens; é o que infla o [[Dicionário de IA#TTFT (time-to-first-token)|TTFT]] em prompts longos.
+
+Depois disso vem o **Decode** — geração token a token. A fase de decode é quando o modelo gera tokens um por um, sequencialmente. Depois que terminou o prefil e tem o cache de atenção montado, o modelo pega esse cache e começa: gera o primeiro token, depois o segundo, depois o terceiro, e assim vai até terminar a resposta.
+
+O gargalo aqui é o **[[Dicionário de IA#KV cache|KV cache]]**: estrutura na VRAM que guarda os vetores K/V de cada token já visto. 
+
+> [!Info] O que é o KV cache.
+  Lembra que na atenção cada token precisa "olhar" para todos os tokens anteriores? Para isso, cada token gera dois vetores: o K (key) e o V (value). Em vez de recalcular esses vetores de todos os tokens passados a cada novo token gerado, o modelo guarda eles prontos na VRAM. Esse armazenamento é o KV cache. É memória pura: "já calculei as keys e values desses mil tokens, deixa guardado aqui que vou reusar".
+
+> [!info] Por que é o gargalo? 
+> Porque a geração de tokens é sequencial. Você não consegue gerar o décimo token sem antes gerar o nono — são passos que precisam acontecer um após o outro. Na fase de prefil, o processamento era paralelizável, a GPU consegue fazer muita coisa de uma vez. Na decodificação, não. Cada passo depende do anterior. Portanto, o KV cache cresce **linearmente** com o contexto. Porém, a banda de memória da GPU é finita, logo é o [[Dicionário de IA#memory bandwidth bottleneck|gargalo de banda de memória]] que limita o throughput, não o compute.
+
+> [!info] Por que cresce linearmente?
+> Cada token novo adiciona um par K/V ao cache. Mil tokens, mil pares. Dois mil tokens, dois mil pares. Cresce em linha reta com o contexto — diferente do prefil, que era quadrático. Isso é importante: o cache em si não explode, ele cresce de forma comportada.
+> 
+> Agora o pulo do gato: o gargalo mudou de lugar. No prefil, o gargalo era compute — fazer as contas da atenção quadrática. No decode, o gargalo não é mais conta, é movimentação de dados. Para gerar cada token, a GPU precisa ler o KV cache inteiro da VRAM. Todo ele. A cada token.
+> 
+> Por que isso é o problema. A GPU tem uma quantidade absurda de poder de cálculo (compute), mas a velocidade com que ela lê dados da memória — a memory bandwidth, banda de memória — é limitada. No decode você está gerando um token de cada vez, então tem pouca conta para fazer, mas precisa varrer o cache todo da memória a cada passo. A GPU fica ociosa esperando os dados chegarem da VRAM em vez de estar calculando. É como ter um chef rapidíssimo, mas que precisa atravessar o depósito inteiro para pegar cada ingrediente — o gargalo não é a velocidade dele cortando, é a caminhada até a despensa.
+
+E tem mais: cada novo token que você gera precisa de operações de atenção também, mas agora contra o cache que já existe. Então não é exatamente linear, mas é muito mais barato que o prefil porque você já tem o cache pronto. O verdadeiro gargalo é que a latência fica alta — demora muito tempo gerando token por token, mesmo que cada token individualmente seja rápido. É por isso que modelos rápidos como o 4o mini conseguem ser tão eficientes: eles otimizam essa fase de decode pesadamente.
+
+Por isso é o gargalo de banda de memória que limita o throughput, não o compute. Quanto maior o contexto, maior o cache, mais dados para ler por token, mais lenta fica a geração. É exatamente o que torna o decode o gargalo de latência que comentamos antes.
+
+Faz sentido o encadeamento? Prefil = limitado por compute (quadrático); decode = limitado por banda de memória (cache linear, mas lido inteiro a cada token).
 
 Por isso modelos de 1M+ não são só caros em dinheiro: são caros em VRAM e, em latência, pagam um pedágio quadrático no prefill que nenhum truque de prompt elimina.
-
 ### Janelas de contexto em 2026
 
 | Modelo            | Context window   | Output máximo | Nota                                    |
