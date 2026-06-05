@@ -1,10 +1,10 @@
 ---
-title: "A janela de contexto"
+title: A janela de contexto
 created: 2026-05-02
 updated: 2026-06-05
 type: concept
 progress: in_progress
-status: growing
+status: evergreen
 publish: true
 tags:
   - anatomia-llm
