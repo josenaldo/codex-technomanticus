@@ -173,6 +173,11 @@ Thread única onde o Swing processa todos os eventos e repinta a tela. A single-
 
 Veja também: [[03-Dominios/Java/Swing/05 - A Event Dispatch Thread|EDT]].
 
+### effectively final
+Variável local (ou parâmetro) que nunca é reatribuída após a inicialização, mesmo sem o modificador `final` explícito. Lambdas e classes anônimas só podem capturar variáveis `final` ou *effectively final*; reatribuir a variável depois da captura é erro de compilação. Garante que o valor capturado seja estável e evita closures sobre estado mutável.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]], [[03-Dominios/Java/Collections e Streams/13 - Composição funcional e funções de alta ordem|Composição funcional]].
+
 ### Enhanced for
 Laço `for-each` — forma simplificada do `for` que itera diretamente sobre arrays ou qualquer objeto `Iterable`, sem índice explícito. Sintaxe: `for (Tipo var : coleção) { }`. Introduzido no Java 5.
 
@@ -204,6 +209,11 @@ Veja também: [[03-Dominios/Java/Swing/09 - Look and Feel e temas|Look and Feel]
 Framework introduzido no Java 7 (`ForkJoinPool`, `RecursiveTask`, `RecursiveAction`) que divide um problema em subproblemas menores (fork), resolve-os em paralelo e combina os resultados (join). Usa work-stealing para maximizar a utilização dos núcleos. Base dos parallel streams e do `CompletableFuture`.
 
 Veja também: [[15 - Parallel streams e fork-join]].
+
+### Function / Predicate / Consumer / Supplier
+As quatro interfaces funcionais centrais de `java.util.function`. `Function<T,R>` transforma um T em R (`apply`); `Predicate<T>` testa uma condição booleana sobre T (`test`); `Consumer<T>` executa uma ação sobre T sem retorno (`accept`); `Supplier<T>` fornece um T sem receber argumento (`get`). Cada uma traz métodos `default` de composição — `andThen`/`compose` (`Function`), `and`/`or`/`negate` (`Predicate`), `andThen` (`Consumer`) — base da composição funcional e das operações de Stream.
+
+Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]], [[03-Dominios/Java/Collections e Streams/13 - Composição funcional e funções de alta ordem|Composição funcional]].
 
 ### Future
 Interface que representa o resultado de uma operação assíncrona ainda em execução. Permite verificar se concluiu (`isDone`), cancelar (`cancel`) ou obter o resultado bloqueando (`get`). Limitada por não suportar composição; `CompletableFuture` supera essas limitações.
