@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-04
+updated: 2026-06-05
 type: glossary
 status: growing
 publish: true
@@ -80,7 +80,7 @@ Veja também: [[03-Dominios/Java/Collections e Streams/09 - Streams primitivos|S
 ### Bytecode
 Representação intermediária compilada pelo `javac` a partir do código-fonte `.java`, gravada em arquivos `.class`. Não é código de máquina nativo: é executado (ou JIT-compilado) pela JVM, o que viabiliza o princípio WORA.
 
-Veja também: [[01 - O modelo da linguagem Java]].
+Veja também: [[01 - O modelo da linguagem Java]], [[04 - Bytecode por dentro — anatomia e javap]].
 
 ## C
 
@@ -108,6 +108,16 @@ Veja também: [[03-Dominios/Java/Swing/08 - Renderers e editors|Renderers e edit
 Exceção que o compilador obriga o desenvolvedor a declarar (`throws`) ou capturar (`try/catch`). Estende `Exception` (excluindo `RuntimeException`). Exemplos: `IOException`, `SQLException`. Usada quando o chamador pode se recuperar do erro.
 
 Veja também: [[10 - Exceções e tratamento de erros]].
+
+### classloader (parent delegation)
+Componente da JVM responsável por carregar classes sob demanda a partir do classpath ou modulepath. O modelo de delegação hierárquica (parent delegation) determina que cada classloader consulta seu pai antes de tentar carregar a classe ele mesmo, garantindo que classes do JDK nunca sejam substituídas por versões do usuário.
+
+Veja também: [[05 - Classloading e o delegation model]].
+
+### code cache
+Região de memória nativa onde a JVM armazena o código nativo gerado pelo compilador JIT. Quando fica cheia, a JVM para de compilar novos métodos e reverte à interpretação, degradando a performance. Monitorável com `-XX:+PrintCodeCache` e configurável com `-XX:ReservedCodeCacheSize`.
+
+Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
 ### Collector (coletor)
 Objeto que encapsula uma estratégia de redução mutável para a operação terminal `collect` de uma `Stream`. Combina quatro funções: supplier (cria o container), accumulator (adiciona elemento), combiner (mescla containers paralelos) e finisher (transforma o resultado final). A fábrica `Collectors` fornece implementações prontas como `toList`, `groupingBy` e `joining`.
@@ -181,6 +191,11 @@ Modelo de eventos do AWT/Swing: a fonte (componente) notifica os listeners regis
 
 Veja também: [[03-Dominios/Java/Swing/04 - O modelo de eventos|Modelo de eventos]].
 
+### deoptimization
+Processo pelo qual a JVM descarta código nativo gerado pelo JIT e volta a interpretar (ou recompilar com menos agressividade) um método, tipicamente quando uma suposição feita em tempo de compilação (ex.: classe monormórfica) é invalidada em runtime. Pode ser observado nos GC logs com `-XX:+PrintCompilation`.
+
+Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
+
 ### Deque
 Interface `java.util.Deque<E>` (double-ended queue) que permite inserção e remoção em ambas as extremidades. Estende `Queue` e é implementada por `ArrayDeque` (preferível a `Stack` e `LinkedList` para pilhas e filas). Métodos principais: `addFirst`/`addLast`, `pollFirst`/`pollLast`, `peekFirst`/`peekLast`.
 
@@ -223,6 +238,21 @@ Tipo especial de classe cujas instâncias são um conjunto fechado e nomeado de 
 
 Veja também: [[09 - Enums]].
 
+### Epsilon GC
+Coletor de lixo *no-op* experimental (JEP 318, Java 11): aloca objetos mas nunca os coleta. Útil para benchmarks de alocação, testes de desempenho sem interferência de GC e aplicações de vida curtíssima. Quando o heap é esgotado, a JVM termina com `OutOfMemoryError`. Ativado com `-XX:+UseEpsilonGC`.
+
+Veja também: [[06 - Os coletores do HotSpot]].
+
+### ergonomics (JVM)
+Capacidade da JVM de ajustar automaticamente seus parâmetros de comportamento (tamanho de heap, número de GC threads, coletor padrão) com base nos recursos detectados no ambiente de execução, como número de CPUs e memória disponível. Fundamental para ajuste correto em containers, onde os recursos visíveis ao processo podem diferir dos da máquina física.
+
+Veja também: [[09 - Flags, ergonomics e a JVM em containers]].
+
+### escape analysis
+Análise estática realizada pelo JIT para determinar se um objeto criado em um método pode ser referenciado fora dele (escapa). Se o objeto não escapa, o JIT pode eliminá-lo por inteiro (*scalar replacement*), substituindo seus campos por variáveis locais e evitando a alocação no heap — não por alocação na stack.
+
+Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
+
 ### Exaustividade
 Propriedade de um `switch` (expressão ou statement) que garante que todos os casos possíveis são cobertos. O compilador Java exige exaustividade em switch expressions e em switches sobre sealed classes e enums. Violação gera erro em tempo de compilação.
 
@@ -257,10 +287,20 @@ Veja também: [[08 - Executors e thread pools]].
 
 ## G
 
+### G1 GC
+Coletor de lixo de baixa latência padrão desde o Java 9, projetado para heaps grandes (> 4 GB). Divide o heap em regiões de tamanho fixo (1–32 MB) em vez de gerations físicas contíguas, selecionando as regiões com maior quantidade de lixo para coletar primeiro (*garbage-first*). Usa pausas incrementais e previsíveis, com meta de pause-time configurável via `-XX:MaxGCPauseMillis`.
+
+Veja também: [[06 - Os coletores do HotSpot]].
+
 ### Gatherer (Stream Gatherers)
 API introduzida no Java 24 (JEP 485) que permite criar operações intermediárias customizadas para `Stream`, além das oferecidas nativamente. Um `Gatherer` define como acumular, transformar ou filtrar elementos com estado próprio, integrando-se ao pipeline de stream com o método `gather(gatherer)`.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/15 - Collectors customizados e Gatherers|Gatherers]].
+
+### GC roots / reachability
+Conjunto de referências sempre consideradas vivas pelo garbage collector: referências em stack frames ativos, variáveis estáticas, referências JNI e objetos de sistema. Um objeto é alcançável (*reachable*) se existe algum caminho de referências a partir de qualquer GC root; objetos inalcançáveis são elegíveis para coleta.
+
+Veja também: [[03 - Garbage Collection — o conceito]].
 
 ### Generics
 Mecanismo de parametrização de tipos que permite escrever classes, interfaces e métodos que operam sobre um tipo definido pelo chamador, com checagem em tempo de compilação. Elimina casts explícitos e detecta erros de tipo cedo. Ex: `List<String>`.
@@ -294,6 +334,16 @@ Contrato Java que exige consistência entre os dois métodos: objetos iguais (`e
 
 Veja também: [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]].
 
+### heap
+Área de memória principal da JVM onde todos os objetos e arrays são alocados. Dividida em gerações (young/eden, survivor, old) pelos coletores generacionais. O tamanho é configurável com `-Xms` (inicial) e `-Xmx` (máximo); esgotar o heap causa `OutOfMemoryError`.
+
+Veja também: [[02 - Áreas de memória de runtime]].
+
+### heap dump
+Snapshot do conteúdo do heap da JVM em um dado instante, gravado em formato HPROF. Contém todos os objetos vivos, seus tipos, tamanhos e referências entre eles. Usado para diagnosticar vazamentos de memória com ferramentas como JMC, Eclipse MAT ou VisualVM.
+
+Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
+
 ## I
 
 ### Imutabilidade
@@ -305,6 +355,11 @@ Veja também: [[06 - Classes, objetos e encapsulamento]].
 Capacidade do compilador de deduzir o tipo de uma variável local a partir da expressão à direita, sem que o programador o declare explicitamente. Em Java (a partir do Java 10): `var nome = "Alice";`. Só se aplica a variáveis locais com inicializador.
 
 Veja também: [[02 - Tipos, variáveis e operadores]].
+
+### inlining (JIT)
+Otimização do compilador JIT que substitui uma chamada de método pelo corpo do método chamado diretamente no ponto de chamada, eliminando o overhead de invocação e abrindo espaço para otimizações adicionais no contexto inlined. Métodos pequenos e frequentemente chamados são candidatos prioritários.
+
+Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
 ### InputMap / ActionMap (key bindings)
 Mecanismo de atalhos de teclado do Swing: `InputMap` mapeia `KeyStroke` para uma chave string, e `ActionMap` mapeia a chave para uma `Action`. Supera `KeyListener` por suportar escopos de foco (`WHEN_IN_FOCUSED_WINDOW`) independentemente de qual componente está focado.
@@ -333,10 +388,35 @@ API moderna de I/O de arquivos introduzida no Java 7, que substitui `java.io.Fil
 
 Veja também: [[03-Dominios/Java/Collections e Streams/12 - I-O moderno com java.nio.file|I/O moderno]].
 
+### jcmd
+Ferramenta de linha de comando do JDK que envia comandos de diagnóstico a uma JVM em execução, como listar threads (`Thread.print`), gerar heap dump (`GC.heap_dump`), iniciar e despejar JFR (`JFR.start`, `JFR.dump`) e exibir flags de VM (`VM.flags`). Substitui `jmap`, `jstack` e `jinfo` como interface unificada de diagnóstico.
+
+Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
+
 ### JComponent
 Classe-base da maioria dos componentes Swing (`J*`), que estende `Container` do AWT. Adiciona suporte a pluggable look-and-feel, double buffering, borders, tooltips, key bindings e painting otimizado.
 
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
+
+### JFR (Java Flight Recorder)
+Mecanismo de profiling e diagnóstico de baixíssimo overhead integrado à JVM HotSpot (GA no OpenJDK desde o Java 11) que coleta continuamente eventos de GC, alocações, I/O, threads, locks e código JIT em um buffer circular. Os dados são despejados em arquivo `.jfr` e analisados com JMC ou ferramentas compatíveis.
+
+Veja também: [[13 - JFR e JMC — observabilidade de produção]].
+
+### JIT (C1 / C2)
+Compiladores Just-In-Time da JVM HotSpot que traduzem bytecode para código nativo em tempo de execução. C1 (client compiler) é rápido e aplica otimizações simples; C2 (server compiler) é mais lento mas produz código altamente otimizado via especulação e análise de perfil. Em tiered compilation (padrão desde o Java 8), ambos são usados em sequência conforme a "temperatura" do método.
+
+Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
+
+### JMC (JDK Mission Control)
+IDE de análise de performance que lê arquivos `.jfr` gerados pelo JFR e os apresenta em visões gráficas de eventos, alocações, CPU, GC e latências. Distribuído separadamente do JDK; suporta análise offline e conexão em tempo real via JMX.
+
+Veja também: [[13 - JFR e JMC — observabilidade de produção]].
+
+### JPMS (module-info)
+Java Platform Module System (introduzido no Java 9, JEP 261): sistema de módulos que adiciona uma camada de encapsulamento forte acima dos pacotes. Cada módulo declara suas dependências (`requires`) e o que exporta (`exports`) em um arquivo `module-info.java`. Permite criar imagens de runtime mínimas com `jlink` e elimina o classpath hell.
+
+Veja também: [[08 - JPMS — o sistema de módulos]].
 
 ## L
 
@@ -392,6 +472,11 @@ Atalho sintático para lambdas que apenas delegam a um método existente, na for
 
 Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]].
 
+### Metaspace
+Área de memória nativa (fora do heap Java) introduzida no Java 8 para substituir o PermGen, onde a JVM armazena metadados de classes carregadas (estruturas internas, bytecode, pool de constantes). Cresce sob demanda sem limite fixo por padrão; configurável com `-XX:MaxMetaspaceSize`. Não confundir com `MetaspaceSize`, que é o tamanho inicial a partir do qual o GC começa a limpar classes não utilizadas.
+
+Veja também: [[02 - Áreas de memória de runtime]].
+
 ### Monitor (intrinsic lock)
 Mecanismo de sincronização intrínseco de todo objeto Java que combina exclusão mútua e comunicação via `wait/notify/notifyAll`. Cada objeto tem um lock implícito adquirido com `synchronized`. Ao entrar em um bloco `synchronized`, a thread adquire o monitor; ao sair, libera-o automaticamente.
 
@@ -408,6 +493,11 @@ Veja também: [[03 - Exclusão mútua com synchronized]].
 Look and Feel vetorial bundled no JDK desde o Java 7, alternativa ao Metal padrão. Renderiza os componentes com formas suaves e escala melhor em diferentes resoluções de tela. Configurável via `UIManager.put` para ajustes de cores e fontes.
 
 Veja também: [[03-Dominios/Java/Swing/09 - Look and Feel e temas|Look and Feel]].
+
+### NMT (Native Memory Tracking)
+Funcionalidade do HotSpot que rastreia o uso de memória nativa da JVM categorizado por subsistema (heap, metaspace, code cache, threads, GC, compiler…). Ativada com `-XX:NativeMemoryTracking=summary|detail`; consultada com `jcmd <pid> VM.native_memory`. Essencial para diagnosticar crescimento de memória fora do heap.
+
+Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
 
 ## O
 
@@ -492,6 +582,11 @@ Conjunto de técnicas que garantem que um objeto construído por uma thread seja
 
 Veja também: [[11 - Java Memory Model em profundidade]].
 
+### safepoint
+Estado global da JVM em que todas as threads Java estão em pontos de execução seguros — tipicamente paradas ou em código nativo inspecionável — permitindo que a VM execute operações que requerem visibilidade consistente do heap, como pausas de GC, recompilação JIT e deoptimização. A JVM insere verificações de safepoint em loops e chamadas; o tempo de chegada ao safepoint (*time to safepoint*, TTSP) é visível com `-Xlog:safepoint`.
+
+Veja também: [[03 - Garbage Collection — o conceito]].
+
 ### Scoped value
 Mecanismo final (permanente) do Java 25 para compartilhar dados imutáveis com threads descendentes sem passar parâmetros explicitamente, como alternativa segura e eficiente ao `ThreadLocal`. O valor é acessível apenas dentro de um escopo delimitado e não pode ser alterado após a ligação.
 
@@ -517,10 +612,25 @@ Interfaces introduzidas no Java 21 (`java.util.SequencedCollection`, `java.util.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/14 - SequencedCollection e SequencedMap|SequencedCollection]].
 
+### Shenandoah
+Coletor de lixo de pausa ultra-baixa desenvolvido pela Red Hat, disponível no OpenJDK. Realiza a fase de compactação (evacuation) concorrentemente com a aplicação, reduzindo as pausas STW a trabalho de curtíssima duração independentemente do tamanho do heap. Ativado com `-XX:+UseShenandoahGC`.
+
+Veja também: [[06 - Os coletores do HotSpot]].
+
+### stack frame
+Estrutura de dados criada na pilha de cada thread para cada invocação de método ativa, armazenando variáveis locais, operandos, referência ao pool de constantes e o endereço de retorno. O conjunto de stack frames de uma thread forma a call stack. O estouro da pilha causa `StackOverflowError`.
+
+Veja também: [[02 - Áreas de memória de runtime]].
+
 ### Starvation
 Situação em que uma thread nunca obtém acesso a um recurso porque outras threads de maior prioridade ou mais agressivas o monopolizam indefinidamente. A thread não está bloqueada em deadlock — continua elegível para execução — mas jamais é escalonada. Mitigada com políticas de lock fair (ex: `new ReentrantLock(true)`).
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### stop-the-world
+Pausa em que a JVM suspende todas as threads da aplicação para executar uma fase do GC que exige visão consistente do heap, como a marcação inicial ou a cópia de objetos young. A duração das pausas STW é o principal indicador de latência do GC e varia conforme o coletor: G1 as minimiza incrementalmente; ZGC e Shenandoah as tornam sub-milissegundos.
+
+Veja também: [[03 - Garbage Collection — o conceito]].
 
 ### Stream
 Sequência de elementos que suporta operações de agregação em pipeline, introduzida no Java 8 (`java.util.stream.Stream<T>`). Não armazena dados — processa elementos sob demanda a partir de uma fonte (coleção, array, I/O). Operações intermediárias são lazy; apenas uma operação terminal dispara a execução. Uma stream não pode ser reutilizada após consumida.
@@ -579,6 +689,11 @@ Conjunto de threads pré-criadas e reutilizáveis que executam tarefas submetida
 
 Veja também: [[08 - Executors e thread pools]].
 
+### tiered compilation
+Estratégia de compilação JIT padrão desde o Java 8 que combina C1 e C2 em cinco níveis (0=interpretado, 1–3=C1 com crescente profundidade de instrumentação, 4=C2 totalmente otimizado). Métodos sobem de nível conforme a frequência de invocação, balanceando tempo de warmup e pico de throughput.
+
+Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
+
 ### treeification
 Otimização interna do `HashMap` (e `LinkedHashMap`) introduzida no Java 8: quando um bucket acumula muitas entradas por colisões de `hashCode` (padrão: ≥ 8), a lista encadeada do bucket é convertida em uma árvore vermelho-preta, reduzindo o pior caso de buscas de O(n) para O(log n). O bucket é convertido de volta para lista se encolher abaixo do limiar.
 
@@ -606,6 +721,11 @@ Exceção que não precisa ser declarada nem capturada obrigatoriamente. Estende
 
 Veja também: [[10 - Exceções e tratamento de erros]].
 
+### unified logging (-Xlog)
+Framework de logging unificado da JVM introduzido no Java 9 (JEP 158) que unifica todos os logs internos (GC, JIT, classloading, safepoints…) em uma única infraestrutura configurável via `-Xlog:<tags>:<output>:<decorators>`. Substitui flags fragmentadas como `-XX:+PrintGCDetails`. Permite filtrar por subsistema, nível e redirecionar para arquivo com rotação.
+
+Veja também: [[10 - GC logs — unified logging e leitura]].
+
 ## V
 
 ### Varargs
@@ -624,6 +744,11 @@ Modificador de campo que garante visibilidade imediata de escritas a todas as th
 Veja também: [[11 - Java Memory Model em profundidade]].
 
 ## W
+
+### weak generational hypothesis
+Hipótese empírica que embasa os coletores generacionais: a maioria dos objetos morre jovem. Com base nisso, o heap é dividido em geração jovem (young/eden + survivor) e geração velha (old/tenured), e a coleta foca na geração jovem — onde o retorno de objetos coletados por unidade de trabalho é máximo — reduzindo o custo total do GC.
+
+Veja também: [[03 - Garbage Collection — o conceito]].
 
 ### Wildcard
 Argumento de tipo genérico desconhecido, representado por `?`. Pode ser não-limitado (`?`), com limite superior (`? extends T`) ou com limite inferior (`? super T`). Aumenta a flexibilidade das APIs genéricas ao custo de restringir as operações permitidas sobre a coleção.
@@ -646,3 +771,10 @@ Veja também: [[15 - Parallel streams e fork-join]].
 Palavra-chave usada dentro de um bloco de switch expression (`case X -> { ... yield valor; }`) para retornar o valor produzido pelo bloco. Necessário quando o braço do switch contém mais de uma instrução; na sintaxe de seta simples, o valor é retornado diretamente sem `yield`.
 
 Veja também: [[03 - Estruturas de controle e fluxo]].
+
+## Z
+
+### ZGC (generational)
+Coletor de lixo de latência ultra-baixa (sub-milissegundos), com arquitetura generacional adotada como padrão no Java 23 (JEP 439, final no Java 21). Realiza marcação, realocação e compactação concorrentemente com a aplicação usando load barriers e colored pointers, mantendo as pausas STW praticamente constantes independentemente do tamanho do heap. Ativado explicitamente com `-XX:+UseZGC`.
+
+Veja também: [[06 - Os coletores do HotSpot]].
