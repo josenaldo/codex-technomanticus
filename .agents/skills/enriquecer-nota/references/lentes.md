@@ -15,6 +15,23 @@ SKILL). Cada lente produz **candidatos** no schema abaixo.
   fonte: { tipo: url, ref: "https://..." }   # tipo: url | nota | geral
 ```
 
+## Registro do conteúdo gerado (método Feynman)
+
+Todo candidato `tipo: adicao|reescrita` é redigido como quem **ensina**, não como quem cataloga.
+Exemplo canônico do registro: `03 - A janela de contexto.md` (seção prefill/decode/KV cache).
+Anti-exemplo: prosa enciclopédica neutra — tecnicamente correta, mas que não antecipa a dúvida do leitor.
+
+- **Analogia concreta** quando o mecanismo for abstrato (holofote pra atenção diluída, chef/despensa
+  pra banda de memória). Uma por conceito; analogia decorativa é ruído.
+- **Pergunta retórica do leitor** antes de responder ("Por que isso é o gargalo?") — espelha a dúvida
+  que surgiria na leitura corrida.
+- **Camadas explícitas** — separar *sintoma* de *causa*, *o que é* de *por que importa*.
+- **Callouts pedagógicos** (`> [!info]`, `> [!question]-`, `> [!example]`) pra apartes, comparações
+  lado a lado e FAQs; colapsáveis (`-`) quando longos.
+- **Fechar seção densa** com resumo em uma linha (callout `[!summary]` ou frase final).
+- **Visuais:** mindmap pra mapear o argumento de uma seção longa; graph pra mecanismo/fluxo.
+- O registro **não afrouxa a proveniência**: fonte continua obrigatória e vai em `## Referências`.
+
 ## Lente: Profundidade
 
 - **Objetivo:** ir além do óbvio — trade-offs, edge cases, gotchas, o detalhe que separa júnior de sênior.

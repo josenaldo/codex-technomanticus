@@ -3,8 +3,8 @@ title: Tokens e tokenização
 created: 2026-05-02
 updated: 2026-05-27
 type: concept
+status: evergreen
 progress: done
-status: growing
 publish: true
 tags:
   - anatomia-llm

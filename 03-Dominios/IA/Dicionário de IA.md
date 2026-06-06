@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-06-05
+updated: 2026-06-06
 type: glossary
 status: seedling
 aliases:
@@ -188,6 +188,9 @@ O processo de continuar o treino de um modelo pré-treinado em um conjunto de da
 ### flagship model
 O modelo mais capaz e topo de linha do catálogo de um provedor, posicionado acima de variantes menores e mais baratas da mesma família (ex.: na linha Claude, Opus é o flagship; Sonnet e Haiku ficam abaixo). Marca o estado da arte do provedor em raciocínio e capacidades gerais, ao custo de maior latência e preço por token — os modelos menores costumam ser destilações ou versões reduzidas voltadas a velocidade e economia.
 
+### FlashAttention
+Família de kernels de atenção exata (Dao et al., 2022) que reorganiza a computação em blocos para minimizar o I/O entre a HBM e a SRAM da GPU — matematicamente equivalente à [[Dicionário de IA#attention|atenção]] padrão, sem perda de qualidade. Cada geração persegue o hardware do momento: a v4 (Hot Chips 2025) introduz um online softmax que pula ~90% do rescaling e chega a 22% mais rápida que o kernel cuDNN em GPUs Blackwell. É a otimização que viabilizou janelas de contexto longas na prática.
+
 ### foundation model
 Um modelo de grande escala treinado de forma auto-supervisionada em vastos volumes de dados não rotulados, projetado como base genérica e adaptável a muitas tarefas via fine-tuning ou prompting — em vez de treinado para uma única função. O termo, cunhado por Stanford em 2021, engloba LLMs (GPT, Claude), mas também modelos de visão e multimodais; a ideia central é a transferência: treina-se uma vez em escala e reaproveita-se em incontáveis aplicações downstream.
 
@@ -209,11 +212,23 @@ Uma rede neural — tipicamente um transformer apenas com decodificador (decoder
 ### memory bandwidth bottleneck
 Um gargalo de desempenho onde a velocidade de transferência de dados entre a memória (HBM/VRAM) e o processador limita a execução mais do que o poder bruto de processamento. Na inferência de LLMs, a natureza sequencial da geração de tokens força o modelo a ler todos os seus parâmetros da memória para cada token produzido, tornando a fase de "decode" fortemente limitada pela largura de banda da memória.
 
+### MLA (Multi-head Latent Attention)
+Variante de atenção introduzida no DeepSeek-V2 (2024) que comprime os vetores Key/Value num vetor latente de baixo rank antes de cachear — uma down-projection grava só o latente no [[Dicionário de IA#KV cache|KV cache]], e up-projections reconstroem K/V completos na hora da atenção. Reduz o cache em ~1 ordem de grandeza versus multi-head attention pura, indo além do [[Dicionário de IA#GQA (Grouped-Query Attention)|GQA]] (que apenas compartilha K/V entre heads); é a base dos kernels FlashMLA e da família DeepSeek-V3.
+
+### modelos open-weight
+Modelos cujos pesos treinados são publicados para download, permitindo rodar localmente, self-hostear e fazer fine-tuning (ex.: Llama, Mistral, Qwen, DeepSeek). O termo distingue-se de "open source" porque os pesos vêm frequentemente sem os dados de treino, o código de treinamento ou uma licença plenamente livre — abre-se o artefato, não a receita. Contrasta com modelos fechados servidos só via API (GPT, Claude, Gemini).
+
 ### parameters / weights
 Os valores numéricos aprendidos durante o treino que definem o comportamento de uma rede neural — as conexões entre neurônios ajustadas para minimizar o erro. A contagem de parâmetros (bilhões a trilhões em LLMs) é uma medida grosseira de capacidade; na inferência eles ficam fixos e precisam ser lidos da memória a cada token, o que liga o tamanho do modelo ao memory bandwidth bottleneck.
 
+### position embeddings
+Vetores que codificam a posição de cada token na sequência, injetados nos embeddings de tokens para que o transformer — que processa todos os tokens em paralelo e é intrinsecamente insensível à ordem — saiba quem vem antes de quem. Podem ser fixos (sinusoidais, do paper original *Attention Is All You Need*), aprendidos durante o treino (GPT, BERT) ou relativos/rotacionais como o [[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]], dominante nos modelos open-weight modernos.
+
 ### prefill
 A primeira fase da inferência de um LLM, na qual o modelo processa o prompt inteiro de uma vez para construir o KV cache e preparar a geração. É **compute-bound** — o custo cresce quadraticamente com o tamanho do contexto, dominando o TTFT (time-to-first-token). Contrasta com o **decode**, fase token-a-token, que é memory-bandwidth-bound.
+
+### pretraining
+A fase inicial e mais cara do treino de um LLM, em que o modelo aprende a prever o próximo token sobre corpora massivos e não rotulados (trilhões de tokens), adquirindo de forma auto-supervisionada conhecimento linguístico, factual e de raciocínio. Produz o base model — um previsor de texto cru, sem comportamento de assistente; fases posteriores (fine-tuning, RLHF) o especializam e alinham. É o que define o knowledge cutoff do modelo.
 
 ### RoPE (Rotary Position Embedding)
 Esquema de codificação posicional em transformers que aplica rotações 2D aos vetores de query e key proporcionais à posição do token, em vez de somar embeddings posicionais aprendidos. Permite extrapolação relativa entre posições e é a base posicional de Llama, Qwen, Mistral e a maioria dos modelos open-weight modernos. Técnicas como YaRN e NTK-aware extension partem do RoPE para estender o contexto além do pretraining.

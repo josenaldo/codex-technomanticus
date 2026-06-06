@@ -3,8 +3,8 @@ title: A janela de contexto
 created: 2026-05-02
 updated: 2026-06-05
 type: concept
-progress: in_progress
 status: evergreen
+progress: in_progress
 publish: true
 tags:
   - anatomia-llm
@@ -312,9 +312,9 @@ Em 2026, a maioria dos modelos frontier anuncia 1M+ de contexto, mas benchmarks 
 - **Gemini 2.5 Pro**: 100% de recall até ~530k, queda a 99.7% em 1M (single-needle); cai mais em multi-needle.
 
 Regra prática: a partir de ~25–50% da janela nominal, prepare-se pra degradação mensurável, especialmente em tarefas com várias âncoras de informação. "1M de contexto" virou marketing — engenharia séria mede effective context length pra carga real, não decora o número da spec sheet.
-### Como modelos estendem contexto além do pretraining
+### Como modelos estendem contexto além do [[Dicionário de IA#pretraining|pretraining]]
 
-Modelos não nascem com 1M de contexto: a maioria é pretrained em 4k–32k e depois **estendida** por técnicas que ajustam as **position embeddings**:
+Modelos não nascem com 1M de contexto: a maioria é pretrained em 4k–32k e depois **estendida** por técnicas que ajustam as **[[Dicionário de IA#position embeddings|position embeddings]]**:
 
 - **[[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]]** (Rotary Position Embedding) — codifica posição via rotação de vetores; é a base de Llama, Qwen, Mistral.
 - **[[Dicionário de IA#YaRN|YaRN]]** (Yet another RoPE extensioN) — escala frequências do RoPE + ajuste de temperatura da atenção; estende contexto 2–4x com **10x menos tokens de treino** que métodos anteriores.

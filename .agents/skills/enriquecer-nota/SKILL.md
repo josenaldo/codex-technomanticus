@@ -145,6 +145,8 @@ Itens pulados pelo usuário aparecem com `–`.
 ## Convenções rígidas
 
 - **Confirmação antes de executar** — nenhuma edição sem plano aprovado.
+- **Registro Feynman** — candidatos de adição/reescrita seguem o registro didático de `lentes.md`
+  (analogias concretas, perguntas retóricas, callouts pedagógicos, resumo em uma linha).
 - **Aditivo + reescrita-com-diff** — pode aprofundar trecho raso, mas só via diff antes→depois aprovado
   item a item. **Nunca remove em silêncio.** Não reorganiza a nota inteira.
 - **Wikilink format:** `[[NomeDoDicionário#Termo|texto original]]`.

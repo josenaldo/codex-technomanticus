@@ -3,7 +3,8 @@ title: O que é um LLM
 created: 2026-05-02
 updated: 2026-05-25
 type: concept
-status: growing
+status: evergreen
+progress: done
 publish: true
 tags:
   - anatomia-llm
@@ -13,7 +14,6 @@ aliases:
   - Large Language Model
   - Modelo de linguagem
   - LLM
-progress: done
 ---
 # O que é um LLM
 
