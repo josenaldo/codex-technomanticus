@@ -87,4 +87,5 @@ SORT file.name ASC
 - [[Java Concurrency]]
 - [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
-- JVM por dentro (Galho 3) e Programação Reativa (Galho 11) — planejados.
+- [[03-Dominios/Java/JVM/index|JVM por dentro (Galho 3)]] — memória de runtime, GC, JIT e diagnóstico
+- Programação Reativa (Galho 11) — planejado.

@@ -90,4 +90,4 @@ SORT file.name ASC
 - [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (Galho 4)]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
 - [[Java Fundamentals]] (tronco em transição)
-- JVM por dentro (Galho 3) — planejado.
+- [[03-Dominios/Java/JVM/index|JVM por dentro (Galho 3)]] — memória de runtime, GC, JIT e diagnóstico
