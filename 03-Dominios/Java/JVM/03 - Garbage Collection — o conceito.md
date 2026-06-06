@@ -67,7 +67,7 @@ GC roots
 Objeto órfão: Invoice sem referência de nenhum root  ← LIXO
 ```
 
-A fase de varrimento (*sweep*) ou compactação (*compact*) reclaim a memória dos objetos não marcados. Coletores modernos como G1 e ZGC adicionam fases de relocação para compactar o heap sem fragmentação.
+A fase de varrimento (*sweep*) ou compactação (*compact*) recupera a memória dos objetos não marcados. Coletores modernos como G1 e ZGC adicionam fases de relocação para compactar o heap sem fragmentação.
 
 ### A weak generational hypothesis (a maioria dos objetos morre jovem)
 
@@ -93,7 +93,7 @@ A nota [[02 - Áreas de memória de runtime]] detalha a estrutura física das re
 |------|-------------|------------|--------------|
 | **Minor GC** | Young Generation (Eden + Survivors) | Alta | Baixo (milissegundos) |
 | **Major GC** | Old Generation | Baixa | Alto (dezenas a centenas de ms) |
-| **Mixed GC** | Young + subset da Old (G1/ZGC) | Média | Intermediário |
+| **Mixed GC** | Young + subset da Old (G1) | Média | Intermediário |
 | **Full GC** | Heap inteiro + Metaspace | Rara (indica problema) | Muito alto (STW longo) |
 
 **Ciclo de vida de um objeto na geração jovem:**
@@ -148,15 +148,7 @@ Se o código de negócio cria muitas instâncias de `Order` que duram apenas o t
 
 ### `System.gc()` é pedido, não ordem
 
-```java
-// NÃO faça isso em produção:
-System.gc(); // "sugere" ao GC que rode uma Full GC — pode ou não acontecer
-
-// Em produção, a flag abaixo impede chamadas explícitas de terem efeito:
-// -XX:+DisableExplicitGC
-```
-
-Chamar `System.gc()` em produção é um anti-padrão clássico. Na maioria dos casos, o efeito é o oposto do desejado: força uma Full GC (STW de todo o heap), introduzindo uma pausa longa e desnecessária. O GC do HotSpot tem ergonomics automáticos bem calibrados — deixe-o decidir quando coletar.
+`System.gc()` sugere ao GC que execute uma coleta — pode ou não acontecer. Em produção, é um anti-padrão: pode disparar uma Full GC desnecessária. Veja os detalhes em Armadilha (1) abaixo.
 
 ### Como um GC log parece (teaser)
 
@@ -243,7 +235,7 @@ public void processOrders(String filePath) throws IOException {
 }
 ```
 
-Para limpeza de recursos nativos em APIs de baixo nível, a alternativa moderna ao `finalize()` (deprecado desde Java 9, removido no Java 18) é `java.lang.ref.Cleaner` com `PhantomReference`. Veja [[03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]] para o uso correto de `try-with-resources`.
+Para limpeza de recursos nativos em APIs de baixo nível, a alternativa moderna ao `finalize()` (deprecado desde Java 9 e marcado *for removal* no Java 18 via JEP 421; ainda existe, mas não use) é `java.lang.ref.Cleaner` com `PhantomReference`. Veja [[03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]] para o uso correto de `try-with-resources`.
 
 ## Em entrevista
 

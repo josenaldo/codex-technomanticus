@@ -79,7 +79,7 @@ Desde Java 9, com a introdução do JPMS, a JVM tem três classloaders embutidos
 
 ```text
 Bootstrap ClassLoader
-  │  carrega: java.base e outros módulos do JDK (java.*, javax.*)
+  │  carrega: java.base e outros módulos core do JDK
   │  representado como: null em ClassLoader.getParent()
   │  não tem parent
   │

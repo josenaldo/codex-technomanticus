@@ -56,7 +56,7 @@ O heap é a área compartilhada onde todos os objetos Java são alocados. O GC g
 
 Objetos que sobrevivem a um número configurável de coletas (*tenuring threshold*) são **promovidos** para a **Old Generation** (também chamada *Tenured*). A Old armazena objetos de vida longa e é coletada em *major GCs*, que são mais longas.
 
-No **G1GC** (padrão desde Java 9), o heap é dividido em regiões de tamanho fixo (~1–32 MB) que assumem dinamicamente o papel de Eden, Survivor ou Old. Objetos maiores que metade do tamanho de uma região são alocados diretamente em **humongous regions** — regiões contíguas na Old Generation. Objetos humongous são coletados durante minor GCs (desde Java 8u60), mas alocações frequentes de objetos grandes podem fragmentar o heap.
+No **G1GC** (padrão desde Java 9), o heap é dividido em regiões de tamanho fixo (~1–32 MB) que assumem dinamicamente o papel de Eden, Survivor ou Old. Objetos maiores que metade do tamanho de uma região são alocados diretamente em **humongous regions** — regiões contíguas na Old Generation. Objetos humongous sem referências externas (na prática, sobretudo arrays primitivos) podem ser reclamados de forma antecipada durante minor GCs; demais humongous aguardam coletas do ciclo completo. Alocações frequentes de objetos grandes podem fragmentar o heap.
 
 ```text
 ┌─────────────────────────────────────────────────┐
@@ -75,7 +75,7 @@ No **G1GC** (padrão desde Java 9), o heap é dividido em regiões de tamanho fi
 └─────────────────────────────────────────────────┘
 ```
 
-O heap é compartilhada entre todas as threads — qualquer thread pode ler ou escrever em qualquer objeto no heap. Isso levanta a questão de visibilidade de escritas entre threads: esse assunto pertence ao [[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]] (happens-before, volatile, sincronização) e está fora do escopo desta nota.
+O heap é compartilhado entre todas as threads — qualquer thread pode ler ou escrever em qualquer objeto no heap. Isso levanta a questão de visibilidade de escritas entre threads: esse assunto pertence ao [[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]] (happens-before, volatile, sincronização) e está fora do escopo desta nota.
 
 ### Metaspace (Java 8+; por que PermGen morreu)
 
@@ -154,13 +154,19 @@ Visão geral: processo JVM (RSS)
 
 ```bash
 # Exemplo de linha de comando para aplicação de processamento de pedidos
+# -Xms512m              heap inicial (evita resize no startup)
+# -Xmx2g               heap máximo
+# -Xss512k             stack por thread
+# -XX:MetaspaceSize    high-water mark inicial para GC de classes (não tamanho fixo)
+# -XX:MaxMetaspaceSize limite máximo do Metaspace
+# -XX:ReservedCodeCacheSize  code cache para o JIT
 java \
-  -Xms512m \                        # heap inicial (evita resize no startup)
-  -Xmx2g \                          # heap máximo
-  -Xss512k \                        # stack por thread
-  -XX:MetaspaceSize=128m \           # tamanho inicial do Metaspace
-  -XX:MaxMetaspaceSize=256m \        # limite máximo do Metaspace
-  -XX:ReservedCodeCacheSize=256m \   # code cache para o JIT
+  -Xms512m \
+  -Xmx2g \
+  -Xss512k \
+  -XX:MetaspaceSize=128m \
+  -XX:MaxMetaspaceSize=256m \
+  -XX:ReservedCodeCacheSize=256m \
   -jar order-processor.jar
 ```
 
@@ -169,7 +175,7 @@ java \
 | `-Xms` | Heap inicial | ~1/64 da RAM |
 | `-Xmx` | Heap máximo | ~1/4 da RAM |
 | `-Xss` | Stack por thread | 512 KB–1 MB |
-| `-XX:MetaspaceSize` | Tamanho inicial do Metaspace | ~21 MB |
+| `-XX:MetaspaceSize` | High-water mark inicial que dispara a primeira GC de classes / redimensionamento do Metaspace | ~21 MB |
 | `-XX:MaxMetaspaceSize` | Limite máximo do Metaspace | ilimitado (padrão) |
 | `-XX:ReservedCodeCacheSize` | Tamanho do code cache | ~240 MB |
 

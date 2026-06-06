@@ -129,7 +129,7 @@ As instruções da JVM se organizam em famílias pelo prefixo de tipo (`i` = int
 
 `invokedynamic` (Java 7+) é a instrução mais versátil do conjunto. Diferente das outras variantes de invocação, ela não resolve o método-alvo em tempo de compilação. Em vez disso, associa ao call site um **bootstrap method** que será chamado uma única vez, na primeira execução, para retornar um `CallSite` — um objeto que encapsula o `MethodHandle` do método de destino.
 
-**Lambdas:** o compilador gera `invokedynamic` cujo bootstrap method é `LambdaMetafactory.metafactory`. Em runtime, a metafactory cria uma classe que implementa a interface funcional usando `MethodHandles`, evitando a geração de `.class` por lambda que havia em versões antigas. Isso é transparente para o código Java — a implementação completa está em [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]].
+**Lambdas:** o compilador gera `invokedynamic` cujo bootstrap method é `LambdaMetafactory.metafactory`. Esse design foi escolhido desde o Java 8 em vez de compilar cada lambda para uma classe anônima (alternativa que foi rejeitada), o que permite à JVM escolher e otimizar a estratégia de implementação em runtime via `MethodHandles`. Isso é transparente para o código Java — a implementação completa está em [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]].
 
 **String concat:** a partir do Java 9, `"Hello " + name` gera `invokedynamic` com bootstrap em `StringConcatFactory`. A JVM escolhe a estratégia de concatenação mais eficiente para a plataforma — não mais `StringBuilder` emitido rigidamente pelo compilador.
 
@@ -226,7 +226,7 @@ public final class Point extends java.lang.Record {
   public Point(int, int);          // construtor canônico
   public int x();                  // accessor x
   public int y();                  // accessor y
-  public java.lang.String toString();
+  public final java.lang.String toString();
   public final int hashCode();
   public final boolean equals(java.lang.Object);
 }
@@ -293,7 +293,9 @@ No Java 8, isso gerava 4+ instruções para construir um `StringBuilder` explíc
 invokedynamic #4, 0  // InvokeDynamic #0:makeConcatWithConstants:(II)Ljava/lang/String;
 ```
 
-Quem assume que o comportamento em runtime é o que "parece óbvio" no bytecode pode se surpreender ao diagnosticar um problema de performance ou comportamento em versões diferentes do JDK. Sempre valide com `javap -v` na versão-alvo.
+Quem assume que o comportamento em runtime é o que "parece óbvio" no bytecode pode se surpreender ao diagnosticar um problema de performance ou comportamento em versões diferentes do JDK.
+
+**Fix:** sempre valide com `javap -v` na versão-alvo de deploy, especialmente ao migrar entre versões do JDK onde estratégias de geração de código (como concatenação de strings) mudaram.
 
 ## Em entrevista
 

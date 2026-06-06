@@ -32,7 +32,7 @@ A JVM é uma máquina virtual de pilha (*stack-based virtual machine*) que carre
 | Componente | O que inclui | Para quem |
 |------------|-------------|-----------|
 | **JVM** | Motor de execução (interpretador + JIT + GC + classloader) | Base de tudo |
-| **JRE** | JVM + bibliotecas padrão (rt.jar, módulos do Java SE) | Apenas rodar aplicações |
+| **JRE** | JVM + bibliotecas padrão (rt.jar até o Java 8; módulos desde o 9) | Apenas rodar aplicações |
 | **JDK** | JRE + ferramentas de desenvolvimento (`javac`, `javap`, `jshell`, `jmap`, `jstack`…) | Desenvolver e depurar |
 
 > O JRE como distribuição separada foi descontinuado a partir do Java 11 (OpenJDK / Oracle). Hoje distribui-se apenas o JDK completo — mas a distinção conceitual permanece e aparece em entrevistas.
@@ -100,7 +100,7 @@ Ao mesmo tempo, o **GC** gerencia o ciclo de vida dos objetos no heap — é um 
 
 ### Carga e verificação — classloader + bytecode verifier (visão geral)
 
-Antes de executar qualquer bytecode, a JVM precisa carregar a classe e verificar que o bytecode é válido e seguro. Esse processo tem três hierarquias de classloaders encadeadas no HotSpot:
+Antes de executar qualquer bytecode, a JVM precisa carregar a classe e verificar que o bytecode é válido e seguro. Esse processo usa uma hierarquia com três classloaders encadeados no HotSpot:
 
 ```text
 Bootstrap ClassLoader    ← carrega java.lang.*, java.util.*, módulos core
@@ -208,7 +208,7 @@ public java.lang.String toString();
      3: dup
      4: invokespecial #13  // Method java/lang/StringBuilder."<init>":()V
      7: ldc           #14  // String "Order created: #"
-     9: invokevirtual #16  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)V
+     9: invokevirtual #16  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ...
 ```
 
