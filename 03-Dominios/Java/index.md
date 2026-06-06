@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-04
+updated: 2026-06-05
 status: growing
 tags:
   - moc
@@ -24,7 +24,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 
 1. [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]] — tipos, OOP, exceções, generics, records, sealed classes, pattern matching, evolução Java 8→25
 2. [[03-Dominios/Java/Collections e Streams/index|Collections, Streams e Programação Funcional]] — Collections Framework, Stream API, lambdas e interfaces funcionais, Optional, Date/Time (java.time), I/O moderno (java.nio.file)
-3. JVM por dentro *(planejado)* — memory model, GC (G1/ZGC), JIT, classloading, bytecode, módulos (JPMS), tuning
+3. [[03-Dominios/Java/JVM/index|JVM por dentro]] — memória de runtime, GC (G1/ZGC/Shenandoah), JIT e tiered compilation, classloading, bytecode, módulos (JPMS), diagnóstico (JFR/jcmd) e tuning
 4. [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]] — Memory Model, locks, atomics, executors, CompletableFuture, Virtual Threads/Loom, structured concurrency
 
 ### Interfaces desktop
