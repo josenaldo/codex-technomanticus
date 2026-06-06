@@ -40,7 +40,7 @@ O classpath não desapareceu: JARs sem `module-info.java` continuam funcionando 
 
 ## Por que importa
 
-**Strong encapsulation afeta TODO MUNDO, mesmo sem escrever module-info.** A partir do Java 17 (JEP 403), o JDK bloqueou por padrão o acesso reflexivo a seus próprios internos — sem aviso, sem retrocompatibilidade. Frameworks como Hibernate, Jackson, Spring e Lombok acessam fields e construtores privados de classes do JDK via reflection. Quando você atualiza o JDK e a aplicação explode com `InaccessibleObjectException` ou `IllegalAccessException`, isso é o JPMS fazendo o trabalho dele. Entender o mecanismo é a diferença entre resolver o problema em dois minutos e passar horas caçando a causa.
+**Strong encapsulation afeta TODO MUNDO, mesmo sem escrever module-info.** A partir do Java 16 (JEP 396), o acesso reflexivo a internos do JDK passou a ser bloqueado por padrão — o Java 17 (JEP 403) deu o passo seguinte, removendo a válvula `--illegal-access` por completo, sem possibilidade de retrocompatibilidade. Frameworks como Hibernate, Jackson, Spring e Lombok acessam fields e construtores privados de classes do JDK via reflection. Quando você atualiza o JDK e a aplicação explode com `InaccessibleObjectException` ou `IllegalAccessException`, isso é o JPMS fazendo o trabalho dele. Entender o mecanismo é a diferença entre resolver o problema em dois minutos e passar horas caçando a causa.
 
 **Em entrevista**, perguntas sobre "Java 9+" invariavelmente tocam em JPMS. As armadilhas mais comuns: achar que o classpath morreu (não morreu), confundir `opens` com `exports` (são coisas diferentes — uma é para reflection, a outra é para compile/runtime direto), e não saber explicar o que um automatic module é.
 
@@ -109,7 +109,7 @@ Quando o framework precisa de ambos (acessar os tipos e usar reflection), você 
 
 ### Services (uses / provides ... with — ServiceLoader de primeira classe)
 
-O JPMS eleva o padrão **Service Locator** para nível de linguagem. Um módulo que consome um serviço declara `uses`; um módulo que implementa declara `provides ... with`:
+O JPMS eleva o mecanismo de **service provider (ServiceLoader)** para nível de linguagem. Um módulo que consome um serviço declara `uses`; um módulo que implementa declara `provides ... with`:
 
 ```java
 // Módulo consumidor
@@ -144,7 +144,7 @@ O JPMS foi projetado para coexistir com o mundo pré-módulos:
 
 **O risco do automatic module sem `Automatic-Module-Name`:** o nome derivado do filename é instável. Se a lib lançar `guava-33.0.jar`, o nome muda. Se o module-info do seu módulo diz `requires guava;` e amanhã o JAR chama `com.google.guava`, seu build quebra. A solução: preferir libs que declaram `Automatic-Module-Name` no `MANIFEST.MF`:
 
-```
+```text
 Automatic-Module-Name: com.google.guava
 ```
 

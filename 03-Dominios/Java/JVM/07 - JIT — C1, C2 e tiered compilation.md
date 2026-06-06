@@ -47,7 +47,7 @@ Os nomes "client" e "server" são fósseis úteis: vêm da era em que se escolhi
 
 **"Por que a aplicação ficou rápida depois de 10 minutos?"** — porque os caminhos quentes terminaram de subir a escada interpretador → C1 → C2. Antes disso, parte do código roda interpretado ou em código C1, ambos mais lentos que o produto final do C2. Esse período é o **warmup**, e ele explica fenômenos que parecem misteriosos para quem não conhece o JIT: os primeiros requests de um deploy são os mais lentos; a latência cai em degraus nos primeiros minutos; dois pods idênticos têm p99 diferente porque um acabou de subir.
 
-**Benchmark ingênuo mente — sempre.** Medir um trecho de código com `System.nanoTime()` num loop mistura tempo de interpretador, tempo de compilação JIT rodando em background e código C1/C2 na mesma média — e, pior, o C2 pode **eliminar o código inteiro** se perceber que o resultado não é usado (dead code elimination), produzindo o famoso benchmark que "prova" que uma operação custa 0ns. Quem apresenta números de microbenchmark caseiro numa discussão técnica está, na prática, medindo o próprio erro de metodologia. A resposta é JMH — detalhes em [[#Na prática]].
+**Benchmark ingênuo mente — sempre.** Medir um trecho de código com `System.nanoTime()` num loop mistura tempo de interpretador, tempo de compilação JIT rodando em background e código C1/C2 na mesma média — e, pior, o C2 pode **eliminar o código inteiro** se perceber que o resultado não é usado (dead code elimination), produzindo o famoso benchmark que "prova" que uma operação custa 0ns. Quem apresenta números de microbenchmark caseiro numa discussão técnica está, na prática, medindo o próprio erro de metodologia. A resposta é JMH — detalhes na seção Na prática, abaixo.
 
 **Deoptimization é pergunta clássica de entrevista senior.** "O que acontece quando o JIT compila um método com uma suposição que depois se revela falsa?" separa quem decorou "JIT compila código quente" de quem entende o modelo: o C2 **especula** (esse `if` nunca foi tomado, esse call site só viu um tipo), gera código otimizado para a especulação com um *guard* de verificação, e quando o guard falha o código é invalidado (*made not entrant*), a execução **volta pro interpretador** e o método é eventualmente recompilado com o perfil corrigido. Sem deoptimization não haveria especulação; sem especulação, o JIT perderia suas otimizações mais lucrativas.
 
@@ -145,6 +145,7 @@ $ java -XX:+PrintCompilation -jar app.jar
     145    2       3       java.lang.String::equals (65 bytes)
     151    3     n 0       java.lang.System::arraycopy (native)   (static)
     310   87 %     3       com.example.OrderService::processAll @ 12 (89 bytes)
+   1796   95       3       com.example.Order::total (38 bytes)
    1843  412       4       com.example.Order::total (38 bytes)
    1844   95       3       com.example.Order::total (38 bytes)   made not entrant
    9120  412       4       com.example.Order::total (38 bytes)   made not entrant

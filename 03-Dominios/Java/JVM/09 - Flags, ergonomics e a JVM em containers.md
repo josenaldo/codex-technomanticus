@@ -98,7 +98,7 @@ Em uma máquina de 16 GB, ergonomics daria heap inicial de ~256 MB e heap máxim
 
 ### Container awareness (cgroups e UseContainerSupport)
 
-Antes do Java 10u191 / 8u191, a JVM enxergava a memória da máquina host inteira, não o limite do cgroup do container — resultado: ergonomics superdimensionava o heap, o processo estourava o limite do pod e o kernel matava o container.
+Antes do Java 10 (JDK-8146115; backportado pro 8u191), a JVM enxergava a memória da máquina host inteira, não o limite do cgroup do container — resultado: ergonomics superdimensionava o heap, o processo estourava o limite do pod e o kernel matava o container.
 
 A solução foi `UseContainerSupport`:
 
@@ -245,8 +245,8 @@ Trate cada flag de JVM copiada da internet ou de config legada como suspeita at�
 
 ### Vocabulário
 
-| PT | EN |
-|----|-----|
+| Termo PT | Termo EN |
+|----------|----------|
 | ergonomia da JVM | JVM ergonomics |
 | flag booleana | boolean flag |
 | limite de memória do pod | pod memory limit |

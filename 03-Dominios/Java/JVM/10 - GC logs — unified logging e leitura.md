@@ -50,7 +50,7 @@ O custo de habilitar é desprezível. A Oracle documenta o overhead como estatis
 
 A sintaxe completa, conforme a documentação da Oracle para o Java 21:
 
-```
+```text
 -Xlog[:<seletores>][:<output>][:<decoradores>][:<opções-de-output>]
 ```
 
@@ -64,7 +64,7 @@ Todos os componentes são opcionais e separados por `:`. Na prática:
 
 **Seletores (tags + níveis):** combinam uma ou mais tags com um nível de detalhe.
 
-```
+```text
 gc               # tag "gc", nível default (info)
 gc=debug         # tag "gc", nível debug
 gc*              # tag "gc" e quaisquer subtags (gc+heap, gc+phases...)
@@ -182,21 +182,32 @@ Níveis em ordem crescente de detalhe: `off` → `error` → `warning` → `info
 > [!note] Logs ilustrativos
 > Trechos representativos do ZGC generational (Java 21+). Formato real pode variar.
 
-O ZGC realiza quase todo o trabalho **concorrentemente** — as pausas STW são mínimas e de duração constante:
+O ZGC generational (default a partir do Java 21) separa coletas em **Major** (heap todo) e **Minor** (young generation). As pausas STW são mínimas e de duração constante; as fases longas rodam concorrentemente:
 
 ```text
-[5.002s][info][gc] GC(12) Garbage Collection (Warmup)
-[5.004s][info][gc] GC(12) Pause Mark Start (Major) 0.412ms
-[5.312s][info][gc] GC(12) Concurrent Mark (Major) 307.891ms
-[5.313s][info][gc] GC(12) Pause Mark End (Major) 0.198ms
-[5.315s][info][gc] GC(12) Concurrent Process Non-Strong References (Major) 1.234ms
-[5.316s][info][gc] GC(12) Pause Relocate Start (Major) 0.287ms
-[5.451s][info][gc] GC(12) Concurrent Relocate (Major) 134.566ms
-[5.451s][info][gc] GC(12) Garbage Collection (Warmup) 449.113ms 4096M->1024M(8192M)
+[5.002s][info][gc] GC(2) Minor Collection (Allocation Rate)
+[5.003s][info][gc] GC(2) Y: Pause Mark Start 0.012ms
+[5.104s][info][gc] GC(2) Y: Concurrent Mark 101.234ms
+[5.105s][info][gc] GC(2) Y: Pause Mark End 0.009ms
+[5.106s][info][gc] GC(2) Y: Concurrent Process Non-Strong References 0.987ms
+[5.107s][info][gc] GC(2) Y: Pause Relocate Start 0.011ms
+[5.189s][info][gc] GC(2) Y: Concurrent Relocate 81.443ms
+[5.189s][info][gc] GC(2) Y: Young Generation 187.234ms 512M->128M(8192M)
+
+[12.441s][info][gc] GC(7) Major Collection (Warmup)
+[12.442s][info][gc] GC(7) O: Pause Mark Start 0.018ms
+[12.751s][info][gc] GC(7) O: Concurrent Mark 308.912ms
+[12.752s][info][gc] GC(7) O: Pause Mark End 0.014ms
+[12.754s][info][gc] GC(7) O: Concurrent Process Non-Strong References 1.102ms
+[12.755s][info][gc] GC(7) O: Pause Relocate Start 0.021ms
+[12.891s][info][gc] GC(7) O: Concurrent Relocate 135.678ms
+[12.891s][info][gc] GC(7) O: Old Generation 446.891ms 4096M->1024M(8192M)
 ```
 
 O que observar:
 
+- **Prefixo `Y:`** — fase da young generation; **prefixo `O:`** — fase da old generation
+- **`Minor Collection` / `Major Collection`** — tipo do ciclo; o motivo entre parênteses (`Allocation Rate`, `Warmup`, `Proactive`, etc.) indica o gatilho
 - **Pause Mark Start / Pause Mark End / Pause Relocate Start** — as três pausas STW; todas sub-milissegundo em operação normal
 - **Concurrent Mark / Concurrent Relocate** — fases longas, mas correm com a aplicação — sem pausa
 - `4096M->1024M(8192M)` — heap antes, depois, total — aparece no resumo final do ciclo
@@ -349,8 +360,10 @@ grep "Pause Young" gc.log | awk -F'ms' '{print $1}' | awk '{sum+=$NF; n++} END{p
 # Análise honesta — procura o que dói:
 grep -E "Pause Full|to-space exhausted|To-space" gc.log
 # resultado: 3 ocorrências de "Pause Full" nas últimas 12h — problema real
-grep "Pause Young\|Pause Mixed\|Pause Full" gc.log | awk -F'[0-9]+\.[0-9]+ms' 'NR%100==0' | tail -20
-# observa distribuição, não só a média
+
+# As 5 piores pausas (distribuição real, não média):
+grep -oE '[0-9]+\.[0-9]+ms' gc.log | sort -n | tail -5
+# observa a cauda — onde os SLAs estouram
 ```
 
 **Fix:** ao analisar GC logs, sempre: (a) `grep "Pause Full\|to-space exhausted"` primeiro — qualquer hit é prioridade; (b) analise distribuição de pausas (sort + percentis), não só média; (c) observe frequência absoluta de coletas — muita coleta Young rápida pode ser tão problemático quanto pouca coleta lenta.
