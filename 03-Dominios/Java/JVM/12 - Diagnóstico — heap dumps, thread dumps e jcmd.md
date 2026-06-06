@@ -117,7 +117,7 @@ jcmd <pid> help -all   # descobrir todos os subcomandos disponíveis
 
 ```bash
 jstat -gcutil <pid> 5000    # amostra a cada 5 segundos
-# saída: S0, S1, E (eden), O (old), M (metaspace), YGC, YGCT, FGC, FGCT, CGC, CGCT, GCT
+# saída: S0, S1, E (eden), O (old), M (metaspace), CCS (compressed class space), YGC, YGCT, FGC, FGCT, CGC, CGCT, GCT
 ```
 
 **`jmap -dump`** e **`jstack <pid>`** ainda aparecem extensivamente em runbooks antigos, documentação de ferramentas externas e tutoriais. Funcionam, mas `jcmd` é o substituto moderno recomendado — mais seguro (não usa API de attach interna depreciada) e com interface mais consistente. Em ambientes containerizados com binários mínimos, às vezes só `jcmd` está disponível.
@@ -156,7 +156,7 @@ java \
 
 MAT é um analisador offline de arquivos HPROF. Ele abre dumps com centenas de milhões de objetos e oferece três visões principais:
 
-- **Histogram** — lista todas as classes com o número de instâncias e o tamanho retido total. Ponto de partida: quais classes ocupam mais memória?
+- **Histogram** — lista todas as classes com o número de instâncias e o shallow size total (tamanho direto de cada objeto, sem o grafo que ele retém) por default. Retained size é calculado sob demanda e pode ser aproximado para conjuntos grandes. Ponto de partida: quais classes dominam em número de instâncias ou em tamanho?
 - **Dominator tree** — para cada objeto, mostra quem é o "dominador" (quem segura a referência que impede o GC de coletar o grafo inteiro). É a visão que responde "quem está segurando tudo isso?". Uma entrada com retenção de vários GB no topo da dominator tree é o leak.
 - **Leak Suspects** — relatório automático gerado pelo MAT que identifica os candidatos mais prováveis de leak com base na dominator tree. Bom ponto de entrada em dumps desconhecidos.
 
@@ -384,7 +384,7 @@ scp prod-server:/tmp/heap-42.hprof ./heap-42.hprof
 
 ### (4) Concluir de um único thread dump ("está travado!")
 
-**O problema:** um único thread dump é um snapshot de um instante. Uma thread aparecendo como `WAITING` pode estar num wait legítimo entre tasks de um executor. Uma thread com um `synchronized` no stack pode ter acabado de entrar e sair na fração de segundo seguinte. Concluir "o serviço está em deadlock" a partir de um único dump é common e frequentemente errado — e leva a reinicializações desnecessárias que não resolvem a causa raiz.
+**O problema:** um único thread dump é um snapshot de um instante. Uma thread aparecendo como `WAITING` pode estar num wait legítimo entre tasks de um executor. Uma thread com um `synchronized` no stack pode ter acabado de entrar e sair na fração de segundo seguinte. Concluir "o serviço está em deadlock" a partir de um único dump é comum e frequentemente errado — e leva a reinicializações desnecessárias que não resolvem a causa raiz.
 
 ```text
 // hipotético: snapshot infeliz — thread parece travada mas só estava em pausa momentânea

@@ -55,7 +55,7 @@ Do ponto de vista de carreira, saber configurar JFR para gravação contínua em
 O JFR organiza seus eventos em categorias funcionais:
 
 - **GC** — coletas (tipo, duração, pausa, fases do G1/ZGC/Shenandoah), alocações que falharam no TLAB, referências
-- **Alocação** — objetos alocados fora do TLAB (eventos `jdk.ObjectAllocationInNewTLAB`, `jdk.ObjectAllocationOutsideTLAB`), live objects
+- **Alocação** — alocações amostradas — em novo TLAB e fora do TLAB (`jdk.ObjectAllocationInNewTLAB`, `jdk.ObjectAllocationOutsideTLAB`), live objects
 - **Locks / monitor** — contenção em `synchronized` (`jdk.JavaMonitorWait`, `jdk.JavaMonitorEnter`), threads park/unpark
 - **I/O** — leituras e escritas em socket e arquivo com duração acima de threshold configurável
 - **CPU / método** — amostras de CPU com stack trace (method profiling), tempo de execução de métodos
@@ -125,25 +125,30 @@ Antes do Java 14, a única forma de consumir dados do JFR era abrir um arquivo `
 
 ```java
 // hipotético: monitoring de CPU e GC em tempo real
+// RecordingStream como campo de instância — mantido vivo enquanto o serviço roda;
+// fechado no shutdown hook para liberar o stream com segurança.
 import jdk.jfr.consumer.RecordingStream;
 import java.time.Duration;
 
-try (var rs = new RecordingStream()) {
-    rs.enable("jdk.CPULoad").withPeriod(Duration.ofSeconds(5));
-    rs.enable("jdk.GarbageCollection");
-    rs.onEvent("jdk.CPULoad", event -> {
-        double jvmUser = event.getDouble("jvmUser");
-        if (jvmUser > 0.80) {
-            System.out.printf("ALERTA: CPU JVM em %.0f%%%n", jvmUser * 100);
-        }
-    });
-    rs.onEvent("jdk.GarbageCollection", event -> {
-        System.out.printf("GC %s — duração: %s%n",
-            event.getString("cause"), event.getDuration("duration"));
-    });
-    rs.startAsync();   // processa em thread separada
-    // a aplicação continua rodando...
-}
+// Em código real: campo de instância, não try-with-resources local
+// (try-with-resources fecha o stream ao sair do bloco, encerrando o consumo)
+var rs = new RecordingStream();
+rs.enable("jdk.CPULoad").withPeriod(Duration.ofSeconds(5));
+rs.enable("jdk.GarbageCollection");
+rs.onEvent("jdk.CPULoad", event -> {
+    double jvmUser = event.getDouble("jvmUser");
+    if (jvmUser > 0.80) {
+        System.out.printf("ALERTA: CPU JVM em %.0f%%%n", jvmUser * 100);
+    }
+});
+rs.onEvent("jdk.GarbageCollection", event -> {
+    System.out.printf("GC %s — duração: %s%n",
+        event.getString("cause"), event.getDuration("duration"));
+});
+rs.startAsync();   // processa em thread separada — a aplicação continua rodando
+
+// fechar no shutdown da aplicação:
+// Runtime.getRuntime().addShutdownHook(new Thread(rs::close));
 ```
 
 `RecordingStream` implementa `AutoCloseable` e `EventStream`. Métodos principais:
@@ -351,7 +356,7 @@ O JFR usa os dois limites simultaneamente: o dado é descartado quando excede `m
 
 ### Frase pronta (inglês)
 
-> "We run JFR in continuous recording mode on all our production services — `disk=true`, `maxage=12h`, `maxsize=512m`, `settings=default`. The overhead with the default profile is low enough that Oracle documents it for continuous production use. When an incident happens — CPU spike, latency degradation, GC pressure — I dump the ring buffer with `jcmd JFR.dump` without stopping the recording, open the file in JMC, and let the Automated Analysis surface the top issues. From there I drill into Method Profiling for CPU, the Allocation view for memory pressure, and the Lock view for thread contention — all of which happened before the incident, not just at the moment I took the snapshot."
+> "My default for production services is running JFR in continuous mode — `disk=true`, `maxage=12h`, `maxsize=512m`, `settings=default`. The overhead with the default profile is low enough that Oracle documents it for continuous production use. When an incident happens — CPU spike, latency degradation, GC pressure — I dump the ring buffer with `jcmd JFR.dump` without stopping the recording, open the file in JMC, and let the Automated Analysis surface the top issues. From there I drill into Method Profiling for CPU, the Allocation view for memory pressure, and the Lock view for thread contention — all of which happened before the incident, not just at the moment I took the snapshot."
 
 > "The key difference from reactive diagnostics is timing. A heap dump or thread dump tells you what the JVM looks like right now. JFR tells you what happened over the last 12 hours. If the OOM or the CPU spike is a symptom of something that built up over time — a growing allocation rate, increasing lock contention, a GC that started taking longer — the JFR recording has the evidence; the point-in-time snapshot doesn't."
 
@@ -384,7 +389,7 @@ O JFR usa os dois limites simultaneamente: o dado é descartado quando excede `m
 
 ## Referências
 
-- [JDK jcmd man page — Java 21 (Oracle)](https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html) — JFR.start (parâmetros `disk`, `maxage`, `maxsize`, `dumponexit`, `filename`, `name`, `settings`, `delay`, `duration`, `path-to-gc-root`), JFR.dump, JFR.stop, JFR.check — todos os parâmetros confirmados nessa fonte
+- [JDK jcmd man page — Java 21 (Oracle)](https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html) — JFR.start (parâmetros `disk`, `maxage`, `maxsize`, `dumponexit`, `filename`, `name`, `settings`, `delay`, `duration`, `path-to-gc-roots`), JFR.dump, JFR.stop, JFR.check — todos os parâmetros confirmados nessa fonte
 - [java man page — Java 21 (Oracle)](https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html) — `-XX:StartFlightRecording` com subopções `disk`, `maxage`, `maxsize`, `dumponexit`, `filename`, `settings`, `delay`, `duration`, `name`, `path-to-gc-roots` — confirmadas; `default.jfc` descrito como "low overhead, minimal performance impact"; `profile.jfc` descrito como "more data, more overhead, short periods"
 - [jdk.jfr package-summary — Java 21 Javadoc (Oracle)](https://docs.oracle.com/en/java/javase/21/docs/api/jdk.jfr/jdk/jfr/package-summary.html) — classes confirmadas: `Event`, `FlightRecorder`, `Recording`, `RecordingState`, `EventFactory`, `Configuration`; anotações: `@Label`, `@Description`, `@Category`, `@Enabled`, `@StackTrace`, `@Threshold`, `@Period`; métodos `begin()`, `commit()`, `shouldCommit()`
 - [RecordingStream — Java 21 Javadoc (Oracle)](https://docs.oracle.com/en/java/javase/21/docs/api/jdk.jfr/jdk/jfr/consumer/RecordingStream.html) — confirmado "Since: 14" (Java 14); métodos `onEvent`, `startAsync`, `start`, `stop`, `close`, `enable`, `setMaxAge`, `dump`

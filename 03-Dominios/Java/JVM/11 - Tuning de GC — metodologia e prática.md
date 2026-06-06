@@ -215,7 +215,7 @@ O desmonte, flag a flag:
 | `-XX:NewRatio=3` | Mesmo pecado da anterior — e **conflita com ela** (duas formas de fixar a young com valores potencialmente incompatíveis). |
 | `-XX:MaxGCPauseMillis=10` | Meta irreal para um heap de serviço comum no G1. O coletor encolhe a young ao mínimo tentando cumprir, minors disparam, throughput despenca — e 10ms não chega. Se 10ms é requisito real, a resposta é ZGC, não este número. |
 | `-XX:GCTimeRatio=99` | Default **do Parallel** (1% em GC) colado num contexto G1, onde o default é 12 (~8%). Junto com a meta de pausa de 10ms, declara duas metas mutuamente impossíveis — pausas mínimas E tempo de GC mínimo. |
-| `-XX:+AggressiveOpts` | Flag morta — deprecada no JDK 11 e removida logo em seguida; em JDKs atuais derruba ou avisa, dependendo da versão. Nunca teve semântica estável: era um pacote de opções experimentais que mudava por release. |
+| `-XX:+AggressiveOpts` | Flag morta — deprecada no JDK 11, obsoleta no 12 (emite warning), expirada no 13 (derruba a JVM com `Unrecognized VM option`); em qualquer JDK atual derruba a JVM. Nunca teve semântica estável: era um pacote de opções experimentais que mudava por release. |
 
 Resultado líquido do bloco: **a JVM nem inicia** num JDK ≥ 14. E se as flags fatais fossem removidas, o resto ainda seria um G1 sabotado perseguindo metas contraditórias. O fix não é ajustar — é **zerar**: voltar para `-Xmx` + GC log, capturar baseline e só readicionar o que um log justificar.
 

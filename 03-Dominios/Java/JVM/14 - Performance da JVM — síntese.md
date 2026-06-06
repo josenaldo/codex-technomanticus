@@ -312,6 +312,8 @@ Qual nota para qual problema — o índice reverso do galho:
 - [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]]
 - [[13 - JFR e JMC — observabilidade de produção]]
 - [[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads]]
+- [[03-Dominios/Java/Dicionário de Java#G1 GC|G1 GC (Dicionário)]]
+- [[03-Dominios/Java/Dicionário de Java#ZGC (generational)|ZGC (Dicionário)]]
 - [[03-Dominios/Java/JVM/index|JVM por dentro (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
 
