@@ -21,7 +21,7 @@ aliases:
 # Swing hoje: estado atual
 
 > [!abstract] TL;DR
-> **Swing é tecnologia core e suportada do Java SE — não está deprecada nem marcada para remoção.** A Oracle, no *Java Client Roadmap Update* (março de 2018, atualizado em maio de 2020), afirma que **Swing e AWT permanecem "core Java SE technologies"**, seguem recebendo *bug fixes* e atualizações nas releases LTS e na mainline, e serão suportadas **enquanto o JDK for suportado**. O que mudou foi o ritmo de evolução: na prática a API recebe **poucas features novas**. O rótulo **"modo de manutenção" é jargão da comunidade, não termo oficial da Oracle** — convém citar a declaração oficial e a leitura de-facto como duas coisas distintas. Enquadre Swing como **decisão de arquitetura honesta**: ainda é a escolha certa para um nicho bem definido — ferramentas internas/admin, IDEs (IntelliJ IDEA, NetBeans, Eclipse), apps desktop offline e legados, embedded — e a escolha errada para um app moderno com UI rica/animada, web ou mobile. Para esses casos o Java oferece **JavaFX (planejado, Galho 6)** ou stacks web. E uma honestidade técnica: **virtual threads** (Galho 4) melhoram o trabalho de **background**, mas **não mudam a natureza single-thread da EDT** — não a "consertam" nem a substituem.
+> **Swing é tecnologia core e suportada do Java SE — não está deprecada nem marcada para remoção.** A Oracle, no *Java Client Roadmap Update* (março de 2018, atualizado em maio de 2020), afirma que **Swing e AWT permanecem "core Java SE technologies"**, seguem recebendo *bug fixes* e atualizações nas releases LTS e na mainline, e serão suportadas **enquanto o JDK for suportado**. O que mudou foi o ritmo de evolução: na prática a API recebe **poucas features novas**. O rótulo **"modo de manutenção" é jargão da comunidade, não termo oficial da Oracle** — convém citar a declaração oficial e a leitura de-facto como duas coisas distintas. Enquadre Swing como **decisão de arquitetura honesta**: ainda é a escolha certa para um nicho bem definido — ferramentas internas/admin, IDEs (IntelliJ IDEA, NetBeans, Eclipse), apps desktop offline e legados, embedded — e a escolha errada para um app moderno com UI rica/animada, web ou mobile. Para esses casos o Java oferece [[03-Dominios/Java/JavaFX/14 - JavaFX hoje — estado do projeto e Swing vs JavaFX|JavaFX (Galho 6)]] ou stacks web. E uma honestidade técnica: **virtual threads** (Galho 4) melhoram o trabalho de **background**, mas **não mudam a natureza single-thread da EDT** — não a "consertam" nem a substituem.
 
 ## O que é
 
@@ -125,7 +125,7 @@ Outra peça do "Swing hoje" do lado de **distribuição**: o `jpackage` (ferrame
 
 A outra opção de UI desktop do Java é o **JavaFX**: mais novo, com *theming* por CSS, *data binding* declarativo, animação e gráficos vetoriais de primeira classe. Um detalhe arquitetural relevante: **a partir do Java 11, o JavaFX foi desacoplado do JDK** — deixou de vir empacotado e passou a ser um módulo standalone (OpenJFX), adicionado como dependência. Swing e AWT, ao contrário, **continuam dentro do JDK**.
 
-A comparação detalhada — quando preferir JavaFX a Swing, o modelo de *scene graph*, *properties* e *binding* — é assunto do **Galho 6 (JavaFX, planejado)**, não desta nota. Aqui o JavaFX entra só como **gancho**: saiba que existe, que é a alternativa desktop "moderna" do Java, e que vive fora do JDK desde o Java 11.
+A comparação detalhada — quando preferir JavaFX a Swing, o modelo de *scene graph*, *properties* e *binding* — é assunto do Galho 6: ver [[03-Dominios/Java/JavaFX/14 - JavaFX hoje — estado do projeto e Swing vs JavaFX|JavaFX hoje — estado do projeto e Swing vs JavaFX]]. Aqui o JavaFX entra só como **gancho**: saiba que existe, que é a alternativa desktop "moderna" do Java, e que vive fora do JDK desde o Java 11.
 
 Um esclarecimento que evita um mal-entendido comum em entrevista: **JavaFX estar fora do JDK não significa "abandonado"** — significa que evolui no seu **próprio ciclo** (OpenJFX), desacoplado do JDK, podendo lançar mais rápido. E **Swing continuar no JDK não significa "preferido"** — significa que faz parte da especificação Java SE e é mantido como tal. São dois modelos de empacotamento diferentes, não um ranking de qualidade. A escolha entre eles é de *fit* com o projeto, não de "qual a Oracle gosta mais".
 
@@ -151,7 +151,7 @@ UI funcional, offline, zero-dependência-externa? ──sim──► Swing é de
    │
    ▼
 Precisa de UI rica/animada, theming sofisticado,
-data binding declarativo? ──────────────────────sim──► Avalie JavaFX (planejado) ou web; Swing custa caro aqui
+data binding declarativo? ──────────────────────sim──► Avalie JavaFX (Galho 6) ou web; Swing custa caro aqui
    │
    não / indiferente
    │
@@ -171,7 +171,7 @@ Resumido em uma tabela de cenário → veredito:
 | Plugin/UI de IDE, app maduro em Swing | Sim (é o terreno natural) |
 | Desktop offline / acesso a hardware local | Sim |
 | Legado em Swing (manutenção) | Sim — não reescreva sem ganho claro |
-| Greenfield com UI rica/animada | Não — avalie JavaFX (planejado) ou web |
+| Greenfield com UI rica/animada | Não — avalie [[03-Dominios/Java/JavaFX/index|JavaFX]] ou web |
 | Aplicação web | Não (Swing é desktop) |
 | Mobile | Não (fora de escopo) |
 | Time só-web, sem cultura desktop | Provavelmente não — pese a curva |
@@ -183,7 +183,7 @@ A regra-mestra: **a inércia não é argumento**. "Já sabemos Swing" justifica 
 Para ver a árvore funcionando, três cenários concretos:
 
 - **"Ferramenta de operações que roda na intranet, lê arquivos locais, sem UI sofisticada, time já em Java backend."** → desktop sim → greenfield → ferramenta interna/offline/zero-dep → **Swing é defensável**. Some FlatLaf para não parecer datado e siga. A *single-thread rule* é o único custo de aprendizado, e é bem documentada.
-- **"App de produto com UI animada, gráficos, terá versão web no roadmap, time vem de front-end web."** → desktop talvez, mas web no horizonte → UI rica → time só-web → **Swing está fora**: avalie uma stack web (que cobre o futuro web de graça) ou, se desktop nativo for mandatório, **JavaFX (planejado)**.
+- **"App de produto com UI animada, gráficos, terá versão web no roadmap, time vem de front-end web."** → desktop talvez, mas web no horizonte → UI rica → time só-web → **Swing está fora**: avalie uma stack web (que cobre o futuro web de graça) ou, se desktop nativo for mandatório, [[03-Dominios/Java/JavaFX/index|JavaFX]].
 - **"Sistema legado de 200 telas em Swing, em manutenção, com bugs ocasionais de EDT."** → desktop sim → legado → **continue em Swing**; reescrever 200 telas raramente se paga. O esforço melhor investido é treinar o time no modelo da EDT e adotar `SwingWorker`/FlatLaf incrementalmente.
 
 O denominador comum dos três: a decisão saiu de **critérios** (desktop? legado? nicho? time?), não de gosto. É assim que se defende a escolha numa revisão de arquitetura — ou numa entrevista.
@@ -204,7 +204,7 @@ São armadilhas **de raciocínio** — erros de leitura do estado atual, não bu
 
 **Descrição.** Iniciar um projeto **novo** com UI rica/animada em Swing **só porque o time já conhece Swing** — sem comparar com as alternativas. A inércia ("é o que sabemos") é um argumento legítimo para **manter legado**, mas fraco para **decidir greenfield**. O resultado costuma ser reproduzir trabalhosamente em Swing o que JavaFX ou uma stack web entregariam de graça (animação, CSS, *binding*).
 
-**Raciocínio correto.** Para greenfield, faça a comparação explícita: o app precisa mesmo ser desktop? Se sim, **JavaFX (planejado)** entrega *theming* por CSS, *data binding* e animação como cidadãos de primeira classe; se o requisito for navegador, uma **stack web** vence. Escolha Swing por greenfield só quando o nicho o favorece (ferramenta interna, offline, zero-dependência, UI funcional) — não por hábito.
+**Raciocínio correto.** Para greenfield, faça a comparação explícita: o app precisa mesmo ser desktop? Se sim, [[03-Dominios/Java/JavaFX/index|JavaFX]] entrega *theming* por CSS, *data binding* e animação como cidadãos de primeira classe; se o requisito for navegador, uma **stack web** vence. Escolha Swing por greenfield só quando o nicho o favorece (ferramenta interna, offline, zero-dependência, UI funcional) — não por hábito.
 
 ---
 
@@ -274,7 +274,7 @@ Vale memorizar o **anti-padrão de resposta**, porque é o que mais reprova. O c
 - [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]
 - [[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads e Project Loom]]
 - [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]
-- JavaFX — a alternativa desktop moderna do Java — é tema do **Galho 6 (JavaFX, planejado)**.
+- [[03-Dominios/Java/JavaFX/index|JavaFX (Galho 6)]] — a alternativa desktop moderna do Java; comparação em [[03-Dominios/Java/JavaFX/14 - JavaFX hoje — estado do projeto e Swing vs JavaFX|JavaFX hoje]].
 
 ## Referências
 
