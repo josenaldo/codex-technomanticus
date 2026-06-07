@@ -249,15 +249,17 @@ loadButton.disableProperty().bind(task.runningProperty());
 
 // handlers de transição rodam na FX thread -> podem tocar a cena
 task.setOnSucceeded(e -> ordersTable.setItems(task.getValue()));
-task.setOnFailed(e -> statusLabel.textProperty().unbind(),    // solta o bind antes de setar
-                 statusLabel.setText("Falha: " + task.getException().getMessage()));
+task.setOnFailed(e -> {
+    statusLabel.textProperty().unbind();  // solta o bind antes de setar
+    statusLabel.setText("Falha: " + task.getException().getMessage());
+});
 
 // dispara em background — virtual thread é idiomático para I/O-bound
 Thread.ofVirtual().start(task);
 ```
 
 > [!note] Sobre o disparo
-> `Thread.ofVirtual().start(task)` é o idiomático para carga **I/O-bound** em Java 21+. Em código de produção com muitas tarefas, prefira um `Service` com `setExecutor(...)` apontando para um pool reusável — o `Service` evita recriar a infraestrutura a cada clique. O trecho acima é ilustrativo; o handler de `setOnFailed` com duas instruções é pseudo-sintaxe (use um bloco `{ ... }` real).
+> `Thread.ofVirtual().start(task)` é o idiomático para carga **I/O-bound** em Java 21+. Em código de produção com muitas tarefas, prefira um `Service` com `setExecutor(...)` apontando para um pool reusável — o `Service` evita recriar a infraestrutura a cada clique. O trecho acima é ilustrativo.
 
 Um `Service` de refresh, com o pool plugado e `restart()` no botão:
 
@@ -280,7 +282,7 @@ public class OrderRefreshService extends Service<ObservableList<Order>> {
 
 // uso:
 OrderRefreshService service = new OrderRefreshService(repo);
-ordersTable.itemsProperty().bind(service.valueProperty()); // hipotético: itemsProperty é bindável
+ordersTable.itemsProperty().bind(service.valueProperty()); // itemsProperty é uma ObjectProperty bindável
 refreshButton.setOnAction(e -> service.restart());         // reusa: cancela a corrente e roda de novo
 ```
 

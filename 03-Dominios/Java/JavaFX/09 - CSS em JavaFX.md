@@ -372,7 +372,7 @@ Se `getResource()` retornar `null` (path errado ou arquivo ausente do classpath)
 | folha de estilo | stylesheet |
 | classe de estilo | style class |
 | tema padrão / user-agent | default theme / user-agent stylesheet |
-| precedência da cascata | cascade precedence / specificity |
+| precedência da cascata | cascade order |
 | pseudo-classe de domínio | custom pseudo-class |
 | estilo inline | inline style (`setStyle`) |
 | prefixo de propriedade | property prefix (`-fx-`) |

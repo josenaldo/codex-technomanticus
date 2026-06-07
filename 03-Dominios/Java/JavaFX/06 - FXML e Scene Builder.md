@@ -185,7 +185,7 @@ Nem FXML nem código puro é a escolha correta para todos os casos. A decisão �
 | Tooling visual | Scene Builder, editores com preview | nenhum |
 | Colaboração com designer | possível (sem Java) | improvável |
 | Type-safety | nenhuma no XML | total em Java |
-| Refactoring | renomear fx:id quebrasilenciosamente | IDE propaga tudo |
+| Refactoring | renomear fx:id quebra silenciosamente | IDE propaga tudo |
 | Magia/indireção | `@FXML`, reflexão, ordem de init | zero — tudo explícito |
 | Geração dinâmica de UI | difícil (templates + factory) | natural (loops, condicionais) |
 
