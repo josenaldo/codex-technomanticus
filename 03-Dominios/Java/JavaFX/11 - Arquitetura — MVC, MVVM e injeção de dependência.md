@@ -60,7 +60,7 @@ O **ViewModel** é uma classe Java pura. Ele expõe:
 - **ReadOnlyProperty** para dados derivados ou que a View não deve alterar diretamente (totais calculados, flags de estado).
 - **Métodos de comando** para ações (`save()`, `cancel()`, `loadData()`).
 
-O **controller** (a View no vocabulário MVVM) recebe o ViewModel — via construtor ou DI — e no `initialize()` apenas binda cada control a uma property correspondente. Não há `if`s, não há acesso direto a serviços, não há estado local. Cada ação delega para o ViewModel (`viewModel.save()`). O exemplo completo está em [[#Na prática]].
+O **controller** (a View no vocabulário MVVM) recebe o ViewModel — via construtor ou DI — e no `initialize()` apenas binda cada control a uma property correspondente. Não há `if`s, não há acesso direto a serviços, não há estado local. Cada ação delega para o ViewModel (`viewModel.save()`). O exemplo completo está na seção *Na prática*, abaixo.
 
 A **direção das dependências** é a invariante central:
 
@@ -75,7 +75,7 @@ Nenhuma seta sobe. O ViewModel não sabe que existe uma `Label`; o Model não sa
 
 ### O ViewModel testável
 
-O JavaFX separa properties em dois módulos: `javafx.base` (properties, observables, bindings) e `javafx.graphics` (nodes, scene, stage). O módulo `javafx.base` **não exige FX Application Thread** — um ViewModel construído só sobre `javafx.beans.property.*` pode ser instanciado, manipulado e assertado em JUnit puro, sem nenhuma infraestrutura de UI. O exemplo completo está em [[#Na prática]].
+O JavaFX separa properties em dois módulos: `javafx.base` (properties, observables, bindings) e `javafx.graphics` (nodes, scene, stage). O módulo `javafx.base` **não exige FX Application Thread** — um ViewModel construído só sobre `javafx.beans.property.*` pode ser instanciado, manipulado e assertado em JUnit puro, sem nenhuma infraestrutura de UI. O exemplo completo está na seção *Na prática*, abaixo.
 
 ### DI nos controllers
 
@@ -92,7 +92,7 @@ O `Callback<Class<?>, Object>` é uma interface funcional do JavaFX com método 
 ```java
 Map<Class<?>, Supplier<Object>> registry = new HashMap<>();
 registry.put(OrderController.class,
-    () -> new OrderController(new OrderRepositoryImpl()));
+    () -> new OrderController(new OrderViewModel(new OrderRepositoryImpl())));
 
 FXMLLoader loader = new FXMLLoader(
     getClass().getResource("/com/example/order-view.fxml")
