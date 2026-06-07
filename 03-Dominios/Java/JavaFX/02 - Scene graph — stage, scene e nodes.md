@@ -125,6 +125,7 @@ Montar uma cena por código, aplicar transformações e consultar nós por CSS s
 
 ```java
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

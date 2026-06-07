@@ -33,7 +33,7 @@ JavaFX é um toolkit de interface gráfica desktop para Java, baseado em **scene
 |---------|-----------------|
 | 2011 | JavaFX 2.0 lançado pela Oracle — substitui o JavaFX Script, API Java pura |
 | JDK 8 (2014) | JavaFX bundled no JDK da Oracle — era possível importar sem dependência externa |
-| Java 11 (2018) | JavaFX **desacoplado** do JDK → projeto **OpenJFX** no OpenJDK; passes a ser dependência externa |
+| Java 11 (2018) | JavaFX **desacoplado** do JDK → projeto **OpenJFX** no OpenJDK; passa a ser dependência externa |
 | Hoje | OpenJFX 26 (versão atual confirmada em openjfx.io) — ciclo de release alinhado ao JDK (6 meses) |
 
 > Na era do JDK 8, `import javafx.*` funcionava sem adicionar nenhuma dependência ao pom.xml porque o runtime era parte da instalação da Oracle JDK. Esse comportamento não existe em nenhum JDK atual.
@@ -117,7 +117,7 @@ main() chama Application.launch()
   [aplicação rodando — event loop do JavaFX]
         │
         ▼
-  stop()         ← opcional; chamado ao fechar a janela ou Application.Platform.exit()
+  stop()         ← opcional; chamado ao fechar a janela ou Platform.exit()
 ```
 
 O ponto crítico: `start(Stage)` é o único método que roda **na JavaFX Application Thread** com garantia desde o início. Atualizar a UI fora dessa thread (ou sem `Platform.runLater()`) causa `IllegalStateException` — armadilha comum em integração com CompletableFuture.
