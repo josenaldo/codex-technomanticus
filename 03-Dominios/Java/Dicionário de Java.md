@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-05
+updated: 2026-06-06
 type: glossary
 status: growing
 publish: true
@@ -67,6 +67,11 @@ Ponto de sincronização onde um número fixo de threads deve se encontrar antes
 
 Veja também: [[09 - Sincronizadores]].
 
+### binding (JavaFX)
+Mecanismo de sincronização declarativa entre `Property` observáveis: `propA.bind(propB)` faz com que `propA` se atualize automaticamente sempre que `propB` mudar. Bindings unidirecionais (`bind`) e bidirecionais (`bindBidirectional`) eliminam listeners manuais; bindings podem ser compostos com `Bindings.*` para expressar expressões aritméticas ou booleanas.
+
+Veja também: [[07 - Properties e binding]].
+
 ### BlockingQueue
 Interface de fila thread-safe que bloqueia o produtor quando a fila está cheia e o consumidor quando está vazia, sem necessidade de `wait/notify` manuais. Implementações incluem `ArrayBlockingQueue`, `LinkedBlockingQueue` e `SynchronousQueue`. Pedra angular do padrão produtor-consumidor.
 
@@ -84,6 +89,11 @@ Veja também: [[01 - O modelo da linguagem Java]], [[04 - Bytecode por dentro �
 
 ## C
 
+### Canvas (JavaFX)
+Nó de modo imediato do JavaFX que expõe uma API de desenho 2D (via `GraphicsContext`) semelhante ao HTML5 Canvas. Todo o conteúdo é rasterizado em um bitmap; não há grafo de cena interno — o desenvolvedor é responsável por redesenhar a área afetada. Indicado para gráficos dinâmicos de alta frequência (simulações, jogos simples).
+
+Veja também: [[12 - Custom controls, Canvas e charts]].
+
 ### Carrier thread
 Thread da plataforma (OS thread) que executa uma virtual thread no modelo de virtual threads do Java. Uma virtual thread é montada sobre um carrier thread durante sua execução e desmontada ao bloquear, liberando o carrier para executar outra virtual thread.
 
@@ -98,6 +108,11 @@ Veja também: [[06 - Atômicos e operações lock-free]].
 Componente temporário que entra em ação quando o usuário edita uma célula de `JTable`. Implementa `TableCellEditor` (ex.: `DefaultCellEditor` com `JComboBox`); confirma o valor editado via `stopCellEditing` e o devolve ao model.
 
 Veja também: [[03-Dominios/Java/Swing/08 - Renderers e editors|Renderers e editors]].
+
+### cell factory / cell value factory
+Em `TableColumn` do JavaFX, `cellValueFactory` extrai o valor a exibir de cada item de linha (retorna uma `ObservableValue`), e `cellFactory` cria o nó visual que renderiza esse valor. A célula (`TableCell`) é **reutilizada** pela `ListView`/`TableView` — deve-se sobrescrever `updateItem` para evitar artefatos de reuso.
+
+Veja também: [[08 - TableView, cell factories e dados observáveis]].
 
 ### cell renderer
 Objeto responsável por desenhar o conteúdo de cada célula ou item de `JTable`/`JList`, implementando `TableCellRenderer` ou `ListCellRenderer`. Reutilizado para pintar todas as células (rubber-stamp), por isso deve ser stateless.
@@ -173,6 +188,11 @@ Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
 Situação em que múltiplas threads disputam o mesmo lock ou recurso simultaneamente, forçando algumas a esperar. Alta contention degrada performance e pode eliminar os ganhos do paralelismo. Mitigada por locks de granularidade fina, estruturas lock-free ou particionamento de estado.
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### CSS do JavaFX (-fx-)
+Sistema de estilização do JavaFX baseado em um subconjunto de CSS 2.1 estendido com propriedades prefixadas `-fx-` (ex.: `-fx-background-color`, `-fx-font-size`). O user-agent stylesheet padrão é o Modena; folhas customizadas são aplicadas via `scene.getStylesheets().add(...)` ou `node.setStyle(...)`. Cada controle expõe pseudo-classes de estado (`:hover`, `:focused`, `:disabled`).
+
+Veja também: [[09 - CSS em JavaFX]].
 
 ## D
 
@@ -253,6 +273,16 @@ Análise estática realizada pelo JIT para determinar se um objeto criado em um 
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
+### event dispatch chain (capturing / bubbling)
+Rota percorrida por um evento JavaFX desde a raiz do grafo de cena até o nó-alvo (fase de *capturing*) e de volta à raiz (fase de *bubbling*). `EventFilter`s são ativados durante capturing; `EventHandler`s durante bubbling. Chamar `event.consume()` interrompe a propagação.
+
+Veja também: [[05 - Eventos — capturing, bubbling e handlers]].
+
+### EventFilter / EventHandler
+Interfaces de tratamento de eventos do JavaFX. `EventHandler` (bubbling) é registrado com `node.addEventHandler(tipo, handler)` ou pela propriedade de conveniência `setOnAction`. `EventFilter` (capturing) é registrado com `node.addEventFilter(tipo, filter)` e intercepta o evento antes que chegue ao nó-alvo, permitindo controle centralizado ou cancelamento.
+
+Veja também: [[05 - Eventos — capturing, bubbling e handlers]].
+
 ### Exaustividade
 Propriedade de um `switch` (expressão ou statement) que garante que todos os casos possíveis são cobertos. O compilador Java exige exaustividade em switch expressions e em switches sobre sealed classes e enums. Violação gera erro em tempo de compilação.
 
@@ -285,6 +315,21 @@ Interface que representa o resultado de uma operação assíncrona ainda em exec
 
 Veja também: [[08 - Executors e thread pools]].
 
+### fx:id / @FXML
+`fx:id` é o atributo XML de um elemento FXML que serve como identificador do nó dentro do documento. A anotação `@FXML` em um campo ou método do controller permite que o `FXMLLoader` injete o nó correspondente ao carregar o arquivo, eliminando lookups manuais via `scene.lookup`.
+
+Veja também: [[06 - FXML e Scene Builder]].
+
+### FXML
+Formato XML do JavaFX para declarar a hierarquia de nós da UI de forma separada da lógica de negócio. Cada elemento XML corresponde a uma classe JavaFX instanciada pelo `FXMLLoader`; atributos mapeiam para propriedades via reflection. Suporta referência a controller, importações de classes, recursos i18n e inclusão de outros arquivos FXML.
+
+Veja também: [[06 - FXML e Scene Builder]].
+
+### FXMLLoader
+Classe responsável por parsear um arquivo FXML e instanciar o grafo de cena correspondente. Associa o controller (anotado com `@FXML`) ao grafo carregado, injeta os nós com `fx:id` e registra os handlers declarados nos atributos `onAction`. Uso típico: `FXMLLoader.load(getClass().getResource("view.fxml"))`.
+
+Veja também: [[06 - FXML e Scene Builder]].
+
 ## G
 
 ### G1 GC
@@ -306,6 +351,11 @@ Veja também: [[03 - Garbage Collection — o conceito]].
 Mecanismo de parametrização de tipos que permite escrever classes, interfaces e métodos que operam sobre um tipo definido pelo chamador, com checagem em tempo de compilação. Elimina casts explícitos e detecta erros de tipo cedo. Ex: `List<String>`.
 
 Veja também: [[12 - Generics em profundidade]].
+
+### Gluon
+Empresa e projeto open-source que mantém o port do JavaFX para dispositivos móveis (iOS e Android) por meio do Gluon Mobile e das ferramentas GraalVM native-image. Principal mantenedor comercial do OpenJFX; fornece também o Gluon CloudLink e plugins para integração com Maven/Gradle.
+
+Veja também: [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 
 ### GridBagLayout
 Layout manager mais flexível do Swing: posiciona componentes numa grade configurável via `GridBagConstraints` (gridx, gridy, weightx, weighty, fill, anchor). Poderoso para layouts complexos, mas verboso em comparação com alternativas como `MigLayout`.
@@ -388,6 +438,11 @@ API moderna de I/O de arquivos introduzida no Java 7, que substitui `java.io.Fil
 
 Veja também: [[03-Dominios/Java/Collections e Streams/12 - I-O moderno com java.nio.file|I/O moderno]].
 
+### JavaFX Application Thread
+Thread única dedicada à atualização do grafo de cena e ao processamento de eventos de UI no JavaFX, análoga à EDT do Swing. Todo acesso a nós visíveis deve ocorrer nessa thread; operações longas devem ser delegadas a `Task` ou `Service` e o resultado devolvido via `Platform.runLater`.
+
+Veja também: [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]].
+
 ### jcmd
 Ferramenta de linha de comando do JDK que envia comandos de diagnóstico a uma JVM em execução, como listar threads (`Thread.print`), gerar heap dump (`GC.heap_dump`), iniciar e despejar JFR (`JFR.start`, `JFR.dump`) e exibir flags de VM (`VM.flags`). Substitui `jmap`, `jstack` e `jinfo` como interface unificada de diagnóstico.
 
@@ -408,10 +463,20 @@ Compiladores Just-In-Time da JVM HotSpot que traduzem bytecode para código nati
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
+### jlink
+Ferramenta do JDK (introduzida no Java 9) que gera uma imagem de runtime customizada contendo apenas os módulos JPMS necessários para a aplicação. Reduz drasticamente o tamanho do JRE distribuído (de centenas de MB para dezenas), viabilizando distribuições self-contained de aplicações JavaFX.
+
+Veja também: [[13 - Empacotamento — módulos, jlink e jpackage]].
+
 ### JMC (JDK Mission Control)
 IDE de análise de performance que lê arquivos `.jfr` gerados pelo JFR e os apresenta em visões gráficas de eventos, alocações, CPU, GC e latências. Distribuído separadamente do JDK; suporta análise offline e conexão em tempo real via JMX.
 
 Veja também: [[13 - JFR e JMC — observabilidade de produção]].
+
+### jpackage
+Ferramenta do JDK (JEP 392, GA no Java 16) que empacota uma aplicação Java e sua imagem de runtime (`jlink`) em um instalador nativo para a plataforma-alvo: `.msi`/`.exe` (Windows), `.dmg`/`.pkg` (macOS) ou `.deb`/`.rpm` (Linux). Elimina a necessidade de JRE instalado previamente no sistema do usuário.
+
+Veja também: [[13 - Empacotamento — módulos, jlink e jpackage]].
 
 ### JPMS (module-info)
 Java Platform Module System (introduzido no Java 9, JEP 261): sistema de módulos que adiciona uma camada de encapsulamento forte acima dos pacotes. Cada módulo declara suas dependências (`requires`) e o que exporta (`exports`) em um arquivo `module-info.java`. Permite criar imagens de runtime mínimas com `jlink` e elimina o classpath hell.
@@ -434,6 +499,11 @@ Veja também: [[09 - Sincronizadores]].
 Objeto que posiciona e dimensiona automaticamente os componentes de um container, respondendo a resize, look-and-feel e DPI. Exemplos: `BorderLayout`, `FlowLayout`, `BoxLayout`, `GridBagLayout`. Evita coordenadas absolutas e torna o layout adaptável.
 
 Veja também: [[03-Dominios/Java/Swing/03 - Layout managers|Layout managers]].
+
+### layout pane
+Container do JavaFX que posiciona e dimensiona seus filhos segundo uma estratégia específica. Principais opções: `HBox`/`VBox` (linha/coluna), `BorderPane` (5 regiões), `GridPane` (grade), `StackPane` (sobreposição), `AnchorPane` (ancorado nas bordas) e `FlowPane` (fluxo). Substituem os layout managers do Swing no modelo de retained mode.
+
+Veja também: [[03 - Layout panes]].
 
 ### listener (event listener)
 Objeto registrado em um componente (fonte) para ser notificado quando eventos específicos ocorrem, via callback (ex.: `ActionListener.actionPerformed`). Os callbacks são invocados na EDT.
@@ -477,6 +547,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces
 
 Veja também: [[02 - Áreas de memória de runtime]].
 
+### Modena
+User-agent stylesheet padrão do JavaFX desde a versão 8, que define a aparência base de todos os controles. É um arquivo CSS interno que pode ser consultado e sobrescrito pelas folhas da aplicação. Substitui o Caspian (padrão no JavaFX 2) e serve como ponto de partida para temas customizados.
+
+Veja também: [[09 - CSS em JavaFX]].
+
 ### Monitor (intrinsic lock)
 Mecanismo de sincronização intrínseco de todo objeto Java que combina exclusão mútua e comunicação via `wait/notify/notifyAll`. Cada objeto tem um lock implícito adquirido com `synchronized`. Ao entrar em um bloco `synchronized`, a thread adquire o monitor; ao sair, libera-o automaticamente.
 
@@ -486,6 +561,11 @@ Veja também: [[03 - Exclusão mútua com synchronized]].
 Propriedade que garante que apenas uma thread por vez execute uma seção crítica de código que acessa estado compartilhado. Implementada em Java por `synchronized`, `ReentrantLock` ou semáforos com 1 permissão. Previne condições de corrida ao serializar o acesso.
 
 Veja também: [[03 - Exclusão mútua com synchronized]].
+
+### MVVM
+Padrão arquitetural (Model-View-ViewModel) adaptado para JavaFX: o ViewModel expõe `Property` observáveis que a View conecta via binding bidirecional, sem referência direta ao Model. Permite testar a lógica de apresentação sem instanciar nós de UI, e mantém o controller FXML como cola mínima entre View e ViewModel.
+
+Veja também: [[11 - Arquitetura — MVC, MVVM e injeção de dependência]].
 
 ## N
 
@@ -500,6 +580,16 @@ Funcionalidade do HotSpot que rastreia o uso de memória nativa da JVM categoriz
 Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
 
 ## O
+
+### ObservableList
+Implementação de `List` do JavaFX (`javafx.collections.ObservableList`) que dispara notificações de mudança (`ListChangeListener`) sempre que elementos são adicionados, removidos ou substituídos. É a coleção-base de controles como `ListView` e `TableView`, garantindo que a UI reflita automaticamente alterações nos dados.
+
+Veja também: [[08 - TableView, cell factories e dados observáveis]].
+
+### OpenJFX
+Projeto open-source que abriga o código-fonte do JavaFX desde que foi desacoplado do JDK no Java 11. Mantido pela comunidade com contribuições da Gluon, Oracle e outros, disponibilizado em [openjfx.io](https://openjfx.io). Distribuído como módulos separados adicionados ao projeto via Maven/Gradle.
+
+Veja também: [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 
 ### operação intermediária / terminal
 Classificação das operações de uma `Stream`. Operações *intermediárias* (ex.: `filter`, `map`, `sorted`) retornam uma nova stream e são *lazy* — não processam elementos até que uma operação terminal seja chamada. Operações *terminais* (ex.: `collect`, `forEach`, `count`, `reduce`) desencadeiam o processamento do pipeline e consomem a stream, que não pode ser reutilizada.
@@ -543,6 +633,11 @@ Fenômeno em que uma virtual thread fica "presa" ao seu carrier thread durante u
 
 Veja também: [[12 - Virtual Threads e Project Loom]].
 
+### Platform.runLater
+Método estático do JavaFX (`Platform.runLater(Runnable)`) que agenda a execução de um `Runnable` na JavaFX Application Thread de forma assíncrona. Deve ser usado sempre que código de uma background thread precisar atualizar nós do grafo de cena; análogo ao `SwingUtilities.invokeLater` do Swing.
+
+Veja também: [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]].
+
 ### pluggable look-and-feel
 Arquitetura do Swing em que a renderização de cada componente é delegada a um UI delegate (`ComponentUI`), separando o modelo/lógica da apresentação visual. Permite trocar toda a aparência da aplicação via `UIManager.setLookAndFeel` sem alterar o código da aplicação.
 
@@ -563,6 +658,11 @@ Fila (`java.util.PriorityQueue<E>`) que entrega elementos na ordem definida pelo
 
 Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e filas|Listas, conjuntos e filas]].
 
+### Property (JavaFX)
+Abstração central do sistema de binding do JavaFX (`javafx.beans.property`). Uma `Property<T>` é ao mesmo tempo um `ObservableValue` (notifica listeners de invalidação de forma *lazy* ou de mudança de valor de forma *eager*) e um `WritableValue`. Subclasses concretas (`SimpleStringProperty`, `IntegerProperty`…) são usadas em beans de ViewModel para habilitar binding declarativo.
+
+Veja também: [[07 - Properties e binding]].
+
 ## R
 
 ### Record
@@ -575,6 +675,11 @@ Extensão de pattern matching que desconstói um record diretamente no `instance
 
 Veja também: [[13 - Records e record patterns]], [[14 - Sealed classes e pattern matching]].
 
+### retained mode / immediate mode
+Dois paradigmas de renderização de UI. No **retained mode** (JavaFX, Swing), o framework mantém uma representação interna do estado da cena (o grafo de cena) e sabe o que redesenhar; o desenvolvedor modifica o modelo e o framework atualiza a tela. No **immediate mode** (Canvas JavaFX, OpenGL), o desenvolvedor emite comandos de desenho diretamente a cada frame, sem estado persistente gerenciado pelo framework.
+
+Veja também: [[02 - Scene graph — stage, scene e nodes]].
+
 ## S
 
 ### Safe publication (publicação segura)
@@ -586,6 +691,16 @@ Veja também: [[11 - Java Memory Model em profundidade]].
 Estado global da JVM em que todas as threads Java estão em pontos de execução seguros — tipicamente paradas ou em código nativo inspecionável — permitindo que a VM execute operações que requerem visibilidade consistente do heap, como pausas de GC, recompilação JIT e deoptimização. A JVM insere verificações de safepoint em loops e chamadas; o tempo de chegada ao safepoint (*time to safepoint*, TTSP) é visível com `-Xlog:safepoint`.
 
 Veja também: [[03 - Garbage Collection — o conceito]].
+
+### Scene Builder
+Ferramenta visual de arrastar-e-soltar (distribuída pela Gluon) para criar arquivos FXML sem escrever XML manualmente. Permite inspecionar a hierarquia de nós, configurar propriedades e CSS, e associar controllers; gera o FXML que o `FXMLLoader` carrega em tempo de execução.
+
+Veja também: [[06 - FXML e Scene Builder]].
+
+### scene graph
+Estrutura de dados em árvore do JavaFX que representa todos os nós visuais de uma `Scene`. Cada nó é uma instância de `Node` (shapes, controles, containers, grupos); o framework percorre o grafo para layout, renderização e hit-testing. Opera em retained mode — o desenvolvedor modifica a árvore e o runtime decide o que redesenhar.
+
+Veja também: [[02 - Scene graph — stage, scene e nodes]].
 
 ### Scoped value
 Mecanismo final (permanente) do Java 25 para compartilhar dados imutáveis com threads descendentes sem passar parâmetros explicitamente, como alternativa segura e eficiente ao `ThreadLocal`. O valor é acessível apenas dentro de um escopo delimitado e não pode ser alterado após a ligação.
@@ -617,10 +732,20 @@ Coletor de lixo de pausa ultra-baixa desenvolvido pela Red Hat, disponível no O
 
 Veja também: [[06 - Os coletores do HotSpot]].
 
+### skin (Control)
+Implementação plugável da aparência e do comportamento visual de um `Control` do JavaFX. Cada controle delega layout e renderização ao seu `Skin` (ex.: `ButtonSkin`); criar um skin customizado permite reimplementar completamente a aparência sem alterar o modelo do controle. O mecanismo é análogo ao UI delegate do Swing.
+
+Veja também: [[12 - Custom controls, Canvas e charts]].
+
 ### stack frame
 Estrutura de dados criada na pilha de cada thread para cada invocação de método ativa, armazenando variáveis locais, operandos, referência ao pool de constantes e o endereço de retorno. O conjunto de stack frames de uma thread forma a call stack. O estouro da pilha causa `StackOverflowError`.
 
 Veja também: [[02 - Áreas de memória de runtime]].
+
+### Stage / Scene
+As duas classes de container de mais alto nível do JavaFX. `Stage` representa uma janela do SO (a janela primária é passada ao método `start(Stage)`); cada Stage pode exibir uma `Scene`. `Scene` é o container do grafo de cena, define largura/altura e a folha de estilos aplicada aos nós filhos. Um Stage pode trocar de Scene em runtime.
+
+Veja também: [[02 - Scene graph — stage, scene e nodes]].
 
 ### Starvation
 Situação em que uma thread nunca obtém acesso a um recurso porque outras threads de maior prioridade ou mais agressivas o monopolizam indefinidamente. A thread não está bloqueada em deadlock — continua elegível para execução — mas jamais é escalonada. Mitigada com políticas de lock fair (ex: `new ReentrantLock(true)`).
@@ -678,6 +803,11 @@ Veja também: [[03 - Exclusão mútua com synchronized]].
 Interfaces de model para `JTable` (`TableModel`) e `JList` (`ListModel`): guardam os dados que o componente apenas exibe. `AbstractTableModel` e `AbstractListModel` facilitam implementações customizadas, exigindo apenas os métodos essenciais.
 
 Veja também: [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swing]].
+
+### Task / Service (JavaFX)
+Classes do JavaFX para executar trabalho demorado fora da JavaFX Application Thread. `Task<V>` é de uso único (como `FutureTask`): define `call()`, expõe propriedades `value`, `progress` e `message` observáveis na JAT. `Service<V>` encapsula e reutiliza um `Task`, podendo ser reiniciado (`restart()`); adequado para operações repetíveis como buscas ou polling.
+
+Veja também: [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]].
 
 ### Text block
 Literal de string multilinha delimitado por `"""` (Java 15+). Preserva a indentação relativa, suporta interpolação futura e elimina concatenações e escapes desnecessários em strings longas como SQL, JSON ou HTML embutido.
