@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-05
+updated: 2026-06-06
 status: growing
 tags:
   - moc
@@ -30,7 +30,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 ### Interfaces desktop
 
 5. [[03-Dominios/Java/Swing/index|Swing]] — componentes e containers, layout managers, modelo de eventos, EDT/SwingWorker, MVC/models, Look & Feel, custom painting, estado atual da API
-6. JavaFX *(planejado)* — scene graph, FXML, properties/binding, CSS, estado atual do projeto
+6. [[03-Dominios/Java/JavaFX/index|JavaFX]] — scene graph, FXML/Scene Builder, properties e binding, CSS, Task/Service e threading, MVVM, jlink/jpackage, estado do projeto (OpenJFX/Gluon)
 
 ### Fundamentos enterprise e Spring
 
