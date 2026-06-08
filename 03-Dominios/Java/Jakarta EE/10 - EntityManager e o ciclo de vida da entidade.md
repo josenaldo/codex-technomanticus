@@ -21,7 +21,7 @@ aliases:
 # EntityManager e o ciclo de vida da entidade
 
 > [!abstract] TL;DR
-> O `EntityManager` é a interface central da Jakarta Persistence — e o que ele de fato opera é um **persistence context**: um conjunto de entidades gerenciadas que funciona como **cache de identidade** (mesmo id → mesma instância) e **unit of work** (acumula mudanças e sincroniza com o banco no flush). Toda entidade está em um de **4 estados** — *new*, *managed*, *detached*, *removed* — e as operações da API (`persist`, `merge`, `remove`, `find`, `detach`, `refresh`) são **transições entre esses estados**. Quem entende o diagrama de estados entende 80% dos "bugs de JPA": `merge` que não salvou, UPDATE que nunca rodou, `LazyInitializationException`. Esta nota cobra o **contrato da spec 3.2**; como o provider implementa (e como otimizar) é assunto do Galho 10 (planejado).
+> O `EntityManager` é a interface central da Jakarta Persistence — e o que ele de fato opera é um **persistence context**: um conjunto de entidades gerenciadas que funciona como **cache de identidade** (mesmo id → mesma instância) e **unit of work** (acumula mudanças e sincroniza com o banco no flush). Toda entidade está em um de **4 estados** — *new*, *managed*, *detached*, *removed* — e as operações da API (`persist`, `merge`, `remove`, `find`, `detach`, `refresh`) são **transições entre esses estados**. Quem entende o diagrama de estados entende a maior parte dos "bugs de JPA": `merge` que não salvou, UPDATE que nunca rodou, `LazyInitializationException`. Esta nota cobra o **contrato da spec 3.2**; como o provider implementa (e como otimizar) é assunto do Galho 10 (planejado).
 
 ---
 
