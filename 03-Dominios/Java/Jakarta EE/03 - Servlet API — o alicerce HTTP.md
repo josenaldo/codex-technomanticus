@@ -18,6 +18,8 @@ aliases:
   - "HttpServlet"
 ---
 
+# Servlet API — o alicerce HTTP
+
 > [!abstract] TL;DR
 > A Servlet API é o **contrato entre o código Java e o servidor HTTP** — o container cria **uma única instância** do servlet e a usa para atender **múltiplas threads concorrentes**. Tudo que processa HTTP no ecossistema Java — incluindo o Spring MVC (Galho 9, planejado) — roda sobre essa fundação. Entender o lifecycle e o modelo de threading é a chave para não introduzir bugs silenciosos em produção.
 

@@ -18,6 +18,8 @@ aliases:
   - "Eventos CDI"
 ---
 
+# CDI — qualifiers, producers e eventos
+
 > [!abstract] TL;DR
 > **Qualifiers** desambiguam: quando você tem dois beans que implementam o mesmo tipo (`PaymentGateway`), o container precisa de uma pista extra — e é para isso que servem. **Producers** fabricam o que o container não sabe criar sozinho: objetos de bibliotecas de terceiros, valores de configuração, qualquer coisa que precise de lógica de construção personalizada. **Eventos** desacoplam quem emite de quem ouve: o emissor não sabe nada sobre os ouvintes — é o pub/sub embutido no próprio container. Juntos, os três mecanismos resolvem a maioria dos casos em que a injeção simples por tipo não é suficiente.
 
@@ -37,7 +39,7 @@ Todo sistema real chega a um ponto em que há **duas ou mais implementações do
 
 **Integrar bibliotecas de terceiros** é o dia-a-dia do desenvolvimento — e é exatamente onde producers brilham. O container só sabe gerenciar beans cujo ciclo de vida ele controla. Quando você precisa injetar um `ObjectMapper` do Jackson ou um `EntityManager` do JPA, você escreve um producer: um método que cria o objeto, e um disposer que faz o cleanup. A partir daí, o objeto de terceiro se comporta como qualquer bean CDI.
 
-O **padrão de eventos** é a versão da spec do que frameworks como o Spring ApplicationEvent ou bibliotecas como Guava EventBus oferecem. A vantagem é que você não precisa de nenhuma dependência extra: funciona em qualquer runtime Jakarta EE ou MicroProfile.
+O **padrão de eventos** é a versão da spec de um pub/sub embutido — o mesmo papel que bibliotecas dedicadas (como o Guava EventBus) e frameworks de aplicação (Galho 8, planejado) cumprem. A vantagem é que você não precisa de nenhuma dependência extra: funciona em qualquer runtime Jakarta EE ou MicroProfile.
 
 > [!warning] Dois `@Produces` completamente diferentes
 > O `@Produces` do CDI (`jakarta.enterprise.inject.Produces`) e o `@Produces` do JAX-RS (`jakarta.ws.rs.Produces`) são **homônimos sem nenhuma relação**. O primeiro declara um bean producer para o container de injeção. O segundo declara o media type que um endpoint REST produz. Sempre confira o import. A nota [[07 - JAX-RS — REST declarativo]] cobre o `@Produces` do JAX-RS em detalhe.

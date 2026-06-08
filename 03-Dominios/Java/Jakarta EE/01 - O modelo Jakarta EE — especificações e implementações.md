@@ -18,6 +18,8 @@ aliases:
   - "Java EE"
 ---
 
+# O modelo Jakarta EE — especificações e implementações
+
 > [!abstract] TL;DR
 > Jakarta EE não é um produto — é um **conjunto de especificações** (contratos de API) mantido pela Eclipse Foundation, com múltiplas implementações certificadas por um kit de testes chamado TCK. Quando você usa Spring, boa parte do que acontece por baixo — persistência, transações, injeção de dependências — segue esses mesmos contratos. Entender o modelo desbloqueia todo o restante do galho.
 

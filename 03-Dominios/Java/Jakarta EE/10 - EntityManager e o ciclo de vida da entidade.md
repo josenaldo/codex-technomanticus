@@ -364,7 +364,7 @@ tx.commit();
 
 > "The EntityManager manages a persistence context, which plays two roles: an identity map — within one context, one persistent identity maps to at most one instance — and a unit of work that tracks changes to managed entities and synchronizes them on flush. Every entity is in one of four states — new, managed, detached, or removed — and operations like persist, merge, remove, and detach are just transitions between those states. The classic pitfalls all come down to state: merge returns the managed copy while the argument stays detached, dirty checking only turns into SQL when a flush happens inside an active transaction, and a LazyInitializationException simply means you touched a lazy association after the entity became detached. Once you reason from the state diagram instead of memorizing method behaviors, most JPA bugs become trivial to diagnose."
 
-**Vocabulário**
+### Vocabulário
 
 | Termo PT | Termo EN |
 |---|---|

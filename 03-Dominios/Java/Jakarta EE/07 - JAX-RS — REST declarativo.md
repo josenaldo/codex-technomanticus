@@ -18,6 +18,8 @@ aliases:
   - "Jakarta RESTful Web Services"
 ---
 
+# JAX-RS — REST declarativo
+
 > [!abstract] TL;DR
 > JAX-RS mapeia HTTP para métodos Java por annotations — resource classes, params tipados, content negotiation e providers. Roda sobre a Servlet API por baixo (nota [[03 - Servlet API — o alicerce HTTP]]); controllers do Spring são outro caminho para o mesmo problema (Galho 9, planejado). Entender a spec é o diferencial em entrevista: você explica *por que* funciona, não só *como* usar.
 

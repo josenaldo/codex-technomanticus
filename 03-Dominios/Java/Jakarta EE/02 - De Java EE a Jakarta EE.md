@@ -18,6 +18,8 @@ aliases:
   - "Jakarta EE 9"
 ---
 
+# De Java EE a Jakarta EE
+
 > [!abstract] TL;DR
 > Java EE virou Jakarta EE quando a Oracle doou a plataforma à Eclipse Foundation (2017), mas reteve a trademark "Java" — daí o **rename big-bang `javax.*` → `jakarta.*` no EE 9 (2020)**, que partiu o ecossistema em dois mundos de namespace. Jakarta EE 8 foi a transição de governança *sem* rename; EE 9 foi o rename *sem* features novas; EE 10 em diante é onde a plataforma voltou a evoluir de verdade.
 
