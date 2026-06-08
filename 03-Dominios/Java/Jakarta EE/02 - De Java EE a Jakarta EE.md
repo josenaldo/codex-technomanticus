@@ -53,11 +53,11 @@ Em entrevistas internacionais, a pergunta sobre a diferença entre Java EE e Jak
 | J2EE 1.4 | Nov/2003 | `javax.*` | Web services integrados |
 | Java EE 5 | Mai/2006 | `javax.*` | Rename: J2EE → Java EE; anotações introduzidas |
 | Java EE 6 | Dez/2009 | `javax.*` | CDI, Bean Validation, JAX-RS |
-| Java EE 7 | Mai/2013 | `javax.*` | WebSocket, JSON-P, Batch |
+| Java EE 7 | Jun/2013 | `javax.*` | WebSocket, JSON-P, Batch |
 | Java EE 8 | Set/2017 | `javax.*` | Última versão sob Oracle |
 | **Jakarta EE 8** | **10/set/2019** | **`javax.*`** | **Primeira versão Eclipse Foundation — sem rename** |
 | **Jakarta EE 9** | **08/dez/2020** | **`jakarta.*`** | **Big-bang rename — sem features novas** |
-| **Jakarta EE 9.1** | **25/mai/2021** | `jakarta.*` | Suporte a Java 11 (SE 11 mínimo) |
+| **Jakarta EE 9.1** | **25/mai/2021** | `jakarta.*` | Adiciona suporte a Java SE 11 |
 | **Jakarta EE 10** | **22/set/2022** | `jakarta.*` | Core Profile novo; evolução das specs |
 | **Jakarta EE 11** | **26/jun/2025** | `jakarta.*` | Jakarta Data; suporte a Java 21 |
 | Jakarta EE 12 | Em desenvolvimento | `jakarta.*` | WIP na data desta nota (2026-06-07) |
@@ -94,7 +94,7 @@ O rename criou uma linha divisória no ecossistema:
 - Spring Boot ≤ 2.x (internamente usa `javax.*`)
 
 **Mundo `jakarta` (Jakarta EE 9+ ):**
-- Servidores: WildFly ≥ 27, Payara ≥ 6, GlassFish ≥ 7, Open Liberty ≥ 22.x, Tomcat ≥ 10 (para Servlet)
+- Servidores: WildFly ≥ 27, Payara ≥ 6, GlassFish ≥ 6 (dez/2020, EE 9), Open Liberty ≥ 22.x, Tomcat ≥ 10 (para Servlet)
 - Hibernate ORM ≥ 6.x
 - Spring Boot ≥ 3.x (migrou para `jakarta.*`)
 
@@ -263,7 +263,7 @@ WELD-001408: Unsatisfied dependencies for type EntityManager
 
 ### Frase pronta (inglês)
 
-"Java EE became Jakarta EE in 2019 when Oracle donated the platform to the Eclipse Foundation, but Oracle retained the 'Java' trademark and the `javax` package namespace, which meant the community couldn't evolve any existing API under `javax.*`. To resolve this cleanly, Jakarta EE 9 in December 2020 did a big-bang rename of all APIs from `javax.*` to `jakarta.*` with no new features — it was a pure namespace migration release. The practical implication is that libraries and servers compiled against `javax` and those compiled against `jakarta` are binary-incompatible, so migrating a project means aligning every dependency and the runtime to the same namespace world."
+"Oracle donated the platform to the Eclipse Foundation in 2017, and the first Jakarta EE release shipped in 2019, but Oracle retained the 'Java' trademark and the `javax` package namespace, which meant the community couldn't evolve any existing API under `javax.*`. To resolve this cleanly, Jakarta EE 9 in December 2020 did a big-bang rename of all APIs from `javax.*` to `jakarta.*` with no new features — it was a pure namespace migration release. The practical implication is that libraries and servers compiled against `javax` and those compiled against `jakarta` are binary-incompatible, so migrating a project means aligning every dependency and the runtime to the same namespace world."
 
 ### Vocabulário
 

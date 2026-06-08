@@ -52,7 +52,7 @@ Entrevistas internacionais testam exatamente essa distinção:
 
 Todas essas perguntas têm a mesma raiz: **spec vs. implementação vs. perfil**.
 
-E mais: quando você usa `@Transactional` ou `@Autowired` no Spring, o que acontece por baixo envolve exatamente esses contratos Jakarta EE. O Galho 14 (planejado) explora esse elo com profundidade.
+E mais: quando você usa `@Transactional` ou `@Autowired` no Spring, o que acontece por baixo envolve exatamente esses contratos Jakarta EE. A nota [[14 - Jakarta EE hoje — a plataforma sob o Spring]] explora esse elo com profundidade.
 
 ## Como funciona
 
@@ -85,7 +85,7 @@ Jakarta EE não é monolítico: existe em três perfis com escopos diferentes.
 ```
 
 **Core Profile** — o menor subconjunto, voltado para runtimes cloud-native e microserviços. Contém:
-- CDI Lite 4.1 (subconjunto de CDI sem interceptors completos)
+- CDI Lite 4.1 (subconjunto de CDI sem decorators, portable extensions, specialization e escopos de sessão/conversação — pensado pra resolução em build-time)
 - RESTful Web Services 4.0
 - JSON Processing 2.1
 - JSON Binding 3.0
@@ -126,13 +126,13 @@ A tabela abaixo lista as especificações cobertas neste Galho 7, todas na vers�
 
 | Especificação | Versão no EE 11 | Perfil mínimo | Notas do galho |
 |---|---|---|---|
-| CDI (Contexts and Dependency Injection) | 4.1 | Core (Lite) / Web (completo) | Galho: nota 04 |
-| Servlet | 6.1 | Web Profile | Galho: nota 05 |
-| RESTful Web Services (JAX-RS) | 4.0 | Core Profile | Galho: nota 06 |
-| Bean Validation | 3.1 | Web Profile | Galho: nota 07 |
-| Persistence (JPA) | 3.2 | Web Profile | Galho: nota 08 |
-| Transactions (JTA) | 2.0 | Web Profile | Galho: nota 09 |
-| Enterprise Beans (EJB) | 4.0 | Platform | Galho: nota 10 |
+| CDI (Contexts and Dependency Injection) | 4.1 | Core (Lite) / Web (completo) | Galho: notas 04-06/13 |
+| Servlet | 6.1 | Web Profile | Galho: nota 03 |
+| RESTful Web Services (JAX-RS) | 4.0 | Core Profile | Galho: nota 07 |
+| Bean Validation | 3.1 | Web Profile | Galho: nota 08 |
+| Persistence (JPA) | 3.2 | Web Profile | Galho: nota 09 |
+| Transactions (JTA) | 2.0 | Web Profile | Galho: nota 11 |
+| Enterprise Beans (EJB) | 4.0 | Platform | Galho: nota 12 |
 
 > [!info] Fonte
 > Versões confirmadas em [jakarta.ee/specifications](https://jakarta.ee/specifications/) em 2026-06-07. Jakarta EE 12 está em desenvolvimento no mesmo período.

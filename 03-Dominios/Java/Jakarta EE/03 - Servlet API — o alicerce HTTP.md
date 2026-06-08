@@ -73,9 +73,10 @@ Para detalhes sobre sincronização e visibilidade entre threads, veja [[03-Domi
 | POST | `doPost(req, resp)` |
 | PUT | `doPut(req, resp)` |
 | DELETE | `doDelete(req, resp)` |
-| PATCH | `doPatch(req, resp)` |
 | HEAD | `doHead(req, resp)` |
 | OPTIONS | `doOptions(req, resp)` |
+
+PATCH não tem `doPatch` — o `service()` default responde 405; pra suportar PATCH é preciso sobrescrever `service()`.
 
 A recomendação da spec é **nunca sobrescrever `service()`** — apenas os métodos `doXxx` específicos que a classe precisar atender.
 
@@ -103,7 +104,8 @@ HTTP é stateless por natureza. `HttpSession` é o mecanismo da Servlet API para
 
 ```java
 HttpSession session = request.getSession();          // cria se não existir
-HttpSession session = request.getSession(false);     // retorna null se não existir
+// ou, sem criar se não existir:
+HttpSession existente = request.getSession(false);   // retorna null se não existir
 
 session.setAttribute("cart", cartObject);            // armazena objeto
 Object cart = session.getAttribute("cart");          // recupera objeto
@@ -381,7 +383,7 @@ session.setAttribute("currentProductId", productId);
 
 ### Frase pronta (inglês)
 
-> "A servlet is a Java class managed by the servlet container — the container creates a single instance and dispatches every incoming HTTP request to that same instance on potentially many concurrent threads. That means any mutable instance field is a shared resource and must be thread-safe or avoided entirely. The lifecycle is straightforward: `init` runs once at deployment, `service` (routed to `doGet`, `doPost`, etc.) runs for every request, and `destroy` runs once at undeployment. Filters wrap around servlets to implement cross-cutting concerns like logging and authentication, and every filter must either call `chain.doFilter` to continue the chain or write a response — there is no middle ground."
+"A servlet is a Java class managed by the servlet container — the container creates a single instance and dispatches every incoming HTTP request to that same instance on potentially many concurrent threads. That means any mutable instance field is a shared resource and must be thread-safe or avoided entirely. The lifecycle is straightforward: `init` runs once at deployment, `service` (routed to `doGet`, `doPost`, etc.) runs for every request, and `destroy` runs once at undeployment. Filters wrap around servlets to implement cross-cutting concerns like logging and authentication, and every filter must either call `chain.doFilter` to continue the chain or write a response — there is no middle ground."
 
 ### Vocabulário
 

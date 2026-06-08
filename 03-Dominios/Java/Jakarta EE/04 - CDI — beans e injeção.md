@@ -31,7 +31,7 @@ aliases:
 A combinação das duas ideias é o que se chama de **Inversão de Controle (IoC):** o controle sobre a criação e o ciclo de vida dos objetos sai do código de negócio e passa para o container.
 
 > [!info] Versão cravada
-> CDI 4.1 integra o Jakarta EE 11. A implementação de referência é o **Weld** (projeto Eclipse Foundation / Commonhaus).
+> CDI 4.1 integra o Jakarta EE 11. A implementação de referência é o **Weld** (Red Hat/JBoss); a spec CDI em si é mantida pela Eclipse Foundation.
 
 ## Por que importa
 
@@ -47,7 +47,7 @@ Para o código do dia a dia, DI reduz acoplamento: em vez de `new OrderService(n
 
 O CDI chama de **managed bean** qualquer classe Java que o container descobre, instancia e gerencia. Para uma classe ser elegível como managed bean ela deve atender a todos os critérios abaixo (conforme a spec CDI 4.1):
 
-- Não é uma classe interna (inner class).
+- Não é uma inner class não-estática (nested static é elegível).
 - Não é abstrata.
 - Não implementa `jakarta.enterprise.inject.spi.Extension` nem `BuildCompatibleExtension`.
 - Não está anotada com `@Vetoed` (nem pertence a um pacote `@Vetoed`).
@@ -237,7 +237,7 @@ public class Main {
 ```
 
 > [!info] Weld é a implementação de referência
-> Weld é o projeto de referência (RI) do CDI, mantido pela Eclipse Foundation / Commonhaus. Em servidores de aplicação Jakarta EE certificados, outra implementação CDI pode ser usada internamente — mas Weld é o padrão de facto e o que você vai encontrar no WildFly/JBoss.
+> Weld (Red Hat/JBoss) é o projeto de referência (RI) do CDI. Em servidores de aplicação Jakarta EE certificados, outra implementação CDI pode ser usada internamente — mas Weld é o padrão de facto e o que você vai encontrar no WildFly/JBoss.
 
 **Contraexemplo — o que acontece com `new`:**
 
