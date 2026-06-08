@@ -19,3 +19,6 @@ __pycache__/
 # Logs brutos dos crons (os relatórios .md ficam versionados)
 00-Meta/health-audits/.cron.log
 00-Meta/revisoes/.cron.log
+
+# Lock de runtime do Claude Code (scheduled tasks)
+.claude/scheduled_tasks.lock
