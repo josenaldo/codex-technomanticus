@@ -234,7 +234,7 @@ O Spring MVC não inventou HTTP em Java. Ele é uma camada opinativa **sobre** a
 
 | Componente Spring MVC | Spec Jakarta equivalente | O que faz |
 | --- | --- | --- |
-| `DispatcherServlet` | **Servlet API** (`jakarta.servlet.http.HttpServlet`) | É, literalmente, *um* `Servlet` registrado no container. Todo o pipeline roda dentro de `service()`. Veja [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API]]. |
+| `DispatcherServlet` | **Servlet API** (`jakarta.servlet.http.HttpServlet`) | É, literalmente, *um* `Servlet` registrado no container. Todo o pipeline roda dentro de `service()`. Veja [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP\|Servlet API]]. |
 | `@RestController` + `@RequestMapping` | **JAX-RS** (`@Path`, `@GET`, `@Produces`) | Roteamento declarativo de HTTP para métodos. O Spring usa convenção própria; JAX-RS é a spec portável. Veja [[03-Dominios/Java/Jakarta EE/07 - JAX-RS — REST declarativo\|JAX-RS]]. |
 | `@Valid` no `@RequestBody` | **Bean Validation** (`jakarta.validation`, `@NotNull`, `@Min`) | A *especificação* de validação é Jakarta; o Spring só decide *onde* e *quando* dispará-la no pipeline. Veja [[03-Dominios/Java/Jakarta EE/08 - Bean Validation\|Bean Validation]]. |
 | `HandlerInterceptor` | **Servlet Filter** (`jakarta.servlet.Filter`) | Ambos interceptam, mas em alturas diferentes: o `Filter` envolve o servlet inteiro (byte cru, agnóstico de handler); o `HandlerInterceptor` roda dentro do MVC, já sabendo qual controller vai atender. Veja [[03-Dominios/Java/Web e APIs REST/11 - Interceptors vs Filters\|Interceptors vs Filters]]. |
