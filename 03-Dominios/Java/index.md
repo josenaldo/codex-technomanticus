@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-06
+updated: 2026-06-07
 status: growing
 tags:
   - moc
@@ -34,7 +34,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 
 ### Fundamentos enterprise e Spring
 
-7. Jakarta EE *(planejado)* — CDI, Servlet, JAX-RS, Bean Validation, JPA spec, JTA
+7. [[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] — spec vs implementação, transição javax→jakarta, Servlet, CDI, JAX-RS, Bean Validation, JPA spec, JTA, legado EJB, estado atual da plataforma
 8. Spring Core e Boot *(planejado)* — IoC/DI, AOP, auto-configuration, profiles, Actuator
 9. Web e APIs REST *(planejado)* — Spring MVC, REST, exception handling, validation, OpenAPI
 10. Persistência de dados *(planejado)* — JPA/Hibernate, Spring Data, fetch/N+1, transações, migrations
