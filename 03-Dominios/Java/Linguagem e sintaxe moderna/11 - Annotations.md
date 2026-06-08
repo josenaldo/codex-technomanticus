@@ -1,7 +1,7 @@
 ---
 title: "Annotations"
 created: 2026-06-02
-updated: 2026-06-02
+updated: 2026-06-07
 type: concept
 progress: backlog
 status: seedling
@@ -306,7 +306,7 @@ Spring e Jakarta EE são construídos sobre annotations com `RetentionPolicy.RUN
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 ```
 
-Todas essas annotations têm `@Retention(RUNTIME)` — o Spring scanneia o classpath em startup, lê as annotations via reflection, e constrói o grafo de dependências e os proxies. Este é o ponto de conexão com os **Galhos 7 e 8** (Spring e Jakarta EE).
+Todas essas annotations têm `@Retention(RUNTIME)` — o container scanneia o classpath em startup, lê as annotations via reflection, e constrói o grafo de dependências e os proxies. Este é o ponto de conexão com o galho [[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] (CDI, JPA e Bean Validation são specs construídas sobre annotations RUNTIME) e com o Galho 8 (Spring, planejado).
 
 ## Na prática
 
