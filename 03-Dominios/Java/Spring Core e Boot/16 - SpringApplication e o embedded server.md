@@ -141,7 +141,7 @@ server.port=8080
 server.servlet.context-path=/api
 ```
 
-Customizações avançadas (thread pool, timeouts, connectors) são feitas via `WebServerFactoryCustomizer<TomcatServletWebServerFactory>`. Tuning profundo de servidor e configurações de produção são cobertos no Galho 9/17 (planejado).
+Customizações avançadas (thread pool, timeouts, connectors) são feitas via `WebServerFactoryCustomizer<TomcatServletWebServerFactory>`. O pipeline web sobre esse servidor é o galho [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|Web e APIs REST]]; tuning profundo de servidor e configurações de produção ficam para o Galho 17 (planejado).
 
 > [!note] O servidor embutido roda o Servlet container
 > O embedded server implementa o contêiner de Servlets que a Servlet API (Jakarta EE) define. O Spring MVC usa `DispatcherServlet` como front controller, que é registrado nesse contêiner. Para entender a spec que o embedded Tomcat implementa, veja [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API — o alicerce HTTP]].

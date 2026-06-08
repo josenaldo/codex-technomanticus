@@ -1,7 +1,7 @@
 ---
 title: "Bean Validation"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -21,7 +21,7 @@ aliases:
 # Bean Validation
 
 > [!abstract] TL;DR
-> Bean Validation (Jakarta Validation 3.1) declara restrições no modelo com annotations e valida em um ponto centralizado — standalone via `Validator` programático ou integrada ao container (JAX-RS valida a request automaticamente e devolve 400 em caso de violação). O `@Valid` que você vê no Spring MVC é esta mesma spec por baixo (Galho 9, planejado). Hibernate Validator 8.x/9.x é a implementação de referência.
+> Bean Validation (Jakarta Validation 3.1) declara restrições no modelo com annotations e valida em um ponto centralizado — standalone via `Validator` programático ou integrada ao container (JAX-RS valida a request automaticamente e devolve 400 em caso de violação). O `@Valid` que você vê no Spring MVC é esta mesma spec por baixo ([[03-Dominios/Java/Web e APIs REST/08 - Validação na borda|validação na borda no Spring MVC]]). Hibernate Validator 8.x/9.x é a implementação de referência.
 
 ---
 

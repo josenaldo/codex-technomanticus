@@ -1,7 +1,7 @@
 ---
 title: "JAX-RS — REST declarativo"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -21,7 +21,7 @@ aliases:
 # JAX-RS — REST declarativo
 
 > [!abstract] TL;DR
-> JAX-RS mapeia HTTP para métodos Java por annotations — resource classes, params tipados, content negotiation e providers. Roda sobre a Servlet API por baixo (nota [[03 - Servlet API — o alicerce HTTP]]); controllers do Spring são outro caminho para o mesmo problema (Galho 9, planejado). Entender a spec é o diferencial em entrevista: você explica *por que* funciona, não só *como* usar.
+> JAX-RS mapeia HTTP para métodos Java por annotations — resource classes, params tipados, content negotiation e providers. Roda sobre a Servlet API por baixo (nota [[03 - Servlet API — o alicerce HTTP]]); controllers do Spring ([[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos|@RestController]]) são outro caminho para o mesmo problema. Entender a spec é o diferencial em entrevista: você explica *por que* funciona, não só *como* usar.
 
 ## O que é
 
@@ -41,7 +41,7 @@ REST é o protocolo de integração dominante na indústria — APIs REST são a
 
 O modelo de **providers** é particularmente valioso porque explica algo que frameworks "mágicos" escondem: *como o JSON vira objeto*. Quando você injeta um `Order` de um request body, existe um `MessageBodyReader` que faz essa conversão — geralmente via **JSON-B** (Jakarta JSON Binding) ou **JSON-P** (Jakarta JSON Processing). Saber isso resolve problemas de deserialização que aparecem constantemente em produção.
 
-Em entrevista, saber a spec é o diferencial porque você consegue comparar abordagens: JAX-RS (spec portável), Spring MVC (Galho 9, planejado), ou Quarkus/Micronaut (que implementam JAX-RS por baixo). Quem conhece só o framework não sabe o que acontece quando a magia falha.
+Em entrevista, saber a spec é o diferencial porque você consegue comparar abordagens: JAX-RS (spec portável), Spring MVC ([[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]]), ou Quarkus/Micronaut (que implementam JAX-RS por baixo). Quem conhece só o framework não sabe o que acontece quando a magia falha.
 
 ## Como funciona
 

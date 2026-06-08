@@ -36,7 +36,7 @@ Os **estereótipos** são anotações que marcam uma classe como candidata ao co
 | `@Component` | Genérica — qualquer componente Spring |
 | `@Service` | Camada de serviço / lógica de negócio |
 | `@Repository` | Camada de persistência (DAO) |
-| `@Controller` | Camada web / handler HTTP (detalhado no Galho 9, planejado) |
+| `@Controller` | Camada web / handler HTTP (detalhado no galho [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos\|Web e APIs REST]]) |
 
 ## Por que importa
 
@@ -44,7 +44,7 @@ Escolher o estereótipo correto vai além de documentação. O Spring e framewor
 
 - **`@Repository`** ativa o `PersistenceExceptionTranslationPostProcessor`, que intercepta exceções lançadas pela camada de persistência (Hibernate, JPA, JDBC) e as converte para a hierarquia `DataAccessException` do Spring. Sem isso, uma `HibernateException` ou `PersistenceException` vaza diretamente para camadas superiores — acoplando o código de negócio ao ORM escolhido.
 - **`@Service`** não adiciona comportamento técnico hoje, mas é o ponto de entrada padrão para aspectos AOP transacionais (`@Transactional`) e interceptors, além de sinalizar claramente a camada.
-- **`@Controller`** (e `@RestController`) são detectados pelo Spring MVC para registrar handlers de requisições HTTP — tema do Galho 9, planejado.
+- **`@Controller`** (e `@RestController`) são detectados pelo Spring MVC para registrar handlers de requisições HTTP — tema do galho [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos|Web e APIs REST]].
 
 Para entrevistas sênior, a pergunta clássica é: **"Qual a diferença entre `@Component`, `@Service` e `@Repository`?"** Saber que `@Repository` é o único com comportamento técnico adicional diferencia a resposta.
 
@@ -107,9 +107,9 @@ JdbcSQLException    ─┘
 
 Resultado prático: a camada de serviço trata `DataAccessException` sem saber se o ORM é Hibernate, EclipseLink ou JDBC puro.
 
-### `@Controller` / `@RestController`: handlers HTTP (citados — detalhe no Galho 9, planejado)
+### `@Controller` / `@RestController`: handlers HTTP (citados — detalhe no galho Web e APIs REST)
 
-`@Controller` marca a classe para o dispatcher do Spring MVC, que mapeia métodos anotados com `@GetMapping`, `@PostMapping` etc. a URLs. `@RestController` combina `@Controller` + `@ResponseBody`, tornando cada método retornando diretamente o corpo da resposta HTTP (normalmente JSON). O funcionamento completo desses dois estereótipos é coberto no Galho 9 (Spring MVC e REST — planejado).
+`@Controller` marca a classe para o dispatcher do Spring MVC, que mapeia métodos anotados com `@GetMapping`, `@PostMapping` etc. a URLs. `@RestController` combina `@Controller` + `@ResponseBody`, tornando cada método retornando diretamente o corpo da resposta HTTP (normalmente JSON). O funcionamento completo desses dois estereótipos é coberto no galho [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos|Web e APIs REST]].
 
 ## Na prática
 

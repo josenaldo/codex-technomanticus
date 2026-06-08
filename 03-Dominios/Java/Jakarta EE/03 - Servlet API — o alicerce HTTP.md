@@ -1,7 +1,7 @@
 ---
 title: "Servlet API — o alicerce HTTP"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -21,7 +21,7 @@ aliases:
 # Servlet API — o alicerce HTTP
 
 > [!abstract] TL;DR
-> A Servlet API é o **contrato entre o código Java e o servidor HTTP** — o container cria **uma única instância** do servlet e a usa para atender **múltiplas threads concorrentes**. Tudo que processa HTTP no ecossistema Java — incluindo o Spring MVC (Galho 9, planejado) — roda sobre essa fundação. Entender o lifecycle e o modelo de threading é a chave para não introduzir bugs silenciosos em produção.
+> A Servlet API é o **contrato entre o código Java e o servidor HTTP** — o container cria **uma única instância** do servlet e a usa para atender **múltiplas threads concorrentes**. Tudo que processa HTTP no ecossistema Java — incluindo o Spring MVC ([[03-Dominios/Java/Web e APIs REST/01 - O que é Spring MVC — a camada web sobre o container|o DispatcherServlet é um servlet]]) — roda sobre essa fundação. Entender o lifecycle e o modelo de threading é a chave para não introduzir bugs silenciosos em produção.
 
 ## O que é
 
