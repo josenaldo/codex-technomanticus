@@ -27,9 +27,9 @@ aliases:
 
 **`HandlerInterceptor`** é uma interface do Spring MVC (`org.springframework.web.servlet.HandlerInterceptor`) que age **depois** que o `DispatcherServlet` já mapeou a requisição para um handler. Tem acesso ao objeto handler (normalmente um `HandlerMethod` que representa o método do controller) e ao `ModelAndView` resultante.
 
-Os dois mecanismos coexistem, mas actuam em camadas distintas do pipeline:
+Os dois mecanismos coexistem, mas atuam em camadas distintas do pipeline:
 
-```
+```text
 Requisição HTTP
     ↓
 [ Servlet Container ]

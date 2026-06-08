@@ -94,6 +94,9 @@ pd.setTitle("Falha de validação");
 pd.setProperty("errors", List.of("campo 'quantidade' deve ser positivo"));
 ```
 
+> [!info] 422 ou 400?
+> Aqui usamos `422 Unprocessable Entity` por escolha semântica (o payload é sintaticamente válido, mas falha em regra). O *default* do Spring para `MethodArgumentNotValidException` (falha de `@Valid`) é **400 Bad Request** — ver [[03-Dominios/Java/Web e APIs REST/08 - Validação na borda|Validação na borda]]. Os dois são defensáveis; o importante é ser consistente na API inteira.
+
 ### ErrorResponse, ErrorResponseException e a integração com @RestControllerAdvice (nota 09); spring.mvc.problemdetails.enabled
 
 **`ErrorResponse`** é uma interface que expõe os detalhes de uma resposta de erro HTTP: status, cabeçalhos e o body como `ProblemDetail`. Todas as exceções nativas do Spring MVC (como `MethodArgumentNotValidException`, `HttpRequestMethodNotSupportedException`, etc.) implementam essa interface.

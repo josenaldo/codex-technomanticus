@@ -52,7 +52,7 @@ public ResponseEntity<OrderResponse> createOrder(
 }
 ```
 
-Se alguma constraint falhar, o Spring lança `MethodArgumentNotValidException`. A partir do Spring Boot 3 / Framework 6, o `DefaultHandlerExceptionResolver` (ou o `ProblemDetailsExceptionHandler`, quando habilitado) converte essa exceção em **400 Bad Request** automaticamente, com detalhes dos campos inválidos no corpo da resposta.
+Se alguma constraint falhar, o Spring lança `MethodArgumentNotValidException`. No Spring Boot 3 / Framework 6, o handler built-in do Spring (o `ResponseEntityExceptionHandler`, base do tratamento padrão de exceções do MVC) converte essa exceção em **400 Bad Request** automaticamente; com `spring.mvc.problemdetails.enabled=true`, a resposta já sai no formato `ProblemDetail`. Para incluir os detalhes de cada campo inválido no corpo, você customiza esse handler num `@RestControllerAdvice` — ver [[03-Dominios/Java/Web e APIs REST/09 - Tratamento de exceções com @ControllerAdvice|Tratamento de exceções com @ControllerAdvice]].
 
 ### @Validated na classe para validar @PathVariable e @RequestParam (→ ConstraintViolationException / HandlerMethodValidationException)
 
