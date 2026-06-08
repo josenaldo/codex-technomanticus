@@ -1,7 +1,7 @@
 ---
 title: "Qualificação de beans — @Qualifier, @Primary, @Profile"
-created_at: 2026-06-08
-updated_at: 2026-06-08
+created: 2026-06-08
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -19,7 +19,7 @@ aliases:
 
 # Qualificação de beans — @Qualifier, @Primary, @Profile
 
-> [!tip] TL;DR
+> [!abstract] TL;DR
 > Quando o Spring encontra mais de um bean do mesmo tipo no contexto, ele lança `NoUniqueBeanDefinitionException`. `@Qualifier` aponta qual bean usar pelo nome ou por anotação customizada; `@Primary` elege um candidato padrão; `@Profile` registra o bean apenas quando um perfil de ambiente está ativo. Os três mecanismos colaboram: `@Profile` filtra *quais* beans existem, `@Primary` define o padrão entre os restantes, e `@Qualifier` escolhe um específico na injeção.
 
 ## O que é
@@ -232,10 +232,75 @@ Em testes, basta criar um bean `@TestConfiguration` com `@Primary` para sobrescr
 
 ## Armadilhas
 
-- **Dois `@Primary` no mesmo tipo:** o contêiner não elege um dos dois — ele lança `NoUniqueBeanDefinitionException` igualmente. Use `@Primary` em no máximo um bean por tipo.
-- **`@Qualifier` com nome errado:** o Spring lança `NoSuchBeanDefinitionException` em startup se o nome do qualifier não corresponder a nenhum bean registrado. Qualifiers customizados (anotações) evitam esse risco.
-- **`List<T>` injeta todos os beans do tipo:** ao injetar uma coleção, o Spring não filtra por `@Qualifier` — ele coleta todos os candidatos compatíveis. Se apenas um subconjunto for desejado, use qualifiers customizados nas implementações e no ponto de injeção.
-- **`@Profile` sem perfil ativo levanta `NoSuchBeanDefinitionException`:** se todos os beans de um tipo estiverem sob `@Profile` e nenhum perfil correspondente estiver ativo, a injeção falha. Sempre forneça um bean default (`@Profile("default")`) ou garanta que pelo menos um perfil esteja ativo.
+**1. Dois `@Primary` no mesmo tipo**
+
+O contêiner não elege um dos dois — ele lança `NoUniqueBeanDefinitionException` igualmente. Use `@Primary` em no máximo um bean por tipo.
+
+```java
+// PROBLEMA: dois @Primary para o mesmo tipo
+@Component @Primary
+public class StripeGateway implements PaymentGateway { ... }
+
+@Component @Primary      // ← segundo @Primary para PaymentGateway
+public class PaypalGateway implements PaymentGateway { ... }
+
+// Resultado em startup:
+// NoUniqueBeanDefinitionException: expected single matching bean but found 2
+```
+
+**Fix:** remova `@Primary` de um dos beans; deixe apenas um candidato padrão.
+
+**2. `@Qualifier` com nome errado**
+
+O Spring lança `NoSuchBeanDefinitionException` em startup se o nome do qualifier não corresponder a nenhum bean registrado. Qualifiers customizados (anotações) evitam esse risco.
+
+```java
+@Component("stripeGateway")
+public class StripeGateway implements PaymentGateway { ... }
+
+@Service
+public class CheckoutService {
+    // PROBLEMA: nome do qualifier difere do nome do bean
+    public CheckoutService(@Qualifier("stripe") PaymentGateway gw) { ... }
+    //                                  ^^^^^^ deveria ser "stripeGateway"
+}
+// Resultado: NoSuchBeanDefinitionException em startup
+```
+
+**Fix:** use o nome exato do bean ou, melhor, crie uma `@Qualifier` customizada para desacoplar do nome literal.
+
+**3. `List<T>` injeta todos os beans do tipo**
+
+Ao injetar uma coleção, o Spring coleta todos os candidatos compatíveis, ignorando `@Qualifier` no ponto de injeção. Se apenas um subconjunto for desejado, use qualifiers customizados nas implementações e no ponto de injeção.
+
+```java
+// PROBLEMA: intenção é apenas canais de email, mas injeta todos
+@Service
+public class AlertService {
+    public AlertService(List<NotificationChannel> channels) {
+        // channels conterá EmailChannel, SmsChannel, PushChannel...
+    }
+}
+```
+
+**Fix:** crie uma `@Qualifier` customizada (ex. `@EmailOnly`) e anote tanto as implementações desejadas quanto o ponto de injeção.
+
+**4. `@Profile` sem perfil ativo levanta `NoSuchBeanDefinitionException`**
+
+Se todos os beans de um tipo estiverem sob `@Profile` e nenhum perfil correspondente estiver ativo, a injeção falha em startup.
+
+```java
+@Bean @Profile("development")
+public DataSource h2DataSource() { ... }
+
+@Bean @Profile("production")
+public DataSource postgresDataSource() { ... }
+
+// Se nenhum perfil estiver ativo → NoSuchBeanDefinitionException:
+// No qualifying bean of type 'DataSource'
+```
+
+**Fix:** forneça um bean default (`@Profile("default")`) ou garanta que pelo menos um perfil esteja sempre ativo (ex.: via `spring.profiles.default=development`).
 
 ## Em entrevista
 

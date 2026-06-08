@@ -1,7 +1,7 @@
 ---
 title: "Self-invocation e os limites do proxy"
-created_at: 2026-06-08
-updated_at: 2026-06-08
+created: 2026-06-08
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -19,7 +19,7 @@ aliases:
 
 # Self-invocation e os limites do proxy
 
-> [!tip] TL;DR
+> [!abstract] TL;DR
 > Toda a mágica de `@Transactional`, `@Async`, `@Cacheable` e afins depende de um proxy que intercepta a chamada antes de ela chegar ao objeto real. Quando um método chama outro método *do mesmo objeto* com `this.metodo()`, o proxy é ignorado completamente — a chamada vai direto para a instância, sem passar pelas instruções do aspecto. Além disso, métodos `private` e `final` nunca são interceptados pelo proxy CGLIB. A solução mais limpa é extrair o método para outro bean; self-injection e `AopContext.currentProxy()` existem, mas cada um traz um custo.
 
 ## O que é
@@ -159,7 +159,7 @@ public class PedidoService {
 }
 ```
 
-Limitação: funciona apenas quando a propagação padrão (`REQUIRED`) é suficiente. Se `enviarConfirmacao` precisasse de `REQUIRES_NEW` (nova transação independente), essa abordagem não serve.
+Limitação: funciona apenas quando a propagação padrão (`REQUIRED`) é suficiente. Se `enviarConfirmacao` precisasse de `REQUIRES_NEW` (nova transação independente), essa abordagem não serve. (A semântica de propagação — `REQUIRED`/`REQUIRES_NEW` — é tema do Galho 10, Persistência de dados, planejado.)
 
 ## Na prática
 
@@ -249,13 +249,70 @@ public class PedidoService {
 
 ## Armadilhas
 
-- **Refatorar "puxando lógica pra dentro" quebra `@Transactional`:** ao mover um método de uma classe auxiliar para dentro do próprio serviço (por parecer mais simples), a chamada deixa de passar pelo proxy. O comportamento muda silenciosamente em produção.
+**1. Refatorar "puxando lógica pra dentro" quebra `@Transactional`**
 
-- **Método `@Async private`:** colocar `@Async` em um método `private` não gera erro, mas o método sempre roda na thread atual. O comportamento assíncrono nunca acontece.
+Ao mover um método de uma classe auxiliar para dentro do próprio serviço (por parecer mais simples), a chamada deixa de passar pelo proxy. O comportamento muda silenciosamente em produção.
 
-- **Achar self-injection elegante:** self-injection resolve o problema técnico, mas sinaliza que a classe provavelmente acumula responsabilidades demais. Em revisão de código, é um indicador de que uma extração de bean seria mais adequada.
+```java
+// ANTES (funcionava): chamada cruzava fronteira de bean → proxy ativo
+confirmacaoService.enviarConfirmacao(pedidoId);
 
-- **Assumir que AspectJ tem o mesmo limite:** AspectJ compile-time weaving e load-time weaving *não* têm esse problema — eles tecem o adendo diretamente no bytecode, sem proxy. O limite é específico do modelo de proxy do Spring AOP.
+// DEPOIS (quebrado): método movido para dentro da mesma classe
+this.enviarConfirmacao(pedidoId);   // proxy ignorado; @Transactional não roda
+```
+
+**Fix:** mantenha o método no bean auxiliar ou use self-injection se a consolidação for indispensável.
+
+**2. Método `@Async private`**
+
+Colocar `@Async` em um método `private` não gera erro, mas o método sempre roda na thread atual. O comportamento assíncrono nunca acontece.
+
+```java
+@Service
+public class RelatorioService {
+
+    // PROBLEMA: @Async em método private — CGLIB não intercepta
+    @Async
+    private void gerarRelatorio(Long id) {
+        // roda na thread do chamador, nunca numa thread de pool
+    }
+}
+```
+
+**Fix:** torne o método `public` — o CGLIB só pode sobrescrever (e portanto interceptar) métodos públicos.
+
+**3. Achar self-injection elegante**
+
+Self-injection resolve o problema técnico, mas sinaliza que a classe provavelmente acumula responsabilidades demais. Em revisão de código, é um indicador de que uma extração de bean seria mais adequada.
+
+```java
+// FUNCIONA, mas é sinal de design ruim
+@Service
+public class PedidoService {
+    @Autowired @Lazy
+    private PedidoService self;   // ← sinal de acúmulo de responsabilidades
+
+    @Transactional
+    public void criarPedido(Long id) { self.enviarConfirmacao(id); }
+
+    @Transactional
+    public void enviarConfirmacao(Long id) { ... }
+}
+```
+
+**Fix:** extraia `enviarConfirmacao` para um `ConfirmacaoService` separado; o problema de self-invocation desaparece e o design fica mais coeso.
+
+**4. Assumir que AspectJ tem o mesmo limite**
+
+AspectJ compile-time weaving e load-time weaving *não* têm esse problema — eles tecem o adendo diretamente no bytecode, sem proxy. O limite é específico do modelo de proxy do Spring AOP.
+
+```java
+// Com Spring AOP (proxy): this.metodoB() IGNORA o aspecto
+// Com AspectJ weaving: this.metodoB() APLICA o aspecto normalmente
+// — o bytecode do objeto real já contém a lógica de interceptação
+```
+
+**Fix:** se self-invocation for padrão inevitável na arquitetura, considere configurar AspectJ load-time weaving (`spring-instrument.jar`). Na maioria dos casos, a extração de bean é a resposta mais simples.
 
 ## Em entrevista
 

@@ -1,7 +1,7 @@
 ---
 title: "AOP e proxies no Spring"
-created_at: 2026-06-08
-updated_at: 2026-06-08
+created: 2026-06-08
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -20,7 +20,7 @@ aliases:
 
 # AOP e proxies no Spring
 
-> [!tip] TL;DR
+> [!abstract] TL;DR
 > AOP (*Aspect-Oriented Programming*) modulariza *cross-cutting concerns* — logging, métricas, transação, segurança, cache — que cortam horizontalmente várias classes. No Spring, o mecanismo é **proxy em runtime**: o container embrulha o bean num objeto-proxy que intercepta as chamadas de método e injeta o *advice* (código do aspecto) antes, depois ou em volta da execução real. Há dois tipos de proxy: **JDK dynamic proxy** (quando o bean implementa interface) e **CGLIB** (subclasse gerada em runtime, quando não há interface). O Spring Boot força CGLIB por padrão. Você escreve um aspecto com `@Aspect` + `@Component`, declara um *pointcut* (expressão que casa os pontos de interseção) e anota o método com um *advice type* (`@Before`, `@After`, `@AfterReturning`, `@AfterThrowing`, `@Around`). AOP é o motor por baixo de `@Transactional`, `@Async`, `@Cacheable` e `@PreAuthorize`.
 
 ## O que é
@@ -45,7 +45,7 @@ A AOP inverte isso: a instrumentação vira **um** aspecto, declarado uma vez, a
 
 Mas o motivo mais importante de entender AOP no Spring não é escrever aspectos próprios — é que **AOP é o mecanismo por baixo de quase toda a mágica declarativa do framework**:
 
-- `@Transactional` → um aspecto abre a transação no `@Before` e commita/faz rollback no `@After`/`@AfterThrowing`.
+- `@Transactional` → implementado com um advice do tipo **`@Around`**: um `TransactionInterceptor` envolve o método, abre/obtém a transação antes de `proceed()` e commita ou faz rollback depois.
 - `@Async` → um aspecto desvia a execução para outra thread.
 - `@Cacheable` → um aspecto checa o cache antes de chamar o método e guarda o retorno depois.
 - `@PreAuthorize` / `@Secured` → um aspecto valida a autorização antes de deixar a chamada passar.

@@ -20,7 +20,7 @@ aliases:
 
 # Configuração e profiles
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > Spring Boot lê propriedades de múltiplas fontes numa hierarquia fixa — args de linha de comando vencem tudo. Profiles recortam configurações por ambiente (`application-{profile}.yml`). `@ConfigurationProperties` entrega binding tipado, validado e imutável (records), substituindo `@Value` espalhado em todo o código.
 
 ## O que é

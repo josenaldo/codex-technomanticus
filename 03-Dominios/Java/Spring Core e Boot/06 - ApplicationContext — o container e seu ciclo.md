@@ -82,7 +82,7 @@ ClassPathXmlApplicationContext ctx =
 
 **Reactive (Spring WebFlux / Spring Boot + Netty):**
 
-- `AnnotationConfigReactiveWebApplicationContext` — entregue automaticamente pelo Boot quando a pilha WebFlux é detectada no classpath
+- `AnnotationConfigReactiveWebServerApplicationContext` — entregue automaticamente pelo Boot quando a pilha WebFlux é detectada no classpath
 
 O Spring Boot escolhe a implementação correta baseado no classpath: ausência de `spring-webmvc` e `spring-webflux` → standalone; presença de `spring-webmvc` → servlet; presença de `spring-webflux` (sem MVC) → reactive.
 
@@ -123,7 +123,7 @@ O container detecta beans que implementam interfaces `*Aware` durante a fase de 
 | `MessageSourceAware` | `setMessageSource()` | `MessageSource` para i18n |
 | `ResourceLoaderAware` | `setResourceLoader()` | `ResourceLoader` para carregar arquivos |
 | `EnvironmentAware` | `setEnvironment()` | `Environment` com perfis e properties |
-| `ApplicationStartupAware` | `setApplicationStartup()` | `ApplicationStartup` para métricas de inicialização |
+| `EmbeddedValueResolverAware` | `setEmbeddedValueResolver(StringValueResolver)` | Resolvedor de placeholders `${...}` para uso em código de infraestrutura |
 
 Interfaces `*Aware` são usadas principalmente por código de infraestrutura e integrações. Em código de aplicação, prefira injeção via `@Autowired` ou construtor.
 
