@@ -50,6 +50,11 @@ A ação que um aspecto executa, associada a um pointcut: define *o quê* fazer 
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
 
+### API versioning
+Estratégias para evoluir uma API sem quebrar clientes existentes: versão na URI (`/v1/...`), em header customizado, via content negotiation (media type versionado) ou query param. Cada abordagem tem trade-offs de visibilidade, cacheabilidade e aderência ao REST; o Spring MVC suporta todas via atributos de `@RequestMapping` (path, headers, params, produces).
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/13 - Versionamento de API|Versionamento de API]].
+
 ### ApplicationContext
 A interface central do container Spring: estende `BeanFactory` e adiciona resolução de mensagens i18n, publicação de eventos, carregamento de recursos e integração com a hierarquia de contextos. É o objeto que instancia, configura e gerencia o ciclo de vida de todos os beans da aplicação.
 
@@ -294,6 +299,11 @@ Forma de injeção de dependência em que o container fornece as dependências c
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/04 - Tipos de injeção — constructor, setter, field|Tipos de injeção]].
 
+### content negotiation
+Mecanismo pelo qual o servidor escolhe a representação da resposta (JSON, XML, etc.) com base no que o cliente aceita, geralmente pelo header `Accept`. No Spring MVC o `ContentNegotiationManager` casa o media type solicitado com os `HttpMessageConverter` disponíveis e com o `produces` do mapeamento, retornando 406 (Not Acceptable) quando não há representação compatível.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/07 - Content negotiation|Content negotiation]].
+
 ### content pane
 Container interno de um top-level container (`JFrame`, `JDialog`) onde se adicionam os componentes visíveis da aplicação. `frame.add(...)` delega a ele. Usa `BorderLayout` por padrão.
 
@@ -303,6 +313,11 @@ Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
 Situação em que múltiplas threads disputam o mesmo lock ou recurso simultaneamente, forçando algumas a esperar. Alta contention degrada performance e pode eliminar os ganhos do paralelismo. Mitigada por locks de granularidade fina, estruturas lock-free ou particionamento de estado.
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### @ControllerAdvice / @RestControllerAdvice
+`@ControllerAdvice` marca uma classe cujos `@ExceptionHandler`, `@InitBinder` e `@ModelAttribute` valem globalmente, para todos os controllers (ou um subconjunto filtrado por pacote/anotação/tipo). `@RestControllerAdvice` é a variante que combina `@ControllerAdvice` com `@ResponseBody`, ideal para handlers de exceção de APIs REST que serializam o corpo de erro diretamente. Alfabetiza como "ControllerAdvice".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/09 - Tratamento de exceções com @ControllerAdvice|Tratamento de exceções com @ControllerAdvice]].
 
 ### convention over configuration
 Princípio de design (popularizado pelo Rails e abraçado pelo Spring Boot) em que o framework assume padrões sensatos para a maioria dos casos, reduzindo a configuração explícita ao mínimo. O desenvolvedor só configura aquilo que diverge da convenção — é a filosofia por trás da auto-configuration e dos starters.
@@ -355,6 +370,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e 
 Mecanismo da JPA pelo qual o provider detecta, no flush, quais entidades managed mudaram desde que entraram no persistence context e gera o SQL de UPDATE automaticamente — sem chamada explícita de "save". O contrato é da spec; a estratégia de detecção é do provider.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager e o ciclo de vida da entidade]].
+
+### DispatcherServlet
+O *front controller* do Spring MVC: um único `Servlet` que recebe todas as requisições e orquestra o pipeline — consulta os `HandlerMapping` para achar o handler, invoca o `HandlerAdapter` para executá-lo, aplica `HandlerInterceptor`, resolve a view (ou serializa via `HttpMessageConverter`) e despacha a resposta. Centraliza o fluxo de processamento web.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]].
 
 ### Document (modelo de texto)
 Model dos componentes de texto (`JTextField`, `JTextArea`): representa o conteúdo como sequência de caracteres com atributos, não como `String`. Edições disparam `DocumentEvent` e podem ser interceptadas via `DocumentListener` ou `DocumentFilter`.
@@ -458,6 +478,11 @@ Annotation do Spring que marca um método como ouvinte de eventos do `Applicatio
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/11 - Eventos do ApplicationContext|Eventos do ApplicationContext]].
 
+### @ExceptionHandler
+Annotation do Spring MVC que marca um método como tratador de uma ou mais exceções: quando um controller (ou handler) lança o tipo declarado, o método anotado é invocado para produzir a resposta. Funciona local ao controller ou globalmente dentro de uma classe `@ControllerAdvice`; o método pode retornar `ResponseEntity`, `ProblemDetail` ou um corpo serializado. Alfabetiza como "ExceptionHandler".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/09 - Tratamento de exceções com @ControllerAdvice|Tratamento de exceções com @ControllerAdvice]].
+
 ### ExceptionMapper
 Provider JAX-RS que converte uma exceção lançada por um resource em uma `Response` HTTP (ex.: `OrderNotFoundException` → 404). Centraliza o tratamento de erros fora dos métodos de recurso.
 
@@ -484,6 +509,11 @@ Veja também: [[03-Dominios/Java/Swing/09 - Look and Feel e temas|Look and Feel]
 Framework introduzido no Java 7 (`ForkJoinPool`, `RecursiveTask`, `RecursiveAction`) que divide um problema em subproblemas menores (fork), resolve-os em paralelo e combina os resultados (join). Usa work-stealing para maximizar a utilização dos núcleos. Base dos parallel streams e do `CompletableFuture`.
 
 Veja também: [[15 - Parallel streams e fork-join]].
+
+### front controller
+Padrão de arquitetura web em que um único ponto de entrada recebe todas as requisições e centraliza o despacho para os handlers apropriados, concentrando preocupações transversais (roteamento, segurança, logging) num só lugar. No Spring MVC, o `DispatcherServlet` é a encarnação desse padrão.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/01 - O que é Spring MVC — a camada web sobre o container|O que é Spring MVC]].
 
 ### Function / Predicate / Consumer / Supplier
 As quatro interfaces funcionais centrais de `java.util.function`. `Function<T,R>` transforma um T em R (`apply`); `Predicate<T>` testa uma condição booleana sobre T (`test`); `Consumer<T>` executa uma ação sobre T sem retorno (`accept`); `Supplier<T>` fornece um T sem receber argumento (`get`). Cada uma traz métodos `default` de composição — `andThen`/`compose` (`Function`), `and`/`or`/`negate` (`Predicate`), `andThen` (`Consumer`) — base da composição funcional e das operações de Stream.
@@ -532,6 +562,11 @@ Mecanismo de parametrização de tipos que permite escrever classes, interfaces 
 
 Veja também: [[12 - Generics em profundidade]].
 
+### @GetMapping / @PostMapping (mapeamentos HTTP)
+Atalhos do Spring MVC para `@RequestMapping` restritos a um método HTTP: `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping` e `@PatchMapping`. Aplicados a métodos de um `@RestController`/`@Controller`, mapeiam um path + verbo para o handler, deixando a intenção explícita e o código mais legível que o `@RequestMapping(method = ...)`. Alfabetiza como "GetMapping".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos|@RestController e os mapeamentos]].
+
 ### Gluon
 Empresa e projeto open-source que mantém o port do JavaFX para dispositivos móveis (iOS e Android) por meio do Gluon Mobile e das ferramentas GraalVM native-image. Principal mantenedor comercial do OpenJFX; fornece também o Gluon CloudLink e plugins para integração com Maven/Gradle.
 
@@ -554,6 +589,21 @@ Veja também: [[14 - Sealed classes e pattern matching]].
 
 ## H
 
+### HandlerAdapter
+Componente do Spring MVC que sabe *como invocar* um handler de um determinado tipo. O `DispatcherServlet` não chama o handler diretamente: delega ao `HandlerAdapter` apropriado (ex.: `RequestMappingHandlerAdapter` para métodos `@RequestMapping`), que resolve argumentos, executa o método e adapta o retorno. Desacopla o despachante das várias formas de handler.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]].
+
+### HandlerInterceptor
+Interface do Spring MVC com os ganchos `preHandle`, `postHandle` e `afterCompletion`, executados em torno da invocação do handler (dentro do `DispatcherServlet`, com acesso ao contexto Spring). Diferente do `Filter` da spec Servlet (que opera antes de chegar ao `DispatcherServlet`), o interceptor enxerga qual handler será executado e pode abortar a cadeia retornando `false` no `preHandle`.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/11 - Interceptors vs Filters|Interceptors vs Filters]].
+
+### HandlerMapping
+Componente do Spring MVC que, dada uma requisição, decide *qual handler* deve tratá-la. O `RequestMappingHandlerMapping` casa URL + método HTTP + headers/params contra os mapeamentos declarados (`@RequestMapping` e atalhos) e devolve um `HandlerExecutionChain` (handler + interceptors) ao `DispatcherServlet`.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]].
+
 ### Happens-before
 Relação de ordenação definida pelo Java Memory Model (JMM) que garante que ações de uma thread sejam visíveis e ordenadas corretamente para outra thread. Não é ordem temporal: duas ações podem ocorrer em qualquer tempo, mas se A happens-before B, o efeito de A é garantidamente visível quando B ocorre. Estabelecida por `synchronized`, `volatile`, start/join de threads, entre outros.
 
@@ -564,6 +614,11 @@ Contrato Java que exige consistência entre os dois métodos: objetos iguais (`e
 
 Veja também: [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]].
 
+### HATEOAS
+Hypermedia As The Engine Of Application State: restrição do REST em que a resposta carrega *links* que indicam ao cliente as transições de estado possíveis a partir do recurso atual, em vez de o cliente conhecer URLs de antemão. Corresponde ao nível 3 do Richardson Maturity Model; no Spring é suportado pela biblioteca Spring HATEOAS (`EntityModel`, `Link`, `WebMvcLinkBuilder`).
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
+
 ### heap
 Área de memória principal da JVM onde todos os objetos e arrays são alocados. Dividida em gerações (young/eden, survivor, old) pelos coletores generacionais. O tamanho é configurável com `-Xms` (inicial) e `-Xmx` (máximo); esgotar o heap causa `OutOfMemoryError`.
 
@@ -573,6 +628,11 @@ Veja também: [[02 - Áreas de memória de runtime]].
 Snapshot do conteúdo do heap da JVM em um dado instante, gravado em formato HPROF. Contém todos os objetos vivos, seus tipos, tamanhos e referências entre eles. Usado para diagnosticar vazamentos de memória com ferramentas como JMC, Eclipse MAT ou VisualVM.
 
 Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
+
+### HttpMessageConverter
+Estratégia do Spring MVC que converte entre o corpo HTTP (bytes) e objetos Java: na leitura, desserializa o `@RequestBody`; na escrita, serializa o retorno marcado com `@ResponseBody`. Cada converter declara os media types que suporta (ex.: `MappingJackson2HttpMessageConverter` para JSON); a content negotiation escolhe qual usar conforme o `Accept`/`Content-Type`.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/05 - Serialização JSON com Jackson|Serialização JSON com Jackson]].
 
 ## I
 
@@ -627,6 +687,11 @@ Princípio em que o controle da criação e da ligação de objetos é transferi
 Veja também: [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|IoC e injeção de dependência no Spring]].
 
 ## J
+
+### Jackson
+Biblioteca de serialização/desserialização JSON padrão do ecossistema Spring. O `ObjectMapper` é o objeto central; anotações como `@JsonProperty`, `@JsonIgnore`, `@JsonInclude` e `@JsonFormat` controlam o mapeamento entre objetos Java e JSON. No Spring MVC, o `MappingJackson2HttpMessageConverter` o usa para converter `@RequestBody`/`@ResponseBody`.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/05 - Serialização JSON com Jackson|Serialização JSON com Jackson]].
 
 ### Jakarta EE
 Conjunto de especificações enterprise para Java (sucessor do Java EE, sob a Eclipse Foundation desde 2017). Define contratos de API (CDI, Servlet, JAX-RS, JPA, JTA...) implementados por servidores e runtimes certificados via TCK. Release atual: Jakarta EE 11 (jun/2025).
@@ -777,6 +842,11 @@ Atalho sintático para lambdas que apenas delegam a um método existente, na for
 
 Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]].
 
+### MethodArgumentNotValidException
+Exceção que o Spring MVC lança quando um argumento de handler anotado com `@Valid`/`@Validated` falha na Bean Validation: agrega os erros num `BindingResult`. Por padrão resulta em 400 (Bad Request); pode ser capturada num `@ExceptionHandler`/`@ControllerAdvice` para transformar as violações num corpo de erro estruturado (ex.: `ProblemDetail`).
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/08 - Validação na borda|Validação na borda]], [[Dicionário de Java#Bean Validation (Jakarta Validation)|Bean Validation]].
+
 ### Metaspace
 Área de memória nativa (fora do heap Java) introduzida no Java 8 para substituir o PermGen, onde a JVM armazena metadados de classes carregadas (estruturas internas, bytecode, pool de constantes). Cresce sob demanda sem limite fixo por padrão; configurável com `-XX:MaxMetaspaceSize`. Não confundir com `MetaspaceSize`, que é o tamanho inicial a partir do qual o GC começa a limpar classes não utilizadas.
 
@@ -826,6 +896,11 @@ Mecanismo de pub/sub embutido no CDI: um bean dispara um evento (`Event<T>.fire`
 
 Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
 
+### OpenAPI
+Especificação aberta (antiga Swagger Specification) para descrever APIs REST de forma legível por máquina — endpoints, parâmetros, schemas, respostas e segurança — em JSON ou YAML. Serve de contrato e alimenta ferramentas de documentação (Swagger UI), geração de clientes e testes. No Spring Boot é gerada automaticamente pelo springdoc-openapi.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/12 - Documentando a API com OpenAPI e Swagger|Documentando a API com OpenAPI e Swagger]].
+
 ### OpenJFX
 Projeto open-source que abriga o código-fonte do JavaFX desde que foi desacoplado do JDK no Java 11. Mantido pela comunidade com contribuições da Gluon, Oracle e outros, disponibilizado em [openjfx.io](https://openjfx.io). Distribuído como módulos separados adicionados ao projeto via Maven/Gradle.
 
@@ -857,6 +932,11 @@ Veja também: [[07 - Herança e polimorfismo]].
 Método a sobrescrever (em vez de `paint`) para desenhar conteúdo customizado em um componente Swing. Deve chamar `super.paintComponent(g)` antes de desenhar e fazer cast de `Graphics` para `Graphics2D` para acessar a API completa de renderização Java2D.
 
 Veja também: [[03-Dominios/Java/Swing/10 - Custom painting e componentes customizados|Custom painting]].
+
+### @PathVariable
+Annotation do Spring MVC que vincula um segmento variável do path da URL a um parâmetro do método handler. Declarado no mapeamento como `{id}` (ex.: `@GetMapping("/users/{id}")`) e capturado com `@PathVariable Long id`. Usado para identificar o recurso na própria URL, no estilo REST.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/03 - Recebendo dados da request|Recebendo dados da request]].
 
 ### Pattern matching
 Mecanismo que combina teste de tipo, extração de componentes e (opcionalmente) uma guarda em uma única expressão coesa. A partir do Java 16 (`instanceof`) e Java 21 (switch patterns), elimina casts manuais e torna o código mais legível e seguro.
@@ -923,6 +1003,11 @@ Fila (`java.util.PriorityQueue<E>`) que entrega elementos na ordem definida pelo
 
 Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e filas|Listas, conjuntos e filas]].
 
+### ProblemDetail (RFC 9457)
+Formato padronizado de corpo de erro HTTP definido pela RFC 9457 (antiga RFC 7807): um objeto com campos `type`, `title`, `status`, `detail` e `instance`, servido como `application/problem+json`. O Spring 6 traz a classe `ProblemDetail` e suporte nativo (`ResponseEntityExceptionHandler`) para devolver erros nesse formato, padronizando as respostas de falha da API.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/10 - Problem Details — RFC 9457|Problem Details — RFC 9457]].
+
 ### @Produces (producer CDI)
 Method/field producer do CDI (`jakarta.enterprise.inject.Produces`) que fabrica um objeto que o container não criaria sozinho (libs de terceiros, valores de config); `@Disposes` faz o cleanup. NÃO confundir com o `@Produces` do JAX-RS (`jakarta.ws.rs.Produces`), que declara media types. Alfabetiza como "Produces".
 
@@ -962,10 +1047,60 @@ Extensão de pattern matching que desconstói um record diretamente no `instance
 
 Veja também: [[13 - Records e record patterns]], [[14 - Sealed classes e pattern matching]].
 
+### @RequestBody
+Annotation do Spring MVC que vincula o corpo da requisição HTTP a um parâmetro do método, desserializando-o (via `HttpMessageConverter`/Jackson) para um objeto Java. Usado em POST/PUT/PATCH para receber payloads JSON; combina com `@Valid` para disparar a Bean Validation sobre o objeto recebido. Alfabetiza como "RequestBody".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/03 - Recebendo dados da request|Recebendo dados da request]].
+
+### @RequestHeader
+Annotation do Spring MVC que vincula o valor de um header HTTP a um parâmetro do método handler (ex.: `@RequestHeader("User-Agent") String ua`). Suporta valor default e marcação de obrigatoriedade. Alfabetiza como "RequestHeader".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/03 - Recebendo dados da request|Recebendo dados da request]].
+
+### @RequestMapping
+Annotation base do Spring MVC que mapeia requisições HTTP para classes e métodos handler, combinando path, método HTTP, headers, params e media types (`consumes`/`produces`). Aplicada na classe define um prefixo comum; nos métodos, os atalhos `@GetMapping`/`@PostMapping` etc. são especializações por verbo. Alfabetiza como "RequestMapping".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos|@RestController e os mapeamentos]].
+
+### @RequestParam
+Annotation do Spring MVC que vincula um parâmetro de query string (ou de formulário) a um parâmetro do método (ex.: `?page=2` → `@RequestParam int page`). Suporta valor default, obrigatoriedade e binding para coleções/`Map`. Alfabetiza como "RequestParam".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/03 - Recebendo dados da request|Recebendo dados da request]].
+
+### @ResponseBody
+Annotation do Spring MVC que indica que o retorno do método deve ser serializado direto no corpo da resposta (via `HttpMessageConverter`), em vez de ser interpretado como nome de view. É implícita em `@RestController`. Alfabetiza como "ResponseBody".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/04 - ResponseEntity e status codes|ResponseEntity e status codes]].
+
+### @ResponseStatus
+Annotation do Spring MVC que define o status code HTTP da resposta de forma declarativa, aplicada a um método handler ou a uma classe de exceção (ex.: `@ResponseStatus(HttpStatus.NOT_FOUND)`). Alternativa estática ao `ResponseEntity` quando o status é fixo. Alfabetiza como "ResponseStatus".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/04 - ResponseEntity e status codes|ResponseEntity e status codes]].
+
+### RestClient
+Cliente HTTP síncrono e fluente introduzido no Spring 6.1, com API moderna (`get().uri(...).retrieve()...`) que substitui o `RestTemplate` em código novo síncrono. Reusa a infraestrutura de `HttpMessageConverter` do Spring. Alfabetiza como "RestClient".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP — RestClient, WebClient, RestTemplate]].
+
+### @RestController
+Estereótipo do Spring que combina `@Controller` com `@ResponseBody`: marca a classe como controller web cujos métodos retornam o corpo da resposta serializado (tipicamente JSON), sem resolução de view. É o ponto de entrada padrão de uma API REST no Spring MVC. Alfabetiza como "RestController".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos|@RestController e os mapeamentos]], [[Dicionário de Java#@Component / estereótipos Spring|@Component / estereótipos Spring]].
+
+### RestTemplate
+Cliente HTTP síncrono clássico do Spring, dominante por anos para consumir APIs REST. Em modo de manutenção desde o Spring 5: ainda suportado, mas o time recomenda `RestClient` (síncrono) ou `WebClient` (reativo) para código novo. Alfabetiza como "RestTemplate".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP — RestClient, WebClient, RestTemplate]].
+
 ### retained mode / immediate mode
 Dois paradigmas de renderização de UI. No **retained mode** (JavaFX, Swing), o framework mantém uma representação interna do estado da cena (o grafo de cena) e sabe o que redesenhar; o desenvolvedor modifica o modelo e o framework atualiza a tela. No **immediate mode** (Canvas JavaFX, OpenGL), o desenvolvedor emite comandos de desenho diretamente a cada frame, sem estado persistente gerenciado pelo framework.
 
 Veja também: [[02 - Scene graph — stage, scene e nodes]].
+
+### Richardson Maturity Model
+Modelo de Leonard Richardson que mede o quão "RESTful" é uma API em quatro níveis: nível 0 (um único endpoint, RPC sobre HTTP), nível 1 (recursos identificados por URLs), nível 2 (uso correto dos verbos HTTP e status codes) e nível 3 (HATEOAS — hipermídia guiando o cliente). Serve de régua para avaliar maturidade de design de APIs.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
 
 ## S
 
@@ -1069,10 +1204,25 @@ O núcleo do ecossistema Spring: container IoC/DI, AOP, abstração de transaç�
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
 
+### Spring HATEOAS
+Biblioteca do ecossistema Spring que facilita construir representações hipermídia (nível 3 do Richardson Maturity Model): fornece `EntityModel`/`CollectionModel` para envolver recursos com links, `Link` para representá-los e `WebMvcLinkBuilder` para gerar URLs de forma type-safe a partir dos controllers.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
+
+### Spring MVC
+O framework web do Spring baseado no padrão front controller: um `DispatcherServlet` recebe as requisições e orquestra `HandlerMapping`, `HandlerAdapter`, interceptors e `HttpMessageConverter` para produzir a resposta. Roda sobre a Servlet API e é a base para construir aplicações web e APIs REST com `@Controller`/`@RestController`.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/01 - O que é Spring MVC — a camada web sobre o container|O que é Spring MVC]].
+
 ### SpringApplication
 Classe que faz o bootstrap de uma aplicação Spring Boot (`SpringApplication.run(App.class, args)`): cria o `ApplicationContext` apropriado, aplica auto-configuration, sobe o servidor embarcado, dispara listeners e banners. Customizável via `SpringApplicationBuilder` ou propriedades. Alfabetiza como "SpringApplication".
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication e o embedded server]].
+
+### springdoc-openapi
+Biblioteca que integra OpenAPI ao Spring Boot: inspeciona os controllers em runtime e gera automaticamente o documento OpenAPI da API, além de servir a interface Swagger UI. Adicionada via starter (`springdoc-openapi-starter-webmvc-ui`), expõe a spec em `/v3/api-docs` e a UI em `/swagger-ui.html`.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/12 - Documentando a API com OpenAPI e Swagger|Documentando a API com OpenAPI e Swagger]].
 
 ### stack frame
 Estrutura de dados criada na pilha de cada thread para cada invocação de método ativa, armazenando variáveis locais, operandos, referência ao pool de constantes e o endereço de retorno. O conjunto de stack frames de uma thread forma a call stack. O estouro da pilha causa `StackOverflowError`.
@@ -1123,6 +1273,11 @@ Veja também: [[04 - Strings e text blocks]].
 API de concorrência estruturada em preview no Java 25 (exige `--enable-preview`), que trata um conjunto de tarefas concorrentes como uma unidade coesa com ciclo de vida delimitado por um `StructuredTaskScope`. Garante que subtarefas são concluídas (ou canceladas) antes que o escopo seja fechado, simplificando o tratamento de erros e cancelamento.
 
 Veja também: [[13 - Structured concurrency]].
+
+### Swagger UI
+Interface web interativa que renderiza um documento OpenAPI como documentação navegável e executável: lista endpoints, schemas e exemplos, e permite disparar requisições de teste direto do navegador. No Spring Boot é servida automaticamente pelo springdoc-openapi.
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/12 - Documentando a API com OpenAPI e Swagger|Documentando a API com OpenAPI e Swagger]].
 
 ### SwingWorker
 Classe utilitária para executar trabalho demorado em uma background thread (`doInBackground`) e devolver resultados e progresso à EDT (`process`/`done`), sem congelar a interface. Cada instância é de uso único — não pode ser reiniciada.
@@ -1246,6 +1401,11 @@ Veja também: [[03 - Garbage Collection — o conceito]].
 Perfil intermediário do Jakarta EE: inclui as specs típicas de aplicações web (Servlet, CDI, JAX-RS, JPA, JTA, Bean Validation...) sem o conjunto completo da Platform. Maior que o Core Profile, menor que a Platform.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
+
+### WebClient
+Cliente HTTP reativo e não-bloqueante do Spring WebFlux, com API fluente (`get().uri(...).retrieve().bodyToMono(...)`). Suporta streaming e composição reativa via Project Reactor (`Mono`/`Flux`); é a escolha para cenários assíncronos/reativos ou alta concorrência, complementando o `RestClient` síncrono. Alfabetiza como "WebClient".
+
+Veja também: [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP — RestClient, WebClient, RestTemplate]].
 
 ### Wildcard
 Argumento de tipo genérico desconhecido, representado por `?`. Pode ser não-limitado (`?`), com limite superior (`? extends T`) ou com limite inferior (`? super T`). Aumenta a flexibilidade das APIs genéricas ao custo de restringir as operações permitidas sobre a coleção.
