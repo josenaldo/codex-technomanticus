@@ -39,7 +39,7 @@ Você adiciona o starter; o starter traz (transitivamente) o módulo de auto-con
 
 ## Por que importa
 
-Antes do Boot, subir uma aplicação Spring significava dezenas de linhas de XML ou de `@Configuration` manual: declarar `DispatcherServlet`, `ViewResolver`, `DataSource`, `EntityManagerFactory`, `TransactionManager`, conversores, validadores. A auto-configuration apaga 90% desse boilerplate — você declara a intenção (`spring-boot-starter-data-jpa`) e o resto aparece pronto.
+Antes do Boot, subir uma aplicação Spring significava dezenas de linhas de XML ou de `@Configuration` manual: declarar `DispatcherServlet`, `ViewResolver`, `DataSource`, `EntityManagerFactory`, `TransactionManager`, conversores, validadores. A auto-configuration apaga a maior parte desse boilerplate — você declara a intenção (`spring-boot-starter-data-jpa`) e o resto aparece pronto.
 
 Para o nível **magus**, o que importa não é usar a auto-configuration (todo mundo usa), e sim **entendê-la por dentro**:
 

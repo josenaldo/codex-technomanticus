@@ -93,10 +93,9 @@ SpringApplication.run(App.class, args)
         │
         ▼
 ┌─────────────────────────────────────────────────────────────┐
-│ 7. BeanPostProcessor (BPP) — postProcessBeforeInitialization│  notas 09, 13
-│    AQUI NASCEM OS PROXIES: AOP, @Transactional, @Async,     │
-│    @Cacheable. O bean pode ser ENVOLVIDO/SUBSTITUÍDO por     │
-│    um proxy que intercepta as chamadas.                      │
+│ 7. BeanPostProcessor (BPP) — postProcessBeforeInitialization│  nota 13
+│    ganchos ANTES da init: callbacks *Aware, etc.            │
+│    (Ainda NÃO é aqui que os proxies AOP nascem.)            │
 └─────────────────────────────────────────────────────────────┘
         │
         ▼
@@ -105,7 +104,15 @@ SpringApplication.run(App.class, args)
 │    callbacks de inicialização do bean (já com deps prontas) │
 └─────────────────────────────────────────────────────────────┘
         │
-        ▼  postProcessAfterInitialization (fecha o BPP)          nota 13
+        ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 8b. BeanPostProcessor — postProcessAfterInitialization      │  notas 09, 13
+│     AQUI NASCEM OS PROXIES: AOP, @Transactional, @Async,    │
+│     @Cacheable. O bean é ENVOLVIDO/SUBSTITUÍDO por um proxy │
+│     que intercepta as chamadas.                             │
+└─────────────────────────────────────────────────────────────┘
+        │
+        ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 9. CONTEXTO PRONTO                                           │  notas 06, 11
 │    dispara ContextRefreshed/ApplicationReadyEvent;           │
@@ -115,7 +122,7 @@ SpringApplication.run(App.class, args)
 
 Três observações que costumam aparecer em entrevista:
 
-- **BFPP age sobre definitions; BPP age sobre instâncias.** O `BeanFactoryPostProcessor` (etapa 4) mexe nos **metadados** antes de qualquer objeto existir. O `BeanPostProcessor` (etapa 7) recebe o **objeto já instanciado** e pode devolver um substituto — é por isso que ele é o ponto onde os proxies nascem. Confundir os dois é erro clássico.
+- **BFPP age sobre definitions; BPP age sobre instâncias.** O `BeanFactoryPostProcessor` (etapa 4) mexe nos **metadados** antes de qualquer objeto existir. O `BeanPostProcessor` (etapas 7 e 8b) recebe o **objeto já instanciado** e pode devolvê-lo envolvido num substituto — o proxy AOP nasce no gancho *after-initialization* (8b), **depois** do `@PostConstruct`. Confundir BFPP com BPP é erro clássico.
 - **Injeção por construtor acontece na instanciação (5); por setter/field, na população (6).** Por isso a injeção por construtor garante o bean já nascer completo e imutável — o motivo técnico de ela ser a recomendada (nota 04).
 - **O proxy é um wrapper.** Quando há AOP/transação, o bean que os outros recebem injetado **não é a instância original** — é o proxy. Isso explica a self-invocation (nota 10): uma chamada `this.metodo()` interna pula o proxy e, portanto, pula a transação.
 
