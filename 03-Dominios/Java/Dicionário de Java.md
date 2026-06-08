@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-06
+updated: 2026-06-07
 type: glossary
 status: growing
 publish: true
@@ -67,6 +67,21 @@ Ponto de sincronização onde um número fixo de threads deve se encontrar antes
 
 Veja também: [[09 - Sincronizadores]].
 
+### bean (CDI)
+No CDI, qualquer classe Java que o container consegue instanciar e gerenciar — descoberta por bean discovery, com ciclo de vida e injeção controlados pelo container. Inclui managed beans (classes concretas com construtor adequado) e objetos fabricados por `@Produces`.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI — beans e injeção]].
+
+### bean discovery / beans.xml
+Processo pelo qual o container CDI varre o classpath e decide quais classes viram beans. No CDI 4 o modo padrão é `annotated` (só classes com bean defining annotation); `all` descobre todas. O arquivo `beans.xml` (opcional) ajusta o modo e ativa alternatives/interceptors.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI — beans e injeção]].
+
+### Bean Validation (Jakarta Validation)
+Especificação de validação declarativa (Jakarta Validation 3.1 no EE 11): restrições como `@NotNull`/`@Size`/`@Pattern` anotadas no modelo e checadas por um `Validator`. Integra-se a CDI e JAX-RS; a implementação de referência é o Hibernate Validator.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/08 - Bean Validation|Bean Validation]].
+
 ### binding (JavaFX)
 Mecanismo de sincronização declarativa entre `Property` observáveis: `propA.bind(propB)` faz com que `propA` se atualize automaticamente sempre que `propB` mudar. Bindings unidirecionais (`bind`) e bidirecionais (`bindBidirectional`) eliminam listeners manuais; bindings podem ser compostos com `Bindings.*` para expressar expressões aritméticas ou booleanas.
 
@@ -104,6 +119,11 @@ Instrução atômica de hardware que compara o valor atual de uma posição de m
 
 Veja também: [[06 - Atômicos e operações lock-free]].
 
+### CDI (Contexts and Dependency Injection)
+Especificação de injeção de dependência e gerenciamento de contextos da plataforma Jakarta (CDI 4.1 no EE 11). O container resolve e injeta dependências por tipo + qualifiers, gerencia escopos e habilita interceptors, decorators e eventos. É a spec que o `@Autowired` de frameworks esconde.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI — beans e injeção]].
+
 ### cell editor
 Componente temporário que entra em ação quando o usuário edita uma célula de `JTable`. Implementa `TableCellEditor` (ex.: `DefaultCellEditor` com `JComboBox`); confirma o valor editado via `stopCellEditing` e o devolve ao model.
 
@@ -128,6 +148,16 @@ Veja também: [[10 - Exceções e tratamento de erros]].
 Componente da JVM responsável por carregar classes sob demanda a partir do classpath ou modulepath. O modelo de delegação hierárquica (parent delegation) determina que cada classloader consulta seu pai antes de tentar carregar a classe ele mesmo, garantindo que classes do JDK nunca sejam substituídas por versões do usuário.
 
 Veja também: [[05 - Classloading e o delegation model]].
+
+### client proxy (CDI)
+Objeto intermediário que o container injeta no lugar da instância real de um bean de escopo normal. A cada chamada de método o proxy resolve a instância do contexto ativo — o que permite injetar um bean de escopo curto (request) em um de escopo longo (application). Exige classe não-final (unproxyable types geram erro de deployment).
+
+Veja também: [[03-Dominios/Java/Jakarta EE/05 - CDI — escopos e contextos|CDI — escopos e contextos]].
+
+### CMT / BMT
+Container-Managed Transactions vs. Bean-Managed Transactions: os dois modelos de demarcação da JTA. Em CMT o container abre/comita a transação de forma declarativa (`@Transactional`); em BMT o código controla manualmente via `UserTransaction`.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
 
 ### code cache
 Região de memória nativa onde a JVM armazena o código nativo gerado pelo compilador JIT. Quando fica cheia, a JVM para de compilar novos métodos e reverte à interpretação, degradando a performance. Monitorável com `-XX:+PrintCodeCache` e configurável com `-XX:ReservedCodeCacheSize`.
@@ -189,6 +219,11 @@ Situação em que múltiplas threads disputam o mesmo lock ou recurso simultanea
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
 
+### Core Profile
+O menor dos três perfis do Jakarta EE (introduzido no EE 10): conjunto mínimo de specs (CDI Lite, RESTful Web Services, JSON, Annotations, Interceptors) voltado a runtimes cloud-native e resolução em build-time. Web Profile e Platform são supersets.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
+
 ### CSS do JavaFX (-fx-)
 Sistema de estilização do JavaFX baseado em um subconjunto de CSS 2.1 estendido com propriedades prefixadas `-fx-` (ex.: `-fx-background-color`, `-fx-font-size`). O user-agent stylesheet padrão é o Modena; folhas customizadas são aplicadas via `scene.getStylesheets().add(...)` ou `node.setStyle(...)`. Cada controle expõe pseudo-classes de estado (`:hover`, `:focused`, `:disabled`).
 
@@ -200,6 +235,11 @@ Veja também: [[09 - CSS em JavaFX]].
 Estado em que duas ou mais threads se bloqueiam mutuamente, cada uma esperando um lock que a outra segura — criando uma espera circular sem saída. Nenhuma das threads progride indefinidamente. Prevenido por ordenação consistente de locks, uso de `tryLock` com timeout ou eliminação de lock aninhado.
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### decorator (CDI)
+Bean que envolve outro implementando o MESMO contrato de negócio, com acesso à instância decorada via `@Delegate`. Ao contrário do interceptor (cego ao contrato), o decorator conhece e pode usar os métodos do tipo decorado — ideal quando a lógica transversal depende do domínio.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/13 - CDI avançado — interceptors, decorators e extensões|CDI avançado]].
 
 ### Default method
 Método com implementação definido em uma interface (palavra-chave `default`), introduzido no Java 8. Permite adicionar comportamento a interfaces sem quebrar classes que as implementam, viabilizando evolução retrocompatível de APIs.
@@ -220,6 +260,11 @@ Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 Interface `java.util.Deque<E>` (double-ended queue) que permite inserção e remoção em ambas as extremidades. Estende `Queue` e é implementada por `ArrayDeque` (preferível a `Stack` e `LinkedList` para pilhas e filas). Métodos principais: `addFirst`/`addLast`, `pollFirst`/`pollLast`, `peekFirst`/`peekLast`.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e filas|Listas, conjuntos e filas]].
+
+### dirty checking
+Mecanismo da JPA pelo qual o provider detecta, no flush, quais entidades managed mudaram desde que entraram no persistence context e gera o SQL de UPDATE automaticamente — sem chamada explícita de "save". O contrato é da spec; a estratégia de detecção é do provider.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager e o ciclo de vida da entidade]].
 
 ### Document (modelo de texto)
 Model dos componentes de texto (`JTextField`, `JTextArea`): representa o conteúdo como sequência de caracteres com atributos, não como `String`. Edições disparam `DocumentEvent` e podem ser interceptadas via `DocumentListener` ou `DocumentFilter`.
@@ -243,6 +288,11 @@ Thread única onde o Swing processa todos os eventos e repinta a tela. A single-
 
 Veja também: [[03-Dominios/Java/Swing/05 - A Event Dispatch Thread|EDT]].
 
+### EJB (Enterprise JavaBeans)
+Modelo de componentes server-side da plataforma (Enterprise Beans 4.0 no EE 11): session beans (stateless/stateful/singleton), message-driven beans e timer service, com transações e segurança declarativas. Dominou o Java enterprise nos anos 2000; hoje grande parte de seu papel foi absorvida pelo CDI.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/12 - EJB — o legado que moldou a plataforma|EJB — o legado que moldou a plataforma]].
+
 ### effectively final
 Variável local (ou parâmetro) que nunca é reatribuída após a inicialização, mesmo sem o modificador `final` explícito. Lambdas e classes anônimas só podem capturar variáveis `final` ou *effectively final*; reatribuir a variável depois da captura é erro de compilação. Garante que o valor capturado seja estável e evita closures sobre estado mutável.
 
@@ -253,6 +303,16 @@ Laço `for-each` — forma simplificada do `for` que itera diretamente sobre arr
 
 Veja também: [[03 - Estruturas de controle e fluxo]].
 
+### entity (JPA)
+Classe Java anotada com `@Entity` que a JPA mapeia para uma tabela: tem identidade (`@Id`), construtor no-args e estado persistente. É o contrato da spec; o provider (Hibernate, EclipseLink) faz o ORM real.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA — a especificação de persistência]].
+
+### EntityManager
+Interface central da JPA que gerencia o persistence context e expõe as operações de ciclo de vida (`persist`/`merge`/`remove`/`find`) e consultas (JPQL/Criteria). É a porta pela qual as entidades transitam entre os estados managed/detached.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager e o ciclo de vida da entidade]].
+
 ### Enum
 Tipo especial de classe cujas instâncias são um conjunto fechado e nomeado de constantes. Em Java, enums são objetos de pleno direito: podem ter campos, construtores, métodos e implementar interfaces. Garantem type-safety e eliminam "magic numbers".
 
@@ -262,6 +322,11 @@ Veja também: [[09 - Enums]].
 Coletor de lixo *no-op* experimental (JEP 318, Java 11): aloca objetos mas nunca os coleta. Útil para benchmarks de alocação, testes de desempenho sem interferência de GC e aplicações de vida curtíssima. Quando o heap é esgotado, a JVM termina com `OutOfMemoryError`. Ativado com `-XX:+UseEpsilonGC`.
 
 Veja também: [[06 - Os coletores do HotSpot]].
+
+### escopo (CDI)
+Define o ciclo de vida e a visibilidade de um bean: quando o container o cria e descarta, e quem compartilha a instância. Escopos normais (`@ApplicationScoped`/`@RequestScoped`/`@SessionScoped`/`@ConversationScoped`) usam client proxy; `@Dependent` é pseudo-escopo (sem proxy, acompanha quem injeta).
+
+Veja também: [[03-Dominios/Java/Jakarta EE/05 - CDI — escopos e contextos|CDI — escopos e contextos]].
 
 ### ergonomics (JVM)
 Capacidade da JVM de ajustar automaticamente seus parâmetros de comportamento (tamanho de heap, número de GC threads, coletor padrão) com base nos recursos detectados no ambiente de execução, como número de CPUs e memória disponível. Fundamental para ajuste correto em containers, onde os recursos visíveis ao processo podem diferir dos da máquina física.
@@ -287,6 +352,11 @@ Veja também: [[05 - Eventos — capturing, bubbling e handlers]].
 Propriedade de um `switch` (expressão ou statement) que garante que todos os casos possíveis são cobertos. O compilador Java exige exaustividade em switch expressions e em switches sobre sealed classes e enums. Violação gera erro em tempo de compilação.
 
 Veja também: [[14 - Sealed classes e pattern matching]].
+
+### ExceptionMapper
+Provider JAX-RS que converte uma exceção lançada por um resource em uma `Response` HTTP (ex.: `OrderNotFoundException` → 404). Centraliza o tratamento de erros fora dos métodos de recurso.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/07 - JAX-RS — REST declarativo|JAX-RS — REST declarativo]].
 
 ### Executor / ExecutorService
 Abstração do `java.util.concurrent` que desacopla a submissão de tarefas (`Runnable` ou `Callable`) de sua execução. `ExecutorService` estende `Executor` adicionando ciclo de vida (`shutdown`, `awaitTermination`) e suporte a `Future`. Preferido ao gerenciamento manual de threads.
@@ -406,6 +476,11 @@ Capacidade do compilador de deduzir o tipo de uma variável local a partir da ex
 
 Veja também: [[02 - Tipos, variáveis e operadores]].
 
+### @Inject
+Annotation do CDI (`jakarta.inject.Inject`) que marca um ponto de injeção — campo, construtor ou método. O container resolve o bean por tipo + qualifiers e o fornece. Injeção por construtor é a preferida (testabilidade e imutabilidade). Alfabetiza como "Inject".
+
+Veja também: [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI — beans e injeção]].
+
 ### inlining (JIT)
 Otimização do compilador JIT que substitui uma chamada de método pelo corpo do método chamado diretamente no ponto de chamada, eliminando o overhead de invocação e abrindo espaço para otimizações adicionais no contexto inlined. Métodos pequenos e frequentemente chamados são candidatos prioritários.
 
@@ -421,6 +496,11 @@ Ponto no tempo com precisão de nanossegundos representado pelo número de segun
 
 Veja também: [[03-Dominios/Java/Collections e Streams/11 - java.time — Date e Time API|java.time]].
 
+### interceptor (CDI)
+Bean transversal (`@Interceptor` + `@InterceptorBinding`) que envolve chamadas de método via `@AroundInvoke`/`InvocationContext`, sem conhecer o contrato de negócio do alvo. É o AOP da plataforma — o mecanismo por baixo de `@Transactional`. Ativado por `@Priority` ou `beans.xml`.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/13 - CDI avançado — interceptors, decorators e extensões|CDI avançado]].
+
 ### interface funcional
 Interface com exatamente um método abstrato (SAM — Single Abstract Method), anotada opcionalmente com `@FunctionalInterface`. Permite que lambdas e method references sejam usados onde a interface é esperada. Exemplos: `Runnable`, `Comparator`, `Function`, `Predicate`, `Consumer`, `Supplier`.
 
@@ -433,6 +513,16 @@ Veja também: [[03-Dominios/Java/Swing/05 - A Event Dispatch Thread|EDT]].
 
 ## J
 
+### Jakarta EE
+Conjunto de especificações enterprise para Java (sucessor do Java EE, sob a Eclipse Foundation desde 2017). Define contratos de API (CDI, Servlet, JAX-RS, JPA, JTA...) implementados por servidores e runtimes certificados via TCK. Release atual: Jakarta EE 11 (jun/2025).
+
+Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
+
+### javax → jakarta (rename)
+Mudança de namespace ocorrida no Jakarta EE 9 (dez/2020): os pacotes `javax.*` da plataforma passaram a `jakarta.*` porque a Oracle reteve a trademark "Java". Foi big-bang (sem features novas) e partiu o ecossistema em dois mundos de namespace.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/02 - De Java EE a Jakarta EE|De Java EE a Jakarta EE]].
+
 ### java.nio.file (Path / Files)
 API moderna de I/O de arquivos introduzida no Java 7, que substitui `java.io.File`. `Path` representa um caminho no sistema de arquivos de forma imutável e portável; `Files` oferece métodos utilitários estáticos para leitura, escrita, cópia, movimentação, walk e observação de diretórios com suporte a streams e nio channels.
 
@@ -442,6 +532,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/12 - I-O moderno com java
 Thread única dedicada à atualização do grafo de cena e ao processamento de eventos de UI no JavaFX, análoga à EDT do Swing. Todo acesso a nós visíveis deve ocorrer nessa thread; operações longas devem ser delegadas a `Task` ou `Service` e o resultado devolvido via `Platform.runLater`.
 
 Veja também: [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]].
+
+### JAX-RS (Jakarta RESTful Web Services)
+Especificação para construir APIs REST com annotations (RESTful Web Services 4.0 no EE 11): `@Path`/`@GET`/`@PathParam`, content negotiation (`@Produces`/`@Consumes`) e providers (`MessageBodyReader/Writer`, `ExceptionMapper`). Implementações: Jersey (RI), RESTEasy.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/07 - JAX-RS — REST declarativo|JAX-RS — REST declarativo]].
 
 ### jcmd
 Ferramenta de linha de comando do JDK que envia comandos de diagnóstico a uma JVM em execução, como listar threads (`Thread.print`), gerar heap dump (`GC.heap_dump`), iniciar e despejar JFR (`JFR.start`, `JFR.dump`) e exibir flags de VM (`VM.flags`). Substitui `jmap`, `jstack` e `jinfo` como interface unificada de diagnóstico.
@@ -478,10 +573,25 @@ Ferramenta do JDK (JEP 392, GA no Java 16) que empacota uma aplicação Java e s
 
 Veja também: [[13 - Empacotamento — módulos, jlink e jpackage]].
 
+### JPA (Jakarta Persistence)
+Especificação de ORM da plataforma (Jakarta Persistence 3.2 no EE 11): define `@Entity`, EntityManager, persistence unit e JPQL. É o contrato — Hibernate e EclipseLink são implementações. "JPA não é o Hibernate."
+
+Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA — a especificação de persistência]].
+
+### JPQL
+Jakarta Persistence Query Language: linguagem de consulta orientada a entidades (não a tabelas) da JPA. Sintaxe parecida com SQL, mas opera sobre entidades e seus relacionamentos; executada via `TypedQuery` com parâmetros nomeados.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager e o ciclo de vida da entidade]].
+
 ### JPMS (module-info)
 Java Platform Module System (introduzido no Java 9, JEP 261): sistema de módulos que adiciona uma camada de encapsulamento forte acima dos pacotes. Cada módulo declara suas dependências (`requires`) e o que exporta (`exports`) em um arquivo `module-info.java`. Permite criar imagens de runtime mínimas com `jlink` e elimina o classpath hell.
 
 Veja também: [[08 - JPMS — o sistema de módulos]].
+
+### JTA (Jakarta Transactions)
+Especificação de demarcação e coordenação de transações da plataforma (Transactions 2.0 no EE 11): `UserTransaction` (programática), `@Transactional` (declarativa via interceptor CDI) e integração com XA/two-phase commit para múltiplos recursos.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
 
 ## L
 
@@ -537,6 +647,11 @@ Veja também: [[01 - O modelo da linguagem Java]], [[15 - A evolução do Java (
 
 ## M
 
+### MDB (message-driven bean)
+Tipo de Enterprise Bean que consome mensagens de forma assíncrona (tipicamente de uma fila/tópico), processando-as fora do fluxo request/response. É o ponto de integração do EJB com mensageria.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/12 - EJB — o legado que moldou a plataforma|EJB — o legado que moldou a plataforma]].
+
 ### method reference
 Atalho sintático para lambdas que apenas delegam a um método existente, na forma `Classe::método` ou `objeto::método`. Quatro variantes: referência a método estático (`Integer::parseInt`), a método de instância via tipo (`String::toUpperCase`), a método de instância via objeto específico (`this::process`) e a construtor (`ArrayList::new`).
 
@@ -586,6 +701,11 @@ Implementação de `List` do JavaFX (`javafx.collections.ObservableList`) que di
 
 Veja também: [[08 - TableView, cell factories e dados observáveis]].
 
+### @Observes / eventos CDI
+Mecanismo de pub/sub embutido no CDI: um bean dispara um evento (`Event<T>.fire`/`fireAsync`) e métodos observadores marcados com `@Observes`/`@ObservesAsync` reagem — desacoplando emissor e ouvintes sem dependência direta. Alfabetiza como "Observes".
+
+Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
+
 ### OpenJFX
 Projeto open-source que abriga o código-fonte do JavaFX desde que foi desacoplado do JDK no Java 11. Mantido pela comunidade com contribuições da Gluon, Oracle e outros, disponibilizado em [openjfx.io](https://openjfx.io). Distribuído como módulos separados adicionados ao projeto via Maven/Gradle.
 
@@ -628,6 +748,16 @@ Producer Extends, Consumer Super — regra mnemônica para uso de wildcards em G
 
 Veja também: [[12 - Generics em profundidade]].
 
+### persistence context
+Conjunto de entidades managed que o EntityManager rastreia: funciona como identity map (um id ↔ uma instância) e unit of work (acumula mudanças até o flush). Entender suas transições explica a maioria dos "bugs de JPA".
+
+Veja também: [[03-Dominios/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager e o ciclo de vida da entidade]].
+
+### persistence unit / persistence.xml
+Unidade de configuração da JPA (declarada em `persistence.xml` ou, na 3.2, via `PersistenceConfiguration` programática): define o provider, o datasource, as entidades e o tipo de transação (JTA ou resource-local). É o que liga `@Entity` a um provider real.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA — a especificação de persistência]].
+
 ### Pinning
 Fenômeno em que uma virtual thread fica "presa" ao seu carrier thread durante um bloco `synchronized` ou chamada nativa, impedindo que o carrier execute outras virtual threads enquanto aguarda. Reduz a escalabilidade de virtual threads; mitigado substituindo `synchronized` por `ReentrantLock` ou eliminando bloqueios em seções críticas.
 
@@ -648,6 +778,11 @@ Capacidade de um mesmo método ou referência se comportar de maneiras diferente
 
 Veja também: [[07 - Herança e polimorfismo]].
 
+### portable extension (CDI)
+Ponto de extensão do container CDI (SPI `Extension`): um bean observa eventos do bootstrap (`ProcessAnnotatedType` etc.) para adicionar/modificar beans programaticamente — é como frameworks se integram ao CDI. No CDI Lite, o equivalente build-time é a build compatible extension.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/13 - CDI avançado — interceptors, decorators e extensões|CDI avançado]].
+
 ### Preview feature
 Funcionalidade completa de linguagem ou JVM incluída em uma versão do Java para coleta de feedback, mas não finalizada. Precisa ser habilitada explicitamente com `--enable-preview` em compilação e execução. Pode mudar ou ser removida antes de tornar-se permanente.
 
@@ -658,10 +793,22 @@ Fila (`java.util.PriorityQueue<E>`) que entrega elementos na ordem definida pelo
 
 Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e filas|Listas, conjuntos e filas]].
 
+### @Produces (producer CDI)
+Method/field producer do CDI (`jakarta.enterprise.inject.Produces`) que fabrica um objeto que o container não criaria sozinho (libs de terceiros, valores de config); `@Disposes` faz o cleanup. NÃO confundir com o `@Produces` do JAX-RS (`jakarta.ws.rs.Produces`), que declara media types. Alfabetiza como "Produces".
+
+Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
+
 ### Property (JavaFX)
 Abstração central do sistema de binding do JavaFX (`javafx.beans.property`). Uma `Property<T>` é ao mesmo tempo um `ObservableValue` (notifica listeners de invalidação de forma *lazy* ou de mudança de valor de forma *eager*) e um `WritableValue`. Subclasses concretas (`SimpleStringProperty`, `IntegerProperty`…) são usadas em beans de ViewModel para habilitar binding declarativo.
 
 Veja também: [[07 - Properties e binding]].
+
+## Q
+
+### qualifier (CDI)
+Annotation (`@Qualifier`) que desambigua qual implementação injetar quando há mais de um bean do mesmo tipo (ex.: `@Pix` vs. `@CreditCard`). `@Default` e `@Any` são built-in; `@Named` é para EL, não para injeção típica.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
 
 ## R
 
@@ -726,6 +873,21 @@ Veja também: [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swin
 Interfaces introduzidas no Java 21 (`java.util.SequencedCollection`, `java.util.SequencedMap`) que adicionam semântica de *ordem de encontro* garantida a coleções. Fornecem métodos uniformes `getFirst`, `getLast`, `addFirst`, `addLast`, `removeFirst`, `removeLast` e `reversed()`. Implementadas por `List`, `Deque`, `LinkedHashSet`, `LinkedHashMap` e `SortedSet`/`SortedMap`.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/14 - SequencedCollection e SequencedMap|SequencedCollection]].
+
+### servlet
+Componente Java que processa requisições HTTP dentro de um container (Servlet 6.1 no EE 11). `HttpServlet` expõe `doGet`/`doPost`...; uma única instância atende múltiplas threads concorrentes, então estado mutável de instância é perigoso. É o alicerce sobre o qual frameworks web rodam.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API — o alicerce HTTP]].
+
+### servlet container
+Runtime que gerencia o ciclo de vida de servlets e a infraestrutura HTTP (threads, sessões, mapeamento de URLs) — ex.: Tomcat, Jetty. Implementa a Servlet API mas não necessariamente a plataforma Jakarta EE completa (sem CDI/JPA nativos).
+
+Veja também: [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API — o alicerce HTTP]].
+
+### session bean
+Tipo de Enterprise Bean que encapsula lógica de negócio: stateless (sem estado entre chamadas, pooled), stateful (mantém estado conversacional por cliente) ou singleton (uma instância por aplicação).
+
+Veja também: [[03-Dominios/Java/Jakarta EE/12 - EJB — o legado que moldou a plataforma|EJB — o legado que moldou a plataforma]].
 
 ### Shenandoah
 Coletor de lixo de pausa ultra-baixa desenvolvido pela Red Hat, disponível no OpenJDK. Realiza a fase de compactação (evacuation) concorrentemente com a aplicação, reduzindo as pausas STW a trabalho de curtíssima duração independentemente do tamanho do heap. Ativado com `-XX:+UseShenandoahGC`.
@@ -824,6 +986,11 @@ Estratégia de compilação JIT padrão desde o Java 8 que combina C1 e C2 em ci
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
+### @Transactional (Jakarta)
+Annotation da JTA (`jakarta.transaction.Transactional`) que demarca transações de forma declarativa via interceptor CDI. O atributo `TxType` (REQUIRED/REQUIRES_NEW/...) define a propagação; por padrão faz rollback em exceções unchecked, não em checked. Homônima — mas distinta — da annotation de mesmo nome em frameworks. Alfabetiza como "Transactional".
+
+Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
+
 ### treeification
 Otimização interna do `HashMap` (e `LinkedHashMap`) introduzida no Java 8: quando um bucket acumula muitas entradas por colisões de `hashCode` (padrão: ≥ 8), a lista encadeada do bucket é convertida em uma árvore vermelho-preta, reduzindo o pior caso de buscas de O(n) para O(log n). O bucket é convertido de volta para lista se encolher abaixo do limiar.
 
@@ -833,6 +1000,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]].
 Construção `try (Recurso r = ...)` que garante o fechamento automático de qualquer objeto `AutoCloseable` ao fim do bloco, mesmo em caso de exceção. Elimina o padrão `finally { r.close(); }` e torna o gerenciamento de recursos mais seguro e legível.
 
 Veja também: [[10 - Exceções e tratamento de erros]].
+
+### two-phase commit (2PC / XA)
+Protocolo que garante atomicidade de uma transação que abrange múltiplos recursos (ex.: banco + fila): uma fase de prepare seguida de uma de commit, coordenadas por um transaction manager via a interface X/Open XA. Robusto, mas caro em latência e bloqueio.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
 
 ### Type erasure
 Processo pelo qual o compilador Java remove as informações de tipo genérico em tempo de compilação, substituindo parâmetros de tipo por `Object` (ou pelo bound superior). Em tempo de execução, `List<String>` e `List<Integer>` são indistinguíveis, o que limita certas reflexões e casts.
@@ -879,6 +1051,11 @@ Veja também: [[11 - Java Memory Model em profundidade]].
 Hipótese empírica que embasa os coletores generacionais: a maioria dos objetos morre jovem. Com base nisso, o heap é dividido em geração jovem (young/eden + survivor) e geração velha (old/tenured), e a coleta foca na geração jovem — onde o retorno de objetos coletados por unidade de trabalho é máximo — reduzindo o custo total do GC.
 
 Veja também: [[03 - Garbage Collection — o conceito]].
+
+### Web Profile
+Perfil intermediário do Jakarta EE: inclui as specs típicas de aplicações web (Servlet, CDI, JAX-RS, JPA, JTA, Bean Validation...) sem o conjunto completo da Platform. Maior que o Core Profile, menor que a Platform.
+
+Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
 
 ### Wildcard
 Argumento de tipo genérico desconhecido, representado por `?`. Pode ser não-limitado (`?`), com limite superior (`? extends T`) ou com limite inferior (`? super T`). Aumenta a flexibilidade das APIs genéricas ao custo de restringir as operações permitidas sobre a coleção.
