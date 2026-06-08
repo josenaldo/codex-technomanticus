@@ -1,7 +1,7 @@
 ---
 title: "CDI — escopos e contextos"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -45,7 +45,7 @@ Quando uma classe não declara escopo nenhum, o default é `@Dependent` (spec §
 - **Estado vazando:** um bean `@ApplicationScoped` com um campo mutável que deveria ser por usuário — de repente o carrinho do cliente A aparece pro cliente B. Uma instância só, compartilhada por todas as threads e usuários.
 - **Estado sumindo:** um bean `@Dependent` (o default!) que você achava que era singleton — cada ponto de injeção recebe uma instância nova, e aquele cache que você populou num lugar está vazio no outro.
 
-Além disso, entender o **client proxy** desmistifica comportamentos que parecem mágica em qualquer container de DI — os frameworks construídos sobre essas ideias (Galho 8, planejado) reaproveitam o mesmo raciocínio. E em entrevista de nível sênior, a pergunta favorita é exatamente: **"como pode um bean request-scoped ser injetado num application-scoped sem vazar entre requisições?"** A resposta — _porque a referência injetada é um proxy, não a instância_ — separa quem usou o framework de quem entendeu o framework.
+Além disso, entender o **client proxy** desmistifica comportamentos que parecem mágica em qualquer container de DI — os frameworks construídos sobre essas ideias (veja [[03-Dominios/Java/Spring Core e Boot/07 - Ciclo de vida e escopos de beans|escopos no Spring]]) reaproveitam o mesmo raciocínio. E em entrevista de nível sênior, a pergunta favorita é exatamente: **"como pode um bean request-scoped ser injetado num application-scoped sem vazar entre requisições?"** A resposta — _porque a referência injetada é um proxy, não a instância_ — separa quem usou o framework de quem entendeu o framework.
 
 ## Como funciona
 

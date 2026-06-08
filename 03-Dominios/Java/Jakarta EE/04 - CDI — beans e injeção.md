@@ -1,7 +1,7 @@
 ---
 title: "CDI — beans e injeção"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -21,7 +21,7 @@ aliases:
 # CDI — beans e injeção
 
 > [!abstract] TL;DR
-> CDI é a especificação de **Contexts and Dependency Injection** da plataforma Jakarta EE: o container constrói o grafo de objetos por você, gerencia o ciclo de vida de cada instância e resolve automaticamente quem depende de quem. **É isso que o `@Autowired` esconde** — o Spring (Galho 8, planejado) implementa um container próprio inspirado nesse modelo; entender CDI torna o Spring transparente, não o contrário.
+> CDI é a especificação de **Contexts and Dependency Injection** da plataforma Jakarta EE: o container constrói o grafo de objetos por você, gerencia o ciclo de vida de cada instância e resolve automaticamente quem depende de quem. **É isso que o `@Autowired` esconde** — o Spring (veja [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|IoC e DI no Spring]]) implementa um container próprio inspirado nesse modelo; entender CDI torna o Spring transparente, não o contrário.
 
 ## O que é
 

@@ -1,7 +1,7 @@
 ---
 title: "Arquitetura — MVC, MVVM e injeção de dependência"
 created: 2026-06-06
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -32,7 +32,7 @@ Três arranjos arquiteturais dominam aplicações JavaFX, e entendê-los em conj
 
 **MVVM com properties** — o arranjo que explora a proposta central do JavaFX. O **ViewModel** é uma classe pura Java que expõe o estado da tela como properties observáveis (`StringProperty`, `BooleanProperty`, `ReadOnlyDoubleProperty`…) e operações como métodos simples. A View (o controller fino) recebe o ViewModel, binda cada control a uma property correspondente e delega ações ao ViewModel — sem guardar estado próprio, sem chamar serviços diretamente. O Model (repositórios, serviços de domínio) é chamado pelo ViewModel, não pela View. A seta de dependência nunca sobe: Model não conhece ViewModel, ViewModel não conhece View.
 
-**Injeção de dependência nos controllers** — FXML por padrão instancia o controller com `new` via reflexão. `setControllerFactory` substitui essa instanciação: você fornece um `Callback<Class<?>, Object>` e o loader o invoca para cada classe de controller encontrada no documento, antes de injetar os campos `@FXML`. É o ponto de encaixe de qualquer estratégia de DI — de uma factory manual com mapa de suppliers até um container completo (Guice, Weld, ou frameworks de terceiros como mvvmFX; [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI]] tem galho próprio, o Spring fica para o Galho 8, planejado).
+**Injeção de dependência nos controllers** — FXML por padrão instancia o controller com `new` via reflexão. `setControllerFactory` substitui essa instanciação: você fornece um `Callback<Class<?>, Object>` e o loader o invoca para cada classe de controller encontrada no documento, antes de injetar os campos `@FXML`. É o ponto de encaixe de qualquer estratégia de DI — de uma factory manual com mapa de suppliers até um container completo (Guice, Weld, ou frameworks de terceiros como mvvmFX; [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI]] tem galho próprio, o Spring fica para o galho [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|Spring Core e Boot]]).
 
 ## Por que importa
 
@@ -107,7 +107,7 @@ loader.setControllerFactory(type -> {
 Parent root = loader.load();
 ```
 
-Essa abordagem é suficiente para projetos sem container. Para projetos maiores, frameworks de DI se plugam exatamente neste ponto — por exemplo, Guice: `injector.getInstance(type)`; Weld e [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI]] têm galho próprio, e o Spring fica para o Galho 8 (planejado). Frameworks de terceiros como mvvmFX existem para reduzir o boilerplate de binding MVVM; basta saber que existem — verifique o repositório corrente antes de adotar.
+Essa abordagem é suficiente para projetos sem container. Para projetos maiores, frameworks de DI se plugam exatamente neste ponto — por exemplo, Guice: `injector.getInstance(type)`; Weld e [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI]] têm galho próprio, e o Spring fica para o galho [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|Spring Core e Boot]]. Frameworks de terceiros como mvvmFX existem para reduzir o boilerplate de binding MVVM; basta saber que existem — verifique o repositório corrente antes de adotar.
 
 ### Quando MVC basta vs quando MVVM compensa
 

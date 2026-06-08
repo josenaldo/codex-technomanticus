@@ -1,7 +1,7 @@
 ---
 title: "EJB — o legado que moldou a plataforma"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -62,7 +62,7 @@ O EJB 2.x acumulou complexidade que se tornava acidental conforme o ecossistema 
 
 **Entity beans e CMP (Container-Managed Persistence)**: o EJB 2.x tentou resolver persistência dentro do contêiner, com mapeamento objeto-relacional declarado em XML e gerado pelo servidor. A abstração vazava, o comportamento variava entre fornecedores, e o modelo era fundamentalmente mais difícil de usar do que SQL direto para qualquer consulta não trivial.
 
-Essa combinação gerou pressão da comunidade por alternativas mais simples. Surgiram frameworks mais leves — alguns ainda ativos, abordados no Galho 8 (planejado) — que mostraram na prática que POJOs gerenciados por um contêiner leve podiam entregar o mesmo resultado com fração do cerimônial.
+Essa combinação gerou pressão da comunidade por alternativas mais simples. Surgiram frameworks mais leves — alguns ainda ativos, abordados no galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — que mostraram na prática que POJOs gerenciados por um contêiner leve podiam entregar o mesmo resultado com fração do cerimônial.
 
 ### A simplificação do 3.x
 
@@ -200,7 +200,7 @@ public class PedidoService {
     }
 
     // CDI base não tem @Schedule — depende de extensão
-    // (ex: Jakarta Batch, ou scheduler do servidor/framework do Galho 8)
+    // (ex: Jakarta Batch, ou scheduler do servidor/framework do Spring)
 }
 ```
 

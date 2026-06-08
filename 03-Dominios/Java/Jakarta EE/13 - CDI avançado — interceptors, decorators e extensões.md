@@ -1,7 +1,7 @@
 ---
 title: "CDI avançado — interceptors, decorators e extensões"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: concept
 progress: backlog
 status: seedling
@@ -39,7 +39,7 @@ Esses mecanismos desmistificam a "mágica" de frameworks inteiros. Quando você 
 
 Em entrevista de nível sênior, a pergunta clássica é: *"Como você implementaria um `@Audited` que registra toda operação sensível?"* A resposta canônica passa por interceptor binding + `@AroundInvoke` + `InvocationContext`.
 
-A distinção **CDI Lite vs CDI Full** explica por que a nova geração de runtimes (aqueles que fazem resolução em build-time para obter startup rápido e executáveis nativos — Galho 8, planejado) pode suportar CDI sem reflexão em runtime: build compatible extensions (introduzidas no CDI 4.0) permitem que extensões operem durante a compilação, antes do container subir.
+A distinção **CDI Lite vs CDI Full** explica por que a nova geração de runtimes (aqueles que fazem resolução em build-time para obter startup rápido e executáveis nativos — veja [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|auto-configuration]]) pode suportar CDI sem reflexão em runtime: build compatible extensions (introduzidas no CDI 4.0) permitem que extensões operem durante a compilação, antes do container subir.
 
 ## Como funciona
 

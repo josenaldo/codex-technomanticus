@@ -1,7 +1,7 @@
 ---
 title: "Jakarta EE"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-08
 type: moc
 status: growing
 publish: true
@@ -27,7 +27,7 @@ Este galho cobre **a plataforma de especificações enterprise do Java de ponta 
 
 Este é um **galho de pesquisa** (sem tronco a podar): cada nota nasceu da documentação oficial (`jakarta.ee`, spec documents e Javadoc das specs) verificada fonte a fonte. É o **dono dos conceitos de especificação enterprise** da trilha.
 
-**Fronteiras importantes:** o Spring (que implementa/abstrai estas specs) é do Galho 8 (planejado) — aqui ele aparece só como motivação, nunca explicado; Spring MVC e validação no Spring são do Galho 9 (planejado); JPA operacional (Hibernate, fetch/N+1, caching, Spring Data, migrations) é do Galho 10 (planejado) — aqui a JPA é tratada **só como especificação** (entidade, EntityManager, ciclo de vida); a mecânica de annotations está no Galho 1 ([[03-Dominios/Java/Linguagem e sintaxe moderna/11 - Annotations|Annotations]]); concorrência de baixo nível está no Galho 4 ([[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]).
+**Fronteiras importantes:** o Spring (que implementa/abstrai estas specs) é do galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — aqui ele aparece só como motivação, nunca explicado; Spring MVC e validação no Spring são do Galho 9 (planejado); JPA operacional (Hibernate, fetch/N+1, caching, Spring Data, migrations) é do Galho 10 (planejado) — aqui a JPA é tratada **só como especificação** (entidade, EntityManager, ciclo de vida); a mecânica de annotations está no Galho 1 ([[03-Dominios/Java/Linguagem e sintaxe moderna/11 - Annotations|Annotations]]); concorrência de baixo nível está no Galho 4 ([[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]).
 
 ## Iniciado
 
