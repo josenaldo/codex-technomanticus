@@ -239,7 +239,7 @@ Pontos destacados:
 
 ### (1) Usar `@Controller` sem `@ResponseBody` em uma API REST
 
-**Problema:** Ao usar `@Controller` puro em um endpoint REST, o Spring MVC interpreta o valor de retorno como um **nome de view**. Se não existir um `ViewResolver` configurado para aquele nome, a aplicação lança `javax.servlet.ServletException: Could not resolve view with name '...'` ou retorna `500`.
+**Problema:** Ao usar `@Controller` puro em um endpoint REST, o Spring MVC interpreta o valor de retorno como um **nome de view**. Se não existir um `ViewResolver` configurado para aquele nome, a aplicação lança `jakarta.servlet.ServletException: Could not resolve view with name '...'` ou retorna `500`.
 
 **Exemplo que falha:**
 

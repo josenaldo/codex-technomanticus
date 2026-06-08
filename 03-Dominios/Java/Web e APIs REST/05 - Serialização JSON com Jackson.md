@@ -66,7 +66,7 @@ O fluxo interno é:
 3. O `MappingJackson2HttpMessageConverter` verifica se consegue escrever o tipo para `application/json`.
 4. O `ObjectMapper` serializa o objeto e escreve no `HttpServletResponse`.
 
-Para customizar o conversor, basta registrar um `JacksonJsonHttpMessageConverter` como bean — o Spring Boot o usa no lugar do padrão.
+Para customizar a serialização, você ajusta o `ObjectMapper` via `Jackson2ObjectMapperBuilderCustomizer` (ou pelas propriedades `spring.jackson.*`) — o Spring Boot aplica a customização ao `MappingJackson2HttpMessageConverter` padrão, sem você precisar registrar o conversor à mão.
 
 ### Anotações Jackson (@JsonProperty, @JsonIgnore, @JsonInclude, @JsonFormat)
 

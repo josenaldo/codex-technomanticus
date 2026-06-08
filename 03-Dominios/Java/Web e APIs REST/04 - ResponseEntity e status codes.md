@@ -114,7 +114,7 @@ public class ProdutoNaoEncontradoException extends RuntimeException {
 | 400 | Bad Request | Parâmetro malformado, JSON inválido, erro de binding |
 | 404 | Not Found | Recurso não existe |
 | 409 | Conflict | Conflito de estado (ex.: duplicata, versão desatualizada) |
-| 422 | Unprocessable Entity | Payload válido estruturalmente, mas inválido semanticamente (falha de Bean Validation) |
+| 422 | Unprocessable Entity | Payload válido estruturalmente, mas inválido semanticamente. O *default* do Spring para falha de `@Valid`/Bean Validation é **400**; 422 é uma escolha explícita de design |
 | 500 | Internal Server Error | Falha inesperada do servidor; nunca retornar intencionalmente |
 
 ## Na prática
