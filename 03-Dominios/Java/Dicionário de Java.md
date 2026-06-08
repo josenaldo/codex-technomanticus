@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-07
+updated: 2026-06-08
 type: glossary
 status: growing
 publish: true
@@ -45,6 +45,21 @@ Classe abstrata (ex.: `MouseAdapter`) que implementa um listener com métodos va
 
 Veja também: [[03-Dominios/Java/Swing/04 - O modelo de eventos|Modelo de eventos]].
 
+### advice (Spring AOP)
+A ação que um aspecto executa, associada a um pointcut: define *o quê* fazer e *quando* (`@Before`, `@After`, `@AfterReturning`, `@AfterThrowing`, `@Around`). O `@Around` é o mais poderoso — recebe um `ProceedingJoinPoint` e decide se e quando chama o método interceptado.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
+
+### ApplicationContext
+A interface central do container Spring: estende `BeanFactory` e adiciona resolução de mensagens i18n, publicação de eventos, carregamento de recursos e integração com a hierarquia de contextos. É o objeto que instancia, configura e gerencia o ciclo de vida de todos os beans da aplicação.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext — o container e seu ciclo]].
+
+### aspect
+Módulo que encapsula uma preocupação transversal (cross-cutting concern) no AOP, combinando pointcuts (onde) e advices (o quê). No Spring, declarado com `@Aspect` sobre um bean; agrupa a lógica de logging, segurança ou transações que de outra forma se espalharia por todo o código.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
+
 ### Atomic (variável atômica)
 Variável que suporta operações de leitura, escrita e atualização compostas sem necessidade de `synchronized`, usando instruções CAS do hardware. O pacote `java.util.concurrent.atomic` oferece `AtomicInteger`, `AtomicLong`, `AtomicReference` e variantes. Garante atomicidade sem bloquear threads.
 
@@ -54,6 +69,16 @@ Veja também: [[06 - Atômicos e operações lock-free]].
 Conversão automática entre tipos primitivos (ex: `int`) e seus wrappers (`Integer`) feita pelo compilador Java. O processo inverso — de wrapper para primitivo — chama-se *unboxing*. Pode causar `NullPointerException` e overhead de alocação se usado em laços intensivos.
 
 Veja também: [[02 - Tipos, variáveis e operadores]].
+
+### auto-configuration
+Mecanismo do Spring Boot que configura beans automaticamente com base no que está no classpath e nas propriedades definidas, aplicando *convention over configuration*. Classes de auto-configuração (anotadas com `@AutoConfiguration` + `@ConditionalOnX`) entram em ação só quando suas condições são satisfeitas, e cedem lugar a beans definidos pelo usuário.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
+
+### @Autowired
+Annotation do Spring (`org.springframework.beans.factory.annotation.Autowired`) que marca um ponto de injeção — construtor, campo ou método. O container resolve a dependência por tipo (e desambigua com `@Qualifier`/`@Primary`). Desde o Spring 4.3 é opcional em construtores únicos. Alfabetiza como "Autowired".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|IoC e injeção de dependência no Spring]].
 
 ### AWT (Abstract Window Toolkit)
 Toolkit de GUI original do Java, com componentes heavyweight que têm peers nativos do sistema operacional. O Swing é construído sobre o AWT e o estende com componentes lightweight de renderização puramente Java.
@@ -67,6 +92,11 @@ Ponto de sincronização onde um número fixo de threads deve se encontrar antes
 
 Veja também: [[09 - Sincronizadores]].
 
+### @Bean
+Annotation do Spring (`org.springframework.context.annotation.Bean`) aplicada a um método dentro de uma classe `@Configuration`: o valor retornado pelo método é registrado como bean no container. É a definição *explícita e programática* de beans — alternativa ao component scanning, útil para configurar objetos de bibliotecas de terceiros. Alfabetiza como "Bean".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/05 - @Configuration e @Bean — definição explícita de beans|@Configuration e @Bean]].
+
 ### bean (CDI)
 No CDI, qualquer classe Java que o container consegue instanciar e gerenciar — descoberta por bean discovery, com ciclo de vida e injeção controlados pelo container. Inclui managed beans (classes concretas com construtor adequado) e objetos fabricados por `@Produces`.
 
@@ -77,10 +107,30 @@ Processo pelo qual o container CDI varre o classpath e decide quais classes vira
 
 Veja também: [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI — beans e injeção]].
 
+### bean scope (Spring)
+Define quantas instâncias de um bean o container cria e por quanto tempo vivem. O padrão é `singleton` (uma instância por container); `prototype` cria uma nova a cada injeção/lookup. Escopos web (`request`, `session`, `application`, `websocket`) ligam a vida do bean ao ciclo HTTP. Configurado com `@Scope`.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/07 - Ciclo de vida e escopos de beans|Ciclo de vida e escopos de beans]].
+
 ### Bean Validation (Jakarta Validation)
 Especificação de validação declarativa (Jakarta Validation 3.1 no EE 11): restrições como `@NotNull`/`@Size`/`@Pattern` anotadas no modelo e checadas por um `Validator`. Integra-se a CDI e JAX-RS; a implementação de referência é o Hibernate Validator.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/08 - Bean Validation|Bean Validation]].
+
+### BeanFactory
+A interface raiz do container Spring (`org.springframework.beans.factory.BeanFactory`): define o contrato mínimo de IoC — instanciar, configurar e fornecer beans sob demanda (lazy). O `ApplicationContext` é um superset que adiciona recursos enterprise. Raramente usado diretamente; é a base sobre a qual o container completo é construído.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext — o container e seu ciclo]].
+
+### BeanFactoryPostProcessor
+Hook de extensão do container que opera sobre as *definições* de bean (metadados) antes que qualquer bean seja instanciado. Permite modificar a configuração programaticamente — o exemplo clássico é o `PropertySourcesPlaceholderConfigurer`, que resolve placeholders `${...}`. Atua antes do `BeanPostProcessor`.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/13 - BeanPostProcessor e BeanFactoryPostProcessor|BeanPostProcessor e BeanFactoryPostProcessor]].
+
+### BeanPostProcessor
+Hook de extensão que intercepta cada bean *já instanciado*, antes e depois da inicialização (`postProcessBeforeInitialization`/`postProcessAfterInitialization`). É o mecanismo por baixo de boa parte da mágica do Spring — `@Autowired`, `@Async` e os proxies de `@Transactional` são aplicados por BeanPostProcessors.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/13 - BeanPostProcessor e BeanFactoryPostProcessor|BeanPostProcessor e BeanFactoryPostProcessor]].
 
 ### binding (JavaFX)
 Mecanismo de sincronização declarativa entre `Property` observáveis: `propA.bind(propB)` faz com que `propA` se atualize automaticamente sempre que `propB` mudar. Bindings unidirecionais (`bind`) e bidirecionais (`bindBidirectional`) eliminam listeners manuais; bindings podem ser compostos com `Bindings.*` para expressar expressões aritméticas ou booleanas.
@@ -139,6 +189,11 @@ Objeto responsável por desenhar o conteúdo de cada célula ou item de `JTable`
 
 Veja também: [[03-Dominios/Java/Swing/08 - Renderers e editors|Renderers e editors]].
 
+### CGLIB
+Biblioteca de geração de bytecode que o Spring usa para criar proxies via *subclasse* quando o bean-alvo não implementa interface alguma. Diferente do JDK dynamic proxy (baseado em interface), o proxy CGLIB estende a classe concreta — por isso a classe e os métodos não podem ser `final`. É a estratégia padrão para classes `@Configuration` e beans sem interface.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
+
 ### Checked exception
 Exceção que o compilador obriga o desenvolvedor a declarar (`throws`) ou capturar (`try/catch`). Estende `Exception` (excluindo `RuntimeException`). Exemplos: `IOException`, `SQLException`. Usada quando o chamador pode se recuperar do erro.
 
@@ -194,6 +249,16 @@ Implementação de `Future` e `CompletionStage` introduzida no Java 8 que permit
 
 Veja também: [[10 - CompletableFuture e composição assíncrona]].
 
+### @Component / estereótipos Spring
+`@Component` marca uma classe como bean candidato a ser detectado pelo component scanning. Os estereótipos `@Service`, `@Repository` e `@Controller` (e `@RestController`) são especializações semânticas de `@Component`: indicam o papel da classe na arquitetura e, em alguns casos, adicionam comportamento (ex.: `@Repository` traduz exceções de persistência). Alfabetiza como "Component".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/03 - Beans e estereótipos — @Component, @Service, @Repository, @Controller|Beans e estereótipos]].
+
+### component scanning
+Processo pelo qual o Spring varre os pacotes em busca de classes anotadas com `@Component` (ou estereótipos) e as registra como beans, sem definição explícita. Configurado por `@ComponentScan` (ou implicitamente por `@SpringBootApplication`, que escaneia o pacote da classe principal e seus subpacotes).
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/03 - Beans e estereótipos — @Component, @Service, @Repository, @Controller|Beans e estereótipos]].
+
 ### componente lightweight / heavyweight
 Componente lightweight (Swing) é pintado inteiramente em Java, sem peer nativo do SO; componente heavyweight (AWT) possui peer nativo. Lightweight possibilita aparência consistente cross-platform e suporte a pluggable look-and-feel.
 
@@ -209,6 +274,26 @@ Defeito que ocorre quando o resultado de um programa depende da ordem de interca
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
 
+### @Conditional / @ConditionalOnX
+`@Conditional` registra um bean apenas se uma `Condition` programática retornar `true`. O Spring Boot fornece variantes declarativas — `@ConditionalOnClass`, `@ConditionalOnMissingBean`, `@ConditionalOnProperty` etc. — que são a espinha dorsal da auto-configuration: cada bean automático só entra se as condições do ambiente forem satisfeitas. Alfabetiza como "Conditional".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/14 - Conditional beans — @Conditional e os @ConditionalOn|Conditional beans]].
+
+### @Configuration
+Annotation do Spring que marca uma classe como fonte de definições de bean via métodos `@Bean`. Por padrão é *full mode*: a classe é proxiada por CGLIB para que chamadas entre métodos `@Bean` retornem o singleton do container (não uma nova instância). Alfabetiza como "Configuration".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/05 - @Configuration e @Bean — definição explícita de beans|@Configuration e @Bean]].
+
+### @ConfigurationProperties
+Annotation do Spring Boot que faz binding de um grupo de propriedades externas (com prefixo comum) para os campos de um bean tipado, com validação opcional. Alternativa estruturada e type-safe ao `@Value` para conjuntos de configuração relacionados. Alfabetiza como "ConfigurationProperties".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profiles|Configuração e profiles]].
+
+### constructor injection
+Forma de injeção de dependência em que o container fornece as dependências como argumentos do construtor. É a abordagem recomendada no Spring: torna as dependências obrigatórias e explícitas, permite campos `final` (imutabilidade) e facilita testes sem o container.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/04 - Tipos de injeção — constructor, setter, field|Tipos de injeção]].
+
 ### content pane
 Container interno de um top-level container (`JFrame`, `JDialog`) onde se adicionam os componentes visíveis da aplicação. `frame.add(...)` delega a ele. Usa `BorderLayout` por padrão.
 
@@ -218,6 +303,11 @@ Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
 Situação em que múltiplas threads disputam o mesmo lock ou recurso simultaneamente, forçando algumas a esperar. Alta contention degrada performance e pode eliminar os ganhos do paralelismo. Mitigada por locks de granularidade fina, estruturas lock-free ou particionamento de estado.
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### convention over configuration
+Princípio de design (popularizado pelo Rails e abraçado pelo Spring Boot) em que o framework assume padrões sensatos para a maioria dos casos, reduzindo a configuração explícita ao mínimo. O desenvolvedor só configura aquilo que diverge da convenção — é a filosofia por trás da auto-configuration e dos starters.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
 
 ### Core Profile
 O menor dos três perfis do Jakarta EE (introduzido no EE 10): conjunto mínimo de specs (CDI Lite, RESTful Web Services, JSON, Annotations, Interceptors) voltado a runtimes cloud-native e resolução em build-time. Web Profile e Platform são supersets.
@@ -298,6 +388,16 @@ Variável local (ou parâmetro) que nunca é reatribuída após a inicializaçã
 
 Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]], [[03-Dominios/Java/Collections e Streams/13 - Composição funcional e funções de alta ordem|Composição funcional]].
 
+### embedded server
+Servidor web (Tomcat, Jetty ou Undertow) embutido dentro do próprio jar da aplicação Spring Boot, em vez de a aplicação ser empacotada como WAR e implantada num servidor externo. Inverte o modelo tradicional: o `main()` sobe o servidor. Permite executar a aplicação com `java -jar`, simplificando deploy e containerização.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication e o embedded server]].
+
+### @EnableAutoConfiguration
+Annotation que ativa o mecanismo de auto-configuration do Spring Boot: instrui o container a aplicar as classes de auto-configuração registradas no classpath, conforme suas condições. Está embutida em `@SpringBootApplication`. Alfabetiza como "EnableAutoConfiguration".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
+
 ### Enhanced for
 Laço `for-each` — forma simplificada do `for` que itera diretamente sobre arrays ou qualquer objeto `Iterable`, sem índice explícito. Sintaxe: `for (Tipo var : coleção) { }`. Introduzido no Java 5.
 
@@ -353,10 +453,20 @@ Propriedade de um `switch` (expressão ou statement) que garante que todos os ca
 
 Veja também: [[14 - Sealed classes e pattern matching]].
 
+### @EventListener
+Annotation do Spring que marca um método como ouvinte de eventos do `ApplicationContext`: o método é invocado quando um evento do tipo declarado é publicado (via `ApplicationEventPublisher`). Substitui a interface `ApplicationListener` por uma abordagem declarativa; suporta filtragem por condição SpEL e execução assíncrona com `@Async`. Alfabetiza como "EventListener".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/11 - Eventos do ApplicationContext|Eventos do ApplicationContext]].
+
 ### ExceptionMapper
 Provider JAX-RS que converte uma exceção lançada por um resource em uma `Response` HTTP (ex.: `OrderNotFoundException` → 404). Centraliza o tratamento de erros fora dos métodos de recurso.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/07 - JAX-RS — REST declarativo|JAX-RS — REST declarativo]].
+
+### executable jar / fat jar
+Jar autocontido do Spring Boot que empacota a aplicação, todas as dependências e um servidor embarcado, executável com `java -jar`. Usa um layout aninhado próprio (dependências sob `BOOT-INF/lib`) e um launcher do Boot, em vez de um uber-jar plano. Também chamado de fat jar.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication e o embedded server]].
 
 ### Executor / ExecutorService
 Abstração do `java.util.concurrent` que desacopla a submissão de tarefas (`Runnable` ou `Callable`) de sua execução. `ExecutorService` estende `Executor` adicionando ciclo de vida (`shutdown`, `awaitTermination`) e suporte a `Future`. Preferido ao gerenciamento manual de threads.
@@ -511,6 +621,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces
 
 Veja também: [[03-Dominios/Java/Swing/05 - A Event Dispatch Thread|EDT]].
 
+### IoC / inversão de controle (Spring)
+Princípio em que o controle da criação e da ligação de objetos é transferido do código da aplicação para o container: em vez de a classe instanciar suas dependências, o framework as injeta. A injeção de dependência é a forma concreta de IoC no Spring — "não nos chame, nós o chamaremos". Alfabetiza como "IoC".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|IoC e injeção de dependência no Spring]].
+
 ## J
 
 ### Jakarta EE
@@ -547,6 +662,11 @@ Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
 Classe-base da maioria dos componentes Swing (`J*`), que estende `Container` do AWT. Adiciona suporte a pluggable look-and-feel, double buffering, borders, tooltips, key bindings e painting otimizado.
 
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
+
+### JDK dynamic proxy
+Mecanismo do JDK (`java.lang.reflect.Proxy`) que cria, em runtime, um proxy implementando uma ou mais *interfaces*. É a estratégia padrão do Spring AOP quando o bean-alvo implementa interface — o proxy só pode interceptar métodos declarados na interface. Quando não há interface, o Spring recorre ao CGLIB.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
 
 ### JFR (Java Flight Recorder)
 Mecanismo de profiling e diagnóstico de baixíssimo overhead integrado à JVM HotSpot (GA no OpenJDK desde o Java 11) que coleta continuamente eventos de GC, alocações, I/O, threads, locks e código JIT em um buffer circular. Os dados são despejados em arquivo `.jfr` e analisados com JMC ou ferramentas compatíveis.
@@ -773,6 +893,11 @@ Arquitetura do Swing em que a renderização de cada componente é delegada a um
 
 Veja também: [[03-Dominios/Java/Swing/09 - Look and Feel e temas|Look and Feel]].
 
+### pointcut
+Expressão que seleciona *onde* um advice deve ser aplicado — quais join points (no Spring AOP, execuções de método) são interceptados. Escrito na linguagem de pointcut do AspectJ (ex.: `execution(* com.app.service.*.*(..))`), pode ser nomeado com `@Pointcut` e reutilizado por vários advices.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
+
 ### Polimorfismo
 Capacidade de um mesmo método ou referência se comportar de maneiras diferentes conforme o tipo real do objeto em tempo de execução. Em Java, é realizado principalmente por overriding + herança/interface. Permite escrever código genérico que opera sobre famílias de tipos.
 
@@ -788,6 +913,11 @@ Funcionalidade completa de linguagem ou JVM incluída em uma versão do Java par
 
 Veja também: [[15 - A evolução do Java (8 a 25)]].
 
+### @Primary
+Annotation do Spring que marca um bean como a escolha preferencial quando há múltiplos candidatos do mesmo tipo e nenhum `@Qualifier` desambigua. Define o "padrão" da injeção; um `@Qualifier` explícito ainda pode sobrepor a preferência. Alfabetiza como "Primary".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/08 - Qualificação de beans — @Qualifier, @Primary, @Profile|Qualificação de beans]].
+
 ### PriorityQueue
 Fila (`java.util.PriorityQueue<E>`) que entrega elementos na ordem definida pelo `Comparator` fornecido ou pela ordenação natural (`Comparable`). Internamente implementada como heap binário. Não garante ordem de iteração, apenas que `poll()` retorna sempre o menor (ou maior) elemento segundo o critério configurado.
 
@@ -797,6 +927,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e 
 Method/field producer do CDI (`jakarta.enterprise.inject.Produces`) que fabrica um objeto que o container não criaria sozinho (libs de terceiros, valores de config); `@Disposes` faz o cleanup. NÃO confundir com o `@Produces` do JAX-RS (`jakarta.ws.rs.Produces`), que declara media types. Alfabetiza como "Produces".
 
 Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
+
+### @Profile (Spring)
+Annotation do Spring que condiciona o registro de um bean (ou de uma classe `@Configuration`) à ativação de um ou mais profiles. Profiles (`dev`, `prod`, `test`...) são ativados via `spring.profiles.active` e permitem variar a configuração por ambiente. Alfabetiza como "Profile".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profiles|Configuração e profiles]].
 
 ### Property (JavaFX)
 Abstração central do sistema de binding do JavaFX (`javafx.beans.property`). Uma `Property<T>` é ao mesmo tempo um `ObservableValue` (notifica listeners de invalidação de forma *lazy* ou de mudança de valor de forma *eager*) e um `WritableValue`. Subclasses concretas (`SimpleStringProperty`, `IntegerProperty`…) são usadas em beans de ViewModel para habilitar binding declarativo.
@@ -809,6 +944,11 @@ Veja também: [[07 - Properties e binding]].
 Annotation (`@Qualifier`) que desambigua qual implementação injetar quando há mais de um bean do mesmo tipo (ex.: `@Pix` vs. `@CreditCard`). `@Default` e `@Any` são built-in; `@Named` é para EL, não para injeção típica.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
+
+### @Qualifier (Spring)
+Annotation do Spring que desambigua qual bean injetar quando há vários candidatos do mesmo tipo, casando pelo nome/qualificador declarado. É o equivalente Spring do `@Qualifier` do CDI. Combina com `@Primary` (preferência padrão) e pode ser usado como meta-annotation para criar qualificadores customizados. Alfabetiza como "Qualifier".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/08 - Qualificação de beans — @Qualifier, @Primary, @Profile|Qualificação de beans]].
 
 ## R
 
@@ -859,6 +999,11 @@ Classe (ou interface) que restringe explicitamente quais subclasses (ou subinter
 
 Veja também: [[14 - Sealed classes e pattern matching]].
 
+### self-invocation
+Chamada de um método do próprio bean a partir de outro método dele (`this.metodo()`), que *não passa pelo proxy* — porque o proxy só intercepta chamadas externas. É a armadilha clássica do Spring AOP: `@Transactional`, `@Cacheable` ou `@Async` em um método invocado internamente são silenciosamente ignorados.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/10 - Self-invocation e os limites do proxy|Self-invocation e os limites do proxy]].
+
 ### Semaphore (semáforo)
 Sincronizador que controla o acesso a um recurso com um número limitado de permissões. Threads adquirem permissões com `acquire()` e as devolvem com `release()`; quando todas as permissões estão em uso, novos `acquire()` bloqueiam. Útil para limitar concorrência em pools de recursos ou seções com capacidade máxima.
 
@@ -899,6 +1044,36 @@ Implementação plugável da aparência e do comportamento visual de um `Control
 
 Veja também: [[12 - Custom controls, Canvas e charts]].
 
+### Spring Actuator
+Módulo do Spring Boot que expõe endpoints de produção (`/actuator/health`, `/metrics`, `/info`, `/env`, `/conditions`...) para monitorar e inspecionar a aplicação em runtime. Integra-se ao Micrometer para métricas e a sistemas de observabilidade; os endpoints são habilitados e protegidos seletivamente.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/17 - Actuator e observabilidade|Actuator e observabilidade]].
+
+### Spring AOP
+Implementação de programação orientada a aspectos do Spring, baseada em *proxies* em runtime (JDK dynamic proxy ou CGLIB) — não em weaving de bytecode como o AspectJ completo. Intercepta apenas execuções de método de beans gerenciados; é o mecanismo por baixo de `@Transactional`, `@Cacheable` e `@Async`.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
+
+### Spring AOT
+Processamento ahead-of-time do Spring (build-time) que "congela" o grafo de beans e avalia as condições durante a compilação, gerando código e metadados que substituem parte do trabalho reflexivo de runtime. É o que viabiliza imagens nativas com GraalVM e reduz tempo de startup e footprint de memória.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
+
+### Spring Boot
+Camada sobre o Spring Framework que aplica *convention over configuration*: auto-configuration, starters, servidor embarcado e jars executáveis para que uma aplicação Spring suba com configuração mínima e `java -jar`. Não substitui o Spring Framework — o orquestra para reduzir boilerplate.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
+
+### Spring Framework
+O núcleo do ecossistema Spring: container IoC/DI, AOP, abstração de transações, suporte a MVC web e muito mais. É a base sobre a qual Spring Boot, Spring Data, Spring Security e os demais projetos são construídos. Lançado em 2003 como alternativa leve ao peso do EJB da época.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
+
+### SpringApplication
+Classe que faz o bootstrap de uma aplicação Spring Boot (`SpringApplication.run(App.class, args)`): cria o `ApplicationContext` apropriado, aplica auto-configuration, sobe o servidor embarcado, dispara listeners e banners. Customizável via `SpringApplicationBuilder` ou propriedades. Alfabetiza como "SpringApplication".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication e o embedded server]].
+
 ### stack frame
 Estrutura de dados criada na pilha de cada thread para cada invocação de método ativa, armazenando variáveis locais, operandos, referência ao pool de constantes e o endereço de retorno. O conjunto de stack frames de uma thread forma a call stack. O estouro da pilha causa `StackOverflowError`.
 
@@ -908,6 +1083,11 @@ Veja também: [[02 - Áreas de memória de runtime]].
 As duas classes de container de mais alto nível do JavaFX. `Stage` representa uma janela do SO (a janela primária é passada ao método `start(Stage)`); cada Stage pode exibir uma `Scene`. `Scene` é o container do grafo de cena, define largura/altura e a folha de estilos aplicada aos nós filhos. Um Stage pode trocar de Scene em runtime.
 
 Veja também: [[02 - Scene graph — stage, scene e nodes]].
+
+### starter (Spring Boot)
+Dependência "guarda-chuva" do Spring Boot (ex.: `spring-boot-starter-web`) que agrega um conjunto coeso de bibliotecas para uma capacidade, com versões já harmonizadas pelo BOM do Boot. Adicionar um starter ao build traz, de uma vez, tudo o que aquela funcionalidade precisa — e ativa as auto-configurations correspondentes.
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
 
 ### Starvation
 Situação em que uma thread nunca obtém acesso a um recurso porque outras threads de maior prioridade ou mais agressivas o monopolizam indefinidamente. A thread não está bloqueada em deadlock — continua elegível para execução — mas jamais é escalonada. Mitigada com políticas de lock fair (ex: `new ReentrantLock(true)`).
@@ -989,7 +1169,12 @@ Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 ### @Transactional (Jakarta)
 Annotation da JTA (`jakarta.transaction.Transactional`) que demarca transações de forma declarativa via interceptor CDI. O atributo `TxType` (REQUIRED/REQUIRES_NEW/...) define a propagação; por padrão faz rollback em exceções unchecked, não em checked. Homônima — mas distinta — da annotation de mesmo nome em frameworks. Alfabetiza como "Transactional".
 
-Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
+Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]]; ver também o homônimo do Spring em [[#@Transactional (Spring)]].
+
+### @Transactional (Spring)
+Annotation do Spring (`org.springframework.transaction.annotation.Transactional`) que demarca transações de forma declarativa via proxy AOP. O atributo `propagation` (REQUIRED/REQUIRES_NEW/...) controla a propagação e `isolation` o nível; por padrão faz rollback só em exceções unchecked (`rollbackFor` ajusta isso). Sofre da armadilha de self-invocation. Distinta — mas homônima — da annotation da JTA. Alfabetiza como "Transactional".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]]; ver também o homônimo da plataforma em [[#@Transactional (Jakarta)]].
 
 ### treeification
 Otimização interna do `HashMap` (e `LinkedHashMap`) introduzida no Java 8: quando um bucket acumula muitas entradas por colisões de `hashCode` (padrão: ≥ 8), a lista encadeada do bucket é convertida em uma árvore vermelho-preta, reduzindo o pior caso de buscas de O(n) para O(log n). O bucket é convertido de volta para lista se encolher abaixo do limiar.
@@ -1029,6 +1214,11 @@ Framework de logging unificado da JVM introduzido no Java 9 (JEP 158) que unific
 Veja também: [[10 - GC logs — unified logging e leitura]].
 
 ## V
+
+### @Value
+Annotation do Spring que injeta um valor — literal, propriedade externa (`@Value("${app.timeout}")`) ou expressão SpEL (`@Value("#{...}")`) — em um campo, parâmetro ou método. É a forma pontual de ler configuração; para grupos de propriedades relacionadas, prefira `@ConfigurationProperties`. Alfabetiza como "Value".
+
+Veja também: [[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profiles|Configuração e profiles]].
 
 ### Varargs
 Mecanismo que permite declarar um método com número variável de argumentos do mesmo tipo (`Tipo... nomes`). O compilador converte os argumentos em um array. Deve ser o último parâmetro da assinatura e gera um aviso se usado junto com generics por ambiguidade de heap pollution.
