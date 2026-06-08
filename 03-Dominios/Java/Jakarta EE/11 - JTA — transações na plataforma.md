@@ -46,7 +46,7 @@ Há três razões para um sênior dominar JTA mesmo trabalhando com frameworks q
 
 2. **A regra de rollback é a fonte nº 1 de bugs de consistência.** "Lancei uma exceção, por que a transação não desfez?" é uma pergunta diária. A resposta — checked não faz rollback por padrão — está na spec, não na intuição.
 
-3. **XA / 2PC é pergunta clássica de system design.** "Como você garante consistência entre o banco e a fila de mensagens?" testa se você sabe que two-phase commit *existe*, *funciona*, e *custa caro* — e que muitas vezes a resposta sênior é **evitar** 2PC com padrões como outbox (assunto de mensageria, [[#XA e two-phase commit|abaixo]] e Galho 14 planejado).
+3. **XA / 2PC é pergunta clássica de system design.** "Como você garante consistência entre o banco e a fila de mensagens?" testa se você sabe que two-phase commit *existe*, *funciona*, e *custa caro* — e que muitas vezes a resposta sênior é **evitar** 2PC com padrões como outbox (ver a seção sobre XA e two-phase commit, adiante; mensageria é assunto do Galho 14 planejado).
 
 ---
 
@@ -89,7 +89,7 @@ O elemento `value` da annotation é um **`Transactional.TxType`**, que controla 
 | `NOT_SUPPORTED` | executa sem transação | **suspende** a corrente, executa sem transação, e **retoma** a suspensa |
 | `NEVER` | executa sem transação | lança `TransactionalException` (com `InvalidTransactionException`) |
 
-`REQUIRED` é o default e cobre 90% dos casos: "quero estar numa transação; reaproveite uma se existir, senão crie". `REQUIRES_NEW` é o que você usa quando um trecho precisa **sobreviver ao rollback** do chamador (auditoria, log persistente). `MANDATORY`/`NEVER` são guardas de contrato ("este método *exige*/*proíbe* transação ambiente"). `SUPPORTS`/`NOT_SUPPORTED` são casos de borda (operações de leitura ou trabalho que não pode estar numa transação, como certas chamadas externas).
+`REQUIRED` é o default e cobre a grande maioria dos casos: "quero estar numa transação; reaproveite uma se existir, senão crie". `REQUIRES_NEW` é o que você usa quando um trecho precisa **sobreviver ao rollback** do chamador (auditoria, log persistente). `MANDATORY`/`NEVER` são guardas de contrato ("este método *exige*/*proíbe* transação ambiente"). `SUPPORTS`/`NOT_SUPPORTED` são casos de borda (operações de leitura ou trabalho que não pode estar numa transação, como certas chamadas externas).
 
 ### Rollback — a regra exata da spec
 
