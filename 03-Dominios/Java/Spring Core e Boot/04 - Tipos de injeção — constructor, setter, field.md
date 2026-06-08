@@ -277,16 +277,16 @@ public class InvoiceService {
 
 ### Vocabulário
 
-| Termo | Definição rápida |
-|---|---|
-| **constructor injection** | Dependências fornecidas como argumentos do construtor; permite `final` e fail-fast |
-| **setter injection** | Dependências fornecidas via métodos setter após instanciação; para dependências opcionais |
-| **field injection** | Dependências preenchidas por reflexão direto no campo; evitar em produção |
-| **`@Autowired`** | Anotação Spring que marca onde o container deve injetar uma dependência |
-| **circular dependency** | Ciclo onde bean A depende de B e B depende de A; proibido por padrão no Boot 2.6+ |
-| **`BeanCurrentlyInCreationException`** | Exceção lançada pelo container ao detectar dependência circular irresolvível |
-| **fail-fast** | Comportamento de falhar imediatamente na inicialização em vez de mais tarde em runtime |
-| **immutability** | Propriedade de um objeto cujo estado não pode mudar após construção; `final` fields |
+| Termo PT | Termo EN |
+| --- | --- |
+| injeção por construtor | constructor injection |
+| injeção por setter | setter injection |
+| injeção por campo | field injection |
+| dependência obrigatória | mandatory dependency |
+| dependência opcional | optional dependency |
+| dependência circular | circular dependency |
+| falha rápida | fail-fast |
+| imutabilidade | immutability |
 
 ## Veja também
 

@@ -99,7 +99,7 @@ public @interface Service {
 
 O diferencial de `@Repository` é o bean `PersistenceExceptionTranslationPostProcessor`. Quando presente no contexto (registrado automaticamente com `@ComponentScan`), esse post-processor envolve os beans anotados com `@Repository` em um proxy AOP que captura exceções de persistência e as relança como subclasses de `DataAccessException`:
 
-```
+```text
 HibernateException  ─┐
 PersistenceException ─┤  →  DataAccessException  (hierarquia Spring)
 JdbcSQLException    ─┘
@@ -173,7 +173,7 @@ public class ProductCodeGenerator {
 
 **Causa:** a classe está em um pacote que não está sob a raiz definida pelo `@ComponentScan` (ou pelo pacote da classe `@SpringBootApplication`).
 
-```
+```text
 com.exemplo.pedido          ← raiz do scan (classe principal aqui)
   └── service/
        └── OrderService     ← encontrado ✓
@@ -220,16 +220,16 @@ public class CustomerRepository {
 
 ### Vocabulário
 
-| Termo | Definição |
-|---|---|
-| bean | Objeto instanciado e gerenciado pelo ApplicationContext do Spring |
-| stereotype annotation | Anotação que marca uma classe para registro via component scanning (`@Component` e derivadas) |
-| component scanning | Varredura automática do classpath para detectar e registrar beans |
-| `@ComponentScan` | Anotação que ativa o component scanning e define os pacotes raiz a varrer |
-| `DataAccessException` | Hierarquia de exceções não-checadas do Spring que abstrai erros de persistência de qualquer ORM |
-| `PersistenceExceptionTranslationPostProcessor` | Bean post-processor que aplica um proxy AOP em `@Repository` para traduzir exceções de persistência |
-| meta-annotation | Anotação aplicada a outra anotação; `@Component` é meta-anotação de `@Service`, `@Repository` e `@Controller` |
-| `NoSuchBeanDefinitionException` | Exceção lançada quando o container não encontra um bean do tipo ou nome solicitado |
+| Termo PT | Termo EN |
+| --- | --- |
+| bean gerenciado | managed bean |
+| anotação de estereótipo | stereotype annotation |
+| varredura de componentes | component scanning |
+| tradução de exceções | exception translation |
+| meta-anotação | meta-annotation |
+| camada de persistência | persistence layer |
+| pós-processador de bean | bean post-processor |
+| bean não encontrado | `NoSuchBeanDefinitionException` |
 
 ## Veja também
 

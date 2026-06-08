@@ -235,16 +235,16 @@ public class AppBeans {
 
 ### Vocabulário
 
-| Termo | Tradução / Significado |
-|---|---|
-| `@Configuration` | Anotação que marca uma classe como fonte de definições de beans |
-| `@Bean` | Anotação de método; o retorno é registrado como bean no container |
-| Full mode | Modo padrão: CGLIB proxifica `@Configuration`, garantindo singletons nas chamadas inter-bean |
-| Lite mode | `proxyBeanMethods = false`; sem proxy CGLIB; dependências via parâmetro obrigatório |
-| `@Import` | Importa definições de outra classe `@Configuration` para o contexto atual |
-| CGLIB | Biblioteca de geração de bytecode usada pelo Spring para subclassificar `@Configuration` em runtime |
-| `proxyBeanMethods` | Atributo de `@Configuration` que controla se os métodos `@Bean` são interceptados por proxy |
-| Inter-bean method call | Chamada direta de um método `@Bean` dentro de outro, dentro da mesma `@Configuration` |
+| Termo PT | Termo EN |
+| --- | --- |
+| configuração explícita | explicit configuration |
+| modo completo | full mode |
+| modo enxuto | lite mode |
+| chamada inter-bean | inter-bean method call |
+| definição de bean | bean definition |
+| subclasse em tempo de execução | CGLIB subclass / runtime proxy |
+| métodos com proxy | proxied bean methods |
+| importação de configuração | configuration import |
 
 ## Veja também
 
