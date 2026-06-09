@@ -78,7 +78,7 @@ A escolha começa com **uma pergunta sobre o padrão de acesso**, não sobre a i
 | `ArrayDeque` | O(1)* pontas | — | O(n) meio | O(n) | inserção (FIFO/LIFO) |
 | `PriorityQueue` | O(log n) | `peek` O(1) | O(log n) topo | O(n) arbitrário | **não ordenada** na iteração |
 
-\* amortizado ou médio. Nota sobre memória: estruturas baseadas em nós (`LinkedList`, `TreeMap`/`TreeSet`) gastam mais memória por elemento (ponteiros + objetos `Node` espalhados no heap) do que arrays contíguos — o impacto disso no GC e na localidade de cache se conecta ao galho de JVM (planejado).
+\* amortizado ou médio. Nota sobre memória: estruturas baseadas em nós (`LinkedList`, `TreeMap`/`TreeSet`) gastam mais memória por elemento (ponteiros + objetos `Node` espalhados no heap) do que arrays contíguos — o impacto disso no GC e na localidade de cache se conecta a [[03-Dominios/Java/JVM/02 - Áreas de memória de runtime|Áreas de memória de runtime]] (Galho 3).
 
 A regra de ouro da árvore: **se você não consegue nomear o padrão de acesso, ainda não escolheu a coleção — só chutou o padrão.**
 

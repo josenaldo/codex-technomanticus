@@ -76,4 +76,4 @@ SORT file.name ASC
 - [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]
 - [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (Galho 4)]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
-- JavaFX — a outra interface desktop do Java — é o **Galho 6 (planejado)**.
+- [[03-Dominios/Java/JavaFX/index|JavaFX (Galho 6)]] — a outra interface desktop do Java.

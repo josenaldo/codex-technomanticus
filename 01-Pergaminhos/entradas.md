@@ -86,6 +86,7 @@ https://arxiv.org/abs/2506.08872
 <https://github.com/forrestchang/andrej-karpathy-skills>
 <https://github.com/safishamsi/graphify>
 <https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2>
+https://github.com/W3SS/headroom
 
 # Stanford CS230: Deep Learning I Autumn 2025
 

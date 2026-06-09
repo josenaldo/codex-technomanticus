@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-04
+updated: 2026-06-08
 status: growing
 tags:
   - moc
@@ -24,19 +24,19 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 
 1. [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]] — tipos, OOP, exceções, generics, records, sealed classes, pattern matching, evolução Java 8→25
 2. [[03-Dominios/Java/Collections e Streams/index|Collections, Streams e Programação Funcional]] — Collections Framework, Stream API, lambdas e interfaces funcionais, Optional, Date/Time (java.time), I/O moderno (java.nio.file)
-3. JVM por dentro *(planejado)* — memory model, GC (G1/ZGC), JIT, classloading, bytecode, módulos (JPMS), tuning
+3. [[03-Dominios/Java/JVM/index|JVM por dentro]] — memória de runtime, GC (G1/ZGC/Shenandoah), JIT e tiered compilation, classloading, bytecode, módulos (JPMS), diagnóstico (JFR/jcmd) e tuning
 4. [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]] — Memory Model, locks, atomics, executors, CompletableFuture, Virtual Threads/Loom, structured concurrency
 
 ### Interfaces desktop
 
 5. [[03-Dominios/Java/Swing/index|Swing]] — componentes e containers, layout managers, modelo de eventos, EDT/SwingWorker, MVC/models, Look & Feel, custom painting, estado atual da API
-6. JavaFX *(planejado)* — scene graph, FXML, properties/binding, CSS, estado atual do projeto
+6. [[03-Dominios/Java/JavaFX/index|JavaFX]] — scene graph, FXML/Scene Builder, properties e binding, CSS, Task/Service e threading, MVVM, jlink/jpackage, estado do projeto (OpenJFX/Gluon)
 
 ### Fundamentos enterprise e Spring
 
-7. Jakarta EE *(planejado)* — CDI, Servlet, JAX-RS, Bean Validation, JPA spec, JTA
-8. Spring Core e Boot *(planejado)* — IoC/DI, AOP, auto-configuration, profiles, Actuator
-9. Web e APIs REST *(planejado)* — Spring MVC, REST, exception handling, validation, OpenAPI
+7. [[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] — spec vs implementação, transição javax→jakarta, Servlet, CDI, JAX-RS, Bean Validation, JPA spec, JTA, legado EJB, estado atual da plataforma
+8. [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — IoC/DI, beans e escopos, AOP/proxies, configuração e profiles, conditional/auto-configuration, eventos do contexto, fundamentos do Boot, Actuator
+9. [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — Spring MVC e o pipeline do DispatcherServlet, REST controllers, content negotiation, validação na borda, exception handling (@ControllerAdvice, Problem Details), OpenAPI, HATEOAS, versionamento, clientes HTTP
 10. Persistência de dados *(planejado)* — JPA/Hibernate, Spring Data, fetch/N+1, transações, migrations
 11. Programação Reativa *(planejado)* — Reactor, WebFlux, backpressure, R2DBC
 12. Segurança *(planejado)* — Spring Security, JWT, OAuth2/OIDC, CSRF/CORS
