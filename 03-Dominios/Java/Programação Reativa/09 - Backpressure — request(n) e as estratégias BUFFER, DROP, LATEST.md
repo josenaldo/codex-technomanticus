@@ -83,7 +83,7 @@ No Project Reactor, operadores `onBackpressure*` interceptam o que excede a dema
 - **`onBackpressureBuffer`** — guarda o excedente numa fila e entrega quando o consumidor pedir mais. Sem argumento, a fila é **ilimitada** (risco de OOM). Com `onBackpressureBuffer(maxSize)`, a fila é limitada e você define o que fazer ao estourar (erro ou descarte, dependendo da sobrecarga do método).
 - **`onBackpressureDrop`** — descarta silenciosamente o que excede a demanda. Há a sobrecarga `onBackpressureDrop(consumer)` que te dá um callback pra _logar_ ou contabilizar cada item dropado (use sempre).
 - **`onBackpressureLatest`** — mantém só o **item mais recente** e descarta os anteriores não consumidos. Ideal pra "estado atual" (último preço, última posição do cursor) onde valores velhos não importam.
-- **`onBackpressureError`** — sinaliza um erro (`IllegalStateException` / `MissingBackpressureException`) assim que houver overflow. Fail-fast: prefira isso a um OOM silencioso quando perder dado é inaceitável.
+- **`onBackpressureError`** — sinaliza um erro (`IllegalStateException`, com mensagem de overflow) assim que houver overflow. Fail-fast: prefira isso a um OOM silencioso quando perder dado é inaceitável.
 
 A escolha é semântica, não técnica: depende se o dado é **acumulável** (buffer), **descartável** (drop/latest) ou **crítico** (error).
 

@@ -34,7 +34,7 @@ A criação tem duas portas: o atalho estático `WebClient.create()` (ou `WebCli
 
 Quase todo serviço moderno é, no fundo, um **orquestrador de outros serviços** por HTTP. Como você faz essas chamadas define o modelo de concorrência da aplicação inteira. Num stack reativo (Galho 10), o `WebClient` é o que mantém a promessa de ponta a ponta: a chamada de saída também é não-bloqueante, então o *event loop* dispara o request e fica livre para atender outras requisições enquanto a resposta não chega.
 
-O erro caro é o inverso: usar `WebClient` num serviço imperativo e fechar a chamada com `.block()`. Aí você paga **toda** a ceticidade do reativo — operadores, *schedulers*, *publishers* — só pra, no fim, bloquear a thread como se fosse um cliente síncrono qualquer. É o **pior dos dois mundos**, e foi exatamente esse buraco que o `RestClient` (Spring 6.1, Galho 9) veio tapar: a mesma API *fluent*, mas síncrona de verdade, sem `Mono`/`Flux` no caminho.
+O erro caro é o inverso: usar `WebClient` num serviço imperativo e fechar a chamada com `.block()`. Aí você paga **toda** a cerimônia do reativo — operadores, *schedulers*, *publishers* — só pra, no fim, bloquear a thread como se fosse um cliente síncrono qualquer. É o **pior dos dois mundos**, e foi exatamente esse buraco que o `RestClient` (Spring 6.1, Galho 9) veio tapar: a mesma API *fluent*, mas síncrona de verdade, sem `Mono`/`Flux` no caminho.
 
 Em entrevista, saber **quando não usar** `WebClient` vale mais que decorar a API. A pergunta que separa os candidatos é: "seu serviço é MVC ou WebFlux?" — porque a resposta dita qual cliente é o certo.
 

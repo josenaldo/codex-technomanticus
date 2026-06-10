@@ -20,7 +20,7 @@ aliases:
 # Functional endpoints — RouterFunction e HandlerFunction
 
 > [!abstract] TL;DR
-> Functional endpoints (WebFlux.fn) são a **alternativa funcional** aos controllers anotados do WebFlux (Galho 9): em vez de declarar rotas com `@GetMapping` e deixar o framework descobri-las por reflexão, o **roteamento vira código explícito** — você constrói um `RouterFunction` com `RouterFunctions.route().GET(...).build()`. Cada rota aponta para uma **`HandlerFunction`**, que é só uma função `ServerRequest → Mono<ServerResponse>` — o equivalente ao corpo de um método `@RequestMapping`, mas como um lambda comum. A resposta também é reativa: `ServerResponse.ok().body(orderMono, OrderDto.class)`. O modelo anotado e o funcional rodam sobre o **mesmo** `DispatcherHandler` e o mesmo stack não-bloqueante; muda só *quem escreve o roteamento* — o framework (anotações) ou você (código).
+> Functional endpoints (WebFlux.fn) são a **alternativa funcional** aos controllers anotados do WebFlux: em vez de declarar rotas com `@GetMapping` e deixar o framework descobri-las por reflexão, o **roteamento vira código explícito** — você constrói um `RouterFunction` com `RouterFunctions.route().GET(...).build()`. Cada rota aponta para uma **`HandlerFunction`**, que é só uma função `ServerRequest → Mono<ServerResponse>` — o equivalente ao corpo de um método `@RequestMapping`, mas como um lambda comum. A resposta também é reativa: `ServerResponse.ok().body(orderMono, OrderDto.class)`. O modelo anotado e o funcional rodam sobre o **mesmo** `DispatcherHandler` e o mesmo stack não-bloqueante; muda só *quem escreve o roteamento* — o framework (anotações) ou você (código).
 
 ## O que é
 

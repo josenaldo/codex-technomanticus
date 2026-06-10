@@ -123,9 +123,10 @@ Filtrando o fluxo combinado:
 
 ```java
 import reactor.core.publisher.Flux;
+import java.math.BigDecimal;
 
 Flux<Order> relevantes = Flux.merge(pendentes, arquivados)
-        .filter(o -> o.total() > 100)   // só pedidos acima de 100
+        .filter(o -> o.total().compareTo(BigDecimal.valueOf(100)) > 0) // só pedidos acima de 100
         .distinct()                     // remove duplicatas (mesmo Order nas duas fontes)
         .take(20);                      // os primeiros 20 e completa
 ```
@@ -182,10 +183,11 @@ Você puxa o catálogo inteiro do banco e filtra em memória com `.filter(...)`.
 
 ```java
 import reactor.core.publisher.Flux;
+import java.math.BigDecimal;
 
 // BUG: carrega TODOS os products e descarta a maioria em memória.
 Flux<Product> caros = productRepository.findAll()
-        .filter(p -> p.price() > 1000);
+        .filter(p -> p.price().compareTo(BigDecimal.valueOf(1000)) > 0);
 ```
 
 Fix: empurre o predicado pra origem — um método de repositório com a condição na query (`findByPriceGreaterThan(1000)`). Reserve `filter` reativo pra critérios que o banco não consegue expressar ou pra fontes que não são bancos.
