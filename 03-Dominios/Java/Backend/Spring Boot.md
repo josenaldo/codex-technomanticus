@@ -1,7 +1,7 @@
 ---
 title: "Spring Boot"
 created: 2026-04-01
-updated: 2026-06-09
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: evergreen
@@ -94,37 +94,8 @@ Em entrevistas, o que diferencia um senior em Spring Boot:
 
 ## Spring WebFlux — visão geral
 
-Alternativa reativa ao Spring MVC. Usa Project Reactor (Mono, Flux) em vez de servlet API.
-
-**Quando usar:**
-
-- Alta concorrência I/O-bound (antes de Virtual Threads)
-- Streaming (SSE, WebSocket)
-- Stack já reactive (Reactor Kafka, R2DBC)
-
-**Quando NÃO usar:**
-
-- CRUD tradicional — Spring MVC é mais simples
-- Equipe sem experiência com reactive programming
-- Java 21+ disponível — Virtual Threads tornam WebFlux menos necessário
-
-```java
-@RestController
-public class ReactiveController {
-
-    @GetMapping("/users/{id}")
-    public Mono<User> getUser(@PathVariable String id) {
-        return userRepository.findById(id);
-    }
-
-    @GetMapping("/users")
-    public Flux<User> listUsers() {
-        return userRepository.findAll();
-    }
-}
-```
-
-**Não cobrimos em profundidade aqui** — WebFlux merece sua própria nota se virar relevante.
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]. Veja [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]], [[03-Dominios/Java/Programação Reativa/01 - O que é programação reativa — o modelo push, assíncrono e não-bloqueante|O que é programação reativa]] e o confronto honesto [[03-Dominios/Java/Programação Reativa/14 - Reativo vs Virtual Threads — o confronto honesto|Reativo vs Virtual Threads]].
 
 ---
 
@@ -790,6 +761,7 @@ One area where I've seen teams struggle is with JPA's lazy loading. The LazyInit
 - [[Java Fundamentals]] — a linguagem
 - [[Java Concurrency]] — concorrência, Virtual Threads, ThreadPools
 - [[03-Dominios/Java/Persistência de dados/index|Persistência de dados (Galho 10)]] — JPA/Hibernate, fetch/N+1, transações, locking, caching, migrations
+- [[03-Dominios/Java/Programação Reativa/index|Programação Reativa (Galho 11)]] — Reactor, WebFlux, backpressure, R2DBC, reativo vs Virtual Threads
 - [[Spring Security]] — deep dive em autenticação e autorização
 - [[Testes em Java]] — JUnit 5, Mockito, Testcontainers, slices
 - [[Testes]] — fundamentos gerais
