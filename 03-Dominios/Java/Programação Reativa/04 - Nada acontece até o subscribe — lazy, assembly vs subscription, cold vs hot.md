@@ -71,7 +71,7 @@ A distinção importa pra coisas como `defer`: `Mono.defer(() -> Mono.just(busca
 `subscribe()` retorna um `Disposable` — uma alça pra cancelar a subscription (via `dispose()`).
 
 - **Em testes / código standalone**, *você* é responsável por disparar. Sem `subscribe()` (ou `block()`, que subscreve e espera), o pipeline fica inerte. Ferramentas como `StepVerifier` subscrevem por você no contexto de teste.
-- **No Spring WebFlux**, *o framework* subscreve. O `DispatcherHandler` recebe o `Publisher` que seu controller retorna e subscreve internamente, ligando a saída ao response HTTP. Chamar `subscribe()` ou `block()` dentro de um controller WebFlux é antipadrão — quebra o modelo não-bloqueante.
+- **No Spring WebFlux**, *o framework* subscreve. A camada reativa do WebFlux recebe o `Publisher` que seu controller retorna e subscreve internamente, na escrita ao response HTTP — você nunca chama `subscribe()`. Fazer `subscribe()` ou `block()` dentro de um controller WebFlux é antipadrão — quebra o modelo não-bloqueante.
 
 ### Cold vs hot: refaz por subscriber (`defer`) vs compartilha (`share`/`publish`)
 
@@ -197,7 +197,7 @@ Fix: se quer compartilhar a mesma emissão entre subscribers, torne a fonte hot 
 
 ### Frase pronta (inglês)
 
-In Project Reactor, a publisher chain is lazy and declarative: assembling operators like `map` or `flatMap` builds a plan but executes nothing — nothing happens until you subscribe. Calling `subscribe()` connects a subscriber to the source, propagates a request signal upstream, and only then does data flow; in WebFlux you rarely subscribe yourself, because the framework subscribes to the publisher your controller returns. A key distinction is cold versus hot: a cold publisher restarts the entire source for each subscriber — so two subscribers to an HTTP-backed flux fire two requests — whereas a hot publisher, obtained via `share()` or `publish()`, multicasts a single source and only delivers later signals to late subscribers.
+> In Project Reactor, a publisher chain is lazy and declarative: assembling operators like `map` or `flatMap` builds a plan but executes nothing — nothing happens until you subscribe. Calling `subscribe()` connects a subscriber to the source, propagates a request signal upstream, and only then does data flow; in WebFlux you rarely subscribe yourself, because the framework subscribes to the publisher your controller returns. A key distinction is cold versus hot: a cold publisher restarts the entire source for each subscriber — so two subscribers to an HTTP-backed flux fire two requests — whereas a hot publisher, obtained via `share()` or `publish()`, multicasts a single source and only delivers later signals to late subscribers.
 
 ### Vocabulário
 
@@ -217,7 +217,7 @@ In Project Reactor, a publisher chain is lazy and declarative: assembling operat
 - [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]]
 - [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]]
 - [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]]
-- Backpressure e o protocolo `request(n)` (planejado)
+- [[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure e o protocolo request(n)]]
 - [[03-Dominios/Java/Programação Reativa/index|Programação Reativa (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
