@@ -1,7 +1,7 @@
 ---
 title: "Validação na borda"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 type: concept
 progress: backlog
 status: seedling
@@ -19,7 +19,7 @@ aliases:
 # Validação na borda
 
 > [!abstract] TL;DR
-> `@Valid` e `@Validated` no controller acionam a spec Bean Validation (Galho 7) na **borda** da API — o ponto de entrada dos dados externos. Uma constraint violada dispara um 400 automático, sem código extra. A distinção essencial: validar **formato** (campo não pode ser vazio, e-mail tem que ser válido) pertence à borda; validar **regra de negócio** (pedido não pode ter quantidade maior que o estoque) pertence ao serviço (Galho 10 — planejado).
+> `@Valid` e `@Validated` no controller acionam a spec Bean Validation (Galho 7) na **borda** da API — o ponto de entrada dos dados externos. Uma constraint violada dispara um 400 automático, sem código extra. A distinção essencial: validar **formato** (campo não pode ser vazio, e-mail tem que ser válido) pertence à borda; validar **regra de negócio** (pedido não pode ter quantidade maior que o estoque) pertence ao serviço ([[03-Dominios/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Galho 10]]).
 
 ## O que é
 
@@ -233,7 +233,7 @@ public class OrderController {
 
 ### (4) Misturar validação de formato com validação de regra de negócio
 
-A borda é o lugar certo para checar **formato e estrutura** — campo obrigatório, formato de e-mail, intervalo numérico. Regras como "cliente não pode ter mais de 3 pedidos abertos" ou "produto precisa estar em estoque" são **regras de negócio** e pertencem à camada de serviço (Galho 10 — planejado).
+A borda é o lugar certo para checar **formato e estrutura** — campo obrigatório, formato de e-mail, intervalo numérico. Regras como "cliente não pode ter mais de 3 pedidos abertos" ou "produto precisa estar em estoque" são **regras de negócio** e pertencem à camada de serviço ([[03-Dominios/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Galho 10]]).
 
 ```java
 // ERRADO — regra de negócio implementada como constraint customizada no DTO
