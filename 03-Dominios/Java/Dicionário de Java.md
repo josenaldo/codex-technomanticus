@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-08
+updated: 2026-06-09
 type: glossary
 status: growing
 publish: true
@@ -159,6 +159,9 @@ Veja também: [[01 - O modelo da linguagem Java]], [[04 - Bytecode por dentro �
 
 ## C
 
+### @Cacheable / Spring Cache
+Abstração de cache do Spring aplicada em métodos (`@Cacheable`, `@CacheEvict`, `@CachePut`), na camada de serviço, acima da JPA — com providers como Caffeine, Redis ou Hazelcast. Diferente do cache de 2º nível do Hibernate (que cacheia entidades). Veja também: [[03-Dominios/Java/Persistência de dados/14 - Caching — 1º nível, 2º nível e Spring Cache|Caching]].
+
 ### Canvas (JavaFX)
 Nó de modo imediato do JavaFX que expõe uma API de desenho 2D (via `GraphicsContext`) semelhante ao HTML5 Canvas. Todo o conteúdo é rasterizado em um bitmap; não há grafo de cena interno — o desenvolvedor é responsável por redesenhar a área afetada. Indicado para gráficos dinâmicos de alta frequência (simulações, jogos simples).
 
@@ -173,6 +176,9 @@ Veja também: [[12 - Virtual Threads e Project Loom]].
 Instrução atômica de hardware que compara o valor atual de uma posição de memória com um valor esperado e, somente se forem iguais, substitui pelo novo valor — tudo em uma única operação indivisível. Base de todos os algoritmos lock-free em Java. Exposto pela API `Unsafe` e pelas classes `Atomic*`.
 
 Veja também: [[06 - Atômicos e operações lock-free]].
+
+### cascade / orphanRemoval
+`cascade` propaga operações (PERSIST, MERGE, REMOVE, ALL) do lado pai para o filho de uma associação. `orphanRemoval = true` apaga o filho quando ele é removido da coleção do pai — vai além do `cascade = REMOVE`. Veja também: [[03-Dominios/Java/Persistência de dados/06 - @ManyToMany, @OneToOne, cascade e orphanRemoval|@ManyToMany, @OneToOne, cascade e orphanRemoval]].
 
 ### CDI (Contexts and Dependency Injection)
 Especificação de injeção de dependência e gerenciamento de contextos da plataforma Jakarta (CDI 4.1 no EE 11). O container resolve e injeta dependências por tipo + qualifiers, gerencia escopos e habilita interceptors, decorators e eventos. É a spec que o `@Autowired` de frameworks esconde.
@@ -329,6 +335,9 @@ O menor dos três perfis do Jakarta EE (introduzido no EE 10): conjunto mínimo 
 
 Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
 
+### Criteria API
+API programática e type-safe da spec Jakarta Persistence para construir queries em Java (`CriteriaBuilder`, `CriteriaQuery`, `Root`) em vez de strings JPQL. As Specifications do Spring Data são uma camada sobre ela. Veja também: [[03-Dominios/Java/Persistência de dados/15 - Consultas dinâmicas e os limites da JPA — Specifications, Criteria e SQL|Consultas dinâmicas e os limites da JPA]], [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA]].
+
 ### CSS do JavaFX (-fx-)
 Sistema de estilização do JavaFX baseado em um subconjunto de CSS 2.1 estendido com propriedades prefixadas `-fx-` (ex.: `-fx-background-color`, `-fx-font-size`). O user-agent stylesheet padrão é o Modena; folhas customizadas são aplicadas via `scene.getStylesheets().add(...)` ou `node.setStyle(...)`. Cada controle expõe pseudo-classes de estado (`:hover`, `:focused`, `:disabled`).
 
@@ -428,6 +437,9 @@ Classe Java anotada com `@Entity` que a JPA mapeia para uma tabela: tem identida
 
 Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA — a especificação de persistência]].
 
+### @EntityGraph
+Anotação do Spring Data que define declarativamente quais associações carregar junto numa query (`attributePaths`) — a solução preferida para o problema N+1, sem o `JOIN FETCH` manual. Veja também: [[03-Dominios/Java/Persistência de dados/08 - O problema N+1 e suas soluções — @EntityGraph, JOIN FETCH, batch size|O problema N+1]].
+
 ### EntityManager
 Interface central da JPA que gerencia o persistence context e expõe as operações de ciclo de vida (`persist`/`merge`/`remove`/`find`) e consultas (JPQL/Criteria). É a porta pela qual as entidades transitam entre os estados managed/detached.
 
@@ -498,12 +510,21 @@ Abstração do `java.util.concurrent` que desacopla a submissão de tarefas (`Ru
 
 Veja também: [[08 - Executors e thread pools]].
 
+### expand-and-contract
+Padrão de migração de schema em três passos para mudar tabelas grandes sem downtime: expand (coluna nullable), backfill (em lotes), contract (aplica a constraint, ex.: NOT NULL) — cada passo numa migration separada, deployada em sequência. Veja também: [[03-Dominios/Java/Persistência de dados/16 - Migrations de schema — Flyway, Liquibase e expand-and-contract|Migrations de schema]].
+
 ## F
+
+### fetch strategy (LAZY/EAGER)
+Decide quando o Hibernate carrega uma associação: LAZY (sob demanda, via proxy) ou EAGER (junto com o pai). A regra prática é sempre LAZY — o default EAGER de `@ManyToOne`/`@OneToOne` é fonte oculta de problemas de performance. Veja também: [[03-Dominios/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Fetch strategies]].
 
 ### FlatLaf
 Look and Feel moderno (flat, com suporte a dark mode) desenvolvido pela FormDev, disponível como biblioteca open-source third-party — não faz parte do JDK. Mantém aplicações Swing com aparência atual em diferentes sistemas operacionais.
 
 Veja também: [[03-Dominios/Java/Swing/09 - Look and Feel e temas|Look and Feel]].
+
+### Flyway
+Ferramenta de migração de schema baseada em SQL versionado (`V<versão>__<descrição>.sql`) e repeatable (`R__`), com a tabela de controle `flyway_schema_history` e enforcement de checksum. Veja também: [[03-Dominios/Java/Persistência de dados/16 - Migrations de schema — Flyway, Liquibase e expand-and-contract|Migrations de schema]].
 
 ### Fork/join
 Framework introduzido no Java 7 (`ForkJoinPool`, `RecursiveTask`, `RecursiveAction`) que divide um problema em subproblemas menores (fork), resolve-os em paralelo e combina os resultados (join). Usa work-stealing para maximizar a utilização dos núcleos. Base dos parallel streams e do `CompletableFuture`.
@@ -556,6 +577,9 @@ Veja também: [[03-Dominios/Java/Collections e Streams/15 - Collectors customiza
 Conjunto de referências sempre consideradas vivas pelo garbage collector: referências em stack frames ativos, variáveis estáticas, referências JNI e objetos de sistema. Um objeto é alcançável (*reachable*) se existe algum caminho de referências a partir de qualquer GC root; objetos inalcançáveis são elegíveis para coleta.
 
 Veja também: [[03 - Garbage Collection — o conceito]].
+
+### @GeneratedValue
+Anotação JPA que define a estratégia de geração da chave primária: IDENTITY (auto-increment, impede batch), SEQUENCE (recomendado, permite batch via `allocationSize`), TABLE, AUTO e UUID (adicionada na JPA 3.1). Veja também: [[03-Dominios/Java/Persistência de dados/02 - A entidade JPA — @Entity, @Id e geração de chave|A entidade JPA]].
 
 ### Generics
 Mecanismo de parametrização de tipos que permite escrever classes, interfaces e métodos que operam sobre um tipo definido pelo chamador, com checagem em tempo de compilação. Elimina casts explícitos e detecta erros de tipo cedo. Ex: `List<String>`.
@@ -628,6 +652,9 @@ Veja também: [[02 - Áreas de memória de runtime]].
 Snapshot do conteúdo do heap da JVM em um dado instante, gravado em formato HPROF. Contém todos os objetos vivos, seus tipos, tamanhos e referências entre eles. Usado para diagnosticar vazamentos de memória com ferramentas como JMC, Eclipse MAT ou VisualVM.
 
 Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
+
+### Hibernate
+A implementação mais usada da especificação JPA (Jakarta Persistence) — o provider que faz o ORM, com recursos além da spec (natural IDs, `@BatchSize`, query cache). É o que se usa em 99% dos casos quando se diz "JPA". Veja também: [[03-Dominios/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|O que é a camada de persistência]].
 
 ### HttpMessageConverter
 Estratégia do Spring MVC que converte entre o corpo HTTP (bytes) e objetos Java: na leitura, desserializa o `@RequestBody`; na escrita, serializa o retorno marcado com `@ResponseBody`. Cada converter declara os media types que suporta (ex.: `MappingJackson2HttpMessageConverter` para JSON); a content negotiation escolhe qual usar conforme o `Accept`/`Content-Type`.
@@ -763,6 +790,9 @@ Especificação de ORM da plataforma (Jakarta Persistence 3.2 no EE 11): define 
 
 Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA — a especificação de persistência]].
 
+### JpaRepository
+Interface topo da hierarquia de repositórios do Spring Data JPA (`Repository` → `CrudRepository` → `PagingAndSortingRepository` → `JpaRepository`); o Spring gera a implementação (um proxy) em runtime, com CRUD, paginação e queries derivadas. Veja também: [[03-Dominios/Java/Persistência de dados/04 - Spring Data repositories — JpaRepository e query methods derivados|Spring Data repositories]].
+
 ### JPQL
 Jakarta Persistence Query Language: linguagem de consulta orientada a entidades (não a tabelas) da JPA. Sintaxe parecida com SQL, mas opera sobre entidades e seus relacionamentos; executada via `TypedQuery` com parâmetros nomeados.
 
@@ -800,6 +830,9 @@ Container do JavaFX que posiciona e dimensiona seus filhos segundo uma estratég
 
 Veja também: [[03 - Layout panes]].
 
+### Liquibase
+Ferramenta de migração de schema baseada em changelog declarativo (changesets em XML/YAML/JSON/SQL), com rollback declarativo e a tabela de controle `DATABASECHANGELOG` (com MD5SUM). Alternativa ao Flyway. Veja também: [[03-Dominios/Java/Persistência de dados/16 - Migrations de schema — Flyway, Liquibase e expand-and-contract|Migrations de schema]].
+
 ### listener (event listener)
 Objeto registrado em um componente (fonte) para ser notificado quando eventos específicos ocorrem, via callback (ex.: `ActionListener.actionPerformed`). Os callbacks são invocados na EDT.
 
@@ -832,6 +865,12 @@ Veja também: [[01 - O modelo da linguagem Java]], [[15 - A evolução do Java (
 
 ## M
 
+### @ManyToMany
+Associação muitos-para-muitos, mapeada por uma tabela de junção (`@JoinTable`). Quando a relação tem atributos próprios (quantidade, data), prefira uma entidade associativa explícita. Veja também: [[03-Dominios/Java/Persistência de dados/06 - @ManyToMany, @OneToOne, cascade e orphanRemoval|@ManyToMany, @OneToOne, cascade e orphanRemoval]].
+
+### @ManyToOne / @OneToMany
+O par que modela uma associação um-para-muitos. O `@ManyToOne` é o owning side (tem a foreign key); o `@OneToMany(mappedBy = ...)` é o inverse side (só espelha). Veja também: [[03-Dominios/Java/Persistência de dados/05 - Relacionamentos — @ManyToOne, @OneToMany e o owning side|Relacionamentos]].
+
 ### MDB (message-driven bean)
 Tipo de Enterprise Bean que consome mensagens de forma assíncrona (tipicamente de uma fila/tópico), processando-as fora do fluxo request/response. É o ponto de integração do EJB com mensageria.
 
@@ -857,6 +896,9 @@ User-agent stylesheet padrão do JavaFX desde a versão 8, que define a aparênc
 
 Veja também: [[09 - CSS em JavaFX]].
 
+### @Modifying
+Anotação do Spring Data que marca uma `@Query` como UPDATE/DELETE em massa; use `@Modifying(clearAutomatically = true, flushAutomatically = true)` porque o persistence context (1º nível) não é invalidado automaticamente. Veja também: [[03-Dominios/Java/Persistência de dados/09 - Consultas com @Query — JPQL, native e @Modifying|Consultas com @Query]].
+
 ### Monitor (intrinsic lock)
 Mecanismo de sincronização intrínseco de todo objeto Java que combina exclusão mútua e comunicação via `wait/notify/notifyAll`. Cada objeto tem um lock implícito adquirido com `synchronized`. Ao entrar em um bloco `synchronized`, a thread adquire o monitor; ao sair, libera-o automaticamente.
 
@@ -873,6 +915,9 @@ Padrão arquitetural (Model-View-ViewModel) adaptado para JavaFX: o ViewModel ex
 Veja também: [[11 - Arquitetura — MVC, MVVM e injeção de dependência]].
 
 ## N
+
+### N+1 (problema)
+O bug de performance mais comum da JPA: ao carregar N entidades pai e acessar uma associação lazy de cada uma, geram-se 1 (pai) + N (filhos) queries. Resolve-se com `@EntityGraph`, `JOIN FETCH`, `@BatchSize` ou DTO projection. Veja também: [[03-Dominios/Java/Persistência de dados/08 - O problema N+1 e suas soluções — @EntityGraph, JOIN FETCH, batch size|O problema N+1]].
 
 ### Nimbus
 Look and Feel vetorial bundled no JDK desde o Java 7, alternativa ao Metal padrão. Renderiza os componentes com formas suaves e escala melhor em diferentes resoluções de tela. Configurável via `UIManager.put` para ajustes de cores e fontes.
@@ -928,6 +973,9 @@ Veja também: [[07 - Herança e polimorfismo]].
 
 ## P
 
+### Pageable / Page / Slice
+Abstrações de paginação do Spring Data: `Pageable`/`PageRequest` definem página+tamanho+ordenação; `Page<T>` traz o total (query `count` extra); `Slice<T>` só sabe se há próxima página (sem count, mais barato). Veja também: [[03-Dominios/Java/Persistência de dados/11 - Paginação e ordenação — Pageable, Page e Slice|Paginação e ordenação]].
+
 ### paintComponent / custom painting
 Método a sobrescrever (em vez de `paint`) para desenhar conteúdo customizado em um componente Swing. Deve chamar `super.paintComponent(g)` antes de desenhar e fazer cast de `Graphics` para `Graphics2D` para acessar a API completa de renderização Java2D.
 
@@ -953,10 +1001,16 @@ Conjunto de entidades managed que o EntityManager rastreia: funciona como identi
 
 Veja também: [[03-Dominios/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager e o ciclo de vida da entidade]].
 
+### persistence context (1º nível)
+O ângulo operacional do persistence context: atua como cache de 1º nível por transação — entidades managed têm identidade (mesma query 2x = 1 SQL) e dirty checking (mudança gera UPDATE no flush, sem `save()`). Complementa o conceito da spec (verbete `persistence context`). Veja também: [[03-Dominios/Java/Persistência de dados/03 - O persistence context e os estados da entidade|O persistence context e os estados da entidade]].
+
 ### persistence unit / persistence.xml
 Unidade de configuração da JPA (declarada em `persistence.xml` ou, na 3.2, via `PersistenceConfiguration` programática): define o provider, o datasource, as entidades e o tipo de transação (JTA ou resource-local). É o que liga `@Entity` a um provider real.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA — a especificação de persistência]].
+
+### pessimistic locking
+Bloqueio explícito no banco (`@Lock(LockModeType.PESSIMISTIC_WRITE)` → `SELECT ... FOR UPDATE`) que segura o lock até o commit; usado quando conflitos de escrita são frequentes. Cuidado com deadlocks (adquira locks em ordem consistente). Veja também: [[03-Dominios/Java/Persistência de dados/13 - Locking — optimistic (@Version) e pessimistic|Locking]].
 
 ### Pinning
 Fenômeno em que uma virtual thread fica "presa" ao seu carrier thread durante um bloco `synchronized` ou chamada nativa, impedindo que o carrier execute outras virtual threads enquanto aguarda. Reduz a escalabilidade de virtual threads; mitigado substituindo `synchronized` por `ReentrantLock` ou eliminando bloqueios em seções críticas.
@@ -1018,6 +1072,9 @@ Annotation do Spring que condiciona o registro de um bean (ou de uma classe `@Co
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profiles|Configuração e profiles]].
 
+### projection (JPA)
+Trazer só um subconjunto de campos em vez da entidade inteira, via interface projection (proxy do Spring), class-based/DTO (`record` com `SELECT new`) ou dynamic (`Class<T>`). Ideal para listagens read-only. Veja também: [[03-Dominios/Java/Persistência de dados/10 - Projections e DTOs — não vazar a entidade|Projections e DTOs]].
+
 ### Property (JavaFX)
 Abstração central do sistema de binding do JavaFX (`javafx.beans.property`). Uma `Property<T>` é ao mesmo tempo um `ObservableValue` (notifica listeners de invalidação de forma *lazy* ou de mudança de valor de forma *eager*) e um `WritableValue`. Subclasses concretas (`SimpleStringProperty`, `IntegerProperty`…) são usadas em beans de ViewModel para habilitar binding declarativo.
 
@@ -1034,6 +1091,9 @@ Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e
 Annotation do Spring que desambigua qual bean injetar quando há vários candidatos do mesmo tipo, casando pelo nome/qualificador declarado. É o equivalente Spring do `@Qualifier` do CDI. Combina com `@Primary` (preferência padrão) e pode ser usado como meta-annotation para criar qualificadores customizados. Alfabetiza como "Qualifier".
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/08 - Qualificação de beans — @Qualifier, @Primary, @Profile|Qualificação de beans]].
+
+### @Query (JPQL/native)
+Anotação do Spring Data para escrever a query explicitamente — em JPQL (sobre entidades/atributos) ou SQL nativo (`nativeQuery = true`, sobre tabelas/colunas) — quando a derived query não basta. Veja também: [[03-Dominios/Java/Persistência de dados/09 - Consultas com @Query — JPQL, native e @Modifying|Consultas com @Query]].
 
 ## R
 
@@ -1134,6 +1194,9 @@ Classe (ou interface) que restringe explicitamente quais subclasses (ou subinter
 
 Veja também: [[14 - Sealed classes e pattern matching]].
 
+### second-level cache (2º nível)
+Cache de entidades compartilhado entre transações/sessões (application-wide), opt-in no Hibernate (`@Cacheable` + `@Cache(usage = ...)`, com estratégias READ_ONLY/NONSTRICT_READ_WRITE/READ_WRITE/TRANSACTIONAL). Indicado para dados de referência lidos muito e mudados pouco. Veja também: [[03-Dominios/Java/Persistência de dados/14 - Caching — 1º nível, 2º nível e Spring Cache|Caching]].
+
 ### self-invocation
 Chamada de um método do próprio bean a partir de outro método dele (`this.metodo()`), que *não passa pelo proxy* — porque o proxy só intercepta chamadas externas. É a armadilha clássica do Spring AOP: `@Transactional`, `@Cacheable` ou `@Async` em um método invocado internamente são silenciosamente ignorados.
 
@@ -1179,6 +1242,9 @@ Implementação plugável da aparência e do comportamento visual de um `Control
 
 Veja também: [[12 - Custom controls, Canvas e charts]].
 
+### Specification (Spring Data)
+Predicado componível (`Specification<T>`) sobre a Criteria API, usado com `JpaSpecificationExecutor` para construir filtros dinâmicos (`where(...).and(...).or(...)`) — comum em APIs de busca. Veja também: [[03-Dominios/Java/Persistência de dados/15 - Consultas dinâmicas e os limites da JPA — Specifications, Criteria e SQL|Consultas dinâmicas e os limites da JPA]].
+
 ### Spring Actuator
 Módulo do Spring Boot que expõe endpoints de produção (`/actuator/health`, `/metrics`, `/info`, `/env`, `/conditions`...) para monitorar e inspecionar a aplicação em runtime. Integra-se ao Micrometer para métricas e a sistemas de observabilidade; os endpoints são habilitados e protegidos seletivamente.
 
@@ -1198,6 +1264,9 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e st
 Camada sobre o Spring Framework que aplica *convention over configuration*: auto-configuration, starters, servidor embarcado e jars executáveis para que uma aplicação Spring suba com configuração mínima e `java -jar`. Não substitui o Spring Framework — o orquestra para reduzir boilerplate.
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
+
+### Spring Data JPA
+Camada do Spring sobre a JPA/Hibernate que elimina o boilerplate do repositório: interfaces `JpaRepository`, queries derivadas, paginação, projections e Specifications. Veja também: [[03-Dominios/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|O que é a camada de persistência]].
 
 ### Spring Framework
 O núcleo do ecossistema Spring: container IoC/DI, AOP, abstração de transações, suporte a MVC web e muito mais. É a base sobre a qual Spring Boot, Spring Data, Spring Security e os demais projetos são construídos. Lançado em 2003 como alternativa leve ao peso do EJB da época.
@@ -1326,6 +1395,9 @@ Annotation da JTA (`jakarta.transaction.Transactional`) que demarca transações
 
 Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]]; ver também o homônimo do Spring em [[#@Transactional (Spring)]].
 
+### @Transactional (propagação)
+O comportamento transacional do `@Transactional` do Spring: propagação (REQUIRED, REQUIRES_NEW, NESTED...), isolamento, rollback rules (só `RuntimeException`/`Error` por default — checked não reverte) e `readOnly`. O mecanismo (proxy AOP) é o do verbete `@Transactional (Spring)`. Veja também: [[03-Dominios/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Transações operacionais]].
+
 ### @Transactional (Spring)
 Annotation do Spring (`org.springframework.transaction.annotation.Transactional`) que demarca transações de forma declarativa via proxy AOP. O atributo `propagation` (REQUIRED/REQUIRES_NEW/...) controla a propagação e `isolation` o nível; por padrão faz rollback só em exceções unchecked (`rollbackFor` ajusta isso). Sofre da armadilha de self-invocation. Distinta — mas homônima — da annotation da JTA. Alfabetiza como "Transactional".
 
@@ -1379,6 +1451,9 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profil
 Mecanismo que permite declarar um método com número variável de argumentos do mesmo tipo (`Tipo... nomes`). O compilador converte os argumentos em um array. Deve ser o último parâmetro da assinatura e gera um aviso se usado junto com generics por ambiguidade de heap pollution.
 
 Veja também: [[05 - Arrays e varargs]].
+
+### @Version (optimistic locking)
+Campo de versão numa entidade que habilita o optimistic locking: o Hibernate adiciona `WHERE version = ?` no UPDATE e incrementa a versão; se 0 linhas forem afetadas, lança `OptimisticLockException`. Veja também: [[03-Dominios/Java/Persistência de dados/13 - Locking — optimistic (@Version) e pessimistic|Locking]].
 
 ### Virtual thread
 Thread leve gerenciada pela JVM (não mapeada 1:1 com OS threads), GA no Java 21 (JEP 444). Permite criar milhões de threads com baixo overhead de memória, tornando o modelo thread-per-request viável em servidores de alta concorrência. Criadas via `Thread.ofVirtual()` ou `Executors.newVirtualThreadPerTaskExecutor()`.
