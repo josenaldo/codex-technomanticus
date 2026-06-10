@@ -1,7 +1,7 @@
 ---
 title: "O que é Spring MVC — a camada web sobre o container"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: seedling
@@ -101,7 +101,7 @@ A consequência prática é poderosa: como o controller é um bean, ele recebe *
 
 Spring MVC é **imperativo e bloqueante por modelo**: cada request ocupa uma thread do pool do servlet container do início ao fim (*thread-per-request*). É simples de raciocinar e cobre a esmagadora maioria dos backends.
 
-O Spring oferece uma alternativa reativa, o **WebFlux** (Galho 11, planejado), construído sobre Reactor e um modelo não-bloqueante, sem depender da Servlet API. WebFlux brilha em cenários de altíssima concorrência com I/O dominante (muitas conexões esperando), trocando simplicidade por escalabilidade de threads. Para esta trilha e para a maioria das APIs CRUD, **Spring MVC é o ponto de partida correto** — e os dois não se misturam no mesmo fluxo de request.
+O Spring oferece uma alternativa reativa, o **WebFlux** ([[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Galho 11]]), construído sobre Reactor e um modelo não-bloqueante, sem depender da Servlet API. WebFlux brilha em cenários de altíssima concorrência com I/O dominante (muitas conexões esperando), trocando simplicidade por escalabilidade de threads. Para esta trilha e para a maioria das APIs CRUD, **Spring MVC é o ponto de partida correto** — e os dois não se misturam no mesmo fluxo de request.
 
 ## Na prática
 
@@ -185,7 +185,7 @@ São **dois stacks web distintos** que compartilham anotações parecidas (`@Get
 @GetMapping("/{id}")
 public Order findById(@PathVariable Long id) { ... }
 
-// WebFlux (Galho 11, planejado) usaria outro starter e Mono<Order>.
+// WebFlux (Galho 11) usaria outro starter e Mono<Order>.
 // Não basta trocar o tipo de retorno: o stack inteiro muda.
 ```
 

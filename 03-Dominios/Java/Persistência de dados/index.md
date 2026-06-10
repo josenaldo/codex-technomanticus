@@ -1,7 +1,7 @@
 ---
 title: "Persistência de dados"
 created: 2026-06-09
-updated: 2026-06-09
+updated: 2026-06-10
 type: moc
 status: growing
 publish: true
@@ -29,7 +29,7 @@ Persistência de dados é como o seu domínio vira linhas no banco e volta — s
 
 É um **galho híbrido**: parte **refatora** os troncos monolíticos `Spring Data JPA.md` (poda integral) e a seção de transações do `Spring Boot.md` (poda cirúrgica), parte **pesquisa** as partes version-specific (versão do Hibernate/Spring Data, `@GeneratedValue` UUID na JPA 3.1, Flyway vs Liquibase) em doc oficial.
 
-E tem **tripla fronteira**: este galho **operacionaliza as specs do Galho 7** ([[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] — JPA, EntityManager, JTA), **usa o mecanismo AOP do Galho 8** ([[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — o proxy que faz o `@Transactional` funcionar) e **alimenta a borda do Galho 9** ([[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — a entidade vira DTO antes de virar JSON). As notas linkam de volta a essas fronteiras sem re-explicá-las. Persistência reativa/R2DBC (Galho 11), segurança de dados (Galho 12), testes de repositório (Galho 13) e dados distribuídos/saga (Galho 16) são planejados, sem cobertura aqui.
+E tem **tripla fronteira**: este galho **operacionaliza as specs do Galho 7** ([[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] — JPA, EntityManager, JTA), **usa o mecanismo AOP do Galho 8** ([[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — o proxy que faz o `@Transactional` funcionar) e **alimenta a borda do Galho 9** ([[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — a entidade vira DTO antes de virar JSON). As notas linkam de volta a essas fronteiras sem re-explicá-las. Persistência reativa/R2DBC é o galho [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|Programação Reativa]]; segurança de dados (Galho 12), testes de repositório (Galho 13) e dados distribuídos/saga (Galho 16) são planejados, sem cobertura aqui.
 
 ## Iniciado
 

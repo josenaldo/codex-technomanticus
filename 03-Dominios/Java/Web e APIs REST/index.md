@@ -1,7 +1,7 @@
 ---
 title: "Web e APIs REST"
 created: 2026-06-08
-updated: 2026-06-09
+updated: 2026-06-10
 type: moc
 status: growing
 publish: true
@@ -29,7 +29,7 @@ Este galho cobre **a camada web do Spring** — não o container (Galho 8) nem a
 
 Este é um **galho híbrido**: parte refatora o tronco existente `Spring Boot.md` (que cobria os temas de MVC de forma densa e monolítica), parte expande com pesquisa aprofundada nas partes que o tronco tratava de forma rasa (pipeline do DispatcherServlet, content negotiation, Problem Details, HATEOAS). A divisão em notas atômicas garante que cada conceito possa ser estudado e revisado de forma independente.
 
-**Dupla fronteira:** este galho **implementa as specs HTTP do Galho 7** ([[03-Dominios/Java/Jakarta EE/index|Jakarta EE]]) — Servlet API, JAX-RS e Bean Validation — e **roda sobre o container do Galho 8** ([[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]]) — IoC/DI, AOP, auto-configuration. As notas aqui assumem familiaridade com os dois. Persistência/Spring Data ([[03-Dominios/Java/Persistência de dados/index|Persistência de dados]]), Spring Reativa/WebFlux (Galho 11), Spring Security (Galho 12), Testes no ecossistema Spring (Galho 13), Microservices (Galho 16) e Spring Cloud (Galho 17) são planejados, sem cobertura neste galho.
+**Dupla fronteira:** este galho **implementa as specs HTTP do Galho 7** ([[03-Dominios/Java/Jakarta EE/index|Jakarta EE]]) — Servlet API, JAX-RS e Bean Validation — e **roda sobre o container do Galho 8** ([[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]]) — IoC/DI, AOP, auto-configuration. As notas aqui assumem familiaridade com os dois. Persistência/Spring Data ([[03-Dominios/Java/Persistência de dados/index|Persistência de dados]]) e Spring Reativa/WebFlux ([[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]) já estão cobertos; Spring Security (Galho 12), Testes no ecossistema Spring (Galho 13), Microservices (Galho 16) e Spring Cloud (Galho 17) são planejados, sem cobertura neste galho.
 
 ## Iniciado
 

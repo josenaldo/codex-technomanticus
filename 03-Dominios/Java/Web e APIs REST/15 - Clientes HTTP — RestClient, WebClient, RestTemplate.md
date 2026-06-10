@@ -1,7 +1,7 @@
 ---
 title: "Clientes HTTP — RestClient, WebClient, RestTemplate"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: seedling
@@ -20,7 +20,7 @@ aliases:
 # Clientes HTTP — RestClient, WebClient, RestTemplate
 
 > [!abstract] TL;DR
-> Pra consumir outra API de forma bloqueante, o default moderno é o `RestClient` (Spring Framework 6.1+, API fluent). O `RestTemplate` é o legado em manutenção desde a 5.0 — ainda onipresente, mas você não começa código novo nele. O `WebClient` é o cliente reativo (parte do WebFlux; uso reativo/streaming = Galho 11, planejado). A escolha não é pelo hype: ela segue o modelo de execução do seu stack. Stack imperativo pede `RestClient`; stack reativo pede `WebClient`.
+> Pra consumir outra API de forma bloqueante, o default moderno é o `RestClient` (Spring Framework 6.1+, API fluent). O `RestTemplate` é o legado em manutenção desde a 5.0 — ainda onipresente, mas você não começa código novo nele. O `WebClient` é o cliente reativo (parte do WebFlux; uso reativo/streaming = [[03-Dominios/Java/Programação Reativa/11 - WebClient — o cliente HTTP reativo a fundo|Galho 11]]). A escolha não é pelo hype: ela segue o modelo de execução do seu stack. Stack imperativo pede `RestClient`; stack reativo pede `WebClient`.
 
 ## O que é
 
@@ -110,7 +110,7 @@ O `exchange` é o método "canivete suíço": dá controle total sobre verbo, he
 
 Em versões recentes do Spring Framework, o `RestTemplate` deixou de ser apenas "em manutenção" e passou a ser **formalmente marcado como obsoleto** em favor do `RestClient`. O sinal é o mesmo desde a 5.0: comece código novo no `RestClient`.
 
-### WebClient: menção — reativo, do WebFlux (uso reativo/streaming = Galho 11, planejado)
+### WebClient: menção — reativo, do WebFlux (uso reativo/streaming)
 
 O `WebClient` é o cliente **não-bloqueante e reativo** do Spring. Ele faz parte do módulo WebFlux e trabalha sobre o Project Reactor: as respostas chegam como `Mono<T>` (zero ou um elemento) ou `Flux<T>` (stream de N elementos), com suporte a back-pressure.
 
@@ -124,7 +124,7 @@ Mono<OrderDto> orderMono = webClient.get()
 
 Repare na diferença essencial: o `RestClient` te devolve `OrderDto`; o `WebClient` te devolve `Mono<OrderDto>`, um valor que ainda não chegou. Você só usa o `WebClient` quando o **resto do seu stack também é reativo** — caso contrário, você acaba bloqueando um fluxo reativo (`.block()`) e perde toda a vantagem, pagando a complexidade sem o benefício.
 
-O uso aprofundado do `WebClient` — programação reativa, streaming de respostas, back-pressure — é tema do Galho 11 (planejado). Aqui ele entra só como o terceiro lado da escolha: existe, é reativo, e não é o que você quer num serviço imperativo.
+O uso aprofundado do `WebClient` — programação reativa, streaming de respostas, back-pressure — é tema do galho [[03-Dominios/Java/Programação Reativa/11 - WebClient — o cliente HTTP reativo a fundo|Programação Reativa]]. Aqui ele entra só como o terceiro lado da escolha: existe, é reativo, e não é o que você quer num serviço imperativo.
 
 ### Timeouts e error handling no cliente (onStatus)
 
@@ -271,7 +271,7 @@ OrderDto order = webClient.get().uri("/orders/{id}", id)
         .block(); // bloqueia o reativo: o pior dos dois mundos
 ```
 
-**Fix:** num stack imperativo, use `RestClient`. Reserve o `WebClient` para quando o serviço inteiro for reativo (tema do Galho 11, planejado).
+**Fix:** num stack imperativo, use `RestClient`. Reserve o `WebClient` para quando o serviço inteiro for reativo (tema do galho [[03-Dominios/Java/Programação Reativa/11 - WebClient — o cliente HTTP reativo a fundo|Programação Reativa]]).
 
 ## Em entrevista
 
@@ -300,7 +300,7 @@ OrderDto order = webClient.get().uri("/orders/{id}", id)
 - [[03-Dominios/Java/index|Trilha Java]]
 - Verbetes: [[03-Dominios/Java/Dicionário de Java#RestClient|RestClient]], [[03-Dominios/Java/Dicionário de Java#RestTemplate|RestTemplate]], [[03-Dominios/Java/Dicionário de Java#WebClient|WebClient]]
 
-O uso reativo/streaming do `WebClient` (WebFlux/Reactor) é tema do Galho 11 (planejado). O cliente declarativo `@FeignClient` (Spring Cloud OpenFeign) — orientado a microservices, com service discovery e load balancing — é tema do Galho 16 (planejado); ele fecha o leque "e o Feign?", mas pertence ao mundo do Spring Cloud, não ao core do Spring Framework. Ambos aparecem aqui só como menção de fronteira, sem wikilink.
+O uso reativo/streaming do `WebClient` (WebFlux/Reactor) é tema do galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]. O cliente declarativo `@FeignClient` (Spring Cloud OpenFeign) — orientado a microservices, com service discovery e load balancing — é tema do Galho 16 (planejado); ele fecha o leque "e o Feign?", mas pertence ao mundo do Spring Cloud, não ao core do Spring Framework. Ambos aparecem aqui só como menção de fronteira, sem wikilink.
 
 ## Referências
 
