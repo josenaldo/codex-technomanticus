@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-09
+updated: 2026-06-10
 type: glossary
 status: growing
 publish: true
@@ -65,6 +65,11 @@ Módulo que encapsula uma preocupação transversal (cross-cutting concern) no A
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
 
+### assembly time / subscription time
+As duas fases de um pipeline reativo: montar a cadeia de operadores (*assembly time*) não executa nada; só o `subscribe` (*subscription time*) dispara o fluxo. Erros de montagem aparecem cedo; o trabalho real só acontece na subscription.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/04 - Nada acontece até o subscribe — lazy, assembly vs subscription, cold vs hot|Nada acontece até o subscribe]].
+
 ### Atomic (variável atômica)
 Variável que suporta operações de leitura, escrita e atualização compostas sem necessidade de `synchronized`, usando instruções CAS do hardware. O pacote `java.util.concurrent.atomic` oferece `AtomicInteger`, `AtomicLong`, `AtomicReference` e variantes. Garante atomicidade sem bloquear threads.
 
@@ -91,6 +96,11 @@ Toolkit de GUI original do Java, com componentes heavyweight que têm peers nati
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
 
 ## B
+
+### backpressure
+Mecanismo do Reactive Streams em que o consumidor controla a demanda (`request(n)`), impedindo o produtor de empurrar mais elementos do que ele consegue processar. É o que torna o modelo reativo seguro sob carga, em contraste com o push cego.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure]].
 
 ### Barrier (CyclicBarrier)
 Ponto de sincronização onde um número fixo de threads deve se encontrar antes que qualquer uma prossiga. Ao contrário do `CountDownLatch`, o `CyclicBarrier` pode ser reutilizado após cada ciclo. Útil em algoritmos paralelos com fases distintas.
@@ -146,6 +156,11 @@ Veja também: [[07 - Properties e binding]].
 Interface de fila thread-safe que bloqueia o produtor quando a fila está cheia e o consumidor quando está vazia, sem necessidade de `wait/notify` manuais. Implementações incluem `ArrayBlockingQueue`, `LinkedBlockingQueue` e `SynchronousQueue`. Pedra angular do padrão produtor-consumidor.
 
 Veja também: [[07 - Concurrent collections]].
+
+### boundedElastic (Scheduler)
+`Scheduler` do Reactor com pool elástico mas limitado, destinado a isolar chamadas BLOQUEANTES (JDBC, I/O legado) para que não travem o event loop. Cada tarefa bloqueante roda numa thread dedicada e descartável, em vez de prender um worker do event loop.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]].
 
 ### boxing / unboxing
 Conversão automática entre tipos primitivos (`int`, `long`, `double`…) e seus wrappers (`Integer`, `Long`, `Double`…): *boxing* empacota o primitivo num objeto; *unboxing* extrai o primitivo do wrapper. Feita implicitamente pelo compilador (autoboxing), mas introduz overhead de alocação e risco de `NullPointerException` em unboxing de referência `null`. Relevante em streams primitivos (`IntStream`), que evitam esse custo.
@@ -230,6 +245,11 @@ Região de memória nativa onde a JVM armazena o código nativo gerado pelo comp
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
+### cold publisher / hot publisher
+Um *cold publisher* refaz a fonte para cada subscriber — cada subscription recomeça o fluxo do zero. Um *hot publisher* compartilha uma única fonte entre subscribers, e late subscribers só recebem o que for emitido depois que entraram (`share()`/`publish()`).
+
+Veja também: [[03-Dominios/Java/Programação Reativa/04 - Nada acontece até o subscribe — lazy, assembly vs subscription, cold vs hot|Nada acontece até o subscribe]].
+
 ### Collector (coletor)
 Objeto que encapsula uma estratégia de redução mutável para a operação terminal `collect` de uma `Stream`. Combina quatro funções: supplier (cria o container), accumulator (adiciona elemento), combiner (mescla containers paralelos) e finisher (transforma o resultado final). A fábrica `Collectors` fornece implementações prontas como `toList`, `groupingBy` e `joining`.
 
@@ -274,6 +294,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/03 - Beans e estereótipos �
 Componente lightweight (Swing) é pintado inteiramente em Java, sem peer nativo do SO; componente heavyweight (AWT) possui peer nativo. Lightweight possibilita aparência consistente cross-platform e suporte a pluggable look-and-feel.
 
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
+
+### concatMap
+Operador reativo como o `flatMap`, mas que preserva a ordem: assina o próximo inner publisher só depois que o anterior completar. Sacrifica a concorrência em troca de saída ordenada e determinística.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/05 - map e flatMap — transformando o fluxo|map e flatMap]].
 
 ### ConcurrentHashMap
 Implementação de `Map` altamente concorrente que usa segmentação interna (striping) e CAS para permitir leituras sem bloqueio e escritas com granularidade fina. Substituiu `Hashtable` e `Collections.synchronizedMap` em cenários de alta concorrência. Não permite chaves ou valores `null`.
@@ -345,6 +370,11 @@ Veja também: [[09 - CSS em JavaFX]].
 
 ## D
 
+### DatabaseClient (R2DBC)
+Cliente de baixo nível do Spring para acesso reativo a banco relacional via R2DBC, sem repositório nem ORM. Expõe uma API fluente (`sql(...).bind(...).fetch()`) que devolve `Mono`/`Flux`, útil quando se quer controle direto sobre o SQL.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|R2DBC]].
+
 ### Deadlock
 Estado em que duas ou mais threads se bloqueiam mutuamente, cada uma esperando um lock que a outra segura — criando uma espera circular sem saída. Nenhuma das threads progride indefinidamente. Prevenido por ordenação consistente de locks, uso de `tryLock` com timeout ou eliminação de lock aninhado.
 
@@ -379,6 +409,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e 
 Mecanismo da JPA pelo qual o provider detecta, no flush, quais entidades managed mudaram desde que entraram no persistence context e gera o SQL de UPDATE automaticamente — sem chamada explícita de "save". O contrato é da spec; a estratégia de detecção é do provider.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/10 - EntityManager e o ciclo de vida da entidade|EntityManager e o ciclo de vida da entidade]].
+
+### DispatcherHandler
+O *front controller* reativo do Spring WebFlux: o equivalente não-bloqueante do `DispatcherServlet` do Spring MVC. Recebe todas as requisições, resolve o handler via `HandlerMapping` e devolve um `Mono<Void>`, orquestrando o pipeline sobre o event loop.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]].
 
 ### DispatcherServlet
 O *front controller* do Spring MVC: um único `Servlet` que recebe todas as requisições e orquestra o pipeline — consulta os `HandlerMapping` para achar o handler, invoca o `HandlerAdapter` para executá-lo, aplica `HandlerInterceptor`, resolve a view (ou serializa via `HttpMessageConverter`) e despacha a resposta. Centraliza o fluxo de processamento web.
@@ -490,6 +525,11 @@ Annotation do Spring que marca um método como ouvinte de eventos do `Applicatio
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/11 - Eventos do ApplicationContext|Eventos do ApplicationContext]].
 
+### event loop
+Modelo de execução do WebFlux/Netty em que poucos threads processam muitas conexões de forma não-bloqueante. Como cada thread atende várias requisições, bloquear um deles (ex.: JDBC ou `sleep`) paralisa todas as conexões que ele estava servindo — daí a regra de nunca bloquear o event loop.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]].
+
 ### @ExceptionHandler
 Annotation do Spring MVC que marca um método como tratador de uma ou mais exceções: quando um controller (ou handler) lança o tipo declarado, o método anotado é invocado para produzir a resposta. Funciona local ao controller ou globalmente dentro de uma classe `@ControllerAdvice`; o método pode retornar `ResponseEntity`, `ProblemDetail` ou um corpo serializado. Alfabetiza como "ExceptionHandler".
 
@@ -523,6 +563,21 @@ Look and Feel moderno (flat, com suporte a dark mode) desenvolvido pela FormDev,
 
 Veja também: [[03-Dominios/Java/Swing/09 - Look and Feel e temas|Look and Feel]].
 
+### flatMap (reativo)
+Operador que transforma cada elemento em outro publisher e achata o resultado (`T → Publisher<R>`), usado para encadear chamadas assíncronas (ex.: buscar o usuário e, para cada um, buscar seus pedidos). Não garante ordem — os inner publishers são assinados em paralelo e intercalados conforme respondem.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/05 - map e flatMap — transformando o fluxo|map e flatMap]].
+
+### Flow (java.util.concurrent)
+As interfaces de Reactive Streams absorvidas no JDK no Java 9: `Flow.Publisher`, `Flow.Subscriber`, `Flow.Subscription` e `Flow.Processor`. São idênticas em contrato à spec Reactive Streams, mas vivem no `java.util.concurrent`, dando ao JDK um vocabulário comum sem depender de bibliotecas externas.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/02 - Reactive Streams — a spec das 4 interfaces e o Flow do Java 9|Reactive Streams]].
+
+### Flux
+Publisher do Project Reactor que representa uma sequência assíncrona de 0-N elementos (`Flux<T>`). É o tipo usado quando o fluxo pode emitir vários valores antes de completar (ou falhar); complementa o `Mono` (0-1).
+
+Veja também: [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]].
+
 ### Flyway
 Ferramenta de migração de schema baseada em SQL versionado (`V<versão>__<descrição>.sql`) e repeatable (`R__`), com a tabela de controle `flyway_schema_history` e enforcement de checksum. Veja também: [[03-Dominios/Java/Persistência de dados/16 - Migrations de schema — Flyway, Liquibase e expand-and-contract|Migrations de schema]].
 
@@ -540,6 +595,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/01 - O que é Spring MVC — a 
 As quatro interfaces funcionais centrais de `java.util.function`. `Function<T,R>` transforma um T em R (`apply`); `Predicate<T>` testa uma condição booleana sobre T (`test`); `Consumer<T>` executa uma ação sobre T sem retorno (`accept`); `Supplier<T>` fornece um T sem receber argumento (`get`). Cada uma traz métodos `default` de composição — `andThen`/`compose` (`Function`), `and`/`or`/`negate` (`Predicate`), `andThen` (`Consumer`) — base da composição funcional e das operações de Stream.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]], [[03-Dominios/Java/Collections e Streams/13 - Composição funcional e funções de alta ordem|Composição funcional]].
+
+### functional endpoint (RouterFunction)
+Modelo do Spring WebFlux em que o roteamento é código explícito (`RouterFunction`) em vez de controllers anotados, e cada rota é uma `HandlerFunction` (`ServerRequest → Mono<ServerResponse>`). Torna o fluxo de uma request um valor de primeira classe, componível e testável sem o container web.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/12 - Functional endpoints — RouterFunction e HandlerFunction|Functional endpoints]].
 
 ### Future
 Interface que representa o resultado de uma operação assíncrona ainda em execução. Permite verificar se concluiu (`isDone`), cancelar (`cancel`) ou obter o resultado bloqueando (`get`). Limitada por não suportar composição; `CompletableFuture` supera essas limitações.
@@ -871,10 +931,25 @@ Associação muitos-para-muitos, mapeada por uma tabela de junção (`@JoinTable
 ### @ManyToOne / @OneToMany
 O par que modela uma associação um-para-muitos. O `@ManyToOne` é o owning side (tem a foreign key); o `@OneToMany(mappedBy = ...)` é o inverse side (só espelha). Veja também: [[03-Dominios/Java/Persistência de dados/05 - Relacionamentos — @ManyToOne, @OneToMany e o owning side|Relacionamentos]].
 
+### map (reativo)
+Operador que transforma cada elemento de um publisher de forma síncrona e 1:1 (`T → R`), sem achatar publishers. É o equivalente reativo do `map` de `Stream`/`Optional`; quando a transformação produz outro publisher, usa-se `flatMap` no lugar.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/05 - map e flatMap — transformando o fluxo|map e flatMap]].
+
+### marble diagram
+Diagrama visual que representa um fluxo reativo no tempo — os elementos emitidos, o sinal de conclusão e o de erro — e o efeito de um operador sobre esse fluxo. É a notação padrão da documentação do Reactor/RxJava para explicar operadores.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]].
+
 ### MDB (message-driven bean)
 Tipo de Enterprise Bean que consome mensagens de forma assíncrona (tipicamente de uma fila/tópico), processando-as fora do fluxo request/response. É o ponto de integração do EJB com mensageria.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/12 - EJB — o legado que moldou a plataforma|EJB — o legado que moldou a plataforma]].
+
+### merge / concat / zip
+Operadores de combinação de publishers no Reactor: `merge` intercala os elementos conforme chegam (sem ordem garantida entre fontes), `concat` concatena ordenado (esgota uma fonte antes da próxima) e `zip` combina elemento-a-elemento, esperando que todos os lados emitam.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/06 - Combinando publishers — zip, merge, concat, filter|Combinando publishers]].
 
 ### method reference
 Atalho sintático para lambdas que apenas delegam a um método existente, na forma `Classe::método` ou `objeto::método`. Quatro variantes: referência a método estático (`Integer::parseInt`), a método de instância via tipo (`String::toUpperCase`), a método de instância via objeto específico (`this::process`) e a construtor (`ArrayList::new`).
@@ -904,6 +979,11 @@ Mecanismo de sincronização intrínseco de todo objeto Java que combina exclus�
 
 Veja também: [[03 - Exclusão mútua com synchronized]].
 
+### Mono
+Publisher do Project Reactor que representa 0-1 elemento assíncrono (`Mono<T>`). É o tipo usado quando a operação produz no máximo um valor — uma busca por id, um POST, um `count`; complementa o `Flux` (0-N).
+
+Veja também: [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]].
+
 ### Mutual exclusion (exclusão mútua)
 Propriedade que garante que apenas uma thread por vez execute uma seção crítica de código que acessa estado compartilhado. Implementada em Java por `synchronized`, `ReentrantLock` ou semáforos com 1 permissão. Previne condições de corrida ao serializar o acesso.
 
@@ -929,6 +1009,11 @@ Funcionalidade do HotSpot que rastreia o uso de memória nativa da JVM categoriz
 
 Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
 
+### non-blocking I/O
+Modelo de I/O em que a thread não fica parada esperando a resposta: ela é liberada e retomada por callback quando o dado chega. É a base do modelo reativo e do WebFlux — permite que poucos threads sustentem muitas conexões concorrentes, ao contrário do I/O bloqueante thread-por-request.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/01 - O que é programação reativa — o modelo push, assíncrono e não-bloqueante|O que é programação reativa]].
+
 ## O
 
 ### ObservableList
@@ -940,6 +1025,16 @@ Veja também: [[08 - TableView, cell factories e dados observáveis]].
 Mecanismo de pub/sub embutido no CDI: um bean dispara um evento (`Event<T>.fire`/`fireAsync`) e métodos observadores marcados com `@Observes`/`@ObservesAsync` reagem — desacoplando emissor e ouvintes sem dependência direta. Alfabetiza como "Observes".
 
 Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
+
+### onBackpressureBuffer / Drop / Latest
+Estratégias de overflow do Reactor para quando o produtor é mais rápido que o consumidor: `onBackpressureBuffer` enfileira o excedente (com risco de OOM), `onBackpressureDrop` descarta o que não cabe, e `onBackpressureLatest` mantém apenas o elemento mais recente.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure]].
+
+### onErrorResume / onErrorReturn
+Operadores de recuperação reativa: `onErrorResume` substitui o erro por um publisher de fallback (ex.: buscar de um cache), enquanto `onErrorReturn` substitui por um valor fixo. Ambos transformam um sinal de erro num caminho alternativo de sucesso.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/07 - Error handling reativo — onErrorResume, onErrorReturn, retry|Error handling reativo]].
 
 ### OpenAPI
 Especificação aberta (antiga Swagger Specification) para descrever APIs REST de forma legível por máquina — endpoints, parâmetros, schemas, respostas e segurança — em JSON ou YAML. Serve de contrato e alimenta ferramentas de documentação (Swagger UI), geração de clientes e testes. No Spring Boot é gerada automaticamente pelo springdoc-openapi.
@@ -1062,6 +1157,11 @@ Formato padronizado de corpo de erro HTTP definido pela RFC 9457 (antiga RFC 780
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/10 - Problem Details — RFC 9457|Problem Details — RFC 9457]].
 
+### Processor (Reactive Streams)
+Interface que é `Publisher` e `Subscriber` ao mesmo tempo — um estágio intermediário que consome um fluxo e reemite outro. Raramente usada diretamente no código de aplicação; operadores e `Sinks` cobrem a maioria dos casos. Alfabetiza como "Processor".
+
+Veja também: [[03-Dominios/Java/Programação Reativa/02 - Reactive Streams — a spec das 4 interfaces e o Flow do Java 9|Reactive Streams]].
+
 ### @Produces (producer CDI)
 Method/field producer do CDI (`jakarta.enterprise.inject.Produces`) que fabrica um objeto que o container não criaria sozinho (libs de terceiros, valores de config); `@Disposes` faz o cleanup. NÃO confundir com o `@Produces` do JAX-RS (`jakarta.ws.rs.Produces`), que declara media types. Alfabetiza como "Produces".
 
@@ -1072,6 +1172,11 @@ Annotation do Spring que condiciona o registro de um bean (ou de uma classe `@Co
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profiles|Configuração e profiles]].
 
+### Project Reactor
+Biblioteca reativa da Pivotal/VMware que implementa a spec Reactive Streams e fornece os tipos `Mono` e `Flux` com um vasto conjunto de operadores. É a base sobre a qual o Spring WebFlux é construído. Alfabetiza como "Project".
+
+Veja também: [[03-Dominios/Java/Programação Reativa/01 - O que é programação reativa — o modelo push, assíncrono e não-bloqueante|O que é programação reativa]].
+
 ### projection (JPA)
 Trazer só um subconjunto de campos em vez da entidade inteira, via interface projection (proxy do Spring), class-based/DTO (`record` com `SELECT new`) ou dynamic (`Class<T>`). Ideal para listagens read-only. Veja também: [[03-Dominios/Java/Persistência de dados/10 - Projections e DTOs — não vazar a entidade|Projections e DTOs]].
 
@@ -1079,6 +1184,16 @@ Trazer só um subconjunto de campos em vez da entidade inteira, via interface pr
 Abstração central do sistema de binding do JavaFX (`javafx.beans.property`). Uma `Property<T>` é ao mesmo tempo um `ObservableValue` (notifica listeners de invalidação de forma *lazy* ou de mudança de valor de forma *eager*) e um `WritableValue`. Subclasses concretas (`SimpleStringProperty`, `IntegerProperty`…) são usadas em beans de ViewModel para habilitar binding declarativo.
 
 Veja também: [[07 - Properties e binding]].
+
+### Publisher / Subscriber / Subscription
+As três interfaces centrais do Reactive Streams: o `Publisher` é a fonte de dados, o `Subscriber` é o consumidor, e a `Subscription` é a ligação entre eles que carrega a demanda (`request(n)`) e o cancelamento (`cancel`). É por essa tríade que o backpressure flui.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/02 - Reactive Streams — a spec das 4 interfaces e o Flow do Java 9|Reactive Streams]].
+
+### publishOn / subscribeOn
+Operadores de troca de thread no Reactor. `subscribeOn` afeta a origem da cadeia — em qual `Scheduler` a subscription e a fonte rodam — independentemente de onde aparece no pipeline. `publishOn` troca a thread daquele ponto para baixo, afetando os operadores subsequentes.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]].
 
 ## Q
 
@@ -1097,6 +1212,21 @@ Anotação do Spring Data para escrever a query explicitamente — em JPQL (sobr
 
 ## R
 
+### R2DBC
+Reactive Relational Database Connectivity: a API/driver não-bloqueante para banco relacional, alternativa reativa ao JDBC. Permite acesso a banco sem segurar a thread esperando o resultado, fechando o gap entre o stack reativo e a persistência relacional.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|R2DBC]].
+
+### R2dbcRepository
+Repositório do Spring Data R2DBC cujos métodos devolvem `Mono`/`Flux`; é o equivalente reativo do `JpaRepository`, mas sem ORM nem persistence context — não há dirty checking nem lazy loading, e o mapeamento é direto linha→objeto.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|R2DBC]].
+
+### Reactive Streams
+Especificação de streams assíncronos com backpressure não-bloqueante: padroniza o contrato entre publishers e subscribers (as quatro interfaces `Publisher`/`Subscriber`/`Subscription`/`Processor`). Foi absorvida no `java.util.concurrent.Flow` no Java 9 e é implementada pelo Reactor, RxJava e Akka Streams.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/02 - Reactive Streams — a spec das 4 interfaces e o Flow do Java 9|Reactive Streams]].
+
 ### Record
 Classe de dados imutável declarada com `record NomeClasse(Tipo campo, ...)`. O compilador gera automaticamente construtor canônico, acessores, `equals`, `hashCode` e `toString`. Ideal para portadores de dados sem lógica de negócio.
 
@@ -1106,6 +1236,11 @@ Veja também: [[13 - Records e record patterns]].
 Extensão de pattern matching que desconstói um record diretamente no `instanceof` ou `switch`, ligando seus componentes a variáveis locais. Permite navegação estrutural em hierarquias de dados sem getters explícitos.
 
 Veja também: [[13 - Records e record patterns]], [[14 - Sealed classes e pattern matching]].
+
+### request(n) (demanda)
+O sinal pelo qual o `Subscriber` pede `n` elementos ao `Publisher` através da `Subscription`. É o mecanismo concreto do backpressure: o produtor só pode emitir até o total já demandado, e nunca além — o consumidor dita o ritmo.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure]].
 
 ### @RequestBody
 Annotation do Spring MVC que vincula o corpo da requisição HTTP a um parâmetro do método, desserializando-o (via `HttpMessageConverter`/Jackson) para um objeto Java. Usado em POST/PUT/PATCH para receber payloads JSON; combina com `@Valid` para disparar a Bean Validation sobre o objeto recebido. Alfabetiza como "RequestBody".
@@ -1157,6 +1292,11 @@ Dois paradigmas de renderização de UI. No **retained mode** (JavaFX, Swing), o
 
 Veja também: [[02 - Scene graph — stage, scene e nodes]].
 
+### retry / retryWhen
+Operadores reativos que re-subscrevem a fonte após um erro, refazendo o trabalho do zero. `retry(n)` tenta n vezes; `retryWhen(Retry.backoff(...))` adiciona espera exponencial (com jitter) entre as tentativas, evitando martelar um serviço que está se recuperando.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/07 - Error handling reativo — onErrorResume, onErrorReturn, retry|Error handling reativo]].
+
 ### Richardson Maturity Model
 Modelo de Leonard Richardson que mede o quão "RESTful" é uma API em quatro níveis: nível 0 (um único endpoint, RPC sobre HTTP), nível 1 (recursos identificados por URLs), nível 2 (uso correto dos verbos HTTP e status codes) e nível 3 (HATEOAS — hipermídia guiando o cliente). Serve de régua para avaliar maturidade de design de APIs.
 
@@ -1183,6 +1323,11 @@ Veja também: [[06 - FXML e Scene Builder]].
 Estrutura de dados em árvore do JavaFX que representa todos os nós visuais de uma `Scene`. Cada nó é uma instância de `Node` (shapes, controles, containers, grupos); o framework percorre o grafo para layout, renderização e hit-testing. Opera em retained mode — o desenvolvedor modifica a árvore e o runtime decide o que redesenhar.
 
 Veja também: [[02 - Scene graph — stage, scene e nodes]].
+
+### Scheduler (Reactor)
+Abstração do Reactor para controlar em qual thread/pool um trecho do pipeline roda. As fábricas de `Schedulers` oferecem `parallel` (CPU-bound), `boundedElastic` (I/O bloqueante isolado), `single` e `immediate`. Combina-se com `publishOn`/`subscribeOn` para mover o trabalho entre threads.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]].
 
 ### Scoped value
 Mecanismo final (permanente) do Java 25 para compartilhar dados imutáveis com threads descendentes sem passar parâmetros explicitamente, como alternativa segura e eficiente ao `ThreadLocal`. O valor é acessível apenas dentro de um escopo delimitado e não pode ser alterado após a ligação.
@@ -1282,6 +1427,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
 O framework web do Spring baseado no padrão front controller: um `DispatcherServlet` recebe as requisições e orquestra `HandlerMapping`, `HandlerAdapter`, interceptors e `HttpMessageConverter` para produzir a resposta. Roda sobre a Servlet API e é a base para construir aplicações web e APIs REST com `@Controller`/`@RestController`.
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/01 - O que é Spring MVC — a camada web sobre o container|O que é Spring MVC]].
+
+### Spring WebFlux
+O stack web não-bloqueante do Spring, construído sobre o Project Reactor e tipicamente servido por Netty. É a alternativa reativa ao Spring MVC: usa o `DispatcherHandler` em vez do `DispatcherServlet`, handlers que devolvem `Mono`/`Flux`, e roda sobre um event loop em vez de thread-por-request.
+
+Veja também: [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]].
 
 ### SpringApplication
 Classe que faz o bootstrap de uma aplicação Spring Boot (`SpringApplication.run(App.class, args)`): cria o `ApplicationContext` apropriado, aplica auto-configuration, sobe o servidor embarcado, dispara listeners e banners. Customizável via `SpringApplicationBuilder` ou propriedades. Alfabetiza como "SpringApplication".
@@ -1478,9 +1628,9 @@ Perfil intermediário do Jakarta EE: inclui as specs típicas de aplicações we
 Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
 
 ### WebClient
-Cliente HTTP reativo e não-bloqueante do Spring WebFlux, com API fluente (`get().uri(...).retrieve().bodyToMono(...)`). Suporta streaming e composição reativa via Project Reactor (`Mono`/`Flux`); é a escolha para cenários assíncronos/reativos ou alta concorrência, complementando o `RestClient` síncrono. Alfabetiza como "WebClient".
+Cliente HTTP reativo e não-bloqueante do Spring WebFlux, com API fluente (`get().uri(...).retrieve().bodyToMono(...)`). Suporta streaming e composição reativa via Project Reactor (`Mono`/`Flux`); é a escolha para cenários assíncronos/reativos ou alta concorrência, complementando o `RestClient` síncrono. Sob o capô, libera a thread chamadora enquanto a resposta não chega, integrando-se ao event loop do Netty — por isso uma única conexão pode multiplexar muitas requests sem inflar o pool de threads. Alfabetiza como "WebClient".
 
-Veja também: [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP — RestClient, WebClient, RestTemplate]].
+Veja também: [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP — RestClient, WebClient, RestTemplate]], [[03-Dominios/Java/Programação Reativa/11 - WebClient — o cliente HTTP reativo a fundo|WebClient a fundo]].
 
 ### Wildcard
 Argumento de tipo genérico desconhecido, representado por `?`. Pode ser não-limitado (`?`), com limite superior (`? extends T`) ou com limite inferior (`? super T`). Aumenta a flexibilidade das APIs genéricas ao custo de restringir as operações permitidas sobre a coleção.
