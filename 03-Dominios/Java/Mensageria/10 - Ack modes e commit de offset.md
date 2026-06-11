@@ -170,14 +170,14 @@ Com `MANUAL` ou `MANUAL_IMMEDIATE`, esquecer de chamar `acknowledge()` faz com q
 
 ## Em entrevista
 
-**Frases para usar em inglês:**
+### Frase pronta (inglês)
 
 - *"Spring Kafka takes over offset management by setting `enable.auto.commit` to false and exposing the `AckMode` abstraction."*
 - *"With `MANUAL_IMMEDIATE`, the offset is committed right when `acknowledge()` is called, giving fine-grained control at the record level."*
 - *"The golden rule for at-least-once is: process first, commit after — never the other way around."*
 - *"Committing before processing accidentally turns at-least-once into at-most-once, which means data loss on crashes."*
 
-**Vocabulário técnico:**
+### Vocabulário
 
 | Termo | Significado resumido |
 |---|---|
@@ -191,8 +191,8 @@ Com `MANUAL` ou `MANUAL_IMMEDIATE`, esquecer de chamar `acknowledge()` faz com q
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/00 - MOC - Galho 14 - Mensageria|MOC — Galho 14: Mensageria]]
-- [[03-Dominios/Java/Java|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Backend/Kafka/Kafka Concepts/12. Consumer Offsets|Consumer Offsets (infra)]]
 - [[03-Dominios/Java/Mensageria/08 - @KafkaListener — consumindo mensagens|@KafkaListener]]
 - [[03-Dominios/Java/Mensageria/11 - Tratamento de erro no consumo|Tratamento de erro no consumo]]

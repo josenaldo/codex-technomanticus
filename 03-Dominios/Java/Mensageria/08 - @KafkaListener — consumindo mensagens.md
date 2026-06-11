@@ -194,7 +194,7 @@ Com `auto.offset.reset=latest` (o padrão do Kafka), um grupo *novo* só começa
 ## Veja também
 
 - [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
-- [[03-Dominios/Java/index|Trilha Java Senior]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Backend/Kafka/Kafka Concepts/10. Consumers|Consumers (infra)]]
 - [[03-Dominios/Java/Backend/Kafka/Kafka Concepts/11. Consumer Groups|Consumer Groups (infra)]]
 - [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]

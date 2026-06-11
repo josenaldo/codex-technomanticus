@@ -17,7 +17,8 @@ aliases:
 
 # Kafka Streams pela API Java
 
-> **TL;DR** — Kafka Streams é uma biblioteca Java (não um cluster, não um servidor separado) que você embute na sua aplicação para processar dados de tópicos Kafka com operações encadeadas, stateless ou stateful. A topologia é declarada via `StreamsBuilder`; os tipos centrais são `KStream` (fluxo contínuo), `KTable` (snapshot particionado) e `GlobalKTable` (snapshot replicado em todas as instâncias). Para a mecânica de infra (partições, consumer groups, rebalance interno), veja [[03-Dominios/Java/Backend/Kafka/Kafka Concepts/18. Kafka Streams|Kafka Streams (infra)]].
+> [!abstract] TL;DR
+> Kafka Streams é uma biblioteca Java (não um cluster, não um servidor separado) que você embute na sua aplicação para processar dados de tópicos Kafka com operações encadeadas, stateless ou stateful. A topologia é declarada via `StreamsBuilder`; os tipos centrais são `KStream` (fluxo contínuo), `KTable` (snapshot particionado) e `GlobalKTable` (snapshot replicado em todas as instâncias). Para a mecânica de infra (partições, consumer groups, rebalance interno), veja [[03-Dominios/Java/Backend/Kafka/Kafka Concepts/18. Kafka Streams|Kafka Streams (infra)]].
 
 ---
 
@@ -157,14 +158,14 @@ Por padrão, stores criados via `Materialized.as(...)` são persistidos com chan
 
 ## Em entrevista
 
-Frases de partida em inglês:
+### Frase pronta (inglês)
 
 - *"Kafka Streams is a client library — it runs inside your application process, so there's no additional cluster to manage beyond the Kafka broker itself."*
 - *"KTable represents the latest state per key, backed by a local state store and a changelog topic for fault tolerance; GlobalKTable replicates the full table to every application instance, which removes the co-partitioning requirement for joins."*
 - *"Stateful operations like aggregations and windowed counts use a local RocksDB store; on failure or rebalance, the store is rebuilt by replaying the changelog topic."*
 - *"The key difference between Kafka Streams and Kafka Connect is that Streams is application code doing stream processing, while Connect is infrastructure for moving data between Kafka and external systems."*
 
-**Vocabulário para usar:**
+### Vocabulário
 
 | Termo | Uso |
 |---|---|
@@ -179,8 +180,8 @@ Frases de partida em inglês:
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/index|MOC — Galho 14: Mensageria e eventos]]
-- [[03-Dominios/Java/index|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Backend/Kafka/Kafka Concepts/18. Kafka Streams|Kafka Streams (infra)]]
 - [[03-Dominios/Java/Mensageria/19 - Kafka Connect pela ótica da app|Kafka Connect pela ótica da app]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]

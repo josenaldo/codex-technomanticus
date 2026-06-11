@@ -195,14 +195,28 @@ Nesses casos, use Kafka ou RabbitMQ com as garantias de entrega adequadas.
 
 ## Em entrevista
 
-> "The Spring `ApplicationContext` ships with a built-in, **in-process event bus** powered by `ApplicationEventPublisher` and `@EventListener`. It's great for decoupling modules inside a monolith — for example, triggering a notification after an order is saved — but it has **no durability**: events live only in the current JVM process. The key architectural tool is `@TransactionalEventListener(phase=AFTER_COMMIT)`, which guarantees the listener fires **only after the publishing transaction commits successfully**, eliminating the classic dual-write bug where a side effect runs before a potential rollback. When I need cross-service delivery, replay after restart, or backpressure across multiple consumers, I switch to a **message broker** like Kafka or RabbitMQ, because those guarantees simply don't exist in the in-process bus."
+### Frase pronta (inglês)
 
-Vocabulário para soltar com naturalidade: **in-process event bus**, **ApplicationEventPublisher**, **transactional event listener**, **AFTER_COMMIT phase**, **same-thread execution**, **fallbackExecution**, **dual-write bug**, **durability**, **broker vs in-process**.
+"The Spring `ApplicationContext` ships with a built-in, in-process event bus powered by `ApplicationEventPublisher` and `@EventListener`. It's great for decoupling modules inside a monolith — for example, triggering a notification after an order is saved — but it has no durability: events live only in the current JVM process. The key architectural tool is `@TransactionalEventListener(phase=AFTER_COMMIT)`, which guarantees the listener fires only after the publishing transaction commits successfully, eliminating the classic dual-write bug where a side effect runs before a potential rollback. When I need cross-service delivery, replay after restart, or backpressure across multiple consumers, I switch to a message broker like Kafka or RabbitMQ, because those guarantees simply don't exist in the in-process bus."
+
+### Vocabulário
+
+| Termo PT | Termo EN |
+|---|---|
+| barramento de eventos in-process | in-process event bus |
+| publicador de eventos | ApplicationEventPublisher |
+| listener transacional | transactional event listener |
+| fase após commit | AFTER_COMMIT phase |
+| execução na mesma thread | same-thread execution |
+| execução sem transação ativa | fallbackExecution |
+| bug de escrita dupla | dual-write bug |
+| durabilidade | durability |
+| broker vs in-process | broker vs in-process |
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/Mensageria|MOC — Mensageria (Galho 14)]]
-- [[03-Dominios/Java/Java|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Spring Core e Boot/11 - Eventos do ApplicationContext|Eventos do ApplicationContext]] (Galho 8 — o mecanismo: `@EventListener`, `ApplicationEvent`, ordenação, eventos genéricos)
 - [[03-Dominios/Java/Mensageria/01 - O que é mensageria e arquitetura orientada a eventos|O que é mensageria]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]

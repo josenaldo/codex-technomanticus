@@ -102,7 +102,7 @@ Sem ele, o comportamento padrão do Spring Kafka é lançar `ListenerExecutionFa
 Com o `ErrorHandlingDeserializer`:
 - O record inválido é consumido normalmente (offset avança).
 - O payload do record problemático chega ao listener como `null`.
-- A exceção original é serializada e colocada em um header especial (`DeserializationExceptionHeader`) que pode ser inspecionado pelo listener ou pelo `SeekToCurrentErrorHandler`.
+- A exceção original é serializada e colocada em um header especial (`DeserializationExceptionHeader`) que pode ser inspecionado pelo listener ou pelo `DefaultErrorHandler`.
 
 O consumer não trava e pode rotear a mensagem para uma DLT (Dead Letter Topic).
 
@@ -120,7 +120,7 @@ public ConsumerFactory<String, Pedido> consumerFactory() {
     // Deserializer configurado programaticamente (alternativa ao application.yml)
     JsonDeserializer<Pedido> deserializer = new JsonDeserializer<>(Pedido.class);
     deserializer.addTrustedPackages("com.example.pedidos");
-    // Remove o type header após leitura para não propagar para o listener
+    // Preserva o type header para o listener inspecionar
     deserializer.setRemoveTypeHeaders(false);
     deserializer.setUseTypeMapperForKey(false);
 
@@ -220,13 +220,13 @@ Quando o type mapping não é configurado, o header `__TypeId__` carrega o nome 
 
 ## Em entrevista
 
-> "If a Kafka record can't be deserialized, what happens by default, and how do you prevent the consumer from getting stuck?"
+### Frase pronta (inglês)
 
-Resposta esperada em inglês:
+"If a Kafka record can't be deserialized, what happens by default, and how do you prevent the consumer from getting stuck?"
 
-> "By default, the deserialization exception is thrown before the listener is invoked, so the offset doesn't advance and the consumer keeps retrying the same record — that's the poison-pill scenario. The standard fix in Spring Kafka is to wrap the real deserializer with `ErrorHandlingDeserializer`. When deserialization fails, the wrapper catches the exception, delivers a null payload to the listener, and attaches the exception to a record header. The listener can then inspect that header and route the record to a dead-letter topic instead of blocking the partition."
+"By default, the deserialization exception is thrown before the listener is invoked, so the offset doesn't advance and the consumer keeps retrying the same record — that's the poison-pill scenario. The standard fix in Spring Kafka is to wrap the real deserializer with `ErrorHandlingDeserializer`. When deserialization fails, the wrapper catches the exception, delivers a null payload to the listener, and attaches the exception to a record header. The listener can then inspect that header and route the record to a dead-letter topic instead of blocking the partition."
 
-**Vocabulário-chave:**
+### Vocabulário
 
 | Termo EN | Termo PT-BR |
 |---|---|

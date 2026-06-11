@@ -205,13 +205,13 @@ Se o banco caiu e o back-off é de 100 ms com 10 tentativas, o consumer vai mart
 
 ## Em entrevista
 
-> "When a Kafka consumer throws an exception, how does Spring Kafka decide whether to retry?"
+### Frase pronta (inglês)
 
-Resposta estruturada (EN):
+"When a Kafka consumer throws an exception, how does Spring Kafka decide whether to retry?"
 
-> "Spring Kafka delegates that decision to the `CommonErrorHandler` — specifically, the `DefaultErrorHandler` introduced in version 2.8 to replace the deprecated `SeekToCurrentErrorHandler`. It consults a `BackOff` strategy — fixed or exponential — to determine retry count and delay. If the exception is classified as non-retryable via `addNotRetryableExceptions`, retries are skipped entirely and the record goes straight to the recoverer, typically a `DeadLetterPublishingRecoverer`. Once the back-off is exhausted, the same recovery path triggers. This prevents a single bad record from blocking an entire partition indefinitely."
+"Spring Kafka delegates that decision to the `CommonErrorHandler` — specifically, the `DefaultErrorHandler` introduced in version 2.8 to replace the deprecated `SeekToCurrentErrorHandler`. It consults a `BackOff` strategy — fixed or exponential — to determine retry count and delay. If the exception is classified as non-retryable via `addNotRetryableExceptions`, retries are skipped entirely and the record goes straight to the recoverer, typically a `DeadLetterPublishingRecoverer`. Once the back-off is exhausted, the same recovery path triggers. This prevents a single bad record from blocking an entire partition indefinitely."
 
-**Vocabulário-chave:**
+### Vocabulário
 
 | Termo | Contexto |
 |---|---|
@@ -226,8 +226,8 @@ Resposta estruturada (EN):
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/index|MOC — Mensageria]]
-- [[03-Dominios/Java/index|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Mensageria/12 - Dead Letter Topic — o padrão DLQ|Dead Letter Topic — o padrão DLQ]]
 - [[03-Dominios/Java/Mensageria/10 - Ack modes e commit de offset|Ack modes e commit de offset]]
 - [[03-Dominios/Java/Mensageria/09 - (De)serialização de mensagens|(De)serialização de mensagens]]

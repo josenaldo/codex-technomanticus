@@ -2,7 +2,11 @@
 title: "Transações e exactly-once no Spring Kafka"
 fase: adepto
 tags:
-  - java/mensageria/adepto/spring-kafka/kafka
+  - java
+  - mensageria
+  - adepto
+  - spring-kafka
+  - kafka
 created: 2026-06-11
 updated: 2026-06-11
 type: concept
@@ -162,14 +166,26 @@ Um `KafkaTemplate` cuja `ProducerFactory` tem `transaction-id-prefix` é transac
 
 ## Em entrevista
 
-> Kafka transactions make the read-process-write cycle atomic: consuming from an input topic, producing to output topics, and committing the consumer offsets all succeed or all abort together, driven in Spring by a `KafkaTransactionManager` and a stable `transactional.id`. The crucial caveat I always stress is that **exactly-once semantics is internal to Kafka** — it covers messages and offsets within the broker, but it does not span an external database. A method that both writes to Postgres and produces to Kafka is a dual-write, not a distributed transaction, so for end-to-end correctness I reach for the Outbox pattern plus idempotent consumers rather than pretending `@Transactional` gives me cross-system atomicity. On the consumer side I also make sure downstream readers run with `isolation.level=read_committed`, otherwise they'd see uncommitted or aborted records and the whole transactional effort leaks.
+### Frase pronta (inglês)
 
-Vocabulário para soltar com naturalidade: **transactional.id**, **fencing / zombie producer**, **last stable offset (LSO)**, **read_committed**, **EOS v2**, **dual-write**, **read-process-write**.
+"Kafka transactions make the read-process-write cycle atomic: consuming from an input topic, producing to output topics, and committing the consumer offsets all succeed or all abort together, driven in Spring by a `KafkaTransactionManager` and a stable `transactional.id`. The crucial caveat I always stress is that exactly-once semantics is internal to Kafka — it covers messages and offsets within the broker, but it does not span an external database. A method that both writes to Postgres and produces to Kafka is a dual-write, not a distributed transaction, so for end-to-end correctness I reach for the Outbox pattern plus idempotent consumers rather than pretending `@Transactional` gives me cross-system atomicity. On the consumer side I also make sure downstream readers run with `isolation.level=read_committed`, otherwise they'd see uncommitted or aborted records and the whole transactional effort leaks."
+
+### Vocabulário
+
+| Termo PT | Termo EN |
+|---|---|
+| id transacional | transactional.id |
+| cercamento / produtor zumbi | fencing / zombie producer |
+| último offset estável | last stable offset (LSO) |
+| leitura confirmada | read_committed |
+| semântica exatamente-uma-vez v2 | EOS v2 |
+| escrita dupla | dual-write |
+| lê-processa-escreve | read-process-write |
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/Mensageria|MOC — Mensageria (Galho 14)]]
-- [[03-Dominios/Java/Java|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Mensageria/03 - Garantias de entrega — e a falácia do exactly-once|Garantias de entrega]]
 - [[03-Dominios/Java/Mensageria/20 - Idempotência — o pilar do at-least-once|Idempotência]]
 - [[03-Dominios/Java/Mensageria/21 - O padrão Outbox|O padrão Outbox]]

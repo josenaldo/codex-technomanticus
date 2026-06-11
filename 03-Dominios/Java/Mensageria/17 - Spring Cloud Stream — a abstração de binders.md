@@ -17,7 +17,7 @@ updated: 2026-06-11
 
 # Spring Cloud Stream — a abstração de binders
 
-> [!tldr] TL;DR
+> [!abstract] TL;DR
 > Spring Cloud Stream coloca uma camada de abstração entre seu código e o broker de mensagens. Você escreve `Supplier`, `Function` e `Consumer` como beans Java padrão; o framework conecta esses beans ao Kafka ou RabbitMQ via **binders**. A indireção vale quando a troca de broker é um requisito real — e atrapalha quando não é.
 
 ---
@@ -218,26 +218,30 @@ Código que funciona perfeitamente com Kafka (ex.: dependente de ordenação por
 
 ## Em entrevista
 
-> [!example] Frases em inglês
-> - *"Spring Cloud Stream decouples application logic from the messaging broker by introducing a binder abstraction."*
-> - *"Instead of using broker-specific APIs, we define `Supplier`, `Function`, and `Consumer` beans, and the framework handles the binding to Kafka or RabbitMQ."*
-> - *"The annotation-based model with `@StreamListener` and `@EnableBinding` was removed in version 4.0 — the functional model is the only supported approach today."*
-> - *"The binding naming convention is `functionName-in-0` for input and `functionName-out-0` for output."*
+### Frase pronta (inglês)
 
-> [!info] Vocabulário técnico
-> - **binder** — componente que adapta o SCSt a um broker específico
-> - **binding** — mapeamento entre um bean funcional e um tópico/fila
-> - **destination** — nome do tópico (Kafka) ou exchange (RabbitMQ) no `spring.cloud.stream.bindings`
-> - **consumer group** — propriedade `group` no binding de entrada; determina como mensagens são distribuídas entre instâncias
-> - **functional definition** — `spring.cloud.function.definition`; especifica qual bean funcional ativar
-> - **leaky abstraction** — abstração que vaza os detalhes do que ela tenta esconder; o SCSt não elimina as diferenças semânticas entre brokers
+- *"Spring Cloud Stream decouples application logic from the messaging broker by introducing a binder abstraction."*
+- *"Instead of using broker-specific APIs, we define `Supplier`, `Function`, and `Consumer` beans, and the framework handles the binding to Kafka or RabbitMQ."*
+- *"The annotation-based model with `@StreamListener` and `@EnableBinding` was removed in version 4.0 — the functional model is the only supported approach today."*
+- *"The binding naming convention is `functionName-in-0` for input and `functionName-out-0` for output."*
+
+### Vocabulário
+
+| Termo PT | Termo EN |
+|---|---|
+| adaptador de broker | binder |
+| mapeamento funcional-tópico | binding |
+| destino | destination |
+| grupo de consumidores | consumer group |
+| definição funcional | functional definition |
+| abstração com vazamento | leaky abstraction |
 
 ---
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/index|MOC — Mensageria]]
-- [[03-Dominios/Java/index|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Mensageria/06 - Spring para mensageria — o panorama|Spring para mensageria]]
 - [[03-Dominios/Java/Mensageria/25 - Mensageria reativa — Reactor Kafka|Mensageria reativa]] (planejado)
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]

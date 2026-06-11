@@ -17,7 +17,8 @@ aliases:
 
 # Schema e contratos — Avro e Schema Registry
 
-> **TL;DR** — Sem schema explícito, producer e consumer compartilham um contrato invisível: qualquer renomeação de campo quebra o consumer em produção sem aviso. O Confluent Schema Registry resolve isso centralizando o registro de schemas (Avro, Protobuf ou JSON Schema), atribuindo um `schema_id` único a cada versão e impondo políticas de compatibilidade (BACKWARD, FORWARD, FULL) que protegem o pipeline antes do deploy.
+> [!abstract] TL;DR
+> Sem schema explícito, producer e consumer compartilham um contrato invisível: qualquer renomeação de campo quebra o consumer em produção sem aviso. O Confluent Schema Registry resolve isso centralizando o registro de schemas (Avro, Protobuf ou JSON Schema), atribuindo um `schema_id` único a cada versão e impondo políticas de compatibilidade (BACKWARD, FORWARD, FULL) que protegem o pipeline antes do deploy.
 
 ---
 
@@ -185,14 +186,14 @@ Deixar a política como NONE (ou nunca configurar, aceitando o padrão global se
 
 ## Em entrevista
 
-**Frases de impacto (EN):**
+### Frase pronta (inglês)
 
 - *"Schema Registry enforces explicit contracts between producers and consumers at registration time, not at runtime."*
 - *"BACKWARD compatibility means a new consumer can read old data — that's the safe default when you deploy consumers before producers."*
 - *"The schema ID in the wire format means only 5 bytes of overhead per message instead of repeating the full schema."*
 - *"Without schema governance, any field rename is a silent breaking change waiting to surface in production."*
 
-**Vocabulário técnico:**
+### Vocabulário
 
 | Termo | Significado |
 |---|---|
@@ -208,8 +209,8 @@ Deixar a política como NONE (ou nunca configurar, aceitando o padrão global se
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/index|MOC — Galho 14: Mensageria]]
-- [[03-Dominios/Java/index|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Web e APIs REST/05 - Serialização JSON com Jackson|Serialização JSON com Jackson]]
 - [[03-Dominios/Java/Mensageria/24 - Versionamento e evolução de eventos|Versionamento e evolução de eventos]]
 - [[03-Dominios/Java/Mensageria/27 - Protocol Buffers — a IDL e a serialização binária|Protocol Buffers]]

@@ -18,7 +18,8 @@ updated: 2026-06-11
 
 # Dead Letter Topic — o padrão DLQ
 
-> **TL;DR** — Quando uma mensagem falha repetidamente e os retries se esgotam, ela não pode ser descartada silenciosamente. O padrão DLQ (Dead Letter Queue / Dead Letter Topic) a redireciona para um destino separado — o `*-dlt` no Kafka ou o *dead-letter exchange* no RabbitMQ — onde pode ser inspecionada, alertada e reprocessada depois que a causa-raiz for corrigida.
+> [!abstract] TL;DR
+> Quando uma mensagem falha repetidamente e os retries se esgotam, ela não pode ser descartada silenciosamente. O padrão DLQ (Dead Letter Queue / Dead Letter Topic) a redireciona para um destino separado — o `*-dlt` no Kafka ou o *dead-letter exchange* no RabbitMQ — onde pode ser inspecionada, alertada e reprocessada depois que a causa-raiz for corrigida.
 
 ---
 
@@ -177,14 +178,14 @@ Cada tópico de retry criado pelo `@RetryableTopic` consome recursos do broker (
 
 ## Em entrevista
 
-**Frases-chave em inglês:**
+### Frase pronta (inglês)
 
 - *"A dead letter topic is where messages land after all retry attempts are exhausted, preventing data loss without blocking the consumer."*
 - *"With `@RetryableTopic`, Spring Kafka implements non-blocking retries by forwarding failed messages to intermediate retry topics and eventually to the DLT."*
 - *"One common pitfall is setting up a DLT without any alerting — messages silently pile up and the team only finds out during an incident."*
 - *"Before replaying a DLT, you must fix the root cause; otherwise the messages just cycle back."*
 
-**Vocabulário técnico:**
+### Vocabulário
 
 | Termo | Significado |
 |---|---|
@@ -200,8 +201,8 @@ Cada tópico de retry criado pelo `@RetryableTopic` consome recursos do broker (
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/MOC — Galho 14 Mensageria|MOC — Galho 14 Mensageria]]
-- [[03-Dominios/Java/Trilha Java Senior|Trilha Java Senior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Mensageria/11 - Tratamento de erro no consumo|Tratamento de erro no consumo]]
 - [[03-Dominios/Java/Mensageria/15 - Spring AMQP e RabbitMQ|Spring AMQP e RabbitMQ]]
 - [[03-Dominios/Java/Mensageria/26 - Observabilidade em mensageria|Observabilidade em mensageria]]

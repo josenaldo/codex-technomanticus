@@ -310,7 +310,7 @@ Tentar replicar o modelo de "consumidor dedicado por partição" do Kafka em Rab
 
 ## Em entrevista
 
-**Frases em inglês prontas para uso:**
+### Frase pronta (inglês)
 
 1. *"In AMQP, producers never publish directly to a queue — they send to an exchange, and the exchange routes to queues based on bindings and routing keys."*
 2. *"Fanout exchanges broadcast to every bound queue regardless of routing key, so if you need filtering, you want direct or topic instead."*
@@ -318,7 +318,7 @@ Tentar replicar o modelo de "consumidor dedicado por partição" do Kafka em Rab
 4. *"Quorum queues use the Raft consensus algorithm, which means a message is only confirmed to the producer once a majority of nodes have persisted it — strong durability at the cost of some latency."*
 5. *"RabbitMQ Streams give you Kafka-like replay semantics within RabbitMQ: messages aren't deleted after consumption, and consumers can seek to any offset or timestamp."*
 
-**Vocabulário essencial:**
+### Vocabulário
 
 | Termo | Significado |
 |---|---|
@@ -333,8 +333,8 @@ Tentar replicar o modelo de "consumidor dedicado por partição" do Kafka em Rab
 
 ## Veja também
 
-- [[03-Dominios/Java/Mensageria/Mensageria|MOC — Mensageria na JVM]]
-- [[03-Dominios/Java/Java|Trilha Java Sênior]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria (MOC do galho)]]
+- [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Mensageria/04 - O ecossistema de brokers na JVM|O ecossistema de brokers]]
 - [[03-Dominios/Java/Mensageria/12 - Dead Letter Topic — o padrão DLQ|Dead Letter Topic]]
 - [[03-Dominios/Java/Mensageria/02 - Os modelos de mensageria — queue vs topic|Queue vs topic]]
