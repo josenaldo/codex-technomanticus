@@ -35,6 +35,11 @@ Anomalia em algoritmos lock-free onde um valor lido como A é alterado para B e 
 
 Veja também: [[06 - Atômicos e operações lock-free]].
 
+### ABAC (attribute-based)
+Modelo de autorização que decide o acesso por **atributos** (do usuário, do recurso, do contexto) em vez de papéis fixos; no Spring Security expressa-se via SpEL. Mais flexível que o RBAC, porém mais difícil de auditar.
+
+Veja também: [[03-Dominios/Java/Segurança/14 - Autorização avançada — AuthorizationManager, RBAC vs ABAC|Autorização avançada]].
+
 ### Action API
 `Action`/`AbstractAction` encapsulam um comportamento e seu estado (`enabled`, texto, ícone, accelerator key) em um único objeto reutilizável. O mesmo objeto pode ser plugado em botão, item de menu e toolbar, mantendo todos sincronizados automaticamente.
 
@@ -49,6 +54,11 @@ Veja também: [[03-Dominios/Java/Swing/04 - O modelo de eventos|Modelo de evento
 A ação que um aspecto executa, associada a um pointcut: define *o quê* fazer e *quando* (`@Before`, `@After`, `@AfterReturning`, `@AfterThrowing`, `@Around`). O `@Around` é o mais poderoso — recebe um `ProceedingJoinPoint` e decide se e quando chama o método interceptado.
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
+
+### alg: none (ataque JWT)
+Ataque em que o header do token traz `"alg":"none"`, pedindo que o servidor aceite um JWT **sem assinatura**; uma biblioteca ingênua valida e o atacante forja qualquer claim. Defesa: whitelist explícita de algoritmos.
+
+Veja também: [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e validação|JWT]].
 
 ### API versioning
 Estratégias para evoluir uma API sem quebrar clientes existentes: versão na URI (`/v1/...`), em header customizado, via content negotiation (media type versionado) ou query param. Cada abordagem tem trade-offs de visibilidade, cacheabilidade e aderência ao REST; o Spring MVC suporta todas via atributos de `@RequestMapping` (path, headers, params, produces).
@@ -74,6 +84,31 @@ Veja também: [[03-Dominios/Java/Programação Reativa/04 - Nada acontece até o
 Variável que suporta operações de leitura, escrita e atualização compostas sem necessidade de `synchronized`, usando instruções CAS do hardware. O pacote `java.util.concurrent.atomic` oferece `AtomicInteger`, `AtomicLong`, `AtomicReference` e variantes. Garante atomicidade sem bloquear threads.
 
 Veja também: [[06 - Atômicos e operações lock-free]].
+
+### AuthenticationManager
+Ponto central da autenticação no Spring Security: recebe um `Authentication` não-autenticado e devolve um autenticado (ou lança exceção); a implementação padrão `ProviderManager` delega a uma cadeia de `AuthenticationProvider`.
+
+Veja também: [[03-Dominios/Java/Segurança/03 - Autenticação — UserDetailsService, AuthenticationManager, Form e Basic|Autenticação]].
+
+### @AuthenticationPrincipal
+Anotação que injeta o principal autenticado (`UserDetails`, `Jwt` ou `OidcUser`) direto num parâmetro do controller.
+
+Veja também: [[03-Dominios/Java/Segurança/02 - SecurityContext, Authentication e Principal — o usuário atual|SecurityContext, Authentication e Principal]].
+
+### AuthenticationProvider
+Estratégia que sabe autenticar um tipo específico de credencial; o `DaoAuthenticationProvider` usa um `UserDetailsService` + `PasswordEncoder`.
+
+Veja também: [[03-Dominios/Java/Segurança/03 - Autenticação — UserDetailsService, AuthenticationManager, Form e Basic|Autenticação]].
+
+### AuthorizationManager
+Interface (Spring Security 6) que decide uma autorização de forma programática; usada com `.access(...)` para lógica custom além de `hasRole`/SpEL.
+
+Veja também: [[03-Dominios/Java/Segurança/14 - Autorização avançada — AuthorizationManager, RBAC vs ABAC|Autorização avançada]].
+
+### authorizeHttpRequests
+DSL atual (Spring Security 6) para autorização baseada em URL; substituiu `authorizeRequests`. Casa requests com `requestMatchers` e exige `permitAll`/`authenticated`/`hasRole`/`hasAuthority`.
+
+Veja também: [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Autorização baseada em URL]].
 
 ### Autoboxing
 Conversão automática entre tipos primitivos (ex: `int`) e seus wrappers (`Integer`) feita pelo compilador Java. O processo inverso — de wrapper para primitivo — chama-se *unboxing*. Pode causar `NullPointerException` e overhead de alocação se usado em laços intensivos.
@@ -106,6 +141,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — req
 Ponto de sincronização onde um número fixo de threads deve se encontrar antes que qualquer uma prossiga. Ao contrário do `CountDownLatch`, o `CyclicBarrier` pode ser reutilizado após cada ciclo. Útil em algoritmos paralelos com fases distintas.
 
 Veja também: [[09 - Sincronizadores]].
+
+### BCryptPasswordEncoder
+Implementação de `PasswordEncoder` baseada no algoritmo BCrypt: hash adaptativo com work factor ajustável, slow-by-design contra força bruta. Default razoável no Spring Security.
+
+Veja também: [[03-Dominios/Java/Segurança/04 - Password encoding — BCrypt, Argon2 e o DelegatingPasswordEncoder|Password encoding]].
 
 ### @Bean
 Annotation do Spring (`org.springframework.context.annotation.Bean`) aplicada a um método dentro de uma classe `@Configuration`: o valor retornado pelo método é registrado como bean no container. É a definição *explícita e programática* de beans — alternativa ao component scanning, útil para configurar objetos de bibliotecas de terceiros. Alfabetiza como "Bean".
@@ -146,6 +186,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/13 - BeanPostProcessor e Bea
 Hook de extensão que intercepta cada bean *já instanciado*, antes e depois da inicialização (`postProcessBeforeInitialization`/`postProcessAfterInitialization`). É o mecanismo por baixo de boa parte da mágica do Spring — `@Autowired`, `@Async` e os proxies de `@Transactional` são aplicados por BeanPostProcessors.
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/13 - BeanPostProcessor e BeanFactoryPostProcessor|BeanPostProcessor e BeanFactoryPostProcessor]].
+
+### BearerTokenAuthenticationFilter
+Filtro do Resource Server que extrai o token do header `Authorization: Bearer ...`, valida e popula o `SecurityContext`; é o ponto de entrada de uma request autenticada por JWT.
+
+Veja também: [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]].
 
 ### binding (JavaFX)
 Mecanismo de sincronização declarativa entre `Property` observáveis: `propA.bind(propB)` faz com que `propA` se atualize automaticamente sempre que `propB` mudar. Bindings unidirecionais (`bind`) e bidirecionais (`bindBidirectional`) eliminam listeners manuais; bindings podem ser compostos com `Bindings.*` para expressar expressões aritméticas ou booleanas.
@@ -229,6 +274,11 @@ Veja também: [[10 - Exceções e tratamento de erros]].
 Componente da JVM responsável por carregar classes sob demanda a partir do classpath ou modulepath. O modelo de delegação hierárquica (parent delegation) determina que cada classloader consulta seu pai antes de tentar carregar a classe ele mesmo, garantindo que classes do JDK nunca sejam substituídas por versões do usuário.
 
 Veja também: [[05 - Classloading e o delegation model]].
+
+### client credentials (grant)
+Fluxo OAuth2 server-to-server, sem usuário: o cliente troca `client_id`+`client_secret` por um access token. Para integrações de backend, não para login de pessoa.
+
+Veja também: [[03-Dominios/Java/Segurança/12 - OAuth2 e OIDC Client e os grant types|OAuth2 e OIDC Client]].
 
 ### client proxy (CDI)
 Objeto intermediário que o container injeta no lugar da instância real de um bean de escopo normal. A cada chamada de método o proxy resolve a instância do contexto ativo — o que permite injetar um bean de escopo curto (request) em um de escopo longo (application). Exige classe não-final (unproxyable types geram erro de deployment).
@@ -360,8 +410,23 @@ O menor dos três perfis do Jakarta EE (introduzido no EE 10): conjunto mínimo 
 
 Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
 
+### CORS (Cross-Origin Resource Sharing)
+Mecanismo do **browser** que libera ou bloqueia requests entre origens diferentes; não é segurança do servidor (`curl` ignora). Configurado por origens/métodos/headers explícitos.
+
+Veja também: [[03-Dominios/Java/Segurança/11 - CORS — a borda, o preflight e a config de segurança|CORS]].
+
 ### Criteria API
 API programática e type-safe da spec Jakarta Persistence para construir queries em Java (`CriteriaBuilder`, `CriteriaQuery`, `Root`) em vez de strings JPQL. As Specifications do Spring Data são uma camada sobre ela. Veja também: [[03-Dominios/Java/Persistência de dados/15 - Consultas dinâmicas e os limites da JPA — Specifications, Criteria e SQL|Consultas dinâmicas e os limites da JPA]], [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA]].
+
+### CSRF (Cross-Site Request Forgery)
+Ataque em que um site malicioso induz o browser a enviar uma request autenticada via cookie; o Spring Security protege por default com token sincronizado. Desliga-se em APIs stateless com JWT no header.
+
+Veja também: [[03-Dominios/Java/Segurança/10 - CSRF — por que ligado por default e quando desligar|CSRF]].
+
+### CsrfFilter
+Filtro da cadeia que valida o token CSRF em requests mutating (POST/PUT/DELETE/PATCH).
+
+Veja também: [[03-Dominios/Java/Segurança/10 - CSRF — por que ligado por default e quando desligar|CSRF]].
 
 ### CSS do JavaFX (-fx-)
 Sistema de estilização do JavaFX baseado em um subconjunto de CSS 2.1 estendido com propriedades prefixadas `-fx-` (ex.: `-fx-background-color`, `-fx-font-size`). O user-agent stylesheet padrão é o Modena; folhas customizadas são aplicadas via `scene.getStylesheets().add(...)` ou `node.setStyle(...)`. Cada controle expõe pseudo-classes de estado (`:hover`, `:focused`, `:disabled`).
@@ -389,6 +454,11 @@ Veja também: [[03-Dominios/Java/Jakarta EE/13 - CDI avançado — interceptors,
 Método com implementação definido em uma interface (palavra-chave `default`), introduzido no Java 8. Permite adicionar comportamento a interfaces sem quebrar classes que as implementam, viabilizando evolução retrocompatível de APIs.
 
 Veja também: [[08 - Interfaces e classes abstratas]].
+
+### DelegatingPasswordEncoder
+`PasswordEncoder` que prefixa o hash com o id do algoritmo (`{bcrypt}$...`), permitindo conviver com vários algoritmos e migrar gradualmente. Default do `PasswordEncoderFactories`.
+
+Veja também: [[03-Dominios/Java/Segurança/04 - Password encoding — BCrypt, Argon2 e o DelegatingPasswordEncoder|Password encoding]].
 
 ### delegation event model
 Modelo de eventos do AWT/Swing: a fonte (componente) notifica os listeners registrados quando um evento ocorre, despachando um objeto de evento. Separa a produção do evento do seu tratamento, favorecendo extensibilidade.
@@ -461,6 +531,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o e
 Annotation que ativa o mecanismo de auto-configuration do Spring Boot: instrui o container a aplicar as classes de auto-configuração registradas no classpath, conforme suas condições. Está embutida em `@SpringBootApplication`. Alfabetiza como "EnableAutoConfiguration".
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
+
+### @EnableMethodSecurity
+Anotação que liga a segurança no nível de método (`@PreAuthorize`/`@PostAuthorize`); substituiu `@EnableGlobalMethodSecurity`. Sem ela, as anotações são ignoradas silenciosamente.
+
+Veja também: [[03-Dominios/Java/Segurança/07 - Method security — @PreAuthorize, @PostAuthorize e SpEL|Method security]].
 
 ### Enhanced for
 Laço `for-each` — forma simplificada do `for` que itera diretamente sobre arrays ou qualquer objeto `Iterable`, sem índice explícito. Sintaxe: `for (Tipo var : coleção) { }`. Introduzido no Java 5.
@@ -540,6 +615,11 @@ Provider JAX-RS que converte uma exceção lançada por um resource em uma `Resp
 
 Veja também: [[03-Dominios/Java/Jakarta EE/07 - JAX-RS — REST declarativo|JAX-RS — REST declarativo]].
 
+### ExceptionTranslationFilter
+Filtro que traduz exceções de segurança em respostas HTTP: 401 (não-autenticado) dispara o entry point de autenticação, 403 (não-autorizado) vira acesso negado.
+
+Veja também: [[03-Dominios/Java/Segurança/06 - A arquitetura do filter chain em profundidade|A arquitetura do filter chain]].
+
 ### executable jar / fat jar
 Jar autocontido do Spring Boot que empacota a aplicação, todas as dependências e um servidor embarcado, executável com `java -jar`. Usa um layout aninhado próprio (dependências sob `BOOT-INF/lib`) e um launcher do Boot, em vez de um uber-jar plano. Também chamado de fat jar.
 
@@ -557,6 +637,11 @@ Padrão de migração de schema em três passos para mudar tabelas grandes sem d
 
 ### fetch strategy (LAZY/EAGER)
 Decide quando o Hibernate carrega uma associação: LAZY (sob demanda, via proxy) ou EAGER (junto com o pai). A regra prática é sempre LAZY — o default EAGER de `@ManyToOne`/`@OneToOne` é fonte oculta de problemas de performance. Veja também: [[03-Dominios/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Fetch strategies]].
+
+### FilterChainProxy
+O `Filter` único (registrado via `DelegatingFilterProxy`) que delega para a lista ordenada de `SecurityFilterChain`; o coração da arquitetura do Spring Security.
+
+Veja também: [[03-Dominios/Java/Segurança/06 - A arquitetura do filter chain em profundidade|A arquitetura do filter chain]].
 
 ### FlatLaf
 Look and Feel moderno (flat, com suporte a dark mode) desenvolvido pela FormDev, disponível como biblioteca open-source third-party — não faz parte do JDK. Mantém aplicações Swing com aparência atual em diferentes sistemas operacionais.
@@ -656,6 +741,11 @@ Empresa e projeto open-source que mantém o port do JavaFX para dispositivos mó
 
 Veja também: [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 
+### GrantedAuthority
+Representa uma permissão concedida ao principal (uma role `ROLE_*`, um scope `SCOPE_*` ou uma authority custom); é o que `hasRole`/`hasAuthority` consultam.
+
+Veja também: [[03-Dominios/Java/Segurança/02 - SecurityContext, Authentication e Principal — o usuário atual|SecurityContext, Authentication e Principal]].
+
 ### GridBagLayout
 Layout manager mais flexível do Swing: posiciona componentes numa grade configurável via `GridBagConstraints` (gridx, gridy, weightx, weighty, fill, anchor). Poderoso para layouts complexos, mas verboso em comparação com alternativas como `MigLayout`.
 
@@ -697,6 +787,11 @@ Veja também: [[11 - Java Memory Model em profundidade]].
 Contrato Java que exige consistência entre os dois métodos: objetos iguais (`equals` retorna `true`) devem ter o mesmo `hashCode`. A violação corrompeu estruturas baseadas em hash (`HashMap`, `HashSet`): o objeto pode ser inserido mas nunca encontrado. O inverso não é obrigado — dois objetos com mesmo `hashCode` podem ser desiguais (colisão normal).
 
 Veja também: [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]].
+
+### hasRole vs hasAuthority
+`hasRole("ADMIN")` consulta a authority `ROLE_ADMIN` (adiciona o prefixo `ROLE_` automaticamente); `hasAuthority("ROLE_ADMIN")` exige o nome exato. Não duplicar o prefixo.
+
+Veja também: [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Autorização baseada em URL]].
 
 ### HATEOAS
 Hypermedia As The Engine Of Application State: restrição do REST em que a resposta carrega *links* que indicam ao cliente as transições de estado possíveis a partir do recurso atual, em vez de o cliente conhecer URLs de antemão. Corresponde ao nível 3 do Richardson Maturity Model; no Spring é suportado pela biblioteca Spring HATEOAS (`EntityModel`, `Link`, `WebMvcLinkBuilder`).
@@ -868,6 +963,21 @@ Especificação de demarcação e coordenação de transações da plataforma (T
 
 Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
 
+### JWKS (JSON Web Key Set)
+Endpoint que publica as chaves públicas do emissor (`jwk-set-uri`); o Resource Server busca a chave por ele para validar a assinatura do JWT, permitindo rotação sem downtime.
+
+Veja também: [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]].
+
+### JWT (JSON Web Token)
+Token de três partes (header.payload.signature em base64url) que carrega claims assinadas; é **legível, não criptografado**. Stateless; valide sempre `iss`/`aud`/`exp` e a whitelist de `alg`.
+
+Veja também: [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e validação|JWT]].
+
+### JwtAuthenticationConverter
+Componente que converte as claims de um JWT (ex.: `scope`/`roles`) em `GrantedAuthority` no Resource Server; sem ele, as authorities saem vazias.
+
+Veja também: [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]].
+
 ## L
 
 ### lambda
@@ -1016,6 +1126,16 @@ Veja também: [[03-Dominios/Java/Programação Reativa/01 - O que é programaç�
 
 ## O
 
+### OAuth2 Client
+Lado do Spring Security em que a app **consome** um provedor OAuth2/OIDC (login social): `oauth2Login`, `OidcUser`/`OAuth2User`. Contrasta com o Resource Server, que valida tokens.
+
+Veja também: [[03-Dominios/Java/Segurança/12 - OAuth2 e OIDC Client e os grant types|OAuth2 e OIDC Client]].
+
+### OAuth2 Resource Server
+Configuração em que a API **valida** JWTs emitidos por um IdP (`issuer-uri`/`jwk-set-uri`); o cenário mais comum de API stateless.
+
+Veja também: [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]].
+
 ### ObservableList
 Implementação de `List` do JavaFX (`javafx.collections.ObservableList`) que dispara notificações de mudança (`ListChangeListener`) sempre que elementos são adicionados, removidos ou substituídos. É a coleção-base de controles como `ListView` e `TableView`, garantindo que a UI reflita automaticamente alterações nos dados.
 
@@ -1025,6 +1145,11 @@ Veja também: [[08 - TableView, cell factories e dados observáveis]].
 Mecanismo de pub/sub embutido no CDI: um bean dispara um evento (`Event<T>.fire`/`fireAsync`) e métodos observadores marcados com `@Observes`/`@ObservesAsync` reagem — desacoplando emissor e ouvintes sem dependência direta. Alfabetiza como "Observes".
 
 Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
+
+### OIDC (OpenID Connect)
+Camada de **identidade** sobre o OAuth2: adiciona o `id_token` (um JWT que identifica o usuário). OAuth2 delega acesso; OIDC autentica.
+
+Veja também: [[03-Dominios/Java/Segurança/12 - OAuth2 e OIDC Client e os grant types|OAuth2 e OIDC Client]].
 
 ### onBackpressureBuffer / Drop / Latest
 Estratégias de overflow do Reactor para quando o produtor é mais rápido que o consumidor: `onBackpressureBuffer` enfileira o excedente (com risco de OOM), `onBackpressureDrop` descarta o que não cabe, e `onBackpressureLatest` mantém apenas o elemento mais recente.
@@ -1066,6 +1191,11 @@ Redefinição de um método herdado em uma subclasse, mantendo a mesma assinatur
 
 Veja também: [[07 - Herança e polimorfismo]].
 
+### OWASP Top 10
+Lista de referência das dez categorias de risco mais críticas em aplicações web (edição 2025: A01 Broken Access Control, A02 Security Misconfiguration, ...); guia de conscientização, não checklist exaustivo.
+
+Veja também: [[03-Dominios/Java/Segurança/16 - OWASP Top 10 no contexto Java|OWASP Top 10 no contexto Java]].
+
 ## P
 
 ### Pageable / Page / Slice
@@ -1075,6 +1205,11 @@ Abstrações de paginação do Spring Data: `Pageable`/`PageRequest` definem pá
 Método a sobrescrever (em vez de `paint`) para desenhar conteúdo customizado em um componente Swing. Deve chamar `super.paintComponent(g)` antes de desenhar e fazer cast de `Graphics` para `Graphics2D` para acessar a API completa de renderização Java2D.
 
 Veja também: [[03-Dominios/Java/Swing/10 - Custom painting e componentes customizados|Custom painting]].
+
+### PasswordEncoder
+Interface do Spring Security para hash de senha: `encode` (gera) e `matches` (confere). Nunca há decode — hash é one-way.
+
+Veja também: [[03-Dominios/Java/Segurança/04 - Password encoding — BCrypt, Argon2 e o DelegatingPasswordEncoder|Password encoding]].
 
 ### @PathVariable
 Annotation do Spring MVC que vincula um segmento variável do path da URL a um parâmetro do método handler. Declarado no mapeamento como `{id}` (ex.: `@GetMapping("/users/{id}")`) e capturado com `@PathVariable Long id`. Usado para identificar o recurso na própria URL, no estilo REST.
@@ -1107,6 +1242,11 @@ Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de pe
 ### pessimistic locking
 Bloqueio explícito no banco (`@Lock(LockModeType.PESSIMISTIC_WRITE)` → `SELECT ... FOR UPDATE`) que segura o lock até o commit; usado quando conflitos de escrita são frequentes. Cuidado com deadlocks (adquira locks em ordem consistente). Veja também: [[03-Dominios/Java/Persistência de dados/13 - Locking — optimistic (@Version) e pessimistic|Locking]].
 
+### PKCE / authorization code
+Authorization Code é o fluxo OAuth2 recomendado (redirect → code → token); o PKCE (Proof Key for Code Exchange) o protege em clientes públicos (SPA/mobile) dispensando o client secret.
+
+Veja também: [[03-Dominios/Java/Segurança/12 - OAuth2 e OIDC Client e os grant types|OAuth2 e OIDC Client]].
+
 ### Pinning
 Fenômeno em que uma virtual thread fica "presa" ao seu carrier thread durante um bloco `synchronized` ou chamada nativa, impedindo que o carrier execute outras virtual threads enquanto aguarda. Reduz a escalabilidade de virtual threads; mitigado substituindo `synchronized` por `ReentrantLock` ou eliminando bloqueios em seções críticas.
 
@@ -1136,6 +1276,11 @@ Veja também: [[07 - Herança e polimorfismo]].
 Ponto de extensão do container CDI (SPI `Extension`): um bean observa eventos do bootstrap (`ProcessAnnotatedType` etc.) para adicionar/modificar beans programaticamente — é como frameworks se integram ao CDI. No CDI Lite, o equivalente build-time é a build compatible extension.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/13 - CDI avançado — interceptors, decorators e extensões|CDI avançado]].
+
+### @PreAuthorize / @PostAuthorize
+Anotações de method security que avaliam uma expressão SpEL antes (`@PreAuthorize`) ou depois (`@PostAuthorize`) da execução do método; rodam sobre o proxy AOP, logo só funcionam em método `public` chamado de fora.
+
+Veja também: [[03-Dominios/Java/Segurança/07 - Method security — @PreAuthorize, @PostAuthorize e SpEL|Method security]].
 
 ### Preview feature
 Funcionalidade completa de linguagem ou JVM incluída em uma versão do Java para coleta de feedback, mas não finalizada. Precisa ser habilitada explicitamente com `--enable-preview` em compilação e execução. Pode mudar ou ser removida antes de tornar-se permanente.
@@ -1222,6 +1367,11 @@ Repositório do Spring Data R2DBC cujos métodos devolvem `Mono`/`Flux`; é o eq
 
 Veja também: [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|R2DBC]].
 
+### RBAC (role-based)
+Controle de acesso por **papéis**: o usuário tem roles, as roles concedem permissões. Simples e cobre a maioria dos casos; o modelo default do Spring Security.
+
+Veja também: [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Autorização baseada em URL]].
+
 ### Reactive Streams
 Especificação de streams assíncronos com backpressure não-bloqueante: padroniza o contrato entre publishers e subscribers (as quatro interfaces `Publisher`/`Subscriber`/`Subscription`/`Processor`). Foi absorvida no `java.util.concurrent.Flow` no Java 9 e é implementada pelo Reactor, RxJava e Akka Streams.
 
@@ -1236,6 +1386,11 @@ Veja também: [[13 - Records e record patterns]].
 Extensão de pattern matching que desconstói um record diretamente no `instanceof` ou `switch`, ligando seus componentes a variáveis locais. Permite navegação estrutural em hierarquias de dados sem getters explícitos.
 
 Veja também: [[13 - Records e record patterns]], [[14 - Sealed classes e pattern matching]].
+
+### refresh token
+Token de longa duração (idealmente opaco e server-side) usado para obter novos access tokens curtos sem novo login; permite revogação imediata e rotação a cada uso.
+
+Veja também: [[03-Dominios/Java/Segurança/13 - Refresh tokens e revogação de token|Refresh tokens e revogação de token]].
 
 ### request(n) (demanda)
 O sinal pelo qual o `Subscriber` pede `n` elementos ao `Publisher` através da `Subscription`. É o mecanismo concreto do backpressure: o produtor só pode emitir até o total já demandado, e nunca além — o consumidor dita o ritmo.
@@ -1302,6 +1457,11 @@ Modelo de Leonard Richardson que mede o quão "RESTful" é uma API em quatro ní
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
 
+### RoleHierarchy
+Configuração que faz uma role herdar outra (ex.: `ROLE_ADMIN > ROLE_USER`), evitando listar todas as roles em cada regra.
+
+Veja também: [[03-Dominios/Java/Segurança/14 - Autorização avançada — AuthorizationManager, RBAC vs ABAC|Autorização avançada]].
+
 ## S
 
 ### Safe publication (publicação segura)
@@ -1342,6 +1502,16 @@ Veja também: [[14 - Sealed classes e pattern matching]].
 ### second-level cache (2º nível)
 Cache de entidades compartilhado entre transações/sessões (application-wide), opt-in no Hibernate (`@Cacheable` + `@Cache(usage = ...)`, com estratégias READ_ONLY/NONSTRICT_READ_WRITE/READ_WRITE/TRANSACTIONAL). Indicado para dados de referência lidos muito e mudados pouco. Veja também: [[03-Dominios/Java/Persistência de dados/14 - Caching — 1º nível, 2º nível e Spring Cache|Caching]].
 
+### SecurityContextHolder
+Onde o `Authentication` do usuário atual vive durante o request (um `ThreadLocal` por default); acessível via `SecurityContextHolder.getContext().getAuthentication()`.
+
+Veja também: [[03-Dominios/Java/Segurança/02 - SecurityContext, Authentication e Principal — o usuário atual|SecurityContext, Authentication e Principal]].
+
+### SecurityFilterChain
+A cadeia ordenada de filtros de segurança aplicada a um conjunto de requests; em Spring Security 6 é um **bean** declarado com lambda DSL (substituiu o `WebSecurityConfigurerAdapter`).
+
+Veja também: [[03-Dominios/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain|O que é Spring Security]].
+
 ### self-invocation
 Chamada de um método do próprio bean a partir de outro método dele (`this.metodo()`), que *não passa pelo proxy* — porque o proxy só intercepta chamadas externas. É a armadilha clássica do Spring AOP: `@Transactional`, `@Cacheable` ou `@Async` em um método invocado internamente são silenciosamente ignorados.
 
@@ -1376,6 +1546,16 @@ Veja também: [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP
 Tipo de Enterprise Bean que encapsula lógica de negócio: stateless (sem estado entre chamadas, pooled), stateful (mantém estado conversacional por cliente) ou singleton (uma instância por aplicação).
 
 Veja também: [[03-Dominios/Java/Jakarta EE/12 - EJB — o legado que moldou a plataforma|EJB — o legado que moldou a plataforma]].
+
+### session fixation
+Ataque em que o atacante fixa um session id antes do login para sequestrá-lo depois; o Spring previne migrando a sessão no login (`migrateSession`, default).
+
+Veja também: [[03-Dominios/Java/Segurança/15 - Session management e security headers|Session management e security headers]].
+
+### SessionCreationPolicy (STATELESS)
+Política de criação de sessão; `STATELESS` (típica de APIs JWT) não cria nem usa `HttpSession` — a identidade vem no token a cada request.
+
+Veja também: [[03-Dominios/Java/Segurança/15 - Session management e security headers|Session management e security headers]].
 
 ### Shenandoah
 Coletor de lixo de pausa ultra-baixa desenvolvido pela Red Hat, disponível no OpenJDK. Realiza a fase de compactação (evacuation) concorrentemente com a aplicação, reduzindo as pausas STW a trabalho de curtíssima duração independentemente do tamanho do heap. Ativado com `-XX:+UseShenandoahGC`.
@@ -1427,6 +1607,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
 O framework web do Spring baseado no padrão front controller: um `DispatcherServlet` recebe as requisições e orquestra `HandlerMapping`, `HandlerAdapter`, interceptors e `HttpMessageConverter` para produzir a resposta. Roda sobre a Servlet API e é a base para construir aplicações web e APIs REST com `@Controller`/`@RestController`.
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/01 - O que é Spring MVC — a camada web sobre o container|O que é Spring MVC]].
+
+### Spring Security
+Framework de segurança do ecossistema Spring: autenticação, autorização e proteção contra ataques comuns, construído sobre um filter chain na frente do `DispatcherServlet`.
+
+Veja também: [[03-Dominios/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain|O que é Spring Security]].
 
 ### Spring WebFlux
 O stack web não-bloqueante do Spring, construído sobre o Project Reactor e tipicamente servido por Netty. É a alternativa reativa ao Spring MVC: usa o `DispatcherHandler` em vez do `DispatcherServlet`, handlers que devolvem `Mono`/`Flux`, e roda sobre um event loop em vez de thread-por-request.
@@ -1590,6 +1775,11 @@ Framework de logging unificado da JVM introduzido no Java 9 (JEP 158) que unific
 
 Veja também: [[10 - GC logs — unified logging e leitura]].
 
+### UserDetailsService
+Interface cujo `loadUserByUsername` carrega o usuário (e suas authorities) de onde estiver (banco, LDAP); auto-detectada como bean e usada pelo `DaoAuthenticationProvider`.
+
+Veja também: [[03-Dominios/Java/Segurança/03 - Autenticação — UserDetailsService, AuthenticationManager, Form e Basic|Autenticação]].
+
 ## V
 
 ### @Value
@@ -1636,6 +1826,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClie
 Argumento de tipo genérico desconhecido, representado por `?`. Pode ser não-limitado (`?`), com limite superior (`? extends T`) ou com limite inferior (`? super T`). Aumenta a flexibilidade das APIs genéricas ao custo de restringir as operações permitidas sobre a coleção.
 
 Veja também: [[12 - Generics em profundidade]].
+
+### @WithMockUser
+Anotação de teste do Spring Security que injeta um usuário autenticado no `SecurityContext` para testar regras de autorização; a stack de teste é tema do galho de Testes.
+
+Veja também: [[03-Dominios/Java/Segurança/18 - Capstone — projetando a segurança de uma API Spring production-grade|Capstone de segurança]].
 
 ### WORA
 Write Once, Run Anywhere — princípio central do Java: o bytecode compilado roda em qualquer plataforma que possua uma JVM compatível, sem recompilação. Viabilizado pela camada de abstração da JVM entre o código e o hardware/SO.
