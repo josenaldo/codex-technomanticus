@@ -89,7 +89,7 @@ O Reactor Kafka justifica sua complexidade quando:
 
 Quando **não** justifica:
 
-- Aplicações simples com taxa de chegada estável e processamento rápido: aqui o `@KafkaListener` com [[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Virtual Threads]] (Galho 4) entrega não-bloqueabilidade com muito menos cerimônia. Virtual Threads tornam o modelo imperativo suficiente ao eliminar o custo de thread bloqueada sem exigir programação reativa.
+- Aplicações simples com taxa de chegada estável e processamento rápido: aqui o `@KafkaListener` com Virtual Threads (Galho 4, planejado) entrega não-bloqueabilidade com muito menos cerimônia. Virtual Threads tornam o modelo imperativo suficiente ao eliminar o custo de thread bloqueada sem exigir programação reativa.
 - Times sem familiaridade com o modelo reativo: a curva de aprendizado e o risco de erros (bloquear dentro do pipeline, commit fora do fluxo) superam os ganhos.
 
 ## Na prática

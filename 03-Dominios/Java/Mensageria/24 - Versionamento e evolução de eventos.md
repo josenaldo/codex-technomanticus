@@ -85,7 +85,7 @@ Esse padrão garante que consumidores antigos (que não conhecem o campo) leiam 
 
 O Confluent Schema Registry (documentação oficial) define quatro modos principais:
 
-- **BACKWARD**: consumidores com schema **novo** conseguem ler dados escritos com schema **antigo`. Requer upgrade do consumidor primeiro. Permite adicionar campos opcionais e remover campos opcionais.
+- **BACKWARD**: consumidores com schema **novo** conseguem ler dados escritos com schema **antigo**. Requer upgrade do consumidor primeiro. Permite adicionar campos opcionais e remover campos opcionais.
 - **FORWARD**: consumidores com schema **antigo** conseguem ler dados escritos com schema **novo**. Requer upgrade do produtor primeiro.
 - **FULL**: combinação de BACKWARD e FORWARD. Permite somente mudanças que são seguras em ambos os sentidos (adicionar/remover campos opcionais com default).
 - **NONE**: desativa verificação de compatibilidade (usar apenas em desenvolvimento).

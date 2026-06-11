@@ -46,7 +46,7 @@ Num contexto de entrevista para posições sênior, demonstrar que você pensa e
 
 Consumer lag é a quantidade de mensagens que o consumer ainda não processou. Formalmente:
 
-```
+```text
 lag = latest_offset(topic, partition) - committed_offset(consumer_group, partition)
 ```
 

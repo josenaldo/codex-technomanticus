@@ -113,7 +113,7 @@ message Pedido {
 
 O nome de um campo em `.proto` é irrelevante na **wire format**: o que identifica o campo na serialização binária é o **field number** (o inteiro após o `=`). Cada campo codificado começa com uma tag que combina o field number e o wire type (varint, 64-bit, length-delimited, 32-bit).
 
-```
+```text
 tag = (field_number << 3) | wire_type
 ```
 
@@ -302,7 +302,7 @@ Ao remover campos intermediários e renumerar os restantes para "reorganizar", v
 | **IDL** (Interface Definition Language) | Linguagem para descrever estruturas de dados e contratos de API de forma independente de linguagem |
 | **field number** | Inteiro positivo único dentro de uma `message` que identifica o campo na wire format; imutável após definido |
 | **wire type** | Código de 3 bits combinado com o field number na tag; indica como o valor está codificado (varint, fixed, length-delimited) |
-| **`reserved`** | Declaração que apagenta um field number ou nome, impedindo reuso acidental |
+| **`reserved`** | Declaração que aposenta um field number ou nome, impedindo reuso acidental |
 | **wire format** | Representação binária compacta produzida pela serialização protobuf; menor e mais rápida de parsear que JSON |
 | **`protoc`** | Compilador de arquivos `.proto`; gera código de cliente e servidor em diversas linguagens, incluindo Java |
 | **packed encoding** | Codificação padrão de campos `repeated` numéricos em proto3; agrupa todos os valores em um único bloco length-delimited |

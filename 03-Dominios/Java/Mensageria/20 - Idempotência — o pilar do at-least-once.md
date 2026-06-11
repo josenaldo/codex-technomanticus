@@ -2,7 +2,10 @@
 title: "Idempotência — o pilar do at-least-once"
 fase: magus
 tags:
-  - java/mensageria/magus/idempotencia
+  - java
+  - mensageria
+  - magus
+  - idempotencia
 created: 2026-06-11
 updated: 2026-06-11
 type: concept
