@@ -45,7 +45,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 ### Plataforma distribuída e produção
 
 14. [[03-Dominios/Java/Mensageria/index|Mensageria e eventos]] — o modelo de mensageria e as garantias de entrega, Spring Kafka e RabbitMQ, eventos in-process, padrões de confiabilidade (idempotência, outbox, DLQ, exactly-once), arquitetura event-driven (saga, event sourcing, CQRS), mensageria reativa, observabilidade e o contraste com gRPC
-15. Build, tooling e ecossistema *(planejado)* — Maven, Gradle, BOM, multi-module, JDK distributions
+15. [[03-Dominios/Java/Build e tooling/index|Build, tooling e ecossistema]] — Maven e Gradle (modelo, lifecycle/tasks, performance), gestão de dependências (resolução transitiva, conflitos, BOM), multi-módulo, distribuições do JDK e licenciamento, annotation processing (Lombok/MapStruct), empacotamento, quality gates no build e cadeia de suprimentos (reproducible builds, SBOM, Maven Central)
 16. Microservices e sistemas distribuídos *(planejado)* — Spring Cloud, gateway, resilience, sagas, tracing
 17. Cloud-native e produção *(planejado)* — containers, GraalVM native, Micrometer/OpenTelemetry, profiling
 
