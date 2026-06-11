@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-10
+updated: 2026-06-11
 type: glossary
 status: growing
 publish: true
@@ -45,6 +45,11 @@ Modelo de autorização que decide o acesso por **atributos** (do usuário, do r
 
 Veja também: [[03-Dominios/Java/Segurança/14 - Autorização avançada — AuthorizationManager, RBAC vs ABAC|Autorização avançada]].
 
+### ack mode (Spring Kafka)
+Controla quando o offset de uma mensagem consumida é confirmado (committed) de volta ao broker. Os modos principais são `RECORD` (após cada registro), `BATCH` (após o lote inteiro), `MANUAL` e `MANUAL_IMMEDIATE` (o código chama `Acknowledgment.acknowledge()` explicitamente). O modo adequado influencia a semântica de entrega e o comportamento em caso de falha.
+
+Veja também: [[03-Dominios/Java/Mensageria/10 Ack modes e commit de offset|Ack modes e commit de offset]].
+
 ### Action API
 `Action`/`AbstractAction` encapsulam um comportamento e seu estado (`enabled`, texto, ícone, accelerator key) em um único objeto reutilizável. O mesmo objeto pode ser plugado em botão, item de menu e toolbar, mantendo todos sincronizados automaticamente.
 
@@ -64,6 +69,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring
 Ataque em que o header do token traz `"alg":"none"`, pedindo que o servidor aceite um JWT **sem assinatura**; uma biblioteca ingênua valida e o atacante forja qualquer claim. Defesa: whitelist explícita de algoritmos.
 
 Veja também: [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e validação|JWT]].
+
+### AMQP
+Advanced Message Queuing Protocol: protocolo aberto de mensageria orientado a filas, com suporte a exchanges, bindings e filas. O RabbitMQ é a implementação de referência na JVM; o Spring AMQP abstrai a API de baixo nível do cliente Java (rabbitmq-client) com template e listener container.
+
+Veja também: [[03-Dominios/Java/Mensageria/15 Spring AMQP e RabbitMQ|Spring AMQP e RabbitMQ]].
 
 ### API versioning
 Estratégias para evoluir uma API sem quebrar clientes existentes: versão na URI (`/v1/...`), em header customizado, via content negotiation (media type versionado) ou query param. Cada abordagem tem trade-offs de visibilidade, cacheabilidade e aderência ao REST; o Spring MVC suporta todas via atributos de `@RequestMapping` (path, headers, params, produces).
@@ -99,6 +109,16 @@ Veja também: [[03-Dominios/Java/Programação Reativa/04 - Nada acontece até o
 Biblioteca de asserções fluent (`assertThat(x).isNotNull().hasSize(3)`) com mensagens de erro claras; o padrão moderno, mais legível que o JUnit built-in/Hamcrest.
 
 Veja também: [[03-Dominios/Java/Testes/03 - AssertJ — fluent assertions|AssertJ]].
+
+### at-least-once
+Garantia de entrega em que uma mensagem é processada **uma ou mais vezes**: o broker retransmite em caso de falha ou falta de ACK, podendo gerar duplicatas. É a garantia mais comum em sistemas de mensageria; exige que o consumidor seja **idempotente** para lidar com reprocessamento.
+
+Veja também: [[03-Dominios/Java/Mensageria/03 Garantias de entrega — e a falácia do exactly-once|Garantias de entrega]].
+
+### at-most-once
+Garantia de entrega em que uma mensagem é processada **no máximo uma vez**: o broker não retransmite em caso de falha, podendo haver perda de mensagens. Oferece a menor latência e overhead, sendo adequada para dados onde perda ocasional é tolerável (logs, métricas em alta frequência).
+
+Veja também: [[03-Dominios/Java/Mensageria/03 Garantias de entrega — e a falácia do exactly-once|Garantias de entrega]].
 
 ### Atomic (variável atômica)
 Variável que suporta operações de leitura, escrita e atualização compostas sem necessidade de `synchronized`, usando instruções CAS do hardware. O pacote `java.util.concurrent.atomic` oferece `AtomicInteger`, `AtomicLong`, `AtomicReference` e variantes. Garante atomicidade sem bloquear threads.
@@ -154,6 +174,11 @@ Veja também: [[03-Dominios/Java/Testes/14 - Testando código assíncrono — Aw
 Toolkit de GUI original do Java, com componentes heavyweight que têm peers nativos do sistema operacional. O Swing é construído sobre o AWT e o estende com componentes lightweight de renderização puramente Java.
 
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
+
+### Avro
+Formato de serialização binária criado pela Apache, amplamente usado com Kafka. Define schemas em JSON que descrevem a estrutura dos dados; ao contrário do JSON/XML, os dados em Avro são binários e compactos. A separação schema/dado permite evolução compatível e integração com o Schema Registry.
+
+Veja também: [[03-Dominios/Java/Mensageria/14 Schema e contratos — Avro e Schema Registry|Schema e contratos — Avro e Schema Registry]].
 
 ## B
 
@@ -232,6 +257,11 @@ Veja também: [[07 - Concurrent collections]].
 
 Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]].
 
+### broker (mensageria)
+Servidor intermediário que recebe mensagens de produtores, as armazena em filas ou tópicos e as entrega a consumidores. Desacopla produtores de consumidores no tempo e no espaço. Exemplos de brokers JVM-friendly: Apache Kafka (log distribuído), RabbitMQ (AMQP), ActiveMQ (JMS).
+
+Veja também: [[03-Dominios/Java/Mensageria/04 O ecossistema de brokers na JVM|O ecossistema de brokers na JVM]].
+
 ### boxing / unboxing
 Conversão automática entre tipos primitivos (`int`, `long`, `double`…) e seus wrappers (`Integer`, `Long`, `Double`…): *boxing* empacota o primitivo num objeto; *unboxing* extrai o primitivo do wrapper. Feita implicitamente pelo compilador (autoboxing), mas introduz overhead de alocação e risco de `NullPointerException` em unboxing de referência `null`. Relevante em streams primitivos (`IntStream`), que evitam esse custo.
 
@@ -264,6 +294,11 @@ Veja também: [[06 - Atômicos e operações lock-free]].
 
 ### cascade / orphanRemoval
 `cascade` propaga operações (PERSIST, MERGE, REMOVE, ALL) do lado pai para o filho de uma associação. `orphanRemoval = true` apaga o filho quando ele é removido da coleção do pai — vai além do `cascade = REMOVE`. Veja também: [[03-Dominios/Java/Persistência de dados/06 - @ManyToMany, @OneToOne, cascade e orphanRemoval|@ManyToMany, @OneToOne, cascade e orphanRemoval]].
+
+### CDC (Change Data Capture)
+Técnica que captura eventos de mudança de dados diretamente do log de transações do banco (ex.: binlog do MySQL, WAL do Postgres) e os publica como mensagens em um tópico. Permite sincronizar sistemas sem polling e sem acoplar o banco ao código da aplicação. O Debezium é o conector CDC de referência na JVM.
+
+Veja também: [[03-Dominios/Java/Mensageria/21 O padrão Outbox|O padrão Outbox]].
 
 ### CDI (Contexts and Dependency Injection)
 Especificação de injeção de dependência e gerenciamento de contextos da plataforma Jakarta (CDI 4.1 no EE 11). O container resolve e injeta dependências por tipo + qualifiers, gerencia escopos e habilita interceptors, decorators e eventos. É a spec que o `@Autowired` de frameworks esconde.
@@ -314,6 +349,11 @@ Veja também: [[03-Dominios/Java/Jakarta EE/05 - CDI — escopos e contextos|CDI
 Container-Managed Transactions vs. Bean-Managed Transactions: os dois modelos de demarcação da JTA. Em CMT o container abre/comita a transação de forma declarativa (`@Transactional`); em BMT o código controla manualmente via `UserTransaction`.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
+
+### comando vs evento
+Distinção fundamental em arquiteturas orientadas a mensagens: um **comando** é uma instrução imperativa direcionada a um destinatário específico (ex.: `ProcessarPedidoCommand`), enquanto um **evento** é um fato ocorrido no passado publicado para quem quiser reagir (ex.: `PedidoProcessadoEvent`). Comandos implicam intenção; eventos implicam notificação.
+
+Veja também: [[03-Dominios/Java/Mensageria/01 O que é mensageria e arquitetura orientada a eventos|O que é mensageria e arquitetura orientada a eventos]].
 
 ### code cache
 Região de memória nativa onde a JVM armazena o código nativo gerado pelo compilador JIT. Quando fica cheia, a JVM para de compilar novos métodos e reverte à interpretação, degradando a performance. Monitorável com `-XX:+PrintCodeCache` e configurável com `-XX:ReservedCodeCacheSize`.
@@ -415,6 +455,11 @@ Container interno de um top-level container (`JFrame`, `JDialog`) onde se adicio
 
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
 
+### consumer lag
+Diferença entre o offset mais recente produzido num tópico/partição e o offset que o grupo de consumidores já confirmou. Um lag crescente indica que os consumidores não acompanham o ritmo de produção. Monitorado via `kafka-consumer-groups.sh`, JMX ou ferramentas de observabilidade como Burrow e Micrometer.
+
+Veja também: [[03-Dominios/Java/Mensageria/26 Observabilidade em mensageria|Observabilidade em mensageria]].
+
 ### Contention
 Situação em que múltiplas threads disputam o mesmo lock ou recurso simultaneamente, forçando algumas a esperar. Alta contention degrada performance e pode eliminar os ganhos do paralelismo. Mitigada por locks de granularidade fina, estruturas lock-free ou particionamento de estado.
 
@@ -440,10 +485,20 @@ O menor dos três perfis do Jakarta EE (introduzido no EE 10): conjunto mínimo 
 
 Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especificações e implementações|O modelo Jakarta EE]].
 
+### coreografia vs orquestração
+Dois estilos de coordenação em arquiteturas de microsserviços. Na **coreografia** cada serviço reage a eventos e age de forma autônoma, sem um coordenador central — acoplamento mínimo, complexidade distribuída. Na **orquestração** um serviço central (orquestrador/saga orchestrator) coordena explicitamente os passos, facilitando visibilidade mas introduzindo acoplamento.
+
+Veja também: [[03-Dominios/Java/Mensageria/22 Saga — transações distribuídas por eventos|Saga — transações distribuídas por eventos]].
+
 ### CORS (Cross-Origin Resource Sharing)
 Mecanismo do **browser** que libera ou bloqueia requests entre origens diferentes; não é segurança do servidor (`curl` ignora). Configurado por origens/métodos/headers explícitos.
 
 Veja também: [[03-Dominios/Java/Segurança/11 - CORS — a borda, o preflight e a config de segurança|CORS]].
+
+### CQRS
+Command Query Responsibility Segregation: padrão arquitetural que separa o modelo de escrita (comandos que alteram estado) do modelo de leitura (queries). Permite otimizar cada lado independentemente — escritas transacionais com consistência forte; leituras com projeções desnormalizadas e alta performance. Frequentemente combinado com event sourcing.
+
+Veja também: [[03-Dominios/Java/Mensageria/23 Event sourcing e CQRS|Event sourcing e CQRS]].
 
 ### Criteria API
 API programática e type-safe da spec Jakarta Persistence para construir queries em Java (`CriteriaBuilder`, `CriteriaQuery`, `Root`) em vez de strings JPQL. As Specifications do Spring Data são uma camada sobre ela. Veja também: [[03-Dominios/Java/Persistência de dados/15 - Consultas dinâmicas e os limites da JPA — Specifications, Criteria e SQL|Consultas dinâmicas e os limites da JPA]], [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA]].
@@ -475,10 +530,20 @@ Slice de teste do Spring Boot que carrega só a camada JPA (repositories, `Entit
 
 Veja também: [[03-Dominios/Java/Testes/10 - @DataJpaTest — testando repositories|@DataJpaTest]].
 
+### dead letter queue (DLQ)
+Fila (ou tópico) de destino para mensagens que não puderam ser processadas com sucesso após N tentativas. Em vez de descartar ou bloquear o consumidor, a mensagem é encaminhada para a DLQ para análise e reprocessamento manual. No Spring Kafka o padrão equivalente chama-se Dead Letter Topic (DLT).
+
+Veja também: [[03-Dominios/Java/Mensageria/12 Dead Letter Topic — o padrão DLQ|Dead Letter Topic — o padrão DLQ]].
+
 ### Deadlock
 Estado em que duas ou mais threads se bloqueiam mutuamente, cada uma esperando um lock que a outra segura — criando uma espera circular sem saída. Nenhuma das threads progride indefinidamente. Prevenido por ordenação consistente de locks, uso de `tryLock` com timeout ou eliminação de lock aninhado.
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### Debezium
+Plataforma open-source de Change Data Capture baseada em Kafka Connect que captura eventos de mudança do log transacional de bancos (Postgres WAL, MySQL binlog, MongoDB oplog) e os publica como mensagens Kafka. É a implementação de CDC mais adotada na JVM e viabiliza o padrão Outbox sem polling no banco.
+
+Veja também: [[03-Dominios/Java/Mensageria/21 O padrão Outbox|O padrão Outbox]].
 
 ### decorator (CDI)
 Bean que envolve outro implementando o MESMO contrato de negócio, com acesso à instância decorada via `@Delegate`. Ao contrário do interceptor (cego ao contrato), o decorator conhece e pode usar os métodos do tipo decorado — ideal quando a lógica transversal depende do domínio.
@@ -489,6 +554,11 @@ Veja também: [[03-Dominios/Java/Jakarta EE/13 - CDI avançado — interceptors,
 Método com implementação definido em uma interface (palavra-chave `default`), introduzido no Java 8. Permite adicionar comportamento a interfaces sem quebrar classes que as implementam, viabilizando evolução retrocompatível de APIs.
 
 Veja também: [[08 - Interfaces e classes abstratas]].
+
+### DefaultErrorHandler
+Componente do Spring Kafka (substituto do `SeekToCurrentErrorHandler` a partir do 2.8) que trata falhas no processamento de mensagens: tenta novamente N vezes (com backoff configurável) e, ao esgotar as tentativas, encaminha a mensagem para o Dead Letter Topic ou a descarta.
+
+Veja também: [[03-Dominios/Java/Mensageria/11 Tratamento de erro no consumo|Tratamento de erro no consumo]].
 
 ### DelegatingPasswordEncoder
 `PasswordEncoder` que prefixa o hash com o id do algoritmo (`{bcrypt}$...`), permitindo conviver com vários algoritmos e migrar gradualmente. Default do `PasswordEncoderFactories`.
@@ -635,10 +705,25 @@ Annotation do Spring que marca um método como ouvinte de eventos do `Applicatio
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/11 - Eventos do ApplicationContext|Eventos do ApplicationContext]].
 
+### event-driven architecture
+Estilo arquitetural em que os componentes se comunicam por meio de eventos assíncronos em vez de chamadas síncronas diretas. O produtor publica um evento e não conhece os consumidores; cada consumidor reage de forma independente, promovendo baixo acoplamento, alta escalabilidade e resiliência.
+
+Veja também: [[03-Dominios/Java/Mensageria/01 O que é mensageria e arquitetura orientada a eventos|O que é mensageria e arquitetura orientada a eventos]].
+
 ### event loop
 Modelo de execução do WebFlux/Netty em que poucos threads processam muitas conexões de forma não-bloqueante. Como cada thread atende várias requisições, bloquear um deles (ex.: JDBC ou `sleep`) paralisa todas as conexões que ele estava servindo — daí a regra de nunca bloquear o event loop.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]].
+
+### event sourcing
+Padrão em que o estado de uma entidade é derivado de uma sequência de eventos imutáveis armazenados em ordem temporal, em vez de persistir o estado atual diretamente. O estado presente é reconstituído reproduzindo os eventos. Facilita auditoria completa, projeções (read models) e integração com CQRS.
+
+Veja também: [[03-Dominios/Java/Mensageria/23 Event sourcing e CQRS|Event sourcing e CQRS]].
+
+### exactly-once semantics (EOS)
+Garantia de que uma mensagem é processada **exatamente uma vez**, sem perdas nem duplicatas. Na prática é a mais difícil de alcançar: requer transações idempotentes no produtor Kafka (enable.idempotence), transações no consumidor/produtor e um processamento transacional end-to-end. O Spring Kafka oferece suporte via `KafkaTransactionManager`.
+
+Veja também: [[03-Dominios/Java/Mensageria/13 Transações e exactly-once no Spring Kafka|Transações e exactly-once no Spring Kafka]].
 
 ### @ExceptionHandler
 Annotation do Spring MVC que marca um método como tratador de uma ou mais exceções: quando um controller (ou handler) lança o tipo declarado, o método anotado é invocado para produzir a resposta. Funciona local ao controller ou globalmente dentro de uma classe `@ControllerAdvice`; o método pode retornar `ResponseEntity`, `ProblemDetail` ou um corpo serializado. Alfabetiza como "ExceptionHandler".
@@ -796,6 +881,11 @@ Collector de `java.util.stream.Collectors` que agrupa os elementos de uma stream
 
 Veja também: [[03-Dominios/Java/Collections e Streams/08 - Collectors e agrupamento|Collectors]].
 
+### gRPC
+Framework de RPC (Remote Procedure Call) de alto desempenho criado pelo Google, que usa HTTP/2 como transporte e Protocol Buffers como serialização. Permite definir serviços e mensagens em `.proto` e gerar stubs Java tipados. Suporta streaming unidirecional e bidirecional. Alternativa eficiente ao REST para comunicação interna entre microsserviços.
+
+Veja também: [[03-Dominios/Java/Mensageria/28 gRPC em Java — RPC síncrono sobre HTTP_2|gRPC em Java — RPC síncrono sobre HTTP/2]].
+
 ### Guard
 Condição booleana adicional (`when`) que refina um case de pattern matching. Permite combinar a verificação de tipo/estrutura com uma expressão lógica no mesmo braço do switch. Ex: `case Integer i when i > 0 -> ...`.
 
@@ -862,6 +952,11 @@ Estratégia do Spring MVC que converte entre o corpo HTTP (bytes) e objetos Java
 Veja também: [[03-Dominios/Java/Web e APIs REST/05 - Serialização JSON com Jackson|Serialização JSON com Jackson]].
 
 ## I
+
+### idempotência (consumidor idempotente)
+Propriedade de uma operação que produz o mesmo resultado independentemente de ser executada uma ou múltiplas vezes. Em mensageria com semântica at-least-once, o consumidor **deve** ser idempotente para lidar com reentregas sem efeitos colaterais duplicados — por exemplo, usando uma tabela de IDs processados ou uma chave de idempotência na operação de negócio.
+
+Veja também: [[03-Dominios/Java/Mensageria/20 Idempotência — o pilar do at-least-once|Idempotência — o pilar do at-least-once]].
 
 ### Imutabilidade
 Propriedade de um objeto cujo estado não pode ser alterado após a criação. Em Java, alcançada declarando campos `final`, não expondo mutadores e retornando cópias defensivas. Facilita raciocínio sobre o código e é segura para uso concorrente.
@@ -990,6 +1085,11 @@ Java Microbenchmark Harness — o harness oficial do OpenJDK pra medir performan
 
 Veja também: [[03-Dominios/Java/Testes/18 - Performance — JMH e microbenchmarks|Performance — JMH]].
 
+### JMS
+Java Message Service: API padrão do Jakarta EE (Jakarta Messaging 3.1) para comunicação assíncrona baseada em mensagens. Define `Queue` (point-to-point) e `Topic` (publish-subscribe) como destinos, e usa `JMSProducer`/`JMSConsumer` para envio e recepção. Implementações: ActiveMQ, IBM MQ, Oracle AQ.
+
+Veja também: [[03-Dominios/Java/Mensageria/02 Os modelos de mensageria — queue vs topic|Os modelos de mensageria — queue vs topic]].
+
 ### jpackage
 Ferramenta do JDK (JEP 392, GA no Java 16) que empacota uma aplicação Java e sua imagem de runtime (`jlink`) em um instalador nativo para a plataforma-alvo: `.msi`/`.exe` (Windows), `.dmg`/`.pkg` (macOS) ou `.deb`/`.rpm` (Linux). Elimina a necessidade de JRE instalado previamente no sistema do usuário.
 
@@ -1037,6 +1137,23 @@ Veja também: [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e
 Componente que converte as claims de um JWT (ex.: `scope`/`roles`) em `GrantedAuthority` no Resource Server; sem ele, as authorities saem vazias.
 
 Veja também: [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]].
+
+## K
+
+### @KafkaListener
+Annotation do Spring Kafka aplicada a um método que o torna um consumidor Kafka: o Spring cria um listener container que faz o poll, deserializa os registros e invoca o método para cada mensagem (ou lote). Configurável com group id, tópicos, partições e concorrência diretamente na anotação. Alfabetiza como "KafkaListener".
+
+Veja também: [[03-Dominios/Java/Mensageria/08 @KafkaListener — consumindo mensagens|@KafkaListener — consumindo mensagens]].
+
+### KafkaTemplate
+Componente central do Spring Kafka para produção de mensagens: abstrai o `KafkaProducer` do cliente Java com uma API fluente (`send(topic, key, value)`) que devolve um `CompletableFuture`. Lida com serialização e, opcionalmente, com transações Kafka.
+
+Veja também: [[03-Dominios/Java/Mensageria/07 KafkaTemplate — produzindo mensagens|KafkaTemplate — produzindo mensagens]].
+
+### KRaft
+Modo de operação do Apache Kafka (disponível como padrão a partir do Kafka 3.3, substituindo o ZooKeeper completamente no 4.0) em que o próprio cluster Kafka gerencia seus metadados via protocolo Raft, eliminando a dependência do ZooKeeper. Simplifica o deployment e operação do cluster.
+
+Veja também: [[03-Dominios/Java/Mensageria/05 Kafka numa página para o dev de aplicação|Kafka numa página para o dev de aplicação]].
 
 ## L
 
@@ -1276,6 +1393,11 @@ Container que pode ou não conter um valor não-nulo, introduzido no Java 8. Evi
 
 Veja também: [[03-Dominios/Java/Collections e Streams/10 - Optional|Optional]].
 
+### outbox pattern
+Padrão para garantir consistência entre persistência e publicação de mensagens: em vez de chamar o broker diretamente após salvar, o código persiste o evento em uma tabela `outbox` dentro da mesma transação de banco. Um processo separado (poller ou Debezium CDC) lê a tabela e publica as mensagens, assegurando que "ou salva e publica, ou não faz nenhum dos dois".
+
+Veja também: [[03-Dominios/Java/Mensageria/21 O padrão Outbox|O padrão Outbox]].
+
 ### Overloading
 Definição de múltiplos métodos com o mesmo nome mas assinaturas diferentes (quantidade ou tipos de parâmetros) em uma mesma classe. A resolução acontece em tempo de compilação com base nos tipos dos argumentos. Não deve ser confundido com overriding.
 
@@ -1377,6 +1499,11 @@ Expressão que seleciona *onde* um advice deve ser aplicado — quais join point
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
 
+### point-to-point (queue)
+Modelo de mensageria em que cada mensagem é entregue a **um único consumidor**: o primeiro que consome a mensagem do canal a remove da fila. Garante processamento exclusivo e distribui carga entre consumidores competidores. Equivale ao conceito de `Queue` no JMS e às partições Kafka com um único consumer group.
+
+Veja também: [[03-Dominios/Java/Mensageria/02 Os modelos de mensageria — queue vs topic|Os modelos de mensageria — queue vs topic]].
+
 ### Polimorfismo
 Capacidade de um mesmo método ou referência se comportar de maneiras diferentes conforme o tipo real do objeto em tempo de execução. Em Java, é realizado principalmente por overriding + herança/interface. Permite escrever código genérico que opera sobre famílias de tipos.
 
@@ -1440,6 +1567,11 @@ Abstração central do sistema de binding do JavaFX (`javafx.beans.property`). U
 
 Veja também: [[07 - Properties e binding]].
 
+### Protocol Buffers (protobuf)
+Formato de serialização binária e IDL (Interface Definition Language) criado pelo Google, definido em arquivos `.proto`. Gera stubs fortemente tipados em várias linguagens. É compacto, eficiente e versionável; usado como formato de serialização padrão do gRPC e como alternativa ao Avro em ecossistemas multi-linguagem.
+
+Veja também: [[03-Dominios/Java/Mensageria/27 Protocol Buffers — a IDL e a serialização binária|Protocol Buffers — a IDL e a serialização binária]].
+
 ### Publisher / Subscriber / Subscription
 As três interfaces centrais do Reactive Streams: o `Publisher` é a fonte de dados, o `Subscriber` é o consumidor, e a `Subscription` é a ligação entre eles que carrega a demanda (`request(n)`) e o cancelamento (`cancel`). É por essa tríade que o backpressure flui.
 
@@ -1449,6 +1581,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/02 - Reactive Streams —
 Operadores de troca de thread no Reactor. `subscribeOn` afeta a origem da cadeia — em qual `Scheduler` a subscription e a fonte rodam — independentemente de onde aparece no pipeline. `publishOn` troca a thread daquele ponto para baixo, afetando os operadores subsequentes.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]].
+
+### publish-subscribe (topic)
+Modelo de mensageria em que uma mensagem publicada num canal (tópico) é entregue a **todos os assinantes** interessados. Cada consumidor (ou consumer group) recebe sua própria cópia. Promove fanout e desacoplamento; é o modelo base do Kafka (via tópico + consumer groups) e do RabbitMQ com exchanges do tipo fanout/topic.
+
+Veja também: [[03-Dominios/Java/Mensageria/02 Os modelos de mensageria — queue vs topic|Os modelos de mensageria — queue vs topic]].
 
 ## Q
 
@@ -1477,6 +1614,16 @@ Repositório do Spring Data R2DBC cujos métodos devolvem `Mono`/`Flux`; é o eq
 
 Veja também: [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|R2DBC]].
 
+### @RabbitListener
+Annotation do Spring AMQP aplicada a um método que o torna um consumidor de mensagens de uma fila RabbitMQ. O listener container gerencia a conexão, o thread pool e o ACK automático ou manual. Equivalente funcional do `@KafkaListener` para o ecossistema AMQP. Alfabetiza como "RabbitListener".
+
+Veja também: [[03-Dominios/Java/Mensageria/15 Spring AMQP e RabbitMQ|Spring AMQP e RabbitMQ]].
+
+### RabbitMQ
+Message broker open-source que implementa o protocolo AMQP, com suporte adicional a MQTT e STOMP. Usa o modelo de exchanges → bindings → queues para roteamento flexível de mensagens. Amplamente adotado em microsserviços que precisam de roteamento sofisticado, confirmação de entrega e filas duráveis.
+
+Veja também: [[03-Dominios/Java/Mensageria/15 Spring AMQP e RabbitMQ|Spring AMQP e RabbitMQ]].
+
 ### RBAC (role-based)
 Controle de acesso por **papéis**: o usuário tem roles, as roles concedem permissões. Simples e cobre a maioria dos casos; o modelo default do Spring Security.
 
@@ -1486,6 +1633,11 @@ Veja também: [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL �
 Especificação de streams assíncronos com backpressure não-bloqueante: padroniza o contrato entre publishers e subscribers (as quatro interfaces `Publisher`/`Subscriber`/`Subscription`/`Processor`). Foi absorvida no `java.util.concurrent.Flow` no Java 9 e é implementada pelo Reactor, RxJava e Akka Streams.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/02 - Reactive Streams — a spec das 4 interfaces e o Flow do Java 9|Reactive Streams]].
+
+### Reactor Kafka
+Biblioteca da família Reactor (desenvolvida pela Confluent) que expõe a API do produtor e consumidor Kafka como `KafkaSender` e `KafkaReceiver`, devolvendo `Flux`/`Mono`. Permite integrar Kafka num pipeline reativo sem bloquear threads, aproveitando backpressure e composição de operadores.
+
+Veja também: [[03-Dominios/Java/Mensageria/25 Mensageria reativa — Reactor Kafka|Mensageria reativa — Reactor Kafka]].
 
 ### Record
 Classe de dados imutável declarada com `record NomeClasse(Tipo campo, ...)`. O compilador gera automaticamente construtor canônico, acessores, `equals`, `hashCode` e `toString`. Ideal para portadores de dados sem lógica de negócio.
@@ -1557,6 +1709,11 @@ Dois paradigmas de renderização de UI. No **retained mode** (JavaFX, Swing), o
 
 Veja também: [[02 - Scene graph — stage, scene e nodes]].
 
+### @RetryableTopic
+Annotation do Spring Kafka que configura reprocessamento automático com retentativas em tópicos separados (retry topics) e, após esgotar as tentativas, encaminha a mensagem para o Dead Letter Topic (DLT). Elimina a necessidade de lógica manual de retry e DLQ, com suporte a backoff configurável. Alfabetiza como "RetryableTopic".
+
+Veja também: [[03-Dominios/Java/Mensageria/12 Dead Letter Topic — o padrão DLQ|Dead Letter Topic — o padrão DLQ]].
+
 ### retry / retryWhen
 Operadores reativos que re-subscrevem a fonte após um erro, refazendo o trabalho do zero. `retry(n)` tenta n vezes; `retryWhen(Retry.backoff(...))` adiciona espera exponencial (com jitter) entre as tentativas, evitando martelar um serviço que está se recuperando.
 
@@ -1584,6 +1741,11 @@ Estado global da JVM em que todas as threads Java estão em pontos de execução
 
 Veja também: [[03 - Garbage Collection — o conceito]].
 
+### saga
+Padrão para gerenciar transações longas distribuídas por múltiplos microsserviços sem two-phase commit: a saga é uma sequência de transações locais, cada uma seguida de um evento; em caso de falha, eventos compensatórios desfazem as etapas anteriores. Pode ser implementada por coreografia (eventos reativos) ou orquestração (saga orchestrator central).
+
+Veja também: [[03-Dominios/Java/Mensageria/22 Saga — transações distribuídas por eventos|Saga — transações distribuídas por eventos]].
+
 ### Scene Builder
 Ferramenta visual de arrastar-e-soltar (distribuída pela Gluon) para criar arquivos FXML sem escrever XML manualmente. Permite inspecionar a hierarquia de nós, configurar propriedades e CSS, e associar controllers; gera o FXML que o `FXMLLoader` carrega em tempo de execução.
 
@@ -1598,6 +1760,11 @@ Veja também: [[02 - Scene graph — stage, scene e nodes]].
 Abstração do Reactor para controlar em qual thread/pool um trecho do pipeline roda. As fábricas de `Schedulers` oferecem `parallel` (CPU-bound), `boundedElastic` (I/O bloqueante isolado), `single` e `immediate`. Combina-se com `publishOn`/`subscribeOn` para mover o trabalho entre threads.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]].
+
+### schema registry
+Serviço centralizado que armazena e versiona schemas (Avro, Protobuf, JSON Schema) usados por produtores e consumidores Kafka. Garante compatibilidade de evolução (backward, forward, full) no momento do registro, evitando que uma mudança de schema quebre consumidores em produção. A implementação de referência é o Confluent Schema Registry.
+
+Veja também: [[03-Dominios/Java/Mensageria/14 Schema e contratos — Avro e Schema Registry|Schema e contratos — Avro e Schema Registry]].
 
 ### Scoped value
 Mecanismo final (permanente) do Java 25 para compartilhar dados imutáveis com threads descendentes sem passar parâmetros explicitamente, como alternativa segura e eficiente ao `ThreadLocal`. O valor é acessível apenas dentro de um escopo delimitado e não pode ser alterado após a ligação.
@@ -1695,6 +1862,11 @@ Módulo do Spring Boot que expõe endpoints de produção (`/actuator/health`, `
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/17 - Actuator e observabilidade|Actuator e observabilidade]].
 
+### Spring AMQP
+Módulo do ecossistema Spring que abstrai a comunicação com brokers AMQP (principalmente RabbitMQ): fornece `RabbitTemplate` para envio, `@RabbitListener` para consumo e o listener container para gerenciamento de threads e conexões. Segue o mesmo padrão de abstração do Spring Kafka.
+
+Veja também: [[03-Dominios/Java/Mensageria/15 Spring AMQP e RabbitMQ|Spring AMQP e RabbitMQ]].
+
 ### Spring AOP
 Implementação de programação orientada a aspectos do Spring, baseada em *proxies* em runtime (JDK dynamic proxy ou CGLIB) — não em weaving de bytecode como o AspectJ completo. Intercepta apenas execuções de método de beans gerenciados; é o mecanismo por baixo de `@Transactional`, `@Cacheable` e `@Async`.
 
@@ -1715,6 +1887,11 @@ Anotação que carrega o `ApplicationContext` completo num teste (integração);
 
 Veja também: [[03-Dominios/Java/Testes/12 - Testes de integração ponta a ponta|Testes de integração ponta a ponta]].
 
+### Spring Cloud Stream
+Framework do ecossistema Spring Cloud que abstrai a integração com brokers de mensagens (Kafka, RabbitMQ) por meio de *binders* e *bindings* declarativos. O código da aplicação trabalha com `Supplier`, `Function` e `Consumer` Java; o binder cuida da conexão com o broker específico. Facilita a troca de broker sem alterar a lógica de negócio.
+
+Veja também: [[03-Dominios/Java/Mensageria/17 Spring Cloud Stream — a abstração de binders|Spring Cloud Stream — a abstração de binders]].
+
 ### Spring Data JPA
 Camada do Spring sobre a JPA/Hibernate que elimina o boilerplate do repositório: interfaces `JpaRepository`, queries derivadas, paginação, projections e Specifications. Veja também: [[03-Dominios/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|O que é a camada de persistência]].
 
@@ -1727,6 +1904,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Fra
 Biblioteca do ecossistema Spring que facilita construir representações hipermídia (nível 3 do Richardson Maturity Model): fornece `EntityModel`/`CollectionModel` para envolver recursos com links, `Link` para representá-los e `WebMvcLinkBuilder` para gerar URLs de forma type-safe a partir dos controllers.
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
+
+### Spring Kafka
+Módulo do Spring para integração com Apache Kafka: fornece `KafkaTemplate` para produção, `@KafkaListener` e listener containers para consumo, suporte a transações via `KafkaTransactionManager`, `DefaultErrorHandler` para tratamento de erros e `@RetryableTopic` para retry automático. É a camada de abstração principal para Kafka no ecossistema Spring.
+
+Veja também: [[03-Dominios/Java/Mensageria/07 KafkaTemplate — produzindo mensagens|KafkaTemplate — produzindo mensagens]].
 
 ### Spring MVC
 O framework web do Spring baseado no padrão front controller: um `DispatcherServlet` recebe as requisições e orquestra `HandlerMapping`, `HandlerAdapter`, interceptors e `HttpMessageConverter` para produzir a resposta. Roda sobre a Servlet API e é a base para construir aplicações web e APIs REST com `@Controller`/`@RestController`.
