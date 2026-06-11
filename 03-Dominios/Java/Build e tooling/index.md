@@ -30,7 +30,7 @@ A audiência primária é o dev pleno/sênior em preparação pra entrevista int
 
 Este é um **galho novo/de pesquisa**, com **poda reversa mínima** — Lombok, MapStruct e packaging foram migrados de notas Spring pra cá, onde pertencem conceitualmente. A **tese honesta** atravessa o galho inteiro: build = grafo de dependências + reprodutibilidade; o bytecode produzido é o mesmo OpenJDK, então a diferença entre distribuições é licença e suporte, não tecnologia; e supply chain deixou de ser opcional depois do Log4Shell.
 
-A **fronteira-assinatura é quádrupla** — quatro temas pertencem a este galho só de relance, porque foram explicados em profundidade em outros galhos (aqui se linka, não se re-explica): módulos/jlink/GraalVM-AOT estão no Galho 3; jpackage está no Galho 6; starters e repackage estão no Galho 8; teoria de teste, cobertura e mutation testing estão no Galho 13.
+A **fronteira-assinatura é quádrupla** — quatro temas pertencem a este galho só de relance, porque foram explicados em profundidade em outros galhos (aqui se linka, não se re-explica): módulos/JPMS, jlink e GraalVM/AOT (em nível de JVM) estão no Galho 3 — a imagem nativa de produção (GraalVM native image) é o Galho 17 (planejado); jpackage está no Galho 6; starters e repackage estão no Galho 8; teoria de teste, cobertura e mutation testing estão no Galho 13.
 
 ## Iniciado
 
