@@ -169,7 +169,7 @@ O Maven Plugin do Spring Boot cuida do empacotamento:
 </plugin>
 ```
 
-O **layered jar** é uma variante que organiza o conteúdo em camadas (`dependencies`, `spring-boot-loader`, `snapshot-dependencies`, `application`) para otimizar cache de layers em imagens Docker — a camada de dependências externas raramente muda; só a camada `application` é reconstruída no pipeline. O detalhamento de packaging, layered jars e imagens nativas é coberto no Galho 15/17 (planejado).
+O **layered jar** é uma variante que organiza o conteúdo em camadas (`dependencies`, `spring-boot-loader`, `snapshot-dependencies`, `application`) para otimizar cache de layers em imagens Docker — a camada de dependências externas raramente muda; só a camada `application` é reconstruída no pipeline. O detalhamento de packaging (fat/thin/uber jar, Maven Shade/Gradle Shadow) e layered jars é coberto em [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|Empacotamento (Galho 15)]]; imagens nativas (GraalVM) são o Galho 17 (planejado).
 
 ## Na prática
 

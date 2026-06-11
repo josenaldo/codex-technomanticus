@@ -294,17 +294,7 @@ public @interface ValidCpf {
 
 ### Ferramentas do ecossistema
 
-**MapStruct** — mapeamento entre objetos (Entity ↔ DTO) em compile-time. Sem reflection, mais rápido que ModelMapper.
-
-```java
-@Mapper(componentModel = "spring")
-public interface PatientMapper {
-    PatientDTO toDto(Patient entity);
-    Patient toEntity(CreatePatientRequest request);
-}
-```
-
-**Lombok** — elimina boilerplate (getters, setters, constructors). **Cuidado com JPA:** `@Data` gera equals/hashCode com todos os campos, causando `LazyInitializationException` e loops infinitos com relações. Use `@Getter @Setter @NoArgsConstructor` separados e implemente equals/hashCode manualmente (ou use Records).
+**MapStruct** e **Lombok** — geração de código em compile-time (mapeamento Entity↔DTO e boilerplate de getters/setters/builders). O tratamento canônico de annotation processing — incluindo o atrito **Lombok + MapStruct** e o `lombok-mapstruct-binding` — está em [[03-Dominios/Java/Build e tooling/14 - Annotation processing — Lombok e MapStruct|Annotation processing (Galho 15)]]. **No contexto JPA, cuidado com Lombok:** `@Data` gera `equals`/`hashCode`/`toString` com todos os campos, tocando relações lazy (`LazyInitializationException`, loops, problemas de performance). Use `@Getter @Setter @NoArgsConstructor` separados e implemente `equals`/`hashCode` manualmente (ou use Records).
 
 **SpringDoc OpenAPI** — gera OpenAPI 3 + Swagger UI automaticamente a partir dos controllers.
 
