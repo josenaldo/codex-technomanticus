@@ -30,6 +30,11 @@ Como usar este glossário:
 
 ## A
 
+### AAA (Arrange-Act-Assert)
+Estrutura de um teste em três blocos: **Arrange** (prepara o cenário/given), **Act** (executa a ação/when), **Assert** (verifica o resultado/then). Torna o teste legível em segundos.
+
+Veja também: [[03-Dominios/Java/Testes/02 - JUnit 5 — anatomia, lifecycle e o padrão AAA|JUnit 5]].
+
 ### ABA problem
 Anomalia em algoritmos lock-free onde um valor lido como A é alterado para B e de volta para A antes do CAS ser executado, fazendo o CAS ter sucesso incorretamente. A thread acredita que nada mudou, mas o estado intermediário pode ter corrompido invariantes. Solucionado com estampilhas de versão (ex: `AtomicStampedReference`).
 
@@ -70,6 +75,16 @@ A interface central do container Spring: estende `BeanFactory` e adiciona resolu
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext — o container e seu ciclo]].
 
+### ArchUnit
+Biblioteca que expressa regras de arquitetura como testes JUnit (dependências entre camadas, ausência de ciclos, convenções) — fitness functions que falham o build no drift arquitetural.
+
+Veja também: [[03-Dominios/Java/Testes/19 - Fitness functions — ArchUnit (testes de arquitetura)|Fitness functions — ArchUnit]].
+
+### ArgumentCaptor
+Recurso do Mockito que captura o argumento passado a um mock (`captor.capture()`/`getValue()`), permitindo asserções detalhadas sobre o que o código sob teste enviou.
+
+Veja também: [[03-Dominios/Java/Testes/07 - Mockito — verify, ArgumentCaptor e quando NÃO mockar|Mockito: verify e ArgumentCaptor]].
+
 ### aspect
 Módulo que encapsula uma preocupação transversal (cross-cutting concern) no AOP, combinando pointcuts (onde) e advices (o quê). No Spring, declarado com `@Aspect` sobre um bean; agrupa a lógica de logging, segurança ou transações que de outra forma se espalharia por todo o código.
 
@@ -79,6 +94,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring
 As duas fases de um pipeline reativo: montar a cadeia de operadores (*assembly time*) não executa nada; só o `subscribe` (*subscription time*) dispara o fluxo. Erros de montagem aparecem cedo; o trabalho real só acontece na subscription.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/04 - Nada acontece até o subscribe — lazy, assembly vs subscription, cold vs hot|Nada acontece até o subscribe]].
+
+### AssertJ
+Biblioteca de asserções fluent (`assertThat(x).isNotNull().hasSize(3)`) com mensagens de erro claras; o padrão moderno, mais legível que o JUnit built-in/Hamcrest.
+
+Veja também: [[03-Dominios/Java/Testes/03 - AssertJ — fluent assertions|AssertJ]].
 
 ### Atomic (variável atômica)
 Variável que suporta operações de leitura, escrita e atualização compostas sem necessidade de `synchronized`, usando instruções CAS do hardware. O pacote `java.util.concurrent.atomic` oferece `AtomicInteger`, `AtomicLong`, `AtomicReference` e variantes. Garante atomicidade sem bloquear threads.
@@ -124,6 +144,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e st
 Annotation do Spring (`org.springframework.beans.factory.annotation.Autowired`) que marca um ponto de injeção — construtor, campo ou método. O container resolve a dependência por tipo (e desambigua com `@Qualifier`/`@Primary`). Desde o Spring 4.3 é opcional em construtores únicos. Alfabetiza como "Autowired".
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|IoC e injeção de dependência no Spring]].
+
+### Awaitility
+Biblioteca para testar condições eventuais/assíncronas com polling declarativo (`await().atMost(...).untilAsserted(...)`), substituindo o `Thread.sleep` que causa flakiness.
+
+Veja também: [[03-Dominios/Java/Testes/14 - Testando código assíncrono — Awaitility|Testando código assíncrono]].
 
 ### AWT (Abstract Window Toolkit)
 Toolkit de GUI original do Java, com componentes heavyweight que têm peers nativos do sistema operacional. O Swing é construído sobre o AWT e o estende com componentes lightweight de renderização puramente Java.
@@ -395,6 +420,11 @@ Situação em que múltiplas threads disputam o mesmo lock ou recurso simultanea
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
 
+### contract testing
+Técnica em que o consumidor de uma API declara o contrato que espera e o provedor verifica que o cumpre no próprio build — pega quebras sem testes E2E frágeis entre serviços. Em Java, via Pact.
+
+Veja também: [[03-Dominios/Java/Testes/20 - Contract testing — Pact|Contract testing — Pact]].
+
 ### @ControllerAdvice / @RestControllerAdvice
 `@ControllerAdvice` marca uma classe cujos `@ExceptionHandler`, `@InitBinder` e `@ModelAttribute` valem globalmente, para todos os controllers (ou um subconjunto filtrado por pacote/anotação/tipo). `@RestControllerAdvice` é a variante que combina `@ControllerAdvice` com `@ResponseBody`, ideal para handlers de exceção de APIs REST que serializam o corpo de erro diretamente. Alfabetiza como "ControllerAdvice".
 
@@ -439,6 +469,11 @@ Veja também: [[09 - CSS em JavaFX]].
 Cliente de baixo nível do Spring para acesso reativo a banco relacional via R2DBC, sem repositório nem ORM. Expõe uma API fluente (`sql(...).bind(...).fetch()`) que devolve `Mono`/`Flux`, útil quando se quer controle direto sobre o SQL.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|R2DBC]].
+
+### @DataJpaTest
+Slice de teste do Spring Boot que carrega só a camada JPA (repositories, `EntityManager`); cada teste roda em transação com rollback automático. Use `Replace.NONE` + Testcontainers pra banco real.
+
+Veja também: [[03-Dominios/Java/Testes/10 - @DataJpaTest — testando repositories|@DataJpaTest]].
 
 ### Deadlock
 Estado em que duas ou mais threads se bloqueiam mutuamente, cada uma esperando um lock que a outra segura — criando uma espera circular sem saída. Nenhuma das threads progride indefinidamente. Prevenido por ordenação consistente de locks, uso de `tryLock` com timeout ou eliminação de lock aninhado.
@@ -643,6 +678,11 @@ O `Filter` único (registrado via `DelegatingFilterProxy`) que delega para a lis
 
 Veja também: [[03-Dominios/Java/Segurança/06 - A arquitetura do filter chain em profundidade|A arquitetura do filter chain]].
 
+### fitness function
+Teste automatizado que valida uma característica arquitetural (camadas, ciclos, convenções) e falha o build quando ela é violada; em Java, expressas com ArchUnit.
+
+Veja também: [[03-Dominios/Java/Testes/19 - Fitness functions — ArchUnit (testes de arquitetura)|Fitness functions — ArchUnit]].
+
 ### FlatLaf
 Look and Feel moderno (flat, com suporte a dark mode) desenvolvido pela FormDev, disponível como biblioteca open-source third-party — não faz parte do JDK. Mantém aplicações Swing com aparência atual em diferentes sistemas operacionais.
 
@@ -763,6 +803,11 @@ Veja também: [[14 - Sealed classes e pattern matching]].
 
 ## H
 
+### H2 (vs Testcontainers)
+Banco em memória usado historicamente em testes; rápido, mas seu dialeto SQL diverge do banco de produção (Postgres/MySQL) e gera falso-positivo. Em produção-grade, prefira Testcontainers com o banco real.
+
+Veja também: [[03-Dominios/Java/Testes/11 - Testcontainers — infra real em testes|Testcontainers]].
+
 ### HandlerAdapter
 Componente do Spring MVC que sabe *como invocar* um handler de um determinado tipo. O `DispatcherServlet` não chama o handler diretamente: delega ao `HandlerAdapter` apropriado (ex.: `RequestMappingHandlerAdapter` para métodos `@RequestMapping`), que resolve argumentos, executa o método e adapta o retorno. Desacopla o despachante das várias formas de handler.
 
@@ -832,6 +877,11 @@ Veja também: [[02 - Tipos, variáveis e operadores]].
 Annotation do CDI (`jakarta.inject.Inject`) que marca um ponto de injeção — campo, construtor ou método. O container resolve o bean por tipo + qualifiers e o fornece. Injeção por construtor é a preferida (testabilidade e imutabilidade). Alfabetiza como "Inject".
 
 Veja também: [[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI — beans e injeção]].
+
+### InjectMocks
+Anotação do Mockito (`@InjectMocks`) que cria o objeto sob teste e injeta nele os colaboradores `@Mock` declarados na classe de teste.
+
+Veja também: [[03-Dominios/Java/Testes/06 - Mockito — mocks, stubbing e matchers|Mockito]].
 
 ### inlining (JIT)
 Otimização do compilador JIT que substitui uma chamada de método pelo corpo do método chamado diretamente no ponto de chamada, eliminando o overhead de invocação e abrindo espaço para otimizações adicionais no contexto inlined. Métodos pequenos e frequentemente chamados são candidatos prioritários.
@@ -935,6 +985,11 @@ IDE de análise de performance que lê arquivos `.jfr` gerados pelo JFR e os apr
 
 Veja também: [[13 - JFR e JMC — observabilidade de produção]].
 
+### JMH (microbenchmark)
+Java Microbenchmark Harness — o harness oficial do OpenJDK pra medir performance de código corretamente, lidando com warmup, JIT, fork e dead-code elimination (que enganam um `System.nanoTime()` num `@Test`).
+
+Veja também: [[03-Dominios/Java/Testes/18 - Performance — JMH e microbenchmarks|Performance — JMH]].
+
 ### jpackage
 Ferramenta do JDK (JEP 392, GA no Java 16) que empacota uma aplicação Java e sua imagem de runtime (`jlink`) em um instalador nativo para a plataforma-alvo: `.msi`/`.exe` (Windows), `.dmg`/`.pkg` (macOS) ou `.deb`/`.rpm` (Linux). Elimina a necessidade de JRE instalado previamente no sistema do usuário.
 
@@ -962,6 +1017,11 @@ Veja também: [[08 - JPMS — o sistema de módulos]].
 Especificação de demarcação e coordenação de transações da plataforma (Transactions 2.0 no EE 11): `UserTransaction` (programática), `@Transactional` (declarativa via interceptor CDI) e integração com XA/two-phase commit para múltiplos recursos.
 
 Veja também: [[03-Dominios/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA — transações na plataforma]].
+
+### JUnit 5 (Jupiter)
+Framework de testes moderno do Java (Platform + Jupiter + Vintage); a API Jupiter (`@Test`/`@BeforeEach`/`@ParameterizedTest`) substituiu o modelo do JUnit 4.
+
+Veja também: [[03-Dominios/Java/Testes/02 - JUnit 5 — anatomia, lifecycle e o padrão AAA|JUnit 5]].
 
 ### JWKS (JSON Web Key Set)
 Endpoint que publica as chaves públicas do emissor (`jwk-set-uri`); o Resource Server busca a chave por ele para validar a assinatura do JWT, permitindo rotação sem downtime.
@@ -1076,6 +1136,31 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/08 - Validação na borda|Valid
 
 Veja também: [[02 - Áreas de memória de runtime]].
 
+### mock vs spy vs fake vs stub
+Os test doubles: **mock** (dublê controlado e verificável), **spy** (wrapper sobre objeto real com stubs pontuais), **fake** (implementação simples alternativa, ex.: repositório em `HashMap`), **stub** (retorna respostas fixas).
+
+Veja também: [[03-Dominios/Java/Testes/06 - Mockito — mocks, stubbing e matchers|Mockito]].
+
+### Mockito
+Framework de mocks de facto do Java: cria dublês programáveis (`when().thenReturn()`) e verificáveis (`verify()`); integra via `MockitoExtension`.
+
+Veja também: [[03-Dominios/Java/Testes/06 - Mockito — mocks, stubbing e matchers|Mockito]].
+
+### @MockitoBean
+Anotação do Spring Boot (3.4+) que substitui um bean do contexto de teste por um mock do Mockito; substituiu o `@MockBean` (deprecated).
+
+Veja também: [[03-Dominios/Java/Testes/08 - Spring Boot Test e os slices — o contexto de teste|Spring Boot Test e os slices]].
+
+### MockMvc
+Cliente de teste do Spring que dispara requests contra a camada web sem subir um servidor (`perform(...).andExpect(status()/jsonPath())`); o coração do `@WebMvcTest`.
+
+Veja também: [[03-Dominios/Java/Testes/09 - @WebMvcTest — testando controllers com MockMvc|@WebMvcTest]].
+
+### MockRestServiceServer
+Servidor de mock do Spring Test pra `RestClient`/`RestTemplate` (`@RestClientTest`): casa requests esperados e devolve respostas stub, sem HTTP real.
+
+Veja também: [[03-Dominios/Java/Testes/16 - Mockando HTTP externo — WireMock e MockRestServiceServer|Mockando HTTP externo]].
+
 ### Modena
 User-agent stylesheet padrão do JavaFX desde a versão 8, que define a aparência base de todos os controles. É um arquivo CSS interno que pode ser consultado e sobrescrito pelas folhas da aplicação. Substitui o Caspian (padrão no JavaFX 2) e serve como ponto de partida para temas customizados.
 
@@ -1094,6 +1179,11 @@ Publisher do Project Reactor que representa 0-1 elemento assíncrono (`Mono<T>`)
 
 Veja também: [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]].
 
+### mutation testing
+Técnica que mede a qualidade dos testes mutando o bytecode (ex.: `>`→`>=`) e checando se os testes pegam o mutante; mutation coverage é métrica mais honesta que line coverage. Em Java, PIT.
+
+Veja também: [[03-Dominios/Java/Testes/17 - Mutation testing — PIT e cobertura honesta|Mutation testing — PIT]].
+
 ### Mutual exclusion (exclusão mútua)
 Propriedade que garante que apenas uma thread por vez execute uma seção crítica de código que acessa estado compartilhado. Implementada em Java por `synchronized`, `ReentrantLock` ou semáforos com 1 permissão. Previne condições de corrida ao serializar o acesso.
 
@@ -1108,6 +1198,11 @@ Veja também: [[11 - Arquitetura — MVC, MVVM e injeção de dependência]].
 
 ### N+1 (problema)
 O bug de performance mais comum da JPA: ao carregar N entidades pai e acessar uma associação lazy de cada uma, geram-se 1 (pai) + N (filhos) queries. Resolve-se com `@EntityGraph`, `JOIN FETCH`, `@BatchSize` ou DTO projection. Veja também: [[03-Dominios/Java/Persistência de dados/08 - O problema N+1 e suas soluções — @EntityGraph, JOIN FETCH, batch size|O problema N+1]].
+
+### @Nested
+Anotação do JUnit 5 que agrupa testes relacionados numa classe interna não-estática, dando estrutura e nomes de cenário (`@Nested @DisplayName "when order is pending"`).
+
+Veja também: [[03-Dominios/Java/Testes/04 - Testes parametrizados e organização|Testes parametrizados e organização]].
 
 ### Nimbus
 Look and Feel vetorial bundled no JDK desde o Java 7, alternativa ao Metal padrão. Renderiza os componentes com formas suaves e escala melhor em diferentes resoluções de tela. Configurável via `UIManager.put` para ajustes de cores e fontes.
@@ -1198,6 +1293,11 @@ Veja também: [[03-Dominios/Java/Segurança/16 - OWASP Top 10 no contexto Java|O
 
 ## P
 
+### Pact
+Ferramenta de contract testing consumer-driven pra JVM: o consumer gera o pact, o producer verifica (`@Provider`/`@State`); a quebra falha no build sem E2E.
+
+Veja também: [[03-Dominios/Java/Testes/20 - Contract testing — Pact|Contract testing — Pact]].
+
 ### Pageable / Page / Slice
 Abstrações de paginação do Spring Data: `Pageable`/`PageRequest` definem página+tamanho+ordenação; `Page<T>` traz o total (query `count` extra); `Slice<T>` só sabe se há próxima página (sem count, mais barato). Veja também: [[03-Dominios/Java/Persistência de dados/11 - Paginação e ordenação — Pageable, Page e Slice|Paginação e ordenação]].
 
@@ -1205,6 +1305,11 @@ Abstrações de paginação do Spring Data: `Pageable`/`PageRequest` definem pá
 Método a sobrescrever (em vez de `paint`) para desenhar conteúdo customizado em um componente Swing. Deve chamar `super.paintComponent(g)` antes de desenhar e fazer cast de `Graphics` para `Graphics2D` para acessar a API completa de renderização Java2D.
 
 Veja também: [[03-Dominios/Java/Swing/10 - Custom painting e componentes customizados|Custom painting]].
+
+### @ParameterizedTest
+Anotação do JUnit 5 que roda o mesmo teste com vários inputs vindos de uma source (`@ValueSource`/`@CsvSource`/`@MethodSource`/`@EnumSource`).
+
+Veja também: [[03-Dominios/Java/Testes/04 - Testes parametrizados e organização|Testes parametrizados e organização]].
 
 ### PasswordEncoder
 Interface do Spring Security para hash de senha: `encode` (gera) e `matches` (confere). Nunca há decode — hash é one-way.
@@ -1251,6 +1356,11 @@ Veja também: [[03-Dominios/Java/Segurança/12 - OAuth2 e OIDC Client e os grant
 Fenômeno em que uma virtual thread fica "presa" ao seu carrier thread durante um bloco `synchronized` ou chamada nativa, impedindo que o carrier execute outras virtual threads enquanto aguarda. Reduz a escalabilidade de virtual threads; mitigado substituindo `synchronized` por `ReentrantLock` ou eliminando bloqueios em seções críticas.
 
 Veja também: [[12 - Virtual Threads e Project Loom]].
+
+### PIT (Pitest)
+Ferramenta de mutation testing pra Java (`pitest-maven` + `pitest-junit5-plugin`): muta o bytecode e reporta a mutation coverage; lento, roda no nightly.
+
+Veja também: [[03-Dominios/Java/Testes/17 - Mutation testing — PIT e cobertura honesta|Mutation testing — PIT]].
 
 ### Platform.runLater
 Método estático do JavaFX (`Platform.runLater(Runnable)`) que agenda a execução de um `Runnable` na JavaFX Application Thread de forma assíncrona. Deve ser usado sempre que código de uma background thread precisar atualizar nós do grafo de cena; análogo ao `SwingUtilities.invokeLater` do Swing.
@@ -1532,6 +1642,11 @@ Interfaces introduzidas no Java 21 (`java.util.SequencedCollection`, `java.util.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/14 - SequencedCollection e SequencedMap|SequencedCollection]].
 
+### @ServiceConnection
+Anotação do Spring Boot (3.1+) que auto-configura a conexão (datasource, Kafka, Redis) a partir de um container Testcontainers, dispensando o `@DynamicPropertySource` manual.
+
+Veja também: [[03-Dominios/Java/Testes/11 - Testcontainers — infra real em testes|Testcontainers]].
+
 ### servlet
 Componente Java que processa requisições HTTP dentro de um container (Servlet 6.1 no EE 11). `HttpServlet` expõe `doGet`/`doPost`...; uma única instância atende múltiplas threads concorrentes, então estado mutável de instância é perigoso. É o alicerce sobre o qual frameworks web rodam.
 
@@ -1567,6 +1682,11 @@ Implementação plugável da aparência e do comportamento visual de um `Control
 
 Veja também: [[12 - Custom controls, Canvas e charts]].
 
+### soft assertions
+Asserções que acumulam todas as falhas em vez de parar na primeira (`SoftAssertions.assertSoftly`), reportando tudo de uma vez.
+
+Veja também: [[03-Dominios/Java/Testes/03 - AssertJ — fluent assertions|AssertJ]].
+
 ### Specification (Spring Data)
 Predicado componível (`Specification<T>`) sobre a Criteria API, usado com `JpaSpecificationExecutor` para construir filtros dinâmicos (`where(...).and(...).or(...)`) — comum em APIs de busca. Veja também: [[03-Dominios/Java/Persistência de dados/15 - Consultas dinâmicas e os limites da JPA — Specifications, Criteria e SQL|Consultas dinâmicas e os limites da JPA]].
 
@@ -1589,6 +1709,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e st
 Camada sobre o Spring Framework que aplica *convention over configuration*: auto-configuration, starters, servidor embarcado e jars executáveis para que uma aplicação Spring suba com configuração mínima e `java -jar`. Não substitui o Spring Framework — o orquestra para reduzir boilerplate.
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
+
+### @SpringBootTest
+Anotação que carrega o `ApplicationContext` completo num teste (integração); combinada com Testcontainers e `WebEnvironment`, testa o fluxo inteiro. Mais pesada que os slices.
+
+Veja também: [[03-Dominios/Java/Testes/12 - Testes de integração ponta a ponta|Testes de integração ponta a ponta]].
 
 ### Spring Data JPA
 Camada do Spring sobre a JPA/Hibernate que elimina o boilerplate do repositório: interfaces `JpaRepository`, queries derivadas, paginação, projections e Specifications. Veja também: [[03-Dominios/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|O que é a camada de persistência]].
@@ -1647,6 +1772,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e st
 Situação em que uma thread nunca obtém acesso a um recurso porque outras threads de maior prioridade ou mais agressivas o monopolizam indefinidamente. A thread não está bloqueada em deadlock — continua elegível para execução — mas jamais é escalonada. Mitigada com políticas de lock fair (ex: `new ReentrantLock(true)`).
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### StepVerifier
+Utilitário do `reactor-test` pra testar `Mono`/`Flux`: assina o publisher e verifica os sinais passo a passo (`expectNext`/`expectError`/`verifyComplete`), com `withVirtualTime` pra delays.
+
+Veja também: [[03-Dominios/Java/Testes/15 - Testando código reativo — StepVerifier e @WebFluxTest|Testando código reativo]].
 
 ### stop-the-world
 Pausa em que a JVM suspende todas as threads da aplicação para executar uma fase do GC que exige visão consistente do heap, como a marcação inicial ou a cópia de objetos young. A duração das pausas STW é o principal indicador de latência do GC e varia conforme o coletor: G1 as minimiza incrementalmente; ZGC e Shenandoah as tornam sub-milissegundos.
@@ -1709,6 +1839,31 @@ Veja também: [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swin
 Classes do JavaFX para executar trabalho demorado fora da JavaFX Application Thread. `Task<V>` é de uso único (como `FutureTask`): define `call()`, expõe propriedades `value`, `progress` e `message` observáveis na JAT. `Service<V>` encapsula e reutiliza um `Task`, podendo ser reiniciado (`restart()`); adequado para operações repetíveis como buscas ou polling.
 
 Veja também: [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]].
+
+### test data builder
+Padrão que constrói objetos de teste com defaults sensatos + overrides fluentes (`anOrder().asPaid().build()`), evitando construtores enormes e setup duplicado.
+
+Veja também: [[03-Dominios/Java/Testes/05 - Test data builders e fixtures|Test data builders e fixtures]].
+
+### test pyramid (pirâmide de testes)
+Heurística de distribuição: muitos testes de unidade (rápidos), uma camada de integração e poucos E2E (lentos/frágeis). Inverter a pirâmide deixa a suíte lenta.
+
+Veja também: [[03-Dominios/Java/Testes/01 - O que é testar em Java — a pirâmide e o stack moderno|O que é testar em Java]].
+
+### test slice (Spring Boot)
+Anotação que carrega só parte do contexto pra testar uma camada isolada (`@WebMvcTest`/`@DataJpaTest`/`@JsonTest`/`@RestClientTest`), mais rápida que `@SpringBootTest`.
+
+Veja também: [[03-Dominios/Java/Testes/08 - Spring Boot Test e os slices — o contexto de teste|Spring Boot Test e os slices]].
+
+### Testcontainers
+Biblioteca que sobe containers Docker reais (Postgres, Kafka, Redis) durante o teste, eliminando o falso-positivo do H2; `@ServiceConnection` (Boot 3.1+) auto-configura a conexão.
+
+Veja também: [[03-Dominios/Java/Testes/11 - Testcontainers — infra real em testes|Testcontainers]].
+
+### TestEntityManager
+Alternativa de teste ao `EntityManager` no `@DataJpaTest` (`persist`/`flush`/`find`), pra preparar o estado do banco sem passar pelo repositório sob teste.
+
+Veja também: [[03-Dominios/Java/Testes/10 - @DataJpaTest — testando repositories|@DataJpaTest]].
 
 ### Text block
 Literal de string multilinha delimitado por `"""` (Java 15+). Preserva a indentação relativa, suporta interpolação futura e elimina concatenações e escapes desnecessários em strings longas como SQL, JSON ou HTML embutido.
@@ -1780,6 +1935,11 @@ Interface cujo `loadUserByUsername` carrega o usuário (e suas authorities) de o
 
 Veja também: [[03-Dominios/Java/Segurança/03 - Autenticação — UserDetailsService, AuthenticationManager, Form e Basic|Autenticação]].
 
+### usingRecursiveComparison
+Recurso do AssertJ que compara dois objetos campo a campo recursivamente (`.ignoringFields("id", "createdAt")`), sem depender de `equals`.
+
+Veja também: [[03-Dominios/Java/Testes/03 - AssertJ — fluent assertions|AssertJ]].
+
 ## V
 
 ### @Value
@@ -1791,6 +1951,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profil
 Mecanismo que permite declarar um método com número variável de argumentos do mesmo tipo (`Tipo... nomes`). O compilador converte os argumentos em um array. Deve ser o último parâmetro da assinatura e gera um aviso se usado junto com generics por ambiguidade de heap pollution.
 
 Veja também: [[05 - Arrays e varargs]].
+
+### verify (Mockito)
+Confere que um mock foi chamado como esperado (`verify(mock, times(n))`, `never()`, `InOrder`); verifique o comportamento observável, não a contagem acoplada à implementação.
+
+Veja também: [[03-Dominios/Java/Testes/07 - Mockito — verify, ArgumentCaptor e quando NÃO mockar|Mockito: verify e ArgumentCaptor]].
 
 ### @Version (optimistic locking)
 Campo de versão numa entidade que habilita o optimistic locking: o Hibernate adiciona `WHERE version = ?` no UPDATE e incrementa a versão; se 0 linhas forem afetadas, lança `OptimisticLockException`. Veja também: [[03-Dominios/Java/Persistência de dados/13 - Locking — optimistic (@Version) e pessimistic|Locking]].
@@ -1822,15 +1987,35 @@ Cliente HTTP reativo e não-bloqueante do Spring WebFlux, com API fluente (`get(
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP — RestClient, WebClient, RestTemplate]], [[03-Dominios/Java/Programação Reativa/11 - WebClient — o cliente HTTP reativo a fundo|WebClient a fundo]].
 
+### @WebFluxTest
+Slice de teste do Spring Boot pra reactive controllers (WebFlux); auto-configura o `WebTestClient`.
+
+Veja também: [[03-Dominios/Java/Testes/15 - Testando código reativo — StepVerifier e @WebFluxTest|Testando código reativo]].
+
+### @WebMvcTest
+Slice de teste do Spring Boot que carrega só a web layer (controllers, `@ControllerAdvice`, converters) e mocka o resto; testado com `MockMvc`.
+
+Veja também: [[03-Dominios/Java/Testes/09 - @WebMvcTest — testando controllers com MockMvc|@WebMvcTest]].
+
+### WebTestClient
+Cliente de teste reativo do Spring (não-bloqueante) pra exercitar endpoints WebFlux ou servidores reais; usado em `@WebFluxTest` e `@SpringBootTest`.
+
+Veja também: [[03-Dominios/Java/Testes/15 - Testando código reativo — StepVerifier e @WebFluxTest|Testando código reativo]].
+
 ### Wildcard
 Argumento de tipo genérico desconhecido, representado por `?`. Pode ser não-limitado (`?`), com limite superior (`? extends T`) ou com limite inferior (`? super T`). Aumenta a flexibilidade das APIs genéricas ao custo de restringir as operações permitidas sobre a coleção.
 
 Veja também: [[12 - Generics em profundidade]].
 
+### WireMock
+Servidor de mock HTTP pra testar integrações com APIs externas sem depender delas (`stubFor`/`verify`, cenários de retry); aponta-se o client via `@DynamicPropertySource`.
+
+Veja também: [[03-Dominios/Java/Testes/16 - Mockando HTTP externo — WireMock e MockRestServiceServer|Mockando HTTP externo]].
+
 ### @WithMockUser
 Anotação de teste do Spring Security que injeta um usuário autenticado no `SecurityContext` para testar regras de autorização; a stack de teste é tema do galho de Testes.
 
-Veja também: [[03-Dominios/Java/Segurança/18 - Capstone — projetando a segurança de uma API Spring production-grade|Capstone de segurança]].
+Veja também: [[03-Dominios/Java/Segurança/18 - Capstone — projetando a segurança de uma API Spring production-grade|Capstone de segurança]]. [[03-Dominios/Java/Testes/13 - Testando a segurança|Testando a segurança]].
 
 ### WORA
 Write Once, Run Anywhere — princípio central do Java: o bytecode compilado roda em qualquer plataforma que possua uma JVM compatível, sem recompilação. Viabilizado pela camada de abstração da JVM entre o código e o hardware/SO.
