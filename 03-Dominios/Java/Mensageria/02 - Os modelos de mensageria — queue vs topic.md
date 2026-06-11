@@ -47,7 +47,7 @@ O efeito prático do competing consumers é escala horizontal de throughput: se 
 
 No RabbitMQ, o roteamento de filas passa por um **exchange**. O exchange do tipo `direct` ou `fanout` decide para quais filas a mensagem vai. A fila em si é FIFO e entrega cada mensagem a exatamente um consumidor.
 
-```
+```text
 Producer → Exchange → Queue → Consumer A
                              (Consumer B fica idle ou recebe a próxima)
 ```
@@ -63,7 +63,7 @@ No Kafka, o **consumer group** é a unidade que combina os dois modelos:
 
 Isso permite, por exemplo, que o serviço de `Shipment` e o serviço de `Payment` consumam o mesmo tópico `order.created` de forma independente, enquanto cada serviço escala horizontalmente com múltiplos workers dentro do seu próprio group.
 
-```
+```text
 Producer → Topic (partições) → Group A: Consumer A1, A2 (competing)
                              → Group B: Consumer B1 (independente)
 ```
@@ -143,7 +143,7 @@ rabbitTemplate.convertAndSend("payment.confirmed.fanout", "", paymentEvent);
 
 Se múltiplos workers do mesmo serviço escutam tópicos Kafka mas estão em **consumer groups diferentes**, cada worker recebe **todas** as mensagens — o trabalho é executado N vezes.
 
-```
+```java
 // ERRADO: dois grupos distintos para o mesmo serviço
 @KafkaListener(topics = "payment.process", groupId = "payment-worker-1")
 @KafkaListener(topics = "payment.process", groupId = "payment-worker-2")

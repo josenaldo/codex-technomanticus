@@ -63,7 +63,7 @@ Um **consumer group** é um conjunto de instâncias da sua aplicação que divid
 
 Regra de ouro para escala:
 
-```
+```text
 consumers ativos no grupo ≤ número de partições do tópico
 ```
 
@@ -124,7 +124,7 @@ Para consumir, basta anotar um método com `@KafkaListener` — veja [[03-Domini
 
 É o erro de escala mais comum. Se o tópico `pedido-criado` tem 4 partições e você sobe 6 pods, 2 pods ficam completamente ociosos — nunca recebem uma mensagem. O remédio é aumentar as partições do tópico (operação de infra, não de app) ou reduzir as instâncias ao número certo.
 
-> [!warning] Cuidado ao aumentar partições
+> [!caution] Cuidado ao aumentar partições
 > Aumentar partições de um tópico existente quebra a garantia de ordenação por chave para mensagens já publicadas, pois a chave pode ir parar em uma partição diferente. Planeje o número de partições antes de ir para produção.
 
 ### (2) Tentar reaprender internals quando o modelo de app é suficiente
