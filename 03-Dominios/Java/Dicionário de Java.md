@@ -95,6 +95,11 @@ Recurso do Mockito que captura o argumento passado a um mock (`captor.capture()`
 
 Veja também: [[03-Dominios/Java/Testes/07 - Mockito — verify, ArgumentCaptor e quando NÃO mockar|Mockito: verify e ArgumentCaptor]].
 
+### artifact (artefato Maven)
+A unidade que um build produz ou consome — tipicamente um `jar`, `war` ou o próprio `pom` — identificada de forma única por suas coordenadas GAV (groupId:artifactId:version) no repositório.
+
+Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas e lifecycle|Maven — coordenadas]].
+
 ### aspect
 Módulo que encapsula uma preocupação transversal (cross-cutting concern) no AOP, combinando pointcuts (onde) e advices (o quê). No Spring, declarado com `@Aspect` sobre um bean; agrupa a lógica de logging, segurança ou transações que de outra forma se espalharia por todo o código.
 
@@ -252,6 +257,11 @@ Interface de fila thread-safe que bloqueia o produtor quando a fila está cheia 
 
 Veja também: [[07 - Concurrent collections]].
 
+### BOM (Bill of Materials)
+POM especial que contém apenas uma seção `dependencyManagement` e é importado com `<scope>import</scope>`, alinhando as versões de um conjunto coeso de bibliotecas sem declará-las como dependências diretas.
+
+Veja também: [[03-Dominios/Java/Build e tooling/11 - BOM e dependency management|BOM e dependency management]].
+
 ### boundedElastic (Scheduler)
 `Scheduler` do Reactor com pool elástico mas limitado, destinado a isolar chamadas BLOQUEANTES (JDBC, I/O legado) para que não travem o event loop. Cada tarefa bloqueante roda numa thread dedicada e descartável, em vez de prender um worker do event loop.
 
@@ -266,6 +276,11 @@ Veja também: [[03-Dominios/Java/Mensageria/04 O ecossistema de brokers na JVM|O
 Conversão automática entre tipos primitivos (`int`, `long`, `double`…) e seus wrappers (`Integer`, `Long`, `Double`…): *boxing* empacota o primitivo num objeto; *unboxing* extrai o primitivo do wrapper. Feita implicitamente pelo compilador (autoboxing), mas introduz overhead de alocação e risco de `NullPointerException` em unboxing de referência `null`. Relevante em streams primitivos (`IntStream`), que evitam esse custo.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]].
+
+### build cache (Gradle)
+Cache que reusa os outputs de tasks já executadas — entre builds, máquinas e até no CI — chaveado por um hash dos inputs da task. Diferente do build incremental (local à máquina), pode ser remoto e compartilhado pelo time.
+
+Veja também: [[03-Dominios/Java/Build e tooling/07 - Gradle — performance, build cache e daemon|Gradle — performance e build cache]].
 
 ### Bytecode
 Representação intermediária compilada pelo `javac` a partir do código-fonte `.java`, gravada em arquivos `.class`. Não é código de máquina nativo: é executado (ou JIT-compilado) pela JVM, o que viabiliza o princípio WORA.
@@ -320,6 +335,11 @@ Objeto responsável por desenhar o conteúdo de cada célula ou item de `JTable`
 
 Veja também: [[03-Dominios/Java/Swing/08 - Renderers e editors|Renderers e editors]].
 
+### Central Portal
+Serviço atual da Sonatype para publicar artefatos no Maven Central, que substituiu o OSSRH (legacy) em 2025. Centraliza namespace verification, upload e release dos componentes.
+
+Veja também: [[03-Dominios/Java/Build e tooling/19 - Publicação de artefatos|Publicação de artefatos]].
+
 ### CGLIB
 Biblioteca de geração de bytecode que o Spring usa para criar proxies via *subclasse* quando o bean-alvo não implementa interface alguma. Diferente do JDK dynamic proxy (baseado em interface), o proxy CGLIB estende a classe concreta — por isso a classe e os métodos não podem ser `final`. É a estratégia padrão para classes `@Configuration` e beans sem interface.
 
@@ -329,6 +349,11 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring
 Exceção que o compilador obriga o desenvolvedor a declarar (`throws`) ou capturar (`try/catch`). Estende `Exception` (excluindo `RuntimeException`). Exemplos: `IOException`, `SQLException`. Usada quando o chamador pode se recuperar do erro.
 
 Veja também: [[10 - Exceções e tratamento de erros]].
+
+### Checkstyle
+Ferramenta de análise estática que verifica estilo e convenções de código (formatação, nomes, imports, javadoc) contra um conjunto de regras configurável. Plugável no build (Maven/Gradle) como quality gate que falha o build no desvio.
+
+Veja também: [[03-Dominios/Java/Build e tooling/16 - Quality gates no build|Quality gates no build]].
 
 ### classloader (parent delegation)
 Componente da JVM responsável por carregar classes sob demanda a partir do classpath ou modulepath. O modelo de delegação hierárquica (parent delegation) determina que cada classloader consulta seu pai antes de tentar carregar a classe ele mesmo, garantindo que classes do JDK nunca sejam substituídas por versões do usuário.
@@ -435,6 +460,16 @@ Annotation do Spring que marca uma classe como fonte de definições de bean via
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/05 - @Configuration e @Bean — definição explícita de beans|@Configuration e @Bean]].
 
+### configuration cache (Gradle)
+Cache da fase de configuração e do task graph: o Gradle serializa o resultado da configuração e o reusa quando nada relevante muda, pulando o trabalho de reconfigurar o build. É o modo preferido a partir do Gradle 9.0 (ainda opt-in).
+
+Veja também: [[03-Dominios/Java/Build e tooling/07 - Gradle — performance, build cache e daemon|Gradle — performance e build cache]].
+
+### configuration (Gradle)
+Bucket nomeado de dependências no Gradle — `implementation`, `api`, `compileOnly`, `runtimeOnly`, `testImplementation` — que define em qual classpath cada dependência entra e como se propaga para os consumidores do módulo.
+
+Veja também: [[03-Dominios/Java/Build e tooling/05 - Gradle — build script, tasks e configurations|Gradle — build script e configurations]].
+
 ### @ConfigurationProperties
 Annotation do Spring Boot que faz binding de um grupo de propriedades externas (com prefixo comum) para os campos de um bean tipado, com validação opcional. Alternativa estruturada e type-safe ao `@Value` para conjuntos de configuração relacionados. Alfabetiza como "ConfigurationProperties".
 
@@ -480,6 +515,11 @@ Princípio de design (popularizado pelo Rails e abraçado pelo Spring Boot) em q
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
 
+### coordenadas GAV
+O endereço único de um artefato no repositório: `groupId:artifactId:version`. O groupId identifica a organização/projeto, o artifactId o módulo, e a version a release específica — juntos, resolvem exatamente qual binário baixar.
+
+Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas e lifecycle|Maven — coordenadas]].
+
 ### Core Profile
 O menor dos três perfis do Jakarta EE (introduzido no EE 10): conjunto mínimo de specs (CDI Lite, RESTful Web Services, JSON, Annotations, Interceptors) voltado a runtimes cloud-native e resolução em build-time. Web Profile e Platform são supersets.
 
@@ -517,6 +557,11 @@ Veja também: [[03-Dominios/Java/Segurança/10 - CSRF — por que ligado por def
 Sistema de estilização do JavaFX baseado em um subconjunto de CSS 2.1 estendido com propriedades prefixadas `-fx-` (ex.: `-fx-background-color`, `-fx-font-size`). O user-agent stylesheet padrão é o Modena; folhas customizadas são aplicadas via `scene.getStylesheets().add(...)` ou `node.setStyle(...)`. Cada controle expõe pseudo-classes de estado (`:hover`, `:focused`, `:disabled`).
 
 Veja também: [[09 - CSS em JavaFX]].
+
+### CycloneDX
+Padrão de SBOM focado em segurança, ratificado como especificação Ecma. Descreve componentes, dependências e suas vulnerabilidades em um formato legível por máquina; plugins Maven e Gradle geram o BOM CycloneDX no build.
+
+Veja também: [[03-Dominios/Java/Build e tooling/18 - Supply chain e SBOM|Supply chain e SBOM]].
 
 ## D
 
@@ -574,6 +619,21 @@ Veja também: [[03-Dominios/Java/Swing/04 - O modelo de eventos|Modelo de evento
 Processo pelo qual a JVM descarta código nativo gerado pelo JIT e volta a interpretar (ou recompilar com menos agressividade) um método, tipicamente quando uma suposição feita em tempo de compilação (ex.: classe monormórfica) é invalidada em runtime. Pode ser observado nos GC logs com `-XX:+PrintCompilation`.
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
+
+### dependencyManagement
+Seção do POM que fixa as versões (e opcionalmente scope/exclusions) de dependências sem declará-las de fato no módulo. Os módulos filhos herdam a versão ao declarar a dependência sem `<version>`. É a base sobre a qual um BOM é construído.
+
+Veja também: [[03-Dominios/Java/Build e tooling/11 - BOM e dependency management|BOM e dependency management]].
+
+### dependency scope (Maven)
+O escopo de uma dependência no Maven — `compile`, `provided`, `runtime`, `test`, `system` ou `import` — que controla em quais classpaths (compilação, runtime, teste) ela aparece e se é transitiva para os consumidores.
+
+Veja também: [[03-Dominios/Java/Build e tooling/03 - Maven — dependências, scopes e exclusions|Maven — dependências e scopes]].
+
+### dependency tree
+A árvore das dependências efetivamente resolvidas, incluindo as transitivas. Inspecionada com `mvn dependency:tree` ou `gradle dependencies` para diagnosticar conflitos de versão, dependências duplicadas ou indesejadas.
+
+Veja também: [[03-Dominios/Java/Build e tooling/10 - Resolução de dependências e conflitos de versão|Resolução de dependências e conflitos]].
 
 ### Deque
 Interface `java.util.Deque<E>` (double-ended queue) que permite inserção e remoção em ambas as extremidades. Estende `Queue` e é implementada por `ArrayDeque` (preferível a `Stack` e `LinkedList` para pilhas e filas). Métodos principais: `addFirst`/`addLast`, `pollFirst`/`pollLast`, `peekFirst`/`peekLast`.
@@ -755,6 +815,11 @@ Padrão de migração de schema em três passos para mudar tabelas grandes sem d
 
 ## F
 
+### fat jar / uber jar
+Jar que embute, além das classes da aplicação, todas as suas dependências, virando um único artefato executável e autossuficiente. Produzido pelo Maven Shade Plugin ou pelo Gradle Shadow; o Spring Boot usa uma variante com layout próprio (executable jar).
+
+Veja também: [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|Empacotamento — fat jar e thin jar]].
+
 ### fetch strategy (LAZY/EAGER)
 Decide quando o Hibernate carrega uma associação: LAZY (sob demanda, via proxy) ou EAGER (junto com o pai). A regra prática é sempre LAZY — o default EAGER de `@ManyToOne`/`@OneToOne` é fonte oculta de problemas de performance. Veja também: [[03-Dominios/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Fetch strategies]].
 
@@ -866,6 +931,11 @@ Empresa e projeto open-source que mantém o port do JavaFX para dispositivos mó
 
 Veja também: [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 
+### Gradle
+Build tool imperativo e flexível baseado em DSL (Groovy ou Kotlin), com build incremental, daemon e cache para acelerar builds. Modela o build como um grafo de tasks, em contraste com o lifecycle fixo do Maven.
+
+Veja também: [[03-Dominios/Java/Build e tooling/05 - Gradle — build script, tasks e configurations|Gradle — build script, tasks e configurations]].
+
 ### GrantedAuthority
 Representa uma permissão concedida ao principal (uma role `ROLE_*`, um scope `SCOPE_*` ou uma authority custom); é o que `hasRole`/`hasAuthority` consultam.
 
@@ -963,6 +1033,11 @@ Propriedade de um objeto cujo estado não pode ser alterado após a criação. E
 
 Veja também: [[06 - Classes, objetos e encapsulamento]].
 
+### incremental build
+Otimização do build tool que pula tasks cujos inputs e outputs não mudaram desde a última execução (up-to-date checking). É local à máquina; complementa o build cache, que compartilha outputs entre builds e máquinas.
+
+Veja também: [[03-Dominios/Java/Build e tooling/07 - Gradle — performance, build cache e daemon|Gradle — performance e build cache]].
+
 ### Inferência de tipo
 Capacidade do compilador de deduzir o tipo de uma variável local a partir da expressão à direita, sem que o programador o declare explicitamente. Em Java (a partir do Java 10): `var nome = "Alice";`. Só se aplica a variáveis locais com inicializador.
 
@@ -1055,6 +1130,11 @@ Classe-base da maioria dos componentes Swing (`J*`), que estende `Container` do 
 
 Veja também: [[03-Dominios/Java/Swing/01 - O modelo do Swing|Modelo do Swing]].
 
+### JDK distribution
+Um binário concreto do OpenJDK empacotado por um vendor com seu próprio selo de suporte, licença e cadência — Temurin (Adoptium), Corretto (AWS), Zulu (Azul), Liberica (BellSoft), Oracle JDK e GraalVM. Todas partem da mesma base OpenJDK.
+
+Veja também: [[03-Dominios/Java/Build e tooling/09 - Distribuições do JDK e o ecossistema|Distribuições do JDK]].
+
 ### JDK dynamic proxy
 Mecanismo do JDK (`java.lang.reflect.Proxy`) que cria, em runtime, um proxy implementando uma ou mais *interfaces*. É a estratégia padrão do Spring AOP quando o bean-alvo implementa interface — o proxy só pode interceptar métodos declarados na interface. Quando não há interface, o Spring recorre ao CGLIB.
 
@@ -1074,6 +1154,11 @@ Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 Ferramenta do JDK (introduzida no Java 9) que gera uma imagem de runtime customizada contendo apenas os módulos JPMS necessários para a aplicação. Reduz drasticamente o tamanho do JRE distribuído (de centenas de MB para dezenas), viabilizando distribuições self-contained de aplicações JavaFX.
 
 Veja também: [[13 - Empacotamento — módulos, jlink e jpackage]].
+
+### jlink (no build)
+No contexto de empacotamento, o `jlink` cria um runtime Java mínimo e customizado a partir dos módulos JPMS necessários, reduzindo o tamanho da imagem distribuída. O detalhe da ferramenta em si está no Galho 3 (JPMS).
+
+Veja também: [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|Empacotamento]], [[03-Dominios/Java/JVM/08 - JPMS — o sistema de módulos|JPMS]].
 
 ### JMC (JDK Mission Control)
 IDE de análise de performance que lê arquivos `.jfr` gerados pelo JFR e os apresenta em visões gráficas de eventos, alocações, CPU, GC e latências. Distribuído separadamente do JDK; suporta análise offline e conexão em tempo real via JMX.
@@ -1150,6 +1235,11 @@ Componente central do Spring Kafka para produção de mensagens: abstrai o `Kafk
 
 Veja também: [[03-Dominios/Java/Mensageria/07 KafkaTemplate — produzindo mensagens|KafkaTemplate — produzindo mensagens]].
 
+### Kotlin DSL (Gradle)
+Forma de escrever build scripts do Gradle em Kotlin (`build.gradle.kts`), com tipagem estática e autocompletar no IDE, em contraste com a DSL Groovy dinâmica. É o default recomendado desde o Gradle 8.0.
+
+Veja também: [[03-Dominios/Java/Build e tooling/05 - Gradle — build script, tasks e configurations|Gradle — build script, tasks e configurations]].
+
 ### KRaft
 Modo de operação do Apache Kafka (disponível como padrão a partir do Kafka 3.3, substituindo o ZooKeeper completamente no 4.0) em que o próprio cluster Kafka gerencia seus metadados via protocolo Raft, eliminando a dependência do ZooKeeper. Simplifica o deployment e operação do cluster.
 
@@ -1177,6 +1267,11 @@ Container do JavaFX que posiciona e dimensiona seus filhos segundo uma estratég
 
 Veja também: [[03 - Layout panes]].
 
+### lifecycle (Maven)
+A sequência ordenada de phases que o Maven executa: `validate` → `compile` → `test` → `package` → `verify` → `install` → `deploy`. Rodar uma phase executa todas as anteriores e dispara os goals de plugin ligados a cada uma.
+
+Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas e lifecycle|Maven — lifecycle]].
+
 ### Liquibase
 Ferramenta de migração de schema baseada em changelog declarativo (changesets em XML/YAML/JSON/SQL), com rollback declarativo e a tabela de controle `DATABASECHANGELOG` (com MD5SUM). Alternativa ao Flyway. Veja também: [[03-Dominios/Java/Persistência de dados/16 - Migrations de schema — Flyway, Liquibase e expand-and-contract|Migrations de schema]].
 
@@ -1199,6 +1294,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/11 - java.time — Date e
 Propriedade de um algoritmo ou estrutura de dados que garante progresso global mesmo se threads individuais forem preemptadas indefinidamente — ao menos uma thread sempre avança. Implementado com CAS e loops de retry sem `synchronized`. Reduz contention e risco de deadlock ao custo de maior complexidade.
 
 Veja também: [[06 - Atômicos e operações lock-free]].
+
+### Lombok
+Biblioteca que gera boilerplate (getters, setters, construtores, `equals`/`hashCode`, builders) em compile-time, manipulando a AST via annotation processing — `@Getter`, `@Data`, `@Builder`. Reduz código repetitivo, ao custo de acoplar o build ao processor.
+
+Veja também: [[03-Dominios/Java/Build e tooling/14 - Annotation processing — Lombok e MapStruct|Annotation processing — Lombok e MapStruct]].
 
 ### look and feel (L&F)
 Conjunto plugável que define a aparência visual e o comportamento interativo de todos os componentes Swing. Trocável em runtime via `UIManager.setLookAndFeel`; inclui opções como Metal, Nimbus, System L&F e bibliotecas third-party como FlatLaf.
@@ -1223,10 +1323,25 @@ Operador que transforma cada elemento de um publisher de forma síncrona e 1:1 (
 
 Veja também: [[03-Dominios/Java/Programação Reativa/05 - map e flatMap — transformando o fluxo|map e flatMap]].
 
+### MapStruct
+Gerador de mappers entre Entity e DTO em compile-time via annotation processing: a partir de uma interface anotada com `@Mapper`, gera a implementação que copia os campos, sem reflection em runtime. Type-safe e rápido.
+
+Veja também: [[03-Dominios/Java/Build e tooling/14 - Annotation processing — Lombok e MapStruct|Annotation processing — Lombok e MapStruct]].
+
 ### marble diagram
 Diagrama visual que representa um fluxo reativo no tempo — os elementos emitidos, o sinal de conclusão e o de erro — e o efeito de um operador sobre esse fluxo. É a notação padrão da documentação do Reactor/RxJava para explicar operadores.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]].
+
+### Maven
+Build tool declarativo baseado em convenção e no descritor `pom.xml`. Modela o build como um lifecycle de phases fixas e resolve dependências por coordenadas GAV a partir de repositórios. Privilegia convenção sobre configuração.
+
+Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas e lifecycle|Maven — POM, coordenadas e lifecycle]].
+
+### Maven Central
+O repositório público padrão de artefatos do ecossistema Java/JVM, de onde Maven e Gradle baixam dependências por default. A publicação atual passa pelo Central Portal da Sonatype.
+
+Veja também: [[03-Dominios/Java/Build e tooling/19 - Publicação de artefatos|Publicação de artefatos]].
 
 ### MDB (message-driven bean)
 Tipo de Enterprise Bean que consome mensagens de forma assíncrona (tipicamente de uma fila/tópico), processando-as fora do fluxo request/response. É o ponto de integração do EJB com mensageria.
@@ -1296,6 +1411,11 @@ Publisher do Project Reactor que representa 0-1 elemento assíncrono (`Mono<T>`)
 
 Veja também: [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]].
 
+### multi-module (reactor)
+Projeto Maven composto de vários módulos sob um parent POM. O reactor analisa as dependências entre os módulos e os ordena topologicamente, buildando-os na ordem correta em uma única invocação.
+
+Veja também: [[03-Dominios/Java/Build e tooling/12 - Projetos multi-módulo|Projetos multi-módulo]].
+
 ### mutation testing
 Técnica que mede a qualidade dos testes mutando o bytecode (ex.: `>`→`>=`) e checando se os testes pegam o mutante; mutation coverage é métrica mais honesta que line coverage. Em Java, PIT.
 
@@ -1316,10 +1436,20 @@ Veja também: [[11 - Arquitetura — MVC, MVVM e injeção de dependência]].
 ### N+1 (problema)
 O bug de performance mais comum da JPA: ao carregar N entidades pai e acessar uma associação lazy de cada uma, geram-se 1 (pai) + N (filhos) queries. Resolve-se com `@EntityGraph`, `JOIN FETCH`, `@BatchSize` ou DTO projection. Veja também: [[03-Dominios/Java/Persistência de dados/08 - O problema N+1 e suas soluções — @EntityGraph, JOIN FETCH, batch size|O problema N+1]].
 
+### nearest-wins (mediation)
+Estratégia de dependency mediation do Maven: quando a árvore traz a mesma dependência em versões diferentes, vence a declaração mais próxima da raiz (menor profundidade), não a versão mais nova. O Gradle, por contraste, escolhe a versão mais alta.
+
+Veja também: [[03-Dominios/Java/Build e tooling/10 - Resolução de dependências e conflitos de versão|Resolução de dependências e conflitos]].
+
 ### @Nested
 Anotação do JUnit 5 que agrupa testes relacionados numa classe interna não-estática, dando estrutura e nomes de cenário (`@Nested @DisplayName "when order is pending"`).
 
 Veja também: [[03-Dominios/Java/Testes/04 - Testes parametrizados e organização|Testes parametrizados e organização]].
+
+### NFTC (No-Fee Terms and Conditions)
+Licença da Oracle, vigente desde 2021, sob a qual o Oracle JDK é gratuito para uso em produção a partir da versão 17 — incluindo uso comercial, durante o período de release + um ano. Distinta da licença comercial paga das versões anteriores.
+
+Veja também: [[03-Dominios/Java/Build e tooling/09 - Distribuições do JDK e o ecossistema|Distribuições do JDK]].
 
 ### Nimbus
 Look and Feel vetorial bundled no JDK desde o Java 7, alternativa ao Metal padrão. Renderiza os componentes com formas suaves e escala melhor em diferentes resoluções de tela. Configurável via `UIManager.put` para ajustes de cores e fontes.
@@ -1377,6 +1507,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/07 - Error handling reati
 Especificação aberta (antiga Swagger Specification) para descrever APIs REST de forma legível por máquina — endpoints, parâmetros, schemas, respostas e segurança — em JSON ou YAML. Serve de contrato e alimenta ferramentas de documentação (Swagger UI), geração de clientes e testes. No Spring Boot é gerada automaticamente pelo springdoc-openapi.
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/12 - Documentando a API com OpenAPI e Swagger|Documentando a API com OpenAPI e Swagger]].
+
+### OpenJDK
+A implementação de referência open-source do Java SE, sob licença GPLv2+CPE. É a base de código a partir da qual todas as distribuições do JDK (Temurin, Corretto, Oracle JDK, etc.) são construídas.
+
+Veja também: [[03-Dominios/Java/Build e tooling/09 - Distribuições do JDK e o ecossistema|Distribuições do JDK]].
 
 ### OpenJFX
 Projeto open-source que abriga o código-fonte do JavaFX desde que foi desacoplado do JDK no Java 11. Mantido pela comunidade com contribuições da Gluon, Oracle e outros, disponibilizado em [openjfx.io](https://openjfx.io). Distribuído como módulos separados adicionados ao projeto via Maven/Gradle.
@@ -1469,6 +1604,11 @@ Veja também: [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de pe
 ### pessimistic locking
 Bloqueio explícito no banco (`@Lock(LockModeType.PESSIMISTIC_WRITE)` → `SELECT ... FOR UPDATE`) que segura o lock até o commit; usado quando conflitos de escrita são frequentes. Cuidado com deadlocks (adquira locks em ordem consistente). Veja também: [[03-Dominios/Java/Persistência de dados/13 - Locking — optimistic (@Version) e pessimistic|Locking]].
 
+### phase (Maven)
+Uma etapa do lifecycle do Maven (ex.: `compile`, `test`, `package`). Cada phase dispara os goals dos plugins ligados a ela; invocar uma phase executa, em cadeia, todas as phases anteriores do mesmo lifecycle.
+
+Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas e lifecycle|Maven — lifecycle]].
+
 ### PKCE / authorization code
 Authorization Code é o fluxo OAuth2 recomendado (redirect → code → token); o PKCE (Proof Key for Code Exchange) o protege em clientes públicos (SPA/mobile) dispensando o client secret.
 
@@ -1508,6 +1648,11 @@ Veja também: [[03-Dominios/Java/Mensageria/02 Os modelos de mensageria — queu
 Capacidade de um mesmo método ou referência se comportar de maneiras diferentes conforme o tipo real do objeto em tempo de execução. Em Java, é realizado principalmente por overriding + herança/interface. Permite escrever código genérico que opera sobre famílias de tipos.
 
 Veja também: [[07 - Herança e polimorfismo]].
+
+### POM (Project Object Model)
+O `pom.xml`: o descritor declarativo de um projeto Maven. Define coordenadas GAV, dependências, plugins, propriedades e herança de parent — a fonte única da configuração do build.
+
+Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas e lifecycle|Maven — POM, coordenadas e lifecycle]].
 
 ### portable extension (CDI)
 Ponto de extensão do container CDI (SPI `Extension`): um bean observa eventos do bootstrap (`ProcessAnnotatedType` etc.) para adicionar/modificar beans programaticamente — é como frameworks se integram ao CDI. No CDI Lite, o equivalente build-time é a build compatible extension.
@@ -1654,6 +1799,11 @@ Token de longa duração (idealmente opaco e server-side) usado para obter novos
 
 Veja também: [[03-Dominios/Java/Segurança/13 - Refresh tokens e revogação de token|Refresh tokens e revogação de token]].
 
+### reproducible build
+Build determinístico: a mesma entrada (fontes + dependências + toolchain) produz bit-a-bit o mesmo artefato, independentemente de quando ou onde rodou. No Maven, exige fixar `project.build.outputTimestamp` e zerar fontes de variação (timestamps, ordem de arquivos). Permite verificar a integridade da cadeia de build.
+
+Veja também: [[03-Dominios/Java/Build e tooling/17 - Reprodutibilidade e reproducible builds|Reprodutibilidade e reproducible builds]].
+
 ### request(n) (demanda)
 O sinal pelo qual o `Subscriber` pede `n` elementos ao `Publisher` através da `Subscription`. É o mecanismo concreto do backpressure: o produtor só pode emitir até o total já demandado, e nunca além — o consumidor dita o ritmo.
 
@@ -1746,6 +1896,11 @@ Padrão para gerenciar transações longas distribuídas por múltiplos microsse
 
 Veja também: [[03-Dominios/Java/Mensageria/22 Saga — transações distribuídas por eventos|Saga — transações distribuídas por eventos]].
 
+### SBOM (Software Bill of Materials)
+Inventário formal e legível por máquina de todos os componentes e dependências (diretas e transitivas) que compõem um artefato. Base da segurança de supply chain — permite cruzar componentes com bases de vulnerabilidades. Formatos comuns: CycloneDX e SPDX.
+
+Veja também: [[03-Dominios/Java/Build e tooling/18 - Supply chain e SBOM|Supply chain e SBOM]].
+
 ### Scene Builder
 Ferramenta visual de arrastar-e-soltar (distribuída pela Gluon) para criar arquivos FXML sem escrever XML manualmente. Permite inspecionar a hierarquia de nós, configurar propriedades e CSS, e associar controllers; gera o FXML que o `FXMLLoader` carrega em tempo de execução.
 
@@ -1770,6 +1925,11 @@ Veja também: [[03-Dominios/Java/Mensageria/14 Schema e contratos — Avro e Sch
 Mecanismo final (permanente) do Java 25 para compartilhar dados imutáveis com threads descendentes sem passar parâmetros explicitamente, como alternativa segura e eficiente ao `ThreadLocal`. O valor é acessível apenas dentro de um escopo delimitado e não pode ser alterado após a ligação.
 
 Veja também: [[14 - Scoped values]].
+
+### SDKMAN
+Gerenciador de versões de SDKs no ambiente local (JDK, Maven, Gradle, etc.): instala, lista e alterna distribuições por linha de comando, definindo o JDK ativo por shell ou por projeto (`.sdkmanrc`).
+
+Veja também: [[03-Dominios/Java/Build e tooling/09 - Distribuições do JDK e o ecossistema|Distribuições do JDK]].
 
 ### Sealed class
 Classe (ou interface) que restringe explicitamente quais subclasses (ou subinterfaces) podem estendê-la, usando a palavra-chave `sealed` e a cláusula `permits`. Permite ao compilador verificar exaustividade em switches e torna hierarquias fechadas e explicitamente documentadas.
@@ -1848,6 +2008,11 @@ Veja também: [[06 - Os coletores do HotSpot]].
 Implementação plugável da aparência e do comportamento visual de um `Control` do JavaFX. Cada controle delega layout e renderização ao seu `Skin` (ex.: `ButtonSkin`); criar um skin customizado permite reimplementar completamente a aparência sem alterar o modelo do controle. O mecanismo é análogo ao UI delegate do Swing.
 
 Veja também: [[12 - Custom controls, Canvas e charts]].
+
+### SLSA
+Framework de níveis de integridade da cadeia de suprimentos de software (Supply-chain Levels for Software Artifacts). Define níveis crescentes de garantia sobre como um artefato foi produzido, baseados em proveniência (provenance) e attestation verificáveis.
+
+Veja também: [[03-Dominios/Java/Build e tooling/18 - Supply chain e SBOM|Supply chain e SBOM]].
 
 ### soft assertions
 Asserções que acumulam todas as falhas em vez de parar na primeira (`SoftAssertions.assertSoftly`), reportando tudo de uma vez.
@@ -2022,6 +2187,11 @@ Classes do JavaFX para executar trabalho demorado fora da JavaFX Application Thr
 
 Veja também: [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]].
 
+### Temurin (Adoptium)
+Distribuição do OpenJDK vendor-neutral mantida pela Eclipse Foundation (projeto Adoptium), sob licença GPLv2+CPE. É a escolha gratuita e neutra mais comum quando não há requisito de um vendor específico.
+
+Veja também: [[03-Dominios/Java/Build e tooling/09 - Distribuições do JDK e o ecossistema|Distribuições do JDK]].
+
 ### test data builder
 Padrão que constrói objetos de teste com defaults sensatos + overrides fluentes (`anOrder().asPaid().build()`), evitando construtores enormes e setup duplicado.
 
@@ -2052,6 +2222,11 @@ Literal de string multilinha delimitado por `"""` (Java 15+). Preserva a indenta
 
 Veja também: [[04 - Strings e text blocks]].
 
+### thin jar
+Jar que contém apenas as classes da aplicação, mantendo as dependências externas (no classpath ou em um diretório `lib/`). Mais leve que o fat jar e melhor para camadas de cache de imagem Docker, ao custo de exigir o classpath montado na execução.
+
+Veja também: [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|Empacotamento — fat jar e thin jar]].
+
 ### Thread pool
 Conjunto de threads pré-criadas e reutilizáveis que executam tarefas submetidas a uma fila, evitando o custo de criar e destruir threads para cada tarefa. Em Java, provido por `ExecutorService` com implementações como `ThreadPoolExecutor`, `FixedThreadPool` e `ForkJoinPool`. Fundamental para escalabilidade de aplicações concorrentes.
 
@@ -2061,6 +2236,11 @@ Veja também: [[08 - Executors e thread pools]].
 Estratégia de compilação JIT padrão desde o Java 8 que combina C1 e C2 em cinco níveis (0=interpretado, 1–3=C1 com crescente profundidade de instrumentação, 4=C2 totalmente otimizado). Métodos sobem de nível conforme a frequência de invocação, balanceando tempo de warmup e pico de throughput.
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
+
+### toolchain (build)
+Mecanismo do Maven e do Gradle que desacopla o JDK que roda o build do JDK usado para compilar e mirar o código. Permite, por exemplo, rodar o build com Java 21 e produzir bytecode compatível com Java 17, sem depender do JDK do `PATH`.
+
+Veja também: [[03-Dominios/Java/Build e tooling/13 - Toolchains — buildar com um JDK, mirar outro|Toolchains]].
 
 ### @Transactional (Jakarta)
 Annotation da JTA (`jakarta.transaction.Transactional`) que demarca transações de forma declarativa via interceptor CDI. O atributo `TxType` (REQUIRED/REQUIRES_NEW/...) define a propagação; por padrão faz rollback em exceções unchecked, não em checked. Homônima — mas distinta — da annotation de mesmo nome em frameworks. Alfabetiza como "Transactional".
@@ -2139,6 +2319,11 @@ Confere que um mock foi chamado como esperado (`verify(mock, times(n))`, `never(
 
 Veja também: [[03-Dominios/Java/Testes/07 - Mockito — verify, ArgumentCaptor e quando NÃO mockar|Mockito: verify e ArgumentCaptor]].
 
+### Version Catalog
+Mecanismo do Gradle (`gradle/libs.versions.toml`) que centraliza, de forma type-safe, as versões e coordenadas das dependências num único arquivo TOML. Os módulos referenciam as libs pelo alias (`libs.spring.boot`), evitando versões duplicadas e divergentes.
+
+Veja também: [[03-Dominios/Java/Build e tooling/06 - Gradle — dependências, Version Catalogs e o wrapper|Gradle — dependências e Version Catalogs]].
+
 ### @Version (optimistic locking)
 Campo de versão numa entidade que habilita o optimistic locking: o Hibernate adiciona `WHERE version = ?` no UPDATE e incrementa a versão; se 0 linhas forem afetadas, lança `OptimisticLockException`. Veja também: [[03-Dominios/Java/Persistência de dados/13 - Locking — optimistic (@Version) e pessimistic|Locking]].
 
@@ -2208,6 +2393,11 @@ Veja também: [[01 - O modelo da linguagem Java]].
 Estratégia de escalonamento do `ForkJoinPool` onde threads ociosas "roubam" tarefas da fila de outras threads sobrecarregadas. Reduz ociosidade e melhora o balanceamento dinâmico de carga em workloads irregulares. Cada worker mantém uma deque (fila dupla) de tarefas; o roubo ocorre pela extremidade oposta.
 
 Veja também: [[15 - Parallel streams e fork-join]].
+
+### wrapper (mvnw/gradlew)
+Script versionado no próprio projeto (`mvnw`/`mvnw.cmd`, `gradlew`/`gradlew.bat`) que baixa e usa uma versão fixa do build tool, garantindo builds reprodutíveis sem depender da instalação local. O Gradle Wrapper vem por padrão (`gradle wrapper`); o Maven Wrapper precisa ser adicionado explicitamente.
+
+Veja também: [[03-Dominios/Java/Build e tooling/04 - Maven — plugins, profiles e o wrapper|Maven — wrapper]], [[03-Dominios/Java/Build e tooling/06 - Gradle — dependências, Version Catalogs e o wrapper|Gradle — wrapper]].
 
 ## Y
 
