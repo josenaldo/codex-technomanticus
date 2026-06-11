@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-10
+updated: 2026-06-11
 status: growing
 tags:
   - moc
@@ -40,7 +40,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 10. [[03-Dominios/Java/Persistência de dados/index|Persistência de dados]] — JPA/Hibernate, o persistence context, mapeamento e relacionamentos, fetch strategies e o N+1, Spring Data repositories e consultas, paginação, transações operacionais, locking, caching e migrations
 11. [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]] — o modelo reativo na JVM: Reactive Streams, Project Reactor (Mono/Flux e operadores), schedulers e backpressure, Spring WebFlux e WebClient, R2DBC, e o confronto honesto reativo vs Virtual Threads
 12. [[03-Dominios/Java/Segurança/index|Segurança]] — Spring Security e o filter chain, autenticação e password encoding, autorização URL-based e method-level, JWT, OAuth2/OIDC, CSRF/CORS, session management, security headers e OWASP no contexto Java
-13. Testes *(planejado)* — JUnit 5, Mockito, AssertJ, Spring Boot Test, Testcontainers
+13. [[03-Dominios/Java/Testes/index|Testes]] — a pirâmide e o stack moderno, JUnit 5/AssertJ/Mockito, os slices do Spring Boot, Testcontainers e integração, testes de segurança/async/reativo, mutation testing, performance, fitness functions e contract testing
 
 ### Plataforma distribuída e produção
 
