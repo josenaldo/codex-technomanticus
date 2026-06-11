@@ -35,48 +35,48 @@ Os itens abaixo são a espinha do galho. Trate como um checklist de revisão de 
 ### Config — o ponto de entrada
 
 - Declare um bean `SecurityFilterChain` e configure tudo via **lambda DSL** (o estilo moderno, sem `WebSecurityConfigurerAdapter`). Um bean por cadeia; use `securityMatcher` quando precisar de cadeias distintas (ex.: API vs. actuator).
-- Veja [[03-Dominios/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain|O que é Spring Security]] e [[03-Dominios/Java/Segurança/06 - SecurityFilterChain e a lambda DSL — configuração moderna|SecurityFilterChain e a lambda DSL]].
+- Veja [[03-Dominios/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain|O que é Spring Security]] e [[03-Dominios/Java/Segurança/06 - A arquitetura do filter chain em profundidade|A arquitetura do filter chain]].
 
 ### Autenticação — stateless por padrão
 
 - Para uma API, prefira **stateless**: `sessionCreationPolicy(STATELESS)`, sem `JSESSIONID`. A identidade vem em cada request via token.
 - Use **OAuth2 Resource Server** com JWT. O servidor de recursos **não emite** tokens; ele os **valida**.
 - Valide o token contra o **JWKS** do emissor (chaves públicas rotacionáveis), e cheque as claims: `iss` (emissor esperado), `aud` (este serviço é o público-alvo), `exp` (não expirado). Faça **whitelist de `alg`** — nunca aceite `none` nem confie cegamente no header do token.
-- Veja [[03-Dominios/Java/Segurança/08 - OAuth2 e OIDC — o resource server valida, não emite|OAuth2 e OIDC]] e [[03-Dominios/Java/Segurança/09 - Validando JWT — JWKS, claims e a whitelist de algoritmos|Validando JWT]].
+- Veja [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e validação|JWT]] e [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]].
 
 ### Autorização — duas camadas
 
 - Camada de **URL**: `authorizeHttpRequests` com matchers explícitos. Negue por padrão (`anyRequest().authenticated()` no fim).
 - Camada de **método**: ative method security e use `@PreAuthorize` com **SpEL** para regras finas (`hasRole`, `hasAuthority`, comparação com o principal). É a defesa que sobrevive a um matcher de URL mal configurado.
-- Veja [[03-Dominios/Java/Segurança/05 - Autorização por URL — authorizeHttpRequests e matchers|Autorização por URL]], [[03-Dominios/Java/Segurança/07 - Method security — @PreAuthorize, @PostAuthorize e SpEL|Method security]] e [[03-Dominios/Java/Segurança/14 - SpEL em segurança — expressões de autorização|SpEL em segurança]].
+- Veja [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Autorização baseada em URL]], [[03-Dominios/Java/Segurança/07 - Method security — @PreAuthorize, @PostAuthorize e SpEL|Method security]] e [[03-Dominios/Java/Segurança/14 - Autorização avançada — AuthorizationManager, RBAC vs ABAC|Autorização avançada]].
 
 ### Password — encoding forte
 
 - Use `DelegatingPasswordEncoder` (prefixo `{bcrypt}`, `{argon2}` etc.) para suportar migração de algoritmo sem quebrar hashes antigos. BCrypt é o default seguro.
 - Nunca compare senha em texto puro; nunca use hash rápido (MD5/SHA-1) para senha. (OWASP: armazenar senhas com hashing forte + salt, comparação em tempo constante.)
-- Veja [[03-Dominios/Java/Segurança/04 - PasswordEncoder — BCrypt, DelegatingPasswordEncoder e migração|PasswordEncoder]].
+- Veja [[03-Dominios/Java/Segurança/04 - Password encoding — BCrypt, Argon2 e o DelegatingPasswordEncoder|Password encoding]].
 
 ### CSRF — depende do estado
 
 - **Stateless (API com token em header)**: CSRF pode/deve ficar **off** — não há cookie de sessão para o browser anexar automaticamente, então o vetor não existe.
 - **Com sessão (cookie)**: CSRF **on**, com token sincronizado. Desligar CSRF "porque dá erro" em fluxo de sessão abre a porta.
-- Veja [[03-Dominios/Java/Segurança/10 - CSRF — quando ligar, quando desligar e por quê|CSRF]].
+- Veja [[03-Dominios/Java/Segurança/10 - CSRF — por que ligado por default e quando desligar|CSRF]].
 
 ### CORS — origens explícitas
 
 - Liste **origens explícitas**. **Nunca** combine `allowedOrigins("*")` com `allowCredentials(true)` — é proibido pela spec e perigoso.
 - CORS é configuração de borda, não substituto de autenticação.
-- Veja [[03-Dominios/Java/Segurança/11 - CORS — origens explícitas e o erro do wildcard com credenciais|CORS]].
+- Veja [[03-Dominios/Java/Segurança/11 - CORS — a borda, o preflight e a config de segurança|CORS]].
 
 ### Headers — endureça o browser
 
 - Garanta **HSTS** (força HTTPS), **CSP** (restringe origem de scripts/recursos) e **frame-options** (anti-clickjacking). O Spring Security já liga vários headers por padrão; ajuste CSP ao seu front.
-- Veja [[03-Dominios/Java/Segurança/15 - Security headers — HSTS, CSP e frame-options|Security headers]].
+- Veja [[03-Dominios/Java/Segurança/15 - Session management e security headers|Session management e security headers]].
 
 ### Refresh tokens — server-side
 
 - Access tokens curtos; **refresh tokens** guardados e revogáveis **no servidor** (não no localStorage do cliente como verdade única). Permite revogar sessão sem esperar o `exp`.
-- Veja [[03-Dominios/Java/Segurança/13 - Refresh tokens — rotação, revogação e armazenamento server-side|Refresh tokens]].
+- Veja [[03-Dominios/Java/Segurança/13 - Refresh tokens e revogação de token|Refresh tokens]].
 
 ## A dupla fronteira numa tabela
 
@@ -104,17 +104,17 @@ Tabela de bolso para entrevista e para revisão. Bateu o problema, pule direto p
 | Problema / pergunta | Nota do galho |
 | --- | --- |
 | Como funciona o filter chain de ponta a ponta? | [[03-Dominios/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain\|nota 01]] |
-| Como guardo senha sem fazer besteira? | [[03-Dominios/Java/Segurança/04 - PasswordEncoder — BCrypt, DelegatingPasswordEncoder e migração\|nota 04]] |
-| Como protejo URLs por padrão? | [[03-Dominios/Java/Segurança/05 - Autorização por URL — authorizeHttpRequests e matchers\|nota 05]] |
-| Como configuro tudo com a lambda DSL moderna? | [[03-Dominios/Java/Segurança/06 - SecurityFilterChain e a lambda DSL — configuração moderna\|nota 06]] |
+| Como guardo senha sem fazer besteira? | [[03-Dominios/Java/Segurança/04 - Password encoding — BCrypt, Argon2 e o DelegatingPasswordEncoder\|nota 04]] |
+| Como protejo URLs por padrão? | [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities\|nota 05]] |
+| Como configuro tudo com a lambda DSL moderna? | [[03-Dominios/Java/Segurança/06 - A arquitetura do filter chain em profundidade\|nota 06]] |
 | Por que `@PreAuthorize` não funciona? | [[03-Dominios/Java/Segurança/07 - Method security — @PreAuthorize, @PostAuthorize e SpEL\|nota 07]] |
-| Quem emite e quem valida o token? | [[03-Dominios/Java/Segurança/08 - OAuth2 e OIDC — o resource server valida, não emite\|nota 08]] |
-| Como valido um JWT (JWKS, claims, `alg`)? | [[03-Dominios/Java/Segurança/09 - Validando JWT — JWKS, claims e a whitelist de algoritmos\|nota 09]] |
-| Ligo ou desligo CSRF? | [[03-Dominios/Java/Segurança/10 - CSRF — quando ligar, quando desligar e por quê\|nota 10]] |
-| Por que CORS com `*` e credenciais quebra? | [[03-Dominios/Java/Segurança/11 - CORS — origens explícitas e o erro do wildcard com credenciais\|nota 11]] |
-| Como revogo uma sessão antes do `exp`? | [[03-Dominios/Java/Segurança/13 - Refresh tokens — rotação, revogação e armazenamento server-side\|nota 13]] |
-| Como escrevo regra de autorização em SpEL? | [[03-Dominios/Java/Segurança/14 - SpEL em segurança — expressões de autorização\|nota 14]] |
-| Quais headers de segurança ligar? | [[03-Dominios/Java/Segurança/15 - Security headers — HSTS, CSP e frame-options\|nota 15]] |
+| Quem emite e quem valida o token? | [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e validação\|nota 08]] |
+| Como valido um JWT (JWKS, claims, `alg`)? | [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API\|nota 09]] |
+| Ligo ou desligo CSRF? | [[03-Dominios/Java/Segurança/10 - CSRF — por que ligado por default e quando desligar\|nota 10]] |
+| Por que CORS com `*` e credenciais quebra? | [[03-Dominios/Java/Segurança/11 - CORS — a borda, o preflight e a config de segurança\|nota 11]] |
+| Como revogo uma sessão antes do `exp`? | [[03-Dominios/Java/Segurança/13 - Refresh tokens e revogação de token\|nota 13]] |
+| Como escrevo regra de autorização avançada (RBAC/ABAC)? | [[03-Dominios/Java/Segurança/14 - Autorização avançada — AuthorizationManager, RBAC vs ABAC\|nota 14]] |
+| Quais headers de segurança ligar? | [[03-Dominios/Java/Segurança/15 - Session management e security headers\|nota 15]] |
 | Onde isso tudo encaixa no OWASP Top 10? | [[03-Dominios/Java/Segurança/16 - OWASP Top 10 no contexto Java\|nota 16]] |
 | Como é uma request autenticada de ponta a ponta? | [[03-Dominios/Java/Segurança/17 - Uma request autenticada do token à autorização no método\|nota 17]] |
 
