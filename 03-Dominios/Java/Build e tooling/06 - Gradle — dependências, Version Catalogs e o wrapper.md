@@ -138,13 +138,15 @@ In Gradle, the most important dependency choice is between the `implementation` 
 
 ### Vocabulário
 
-- **configuration** — escopo nomeado onde uma dependência é declarada (`implementation`, `api`, etc.).
-- **compile classpath** — conjunto de dependências visíveis na compilação; o que `implementation` impede de vazar aos consumidores.
-- **transitive dependency** — dependência herdada de outra dependência; `api` as expõe, `implementation` não.
-- **ABI (Application Binary Interface)** — superfície pública do módulo (assinaturas, tipos expostos) que decide se algo é `api`.
-- **Version Catalog** — `libs.versions.toml`, centraliza versões e gera accessors `libs.xxx`.
-- **type-safe accessor** — referência gerada (`libs.spring.boot.starter.web`) com autocompletar e checagem em build.
-- **Gradle Wrapper** — `gradlew`/`gradlew.bat` que fixa e provisiona a versão do Gradle.
+| Termo PT | Termo EN |
+| --- | --- |
+| escopo nomeado onde uma dependência é declarada (`implementation`, `api`, etc.) | configuration |
+| conjunto de dependências visíveis na compilação; o que `implementation` impede de vazar aos consumidores | compile classpath |
+| dependência herdada de outra dependência; `api` as expõe, `implementation` não | transitive dependency |
+| superfície pública do módulo (assinaturas, tipos expostos) que decide se algo é `api` | ABI (Application Binary Interface) |
+| `libs.versions.toml`, centraliza versões e gera accessors `libs.xxx` | Version Catalog |
+| referência gerada (`libs.spring.boot.starter.web`) com autocompletar e checagem em build | type-safe accessor |
+| `gradlew`/`gradlew.bat` que fixa e provisiona a versão do Gradle | Gradle Wrapper |
 
 ## Veja também
 

@@ -137,14 +137,16 @@ In Maven, plugins are where the actual work happens — the lifecycle phases lik
 
 ### Vocabulário
 
-- **plugin / goal** — plugin / objetivo (a unidade de trabalho executável)
-- **lifecycle phase** — fase do ciclo de vida (orquestra goals)
-- **Surefire** — plugin de execução de testes unitários
-- **uber-JAR / fat JAR** — JAR com dependências embutidas (Shade plugin)
-- **build profile** — perfil de build, ativado por condição
-- **profile activation** — ativação de profile (`-P`, property, env, OS, JDK)
-- **Maven Wrapper (`mvnw`)** — wrapper que fixa a versão do Maven por projeto
-- **reproducible build** — build reprodutível / determinística
+| Termo PT | Termo EN |
+| --- | --- |
+| plugin / objetivo (a unidade de trabalho executável) | plugin / goal |
+| fase do ciclo de vida (orquestra goals) | lifecycle phase |
+| plugin de execução de testes unitários | Surefire |
+| JAR com dependências embutidas (Shade plugin) | uber-JAR / fat JAR |
+| perfil de build, ativado por condição | build profile |
+| ativação de profile (`-P`, property, env, OS, JDK) | profile activation |
+| wrapper que fixa a versão do Maven por projeto | Maven Wrapper (`mvnw`) |
+| build reprodutível / determinística | reproducible build |
 
 ## Veja também
 

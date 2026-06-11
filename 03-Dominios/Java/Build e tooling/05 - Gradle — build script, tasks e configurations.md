@@ -183,13 +183,15 @@ Se você escreve uma task customizada (ou um `doLast`) que lê/escreve arquivos 
 
 ### Vocabulário
 
-- **Build script** — o `build.gradle(.kts)` que descreve o projeto.
-- **Task** — unidade de trabalho do build (compilar, testar, empacotar).
-- **DAG (directed acyclic graph)** — grafo de tasks ordenado por `dependsOn`, sem ciclos.
-- **Inputs/outputs** — o que uma task consome e produz; base do `UP-TO-DATE` e do incremental.
-- **Configuration** — balde de dependências por escopo (`implementation`, `api`, etc.).
-- **Kotlin DSL** — DSL tipada (`.kts`), default recomendado desde Gradle 8.0; Groovy DSL não é deprecado.
-- **`settings.gradle(.kts)`** — define nome do build e subprojetos; avaliado antes dos build scripts.
+| Termo PT | Termo EN |
+| --- | --- |
+| o `build.gradle(.kts)` que descreve o projeto | Build script |
+| unidade de trabalho do build (compilar, testar, empacotar) | Task |
+| grafo de tasks ordenado por `dependsOn`, sem ciclos | DAG (directed acyclic graph) |
+| o que uma task consome e produz; base do `UP-TO-DATE` e do incremental | Inputs/outputs |
+| balde de dependências por escopo (`implementation`, `api`, etc.) | Configuration |
+| DSL tipada (`.kts`), default recomendado desde Gradle 8.0; Groovy DSL não é deprecado | Kotlin DSL |
+| define nome do build e subprojetos; avaliado antes dos build scripts | `settings.gradle(.kts)` |
 
 ## Veja também
 
@@ -204,4 +206,4 @@ Se você escreve uma task customizada (ou um `doLast`) que lê/escreve arquivos 
 - Gradle User Guide — [Kotlin DSL Primer](https://docs.gradle.org/current/userguide/kotlin_dsl.html)
 - Gradle User Guide — [More about Tasks](https://docs.gradle.org/current/userguide/more_about_tasks.html)
 - Gradle User Guide — [Declaring Dependencies](https://docs.gradle.org/current/userguide/declaring_dependencies.html)
-- [Gradle Releases](https://gradle.org/releases/) — versão estável atual 9.5.1 (2026-05-12); Gradle 9.0.0 (2025-07-31) exige Java 17+.
+- [Gradle Releases](https://gradle.org/releases/) — versão estável atual 9.5.1 (maio de 2026); Gradle 9.0.0 (2025-07-31) exige Java 17+.

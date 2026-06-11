@@ -19,7 +19,7 @@ aliases:
 # Maven — POM, coordenadas e lifecycle
 
 > [!abstract] TL;DR
-> Maven é uma ferramenta de build **declarativa**: você descreve *o que* o projeto é num arquivo `pom.xml` (o **POM**, Project Object Model), e o Maven decide *como* construí-lo seguindo convenções. Todo artefato é identificado por **coordenadas GAV** (`groupId:artifactId:version`), e o build percorre um **lifecycle** de phases ordenadas (`validate` → `compile` → `test` → `package` → `verify` → `install` → `deploy`). A phase em si não faz nada: ela apenas dispara os **goals de plugin** que foram ligados a ela. A linha estável é o **Maven 3.9.x** (3.9.16, GA em 2026-05-13); o **Maven 4** ainda é **release candidate** (4.0.0-rc-5) e não deve ir pra produção.
+> Maven é uma ferramenta de build **declarativa**: você descreve *o que* o projeto é num arquivo `pom.xml` (o **POM**, Project Object Model), e o Maven decide *como* construí-lo seguindo convenções. Todo artefato é identificado por **coordenadas GAV** (`groupId:artifactId:version`), e o build percorre um **lifecycle** de phases ordenadas (`validate` → `compile` → `test` → `package` → `verify` → `install` → `deploy`). A phase em si não faz nada: ela apenas dispara os **goals de plugin** que foram ligados a ela. A linha estável é o **Maven 3.9.x** (3.9.16, GA em maio de 2026); o **Maven 4** ainda é **release candidate** (4.0.0-rc-5) e não deve ir pra produção.
 
 ## O que é
 
@@ -111,7 +111,7 @@ Você também pode invocar um goal diretamente, fora do lifecycle, no formato `p
 
 ### Versão: 3.9.x estável, Maven 4 ainda RC
 
-A linha **estável** atual é o **Maven 3.9.x** — a release mais recente é a **3.9.16** (GA em 2026-05-13), que roda em JDK 8+. É o que você usa em produção.
+A linha **estável** atual é o **Maven 3.9.x** — a release mais recente é a **3.9.16** (GA em maio de 2026), que roda em JDK 8+. É o que você usa em produção.
 
 O **Maven 4** ainda está em **release candidate** (4.0.0-rc-5 no momento) e **não é GA** — a própria página de download avisa que não é seguro para produção. Ele exige JDK 17+ e traz mudanças no modelo (consumer/flattened POM, `<packaging>bom</packaging>` nativo, sintaxe de versão CI-friendly, reproducible builds por padrão), mas trate isso tudo como **"vindo no Maven 4"**, não como algo presente no seu dia a dia.
 

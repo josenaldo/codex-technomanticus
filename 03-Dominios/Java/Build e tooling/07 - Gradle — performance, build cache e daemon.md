@@ -165,14 +165,16 @@ A regra prática: **em dev, deixe o daemon ligado** (é o padrão). `--no-daemon
 
 ### Vocabulário
 
-- **Incremental build** — pular tasks cujos inputs/outputs não mudaram (`UP-TO-DATE`).
-- **Up-to-date checking** — comparar fingerprints de inputs/outputs para decidir se a task roda.
-- **Build cache** — reusar *outputs* de tasks indexados por hash dos inputs (`FROM-CACHE`); local ou remoto.
-- **Configuration cache** — cachear a fase de configuração / o task graph; preferred mode desde 9.0, opt-in.
-- **Daemon** — processo JVM persistente que fica "quente" entre builds, evitando custo de startup.
-- **Task inputs/outputs** — propriedades declaradas (anotações ou API) que alimentam fingerprint e chave de cache.
-- **Cache key** — hash derivado de tipo da task, classpath e valores dos inputs (o caminho da task *não* entra).
-- **Configuration phase vs execution phase** — montar o task graph vs rodar as tasks; cada cache otimiza uma fase.
+| Termo PT | Termo EN |
+| --- | --- |
+| pular tasks cujos inputs/outputs não mudaram (`UP-TO-DATE`) | Incremental build |
+| comparar fingerprints de inputs/outputs para decidir se a task roda | Up-to-date checking |
+| reusar *outputs* de tasks indexados por hash dos inputs (`FROM-CACHE`); local ou remoto | Build cache |
+| cachear a fase de configuração / o task graph; preferred mode desde 9.0, opt-in | Configuration cache |
+| processo JVM persistente que fica "quente" entre builds, evitando custo de startup | Daemon |
+| propriedades declaradas (anotações ou API) que alimentam fingerprint e chave de cache | Task inputs/outputs |
+| hash derivado de tipo da task, classpath e valores dos inputs (o caminho da task *não* entra) | Cache key |
+| montar o task graph vs rodar as tasks; cada cache otimiza uma fase | Configuration phase vs execution phase |
 
 ## Veja também
 

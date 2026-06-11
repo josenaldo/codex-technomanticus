@@ -159,9 +159,13 @@ POM mostrando vários scopes e uma exclusão de transitiva:
 
 ## Armadilhas
 
-1. **`provided` esperando estar no runtime (NoClassDefFoundError).** Marcar como `provided` algo que o ambiente *não* fornece compila sem erro — porque `provided` está no compile-time — mas a classe some do artefato final e estoura `NoClassDefFoundError`/`ClassNotFoundException` ao executar. A regra: só use `provided` quando o container/JDK comprovadamente entrega aquela classe (servlet-api num WAR servido pelo Tomcat, Lombok que age só na compilação). Se a sua aplicação carrega e executa a classe por conta própria, o scope é `compile` (ou `runtime`).
+### (1) `provided` esperando estar no runtime (NoClassDefFoundError)
 
-2. **Não excluir uma transitiva conflitante.** Quando duas dependências arrastam versões diferentes da mesma biblioteca, o Maven escolhe uma pela árvore — e a perdedora pode quebrar em runtime (`NoSuchMethodError`, incompatibilidade binária). Inspecionar a árvore (`mvn dependency:tree`) e cortar a versão errante com `<exclusions>` resolve o sintoma; a forma estrutural de fixar versão é gerenciar em `dependencyManagement`/BOM. Os detalhes de resolução e mediação de versão estão em [[03-Dominios/Java/Build e tooling/10 - Resolução de dependências e conflitos de versão|Resolução de conflitos]].
+Marcar como `provided` algo que o ambiente *não* fornece compila sem erro — porque `provided` está no compile-time — mas a classe some do artefato final e estoura `NoClassDefFoundError`/`ClassNotFoundException` ao executar. A regra: só use `provided` quando o container/JDK comprovadamente entrega aquela classe (servlet-api num WAR servido pelo Tomcat, Lombok que age só na compilação). Se a sua aplicação carrega e executa a classe por conta própria, o scope é `compile` (ou `runtime`).
+
+### (2) Não excluir uma transitiva conflitante
+
+Quando duas dependências arrastam versões diferentes da mesma biblioteca, o Maven escolhe uma pela árvore — e a perdedora pode quebrar em runtime (`NoSuchMethodError`, incompatibilidade binária). Inspecionar a árvore (`mvn dependency:tree`) e cortar a versão errante com `<exclusions>` resolve o sintoma; a forma estrutural de fixar versão é gerenciar em `dependencyManagement`/BOM. Os detalhes de resolução e mediação de versão estão em [[03-Dominios/Java/Build e tooling/10 - Resolução de dependências e conflitos de versão|Resolução de conflitos]].
 
 ## Em entrevista
 
@@ -171,13 +175,15 @@ In Maven, every dependency has a scope that determines which classpaths it appea
 
 ### Vocabulário
 
-- **dependency scope** — escopo da dependência (em quais classpaths ela vale).
-- **transitive dependency** — dependência transitiva (a dependência da sua dependência).
-- **provided scope** — fornecida pelo ambiente em runtime, não empacotada.
-- **runtime classpath** — caminho de classes usado na execução.
-- **exclusion** — corte de uma transitiva indesejada.
-- **optional dependency** — opcional; não propaga ao consumidor ("excluded by default").
-- **bill of materials (BOM)** — POM importado para alinhar versões.
+| Termo PT | Termo EN |
+| --- | --- |
+| escopo da dependência (em quais classpaths ela vale) | dependency scope |
+| dependência transitiva (a dependência da sua dependência) | transitive dependency |
+| fornecida pelo ambiente em runtime, não empacotada | provided scope |
+| caminho de classes usado na execução | runtime classpath |
+| corte de uma transitiva indesejada | exclusion |
+| opcional; não propaga ao consumidor ("excluded by default") | optional dependency |
+| POM importado para alinhar versões | bill of materials (BOM) |
 
 ## Veja também
 

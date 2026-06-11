@@ -183,12 +183,14 @@ Por que funciona: mostra que você entende **o que é igual** (mesmo bytecode, m
 
 ### Vocabulário
 
-- **Convention over configuration** — defaults sensatos no lugar de configuração explícita; o pilar do Maven.
-- **Declarative build** — você descreve *o quê*; a ferramenta decide *como* (POM do Maven).
-- **Imperative / programmable build** — você escreve *como*, com lógica (build script do Gradle).
-- **Incremental build** — só refaz o trabalho cujas entradas mudaram desde o último build.
-- **Build cache** — reaproveita outputs já calculados, local ou remotamente entre máquinas.
-- **CV-driven development** — escolher tecnologia pelo currículo, não pela necessidade do projeto.
+| Termo PT | Termo EN |
+| --- | --- |
+| defaults sensatos no lugar de configuração explícita; o pilar do Maven | Convention over configuration |
+| você descreve *o quê*; a ferramenta decide *como* (POM do Maven) | Declarative build |
+| você escreve *como*, com lógica (build script do Gradle) | Imperative / programmable build |
+| só refaz o trabalho cujas entradas mudaram desde o último build | Incremental build |
+| reaproveita outputs já calculados, local ou remotamente entre máquinas | Build cache |
+| escolher tecnologia pelo currículo, não pela necessidade do projeto | CV-driven development |
 
 ## Veja também
 

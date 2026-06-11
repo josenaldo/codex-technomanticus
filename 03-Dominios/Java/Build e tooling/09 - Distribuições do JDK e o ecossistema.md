@@ -99,7 +99,7 @@ Todas as alternativas abaixo partem do mesmo OpenJDK e são certificadas — a d
 - **Azul Zulu** — build da Azul, **GPLv2+CE** na versão Community, com opções comerciais pagas (suporte estendido, builds otimizadas) à parte. Forte presença em ambientes que exigem SLA e suporte de longo prazo contratado.
 - **BellSoft Liberica** — build da BellSoft, **GPLv2+CE**, conhecida por imagens "full" (que incluem JavaFX) e por foco em ARM e dispositivos embarcados; suporte comercial à parte.
 - **Microsoft Build of OpenJDK** — build da Microsoft, **GPLv2+CE**, alinhada a Azure e ao uso interno da empresa, com ênfase em versões LTS.
-- **GraalVM (Oracle)** — não é só um JDK: traz um compilador JIT avançado e capacidade de **AOT / native image**. Sob **GFTC** a partir do JDK 21, é grátis para produção comercial. O native image (compilar para um executável nativo) é assunto do **Galho 17** — aqui basta saber que GraalVM existe e tem licença própria.
+- **GraalVM (Oracle)** — não é só um JDK: traz um compilador JIT avançado e capacidade de **AOT / native image**. Sob **GFTC** a partir do JDK 21, é grátis para produção comercial. O native image (compilar para um executável nativo) é assunto do **Galho 17 (Cloud-native e produção, planejado)** — aqui basta saber que GraalVM existe e tem licença própria.
 
 ### Onde isso vive: source vs binário
 
@@ -200,21 +200,23 @@ O entrevistador raramente quer um nome de fornecedor "certo" — quer ver que vo
 
 ### Vocabulário
 
-- **OpenJDK** — the open-source reference project; the source code where Java is developed
-- **Distribution / build** — a vendor-compiled, TCK-certified binary of the JDK
-- **TCK (Technology Compatibility Kit)** — the official conformance suite a build must pass to call itself Java SE
-- **LTS (Long-Term Support)** — a release with multi-year patches (17, 21, 25); next is 29 in 2027
-- **NFTC (No-Fee Terms and Conditions)** — Oracle's license making Oracle JDK free for production from v17+
-- **GPLv2 + Classpath Exception** — the open-source license of Temurin, Corretto, Zulu, Liberica, Microsoft builds
-- **GFTC (GraalVM Free Terms and Conditions)** — GraalVM's license, free for production from JDK 21+
-- **Two-year LTS cadence** — the shift from a three-year to a two-year interval between LTS releases
-- **AQAvit** — an additional quality/robustness suite (Adoptium) beyond TCK conformance
-- **CPU (Critical Patch Update)** — the quarterly cycle of security patches that bumps the update level
-- **EOL (End of Life)** — the point at which a release stops receiving security patches
-- **OTN (Oracle Technology Network) License** — the paid license behind the 2019 scare and post-NFTC-window updates
-- **Vendor-neutral** — not tied to a single cloud or company (Temurin's selling point)
-- **Non-LTS / feature release** — the six-month cadence release with only six months of updates (e.g. 24, 26)
-- **`setup-java`** — the GitHub Actions step that pins distribution and version in CI
+| Termo PT | Termo EN |
+| --- | --- |
+| projeto open-source de referência; o código-fonte onde o Java é desenvolvido | OpenJDK |
+| binário do JDK compilado por um fornecedor e certificado contra o TCK | Distribution / build |
+| suíte oficial de conformidade que um build precisa passar para se chamar Java SE | TCK (Technology Compatibility Kit) |
+| release com patches por vários anos (17, 21, 25); a próxima é a 29 em 2027 | LTS (Long-Term Support) |
+| licença da Oracle que torna o Oracle JDK grátis para produção a partir da v17 | NFTC (No-Fee Terms and Conditions) |
+| licença open-source do Temurin, Corretto, Zulu, Liberica e builds da Microsoft | GPLv2 + Classpath Exception |
+| licença do GraalVM, grátis para produção a partir do JDK 21 | GFTC (GraalVM Free Terms and Conditions) |
+| a mudança do intervalo de 3 anos para 2 anos entre releases LTS | Two-year LTS cadence |
+| suíte adicional de qualidade/robustez (Adoptium) além da conformidade TCK | AQAvit |
+| o ciclo trimestral de patches de segurança que sobe o nível de update | CPU (Critical Patch Update) |
+| o ponto em que um release para de receber patches de segurança | EOL (End of Life) |
+| a licença paga por trás do pânico de 2019 e dos updates pós-janela NFTC | OTN (Oracle Technology Network) License |
+| não atrelado a uma única nuvem ou empresa (o argumento de venda do Temurin) | Vendor-neutral |
+| o release da cadência de 6 meses, com apenas 6 meses de updates (ex.: 24, 26) | Non-LTS / feature release |
+| o passo do GitHub Actions que fixa distribuição e versão no CI | `setup-java` |
 
 ### Frase pronta alternativa (curta)
 
