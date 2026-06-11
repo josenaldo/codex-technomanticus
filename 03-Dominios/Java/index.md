@@ -39,7 +39,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 9. [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — Spring MVC e o pipeline do DispatcherServlet, REST controllers, content negotiation, validação na borda, exception handling (@ControllerAdvice, Problem Details), OpenAPI, HATEOAS, versionamento, clientes HTTP
 10. [[03-Dominios/Java/Persistência de dados/index|Persistência de dados]] — JPA/Hibernate, o persistence context, mapeamento e relacionamentos, fetch strategies e o N+1, Spring Data repositories e consultas, paginação, transações operacionais, locking, caching e migrations
 11. [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]] — o modelo reativo na JVM: Reactive Streams, Project Reactor (Mono/Flux e operadores), schedulers e backpressure, Spring WebFlux e WebClient, R2DBC, e o confronto honesto reativo vs Virtual Threads
-12. Segurança *(planejado)* — Spring Security, JWT, OAuth2/OIDC, CSRF/CORS
+12. [[03-Dominios/Java/Segurança/index|Segurança]] — Spring Security e o filter chain, autenticação e password encoding, autorização URL-based e method-level, JWT, OAuth2/OIDC, CSRF/CORS, session management, security headers e OWASP no contexto Java
 13. Testes *(planejado)* — JUnit 5, Mockito, AssertJ, Spring Boot Test, Testcontainers
 
 ### Plataforma distribuída e produção
