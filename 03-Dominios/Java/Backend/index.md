@@ -3,7 +3,7 @@ title: "Java — Backend"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-05-21
+updated: 2026-06-11
 status: seedling
 tags:
   - moc
@@ -35,3 +35,4 @@ Concentra as notas voltadas a backend de produção em Java: o trio Spring (Boot
 
 - [[03-Dominios/Java/index|Java]]
 - [[03-Dominios/Java/Core/index|Core]]
+- [[03-Dominios/Java/Mensageria/index|Mensageria e eventos]] — a camada de aplicação Java/Spring de mensageria (Spring Kafka, RabbitMQ, eventos, gRPC); galho 14 da trilha

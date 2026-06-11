@@ -1,7 +1,7 @@
 ---
 title: "Eventos do ApplicationContext"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-11
 type: concept
 progress: backlog
 status: seedling
@@ -40,7 +40,7 @@ A abordagem POJO é preferida em código moderno: menos acoplamento à API do fr
 - **Desacoplamento**: o publicador não precisa saber quantos ou quais beans estão ouvindo.
 - **Reação a ciclo de vida**: código que precisa rodar após o contexto estar completamente pronto usa `ApplicationReadyEvent` sem poluir a lógica de negócio.
 - **Alternativa ao observer manual**: evita criar `List<Listener>` + iterar manualmente; o container faz o dispatch.
-- **Preparação para sistemas orientados a eventos**: o modelo mental é idêntico ao de mensageria assíncrona (Kafka, RabbitMQ), porém in-process e síncrono por default.
+- **Preparação para sistemas orientados a eventos**: o modelo mental é idêntico ao de mensageria assíncrona (Kafka, RabbitMQ), porém in-process e síncrono por default — o contraste in-process vs broker é o galho [[03-Dominios/Java/Mensageria/16 - Eventos in-process do Spring|Mensageria]].
 
 Em entrevistas, dominar esse mecanismo demonstra conhecimento do ciclo de vida do Spring além de simples `@Autowired`.
 

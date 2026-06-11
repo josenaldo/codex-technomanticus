@@ -83,7 +83,7 @@ A diferença mental entre os dois: o singleton resolve o desperdício **dentro**
 
 Testcontainers traz módulos especializados que encapsulam a configuração de cada serviço: `PostgreSQLContainer`, `MySQLContainer`, `MongoDBContainer`, `KafkaContainer`, `RedisContainer` (e `GenericContainer` para qualquer imagem). Cada um expõe helpers do domínio — `getJdbcUrl()`, `getBootstrapServers()` — e tem dependência Maven/Gradle própria.
 
-O **LocalStack** merece destaque: emula serviços AWS (S3, SQS, DynamoDB) num container, deixando você testar integração com a nuvem sem credenciais nem custo. Kafka aprofundado (rebalance, exactly-once, schemas) é assunto do **Galho 14**; aqui basta saber que o módulo existe e que `@ServiceConnection` o auto-configura.
+O **LocalStack** merece destaque: emula serviços AWS (S3, SQS, DynamoDB) num container, deixando você testar integração com a nuvem sem credenciais nem custo. Kafka aprofundado (rebalance, exactly-once, schemas) é o galho [[03-Dominios/Java/Mensageria/index|Mensageria]]; aqui basta saber que o módulo existe e que `@ServiceConnection` o auto-configura.
 
 Para imagens sem módulo dedicado, há o `GenericContainer`, que aceita qualquer imagem Docker e expõe `getHost()` / `getMappedPort(porta)`. Com ele, você precisa dizer ao Spring qual conexão o container representa — via `@ServiceConnection(name = "redis")` num `@Bean` de configuração de teste, ou via `@DynamicPropertySource` na mão. Os módulos prontos existem justamente para te poupar dessa fiação no caso comum.
 

@@ -3,7 +3,7 @@ title: "Kafka"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-05-21
+updated: 2026-06-11
 status: seedling
 tags:
   - moc
@@ -34,5 +34,6 @@ Reúne o material de Kafka usado a partir de aplicações Java/Spring: visão ge
 
 ## Veja também
 
+- [[03-Dominios/Java/Mensageria/index|Mensageria e eventos]] — a camada de aplicação Java/Spring sobre estes fundamentos de infra (Spring Kafka, padrões de confiabilidade, event-driven); galho 14 da trilha
 - [[03-Dominios/Java/Backend/index|Backend]]
 - [[03-Dominios/Java/index|Java]]
