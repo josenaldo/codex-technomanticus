@@ -1,7 +1,7 @@
 ---
 title: "Spring Core e Boot"
 created: 2026-06-08
-updated: 2026-06-10
+updated: 2026-06-11
 type: moc
 status: growing
 publish: true
@@ -29,7 +29,7 @@ Este galho cobre **o Spring como container e plataforma** — não as APIs de bo
 
 Este é um **galho híbrido**: parte refatora o tronco existente `Spring Boot.md` (que cobria os temas de forma densa e monolítica), parte expande com pesquisa aprofundada nas partes que o tronco tratava de forma rasa (AOP, proxies, BeanPostProcessor, auto-configuration interna). A divisão em notas atômicas garante que cada conceito possa ser estudado e revisado de forma independente.
 
-**Fronteiras importantes:** [[03-Dominios/Java/Jakarta EE/index|Jakarta EE (Galho 7)]] é a plataforma de especificações que o Spring implementa e abstrai — o ponto de partida conceitual para entender o que o Spring esconde. Spring MVC/Web é o galho [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — endpoints, DispatcherServlet e a camada web ficam lá. Persistência/transações operacionais com Spring Data, Hibernate, fetch/N+1 e migrations é o galho [[03-Dominios/Java/Persistência de dados/index|Persistência de dados]] — aqui a persistência aparece só quando explica comportamento do proxy (`@Transactional`). Spring Reativa com WebFlux é o galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]; Spring Security é o galho [[03-Dominios/Java/Segurança/index|Segurança]]; Testes no ecossistema Spring (Galho 13) e Microservices/Cloud com Spring Cloud (Galhos 16 e 17) são planejados, sem cobertura neste galho.
+**Fronteiras importantes:** [[03-Dominios/Java/Jakarta EE/index|Jakarta EE (Galho 7)]] é a plataforma de especificações que o Spring implementa e abstrai — o ponto de partida conceitual para entender o que o Spring esconde. Spring MVC/Web é o galho [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — endpoints, DispatcherServlet e a camada web ficam lá. Persistência/transações operacionais com Spring Data, Hibernate, fetch/N+1 e migrations é o galho [[03-Dominios/Java/Persistência de dados/index|Persistência de dados]] — aqui a persistência aparece só quando explica comportamento do proxy (`@Transactional`). Spring Reativa com WebFlux é o galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]; Spring Security é o galho [[03-Dominios/Java/Segurança/index|Segurança]]; Testes no ecossistema Spring é o galho [[03-Dominios/Java/Testes/index|Testes]]; Microservices/Cloud com Spring Cloud (Galhos 16 e 17) são planejados, sem cobertura neste galho.
 
 ## Iniciado
 

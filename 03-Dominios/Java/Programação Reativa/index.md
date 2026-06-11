@@ -1,7 +1,7 @@
 ---
 title: "Programação Reativa"
 created: 2026-06-10
-updated: 2026-06-10
+updated: 2026-06-11
 type: moc
 status: growing
 publish: true
@@ -32,7 +32,7 @@ Programação reativa é o **modelo push, assíncrono e não-bloqueante** da JVM
 
 **A tese central, sem hype:** os **Virtual Threads** (Java 21 GA) tornaram o modelo imperativo viável pra alta concorrência I/O-bound **sem** a complexidade do Reactor — então reativo virou **nicho**: ainda vence em streaming real e backpressure de verdade, mas perdeu a maioria dos CRUDs. Por isso "quando **não** usar reativo" é metade do galho.
 
-Mensageria reativa/Reactor Kafka (Galho 14), resiliência/backpressure distribuído (Galho 16), segurança reativa (Galho 12) e testes reativos com `StepVerifier` (Galho 13) são planejados, sem cobertura aqui.
+Mensageria reativa/Reactor Kafka (Galho 14), resiliência/backpressure distribuído (Galho 16) e segurança reativa/WebFlux Security (Galho 12) são planejados, sem cobertura aqui; testes reativos com `StepVerifier` são o galho [[03-Dominios/Java/Testes/15 - Testando código reativo — StepVerifier e @WebFluxTest|Testes]].
 
 ## Iniciado
 

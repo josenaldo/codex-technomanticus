@@ -1,7 +1,7 @@
 ---
 title: "Capstone — projetando a segurança de uma API Spring production-grade"
 created: 2026-06-10
-updated: 2026-06-10
+updated: 2026-06-11
 type: concept
 progress: backlog
 status: seedling
@@ -95,7 +95,7 @@ A leitura da tabela: quando o `@PreAuthorize` "não dispara", o problema costuma
 
 A segurança também se **testa**, e o teste é uma fronteira para o próximo galho. O padrão: você dispara requests contra a aplicação com uma identidade simulada — um **mock user** (`@WithMockUser`) para autorização baseada em roles, ou um **JWT de teste** (`with(jwt())`) para o fluxo Resource Server — e verifica os status (`200`/`401`/`403`) e o comportamento via `MockMvc`.
 
-A montagem completa dessa stack de teste (slices, `MockMvc`, fixtures de identidade, asserts) é assunto do **galho de Testes (Galho 13, planejado)**. Aqui fica só a fronteira: se você desenhou a segurança como acima, você a valida com mock user / JWT de teste — não testando no navegador na unha.
+A montagem completa dessa stack de teste (slices, `MockMvc`, fixtures de identidade, asserts) é assunto do galho [[03-Dominios/Java/Testes/13 - Testando a segurança|Testes]]. Aqui fica só a fronteira: se você desenhou a segurança como acima, você a valida com mock user / JWT de teste — não testando no navegador na unha.
 
 ## Cheatsheet nota → problema
 
