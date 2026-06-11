@@ -1,52 +1,53 @@
-# Protocol Buffers
+---
+title: "gRPC e Protocol Buffers"
+type: note
+publish: true
+created: 2026-05-21
+updated: 2026-06-11
+status: seedling
+tags:
+  - java
+  - backend
+  - grpc
+  - protobuf
+aliases:
+  - "gRPC e Go"
+  - "gRPC"
+  - "Protocol Buffers"
+---
+# gRPC e Protocol Buffers
 
-> [!info] O que é e como utilizar protocol buffers - Aprenda Golang  
-> Protocol buffers, protobuf ou simplesmente proto, é uma linguagem criada pela Google para serialização de dados.  
-> [https://aprendagolang.com.br/2023/06/22/o-que-e-e-como-utilizar-protocol-buffers/](https://aprendagolang.com.br/2023/06/22/o-que-e-e-como-utilizar-protocol-buffers/)  
+> [!nota] Migrado para galho próprio
+> O conteúdo conceitual de Protocol Buffers e gRPC foi migrado para o galho [[03-Dominios/Java/Mensageria/index|Mensageria e eventos]], em ângulo Java. Veja [[03-Dominios/Java/Mensageria/27 - Protocol Buffers — a IDL e a serialização binária|Protocol Buffers — a IDL e a serialização binária]] e [[03-Dominios/Java/Mensageria/28 - gRPC em Java — RPC síncrono sobre HTTP_2|gRPC em Java — RPC síncrono sobre HTTP/2]].
 
-## Documentação
+Esta nota permanece como índice de referências externas. O tratamento conceitual (IDL proto3, serialização binária, schema evolution, os 4 tipos de chamada do gRPC, geração de stubs em Java e o contraste RPC síncrono vs mensageria assíncrona) está nas notas do galho acima.
 
-> [!info] Protocol Buffers  
-> Protocol Buffers are language-neutral, platform-neutral extensible mechanisms for serializing structured data.  
-> [https://protobuf.dev/](https://protobuf.dev/)  
+## Referências
 
-## Repositório
+### Protocol Buffers
 
-> [!info] Protocol Buffers  
-> A language-neutral, platform-neutral extensible mechanism for serializing structured data.  
-> [https://github.com/protocolbuffers](https://github.com/protocolbuffers)  
+> [!info] Protocol Buffers — documentação oficial
+> Language-neutral, platform-neutral extensible mechanisms for serializing structured data.
+> [https://protobuf.dev/](https://protobuf.dev/)
 
-# gRPC
+> [!info] Protocol Buffers — repositório
+> [https://github.com/protocolbuffers](https://github.com/protocolbuffers)
 
-## Documentação
+### gRPC
 
-> [!info] Documentation  
-> A high-performance, open source universal RPC framework  
-> [https://grpc.io/docs/](https://grpc.io/docs/)  
+> [!info] gRPC — documentação oficial
+> A high-performance, open source universal RPC framework.
+> [https://grpc.io/docs/](https://grpc.io/docs/)
 
-## Youtube
+> [!info] grpc-java — repositório
+> A implementação Java do gRPC.
+> [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
 
-> [!info] gRPC  
-> This is a channel for all videos related to gRPC.  
-> [https://www.youtube.com/@grpcio](https://www.youtube.com/@grpcio)  
+> [!info] gRPC — canal no YouTube
+> [https://www.youtube.com/@grpcio](https://www.youtube.com/@grpcio)
 
-# Instalação
+## Veja também
 
-Instale o `protobuf-compiler`
-
-```Bash
-sudo apt install -y protobuf-compiler
-```
-
-No arquivo `~/zshrc`, atualize o path, de modo a permitir que o `protoc` encontre os plugins.
-
-```Bash
-export PATH="$PATH:$(go env GOPATH)/bin"
-```
-
-1. Instale os plugins do `protocol compiler` para Go
-
-```Bash
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-```
+- [[03-Dominios/Java/Mensageria/index|Mensageria e eventos]] — o galho que cobre Protobuf e gRPC em profundidade
+- [[03-Dominios/Java/Backend/index|Backend]]
+- [[03-Dominios/Java/index|Trilha Java]]
