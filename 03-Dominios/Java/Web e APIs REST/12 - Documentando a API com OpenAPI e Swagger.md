@@ -1,7 +1,7 @@
 ---
 title: "Documentando a API com OpenAPI e Swagger"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: seedling
@@ -164,7 +164,7 @@ Após subir a aplicação, acesse:
 
 **Problema**: por padrão, o `/swagger-ui.html` e o `/v3/api-docs` ficam acessíveis para qualquer requisição. Em produção, isso expõe o mapa completo da API — endpoints, schemas, exemplos — para qualquer pessoa que adivinhe a URL.
 
-**Fix**: configurar o Spring Security para proteger esses paths (autenticação obrigatória, ou acesso restrito a IPs internos), ou desabilitar completamente via `springdoc.api-docs.enabled=false` e `springdoc.swagger-ui.enabled=false` no perfil de produção. Segurança de API é assunto do Galho 12 (planejado).
+**Fix**: configurar o Spring Security para proteger esses paths (autenticação obrigatória, ou acesso restrito a IPs internos), ou desabilitar completamente via `springdoc.api-docs.enabled=false` e `springdoc.swagger-ui.enabled=false` no perfil de produção. Segurança de API é assunto do galho [[03-Dominios/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain|Segurança]].
 
 ### (4) Documentação escrita à mão que desatualiza
 

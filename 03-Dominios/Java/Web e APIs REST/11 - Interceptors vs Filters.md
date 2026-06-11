@@ -1,7 +1,7 @@
 ---
 title: "Interceptors vs Filters"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: seedling
@@ -354,7 +354,7 @@ public void afterCompletion(HttpServletRequest request,
 - [[03-Dominios/Java/index|Trilha Java]]
 - Verbete: [[03-Dominios/Java/Dicionário de Java#HandlerInterceptor|HandlerInterceptor]]
 
-Autenticação, CSRF e autorização pertencem ao Galho 12 (Segurança com Spring Security — planejado), que explora a camada de filtros do Spring Security em profundidade.
+Autenticação, CSRF e autorização pertencem ao galho [[03-Dominios/Java/Segurança/06 - A arquitetura do filter chain em profundidade|Segurança]], que explora a camada de filtros do Spring Security em profundidade.
 
 ## Referências
 

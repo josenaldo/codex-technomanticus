@@ -1,7 +1,7 @@
 ---
 title: "Actuator e observabilidade"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: seedling
@@ -49,7 +49,7 @@ Sem o Actuator, a única forma de saber se uma aplicação está saudável é es
 
 Para o nível **magus**, o ponto crítico não é saber que os endpoints existem, e sim entender **o que expor, para quem, e como instrumentar métricas de negócio** que vão além das métricas de infraestrutura geradas automaticamente.
 
-Segurança de endpoints (autenticação e autorização do Actuator) é tema do Galho 12 (planejado).
+Segurança de endpoints (autenticação e autorização do Actuator) é tema do galho [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Segurança]].
 
 ## Como funciona
 
@@ -108,7 +108,7 @@ management:
 ```
 
 > [!danger] Produção
-> Nunca exponha `*` em produção sem proteção por autenticação. Endpoints como `/env`, `/heapdump` e `/beans` expõem informações sensíveis. Proteção com Spring Security é abordada no Galho 12 (planejado).
+> Nunca exponha `*` em produção sem proteção por autenticação. Endpoints como `/env`, `/heapdump` e `/beans` expõem informações sensíveis. Proteção com Spring Security é abordada no galho [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Segurança]].
 
 ### Health groups, liveness e readiness (Kubernetes)
 
@@ -285,7 +285,7 @@ management:
         include: "*"
 ```
 
-Endpoints como `/env` listam variáveis de ambiente (incluindo senhas), `/heapdump` entrega o heap inteiro da JVM, e `/loggers` permite mudar o nível de log remotamente. Em produção, exponha apenas o necessário e proteja com Spring Security (Galho 12, planejado).
+Endpoints como `/env` listam variáveis de ambiente (incluindo senhas), `/heapdump` entrega o heap inteiro da JVM, e `/loggers` permite mudar o nível de log remotamente. Em produção, exponha apenas o necessário e proteja com Spring Security ([[03-Dominios/Java/Segurança/index|Galho 12 — Segurança]]).
 
 **Fix**: listar explicitamente os endpoints necessários e colocar o path de gerenciamento em uma porta separada (`management.server.port=8081`) que não seja acessível externamente.
 
