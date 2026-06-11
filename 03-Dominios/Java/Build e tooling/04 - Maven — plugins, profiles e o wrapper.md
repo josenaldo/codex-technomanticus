@@ -45,7 +45,7 @@ Cada plugin expõe um ou mais **goals**, e o lifecycle só os coordena. Os essen
 - **`maven-compiler-plugin`** — compila os fontes Java. É aqui que se define o nível da linguagem (`<release>`).
 - **`maven-surefire-plugin`** — roda os **testes unitários** num classloader isolado, na fase `test`. Build quebra se um teste falha.
 - **`maven-jar-plugin`** — monta o JAR principal do projeto (o artefato `package` padrão para `jar`).
-- **`maven-shade-plugin`** — gera um **uber-JAR** (fat JAR), embutindo as dependências num único arquivo executável. Os detalhes de empacotamento e fat JAR ficam em [[03-Dominios/Java/Build e tooling/15 - Empacotamento — JAR, fat JAR e camadas de imagem|empacotamento]].
+- **`maven-shade-plugin`** — gera um **uber-JAR** (fat JAR), embutindo as dependências num único arquivo executável. Os detalhes de empacotamento e fat JAR ficam em [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|empacotamento]].
 
 Você declara um plugin em `<build><plugins>`, fixando versão e configuração.
 
