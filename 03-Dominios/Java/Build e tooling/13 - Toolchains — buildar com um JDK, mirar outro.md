@@ -68,7 +68,7 @@ O Maven **não baixa JDK**: o `toolchains.xml` só referencia JDKs já instalado
 
 No Gradle (Kotlin DSL) a declaração é mais enxuta e fica num único bloco:
 
-```text
+```kotlin
 java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 ```
 

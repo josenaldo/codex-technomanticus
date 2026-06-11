@@ -62,7 +62,7 @@ No Gradle, você importa um BOM (ou uma plataforma Gradle nativa) com a função
 
 Existe também `enforcedPlatform()`, uma variante mais agressiva que **força** as versões do BOM, sobrescrevendo o que aparecer no grafo de dependências. A documentação alerta que essa imposição é transitiva e afeta o grafo dos seus consumidores — então use com cuidado em bibliotecas publicadas. Resumindo: `platform()` recomenda versões (permite override), `enforcedPlatform()` impõe.
 
-No Gradle, o catálogo de versões (Version Catalogs) cobre o lado de **aliases e centralização declarativa** de coordenadas/versões — veja [[03-Dominios/Java/Build e tooling/06 - Gradle — tasks, plugins e configuration cache|Version Catalogs (nota 06)]]. `platform()` e os catálogos são complementares: um importa conjuntos testados de terceiros, o outro centraliza as suas próprias coordenadas.
+No Gradle, o catálogo de versões (Version Catalogs) cobre o lado de **aliases e centralização declarativa** de coordenadas/versões — veja [[03-Dominios/Java/Build e tooling/06 - Gradle — dependências, Version Catalogs e o wrapper|Version Catalogs (nota 06)]]. `platform()` e os catálogos são complementares: um importa conjuntos testados de terceiros, o outro centraliza as suas próprias coordenadas.
 
 ## Na prática
 
