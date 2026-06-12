@@ -39,7 +39,7 @@ As duas respostas são:
 - **Spring Cloud Kubernetes** — a ponte entre o `DiscoveryClient` do Spring e o discovery *que o Kubernetes já oferece de fábrica*. Aqui a app não roda nenhum registry: ela consulta o que o cluster sabe.
 
 > [!info] O escopo desta nota
-> Operar e instalar Kubernetes em produção — como subir um cluster, configurar `Service`, `Ingress`, etc. — é assunto do **Galho 17 (planejado)**. Aqui olhamos o discovery **pela ótica da aplicação Java**: como o código Spring descobre os outros serviços. A operação do cluster fica de fora de propósito.
+> Operar e instalar Kubernetes em produção — como subir um cluster, configurar `Service`, `Ingress`, etc. — **fica fora do escopo desta trilha** (o Galho 17 cobre o *contrato do app* com o cluster, como [[03-Dominios/Java/Cloud-native e produção/10 - Health e probes — o contrato com o orquestrador|health e probes]] e [[03-Dominios/Java/Cloud-native e produção/11 - Config e recursos no Kubernetes|config e recursos]], mas não ensina a subir cluster nem Ingress). Aqui olhamos o discovery **pela ótica da aplicação Java**: como o código Spring descobre os outros serviços. A operação do cluster fica de fora de propósito.
 
 ## Por que importa
 

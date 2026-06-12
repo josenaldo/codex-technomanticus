@@ -201,7 +201,7 @@ O retry é a defesa que mais facilmente vira ataque. Sob uma falha transitória,
 - [[03-Dominios/Java/index|Trilha Java]]
 
 > [!note] Onde isto se encaixa
-> Esta nota é a **síntese de arquitetura** da resiliência: ela amarra os padrões táticos das notas 13-16 numa postura coerente e fecha o gancho que a trilha **Reativa (Galho 11)** deixou na backpressure. Daqui, o galho segue para segurança entre serviços (nota 17) e tracing distribuído (notas 18-19) — porque resiliência sem **observabilidade** é cega: você não pode conter o que não consegue ver. Operar resiliência em escala (coletores, dashboards, *chaos engineering*) é assunto do **Galho 17 (planejado)**.
+> Esta nota é a **síntese de arquitetura** da resiliência: ela amarra os padrões táticos das notas 13-16 numa postura coerente e fecha o gancho que a trilha **Reativa (Galho 11)** deixou na backpressure. Daqui, o galho segue para segurança entre serviços (nota 17) e tracing distribuído (notas 18-19) — porque resiliência sem **observabilidade** é cega: você não pode conter o que não consegue ver. Operar resiliência em escala envolve [[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|coletores]] e [[03-Dominios/Java/Cloud-native e produção/15 - Dashboards e alertas — Grafana|dashboards]] — assunto do **Galho 17**; já *chaos engineering* fica fora do escopo desta trilha.
 
 ## Referências
 

@@ -200,11 +200,11 @@ Colocar `micrometer-tracing-bridge-otel` **e** `micrometer-tracing-bridge-brave`
 - [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
 
-> [!warning] Seam com o Galho 17 (planejado) — onde esta nota para
-> Esta nota cobre **instrumentar e exportar** do ângulo do **código/config do app**: adicionar o bridge, apontar o endpoint, declarar a taxa de sampling. Tudo o que vem **depois da borda do app** é **Galho 17 (planejado)**: *operar* o **coletor** (OpenTelemetry Collector) e seus pipelines, montar e manter **dashboards**, **profiling** contínuo, e a **estratégia de sampling de produção** (head-based vs tail-based, adaptativo, budget de cardinalidade). Aqui você instrumenta e manda o dado pra fora; *governar* esse dado em produção é o outro galho.
+> [!warning] Seam com o Galho 17 — onde esta nota para
+> Esta nota cobre **instrumentar e exportar** do ângulo do **código/config do app**: adicionar o bridge, apontar o endpoint, declarar a taxa de sampling. Tudo o que vem **depois da borda do app** é Galho 17: *operar* o **[[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|coletor]]** (OpenTelemetry Collector) e seus pipelines, montar e manter **[[03-Dominios/Java/Cloud-native e produção/15 - Dashboards e alertas — Grafana|dashboards]]**, **[[03-Dominios/Java/Cloud-native e produção/19 - Continuous profiling no cluster — Pyroscope e async-profiler|profiling contínuo]]**, e a **[[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|estratégia de sampling de produção]]** (head-based vs tail-based, adaptativo, budget de cardinalidade). Aqui você instrumenta e manda o dado pra fora; *governar* esse dado em produção é o outro galho.
 
 > [!note] Galhos seguintes
-> Observabilidade operacional (galho 17) e segurança em sistemas distribuídos (galho 18) ainda estão **(planejado)**.
+> [[03-Dominios/Java/Cloud-native e produção/index|Observabilidade operacional (galho 17)]] já está pronta; segurança em sistemas distribuídos (galho 18) ainda está **(planejado)**.
 
 ## Referências
 

@@ -45,7 +45,7 @@ A resposta tem três camadas:
 3. **Observabilidade uniforme.** Como o proxy vê *todo* o tráfego L7, ele gera métricas douradas (latência, taxa de erro, throughput) e contexto de trace **sem instrumentação manual** em cada serviço.
 
 > [!info] Onde isto entra na trilha
-> Esta nota é **conceitual**: o que o mesh é e qual problema resolve. **Instalar e operar Istio ou Linkerd em produção** — perfis de injeção, gateways, políticas YAML, upgrade do control plane — é assunto do **Galho 17 (planejado)**.
+> Esta nota é **conceitual**: o que o mesh é e qual problema resolve. **Instalar e operar Istio ou Linkerd em produção** — perfis de injeção, gateways, políticas YAML, upgrade do control plane — **fica fora do escopo desta trilha**.
 
 ## Como funciona
 
@@ -129,7 +129,7 @@ E o modo **ambient** do Istio, que troca o sidecar-por-pod por um ztunnel-por-n�
 ```
 
 > [!warning] Decisão de design, não receita de instalação
-> Os diagramas acima são conceituais. **Habilitar injeção de sidecar, ligar ambient, criar waypoints, escrever políticas YAML** e operar upgrades é território do **Galho 17 (planejado)**. Aqui o objetivo é entender *onde* a resiliência passa a morar.
+> Os diagramas acima são conceituais. **Habilitar injeção de sidecar, ligar ambient, criar waypoints, escrever políticas YAML** e operar upgrades **fica fora do escopo desta trilha**. Aqui o objetivo é entender *onde* a resiliência passa a morar.
 
 ## Armadilhas
 

@@ -29,7 +29,7 @@ aliases:
 
 A audiência é o desenvolvedor **pleno avançando para senior**, preparando-se para entrevista internacional, que precisa não só conhecer os padrões de Spring Cloud mas saber **defender quando NÃO usá-los**. Este é um galho **híbrido**: parte de pesquisa nova sobre o ecossistema distribuído e parte de **poda reversa do tronco `Spring Boot.md`**, extraindo o conteúdo de microservices que estava acoplado ao monólito.
 
-A **fronteira-assinatura é dupla**. Atrás dele fica o **Galho 14 (Mensageria e eventos)** — saga, outbox, idempotência e gRPC vivem lá, porque são a face *assíncrona* do problema distribuído. À frente fica o **Galho 17 (Cloud-native e produção)** — containers, orquestração e operação em produção, ainda planejado. Este galho 16 ocupa o meio: a plataforma síncrona de serviços, sua descoberta, seu roteamento e sua resiliência.
+A **fronteira-assinatura é dupla**. Atrás dele fica o **Galho 14 (Mensageria e eventos)** — saga, outbox, idempotência e gRPC vivem lá, porque são a face *assíncrona* do problema distribuído. À frente fica o **[[03-Dominios/Java/Cloud-native e produção/index|Galho 17 (Cloud-native e produção)]]** — containers, orquestração e operação em produção. Este galho 16 ocupa o meio: a plataforma síncrona de serviços, sua descoberta, seu roteamento e sua resiliência.
 
 ## Iniciado
 
@@ -81,7 +81,7 @@ A **fronteira-assinatura é dupla**. Atrás dele fica o **Galho 14 (Mensageria e
 - [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST (Galho 9)]]
 - [[03-Dominios/Java/Build e tooling/index|Build e tooling (Galho 15)]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
-- Galho 17 — Cloud-native e produção (planejado)
+- [[03-Dominios/Java/Cloud-native e produção/index|Cloud-native e produção (Galho 17)]]
 - Galho 18 — OCP / Certificação (planejado)
 
 ## Notas do galho

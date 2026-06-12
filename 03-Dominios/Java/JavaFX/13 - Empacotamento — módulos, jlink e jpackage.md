@@ -136,9 +136,9 @@ Funciona com app **não-modular também**: aí você usa `--input` (diretório c
 
 Esse último é a ponte com o jlink: você gera o runtime enxuto com `jlink`, depois passa via `--runtime-image` pro `jpackage`, controlando exatamente o que viaja.
 
-### Native image (Galho 17, planejado)
+### Native image
 
-Há um caminho ainda mais agressivo: compilar a app a um binário nativo único (sem JVM), via GraalVM Native Image e Gluon Substrate, com tempo de startup quase instantâneo e footprint reduzido. É o que viabiliza JavaFX em mobile e ambientes restritos. Cobertura aprofundada fica para o **Galho 17 (planejado)**.
+Há um caminho ainda mais agressivo: compilar a app a um binário nativo único (sem JVM), via GraalVM Native Image e Gluon Substrate, com tempo de startup quase instantâneo e footprint reduzido. É o que viabiliza JavaFX em mobile e ambientes restritos. O conceito de native image é tratado no [[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|Galho 17 (nota 08)]], embora o alvo lá seja serviços server-side, não o destino desktop/mobile do Gluon Substrate.
 
 ## Na prática
 

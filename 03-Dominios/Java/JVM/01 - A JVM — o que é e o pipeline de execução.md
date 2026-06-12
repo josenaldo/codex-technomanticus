@@ -41,7 +41,7 @@ A JVM é uma máquina virtual de pilha (*stack-based virtual machine*) que carre
 
 - **HotSpot** — implementação de referência, mantida pela Oracle como parte do **OpenJDK** (open source). É o que você usa por padrão ao instalar qualquer distribuição OpenJDK (Temurin, Amazon Corretto, Microsoft Build of OpenJDK etc.).
 - **Eclipse OpenJ9** — implementação alternativa mantida pela Eclipse Foundation, focada em menor footprint de memória e startup rápido. Presente no IBM Semeru.
-- **GraalVM** — distribui o HotSpot + compilador GraalVM (que pode substituir C2) e suporta *native image* (compilação AOT), removendo a JVM do runtime. Compilação AOT e *native image* são tema do Galho 17 (planejado) — aqui apenas registramos que a opção existe.
+- **GraalVM** — distribui o HotSpot + compilador GraalVM (que pode substituir C2) e suporta *native image* (compilação AOT), removendo a JVM do runtime. Compilação AOT e *native image* são tema do [[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|Galho 17 (GraalVM Native Image)]] — aqui apenas registramos que a opção existe.
 
 ## Por que importa
 
@@ -229,7 +229,7 @@ java -version 2>&1 | grep "mixed mode"
 OpenJDK 64-Bit Server VM ... (build 21.0.3+9, mixed mode, sharing)
 ```
 
-**Fix:** a afirmação correta é "Java tem overhead de warmup". Após o JIT aquecer (~alguns milhares de invocações), o código compilado roda nativo. Para contextos de startup crítico (serverless, CLI), considerar GraalVM native image (Galho 17, planejado). Para mais detalhes do JIT: ver [[07 - JIT — C1, C2 e tiered compilation]].
+**Fix:** a afirmação correta é "Java tem overhead de warmup". Após o JIT aquecer (~alguns milhares de invocações), o código compilado roda nativo. Para contextos de startup crítico (serverless, CLI), considerar GraalVM native image ([[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|Galho 17]]). Para mais detalhes do JIT: ver [[07 - JIT — C1, C2 e tiered compilation]].
 
 ---
 

@@ -58,7 +58,7 @@ A pergunta natural — "mas o Kubernetes já tem ConfigMap e Secret, pra que iss
 O Config Server é uma app Spring Boot anotada com `@EnableConfigServer`. Ele não guarda config: ele a **lê de um backend** e a serve. Os backends mais comuns:
 
 - **Git (default)**: a config vive num repositório Git. Cada arquivo (`pedidos.yml`, `pedidos-prod.yml`, `application.yml`) é uma `PropertySource`. Ganha versionamento, branches como `{label}` e ferramental de PR/review de graça. A URI aceita placeholders — `https://git.exemplo.com/config/{application}` dá um repo por serviço.
-- **Vault**: backend voltado a **segredos**. O server lê valores do HashiCorp Vault em vez de (ou além de) arquivos planos. A *ótica operacional* disso — como operar Vault, rotação de segredos, secrets management de produção — é território do **Galho 17 (planejado)**; aqui só registramos que Vault é um backend possível para o mecanismo de config.
+- **Vault**: backend voltado a **segredos**. O server lê valores do HashiCorp Vault em vez de (ou além de) arquivos planos. A *ótica operacional* disso — como operar Vault, rotação de segredos, secrets management de produção — **fica fora do escopo desta trilha**; aqui só registramos que Vault é um backend possível para o mecanismo de config.
 - **JDBC**: a config mora numa tabela de banco relacional. Útil quando a equipe já tem governança forte de banco e prefere SQL a Git para configuração.
 
 Há ainda S3, Redis, MongoDB, Secrets Manager e **repositórios compostos** (combinar Git + Vault, por exemplo: arquivos planos no Git, segredos no Vault).
@@ -193,7 +193,7 @@ curl -X POST http://pedidos-1:8080/actuator/busrefresh
 
 ### (1) Segredo em Git plano, sem cifragem nem Vault
 
-Commitar senha, token ou chave em texto puro no repositório de config é o erro clássico: qualquer um com acesso de leitura ao repo — e ao seu **histórico** — vê o segredo, mesmo depois de você "removê-lo" num commit posterior. O Config Server oferece cifragem (`{cipher}...`) e o backend Vault existe justamente para segredos. A *operação* desse Vault em produção é do **Galho 17 (planejado)**; o ponto aqui é não tratar dado sensível como propriedade comum.
+Commitar senha, token ou chave em texto puro no repositório de config é o erro clássico: qualquer um com acesso de leitura ao repo — e ao seu **histórico** — vê o segredo, mesmo depois de você "removê-lo" num commit posterior. O Config Server oferece cifragem (`{cipher}...`) e o backend Vault existe justamente para segredos. A *operação* desse Vault em produção **fica fora do escopo desta trilha**; o ponto aqui é não tratar dado sensível como propriedade comum.
 
 ### (2) Refresh sem `@RefreshScope`: o bean não atualiza
 

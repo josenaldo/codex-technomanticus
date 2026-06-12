@@ -36,7 +36,7 @@ A dependência é adicionada declarando o starter:
 </dependency>
 ```
 
-O Actuator não é apenas um conjunto de URLs úteis. Ele é a ponte entre a aplicação e as ferramentas de operação: sistemas de monitoramento, plataformas de orquestração (Kubernetes), dashboards de métricas (Grafana), alertas (Alertmanager) e pipelines de observabilidade. Observabilidade distribuída completa — rastreamento distribuído, OpenTelemetry, correlação de traces — é tema do Galho 17 (Cloud-native e produção, planejado).
+O Actuator não é apenas um conjunto de URLs úteis. Ele é a ponte entre a aplicação e as ferramentas de operação: sistemas de monitoramento, plataformas de orquestração (Kubernetes), dashboards de métricas (Grafana), alertas (Alertmanager) e pipelines de observabilidade. Observabilidade distribuída completa — rastreamento distribuído, OpenTelemetry, correlação de traces — é tema do Galho 17: veja o [[03-Dominios/Java/Cloud-native e produção/13 - Observabilidade de operação — o panorama e os 3 seams|panorama de observabilidade de operação]] e o [[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|OpenTelemetry Collector]].
 
 ## Por que importa
 

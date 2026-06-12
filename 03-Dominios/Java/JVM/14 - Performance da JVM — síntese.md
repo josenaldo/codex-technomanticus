@@ -134,7 +134,7 @@ java -XX:AOTCache=app.aot -jar app.jar         # produção
 
 Duas regras de uso que evitam o cache trabalhar contra você: o **treino precisa ser representativo** — o cache acelera o que foi observado; treinar com um "hello world" e servir tráfego real desperdiça o mecanismo; e o cache é **acoplado ao ambiente** (versão de JDK, classpath) — recriá-lo faz parte do pipeline de build, não é artefato eterno.
 
-**GraalVM native image — a alternativa radical.** Compilar tudo ahead-of-time para um binário nativo: startup de milissegundos, sem warmup — em troca de abrir mão do JIT especulativo (e do pico que ele entrega), com restrições ao dinamismo (reflection exige configuração). É um trade-off de arquitetura para cenários onde o startup domina tudo; tratamento completo fica para o Galho 17 (planejado).
+**GraalVM native image — a alternativa radical.** Compilar tudo ahead-of-time para um binário nativo: startup de milissegundos, sem warmup — em troca de abrir mão do JIT especulativo (e do pico que ele entrega), com restrições ao dinamismo (reflection exige configuração). É um trade-off de arquitetura para cenários onde o startup domina tudo; tratamento completo fica para o [[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|Galho 17 (GraalVM Native Image)]].
 
 A leitura senior do eixo: **CDS → AOT cache → native image é um espectro de quanto trabalho você move do runtime para antes dele** — e quanto de flexibilidade (e pico de JIT) você troca por isso.
 
@@ -208,7 +208,7 @@ A postura — aqui o eixo temporal manda, não a árvore de coletor:
 
 - **Startup primeiro**: AppCDS como ganho barato e imediato (archive dinâmico gerado numa execução de treino); em Java 24+, **AOT cache do Leyden** (JEP 483; em Java 25, fluxo de dois passos via JEP 514 e perfis de método via JEP 515 — que ataca também o warmup que uma instância efêmera nunca completaria).
 - **Coletor: irrelevante de tunar** — com heap pequeno e vida curta, o default (ou Serial, se o container tem 1 vCPU) resolve; qualquer minuto gasto em flag de GC aqui é minuto roubado do problema real.
-- **Decisão de arquitetura no horizonte**: se mesmo com AOT cache o cold start dominar o SLA, a conversa muda de tuning para plataforma — native image (Galho 17, planejado), com seus próprios trade-offs.
+- **Decisão de arquitetura no horizonte**: se mesmo com AOT cache o cold start dominar o SLA, a conversa muda de tuning para plataforma — native image ([[03-Dominios/Java/Cloud-native e produção/21 - Native vs JVM — a decisão honesta|Galho 17 — native vs JVM]]), com seus próprios trade-offs.
 
 Os três cenários usam o mesmo método e chegam a posturas opostas — é exatamente isso que "performance de JVM" significa: **não existe configuração boa, existe configuração boa para um perfil de carga medido**.
 

@@ -514,7 +514,7 @@ ALTER TABLE patients ALTER COLUMN email SET NOT NULL;
 ### Distributed tracing
 
 > [!nota] Migrado para galho próprio
-> O tracing distribuído (Micrometer Tracing, OpenTelemetry, propagação de contexto) foi expandido no galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]]. Veja [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|correlação no código]] e [[03-Dominios/Java/Microservices e sistemas distribuídos/19 - Tracing distribuído II — exportando o trace|exportando o trace]]. (A operação de coletores/dashboards de produção fica para o Galho 17, planejado.)
+> O tracing distribuído (Micrometer Tracing, OpenTelemetry, propagação de contexto) foi expandido no galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]]. Veja [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|correlação no código]] e [[03-Dominios/Java/Microservices e sistemas distribuídos/19 - Tracing distribuído II — exportando o trace|exportando o trace]]. (A operação de coletores/dashboards de produção fica para o Galho 17 — veja [[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|OpenTelemetry Collector]] e [[03-Dominios/Java/Cloud-native e produção/15 - Dashboards e alertas — Grafana|dashboards no Grafana]].)
 ## Quando usar
 
 - **Spring Boot:** default para aplicações Java. Microserviços, APIs REST, batch processing.

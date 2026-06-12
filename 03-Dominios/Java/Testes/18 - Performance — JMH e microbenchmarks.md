@@ -29,7 +29,7 @@ aliases:
 
 Um *microbenchmark* mede um pedaço pequeno e isolado de código — a diferença entre concatenar com `+` e com `StringBuilder`, o custo de um `HashMap` vs. `TreeMap`, o overhead de um `Stream` vs. um `for`. JMH dá a infraestrutura para que essas medidas sejam **reprodutíveis e confiáveis**, em vez de números que mudam de execução para execução.
 
-O escopo aqui é **microbenchmark de código**: medir uma operação isolada num ambiente controlado. Profiling de produção e observabilidade — onde você mede a aplicação rodando sob carga real — são outro tema (Galho 17, planejado), e não usam JMH.
+O escopo aqui é **microbenchmark de código**: medir uma operação isolada num ambiente controlado. Profiling de produção e observabilidade — onde você mede a aplicação rodando sob carga real — são outro tema ([[03-Dominios/Java/Cloud-native e produção/18 - Profiling e diagnóstico sob carga — produção|profiling de produção, Galho 17]]), e não usam JMH.
 
 ## Por que importa
 

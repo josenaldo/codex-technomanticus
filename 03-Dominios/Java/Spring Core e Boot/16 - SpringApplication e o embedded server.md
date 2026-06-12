@@ -141,7 +141,7 @@ server.port=8080
 server.servlet.context-path=/api
 ```
 
-Customizações avançadas (thread pool, timeouts, connectors) são feitas via `WebServerFactoryCustomizer<TomcatServletWebServerFactory>`. O pipeline web sobre esse servidor é o galho [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|Web e APIs REST]]; tuning profundo de servidor e configurações de produção ficam para o Galho 17 (planejado).
+Customizações avançadas (thread pool, timeouts, connectors) são feitas via `WebServerFactoryCustomizer<TomcatServletWebServerFactory>`. O pipeline web sobre esse servidor é o galho [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|Web e APIs REST]]; tuning profundo de servidor e configurações de produção ficam para o [[03-Dominios/Java/Cloud-native e produção/11 - Config e recursos no Kubernetes|Galho 17 (config e recursos em produção)]].
 
 > [!note] O servidor embutido roda o Servlet container
 > O embedded server implementa o contêiner de Servlets que a Servlet API (Jakarta EE) define. O Spring MVC usa `DispatcherServlet` como front controller, que é registrado nesse contêiner. Para entender a spec que o embedded Tomcat implementa, veja [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API — o alicerce HTTP]].
@@ -169,7 +169,7 @@ O Maven Plugin do Spring Boot cuida do empacotamento:
 </plugin>
 ```
 
-O **layered jar** é uma variante que organiza o conteúdo em camadas (`dependencies`, `spring-boot-loader`, `snapshot-dependencies`, `application`) para otimizar cache de layers em imagens Docker — a camada de dependências externas raramente muda; só a camada `application` é reconstruída no pipeline. O detalhamento de packaging (fat/thin/uber jar, Maven Shade/Gradle Shadow) e layered jars é coberto em [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|Empacotamento (Galho 15)]]; imagens nativas (GraalVM) são o Galho 17 (planejado).
+O **layered jar** é uma variante que organiza o conteúdo em camadas (`dependencies`, `spring-boot-loader`, `snapshot-dependencies`, `application`) para otimizar cache de layers em imagens Docker — a camada de dependências externas raramente muda; só a camada `application` é reconstruída no pipeline. O detalhamento de packaging (fat/thin/uber jar, Maven Shade/Gradle Shadow) e layered jars é coberto em [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|Empacotamento (Galho 15)]]; imagens nativas (GraalVM) são o [[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|Galho 17 (GraalVM Native Image)]].
 
 ## Na prática
 

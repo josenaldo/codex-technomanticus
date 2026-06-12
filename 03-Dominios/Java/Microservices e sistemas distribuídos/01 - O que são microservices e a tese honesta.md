@@ -117,7 +117,7 @@ Os módulos conversam por chamadas de método em memória, dentro de uma transa�
 
 Como decidir? A pergunta não é "qual é mais elegante". É: **há times separados? Há escala/ritmo divergente real? As fronteiras já provaram ser estáveis?** Se a resposta for "não" ou "ainda não sei", a Opção A é a escolha de senior. A Opção B passa a fazer sentido quando o monólito vira gargalo organizacional — não antes.
 
-(O empacotamento e a produção desses serviços — containers, orquestração — são assunto do **Galho 17 (planejado)**. Aqui a decisão é de fronteira, não de infra.)
+(O empacotamento e a produção desses serviços — containers, orquestração — são assunto do **[[03-Dominios/Java/Cloud-native e produção/index|Galho 17]]**. Aqui a decisão é de fronteira, não de infra.)
 
 ## Armadilhas
 

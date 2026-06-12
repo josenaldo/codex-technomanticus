@@ -189,7 +189,7 @@ O entrevistador raramente quer ouvir nomes de ferramentas soltos. Ele quer ver q
 - [[03-Dominios/Java/index|Trilha Java]]
 - [[03-Dominios/Java/Dicionário de Java]]
 
-Galhos seguintes da trilha — mensageria e eventos ([[03-Dominios/Java/Mensageria/index|Galho 14]]), microservices ([[03-Dominios/Java/Microservices e sistemas distribuídos/index|Galho 16]]) e cloud-native/produção (Galho 17, planejado) — vão exigir suas próprias estratégias de teste, mas a base da pirâmide construída aqui permanece a mesma.
+Galhos seguintes da trilha — mensageria e eventos ([[03-Dominios/Java/Mensageria/index|Galho 14]]), microservices ([[03-Dominios/Java/Microservices e sistemas distribuídos/index|Galho 16]]) e cloud-native/produção ([[03-Dominios/Java/Cloud-native e produção/index|Galho 17]]) — vão exigir suas próprias estratégias de teste, mas a base da pirâmide construída aqui permanece a mesma.
 
 Se você for ler uma nota só depois desta, leia a [[03-Dominios/Java/Testes/17 - Mutation testing — PIT e cobertura honesta|17 (mutation testing)]]: é o verbete que mais muda a forma como você enxerga a própria suíte, porque transforma "tenho testes" em "sei que meus testes funcionam". É o passo que separa cobertura de teatro de cobertura de verdade.
 

@@ -230,7 +230,7 @@ A linha estável é a **2.x — atualmente 2.4.0 (mar/2025), baseline Java 17**.
 - [[03-Dominios/Java/index|Trilha Java]]
 
 > [!note] Onde isto se encaixa
-> Esta é a **porta de entrada da resiliência** no galho de Microservices. As próximas notas dão sequência: **Resiliência II** cobre Retry e Time Limiter, **III** cobre Bulkhead e Rate Limiter (planejado), e **IV** compõe todos os decoradores na ordem correta. As notas sobre malha de serviço e observabilidade do galho 17/18 (planejado) tratam de onde *aplicar* esses padrões em escala.
+> Esta é a **porta de entrada da resiliência** no galho de Microservices. As próximas notas dão sequência: **Resiliência II** cobre Retry e Time Limiter, **III** cobre Bulkhead e Rate Limiter (planejado), e **IV** compõe todos os decoradores na ordem correta. A [[03-Dominios/Java/Cloud-native e produção/13 - Observabilidade de operação — o panorama e os 3 seams|observabilidade de produção (Galho 17)]] mostra como *enxergar* esses padrões em operação; a malha de serviço operacional (Istio/Linkerd) fica fora do escopo da trilha.
 
 ## Referências
 

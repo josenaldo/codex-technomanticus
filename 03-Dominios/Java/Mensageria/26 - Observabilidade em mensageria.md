@@ -265,7 +265,7 @@ Se o producer envia mensagens sem incluir os headers de tracing, o consumer não
 - [[03-Dominios/Java/Mensageria/10 - Ack modes e commit de offset|Ack modes e commit de offset]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
 
-Observabilidade de infraestrutura e operação de cluster em produção = Galho 17 (planejado).
+Observabilidade de infraestrutura e operação de cluster em produção = [[03-Dominios/Java/Cloud-native e produção/13 - Observabilidade de operação — o panorama e os 3 seams|Galho 17 (Cloud-native e produção)]].
 
 ---
 

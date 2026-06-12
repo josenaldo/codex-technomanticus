@@ -99,7 +99,7 @@ Todas as alternativas abaixo partem do mesmo OpenJDK e são certificadas — a d
 - **Azul Zulu** — build da Azul, **GPLv2+CE** na versão Community, com opções comerciais pagas (suporte estendido, builds otimizadas) à parte. Forte presença em ambientes que exigem SLA e suporte de longo prazo contratado.
 - **BellSoft Liberica** — build da BellSoft, **GPLv2+CE**, conhecida por imagens "full" (que incluem JavaFX) e por foco em ARM e dispositivos embarcados; suporte comercial à parte.
 - **Microsoft Build of OpenJDK** — build da Microsoft, **GPLv2+CE**, alinhada a Azure e ao uso interno da empresa, com ênfase em versões LTS.
-- **GraalVM (Oracle)** — não é só um JDK: traz um compilador JIT avançado e capacidade de **AOT / native image**. Sob **GFTC** a partir do JDK 21, é grátis para produção comercial. O native image (compilar para um executável nativo) é assunto do **Galho 17 (Cloud-native e produção, planejado)** — aqui basta saber que GraalVM existe e tem licença própria.
+- **GraalVM (Oracle)** — não é só um JDK: traz um compilador JIT avançado e capacidade de **AOT / native image**. Sob **GFTC** a partir do JDK 21, é grátis para produção comercial. O native image (compilar para um executável nativo) é assunto do **[[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|Galho 17 (GraalVM Native Image)]]** — aqui basta saber que GraalVM existe e tem licença própria.
 
 ### Onde isso vive: source vs binário
 

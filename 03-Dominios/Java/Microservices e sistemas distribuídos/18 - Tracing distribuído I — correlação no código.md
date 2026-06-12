@@ -155,7 +155,7 @@ O **Spring Cloud Sleuth está descontinuado**: foi movido para o `spring-attic`,
 - [[03-Dominios/Java/index|Trilha Java]]
 
 > [!note] Fronteira com o Galho 17
-> Operar o **coletor** e os **dashboards** de produção (Tempo, Jaeger, Grafana, a parte de SRE/operação) é assunto do **Galho 17 — Observabilidade e operação (planejado)**. Aqui, no Galho 16, o escopo é só a **correlação no código**: instrumentar com Observation, propagar o traceId e carimbá-lo nos logs.
+> Operar o **[[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|coletor]]** e os **[[03-Dominios/Java/Cloud-native e produção/15 - Dashboards e alertas — Grafana|dashboards]]** de produção (Tempo, Jaeger, Grafana, a parte de SRE/operação) é assunto do **Galho 17 — Observabilidade e operação**. Aqui, no Galho 16, o escopo é só a **correlação no código**: instrumentar com Observation, propagar o traceId e carimbá-lo nos logs.
 
 ## Referências
 

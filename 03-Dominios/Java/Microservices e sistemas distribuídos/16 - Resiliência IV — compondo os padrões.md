@@ -230,7 +230,7 @@ O fallback mais perigoso é o que "funciona": devolve um valor plausível e o si
 - [[03-Dominios/Java/index|Trilha Java]]
 
 > [!note] Onde continuar
-> Segurança entre serviços e tracing distribuído são as notas 17, 18 e 19 **deste** galho. A observabilidade de **produção** (operar coletores, dashboards, profiling) é o **Galho 17 (planejado)**.
+> Segurança entre serviços e tracing distribuído são as notas 17, 18 e 19 **deste** galho. A observabilidade de **produção** (operar coletores, dashboards, profiling) é o **[[03-Dominios/Java/Cloud-native e produção/13 - Observabilidade de operação — o panorama e os 3 seams|Galho 17]]**.
 
 ## Referências
 
