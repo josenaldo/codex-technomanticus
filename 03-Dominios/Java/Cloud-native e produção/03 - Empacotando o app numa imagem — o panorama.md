@@ -176,7 +176,7 @@ A armadilha mais comum: tratar a imagem como um bloco monolítico — um `COPY a
 - [[03-Dominios/Java/index|Trilha Java]]
 
 > [!note] Adiante no galho
-> Depois de saber empacotar a imagem, o próximo passo natural é como o app **se comporta em produção** (configuração externalizada, observabilidade, graceful shutdown) — território do Galho 18 *(planejado)*.
+> Depois de saber empacotar a imagem, o próximo passo natural é como o app **se comporta em produção** (configuração externalizada, observabilidade, graceful shutdown) — o miolo deste mesmo galho, das notas 10 em diante.
 
 ## Referências
 

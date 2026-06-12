@@ -109,6 +109,10 @@ Você definiu `-Xmx1g` na imagem. Meses depois, alguém aperta o `limits.memory`
 
 Você roda uma imagem com um JDK anterior ao **11.0.16 / 17 / 8u372** num cluster moderno, que é **cgroup-v2-only**. Esse JDK só entende cgroup v1; em host v2 ele **não detecta o container** e volta a enxergar toda a RAM do host. Com `MaxRAMPercentage=25%` calculado sobre, digamos, 64 GB do nó, a JVM se concede 16 GB de heap dentro de um pod de 1 GB — e morre na primeira alocação séria. A correção é **subir o JDK** para uma versão com suporte a cgroup v2.
 
+### (3) Contagem de CPU errada → thread pools superdimensionados
+
+O mesmo problema da memória vale para a CPU, e é mais sutil porque não dá OOM-kill — dá contenção. `Runtime.getRuntime().availableProcessors()` alimenta o tamanho do `ForkJoinPool.commonPool`, o número de threads de GC e os pools default do Reactor/Tomcat. Sem CPU `limits` no pod, ou com a detecção atrapalhada, a JVM pode ler os **64 cores do nó** estando confinada a **1 core** efetivo — e criar 64 threads de GC que só brigam por tempo de CPU. A correção é declarar `resources.limits.cpu` no pod (a JVM converte a cota de cgroup em nº de processadores) ou cravar `-XX:ActiveProcessorCount=N` quando o cluster não define o limit.
+
 ## Em entrevista
 
 ### Frase pronta (inglês)
@@ -136,7 +140,7 @@ Você roda uma imagem com um JDK anterior ao **11.0.16 / 17 / 8u372** num cluste
 - [[03-Dominios/Java/Cloud-native e produção/index|Cloud-native e produção (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
 
-A observabilidade dessa JVM em produção (métricas de heap, GC, OOM) é tema do **Galho 18 — Observabilidade (planejado)**.
+A observabilidade interna dessa JVM (JFR, heap, GC) é o [[03-Dominios/Java/JVM/13 - JFR e JMC — observabilidade de produção|Galho 3]]; operar as métricas dela no cluster é a [[03-Dominios/Java/Cloud-native e produção/13 - Observabilidade de operação — o panorama e os 3 seams|observabilidade de operação]] deste galho.
 
 ## Referências
 

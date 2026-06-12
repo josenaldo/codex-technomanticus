@@ -77,7 +77,7 @@ A distinção importa porque você pode ser cloud-native-operação **sem** ser 
 > [!tip] Regra de bolso
 > Se a pergunta é *"como divido isso em serviços?"* → Galho 16 (arquitetura). Se a pergunta é *"como observo e opero esse processo no cluster?"* → Galho 17 (operação). Este galho fica do lado direito.
 
-### Os 3 seams de observabilidade — a fronteira sêxtupla
+### Os 3 seams de observabilidade
 
 Observabilidade aparece em três galhos diferentes da trilha, e a fonte de confusão é achar que é tudo a mesma coisa. Não é. Há **três costuras (seams)** distintas, cada uma operando numa camada:
 
@@ -158,7 +158,13 @@ Migrar pra native image porque "é mais rápido" sem pesar os custos — perda d
 - [[03-Dominios/Java/Cloud-native e produção/index|Cloud-native e produção (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
 
-O Galho 18 (Containers e orquestração — OCP) aprofunda o lado de plataforma do deploy (planejado).
+> [!note] O que vem depois
+> Este galho 17 é onde a plataforma de produção é tratada. O **Galho 18 (Certificação Java OCP)** fecha a trilha, mapeando a prova aos galhos de linguagem — é texto "(planejado)".
+
+## Referências
+
+- *The Twelve-Factor App* — 12factor.net (fatores III Config, V Build/release/run, VI Processes, IX Disposability, XI Logs). Acesso 2026-06-12.
+- *Spring Boot Actuator — Production-ready Features*. docs.spring.io/spring-boot/reference/actuator. Acesso 2026-06-12.
 
 ## Referências
 
