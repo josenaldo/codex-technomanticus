@@ -98,7 +98,7 @@ A página oficial de maintenance mode do Spring Cloud Netflix lista **Archaius, 
 
 ### Eureka segue vivo
 
-O ponto que mais gera confusão: **nem tudo do Netflix morreu**. O **Eureka** (servidor e cliente de service discovery) **não está em maintenance mode** e segue **ativamente mantido** dentro do Spring Cloud Netflix (módulo na linha **5.0.x** no Oakwood — p.ex. **5.0.2**; **4.3.0** no Northfields). Só o quarteto **Archaius / Hystrix / Ribbon / Turbine / Zuul** está em manutenção/removido.
+O ponto que mais gera confusão: **nem tudo do Netflix morreu**. O **Eureka** (servidor e cliente de service discovery) **não está em maintenance mode** e segue **ativamente mantido** dentro do Spring Cloud Netflix (módulo na linha **5.0.x** no Oakwood — p.ex. **5.0.2**; **4.3.0** no Northfields). Só o conjunto **Archaius / Hystrix / Ribbon / Turbine / Zuul** está em manutenção/removido.
 
 > [!example] Feynman: a casa do Netflix
 > Pense no "Netflix stack" como uma casa antiga com cinco cômodos. Quatro foram demolidos (Zuul, Ribbon, Hystrix, Turbine/Archaius) e substituídos por construções novas no lote ao lado (Gateway, LoadBalancer, Resilience4j). **Um cômodo continua de pé, reformado e em uso: o Eureka.** Dizer "demoliram a casa" está errado — demoliram parte dela.
@@ -191,15 +191,17 @@ Resilience4j **não** é uma continuação do Hystrix — é uma biblioteca inde
 
 ### Vocabulário
 
-- **release train** — trem de release; conjunto de projetos versionados em bloco
-- **service discovery** — descoberta de serviço(s)
-- **circuit breaker** — disjuntor; padrão de resiliência que isola dependências falhas
-- **client-side load balancing** — balanceamento de carga no cliente
-- **maintenance mode** — modo de manutenção; só correções críticas, sem features novas
-- **deprecated** — depreciado; marcado para remoção futura
-- **removed / dropped** — removido; já não existe no classpath
-- **baseline** — versão-base de compatibilidade (aqui, a geração do Spring Boot do trem)
-- **BOM (Bill of Materials)** — manifesto que fixa versões compatíveis de um bloco de dependências
+| Termo PT | Termo EN |
+| --- | --- |
+| trem de release (projetos versionados em bloco) | release train |
+| descoberta de serviço(s) | service discovery |
+| disjuntor (isola dependências falhas) | circuit breaker |
+| balanceamento de carga no cliente | client-side load balancing |
+| modo de manutenção (só correções críticas, sem features) | maintenance mode |
+| depreciado (marcado para remoção futura) | deprecated |
+| removido (já não existe no classpath) | removed / dropped |
+| versão-base de compatibilidade (a geração do Boot do trem) | baseline |
+| manifesto que fixa versões compatíveis de um bloco | BOM (Bill of Materials) |
 
 ## Veja também
 

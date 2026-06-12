@@ -227,14 +227,16 @@ Num servidor único isso funcionava. Em N réplicas efêmeras, cada uma escreve 
 
 ### Vocabulário
 
-- **fator** — *factor*
-- **sem estado** — *stateless*
-- **serviço de apoio** — *backing service* (banco, fila, cache, API externa tratados como recursos anexados / *attached resources*)
-- **descartabilidade** — *disposability* (startup rápido, *graceful shutdown* com `SIGTERM`)
-- **paridade dev-prod** — *dev/prod parity*
-- **fluxo de eventos** — *event stream* (logs no *stdout*, coletados pelo ambiente)
-- **escalar horizontalmente** — *scale out / scale horizontally*
-- **separação de config e código** — *separation of config from code*
+| Termo PT | Termo EN |
+| --- | --- |
+| fator | factor |
+| sem estado | stateless |
+| serviço de apoio (banco, fila, cache, API externa como recursos anexados) | backing service / attached resource |
+| descartabilidade (startup rápido, shutdown gracioso com `SIGTERM`) | disposability |
+| paridade dev-prod | dev/prod parity |
+| fluxo de eventos (logs no stdout, coletados pelo ambiente) | event stream |
+| escalar horizontalmente | scale out / scale horizontally |
+| separação de config e código | separation of config from code |
 
 ## Veja também
 

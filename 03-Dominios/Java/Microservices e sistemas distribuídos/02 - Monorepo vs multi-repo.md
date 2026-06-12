@@ -153,14 +153,16 @@ No multi-repo, uma mudança em `commons-money` exige novo release do pacote e *b
 
 ### Vocabulário
 
-- **monorepo** — *monorepo* (um repositório guardando vários serviços deployáveis)
-- **multi-repo / polyrepo** — *multi-repo* (um serviço por repositório)
-- **repositório** — *repository* (a unidade de versionamento Git; o eixo desta decisão)
-- **deploy independente** — *independent deployment* (cada serviço sobe para produção no seu próprio ritmo)
-- **propriedade** — *ownership* (quem é dono e responde pelo código)
-- **mudança atômica** — *atomic change* (alteração que atravessa vários serviços num único commit/PR)
-- **detecção de afetados** — *affected detection* (rodar no CI só o que a mudança impacta)
-- **fronteira de repositório** — *repository boundary* (a borda que separa o que um time vê e versiona)
+| Termo PT | Termo EN |
+| --- | --- |
+| monorepo (um repositório guardando vários serviços deployáveis) | monorepo |
+| multi-repo / polyrepo (um serviço por repositório) | multi-repo / polyrepo |
+| repositório (unidade de versionamento Git; o eixo desta decisão) | repository |
+| deploy independente (cada serviço sobe no seu próprio ritmo) | independent deployment |
+| propriedade (quem é dono e responde pelo código) | ownership |
+| mudança atômica (altera vários serviços num único commit/PR) | atomic change |
+| detecção de afetados (rodar no CI só o que a mudança impacta) | affected detection |
+| fronteira de repositório (borda do que um time vê e versiona) | repository boundary |
 
 ## Veja também
 
