@@ -74,9 +74,9 @@ Cada sinal tem uma nota dedicada no Galho 3 com a **mecânica completa** — com
 
 Um sinal de JVM isolado é meia história. O salto sênior é **cruzar** o sinal com o que a observabilidade já registrava:
 
-- A **métrica** (nota [[03-Dominios/Java/Cloud-native e produção/15 - Métricas — Micrometer e Prometheus|Métricas — Micrometer e Prometheus]]) te dá o **quando** e o **quanto**: o pico de latência começou às 14h03, a CPU subiu junto, o uso de heap fez serra. A métrica é o **gatilho** do diagnóstico.
-- O **trace** (nota [[03-Dominios/Java/Cloud-native e produção/16 - Tracing distribuído — OpenTelemetry|Tracing distribuído — OpenTelemetry]]) te dá o **onde** no fluxo distribuído: qual span estourou, qual chamada downstream segurou a thread.
-- O **log** (nota [[03-Dominios/Java/Cloud-native e produção/14 - Logging estruturado e correlação|Logging estruturado e correlação]]) te dá o **o quê** textual: a exceção, o ID de correlação que liga tudo.
+- A **métrica** (nota [[03-Dominios/Java/Cloud-native e produção/14 - Métricas em produção — Micrometer e Prometheus|Métricas em produção — Micrometer e Prometheus]]) te dá o **quando** e o **quanto**: o pico de latência começou às 14h03, a CPU subiu junto, o uso de heap fez serra. A métrica é o **gatilho** do diagnóstico.
+- O **trace** (nota [[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|OpenTelemetry Collector e sampling de produção]]) te dá o **onde** no fluxo distribuído: qual span estourou, qual chamada downstream segurou a thread.
+- O **log** (nota [[03-Dominios/Java/Cloud-native e produção/17 - Logs estruturados em produção|Logs estruturados em produção]]) te dá o **o quê** textual: a exceção, o ID de correlação que liga tudo.
 - O **panorama** dos três seams está em [[03-Dominios/Java/Cloud-native e produção/13 - Observabilidade de operação — o panorama e os 3 seams|Observabilidade de operação — o panorama e os 3 seams]].
 
 O profiling **completa** essa tríade: quando métrica + trace + log dizem "a thread X ficou presa", o **thread dump** mostra *em quê*; quando dizem "o heap cresceu sem voltar", o **heap dump** mostra *o quê* estava vazando. Profiling sem correlação é olhar um sinal solto no escuro; correlação sem profiling é saber *que* dói sem saber *onde*.
@@ -103,7 +103,7 @@ INCIDENTE
 │   └─ se GC É a causa → tuning ────────────────────────────── G3: JVM/11
 │
 ├─ OOM / memória subindo (heap cresce e não volta, pod reinicia)
-│   ├─ 1º: métrica de heap — vazamento (sobe sempre) ou pico? ─ nota 15
+│   ├─ 1º: métrica de heap — vazamento (sobe sempre) ou pico? ─ nota 14
 │   ├─ 2º: heap dump — MAS NÃO no pod sob OOM (ver Armadilhas) ─ G3: JVM/12
 │   └─ 3º: dominadores / suspeitos de vazamento no dump ─────── G3: JVM/12
 │
