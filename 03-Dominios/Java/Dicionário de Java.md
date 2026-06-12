@@ -75,15 +75,15 @@ Modo do Istio que dispensa o sidecar por pod: um `ztunnel` por nó cuida do trá
 
 Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]].
 
-### API Gateway
-Porta única de entrada de um sistema de microservices: roteia requisições para os serviços internos e centraliza preocupações transversais (autenticação, rate limiting, CORS, agregação). Esconde a topologia interna do cliente.
-
-Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/10 - API Gateway — papel, roteamento, predicates e filters|API Gateway]].
-
 ### AMQP
 Advanced Message Queuing Protocol: protocolo aberto de mensageria orientado a filas, com suporte a exchanges, bindings e filas. O RabbitMQ é a implementação de referência na JVM; o Spring AMQP abstrai a API de baixo nível do cliente Java (rabbitmq-client) com template e listener container.
 
 Veja também: [[03-Dominios/Java/Mensageria/15 Spring AMQP e RabbitMQ|Spring AMQP e RabbitMQ]].
+
+### API Gateway
+Porta única de entrada de um sistema de microservices: roteia requisições para os serviços internos e centraliza preocupações transversais (autenticação, rate limiting, CORS, agregação). Esconde a topologia interna do cliente.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/10 - API Gateway — papel, roteamento, predicates e filters|API Gateway]].
 
 ### API versioning
 Estratégias para evoluir uma API sem quebrar clientes existentes: versão na URI (`/v1/...`), em header customizado, via content negotiation (media type versionado) ou query param. Cada abordagem tem trade-offs de visibilidade, cacheabilidade e aderência ao REST; o Spring MVC suporta todas via atributos de `@RequestMapping` (path, headers, params, produces).
