@@ -101,79 +101,8 @@ Em entrevistas, o que diferencia um senior em Spring Boot:
 
 ## Spring Cloud — visão geral
 
-Conjunto de projetos para microserviços distribuídos.
-
-| Projeto | O que faz |
-| --- | --- |
-| **Spring Cloud Config** | Configuração centralizada (Git, Vault) |
-| **Spring Cloud Netflix Eureka** | Service Discovery (deprecado, hoje usa-se Kubernetes) |
-| **Spring Cloud LoadBalancer** | Client-side load balancing |
-| **Spring Cloud OpenFeign** | HTTP client declarativo |
-| **Spring Cloud Gateway** | API Gateway (substitui Zuul) |
-| **Spring Cloud Sleuth** (deprecated) / **Micrometer Tracing** | Distributed tracing |
-| **Spring Cloud Stream** | Abstração de messaging (Kafka, RabbitMQ) |
-| **Spring Cloud Bus** | Eventos via broker para sincronizar configs |
-| **Spring Cloud Circuit Breaker** | Abstração sobre Resilience4j / Sentinel |
-
-### OpenFeign — HTTP client declarativo
-
-Popular para chamadas entre microserviços:
-
-```java
-@FeignClient(name = "notification-service", url = "${notification.url}")
-public interface NotificationClient {
-
-    @PostMapping("/notifications")
-    void send(@RequestBody NotificationRequest req);
-
-    @GetMapping("/notifications/{id}")
-    NotificationStatus getStatus(@PathVariable String id);
-}
-
-// Habilitar
-@SpringBootApplication
-@EnableFeignClients
-public class App { }
-
-// Usar
-@Service
-@RequiredArgsConstructor
-public class OrderService {
-    private final NotificationClient notifications;
-
-    public void createOrder(Order o) {
-        // ...
-        notifications.send(new NotificationRequest(o.getUserId(), "Pedido criado"));
-    }
-}
-```
-
-**Configuração:**
-
-```yaml
-spring:
-  cloud:
-    openfeign:
-      client:
-        config:
-          default:
-            connect-timeout: 5000
-            read-timeout: 10000
-          notification-service:
-            read-timeout: 30000
-```
-
-### Alternativa moderna
-
-Em 2026, muitas equipes preferem:
-
-- **Kubernetes Service Discovery** em vez de Eureka
-- **Envoy / Istio** em vez de Spring Cloud Gateway
-- **HashiCorp Vault** direto em vez de Spring Cloud Config
-- **OpenTelemetry** em vez de Sleuth
-
-Spring Cloud ainda é relevante, mas o mundo se moveu para infraestrutura declarativa.
-
+> [!nota] Migrado para galho próprio
+> O ecossistema Spring Cloud (service discovery, gateway, config centralizado, OpenFeign, resiliência) foi expandido no galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]]. Veja [[03-Dominios/Java/Microservices e sistemas distribuídos/04 - Panorama do Spring Cloud — e o que morreu|Panorama do Spring Cloud]], [[03-Dominios/Java/Microservices e sistemas distribuídos/06 - Service discovery — o conceito e o Eureka|Service discovery]], [[03-Dominios/Java/Microservices e sistemas distribuídos/09 - Comunicação síncrona — OpenFeign e HTTP Interface|OpenFeign e @HttpExchange]] e [[03-Dominios/Java/Microservices e sistemas distribuídos/10 - API Gateway — papel, roteamento, predicates e filters|API Gateway]].
 ---
 
 ## Camadas típicas de uma aplicação Spring Boot
@@ -576,48 +505,8 @@ management.metrics.enable.jvm=true
 
 ### API timeout e cascading failures
 
-**Problema:** serviço A chama serviço B que está lento → threads de A ficam presas → A também fica lento → cascata.
-
-**Solução com Resilience4j:**
-
-```java
-// build.gradle
-implementation 'io.github.resilience4j:resilience4j-spring-boot3'
-
-// application.yml
-resilience4j:
-  circuitbreaker:
-    instances:
-      notificationService:
-        sliding-window-size: 10
-        failure-rate-threshold: 50    # abre após 50% de falhas
-        wait-duration-in-open-state: 30s
-        permitted-number-of-calls-in-half-open-state: 3
-  timelimiter:
-    instances:
-      notificationService:
-        timeout-duration: 2s          # timeout de 2s
-  retry:
-    instances:
-      notificationService:
-        max-attempts: 3
-        wait-duration: 500ms
-
-// No service
-@CircuitBreaker(name = "notificationService", fallbackMethod = "fallbackNotify")
-@TimeLimiter(name = "notificationService")
-@Retry(name = "notificationService")
-public CompletableFuture<String> notify(NotificationRequest req) {
-    return CompletableFuture.supplyAsync(() -> notificationClient.send(req));
-}
-
-public CompletableFuture<String> fallbackNotify(NotificationRequest req, Throwable t) {
-    log.warn("Notification failed, queuing for retry: {}", t.getMessage());
-    retryQueue.add(req);  // enfileirar para retry assíncrono
-    return CompletableFuture.completedFuture("queued");
-}
-```
-
+> [!nota] Migrado para galho próprio
+> A resiliência com Resilience4j (circuit breaker, retry, time limiter, bulkhead, fallback) foi expandida no galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]]. Veja [[03-Dominios/Java/Microservices e sistemas distribuídos/13 - Resiliência I — a falha distribuída e o Circuit Breaker|Circuit Breaker]], [[03-Dominios/Java/Microservices e sistemas distribuídos/14 - Resiliência II — Retry e Time Limiter|Retry e Time Limiter]] e [[03-Dominios/Java/Microservices e sistemas distribuídos/16 - Resiliência IV — compondo os padrões|compondo os padrões]].
 ### Graceful shutdown
 
 **Problema:** deploy mata o processo enquanto requests estão em andamento → erros 502 para o usuário.
@@ -671,30 +560,13 @@ ALTER TABLE patients ALTER COLUMN email SET NOT NULL;
 
 ### Distributed tracing
 
-**Problema:** request passa por 5 microserviços, está lenta. Qual serviço é o gargalo?
-
-```java
-// build.gradle — Spring Boot 3 com Micrometer Tracing
-implementation 'io.micrometer:micrometer-tracing-bridge-otel'
-implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
-
-// application.yml
-management:
-  tracing:
-    sampling:
-      probability: 1.0  # 100% em dev, 10% em prod
-  otlp:
-    tracing:
-      endpoint: http://jaeger:4318/v1/traces
-```
-
-Cada request recebe um `traceId` propagado automaticamente entre serviços via headers HTTP. Visualiza no Jaeger/Zipkin o waterfall de cada serviço e identifica o bottleneck.
-
+> [!nota] Migrado para galho próprio
+> O tracing distribuído (Micrometer Tracing, OpenTelemetry, propagação de contexto) foi expandido no galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]]. Veja [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|correlação no código]] e [[03-Dominios/Java/Microservices e sistemas distribuídos/19 - Tracing distribuído II — exportando o trace|exportando o trace]]. (A operação de coletores/dashboards de produção fica para o Galho 17, planejado.)
 ## Quando usar
 
 - **Spring Boot:** default para aplicações Java. Microserviços, APIs REST, batch processing.
 - **Spring WebFlux:** quando precisa de non-blocking I/O (reactive). Útil para gateways, streaming.
-- **Spring Cloud:** microserviços distribuídos (service discovery, circuit breaker, config server).
+- **Spring Cloud:** microserviços distribuídos (service discovery, circuit breaker, config server) — ver [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]].
 - **Spring Batch:** processamento em lote de grandes volumes.
 
 ## Armadilhas comuns
