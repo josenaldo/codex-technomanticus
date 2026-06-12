@@ -26,7 +26,7 @@ aliases:
 
 Imagine que você aluga um apartamento. Você não decide a voltagem da tomada, a pressão da água ou o horário do elevador de serviço — essas regras estão **afixadas no ambiente** pela administração do prédio. Você, inquilino, apenas **lê** essas regras e se adapta a elas. Você não administra o prédio.
 
-Seu app rodando no Kubernetes é exatamente esse inquilino. A config — URL do banco, senha, feature flags, quanto de memória ele pode usar — não vem hardcoded na imagem Docker. Ela vem **do ambiente**, injetada pelo orquestrador no momento em que o container sobe. Esse é o princípio "config no ambiente" do [[03-Dominios/Java/Cloud-native e produção/01 - Os 12 fatores na prática Java|12-factor]]: a mesma imagem roda em dev, staging e produção, mudando só o que o ambiente afixa.
+Seu app rodando no Kubernetes é exatamente esse inquilino. A config — URL do banco, senha, feature flags, quanto de memória ele pode usar — não vem hardcoded na imagem Docker. Ela vem **do ambiente**, injetada pelo orquestrador no momento em que o container sobe. Esse é o princípio "config no ambiente" do [[03-Dominios/Java/Cloud-native e produção/01 - Production-ready e cloud-native — a tese honesta|twelve-factor]]: a mesma imagem roda em dev, staging e produção, mudando só o que o ambiente afixa.
 
 No Kubernetes, quem afixa essas regras são dois objetos:
 
@@ -205,7 +205,7 @@ In a Kubernetes environment, I externalize all configuration following the twelv
 
 ## Veja também
 
-- [[03-Dominios/Java/Cloud-native e produção/01 - Os 12 fatores na prática Java|Os 12 fatores na prática Java]]
+- [[03-Dominios/Java/Cloud-native e produção/01 - Production-ready e cloud-native — a tese honesta|Production-ready e cloud-native (a tese)]]
 - [[03-Dominios/Java/Cloud-native e produção/02 - A JVM dentro de um container|A JVM dentro de um container]]
 - [[03-Dominios/Java/Cloud-native e produção/10 - Health e probes — o contrato com o orquestrador|Health e probes]]
 - [[03-Dominios/Java/Cloud-native e produção/12 - Graceful shutdown e deploy sem downtime|Graceful shutdown e deploy sem downtime]]
