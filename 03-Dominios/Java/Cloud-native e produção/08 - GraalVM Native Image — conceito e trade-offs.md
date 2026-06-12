@@ -103,7 +103,7 @@ Aqui está a parte honesta. Native Image não é "JVM, só que mais rápido". É
 - **Mundo fechado por definição.** Não há carregamento dinâmico de classes "de fora" em runtime. O conjunto de código é fixo no build.
 
 > [!warning] A fronteira do Galho 3 (não re-explicar aqui)
-> **AOT** e **JIT** como *mecanismos* de execução da JVM — o que são, como o JIT compila trechos quentes, C1/C2, tiered compilation — pertencem ao **Galho 3 (JVM)**. Esta nota usa esses conceitos, não os ensina. Quando precisar do "por que o JIT ganha em pico" ou "o que é compilação AOT", siga os links em [[#Veja também]].
+> **AOT** e **JIT** como *mecanismos* de execução da JVM — o que são, como o JIT compila trechos quentes, C1/C2, tiered compilation — pertencem ao **Galho 3 (JVM)**. Esta nota usa esses conceitos, não os ensina. Quando precisar do "por que o JIT ganha em pico" ou "o que é compilação AOT", siga os links da seção "Veja também" abaixo.
 
 ## Na prática
 
