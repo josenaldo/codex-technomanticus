@@ -96,7 +96,7 @@ Divida em módulos quando:
 - o número de módulos cresce a ponto de o **overhead** de manter N arquivos de build superar o ganho de fronteira.
 
 > [!info] Fronteira de escopo
-> Multi-módulo aqui é estrutura de **UM** projeto/build. A topologia de **repositórios** de microservices (monorepo vs multi-repo, vários serviços deployáveis) é assunto de organização de código e deploy, tratada no Galho 16 (planejado). Não confunda os dois eixos.
+> Multi-módulo aqui é estrutura de **UM** projeto/build. A topologia de **repositórios** de microservices (monorepo vs multi-repo, vários serviços deployáveis) é assunto de organização de código e deploy, tratada no galho [[03-Dominios/Java/Microservices e sistemas distribuídos/02 - Monorepo vs multi-repo|Microservices e sistemas distribuídos]]. Não confunda os dois eixos.
 
 ## Na prática
 
@@ -200,7 +200,7 @@ Se `core` depende de `domain` e `domain` passa a depender de `core`, você cria 
 
 ### (3) Confundir multi-módulo com multi-repo de microservices
 
-Multi-módulo é **um** projeto, **um** build, **um** repositório, com vários artefatos internos compilados juntos. Microservices são **vários serviços deployáveis independentemente**, cada um com seu ciclo de release — possivelmente em repositórios separados (multi-repo) ou num monorepo. São eixos diferentes: um é organização de **build**, o outro é organização de **deploy/repositório**. Tratar módulos internos como se fossem serviços (ou vice-versa) leva a decisões de fronteira erradas. (A topologia de repositórios é assunto do Galho 16, planejado.)
+Multi-módulo é **um** projeto, **um** build, **um** repositório, com vários artefatos internos compilados juntos. Microservices são **vários serviços deployáveis independentemente**, cada um com seu ciclo de release — possivelmente em repositórios separados (multi-repo) ou num monorepo. São eixos diferentes: um é organização de **build**, o outro é organização de **deploy/repositório**. Tratar módulos internos como se fossem serviços (ou vice-versa) leva a decisões de fronteira erradas. (A topologia de repositórios é o galho [[03-Dominios/Java/Microservices e sistemas distribuídos/02 - Monorepo vs multi-repo|Microservices e sistemas distribuídos]].)
 
 ## Em entrevista
 

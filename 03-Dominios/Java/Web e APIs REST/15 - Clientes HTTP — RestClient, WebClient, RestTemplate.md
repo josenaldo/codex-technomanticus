@@ -300,7 +300,7 @@ OrderDto order = webClient.get().uri("/orders/{id}", id)
 - [[03-Dominios/Java/index|Trilha Java]]
 - Verbetes: [[03-Dominios/Java/Dicionário de Java#RestClient|RestClient]], [[03-Dominios/Java/Dicionário de Java#RestTemplate|RestTemplate]], [[03-Dominios/Java/Dicionário de Java#WebClient|WebClient]]
 
-O uso reativo/streaming do `WebClient` (WebFlux/Reactor) é tema do galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]. O cliente declarativo `@FeignClient` (Spring Cloud OpenFeign) — orientado a microservices, com service discovery e load balancing — é tema do Galho 16 (planejado); ele fecha o leque "e o Feign?", mas pertence ao mundo do Spring Cloud, não ao core do Spring Framework. Ambos aparecem aqui só como menção de fronteira, sem wikilink.
+O uso reativo/streaming do `WebClient` (WebFlux/Reactor) é tema do galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]. O cliente declarativo `@FeignClient` (Spring Cloud OpenFeign) — orientado a microservices, com service discovery e load balancing — é tema do galho [[03-Dominios/Java/Microservices e sistemas distribuídos/09 - Comunicação síncrona — OpenFeign e HTTP Interface|Microservices e sistemas distribuídos]]; ele fecha o leque "e o Feign?", mas pertence ao mundo do Spring Cloud, não ao core do Spring Framework.
 
 ## Referências
 

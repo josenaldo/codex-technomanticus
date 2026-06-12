@@ -104,7 +104,7 @@ Esse é o coração do mecanismo. Repare que em **nenhum momento** os dois servi
 Se o time do `order-service` remove um campo que o `billing-service` usa, a verificação do producer **falha no build do `order-service`** — porque o pact ainda exige aquele campo. A incompatibilidade é detectada cedo, no lugar certo, sem ambiente E2E.
 
 > [!warning] O elo: o pact precisa chegar do consumer ao producer
-> Em projetos sérios o transporte do arquivo não é manual. Usa-se um **Pact Broker** (ou Pactflow) pra publicar pacts do consumer e o producer baixar a versão certa, com versionamento por branch/tag. O `@PactFolder` mostrado aqui é o atalho didático (arquivo em disco); a orquestração distribuída do broker entre times é assunto de **Galho 16 (planejado)**.
+> Em projetos sérios o transporte do arquivo não é manual. Usa-se um **Pact Broker** (ou Pactflow) pra publicar pacts do consumer e o producer baixar a versão certa, com versionamento por branch/tag. O `@PactFolder` mostrado aqui é o atalho didático (arquivo em disco); a orquestração distribuída do broker entre times conversa com o galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]].
 
 ## Na prática
 

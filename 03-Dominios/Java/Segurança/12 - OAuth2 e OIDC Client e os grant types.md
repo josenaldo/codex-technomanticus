@@ -85,7 +85,7 @@ Quando **não há usuário** na jogada — um serviço batch chamando outra API,
 
 No Spring, isso é orquestrado pelo `OAuth2AuthorizedClientManager` com um `OAuth2AuthorizedClientProvider` configurado pro grant `client_credentials` — tipicamente pra um `WebClient`/`RestClient` chamar uma API protegida. O `authorization-grant-type` na registration vira `client_credentials`.
 
-> OAuth2 como SSO/gateway entre microservices (propagação de token, token relay) é assunto do Galho 16 (planejado).
+> OAuth2 como SSO/gateway entre microservices (propagação de token, token relay) é o galho [[03-Dominios/Java/Microservices e sistemas distribuídos/17 - Segurança entre serviços|Microservices e sistemas distribuídos]].
 
 ### Implicit e Password: deprecated — não use em código novo
 

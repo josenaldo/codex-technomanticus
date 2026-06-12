@@ -29,7 +29,7 @@ Segurança no stack Spring é a camada que **autentica** (quem é você) e **aut
 
 É um **galho híbrido**: combina a **poda integral do tronco** `Spring Security.md` (a nota monolítica antiga, agora dissolvida em notas atômicas) com **pesquisa version-specific** na doc oficial do Spring Security 6.x. E tem **dupla fronteira**: usa o **mecanismo AOP do Galho 8** ([[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — os proxies que fazem `@PreAuthorize` funcionar), protege a **borda web do Galho 9** ([[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — os endpoints que o filter chain envolve) e toca de leve a **Servlet API do Galho 7** ([[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] — os `Filter`s por baixo do `SecurityFilterChain`). As notas linkam de volta a essas fronteiras sem re-explicá-las.
 
-O foco é **servlet/MVC**: a segurança reativa (WebFlux Security) é fronteira pra frente. Testes de segurança são o galho [[03-Dominios/Java/Testes/13 - Testando a segurança|Testes]]; segurança em microservices (Galho 16 planejado) e segredos/cloud security (Galho 17 planejado) não têm cobertura aqui.
+O foco é **servlet/MVC**: a segurança reativa (WebFlux Security) é fronteira pra frente. Testes de segurança são o galho [[03-Dominios/Java/Testes/13 - Testando a segurança|Testes]]; segurança em microservices é o galho [[03-Dominios/Java/Microservices e sistemas distribuídos/17 - Segurança entre serviços|Microservices e sistemas distribuídos]]; segredos/cloud security (Galho 17 planejado) não têm cobertura aqui.
 
 ## Iniciado
 

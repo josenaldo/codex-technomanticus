@@ -202,7 +202,7 @@ A saga is a way to keep data consistent across services without using a distribu
 - [[03-Dominios/Java/Mensageria/21 - O padrão Outbox|O padrão Outbox]]
 - [[03-Dominios/Java/Mensageria/23 - Event sourcing e CQRS|Event sourcing e CQRS]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
-- Microsserviços e Spring Cloud (Galho 16, planejado) — coordenação de sagas no contexto da plataforma de microsserviços.
+- Microsserviços e Spring Cloud — o galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]] trata a coordenação de sagas no contexto da plataforma de microsserviços.
 
 ## Referências
 
