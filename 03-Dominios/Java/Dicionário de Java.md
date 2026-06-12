@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-11
+updated: 2026-06-12
 type: glossary
 status: growing
 publish: true
@@ -69,6 +69,16 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring
 Ataque em que o header do token traz `"alg":"none"`, pedindo que o servidor aceite um JWT **sem assinatura**; uma biblioteca ingênua valida e o atacante forja qualquer claim. Defesa: whitelist explícita de algoritmos.
 
 Veja também: [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e validação|JWT]].
+
+### ambient mesh
+Modo do Istio que dispensa o sidecar por pod: um `ztunnel` por nó cuida do tráfego L4 (mTLS, identidade) e um `waypoint` opcional aplica políticas L7. Reduz o overhead de recursos e a complexidade de injeção de sidecar.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]].
+
+### API Gateway
+Porta única de entrada de um sistema de microservices: roteia requisições para os serviços internos e centraliza preocupações transversais (autenticação, rate limiting, CORS, agregação). Esconde a topologia interna do cliente.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/10 - API Gateway — papel, roteamento, predicates e filters|API Gateway]].
 
 ### AMQP
 Advanced Message Queuing Protocol: protocolo aberto de mensageria orientado a filas, com suporte a exchanges, bindings e filas. O RabbitMQ é a implementação de referência na JVM; o Spring AMQP abstrai a API de baixo nível do cliente Java (rabbitmq-client) com template e listener container.
@@ -190,7 +200,12 @@ Veja também: [[03-Dominios/Java/Mensageria/14 Schema e contratos — Avro e Sch
 ### backpressure
 Mecanismo do Reactive Streams em que o consumidor controla a demanda (`request(n)`), impedindo o produtor de empurrar mais elementos do que ele consegue processar. É o que torna o modelo reativo seguro sob carga, em contraste com o push cego.
 
-Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure]].
+Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure]]. Para o controle de fluxo entre serviços, veja [[#backpressure distribuído|backpressure distribuído]].
+
+### backpressure distribuído
+Controle de fluxo entre serviços: impedir que um produtor sobrecarregue um consumidor mais lento ao longo da rede, propagando a pressão para trás. Diferente do backpressure intra-processo do Reactive Streams, depende de filas, rate limiting e padrões de resiliência para não derrubar a cadeia.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/21 - Os padrões de falha distribuída|Os padrões de falha distribuída]], [[#backpressure|backpressure (Reactive Streams)]].
 
 ### Barrier (CyclicBarrier)
 Ponto de sincronização onde um número fixo de threads deve se encontrar antes que qualquer uma prossiga. Ao contrário do `CountDownLatch`, o `CyclicBarrier` pode ser reutilizado após cada ciclo. Útil em algoritmos paralelos com fases distintas.
@@ -262,10 +277,20 @@ POM especial que contém apenas uma seção `dependencyManagement` e é importad
 
 Veja também: [[03-Dominios/Java/Build e tooling/11 - BOM e dependency management|BOM e dependency management]].
 
+### bounded context
+Conceito do DDD: uma fronteira explícita dentro da qual um modelo de domínio é coeso e consistente. É o critério natural para dividir um sistema em microservices — cada serviço deve possuir um bounded context, não uma entidade isolada.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/01 - O que são microservices e a tese honesta|O que são microservices]], [[03-Dominios/Java/Microservices e sistemas distribuídos/23 - Quando NÃO fazer microservices|Quando NÃO fazer microservices]].
+
 ### boundedElastic (Scheduler)
 `Scheduler` do Reactor com pool elástico mas limitado, destinado a isolar chamadas BLOQUEANTES (JDBC, I/O legado) para que não travem o event loop. Cada tarefa bloqueante roda numa thread dedicada e descartável, em vez de prender um worker do event loop.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subscribeOn, publishOn e em qual thread o código roda|Schedulers]].
+
+### Brave (tracer)
+Tracer da família OpenZipkin usado pelo Micrometer Tracing através do bridge `micrometer-tracing-bridge-brave`. Instrumenta a propagação de contexto (traceId/spanId) e exporta spans para o Zipkin ou compatíveis.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/19 - Tracing distribuído II — exportando o trace|Tracing distribuído II — exportando o trace]].
 
 ### broker (mensageria)
 Servidor intermediário que recebe mensagens de produtores, as armazena em filas ou tópicos e as entrega a consumidores. Desacopla produtores de consumidores no tempo e no espaço. Exemplos de brokers JVM-friendly: Apache Kafka (log distribuído), RabbitMQ (AMQP), ActiveMQ (JMS).
@@ -282,6 +307,11 @@ Cache que reusa os outputs de tasks já executadas — entre builds, máquinas e
 
 Veja também: [[03-Dominios/Java/Build e tooling/07 - Gradle — performance, build cache e daemon|Gradle — performance e build cache]].
 
+### bulkhead
+Padrão de resiliência (anteparo) que isola recursos — pools de threads ou semáforos — por dependência, de modo que a saturação de uma chamada lenta não consuma toda a capacidade do serviço e derrube as demais. Inspirado nos compartimentos estanques de um navio.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/15 - Resiliência III — Bulkhead e Rate Limiter|Resiliência III — Bulkhead e Rate Limiter]].
+
 ### Bytecode
 Representação intermediária compilada pelo `javac` a partir do código-fonte `.java`, gravada em arquivos `.class`. Não é código de máquina nativo: é executado (ou JIT-compilado) pela JVM, o que viabiliza o princípio WORA.
 
@@ -297,6 +327,11 @@ Nó de modo imediato do JavaFX que expõe uma API de desenho 2D (via `GraphicsCo
 
 Veja também: [[12 - Custom controls, Canvas e charts]].
 
+### CAP theorem
+Teorema de Brewer: em um sistema distribuído, sob uma partição de rede (P) é impossível garantir simultaneamente consistência (C) e disponibilidade (A) — é preciso escolher entre CP e AP. Orienta decisões de design em sistemas distribuídos.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/20 - Consistência em sistemas distribuídos|Consistência em sistemas distribuídos]].
+
 ### Carrier thread
 Thread da plataforma (OS thread) que executa uma virtual thread no modelo de virtual threads do Java. Uma virtual thread é montada sobre um carrier thread durante sua execução e desmontada ao bloquear, liberando o carrier para executar outra virtual thread.
 
@@ -309,6 +344,11 @@ Veja também: [[06 - Atômicos e operações lock-free]].
 
 ### cascade / orphanRemoval
 `cascade` propaga operações (PERSIST, MERGE, REMOVE, ALL) do lado pai para o filho de uma associação. `orphanRemoval = true` apaga o filho quando ele é removido da coleção do pai — vai além do `cascade = REMOVE`. Veja também: [[03-Dominios/Java/Persistência de dados/06 - @ManyToMany, @OneToOne, cascade e orphanRemoval|@ManyToMany, @OneToOne, cascade e orphanRemoval]].
+
+### cascading failure
+Falha em cascata: uma falha (ou lentidão) em um serviço se propaga pelas chamadas encadeadas, esgotando threads e recursos dos chamadores até derrubar boa parte do sistema. É a falha distribuída que circuit breaker, timeout e bulkhead existem para conter.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/21 - Os padrões de falha distribuída|Os padrões de falha distribuída]].
 
 ### CDC (Change Data Capture)
 Técnica que captura eventos de mudança de dados diretamente do log de transações do banco (ex.: binlog do MySQL, WAL do Postgres) e os publica como mensagens em um tópico. Permite sincronizar sistemas sem polling e sem acoplar o banco ao código da aplicação. O Debezium é o conector CDC de referência na JVM.
@@ -355,6 +395,11 @@ Ferramenta de análise estática que verifica estilo e convenções de código (
 
 Veja também: [[03-Dominios/Java/Build e tooling/16 - Quality gates no build|Quality gates no build]].
 
+### circuit breaker
+Disjuntor: padrão de resiliência que monitora a taxa de falha de uma chamada remota e, ao ultrapassar um limiar, "abre" — passa a falhar rápido sem chamar o serviço degradado, dando-lhe tempo para se recuperar. Tem três estados: fechado, aberto e meio-aberto. No Java, implementado pelo Resilience4j.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/13 - Resiliência I — a falha distribuída e o Circuit Breaker|Resiliência I — Circuit Breaker]].
+
 ### classloader (parent delegation)
 Componente da JVM responsável por carregar classes sob demanda a partir do classpath ou modulepath. O modelo de delegação hierárquica (parent delegation) determina que cada classloader consulta seu pai antes de tentar carregar a classe ele mesmo, garantindo que classes do JDK nunca sejam substituídas por versões do usuário.
 
@@ -369,6 +414,16 @@ Veja também: [[03-Dominios/Java/Segurança/12 - OAuth2 e OIDC Client e os grant
 Objeto intermediário que o container injeta no lugar da instância real de um bean de escopo normal. A cada chamada de método o proxy resolve a instância do contexto ativo — o que permite injetar um bean de escopo curto (request) em um de escopo longo (application). Exige classe não-final (unproxyable types geram erro de deployment).
 
 Veja também: [[03-Dominios/Java/Jakarta EE/05 - CDI — escopos e contextos|CDI — escopos e contextos]].
+
+### client-side discovery
+Padrão de service discovery em que o próprio cliente consulta o service registry, obtém a lista de instâncias disponíveis e escolhe uma (geralmente com load balancing). Contrasta com server-side discovery, onde um intermediário (load balancer) faz a escolha.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/06 - Service discovery — o conceito e o Eureka|Service discovery — o conceito e o Eureka]].
+
+### client-side load balancing
+Balanceamento de carga feito no cliente: a partir da lista de instâncias obtida do registry, o cliente decide para qual instância enviar cada requisição (round-robin, random etc.). No Spring, implementado pelo Spring Cloud LoadBalancer.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/08 - Client-side load balancing — Spring Cloud LoadBalancer|Client-side load balancing]].
 
 ### CMT / BMT
 Container-Managed Transactions vs. Bean-Managed Transactions: os dois modelos de demarcação da JTA. Em CMT o container abre/comita a transação de forma declarativa (`@Transactional`); em BMT o código controla manualmente via `UserTransaction`.
@@ -480,6 +535,11 @@ Forma de injeção de dependência em que o container fornece as dependências c
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/04 - Tipos de injeção — constructor, setter, field|Tipos de injeção]].
 
+### Consul
+Ferramenta da HashiCorp para service discovery e configuração distribuída: oferece registro de serviços com health checks, resolução via HTTP e DNS e um key/value store. Alternativa ao Eureka, integrada ao Spring Cloud via `spring-cloud-consul`.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/07 - Discovery — Consul e Kubernetes-native|Discovery — Consul e Kubernetes-native]].
+
 ### content negotiation
 Mecanismo pelo qual o servidor escolhe a representação da resposta (JSON, XML, etc.) com base no que o cliente aceita, geralmente pelo header `Accept`. No Spring MVC o `ContentNegotiationManager` casa o media type solicitado com os `HttpMessageConverter` disponíveis e com o `produces` do mapeamento, retornando 406 (Not Acceptable) quando não há representação compatível.
 
@@ -505,6 +565,11 @@ Técnica em que o consumidor de uma API declara o contrato que espera e o proved
 
 Veja também: [[03-Dominios/Java/Testes/20 - Contract testing — Pact|Contract testing — Pact]].
 
+### control plane
+Plano de controle de um service mesh: o componente que distribui configuração, políticas e certificados para os proxies (data plane), sem tocar no tráfego em si. No Istio, é o `istiod`.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]].
+
 ### @ControllerAdvice / @RestControllerAdvice
 `@ControllerAdvice` marca uma classe cujos `@ExceptionHandler`, `@InitBinder` e `@ModelAttribute` valem globalmente, para todos os controllers (ou um subconjunto filtrado por pacote/anotação/tipo). `@RestControllerAdvice` é a variante que combina `@ControllerAdvice` com `@ResponseBody`, ideal para handlers de exceção de APIs REST que serializam o corpo de erro diretamente. Alfabetiza como "ControllerAdvice".
 
@@ -514,6 +579,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/09 - Tratamento de exceções c
 Princípio de design (popularizado pelo Rails e abraçado pelo Spring Boot) em que o framework assume padrões sensatos para a maioria dos casos, reduzindo a configuração explícita ao mínimo. O desenvolvedor só configura aquilo que diverge da convenção — é a filosofia por trás da auto-configuration e dos starters.
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Framework, Boot e o ecossistema|O que é Spring]].
+
+### Conway's Law
+Lei de Conway: organizações tendem a produzir sistemas cuja arquitetura espelha a estrutura de comunicação da própria organização. Em microservices, implica que a divisão em serviços deve refletir (e às vezes redesenhar — *inverse Conway maneuver*) as fronteiras das equipes.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/01 - O que são microservices e a tese honesta|O que são microservices]], [[03-Dominios/Java/Microservices e sistemas distribuídos/23 - Quando NÃO fazer microservices|Quando NÃO fazer microservices]].
 
 ### coordenadas GAV
 O endereço único de um artefato no repositório: `groupId:artifactId:version`. O groupId identifica a organização/projeto, o artifactId o módulo, e a version a release específica — juntos, resolvem exatamente qual binário baixar.
@@ -529,6 +599,11 @@ Veja também: [[03-Dominios/Java/Jakarta EE/01 - O modelo Jakarta EE — especif
 Dois estilos de coordenação em arquiteturas de microsserviços. Na **coreografia** cada serviço reage a eventos e age de forma autônoma, sem um coordenador central — acoplamento mínimo, complexidade distribuída. Na **orquestração** um serviço central (orquestrador/saga orchestrator) coordena explicitamente os passos, facilitando visibilidade mas introduzindo acoplamento.
 
 Veja também: [[03-Dominios/Java/Mensageria/22 Saga — transações distribuídas por eventos|Saga — transações distribuídas por eventos]].
+
+### correlation ID
+Identificador único atribuído a uma requisição na borda do sistema e propagado por todas as chamadas downstream, permitindo correlacionar logs e traces de uma mesma transação espalhada por vários serviços. Base do tracing distribuído junto com traceId/spanId.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|Tracing distribuído I — correlação no código]].
 
 ### CORS (Cross-Origin Resource Sharing)
 Mecanismo do **browser** que libera ou bloqueia requests entre origens diferentes; não é segurança do servidor (`curl` ignora). Configurado por origens/métodos/headers explícitos.
@@ -570,10 +645,20 @@ Cliente de baixo nível do Spring para acesso reativo a banco relacional via R2D
 
 Veja também: [[03-Dominios/Java/Programação Reativa/13 - R2DBC — persistência reativa sem EntityManager|R2DBC]].
 
+### database-per-service
+Princípio de microservices em que cada serviço é dono exclusivo do seu banco de dados; nenhum outro serviço o acessa diretamente, só via API. Garante baixo acoplamento e autonomia, ao custo de consistência eventual e transações distribuídas (saga) entre serviços.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/20 - Consistência em sistemas distribuídos|Consistência em sistemas distribuídos]].
+
 ### @DataJpaTest
 Slice de teste do Spring Boot que carrega só a camada JPA (repositories, `EntityManager`); cada teste roda em transação com rollback automático. Use `Replace.NONE` + Testcontainers pra banco real.
 
 Veja também: [[03-Dominios/Java/Testes/10 - @DataJpaTest — testando repositories|@DataJpaTest]].
+
+### data plane
+Plano de dados de um service mesh: o conjunto de proxies sidecar que interceptam e roteiam o tráfego real entre serviços, aplicando mTLS, retry e telemetria conforme a configuração recebida do control plane.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]].
 
 ### dead letter queue (DLQ)
 Fila (ou tópico) de destino para mensagens que não puderam ser processadas com sucesso após N tentativas. Em vez de descartar ou bloquear o consumidor, a mensagem é encaminhada para a DLQ para análise e reprocessamento manual. No Spring Kafka o padrão equivalente chama-se Dead Letter Topic (DLT).
@@ -745,6 +830,11 @@ Análise estática realizada pelo JIT para determinar se um objeto criado em um 
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
+### Eureka
+Service registry da Netflix, ainda mantido e integrado ao Spring Cloud via `spring-cloud-netflix-eureka`. As instâncias se registram e enviam heartbeats; os clientes consultam o registry para descobrir instâncias. Modelo AP (prioriza disponibilidade sobre consistência).
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/06 - Service discovery — o conceito e o Eureka|Service discovery — o conceito e o Eureka]].
+
 ### event dispatch chain (capturing / bubbling)
 Rota percorrida por um evento JavaFX desde a raiz do grafo de cena até o nó-alvo (fase de *capturing*) e de volta à raiz (fase de *bubbling*). `EventFilter`s são ativados durante capturing; `EventHandler`s durante bubbling. Chamar `event.consume()` interrompe a propagação.
 
@@ -779,6 +869,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o
 Padrão em que o estado de uma entidade é derivado de uma sequência de eventos imutáveis armazenados em ordem temporal, em vez de persistir o estado atual diretamente. O estado presente é reconstituído reproduzindo os eventos. Facilita auditoria completa, projeções (read models) e integração com CQRS.
 
 Veja também: [[03-Dominios/Java/Mensageria/23 Event sourcing e CQRS|Event sourcing e CQRS]].
+
+### eventual consistency
+Consistência eventual: modelo em que réplicas ou serviços diferentes podem divergir temporariamente, mas convergem para o mesmo estado se não houver novas escritas. É o trade-off típico de sistemas AP e do database-per-service, onde a consistência forte cede lugar à disponibilidade.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/20 - Consistência em sistemas distribuídos|Consistência em sistemas distribuídos]].
 
 ### exactly-once semantics (EOS)
 Garantia de que uma mensagem é processada **exatamente uma vez**, sem perdas nem duplicatas. Na prática é a mais difícil de alcançar: requer transações idempotentes no produtor Kafka (enable.idempotence), transações no consumidor/produtor e um processamento transacional end-to-end. O Spring Kafka oferece suporte via `KafkaTransactionManager`.
@@ -819,6 +914,11 @@ Padrão de migração de schema em três passos para mudar tabelas grandes sem d
 Jar que embute, além das classes da aplicação, todas as suas dependências, virando um único artefato executável e autossuficiente. Produzido pelo Maven Shade Plugin ou pelo Gradle Shadow; o Spring Boot usa uma variante com layout próprio (executable jar).
 
 Veja também: [[03-Dominios/Java/Build e tooling/15 - Empacotamento — fat jar, thin jar e repackage|Empacotamento — fat jar e thin jar]].
+
+### Feign / OpenFeign
+Cliente HTTP declarativo: descreve-se a chamada remota como uma interface Java anotada (`@FeignClient`) e o framework gera a implementação. Hoje em modo *feature-complete* (sem novos recursos), com o `@HttpExchange` do Spring como alternativa nativa.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/09 - Comunicação síncrona — OpenFeign e HTTP Interface|Comunicação síncrona — OpenFeign e HTTP Interface]].
 
 ### fetch strategy (LAZY/EAGER)
 Decide quando o Hibernate carrega uma associação: LAZY (sob demanda, via proxy) ou EAGER (junto com o pai). A regra prática é sempre LAZY — o default EAGER de `@ManyToOne`/`@OneToOne` é fonte oculta de problemas de performance. Veja também: [[03-Dominios/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Fetch strategies]].
@@ -1016,6 +1116,11 @@ Veja também: [[12 - Diagnóstico — heap dumps, thread dumps e jcmd]].
 ### Hibernate
 A implementação mais usada da especificação JPA (Jakarta Persistence) — o provider que faz o ORM, com recursos além da spec (natural IDs, `@BatchSize`, query cache). É o que se usa em 99% dos casos quando se diz "JPA". Veja também: [[03-Dominios/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|O que é a camada de persistência]].
 
+### @HttpExchange (HTTP Interface)
+Cliente HTTP declarativo nativo do Spring Framework (6.1+): uma interface anotada com `@HttpExchange`/`@GetExchange` é transformada em proxy por um `HttpServiceProxyFactory` sobre `RestClient` ou `WebClient`. Alternativa do próprio Spring ao OpenFeign.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/09 - Comunicação síncrona — OpenFeign e HTTP Interface|Comunicação síncrona — OpenFeign e HTTP Interface]].
+
 ### HttpMessageConverter
 Estratégia do Spring MVC que converte entre o corpo HTTP (bytes) e objetos Java: na leitura, desserializa o `@RequestBody`; na escrita, serializa o retorno marcado com `@ResponseBody`. Cada converter declara os media types que suporta (ex.: `MappingJackson2HttpMessageConverter` para JSON); a content negotiation escolhe qual usar conforme o `Accept`/`Content-Type`.
 
@@ -1087,6 +1192,11 @@ Veja também: [[03-Dominios/Java/Swing/05 - A Event Dispatch Thread|EDT]].
 Princípio em que o controle da criação e da ligação de objetos é transferido do código da aplicação para o container: em vez de a classe instanciar suas dependências, o framework as injeta. A injeção de dependência é a forma concreta de IoC no Spring — "não nos chame, nós o chamaremos". Alfabetiza como "IoC".
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/02 - IoC e injeção de dependência no Spring|IoC e injeção de dependência no Spring]].
+
+### Istio
+Service mesh mais popular: injeta proxies Envoy como sidecar (ou, no modo ambient, usa ztunnel + waypoint) para entregar mTLS, roteamento, retry e observabilidade sem tocar no código do serviço. Composto por data plane (proxies) e control plane (`istiod`).
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]].
 
 ## J
 
@@ -1272,6 +1382,11 @@ A sequência ordenada de phases que o Maven executa: `validate` → `compile` �
 
 Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas e lifecycle|Maven — lifecycle]].
 
+### Linkerd
+Service mesh leve, focado em simplicidade: usa um micro-proxy escrito em Rust (em vez do Envoy) como sidecar, com menor consumo de recursos. Projeto graduado da CNCF, alternativa mais enxuta ao Istio.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]].
+
 ### Liquibase
 Ferramenta de migração de schema baseada em changelog declarativo (changesets em XML/YAML/JSON/SQL), com rollback declarativo e a tabela de controle `DATABASECHANGELOG` (com MD5SUM). Alternativa ao Flyway. Veja também: [[03-Dominios/Java/Persistência de dados/16 - Migrations de schema — Flyway, Liquibase e expand-and-contract|Migrations de schema]].
 
@@ -1368,6 +1483,21 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/08 - Validação na borda|Valid
 
 Veja também: [[02 - Áreas de memória de runtime]].
 
+### Micrometer Observation API
+API do Micrometer que unifica a instrumentação: marca-se uma operação como uma `Observation` uma única vez e dela derivam métricas, traces e logs correlacionados. Evita instrumentar três vezes a mesma fronteira.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|Tracing distribuído I — correlação no código]].
+
+### Micrometer Tracing
+Biblioteca de tracing distribuído do projeto Micrometer, sucessora do Spring Cloud Sleuth (descontinuado). Gera e propaga traceId/spanId e faz bridge para tracers como Brave (Zipkin) ou OpenTelemetry.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|Tracing distribuído I — correlação no código]].
+
+### microservices
+Estilo arquitetural em que a aplicação é dividida em serviços pequenos, independentes e deployáveis em separado, cada um dono de um bounded context e do seu próprio banco. Troca a simplicidade do monólito por autonomia de equipes e escala — ao custo de complexidade distribuída.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/01 - O que são microservices e a tese honesta|O que são microservices e a tese honesta]].
+
 ### mock vs spy vs fake vs stub
 Os test doubles: **mock** (dublê controlado e verificável), **spy** (wrapper sobre objeto real com stubs pontuais), **fake** (implementação simples alternativa, ex.: repositório em `HashMap`), **stub** (retorna respostas fixas).
 
@@ -1401,6 +1531,11 @@ Veja também: [[09 - CSS em JavaFX]].
 ### @Modifying
 Anotação do Spring Data que marca uma `@Query` como UPDATE/DELETE em massa; use `@Modifying(clearAutomatically = true, flushAutomatically = true)` porque o persistence context (1º nível) não é invalidado automaticamente. Veja também: [[03-Dominios/Java/Persistência de dados/09 - Consultas com @Query — JPQL, native e @Modifying|Consultas com @Query]].
 
+### modular monolith (monólito modular)
+Arquitetura de um único processo (deploy único) internamente dividido em módulos bem isolados, com fronteiras explícitas e baixo acoplamento. Captura boa parte dos benefícios organizacionais dos microservices sem a complexidade distribuída — frequentemente o ponto de partida e o destino recomendado antes de fragmentar.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/23 - Quando NÃO fazer microservices|Quando NÃO fazer microservices]].
+
 ### Monitor (intrinsic lock)
 Mecanismo de sincronização intrínseco de todo objeto Java que combina exclusão mútua e comunicação via `wait/notify/notifyAll`. Cada objeto tem um lock implícito adquirido com `synchronized`. Ao entrar em um bloco `synchronized`, a thread adquire o monitor; ao sair, libera-o automaticamente.
 
@@ -1411,10 +1546,25 @@ Publisher do Project Reactor que representa 0-1 elemento assíncrono (`Mono<T>`)
 
 Veja também: [[03-Dominios/Java/Programação Reativa/03 - Mono e Flux — os publishers do Project Reactor|Mono e Flux]].
 
+### monorepo
+Estratégia de versionamento em que vários serviços (ou todos) convivem num único repositório. Facilita refatorações atômicas cross-serviço e compartilhamento de código, ao custo de tooling de build mais sofisticado e acoplamento de CI.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/02 - Monorepo vs multi-repo|Monorepo vs multi-repo]].
+
+### mTLS (TLS mútuo)
+TLS mútuo: ambas as pontas de uma conexão se autenticam por certificado, não só o servidor. Em microservices, garante que apenas serviços de identidade conhecida conversem entre si; normalmente entregue de forma transparente pelo service mesh.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]], [[03-Dominios/Java/Microservices e sistemas distribuídos/17 - Segurança entre serviços|Segurança entre serviços]].
+
 ### multi-module (reactor)
 Projeto Maven composto de vários módulos sob um parent POM. O reactor analisa as dependências entre os módulos e os ordena topologicamente, buildando-os na ordem correta em uma única invocação.
 
 Veja também: [[03-Dominios/Java/Build e tooling/12 - Projetos multi-módulo|Projetos multi-módulo]].
+
+### multi-repo
+Estratégia de versionamento com um repositório por serviço. Reforça a autonomia e o deploy independente de cada equipe, ao custo de coordenar mudanças que atravessam serviços e duplicar configuração de build/CI.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/02 - Monorepo vs multi-repo|Monorepo vs multi-repo]].
 
 ### mutation testing
 Técnica que mede a qualidade dos testes mutando o bytecode (ex.: `>`→`>=`) e checando se os testes pegam o mutante; mutation coverage é métrica mais honesta que line coverage. Em Java, PIT.
@@ -1518,6 +1668,11 @@ Projeto open-source que abriga o código-fonte do JavaFX desde que foi desacopla
 
 Veja também: [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 
+### OpenTelemetry
+Padrão vendor-neutral da CNCF para telemetria (traces, métricas, logs): define APIs, SDKs e o protocolo de transporte OTLP, desacoplando a instrumentação do backend de observabilidade (Jaeger, Tempo, Datadog etc.). No Java, integra-se ao Micrometer Tracing via bridge.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/19 - Tracing distribuído II — exportando o trace|Tracing distribuído II — exportando o trace]].
+
 ### operação intermediária / terminal
 Classificação das operações de uma `Stream`. Operações *intermediárias* (ex.: `filter`, `map`, `sorted`) retornam uma nova stream e são *lazy* — não processam elementos até que uma operação terminal seja chamada. Operações *terminais* (ex.: `collect`, `forEach`, `count`, `reduce`) desencadeiam o processamento do pipeline e consomem a stream, que não pode ser reutilizada.
 
@@ -1527,6 +1682,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/05 - Introdução à Stre
 Container que pode ou não conter um valor não-nulo, introduzido no Java 8. Evita `NullPointerException` ao forçar o tratamento explícito da ausência de valor. Métodos principais: `isPresent`, `get`, `orElse`, `orElseGet`, `orElseThrow`, `map`, `flatMap`, `ifPresent`. Deve ser usado como tipo de retorno, nunca como campo ou parâmetro.
 
 Veja também: [[03-Dominios/Java/Collections e Streams/10 - Optional|Optional]].
+
+### OTLP
+OpenTelemetry Protocol: o formato e o transporte padrão (sobre gRPC ou HTTP) pelo qual dados de telemetria do OpenTelemetry são exportados de uma aplicação para um collector ou backend de observabilidade.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/19 - Tracing distribuído II — exportando o trace|Tracing distribuído II — exportando o trace]].
 
 ### outbox pattern
 Padrão para garantir consistência entre persistência e publicação de mensagens: em vez de chamar o broker diretamente após salvar, o código persiste o evento em uma tabela `outbox` dentro da mesma transação de banco. Um processo separado (poller ou Debezium CDC) lê a tabela e publica as mensagens, assegurando que "ou salva e publica, ou não faz nenhum dos dois".
@@ -1549,6 +1709,11 @@ Lista de referência das dez categorias de risco mais críticas em aplicações 
 Veja também: [[03-Dominios/Java/Segurança/16 - OWASP Top 10 no contexto Java|OWASP Top 10 no contexto Java]].
 
 ## P
+
+### PACELC
+Extensão do teorema CAP: além do trade-off C/A sob partição (P), considera o caso sem partição (Else) — em que a escolha passa a ser entre menor latência (L) e maior consistência (C). Captura que o trade-off latência×consistência existe mesmo quando a rede está saudável.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/20 - Consistência em sistemas distribuídos|Consistência em sistemas distribuídos]].
 
 ### Pact
 Ferramenta de contract testing consumer-driven pra JVM: o consumer gera o pact, o producer verifica (`@Provider`/`@State`); a quebra falha no build sem E2E.
@@ -1769,6 +1934,11 @@ Message broker open-source que implementa o protocolo AMQP, com suporte adiciona
 
 Veja também: [[03-Dominios/Java/Mensageria/15 Spring AMQP e RabbitMQ|Spring AMQP e RabbitMQ]].
 
+### rate limiter
+Padrão de resiliência que limita o número de chamadas permitidas por janela de tempo, protegendo um serviço de ser sobrecarregado e impondo cotas de uso. No Java, oferecido pelo Resilience4j (`RateLimiter`).
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/15 - Resiliência III — Bulkhead e Rate Limiter|Resiliência III — Bulkhead e Rate Limiter]].
+
 ### RBAC (role-based)
 Controle de acesso por **papéis**: o usuário tem roles, as roles concedem permissões. Simples e cobre a maioria dos casos; o modelo default do Spring Security.
 
@@ -1828,6 +1998,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapea
 Annotation do Spring MVC que vincula um parâmetro de query string (ou de formulário) a um parâmetro do método (ex.: `?page=2` → `@RequestParam int page`). Suporta valor default, obrigatoriedade e binding para coleções/`Map`. Alfabetiza como "RequestParam".
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/03 - Recebendo dados da request|Recebendo dados da request]].
+
+### Resilience4j
+Biblioteca leve e modular de tolerância a falhas para Java, sucessora do Hystrix (em manutenção). Oferece Circuit Breaker, Retry, Rate Limiter, Bulkhead e Time Limiter como decorators componíveis, com integração Spring Boot. Versão atual 2.4.0.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/13 - Resiliência I — a falha distribuída e o Circuit Breaker|Resiliência I — Circuit Breaker]], [[03-Dominios/Java/Microservices e sistemas distribuídos/16 - Resiliência IV — compondo os padrões|Resiliência IV — compondo os padrões]].
 
 ### @ResponseBody
 Annotation do Spring MVC que indica que o retorno do método deve ser serializado direto no corpo da resposta (via `HttpMessageConverter`), em vez de ser interpretado como nome de view. É implícita em `@RestController`. Alfabetiza como "ResponseBody".
@@ -1974,6 +2149,21 @@ Anotação do Spring Boot (3.1+) que auto-configura a conexão (datasource, Kafk
 
 Veja também: [[03-Dominios/Java/Testes/11 - Testcontainers — infra real em testes|Testcontainers]].
 
+### service discovery
+Mecanismo que permite a um serviço localizar, em tempo de execução, as instâncias (host:porta) de outro serviço, cujos endereços são dinâmicos. Resolve o problema de hardcodar endpoints num ambiente onde instâncias sobem, caem e migram.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/06 - Service discovery — o conceito e o Eureka|Service discovery — o conceito e o Eureka]].
+
+### service mesh
+Malha de serviço: infraestrutura que move resiliência, mTLS, roteamento e observabilidade para fora do código da aplicação, delegando-os a proxies sidecar (data plane) coordenados por um control plane. Implementações: Istio, Linkerd.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh — quando a resiliência sai do código]].
+
+### service registry
+Registro central das instâncias de serviço disponíveis: cada instância se cadastra (e renova via heartbeat) e os clientes o consultam para descobrir endereços. É a peça que viabiliza o service discovery. Exemplos: Eureka, Consul.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/06 - Service discovery — o conceito e o Eureka|Service discovery — o conceito e o Eureka]].
+
 ### servlet
 Componente Java que processa requisições HTTP dentro de um container (Servlet 6.1 no EE 11). `HttpServlet` expõe `doGet`/`doPost`...; uma única instância atende múltiplas threads concorrentes, então estado mutável de instância é perigoso. É o alicerce sobre o qual frameworks web rodam.
 
@@ -2003,6 +2193,11 @@ Veja também: [[03-Dominios/Java/Segurança/15 - Session management e security h
 Coletor de lixo de pausa ultra-baixa desenvolvido pela Red Hat, disponível no OpenJDK. Realiza a fase de compactação (evacuation) concorrentemente com a aplicação, reduzindo as pausas STW a trabalho de curtíssima duração independentemente do tamanho do heap. Ativado com `-XX:+UseShenandoahGC`.
 
 Veja também: [[06 - Os coletores do HotSpot]].
+
+### sidecar
+Proxy implantado ao lado de cada instância de serviço (no mesmo pod), que intercepta todo o tráfego de entrada e saída. É o data plane de um service mesh: aplica mTLS, retry, telemetria e roteamento sem que o serviço saiba. O Envoy é o sidecar mais comum.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/22 - Service mesh — quando a resiliência sai do código|Service mesh]].
 
 ### skin (Control)
 Implementação plugável da aparência e do comportamento visual de um `Control` do JavaFX. Cada controle delega layout e renderização ao seu `Skin` (ex.: `ButtonSkin`); criar um skin customizado permite reimplementar completamente a aparência sem alterar o modelo do controle. O mecanismo é análogo ao UI delegate do Swing.
@@ -2051,6 +2246,26 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/01 - O que é Spring — Fra
 Anotação que carrega o `ApplicationContext` completo num teste (integração); combinada com Testcontainers e `WebEnvironment`, testa o fluxo inteiro. Mais pesada que os slices.
 
 Veja também: [[03-Dominios/Java/Testes/12 - Testes de integração ponta a ponta|Testes de integração ponta a ponta]].
+
+### Spring Cloud
+Conjunto de projetos do ecossistema Spring para construir sistemas distribuídos: service discovery, config centralizado, gateway, resiliência e tracing. Versionado por um *release train* alinhado ao Spring Boot. Vários módulos da era Netflix (Ribbon, Hystrix, Zuul) foram aposentados e substituídos.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/04 - Panorama do Spring Cloud — e o que morreu|Panorama do Spring Cloud — e o que morreu]].
+
+### Spring Cloud Config
+Solução de configuração externalizada e centralizada do Spring Cloud: um Config Server serve propriedades (de Git, Vault etc.) e os Config Clients as consomem no boot, com suporte a refresh dinâmico. Realiza o fator "config" dos 12 fatores.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/12 - Config centralizado — Spring Cloud Config|Config centralizado — Spring Cloud Config]].
+
+### Spring Cloud Gateway
+API Gateway do ecossistema Spring, baseado em rotas com *predicates* (condições de match) e *filters* (transformações). Existe em duas variantes: a reativa (sobre WebFlux/Netty) e a Spring Cloud Gateway MVC (sobre o stack servlet bloqueante).
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/10 - API Gateway — papel, roteamento, predicates e filters|API Gateway]], [[03-Dominios/Java/Microservices e sistemas distribuídos/11 - Gateway reativo vs MVC — as duas variantes|Gateway reativo vs MVC]].
+
+### Spring Cloud LoadBalancer
+Componente de client-side load balancing do Spring Cloud, que substituiu o Netflix Ribbon (aposentado). Distribui as requisições entre as instâncias descobertas via service discovery, com estratégias plugáveis (round-robin por padrão).
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/08 - Client-side load balancing — Spring Cloud LoadBalancer|Client-side load balancing]].
 
 ### Spring Cloud Stream
 Framework do ecossistema Spring Cloud que abstrai a integração com brokers de mensagens (Kafka, RabbitMQ) por meio de *binders* e *bindings* declarativos. O código da aplicação trabalha com `Supplier`, `Function` e `Consumer` Java; o binder cuida da conexão com o broker específico. Facilita a troca de broker sem alterar a lógica de negócio.
@@ -2129,6 +2344,11 @@ Veja também: [[03-Dominios/Java/Testes/15 - Testando código reativo — StepVe
 Pausa em que a JVM suspende todas as threads da aplicação para executar uma fase do GC que exige visão consistente do heap, como a marcação inicial ou a cópia de objetos young. A duração das pausas STW é o principal indicador de latência do GC e varia conforme o coletor: G1 as minimiza incrementalmente; ZGC e Shenandoah as tornam sub-milissegundos.
 
 Veja também: [[03 - Garbage Collection — o conceito]].
+
+### strangler fig
+Padrão de migração incremental (Martin Fowler): em vez de reescrever um monólito de uma vez, novas funcionalidades e fatias migradas são interceptadas por uma fachada e roteadas para serviços novos, enquanto o monólito é "estrangulado" aos poucos até ser desligado. Reduz o risco do big-bang.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/23 - Quando NÃO fazer microservices|Quando NÃO fazer microservices]].
 
 ### Stream
 Sequência de elementos que suporta operações de agregação em pipeline, introduzida no Java 8 (`java.util.stream.Stream<T>`). Não armazena dados — processa elementos sob demanda a partir de uma fonte (coleção, array, I/O). Operações intermediárias são lazy; apenas uma operação terminal dispara a execução. Uma stream não pode ser reutilizada após consumida.
@@ -2237,10 +2457,25 @@ Estratégia de compilação JIT padrão desde o Java 8 que combina C1 e C2 em ci
 
 Veja também: [[07 - JIT — C1, C2 e tiered compilation]].
 
+### time limiter
+Padrão de resiliência que impõe um timeout a chamadas assíncronas (`Future`/`CompletableFuture`), cancelando a operação e liberando recursos se ela exceder o tempo limite. No Java, oferecido pelo Resilience4j (`TimeLimiter`).
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/14 - Resiliência II — Retry e Time Limiter|Resiliência II — Retry e Time Limiter]].
+
+### token relay
+Padrão em que um serviço (tipicamente o gateway) repassa o token de acesso do usuário para os serviços downstream, propagando a identidade e as permissões ao longo da cadeia de chamadas em vez de reautenticar.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/17 - Segurança entre serviços|Segurança entre serviços]].
+
 ### toolchain (build)
 Mecanismo do Maven e do Gradle que desacopla o JDK que roda o build do JDK usado para compilar e mirar o código. Permite, por exemplo, rodar o build com Java 21 e produzir bytecode compatível com Java 17, sem depender do JDK do `PATH`.
 
 Veja também: [[03-Dominios/Java/Build e tooling/13 - Toolchains — buildar com um JDK, mirar outro|Toolchains]].
+
+### traceId / spanId
+Identificadores do tracing distribuído: o **traceId** identifica uma requisição inteira ao atravessar vários serviços; cada unidade de trabalho dentro dela recebe um **spanId** próprio, formando uma árvore. Propagados via headers (ex.: W3C `traceparent`) para reconstituir o caminho ponta a ponta.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|Tracing distribuído I — correlação no código]].
 
 ### @Transactional (Jakarta)
 Annotation da JTA (`jakarta.transaction.Transactional`) que demarca transações de forma declarativa via interceptor CDI. O atributo `TxType` (REQUIRED/REQUIRES_NEW/...) define a propagação; por padrão faz rollback em exceções unchecked, não em checked. Homônima — mas distinta — da annotation de mesmo nome em frameworks. Alfabetiza como "Transactional".
@@ -2264,6 +2499,11 @@ Veja também: [[03-Dominios/Java/Collections e Streams/03 - Mapas|Mapas]].
 Construção `try (Recurso r = ...)` que garante o fechamento automático de qualquer objeto `AutoCloseable` ao fim do bloco, mesmo em caso de exceção. Elimina o padrão `finally { r.close(); }` e torna o gerenciamento de recursos mais seguro e legível.
 
 Veja também: [[10 - Exceções e tratamento de erros]].
+
+### twelve-factor (12-factor)
+Metodologia (Heroku) de doze práticas para construir aplicações cloud-native — config no ambiente, processos stateless, build/release/run separados, paridade dev/prod, logs como streams etc. Serve de checklist para serviços bem-comportados em containers e orquestradores.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/03 - Os 12 fatores e o serviço cloud-native|Os 12 fatores e o serviço cloud-native]].
 
 ### two-phase commit (2PC / XA)
 Protocolo que garante atomicidade de uma transação que abrange múltiplos recursos (ex.: banco + fila): uma fase de prepare seguida de uma de commit, coordenadas por um transaction manager via a interface X/Open XA. Robusto, mas caro em latência e bloqueio.
@@ -2412,3 +2652,8 @@ Veja também: [[03 - Estruturas de controle e fluxo]].
 Coletor de lixo de latência ultra-baixa (sub-milissegundos), com arquitetura generacional adotada como padrão no Java 23 (JEP 439, final no Java 21). Realiza marcação, realocação e compactação concorrentemente com a aplicação usando load barriers e colored pointers, mantendo as pausas STW praticamente constantes independentemente do tamanho do heap. Ativado explicitamente com `-XX:+UseZGC`.
 
 Veja também: [[06 - Os coletores do HotSpot]].
+
+### Zuul
+API Gateway legado da Netflix, integrado ao Spring Cloud Netflix. Foi descontinuado e removido — o Spring Cloud Gateway é seu substituto recomendado, com modelo reativo e melhor desempenho.
+
+Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/04 - Panorama do Spring Cloud — e o que morreu|Panorama do Spring Cloud — e o que morreu]].
