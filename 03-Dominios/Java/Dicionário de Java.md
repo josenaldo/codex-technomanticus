@@ -125,6 +125,11 @@ Biblioteca de asserções fluent (`assertThat(x).isNotNull().hasSize(3)`) com me
 
 Veja também: [[03-Dominios/Java/Testes/03 - AssertJ — fluent assertions|AssertJ]].
 
+### async-profiler
+Profiler de baixo overhead para a JVM que amostra via `perf_events` do kernel Linux, produzindo saída em flamegraph ou JFR. Captura stacks de CPU, alocação e contenção de locks sem o viés de safepoint dos profilers tradicionais.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/19 - Continuous profiling no cluster — Pyroscope e async-profiler|Continuous profiling no cluster]].
+
 ### at-least-once
 Garantia de entrega em que uma mensagem é processada **uma ou mais vezes**: o broker retransmite em caso de falha ou falta de ACK, podendo gerar duplicatas. É a garantia mais comum em sistemas de mensageria; exige que o consumidor seja **idempotente** para lidar com reprocessamento.
 
@@ -307,6 +312,11 @@ Cache que reusa os outputs de tasks já executadas — entre builds, máquinas e
 
 Veja também: [[03-Dominios/Java/Build e tooling/07 - Gradle — performance, build cache e daemon|Gradle — performance e build cache]].
 
+### Buildpacks (Cloud Native Buildpacks)
+Especificação que transforma código-fonte diretamente em imagem OCI, sem Dockerfile, detectando a stack e aplicando camadas otimizadas. O Paketo é a implementação usada pelo Spring Boot via `spring-boot:build-image`.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/06 - Buildpacks — imagem sem Dockerfile|Buildpacks — imagem sem Dockerfile]].
+
 ### bulkhead
 Padrão de resiliência (anteparo) que isola recursos — pools de threads ou semáforos — por dependência, de modo que a saturação de uma chamada lenta não consuma toda a capacidade do serviço e derrube as demais. Inspirado nos compartimentos estanques de um navio.
 
@@ -385,6 +395,11 @@ Biblioteca de geração de bytecode que o Spring usa para criar proxies via *sub
 
 Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]].
 
+### cgroup (control group)
+Recurso do kernel Linux que impõe e contabiliza limites de CPU e memória sobre um conjunto de processos; é o que o container engine usa para confinar um container. A JVM container-aware lê esses limites para dimensionar heap e pools.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/02 - A JVM dentro de um container|A JVM dentro de um container]].
+
 ### Checked exception
 Exceção que o compilador obriga o desenvolvedor a declarar (`throws`) ou capturar (`try/catch`). Estende `Exception` (excluindo `RuntimeException`). Exemplos: `IOException`, `SQLException`. Usada quando o chamador pode se recuperar do erro.
 
@@ -394,6 +409,11 @@ Veja também: [[10 - Exceções e tratamento de erros]].
 Ferramenta de análise estática que verifica estilo e convenções de código (formatação, nomes, imports, javadoc) contra um conjunto de regras configurável. Plugável no build (Maven/Gradle) como quality gate que falha o build no desvio.
 
 Veja também: [[03-Dominios/Java/Build e tooling/16 - Quality gates no build|Quality gates no build]].
+
+### CI/CD
+Integração contínua e entrega/deploy contínuos: o pipeline automatizado que constrói, testa e leva o código até produção sem humano no terminal. Cada commit dispara build, testes e gates de qualidade; passando, o artefato segue para deploy.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/20 - CI-CD e o caminho até produção|CI-CD e o caminho até produção]].
 
 ### circuit breaker
 Disjuntor: padrão de resiliência que monitora a taxa de falha de uma chamada remota e, ao ultrapassar um limiar, "abre" — passa a falhar rápido sem chamar o serviço degradado, dando-lhe tempo para se recuperar. Tem três estados: fechado, aberto e meio-aberto. No Java, implementado pelo Resilience4j.
@@ -424,6 +444,11 @@ Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/06 - Ser
 Balanceamento de carga feito no cliente: a partir da lista de instâncias obtida do registry, o cliente decide para qual instância enviar cada requisição (round-robin, random etc.). No Spring, implementado pelo Spring Cloud LoadBalancer.
 
 Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/08 - Client-side load balancing — Spring Cloud LoadBalancer|Client-side load balancing]].
+
+### closed-world assumption
+Premissa do GraalVM Native Image: tudo que o programa pode executar precisa ser conhecido em tempo de build, pois o que não for alcançado pela análise estática não entra no binário. Reflexão, proxies dinâmicos e carregamento dinâmico de classes exigem hints de configuração.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|GraalVM Native Image — conceito e trade-offs]].
 
 ### CMT / BMT
 Container-Managed Transactions vs. Bean-Managed Transactions: os dois modelos de demarcação da JTA. Em CMT o container abre/comita a transação de forma declarativa (`@Transactional`); em BMT o código controla manualmente via `UserTransaction`.
@@ -540,6 +565,11 @@ Ferramenta da HashiCorp para service discovery e configuração distribuída: of
 
 Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/07 - Discovery — Consul e Kubernetes-native|Discovery — Consul e Kubernetes-native]].
 
+### container-awareness
+Capacidade da JVM (desde o Java 10) de detectar que roda dentro de um container e ler os limites do cgroup em vez dos recursos da máquina inteira. Sem isso, a JVM dimensionaria heap e pools pela CPU/memória do host, e estouraria o limite do container.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/02 - A JVM dentro de um container|A JVM dentro de um container]].
+
 ### content negotiation
 Mecanismo pelo qual o servidor escolhe a representação da resposta (JSON, XML, etc.) com base no que o cliente aceita, geralmente pelo header `Accept`. No Spring MVC o `ContentNegotiationManager` casa o media type solicitado com os `HttpMessageConverter` disponíveis e com o `produces` do mapeamento, retornando 406 (Not Acceptable) quando não há representação compatível.
 
@@ -559,6 +589,11 @@ Veja também: [[03-Dominios/Java/Mensageria/26 Observabilidade em mensageria|Obs
 Situação em que múltiplas threads disputam o mesmo lock ou recurso simultaneamente, forçando algumas a esperar. Alta contention degrada performance e pode eliminar os ganhos do paralelismo. Mitigada por locks de granularidade fina, estruturas lock-free ou particionamento de estado.
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### continuous profiling
+Perfilar a frota inteira continuamente, com overhead baixo o bastante para rodar sempre em produção, agregando os dados numa plataforma central. Permite responder "por que este serviço gastou CPU às 3h da manhã na semana passada" sem reproduzir o incidente.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/19 - Continuous profiling no cluster — Pyroscope e async-profiler|Continuous profiling no cluster]].
 
 ### contract testing
 Técnica em que o consumidor de uma API declara o contrato que espera e o provedor verifica que o cumpre no próprio build — pega quebras sem testes E2E frágeis entre serviços. Em Java, via Pact.
@@ -739,6 +774,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o
 O *front controller* do Spring MVC: um único `Servlet` que recebe todas as requisições e orquestra o pipeline — consulta os `HandlerMapping` para achar o handler, invoca o `HandlerAdapter` para executá-lo, aplica `HandlerInterceptor`, resolve a view (ou serializa via `HttpMessageConverter`) e despacha a resposta. Centraliza o fluxo de processamento web.
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]].
+
+### distroless
+Imagens base de container sem shell nem gerenciador de pacotes — só o runtime e as dependências estritamente necessárias para rodar o app. Reduzem drasticamente a superfície de ataque e o ruído do scanning de vulnerabilidades, ao custo de dificultar o debug interativo dentro do container.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/05 - Imagem enxuta e segura — distroless e scanning|Imagem enxuta e segura — distroless e scanning]].
 
 ### Document (modelo de texto)
 Model dos componentes de texto (`JTextField`, `JTextArea`): representa o conteúdo como sequência de caracteres com atributos, não como `String`. Edições disparam `DocumentEvent` e podem ser interceptadas via `DocumentListener` ou `DocumentFilter`.
@@ -1031,10 +1071,25 @@ Empresa e projeto open-source que mantém o port do JavaFX para dispositivos mó
 
 Veja também: [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 
+### GraalVM
+Distribuição de JDK de alto desempenho que inclui um compilador AOT capaz de gerar um native image — um executável nativo do app, sem JVM em runtime. Também oferece um JIT alternativo e suporte a linguagens poliglotas.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|GraalVM Native Image — conceito e trade-offs]].
+
+### graceful shutdown
+Encerramento ordenado em que, ao receber o `SIGTERM`, a aplicação para de aceitar novas requisições mas drena as que estão em voo antes de terminar. É o que evita erros 5xx para o usuário durante deploys e rescheduling de pods.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/12 - Graceful shutdown e deploy sem downtime|Graceful shutdown e deploy sem downtime]].
+
 ### Gradle
 Build tool imperativo e flexível baseado em DSL (Groovy ou Kotlin), com build incremental, daemon e cache para acelerar builds. Modela o build como um grafo de tasks, em contraste com o lifecycle fixo do Maven.
 
 Veja também: [[03-Dominios/Java/Build e tooling/05 - Gradle — build script, tasks e configurations|Gradle — build script, tasks e configurations]].
+
+### Grafana
+Plataforma de dashboards e alertas que visualiza métricas (do Prometheus) e outros sinais de observabilidade. Painéis exibem séries temporais e regras de alerta disparam notificações quando um limiar é cruzado.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/15 - Dashboards e alertas — Grafana|Dashboards e alertas — Grafana]].
 
 ### GrantedAuthority
 Representa uma permissão concedida ao principal (uma role `ROLE_*`, um scope `SCOPE_*` ou uma authority custom); é o que `hasRole`/`hasAuthority` consultam.
@@ -1102,6 +1157,11 @@ Veja também: [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL �
 Hypermedia As The Engine Of Application State: restrição do REST em que a resposta carrega *links* que indicam ao cliente as transições de estado possíveis a partir do recurso atual, em vez de o cliente conhecer URLs de antemão. Corresponde ao nível 3 do Richardson Maturity Model; no Spring é suportado pela biblioteca Spring HATEOAS (`EntityModel`, `Link`, `WebMvcLinkBuilder`).
 
 Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
+
+### head sampling
+Estratégia de amostragem de traces em que a decisão de amostrar (ou descartar) é tomada no início, na própria aplicação, antes de o trace existir por inteiro. É barata e simples, mas pode descartar justamente o trace de um erro raro, por decidir às cegas.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|OpenTelemetry Collector e sampling de produção]].
 
 ### heap
 Área de memória principal da JVM onde todos os objetos e arrays são alocados. Dividida em gerações (young/eden, survivor, old) pelos coletores generacionais. O tamanho é configurável com `-Xms` (inicial) e `-Xmx` (máximo); esgotar o heap causa `OutOfMemoryError`.
@@ -1255,6 +1315,11 @@ Mecanismo de profiling e diagnóstico de baixíssimo overhead integrado à JVM H
 
 Veja também: [[13 - JFR e JMC — observabilidade de produção]].
 
+### Jib
+Plugin Maven/Gradle (do Google) que constrói uma imagem OCI do app sem precisar de Docker daemon nem Dockerfile — é daemonless. Monta a imagem em camadas otimizadas (dependências, recursos, classes) direto a partir do build, e pode publicá-la diretamente num registry.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/07 - Jib — imagem daemonless|Jib — imagem daemonless]].
+
 ### JIT (C1 / C2)
 Compiladores Just-In-Time da JVM HotSpot que traduzem bytecode para código nativo em tempo de execução. C1 (client compiler) é rápido e aplica otimizações simples; C2 (server compiler) é mais lento mas produz código altamente otimizado via especulação e análise de perfil. Em tiered compilation (padrão desde o Java 8), ambos são usados em sequência conforme a "temperatura" do método.
 
@@ -1367,6 +1432,11 @@ Sincronizador de uso único que permite que uma ou mais threads aguardem até qu
 
 Veja também: [[09 - Sincronizadores]].
 
+### layered jar
+Modo de empacotamento do Spring Boot que divide o jar executável em camadas organizadas por ritmo de mudança (dependências, snapshots, recursos, classes da aplicação). Como as camadas de baixo ritmo mudam raramente, a imagem de container reaproveita seu cache entre builds, reconstruindo só o que mudou.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/04 - Dockerfile na prática — multi-stage e layered jar|Dockerfile na prática — multi-stage e layered jar]].
+
 ### layout manager
 Objeto que posiciona e dimensiona automaticamente os componentes de um container, respondendo a resize, look-and-feel e DPI. Exemplos: `BorderLayout`, `FlowLayout`, `BoxLayout`, `GridBagLayout`. Evita coordenadas absolutas e torna o layout adaptável.
 
@@ -1399,6 +1469,11 @@ Veja também: [[03-Dominios/Java/Swing/04 - O modelo de eventos|Modelo de evento
 Situação em que duas ou mais threads continuam executando (não bloqueadas) mas não progridem, pois cada uma reage à ação da outra em loop infinito — como duas pessoas que se desviam na mesma direção no corredor. Diferente do deadlock, as threads estão ativas mas inutilmente.
 
 Veja também: [[04 - As armadilhas - race, deadlock e companhia]].
+
+### liveness probe
+Sonda do Kubernetes que pergunta "este pod ainda está vivo?"; se falhar repetidamente, o orquestrador reinicia o container. Deve checar apenas se o processo travou de forma irrecuperável — não dependências externas, sob pena de reinícios em cascata.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/10 - Health e probes — o contrato com o orquestrador|Health e probes — o contrato com o orquestrador]].
 
 ### LocalDate / LocalDateTime
 Classes imutáveis de `java.time` que representam, respectivamente, uma data (ano-mês-dia) e uma combinação de data e hora, ambas sem informação de fuso horário. `LocalDate` é adequada para datas de calendário (aniversários, vencimentos); `LocalDateTime` para timestamps locais. Criadas por `LocalDate.now()`, `LocalDate.of(...)` e similares.
@@ -1457,6 +1532,11 @@ Veja também: [[03-Dominios/Java/Build e tooling/02 - Maven — POM, coordenadas
 O repositório público padrão de artefatos do ecossistema Java/JVM, de onde Maven e Gradle baixam dependências por default. A publicação atual passa pelo Central Portal da Sonatype.
 
 Veja também: [[03-Dominios/Java/Build e tooling/19 - Publicação de artefatos|Publicação de artefatos]].
+
+### MaxRAMPercentage
+Flag da JVM que dimensiona o heap máximo como uma porcentagem da memória disponível ao container, em vez de um valor absoluto fixo (`-Xmx`). É a forma idiomática de configurar memória num container: o heap acompanha o limite do cgroup mesmo quando este muda.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/02 - A JVM dentro de um container|A JVM dentro de um container]].
 
 ### MDB (message-driven bean)
 Tipo de Enterprise Bean que consome mensagens de forma assíncrona (tipicamente de uma fila/tópico), processando-as fora do fluxo request/response. É o ponto de integração do EJB com mensageria.
@@ -1566,6 +1646,11 @@ Estratégia de versionamento com um repositório por serviço. Reforça a autono
 
 Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/02 - Monorepo vs multi-repo|Monorepo vs multi-repo]].
 
+### multi-stage build
+Dockerfile com mais de um estágio `FROM`: estágios iniciais compilam/empacotam o app com todo o toolchain, e o estágio final copia apenas o artefato pronto para uma imagem base mínima. O resultado é uma imagem enxuta, sem compilador nem dependências de build.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/04 - Dockerfile na prática — multi-stage e layered jar|Dockerfile na prática — multi-stage e layered jar]].
+
 ### mutation testing
 Técnica que mede a qualidade dos testes mutando o bytecode (ex.: `>`→`>=`) e checando se os testes pegam o mutante; mutation coverage é métrica mais honesta que line coverage. Em Java, PIT.
 
@@ -1585,6 +1670,11 @@ Veja também: [[11 - Arquitetura — MVC, MVVM e injeção de dependência]].
 
 ### N+1 (problema)
 O bug de performance mais comum da JPA: ao carregar N entidades pai e acessar uma associação lazy de cada uma, geram-se 1 (pai) + N (filhos) queries. Resolve-se com `@EntityGraph`, `JOIN FETCH`, `@BatchSize` ou DTO projection. Veja também: [[03-Dominios/Java/Persistência de dados/08 - O problema N+1 e suas soluções — @EntityGraph, JOIN FETCH, batch size|O problema N+1]].
+
+### native image
+Executável nativo compilado ahead-of-time pelo GraalVM, que embute o app e um runtime mínimo num único binário, sem JVM em runtime. Startup quase instantâneo e footprint de memória baixo, ao custo de build mais lento, ausência de JIT e a closed-world assumption.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/08 - GraalVM Native Image — conceito e trade-offs|GraalVM Native Image — conceito e trade-offs]].
 
 ### nearest-wins (mediation)
 Estratégia de dependency mediation do Maven: quando a árvore traz a mesma dependência em versões diferentes, vence a declaração mais próxima da raiz (menor profundidade), não a versão mais nova. O Gradle, por contraste, escolhe a versão mais alta.
@@ -1638,6 +1728,11 @@ Mecanismo de pub/sub embutido no CDI: um bean dispara um evento (`Event<T>.fire`
 
 Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
 
+### OCI image
+Formato padrão de imagem de container especificado pela Open Container Initiative, independente do Docker. Define como as camadas, o manifesto e a configuração de uma imagem são empacotados, de modo que qualquer runtime compatível (Docker, containerd, Podman) a execute.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/03 - Empacotando o app numa imagem — o panorama|Empacotando o app numa imagem — o panorama]].
+
 ### OIDC (OpenID Connect)
 Camada de **identidade** sobre o OAuth2: adiciona o `id_token` (um JWT que identifica o usuário). OAuth2 delega acesso; OIDC autentica.
 
@@ -1652,6 +1747,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — req
 Operadores de recuperação reativa: `onErrorResume` substitui o erro por um publisher de fallback (ex.: buscar de um cache), enquanto `onErrorReturn` substitui por um valor fixo. Ambos transformam um sinal de erro num caminho alternativo de sucesso.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/07 - Error handling reativo — onErrorResume, onErrorReturn, retry|Error handling reativo]].
+
+### OOM-kill (OOMKilled)
+Quando o kernel Linux mata um processo que ultrapassou o limite de memória do cgroup do container; no Kubernetes o pod aparece como `OOMKilled`. Não há `OutOfMemoryError` nem stack trace Java — o processo simplesmente recebe um `SIGKILL`, daí a importância de dimensionar o heap dentro do limite.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/02 - A JVM dentro de um container|A JVM dentro de um container]].
 
 ### OpenAPI
 Especificação aberta (antiga Swagger Specification) para descrever APIs REST de forma legível por máquina — endpoints, parâmetros, schemas, respostas e segurança — em JSON ou YAML. Serve de contrato e alimenta ferramentas de documentação (Swagger UI), geração de clientes e testes. No Spring Boot é gerada automaticamente pelo springdoc-openapi.
@@ -1672,6 +1772,11 @@ Veja também: [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 Padrão vendor-neutral da CNCF para telemetria (traces, métricas, logs): define APIs, SDKs e o protocolo de transporte OTLP, desacoplando a instrumentação do backend de observabilidade (Jaeger, Tempo, Datadog etc.). No Java, integra-se ao Micrometer Tracing via bridge.
 
 Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/19 - Tracing distribuído II — exportando o trace|Tracing distribuído II — exportando o trace]].
+
+### OpenTelemetry Collector
+Processo intermediário, fora da aplicação, que recebe telemetria via OTLP, a processa (filtragem, enriquecimento, tail sampling) e a exporta para um ou mais backends. Centraliza a política de sampling e desacopla as apps dos destinos de observabilidade.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|OpenTelemetry Collector e sampling de produção]].
 
 ### operação intermediária / terminal
 Classificação das operações de uma `Stream`. Operações *intermediárias* (ex.: `filter`, `map`, `sorted`) retornam uma nova stream e são *lazy* — não processam elementos até que uma operação terminal seja chamada. Operações *terminais* (ex.: `collect`, `forEach`, `count`, `reduce`) desencadeiam o processamento do pipeline e consomem a stream, que não pode ser reutilizada.
@@ -1727,6 +1832,11 @@ Abstrações de paginação do Spring Data: `Pageable`/`PageRequest` definem pá
 Método a sobrescrever (em vez de `paint`) para desenhar conteúdo customizado em um componente Swing. Deve chamar `super.paintComponent(g)` antes de desenhar e fazer cast de `Graphics` para `Graphics2D` para acessar a API completa de renderização Java2D.
 
 Veja também: [[03-Dominios/Java/Swing/10 - Custom painting e componentes customizados|Custom painting]].
+
+### Paketo Buildpacks
+Implementação de Cloud Native Buildpacks mantida pela comunidade, usada por padrão pelo `spring-boot:build-image` para gerar a imagem de container do app sem Dockerfile. Detecta a stack JVM e monta camadas otimizadas automaticamente.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/06 - Buildpacks — imagem sem Dockerfile|Buildpacks — imagem sem Dockerfile]].
 
 ### @ParameterizedTest
 Anotação do JUnit 5 que roda o mesmo teste com vários inputs vindos de uma source (`@ValueSource`/`@CsvSource`/`@MethodSource`/`@EnumSource`).
@@ -1844,6 +1954,11 @@ Fila (`java.util.PriorityQueue<E>`) que entrega elementos na ordem definida pelo
 
 Veja também: [[03-Dominios/Java/Collections e Streams/02 - Listas, conjuntos e filas|Listas, conjuntos e filas]].
 
+### probe (Kubernetes)
+Sonda que o Kubernetes usa para inspecionar a saúde de um pod e decidir o que fazer com ele. Há três tipos: liveness (reiniciar se travou), readiness (mandar ou não tráfego) e startup (esperar a inicialização lenta antes das outras sondas valerem).
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/10 - Health e probes — o contrato com o orquestrador|Health e probes — o contrato com o orquestrador]].
+
 ### ProblemDetail (RFC 9457)
 Formato padronizado de corpo de erro HTTP definido pela RFC 9457 (antiga RFC 7807): um objeto com campos `type`, `title`, `status`, `detail` e `instance`, servido como `application/problem+json`. O Spring 6 traz a classe `ProblemDetail` e suporte nativo (`ResponseEntityExceptionHandler`) para devolver erros nesse formato, padronizando as respostas de falha da API.
 
@@ -1872,6 +1987,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/01 - O que é programaç�
 ### projection (JPA)
 Trazer só um subconjunto de campos em vez da entidade inteira, via interface projection (proxy do Spring), class-based/DTO (`record` com `SELECT new`) ou dynamic (`Class<T>`). Ideal para listagens read-only. Veja também: [[03-Dominios/Java/Persistência de dados/10 - Projections e DTOs — não vazar a entidade|Projections e DTOs]].
 
+### Prometheus
+Banco de séries temporais e sistema de monitoramento que coleta métricas por scraping: faz pull periódico do endpoint `/actuator/prometheus` da aplicação. Armazena as séries e oferece a linguagem de consulta PromQL, consumida por dashboards (Grafana) e regras de alerta.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/14 - Métricas em produção — Micrometer e Prometheus|Métricas em produção — Micrometer e Prometheus]].
+
 ### Property (JavaFX)
 Abstração central do sistema de binding do JavaFX (`javafx.beans.property`). Uma `Property<T>` é ao mesmo tempo um `ObservableValue` (notifica listeners de invalidação de forma *lazy* ou de mudança de valor de forma *eager*) e um `WritableValue`. Subclasses concretas (`SimpleStringProperty`, `IntegerProperty`…) são usadas em beans de ViewModel para habilitar binding declarativo.
 
@@ -1896,6 +2016,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/08 - Schedulers — subsc
 Modelo de mensageria em que uma mensagem publicada num canal (tópico) é entregue a **todos os assinantes** interessados. Cada consumidor (ou consumer group) recebe sua própria cópia. Promove fanout e desacoplamento; é o modelo base do Kafka (via tópico + consumer groups) e do RabbitMQ com exchanges do tipo fanout/topic.
 
 Veja também: [[03-Dominios/Java/Mensageria/02 Os modelos de mensageria — queue vs topic|Os modelos de mensageria — queue vs topic]].
+
+### Pyroscope (Grafana Pyroscope)
+Plataforma de continuous profiling multi-tenant que coleta, armazena e visualiza perfis de toda a frota ao longo do tempo. Para aplicações Java, a coleta usa o async-profiler; os flamegraphs ficam consultáveis por serviço, período e dimensão.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/19 - Continuous profiling no cluster — Pyroscope e async-profiler|Continuous profiling no cluster]].
 
 ## Q
 
@@ -1953,6 +2078,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/02 - Reactive Streams —
 Biblioteca da família Reactor (desenvolvida pela Confluent) que expõe a API do produtor e consumidor Kafka como `KafkaSender` e `KafkaReceiver`, devolvendo `Flux`/`Mono`. Permite integrar Kafka num pipeline reativo sem bloquear threads, aproveitando backpressure e composição de operadores.
 
 Veja também: [[03-Dominios/Java/Mensageria/25 Mensageria reativa — Reactor Kafka|Mensageria reativa — Reactor Kafka]].
+
+### readiness probe
+Sonda do Kubernetes que pergunta "este pod pode receber tráfego agora?". Quando falha, o pod é retirado do balanceamento de carga sem ser reiniciado — útil enquanto a app aquece ou perde temporariamente uma dependência. É separada da liveness probe justamente para não reiniciar um pod que só está temporariamente indisponível.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/10 - Health e probes — o contrato com o orquestrador|Health e probes — o contrato com o orquestrador]].
 
 ### Record
 Classe de dados imutável declarada com `record NomeClasse(Tipo campo, ...)`. O compilador gera automaticamente construtor canônico, acessores, `equals`, `hashCode` e `toString`. Ideal para portadores de dados sem lógica de negócio.
@@ -2053,6 +2183,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/14 - HATEOAS|HATEOAS]].
 Configuração que faz uma role herdar outra (ex.: `ROLE_ADMIN > ROLE_USER`), evitando listar todas as roles em cada regra.
 
 Veja também: [[03-Dominios/Java/Segurança/14 - Autorização avançada — AuthorizationManager, RBAC vs ABAC|Autorização avançada]].
+
+### rolling update
+Estratégia de deploy do Kubernetes que substitui os pods da versão antiga pela nova gradualmente, alguns por vez, mantendo o serviço disponível durante a transição. Combinada com readiness probes e graceful shutdown, permite atualizar a aplicação sem downtime.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/12 - Graceful shutdown e deploy sem downtime|Graceful shutdown e deploy sem downtime]].
 
 ## S
 
@@ -2235,7 +2370,7 @@ Veja também: [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring
 ### Spring AOT
 Processamento ahead-of-time do Spring (build-time) que "congela" o grafo de beans e avalia as condições durante a compilação, gerando código e metadados que substituem parte do trabalho reflexivo de runtime. É o que viabiliza imagens nativas com GraalVM e reduz tempo de startup e footprint de memória.
 
-Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
+Veja também: [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]], [[03-Dominios/Java/Cloud-native e produção/09 - Native Image com Spring — Spring AOT na prática|Native Image com Spring — Spring AOT na prática]].
 
 ### Spring Boot
 Camada sobre o Spring Framework que aplica *convention over configuration*: auto-configuration, starters, servidor embarcado e jars executáveis para que uma aplicação Spring suba com configuração mínima e `java -jar`. Não substitui o Spring Framework — o orquestra para reduzir boilerplate.
@@ -2375,6 +2510,11 @@ API de concorrência estruturada em preview no Java 25 (exige `--enable-preview`
 
 Veja também: [[13 - Structured concurrency]].
 
+### structured logging (log estruturado)
+Logar em formato estruturado e legível por máquina (tipicamente JSON) no `stdout`, com campos nomeados em vez de texto livre. Carregar o `traceId` em cada linha permite correlacionar os logs de uma requisição com seu trace e filtrar/agregar os eventos numa plataforma central.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/17 - Logs estruturados em produção|Logs estruturados em produção]].
+
 ### Swagger UI
 Interface web interativa que renderiza um documento OpenAPI como documentação navegável e executável: lista endpoints, schemas e exemplos, e permite disparar requisições de teste direto do navegador. No Spring Boot é servida automaticamente pelo springdoc-openapi.
 
@@ -2401,6 +2541,11 @@ Veja também: [[03 - Exclusão mútua com synchronized]].
 Interfaces de model para `JTable` (`TableModel`) e `JList` (`ListModel`): guardam os dados que o componente apenas exibe. `AbstractTableModel` e `AbstractListModel` facilitam implementações customizadas, exigindo apenas os métodos essenciais.
 
 Veja também: [[03-Dominios/Java/Swing/07 - MVC em Swing e os models|MVC em Swing]].
+
+### tail sampling
+Estratégia de amostragem de traces em que a decisão é tomada depois de o trace estar completo, no OpenTelemetry Collector, que enxerga o trace inteiro. Permite reter justamente os outliers (traces com erro ou alta latência), ao custo de buffer e processamento — mais caro que o head sampling.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/16 - OpenTelemetry Collector e sampling de produção|OpenTelemetry Collector e sampling de produção]].
 
 ### Task / Service (JavaFX)
 Classes do JavaFX para executar trabalho demorado fora da JavaFX Application Thread. `Task<V>` é de uso único (como `FutureTask`): define `call()`, expõe propriedades `value`, `progress` e `message` observáveis na JAT. `Service<V>` encapsula e reutiliza um `Task`, podendo ser reiniciado (`restart()`); adequado para operações repetíveis como buscas ou polling.
@@ -2531,6 +2676,11 @@ Veja também: [[10 - Exceções e tratamento de erros]].
 Framework de logging unificado da JVM introduzido no Java 9 (JEP 158) que unifica todos os logs internos (GC, JIT, classloading, safepoints…) em uma única infraestrutura configurável via `-Xlog:<tags>:<output>:<decorators>`. Substitui flags fragmentadas como `-XX:+PrintGCDetails`. Permite filtrar por subsistema, nível e redirecionar para arquivo com rotação.
 
 Veja também: [[10 - GC logs — unified logging e leitura]].
+
+### UseContainerSupport
+Flag da JVM, ligada por padrão desde o Java 10, que faz a VM detectar que roda dentro de um container e ler os limites do cgroup em vez dos recursos do host. É o interruptor por trás da container-awareness; desligá-la faz a JVM voltar a enxergar a máquina inteira.
+
+Veja também: [[03-Dominios/Java/Cloud-native e produção/02 - A JVM dentro de um container|A JVM dentro de um container]].
 
 ### UserDetailsService
 Interface cujo `loadUserByUsername` carrega o usuário (e suas authorities) de onde estiver (banco, LDAP); auto-detectada como bean e usada pelo `DaoAuthenticationProvider`.
