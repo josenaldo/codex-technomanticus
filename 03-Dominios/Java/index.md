@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-11
+updated: 2026-06-12
 status: growing
 tags:
   - moc
@@ -46,7 +46,7 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 
 14. [[03-Dominios/Java/Mensageria/index|Mensageria e eventos]] — o modelo de mensageria e as garantias de entrega, Spring Kafka e RabbitMQ, eventos in-process, padrões de confiabilidade (idempotência, outbox, DLQ, exactly-once), arquitetura event-driven (saga, event sourcing, CQRS), mensageria reativa, observabilidade e o contraste com gRPC
 15. [[03-Dominios/Java/Build e tooling/index|Build, tooling e ecossistema]] — Maven e Gradle (modelo, lifecycle/tasks, performance), gestão de dependências (resolução transitiva, conflitos, BOM), multi-módulo, distribuições do JDK e licenciamento, annotation processing (Lombok/MapStruct), empacotamento, quality gates no build e cadeia de suprimentos (reproducible builds, SBOM, Maven Central)
-16. Microservices e sistemas distribuídos *(planejado)* — Spring Cloud, gateway, resilience, sagas, tracing
+16. [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]] — o modelo e a tese honesta (microservices vs monólito modular), Spring Cloud (service discovery, gateway, config centralizado), resiliência com Resilience4j (circuit breaker, retry, bulkhead, rate limiter, time limiter), comunicação síncrona (OpenFeign/@HttpExchange), segurança entre serviços, tracing distribuído (Micrometer Tracing/OpenTelemetry), consistência (CAP/PACELC) e service mesh
 17. Cloud-native e produção *(planejado)* — containers, GraalVM native, Micrometer/OpenTelemetry, profiling
 
 ### Certificação
