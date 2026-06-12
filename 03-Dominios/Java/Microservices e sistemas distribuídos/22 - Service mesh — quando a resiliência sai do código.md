@@ -82,7 +82,7 @@ Os dois meshes mais conhecidos fazem escolhas diferentes de **data plane**.
 - **ztunnel** — um proxy **L4 por nó** (um por máquina, não por pod), responsável por mTLS e pelo transporte seguro de todo o tráfego daquele nó. É leve e cuida só de camada 4.
 - **waypoint** — um proxy **L7 opcional** (um Envoy compartilhado, tipicamente por *namespace*) que você habilita **só onde precisa** de recursos de camada 7 (retries HTTP, roteamento por header, *traffic shaping* avançado).
 
-Segundo a documentação oficial (Istio 1.30.1, 2026), o modo **ambient é considerado pronto para produção em cenário *single-cluster* desde a versão 1.22**. A motivação do ambient é reduzir o custo de recursos: em vez de um Envoy completo em *cada* pod, você tem um L4 por nó e L7 só onde justifica.
+Segundo a documentação oficial (Istio, linha ~1.30.x em 2026), o modo **ambient é considerado pronto para produção em cenário *single-cluster* desde a versão 1.22**. A motivação do ambient é reduzir o custo de recursos: em vez de um Envoy completo em *cada* pod, você tem um L4 por nó e L7 só onde justifica.
 
 **Linkerd** faz uma aposta diferente: em vez do Envoy, usa um **micro-proxy próprio escrito em Rust** (o `linkerd2-proxy`), projetado especificamente para o caso de uso de mesh — bem menor e mais simples que um Envoy de propósito geral. A documentação oficial ("Why Linkerd doesn't use Envoy") confirma que a escolha de *não* usar Envoy é deliberada. Em versão recente (Linkerd 2.19, 2026), ele entrega mTLS automático, *retries*/timeouts de HTTP e gRPC, *circuit breaking*, *traffic splitting* e métricas automáticas.
 
@@ -175,6 +175,6 @@ O mesh fornece os **mecanismos** (retry, circuit breaker, timeout), mas **não d
 
 ## Referências
 
-- Istio — *Data Plane Modes* (sidecar vs ambient; ztunnel L4 por nó, waypoint L7 opcional; ambient production-ready single-cluster desde 1.22). Documentação Istio 1.30.1. https://istio.io/latest/docs/overview/dataplane-modes/ — acesso em 2026-06-12.
+- Istio — *Data Plane Modes* (sidecar vs ambient; ztunnel L4 por nó, waypoint L7 opcional; ambient production-ready single-cluster desde 1.22). Documentação Istio (linha ~1.30.x). https://istio.io/latest/docs/overview/dataplane-modes/ — acesso em 2026-06-12.
 - Linkerd — *Features* (mTLS automático, retries/timeouts HTTP e gRPC, traffic splitting, observabilidade). Linkerd 2.19. https://linkerd.io/2-edge/features/ — acesso em 2026-06-12.
 - Linkerd — *Architecture* (micro-proxy `linkerd2-proxy` escrito em Rust, não baseado em Envoy; suporte a circuit breaking). https://linkerd.io/2-edge/reference/architecture/ — acesso em 2026-06-12.
