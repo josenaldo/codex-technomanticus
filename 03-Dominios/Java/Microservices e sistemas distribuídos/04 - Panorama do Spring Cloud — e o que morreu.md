@@ -77,7 +77,7 @@ Cada linha aponta a nota futura deste galho (algumas planejadas):
 | **Spring Cloud Kubernetes** | Discovery + config usando primitivas do K8s | (planejado) |
 
 > [!info] Tracing virou "core"
-> O antigo **Spring Cloud Sleuth** **não** está mais nesta lista. Com o Spring Boot 3, o rastreamento distribuído migrou para o **Micrometer Tracing** (via Observation API), agora parte do núcleo de observabilidade do Spring — não é mais um módulo do Spring Cloud. Aprofunda em [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código\|Tracing distribuído]].
+> O antigo **Spring Cloud Sleuth** **não** está mais nesta lista. Com o Spring Boot 3, o rastreamento distribuído migrou para o **Micrometer Tracing** (via Observation API), agora parte do núcleo de observabilidade do Spring — não é mais um módulo do Spring Cloud. Aprofunda em [[03-Dominios/Java/Microservices e sistemas distribuídos/18 - Tracing distribuído I — correlação no código|Tracing distribuído]].
 
 ### O que morreu — e o substituto de cada um
 
