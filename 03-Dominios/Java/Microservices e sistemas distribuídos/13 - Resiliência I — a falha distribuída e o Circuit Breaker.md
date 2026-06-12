@@ -37,7 +37,7 @@ A implementação canônica em Java é a biblioteca **[Resilience4j](https://res
 
 ### A rede é o inimigo
 
-Numa aplicação monolítica, chamar outro componente é uma invocação de método: rápida, confiável, dentro do mesmo processo. Num sistema distribuído, "chamar outro serviço" significa atravessar a **rede** — e a rede mente. As [falácias da computação distribuída](https://03-Dominios/Java/Microservices%20e%20sistemas%20distribuídos/index) começam justamente com "a rede é confiável", "a latência é zero" e "a largura de banda é infinita". Nenhuma dessas é verdade.
+Numa aplicação monolítica, chamar outro componente é uma invocação de método: rápida, confiável, dentro do mesmo processo. Num sistema distribuído, "chamar outro serviço" significa atravessar a **rede** — e a rede mente. As **falácias da computação distribuída** começam justamente com "a rede é confiável", "a latência é zero" e "a largura de banda é infinita". Nenhuma dessas é verdade.
 
 Isso introduz um modo de falha que o monólito não tinha: a **falha parcial**. Seu serviço está perfeitamente saudável, mas o `payment-service` que ele chama está fora do ar, ou — pior — está *lento*. A falha parcial é traiçoeira porque ela não é binária: o serviço não está "morto", ele está "respondendo em 30 segundos em vez de 50 milissegundos".
 

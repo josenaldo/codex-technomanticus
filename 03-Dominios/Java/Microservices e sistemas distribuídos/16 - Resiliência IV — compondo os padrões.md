@@ -229,8 +229,8 @@ O fallback mais perigoso é o que "funciona": devolve um valor plausível e o si
 - [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
 
-> [!note] Galhos seguintes
-> Observabilidade e tracing distribuído (galho 17) e segurança em sistemas distribuídos (galho 18) ainda estão **(planejado)**.
+> [!note] Onde continuar
+> Segurança entre serviços e tracing distribuído são as notas 17, 18 e 19 **deste** galho. A observabilidade de **produção** (operar coletores, dashboards, profiling) é o **Galho 17 (planejado)**.
 
 ## Referências
 

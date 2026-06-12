@@ -41,7 +41,7 @@ O gateway resolve um problema concreto de microsserviços: **onde colocar o que 
 - **Roteamento flexível.** Você pode rotear por caminho, método, header ou query, e fazer rollout gradual (peso de rotas), canary releases ou A/B testing sem tocar nos serviços.
 - **Desacoplamento de contrato.** O gateway pode **reescrever caminhos** (`/api/v2/orders` → `/orders` no serviço interno), agregar uma fachada estável sobre serviços que evoluem por baixo.
 
-A contrapartida — e isso cai em entrevista — é que o gateway vira um **ponto de acoplamento e de falha**. Se ele cair, tudo cai. E se você encher ele de lógica de negócio, ele vira um monólito disfarçado. As [[#Armadilhas|armadilhas]] no fim tratam exatamente disso.
+A contrapartida — e isso cai em entrevista — é que o gateway vira um **ponto de acoplamento e de falha**. Se ele cair, tudo cai. E se você encher ele de lógica de negócio, ele vira um monólito disfarçado. As armadilhas no fim tratam exatamente disso.
 
 ## Como funciona
 
@@ -104,7 +104,7 @@ Há dois sabores de filtro:
 
 Filtros built-in importantes são, na verdade, **GlobalFilters**: o `ReactiveLoadBalancerClientFilter` é quem resolve o esquema `lb://` consultando o load balancer; o `NettyRoutingFilter` é quem faz o proxy HTTP de fato. Você raramente os configura à mão — eles entram no jogo automaticamente.
 
-**Ordem dos filtros** segue a interface `Ordered` (`getOrder()`): **menor valor = maior precedência**. E aqui mora uma sutileza que confunde quase todo mundo — a [[#### (3) Ordem de filters mal entendida|armadilha 3]] detalha. O filtro de maior precedência roda **primeiro na fase pre** e **por último na fase post**. É um modelo de pilha: quem entra primeiro, sai por último.
+**Ordem dos filtros** segue a interface `Ordered` (`getOrder()`): **menor valor = maior precedência**. E aqui mora uma sutileza que confunde quase todo mundo — a armadilha (3) detalha. O filtro de maior precedência roda **primeiro na fase pre** e **por último na fase post**. É um modelo de pilha: quem entra primeiro, sai por último.
 
 ### Integração com discovery (`lb://`)
 
@@ -243,7 +243,7 @@ A ordem dos filtros segue `Ordered`, e o ponto contra-intuitivo é: **menor valo
 ## Veja também
 
 - [[03-Dominios/Java/Microservices e sistemas distribuídos/11 - Gateway reativo vs MVC — as duas variantes|Gateway reativo vs MVC]]
-- [[03-Dominios/Java/Microservices e sistemas distribuídos/17 - Segurança entre serviços|Segurança entre serviços]] (planejado)
+- [[03-Dominios/Java/Microservices e sistemas distribuídos/17 - Segurança entre serviços|Segurança entre serviços]]
 - [[03-Dominios/Java/Microservices e sistemas distribuídos/08 - Client-side load balancing — Spring Cloud LoadBalancer|Spring Cloud LoadBalancer]]
 - [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos (MOC do galho)]]
 - [[03-Dominios/Java/index|Trilha Java]]
