@@ -88,7 +88,7 @@ Em entrevistas, o que diferencia um senior em Spring Boot:
 ## Actuator — production-ready features
 
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]]. Veja [[03-Dominios/Java/Spring Core e Boot/17 - Actuator e observabilidade|Actuator e observabilidade]]. (Observabilidade distribuída — OpenTelemetry, tracing — fica para o Galho 17, planejado.)
+> Expandido no galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]]. Veja [[03-Dominios/Java/Spring Core e Boot/17 - Actuator e observabilidade|Actuator e observabilidade]]. A observabilidade de operação em produção — métricas via Micrometer/Prometheus/Grafana, OpenTelemetry Collector e sampling, logs estruturados — está no galho [[03-Dominios/Java/Cloud-native e produção/13 - Observabilidade de operação — o panorama e os 3 seams|Cloud-native e produção (os 3 seams)]].
 
 ---
 
@@ -474,34 +474,8 @@ public void transfer(Account from, Account to, BigDecimal amount) throws Insuffi
 
 ### Memory leak e GC tuning
 
-**Diagnóstico:**
-
-```bash
-# Heap dump quando OOM
-java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/heapdump.hprof -jar app.jar
-
-# Analisar com Eclipse MAT ou VisualVM
-# Buscar: objetos que crescem sem parar, collections gigantes, caches sem limite
-```
-
-**Causas comuns em Spring Boot:**
-- Cache sem eviction (ex.: `@Cacheable` sem TTL → memória cresce infinitamente)
-- `static` collections que acumulam dados
-- Event listeners que acumulam referências
-- ThreadLocal não limpo (especialmente em servidores com thread pool)
-
-**GC tuning básico:**
-
-```bash
-# G1GC (default Java 17+) — geralmente não precisa tuning
-java -Xms512m -Xmx2g -XX:+UseG1GC -jar app.jar
-
-# ZGC (Java 21+) — low-latency, pausas < 1ms
-java -Xms512m -Xmx2g -XX:+UseZGC -jar app.jar
-
-# Métricas: monitorar via Actuator/Micrometer
-management.metrics.enable.jvm=true
-```
+> [!nota] Migrado para galho próprio
+> O dimensionamento de memória num container (cgroup, `MaxRAMPercentage` vs `-Xmx`, OOM-kill) está em [[03-Dominios/Java/Cloud-native e produção/02 - A JVM dentro de um container|A JVM dentro de um container]] (Galho 17), e o diagnóstico de vazamento sob carga (heap dump sem derrubar o pod, correlação) em [[03-Dominios/Java/Cloud-native e produção/18 - Profiling e diagnóstico sob carga — produção|Profiling e diagnóstico sob carga]]. A mecânica interna — ler heap dumps, tuning de GC, GC logs — é do Galho 3: veja [[03-Dominios/Java/JVM/12 - Diagnóstico — heap dumps, thread dumps e jcmd|Diagnóstico (heap/thread dumps, jcmd)]] e [[03-Dominios/Java/JVM/11 - Tuning de GC — metodologia e prática|Tuning de GC]].
 
 ### API timeout e cascading failures
 
@@ -509,29 +483,8 @@ management.metrics.enable.jvm=true
 > A resiliência com Resilience4j (circuit breaker, retry, time limiter, bulkhead, fallback) foi expandida no galho [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]]. Veja [[03-Dominios/Java/Microservices e sistemas distribuídos/13 - Resiliência I — a falha distribuída e o Circuit Breaker|Circuit Breaker]], [[03-Dominios/Java/Microservices e sistemas distribuídos/14 - Resiliência II — Retry e Time Limiter|Retry e Time Limiter]] e [[03-Dominios/Java/Microservices e sistemas distribuídos/16 - Resiliência IV — compondo os padrões|compondo os padrões]].
 ### Graceful shutdown
 
-**Problema:** deploy mata o processo enquanto requests estão em andamento → erros 502 para o usuário.
-
-```yaml
-# application.yml
-server:
-  shutdown: graceful  # espera requests em andamento terminarem
-
-spring:
-  lifecycle:
-    timeout-per-shutdown-phase: 30s  # tempo máximo de espera
-```
-
-```java
-// Para limpeza customizada
-@Component
-public class CleanupHandler {
-    @PreDestroy
-    public void cleanup() {
-        // fechar conexões, flush de buffers, etc.
-        log.info("Shutting down gracefully...");
-    }
-}
-```
+> [!nota] Migrado para galho próprio
+> O encerramento limpo (`server.shutdown: graceful`, `timeout-per-shutdown-phase`, drenagem de requisições no SIGTERM) e o deploy sem downtime — casado com `preStop` e `terminationGracePeriodSeconds` do Kubernetes — foram expandidos no galho [[03-Dominios/Java/Cloud-native e produção/index|Cloud-native e produção]]. Veja [[03-Dominios/Java/Cloud-native e produção/12 - Graceful shutdown e deploy sem downtime|Graceful shutdown e deploy sem downtime]].
 
 ### Database migrations seguras (Flyway)
 
