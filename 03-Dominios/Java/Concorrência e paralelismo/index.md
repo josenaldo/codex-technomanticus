@@ -1,7 +1,7 @@
 ---
 title: "Concorrência e paralelismo"
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-10
 type: moc
 status: growing
 publish: true
@@ -88,4 +88,4 @@ SORT file.name ASC
 - [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]
 - [[03-Dominios/Java/JVM/index|JVM por dentro (Galho 3)]] — memória de runtime, GC, JIT e diagnóstico
-- Programação Reativa (Galho 11) — planejado.
+- [[03-Dominios/Java/Programação Reativa/index|Programação Reativa (Galho 11)]] — o modelo reativo e o confronto honesto com Virtual Threads.

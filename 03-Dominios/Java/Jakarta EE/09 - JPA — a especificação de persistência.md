@@ -1,7 +1,7 @@
 ---
 title: "JPA — a especificação de persistência"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-09
 type: concept
 progress: backlog
 status: seedling
@@ -21,7 +21,7 @@ aliases:
 # JPA — a especificação de persistência
 
 > [!abstract] TL;DR
-> JPA é a **especificação** de mapeamento objeto-relacional da plataforma — **Jakarta Persistence 3.2** no Jakarta EE 11. Ela define o **contrato**: `@Entity`, `@Id`, relacionamentos, `EntityManager`, JPQL, `persistence.xml`. Hibernate e EclipseLink são **implementações** desse contrato. **JPA não é o Hibernate** — confundir os dois é o erro de vocabulário mais comum do ecossistema Java. Esta nota cobre o contrato; comportamento de provider, tuning e o ecossistema em volta são assunto do Galho 10 (planejado).
+> JPA é a **especificação** de mapeamento objeto-relacional da plataforma — **Jakarta Persistence 3.2** no Jakarta EE 11. Ela define o **contrato**: `@Entity`, `@Id`, relacionamentos, `EntityManager`, JPQL, `persistence.xml`. Hibernate e EclipseLink são **implementações** desse contrato. **JPA não é o Hibernate** — confundir os dois é o erro de vocabulário mais comum do ecossistema Java. Esta nota cobre o contrato; comportamento de provider, tuning e o ecossistema em volta são assunto do Galho 10.
 
 ---
 
@@ -50,11 +50,11 @@ No **Jakarta EE 11**, a versão vigente é a **Persistence 3.2**. Entre as novid
 
 ### A confusão mais comum do ecossistema
 
-Pergunte a dez devs Java "o que é JPA?" e uma parte vai responder "é o Hibernate" — ou pior, "é o Spring Data". A confusão é compreensível (quase ninguém usa JPA sem um provider por trás, e muita gente só encontra JPA embrulhada pelo Spring Data — Galho 10, planejado), mas ela tem custo real:
+Pergunte a dez devs Java "o que é JPA?" e uma parte vai responder "é o Hibernate" — ou pior, "é o Spring Data". A confusão é compreensível (quase ninguém usa JPA sem um provider por trás, e muita gente só encontra JPA embrulhada pelo Spring Data — Galho 10), mas ela tem custo real:
 
 - **Portabilidade**: quem conhece o contrato sabe o que funciona em *qualquer* provider e o que é extensão proprietária. Trocar de Hibernate para EclipseLink (ou rodar testes num provider e produção noutro) só é viável se o seu código fala a língua da spec.
 - **Diagnóstico**: quando algo se comporta "estranho", saber se o comportamento é **mandatado pela spec** ou **decisão do provider** muda completamente onde você procura a resposta — no documento da spec ou na documentação do Hibernate/EclipseLink.
-- **Vocabulário**: entidade, persistence unit, owning side, JPQL — esse é o vocabulário que todo o bloco de persistência usa. O Galho 10 (planejado) constrói em cima dele; sem o contrato, o resto é cargo cult.
+- **Vocabulário**: entidade, persistence unit, owning side, JPQL — esse é o vocabulário que todo o bloco de persistência usa. O [[03-Dominios/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|Galho 10]] constrói em cima dele; sem o contrato, o resto é cargo cult.
 
 ### Em entrevista
 
@@ -84,7 +84,7 @@ A identidade pode ser atribuída pela aplicação ou **gerada** via `@GeneratedV
 | `TABLE` | PK atribuída usando uma tabela auxiliar para garantir unicidade | `Long`, `Integer`, `long`, `int` |
 | `UUID` | PK gerada como UUID RFC 4122 (entrou na **spec 3.1**, Jakarta EE 10) | `java.util.UUID`, `String` |
 
-Note o fraseado: *o que a spec exige do provider*. A spec define o **resultado contratual** (haverá uma PK única, vinda de tal mecanismo); *como* o provider implementa, otimiza ou agrupa essas gerações é território dele — e do Galho 10 (planejado).
+Note o fraseado: *o que a spec exige do provider*. A spec define o **resultado contratual** (haverá uma PK única, vinda de tal mecanismo); *como* o provider implementa, otimiza ou agrupa essas gerações é território dele — e do Galho 10.
 
 ### Mapeamento básico — colunas, tabelas e tipos
 
@@ -109,7 +109,7 @@ Relacionamentos entre entidades são declarados com quatro annotations, e aqui o
 - **`@ManyToMany`** — junção N:N via join table (`@JoinTable` configura nome e colunas). Um lado é dono, o outro usa `mappedBy`.
 - **`@OneToOne`** — 1:1; o owning side é o que carrega a FK (`@JoinColumn`).
 
-Todas aceitam o atributo **`fetch`** (`FetchType.LAZY` ou `FetchType.EAGER`), que **existe no contrato** com defaults definidos pela spec: `@ManyToOne` e `@OneToOne` são `EAGER` por default; `@OneToMany` e `@ManyToMany` são `LAZY`. Aqui esta nota **para de propósito**: o que fazer com isso — estratégias de carregamento, consequências de performance e os padrões/anti-padrões associados — é assunto do Galho 10 (planejado). No nível do contrato, basta saber que o atributo existe e quais são os defaults.
+Todas aceitam o atributo **`fetch`** (`FetchType.LAZY` ou `FetchType.EAGER`), que **existe no contrato** com defaults definidos pela spec: `@ManyToOne` e `@OneToOne` são `EAGER` por default; `@OneToMany` e `@ManyToMany` são `LAZY`. Aqui esta nota **para de propósito**: o que fazer com isso — estratégias de carregamento, consequências de performance e os padrões/anti-padrões associados — é assunto do [[03-Dominios/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Galho 10]]. No nível do contrato, basta saber que o atributo existe e quais são os defaults.
 
 ### Persistence unit — `persistence.xml`
 
@@ -149,10 +149,10 @@ A linha que separa o portável do proprietário:
 | `jakarta.persistence.*` — annotations, `EntityManager`, JPQL, Criteria | Qualquer import `org.hibernate.*` ou `org.eclipse.persistence.*` |
 | Estratégias de `@GeneratedValue` e seus tipos de PK | Geradores customizados do provider |
 | Propriedades `jakarta.persistence.*` no `persistence.xml` | Propriedades `hibernate.*` / `eclipselink.*` |
-| Defaults de `fetch` definidos pela spec | Tudo que vai além do default — Galho 10 (planejado) |
+| Defaults de `fetch` definidos pela spec | Tudo que vai além do default — Galho 10 |
 | JPQL conforme o capítulo de query language da spec | Dialetos, funções nativas, hints proprietários |
 
-Regra prática de Adepto: **escreva contra `jakarta.persistence.*` e trate cada import do provider como dívida consciente** — às vezes vale a pena, mas precisa ser uma decisão, não um acidente. Hibernate e EclipseLink ficam aqui como nomes citados; o que cada um faz além do contrato é assunto do Galho 10 (planejado).
+Regra prática de Adepto: **escreva contra `jakarta.persistence.*` e trate cada import do provider como dívida consciente** — às vezes vale a pena, mas precisa ser uma decisão, não um acidente. Hibernate e EclipseLink ficam aqui como nomes citados; o que cada um faz além do contrato é assunto do Galho 10.
 
 ---
 
@@ -330,7 +330,7 @@ E o `persistence.xml` mínimo (em `META-INF/persistence.xml`), no schema 3.2:
 
     <persistence-unit name="orders" transaction-type="JTA">
         <!-- O provider (Hibernate/EclipseLink) entra aqui — comportamento
-             além do contrato é assunto do Galho 10 (planejado). -->
+             além do contrato é assunto do Galho 10. -->
         <jta-data-source>java:app/jdbc/OrdersDB</jta-data-source>
         <class>com.example.orders.Customer</class>
         <class>com.example.orders.Order</class>

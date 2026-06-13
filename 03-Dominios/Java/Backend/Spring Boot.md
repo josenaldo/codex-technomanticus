@@ -1,7 +1,7 @@
 ---
 title: "Spring Boot"
 created: 2026-04-01
-updated: 2026-06-08
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: evergreen
@@ -60,161 +60,14 @@ Em entrevistas, o que diferencia um senior em Spring Boot:
 ## AOP e proxies — a mágica por baixo
 
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]]. Veja [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]] e [[03-Dominios/Java/Spring Core e Boot/10 - Self-invocation e os limites do proxy|Self-invocation e os limites do proxy]]. (O comportamento transacional do `@Transactional` — propagation/isolation/rollback — fica para o Galho 10, planejado, na seção de transações abaixo.)
+> Expandido no galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]]. Veja [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies no Spring]] e [[03-Dominios/Java/Spring Core e Boot/10 - Self-invocation e os limites do proxy|Self-invocation e os limites do proxy]]. (O comportamento transacional do `@Transactional` — propagation/isolation/rollback — é coberto no Galho 10: ver [[03-Dominios/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Transações operacionais]].)
 
 ---
 
 ## Gerenciamento de transações — @Transactional deep dive
 
-Uma das features mais usadas e mal compreendidas do Spring.
-
-### O básico
-
-```java
-@Service
-public class TransferenciaService {
-
-    @Transactional
-    public void transferir(Account origem, Account destino, Money valor) {
-        origem.debitar(valor);
-        contaRepo.save(origem);
-        destino.creditar(valor);
-        contaRepo.save(destino);
-        // Se qualquer operação lançar RuntimeException, tudo faz rollback
-    }
-}
-```
-
-Por baixo: Spring cria proxy → ao entrar no método, chama `PlatformTransactionManager.getTransaction()` → commit ou rollback ao sair.
-
-### Propagation
-
-Como transações se comportam quando uma chama outra.
-
-| Propagation | Comportamento |
-| --- | --- |
-| **`REQUIRED`** (default) | Usa tx existente ou cria nova |
-| **`REQUIRES_NEW`** | Suspende tx atual e cria nova (independente) |
-| **`SUPPORTS`** | Usa tx se existir, caso contrário sem tx |
-| **`NOT_SUPPORTED`** | Suspende tx atual, executa sem tx |
-| **`MANDATORY`** | Exige tx existente, lança se não houver |
-| **`NEVER`** | Lança se houver tx em andamento |
-| **`NESTED`** | Savepoint dentro da tx atual (se suportado) |
-
-**Uso prático de `REQUIRES_NEW`:** auditoria que deve commitar mesmo se a tx principal falhar.
-
-```java
-@Service
-public class AuditoriaService {
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void registrar(Evento e) {
-        auditoriaRepo.save(e);
-        // Mesmo se a tx externa rollback, esta aqui commita
-    }
-}
-```
-
-### Isolation levels
-
-Controla visibilidade entre transações concorrentes. Ver [[Banco de dados]] para teoria completa.
-
-| Isolation | Dirty read | Non-repeatable read | Phantom read |
-| --- | --- | --- | --- |
-| `READ_UNCOMMITTED` | ✓ possível | ✓ possível | ✓ possível |
-| `READ_COMMITTED` (default PostgreSQL) | ✗ | ✓ possível | ✓ possível |
-| `REPEATABLE_READ` (default MySQL) | ✗ | ✗ | ✓ possível |
-| `SERIALIZABLE` | ✗ | ✗ | ✗ |
-
-```java
-@Transactional(isolation = Isolation.SERIALIZABLE)
-public void operacaoCritica() { ... }
-```
-
-**Na prática:** `READ_COMMITTED` resolve a maioria dos casos. `SERIALIZABLE` tem custo de performance.
-
-### Rollback rules
-
-**Regra default:** rollback **apenas** em `RuntimeException` (unchecked) e `Error`. Checked exceptions **não fazem rollback**.
-
-```java
-@Transactional
-public void transferir(...) throws InsufficientFundsException {
-    // Se InsufficientFundsException (checked) for lançada, a tx COMMITA!
-}
-
-// Correção
-@Transactional(rollbackFor = InsufficientFundsException.class)
-public void transferir(...) throws InsufficientFundsException { ... }
-
-// Ou rollback para qualquer exceção
-@Transactional(rollbackFor = Exception.class)
-public void transferir(...) throws Exception { ... }
-```
-
-**Rollback manual:**
-
-```java
-@Transactional
-public void minhaOperacao() {
-    try {
-        repo.save(entidade);
-    } catch (Exception e) {
-        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        throw e;
-    }
-}
-```
-
-### Read-only
-
-Otimização — o Spring e o banco podem pular overhead se souber que é só leitura.
-
-```java
-@Transactional(readOnly = true)
-public Page<Patient> listarPacientes(Pageable pageable) {
-    return repo.findAll(pageable);
-}
-```
-
-**Hibernate benefit:** desabilita dirty checking automático (não verifica mudanças no final).
-
-### Timeout
-
-```java
-@Transactional(timeout = 30)  // segundos
-public void operacaoLenta() { ... }
-```
-
-Lança `TransactionTimedOutException` se passar.
-
-### Padrão arquitetural: transações na camada Service
-
-**Regra:** `@Transactional` na **camada Service**, não no Controller nem no Repository.
-
-**Razões:**
-
-- Service define as **fronteiras do caso de uso**
-- Controller não deve saber de persistência
-- Repository é muito granular (cada call vira uma tx, ineficiente)
-
-```java
-// BOM
-@Service
-public class OrderService {
-    @Transactional
-    public Order createOrder(OrderRequest req) {
-        // valida, salva, dispara eventos — tudo em uma tx
-    }
-}
-
-// RUIM — @Transactional no Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
-    // cada save é uma tx separada
-}
-```
-
-→ Para deep dive em JPA, transações, N+1: ver [[Spring Data JPA]]
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Persistência de dados/index|Persistência de dados]]. Veja [[03-Dominios/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Transações operacionais (@Transactional)]] e [[03-Dominios/Java/Persistência de dados/13 - Locking — optimistic (@Version) e pessimistic|Locking]]. O mecanismo (proxy AOP, self-invocation) é do galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]].
 
 ---
 
@@ -241,37 +94,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 ## Spring WebFlux — visão geral
 
-Alternativa reativa ao Spring MVC. Usa Project Reactor (Mono, Flux) em vez de servlet API.
-
-**Quando usar:**
-
-- Alta concorrência I/O-bound (antes de Virtual Threads)
-- Streaming (SSE, WebSocket)
-- Stack já reactive (Reactor Kafka, R2DBC)
-
-**Quando NÃO usar:**
-
-- CRUD tradicional — Spring MVC é mais simples
-- Equipe sem experiência com reactive programming
-- Java 21+ disponível — Virtual Threads tornam WebFlux menos necessário
-
-```java
-@RestController
-public class ReactiveController {
-
-    @GetMapping("/users/{id}")
-    public Mono<User> getUser(@PathVariable String id) {
-        return userRepository.findById(id);
-    }
-
-    @GetMapping("/users")
-    public Flux<User> listUsers() {
-        return userRepository.findAll();
-    }
-}
-```
-
-**Não cobrimos em profundidade aqui** — WebFlux merece sua própria nota se virar relevante.
+> [!nota] Migrado para galho próprio
+> Expandido no galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]. Veja [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]], [[03-Dominios/Java/Programação Reativa/01 - O que é programação reativa — o modelo push, assíncrono e não-bloqueante|O que é programação reativa]] e o confronto honesto [[03-Dominios/Java/Programação Reativa/14 - Reativo vs Virtual Threads — o confronto honesto|Reativo vs Virtual Threads]].
 
 ---
 
@@ -936,7 +760,8 @@ One area where I've seen teams struggle is with JPA's lazy loading. The LazyInit
 - [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST (Galho 9)]] — Spring MVC, REST controllers, Problem Details, OpenAPI, clientes HTTP
 - [[Java Fundamentals]] — a linguagem
 - [[Java Concurrency]] — concorrência, Virtual Threads, ThreadPools
-- [[Spring Data JPA]] — deep dive em persistência
+- [[03-Dominios/Java/Persistência de dados/index|Persistência de dados (Galho 10)]] — JPA/Hibernate, fetch/N+1, transações, locking, caching, migrations
+- [[03-Dominios/Java/Programação Reativa/index|Programação Reativa (Galho 11)]] — Reactor, WebFlux, backpressure, R2DBC, reativo vs Virtual Threads
 - [[Spring Security]] — deep dive em autenticação e autorização
 - [[Testes em Java]] — JUnit 5, Mockito, Testcontainers, slices
 - [[Testes]] — fundamentos gerais

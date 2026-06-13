@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-08
+updated: 2026-06-10
 status: growing
 tags:
   - moc
@@ -37,8 +37,8 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 7. [[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] — spec vs implementação, transição javax→jakarta, Servlet, CDI, JAX-RS, Bean Validation, JPA spec, JTA, legado EJB, estado atual da plataforma
 8. [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — IoC/DI, beans e escopos, AOP/proxies, configuração e profiles, conditional/auto-configuration, eventos do contexto, fundamentos do Boot, Actuator
 9. [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — Spring MVC e o pipeline do DispatcherServlet, REST controllers, content negotiation, validação na borda, exception handling (@ControllerAdvice, Problem Details), OpenAPI, HATEOAS, versionamento, clientes HTTP
-10. Persistência de dados *(planejado)* — JPA/Hibernate, Spring Data, fetch/N+1, transações, migrations
-11. Programação Reativa *(planejado)* — Reactor, WebFlux, backpressure, R2DBC
+10. [[03-Dominios/Java/Persistência de dados/index|Persistência de dados]] — JPA/Hibernate, o persistence context, mapeamento e relacionamentos, fetch strategies e o N+1, Spring Data repositories e consultas, paginação, transações operacionais, locking, caching e migrations
+11. [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]] — o modelo reativo na JVM: Reactive Streams, Project Reactor (Mono/Flux e operadores), schedulers e backpressure, Spring WebFlux e WebClient, R2DBC, e o confronto honesto reativo vs Virtual Threads
 12. Segurança *(planejado)* — Spring Security, JWT, OAuth2/OIDC, CSRF/CORS
 13. Testes *(planejado)* — JUnit 5, Mockito, AssertJ, Spring Boot Test, Testcontainers
 

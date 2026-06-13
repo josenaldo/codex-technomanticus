@@ -1,7 +1,7 @@
 ---
 title: "Virtual Threads e Project Loom"
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-10
 type: concept
 progress: backlog
 status: seedling
@@ -78,7 +78,7 @@ Um esboço da comparação:
 | Libs bloqueantes | Compatíveis direto | Precisam de adaptador |
 
 > [!note] A comparação aprofundada com reativo é assunto de outro galho
-> Este card não ensina programação reativa. O confronto detalhado (backpressure, operadores, quando reativo ainda vence) pertence ao **Galho 11 — Programação Reativa**. Para o panorama de concorrência completo, ver o tronco [[Java Concurrency]].
+> Este card não ensina programação reativa. O confronto detalhado (backpressure, operadores, quando reativo ainda vence) pertence ao **Galho 11** — [[03-Dominios/Java/Programação Reativa/14 - Reativo vs Virtual Threads — o confronto honesto|Reativo vs Virtual Threads]]. Para o panorama de concorrência completo, ver o tronco [[Java Concurrency]].
 
 ## Como funciona
 

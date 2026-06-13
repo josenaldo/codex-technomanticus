@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-06-06
+updated: 2026-06-09
 type: glossary
 status: seedling
 aliases:
@@ -209,6 +209,9 @@ Uma técnica de otimização para inferência de Transformers que armazena os ve
 ### LLM (Large Language Model)
 Uma rede neural — tipicamente um transformer apenas com decodificador (decoder-only) — treinada em grandes corpora de texto para prever o próximo token dada uma sequência. LLMs modernos escalam para bilhões ou trilhões de parâmetros e exibem capacidades emergentes como aprendizado em contexto e seguimento de instruções.
 
+### logit
+O score bruto e não normalizado que o modelo produz para cada token do vocabulário na camada final, antes de qualquer normalização. É um número real em escala arbitrária (pode ser negativo); o [[Dicionário de IA#softmax|softmax]] os converte numa distribuição de probabilidades de onde o próximo token é amostrado. Parâmetros como [[Dicionário de IA#temperature|temperature]], [[Dicionário de IA#top-k|top-k]] e [[Dicionário de IA#top-p|top-p]] operam sobre os logits (ou a distribuição derivada deles) para moldar a [[Dicionário de IA#decoding strategy|decoding strategy]].
+
 ### memory bandwidth bottleneck
 Um gargalo de desempenho onde a velocidade de transferência de dados entre a memória (HBM/VRAM) e o processador limita a execução mais do que o poder bruto de processamento. Na inferência de LLMs, a natureza sequencial da geração de tokens força o modelo a ler todos os seus parâmetros da memória para cada token produzido, tornando a fase de "decode" fortemente limitada pela largura de banda da memória.
 
@@ -235,6 +238,9 @@ Esquema de codificação posicional em transformers que aplica rotações 2D aos
 
 ### sampling
 A escolha estocástica do próximo token a partir da distribuição de probabilidades do modelo, em vez de pegar sempre o mais provável. Parâmetros como temperature, top-k e top-p moldam quão aleatória ou conservadora é a seleção, controlando o trade-off entre diversidade e coerência da saída.
+
+### softmax
+A função que converte um vetor de scores brutos (logits) numa distribuição de probabilidades — exponencia cada valor e normaliza para que somem 1. No transformer aparece em dois pontos críticos: pondera os pesos de [[Dicionário de IA#attention|atenção]] (forçando cada token a distribuir 100% da sua atenção entre os demais, o que origina o [[Dicionário de IA#attention sink|attention sink]]) e converte os logits da camada final na distribuição sobre o vocabulário de onde o próximo token é amostrado. A [[Dicionário de IA#temperature|temperature]] atua justamente escalando os logits antes do softmax.
 
 ### Speculative decoding
 Uma otimização de inferência onde um modelo de rascunho (draft model) pequeno propõe sequências de tokens candidatas que um modelo alvo (target model) maior verifica em paralelo. Predições aceitas reduzem as etapas de decodificação efetivas, diminuindo a latência. O impacto no custo depende do provedor: a contagem de tokens faturados pode não diminuir mesmo que o tempo real de execução diminua.

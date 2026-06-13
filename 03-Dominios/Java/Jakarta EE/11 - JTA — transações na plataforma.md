@@ -1,7 +1,7 @@
 ---
 title: "JTA — transações na plataforma"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-09
 type: concept
 progress: backlog
 status: seedling
@@ -32,7 +32,7 @@ Transação é a velha promessa do **ACID** num verbo: ou **tudo** acontece, ou 
 JTA não persiste nada por conta própria — ela não é JDBC nem [[09 - JPA — a especificação de persistência|JPA]]. JTA é o **contrato de demarcação e coordenação**: define *quem* abre uma transação, *quem* a confirma ou desfaz, *como* múltiplos recursos transacionais se alistam (*enlist*) sob a mesma transação, e *como* o container amarra tudo isso de forma declarativa. A versão cravada para esta trilha é **Jakarta Transactions 2.0**, parte do **Jakarta EE 11** (a renomeação `javax.transaction` → `jakarta.transaction` veio na migração coberta em [[02 - De Java EE a Jakarta EE]]).
 
 > [!warning] Desambiguação imediata: dois `@Transactional` homônimos
-> Existe `jakarta.transaction.Transactional` (esta nota) e existe um `@Transactional` do **Spring** (`org.springframework.transaction.annotation.Transactional`). São **annotations diferentes, de specs/frameworks diferentes**, que resolvem o **mesmo problema** com semânticas parecidas mas **não idênticas** (a regra de rollback default, inclusive, difere entre as duas). Esta nota é **exclusivamente** sobre a annotation do Jakarta. O `@Transactional` do Spring é assunto dos **Galhos 8/10 (planejado)** — aqui não explicamos como o Spring implementa. Sempre que ler `@Transactional` daqui pra frente, leia "o do `jakarta.transaction`".
+> Existe `jakarta.transaction.Transactional` (esta nota) e existe um `@Transactional` do **Spring** (`org.springframework.transaction.annotation.Transactional`). São **annotations diferentes, de specs/frameworks diferentes**, que resolvem o **mesmo problema** com semânticas parecidas mas **não idênticas** (a regra de rollback default, inclusive, difere entre as duas). Esta nota é **exclusivamente** sobre a annotation do Jakarta. O `@Transactional` do Spring é assunto dos **Galhos [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|8 (o mecanismo)]] e [[03-Dominios/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|10 (o comportamento)]]** — aqui não explicamos como o Spring implementa. Sempre que ler `@Transactional` daqui pra frente, leia "o do `jakarta.transaction`".
 
 ---
 

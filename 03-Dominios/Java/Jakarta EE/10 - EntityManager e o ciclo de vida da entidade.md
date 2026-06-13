@@ -1,7 +1,7 @@
 ---
 title: "EntityManager e o ciclo de vida da entidade"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-09
 type: concept
 progress: backlog
 status: seedling
@@ -21,7 +21,7 @@ aliases:
 # EntityManager e o ciclo de vida da entidade
 
 > [!abstract] TL;DR
-> O `EntityManager` é a interface central da Jakarta Persistence — e o que ele de fato opera é um **persistence context**: um conjunto de entidades gerenciadas que funciona como **cache de identidade** (mesmo id → mesma instância) e **unit of work** (acumula mudanças e sincroniza com o banco no flush). Toda entidade está em um de **4 estados** — *new*, *managed*, *detached*, *removed* — e as operações da API (`persist`, `merge`, `remove`, `find`, `detach`, `refresh`) são **transições entre esses estados**. Quem entende o diagrama de estados entende a maior parte dos "bugs de JPA": `merge` que não salvou, UPDATE que nunca rodou, `LazyInitializationException`. Esta nota cobra o **contrato da spec 3.2**; como o provider implementa (e como otimizar) é assunto do Galho 10 (planejado).
+> O `EntityManager` é a interface central da Jakarta Persistence — e o que ele de fato opera é um **persistence context**: um conjunto de entidades gerenciadas que funciona como **cache de identidade** (mesmo id → mesma instância) e **unit of work** (acumula mudanças e sincroniza com o banco no flush). Toda entidade está em um de **4 estados** — *new*, *managed*, *detached*, *removed* — e as operações da API (`persist`, `merge`, `remove`, `find`, `detach`, `refresh`) são **transições entre esses estados**. Quem entende o diagrama de estados entende a maior parte dos "bugs de JPA": `merge` que não salvou, UPDATE que nunca rodou, `LazyInitializationException`. Esta nota cobra o **contrato da spec 3.2**; como o provider implementa (e como otimizar) é assunto do Galho 10.
 
 ---
 
@@ -157,7 +157,7 @@ Além disso, a aplicação pode forçar a sincronização a qualquer momento com
 
 O flush "antes de query" do modo `AUTO` é mais sutil do que parece: ele existe para que **uma query JPQL enxergue as mudanças pendentes do próprio contexto**. Se você persistiu um `Order` e na linha seguinte roda `SELECT o FROM Order o`, o provider flusha o `INSERT` pendente antes de executar a query — senão a query "não veria" o que você acabou de criar. É o contexto garantindo consistência consigo mesmo.
 
-E o **dirty checking**? É o nome do mecanismo pelo qual o provider descobre, na hora do flush, **quais entidades managed mudaram** desde que entraram no contexto — e gera os `UPDATE` correspondentes. No nível da spec, o que está contratado é o **resultado**: *"o estado das entidades managed é sincronizado com o banco"* no flush, sem que a aplicação chame nada além de setters. **Como** o provider detecta as mudanças (snapshots, bytecode enhancement, etc.) é decisão de implementação — e território do Galho 10 (planejado).
+E o **dirty checking**? É o nome do mecanismo pelo qual o provider descobre, na hora do flush, **quais entidades managed mudaram** desde que entraram no contexto — e gera os `UPDATE` correspondentes. No nível da spec, o que está contratado é o **resultado**: *"o estado das entidades managed é sincronizado com o banco"* no flush, sem que a aplicação chame nada além de setters. **Como** o provider detecta as mudanças (snapshots, bytecode enhancement, etc.) é decisão de implementação — e território do [[03-Dominios/Java/Persistência de dados/03 - O persistence context e os estados da entidade|Galho 10]].
 
 > [!tip] Resumo em uma linha
 > `persist`/`remove`/setters mudam **o plano**; `flush` (no commit, antes de query, ou explícito) **executa o plano**.
@@ -328,7 +328,7 @@ o.getItems().size();                   // 💥 associação não inicializada,
                                        // e não há mais contexto pra carregá-la
 ```
 
-**Fix conceitual (nível desta nota):** acesse/inicialize a associação **enquanto a entidade está managed** — dentro da transação/contexto. As estratégias concretas de carregamento e seus trade-offs são assunto do Galho 10 (planejado); aqui o que importa é o diagnóstico: *a entidade estava detached, e lazy só funciona managed*.
+**Fix conceitual (nível desta nota):** acesse/inicialize a associação **enquanto a entidade está managed** — dentro da transação/contexto. As estratégias concretas de carregamento e seus trade-offs são assunto do [[03-Dominios/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Galho 10]]; aqui o que importa é o diagnóstico: *a entidade estava detached, e lazy só funciona managed*.
 
 ### (4) Persistence context inflando em processamento em lote
 

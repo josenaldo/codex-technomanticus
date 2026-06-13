@@ -1,7 +1,7 @@
 ---
 title: "Serialização JSON com Jackson"
 created: 2026-06-08
-updated: 2026-06-08
+updated: 2026-06-09
 type: concept
 progress: backlog
 status: seedling
@@ -130,7 +130,7 @@ Usar a entidade JPA diretamente como retorno de um controller é um antipadrão 
 2. **Ciclos de serialização**: relacionamentos bidirecionais (`@ManyToOne` ↔ `@OneToMany`) causam `StackOverflowError` ou loop infinito ao serializar.
 3. **Over-exposure**: campos de auditoria (`createdBy`, `version`), colunas internas ou dados sensíveis são expostos sem querer.
 
-A solução é sempre criar um DTO (preferencialmente como `record`) e converter a entidade para ele antes de retornar. A camada de persistência e suas regras ficam isoladas (Galho 10 da trilha Java — persistência com JPA/Hibernate, planejado).
+A solução é sempre criar um DTO (preferencialmente como `record`) e converter a entidade para ele antes de retornar. A camada de persistência e suas regras ficam isoladas (o galho [[03-Dominios/Java/Persistência de dados/10 - Projections e DTOs — não vazar a entidade|Persistência de dados]]).
 
 ```java
 // Entidade JPA (não sai do service/repository)
@@ -375,7 +375,7 @@ public record CustomerDto(Long id, String name) {}
 - [[03-Dominios/Java/index|Trilha Java]]
 - Verbetes: [[03-Dominios/Java/Dicionário de Java#Jackson|Jackson]], [[03-Dominios/Java/Dicionário de Java#HttpMessageConverter|HttpMessageConverter]]
 
-Persistência JPA/Hibernate (incluindo mapeamentos lazy e relacionamentos bidirecionais) → Galho 10 da trilha Java (planejado).
+Persistência JPA/Hibernate (incluindo mapeamentos lazy e relacionamentos bidirecionais) → [[03-Dominios/Java/Persistência de dados/index|Galho 10 (Persistência de dados)]].
 
 ## Referências
 
