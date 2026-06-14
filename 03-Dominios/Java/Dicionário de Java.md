@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de Java"
 created: 2026-06-02
-updated: 2026-06-12
+updated: 2026-06-13
 type: glossary
 status: growing
 publish: true
@@ -390,6 +390,11 @@ Serviço atual da Sonatype para publicar artefatos no Maven Central, que substit
 
 Veja também: [[03-Dominios/Java/Build e tooling/19 - Publicação de artefatos|Publicação de artefatos]].
 
+### CertView
+Portal da Oracle (certview.oracle.com) onde o candidato acessa seus certificados, badges e resultados após o exame de certificação.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/17 - O dia da prova e depois|O dia da prova e depois]].
+
 ### CGLIB
 Biblioteca de geração de bytecode que o Spring usa para criar proxies via *subclasse* quando o bean-alvo não implementa interface alguma. Diferente do JDK dynamic proxy (baseado em interface), o proxy CGLIB estende a classe concreta — por isso a classe e os métodos não podem ser `final`. É a estratégia padrão para classes `@Configuration` e beans sem interface.
 
@@ -650,6 +655,11 @@ Command Query Responsibility Segregation: padrão arquitetural que separa o mode
 
 Veja também: [[03-Dominios/Java/Mensageria/23 Event sourcing e CQRS|Event sourcing e CQRS]].
 
+### Credly
+Plataforma de digital badges usada pela Oracle para emitir o selo verificável da certificação, que o candidato pode compartilhar no LinkedIn e no currículo.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/17 - O dia da prova e depois|O dia da prova e depois]].
+
 ### Criteria API
 API programática e type-safe da spec Jakarta Persistence para construir queries em Java (`CriteriaBuilder`, `CriteriaQuery`, `Root`) em vez de strings JPQL. As Specifications do Spring Data são uma camada sobre ela. Veja também: [[03-Dominios/Java/Persistência de dados/15 - Consultas dinâmicas e os limites da JPA — Specifications, Criteria e SQL|Consultas dinâmicas e os limites da JPA]], [[03-Dominios/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA]].
 
@@ -832,6 +842,11 @@ Laço `for-each` — forma simplificada do `for` que itera diretamente sobre arr
 
 Veja também: [[03 - Estruturas de controle e fluxo]].
 
+### Enthuware
+Conjunto de simulados (mock exams) de baixo custo para as certificações Java OCP, com qualidade de questão próxima à da prova real; é o recurso de prática mais recomendado.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/16 - Estratégia de estudo e recursos|Estratégia de estudo e recursos]].
+
 ### entity (JPA)
 Classe Java anotada com `@Entity` que a JPA mapeia para uma tabela: tem identidade (`@Id`), construtor no-args e estado persistente. É o contrato da spec; o provider (Hibernate, EclipseLink) faz o ORM real.
 
@@ -919,6 +934,11 @@ Veja também: [[03-Dominios/Java/Microservices e sistemas distribuídos/20 - Con
 Garantia de que uma mensagem é processada **exatamente uma vez**, sem perdas nem duplicatas. Na prática é a mais difícil de alcançar: requer transações idempotentes no produtor Kafka (enable.idempotence), transações no consumidor/produtor e um processamento transacional end-to-end. O Spring Kafka oferece suporte via `KafkaTransactionManager`.
 
 Veja também: [[03-Dominios/Java/Mensageria/13 Transações e exactly-once no Spring Kafka|Transações e exactly-once no Spring Kafka]].
+
+### exam objective
+Cada um dos ~10 domínios oficiais que a Oracle publica como escopo da prova OCP; é a unidade pela qual o syllabus é organizado e pela qual a revisão deve ser mapeada.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova|O mapa objetivo → galho]].
 
 ### @ExceptionHandler
 Annotation do Spring MVC que marca um método como tratador de uma ou mais exceções: quando um controller (ou handler) lança o tipo declarado, o método anotado é invocado para produzir a resposta. Funciona local ao controller ou globalmente dentro de uma classe `@ControllerAdvice`; o método pode retornar `ResponseEntity`, `ProblemDetail` ou um corpo serializado. Alfabetiza como "ExceptionHandler".
@@ -1706,6 +1726,11 @@ Modelo de I/O em que a thread não fica parada esperando a resposta: ela é libe
 
 Veja também: [[03-Dominios/Java/Programação Reativa/01 - O que é programação reativa — o modelo push, assíncrono e não-bloqueante|O que é programação reativa]].
 
+### nota de corte (passing score)
+Percentual mínimo de acerto para aprovação no exame OCP — em torno de 68%, podendo variar a cada release. Em questões multi-resposta não há crédito parcial.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/03 - Formato, logística e mecânica da prova|Formato, logística e mecânica da prova]].
+
 ## O
 
 ### OAuth2 Client
@@ -1728,10 +1753,20 @@ Mecanismo de pub/sub embutido no CDI: um bean dispara um evento (`Event<T>.fire`
 
 Veja também: [[03-Dominios/Java/Jakarta EE/06 - CDI — qualifiers, producers e eventos|CDI — qualifiers, producers e eventos]].
 
+### OCA (Oracle Certified Associate)
+Nível introdutório de certificação Java, descontinuado desde o Java 11; hoje a Oracle oferece uma prova OCP única, sem associate separado nem pré-requisito.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/01 - A certificação OCP — o que é, por que (e por que não) fazer|A certificação OCP]].
+
 ### OCI image
 Formato padrão de imagem de container especificado pela Open Container Initiative, independente do Docker. Define como as camadas, o manifesto e a configuração de uma imagem são empacotados, de modo que qualquer runtime compatível (Docker, containerd, Podman) a execute.
 
 Veja também: [[03-Dominios/Java/Cloud-native e produção/03 - Empacotando o app numa imagem — o panorama|Empacotando o app numa imagem — o panorama]].
+
+### OCP (Oracle Certified Professional)
+Certificação oficial da Oracle que valida domínio profundo da linguagem Java e suas APIs core. Provas vigentes em 2026: 1Z0-830 (Java SE 21) e 1Z0-831 (Java SE 25, lançada em mai/2026).
+
+Veja também: [[03-Dominios/Java/Certificação OCP/index|Certificação OCP (Galho 18)]].
 
 ### OIDC (OpenID Connect)
 Camada de **identidade** sobre o OAuth2: adiciona o `id_token` (um JWT que identifica o usuário). OAuth2 delega acesso; OIDC autentica.
@@ -1747,6 +1782,11 @@ Veja também: [[03-Dominios/Java/Programação Reativa/09 - Backpressure — req
 Operadores de recuperação reativa: `onErrorResume` substitui o erro por um publisher de fallback (ex.: buscar de um cache), enquanto `onErrorReturn` substitui por um valor fixo. Ambos transformam um sinal de erro num caminho alternativo de sucesso.
 
 Veja também: [[03-Dominios/Java/Programação Reativa/07 - Error handling reativo — onErrorResume, onErrorReturn, retry|Error handling reativo]].
+
+### online proctored
+Modalidade de aplicação da prova em que um fiscal (proctor) supervisiona o candidato remotamente por webcam e microfone, a partir de casa; comportamento suspeito invalida o exame.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/03 - Formato, logística e mecânica da prova|Formato, logística e mecânica da prova]].
 
 ### OOM-kill (OOMKilled)
 Quando o kernel Linux mata um processo que ultrapassou o limite de memória do cgroup do container; no Kubernetes o pod aparece como `OOMKilled`. Não há `OutOfMemoryError` nem stack trace Java — o processo simplesmente recebe um `SIGKILL`, daí a importância de dimensionar o heap dentro do limite.
@@ -1857,6 +1897,11 @@ Veja também: [[03-Dominios/Java/Web e APIs REST/03 - Recebendo dados da request
 Mecanismo que combina teste de tipo, extração de componentes e (opcionalmente) uma guarda em uma única expressão coesa. A partir do Java 16 (`instanceof`) e Java 21 (switch patterns), elimina casts manuais e torna o código mais legível e seguro.
 
 Veja também: [[14 - Sealed classes e pattern matching]].
+
+### Pearson VUE
+Rede de centros de teste que historicamente aplicava as provas Oracle; o 1Z0-830 migrou para agendamento via oracle.com (online proctored).
+
+Veja também: [[03-Dominios/Java/Certificação OCP/03 - Formato, logística e mecânica da prova|Formato, logística e mecânica da prova]].
 
 ### PECS
 Producer Extends, Consumer Super — regra mnemônica para uso de wildcards em Generics. Use `? extends T` quando a coleção é fonte de dados (apenas leitura); use `? super T` quando a coleção é destino (apenas escrita). Define qual operação é type-safe em cada contexto.
@@ -2726,6 +2771,11 @@ Veja também: [[12 - Virtual Threads e Project Loom]].
 Modificador de campo que garante visibilidade imediata de escritas a todas as threads e proíbe reordenação de instruções ao redor da variável. Garante visibilidade e ordering, mas NÃO garante atomicidade composta: `volatile int i; i++` ainda é uma race condition pois envolve leitura-modificação-escrita não-atômica.
 
 Veja também: [[11 - Java Memory Model em profundidade]].
+
+### voucher
+Crédito pré-pago que dá direito a uma tentativa do exame de certificação; após uma reprovação, costuma-se exigir 14 dias de espera para nova tentativa.
+
+Veja também: [[03-Dominios/Java/Certificação OCP/03 - Formato, logística e mecânica da prova|Formato, logística e mecânica da prova]].
 
 ## W
 
