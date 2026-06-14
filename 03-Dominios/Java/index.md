@@ -3,7 +3,7 @@ title: "Java"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-12
+updated: 2026-06-13
 status: growing
 tags:
   - moc
@@ -51,14 +51,14 @@ A estante de Java cobre tudo o que um desenvolvedor senior precisa dominar no ec
 
 ### Certificação
 
-18. Certificação Java OCP *(planejado)* — guia da prova OCP Java SE 21, mapeado aos galhos de linguagem
+18. [[03-Dominios/Java/Certificação OCP/index|Certificação Java OCP]] — guia das provas OCP Java SE 21 (1Z0-830) e 25 (1Z0-831): os 10 domínios oficiais mapeados às notas dos galhos 1-4, o catálogo de pegadinhas clássicas, formato e logística da prova, e estratégia de estudo — guia da prova OCP Java SE 21, mapeado aos galhos de linguagem
 
 ## Referência
 
 - [[03-Dominios/Java/Dicionário de Java|Dicionário de Java]] — glossário de termos da trilha
 - [[Java Fundamentals]] — tronco original da linguagem (em transição; sendo podado conforme galhos fecham)
 - [[03-Dominios/Java/Core/Helsinki MOOC - Guia de Revisão|Helsinki MOOC]] — guia de revisão para iniciantes
-- [[03-Dominios/Java/Core/Certificação Java OCP|Certificação OCP]] — guia da prova (vira Galho 18)
+- [[03-Dominios/Java/Core/Certificação Java OCP|Certificação OCP (tronco legado)]] — podado; o conteúdo virou o [[03-Dominios/Java/Certificação OCP/index|Galho 18]]
 
 ## Veja também
 
