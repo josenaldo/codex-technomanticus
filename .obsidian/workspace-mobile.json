@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "03-Dominios/IA/Anatomia dos LLMs/03 - A janela de contexto.md",
+                "file": "03-Dominios/IA/Anatomia dos LLMs/04 - Atenção e o mecanismo transformer.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "03 - A janela de contexto"
+              "title": "04 - Atenção e o mecanismo transformer"
             }
           },
           {
@@ -161,7 +161,7 @@
         "state": {
           "type": "outline",
           "state": {
-            "file": "03-Dominios/IA/Anatomia dos LLMs/03 - A janela de contexto.md",
+            "file": "03-Dominios/IA/Anatomia dos LLMs/04 - Atenção e o mecanismo transformer.md",
             "followCursor": false,
             "showSearch": false,
             "searchQuery": ""
@@ -203,8 +203,8 @@
   },
   "active": "8c59943ad5e99a5b",
   "lastOpenFiles": [
-    "03-Dominios/IA/Dicionário de IA.md",
     "03-Dominios/IA/Anatomia dos LLMs/03 - A janela de contexto.md",
+    "03-Dominios/IA/Dicionário de IA.md",
     "02-Glosas/2026-the-death-of-the-junior-developer.md",
     "JavaScript/Frontend/React.md",
     "README.md",
