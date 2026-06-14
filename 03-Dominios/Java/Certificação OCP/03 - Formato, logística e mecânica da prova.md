@@ -34,7 +34,7 @@ aliases:
 | **Duração** | 90–120 min (fontes divergem — confirmar) |
 
 > [!warning] A duração não é confiável de cabeça
-> As fontes secundárias **divergem entre 90 e 120 minutos** para o 1Z0-830 / 1Z0-831. O tronco antigo deste codex cravava 90 min — **não confie nele**. Antes de agendar, confirme a duração na **página oficial do seu exame específico** (links em [[#Referências]]). Esse número define todo o seu pacing na prova, então vale a checagem de dois minutos.
+> As fontes secundárias **divergem entre 90 e 120 minutos** para o 1Z0-830 / 1Z0-831. O tronco antigo deste codex cravava 90 min — **não confie nele**. Antes de agendar, confirme a duração na **página oficial do seu exame específico** (links na seção **Referências**, abaixo). Esse número define todo o seu pacing na prova, então vale a checagem de dois minutos.
 
 ## Características traiçoeiras
 
