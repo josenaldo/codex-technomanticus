@@ -161,6 +161,7 @@ Para 100.000 chamadas/dia com ~2k tokens cada:
 - [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — modelos open-weight disponíveis
 - [[07 - Dense vs Mixture-of-Experts]] — impacto da arquitetura na VRAM necessária
 - [[09 - APIs de LLM — anatomia de uma chamada]] — o caminho alternativo (API cloud)
+- [[18 - Compressão de modelos — quantização e destilação]] — a teoria da quantização que você aplica aqui
 
 ## Referências
 

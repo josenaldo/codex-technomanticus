@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-06-09
+updated: 2026-06-14
 type: glossary
 status: seedling
 aliases:
@@ -176,6 +176,9 @@ Os primeiros tokens de uma sequência, que acumulam uma fração desproporcional
 ### decoding strategy
 O algoritmo que escolhe o próximo token a partir da distribuição de probabilidades produzida pelo modelo a cada passo — greedy (sempre o mais provável), beam search, ou amostragem estocástica controlada por temperature, top-k e top-p. Determina o equilíbrio entre determinismo/precisão e diversidade/criatividade da saída.
 
+### Destilação (knowledge distillation)
+Técnica de compressão em que um modelo "aluno" (student), menor, é treinado para reproduzir o comportamento de um modelo "professor" (teacher) maior — imitando não só o rótulo certo, mas a distribuição completa de probabilidades sobre o vocabulário (os *soft targets*), que carrega informação fina sobre como o professor "pensa". Produz uma rede genuinamente menor e mais barata de servir, ao custo de herdar vieses e limitações do professor; é parte do que viabiliza as variantes leves das famílias comerciais (Haiku, Flash, Nano). Distingue-se da [[Dicionário de IA#Quantização|quantização]], que reduz a precisão dos pesos sem mudar a arquitetura. Ver [[Anatomia dos LLMs/18 - Compressão de modelos — quantização e destilação]].
+
 ### embedding
 A representação de um token como um vetor denso de números reais em um espaço de alta dimensão, onde a proximidade geométrica captura similaridade semântica. É a primeira transformação após a tokenização — cada token vira um vetor que as camadas Transformer manipulam. O mesmo mecanismo embasa RAG e busca semântica, onde textos são comparados pela distância entre seus vetores.
 
@@ -232,6 +235,9 @@ A primeira fase da inferência de um LLM, na qual o modelo processa o prompt int
 
 ### pretraining
 A fase inicial e mais cara do treino de um LLM, em que o modelo aprende a prever o próximo token sobre corpora massivos e não rotulados (trilhões de tokens), adquirindo de forma auto-supervisionada conhecimento linguístico, factual e de raciocínio. Produz o base model — um previsor de texto cru, sem comportamento de assistente; fases posteriores (fine-tuning, RLHF) o especializam e alinham. É o que define o knowledge cutoff do modelo.
+
+### Quantização
+Técnica de compressão que reduz a precisão numérica com que os [[Dicionário de IA#parameters / weights|pesos]] (e às vezes ativações) de um modelo são armazenados — tipicamente FP16 → INT8 → INT4 — sem alterar a contagem de parâmetros nem a arquitetura. Corta uso de VRAM e custo de inferência (INT4 usa ~4× menos memória que FP16) com perda de qualidade crescente em raciocínio complexo nos bits mais baixos. Aplicada quase sempre depois do treino (PTQ); formatos comuns são GGUF/k-quants, GPTQ, AWQ e NF4. Ver [[Anatomia dos LLMs/18 - Compressão de modelos — quantização e destilação]].
 
 ### RoPE (Rotary Position Embedding)
 Esquema de codificação posicional em transformers que aplica rotações 2D aos vetores de query e key proporcionais à posição do token, em vez de somar embeddings posicionais aprendidos. Permite extrapolação relativa entre posições e é a base posicional de Llama, Qwen, Mistral e a maioria dos modelos open-weight modernos. Técnicas como YaRN e NTK-aware extension partem do RoPE para estender o contexto além do pretraining.

@@ -7,7 +7,7 @@ tags:
   - ia
   - moc
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-06-14
 aliases:
   - LLMs
   - Large Language Models
@@ -81,6 +81,12 @@ Como modelos chegam ao comportamento que você vê — e como medir se estão fu
 - [[16 - Como LLMs são treinados — pretraining, SFT, RLHF]] — o pipeline canônico, Constitutional AI, DPO
 - [[17 - Evaluation de LLMs em produção]] — golden set, LLM-as-judge, traces, A/B test
 
+### Bloco 6 — Eficiência e compressão (avançado)
+
+Como modelos ficam menores, mais baratos e rodáveis localmente — o lado avançado do Nível 5.
+
+- [[18 - Compressão de modelos — quantização e destilação]] — reduzir precisão (quantização) e treinar alunos menores (destilação)
+
 ## Rotas alternativas
 
 ### Rota custo-zero (começar sem gastar)
@@ -142,7 +148,7 @@ Como modelos chegam ao comportamento que você vê — e como medir se estão fu
 > **Check:** assume ownership de um serviço LLM-backed.
 >
 > ### Nível 5 — Avançado (ongoing)
-> Fine-tuning quando justificado (LoRA, QLoRA, DPO), LLMs locais (Ollama, vLLM), quantização/distillation, evaluation profunda (LLM-as-judge, A/B test), papers (Attention is All You Need, InstructGPT, LLaMA, etc).
+> Fine-tuning quando justificado (LoRA, QLoRA, DPO), LLMs locais (Ollama, vLLM), [[18 - Compressão de modelos — quantização e destilação|quantização/destilação]], evaluation profunda (LLM-as-judge, A/B test), papers (Attention is All You Need, InstructGPT, LLaMA, etc).
 
 ## Leituras recomendadas
 

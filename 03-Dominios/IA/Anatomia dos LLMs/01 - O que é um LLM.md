@@ -127,6 +127,7 @@ A ideia de que certas habilidades *surgem* de repente acima de uma escala críti
 - [[16 - Como LLMs são treinados — pretraining, SFT, RLHF]] — pré-treino, SFT e RLHF em detalhe
 - [[03 - A janela de contexto]] — o limite de tokens que o modelo enxerga
 - [[13 - Reasoning models e chain-of-thought]] — o compute de inferência que virou o novo eixo
+- [[18 - Compressão de modelos — quantização e destilação]] — por que um modelo menor pode bater um maior (o caso T5/PaLM)
 
 ## Referências
 - **Vaswani et al.** — *Attention Is All You Need* (2017). O paper que introduziu a arquitetura Transformer.
