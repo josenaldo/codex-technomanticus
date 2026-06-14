@@ -47,7 +47,7 @@ A **fronteira-assinatura** deste galho é que ele **linka, não re-explica**. A 
 - [[03-Dominios/Java/Certificação OCP/10 - Domínio 6 — Streams e lambdas|Domínio 6 — Streams e lambdas]]
 - [[03-Dominios/Java/Certificação OCP/11 - Domínio 7 — Empacotamento, deployment e módulos|Domínio 7 — Empacotamento, deployment e módulos]] *(cobertura parcial)*
 - [[03-Dominios/Java/Certificação OCP/12 - Domínio 8 — Concorrência|Domínio 8 — Concorrência]]
-- [[03-Dominios/Java/Certificação OCP/13 - Domínio 9 — I/O|Domínio 9 — I/O]] *(cobertura parcial)*
+- [[03-Dominios/Java/Certificação OCP/13 - Domínio 9 — I-O|Domínio 9 — I/O]] *(cobertura parcial)*
 - [[03-Dominios/Java/Certificação OCP/14 - Domínio 10 — Localização|Domínio 10 — Localização]] *(cobertura parcial)*
 
 ## Pegadinhas, estratégia e dia da prova

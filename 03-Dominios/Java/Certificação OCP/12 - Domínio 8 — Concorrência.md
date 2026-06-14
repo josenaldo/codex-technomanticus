@@ -123,7 +123,7 @@ Vocabulário PT|EN:
 ## Veja também
 
 - [[03-Dominios/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova|O mapa objetivo → galho]]
-- [[03-Dominios/Java/Certificação OCP/13 - Domínio 9 — I/O|Domínio 9 — I/O]]
+- [[03-Dominios/Java/Certificação OCP/13 - Domínio 9 — I-O|Domínio 9 — I/O]]
 - [[03-Dominios/Java/Certificação OCP/index|Certificação OCP (MOC do galho)]]
 
 ## Referências
