@@ -81,6 +81,11 @@ Tendência de um sistema a aumentar em desordem e complexidade conforme é modif
 
 *Veja também: [[13 - Entropia de software e decaimento]]*
 
+### Hipótese do espelhamento (mirroring)
+Reformulação testável da Lei de Conway: a arquitetura técnica de um produto e a arquitetura social da organização que o produz são homólogas — fronteiras de módulo alinhadas com fronteiras de equipe. MacCormack, Baldwin & Rusnak (2012) confirmaram empiricamente que organizações fracamente acopladas produzem produtos mais modulares; Colfer & Baldwin (2016), revisando 102 estudos, acharam o espelhamento em ~69% dos casos, com duas formas conhecidas de "quebrar o espelho".
+
+*Veja também: [[16 - Lei de Conway]]*
+
 ### Lei de Conway
 Organizações que projetam sistemas produzem desenhos cuja estrutura espelha a estrutura de comunicação da própria organização (Melvin Conway, 1968).
 
