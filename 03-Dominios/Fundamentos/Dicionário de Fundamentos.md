@@ -96,6 +96,16 @@ Organizações que projetam sistemas produzem desenhos cuja estrutura espelha a 
 
 *Veja também: [[16 - Lei de Conway]]*
 
+### Mudança amplificada (change amplification)
+Sintoma de complexidade em que uma mudança conceitualmente pequena exige editar muitos lugares do código — trocar uma cor padrão que está hardcoded em vinte arquivos. Um dos três sintomas de Ousterhout (*A Philosophy of Software Design*); nasce sobretudo de **dependências** (peças que não podem ser mudadas isoladamente). O custo da mudança fica desproporcional ao tamanho da intenção.
+
+*Veja também: [[01 - A complexidade como problema central]]*
+
+### Programação tática vs. estratégica
+Duas posturas diante de cada decisão de design (Ousterhout, *A Philosophy of Software Design*). A **tática** otimiza o agora — "fazer funcionar" o mais rápido possível —, e seu extremo é o *tactical tornado*, que despeja features deixando complexidade para os outros limparem. A **estratégica** trata o bom design como meta primária ("a great design, which also happens to work"), com mentalidade de **investimento**: ~10–20% do tempo aplicado em design rende ao longo da vida do sistema, evitando os juros compostos da complexidade.
+
+*Veja também: [[01 - A complexidade como problema central]]*
+
 ### Quadrante de dívida técnica (Technical Debt Quadrant)
 Modelo de Martin Fowler (2009) que cruza dois eixos — deliberada × inadvertida (você sabia que criava a dívida?) e prudente × imprudente (a decisão foi pensada?) — para mostrar que nem toda dívida é falha moral. Os quatro cantos canônicos: *"We don't have time for design"* (deliberada/imprudente), *"We must ship now and deal with the consequences"* (deliberada/prudente), *"What's layering?"* (inadvertida/imprudente, o pior caso) e *"Now we know how we should have done it"* (inadvertida/prudente, praticamente inevitável). Desarma o falso dilema "refatorar tudo vs. nunca refatorar".
 
