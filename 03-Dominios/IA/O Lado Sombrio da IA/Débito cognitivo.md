@@ -66,6 +66,7 @@ A distinção é o ponto-chave: você pode zerar o débito técnico (código imp
 
 ## Veja também
 
+- [[11 - Dívida cognitiva]] — **o mesmo conceito sob a lente geral/atemporal** (em [[03-Dominios/Fundamentos/Complexidade de Software/index|Complexidade de Software]]); esta nota é o recorte da *aceleração por IA*
 - [[O programa como teoria]] — a base teórica (Naur): o que exatamente se perde quando há débito cognitivo
 - [[03 - O comprehension gate|Comprehension gate]] — a barreira de code review que defende a teoria mudança a mudança
 - [[02 - Vibe coding vs engenharia disciplinada|Vibe coding vs engenharia disciplinada]] — o contexto que gera o débito

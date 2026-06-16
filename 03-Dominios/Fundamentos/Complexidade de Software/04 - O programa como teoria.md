@@ -64,6 +64,9 @@ Quarenta anos depois, o conceito ressurge por causa da IA generativa: ela barate
 
 ## Veja também
 
-- [[Débito cognitivo]] — a erosão, em nível de projeto, dessa teoria (Storey, 2026)
+- [[01 - A complexidade como problema central]] — abre o galho Complexidade de Software, onde esta nota é a fase Iniciado
+- [[11 - Dívida cognitiva]] — a erosão dessa teoria em nível de projeto, sob a lente geral
+- [[15 - Pensamento sistêmico]] — o software como sistema sociotécnico de pessoas + código + processo
+- [[Débito cognitivo]] — a erosão, em nível de projeto, dessa teoria sob a lente da IA (Storey, 2026)
 - [[03 - O comprehension gate|Comprehension gate]] — a prática que defende a teoria mudança a mudança
 - [[02-Glosas/2026-cognitive-debt-hidden-risk-ai-driven-software-development|Cognitive debt — Margaret-Anne Storey (DX)]] — a glosa que conecta Naur ao contexto de IA

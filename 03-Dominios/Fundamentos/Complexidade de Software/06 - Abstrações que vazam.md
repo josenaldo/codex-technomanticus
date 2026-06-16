@@ -129,6 +129,8 @@ A cadeia conceitual: Parnas prescreve o que esconder → Spolsky observa que o e
 
 ## Veja também
 
+- [[05 - Abstração - a ferramenta central]] — a abstração e o information hiding que esta lei mostra vazando
+- [[07 - Módulos profundos e rasos]] — como dimensionar abstrações (interface simples, muita funcionalidade)
 - [[Redes e Protocolos]] — TCP/IP, o exemplo canônico da lei
 - [[Orientação a Objetos]] — encapsulamento, o mecanismo que o vazamento atravessa
 - [[03 - Garbage Collection — o conceito]] — a abstração de memória da JVM por dentro
