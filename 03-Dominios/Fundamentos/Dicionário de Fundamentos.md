@@ -71,6 +71,11 @@ Um componente deve se comportar do jeito que a maioria dos seus leitores e usuá
 
 ## Complexidade e dívidas
 
+### Arquétipo de sistema (system archetype)
+Padrão de comportamento que se repete em sistemas completamente diferentes, catalogado por **Peter Senge** (*The Fifth Discipline*, 1990) a partir de combinações típicas de loops de reforço e equilíbrio. Os mais citados em software: **Shifting the Burden** (um paliativo alivia o sintoma e atrofia a capacidade de tratar a causa-raiz — ex.: viver de *hotfix*), **Fixes that Fail** (o conserto rápido funciona e depois piora o problema por efeito colateral atrasado), **Limits to Growth** (um loop de reforço cresce até esbarrar num limite escondido) e **Tragedy of the Commons** (cada ator exaure um recurso compartilhado). Conhecê-los é reconhecer a armadilha antes de ela se desenrolar.
+
+*Veja também: [[15 - Pensamento sistêmico]]*
+
 ### Big Ball of Mud
 Arquitetura (ou ausência dela) caracterizada por estrutura caótica, código-espaguete e remendos acumulados — *"a haphazardly structured, sprawling, sloppy, duct-tape-and-baling-wire, spaghetti-code jungle"* (Brian Foote & Joseph Yoder, PLoP 1997; termo creditado a Brian Marick). O *insight* do paper é que ela é a arquitetura **mais comum** do mundo e tem causas **estruturais**, não morais: pressão de prazo, rotatividade de devs, crescimento aos pedaços e entropia de software. Não é fracasso de programadores ruins — é o que acontece quando ninguém gasta energia contínua e deliberada contra a desordem.
 
@@ -121,6 +126,11 @@ Fenda crescente entre a arquitetura **pretendida** (o desenho que os arquitetos 
 
 *Veja também: [[13 - Entropia de software e decaimento]], [[16 - Lei de Conway]]*
 
+### Emergência (emergent behavior)
+Comportamento que surge da **interação** entre as partes de um sistema e não está presente em nenhum componente isolado — a propriedade do todo que nenhuma peça carrega. A formulação "o todo é mais que a soma das partes" é de Ludwig von Bertalanffy (*General System Theory*, 1968): as características do complexo aparecem como **novas** porque não são explicáveis a partir das partes isoladas. Exemplos em software: um *deadlock* (não mora em thread nenhuma, só na relação entre elas), um *thundering herd*, um engarrafamento. Corolário central deste galho: a complexidade de uma base é, em larga medida, **emergente** — nasce do enredamento das dependências, não das peças.
+
+*Veja também: [[15 - Pensamento sistêmico]], [[01 - A complexidade como problema central]]*
+
 ### Functional Relational Programming (FRP)
 Arquitetura proposta por Moseley & Marks (*Out of the Tar Pit*, 2006) para minimizar complexidade acidental, combinando um núcleo funcional puro (que carrega a lógica essencial com transparência referencial, sem estado) ao modelo relacional de Codd (que estrutura os dados e o estado essencial que sobra). A ideia é empurrar o estado mutável — apontado pelos autores como a maior fonte de complexidade — para um canto pequeno, explícito e controlado. Não confundir com *Functional Reactive Programming*, que usa a mesma sigla mas é outra coisa.
 
@@ -135,6 +145,11 @@ Reformulação testável da Lei de Conway: a arquitetura técnica de um produto 
 Organizações que projetam sistemas produzem desenhos cuja estrutura espelha a estrutura de comunicação da própria organização (Melvin Conway, 1968).
 
 *Veja também: [[16 - Lei de Conway]]*
+
+### Loop de feedback (reforço / equilíbrio)
+Estrutura em que a saída de um processo volta a influenciar a própria entrada — o sistema "se ouve". **Donella Meadows** (*Thinking in Systems*) os classifica em dois tipos: **de reforço** (*reinforcing*, R) **amplificam** — bola de neve, ciclos viciosos/virtuosos (ex.: janelas quebradas, crescimento da complexidade); **de equilíbrio** (*balancing*, B) **estabilizam**, buscando uma meta e corrigindo desvios (ex.: termostato, *autoscaler*, revisão de código). Atrasos (*delays*) entre ação e efeito são a causa principal de **oscilação** e *overshoot*. Assimetria prática de Meadows: frear um loop de reforço costuma bater empilhar contenção nos loops de equilíbrio que tentam compensá-lo.
+
+*Veja também: [[15 - Pensamento sistêmico]], [[13 - Entropia de software e decaimento]]*
 
 ### Leis de Lehman (Lehman's laws)
 Conjunto de oito leis empíricas sobre a evolução de software, formuladas por Meir M. Lehman & László Belády entre 1974 e 1996 a partir do estudo do OS/360 da IBM. Valem para sistemas **E-type** (os que mecanizam uma atividade do mundo real — quase todo software comercial). As duas mais citadas ancoram o decaimento: **Lei I — Mudança Contínua** (*"an E-type system must be continually adapted or it becomes progressively less satisfactory"* — ficar parado já é decair, porque o mundo em volta muda) e **Lei II — Complexidade Crescente** (*"its complexity increases unless explicit work is done to maintain or reduce it"* — a complexidade sobe **por padrão**; conter exige trabalho explícito). A Lei VII (Qualidade Declinante) e a VIII (Sistema de Feedback) fecham o quadro. Há debate empírico sobre seu alcance em software *open source*.
@@ -155,6 +170,11 @@ Tese de **Peter Naur** (*Programming as Theory Building*, 1985): o produto real 
 Duas posturas diante de cada decisão de design (Ousterhout, *A Philosophy of Software Design*). A **tática** otimiza o agora — "fazer funcionar" o mais rápido possível —, e seu extremo é o *tactical tornado*, que despeja features deixando complexidade para os outros limparem. A **estratégica** trata o bom design como meta primária ("a great design, which also happens to work"), com mentalidade de **investimento**: ~10–20% do tempo aplicado em design rende ao longo da vida do sistema, evitando os juros compostos da complexidade.
 
 *Veja também: [[01 - A complexidade como problema central]]*
+
+### Pontos de alavancagem (leverage points)
+Os lugares de um sistema onde uma intervenção produz mudança — ordenados por **Donella Meadows** (*Leverage Points*, 1997; livro de 2008) numa lista de **doze**, do mais fraco ao mais forte. A tese é contraintuitiva: as intervenções **óbvias** são as **mais fracas** e as **fortes** são as mais sutis. Da base ao topo: mexer em **números/parâmetros** (nº 12, fraco) → *buffers* e estrutura de estoques/fluxos → atrasos e força dos loops → fluxos de **informação** → **regras** (incentivos, *Definition of Done*) → auto-organização → **metas** do sistema → **paradigma** e transcendê-lo (nº 1, mais profundo). Em software: trocar um *timeout* é fraco; mudar a arquitetura é forte; redefinir o que o time considera "pronto" ou o que o sistema persegue é mais forte ainda.
+
+*Veja também: [[15 - Pensamento sistêmico]]*
 
 ### Quadrante de dívida técnica (Technical Debt Quadrant)
 Modelo de Martin Fowler (2009) que cruza dois eixos — deliberada × inadvertida (você sabia que criava a dívida?) e prudente × imprudente (a decisão foi pensada?) — para mostrar que nem toda dívida é falha moral. Os quatro cantos canônicos: *"We don't have time for design"* (deliberada/imprudente), *"We must ship now and deal with the consequences"* (deliberada/prudente), *"What's layering?"* (inadvertida/imprudente, o pior caso) e *"Now we know how we should have done it"* (inadvertida/prudente, praticamente inevitável). Desarma o falso dilema "refatorar tudo vs. nunca refatorar".
