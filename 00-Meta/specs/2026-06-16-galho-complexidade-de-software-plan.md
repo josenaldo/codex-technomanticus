@@ -25,7 +25,7 @@ tags:
 
 **Convenções herdadas (não re-decidir):**
 - Limite ~600 linhas/nota; dividir se estourar.
-- `publish: true` nas notas do galho (o domínio Fundamentos publica).
+- `publish: false` nas notas do galho (convenção de Fundamentos: notas não publicam; só o `index.md`/MOC é `publish: true`). Verificado em 2026-06-16 contra todas as notas do domínio.
 - Nunca deletar `index.md` (regra Quartz). Folder-link exige `index.md`.
 - Não assinar commits (sem Co-Authored-By).
 - Honestidade epistêmica: marcar o que não passou por verificação de fonte.
@@ -229,7 +229,7 @@ updated: 2026-06-16
 type: concept
 progress: backlog
 status: seedling
-publish: true
+publish: false
 fase: <iniciado|adepto|magus>
 tags:
   - fundamentos
