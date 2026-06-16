@@ -86,6 +86,11 @@ Tendência de um sistema a aumentar em desordem e complexidade conforme é modif
 
 *Veja também: [[13 - Entropia de software e decaimento]]*
 
+### Functional Relational Programming (FRP)
+Arquitetura proposta por Moseley & Marks (*Out of the Tar Pit*, 2006) para minimizar complexidade acidental, combinando um núcleo funcional puro (que carrega a lógica essencial com transparência referencial, sem estado) ao modelo relacional de Codd (que estrutura os dados e o estado essencial que sobra). A ideia é empurrar o estado mutável — apontado pelos autores como a maior fonte de complexidade — para um canto pequeno, explícito e controlado. Não confundir com *Functional Reactive Programming*, que usa a mesma sigla mas é outra coisa.
+
+*Veja também: [[02 - Complexidade essencial vs. acidental]]*
+
 ### Hipótese do espelhamento (mirroring)
 Reformulação testável da Lei de Conway: a arquitetura técnica de um produto e a arquitetura social da organização que o produz são homólogas — fronteiras de módulo alinhadas com fronteiras de equipe. MacCormack, Baldwin & Rusnak (2012) confirmaram empiricamente que organizações fracamente acopladas produzem produtos mais modulares; Colfer & Baldwin (2016), revisando 102 estudos, acharam o espelhamento em ~69% dos casos, com duas formas conhecidas de "quebrar o espelho".
 
