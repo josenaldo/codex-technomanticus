@@ -130,11 +130,11 @@ Inteligência Artificial (campo amplo, 1950+)
 graph TB
     M_STACK["🗺️ AI Engineering Stack<br/>(13 notas — tronco)"]
 
-    M1["📐 1. Anatomia dos LLMs<br/>(17 notas)"]
+    M1["📐 1. Anatomia dos LLMs<br/>(18 notas)"]
     M2["🤖 2. Anatomia de Agents<br/>(10 notas)"]
     M3["💻 3. Agentes de Codificação<br/>(18 notas)"]
     M4["💰 4. Economia de Tokens<br/>(22 notas)"]
-    M5["🌍 5. Context Engineering<br/>(17 notas)"]
+    M5["🌍 5. Context Engineering<br/>(16 notas)"]
     M6["📋 6. Spec-Driven Development<br/>(12 notas)"]
     M7["🛡️ 7. Segurança e Guardrails<br/>(12 notas)"]
     M8["🧠 8. Memória de Agentes<br/>(24 notas)"]
@@ -192,11 +192,11 @@ As 11 camadas que compõem um sistema com LLM em produção — Purpose, Prompt,
 
 ### Núcleo da formação (sequencial)
 
-#### Trilha 1 — [[03-Dominios/IA/Anatomia dos LLMs/index|Anatomia dos LLMs]] (17 notas)
+#### Trilha 1 — [[03-Dominios/IA/Anatomia dos LLMs/index|Anatomia dos LLMs]] (18 notas)
 
 > *"Antes de orquestrar agentes, entenda os blocos."*
 
-Tokens, atenção, modelos em produção (incluindo chineses), APIs, pricing, reasoning, treino (pretraining/SFT/RLHF), evaluation, fine-tuning vs RAG, futuro.
+Tokens, atenção, modelos em produção (incluindo chineses), APIs, pricing, reasoning, treino (pretraining/SFT/RLHF), evaluation, fine-tuning vs RAG, compressão (quantização/destilação), futuro.
 
 **Quando ler:** sempre. É o alicerce.
 
@@ -227,7 +227,7 @@ Em 5 blocos: o problema, reduzir input (caching, pruning, compression, compactio
 
 **Quando ler:** após Trilha 3 — para parar de queimar dinheiro.
 
-#### Trilha 5 — [[03-Dominios/IA/Context Engineering/index|Context Engineering]] (17 notas)
+#### Trilha 5 — [[03-Dominios/IA/Context Engineering/index|Context Engineering]] (16 notas)
 
 > *"A disciplina que substituiu prompt engineering."*
 

@@ -149,7 +149,7 @@ LoRA/QLoRA em cima de modelos comerciais ajusta margens. Não espere alteração
 
 ### 2. Prompt engineering vence quase sempre
 
-99% das diferenças que você quer ver no comportamento são reveladas por prompt + system message. Antes de pensar em fine-tune, exauste prompt engineering ([[Skills e Prompting]]).
+99% das diferenças que você quer ver no comportamento são reveladas por prompt + system message. Antes de pensar em fine-tune, exauste prompt engineering ([[Context Engineering|15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT]]).
 
 ### 3. Recusas são reverssíveis (parcialmente)
 

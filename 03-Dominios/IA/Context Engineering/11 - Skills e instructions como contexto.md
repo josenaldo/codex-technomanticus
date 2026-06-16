@@ -142,7 +142,7 @@ A ferramenta resolve **mais próximo do arquivo editado vence**. Convenção uni
 
 ### Skills marketplace
 
-Skills são **distribuíveis**: GitHub repos com `skill.md` + assets. Ferramentas começam a expor "instalar skill" como ação. (Ver [[Skills e Prompting]].)
+Skills são **distribuíveis**: GitHub repos com `skill.md` + assets. Ferramentas começam a expor "instalar skill" como ação. (Ver [[16 - Agent skills marketplace e SKILL.md]].)
 
 ### Versionamento de instructions
 
@@ -180,7 +180,8 @@ Hooks (Claude Code) ou rules (Cursor) leem o filesystem e recomendam atualizaç�
 ## Veja também
 
 - [[Agentes de Codificação|14 - agents.md e configuração de projeto]]
-- [[Skills e Prompting]]
+- [[15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT]]
+- [[16 - Agent skills marketplace e SKILL.md]]
 - [[10 - Structured state tracking]]
 - [[14 - Context engineering na prática — setup completo]]
 

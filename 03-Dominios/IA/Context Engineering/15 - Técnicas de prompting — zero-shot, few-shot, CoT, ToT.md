@@ -1,7 +1,7 @@
 ---
 title: "Técnicas de prompting — zero-shot, few-shot, CoT, ToT"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-15
 type: concept
 progress: backlog
 status: seedling
@@ -195,6 +195,30 @@ You are a senior backend engineer.
 - **Listas** > parágrafos
 - **Diga o que fazer** + **o que NÃO fazer**
 - **Restrições críticas** no início e no fim (attention favorece bordas)
+
+## Skills — empacotando técnicas de prompting
+
+Toda técnica acima é, no fundo, uma instrução que você escreve no prompt. O problema aparece quando a **mesma** combinação — um role, três exemplos few-shot, um formato de output, duas restrições — se repete em toda sessão. Copiar-colar isso a cada vez é prompting **ad-hoc**: funciona, mas não escala e desvia (drift) entre usos.
+
+Uma **[[16 - Agent skills marketplace e SKILL.md|skill]]** é essa combinação **formalizada**: instruções + exemplos + formato + (às vezes) ferramentas, empacotados numa unidade versionada que o agente carrega **sob demanda**. É prompting estruturado e reutilizável — um [[Dicionário de IA#prompt template|prompt template]] com discovery e versionamento por cima.
+
+| | Prompt ad-hoc | Skill formalizada |
+|---|---|---|
+| **Onde vive** | Digitado na hora / colado no system prompt | Arquivo `SKILL.md` versionado |
+| **Reúso** | Copy-paste | Carregada por nome, cross-project |
+| **O que empacota** | Uma técnica isolada | Role + few-shot + CoT + output format juntos |
+| **Quando entra no contexto** | Sempre que você cola | Só quando a tarefa ativa (lazy) |
+
+> [!tip] A skill é o "como", as técnicas são as "peças"
+> Uma skill `code-review-security` não inventa nada novo: ela embala **role prompting** ("você é um auditor de segurança"), **few-shot** (exemplos de findings), e um **structured output** (formato do relatório) numa receita só. Dominar as técnicas desta nota é pré-requisito para escrever boas skills.
+
+### Quando formalizar — ad-hoc, system prompt ou skill
+
+- **Ad-hoc** — uso único ou exploratório. Não vale formalizar.
+- **System prompt** — a regra vale para **toda** interação daquela sessão/persona (tom, formato padrão). Persistente, mas preso ao projeto/app.
+- **Skill** — o padrão é uma **tarefa específica e recorrente**, reutilizável entre projetos, e você quer que ele carregue só quando relevante (sem inflar o contexto base).
+
+A árvore completa de decisão (skill vs `AGENTS.md` vs prompt hardcoded) e a anatomia do `SKILL.md` estão em [[16 - Agent skills marketplace e SKILL.md]]; a distinção skill vs instruction de projeto, em [[11 - Skills e instructions como contexto]].
 
 ## Anti-patterns de prompting
 
