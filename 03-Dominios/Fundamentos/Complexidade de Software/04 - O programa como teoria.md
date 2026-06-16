@@ -1,15 +1,17 @@
 ---
 title: "O programa como teoria"
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-06-16
 type: concept
 progress: backlog
 status: evergreen
+fase: iniciado
 tags:
   - fundamentos
   - engenharia-de-software
+  - complexidade-de-software
+  - iniciado
 aliases:
-  - Teoria do sistema
   - Teoria do programa
   - Theory building
   - Programming as Theory Building
