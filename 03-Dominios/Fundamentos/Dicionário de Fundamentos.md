@@ -39,6 +39,11 @@ Abstração que falha em esconder completamente a complexidade subjacente que pr
 
 *Veja também: [[Abstrações que vazam]]*
 
+### Classitis
+Síndrome nomeada por Ousterhout (*A Philosophy of Software Design*): a crença de que classes devem ser sempre pequenas e numerosas leva a fragmentar demais, produzindo muitas **classes rasas** em vez de poucas profundas. Cada peça parece simples isolada, mas o sistema todo fica mais complexo — há mais interfaces pra aprender e mais costuras (acoplamento) entre os fragmentos. O critério correto não é "classe pequena", e sim **profundidade** (funcionalidade ÷ complexidade da interface).
+
+*Veja também: [[07 - Módulos profundos e rasos]]*
+
 ### Information hiding
 Princípio de Parnas (*On the Criteria To Be Used in Decomposing Systems into Modules*, 1972): cada módulo deve esconder uma decisão de design propensa a mudar, localizando o impacto de mudanças futuras. Não é "esconder dados" nem decompor pelos passos do fluxograma — é guardar a decisão volátil atrás de uma interface estável.
 
@@ -48,6 +53,11 @@ Princípio de Parnas (*On the Criteria To Be Used in Decomposing Systems into Mo
 Com um número suficiente de usuários de uma API, todo comportamento observável passa a ser dependido por alguém, independentemente do que o contrato promete. É o extremo lógico do vazamento de abstrações: em escala, toda a implementação vira interface implícita — alguém depende até dos bugs (Hyrum Wright / Titus Winters, *Software Engineering at Google*).
 
 *Veja também: [[06 - Abstrações que vazam]]*
+
+### Módulo profundo (deep module)
+Módulo cuja **interface é pequena em relação à funcionalidade que esconde** — a razão funcionalidade ÷ complexidade de interface é alta (Ousterhout, *A Philosophy of Software Design*). É o que dá lucro: o cliente aprende pouco e ganha muito. O oposto é o **módulo raso** (*shallow module*), cuja interface é quase tão complicada quanto a implementação, pagando o custo de mais uma camada sem esconder nada. Exemplos profundos: o I/O de arquivos do Unix (`open`/`read`/`write`/`close`) e o garbage collector (funcionalidade enorme, interface zero). Profundidade importa mais que tamanho.
+
+*Veja também: [[07 - Módulos profundos e rasos]]*
 
 ## Complexidade e dívidas
 
