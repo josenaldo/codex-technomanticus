@@ -151,6 +151,11 @@ Modelo de Margaret-Anne Storey (*From Technical Debt to Cognitive and Intent Deb
 
 *Veja também: [[09 - As três dívidas do software]]*
 
+### Truck factor / Bus factor (fator caminhão)
+Número mínimo de pessoas cuja saída repentina trava um projeto por falta de quem detém o conhecimento — "quantos membros teriam que ser atropelados por um ônibus para o sistema ficar órfão". É a métrica mais direta da **dívida cognitiva**: um *truck factor* de 1 numa área crítica significa que a teoria daquela parte vive numa cabeça só. Não se eleva documentando mais (a teoria é majoritariamente tácita), e sim **espalhando a teoria** — pairing, rotação de áreas, code ownership compartilhado. É um *proxy*, não uma medida limpa da dívida.
+
+*Veja também: [[11 - Dívida cognitiva]]*
+
 ## Performance e observabilidade
 
 ### p99
