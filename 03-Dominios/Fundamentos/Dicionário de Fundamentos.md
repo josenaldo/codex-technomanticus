@@ -29,6 +29,11 @@ Como usar este glossário:
 
 ## Abstração e design
 
+### ADR (Architecture Decision Record)
+Registro curto e versionado de uma decisão de arquitetura, capturando o *porquê* dela no momento em que ainda está vivo. Formato cunhado por Michael Nygard (*Documenting Architecture Decisions*, 2011): um arquivo Markdown por decisão, guardado no mesmo repositório do código, com quatro seções — **contexto** (as forças em jogo), **decisão** (o que se escolheu), **status** (proposto/aceito/substituído) e **consequências** (o que fica mais fácil e mais difícil depois). O valor está em ser leve: um ADR que leva dez minutos pra escrever é o que de fato se escreve. É a principal ferramenta de pagamento da dívida de intenção e uma captura *parcial* da teoria do programa (Naur) — necessária, não suficiente.
+
+*Veja também: [[12 - Dívida de intenção]], [[04 - O programa como teoria]]*
+
 ### Abstração errada (the wrong abstraction)
 Abstração extraída cedo ou de duplicação apenas aparente, que com o tempo só sobrevive à custa de parâmetros e condicionais empilhados para servir casos que não compartilham um segredo real. Tese de Sandi Metz (*The Wrong Abstraction*, 2016): "duplication is far cheaper than the wrong abstraction" — a duplicação tem custo honesto e linear, a abstração errada tem custo escondido e composto, agravado pela falácia do custo afundado. Remédio: re-inline ("the fastest way forward is back") e re-extração; prevenção: regra de três.
 
