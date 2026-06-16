@@ -29,6 +29,11 @@ Como usar este glossário:
 
 ## Abstração e design
 
+### Abstração errada (the wrong abstraction)
+Abstração extraída cedo ou de duplicação apenas aparente, que com o tempo só sobrevive à custa de parâmetros e condicionais empilhados para servir casos que não compartilham um segredo real. Tese de Sandi Metz (*The Wrong Abstraction*, 2016): "duplication is far cheaper than the wrong abstraction" — a duplicação tem custo honesto e linear, a abstração errada tem custo escondido e composto, agravado pela falácia do custo afundado. Remédio: re-inline ("the fastest way forward is back") e re-extração; prevenção: regra de três.
+
+*Veja também: [[05 - Abstração - a ferramenta central]]*
+
 ### Abstração que vaza (leaky abstraction)
 Abstração que falha em esconder completamente a complexidade subjacente que pretendia simplificar, forçando quem a usa a entender detalhes da camada de baixo. Termo de Joel Spolsky (*The Law of Leaky Abstractions*, 2002): "toda abstração não-trivial, em algum grau, vaza" — abstrações poupam tempo de trabalho, mas não de aprendizado.
 
