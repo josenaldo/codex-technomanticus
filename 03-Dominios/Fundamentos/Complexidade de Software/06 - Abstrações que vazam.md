@@ -1,14 +1,17 @@
 ---
 title: "Abstrações que vazam"
 created: 2026-06-07
-updated: 2026-06-07
+updated: 2026-06-16
 type: concept
 status: seedling
 progress: backlog
+fase: adepto
 tags:
   - fundamentos
   - engenharia-de-software
   - abstracao
+  - complexidade-de-software
+  - adepto
 aliases:
   - Leaky abstraction
   - Abstração vazada
