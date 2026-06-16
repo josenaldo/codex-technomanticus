@@ -71,6 +71,11 @@ Um componente deve se comportar do jeito que a maioria dos seus leitores e usuá
 
 ## Complexidade e dívidas
 
+### Big Ball of Mud
+Arquitetura (ou ausência dela) caracterizada por estrutura caótica, código-espaguete e remendos acumulados — *"a haphazardly structured, sprawling, sloppy, duct-tape-and-baling-wire, spaghetti-code jungle"* (Brian Foote & Joseph Yoder, PLoP 1997; termo creditado a Brian Marick). O *insight* do paper é que ela é a arquitetura **mais comum** do mundo e tem causas **estruturais**, não morais: pressão de prazo, rotatividade de devs, crescimento aos pedaços e entropia de software. Não é fracasso de programadores ruins — é o que acontece quando ninguém gasta energia contínua e deliberada contra a desordem.
+
+*Veja também: [[13 - Entropia de software e decaimento]]*
+
 ### Carga cognitiva
 Esforço mental momentâneo e individual para entender e mudar um trecho de código com segurança. É distinta do débito cognitivo, que é uma propriedade coletiva e acumulada ao longo do tempo: a carga é o custo do "agora" de uma pessoa diante do código.
 
@@ -111,6 +116,11 @@ Tendência de um sistema a aumentar em desordem e complexidade conforme é modif
 
 *Veja também: [[13 - Entropia de software e decaimento]]*
 
+### Erosão arquitetural (architecture erosion / drift)
+Fenda crescente entre a arquitetura **pretendida** (o desenho que os arquitetos têm em mente) e a **implementada** (o que o código de fato faz), nomeada por Dewayne Perry & Alexander Wolf (*Foundations for the Study of Software Architecture*, 1992). Perry & Wolf distinguem dois modos: **erosão** (a fenda abre por *violações* conscientes da regra conhecida) e **deriva** (*drift* — a fenda abre por *insensibilidade*: ninguém mais conhece a regra, então ela escorrega sem que ninguém decida quebrá-la). A erosão de hoje, tolerada, vira o "padrão existente" que causa a deriva de amanhã — janela quebrada aplicada à arquitetura.
+
+*Veja também: [[13 - Entropia de software e decaimento]], [[16 - Lei de Conway]]*
+
 ### Functional Relational Programming (FRP)
 Arquitetura proposta por Moseley & Marks (*Out of the Tar Pit*, 2006) para minimizar complexidade acidental, combinando um núcleo funcional puro (que carrega a lógica essencial com transparência referencial, sem estado) ao modelo relacional de Codd (que estrutura os dados e o estado essencial que sobra). A ideia é empurrar o estado mutável — apontado pelos autores como a maior fonte de complexidade — para um canto pequeno, explícito e controlado. Não confundir com *Functional Reactive Programming*, que usa a mesma sigla mas é outra coisa.
 
@@ -125,6 +135,11 @@ Reformulação testável da Lei de Conway: a arquitetura técnica de um produto 
 Organizações que projetam sistemas produzem desenhos cuja estrutura espelha a estrutura de comunicação da própria organização (Melvin Conway, 1968).
 
 *Veja também: [[16 - Lei de Conway]]*
+
+### Leis de Lehman (Lehman's laws)
+Conjunto de oito leis empíricas sobre a evolução de software, formuladas por Meir M. Lehman & László Belády entre 1974 e 1996 a partir do estudo do OS/360 da IBM. Valem para sistemas **E-type** (os que mecanizam uma atividade do mundo real — quase todo software comercial). As duas mais citadas ancoram o decaimento: **Lei I — Mudança Contínua** (*"an E-type system must be continually adapted or it becomes progressively less satisfactory"* — ficar parado já é decair, porque o mundo em volta muda) e **Lei II — Complexidade Crescente** (*"its complexity increases unless explicit work is done to maintain or reduce it"* — a complexidade sobe **por padrão**; conter exige trabalho explícito). A Lei VII (Qualidade Declinante) e a VIII (Sistema de Feedback) fecham o quadro. Há debate empírico sobre seu alcance em software *open source*.
+
+*Veja também: [[13 - Entropia de software e decaimento]], [[01 - A complexidade como problema central]]*
 
 ### Mudança amplificada (change amplification)
 Sintoma de complexidade em que uma mudança conceitualmente pequena exige editar muitos lugares do código — trocar uma cor padrão que está hardcoded em vinte arquivos. Um dos três sintomas de Ousterhout (*A Philosophy of Software Design*); nasce sobretudo de **dependências** (peças que não podem ser mudadas isoladamente). O custo da mudança fica desproporcional ao tamanho da intenção.
