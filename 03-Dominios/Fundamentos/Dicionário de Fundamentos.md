@@ -59,10 +59,20 @@ Módulo cuja **interface é pequena em relação à funcionalidade que esconde**
 
 *Veja também: [[07 - Módulos profundos e rasos]]*
 
+### Princípio da menor surpresa (POLA)
+Um componente deve se comportar do jeito que a maioria dos seus leitores e usuários **espera** — alinhado ao modelo mental deles —, porque a surpresa custa carga cognitiva: o leitor confiou no nome ou na convenção e errou. *Principle of least astonishment*, formulado em design de linguagens de programação (1972). Um `getUser` que silenciosamente grava no banco viola o princípio; seguir as convenções da plataforma é a forma mais barata de não surpreender.
+
+*Veja também: [[08 - Carga cognitiva e legibilidade]]*
+
 ## Complexidade e dívidas
 
 ### Carga cognitiva
 Esforço mental momentâneo e individual para entender e mudar um trecho de código com segurança. É distinta do débito cognitivo, que é uma propriedade coletiva e acumulada ao longo do tempo: a carga é o custo do "agora" de uma pessoa diante do código.
+
+*Veja também: [[08 - Carga cognitiva e legibilidade]]*
+
+### Complexidade cognitiva (Cognitive Complexity)
+Métrica da SonarSource (white paper de G. Ann Campbell, 2018) que mede *compreensibilidade*, não testabilidade — motivada pela tese "*testability != understandability*". Penaliza o que quebra a leitura linear: dá um incremento extra por **nível de aninhamento** e não penaliza atalhos que facilitam a leitura (um `switch` plano conta como um). É um proxy melhor que a complexidade ciclomática pra "quão difícil isso é de ler", mas continua sendo um proxy: ignora nomes, contexto e conhecimento prévio do leitor.
 
 *Veja também: [[08 - Carga cognitiva e legibilidade]]*
 
