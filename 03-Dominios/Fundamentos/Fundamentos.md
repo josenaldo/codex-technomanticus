@@ -29,6 +29,10 @@ Conceitos base de ciência da computação e engenharia de software.
 
 - [[Redes e Protocolos]]
 
+## Complexidade de Software
+
+- [[03-Dominios/Fundamentos/Complexidade de Software/index|Complexidade de Software]] — galho 12: complexidade essencial vs. acidental, abstração, dívidas (técnica/cognitiva/intenção), entropia e sistemas
+
 ---
 
 ```dataview

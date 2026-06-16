@@ -28,8 +28,7 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 - [[Banco de dados]] — modelagem, SQL, normalização, índices
 - [[Redes e Protocolos]] — TCP/IP, HTTP, modelo OSI
 - [[Testes]] — testes unitários, integração, TDD, mocks
-- [[O programa como teoria]] — programação como construção de teoria (Naur); por que o entendimento mora nas pessoas, não no código
-- [[Abstrações que vazam]] — a Lei das Abstrações Vazadas (Spolsky); por que toda abstração não-trivial vaza, com exemplos em Java, TypeScript, Go e Python
+- [[03-Dominios/Fundamentos/Complexidade de Software/index|Complexidade de Software]] — galho: o que torna software difícil e como gerenciá-lo (essencial vs. acidental, abstração, as três dívidas, sistemas). Inclui [[04 - O programa como teoria|O programa como teoria]] (Naur) e [[06 - Abstrações que vazam|Abstrações que vazam]] (Spolsky)
 - [[Dicionário de Fundamentos]] — glossário de termos fundamentais
 
 ## Veja também
