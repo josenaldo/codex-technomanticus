@@ -146,6 +146,11 @@ Modelo de Martin Fowler (2009) que cruza dois eixos — deliberada × inadvertid
 
 *Veja também: [[10 - Dívida técnica]]*
 
+### Triple Debt Model (modelo das três dívidas)
+Modelo de Margaret-Anne Storey (*From Technical Debt to Cognitive and Intent Debt*, arXiv, 2026) que reparte a saúde do software em **três dívidas independentes mas interagentes**: a técnica (vive no código, limita evoluí-lo), a cognitiva (vive nas pessoas, limita raciocinar com segurança) e a de intenção (vive nos artefatos, limita refletir os objetivos originais). Desmembra a metáfora única de Cunningham (1992): surge porque a IA generativa baratea o código e desloca o gargalo do *escrever* para o *entender* e o *saber o porquê*. Só a dívida técnica tem ferramenta (linter) — as outras duas só se pagam com prática humana. Popularizado por Fowler e Addy Osmani.
+
+*Veja também: [[09 - As três dívidas do software]]*
+
 ## Performance e observabilidade
 
 ### p99
