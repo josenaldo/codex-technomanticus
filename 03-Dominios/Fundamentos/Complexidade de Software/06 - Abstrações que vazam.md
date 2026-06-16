@@ -13,6 +13,7 @@ tags:
   - complexidade-de-software
   - adepto
 aliases:
+  - Abstrações que vazam
   - Leaky abstraction
   - Abstração vazada
   - Lei das Abstrações Vazadas

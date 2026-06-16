@@ -12,6 +12,7 @@ tags:
   - complexidade-de-software
   - iniciado
 aliases:
+  - O programa como teoria
   - Teoria do programa
   - Theory building
   - Programming as Theory Building
