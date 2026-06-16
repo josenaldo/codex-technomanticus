@@ -96,6 +96,16 @@ Organizações que projetam sistemas produzem desenhos cuja estrutura espelha a 
 
 *Veja também: [[16 - Lei de Conway]]*
 
+### Quadrante de dívida técnica (Technical Debt Quadrant)
+Modelo de Martin Fowler (2009) que cruza dois eixos — deliberada × inadvertida (você sabia que criava a dívida?) e prudente × imprudente (a decisão foi pensada?) — para mostrar que nem toda dívida é falha moral. Os quatro cantos canônicos: *"We don't have time for design"* (deliberada/imprudente), *"We must ship now and deal with the consequences"* (deliberada/prudente), *"What's layering?"* (inadvertida/imprudente, o pior caso) e *"Now we know how we should have done it"* (inadvertida/prudente, praticamente inevitável). Desarma o falso dilema "refatorar tudo vs. nunca refatorar".
+
+*Veja também: [[10 - Dívida técnica]]*
+
+### Regra do Escoteiro (Boy Scout Rule)
+"Deixe o código mais limpo do que você o encontrou": toda vez que toca um arquivo, melhore-o um pouquinho. Adaptada por Robert C. Martin (Uncle Bob) no *Clean Code* (2008) a partir do lema escoteiro de Baden-Powell. É a forma mais barata de gerenciar dívida técnica — mil melhorias minúsculas no lugar do grande refator que quase nunca acontece, pagando juros antes que componham.
+
+*Veja também: [[10 - Dívida técnica]]*
+
 ## Performance e observabilidade
 
 ### p99
