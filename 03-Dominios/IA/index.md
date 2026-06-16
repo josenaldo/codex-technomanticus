@@ -130,7 +130,7 @@ Inteligência Artificial (campo amplo, 1950+)
 graph TB
     M_STACK["🗺️ AI Engineering Stack<br/>(13 notas — tronco)"]
 
-    M1["📐 1. Anatomia dos LLMs<br/>(18 notas)"]
+    M1["📐 1. Anatomia dos LLMs<br/>(19 notas)"]
     M2["🤖 2. Anatomia de Agents<br/>(10 notas)"]
     M3["💻 3. Agentes de Codificação<br/>(18 notas)"]
     M4["💰 4. Economia de Tokens<br/>(22 notas)"]
@@ -192,11 +192,11 @@ As 11 camadas que compõem um sistema com LLM em produção — Purpose, Prompt,
 
 ### Núcleo da formação (sequencial)
 
-#### Trilha 1 — [[03-Dominios/IA/Anatomia dos LLMs/index|Anatomia dos LLMs]] (18 notas)
+#### Trilha 1 — [[03-Dominios/IA/Anatomia dos LLMs/index|Anatomia dos LLMs]] (19 notas)
 
 > *"Antes de orquestrar agentes, entenda os blocos."*
 
-Tokens, atenção, modelos em produção (incluindo chineses), APIs, pricing, reasoning, treino (pretraining/SFT/RLHF), evaluation, fine-tuning vs RAG, compressão (quantização/destilação), futuro.
+Tokens, atenção, modelos em produção (incluindo chineses), APIs, pricing, reasoning, treino (pretraining/SFT/RLHF), evaluation, fine-tuning (vs RAG e na prática — LoRA/QLoRA/DPO), compressão (quantização/destilação), futuro.
 
 **Quando ler:** sempre. É o alicerce.
 

@@ -1,7 +1,7 @@
 ---
 title: "Fine-tuning vs prompting vs RAG"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-06-15
 type: concept
 progress: backlog
 status: seedling
@@ -94,6 +94,9 @@ graph LR
 ### 3. Fine-tuning
 
 Retreina os pesos do modelo em dados específicos do domínio.
+
+> [!info] Esta nota é o "quando"; o "como" está na 19
+> A mecânica — full fine-tuning, PEFT/LoRA/QLoRA e alinhamento por preferência (DPO) — está em [[19 - Fine-tuning na prática — LoRA, QLoRA, DPO]].
 
 ```mermaid
 graph LR

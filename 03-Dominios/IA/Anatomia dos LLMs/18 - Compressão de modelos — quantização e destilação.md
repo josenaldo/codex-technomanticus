@@ -1,7 +1,7 @@
 ---
 title: "Compressão de modelos — quantização e destilação"
 created: 2026-06-14
-updated: 2026-06-14
+updated: 2026-06-15
 type: concept
 progress: backlog
 status: seedling
@@ -120,6 +120,7 @@ Não são concorrentes. O pipeline de menor pegada é **destilar primeiro** (cé
 - [[07 - Dense vs Mixture-of-Experts]] — outro eixo de eficiência (esparsidade vs precisão/tamanho)
 - [[08 - Modelos locais e self-hosting]] — quantização aplicada na prática (VRAM, AWQ, k-quants)
 - [[14 - Fine-tuning vs prompting vs RAG]] — adaptar ≠ comprimir
+- [[19 - Fine-tuning na prática — LoRA, QLoRA, DPO]] — QLoRA fine-tuna sobre um base quantizado: compressão e treino se encontram
 
 ## Referências
 
