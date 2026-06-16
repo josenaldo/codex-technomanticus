@@ -106,6 +106,11 @@ Sintoma de complexidade em que uma mudança conceitualmente pequena exige editar
 
 *Veja também: [[01 - A complexidade como problema central]]*
 
+### Programação como construção de teoria (theory building)
+Tese de **Peter Naur** (*Programming as Theory Building*, 1985): o produto real da programação não é o código, e sim a **teoria** que os desenvolvedores formam — como o programa corresponde ao mundo, por que está estruturado assim, e como evoluí-lo com coerência. "Teoria" no sentido de **Ryle**: uma capacidade (*knowing-how*), não um texto. Código e documentação são externalizações *parciais*; o "porquê" é majoritariamente **tácito** (Polanyi). Corolário: um programa "morre" quando a equipe que detém sua teoria se dispersa — ainda executa, mas ninguém consegue modificá-lo com segurança.
+
+*Veja também: [[04 - O programa como teoria]]*
+
 ### Programação tática vs. estratégica
 Duas posturas diante de cada decisão de design (Ousterhout, *A Philosophy of Software Design*). A **tática** otimiza o agora — "fazer funcionar" o mais rápido possível —, e seu extremo é o *tactical tornado*, que despeja features deixando complexidade para os outros limparem. A **estratégica** trata o bom design como meta primária ("a great design, which also happens to work"), com mentalidade de **investimento**: ~10–20% do tempo aplicado em design rende ao longo da vida do sistema, evitando os juros compostos da complexidade.
 
