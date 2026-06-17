@@ -436,7 +436,7 @@ E o golpe de mestre, o que separa sênior de pleno:
 - [Red–black tree (Wikipedia)](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree) — as 5 propriedades e a garantia de altura `O(log n)`.
 
 > [!note] Lastro de honestidade
-> Verifiquei via web (jun/2026): o desenho lista-de-listas do `sortedcontainers` e seu overhead reduzido vs árvore, o `TreeMap` como rubro-negra com `NavigableMap`, a inserção `O(n)` do `bisect`, e a **ausência de árvore balanceada embutida em JS, Python e Go** — todos confirmados nas fontes acima. A experiência do Digidados (`TreeMap<Long, Reading>` + `subMap`) é real, relocada do monólito sem invenção. Detalhes finos de implementação (ex.: estratégia exata de *treeify* ou número de rotações por operação) ficam de fora por atomicidade — heap vai para [[07 - Heaps e filas de prioridade]], trie para [[08 - Tries (árvores de prefixo)]], B-tree e índices de banco para [[09 - Árvores B e índices]].
+> Verifiquei via web (jun/2026): o desenho lista-de-listas do `sortedcontainers` e seu overhead reduzido vs árvore, o `TreeMap` como rubro-negra com `NavigableMap`, a inserção `O(n)` do `bisect`, e a **ausência de árvore balanceada embutida em JS, Python e Go** — todos confirmados nas fontes acima. A experiência do Digidados (`TreeMap<Long, Reading>` + `subMap`) é real, relocada do monólito sem invenção. Detalhes finos de implementação (ex.: estratégia exata de *treeify* ou número de rotações por operação) ficam de fora por atomicidade — heap vai para [[07 - Heaps e filas de prioridade]], trie para [[08 - Tries]], B-tree e índices de banco para [[09 - Árvores B e índices]].
 
 ---
 
