@@ -20,8 +20,11 @@ Primeiro galho da **Camada A** do meta-plano de Fundamentos
 em 3 fases. Interview-critical (★, Fase 1 da Senda Entrevistas).
 
 ## Padrão por nota (herdado do galho Complexidade + acréscimos do usuário)
-- **Profunda** (~440 linhas de PROSA; teto ~600). **Linhas de código NÃO contam** para o limite —
-  implementações podem ser longas; o limite vale só para a prosa.
+- **Profunda, à profundidade que o assunto exigir.** TETO DE PROSA = **2400 linhas SÓ NESTE GALHO**
+  (decisão do usuário em 2026-06-17): não é alvo, é permissão — notas vão tão fundo quanto o tema
+  honestamente render, sem padding. **Linhas de código NÃO contam** para o limite. Notas-intro mais
+  leves (ex.: 01) ficam menores; estruturas ricas em divergência de runtime (arrays, hash, árvores,
+  grafos) podem passar de 1000 linhas de prosa com o tratamento 4-linguagens exaustivo.
 - **Diagramas Mermaid** (3–5 por nota) onde ajudam (estrutura de memória, operações, árvores, grafos).
 - **Seção "Implementações comparadas: Java · TypeScript · Python · Go"** em cada estrutura — PROFUNDA:
   como cada stack trata o assunto e como as particularidades da linguagem moldam a implementação.
