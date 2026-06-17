@@ -76,12 +76,20 @@ próximas semanas. As camadas indicam natureza e sequência, não "agora vs. tal
 Conteúdo maduro já existe (colher do monólito). São os interview-critical (Fase 1 da
 Senda Entrevistas, marcados ★).
 
-1. **Estruturas de Dados** ★
-2. **Algoritmos** (inclui análise e complexidade) ★
+1. **Estruturas de Dados** ★ — COMPLETO (galho de 13 notas)
+2. **Algoritmos** (inclui análise e complexidade) ★ — COMPLETO (galho de 14 notas)
 3. **Orientação a Objetos** ★
-4. **Banco de Dados** ★
-5. **Redes e Protocolos** ★
-6. **Testes** ★
+4. **SOLID** ★ — *spin-off do galho OO (2026-06-17): SOLID virou galho próprio, irmão de OO.*
+5. **Banco de Dados** ★
+6. **Redes e Protocolos** ★
+7. **Testes** ★
+
+> Decisão (2026-06-17): ao refatorar o monólito de OO, **SOLID** foi extraído como galho
+> próprio (8 notas), e não como sub-seção de OO — os cinco princípios rendem fundo e têm
+> identidade didática própria. O galho OO mantém os 4 pilares, composição vs herança,
+> acoplamento/coesão, modelagem tática (Entity/VO, Rich vs Anemic) e a divergência cross-language;
+> linka para SOLID, Design Patterns e Arquitetura. Ver
+> `2026-06-17-galho-orientacao-a-objetos-plan.md` e `2026-06-17-galho-solid-plan.md`.
 
 ### Camada B — novos galhos teóricos (sem casa em outro domínio)
 
