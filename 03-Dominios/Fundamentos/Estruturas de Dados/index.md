@@ -3,7 +3,7 @@ title: "Estruturas de Dados"
 created: 2026-06-17
 updated: 2026-06-17
 type: moc
-status: seedling
+status: growing
 publish: true
 tags:
   - fundamentos

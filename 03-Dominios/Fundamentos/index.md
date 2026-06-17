@@ -23,7 +23,7 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 
 - [[Fundamentos]] — visão geral da área
 - [[Algoritmos]] — algoritmos clássicos, análise e complexidade
-- [[Estruturas de Dados]] — listas, árvores, grafos, hash, etc.
+- [[03-Dominios/Fundamentos/Estruturas de Dados/index|Estruturas de Dados]] — galho: arrays, listas, hash, árvores, heaps, tries, grafos e especializadas, com comparação de implementação Java/TS/Python/Go
 - [[Orientação a Objetos]] — princípios e padrões de OO
 - [[Banco de dados]] — modelagem, SQL, normalização, índices
 - [[Redes e Protocolos]] — TCP/IP, HTTP, modelo OSI
