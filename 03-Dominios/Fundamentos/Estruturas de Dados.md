@@ -373,12 +373,8 @@ grafo.computeIfAbsent(1, k -> new ArrayList<>()).add(3);
 
 ### Algoritmos essenciais
 
-- **BFS** (Breadth-First Search) — fila. Caminho mais curto em grafos **não ponderados**. Explora em camadas.
-- **DFS** (Depth-First Search) — pilha (ou recursão). Detecção de ciclos, topological sort, componentes conexos.
-- **Dijkstra** — caminho mais curto em grafos **ponderados com pesos não-negativos**. Usa priority queue. O((V + E) log V).
-- **Bellman-Ford** — como Dijkstra, mas aceita pesos negativos. O(V × E).
-- **Topological Sort** — ordena vértices de um DAG respeitando dependências. Base para build systems, task schedulers.
-- **Union-Find (Disjoint Set)** — detecta componentes conexos e ciclos em tempo quase O(1) amortizado.
+> [!info] Aprofundado em nota dedicada
+> BFS, DFS, Dijkstra, Bellman-Ford, A\*, Floyd-Warshall, ordenação topológica (Kahn e DFS), union-find e MST (Kruskal/Prim) — com diagramas, tabela de decisão e implementações em Java/TS/Python/Go — vivem em [[11 - Grafos - travessia e algoritmos]]. Em resumo: **BFS** (fila) dá caminho mais curto não-ponderado; **DFS** (pilha) detecta ciclo e faz topo-sort; **Dijkstra** (fila de prioridade) faz caminho mínimo ponderado não-negativo; **union-find** responde "mesmo grupo?" em tempo quase constante.
 
 ### Onde aparecem em sistemas reais
 
