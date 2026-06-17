@@ -24,7 +24,8 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 - [[Fundamentos]] — visão geral da área
 - [[03-Dominios/Fundamentos/Algoritmos/index|Algoritmos]] — galho: análise de complexidade (Big-O, recorrências, Teorema Mestre) e algoritmos clássicos (ordenação, busca, two pointers, divisão e conquista, DP, greedy, backtracking)
 - [[03-Dominios/Fundamentos/Estruturas de Dados/index|Estruturas de Dados]] — galho: arrays, listas, hash, árvores, heaps, tries, grafos e especializadas, com comparação de implementação Java/TS/Python/Go
-- [[Orientação a Objetos]] — princípios e padrões de OO
+- [[03-Dominios/Fundamentos/Orientação a Objetos/index|Orientação a Objetos]] — galho: pilares (encapsulamento, abstração, herança, polimorfismo), interfaces, composição sobre herança, acoplamento/coesão, modelagem rica e como o modelo OO diverge entre linguagens
+- [[03-Dominios/Fundamentos/SOLID/index|SOLID]] — galho: os cinco princípios de design OO (SRP, OCP, LSP, ISP, DIP), DI/IoC e a leitura crítica
 - [[Banco de dados]] — modelagem, SQL, normalização, índices
 - [[Redes e Protocolos]] — TCP/IP, HTTP, modelo OSI
 - [[Testes]] — testes unitários, integração, TDD, mocks

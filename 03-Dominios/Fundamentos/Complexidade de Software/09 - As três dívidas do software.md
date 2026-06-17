@@ -29,6 +29,9 @@ Há mais duas dívidas — e elas vivem fora do código, em lugares que nenhum l
 
 ## O que é
 
+[[triple-debt-model.jpg|Triple Debt Model]]
+![[triple-debt-model.jpg]]
+
 O **Triple Debt Model** foi articulado por **Margaret-Anne Storey** em *From Technical Debt to Cognitive and Intent Debt* (arXiv, 2026).
 
 A tese central é simples e desconfortável: a dívida técnica — o conceito que Ward Cunningham popularizou nos anos 1990 — sempre foi tratada como *a* forma de degradação do software. Mas ela é só uma das três.

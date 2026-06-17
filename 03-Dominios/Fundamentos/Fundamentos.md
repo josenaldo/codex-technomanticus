@@ -19,7 +19,8 @@ Conceitos base de ciência da computação e engenharia de software.
 
 ## Paradigmas
 
-- [[Orientação a Objetos]]
+- [[03-Dominios/Fundamentos/Orientação a Objetos/index|Orientação a Objetos]] — galho de 13 notas (pilares, composição, modelagem rica, divergência cross-language)
+- [[03-Dominios/Fundamentos/SOLID/index|SOLID]] — galho de 8 notas (os cinco princípios + DI/IoC + crítica)
 
 ## Qualidade de Software
 
