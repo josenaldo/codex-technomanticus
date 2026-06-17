@@ -4,7 +4,7 @@ created: 2026-06-17
 updated: 2026-06-17
 type: concept
 progress: backlog
-status: seedling
+status: growing
 publish: false
 fase: iniciado
 tags:
@@ -197,6 +197,97 @@ lista.remove(0);                           // O(n): desloca à esquerda
 
 Sequência de capacidades partindo de 10: 10 → 15 → 22 → 33 → 49... (cada uma é 1,5× a anterior, arredondado). Note que `ArrayList` sempre guarda `Object`, então `ArrayList<Integer>` **sempre faz boxing** — não existe `ArrayList` de primitivos (é onde bibliotecas como Eclipse Collections ou `IntStream` entram).
 
+#### Os ancestrais: `Vector` e `Stack` (e por que você os evita)
+
+Antes do `ArrayList` (Java 1.2) existia o **`Vector`** (Java 1.0), e em cima dele a **`Stack`**. Os dois ainda estão na stdlib — você vai topar com eles em código antigo —, mas o conselho moderno é simples: não use.
+
+A diferença não é o crescimento; é a **sincronização**. Cada método de `Vector` é `synchronized`. Isso soa seguro, mas é o pior dos mundos:
+
+- Você paga o custo do lock **em toda chamada**, mesmo num programa de uma thread só.
+- E mesmo assim a thread-safety é uma ilusão para operações compostas. `if (v.isEmpty()) v.add(x)` são **dois** métodos sincronizados — entre um e outro, outra thread pode agir. O lock por método não protege a sequência.
+
+`Stack` herda de `Vector` e ainda erra a topologia: como subclasse de uma lista, ela expõe `get(i)`/`insertElementAt`, deixando você espetar o meio de uma pilha. O substituto idiomático é `Deque`/`ArrayDeque`.
+
+> [!note] A regra
+> Precisa de uma lista sem concorrência? Use `ArrayList`. Precisa de uma pilha? Use `ArrayDeque`. `Vector` e `Stack` ficaram para trás por sincronizar à força (caro) e mesmo assim não resolver concorrência de verdade (compostas continuam inseguras).
+
+#### Quando você de fato precisa de concorrência
+
+Se múltiplas threads compartilham a lista, há duas rotas idiomáticas — e elas trocam custo de forma oposta.
+
+**`Collections.synchronizedList(list)`** embrulha a lista num wrapper que sincroniza cada método. É o `Vector` feito à mão, com a mesma pegadinha: **a iteração não é atômica**. Você precisa sincronizar o `for` manualmente, `synchronized (lista) { for (...) }`, ou leva um `ConcurrentModificationException`.
+
+**`CopyOnWriteArrayList`** vira o trade-off do avesso. Toda **escrita** (`add`, `set`, `remove`) tira um lock e **copia o array inteiro** para um novo, aplicando a mudança na cópia e trocando a referência. Escrever é O(n) e caríssimo. Em troca, **leitura é livre de lock** e o iterador é um **snapshot**: ele segura a referência do array no instante em que foi criado, e esse array nunca muda. Logo, iterar nunca lança `ConcurrentModificationException` — e nunca enxerga escritas posteriores.
+
+```java
+// Leituras dominam, escritas raras — ex: lista de listeners
+List<Listener> ouvintes = new CopyOnWriteArrayList<>();
+ouvintes.add(novo);            // O(n): copia o array todo
+for (Listener l : ouvintes) {  // iterador snapshot, sem lock, sem CME
+    l.notificar();             // escritas concorrentes não afetam esta volta
+}
+```
+
+A regra de bolso: `CopyOnWriteArrayList` só compensa quando **leituras superam escritas em ordens de magnitude** (configuração lida o tempo todo, mudada raramente). Para muitas escritas, o custo de copiar o array a cada uma destrói tudo.
+
+#### Iteradores fail-fast e `ConcurrentModificationException`
+
+Vale entender o mecanismo, porque a exceção engana o nome. Os iteradores de `ArrayList` (e da maioria das coleções `java.util`) são **fail-fast**: eles guardam um contador `modCount` e o conferem a cada `next()`. Se a lista foi **estruturalmente modificada** (add/remove) por qualquer caminho que não seja o próprio iterador, o contador diverge e ele lança `ConcurrentModificationException` na hora.
+
+```java
+for (String s : lista) {
+    if (s.equals("x")) lista.remove(s); // CME: modificou por fora do iterador
+}
+// Forma correta: o remove do próprio iterador
+Iterator<String> it = lista.iterator();
+while (it.hasNext()) {
+    if (it.next().equals("x")) it.remove(); // ok, mantém modCount em sincronia
+}
+```
+
+> [!warning] "Concurrent" no nome, mas dispara numa thread só
+> `ConcurrentModificationException` **não** significa "duas threads". O caso mais comum é numa **única thread**: mutar a lista enquanto a percorre num for-each. É uma rede de segurança best-effort contra um bug de iteração, não uma garantia de concorrência. `CopyOnWriteArrayList`, com seu iterador snapshot, é justamente a coleção que **não** lança CME.
+
+#### A caixa de ferramentas `java.util.Arrays`
+
+Arrays crus (`int[]`, `String[]`) não têm métodos — são quase um tipo primitivo. A funcionalidade mora na classe utilitária `java.util.Arrays`, que vale conhecer:
+
+- **`Arrays.sort(arr)`** — para **primitivos**, um Dual-Pivot Quicksort (desde Java 7), in-place e cache-friendly. Para **objetos**, um **TimSort** (merge sort adaptativo, estável, ótimo em dados quase-ordenados). A escolha não é arbitrária: primitivos não têm noção de "igualdade estável" para preservar, então a velocidade in-place do quicksort vence; objetos podem ter ordem de chegada significativa, e estabilidade importa.
+- **`Arrays.binarySearch(arr, chave)`** — busca O(log n) num array **já ordenado**; resultado indefinido se não estiver.
+- **`Arrays.fill`, `Arrays.equals`, `Arrays.copyOf`, `Arrays.stream`** — preencher, comparar elemento a elemento, copiar com novo tamanho, e abrir um `Stream`.
+
+```java
+int[] a = {5, 3, 8, 1};
+Arrays.sort(a);                    // Dual-Pivot Quicksort → [1, 3, 5, 8]
+int i = Arrays.binarySearch(a, 8); // 3 (array já ordenado)
+int[] b = Arrays.copyOf(a, 6);     // [1,3,5,8,0,0] — cresce com zeros
+boolean ok = Arrays.equals(a, b);  // false (tamanhos diferentes)
+```
+
+#### Multidimensional = array de arrays (não é uma matriz contígua)
+
+Aqui mora uma confusão que custa performance. Em Java, `int[][]` **não** é uma matriz contígua em row-major. É um **array de arrays**: o array externo guarda **referências** para arrays-linha, cada um alocado independentemente e possivelmente espalhado pelo heap.
+
+Duas consequências:
+
+- As linhas podem ter tamanhos diferentes — isso é o **array irregular (jagged)**: `m[0]` pode ter 3 elementos e `m[1]` ter 10.
+- Percorrer `m[i][j]` envolve **duas indireções** (segue o ponteiro da linha, depois indexa), e linhas distantes na memória custam cache misses. Uma matriz pesada de verdade é mais rápida como um `int[]` **achatado** com índice `i·colunas + j` — aí você tem contiguidade real.
+
+```java
+int[][] jagged = new int[3][];   // 3 referências, nenhuma linha ainda
+jagged[0] = new int[]{1, 2};     // linha 0: 2 elementos
+jagged[1] = new int[]{3, 4, 5};  // linha 1: 3 elementos (irregular!)
+
+// Matriz "de verdade" achatada: contígua, row-major manual
+int linhas = 3, cols = 4;
+int[] flat = new int[linhas * cols];
+flat[i * cols + j] = 42;         // índice manual, uma só indireção
+```
+
+#### Bounds checking: a JVM te protege (e custa um pouco)
+
+Toda leitura ou escrita num array Java é **checada**: se o índice cai fora de `[0, length)`, a JVM lança `ArrayIndexOutOfBoundsException` em vez de ler memória alheia (como faria C). É uma garantia de segurança de memória que você paga com uma comparação por acesso — mas o JIT costuma **eliminar** essa checagem (bounds-check elimination) quando consegue provar que o índice é seguro, por exemplo num `for` clássico de 0 a `length-1`. Voltaremos a esse custo na seção transversal.
+
 ### TypeScript / JavaScript: o array que finge ser array
 
 Em JS, `Array` é, tecnicamente, um **objeto** — um caso especial de objeto com chaves numéricas e uma propriedade `length`. Isso soa como um desastre de performance. E seria, se a engine fosse ingênua.
@@ -217,6 +308,28 @@ Duas regras governam isso, e ambas são pegadinhas de performance.
 
 **Regra 2 — transições só descem.** A treliça é uma via de mão única. Adicione um float a um array de Smis e ele vira DOUBLE para sempre — mesmo que você sobrescreva o float com um inteiro depois. Misture tipos e ele cai para PACKED_ELEMENTS (ponteiros). Nunca sobe.
 
+A imagem abaixo desenha essa treliça e a regra do mão-única.
+
+```mermaid
+flowchart TB
+    PSMI["PACKED_SMI\n(inteiros pequenos, densos)\nMAIS RAPIDO"]
+    PD["PACKED_DOUBLE\n(numeros c/ float, densos)"]
+    PE["PACKED_ELEMENTS\n(qualquer valor, denso)\narray de ponteiros"]
+    HSMI["HOLEY_SMI"]
+    HD["HOLEY_DOUBLE"]
+    HE["HOLEY_ELEMENTS"]
+    DICT["DICTIONARY\n(hash map indice to valor)\nMAIS LENTO"]
+    PSMI -->|"push um float"| PD
+    PD -->|"push uma string"| PE
+    PSMI -->|"abre um buraco"| HSMI
+    PD -->|"abre um buraco"| HD
+    PE -->|"abre um buraco"| HE
+    HSMI --> HD --> HE --> DICT
+    PE --> DICT
+```
+
+Leitura do diagrama: todas as setas apontam para baixo e para a direita — a V8 nunca promove de volta. Misturar tipos te empurra na horizontal (SMI → DOUBLE → ELEMENTS); abrir um buraco te empurra na vertical (PACKED → HOLEY); o fundo do poço é DICTIONARY, onde o array vira um hash map e perde toda a vantagem de contiguidade. O caminho ideal é ficar parado no topo-esquerdo.
+
 ```typescript
 const a = [1, 2, 3];      // PACKED_SMI: backing store contíguo, rápido
 a.push(4.5);              // vira PACKED_DOUBLE (irreversível)
@@ -225,7 +338,50 @@ const b = [1, 2, 3];
 b[100] = 1;               // vira HOLEY: 97 buracos, iteração mais lenta p/ sempre
 ```
 
-Em termos de complexidade, as operações de fim são amortizadas O(1) e as de início são O(n):
+#### O precipício do array holey, em código
+
+A teoria fica abstrata; o veneno é concreto. O modo de criar um buraco mais traiçoeiro é alocar por tamanho ou pular índices:
+
+```typescript
+// RUIM: nasce holey
+const a = new Array(10_000);  // 10k buracos → HOLEY desde o berço
+for (let i = 0; i < a.length; i++) a[i] = i; // preencher NÃO promove de volta
+
+// BOM: nasce e cresce packed
+const b: number[] = [];
+for (let i = 0; i < 10_000; i++) b.push(i);  // PACKED_SMI o tempo todo
+```
+
+Os dois terminam "cheios", mas `a` carrega a marca HOLEY para sempre: cada acesso da V8 inclui uma checagem de "essa posição existe?", e o loop perde otimizações de hot-path. Em microbenchmarks essa diferença chega a **vários múltiplos** num laço quente. A regra prática: **nunca pré-aloque com `new Array(n)`** se vai preencher por índice — comece com `[]` e use `push`.
+
+#### `delete arr[i]` abre buraco — não é "remover"
+
+Outro caminho silencioso para HOLEY:
+
+```typescript
+const arr = [10, 20, 30, 40];
+delete arr[1];     // arr é [10, <hole>, 30, 40], length AINDA é 4
+arr.length;        // 4 (!) — não removeu, esburacou
+arr[1];            // undefined
+
+arr.splice(1, 1);  // a forma certa de remover: [10, 30, 40], length 3
+```
+
+`delete` apaga a *propriedade* de índice 1, deixando um buraco e degradando o array para holey de forma permanente. Para remover de verdade, `splice` (que paga O(n) de deslocamento, mas mantém o array denso) ou `filter` (que gera um novo array packed).
+
+#### Tabela de complexidade dos métodos
+
+Útil ter na ponta da língua — a assimetria fim vs início/meio é a mesma do array dinâmico clássico:
+
+| Método | Complexidade | Por quê |
+| --- | --- | --- |
+| `push` / `pop` | O(1) amortizado | escreve/lê no fim |
+| `unshift` / `shift` | O(n) | desloca todos os elementos |
+| `splice(i, ...)` | O(n) | desloca a partir de `i` |
+| `indexOf` / `includes` / `find` | O(n) | varredura linear por valor |
+| `at(i)` / `arr[i]` | O(1) | acesso por índice |
+| `slice(a, b)` | O(b−a) | copia o intervalo (novo array) |
+| `concat` / spread `[...a]` | O(n) | copia tudo |
 
 ```typescript
 const arr = [1, 2, 3];
@@ -235,14 +391,45 @@ arr.unshift(0);  // O(n) — desloca TODOS à direita para abrir o índice 0
 arr.shift();     // O(n) — desloca todos à esquerda
 ```
 
-> [!tip] Typed arrays = array contíguo de verdade
-> Quando você precisa de números contíguos garantidos (processamento numérico, binário, performance), use **typed arrays**: `Int32Array`, `Float64Array`, `Uint8Array`. Eles são contíguos por especificação — não há elements kinds, não há holey, não há ponteiros. São o `int[]` do mundo JS.
-> ```typescript
-> const buf = new Int32Array(1000); // 4000 bytes contíguos, valores crus
-> buf[3] = 42;                       // sem boxing, sem indireção
-> ```
+#### Typed arrays e `ArrayBuffer`: contiguidade de verdade
 
-A lição: para a V8 te dar o array rápido (contíguo), mantenha-o **denso e homogêneo**. Arrays buracados ou de tipos misturados caem para representações mais lentas.
+Quando você precisa de números contíguos garantidos (processamento numérico, dados binários, performance crua), os arrays comuns não bastam — você quer **typed arrays**. Eles são contíguos **por especificação**: sem elements kinds, sem holey, sem ponteiros. São o `int[]` do mundo JS.
+
+O modelo tem duas camadas, e entender a separação é o ponto:
+
+- **`ArrayBuffer`** — um bloco de bytes **contíguo e de tamanho fixo** na heap. Bytes crus, sem interpretação. Você não lê dele diretamente.
+- **Views** — interpretam esses bytes num formato. `Int32Array` lê de 4 em 4 bytes como inteiros com sinal; `Float64Array` de 8 em 8 como doubles; `Uint8Array` byte a byte. A view não copia nada — ela é uma janela sobre o buffer.
+
+```typescript
+const buf = new ArrayBuffer(16);     // 16 bytes contíguos, crus
+const i32 = new Int32Array(buf);     // view: 4 inteiros de 4 bytes
+i32[0] = 42;                         // escreve sem boxing, sem indireção
+const u8 = new Uint8Array(buf);      // OUTRA view, MESMOS bytes
+u8[0];                               // 42 (em little-endian) — zero-cópia
+```
+
+Várias views podem compartilhar o **mesmo** `ArrayBuffer` — é literalmente o mesmo bloco visto de ângulos diferentes (o paralelo com a slice do Go é forte). O diagrama abaixo desenha isso.
+
+```mermaid
+flowchart TB
+    subgraph Buffer["ArrayBuffer (16 bytes contiguos)"]
+        direction LR
+        Bytes["b0 b1 b2 b3 | b4 b5 b6 b7 | b8 ... b15"]
+    end
+    I32["Int32Array view\n[ inteiro0 ][ inteiro1 ][ inteiro2 ][ inteiro3 ]\n(4 bytes cada)"]
+    U8["Uint8Array view\n[b0][b1][b2]...[b15]\n(1 byte cada)"]
+    DV["DataView\n(le qualquer offset,\nqualquer tipo, endianness escolhida)"]
+    Buffer --> I32
+    Buffer --> U8
+    Buffer --> DV
+```
+
+Leitura do diagrama: o `ArrayBuffer` é a memória; as views são lentes sobre ela. `Int32Array` agrupa os 16 bytes em 4 inteiros; `Uint8Array` enxerga os mesmos bytes como 16 valores; o **`DataView`** é a lente flexível para dados de formato misto — ele lê um inteiro de 16 bits aqui e um float de 32 ali, com endianness que você escolhe (ideal para parsear formatos binários de arquivo/rede). Nenhuma view duplica os bytes; escrever por uma muda o que as outras enxergam.
+
+> [!tip] Quando alcançar typed arrays
+> Loops numéricos pesados, manipulação de bytes (imagens, áudio, WebGL, protocolos de rede), ou qualquer caso onde a contiguidade e a ausência de boxing pagam. Para dados de **formato heterogêneo** num mesmo buffer, use `DataView`; para um único tipo numérico, a typed array correspondente é mais rápida.
+
+A lição geral do JS: para a V8 te dar o array rápido (contíguo), mantenha o array comum **denso e homogêneo** — ou, quando os números são o que importa, pule para typed arrays e fixe a contiguidade na marra.
 
 ### Python: `list` é um array de ponteiros, sempre
 
@@ -277,8 +464,32 @@ nums.pop()           # O(1): remove do fim
 nums.pop(0)          # O(n): remove do início, desloca todos
 ```
 
+#### Por que CPython *não pode* guardar inteiros crus
+
+Não é preguiça de implementação — é uma amarra do C API. A estrutura `PyListObject` é literalmente `PyObject **ob_item`: um vetor de ponteiros. E `PyList_GET_ITEM(list, i)` é uma **macro** que devolve esse ponteiro direto, exposta a milhares de extensões C que dependem dela.
+
+Para guardar inteiros desboxados, CPython teria que quebrar esse contrato. O PyPy consegue (ele detecta listas só-de-inteiros e usa um array C de `long`), mas o CPython está preso ao layout de ponteiros por compatibilidade. É por isso que `[1, 2, 3]` carrega o overhead de três objetos `PyLongObject` mesmo para três números minúsculos.
+
+#### Detalhes idiomáticos que mudam o custo
+
+- **Slicing copia.** `nums[1:4]` cria uma **nova lista** (cópia rasa: novos slots, mas apontando para os mesmos objetos). `nums[:]` é o idioma clássico de copiar a lista inteira. Isso é O(k) no tamanho da fatia, não O(1) como a slice "janela" do Go — em Python, fatiar duplica o array de ponteiros.
+- **List comprehension** (`[x*2 for x in nums]`) é o jeito idiomático e mais rápido de construir uma lista derivada; o interpretador tem bytecode dedicado para ela, batendo um `for` com `append` manual.
+- **Indexação negativa.** `nums[-1]` é o último elemento, `nums[-2]` o penúltimo — açúcar que vira `len + índice` por baixo. Acesso ainda O(1).
+
+```python
+nums = [10, 20, 30, 40]
+nums[-1]                 # 40 — indexação negativa, O(1)
+fatia = nums[1:3]        # NOVA lista [20, 30] — copia os slots
+dobro = [x*2 for x in nums]  # list comprehension: [20,40,60,80]
+```
+
 > [!info] Quando você precisa de números contíguos em Python
-> A `list` nunca te dá valores contíguos. Para isso, há duas saídas: o módulo `array` da stdlib (`array('i', [1,2,3])` — um array de inteiros C de verdade) ou, para qualquer coisa séria, **NumPy** (`np.array([1,2,3])` — `ndarray` contíguo, vetorizado, com localidade de cache real). O custo "tudo-é-objeto" é o motivo de loops numéricos em Python puro serem lentos e de NumPy existir.
+> A `list` nunca te dá valores contíguos. Há três saídas, em ordem crescente de seriedade:
+> - O módulo **`array`** da stdlib: `array('i', [1,2,3])` é um array de inteiros C de verdade — typed, contíguo, sem boxing. Útil quando você só quer densidade, sem dependências.
+> - **`bytearray`** e **`memoryview`**: `bytearray` é uma sequência mutável de bytes contíguos; `memoryview(obj)` te dá uma **janela zero-cópia** sobre os bytes de outro objeto (um buffer, um `bytearray`, um `ndarray`), parente direto do `DataView`/typed array do JS.
+> - **NumPy**: `np.array([1,2,3])` é um **`ndarray`** — um segmento contíguo de memória de um único `dtype`, com **strides** (os passos em bytes para andar em cada dimensão). É o que dá a NumPy localidade de cache real e **vetorização** (operar o array todo em C, sem o loop Python). As fatias do NumPy, ao contrário das da `list`, são **views zero-cópia** strided, não cópias.
+>
+> O custo "tudo-é-objeto" da `list` é exatamente o motivo de loops numéricos em Python puro serem lentos e de NumPy existir.
 
 ### Go: array é valor, slice é um header de 3 palavras
 
@@ -331,10 +542,37 @@ Leitura do diagrama: `s1` e `s2` são dois headers diferentes, mas seus ponteiro
 O `append` faz a slice crescer. Desde **Go 1.18**, a fórmula mudou: em vez do antigo "dobra até 1024, depois 1,25×", a função `nextslicecap` (em `runtime/slice.go`) suaviza a curva — **dobra a capacidade até 256 elementos**, e a partir daí aplica `newcap += (newcap + 3·256) >> 2` iterativamente, dando um fator que desce gradualmente de 2× rumo a ~1,25× conforme a slice cresce.
 
 ```go
-s := make([]int, 0, 4)  // len=0, cap=4
+s := make([]int, 0, 4)  // len=0, cap=4 — pré-aloca o backing, evita resizes
 s = append(s, 1, 2, 3)  // len=3, cap=4: cabe, sem realocar
 s = append(s, 4, 5)     // estourou cap 4 → dobra para 8, copia, REALOCA
 ```
+
+`make([]T, len, cap)` é o jeito de pré-alocar: `len` é quantos elementos já existem (zerados), `cap` é quanto cabe antes do primeiro resize. Saber a contagem e passar `cap` é o equivalente Go do `ensureCapacity`.
+
+#### `nil slice` vs `empty slice`: parecidas, não idênticas
+
+Há dois jeitos de ter uma slice "vazia", e a diferença aparece em casos sutis:
+
+```go
+var s1 []int      // nil slice: ptr=nil, len=0, cap=0
+s2 := []int{}     // empty slice: ptr aponta p/ array vazio, len=0, cap=0
+```
+
+Para o uso normal elas são intercambiáveis — `len`, `cap`, `range` e `append` se comportam igual nas duas (você pode dar `append` numa slice nil sem problema; ela vira não-nil). A divergência mora em dois lugares: `s1 == nil` é `true` e `s2 == nil` é `false`; e ao serializar para JSON, a nil vira `null` enquanto a empty vira `[]`. O estilo idiomático recomendado pela comunidade é **preferir nil** para "nenhum elemento".
+
+#### A pegadinha do retorno de `append`
+
+A mais comum de todas em Go: `append` **devolve uma nova slice header** e você precisa reatribuir. Se ele realocou, a slice antiga continua apontando para o backing array velho.
+
+```go
+s := make([]int, 0, 2)
+append(s, 1)         // ERRADO: descarta o retorno, s não muda
+s = append(s, 1)     // CERTO: reatribui o header devolvido
+```
+
+Pior: dentro de uma função, se você dá `append` num parâmetro slice e ele **realoca**, o chamador **não vê** a mudança — porque a slice é passada por valor (o header é copiado). Se *não* realocou, escritas nos elementos existentes aparecem, mas o novo elemento não. O padrão seguro é devolver a slice: `func add(s []int, x int) []int { return append(s, x) }`.
+
+#### `copy` e a expressão de três índices
 
 > [!danger] A pegadinha do aliasing
 > Porque slices compartilham backing arrays, `append` esconde uma armadilha. Se há espaço (`len < cap`), `append` escreve **no mesmo backing array** — e silenciosamente sobrescreve o vizinho:
@@ -346,12 +584,41 @@ s = append(s, 4, 5)     // estourou cap 4 → dobra para 8, copia, REALOCA
 > ```
 > Se **não** há espaço (`len == cap`), `append` realoca para um novo backing array — e aí as slices **silenciosamente se desconectam**: a partir desse append elas não compartilham mais nada. O mesmo `append` ora muta o vizinho, ora não — dependendo da capacidade. Esse é o bug de slice clássico de Go.
 
-A defesa contra aliasing acidental é a **expressão de slice completa** `s[a:b:c]`, que limita o `cap` (terceiro índice = até onde vai a capacidade), forçando o próximo `append` a realocar em vez de pisar no vizinho. E `copy(dst, src)` faz uma cópia explícita e segura quando você quer independência real:
+A defesa contra aliasing acidental é a **expressão de slice completa (de três índices)** `s[a:b:c]`. O terceiro índice limita o `cap`: a slice resultante tem `len = b−a` e `cap = c−a`. Cravando `cap` no tamanho exato, você força o próximo `append` a **realocar** em vez de pisar no vizinho.
+
+E `copy(dst, src)` faz uma cópia explícita e segura quando você quer independência real. Ele copia `min(len(dst), len(src))` elementos e **devolve quantos copiou** — por isso `dst` precisa ter `len` suficiente (não basta `cap`):
 
 ```go
 a := base[0:2:2]        // cap forçado a 2 → append SEMPRE realoca, não toca base
 b := make([]int, len(src))
-copy(b, src)            // b é independente de src
+n := copy(b, src)       // b é independente de src; n = nº de elementos copiados
+```
+
+#### Slices multidimensionais: também não são contíguas
+
+Como em Java, `[][]int` em Go é uma **slice de slices** — cada linha é uma slice independente, com seu próprio backing array, possivelmente espalhada pela memória. Não é uma matriz contígua.
+
+```go
+grid := make([][]int, linhas)
+for i := range grid {
+    grid[i] = make([]int, cols)  // cada linha alocada à parte
+}
+```
+
+Quando a contiguidade importa (matrizes numéricas, cache), o idioma é o mesmo do Java: um `[]int` **achatado** indexado por `i*cols + j`. Uma alocação, um bloco contíguo, zero indireção de linha.
+
+#### Bounds checking e panics
+
+Como Java e Python, Go **checa os limites**: indexar fora de `[0, len)` dispara um **`panic` em runtime** (`index out of range`), não uma leitura de memória inválida. O compilador insere essas checagens, mas otimiza com **BCE (bounds-check elimination)** quando consegue provar que o índice é seguro — um motivo para preferir slices locais a globais em hot paths, já que slices de pacote são menos amigáveis à BCE.
+
+#### Arrays são comparáveis; slices não
+
+Um detalhe que aparece em entrevista de Go: **arrays** (`[3]int`) são **comparáveis** com `==` e podem ser **chaves de map** — porque têm tamanho fixo e valor bem definido. **Slices não são comparáveis** (só contra `nil`) e **não podem** ser chaves de map, porque carregam um ponteiro mutável para dados compartilhados. É um dos poucos lugares onde o array de tamanho fixo, raro no Go idiomático, ganha utilidade real.
+
+```go
+type Ponto [2]int
+m := map[Ponto]string{{1, 2}: "a"}  // array como chave: OK
+// chave de slice → erro de compilação: "invalid map key type []int"
 ```
 
 ### A síntese senior: quatro modelos de memória
@@ -401,6 +668,47 @@ E sobre tudo isso paira o twist do Go: a **slice é um header `(ptr, len, cap)`*
 
 > [!quote] A resposta de uma frase
 > *"It's the same array concept with four memory models. Java splits primitives from objects — `int[]` is contiguous values, `Integer[]` is boxed pointers. Python's `list` is always an array of pointers, never raw values. JavaScript's V8 picks a representation by elements kind — packed-Smi arrays are contiguous, holey or mixed arrays fall back to slower stores. And Go's slice is a three-word header over a backing array, which is fast to pass but creates aliasing gotchas with append."*
+
+## Temas transversais: o que as quatro têm (e não têm) em comum
+
+Recuando das particularidades, três eixos atravessam as quatro linguagens e rendem boas respostas comparativas.
+
+### Bounds checking: três protegem, uma cala
+
+Indexe fora dos limites e veja a divergência:
+
+- **Java** lança `ArrayIndexOutOfBoundsException`.
+- **Python** lança `IndexError`.
+- **Go** dispara um `panic` (`index out of range`).
+- **JavaScript** **não reclama**: `arr[999]` num array de 3 simplesmente devolve `undefined`, e `arr[999] = 1` cria um buraco (esburaca o array).
+
+Os três primeiros compram segurança de memória ao custo de uma comparação por acesso — e os três têm compiladores/JITs que **eliminam** essa checagem (bounds-check elimination) quando provam o índice seguro, tipicamente num `for` de 0 a `length-1`. O JS troca a checagem pela semântica permissiva de objeto, que é justamente a porta de entrada dos arrays holey.
+
+### Localidade de cache: a métrica que o Big-O esconde
+
+O fio que costura toda a comparação. Os modelos de **valores contíguos** (`int[]`, `[]int`, typed arrays, NumPy `ndarray`, PACKED_SMI) ganham um presente do hardware: ler um elemento traz os vizinhos no mesmo cache line, então iterar **voa**. Os modelos de **ponteiros** (`Integer[]`, `list` do Python, PACKED_ELEMENTS) têm o array de endereços contíguo, mas cada acesso salta para um objeto espalhado — cache miss atrás de cache miss.
+
+É por isso que, na prática, um array de valores pode bater por **ordens de magnitude** uma estrutura com Big-O igual ou melhor. O Big-O conta operações; a localidade decide o custo de cada uma. É exatamente o contraste que volta em [[03 - Listas encadeadas]], onde cada nó é um salto de ponteiro.
+
+### Invalidação ao mutar durante a iteração
+
+Mutar a coleção enquanto a percorre é um campo minado universal, com defesas diferentes:
+
+- **Java** te avisa: `ConcurrentModificationException` via iterador fail-fast (use `it.remove()`).
+- **Go** não avisa, mas `range` **fixa `len` no início** do loop — appends durante a volta não aparecem nela, e a slice pode realocar por baixo.
+- **Python** silenciosamente **pula elementos** se você remover durante o `for` (os índices deslizam); o idioma é iterar sobre uma cópia (`for x in lista[:]`) ou construir uma lista nova.
+- **JavaScript** também escorrega: remover durante um `for` clássico bagunça os índices; `forEach` ignora elementos adicionados depois.
+
+A lição transversal: **não mute enquanto itera**. Filtre para uma estrutura nova, ou use o removedor do próprio iterador onde existe.
+
+### Imutabilidade: opções desiguais
+
+Quando você quer uma sequência que não muda, o suporte varia bastante:
+
+- **Java** — `List.of(...)` e `List.copyOf(...)` devolvem listas imutáveis (lançam em qualquer mutação). `Arrays.asList` é só de tamanho fixo, não imutável.
+- **JavaScript** — `Object.freeze(arr)` congela em runtime; em TypeScript, `as const` e `readonly T[]` dão imutabilidade em tempo de compilação.
+- **Python** — a **tupla** (`(1, 2, 3)`) é a sequência imutável nativa; útil inclusive como chave de dict, onde a `list` não serve.
+- **Go** — **não tem** slice imutável nem `const` para slices/arrays (só para tipos primitivos). A imutabilidade é por convenção ou por bibliotecas externas de read-only — uma lacuna reconhecida da linguagem.
 
 ## Padrões em entrevista: arrays são o palco
 
@@ -519,11 +827,27 @@ Falar de arrays com fluência em inglês é mostrar que você entende o nível d
 - [go/src/runtime/slice.go · GitHub](https://github.com/golang/go/blob/master/src/runtime/slice.go) — `growslice`/`nextslicecap`, header da slice.
 - [Go: How slices grow · Graham King](https://darkcoding.net/software/go-how-slices-grow/) — crescimento de slice e aliasing explicados.
 - [ArrayList.grow — formula `oldCapacity + (oldCapacity >> 1)`](https://medium.com/@ashutosh-ceg/day-12-arraylist-initial-capacity-growth-rate-trick-question-2e2ff73e7f11) — crescimento 1,5× do `ArrayList` (verificável também no fonte do OpenJDK `ArrayList.java`).
+- [CopyOnWriteArrayList (Java SE 21) · Oracle docs](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html) — iterador snapshot, custo de escrita (cópia do array a cada mutação), uso quando leituras dominam.
+- [Vector (Java) · Oracle docs](https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/util/Vector.html) — iteradores fail-fast e `ConcurrentModificationException`; status legado e sincronização por método.
+- [Jagged Arrays in Java · Baeldung](https://www.baeldung.com/java-jagged-arrays) — `int[][]` como array de arrays (irregular, não contíguo).
+- [Java Arrays.sort explained](https://medium.com/@AlexanderObregon/javas-arrays-sort-explained-d7a2d48f1cc0) — Dual-Pivot Quicksort para primitivos, TimSort para objetos.
+- [JavaScript typed arrays · MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Typed_arrays) — `ArrayBuffer` contíguo, views (`Int32Array`, `Uint8Array`), `DataView` para formato misto.
+- [Sparse Arrays and JS performance / packed vs holey](https://medium.com/@gursewaksingh3789/packed-vs-holey-arrays-in-v8-whats-the-deal-fb4073cae4ac) — `delete arr[i]` esburaca, "holey para sempre", impacto no hot path.
+- [Time complexity of JS array methods](https://www.mbloging.com/post/understanding-time-complexity-of-array-operations-in-javascript) — `splice`/`shift`/`unshift` O(n), `push`/`pop` O(1), `indexOf` O(n).
+- [The N-dimensional array (ndarray) · NumPy docs](https://numpy.org/doc/stable/reference/arrays.ndarray.html) — segmento contíguo + strides + dtype; views strided (slicing zero-cópia).
+- [CPython não pode guardar inteiros desboxados · Victor Stinner](https://vstinner.github.io/c-api-abstract-pyobject.html) — `PyList_GET_ITEM` como macro força o layout de `PyObject*`.
+- [Empty vs nil slice in Go · gosamples.dev](https://gosamples.dev/empty-vs-nil-slice/) — nil vs empty, comportamento de `==`/JSON.
+- [Go slice gotchas · Redowan](https://rednafi.com/go/slice-gotchas/) — retorno de `append`, aliasing, três índices.
+- [BCE (Bounds Check Elimination) · Go 101](https://go101.org/optimizations/5-bce.html) — checagem de limites, panic e eliminação pelo compilador.
+- [Map Keys · Boldly Go](https://boldlygo.tech/archive/2023-05-11-map-keys/) — arrays comparáveis (chave de map), slices não.
+- [Immutability across languages](https://medium.com/@mate.subicz/typescript-object-immutability-as-const-vs-object-freeze-vs-deepfreeze-vs-immer-vs-enum-680f6f71bf84) — `Object.freeze`/`as const`; Go sem slice imutável nativo.
 - [Big-O Cheat Sheet](https://bigocheatsheet.com/) — complexidades de array e lista dinâmica.
 - [Visualgo — Arrays](https://visualgo.net/) — visualização interativa.
 
 > [!info] Lastro
 > Os quatro comportamentos centrais foram verificados em fonte primária: V8 elements kinds (blog oficial do V8), crescimento da `list` (CPython `listobject.c`), crescimento e aliasing de slice (commit e `slice.go` do Go), crescimento 1,5× do `ArrayList` (fórmula `oldCapacity + (oldCapacity >> 1)` do OpenJDK). A fórmula exata de over-allocation do CPython e o threshold 256 do Go 1.18 vêm do código-fonte citado; valores como cache line de 64 bytes e overhead de ~16 bytes por `Integer` são típicos de JVMs HotSpot de 64 bits e podem variar por plataforma/configuração.
+>
+> Os acréscimos desta segunda passada também foram lastreados: o iterador snapshot e o custo de cópia por escrita do `CopyOnWriteArrayList` vêm da Javadoc oficial; o caráter fail-fast e legado de `Vector`/`Stack`, idem; a escolha Dual-Pivot Quicksort (primitivos) vs TimSort (objetos) do `Arrays.sort` e o `int[][]` como array de arrays irregular são comportamento documentado da plataforma; `ArrayBuffer`/`DataView`/typed arrays vêm da MDN; o "holey para sempre" e a tabela de complexidade dos métodos JS de fontes alinhadas ao guia de elements kinds do V8; o `ndarray` contíguo/strided e o slicing zero-cópia da documentação da NumPy; a impossibilidade de inteiros desboxados em CPython da macro `PyList_GET_ITEM`; nil vs empty slice, o retorno de `append`, a expressão de três índices, BCE e a comparabilidade de arrays (chave de map) vs slices de fontes da comunidade Go consistentes com a especificação. Os ganhos de performance citados como "ordens de magnitude" / "vários múltiplos" (holey, cache locality) são qualitativos e dependem de workload, engine e hardware — a direção é robusta, o número exato não.
 
 ## Veja também
 
