@@ -10,7 +10,7 @@ Conceitos base de ciência da computação e engenharia de software.
 
 ## Estruturas de Dados e Algoritmos
 
-- [[Algoritmos]]
+- [[03-Dominios/Fundamentos/Algoritmos/index|Algoritmos]] — galho de 14 notas (complexidade, recorrências e algoritmos clássicos)
 - [[03-Dominios/Fundamentos/Estruturas de Dados/index|Estruturas de Dados]] — galho de 13 notas (comparação Java/TS/Python/Go)
 
 ## Banco de Dados

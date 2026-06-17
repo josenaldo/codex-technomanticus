@@ -22,7 +22,7 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 ## Conteúdo
 
 - [[Fundamentos]] — visão geral da área
-- [[Algoritmos]] — algoritmos clássicos, análise e complexidade
+- [[03-Dominios/Fundamentos/Algoritmos/index|Algoritmos]] — galho: análise de complexidade (Big-O, recorrências, Teorema Mestre) e algoritmos clássicos (ordenação, busca, two pointers, divisão e conquista, DP, greedy, backtracking)
 - [[03-Dominios/Fundamentos/Estruturas de Dados/index|Estruturas de Dados]] — galho: arrays, listas, hash, árvores, heaps, tries, grafos e especializadas, com comparação de implementação Java/TS/Python/Go
 - [[Orientação a Objetos]] — princípios e padrões de OO
 - [[Banco de dados]] — modelagem, SQL, normalização, índices
