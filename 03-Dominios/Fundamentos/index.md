@@ -26,7 +26,7 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 - [[03-Dominios/Fundamentos/Estruturas de Dados/index|Estruturas de Dados]] — galho: arrays, listas, hash, árvores, heaps, tries, grafos e especializadas, com comparação de implementação Java/TS/Python/Go
 - [[03-Dominios/Fundamentos/Orientação a Objetos/index|Orientação a Objetos]] — galho: pilares (encapsulamento, abstração, herança, polimorfismo), interfaces, composição sobre herança, acoplamento/coesão, modelagem rica e como o modelo OO diverge entre linguagens
 - [[03-Dominios/Fundamentos/SOLID/index|SOLID]] — galho: os cinco princípios de design OO (SRP, OCP, LSP, ISP, DIP), DI/IoC e a leitura crítica
-- [[Banco de dados]] — modelagem, SQL, normalização, índices
+- [[03-Dominios/Fundamentos/Banco de Dados/index|Banco de Dados]] — galho: modelo relacional, SQL, normalização, transações (ACID), índices/EXPLAIN, performance, concorrência, distribuídos e NoSQL
 - [[Redes e Protocolos]] — TCP/IP, HTTP, modelo OSI
 - [[Testes]] — testes unitários, integração, TDD, mocks
 - [[03-Dominios/Fundamentos/Complexidade de Software/index|Complexidade de Software]] — galho: o que torna software difícil e como gerenciá-lo (essencial vs. acidental, abstração, as três dívidas, sistemas). Inclui [[04 - O programa como teoria|O programa como teoria]] (Naur) e [[06 - Abstrações que vazam|Abstrações que vazam]] (Spolsky)

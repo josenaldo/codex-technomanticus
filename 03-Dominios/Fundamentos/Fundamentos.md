@@ -15,7 +15,7 @@ Conceitos base de ciência da computação e engenharia de software.
 
 ## Banco de Dados
 
-- [[Banco de dados]]
+- [[03-Dominios/Fundamentos/Banco de Dados/index|Banco de Dados]] — galho de 16 notas (modelo relacional, SQL, transações, índices/EXPLAIN, performance, concorrência, distribuídos e NoSQL)
 
 ## Paradigmas
 
