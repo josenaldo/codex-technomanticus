@@ -63,8 +63,8 @@ A [[04 - Herança|herança]] é o eixo onde as quatro mais divergem. Quantas mã
   por **MRO (Method Resolution Order)** via algoritmo **C3** — uma linearização determinística que
   define em que ordem Python procura o método. (Detalhe e exemplo de C3 em [[04 - Herança]].)
 - **Go**: **NENHUMA herança**. Não existe `extends`, não existe superclasse. Em vez disso, Go tem
-  **struct embedding** (composição com promoção de métodos). É [[07 - Composição sobre
-  herança|composição sobre herança]] *imposta pela linguagem* — você não tem escolha.
+  **struct embedding** (composição com promoção de métodos). É
+  [[07 - Composição sobre herança|composição sobre herança]] *imposta pela linguagem* — você não tem escolha.
 
 Repare na assimetria: em Java você *pode* compor mas o caminho fácil é herdar; em Go você *só* pode
 compor. A linguagem te empurra para o idioma certo.

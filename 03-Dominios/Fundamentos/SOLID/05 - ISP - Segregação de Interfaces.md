@@ -202,8 +202,8 @@ ao mesmo cliente. Segregar é restaurar a coesão.
 
 ## Entre linguagens: Go já nasce com ISP
 
-Aqui vale uma volta por [[11 - Como o modelo OO difere entre linguagens|como o OO difere
-entre linguagens]], porque **Go** ilustra o ISP de um jeito quase poético. A cultura de Go
+Aqui vale uma volta por
+[[11 - Como o modelo OO difere entre linguagens|como o OO difere entre linguagens]], porque **Go** ilustra o ISP de um jeito quase poético. A cultura de Go
 prega interfaces minúsculas — frequentemente de **um único método**. As mais famosas da
 biblioteca padrão são `io.Reader` e `io.Writer`:
 
