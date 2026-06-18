@@ -28,7 +28,7 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 - [[03-Dominios/Fundamentos/SOLID/index|SOLID]] — galho: os cinco princípios de design OO (SRP, OCP, LSP, ISP, DIP), DI/IoC e a leitura crítica
 - [[03-Dominios/Fundamentos/Banco de Dados/index|Banco de Dados]] — galho: modelo relacional, SQL, normalização, transações (ACID), índices/EXPLAIN, performance, concorrência, distribuídos e NoSQL
 - [[03-Dominios/Fundamentos/Redes e Protocolos/index|Redes e Protocolos]] — galho: modelo de camadas, TCP/UDP/DNS/TLS, HTTP (métodos, caching, CORS, HTTP/2-3), REST/GraphQL/gRPC, WebSocket/SSE, latência, load balancing/CDN e resiliência
-- [[Testes]] — testes unitários, integração, TDD, mocks
+- [[03-Dominios/Fundamentos/Testes/index|Testes]] — galho: estratégia de testes, pirâmide, tipos, test doubles, TDD, técnicas de caso/edge cases, flaky, coverage/mutation e CI/CD (stack-agnóstico)
 - [[03-Dominios/Fundamentos/Complexidade de Software/index|Complexidade de Software]] — galho: o que torna software difícil e como gerenciá-lo (essencial vs. acidental, abstração, as três dívidas, sistemas). Inclui [[04 - O programa como teoria|O programa como teoria]] (Naur) e [[06 - Abstrações que vazam|Abstrações que vazam]] (Spolsky)
 - [[Dicionário de Fundamentos]] — glossário de termos fundamentais
 

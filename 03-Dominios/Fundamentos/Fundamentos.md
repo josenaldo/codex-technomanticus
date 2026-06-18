@@ -24,7 +24,7 @@ Conceitos base de ciência da computação e engenharia de software.
 
 ## Qualidade de Software
 
-- [[Testes]]
+- [[03-Dominios/Fundamentos/Testes/index|Testes]] — galho de 16 notas (pirâmide, tipos, test doubles, TDD, técnicas de caso/edge cases, flaky, coverage/mutation, CI/CD; stack-agnóstico, linka Java/JS)
 
 ## Redes e Infraestrutura
 
