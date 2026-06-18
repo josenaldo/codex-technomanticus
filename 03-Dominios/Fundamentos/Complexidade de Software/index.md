@@ -10,6 +10,7 @@ tags:
   - complexidade-de-software
   - moc
 aliases:
+  - Complexidade de Software
   - Galho 12 - Complexidade de Software
   - A Complexidade do Software
 ---
