@@ -234,7 +234,7 @@ A ausência de estado de conexão, que dá leveza ao UDP, cobra um preço do out
 
 A maioria dos dispositivos não tem IP público próprio; eles vivem atrás de um **NAT** (Network Address Translation), que traduz endereços privados internos para o IP público do roteador. O NAT precisa lembrar "este pacote que está voltando pertence àquela conversa interna" — e ele monta essa memória observando o *estado* da conexão. Com TCP, o handshake torna o início da conexão óbvio. Com UDP, não há handshake: o NAT tem que adivinhar, mantendo mapeamentos por tempo limitado e fechando-os no escuro.
 
-Isso torna a conexão direta entre dois pares atrás de NATs (uma chamada de vídeo P2P, por exemplo) genuinamente difícil. A solução, usada em [[09 - WebSocket e tempo real|WebRTC]] e afins, é um trio de protocolos:
+Isso torna a conexão direta entre dois pares atrás de NATs (uma chamada de vídeo P2P, por exemplo) genuinamente difícil. A solução, usada em WebRTC e afins, é um trio de protocolos:
 
 - **STUN** — o par pergunta a um servidor externo "qual é o meu IP e porta públicos, vistos de fora?". Descobre como o NAT o enxerga.
 - **TURN** — quando a conexão direta é impossível, um servidor de *relay* fica no meio e repassa o tráfego. Funciona sempre, mas custa banda.

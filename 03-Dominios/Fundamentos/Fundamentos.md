@@ -28,7 +28,7 @@ Conceitos base de ciência da computação e engenharia de software.
 
 ## Redes e Infraestrutura
 
-- [[Redes e Protocolos]]
+- [[03-Dominios/Fundamentos/Redes e Protocolos/index|Redes e Protocolos]] — galho de 15 notas (camadas, TCP/UDP/DNS/TLS, HTTP e sua evolução, caching, CORS, REST/GraphQL/gRPC, WebSocket/SSE, latência, load balancing/CDN, resiliência)
 
 ## Complexidade de Software
 
