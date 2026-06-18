@@ -23,6 +23,10 @@ Conceitos base de ciência da computação e engenharia de software.
 - [[03-Dominios/Fundamentos/Orientação a Objetos/index|Orientação a Objetos]] — galho de 13 notas (pilares, composição, modelagem rica, divergência cross-language)
 - [[03-Dominios/Fundamentos/SOLID/index|SOLID]] — galho de 8 notas (os cinco princípios + DI/IoC + crítica)
 
+## Concorrência
+
+- [[03-Dominios/Fundamentos/Concorrência e Paralelismo/index|Concorrência e Paralelismo]] — galho de 18 notas (race conditions, atomicidade/visibilidade/ordenação, locks/semáforos, deadlock, lock-free, STM, os 5 modelos — memória compartilhada/CSP/atores/event loop/dados —, leis de escala e padrões; stack-agnóstico, linka Java)
+
 ## Qualidade de Software
 
 - [[03-Dominios/Fundamentos/Testes/index|Testes]] — galho de 16 notas (pirâmide, tipos, test doubles, TDD, técnicas de caso/edge cases, flaky, coverage/mutation, CI/CD; stack-agnóstico, linka Java/JS)
