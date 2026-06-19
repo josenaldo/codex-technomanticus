@@ -26,6 +26,7 @@ Conceitos base de ciência da computação e engenharia de software.
 ## Concorrência
 
 - [[03-Dominios/Fundamentos/Concorrência e Paralelismo/index|Concorrência e Paralelismo]] — galho de 18 notas (race conditions, atomicidade/visibilidade/ordenação, locks/semáforos, deadlock, lock-free, STM, os 5 modelos — memória compartilhada/CSP/atores/event loop/dados —, leis de escala e padrões; stack-agnóstico, linka Java)
+- [[03-Dominios/Fundamentos/Sistemas Operacionais/index|Sistemas Operacionais]] — galho de 14 notas (kernel/user, system calls, processos/threads, escalonamento, memória virtual/paginação, thrashing, IPC, I/O, sistemas de arquivos, journaling, virtualização/containers; teoria, linka Infraestrutura)
 
 ## Qualidade de Software
 
