@@ -13,6 +13,10 @@ Conceitos base de ciência da computação e engenharia de software.
 - [[03-Dominios/Fundamentos/Algoritmos/index|Algoritmos]] — galho de 14 notas (complexidade, recorrências e algoritmos clássicos)
 - [[03-Dominios/Fundamentos/Estruturas de Dados/index|Estruturas de Dados]] — galho de 13 notas (comparação Java/TS/Python/Go)
 
+## Teoria da Computação
+
+- [[03-Dominios/Fundamentos/Teoria da Computação/index|Teoria da Computação]] — galho de 17 notas (autômatos finitos/de pilha e linguagens formais, hierarquia de Chomsky, pumping lemmas, máquina de Turing e tese de Church-Turing, computabilidade — problema da parada, reduções, teorema de Rice — e complexidade formal — P, NP, NP-completude/Cook-Levin, P vs NP; dono do tratamento formal de P/NP que Algoritmos defere)
+
 ## Banco de Dados
 
 - [[03-Dominios/Fundamentos/Banco de Dados/index|Banco de Dados]] — galho de 16 notas (modelo relacional, SQL, transações, índices/EXPLAIN, performance, concorrência, distribuídos e NoSQL)
