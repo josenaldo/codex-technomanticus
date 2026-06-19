@@ -67,6 +67,6 @@ Embeddings são a ponte entre palavras (mundo humano) e números (mundo computac
 
 ## Ver também
 
+- [[03 - Embeddings — representação semântica]] <!-- sugestão; validar -->
 - [[02 - Tokens e tokenização]] <!-- sugestão; validar -->
 - [[03 - A janela de contexto]] <!-- sugestão; validar -->
-- 💡 Lacuna: nenhuma nota cobre Embeddings especificamente — candidata a nota nova "Embeddings e representação vetorial". <!-- sugestão -->

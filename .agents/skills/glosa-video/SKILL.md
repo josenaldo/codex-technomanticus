@@ -75,7 +75,7 @@ Todos os comandos usam `uvx yt-dlp` (não instalar global; o `uv` já está na m
 - **Momentos-chave** — capítulos reais do vídeo como `- [mm:ss] — tópico`, tipicamente 4-12 (mais se o vídeo for um passo-a-passo longo).
 - **Citações** — 3-5 trechos verbatim **na língua original**, cada um com `[mm:ss]`.
 - **Meu comentário** — placeholder literal, nunca preenchido.
-- **Ver também** — 1-4 wikilinks pras notas existentes de melhor encaixe. Buscar em `[pasta-alvo]` (se dado) ou no vault, por interseção de tags/tema. Marcar como sugestão (`<!-- sugestão; validar -->`). Sem match → `-`.
+- **Ver também** — 1-4 wikilinks pras notas existentes de melhor encaixe. `[pasta-alvo]` é só uma **dica de prioridade**, NÃO um escopo exclusivo: sempre varra TAMBÉM o vault inteiro (sobretudo galhos vizinhos em `03-Dominios/`) por interseção de tags/tema. Antes de declarar lacuna, confirme com uma busca global (ex: `find 03-Dominios -iname "*<tema>*"`) — um tema pode ter nota em outro domínio (ex: Embeddings vive em `RAG e Vector Databases`, não em `Anatomia dos LLMs`). Marcar como sugestão (`<!-- sugestão; validar -->`). Só declare 💡 lacuna se a busca global não achar nada. Sem match → `-`.
 
 ## Template do arquivo (vídeo)
 
