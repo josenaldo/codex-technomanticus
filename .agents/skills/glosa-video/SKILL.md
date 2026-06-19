@@ -72,7 +72,7 @@ Todos os comandos usam `uvx yt-dlp` (não instalar global; o `uv` já está na m
 
 - **TL;DR** — 1-3 frases PT-BR com o argumento do vídeo.
 - **Pontos-chave** — 5-7 bullets PT-BR fiéis à transcrição (sem inferência externa).
-- **Momentos-chave** — 4-10 marcos `- [mm:ss] — tópico` (capítulos).
+- **Momentos-chave** — capítulos reais do vídeo como `- [mm:ss] — tópico`, tipicamente 4-12 (mais se o vídeo for um passo-a-passo longo).
 - **Citações** — 3-5 trechos verbatim **na língua original**, cada um com `[mm:ss]`.
 - **Meu comentário** — placeholder literal, nunca preenchido.
 - **Ver também** — 1-4 wikilinks pras notas existentes de melhor encaixe. Buscar em `[pasta-alvo]` (se dado) ou no vault, por interseção de tags/tema. Marcar como sugestão (`<!-- sugestão; validar -->`). Sem match → `-`.
