@@ -45,6 +45,7 @@ O alicerce. O que é um LLM, como texto vira tokens, o que limita o que o modelo
 
 - [[01 - O que é um LLM]] — definição, categorias (dense vs MoE), estado da arte 2026
 - [[02 - Tokens e tokenização]] — BPE, vocabulário, como texto vira números, custos por token
+- [[02b - Embeddings — do token ao vetor]] — como o ID do token vira um vetor com significado; geometria do significado; estático vs contextual
 - [[03 - A janela de contexto]] — input vs output tokens, limites reais, "lost in the middle"
 - [[04 - Atenção e o mecanismo transformer]] — self-attention, Q/K/V, multi-head, complexidade quadrática
 

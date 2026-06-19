@@ -9,9 +9,12 @@ video_id: _G_--YC5Xd4
 duration: "00:18:20"
 published: 2025-02-17
 read: 2026-06-18
+updated: 2026-06-19
 type: glosa
-progress: backlog
+progress: done
 status: lido
+promovida_em:
+  - "[[02b - Embeddings — do token ao vetor]]"
 tags: [embeddings, llm, transformers, representacao-vetorial, janela-de-contexto]
 lang: pt
 publish: false
