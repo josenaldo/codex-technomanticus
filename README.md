@@ -70,6 +70,7 @@ Pra reduzir o atrito do "li algo, quero guardar":
 - Cole o link em `01-Pergaminhos/entradas.md` quando aparecer
 - Quando ler, invoque `/glosa <url>` — a skill faz o WebFetch, gera fichamento estruturado em `02-Glosas/`, e remove o link de Pergaminhos automaticamente
 - Você só preenche **Meu comentário** (sua reação genuína) e **Ver também** (wikilinks pra Domínios)
+- Para vídeos do YouTube, use `/glosa-video <url>` — baixa as legendas (via `yt-dlp`), sintetiza em PT-BR e gera a glosa com timestamps. Aceita vídeo único ou playlist (gera uma glosa por vídeo + um índice da série).
 
 Limitação atual: só artigos web (HTML). PDFs, YouTube, podcasts, redes sociais avisam e abortam.
 
