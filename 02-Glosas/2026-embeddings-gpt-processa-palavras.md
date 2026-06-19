@@ -32,7 +32,7 @@ Embeddings são a ponte entre palavras (mundo humano) e números (mundo computac
 - O hiperparâmetro `d_model` define o tamanho do embedding (número de valores por token): BERT usa 768, GPT-2 usa 1.024, GPT-3 usa 12.288 — e é exatamente esse número que determina a contagem de parâmetros da rede (BERT: 340M; GPT-3: 175B).
 - O valor de `d_model` é sempre par — requisito importante para o mecanismo de positional encoding que combina seno e cosseno em pares.
 - Tokens que se repetem no texto ainda recebem o mesmo embedding base; a distinção por contexto e posição virá dos mecanismos seguintes (positional encoding + atenção).
-- Janela de contexto é a quantidade de tokens processados por solicitação: GPT tem 128.000; Gemini 2 tem 2 bilhões. Uma janela pequena faz o modelo "esquecer" contexto anterior, degradando a coerência da resposta.
+- Janela de contexto é a quantidade de tokens processados por solicitação: GPT tem 128.000; o Gemini 2, segundo o vídeo, "2 bilhões" — **lapso do apresentador**: a janela real do Gemini é ~2 **milhões** (ele próprio cita "2 milhões" mais adiante). Uma janela pequena faz o modelo "esquecer" contexto anterior, degradando a coerência da resposta.
 - O backpropagation encontra os melhores pesos dos embeddings por tentativa e erro: começa aleatório, propaga, mede o erro, retropropaga ajustando os valores — repetindo até convergir.
 - Embeddings são a base de técnicas como RAG (Retrieval-Augmented Generation): transformar texto em vetores permite calcular similaridade semântica entre documentos e recuperar os mais relevantes.
 
@@ -68,4 +68,5 @@ Embeddings são a ponte entre palavras (mundo humano) e números (mundo computac
 ## Ver também
 
 - [[02 - Tokens e tokenização]] <!-- sugestão; validar -->
+- [[03 - A janela de contexto]] <!-- sugestão; validar -->
 - 💡 Lacuna: nenhuma nota cobre Embeddings especificamente — candidata a nota nova "Embeddings e representação vetorial". <!-- sugestão -->

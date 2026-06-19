@@ -17,7 +17,7 @@ publish: false
 
 ## TL;DR
 
-Série de 6 aulas do canal Sandeco que desmonta a arquitetura Transformer do zero, em ordem pedagógica: de como o GPT completa texto (completação), passando por tokens e embeddings, positional encoding e o mecanismo de atenção, até multi-head attention. Linguagem acessível para leigos, com animações e exemplos visuais — sem pré-requisito além de matemática básica.
+Série de 6 aulas do canal Sandeco que desmonta a arquitetura Transformer do zero, em ordem pedagógica: de como o GPT completa texto (completação), passando por tokens e embeddings, positional encoding e o mecanismo de atenção, até multi-head attention. Linguagem acessível para leigos, com animações e exemplos visuais — sem pré-requisito além de matemática básica. (O apresentador anuncia "8 aulas" planejadas; esta playlist publicou 6 — faltam *transformer completo* e *vision transformer*.)
 
 ## Vídeos
 
