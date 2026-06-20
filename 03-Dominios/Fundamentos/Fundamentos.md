@@ -21,6 +21,10 @@ Conceitos base de ciência da computação e engenharia de software.
 
 - [[03-Dominios/Fundamentos/Matemática para Computação/index|Matemática para Computação]] — galho de 22 notas (lógica proposicional e de predicados, técnicas de prova e indução matemática/estrutural, somatórios/logaritmos/crescimento, conjuntos/funções/relações, combinatória e princípios combinatórios, cardinalidade e diagonalização, teoria dos números e aritmética modular/RSA, grafos e árvores como objeto matemático, probabilidade/esperança e estruturas aleatorizadas; dona das ferramentas que Algoritmos e Teoria da Computação usam)
 
+## Organização de Computadores
+
+- [[03-Dominios/Fundamentos/Organização de Computadores/index|Organização de Computadores]] — galho de 19 notas (representação binária/IEEE 754/endianness, lógica digital, von Neumann e ciclo de instrução, ISA/assembly, pipeline e hazards, hierarquia de memória e cache, execução fora de ordem/branch prediction/especulação, multicore/coerência MESI, SIMD e GPU, I/O/interrupções/DMA, performance CPI/Amdahl; a máquina física por baixo do SO — mechanical sympathy)
+
 ## Banco de Dados
 
 - [[03-Dominios/Fundamentos/Banco de Dados/index|Banco de Dados]] — galho de 16 notas (modelo relacional, SQL, transações, índices/EXPLAIN, performance, concorrência, distribuídos e NoSQL)
