@@ -128,7 +128,7 @@ Veja [[11 - Combinatória - a arte de contar]] para regra do produto, permutaç�
 
 **O que te dá**: entender o que é infinito contável versus incontável — e por que isso importa para decidibilidade.
 
-Cardinalidade é a ponte entre este galho e a [[../../Teoria da Computação/index|Teoria da Computação]]. O argumento diagonal de Cantor aparece na prova de que o problema da parada é indecidível. Não é cultura geral: é a base filosófica de por que existem problemas que nenhum software pode resolver.
+Cardinalidade é a ponte entre este galho e a [[03-Dominios/Fundamentos/Teoria da Computação/index|Teoria da Computação]]. O argumento diagonal de Cantor aparece na prova de que o problema da parada é indecidível. Não é cultura geral: é a base filosófica de por que existem problemas que nenhum software pode resolver.
 
 Veja [[13 - Cardinalidade - contável e incontável]].
 
