@@ -362,7 +362,7 @@ Isso praticamente força uma arquitetura interpretada (ou JIT com compilação i
 > O fato de linguagens com VMs (Python, Ruby, Clojure, Elixir) terem REPLs naturais não é coincidência — a arquitetura de bytecode + runtime já tem o maquinário para compilar e executar sob demanda. Linguagens AOT puras (C, Rust, Go) têm REPLs, mas precisam compilar e relinkar em tempo real — é possível, mas mais custoso.
 
 > [!warning] eval() e segurança
-> `eval()` de input de usuário é a forma mais rápida de introduzir injeção de código. Nunca execute código arbitrário vindos de fontes não confiáveis. Essa é a categoria de vulnerabilidade "code injection" — mencionada em [[03-Dominios/Fundamentos/Segurança Conceitual/12 - Classes de vulnerabilidade]].
+> `eval()` de input de usuário é a forma mais rápida de introduzir injeção de código. Nunca execute código arbitrário vindos de fontes não confiáveis. Essa é a categoria de vulnerabilidade "code injection" — mencionada em [[03-Dominios/Fundamentos/Segurança Conceitual/16 - Classes de vulnerabilidade]].
 
 A conexão entre GC e VMs — que aparece naturalmente aqui — é explorada em [[16 - Garbage collection]]: VMs com JIT e GC são arquiteturas profundamente co-dependentes. O JIT, por exemplo, precisa conhecer os pontos seguros (*safepoints*) onde o GC pode pausar o programa — e isso exige cooperação estreita entre os dois subsistemas. Em VMs como a JVM, o JIT emite código que periodicamente checa um flag de "solicitação de safepoint"; quando o GC precisa rodar um stop-the-world, seta esse flag e espera todas as threads chegarem ao próximo safepoint antes de varrer o heap.
 

@@ -26,7 +26,7 @@ Quando você leu [[11 - Representação intermediária e SSA]], viu que a IR inv
 
 Só que no fim do dia, a CPU não conhece `t247`. Ela conhece `rax`, `rbx`, `rcx`… Em x86-64 há 16 registradores de uso geral. Apenas isso. E alguns estão reservados (ponteiro de pilha, base frame, registradores que a ABI exige para argumentos). Na prática você tem algo entre 6 e 14 registradores para jogar.
 
-Por que isso importa? Porque registrador é rápido de verdade. Um acesso a registrador custa 1 ciclo. Um acesso à RAM (mesmo com cache L1) custa ~4 ciclos; sem cache, ~200 ciclos. A hierarquia de memória — discutida em [[03-Dominios/Fundamentos/Org. de Computadores/08 - Hierarquia de memória e cache]] — explica em detalhe essa diferença. Aqui basta saber: colocar um valor na pilha em vez de registrador pode desacelerar o código por um fator de 100×.
+Por que isso importa? Porque registrador é rápido de verdade. Um acesso a registrador custa 1 ciclo. Um acesso à RAM (mesmo com cache L1) custa ~4 ciclos; sem cache, ~200 ciclos. A hierarquia de memória — discutida em [[03-Dominios/Fundamentos/Organização de Computadores/11 - Hierarquia de memória e localidade]] — explica em detalhe essa diferença. Aqui basta saber: colocar um valor na pilha em vez de registrador pode desacelerar o código por um fator de 100×.
 
 A alocação de registradores é o problema de decidir: qual temporário vive em qual registrador físico? E quando não há registradores suficientes, qual temporário "derramamos" para a pilha?
 

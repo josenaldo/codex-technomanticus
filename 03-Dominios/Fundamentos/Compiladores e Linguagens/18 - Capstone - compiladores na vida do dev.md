@@ -51,13 +51,13 @@ flowchart TD
     G["ASSEMBLY\nfmul  xmm0, [preco], [quantidade]\nfadd  xmm0, 10.0\nmovsd [total], xmm0"]
     H["EXECUTAVEL\n.text section: opcodes x86-64\n.data section: preco, quantidade, total\nELF / PE / Mach-O"]
 
-    A -->|"Analise lexica\n[[03 - Analise lexica - do texto a tokens]]"| B
-    B -->|"Parsing\n[[04 - Gramaticas e a arvore sintatica]]\n[[06 - A AST e o padrao visitor]]"| C
-    C -->|"Analise semantica\n[[10 - Analise semantica e checagem de tipos]]"| D
-    D -->|"Geracao de IR\n[[11 - Representacao intermediaria e SSA]]"| E
-    E -->|"Otimizacao\n[[12 - Otimizacao]]"| F
-    F -->|"Selecao de instrucoes\naloc. de registradores\n[[13 - Geracao de codigo e selecao de instrucoes]]"| G
-    G -->|"Linking e loading\n[[19 - Linking e loading]]"| H
+    A -->|"Analise lexica (nota 03)"| B
+    B -->|"Parsing + AST (notas 04-06)"| C
+    C -->|"Analise semantica (nota 10)"| D
+    D -->|"Geracao de IR (nota 11)"| E
+    E -->|"Otimizacao (nota 12)"| F
+    F -->|"Selecao de instr. + aloc. registradores (notas 13-14)"| G
+    G -->|"Linking e loading (nota 19)"| H
 ```
 
 > [!info] Leitura do diagrama
@@ -201,10 +201,10 @@ flowchart TD
     Link{"Erro de LINK?\n(undefined reference,\nunresolved symbol)"}
     Run{"Erro de RUNTIME?\n(NullPointerException,\nsegfault, panic)"}
 
-    Lex_fix["Fase lexica ou parsing\nRevise a gramatica do codigo\n[[03 - Analise lexica - do texto a tokens]]\n[[04 - Gramaticas e a arvore sintatica]]"]
-    Sem_fix["Fase semantica\nRevise tipos, escopos, declaracoes\n[[10 - Analise semantica e checagem de tipos]]"]
-    Link_fix["Fase de linking\nRevise imports, exports, bibliotecas\n[[19 - Linking e loading]]"]
-    Run_fix["Logica em runtime\nO compilador nao detectou: GC, JIT,\ncomportamento dinamico\n[[16 - Garbage collection]]\n[[17 - JIT a fundo]]"]
+    Lex_fix["Fase lexica ou parsing\nRevise a gramatica do codigo\n(notas 03-05)"]
+    Sem_fix["Fase semantica\nRevise tipos, escopos, declaracoes\n(notas 09-10)"]
+    Link_fix["Fase de linking\nRevise imports, exports, bibliotecas\n(nota 19)"]
+    Run_fix["Logica em runtime\nO compilador nao detectou: GC, JIT,\ncomportamento dinamico\n(notas 16-17)"]
 
     Err --> Lex
     Lex -->|Sim| Lex_fix
@@ -353,41 +353,42 @@ Saber o que o compilador faz internamente muda como você escreve código:
 
 ```mermaid
 flowchart TD
-    subgraph Iniciado["FASE INICIADO — Fundamentos do Pipeline"]
-        N01["01 - O que e um compilador"]
-        N02["02 - Compiladores vs Interpretadores"]
+    subgraph Iniciado["FASE INICIADO — Panorama e Front-end"]
+        N01["01 - O que e um compilador e o pipeline"]
+        N02["02 - Compilacao, interpretacao e JIT"]
         N03["03 - Analise lexica"]
-        N04["04 - Gramaticas e AST"]
-        N05["05 - Parsing descendente"]
-        N06["06 - AST e padrao Visitor"]
-        N07["07 - Tabela de simbolos e escopos"]
+        N04["04 - Gramaticas e a arvore sintatica"]
+        N05["05 - Recursive descent e Pratt parsing"]
+        N06["06 - A AST e o padrao visitor"]
     end
 
-    subgraph Adepto["FASE ADEPTO — Semantica e IR"]
-        N08["08 - Tipos e sistemas de tipos"]
-        N09["09 - Inferencia de tipos"]
-        N10["10 - Analise semantica e checagem de tipos"]
+    subgraph Adepto["FASE ADEPTO — Miolo de Engenharia"]
+        N07["07 - Parsing top-down formal"]
+        N08["08 - Parsing bottom-up"]
+        N09["09 - Tabela de simbolos e escopo"]
+        N10["10 - Analise semantica e tipos"]
         N11["11 - IR e SSA"]
         N12["12 - Otimizacao"]
-        N13["13 - Geracao de codigo"]
-        N14["14 - Alocacao de registradores"]
     end
 
-    subgraph Magus["FASE MAGUS — Execucao e Fechamento"]
-        N15["15 - Maquinas virtuais e bytecode"]
+    subgraph Magus["FASE MAGUS — Back-end, Runtime e Fronteiras"]
+        N13["13 - Geracao de codigo"]
+        N14["14 - Alocacao de registradores"]
+        N15["15 - Runtime e stack frames"]
         N16["16 - Garbage collection"]
         N17["17 - JIT a fundo"]
         N18["18 - CAPSTONE (esta nota)"]
         N19["19 - Linking e loading"]
+        N20["20 - Bootstrapping e Trusting Trust"]
     end
 
-    N01 --> N02 --> N03 --> N04 --> N05 --> N06 --> N07
-    N07 --> N08 --> N09 --> N10 --> N11 --> N12 --> N13 --> N14
-    N14 --> N15 --> N16 --> N17 --> N18 --> N19
+    N01 --> N02 --> N03 --> N04 --> N05 --> N06
+    N06 --> N07 --> N08 --> N09 --> N10 --> N11 --> N12
+    N12 --> N13 --> N14 --> N15 --> N16 --> N17 --> N18 --> N19 --> N20
 ```
 
 > [!info] Leitura do diagrama
-> O galho tem 19 notas distribuídas em três fases. A fase Iniciado cobre o front-end (lexer → parser → AST). A fase Adepto cobre o middle-end e back-end (semântica → IR → otimização → geração de código). A fase Magus cobre execução em runtime (VM → GC → JIT) e fecha com este capstone + linking.
+> O galho tem 20 notas distribuídas em três fases. A fase Iniciado cobre o panorama e o front-end (lexer → parser → AST). A fase Adepto cobre o miolo de engenharia (parsing formal LL/LR → tabela de símbolos → semântica/tipos → IR/SSA → otimização). A fase Magus cobre o back-end e o runtime (geração de código → alocação de registradores → stack frames → GC → JIT), fecha com este capstone e termina em linking/loading e bootstrapping/Trusting Trust — o último elo, da fonte ao binário.
 
 ---
 
