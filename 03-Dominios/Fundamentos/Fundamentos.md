@@ -52,6 +52,10 @@ Conceitos base de ciência da computação e engenharia de software.
 
 - [[03-Dominios/Fundamentos/Complexidade de Software/index|Complexidade de Software]] — galho 12: complexidade essencial vs. acidental, abstração, dívidas (técnica/cognitiva/intenção), entropia e sistemas
 
+## Segurança
+
+- [[03-Dominios/Fundamentos/Segurança Conceitual/index|Segurança Conceitual]] — galho de 22 notas (CIA/AAA e modelo adversarial, modelagem de ameaças/STRIDE, economia e fator humano, princípios de Saltzer & Schroeder/Kerckhoffs, aleatoriedade/CSPRNG, hashing e password hashing, criptografia simétrica/assimétrica/troca de chaves/MAC-assinaturas/PKI, autenticação/MFA/passkeys, autorização DAC-MAC-RBAC-ABAC/OAuth2-OIDC, cripto em trânsito/repouso, ataques a sistemas cripto/side channels, classes de vulnerabilidade/OWASP, Trusting Trust e supply chain, gestão de chaves/KMS-HSM, zero trust, privacidade × segurança e criptografia pós-quântica; confiança sob adversário — não appsec aplicado)
+
 ---
 
 ```dataview
