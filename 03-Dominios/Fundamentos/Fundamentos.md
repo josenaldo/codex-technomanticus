@@ -56,6 +56,10 @@ Conceitos base de ciência da computação e engenharia de software.
 
 - [[03-Dominios/Fundamentos/Segurança Conceitual/index|Segurança Conceitual]] — galho de 22 notas (CIA/AAA e modelo adversarial, modelagem de ameaças/STRIDE, economia e fator humano, princípios de Saltzer & Schroeder/Kerckhoffs, aleatoriedade/CSPRNG, hashing e password hashing, criptografia simétrica/assimétrica/troca de chaves/MAC-assinaturas/PKI, autenticação/MFA/passkeys, autorização DAC-MAC-RBAC-ABAC/OAuth2-OIDC, cripto em trânsito/repouso, ataques a sistemas cripto/side channels, classes de vulnerabilidade/OWASP, Trusting Trust e supply chain, gestão de chaves/KMS-HSM, zero trust, privacidade × segurança e criptografia pós-quântica; confiança sob adversário — não appsec aplicado)
 
+## Compiladores e Linguagens
+
+- [[03-Dominios/Fundamentos/Compiladores e Linguagens/index|Compiladores e Linguagens]] — galho de 20 notas (o pipeline de tradução front/middle/back-end e compilação×interpretação×JIT; análise léxica — scanner/tokens/maximal munch; parsing — gramáticas/AST, recursive descent/Pratt, LL FIRST-FOLLOW e LR/LALR; tabela de símbolos/escopo, análise semântica e checagem de tipos/inferência Hindley-Milner; IR e SSA, otimização — dataflow/constant folding/DCE/inlining; geração de código/seleção de instruções, alocação de registradores/graph coloring; runtime/stack frames, garbage collection, JIT a fundo/deoptimization; capstone, linking/loading e bootstrapping/self-hosting/ataque de Thompson; a engenharia da tradução — linka Teoria da Computação para autômatos/gramáticas, Org para ISA/assembly, Segurança para Trusting Trust)
+
 ---
 
 ```dataview

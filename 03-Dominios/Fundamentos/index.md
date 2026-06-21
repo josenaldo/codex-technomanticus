@@ -3,7 +3,7 @@ title: "Fundamentos"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-06-20
+updated: 2026-06-21
 status: seedling
 tags:
   - moc
@@ -33,6 +33,7 @@ Esta estante reúne os fundamentos que sustentam qualquer prática de desenvolvi
 - [[03-Dominios/Fundamentos/Matemática para Computação/index|Matemática para Computação]] — galho: matemática discreta como ferramenta (lógica proposicional e de predicados, técnicas de prova e indução matemática/estrutural, somatórios/logaritmos/crescimento, conjuntos/funções/relações, combinatória, cardinalidade e diagonalização, teoria dos números e aritmética modular, grafos e árvores como objeto matemático, probabilidade e estruturas aleatorizadas). Dona das ferramentas que Algoritmos (logaritmos/somatórios/recorrências) e Teoria da Computação (diagonalização) usam
 - [[03-Dominios/Fundamentos/Organização de Computadores/index|Organização de Computadores]] — galho: a máquina física por baixo do SO — representação binária/IEEE 754/endianness, lógica digital, von Neumann e o ciclo de instrução, ISA/assembly, pipeline, hierarquia de memória e cache, execução fora de ordem/especulação, multicore/coerência (MESI), SIMD/GPU, I/O/DMA e a equação de performance (CPI/Amdahl). Mechanical sympathy: por que `int` estoura, por que floats enganam, por que cache manda na performance
 - [[03-Dominios/Fundamentos/Segurança Conceitual/index|Segurança Conceitual]] — galho: a teoria atemporal da segurança — CIA/AAA e o modelo adversarial, modelagem de ameaças (STRIDE), princípios de design (Saltzer & Schroeder, Kerckhoffs), as primitivas criptográficas como ideias (hash, simétrico, assimétrico, troca de chaves, assinatura, PKI), autenticação × autorização (MFA/passkeys, RBAC/OAuth2-OIDC), ataques (side channels, injection, Trusting Trust), gestão de chaves, zero trust, privacidade × segurança e criptografia pós-quântica. Confiança sob adversário — não appsec aplicado
+- [[03-Dominios/Fundamentos/Compiladores e Linguagens/index|Compiladores e Linguagens]] — galho: a engenharia de traduzir código em algo que roda — o pipeline (front/middle/back-end), análise léxica (scanner, tokens), parsing (gramáticas, AST, recursive descent/Pratt, LL e LR), análise semântica e checagem de tipos (inferência Hindley-Milner), IR e SSA, otimização (dataflow, constant folding/DCE/inlining), geração de código e alocação de registradores, runtime (stack frames, garbage collection), JIT (tiered compilation, deoptimization), linking/loading e bootstrapping/Trusting Trust. A teoria (autômatos/gramáticas) vira a *construção* do tradutor — não tutorial de toolchain
 - [[03-Dominios/Fundamentos/Banco de Dados/index|Banco de Dados]] — galho: modelo relacional, SQL, normalização, transações (ACID), índices/EXPLAIN, performance, concorrência, distribuídos e NoSQL
 - [[03-Dominios/Fundamentos/Redes e Protocolos/index|Redes e Protocolos]] — galho: modelo de camadas, TCP/UDP/DNS/TLS, HTTP (métodos, caching, CORS, HTTP/2-3), REST/GraphQL/gRPC, WebSocket/SSE, latência, load balancing/CDN e resiliência
 - [[03-Dominios/Fundamentos/Testes/index|Testes]] — galho: estratégia de testes, pirâmide, tipos, test doubles, TDD, técnicas de caso/edge cases, flaky, coverage/mutation e CI/CD (stack-agnóstico)
