@@ -6,7 +6,7 @@ type: moc
 status: growing
 publish: true
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - organizacao-de-computadores
   - entrevista
   - moc

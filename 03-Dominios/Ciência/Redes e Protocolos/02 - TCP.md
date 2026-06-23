@@ -7,7 +7,7 @@ fase: iniciado
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - redes
   - protocolos
   - tcp

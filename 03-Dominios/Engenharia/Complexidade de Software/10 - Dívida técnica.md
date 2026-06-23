@@ -8,7 +8,7 @@ status: growing
 publish: false
 fase: adepto
 tags:
-  - fundamentos
+  - engenharia
   - complexidade-de-software
   - adepto
   - divida-tecnica

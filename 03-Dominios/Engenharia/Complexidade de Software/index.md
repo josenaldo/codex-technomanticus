@@ -6,7 +6,7 @@ type: moc
 status: growing
 publish: true
 tags:
-  - fundamentos
+  - engenharia
   - complexidade-de-software
   - moc
 aliases:

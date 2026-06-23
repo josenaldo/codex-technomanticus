@@ -8,7 +8,7 @@ status: growing
 publish: false
 fase: magus
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - estruturas-de-dados
   - magus
   - entrevista

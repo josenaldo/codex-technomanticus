@@ -7,7 +7,7 @@ fase: magus
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - banco-de-dados
   - nosql
   - entrevista

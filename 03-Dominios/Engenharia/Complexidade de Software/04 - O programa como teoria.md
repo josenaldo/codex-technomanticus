@@ -7,7 +7,7 @@ progress: backlog
 status: growing
 fase: iniciado
 tags:
-  - fundamentos
+  - engenharia
   - engenharia-de-software
   - complexidade-de-software
   - iniciado

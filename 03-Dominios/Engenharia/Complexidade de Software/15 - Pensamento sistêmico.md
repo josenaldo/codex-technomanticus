@@ -12,7 +12,7 @@ aliases:
   - Teoria dos sistemas
   - Systems thinking
 tags:
-  - fundamentos
+  - engenharia
   - complexidade-de-software
   - magus
   - pensamento-sistemico

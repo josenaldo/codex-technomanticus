@@ -7,7 +7,7 @@ status: growing
 progress: backlog
 fase: adepto
 tags:
-  - fundamentos
+  - engenharia
   - engenharia-de-software
   - abstracao
   - complexidade-de-software

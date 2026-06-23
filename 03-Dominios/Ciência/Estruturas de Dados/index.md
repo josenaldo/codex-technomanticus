@@ -6,7 +6,7 @@ type: moc
 status: growing
 publish: true
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - estruturas-de-dados
   - entrevista
   - moc

@@ -7,7 +7,7 @@ fase: magus
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - engenharia
   - solid
   - dependency-injection
   - entrevista

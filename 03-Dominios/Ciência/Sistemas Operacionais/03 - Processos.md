@@ -7,7 +7,7 @@ fase: iniciado
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - sistemas-operacionais
   - processos
   - entrevista

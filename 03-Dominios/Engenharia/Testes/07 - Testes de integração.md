@@ -7,7 +7,7 @@ fase: adepto
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - engenharia
   - testes
   - integracao
   - entrevista

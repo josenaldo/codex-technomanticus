@@ -7,7 +7,7 @@ fase: magus
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - engenharia
   - orientacao-a-objetos
   - ddd
   - entrevista

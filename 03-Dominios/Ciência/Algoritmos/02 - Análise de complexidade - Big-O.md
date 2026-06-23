@@ -8,7 +8,7 @@ status: seedling
 publish: false
 fase: iniciado
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - algoritmos
   - iniciado
   - entrevista

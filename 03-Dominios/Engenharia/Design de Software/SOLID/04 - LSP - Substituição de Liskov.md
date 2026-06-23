@@ -7,7 +7,7 @@ fase: adepto
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - engenharia
   - solid
   - lsp
   - entrevista

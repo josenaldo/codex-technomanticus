@@ -6,7 +6,7 @@ type: moc
 status: growing
 publish: true
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - banco-de-dados
   - sql
   - entrevista

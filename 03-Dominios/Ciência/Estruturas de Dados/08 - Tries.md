@@ -8,7 +8,7 @@ status: growing
 publish: false
 fase: adepto
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - estruturas-de-dados
   - adepto
   - tries

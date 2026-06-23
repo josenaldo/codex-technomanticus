@@ -8,7 +8,7 @@ status: seedling
 publish: false
 fase: adepto
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - algoritmos
   - adepto
   - entrevista

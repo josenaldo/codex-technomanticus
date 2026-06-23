@@ -8,7 +8,7 @@ status: growing
 publish: false
 fase: magus
 tags:
-  - fundamentos
+  - engenharia
   - complexidade-de-software
   - magus
   - manutencao

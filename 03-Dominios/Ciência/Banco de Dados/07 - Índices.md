@@ -7,7 +7,7 @@ fase: adepto
 status: evergreen
 publish: false
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - banco-de-dados
   - indices
   - performance

@@ -8,7 +8,7 @@ status: seedling
 publish: false
 fase: magus
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - algoritmos
   - magus
   - entrevista

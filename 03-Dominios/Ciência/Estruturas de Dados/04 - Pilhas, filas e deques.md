@@ -8,7 +8,7 @@ status: growing
 publish: false
 fase: iniciado
 tags:
-  - fundamentos
+  - ciencia-da-computacao
   - estruturas-de-dados
   - iniciado
   - pilhas-filas
