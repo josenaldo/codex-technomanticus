@@ -31,7 +31,7 @@ Galho de frontend do ecossistema JS. Cobre HTML/CSS, React e o ecossistema de bi
 
 ### Subpastas
 
-- [[03-Dominios/Tecnologia/JavaScript/Frontend/TypeScript com React/index|TypeScript com React]] — combinando TypeScript e React
+- [[03-Dominios/Tecnologia/React/TypeScript com React/index|TypeScript com React]] — combinando TypeScript e React
 
 ## Veja também
 
