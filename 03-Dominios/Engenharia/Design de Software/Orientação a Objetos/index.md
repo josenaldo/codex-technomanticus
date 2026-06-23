@@ -35,7 +35,7 @@ coesão, a modelagem tática de objetos (identidade/igualdade, imutabilidade, Ri
 Model), os anti-patterns clássicos, e como o paradigma diverge entre linguagens.
 
 **Fronteiras (linka, não duplica):**
-- **SOLID** tem galho próprio → [[03-Dominios/Engenharia/SOLID/index|SOLID]]. Aqui fica
+- **SOLID** tem galho próprio → [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]. Aqui fica
   `Acoplamento e coesão` (08), que o SOLID referencia.
 - **Design Patterns** (catálogo GoF) → [[Design Patterns]]. Aqui ensinamos o *material bruto*
   (composição + polimorfismo), não os padrões nomeados.
@@ -82,7 +82,7 @@ Model), os anti-patterns clássicos, e como o paradigma diverge entre linguagens
 
 ```dataview
 TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/Orientação a Objetos"
+FROM "03-Dominios/Engenharia/Design de Software/Orientação a Objetos"
 WHERE type = "concept"
 SORT file.name ASC
 ```
@@ -90,7 +90,7 @@ SORT file.name ASC
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — os cinco princípios de design OO
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — os cinco princípios de design OO
 - [[Design Patterns]] — o catálogo GoF construído sobre estes fundamentos
 - [[Arquitetura de Software]] — DDD estratégico e SOLID no nível de módulo/serviço
 - [[Dicionário de Fundamentos]]

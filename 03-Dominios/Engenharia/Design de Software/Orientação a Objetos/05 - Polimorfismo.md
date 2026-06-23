@@ -286,7 +286,7 @@ polimorfismo de subtipo, caso novo é **classe nova**: você cria `Vaca extends 
 sobre `List<Animal>` já a atende sem tocar numa linha existente.
 
 Isso é literalmente o **Open/Closed Principle**: aberto para extensão, fechado para modificação. O
-polimorfismo é o mecanismo que o torna possível — ver [[03-Dominios/Engenharia/SOLID/index|SOLID]].
+polimorfismo é o mecanismo que o torna possível — ver [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]].
 E como o sabor preferido na prática é "novo comportamento = novo objeto plugado", isso conversa direto
 com [[07 - Composição sobre herança]]: você injeta a estratégia em vez de herdar.
 
@@ -339,5 +339,5 @@ e explica o mecanismo.
 - [[11 - Como o modelo OO difere entre linguagens]] — overload, generics e duck typing por linguagem
 - [[12 - Anti-patterns de OO]] — o `switch` por tipo que polimorfismo elimina
 - [[13 - OO na prática e em entrevista]] — capstone e prep bilíngue
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — Open/Closed depende de polimorfismo
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — Open/Closed depende de polimorfismo
 - [[01 - O que é Orientação a Objetos]] — o paradigma de onde tudo parte

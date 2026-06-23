@@ -39,7 +39,7 @@ concreto vive nos galhos de stack — aqui ele entra só como ponteiro.
 - **Ferramental JavaScript/TS** (Vitest, Jest, Testing Library, MSW, Playwright, fast-check) →
   [[Testes em JavaScript]].
 - **Testes como rede de segurança contra entropia** → [[03-Dominios/Engenharia/Complexidade de Software/14 - Manutenção e evolução|Manutenção e evolução]].
-- **Código testável é código bem desenhado** (DI, DIP) → [[03-Dominios/Engenharia/SOLID/index|SOLID]] · [[03-Dominios/Engenharia/Orientação a Objetos/index|OO]].
+- **Código testável é código bem desenhado** (DI, DIP) → [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] · [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|OO]].
 - **Design testável** (hexagonal, ports & adapters) → [[Arquitetura de Software]].
 
 **Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista"

@@ -168,7 +168,7 @@ O teste é, nesse sentido, o **primeiro cliente** da sua API — antes de qualqu
 - **Excesso de mocks** — se o teste tem dez dublês, a unidade tem dez colaboradores; o acoplamento é alto e provavelmente as dependências nasceram lá dentro em vez de entrar por fora.
 - **Dependência de estado global** — relógio do sistema, variável de ambiente, singleton mutável. Isso torna o teste não-determinístico e revela uma dependência escondida que deveria ser explícita e injetada.
 
-É aqui que [[03-Dominios/Engenharia/SOLID/index|SOLID]] entra como par natural dos testes. O **DIP** (Inversão de Dependência) — depender de abstrações e injetar as dependências concretas — é exatamente o que torna um objeto testável em isolamento: você passa um dublê no lugar da dependência real. Testes pressionam você a injetar dependências; injetar dependências é o coração do DIP. Quem pratica testes acaba praticando SOLID sem ter lido o acrônimo. Essa "pressão de design" fica concreta quando você escreve o primeiro teste de unidade — é o assunto de [[04 - Testes unitários]].
+É aqui que [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] entra como par natural dos testes. O **DIP** (Inversão de Dependência) — depender de abstrações e injetar as dependências concretas — é exatamente o que torna um objeto testável em isolamento: você passa um dublê no lugar da dependência real. Testes pressionam você a injetar dependências; injetar dependências é o coração do DIP. Quem pratica testes acaba praticando SOLID sem ter lido o acrônimo. Essa "pressão de design" fica concreta quando você escreve o primeiro teste de unidade — é o assunto de [[04 - Testes unitários]].
 
 ## Teste de regressão — a memória institucional dos bugs
 

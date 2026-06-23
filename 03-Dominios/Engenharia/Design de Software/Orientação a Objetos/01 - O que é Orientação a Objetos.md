@@ -250,4 +250,4 @@ Vocabulário PT → EN:
 - [[02 - Encapsulamento]]
 - [[09 - Identidade, igualdade e imutabilidade]]
 - [[07 - Composição sobre herança]]
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]]
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]

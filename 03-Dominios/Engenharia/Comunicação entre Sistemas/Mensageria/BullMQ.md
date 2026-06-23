@@ -15,7 +15,7 @@ publish: false
 
 # BullMQ
 
-Biblioteca de **job queue** para Node.js baseada em Redis — background jobs, scheduling, rate limiting, retries, flows e workers distribuídos. É a escolha padrão para processamento assíncrono em aplicações Node.js que já usam (ou podem usar) Redis. Enquanto [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] é uma plataforma de event streaming e [[RabbitMQ]] é um message broker com routing flexível, BullMQ é uma **job queue especializada** para o ecossistema Node.js.
+Biblioteca de **job queue** para Node.js baseada em Redis — background jobs, scheduling, rate limiting, retries, flows e workers distribuídos. É a escolha padrão para processamento assíncrono em aplicações Node.js que já usam (ou podem usar) Redis. Enquanto [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] é uma plataforma de event streaming e [[RabbitMQ]] é um message broker com routing flexível, BullMQ é uma **job queue especializada** para o ecossistema Node.js.
 
 ## O que é
 
@@ -779,7 +779,7 @@ await queue.obliterate({ force: true });
 ## Veja também
 
 - [[Mensageria]] — contexto geral, quando usar cada broker
-- [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] — alternativa para event streaming e comunicação entre serviços
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — alternativa para event streaming e comunicação entre serviços
 - [[RabbitMQ]] — alternativa para routing complexo multi-linguagem
 - [[Node.js]] — troubleshooting, patterns, ecossistema
 - [[System Design]] — onde encaixar job queues em system design

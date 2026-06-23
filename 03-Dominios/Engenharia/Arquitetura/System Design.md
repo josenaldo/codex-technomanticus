@@ -266,7 +266,7 @@ Desacoplam produtores de consumidores. Fundamentais para resiliência e escalabi
 | SQS | Managed, simples, integrado com AWS |
 | BullMQ | Node.js, job queues com retry, cron jobs |
 
-→ Para aprofundar: [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]], [[RabbitMQ]], [[BullMQ]]
+→ Para aprofundar: [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]], [[RabbitMQ]], [[BullMQ]]
 
 ### Consistência e CAP Theorem
 
@@ -913,7 +913,7 @@ Em entrevistas, é frequente o entrevistador perguntar: "você já enfrentou ess
 - [[API Design]] — design de APIs REST, GraphQL, gRPC
 - [[Banco de dados]] — SQL, NoSQL, ACID, indexação, replicação, sharding
 - [[Redes e Protocolos]] — TCP/UDP, DNS, HTTP, WebSocket, load balancing, CDN, caching HTTP
-- [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] — event streaming, partições, consumers
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — event streaming, partições, consumers
 - [[RabbitMQ]] — message queuing, routing, dead letter queues
 - [[Arquitetura de Software]] — patterns arquiteturais, microserviços, monolito
 - [[Event Storming]] — event sourcing, domain events

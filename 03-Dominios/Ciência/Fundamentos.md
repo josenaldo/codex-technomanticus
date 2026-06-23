@@ -32,8 +32,8 @@ Conceitos base de ciência da computação e engenharia de software.
 ## Paradigmas
 
 - [[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]] — galho de 16 notas (imperativo, OO e funcional como paradigmas, declarativo, lógico, reativo, imutabilidade, sistemas de tipos, multi-paradigma)
-- [[03-Dominios/Engenharia/Orientação a Objetos/index|Orientação a Objetos]] — galho de 13 notas (pilares, composição, modelagem rica, divergência cross-language)
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — galho de 8 notas (os cinco princípios + DI/IoC + crítica)
+- [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]] — galho de 13 notas (pilares, composição, modelagem rica, divergência cross-language)
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — galho de 8 notas (os cinco princípios + DI/IoC + crítica)
 
 ## Concorrência
 

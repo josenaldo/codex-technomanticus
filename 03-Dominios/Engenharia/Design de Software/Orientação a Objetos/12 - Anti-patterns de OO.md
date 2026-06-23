@@ -34,7 +34,7 @@ São os dois extremos da mesma doença: uma classe que faz tudo, e uma que não 
 
 **Sintoma**: uma classe gigante — `Pedido` com 2000 linhas, 40 campos, métodos que calculam frete, persistem no banco, mandam e-mail, geram PDF e validam estoque. Você abre o arquivo e rola, rola, rola.
 
-**Causa**: a classe foi virando ímã. Cada feature nova "tinha tudo a ver com pedido", então foi parar lá. Ninguém violou nada de propósito; a entropia fez o trabalho. No fundo é violação direta de **SRP** ([[03-Dominios/Engenharia/SOLID/index|SOLID]]): a classe tem dezenas de razões para mudar.
+**Causa**: a classe foi virando ímã. Cada feature nova "tinha tudo a ver com pedido", então foi parar lá. Ninguém violou nada de propósito; a entropia fez o trabalho. No fundo é violação direta de **SRP** ([[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]): a classe tem dezenas de razões para mudar.
 
 **Correção**: quebre por **responsabilidade**. Pergunte "esta classe é responsável por ___" e cada vez que precisar de um "e", nasce uma classe nova: `CalculadoraDeFrete`, `RepositorioDePedido`, `NotificadorDePedido`. Cada peça vira coesa e o acoplamento despenca — veja [[08 - Acoplamento e coesão]].
 
@@ -168,7 +168,7 @@ Aqui o cheiro não está numa classe — está na **topologia** das dependência
 
 **Causa**: as duas classes compartilham um conceito que não foi extraído, ou a dependência está apontando para o lado errado.
 
-**Correção**: duas saídas clássicas — (1) **extraia a dependência comum** para uma terceira classe `C`, e deixe `A → C ← B`; ou (2) **inverta com uma interface** (DIP de [[03-Dominios/Engenharia/SOLID/index|SOLID]]): `A` passa a depender de uma interface que `B` implementa, quebrando o ciclo. Mais sobre depender de abstrações em [[06 - Interfaces e classes abstratas]].
+**Correção**: duas saídas clássicas — (1) **extraia a dependência comum** para uma terceira classe `C`, e deixe `A → C ← B`; ou (2) **inverta com uma interface** (DIP de [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]): `A` passa a depender de uma interface que `B` implementa, quebrando o ciclo. Mais sobre depender de abstrações em [[06 - Interfaces e classes abstratas]].
 
 ```mermaid
 flowchart LR
@@ -211,7 +211,7 @@ Quando o problema é **herança** ([[04 - Herança]]) usada onde não devia.
 
 **Causa**: a herança foi usada para *reaproveitar código*, não para modelar um "é-um" honesto. O pinguim *é* uma ave, mas a superclasse `Bird` assumiu errado que toda ave voa.
 
-**Correção**: ou a hierarquia está errada (extraia `AveQueVoa`/`AveQueNaoVoa`, ou componha o comportamento de voo), ou você está violando **LSP** ([[03-Dominios/Engenharia/SOLID/index|SOLID]]): a subclasse deveria poder substituir a superclasse sem surpresas, e lançar exceção num método herdado é a surpresa que quebra o contrato. Quando a herança "recusa a herança", quase sempre o certo é [[07 - Composição sobre herança]].
+**Correção**: ou a hierarquia está errada (extraia `AveQueVoa`/`AveQueNaoVoa`, ou componha o comportamento de voo), ou você está violando **LSP** ([[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]): a subclasse deveria poder substituir a superclasse sem surpresas, e lançar exceção num método herdado é a surpresa que quebra o contrato. Quando a herança "recusa a herança", quase sempre o certo é [[07 - Composição sobre herança]].
 
 ## Encapsulamento e abstração furados: Exposed Internals e Leaky Abstraction
 
@@ -350,5 +350,5 @@ Vocabulário PT → EN:
 - [[10 - Rich vs Anemic Domain Model]] — o detalhe de Anemic/Data Class
 - [[11 - Como o modelo OO difere entre linguagens]]
 - [[13 - OO na prática e em entrevista]] — reconhecer o cheiro é metade da refatoração
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — SRP, LSP, DIP por trás das curas
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — SRP, LSP, DIP por trás das curas
 - [[Design Patterns]] — muitas curas têm nome de padrão

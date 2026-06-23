@@ -985,7 +985,7 @@ Cada "span" é uma operação. Trace ID é propagado via headers HTTP e logs est
 - [[Event Storming]] — workshop para descobrir bounded contexts
 - [[Mensageria]] — comunicação assíncrona
 - [[Event Streaming]] — eventos como fonte de verdade
-- [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] — event broker mais usado
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — event broker mais usado
 - [[RabbitMQ]] — message queuing tradicional
 - [[Banco de dados]] — persistência, transações, consistência
 - [[Redes e Protocolos]] — comunicação entre serviços

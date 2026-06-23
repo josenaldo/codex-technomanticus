@@ -246,4 +246,4 @@ Vocabulário PT → EN:
 - [[12 - Anti-patterns de OO]]
 - [[13 - OO na prática e em entrevista]] — "OO é ferramenta, não religião"
 - [[Arquitetura de Software]] — DDD estratégico: Aggregate, Bounded Context, Ubiquitous Language
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — a engenharia de chegar a baixo acoplamento + alta coesão
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — a engenharia de chegar a baixo acoplamento + alta coesão

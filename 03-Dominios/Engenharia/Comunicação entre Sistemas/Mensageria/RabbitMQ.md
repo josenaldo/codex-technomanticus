@@ -14,7 +14,7 @@ publish: false
 
 # RabbitMQ
 
-Message broker tradicional baseado no protocolo **AMQP** — routing flexível via exchanges, múltiplos protocolos suportados, maturidade operacional, e o broker de facto para **task queues** e **workflows complexos**. Enquanto [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] é uma plataforma de event streaming e [[BullMQ]] é uma job queue Node.js, RabbitMQ é o **message broker de propósito geral** mais usado no mercado enterprise.
+Message broker tradicional baseado no protocolo **AMQP** — routing flexível via exchanges, múltiplos protocolos suportados, maturidade operacional, e o broker de facto para **task queues** e **workflows complexos**. Enquanto [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] é uma plataforma de event streaming e [[BullMQ]] é uma job queue Node.js, RabbitMQ é o **message broker de propósito geral** mais usado no mercado enterprise.
 
 ## O que é
 
@@ -920,7 +920,7 @@ Comparação lado-a-lado — é a pergunta mais comum em entrevistas sobre mensa
 ## Veja também
 
 - [[Mensageria]] — contexto geral, quando usar cada broker
-- [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] — alternativa para event streaming
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — alternativa para event streaming
 - [[BullMQ]] — alternativa para Node.js com Redis
 - [[Event Streaming]] — quando RabbitMQ NÃO é a escolha
 - [[System Design]] — usando RabbitMQ em system design

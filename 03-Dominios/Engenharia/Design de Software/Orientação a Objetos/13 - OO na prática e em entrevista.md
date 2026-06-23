@@ -61,7 +61,7 @@ A entrevista de design OO tem armadilhas previsíveis. Cada item abaixo é um er
 
 - **[ ] Recitar definição sem contexto.** Dizer "encapsulamento é esconder o estado interno" é resposta de pleno. Resposta de sênior: dê um **exemplo de quando você viu a regra ser violada e por que doeu**. "Já peguei um `getItens()` que devolvia a lista interna mutável; um caller deu `.clear()` nela e corrompeu o pedido sem ninguém saber. Por isso encapsulamento não é dogma — é o que impede esse bug." Contexto > definição.
 
-- **[ ] Dizer que "usa SOLID" sem conseguir aplicar.** O entrevistador vai cravar: *"como você aplicou DIP recentemente?"*. Se a resposta for vaga, queimou. Tenha um caso concreto na ponta da língua — em Spring, "meu `service` depende de uma `interface` de repositório e o container injeta a implementação; é o que me deixa trocar por um *fake* no teste" (detalhe em [[03-Dominios/Engenharia/SOLID/index|SOLID]]).
+- **[ ] Dizer que "usa SOLID" sem conseguir aplicar.** O entrevistador vai cravar: *"como você aplicou DIP recentemente?"*. Se a resposta for vaga, queimou. Tenha um caso concreto na ponta da língua — em Spring, "meu `service` depende de uma `interface` de repositório e o container injeta a implementação; é o que me deixa trocar por um *fake* no teste" (detalhe em [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]).
 
 - **[ ] Defender herança a qualquer custo.** Em 2026, a resposta esperada **não** é "uso herança para reaproveitar código". É: *"prefiro composição por padrão, exceto em `is-a` genuíno e em pontos de extensão de framework"*. Quem defende hierarquias profundas como primeira opção sinaliza que não sentiu na pele o [[12 - Anti-patterns de OO|Yo-yo]] nem a *fragile base class* — linke [[07 - Composição sobre herança]].
 
@@ -85,7 +85,7 @@ Esta é a folha de cola do galho inteiro condensada. Para cada conceito, a frase
 | [[04 - Herança\|Herança]] | "Reservo herança para `is-a` genuíno e pontos de extensão de framework." |
 | [[05 - Polimorfismo\|Polimorfismo]] | "Adiciono comportamento com uma classe nova, sem editar as existentes (OCP)." |
 | [[07 - Composição sobre herança\|Composição > herança]] | "Por padrão injeto um colaborador em vez de herdar dele — acopla menos." |
-| [[03-Dominios/Engenharia/SOLID/index\|SOLID]] | "DIP em todo lugar: dependo de interfaces, o container injeta o concreto — testável e extensível." |
+| [[03-Dominios/Engenharia/Design de Software/SOLID/index\|SOLID]] | "DIP em todo lugar: dependo de interfaces, o container injeta o concreto — testável e extensível." |
 | [[10 - Rich vs Anemic Domain Model\|Rich model]] | "A regra de negócio mora na entidade: o `Pedido` sabe se pode ser aprovado." |
 | [[12 - Anti-patterns de OO\|Anti-patterns]] | "Quase todo *smell* é sintoma de baixa coesão ou alto acoplamento — reconhecer já é metade da cura." |
 
@@ -213,6 +213,6 @@ Quando o entrevistador mostra um trecho de código e pergunta "what would you ch
 - [[10 - Rich vs Anemic Domain Model]] — a regra mora na entidade
 - [[11 - Como o modelo OO difere entre linguagens]] — o paradigma muda de forma
 - [[12 - Anti-patterns de OO]] — reconhecer o cheiro é metade da cura
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — os cinco princípios por trás das frases de pivô
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — os cinco princípios por trás das frases de pivô
 - [[Design Patterns]] — o catálogo construído sobre estes fundamentos
 - [[Arquitetura de Software]] — DDD estratégico e SOLID no nível de módulo/serviço

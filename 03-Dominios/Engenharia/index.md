@@ -36,8 +36,8 @@ particularidades** (ex.: os princípios de RBAC ficam em [[03-Dominios/Engenhari
 - [[03-Dominios/Engenharia/Complexidade de Software/index|Complexidade de Software]] — essencial vs. acidental, abstração, dívida técnica
 - [[03-Dominios/Engenharia/Segurança/index|Segurança]] — princípios, autenticação, autorização, RBAC, OWASP
 - [[03-Dominios/Engenharia/Testes/index|Testes]] — pirâmide de testes, TDD, mocking, cobertura
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — princípios de design orientado a objetos
-- [[03-Dominios/Engenharia/Orientação a Objetos/index|Orientação a Objetos]] — OO como craft de design
+- [[03-Dominios/Engenharia/Design de Software/index|Design de Software]] — OO como craft, SOLID, design patterns, clean code
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] — APIs, REST, GraphQL, gRPC, mensageria, contratos
 
 ## Veja também
 

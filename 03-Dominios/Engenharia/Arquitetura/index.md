@@ -6,37 +6,32 @@ publish: true
 
 # Arquitetura de Software
 
-Padrões, estilos e práticas de arquitetura de sistemas.
+A **forma macro** do sistema: estilos, decisões estruturais, modelagem de domínio e design de sistemas em escala. O design de código (OO, SOLID, patterns) vive em [[03-Dominios/Engenharia/Design de Software/index|Design de Software]]; os contratos entre sistemas, em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]].
 
 ## Referências
 
 - [[Arquitetura de Software]] — guia abrangente com links e conceitos
+- [[System Design]] — design de sistemas em escala
 
-## Design de Sistemas
-
-- [[System Design]]
-- [[Design Patterns]]
-- [[API Design]]
-
-## Mensageria e Event Streaming
-
-- [[Mensageria]] — conceitos gerais
-- [[Event Streaming]]
-- [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] · [[RabbitMQ]] · [[BullMQ]]
-
-## Modelagem e Design
+## Modelagem de domínio
 
 - [[Event Storming]]
   - [[Exemplos]]
 - [[Gateway de Pagamento]]
 
+## Veja também
+
+- [[03-Dominios/Engenharia/Design de Software/index|Design de Software]] — design de código (OO, SOLID, patterns)
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] — APIs e mensageria
+- [[03-Dominios/Engenharia/index|Engenharia]] — a camada
+
 ---
 
-*Dataview — notas desta seção:*
+*Dataview — notas deste domínio:*
 
 ```dataview
 LIST
-FROM "Arquitetura"
+FROM "03-Dominios/Engenharia/Arquitetura"
 WHERE type != "moc"
 SORT file.name ASC
 ```

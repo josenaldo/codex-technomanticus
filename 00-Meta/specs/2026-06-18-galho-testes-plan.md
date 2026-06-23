@@ -39,7 +39,7 @@ pro galho de stack que aprofunda o ferramental.
   `[[03-Dominios/Engenharia/Complexidade de Software/14 - Manutenção e evolução|Manutenção e evolução]]`
   forward-linka pra cá; aqui mencionamos a relação sem reescrever a tese.
 - **OO / SOLID** — "código difícil de testar é código mal desenhado" (DIP, injeção de dependência) →
-  `[[03-Dominios/Engenharia/SOLID/index|SOLID]]` / `[[03-Dominios/Engenharia/Orientação a Objetos/index|OO]]`.
+  `[[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]` / `[[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|OO]]`.
 - **Arquitetura** — hexagonal/ports&adapters como design testável → `[[Arquitetura de Software]]`.
 - **Redes** — resiliência/chaos como teste de falha → `[[03-Dominios/Ciência/Redes e Protocolos/index|Redes]]`.
 

@@ -28,7 +28,7 @@ aliases:
 
 ## Sobre este galho
 
-Spin-off do galho [[03-Dominios/Engenharia/Orientação a Objetos/index|Orientação a Objetos]]: os
+Spin-off do galho [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]]: os
 cinco princípios de Robert C. Martin (Uncle Bob) rendem fundo o suficiente para terem galho próprio.
 A meta comum dos cinco é **baixo acoplamento e alta coesão** — por isso o galho referencia
 [[08 - Acoplamento e coesão]] (no galho OO), que é seu pré-requisito conceitual.
@@ -71,7 +71,7 @@ A meta comum dos cinco é **baixo acoplamento e alta coesão** — por isso o ga
 
 ```dataview
 TABLE fase, status, updated
-FROM "03-Dominios/Engenharia/SOLID"
+FROM "03-Dominios/Engenharia/Design de Software/SOLID"
 WHERE type = "concept"
 SORT file.name ASC
 ```
@@ -79,7 +79,7 @@ SORT file.name ASC
 ## Veja também
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
-- [[03-Dominios/Engenharia/Orientação a Objetos/index|Orientação a Objetos]] — os pilares e o design OO que SOLID refina
+- [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]] — os pilares e o design OO que SOLID refina
 - [[08 - Acoplamento e coesão]] — a meta que os cinco princípios perseguem
 - [[Arquitetura de Software]] — SOLID no nível de módulo e serviço
 - [[Design Patterns]] — padrões que materializam OCP e DIP

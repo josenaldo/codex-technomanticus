@@ -14,7 +14,7 @@ publish: false
 
 # Event Streaming
 
-Modelo arquitetural onde **eventos** (fatos imutáveis) são publicados em um log persistente e consumidos de forma contínua. É a base das arquiteturas event-driven modernas — mais que apenas mensageria, é uma forma diferente de pensar o estado do sistema. Enquanto [[Mensageria]] cobre o domínio geral e [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] é o deep dive na plataforma, esta nota foca nos **conceitos arquiteturais** de streams, event-driven, event sourcing e CQRS.
+Modelo arquitetural onde **eventos** (fatos imutáveis) são publicados em um log persistente e consumidos de forma contínua. É a base das arquiteturas event-driven modernas — mais que apenas mensageria, é uma forma diferente de pensar o estado do sistema. Enquanto [[Mensageria]] cobre o domínio geral e [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] é o deep dive na plataforma, esta nota foca nos **conceitos arquiteturais** de streams, event-driven, event sourcing e CQRS.
 
 ## O que é
 
@@ -630,7 +630,7 @@ Todo event-sourced system sério precisa de upcasters para lidar com histórico.
 ## Veja também
 
 - [[Event Storming]] — workshop para descobrir eventos de domínio (DDD)
-- [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] — a plataforma de event streaming mais usada
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — a plataforma de event streaming mais usada
 - [[Mensageria]] — contexto geral, comparação com queues
 - [[Arquitetura de Software]] — DDD, bounded contexts, EDA como estilo
 - [[System Design]] — CQRS em walkthroughs

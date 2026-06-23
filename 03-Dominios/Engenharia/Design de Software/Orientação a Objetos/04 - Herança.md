@@ -121,7 +121,7 @@ independentes, **não** — porque mudar só a largura de um quadrado quebra a i
 O quadrado **recusa** o comportamento que a base oferece.
 
 Esse é o gatilho para olhar **substituibilidade** — o Princípio de Substituição de Liskov (L de
-[[03-Dominios/Engenharia/SOLID/index|SOLID]]): qualquer lugar que espera a base tem que aceitar o
+[[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]): qualquer lugar que espera a base tem que aceitar o
 filho **sem surpresas**. Quando o filho recusa ou contradiz um comportamento herdado, isso é o
 anti-pattern **Refused Bequest** ("herança recusada"), catalogado em [[12 - Anti-patterns de OO]].
 
@@ -358,4 +358,4 @@ não usar* vale mais que recitar a definição.
 - [[11 - Como o modelo OO difere entre linguagens]] — Go sem herança, Python MRO, nominal vs estrutural
 - [[12 - Anti-patterns de OO]] — Refused Bequest e Yo-yo problem em detalhe
 - [[13 - OO na prática e em entrevista]] — o capstone bilíngue
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — o L (Liskov) que governa quando herdar é legítimo
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — o L (Liskov) que governa quando herdar é legítimo

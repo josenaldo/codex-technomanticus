@@ -474,7 +474,7 @@ Cada broker resolve um problema diferente. Escolher errado é fonte comum de ret
 
 **Ideal para:** event streaming, event-driven architecture entre microserviços, CDC, analytics pipelines, replay de eventos, log de auditoria.
 
-→ Para deep dive: [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]]
+→ Para deep dive: [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]]
 
 ### RabbitMQ
 
@@ -765,7 +765,7 @@ Um request que começa em HTTP → vira evento → processado por múltiplos con
 
 ## Veja também
 
-- [[03-Dominios/Engenharia/Arquitetura/Mensageria/Kafka]] — deep dive em Apache Kafka
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — deep dive em Apache Kafka
 - [[RabbitMQ]] — message queue com routing flexível
 - [[BullMQ]] — job queue para Node.js
 - [[Event Streaming]] — event sourcing, CQRS, streams

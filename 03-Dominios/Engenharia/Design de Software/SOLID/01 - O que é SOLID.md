@@ -125,7 +125,7 @@ flowchart TB
 > [!note] Leitura do diagrama
 > As cinco letras convergem. SRP e ISP alimentam a coesão; OCP, LSP e DIP alimentam o baixo acoplamento. E essas duas, juntas, produzem o que de fato importa: código que você consegue mudar sem medo. SOLID não é o objetivo — é o caminho. O objetivo é coesão e acoplamento.
 
-Por isso o galho inteiro de SOLID é, no fundo, a engenharia de atingir uma meta que vive lá fora: em [[08 - Acoplamento e coesão]], no galho de [[03-Dominios/Engenharia/Orientação a Objetos/index|Orientação a Objetos]]. Se você ainda não tem essa nota firme na cabeça, ela é o pré-requisito conceitual de tudo o que vem aqui. Leia-a primeiro, se puder.
+Por isso o galho inteiro de SOLID é, no fundo, a engenharia de atingir uma meta que vive lá fora: em [[08 - Acoplamento e coesão]], no galho de [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]]. Se você ainda não tem essa nota firme na cabeça, ela é o pré-requisito conceitual de tudo o que vem aqui. Leia-a primeiro, se puder.
 
 E como SOLID alcança isso? Pelas ferramentas que o OO já te deu: [[05 - Polimorfismo]] (o motor do OCP e do LSP), [[06 - Interfaces e classes abstratas]] (o ponto de articulação do DIP e do ISP). SOLID não inventa mecanismos novos — ele te diz *como apontar* os mecanismos que você já tem.
 
@@ -190,6 +190,6 @@ Vocabulário PT → EN:
 - [[05 - Polimorfismo]] — o motor por trás de OCP e LSP
 - [[06 - Interfaces e classes abstratas]] — o ponto de articulação de DIP e ISP
 - [[12 - Anti-patterns de OO]] — o que acontece quando SOLID vira dogma
-- [[03-Dominios/Engenharia/Orientação a Objetos/index|Orientação a Objetos]] — o galho de onde SOLID nasce
+- [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]] — o galho de onde SOLID nasce
 - [[Arquitetura de Software]] — SOLID no nível de módulo e serviço
 - [[Design Patterns]] — padrões que materializam OCP e DIP

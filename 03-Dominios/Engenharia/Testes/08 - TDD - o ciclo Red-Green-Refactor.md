@@ -105,7 +105,7 @@ O teste é o **primeiro cliente** da sua API. Antes de implementar, você já de
 
 ### Escrever código testável
 
-Código difícil de testar quase sempre é código mal projetado. Se você precisa subir meio sistema pra testar uma regra, é sinal de que a regra está acoplada demais. TDD empurra você na direção de **dependências injetadas**, responsabilidades separadas, fronteiras claras — exatamente os princípios de `[[03-Dominios/Engenharia/SOLID/index|SOLID]]`. A dor de testar é um feedback de design chegando cedo.
+Código difícil de testar quase sempre é código mal projetado. Se você precisa subir meio sistema pra testar uma regra, é sinal de que a regra está acoplada demais. TDD empurra você na direção de **dependências injetadas**, responsabilidades separadas, fronteiras claras — exatamente os princípios de `[[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]`. A dor de testar é um feedback de design chegando cedo.
 
 ### Resolver o problema certo
 

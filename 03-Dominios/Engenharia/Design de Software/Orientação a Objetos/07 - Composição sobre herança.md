@@ -93,7 +93,7 @@ new NotificationService(new SlackSender()).notify("@ana", "oi");
 
 Repare em três coisas. Primeiro: `NotificationService` depende da **interface** `MessageSender`, não
 de uma classe concreta — isso é o **DIP** (Dependency Inversion Principle, o D de
-[[03-Dominios/Engenharia/SOLID/index|SOLID]]): dependa de abstrações. Segundo: trocar e-mail por
+[[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]): dependa de abstrações. Segundo: trocar e-mail por
 Slack não toca uma linha do serviço — você passa outro objeto no construtor. Terceiro: testar é
 trivial — injete um `FakeSender` e verifique o que foi enviado, sem rede.
 
@@ -347,4 +347,4 @@ o trade-off — e que você não é dogmático — vale mais que recitar o sloga
 - [[12 - Anti-patterns de OO]] — herança abusada (Refused Bequest, Yo-yo) que a composição evita
 - [[13 - OO na prática e em entrevista]] — o capstone: quando a regra se aplica e quando furá-la
 - [[Design Patterns]] — Strategy, Decorator, Composite: composição com nome
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — o D (DIP) que torna a composição testável e flexível
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — o D (DIP) que torna a composição testável e flexível

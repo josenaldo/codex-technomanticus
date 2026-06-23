@@ -212,7 +212,7 @@ Há uma descoberta que assusta na primeira vez: a dificuldade de testar comporta
 
 Quando você é *forçado* a mockar dez colaboradores para testar uma classe, a classe provavelmente faz coisas demais — viola Responsabilidade Única. Quando você precisa de `@Spy` no SUT, é porque a classe mistura lógica que você quer testar com lógica que você quer fingir — sinal de que essas duas lógicas deveriam estar em classes separadas. Quando o fake é impossível de escrever porque a "dependência" é uma classe concreta cheia de detalhes, falta uma **interface** — uma fronteira limpa entre o que seu código quer e como isso é cumprido.
 
-Testar comportamento *empurra* o código na direção certa: interfaces pequenas, contratos claros, dependências injetadas. É a mesma força que os princípios `[[03-Dominios/Engenharia/SOLID/index|SOLID]]` aplicam de outro ângulo — Inversão de Dependência te dá a interface que vira o ponto natural do fake; Segregação de Interface te dá interfaces pequenas que são triviais de fakear.
+Testar comportamento *empurra* o código na direção certa: interfaces pequenas, contratos claros, dependências injetadas. É a mesma força que os princípios `[[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]` aplicam de outro ângulo — Inversão de Dependência te dá a interface que vira o ponto natural do fake; Segregação de Interface te dá interfaces pequenas que são triviais de fakear.
 
 ```mermaid
 flowchart TD
@@ -260,7 +260,7 @@ Leitura do diagrama: o teste difícil não é um problema a contornar com mais m
 - `[[07 - Testes de integração]]` — onde dependências reais entram com intenção explícita
 - `[[11 - Testes flaky]]` — a outra fonte de testes que você não pode confiar
 - `[[16 - Estratégia de testes em entrevista]]` — como articular tudo isso sob pressão
-- `[[03-Dominios/Engenharia/SOLID/index|SOLID]]` — por que código testável é código bem desenhado
+- `[[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]` — por que código testável é código bem desenhado
 - `[[Testes em Java]]` — Mockito, fakes e a aplicação concreta na linguagem
 - `[[03-Dominios/Engenharia/Testes/index|Testes]]` — o índice do galho
 

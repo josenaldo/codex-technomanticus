@@ -126,7 +126,7 @@ O bloco **"How to explain in English"** + frases de pivô + vocabulário bilíng
 - Frontmatter com `fase: iniciado|adepto|magus`, tags.
 
 ## Tronco e MOC
-- Criar pasta `03-Dominios/Engenharia/Orientação a Objetos/` com `index.md` (MOC, `type: moc`,
+- Criar pasta `03-Dominios/Engenharia/Design de Software/Orientação a Objetos/` com `index.md` (MOC, `type: moc`,
   `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - O `index.md` recebe **alias "Orientação a Objetos"** (+ "Orientação a objetos", "OO",
   "Object-Oriented Programming") para que os 13 links de entrada existentes resolvam (README,

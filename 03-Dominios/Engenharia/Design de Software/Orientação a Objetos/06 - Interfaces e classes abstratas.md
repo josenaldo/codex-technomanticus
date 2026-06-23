@@ -163,7 +163,7 @@ compartilhada" é só uma dependência esperando para ser composta — é o argu
 hierarquia, ver [[08 - Acoplamento e coesão]]); composição mantém as peças soltas.
 
 Por que começar pela interface? Porque ela é o ponto de menor compromisso. Ela te dá o desacoplamento
-do **DIP** (depender do contrato, não da classe concreta — [[03-Dominios/Engenharia/SOLID/index|SOLID]])
+do **DIP** (depender do contrato, não da classe concreta — [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]])
 sem te amarrar numa hierarquia. Você sempre pode promover uma interface a abstrata depois; o caminho
 inverso dói muito mais.
 
@@ -261,7 +261,7 @@ Não é trivia acadêmica — muda *como você desenha interfaces*.
 precisa declarar `implements`, é barato definir uma interface de **um método** exatamente onde você a
 consome (`io.Reader`, `io.Writer` são o exemplo canônico). O provedor nem sabe que a interface existe.
 Isso é o **ISP** (Interface Segregation Principle) levado ao extremo natural — interfaces minúsculas e
-focadas, ver [[03-Dominios/Engenharia/SOLID/index|SOLID]].
+focadas, ver [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]].
 
 **Nominal (Java) torna o contrato rastreável e intencional.** Como você *declara* `implements`, a IDE
 acha todos os implementadores num clique, e a relação é documentação viva. O custo é a cerimônia: para
@@ -332,5 +332,5 @@ A pergunta "interface ou classe abstrata?" é clássica. O júnior recita a tabe
 - [[11 - Como o modelo OO difere entre linguagens]] — nominal vs. estrutural por linguagem, em detalhe
 - [[12 - Anti-patterns de OO]] — hierarquias de abstratas profundas demais
 - [[13 - OO na prática e em entrevista]] — capstone e prep bilíngue
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — ISP (interfaces pequenas) e DIP (dependa do contrato)
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — ISP (interfaces pequenas) e DIP (dependa do contrato)
 - [[Design Patterns]] — Strategy, Template Method e Adapter vivem nessa fronteira

@@ -21,7 +21,7 @@ Escopo do spec-mãe (galho 7): "imperativo, OO, funcional, lógico, declarativo;
 colaterais. (cai parcialmente em entrevista)". Roster aprovado pelo usuário em 2026-06-18 (expandido p/ 16).
 
 ## Decisão de fronteira (a chave — rígido, anti-duplicação)
-- **OO já tem galho próprio** (`03-Dominios/Engenharia/Orientação a Objetos/`). Aqui OO entra como **um
+- **OO já tem galho próprio** (`03-Dominios/Engenharia/Design de Software/Orientação a Objetos/`). Aqui OO entra como **um
   paradigma entre vários** (objetos = estado + mensagens; como se compara ao imperativo e ao funcional) —
   **linka [[Orientação a Objetos]]** pros 4 pilares, NÃO os reensina.
 - **Concorrência conceitual** será galho próprio (Camada B, galho 8, ainda NÃO existe). Atores/CSP/memória

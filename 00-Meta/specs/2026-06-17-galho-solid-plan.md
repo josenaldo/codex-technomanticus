@@ -86,7 +86,7 @@ Experiência REAL do usuário, relocada do monólito ([[feedback-no-fabrication]
 - `publish: false` nas notas; `publish: true` só no `index.md`. Frontmatter `fase:`, tags.
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Engenharia/SOLID/` com `index.md` (MOC, `type: moc`, `publish: true`,
+- Pasta `03-Dominios/Engenharia/Design de Software/SOLID/` com `index.md` (MOC, `type: moc`, `publish: true`,
   agrupado por fase, rota de entrevista, dataview, "Veja também").
 - Alias do `index.md`: **"SOLID"** (+ "Princípios SOLID", "SOLID Principles") para resolver links de
   entrada (Arquitetura de Software, Java, etc. referenciam SOLID).

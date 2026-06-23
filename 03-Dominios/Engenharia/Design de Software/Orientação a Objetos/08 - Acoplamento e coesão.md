@@ -17,11 +17,11 @@ tags:
 # Acoplamento e coesão
 
 > [!summary] Resumo
-> Bom design é **baixo acoplamento** (módulos pouco dependentes entre si) com **alta coesão** (responsabilidades muito relacionadas dentro de cada módulo) — e [[03-Dominios/Engenharia/SOLID/index|SOLID]] é só a engenharia de chegar lá.
+> Bom design é **baixo acoplamento** (módulos pouco dependentes entre si) com **alta coesão** (responsabilidades muito relacionadas dentro de cada módulo) — e [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] é só a engenharia de chegar lá.
 
 Imagine que você está montando uma equipe. Você quer que cada pessoa seja **especialista numa coisa só** (que faça sentido juntar tudo o que ela faz) e que ela **não precise saber o trabalho íntimo das outras** para fazer o seu. A primeira qualidade é coesão. A segunda é baixo acoplamento.
 
-Essas duas palavras são o vocabulário com que você vai julgar quase todo código pelo resto da carreira. Quase todo princípio de design — incluindo o galho inteiro de [[03-Dominios/Engenharia/SOLID/index|SOLID]] — é uma técnica para empurrar um sistema na direção desses dois alvos.
+Essas duas palavras são o vocabulário com que você vai julgar quase todo código pelo resto da carreira. Quase todo princípio de design — incluindo o galho inteiro de [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — é uma técnica para empurrar um sistema na direção desses dois alvos.
 
 Vamos por partes.
 
@@ -237,12 +237,12 @@ O cheiro: o método pergunta tudo ao `Cliente` e quase nada à `Fatura`. A cura?
 
 ## Conexão com SOLID: a engenharia do mantra
 
-Se acoplamento e coesão são as **metas**, [[03-Dominios/Engenharia/SOLID/index|SOLID]] é o **manual de como atingi-las**. Dois exemplos diretos:
+Se acoplamento e coesão são as **metas**, [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] é o **manual de como atingi-las**. Dois exemplos diretos:
 
 - **SRP** (*Single Responsibility*) é, na essência, **otimizar coesão**: "uma classe, uma razão para mudar" é só outra forma de dizer "alta coesão funcional".
 - **DIP** (*Dependency Inversion*) é **otimizar acoplamento**: depender de uma abstração ([[06 - Interfaces e classes abstratas]]) em vez de uma implementação concreta troca acoplamento forte por fraco.
 
-Os outros três (OCP, LSP, ISP) também são, no fundo, manobras de acoplamento e coesão. O galho [[03-Dominios/Engenharia/SOLID/index|SOLID]] inteiro é a engenharia de chegar a **baixo acoplamento + alta coesão** sem ter que adivinhar.
+Os outros três (OCP, LSP, ISP) também são, no fundo, manobras de acoplamento e coesão. O galho [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] inteiro é a engenharia de chegar a **baixo acoplamento + alta coesão** sem ter que adivinhar.
 
 ```mermaid
 flowchart LR
@@ -300,4 +300,4 @@ Vocabulário PT → EN:
 - [[11 - Como o modelo OO difere entre linguagens]]
 - [[12 - Anti-patterns de OO]]
 - [[13 - OO na prática e em entrevista]]
-- [[03-Dominios/Engenharia/SOLID/index|SOLID]] — a engenharia de atingir baixo acoplamento + alta coesão
+- [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — a engenharia de atingir baixo acoplamento + alta coesão
