@@ -54,7 +54,7 @@ Antes de detalhar request e response, vale entender o que acontece **do lado do 
 Três implicações práticas pro que vem a seguir neste artigo:
 
 - **Tokenização (estágio 3) acontece antes da inferência** — por isso `tools` e mensagens longas no `messages` aumentam o custo *antes* mesmo do modelo gerar qualquer coisa.
-- **Inference engine (estágio 5) domina a latência** — otimizações como [[11 - Prompt caching e otimizações de API|prompt caching]] e [[12 - Streaming, batching e latência|streaming]] atacam exatamente essa fase.
+- **Inference engine (estágio 5) domina a latência** — otimizações como [[13 - Prompt caching e otimizações de API|prompt caching]] e [[14 - Streaming, batching e latência|streaming]] atacam exatamente essa fase.
 - **Billing começa no estágio 1** — toda request autenticada conta, mesmo que falhe depois. Por isso `usage` no response é o seu único termômetro confiável.
 
 ### Anatomia do Request
@@ -196,9 +196,9 @@ Cada seta para a API é uma chamada HTTP completa, com o histórico inteiro reen
 
 ## Veja também
 
-- [[10 - Pricing de APIs — como calcular custos]] — traduzindo tokens em dinheiro
-- [[11 - Prompt caching e otimizações de API]] — reduzindo custo de chamadas repetitivas
-- [[12 - Streaming, batching e latência]] — performance da comunicação
+- [[12 - Pricing de APIs — como calcular custos]] — traduzindo tokens em dinheiro
+- [[13 - Prompt caching e otimizações de API]] — reduzindo custo de chamadas repetitivas
+- [[14 - Streaming, batching e latência]] — performance da comunicação
 
 ## Referências
 

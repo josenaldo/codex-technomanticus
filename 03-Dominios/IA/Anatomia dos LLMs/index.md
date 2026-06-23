@@ -7,7 +7,7 @@ tags:
   - ia
   - moc
 created: 2026-05-02
-updated: 2026-06-15
+updated: 2026-06-20
 aliases:
   - LLMs
   - Large Language Models
@@ -41,53 +41,57 @@ Trilha sequencial recomendada — leia na ordem para construir do conceito até 
 
 ### Bloco 1 — Fundamentos do Transformer
 
-O alicerce. O que é um LLM, como texto vira tokens, o que limita o que o modelo "vê", e o mecanismo que faz tudo funcionar.
+O alicerce. O que é um LLM, como texto vira tokens, o mecanismo que faz tudo funcionar, como o texto sai token a token, e o que limita o que o modelo "vê".
 
 - [[01 - O que é um LLM]] — definição, categorias (dense vs MoE), estado da arte 2026
 - [[02 - Tokens e tokenização]] — BPE, vocabulário, como texto vira números, custos por token
-- [[02b - Embeddings — do token ao vetor]] — como o ID do token vira um vetor com significado; geometria do significado; estático vs contextual
-- [[03 - A janela de contexto]] — input vs output tokens, limites reais, "lost in the middle"
-- [[04 - Atenção e o mecanismo transformer]] — self-attention, Q/K/V, multi-head, complexidade quadrática
+- [[03 - Embeddings — do token ao vetor]] — como o ID do token vira um vetor com significado; geometria do significado; estático vs contextual
+- [[04 - Atenção e o mecanismo transformer]] — self-attention, Q/K/V, softmax, máscara causal, multi-head, FFN *(núcleo conceitual)*
+	- [[04a - KV cache, prefill e decode — a física da inferência]] — *(Magus)* custo quadrático, prefill vs decode, o KV cache
+	- [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA]] — *(Magus)* as variantes de atenção que reduzem o cache
+	- [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]] — *(Magus)* atacando o custo O(n²); attention sinks
+- [[05 - Completação — o loop autoregressivo]] — logits, softmax na saída, amostragem (greedy/top-k/top-p/temperatura), o loop token a token
+- [[06 - A janela de contexto]] — input vs output tokens, limites reais, "lost in the middle"
 
 ### Bloco 2 — Modelos em Produção
 
 Quem compete com quem, quanto custam, e quando usar cada um.
 
-- [[05 - Panorama de modelos 2026]] — GPT-5.x, Claude 4.x, Gemini 3.x, Llama 4, benchmarks
-- [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — os players open-weight que mudaram o mercado
-- [[07 - Dense vs Mixture-of-Experts]] — a escolha arquitetural que define custo e performance
-- [[08 - Modelos locais e self-hosting]] — Ollama, vLLM, hardware, quando vale a pena
+- [[07 - Panorama de modelos 2026]] — GPT-5.x, Claude 4.x, Gemini 3.x, Llama 4, benchmarks
+- [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — os players open-weight que mudaram o mercado
+- [[09 - Dense vs Mixture-of-Experts]] — a escolha arquitetural que define custo e performance
+- [[10 - Modelos locais e self-hosting]] — Ollama, vLLM, hardware, quando vale a pena
 
 ### Bloco 3 — APIs e Infraestrutura
 
 Como a comunicação funciona, quanto custa, e como gastar menos.
 
-- [[09 - APIs de LLM — anatomia de uma chamada]] — request/response, roles, temperature, tools
-- [[10 - Pricing de APIs — como calcular custos]] — fórmulas, tabelas de preço, custos ocultos
-- [[11 - Prompt caching e otimizações de API]] — caching, Batch API, model routing, compressão
-- [[12 - Streaming, batching e latência]] — TTFT, TPOT, SSE, otimizações de inferência
+- [[11 - APIs de LLM — anatomia de uma chamada]] — request/response, roles, temperature, tools
+- [[12 - Pricing de APIs — como calcular custos]] — fórmulas, tabelas de preço, custos ocultos
+- [[13 - Prompt caching e otimizações de API]] — caching, Batch API, model routing, compressão
+- [[14 - Streaming, batching e latência]] — TTFT, TPOT, SSE, otimizações de inferência
 
 ### Bloco 4 — Conceitos Avançados
 
 O que muda quando modelos "pensam", quando customizar, e para onde tudo isso vai.
 
-- [[13 - Reasoning models e chain-of-thought]] — o1/o4, Claude Thinking, custos de reasoning
-- [[14 - Fine-tuning vs prompting vs RAG]] — árvore de decisão para adaptação de LLMs
-- [[15 - O futuro dos LLMs — tendências 2026-2027]] — agentes, contexto infinito, commoditização
+- [[15 - Reasoning models e chain-of-thought]] — o1/o4, Claude Thinking, custos de reasoning
+- [[16 - Fine-tuning vs prompting vs RAG]] — árvore de decisão para adaptação de LLMs
+- [[17 - O futuro dos LLMs — tendências 2026-2027]] — agentes, contexto infinito, commoditização
 
 ### Bloco 5 — Treino e Avaliação
 
 Como modelos chegam ao comportamento que você vê — e como medir se estão funcionando em produção.
 
-- [[16 - Como LLMs são treinados — pretraining, SFT, RLHF]] — o pipeline canônico, Constitutional AI, DPO
-- [[17 - Evaluation de LLMs em produção]] — golden set, LLM-as-judge, traces, A/B test
+- [[18 - Como LLMs são treinados — pretraining, SFT, RLHF]] — o pipeline canônico, Constitutional AI, DPO
+- [[19 - Evaluation de LLMs em produção]] — golden set, LLM-as-judge, traces, A/B test
 
 ### Bloco 6 — Eficiência, compressão e customização (avançado)
 
 Como modelos ficam menores, mais baratos, rodáveis localmente e adaptados ao seu caso — o lado avançado do Nível 5.
 
-- [[18 - Compressão de modelos — quantização e destilação]] — reduzir precisão (quantização) e treinar alunos menores (destilação)
-- [[19 - Fine-tuning na prática — LoRA, QLoRA, DPO]] — como customizar os pesos: PEFT/LoRA/QLoRA e alinhamento por preferência (DPO)
+- [[20 - Compressão de modelos — quantização e destilação]] — reduzir precisão (quantização) e treinar alunos menores (destilação)
+- [[21 - Fine-tuning na prática — LoRA, QLoRA, DPO]] — como customizar os pesos: PEFT/LoRA/QLoRA e alinhamento por preferência (DPO)
 
 ## Rotas alternativas
 
@@ -95,31 +99,31 @@ Como modelos ficam menores, mais baratos, rodáveis localmente e adaptados ao se
 
 *"Quero rodar IA localmente sem pagar API"*
 
-[[01 - O que é um LLM]] → [[02 - Tokens e tokenização]] → [[08 - Modelos locais e self-hosting]] → [[10 - Pricing de APIs — como calcular custos]]
+[[01 - O que é um LLM]] → [[02 - Tokens e tokenização]] → [[10 - Modelos locais e self-hosting]] → [[12 - Pricing de APIs — como calcular custos]]
 
 ### Rota arquiteto (entender para projetar sistemas)
 
 *"Preciso tomar decisões técnicas sobre qual modelo e infra usar"*
 
-[[03 - A janela de contexto]] → [[04 - Atenção e o mecanismo transformer]] → [[07 - Dense vs Mixture-of-Experts]] → [[09 - APIs de LLM — anatomia de uma chamada]] → [[12 - Streaming, batching e latência]]
+[[04 - Atenção e o mecanismo transformer]] → [[06 - A janela de contexto]] → [[09 - Dense vs Mixture-of-Experts]] → [[11 - APIs de LLM — anatomia de uma chamada]] → [[14 - Streaming, batching e latência]]
 
 ### Rota decisor (escolher e comprar)
 
 *"Preciso decidir qual modelo usar no meu projeto"*
 
-[[05 - Panorama de modelos 2026]] → [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] → [[10 - Pricing de APIs — como calcular custos]] → [[14 - Fine-tuning vs prompting vs RAG]]
+[[07 - Panorama de modelos 2026]] → [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] → [[12 - Pricing de APIs — como calcular custos]] → [[16 - Fine-tuning vs prompting vs RAG]]
 
 ### Rota otimização (reduzir custos)
 
 *"Já uso LLMs e quero gastar menos"*
 
-[[02 - Tokens e tokenização]] → [[10 - Pricing de APIs — como calcular custos]] → [[11 - Prompt caching e otimizações de API]] → [[13 - Reasoning models e chain-of-thought]]
+[[02 - Tokens e tokenização]] → [[12 - Pricing de APIs — como calcular custos]] → [[13 - Prompt caching e otimizações de API]] → [[15 - Reasoning models e chain-of-thought]]
 
 ### Rota produção (do POC ao deploy confiável)
 
 *"Quero levar LLM para produção com observabilidade real"*
 
-[[09 - APIs de LLM — anatomia de uma chamada]] → [[16 - Como LLMs são treinados — pretraining, SFT, RLHF]] → [[17 - Evaluation de LLMs em produção]] → [[Economia de Tokens|04 - Monitoramento — ccusage, Langfuse, dashboards]]
+[[11 - APIs de LLM — anatomia de uma chamada]] → [[18 - Como LLMs são treinados — pretraining, SFT, RLHF]] → [[19 - Evaluation de LLMs em produção]] → [[Economia de Tokens|04 - Monitoramento — ccusage, Langfuse, dashboards]]
 
 ## Trilha de aprendizado em 5 níveis (do zero ao domínio)
 
@@ -150,7 +154,7 @@ Como modelos ficam menores, mais baratos, rodáveis localmente e adaptados ao se
 > **Check:** assume ownership de um serviço LLM-backed.
 >
 > ### Nível 5 — Avançado (ongoing)
-> [[19 - Fine-tuning na prática — LoRA, QLoRA, DPO|Fine-tuning quando justificado (LoRA, QLoRA, DPO)]], LLMs locais (Ollama, vLLM), [[18 - Compressão de modelos — quantização e destilação|quantização/destilação]], evaluation profunda (LLM-as-judge, A/B test), papers (Attention is All You Need, InstructGPT, LLaMA, etc).
+> [[21 - Fine-tuning na prática — LoRA, QLoRA, DPO|Fine-tuning quando justificado (LoRA, QLoRA, DPO)]], LLMs locais (Ollama, vLLM), [[20 - Compressão de modelos — quantização e destilação|quantização/destilação]], evaluation profunda (LLM-as-judge, A/B test), papers (Attention is All You Need, InstructGPT, LLaMA, etc).
 
 ## Leituras recomendadas
 
@@ -161,11 +165,11 @@ Como modelos ficam menores, mais baratos, rodáveis localmente e adaptados ao se
 | *Let's build GPT from scratch*              | Andrej Karpathy     | Vídeo (YouTube) | Bloco 1 — implementação completa     |
 | *Let's build the GPT tokenizer*             | Andrej Karpathy     | Vídeo (YouTube) | Nota 02 — BPE do zero                |
 | *3Blue1Brown — Transformers explained*      | Grant Sanderson     | Vídeo (YouTube) | Nota 04 — visualização de atenção    |
-| *DeepSeek-V3 Technical Report*              | DeepSeek AI         | Paper           | Notas 06-07 — MoE e modelos chineses |
-| *LLM Cost Comparison*                       | Artificial Analysis | Site            | Notas 10-11 — pricing atualizado     |
-| *InstructGPT paper*                         | OpenAI              | Paper           | Nota 16 — fundamento do RLHF         |
-| *Constitutional AI*                         | Anthropic           | Paper           | Nota 16 — alignment via princípios   |
-| *AI Engineering*                            | Chip Huyen          | Livro (2025)    | Notas 16-17 — eval e produção        |
+| *DeepSeek-V3 Technical Report*              | DeepSeek AI         | Paper           | Notas 08-09 — MoE e modelos chineses |
+| *LLM Cost Comparison*                       | Artificial Analysis | Site            | Notas 12-13 — pricing atualizado     |
+| *InstructGPT paper*                         | OpenAI              | Paper           | Nota 18 — fundamento do RLHF         |
+| *Constitutional AI*                         | Anthropic           | Paper           | Nota 18 — alignment via princípios   |
+| *AI Engineering*                            | Chip Huyen          | Livro (2025)    | Notas 18-19 — eval e produção        |
 
 ## How to explain in English
 

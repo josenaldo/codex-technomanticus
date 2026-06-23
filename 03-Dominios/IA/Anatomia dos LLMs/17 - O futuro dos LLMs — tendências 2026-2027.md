@@ -138,9 +138,9 @@ graph LR
 
 ## Veja também
 
-- [[05 - Panorama de modelos 2026]] — o estado atual que dá base para essas projeções
+- [[07 - Panorama de modelos 2026]] — o estado atual que dá base para essas projeções
 - [[01 - O que é um LLM]] — fundamentos da arquitetura que está evoluindo
-- [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — os drivers da commoditização
+- [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — os drivers da commoditização
 
 ## Referências
 

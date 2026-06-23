@@ -139,7 +139,7 @@ Para modelos MoE (DeepSeek, Mixtral), pós-training tem cuidados específicos co
 
 ### Long-context fine-tuning
 
-Modelos modernos (Claude 200K+, Gemini 1M+, GPT-5) precisam de SFT/RLHF em prompts longos para evitar [[03 - A janela de contexto|context rot]] muito severo.
+Modelos modernos (Claude 200K+, Gemini 1M+, GPT-5) precisam de SFT/RLHF em prompts longos para evitar [[06 - A janela de contexto|context rot]] muito severo.
 
 ## Implicações práticas para você
 
@@ -182,13 +182,13 @@ Escolha de modelo é também escolha de **persona** moldada pelo pós-training.
 | Prompt está longo e caro | ⚠️ Considere fine-tune para encurtar |
 | Adicionar nova skill emergente | ❌ Improvável de funcionar |
 
-Ver [[14 - Fine-tuning vs prompting vs RAG]] para árvore de decisão.
+Ver [[16 - Fine-tuning vs prompting vs RAG]] para árvore de decisão.
 
 ## Veja também
 
 - [[01 - O que é um LLM]]
-- [[14 - Fine-tuning vs prompting vs RAG]]
-- [[17 - Evaluation de LLMs em produção]]
+- [[16 - Fine-tuning vs prompting vs RAG]]
+- [[19 - Evaluation de LLMs em produção]]
 - [[Spec-Driven Development|02 - O que é Spec-Driven Development]]
 
 ## Referências

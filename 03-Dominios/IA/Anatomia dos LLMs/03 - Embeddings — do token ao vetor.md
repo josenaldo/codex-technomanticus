@@ -1,9 +1,9 @@
 ---
 title: "Embeddings — do token ao vetor"
 created: 2026-06-19
-updated: 2026-06-19
+updated: 2026-06-21
 type: concept
-status: seedling
+status: growing
 progress: in-progress
 publish: true
 tags:
@@ -21,7 +21,14 @@ aliases:
 > [!abstract] TL;DR
 > Um **embedding** é a tradução de um token em uma lista de números (um vetor) que o modelo consegue processar. O passo anterior — [[02 - Tokens e tokenização|tokenização]] — quebra o texto em tokens e dá a cada um um número de identidade (ID). Esse ID, sozinho, não tem significado. O embedding resolve isso: troca o ID por um vetor de centenas ou milhares de números, aprendido durante o treino, posicionado num espaço onde **significados parecidos ficam perto**. É por isso que o modelo "sabe" que *rei* e *rainha* são parentes e que *rei* e *mesa* não são — a semelhança virou distância geométrica.
 
+> [!tip] Comece pelo vídeo
+> Sandeco (Decomplicated IA) mostra, em ~18 minutos e em português, como o GPT transforma cada palavra em vetor — exatamente o tema desta nota:
+
+![](https://www.youtube.com/watch?v=_G_--YC5Xd4)
+
 ## O que é
+
+A nota anterior fechou com uma pergunta em aberto: o token virou um número (`"gato"` → `1842`), e um número sozinho não significa nada — como o modelo extrai *sentido* de um índice? Esta nota responde.
 
 Depois da [[02 - Tokens e tokenização|tokenização]], cada token vira um **ID inteiro** — uma posição no vocabulário (ex: `"gato"` → token `1842`). Mas o número `1842` não carrega nenhum significado: é só um endereço. Token `1843` poderia ser `"geladeira"`, sem nenhuma relação, mesmo o número estando colado.
 
@@ -67,6 +74,9 @@ A "direção" que separa *homem* de *mulher* é mais ou menos a mesma que separa
 
 A proximidade entre dois embeddings costuma ser medida por **similaridade de cosseno** (o ângulo entre os vetores, não a distância absoluta): cosseno perto de `1` = muito parecidos; perto de `0` = sem relação.
 
+> [!question]- Por que medir por ângulo (cosseno), e não por distância?
+> Porque num espaço de embeddings é a **direção** que carrega o significado — o *tamanho* do vetor costuma codificar outra coisa (frequência, "intensidade"). Dois vetores podem ter comprimentos bem diferentes e ainda assim apontar para o mesmo lado: mesmo sentido, intensidades distintas. O cosseno olha só o ângulo, então os trata como parecidos; a distância euclidiana, sensível ao comprimento, poderia dizer que estão longe. Como é a direção que importa, compara-se por ângulo — cosseno perto de 1 = quase mesma direção; perto de 0 = perpendiculares, sem relação.
+
 > [!tip] Por que isso é poderoso
 > O modelo nunca recebeu uma definição de "rei" ou uma regra de gramática. A geometria emergiu de prever texto: tokens que aparecem em contextos parecidos acabam com vetores parecidos. Significado, aqui, é **estatística de coocorrência** transformada em espaço.
 
@@ -74,9 +84,16 @@ A proximidade entre dois embeddings costuma ser medida por **similaridade de cos
 
 Por dentro, a camada de embedding é simples: uma **tabela de consulta** (lookup table).
 
+```mermaid
+flowchart LR
+    A["Token: 'gato'"] --> B["ID: 1842<br/>(tokenização)"]
+    B --> C["Linha 1842 da matriz<br/>de embedding<br/>(V linhas × d_model colunas)"]
+    C --> D["Vetor de d_model números<br/>[0.12, -0.88, 0.34, …]"]
+```
+
 1. **Uma matriz gigante.** O modelo guarda uma matriz com `V` linhas (uma por token do vocabulário) e `d_model` colunas. Cada linha *é* o embedding daquele token. É a **mesma tabela de embedding** dimensionada pelo tamanho do vocabulário discutida em [[02 - Tokens e tokenização]].
 2. **A consulta.** Para o token de ID `1842`, o modelo simplesmente pega a linha `1842` da matriz. Sem cálculo — é um acesso por índice.
-3. **De onde vêm os números.** No começo do treino, a matriz é preenchida com **valores aleatórios**. Durante o pré-treinamento, o **backpropagation** ajusta esses números milhões de vezes: prevê o próximo token, mede o erro, corrige os vetores na direção que reduz o erro. Aos poucos, tokens que aparecem em contextos parecidos são empurrados para perto uns dos outros. A semântica não é injetada — é **destilada dos dados**.
+3. **De onde vêm os números.** No começo do treino, a matriz é preenchida com **valores aleatórios**. Durante o pré-treinamento, o **backpropagation** (o algoritmo que treina toda rede neural: mede o quanto cada número contribuiu para o erro da previsão e o ajusta na direção que reduz esse erro) refina esses vetores milhões de vezes: prevê o próximo token, mede o erro, corrige na direção que o reduz. Aos poucos, tokens que aparecem em contextos parecidos são empurrados para perto uns dos outros. A semântica não é injetada — é **destilada dos dados**.
 
 É também por isso que `d_model` define o tamanho do modelo: cada token ocupa uma linha de `d_model` números na entrada (e outra na saída), então dobrar `d_model` infla a contagem de parâmetros. O salto de dimensão é parte de por que modelos "maiores" têm mais parâmetros.
 
@@ -114,20 +131,31 @@ Sem embeddings, não há nada para a atenção operar — eles são o substrato 
 - **Confundir embedding com tokenização.** Tokenização é uma tabela fixa texto↔ID; embedding é uma representação aprendida ID→vetor. Uma é determinística, a outra emerge do treino.
 - **Achar que o vetor de entrada é "o significado final".** O embedding da tabela é estático e descontextualizado. O significado sensível ao contexto só aparece *depois* das camadas de atenção.
 - **Tratar dimensão como qualidade absoluta.** Mais dimensões (`d_model` maior) dá mais capacidade de representação, mas também mais parâmetros e custo. Não existe "quanto mais, melhor" — é um trade-off.
-- **Misturar embeddings de modelos diferentes.** O espaço vetorial de cada modelo é próprio: um vetor do modelo A não tem sentido no espaço do modelo B. Isso importa muito em busca/[[14 - Fine-tuning vs prompting vs RAG|RAG]].
+- **Misturar embeddings de modelos diferentes.** O espaço vetorial de cada modelo é próprio: um vetor do modelo A não tem sentido no espaço do modelo B. Isso importa muito em busca/[[16 - Fine-tuning vs prompting vs RAG|RAG]].
 
 ## Embeddings além do input: busca e RAG
 
-Embeddings não servem só *dentro* do modelo. Como eles transformam texto em vetores onde proximidade = similaridade de significado, são a base de **busca semântica** e de [[14 - Fine-tuning vs prompting vs RAG|RAG]]: você transforma documentos em vetores, transforma a pergunta em vetor, e recupera os documentos mais próximos.
+Embeddings não servem só *dentro* do modelo. Como eles transformam texto em vetores onde proximidade = similaridade de significado, são a base de **busca semântica** e de [[16 - Fine-tuning vs prompting vs RAG|RAG]]: você transforma documentos em vetores, transforma a pergunta em vetor, e recupera os documentos mais próximos.
 
 Esse uso aplicado — escolher um **modelo de embedding** (text-embedding-3, Voyage, Cohere), dimensões matryoshka, custo, e o casamento com o índice vetorial — é uma decisão de engenharia tratada em detalhe em [[03 - Embeddings — representação semântica]] (galho de RAG e Vector Databases). Esta nota cobre o *conceito*; aquela cobre a *escolha de ferramenta*.
 
+## Embeddings em uma frase
+
+Se for para guardar uma coisa só: **um embedding troca o ID sem-sentido de um token por um vetor aprendido, posicionado num espaço onde proximidade = semelhança de significado — é o que torna o texto calculável.**
+
+Mas esse vetor de entrada é só a **semente**: ele é estático, o mesmo para o `"banco"` de praça e o de dinheiro. Falta o contexto entrar em cena e diferenciar os dois. Esse é o trabalho da próxima nota — o **mecanismo de atenção**, que pega esses vetores e deixa cada um "olhar" para os outros, reescrevendo-se conforme a vizinhança. É a [[04 - Atenção e o mecanismo transformer]].
+
 ## Veja também
 
+- [[01 - O que é um LLM]] — o panorama: onde os embeddings entram no modelo
 - [[02 - Tokens e tokenização]] — o passo anterior: como o texto vira IDs
 - [[04 - Atenção e o mecanismo transformer]] — o que contextualiza os embeddings camada a camada
 - [[03 - Embeddings — representação semântica]] — embeddings aplicados a busca/RAG (escolha de modelo, matryoshka, cosine)
-- [[03 - A janela de contexto]] — quantos tokens (e portanto embeddings) o modelo processa por vez
+- [[06 - A janela de contexto]] — quantos tokens (e portanto embeddings) o modelo processa por vez
+
+## Ver mais
+
+- [3Blue1Brown — *Transformers, the tech behind LLMs (Chapter 5)*](https://www.youtube.com/watch?v=wjZofJX0v4M) (2024, 27 min) — a partir da ideia de "embutir uma palavra", trata os embeddings como pontos e direções num espaço de significado (a aritmética rei−homem+mulher, os 12.288 eixos do GPT-3). O tratamento visual definitivo.
 
 ## Fontes
 

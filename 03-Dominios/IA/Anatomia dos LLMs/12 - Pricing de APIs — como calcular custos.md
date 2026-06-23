@@ -125,8 +125,8 @@ Cenário: engenheiro usando Claude Sonnet 4.6 como agente de codificação, 8h d
 ## Veja também
 
 - [[02 - Tokens e tokenização]] — como contar tokens
-- [[09 - APIs de LLM — anatomia de uma chamada]] — estrutura do request que gera custo
-- [[11 - Prompt caching e otimizações de API]] — como reduzir a conta
+- [[11 - APIs de LLM — anatomia de uma chamada]] — estrutura do request que gera custo
+- [[13 - Prompt caching e otimizações de API]] — como reduzir a conta
 
 ## Referências
 

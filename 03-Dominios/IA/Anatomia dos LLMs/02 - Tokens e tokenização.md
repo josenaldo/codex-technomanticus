@@ -1,7 +1,7 @@
 ---
 title: Tokens e tokenização
 created: 2026-05-02
-updated: 2026-05-27
+updated: 2026-06-21
 type: concept
 status: evergreen
 progress: done
@@ -20,7 +20,14 @@ aliases:
 > [!abstract] TL;DR
 > Tokens são as unidades atômicas que LLMs processam — não caracteres, não palavras, mas pedaços intermediários de texto definidos por um algoritmo de compressão chamado BPE. Uma palavra comum como "the" é 1 token; "tokenização" pode ser 3. Entender tokenização é pré-requisito para entender custos, limites de contexto e por que seu prompt às vezes gasta mais do que esperado.
 
+> [!tip] Comece pelo vídeo
+> Gustavo Guanabara (Curso em Vídeo) apresenta o conceito de tokens do zero, em ~19 minutos — um bom panorama antes de mergulhar no texto:
+
+![](https://www.youtube.com/watch?v=JfJJIrOhWwQ)
+
 ## O que é
+
+No ciclo que fecha a nota anterior, o primeiro passo era *tokenização* — e ali ele passou rápido. Aqui abrimos essa caixa: o que é, afinal, um token, e como um texto vira a sequência de pedaços que o modelo de fato processa.
 
 **Tokenização** é o processo de converter texto bruto (strings de caracteres) em sequências de **[[Dicionário de IA#Token|tokens]]** — unidades numéricas que o modelo realmente processa. Cada token é mapeado para um ID inteiro no vocabulário do modelo.
 
@@ -36,8 +43,8 @@ O vocabulário típico de um LLM moderno tem entre **32.000 e 200.000 tokens**.
 > [!info] O que é o vocabulário de um LLM
 > O **vocabulário** é o dicionário fixo e finito de todos os tokens que o modelo reconhece — definido uma única vez, quando o tokenizador é treinado, antes do treino do modelo começar. Não é um detalhe abstrato: o tamanho do vocabulário (`V`) dimensiona duas estruturas reais do modelo.
 >
-> - **Tabela de embedding** — uma linha por token (`V` linhas). É como o modelo converte cada ID de token no vetor que ele de fato processa.
-> - **Camada de saída** — a cada passo de geração, o modelo produz `V` logits e aplica softmax, gerando uma distribuição de probabilidade sobre *todo* o vocabulário.
+> - **Tabela de embedding** — uma linha por token (`V` linhas). É como o modelo converte cada ID de token no vetor que ele de fato processa (ver [[03 - Embeddings — do token ao vetor]]).
+> - **Camada de saída** — a cada passo de geração, o modelo produz `V` **logits** (um score bruto por token) e aplica **softmax** (que transforma esses scores em probabilidades somando 1), gerando uma distribuição sobre *todo* o vocabulário. Não precisa dominar esses dois termos agora — a nota [[05 - Completação — o loop autoregressivo]] os destrincha; aqui basta saber que a saída é uma escolha entre as `V` entradas.
 >
 > Por isso "qual o próximo token?" é, literalmente, escolher entre essas `V` entradas: o vocabulário é o **espaço de escolha** do modelo a cada token gerado. O custo de inflar `V` é tratado em [[#O trade-off do tamanho de vocabulário]].
 
@@ -65,6 +72,16 @@ O algoritmo mais usado em LLMs modernos. É um método de compressão iterativo 
 3. **Merge** — fundir o par mais frequente em um novo token e adicioná-lo ao vocabulário
 4. **Repetição** — repetir passos 2-3 até atingir o tamanho de vocabulário desejado (ex: 100k)
 
+```mermaid
+flowchart TD
+    A["Vocabulário inicial:<br/>256 bytes individuais"] --> B["Conta a frequência de todos<br/>os pares adjacentes no corpus"]
+    B --> C["Funde o par mais frequente<br/>num novo token único"]
+    C --> D["Adiciona o token ao vocabulário"]
+    D --> E{"Atingiu o tamanho<br/>de vocabulário V?"}
+    E -- não --> B
+    E -- sim --> F["Vocabulário final<br/>(ex.: 100k tokens)"]
+```
+
 #### Exemplo concreto
 
 ```
@@ -84,9 +101,11 @@ Iteração 2: par mais frequente = "aa b" → merge → novo token "aab"
 
 Na prática, o BPE descrito acima **não roda direto sobre o texto bruto**. Antes vem um passo de **pré-tokenização**: uma expressão regular quebra o texto em pedaços — contrações, sequências de letras, números (em grupos de 1 a 3 dígitos) e pontuação. O BPE então roda **isoladamente dentro de cada pedaço**, e nenhum merge cruza essas fronteiras.
 
-Isso tem consequências concretas: `" world"` (com espaço à frente) e `"world"` viram tokens diferentes, e o tokenizador nunca funde uma letra com a pontuação ao lado. O exemplo didático acima ignora esse passo — um tokenizador real jamais produziria um merge atravessando um espaço ou uma vírgula.
+Isso tem consequências concretas: `" world"` (com espaço à frente) e `"world"` viram tokens diferentes, e o tokenizador nunca funde uma letra com a pontuação ao lado. E o exemplo didático acima **não está errado** — ele mostra fielmente a *mecânica* do merge (achar o par mais frequente e fundir). O que a pré-tokenização acrescenta é uma *regra de fronteira*: na prática o merge só roda dentro de cada pedaço, então um tokenizador real jamais fundiria atravessando um espaço ou uma vírgula. Mecânica certa; faltava dizer **onde** ela pode acontecer.
 
 ### Variantes de tokenização
+
+O BPE é o algoritmo dominante, mas não o único. As variantes diferem sobretudo em *como* decidem o que fundir:
 
 | Método                      | Usado por             | Características                                                               |
 | --------------------------- | --------------------- | ----------------------------------------------------------------------------- |
@@ -96,6 +115,8 @@ Isso tem consequências concretas: `" world"` (com espaço à frente) e `"world"
 | **Tiktoken**                | OpenAI (GPT-3.5+)     | Implementação otimizada de BPE em Rust, usada pela API                        |
 
 ### Impacto da tokenização no custo
+
+Qualquer que seja a variante, uma consequência pesa direto no bolso: o mesmo conteúdo não custa igual em todo idioma.
 
 ```
 Frase em inglês: "The quick brown fox" → 4 tokens
@@ -180,19 +201,30 @@ A tokenização é uma **heurística** de pré-processamento — não faz parte 
 
 O resultado iguala modelos baseados em tokenização até 8B de parâmetros e elimina de uma vez vários problemas herdados: a cegueira ortográfica (o "strawberry"), a fragilidade a ruído e a desigualdade multilíngue. Não é produção mainstream ainda, mas sinaliza que a tokenização pode ser uma fase, não um pilar permanente.
 
+## Tokens em uma frase
+
+Se for para guardar uma coisa só: **um token é o pedaço de texto que o modelo realmente enxerga — nem letra, nem palavra, mas uma subpalavra escolhida por um algoritmo de compressão (BPE) — e é a unidade de custo, de contexto e de velocidade de tudo num LLM.**
+
+Mas repare onde paramos: ao fim da tokenização, cada token virou apenas um **ID inteiro** — `"gato"` é o número 1842, e o número 1842, sozinho, não significa nada. Como é que o modelo extrai *sentido* de um índice? Esse é o salto da próxima nota: transformar o ID num **vetor**, posicionado num espaço onde significados parecidos ficam perto. É a [[03 - Embeddings — do token ao vetor]].
+
 ## Veja também
 
 - [[01 - O que é um LLM]] — contexto geral dos modelos
-- [[03 - A janela de contexto]] — como tokens definem os limites do que o modelo "vê"
-- [[10 - Pricing de APIs — como calcular custos]] — impacto direto da contagem de tokens no bolso
+- [[03 - Embeddings — do token ao vetor]] — o passo seguinte: como o ID do token vira um vetor com significado
+- [[05 - Completação — o loop autoregressivo]] — como o vocabulário vira a "escolha" do próximo token na saída
+- [[06 - A janela de contexto]] — como tokens definem os limites do que o modelo "vê"
+- [[12 - Pricing de APIs — como calcular custos]] — impacto direto da contagem de tokens no bolso
+
+## Ver mais
+
+- [Andrej Karpathy — *Let's build the GPT Tokenizer*](https://www.youtube.com/watch?v=zduSFxRajkE) (2024, 2h13) — constrói um tokenizador BPE do zero, em código, e no fim revisita os "quirks" da tokenização (o strawberry, a aritmética, por que às vezes YAML bate JSON). O recurso definitivo para ir além do conceito.
 
 ## Referências
 
 - **Sennrich, Haddow, Birch** — *Neural Machine Translation of Rare Words with Subword Units* (2016). Paper original do BPE para NLP.
 - **OpenAI** — *Tiktoken* (GitHub). Implementação de referência do tokenizador GPT.
 - **HuggingFace** — *Tokenizers library*. Biblioteca universal para BPE, WordPiece, Unigram.
-- **Karpathy, Andrej** — *Let's build the GPT tokenizer* (YouTube, 2024). Implementação de BPE do zero em ~2h.
-- **Karpathy, Andrej** — [*minbpe*](https://github.com/karpathy/minbpe) (2024). Código mínimo do BPE, incluindo o regex de pré-tokenização do GPT-4.
+- **Karpathy, Andrej** — [*minbpe*](https://github.com/karpathy/minbpe) (2024). Código mínimo do BPE, incluindo o regex de pré-tokenização do GPT-4. (O vídeo correspondente está em "Ver mais".)
 - **"Tokenization counts: the impact of tokenization on arithmetic in frontier LLMs"** — [arXiv:2402.14903](https://arxiv.org/abs/2402.14903) (2024). Padrões de erro aritmético dependentes do fatiamento de dígitos.
 - **"Why Do Large Language Models Struggle to Count Letters?"** — [arXiv:2412.18626](https://arxiv.org/abs/2412.18626) (2024). Liga o erro do "strawberry" à granularidade dos tokens.
 - **Rumbelow, Jessica & Watkins, Matthew** — [*SolidGoldMagikarp (plus, prompt generation)*](https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation) (LessWrong, 2023). Descoberta original dos glitch tokens via clustering de embeddings.

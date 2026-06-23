@@ -216,9 +216,9 @@ Depois (economiza ~60% dos tokens de tool definitions):
 
 ## Veja também
 
-- [[10 - Pricing de APIs — como calcular custos]] — os preços que o caching reduz
-- [[09 - APIs de LLM — anatomia de uma chamada]] — a estrutura do request que é cacheada
-- [[12 - Streaming, batching e latência]] — otimizações de performance
+- [[12 - Pricing de APIs — como calcular custos]] — os preços que o caching reduz
+- [[11 - APIs de LLM — anatomia de uma chamada]] — a estrutura do request que é cacheada
+- [[14 - Streaming, batching e latência]] — otimizações de performance
 
 ## Referências
 

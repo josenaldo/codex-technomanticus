@@ -153,7 +153,7 @@ def llm_as_judge(question, expected, actual):
 
 | Métrica | O que mede | Por que importa |
 |---|---|---|
-| **Input tokens** | Tokens consumidos | Custo + atenção dilui ([[03 - A janela de contexto]]) |
+| **Input tokens** | Tokens consumidos | Custo + atenção dilui ([[06 - A janela de contexto]]) |
 | **Output tokens** | Tokens gerados | Custo principal |
 | **Total cost** | $ por chamada | Direto pro budget |
 | **TTFT** | Time to First Token | UX em streaming |
@@ -264,7 +264,7 @@ def get_response(user_id, query):
 ## Veja também
 
 - [[Evaluation]]
-- [[16 - Como LLMs são treinados — pretraining, SFT, RLHF]]
+- [[18 - Como LLMs são treinados — pretraining, SFT, RLHF]]
 - [[Economia de Tokens|04 - Monitoramento — ccusage, Langfuse, dashboards]]
 - [[Segurança e Guardrails|10 - Métricas de qualidade AI — defect escape rate, rework ratio]]
 - [[Anatomia de Agents|08 - Evaluation de agents]]

@@ -163,9 +163,9 @@ curl https://api.siliconflow.cn/v1/chat/completions \
 
 ## Veja também
 
-- [[05 - Panorama de modelos 2026]] — contexto geral do mercado
-- [[07 - Dense vs Mixture-of-Experts]] — a arquitetura que torna modelos chineses eficientes
-- [[08 - Modelos locais e self-hosting]] — como rodar esses modelos localmente
+- [[07 - Panorama de modelos 2026]] — contexto geral do mercado
+- [[09 - Dense vs Mixture-of-Experts]] — a arquitetura que torna modelos chineses eficientes
+- [[10 - Modelos locais e self-hosting]] — como rodar esses modelos localmente
 
 ## Referências
 

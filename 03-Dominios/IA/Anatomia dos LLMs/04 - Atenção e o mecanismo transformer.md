@@ -1,10 +1,11 @@
 ---
 title: Atenção e o mecanismo transformer
 created: 2026-05-02
-updated: 2026-06-16
+updated: 2026-06-21
 type: concept
-status: growing
-progress: in_progress
+status: evergreen
+fase: Adepto
+progress: done
 publish: true
 tags:
   - anatomia-llm
@@ -14,43 +15,110 @@ aliases:
   - Self-attention
   - Transformer
   - Multi-head attention
+  - Atenção
+  - Query Key Value
 ---
 # Atenção e o mecanismo transformer
 
 > [!abstract] TL;DR
-> O mecanismo de atenção é o coração dos LLMs. Ele permite que cada token "olhe" para todos os outros tokens no contexto simultaneamente, calculando pesos de relevância via Query-Key-Value. Multi-head attention faz isso em paralelo com diferentes "lentes". É isso que torna LLMs capazes de entender contexto, resolver referências e processar sequências inteiras de uma vez — e também é o motivo pelo qual contexto longo é caro.
+> O mecanismo de atenção é o coração dos LLMs. Ele permite que cada token "olhe" para todos os outros tokens no contexto e construa, a partir deles, uma versão enriquecida de si mesmo — uma **média ponderada** onde o peso de cada token é a sua *relevância*. Esses pesos saem de um trio de vetores por token: **Query** ("o que procuro?"), **Key** ("o que ofereço?") e **Value** ("qual é minha informação?"). Multi-head attention faz isso várias vezes em paralelo, cada "cabeça" com uma lente diferente. É isso que torna os LLMs capazes de entender contexto, resolver referências e processar sequências inteiras de uma vez — substituindo a leitura sequencial das antigas redes recorrentes.
+
+> [!tip] Comece pelo vídeo
+> 3Blue1Brown desenha a atenção como ninguém: Query, Key e Value viram setas num espaço, e a matriz de pesos se forma passo a passo na sua frente (EN, legendado, ~26 min). É o tratamento visual definitivo do que esta nota explica em texto:
+
+![](https://www.youtube.com/watch?v=eMlx5fFNoYc)
+
+> [!abstract] Guia de leitura
+> Esta nota é o **núcleo conceitual** da atenção (nível Adepto): o que ela é e como o Transformer é montado em volta dela. Os aprofundamentos de **engenharia de inferência** — que afogavam o conceito central — viraram brotos Magus separados:
+> - [[04a - KV cache, prefill e decode — a física da inferência]] — por que contexto longo é caro
+> - [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA]] — as variantes de atenção
+> - [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]] — atacando o custo O(n²)
+>
+> Leia esta primeiro; os brotos quando for otimizar ou servir um modelo.
 
 ## O que é
 
-O **[[Dicionário de IA#transformer|Transformer]]** é a arquitetura de rede neural introduzida por Vaswani et al. em 2017 no paper *"Attention Is All You Need"*. Antes dele, modelos de linguagem usavam RNNs (Recurrent Neural Networks) que processavam texto sequencialmente — uma palavra por vez, da esquerda para a direita. Isso era lento e perdia informação em distâncias longas.
+O **[[Dicionário de IA#transformer|Transformer]]** é a arquitetura de rede neural introduzida por Vaswani et al. em 2017, no paper de título provocador *"Attention Is All You Need"*. O título é literal: a grande aposta foi **jogar fora a recorrência** e deixar só a atenção.
 
-O Transformer substituiu a recorrência por **[[Dicionário de IA#attention|atenção]]** — um mecanismo que permite processar todos os tokens de uma sequência **em paralelo**, calculando a relação de cada token com todos os outros.
+Mas o que é essa "recorrência"? É o jeito como as redes anteriores liam texto: em **cadeia, um token por vez**, cada passo dependendo do resultado do anterior — como anotar uma frase inteira num único bilhete que você reescreve a cada palavra nova. Era ela que tornava o treino lento e a memória curta, exatamente como o próximo parágrafo detalha.
+
+Para entender por que isso foi revolucionário, vale lembrar o que veio antes. Modelos de linguagem usavam **RNNs** (Recurrent Neural Networks): processavam o texto **uma palavra por vez**, da esquerda para a direita, carregando um "estado de memória" que era atualizado a cada token. Isso tinha três problemas sérios:
+
+- **Era sequencial.** Para processar a palavra 100, você precisava ter processado as 99 anteriores em ordem. Não dá para paralelizar — e treinar em GPUs (que são máquinas massivamente paralelas) fica desperdiçado.
+- **Esquecia o passado distante.** A informação de uma palavra lá no começo tinha que sobreviver, intacta, passando por dezenas de atualizações de estado até chegar ao fim da frase. Na prática, ela se diluía — o famoso problema de dependências de longo alcance.
+- **Tratava todos os tokens com o mesmo canal estreito.** Tudo precisava caber num único vetor de estado que era reescrito a cada passo.
+
+O Transformer substituiu a recorrência por **[[Dicionário de IA#attention|atenção]]** — um mecanismo que olha para **todos os tokens de uma vez**, calculando diretamente a relação de cada token com todos os outros. Sem passar o estado de mão em mão: cada par de tokens tem um caminho direto. Isso resolve os três problemas de uma tacada — paraleliza o treino, encurta a distância entre tokens distantes para "um passo", e dá a cada token um canal rico para puxar informação de onde precisar.
+
+> [!example]- RNN vs. atenção: o mesmo problema, duas físicas
+> Para resolver "a quem 'ele' se refere" oito palavras atrás, uma **RNN** precisa que a informação de "animal" sobreviva sendo reescrita a cada uma das oito atualizações de estado intermediárias — e a cada passo ela compete com tudo o mais que entrou. É um telefone-sem-fio: quanto mais longe, mais degradado o sinal. A **atenção** liga "ele" a "animal" **diretamente**, com um único produto escalar, dê 8 ou 800 palavras de distância entre eles. A distância deixa de degradar o sinal — ela só encarece a conta (o tal O(n²) que mora nos [[04a - KV cache, prefill e decode — a física da inferência|brotos de inferência]]).
 
 ## Por que importa
 
-A atenção explica diretamente:
+A atenção não é um detalhe técnico — ela explica diretamente o comportamento que você observa nos LLMs:
 
-- **Por que LLMs são bons em contexto** — cada token é enriquecido pelo contexto de todos os outros
-- **Por que contexto longo custa caro** — a atenção escala quadraticamente: O(n²) com o tamanho da sequência
-- **Por que GPUs são necessárias** — a paralelização massiva da atenção é perfeita para hardware paralelo
-- **Por que "lost in the middle" acontece** — os pesos de atenção podem se diluir em contextos muito longos
+- **Por que LLMs são bons em contexto** — cada token é enriquecido pela informação de todos os outros, então o modelo "entende" que *ele* se refere a *animal*, que *banco* é de praça ou de dinheiro conforme a vizinhança.
+- **Por que a paralelização destravou a escala** — calcular a atenção de todos os tokens ao mesmo tempo é exatamente o tipo de trabalho que GPUs fazem rápido. Foi isso que tornou viável treinar modelos gigantes.
+- **Por que contexto longo custa caro** — a atenção compara cada token com todos os outros, então o custo cresce com o *quadrado* do tamanho da sequência. (O detalhamento dessa conta e dos truques para domá-la está em [[04a - KV cache, prefill e decode — a física da inferência|KV cache, prefill e decode]].)
 
-## Como funciona
+[[04 - Atenção e o mecanismo transformer-image-01.jpg]]
+![[04 - Atenção e o mecanismo transformer-image-01.jpg]]
 
-### A intuição: "quem é relevante pra mim?"
+>[!info]- 💸 Por que dobrar o contexto quadruplica o custo?
+> 
+> O custo computacional e de memória não cresce de forma direta (linear), mas sim de forma **quadrática (\(O(N^2)\))**.
+> 
+> #### 1. A Matriz de Atenção Quadrática
+> 
+> Para que o modelo entenda o significado de uma palavra, ele precisa compará-la com **todas as outras palavras** já ditas no texto.
+> 
+> - Se o contexto tem **1.000 tokens**, o modelo faz 1.000 × 1.000 = **1 milhão de conexões**.
+> - Se o contexto sobe para **100.000 tokens**, o modelo precisa processar 100.000 × 100.000 = **10 bilhões de conexões** apenas para manter a atenção.
+> 
+> #### 2. O Gargalo do KV Cache (Memória RAM da GPU)
+> 
+> Durante a geração de texto (loop autorregressivo), o modelo precisa guardar os cálculos anteriores em um "bloco de notas temporário" chamado **KV Cache**.
+> 
+> - Esse cache consome gigabytes de memória **VRAM** ultrarrápida das placas de vídeo (como as H100 ou B200).
+> - Quanto maior o contexto, menos espaço sobra na memória para processar requisições de outros usuários ao mesmo tempo, reduzindo a eficiência do servidor.
+> 
+> #### 3. Latência de Inicialização (Prefill)
+> 
+> Antes de começar a escrever a primeira palavra da resposta, a GPU precisa ler e processar todo o seu prompt gigante de uma só vez. Isso exige picos massivos de processamento energético e poder computacional, gerando custos operacionais altíssimos para as empresas de IA.
 
-Considere a frase: *"O animal não atravessou a rua porque **ele** estava cansado."*
+## A intuição: "quem é relevante pra mim?"
 
-Quando o modelo processa "ele", o mecanismo de atenção calcula:
+Antes de qualquer fórmula, fixe a ideia central, porque tudo o resto é só a mecânica dela:
 
-- Alta atenção para "animal" (é a referência provável)
-- Baixa atenção para "rua" (irrelevante para "ele")
-- Atenção moderada para "cansado" (descreve "ele")
+> **Cada token reescreve a si mesmo como uma mistura dos outros tokens, dando mais peso aos que importam para ele.**
 
-O resultado: a representação de "ele" é enriquecida com informação de "animal".
-### Os três vetores: Query, Key, Value
+É uma **média ponderada** — e o que entra na média não são as palavras, são os **vetores**. Lembre da nota anterior: cada token já virou um [[03 - Embeddings — do token ao vetor|embedding]], uma lista de números. Misturar "⅔ de animal + ⅓ de rua" é somar os vetores deles, coordenada a coordenada. A atenção decide só os *pesos* dessa soma — quanto do vetor de cada token entra na nova versão do vetor de cada outro.
 
-Para cada token, o modelo cria três vetores através de multiplicação por matrizes de pesos aprendidas:
+Considere a frase:
+
+> *"O animal não atravessou a rua porque **ele** estava cansado."*
+
+Quando o modelo processa "ele", ele precisa descobrir a quem "ele" se refere. O mecanismo de atenção calcula um peso de relevância de "ele" para cada outra palavra:
+
+- **Alta atenção para "animal"** — é a referência provável; é o que "ele" significa aqui.
+- **Baixa atenção para "rua"** — gramaticalmente possível, mas semanticamente é "animal" quem cansa.
+- **Atenção moderada para "cansado"** — descreve o estado de "ele".
+
+O resultado: a representação interna de "ele" é **reescrita puxando informação de "animal"**. Depois dessa passada, o vetor de "ele" carrega, nele mesmo, o "ser animal". É assim que o modelo resolve a correferência sem nenhuma regra gramatical programada — só pesos aprendidos.
+
+> [!tip] Uma analogia: busca numa biblioteca
+> Imagine que cada token faz uma **busca** contra todos os outros:
+> - A **Query** é o que você digita na busca — "estou procurando o sujeito de quem 'ele' fala".
+> - Cada token oferece uma **Key**, como a etiqueta na lombada de um livro — "eu sou um substantivo animado, candidato a sujeito".
+> - E cada token tem um **Value**, o conteúdo do livro — a informação que ele entrega se for escolhido.
+>
+> Você compara sua Query com **todas** as Keys, vê quais combinam melhor, e leva de volta uma **mistura dos Values** — mais do livro que casou bem, menos dos que casaram mal. A atenção é exatamente isso, feito com vetores e em paralelo para todos os tokens ao mesmo tempo.
+
+## Os três vetores: Query, Key, Value
+[[04 - Atenção e o mecanismo transformer - query-key-value.png]]
+![[04 - Atenção e o mecanismo transformer - query-key-value.png]]
+
+De onde saem essa Query, Key e Value? De **três matrizes de pesos aprendidas** (W_Q, W_K, W_V). O [[Dicionário de IA#embedding|embedding]] de cada token é multiplicado por cada uma delas, gerando três vetores diferentes a partir do mesmo token — três "lentes" sobre a mesma palavra:
 
 | Vetor         | Papel                      | Analogia                 |
 | ------------- | -------------------------- | ------------------------ |
@@ -58,11 +126,16 @@ Para cada token, o modelo cria três vetores através de multiplicação por mat
 | **Key (K)**   | "O que eu ofereço?"        | O índice de um documento |
 | **Value (V)** | "Qual é minha informação?" | O conteúdo do documento  |
 
+As três matrizes são o que o modelo **aprende** no treino. Não há nada de mágico nos vetores em si: o que torna a atenção poderosa é que, depois de bilhões de exemplos, W_Q e W_K aprendem a fazer Queries e Keys de tokens relacionados "casarem" (**produto escalar** alto — a medida de quanto dois vetores apontam na mesma direção, detalhada no passo do cálculo abaixo), e W_V aprende a empacotar, no Value, a informação que vale a pena propagar.
+
+Concretamente: se o embedding do token tem dimensão `d_model` (digamos 4096) e cada *head* (uma das várias "cabeças" de atenção que rodam em paralelo — detalhadas na seção **Multi-Head Attention**, adiante) trabalha em `d_k` (digamos 128), então W_Q, W_K e W_V são matrizes de forma `4096 × 128`. Multiplicar o embedding por cada uma projeta o token de 4096 dimensões para os três vetores de 128. **E não, projetar "para baixo" não joga informação fora**: cada head se especializa de propósito num pedaço menor, e a dimensão cheia é recomposta quando todas as cabeças são concatenadas. Essas matrizes nascem aleatórias e são lapidadas pelo [[Dicionário de IA#backpropagation|backpropagation]] junto com o resto do modelo — ninguém define "esta coluna detecta sujeitos". A especialização **emerge** da pressão de prever o próximo token, repetida bilhões de vezes.
 
 > [!question] Q, K e V vêm todos do mesmo token?
 > Na **self-attention** (o que roda dentro de um LLM) sim: Q, K e V são três projeções **do mesmo conjunto de tokens** — a sequência atende a si mesma. Existe também a **cross-attention**, usada em arquiteturas encoder-decoder (tradução, alguns modelos multimodais): ali o Q vem de uma sequência (ex.: o texto sendo gerado) e K/V vêm de outra (ex.: a imagem ou o texto-fonte). LLMs decoder-only modernos usam só self-attention mascarada; a cross-attention reaparece quando há duas sequências distintas para casar.
 
-### O cálculo passo a passo
+## O cálculo, passo a passo
+
+Com Q, K e V em mãos, a atenção de um token é calculada em quatro passos:
 
 ```mermaid
 graph TD
@@ -73,55 +146,113 @@ graph TD
     E --> F["Somar Values ponderados<br>= nova representação de 'ele'"]
 ```
 
-1. **Score** = Q(ele) · K(cada_token)ᵀ — produto escalar que mede similaridade
-2. **Normalização** = softmax(scores / √d_k) — transforma em probabilidades que somam 1
-3. **Output** = Σ (score_i × V_i) — média ponderada dos Values
+1. **Score (similaridade).** Para o token atual, calcula-se o produto escalar da sua Query com a Key de cada token: `score = Q · Kᵀ`. O produto escalar mede **alinhamento**: dois vetores apontando na mesma direção dão um número alto; perpendiculares dão zero. Um score alto significa "esta Key combina com o que minha Query procura".
+2. **Escala.** Divide-se cada score por `√d_k` (a raiz da dimensão das Keys). É um ajuste para o softmax não ficar instável — explicado logo abaixo.
+3. **Normalização (softmax).** Os scores crus viram **proporções que somam 1** — os pesos da média ponderada.
+4. **Output (média ponderada).** Multiplica-se o Value de cada token pelo seu peso e soma-se tudo: `output = Σ (peso_i × V_i)`. Esse é o novo vetor do token — uma mistura dos Values, dosada pela relevância.
 
-> [!question]- O que é esse softmax — e por que não um `argmax`?
-> Os dois são parentes do `max`, e a diferença explica metade da atenção. O **`argmax`** responde "qual o maior?" e devolve **só o vencedor** — útil pra *decidir*, mas descontínuo: um empurrãozinho nos scores ou não muda nada, ou faz o vencedor pular de posição. Sem derivada útil, não dá pra treinar com gradiente.
->
-> O **softmax** é o `max` "amolecido" (*soft*). Ele pega os scores crus e devolve uma lista do mesmo tamanho que (a) é toda positiva e (b) **soma exatamente 1** — viram proporções. A fórmula: exponencia cada score (`e^x`, que garante positividade e amplifica diferenças) e divide pela soma de todos.
-> $$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$$
-> Ex.: `[1,2 , 3,8 , 0,5]` → `[0,07 , 0,90 , 0,03]`. O índice que o `argmax` escolheria leva 90%, mas os outros **não zeram** — e é isso que importa: a atenção quer *misturar* vários Values numa média ponderada, não escolher um só. Sendo suave e diferenciável, o softmax ainda permite calcular gradiente e treinar.
->
-> Os dois têm um botão de "dureza", a **temperatura**: dividir os scores por um número pequeno antes de exponenciar deixa o softmax "pontudo" (quase `argmax`); por um grande, "achatado" (quase uniforme). No limite `T → 0`, **softmax vira argmax**. É literalmente o mesmo botão que o `√d_k` mexe aqui na atenção e que a "temperature" do playground mexe na camada final (linha do `Linear + Softmax`). Origem do nome: a *distribuição de Boltzmann* da física (~1900), onde `T` é temperatura de verdade; o termo "softmax" foi cunhado por John Bridle em 1989 para redes neurais.
+### O softmax — e por que não um `argmax`?
 
-A divisão por √d_k (dimensão das keys) evita que os scores fiquem muito grandes, o que tornaria o [[Dicionário de IA#softmax|softmax]] muito "pontudo" (concentrado em um único token).
+O passo 3 merece atenção própria, porque é onde a "decisão" acontece — e é o conceito que mais confunde quem está começando.
 
-> [!question]- Por que dividir por √d_k, e não por d_k ou por nada?
-> Conforme d_k cresce, o produto escalar Q·K soma mais termos e sua **variância** cresce proporcionalmente a d_k — ou seja, o desvio-padrão cresce com √d_k. Dividir por √d_k traz essa variância de volta para ~1, mantendo os scores numa faixa onde o softmax tem gradiente saudável. Dividir por d_k corrigiria demais (encolheria os scores até quase uniformes); não dividir deixaria o softmax **saturar** — vira quase um `argmax`, e aí o gradiente some e o treino emperra. É um ajuste de escala estatístico, não um número mágico.
+Os dois, `softmax` e `argmax`, são parentes do `max`, e a diferença explica metade da atenção. O **`argmax`** responde "qual o maior?" e devolve **só o vencedor** — útil para *decidir*, mas descontínuo: um empurrãozinho nos scores ou não muda nada, ou faz o vencedor pular de posição. Sem derivada útil, não dá para treinar com **gradiente** — o sinal que, durante o treino, diz a cada parâmetro para que lado (e quanto) mexer a fim de reduzir o erro; é o motor da [[18 - Como LLMs são treinados — pretraining, SFT, RLHF|fase de treino]].
 
-> [!example]- Uma passada de atenção com números de verdade
-> Vamos atender "ele" a dois tokens — "animal" e "rua" — com vetores de dimensão 2 (d_k = 2) para caber na cabeça.
->
-> **Vetores já projetados:**
-> - Q(ele) = [1, 0]
-> - K(animal) = [1, 0]  ·  K(rua) = [0, 1]
-> - V(animal) = [10, 0]  ·  V(rua) = [0, 10]
->
-> **1. Scores (Q·Kᵀ):** score(animal) = 1·1 + 0·0 = **1** · score(rua) = 1·0 + 0·1 = **0**
-> **2. Escala (÷√2 ≈ ÷1,41):** [0,71 , 0]
-> **3. Softmax de [0,71 , 0]:** e^0,71 ≈ 2,03 · e^0 = 1 → pesos ≈ **[0,67 , 0,33]**
-> **4. Output (média ponderada dos V):** 0,67·[10, 0] + 0,33·[0, 10] = **[6,7 , 3,3]**
->
-> A nova representação de "ele" puxou ~⅔ de "animal" e ~⅓ de "rua" — porque a Query de "ele" estava alinhada com a Key de "animal". Inverta K(animal) para [0, 1] e o resultado se inverte: é assim que pesos aprendidos redirecionam para onde a atenção flui.
+O **softmax** é o `max` "amolecido" (*soft*). Ele pega os scores crus e devolve uma lista do mesmo tamanho que (a) é toda positiva e (b) **soma exatamente 1** — viram proporções. A fórmula exponencia cada score (`eˣ`, que garante positividade e amplifica diferenças) e divide pela soma de todos:
+
+$$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$$
+
+Por exemplo, os scores `[1,2 , 3,8 , 0,5]` viram `[0,07 , 0,90 , 0,03]`. Repare: o índice que o `argmax` escolheria leva 90%, mas os outros **não zeram**. E é isso que importa para a atenção — ela quer *misturar* vários Values numa média ponderada, não escolher um só. Sendo suave e diferenciável, o softmax ainda permite calcular gradiente e treinar.
+
+> [!info] O botão da temperatura
+> Tanto o `softmax` quanto o `argmax` têm um botão de "dureza", a **temperatura**: dividir os scores por um número pequeno antes de exponenciar deixa o softmax "pontudo" (quase `argmax`); por um grande, "achatado" (quase uniforme). No limite `T → 0`, **softmax vira argmax**. É literalmente o mesmo botão que o `√d_k` mexe aqui na atenção e que a "temperature" do playground mexe na geração de texto (ver [[05 - Completação — o loop autoregressivo|completação]]). Origem do nome: a *distribuição de Boltzmann* da física, onde `T` é temperatura de verdade; o termo "softmax" foi cunhado por John Bridle em 1989.
+
+### Por que dividir por `√d_k`?
+
+Aquele passo 2 (a escala) tem uma razão estatística precisa.
+
+Conforme `d_k` cresce, o produto escalar `Q·K` soma mais termos e sua **variância** cresce proporcionalmente a `d_k` — ou seja, o desvio-padrão cresce com `√d_k`. Dividir por `√d_k` traz essa variância de volta para ~1, mantendo os scores numa faixa onde o softmax tem gradiente saudável.
+
+Por que não dividir por `d_k`, ou por nada? Dividir por `d_k` corrigiria *demais* (encolheria os scores até quase uniformes). Não dividir deixaria o softmax **saturar** — com scores grandes, ele vira quase um `argmax`, o gradiente some e o treino emperra. É um ajuste de escala, não um número mágico.
+
+### Uma passada de atenção com números de verdade
+
+Nada fixa a intuição como ver a conta rodar. Vamos atender "ele" a dois tokens — "animal" e "rua" — com vetores de dimensão 2 (`d_k = 2`) para caber na cabeça.
+
+**Vetores já projetados (saídas de W_Q, W_K, W_V):**
+- Q(ele) = `[1, 0]`
+- K(animal) = `[1, 0]`  ·  K(rua) = `[0, 1]`
+- V(animal) = `[10, 0]`  ·  V(rua) = `[0, 10]`
+
+**1. Scores (Q·Kᵀ):**
+- score(animal) = 1·1 + 0·0 = **1**
+- score(rua) = 1·0 + 0·1 = **0**
+- 
+
+**2. Escala (÷√2 ≈ ÷1,41):** `[0,71 , 0]`
+
+**3. Softmax de `[0,71 , 0]`:** e^0,71 ≈ 2,03 · e^0 = 1 → pesos ≈ **`[0,67 , 0,33]`**
+
+**4. Output (média ponderada dos V):** 0,67·`[10, 0]` + 0,33·`[0, 10]` = **`[6,7 , 3,3]`**
+
+A nova representação de "ele" puxou ~⅔ de "animal" e ~⅓ de "rua" — porque a Query de "ele" estava alinhada com a Key de "animal". Inverta `K(animal)` para `[0, 1]` e o resultado se inverte: é assim que **pesos aprendidos redirecionam para onde a atenção flui**. O treino não programa "ele → animal"; ele ajusta as matrizes até que esse alinhamento aconteça sozinho.
+
+### A geometria por trás: alinhamento no espaço
+
+Por que o produto escalar `Q·K` mede "relevância"? Porque ele mede **alinhamento geométrico**. Vale a relação `Q·K = |Q| · |K| · cos(θ)`, onde θ é o ângulo entre os dois vetores: mesma direção → valor grande; perpendiculares → zero; opostos → negativo.
+
+Então a atenção, geometricamente, é isto: a Query de um token é uma **seta** apontando para uma região do espaço ("é por aqui que está o que eu procuro"). Cada Key é outra seta. Os scores altos saem dos tokens cuja Key aponta para perto da Query. O treino, ajustando W_Q e W_K, vai **girando essas setas** até que tokens relacionados fiquem alinhados e os irrelevantes fiquem perpendiculares. É exatamente essa imagem — setas num espaço, ângulos se fechando entre o que combina — que o vídeo do 3Blue1Brown no topo anima em movimento. Se a fórmula ainda parece abstrata, é porque ela é só a versão algébrica de "veja para onde cada seta aponta e misture o conteúdo das que apontam para perto de mim".
+
+> [!info] Por que Q e K têm a mesma dimensão, mas V pode ter outra
+> Q e K precisam morar no **mesmo espaço** para o ângulo entre eles fazer sentido — por isso ambos têm dimensão `d_k`. O Value não entra em nenhum produto escalar; ele é apenas *carregado* na média ponderada. Por isso, em princípio, V poderia ter outra dimensão (`d_v`) — embora na prática quase todos usem `d_v = d_k`.
+
+### A matriz de atenção: todos os tokens de uma vez
+
+Descrevi o cálculo para um token ("ele"), mas o modelo faz isso para **todos os tokens ao mesmo tempo**. Empilhe todas as Queries numa matriz Q e todas as Keys numa matriz K, e `Q·Kᵀ` produz de uma vez uma **matriz N×N de scores**: a célula na linha *i*, coluna *j* diz "quanto o token *i* atende ao token *j*".
+
+É essa matriz que aparece nas famosas visualizações de atenção em forma de **mapa de calor**: cada célula é um peso, com as regiões mais quentes onde a atenção se concentra. Depois do softmax (aplicado linha a linha) e da máscara causal (que apaga o triângulo do "futuro"), essa matriz multiplica V e entrega, de uma tacada, a nova representação de todos os tokens. É essa formulação **matricial** — e não um laço token a token — que faz a atenção voar nas GPUs. E é o tamanho dessa matriz N×N que vira o problema de memória atacado em [[04c - Atenção eficiente — FlashAttention, sparse e híbrida|atenção eficiente]].
 
 ### Fórmula canônica
 
-$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+Os quatro passos, condensados na fórmula que você verá em todo paper:
 
-### A máscara causal — por que o modelo não pode "espiar o futuro"
+> [!warning] Fómula de cálculo de atenção:
+> $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+>
+> Leia da direita para a esquerda das operações: 
+> - `QKᵀ` são os scores
+> - `√d_k` é a escala
+> - `softmax` são os pesos, 
+> - a multiplicação final por `V` é a média ponderada. 
+
+Toda a intuição desta seção mora nesse quadro.
+
+## A máscara causal — por que o modelo não pode "espiar o futuro"
 
 Se a atenção deixa cada token olhar para todos os outros em paralelo, surge um problema no treino: prever o próximo token vira trapaça se o modelo já enxerga a resposta à frente. A solução é a **máscara causal** (*causal mask*).
 
-Antes do softmax, os scores Q·Kᵀ de todas as posições **futuras** são zerados — tecnicamente, setados para −∞. Como o softmax de −∞ é 0, cada token fica matematicamente proibido de atender a qualquer token à sua direita: só "vê" a si mesmo e ao passado.
+Antes do softmax, os scores `Q·Kᵀ` de todas as posições **futuras** são zerados — tecnicamente, setados para −∞. Como o softmax de −∞ é 0, cada token fica matematicamente proibido de atender a qualquer token à sua direita: só "vê" a si mesmo e ao passado.
+
+Visualmente, para uma sequência de 4 tokens, a máscara é um **triângulo** — cada linha só enxerga as colunas até a diagonal:
+
+```
+              atende a →
+           T1    T2    T3    T4
+   T1   [  ✓     ✗     ✗     ✗  ]
+   T2   [  ✓     ✓     ✗     ✗  ]
+   T3   [  ✓     ✓     ✓     ✗  ]
+   T4   [  ✓     ✓     ✓     ✓  ]
+```
+
+T1 só pode atender a si mesmo; T4 já vê a frase inteira até ali. As células ✗ (o triângulo superior, o "futuro") recebem −∞ antes do softmax e viram peso 0. É literalmente esse triângulo que separa um [[Dicionário de IA#GPT (Generative Pre-trained Transformer)|GPT]] (que **gera**, olhando só para trás) de um [[Dicionário de IA#BERT (Bidirectional Encoder Representations from Transformers)|BERT]] (que só **lê**, olhando para os dois lados).
 
 > [!info] É isso que define um modelo *decoder-only*
-> Um Transformer "decoder-only" (GPT, Llama, etc.) é, na prática, **definido por essa máscara**. Ela vale tanto na geração token-a-token quanto no prefill do prompt inteiro — por isso o modelo consegue treinar todas as posições de uma sequência **em paralelo** e mesmo assim manter a regra "só o passado conta". O que é paralelo é o *cálculo* (todas as posições de uma vez), não o *alcance* (cada token enxerga apenas para trás). Encoders bidirecionais como o BERT não usam essa máscara — aí sim cada token vê todos os outros.
+> Um Transformer "decoder-only" (GPT, Llama, etc.) é, na prática, **definido por essa máscara**. Ela vale tanto na geração token-a-token quanto no processamento do prompt inteiro — por isso o modelo consegue treinar todas as posições de uma sequência **em paralelo** e mesmo assim manter a regra "só o passado conta". O que é paralelo é o *cálculo* (todas as posições de uma vez), não o *alcance* (cada token enxerga apenas para trás). Encoders bidirecionais como o BERT não usam essa máscara — aí sim cada token vê todos os outros.
 
-### Multi-Head Attention
+## Multi-Head Attention
 
-Em vez de calcular atenção uma vez, o modelo faz isso **N vezes em paralelo** (geralmente 32-128 "heads"). Cada head aprende a detectar um tipo diferente de relação:
+Até aqui descrevemos **uma** passada de atenção. Mas uma só captura um tipo de relação por vez — e a linguagem tem muitos tipos de relação acontecendo ao mesmo tempo. A solução: rodar a atenção **N vezes em paralelo** (geralmente 32-128 "heads"), cada uma com seu próprio trio de matrizes W_Q/W_K/W_V. Cada head aprende a detectar um padrão diferente:
+
+Por "relação" (ou "padrão") aqui, entenda *quais tokens devem se atender* — e isso não é programado por ninguém: a head aprende W_Q/W_K que fazem certos pares se alinharem (Query e Key com produto escalar alto). A "relação sintática", por exemplo, é só uma head cujas matrizes passaram a alinhar a Query de um verbo com a Key do seu sujeito. É **geometria aprendida, não uma regra** — e o exemplo de duas cabeças mais abaixo mostra isso concretamente.
 
 | Head   | Pode aprender a detectar               |
 | ------ | -------------------------------------- |
@@ -130,7 +261,7 @@ Em vez de calcular atenção uma vez, o modelo faz isso **N vezes em paralelo** 
 | Head 3 | Padrões de código (variável → tipo)    |
 | Head N | Outros padrões emergentes              |
 
-Os outputs de todos os heads são concatenados e projetados para produzir a representação final:
+Os outputs de todos os heads são concatenados e projetados por uma matriz final (W_O) para produzir a representação final do token:
 
 ```mermaid
 graph LR
@@ -147,155 +278,34 @@ graph LR
 ```
 
 > [!question]- Se o modelo divide a dimensão entre N heads, cada head não fica "burro"?
-> Cada head opera num subespaço de dimensão d_model/N (ex.: d_model = 4096 e 32 heads → 128 por head). Individualmente é mais pobre, sim — mas a aposta é que **especialização vence capacidade bruta**: um head de 128 dims focado em correferência rende mais que um head de 4096 tentando capturar tudo de uma vez. A concatenação no fim recompõe a dimensão cheia, e a projeção W_O aprende a misturar os subespaços. Não é fatiar por fatiar: é fatorar um problema grande em vários menores e independentes que rodam em paralelo.
+> Cada head opera num subespaço de dimensão `d_model/N` (ex.: d_model = 4096 e 32 heads → 128 por head). Individualmente é mais pobre, sim — mas a aposta é que **especialização vence capacidade bruta**: um head de 128 dims focado em correferência rende mais que um head de 4096 tentando capturar tudo de uma vez. A concatenação no fim recompõe a dimensão cheia, e a projeção W_O aprende a misturar os subespaços. Não é fatiar por fatiar: é fatorar um problema grande em vários menores e independentes que rodam em paralelo.
 
-### Attention sinks — o paradoxo do primeiro token
+### Duas cabeças, duas relações: um exemplo
 
-O softmax tem um efeito colateral estrutural: os pesos de atenção **precisam somar 1**. Quando a query de um token não encontra match forte em nenhum token anterior, o modelo ainda é obrigado a alocar essa atenção em algum lugar — e despeja nos **primeiros tokens** da sequência. Como eles são visíveis a quase todos os tokens subsequentes (natureza autoregressiva), o treinamento os converte em [[Dicionário de IA#attention sink|attention sinks]]: tokens que recebem atenção alta sem carregar semântica proporcional.
+Pegue a frase *"O programador corrigiu o bug que ele tinha introduzido."* Imagine duas cabeças trabalhando na mesma passada:
 
-```mermaid
-graph LR
-    Q["Query do<br>token atual"] --> T0["Token 0 — sink<br>(peso alto 'estacionado')"]
-    Q --> TM["Tokens do meio<br>(pesos baixos)"]
-    Q --> TR["Tokens recentes<br>(pesos relevantes)"]
-```
+- A **cabeça de sintaxe**, processando "introduzido", pergunta (via sua Query) "quem é meu sujeito?". Sua Key casa forte com **"ele"**.
+- A **cabeça de correferência**, processando "ele", pergunta "a quem me refiro?". Sua Key casa com **"programador"**.
 
-A consequência de produção é contraintuitiva: **remover os primeiros tokens do [[Dicionário de IA#KV cache|KV cache]]** (como faria uma sliding window ingênua) **destrói a qualidade do modelo** — não por perder contexto antigo, mas por remover uma fração enorme do denominador do softmax, desestabilizando a distribuição de atenção inteira. O StreamingLLM explora exatamente isso: mantém permanentemente os 4 primeiros tokens e desliza a janela para o resto, processando 4M+ tokens com estabilidade.
+Nenhuma sabe da outra; cada uma tem seu próprio W_Q/W_K/W_V e seu próprio alinhamento de setas. Uma costura *introduzido → ele*; a outra, *ele → programador*. Depois da projeção W_O, o token sai carregando as duas relações ao mesmo tempo. Empilhe isso por dezenas de camadas e o modelo monta, peça por peça, a teia completa de "quem fez o quê a quem" — sem nenhuma regra gramatical explícita.
 
-### A complexidade quadrática
+> [!question]- Por que não uma única cabeça gigante em vez de N pequenas?
+> Porque relações diferentes pedem **alinhamentos diferentes** no espaço. Uma cabeça só teria que encontrar um único conjunto de direções que servisse para sintaxe, correferência, concordância de número e tudo mais simultaneamente — um compromisso medíocre em tudo. Várias cabeças menores deixam cada uma esculpir a própria geometria, especializada. É o mesmo princípio de montar um time de especialistas em vez de um generalista tentando fazer tudo sozinho.
 
-O cálculo Q·Kᵀ compara cada token com todos os outros:
+## Positional encoding — atenção não sabe ordem
 
-| Tokens no contexto | Comparações       | Custo relativo |
-| ------------------ | ----------------- | -------------- |
-| 1.000              | 1.000.000         | 1x             |
-| 10.000             | 100.000.000       | 100x           |
-| 100.000            | 10.000.000.000    | 10.000x        |
-| 1.000.000          | 1.000.000.000.000 | 1.000.000x     |
-
-É por isso que contextos de 1M tokens exigem hardware especializado e otimizações como **[[Dicionário de IA#FlashAttention|FlashAttention]]**, **paged attention**, e **[[Dicionário de IA#KV cache|KV cache]]**.
-
-> [!question]- Se a atenção é O(n²), como modelos de 1M de tokens existem?
-> Por uma pilha de truques que atacam ângulos diferentes da mesma conta — nenhum resolve sozinho:
-> - O **FlashAttention** derruba a *constante* (não materializa a matriz N×N na memória lenta).
-> - A **sparse/hybrid attention** quebra o próprio O(n²), fazendo a maioria das camadas olhar só localmente.
-> - O **KV cache** + GQA/MLA fazem a memória caber.
-> - A **paged attention** elimina o desperdício de alocação.
->
-> É a combinação que torna 1M de tokens economicamente viável — cada peça aparece detalhada nas seções abaixo.
-
-### As duas fases da atenção: prefill e decode
-
-A mesma fórmula de atenção roda sob duas físicas completamente diferentes durante a [[Dicionário de IA#inference|inferência]]:
-
-```mermaid
-graph TD
-    subgraph "Prefill — processa o prompt"
-        A["Prompt inteiro<br>(milhares de tokens)"] --> B["Atenção em paralelo<br>(matmuls densos)"]
-        B --> C["KV cache populado<br>+ primeiro token gerado"]
-    end
-    subgraph "Decode — gera a resposta"
-        D["1 token novo por vez"] --> E["Atende a TODO o<br>KV cache acumulado"]
-        E --> F["Lê GBs de memória<br>para gerar 1 token"]
-        F --> D
-    end
-    C --> D
-```
-
-| Fase | O que acontece | Gargalo |
-| ---- | -------------- | ------- |
-| **[[Dicionário de IA#prefill\|Prefill]]** | O prompt inteiro é processado em paralelo — matmuls densos sobre milhares de tokens | **Compute-bound**: 90-95% de utilização de GPU (H100) |
-| **Decode** | Cada token novo atende a todo o KV cache acumulado | **Memory-bound**: a intensidade aritmética cai ~2 ordens de magnitude; o limite vira o [[Dicionário de IA#memory bandwidth bottleneck\|memory bandwidth bottleneck]] |
-
-Essa divisão explica fatos de produção que parecem desconexos:
-
-- **[[Dicionário de IA#TTFT (time-to-first-token)|TTFT]] e tokens/s são métricas independentes** — uma mede o prefill, a outra o decode
-- **Batching grande melhora o throughput do decode** (amortiza as leituras de memória), mas não acelera o prefill de uma request individual
-- **Provedores fazem prefill-decode disaggregation** — GPUs separadas e otimizadas para cada fase
-
-### O KV cache — o monstro de memória que governa a inferência
-
-Você acabou de ver que o decode é *memory-bound*. O **[[Dicionário de IA#KV cache|KV cache]]** é a razão exata disso — e entender essa única estrutura explica metade da engenharia de inferência moderna.
-
-**O problema.** Na geração autoregressiva, cada token novo precisa atender a *todos* os anteriores — ou seja, precisa das Keys e Values de todo o passado. Sem cache, a cada passo o modelo recomputaria K e V da sequência inteira: gerar o token 1.000 recomputaria 999 pares K/V; o token 1.001, mais 1.000... um desperdício O(n²) só para reconstruir o que já se sabia.
-
-**A solução.** Computa-se K e V de cada token **uma única vez**, quando ele entra, e guarda-se na memória da GPU. Cada token novo só calcula o *seu* Q, K, V; os K/V antigos vêm do cache. O custo de gerar um token cai de O(n²) para O(n) — ao preço de carregar o cache inteiro da memória a cada passo. É *exatamente* esse carregamento que torna o decode memory-bound.
-
-> [!question]- Por que cachear K e V, mas não o Q?
-> Porque o Q de um token é usado **uma vez só**: no passo em que esse token é gerado, para perguntar ao passado. Depois disso, ninguém mais consulta o Q dele. Já o K e o V de cada token são consultados por **todos os tokens futuros** — então vale a pena guardá-los. Cachear o Q não economizaria nada.
-
-**O custo.** O cache cresce **linearmente** com o contexto, e a conta é brutal:
-
-$$\text{KV por token} = 2 \times L \times n_{kv} \times d_{head} \times \text{bytes}$$
-
-(o 2 é um para K e outro para V; L = número de camadas; n_kv = número de KV heads; bytes = 2 em FP16/BF16).
-
-| Modelo | Config | KV/token | Cache p/ 100k tokens |
-| ------ | ------ | -------- | -------------------- |
-| Llama 2 70B (MHA) | 80 cam · 64 heads · d=128 | ~2,5 MB | **~250 GB** |
-| Llama 3 70B (GQA) | 80 cam · **8** KV heads · d=128 | ~0,31 MB | ~31 GB |
-
-Uma H100 tem 80 GB. O KV cache de um único contexto de 100k tokens em MHA puro **não cabe na placa** — e é por isso que toda a engenharia de inferência gira em torno de encolher esse cache. As próximas otimizações (GQA, MLA, paged attention) são, no fundo, ataques diferentes a essa mesma linha.
-
-### MHA → MQA → GQA → MLA: a corrida para encolher o KV cache
-
-Olhe de novo a fórmula do cache: `2 × L × n_kv × d_head × bytes`. L e d_head são fixos pela arquitetura. A única alavanca real é **n_kv** — quantos conjuntos de Key/Value o modelo precisa guardar. Boa parte da evolução da atenção nos últimos anos é uma briga por esse número.
-
-| Variante | Como compartilha K/V | KV cache | Trade-off |
-| -------- | -------------------- | -------- | --------- |
-| **MHA** (Multi-Head) | Cada head tem seu próprio K/V | Máximo (n_kv = n_heads) | Qualidade máxima, cache máximo |
-| **MQA** (Multi-Query) | *Todos* os heads dividem **um** K/V | Mínimo (n_kv = 1) | Cache despenca, qualidade cai em escala |
-| **GQA** (Grouped-Query) | Grupos de heads dividem K/V | Intermediário (n_kv = grupos) | O dial entre MHA e MQA |
-| **MLA** (Multi-head Latent) | Comprime K/V num vetor latente low-rank | Menor que MQA | Cache mínimo *e* qualidade acima do MHA |
-
-- **MHA** é o original: 32 heads → 32 conjuntos de K/V no cache. Caro.
-- **MQA** foi a primeira pancada: e se *todos* os heads consultassem o mesmo K/V? O cache encolhe ~n_heads vezes. O problema: com um único K/V o modelo perde nuance e degrada conforme cresce.
-- **GQA** é o meio-termo que venceu: divide os heads em poucos grupos (ex.: 32 heads em 8 grupos), cada grupo com seu K/V. Pega quase toda a economia do MQA sem a queda de qualidade. É o padrão de [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM|Qwen]], Llama 2/3 e Mistral.
-- **MLA** muda a estratégia: em vez de cortar heads, **comprime** Key e Value juntos num vetor latente de baixa dimensão antes de cachear, e os reconstrói na hora da atenção. Cache menor que o do MQA e, surpreendentemente, qualidade *acima* do MHA — a compressão funciona como um gargalo regularizador. É a aposta da família [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM|DeepSeek]] (V2/V3).
-
-> [!question]- Dá para ligar GQA num modelo já treinado em MHA?
-> Não dá para simplesmente "ativar" — mas dá para converter com *uptraining*: agrupam-se os K/V heads (média dos pesos) e re-treina-se com uma fração pequena do compute original (~5%) para o modelo se reacomodar. Foi assim que o Llama 2 ganhou suas versões GQA. Trocar a arquitetura de atenção não é de graça, mas é muito mais barato que treinar do zero.
-
-### Otimizações modernas (2026)
-
-| Otimização | O que faz | Ganho |
-| ---------- | --------- | ----- |
-| **FlashAttention 4** | Reorganiza computação para minimizar I/O de memória; novo online softmax pula ~90% do rescaling (Hot Chips 2025) | Até 22% mais rápido que o kernel cuDNN em GPUs Blackwell |
-| **KV Cache** | Cacheia Key/Value de tokens já processados para evitar recomputação | Essencial para geração autoregressiva |
-| **[[Dicionário de IA#GQA (Grouped-Query Attention)\|Grouped Query Attention (GQA)]]** | Compartilha Keys/Values entre múltiplos heads | Reduz memória 2-8x |
-| **[[Dicionário de IA#MLA (Multi-head Latent Attention)\|MLA (Multi-head Latent Attention)]]** | Comprime K/V num vetor latente low-rank antes de cachear; reconstrói na hora da atenção (DeepSeek-V2/V3) | KV cache ~1 ordem de grandeza menor que multi-head puro |
-| **Paged Attention** | Gerencia KV cache como "páginas" de memória virtual | Permite batching eficiente (vLLM) |
-| **Sparse Attention** | Cada token atende apenas a um subconjunto relevante | Reduz O(n²) para O(n·√n) ou O(n·log(n)) |
-| **DSA (DeepSeek Sparse Attention)** | Heads leves selecionam quais tokens recebem atenção plena | Sparse attention treinável, em produção (V3.2-Exp) |
-
-#### FlashAttention desempacotado — atenção que evita a memória lenta
-
-A tabela trata o FlashAttention como "reorganiza a computação". Vale abrir, porque o insight é contraintuitivo e cai em entrevista.
-
-> [!question]- Se a atenção é O(n²) em FLOPs, por que dizem que o gargalo é memória, não compute?
-> Porque numa GPU moderna os FLOPs são baratos e a *memória é lenta*. O custo dominante da atenção não é multiplicar matrizes — é **escrever a matriz N×N de scores na HBM** (a memória principal da GPU: vasta, mas lenta) e lê-la de volta para o softmax. Para n grande, esse tráfego de bytes domina o relógio, não a aritmética.
-
-A GPU tem duas memórias: a **HBM** (dezenas de GB, lenta) e a **SRAM** (poucos MB, ~10x mais rápida, on-chip). A atenção ingênua materializa a matriz N×N inteira na HBM. O FlashAttention nunca faz isso:
-
-1. **Tiling** — corta Q, K e V em blocos pequenos que cabem na SRAM e computa a atenção bloco a bloco, on-chip. A matriz N×N completa nunca toca a HBM.
-2. **Online softmax** — como cada bloco vê só um pedaço da linha, o softmax é calculado *incrementalmente*, carregando estatísticas correntes (o máximo e a soma) que são reajustadas a cada bloco novo. O resultado é **matematicamente idêntico** ao softmax sobre a linha inteira.
-3. **Recomputação no backward** — em vez de guardar a matriz de atenção para o gradiente, o treino a **recomputa** a partir de Q/K/V na SRAM. Troca um pouco mais de FLOPs por uma redução enorme de tráfego de memória.
-
-O resultado: mesmo cálculo, resultado **exato** (não é aproximação), porém com memória **linear** em n e parede de relógio menor. É por isso que a armadilha lá embaixo está certa — FlashAttention não muda a qualidade, só a *física* da execução.
-
-A fronteira 2025-2026 é a **sparse attention treinável** — não mais um truque aplicado só na inferência, mas esparsidade aprendida durante o treino. O NSA (*Native Sparse Attention*, fev/2025) treina o modelo já esparso com kernels hardware-aligned; o DSA (DeepSeek-V3.2-Exp, set/2025) usa um *lightning indexer* — heads leves que pontuam quais tokens merecem atenção plena — com kernels atingindo 640 TFlops no prefill. O GLM5 (2026) já adota DSA. A aposta: quebrar o O(n²) sem perder qualidade, tornando contexto de 1M tokens economicamente viável.
-
-Uma rota paralela à esparsidade é a **atenção híbrida (local + global)**. Em vez de toda camada pagar o O(n²), o modelo intercala camadas de *sliding window* — onde cada token só atende a uma janela local fixa — com uma minoria de camadas de atenção global, que costuram o contexto inteiro. O Gemma 2 alterna 1:1 (janela de 4096 tokens); o GPT-OSS usa janelas bem menores (128 tokens) entre as camadas globais. A maior parte do trabalho fica local e barata; só algumas camadas pagam o custo quadrático. Cuidado com a dosagem: janelas pequenas demais ou camadas globais de menos degradam a qualidade — o modelo perde alcance de longo prazo. Note que isso é diferente do StreamingLLM lá de cima: aqui a esparsidade local é **treinada na arquitetura**, não um remendo aplicado só na inferência.
-
-### Positional encoding — atenção não sabe ordem
-
-A atenção pura é **permutation-invariant**: os scores Q·Kᵀ não mudam se você embaralhar os tokens. Sem informação posicional, "cão morde homem" e "homem morde cão" produziriam as mesmas representações. É por isso que todo Transformer injeta posição nos [[Dicionário de IA#embedding|embeddings]] — e a forma de fazer isso evoluiu:
+Há um detalhe que a fórmula esconde: a atenção pura é **permutation-invariant**. Os scores `Q·Kᵀ` não mudam se você embaralhar os tokens — a média ponderada é a mesma independente da ordem. Sem informação posicional, *"cão morde homem"* e *"homem morde cão"* produziriam as mesmas representações. É por isso que todo Transformer injeta a posição nos [[03 - Embeddings — do token ao vetor|embeddings]] — e a forma de fazer isso evoluiu:
 
 - **Posicional absoluto** (paper original) — soma um vetor de posição ao embedding. Simples, mas generaliza mal além do comprimento visto no treino.
-- **[[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]]** (padrão moderno) — em vez de somar, **rotaciona pares de dimensões de Q e K** por um ângulo proporcional à posição. O produto escalar Q·K passa a codificar **distância relativa** naturalmente: o que importa é "quão longe", não "em qual posição absoluta".
-- **[[Dicionário de IA#YaRN|YaRN]]** (extensão de contexto) — reescala as frequências do RoPE (interpolação rampada + temperatura de atenção) para esticar a janela além do comprimento de pretraining, usando ~10x menos tokens de treino que métodos anteriores. É assim que modelos treinados em 4K chegam a 128K+.
+- **[[Dicionário de IA#RoPE (Rotary Position Embedding)|RoPE]]** (padrão moderno) — em vez de somar, **rotaciona pares de dimensões de Q e K** por um ângulo proporcional à posição (pense em cada par como o ponteiro de um relógio: o token na posição 50 gira 50 "tiquinhos"). Assim o produto escalar `Q·K` passa a depender da **distância relativa** entre os tokens: o que importa é "quão longe", não "em qual posição absoluta".
+- **[[Dicionário de IA#YaRN|YaRN]]** (extensão de contexto) — reescala as frequências do RoPE para esticar a janela além do comprimento de pretraining, usando ~10x menos tokens de treino que métodos anteriores. É assim que modelos treinados em 4K chegam a 128K+.
 
-### A arquitetura completa do Transformer
+> [!question] Como "rotacionar" um vetor codifica posição? (a intuição do RoPE)
+> Pense em cada par de dimensões de Q e K como as coordenadas de um **ponteiro de relógio**. O RoPE gira esse ponteiro por um ângulo proporcional à posição do token: o da posição 1 gira um tiquinho; o da posição 50, cinquenta tiquinhos. Quando depois você calcula `Q·K` entre dois tokens, o resultado passa a depender da **diferença** de ângulos — ou seja, de quão distantes eles estão, não de onde estão em absoluto. Dois tokens a 3 posições de distância produzem o mesmo "desencontro de ponteiros" estejam no início ou no fim do texto. É por isso que o RoPE generaliza bem para comprimentos novos: ele ensina o modelo a raciocinar sobre *distância relativa*, que é o que de fato importa na linguagem.
+
+## A arquitetura completa do Transformer
+
+A atenção é a estrela, mas não trabalha sozinha. Uma camada de Transformer combina atenção com mais algumas peças, e o modelo empilha essa camada N vezes:
 
 ```mermaid
 graph TD
@@ -307,71 +317,106 @@ graph TD
         E --> F[Feed-Forward Network]
         F --> G[Add & Normalize]
     end
-    G --> H[..."Layer N"]
+    G --> H["⋯ Layer N"]
     H --> I[Linear + Softmax]
     I --> J[Probabilidade do próximo token]
 ```
 
+> [!question] O "Linear + Softmax" do fim é o mesmo softmax da atenção?
+> Não — é a mesma *função*, em outro lugar e com outro papel. O **softmax da atenção** roda dentro de cada camada e distribui pesos **sobre os tokens** (quem atende a quem). O **softmax do fim** roda uma vez só, na saída da última camada, e distribui probabilidades **sobre o vocabulário inteiro** — é ele que escolhe o próximo token. Mesma matemática (transformar números em proporções que somam 1), alvos diferentes. Esse passo final é o tema de [[05 - Completação — o loop autoregressivo|completação]].
+
 Cada camada combina:
 
-1. **Self-attention** — captura relações entre tokens
-2. **Feed-forward network** — processa cada token independentemente (onde fica o "conhecimento" armazenado)
-3. **Residual connections + layer norm** — estabilizam o treinamento em redes profundas
+1. **Self-attention** — captura relações entre tokens (o mecanismo de *roteamento*: quem fala com quem).
+2. **Feed-forward network** — processa cada token independentemente (onde fica o "conhecimento" armazenado).
+3. **Residual connections + layer norm** — estabilizam o treinamento em redes profundas, dando ao gradiente um "atalho" para fluir até as primeiras camadas.
 
-> [!warning]- O diagrama acima é *post-norm* — e quase nenhum LLM moderno usa isso
+> [!warning] O diagrama acima é *post-norm* — e quase nenhum LLM moderno usa isso
 > O paper original normaliza **depois** de somar o resíduo (*post-norm*, o "Add & Normalize" do diagrama). Parece detalhe de ordem, mas em redes profundas o post-norm trava: gradientes explodem ou somem, e o treino só converge com *warm-up* cuidadoso de learning rate — num teste de 29 camadas, o post-norm sequer convergiu.
-> Praticamente todos os LLMs modernos (GPT-3, Llama, PaLM) inverteram para **pre-norm**: normalizar *antes* do sub-layer, deixando a conexão residual como um "atalho limpo" para o gradiente fluir até as primeiras camadas. O preço é uma leve perda de fidelidade representacional, mas a estabilidade compensa.
+> Praticamente todos os LLMs modernos (GPT-3, Llama, PaLM) inverteram para **pre-norm**: normalizar *antes* do sub-layer, deixando a conexão residual como um "atalho limpo" para o gradiente. O preço é uma leve perda de fidelidade representacional, mas a estabilidade compensa.
 > De brinde, a norma deixou de ser LayerNorm e virou **RMSNorm**: só reescala (não centraliza nem aprende *bias*), o que corta um parâmetro por camada e sai mais barato. É o padrão da família Llama em diante.
 
-### A Feed-Forward Network — onde mora o conhecimento
+## A Feed-Forward Network — onde mora o conhecimento
 
 A atenção recebe toda a atenção (trocadilho intencional), mas ~⅔ dos [[Dicionário de IA#parameters / weights|parâmetros]] de um Transformer estão na **FFN** — a rede feed-forward que vem depois da atenção em cada camada. Se a atenção é o mecanismo de *roteamento* (quem fala com quem), a FFN é a *memória* (o que se sabe).
 
 Ela é deceptivamente simples — roda em cada token de forma independente:
 
-$$\text{FFN}(x) = W_{down} \cdot \text{ativação}(W_{up} \cdot x)$$
+> [!warning] Fórmula FFN
+> 
+> $$\text{FFN}(x) = W_{down} \cdot \text{ativação}(W_{up} \cdot x)$$
 
-- **Up-projection** — expande a dimensão do token, tipicamente para `d_ff ≈ 4 × d_model` (ex.: 4096 → 16384).
-- **Ativação** não-linear — GELU no GPT, **SwiGLU** na família Llama.
-- **Down-projection** — comprime de volta para d_model.
+Termo a termo, onde `x` é o vetor do token que entra na camada:
+
+- **Up-projection** (`W_up · x`) — expande a dimensão do token, tipicamente para `d_ff ≈ 4 × d_model` (ex.: 4096 → 16384).
+- **Ativação** não-linear (a `ativação(...)`) — GELU no GPT, **SwiGLU** na família Llama; é o que dá à camada poder de representar funções complexas.
+- **Down-projection** (`W_down`) — comprime de volta para `d_model`.
 
 Esse "incha → processa → comprime" é onde os fatos ficam guardados: estudos de interpretabilidade mostram que as camadas FFN funcionam como uma memória chave-valor, com neurônios específicos ativando para conceitos específicos (*"a capital da França é…"*). A atenção **move** informação entre posições; a FFN **transforma** a informação de cada posição com base no que aprendeu no pré-treino.
 
-> [!question]- Então o custo de um LLM é tudo atenção?
-> Só em contexto longo. Para sequências curtas, a **FFN domina os FLOPs** — ela roda em todo token e é ~4x mais larga que o modelo. A atenção, sendo O(n²), só ultrapassa a FFN quando n fica grande. Por isso otimizar atenção (FlashAttention, sparse) importa para contexto longo, mas a contagem de parâmetros e o custo de prompts curtos são governados pela FFN — exatamente o que o [[07 - Dense vs Mixture-of-Experts|Mixture-of-Experts]] ataca ao tornar a FFN esparsa.
+> [!question] Então o custo de um LLM é tudo atenção?
+> Só em contexto longo. Para sequências curtas, a **FFN domina os FLOPs** — ela roda em todo token e é ~4x mais larga que o modelo. A atenção, sendo O(n²), só ultrapassa a FFN quando n fica grande. Por isso otimizar atenção importa para contexto longo, mas a contagem de parâmetros e o custo de prompts curtos são governados pela FFN — exatamente o que o [[09 - Dense vs Mixture-of-Experts|Mixture-of-Experts]] ataca ao tornar a FFN esparsa.
+
+## O fluxo residual — como o token evolui camada a camada
+
+Falta uma peça para o quadro fechar. As camadas não são uma esteira onde cada uma descarta o trabalho da anterior: elas compartilham um **fluxo residual** (*residual stream*) — um vetor por token que atravessa o modelo de ponta a ponta e que cada sub-camada **lê e reescreve por adição**.
+
+Lembra do "Add & Normalize" do diagrama? O "Add" é exatamente isto: a saída de cada sub-camada é **somada de volta** ao vetor que entrou, em vez de substituí-lo:
+
+$$x' = x + \text{Atenção}(x) \qquad\text{e depois}\qquad x'' = x' + \text{FFN}(x')$$
+
+A consequência conceitual é grande. Acompanhe o vetor de **"ele"** começando a jornada como o [[03 - Embeddings — do token ao vetor|embedding]] cru e descontextualizado. A cada camada:
+
+1. A **atenção** lê o fluxo, encontra "animal" e **escreve** nele "sou um animal".
+2. A **FFN** lê o fluxo já enriquecido e **escreve** o que sabe sobre animais e cansaço.
+3. A camada seguinte lê o resultado e refina mais — ligando "cansado" a "não atravessou".
+
+Camada após camada, o vetor de "ele" **acumula** contexto, como um documento que vários revisores anotam em sequência sem apagar as anotações anteriores. Ao chegar à última camada, ele já não é "ele" genérico: carrega "ele = o animal que estava cansado e por isso não atravessou". É desse vetor final que sai a previsão do próximo token (ver [[05 - Completação — o loop autoregressivo|completação]]).
+
+> [!tip] Por que o "atalho" residual importa tanto
+> As conexões residuais não são só um truque para o gradiente fluir (embora também sejam — ver o callout sobre pre-norm). Conceitualmente, elas são o que permite a informação **persistir**: sem a soma, cada camada teria que reconstruir do zero tudo o que importa. Com ela, uma camada pode fazer uma contribuição pequena e cirúrgica, confiando que o resto continua intacto no fluxo. É por isso que se fala no fluxo residual como a "memória de trabalho" compartilhada do Transformer — e é nele que a pesquisa de interpretabilidade vai "ler" o que o modelo está construindo.
+
+## Da atenção à inferência — para onde foi o resto
+
+Você reparou que esta nota não falou de KV cache, FlashAttention ou das variantes MQA/GQA/MLA. Isso é proposital: esse material é **engenharia de inferência** (nível Magus) e ganhou brotos próprios, para não afogar o conceito de atenção. Quando quiser entender *por que rodar um LLM custa o que custa*, siga em ordem:
+
+> [!abstract] Os brotos de engenharia de inferência
+> - [[04a - KV cache, prefill e decode — a física da inferência]] — o custo quadrático, as duas fases da inferência e o KV cache.
+> - [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA]] — as variantes de atenção que reduzem a memória.
+> - [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]] — os ataques à própria conta O(n²), e os attention sinks.
 
 ## Armadilhas
 
-- **"O modelo lê da esquerda pra direita"** — na geração sim, mas durante o processamento do input, self-attention vê todos os tokens simultaneamente.
-- **"Atenção = compreensão"** — atenção é correlação estatística. O modelo pode dar peso alto a um token por razões estatísticas, não semânticas.
-- **Ignorar o custo quadrático** — duplicar o contexto quadruplica o custo de atenção. É por isso que context engineering importa tanto.
-- **"Flash Attention muda a qualidade"** — não. FlashAttention é matematicamente equivalente à atenção padrão. Só reorganiza a computação para ser mais eficiente em hardware.
-- **Confundir [[Dicionário de IA#parameters / weights|parâmetros]] com atenção** — os pesos das camadas feed-forward (não a atenção) são onde o "conhecimento factual" do modelo reside. Atenção é o mecanismo de busca/organização.
+- **"O modelo lê da esquerda pra direita"** — na geração sim, mas durante o processamento do input, a self-attention vê todos os tokens simultaneamente (limitada pela máscara causal a olhar só para trás).
+- **"Atenção = compreensão"** — atenção é correlação estatística. O modelo pode dar peso alto a um token por razões estatísticas, não semânticas. O peso alto significa "estes vetores se alinham", não "o modelo entendeu".
+- **Confundir o score (atenção) com o output** — a atenção produz *pesos*; o que sai da camada é a *média ponderada dos Values*. Token com peso alto contribui mais, mas o resultado é sempre uma mistura.
+- **Confundir [[Dicionário de IA#parameters / weights|parâmetros]] com atenção** — os pesos das camadas feed-forward (não a atenção) são onde o "conhecimento factual" do modelo reside. Atenção é o mecanismo de busca/organização; a FFN é a memória.
+
+## A atenção em uma frase
+
+Se for para guardar uma coisa só: **a atenção faz cada token se reescrever como uma média ponderada dos outros, onde os pesos saem do alinhamento entre Queries e Keys, e o conteúdo misturado são os Values.** Tudo o mais é consequência disso — o multi-head faz a mistura por várias lentes em paralelo; a máscara causal proíbe olhar para o futuro; o positional encoding devolve a noção de ordem; o fluxo residual deixa o enriquecimento acumular camada a camada; e a FFN, entre uma atenção e outra, guarda o conhecimento. O Transformer é essa peça repetida dezenas de vezes — e foi ela que tornou os LLMs possíveis.
 
 ## Veja também
 
 - [[01 - O que é um LLM]] — contexto geral da arquitetura
-- [[03 - A janela de contexto]] — a consequência prática da atenção
-- [[07 - Dense vs Mixture-of-Experts]] — como MoE modifica as camadas feed-forward
-- [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — MLA e DSA em produção
-- [[12 - Streaming, batching e latência]] — prefill, decode e TTFT na prática
-- [[03 - Context rot e atenção diluída]] — quando a atenção dilui em contextos longos
+- [[03 - Embeddings — do token ao vetor]] — o que a atenção contextualiza camada a camada
+- [[05 - Completação — o loop autoregressivo]] — o que acontece depois da última camada (logits → softmax → amostragem)
+- [[06 - A janela de contexto]] — a consequência prática da atenção
+- [[09 - Dense vs Mixture-of-Experts]] — como MoE modifica as camadas feed-forward
+- Os brotos Magus de inferência
+	- [[04a - KV cache, prefill e decode — a física da inferência]] 
+	- [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA]] 
+	- [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]] 
+## Ver mais
+
+- [3Blue1Brown — *Transformers, the tech behind LLMs (Ch.5)*](https://www.youtube.com/watch?v=wjZofJX0v4M) (2024, 27 min) — o capítulo anterior ao do topo: mostra **onde** a atenção se encaixa na pilha completa (embeddings → atenção → FFN → saída). Veja antes do Ch.6 se quiser o panorama da arquitetura.
+- [Andrej Karpathy — *Let's build GPT: from scratch, in code, spelled out*](https://www.youtube.com/watch?v=kCc8FmEb1nY) (2023, 1h56) — implementa a self-attention mascarada linha a linha em PyTorch. O deep-dive técnico definitivo: depois de assistir, a fórmula `softmax(QKᵀ/√d_k)V` deixa de ser abstrata.
 
 ## Referências
 
 - **Vaswani et al.** — *Attention Is All You Need* (NeurIPS, 2017). O paper fundador.
-- **Dao, Tri** — *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness* (2022). A otimização que viabilizou contextos longos.
-- **Ainslie et al.** — *GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints* (Google, 2023). Grouped Query Attention.
-- **3Blue1Brown** — *Attention in transformers, visually explained* (YouTube, 2024). Explicação visual excelente.
-- **Karpathy, Andrej** — *Let's build GPT from scratch* (YouTube, 2023). Implementação completa com atenção.
-- **Xiao et al.** — [*Efficient Streaming Language Models with Attention Sinks*](https://arxiv.org/abs/2309.17453) (2023). O paper dos attention sinks e do StreamingLLM.
-- **Peng et al.** — [*YaRN: Efficient Context Window Extension of Large Language Models*](https://arxiv.org/abs/2309.00071) (2023). Extensão de contexto via reescala do RoPE.
-- **Dao, Tri** — [*FlashAttention-4: Algorithm and Kernel Pipelining Co-Design*](https://tridao.me/blog/2026/flash4/) (2026). O kernel de atenção mais otimizado para Blackwell.
-- **Yuan et al.** — [*Native Sparse Attention: Hardware-Aligned and Natively Trainable Sparse Attention*](https://arxiv.org/abs/2502.11089) (2025). Sparse attention treinável (DeepSeek).
-- **Towards Data Science** — [*Prefill Is Compute-Bound. Decode Is Memory-Bound.*](https://towardsdatascience.com/prefill-is-compute-bound-decode-is-memory-bound-why-your-gpu-shouldnt-do-both/) (2025). As duas físicas da inferência.
+- **Alammar, Jay** — [*The Illustrated Transformer*](https://jalammar.github.io/illustrated-transformer/). O passo a passo visual de Q/K/V e multi-head.
 - **MachineLearningMastery** — [*A Gentle Introduction to Attention Masking in Transformer Models*](https://machinelearningmastery.com/a-gentle-introduction-to-attention-masking-in-transformer-models/) (2024). A máscara causal que define modelos decoder-only.
+- **Peng et al.** — [*YaRN: Efficient Context Window Extension of Large Language Models*](https://arxiv.org/abs/2309.00071) (2023). Extensão de contexto via reescala do RoPE.
 - **Why Pre-Norm Became the Default in Transformers** — [Medium](https://medium.com/@ashutoshs81127/why-pre-norm-became-the-default-in-transformers-4229047e2620) (2025). Pre-norm vs post-norm e a adoção de RMSNorm.
-- **Gemma Team** — [*Gemma 2: Improving Open Language Models at a Practical Size*](https://arxiv.org/abs/2408.00118) (Google, 2024). Atenção híbrida local/global intercalada (sliding window + global).
-- **Analytics Vidhya** — [*How KV Caching Makes Modern LLMs Fast?*](https://www.analyticsvidhya.com/blog/2025/11/kv-caching-guide/) (2025). A matemática do KV cache e por que ele domina a memória no decode.
-- **DeepSeek-AI** — [*DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model*](https://arxiv.org/abs/2405.04434) (2024). Multi-head Latent Attention (MLA) e a compressão low-rank do KV cache.
 - **Geva et al.** — [*Transformer Feed-Forward Layers Are Key-Value Memories*](https://arxiv.org/abs/2012.14913) (EMNLP, 2021). Evidência de que o conhecimento factual reside nas camadas feed-forward.

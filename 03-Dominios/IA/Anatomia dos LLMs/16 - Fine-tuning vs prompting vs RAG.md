@@ -96,7 +96,7 @@ graph LR
 Retreina os pesos do modelo em dados específicos do domínio.
 
 > [!info] Esta nota é o "quando"; o "como" está na 19
-> A mecânica — full fine-tuning, PEFT/LoRA/QLoRA e alinhamento por preferência (DPO) — está em [[19 - Fine-tuning na prática — LoRA, QLoRA, DPO]].
+> A mecânica — full fine-tuning, PEFT/LoRA/QLoRA e alinhamento por preferência (DPO) — está em [[21 - Fine-tuning na prática — LoRA, QLoRA, DPO]].
 
 ```mermaid
 graph LR
@@ -181,9 +181,9 @@ graph TD
 
 ## Veja também
 
-- [[03 - A janela de contexto]] — o limite que determina quando prompting não basta
-- [[11 - Prompt caching e otimizações de API]] — otimizações para prompting de alta escala
-- [[15 - O futuro dos LLMs — tendências 2026-2027]] — para onde essas técnicas estão evoluindo
+- [[06 - A janela de contexto]] — o limite que determina quando prompting não basta
+- [[13 - Prompt caching e otimizações de API]] — otimizações para prompting de alta escala
+- [[17 - O futuro dos LLMs — tendências 2026-2027]] — para onde essas técnicas estão evoluindo
 
 ## Referências
 

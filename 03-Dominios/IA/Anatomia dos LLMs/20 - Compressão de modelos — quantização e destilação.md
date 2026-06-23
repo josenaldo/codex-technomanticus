@@ -39,7 +39,7 @@ aliases:
 
 | Motivação | Como a compressão ajuda |
 | --- | --- |
-| **VRAM / hardware** | INT4 corta o uso de memória em ~4× vs FP16 — é o que faz um 70B caber em ~40GB (ver [[08 - Modelos locais e self-hosting]]) |
+| **VRAM / hardware** | INT4 corta o uso de memória em ~4× vs FP16 — é o que faz um 70B caber em ~40GB (ver [[10 - Modelos locais e self-hosting]]) |
 | **Custo de inferência** | Modelos menores leem menos pesos da memória por token → menos custo, contornando o [[Dicionário de IA#memory bandwidth bottleneck\|memory bandwidth bottleneck]] |
 | **Latência** | Menos bits para mover e menos parâmetros para ler reduzem o tempo por token |
 | **Edge / on-device** | Destilação + quantização é o que põe um modelo num celular ou navegador |
@@ -72,7 +72,7 @@ A ideia é representar pesos (e às vezes ativações) com menos bits. Quanto me
 
 - **GGUF** (llama.cpp) — formato dos *k-quants* (`Q4_K_M`, `Q5_K_M`, `Q8_0`). Padrão de fato para CPU/Apple Silicon e Ollama.
 - **GPTQ** — PTQ baseado em informação de segunda ordem; popular para GPU.
-- **AWQ** (Activation-aware Weight Quantization) — preserva os pesos mais salientes; usado pelo [[08 - Modelos locais e self-hosting|vLLM]] (`--quantization awq`).
+- **AWQ** (Activation-aware Weight Quantization) — preserva os pesos mais salientes; usado pelo [[10 - Modelos locais e self-hosting|vLLM]] (`--quantization awq`).
 - **bitsandbytes / NF4** — quantização 4-bit usada em [[Dicionário de IA#fine-tuning|QLoRA]] para fine-tuning em hardware modesto.
 
 ### Destilação
@@ -107,20 +107,20 @@ Não são concorrentes. O pipeline de menor pegada é **destilar primeiro** (cé
 
 ## Armadilhas
 
-- **INT4 degrada raciocínio** — para coding e raciocínio complexo, prefira INT8 ou `Q5_K_M`; INT4 é perceptivelmente pior (ver armadilhas em [[08 - Modelos locais e self-hosting]]).
+- **INT4 degrada raciocínio** — para coding e raciocínio complexo, prefira INT8 ou `Q5_K_M`; INT4 é perceptivelmente pior (ver armadilhas em [[10 - Modelos locais e self-hosting]]).
 - **"Modelo menor é de graça"** — destilação não é grátis: exige o professor e compute de treino. O barato é a *inferência* depois, não o processo.
 - **O aluno herda os vícios do professor** — vieses, alucinações e lacunas do teacher passam adiante. Destilar de um modelo ruim produz um aluno ruim, menor.
 - **Quantizar modelo já pequeno dói mais** — um 70B em INT4 sofre menos (proporcionalmente) que um 3B em INT4; modelos pequenos têm menos "gordura" de precisão para perder.
-- **Perplexity ≠ desempenho na sua tarefa** — sempre meça o modelo comprimido no *seu* golden set (ver [[17 - Evaluation de LLMs em produção]]), não só em benchmarks genéricos.
+- **Perplexity ≠ desempenho na sua tarefa** — sempre meça o modelo comprimido no *seu* golden set (ver [[19 - Evaluation de LLMs em produção]]), não só em benchmarks genéricos.
 - **Destilar de uma API fechada pode violar ToS** — treinar um aluno a partir das saídas de um modelo comercial de terceiros frequentemente esbarra nos termos de uso do provider. Verifique antes.
 
 ## Veja também
 
 - [[01 - O que é um LLM]] — o mito "maior é melhor" e o caso T5/PaLM
-- [[07 - Dense vs Mixture-of-Experts]] — outro eixo de eficiência (esparsidade vs precisão/tamanho)
-- [[08 - Modelos locais e self-hosting]] — quantização aplicada na prática (VRAM, AWQ, k-quants)
-- [[14 - Fine-tuning vs prompting vs RAG]] — adaptar ≠ comprimir
-- [[19 - Fine-tuning na prática — LoRA, QLoRA, DPO]] — QLoRA fine-tuna sobre um base quantizado: compressão e treino se encontram
+- [[09 - Dense vs Mixture-of-Experts]] — outro eixo de eficiência (esparsidade vs precisão/tamanho)
+- [[10 - Modelos locais e self-hosting]] — quantização aplicada na prática (VRAM, AWQ, k-quants)
+- [[16 - Fine-tuning vs prompting vs RAG]] — adaptar ≠ comprimir
+- [[21 - Fine-tuning na prática — LoRA, QLoRA, DPO]] — QLoRA fine-tuna sobre um base quantizado: compressão e treino se encontram
 
 ## Referências
 

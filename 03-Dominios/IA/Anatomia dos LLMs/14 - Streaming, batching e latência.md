@@ -152,9 +152,9 @@ Benefício: cada cluster é otimizado para seu bottleneck específico.
 
 ## Veja também
 
-- [[09 - APIs de LLM — anatomia de uma chamada]] — a estrutura que é streamada
-- [[11 - Prompt caching e otimizações de API]] — caching para reduzir TTFT
-- [[03 - A janela de contexto]] — contexto grande = prefill mais lento
+- [[11 - APIs de LLM — anatomia de uma chamada]] — a estrutura que é streamada
+- [[13 - Prompt caching e otimizações de API]] — caching para reduzir TTFT
+- [[06 - A janela de contexto]] — contexto grande = prefill mais lento
 
 ## Referências
 

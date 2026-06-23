@@ -75,7 +75,7 @@ Escolher o modelo errado pode significar:
 **Forças:** Contexto mais longo (2M experimental), multimodal nativo (áudio, vídeo, imagem), integração GCP, preço competitivo.
 **Fraquezas:** Menos consistente em coding puro que Claude, ecossistema de tools menos maduro.
 
-#### Open-Weight (ver detalhes em [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]])
+#### Open-Weight (ver detalhes em [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]])
 
 | Modelo        | Origem              | Parâmetros           | Licença       | Melhor para                     |
 | ------------- | ------------------- | -------------------- | ------------- | ------------------------------- |
@@ -137,9 +137,9 @@ graph TD
 
 ## Veja também
 
-- [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — deep dive nos players chineses
-- [[07 - Dense vs Mixture-of-Experts]] — a arquitetura por trás das diferenças de custo
-- [[10 - Pricing de APIs — como calcular custos]] — como traduzir preços por token em custo real
+- [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — deep dive nos players chineses
+- [[09 - Dense vs Mixture-of-Experts]] — a arquitetura por trás das diferenças de custo
+- [[12 - Pricing de APIs — como calcular custos]] — como traduzir preços por token em custo real
 
 ## Referências
 

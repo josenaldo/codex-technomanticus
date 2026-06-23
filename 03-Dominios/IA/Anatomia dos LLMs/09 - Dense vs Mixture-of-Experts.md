@@ -135,9 +135,9 @@ O maior desafio técnico do MoE é garantir que os experts sejam usados de forma
 ## Veja também
 
 - [[01 - O que é um LLM]] — contexto geral da arquitetura
-- [[06 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — modelos que lideram em MoE
-- [[08 - Modelos locais e self-hosting]] — como rodar esses modelos
-- [[18 - Compressão de modelos — quantização e destilação]] — outro eixo de eficiência (precisão e tamanho)
+- [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — modelos que lideram em MoE
+- [[10 - Modelos locais e self-hosting]] — como rodar esses modelos
+- [[20 - Compressão de modelos — quantização e destilação]] — outro eixo de eficiência (precisão e tamanho)
 
 ## Referências
 

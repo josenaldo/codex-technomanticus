@@ -359,9 +359,9 @@ Ferramentas como Claude Code e Cursor implementam **[[Dicionário de IA#context 
 
 - [[02 - Tokens e tokenização]] — a unidade que mede a janela
 - [[04 - Atenção e o mecanismo transformer]] — o motor que sofre quando a janela cresce
-- [[10 - Pricing de APIs — como calcular custos]] — onde o custo do contexto vira fatura
-- [[11 - Prompt caching e otimizações de API]] — como reduzir custo de contexto repetido
-- [[12 - Streaming, batching e latência]] — como o tamanho do contexto afeta performance
+- [[12 - Pricing de APIs — como calcular custos]] — onde o custo do contexto vira fatura
+- [[13 - Prompt caching e otimizações de API]] — como reduzir custo de contexto repetido
+- [[14 - Streaming, batching e latência]] — como o tamanho do contexto afeta performance
 
 ## Referências
 

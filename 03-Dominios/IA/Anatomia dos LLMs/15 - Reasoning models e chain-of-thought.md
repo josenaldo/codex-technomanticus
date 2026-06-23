@@ -159,8 +159,8 @@ Exemplo: pedir para refatorar um módulo de autenticação.
 
 ## Veja também
 
-- [[10 - Pricing de APIs — como calcular custos]] — impacto dos reasoning tokens na conta
-- [[05 - Panorama de modelos 2026]] — quais modelos oferecem reasoning
+- [[12 - Pricing de APIs — como calcular custos]] — impacto dos reasoning tokens na conta
+- [[07 - Panorama de modelos 2026]] — quais modelos oferecem reasoning
 - [[01 - O que é um LLM]] — contexto geral da arquitetura
 
 ## Referências
