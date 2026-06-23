@@ -29,7 +29,7 @@ aliases:
 > coluna, por que array bate lista encadeada na vida real.
 
 ## Sobre este galho
-Este é o **andar de baixo** de Fundamentos: o degrau abaixo do Sistema Operacional. Ele explica a máquina física
+Este é o **andar de baixo** da Ciência da Computação: o degrau abaixo do Sistema Operacional. Ele explica a máquina física
 sobre a qual todo o resto roda — e, principalmente, *por que a abstração vaza*: o desempenho do seu código depende
 de detalhes de hardware (cache, pipeline, ramos) que nenhuma linguagem esconde por completo.
 
@@ -98,4 +98,4 @@ SORT file.name ASC
 - [[03-Dominios/Ciência/Sistemas Operacionais/index|Sistemas Operacionais]] — o software que gerencia este hardware
 - [[03-Dominios/Ciência/Concorrência e Paralelismo/index|Concorrência e Paralelismo]] — a coerência de cache pelo lado da sincronização
 - [[03-Dominios/Ciência/Matemática para Computação/index|Matemática para Computação]] — bases numéricas e aritmética modular pelo lado matemático
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

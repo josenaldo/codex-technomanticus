@@ -20,7 +20,7 @@ aliases:
 # Teoria da Computação
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre as duas perguntas que nenhum framework responde: **o que pode ser computado** e
+> Galho de Ciência da Computação sobre as duas perguntas que nenhum framework responde: **o que pode ser computado** e
 > **a que custo**. Sobe a "torre de poder" dos modelos de computação — autômato finito → autômato de pilha →
 > máquina de Turing — e, no topo, esbarra nos dois muros: o que **nenhuma** máquina computa (indecidibilidade:
 > o problema da parada, Rice) e o que máquina nenhuma computa **barato** (complexidade: P, NP, NP-completo,
@@ -28,7 +28,7 @@ aliases:
 > linter não pega todo loop infinito, e que você para de caçar o ótimo e aproxima.
 
 ## Sobre este galho
-Este é o andar mais **teórico** de Fundamentos — e o mais antigo da Ciência da Computação (Turing, Church e
+Este é o andar mais **teórico** da Ciência da Computação — e o mais antigo da Ciência da Computação (Turing, Church e
 Gödel, anos 1930, antes de existir computador). Ele dá o vocabulário formal para falar de *limites*: o que a
 computação **não** pode fazer, e o que ela só faz a um custo proibitivo.
 
@@ -93,4 +93,4 @@ SORT file.name ASC
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
 - [[03-Dominios/Ciência/Algoritmos/13 - Intratabilidade|Intratabilidade]] — a face prática de P/NP (NP-difícil, aproximação, heurística)
 - [[Paradigmas de Programação]] — funcional e λ-cálculo pelo ângulo de estilo
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

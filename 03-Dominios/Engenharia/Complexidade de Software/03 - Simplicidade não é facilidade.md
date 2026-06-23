@@ -454,4 +454,4 @@ Se cair "qual a diferença entre simples e fácil?", a resposta curta que mostra
 - [[08 - Carga cognitiva e legibilidade]] — o que o entrelaçamento cobra na cabeça de quem lê
 - [[06 - Abstrações que vazam]] — quando o esconderijo da complexidade falha por baixo
 - [[14 - Manutenção e evolução]] — simplicidade como moeda da mudança barata
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

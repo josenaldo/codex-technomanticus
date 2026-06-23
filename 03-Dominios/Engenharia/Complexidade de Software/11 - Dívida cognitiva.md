@@ -339,4 +339,4 @@ Leitura do diagrama: a seta de volta é o coração — reconstruir a teoria *re
 - [[13 - Entropia de software e decaimento]] — o decaimento que a perda de teoria alimenta (remendos sem teoria)
 - [[14 - Manutenção e evolução]] — "make the change easy": manter o sistema mudável é manter a teoria viável
 - [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/Débito cognitivo|Débito cognitivo (lente IA)]] — o mesmo conceito sob a ótica da IA generativa
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

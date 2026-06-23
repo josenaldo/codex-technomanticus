@@ -381,4 +381,4 @@ Estude a tabela de vocabulário abaixo e pratique as frases em voz alta — entr
 
 *Próxima nota:* [[02 - Representação binária de inteiros]] — como o hardware representa números e por que isso importa.
 
-*Ver também:* [[03-Dominios/Ciência/index|Fundamentos]] · [[07 - Arquitetura de von Neumann e o ciclo de instrução]] · [[11 - Hierarquia de memória e localidade]] · [[05 - Lógica digital - portas e circuitos combinacionais]]
+*Ver também:* [[03-Dominios/Ciência/index|Ciência da Computação]] · [[07 - Arquitetura de von Neumann e o ciclo de instrução]] · [[11 - Hierarquia de memória e localidade]] · [[05 - Lógica digital - portas e circuitos combinacionais]]

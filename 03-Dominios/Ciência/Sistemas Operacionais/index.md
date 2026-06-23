@@ -21,7 +21,7 @@ aliases:
 # Sistemas Operacionais
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre a **teoria** do software que fica entre seus programas e o hardware — o sistema
+> Galho de Ciência da Computação sobre a **teoria** do software que fica entre seus programas e o hardware — o sistema
 > operacional. Cobre as abstrações que ele inventa (processos, threads, memória virtual, arquivos), os
 > mecanismos com que as sustenta (system calls, escalonamento, paginação, I/O, journaling) e a divergência
 > entre os SOs reais (Linux, Windows, macOS). Não é "como usar o Linux" — é **como o SO funciona por dentro**
@@ -92,4 +92,4 @@ SORT file.name ASC
 - [[Concorrência e Paralelismo]] — threads, scheduling e sincronização pelo ângulo conceitual
 - [[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux]] — usar o SO na prática
 - [[Banco de Dados]] — buffer pool, WAL e durabilidade (o mesmo problema do page cache/journaling)
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

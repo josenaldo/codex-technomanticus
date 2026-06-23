@@ -20,7 +20,7 @@ aliases:
 # Estruturas de Dados
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre as formas de organizar e armazenar dados — e os trade-offs de
+> Galho de Ciência da Computação sobre as formas de organizar e armazenar dados — e os trade-offs de
 > tempo, espaço e ordem que cada uma impõe. Interview-critical. Cada estrutura traz uma
 > comparação profunda de implementação em **Java, TypeScript, Python e Go**, mostrando como
 > as particularidades de cada linguagem moldam a estrutura.
@@ -90,4 +90,4 @@ SORT file.name ASC
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
 - [[Algoritmos]] — a análise de complexidade e os algoritmos que operam sobre estas estruturas
 - [[Banco de dados]] — B-Trees nos índices
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

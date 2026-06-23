@@ -423,4 +423,4 @@ Vocabulário-chave:
 - [[02 - Arrays e listas dinâmicas]] — o lado oposto: bloco contíguo, acesso O(1), cache-friendly
 - [[04 - Pilhas, filas e deques]] — FIFO/LIFO que a lista encadeada sustenta como backing
 - [[12 - Estruturas especializadas]] — LRU cache (HashMap + DLL), skip list e outras
-- [[Dicionário de Fundamentos]] — vocabulário comum das estruturas
+- [[Dicionário de Ciência da Computação]] — vocabulário comum das estruturas

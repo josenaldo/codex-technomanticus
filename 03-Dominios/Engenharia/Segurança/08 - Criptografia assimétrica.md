@@ -147,7 +147,7 @@ RSA (Rivest, Shamir, Adleman, 1978) é o algoritmo assimétrico historicamente d
 
 A intuição direta: dado um número `n = p × q` onde `p` e `q` são primos com centenas de dígitos cada, encontrar `p` e `q` separadamente é computacionalmente inviável. Multiplicar dois primos grandes leva microssegundos; fatorar o produto com os melhores algoritmos clássicos conhecidos (GNFS — General Number Field Sieve) levaria tempo astronômico para `n` de tamanho adequado.
 
-> [!note] A matemática exata fica nas notas de Fundamentos de Matemática
+> [!note] A matemática exata fica nas notas de Matemática para Computação
 > A construção formal do RSA — escolha de `e` e `d`, uso do Teorema de Euler-Fermat para provar que `(m^e)^d ≡ m (mod n)`, geração de chaves — está documentada em [[03-Dominios/Ciência/Matemática para Computação/14 - Teoria dos números - divisibilidade e primos]] e [[03-Dominios/Ciência/Matemática para Computação/15 - Aritmética modular e Fermat-Euler]]. Aqui ficamos no nível conceitual que entrevista exige.
 
 **Tamanhos de chave RSA recomendados (NIST SP 800-57 Part 1 Rev. 5):**

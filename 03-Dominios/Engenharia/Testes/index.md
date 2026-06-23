@@ -22,7 +22,7 @@ aliases:
 # Testes
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre como verificar que o software funciona — e **continua** funcionando após
+> Galho de Engenharia sobre como verificar que o software funciona — e **continua** funcionando após
 > mudanças. Escrever um teste é fácil; **desenhar uma estratégia de testes** que equilibra confiança,
 > velocidade e custo de manutenção é o que diferencia um senior. Cobre a pirâmide, os tipos de teste,
 > test doubles, TDD, técnicas de design de caso, flaky tests, coverage e CI/CD — tudo **stack-agnóstico**,
@@ -96,4 +96,4 @@ SORT file.name ASC
 - [[Testes em Java]] — o ferramental Java (JUnit, Mockito, Testcontainers)
 - [[Testes em JavaScript]] — o ferramental JS/TS (Vitest, Testing Library, Playwright)
 - [[Arquitetura de Software]] — design testável (hexagonal, ports & adapters)
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

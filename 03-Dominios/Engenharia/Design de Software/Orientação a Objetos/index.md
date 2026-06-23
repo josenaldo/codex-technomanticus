@@ -22,7 +22,7 @@ aliases:
 # Orientação a Objetos
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre o paradigma que organiza software em **objetos** que encapsulam estado
+> Galho de Engenharia sobre o paradigma que organiza software em **objetos** que encapsulam estado
 > e comportamento e colaboram por mensagens. O diferencial de um senior não é recitar os quatro
 > pilares — é demonstrar **quando aplicar, quando não aplicar**, reconhecer anti-patterns, e saber
 > que o modelo OO **muda de forma** conforme a linguagem. Interview-critical.
@@ -93,4 +93,4 @@ SORT file.name ASC
 - [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — os cinco princípios de design OO
 - [[Design Patterns]] — o catálogo GoF construído sobre estes fundamentos
 - [[Arquitetura de Software]] — DDD estratégico e SOLID no nível de módulo/serviço
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

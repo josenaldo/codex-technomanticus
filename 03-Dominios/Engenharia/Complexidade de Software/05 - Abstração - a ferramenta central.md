@@ -506,5 +506,5 @@ flowchart TD
 - [[07 - Módulos profundos e rasos]] — como dimensionar um módulo pra que a abstração seja profunda
 - [[01 - A complexidade como problema central]] — o problema que a abstração existe pra combater
 - [[Orientação a Objetos]] — encapsulamento, o mecanismo de linguagem que implementa information hiding
-- [[Dicionário de Fundamentos#Abstração errada (the wrong abstraction)]] — o verbete do contraponto sênior
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação#Abstração errada (the wrong abstraction)]] — o verbete do contraponto sênior
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

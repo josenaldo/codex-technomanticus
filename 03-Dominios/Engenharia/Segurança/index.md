@@ -30,7 +30,7 @@ aliases:
 > deve "rolar a própria cripto", e por que o elo mais fraco quase sempre é humano.
 
 ## Sobre este galho
-Onde os outros galhos de Fundamentos perguntam *como a máquina funciona*, Segurança Conceitual pergunta *o que
+Onde os outros galhos da Ciência da Computação perguntam *como a máquina funciona*, Segurança Conceitual pergunta *o que
 acontece quando alguém inteligente tenta quebrá-la de propósito*. É a teoria atemporal — os conceitos que
 sobrevivem à próxima biblioteca e ao próximo CVE: o triângulo CIA, os princípios de Saltzer & Schroeder, a ideia
 de chave pública, a cadeia de confiança. Não é appsec aplicado (hardening, WAF, scanners) nem operação de
@@ -105,4 +105,4 @@ SORT file.name ASC
 - [[03-Dominios/Ciência/Matemática para Computação/index|Matemática para Computação]] — a teoria dos números que sustenta RSA e Diffie-Hellman
 - [[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS|TLS e HTTPS]] — a criptografia conceitual virada protocolo de rede
 - [[03-Dominios/Ciência/Organização de Computadores/14 - Branch prediction e execução especulativa|Branch prediction e especulação]] — Spectre como mecanismo de hardware por trás dos side channels
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

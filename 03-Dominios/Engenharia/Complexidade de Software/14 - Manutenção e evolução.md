@@ -303,4 +303,4 @@ Quando o tema aparece, o entrevistador quer ver se você entende manutenção co
 - [[04 - O programa como teoria]] — legado também é código cuja teoria se perdeu (Naur)
 - [[10 - Dívida técnica]] — a refatoração é a moeda com que se paga a dívida ao longo da vida do sistema
 - [[Testes]] — a mecânica que torna a refatoração destemida (a rede de segurança de Feathers)
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

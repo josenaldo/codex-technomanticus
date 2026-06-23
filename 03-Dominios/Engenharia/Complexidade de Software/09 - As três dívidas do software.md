@@ -154,7 +154,7 @@ Porque a metáfora financeira captura algo verdadeiro em todas as três: você g
 Mas a metáfora tem limites honestos, e vale conhecê-los:
 
 - **Dívida financeira é mensurável; dívida de software, não.** Você sabe exatamente quanto deve ao banco. Ninguém sabe quanto "deve" em dívida cognitiva — não há saldo, só sintomas.
-- **Nem toda dívida é imprudente.** Fowler mostrou no [[Dicionário de Fundamentos#Quadrante de dívida técnica (Technical Debt Quadrant)|Quadrante de Dívida Técnica]] que tomar dívida pode ser uma decisão estratégica e consciente ("a gente *precisa* lançar agora"), não um pecado.
+- **Nem toda dívida é imprudente.** Fowler mostrou no [[Dicionário de Ciência da Computação#Quadrante de dívida técnica (Technical Debt Quadrant)|Quadrante de Dívida Técnica]] que tomar dívida pode ser uma decisão estratégica e consciente ("a gente *precisa* lançar agora"), não um pecado.
 - **Algumas dívidas não têm "principal" pra quitar.** Dívida de intenção que se perdeu de vez (a pessoa que sabia o *porquê* saiu da empresa) não se "paga": no máximo se *reconstrói por aproximação*, fabricando uma intenção plausível — que pode não ser a verdadeira.
 
 A metáfora, então, é uma boa porta de entrada, não um modelo contábil. Ela nos dá o vocabulário ("juros", "pagar", "principal") sem prometer precisão que o software não tem.
@@ -167,7 +167,7 @@ Se levarmos a metáfora a sério por um instante, cada dívida tem um perfil de 
 - **Dívida cognitiva** tem juros *que disparam em eventos*. Ela se acumula em silêncio enquanto o time está estável, e cobra de uma vez quando alguém sai, quando o time cresce rápido, ou quando passa tempo demais sem ninguém tocar numa área. O risco mora no *bus factor*.
 - **Dívida de intenção** tem juros *que a IA tornou compostos*. Antes cobrava raramente (onboarding, saída de pessoa); com agentes, cobra a cada sessão. É a única das três cuja taxa de juros literalmente *subiu* por causa de uma mudança externa de tecnologia.
 
-A consequência prática é sobre **quando pagar**. Dívida técnica você pode pagar de forma incremental, à medida que toca o código (a [[Dicionário de Fundamentos#Regra do Escoteiro (Boy Scout Rule)|Regra do Escoteiro]]). Dívida cognitiva você paga *antes* dos eventos que a cobram — investindo em rotação, pairing e redundância de conhecimento *enquanto* o time ainda está inteiro. Dívida de intenção você paga *no momento da decisão*, externalizando o *porquê* quando ele ainda está fresco — porque depois ele não se "recupera", só se fabrica por aproximação.
+A consequência prática é sobre **quando pagar**. Dívida técnica você pode pagar de forma incremental, à medida que toca o código (a [[Dicionário de Ciência da Computação#Regra do Escoteiro (Boy Scout Rule)|Regra do Escoteiro]]). Dívida cognitiva você paga *antes* dos eventos que a cobram — investindo em rotação, pairing e redundância de conhecimento *enquanto* o time ainda está inteiro. Dívida de intenção você paga *no momento da decisão*, externalizando o *porquê* quando ele ainda está fresco — porque depois ele não se "recupera", só se fabrica por aproximação.
 
 > [!info] O paradoxo das dívidas baratas de pagar e fáceis de adiar
 > As duas dívidas mais perigosas (cognitiva e de intenção) são, no momento certo, as **mais baratas** de pagar — escrever um ADR custa minutos, fazer um pairing custa uma tarde. O problema é que são as mais fáceis de *adiar*, porque não doem agora e não têm linter cobrando. A dívida técnica grita; as outras duas sussurram até a fatura chegar. Essa assimetria — barato pagar, fácil ignorar — é o que faz delas as dívidas dominantes da era da IA.
@@ -350,7 +350,7 @@ Repare que o sinal de dívida de intenção mais agudo da era da IA — "agentes
 
 Cada uma das três perguntas tem um teste de bolso — algo que você consegue rodar em minutos, sem ferramenta:
 
-- **Código mutável?** Pegue uma mudança pequena e plausível ("trocar a moeda padrão") e estime quantos arquivos ela tocaria. Se a resposta assusta, há dívida técnica (é a [[Dicionário de Fundamentos#Mudança amplificada (change amplification)|mudança amplificada]] de Ousterhout).
+- **Código mutável?** Pegue uma mudança pequena e plausível ("trocar a moeda padrão") e estime quantos arquivos ela tocaria. Se a resposta assusta, há dívida técnica (é a [[Dicionário de Ciência da Computação#Mudança amplificada (change amplification)|mudança amplificada]] de Ousterhout).
 - **Time entende?** Conte quantas pessoas conseguiriam, sozinhas, evoluir cada área crítica do sistema com segurança. Se alguma área tem *bus factor* 1 ("só fulano sabe"), há dívida cognitiva concentrada ali.
 - **Intenção registrada?** O *teste dos 5 minutos* (Developers Digest/Osmani): você consegue articular, sem olhar o código, pra que o sistema serve, pra que ele deliberadamente *não* serve, e as três restrições mais duras que ele respeita? Se trava na segunda ou terceira, a intenção não está externalizada — está só na sua cabeça.
 
@@ -392,4 +392,4 @@ O fio comum dos três anti-padrões: confundir **atividade** com **pagamento**. 
 - [[08 - Carga cognitiva e legibilidade]] — o par carga × débito que esta nota completa
 - [[04 - O programa como teoria]] — a teoria de Naur, lastro da dívida cognitiva
 - [[Débito cognitivo]] — a manifestação na era da IA, no Lado Sombrio da IA
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

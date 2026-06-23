@@ -407,4 +407,4 @@ Se sobrar tempo, o gancho de profundidade é o exemplo do compilador de Naur (gr
 - [[03 - O comprehension gate|Comprehension gate]] — a prática que defende a teoria mudança a mudança
 - [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/Débito cognitivo|Débito cognitivo]] — a erosão, em nível de projeto, dessa teoria sob a lente da IA (Storey, 2026)
 - [[02-Glosas/2026-cognitive-debt-hidden-risk-ai-driven-software-development|Cognitive debt — Margaret-Anne Storey (DX)]] — a glosa que conecta Naur ao contexto de IA
-- [[Dicionário de Fundamentos]] — verbete *Programação como construção de teoria (theory building)*
+- [[Dicionário de Ciência da Computação]] — verbete *Programação como construção de teoria (theory building)*

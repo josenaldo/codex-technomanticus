@@ -431,4 +431,4 @@ A trie aparece em duas formas: como **resposta de pattern** ("autocomplete / bus
 - [[06 - Árvores e árvores de busca]] — a estrutura-pai; BST, balanceamento, heap
 - [[05 - Tabelas hash]] — a alternativa para lookup exato (sem prefixo/ordem)
 - [[09 - Árvores B e índices]] — outra árvore multi-way, mas otimizada para disco
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

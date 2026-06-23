@@ -457,4 +457,4 @@ Na vida real, a falência às vezes é a saída racional: você zera as dívidas
 - [[12 - Dívida de intenção]] — a terceira dívida; vive no *rationale* e nos artefatos
 - [[02 - Complexidade essencial vs. acidental]] — dívida técnica ≈ complexidade acidental acumulada
 - [[14 - Manutenção e evolução]] — onde a refatoração paga a dívida ao longo da vida do sistema
-- [[Dicionário de Fundamentos]] — verbetes do domínio (Débito técnico, Quadrante de dívida técnica, Regra do Escoteiro)
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio (Débito técnico, Quadrante de dívida técnica, Regra do Escoteiro)

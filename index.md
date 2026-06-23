@@ -83,9 +83,9 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
 
 ---
 
-## Domínio dos Fundamentos
+## Ciência da Computação
 
-- [[Fundamentos]]
+- [[03-Dominios/Ciência/index|Ciência da Computação]]
 - [[Algoritmos]] · [[Estruturas de Dados]] · [[Banco de dados]] · [[Orientação a Objetos]] · [[Testes]] · [[Redes e Protocolos]]
 
 ## Domínio da Arquitetura

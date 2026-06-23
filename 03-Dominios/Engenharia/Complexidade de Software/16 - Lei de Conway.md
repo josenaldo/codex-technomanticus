@@ -440,4 +440,4 @@ Gerenciar complexidade, no fim, é gerenciar o todo sócio-técnico, não só os
 - [[01 - A complexidade como problema central]] — onde o galho abre; a complexidade que Conway mostra ser também organizacional; Lei de Brooks e carga cognitiva de Ousterhout
 - [[13 - Entropia de software e decaimento]] — por que a arquitetura "volta" ao formato do org chart se você refatora sem mexer na comunicação
 - [[03-Dominios/Engenharia/Arquitetura/Arquitetura de Software|Arquitetura de Software]] — o domínio onde fronteiras de módulo e de time se encontram
-- [[Dicionário de Fundamentos]] — verbetes do domínio (ver *Lei de Conway* e *Hipótese do espelhamento*)
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio (ver *Lei de Conway* e *Hipótese do espelhamento*)

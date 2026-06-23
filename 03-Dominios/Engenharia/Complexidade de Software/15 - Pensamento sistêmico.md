@@ -470,4 +470,4 @@ Se sobrar tempo, feche com a moral: o sistema não é só o código; é o códig
 - [[14 - Manutenção e evolução]] — manutenção como tentativa de injetar *loops de equilíbrio* no decaimento
 - [[16 - Lei de Conway]] — o acoplamento organização ↔ arquitetura, um resultado de pensamento sistêmico
 - [[01 - A complexidade como problema central]] — a complexidade que o galho combate é, em larga medida, emergente
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

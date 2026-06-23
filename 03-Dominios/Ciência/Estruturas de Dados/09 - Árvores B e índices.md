@@ -408,4 +408,4 @@ Sobre B-Tree vs LSM:
 - [[06 - Árvores e árvores de busca]] — BST e árvores balanceadas (Red-Black, AVL); a base binária que a B-Tree generaliza para o disco.
 - [[05 - Tabelas hash]] — hash index: O(1) em igualdade, sem range; a alternativa à B+Tree.
 - [[Banco de dados]] — internos de storage engine, EXPLAIN, otimização de queries.
-- [[Dicionário de Fundamentos]] — verbetes de fanout, índice clusterizado, LSM-Tree.
+- [[Dicionário de Ciência da Computação]] — verbetes de fanout, índice clusterizado, LSM-Tree.

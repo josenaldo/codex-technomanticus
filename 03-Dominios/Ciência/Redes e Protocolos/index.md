@@ -23,7 +23,7 @@ aliases:
 # Redes e Protocolos
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre como sistemas conversam — do **modelo de camadas** e **TCP/UDP/DNS/TLS**
+> Galho de Ciência da Computação sobre como sistemas conversam — do **modelo de camadas** e **TCP/UDP/DNS/TLS**
 > até **HTTP** (métodos, status, caching, CORS, HTTP/2-3), os **protocolos de aplicação**
 > (REST/GraphQL/gRPC, WebSocket/SSE) e a **engenharia de comunicação em escala** (latência, load
 > balancing, CDN, resiliência). Para um senior, a rede é onde nascem os gargalos invisíveis: saber
@@ -105,4 +105,4 @@ SORT file.name ASC
 - [[System Design]] — escala e composição: LB, CDN, resiliência na escala de sistema
 - [[Mensageria]] — comunicação assíncrona entre serviços
 - [[Spring Boot]] — OkHttp, Resilience4j, HikariCP no ecossistema Java
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

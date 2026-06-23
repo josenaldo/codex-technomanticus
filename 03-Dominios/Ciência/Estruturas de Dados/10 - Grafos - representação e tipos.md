@@ -442,4 +442,4 @@ Sobre o ecossistema:
 - [[11 - Grafos - travessia e algoritmos]] — BFS, DFS, Dijkstra, ordenação topológica e union-find: os algoritmos que correm sobre as representações desta nota.
 - [[05 - Tabelas hash]] — o mapa de adjacência é, por dentro, um `HashMap`; e o `Set` de vizinhos é o que dá consulta de aresta em O(1).
 - [[04 - Pilhas, filas e deques]] — as listas de vizinhos, e as filas/pilhas que a travessia usa.
-- [[Dicionário de Fundamentos]] — verbetes de grafo, DAG, lista de adjacência, grau, componente conexo.
+- [[Dicionário de Ciência da Computação]] — verbetes de grafo, DAG, lista de adjacência, grau, componente conexo.

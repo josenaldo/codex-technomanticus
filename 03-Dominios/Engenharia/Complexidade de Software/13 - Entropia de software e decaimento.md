@@ -364,4 +364,4 @@ A frase de efeito: *"a pergunta não é se o sistema vai decair, é quanta energ
 - [[15 - Pensamento sistêmico]] — janelas quebradas e leis de Lehman são, no fundo, *feedback loops* de reforço
 - [[01 - A complexidade como problema central]] — a Lei II de Lehman é essa tese elevada a lei empírica
 - [[06 - Abstrações que vazam]] — origem do padrão de callout de lastro/honestidade usado aqui
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

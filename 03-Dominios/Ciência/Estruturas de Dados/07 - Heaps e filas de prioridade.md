@@ -460,4 +460,4 @@ Frases-gancho:
 - [[04 - Pilhas, filas e deques]] — o heap é uma fila cuja ordem de saída é prioridade, não chegada
 - [[06 - Árvores e árvores de busca]] — por que heap ≠ BST (ordem vertical vs horizontal)
 - [[11 - Grafos - travessia e algoritmos]] — Dijkstra e Prim usam a priority queue como motor; o abismo do decrease-key
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

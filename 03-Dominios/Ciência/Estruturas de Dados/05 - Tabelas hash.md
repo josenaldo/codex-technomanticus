@@ -477,4 +477,4 @@ O detalhe sênior desse caso: o cache de boot funciona **porque os dados são qu
 - [[06 - Árvores e árvores de busca]] — `TreeMap`/BST: O(log n) ordenado, a escolha quando você precisa de ordem natural e range queries (e a árvore rubro-negra que o Java treeifica por bucket).
 - [[09 - Árvores B e índices]] — quando os dados vão para disco e o hash não basta: a B-Tree que indexa o banco.
 - [[12 - Estruturas especializadas]] — LRU cache, Bloom filter e outras estruturas que se constroem *sobre* a tabela hash.
-- [[Dicionário de Fundamentos]] — glossário de termos.
+- [[Dicionário de Ciência da Computação]] — glossário de termos.

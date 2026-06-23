@@ -18,7 +18,7 @@ aliases:
 # Complexidade de Software
 
 > [!abstract] TL;DR
-> Galho 12 de Fundamentos. O estudo daquilo que torna software difícil de construir e
+> Galho 12 de Engenharia. O estudo daquilo que torna software difícil de construir e
 > manter — complexidade essencial vs. acidental, os limites da abstração, carga cognitiva,
 > as três dívidas (técnica, cognitiva, intenção) e o decaimento dos sistemas no tempo. A
 > espinha: *o que ajuda a entender ou gerenciar a complexidade do software?*
@@ -73,4 +73,4 @@ SORT file.name ASC
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
 - [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]] — os débitos sob a lente da IA
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

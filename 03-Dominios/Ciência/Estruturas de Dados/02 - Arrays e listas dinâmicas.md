@@ -854,4 +854,4 @@ Falar de arrays com fluência em inglês é mostrar que você entende o nível d
 - [[01 - O que é uma estrutura de dados]] — a nota de abertura: contrato, três dimensões, Big-O mínimo.
 - [[03 - Listas encadeadas]] — o contraponto do array: nós espalhados por ponteiros, inserção O(1) com referência, mas cache-hostil.
 - [[05 - Tabelas hash]] — quando a busca é por chave e não por posição.
-- [[Dicionário de Fundamentos]] — verbetes de amortizado, localidade de cache, boxing, slice.
+- [[Dicionário de Ciência da Computação]] — verbetes de amortizado, localidade de cache, boxing, slice.

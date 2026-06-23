@@ -368,4 +368,4 @@ Como usá-la sem soar decorado:
 - [[02 - Complexidade essencial vs. acidental]] — o par que carga intrínseca e estranha espelham
 - [[11 - Dívida cognitiva]] — o conceito de time, ao longo do tempo, que esta nota não é
 - [[16 - Lei de Conway]] — por que o orçamento cognitivo de um time é decisão de arquitetura
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

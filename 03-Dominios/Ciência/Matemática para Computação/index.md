@@ -103,4 +103,4 @@ SORT file.name ASC
 - [[03-Dominios/Ciência/Algoritmos/index|Algoritmos]] — a base de logaritmos/somatórios/recorrências em uso
 - [[03-Dominios/Ciência/Estruturas de Dados/index|Estruturas de Dados]] — grafos e estruturas aleatorizadas pelo lado algorítmico
 - [[03-Dominios/Ciência/Teoria da Computação/index|Teoria da Computação]] — usa lógica, prova e diagonalização (que moram aqui)
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

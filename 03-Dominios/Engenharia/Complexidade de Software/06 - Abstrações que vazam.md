@@ -325,4 +325,4 @@ Vazar é o estado normal; não há abstração não-trivial sem vazamento. O obj
 - [[03 - Garbage Collection — o conceito]] — a abstração de memória da JVM por dentro
 - [[07 - JIT — C1, C2 e tiered compilation]] — por que a performance "transparente" varia
 - [[O programa como teoria]] — outro fundamento sobre o que o código esconde: o entendimento mora nas pessoas
-- [[Dicionário de Fundamentos#Abstração que vaza (leaky abstraction)|Verbete no Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação#Abstração que vaza (leaky abstraction)|Verbete no Dicionário de Ciência da Computação]]

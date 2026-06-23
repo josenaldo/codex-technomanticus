@@ -110,4 +110,4 @@ SORT file.name ASC
 - [[03-Dominios/Ciência/Organização de Computadores/index|Organização de Computadores]] — a ISA e o assembly que o back-end emite
 - [[03-Dominios/Ciência/Paradigmas/13 - Sistemas de tipos|Sistemas de tipos]] — os tipos como design; aqui é o algoritmo de checagem
 - [[03-Dominios/Engenharia/Segurança/17 - Confiança transitiva e Trusting Trust|Trusting Trust]] — o ataque de Thompson pelo ângulo de confiança
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

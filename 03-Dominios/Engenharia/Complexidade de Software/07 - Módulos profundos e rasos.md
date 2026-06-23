@@ -382,4 +382,4 @@ Se cair "como você decide quebrar uma classe grande?", a resposta sênior é o 
 - [[08 - Carga cognitiva e legibilidade]] — o custo cognitivo que interfaces rasas impõem ao leitor, e o papel dos comentários
 - [[01 - A complexidade como problema central]] — a complexidade incremental e a change amplification que a profundidade combate
 - [[Orientação a Objetos]] — encapsulamento, o mecanismo de linguagem por trás de módulos profundos
-- [[Dicionário de Fundamentos]] — verbetes do domínio (ver *Classitis* e *Módulo profundo*)
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio (ver *Classitis* e *Módulo profundo*)

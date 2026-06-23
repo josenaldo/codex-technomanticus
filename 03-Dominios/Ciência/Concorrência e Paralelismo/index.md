@@ -23,7 +23,7 @@ aliases:
 # Concorrência e Paralelismo
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre como o software faz **mais de uma coisa ao mesmo tempo** — e por que isso é
+> Galho de Ciência da Computação sobre como o software faz **mais de uma coisa ao mesmo tempo** — e por que isso é
 > tão difícil de acertar. Aqui ficam os **problemas universais** (race conditions, deadlock, atomicidade/
 > visibilidade/ordenação), as **primitivas de coordenação** (locks, semáforos, atômicos, STM) e, o coração
 > do galho, os **cinco modelos de concorrência** (memória compartilhada, CSP, atores, event loop, dados),
@@ -100,4 +100,4 @@ SORT file.name ASC
 - [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência (Java)]] — a mecânica concreta em Java
 - [[08 - Imutabilidade e estado]] — imutabilidade como antídoto ao estado compartilhado (galho Paradigmas)
 - [[Banco de Dados]] — isolamento, MVCC e locking no banco
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

@@ -459,4 +459,4 @@ Vocabulário essencial:
 - [[05 - Tabelas hash]] — a estrutura mais cobrada; hashing, colisões, o contrato hashCode/equals.
 - [[13 - Escolhendo a estrutura certa]] — o capstone: tabela comparativa completa, patterns de entrevista e armadilhas.
 - [[Algoritmos]] — a teoria de complexidade (Big-O, recorrências) e os algoritmos que operam sobre estas estruturas.
-- [[Dicionário de Fundamentos]] — verbetes dos termos deste galho.
+- [[Dicionário de Ciência da Computação]] — verbetes dos termos deste galho.

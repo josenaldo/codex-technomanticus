@@ -20,7 +20,7 @@ aliases:
 # Algoritmos
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre as sequências de passos que resolvem problemas computacionais — e,
+> Galho de Ciência da Computação sobre as sequências de passos que resolvem problemas computacionais — e,
 > sobretudo, como **raciocinar** sobre elas: análise de complexidade, recorrências, e as grandes
 > famílias de técnicas (ordenação, busca, dois ponteiros, divisão e conquista, programação dinâmica,
 > greedy, backtracking). Interview-critical. O que separa um senior não é decorar quicksort, é
@@ -94,4 +94,4 @@ SORT file.name ASC
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
 - [[03-Dominios/Ciência/Estruturas de Dados/index|Estruturas de Dados]] — as estruturas sobre as quais os algoritmos operam
 - [[Banco de dados]] — índices e a complexidade das queries
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

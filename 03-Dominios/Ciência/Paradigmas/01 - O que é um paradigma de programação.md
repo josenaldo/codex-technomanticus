@@ -177,7 +177,7 @@ Leitura do diagrama: o tronco se parte em imperativo e declarativo. Do imperativ
 > Listas de paradigmas variam de autor para autor. OO é geralmente classificado como imperativo, mas há quem o trate à parte. Programação reativa às vezes é vista como uma técnica dentro do funcional. Não decore a árvore como dogma — entenda os eixos que a organizam (estado mutável ou não? você descreve passos ou intenção? a unidade é objeto, função ou regra?).
 
 > [!note] Forward-links das notas-dona
-> Cada ramo tem sua nota: `[[03 - O paradigma orientado a objetos]]`, `[[05 - O paradigma funcional]]`, `[[11 - O paradigma lógico]]` e `[[12 - Programação reativa e dataflow]]`. A nota externa `[[Orientação a Objetos]]` aprofunda o ramo OO no domínio de Fundamentos.
+> Cada ramo tem sua nota: `[[03 - O paradigma orientado a objetos]]`, `[[05 - O paradigma funcional]]`, `[[11 - O paradigma lógico]]` e `[[12 - Programação reativa e dataflow]]`. A nota externa `[[Orientação a Objetos]]` aprofunda o ramo OO no domínio de Engenharia.
 
 ## Por que isso importa de verdade
 

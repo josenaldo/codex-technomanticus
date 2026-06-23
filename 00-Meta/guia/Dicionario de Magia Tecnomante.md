@@ -103,4 +103,4 @@ publish: true
 - [[Anatomia de Agents|Agents]]
 - [[Context Engineering]]
 - [[Arquitetura]]
-- [[Fundamentos]]
+- [[03-Dominios/Ciência/index|Ciência da Computação]]

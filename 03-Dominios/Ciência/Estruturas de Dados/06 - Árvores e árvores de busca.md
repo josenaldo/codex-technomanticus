@@ -447,4 +447,4 @@ E o golpe de mestre, o que separa sênior de pleno:
 - [[09 - Árvores B e índices]] — quando a árvore mora em disco: B-tree/B+tree e índices de banco
 - [[04 - Pilhas, filas e deques]] — a pilha (DFS) e a fila (BFS) que dirigem as travessias
 - [[Banco de dados]] — índices como árvores balanceadas em disco
-- [[Dicionário de Fundamentos]] — verbetes de BST, rotação, travessia
+- [[Dicionário de Ciência da Computação]] — verbetes de BST, rotação, travessia

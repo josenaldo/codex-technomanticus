@@ -368,7 +368,7 @@ Ao longo do domínio Fundamentos, construímos uma imagem de como os computadore
 - A **Segurança Conceitual** nos deu o adversário: criptografia, autenticação, ataques, defesas, confiança.
 - E os **Compiladores e Linguagens** fecharam o ciclo: como programas escritos por humanos se tornam instruções para máquinas — e quem garante que essa tradução é honesta.
 
-Bootstrapping e o ataque de Thompson são o ponto onde todos esses fios se cruzam. É o compilador como sistema de confiança, como alvo de adversário, como artefato histórico com cadeia de custódia. É onde Fundamentos encontra Segurança, onde teoria encontra consequência prática.
+Bootstrapping e o ataque de Thompson são o ponto onde todos esses fios se cruzam. É o compilador como sistema de confiança, como alvo de adversário, como artefato histórico com cadeia de custódia. É onde a Ciência da Computação encontra a Segurança, onde teoria encontra consequência prática.
 
 > [!tip] A torre inteira
 > Hardware → firmware → bootloader → kernel → libc → compilador → linguagem → seu programa.

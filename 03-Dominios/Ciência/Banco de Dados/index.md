@@ -23,7 +23,7 @@ aliases:
 # Banco de Dados
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre como software guarda, consulta e protege dados. Coração do
+> Galho de Ciência da Computação sobre como software guarda, consulta e protege dados. Coração do
 > relacional — **modelo, SQL, transações (ACID), índices, performance e concorrência** — com
 > um tratamento honesto de **distribuídos** e **NoSQL**. Para um senior, o banco raramente é
 > só persistência: é onde vivem as garantias de consistência, os maiores ganhos de performance
@@ -99,4 +99,4 @@ SORT file.name ASC
 - [[System Design]] — replicação/sharding/CAP na escala de arquitetura
 - [[Arquitetura de Software]] — Saga, Outbox e consistência distribuída em sistemas
 - [[Spring Boot]] — JPA, Hibernate, `@Transactional`, `@Version`
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

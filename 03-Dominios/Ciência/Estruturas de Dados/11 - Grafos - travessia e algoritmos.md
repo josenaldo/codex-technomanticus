@@ -510,4 +510,4 @@ Sobre union-find e MST:
 - [[10 - Grafos - representação e tipos]] — o substrato: o que é um grafo, lista vs matriz de adjacência, e os tipos (DAG, ponderado, conexo) que ditam qual algoritmo desta nota serve.
 - [[07 - Heaps e filas de prioridade]] — a fila de prioridade que faz Dijkstra e Prim funcionarem; o detalhe do heap binário vs Fibonacci e o decrease-key.
 - [[12 - Estruturas especializadas]] — o union-find como *estrutura* (floresta, path compression, union by rank) é detalhado lá; aqui ele é ferramenta.
-- [[Dicionário de Fundamentos]] — verbetes de BFS, DFS, Dijkstra, ordenação topológica, union-find, MST.
+- [[Dicionário de Ciência da Computação]] — verbetes de BFS, DFS, Dijkstra, ordenação topológica, union-find, MST.

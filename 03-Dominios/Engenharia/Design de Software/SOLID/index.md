@@ -21,7 +21,7 @@ aliases:
 # SOLID
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre os cinco princípios de design orientado a objetos —
+> Galho de Engenharia sobre os cinco princípios de design orientado a objetos —
 > **S**RP, **O**CP, **L**SP, **I**SP, **D**IP — que, aplicados juntos, levam a código flexível,
 > testável e evolutivo. Não são regras religiosas: são **heurísticas cujas exceções você deve
 > conhecer**. Interview-critical.
@@ -83,4 +83,4 @@ SORT file.name ASC
 - [[08 - Acoplamento e coesão]] — a meta que os cinco princípios perseguem
 - [[Arquitetura de Software]] — SOLID no nível de módulo e serviço
 - [[Design Patterns]] — padrões que materializam OCP e DIP
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

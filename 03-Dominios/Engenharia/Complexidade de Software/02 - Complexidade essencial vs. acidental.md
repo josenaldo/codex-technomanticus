@@ -415,4 +415,4 @@ Mesma complexidade essencial total. Distribuição radicalmente diferente da car
 - [[03 - Simplicidade não é facilidade]] — a outra face: combater o acidental é buscar simplicidade, e simples não é o mesmo que fácil
 - [[06 - Abstrações que vazam]] — quando os mecanismos de gestão de complexidade falham
 - [[07 - Módulos profundos e rasos]] — para onde relocar o essencial: muita funcionalidade atrás de uma interface estreita
-- [[Dicionário de Fundamentos]] — verbetes do domínio
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio

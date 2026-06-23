@@ -1,19 +1,21 @@
 ---
-title: "Dicionário de Fundamentos"
+title: "Dicionário de Ciência da Computação"
 created: 2026-06-07
-updated: 2026-06-16
+updated: 2026-06-23
 type: glossary
 status: seedling
 aliases:
+  - Glossário de Ciência da Computação
+  - Dicionário de Fundamentos
   - Glossário de Fundamentos
 tags:
   - glossary
-  - fundamentos
+  - ciencia-da-computacao
 lang: pt
 publish: true
 ---
 
-# Dicionário de Fundamentos
+# Dicionário de Ciência da Computação
 
 > Termos de ciência da computação e engenharia de software que sobrevivem à troca de linguagem, framework ou paradigma — o vocabulário comum das outras estantes.
 
@@ -21,8 +23,8 @@ publish: true
 Como usar este glossário:
 
 - Cada verbete é um `###` dentro de uma `##` temática.
-- Linkar de outra nota: [[Dicionário de Fundamentos#Nome do termo]]
-- Customizar texto exibido: [[Dicionário de Fundamentos#Nome do termo|texto]]
+- Linkar de outra nota: [[Dicionário de Ciência da Computação#Nome do termo]]
+- Customizar texto exibido: [[Dicionário de Ciência da Computação#Nome do termo|texto]]
 - A skill /verbete adiciona termos automaticamente em ordem alfabética.
 - Ajuste `lang:` no frontmatter (`pt` ou `en`) — define o idioma das definições.
 -->

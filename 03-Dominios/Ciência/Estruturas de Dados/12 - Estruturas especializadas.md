@@ -460,4 +460,4 @@ Essas estruturas raramente caem como problema de implementação num *coding cha
 - [[03 - Listas encadeadas]] — a lista duplamente encadeada que faz o LRU ser O(1).
 - [[11 - Grafos - travessia e algoritmos]] — onde o union-find é *usado* (Kruskal, ciclo, componentes).
 - [[13 - Escolhendo a estrutura certa]] — o framework de decisão que escolhe entre tudo isto.
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]

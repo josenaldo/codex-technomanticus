@@ -516,4 +516,4 @@ A lição condensa o tema inteiro: a escolha entre `LinkedList` e `ArrayDeque` p
 - [[03 - Listas encadeadas]] — o nó encadeado que está por trás de filas e deques.
 - [[07 - Heaps e filas de prioridade]] — a fila onde sai primeiro o de maior prioridade, não o que entrou primeiro.
 - [[02 - Arrays e listas dinâmicas]] — o array contíguo sob `ArrayDeque` e o ring buffer.
-- [[Dicionário de Fundamentos]] — glossário de termos.
+- [[Dicionário de Ciência da Computação]] — glossário de termos.

@@ -468,4 +468,4 @@ A dívida que ninguém rastreava virou a que mais custa não pagar.
 - [[04 - O programa como teoria]] — Naur: o programa é uma teoria na cabeça; a dívida de intenção é a fatia externalizável dessa teoria que ficou por escrever
 - [[10 - Dívida técnica]] — a dívida-irmã que vive no código; um agente paga essa fácil, mas não a de intenção
 - [[13 - Entropia de software e decaimento]] — o que acontece quando o artefato de intenção apodrece e diverge do sistema real
-- [[Dicionário de Fundamentos]] — verbetes do domínio (ver *ADR* e *Dívida de intenção*)
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio (ver *ADR* e *Dívida de intenção*)

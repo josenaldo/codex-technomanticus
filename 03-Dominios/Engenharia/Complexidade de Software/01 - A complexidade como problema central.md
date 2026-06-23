@@ -438,4 +438,4 @@ Saber articular "complexidade como problema central" sinaliza maturidade — por
 - [[08 - Carga cognitiva e legibilidade]] — o sintoma "cognitive load" deste mapa, medido e aprofundado
 - [[09 - As três dívidas do software]] — para onde a complexidade não-gerenciada vai parar: dívida técnica, cognitiva e de intenção
 - [[13 - Entropia de software e decaimento]] — o custo de mudança crescente, projetado no tempo de vida do sistema
-- [[Dicionário de Fundamentos]] — verbetes do domínio (incl. *Programação tática vs. estratégica* e *Mudança amplificada*)
+- [[Dicionário de Ciência da Computação]] — verbetes do domínio (incl. *Programação tática vs. estratégica* e *Mudança amplificada*)

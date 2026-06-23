@@ -22,7 +22,7 @@ aliases:
 # Paradigmas de Programação
 
 > [!abstract] TL;DR
-> Galho de Fundamentos sobre os **modelos mentais** de programar — imperativo, orientado a objetos,
+> Galho de Ciência da Computação sobre os **modelos mentais** de programar — imperativo, orientado a objetos,
 > declarativo, funcional, lógico, reativo. Um paradigma não é uma linguagem: é um jeito de *pensar* o
 > problema, e as linguagens modernas misturam vários. O coração do galho é o **paradigma funcional**
 > (pureza, imutabilidade, composição, tipos algébricos) — o estilo que mais saiu do nicho para o
@@ -98,4 +98,4 @@ SORT file.name ASC
 - [[Orientação a Objetos]] — OO em profundidade (os pilares, composição, modelagem)
 - [[Programação Reativa]] — o paradigma reativo com Reactor/WebFlux (estante Java)
 - [[Complexidade de Software]] — simplicidade, estado e raciocínio sobre código
-- [[Dicionário de Fundamentos]]
+- [[Dicionário de Ciência da Computação]]
