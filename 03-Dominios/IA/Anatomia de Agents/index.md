@@ -7,7 +7,7 @@ tags:
   - ia
   - moc
 created: 2026-05-02
-updated: 2026-05-28
+updated: 2026-06-19
 aliases:
   - Agents
   - AI Agents
@@ -57,6 +57,12 @@ Reconhecer o pattern certo, medir o que importa, escolher a arquitetura certa.
 - [[08 - Patterns comuns de agents]] — 6 patterns canônicos, anti-patterns por confusão
 - [[09 - Evaluation de agents]] — métricas, golden set, trace review, regression tests
 - [[10 - Workflow vs Agent — quando usar cada um]] — decisão arquitetural, árvore de decisão, padrão híbrido
+
+### Bloco 5 — A camada que costura tudo (1 nota)
+
+O nome de 2026 para o runtime que hospeda todos os componentes acima.
+
+- [[11 - Harness engineering — a terceira camada]] — pesos→contexto→harness; as 4 taxonomias concorrentes; Memory/Skills/Protocols + mediadores; ganhos "harness-sensitive" e o HarnessCard
 
 ## Rotas alternativas
 

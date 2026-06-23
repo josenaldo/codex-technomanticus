@@ -1,7 +1,7 @@
 ---
 title: Vibe coding vs engenharia disciplinada
 created: 2026-05-02
-updated: 2026-05-25
+updated: 2026-06-19
 type: concept
 status: growing
 publish: true
@@ -124,6 +124,27 @@ Na prática, o ideal não é nem 100% vibe nem 100% spec-driven. Depende da fase
 
 O ciclo virtuoso acima descreve o modelo de 2025: **um** agente em plan → build → review, com o humano revisando cada diff. O que Karpathy chama de *agentic engineering* (2026) leva a disciplina adiante e a torna multi-agente — o humano vira orquestrador de vários agentes especializados rodando em paralelo (planejador, implementador, validador), e seu trabalho migra de "revisar cada diff" para *projetar o sistema, especificar constraints e julgar saídas*. A spec deixa de ser documento e passa a ser o substrato que coordena os agentes. A disciplina não desaparece com agentes melhores; ela sobe de nível.
 
+## De prática a disciplina (2026)
+
+Até aqui esta nota tratou a "engenharia disciplinada" como uma postura — um jeito mais cuidadoso de trabalhar com IA. Em 2026 ela ganhou algo que postura nenhuma tinha: um nome próprio, um palco acadêmico e um caso de escala industrial. O lado disciplinado do contraste deixou de ser conselho de blog e virou *disciplina* no sentido técnico da palavra.
+
+A prova mais formal veio da academia. O **ICSE 2026** — a principal conferência de engenharia de software do mundo — hospedou o **AGENT 2026** (International Workshop on Agentic Engineering), no Rio de Janeiro, em 14 de abril de 2026. O workshop define a área como *"an emerging discipline focused on the design, development, and operation of systems that exhibit goal-directed autonomy"*. Repare no vocabulário: design, desenvolvimento, operação. É o mesmo arco de qualquer engenharia madura, agora aplicado a agentes.
+
+> [!info] O escopo que o AGENT 2026 reivindica
+> Não é "como escrever prompts melhores". O workshop lista as mesmas frentes de uma engenharia de software clássica, traduzidas para sistemas agênticos: engenharia de requisitos, design arquitetural, V&V/testing/evaluation, **AgentOps** (o DevOps dos sistemas agênticos), responsible AI/safety, e interação/supervisão humano-agente. Quando uma área ganha sua própria sub-divisão de "Ops", ela passou de truque a infraestrutura.
+
+E o que isso parece na prática, fora do papel? O time do Knowledge Graph (projeto **Orbit**) da GitLab oferece um retrato concreto: relata ter construído um codebase em **Rust de ~135 mil linhas, com cerca de 95% do código gerado por IA**, em ~2 semanas com 4 pessoas, produzindo 259 merge requests. O ponto que interessa a esta nota não é o tamanho — é *como* eles enquadram o método. Para a GitLab, agentic engineering é o oposto de vibe coding: *"not ad hoc prompting, but rather deliberate guardrails, agent context files, custom skills, and CI enforcement"*.
+
+> [!example] Os guardrails do caso GitLab Orbit
+> O relato lista exatamente as práticas que a tabela de "engenharia disciplinada" desta nota prega, agora industrializadas: arquivos de contexto `AGENTS.md`/`CLAUDE.md` com **sincronização forçada por CI** (o agente não pode divergir do padrão sem o pipeline reclamar), *custom skills* nomeadas, 15+ jobs de CI, conventional commits, e varredura de segurança com `cargo-audit` e Semgrep. É a prova de que [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]] — o trilho que cerca o agente — é o que separa 135 mil linhas mantíveis de 135 mil linhas de tech debt.
+
+Mas aqui a honestidade pesa mais que o entusiasmo. Os números são impressionantes justamente porque vêm de quem tem interesse em que sejam impressionantes.
+
+> [!caution] As métricas são reivindicação, não fato auditado
+> Os números do caso Orbit (135 mil linhas, "~95% gerado por IA", 2 semanas) são **auto-reportados** pela própria GitLab, *first-party*, sem auditoria externa. Pior: "~95% gerado por IA" é uma métrica **auto-definida** — não há padrão acordado de como medir "quanto do código é da IA" (conta linhas aceitas? caracteres? commits? código depois reescrito por humano?). Trate isso como *"a GitLab reivindica X"*, não como *"está provado que X"*. O caso é valioso como demonstração de método (os guardrails são reais e descritos), não como benchmark de produtividade.
+
+Junte as duas pontas: um venue acadêmico que batiza e delimita a disciplina, e um caso industrial que mostra o método rodando em escala. O contraste vibe vs. disciplina não é mais opinião de duas tribos — o lado disciplinado agora tem endereço acadêmico, taxonomia e um *case* de produção (com asterisco). **Em 2026, "ser disciplinado com IA" deixou de ser virtude pessoal e virou nome de disciplina.**
+
 ## Armadilhas
 
 - **"Vibe coding é ruim"** — não é. É excelente para prototipagem, exploração, e aprendizado. O problema é usá-lo em produção.
@@ -154,3 +175,5 @@ O ciclo virtuoso acima descreve o modelo de 2025: **um** agente em plan → buil
 - **Osmani, Addy** — [*The 70% problem: Hard truths about AI-assisted coding*](https://addyo.substack.com/p/the-70-problem). O custo da última milha (os 30% finais) e a divisão por senioridade.
 - **METR** — [*Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity*](https://arxiv.org/abs/2507.09089) (2025). RCT: 19% mais lento vs percepção de +20%. Ver a [revisão metodológica de fev/2026](https://metr.org/blog/2026-02-24-uplift-update/).
 - **IEEE-ISTAS 2025** — [*Security Degradation in Iterative AI Code Generation*](https://arxiv.org/html/2506.11022v2). Iterar sobre o próprio código degrada a segurança a cada rodada.
+- **AGENT 2026 (ICSE 2026)** — [*International Workshop on Agentic Engineering*](https://conf.researchr.org/home/icse-2026/agent-2026) (2026). Workshop no ICSE define agentic engineering como disciplina emergente (design/dev/operação de autonomia orientada a objetivos); escopo inclui requisitos, arquitetura, V&V, AgentOps, safety e supervisão humana. Rio de Janeiro, 14-abr-2026.
+- **GitLab — Orbit / Knowledge Graph** — [*Issue #163*](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/issues/163) (2026). Relato de caso: ~135K linhas de Rust, ~95% gerado por IA, 259 MRs, com guardrails de CI, AGENTS.md/CLAUDE.md sincronizados e custom skills. Métricas auto-reportadas, sem auditoria externa.

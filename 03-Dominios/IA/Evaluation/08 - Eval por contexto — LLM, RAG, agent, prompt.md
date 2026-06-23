@@ -1,9 +1,9 @@
 ---
 title: "08 - Eval por contexto — LLM, RAG, agent, prompt"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-19
 type: concept
-status: seedling
+status: growing
 progress: in_progress
 tags:
   - evaluation
@@ -162,6 +162,26 @@ Agent:     Input → 12 steps com decisões → output
 
 **Aprofundamento**: [[Anatomia de Agents/09 - Evaluation de agents]] cobre completion rate, error type catalog, trace review, regression patterns específicos pra agentic systems.
 
+### 3.1 Fixe o harness, não só o modelo
+
+Aqui mora uma armadilha de eval de agent que a tabela acima não captura. Quando você roda um agente, o número que sai não vem só do modelo — vem do modelo **mais** o [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]] que o envolve: o loop de controle, o scaffolding de tools, o retry, o orquestrador. Troque o harness e o mesmo modelo entrega um número diferente.
+
+Pergunta natural do leitor: então quando um leaderboard diz "modelo X subiu 8 pontos em SWE-bench", quanto disso é o modelo? A resposta honesta é: pode ser que parte considerável seja do harness. Um preprint de 2026, *Harness Engineering for Language Agents*, decompõe a camada em CAR (Control / Agency / Runtime) e argumenta que *"many reported agent gains may be partly harness-sensitive rather than purely model-driven"* — muito do ganho reportado pode ser efeito do harness, não do modelo.
+
+A consequência pra eval é direta. Um leaderboard que troca modelo **e** harness ao mesmo tempo está medindo uma variável confundida — você não sabe a qual das duas mudanças atribuir a diferença. A regra prática é a mesma de qualquer experimento controlado: **fixe o harness antes de atribuir uma diferença ao modelo**. Compare modelos sob o mesmo scaffolding, ou compare scaffoldings sob o mesmo modelo, nunca os dois de uma vez.
+
+> [!example] O confounding na prática
+> Setup A: modelo M1 + harness com retry agressivo e 12 tools → 82% completion.
+> Setup B: modelo M2 + harness enxuto, 4 tools, sem retry → 74% completion.
+> Conclusão ingênua: "M1 > M2". Conclusão correta: **você não sabe** — pode ser que M2 com o harness do A vencesse. Duas variáveis mudaram; o resultado é ilegível.
+
+Os autores propõem o **HarnessCard**: um artefato leve de reporte, análogo aos *model cards* e *datasheets*, descrevendo a camada de harness usada. A posição deles: *"progress in language agents should report not only the model, but also the harness layer that turns capability into governed action"* — reportar não só o modelo, mas a camada que transforma capacidade em ação governada. Pra quem faz eval, isso vira um item de checklist: ao publicar (ou ler) um resultado de agente, exija a descrição do harness junto.
+
+> [!caution] Preprint, não consenso
+> *Harness Engineering for Language Agents* é um **preprint não revisado por pares** (preprints.org, abr/2026). Trate CAR e o HarnessCard como **proposta argumentada / tomada de posição**, não como prática consolidada da comunidade. A intuição de "harness confunde a medição" é sólida e útil hoje; a nomenclatura específica e o formato do card ainda não passaram por revisão.
+
+**Resumo em uma linha**: número de agente é modelo × harness — para que a comparação signifique algo, prenda uma das duas variáveis.
+
 ## 4. Eval de LLM base
 
 Cenário: você está avaliando o **modelo em si**, não um produto sobre ele. Provider novo, fine-tuned model, comparação cross-modelo.
@@ -284,3 +304,4 @@ Cada estágio com seu eval. Failure em qualquer um sinaliza onde está o problem
 - **Princeton + Stanford** — *SWE-bench* ([arxiv:2310.06770](https://arxiv.org/abs/2310.06770), 2023)
 - **Chip Huyen** — *AI Engineering* (2025), cap. eval por contexto
 - **Anthropic** — *Eval cookbook — agent and RAG patterns* (2026)
+- **Harness Engineering for Language Agents** — [preprints.org 10.20944/preprints202603.1756](https://doi.org/10.20944/preprints202603.1756) (2026). Decompõe a camada de harness em CAR (Control/Agency/Runtime), argumenta que ganhos de agente são "harness-sensitive" e propõe o HarnessCard como artefato de reporte. *Preprint, não peer-reviewed.*

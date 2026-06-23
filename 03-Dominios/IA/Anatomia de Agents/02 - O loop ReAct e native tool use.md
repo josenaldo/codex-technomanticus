@@ -1,10 +1,10 @@
 ---
 title: "O loop ReAct e native tool use"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-19
 type: concept
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - anatomia-agents
@@ -181,6 +181,25 @@ Agent chama mesma tool com mesmos args repetidamente. **Fix:** detectar duplica�
 
 ReAct continua sendo o **default certo** na maioria dos casos.
 
+## Do pattern à camada: loop engineering (2026)
+
+Tudo acima descreve o loop como **um padrão que você usa**: escolhe ReAct, monta o `while`, define `max_steps`, segue a vida. Em 2026 o vocabulário mudou. O termo que circula é **loop engineering** — o reconhecimento de que esse `while` deixou de ser detalhe de implementação e virou um **artefato que você projeta** deliberadamente.
+
+Qual a diferença na prática? "Usar ReAct" responde *o que o agent faz a cada passo*. Loop engineering responde *quem governa o passo seguinte*: as condições de parada (não só `end_turn`/`max_steps`, mas critérios de "bom o suficiente"), a detecção de loop infinito, a política de retry escalonado, e — crucialmente — **onde entra o humano**. O ponto de aprovação (HITL) não é uma feature solta; é uma decisão de design do loop, igual ao `max_steps`.
+
+> [!info] Onde os pitfalls viram disciplina
+> Repare que os quatro pitfalls da seção anterior (max_steps ausente, tool result silencioso, output gigante, loop sem progresso) são exatamente o que loop engineering nomeia como objeto de projeto. O que antes era "lista de coisas pra não esquecer" agora tem nome: é a engenharia do control loop.
+
+Esse loop é uma das seis dimensões do design de [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]]. Um preprint recente — *Harness Engineering for Language Agents* — propõe a decomposição **CAR (Control / Agency / Runtime)**, e é o eixo **Runtime** que captura precisamente a parte do loop que **um diagrama ReAct ingênuo não mostra**: como o estado é carregado adiante de passo a passo e como as falhas são tratadas ao longo do tempo. O diagrama Mermaid lá em cima desenha o fluxo feliz; o Runtime é o que acontece quando a tool morre no passo 7 e você precisa decidir se reidrata o contexto, faz backoff ou aborta.
+
+> [!caution] Maturidade das fontes
+> Tanto o CAR quanto os NLAHs abaixo vêm de **preprints não revisados por pares** (início de 2026). São vocabulário emergente, úteis pra pensar — não cânone estabelecido. Trate como lentes, não como lei.
+
+Há ainda uma forma de **externalizar** esse design: os **NLAHs (Natural-Language Agent Harnesses)**. A ideia é escrever o comportamento do harness — fronteiras de papel, semântica de estado, tratamento de falha — em **linguagem natural editável em texto puro**, em vez de cravá-lo em código. A promessa é baixar a barreira de adoção: você ajusta a política do loop editando um prompt, não refatorando um `for`. É uma abordagem emergente, ainda em formação — sem evidência de que iguale código nativo em performance.
+
+> [!summary] Em uma frase
+> ReAct te dá o passo; loop engineering te dá a camada que governa a sequência de passos — e o Runtime do CAR é o nome pra parte dela que nenhum diagrama de loop desenha.
+
 ## Veja também
 
 - [[01 - O que é um agent]]
@@ -195,3 +214,5 @@ ReAct continua sendo o **default certo** na maioria dos casos.
 - **Schick et al.** — *Toolformer* (arxiv:2302.04761)
 - **Anthropic** — *Tool use documentation* (2026)
 - **OpenAI** — *Function calling guide* (2026)
+- **Harness Engineering for Language Agents** — [preprints.org 10.20944/preprints202603.1756](https://doi.org/10.20944/preprints202603.1756) (2026). Decompõe o design de harness em CAR (Control/Agency/Runtime); o Runtime cobre carregamento de estado e tratamento de falhas ao longo do loop. *Preprint.*
+- **Pan et al.** — *Natural-Language Agent Harnesses* — [arXiv:2603.25723](https://arxiv.org/abs/2603.25723) (2026). Comportamento do harness escrito em linguagem natural editável em texto puro, em vez de código hard-coded. *Preprint.*

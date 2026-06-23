@@ -1,10 +1,10 @@
 ---
 title: "Compressão e pruning de informação"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-06-19
 type: concept
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - context-engineering
@@ -127,6 +127,26 @@ def compact_history(history, budget=50_000):
     return static + [middle_summary] + recent
 ```
 
+## Onde a compaction não basta (long-running)
+
+Tudo acima resolve *uma* sessão que satura. Mas e um agente que cruza **várias** janelas de contexto — um coding agent rodando em loop por horas? Aqui a compaction sozinha trinca. A própria Anthropic é direta sobre isso:
+
+> [!quote] Anthropic — Effective harnesses for long-running agents (nov/2025)
+> *"compaction isn't sufficient. Out of the box, even a frontier coding model like Opus 4.5 running on the Claude Agent SDK in a loop across multiple context windows will fall short."*
+
+O problema é de **continuidade**, não de tamanho. Comprimir converte 100K em 10K, mas o resumo ainda vive *dentro* da conversa — e a cada janela nova ele é re-resumido, perdendo nuance de resumo em resumo. O que falta é um estado que sobreviva *fora* da janela, intacto, que a próxima instância possa reler do zero. A receita prescrita é uma tríade de artefatos **estruturados e duráveis** que fazem a ponte entre janelas:
+
+1. **Lista de features/requisitos em JSON** — o backlog do que precisa existir, como dado, não como prosa.
+2. **Arquivo de progresso** (`claude-progress.txt`) — o "onde eu parei", para reconstruir o estado de trabalho ao iniciar com uma janela fresca.
+3. **Histórico git inicial** — para rastrear e poder reverter mudanças (o undo durável do agente).
+
+Por que JSON e não Markdown para os requisitos? Porque o modelo **tem menos probabilidade de modificá-lo indevidamente** — a rigidez do schema vira uma trava contra a tentação de "melhorar" o checklist no meio do caminho. Markdown convida edição; JSON resiste a ela. É a mesma intuição da *compactação estrutural* lá em cima, agora aplicada não ao histórico, mas ao **contrato** entre janelas.
+
+> [!info] A analogia do turno de plantão
+> Pense num hospital trocando de turno. A compaction é o médico que sai resumindo de cabeça o que aconteceu — útil, mas some quando ele vai embora. A tríade durável é o **prontuário**: a lista de problemas (JSON), a evolução do dia (`claude-progress.txt`) e o registro do que foi feito e pode ser desfeito (git). O próximo plantonista não depende da memória de ninguém — ele lê o prontuário. Anthropic chega a observar uma *"context anxiety"* no Sonnet 4.5: o agente que, sem âncora durável, gasta atenção se preocupando com o que pode ter esquecido.
+
+Em síntese: *"finding a way for agents to quickly understand the state of work when starting with a fresh context window... accomplished with the `claude-progress.txt` file alongside the git history."* Onde a compaction acaba — na borda da janela — começa o [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]]: não é mais o que cabe no contexto, é o andaime que persiste *entre* contextos. A instanciação prática disso vive em [[03-Dominios/IA/Claude Code/Mental Model/09 - O harness como terceira camada|O harness como terceira camada]].
+
 ## Métricas para acompanhar
 
 | Métrica | Alvo |
@@ -155,6 +175,7 @@ def compact_history(history, budget=50_000):
 ## Referências
 
 - **Anthropic** — *Effective context engineering for AI agents* (2025).
+- **Anthropic** — [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) (nov/2025). Nota curta.
 - **Claude Cookbook** — *Context engineering: memory, compaction, and tool clearing* (2026).
 - **Bojie Li** — *Claude's Context Engineering Secrets* (dez 2025).
 - **Sebastian Raschka** — *Components of A Coding Agent* (2025).

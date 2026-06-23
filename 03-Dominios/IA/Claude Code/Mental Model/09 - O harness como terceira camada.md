@@ -4,8 +4,8 @@ type: concept
 progress: backlog
 publish: true
 created: 2026-05-25
-updated: 2026-05-25
-status: seedling
+updated: 2026-06-19
+status: growing
 tags:
   - claude-code
   - mental-model
@@ -29,6 +29,8 @@ A tese central, em uma frase do próprio post:
 
 Isso muda a pergunta de "qual modelo usar?" pra "como configurar a sessão pra esse modelo render?". Não substitui a primeira pergunta — soma a ela.
 
+[[962d850e52b48c08de3e51ccb37098ef_MD5.jpg|Open: Pasted image 20260619100614.png]]
+![[962d850e52b48c08de3e51ccb37098ef_MD5.jpg]]
 ## Os 7 componentes do harness
 
 Cinco extension points "core" + dois capacitadores. Cada um já é coberto em profundidade num galho desta trilha:
@@ -44,6 +46,23 @@ Cinco extension points "core" + dois capacitadores. Cada um já é coberto em pr
 | **Subagents** | Instâncias isoladas pra separar exploração de edição | [[03-Dominios/IA/Claude Code/Workflows/07 - Sub-agents e dispatch\|Workflows/07]] |
 
 A ordem importa: o post recomenda construir top-down nessa sequência. Cada camada se apoia na anterior — pular CLAUDE.md pra começar com MCP server custom é tentar otimizar antes do básico funcionar.
+
+## Dois cortes do mesmo harness
+
+A lista de 7 componentes acima é um corte **autoral**: "que artefatos eu escrevo pra configurar o Claude Code?". Em 2026 a academia formalizou um corte **funcional** do mesmo objeto — *"que funções o harness precisa prover?"*. Vale guardar os dois, porque eles se iluminam.
+
+O survey *Externalization in LLM Agents* (arXiv:2604.08224, abr/2026) decompõe a cognição externalizada em três dimensões — **Memory** (estado), **Skills** (procedimento) e **Protocols** (contratos de interação) — e define o harness não como uma quarta dimensão, mas como **o runtime que hospeda as três** e provê os mediadores (sandboxing, observabilidade, compressão, avaliação, approval loops, orquestração de sub-agentes). É a mesma figura, vista de cima: onde a Anthropic lista *o que você edita*, o survey nomeia *o que aquilo serve*.
+
+| Componente autorável (Anthropic) | Função que ele encarna (survey) |
+|---|---|
+| CLAUDE.md, MCP servers | Memory + Protocols (contexto e contratos com dados/tools) |
+| Skills, plugins | Skills (procedimento especializado) |
+| Hooks | Mediadores (approval loops, guardrails) |
+| Subagents | Orquestração de sub-agentes (mediador) |
+| LSP | Protocols (contrato agente↔código) |
+
+> [!info] E há mais de dois cortes
+> Existem pelo menos quatro taxonomias concorrentes do harness em 2026 (survey de 6 dimensões; Memory/Skills/Protocols; os 11 aspectos dos NLAHs; o CAR — Control/Agency/Runtime), e **nenhuma venceu**. O tratamento tool-agnóstico desse debate — e por que conviver com as quatro lentes é mais útil que escolher uma — está em [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|Harness engineering — a terceira camada]]. Esta nota é a **instanciação concreta** daquele conceito num harness real.
 
 ## Os três padrões organizacionais
 
@@ -98,6 +117,17 @@ A lição: dos 7 componentes, **5 têm ROI alto mesmo em escala individual** (CL
 
 O próprio gatilho da reavaliação do harness do MedEspecialista ilustra o padrão da Anthropic em escala individual: post novo (mai/2026) introduz componente ainda não adotado → revisão fora do ciclo regular de 3-6 meses (sinal "vale checar pós-release/publicação relevante") → avaliação registrada com critério de reversão explícito (2 semanas de uso real; se find-references / go-to-definition não substituir traces multi-grep, desinstala sem culpa). É **review + DRI** funcionando — só que o "agent manager" e o "engenheiro" são a mesma pessoa.
 
+## A versão acadêmica da tese: ganhos harness-sensitive
+
+A frase da Anthropic que abre esta nota — *"the harness determines performance more than the model alone"* — ganhou em 2026 uma formulação acadêmica afiada, no preprint *Harness Engineering for Language Agents* (a proposta **CAR** — Control/Agency/Runtime). O argumento: muito do ganho de performance que se credita a um modelo novo é, na verdade, **atribuível à camada de harness** — *"many reported agent gains may be partly harness-sensitive rather than purely model-driven"*.
+
+Por que isso deveria mudar como você lê um leaderboard? Porque quando o "Modelo X v2" sobe pontos no SWE-bench, o ranking não diz quanto veio do modelo e quanto veio do scaffold em volta. Os autores propõem um artefato leve de reporte — o **HarnessCard** — defendendo que *"progress in language agents should report not only the model, but also the harness layer that turns capability into governed action"*.
+
+A implicação prática para quem opera Claude Code: ao comparar dois setups, **fixe o harness** antes de atribuir uma diferença ao modelo. Um eval que troca modelo *e* config ao mesmo tempo está medindo uma variável confundida.
+
+> [!caution] Honestidade sobre a fonte
+> CAR e HarnessCard vêm de um preprint **não peer-reviewed** — é posição argumentada, não achado validado. O ponto, porém, ecoa o que a própria Anthropic afirma em prosa: o harness é variável de primeira ordem, não detalhe de implementação.
+
 ## Armadilhas
 
 **Achar que modelo basta.** Trocar pra modelo mais novo sem mexer no harness deixa ganho na mesa — e às vezes regride performance se regras antigas conflitam com o modelo novo.
@@ -113,9 +143,13 @@ O próprio gatilho da reavaliação do harness do MedEspecialista ilustra o padr
 ## Fontes
 
 - [[02-Glosas/Promovidas/2026/2026-claude-code-large-codebases-best-practices|How Claude Code works in large codebases — Anthropic Applied AI Team]]
+- [[02-Glosas/2026-ai-agent-harness-5-core-pillars|What is an AI Agent Harness? 5 Core Pillars — Duc Nguyen (AIQuinta)]] — a analogia CPU/SO e os 5 pilares operacionais
+- **Externalization in LLM Agents** — [arXiv:2604.08224](https://arxiv.org/html/2604.08224v1) (abr/2026). Decomposição funcional Memory/Skills/Protocols + harness-runtime; progressão weights→context→harness. *Preprint.*
+- **Harness Engineering for Language Agents (CAR)** — [preprint 202603.1756](https://www.preprints.org/manuscript/202603.1756) (abr/2026). Tese "harness-sensitive gains" e proposta HarnessCard. *Preprint, não peer-reviewed.*
 
 ## Veja também
 
+- [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|Harness engineering — a terceira camada]] — o conceito tool-agnóstico que esta nota instancia; as taxonomias concorrentes e a formalização acadêmica
 - [[03-Dominios/IA/Claude Code/index|Claude Code]] — tronco da trilha; os 6 galhos materializam os componentes do harness
 - [[03-Dominios/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase|02 - Como Claude Code lê um codebase]] — por que o harness importa: o agente navega, não indexa
 - [[03-Dominios/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|CLAUDE.md anatomia]] — componente mais visível do harness

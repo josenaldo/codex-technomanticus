@@ -71,7 +71,7 @@ Custo do thinking no Claude Opus: 8500 × $25/MTok = **$0.21** — só para "pen
 ## Veja também
 - [[02 - Anatomia do gasto — input, output e reasoning]]
 - [[09 - Model routing — modelo certo para a tarefa]]
-- [[13 - Reasoning models e chain-of-thought]] (Trilha 1)
+- [[15 - Reasoning models e chain-of-thought]] (Trilha 1)
 
 ## Referências
 - **Anthropic** — *Extended Thinking Documentation* (2026).

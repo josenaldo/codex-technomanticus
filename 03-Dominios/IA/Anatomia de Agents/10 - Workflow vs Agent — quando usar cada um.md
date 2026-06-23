@@ -144,4 +144,4 @@ Detalhamento dessa coordenação em [[06 - Multi-agent — orchestrator e sub-ag
 - [[05 - Planning — plan-then-execute, dynamic, hierarchical]] — estratégias de plano que mudam o perfil do agent
 - [[06 - Multi-agent — orchestrator e sub-agents]] — orchestrator-workers em detalhe
 - [[08 - Patterns comuns de agents]] — pattern 6 (workflow híbrido) e anti-patterns por confusão
-- [[AI Engineering Stack/08 - Workflow vs Agent Layer]] — esta decisão dentro do stack de engenharia
+- [[03-Dominios/IA/AI Engineering Stack/08 - Workflow vs Agent Layer]] — esta decisão dentro do stack de engenharia

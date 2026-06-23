@@ -12,7 +12,6 @@ tags:
   - Produtividade
 publish: true
 ---
-
 # Modelo de Maturidade AI - Steve Yegge
 
 O modelo de maturidade de Steve Yegge (ex-Google, ex-Amazon, Sourcegraph) descreve a evolução da relação entre engenheiros de software e IA generativa: de rejeição defensiva, passando por autocomplete e chat, até workflows agênticos onde o humano especifica intenção, valida qualidade e coordena execução.

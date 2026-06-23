@@ -1,10 +1,10 @@
 ---
 title: "Ecossistema 2026 — clients e integrações"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-19
 type: concept
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - mcp
@@ -206,6 +206,47 @@ Edge devices (Raspberry Pi, smart home) expondo capabilities via MCP. Casa intel
 
 Browser-based clients consumindo MCP servers. JavaScript SDK + WebSocket transport.
 
+## Maturação do protocolo (2026)
+
+Adoção em larga escala vira pressão de produção. As tabelas acima contam *quem* fala MCP; esta seção conta *como o protocolo está amadurecendo* sob esse peso. Dois marcos de 2026 importam: uma primitiva nova para trabalho assíncrono e um padrão de uso que economiza contexto. Ambos são camada de Protocols do [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]] — o MCP é onde o harness expõe ferramentas ao modelo.
+
+> [!note] Contexto: 1 ano de MCP
+> Em **25-nov-2025** o MCP completou um ano. Isso não é trivia: o protocolo saiu de "experimento da Anthropic" para padrão inter-vendor em doze meses. O que vem a seguir não é mais sobre *adotar* MCP — é sobre fechar as arestas que só aparecem quando milhares de servers rodam em produção.
+
+### MCP Tasks (SEP-1686) — call-now, fetch-later
+
+E quando uma tool demora minutos — um build, um scan, um job de dados? O modelo request/response padrão do MCP segura a conversa esperando a resposta. **MCP Tasks** (proposta SEP-1686) resolve isso com uma primitiva nova de comunicação **assíncrona** entre agentes: você dispara a operação agora e busca o resultado depois.
+
+O padrão é literalmente *"call-now, fetch-later"*. O cliente chama a tool, recebe de volta um identificador de task em vez do resultado, e segue tocando outras coisas. Quando o trabalho termina, ele busca (ou é notificado). Isso também abre caminho para notificação **multi-agente**: um agente dispara, outro consome.
+
+```mermaid
+sequenceDiagram
+    participant C as Cliente (agente)
+    participant S as MCP Server
+    C->>S: call_tool (operação longa)
+    S-->>C: task_id (call-now)
+    Note over C,S: agente faz outras coisas
+    S->>S: processa em background
+    C->>S: fetch_result(task_id)
+    S-->>C: resultado (fetch-later)
+```
+
+> [!warning] Status ambíguo — leia a fonte certa
+> A GitHub issue do SEP-1686 está marcada como **"Accepted"**. Mas o roadmap autoritativo de 2026 do MCP chama Tasks de **feature experimental** e lista os gaps de lifecycle que ainda faltam fechar — citando textualmente *"retry semantics when a task fails transiently, and expiry policies for how long results are retained after completion."* Em produção, trate como experimental: o que acontece quando a task falha por causa transiente, e por quanto tempo o resultado fica guardado, ainda não está cravado.
+
+### Code execution with MCP — chamar tools por código, não por contexto
+
+Tem um custo escondido em ligar muitos servers: cada tool de cada server entra no contexto do modelo como definição. Dez servers viram milhares de tokens só de *descrições* antes de o agente fazer nada (o mesmo problema que a seção [[#1. Discovery overhead|Discovery overhead]] aponta).
+
+Simon Willison documentou (4-nov-2025) um padrão que vira a chave: em vez de expor cada tool MCP diretamente ao modelo, o modelo **escreve código que chama as tools MCP**. As ferramentas viram uma API que o código consome, não cards no prompt.
+
+Por que ajuda? Dois ganhos. Reduz o consumo de contexto — o modelo não carrega N definições de tool, carrega uma interface programática. E melhora **composição**: encadear, filtrar e iterar sobre chamadas vira código normal, não uma sequência de tool-calls manuais.
+
+> [!tip] A regra de bolso
+> Poucas tools → expor direto está ótimo. **Muitas** tools (dezenas, vários servers) → considere o padrão code-execution: o modelo orquestra via código e só as tools relevantes entram em jogo.
+
+**Resumo:** em 2026 o MCP amadurece em duas frentes — Tasks (SEP-1686) traz assincronia "call-now, fetch-later" para operações longas e multi-agente (ainda experimental), e o padrão code-execution corta o custo de contexto quando há muitas tools.
+
 ## Casos comuns no mercado
 
 ### Caso 1 — Equipe interna com Internal API MCP
@@ -281,3 +322,6 @@ Como saber se server "mcp-totally-safe-postgres" não é malicioso? Audit é res
 - **glama.ai/mcp** — discovery + monitoring
 - **Anthropic** — *MCP ecosystem 2026 update* (blog)
 - **Cloudflare** — *MCP on Workers* (developers.cloudflare.com)
+- **MCP roadmap 2026** — [blog.modelcontextprotocol.io](https://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/) (2026). Roadmap autoritativo: chama Tasks (SEP-1686) de experimental e lista gaps de lifecycle (retry semantics, expiry policies).
+- **Code execution with MCP (Simon Willison)** — [simonwillison.net](https://simonwillison.net/2025/Nov/4/code-execution-with-mcp/) (2025). Padrão de o modelo escrever código que chama tools MCP, reduzindo contexto e melhorando composição.
+- **First MCP anniversary** — [blog.modelcontextprotocol.io](https://blog.modelcontextprotocol.io/posts/2025-11-25-first-mcp-anniversary/) (2025). MCP completa 1 ano (25-nov-2025); sinal de maturação do protocolo.

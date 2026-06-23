@@ -97,7 +97,7 @@ aliases:
 
 ## Veja também
 
-- [[05 - Panorama de modelos 2026]] — (Trilha 1) scores por modelo
+- [[07 - Panorama de modelos 2026]] — (Trilha 1) scores por modelo
 - [[11 - Comparativo — qual ferramenta para qual tarefa]] — decisão prática
 - [[13 - Devin e agentes autônomos cloud]] — quem lidera nos benchmarks
 

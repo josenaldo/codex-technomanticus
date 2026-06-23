@@ -121,7 +121,7 @@ Conteúdo **semanticamente similar mas irrelevante** ativa neurônios competindo
 - [[06 - Dynamic retrieval beyond RAG]]
 - [[07 - Compressão e pruning de informação]]
 - [[13 - Entropia e qualidade de contexto]]
-- [[03 - A janela de contexto]] (Trilha 1)
+- [[06 - A janela de contexto]] (Trilha 1)
 
 ## Referências
 

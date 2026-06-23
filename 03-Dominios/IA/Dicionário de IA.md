@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-06-14
+updated: 2026-06-21
 type: glossary
 status: seedling
 aliases:
@@ -31,8 +31,29 @@ publish: true
 ### Agent
 Um programa que utiliza um LLM em um loop para realizar ações em direção a um objetivo: ele observa o estado, decide por uma chamada de ferramenta ou resposta, executa e envia o resultado de volta para o próximo passo. A propriedade definidora é a autonomia através de múltiplos turnos, não a inteligência bruta.
 
+### agentic engineering
+A disciplina emergente — nomeada e institucionalizada em 2026, com workshop próprio no ICSE (AGENT 2026) — que trata o design, a construção e a operação de sistemas com autonomia orientada a objetivos como engenharia estruturada, e não prompting ad hoc. Abrange requisitos, arquitetura, verificação/avaliação, AgentOps, safety e supervisão humana. Distingue-se do [[Dicionário de IA#vibe coding|vibe coding]] por apoiar-se em guardrails deliberados, arquivos de contexto, skills e enforcement por CI. Ver [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]].
+
 ### agentic loop
 O ciclo iterativo fundamental de um agente de IA, composto por etapas de percepção, planejamento, ação e observação. O agente processa uma entrada, decide por uma ação (frequentemente uma chamada de ferramenta), observa o resultado e repete o processo até que o objetivo final seja alcançado ou um critério de parada seja atingido.
+
+### CAR (Control, Agency, Runtime)
+Decomposição da camada de [[Dicionário de IA#harness|harness]] proposta em 2026 (preprint *Harness Engineering for Language Agents*) em três eixos: **Control** (quais instruções permanecem autoritativas), **Agency** (quais ações estão disponíveis) e **Runtime** (como o estado é carregado adiante e como falhas são tratadas ao longo do tempo). É uma de várias taxonomias concorrentes do harness — nenhuma virou consenso. *Preprint não peer-reviewed.* Ver [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]].
+
+### harness
+A camada de runtime que envolve o LLM e transforma capacidade bruta em ação governada: memória externa, registries de ferramentas, protocolos, sandboxes, orquestração de [[Dicionário de IA#subagent|subagentes]] e pipelines de compressão. O modelo raciocina; o harness executa. Em 2026 foi nomeado como a "terceira camada" da capacidade de agentes (depois dos pesos e do contexto). Ver [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|Harness engineering]].
+
+### harness engineering
+A engenharia deliberada do [[Dicionário de IA#harness|harness]] como disciplina estruturada — decidir conscientemente o loop de controle, o sandboxing, os gates de aprovação humana, a observabilidade, a política de permissões e o orçamento de contexto. Tese central de 2026: boa parte do ganho de performance atribuído a um "modelo novo" é, na verdade, do harness (ganhos *[[Dicionário de IA#HarnessCard|harness-sensitive]]*). Ver [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|nota dedicada]].
+
+### HarnessCard
+Artefato leve de reporte proposto em 2026 (preprint CAR) para que benchmarks de agentes reportem não só o modelo, mas também a camada de [[Dicionário de IA#harness|harness]] que o cerca — análogo aos "model cards". Responde ao problema dos ganhos *harness-sensitive*: um leaderboard que troca modelo e harness ao mesmo tempo mede uma variável confundida. *Proposta de preprint não peer-reviewed.*
+
+### loop engineering
+O design deliberado do [[Dicionário de IA#agentic loop|loop de controle]] de um agente como artefato de engenharia — governança do loop, condições de parada, detecção de loop infinito, retry escalonado e pontos de aprovação humana —, em vez de apenas "usar ReAct". Termo consolidado em 2026; corresponde de perto à dimensão Runtime do [[Dicionário de IA#CAR (Control, Agency, Runtime)|CAR]].
+
+### NLAH (Natural-Language Agent Harness)
+Padrão emergente (2026) em que o comportamento do [[Dicionário de IA#harness|harness]] — fronteiras de papel, semântica de estado, tratamento de falha — é escrito em linguagem natural editável em texto puro, em vez de código hard-coded, baixando a barreira de adoção. Abordagem em pesquisa; não há evidência de que iguale código nativo em performance. *Preprint.*
 
 ### orchestrator-worker
 Um padrão de arquitetura agêntica onde um agente orquestrador decompõe uma tarefa complexa e delega subtarefas a múltiplos agentes trabalhadores (workers) especializados, depois agrega os resultados. Permite paralelismo e separação de responsabilidades, ao custo de overhead de coordenação e de mais tokens consumidos por cada worker.
@@ -107,6 +128,9 @@ Uma técnica que inclui no prompt alguns exemplos resolvidos da tarefa (input �
 ### Multimodal prompting
 Prompting que combina texto com imagens, PDFs, áudio, vídeo ou tabelas como input. Em 2026, modelos de fronteira (Claude 4.x, GPT-5, Gemini 2.x) são multimodais nativos; o gargalo é o engenheiro ainda dar apenas texto, desperdiçando capacidade do modelo. Ver [[Multimodal Prompting]].
 
+### progressive disclosure
+Mecanismo de carregamento em camadas que mantém o context window enxuto mesmo com muitas capacidades disponíveis. Nas Agent Skills: no startup, só o metadata (nome + descrição) de cada skill é pré-carregado (~30-100 tokens); o corpo do `SKILL.md` é lido sob demanda quando a skill fica relevante; arquivos de referência só carregam quando acessados (zero tokens de contexto até lá). É habilitado pelo modelo filesystem-based e é o que permite ter dezenas de skills sem inflar o contexto. Ver [[03-Dominios/IA/Claude Code/Skills e MCP/01 - Anatomia de uma skill|Anatomia de uma skill]].
+
 ### prompt engineering
 A prática de projetar e refinar prompts — instruções, exemplos, estrutura e formato — para obter saídas mais precisas e confiáveis de um LLM sem alterar seus pesos. Inclui técnicas como Chain-of-Thought e few-shot e delimitação clara de papéis; é a camada de controle mais barata e imediata sobre o comportamento do modelo.
 
@@ -173,6 +197,9 @@ O mecanismo central do transformer que, para cada token, pondera a relevância d
 ### attention sink
 Os primeiros tokens de uma sequência, que acumulam uma fração desproporcional da massa de [[Dicionário de IA#attention|atenção]] mesmo sem carregarem significado relevante. Funcionam como um "ralo" onde as cabeças de atenção despejam peso quando não têm nada específico para focar — uma consequência do softmax, que obriga os pesos a somarem 1 e precisa de algum lugar para escoar. Descobertos por Xiao et al. (2023) no trabalho de *StreamingLLM*; preservar esses tokens iniciais é essencial para manter a qualidade em janelas deslizantes, e o fenômeno explica o lado "início" da curva em U do [[Dicionário de IA#Lost in the Middle|Lost in the Middle]] e o complemento do [[Dicionário de IA#recency bias|recency bias]].
 
+### backpropagation
+O algoritmo que treina redes neurais calculando o gradiente da função de perda em relação a cada parâmetro, propagando o erro da camada de saída para as camadas de entrada via regra da cadeia. A cada iteração, os parâmetros são ajustados na direção oposta ao gradiente (gradiente descendente), minimizando progressivamente o erro. É o mecanismo central por trás do [[Dicionário de IA#pretraining|pretraining]] e do [[Dicionário de IA#fine-tuning|fine-tuning]] de LLMs — sem ele, os pesos da rede não seriam atualizáveis a partir dos dados.
+
 ### decoding strategy
 O algoritmo que escolhe o próximo token a partir da distribuição de probabilidades produzida pelo modelo a cada passo — greedy (sempre o mais provável), beam search, ou amostragem estocástica controlada por temperature, top-k e top-p. Determina o equilíbrio entre determinismo/precisão e diversidade/criatividade da saída.
 
@@ -196,6 +223,9 @@ Família de kernels de atenção exata (Dao et al., 2022) que reorganiza a compu
 
 ### foundation model
 Um modelo de grande escala treinado de forma auto-supervisionada em vastos volumes de dados não rotulados, projetado como base genérica e adaptável a muitas tarefas via fine-tuning ou prompting — em vez de treinado para uma única função. O termo, cunhado por Stanford em 2021, engloba LLMs (GPT, Claude), mas também modelos de visão e multimodais; a ideia central é a transferência: treina-se uma vez em escala e reaproveita-se em incontáveis aplicações downstream.
+
+### GPT (Generative Pre-trained Transformer)
+Família de LLMs da OpenAI baseados na arquitetura Transformer decoder-only e treinados de forma auto-supervisionada em grandes corpora de texto para prever o próximo token. Cada versão (GPT-2, GPT-3, GPT-4…) escalou parâmetros e dados, revelando capacidades emergentes como raciocínio e seguimento de instruções. O nome é frequentemente usado de forma genérica para qualquer LLM de grande escala baseado em Transformer, embora tecnicamente se refira à linha da OpenAI.
 
 ### GQA (Grouped-Query Attention)
 Esquema de atenção em que grupos de query heads compartilham um mesmo par de vetores K/V, reduzindo o tamanho do [[Dicionário de IA#KV cache|KV cache]] em até ~8× (≈90% vs multi-head attention) com perda de qualidade quase nula. Fica entre a multi-head attention (um K/V por head) e a multi-query attention (MQA, um único K/V para todas as heads); variantes mais agressivas como a MLA (Multi-Head Latent Attention, da DeepSeek) comprimem K/V numa representação latente de baixo rank. É uma das otimizações arquiteturais que tornam janelas de contexto de 1M+ economicamente viáveis.
@@ -279,6 +309,9 @@ O componente, embutido na aplicação host (ex.: um coding agent), que abre e ma
 
 ### MCP server
 Um processo que expõe ferramentas, recursos e prompts a clientes MCP através do protocolo padronizado, desacoplando uma fonte de dados ou capacidade do modelo que a consome. Pode rodar localmente (via stdio) ou remotamente (via HTTP/SSE); qualquer cliente compatível pode usá-lo sem integração customizada.
+
+### MCP Tasks (SEP-1686)
+Primitiva experimental do MCP (proposta SEP-1686, 2026) para comunicação assíncrona entre agentes, no padrão *call-now, fetch-later*: o cliente dispara uma operação de longa duração e busca o resultado depois, em vez de bloquear. O roadmap 2026 do protocolo mira fechar gaps de lifecycle — semântica de *retry* em falhas transitórias e políticas de expiração de resultados. *Status experimental.*
 
 ### prompts (MCP)
 Templates de prompt parametrizados que um servidor MCP expõe para serem invocados pelo usuário ou pela aplicação host — tipicamente como atalhos ou comandos reutilizáveis. São uma das três primitivas do MCP, ao lado de tools e resources.
@@ -397,6 +430,9 @@ Um ataque em que instruções maliciosas embutidas na entrada — ou em conteúd
 A prática de testar adversarialmente um sistema de IA — sondando-o com jailbreaks, prompt injections e casos extremos — para descobrir falhas de segurança e alinhamento antes que sejam exploradas em produção. Pode ser manual ou automatizada e alimenta o desenho de guardrails mais robustos.
 
 ## Sequence Models
+
+### BERT (Bidirectional Encoder Representations from Transformers)
+Modelo Transformer encoder-only da Google (Devlin et al., 2018) pré-treinado em duas tarefas auto-supervisionadas — masked language modeling (prever tokens mascarados) e next sentence prediction —, capturando contexto bidirecional da sequência inteira. Ao contrário dos modelos decoder-only como o [[Dicionário de IA#GPT (Generative Pre-trained Transformer)|GPT]], o BERT é otimizado para tarefas de compreensão de linguagem (classificação, NER, QA) e não para geração de texto; popularizou o paradigma de pre-training + fine-tuning em NLP.
 
 ### LSTM (Long Short-Term Memory)
 Uma arquitetura de rede neural recorrente introduzida por Hochreiter & Schmidhuber (1997) que utiliza portas de entrada, esquecimento e saída para manter informações em sequências longas, mitigando o problema do gradiente evanescente de RNNs tradicionais. Dominou tarefas de modelagem de sequência como tradução e reconhecimento de fala antes de ser amplamente substituída pelo Transformer.
