@@ -22,3 +22,6 @@ __pycache__/
 
 # Lock de runtime do Claude Code (scheduled tasks)
 .claude/scheduled_tasks.lock
+
+# Checkpoints de sessão do Claude Code (estado local, recuperação pós-/clear)
+.claude/checkpoints/
