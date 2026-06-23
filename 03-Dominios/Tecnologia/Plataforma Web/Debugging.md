@@ -41,4 +41,4 @@ Técnicas e ferramentas para identificar e corrigir erros em aplicações fronte
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/Frontend/index|Frontend]]
+- [[03-Dominios/Tecnologia/Plataforma Web/index|Plataforma Web]]

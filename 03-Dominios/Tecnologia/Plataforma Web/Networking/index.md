@@ -24,4 +24,4 @@ A comunicação HTTP é central em qualquer aplicação frontend — da escolha 
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/Frontend/index|Frontend]]
+- [[03-Dominios/Tecnologia/Plataforma Web/index|Plataforma Web]]

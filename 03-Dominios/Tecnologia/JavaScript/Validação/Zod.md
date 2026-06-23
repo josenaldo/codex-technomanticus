@@ -1,5 +1,5 @@
 ---
-title: "Fetch API"
+title: "Zod"
 created: 2026-05-04
 updated: 2026-05-04
 type: concept
@@ -7,14 +7,14 @@ status: seedling
 progress: backlog
 tags:
   - frontend
-  - networking
-  - http
+  - validacao
+  - typescript
 publish: true
 ---
 
-# Fetch API
+# Zod
 
-API nativa do browser para realizar requisições HTTP assíncronas, baseada em Promises e sem dependências externas.
+Biblioteca de validação e parsing com inferência automática de tipos TypeScript, padrão atual para validação de schemas no frontend.
 
 ## O que é
 
@@ -34,5 +34,5 @@ API nativa do browser para realizar requisições HTTP assíncronas, baseada em 
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/Frontend/Networking/index|Networking]]
-- [[Axios|Axios]]
+- [[03-Dominios/Tecnologia/JavaScript/Validação/index|Validação]]
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]

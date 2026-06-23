@@ -1,5 +1,5 @@
 ---
-title: "Yup"
+title: "Joi"
 created: 2026-05-04
 updated: 2026-05-04
 type: concept
@@ -11,9 +11,9 @@ tags:
 publish: true
 ---
 
-# Yup
+# Joi
 
-Biblioteca de validação de schemas JavaScript/TypeScript, amplamente usada em conjunto com Formik e React Hook Form.
+Biblioteca de validação de objetos JavaScript, robusta e madura, com ampla adoção no ecossistema Node.js e também utilizável no frontend.
 
 ## O que é
 
@@ -33,11 +33,11 @@ Biblioteca de validação de schemas JavaScript/TypeScript, amplamente usada em 
 
 ## Aprofundamento
 
-> [!convite] Aprofundamento — Yup
-> - [Repositório oficial](https://github.com/jquense/yup) — GitHub
+> [!convite] Aprofundamento — Joi
+> - [API oficial (v17.13.3)](https://joi.dev/api/?v=17.13.3) — joi.dev
 >
 > Consumiu? Faça uma glosa em `02-Glosas/` e amadureça pro domínio quando fizer sentido.
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/Frontend/Validação/index|Validação]]
+- [[03-Dominios/Tecnologia/JavaScript/Validação/index|Validação]]

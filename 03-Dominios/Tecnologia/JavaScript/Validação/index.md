@@ -23,4 +23,4 @@ Validar dados no cliente melhora a experiência do usuário com feedback imediat
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/Frontend/index|Frontend]]
+- [[03-Dominios/Tecnologia/JavaScript/index|JavaScript]]

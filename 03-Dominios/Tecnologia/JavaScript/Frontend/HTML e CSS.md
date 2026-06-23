@@ -1549,5 +1549,5 @@ Hint para o browser otimizar:
 - [[API Design]] — APIs que alimentam UIs
 - [[System Design]] — performance em sistemas distribuídos
 - [[Bootstrap]] — framework CSS
-- [[Material UI]] — React components
-- [[03-Dominios/Tecnologia/JavaScript/Frontend/Mantine]] — React components
+- [[MUI|Material UI]] — React components
+- [[03-Dominios/Tecnologia/React/Mantine]] — React components

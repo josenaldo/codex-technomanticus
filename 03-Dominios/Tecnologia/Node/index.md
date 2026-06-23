@@ -22,6 +22,8 @@ Estante de Node.js da trilha senior em prep para entrevistas internacionais. Cob
 
 ## Conteúdo
 
+- [[Node.js]] — nota-tronco do domínio: visão geral do runtime, troubleshooting em produção, vocabulário em inglês
+
 ### Galhos da trilha Node Senior
 
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] — galho 1: o motor do Node (single-thread, libuv, fases, microtasks, async/await, bloqueio, diagnóstico)

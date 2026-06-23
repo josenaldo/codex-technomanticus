@@ -339,7 +339,7 @@ A: The default in-memory store doesn't work in multi-instance deployments becaus
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — MOC do galho 8, visão geral de todos os tópicos de segurança Node
-- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha Node Senior
 - [express-rate-limit — npm](https://www.npmjs.com/package/express-rate-limit) — documentação oficial com todas as opções da v7
 - [rate-limit-redis — GitHub](https://github.com/express-rate-limit/rate-limit-redis) — store Redis oficial para express-rate-limit
 - [RFC 6585 — Additional HTTP Status Codes](https://www.rfc-editor.org/rfc/rfc6585) — define o status `429 Too Many Requests` e o header `Retry-After`

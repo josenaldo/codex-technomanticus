@@ -41,5 +41,5 @@ Cliente HTTP baseado em Promises para browser e Node.js, com suporte a intercept
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/Frontend/Networking/index|Networking]]
+- [[03-Dominios/Tecnologia/Plataforma Web/Networking/index|Networking]]
 - [[Fetch|Fetch API]]

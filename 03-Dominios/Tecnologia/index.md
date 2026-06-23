@@ -38,7 +38,7 @@ cuidam das particularidades de cada stack e linkam pras disciplinas neutras de
 - [[03-Dominios/Tecnologia/Python/index|Python]] — linguagem Python
 - [[03-Dominios/Tecnologia/IA/index|IA]] — inteligência artificial e LLMs
 - [[03-Dominios/Tecnologia/Infraestrutura/index|Infraestrutura]] — Docker, Kubernetes, Nginx, cloud
-- [[03-Dominios/Tecnologia/Frontend/index|Frontend]] — interfaces (em reorganização)
+- [[03-Dominios/Tecnologia/Plataforma Web/index|Plataforma Web]] — APIs do navegador: networking no cliente (fetch/Axios), debugging
 - [[03-Dominios/Tecnologia/Ferramentas/index|Ferramentas]] — ferramentas do dia a dia do dev
 - [[03-Dominios/Tecnologia/Terminal/index|Terminal]] — shell, dotfiles, CLI
 - [[03-Dominios/Tecnologia/RPA/index|RPA]] — automação de processos

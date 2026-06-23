@@ -529,7 +529,7 @@ A: The principle of least privilege means every entity — user, service account
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]]
 - [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação]]
-- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]]
+- [[03-Dominios/Tecnologia/Node/Node.js|Node.js]]
 - [casl.js.org — documentação oficial](https://casl.js.org)
 - [casbin.org — documentação oficial](https://casbin.org)
 - [OWASP — Broken Access Control](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)

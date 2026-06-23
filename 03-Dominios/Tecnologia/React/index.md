@@ -19,7 +19,15 @@ Estante de React: a biblioteca, seu ecossistema, frameworks que rodam sobre ela 
 
 ## Conteúdo
 
-(notas serão adicionadas conforme amadurecimento)
+- [[React]] — a biblioteca: visão geral, hooks, patterns, performance
+- [[React Red Flag Manual]] — antipatterns e armadilhas (manual extenso)
+- [[03-Dominios/Tecnologia/React/TypeScript com React/index|TypeScript com React]] — tipando componentes, hooks, forms
+- [[Next.js]] — o framework full-stack sobre React
+- [[MUI|Material UI]] · [[Mantine]] — bibliotecas de componentes
+- [[React Hook Form]] · [[TanStack Form]] · [[TanStack Query]] — formulários e estado de servidor
+- [[React Admin]] · [[React Data Table]] · [[Ícones]] — utilitários
+- [[03-Dominios/Tecnologia/React/Charts/index|Charts]] — bibliotecas de gráficos
+- [[Dicionário de React]] — glossário
 
 ## Aprofundamento
 

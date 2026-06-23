@@ -832,7 +832,7 @@ function useFetchOnMount(url: string) {
 **Regra prática.** Comece em 2 (state local). Suba na hierarquia apenas quando houver pressão real: múltiplos consumidores distantes, persistência necessária, devtools/time-travel valiosos, performance de re-render (seletores granulares do store).
 
 > [!tip] Server state ≠ client state
-> Antes de colocar dados de API num store global, considere [[03-Dominios/Tecnologia/JavaScript/Frontend/React|React Query/TanStack Query]] ou SWR. Eles resolvem cache, dedup, revalidação, paginação, mutation — coisas que você _vai_ implementar mal no Redux.
+> Antes de colocar dados de API num store global, considere [[03-Dominios/Tecnologia/React/React|React Query/TanStack Query]] ou SWR. Eles resolvem cache, dedup, revalidação, paginação, mutation — coisas que você _vai_ implementar mal no Redux.
 
 **Fonte**: [1]
 
@@ -1957,7 +1957,7 @@ useEffect(() => {
 }, [query]);
 ```
 
-**Solução 3 (recomendada em prod) — use [[03-Dominios/Tecnologia/JavaScript/Frontend/React|TanStack Query]] ou SWR.**
+**Solução 3 (recomendada em prod) — use [[03-Dominios/Tecnologia/React/React|TanStack Query]] ou SWR.**
 
 ```tsx
 // bom — lib lida com tudo: dedup, cache, cancelamento, revalidação
@@ -2165,7 +2165,7 @@ useEffect(() => {
 
 **Solução — use lib madura.**
 
-**[[03-Dominios/Tecnologia/JavaScript/Frontend/React|TanStack Query]]** (`@tanstack/react-query`) — padrão de facto pra client-side.
+**[[03-Dominios/Tecnologia/React/React|TanStack Query]]** (`@tanstack/react-query`) — padrão de facto pra client-side.
 
 ```tsx
 // queries

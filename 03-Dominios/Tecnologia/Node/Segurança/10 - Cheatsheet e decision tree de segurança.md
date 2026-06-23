@@ -383,4 +383,4 @@ A: The principles are: secrets never in source code, never in environment variab
 - [[03-Dominios/Tecnologia/Node/Segurança/08 - Helmet.js e hardening HTTP]] — CSP com nonce, HSTS, CORS allowlist
 - [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node]] — A01–A10 com exemplos Node e mitigações
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]] — visão geral de todos os galhos da trilha
-- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha Node Senior

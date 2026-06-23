@@ -102,6 +102,6 @@ function Dashboard() {
 ## Veja também
 
 - [[HTML e CSS]]
-- [[Material UI]]
-- [[03-Dominios/Tecnologia/JavaScript/Frontend/Mantine]]
+- [[MUI|Material UI]]
+- [[03-Dominios/Tecnologia/React/Mantine]]
 - [[React]]
