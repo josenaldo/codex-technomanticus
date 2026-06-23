@@ -20,11 +20,11 @@ aliases:
 # 07 - Eval gates em CI — quando bloquear merge
 
 > [!abstract] TL;DR
-> [[Evaluation/07 - Eval em CI-CD|Evaluation/07]] cobre o **pipeline** de eval em CI/CD (configuração, sampling, GitHub Actions). Esta nota foca o **gate mechanism do Improvement Loop**: regra de regressão por categoria que bloqueia merge, calibração do threshold, sampling pra fast feedback em PR, quarentena de evals flaky, e quando falhar **graciosamente** (warn) vs **alto** (block). Princípio central: threshold uniforme é anti-padrão (safety = 0 tolerância, calibration = 5-10% tolerância). Métrica do gate é "regression delta" (vs baseline da main), não "score absoluto". Sem quarentena de flaky, gate vira ruído e time ignora; sem audit de override, gate vira teatro. Custo realista: $0.50-5 por PR pra time típico (golden set 100-300, modelo médio). Onde mora o gate: GitHub Actions / GitLab CI / similar; integração com Promptfoo, Braintrust, Langfuse.
+> [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD|Evaluation/07]] cobre o **pipeline** de eval em CI/CD (configuração, sampling, GitHub Actions). Esta nota foca o **gate mechanism do Improvement Loop**: regra de regressão por categoria que bloqueia merge, calibração do threshold, sampling pra fast feedback em PR, quarentena de evals flaky, e quando falhar **graciosamente** (warn) vs **alto** (block). Princípio central: threshold uniforme é anti-padrão (safety = 0 tolerância, calibration = 5-10% tolerância). Métrica do gate é "regression delta" (vs baseline da main), não "score absoluto". Sem quarentena de flaky, gate vira ruído e time ignora; sem audit de override, gate vira teatro. Custo realista: $0.50-5 por PR pra time típico (golden set 100-300, modelo médio). Onde mora o gate: GitHub Actions / GitLab CI / similar; integração com Promptfoo, Braintrust, Langfuse.
 
 ## Ponte com Evaluation/07
 
-[[Evaluation/07 - Eval em CI-CD]] cobre:
+[[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD]] cobre:
 
 - Contrato de eval-em-CI ("nenhum prompt change vai pra main sem ter sido medido")
 - Pipeline canônico (fast em PR / full em main)
@@ -33,7 +33,7 @@ aliases:
 - Cálculo de custo realista
 - Maturidade ladder
 
-**Esta nota não duplica.** Aqui o foco é o **gate mechanism** especificamente: como decidir bloquear ou não, como calibrar threshold, como tratar flakiness sem matar o sinal. Pra o pipeline completo, vá em [[Evaluation/07 - Eval em CI-CD]].
+**Esta nota não duplica.** Aqui o foco é o **gate mechanism** especificamente: como decidir bloquear ou não, como calibrar threshold, como tratar flakiness sem matar o sinal. Pra o pipeline completo, vá em [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD]].
 
 ## O gate — o que ele é, mecanicamente
 
@@ -147,7 +147,7 @@ Calibração é processo, não constante. Reabra periodicamente.
 
 Rodar full golden set (200-2000 itens) em cada PR não escala. Em time típico, full eval custa $1-5 e demora 5-15min. Em PR busy, isso vira gargalo.
 
-A estratégia: **fast em PR, full em main** (detalhe completo em [[Evaluation/07 - Eval em CI-CD]]). O essencial do gate aqui:
+A estratégia: **fast em PR, full em main** (detalhe completo em [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD]]). O essencial do gate aqui:
 
 | Quando | O que roda | Quem decide |
 |---|---|---|
@@ -326,9 +326,9 @@ Princípios do comment:
 
 ## Veja também
 
-- [[Evaluation/07 - Eval em CI-CD]] — o pipeline completo; esta nota foca o **gate**
+- [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD]] — o pipeline completo; esta nota foca o **gate**
 - [[01 - O ciclo eval → diff → ship]] — gate é o que materializa o passo 2 no pipeline
 - [[03 - Prompt versioning — semver para prompts]] — bump da versão dispara o gate
 - [[04 - Champion-challenger em produção]] — gate é o passo **antes** do canary
-- [[Evaluation/05 - Regression testing em LLMs]] — padrão de regressão que o gate executa
-- [[Evaluation/06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix]] — frameworks que o gate roda
+- [[03-Dominios/Tecnologia/IA/Evaluation/05 - Regression testing em LLMs]] — padrão de regressão que o gate executa
+- [[03-Dominios/Tecnologia/IA/Evaluation/06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix]] — frameworks que o gate roda

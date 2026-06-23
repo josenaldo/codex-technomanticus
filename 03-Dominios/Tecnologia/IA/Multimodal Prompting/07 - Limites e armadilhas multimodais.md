@@ -96,7 +96,7 @@ Vídeo é pior: 10 minutos em Gemini ≈ 155k tokens. Uma chamada custa o que ca
 - Pré-filtre. Use modelo barato (Haiku, Flash-Lite, GPT-4.1 nano) pra triagem; modelo bom só pro que passou no filtro.
 - Corte. Mande região de interesse, não a tela inteira.
 - Use detail baixo onde puder. OpenAI `detail: low` é 85 tokens fixos — basta pra classificação.
-- Cache. Files API do Gemini, [[Anatomia dos LLMs/11 - Prompt caching e otimizações de API|prompt caching]] do Anthropic — reuse o mesmo arquivo em múltiplas perguntas sem pagar reingresto.
+- Cache. Files API do Gemini, [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/13 - Prompt caching e otimizações de API|prompt caching]] do Anthropic — reuse o mesmo arquivo em múltiplas perguntas sem pagar reingresto.
 
 ## 6. Latência maior
 
@@ -188,5 +188,5 @@ Antes de enviar imagem/PDF/áudio pro modelo, pergunte:
 - [[01 - O salto multimodal — por que isso importa]] — onde multimodal ganha
 - [[02 - Imagens como input — screenshots, charts, mockups]] — custo por imagem
 - [[06 - Como dizer ao modelo o tipo de leitura]] — instrução boa reduz boa parte das falhas
-- [[Anatomia dos LLMs/11 - Prompt caching e otimizações de API]] — cache de imagem reduz custo
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — como medir as falhas listadas aqui no seu caso
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/13 - Prompt caching e otimizações de API]] — cache de imagem reduz custo
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — como medir as falhas listadas aqui no seu caso

@@ -57,8 +57,8 @@ A regra do thread @hooeem: "After each use, ask what worked, what failed, what t
 ## Onde aprofundar no Codex
 
 - **[[Improvement Loop]]** — trilha-irmã dedicada (em construção).
-- **[[Anatomia de Agents/09 - Evaluation de agents|Evaluation de agents]]** — eval contínua como entrada do improvement.
-- **[[Segurança e Guardrails/10 - Métricas de qualidade AI — defect escape rate, rework ratio|Métricas de qualidade AI]]** — métricas operacionais.
+- **[[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents|Evaluation de agents]]** — eval contínua como entrada do improvement.
+- **[[03-Dominios/Tecnologia/IA/Segurança e Guardrails/10 - Métricas de qualidade AI — defect escape rate, rework ratio|Métricas de qualidade AI]]** — métricas operacionais.
 
 ## Veja também
 

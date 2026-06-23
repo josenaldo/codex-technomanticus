@@ -57,7 +57,7 @@ Este galho cobre o **motor** do Node.js — como uma única thread JS atende mil
 
 ### Bloco E — Fechamento
 
-12. [[12 - Armadilhas, regras práticas, cheatsheet]]
+12. [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/12 - Armadilhas, regras práticas, cheatsheet]]
 
 ## Rotas alternativas
 

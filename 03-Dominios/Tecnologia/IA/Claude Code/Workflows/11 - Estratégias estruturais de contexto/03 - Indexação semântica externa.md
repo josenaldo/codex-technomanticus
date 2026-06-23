@@ -173,7 +173,7 @@ A diferença pra knowledge graph ([[04 - Knowledge graph local com AST|04]]) é 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/05 - MCP servers essenciais|MCP servers essenciais]] — outras MCPs úteis
 - [[03-Dominios/Tecnologia/IA/Context Engineering/06 - Dynamic retrieval beyond RAG|Dynamic retrieval beyond RAG]] — contexto teórico de RAG e suas evoluções
 - [[04 - Knowledge graph local com AST]] — abordagem complementar (relação estrutural)
-- [[index|Tronco do sub-galho]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|Tronco do sub-galho]]
 
 ## Aprofundamento
 

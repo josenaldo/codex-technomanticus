@@ -987,6 +987,6 @@ Cada "span" é uma operação. Trace ID é propagado via headers HTTP e logs est
 - [[Event Streaming]] — eventos como fonte de verdade
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — event broker mais usado
 - [[RabbitMQ]] — message queuing tradicional
-- [[Banco de dados]] — persistência, transações, consistência
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — persistência, transações, consistência
 - [[Redes e Protocolos]] — comunicação entre serviços
 - [[Spring Boot]] — implementação prática na stack Java

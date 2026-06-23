@@ -219,7 +219,7 @@ Prompt longo + schema grande compete pela atenção do modelo. Mantenha prompt u
 
 ### Cache de prompt + tools
 
-Tools entram no input cacheado quando você usa prompt caching ([[Anatomia dos LLMs/11 - Prompt caching e otimizações de API|prompt caching]]). Se a tool é estável, marque o bloco como `cache_control` pra economizar.
+Tools entram no input cacheado quando você usa prompt caching ([[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/13 - Prompt caching e otimizações de API|prompt caching]]). Se a tool é estável, marque o bloco como `cache_control` pra economizar.
 
 ## Quando Anthropic é a escolha certa pra structured output
 
@@ -246,4 +246,4 @@ Quando OpenAI ou Gemini podem ser melhores:
 - [[04 - OpenAI Structured Outputs — strict mode]] — abordagem alternativa
 - [[06 - Gemini structured output]] — terceira abordagem
 - [[07 - Validação e retry — Pydantic, Zod]] — necessária especialmente em Anthropic (sem constrained decoding)
-- [[Anatomia de Agents/02 - O loop ReAct e native tool use|Loop ReAct e native tool use]] — o caso geral de tool use
+- [[03-Dominios/Tecnologia/IA/Anatomia de Agents/02 - O loop ReAct e native tool use|Loop ReAct e native tool use]] — o caso geral de tool use

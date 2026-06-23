@@ -237,7 +237,7 @@ Sem o passo 4 (backlog), feedback nunca vira ação. Sem o passo 8 (métrica de 
 ## Veja também
 
 - [[01 - O ciclo eval → diff → ship]] — feedback é uma das fontes do passo 1 (observability)
-- [[Evaluation/04 - LLM-as-judge — quando e como]] — judge enviesado por feedback vira problema
+- [[03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — quando e como]] — judge enviesado por feedback vira problema
 - [[Observability]] — feedback como sinal no observability stack
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — A/B em prod cruza com feedback
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — A/B em prod cruza com feedback
 - [[Segurança e Guardrails]] — sycophancy é falha de guardrail comportamental

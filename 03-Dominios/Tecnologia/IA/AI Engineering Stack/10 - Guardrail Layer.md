@@ -57,8 +57,8 @@ A distinção crucial: **Prompt Layer pede; Guardrail Layer impõe**. "Não resp
 
 ## Onde aprofundar no Codex
 
-- **[[Segurança e Guardrails]]** — trilha completa, especialmente [[Segurança e Guardrails/04 - A pirâmide de validação AI|A pirâmide de validação AI]].
-- **[[Context Engineering/12 - Guardrails determinísticos|Guardrails determinísticos]]** — control plane antes e depois do LLM.
+- **[[Segurança e Guardrails]]** — trilha completa, especialmente [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/04 - A pirâmide de validação AI|A pirâmide de validação AI]].
+- **[[03-Dominios/Tecnologia/IA/Context Engineering/12 - Guardrails determinísticos|Guardrails determinísticos]]** — control plane antes e depois do LLM.
 - **[[Dicionário de IA#Guardrail|Dicionário: Guardrail]]**.
 
 ## Veja também

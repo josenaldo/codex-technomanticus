@@ -289,7 +289,7 @@ Sem calibração com humano, judge é só mais um modelo opinando — não é ev
 - [[02 - Golden datasets — como construir]] — dataset + rubrica andam juntos
 - [[04 - LLM-as-judge — quando e como]] — escalar a rubrica
 - [[05 - Regression testing em LLMs]] — rubrica como threshold de regressão
-- [[AI Engineering Stack/09 - Evaluation Layer]] — template de rubrica @hooeem
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/09 - Evaluation Layer]] — template de rubrica @hooeem
 - [[Segurança e Guardrails]] — automatic failure conditions = guardrails
 
 ## Fontes

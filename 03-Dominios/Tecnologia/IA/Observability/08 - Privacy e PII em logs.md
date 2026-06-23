@@ -197,6 +197,6 @@ Em produto end-user:
 
 - [[06 - Session replay e debugging]] — redaction afeta replay; estratégias de mitigação
 - [[02 - Anatomia de um trace LLM]] — atributos onde PII costuma vazar (prompt em span attribute)
-- [[Segurança e Guardrails/11 - Governance as architecture — EU AI Act, GDPR, licenças]] — visão de governança end-to-end
-- [[AI Engineering Stack/11 - Logging Layer]] — onde a política de PII se materializa
+- [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/11 - Governance as architecture — EU AI Act, GDPR, licenças]] — visão de governança end-to-end
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/11 - Logging Layer]] — onde a política de PII se materializa
 - [[Dicionário de IA#LGPD|Dicionário: LGPD]], [[Dicionário de IA#GDPR|Dicionário: GDPR]], [[Dicionário de IA#EU AI Act|Dicionário: EU AI Act]]

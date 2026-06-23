@@ -19,10 +19,10 @@ aliases:
 Sem observability, debugar LLM em produção é arqueologia — você sabe que algo quebrou ontem mas não sabe o quê. Stack tracking convencional (APM, logs estruturados, métricas) foi desenhado pra HTTP, banco e fila — não pra um sistema onde a unidade de trabalho é uma chamada com 12k tokens de entrada, 3 ferramentas executadas no meio, 1.800 tokens de raciocínio invisíveis ao usuário e um output que pode variar de 200 a 8.000 tokens dependendo da pergunta. Esta trilha define **observability de LLM como disciplina distinta**: o que precisa ser instrumentado, em que padrão, com qual ferramenta, e como manter compliance enquanto você loga prompts que muitas vezes contêm PII.
 
 > [!info] Pré-requisitos
-> [[Anatomia dos LLMs]] resolve a unidade básica (token, contexto, custo). Recomendo passar antes pelo ângulo de custo em [[Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — esta trilha **complementa** aquela: lá o foco é dinheiro, aqui o foco é qualidade, debug e compliance.
+> [[Anatomia dos LLMs]] resolve a unidade básica (token, contexto, custo). Recomendo passar antes pelo ângulo de custo em [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — esta trilha **complementa** aquela: lá o foco é dinheiro, aqui o foco é qualidade, debug e compliance.
 
 > [!warning] Esta trilha não duplica a nota de monitoramento de custos
-> A nota [[Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] cobre o ângulo financeiro (ccusage, dashboards de provider, alertas de custo, breakdown por modelo). Esta trilha cobre o restante: anatomia de trace, escolha de ferramenta de tracing, versionamento de prompts, session replay, métricas além de custo, e PII em logs. Quando precisar dos dois ângulos, leia em conjunto.
+> A nota [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] cobre o ângulo financeiro (ccusage, dashboards de provider, alertas de custo, breakdown por modelo). Esta trilha cobre o restante: anatomia de trace, escolha de ferramenta de tracing, versionamento de prompts, session replay, métricas além de custo, e PII em logs. Quando precisar dos dois ângulos, leia em conjunto.
 
 ## Comece por aqui
 
@@ -105,9 +105,9 @@ A camada legal e ética sem a qual logging vira passivo.
 ## Veja também
 
 - [[AI Engineering Stack]] — onde a Logging Layer e Observability se encaixam no stack
-- [[AI Engineering Stack/11 - Logging Layer]] — a camada que aponta pra esta trilha como aprofundamento
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/11 - Logging Layer]] — a camada que aponta pra esta trilha como aprofundamento
 - [[Evaluation]] — observability fornece o sinal contínuo; eval fornece o critério
-- [[Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — o ângulo de custo que esta trilha complementa
+- [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — o ângulo de custo que esta trilha complementa
 - [[Improvement Loop]] — o ciclo onde traces viram dataset de eval e dataset vira nova versão (em construção)
 - [[Segurança e Guardrails]] — incidentes de guardrail são registrados via observability
 

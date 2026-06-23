@@ -346,7 +346,7 @@ Um **tipo algébrico de dados** (ADT) *é* uma definição indutiva escrita na s
 data Arvore a = Folha a | No (Arvore a) (Arvore a)
 ```
 
-Cada `|` é um construtor. `Folha` é a base; `No` é a regra. A definição matemática e a declaração de tipo são a mesma coisa em dois idiomas. Veja [[Paradigmas de Programação]] para como ADTs, recursão e pattern matching se entrelaçam no estilo funcional — esta nota é a fundação teórica daquele tripé.
+Cada `|` é um construtor. `Folha` é a base; `No` é a regra. A definição matemática e a declaração de tipo são a mesma coisa em dois idiomas. Veja [[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]] para como ADTs, recursão e pattern matching se entrelaçam no estilo funcional — esta nota é a fundação teórica daquele tripé.
 
 ### Confiança sem rodar
 
@@ -416,4 +416,4 @@ Indução estrutural raramente aparece com esse nome numa entrevista de engenhar
 - [[06 - Indução matemática]] — o caso particular sobre ℕ; esta nota é a generalização.
 - [[05 - Técnicas de prova]] — onde a indução entra no arsenal de provas.
 - [[04 - Teoria dos conjuntos]] — "o menor conjunto fechado sob regras" formaliza-se via interseção de conjuntos fechados.
-- [[Paradigmas de Programação]] — ADTs, recursão e pattern matching no estilo funcional, a face prática desta teoria.
+- [[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]] — ADTs, recursão e pattern matching no estilo funcional, a face prática desta teoria.

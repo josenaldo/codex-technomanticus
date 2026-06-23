@@ -211,5 +211,5 @@ async def diff_replay(label_new: str, n: int = 100):
 - [[02 - Anatomia de um trace LLM]] — o que precisa estar no span pra replay funcionar
 - [[05 - Versionamento de prompts]] — versão de prompt é peça obrigatória do replay
 - [[08 - Privacy e PII em logs]] — redaction na captura
-- [[Evaluation/05 - Regression testing em LLMs]] — diff replay é base de regression testing
+- [[03-Dominios/Tecnologia/IA/Evaluation/05 - Regression testing em LLMs]] — diff replay é base de regression testing
 - [[Improvement Loop]] — bug capturado em replay vira dataset de eval (em construção)

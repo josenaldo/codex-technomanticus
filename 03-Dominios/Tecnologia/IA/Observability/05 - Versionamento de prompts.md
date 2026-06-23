@@ -173,5 +173,5 @@ Não há redeploy. Não há push pra Git. Cache curto + label móvel = rollback 
 - [[03 - Langfuse — open-source standard]] — Langfuse Prompts é a referência operacional
 - [[06 - Session replay e debugging]] — versão de prompt é peça obrigatória do replay
 - [[02 - Anatomia de um trace LLM]] — `prompt_version` é atributo de span
-- [[Evaluation/07 - Eval em CI-CD]] — promoção `staging → production` passa pela eval automatizada
+- [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD]] — promoção `staging → production` passa pela eval automatizada
 - [[Prompt Engineering]] — onde os prompts são desenhados antes de virarem versão

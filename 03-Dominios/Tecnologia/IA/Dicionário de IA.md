@@ -99,7 +99,7 @@ Gerar software descrevendo a intenção em linguagem natural a um LLM e aceitand
 ## Context Engineering
 
 ### Audit trail (reasoning)
-Em reasoning models (o3, R1, Gemini Thinking), padrão de output em que o modelo entrega resposta final + checkpoints de raciocínio + suposições + incertezas + caminho de verificação, em vez de chain-of-thought verboso. Substitui o anti-padrão "think step by step", que virou ruído em modelos de raciocínio nativo. Ver [[Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought]].
+Em reasoning models (o3, R1, Gemini Thinking), padrão de output em que o modelo entrega resposta final + checkpoints de raciocínio + suposições + incertezas + caminho de verificação, em vez de chain-of-thought verboso. Substitui o anti-padrão "think step by step", que virou ruído em modelos de raciocínio nativo. Ver [[03-Dominios/Tecnologia/IA/Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought]].
 
 ### Chain-of-Thought (CoT)
 Uma técnica de prompting que instrui o modelo a produzir etapas de raciocínio intermediárias antes de fornecer uma resposta final — tipicamente acionada por frases como "pense passo a passo". O CoT melhora a precisão em tarefas de múltiplas etapas, mas aumenta a contagem de tokens de saída, e em modelos de raciocínio estendido (extended-thinking), alimenta diretamente a geração de tokens de raciocínio.
@@ -117,7 +117,7 @@ Degradação mensurável da qualidade da saída de um LLM conforme o contexto de
 O número máximo de tokens que um modelo pode considerar em uma única chamada de inferência, incluindo o system prompt, input do usuário, turnos anteriores, definições de ferramentas e a resposta sendo gerada. Exceder esse limite força o truncamento, sumarização ou compactação.
 
 ### Deliverable-first prompting
-Em geração de imagens, descrever o entregável (poster, infográfico, slide, mockup) carrega restrições implícitas — proporção, hierarquia visual, tipografia, layout — que descrever apenas a cena não carrega. Framing canônico do artigo "Become an AI Engineer" (@hooeem, capítulo #16). Ver [[Image Prompting/02 - Deliverable-first, não scene-first]].
+Em geração de imagens, descrever o entregável (poster, infográfico, slide, mockup) carrega restrições implícitas — proporção, hierarquia visual, tipografia, layout — que descrever apenas a cena não carrega. Framing canônico do artigo "Become an AI Engineer" (@hooeem, capítulo #16). Ver [[03-Dominios/Tecnologia/IA/Image Prompting/02 - Deliverable-first, não scene-first]].
 
 ### effective context length
 O comprimento de contexto em que um LLM realmente mantém acurácia aceitável, distinto da janela **nominal** anunciada. Benchmarks como RULER (NVIDIA) e NoLiMa mostram que modelos com 128k-1M de spec sustentam, na prática, uma fração disso em tarefas multi-fato — por exemplo, Granite 3.1-8B com 128k nominal opera bem só até ~32k. Em 2026 virou métrica obrigatória para escolha de modelo em produção, já que "janela nominal" tornou-se número de marketing.
@@ -138,7 +138,7 @@ A prática de projetar e refinar prompts — instruções, exemplos, estrutura e
 Um prompt parametrizado com placeholders preenchidos em tempo de execução com dados variáveis (input do usuário, documentos recuperados, exemplos), separando a estrutura fixa do conteúdo dinâmico. Favorece reuso, versionamento e cache hit rate ao manter o prefixo estável entre chamadas.
 
 ### Prompt versioning
-Tratar prompt como artefato versionado (não config string), com semver: major (breaking output format), minor (quality improvement), patch (typo). Cada trace registra qual versão produziu cada output, viabilizando rollback, A/B test e auditoria. Ver [[Observability/05 - Versionamento de prompts]] e [[Improvement Loop/03 - Prompt versioning — semver para prompts]].
+Tratar prompt como artefato versionado (não config string), com semver: major (breaking output format), minor (quality improvement), patch (typo). Cada trace registra qual versão produziu cada output, viabilizando rollback, A/B test e auditoria. Ver [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]] e [[03-Dominios/Tecnologia/IA/Improvement Loop/03 - Prompt versioning — semver para prompts]].
 
 ### recency bias
 A tendência de um LLM a dar mais peso à informação no fim do contexto (os tokens mais recentes) do que à que veio antes. Na prática de prompting e em agentes, instruções e dados colocados perto do final do prompt influenciam mais a saída — daí a recomendação de posicionar a tarefa atual e as restrições críticas no fim. É a contraparte "recente" do fenômeno [[Dicionário de IA#Lost in the Middle|Lost in the Middle]], que descreve a curva de atenção em U (pontas favorecidas, meio negligenciado).
@@ -147,41 +147,41 @@ A tendência de um LLM a dar mais peso à informação no fim do contexto (os to
 Um bloco de instruções enviado pelo desenvolvedor no início de cada chamada de API para configurar o comportamento, personalidade, limitações e contexto do modelo. Diferente das mensagens do usuário, o system prompt é tipicamente estático e re-enviado integralmente a cada turno — tornando-o um vetor de custo constante em sessões agenticas.
 
 ### Sycophancy
-Tendência de LLM em concordar com a premissa do usuário, elogiar a pergunta, ou recuar quando o usuário discorda sem novo argumento. Mitigada via prompts anti-sycophancy explícitos — o mega-prompt do [[Andrej Karpathy|Karpathy]] é o exemplo canônico, instruindo o modelo a desafiar premissas e oferecer contra-evidência. Ver [[Prompt Engineering/04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy]].
+Tendência de LLM em concordar com a premissa do usuário, elogiar a pergunta, ou recuar quando o usuário discorda sem novo argumento. Mitigada via prompts anti-sycophancy explícitos — o mega-prompt do [[Andrej Karpathy|Karpathy]] é o exemplo canônico, instruindo o modelo a desafiar premissas e oferecer contra-evidência. Ver [[03-Dominios/Tecnologia/IA/Prompt Engineering/04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy]].
 
 ### Tells de IA
-Padrões linguísticos que denunciam output gerado por IA: "In today's fast-paced world", "It's important to note", "It's not X, it's Y" usado em excesso, em-dashes em flood, fechos motivacionais. Catalogados no artigo "Become an AI Engineer" (@hooeem, capítulo #8). Bloqueáveis via constraints declarativas no prompt. Ver [[Prompt Engineering/09 - Anti-patterns e tells de IA — o que evitar]].
+Padrões linguísticos que denunciam output gerado por IA: "In today's fast-paced world", "It's important to note", "It's not X, it's Y" usado em excesso, em-dashes em flood, fechos motivacionais. Catalogados no artigo "Become an AI Engineer" (@hooeem, capítulo #8). Bloqueáveis via constraints declarativas no prompt. Ver [[03-Dominios/Tecnologia/IA/Prompt Engineering/09 - Anti-patterns e tells de IA — o que evitar]].
 
 ## Evaluation and Improvement Loop
 
 ### A/B test de prompts
-Comparação controlada de duas versões de prompt sob o mesmo input, medindo qualidade via eval automático, feedback do usuário ou métrica de produto. A variância alta em LLM exige amostras maiores (frequentemente N=200+ por braço), e abordagem bayesiana costuma ser mais apropriada que frequentista para decidir promoção. Ver [[Improvement Loop/02 - A-B testing de prompts]].
+Comparação controlada de duas versões de prompt sob o mesmo input, medindo qualidade via eval automático, feedback do usuário ou métrica de produto. A variância alta em LLM exige amostras maiores (frequentemente N=200+ por braço), e abordagem bayesiana costuma ser mais apropriada que frequentista para decidir promoção. Ver [[03-Dominios/Tecnologia/IA/Improvement Loop/02 - A-B testing de prompts]].
 
 ### Champion-challenger
-Padrão de deploy em que o tráfego é dividido (ex.: 90/10) entre o prompt em produção (champion) e o candidato (challenger), com critérios objetivos de promoção: eval score, golden subset, custo e latência. Permite iteração contínua sem big-bang releases. Ver [[Improvement Loop/04 - Champion-challenger em produção]].
+Padrão de deploy em que o tráfego é dividido (ex.: 90/10) entre o prompt em produção (champion) e o candidato (challenger), com critérios objetivos de promoção: eval score, golden subset, custo e latência. Permite iteração contínua sem big-bang releases. Ver [[03-Dominios/Tecnologia/IA/Improvement Loop/04 - Champion-challenger em produção]].
 
 ### DSPy
-Framework de Stanford (Khattab et al., arXiv 2310.03714) que trata prompts como programas compiláveis. Define Signatures (input/output), Modules (chamadas LM) e Compilers (BootstrapFewShot, MIPROv2) que otimizam prompts contra eval functions, eliminando boa parte do prompt-tuning manual. Ver [[Improvement Loop/05 - Auto-prompt optimization — DSPy e além]].
+Framework de Stanford (Khattab et al., arXiv 2310.03714) que trata prompts como programas compiláveis. Define Signatures (input/output), Modules (chamadas LM) e Compilers (BootstrapFewShot, MIPROv2) que otimizam prompts contra eval functions, eliminando boa parte do prompt-tuning manual. Ver [[03-Dominios/Tecnologia/IA/Improvement Loop/05 - Auto-prompt optimization — DSPy e além]].
 
 ### Eval-driven development (EDD)
-Disciplina que coloca evals antes do prompt — análoga a TDD para código. O lema é "evals first, prompts second": sem dataset de avaliação e critério objetivo, "melhorar o prompt" vira opinião. Ver [[Evaluation/01 - Eval-driven development — a disciplina]].
+Disciplina que coloca evals antes do prompt — análoga a TDD para código. O lema é "evals first, prompts second": sem dataset de avaliação e critério objetivo, "melhorar o prompt" vira opinião. Ver [[03-Dominios/Tecnologia/IA/Evaluation/01 - Eval-driven development — a disciplina]].
 
 ### Eval gate
-Threshold em CI/CD: queda em eval score acima de X% bloqueia merge de PR. Pode falhar silenciosamente (warn) ou ruidosamente (block); a calibração depende da maturidade do dataset e da tolerância a regressões. Ver [[Evaluation/07 - Eval em CI-CD]] e [[Improvement Loop/07 - Eval gates em CI — quando bloquear merge]].
+Threshold em CI/CD: queda em eval score acima de X% bloqueia merge de PR. Pode falhar silenciosamente (warn) ou ruidosamente (block); a calibração depende da maturidade do dataset e da tolerância a regressões. Ver [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD]] e [[03-Dominios/Tecnologia/IA/Improvement Loop/07 - Eval gates em CI — quando bloquear merge]].
 
 ### Golden dataset
-Conjunto canônico de pares input-output usado como referência para avaliar prompts e modelos. Construído por representatividade, edge cases e anti-tests; versionado em paralelo com os prompts para que regressões sejam rastreáveis. Ver [[Evaluation/02 - Golden datasets — como construir]].
+Conjunto canônico de pares input-output usado como referência para avaliar prompts e modelos. Construído por representatividade, edge cases e anti-tests; versionado em paralelo com os prompts para que regressões sejam rastreáveis. Ver [[03-Dominios/Tecnologia/IA/Evaluation/02 - Golden datasets — como construir]].
 
 ### LLM-as-judge
-Uso de outro LLM (frequentemente um modelo capaz como GPT-4 ou Claude) para avaliar outputs em critérios subjetivos onde anotação humana não escala. Vieses canônicos: positional, verbosity, self-preference. Mitigações: chain-of-thought judging, pairwise comparison, swap-judge consistency. Ver [[Evaluation/04 - LLM-as-judge — quando e como]].
+Uso de outro LLM (frequentemente um modelo capaz como GPT-4 ou Claude) para avaliar outputs em critérios subjetivos onde anotação humana não escala. Vieses canônicos: positional, verbosity, self-preference. Mitigações: chain-of-thought judging, pairwise comparison, swap-judge consistency. Ver [[03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — quando e como]].
 
 ### Scoring rubric
-Critério estruturado para pontuar outputs em avaliação: objetivos (formato, presença de campos) e subjetivos (acurácia, utilidade). Escalas 1–5 anchored (com exemplos por nível) ou binárias pass/fail; inter-rater agreement medido via Cohen's kappa. Ver [[Evaluation/03 - Scoring rubrics e critérios]].
+Critério estruturado para pontuar outputs em avaliação: objetivos (formato, presença de campos) e subjetivos (acurácia, utilidade). Escalas 1–5 anchored (com exemplos por nível) ou binárias pass/fail; inter-rater agreement medido via Cohen's kappa. Ver [[03-Dominios/Tecnologia/IA/Evaluation/03 - Scoring rubrics e critérios]].
 
 ## Human Factors and AI Risks
 
 ### Débito cognitivo
-A erosão, ao longo do tempo, do entendimento compartilhado de uma equipe sobre o que um sistema faz, por que as decisões foram tomadas e como mudá-lo. Diferente do débito técnico (que vive no código) e da carga cognitiva (momentânea), é uma propriedade de nível de projeto: o código pode estar limpo e os testes passando enquanto a [[O programa como teoria|teoria do sistema]] se perde da mente das pessoas. Acelerado pela geração de código via IA, que produz estrutura mais rápido do que o entendimento consegue estabilizar. Termo desenvolvido por Margaret-Anne Storey (2026), apoiado em Peter Naur. Ver [[Débito cognitivo]].
+A erosão, ao longo do tempo, do entendimento compartilhado de uma equipe sobre o que um sistema faz, por que as decisões foram tomadas e como mudá-lo. Diferente do débito técnico (que vive no código) e da carga cognitiva (momentânea), é uma propriedade de nível de projeto: o código pode estar limpo e os testes passando enquanto a [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria|teoria do sistema]] se perde da mente das pessoas. Acelerado pela geração de código via IA, que produz estrutura mais rápido do que o entendimento consegue estabilizar. Termo desenvolvido por Margaret-Anne Storey (2026), apoiado em Peter Naur. Ver [[Débito cognitivo]].
 
 - TODO: débito de compreensão (comprehension debt)
 - TODO: rendição cognitiva (cognitive surrender)
@@ -204,13 +204,13 @@ O algoritmo que treina redes neurais calculando o gradiente da função de perda
 O algoritmo que escolhe o próximo token a partir da distribuição de probabilidades produzida pelo modelo a cada passo — greedy (sempre o mais provável), beam search, ou amostragem estocástica controlada por temperature, top-k e top-p. Determina o equilíbrio entre determinismo/precisão e diversidade/criatividade da saída.
 
 ### Destilação (knowledge distillation)
-Técnica de compressão em que um modelo "aluno" (student), menor, é treinado para reproduzir o comportamento de um modelo "professor" (teacher) maior — imitando não só o rótulo certo, mas a distribuição completa de probabilidades sobre o vocabulário (os *soft targets*), que carrega informação fina sobre como o professor "pensa". Produz uma rede genuinamente menor e mais barata de servir, ao custo de herdar vieses e limitações do professor; é parte do que viabiliza as variantes leves das famílias comerciais (Haiku, Flash, Nano). Distingue-se da [[Dicionário de IA#Quantização|quantização]], que reduz a precisão dos pesos sem mudar a arquitetura. Ver [[Anatomia dos LLMs/18 - Compressão de modelos — quantização e destilação]].
+Técnica de compressão em que um modelo "aluno" (student), menor, é treinado para reproduzir o comportamento de um modelo "professor" (teacher) maior — imitando não só o rótulo certo, mas a distribuição completa de probabilidades sobre o vocabulário (os *soft targets*), que carrega informação fina sobre como o professor "pensa". Produz uma rede genuinamente menor e mais barata de servir, ao custo de herdar vieses e limitações do professor; é parte do que viabiliza as variantes leves das famílias comerciais (Haiku, Flash, Nano). Distingue-se da [[Dicionário de IA#Quantização|quantização]], que reduz a precisão dos pesos sem mudar a arquitetura. Ver [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/20 - Compressão de modelos — quantização e destilação]].
 
 ### embedding
 A representação de um token como um vetor denso de números reais em um espaço de alta dimensão, onde a proximidade geométrica captura similaridade semântica. É a primeira transformação após a tokenização — cada token vira um vetor que as camadas Transformer manipulam. O mesmo mecanismo embasa RAG e busca semântica, onde textos são comparados pela distância entre seus vetores.
 
 ### Extended thinking
-Feature de modelos Claude 4 (Anthropic) que aloca um orçamento de tokens dedicado a raciocínio interno antes de produzir a resposta final. Configurado via parâmetro `thinking` na API com `budget_tokens`; o conteúdo do raciocínio fica em blocos `thinking` separados dos blocos de resposta. Análogo conceitual ao reasoning interno de o3/R1, mas com controle de orçamento explícito. Usado pra problemas que se beneficiam de deliberação mais longa sem o custo de sempre rodar reasoning. Ver [[Anatomia dos LLMs/13 - Reasoning models e chain-of-thought]] e [[Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought]].
+Feature de modelos Claude 4 (Anthropic) que aloca um orçamento de tokens dedicado a raciocínio interno antes de produzir a resposta final. Configurado via parâmetro `thinking` na API com `budget_tokens`; o conteúdo do raciocínio fica em blocos `thinking` separados dos blocos de resposta. Análogo conceitual ao reasoning interno de o3/R1, mas com controle de orçamento explícito. Usado pra problemas que se beneficiam de deliberação mais longa sem o custo de sempre rodar reasoning. Ver [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/15 - Reasoning models e chain-of-thought]] e [[03-Dominios/Tecnologia/IA/Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought]].
 
 ### fine-tuning
 O processo de continuar o treino de um modelo pré-treinado em um conjunto de dados menor e específico para especializá-lo numa tarefa ou domínio, ajustando seus pesos. Contrasta com prompting (que não altera pesos); variantes eficientes como LoRA treinam apenas uma fração dos parâmetros para reduzir custo de memória e armazenamento.
@@ -267,7 +267,7 @@ A primeira fase da inferência de um LLM, na qual o modelo processa o prompt int
 A fase inicial e mais cara do treino de um LLM, em que o modelo aprende a prever o próximo token sobre corpora massivos e não rotulados (trilhões de tokens), adquirindo de forma auto-supervisionada conhecimento linguístico, factual e de raciocínio. Produz o base model — um previsor de texto cru, sem comportamento de assistente; fases posteriores (fine-tuning, RLHF) o especializam e alinham. É o que define o knowledge cutoff do modelo.
 
 ### Quantização
-Técnica de compressão que reduz a precisão numérica com que os [[Dicionário de IA#parameters / weights|pesos]] (e às vezes ativações) de um modelo são armazenados — tipicamente FP16 → INT8 → INT4 — sem alterar a contagem de parâmetros nem a arquitetura. Corta uso de VRAM e custo de inferência (INT4 usa ~4× menos memória que FP16) com perda de qualidade crescente em raciocínio complexo nos bits mais baixos. Aplicada quase sempre depois do treino (PTQ); formatos comuns são GGUF/k-quants, GPTQ, AWQ e NF4. Ver [[Anatomia dos LLMs/18 - Compressão de modelos — quantização e destilação]].
+Técnica de compressão que reduz a precisão numérica com que os [[Dicionário de IA#parameters / weights|pesos]] (e às vezes ativações) de um modelo são armazenados — tipicamente FP16 → INT8 → INT4 — sem alterar a contagem de parâmetros nem a arquitetura. Corta uso de VRAM e custo de inferência (INT4 usa ~4× menos memória que FP16) com perda de qualidade crescente em raciocínio complexo nos bits mais baixos. Aplicada quase sempre depois do treino (PTQ); formatos comuns são GGUF/k-quants, GPTQ, AWQ e NF4. Ver [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/20 - Compressão de modelos — quantização e destilação]].
 
 ### RoPE (Rotary Position Embedding)
 Esquema de codificação posicional em transformers que aplica rotações 2D aos vetores de query e key proporcionais à posição do token, em vez de somar embeddings posicionais aprendidos. Permite extrapolação relativa entre posições e é a base posicional de Llama, Qwen, Mistral e a maioria dos modelos open-weight modernos. Técnicas como YaRN e NTK-aware extension partem do RoPE para estender o contexto além do pretraining.
@@ -406,10 +406,10 @@ Um banco de dados otimizado para armazenar embeddings e recuperar os vetores mai
 A inspeção e bloqueio de entradas ou saídas que violem políticas — conteúdo tóxico, ilegal, sexual ou perigoso — por meio de classificadores, listas ou modelos dedicados. É um tipo de guardrail aplicado nas bordas do pipeline, antes de o input chegar ao modelo ou de o output chegar ao usuário.
 
 ### EU AI Act
-Regulamentação europeia (Regulation (EU) 2024/1689) que classifica sistemas de IA por nível de risco e impõe obrigações proporcionais: práticas proibidas (banimentos), alto risco (avaliação de conformidade, transparência, supervisão humana, logging), GPAI (modelos de propósito geral) e risco mínimo. Cronograma de aplicação escalonado: banimentos desde fevereiro de 2025, obrigações GPAI desde agosto de 2025, regime completo de alto risco em agosto de 2026. Multas até €35M ou 7% do faturamento global. Sistemas de LLM em produção precisam de tracing (Art. 12) e DPIA-equivalente quando processam dados pessoais. Ver [[Observability/08 - Privacy e PII em logs]] e [[Segurança e Guardrails/11 - Governance as architecture — EU AI Act, GDPR, licenças]].
+Regulamentação europeia (Regulation (EU) 2024/1689) que classifica sistemas de IA por nível de risco e impõe obrigações proporcionais: práticas proibidas (banimentos), alto risco (avaliação de conformidade, transparência, supervisão humana, logging), GPAI (modelos de propósito geral) e risco mínimo. Cronograma de aplicação escalonado: banimentos desde fevereiro de 2025, obrigações GPAI desde agosto de 2025, regime completo de alto risco em agosto de 2026. Multas até €35M ou 7% do faturamento global. Sistemas de LLM em produção precisam de tracing (Art. 12) e DPIA-equivalente quando processam dados pessoais. Ver [[03-Dominios/Tecnologia/IA/Observability/08 - Privacy e PII em logs]] e [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/11 - Governance as architecture — EU AI Act, GDPR, licenças]].
 
 ### GDPR
-General Data Protection Regulation (Regulation (EU) 2016/679), em vigor desde maio de 2018. Estabelece direitos do titular de dados (acesso, retificação, apagamento, portabilidade), bases legais pra tratamento (consentimento, legítimo interesse, etc.), princípios de minimização e finalidade, obrigação de DPIA (Art. 35) para tratamentos de alto risco, e papel do DPO. Multas até €20M ou 4% do faturamento global. Em sistemas LLM, atinge logs de prompts contendo PII, retenção de traces e treinamento de modelos com dados pessoais. Ver [[Observability/08 - Privacy e PII em logs]].
+General Data Protection Regulation (Regulation (EU) 2016/679), em vigor desde maio de 2018. Estabelece direitos do titular de dados (acesso, retificação, apagamento, portabilidade), bases legais pra tratamento (consentimento, legítimo interesse, etc.), princípios de minimização e finalidade, obrigação de DPIA (Art. 35) para tratamentos de alto risco, e papel do DPO. Multas até €20M ou 4% do faturamento global. Em sistemas LLM, atinge logs de prompts contendo PII, retenção de traces e treinamento de modelos com dados pessoais. Ver [[03-Dominios/Tecnologia/IA/Observability/08 - Privacy e PII em logs]].
 
 ### Guardrail
 Uma restrição aplicada à entrada ou saída do LLM para impor requisitos de segurança, política ou qualidade — por exemplo, bloqueando informações de identificação pessoal (PII), filtrando conteúdo prejudicial, validando esquemas de saída estruturada ou recusando solicitações fora do tópico. Guardrails podem ser aplicados no modelo (fine-tuning, system prompt) ou no pipeline (pré/pós processamento).
@@ -418,7 +418,7 @@ Uma restrição aplicada à entrada ou saída do LLM para impor requisitos de se
 Uma técnica de prompt que contorna os guardrails e o alinhamento de um modelo para induzi-lo a produzir conteúdo proibido — via role-play, ofuscação, instruções contraditórias ou cenários hipotéticos. É uma forma específica de ataque que explora a tensão entre seguir instruções e respeitar restrições.
 
 ### LGPD
-Lei Geral de Proteção de Dados Pessoais (Lei 13.709/2018), em vigor desde setembro de 2020 no Brasil. Define dado pessoal sensível (Art. 5º II), direitos do titular (Art. 18), bases legais pra tratamento (Art. 7º), e obriga relatório de impacto à proteção de dados pessoais em tratamentos de alto risco. Fiscalizada pela ANPD (Autoridade Nacional de Proteção de Dados); multas até 2% do faturamento limitadas a R$50M por infração (Art. 52, II). Em sistemas LLM, atinge logs de prompts, traces, e treinamento. Ver [[Observability/08 - Privacy e PII em logs]].
+Lei Geral de Proteção de Dados Pessoais (Lei 13.709/2018), em vigor desde setembro de 2020 no Brasil. Define dado pessoal sensível (Art. 5º II), direitos do titular (Art. 18), bases legais pra tratamento (Art. 7º), e obriga relatório de impacto à proteção de dados pessoais em tratamentos de alto risco. Fiscalizada pela ANPD (Autoridade Nacional de Proteção de Dados); multas até 2% do faturamento limitadas a R$50M por infração (Art. 52, II). Em sistemas LLM, atinge logs de prompts, traces, e treinamento. Ver [[03-Dominios/Tecnologia/IA/Observability/08 - Privacy e PII em logs]].
 
 ### output validation
 A verificação programática da saída do modelo antes de usá-la — checagem de schema/JSON, tipos, faixas de valor, ausência de PII ou conformidade com regras de negócio. É um guardrail de pós-processamento que transforma a saída probabilística do LLM em algo confiável para sistemas downstream.
@@ -489,13 +489,13 @@ A unidade atômica que um modelo de linguagem lê e emite — tipicamente um fra
 A capacidade de um LLM de produzir uma chamada estruturada (nome + argumentos em JSON) a uma função previamente declarada, em vez de texto livre, para que a aplicação a execute. É o mecanismo subjacente ao tool use; o termo enfatiza a interface estruturada exposta pelas APIs dos provedores.
 
 ### JSON Schema
-Especificação (json-schema.org) usada como contrato para structured outputs em LLMs. Define `type`, `properties`, `required`, `enum`, `additionalProperties` etc.; OpenAI strict mode e Gemini structured output usam subsets dela, e Anthropic a consome via `tool input_schema`. Ver [[Structured Outputs/02 - JSON Schema como contrato]].
+Especificação (json-schema.org) usada como contrato para structured outputs em LLMs. Define `type`, `properties`, `required`, `enum`, `additionalProperties` etc.; OpenAI strict mode e Gemini structured output usam subsets dela, e Anthropic a consome via `tool input_schema`. Ver [[03-Dominios/Tecnologia/IA/Structured Outputs/02 - JSON Schema como contrato]].
 
 ### SDK
 Um kit de desenvolvimento — biblioteca em uma linguagem específica (Python, TypeScript) — que abstrai as chamadas HTTP cruas à API de um provedor de LLM, oferecendo tipos, autenticação, streaming e tratamento de erros. Exemplos: o Anthropic SDK e o OpenAI SDK.
 
 ### Strict mode (Structured Outputs)
-Modo do OpenAI Structured Outputs que garante aderência total ao JSON Schema (response_format com `strict: true`). Aceita apenas um subset limitado de features de JSON Schema — sem `additionalProperties: true`, com todas as properties em `required` — em troca de output garantidamente válido. Ver [[Structured Outputs/04 - OpenAI Structured Outputs — strict mode]].
+Modo do OpenAI Structured Outputs que garante aderência total ao JSON Schema (response_format com `strict: true`). Aceita apenas um subset limitado de features de JSON Schema — sem `additionalProperties: true`, com todas as properties em `required` — em troca de output garantidamente válido. Ver [[03-Dominios/Tecnologia/IA/Structured Outputs/04 - OpenAI Structured Outputs — strict mode]].
 
 ### structured output
 Uma saída do modelo restrita a um formato verificável — tipicamente JSON conforme um schema declarado — em vez de texto livre, garantida por validação ou por decodificação restrita (constrained decoding). Torna a resposta do LLM consumível diretamente por código, sem parsing frágil.

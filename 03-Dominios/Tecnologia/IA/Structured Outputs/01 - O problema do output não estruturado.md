@@ -161,5 +161,5 @@ O resto da trilha é isso, ramificado.
 - [[02 - JSON Schema como contrato]] — a linguagem padrão pra escrever o schema
 - [[03 - Function calling como mecanismo de output]] — o mecanismo principal de enforcement
 - [[07 - Validação e retry — Pydantic, Zod]] — o que fazer quando shape está OK mas semântica não
-- [[AI Engineering Stack/05 - Output Layer|AI Engineering Stack — Output Layer]] — a camada arquitetural correspondente
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/05 - Output Layer|AI Engineering Stack — Output Layer]] — a camada arquitetural correspondente
 - [[Dicionário de IA#structured output|Dicionário: structured output]]

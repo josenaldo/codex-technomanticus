@@ -40,7 +40,7 @@ forbidden:
 tool_failure_behavior: <retry N vezes | fallback pra tool X | escalate>
 ```
 
-A trilha [[MCP]] descreve o protocolo que padroniza o **transporte** de tools entre modelo e cliente; [[Anatomia de Agents/03 - Tool design — princípios e categorias|Tool design]] descreve **como** desenhar uma tool bem.
+A trilha [[MCP]] descreve o protocolo que padroniza o **transporte** de tools entre modelo e cliente; [[03-Dominios/Tecnologia/IA/Anatomia de Agents/03 - Tool design — princípios e categorias|Tool design]] descreve **como** desenhar uma tool bem.
 
 ## Decisões-chave
 
@@ -52,13 +52,13 @@ A trilha [[MCP]] descreve o protocolo que padroniza o **transporte** de tools en
 
 4. **Failure handling.** Tool falha (timeout, 500, schema mismatch). Sem política, o modelo improvisa — às vezes chama de novo, às vezes inventa o resultado. Política explícita (retry com backoff, fallback, escalate) reduz comportamento errático.
 
-5. **Tool design.** Tool com schema mal-feito gera alucinação de parâmetro ([[Segurança e Guardrails/03 - Alucinações em código — APIs fantasma e parâmetros inexistentes|APIs fantasma]]). Descrições claras, exemplos no schema, erros informativos — é trabalho de engenharia, não detalhe.
+5. **Tool design.** Tool com schema mal-feito gera alucinação de parâmetro ([[03-Dominios/Tecnologia/IA/Segurança e Guardrails/03 - Alucinações em código — APIs fantasma e parâmetros inexistentes|APIs fantasma]]). Descrições claras, exemplos no schema, erros informativos — é trabalho de engenharia, não detalhe.
 
 ## Onde aprofundar no Codex
 
-- **[[Anatomia de Agents/03 - Tool design — princípios e categorias|03 - Tool design]]** — princípios de desenho.
+- **[[03-Dominios/Tecnologia/IA/Anatomia de Agents/03 - Tool design — princípios e categorias|03 - Tool design]]** — princípios de desenho.
 - **[[MCP]]** — protocolo padrão pra transportar tools.
-- **[[Anatomia de Agents/02 - O loop ReAct e native tool use|O loop ReAct]]** — como o modelo decide chamar tool.
+- **[[03-Dominios/Tecnologia/IA/Anatomia de Agents/02 - O loop ReAct e native tool use|O loop ReAct]]** — como o modelo decide chamar tool.
 
 ## Veja também
 

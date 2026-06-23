@@ -1157,7 +1157,7 @@ class PatientControllerIT {
 }
 ```
 
-→ Detalhes de testes em [[Testes]], [[Testes em Java]]
+→ Detalhes de testes em [[03-Dominios/Engenharia/Testes/index|Testes]], [[Testes em Java]]
 
 ---
 
@@ -1321,5 +1321,5 @@ class PatientControllerIT {
 - [[Node.js]] — implementação em Node/Express/NestJS
 - [[Python Backend]] — Django REST Framework, FastAPI
 - [[Go Backend]] — net/http, Gin, gRPC
-- [[Banco de dados]] — paginação, consistência, otimização de queries
-- [[Testes]] — estratégias de teste
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — paginação, consistência, otimização de queries
+- [[03-Dominios/Engenharia/Testes/index|Testes]] — estratégias de teste

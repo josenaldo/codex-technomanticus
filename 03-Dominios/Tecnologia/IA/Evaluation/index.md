@@ -23,9 +23,9 @@ Sem evals, desenvolvimento com LLM vira vibes: qualquer sistema com LLM em produ
 
 > [!warning] Esta trilha é a disciplina; as notas contextuais ficam nas anatomias
 > Já existem três notas de eval no Codex, cada uma cobrindo eval **dentro** de um contexto específico:
-> - [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — eval de LLM puro em produção (4 pilares: golden set, LLM-as-judge, observabilidade, A/B test)
-> - [[Anatomia de Agents/09 - Evaluation de agents]] — eval de sistemas agentic (task completion rate, trace review, error types)
-> - [[RAG e Vector Databases/09 - Evaluation de RAG]] — métricas canônicas Ragas (context precision/recall, faithfulness, answer relevance)
+> - [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — eval de LLM puro em produção (4 pilares: golden set, LLM-as-judge, observabilidade, A/B test)
+> - [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]] — eval de sistemas agentic (task completion rate, trace review, error types)
+> - [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] — métricas canônicas Ragas (context precision/recall, faithfulness, answer relevance)
 >
 > Esta trilha **não duplica** o conteúdo delas. É o tronco que define eval como disciplina; aquelas três são os galhos contextuais. A nota [[08 - Eval por contexto — LLM, RAG, agent, prompt]] fecha a ponte e linka pra cada uma.
 
@@ -103,10 +103,10 @@ Como eval muda quando o sistema avaliado é mais que um prompt isolado.
 ## Veja também
 
 - [[AI Engineering Stack]] — onde a Evaluation Layer se encaixa no stack
-- [[AI Engineering Stack/09 - Evaluation Layer]] — a camada que aponta pra esta trilha como aprofundamento
-- [[Anatomia de Agents/09 - Evaluation de agents]] — eval contextual de sistemas agentic
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — eval contextual de LLM puro em prod
-- [[RAG e Vector Databases/09 - Evaluation de RAG]] — eval contextual de pipelines RAG
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/09 - Evaluation Layer]] — a camada que aponta pra esta trilha como aprofundamento
+- [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]] — eval contextual de sistemas agentic
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — eval contextual de LLM puro em prod
+- [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] — eval contextual de pipelines RAG
 - [[Improvement Loop]] — o ciclo de melhoria contínua onde evals entregam o sinal (em construção)
 - [[Segurança e Guardrails]] — guardrails são automatic_failure_conditions da rubrica
 - [[Prompt Engineering]] — evals dizem se o prompt melhorou ou piorou

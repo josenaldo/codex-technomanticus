@@ -493,8 +493,8 @@ Esta seção resume toda a trilha **Observability e produção** em tabelas de r
 
 ## Veja também
 
-- [[MOC - Observability e produção]]
-- [[01 - Os três pilares]]
+- [[03-Dominios/Tecnologia/Node/Observability e produção/index|Observability e produção]]
+- [[03-Dominios/Tecnologia/Node/Observability e produção/01 - Os três pilares - logs, métricas e traces]]
 - [[04 - Métricas com prom-client]]
 - [[06 - Tracing distribuído com OpenTelemetry]]
 - [[09 - Graceful shutdown profundo]]

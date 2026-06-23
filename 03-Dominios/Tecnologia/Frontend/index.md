@@ -20,7 +20,7 @@ Estante de **engenharia frontend** — disciplina cross-tecnologia. Cobre arquit
 
 > [!info] O que **não** está aqui
 > Tecnologias específicas têm estantes próprias:
-> - Linguagens e libs: [[03-Dominios/Tecnologia/JavaScript/index|JavaScript]], [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]], [[03-Dominios/HTML/index|HTML]], [[03-Dominios/CSS/index|CSS]]
+> - Linguagens e libs: [[03-Dominios/Tecnologia/JavaScript/index|JavaScript]], [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]], [[03-Dominios/Tecnologia/JavaScript/Frontend/HTML e CSS|HTML]], [[03-Dominios/Tecnologia/JavaScript/Frontend/HTML e CSS|CSS]]
 > - Frameworks/UI: [[03-Dominios/Tecnologia/React/index|React]], (futuras: Vue, Svelte, HTMX)
 > - Tooling: [[03-Dominios/Tecnologia/Ferramentas/index|Ferramentas]] (Vite, bundlers, monorepos)
 >

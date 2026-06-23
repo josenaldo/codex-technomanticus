@@ -30,7 +30,7 @@ O escopo inclui: supply chain security (npm audit, lockfiles, socket.dev), geren
 **Audiência secundária:** dev implementando ou auditando segurança em APIs Node.js em produção — que precisa de um mapa coerente do que proteger e com quais ferramentas.
 
 **Pré-requisitos:**
-- [[JavaScript/Backend/Node.js|Node.js]] — tronco da trilha, conceitos fundamentais de Node
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha, conceitos fundamentais de Node
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Runtime e Event Loop]] — galho 1, modelo mental de event loop e async
 - [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index|Frameworks e arquitetura]] — galho 4, Express e Fastify como base para middleware de segurança
 
@@ -96,7 +96,7 @@ SORT file.name ASC
 
 ## Veja também
 
-- [[JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]] — visão geral de todos os galhos
 - [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index|Frameworks e arquitetura]] — galho 4, base para middlewares de segurança
 - [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] — galho 7, supply chain e package managers

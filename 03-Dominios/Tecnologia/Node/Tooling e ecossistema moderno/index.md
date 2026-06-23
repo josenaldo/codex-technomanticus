@@ -34,7 +34,7 @@ O escopo inclui: package managers e lockfiles, semver e estratégias de atualiza
 **Audiência secundária:** dev modernizando toolchain de projeto Node existente — migrando de CommonJS para ESM, adotando TypeScript sem build step, ou avaliando troca de npm por pnpm/Bun para reduzir tempo de CI.
 
 **Pré-requisitos:**
-- [[JavaScript/Backend/Node.js|Node.js]] — tronco da trilha, conceitos fundamentais de Node
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha, conceitos fundamentais de Node
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Runtime e Event Loop]] — galho 1, modelo mental de event loop (pressuposto ao longo de todo este galho)
 
 ## Comece por aqui — trilha completa (10 notas)
@@ -99,7 +99,7 @@ SORT file.name ASC
 
 ## Veja também
 
-- [[JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]] — visão geral de todos os galhos
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Runtime e Event Loop]] — galho 1, modelo mental de event loop
 - [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index|Frameworks e arquitetura]] — galho 4, Express, NestJS, Fastify, Hono

@@ -93,5 +93,5 @@ SORT file.name ASC
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
 - [[03-Dominios/Ciência/Estruturas de Dados/index|Estruturas de Dados]] — as estruturas sobre as quais os algoritmos operam
-- [[Banco de dados]] — índices e a complexidade das queries
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — índices e a complexidade das queries
 - [[Dicionário de Ciência da Computação]]

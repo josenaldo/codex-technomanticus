@@ -124,7 +124,7 @@ A linha *"Padrão a preservar"* dá ao modelo a chave de leitura — o que olhar
 
 ## Few-shot vs CoT vs zero-shot — onde isso encaixa
 
-Esta nota cobre o que faz few-shot **funcionar** em profundidade. Para a taxonomia mais larga das técnicas de prompting (zero-shot, few-shot, chain-of-thought, tree-of-thought), e quando escolher uma em vez de outra, ver [[Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Context Engineering — Técnicas de prompting]]. Aqui o foco é a disciplina específica: como montar exemplos que não envenenam.
+Esta nota cobre o que faz few-shot **funcionar** em profundidade. Para a taxonomia mais larga das técnicas de prompting (zero-shot, few-shot, chain-of-thought, tree-of-thought), e quando escolher uma em vez de outra, ver [[03-Dominios/Tecnologia/IA/Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Context Engineering — Técnicas de prompting]]. Aqui o foco é a disciplina específica: como montar exemplos que não envenenam.
 
 ## Pitfall: exemplo único como "exemplo"
 
@@ -149,7 +149,7 @@ Caso contrário, você arrisca o modelo cuspir um exemplo no output final como s
 
 ## Veja também
 
-- [[Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Técnicas de prompting — taxonomia]] — onde few-shot mora dentro do catálogo maior
+- [[03-Dominios/Tecnologia/IA/Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Técnicas de prompting — taxonomia]] — onde few-shot mora dentro do catálogo maior
 - [[02 - Especificidade — a primeira disciplina]] — exemplos só funcionam se a tarefa-base já é específica
 - [[03 - Roles e personas — escolhendo o juízo do modelo]] — role estabelece juízo; exemplos estabelecem padrão
 - [[06 - Constraints declarativas — boundaries como engenharia]] — quando exemplos contradizem constraints, constraints perdem

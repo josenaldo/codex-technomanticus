@@ -167,7 +167,7 @@ Por que isso é uma superpotência? Porque habilita um monte de coisa de graça:
 
 ### Testabilidade quase gratuita
 
-Esta é a vitória mais imediata, e o gancho direto com [[Testes]]. Testar uma função pura é trivial: você dá uma entrada, compara com a saída esperada. Acabou.
+Esta é a vitória mais imediata, e o gancho direto com [[03-Dominios/Engenharia/Testes/index|Testes]]. Testar uma função pura é trivial: você dá uma entrada, compara com a saída esperada. Acabou.
 
 ```js
 expect(soma(2, 3)).toBe(5); // sem setup, sem mock, sem teardown
@@ -290,5 +290,5 @@ A pure function has two properties: it is deterministic (same input always yield
 - [[10 - Tipos algébricos, pattern matching e erros sem exceção]]
 - [[15 - Programação funcional na prática]]
 - [[16 - Paradigmas na prática e em entrevista]]
-- [[Testes]]
+- [[03-Dominios/Engenharia/Testes/index|Testes]]
 - [[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]]

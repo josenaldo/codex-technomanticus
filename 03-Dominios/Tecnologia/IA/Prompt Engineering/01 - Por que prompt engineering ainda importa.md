@@ -62,7 +62,7 @@ Quando você modela um sistema em camadas (ver [[AI Engineering Stack]]), o prom
 
 ## Onde mora dentro do AI Engineering Stack
 
-Esta trilha mora explicitamente dentro de uma camada: [[AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]]. A relação:
+Esta trilha mora explicitamente dentro de uma camada: [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]]. A relação:
 
 ```
 AI Engineering Stack (11 camadas)
@@ -104,7 +104,7 @@ A trilha existe pra tratar essa camada com seriedade — sem o ar de promessa m�
 
 ## Veja também
 
-- [[AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — a camada onde esta trilha mora
-- [[Context Engineering/01 - De prompt engineering a context engineering|Context Engineering — De prompt a context engineering]] — o framing "evolução" complementar
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — a camada onde esta trilha mora
+- [[03-Dominios/Tecnologia/IA/Context Engineering/01 - De prompt engineering a context engineering|Context Engineering — De prompt a context engineering]] — o framing "evolução" complementar
 - [[02 - Especificidade — a primeira disciplina]] — próxima nota: a primeira alavanca prática
 - [[09 - Anti-patterns e tells de IA — o que evitar]] — o lado cultural do ofício

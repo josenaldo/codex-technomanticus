@@ -272,4 +272,4 @@ Vocabulário PT→EN:
 - [[07 - Composição sobre herança]] — o "tem um" plugável que a DI explora
 - [[08 - Acoplamento e coesão]] — o baixo acoplamento que a DI entrega
 - [[Arquitetura de Software]] — IoC containers como peça da arquitetura
-- estante Java/Spring: [[Spring Boot]], [[Spring]] — o IoC container na prática
+- estante Java/Spring: [[Spring Boot]], [[03-Dominios/Tecnologia/Java/Backend/Spring Boot]] — o IoC container na prática

@@ -541,5 +541,5 @@ O processo filho é encerrado pelo Node e o callback recebe um erro `ERR_CHILD_P
 
 - [[02 - As 3 ferramentas - Worker Threads, Cluster, child_process]] — visão geral dos três modelos de paralelismo Node
 - [[09 - child_process com fork - Node child com IPC]] — processo Node filho com canal IPC bidirecional
-- [[12 - Armadilhas, regras práticas, cheatsheet]] — cheatsheet consolidado da trilha
+- [[03-Dominios/Tecnologia/Node/Paralelismo/12 - Armadilhas, regras práticas, cheatsheet]] — cheatsheet consolidado da trilha
 - [[Node.js]] — tronco da trilha Node Senior

@@ -56,8 +56,8 @@ A regra do `not_in_scope` é o que separa Purpose Layer bem-feita de mission sta
 
 ## Onde aprofundar no Codex
 
-- **[[Spec-Driven Development]]** — a Fase Specify é a versão completa e formalizada da Purpose Layer. Ler especialmente [[Spec-Driven Development/04 - Fase Specify — definindo outcomes e constraints|Fase Specify]].
-- **[[Anatomia de Agents/01 - O que é um agent|O que é um agent]]** — discussão de quando a "primary_job" justifica um agent vs workflow.
+- **[[Spec-Driven Development]]** — a Fase Specify é a versão completa e formalizada da Purpose Layer. Ler especialmente [[03-Dominios/Tecnologia/IA/Spec-Driven Development/04 - Fase Specify — definindo outcomes e constraints|Fase Specify]].
+- **[[03-Dominios/Tecnologia/IA/Anatomia de Agents/01 - O que é um agent|O que é um agent]]** — discussão de quando a "primary_job" justifica um agent vs workflow.
 
 ## Veja também
 

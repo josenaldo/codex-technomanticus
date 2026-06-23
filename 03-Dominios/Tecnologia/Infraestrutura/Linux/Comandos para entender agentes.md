@@ -447,7 +447,7 @@ rm -rf dir                    # força, sem perguntar (CUIDADO)
 
 ### chmod — permissões
 
-Muda permissões. Detalhe completo em [[Linux#Permissões e ownership]] — a essência:
+Muda permissões. Detalhe completo em [[Linux|Permissões e ownership]] — a essência:
 
 ```bash
 chmod +x script.sh            # tornar executável

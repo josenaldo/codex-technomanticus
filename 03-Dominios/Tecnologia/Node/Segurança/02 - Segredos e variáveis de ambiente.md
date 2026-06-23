@@ -594,7 +594,7 @@ A: Because the alternative is discovering misconfiguration in production under l
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — MOC do galho 8; visão completa da trilha de segurança Node.js
-- [[JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior; fundamentos de Node.js
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior; fundamentos de Node.js
 - [[03-Dominios/Tecnologia/Node/Segurança/01 - Supply chain attacks e npm audit|Supply chain attacks e npm audit]] — galho 8, nota 1; vetores de comprometimento via dependências npm
 - [[03-Dominios/Tecnologia/Node/Segurança/03 - Validação de entrada com Zod e Joi|Validação de entrada com Zod e Joi]] — galho 8, nota 3; validação de schemas com Zod aplicada a inputs externos
 - [AWS Secrets Manager — documentação oficial](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html)

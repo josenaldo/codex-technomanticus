@@ -279,8 +279,8 @@ Judge é ~10x mais barato e 50x mais rápido. Por isso vale escalar — **depois
 - [[02 - Golden datasets — como construir]] — dataset onde judge roda
 - [[05 - Regression testing em LLMs]] — judge como sinal de regressão
 - [[Dicionário de IA#LLM-as-judge|LLM-as-judge (verbete)]]
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — pilar 2 contextualizado
-- [[RAG e Vector Databases/09 - Evaluation de RAG]] — Ragas usa LLM-as-judge internamente
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — pilar 2 contextualizado
+- [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] — Ragas usa LLM-as-judge internamente
 
 ## Fontes
 

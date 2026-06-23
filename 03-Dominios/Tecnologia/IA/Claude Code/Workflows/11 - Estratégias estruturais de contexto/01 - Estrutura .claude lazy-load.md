@@ -151,7 +151,7 @@ Esta é a abordagem **Iniciada** — zero infra externa, aplicável em qualquer 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/03 - CLAUDE.md receitas|CLAUDE.md receitas]] — templates por stack
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/07 - Pasta .claude|Pasta .claude]] — convenções de organização
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|Tokens e custo]] — fundamentos econômicos
-- [[index|Tronco do sub-galho]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|Tronco do sub-galho]]
 
 ## Aprofundamento
 

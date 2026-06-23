@@ -3,7 +3,7 @@
     - [[#Configurando WSL do Zero: Ambiente perfeito para quem usa Windows]]
     - [[#Tutorial ZSH e Pyenv no Ubuntu]]
 - [[#Docker]]
-    - [[#APRENDA DOCKER DO ZERO | TUTORIAL COMPLETO COM DEPLOY]]
+    - [[#APRENDA DOCKER DO ZERO — TUTORIAL COMPLETO COM DEPLOY]]
     - [[#Aprenda Docker do Zero, tutorial passo a passo]]
     - [[#Descomplicando Docker ]]
     - [[#Rodando Docker no WSL 2 sem Docker Desktop]]
@@ -37,7 +37,7 @@ https://github.com/codeedu/wsl2-docker-quickstart
 
 # Docker
 
-## **APRENDA DOCKER DO ZERO | TUTORIAL COMPLETO COM DEPLOY**
+## **APRENDA DOCKER DO ZERO — TUTORIAL COMPLETO COM DEPLOY**
 
 [https://www.youtube.com/watch?v=DdoncfOdru8](https://www.youtube.com/watch?v=DdoncfOdru8)
 
@@ -61,7 +61,7 @@ https://github.com/codeedu/wsl2-docker-quickstart
 
 [[Comandos Docker e WSL]]
 
-[[Docke credential helpers]]
+[[03-Dominios/Tecnologia/Infraestrutura/Docker credential helpers]]
 
 ## Garanta que um container só seja iniciado quando o outro estiver pronto
 

@@ -476,7 +476,7 @@ A: The pattern solves a fundamental tension in stateless authentication: short t
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]]
-- [[JavaScript/Backend/Node.js|Node.js]]
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]]
 - [[03-Dominios/Tecnologia/Node/Segurança/02 - Segredos e variáveis de ambiente|Segredos e variáveis de ambiente]]
 - [[03-Dominios/Tecnologia/Node/Segurança/01 - Supply chain attacks e npm audit|Supply chain attacks e npm audit]]
 - [jsonwebtoken — npm](https://www.npmjs.com/package/jsonwebtoken)

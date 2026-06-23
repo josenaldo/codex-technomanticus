@@ -167,5 +167,5 @@ Deep dive em concorrência e paralelismo na JVM — do **Java Memory Model** e h
 - [[Spring Boot]] — concorrência em Spring (async, thread pools, virtual threads)
 - [[System Design]] — patterns de concorrência em larga escala
 - [[Redes e Protocolos]] — I/O-bound, connection pooling, timeouts
-- [[Banco de dados]] — transações, isolation levels, connection pool
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — transações, isolation levels, connection pool
 - [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]] — consumer concurrency, paralelismo por partição

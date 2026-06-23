@@ -48,7 +48,7 @@ Note que **forbidden_actions na Prompt Layer não substitui Guardrail Layer**. P
 
 2. **Tom do `uncertainty_behavior`.** Três comportamentos comuns: (a) *ask back* — pede esclarecimento; (b) *flag and proceed* — segue com aviso de baixa confiança; (c) *stop and escalate* — recusa e pede humano. A escolha define UX inteira.
 
-3. **Tamanho do system prompt.** Prompt longo gasta tokens em **todo** request ([[Anatomia dos LLMs/03 - A janela de contexto|janela de contexto]] mais cheia, custo a cada chamada). Use [[Dicionário de IA#Prompt caching|prompt caching]] quando disponível; ainda assim, prune o que não muda comportamento.
+3. **Tamanho do system prompt.** Prompt longo gasta tokens em **todo** request ([[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/06 - A janela de contexto|janela de contexto]] mais cheia, custo a cada chamada). Use [[Dicionário de IA#Prompt caching|prompt caching]] quando disponível; ainda assim, prune o que não muda comportamento.
 
 4. **Few-shot vs zero-shot.** Adicionar 2-3 exemplos no system prompt geralmente sobe qualidade mais do que reescrever instruções. Custa tokens, mas é a alavanca de melhor ROI quando o modelo "quase acerta".
 
@@ -57,7 +57,7 @@ Note que **forbidden_actions na Prompt Layer não substitui Guardrail Layer**. P
 ## Onde aprofundar no Codex
 
 - **[[Prompt Engineering]]** — trilha-irmã dedicada a técnicas (CoT, few-shot, ToT, role prompting). Em construção.
-- **[[Context Engineering/01 - De prompt engineering a context engineering|De prompt engineering a context engineering]]** — onde a Prompt Layer se posiciona no panorama maior.
+- **[[03-Dominios/Tecnologia/IA/Context Engineering/01 - De prompt engineering a context engineering|De prompt engineering a context engineering]]** — onde a Prompt Layer se posiciona no panorama maior.
 - **[[Dicionário de IA#prompt engineering|Dicionário: prompt engineering]]**.
 
 ## Veja também

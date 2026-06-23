@@ -21,7 +21,7 @@ One-shot prompt é tabu — sistemas de IA em produção melhoram em loop: eval 
 > [[Evaluation]] e [[Observability]] são pré-requisitos efetivos. Sem eval você não sabe se a mudança melhorou; sem observability você não sabe **o que** mudar. Esta trilha assume que ambos estão no lugar (mesmo que em estado seedling).
 
 > [!warning] Onde esta trilha mora no stack
-> A [[AI Engineering Stack/12 - Improvement Layer|Improvement Layer]] do stack referencia esta trilha como aprofundamento. O stack define o **conceito** (loop fechado, cadência, ownership); esta trilha cobre a **mecânica** (eval gate, A/B, semver, champion-challenger, auto-prompt).
+> A [[03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer|Improvement Layer]] do stack referencia esta trilha como aprofundamento. O stack define o **conceito** (loop fechado, cadência, ownership); esta trilha cobre a **mecânica** (eval gate, A/B, semver, champion-challenger, auto-prompt).
 
 ## Comece por aqui
 
@@ -31,14 +31,14 @@ Trilha sequencial recomendada — ciclo → mecânica → automação → sinais
 
 A forma canônica do loop e a maturidade que ele representa.
 
-- [[01 - O ciclo eval → diff → ship]] — observability surface → eval mede → hipótese → A/B → champion-challenger → ship; maturidade ladder; posição no [[AI Engineering Stack/12 - Improvement Layer|stack]]
+- [[01 - O ciclo eval → diff → ship]] — observability surface → eval mede → hipótese → A/B → champion-challenger → ship; maturidade ladder; posição no [[03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer|stack]]
 
 ### Bloco 2 — Mecânica (3 notas)
 
 Os três artefatos operacionais do loop: o experimento, a versão, a promoção.
 
 - [[02 - A-B testing de prompts]] — control vs treatment; sample size; frequentista vs bayesiano pra LLM; peeking como anti-padrão
-- [[03 - Prompt versioning — semver para prompts]] — quando bumpar (e que cada bump dispara); ponte com [[Observability/05 - Versionamento de prompts|Observability/05]] que cobre o **como**
+- [[03 - Prompt versioning — semver para prompts]] — quando bumpar (e que cada bump dispara); ponte com [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts|Observability/05]] que cobre o **como**
 - [[04 - Champion-challenger em produção]] — traffic split, métricas-gate, promoção/rollback automáticos, anti-pattern do challenger eterno
 
 ### Bloco 3 — Automação (1 nota)
@@ -57,7 +57,7 @@ Onde vem o sinal humano que alimenta o loop.
 
 Como o loop atravessa o pipeline de entrega.
 
-- [[07 - Eval gates em CI — quando bloquear merge]] — threshold por categoria; sampling barato em PR + full em main; quarentena de flaky; ponte com [[Evaluation/07 - Eval em CI-CD|Evaluation/07]] que cobre o pipeline mais amplo
+- [[07 - Eval gates em CI — quando bloquear merge]] — threshold por categoria; sampling barato em PR + full em main; quarentena de flaky; ponte com [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD|Evaluation/07]] que cobre o pipeline mais amplo
 
 ## Rotas alternativas
 
@@ -94,7 +94,7 @@ Como o loop atravessa o pipeline de entrega.
 ## Veja também
 
 - [[AI Engineering Stack]] — onde a Improvement Layer se encaixa
-- [[AI Engineering Stack/12 - Improvement Layer]] — a camada conceitual que esta trilha aprofunda
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer]] — a camada conceitual que esta trilha aprofunda
 - [[Evaluation]] — pré-requisito; entrega o sinal pro loop
 - [[Observability]] — pré-requisito; entrega o detalhe pro loop
 - [[Prompt Engineering]] — onde os prompts nascem antes de virarem objeto de melhoria

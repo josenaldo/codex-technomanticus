@@ -382,8 +382,8 @@ Em 80% dos casos, **Promptfoo + Langfuse** já resolve. Os outros entram quando 
 
 - [[07 - Eval em CI-CD]] — onde Promptfoo brilha
 - [[05 - Regression testing em LLMs]] — pattern que esses frameworks implementam
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — Langfuse mencionado como pilar 3
-- [[RAG e Vector Databases/09 - Evaluation de RAG]] — Ragas é nicho específico
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — Langfuse mencionado como pilar 3
+- [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] — Ragas é nicho específico
 - [[Dicionário de IA#Langfuse|Langfuse (verbete)]]
 - [[Dicionário de IA#Arize Phoenix|Arize Phoenix (verbete)]]
 

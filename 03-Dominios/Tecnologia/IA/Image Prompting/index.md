@@ -72,7 +72,7 @@ Onde geração de imagem funciona e onde ainda não — honesto sobre o estado d
 - [[Prompt Engineering]] — mentalidade comum: iteração disciplinada, constraints, especificidade
 - [[Multimodal Prompting]] — input visual no LLM; complementa esta trilha (que cobre output visual)
 - [[AI Engineering Stack]] — image generation é uma decisão de Output Layer
-- [[AI Engineering Stack/05 - Output Layer]] — onde image generation se encaixa no stack
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/05 - Output Layer]] — onde image generation se encaixa no stack
 
 ## Todas as notas
 

@@ -17,7 +17,7 @@ aliases:
 Em 2025, Karpathy declarou que *"prompt engineering morreu"*. A frase pegou — e foi mal lida. O que morreu foi o **prompt como bala de prata**: a ideia de que a frase mágica, isolada, resolve qualquer tarefa. O **ofício do prompt** segue muito vivo — agora como uma camada bem-definida dentro de um sistema maior. Esta trilha trata Prompt Engineering como a camada **dentro** do Prompt Layer do [[AI Engineering Stack]]. [[Context Engineering]] é o superset que cuida do ambiente informacional inteiro; não substitui o ofício do prompt, contém-no. Aqui você aprende as primitivas: especificidade, roles, few-shot, constraints, iteração disciplinada, prompts para reasoning models, e o catálogo de anti-patterns que denunciam IA.
 
 > [!info] Pré-requisitos
-> [[Anatomia dos LLMs/01 - O que é um LLM|01 - O que é um LLM]], [[Anatomia dos LLMs/02 - Tokens e tokenização|02 - Tokens e tokenização]] e [[Anatomia dos LLMs/03 - A janela de contexto|03 - A janela de contexto]] são suficientes. Familiaridade com [[Context Engineering]] ajuda a ver onde esta trilha se encaixa, mas não é obrigatória.
+> [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/01 - O que é um LLM|01 - O que é um LLM]], [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/02 - Tokens e tokenização|02 - Tokens e tokenização]] e [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/06 - A janela de contexto|03 - A janela de contexto]] são suficientes. Familiaridade com [[Context Engineering]] ajuda a ver onde esta trilha se encaixa, mas não é obrigatória.
 
 > [!warning] Não é "prompt vs context"
 > Esta trilha **não** compete com [[Context Engineering]]. Prompt Engineering é uma camada dentro do Prompt Layer; Context Engineering é a disciplina mais larga que orquestra prompt + retrieval + memória + tools. Quem só faz prompt sem pensar em context produz demos; quem só pensa em context sem afiar o prompt entrega sistemas vagos. As duas trilhas se complementam.
@@ -89,11 +89,11 @@ A higiene que separa output de IA de output assinável.
 
 ## Veja também
 
-- [[AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — onde esta trilha se encaixa na arquitetura
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — onde esta trilha se encaixa na arquitetura
 - [[Context Engineering]] — o superset; prompt é uma das fontes de contexto
-- [[Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Context Engineering — Técnicas de prompting]] — taxonomia adjacente
+- [[03-Dominios/Tecnologia/IA/Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Context Engineering — Técnicas de prompting]] — taxonomia adjacente
 - [[Anatomia dos LLMs]] — pré-requisito conceitual
-- [[Anatomia dos LLMs/13 - Reasoning models e chain-of-thought|Reasoning models e chain-of-thought]] — o "porquê" da nota 08
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/15 - Reasoning models e chain-of-thought|Reasoning models e chain-of-thought]] — o "porquê" da nota 08
 - [[Segurança e Guardrails]] — onde constraints declarativas terminam e guardrails de sistema começam
 
 ## Todas as notas

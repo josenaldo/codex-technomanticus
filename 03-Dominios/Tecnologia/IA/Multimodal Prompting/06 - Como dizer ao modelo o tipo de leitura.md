@@ -225,7 +225,7 @@ Output esperado: JSON estruturado, auditável.
 - **Não confunda "ignore X" com "não veja X".** Ignore desloca atenção, não cega. Pra cegar, corte a imagem.
 - **Output é parte do tipo de leitura.** Pedir JSON força leitura extrativa; pedir prosa força narrativa.
 - **Pra leitura comparativa, mande as duas imagens com rótulo claro.** "A é a primeira, B é a segunda" elimina ambiguidade.
-- **Combine com structured output quando tipo for extrativo ou avaliativo.** Ver [[Structured Outputs/04 - OpenAI Structured Outputs — strict mode]] ou equivalente do seu provider.
+- **Combine com structured output quando tipo for extrativo ou avaliativo.** Ver [[03-Dominios/Tecnologia/IA/Structured Outputs/04 - OpenAI Structured Outputs — strict mode]] ou equivalente do seu provider.
 
 ## Anti-padrões
 
@@ -245,5 +245,5 @@ Output esperado: JSON estruturado, auditável.
 - [[02 - Imagens como input — screenshots, charts, mockups]] — onde aplicar isso primeiro
 - [[03 - PDFs e documentos — extração e análise]] — leitura extrativa em PDF longo
 - [[Prompt Engineering]] — princípios de prompt textual estendidos para multimodal
-- [[Structured Outputs/02 - JSON Schema como contrato]] — pra forçar o slot Output
+- [[03-Dominios/Tecnologia/IA/Structured Outputs/02 - JSON Schema como contrato]] — pra forçar o slot Output
 - [[07 - Limites e armadilhas multimodais]] — onde até a leitura bem dirigida falha

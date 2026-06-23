@@ -265,7 +265,7 @@ A regra: **todo bug em prod vira regression test permanente**.
 - [[03 - Scoring rubrics e critérios]] — thresholds vêm da rubrica
 - [[04 - LLM-as-judge — quando e como]] — equivalence judge
 - [[07 - Eval em CI-CD]] — onde o regression test roda
-- [[Anatomia de Agents/09 - Evaluation de agents]] — regression em agents acumulado
+- [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]] — regression em agents acumulado
 
 ## Fontes
 

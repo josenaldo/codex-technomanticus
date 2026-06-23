@@ -204,7 +204,7 @@ Tokens, atenção, modelos em produção (incluindo chineses), APIs, pricing, re
 
 > *"Agents são LLM + tools + loop com autonomia."*
 
-O que define agent (vs chat, RAG, workflow), loop ReAct, native tool use, design de tools, memory, planning, multi-agent, frameworks 2026, patterns canônicos, evaluation, e [[Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um|Workflow vs Agent — quando usar cada um]].
+O que define agent (vs chat, RAG, workflow), loop ReAct, native tool use, design de tools, memory, planning, multi-agent, frameworks 2026, patterns canônicos, evaluation, e [[03-Dominios/Tecnologia/IA/Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um|Workflow vs Agent — quando usar cada um]].
 
 **Quando ler:** após Trilha 1. Fundamentos genéricos antes de coding agents específicos.
 
@@ -329,7 +329,7 @@ Eval-driven development como disciplina, construção (golden datasets, scoring 
 
 Por que LLMs precisam de stack separada, anatomia de um trace LLM (sessão/trace/span, OpenTelemetry GenAI semantic conventions), Langfuse como referência OSS, alternativas (Helicone, Phoenix, OpenLLMetry), versionamento de prompts, session replay e debugging, métricas que importam (P50/P95/P99, TTFT, cost per user), e privacy/PII em logs.
 
-**Quando ler:** antes do primeiro deploy em produção, junto com Trilha 13. Complementa [[Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards|Economia de Tokens/04]] (ângulo de custo).
+**Quando ler:** antes do primeiro deploy em produção, junto com Trilha 13. Complementa [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards|Economia de Tokens/04]] (ângulo de custo).
 
 #### Trilha 17 — [[03-Dominios/Tecnologia/IA/Improvement Loop/index|Improvement Loop]] (7 notas)
 

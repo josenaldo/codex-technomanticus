@@ -301,7 +301,7 @@ No PostgreSQL, adicionar uma coluna `NOT NULL` sem `DEFAULT` exige uma reescrita
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/02 - A entidade JPA — @Entity, @Id e geração de chave|A entidade JPA]]
-- [[03-Dominios/Ciência/Banco de dados|Banco de dados]]
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de dados]]
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/API Design|API Design]]
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/index|Persistência de dados (MOC do galho)]]
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]]

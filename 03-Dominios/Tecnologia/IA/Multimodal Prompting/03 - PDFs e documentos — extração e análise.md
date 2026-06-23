@@ -19,7 +19,7 @@ aliases:
 # 03 - PDFs e documentos — extração e análise
 
 > [!abstract] TL;DR
-> Em 2026, três caminhos cobrem PDF: nativo (Claude, Gemini, OpenAI Files), página-a-página como imagem, e híbrido (PageIndex pra escolher páginas + multimodal pra ler). PDF nativo trata o documento como sequência de páginas-imagem + texto extraído internamente — o modelo vê layout, gráfico, tabela e texto no mesmo passo. Funciona bem até ~100 páginas (Claude) ou docs muito grandes (Gemini). Acima disso, PageIndex como retrieval ([[RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]]) escolhe páginas relevantes e o LLM multimodal lê só essas. OCR + texto puro segue válido pra docs sem layout relevante, mas perdeu o trono como default.
+> Em 2026, três caminhos cobrem PDF: nativo (Claude, Gemini, OpenAI Files), página-a-página como imagem, e híbrido (PageIndex pra escolher páginas + multimodal pra ler). PDF nativo trata o documento como sequência de páginas-imagem + texto extraído internamente — o modelo vê layout, gráfico, tabela e texto no mesmo passo. Funciona bem até ~100 páginas (Claude) ou docs muito grandes (Gemini). Acima disso, PageIndex como retrieval ([[03-Dominios/Tecnologia/IA/RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]]) escolhe páginas relevantes e o LLM multimodal lê só essas. OCR + texto puro segue válido pra docs sem layout relevante, mas perdeu o trono como default.
 
 ## Três caminhos
 
@@ -43,7 +43,7 @@ Pra documento longo (>100 páginas) onde só algumas páginas importam:
 2. LLM navega a árvore por raciocínio, identifica as N páginas relevantes pra query.
 3. Renderiza só essas páginas como imagem, manda em chamada multimodal.
 
-Cobre PDFs financeiros, jurídicos, regulatórios e livros sem comprar vector DB. Ver [[RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]] pro pipeline completo de retrieval; aqui o foco é o passo final de leitura multimodal.
+Cobre PDFs financeiros, jurídicos, regulatórios e livros sem comprar vector DB. Ver [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]] pro pipeline completo de retrieval; aqui o foco é o passo final de leitura multimodal.
 
 ## Code — Claude com PDF nativo
 
@@ -239,7 +239,7 @@ Depois manda `page_8.png` como imagem (ver [[02 - Imagens como input — screens
 ## Veja também
 
 - [[02 - Imagens como input — screenshots, charts, mockups]] — quando mandar página renderizada como imagem
-- [[RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]] — retrieval estrutural pra documentos grandes
+- [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]] — retrieval estrutural pra documentos grandes
 - [[05 - Tabelas e spreadsheets como input estruturado]] — tabela dentro de PDF tem caminhos próprios
 - [[06 - Como dizer ao modelo o tipo de leitura]] — "extraia X" vs "analise Y" mudam o output do mesmo PDF
 - [[07 - Limites e armadilhas multimodais]] — onde leitura de PDF falha

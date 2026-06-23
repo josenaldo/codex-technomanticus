@@ -313,6 +313,6 @@ Vale o custo de token extra quando a resposta precisa ser auditável.
 
 - [[02 - Imagens como input — screenshots, charts, mockups]] — screenshot de tabela é caso particular
 - [[03 - PDFs e documentos — extração e análise]] — tabela dentro de PDF nativo
-- [[Structured Outputs/02 - JSON Schema como contrato]] — pra forçar shape no output de extração
+- [[03-Dominios/Tecnologia/IA/Structured Outputs/02 - JSON Schema como contrato]] — pra forçar shape no output de extração
 - [[06 - Como dizer ao modelo o tipo de leitura]] — "extraia" vs "analise" vs "resuma" mudam o output
 - [[07 - Limites e armadilhas multimodais]] — leitura de tabela em imagem tem armadilhas próprias

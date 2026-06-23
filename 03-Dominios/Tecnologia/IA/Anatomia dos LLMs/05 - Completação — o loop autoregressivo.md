@@ -41,7 +41,7 @@ O nome vem do enquadramento original do GPT: o modelo não "responde", ele **com
 
 Entender a completação como **loop**, e não como uma "resposta mágica", é o que separa quem usa LLM no escuro de quem entende o que está pagando e por quê:
 
-- **Custo e latência** nascem aqui: cada token de saída é uma passada inteira pela rede (ver [[06 - A janela de contexto#O custo real do contexto|prefill vs decode]]). Gerar 500 tokens custa mais latência que ler 5.000 de prompt.
+- **Custo e latência** nascem aqui: cada token de saída é uma passada inteira pela rede (ver [[06 - A janela de contexto#O custo real do contexto: prefill, decode e KV cache|prefill vs decode]]). Gerar 500 tokens custa mais latência que ler 5.000 de prompt.
 - **`temperature`, `top_p`, `top_k`** só fazem sentido quando você sabe que eles atuam na *escolha* do token, não no "pensamento" do modelo (ver [[11 - APIs de LLM — anatomia de uma chamada]]).
 - **Não-determinismo**: por que a mesma pergunta dá respostas diferentes? Porque a amostragem sorteia. Saber disso é saber quando travar (`temperature=0`) e quando soltar.
 - **Alucinação** tem raiz aqui: o modelo *sempre* tem uma distribuição de próximos tokens e *sempre* amostra um — ele nunca "não sabe", apenas atribui probabilidade. Confiança não é verdade.
@@ -93,7 +93,7 @@ prompt: "O céu é"
 
 ### A conexão com prefill, decode e KV cache
 
-O loop tem duas fases, detalhadas em [[06 - A janela de contexto#O custo real do contexto|A janela de contexto]] e em [[04 - Atenção e o mecanismo transformer#As duas fases da atenção|Atenção e o mecanismo transformer]]:
+O loop tem duas fases, detalhadas em [[06 - A janela de contexto#O custo real do contexto: prefill, decode e KV cache|A janela de contexto]] e em [[04 - Atenção e o mecanismo transformer|Atenção e o mecanismo transformer]]:
 
 - **Prefill** — a primeira passada processa o prompt inteiro de uma vez (paralelizável) e produz o logit do primeiro token.
 - **Decode** — daí em diante é token a token, sequencial, cada novo token atendendo a todo o histórico.

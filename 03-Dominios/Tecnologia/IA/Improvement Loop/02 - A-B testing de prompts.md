@@ -225,6 +225,6 @@ O fluxo: routing determinístico no entrypoint, atributo `arm` no span (chave de
 - [[01 - O ciclo eval → diff → ship]] — A/B é o passo 4 do ciclo
 - [[03 - Prompt versioning — semver para prompts]] — A/B compara versões; versão precisa ser identificável
 - [[04 - Champion-challenger em produção]] — o que acontece **depois** que o A/B decide
-- [[Evaluation/02 - Golden datasets — como construir]] — o dataset onde o A/B offline roda
-- [[Observability/05 - Versionamento de prompts]] — o registry que viabiliza o routing
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — A/B em prod como pilar de eval contextual
+- [[03-Dominios/Tecnologia/IA/Evaluation/02 - Golden datasets — como construir]] — o dataset onde o A/B offline roda
+- [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]] — o registry que viabiliza o routing
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — A/B em prod como pilar de eval contextual

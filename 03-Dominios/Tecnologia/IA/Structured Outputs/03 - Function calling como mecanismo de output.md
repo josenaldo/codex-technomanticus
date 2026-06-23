@@ -184,7 +184,7 @@ Modelos pequenos (Haiku, Flash, Mini) são piores em tool use do que em texto. P
 
 ## Conexões
 
-Esse mecanismo é o mesmo que [[MCP]] usa pra expor tools de fora — você só descreve schemas, o cliente decide chamar. E o loop ReAct ([[Anatomia de Agents/02 - O loop ReAct e native tool use|loop ReAct e native tool use]]) é o caso geral onde múltiplas chamadas de tool encadeiam; structured output é o caso degenerado de uma única chamada, forçada.
+Esse mecanismo é o mesmo que [[MCP]] usa pra expor tools de fora — você só descreve schemas, o cliente decide chamar. E o loop ReAct ([[03-Dominios/Tecnologia/IA/Anatomia de Agents/02 - O loop ReAct e native tool use|loop ReAct e native tool use]]) é o caso geral onde múltiplas chamadas de tool encadeiam; structured output é o caso degenerado de uma única chamada, forçada.
 
 ## Fontes
 
@@ -198,5 +198,5 @@ Esse mecanismo é o mesmo que [[MCP]] usa pra expor tools de fora — você só 
 - [[02 - JSON Schema como contrato]] — a linguagem que descreve a "função" fake
 - [[04 - OpenAI Structured Outputs — strict mode]] — alternativa nativa da OpenAI
 - [[05 - Anthropic tool use para forçar formato]] — como Anthropic implementa o padrão
-- [[Anatomia de Agents/02 - O loop ReAct e native tool use|Anatomia de Agents — Loop ReAct]] — o caso geral
+- [[03-Dominios/Tecnologia/IA/Anatomia de Agents/02 - O loop ReAct e native tool use|Anatomia de Agents — Loop ReAct]] — o caso geral
 - [[MCP]] — protocolo que expõe tools externamente

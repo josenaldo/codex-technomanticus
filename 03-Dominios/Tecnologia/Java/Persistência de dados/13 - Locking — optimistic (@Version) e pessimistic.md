@@ -328,7 +328,7 @@ Se dois fluxos de código travam as mesmas linhas em ordens diferentes, o banco 
 
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Transações operacionais]]
 - [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]] ← conflito de escrita
-- [[03-Dominios/Ciência/Banco de dados|Banco de dados]]
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de dados]]
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/index|Persistência de dados (MOC do galho)]]
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]]
 - [[03-Dominios/Tecnologia/Java/Dicionário de Java#@Version (optimistic locking)|@Version (optimistic locking)]]

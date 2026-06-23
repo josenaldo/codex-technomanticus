@@ -208,7 +208,7 @@ Combinação prática:
 ## Veja também
 
 - [[02 - Anatomia de um trace LLM]] — atributos que sustentam essas métricas
-- [[Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — ângulo de custo detalhado
+- [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — ângulo de custo detalhado
 - [[Evaluation]] — scores de qualidade vêm daqui
 - [[06 - Session replay e debugging]] — investigação de outlier flagged por dashboard
 - [[Improvement Loop]] — métricas viram input do ciclo (em construção)

@@ -59,8 +59,8 @@ Implementações reais incluem três tipos de eval: (a) **reference-based** — 
 ## Onde aprofundar no Codex
 
 - **[[Evaluation]]** — trilha-irmã dedicada (em construção).
-- **[[Anatomia de Agents/09 - Evaluation de agents|Evaluation de agents]]** — particularidades quando o sistema é agentic.
-- **[[RAG e Vector Databases/09 - Evaluation de RAG|Evaluation de RAG]]** — métricas específicas (recall, precision, faithfulness).
+- **[[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents|Evaluation de agents]]** — particularidades quando o sistema é agentic.
+- **[[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG|Evaluation de RAG]]** — métricas específicas (recall, precision, faithfulness).
 
 ## Veja também
 

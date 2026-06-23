@@ -446,5 +446,5 @@ E o golpe de mestre, o que separa sênior de pleno:
 - [[07 - Heaps e filas de prioridade]] — outra árvore binária (completa), mas ordenada **parcialmente** (só pai vs filho), implementada como array
 - [[09 - Árvores B e índices]] — quando a árvore mora em disco: B-tree/B+tree e índices de banco
 - [[04 - Pilhas, filas e deques]] — a pilha (DFS) e a fila (BFS) que dirigem as travessias
-- [[Banco de dados]] — índices como árvores balanceadas em disco
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — índices como árvores balanceadas em disco
 - [[Dicionário de Ciência da Computação]] — verbetes de BST, rotação, travessia

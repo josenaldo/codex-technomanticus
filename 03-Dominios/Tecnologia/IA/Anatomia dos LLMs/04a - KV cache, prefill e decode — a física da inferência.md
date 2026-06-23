@@ -112,7 +112,7 @@ $$\text{KV por token} = 2 \times L \times n_{kv} \times d_{head} \times \text{by
 Uma H100 tem 80 GB. O KV cache de um único contexto de 100k tokens em MHA puro **não cabe na placa** — e é por isso que toda a engenharia de inferência gira em torno de encolher esse cache. As otimizações que atacam essa linha (GQA, MLA, paged attention) estão no broto [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA]].
 
 > [!warning] O cache é por-request e por-token
-> Diferente dos pesos do modelo (que são fixos e compartilhados por todos os usuários), o KV cache é **privado de cada conversa** e **cresce com cada token gerado**. É por isso que servir muitos usuários com contextos longos esgota a VRAM bem antes de esgotar o compute — e por que [[13 - Prompt caching|prompt caching]] (reaproveitar o prefill de prefixos repetidos) virou uma alavanca econômica central.
+> Diferente dos pesos do modelo (que são fixos e compartilhados por todos os usuários), o KV cache é **privado de cada conversa** e **cresce com cada token gerado**. É por isso que servir muitos usuários com contextos longos esgota a VRAM bem antes de esgotar o compute — e por que [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/13 - Prompt caching e otimizações de API|prompt caching]] (reaproveitar o prefill de prefixos repetidos) virou uma alavanca econômica central.
 
 ## Veja também
 
@@ -120,7 +120,7 @@ Uma H100 tem 80 GB. O KV cache de um único contexto de 100k tokens em MHA puro 
 - [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA]] — as variantes de atenção que atacam o tamanho do cache
 - [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]] — atacando a própria conta O(n²)
 - [[06 - A janela de contexto]] — a consequência prática: quanto cabe e quanto custa
-- [[13 - Prompt caching]] — reaproveitar o prefill de prefixos repetidos
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/13 - Prompt caching e otimizações de API]] — reaproveitar o prefill de prefixos repetidos
 - [[14 - Streaming, batching e latência]] — TTFT, tokens/s e batching na prática
 
 ## Referências

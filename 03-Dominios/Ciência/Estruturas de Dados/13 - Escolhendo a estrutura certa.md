@@ -300,6 +300,6 @@ Os irmãos do galho, agrupados por família:
 E os vizinhos de domínio:
 
 - [[Algoritmos]] — os algoritmos que rodam sobre estas estruturas
-- [[Banco de dados]] — onde as árvores B viram índices
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — onde as árvores B viram índices
 - [[Coding Challenges Strategy]] — o método de reconhecer pattern e atacar o problema
 - [[Dicionário de Ciência da Computação]] — verbetes de cada estrutura e termo

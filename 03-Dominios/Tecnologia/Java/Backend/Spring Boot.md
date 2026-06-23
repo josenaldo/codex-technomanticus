@@ -579,7 +579,7 @@ One area where I've seen teams struggle is with JPA's lazy loading. The LazyInit
 - [[03-Dominios/Tecnologia/Java/Programação Reativa/index|Programação Reativa (Galho 11)]] — Reactor, WebFlux, backpressure, R2DBC, reativo vs Virtual Threads
 - [[Spring Security]] — deep dive em autenticação e autorização
 - [[Testes em Java]] — JUnit 5, Mockito, Testcontainers, slices
-- [[Testes]] — fundamentos gerais
+- [[03-Dominios/Tecnologia/Java/Testes/index|Testes]] — fundamentos gerais
 - [[API Design]] — REST, RFC 9457 Problem Details
 - [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]] — event streaming com Spring Kafka
 - [[System Design]] — troubleshooting cross-stack, building blocks

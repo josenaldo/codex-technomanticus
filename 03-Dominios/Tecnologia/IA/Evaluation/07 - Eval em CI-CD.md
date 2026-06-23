@@ -281,7 +281,7 @@ Forçar block desde o dia 1 = pushback do time. Adoção gradual = cultura.
 
 ## A/B em prod como complemento
 
-CI mede pre-deploy. Não substitui [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção|A/B em prod com métricas de negócio]]. Pattern recomendado:
+CI mede pre-deploy. Não substitui [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção|A/B em prod com métricas de negócio]]. Pattern recomendado:
 
 ```
 1. CI eval → métrica subiu → merge permitido
@@ -404,7 +404,7 @@ Meta pra 2026: nível 3 como padrão; nível 5 em produtos críticos.
 - [[02 - Golden datasets — como construir]] — dataset rodado em CI
 - [[05 - Regression testing em LLMs]] — o pattern central que CI dispara
 - [[06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix]] — qual framework usar
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — pilar 4 (A/B em prod) complementa CI
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — pilar 4 (A/B em prod) complementa CI
 
 ## Fontes
 

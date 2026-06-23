@@ -21,11 +21,11 @@ publish: true
 A erosão, ao longo do tempo, do entendimento que uma equipe compartilha sobre o sistema que constrói — o risco que a IA generativa desloca do código para a mente das pessoas.
 
 > [!abstract] TL;DR
-> **Débito cognitivo** é a erosão progressiva do entendimento compartilhado de uma equipe sobre o que um sistema faz, por que as decisões foram tomadas e como mudá-lo. Diferente do débito técnico (que vive no código) e da carga cognitiva (momentânea), é uma propriedade de **nível de projeto**. A IA generativa o acelera: ela barateia produzir estrutura mais rápido do que o entendimento consegue estabilizar. Termo desenvolvido por Margaret-Anne Storey (2026), apoiado na tese de [[O programa como teoria|Naur de que um programa é uma teoria]].
+> **Débito cognitivo** é a erosão progressiva do entendimento compartilhado de uma equipe sobre o que um sistema faz, por que as decisões foram tomadas e como mudá-lo. Diferente do débito técnico (que vive no código) e da carga cognitiva (momentânea), é uma propriedade de **nível de projeto**. A IA generativa o acelera: ela barateia produzir estrutura mais rápido do que o entendimento consegue estabilizar. Termo desenvolvido por Margaret-Anne Storey (2026), apoiado na tese de [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria|Naur de que um programa é uma teoria]].
 
 ## O que é
 
-Débito cognitivo é o que acontece quando um time perde, gradualmente, a [[O programa como teoria|teoria do sistema]]: a capacidade de explicar o que o programa faz, como as intenções foram implementadas e como alterá-lo com segurança. Código limpo e testes verdes não impedem que as pessoas "percam o fio da meada".
+Débito cognitivo é o que acontece quando um time perde, gradualmente, a [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria|teoria do sistema]]: a capacidade de explicar o que o programa faz, como as intenções foram implementadas e como alterá-lo com segurança. Código limpo e testes verdes não impedem que as pessoas "percam o fio da meada".
 
 É um conceito de **nível de projeto**, que captura como o entendimento se deteriora ao longo do tempo — não um estado momentâneo de um indivíduo.
 
@@ -67,7 +67,7 @@ A distinção é o ponto-chave: você pode zerar o débito técnico (código imp
 ## Veja também
 
 - [[11 - Dívida cognitiva]] — **o mesmo conceito sob a lente geral/atemporal** (em [[03-Dominios/Engenharia/Complexidade de Software/index|Complexidade de Software]]); esta nota é o recorte da *aceleração por IA*
-- [[O programa como teoria]] — a base teórica (Naur): o que exatamente se perde quando há débito cognitivo
+- [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria]] — a base teórica (Naur): o que exatamente se perde quando há débito cognitivo
 - [[03 - O comprehension gate|Comprehension gate]] — a barreira de code review que defende a teoria mudança a mudança
 - [[02 - Vibe coding vs engenharia disciplinada|Vibe coding vs engenharia disciplinada]] — o contexto que gera o débito
 - [[02-Glosas/2026-comprehension-debt-hidden-cost-ai-generated-code|Comprehension debt — Addy Osmani]] — conceito vizinho (gap código × entendimento)

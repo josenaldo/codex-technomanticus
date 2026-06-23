@@ -37,7 +37,7 @@ computação **não** pode fazer, e o que ela só faz a um custo proibitivo.
 - **Parsing e lexer na prática** → futuro galho de Compiladores e Linguagens. Aqui é a teoria das **linguagens formais** e dos autômatos.
 - **Lógica, provas, conjuntos, combinatória** → futuro galho de Matemática para Computação. Aqui se **usa** prova e diagonalização; não se ensina.
 - **Complexidade de Software** ([[Complexidade de Software]]) é complexidade **cognitiva/de manutenção** — coisa OUTRA, não confundir com complexidade computacional.
-- **λ-cálculo pelo ângulo de estilo** → [[Paradigmas de Programação]] (a nota da tese de Church-Turing linka de volta).
+- **λ-cálculo pelo ângulo de estilo** → [[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]] (a nota da tese de Church-Turing linka de volta).
 
 **Audiência:** dev senior em preparação para entrevista internacional. Cada nota tem seção "Em entrevista" com
 frases prontas em inglês e vocabulário técnico PT→EN. (O tema cai *raramente* em entrevista, mas é fundamento real.)
@@ -92,5 +92,5 @@ SORT file.name ASC
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
 - [[03-Dominios/Ciência/Algoritmos/13 - Intratabilidade|Intratabilidade]] — a face prática de P/NP (NP-difícil, aproximação, heurística)
-- [[Paradigmas de Programação]] — funcional e λ-cálculo pelo ângulo de estilo
+- [[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]] — funcional e λ-cálculo pelo ângulo de estilo
 - [[Dicionário de Ciência da Computação]]

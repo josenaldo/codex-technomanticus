@@ -232,7 +232,7 @@ Strict não enforça descrições, mas o modelo usa pra preenchimento. Tudo o qu
 
 ### Schema versionado
 
-Trate `schema` como contrato versionado. Mude com cuidado, teste com golden set ([[Anatomia dos LLMs/17 - Evaluation de LLMs em produção|nota de evaluation]]) antes de promover.
+Trate `schema` como contrato versionado. Mude com cuidado, teste com golden set ([[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção|nota de evaluation]]) antes de promover.
 
 ### Cache de schema
 

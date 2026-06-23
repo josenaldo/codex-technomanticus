@@ -1113,6 +1113,6 @@ systemd-run --scope -p MemoryMax=500M --user command
 - [[Terminal]] — shell customization
 - [[Configurando Ambiente Linux no WSL]] — WSL setup
 - [[Redes e Protocolos]] — networking básico
-- [[Banco de dados]] — administração de DBs
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — administração de DBs
 - [[CI-CD]] — build e deploy em Linux
 - [[System Design]] — Linux em arquitetura

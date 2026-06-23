@@ -101,7 +101,7 @@ O risco de fazer EDD prematuro é gastar 2 semanas montando golden set pra um pr
 | **0** | *"Olhei e tá bom"* |
 | **1** | Golden set ad-hoc em planilha; rodada manual ocasional |
 | **2** | Eval automatizado em CI bloqueando merge |
-| **3** | Eval em CI + observabilidade em prod ([[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]]) |
+| **3** | Eval em CI + observabilidade em prod ([[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]]) |
 | **4** | A/B test em prod com métricas de negócio + judge calibrado |
 | **5** | Eval contínuo — golden set evolui com casos reais, regression tests acumulados, dashboard de saúde |
 
@@ -153,8 +153,8 @@ Em uma semana você tem nível 1. Em duas, nível 2. O resto é refinamento.
 - [[02 - Golden datasets — como construir]]
 - [[03 - Scoring rubrics e critérios]]
 - [[07 - Eval em CI-CD]]
-- [[AI Engineering Stack/09 - Evaluation Layer]]
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — os 4 pilares aplicados em produção
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/09 - Evaluation Layer]]
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — os 4 pilares aplicados em produção
 
 ## Fontes
 

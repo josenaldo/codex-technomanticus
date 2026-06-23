@@ -258,5 +258,5 @@ Em React/Next.js, Vercel AI SDK tem `useObject` que abstrai streaming structured
 - [[07 - Validação e retry — Pydantic, Zod]] — validação completa só após objeto final
 - [[04 - OpenAI Structured Outputs — strict mode]] — streaming com response_format
 - [[05 - Anthropic tool use para forçar formato]] — streaming nativo de tool_use
-- [[Anatomia dos LLMs/12 - Streaming, batching e latência|Anatomia dos LLMs — Streaming, batching e latência]] — fundamentos de streaming em LLMs
-- [[AI Engineering Stack/05 - Output Layer|AI Engineering Stack — Output Layer]] — onde decisão de streaming entra na arquitetura
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/14 - Streaming, batching e latência|Anatomia dos LLMs — Streaming, batching e latência]] — fundamentos de streaming em LLMs
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/05 - Output Layer|AI Engineering Stack — Output Layer]] — onde decisão de streaming entra na arquitetura

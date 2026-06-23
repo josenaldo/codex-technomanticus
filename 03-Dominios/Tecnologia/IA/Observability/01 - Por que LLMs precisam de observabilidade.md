@@ -91,5 +91,5 @@ APM é caixa-preta com métricas; LLM observability é **árvore de decisão com
 
 - [[02 - Anatomia de um trace LLM]] — o que vai dentro de cada trace
 - [[07 - Métricas que importam — latência, custo, qualidade]] — quais dashboards montar
-- [[AI Engineering Stack/11 - Logging Layer]] — onde isso entra no stack
-- [[Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — ângulo de custo desse mesmo problema
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/11 - Logging Layer]] — onde isso entra no stack
+- [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — ângulo de custo desse mesmo problema

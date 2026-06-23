@@ -2268,7 +2268,7 @@ Completado o Helsinki MOOC, você tem fundamentos sólidos. Próximos passos:
 
 ### 5. Banco de dados e persistência
 
-- [[Banco de dados]] — SQL, modelagem, índices, transações
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — SQL, modelagem, índices, transações
 - JPA, Hibernate
 - JDBC puro (quando você precisa de controle)
 
@@ -2366,6 +2366,6 @@ Completado o Helsinki MOOC, você tem fundamentos sólidos. Próximos passos:
 - [[Spring Boot]] — framework web dominante
 - [[Orientação a Objetos]] — aprofundar OOP
 - [[Design Patterns]] — padrões clássicos
-- [[Banco de dados]] — persistência
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — persistência
 - [[Senda Java]] — plano de aprendizado completo
 - [[What should you do to stand out as a Java-Spring Boot Developer]]

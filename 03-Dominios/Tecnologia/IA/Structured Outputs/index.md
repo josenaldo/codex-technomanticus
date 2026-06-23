@@ -18,7 +18,7 @@ aliases:
 LLMs são **funções estocásticas com saída não tipada** — structured outputs é como você recria contrato de tipo na borda. A frase é a tese que organiza este vault (ver [[03-Dominios/Tecnologia/IA/index|Formação Engenheiro de IA]]): o modelo é uma dependência cujo retorno é texto livre, e qualquer pipeline sério precisa transformar esse texto num objeto validável antes do próximo passo. Esta trilha cobre as três camadas dessa disciplina: o problema (por que "pedir JSON no prompt" não basta), os mecanismos (JSON Schema, function calling, structured outputs por provider), e a robustez (validação semântica, retry, streaming).
 
 > [!info] Pré-requisitos
-> [[Anatomia dos LLMs/09 - APIs de LLM — anatomia de uma chamada|09 - APIs de LLM — anatomia de uma chamada]] é suficiente. Familiaridade com [[Prompt Engineering]] ajuda a entender por que prompt sozinho não resolve, mas não é obrigatória.
+> [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/11 - APIs de LLM — anatomia de uma chamada|09 - APIs de LLM — anatomia de uma chamada]] é suficiente. Familiaridade com [[Prompt Engineering]] ajuda a entender por que prompt sozinho não resolve, mas não é obrigatória.
 
 > [!warning] Provider guarante shape, não semântica
 > Mesmo com strict mode da OpenAI, tool use da Anthropic, ou response schema do Gemini, a garantia é que o JSON tem os campos certos com os tipos certos. **O conteúdo dos campos** (um `email` realmente ser um email, um `cnpj` ter dígito verificador válido) segue sendo seu problema. Notas 07-08 tratam disso.
@@ -92,7 +92,7 @@ O que fazer quando o shape está certo mas o conteúdo não, e como lidar com ou
 ## Veja também
 
 - [[AI Engineering Stack]] — onde esta trilha se encaixa (Output Layer é a camada referente)
-- [[AI Engineering Stack/05 - Output Layer|AI Engineering Stack — Output Layer]] — a camada que cita esta trilha em "Onde aprofundar"
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/05 - Output Layer|AI Engineering Stack — Output Layer]] — a camada que cita esta trilha em "Onde aprofundar"
 - [[Prompt Engineering]] — prompt pode sugerir formato; structured output o **enforça**
 - [[Anatomia dos LLMs]] — pré-requisito conceitual, especialmente nota 09 sobre APIs
 - [[Segurança e Guardrails]] — output validado é a base para validar com cuidado o que o LLM produziu

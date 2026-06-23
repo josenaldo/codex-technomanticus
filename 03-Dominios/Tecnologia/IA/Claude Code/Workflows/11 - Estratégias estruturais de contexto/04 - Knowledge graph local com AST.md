@@ -172,7 +172,7 @@ Lazy-load ([[01 - Estrutura .claude lazy-load|01]]) e sandboxing ([[02 - Sandbox
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/03 - Refactoring pesado|Refactoring pesado]] — blast-radius é central aqui
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/04 - MCP overview|MCP overview]] — como o grafo é exposto ao agente
 - [[03 - Indexação semântica externa]] — abordagem complementar (eixo conceitual)
-- [[index|Tronco do sub-galho]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|Tronco do sub-galho]]
 
 ## Aprofundamento
 

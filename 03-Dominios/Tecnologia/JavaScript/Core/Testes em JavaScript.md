@@ -14,7 +14,7 @@ publish: false
 
 # Testes em JavaScript
 
-Deep dive em estratégias, ferramentas e patterns de teste na stack JavaScript/TypeScript moderna (2026). Para fundamentos gerais de testes, ver [[Testes]]. Para Java testing, ver [[Testes em Java]]. Para React specifically, ver [[React]].
+Deep dive em estratégias, ferramentas e patterns de teste na stack JavaScript/TypeScript moderna (2026). Para fundamentos gerais de testes, ver [[03-Dominios/Engenharia/Testes/index|Testes]]. Para Java testing, ver [[Testes em Java]]. Para React specifically, ver [[React]].
 
 ## O que é
 
@@ -1359,7 +1359,7 @@ export default defineConfig({
 - [[TypeScript]] — tipagem em testes
 - [[React]] — React-specific testing
 - [[Node.js]] — backend testing
-- [[Testes]] — fundamentos gerais
+- [[03-Dominios/Engenharia/Testes/index|Testes]] — fundamentos gerais
 - [[Testes em Java]] — comparação com stack Java
 - [[Full Stack Open - Guia de Revisão]] — partes 4, 5, 10 cobrem testes
 - [[API Design]] — contract testing

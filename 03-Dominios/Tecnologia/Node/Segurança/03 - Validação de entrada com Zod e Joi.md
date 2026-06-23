@@ -866,7 +866,7 @@ A: The pattern I use is a `validateBody(schema)` factory function that returns a
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — MOC do galho 8, visão geral de todos os tópicos de segurança Node
-- [[JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
 - [[03-Dominios/Tecnologia/Node/Segurança/02 - Segredos e variáveis de ambiente|Segredos e variáveis de ambiente]] — validação de env vars com Zod na startup
 - [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação]] — próxima nota do galho
 - [Zod — documentação oficial](https://zod.dev) — referência completa da API Zod v3

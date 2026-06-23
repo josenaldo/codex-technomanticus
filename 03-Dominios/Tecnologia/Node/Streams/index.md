@@ -56,7 +56,7 @@ Pré-requisito: galho 1 ([[03-Dominios/Tecnologia/Node/Runtime e Event Loop/inde
 
 10. [[10 - Padrões práticos]]
 11. [[11 - Performance e tuning]]
-12. [[12 - Armadilhas, regras práticas, cheatsheet]]
+12. [[03-Dominios/Tecnologia/Node/Streams/12 - Armadilhas, regras práticas, cheatsheet]]
 
 ## Rotas alternativas
 

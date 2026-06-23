@@ -299,7 +299,7 @@ Tentadora: usar `field_validator` pra "consertar" um output ruim (string com pre
 
 ### Combine validação semântica com guardrails de sistema
 
-Validação semântica pega muito. Mas pra coisas de segurança (PII, prompt injection refletida no output), você precisa de guardrails dedicados ([[Segurança e Guardrails/01 - Código gerado por IA é untrusted|01 - Código gerado por IA é untrusted]]).
+Validação semântica pega muito. Mas pra coisas de segurança (PII, prompt injection refletida no output), você precisa de guardrails dedicados ([[03-Dominios/Tecnologia/IA/Segurança e Guardrails/01 - Código gerado por IA é untrusted|01 - Código gerado por IA é untrusted]]).
 
 ### Em alta vazão, considere modelos especializados
 
@@ -318,4 +318,4 @@ Pra extração estruturada em grande escala (milhões/dia), modelos como GPT-4o-
 - [[02 - JSON Schema como contrato]] — schema é shape; validator é semântica
 - [[04 - OpenAI Structured Outputs — strict mode]] — strict garante shape mas não semântica
 - [[08 - Streaming de structured outputs]] — validação parcial em streaming
-- [[Segurança e Guardrails/01 - Código gerado por IA é untrusted|Código gerado por IA é untrusted]] — output validado é base pra qualquer execução segura
+- [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/01 - Código gerado por IA é untrusted|Código gerado por IA é untrusted]] — output validado é base pra qualquer execução segura

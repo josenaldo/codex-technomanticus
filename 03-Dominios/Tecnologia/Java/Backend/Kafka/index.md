@@ -22,7 +22,7 @@ Reúne o material de Kafka usado a partir de aplicações Java/Spring: visão ge
 
 ## Conteúdo
 
-- [[Kafka]] — overview do Apache Kafka
+- [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]] — overview do Apache Kafka
 - [[Kafka Concepts]] — visão geral dos conceitos fundamentais
 - [[Setting Up Kafka]] — setup do ambiente
 - [[Otimizando Kafka consumers]] — performance e tuning de consumers

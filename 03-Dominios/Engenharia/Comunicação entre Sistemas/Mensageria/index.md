@@ -23,7 +23,7 @@ Mensageria é o tecido que conecta serviços desacoplados em sistemas distribuí
 
 - [[Mensageria]] — visão geral do tema
 - [[Event Streaming]] — modelo de streaming de eventos
-- [[Kafka]] — plataforma de event streaming
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — plataforma de event streaming
 - [[RabbitMQ]] — message broker AMQP
 - [[BullMQ]] — fila de jobs sobre Redis
 

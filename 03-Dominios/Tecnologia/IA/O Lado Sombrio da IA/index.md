@@ -51,7 +51,7 @@ Externalidades da IA sobre a comunidade e os bens comuns do software.
 
 ## Fundamento
 
-- [[O programa como teoria]] — a tese de Naur (em [[03-Dominios/Ciência/index|Ciência da Computação]]) que dá a base teórica para entender o que se perde no débito cognitivo.
+- [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria]] — a tese de Naur (em [[03-Dominios/Ciência/index|Ciência da Computação]]) que dá a base teórica para entender o que se perde no débito cognitivo.
 - [[03-Dominios/Engenharia/Complexidade de Software/index|Complexidade de Software]] — o galho que trata as três dívidas (técnica, cognitiva, **intenção**) sob a lente geral/atemporal; este galho da IA as trata sob a lente dos custos da IA.
 
 ## Veja também

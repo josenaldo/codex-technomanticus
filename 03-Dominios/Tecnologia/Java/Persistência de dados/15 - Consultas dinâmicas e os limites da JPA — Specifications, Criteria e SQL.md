@@ -270,7 +270,7 @@ O mapeamento objeto-relacional resolve persistência orientada a entidades com e
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/09 - Consultas com @Query — JPQL, native e @Modifying|Consultas com @Query]]
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/11 - Paginação e ordenação — Pageable, Page e Slice|Paginação e ordenação]]
 - [[03-Dominios/Tecnologia/Java/Jakarta EE/09 - JPA — a especificação de persistência|JPA (a Criteria API é da spec)]]
-- [[03-Dominios/Ciência/Banco de dados|Banco de dados]]
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de dados]]
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/index|Persistência de dados (MOC do galho)]]
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]]
 - [[03-Dominios/Tecnologia/Java/Dicionário de Java#Specification (Spring Data)|Specification (Spring Data)]]

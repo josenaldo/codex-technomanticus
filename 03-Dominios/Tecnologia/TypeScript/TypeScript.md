@@ -1510,5 +1510,5 @@ if (result.ok) {
 - [[Testes em JavaScript]] — tipagem em testes
 - [[Full Stack Open - Guia de Revisão]] — Parte 9 é sobre TS
 - [[API Design]] — OpenAPI, contract types
-- [[Banco de dados]] — Prisma, Drizzle (ORMs TS-first)
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — Prisma, Drizzle (ORMs TS-first)
 - [[Arquitetura de Software]] — DDD com TS

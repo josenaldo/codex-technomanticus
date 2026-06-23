@@ -773,4 +773,4 @@ Um request que começa em HTTP → vira evento → processado por múltiplos con
 - [[System Design]] — quando e como usar mensageria em system design
 - [[Arquitetura de Software]] — event-driven architecture, bounded contexts
 - [[API Design]] — webhooks, operações assíncronas
-- [[Banco de dados]] — transações, outbox pattern
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — transações, outbox pattern

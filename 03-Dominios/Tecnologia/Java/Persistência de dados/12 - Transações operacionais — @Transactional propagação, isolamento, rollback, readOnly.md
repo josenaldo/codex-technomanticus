@@ -67,7 +67,7 @@ A diferença entre `REQUIRES_NEW` e `NESTED` é a pegadinha favorita: `REQUIRES_
 Você define com `@Transactional(isolation = Isolation.READ_COMMITTED)`. O default (`Isolation.DEFAULT`) **delega ao banco** — por isso é crucial saber qual é o default do seu SGBD.
 
 > [!note] A teoria mora em Banco de dados
-> Os *fenômenos* que cada nível previne — dirty read, non-repeatable read, phantom read — e o trade-off concorrência × consistência são teoria de banco de dados, não de Spring. Veja [[03-Dominios/Ciência/Banco de dados|Banco de dados]]. Aqui interessa apenas *como acionar* o nível pela anotação e qual é o default da sua plataforma.
+> Os *fenômenos* que cada nível previne — dirty read, non-repeatable read, phantom read — e o trade-off concorrência × consistência são teoria de banco de dados, não de Spring. Veja [[03-Dominios/Ciência/Banco de Dados/index|Banco de dados]]. Aqui interessa apenas *como acionar* o nível pela anotação e qual é o default da sua plataforma.
 
 Detalhe operacional: `isolation`, `timeout` e `readOnly` só fazem sentido quando a propagação **abre** uma transação física — ou seja, `REQUIRED` (quando inicia uma nova) ou `REQUIRES_NEW`. Se o método apenas se junta a uma transação já existente, esses atributos são ignorados (e o Spring pode até alertar dependendo da config).
 
@@ -261,7 +261,7 @@ Nenhum dos dois roda transacional. Mantenha métodos `@Transactional` **`public`
 - [[03-Dominios/Tecnologia/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies (o mecanismo)]]
 - [[03-Dominios/Tecnologia/Java/Spring Core e Boot/10 - Self-invocation e os limites do proxy|Self-invocation e os limites do proxy]]
 - [[03-Dominios/Tecnologia/Java/Jakarta EE/11 - JTA — transações na plataforma|JTA (a demarcação, na spec)]]
-- [[03-Dominios/Ciência/Banco de dados|Banco de dados]]
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de dados]]
 - [[03-Dominios/Tecnologia/Java/Persistência de dados/index|Persistência de dados (MOC do galho)]]
 - [[03-Dominios/Tecnologia/Java/index|Trilha Java]]
 - [[03-Dominios/Tecnologia/Java/Dicionário de Java#@Transactional (propagação)|@Transactional (propagação)]]

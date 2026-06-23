@@ -20,11 +20,11 @@ aliases:
 # 03 - Prompt versioning — semver para prompts
 
 > [!abstract] TL;DR
-> [[Observability/05 - Versionamento de prompts|Observability/05]] cobre **como** versionar (registry, label, semver, tying ao trace). Esta nota cobre **quando bumpar e o que cada bump dispara no Improvement Loop**: patch passa sem A/B (deploy direto); minor passa por A/B offline + canary curto; major dispara golden set novo + champion-challenger formal + plano de migração de consumer. Versão do prompt vira **gatilho** no pipeline — bumpou minor, automação roda A/B; bumpou major, automação cria branch de migração. Mapeamento versão → ação é a parte que torna semver útil pro loop em vez de só ser etiqueta bonita.
+> [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts|Observability/05]] cobre **como** versionar (registry, label, semver, tying ao trace). Esta nota cobre **quando bumpar e o que cada bump dispara no Improvement Loop**: patch passa sem A/B (deploy direto); minor passa por A/B offline + canary curto; major dispara golden set novo + champion-challenger formal + plano de migração de consumer. Versão do prompt vira **gatilho** no pipeline — bumpou minor, automação roda A/B; bumpou major, automação cria branch de migração. Mapeamento versão → ação é a parte que torna semver útil pro loop em vez de só ser etiqueta bonita.
 
 ## Ponte com Observability/05
 
-[[Observability/05 - Versionamento de prompts]] cobre:
+[[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]] cobre:
 
 - A regra de semver pra prompt (major/minor/patch e a heurística "se eval antigo ainda vale como baseline, é minor")
 - Labels `dev` / `staging` / `production` no registry
@@ -43,7 +43,7 @@ aliases:
 | **Minor** (v1.2 → v1.3) | Qualidade, few-shot, reordenação | Sim, como baseline |
 | **Major** (v1 → v2) | Schema de output, contrato, tool removida | Não — precisa novo dataset |
 
-Detalhes completos em [[Observability/05 - Versionamento de prompts]].
+Detalhes completos em [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]].
 
 ## O que cada bump dispara
 
@@ -179,7 +179,7 @@ Pattern recomendado em 2026 pra time típico: **B com cache curto** — Git can�
 - Adicionou tool nova obrigatória
 - Mudou contrato com consumer (e.g., consumer agora precisa parsear novo campo)
 
-A regra heurística do [[Observability/05 - Versionamento de prompts]] vale: **se o golden set antigo ainda mede a versão nova de forma justa, é minor; se precisa de golden set novo, é major**.
+A regra heurística do [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]] vale: **se o golden set antigo ainda mede a versão nova de forma justa, é minor; se precisa de golden set novo, é major**.
 
 ## Anti-padrões específicos do gatilho
 
@@ -200,7 +200,7 @@ A regra heurística do [[Observability/05 - Versionamento de prompts]] vale: **s
 
 ## Veja também
 
-- [[Observability/05 - Versionamento de prompts]] — o **como** completo (registry, labels, tracing); esta nota cobre o **quando** e o **que dispara**
+- [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]] — o **como** completo (registry, labels, tracing); esta nota cobre o **quando** e o **que dispara**
 - [[02 - A-B testing de prompts]] — o que minor e major bumps disparam
 - [[04 - Champion-challenger em produção]] — o gate que minor e major bumps atravessam
 - [[07 - Eval gates em CI — quando bloquear merge]] — onde o bump vira parte do pipeline

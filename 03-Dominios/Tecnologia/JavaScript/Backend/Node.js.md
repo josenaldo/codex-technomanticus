@@ -92,7 +92,7 @@ Em entrevistas, o que diferencia um senior em Node.js:
 ### Stream patterns
 
 > [!nota] Migrado para galho próprio
-> Padrões práticos (line parser, CSV → JSONL, fetch streaming, multipart, tee) foram expandidos em [[10 - Padrões práticos]] no galho [[03-Dominios/Tecnologia/Node/Streams/index]]. Decision tree e armadilhas em [[12 - Armadilhas, regras práticas, cheatsheet]].
+> Padrões práticos (line parser, CSV → JSONL, fetch streaming, multipart, tee) foram expandidos em [[10 - Padrões práticos]] no galho [[03-Dominios/Tecnologia/Node/Streams/index]]. Decision tree e armadilhas em [[03-Dominios/Tecnologia/Node/Streams/12 - Armadilhas, regras práticas, cheatsheet]].
 
 ### npm e Package Management
 

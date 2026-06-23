@@ -109,7 +109,7 @@ A pergunta-teste do template: se eu der esse prompt pra 5 modelos diferentes, el
 O erro mais comum de quem aprende esta disciplina é inflar o prompt achando que mais palavras = mais especificidade. **Falso.** Prompt longo e vago é pior que prompt curto e específico:
 
 - **Mais palavras significam mais ambiguidade superficial.** Cada adjetivo solto ("seja claro", "seja útil", "seja preciso") adiciona instrução sem critério verificável.
-- **Tokens custam.** Cada token de system prompt entra em todo request ([[Anatomia dos LLMs/03 - A janela de contexto|janela de contexto]]).
+- **Tokens custam.** Cada token de system prompt entra em todo request ([[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/06 - A janela de contexto|janela de contexto]]).
 - **Instruções genéricas anestesiam.** Modelos treinaram em milhões de prompts genéricos; "seja claro e conciso" passa direto.
 
 A regra empírica: cada linha do prompt deve responder uma pergunta-guia da tabela acima, ou ser cortada. Se você não consegue dizer qual ambiguidade aquela linha resolve, ela não está especificando — está enfeitando.

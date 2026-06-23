@@ -23,7 +23,7 @@ aliases:
 # 08 - Eval por contexto — LLM, RAG, agent, prompt
 
 > [!abstract] TL;DR
-> Eval **não é uma coisa só**. O que você mede muda dramaticamente com o que está avaliando. **Prompt isolado**: golden set + rubrica simples. **RAG pipeline**: retrieval (precision@k, MRR, context recall) **separado** de generation (faithfulness, answer relevance). **Agent**: trajectory eval, tool call success, multi-step reasoning, task completion rate. **LLM base** (provider, modelo): benchmarks padronizados (MMLU, HumanEval, GSM8K, ARC). Cada contexto tem métrica-chave e frameworks indicados diferentes. Esta nota é o **mapa** que liga essa trilha às três notas contextuais existentes: [[Anatomia de Agents/09 - Evaluation de agents]], [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]], [[RAG e Vector Databases/09 - Evaluation de RAG]].
+> Eval **não é uma coisa só**. O que você mede muda dramaticamente com o que está avaliando. **Prompt isolado**: golden set + rubrica simples. **RAG pipeline**: retrieval (precision@k, MRR, context recall) **separado** de generation (faithfulness, answer relevance). **Agent**: trajectory eval, tool call success, multi-step reasoning, task completion rate. **LLM base** (provider, modelo): benchmarks padronizados (MMLU, HumanEval, GSM8K, ARC). Cada contexto tem métrica-chave e frameworks indicados diferentes. Esta nota é o **mapa** que liga essa trilha às três notas contextuais existentes: [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]], [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]], [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]].
 
 ## Por que eval muda com contexto
 
@@ -53,9 +53,9 @@ Cada tipo de sistema falha de jeitos diferentes. Métrica boa pra um pode ser ce
 | Tipo | Pergunta principal | Métricas-chave | Frameworks indicados | Nota Codex |
 |---|---|---|---|---|
 | **Prompt isolado** | Output atende à rubrica? | Accuracy, completeness, format, tone | Promptfoo, Braintrust, OpenAI Evals | (esta trilha, notas 02-04) |
-| **RAG pipeline** | Retrieval trouxe info certa? Geração fiel? | Context precision/recall, faithfulness, answer relevance, citation accuracy | Ragas, TruLens, DeepEval, Phoenix | [[RAG e Vector Databases/09 - Evaluation de RAG]] |
-| **Agent** | Tarefa completou? Trajetória eficiente? | Task completion rate, steps per task, tool call success, human intervention rate | Langfuse, LangSmith, Braintrust | [[Anatomia de Agents/09 - Evaluation de agents]] |
-| **LLM base** | Modelo é capaz na distribuição? | Benchmarks (MMLU, HumanEval, GSM8K, ARC, HellaSwag) | lm-evaluation-harness, BIG-bench | [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] (parcial) |
+| **RAG pipeline** | Retrieval trouxe info certa? Geração fiel? | Context precision/recall, faithfulness, answer relevance, citation accuracy | Ragas, TruLens, DeepEval, Phoenix | [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] |
+| **Agent** | Tarefa completou? Trajetória eficiente? | Task completion rate, steps per task, tool call success, human intervention rate | Langfuse, LangSmith, Braintrust | [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]] |
+| **LLM base** | Modelo é capaz na distribuição? | Benchmarks (MMLU, HumanEval, GSM8K, ARC, HellaSwag) | lm-evaluation-harness, BIG-bench | [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] (parcial) |
 | **Multimodal** | Output coerente cross-modal? | CLIP-score, multi-modal faithfulness | Phoenix, custom | (futuro) |
 
 ## 1. Eval de prompt isolado
@@ -94,7 +94,7 @@ Para o aprofundamento, esta trilha inteira (notas 01-07) cobre prompt isolado co
 
 Cenário: pergunta → retrieve chunks → rerank → generate com chunks no contexto.
 
-**A regra fundamental** (vinda de [[RAG e Vector Databases/09 - Evaluation de RAG]]): **medir retrieval separado de generation**.
+**A regra fundamental** (vinda de [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]]): **medir retrieval separado de generation**.
 
 Por quê: resposta ruim em RAG tem 5 causas possíveis:
 
@@ -123,7 +123,7 @@ Métricas agregadas escondem qual delas é o gargalo.
 - **Phoenix** — visual debugging
 - **Langfuse** — observability em prod
 
-**Aprofundamento**: [[RAG e Vector Databases/09 - Evaluation de RAG]] tem o tratamento completo — métricas, Ragas code, golden set com `expected_chunks`, anti-patterns, pipeline CI.
+**Aprofundamento**: [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] tem o tratamento completo — métricas, Ragas code, golden set com `expected_chunks`, anti-patterns, pipeline CI.
 
 ## 3. Eval de agent
 
@@ -139,7 +139,7 @@ Agent:     Input → 12 steps com decisões → output
            → caminho importa, não só destino
 ```
 
-**Métricas-chave** (vindas de [[Anatomia de Agents/09 - Evaluation de agents]]):
+**Métricas-chave** (vindas de [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]]):
 
 | Métrica | Mede | Alvo |
 |---|---|---|
@@ -152,7 +152,7 @@ Agent:     Input → 12 steps com decisões → output
 
 **Métodos específicos pra agent**:
 - **Trajectory eval** — não só o output, mas a sequência de tool calls + reasoning
-- **Trace review humana** — 1-2h/semana lendo traces reais ([[Anatomia de Agents/09 - Evaluation de agents]] enfatiza isso como "eval mais valioso")
+- **Trace review humana** — 1-2h/semana lendo traces reais ([[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]] enfatiza isso como "eval mais valioso")
 - **Regression em error types** — bug novo vira teste permanente
 
 **Frameworks**:
@@ -160,7 +160,7 @@ Agent:     Input → 12 steps com decisões → output
 - **LangSmith** — integração nativa LangChain, eval de chain
 - **Braintrust** — eval com versioning, comparação visual de trajetórias
 
-**Aprofundamento**: [[Anatomia de Agents/09 - Evaluation de agents]] cobre completion rate, error type catalog, trace review, regression patterns específicos pra agentic systems.
+**Aprofundamento**: [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]] cobre completion rate, error type catalog, trace review, regression patterns específicos pra agentic systems.
 
 ### 3.1 Fixe o harness, não só o modelo
 
@@ -209,7 +209,7 @@ Cenário: você está avaliando o **modelo em si**, não um produto sobre ele. P
 
 **Cuidado**: benchmarks medem **capabilities** do modelo, não **performance na sua tarefa específica**. Modelo que vence MMLU pode ser pior pra classificação de ticket que um modelo menor com prompt bem feito.
 
-**Aprofundamento**: [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] cobre eval **em produção** (golden set + judge + traces + A/B), que é o mais relevante na maioria dos casos. Benchmarks acadêmicos são úteis quando o trabalho é **escolher** entre modelos base.
+**Aprofundamento**: [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] cobre eval **em produção** (golden set + judge + traces + A/B), que é o mais relevante na maioria dos casos. Benchmarks acadêmicos são úteis quando o trabalho é **escolher** entre modelos base.
 
 ## 5. Multimodal e casos especiais (mencionado)
 
@@ -287,12 +287,12 @@ Cada estágio com seu eval. Failure em qualquer um sinaliza onde está o problem
 
 ## Veja também
 
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — o tratamento aprofundado de eval em prod (os 4 pilares)
-- [[Anatomia de Agents/09 - Evaluation de agents]] — eval específico pra agents
-- [[RAG e Vector Databases/09 - Evaluation de RAG]] — métricas canônicas Ragas
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — o tratamento aprofundado de eval em prod (os 4 pilares)
+- [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]] — eval específico pra agents
+- [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] — métricas canônicas Ragas
 - [[02 - Golden datasets — como construir]] — golden set por tipo
 - [[06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix]] — qual framework por contexto
-- [[AI Engineering Stack/09 - Evaluation Layer]] — a camada onde tudo isso acontece
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/09 - Evaluation Layer]] — a camada onde tudo isso acontece
 
 ## Fontes
 

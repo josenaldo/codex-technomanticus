@@ -175,6 +175,6 @@ Antes de cada iteração, escreva o `Keep / Change / Do not` em texto curto. Mes
 
 ## Veja também
 
-- [[Prompt Engineering/07 - Iteration patterns — keep, change, do-not]] — padrão original em texto, fonte do adaptado aqui
+- [[03-Dominios/Tecnologia/IA/Prompt Engineering/07 - Iteration patterns — keep, change, do-not]] — padrão original em texto, fonte do adaptado aqui
 - [[05 - Templates por entregável — poster, infográfico, mockup, thumbnail]] — ponto de partida das iterações
 - [[07 - Geração de diagramas e ilustrações técnicas]] — onde a iteração visual encontra limite real

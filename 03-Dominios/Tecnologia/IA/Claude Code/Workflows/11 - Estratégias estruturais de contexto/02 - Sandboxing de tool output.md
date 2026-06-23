@@ -146,7 +146,7 @@ Indexação semântica ([[03 - Indexação semântica externa|03]]) e knowledge 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/04 - MCP overview|MCP overview]] — protocolo que sustenta sandboxes externos
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|Compaction]] — comportamento padrão quando contexto satura
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|Tokens e custo]] — táticas básicas de redução
-- [[index|Tronco do sub-galho]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|Tronco do sub-galho]]
 
 ## Aprofundamento
 

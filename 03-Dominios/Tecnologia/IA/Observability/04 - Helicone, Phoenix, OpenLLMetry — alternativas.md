@@ -198,5 +198,5 @@ Stack não precisa ser monolítica. Padrões que aparecem em times médios:
 - [[03 - Langfuse — open-source standard]] — o ponto de partida e referência OSS
 - [[02 - Anatomia de um trace LLM]] — a hierarquia que todas as ferramentas materializam
 - [[07 - Métricas que importam — latência, custo, qualidade]] — quais dashboards montar em qualquer backend
-- [[Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — ângulo de custo dessas mesmas ferramentas
+- [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — ângulo de custo dessas mesmas ferramentas
 - [[Dicionário de IA#Arize Phoenix|Dicionário: Arize Phoenix]], [[Dicionário de IA#OpenTelemetry GenAI|Dicionário: OpenTelemetry GenAI]]

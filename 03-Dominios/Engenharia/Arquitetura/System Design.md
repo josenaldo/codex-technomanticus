@@ -245,7 +245,7 @@ Reduz latência e carga no backend armazenando dados frequentemente acessados em
 - **Sharding:** por hash (distribuição uniforme) ou por range (queries de range). Escolha a shard key com cuidado — redistribuir depois é doloroso.
 - **Replication:** primary-replica para separar reads de writes. Multi-primary para escrita distribuída (mais complexo, risco de conflitos).
 
-→ Para aprofundar: [[Banco de dados]]
+→ Para aprofundar: [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]]
 
 ### Message queues e processamento assíncrono
 
@@ -283,7 +283,7 @@ Desacoplam produtores de consumidores. Fundamentais para resiliência e escalabi
 - **Monotonic reads** — uma vez que o usuário viu versão N, nunca vê versão < N
 - **Quorum** — W + R > N garante overlap entre quem escreveu e quem lê (Dynamo-style)
 
-→ Para aprofundar: [[Banco de dados]] (ACID, isolamento)
+→ Para aprofundar: [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] (ACID, isolamento)
 
 ---
 
@@ -911,7 +911,7 @@ Em entrevistas, é frequente o entrevistador perguntar: "você já enfrentou ess
 ## Veja também
 
 - [[API Design]] — design de APIs REST, GraphQL, gRPC
-- [[Banco de dados]] — SQL, NoSQL, ACID, indexação, replicação, sharding
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — SQL, NoSQL, ACID, indexação, replicação, sharding
 - [[Redes e Protocolos]] — TCP/UDP, DNS, HTTP, WebSocket, load balancing, CDN, caching HTTP
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] — event streaming, partições, consumers
 - [[RabbitMQ]] — message queuing, routing, dead letter queues

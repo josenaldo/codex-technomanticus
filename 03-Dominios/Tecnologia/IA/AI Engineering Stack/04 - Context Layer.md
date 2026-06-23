@@ -41,9 +41,9 @@ A diferença prática: o **Prompt Layer** é o mesmo em mil chamadas; o **Contex
 
 ## Decisões-chave
 
-1. **O que persiste, o que é transiente.** [[Context Engineering/05 - Camadas de contexto — persistente, temporal, transiente|Camadas de contexto]] separa o que vive por longo tempo (preferências do usuário) do que dura uma sessão (decision_history) do que dura um turn (source_material citado agora).
+1. **O que persiste, o que é transiente.** [[03-Dominios/Tecnologia/IA/Context Engineering/05 - Camadas de contexto — persistente, temporal, transiente|Camadas de contexto]] separa o que vive por longo tempo (preferências do usuário) do que dura uma sessão (decision_history) do que dura um turn (source_material citado agora).
 
-2. **Pull vs push.** Empurrar todo o material relevante de uma vez infla a janela e produz [[Dicionário de IA#context rot|context rot]]. Puxar só quando preciso (JIT retrieval, ver [[Context Engineering/06 - Dynamic retrieval beyond RAG|JIT retrieval]]) preserva atenção.
+2. **Pull vs push.** Empurrar todo o material relevante de uma vez infla a janela e produz [[Dicionário de IA#context rot|context rot]]. Puxar só quando preciso (JIT retrieval, ver [[03-Dominios/Tecnologia/IA/Context Engineering/06 - Dynamic retrieval beyond RAG|JIT retrieval]]) preserva atenção.
 
 3. **Compressão vs fidelidade.** Documento longo pode ser passado bruto, resumido por outro LLM ou indexado pra retrieval. Compressão perde nuance; bruto consome tokens. A escolha depende do quanto cada nuance importa.
 
@@ -53,8 +53,8 @@ A diferença prática: o **Prompt Layer** é o mesmo em mil chamadas; o **Contex
 
 ## Onde aprofundar no Codex
 
-- **[[Context Engineering]]** — trilha inteira. Especialmente [[Context Engineering/04 - Context pipelines — montagem dinâmica|Context pipelines]] e [[Context Engineering/05 - Camadas de contexto — persistente, temporal, transiente|Camadas de contexto]].
-- **[[Anatomia dos LLMs/03 - A janela de contexto|A janela de contexto]]** — limite físico.
+- **[[Context Engineering]]** — trilha inteira. Especialmente [[03-Dominios/Tecnologia/IA/Context Engineering/04 - Context pipelines — montagem dinâmica|Context pipelines]] e [[03-Dominios/Tecnologia/IA/Context Engineering/05 - Camadas de contexto — persistente, temporal, transiente|Camadas de contexto]].
+- **[[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/06 - A janela de contexto|A janela de contexto]]** — limite físico.
 - **[[Dicionário de IA#Context window|Dicionário: Context window]]**.
 
 ## Veja também

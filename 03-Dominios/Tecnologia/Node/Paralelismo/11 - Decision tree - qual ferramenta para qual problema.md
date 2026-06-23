@@ -356,7 +356,7 @@ Nada quebra, mas você tem overhead sem benefício equivalente. 4 réplicas K8s 
 
 ## Veja também
 
-- [[12 - Armadilhas, regras práticas, cheatsheet]]
+- [[03-Dominios/Tecnologia/Node/Paralelismo/12 - Armadilhas, regras práticas, cheatsheet]]
 - [[01 - Por que paralelismo em Node]]
 - [[02 - As 3 ferramentas - Worker Threads, Cluster, child_process]]
 - [[03 - Worker Threads - fundamentos]]

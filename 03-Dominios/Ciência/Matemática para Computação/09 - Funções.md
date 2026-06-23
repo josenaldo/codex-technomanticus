@@ -344,7 +344,7 @@ Aplicou uma vez, aplicou mil, mesmo resultado. Isso é precioso em sistemas dist
 
 Uma **função pura** é a que mais se aproxima da definição matemática: mesma entrada ⟹ sempre a mesma saída, e **zero efeito colateral** (não escreve em disco, não muta estado global, não lê o relógio). Ela *é* um mapeamento A→B, nada mais.
 
-Funções impuras (que dependem do tempo, de I/O, de variável global) nem são funções no sentido matemático — `now()` devolve coisas diferentes pra mesma entrada vazia, violando a unicidade. Toda a disciplina de pureza no [[Paradigmas de Programação|paradigma funcional]] é, no fundo, "trate suas funções como funções matemáticas de verdade", e ganhe testabilidade e raciocínio de graça.
+Funções impuras (que dependem do tempo, de I/O, de variável global) nem são funções no sentido matemático — `now()` devolve coisas diferentes pra mesma entrada vazia, violando a unicidade. Toda a disciplina de pureza no [[03-Dominios/Ciência/Paradigmas/index|paradigma funcional]] é, no fundo, "trate suas funções como funções matemáticas de verdade", e ganhe testabilidade e raciocínio de graça.
 
 ### Encoding bijetivo e o round-trip
 

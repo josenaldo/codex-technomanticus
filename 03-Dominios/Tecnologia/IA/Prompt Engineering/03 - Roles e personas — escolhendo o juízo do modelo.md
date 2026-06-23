@@ -152,4 +152,4 @@ A nota 04 leva esse template ao extremo: o prompt do Karpathy é, em essência, 
 - [[02 - Especificidade — a primeira disciplina]] — base sobre a qual o role opera
 - [[04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy]] — role-standards-constraints em estado puro
 - [[05 - Few-shot examples — exemplos como contrato]] — complemento para steer estilo
-- [[AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — onde role é uma das chaves do template
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — onde role é uma das chaves do template

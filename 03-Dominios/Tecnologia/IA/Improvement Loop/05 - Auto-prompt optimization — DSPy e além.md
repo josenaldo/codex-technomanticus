@@ -180,7 +180,7 @@ Auto-prompt é só tão bom quanto sua eval function. Se eval mede a coisa errad
 - **Eval cobre o objetivo final** — não otimize só sintaxe; cubra semântica e edge cases
 - **Eval bate com métrica de prod** — eval que diverge de métrica de prod = ganha eval, perde prod
 
-Quando ground truth não existe, LLM-as-judge ([[Evaluation/04 - LLM-as-judge — quando e como]]) viabiliza eval automatizado pra DSPy. Cuidado: judge enviesado vira prompt enviesado.
+Quando ground truth não existe, LLM-as-judge ([[03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — quando e como]]) viabiliza eval automatizado pra DSPy. Cuidado: judge enviesado vira prompt enviesado.
 
 ## Estado 2026
 
@@ -217,7 +217,7 @@ A escolha "DSPy ou não" em 2026 é típica de adoção de tecnologia em transi�
 
 - [[01 - O ciclo eval → diff → ship]] — auto-prompt é uma forma de gerar o diff (passo 3)
 - [[02 - A-B testing de prompts]] — compilou um candidato, ainda precisa A/B antes de ship
-- [[Evaluation/04 - LLM-as-judge — quando e como]] — judge é frequentemente a eval function que DSPy chama
-- [[Evaluation/02 - Golden datasets — como construir]] — dataset que alimenta o compiler
+- [[03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — quando e como]] — judge é frequentemente a eval function que DSPy chama
+- [[03-Dominios/Tecnologia/IA/Evaluation/02 - Golden datasets — como construir]] — dataset que alimenta o compiler
 - [[Prompt Engineering]] — o ofício que auto-prompt automatiza parcialmente
-- [[AI Engineering Stack/12 - Improvement Layer]] — onde auto-prompt entra na camada
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer]] — onde auto-prompt entra na camada

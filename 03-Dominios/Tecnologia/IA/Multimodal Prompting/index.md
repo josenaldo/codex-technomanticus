@@ -19,7 +19,7 @@ aliases:
 Em 2026, modelos de fronteira já são multimodais nativos — o gargalo é o engenheiro ainda dar só texto. Esta trilha cobre como fornecer imagens, PDFs, áudio, vídeo e dados estruturados pro modelo, e como **dirigir o tipo de leitura** que ele faz desses inputs. A tese central: enviar a modalidade certa, no nível de resolução certo, com a instrução de leitura certa, destrava casos que pipelines OCR/Whisper-pra-texto não resolvem — e custa menos no agregado, mesmo o token de imagem sendo mais caro.
 
 > [!info] Pré-requisitos
-> [[Anatomia dos LLMs/05 - Panorama de modelos 2026]] cobre quais famílias suportam o quê (Claude 4 family, GPT-5 family, Gemini 2.x) e dá vocabulário pra ler as notas seguintes sem cair em "Claude 4.5+" fantasma. Familiaridade básica com [[Prompt Engineering]] ajuda mas não é obrigatória.
+> [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/07 - Panorama de modelos 2026]] cobre quais famílias suportam o quê (Claude 4 family, GPT-5 family, Gemini 2.x) e dá vocabulário pra ler as notas seguintes sem cair em "Claude 4.5+" fantasma. Familiaridade básica com [[Prompt Engineering]] ajuda mas não é obrigatória.
 
 > [!warning] Provider muda; modalidade nativa muda mais ainda
 > Limites de tamanho, formatos aceitos e custo por imagem/página/segundo mudam quase a cada release. As notas trazem ordens de grandeza estáveis em 2026, mas a fonte de verdade pra deploy é o doc oficial do provider — sempre.
@@ -71,8 +71,8 @@ O lado feio: alucinação visual, OCR ruim em handwriting, leitura de cor capeng
 
 - [[Prompt Engineering]] — esta trilha estende prompt engineering pra modalidades além de texto
 - [[AI Engineering Stack]] — multimodal é uma decisão de Input Layer e Context Layer
-- [[Anatomia dos LLMs/05 - Panorama de modelos 2026]] — quais famílias suportam o quê
-- [[RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]] — combinação PageIndex (retrieval) + multimodal (leitura) cobre PDFs longos sem vector DB
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/07 - Panorama de modelos 2026]] — quais famílias suportam o quê
+- [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]] — combinação PageIndex (retrieval) + multimodal (leitura) cobre PDFs longos sem vector DB
 
 ## Todas as notas
 

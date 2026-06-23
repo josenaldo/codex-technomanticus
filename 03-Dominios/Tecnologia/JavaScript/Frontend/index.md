@@ -24,7 +24,7 @@ Galho de frontend do ecossistema JS. Cobre HTML/CSS, React e o ecossistema de bi
 
 - [[React]] — biblioteca para UI
 - [[React Red Flag Manual]] — antipatterns e armadilhas em React
-- [[Mantine]] — biblioteca de componentes
+- [[03-Dominios/Tecnologia/JavaScript/Frontend/Mantine]] — biblioteca de componentes
 - [[Material UI]] — biblioteca de componentes (Material Design)
 - [[Bootstrap]] — framework CSS de componentes
 - [[HTML e CSS]] — fundamentos de marcação e estilo

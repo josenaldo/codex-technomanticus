@@ -190,7 +190,7 @@ Casos:
 
 A regra prática: **constraints declarativas são para comportamento de qualidade; guardrails são para violações inaceitáveis.** Use ambas em camadas — constraint no prompt sobe a probabilidade de o modelo cumprir; guardrail garante que, se falhar, não vaza.
 
-Ver [[Segurança e Guardrails]] para o lado deterministic. Ver [[AI Engineering Stack/03 - Prompt Layer|Prompt Layer]] vs [[AI Engineering Stack]] (Guardrail Layer, layer 10) para a separação de camadas.
+Ver [[Segurança e Guardrails]] para o lado deterministic. Ver [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|Prompt Layer]] vs [[AI Engineering Stack]] (Guardrail Layer, layer 10) para a separação de camadas.
 
 ## Pitfall: constraints contraditórias
 
@@ -238,7 +238,7 @@ Mesmo bem escritas, constraints são pedidos. Quando o custo de violação é al
 ## Veja também
 
 - [[Segurança e Guardrails]] — onde guardrails determinísticos vivem
-- [[AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — constraint declarativa como parte do template de camada
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|AI Engineering Stack — Prompt Layer]] — constraint declarativa como parte do template de camada
 - [[03 - Roles e personas — escolhendo o juízo do modelo]] — role + constraints são complementares
 - [[04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy]] — prompt saturado de constraints declarativas
 - [[09 - Anti-patterns e tells de IA — o que evitar]] — constraints como bloqueio explícito de clichês

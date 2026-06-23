@@ -189,7 +189,7 @@ Langfuse roda LLM-as-judge nas próprias traces:
 - Roda automaticamente em sample de traces de produção (1%, 10%, 100% — escolha)
 - Score vira atributo do span — fica searchable, plotável, alertável
 
-Útil pra detectar regressão em tempo real: se score médio cai 10% após deploy de novo prompt, dashboard pisca antes do usuário reclamar. Detalhes em [[Evaluation/04 - LLM-as-judge — quando e como]].
+Útil pra detectar regressão em tempo real: se score médio cai 10% após deploy de novo prompt, dashboard pisca antes do usuário reclamar. Detalhes em [[03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — quando e como]].
 
 ## Datasets pra eval offline
 
@@ -197,7 +197,7 @@ Trace em produção vira candidato a dataset:
 
 - Marca trace interessante na UI → vira item de dataset
 - Roda nova versão do prompt contra o dataset todo → compara scores
-- CI/CD integration: rodar dataset eval em cada PR ([[Evaluation/07 - Eval em CI-CD]])
+- CI/CD integration: rodar dataset eval em cada PR ([[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD]])
 
 Loop completo: produção → trace → dataset → eval → nova versão de prompt → deploy → produção.
 

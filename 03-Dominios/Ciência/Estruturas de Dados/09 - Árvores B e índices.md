@@ -254,7 +254,7 @@ O trade-off, honestamente:
 - **LSM**: escrita ótima (sequencial), leitura mais cara (vários arquivos) e *write amplification* da compaction. Usada em **Cassandra, RocksDB, LevelDB, ScyllaDB**. ([referência](https://ujjwal3009.medium.com/why-do-cassandra-rocksdb-and-scylladb-use-lsm-trees-instead-of-b-trees-b071b8693471))
 
 > [!important] Lastro de honestidade
-> Estou *gesticulando* sobre LSM-Trees, não esgotando. Detalhes como WAL, *bloom filters* nos SSTables, estratégias de compaction (leveled vs size-tiered) e *write amplification* têm sua própria profundidade. O que importa aqui: **B+Tree lê melhor, LSM escreve melhor** — e a escolha depende da carga. Internos profundos ficam para [[Banco de dados]].
+> Estou *gesticulando* sobre LSM-Trees, não esgotando. Detalhes como WAL, *bloom filters* nos SSTables, estratégias de compaction (leveled vs size-tiered) e *write amplification* têm sua própria profundidade. O que importa aqui: **B+Tree lê melhor, LSM escreve melhor** — e a escolha depende da carga. Internos profundos ficam para [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]].
 
 ---
 
@@ -407,5 +407,5 @@ Sobre B-Tree vs LSM:
 
 - [[06 - Árvores e árvores de busca]] — BST e árvores balanceadas (Red-Black, AVL); a base binária que a B-Tree generaliza para o disco.
 - [[05 - Tabelas hash]] — hash index: O(1) em igualdade, sem range; a alternativa à B+Tree.
-- [[Banco de dados]] — internos de storage engine, EXPLAIN, otimização de queries.
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — internos de storage engine, EXPLAIN, otimização de queries.
 - [[Dicionário de Ciência da Computação]] — verbetes de fanout, índice clusterizado, LSM-Tree.

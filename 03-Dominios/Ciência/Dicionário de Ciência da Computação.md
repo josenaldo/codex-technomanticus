@@ -44,7 +44,7 @@ Abstração extraída cedo ou de duplicação apenas aparente, que com o tempo s
 ### Abstração que vaza (leaky abstraction)
 Abstração que falha em esconder completamente a complexidade subjacente que pretendia simplificar, forçando quem a usa a entender detalhes da camada de baixo. Termo de Joel Spolsky (*The Law of Leaky Abstractions*, 2002): "toda abstração não-trivial, em algum grau, vaza" — abstrações poupam tempo de trabalho, mas não de aprendizado.
 
-*Veja também: [[Abstrações que vazam]]*
+*Veja também: [[03-Dominios/Engenharia/Complexidade de Software/06 - Abstrações que vazam]]*
 
 ### Classitis
 Síndrome nomeada por Ousterhout (*A Philosophy of Software Design*): a crença de que classes devem ser sempre pequenas e numerosas leva a fragmentar demais, produzindo muitas **classes rasas** em vez de poucas profundas. Cada peça parece simples isolada, mas o sistema todo fica mais complexo — há mais interfaces pra aprender e mais costuras (acoplamento) entre os fragmentos. O critério correto não é "classe pequena", e sim **profundidade** (funcionalidade ÷ complexidade da interface).

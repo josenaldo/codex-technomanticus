@@ -228,8 +228,8 @@ A queda inicial em v0.5 e v1.0 **não é regressão** — é a descoberta de que
 - [[03 - Scoring rubrics e critérios]] — como avaliar cada item do dataset
 - [[05 - Regression testing em LLMs]] — golden set é a base do regression
 - [[08 - Eval por contexto — LLM, RAG, agent, prompt]] — datasets específicos por tipo de sistema
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — golden set como pilar 1
-- [[RAG e Vector Databases/09 - Evaluation de RAG]] — golden set com chunks esperados
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — golden set como pilar 1
+- [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]] — golden set com chunks esperados
 
 ## Fontes
 

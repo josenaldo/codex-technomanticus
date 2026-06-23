@@ -305,6 +305,6 @@ Meta pragmática: **nível 3 estável** pra time de IA serio em 2026. Nível 4-5
 - [[02 - A-B testing de prompts]] — o experimento que precede a decisão de ship
 - [[03 - Prompt versioning — semver para prompts]] — bump do prompt é o que dispara o canary
 - [[07 - Eval gates em CI — quando bloquear merge]] — o gate **antes** do canary (offline em CI)
-- [[Observability/05 - Versionamento de prompts]] — o registry que torna o routing por label viável
-- [[Anatomia dos LLMs/17 - Evaluation de LLMs em produção]] — A/B em prod como pilar de eval contextual
+- [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]] — o registry que torna o routing por label viável
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — A/B em prod como pilar de eval contextual
 - [[Observability]] — métricas e alertas que dispatching o rollback automático

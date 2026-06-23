@@ -163,7 +163,7 @@ com confidence levels, (5) como eu poderia verificar."
 
 ## Veja também
 
-- [[Anatomia dos LLMs/13 - Reasoning models e chain-of-thought|Anatomia — Reasoning models e chain-of-thought]] — o "porquê" por trás desta nota, em profundidade
+- [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/15 - Reasoning models e chain-of-thought|Anatomia — Reasoning models e chain-of-thought]] — o "porquê" por trás desta nota, em profundidade
 - [[04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy]] — cláusula step-by-step a revisar em reasoning models
 - [[06 - Constraints declarativas — boundaries como engenharia]] — onde audit trail vira constraint de output
-- [[Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Context Engineering — Técnicas de prompting]] — CoT na taxonomia maior
+- [[03-Dominios/Tecnologia/IA/Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Context Engineering — Técnicas de prompting]] — CoT na taxonomia maior

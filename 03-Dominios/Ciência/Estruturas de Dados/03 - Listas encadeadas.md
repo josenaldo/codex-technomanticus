@@ -124,7 +124,7 @@ Leitura do diagrama: para remover `B`, basta fazer `A.next` apontar para `C` e `
 
 ## A realidade da cache: por que o array quase sempre ganha
 
-Aqui está a parte que o Big-O não conta e que decide o desempenho real — a mesma lição que abrimos em [[02 - Arrays e listas dinâmicas#Localidade de cache - a vantagem invisível|arrays]], agora vista do lado perdedor.
+Aqui está a parte que o Big-O não conta e que decide o desempenho real — a mesma lição que abrimos em [[02 - Arrays e listas dinâmicas#Localidade de cache: a vantagem invisível|arrays]], agora vista do lado perdedor.
 
 Lembre como a CPU lê memória: não byte a byte, mas em **cache lines** de ~64 bytes, que ela guarda numa memória ultrarrápida (L1/L2). Quando você lê um endereço, a vizinhança inteira vem junto, de graça.
 
@@ -211,7 +211,7 @@ Como os iteradores de `java.util`, ele é **fail-fast**: se a lista for modifica
 
 ### TypeScript / JavaScript: não existe — você constrói
 
-JS **não tem** lista encadeada na linguagem nem na stdlib. O `Array` cobre o papel de lista dinâmica (com toda a [[02 - Arrays e listas dinâmicas#TypeScript / JavaScript - o array que finge ser array|maquinaria de elements kinds da V8]]), e quando você quer uma lista encadeada, **constrói com objetos e referências** — um nó é só um objeto `{ valor, next }`, e o `next` é uma referência a outro objeto.
+JS **não tem** lista encadeada na linguagem nem na stdlib. O `Array` cobre o papel de lista dinâmica (com toda a [[02 - Arrays e listas dinâmicas#TypeScript / JavaScript: o array que finge ser array|maquinaria de elements kinds da V8]]), e quando você quer uma lista encadeada, **constrói com objetos e referências** — um nó é só um objeto `{ valor, next }`, e o `next` é uma referência a outro objeto.
 
 ```typescript
 class No<T> {
@@ -253,7 +253,7 @@ A implicação de **GC** é o ponto sensível: cada nó é um objeto separado na
 
 ### Python: a lista encadeada mora dentro do `deque` (e é de blocos)
 
-Python também **não tem** uma lista encadeada clássica de propósito geral exposta. A `list` é um [[02 - Arrays e listas dinâmicas#Python - `list` é um array de ponteiros, sempre|array de ponteiros]]. Mas a stdlib esconde uma lista encadeada de implementação muito mais inteligente que a ingênua: **`collections.deque`**.
+Python também **não tem** uma lista encadeada clássica de propósito geral exposta. A `list` é um [[02 - Arrays e listas dinâmicas#Python: `list` é um array de ponteiros, sempre|array de ponteiros]]. Mas a stdlib esconde uma lista encadeada de implementação muito mais inteligente que a ingênua: **`collections.deque`**.
 
 Um `deque` (double-ended queue) dá O(1) garantido nas **duas pontas** — `append`/`appendleft`/`pop`/`popleft` — exatamente o que a `list` não dá no início (`list.pop(0)` é O(n)). E por dentro ele **é** uma doubly-linked list — mas com um twist que conserta o problema da cache.
 

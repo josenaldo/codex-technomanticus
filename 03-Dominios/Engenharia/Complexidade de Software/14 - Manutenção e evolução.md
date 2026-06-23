@@ -206,7 +206,7 @@ São eles que tornam a refatoração **destemida** — você muda a estrutura e 
 Sem testes, cada refatoração é uma aposta, e o medo paralisa (de volta à definição de legado).
 
 > [!note] Como refatorar o que não tem testes (o paradoxo de Feathers)
-> Há um problema do ovo e da galinha: refatorar com segurança exige testes, mas código legado *não tem testes* — e é difícil testá-lo justamente porque está emaranhado. A solução de Feathers são duas técnicas. **Characterization tests** (testes de caracterização): em vez de testar o que o código *deveria* fazer, você escreve testes que capturam o que ele *de fato faz hoje* — congela o comportamento atual como rede de segurança, mesmo que esse comportamento seja esquisito. E **seams** (costuras): pontos do programa onde dá pra alterar o comportamento *sem editar naquele ponto* — uma costura por onde você insere um substituto (um *mock*, um *stub*) pra conseguir isolar e testar a parte que quer mexer. Com as duas, você cria a rede primeiro e *então* refatora — transformando código legado em código mantível, um pedaço de cada vez. É a manobra inversa da entropia: gastar energia deliberada pra baixar a desordem local. Aprofundamento da mecânica de testes em [[Testes]].
+> Há um problema do ovo e da galinha: refatorar com segurança exige testes, mas código legado *não tem testes* — e é difícil testá-lo justamente porque está emaranhado. A solução de Feathers são duas técnicas. **Characterization tests** (testes de caracterização): em vez de testar o que o código *deveria* fazer, você escreve testes que capturam o que ele *de fato faz hoje* — congela o comportamento atual como rede de segurança, mesmo que esse comportamento seja esquisito. E **seams** (costuras): pontos do programa onde dá pra alterar o comportamento *sem editar naquele ponto* — uma costura por onde você insere um substituto (um *mock*, um *stub*) pra conseguir isolar e testar a parte que quer mexer. Com as duas, você cria a rede primeiro e *então* refatora — transformando código legado em código mantível, um pedaço de cada vez. É a manobra inversa da entropia: gastar energia deliberada pra baixar a desordem local. Aprofundamento da mecânica de testes em [[03-Dominios/Engenharia/Testes/index|Testes]].
 
 Há ainda uma disciplina de *processo* dentro da refatoração, e é talvez a regra mais subestimada da prática: os **dois chapéus** (*two hats*), metáfora de Kent Beck que Fowler popularizou.
 
@@ -302,5 +302,5 @@ Quando o tema aparece, o entrevistador quer ver se você entende manutenção co
 - [[13 - Entropia de software e decaimento]] — o decaimento é o default; manutenção é a energia que o combate
 - [[04 - O programa como teoria]] — legado também é código cuja teoria se perdeu (Naur)
 - [[10 - Dívida técnica]] — a refatoração é a moeda com que se paga a dívida ao longo da vida do sistema
-- [[Testes]] — a mecânica que torna a refatoração destemida (a rede de segurança de Feathers)
+- [[03-Dominios/Engenharia/Testes/index|Testes]] — a mecânica que torna a refatoração destemida (a rede de segurança de Feathers)
 - [[Dicionário de Ciência da Computação]] — verbetes do domínio

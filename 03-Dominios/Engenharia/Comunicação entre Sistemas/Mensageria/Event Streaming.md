@@ -635,4 +635,4 @@ Todo event-sourced system sério precisa de upcasters para lidar com histórico.
 - [[Arquitetura de Software]] — DDD, bounded contexts, EDA como estilo
 - [[System Design]] — CQRS em walkthroughs
 - [[API Design]] — webhooks como notificação de eventos
-- [[Banco de dados]] — outbox pattern, CDC, strong vs eventual consistency
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — outbox pattern, CDC, strong vs eventual consistency

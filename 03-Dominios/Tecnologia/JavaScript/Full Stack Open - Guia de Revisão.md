@@ -778,7 +778,7 @@ export default [
 
 - Deep dive em Node.js: [[Node.js]]
 - REST: [[API Design]]
-- Banco de dados: [[Banco de dados]]
+- Banco de dados: [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]]
 
 ### Armadilhas comuns parte 3
 
@@ -2199,7 +2199,7 @@ module.exports = {
 
 ### Conexões
 
-- Banco de dados: [[Banco de dados]]
+- Banco de dados: [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]]
 - ORM vs raw SQL: [[Spring Data JPA]] (conceitos universais)
 
 ---
@@ -2314,7 +2314,7 @@ Parte do material do curso está traduzido para português, mas a recomendação
 - [[Node.js]] — runtime backend
 - [[HTML e CSS]] — fundação do frontend
 - [[API Design]] — REST, GraphQL, JWT
-- [[Banco de dados]] — MongoDB, PostgreSQL, modelagem
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — MongoDB, PostgreSQL, modelagem
 - [[Spring Security]] — JWT e auth (conceitos transferíveis)
 - [[System Design]] — arquitetura de sistemas
 - [[Arquitetura de Software]] — patterns, DDD, Clean Architecture

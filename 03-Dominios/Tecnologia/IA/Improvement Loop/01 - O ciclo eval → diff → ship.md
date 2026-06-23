@@ -169,17 +169,17 @@ Meta realista pra time típico em 2026: **nível 2 estável, com partes em níve
 
 ## Posição no AI Engineering Stack
 
-O ciclo eval → diff → ship é a operação interna da [[AI Engineering Stack/12 - Improvement Layer|Improvement Layer]]. A layer define **o que** acontece (loop fechado, ownership, cadência); este ciclo define **como** acontece operacionalmente.
+O ciclo eval → diff → ship é a operação interna da [[03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer|Improvement Layer]]. A layer define **o que** acontece (loop fechado, ownership, cadência); este ciclo define **como** acontece operacionalmente.
 
 A layer apoia-se em outras duas:
 
-- [[AI Engineering Stack/09 - Evaluation Layer|Evaluation Layer]] entrega o passo 2
-- [[AI Engineering Stack/11 - Logging Layer|Logging Layer]] / observability entrega o passo 1
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/09 - Evaluation Layer|Evaluation Layer]] entrega o passo 2
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/11 - Logging Layer|Logging Layer]] / observability entrega o passo 1
 
 E retroalimenta:
 
-- [[AI Engineering Stack/03 - Prompt Layer|Prompt Layer]] (mudança do prompt)
-- [[AI Engineering Stack/04 - Context Layer|Context Layer]] (novos casos no contexto)
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|Prompt Layer]] (mudança do prompt)
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/04 - Context Layer|Context Layer]] (novos casos no contexto)
 
 ## Anti-padrões
 
@@ -205,4 +205,4 @@ E retroalimenta:
 - [[07 - Eval gates em CI — quando bloquear merge]] — como o passo 2 vira parte do pipeline
 - [[Evaluation]] — trilha do passo 2
 - [[Observability]] — trilha do passo 1
-- [[AI Engineering Stack/12 - Improvement Layer]] — a camada conceitual onde este ciclo opera
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer]] — a camada conceitual onde este ciclo opera

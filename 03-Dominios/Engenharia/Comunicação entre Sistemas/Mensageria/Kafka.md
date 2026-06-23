@@ -915,4 +915,4 @@ Uma partição com lag crescente indica: consumer lento, erro em uma mensagem, o
 - [[System Design]] — quando e como usar Kafka em system design
 - [[Arquitetura de Software]] — event-driven architecture
 - [[Spring Boot]] — integração com Spring Kafka
-- [[Banco de dados]] — CDC, outbox pattern
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — CDC, outbox pattern

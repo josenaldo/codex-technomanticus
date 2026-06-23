@@ -1605,5 +1605,5 @@ Use `myapp:1.2.3`, não `myapp:latest`. Ou melhor, digest `myapp@sha256:...`.
 - [[Spring Boot]] — apps Java em K8s
 - [[Node.js]] — apps Node em K8s
 - [[WSL, Docker e Kubernetes]] — setup em Windows
-- [[Banco de dados]] — StatefulSets, operators
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — StatefulSets, operators
 - [[Arquitetura de Software]] — microservices patterns

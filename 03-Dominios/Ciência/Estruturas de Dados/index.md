@@ -89,5 +89,5 @@ SORT file.name ASC
 
 - [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
 - [[Algoritmos]] — a análise de complexidade e os algoritmos que operam sobre estas estruturas
-- [[Banco de dados]] — B-Trees nos índices
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — B-Trees nos índices
 - [[Dicionário de Ciência da Computação]]

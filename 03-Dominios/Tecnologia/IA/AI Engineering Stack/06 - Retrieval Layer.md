@@ -58,7 +58,7 @@ Retrieval Layer **decide quando e como**; a implementação (vector DB, BM25, we
 ## Onde aprofundar no Codex
 
 - **[[RAG e Vector Databases]]** — trilha completa de retrieval, da intuição ao setup de produção.
-- **[[Context Engineering/06 - Dynamic retrieval beyond RAG|Dynamic retrieval beyond RAG]]** — JIT retrieval, retrieval por agentes, MCP como retrieval channel.
+- **[[03-Dominios/Tecnologia/IA/Context Engineering/06 - Dynamic retrieval beyond RAG|Dynamic retrieval beyond RAG]]** — JIT retrieval, retrieval por agentes, MCP como retrieval channel.
 - **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|Dicionário: RAG]]**.
 
 ## Veja também

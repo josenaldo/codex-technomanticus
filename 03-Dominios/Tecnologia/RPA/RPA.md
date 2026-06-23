@@ -7,8 +7,8 @@
         - [[#Citizen Developer Basics]]
         - [[#Bot Developer (Automation 360)]]
     - [[#Youtube]]
-        - [[#Automation Anywhere Full Course | Automation Anywhere Tutorial | RPA Course | Learn RPA ]]
-        - [[#Automation Anywhere Interview Questions | RPA Interview Q&A]]
+        - [[#Automation Anywhere Full Course — Automation Anywhere Tutorial — RPA Course — Learn RPA]]
+        - [[#Automation Anywhere Interview Questions — RPA Interview Q&A]]
         - [[#Automation Anywhere Tutorial For Beginners]]
         - [[#Automation Anywhere Tutorials For Beginners]]
         - [[#RPA: Roteiro de Aprendizado]]
@@ -16,7 +16,7 @@
         - [[#RPA Automation Brasil]]
 - [[#UI Path]]
     - [[#Cursos]]
-        - [[#RPA Full Course 2024 | Robotic Process Automation Full Course | RPA UiPath Tutorial | Intellipaat]]
+        - [[#RPA Full Course 2024 — Robotic Process Automation Full Course — RPA UiPath Tutorial — Intellipaat]]
 
 # Automation Anywhere
 
@@ -70,13 +70,13 @@
 
 ## Youtube
 
-### **Automation Anywhere Full Course | Automation Anywhere Tutorial | RPA Course | Learn RPA**
+### **Automation Anywhere Full Course — Automation Anywhere Tutorial — RPA Course — Learn RPA**
 
 > [!info] 🔥Automation Anywhere Full Course | Automation Anywhere Tutorial | RPA Course | RPA | Simplilearn  
 > 🔥Full Stack Developer (MERN Stack): https://www.  
 > [https://www.youtube.com/watch?v=b4BmuMZhiMU](https://www.youtube.com/watch?v=b4BmuMZhiMU)  
 
-### **Automation Anywhere Interview Questions | RPA Interview Q&A**
+### **Automation Anywhere Interview Questions — RPA Interview Q&A**
 
 > [!info] Automation Anywhere Interview Questions | RPA Interview Q&A  
 > 📌This Video is helpful for people who are looking for :  
@@ -116,7 +116,7 @@
 
 ## Cursos
 
-### **RPA Full Course 2024 | Robotic Process Automation Full Course | RPA UiPath Tutorial | Intellipaat**
+### **RPA Full Course 2024 — Robotic Process Automation Full Course — RPA UiPath Tutorial — Intellipaat**
 
 > [!info] RPA Full Course 2024 | Robotic Process Automation Full Course | RPA UiPath Tutorial | Intellipaat  
 > 🔥Enroll for the RPA Training Certification Course - Robotic Process Automation Training for UiPath: https://intellipaat.  

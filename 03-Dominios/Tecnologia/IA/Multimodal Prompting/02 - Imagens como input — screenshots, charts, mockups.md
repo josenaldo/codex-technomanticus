@@ -43,7 +43,7 @@ Toda chamada multimodal com imagem cai em um destes — útil pra decidir a reso
 
 ### 5. Classificação estruturada
 
-"Esse mockup viola alguma das 10 heurísticas de Nielsen? Para cada, indique sim/não com evidência." Cruzamento de descrição + análise + structured output. Modelos médios bastam, combinados com [[Structured Outputs/02 - JSON Schema como contrato|JSON Schema]] no output.
+"Esse mockup viola alguma das 10 heurísticas de Nielsen? Para cada, indique sim/não com evidência." Cruzamento de descrição + análise + structured output. Modelos médios bastam, combinados com [[03-Dominios/Tecnologia/IA/Structured Outputs/02 - JSON Schema como contrato|JSON Schema]] no output.
 
 ## Custo por imagem — números de 2026
 
@@ -220,7 +220,7 @@ Se um campo estiver vazio ou ilegível, marque como null. Não invente.
 Retorne em JSON com exatamente esses campos.
 ```
 
-Combine com strict mode (ver [[Structured Outputs/04 - OpenAI Structured Outputs — strict mode]]) pra garantir shape.
+Combine com strict mode (ver [[03-Dominios/Tecnologia/IA/Structured Outputs/04 - OpenAI Structured Outputs — strict mode]]) pra garantir shape.
 
 ### Comparação
 

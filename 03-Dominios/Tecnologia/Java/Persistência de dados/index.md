@@ -86,7 +86,7 @@ SORT file.name ASC
 - [[03-Dominios/Tecnologia/Java/Jakarta EE/index|Jakarta EE]] — as specs que este galho operacionaliza (JPA, EntityManager, JTA)
 - [[03-Dominios/Tecnologia/Java/Spring Core e Boot/index|Spring Core e Boot]] — o mecanismo AOP do `@Transactional`
 - [[03-Dominios/Tecnologia/Java/Web e APIs REST/index|Web e APIs REST]] — a borda que consome a persistência (DTO vs entidade)
-- [[03-Dominios/Ciência/Banco de dados|Banco de dados]] — SQL, ACID, índices, isolamento (a teoria)
+- [[03-Dominios/Ciência/Banco de Dados/index|Banco de dados]] — SQL, ACID, índices, isolamento (a teoria)
 - [[03-Dominios/Tecnologia/Java/Dicionário de Java|Dicionário de Java]] — glossário de termos da trilha
 
 > Galhos 11 (Programação Reativa/R2DBC), 12 (Segurança), 13 (Testes), 14 (Mensageria), 16 (Microservices) e 17 (Cloud-native) — planejados.

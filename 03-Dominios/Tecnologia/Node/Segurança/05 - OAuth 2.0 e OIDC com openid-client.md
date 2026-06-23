@@ -558,7 +558,7 @@ A: The minimum required validations for an ID Token are: (1) **signature** — v
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — índice do galho, trilha completa de segurança Node
-- [[JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/JavaScript/Backend/Node.js|Node.js]] — tronco da trilha Node Senior
 - [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação com jsonwebtoken]] — nota anterior: tokens JWT, sign/verify, access + refresh
 - [[03-Dominios/Tecnologia/Node/Segurança/06 - RBAC e ABAC com casl e casbin|RBAC e ABAC com casl e casbin]] — nota seguinte: autorização granular
 - [openid-client no npm](https://www.npmjs.com/package/openid-client) — documentação oficial da biblioteca
