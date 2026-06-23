@@ -12,7 +12,6 @@ tags:
   - modelo-relacional
   - entrevista
 ---
-
 # O modelo relacional
 
 A nota anterior ([[01 - O que é um banco de dados]]) tratou o modelo relacional como um **mapa**: você descreve *o quê* quer, não *como* buscar. Esta nota abre o mapa e mostra a maquinaria por baixo. Quando você escreve `SELECT`, o que existe ali embaixo? Tabelas? Sim — mas tabela é a palavra do dia a dia. Por baixo há uma teoria matemática, publicada em 1970, que sustenta tudo o que o SQL faz até hoje.
