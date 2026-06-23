@@ -70,18 +70,19 @@ Seam-chave (anti-duplicação): a **fundamentação** fica na camada de Engenhar
 - Casos: normalização full-path (cluster IA path-relativo), casing `Banco de dados`→`Banco de Dados/index`, `[[Testes]]` por contexto (Engenharia vs Java), `[[index]]`→pasta-própria, Anatomia LLMs 13→15 (renumerado), headings de vídeo com `|`→`—` (WSL/RPA), forward-refs HTML/CSS → fonte interina
 - **GOTCHA:** o `check_wikilinks.py` reporta ~420 FALSOS POSITIVOS estruturais (âncoras same-file 384, imagens existentes 20, em-dash em `[nota](…)` 9, placeholders em comentário 7, crase em âncora 4). NÃO são quebras — validar contra heading/arquivo real antes de "consertar". Vale melhorar o script.
 
-### 🧹 Batch 3 — Dissolver o resto do cluster JS (dedup + distribuir)
-- **Dedup primeiro**: `Mantine.md` e MUI existem em `React/` E `JavaScript/Frontend/` (Material UI.md vs MUI.md) — decidir versão canônica, fundir
-- `JavaScript/Frontend/React.md`, `React Red Flag Manual.md`, `Material UI.md` → React (após dedup)
-- `JavaScript/Backend/Node.js.md` → Node (ou descartar se redundante com a trilha madura)
-- `JavaScript/Core/` achatado: `JavaScript Fundamentals.md`, `Testes em JavaScript.md` sobem pra raiz de JavaScript
-- `Frontend/Networking/` (Axios, Fetch) → Plataforma Web; `Frontend/Debugging.md` → Plataforma Web
-- `Frontend/Validação/` (Zod/Yup/Joi) → JavaScript (ecossistema) ou TypeScript (decidir)
-- Objetivo: `JavaScript/Frontend/`, `JavaScript/Backend/`, `JavaScript/Core/` e o domínio `Frontend/` deixam de existir
+### ✅ Batch 3 — Dissolver o cluster JS (FEITO 2026-06-23, tag `pre-batch3`, commit 62d2a13 + apocrypha 300846f)
+- **Dedup invertido**: as versões RICAS estavam em `JavaScript/Frontend/` (não em React/); viraram canônicas em `React/Mantine.md` e `React/MUI.md` (substituíram os stubs de 44 ln); alias `Material UI` no MUI.md p/ inbound resolver
+- `React.md` (1647 ln) + `React Red Flag Manual.md` (3547 ln) → `React/`
+- `JavaScript/Core/` achatado (Fundamentals + Testes em JS → raiz de JavaScript); `Core/` removido
+- `Node.js.md` (97 inbound, conteúdo próprio) → `Node/` como nota-tronco (NÃO descartado); `Backend/` removido
+- `Frontend/` dissolvido: Networking + Debugging → **novo domínio `Plataforma Web`** (adiantado do Batch 4); Validação (Zod/Yup/Joi) → `JavaScript/Validação/`
+- Resta `JavaScript/Frontend/` só com `HTML e CSS.md` + `Bootstrap.md` (Batch 4 finaliza); `JavaScript/Backend/`, `JavaScript/Core/`, domínio `Frontend/` deixaram de existir
+- **Gotcha confirmado:** `for f in $(grep -rl ...)` quebra em nomes com espaço — usar Python/`-print0` pro rewrite
 
 ### 🔪 Batch 4 — Splits de conteúdo + domínios novos
-- Criar `Tecnologia/HTML`, `Tecnologia/CSS`, `Tecnologia/Plataforma Web`, `Tecnologia/Tooling e Build`, `Engenharia/Dados`, `Engenharia/Operação` (com index.md MOC)
-- Split `JavaScript/Frontend/HTML e CSS.md` → HTML + CSS; `Bootstrap.md` → CSS
+- Criar `Tecnologia/HTML`, `Tecnologia/CSS`, `Tecnologia/Tooling e Build`, `Engenharia/Dados`, `Engenharia/Operação` (com index.md MOC) — **`Plataforma Web` já criado no Batch 3**
+- Split `JavaScript/Frontend/HTML e CSS.md` → HTML + CSS; `Bootstrap.md` → CSS; aí `JavaScript/Frontend/` some de vez
+- Re-apontar forward-refs `[[03-Dominios/HTML/index]]`/`[[…/CSS/index]]` (hoje interino → `JavaScript/Frontend/HTML e CSS`)
 - Split `Ciência/Banco de Dados`: teoria fica, engenharia (modelagem/indexação/tradeoffs) → `Dados`
 - Racha `Infraestrutura`: princípios (SRE/deploy/observabilidade) → `Operação`; `Observabilidade.md` e `CI-CD.md` racham por dentro; tools ficam em Infraestrutura
 
