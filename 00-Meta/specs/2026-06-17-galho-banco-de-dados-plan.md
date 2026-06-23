@@ -16,7 +16,7 @@ tags:
 ## Contexto
 Quinto galho da Camada A do meta-plano de Fundamentos (`2026-06-15-fundamentos-meta-planejamento-design.md`),
 depois de **Estruturas de Dados**, **Algoritmos**, **OO** e **SOLID** (todos COMPLETOS, 2026-06-17).
-Refatora o monólito `03-Dominios/Fundamentos/Banco de dados.md` (616 ln, evergreen) no padrão
+Refatora o monólito `03-Dominios/Ciência/Banco de dados.md` (616 ln, evergreen) no padrão
 tronco/galhos + 3 fases. Interview-critical (★). Aprovado pelo usuário em 2026-06-17.
 
 A semente é o monólito inteiro: SQL/NoSQL, ACID, isolamento, modelagem, SQL essencial, índices,
@@ -105,7 +105,7 @@ experiências reais do usuário (preservar, [[feedback-no-fabrication]]).
 - **NUNCA fabricar** experiências/dados do usuário; preservar e relocar as seções "Na prática" reais.
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Banco de Dados/` com `index.md` (MOC, `type: moc`, `publish: true`,
+- Pasta `03-Dominios/Ciência/Banco de Dados/` com `index.md` (MOC, `type: moc`, `publish: true`,
   agrupado por fase, rota de entrevista, dataview, "Veja também").
 - Alias do `index.md`: **"Banco de Dados"** + **"Banco de dados"** + "Bancos de Dados" + "Database" para
   resolver os links de entrada (Spring Boot, System Design, ED, Arquitetura referenciam Banco de dados).

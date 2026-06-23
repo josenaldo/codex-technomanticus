@@ -21,12 +21,12 @@ aprovado pelo usuário em 2026-06-18, **com CAPRICHO NÍVEL ED** (teto de prosa 
 showcase comparativo de SOs reais — Linux/Windows/macOS — onde ilumina).
 
 ## Decisão de fronteira (rígido)
-- **Infraestrutura** (`03-Dominios/Infraestrutura/`: Linux, Docker, K8s, WSL) = USAR o SO. ESTE galho é a
-  TEORIA. Linka `[[03-Dominios/Infraestrutura/Linux|Linux]]` / `[[Infraestrutura]]` pro concreto.
+- **Infraestrutura** (`03-Dominios/Tecnologia/Infraestrutura/`: Linux, Docker, K8s, WSL) = USAR o SO. ESTE galho é a
+  TEORIA. Linka `[[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux]]` / `[[Infraestrutura]]` pro concreto.
 - **Concorrência e Paralelismo** (galho recém-feito) = threads/scheduling pelo ângulo de SINCRONIZAÇÃO e
   modelos. ESTE galho faz o ângulo de MECANISMO DO KERNEL (PCB/TCB, troca de contexto por dentro, algoritmos
   de scheduler). As notas 04 (threads) e 09 (IPC) **linkam** `[[Concorrência e Paralelismo]]`, não duplicam.
-- **JVM** (`03-Dominios/Java/JVM/index`) = memória/GC do runtime gerenciado. A nota de memória virtual linka
+- **JVM** (`03-Dominios/Tecnologia/Java/JVM/index`) = memória/GC do runtime gerenciado. A nota de memória virtual linka
   pro paralelo (o GC vê memória virtual; o managed heap).
 - **Banco de Dados** — buffer pool, WAL, fsync têm paralelo FORTE com page cache / journaling / durabilidade
   do SO. A nota 08 e a 12 **linkam** `[[Banco de Dados]]` (o paralelo é didático, não duplicação).
@@ -97,7 +97,7 @@ showcase comparativo de SOs reais — Linux/Windows/macOS — onde ilumina).
   exemplos canônicos (jantar dos filósofos NÃO — isso é Concorrência; aqui: o shell, o `ls`, o page fault).
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Sistemas Operacionais/` com `index.md` (MOC, `type: moc`, `status: growing`,
+- Pasta `03-Dominios/Ciência/Sistemas Operacionais/` com `index.md` (MOC, `type: moc`, `status: growing`,
   `publish: true`, fases, rotas, dataview, "Veja também").
 - Alias do index: **"Sistemas Operacionais"** + **"Sistema Operacional"** + **"SO"** + **"Operating Systems"**.
 - Entra no MOC do domínio em `Fundamentos/index.md` e `Fundamentos.md` (seção nova ou junto de Concorrência).

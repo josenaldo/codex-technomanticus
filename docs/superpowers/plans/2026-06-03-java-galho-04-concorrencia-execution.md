@@ -4,7 +4,7 @@
 
 **Goal:** Criar o Galho 4 da trilha Java Senior — 16 notas atômicas de concorrência em 3 fases + MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda integral do tronco `Java Concurrency`.
 
-**Architecture:** Padrão tronco/galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Java/Concorrência e paralelismo/`, notas atômicas `publish: true` em PT-BR, numeração global 01-16 (4 Iniciado / 6 Adepto / 6 Magus). Cada nota refatora/expande material do tronco `Core/Java Concurrency.md` (matéria-prima, não cópia 1:1); features version-specific (virtual threads, structured concurrency, scoped values) verificadas via JEP/doc oficial. Ao fim, o tronco é podado **integralmente** (todo conteúdo migra → redirect enxuto) e a fabricação higienizada. Branch dedicada `java-galho-04-concorrencia` (NÃO em `main`).
+**Architecture:** Padrão tronco/galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/`, notas atômicas `publish: true` em PT-BR, numeração global 01-16 (4 Iniciado / 6 Adepto / 6 Magus). Cada nota refatora/expande material do tronco `Core/Java Concurrency.md` (matéria-prima, não cópia 1:1); features version-specific (virtual threads, structured concurrency, scoped values) verificadas via JEP/doc oficial. Ao fim, o tronco é podado **integralmente** (todo conteúdo migra → redirect enxuto) e a fabricação higienizada. Branch dedicada `java-galho-04-concorrencia` (NÃO em `main`).
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks, callouts, Dataview, Quartz v4 (publicação). Verificação de fonte via WebFetch (dev.java, docs.oracle.com, openjdk.org/jeps).
 
@@ -43,7 +43,7 @@ aliases:
 5. `## Na prática` — exemplos compiláveis, framing neutro ("padrão observado no JDK/Spring", hipotético explícito `// hipotético:`). NUNCA "no meu projeto". Concorrência: ao demonstrar race/visibility bug, declarar que o output é **não-determinístico**.
 6. `## Armadilhas` — ≥2 (Iniciado) / ≥3 (Adepto/Magus). Cada armadilha: `### (N) Título` + descrição + exemplo curto de código demonstrando o problema + fix em 1 linha.
 7. `## Em entrevista` — frase pronta em inglês com **3+ sentenças** (trade-off + decisão + caveat) + sub-bloco "Vocabulário" com **6+ termos PT→EN** traduzidos.
-8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Java/Concorrência e paralelismo/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + `[[Java Concurrency]]` (tronco) + verbetes do Dicionário relevantes.
+8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + `[[Java Concurrency]]` (tronco) + verbetes do Dicionário relevantes.
 9. `## Referências` — docs oficiais + JEPs + *Java Concurrency in Practice* (Goetz) quando pertinente.
 
 **Tamanho:** 200-500 linhas (notas Magus densas até 700; notas 11 JMM e 12 Loom podem ir mais alto — contingência de divisão na própria task).
@@ -57,7 +57,7 @@ aliases:
 - Code fences: ` ```java ` pra código, ` ```text ` pra output/thread dump/erro. Sempre fechadas.
 - Commits: sem `Co-Authored-By: Claude`; sem `--no-verify`; `git add <path>` nominal (nunca `git add -A`); 1 commit por nota.
 
-**Material de origem:** `03-Dominios/Java/Core/Java Concurrency.md` (ler a seção indicada em cada task como matéria-prima; expandir, não copiar). Spec de referência: `docs/superpowers/specs/2026-06-03-java-galho-04-concorrencia-design.md` §5. Template de qualidade: notas do Galho 1 em `03-Dominios/Java/Linguagem e sintaxe moderna/`.
+**Material de origem:** `03-Dominios/Tecnologia/Java/Core/Java Concurrency.md` (ler a seção indicada em cada task como matéria-prima; expandir, não copiar). Spec de referência: `docs/superpowers/specs/2026-06-03-java-galho-04-concorrencia-design.md` §5. Template de qualidade: notas do Galho 1 em `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/`.
 
 **Modelo por nota:** sonnet por padrão; **opus** nas notas 11 (JMM) e 12 (Virtual Threads/Loom) — as mais densas.
 
@@ -66,8 +66,8 @@ aliases:
 ## Task 0: Pré-flight — branch, pasta, versões e leitura do tronco
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/` (pasta)
-- Read: `03-Dominios/Java/Core/Java Concurrency.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/` (pasta)
+- Read: `03-Dominios/Tecnologia/Java/Core/Java Concurrency.md`
 
 - [ ] **Step 1: Criar a branch dedicada**
 
@@ -80,12 +80,12 @@ Expected: `java-galho-04-concorrencia` (NÃO trabalhar em `main`).
 - [ ] **Step 2: Criar a pasta do galho**
 
 ```bash
-mkdir -p "03-Dominios/Java/Concorrência e paralelismo"
+mkdir -p "03-Dominios/Tecnologia/Java/Concorrência e paralelismo"
 ```
 
 - [ ] **Step 3: Ler o tronco e confirmar headings reais**
 
-Ler `03-Dominios/Java/Core/Java Concurrency.md` inteiro. Anotar os números de linha REAIS das seções (mapa de poda no §6 do spec): "Threads na JVM", "Java Memory Model (JMM)", "Synchronized", "java.util.concurrent.locks", "Atomic classes", "Concurrent Collections", "ExecutorService e Thread Pools", "CompletableFuture", "Sincronizadores", "ForkJoinPool", "Parallel Streams", "Virtual Threads", "Structured Concurrency", "Scoped Values", "Deadlock, Race Condition e companhia", "Patterns de design concorrente", "Debugging e profiling", "Armadilhas comuns", e a seção de fabricação `## Na prática (da minha experiência)` (≈ linha 1441).
+Ler `03-Dominios/Tecnologia/Java/Core/Java Concurrency.md` inteiro. Anotar os números de linha REAIS das seções (mapa de poda no §6 do spec): "Threads na JVM", "Java Memory Model (JMM)", "Synchronized", "java.util.concurrent.locks", "Atomic classes", "Concurrent Collections", "ExecutorService e Thread Pools", "CompletableFuture", "Sincronizadores", "ForkJoinPool", "Parallel Streams", "Virtual Threads", "Structured Concurrency", "Scoped Values", "Deadlock, Race Condition e companhia", "Patterns de design concorrente", "Debugging e profiling", "Armadilhas comuns", e a seção de fabricação `## Na prática (da minha experiência)` (≈ linha 1441).
 
 - [ ] **Step 4: Fixar versões assumidas do galho**
 
@@ -100,7 +100,7 @@ Baseline: **Java 21 LTS** (virtual threads GA) e **Java 25 LTS** (structured con
 ### Task 1: Nota 01 — Concorrência e paralelismo: o modelo
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -125,15 +125,15 @@ Tamanho: 200-320 linhas (abertura, mais conceitual).
 - [ ] **Step 3: Verificar a nota**
 
 ```bash
-head -20 "03-Dominios/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md"
-grep -cE "^## (O que é|Como funciona|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md"
+head -20 "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md"
+grep -cE "^## (O que é|Como funciona|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md"
 ```
 Expected: frontmatter com `fase: iniciado`; grep retorna ≥6.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/01 - Concorrência e paralelismo - o modelo.md"
 git commit -m "feat(java): galho 4 nota 01 — concorrência e paralelismo: o modelo"
 ```
 
@@ -142,7 +142,7 @@ git commit -m "feat(java): galho 4 nota 01 — concorrência e paralelismo: o mo
 ### Task 2: Nota 02 — Threads e seu ciclo de vida
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -163,15 +163,15 @@ Tamanho: 250-380 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "^fase: iniciado" "03-Dominios/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md"
-grep -E "RUNNABLE|BLOCKED|WAITING|InterruptedException" "03-Dominios/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md" | head
+grep -E "^fase: iniciado" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md"
+grep -E "RUNNABLE|BLOCKED|WAITING|InterruptedException" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md" | head
 ```
 Expected: `fase: iniciado`; cobre estados + interrupção.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida.md"
 git commit -m "feat(java): galho 4 nota 02 — threads e seu ciclo de vida"
 ```
 
@@ -180,7 +180,7 @@ git commit -m "feat(java): galho 4 nota 02 — threads e seu ciclo de vida"
 ### Task 3: Nota 03 — Exclusão mútua com synchronized
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/03 - Exclusão mútua com synchronized.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/03 - Exclusão mútua com synchronized.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -202,13 +202,13 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "synchronized|monitor|wait|notify|reentr" "03-Dominios/Java/Concorrência e paralelismo/03 - Exclusão mútua com synchronized.md" | head
+grep -E "synchronized|monitor|wait|notify|reentr" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/03 - Exclusão mútua com synchronized.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/03 - Exclusão mútua com synchronized.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/03 - Exclusão mútua com synchronized.md"
 git commit -m "feat(java): galho 4 nota 03 — exclusão mútua com synchronized"
 ```
 
@@ -217,7 +217,7 @@ git commit -m "feat(java): galho 4 nota 03 — exclusão mútua com synchronized
 ### Task 4: Nota 04 — As armadilhas: race, deadlock e companhia
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/04 - As armadilhas - race, deadlock e companhia.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/04 - As armadilhas - race, deadlock e companhia.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -238,13 +238,13 @@ Tamanho: 260-400 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "deadlock|race|livelock|starvation|Coffman" "03-Dominios/Java/Concorrência e paralelismo/04 - As armadilhas - race, deadlock e companhia.md" | head
+grep -E "deadlock|race|livelock|starvation|Coffman" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/04 - As armadilhas - race, deadlock e companhia.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/04 - As armadilhas - race, deadlock e companhia.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/04 - As armadilhas - race, deadlock e companhia.md"
 git commit -m "feat(java): galho 4 nota 04 — armadilhas: race, deadlock e companhia"
 ```
 
@@ -255,7 +255,7 @@ git commit -m "feat(java): galho 4 nota 04 — armadilhas: race, deadlock e comp
 ### Task 5: Nota 05 — Locks explícitos (java.util.concurrent.locks)
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/05 - Locks explícitos.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/05 - Locks explícitos.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -277,13 +277,13 @@ Tamanho: 300-440 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "ReentrantLock|ReadWriteLock|StampedLock|tryLock|Condition" "03-Dominios/Java/Concorrência e paralelismo/05 - Locks explícitos.md" | head
+grep -E "ReentrantLock|ReadWriteLock|StampedLock|tryLock|Condition" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/05 - Locks explícitos.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/05 - Locks explícitos.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/05 - Locks explícitos.md"
 git commit -m "feat(java): galho 4 nota 05 — locks explícitos (j.u.c.locks)"
 ```
 
@@ -292,7 +292,7 @@ git commit -m "feat(java): galho 4 nota 05 — locks explícitos (j.u.c.locks)"
 ### Task 6: Nota 06 — Atômicos e operações lock-free
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/06 - Atômicos e operações lock-free.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/06 - Atômicos e operações lock-free.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -313,13 +313,13 @@ Tamanho: 300-440 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "AtomicInteger|compareAndSet|CAS|LongAdder|ABA" "03-Dominios/Java/Concorrência e paralelismo/06 - Atômicos e operações lock-free.md" | head
+grep -E "AtomicInteger|compareAndSet|CAS|LongAdder|ABA" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/06 - Atômicos e operações lock-free.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/06 - Atômicos e operações lock-free.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/06 - Atômicos e operações lock-free.md"
 git commit -m "feat(java): galho 4 nota 06 — atômicos e operações lock-free"
 ```
 
@@ -328,7 +328,7 @@ git commit -m "feat(java): galho 4 nota 06 — atômicos e operações lock-free
 ### Task 7: Nota 07 — Concurrent collections
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/07 - Concurrent collections.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/07 - Concurrent collections.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -349,13 +349,13 @@ Tamanho: 300-440 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "ConcurrentHashMap|CopyOnWrite|BlockingQueue|computeIfAbsent" "03-Dominios/Java/Concorrência e paralelismo/07 - Concurrent collections.md" | head
+grep -E "ConcurrentHashMap|CopyOnWrite|BlockingQueue|computeIfAbsent" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/07 - Concurrent collections.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/07 - Concurrent collections.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/07 - Concurrent collections.md"
 git commit -m "feat(java): galho 4 nota 07 — concurrent collections"
 ```
 
@@ -364,7 +364,7 @@ git commit -m "feat(java): galho 4 nota 07 — concurrent collections"
 ### Task 8: Nota 08 — Executors e thread pools
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/08 - Executors e thread pools.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/08 - Executors e thread pools.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -385,13 +385,13 @@ Tamanho: 320-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "ExecutorService|ThreadPoolExecutor|shutdown|rejection|Future" "03-Dominios/Java/Concorrência e paralelismo/08 - Executors e thread pools.md" | head
+grep -E "ExecutorService|ThreadPoolExecutor|shutdown|rejection|Future" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/08 - Executors e thread pools.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/08 - Executors e thread pools.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/08 - Executors e thread pools.md"
 git commit -m "feat(java): galho 4 nota 08 — executors e thread pools"
 ```
 
@@ -400,7 +400,7 @@ git commit -m "feat(java): galho 4 nota 08 — executors e thread pools"
 ### Task 9: Nota 09 — Sincronizadores
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/09 - Sincronizadores.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/09 - Sincronizadores.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -421,13 +421,13 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "CountDownLatch|CyclicBarrier|Semaphore|Phaser|Exchanger" "03-Dominios/Java/Concorrência e paralelismo/09 - Sincronizadores.md" | head
+grep -E "CountDownLatch|CyclicBarrier|Semaphore|Phaser|Exchanger" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/09 - Sincronizadores.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/09 - Sincronizadores.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/09 - Sincronizadores.md"
 git commit -m "feat(java): galho 4 nota 09 — sincronizadores"
 ```
 
@@ -436,7 +436,7 @@ git commit -m "feat(java): galho 4 nota 09 — sincronizadores"
 ### Task 10: Nota 10 — CompletableFuture e composição assíncrona
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/10 - CompletableFuture e composição assíncrona.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/10 - CompletableFuture e composição assíncrona.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -457,13 +457,13 @@ Tamanho: 320-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "supplyAsync|thenCompose|thenCombine|exceptionally|orTimeout" "03-Dominios/Java/Concorrência e paralelismo/10 - CompletableFuture e composição assíncrona.md" | head
+grep -E "supplyAsync|thenCompose|thenCombine|exceptionally|orTimeout" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/10 - CompletableFuture e composição assíncrona.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/10 - CompletableFuture e composição assíncrona.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/10 - CompletableFuture e composição assíncrona.md"
 git commit -m "feat(java): galho 4 nota 10 — CompletableFuture e composição assíncrona"
 ```
 
@@ -476,7 +476,7 @@ git commit -m "feat(java): galho 4 nota 10 — CompletableFuture e composição 
 > **Contingência:** se passar de ~700 linhas, dividir em `11 - Java Memory Model` + uma nota dedicada de "Safe publication", renumerando as Magus seguintes (galho viraria 17 notas). Decidir na execução; atualizar MOC e tasks 12+.
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus)**
 
@@ -499,15 +499,15 @@ Tamanho: 400-700 linhas (nota mais teórica do galho; usar opus).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "happens-before|volatile|reorder|publicação|double-checked" "03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md" | head
-wc -l "03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md"
+grep -E "happens-before|volatile|reorder|publicação|double-checked" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md" | head
+wc -l "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md"
 ```
 Expected: cobre happens-before+volatile+safe publication; se `wc -l` > 700, aplicar contingência.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade.md"
 git commit -m "feat(java): galho 4 nota 11 — Java Memory Model em profundidade"
 ```
 
@@ -516,7 +516,7 @@ git commit -m "feat(java): galho 4 nota 11 — Java Memory Model em profundidade
 ### Task 12: Nota 12 — Virtual Threads e Project Loom  ⟦opus⟧
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus)**
 
@@ -540,13 +540,13 @@ Tamanho: 400-650 linhas (densa; usar opus).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "virtual thread|carrier|pinning|ofVirtual|newVirtualThread" "03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom.md" | head
+grep -E "virtual thread|carrier|pinning|ofVirtual|newVirtualThread" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom.md"
 git commit -m "feat(java): galho 4 nota 12 — Virtual Threads e Project Loom"
 ```
 
@@ -555,7 +555,7 @@ git commit -m "feat(java): galho 4 nota 12 — Virtual Threads e Project Loom"
 ### Task 13: Nota 13 — Structured concurrency
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/13 - Structured concurrency.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/13 - Structured concurrency.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -577,13 +577,13 @@ Tamanho: 300-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "StructuredTaskScope|ShutdownOnFailure|fork|join|preview|final" "03-Dominios/Java/Concorrência e paralelismo/13 - Structured concurrency.md" | head
+grep -E "StructuredTaskScope|ShutdownOnFailure|fork|join|preview|final" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/13 - Structured concurrency.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/13 - Structured concurrency.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/13 - Structured concurrency.md"
 git commit -m "feat(java): galho 4 nota 13 — structured concurrency"
 ```
 
@@ -592,7 +592,7 @@ git commit -m "feat(java): galho 4 nota 13 — structured concurrency"
 ### Task 14: Nota 14 — Scoped values
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/14 - Scoped values.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/14 - Scoped values.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -614,13 +614,13 @@ Tamanho: 200-340 linhas (nota mais enxuta do galho — API focada).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "ScopedValue|ThreadLocal|where|run|rebinding" "03-Dominios/Java/Concorrência e paralelismo/14 - Scoped values.md" | head
+grep -E "ScopedValue|ThreadLocal|where|run|rebinding" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/14 - Scoped values.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/14 - Scoped values.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/14 - Scoped values.md"
 git commit -m "feat(java): galho 4 nota 14 — scoped values"
 ```
 
@@ -629,7 +629,7 @@ git commit -m "feat(java): galho 4 nota 14 — scoped values"
 ### Task 15: Nota 15 — Parallel streams e fork/join
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -651,13 +651,13 @@ Tamanho: 320-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "ForkJoinPool|work-stealing|RecursiveTask|parallel|common pool" "03-Dominios/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join.md" | head
+grep -E "ForkJoinPool|work-stealing|RecursiveTask|parallel|common pool" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join.md"
 git commit -m "feat(java): galho 4 nota 15 — parallel streams e fork/join"
 ```
 
@@ -666,7 +666,7 @@ git commit -m "feat(java): galho 4 nota 15 — parallel streams e fork/join"
 ### Task 16: Nota 16 — Padrões e diagnóstico de concorrência
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/16 - Padrões e diagnóstico de concorrência.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/16 - Padrões e diagnóstico de concorrência.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -688,13 +688,13 @@ Tamanho: 320-480 linhas (nota de fechamento).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "thread dump|BLOCKED|WAITING|JFR|jcmd|Cheatsheet|contention" "03-Dominios/Java/Concorrência e paralelismo/16 - Padrões e diagnóstico de concorrência.md" | head
+grep -E "thread dump|BLOCKED|WAITING|JFR|jcmd|Cheatsheet|contention" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/16 - Padrões e diagnóstico de concorrência.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/16 - Padrões e diagnóstico de concorrência.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/16 - Padrões e diagnóstico de concorrência.md"
 git commit -m "feat(java): galho 4 nota 16 — padrões e diagnóstico de concorrência"
 ```
 
@@ -703,13 +703,13 @@ git commit -m "feat(java): galho 4 nota 16 — padrões e diagnóstico de concor
 ## Task 17: MOC do galho
 
 **Files:**
-- Create: `03-Dominios/Java/Concorrência e paralelismo/index.md`
+- Create: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index.md`
 
 - [ ] **Step 1: Escrever o MOC**
 
 Frontmatter: `type: moc`, `status: growing`, `publish: true`, `title: "Concorrência e paralelismo"`, tags `[java, concorrencia, moc]`, aliases `["Concorrência Java", "Galho 4 - Concorrência"]`, `created`/`updated: 2026-06-03`.
 
-Conteúdo (modelar pelo `03-Dominios/Java/Linguagem e sintaxe moderna/index.md`):
+Conteúdo (modelar pelo `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index.md`):
 - `> [!abstract] TL;DR` — Galho 4 da trilha Java Senior; concorrência do Java moderno, das threads e JMM aos executors, CompletableFuture, virtual threads/Loom e structured concurrency.
 - `## Sobre este galho` — escopo + audiência primária (senior em prep de entrevista) + secundária (decisões de design + troubleshooting de produção).
 - `## Iniciado` — wikilinks 01-04 (uma linha descritiva cada).
@@ -726,26 +726,26 @@ Conteúdo (modelar pelo `03-Dominios/Java/Linguagem e sintaxe moderna/index.md`)
 ````markdown
 ```dataview
 TABLE fase, status, updated
-FROM "03-Dominios/Java/Concorrência e paralelismo"
+FROM "03-Dominios/Tecnologia/Java/Concorrência e paralelismo"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 ````
 
-- `## Veja também` — `[[03-Dominios/Java/index|Java (MOC central)]]`, `[[Java Concurrency]]` (tronco), `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]`, `[[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]`. Galhos 3 (JVM) e 11 (Reativa) como texto "(planejado)", SEM wikilink.
+- `## Veja também` — `[[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]`, `[[Java Concurrency]]` (tronco), `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]`, `[[03-Dominios/Tecnologia/Java/Dicionário de Java|Dicionário de Java]]`. Galhos 3 (JVM) e 11 (Reativa) como texto "(planejado)", SEM wikilink.
 
 - [ ] **Step 2: Verificar**
 
 ```bash
-grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Java/Concorrência e paralelismo/index.md"
-grep -c "\[\[" "03-Dominios/Java/Concorrência e paralelismo/index.md"
+grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index.md"
+grep -c "\[\[" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index.md"
 ```
 Expected: 4 headings de seção; ≥16 wikilinks (uma por nota + Veja também).
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Java/Concorrência e paralelismo/index.md"
+git add "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index.md"
 git commit -m "feat(java): galho 4 MOC — concorrência e paralelismo"
 ```
 
@@ -754,11 +754,11 @@ git commit -m "feat(java): galho 4 MOC — concorrência e paralelismo"
 ## Task 18: Expandir o Dicionário de Java (NÃO recriar)
 
 **Files:**
-- Modify: `03-Dominios/Java/Dicionário de Java.md`
+- Modify: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`
 
 - [ ] **Step 1: Reler o Dicionário existente**
 
-Ler `03-Dominios/Java/Dicionário de Java.md` inteiro. Mapear as seções alfabéticas existentes (`## A`..`## Y`) e os verbetes já presentes (do Galho 1). **NÃO recriar o arquivo; NÃO reordenar verbetes existentes.** Confirmar o formato de verbete (`### Termo` + definição 1-3 linhas + `Veja também: [[nota]].`).
+Ler `03-Dominios/Tecnologia/Java/Dicionário de Java.md` inteiro. Mapear as seções alfabéticas existentes (`## A`..`## Y`) e os verbetes já presentes (do Galho 1). **NÃO recriar o arquivo; NÃO reordenar verbetes existentes.** Confirmar o formato de verbete (`### Termo` + definição 1-3 linhas + `Veja também: [[nota]].`).
 
 - [ ] **Step 2: Inserir os verbetes de concorrência em ordem alfabética**
 
@@ -803,15 +803,15 @@ Atualizar frontmatter `updated: 2026-06-03`.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "^### (happens-before|virtual thread|volatile|deadlock|CAS|pinning)" "03-Dominios/Java/Dicionário de Java.md"
-grep -cE "^### " "03-Dominios/Java/Dicionário de Java.md"
+grep -E "^### (happens-before|virtual thread|volatile|deadlock|CAS|pinning)" "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
+grep -cE "^### " "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 ```
 Expected: verbetes de concorrência presentes; contagem total de `###` subiu ~28-32 vs o baseline do Galho 1 (~30 → ~58-62). Verbetes do Galho 1 intactos.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Dicionário de Java.md"
+git add "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 git commit -m "feat(java): expande Dicionário de Java com verbetes de concorrência (galho 4)"
 ```
 
@@ -820,14 +820,14 @@ git commit -m "feat(java): expande Dicionário de Java com verbetes de concorrê
 ## Task 19: Ativar o Galho 4 no MOC central `Java/index.md`
 
 **Files:**
-- Modify: `03-Dominios/Java/index.md`
+- Modify: `03-Dominios/Tecnologia/Java/index.md`
 
 - [ ] **Step 1: Trocar a linha do Galho 4 por wikilink ativo**
 
 Substituir a linha 28 (atualmente `4. Concorrência e paralelismo *(planejado)* — Memory Model, locks, executors, CompletableFuture, Virtual Threads/Loom, structured concurrency`) por:
 
 ```markdown
-4. [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]] — Memory Model, locks, atomics, executors, CompletableFuture, Virtual Threads/Loom, structured concurrency
+4. [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]] — Memory Model, locks, atomics, executors, CompletableFuture, Virtual Threads/Loom, structured concurrency
 ```
 
 Atualizar `updated: 2026-06-03`. **Não mexer no resto do MOC** (galhos 2/3 e 5-18 permanecem como texto "(planejado)").
@@ -835,15 +835,15 @@ Atualizar `updated: 2026-06-03`. **Não mexer no resto do MOC** (galhos 2/3 e 5-
 - [ ] **Step 2: Verificar**
 
 ```bash
-grep -E "Concorrência e paralelismo/index" "03-Dominios/Java/index.md"
-grep -E "updated: 2026-06-03" "03-Dominios/Java/index.md"
+grep -E "Concorrência e paralelismo/index" "03-Dominios/Tecnologia/Java/index.md"
+grep -E "updated: 2026-06-03" "03-Dominios/Tecnologia/Java/index.md"
 ```
 Expected: wikilink ativo do Galho 4; `updated` atualizado.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Java/index.md"
+git add "03-Dominios/Tecnologia/Java/index.md"
 git commit -m "feat(java): ativa Galho 4 (Concorrência) no MOC central"
 ```
 
@@ -852,7 +852,7 @@ git commit -m "feat(java): ativa Galho 4 (Concorrência) no MOC central"
 ## Task 20: Poda integral do tronco `Java Concurrency.md`
 
 **Files:**
-- Modify: `03-Dominios/Java/Core/Java Concurrency.md`
+- Modify: `03-Dominios/Tecnologia/Java/Core/Java Concurrency.md`
 
 - [ ] **Step 1: Reler o tronco e confirmar headings (usar notas do Task 0)**
 
@@ -864,7 +864,7 @@ Como o galho é **dono integral**, substituir o corpo de cada seção conceitual
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> Este tópico foi expandido no galho [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]. Veja [[03-Dominios/Java/Concorrência e paralelismo/<nota canônica>|<título>]].
+> Este tópico foi expandido no galho [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]. Veja [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/<nota canônica>|<título>]].
 ```
 
 Mapa de poda (seção do tronco → nota destino):
@@ -894,20 +894,20 @@ Localizar `## Na prática (da minha experiência)` (≈ linha 1441) e reescrever
 
 - [ ] **Step 5: Reduzir o tronco a redirect enxuto + atualizar frontmatter**
 
-Manter header + TL;DR (apontando pro galho) + os callouts por seção + "Veja também" com `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (galho)]]`. Atualizar `updated: 2026-06-03`. Manter `publish: false`. NÃO apagar o arquivo (histórico + wikilinks).
+Manter header + TL;DR (apontando pro galho) + os callouts por seção + "Veja também" com `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (galho)]]`. Atualizar `updated: 2026-06-03`. Manter `publish: false`. NÃO apagar o arquivo (histórico + wikilinks).
 
 - [ ] **Step 6: Verificar**
 
 ```bash
-grep -c "Migrado para galho próprio" "03-Dominios/Java/Core/Java Concurrency.md"
-grep -iE "da minha experiência|na minha experiência|no meu projeto" "03-Dominios/Java/Core/Java Concurrency.md"
+grep -c "Migrado para galho próprio" "03-Dominios/Tecnologia/Java/Core/Java Concurrency.md"
+grep -iE "da minha experiência|na minha experiência|no meu projeto" "03-Dominios/Tecnologia/Java/Core/Java Concurrency.md"
 ```
 Expected: ≥12 callouts de migração; ZERO ocorrências de "minha experiência"/"meu projeto".
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add "03-Dominios/Java/Core/Java Concurrency.md"
+git add "03-Dominios/Tecnologia/Java/Core/Java Concurrency.md"
 git commit -m "refactor(java): poda integral de Java Concurrency (migra p/ galho 4) + higieniza fabricação"
 ```
 
@@ -920,21 +920,21 @@ git commit -m "refactor(java): poda integral de Java Concurrency (migra p/ galho
 - [ ] **Step 1: Conferir as 16 notas + MOC presentes**
 
 ```bash
-ls "03-Dominios/Java/Concorrência e paralelismo/" | sort
+ls "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/" | sort
 ```
 Expected: 01..16 + index.md (17 arquivos .md).
 
 - [ ] **Step 2: Conferir frontmatter `fase` e distribuição**
 
 ```bash
-for f in "03-Dominios/Java/Concorrência e paralelismo/"[0-9]*.md; do grep -H "^fase:" "$f"; done
+for f in "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/"[0-9]*.md; do grep -H "^fase:" "$f"; done
 ```
 Expected: toda nota 01-16 tem `fase:`; distribuição 4 iniciado / 6 adepto / 6 magus.
 
 - [ ] **Step 3: Conferir seções obrigatórias em todas as notas**
 
 ```bash
-for f in "03-Dominios/Java/Concorrência e paralelismo/"[0-9]*.md; do
+for f in "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/"[0-9]*.md; do
   echo "$f: $(grep -cE '^## (Em entrevista|Armadilhas|Veja também)' "$f")"
 done
 ```
@@ -942,7 +942,7 @@ Expected: cada nota retorna 3 (tem "Em entrevista", "Armadilhas", "Veja também"
 
 - [ ] **Step 4: Rodar a skill de wikilinks**
 
-Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Java/Concorrência e paralelismo/` + `03-Dominios/Java/index.md` + `03-Dominios/Java/Dicionário de Java.md`. Corrigir quebrados (folder-links exigem index.md — regra Quartz). **Lembrar:** o checker dá falso-positivo em self-anchors `[[#Heading]]` — as notas evitam âncoras same-file; ignorar esse falso-positivo. Se houver correções, commitar à parte.
+Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/` + `03-Dominios/Tecnologia/Java/index.md` + `03-Dominios/Tecnologia/Java/Dicionário de Java.md`. Corrigir quebrados (folder-links exigem index.md — regra Quartz). **Lembrar:** o checker dá falso-positivo em self-anchors `[[#Heading]]` — as notas evitam âncoras same-file; ignorar esse falso-positivo. Se houver correções, commitar à parte.
 
 - [ ] **Step 5: Build Quartz (se disponível)**
 

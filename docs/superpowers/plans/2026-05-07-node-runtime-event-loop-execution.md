@@ -10,7 +10,7 @@ publish: false
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Node/Runtime e Event Loop/`, em PT-BR, todas `publish: true`, cobrindo do mental model do runtime de Node ao diagnóstico de event loop bloqueado — para um dev senior em prep para entrevista internacional. Ao final, podar as seções correspondentes do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central de `03-Dominios/Node/index.md`.
+**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`, em PT-BR, todas `publish: true`, cobrindo do mental model do runtime de Node ao diagnóstico de event loop bloqueado — para um dev senior em prep para entrevista internacional. Ao final, podar as seções correspondentes do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central de `03-Dominios/Tecnologia/Node/index.md`.
 
 **Architecture:** Sub-trilha sequencial em 4 blocos (Mental model → Event loop deep dive → async/await em profundidade → Bloqueio e diagnóstico) + 1 nota de fechamento + 1 MOC com 4 rotas alternativas. Cada nota é atômica e linkável, segue estrutura híbrida (TL;DR + corpo técnico), com code samples em JS ou TS (Node 22 LTS / 24, V8 12.x/13.x, libuv 1.x), wikilinks densos para `[[Node.js]]` (tronco), `[[JavaScript Fundamentals]]`, e seção "Em entrevista" para preparação internacional. Ao fim, tronco é podado e MOC central atualizado.
 
@@ -36,10 +36,10 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 ## File Structure
 
-13 arquivos novos em `03-Dominios/Node/Runtime e Event Loop/`:
+13 arquivos novos em `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`:
 
 ```
-03-Dominios/Node/Runtime e Event Loop/
+03-Dominios/Tecnologia/Node/Runtime e Event Loop/
 ├── Runtime e Event Loop.md                                          # MOC (Task 1)
 ├── 01 - Single-thread e non-blocking I-O.md                         # Task 2
 ├── 02 - V8, libuv e thread pool.md                                  # Task 3
@@ -57,8 +57,8 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 **Final integration (Task 14, 15, 16):**
 - Pass final no MOC inserindo todos os wikilinks + dataview
-- Poda do tronco `03-Dominios/JavaScript/Backend/Node.js.md`
-- Atualização do MOC central `03-Dominios/Node/index.md` + verificação de build do Quartz
+- Poda do tronco `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- Atualização do MOC central `03-Dominios/Tecnologia/Node/index.md` + verificação de build do Quartz
 
 ---
 
@@ -161,10 +161,10 @@ aliases:
 
 ### Notas no vault (referências paralelas)
 
-- `03-Dominios/JavaScript/Backend/Node.js.md` — tronco a ser podado
-- `03-Dominios/Node/index.md` — MOC central a ser atualizado
-- `03-Dominios/JavaScript/Core/JavaScript Fundamentals.md` (verificar caminho exato) — event loop básico do JS, pré-requisito
-- `03-Dominios/JavaScript/Core/TypeScript.md` (verificar caminho exato) — quando code sample usar TS
+- `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` — tronco a ser podado
+- `03-Dominios/Tecnologia/Node/index.md` — MOC central a ser atualizado
+- `03-Dominios/Tecnologia/JavaScript/Core/JavaScript Fundamentals.md` (verificar caminho exato) — event loop básico do JS, pré-requisito
+- `03-Dominios/Tecnologia/JavaScript/Core/TypeScript.md` (verificar caminho exato) — quando code sample usar TS
 
 ### A buscar conforme necessidade
 
@@ -178,18 +178,18 @@ aliases:
 ## Task 0: Pré-flight
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/` (diretório)
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/` (diretório)
 
 - [ ] **Step 1: Criar o diretório**
 
 ```bash
-mkdir -p "03-Dominios/Node/Runtime e Event Loop"
+mkdir -p "03-Dominios/Tecnologia/Node/Runtime e Event Loop"
 ```
 
 Verificar com:
 
 ```bash
-ls -la "03-Dominios/Node/Runtime e Event Loop"
+ls -la "03-Dominios/Tecnologia/Node/Runtime e Event Loop"
 ```
 
 Esperado: diretório vazio.
@@ -206,7 +206,7 @@ Esperado: ao menos uma linha referenciando `feedback_no_fabrication.md`. Se não
 
 - [ ] **Step 3: Sanity check do tronco**
 
-Ler `03-Dominios/JavaScript/Backend/Node.js.md` e confirmar que existem as seções a podar:
+Ler `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` e confirmar que existem as seções a podar:
 
 - "Arquitetura"
 - "Single-threaded com non-blocking I/O"
@@ -253,11 +253,11 @@ git commit -m "feat(node-event-loop): create directory for Runtime e Event Loop 
 ## Task 1: MOC esqueleto
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/Runtime e Event Loop.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/Runtime e Event Loop.md`
 
 - [ ] **Step 1: Criar o MOC esqueleto**
 
-Criar `03-Dominios/Node/Runtime e Event Loop/Runtime e Event Loop.md`:
+Criar `03-Dominios/Tecnologia/Node/Runtime e Event Loop/Runtime e Event Loop.md`:
 
 ```markdown
 ---
@@ -333,14 +333,14 @@ aliases:
 
 ```dataview
 TABLE status, updated
-FROM "03-Dominios/Node/Runtime e Event Loop"
+FROM "03-Dominios/Tecnologia/Node/Runtime e Event Loop"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 
 ## Veja também
 
-- [[03-Dominios/Node/index|Node.js (MOC central)]]
+- [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
 - [[Node.js]] — tronco (deep dive panorâmico)
 - [[JavaScript Fundamentals]] — event loop básico do JS
 ```
@@ -358,7 +358,7 @@ Confirmar:
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/Runtime e Event Loop.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/Runtime e Event Loop.md"
 git commit -m "feat(node-event-loop): add MOC skeleton for Runtime e Event Loop branch"
 ```
 
@@ -367,7 +367,7 @@ git commit -m "feat(node-event-loop): add MOC skeleton for Runtime e Event Loop 
 ## Task 2: Nota 01 — Single-thread e non-blocking I/O
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/01 - Single-thread e non-blocking I-O.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/01 - Single-thread e non-blocking I-O.md`
 
 **Conteúdo-chave do spec (seção 5, Bloco A):**
 
@@ -386,7 +386,7 @@ Capturar: definição oficial de "single-threaded with non-blocking I/O", compar
 
 - [ ] **Step 2: Criar o arquivo com frontmatter + esqueleto**
 
-Criar `03-Dominios/Node/Runtime e Event Loop/01 - Single-thread e non-blocking I-O.md` com:
+Criar `03-Dominios/Tecnologia/Node/Runtime e Event Loop/01 - Single-thread e non-blocking I-O.md` com:
 
 ```yaml
 ---
@@ -440,7 +440,7 @@ Checklist:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/01 - Single-thread e non-blocking I-O.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/01 - Single-thread e non-blocking I-O.md"
 git commit -m "feat(node-event-loop): add note 01 — Single-thread e non-blocking I/O"
 ```
 
@@ -449,7 +449,7 @@ git commit -m "feat(node-event-loop): add note 01 — Single-thread e non-blocki
 ## Task 3: Nota 02 — V8, libuv e thread pool
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/02 - V8, libuv e thread pool.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/02 - V8, libuv e thread pool.md`
 
 **Conteúdo-chave do spec:**
 
@@ -510,7 +510,7 @@ Checklist (como na Task 2).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/02 - V8, libuv e thread pool.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/02 - V8, libuv e thread pool.md"
 git commit -m "feat(node-event-loop): add note 02 — V8, libuv e thread pool"
 ```
 
@@ -519,7 +519,7 @@ git commit -m "feat(node-event-loop): add note 02 — V8, libuv e thread pool"
 ## Task 4: Nota 03 — Call stack, heap e queues
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/03 - Call stack, heap e queues.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/03 - Call stack, heap e queues.md`
 
 **Conteúdo-chave do spec:**
 
@@ -579,7 +579,7 @@ Tamanho-alvo: 250-450 linhas.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/03 - Call stack, heap e queues.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/03 - Call stack, heap e queues.md"
 git commit -m "feat(node-event-loop): add note 03 — Call stack, heap e queues"
 ```
 
@@ -588,7 +588,7 @@ git commit -m "feat(node-event-loop): add note 03 — Call stack, heap e queues"
 ## Task 5: Nota 04 — As fases do event loop
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/04 - As fases do event loop.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/04 - As fases do event loop.md`
 
 **Conteúdo-chave do spec:**
 
@@ -652,7 +652,7 @@ Tamanho-alvo: 400-600 linhas (nota central, justifica densidade).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/04 - As fases do event loop.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/04 - As fases do event loop.md"
 git commit -m "feat(node-event-loop): add note 04 — As fases do event loop"
 ```
 
@@ -661,7 +661,7 @@ git commit -m "feat(node-event-loop): add note 04 — As fases do event loop"
 ## Task 6: Nota 05 — Microtasks (nextTick, queueMicrotask, Promise.then)
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/05 - Microtasks - nextTick, queueMicrotask, Promise.then.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/05 - Microtasks - nextTick, queueMicrotask, Promise.then.md`
 
 **Conteúdo-chave do spec:**
 
@@ -723,7 +723,7 @@ Tamanho-alvo: 300-500 linhas.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/05 - Microtasks - nextTick, queueMicrotask, Promise.then.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/05 - Microtasks - nextTick, queueMicrotask, Promise.then.md"
 git commit -m "feat(node-event-loop): add note 05 — Microtasks"
 ```
 
@@ -732,7 +732,7 @@ git commit -m "feat(node-event-loop): add note 05 — Microtasks"
 ## Task 7: Nota 06 — Macrotasks e timers
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/06 - Macrotasks e timers - setTimeout, setInterval, setImmediate.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/06 - Macrotasks e timers - setTimeout, setInterval, setImmediate.md`
 
 **Conteúdo-chave do spec:**
 
@@ -796,7 +796,7 @@ Tamanho-alvo: 300-500 linhas.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/06 - Macrotasks e timers - setTimeout, setInterval, setImmediate.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/06 - Macrotasks e timers - setTimeout, setInterval, setImmediate.md"
 git commit -m "feat(node-event-loop): add note 06 — Macrotasks e timers"
 ```
 
@@ -805,7 +805,7 @@ git commit -m "feat(node-event-loop): add note 06 — Macrotasks e timers"
 ## Task 8: Nota 07 — I/O assíncrono (kernel vs thread pool)
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/07 - I-O assíncrono - kernel vs thread pool.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/07 - I-O assíncrono - kernel vs thread pool.md`
 
 **Conteúdo-chave do spec:**
 
@@ -871,7 +871,7 @@ Tamanho-alvo: 350-500 linhas.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/07 - I-O assíncrono - kernel vs thread pool.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/07 - I-O assíncrono - kernel vs thread pool.md"
 git commit -m "feat(node-event-loop): add note 07 — I/O assíncrono kernel vs thread pool"
 ```
 
@@ -880,7 +880,7 @@ git commit -m "feat(node-event-loop): add note 07 — I/O assíncrono kernel vs 
 ## Task 9: Nota 08 — Promises por dentro
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/08 - Promises por dentro.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/08 - Promises por dentro.md`
 
 **Conteúdo-chave do spec:**
 
@@ -946,7 +946,7 @@ Tamanho-alvo: 350-500 linhas.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/08 - Promises por dentro.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/08 - Promises por dentro.md"
 git commit -m "feat(node-event-loop): add note 08 — Promises por dentro"
 ```
 
@@ -955,7 +955,7 @@ git commit -m "feat(node-event-loop): add note 08 — Promises por dentro"
 ## Task 10: Nota 09 — async/await desmistificado
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/09 - async-await - o que é, o que não é.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/09 - async-await - o que é, o que não é.md`
 
 **Conteúdo-chave do spec:**
 
@@ -1038,7 +1038,7 @@ Tamanho-alvo: 400-600 linhas (nota crítica, justifica densidade).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/09 - async-await - o que é, o que não é.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/09 - async-await - o que é, o que não é.md"
 git commit -m "feat(node-event-loop): add note 09 — async/await desmistificado"
 ```
 
@@ -1047,7 +1047,7 @@ git commit -m "feat(node-event-loop): add note 09 — async/await desmistificado
 ## Task 11: Nota 10 — Bloqueio do event loop
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/10 - Bloqueio do event loop - sintomas e causas.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/10 - Bloqueio do event loop - sintomas e causas.md`
 
 **Conteúdo-chave do spec:**
 
@@ -1123,7 +1123,7 @@ Tamanho-alvo: 400-550 linhas.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/10 - Bloqueio do event loop - sintomas e causas.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/10 - Bloqueio do event loop - sintomas e causas.md"
 git commit -m "feat(node-event-loop): add note 10 — Bloqueio do event loop"
 ```
 
@@ -1132,7 +1132,7 @@ git commit -m "feat(node-event-loop): add note 10 — Bloqueio do event loop"
 ## Task 12: Nota 11 — Diagnóstico do event loop
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/11 - Diagnóstico do event loop.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/11 - Diagnóstico do event loop.md`
 
 **Conteúdo-chave do spec:**
 
@@ -1232,7 +1232,7 @@ Tamanho-alvo: 400-550 linhas.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/11 - Diagnóstico do event loop.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/11 - Diagnóstico do event loop.md"
 git commit -m "feat(node-event-loop): add note 11 — Diagnóstico do event loop"
 ```
 
@@ -1241,7 +1241,7 @@ git commit -m "feat(node-event-loop): add note 11 — Diagnóstico do event loop
 ## Task 13: Nota 12 — Armadilhas, regras práticas, cheatsheet
 
 **Files:**
-- Create: `03-Dominios/Node/Runtime e Event Loop/12 - Armadilhas, regras práticas, cheatsheet.md`
+- Create: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/12 - Armadilhas, regras práticas, cheatsheet.md`
 
 **Conteúdo-chave do spec:**
 
@@ -1337,7 +1337,7 @@ Rubrica adaptada (nota tópica):
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/12 - Armadilhas, regras práticas, cheatsheet.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/12 - Armadilhas, regras práticas, cheatsheet.md"
 git commit -m "feat(node-event-loop): add note 12 — Armadilhas, regras práticas, cheatsheet"
 ```
 
@@ -1346,7 +1346,7 @@ git commit -m "feat(node-event-loop): add note 12 — Armadilhas, regras prátic
 ## Task 14: Pass final no MOC
 
 **Files:**
-- Modify: `03-Dominios/Node/Runtime e Event Loop/Runtime e Event Loop.md`
+- Modify: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/Runtime e Event Loop.md`
 
 - [ ] **Step 1: Reler todas as 12 notas**
 
@@ -1373,7 +1373,7 @@ Este galho cobre o **motor** do Node.js — como uma única thread JS atende mil
 Confirmar que cada `[[01 - ...]]` até `[[12 - ...]]` resolve pra arquivo existente. Em particular, o título do arquivo deve bater **exatamente** com o conteúdo do wikilink.
 
 ```bash
-ls "03-Dominios/Node/Runtime e Event Loop/"
+ls "03-Dominios/Tecnologia/Node/Runtime e Event Loop/"
 ```
 
 Comparar com os wikilinks do MOC. Se algum estiver quebrado, corrigir.
@@ -1385,7 +1385,7 @@ Se algum item não aparecer na dataview, debugar — pode ser que `type` de algu
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Runtime e Event Loop/Runtime e Event Loop.md"
+git add "03-Dominios/Tecnologia/Node/Runtime e Event Loop/Runtime e Event Loop.md"
 git commit -m "feat(node-event-loop): finalize MOC with all wikilinks and intro"
 ```
 
@@ -1394,11 +1394,11 @@ git commit -m "feat(node-event-loop): finalize MOC with all wikilinks and intro"
 ## Task 15: Poda do tronco
 
 **Files:**
-- Modify: `03-Dominios/JavaScript/Backend/Node.js.md`
+- Modify: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
 
 - [ ] **Step 1: Reler o tronco e identificar seções a podar**
 
-Ler `03-Dominios/JavaScript/Backend/Node.js.md` integralmente. Identificar (com nomes exatos confirmados na Task 0):
+Ler `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` integralmente. Identificar (com nomes exatos confirmados na Task 0):
 
 - Seção "Arquitetura" (~linha 47-70)
 - Seção "Single-threaded com non-blocking I/O" (~linha 71-83)
@@ -1469,7 +1469,7 @@ Mudar `updated: 2026-04-11` (ou o que estiver) para `updated: 2026-05-07`.
 - [ ] **Step 9: Commit**
 
 ```bash
-git add "03-Dominios/JavaScript/Backend/Node.js.md"
+git add "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 git commit -m "refactor(node): prune trunk Node.js.md, link to Runtime e Event Loop branch"
 ```
 
@@ -1478,11 +1478,11 @@ git commit -m "refactor(node): prune trunk Node.js.md, link to Runtime e Event L
 ## Task 16: Atualizar MOC central + verificar Quartz
 
 **Files:**
-- Modify: `03-Dominios/Node/index.md`
+- Modify: `03-Dominios/Tecnologia/Node/index.md`
 
 - [ ] **Step 1: Atualizar o MOC central**
 
-Substituir a seção "Conteúdo" do `03-Dominios/Node/index.md`:
+Substituir a seção "Conteúdo" do `03-Dominios/Tecnologia/Node/index.md`:
 
 ```markdown
 ## Conteúdo
@@ -1518,7 +1518,7 @@ Se Quartz é build em CI (push to main), o teste é o build CI passar.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/index.md"
+git add "03-Dominios/Tecnologia/Node/index.md"
 git commit -m "feat(node-event-loop): wire branch into central Node MOC"
 ```
 
@@ -1527,7 +1527,7 @@ git commit -m "feat(node-event-loop): wire branch into central Node MOC"
 Checklist do spec seção 12:
 
 ```
-[ ] 13 arquivos existem em "03-Dominios/Node/Runtime e Event Loop/"
+[ ] 13 arquivos existem em "03-Dominios/Tecnologia/Node/Runtime e Event Loop/"
 [ ] Todos com publish: true
 [ ] MOC com 4 rotas + dataview + 12 notas linkadas
 [ ] Cada nota satisfaz a rubrica padrão
@@ -1544,7 +1544,7 @@ Se algum item falhar, voltar e corrigir antes de declarar galho fechado.
 ```bash
 git commit --allow-empty -m "chore(node-event-loop): close branch Galho 1 — Runtime e Event Loop
 
-12 atomic notes + MOC published in 03-Dominios/Node/Runtime e Event Loop/.
+12 atomic notes + MOC published in 03-Dominios/Tecnologia/Node/Runtime e Event Loop/.
 Trunk Node.js.md pruned. Central Node MOC updated. All acceptance
 criteria from 2026-05-07-node-runtime-event-loop-design.md met."
 ```

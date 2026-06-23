@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Entregar o galho 6 da trilha Terminal — 13 notas atômicas (4 Iniciado + 4 Adepto + 5 Magus) sobre CLI utils modernos em `03-Dominios/Terminal/CLI Utils/`, MOC do galho, expansão do Dicionário com bloco `## CLI Utils` (~40 verbetes), e ativação do wikilink no tronco.
+**Goal:** Entregar o galho 6 da trilha Terminal — 13 notas atômicas (4 Iniciado + 4 Adepto + 5 Magus) sobre CLI utils modernos em `03-Dominios/Tecnologia/Terminal/CLI Utils/`, MOC do galho, expansão do Dicionário com bloco `## CLI Utils` (~40 verbetes), e ativação do wikilink no tronco.
 
 **Architecture:** Mesmo padrão consolidado nos galhos 2-5. Estrutura H2 fixa. Tom pedagógico — user em adoção zero das 14 ferramentas. Exemplos sempre neutros (`alice`, `myproj`, `example.com`) ou hipotéticos explícitos. Fluxo SDD: implementer → reviewer combinado → fix se Critical/Important. Pesquisa-âncora em docs oficiais antes de cada nota.
 
@@ -21,8 +21,8 @@
 3. **Sem `Co-Authored-By: Claude`**. **Sem `--no-verify`**.
 4. **Paths generalizados** pra `~/...`.
 5. **Wikilinks sem backticks** em `## Veja também`.
-6. **Tronco wikilink obrigatório**: `[[03-Dominios/Terminal/index|Trilha Terminal]]`.
-7. **MOC wikilink** em "Veja também": `[[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]`.
+6. **Tronco wikilink obrigatório**: `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`.
+7. **MOC wikilink** em "Veja também": `[[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]`.
 8. **≥5 armadilhas** por nota, **formato bold-label** com `### (N) Título` + 4 labels (`**Causa:**`, `**Sintoma:**`, `**Como detectar:**`, `**Solução:**`). NUNCA callouts.
 9. **"Em inglês" em bullets bilíngues** `- **PT** — *EN*. "frase técnica curta em PT."` (8-10 termos). NUNCA tabela.
 10. **Code fences corretos** e SEMPRE fechadas: ` ```bash `, ` ```json `, ` ```yaml `, ` ```toml `, ` ```text `.
@@ -100,7 +100,7 @@ Procurar: `--ignore-directory`, `--filter`, comportamento default em diretório 
 - [ ] **Step 5: Confirmar estrutura do tronco**
 
 ```bash
-grep -n "galho 6\|CLI Utils" "03-Dominios/Terminal/index.md"
+grep -n "galho 6\|CLI Utils" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Esperado: linha 32 com `- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, eza, zoxide…`. Confirmar texto exato pro Task 18.
@@ -110,17 +110,17 @@ Esperado: linha 32 com `- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, 
 ## Task 1: MOC do galho CLI Utils — esqueleto
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/index.md`
 
 - [ ] **Step 1: Criar pasta**
 
 ```bash
-mkdir -p "03-Dominios/Terminal/CLI Utils"
+mkdir -p "03-Dominios/Tecnologia/Terminal/CLI Utils"
 ```
 
 - [ ] **Step 2: Escrever MOC**
 
-Use `Write` em `03-Dominios/Terminal/CLI Utils/index.md`:
+Use `Write` em `03-Dominios/Tecnologia/Terminal/CLI Utils/index.md`:
 
 ```markdown
 ---
@@ -216,9 +216,9 @@ Versões nas notas são hedged ("0.4x+; verifique localmente") pra envelhecer be
 ## Veja também
 
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
-- [[03-Dominios/Terminal/Shell/index|Shell (galho 2)]] — Zsh + integrações pra muitas dessas ferramentas
-- [[03-Dominios/Terminal/Dotfiles/index|Dotfiles (galho 5)]] — versionar configs dessas ferramentas
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Shell/index|Shell (galho 2)]] — Zsh + integrações pra muitas dessas ferramentas
+- [[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles (galho 5)]] — versionar configs dessas ferramentas
 ```
 
 Placeholders `<VERSAO_*>` serão substituídos no Task 16 com versões reais capturadas no pré-flight.
@@ -226,7 +226,7 @@ Placeholders `<VERSAO_*>` serão substituídos no Task 16 com versões reais cap
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/index.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/index.md"
 git commit -m "feat(terminal-cli-utils): MOC do galho 6 — esqueleto"
 ```
 
@@ -235,7 +235,7 @@ git commit -m "feat(terminal-cli-utils): MOC do galho 6 — esqueleto"
 ## Task 2: Dicionário — bloco "CLI Utils" esqueleto
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 - [ ] **Step 1: Localizar fim do bloco Dotfiles**
 
@@ -256,7 +256,7 @@ Frontmatter deve ter `updated: 2026-05-22`. Se não, Edit pra atualizar.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): adiciona bloco 'CLI Utils' ao Dicionário"
 ```
 
@@ -265,8 +265,8 @@ git commit -m "feat(terminal-cli-utils): adiciona bloco 'CLI Utils' ao Dicionár
 ## Task 3: Nota 01 — fzf: fuzzy finder universal
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: fuzzy finder, extended search syntax, preview window (fzf), FZF_DEFAULT_OPTS)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: fuzzy finder, extended search syntax, preview window (fzf), FZF_DEFAULT_OPTS)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -426,8 +426,8 @@ Termos: fuzzy finder, extended search syntax, preview window, key binding, env v
 - [[02 - ripgrep e fd — buscar conteúdo e nomes]] — fd como fonte default pra `FZF_DEFAULT_COMMAND`
 - [[03 - bat — cat moderno com syntax highlight]] — bat como preview de arquivos
 - [[12 - Stack interativo — fzf zoxide atuin]] — composição capstone
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#fuzzy finder|fuzzy finder]]
 - [[Dicionário do Terminal#extended search syntax (fzf)|extended search syntax]]
 - [[Dicionário do Terminal#preview window (fzf)|preview window]]
@@ -468,9 +468,9 @@ Veja também: [[01 - fzf — fuzzy finder universal]], [[03 - bat — cat modern
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md"
-grep -cE "^### (extended search syntax|fuzzy finder|FZF_DEFAULT_OPTS|preview window)" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md"
+grep -cE "^### (extended search syntax|fuzzy finder|FZF_DEFAULT_OPTS|preview window)" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥9 wikilinks, 4 verbetes visíveis.
@@ -478,7 +478,7 @@ Esperado: arquivo existe, ≥9 wikilinks, 4 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/01 - fzf — fuzzy finder universal.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 01 — fzf"
 ```
 
@@ -487,8 +487,8 @@ git commit -m "feat(terminal-cli-utils): add nota 01 — fzf"
 ## Task 4: Nota 02 — ripgrep e fd: buscar conteúdo e nomes
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: ripgrep, fd, fdfind, smart-case, gitignore-aware)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: ripgrep, fd, fdfind, smart-case, gitignore-aware)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -670,8 +670,8 @@ Termos: search, content, filename, recursive, gitignore-aware, smart-case, paral
 **Veja também:**
 - [[01 - fzf — fuzzy finder universal]] — fzf usa `rg --files` ou `fd` como source
 - [[13 - Pipeline JSON e YAML — jq yq fzf]] — `rg --json | jq` pra análise estruturada
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#ripgrep|ripgrep]]
 - [[Dicionário do Terminal#fd|fd]]
 - [[Dicionário do Terminal#fdfind|fdfind]]
@@ -716,9 +716,9 @@ Veja também: [[02 - ripgrep e fd — buscar conteúdo e nomes]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md"
-grep -cE "^### (fd|fdfind|gitignore-aware|ripgrep|smart-case)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md"
+grep -cE "^### (fd|fdfind|gitignore-aware|ripgrep|smart-case)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥9 wikilinks, 5 verbetes visíveis.
@@ -726,7 +726,7 @@ Esperado: arquivo existe, ≥9 wikilinks, 5 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 02 — ripgrep e fd"
 ```
 
@@ -735,8 +735,8 @@ git commit -m "feat(terminal-cli-utils): add nota 02 — ripgrep e fd"
 ## Task 5: Nota 03 — bat: cat moderno com syntax highlight
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: bat, BAT_THEME, batcat, MANPAGER, TTY detection, syntax pager)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: bat, BAT_THEME, batcat, MANPAGER, TTY detection, syntax pager)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -901,8 +901,8 @@ Termos: syntax highlighting, pager, TTY, env var, theme, line numbers, paging, b
 - [[01 - fzf — fuzzy finder universal]] — bat como preview default
 - [[02 - ripgrep e fd — buscar conteúdo e nomes]] — pipeline com bat preview
 - [[10 - delta — pager moderno pra git diff]] — delta usa engine similar (syntect)
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#bat|bat]]
 - [[Dicionário do Terminal#BAT_THEME|BAT_THEME]]
 - [[Dicionário do Terminal#batcat|batcat]]
@@ -951,9 +951,9 @@ Veja também: [[03 - bat — cat moderno com syntax highlight]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md"
-grep -cE "^### (bat|BAT_THEME|batcat|MANPAGER|syntax pager|TTY detection)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md"
+grep -cE "^### (bat|BAT_THEME|batcat|MANPAGER|syntax pager|TTY detection)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥10 wikilinks, 6 verbetes visíveis.
@@ -961,7 +961,7 @@ Esperado: arquivo existe, ≥10 wikilinks, 6 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/03 - bat — cat moderno com syntax highlight.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 03 — bat"
 ```
 
@@ -970,8 +970,8 @@ git commit -m "feat(terminal-cli-utils): add nota 03 — bat"
 ## Task 6: Nota 04 — eza: ls moderno
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/04 - eza — ls moderno.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: eza, exa (legado), EZA_COLORS)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/04 - eza — ls moderno.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: eza, exa (legado), EZA_COLORS)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1133,8 +1133,8 @@ Termos: listing, long format, hidden file, tree view, git status, icons, color s
 **Veja também:**
 - [[02 - ripgrep e fd — buscar conteúdo e nomes]] — `fd -t d` lista pastas com semantics próprias
 - [[03 - bat — cat moderno com syntax highlight]] — par natural na "stack moderna"
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#eza|eza]]
 - [[Dicionário do Terminal#exa (legado)|exa (legado)]]
 - [[Dicionário do Terminal#EZA_COLORS|EZA_COLORS]]
@@ -1168,9 +1168,9 @@ Veja também: [[04 - eza — ls moderno]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/04 - eza — ls moderno.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/04 - eza — ls moderno.md"
-grep -cE "^### (eza|exa \(legado\)|EZA_COLORS)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/04 - eza — ls moderno.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/04 - eza — ls moderno.md"
+grep -cE "^### (eza|exa \(legado\)|EZA_COLORS)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥9 wikilinks, 3 verbetes visíveis.
@@ -1178,7 +1178,7 @@ Esperado: arquivo existe, ≥9 wikilinks, 3 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/04 - eza — ls moderno.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/04 - eza — ls moderno.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 04 — eza"
 ```
 
@@ -1187,8 +1187,8 @@ git commit -m "feat(terminal-cli-utils): add nota 04 — eza"
 ## Task 7: Nota 05 — zoxide: cd inteligente com frecency
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: zoxide, frecency, init script (shell))
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: zoxide, frecency, init script (shell))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1345,8 +1345,8 @@ Termos: frecency, frequency, recency, init script, substring match, database, ra
 - [[01 - fzf — fuzzy finder universal]] — `zi` usa fzf
 - [[06 - atuin — history shell com SQLite e sync]] — também usa frecency em outra dimensão
 - [[12 - Stack interativo — fzf zoxide atuin]] — composição capstone
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#zoxide|zoxide]]
 - [[Dicionário do Terminal#frecency|frecency]]
 - [[Dicionário do Terminal#init script (shell)|init script (shell)]]
@@ -1377,9 +1377,9 @@ Veja também: [[05 - zoxide — cd inteligente com frecency]], [[12 - Stack inte
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md"
-grep -cE "^### (frecency|init script \(shell\)|zoxide)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md"
+grep -cE "^### (frecency|init script \(shell\)|zoxide)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥8 wikilinks, 3 verbetes visíveis.
@@ -1387,7 +1387,7 @@ Esperado: arquivo existe, ≥8 wikilinks, 3 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 05 — zoxide"
 ```
 
@@ -1396,8 +1396,8 @@ git commit -m "feat(terminal-cli-utils): add nota 05 — zoxide"
 ## Task 8: Nota 06 — atuin: history shell com SQLite e sync
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: atuin, history sync, E2E encryption (history sync))
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: atuin, history sync, E2E encryption (history sync))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1563,8 +1563,8 @@ Termos: shell history, search mode, end-to-end encryption, self-host, stats, exi
 **Veja também:**
 - [[05 - zoxide — cd inteligente com frecency]] — par natural (atuin pra history; zoxide pra pasta)
 - [[12 - Stack interativo — fzf zoxide atuin]] — composição capstone
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#atuin|atuin]]
 - [[Dicionário do Terminal#history sync|history sync]]
 - [[Dicionário do Terminal#E2E encryption (history sync)|E2E encryption (history sync)]]
@@ -1597,9 +1597,9 @@ Veja também: [[06 - atuin — history shell com SQLite e sync]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md"
-grep -cE "^### (atuin|history sync|E2E encryption \(history sync\))$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md"
+grep -cE "^### (atuin|history sync|E2E encryption \(history sync\))$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥9 wikilinks, 3 verbetes visíveis.
@@ -1607,7 +1607,7 @@ Esperado: arquivo existe, ≥9 wikilinks, 3 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 06 — atuin"
 ```
 
@@ -1616,8 +1616,8 @@ git commit -m "feat(terminal-cli-utils): add nota 06 — atuin"
 ## Task 9: Nota 07 — jq: processor JSON com DSL
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: jq, raw output (jq -r), slurp (jq -s))
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: jq, raw output (jq -r), slurp (jq -s))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1789,8 +1789,8 @@ Termos: filter pipeline, raw output, slurp, select, map, reduce, exit code, iden
 - [[08 - yq — processor YAML e as duas implementações]] — par natural pra YAML
 - [[13 - Pipeline JSON e YAML — jq yq fzf]] — composição capstone
 - [[02 - ripgrep e fd — buscar conteúdo e nomes]] — `rg --json | jq` pra análise estruturada
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#jq|jq]]
 - [[Dicionário do Terminal#raw output (jq -r)|raw output (jq -r)]]
 - [[Dicionário do Terminal#slurp (jq -s)|slurp (jq -s)]]
@@ -1821,9 +1821,9 @@ Veja também: [[07 - jq — processor JSON com DSL]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md"
-grep -cE "^### (jq|raw output \(jq -r\)|slurp \(jq -s\))$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md"
+grep -cE "^### (jq|raw output \(jq -r\)|slurp \(jq -s\))$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥8 wikilinks, 3 verbetes visíveis.
@@ -1831,7 +1831,7 @@ Esperado: arquivo existe, ≥8 wikilinks, 3 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/07 - jq — processor JSON com DSL.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 07 — jq"
 ```
 
@@ -1840,8 +1840,8 @@ git commit -m "feat(terminal-cli-utils): add nota 07 — jq"
 ## Task 10: Nota 08 — yq: processor YAML e as duas implementações
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: yq (Go), yq (Python/kislyuk), YAML multi-doc, anchors e aliases (YAML))
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: yq (Go), yq (Python/kislyuk), YAML multi-doc, anchors e aliases (YAML))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -2030,8 +2030,8 @@ Termos: implementation, fork, multi-document, anchor, alias, in-place edit, pars
 **Veja também:**
 - [[07 - jq — processor JSON com DSL]] — base do yq Python; complementa yq Go via conversão
 - [[13 - Pipeline JSON e YAML — jq yq fzf]] — composição capstone
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#yq (Go)|yq (Go)]]
 - [[Dicionário do Terminal#yq (Python/kislyuk)|yq (Python/kislyuk)]]
 - [[Dicionário do Terminal#YAML multi-doc|YAML multi-doc]]
@@ -2069,9 +2069,9 @@ Veja também: [[08 - yq — processor YAML e as duas implementações]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md"
-grep -cE "^### (anchors e aliases \(YAML\)|YAML multi-doc|yq \(Go\)|yq \(Python/kislyuk\))$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md"
+grep -cE "^### (anchors e aliases \(YAML\)|YAML multi-doc|yq \(Go\)|yq \(Python/kislyuk\))$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥8 wikilinks, 4 verbetes visíveis.
@@ -2079,7 +2079,7 @@ Esperado: arquivo existe, ≥8 wikilinks, 4 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/08 - yq — processor YAML e as duas implementações.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 08 — yq"
 ```
 
@@ -2088,8 +2088,8 @@ git commit -m "feat(terminal-cli-utils): add nota 08 — yq"
 ## Task 11: Nota 09 — tldr e cheat: docs práticas em fluxo
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: tldr-pages, cheatsheet)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: tldr-pages, cheatsheet)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -2274,8 +2274,8 @@ Termos: documentation, cheatsheet, manpage, community-driven, cache, offline, co
 
 **Veja também:**
 - [[03 - bat — cat moderno com syntax highlight]] — `MANPAGER` com bat pra manpages bonitas
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#tldr-pages|tldr-pages]]
 - [[Dicionário do Terminal#cheatsheet|cheatsheet]]
 - [[Dicionário do Terminal#MANPAGER|MANPAGER]]
@@ -2302,9 +2302,9 @@ Veja também: [[09 - tldr e cheat — docs práticas em fluxo]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md"
-grep -cE "^### (cheatsheet|tldr-pages)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md"
+grep -cE "^### (cheatsheet|tldr-pages)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥7 wikilinks, 2 verbetes visíveis.
@@ -2312,7 +2312,7 @@ Esperado: arquivo existe, ≥7 wikilinks, 2 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/09 - tldr e cheat — docs práticas em fluxo.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 09 — tldr e cheat"
 ```
 
@@ -2321,8 +2321,8 @@ git commit -m "feat(terminal-cli-utils): add nota 09 — tldr e cheat"
 ## Task 12: Nota 10 — delta: pager moderno pra git diff
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: delta, OSC 8)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: delta, OSC 8)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -2507,9 +2507,9 @@ Termos: pager, syntax highlight, side-by-side, hyperlink, escape sequence, navig
 
 **Veja também:**
 - [[03 - bat — cat moderno com syntax highlight]] — engine compartilhada (syntect); temas comuns
-- [[03-Dominios/Terminal/TUIs/index|TUIs (galho 4)]] — Lazygit usa delta como pager opcionalmente
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs (galho 4)]] — Lazygit usa delta como pager opcionalmente
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#delta|delta]]
 - [[Dicionário do Terminal#OSC 8|OSC 8]]
 - [[Dicionário do Terminal#syntax pager|syntax pager]]
@@ -2536,9 +2536,9 @@ Veja também: [[10 - delta — pager moderno pra git diff]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md"
-grep -cE "^### (delta|OSC 8)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md"
+grep -cE "^### (delta|OSC 8)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥8 wikilinks, 2 verbetes visíveis.
@@ -2546,7 +2546,7 @@ Esperado: arquivo existe, ≥8 wikilinks, 2 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/10 - delta — pager moderno pra git diff.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 10 — delta"
 ```
 
@@ -2555,8 +2555,8 @@ git commit -m "feat(terminal-cli-utils): add nota 10 — delta"
 ## Task 13: Nota 11 — Monitores e disco (btop + htop + dust)
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: btop, htop, dust)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: btop, htop, dust)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -2723,9 +2723,9 @@ alias du-disk='dust -d 3 -n 30'
 Termos: process monitor, memory usage, resident set size, virtual memory, disk usage, tree view, refresh rate, kill signal, available memory, cache.
 
 **Veja também:**
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
-- [[03-Dominios/Terminal/TUIs/index|TUIs (galho 4)]] — Lazydocker pra inspeção específica de containers (vs btop pra host)
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs (galho 4)]] — Lazydocker pra inspeção específica de containers (vs btop pra host)
 - [[Dicionário do Terminal#btop|btop]]
 - [[Dicionário do Terminal#htop|htop]]
 - [[Dicionário do Terminal#dust|dust]]
@@ -2757,9 +2757,9 @@ Veja também: [[11 - Monitores e disco — btop htop dust]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md"
-grep -cE "^### (btop|dust|htop)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md"
+grep -cE "^### (btop|dust|htop)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥7 wikilinks, 3 verbetes visíveis.
@@ -2767,7 +2767,7 @@ Esperado: arquivo existe, ≥7 wikilinks, 3 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/11 - Monitores e disco — btop htop dust.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 11 — Monitores e disco"
 ```
 
@@ -2776,8 +2776,8 @@ git commit -m "feat(terminal-cli-utils): add nota 11 — Monitores e disco"
 ## Task 14: Nota 12 — Stack interativo (fzf + zoxide + atuin)
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: zsh widget)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: zsh widget)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -2987,9 +2987,9 @@ Termos: init order, widget, key binding, frecency, composition, capstone, fuzzy 
 - [[05 - zoxide — cd inteligente com frecency]] — pastas via frecency
 - [[06 - atuin — history shell com SQLite e sync]] — history rico
 - [[13 - Pipeline JSON e YAML — jq yq fzf]] — outro capstone (composição em dados estruturados)
-- [[03-Dominios/Terminal/Shell/index|Shell (galho 2)]] — Zsh + OMZ; base pros init scripts
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Shell/index|Shell (galho 2)]] — Zsh + OMZ; base pros init scripts
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#zsh widget|zsh widget]]
 - [[Dicionário do Terminal#init script (shell)|init script (shell)]]
 - [[Dicionário do Terminal#FZF_DEFAULT_OPTS|FZF_DEFAULT_OPTS]]
@@ -3012,9 +3012,9 @@ Veja também: [[12 - Stack interativo — fzf zoxide atuin]], [[06 - atuin — h
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md"
-grep -cE "^### zsh widget$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md"
+grep -cE "^### zsh widget$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥11 wikilinks (mais que outras notas — capstone linka muito), 1 verbete visível.
@@ -3022,7 +3022,7 @@ Esperado: arquivo existe, ≥11 wikilinks (mais que outras notas — capstone li
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/12 - Stack interativo — fzf zoxide atuin.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 12 — Stack interativo"
 ```
 
@@ -3031,8 +3031,8 @@ git commit -m "feat(terminal-cli-utils): add nota 12 — Stack interativo"
 ## Task 15: Nota 13 — Pipeline JSON e YAML (jq + yq + fzf)
 
 **Files:**
-- Create: `03-Dominios/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: pipefail, xargs -r)
+- Create: `03-Dominios/Tecnologia/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: pipefail, xargs -r)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -3240,8 +3240,8 @@ Termos: pipeline, error handling, exit code, pipefail, structured data, JSON, YA
 - [[08 - yq — processor YAML e as duas implementações]] — base
 - [[01 - fzf — fuzzy finder universal]] — motor de seleção
 - [[12 - Stack interativo — fzf zoxide atuin]] — outro capstone
-- [[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#pipefail|pipefail]]
 - [[Dicionário do Terminal#xargs -r|xargs -r]]
 - [[Dicionário do Terminal#jq|jq]]
@@ -3270,9 +3270,9 @@ Veja também: [[13 - Pipeline JSON e YAML — jq yq fzf]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md"
-grep -c '\[\[' "03-Dominios/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md"
-grep -cE "^### (pipefail|xargs -r)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md"
+grep -cE "^### (pipefail|xargs -r)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥11 wikilinks, 2 verbetes visíveis.
@@ -3280,7 +3280,7 @@ Esperado: arquivo existe, ≥11 wikilinks, 2 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/13 - Pipeline JSON e YAML — jq yq fzf.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-cli-utils): add nota 13 — Pipeline JSON e YAML"
 ```
 
@@ -3289,12 +3289,12 @@ git commit -m "feat(terminal-cli-utils): add nota 13 — Pipeline JSON e YAML"
 ## Task 16: Pass final no MOC do galho
 
 **Files:**
-- Modify: `03-Dominios/Terminal/CLI Utils/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/CLI Utils/index.md`
 
 - [ ] **Step 1: Conferir que todos os wikilinks resolvem**
 
 ```bash
-ls "03-Dominios/Terminal/CLI Utils/"
+ls "03-Dominios/Tecnologia/Terminal/CLI Utils/"
 ```
 
 Esperado: 13 arquivos `.md` (notas) + `index.md` = 14 arquivos.
@@ -3316,7 +3316,7 @@ Frontmatter `updated:` → `2026-05-22` (já correto se MOC foi criado hoje; só
 
 ```bash
 python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py \
-  "03-Dominios/Terminal/CLI Utils/index.md" --respect-public-only
+  "03-Dominios/Tecnologia/Terminal/CLI Utils/index.md" --respect-public-only
 ```
 
 Esperado: 0 broken links.
@@ -3324,7 +3324,7 @@ Esperado: 0 broken links.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/CLI Utils/index.md"
+git add "03-Dominios/Tecnologia/Terminal/CLI Utils/index.md"
 git commit -m "docs(terminal-cli-utils): pass final no MOC do galho"
 ```
 
@@ -3333,25 +3333,25 @@ git commit -m "docs(terminal-cli-utils): pass final no MOC do galho"
 ## Task 17: Pass final no Dicionário
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 - [ ] **Step 1: Verificar verbetes presentes**
 
 ```bash
-grep -cE "^### " "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -cE "^### " "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 # Esperado: total ≈ 119 (pré-existente) + 40 (galho 6) ≈ 159
 ```
 
 Listar verbetes do bloco CLI Utils:
 ```bash
-awk '/^## CLI Utils$/,/^## [^C]/' "03-Dominios/Terminal/Dicionário do Terminal.md" | grep -cE "^### "
+awk '/^## CLI Utils$/,/^## [^C]/' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | grep -cE "^### "
 # Esperado: ≈ 40
 ```
 
 - [ ] **Step 2: Conferir ordem alfabética case-insensitive**
 
 ```bash
-awk '/^## CLI Utils$/,0' "03-Dominios/Terminal/Dicionário do Terminal.md" | \
+awk '/^## CLI Utils$/,0' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | \
   grep -E "^### " | sed 's/^### //' > /tmp/cli-utils-actual.txt
 sort -f /tmp/cli-utils-actual.txt > /tmp/cli-utils-sorted.txt
 diff /tmp/cli-utils-actual.txt /tmp/cli-utils-sorted.txt
@@ -3365,7 +3365,7 @@ Se houver entries fora de ordem, usar Edit pra reordenar.
 
 ```bash
 # Lista todos os verbetes (todos os ###); detectar duplicatas
-grep -E "^### " "03-Dominios/Terminal/Dicionário do Terminal.md" | sort | uniq -d
+grep -E "^### " "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | sort | uniq -d
 ```
 
 Esperado: vazio (sem duplicatas).
@@ -3373,7 +3373,7 @@ Esperado: vazio (sem duplicatas).
 - [ ] **Step 4: Confirmar "Veja também" em todos os verbetes do bloco**
 
 ```bash
-awk '/^## CLI Utils$/,/^## [^C]/' "03-Dominios/Terminal/Dicionário do Terminal.md" | \
+awk '/^## CLI Utils$/,/^## [^C]/' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | \
   awk '/^### / {term=$0; veja=0} /^Veja também/ {veja=1} /^### / && veja==0 && NR>1 {print "MISSING veja em:", term}'
 ```
 
@@ -3386,9 +3386,9 @@ Edit: `updated: 2026-05-22`.
 - [ ] **Step 6: Commit (só se houve alterações)**
 
 ```bash
-git status --short "03-Dominios/Terminal/Dicionário do Terminal.md"
+git status --short "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 # Se modificado:
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "docs(terminal-cli-utils): pass final no Dicionário"
 ```
 
@@ -3399,12 +3399,12 @@ Se não houve alterações (já estava correto), pular commit.
 ## Task 18: Tronco com wikilink ativo
 
 **Files:**
-- Modify: `03-Dominios/Terminal/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/index.md`
 
 - [ ] **Step 1: Localizar placeholder**
 
 ```bash
-grep -n "CLI Utils — galho 6 (planejado)" "03-Dominios/Terminal/index.md"
+grep -n "CLI Utils — galho 6 (planejado)" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Esperado: linha 32 com `- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, eza, zoxide…`.
@@ -3413,12 +3413,12 @@ Esperado: linha 32 com `- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, 
 
 Use `Edit`:
 - `old_string`: `- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, eza, zoxide…`
-- `new_string`: `- [[03-Dominios/Terminal/CLI Utils/index|CLI Utils]] — galho 6: substituições modernas de utilitários UNIX (cat/ls/grep/find/du/top) + fluxo interativo (fzf/zoxide/atuin) + processamento estruturado (jq/yq)`
+- `new_string`: `- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|CLI Utils]] — galho 6: substituições modernas de utilitários UNIX (cat/ls/grep/find/du/top) + fluxo interativo (fzf/zoxide/atuin) + processamento estruturado (jq/yq)`
 
 - [ ] **Step 3: Confirmar galhos 1-5 ainda corretos**
 
 ```bash
-grep -E "^- \[\[" "03-Dominios/Terminal/index.md" | head -6
+grep -E "^- \[\[" "03-Dominios/Tecnologia/Terminal/index.md" | head -6
 ```
 
 Esperado: 6 entradas com wikilinks ativos pros galhos 1-6 (Editor, Shell, Multiplexer, TUIs, Dotfiles, CLI Utils); galho 7 ainda como placeholder.
@@ -3426,7 +3426,7 @@ Esperado: 6 entradas com wikilinks ativos pros galhos 1-6 (Editor, Shell, Multip
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git commit -m "feat(terminal): tronco com wikilink ativo pro galho 6 (CLI Utils)"
 ```
 
@@ -3440,7 +3440,7 @@ git commit -m "feat(terminal): tronco com wikilink ativo pro galho 6 (CLI Utils)
 
 ```bash
 python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py \
-  "03-Dominios/Terminal/CLI Utils/" --respect-public-only
+  "03-Dominios/Tecnologia/Terminal/CLI Utils/" --respect-public-only
 ```
 
 Esperado: 0 broken links.
@@ -3451,13 +3451,13 @@ Se houver broken: investigar caso-a-caso, corrigir com Edit, re-rodar.
 
 Dispatcher lê todas as 13 notas e checa consistência. Prompt do subagent:
 
-> Leia as 13 notas em `03-Dominios/Terminal/CLI Utils/` (01 a 13). Para cada uma, valide:
+> Leia as 13 notas em `03-Dominios/Tecnologia/Terminal/CLI Utils/` (01 a 13). Para cada uma, valide:
 >
 > 1. **Code fences fechadas** — toda ` ``` ` tem par fechando. Contar ` ``` ` em cada arquivo: deve ser par.
 > 2. **Armadilhas em formato bold-label** — cada armadilha tem `### (N) Título` + 4 labels (`**Causa:**`, `**Sintoma:**`, `**Como detectar:**`, `**Solução:**`). NUNCA callouts Obsidian (`> [!warning]`). NUNCA tabela.
 > 3. **"Em inglês" em bullets bilíngues** — formato `- **PT** — *EN*. "frase técnica em PT."`. NUNCA tabela.
 > 4. **"Veja também" sem backticks em wikilinks** — `[[link]]`, NÃO `` `[[link]]` ``.
-> 5. **MOC + tronco em "Veja também"** — `[[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]` e `[[03-Dominios/Terminal/index|Trilha Terminal]]` presentes.
+> 5. **MOC + tronco em "Veja também"** — `[[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]` e `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]` presentes.
 > 6. **TL;DR em callout `> [!abstract] TL;DR`** — NÃO H2 nem texto solto.
 > 7. **Versões hedged** — sem pins específicos no corpo (ex: "fzf 0.4x+" OK; "fzf 0.48.0" não).
 > 8. **Sem fabricação** — sem `josenaldo`, sem `/home/josenaldo/`, sem "no meu setup".
@@ -3492,7 +3492,7 @@ Prompt do fix subagent:
 ```bash
 # Re-rodar verificar-wikilinks
 python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py \
-  "03-Dominios/Terminal/CLI Utils/" --respect-public-only
+  "03-Dominios/Tecnologia/Terminal/CLI Utils/" --respect-public-only
 
 # Conferir commits sem Co-Authored-By Claude
 git log --since="6 hours ago" --grep="Co-Authored-By" --oneline
@@ -3503,7 +3503,7 @@ Esperado: 0 broken links; nenhum commit com `Co-Authored-By: Claude`.
 - [ ] **Step 5: Sumário final**
 
 Verificar critério de pronto:
-- [ ] 14 arquivos em `03-Dominios/Terminal/CLI Utils/` (13 notas + MOC)
+- [ ] 14 arquivos em `03-Dominios/Tecnologia/Terminal/CLI Utils/` (13 notas + MOC)
 - [ ] ~40 verbetes novos no bloco `## CLI Utils` do Dicionário
 - [ ] Tronco com wikilink ativo pro galho 6
 - [ ] `verificar-wikilinks` → 0 broken

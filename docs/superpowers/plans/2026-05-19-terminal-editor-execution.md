@@ -10,9 +10,9 @@ publish: false
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Produzir, em `03-Dominios/Terminal/Editor/`, **13 notas atômicas + 1 MOC do galho** (Iniciado 4 + Adepto 5 + Magus 4) cobrindo Neovim + LazyVim do "abrir e salvar" até "Treesitter queries + DAP". Em paralelo, criar `03-Dominios/Terminal/Dicionário do Terminal.md` (~30 verbetes) e ativar o wikilink do Editor no tronco `03-Dominios/Terminal/index.md`. Todos os arquivos com `publish: true`, PT-BR, com seção "Em inglês" por nota (mini-glossário PT→EN).
+**Goal:** Produzir, em `03-Dominios/Tecnologia/Terminal/Editor/`, **13 notas atômicas + 1 MOC do galho** (Iniciado 4 + Adepto 5 + Magus 4) cobrindo Neovim + LazyVim do "abrir e salvar" até "Treesitter queries + DAP". Em paralelo, criar `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (~30 verbetes) e ativar o wikilink do Editor no tronco `03-Dominios/Tecnologia/Terminal/index.md`. Todos os arquivos com `publish: true`, PT-BR, com seção "Em inglês" por nota (mini-glossário PT→EN).
 
-**Architecture:** Galho atômico em pasta dedicada, com MOC interno + 13 notas numeradas (`NN - Título.md`). Dicionário do Terminal vive no topo do domínio (`03-Dominios/Terminal/`) — trilha-wide, alimentado conforme as notas referenciam termos. LazyVim é caminho primário em Iniciado/Adepto; Neovim/Vim core domina em Magus. Cada nota segue template híbrido (TL;DR + corpo técnico + "Em inglês" + "Veja também" + "Referências"). Wikilinks densos: nota↔nota, nota→verbete, nota→tronco, MOC→todas as notas. Ordem de execução: por fase (01→04, 05→09, 10→13) com commit por arquivo.
+**Architecture:** Galho atômico em pasta dedicada, com MOC interno + 13 notas numeradas (`NN - Título.md`). Dicionário do Terminal vive no topo do domínio (`03-Dominios/Tecnologia/Terminal/`) — trilha-wide, alimentado conforme as notas referenciam termos. LazyVim é caminho primário em Iniciado/Adepto; Neovim/Vim core domina em Magus. Cada nota segue template híbrido (TL;DR + corpo técnico + "Em inglês" + "Veja também" + "Referências"). Wikilinks densos: nota↔nota, nota→verbete, nota→tronco, MOC→todas as notas. Ordem de execução: por fase (01→04, 05→09, 10→13) com commit por arquivo.
 
 **Tech Stack:** Markdown (Obsidian Flavored), wikilinks Obsidian, callouts, frontmatter YAML, Quartz para publicação. Sem código executável de sistema — code samples são Lua de config Neovim ou comandos Ex/keymaps. Testes locais ocasionais (`nvim --headless` ou `:checkhealth`) em notas que mostram config (04, 06, 08, 09).
 
@@ -21,8 +21,8 @@ publish: false
 - Roadmap macro: `docs/superpowers/specs/2026-05-18-trilha-terminal-design.md`
 - Plano-mãe (formato análogo): `docs/superpowers/plans/2026-05-07-node-runtime-event-loop-execution.md`
 - Plano do tronco da trilha: `docs/superpowers/plans/2026-05-18-terminal-tronco-execution.md`
-- Template de glossário: `03-Dominios/Empreendedorismo/Indie Hacker 101/Dicionário do Indie Hacker.md`
-- Tronco Terminal a atualizar no fim: `03-Dominios/Terminal/index.md`
+- Template de glossário: `03-Dominios/Carreira/Empreendedorismo/Indie Hacker 101/Dicionário do Indie Hacker.md`
+- Tronco Terminal a atualizar no fim: `03-Dominios/Tecnologia/Terminal/index.md`
 
 ---
 
@@ -53,7 +53,7 @@ Este galho é 100% público. **Nenhum arquivo aqui pode referenciar conteúdo do
 
 ### Não remover `index.md` do Quartz
 
-A memória [Nunca remover index.md Quartz](/home/josenaldo/.claude/projects/-home-josenaldo-repos-personal-codex-technomanticus/memory/feedback_quartz_index.md) é regra inegociável. **O `03-Dominios/Terminal/index.md` é editado, nunca removido.** A pasta `Editor/` recebe seu próprio `index.md` como MOC do galho — criar, não substituir nada.
+A memória [Nunca remover index.md Quartz](/home/josenaldo/.claude/projects/-home-josenaldo-repos-personal-codex-technomanticus/memory/feedback_quartz_index.md) é regra inegociável. **O `03-Dominios/Tecnologia/Terminal/index.md` é editado, nunca removido.** A pasta `Editor/` recebe seu próprio `index.md` como MOC do galho — criar, não substituir nada.
 
 ---
 
@@ -62,7 +62,7 @@ A memória [Nunca remover index.md Quartz](/home/josenaldo/.claude/projects/-hom
 16 arquivos novos + 1 modificado:
 
 ```
-03-Dominios/Terminal/
+03-Dominios/Tecnologia/Terminal/
 ├── Dicionário do Terminal.md                                     # Task 1 (esqueleto), Task 17 (pass final)
 ├── index.md                                                       # MODIFICADO (Task 18 — ativa wikilink Editor)
 └── Editor/
@@ -140,8 +140,8 @@ Ex:
 ## Veja também
 
 - [[<outra nota do galho>]] — relação
-- [[03-Dominios/Terminal/Editor/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]] (tronco)
+- [[03-Dominios/Tecnologia/Terminal/Editor/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]] (tronco)
 - [[Dicionário do Terminal#<verbete relevante>|<verbete>]] — quando útil
 
 ## Referências
@@ -231,7 +231,7 @@ Consulta rápida durante a escrita. URLs verificadas no spec §5 e §9.
 ## Task 0: Pré-flight
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/` (diretório)
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/` (diretório)
 
 - [ ] **Step 1: Verificar contexto e memórias críticas**
 
@@ -246,10 +246,10 @@ Expected: pelo menos linhas referenciando `feedback_no_fabrication.md`, `feedbac
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/index.md" && echo "ok: tronco existe"
+test -f "03-Dominios/Tecnologia/Terminal/index.md" && echo "ok: tronco existe"
 test -f "docs/superpowers/specs/2026-05-19-terminal-editor-design.md" && echo "ok: spec existe"
-test ! -d "03-Dominios/Terminal/Editor" && echo "ok: Editor/ ainda não existe" || echo "ATENÇÃO: Editor/ já existe — investigar"
-test ! -f "03-Dominios/Terminal/Dicionário do Terminal.md" && echo "ok: Dicionário ainda não existe" || echo "ATENÇÃO: Dicionário já existe — investigar"
+test ! -d "03-Dominios/Tecnologia/Terminal/Editor" && echo "ok: Editor/ ainda não existe" || echo "ATENÇÃO: Editor/ já existe — investigar"
+test ! -f "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" && echo "ok: Dicionário ainda não existe" || echo "ATENÇÃO: Dicionário já existe — investigar"
 ```
 
 Expected: 4 linhas `ok:`. Qualquer "ATENÇÃO" = parar e investigar antes de prosseguir (pode ser sessão anterior incompleta).
@@ -268,8 +268,8 @@ Expected: branch `main` e working tree limpa (sem changes pendentes não relacio
 
 Run:
 ```bash
-mkdir -p "03-Dominios/Terminal/Editor"
-ls -la "03-Dominios/Terminal/Editor"
+mkdir -p "03-Dominios/Tecnologia/Terminal/Editor"
+ls -la "03-Dominios/Tecnologia/Terminal/Editor"
 ```
 
 Expected: diretório vazio criado.
@@ -295,13 +295,13 @@ Como o `mkdir` cria pasta vazia (que git ignora), este task não tem o que commi
 ## Task 1: Dicionário do Terminal — esqueleto
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 **Objetivo:** Criar o glossário no topo do domínio com estrutura por blocos temáticos (sem verbetes ainda — vão sendo preenchidos pelas notas conforme aparecem). Pattern alinhado com `Dicionário do Indie Hacker.md` e `Dicionário de React.md`.
 
 - [ ] **Step 1: Escrever o arquivo**
 
-Criar `03-Dominios/Terminal/Dicionário do Terminal.md` com **exatamente** o conteúdo abaixo:
+Criar `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` com **exatamente** o conteúdo abaixo:
 
 ````markdown
 ---
@@ -349,9 +349,9 @@ Use `Write` com o conteúdo acima exatamente (inclusive a linha em branco final)
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Dicionário do Terminal.md" && echo "ok: file exists"
-wc -l "03-Dominios/Terminal/Dicionário do Terminal.md"
-head -16 "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" && echo "ok: file exists"
+wc -l "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+head -16 "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥25 linhas, frontmatter visível nas 16 primeiras linhas (title, type, publish, tags, lang).
@@ -362,7 +362,7 @@ Run:
 ```bash
 python3 -c "
 import yaml, sys
-content = open('03-Dominios/Terminal/Dicionário do Terminal.md').read()
+content = open('03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md').read()
 parts = content.split('---', 2)
 if len(parts) < 3:
     print('FAIL: no frontmatter delimiters'); sys.exit(1)
@@ -380,18 +380,18 @@ Expected: `ok: frontmatter valid`. Qualquer outra saída = corrigir o frontmatte
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git status
 ```
 
-Expected: status mostra apenas `new file: 03-Dominios/Terminal/Dicionário do Terminal.md`.
+Expected: status mostra apenas `new file: 03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`.
 
 Then:
 ```bash
 git commit -m "$(cat <<'EOF'
 feat(terminal): scaffold Dicionário do Terminal
 
-Cria 03-Dominios/Terminal/Dicionário do Terminal.md como glossário
+Cria 03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md como glossário
 trilha-wide do domínio Terminal. Estrutura inicial em 4 blocos
 temáticos (Vim/Neovim core, Ecossistema LazyVim, LSP & dev, Avançado)
 sem verbetes — serão preenchidos pelas notas conforme aparecem.
@@ -408,13 +408,13 @@ EOF
 ## Task 2: MOC do galho Editor — esqueleto
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/index.md`
 
 **Objetivo:** Criar o MOC do galho com todas as 13 notas listadas como wikilinks (mesmo que ainda não existam — Obsidian aceita wikilinks pendentes; Quartz só renderiza vivos). Estrutura segue o spec §5.
 
 - [ ] **Step 1: Escrever o arquivo**
 
-Criar `03-Dominios/Terminal/Editor/index.md` com **exatamente** o conteúdo abaixo:
+Criar `03-Dominios/Tecnologia/Terminal/Editor/index.md` com **exatamente** o conteúdo abaixo:
 
 ````markdown
 ---
@@ -483,7 +483,7 @@ Esse galho cobre o editor end-to-end: filosofia modal, motions e text objects (I
 ## Veja também
 
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ````
 
 Use `Write` com o conteúdo acima.
@@ -494,7 +494,7 @@ Run:
 ```bash
 python3 -c "
 import yaml
-content = open('03-Dominios/Terminal/Editor/index.md').read()
+content = open('03-Dominios/Tecnologia/Terminal/Editor/index.md').read()
 parts = content.split('---', 2)
 fm = yaml.safe_load(parts[1])
 assert fm.get('type') == 'moc', 'type não é moc'
@@ -504,7 +504,7 @@ for t in ['terminal', 'editor', 'moc']:
     assert t in fm.get('tags', []), f'tag {t} ausente'
 print('ok: frontmatter valid')
 "
-grep -c '^- \[\[' "03-Dominios/Terminal/Editor/index.md"
+grep -c '^- \[\[' "03-Dominios/Tecnologia/Terminal/Editor/index.md"
 ```
 
 Expected: `ok: frontmatter valid` e contagem ≥ 13 (as 13 notas + outros wikilinks).
@@ -512,11 +512,11 @@ Expected: `ok: frontmatter valid` e contagem ≥ 13 (as 13 notas + outros wikili
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/index.md"
 git commit -m "$(cat <<'EOF'
 feat(terminal-editor): scaffold MOC do galho Editor
 
-Cria 03-Dominios/Terminal/Editor/index.md como MOC do galho 1 da
+Cria 03-Dominios/Tecnologia/Terminal/Editor/index.md como MOC do galho 1 da
 trilha Terminal. Lista as 13 notas planejadas (Iniciado 4 + Adepto 5
 + Magus 4) como wikilinks pendentes, mais 3 rotas alternativas (Uso
 diário, Customização, Produtividade avançada) e versões assumidas
@@ -532,7 +532,7 @@ EOF
 ## Task 3: Nota 01 — Modal editing
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/01 - Modal editing.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing.md`
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -553,7 +553,7 @@ Capturar: definição precisa de cada modo, comandos de entrada, indicadores vis
 
 - [ ] **Step 2: Criar frontmatter + esqueleto**
 
-Criar `03-Dominios/Terminal/Editor/01 - Modal editing.md` com:
+Criar `03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing.md` com:
 
 ```yaml
 ---
@@ -603,7 +603,7 @@ Seguido do esqueleto do template padrão (TL;DR vazio, sub-headings a preencher)
   - `[[02 - Motions, operadores e text objects]]`
   - `[[03 - Edição e navegação]]`
   - `[[04 - LazyVim tour]]`
-  - `[[03-Dominios/Terminal/Editor/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Editor/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Modal editing|modal editing]]`, `[[Dicionário do Terminal#Modo|modo]]`
 - **Referências:** Neovim intro, `:Tutor`, Learn Vim, Practical Vim, Boost Your Fu (URLs do spec §5).
 
@@ -611,7 +611,7 @@ Tamanho-alvo: 200-300 linhas.
 
 - [ ] **Step 4: Criar verbetes referenciados no Dicionário**
 
-Para cada verbete listado (modal editing, modo), abrir `03-Dominios/Terminal/Dicionário do Terminal.md` e adicionar dentro do bloco `## Vim / Neovim core` em ordem alfabética:
+Para cada verbete listado (modal editing, modo), abrir `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` e adicionar dentro do bloco `## Vim / Neovim core` em ordem alfabética:
 
 ```markdown
 ### Modal editing
@@ -635,9 +635,9 @@ Aplicar a checklist da seção "Critérios de qualidade por nota" (acima neste p
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Editor/01 - Modal editing.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/01 - Modal editing.md"
-grep -c '^## ' "03-Dominios/Terminal/Editor/01 - Modal editing.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing.md"
+grep -c '^## ' "03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing.md"
 ```
 
 Expected: arquivo existe, ≥6 wikilinks, ≥5 sub-headings.
@@ -645,7 +645,7 @@ Expected: arquivo existe, ≥6 wikilinks, ≥5 sub-headings.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/01 - Modal editing.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 01 — Modal editing"
 ```
 
@@ -654,7 +654,7 @@ git commit -m "feat(terminal-editor): add nota 01 — Modal editing"
 ## Task 4: Nota 02 — Motions, operadores e text objects
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/02 - Motions, operadores e text objects.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/02 - Motions, operadores e text objects.md`
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -750,8 +750,8 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Editor/02 - Motions, operadores e text objects.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/02 - Motions, operadores e text objects.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/02 - Motions, operadores e text objects.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/02 - Motions, operadores e text objects.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa aprovada.
@@ -759,7 +759,7 @@ Expected: ≥6 wikilinks. Rubrica completa aprovada.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/02 - Motions, operadores e text objects.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/02 - Motions, operadores e text objects.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 02 — Motions, operadores e text objects"
 ```
 
@@ -768,7 +768,7 @@ git commit -m "feat(terminal-editor): add nota 02 — Motions, operadores e text
 ## Task 5: Nota 03 — Edição e navegação
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/03 - Edição e navegação.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/03 - Edição e navegação.md`
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -874,8 +874,8 @@ Atualizar `updated:`.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Editor/03 - Edição e navegação.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/03 - Edição e navegação.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/03 - Edição e navegação.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/03 - Edição e navegação.md"
 ```
 
 Expected: ≥7 wikilinks. Rubrica completa.
@@ -883,7 +883,7 @@ Expected: ≥7 wikilinks. Rubrica completa.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/03 - Edição e navegação.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/03 - Edição e navegação.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 03 — Edição e navegação"
 ```
 
@@ -892,7 +892,7 @@ git commit -m "feat(terminal-editor): add nota 03 — Edição e navegação"
 ## Task 6: Nota 04 — LazyVim tour
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/04 - LazyVim tour.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/04 - LazyVim tour.md`
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -1069,9 +1069,9 @@ Aplicar checklist completa.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Editor/04 - LazyVim tour.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/04 - LazyVim tour.md"
-grep -c '^### ' "03-Dominios/Terminal/Editor/04 - LazyVim tour.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/04 - LazyVim tour.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/04 - LazyVim tour.md"
+grep -c '^### ' "03-Dominios/Tecnologia/Terminal/Editor/04 - LazyVim tour.md"
 ```
 
 Expected: ≥10 wikilinks (denso de cross-refs), ≥8 sub-headings (uma por sub-seção de "Na prática").
@@ -1079,7 +1079,7 @@ Expected: ≥10 wikilinks (denso de cross-refs), ≥8 sub-headings (uma por sub-
 - [ ] **Step 7: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/04 - LazyVim tour.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/04 - LazyVim tour.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 04 — LazyVim tour"
 ```
 
@@ -1101,7 +1101,7 @@ Após Task 6, a fase **Iniciado** está completa. Antes de seguir pra Adepto:
 ## Task 7: Nota 05 — Lua para Neovim
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/05 - Lua para Neovim.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/05 - Lua para Neovim.md`
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1219,8 +1219,8 @@ Atualizar `updated:`.
 - [ ] **Step 5: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/05 - Lua para Neovim.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/05 - Lua para Neovim.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/05 - Lua para Neovim.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/05 - Lua para Neovim.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa.
@@ -1228,7 +1228,7 @@ Expected: ≥6 wikilinks. Rubrica completa.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/05 - Lua para Neovim.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/05 - Lua para Neovim.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 05 — Lua para Neovim"
 ```
 
@@ -1237,7 +1237,7 @@ git commit -m "feat(terminal-editor): add nota 05 — Lua para Neovim"
 ## Task 8: Nota 06 — Estrutura de config
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/06 - Estrutura de config.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/06 - Estrutura de config.md`
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1389,8 +1389,8 @@ Expected: `lazy.lua`, `options.lua`, `keymaps.lua`, `autocmds.lua` presentes; pe
 - [ ] **Step 6: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/06 - Estrutura de config.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/06 - Estrutura de config.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/06 - Estrutura de config.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/06 - Estrutura de config.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa.
@@ -1398,7 +1398,7 @@ Expected: ≥6 wikilinks. Rubrica completa.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/06 - Estrutura de config.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/06 - Estrutura de config.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 06 — Estrutura de config"
 ```
 
@@ -1407,7 +1407,7 @@ git commit -m "feat(terminal-editor): add nota 06 — Estrutura de config"
 ## Task 9: Nota 07 — lazy.nvim
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/07 - lazy.nvim.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/07 - lazy.nvim.md`
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1557,8 +1557,8 @@ Atualizar `updated:`.
 - [ ] **Step 5: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/07 - lazy.nvim.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/07 - lazy.nvim.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/07 - lazy.nvim.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/07 - lazy.nvim.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa.
@@ -1566,7 +1566,7 @@ Expected: ≥6 wikilinks. Rubrica completa.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/07 - lazy.nvim.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/07 - lazy.nvim.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 07 — lazy.nvim"
 ```
 
@@ -1575,7 +1575,7 @@ git commit -m "feat(terminal-editor): add nota 07 — lazy.nvim"
 ## Task 10: Nota 08 — Customizando LazyVim
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/08 - Customizando LazyVim.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/08 - Customizando LazyVim.md`
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1722,8 +1722,8 @@ Alternativa: se o usuário aceitar, copiar um exemplo (ex: `colorscheme.lua` des
 - [ ] **Step 6: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/08 - Customizando LazyVim.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/08 - Customizando LazyVim.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/08 - Customizando LazyVim.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/08 - Customizando LazyVim.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa.
@@ -1731,7 +1731,7 @@ Expected: ≥6 wikilinks. Rubrica completa.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/08 - Customizando LazyVim.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/08 - Customizando LazyVim.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 08 — Customizando LazyVim"
 ```
 
@@ -1740,7 +1740,7 @@ git commit -m "feat(terminal-editor): add nota 08 — Customizando LazyVim"
 ## Task 11: Nota 09 — LSP no Neovim
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/09 - LSP no Neovim.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/09 - LSP no Neovim.md`
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1941,8 +1941,8 @@ Mostrar ao usuário (manual): abrir um arquivo TS no Neovim, esperar 2s, `:LspIn
 - [ ] **Step 6: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/09 - LSP no Neovim.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/09 - LSP no Neovim.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/09 - LSP no Neovim.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/09 - LSP no Neovim.md"
 ```
 
 Expected: ≥8 wikilinks. Rubrica completa.
@@ -1950,7 +1950,7 @@ Expected: ≥8 wikilinks. Rubrica completa.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/09 - LSP no Neovim.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/09 - LSP no Neovim.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 09 — LSP no Neovim"
 ```
 
@@ -1971,7 +1971,7 @@ Após Task 11, a fase **Adepto** está completa. Antes de seguir pra Magus:
 ## Task 12: Nota 10 — Registers, marks, macros
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/10 - Registers, marks, macros.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/10 - Registers, marks, macros.md`
 
 **Conteúdo-chave do spec (§5, Magus):**
 
@@ -2093,8 +2093,8 @@ Atualizar `updated:`.
 - [ ] **Step 5: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/10 - Registers, marks, macros.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/10 - Registers, marks, macros.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/10 - Registers, marks, macros.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/10 - Registers, marks, macros.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa.
@@ -2102,7 +2102,7 @@ Expected: ≥6 wikilinks. Rubrica completa.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/10 - Registers, marks, macros.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/10 - Registers, marks, macros.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 10 — Registers, marks, macros"
 ```
 
@@ -2111,7 +2111,7 @@ git commit -m "feat(terminal-editor): add nota 10 — Registers, marks, macros"
 ## Task 13: Nota 11 — Workflow avançado
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/11 - Workflow avançado.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/11 - Workflow avançado.md`
 
 **Conteúdo-chave do spec (§5, Magus):**
 
@@ -2253,8 +2253,8 @@ Atualizar `updated:`.
 - [ ] **Step 5: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/11 - Workflow avançado.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/11 - Workflow avançado.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/11 - Workflow avançado.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/11 - Workflow avançado.md"
 ```
 
 Expected: ≥5 wikilinks. Rubrica completa.
@@ -2262,7 +2262,7 @@ Expected: ≥5 wikilinks. Rubrica completa.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/11 - Workflow avançado.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/11 - Workflow avançado.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 11 — Workflow avançado"
 ```
 
@@ -2271,7 +2271,7 @@ git commit -m "feat(terminal-editor): add nota 11 — Workflow avançado"
 ## Task 14: Nota 12 — Treesitter avançado
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/12 - Treesitter avançado.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/12 - Treesitter avançado.md`
 
 **Conteúdo-chave do spec (§5, Magus):**
 
@@ -2414,8 +2414,8 @@ Atualizar `updated:`.
 - [ ] **Step 5: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/12 - Treesitter avançado.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/12 - Treesitter avançado.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/12 - Treesitter avançado.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/12 - Treesitter avançado.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa.
@@ -2423,7 +2423,7 @@ Expected: ≥6 wikilinks. Rubrica completa.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/12 - Treesitter avançado.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/12 - Treesitter avançado.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 12 — Treesitter avançado"
 ```
 
@@ -2432,7 +2432,7 @@ git commit -m "feat(terminal-editor): add nota 12 — Treesitter avançado"
 ## Task 15: Nota 13 — Snippets e DAP
 
 **Files:**
-- Create: `03-Dominios/Terminal/Editor/13 - Snippets e DAP.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Editor/13 - Snippets e DAP.md`
 
 **Conteúdo-chave do spec (§5, Magus):**
 
@@ -2584,8 +2584,8 @@ Atualizar `updated:`.
 - [ ] **Step 5: Validar rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Editor/13 - Snippets e DAP.md"
-grep -c '\[\[' "03-Dominios/Terminal/Editor/13 - Snippets e DAP.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/13 - Snippets e DAP.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/13 - Snippets e DAP.md"
 ```
 
 Expected: ≥6 wikilinks. Rubrica completa.
@@ -2593,7 +2593,7 @@ Expected: ≥6 wikilinks. Rubrica completa.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Editor/13 - Snippets e DAP.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/13 - Snippets e DAP.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-editor): add nota 13 — Snippets e DAP"
 ```
 
@@ -2615,7 +2615,7 @@ Após Task 15, **todas as 13 notas estão escritas**. Antes da finalização:
 ## Task 16: Pass final no MOC
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Editor/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Editor/index.md`
 
 **Objetivo:** Verificar que todos os wikilinks do MOC apontam pra notas existentes, atualizar `updated:`, declarar versão exata do LazyVim observada na sessão de execução.
 
@@ -2636,7 +2636,7 @@ for n in "01 - Modal editing" \
          "11 - Workflow avançado" \
          "12 - Treesitter avançado" \
          "13 - Snippets e DAP"; do
-  test -f "03-Dominios/Terminal/Editor/${n}.md" && echo "ok: $n" || echo "MISSING: $n"
+  test -f "03-Dominios/Tecnologia/Terminal/Editor/${n}.md" && echo "ok: $n" || echo "MISSING: $n"
 done
 ```
 
@@ -2659,7 +2659,7 @@ Capturar a string (ex: `abc1234 2026-05-15`) pra inserir no MOC.
 
 - [ ] **Step 3: Editar o MOC**
 
-Edit em `03-Dominios/Terminal/Editor/index.md`:
+Edit em `03-Dominios/Tecnologia/Terminal/Editor/index.md`:
 
 - Trocar `updated: 2026-05-19` por `updated: 2026-XX-XX` (data da execução).
 - Na seção `## Versões assumidas`, atualizar `LazyVim:` com a string capturada:
@@ -2671,13 +2671,13 @@ Edit em `03-Dominios/Terminal/Editor/index.md`:
 
 Run:
 ```bash
-grep -c '\[\[' "03-Dominios/Terminal/Editor/index.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Editor/index.md"
 ```
 
 Expected: ≥15 wikilinks (13 notas + Dicionário + tronco + outras).
 
 ```bash
-git add "03-Dominios/Terminal/Editor/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Editor/index.md"
 git commit -m "docs(terminal-editor): finaliza MOC do galho com versões e wikilinks ativos"
 ```
 
@@ -2686,7 +2686,7 @@ git commit -m "docs(terminal-editor): finaliza MOC do galho com versões e wikil
 ## Task 17: Pass final no Dicionário
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 **Objetivo:** Garantir alfabetização dentro de cada bloco temático, completar "Veja também" em todos verbetes, validar coverage (≥30 verbetes), atualizar `updated:`.
 
@@ -2694,7 +2694,7 @@ git commit -m "docs(terminal-editor): finaliza MOC do galho com versões e wikil
 
 Run:
 ```bash
-grep -E '^### ' "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -E '^### ' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: ≥30 entradas (`###`). Lista esperada (do spec §7):
@@ -2714,7 +2714,7 @@ Script auxiliar:
 ```bash
 python3 << 'EOF'
 import re
-content = open('03-Dominios/Terminal/Dicionário do Terminal.md').read()
+content = open('03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md').read()
 blocks = re.split(r'^## ', content, flags=re.MULTILINE)[1:]
 for b in blocks:
     name, *rest = b.split('\n', 1)
@@ -2740,7 +2740,7 @@ Cada verbete deve ter pelo menos uma linha `Veja também: [[<nota>]]` ao final.
 ```bash
 python3 << 'EOF'
 import re
-content = open('03-Dominios/Terminal/Dicionário do Terminal.md').read()
+content = open('03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md').read()
 verbetes = re.split(r'^### ', content, flags=re.MULTILINE)[1:]
 missing = []
 for v in verbetes:
@@ -2768,7 +2768,7 @@ updated: 2026-XX-XX  # data da execução
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "docs(terminal): pass final no Dicionário — alfabetização e Veja também coverage"
 ```
 
@@ -2777,15 +2777,15 @@ git commit -m "docs(terminal): pass final no Dicionário — alfabetização e V
 ## Task 18: Atualizar tronco — ativar wikilink do Editor
 
 **Files:**
-- Modify: `03-Dominios/Terminal/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/index.md`
 
-**Objetivo:** Substituir o bullet de texto puro `Editor — galho 1 (planejado): ...` por wikilink ativo `[[03-Dominios/Terminal/Editor/index|Editor]]`, atualizar `updated:`.
+**Objetivo:** Substituir o bullet de texto puro `Editor — galho 1 (planejado): ...` por wikilink ativo `[[03-Dominios/Tecnologia/Terminal/Editor/index|Editor]]`, atualizar `updated:`.
 
 - [ ] **Step 1: Ler o estado atual**
 
 Run:
 ```bash
-grep -n "Editor" "03-Dominios/Terminal/index.md"
+grep -n "Editor" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Expected: encontra a linha `- Editor — galho 1 (planejado): Neovim + LazyVim (modal editing, plugins, LSP)`.
@@ -2799,7 +2799,7 @@ Expected: encontra a linha `- Editor — galho 1 (planejado): Neovim + LazyVim (
 
 `new_string`:
 ```markdown
-- [[03-Dominios/Terminal/Editor/index|Editor]] — galho 1: Neovim + LazyVim (modal editing, plugins, LSP, Treesitter, DAP)
+- [[03-Dominios/Tecnologia/Terminal/Editor/index|Editor]] — galho 1: Neovim + LazyVim (modal editing, plugins, LSP, Treesitter, DAP)
 ```
 
 - [ ] **Step 3: Atualizar `updated:`**
@@ -2820,8 +2820,8 @@ updated: 2026-XX-XX  # data da execução
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Editor/index.md" && echo "ok: target existe"
-grep -c '\[\[03-Dominios/Terminal/Editor' "03-Dominios/Terminal/index.md"
+test -f "03-Dominios/Tecnologia/Terminal/Editor/index.md" && echo "ok: target existe"
+grep -c '\[\[03-Dominios/Tecnologia/Terminal/Editor' "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Expected: `ok: target existe`; count = 1.
@@ -2829,7 +2829,7 @@ Expected: `ok: target existe`; count = 1.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git commit -m "feat(terminal): ativa wikilink do Editor no tronco — galho 1 entregue"
 ```
 
@@ -2845,8 +2845,8 @@ git commit -m "feat(terminal): ativa wikilink do Editor no tronco — galho 1 en
 
 Run:
 ```bash
-ls "03-Dominios/Terminal/Editor/"
-ls "03-Dominios/Terminal/" | grep -i dicion
+ls "03-Dominios/Tecnologia/Terminal/Editor/"
+ls "03-Dominios/Tecnologia/Terminal/" | grep -i dicion
 git log --oneline -25
 ```
 
@@ -2878,14 +2878,14 @@ Expected: build sem erros. Se acusar wikilink quebrado:
 Se a skill `verificar-wikilinks` (mencionada no roadmap) estiver registrada como invocável:
 
 ```
-/verificar-wikilinks 03-Dominios/Terminal/Editor/
+/verificar-wikilinks 03-Dominios/Tecnologia/Terminal/Editor/
 ```
 
 Caso contrário, fallback bash:
 
 ```bash
 # Lista wikilinks únicos referenciados nas notas do galho
-grep -hoE '\[\[[^]|#]+' "03-Dominios/Terminal/Editor/"*.md | sort -u | sed 's/^\[\[//' | head -50
+grep -hoE '\[\[[^]|#]+' "03-Dominios/Tecnologia/Terminal/Editor/"*.md | sort -u | sed 's/^\[\[//' | head -50
 ```
 
 Para cada wikilink, conferir que o destino existe (arquivo `.md` correspondente). Esta validação é heurística — wikilinks pra verbetes do dicionário (`[[Dicionário do Terminal#Termo]]`) precisam do arquivo do dicionário existir (já existe) e do anchor existir (verbete dentro). Inspeção manual via Obsidian é mais confiável aqui.
@@ -2895,7 +2895,7 @@ Para cada wikilink, conferir que o destino existe (arquivo `.md` correspondente)
 Checklist final:
 
 ```
-- [ ] 14 arquivos em 03-Dominios/Terminal/Editor/ (Step 1 confirmou)
+- [ ] 14 arquivos em 03-Dominios/Tecnologia/Terminal/Editor/ (Step 1 confirmou)
 - [ ] Dicionário do Terminal criado com ≥30 verbetes (Task 17 confirmou)
 - [ ] Todos com publish: true (verificar: grep publish: nos arquivos)
 - [ ] MOC tem TL;DR + Iniciado/Adepto/Magus + Rotas + Veja também (Task 16)
@@ -2907,7 +2907,7 @@ Checklist final:
 
 Run:
 ```bash
-grep -L "publish: true" "03-Dominios/Terminal/Editor/"*.md "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -L "publish: true" "03-Dominios/Tecnologia/Terminal/Editor/"*.md "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: vazio (sem arquivos sem `publish: true`). Qualquer output = corrigir frontmatter.
@@ -2934,7 +2934,7 @@ Se nenhuma correção, **não criar commit vazio** — passar pra Task 20.
 
 Reportar:
 - 13 notas + 1 MOC + 1 Dicionário criados.
-- Total de verbetes no Dicionário: N (rodar `grep -c '^### ' "03-Dominios/Terminal/Dicionário do Terminal.md"`).
+- Total de verbetes no Dicionário: N (rodar `grep -c '^### ' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"`).
 - Total de commits criados nesta sessão (rodar `git log --oneline | grep terminal | wc -l`).
 - Build Quartz: passou / falhou (com detalhes).
 - Critérios da spec §12 atendidos / abertos (lista).
@@ -2955,8 +2955,8 @@ Se o usuário quiser continuar o roadmap, próximo galho recomendado conforme o 
 
 O galho 1 está pronto quando **todas** as Tasks 0-20 têm seus steps marcados (`- [x]`), e:
 
-- 14 arquivos em `03-Dominios/Terminal/Editor/` (13 notas + index.md)
-- 1 dicionário em `03-Dominios/Terminal/Dicionário do Terminal.md` com ≥30 verbetes
+- 14 arquivos em `03-Dominios/Tecnologia/Terminal/Editor/` (13 notas + index.md)
+- 1 dicionário em `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` com ≥30 verbetes
 - Tronco `Terminal/index.md` com wikilink ativo do Editor
 - Build local do Quartz passa (Task 19 Step 2) **ou** validação manual de wikilinks foi feita
 - Nenhum commit do galho leva `Co-Authored-By: Claude`

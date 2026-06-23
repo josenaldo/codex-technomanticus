@@ -555,7 +555,7 @@ no local real `.agents/skills/...`. Mirror seria redundante e o `rm -rf` apagari
 - [ ] **Step 1: Dry-run contra nota SEM `fase:` (default Magus)**
 
 Invoque mentalmente/realmente a skill em:
-`03-Dominios/IA/Agentes de Codificação/02 - Vibe coding vs engenharia disciplinada.md`
+`03-Dominios/Tecnologia/IA/Agentes de Codificação/02 - Vibe coding vs engenharia disciplinada.md`
 Selecione as lentes Profundidade + Novidade. Pare na Fase 5 (plano) — **não execute**.
 
 Verifique:

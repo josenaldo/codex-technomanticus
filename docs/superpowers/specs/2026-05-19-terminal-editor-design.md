@@ -19,7 +19,7 @@ As 13 notas cobrem do "abrir um arquivo e salvar" até "criar text objects com T
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **13 notas atômicas + 1 MOC do galho + Dicionário do Terminal** em `03-Dominios/Terminal/Editor/` e `03-Dominios/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 5 Adepto + 4 Magus).
+Produzir, em uma sessão de execução dedicada, **13 notas atômicas + 1 MOC do galho + Dicionário do Terminal** em `03-Dominios/Tecnologia/Terminal/Editor/` e `03-Dominios/Tecnologia/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 5 Adepto + 4 Magus).
 
 A trilha precisa ser:
 
@@ -34,10 +34,10 @@ A trilha precisa ser:
 ### Em escopo
 
 - 14 arquivos markdown:
-  - 13 notas em `03-Dominios/Terminal/Editor/`
-  - 1 MOC do galho em `03-Dominios/Terminal/Editor/index.md` (segue o padrão do tronco e do roadmap)
-- 1 dicionário em `03-Dominios/Terminal/Dicionário do Terminal.md` com ~30 verbetes iniciais
-- Atualização do tronco `03-Dominios/Terminal/index.md` ativando o wikilink do Editor
+  - 13 notas em `03-Dominios/Tecnologia/Terminal/Editor/`
+  - 1 MOC do galho em `03-Dominios/Tecnologia/Terminal/Editor/index.md` (segue o padrão do tronco e do roadmap)
+- 1 dicionário em `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` com ~30 verbetes iniciais
+- Atualização do tronco `03-Dominios/Tecnologia/Terminal/index.md` ativando o wikilink do Editor
 - Todos os arquivos com `publish: true`
 - Idioma: PT-BR; termos técnicos em inglês mantidos; cada nota tem seção "Em inglês" com 5-10 termos PT→EN
 - Pesquisa baseada em fontes primárias verificadas (links concretos no spec)
@@ -78,7 +78,7 @@ Dev individual editando código no stack típico do usuário (TS/JS, Lua, Markdo
 
 ### MOC do galho
 
-Arquivo: `03-Dominios/Terminal/Editor/index.md` (mesmo padrão do tronco `Terminal/index.md` e do roadmap).
+Arquivo: `03-Dominios/Tecnologia/Terminal/Editor/index.md` (mesmo padrão do tronco `Terminal/index.md` e do roadmap).
 
 Estrutura:
 
@@ -113,7 +113,7 @@ Estrutura:
 
 ## Veja também
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ```
 
 ### Fase Iniciado (4 notas)
@@ -447,7 +447,7 @@ Estrutura do corpo:
 
 ### Localização e estrutura
 
-**Caminho:** `03-Dominios/Terminal/Dicionário do Terminal.md` (no topo do domínio, segue o pattern de `Dicionário do Indie Hacker` e `Dicionário de React`).
+**Caminho:** `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (no topo do domínio, segue o pattern de `Dicionário do Indie Hacker` e `Dicionário de React`).
 
 **Frontmatter:**
 
@@ -529,8 +529,8 @@ Além da sequência 01→13, o MOC oferece 3 rotas curtas pra entradas focadas:
 
 O galho está pronto quando:
 
-1. **14 arquivos** existem em `03-Dominios/Terminal/Editor/`: 13 notas atômicas + 1 MOC do galho.
-2. **Dicionário do Terminal** criado em `03-Dominios/Terminal/Dicionário do Terminal.md` com pelo menos **30 verbetes** cobrindo o jargão usado nas notas.
+1. **14 arquivos** existem em `03-Dominios/Tecnologia/Terminal/Editor/`: 13 notas atômicas + 1 MOC do galho.
+2. **Dicionário do Terminal** criado em `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` com pelo menos **30 verbetes** cobrindo o jargão usado nas notas.
 3. **Todos os arquivos** com `publish: true`, `fase` declarada (notas) ou `type: glossary` (dicionário) ou `type: moc` (MOC), tags consistentes.
 4. **MOC do galho** tem:
    - TL;DR em `[!abstract]`
@@ -547,7 +547,7 @@ O galho está pronto quando:
    - Frontmatter completo (`publish: true`, `status: seedling`, `fase`, tags)
    - PT-BR natural; termos técnicos em inglês mantidos
    - **Zero atribuição de experiência pessoal fabricada** ao autor
-6. **Tronco** `03-Dominios/Terminal/index.md` atualizado: bullet do Editor vira wikilink ativo `[[03-Dominios/Terminal/Editor/index|Editor]]`.
+6. **Tronco** `03-Dominios/Tecnologia/Terminal/index.md` atualizado: bullet do Editor vira wikilink ativo `[[03-Dominios/Tecnologia/Terminal/Editor/index|Editor]]`.
 7. **Quartz publica** corretamente em josenaldo.github.io (rodar build local antes do close).
 8. **Pelo menos 4 notas** com config/keymap testado localmente (rodar a config no `~/.config/nvim/` e validar que carrega sem erro).
 
@@ -587,5 +587,5 @@ Ordem de execução recomendada (sumária — detalhe no plano):
 - `2026-05-18-trilha-terminal-design.md` — roadmap macro da trilha (este spec é galho #1)
 - `2026-05-07-node-runtime-event-loop-design.md` — spec de referência (galho de outra trilha, formato análogo)
 - Plano de execução (criado a seguir): `2026-05-19-terminal-editor-execution.md`
-- Tronco: `03-Dominios/Terminal/index.md`
-- Dicionário a criar: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Tronco: `03-Dominios/Tecnologia/Terminal/index.md`
+- Dicionário a criar: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`

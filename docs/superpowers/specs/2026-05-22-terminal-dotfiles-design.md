@@ -21,7 +21,7 @@ Por isso a trilha master previa 6 notas, mas o galho real vai ter **9 notas** (3
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **9 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Terminal/Dotfiles/` e `03-Dominios/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (3 Iniciado + 3 Adepto + 3 Magus).
+Produzir, em uma sessão de execução dedicada, **9 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Tecnologia/Terminal/Dotfiles/` e `03-Dominios/Tecnologia/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (3 Iniciado + 3 Adepto + 3 Magus).
 
 A trilha precisa ser:
 
@@ -31,7 +31,7 @@ A trilha precisa ser:
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Terminal/Dotfiles/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Terminal/Dotfiles/`)
 
 Pasta nova, flat. 9 notas + 1 MOC:
 
@@ -61,7 +61,7 @@ Pasta nova, flat. 9 notas + 1 MOC:
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Terminal/Dotfiles/index.md`:
+`03-Dominios/Tecnologia/Terminal/Dotfiles/index.md`:
 - `type: moc`, `status: growing`, `progresso: andamento`
 - Frontmatter padrão (`title: "Dotfiles"`, tags `terminal/dotfiles/moc`, aliases `Dotfiles`)
 - Conteúdo agrupado em 3 H3 (Iniciado/Adepto/Magus)
@@ -75,7 +75,7 @@ Pasta nova, flat. 9 notas + 1 MOC:
 
 ### 3.3. Expansão do Dicionário do Terminal
 
-`03-Dominios/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## Dotfiles` (após `## TUIs de Dev / Lazygit / Lazydocker`), com 16 verbetes em ordem alfabética case-insensitive:
+`03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## Dotfiles` (após `## TUIs de Dev / Lazygit / Lazydocker`), com 16 verbetes em ordem alfabética case-insensitive:
 
 | Verbete | Resumo |
 |---|---|
@@ -100,7 +100,7 @@ Cada verbete tem `Veja também:` apontando pra nota canônica.
 
 ### 3.4. Tronco — ativar wikilink
 
-`03-Dominios/Terminal/index.md`: trocar `- Dotfiles — galho 5 (planejado): gerenciamento de configs e sync` por `- [[03-Dominios/Terminal/Dotfiles/index|Dotfiles]] — galho 5: princípios, ferramentas (stow/chezmoi/bare), secrets, bootstrap, sync`.
+`03-Dominios/Tecnologia/Terminal/index.md`: trocar `- Dotfiles — galho 5 (planejado): gerenciamento de configs e sync` por `- [[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles]] — galho 5: princípios, ferramentas (stow/chezmoi/bare), secrets, bootstrap, sync`.
 
 ## 4. Convenções por nota
 
@@ -136,8 +136,8 @@ aliases:
 - `## Em inglês` — bullets bilíngues `- **PT** — *EN*. "frase técnica curta em PT."` (8-10 termos). NUNCA tabela.
 - `## Veja também` — wikilinks SEM backticks; sempre inclui:
   - Notas relacionadas do galho
-  - `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - Wikilinks pros verbetes do Dicionário
 - `## Referências` — docs oficiais + posts canônicos
 
@@ -401,7 +401,7 @@ Cada nota começa com **Step 1: Pesquisa-âncora** — WebFetch em paralelo de d
 
 ## 8. Critério de pronto
 
-- 10 arquivos em `03-Dominios/Terminal/Dotfiles/`: 9 notas + `index.md`
+- 10 arquivos em `03-Dominios/Tecnologia/Terminal/Dotfiles/`: 9 notas + `index.md`
 - ≥15 verbetes novos no bloco `## Dotfiles` do Dicionário
 - Tronco `Terminal/index.md` com wikilink ativo
 - `verificar-wikilinks` em `Dotfiles/` sem broken links

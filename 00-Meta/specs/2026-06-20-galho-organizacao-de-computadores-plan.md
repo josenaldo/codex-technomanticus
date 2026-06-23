@@ -28,16 +28,16 @@ Tese do galho: onde **Sistemas Operacionais** é o *software* que gerencia a má
 - **Sistemas Operacionais** (galho 9, existe) — dono de memória VIRTUAL/paginação/thrashing/escalonamento (o
   SOFTWARE). Org é o HARDWARE: cache como estrutura física, hierarquia física, TLB-hardware, fetch-decode-execute.
   Eviction de página (SO/08) e eviction de linha de cache (Org/12) = MESMA ideia em escalas → linka, não reescreve.
-  `[[03-Dominios/Fundamentos/Sistemas Operacionais/07 - Memória virtual e paginação]]` e `08 - Substituição de páginas e thrashing`.
+  `[[03-Dominios/Ciência/Sistemas Operacionais/07 - Memória virtual e paginação]]` e `08 - Substituição de páginas e thrashing`.
 - **Concorrência e Paralelismo** (galho 8, existe) — dono de modelos de memória/consistência pelo ângulo de
   sincronização. Org/15 é dona do HARDWARE: coerência de cache (MESI), barreiras no nível do hardware, false
-  sharing. LINKA `[[03-Dominios/Fundamentos/Concorrência e Paralelismo/11 - Modelos de memória e consistência]]`.
+  sharing. LINKA `[[03-Dominios/Ciência/Concorrência e Paralelismo/11 - Modelos de memória e consistência]]`.
 - **Matemática para Computação** (galho 11, existe) — dona de bases e aritmética modular pelo ângulo MATEMÁTICO.
   Org é dona da representação de MÁQUINA: complemento de dois, IEEE 754, endianness, overflow-hardware (mod 2ⁿ).
-  Nota 03 (float) LINKA `[[03-Dominios/Fundamentos/Matemática para Computação/13 - Cardinalidade - contável e incontável]]`
+  Nota 03 (float) LINKA `[[03-Dominios/Ciência/Matemática para Computação/13 - Cardinalidade - contável e incontável]]`
   (floats ≠ reais); nota 02 menciona `Matemática/15` (modular) em prosa.
 - **Teoria da Computação** (galho 10, existe) — von Neumann/programa-armazenado = REALIZAÇÃO FÍSICA da máquina
-  universal. Nota 07 LINKA `[[03-Dominios/Fundamentos/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]` em prosa.
+  universal. Nota 07 LINKA `[[03-Dominios/Ciência/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]` em prosa.
 - **Estruturas de Dados / Algoritmos** — donos das estruturas e da locality como propriedade algorítmica. Org/12
   é dona da MECÂNICA do cache; ED/Algoritmos linkam pra cá ("array > lista encadeada por cache"). Linka.
 - **Segurança Conceitual** (galho 14, Camada D, NÃO existe) — dona de Spectre/Meltdown como ATAQUE. Org/14 é dona
@@ -64,7 +64,7 @@ O **capstone (19)** traz cheat-sheet de *mechanical sympathy* (feature de hardwa
    `Matemática/15` (aritmética modular) em prosa.
 3. **Ponto flutuante (IEEE 754)** — fixed × floating, sinal/expoente/mantissa, arredondamento, **`0.1+0.2≠0.3`**,
    NaN/Inf/denormais, float × double. Prática: comparar floats (epsilon), dinheiro em inteiros, cancelamento
-   catastrófico. LINKA `[[03-Dominios/Fundamentos/Matemática para Computação/13 - Cardinalidade - contável e incontável]]`.
+   catastrófico. LINKA `[[03-Dominios/Ciência/Matemática para Computação/13 - Cardinalidade - contável e incontável]]`.
 4. **Texto, endianness e alinhamento** — ASCII, Unicode/UTF-8, **big × little endian**, alinhamento e padding de
    struct. Prática: bugs de encoding/mojibake, byte order em rede/arquivos, layout de struct (data-oriented).
 5. **Lógica digital: portas e circuitos combinacionais** — álgebra booleana → hardware (ponte com `Matemática/02`);
@@ -74,7 +74,7 @@ O **capstone (19)** traz cheat-sheet de *mechanical sympathy* (feature de hardwa
 6. **Circuitos sequenciais e memória** — latch, flip-flop, registrador, clock, máquina de estados; como o hardware
    *lembra*; SRAM × DRAM (e por que cada uma onde está).
 7. **Arquitetura de von Neumann e o ciclo de instrução** — fetch-decode-execute; datapath (ULA, registradores, PC,
-   unidade de controle); von Neumann × Harvard; o **gargalo de von Neumann**. LINKA `[[03-Dominios/Fundamentos/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]` (realização física da UTM).
+   unidade de controle); von Neumann × Harvard; o **gargalo de von Neumann**. LINKA `[[03-Dominios/Ciência/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]` (realização física da UTM).
 8. **ISA: a interface hardware-software** — RISC × CISC, registradores, addressing modes, tipos de instrução,
    x86/ARM/RISC-V; a ISA como "contrato". Compiladores (codegen) em prosa.
 9. **Assembly e o modelo de execução** — instruções na prática, stack e calling convention, como `if`/loop/função
@@ -94,7 +94,7 @@ O **capstone (19)** traz cheat-sheet de *mechanical sympathy* (feature de hardwa
     misprediction em hot loops; gancho **Spectre/Meltdown** em PROSA (mecanismo aqui; ataque na futura Segurança
     Conceitual, sem wikilink quebrado). Prática: branchless code, `likely/unlikely`.
 15. **Multicore, coerência de cache e consistência** — SMP, **MESI** (`stateDiagram-v2`), *false sharing*, barreiras
-    de memória no hardware; consistência sequencial × relaxada. LINKA `[[03-Dominios/Fundamentos/Concorrência e Paralelismo/11 - Modelos de memória e consistência]]`.
+    de memória no hardware; consistência sequencial × relaxada. LINKA `[[03-Dominios/Ciência/Concorrência e Paralelismo/11 - Modelos de memória e consistência]]`.
 16. **Paralelismo de dados: SIMD e GPU** — vetorização, SIMD/AVX, GPU/SIMT, throughput × latência, o modelo de
     execução da GPU; lei de Amdahl linka (nota 18). Prática: libs numéricas, ML.
 17. **Entrada e saída, interrupções e DMA** — memory-mapped I/O, polling × interrupção, DMA, o barramento; fronteira
@@ -127,7 +127,7 @@ O **capstone (19)** traz cheat-sheet de *mechanical sympathy* (feature de hardwa
   matriz linha×coluna, MESI, pipeline de 5 estágios MIPS).
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Organização de Computadores/` com `index.md` (`type: moc`, `status: growing`,
+- Pasta `03-Dominios/Ciência/Organização de Computadores/` com `index.md` (`type: moc`, `status: growing`,
   `publish: true`, fases, rotas, dataview, "Veja também").
 - Aliases do index: **"Organização de Computadores"** + **"Arquitetura de Computadores"** + **"Computer Organization"**
   + **"Computer Architecture"** + **"Galho - Organização de Computadores"**.

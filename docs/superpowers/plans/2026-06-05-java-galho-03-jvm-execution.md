@@ -4,7 +4,7 @@
 
 **Goal:** Criar o Galho 3 da trilha Java Senior — 14 notas atômicas (memória de runtime, GC, JIT, classloading, bytecode, JPMS, diagnóstico/JFR, performance) em 3 fases + MOC do galho + expansão do Dicionário + ativação do MOC central + **poda da seção JVM do tronco** `Java Fundamentals` + **quitação da dívida reversa** ("Galho 3 planejado" → wikilinks).
 
-**Architecture:** Padrão galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Java/JVM/`, notas atômicas `publish: true` em PT-BR, numeração global 01-14 (5 Iniciado / 5 Adepto / 4 Magus). **Galho de refator de tronco:** a seção `## JVM (Java Virtual Machine)` de `Core/Java Fundamentals.md` está marcada `[!info] Migra em galho futuro (Galho 3)` e é matéria-prima **desatualizada** (tabela de GC com CMS, ZGC "Java 15" sem generational) — as notas **expandem e modernizam via WebFetch** (não copiam). Galho dono do *runtime* da JVM; **linka** Galho 4 (JMM, Virtual Threads), Galho 2 (lambdas/invokedynamic, boxing) e Galho 1 sem re-explicar. A seção `## Concorrência (visão geral)` do tronco é dívida do Galho 4 — **não é tocada**. **Trabalho direto na `main`** (sem branch — [[feedback_galhos_direto_main]]); push é manual do usuário.
+**Architecture:** Padrão galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Tecnologia/Java/JVM/`, notas atômicas `publish: true` em PT-BR, numeração global 01-14 (5 Iniciado / 5 Adepto / 4 Magus). **Galho de refator de tronco:** a seção `## JVM (Java Virtual Machine)` de `Core/Java Fundamentals.md` está marcada `[!info] Migra em galho futuro (Galho 3)` e é matéria-prima **desatualizada** (tabela de GC com CMS, ZGC "Java 15" sem generational) — as notas **expandem e modernizam via WebFetch** (não copiam). Galho dono do *runtime* da JVM; **linka** Galho 4 (JMM, Virtual Threads), Galho 2 (lambdas/invokedynamic, boxing) e Galho 1 sem re-explicar. A seção `## Concorrência (visão geral)` do tronco é dívida do Galho 4 — **não é tocada**. **Trabalho direto na `main`** (sem branch — [[feedback_galhos_direto_main]]); push é manual do usuário.
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks, callouts, Dataview, Quartz v4. Verificação de fonte via WebFetch (docs.oracle.com — JVM Guide/GC Tuning Guide/troubleshooting/man pages, dev.java, Javadoc; JEPs no openjdk.org dão 403 → fallback Oracle/dev.java).
 
@@ -43,7 +43,7 @@ aliases:
 5. `## Na prática` — código Java e/ou comandos de CLI (`java -XX:...`, `jcmd`, `javap`, `jstat`) com flags reais conferidas; outputs ilustrativos em ` ```text `. Framing neutro ("padrão observado em serviços enterprise", "caso típico de JVM containerizada", hipotético explícito `// hipotético:`). **NUNCA** "no meu projeto"; **NUNCA** `Patient`/`getSpecialty`. Domínios neutros: `Order`, `Customer`, `Product`.
 6. `## Armadilhas` — ≥2 (Iniciado) / ≥3 (Adepto/Magus). Cada armadilha: `### (N) Título` + descrição + exemplo curto (código/comando/log) demonstrando o problema + fix em 1 linha.
 7. `## Em entrevista` — subheading `### Frase pronta (inglês)` com frase de **3+ sentenças** (trade-off + decisão + caveat) + sub-bloco "Vocabulário" com **6+ termos PT→EN** traduzidos.
-8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Java/JVM/index|JVM por dentro (MOC do galho)]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando o conceito conectar) Galho 1 / Galho 2 / Galho 4 + verbetes do Dicionário relevantes. **Sem âncoras same-file `[[#Heading]]`.**
+8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/JVM/index|JVM por dentro (MOC do galho)]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando o conceito conectar) Galho 1 / Galho 2 / Galho 4 + verbetes do Dicionário relevantes. **Sem âncoras same-file `[[#Heading]]`.**
 9. `## Referências` — docs oficiais (Oracle JVM Guide, GC Tuning Guide, man pages, dev.java, Javadoc) + JEPs quando pertinentes (linkar openjdk.org como referência é ok; **verificar conteúdo** via fallback).
 
 **Tamanho:** 200-500 linhas (notas Magus densas até 700).
@@ -56,7 +56,7 @@ aliases:
 - Code fences: ` ```java ` pra código, ` ```bash ` pra comandos, ` ```text ` pra output/log. Sempre fechadas.
 - Commits: sem `Co-Authored-By: Claude`; sem `--no-verify`; `git add <path>` nominal (nunca `git add -A` — bot de backup do vault roda em timer); 1 commit por nota; **direto na `main`**; **sem push**; **sem deploy**.
 
-**Material de origem:** tronco `03-Dominios/Java/Core/Java Fundamentals.md` (seção `## JVM (Java Virtual Machine)`). Spec de referência: `docs/superpowers/specs/2026-06-05-java-galho-03-jvm-design.md` §5. Template de qualidade: notas dos Galhos 1/2/4/5 em `03-Dominios/Java/`.
+**Material de origem:** tronco `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` (seção `## JVM (Java Virtual Machine)`). Spec de referência: `docs/superpowers/specs/2026-06-05-java-galho-03-jvm-design.md` §5. Template de qualidade: notas dos Galhos 1/2/4/5 em `03-Dominios/Tecnologia/Java/`.
 
 **Modelo por nota:** sonnet por padrão; **opus** nas notas **06** (Coletores), **07** (JIT), **11** (Tuning) e **14** (capstone) — as mais densas/version-sensitive.
 
@@ -75,7 +75,7 @@ aliases:
 ## Task 0: Pré-flight — pasta e confirmação do terreno (tronco já lido na brainstorming)
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/` (pasta)
+- Create: `03-Dominios/Tecnologia/Java/JVM/` (pasta)
 
 - [ ] **Step 1: Confirmar que está na `main`**
 
@@ -87,31 +87,31 @@ Expected: `main`. (Galho 3 é executado direto na main — [[feedback_galhos_dir
 - [ ] **Step 2: Criar a pasta do galho**
 
 ```bash
-mkdir -p "03-Dominios/Java/JVM"
+mkdir -p "03-Dominios/Tecnologia/Java/JVM"
 ```
 
 - [ ] **Step 3: Reconfirmar a seção do tronco a podar (matéria-prima)**
 
 ```bash
-grep -n "^## JVM (Java Virtual Machine)" "03-Dominios/Java/Core/Java Fundamentals.md"
-grep -n "Migra em galho futuro (Galho 3" "03-Dominios/Java/Core/Java Fundamentals.md"
-grep -nE "^## |^### " "03-Dominios/Java/Core/Java Fundamentals.md" | head -20
+grep -n "^## JVM (Java Virtual Machine)" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
+grep -n "Migra em galho futuro (Galho 3" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
+grep -nE "^## |^### " "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md" | head -20
 ```
 Expected: a seção existe, marcada `[!info] Migra em galho futuro (Galho 3 ...)`, com subseções `### Pipeline de compilação e execução`, `### Bytecode — uma olhada`, `### Memory areas`, `### Garbage Collection`, `### Como escolher GC`, `### JIT Compiler`, `### Classloader`, `### Project Loom e Virtual Threads`. (Já confirmado na brainstorming; reconfirmar pois linhas podem ter mudado.) **NÃO** tocar `## Concorrência (visão geral)` (dívida Galho 4).
 
 - [ ] **Step 4: Confirmar os títulos exatos das notas vizinhas que serão linkadas**
 
 ```bash
-ls "03-Dominios/Java/Concorrência e paralelismo/" | grep -E "^(11|12) "
-ls "03-Dominios/Java/Collections e Streams/" | grep -E "^(04|09) "
+ls "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/" | grep -E "^(11|12) "
+ls "03-Dominios/Tecnologia/Java/Collections e Streams/" | grep -E "^(04|09) "
 ```
 Expected: confirmar filenames exatos de Galho 4 notas 11 (Java Memory Model) e 12 (Virtual Threads) e Galho 2 notas 04 (Lambdas) e 09 (Streams primitivos). **Anotar os títulos exatos** — os wikilinks das notas deste galho usam esses nomes (o plano abaixo assume `11 - Java Memory Model em profundidade` e ajusta se divergir).
 
 - [ ] **Step 5: Localizar a dívida reversa ("Galho 3 planejado" nos galhos fechados)**
 
 ```bash
-grep -rn "Galho 3" "03-Dominios/Java/Linguagem e sintaxe moderna/" "03-Dominios/Java/Collections e Streams/" "03-Dominios/Java/Concorrência e paralelismo/" "03-Dominios/Java/Swing/" "03-Dominios/Java/index.md" | grep -vi "galho 3 (jvm" | cat
-grep -rni "JVM.*planejado\|planejado.*JVM" "03-Dominios/Java/Linguagem e sintaxe moderna/" "03-Dominios/Java/Collections e Streams/" "03-Dominios/Java/Concorrência e paralelismo/" "03-Dominios/Java/Swing/"
+grep -rn "Galho 3" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/" "03-Dominios/Tecnologia/Java/Collections e Streams/" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/" "03-Dominios/Tecnologia/Java/Swing/" "03-Dominios/Tecnologia/Java/index.md" | grep -vi "galho 3 (jvm" | cat
+grep -rni "JVM.*planejado\|planejado.*JVM" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/" "03-Dominios/Tecnologia/Java/Collections e Streams/" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/" "03-Dominios/Tecnologia/Java/Swing/"
 ```
 Anotar **todas** as ocorrências de ponteiro textual "Galho 3 (JVM) planejado" — alvos da Task 19. (A linha 27 do MOC central é da Task 17, não desta lista.)
 
@@ -128,7 +128,7 @@ Baseline: **Java 21 LTS** (Javadoc/guides) com fatos de releases posteriores ver
 ### Task 1: Nota 01 — A JVM — o que é e o pipeline de execução
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -152,15 +152,15 @@ Tamanho: 220-340 linhas (abertura).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -cE "^## (O que é|Por que importa|Como funciona|Na prática|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md"
-grep -E "javac|bytecode|HotSpot|JIT|JRE|JDK" "03-Dominios/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md" | head
+grep -cE "^## (O que é|Por que importa|Como funciona|Na prática|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Tecnologia/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md"
+grep -E "javac|bytecode|HotSpot|JIT|JRE|JDK" "03-Dominios/Tecnologia/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md" | head
 ```
 Expected: ≥7 seções; cobre pipeline + distinções.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md"
+git add "03-Dominios/Tecnologia/Java/JVM/01 - A JVM — o que é e o pipeline de execução.md"
 git commit -m "feat(java): galho 3 nota 01 — a JVM e o pipeline de execução"
 ```
 
@@ -169,7 +169,7 @@ git commit -m "feat(java): galho 3 nota 01 — a JVM e o pipeline de execução"
 ### Task 2: Nota 02 — Áreas de memória de runtime
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/02 - Áreas de memória de runtime.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/02 - Áreas de memória de runtime.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -182,25 +182,25 @@ Frontmatter: `fase: iniciado`, tags `[java, jvm, iniciado, memoria, heap]`, alia
 Conteúdo:
 - `## O que é` — o mapa de memória do processo JVM: heap (objetos, compartilhada), Metaspace (metadata de classes, nativa), stacks (por thread), PC register, native method stack, code cache (JIT).
 - `## Por que importa` — cada `OutOfMemoryError` tem endereço: saber a área errada acelera o diagnóstico; entrevista cobra heap vs stack e Metaspace vs PermGen.
-- `## Como funciona` — H3s: "Heap: Young (Eden + S0/S1) e Old/Tenured (+ humongous no G1)", "Metaspace (Java 8+; por que PermGen morreu)", "Stack por thread (frames, variáveis locais, operandos; `-Xss`)", "PC register e native method stack", "Code cache (onde o JIT guarda código nativo)". Diagrama ` ```text ` modernizado do tronco. **Fronteira:** alocação/layout é daqui; *visibilidade* de escritas entre threads é [[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]] (Galho 4) — citar e linkar, sem re-explicar happens-before.
+- `## Como funciona` — H3s: "Heap: Young (Eden + S0/S1) e Old/Tenured (+ humongous no G1)", "Metaspace (Java 8+; por que PermGen morreu)", "Stack por thread (frames, variáveis locais, operandos; `-Xss`)", "PC register e native method stack", "Code cache (onde o JIT guarda código nativo)". Diagrama ` ```text ` modernizado do tronco. **Fronteira:** alocação/layout é daqui; *visibilidade* de escritas entre threads é [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]] (Galho 4) — citar e linkar, sem re-explicar happens-before.
 - `## Na prática` — mapa de erros: `OutOfMemoryError: Java heap space` / `: Metaspace` / `: unable to create native thread` vs `StackOverflowError`; flags de dimensionamento (`-Xms`/`-Xmx`/`-Xss`/`-XX:MaxMetaspaceSize`) com exemplo de linha de comando.
 - `## Armadilhas` — ≥2: (1) achar que `-Xmx` limita a memória total do processo (Metaspace, stacks, code cache, buffers nativos ficam fora) → dimensionar o pod/host pelo RSS, não pelo `-Xmx`; (2) `OutOfMemoryError: Metaspace` por leak de classloader em redeploy (ponte pra nota 05) → heap dump e analisar classloaders; (3) recursão profunda → `StackOverflowError` (e quando ajustar `-Xss` vs reescrever iterativo). Exemplo + fix.
-- `## Em entrevista` + `## Veja também` (01, 03, 05, 09, 12, MOC, central, `[[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]`, verbetes `heap`/`Metaspace`/`stack frame`) + `## Referências`.
+- `## Em entrevista` + `## Veja também` (01, 03, 05, 09, 12, MOC, central, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]`, verbetes `heap`/`Metaspace`/`stack frame`) + `## Referências`.
 
 Tamanho: 280-420 linhas.
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "Eden|Survivor|Metaspace|PermGen|StackOverflowError|OutOfMemoryError|code cache" "03-Dominios/Java/JVM/02 - Áreas de memória de runtime.md" | head
-grep -c "Java Memory Model" "03-Dominios/Java/JVM/02 - Áreas de memória de runtime.md"
+grep -E "Eden|Survivor|Metaspace|PermGen|StackOverflowError|OutOfMemoryError|code cache" "03-Dominios/Tecnologia/Java/JVM/02 - Áreas de memória de runtime.md" | head
+grep -c "Java Memory Model" "03-Dominios/Tecnologia/Java/JVM/02 - Áreas de memória de runtime.md"
 ```
 Expected: cobre as áreas + mapa de erros; link pro JMM presente (≥1).
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/02 - Áreas de memória de runtime.md"
+git add "03-Dominios/Tecnologia/Java/JVM/02 - Áreas de memória de runtime.md"
 git commit -m "feat(java): galho 3 nota 02 — áreas de memória de runtime"
 ```
 
@@ -209,7 +209,7 @@ git commit -m "feat(java): galho 3 nota 02 — áreas de memória de runtime"
 ### Task 3: Nota 03 — Garbage Collection — o conceito
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/03 - Garbage Collection — o conceito.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/03 - Garbage Collection — o conceito.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -225,20 +225,20 @@ Conteúdo:
 - `## Como funciona` — H3s: "Reachability e GC roots", "A weak generational hypothesis (a maioria dos objetos morre jovem)", "Minor, major e mixed collections (promoção, tenuring)", "Stop-the-world e safepoints", "Soft/weak/phantom references (visão geral — quando aparecem em cache/cleanup)". **Sem catálogo de coletores** (nota 06).
 - `## Na prática` — demonstrar promoção conceitualmente (objeto que sobrevive N minors vai pra Old); `System.gc()` é *pedido*, não ordem (e por que desabilitam com `-XX:+DisableExplicitGC`); teaser de 5 linhas de um GC log (ponte pra nota 10).
 - `## Armadilhas` — ≥2: (1) chamar `System.gc()` em produção (Full GC STW na cara do usuário) → deixar o coletor decidir; (2) cache estático sem bound segura referências → "leak na frente do GC" (o GC não coleta o que você ainda alcança) → bound/expiração ou referência fraca; (3) confundir GC com gestão de recursos nativos (files/sockets não são coletados no close) → try-with-resources (linka Galho 1, [[10 - Exceções e tratamento de erros]]). Exemplo + fix.
-- `## Em entrevista` + `## Veja também` (02, 06, 10, 11, MOC, central, `[[03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]]`, verbetes `GC roots / reachability`/`stop-the-world`/`weak generational hypothesis`/`safepoint`) + `## Referências`.
+- `## Em entrevista` + `## Veja também` (02, 06, 10, 11, MOC, central, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]]`, verbetes `GC roots / reachability`/`stop-the-world`/`weak generational hypothesis`/`safepoint`) + `## Referências`.
 
 Tamanho: 260-400 linhas.
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "reachab|GC roots|generational|minor|major|stop-the-world|safepoint|System.gc" "03-Dominios/Java/JVM/03 - Garbage Collection — o conceito.md" | head
+grep -E "reachab|GC roots|generational|minor|major|stop-the-world|safepoint|System.gc" "03-Dominios/Tecnologia/Java/JVM/03 - Garbage Collection — o conceito.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/03 - Garbage Collection — o conceito.md"
+git add "03-Dominios/Tecnologia/Java/JVM/03 - Garbage Collection — o conceito.md"
 git commit -m "feat(java): galho 3 nota 03 — garbage collection, o conceito"
 ```
 
@@ -247,7 +247,7 @@ git commit -m "feat(java): galho 3 nota 03 — garbage collection, o conceito"
 ### Task 4: Nota 04 — Bytecode por dentro — anatomia e javap
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/04 - Bytecode por dentro — anatomia e javap.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/04 - Bytecode por dentro — anatomia e javap.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -263,20 +263,20 @@ Conteúdo:
 - `## Como funciona` — H3s: "Anatomia do `.class` (constant pool, métodos, atributos)", "Máquina de pilha (stack-based vs register-based; frame = locals + operand stack)", "Famílias de instrução (`iload`/`istore`/`iadd`, `invokevirtual`/`invokestatic`/`invokespecial`/`invokeinterface`/`invokedynamic`, `new`/`getfield`)", "`invokedynamic` (call site dinâmico; é como lambdas são implementadas — linka [[04 - Lambdas e interfaces funcionais]] do Galho 2, sem re-explicar)", "Inspecionando com `javap -c -v`".
 - `## Na prática` — `javap -c` de um método `sum(int, int)` de `Order` com output ` ```text ` comentado linha a linha; `javap -v` mostrando constant pool (trecho); o que um record gera (`javap` enxuto — linka Galho 1 [[13 - Records e record patterns]]).
 - `## Armadilhas` — ≥2: (1) "otimizar" lendo bytecode (o JIT reescreve tudo — bytecode ≠ o que executa) → medir com JMH (nota 07); (2) confundir versão de bytecode (`major version`) com versão da linguagem → `javac --release N` e o erro `UnsupportedClassVersionError`; (3) assumir 1 linha de código = 1 instrução (um `a + b` de String vira invokedynamic/StringConcatFactory). Exemplo + fix.
-- `## Em entrevista` + `## Veja também` (01, 05, 07, MOC, central, `[[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]]`, `[[03-Dominios/Java/Linguagem e sintaxe moderna/13 - Records e record patterns|Records]]`, verbetes `bytecode`) + `## Referências`.
+- `## Em entrevista` + `## Veja também` (01, 05, 07, MOC, central, `[[03-Dominios/Tecnologia/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas e interfaces funcionais]]`, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/13 - Records e record patterns|Records]]`, verbetes `bytecode`) + `## Referências`.
 
 Tamanho: 260-400 linhas.
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "javap|constant pool|CAFEBABE|invokedynamic|invokevirtual|stack-based|operand" "03-Dominios/Java/JVM/04 - Bytecode por dentro — anatomia e javap.md" | head
+grep -E "javap|constant pool|CAFEBABE|invokedynamic|invokevirtual|stack-based|operand" "03-Dominios/Tecnologia/Java/JVM/04 - Bytecode por dentro — anatomia e javap.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/04 - Bytecode por dentro — anatomia e javap.md"
+git add "03-Dominios/Tecnologia/Java/JVM/04 - Bytecode por dentro — anatomia e javap.md"
 git commit -m "feat(java): galho 3 nota 04 — bytecode por dentro (anatomia e javap)"
 ```
 
@@ -285,7 +285,7 @@ git commit -m "feat(java): galho 3 nota 04 — bytecode por dentro (anatomia e j
 ### Task 5: Nota 05 — Classloading e o delegation model
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/05 - Classloading e o delegation model.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/05 - Classloading e o delegation model.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -308,13 +308,13 @@ Tamanho: 260-400 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "Bootstrap|Platform|Application|delegation|loading|linking|initialization|NoClassDefFoundError|ClassNotFoundException" "03-Dominios/Java/JVM/05 - Classloading e o delegation model.md" | head
+grep -E "Bootstrap|Platform|Application|delegation|loading|linking|initialization|NoClassDefFoundError|ClassNotFoundException" "03-Dominios/Tecnologia/Java/JVM/05 - Classloading e o delegation model.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/05 - Classloading e o delegation model.md"
+git add "03-Dominios/Tecnologia/Java/JVM/05 - Classloading e o delegation model.md"
 git commit -m "feat(java): galho 3 nota 05 — classloading e o delegation model"
 ```
 
@@ -325,7 +325,7 @@ git commit -m "feat(java): galho 3 nota 05 — classloading e o delegation model
 ### Task 6: Nota 06 — Os coletores do HotSpot  ⟦opus⟧
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/06 - Os coletores do HotSpot.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/06 - Os coletores do HotSpot.md`
 
 - [ ] **Step 1: Pesquisar fonte — VERIFICAÇÃO OBRIGATÓRIA (campo minado de versões)**
 
@@ -348,15 +348,15 @@ Tamanho: 340-520 linhas (densa; opus).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "G1|ZGC|Shenandoah|Epsilon|Serial|Parallel|JEP (248|318|363|377|379|404|439|490)" "03-Dominios/Java/JVM/06 - Os coletores do HotSpot.md" | head -20
-grep -i "CMS" "03-Dominios/Java/JVM/06 - Os coletores do HotSpot.md" | head -3
+grep -E "G1|ZGC|Shenandoah|Epsilon|Serial|Parallel|JEP (248|318|363|377|379|404|439|490)" "03-Dominios/Tecnologia/Java/JVM/06 - Os coletores do HotSpot.md" | head -20
+grep -i "CMS" "03-Dominios/Tecnologia/Java/JVM/06 - Os coletores do HotSpot.md" | head -3
 ```
 Expected: cobre todos os coletores com JEPs/versões citados; CMS só como nota histórica de remoção.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/06 - Os coletores do HotSpot.md"
+git add "03-Dominios/Tecnologia/Java/JVM/06 - Os coletores do HotSpot.md"
 git commit -m "feat(java): galho 3 nota 06 — os coletores do HotSpot"
 ```
 
@@ -365,7 +365,7 @@ git commit -m "feat(java): galho 3 nota 06 — os coletores do HotSpot"
 ### Task 7: Nota 07 — JIT — C1, C2 e tiered compilation  ⟦opus⟧
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/07 - JIT — C1, C2 e tiered compilation.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/07 - JIT — C1, C2 e tiered compilation.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus)**
 
@@ -378,23 +378,23 @@ Frontmatter: `fase: adepto`, tags `[java, jvm, adepto, jit]`, aliases `["JIT", "
 Conteúdo:
 - `## O que é` — JIT = compilar bytecode pra código nativo **em runtime**, guiado por profiling real; o HotSpot combina interpretador + C1 (rápido, leve) + C2 (lento, agressivo).
 - `## Por que importa` — explica warmup, por que benchmark ingênuo mente, e por que "código quente" muda de performance sozinho; entrevista de senior adora deoptimization.
-- `## Como funciona` — H3s: "Tiered compilation (interpretador → C1 com profiling → C2; níveis e promoção por contadores)", "O que o C2 faz (inlining — a otimização-mãe; escape analysis e alocação que desaparece; lock elision; dead code elimination; loop unrolling)", "Deoptimization (especulação que falhou → volta pro interpretador; por que ainda assim compensa)", "Warmup (por que os primeiros N requests são lentos)", "Code cache (onde o nativo mora; o que acontece se enche)". Escape analysis/boxing → linka [[03-Dominios/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]] (Galho 2). Lock elision menciona `synchronized` → linka Galho 4 índice, sem re-explicar locks.
+- `## Como funciona` — H3s: "Tiered compilation (interpretador → C1 com profiling → C2; níveis e promoção por contadores)", "O que o C2 faz (inlining — a otimização-mãe; escape analysis e alocação que desaparece; lock elision; dead code elimination; loop unrolling)", "Deoptimization (especulação que falhou → volta pro interpretador; por que ainda assim compensa)", "Warmup (por que os primeiros N requests são lentos)", "Code cache (onde o nativo mora; o que acontece se enche)". Escape analysis/boxing → linka [[03-Dominios/Tecnologia/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]] (Galho 2). Lock elision menciona `synchronized` → linka Galho 4 índice, sem re-explicar locks.
 - `## Na prática` — flags de observação (`-XX:+PrintCompilation` com output ` ```text ` comentado); por que medir com JMH (dead code elimination engole benchmark ingênuo — exemplo do erro e do fix com Blackhole, marcado `// hipotético:` se ilustrativo); menção honesta: não decorar níveis numéricos, entender o fluxo.
 - `## Armadilhas` — ≥3: (1) microbenchmark sem JMH (JIT elimina o código "não usado" e o loop mede nada) → JMH com Blackhole; (2) medir performance durante warmup (números do interpretador/C1) → aquecer antes de medir; (3) concluir que `synchronized` "é lento" sem considerar lock elision/biased history (o JIT remove lock não-contendido) → medir o caso real; (4) `-Xint`/`-Xcomp` em produção ("forçar" o modo quebra o equilíbrio tiered). Exemplo + fix.
-- `## Em entrevista` + `## Veja também` (01, 04, 06, 14, MOC, central, `[[03-Dominios/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]]`, `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]`, verbetes `tiered compilation`/`inlining (JIT)`/`escape analysis`/`deoptimization`/`code cache`) + `## Referências`.
+- `## Em entrevista` + `## Veja também` (01, 04, 06, 14, MOC, central, `[[03-Dominios/Tecnologia/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]]`, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]`, verbetes `tiered compilation`/`inlining (JIT)`/`escape analysis`/`deoptimization`/`code cache`) + `## Referências`.
 
 Tamanho: 320-500 linhas (densa; opus).
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "C1|C2|tiered|inlining|escape analysis|deoptimiz|warmup|JMH|code cache|PrintCompilation" "03-Dominios/Java/JVM/07 - JIT — C1, C2 e tiered compilation.md" | head
+grep -E "C1|C2|tiered|inlining|escape analysis|deoptimiz|warmup|JMH|code cache|PrintCompilation" "03-Dominios/Tecnologia/Java/JVM/07 - JIT — C1, C2 e tiered compilation.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/07 - JIT — C1, C2 e tiered compilation.md"
+git add "03-Dominios/Tecnologia/Java/JVM/07 - JIT — C1, C2 e tiered compilation.md"
 git commit -m "feat(java): galho 3 nota 07 — JIT (C1, C2 e tiered compilation)"
 ```
 
@@ -403,7 +403,7 @@ git commit -m "feat(java): galho 3 nota 07 — JIT (C1, C2 e tiered compilation)
 ### Task 8: Nota 08 — JPMS — o sistema de módulos
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/08 - JPMS — o sistema de módulos.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/08 - JPMS — o sistema de módulos.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -426,13 +426,13 @@ Tamanho: 300-440 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "module-info|requires|exports|opens|transitive|automatic|jlink|add-opens|InaccessibleObjectException" "03-Dominios/Java/JVM/08 - JPMS — o sistema de módulos.md" | head
+grep -E "module-info|requires|exports|opens|transitive|automatic|jlink|add-opens|InaccessibleObjectException" "03-Dominios/Tecnologia/Java/JVM/08 - JPMS — o sistema de módulos.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/08 - JPMS — o sistema de módulos.md"
+git add "03-Dominios/Tecnologia/Java/JVM/08 - JPMS — o sistema de módulos.md"
 git commit -m "feat(java): galho 3 nota 08 — JPMS, o sistema de módulos"
 ```
 
@@ -441,7 +441,7 @@ git commit -m "feat(java): galho 3 nota 08 — JPMS, o sistema de módulos"
 ### Task 9: Nota 09 — Flags, ergonomics e a JVM em containers
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/09 - Flags, ergonomics e a JVM em containers.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/09 - Flags, ergonomics e a JVM em containers.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -464,13 +464,13 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "Xmx|Xms|MaxRAMPercentage|UseContainerSupport|PrintFlagsFinal|ergonomics|cgroup|OOMKilled" "03-Dominios/Java/JVM/09 - Flags, ergonomics e a JVM em containers.md" | head
+grep -E "Xmx|Xms|MaxRAMPercentage|UseContainerSupport|PrintFlagsFinal|ergonomics|cgroup|OOMKilled" "03-Dominios/Tecnologia/Java/JVM/09 - Flags, ergonomics e a JVM em containers.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/09 - Flags, ergonomics e a JVM em containers.md"
+git add "03-Dominios/Tecnologia/Java/JVM/09 - Flags, ergonomics e a JVM em containers.md"
 git commit -m "feat(java): galho 3 nota 09 — flags, ergonomics e a JVM em containers"
 ```
 
@@ -479,7 +479,7 @@ git commit -m "feat(java): galho 3 nota 09 — flags, ergonomics e a JVM em cont
 ### Task 10: Nota 10 — GC logs — unified logging e leitura
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/10 - GC logs — unified logging e leitura.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/10 - GC logs — unified logging e leitura.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -502,13 +502,13 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "Xlog|unified|Pause Young|Mixed|to-space|Full GC|decorador|filecount" "03-Dominios/Java/JVM/10 - GC logs — unified logging e leitura.md" | head
+grep -E "Xlog|unified|Pause Young|Mixed|to-space|Full GC|decorador|filecount" "03-Dominios/Tecnologia/Java/JVM/10 - GC logs — unified logging e leitura.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/10 - GC logs — unified logging e leitura.md"
+git add "03-Dominios/Tecnologia/Java/JVM/10 - GC logs — unified logging e leitura.md"
 git commit -m "feat(java): galho 3 nota 10 — GC logs (unified logging e leitura)"
 ```
 
@@ -519,7 +519,7 @@ git commit -m "feat(java): galho 3 nota 10 — GC logs (unified logging e leitur
 ### Task 11: Nota 11 — Tuning de GC — metodologia e prática  ⟦opus⟧
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/11 - Tuning de GC — metodologia e prática.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/11 - Tuning de GC — metodologia e prática.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus)**
 
@@ -542,13 +542,13 @@ Tamanho: 320-500 linhas (densa; opus).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "triângulo|latência|throughput|footprint|baseline|MaxGCPauseMillis|InitiatingHeapOccupancy|SoftMaxHeapSize|cargo cult" "03-Dominios/Java/JVM/11 - Tuning de GC — metodologia e prática.md" | head
+grep -E "triângulo|latência|throughput|footprint|baseline|MaxGCPauseMillis|InitiatingHeapOccupancy|SoftMaxHeapSize|cargo cult" "03-Dominios/Tecnologia/Java/JVM/11 - Tuning de GC — metodologia e prática.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/11 - Tuning de GC — metodologia e prática.md"
+git add "03-Dominios/Tecnologia/Java/JVM/11 - Tuning de GC — metodologia e prática.md"
 git commit -m "feat(java): galho 3 nota 11 — tuning de GC (metodologia e prática)"
 ```
 
@@ -557,7 +557,7 @@ git commit -m "feat(java): galho 3 nota 11 — tuning de GC (metodologia e prát
 ### Task 12: Nota 12 — Diagnóstico — heap dumps, thread dumps e jcmd
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/12 - Diagnóstico — heap dumps, thread dumps e jcmd.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/12 - Diagnóstico — heap dumps, thread dumps e jcmd.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -580,13 +580,13 @@ Tamanho: 300-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "jcmd|heap_dump|Thread.print|HeapDumpOnOutOfMemoryError|MAT|dominator|jstat|NativeMemoryTracking" "03-Dominios/Java/JVM/12 - Diagnóstico — heap dumps, thread dumps e jcmd.md" | head
+grep -E "jcmd|heap_dump|Thread.print|HeapDumpOnOutOfMemoryError|MAT|dominator|jstat|NativeMemoryTracking" "03-Dominios/Tecnologia/Java/JVM/12 - Diagnóstico — heap dumps, thread dumps e jcmd.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/12 - Diagnóstico — heap dumps, thread dumps e jcmd.md"
+git add "03-Dominios/Tecnologia/Java/JVM/12 - Diagnóstico — heap dumps, thread dumps e jcmd.md"
 git commit -m "feat(java): galho 3 nota 12 — diagnóstico (heap dumps, thread dumps e jcmd)"
 ```
 
@@ -595,7 +595,7 @@ git commit -m "feat(java): galho 3 nota 12 — diagnóstico (heap dumps, thread 
 ### Task 13: Nota 13 — JFR e JMC — observabilidade de produção
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/13 - JFR e JMC — observabilidade de produção.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/13 - JFR e JMC — observabilidade de produção.md`
 
 - [ ] **Step 1: Pesquisar fonte — VERIFICAÇÃO OBRIGATÓRIA**
 
@@ -618,13 +618,13 @@ Tamanho: 280-440 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "JFR|JMC|StartFlightRecording|JFR.dump|maxage|maxsize|Event Streaming|jdk.jfr|JEP (328|349)" "03-Dominios/Java/JVM/13 - JFR e JMC — observabilidade de produção.md" | head
+grep -E "JFR|JMC|StartFlightRecording|JFR.dump|maxage|maxsize|Event Streaming|jdk.jfr|JEP (328|349)" "03-Dominios/Tecnologia/Java/JVM/13 - JFR e JMC — observabilidade de produção.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/13 - JFR e JMC — observabilidade de produção.md"
+git add "03-Dominios/Tecnologia/Java/JVM/13 - JFR e JMC — observabilidade de produção.md"
 git commit -m "feat(java): galho 3 nota 13 — JFR e JMC (observabilidade de produção)"
 ```
 
@@ -633,7 +633,7 @@ git commit -m "feat(java): galho 3 nota 13 — JFR e JMC (observabilidade de pro
 ### Task 14: Nota 14 — Performance da JVM — síntese  ⟦opus⟧ (capstone)
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/14 - Performance da JVM — síntese.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/14 - Performance da JVM — síntese.md`
 
 - [ ] **Step 1: Pesquisar fonte — VERIFICAÇÃO OBRIGATÓRIA (Leyden/CDS)**
 
@@ -650,27 +650,27 @@ Conteúdo (capstone — decisão de arquitetura, liga o galho):
   - "Decision tree de coletor" — consolidando 06/10/11: SLA de latência? heap? CPU disponível? batch vs serving? → G1/ZGC/Parallel/Serial, com o porquê de cada ramo.
   - "Startup vs warmup vs peak" — o eixo temporal: startup (classloading, CDS/AppCDS ajudam), warmup (JIT — nota 07; impacto em serverless/autoscaling), peak (GC/alocação dominam). CDS/AppCDS explicado curto (archives de classes pré-processadas); **Project Leyden/AOT** com status verificado e hedge (JEP 483 Java 24+; evolução conforme confirmado no Step 1). GraalVM native image: menção como alternativa radical de startup — "Galho 17 (planejado)", sem wikilink.
   - "Checklist de troubleshooting" — OOM (qual área? → nota 02/12), latência alta (GC? → 10/11; lock? → Galho 4; warmup? → 07), CPU alto (GC concorrente? JIT? aplicação? → 06/07/13).
-  - "Virtual Threads e a JVM" — impacto citado (stacks no heap como continuations, carrier threads, escala de I/O-bound) → **linka** [[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads]] (título conforme Task 0 Step 4), **não re-explica Loom**.
+  - "Virtual Threads e a JVM" — impacto citado (stacks no heap como continuations, carrier threads, escala de I/O-bound) → **linka** [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads]] (título conforme Task 0 Step 4), **não re-explica Loom**.
 - `## Na prática` — 2-3 cenários hipotéticos explícitos escolhendo postura: API latency-sensitive (ZGC + JFR always-on + warmup plan), batch noturno (Parallel + throughput), serverless/scale-to-zero (startup: CDS/AOT conforme status verificado).
 - `## Armadilhas` (de raciocínio) — ≥3: (1) otimizar sem medir (toda decisão do galho começa com baseline — log/JFR); (2) escolher coletor por hype e não por SLA medido; (3) tratar a JVM como caixa preta até o incidente (observabilidade — log de GC + JFR — se liga ANTES); (4) ignorar startup/warmup em workload elástico (o p99 do primeiro minuto também é p99). Cada uma com o raciocínio correto.
 - `## Em entrevista` — frase 3+ sentenças enquadrando performance de JVM como decisão de engenharia orientada a medição; vocabulário 6+ termos.
 - `### Cheatsheet do galho` — tabela "qual nota pra qual problema" (pipeline→01, memória/OOM→02, GC conceito→03, bytecode→04, classloading→05, escolher coletor→06, warmup/JIT→07, módulos→08, containers/flags→09, ler logs→10, tunar→11, dumps/forense→12, always-on→13).
-- `## Veja também` (01, 06, 07, 09, 10, 11, 12, 13, MOC, central, `[[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads]]`) + `## Referências` (CDS docs, JEPs Leyden verificados).
+- `## Veja também` (01, 06, 07, 09, 10, 11, 12, 13, MOC, central, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads]]`) + `## Referências` (CDS docs, JEPs Leyden verificados).
 
 Tamanho: 320-500 linhas (fechamento; opus).
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -iE "decision|startup|warmup|peak|CDS|Leyden|checklist|cheatsheet" "03-Dominios/Java/JVM/14 - Performance da JVM — síntese.md" | head
-grep -riE "minha experiência|no meu projeto|josenaldo|Patient" "03-Dominios/Java/JVM/14 - Performance da JVM — síntese.md"
+grep -iE "decision|startup|warmup|peak|CDS|Leyden|checklist|cheatsheet" "03-Dominios/Tecnologia/Java/JVM/14 - Performance da JVM — síntese.md" | head
+grep -riE "minha experiência|no meu projeto|josenaldo|Patient" "03-Dominios/Tecnologia/Java/JVM/14 - Performance da JVM — síntese.md"
 ```
 Expected: cobre decision tree + eixo temporal + checklist + cheatsheet; **segundo grep VAZIO** (zero fabricação).
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/14 - Performance da JVM — síntese.md"
+git add "03-Dominios/Tecnologia/Java/JVM/14 - Performance da JVM — síntese.md"
 git commit -m "feat(java): galho 3 nota 14 — performance da JVM (capstone)"
 ```
 
@@ -679,13 +679,13 @@ git commit -m "feat(java): galho 3 nota 14 — performance da JVM (capstone)"
 ## Task 15: MOC do galho
 
 **Files:**
-- Create: `03-Dominios/Java/JVM/index.md`
+- Create: `03-Dominios/Tecnologia/Java/JVM/index.md`
 
 - [ ] **Step 1: Escrever o MOC**
 
 Frontmatter: `type: moc`, `status: growing`, `publish: true`, `title: "JVM por dentro"`, tags `[java, jvm, moc]`, aliases `["JVM", "Galho 3 - JVM por dentro"]`, `created`/`updated: 2026-06-05`.
 
-Conteúdo (modelar pelo `03-Dominios/Java/Collections e Streams/index.md`):
+Conteúdo (modelar pelo `03-Dominios/Tecnologia/Java/Collections e Streams/index.md`):
 - `> [!abstract] TL;DR` — Galho 3 da trilha Java Senior; memória de runtime, Garbage Collection (conceito → coletores → logs → tuning), JIT, classloading, bytecode, JPMS, diagnóstico (jcmd/heap dumps/JFR) e performance.
 - `## Sobre este galho` — escopo + audiência primária (senior em prep de entrevista + operação de JVM em produção) + secundária + nota de que é galho de **refator do tronco** `Java Fundamentals` (poda da seção JVM — a última grande seção do tronco). Registrar a fronteira: memory model de *runtime* é daqui; *Java Memory Model* (happens-before) é do Galho 4.
 - `## Iniciado` — wikilinks 01-05 (uma linha descritiva cada).
@@ -702,26 +702,26 @@ Conteúdo (modelar pelo `03-Dominios/Java/Collections e Streams/index.md`):
 ````markdown
 ```dataview
 TABLE fase, status, updated
-FROM "03-Dominios/Java/JVM"
+FROM "03-Dominios/Tecnologia/Java/JVM"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 ````
 
-- `## Veja também` — `[[03-Dominios/Java/index|Java (MOC central)]]`, `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]`, `[[03-Dominios/Java/Collections e Streams/index|Collections, Streams e Programação Funcional (Galho 2)]]`, `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (Galho 4)]]`, `[[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]`, `[[Java Fundamentals]]` (tronco em transição).
+- `## Veja também` — `[[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]`, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]`, `[[03-Dominios/Tecnologia/Java/Collections e Streams/index|Collections, Streams e Programação Funcional (Galho 2)]]`, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (Galho 4)]]`, `[[03-Dominios/Tecnologia/Java/Dicionário de Java|Dicionário de Java]]`, `[[Java Fundamentals]]` (tronco em transição).
 
 - [ ] **Step 2: Verificar**
 
 ```bash
-grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Java/JVM/index.md"
-grep -c "\[\[" "03-Dominios/Java/JVM/index.md"
+grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Tecnologia/Java/JVM/index.md"
+grep -c "\[\[" "03-Dominios/Tecnologia/Java/JVM/index.md"
 ```
 Expected: 4 headings de seção; ≥14 wikilinks.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Java/JVM/index.md"
+git add "03-Dominios/Tecnologia/Java/JVM/index.md"
 git commit -m "feat(java): galho 3 MOC — JVM por dentro"
 ```
 
@@ -730,16 +730,16 @@ git commit -m "feat(java): galho 3 MOC — JVM por dentro"
 ## Task 16: Expandir o Dicionário de Java (NÃO recriar)
 
 **Files:**
-- Modify: `03-Dominios/Java/Dicionário de Java.md`
+- Modify: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`
 
 - [ ] **Step 1: Reler o Dicionário existente**
 
-Ler `03-Dominios/Java/Dicionário de Java.md` inteiro. Mapear as seções alfabéticas e os verbetes já presentes (Galhos 1/2/4/5). **NÃO recriar; NÃO reordenar.** Confirmar o formato (`### Termo` + 1-3 linhas + `Veja também: [[nota]].`). **Conferir duplicatas** — termos de threads/locks são do Galho 4; `boxing / unboxing` é do Galho 2; não reinserir.
+Ler `03-Dominios/Tecnologia/Java/Dicionário de Java.md` inteiro. Mapear as seções alfabéticas e os verbetes já presentes (Galhos 1/2/4/5). **NÃO recriar; NÃO reordenar.** Confirmar o formato (`### Termo` + 1-3 linhas + `Veja também: [[nota]].`). **Conferir duplicatas** — termos de threads/locks são do Galho 4; `boxing / unboxing` é do Galho 2; não reinserir.
 
 - [ ] **Step 2: Extrair as âncoras de Dicionário usadas nas notas 01-14**
 
 ```bash
-grep -rhoE "Dicionário de Java#[^]|]+" "03-Dominios/Java/JVM/"
+grep -rhoE "Dicionário de Java#[^]|]+" "03-Dominios/Tecnologia/Java/JVM/"
 ```
 Anotar cada âncora. **Cada verbete inserido deve ter heading que bate EXATAMENTE (case/acento) com a âncora usada nas notas** (regra dos galhos anteriores).
 
@@ -783,15 +783,15 @@ Atualizar frontmatter `updated: 2026-06-05`.
 - [ ] **Step 4: Verificar**
 
 ```bash
-grep -E "^### (bytecode|G1 GC|JIT|Metaspace|safepoint|tiered compilation|ZGC)" "03-Dominios/Java/Dicionário de Java.md"
-grep -cE "^### " "03-Dominios/Java/Dicionário de Java.md"
+grep -E "^### (bytecode|G1 GC|JIT|Metaspace|safepoint|tiered compilation|ZGC)" "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
+grep -cE "^### " "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 ```
 Expected: verbetes do Galho 3 presentes; contagem total subiu ~26-28 vs baseline; verbetes anteriores intactos.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Java/Dicionário de Java.md"
+git add "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 git commit -m "feat(java): expande Dicionário de Java com verbetes do galho 3 (JVM)"
 ```
 
@@ -800,14 +800,14 @@ git commit -m "feat(java): expande Dicionário de Java com verbetes do galho 3 (
 ## Task 17: Ativar o Galho 3 no MOC central `Java/index.md`
 
 **Files:**
-- Modify: `03-Dominios/Java/index.md`
+- Modify: `03-Dominios/Tecnologia/Java/index.md`
 
 - [ ] **Step 1: Trocar a linha do Galho 3 por wikilink ativo**
 
 Localizar por conteúdo (linha 27 hoje: `3. JVM por dentro *(planejado)* — memory model, GC (G1/ZGC), JIT, classloading, bytecode, módulos (JPMS), tuning`) e substituir por:
 
 ```markdown
-3. [[03-Dominios/Java/JVM/index|JVM por dentro]] — memória de runtime, GC (G1/ZGC/Shenandoah), JIT e tiered compilation, classloading, bytecode, módulos (JPMS), diagnóstico (JFR/jcmd) e tuning
+3. [[03-Dominios/Tecnologia/Java/JVM/index|JVM por dentro]] — memória de runtime, GC (G1/ZGC/Shenandoah), JIT e tiered compilation, classloading, bytecode, módulos (JPMS), diagnóstico (JFR/jcmd) e tuning
 ```
 
 Atualizar `updated: 2026-06-05`. **Não mexer no resto** (galhos 6-18 seguem texto "(planejado)").
@@ -815,16 +815,16 @@ Atualizar `updated: 2026-06-05`. **Não mexer no resto** (galhos 6-18 seguem tex
 - [ ] **Step 2: Verificar**
 
 ```bash
-grep -E "JVM/index" "03-Dominios/Java/index.md"
-grep -E "updated: 2026-06-05" "03-Dominios/Java/index.md"
-grep -c "planejado" "03-Dominios/Java/index.md"
+grep -E "JVM/index" "03-Dominios/Tecnologia/Java/index.md"
+grep -E "updated: 2026-06-05" "03-Dominios/Tecnologia/Java/index.md"
+grep -c "planejado" "03-Dominios/Tecnologia/Java/index.md"
 ```
 Expected: wikilink ativo do Galho 3; `updated` atualizado; "planejado" caiu exatamente 1 vs baseline.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Java/index.md"
+git add "03-Dominios/Tecnologia/Java/index.md"
 git commit -m "feat(java): ativa Galho 3 (JVM por dentro) no MOC central"
 ```
 
@@ -833,7 +833,7 @@ git commit -m "feat(java): ativa Galho 3 (JVM por dentro) no MOC central"
 ## Task 18: Poda da seção JVM do tronco
 
 **Files:**
-- Modify: `03-Dominios/Java/Core/Java Fundamentals.md`
+- Modify: `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md`
 
 - [ ] **Step 1: Reler a seção a podar (confirmar limites)**
 
@@ -847,7 +847,7 @@ Substituir o **corpo inteiro** da seção (do callout `[!info]` até antes do `-
 ## JVM (Java Virtual Machine)
 
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/JVM/index|JVM por dentro]]. Veja [[01 - A JVM — o que é e o pipeline de execução]], [[02 - Áreas de memória de runtime]], [[03 - Garbage Collection — o conceito]], [[06 - Os coletores do HotSpot]], [[07 - JIT — C1, C2 e tiered compilation]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/JVM/index|JVM por dentro]]. Veja [[01 - A JVM — o que é e o pipeline de execução]], [[02 - Áreas de memória de runtime]], [[03 - Garbage Collection — o conceito]], [[06 - Os coletores do HotSpot]], [[07 - JIT — C1, C2 e tiered compilation]].
 ```
 
 (Os wikilinks usam o título de arquivo sem path — Obsidian resolve pelo nome; os callouts dos Galhos 1/2 no mesmo tronco já usam esse formato. Conferir na Task 20 que resolvem.)
@@ -857,7 +857,7 @@ Substituir o **corpo inteiro** da seção (do callout `[!info]` até antes do `-
 A intro do tronco (linha ~16 e o bloco "Em entrevistas, o que diferencia um senior") menciona JVM — pode ficar (texto-resumo, não corpo migrado). No `## Veja também` do tronco, adicionar:
 
 ```markdown
-- [[03-Dominios/Java/JVM/index|JVM por dentro (galho)]]
+- [[03-Dominios/Tecnologia/Java/JVM/index|JVM por dentro (galho)]]
 ```
 
 - [ ] **Step 4: Atualizar `updated` do tronco**
@@ -867,17 +867,17 @@ Atualizar o frontmatter `updated:` de `Core/Java Fundamentals.md` para `2026-06-
 - [ ] **Step 5: Verificar**
 
 ```bash
-grep -A3 "^## JVM (Java Virtual Machine)" "03-Dominios/Java/Core/Java Fundamentals.md" | head -5
-grep -c "Migrado para galho próprio" "03-Dominios/Java/Core/Java Fundamentals.md"
-grep -nE "^### (Memory areas|Garbage Collection|JIT Compiler|Classloader)" "03-Dominios/Java/Core/Java Fundamentals.md"
-grep -nE "^## Concorrência" "03-Dominios/Java/Core/Java Fundamentals.md"
+grep -A3 "^## JVM (Java Virtual Machine)" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md" | head -5
+grep -c "Migrado para galho próprio" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
+grep -nE "^### (Memory areas|Garbage Collection|JIT Compiler|Classloader)" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
+grep -nE "^## Concorrência" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
 ```
 Expected: seção JVM agora é callout "Migrado" (contador subiu 1 vs baseline); subseções da JVM **sumiram** (grep 3 vazio); `## Concorrência` ainda presente (intacta).
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Java/Core/Java Fundamentals.md"
+git add "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
 git commit -m "refactor(java): poda a seção JVM do tronco Java Fundamentals (galho 3)"
 ```
 
@@ -891,24 +891,24 @@ git commit -m "refactor(java): poda a seção JVM do tronco Java Fundamentals (g
 - [ ] **Step 1: Relocalizar as ocorrências (por conteúdo, não por linha)**
 
 ```bash
-grep -rn "Galho 3" "03-Dominios/Java/Linguagem e sintaxe moderna/" "03-Dominios/Java/Collections e Streams/" "03-Dominios/Java/Concorrência e paralelismo/" "03-Dominios/Java/Swing/"
+grep -rn "Galho 3" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/" "03-Dominios/Tecnologia/Java/Collections e Streams/" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/" "03-Dominios/Tecnologia/Java/Swing/"
 ```
 Listar as ocorrências de texto "Galho 3 (JVM)... planejado" (a lista da Task 0 Step 5 pode ter mudado).
 
 - [ ] **Step 2: Converter cada ponteiro textual em wikilink**
 
 Para cada ocorrência, trocar o texto "Galho 3 (JVM), planejado" (e variações) pelo wikilink pra **nota mais específica** do Galho 3 conforme o contexto:
-- Menção a custo de memória/heap/alocação/boxing → `[[03-Dominios/Java/JVM/02 - Áreas de memória de runtime|Áreas de memória de runtime]]`
-- Menção a GC genérico → `[[03-Dominios/Java/JVM/03 - Garbage Collection — o conceito|Garbage Collection]]`
-- Menção a JIT/warmup/otimização → `[[03-Dominios/Java/JVM/07 - JIT — C1, C2 e tiered compilation|JIT]]`
-- Menção genérica ao galho (MOCs "Veja também") → `[[03-Dominios/Java/JVM/index|JVM por dentro (Galho 3)]]`
+- Menção a custo de memória/heap/alocação/boxing → `[[03-Dominios/Tecnologia/Java/JVM/02 - Áreas de memória de runtime|Áreas de memória de runtime]]`
+- Menção a GC genérico → `[[03-Dominios/Tecnologia/Java/JVM/03 - Garbage Collection — o conceito|Garbage Collection]]`
+- Menção a JIT/warmup/otimização → `[[03-Dominios/Tecnologia/Java/JVM/07 - JIT — C1, C2 e tiered compilation|JIT]]`
+- Menção genérica ao galho (MOCs "Veja também") → `[[03-Dominios/Tecnologia/Java/JVM/index|JVM por dentro (Galho 3)]]`
 
 Ajustar o texto ao redor pra não dizer mais "planejado". **Não inventar links onde o contexto não pede** — só converter os ponteiros existentes.
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -rn "Galho 3" "03-Dominios/Java/Linguagem e sintaxe moderna/" "03-Dominios/Java/Collections e Streams/" "03-Dominios/Java/Concorrência e paralelismo/" "03-Dominios/Java/Swing/" | grep -i "planejado"
+grep -rn "Galho 3" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/" "03-Dominios/Tecnologia/Java/Collections e Streams/" "03-Dominios/Tecnologia/Java/Concorrência e paralelismo/" "03-Dominios/Tecnologia/Java/Swing/" | grep -i "planejado"
 ```
 Expected: VAZIO (nenhum "Galho 3 ... planejado" remanescente nos galhos fechados).
 
@@ -928,21 +928,21 @@ git commit -m "refactor(java): quita dívida reversa — ponteiros 'Galho 3 plan
 - [ ] **Step 1: Conferir as 14 notas + MOC presentes**
 
 ```bash
-ls "03-Dominios/Java/JVM/" | sort
+ls "03-Dominios/Tecnologia/Java/JVM/" | sort
 ```
 Expected: 01..14 + index.md (15 arquivos .md).
 
 - [ ] **Step 2: Conferir frontmatter `fase` e distribuição**
 
 ```bash
-for f in "03-Dominios/Java/JVM/"[0-9]*.md; do grep -H "^fase:" "$f"; done
+for f in "03-Dominios/Tecnologia/Java/JVM/"[0-9]*.md; do grep -H "^fase:" "$f"; done
 ```
 Expected: toda nota 01-14 tem `fase:`; distribuição 5 iniciado / 5 adepto / 4 magus.
 
 - [ ] **Step 3: Conferir seções obrigatórias em todas as notas**
 
 ```bash
-for f in "03-Dominios/Java/JVM/"[0-9]*.md; do
+for f in "03-Dominios/Tecnologia/Java/JVM/"[0-9]*.md; do
   echo "$f: $(grep -cE '^## (Em entrevista|Armadilhas|Veja também)' "$f")"
 done
 ```
@@ -951,15 +951,15 @@ Expected: cada nota retorna 3.
 - [ ] **Step 4: Conferir ausência de fabricação e de wikilinks pra galhos inexistentes**
 
 ```bash
-grep -riE "minha experiência|no meu projeto|josenaldo|Patient|getSpecialty" "03-Dominios/Java/JVM/"
-grep -rE "\[\[[^]]*(JavaFX|Jakarta|GraalVM|Galho 1[5-8])" "03-Dominios/Java/JVM/"
+grep -riE "minha experiência|no meu projeto|josenaldo|Patient|getSpecialty" "03-Dominios/Tecnologia/Java/JVM/"
+grep -rE "\[\[[^]]*(JavaFX|Jakarta|GraalVM|Galho 1[5-8])" "03-Dominios/Tecnologia/Java/JVM/"
 ```
 Expected: ambos VAZIOS (zero fabricação; galhos futuros só como texto "(planejado)").
 
 - [ ] **Step 5: Conferir a "Frase pronta (inglês)" em todas as notas**
 
 ```bash
-for f in "03-Dominios/Java/JVM/"[0-9]*.md; do
+for f in "03-Dominios/Tecnologia/Java/JVM/"[0-9]*.md; do
   echo "$f: $(grep -c '### Frase pronta (inglês)' "$f")"
 done
 ```
@@ -967,7 +967,7 @@ Expected: cada nota retorna 1.
 
 - [ ] **Step 6: Rodar a skill de wikilinks**
 
-Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Java/JVM/` + `03-Dominios/Java/index.md` + `03-Dominios/Java/Dicionário de Java.md` + `03-Dominios/Java/Core/Java Fundamentals.md` + os arquivos editados na Task 19. Corrigir quebrados (folder-links exigem index.md — regra Quartz). **Lembrar:** falso-positivo em self-anchors `[[#Heading]]` — as notas evitam âncoras same-file; ignorar esse falso-positivo. **Conferir que as âncoras `Dicionário de Java#...` usadas nas notas resolvem 1:1 com os headings dos verbetes inseridos (Task 16 Step 2).** Conferir também que os wikilinks curtos do tronco podado (`[[01 - A JVM — o que é e o pipeline de execução]]` etc.) resolvem. Se houver correções, commitar à parte.
+Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Tecnologia/Java/JVM/` + `03-Dominios/Tecnologia/Java/index.md` + `03-Dominios/Tecnologia/Java/Dicionário de Java.md` + `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` + os arquivos editados na Task 19. Corrigir quebrados (folder-links exigem index.md — regra Quartz). **Lembrar:** falso-positivo em self-anchors `[[#Heading]]` — as notas evitam âncoras same-file; ignorar esse falso-positivo. **Conferir que as âncoras `Dicionário de Java#...` usadas nas notas resolvem 1:1 com os headings dos verbetes inseridos (Task 16 Step 2).** Conferir também que os wikilinks curtos do tronco podado (`[[01 - A JVM — o que é e o pipeline de execução]]` etc.) resolvem. Se houver correções, commitar à parte.
 
 - [ ] **Step 7: Build Quartz (se disponível)**
 

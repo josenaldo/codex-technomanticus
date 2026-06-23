@@ -33,7 +33,7 @@ A sub-trilha existe pra dar ao leitor:
 
 ## 2. Objetivo
 
-Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Node/Paralelismo/`, todas `publish: true`, em PT-BR, cobrindo do mental model de "quando paralelizar" ao domínio operacional das 3 ferramentas e à decisão de qual usar.
+Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Tecnologia/Node/Paralelismo/`, todas `publish: true`, em PT-BR, cobrindo do mental model de "quando paralelizar" ao domínio operacional das 3 ferramentas e à decisão de qual usar.
 
 A trilha precisa ser:
 
@@ -47,7 +47,7 @@ A trilha precisa ser:
 
 ### Em escopo
 
-- 13 arquivos markdown em `03-Dominios/Node/Paralelismo/`
+- 13 arquivos markdown em `03-Dominios/Tecnologia/Node/Paralelismo/`
 - Todos com `publish: true`
 - Idioma: PT-BR; termos técnicos em inglês mantidos
 - Wikilinks densos para `[[Node.js]]` (tronco), `[[Runtime e Event Loop]]` (galho 1, em particular nota 09 e 10), `[[JavaScript Fundamentals]]` quando relevante
@@ -233,7 +233,7 @@ Sequencial 01 → 12. Recomendada na primeira leitura.
 
 ## 10. Tasks de poda do tronco
 
-Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
+Ao fechar o galho, executar no `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`:
 
 1. Substituir seção **`### Worker Threads, cluster, child_process — as 3 formas de paralelismo`** por callout `[!nota]` com wikilinks pra:
    - `[[Paralelismo]]` (MOC do galho)
@@ -244,7 +244,7 @@ Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
    - `[[09 - child_process com fork - Node child com IPC]]`
 2. Adicionar `[[Paralelismo]]` no `## Veja também` do tronco como segundo bullet (após `[[Runtime e Event Loop]]` que foi adicionado no galho 1)
 3. Atualizar `updated: 2026-05-07` no frontmatter do tronco (se não estiver já)
-4. Atualizar `03-Dominios/Node/index.md` (MOC central) adicionando `[[Paralelismo]]` na seção "Galhos da trilha Node Senior"
+4. Atualizar `03-Dominios/Tecnologia/Node/index.md` (MOC central) adicionando `[[Paralelismo]]` na seção "Galhos da trilha Node Senior"
 
 ## 11. Riscos e mitigações
 
@@ -262,7 +262,7 @@ Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
 
 A sub-trilha está completa quando:
 
-1. Todas as 13 arquivos existem em `03-Dominios/Node/Paralelismo/`
+1. Todas as 13 arquivos existem em `03-Dominios/Tecnologia/Node/Paralelismo/`
 2. Todos têm frontmatter completo com `publish: true`
 3. MOC `Paralelismo.md` tem seção "Comece por aqui" com 12 notas linkadas em ordem + 5 rotas alternativas + dataview de "Todas as notas do galho"
 4. Cada nota satisfaz a rubrica padrão:
@@ -276,7 +276,7 @@ A sub-trilha está completa quando:
    - PT-BR natural; termos técnicos em inglês mantidos
    - **Zero atribuição de experiência pessoal ao autor**
 5. Tasks de poda do tronco (seção 10) executadas
-6. MOC central `03-Dominios/Node/index.md` atualizado (galho 2 listado)
+6. MOC central `03-Dominios/Tecnologia/Node/index.md` atualizado (galho 2 listado)
 7. Quartz publica corretamente
 8. Pelo menos 4 notas têm code sample testável em script standalone (ex: pool de workers minimal, exec vs execFile, cluster com `cluster.isPrimary`)
 
@@ -302,6 +302,6 @@ A ordem de execução recomendada:
 - `2026-05-07-node-runtime-event-loop-design.md` — spec do galho 1 (Runtime e Event Loop), referência de formato
 - `2026-05-07-node-runtime-event-loop-execution.md` — plano do galho 1, referência de estrutura de tasks
 - Plano de execução do galho 2 (criado depois): `2026-05-07-node-paralelismo-execution.md`
-- Tronco a ser podado: `03-Dominios/JavaScript/Backend/Node.js.md`
-- MOC central: `03-Dominios/Node/index.md`
-- Galho anterior fechado (referência): `03-Dominios/Node/Runtime e Event Loop/`
+- Tronco a ser podado: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- MOC central: `03-Dominios/Tecnologia/Node/index.md`
+- Galho anterior fechado (referência): `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`

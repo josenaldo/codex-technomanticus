@@ -42,7 +42,7 @@ Esta sub-trilha existe pra dar ao leitor o **modelo mental completo do runtime**
 
 ## 2. Objetivo
 
-Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Node/Runtime e Event Loop/`, todas `publish: true`, em PT-BR, cobrindo do mental model do runtime ao diagnóstico de event loop bloqueado.
+Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`, todas `publish: true`, em PT-BR, cobrindo do mental model do runtime ao diagnóstico de event loop bloqueado.
 
 A trilha precisa ser:
 
@@ -56,7 +56,7 @@ A trilha precisa ser:
 
 ### Em escopo
 
-- 13 arquivos markdown em `03-Dominios/Node/Runtime e Event Loop/`
+- 13 arquivos markdown em `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`
 - Todos com `publish: true`
 - Idioma: PT-BR; termos técnicos em inglês mantidos
 - Wikilinks densos para `[[Node.js]]` (tronco), `[[JavaScript Fundamentals]]` (event loop básico do JS), `[[TypeScript]]` quando code samples em TS
@@ -240,14 +240,14 @@ Sequencial 01 → 12. Recomendada na primeira leitura.
 
 ## 10. Tasks de poda do tronco
 
-Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
+Ao fechar o galho, executar no `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`:
 
 1. Substituir seção **"Arquitetura"** por callout `[!nota]` + wikilink pra `[[02 - V8, libuv e thread pool]]`
 2. Substituir **"Single-threaded com non-blocking I/O"** por callout + wikilink pra `[[01 - Single-thread e non-blocking I-O]]`
 3. Substituir **"Event loop phases — detalhado"** por callout + wikilinks pra `[[04 - As fases do event loop]]` + `[[05 - Microtasks - nextTick, queueMicrotask, Promise.then]]` + `[[06 - Macrotasks e timers - setTimeout, setInterval, setImmediate]]`
 4. Substituir parte CPU-bound de **"Armadilhas comuns"** e **"Event loop blocking"** (de Troubleshooting) por wikilinks pras notas `[[10 - Bloqueio do event loop - sintomas e causas]]` + `[[11 - Diagnóstico do event loop]]`
 5. Atualizar "Veja também" do tronco linkando o MOC `[[Runtime e Event Loop]]`
-6. Atualizar `03-Dominios/Node/index.md` (MOC central) linkando `[[Runtime e Event Loop]]` na seção "Conteúdo"
+6. Atualizar `03-Dominios/Tecnologia/Node/index.md` (MOC central) linkando `[[Runtime e Event Loop]]` na seção "Conteúdo"
 
 A poda é **uma única task atômica** no plano de execução, ao final, quando todas as 12 notas estiverem prontas. Não podar antes — o tronco é referência ativa enquanto a sub-trilha está sendo escrita.
 
@@ -267,7 +267,7 @@ A poda é **uma única task atômica** no plano de execução, ao final, quando 
 
 A sub-trilha está completa quando:
 
-1. Todas as 13 arquivos existem em `03-Dominios/Node/Runtime e Event Loop/`
+1. Todas as 13 arquivos existem em `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`
 2. Todos têm frontmatter completo com `publish: true`
 3. MOC `Runtime e Event Loop.md` tem seção "Comece por aqui" com 12 notas linkadas em ordem + 4 rotas alternativas + dataview de "Todas as notas do galho"
 4. Cada nota satisfaz a rubrica padrão:
@@ -281,7 +281,7 @@ A sub-trilha está completa quando:
    - PT-BR natural; termos técnicos em inglês mantidos
    - **Zero atribuição de experiência pessoal ao autor**
 5. Tasks de poda do tronco (seção 10) executadas
-6. MOC central `03-Dominios/Node/index.md` atualizado
+6. MOC central `03-Dominios/Tecnologia/Node/index.md` atualizado
 7. Quartz publica corretamente em josenaldo.github.io
 8. Pelo menos 4 notas têm exemplo de código testado em script standalone (rodável com `node arquivo.js` ou `node --experimental-strip-types arquivo.ts`)
 
@@ -305,6 +305,6 @@ A ordem de execução recomendada:
 
 - `2026-05-07-node-roadmap-design.md` — roadmap macro dos 6 galhos (este spec é sub-trilha #1)
 - Plano de execução (criado depois): `2026-05-07-node-runtime-event-loop-execution.md`
-- Tronco a ser podado: `03-Dominios/JavaScript/Backend/Node.js.md`
-- MOC central: `03-Dominios/Node/index.md`
+- Tronco a ser podado: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- MOC central: `03-Dominios/Tecnologia/Node/index.md`
 - Spec de referência (formato análogo): `2026-04-26-typescript-react-design.md`

@@ -17,10 +17,10 @@ Este é o **décimo-primeiro galho** da trilha Java Senior (roadmap em `docs/sup
 
 **A fronteira-assinatura é QUÁDRUPLA.** Os Galhos 4, 8, 9 e 10 plantaram ganchos esperando as notas deste galho. Este galho **linka de volta aos quatro**, sem re-explicar nenhum:
 
-- **Galho 4 (o modelo de threads e o confronto reativo vs Virtual Threads):** o **confronto detalhado** (backpressure, operadores, quando reativo ainda vence) que a nota 12 do Galho 4 explicitamente adiou → [[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads e Project Loom]]; o **modelo de memória / visibilidade** que o reativo também precisa respeitar → [[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]; pools/threads → o galho [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]. **Loom não se re-explica** — a nota 14 deste galho paga a dívida do confronto honesto.
-- **Galho 9 (o stack web imperativo que o WebFlux substitui):** **Spring MVC vs WebFlux** (servlet/bloqueante vs reativo/não-bloqueante) → [[03-Dominios/Java/Web e APIs REST/01 - O que é Spring MVC — a camada web sobre o container|O que é Spring MVC]]; **DispatcherServlet vs DispatcherHandler** → [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]]; **RestClient síncrono vs WebClient reativo** → [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP]]. O MVC imperativo é o ponto de partida; o WebFlux é a alternativa.
-- **Galho 10 (a persistência bloqueante que o R2DBC contrasta):** **JPA/JDBC bloqueante vs R2DBC reativo** → [[03-Dominios/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|O que é a camada de persistência]]; o **persistence context / EntityManager** que o R2DBC **não tem** → [[03-Dominios/Java/Persistência de dados/03 - O persistence context e os estados da entidade|O persistence context]]; **lazy loading** que o R2DBC **não suporta** → [[03-Dominios/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Fetch strategies]]. O R2DBC é o contraponto reativo, sem o cache de 1º nível.
-- **Galho 8 (o container/auto-config sob o WebFlux):** o **starter/auto-configuration** que liga o stack reativo → [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]]; o **ApplicationContext** (o mesmo container, beans reativos) → [[03-Dominios/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext]]. O WebFlux roda sobre o mesmo container IoC.
+- **Galho 4 (o modelo de threads e o confronto reativo vs Virtual Threads):** o **confronto detalhado** (backpressure, operadores, quando reativo ainda vence) que a nota 12 do Galho 4 explicitamente adiou → [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads e Project Loom]]; o **modelo de memória / visibilidade** que o reativo também precisa respeitar → [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]; pools/threads → o galho [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]. **Loom não se re-explica** — a nota 14 deste galho paga a dívida do confronto honesto.
+- **Galho 9 (o stack web imperativo que o WebFlux substitui):** **Spring MVC vs WebFlux** (servlet/bloqueante vs reativo/não-bloqueante) → [[03-Dominios/Tecnologia/Java/Web e APIs REST/01 - O que é Spring MVC — a camada web sobre o container|O que é Spring MVC]]; **DispatcherServlet vs DispatcherHandler** → [[03-Dominios/Tecnologia/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]]; **RestClient síncrono vs WebClient reativo** → [[03-Dominios/Tecnologia/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP]]. O MVC imperativo é o ponto de partida; o WebFlux é a alternativa.
+- **Galho 10 (a persistência bloqueante que o R2DBC contrasta):** **JPA/JDBC bloqueante vs R2DBC reativo** → [[03-Dominios/Tecnologia/Java/Persistência de dados/01 - O que é a camada de persistência — Spring Data, JPA e Hibernate|O que é a camada de persistência]]; o **persistence context / EntityManager** que o R2DBC **não tem** → [[03-Dominios/Tecnologia/Java/Persistência de dados/03 - O persistence context e os estados da entidade|O persistence context]]; **lazy loading** que o R2DBC **não suporta** → [[03-Dominios/Tecnologia/Java/Persistência de dados/07 - Fetch strategies — LAZY, EAGER e a LazyInitializationException|Fetch strategies]]. O R2DBC é o contraponto reativo, sem o cache de 1º nível.
+- **Galho 8 (o container/auto-config sob o WebFlux):** o **starter/auto-configuration** que liga o stack reativo → [[03-Dominios/Tecnologia/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]]; o **ApplicationContext** (o mesmo container, beans reativos) → [[03-Dominios/Tecnologia/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext]]. O WebFlux roda sobre o mesmo container IoC.
 
 Os Galhos 4, 8, 9 e 10 deixaram **ganchos "Galho 11 (planejado)" / "WebFlux (planejado)" / "R2DBC (planejado)"** em texto esperando exatamente esses wikilinks (dívida reversa — §3.5). Este galho **quita** essa dívida.
 
@@ -30,7 +30,7 @@ Programação reativa na JVM é o **modelo push, assíncrono e não-bloqueante**
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda cirúrgica da seção WebFlux do `Spring Boot.md` + quitação da dívida reversa**, em `03-Dominios/Java/Programação Reativa/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**4 Iniciado + 8 Adepto + 4 Magus**).
+Produzir, em uma sessão de execução dedicada, **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda cirúrgica da seção WebFlux do `Spring Boot.md` + quitação da dívida reversa**, em `03-Dominios/Tecnologia/Java/Programação Reativa/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**4 Iniciado + 8 Adepto + 4 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -45,7 +45,7 @@ A barra é "explicar o modelo, decidir reativo-vs-imperativo com critério hones
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Programação Reativa/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Programação Reativa/`)
 
 Pasta **nova**, flat. 16 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase).
 
@@ -94,7 +94,7 @@ Pasta **nova**, flat. 16 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Programação Reativa/index.md`:
+`03-Dominios/Tecnologia/Java/Programação Reativa/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Programação Reativa"`, tags `java`/`reativa`/`moc`, aliases `["Programação Reativa", "Reactive Programming", "Project Reactor", "Spring WebFlux", "Galho 11 - Reativa"]`)
 - TL;DR callout (galho cobre o modelo reativo na JVM: o que é reativo e o Reactive Streams, `Mono`/`Flux` e os operadores, schedulers e backpressure, Spring WebFlux e WebClient, R2DBC, e o confronto honesto reativo vs Virtual Threads — quando usar e quando NÃO)
@@ -106,12 +106,12 @@ Pasta **nova**, flat. 16 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **Os operadores do Reactor** — 03 → 04 → 05 → 06 → 07 → 08 (Mono/Flux, lazy, map/flatMap, combinação, erro, schedulers)
   - **O stack web reativo** — 01 → 10 → 11 → 12 → 13 → 16 (modelo, WebFlux, WebClient, functional, R2DBC, capstone)
   - **Reativo vs Virtual Threads** (a ponte com o Galho 4) — 01 → 09 → 14 → 15 + nota 12 do Galho 4 (a decisão honesta)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **Galho 4** (Concorrência — o modelo de threads e o confronto VT), **Galho 9** (Web e APIs REST — o stack imperativo que o WebFlux substitui), **Galho 10** (Persistência — a JPA bloqueante que o R2DBC contrasta), **Galho 8** (Spring Core e Boot — o container sob o WebFlux), Dicionário de Java; Galhos 12/13/14/16 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **Galho 4** (Concorrência — o modelo de threads e o confronto VT), **Galho 9** (Web e APIs REST — o stack imperativo que o WebFlux substitui), **Galho 10** (Persistência — a JPA bloqueante que o R2DBC contrasta), **Galho 8** (Spring Core e Boot — o container sob o WebFlux), Dicionário de Java; Galhos 12/13/14/16 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**296 verbetes** após o Galho 10, `type: glossary`, `updated: 2026-06-09`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter para `2026-06-10`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**296 verbetes** após o Galho 10, `type: glossary`, `updated: 2026-06-09`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter para `2026-06-10`.
 
 Verbetes a inserir (~28, conferir dups antes):
 
@@ -121,10 +121,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 11)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha do item 11 (atualmente `11. Programação Reativa *(planejado)* — Reactor, WebFlux, backpressure, R2DBC`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha do item 11 (atualmente `11. Programação Reativa *(planejado)* — Reactor, WebFlux, backpressure, R2DBC`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-11. [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]] — o modelo reativo na JVM: Reactive Streams, Project Reactor (Mono/Flux e operadores), schedulers e backpressure, Spring WebFlux e WebClient, R2DBC, e o confronto honesto reativo vs Virtual Threads
+11. [[03-Dominios/Tecnologia/Java/Programação Reativa/index|Programação Reativa]] — o modelo reativo na JVM: Reactive Streams, Project Reactor (Mono/Flux e operadores), schedulers e backpressure, Spring WebFlux e WebClient, R2DBC, e o confronto honesto reativo vs Virtual Threads
 ```
 
 Atualizar `updated` para `2026-06-10`. Não mexer no resto do MOC central (galhos 12-17 permanecem "(planejado)").
@@ -141,7 +141,7 @@ Pré-flight localizou **a poda cirúrgica + 13 ponteiros** (incl. 3 parágrafos 
 ## Spring WebFlux — visão geral
 
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]. Veja [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]], [[03-Dominios/Java/Programação Reativa/01 - O que é programação reativa — o modelo push, assíncrono e não-bloqueante|O que é programação reativa]] e o confronto honesto [[03-Dominios/Java/Programação Reativa/14 - Reativo vs Virtual Threads — o confronto honesto|Reativo vs Virtual Threads]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/Programação Reativa/index|Programação Reativa]]. Veja [[03-Dominios/Tecnologia/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]], [[03-Dominios/Tecnologia/Java/Programação Reativa/01 - O que é programação reativa — o modelo push, assíncrono e não-bloqueante|O que é programação reativa]] e o confronto honesto [[03-Dominios/Tecnologia/Java/Programação Reativa/14 - Reativo vs Virtual Threads — o confronto honesto|Reativo vs Virtual Threads]].
 ```
 
 **NÃO TOCAR no `Spring Boot.md` (menções incidentais a WebFlux fora da seção-core):**
@@ -150,7 +150,7 @@ Pré-flight localizou **a poda cirúrgica + 13 ponteiros** (incl. 3 parágrafos 
 - callouts dos Galhos 8/9 (`## O que é`/IoC/AOP/`## Gerenciamento de transações` (callout do Galho 10)/Config/Actuator/`## Spring MVC pipeline`) → **intactos**;
 - `## Spring Cloud — visão geral` (incl. OpenFeign) → Galho 16; `## Camadas típicas`/`## Troubleshooting`/`## Quando usar`/`## Armadilhas comuns`/`## How to explain in English`/`## Recursos` → **intactos**.
 
-**Atualizar `updated: 2026-06-10`** e adicionar wikilink `[[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]` no `## Veja também` do tronco (se já não houver). Confirmar os números de linha na execução (política §9 do roadmap — ler antes de podar). Não tocar em `Backend/Spring Data JPA.md` (hub do Galho 10), `Backend/Spring Security.md` (Galho 12), `Backend/Kafka/` (Galho 14).
+**Atualizar `updated: 2026-06-10`** e adicionar wikilink `[[03-Dominios/Tecnologia/Java/Programação Reativa/index|Programação Reativa]]` no `## Veja também` do tronco (se já não houver). Confirmar os números de linha na execução (política §9 do roadmap — ler antes de podar). Não tocar em `Backend/Spring Data JPA.md` (hub do Galho 10), `Backend/Spring Security.md` (Galho 12), `Backend/Kafka/` (Galho 14).
 
 #### 3.5.2. Dívida reversa inline (13 ponteiros → wikilinks)
 
@@ -208,7 +208,7 @@ H1 `# Título` após o frontmatter (padrão dos galhos publicados).
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`Order`/`Customer`/`Product`/`OrderService`/`OrderRepository`); "padrão observado em apps WebFlux"; NUNCA `Patient`/`MedEspecialista`/"no meu projeto"/1ª pessoa
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma `### (N) Título` + descrição + exemplo curto de código demonstrando o problema + fix em 1 linha (H3 numerado, NÃO callout `[!warning]`)
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + subheading `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**, SEM âncoras same-file `[[#...]]`; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Programação Reativa/index|Programação Reativa (MOC do galho)]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando tocar threads/VT) a nota do **Galho 4** + (quando tocar MVC/DispatcherServlet/WebClient) a nota do **Galho 9** + (quando tocar R2DBC/persistência) a nota do **Galho 10** + (quando tocar container/auto-config) a nota do **Galho 8** + verbetes do Dicionário
+- `## Veja também` — wikilinks **SEM backticks**, SEM âncoras same-file `[[#...]]`; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Programação Reativa/index|Programação Reativa (MOC do galho)]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando tocar threads/VT) a nota do **Galho 4** + (quando tocar MVC/DispatcherServlet/WebClient) a nota do **Galho 9** + (quando tocar R2DBC/persistência) a nota do **Galho 10** + (quando tocar container/auto-config) a nota do **Galho 8** + verbetes do Dicionário
 - `## Referências` — docs oficiais (`projectreactor.io/docs`, `docs.spring.io/spring-framework/reference/web/webflux.html`, `r2dbc.io`, `docs.spring.io/spring-data/r2dbc`, `reactive-streams.org`). Afirmações version-specific fundadas em fonte verificada via WebFetch.
 
 ### 4.3. Restrições absolutas
@@ -254,7 +254,7 @@ Executado nesta fase de brainstorming (2026-06-10); itens version-specific re-co
 3. **Fabricação no tronco-fonte** — a seção WebFlux do `Spring Boot.md` usa `User`/`ReactiveController` (neutro); **some com a poda**. Notas usam `Order`/`Customer`/`Product`. Nenhuma fabricação de experiência pessoal a carregar (galho de pesquisa).
 4. **Dívida reversa localizada** — a poda cirúrgica + 13 ponteiros (§3.5.2), em: MOC central (item 11), Concorrência/12 :81 (callout confronto), Concorrência/index :91 (item dedicado), Web 01 :104/:188, Web 15 :23/:113/:127/:274/:303, e os parágrafos Spring Core index :32 / Web index :32 / Persistência index :32. Horizonte-lists (Spring Core :97, Web :95, Persistência :92) intactos. Confirmar linhas na execução.
 5. **Dicionário** — **296 verbetes** após o Galho 10; seções alfabéticas únicas `## A`…`## Z`; verbetes `### `; `updated: 2026-06-09`. Verbetes possivelmente já existentes a conferir/linkar (não duplicar): `WebClient`/`RestClient` (Galho 9), `Virtual Threads` (Galho 4), `@Transactional` (Galhos 8/10 — transação reativa é diferente), `Netty` (Galho 9 — pode existir). Expansão alfabética (~28), nunca recriar/reordenar; conferir âncoras 1:1.
-6. **MOC central** — `03-Dominios/Java/index.md` item 11 (`11. Programação Reativa *(planejado)* — Reactor, WebFlux, backpressure, R2DBC`, ~linha 43, no bloco "Fundamentos enterprise e Spring"); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-09`.
+6. **MOC central** — `03-Dominios/Tecnologia/Java/index.md` item 11 (`11. Programação Reativa *(planejado)* — Reactor, WebFlux, backpressure, R2DBC`, ~linha 43, no bloco "Fundamentos enterprise e Spring"); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-09`.
 7. **Troncos/notas intocáveis** — `Backend/Spring Data JPA.md` (hub do Galho 10), `Backend/Spring Security.md` (Galho 12), `Backend/Kafka/` (Galho 14), `Backend/Testes em Java.md` (Galho 13); todas as notas dos Galhos 4/8/9/10 (só recebem o link-back/dívida reversa onde mapeado).
 8. **Versões a cravar via WebFetch na execução** — Reactor (família 3.x atual); Reactive Streams absorvido em `java.util.concurrent.Flow` (Java 9); Spring WebFlux (baseline Boot 3.x, Netty); WebClient é o cliente reativo (vs `RestClient` síncrono, Spring 6.1); R2DBC / Spring Data R2DBC (versões atuais); Virtual Threads = GA/final Java 21 JEP 444 (cravado no Galho 4); posição documentada do Spring sobre VT e WebFlux. Boot 3.x baseline. Fonte: `projectreactor.io`, `docs.spring.io`, `r2dbc.io`, `reactive-streams.org`. Nada de memória.
 
@@ -264,7 +264,7 @@ Nenhum número de adoção é inventado (vale **dobrado** pras notas 14/15). Qua
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 16 notas em `03-Dominios/Java/Programação Reativa/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/8/4.
+1. 16 notas em `03-Dominios/Tecnologia/Java/Programação Reativa/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/8/4.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~28 verbetes; verbetes dos Galhos 1-10 intactos; `updated: 2026-06-10`; dups conferidos e linkados (não duplicar `WebClient`/`Virtual Threads`/`Netty`/`@Transactional`); headings conferidos 1:1 com as âncoras usadas nas notas (via grep).
 4. MOC central `Java/index.md` com Galho 11 ativado (item 11 vira wikilink); resto intacto (12-17 "(planejado)").
@@ -312,6 +312,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-03-java-galho-04-concorrencia-design.md` — Galho 4 (dependência: o modelo de threads e os Virtual Threads — a nota 12 espera o confronto que a nota 14 deste galho paga)
 - `2026-06-08-java-galho-08-spring-core-design.md` — Galho 8 (dependência: o container/auto-config sob o WebFlux)
 - Galho 10 (Persistência) — a JPA/JDBC bloqueante que o R2DBC contrasta (notas 01/03/07)
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Spring Boot.md` (poda cirúrgica — seção WebFlux), `Concorrência e paralelismo/12 - Virtual Threads e Project Loom`, `Concorrência e paralelismo/index.md`, `Web e APIs REST/01 - O que é Spring MVC`, `Web e APIs REST/15 - Clientes HTTP`, `Spring Core e Boot/index.md`, `Web e APIs REST/index.md`, `Persistência de dados/index.md` (dívida reversa)
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Spring Boot.md` (poda cirúrgica — seção WebFlux), `Concorrência e paralelismo/12 - Virtual Threads e Project Loom`, `Concorrência e paralelismo/index.md`, `Web e APIs REST/01 - O que é Spring MVC`, `Web e APIs REST/15 - Clientes HTTP`, `Spring Core e Boot/index.md`, `Web e APIs REST/index.md`, `Persistência de dados/index.md` (dívida reversa)
 - Fontes-base do galho: `projectreactor.io/docs/core/release/reference/`, `docs.spring.io/spring-framework/reference/web/webflux.html`, `r2dbc.io`, `docs.spring.io/spring-data/r2dbc/docs/current/reference/html/`, `reactive-streams.org`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]], [[feedback_notas_atomicas]], [[feedback_enriquecimento_feynman]]

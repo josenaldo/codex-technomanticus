@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Entregar o galho 3 da trilha Terminal — 7 notas atômicas (3 Iniciado + 2 Adepto + 2 Magus) sobre Zellij em `03-Dominios/Terminal/Multiplexer/`, MOC do galho, expansão do Dicionário do Terminal com bloco `## Multiplexer / Zellij`, e ativação do wikilink no tronco.
+**Goal:** Entregar o galho 3 da trilha Terminal — 7 notas atômicas (3 Iniciado + 2 Adepto + 2 Magus) sobre Zellij em `03-Dominios/Tecnologia/Terminal/Multiplexer/`, MOC do galho, expansão do Dicionário do Terminal com bloco `## Multiplexer / Zellij`, e ativação do wikilink no tronco.
 
 **Architecture:** Mesmo padrão consolidado no galho 2 (Shell). Cada nota segue estrutura H2 fixa (TL;DR, O que é/Como funciona, Na prática, Armadilhas, Em inglês, Veja também, Referências). Fluxo SDD: implementer subagent → reviewer combinado → fix subagent quando houver issues Critical/Important. Pesquisa-âncora em docs oficiais Zellij antes de cada nota.
 
@@ -21,8 +21,8 @@
 3. **Sem `Co-Authored-By: Claude`** em commits. **Sem `--no-verify`**.
 4. **Paths generalizados** pra `~/...`.
 5. **Wikilinks sem backticks** em `## Veja também`.
-6. **Tronco wikilink obrigatório** em toda `## Veja também`: `[[03-Dominios/Terminal/index|Trilha Terminal]]`.
-7. **MOC wikilink** em toda `## Veja também`: `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`.
+6. **Tronco wikilink obrigatório** em toda `## Veja também`: `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`.
+7. **MOC wikilink** em toda `## Veja também`: `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`.
 8. **≥5 armadilhas** por nota, cada uma com os 4 labels (`**Causa:**` / `**Sintoma:**` / `**Como detectar:**` / `**Solução:**`).
 9. **"Em inglês" em bullets** `- **PT** — *EN*. "frase técnica curta."` com 8-10 termos. **NUNCA tabela.**
 10. **Code fences corretos:** ` ```kdl ` pra KDL; ` ```bash ` pra comandos shell genéricos; ` ```zsh ` quando exclusivamente Zsh; ` ```lua ` pra config Neovim.
@@ -73,19 +73,19 @@ Config: ~/.config/zellij/ existe; sem config.kdl custom; sem layouts custom; sem
 ## Task 1: MOC do galho Multiplexer — esqueleto
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/index.md`
 
 **Objetivo:** criar o MOC do galho com placeholders pros 7 wikilinks de notas (que ainda não existem). Versões usam placeholders explícitos `<COMMIT_X>` / `<DATA_X>` resolvidos no Task 10.
 
 - [ ] **Step 1: Criar pasta + arquivo**
 
 ```bash
-mkdir -p "03-Dominios/Terminal/Multiplexer"
+mkdir -p "03-Dominios/Tecnologia/Terminal/Multiplexer"
 ```
 
 - [ ] **Step 2: Escrever MOC**
 
-Use `Write` em `03-Dominios/Terminal/Multiplexer/index.md`:
+Use `Write` em `03-Dominios/Tecnologia/Terminal/Multiplexer/index.md`:
 
 ```markdown
 ---
@@ -144,13 +144,13 @@ Esse galho cobre o multiplexer end-to-end: por que Zellij e quando tmux ainda ga
 ## Veja também
 
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/index.md"
 git commit -m "feat(terminal-multiplexer): MOC do galho 3 — esqueleto"
 ```
 
@@ -159,13 +159,13 @@ git commit -m "feat(terminal-multiplexer): MOC do galho 3 — esqueleto"
 ## Task 2: Dicionário — bloco "Multiplexer / Zellij" esqueleto
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 **Objetivo:** adicionar header `## Multiplexer / Zellij` (sem verbetes ainda) ao Dicionário, após o bloco `## Shell / Zsh / OMZ`. Verbetes individuais entram com cada nota.
 
 - [ ] **Step 1: Localizar fim do bloco Shell/Zsh/OMZ**
 
-Use `Read` em `03-Dominios/Terminal/Dicionário do Terminal.md` no final do arquivo (provavelmente após o verbete `### Zstyle`, último alfabético do bloco anterior).
+Use `Read` em `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` no final do arquivo (provavelmente após o verbete `### Zstyle`, último alfabético do bloco anterior).
 
 - [ ] **Step 2: Inserir header**
 
@@ -185,7 +185,7 @@ Se ainda não estiver `2026-05-21`, Edit do frontmatter.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-multiplexer): adiciona bloco 'Multiplexer / Zellij' ao Dicionário"
 ```
 
@@ -194,8 +194,8 @@ git commit -m "feat(terminal-multiplexer): adiciona bloco 'Multiplexer / Zellij'
 ## Task 3: Nota 01 — Zellij vs tmux vs screen
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: Multiplexer)
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: Multiplexer)
 
 **Conteúdo-chave:** comparação Zellij vs tmux vs screen, diferenciais (modos discoverable, layouts KDL, plugin WASM, defaults sensatos), quando tmux ainda ganha, tabela comparativa, público-alvo.
 
@@ -342,8 +342,8 @@ Estrutura H2 obrigatória (TL;DR, O que é / Como funciona, Na prática, Armadil
   - `[[02 - Modelo mental — sessions, tabs, panes]]` — próxima nota
   - `[[03 - Modos básicos e keybindings essenciais]]` — modos = diferencial chave
   - `[[06 - Modos avançados, plugins e copy-mode]]` — tmux compat mode
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - `[[Dicionário do Terminal#Multiplexer|multiplexer]]`
 
 - **Referências:**
@@ -365,9 +365,9 @@ Veja também: [[01 - Zellij vs tmux vs screen]].
 - [ ] **Step 5: Validar a rubrica**
 
 ```bash
-test -f "03-Dominios/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md"
-grep -c '\[\[' "03-Dominios/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md"
-grep -E "^### Multiplexer$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md"
+grep -E "^### Multiplexer$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥6 wikilinks, verbete Multiplexer visível.
@@ -375,7 +375,7 @@ Esperado: arquivo existe, ≥6 wikilinks, verbete Multiplexer visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/01 - Zellij vs tmux vs screen.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-multiplexer): add nota 01 — Zellij vs tmux vs screen"
 ```
 
@@ -384,8 +384,8 @@ git commit -m "feat(terminal-multiplexer): add nota 01 — Zellij vs tmux vs scr
 ## Task 4: Nota 02 — Modelo mental: sessions, tabs, panes
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Session (Zellij), Tab (Zellij), Pane, Floating pane, Stacked pane)
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Session (Zellij), Tab (Zellij), Pane, Floating pane, Stacked pane)
 
 **Conteúdo-chave:** hierarquia 1 server → N sessions → N tabs → N panes (+ floating); como cada nível se comporta on detach; diferença entre suspended e closed; floating vs stacked vs split.
 
@@ -544,8 +544,8 @@ aliases:
   - `[[03 - Modos básicos e keybindings essenciais]]` — como criar/navegar
   - `[[04 - Sessões persistentes — detach, attach, gerenciamento]]` — lifecycle profundo
   - `[[05 - Layouts declarativos em KDL]]` — definir layout de panes/tabs em KDL
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - `[[Dicionário do Terminal#Session (Zellij)|session]]`, `[[Dicionário do Terminal#Tab (Zellij)|tab]]`, `[[Dicionário do Terminal#Pane|pane]]`, `[[Dicionário do Terminal#Floating pane|floating pane]]`, `[[Dicionário do Terminal#Stacked pane|stacked pane]]`
 
 - **Referências:**
@@ -587,9 +587,9 @@ Veja também: [[02 - Modelo mental — sessions, tabs, panes]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md"
-grep -c '\[\[' "03-Dominios/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md"
-grep -E "^### (Floating pane|Pane|Session \(Zellij\)|Stacked pane|Tab \(Zellij\))$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md"
+grep -E "^### (Floating pane|Pane|Session \(Zellij\)|Stacked pane|Tab \(Zellij\))$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥8 wikilinks, 5 verbetes presentes.
@@ -597,7 +597,7 @@ Esperado: arquivo existe, ≥8 wikilinks, 5 verbetes presentes.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-multiplexer): add nota 02 — Modelo mental"
 ```
 
@@ -606,8 +606,8 @@ git commit -m "feat(terminal-multiplexer): add nota 02 — Modelo mental"
 ## Task 5: Nota 03 — Modos básicos e keybindings essenciais
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Mode (Zellij), Status bar)
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Mode (Zellij), Status bar)
 
 **Conteúdo-chave:** 9 modos do Zellij (normal, locked, pane, tab, resize, scroll, search, session, move) — overview; aprofundar normal, pane, tab; cheatsheet das ~20 keybindings iniciais.
 
@@ -757,8 +757,8 @@ aliases:
   - `[[02 - Modelo mental — sessions, tabs, panes]]` — o que os modos manipulam
   - `[[04 - Sessões persistentes — detach, attach, gerenciamento]]` — modo session
   - `[[06 - Modos avançados, plugins e copy-mode]]` — locked, scroll, search avançados
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - `[[Dicionário do Terminal#Mode (Zellij)|mode]]`, `[[Dicionário do Terminal#Status bar|status bar]]`
 
 - **Referências:**
@@ -781,9 +781,9 @@ Veja também: [[03 - Modos básicos e keybindings essenciais]], [[06 - Modos ava
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md"
-grep -c '\[\[' "03-Dominios/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md"
-grep -E "^### (Mode \(Zellij\)|Status bar)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md"
+grep -E "^### (Mode \(Zellij\)|Status bar)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥6 wikilinks, 2 verbetes.
@@ -791,7 +791,7 @@ Esperado: arquivo existe, ≥6 wikilinks, 2 verbetes.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-multiplexer): add nota 03 — Modos básicos"
 ```
 
@@ -802,7 +802,7 @@ git commit -m "feat(terminal-multiplexer): add nota 03 — Modos básicos"
 Após Task 5, 3 notas de Iniciado entregues. Verificar:
 
 ```bash
-ls -1 "03-Dominios/Terminal/Multiplexer/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Multiplexer/" | sort
 git log --oneline | head -7
 ```
 
@@ -813,8 +813,8 @@ Esperado: 3 notas + `index.md`. Últimos commits do galho.
 ## Task 6: Nota 04 — Sessões persistentes: detach, attach, gerenciamento
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Attach, Detach)
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Attach, Detach)
 
 **Conteúdo-chave:** `zellij`, `zellij attach`, `zellij ls`, `zellij delete-session`, auto-attach, resume vs new, naming, cleanup.
 
@@ -984,8 +984,8 @@ aliases:
   - `[[02 - Modelo mental — sessions, tabs, panes]]` — hierarquia
   - `[[03 - Modos básicos e keybindings essenciais]]` — modo session (Ctrl-o)
   - `[[05 - Layouts declarativos em KDL]]` — usar layouts em vez de tentar resurrect
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - `[[Dicionário do Terminal#Session (Zellij)|session]]`, `[[Dicionário do Terminal#Attach|attach]]`, `[[Dicionário do Terminal#Detach|detach]]`
 
 - **Referências:**
@@ -1009,15 +1009,15 @@ Veja também: [[04 - Sessões persistentes — detach, attach, gerenciamento]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md"
-grep -c '\[\[' "03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md"
-grep -E "^### (Attach|Detach)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md"
+grep -E "^### (Attach|Detach)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/04 - Sessões persistentes — detach, attach, gerenciamento.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-multiplexer): add nota 04 — Sessões persistentes"
 ```
 
@@ -1026,8 +1026,8 @@ git commit -m "feat(terminal-multiplexer): add nota 04 — Sessões persistentes
 ## Task 7: Nota 05 — Layouts declarativos em KDL
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: KDL, Layout (Zellij))
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: KDL, Layout (Zellij))
 
 **Conteúdo-chave:** sintaxe KDL básica; estrutura `layout { tab { pane ... } }`; propriedades; floating/stacked declarativo; default_layout; layouts customizados.
 
@@ -1253,8 +1253,8 @@ aliases:
   - `[[02 - Modelo mental — sessions, tabs, panes]]` — o que está sendo declarado
   - `[[04 - Sessões persistentes — detach, attach, gerenciamento]]` — sessions usam layouts
   - `[[07 - Integração com Neovim e shell]]` — layouts pra workflows comuns
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - `[[Dicionário do Terminal#KDL|KDL]]`, `[[Dicionário do Terminal#Layout (Zellij)|layout]]`
 
 - **Referências:**
@@ -1278,15 +1278,15 @@ Veja também: [[05 - Layouts declarativos em KDL]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md"
-grep -c '\[\[' "03-Dominios/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md"
-grep -E "^### (KDL|Layout \(Zellij\))$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md"
+grep -E "^### (KDL|Layout \(Zellij\))$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/05 - Layouts declarativos em KDL.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-multiplexer): add nota 05 — Layouts KDL"
 ```
 
@@ -1297,7 +1297,7 @@ git commit -m "feat(terminal-multiplexer): add nota 05 — Layouts KDL"
 Após Task 7, 2 notas Adepto entregues. Total no galho: 5 notas + MOC.
 
 ```bash
-ls -1 "03-Dominios/Terminal/Multiplexer/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Multiplexer/" | sort
 ```
 
 ---
@@ -1305,8 +1305,8 @@ ls -1 "03-Dominios/Terminal/Multiplexer/" | sort
 ## Task 8: Nota 06 — Modos avançados, plugins e copy-mode
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Locked mode, Plugin (Zellij), Pipe API, Tmux compat mode)
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Locked mode, Plugin (Zellij), Pipe API, Tmux compat mode)
 
 **Conteúdo-chave:** locked mode (passthrough), scroll/search avançado, tmux compat mode, arquitetura plugins WASM (lifecycle, pipe API, permissions), 2-3 plugins concretos verificados.
 
@@ -1490,8 +1490,8 @@ aliases:
   - `[[03 - Modos básicos e keybindings essenciais]]` — modos base
   - `[[05 - Layouts declarativos em KDL]]` — onde plugin é referenciado em layout
   - `[[07 - Integração com Neovim e shell]]` — vim-zellij-navigator profundo
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - `[[Dicionário do Terminal#Plugin (Zellij)|plugin]]`, `[[Dicionário do Terminal#Pipe API|pipe API]]`, `[[Dicionário do Terminal#Locked mode|locked mode]]`, `[[Dicionário do Terminal#Tmux compat mode|tmux compat]]`
 
 - **Referências:**
@@ -1527,15 +1527,15 @@ Veja também: [[06 - Modos avançados, plugins e copy-mode]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md"
-grep -c '\[\[' "03-Dominios/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md"
-grep -E "^### (Locked mode|Pipe API|Plugin \(Zellij\)|Tmux compat mode)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md"
+grep -E "^### (Locked mode|Pipe API|Plugin \(Zellij\)|Tmux compat mode)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/06 - Modos avançados, plugins e copy-mode.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-multiplexer): add nota 06 — Modos avançados, plugins, copy-mode"
 ```
 
@@ -1544,7 +1544,7 @@ git commit -m "feat(terminal-multiplexer): add nota 06 — Modos avançados, plu
 ## Task 9: Nota 07 — Integração com Neovim e shell
 
 **Files:**
-- Create: `03-Dominios/Terminal/Multiplexer/07 - Integração com Neovim e shell.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Multiplexer/07 - Integração com Neovim e shell.md`
 - (Sem verbetes novos no Dicionário — apenas referencia verbetes existentes.)
 
 **Conteúdo-chave:** focus events, vim-zellij-navigator (Ctrl-hjkl unificado), status bar dinâmico, `zellij action write-chars`/`send-keys`, hooks pre-detach.
@@ -1707,9 +1707,9 @@ aliases:
 - **Veja também:**
   - `[[06 - Modos avançados, plugins e copy-mode]]` — Pipe API e arquitetura plugin
   - `[[05 - Layouts declarativos em KDL]]` — onde plugin Zellij é referenciado
-  - `[[03-Dominios/Terminal/Editor/index|Editor (Neovim)]]` — galho 1, tudo sobre Neovim
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Editor/index|Editor (Neovim)]]` — galho 1, tudo sobre Neovim
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - `[[Dicionário do Terminal#Plugin (Zellij)|plugin]]`, `[[Dicionário do Terminal#Pipe API|pipe API]]`
 
 - **Referências:**
@@ -1719,8 +1719,8 @@ aliases:
 - [ ] **Step 4: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Multiplexer/07 - Integração com Neovim e shell.md"
-grep -c '\[\[' "03-Dominios/Terminal/Multiplexer/07 - Integração com Neovim e shell.md"
+test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/07 - Integração com Neovim e shell.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Multiplexer/07 - Integração com Neovim e shell.md"
 ```
 
 Esperado: arquivo existe, ≥7 wikilinks (sem novos verbetes desta vez).
@@ -1728,7 +1728,7 @@ Esperado: arquivo existe, ≥7 wikilinks (sem novos verbetes desta vez).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/07 - Integração com Neovim e shell.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/07 - Integração com Neovim e shell.md"
 git commit -m "feat(terminal-multiplexer): add nota 07 — Integração com Neovim e shell"
 ```
 
@@ -1739,7 +1739,7 @@ git commit -m "feat(terminal-multiplexer): add nota 07 — Integração com Neov
 Após Task 9, todas as 7 notas escritas.
 
 ```bash
-ls -1 "03-Dominios/Terminal/Multiplexer/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Multiplexer/" | sort
 ```
 
 Esperado: 7 notas + `index.md`.
@@ -1749,7 +1749,7 @@ Esperado: 7 notas + `index.md`.
 ## Task 10: Pass final no MOC do galho
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Multiplexer/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Multiplexer/index.md`
 
 **Objetivo:** trocar `<VERSAO_ZELLIJ>` pelo valor real capturado no Task 0; confirmar wikilinks ativos.
 
@@ -1781,7 +1781,7 @@ Se Zellij não estava instalado no Task 0, usar:
 
 ```bash
 for n in "01 - Zellij vs tmux vs screen" "02 - Modelo mental — sessions, tabs, panes" "03 - Modos básicos e keybindings essenciais" "04 - Sessões persistentes — detach, attach, gerenciamento" "05 - Layouts declarativos em KDL" "06 - Modos avançados, plugins e copy-mode" "07 - Integração com Neovim e shell"; do
-  test -f "03-Dominios/Terminal/Multiplexer/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
+  test -f "03-Dominios/Tecnologia/Terminal/Multiplexer/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
 done
 ```
 
@@ -1794,7 +1794,7 @@ Se `updated: 2026-05-21` já está correto, sem mudança. Senão, Edit.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Multiplexer/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Multiplexer/index.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal-multiplexer): pass final no MOC do galho
 
@@ -1809,14 +1809,14 @@ EOF
 ## Task 11: Pass final no Dicionário do Terminal
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 **Objetivo:** garantir ordem alfabética dentro do bloco `## Multiplexer / Zellij`; cada verbete tem "Veja também"; contagem ≥15.
 
 - [ ] **Step 1: Listar verbetes do bloco em ordem**
 
 ```bash
-awk '/^## Multiplexer \/ Zellij$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md"
+awk '/^## Multiplexer \/ Zellij$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Verbetes esperados (16) em ordem alfabética case-insensitive:
@@ -1846,7 +1846,7 @@ Se algum verbete estiver fora de ordem, use Edit pra mover o bloco inteiro (5 li
 ```bash
 awk '/^## Multiplexer \/ Zellij$/{f=1; next} /^## /{f=0}
      f && /^### / { v=$0; getline; getline; while(NF==0) getline; if ($0 !~ /^Veja também:/) print v " — sem Veja também" }' \
-  "03-Dominios/Terminal/Dicionário do Terminal.md"
+  "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: nenhum output. Se houver, adicionar "Veja também: ..." apontando pra nota canônica.
@@ -1854,7 +1854,7 @@ Esperado: nenhum output. Se houver, adicionar "Veja também: ..." apontando pra 
 - [ ] **Step 4: Contagem**
 
 ```bash
-awk '/^## Multiplexer \/ Zellij$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l
+awk '/^## Multiplexer \/ Zellij$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l
 ```
 
 Esperado: 16.
@@ -1866,12 +1866,12 @@ Já está `2026-05-21` (do Task 2 ou notas). Confirmar.
 - [ ] **Step 6: Commit (se houve reordenação ou fix)**
 
 ```bash
-git status --short "03-Dominios/Terminal/Dicionário do Terminal.md"
+git status --short "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Se modificado:
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal): pass final no Dicionário (bloco Multiplexer / Zellij)
 
@@ -1888,7 +1888,7 @@ Se sem mudanças, pular commit.
 ## Task 12: Atualizar tronco — ativar wikilink do Multiplexer
 
 **Files:**
-- Modify: `03-Dominios/Terminal/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/index.md`
 
 **Objetivo:** trocar `- Multiplexer — galho 3 (planejado): Zellij` por wikilink ativo.
 
@@ -1901,7 +1901,7 @@ Se sem mudanças, pular commit.
 
 `new_string`:
 ```markdown
-- [[03-Dominios/Terminal/Multiplexer/index|Multiplexer]] — galho 3: Zellij (sessions, layouts KDL, plugins WASM)
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/index|Multiplexer]] — galho 3: Zellij (sessions, layouts KDL, plugins WASM)
 ```
 
 - [ ] **Step 2: Atualizar `updated:` do tronco pra `2026-05-21`**
@@ -1911,7 +1911,7 @@ Edit do frontmatter.
 - [ ] **Step 3: Confirmar mudança**
 
 ```bash
-grep -n "Multiplexer" "03-Dominios/Terminal/index.md"
+grep -n "Multiplexer" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Esperado: wikilink ativo aparece; `(planejado)` desaparece.
@@ -1919,12 +1919,12 @@ Esperado: wikilink ativo aparece; `(planejado)` desaparece.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git commit -m "$(cat <<'EOF'
 feat(terminal): tronco com wikilink ativo pro galho 3 (Multiplexer)
 
 Substitui bullet "Multiplexer (planejado)" por wikilink ativo
-[[03-Dominios/Terminal/Multiplexer/index|Multiplexer]] após entrega do galho 3.
+[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|Multiplexer]] após entrega do galho 3.
 EOF
 )"
 ```
@@ -1942,7 +1942,7 @@ EOF
 
 ```bash
 python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py \
-  "03-Dominios/Terminal/Multiplexer/" --respect-public-only
+  "03-Dominios/Tecnologia/Terminal/Multiplexer/" --respect-public-only
 ```
 
 Lê o JSON gerado em `/tmp/wikilinks-report-*.json`. Esperado: `links_broken: 0`.
@@ -1952,7 +1952,7 @@ Se houver broken links, corrigir antes de declarar galho fechado.
 - [ ] **Step 2: Sanity check geral**
 
 ```bash
-ls -1 "03-Dominios/Terminal/Multiplexer/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Multiplexer/" | sort
 git log --oneline | head -15
 git log --format="%H %s" -15 | grep -i "co-authored" || echo "ok: nenhum commit com Co-Authored-By"
 ```
@@ -1965,7 +1965,7 @@ Esperado:
 - [ ] **Step 3: Contagem final do Dicionário**
 
 ```bash
-awk '/^## Multiplexer \/ Zellij$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l
+awk '/^## Multiplexer \/ Zellij$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l
 ```
 
 Esperado: 16.
@@ -1996,6 +1996,6 @@ Reporte ao usuário:
 
 **Type consistency:** nomes de arquivos consistentes entre Tasks 1, 4, 5, 6, 10. Verbetes consistentes entre Tasks 3-9 e Task 11.
 
-**Cobertura cross-galho:** Task 9 (nota 07) referencia galho 1 (Editor) via wikilink ao MOC dele — verificado que `03-Dominios/Terminal/Editor/index.md` existe.
+**Cobertura cross-galho:** Task 9 (nota 07) referencia galho 1 (Editor) via wikilink ao MOC dele — verificado que `03-Dominios/Tecnologia/Terminal/Editor/index.md` existe.
 
 Pronto pra execução.

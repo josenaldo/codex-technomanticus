@@ -40,9 +40,9 @@ Lista plana ordenada. Use quando a senda é direta e não precisa de fases.
 ```markdown
 ## Sequência
 
-1. [[03-Dominios/Frontend/index|Frontend (engenharia)]]
-2. [[03-Dominios/JavaScript/JavaScript|JavaScript]]
-3. [[03-Dominios/TypeScript/index|TypeScript]]
+1. [[03-Dominios/Tecnologia/Frontend/index|Frontend (engenharia)]]
+2. [[03-Dominios/Tecnologia/JavaScript/JavaScript|JavaScript]]
+3. [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]
 ...
 ```
 
@@ -53,12 +53,12 @@ Estrutura em fases. Use quando a senda tem etapas conceituais distintas.
 ```markdown
 ## Fase 0 — Cultura e intuição
 
-1. [[03-Dominios/IA/O que é IA]]
-2. [[03-Dominios/IA/LLMs vs ML clássico]]
+1. [[03-Dominios/Tecnologia/IA/O que é IA]]
+2. [[03-Dominios/Tecnologia/IA/LLMs vs ML clássico]]
 
 ## Fase 1 — Fundamentos
 
-1. [[03-Dominios/IA/Tokenização]]
+1. [[03-Dominios/Tecnologia/IA/Tokenização]]
 ...
 ```
 

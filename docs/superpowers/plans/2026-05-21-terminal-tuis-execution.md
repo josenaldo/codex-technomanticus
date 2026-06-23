@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Entregar o galho 4 da trilha Terminal — 7 notas atômicas (2 Iniciado + 3 Adepto + 2 Magus) sobre Lazygit (5 notas) e Lazydocker (2 notas) em `03-Dominios/Terminal/TUIs/`, MOC do galho, expansão do Dicionário com bloco `## TUIs de Dev / Lazygit / Lazydocker`, e ativação do wikilink no tronco.
+**Goal:** Entregar o galho 4 da trilha Terminal — 7 notas atômicas (2 Iniciado + 3 Adepto + 2 Magus) sobre Lazygit (5 notas) e Lazydocker (2 notas) em `03-Dominios/Tecnologia/Terminal/TUIs/`, MOC do galho, expansão do Dicionário com bloco `## TUIs de Dev / Lazygit / Lazydocker`, e ativação do wikilink no tronco.
 
 **Architecture:** Mesmo padrão consolidado nos galhos 2 e 3. Estrutura H2 fixa, fluxo SDD (implementer → reviewer combinado → fix se Critical/Important). Pesquisa-âncora em docs oficiais antes de cada nota. Versões reais capturadas no Task 0.
 
@@ -21,8 +21,8 @@
 3. **Sem `Co-Authored-By: Claude`**. **Sem `--no-verify`**.
 4. **Paths generalizados** pra `~/...`.
 5. **Wikilinks sem backticks** em `## Veja também`.
-6. **Tronco wikilink obrigatório**: `[[03-Dominios/Terminal/index|Trilha Terminal]]`.
-7. **MOC wikilink** em "Veja também": `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`.
+6. **Tronco wikilink obrigatório**: `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`.
+7. **MOC wikilink** em "Veja também": `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`.
 8. **≥5 armadilhas** por nota, cada uma com os 4 labels (Causa / Sintoma / Como detectar / Solução).
 9. **"Em inglês" em bullets bilíngues** `- **PT** — *EN*. "frase técnica curta em PT."` (8-10 termos). NUNCA tabela.
 10. **Code fences corretos:** `yaml` pra config, `bash` pra shell, `text`/`diff` pra exemplos de diff.
@@ -70,17 +70,17 @@ Não commitar. Anotar pra uso no Task 10 (substituir placeholders do MOC).
 ## Task 1: MOC do galho TUIs — esqueleto
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/index.md`
 
 - [ ] **Step 1: Criar pasta**
 
 ```bash
-mkdir -p "03-Dominios/Terminal/TUIs"
+mkdir -p "03-Dominios/Tecnologia/Terminal/TUIs"
 ```
 
 - [ ] **Step 2: Escrever MOC**
 
-Use `Write` em `03-Dominios/Terminal/TUIs/index.md`:
+Use `Write` em `03-Dominios/Tecnologia/Terminal/TUIs/index.md`:
 
 ```markdown
 ---
@@ -141,13 +141,13 @@ Esse galho cobre as duas TUIs juntas porque compartilham filosofia (keyboard-fir
 ## Veja também
 
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/index.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/index.md"
 git commit -m "feat(terminal-tuis): MOC do galho 4 — esqueleto"
 ```
 
@@ -156,7 +156,7 @@ git commit -m "feat(terminal-tuis): MOC do galho 4 — esqueleto"
 ## Task 2: Dicionário — bloco "TUIs de Dev / Lazygit / Lazydocker" esqueleto
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 - [ ] **Step 1: Localizar fim do bloco anterior**
 
@@ -180,7 +180,7 @@ Deve estar `updated: 2026-05-21`. Se não, Edit.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-tuis): adiciona bloco 'TUIs de Dev / Lazygit / Lazydocker' ao Dicionário"
 ```
 
@@ -189,8 +189,8 @@ git commit -m "feat(terminal-tuis): adiciona bloco 'TUIs de Dev / Lazygit / Lazy
 ## Task 3: Nota 01 — Lazygit: overview e operações essenciais
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Lazygit, TUI, Command log)
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Lazygit, TUI, Command log)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -388,8 +388,8 @@ Termos: TUI, painel (panel), staging, hunk, commit, push, pull, stash, amend, di
 - `[[03 - Lazygit — operações intermediárias]]` — rebase, cherry-pick
 - `[[04 - Lazygit — config e customização]]` — `~/.config/lazygit/config.yml`
 - `[[06 - Lazygit — operações avançadas]]` — bisect, customCommands
-- `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Lazygit|lazygit]]`, `[[Dicionário do Terminal#TUI|TUI]]`, `[[Dicionário do Terminal#Command log|command log]]`
 
 **Referências:**
@@ -420,9 +420,9 @@ Veja também: [[01 - Lazygit — overview e operações essenciais]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md"
-grep -c '\[\[' "03-Dominios/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md"
-grep -E "^### (Command log|Lazygit|TUI)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md"
+grep -E "^### (Command log|Lazygit|TUI)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥7 wikilinks, 3 verbetes visíveis.
@@ -430,7 +430,7 @@ Esperado: arquivo existe, ≥7 wikilinks, 3 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/01 - Lazygit — overview e operações essenciais.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-tuis): add nota 01 — Lazygit overview"
 ```
 
@@ -439,8 +439,8 @@ git commit -m "feat(terminal-tuis): add nota 01 — Lazygit overview"
 ## Task 4: Nota 02 — Lazydocker: overview e operações comuns
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Lazydocker, Docker-compose, Exec (Lazydocker))
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Lazydocker, Docker-compose, Exec (Lazydocker))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -612,8 +612,8 @@ Termos: container, image, volume, network, log, exec, dashboard, hot reload, hea
 - `[[01 - Lazygit — overview e operações essenciais]]` — TUI irmã pra git
 - `[[05 - Lazydocker — config, customização e workflow]]` — `~/.config/lazydocker/config.yml`
 - `[[07 - Lazydocker — debugging avançado e docker-compose]]` — Magus
-- `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Lazydocker|lazydocker]]`, `[[Dicionário do Terminal#Docker-compose|docker-compose]]`, `[[Dicionário do Terminal#Exec (Lazydocker)|exec]]`
 
 **Referências:**
@@ -642,15 +642,15 @@ Veja também: [[02 - Lazydocker — overview e operações comuns]], [[05 - Lazy
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md"
-grep -c '\[\[' "03-Dominios/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md"
-grep -E "^### (Docker-compose|Exec \(Lazydocker\)|Lazydocker)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md"
+grep -E "^### (Docker-compose|Exec \(Lazydocker\)|Lazydocker)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/02 - Lazydocker — overview e operações comuns.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-tuis): add nota 02 — Lazydocker overview"
 ```
 
@@ -665,8 +665,8 @@ Após Task 4, 2 notas de Iniciado entregues.
 ## Task 5: Nota 03 — Lazygit: operações intermediárias (rebase, cherry-pick, hunks)
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/03 - Lazygit — operações intermediárias.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Cherry-pick, Hunk, Interactive rebase, Reflog)
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/03 - Lazygit — operações intermediárias.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Cherry-pick, Hunk, Interactive rebase, Reflog)
 
 **Conteúdo-chave:** rebase interativo via UI, cherry-pick, staging por hunks, discard, reflog, merge conflicts.
 
@@ -822,8 +822,8 @@ Termos: rebase, cherry-pick, hunk, stage, discard, reflog, conflict, squash, fix
 - `[[01 - Lazygit — overview e operações essenciais]]` — pré-req
 - `[[04 - Lazygit — config e customização]]` — `editPreset` pra conflict resolution externa
 - `[[06 - Lazygit — operações avançadas]]` — bisect, customCommands
-- `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Cherry-pick|cherry-pick]]`, `[[Dicionário do Terminal#Hunk|hunk]]`, `[[Dicionário do Terminal#Interactive rebase|interactive rebase]]`, `[[Dicionário do Terminal#Reflog|reflog]]`
 
 **Referências:**
@@ -857,15 +857,15 @@ Veja também: [[03 - Lazygit — operações intermediárias]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/TUIs/03 - Lazygit — operações intermediárias.md"
-grep -c '\[\[' "03-Dominios/Terminal/TUIs/03 - Lazygit — operações intermediárias.md"
-grep -E "^### (Cherry-pick|Hunk|Interactive rebase|Reflog)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/TUIs/03 - Lazygit — operações intermediárias.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/TUIs/03 - Lazygit — operações intermediárias.md"
+grep -E "^### (Cherry-pick|Hunk|Interactive rebase|Reflog)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/03 - Lazygit — operações intermediárias.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/03 - Lazygit — operações intermediárias.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-tuis): add nota 03 — Lazygit intermediário"
 ```
 
@@ -874,8 +874,8 @@ git commit -m "feat(terminal-tuis): add nota 03 — Lazygit intermediário"
 ## Task 6: Nota 04 — Lazygit: config e customização (`config.yml`)
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/04 - Lazygit — config e customização.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: Editor preset)
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/04 - Lazygit — config e customização.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: Editor preset)
 
 **Conteúdo-chave:** estrutura do `config.yml`, seções gui/git/os/keybinding/customCommands, theme custom, editPreset, versionar via dotfiles.
 
@@ -1097,9 +1097,9 @@ Termos: config, theme, preset, keybinding, custom command, paging, scrollback, h
 **Veja também:**
 - `[[01 - Lazygit — overview e operações essenciais]]` — pré-req
 - `[[06 - Lazygit — operações avançadas]]` — customCommands profundo
-- `[[03-Dominios/Terminal/Editor/index|Editor (Neovim)]]` — `editPreset: nvim`
-- `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Editor/index|Editor (Neovim)]]` — `editPreset: nvim`
+- `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Editor preset|editor preset]]`, `[[Dicionário do Terminal#Lazygit|lazygit]]`
 
 **Referências:**
@@ -1117,15 +1117,15 @@ Veja também: [[04 - Lazygit — config e customização]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/TUIs/04 - Lazygit — config e customização.md"
-grep -c '\[\[' "03-Dominios/Terminal/TUIs/04 - Lazygit — config e customização.md"
-grep -E "^### Editor preset$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/TUIs/04 - Lazygit — config e customização.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/TUIs/04 - Lazygit — config e customização.md"
+grep -E "^### Editor preset$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/04 - Lazygit — config e customização.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/04 - Lazygit — config e customização.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-tuis): add nota 04 — Lazygit config"
 ```
 
@@ -1134,8 +1134,8 @@ git commit -m "feat(terminal-tuis): add nota 04 — Lazygit config"
 ## Task 7: Nota 05 — Lazydocker: config, customização e workflow
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (sem verbetes novos; já temos Docker-compose, Exec, Lazydocker — referencia)
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (sem verbetes novos; já temos Docker-compose, Exec, Lazydocker — referencia)
 
 **Conteúdo-chave:** `~/.config/lazydocker/config.yml`, gui/commandTemplates/customCommands, workflow com docker-compose, podman alternative.
 
@@ -1329,8 +1329,8 @@ Termos: config, command template, placeholder, container, service, volume, logs,
 **Veja também:**
 - `[[02 - Lazydocker — overview e operações comuns]]` — pré-req
 - `[[07 - Lazydocker — debugging avançado e docker-compose]]` — Magus
-- `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Docker-compose|docker-compose]]`, `[[Dicionário do Terminal#Exec (Lazydocker)|exec]]`, `[[Dicionário do Terminal#Lazydocker|lazydocker]]`
 
 **Referências:**
@@ -1342,8 +1342,8 @@ Termos: config, command template, placeholder, container, service, volume, logs,
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md"
-grep -c '\[\[' "03-Dominios/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md"
+test -f "03-Dominios/Tecnologia/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md"
 ```
 
 Esperado: ≥7 wikilinks.
@@ -1351,7 +1351,7 @@ Esperado: ≥7 wikilinks.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/05 - Lazydocker — config, customização e workflow.md"
 git commit -m "feat(terminal-tuis): add nota 05 — Lazydocker config"
 ```
 
@@ -1366,8 +1366,8 @@ Após Task 7, 3 notas Adepto entregues. Total no galho: 5 notas + MOC.
 ## Task 8: Nota 06 — Lazygit: operações avançadas (bisect, custom commands, hooks)
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/06 - Lazygit — operações avançadas.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Bisect (Lazygit), Custom command (Lazygit), Worktree)
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/06 - Lazygit — operações avançadas.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Bisect (Lazygit), Custom command (Lazygit), Worktree)
 
 **Conteúdo-chave:** bisect via UI, customCommands schema completo + exemplos verificáveis, git hooks (pre-commit framework), worktrees no Lazygit.
 
@@ -1622,8 +1622,8 @@ Termos: bisect, regression, custom command, prompt, placeholder, hook, worktree,
 **Veja também:**
 - `[[03 - Lazygit — operações intermediárias]]` — pré-req (rebase, cherry-pick)
 - `[[04 - Lazygit — config e customização]]` — onde customCommands vivem
-- `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Bisect (Lazygit)|bisect]]`, `[[Dicionário do Terminal#Custom command (Lazygit)|custom command]]`, `[[Dicionário do Terminal#Worktree|worktree]]`
 
 **Referências:**
@@ -1653,15 +1653,15 @@ Veja também: [[06 - Lazygit — operações avançadas]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/TUIs/06 - Lazygit — operações avançadas.md"
-grep -c '\[\[' "03-Dominios/Terminal/TUIs/06 - Lazygit — operações avançadas.md"
-grep -E "^### (Bisect \(Lazygit\)|Custom command \(Lazygit\)|Worktree)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/TUIs/06 - Lazygit — operações avançadas.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/TUIs/06 - Lazygit — operações avançadas.md"
+grep -E "^### (Bisect \(Lazygit\)|Custom command \(Lazygit\)|Worktree)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/06 - Lazygit — operações avançadas.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/06 - Lazygit — operações avançadas.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-tuis): add nota 06 — Lazygit avançado"
 ```
 
@@ -1670,7 +1670,7 @@ git commit -m "feat(terminal-tuis): add nota 06 — Lazygit avançado"
 ## Task 9: Nota 07 — Lazydocker: debugging avançado e docker-compose
 
 **Files:**
-- Create: `03-Dominios/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md`
+- Create: `03-Dominios/Tecnologia/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md`
 - (Sem verbetes novos no Dicionário.)
 
 **Conteúdo-chave:** stack docker-compose no Lazydocker, inspect verboso, logs filter, exec custom, debug crash loop, health checks, compose overrides.
@@ -1845,8 +1845,8 @@ Termos: stack, service, dependency, health check, inspect, override, regex, rest
 **Veja também:**
 - `[[02 - Lazydocker — overview e operações comuns]]` — pré-req
 - `[[05 - Lazydocker — config, customização e workflow]]` — customCommands
-- `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Docker-compose|docker-compose]]`, `[[Dicionário do Terminal#Exec (Lazydocker)|exec]]`, `[[Dicionário do Terminal#Lazydocker|lazydocker]]`
 
 **Referências:**
@@ -1859,14 +1859,14 @@ Termos: stack, service, dependency, health check, inspect, override, regex, rest
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md"
-grep -c '\[\[' "03-Dominios/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md"
+test -f "03-Dominios/Tecnologia/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/07 - Lazydocker — debugging avançado e docker-compose.md"
 git commit -m "feat(terminal-tuis): add nota 07 — Lazydocker debugging + docker-compose"
 ```
 
@@ -1881,7 +1881,7 @@ Após Task 9, 7 notas escritas.
 ## Task 10: Pass final no MOC do galho
 
 **Files:**
-- Modify: `03-Dominios/Terminal/TUIs/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/TUIs/index.md`
 
 - [ ] **Step 1: Substituir placeholders de versão**
 
@@ -1903,7 +1903,7 @@ Use Edit:
 
 ```bash
 for n in "01 - Lazygit — overview e operações essenciais" "02 - Lazydocker — overview e operações comuns" "03 - Lazygit — operações intermediárias" "04 - Lazygit — config e customização" "05 - Lazydocker — config, customização e workflow" "06 - Lazygit — operações avançadas" "07 - Lazydocker — debugging avançado e docker-compose"; do
-  test -f "03-Dominios/Terminal/TUIs/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
+  test -f "03-Dominios/Tecnologia/Terminal/TUIs/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
 done
 ```
 
@@ -1912,7 +1912,7 @@ Esperado: 7 `ok:`.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/TUIs/index.md"
+git add "03-Dominios/Tecnologia/Terminal/TUIs/index.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal-tuis): pass final no MOC do galho
 
@@ -1927,12 +1927,12 @@ EOF
 ## Task 11: Pass final no Dicionário do Terminal
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 - [ ] **Step 1: Listar verbetes do bloco**
 
 ```bash
-awk '/^## TUIs de Dev \/ Lazygit \/ Lazydocker$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md"
+awk '/^## TUIs de Dev \/ Lazygit \/ Lazydocker$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Verbetes esperados (14) em ordem alfabética case-insensitive:
@@ -1960,7 +1960,7 @@ Use Edit pra mover blocos fora de ordem. Cada verbete = `### Nome` + corpo + lin
 ```bash
 awk '/^## TUIs de Dev \/ Lazygit \/ Lazydocker$/{f=1; next} /^## /{f=0}
      f && /^### / { v=$0; getline; getline; while(NF==0) getline; if ($0 !~ /^Veja também:/) print v " — sem Veja também" }' \
-  "03-Dominios/Terminal/Dicionário do Terminal.md"
+  "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: nenhum output.
@@ -1968,7 +1968,7 @@ Esperado: nenhum output.
 - [ ] **Step 4: Contagem**
 
 ```bash
-awk '/^## TUIs de Dev \/ Lazygit \/ Lazydocker$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l
+awk '/^## TUIs de Dev \/ Lazygit \/ Lazydocker$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l
 ```
 
 Esperado: 14.
@@ -1976,12 +1976,12 @@ Esperado: 14.
 - [ ] **Step 5: Commit (se houve mudança)**
 
 ```bash
-git status --short "03-Dominios/Terminal/Dicionário do Terminal.md"
+git status --short "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Se modificado:
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal): pass final no Dicionário (bloco TUIs de Dev / Lazygit / Lazydocker)
 
@@ -1998,7 +1998,7 @@ Sem mudanças = pular commit.
 ## Task 12: Atualizar tronco — ativar wikilink do TUIs
 
 **Files:**
-- Modify: `03-Dominios/Terminal/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/index.md`
 
 - [ ] **Step 1: Edit tronco**
 
@@ -2009,7 +2009,7 @@ Sem mudanças = pular commit.
 
 `new_string`:
 ```markdown
-- [[03-Dominios/Terminal/TUIs/index|TUIs de Dev]] — galho 4: Lazygit + Lazydocker (operações, config, debugging)
+- [[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs de Dev]] — galho 4: Lazygit + Lazydocker (operações, config, debugging)
 ```
 
 - [ ] **Step 2: `updated:` do tronco**
@@ -2019,7 +2019,7 @@ Edit pra `updated: 2026-05-21` se já não estiver.
 - [ ] **Step 3: Confirmar**
 
 ```bash
-grep -n "TUIs" "03-Dominios/Terminal/index.md"
+grep -n "TUIs" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Esperado: wikilink ativo aparece; `(planejado)` desaparece.
@@ -2027,12 +2027,12 @@ Esperado: wikilink ativo aparece; `(planejado)` desaparece.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git commit -m "$(cat <<'EOF'
 feat(terminal): tronco com wikilink ativo pro galho 4 (TUIs de Dev)
 
 Substitui bullet "TUIs de Dev (planejado)" por wikilink ativo
-[[03-Dominios/Terminal/TUIs/index|TUIs de Dev]] após entrega do galho 4.
+[[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs de Dev]] após entrega do galho 4.
 EOF
 )"
 ```
@@ -2047,7 +2047,7 @@ EOF
 - [ ] **Step 1: Verificar wikilinks**
 
 ```bash
-python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py "03-Dominios/Terminal/TUIs/" --respect-public-only
+python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py "03-Dominios/Tecnologia/Terminal/TUIs/" --respect-public-only
 ```
 
 Lê o JSON em `/tmp/wikilinks-report-*.json`. Esperado: `links_broken: 0`.
@@ -2055,7 +2055,7 @@ Lê o JSON em `/tmp/wikilinks-report-*.json`. Esperado: `links_broken: 0`.
 - [ ] **Step 2: Sanity check**
 
 ```bash
-ls -1 "03-Dominios/Terminal/TUIs/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/TUIs/" | sort
 git log --oneline | head -16
 git log --format="%H %s" -16 | grep -i "co-authored" || echo "ok: nenhum commit com Co-Authored-By"
 ```
@@ -2068,7 +2068,7 @@ Esperado:
 - [ ] **Step 3: Contagem final do Dicionário**
 
 ```bash
-awk '/^## TUIs de Dev \/ Lazygit \/ Lazydocker$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l
+awk '/^## TUIs de Dev \/ Lazygit \/ Lazydocker$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l
 ```
 
 Esperado: 14.
@@ -2097,6 +2097,6 @@ Reporte:
 
 **Type consistency:** nomes de arquivos consistentes (Tasks 1, 3-9, 10). Verbetes consistentes (Tasks 3-8, 11).
 
-**Cross-galho:** Task 6 (nota 04) referencia galho 1 (Editor) via wikilink ao MOC dele — `03-Dominios/Terminal/Editor/index.md` existe (verificado em galho 3).
+**Cross-galho:** Task 6 (nota 04) referencia galho 1 (Editor) via wikilink ao MOC dele — `03-Dominios/Tecnologia/Terminal/Editor/index.md` existe (verificado em galho 3).
 
 Pronto pra execução.

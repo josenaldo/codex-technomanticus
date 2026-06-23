@@ -4,7 +4,7 @@
 
 **Goal:** Criar as 8 notas atômicas do Galho 1 (Mental Model) da trilha Claude Code no vault Obsidian codex-technomanticus.
 
-**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/IA/Claude Code/Mental Model/`. Segue o padrão de notas atômicas da trilha: frontmatter YAML, callout TL;DR, seções de conteúdo, "Veja também" com wikilinks, "Referências". Sem testes — verificação é checar que o arquivo existe e tem a estrutura esperada.
+**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/`. Segue o padrão de notas atômicas da trilha: frontmatter YAML, callout TL;DR, seções de conteúdo, "Veja também" com wikilinks, "Referências". Sem testes — verificação é checar que o arquivo existe e tem a estrutura esperada.
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks `[[path|alias]]`, callouts `> [!type]`
 
@@ -13,21 +13,21 @@
 ## File Map
 
 **Criar:**
-- `03-Dominios/IA/Claude Code/Mental Model/01 - O loop agentic.md`
-- `03-Dominios/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase.md`
-- `03-Dominios/IA/Claude Code/Mental Model/03 - Tool use.md`
-- `03-Dominios/IA/Claude Code/Mental Model/04 - Context window.md`
-- `03-Dominios/IA/Claude Code/Mental Model/05 - Modos de operação.md`
-- `03-Dominios/IA/Claude Code/Mental Model/06 - Compaction.md`
-- `03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo.md`
-- `03-Dominios/IA/Claude Code/Mental Model/08 - Como o agente decide.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/03 - Tool use.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/05 - Modos de operação.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo.md`
+- `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide.md`
 
 ---
 
 ## Task 1: Criar `01 - O loop agentic.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/01 - O loop agentic.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -123,10 +123,10 @@ claude -p "task" --max-turns 20
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase|02 - Como Claude Code lê um codebase]]
-- [[03-Dominios/IA/Claude Code/Mental Model/03 - Tool use|03 - Tool use]]
-- [[03-Dominios/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase|02 - Como Claude Code lê um codebase]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/03 - Tool use|03 - Tool use]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -137,7 +137,7 @@ claude -p "task" --max-turns 20
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: `01 - O loop agentic.md` na listagem.
@@ -145,7 +145,7 @@ Esperado: `01 - O loop agentic.md` na listagem.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/01 - O loop agentic.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic.md"
 git commit -m "feat(claude-code/g1): add 01 - O loop agentic"
 ```
 
@@ -154,7 +154,7 @@ git commit -m "feat(claude-code/g1): add 01 - O loop agentic"
 ## Task 2: Criar `02 - Como Claude Code lê um codebase.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -242,10 +242,10 @@ O agente não lê tudo — lê o mínimo necessário para a tarefa. Isso mantém
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
-- [[03-Dominios/IA/Claude Code/Mental Model/03 - Tool use|03 - Tool use]]
-- [[03-Dominios/IA/Claude Code/Configuração/index|Configuração]] — CLAUDE.md em detalhes
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/03 - Tool use|03 - Tool use]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — CLAUDE.md em detalhes
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -255,7 +255,7 @@ O agente não lê tudo — lê o mínimo necessário para a tarefa. Isso mantém
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: `02 - Como Claude Code lê um codebase.md` na listagem.
@@ -263,7 +263,7 @@ Esperado: `02 - Como Claude Code lê um codebase.md` na listagem.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase.md"
 git commit -m "feat(claude-code/g1): add 02 - Como Claude Code lê um codebase"
 ```
 
@@ -272,7 +272,7 @@ git commit -m "feat(claude-code/g1): add 02 - Como Claude Code lê um codebase"
 ## Task 3: Criar `03 - Tool use.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/03 - Tool use.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/03 - Tool use.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -408,10 +408,10 @@ Ruim: Bash("cat src/auth.ts")                      → 3000 linhas no contexto
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
-- [[03-Dominios/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — controlar tool use via hooks
-- [[03-Dominios/IA/Claude Code/Configuração/index|Configuração]] — settings.json e permissões
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — controlar tool use via hooks
+- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — settings.json e permissões
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -421,7 +421,7 @@ Ruim: Bash("cat src/auth.ts")                      → 3000 linhas no contexto
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: `03 - Tool use.md` na listagem.
@@ -429,7 +429,7 @@ Esperado: `03 - Tool use.md` na listagem.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/03 - Tool use.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/03 - Tool use.md"
 git commit -m "feat(claude-code/g1): add 03 - Tool use"
 ```
 
@@ -438,7 +438,7 @@ git commit -m "feat(claude-code/g1): add 03 - Tool use"
 ## Task 4: Criar `04 - Context window.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/04 - Context window.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -505,7 +505,7 @@ Input tokens = dinheiro. Em uma sessão que acumula 150k tokens de contexto e te
 
 ### Qualidade
 
-Com contexto saturado (próximo do limite), o modelo começa a "perder" detalhes do início da sessão. Uma instrução dada no turn 1 pode ser esquecida no turn 40. Isso é [[03-Dominios/IA/Claude Code/Mental Model/06 - Compaction|compaction]] em ação — mas compaction tem custo de fidelidade.
+Com contexto saturado (próximo do limite), o modelo começa a "perder" detalhes do início da sessão. Uma instrução dada no turn 1 pode ser esquecida no turn 40. Isso é [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|compaction]] em ação — mas compaction tem custo de fidelidade.
 
 ### Velocidade
 
@@ -542,10 +542,10 @@ npm ci 2>&1 | tail -5
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]]
-- [[03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]]
-- [[03-Dominios/IA/Claude Code/Mental Model/03 - Tool use|03 - Tool use]]
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/03 - Tool use|03 - Tool use]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -555,7 +555,7 @@ npm ci 2>&1 | tail -5
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: `04 - Context window.md` na listagem.
@@ -563,7 +563,7 @@ Esperado: `04 - Context window.md` na listagem.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/04 - Context window.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window.md"
 git commit -m "feat(claude-code/g1): add 04 - Context window"
 ```
 
@@ -572,7 +572,7 @@ git commit -m "feat(claude-code/g1): add 04 - Context window"
 ## Task 5: Criar `05 - Modos de operação.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/05 - Modos de operação.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/05 - Modos de operação.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -729,10 +729,10 @@ echo "$RESULT" | jq '.result'
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Workflows/01 - Plan Mode|01 - Plan Mode]] — uso detalhado do plan mode
-- [[03-Dominios/IA/Claude Code/Time e Automação/01 - Headless mode|01 - Headless mode]] — headless em profundidade
-- [[03-Dominios/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — guardrails para auto mode
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/01 - Plan Mode|01 - Plan Mode]] — uso detalhado do plan mode
+- [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/01 - Headless mode|01 - Headless mode]] — headless em profundidade
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — guardrails para auto mode
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -742,7 +742,7 @@ echo "$RESULT" | jq '.result'
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: `05 - Modos de operação.md` na listagem.
@@ -750,7 +750,7 @@ Esperado: `05 - Modos de operação.md` na listagem.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/05 - Modos de operação.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/05 - Modos de operação.md"
 git commit -m "feat(claude-code/g1): add 05 - Modos de operação"
 ```
 
@@ -759,7 +759,7 @@ git commit -m "feat(claude-code/g1): add 05 - Modos de operação"
 ## Task 6: Criar `06 - Compaction.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/06 - Compaction.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -890,10 +890,10 @@ Retoma uma sessão (incluindo compacted). Útil para continuar trabalho; mas o c
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]
-- [[03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]]
-- [[03-Dominios/IA/Claude Code/Configuração/index|Configuração]] — CLAUDE.md como âncora entre sessões
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — CLAUDE.md como âncora entre sessões
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -903,7 +903,7 @@ Retoma uma sessão (incluindo compacted). Útil para continuar trabalho; mas o c
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: `06 - Compaction.md` na listagem.
@@ -911,7 +911,7 @@ Esperado: `06 - Compaction.md` na listagem.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/06 - Compaction.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction.md"
 git commit -m "feat(claude-code/g1): add 06 - Compaction"
 ```
 
@@ -920,7 +920,7 @@ git commit -m "feat(claude-code/g1): add 06 - Compaction"
 ## Task 7: Criar `07 - Tokens e custo.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -1070,10 +1070,10 @@ O ccusage é a fonte de verdade para o seu uso real.
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]
-- [[03-Dominios/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]]
-- [[03-Dominios/IA/Claude Code/Time e Automação/05 - Controle de custo|05 - Controle de custo]] — monitoramento em nível de time
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/05 - Controle de custo|05 - Controle de custo]] — monitoramento em nível de time
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -1084,7 +1084,7 @@ O ccusage é a fonte de verdade para o seu uso real.
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: `07 - Tokens e custo.md` na listagem.
@@ -1092,7 +1092,7 @@ Esperado: `07 - Tokens e custo.md` na listagem.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/07 - Tokens e custo.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo.md"
 git commit -m "feat(claude-code/g1): add 07 - Tokens e custo"
 ```
 
@@ -1101,7 +1101,7 @@ git commit -m "feat(claude-code/g1): add 07 - Tokens e custo"
 ## Task 8: Criar `08 - Como o agente decide.md`
 
 **Files:**
-- Create: `03-Dominios/IA/Claude Code/Mental Model/08 - Como o agente decide.md`
+- Create: `03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide.md`
 
 - [ ] **Step 1: Criar o arquivo**
 
@@ -1236,10 +1236,10 @@ Esses sinais são informação valiosa — não os ignore.
 
 ## Veja também
 
-- [[03-Dominios/IA/Claude Code/Workflows/09 - Prompting para Claude Code|09 - Prompting para Claude Code]]
-- [[03-Dominios/IA/Claude Code/Configuração/index|Configuração]] — CLAUDE.md e como moldar decisões
-- [[03-Dominios/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
-- [[03-Dominios/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/09 - Prompting para Claude Code|09 - Prompting para Claude Code]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — CLAUDE.md e como moldar decisões
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ## Referências
 
@@ -1249,7 +1249,7 @@ Esses sinais são informação valiosa — não os ignore.
 - [ ] **Step 2: Verificar**
 
 ```bash
-ls "03-Dominios/IA/Claude Code/Mental Model/"
+ls "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/"
 ```
 
 Esperado: todos os 8 arquivos listados.
@@ -1257,6 +1257,6 @@ Esperado: todos os 8 arquivos listados.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/IA/Claude Code/Mental Model/08 - Como o agente decide.md"
+git add "03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide.md"
 git commit -m "feat(claude-code/g1): add 08 - Como o agente decide"
 ```

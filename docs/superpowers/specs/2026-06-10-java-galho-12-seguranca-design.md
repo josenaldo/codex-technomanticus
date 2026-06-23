@@ -21,9 +21,9 @@ Este é o **décimo segundo galho** da trilha Java Senior (roadmap em `docs/supe
 
 **A fronteira-assinatura é DUPLA.** Os Galhos 8 e 9 plantaram ganchos esperando exatamente as notas deste galho. Este galho **linka de volta aos dois**, sem re-explicar nenhum (e toca **levemente** o Galho 7 num único ponto — a Servlet API por baixo do filter chain):
 
-- **Galho 8 (o mecanismo):** o **proxy AOP** que intercepta `@PreAuthorize` → [[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies]]; os **limites do proxy** (`@PreAuthorize` em método `private`/`final` não funciona, self-invocation) → [[03-Dominios/Java/Spring Core e Boot/10 - Self-invocation e os limites do proxy|Self-invocation e os limites do proxy]]; o `SecurityFilterChain` é um **bean** no container → [[03-Dominios/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext]]. Este galho cobre **method security** e a config; **não o mecanismo** (que é o AOP do Galho 8).
-- **Galho 9 (a camada web que a segurança protege):** o filter chain senta na frente do **DispatcherServlet** → [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]]; o **`Filter` genérico vs o `SecurityFilterChain`** → [[03-Dominios/Java/Web e APIs REST/11 - Interceptors vs Filters|Interceptors vs Filters]] (que *espera* esse link — `:357`); **CORS** foi tratado como config MVC no Galho 9 — aqui é a **borda de segurança**. Este galho cobre a **camada de filtros do Spring Security**; **não re-explica o pipeline MVC**.
-- **Galho 7 (toque leve — a Servlet API por baixo):** o filter chain do Spring Security é, no fundo, um único `Filter` da plataforma Servlet → [[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API]] (link só na nota 06, sem re-explicar a spec).
+- **Galho 8 (o mecanismo):** o **proxy AOP** que intercepta `@PreAuthorize` → [[03-Dominios/Tecnologia/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies]]; os **limites do proxy** (`@PreAuthorize` em método `private`/`final` não funciona, self-invocation) → [[03-Dominios/Tecnologia/Java/Spring Core e Boot/10 - Self-invocation e os limites do proxy|Self-invocation e os limites do proxy]]; o `SecurityFilterChain` é um **bean** no container → [[03-Dominios/Tecnologia/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext]]. Este galho cobre **method security** e a config; **não o mecanismo** (que é o AOP do Galho 8).
+- **Galho 9 (a camada web que a segurança protege):** o filter chain senta na frente do **DispatcherServlet** → [[03-Dominios/Tecnologia/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]]; o **`Filter` genérico vs o `SecurityFilterChain`** → [[03-Dominios/Tecnologia/Java/Web e APIs REST/11 - Interceptors vs Filters|Interceptors vs Filters]] (que *espera* esse link — `:357`); **CORS** foi tratado como config MVC no Galho 9 — aqui é a **borda de segurança**. Este galho cobre a **camada de filtros do Spring Security**; **não re-explica o pipeline MVC**.
+- **Galho 7 (toque leve — a Servlet API por baixo):** o filter chain do Spring Security é, no fundo, um único `Filter` da plataforma Servlet → [[03-Dominios/Tecnologia/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API]] (link só na nota 06, sem re-explicar a spec).
 
 Os Galhos 8 e 9 deixaram **ganchos "Galho 12 (planejado)"** em texto esperando exatamente esses wikilinks (dívida reversa — §3.6). Este galho **quita** essa dívida.
 
@@ -31,7 +31,7 @@ Segurança é a **camada que protege a borda web do Galho 9 usando o mecanismo d
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **18 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda INTEGRAL do tronco `Spring Security.md` + quitação da dívida reversa**, em `03-Dominios/Java/Segurança/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 6 Adepto + 7 Magus**).
+Produzir, em uma sessão de execução dedicada, **18 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda INTEGRAL do tronco `Spring Security.md` + quitação da dívida reversa**, em `03-Dominios/Tecnologia/Java/Segurança/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 6 Adepto + 7 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -45,7 +45,7 @@ A barra é "explicar o filter chain, reconhecer o mecanismo (Galho 8) e a borda 
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Segurança/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Segurança/`)
 
 Pasta **nova**, flat. 18 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase).
 
@@ -97,7 +97,7 @@ Pasta **nova**, flat. 18 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Segurança/index.md`:
+`03-Dominios/Tecnologia/Java/Segurança/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Segurança"`, tags `java`/`seguranca`/`moc`, aliases `["Segurança", "Spring Security", "Segurança em Java", "Galho 12 - Segurança"]`)
 - TL;DR callout (galho cobre a camada que protege a borda web do Galho 9 usando o mecanismo do Galho 8: o filter chain, autenticação e password encoding, autorização URL-based e method-level, JWT, OAuth2/OIDC, CSRF/CORS, session management e security headers, e o OWASP Top 10 mapeado pras defesas do Spring Security)
@@ -109,12 +109,12 @@ Pasta **nova**, flat. 18 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **API stateless com JWT** — 01 → 08 → 09 → 10 → 13 → 17 (filter chain, JWT, Resource Server, CSRF off, refresh tokens, trace)
   - **Autorização do grosso ao fino** — 05 → 07 → 14 → 16 (URL-based, method security, AuthorizationManager/RBAC/ABAC, OWASP)
   - **Protegendo a borda web** (a ponte com o Galho 9) — 01 → 06 → 10 → 11 → 15 + notas do Galho 9 (DispatcherServlet, Interceptors vs Filters)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **Galho 8** (Spring Core e Boot — o mecanismo AOP que faz method security funcionar), **Galho 9** (Web e APIs REST — a borda que a segurança protege), **Galho 7** (Jakarta EE — a Servlet API por baixo do filter chain), nota existente [[Redes e Protocolos]] (HTTPS/TLS), Dicionário de Java; Galhos 13/16/17 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **Galho 8** (Spring Core e Boot — o mecanismo AOP que faz method security funcionar), **Galho 9** (Web e APIs REST — a borda que a segurança protege), **Galho 7** (Jakarta EE — a Servlet API por baixo do filter chain), nota existente [[Redes e Protocolos]] (HTTPS/TLS), Dicionário de Java; Galhos 13/16/17 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**327 verbetes** após o Galho 11, `type: glossary`, `updated: 2026-06-10`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Manter `updated: 2026-06-10` (mesmo dia do Galho 11).
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**327 verbetes** após o Galho 11, `type: glossary`, `updated: 2026-06-10`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Manter `updated: 2026-06-10` (mesmo dia do Galho 11).
 
 Verbetes a inserir (~35, conferir dups antes):
 
@@ -124,10 +124,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 12)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha 42 (atualmente `12. Segurança *(planejado)* — Spring Security, JWT, OAuth2/OIDC, CSRF/CORS`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha 42 (atualmente `12. Segurança *(planejado)* — Spring Security, JWT, OAuth2/OIDC, CSRF/CORS`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-12. [[03-Dominios/Java/Segurança/index|Segurança]] — Spring Security e o filter chain, autenticação e password encoding, autorização URL-based e method-level, JWT, OAuth2/OIDC, CSRF/CORS, session management, security headers e OWASP no contexto Java
+12. [[03-Dominios/Tecnologia/Java/Segurança/index|Segurança]] — Spring Security e o filter chain, autenticação e password encoding, autorização URL-based e method-level, JWT, OAuth2/OIDC, CSRF/CORS, session management, security headers e OWASP no contexto Java
 ```
 
 Atualizar `updated` para `2026-06-10`. Não mexer no resto do MOC central.
@@ -142,7 +142,7 @@ O tronco dedicado deste galho (1116 linhas, `publish: false`). **Poda integral**
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Segurança/index|Segurança]]. Veja [[03-Dominios/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain|O que é Spring Security]], [[03-Dominios/Java/Segurança/06 - A arquitetura do filter chain em profundidade|A arquitetura do filter chain]], [[03-Dominios/Java/Segurança/08 - JWT — estrutura, assinatura e validação|JWT]], [[03-Dominios/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]] e [[03-Dominios/Java/Segurança/18 - Capstone — projetando a segurança de uma API Spring production-grade|Capstone de segurança]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/Segurança/index|Segurança]]. Veja [[03-Dominios/Tecnologia/Java/Segurança/01 - O que é Spring Security — authn, authz e o filter chain|O que é Spring Security]], [[03-Dominios/Tecnologia/Java/Segurança/06 - A arquitetura do filter chain em profundidade|A arquitetura do filter chain]], [[03-Dominios/Tecnologia/Java/Segurança/08 - JWT — estrutura, assinatura e validação|JWT]], [[03-Dominios/Tecnologia/Java/Segurança/09 - OAuth2 Resource Server — validando JWT na API|OAuth2 Resource Server]] e [[03-Dominios/Tecnologia/Java/Segurança/18 - Capstone — projetando a segurança de uma API Spring production-grade|Capstone de segurança]].
 ```
 
 **Toda a fabricação some** (`Patient`/`Doctor`/`Appointment`/`MedEspecialista`, `## Na prática (da minha experiência)` com os "incidentes memoráveis" fabricados — `alg: none` no pentest, NPE em SecurityContext sob carga, os "3 fluxos de autenticação" do MedEspecialista —, `## How to explain in English` em 1ª pessoa, `### Frases úteis em entrevista`). O nome de arquivo `Spring Security.md` permanece (qualquer wikilink `[[Spring Security]]` continua resolvendo — vira ponteiro pro hub). Confirmar números de linha na execução (lendo o tronco primeiro — política §9 do roadmap).
@@ -205,7 +205,7 @@ H1 `# Título` após o frontmatter (padrão dos galhos publicados).
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`Order`/`Customer`/`User`/`Role`/`OrderController`/`UserService`); "padrão observado em apps Spring Security"; NUNCA `Patient`/`MedEspecialista`/"no meu projeto"/"durante um pentest" (o tronco está cheio disso — **contraexemplo**)
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com `### (N) Título` (H3 numerado, NÃO callout `[!warning]`) + descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + subheading `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Segurança/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando tocar o mecanismo AOP/method security/bean) a nota do **Galho 8** + (quando tocar filter/DispatcherServlet/CORS/borda web) a nota do **Galho 9** + (nota 06) a Servlet API do **Galho 7** + verbetes do Dicionário
+- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Segurança/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando tocar o mecanismo AOP/method security/bean) a nota do **Galho 8** + (quando tocar filter/DispatcherServlet/CORS/borda web) a nota do **Galho 9** + (nota 06) a Servlet API do **Galho 7** + verbetes do Dicionário
 - `## Referências` — docs oficiais (`docs.spring.io/spring-security/reference/`, OAuth2/OIDC specs, OWASP cheat sheets). Afirmações version-specific fundadas em fonte verificada via WebFetch.
 
 ### 4.3. Restrições absolutas
@@ -253,7 +253,7 @@ Executado nesta fase de brainstorming (2026-06-10); itens version-specific re-co
 3. **Dupla fronteira-assinatura confirmada** — Galho 8 (AOP nota 09, self-invocation nota 10, ApplicationContext nota 06) e Galho 9 (DispatcherServlet nota 06, Interceptors vs Filters nota 11) existem em `main`. Galho 7 nota 03 (Servlet API) existe. A nota 11 do Galho 9 (`:357`) **espera** o link-back deste galho.
 4. **Dívida reversa localizada** — 6 ponteiros inline + 3 parágrafos de fronteira (§3.6), em: MOC central :42, Actuator (G8/17) :52/:111/:288, OpenAPI (G9/12) :167, Interceptors vs Filters (G9/11) :357, e os parágrafos Spring Core index :32 / Web index :32 / Persistência index :32. **NÃO quitar**: Reativa index :35 (segurança reativa = fronteira pra frente) e os horizonte-lists de uma linha (Spring Core :97, Web :95, Persistência :92). Confirmar linhas na execução.
 5. **Dicionário** — **327 verbetes** após o Galho 11; seções alfabéticas únicas `## A`…`## Z`; verbetes `### `; `updated: 2026-06-10`. Verbetes possivelmente já existentes (Galho 7/9: `CORS`, `Filter`, `Servlet`, `DispatcherServlet`, `access token`/`scope`) — conferir e linkar, nunca duplicar. Expansão alfabética (~35), nunca recriar/reordenar; conferir âncoras 1:1.
-6. **MOC central** — `03-Dominios/Java/index.md:42` é a linha do Galho 12 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-10`.
+6. **MOC central** — `03-Dominios/Tecnologia/Java/index.md:42` é a linha do Galho 12 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-10`.
 7. **Troncos intocáveis** — `Backend/Spring Boot.md` (podado 8/9/10), `Backend/Spring Data JPA.md` (hub Galho 10), `Backend/Kafka/` + `Backend/gRPC e Go.md` (Galho 14), `Backend/Testes em Java.md` (Galho 13). Pasta `Segurança/` ainda **não existe**.
 8. **Versões a cravar via WebFetch na execução** — Spring Security 6.x (baseline Boot 3.x, `jakarta.*`, Java 17): `WebSecurityConfigurerAdapter` removido na 6.0; `authorizeHttpRequests`/`requestMatchers`; `@EnableMethodSecurity`; CSRF default on; `DelegatingPasswordEncoder`; OAuth2 Resource Server (JWKS/`issuer-uri`) vs Client; PKCE no authorization code. Citando Security 7.x / Boot 4.x como "mais recente" quando relevante. Fonte: `docs.spring.io/spring-security/reference/`, OAuth2/OIDC RFCs, OWASP cheat sheets.
 
@@ -263,7 +263,7 @@ Nenhum número de adoção/segurança é inventado. Quando faltar fato verificá
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 18 notas em `03-Dominios/Java/Segurança/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/6/7.
+1. 18 notas em `03-Dominios/Tecnologia/Java/Segurança/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/6/7.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~35 verbetes; verbetes dos Galhos 1-11 intactos; `updated: 2026-06-10`; dups conferidos e linkados (não duplicar `CORS`/`Filter`/`Servlet`/`DispatcherServlet`/`scope`/`access token` se vierem dos Galhos 7/9); headings conferidos 1:1 com as âncoras usadas nas notas (via grep).
 4. MOC central `Java/index.md` com Galho 12 ativado (linha 42 vira wikilink); resto intacto.
@@ -310,6 +310,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-08-java-galho-09-web-rest-design.md` — Galho 9 (dependência: a camada web que a segurança protege; a nota 11 espera o link-back)
 - `2026-06-08-java-galho-08-spring-core-design.md` — Galho 8 (dependência: o mecanismo AOP que faz method security funcionar; o `SecurityFilterChain` é um bean)
 - Galho 6 (JavaFX) — template de **poda integral** de tronco monolítico (`Frontend/JavaFX.md` reduzido a hub)
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Spring Security.md` (poda integral), `Spring Core e Boot/17 - Actuator`, `Spring Core e Boot/index.md`, `Web e APIs REST/11 - Interceptors vs Filters`, `Web e APIs REST/12 - OpenAPI`, `Web e APIs REST/index.md`, `Persistência de dados/index.md` (dívida reversa)
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Spring Security.md` (poda integral), `Spring Core e Boot/17 - Actuator`, `Spring Core e Boot/index.md`, `Web e APIs REST/11 - Interceptors vs Filters`, `Web e APIs REST/12 - OpenAPI`, `Web e APIs REST/index.md`, `Persistência de dados/index.md` (dívida reversa)
 - Fonte-base do galho: `docs.spring.io/spring-security/reference/` (+ OAuth2/OIDC RFCs 6749/9700/OIDC Core, OWASP Top 10 + cheat sheets nas notas específicas)
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]], [[feedback_notas_atomicas]], [[feedback_enriquecimento_feynman]]

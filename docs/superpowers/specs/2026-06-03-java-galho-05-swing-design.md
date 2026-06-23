@@ -25,7 +25,7 @@ Swing é a primeira das duas interfaces desktop da trilha (Galho 6 = JavaFX). Po
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **12 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central**, em `03-Dominios/Java/Swing/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 5 Adepto + 3 Magus). **Sem poda** (galho novo).
+Produzir, em uma sessão de execução dedicada, **12 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central**, em `03-Dominios/Tecnologia/Java/Swing/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 5 Adepto + 3 Magus). **Sem poda** (galho novo).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -38,7 +38,7 @@ A barra é "decidir, justificar, reconhecer patterns e armadilhas em code review
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Swing/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Swing/`)
 
 Pasta **nova**, flat. 12 notas + 1 MOC. Numeração global por galho (não reinicia por fase). Pasta precisa de `index.md` (Quartz folder-link).
 
@@ -70,7 +70,7 @@ Pasta **nova**, flat. 12 notas + 1 MOC. Numeração global por galho (não reini
 | 12 | Swing hoje — estado atual *(capstone, opus)* | Status de suporte/manutenção: **frase honesta separando declaração oficial Oracle (Swing/AWT = core Java SE, suportado enquanto o JDK for) de consenso de-facto da comunidade (poucas features novas, papel de nicho)** — com fonte + data, **sem estatísticas inventadas**; onde Swing ainda faz sentido (ferramentas internas, IDEs — IntelliJ/NetBeans/Eclipse usam Swing, apps offline/desktop legados, embedded) vs onde não (app moderno rico/web/mobile); **Swing × virtual threads** com honestidade (EDT continua single-thread; virtual threads não mudam o modelo da EDT — verificar); **gancho pro Galho 6 (JavaFX)** SEM comparar a fundo (texto "planejado", sem wikilink quebrado); munição de entrevista enquadrada como decisão de arquitetura honesta. **WebFetch obrigatório** (Oracle roadmap + dev.java). |
 
 **Decisões de fronteira (escopo NÃO coberto aqui ou de outro dono):**
-- **Threading base (threads, executors, virtual threads)** → Galho 4 é dono. As notas 05 (EDT) e 06 (SwingWorker) são donas do *threading do Swing* (single-thread rule, `invokeLater`, `SwingWorker`) e **linkam** pra `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência]]` e notas específicas (02 Threads, 08 Executors) — **não re-explicam** concorrência base.
+- **Threading base (threads, executors, virtual threads)** → Galho 4 é dono. As notas 05 (EDT) e 06 (SwingWorker) são donas do *threading do Swing* (single-thread rule, `invokeLater`, `SwingWorker`) e **linkam** pra `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência]]` e notas específicas (02 Threads, 08 Executors) — **não re-explicam** concorrência base.
 - **`Swing × virtual threads`** → a honestidade é: a EDT permanece single-thread; virtual threads ajudam o *trabalho de background* (como `SwingWorker` ou executors), não substituem a EDT. Citar com status verificado, sem hype.
 - **JavaFX** → Galho 6 (próximo). É **dono** da comparação Swing vs JavaFX. O Galho 5 deixa só um **gancho** na capstone (12); **NÃO** comparar a fundo, **NÃO** linkar notas inexistentes do Galho 6 — usar texto "planejado" no MOC.
 - **OOP / interfaces / lambdas** → Galho 1. A nota 04 (eventos) e a 10 (componentes customizados) linkam pro Galho 1 quando o conceito conectar, sem re-ensinar OOP.
@@ -78,7 +78,7 @@ Pasta **nova**, flat. 12 notas + 1 MOC. Numeração global por galho (não reini
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Swing/index.md`:
+`03-Dominios/Tecnologia/Java/Swing/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Swing"`, tags `java`/`swing`/`moc`, aliases `["Swing", "Galho 5 - Swing"]`)
 - TL;DR callout (galho cobre GUI desktop Swing: componentes, layouts, eventos, EDT/SwingWorker, MVC/models, L&F, custom painting e o estado atual da API)
@@ -90,12 +90,12 @@ Pasta **nova**, flat. 12 notas + 1 MOC. Numeração global por galho (não reini
   - **Threading do Swing** — 05 → 06 → 11 (EDT, SwingWorker, performance/responsividade) — liga ao Galho 4
   - **Construir uma tela do zero** — 01 → 02 → 03 → 04 → 07 (montar uma UI funcional com dados)
   - **Aparência e customização** — 03 → 09 → 08 → 10 (layouts, L&F, renderers, custom painting)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, Galho 1 (Linguagem), Galho 4 (Concorrência), Galho 6 (JavaFX, **planejado** — texto sem wikilink), Dicionário de Java
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, Galho 1 (Linguagem), Galho 4 (Concorrência), Galho 6 (JavaFX, **planejado** — texto sem wikilink), Dicionário de Java
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (criado no Galho 1, expandido no Galho 4, `type: glossary`, seções alfabéticas). Este galho **expande** o arquivo existente inserindo os verbetes de Swing **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas quando necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-03` no frontmatter.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (criado no Galho 1, expandido no Galho 4, `type: glossary`, seções alfabéticas). Este galho **expande** o arquivo existente inserindo os verbetes de Swing **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas quando necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-03` no frontmatter.
 
 Verbetes a inserir (~20-24):
 
@@ -105,10 +105,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 5)
 
-`03-Dominios/Java/index.md` já existe e lista os 18 galhos. Task **mínima**: trocar a linha 32 (atualmente `5. Swing *(planejado)* — componentes, layout managers, EDT, MVC, estado atual de adoção`) por um wikilink ativo no padrão das linhas 25/28:
+`03-Dominios/Tecnologia/Java/index.md` já existe e lista os 18 galhos. Task **mínima**: trocar a linha 32 (atualmente `5. Swing *(planejado)* — componentes, layout managers, EDT, MVC, estado atual de adoção`) por um wikilink ativo no padrão das linhas 25/28:
 
 ```markdown
-5. [[03-Dominios/Java/Swing/index|Swing]] — componentes e containers, layout managers, modelo de eventos, EDT/SwingWorker, MVC/models, Look & Feel, custom painting, estado atual da API
+5. [[03-Dominios/Tecnologia/Java/Swing/index|Swing]] — componentes e containers, layout managers, modelo de eventos, EDT/SwingWorker, MVC/models, Look & Feel, custom painting, estado atual da API
 ```
 
 Atualizar `updated: 2026-06-03`. Não mexer no resto do MOC central.
@@ -149,7 +149,7 @@ aliases:
 - `## Na prática` — exemplos compiláveis; framing neutro ("padrão observado no JDK/em IDEs Swing", "caso típico em ferramenta interna"); NUNCA "no meu projeto"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — frase pronta em inglês com **3+ sentenças** (trade-off + decisão + caveat) + vocabulário **6+ termos PT→EN**
-- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Swing/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando o conceito conectar) `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência]]` / Galho 1 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
+- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Swing/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando o conceito conectar) `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência]]` / Galho 1 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
 - `## Referências` — docs oficiais (dev.java, docs.oracle.com/The Java Tutorials), JEPs quando relevantes, projetos open-source identificados (FlatLaf, OpenJDK). **Toda nota é fundada em fonte oficial verificada via WebFetch** (galho de pesquisa).
 
 ### 4.3. Restrições absolutas
@@ -197,7 +197,7 @@ Nenhum número de adoção é inventado. Quando faltar fato verificável, **PERG
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 12 notas em `03-Dominios/Java/Swing/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/5/3.
+1. 12 notas em `03-Dominios/Tecnologia/Java/Swing/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/5/3.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~20-24 verbetes de Swing em ordem alfabética; verbetes dos Galhos 1 e 4 intactos; `updated` atualizado; headings dos verbetes conferidos 1:1 com as âncoras usadas nas notas.
 4. MOC central `Java/index.md` com Galho 5 ativado (linha 32 vira wikilink); resto intacto.
@@ -235,6 +235,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-02-java-senior-roadmap-design.md` — roadmap macro (18 galhos)
 - `2026-06-02-java-galho-01-linguagem-design.md` / `...-execution.md` — Galho 1 (template de qualidade/plano)
 - `2026-06-03-java-galho-04-concorrencia-design.md` / `...-execution.md` — Galho 4 (template mais recente; donos de threading que o Galho 5 linka)
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`
 - Fontes-base do galho: The Java Tutorials — *Creating a GUI with Swing* (`docs.oracle.com/javase/tutorial/uiswing/`), `dev.java`, Javadoc `javax.swing`, Oracle Java Client Roadmap (2018/2020)
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]]

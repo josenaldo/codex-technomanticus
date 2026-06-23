@@ -93,22 +93,22 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
 
 - [[Arquitetura]]
 - [[Arquitetura de Software]] · [[System Design]] · [[Design Patterns]] · [[API Design]]
-- **Mensageria:** [[Mensageria]] · [[Event Streaming]] · [[03-Dominios/Java/Backend/Kafka/Kafka]] · [[RabbitMQ]] · [[BullMQ]]
+- **Mensageria:** [[Mensageria]] · [[Event Streaming]] · [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]] · [[RabbitMQ]] · [[BullMQ]]
 - [[Event Storming]] · [[Gateway de Pagamento]]
 
 ## Domínio de Java
 
 - [[Java]]
 - **Core:** [[Java Fundamentals]] · [[Java Concurrency]] · [[Certificação Java OCP]] · [[Helsinki MOOC - Guia de Revisão]]
-- **Backend:** [[Spring Boot]] · [[Spring Data JPA]] · [[Spring Security]] · [[03-Dominios/Java/Backend/Kafka/Kafka]] · [[Testes em Java]] · [[gRPC e Go]]
+- **Backend:** [[Spring Boot]] · [[Spring Data JPA]] · [[Spring Security]] · [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]] · [[Testes em Java]] · [[gRPC e Go]]
 - **Frontend:** [[JavaFX]]
 
 ## Domínio de JavaScript
 
-- [[03-Dominios/JavaScript/index]]
+- [[03-Dominios/Tecnologia/JavaScript/index]]
 - **Core:** [[JavaScript Fundamentals]] · [[TypeScript]] · [[Testes em JavaScript]]
 - **Backend:** [[Node.js]]
-- **Frontend:** [[React]] · [[React Red Flag Manual]] · [[HTML e CSS]] · [[Bootstrap]] · [[Material UI]] · [[03-Dominios/React/Mantine]]
+- **Frontend:** [[React]] · [[React Red Flag Manual]] · [[HTML e CSS]] · [[Bootstrap]] · [[Material UI]] · [[03-Dominios/Tecnologia/React/Mantine]]
 - **Revisão:** [[Full Stack Open - Guia de Revisão]]
 
 ## Domínio de Python
@@ -124,8 +124,8 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
 
 ## Domínio de Inteligência Artificial
 
-- [[03-Dominios/IA/index|IA]] — portal do domínio com 10 trilhas + overview + ferramentas
-- **[[03-Dominios/IA/index|Formação Engenheiro de IA]]** — programa estruturado: 10 trilhas + 4 sendas transversais (Praticante, Arquiteto, Líder Técnico, Open Source)
+- [[03-Dominios/Tecnologia/IA/index|IA]] — portal do domínio com 10 trilhas + overview + ferramentas
+- **[[03-Dominios/Tecnologia/IA/index|Formação Engenheiro de IA]]** — programa estruturado: 10 trilhas + 4 sendas transversais (Praticante, Arquiteto, Líder Técnico, Open Source)
 - **Trilhas atomizadas:**
     - [[Anatomia dos LLMs]] (17 notas) — fundamentos: tokens, atenção, modelos, APIs, treino, evaluation
     - [[Anatomia de Agents]] (9 notas) — fundamentos genéricos: ciclo, tools, memory, planning, multi-agent
@@ -137,8 +137,8 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
     - [[Memória de Agentes]] (23 notas) — Letta, Mem0, Zep, Generative Agents, A-MEM
     - [[RAG e Vector Databases]] (13 notas) — embeddings, chunking, retrieval, reranking, evaluation
     - [[MCP]] (10 notas) — Model Context Protocol, servers, segurança, ecossistema
-- **Overview:** [[03-Dominios/IA/index|Inteligência Artificial]] — portal panorâmico do campo
-- **Ferramentas:** [[03-Dominios/IA/Ferramentas de IA/index|Ferramentas de IA]] — [[Claude]] · [[GitHub Copilot]] · [[Codex]] · [[Gemini]] · [[Comparativo de LLMs]]
+- **Overview:** [[03-Dominios/Tecnologia/IA/index|Inteligência Artificial]] — portal panorâmico do campo
+- **Ferramentas:** [[03-Dominios/Tecnologia/IA/Ferramentas de IA/index|Ferramentas de IA]] — [[Claude]] · [[GitHub Copilot]] · [[Codex]] · [[Gemini]] · [[Comparativo de LLMs]]
 
 ## Domínio de Infraestrutura
 
@@ -150,7 +150,7 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
 
 ## Domínio de Inglês
 
-- Notas de estudo de inglês para entrevistas internacionais (em `03-Dominios/Inglês/`)
+- Notas de estudo de inglês para entrevistas internacionais (em `03-Dominios/Carreira/Inglês/`)
 
 ## Domínio de Entrevistas
 

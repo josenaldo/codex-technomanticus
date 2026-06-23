@@ -38,7 +38,7 @@ Este é o **décimo sétimo galho** da trilha Java Senior (roadmap em `docs/supe
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **22 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central (Galho 17) + poda reversa modesta em `Backend/Spring Boot.md` + quitação de ~23 ganchos "(planejado) G17" + cross-links**, em `03-Dominios/Java/Cloud-native e produção/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**3 Iniciado + 14 Adepto + 5 Magus**).
+Produzir, em uma sessão de execução dedicada, **22 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central (Galho 17) + poda reversa modesta em `Backend/Spring Boot.md` + quitação de ~23 ganchos "(planejado) G17" + cross-links**, em `03-Dominios/Tecnologia/Java/Cloud-native e produção/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**3 Iniciado + 14 Adepto + 5 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -54,7 +54,7 @@ A barra é "levar um serviço Java do `jar` ao cluster e operá-lo em produção
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Cloud-native e produção/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Cloud-native e produção/`)
 
 Pasta **nova**, flat. 22 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase). **Nome da pasta no disco: `Cloud-native e produção`** (casa com o título do roadmap; tag de galho sugerida `cloud-native`).
 
@@ -109,7 +109,7 @@ Pasta **nova**, flat. 22 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Cloud-native e produção/index.md`:
+`03-Dominios/Tecnologia/Java/Cloud-native e produção/index.md`:
 - `type: moc`, `status: growing`, `publish: true`, `created`/`updated: 2026-06-12`
 - Frontmatter padrão (`title: "Cloud-native e produção"`, tags `java`/`cloud-native`/`moc`, aliases `["Cloud-native e produção", "Cloud-native", "Produção", "Containers e Kubernetes", "GraalVM Native Image", "Observabilidade de produção", "Galho 17 - Cloud-native"]`)
 - `> [!abstract] TL;DR` — 2-4 linhas: o galho cobre levar um serviço Java do `jar` ao cluster e operá-lo (containers, native image, contrato k8s, observabilidade de operação, profiling, CI/CD); a tese (production-ready = postura, não feature; native = trade-off de plataforma); **22 notas em 3 fases**
@@ -121,12 +121,12 @@ Pasta **nova**, flat. 22 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **Containerização** — 02 → 03 → 04 → 05 → 06 → 07
   - **Native image** — 08 → 09 → 21
   - **Observabilidade de operação** — 13 → 14 → 15 → 16 → 17 → 18 → 19
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **G3** (JVM/JFR/GC), **G8** (Actuator), **G15** (Build/SBOM), **G16** (Microservices/tracing/mesh), **G13** (Testes/JMH), Dicionário; Galho 18 (OCP) como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **G3** (JVM/JFR/GC), **G8** (Actuator), **G15** (Build/SBOM), **G16** (Microservices/tracing/mesh), **G13** (Testes/JMH), Dicionário; Galho 18 (OCP) como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho" (TABLE fase/status; **inline code/DQL nunca começa com `=`** — memória `feedback_dataview_inline_code`)
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**524 verbetes** após o Galho 16, `type: glossary`, seções `## A`…`## Z` com verbetes `### `). Este galho **expande** inserindo verbetes **em ordem alfabética case-insensitive (sem acento, ignorando símbolos)** nas seções de letra apropriadas. **Nunca recriar nem reordenar.** Atualizar `updated: 2026-06-12`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**524 verbetes** após o Galho 16, `type: glossary`, seções `## A`…`## Z` com verbetes `### `). Este galho **expande** inserindo verbetes **em ordem alfabética case-insensitive (sem acento, ignorando símbolos)** nas seções de letra apropriadas. **Nunca recriar nem reordenar.** Atualizar `updated: 2026-06-12`.
 
 Verbetes a inserir (~35, conferir dups antes via grep):
 
@@ -136,10 +136,10 @@ Cada verbete: definição curta (1-3 linhas) PT-BR + `Veja também:` apontando p
 
 ### 3.4. MOC central (ativação do Galho 17)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 17 (atualmente, **linha 17 do bloco** — confirmar na execução; hoje `17. Cloud-native e produção *(planejado)* — containers, GraalVM native, Micrometer/OpenTelemetry, profiling`) por wikilink ativo:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 17 (atualmente, **linha 17 do bloco** — confirmar na execução; hoje `17. Cloud-native e produção *(planejado)* — containers, GraalVM native, Micrometer/OpenTelemetry, profiling`) por wikilink ativo:
 
 ```markdown
-17. [[03-Dominios/Java/Cloud-native e produção/index|Cloud-native e produção]] — levar um serviço Java do jar ao cluster e operá-lo: containerização (Dockerfile multi-stage, layered jar, Buildpacks/Jib, distroless), GraalVM Native Image (AOT, Spring AOT, trade-offs), o contrato do app com o Kubernetes (health probes, config, graceful shutdown, resource limits), observabilidade de operação (Micrometer/Prometheus/Grafana, OpenTelemetry Collector, sampling, logs estruturados), profiling sob carga e continuous profiling, e CI/CD
+17. [[03-Dominios/Tecnologia/Java/Cloud-native e produção/index|Cloud-native e produção]] — levar um serviço Java do jar ao cluster e operá-lo: containerização (Dockerfile multi-stage, layered jar, Buildpacks/Jib, distroless), GraalVM Native Image (AOT, Spring AOT, trade-offs), o contrato do app com o Kubernetes (health probes, config, graceful shutdown, resource limits), observabilidade de operação (Micrometer/Prometheus/Grafana, OpenTelemetry Collector, sampling, logs estruturados), profiling sob carga e continuous profiling, e CI/CD
 ```
 
 Atualizar `updated` para `2026-06-12` (já é, mas confirmar). Não mexer no resto. **Confirmar o número da linha na execução.** Galho 18 permanece `*(planejado)*`.
@@ -204,7 +204,7 @@ H1 `# Título` após o frontmatter.
 - `## Na prática` — exemplos válidos; framing **neutro** (`com.example`, serviços `order-service`/`payment-service`, imagem `order-service:1.4.2`); "padrão observado em apps Java em produção"; NUNCA `MedEspecialista`/"da minha experiência"/"no meu cluster"/"quando subi em produção"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com `### (N) Título` (H3 numerado, NÃO callout `[!warning]`) + descrição + exemplo curto + fix em 1 linha
 - `## Em entrevista` — `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Cloud-native e produção/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando aplicável) a nota da fronteira (G3 JVM, G8 Actuator, G15 Build, G16 Microservices, G13 Testes) + verbetes do Dicionário
+- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Cloud-native e produção/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando aplicável) a nota da fronteira (G3 JVM, G8 Actuator, G15 Build, G16 Microservices, G13 Testes) + verbetes do Dicionário
 - `## Referências` — docs oficiais (`graalvm.org`, `docs.spring.io`, `buildpacks.io`/`paketo.io`, `micrometer.io`, `prometheus.io`, `grafana.com`, `opentelemetry.io`)
 
 ### 4.3. Restrições absolutas
@@ -224,7 +224,7 @@ H1 `# Título` após o frontmatter.
    - **Continuous profiling**: **Grafana Pyroscope 2.x** (usa **async-profiler** para Java; correlaciona profile↔métrica↔trace); distinto do JFR local (G3).
 4. **Code samples válidos** — `Dockerfile` (multi-stage real), `application.yml`/`.properties` (Actuator/probes/graceful/structured-logging), Deployment YAML (k8s — probes/resources/env), `pom.xml`/`build.gradle.kts` (native-build-tools/jib/buildpacks com coordenadas reais), `prometheus.yml` (scrape), CLI (`docker`/`java -Djarmode`/`./mvnw native:compile`). Fences corretas: ` ```dockerfile `, ` ```yaml ` (application.yml/k8s/prometheus), ` ```xml `/` ```kotlin ` (build), ` ```bash ` (CLI), ` ```json ` (reachability metadata/logs estruturados), ` ```text ` (diagramas/output). Sempre fechadas. **Usar os nomes/flags cravados** (`-Djarmode=tools`, `MaxRAMPercentage`, `native:compile`).
 5. **Comparações justas** — Dockerfile vs Buildpacks vs Jib, JVM vs native image, head vs tail sampling, pull vs push (Prometheus), rolling vs blue-green vs canary, distroless vs base completa: sempre "quando X" E "quando Y". As notas 21 (native vs JVM) e 22 (capstone) são o ápice do julgamento.
-6. **Wikilinks sem backticks** em "Veja também"; MOC do galho + MOC central obrigatórios. **Não linkar galho inexistente** (18) — texto "(planejado)". Wikilinks pras notas-fronteira usam **path completo** e o **título EXATO** (conferir 1:1 — lição do Galho 12; os paths de fronteira têm nomes longos com em-dash `—`, ex.: `[[03-Dominios/Java/JVM/13 - JFR e JMC — observabilidade de produção|JFR]]`).
+6. **Wikilinks sem backticks** em "Veja também"; MOC do galho + MOC central obrigatórios. **Não linkar galho inexistente** (18) — texto "(planejado)". Wikilinks pras notas-fronteira usam **path completo** e o **título EXATO** (conferir 1:1 — lição do Galho 12; os paths de fronteira têm nomes longos com em-dash `—`, ex.: `[[03-Dominios/Tecnologia/Java/JVM/13 - JFR e JMC — observabilidade de produção|JFR]]`).
 7. **`fase:` no frontmatter + na tag** — obrigatório.
 8. **Higiene de commits** — sem `Co-Authored-By: Claude` (memória `feedback_commits`), sem `--no-verify`, `git add <path>` nominal (nunca `-A` — bot de backup Obsidian Git roda em timer), 1 commit por nota/artefato, controlador commita (subagents write-only). Guardar contra `.git/index.lock`.
 9. **Tom pedagógico graduado** — Iniciado assume Galhos 1-3/8 (JVM + Spring) e que o leitor já rodou um `jar`; Adepto assume que já fez deploy de algo e quer fazer direito; Magus assume o stack inteiro + a tese (production-ready é postura; native é trade-off; observabilidade é três pontas).
@@ -240,7 +240,7 @@ Notas de pesquisa fundadas em doc oficial via WebFetch. Fontes-base: `graalvm.or
 
 Executado na fase de pré-flight + brainstorming (2026-06-12); itens version-specific re-confirmados na execução de cada nota via WebFetch:
 
-1. **Estrutura da trilha confirmada** — MOC central é `03-Dominios/Java/index.md`; Galho 17 listado como `*(planejado)*` na linha 17 do bloco "Plataforma distribuída e produção". Template de MOC/nota = Galhos 14/15/16.
+1. **Estrutura da trilha confirmada** — MOC central é `03-Dominios/Tecnologia/Java/index.md`; Galho 17 listado como `*(planejado)*` na linha 17 do bloco "Plataforma distribuída e produção". Template de MOC/nota = Galhos 14/15/16.
 2. **Galho HÍBRIDO confirmado** — pesquisa pesada + poda reversa modesta em `Backend/Spring Boot.md` (`### Graceful shutdown`, `### Memory leak e GC tuning`; o `## Actuator` já é callout) + **integração intensa** (~23 ganchos "(planejado) G17").
 3. **🔴 Achado que moldou o escopo:** o **Galho 3 já cobre profiling/observabilidade interna da JVM** com notas completas (`JVM/13 - JFR e JMC — observabilidade de produção`, `JVM/12 - Diagnóstico — heap dumps...`, `JVM/10 - GC logs`, `JVM/11 - Tuning de GC`, `JVM/14 - Performance da JVM — síntese`). Por isso o eixo "profiling" do G17 **encolheu para link-back** (notas 18/19 linkam G3, não re-explicam) e a **observabilidade virou um seam de TRÊS pontas** (G3 JVM-interno / G16 trace-no-código / G17 operar-o-stack) — decisão do brainstorm.
 4. **Decisões do usuário no brainstorm:** amplitude **granular (22 notas, 3/14/5)**; **profiling expandido em 2 notas** (18 diagnóstico-em-produção + 19 continuous-profiling); **corte k8s = contrato do app + manifesto ilustrativo** (probes/config/resources + um Deployment YAML; sem operar cluster).
@@ -261,7 +261,7 @@ Nenhum número de adoção/market-share é inventado (**não citar percentuais**
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 22 notas em `03-Dominios/Java/Cloud-native e produção/`, frontmatter com `fase:`, `publish: true`, distribuídas 3/14/5.
+1. 22 notas em `03-Dominios/Tecnologia/Java/Cloud-native e produção/`, frontmatter com `fase:`, `publish: true`, distribuídas 3/14/5.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview (inline code nunca inicia com `=`) + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~35 verbetes; verbetes dos Galhos 1-16 intactos; `updated: 2026-06-12`; dups conferidos e linkados (não duplicar `heap dump`/`JFR`/`OpenTelemetry`/`OTLP`/`SBOM`/`sidecar`/`12-factor`).
 4. MOC central `Java/index.md` com Galho 17 ativado (linha vira wikilink); resto intacto; `updated: 2026-06-12`.
@@ -308,6 +308,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-05-java-galho-03-jvm-design.md` — Galho 3 (dono de JFR/heap/GC/AOT-JIT — fronteira-assinatura nº 1, notas 02/08/18)
 - `2026-06-08-java-galho-08-spring-core-design.md` — Galho 8 (dono do Actuator — fronteira das notas 10/13/14)
 - Galhos 5/7/11/14/15/16 — template de **galho de pesquisa/híbrido**
-- Artefatos a criar/atualizar: `03-Dominios/Java/Cloud-native e produção/**` (22 notas + MOC), `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Spring Boot.md` (poda modesta), e os ~23 arquivos de quitação de gancho (§3.6)
+- Artefatos a criar/atualizar: `03-Dominios/Tecnologia/Java/Cloud-native e produção/**` (22 notas + MOC), `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Spring Boot.md` (poda modesta), e os ~23 arquivos de quitação de gancho (§3.6)
 - Fontes-base do galho: `graalvm.org`, `graalvm.github.io/native-build-tools`, `docs.spring.io/spring-boot`, `buildpacks.io`, `paketo.io`, `github.com/GoogleContainerTools/jib`+`/distroless`, `micrometer.io`, `prometheus.io`, `grafana.com`, `opentelemetry.io`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]], [[feedback_notas_atomicas]], [[feedback_enriquecimento_feynman]], [[feedback_redundancia_entre_notas]]

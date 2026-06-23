@@ -10,7 +10,7 @@ publish: false
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Produzir, em `03-Dominios/Terminal/Shell/`, **10 notas atômicas + 1 MOC do galho** (Iniciado 4 + Adepto 4 + Magus 2) cobrindo Zsh + Oh-My-Zsh + Powerlevel10k do "Zsh vs Bash" até "escrevendo seu plugin OMZ". Em paralelo, expandir `03-Dominios/Terminal/Dicionário do Terminal.md` com **≥30 verbetes novos** no bloco "Shell / Zsh / OMZ" e ativar o wikilink do Shell no tronco `03-Dominios/Terminal/index.md`. Todos os arquivos com `publish: true`, PT-BR, com seção "Em inglês" por nota (mini-glossário PT→EN).
+**Goal:** Produzir, em `03-Dominios/Tecnologia/Terminal/Shell/`, **10 notas atômicas + 1 MOC do galho** (Iniciado 4 + Adepto 4 + Magus 2) cobrindo Zsh + Oh-My-Zsh + Powerlevel10k do "Zsh vs Bash" até "escrevendo seu plugin OMZ". Em paralelo, expandir `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` com **≥30 verbetes novos** no bloco "Shell / Zsh / OMZ" e ativar o wikilink do Shell no tronco `03-Dominios/Tecnologia/Terminal/index.md`. Todos os arquivos com `publish: true`, PT-BR, com seção "Em inglês" por nota (mini-glossário PT→EN).
 
 **Architecture:** Galho atômico em pasta dedicada (`Terminal/Shell/`), com MOC interno + 10 notas numeradas (`NN - Título.md`). Dicionário do Terminal já existe (criado no galho 1) — adiciona-se bloco novo "Shell / Zsh / OMZ" após os blocos existentes, preservando wikilinks vivos. OMZ + P10k é o caminho primário em Iniciado/Adepto (porque é o setup real do usuário); Zsh puro aparece quando o conceito é universal (history, setopt, expansion) e domina em Magus. Cada nota segue template híbrido (TL;DR + corpo técnico + "Em inglês" + "Veja também" + "Referências"). Wikilinks densos: nota↔nota, nota→verbete, nota→tronco, MOC→todas as notas. Ordem de execução: por fase (01→04, 05→08, 09→10) com commit por nota.
 
@@ -20,8 +20,8 @@ publish: false
 - Spec: `docs/superpowers/specs/2026-05-19-terminal-shell-design.md`
 - Roadmap macro: `docs/superpowers/specs/2026-05-18-trilha-terminal-design.md`
 - Plano do galho 1 (formato análogo, proven): `docs/superpowers/plans/2026-05-19-terminal-editor-execution.md`
-- Tronco Terminal a atualizar no fim: `03-Dominios/Terminal/index.md`
-- Dicionário do Terminal (já existe, expandir): `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Tronco Terminal a atualizar no fim: `03-Dominios/Tecnologia/Terminal/index.md`
+- Dicionário do Terminal (já existe, expandir): `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 ---
 
@@ -53,7 +53,7 @@ Este galho é 100% público. **Nenhum arquivo aqui pode referenciar conteúdo do
 
 ### Não remover `index.md` do Quartz
 
-A memória [Nunca remover index.md Quartz](/home/josenaldo/.claude/projects/-home-josenaldo-repos-personal-codex-technomanticus/memory/feedback_quartz_index.md) é regra inegociável. **O `03-Dominios/Terminal/index.md` é editado, nunca removido.** A pasta `Shell/` recebe seu próprio `index.md` como MOC do galho — criar, não substituir nada.
+A memória [Nunca remover index.md Quartz](/home/josenaldo/.claude/projects/-home-josenaldo-repos-personal-codex-technomanticus/memory/feedback_quartz_index.md) é regra inegociável. **O `03-Dominios/Tecnologia/Terminal/index.md` é editado, nunca removido.** A pasta `Shell/` recebe seu próprio `index.md` como MOC do galho — criar, não substituir nada.
 
 ### Paths em samples públicos
 
@@ -66,7 +66,7 @@ Generalizar **sempre**: `/home/josenaldo/repos/...` → `~/repos/...` (ou omitir
 11 arquivos novos + 2 modificados:
 
 ```
-03-Dominios/Terminal/
+03-Dominios/Tecnologia/Terminal/
 ├── Dicionário do Terminal.md                                # MODIFICADO (Task 2 — bloco novo + verbetes; Task 8 — Keymap expandido; Task 14 — pass final)
 ├── index.md                                                  # MODIFICADO (Task 15 — ativa wikilink Shell)
 └── Shell/
@@ -142,8 +142,8 @@ Ex:
 ## Veja também
 
 - [[<outra nota do galho>]] — relação
-- [[03-Dominios/Terminal/Shell/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]] (tronco)
+- [[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]] (tronco)
 - [[Dicionário do Terminal#<verbete relevante>|<verbete>]] — quando útil
 
 ## Referências
@@ -232,7 +232,7 @@ Setup real do usuário (verificado em 2026-05-19) — usado como caminho primár
 ## Task 0: Pré-flight
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/` (diretório)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/` (diretório)
 
 - [ ] **Step 1: Verificar contexto e memórias críticas**
 
@@ -247,11 +247,11 @@ Expected: pelo menos linhas referenciando `feedback_no_fabrication.md`, `feedbac
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/index.md" && echo "ok: tronco existe"
-test -f "03-Dominios/Terminal/Dicionário do Terminal.md" && echo "ok: dicionário existe (galho 1)"
-test -d "03-Dominios/Terminal/Editor" && echo "ok: galho 1 entregue"
+test -f "03-Dominios/Tecnologia/Terminal/index.md" && echo "ok: tronco existe"
+test -f "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" && echo "ok: dicionário existe (galho 1)"
+test -d "03-Dominios/Tecnologia/Terminal/Editor" && echo "ok: galho 1 entregue"
 test -f "docs/superpowers/specs/2026-05-19-terminal-shell-design.md" && echo "ok: spec existe"
-test ! -d "03-Dominios/Terminal/Shell" && echo "ok: Shell/ ainda não existe" || echo "ATENÇÃO: Shell/ já existe — investigar"
+test ! -d "03-Dominios/Tecnologia/Terminal/Shell" && echo "ok: Shell/ ainda não existe" || echo "ATENÇÃO: Shell/ já existe — investigar"
 ```
 
 Expected: 5 linhas `ok:`. Qualquer "ATENÇÃO" = parar e investigar (pode ser sessão anterior incompleta).
@@ -281,8 +281,8 @@ Expected: 3 linhas com versões. **Anotar os outputs reais** — vão substituir
 
 Run:
 ```bash
-mkdir -p "03-Dominios/Terminal/Shell"
-ls -la "03-Dominios/Terminal/Shell"
+mkdir -p "03-Dominios/Tecnologia/Terminal/Shell"
+ls -la "03-Dominios/Tecnologia/Terminal/Shell"
 ```
 
 Expected: diretório vazio criado.
@@ -308,13 +308,13 @@ Como o `mkdir` cria pasta vazia (git ignora), pular o commit nesta task. O prime
 ## Task 1: MOC do galho Shell — esqueleto
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/index.md`
 
 **Objetivo:** Criar o MOC do galho com as 10 notas listadas como wikilinks (mesmo que ainda não existam — Obsidian aceita wikilinks pendentes; Quartz só renderiza os vivos). Estrutura segue o spec §5.
 
 - [ ] **Step 1: Escrever o arquivo**
 
-Criar `03-Dominios/Terminal/Shell/index.md` com **exatamente** o conteúdo abaixo (versões com placeholders — preenchidos no Task 13):
+Criar `03-Dominios/Tecnologia/Terminal/Shell/index.md` com **exatamente** o conteúdo abaixo (versões com placeholders — preenchidos no Task 13):
 
 ````markdown
 ---
@@ -382,7 +382,7 @@ Esse galho cobre o shell end-to-end: fundamentos do Zsh e diferenças do Bash, h
 ## Veja também
 
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ````
 
 Use `Write` com o conteúdo acima.
@@ -393,7 +393,7 @@ Run:
 ```bash
 python3 -c "
 import yaml
-content = open('03-Dominios/Terminal/Shell/index.md').read()
+content = open('03-Dominios/Tecnologia/Terminal/Shell/index.md').read()
 parts = content.split('---', 2)
 fm = yaml.safe_load(parts[1])
 assert fm.get('type') == 'moc', 'type não é moc'
@@ -403,7 +403,7 @@ for t in ['terminal', 'shell', 'zsh', 'moc']:
     assert t in fm.get('tags', []), f'tag {t} ausente'
 print('ok: frontmatter valid')
 "
-grep -c '^- \[\[' "03-Dominios/Terminal/Shell/index.md"
+grep -c '^- \[\[' "03-Dominios/Tecnologia/Terminal/Shell/index.md"
 ```
 
 Expected: `ok: frontmatter valid` e contagem ≥ 12 (10 notas + Dicionário + tronco).
@@ -411,11 +411,11 @@ Expected: `ok: frontmatter valid` e contagem ≥ 12 (10 notas + Dicionário + tr
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/index.md"
 git commit -m "$(cat <<'EOF'
 feat(terminal-shell): scaffold MOC do galho Shell
 
-Cria 03-Dominios/Terminal/Shell/index.md como MOC do galho 2 da trilha
+Cria 03-Dominios/Tecnologia/Terminal/Shell/index.md como MOC do galho 2 da trilha
 Terminal. Lista as 10 notas planejadas (Iniciado 4 + Adepto 4 + Magus 2)
 como wikilinks pendentes, mais 3 rotas alternativas (Daily-driver enxuto,
 Customização visual, Domínio do motor) e versões assumidas (Zsh 5.9+,
@@ -431,7 +431,7 @@ EOF
 ## Task 2: Dicionário do Terminal — bloco "Shell / Zsh / OMZ" esqueleto
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (append do bloco novo)
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (append do bloco novo)
 
 **Objetivo:** Adicionar o bloco `## Shell / Zsh / OMZ` ao Dicionário do Terminal **após o último bloco existente** ("Avançado"), sem mexer nos verbetes já criados pelo galho 1. Verbetes individuais serão inseridos pelas Tasks 3-12 conforme cada nota usar o termo.
 
@@ -439,14 +439,14 @@ EOF
 
 Run:
 ```bash
-grep -n "^## " "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -n "^## " "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: deve listar pelo menos 4 blocos do galho 1: `Vim / Neovim core`, `Ecossistema LazyVim`, `LSP & dev`, `Avançado`. Anotar o último — é onde o novo bloco será inserido **após**.
 
 - [ ] **Step 2: Adicionar bloco "Shell / Zsh / OMZ" ao final**
 
-Edit `03-Dominios/Terminal/Dicionário do Terminal.md` adicionando ao final do arquivo (após o último verbete do bloco "Avançado"):
+Edit `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` adicionando ao final do arquivo (após o último verbete do bloco "Avançado"):
 
 ```markdown
 
@@ -466,8 +466,8 @@ Edit o frontmatter: `updated: 2026-05-19` (se já estiver, OK; se não, atualiza
 
 Run:
 ```bash
-grep -n "^## " "03-Dominios/Terminal/Dicionário do Terminal.md"
-grep -c "^### " "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -n "^## " "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+grep -c "^### " "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: agora 5 blocos `##` (os 4 originais + "Shell / Zsh / OMZ"). Contagem de `###` igual ao número de verbetes existentes do galho 1 (≥ 30, ainda sem verbetes novos).
@@ -475,7 +475,7 @@ Expected: agora 5 blocos `##` (os 4 originais + "Shell / Zsh / OMZ"). Contagem d
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "$(cat <<'EOF'
 feat(terminal): scaffold bloco Shell/Zsh/OMZ no Dicionário
 
@@ -496,8 +496,8 @@ EOF
 ## Task 3: Nota 01 — Zsh vs Bash
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/01 - Zsh vs Bash.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Shell, POSIX, Builtin)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/01 - Zsh vs Bash.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Shell, POSIX, Builtin)
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -517,7 +517,7 @@ Capturar: definição precisa de shell, lista de diferenças canônicas Zsh vs B
 
 - [ ] **Step 2: Criar frontmatter + esqueleto**
 
-Criar `03-Dominios/Terminal/Shell/01 - Zsh vs Bash.md` com:
+Criar `03-Dominios/Tecnologia/Terminal/Shell/01 - Zsh vs Bash.md` com:
 
 ```yaml
 ---
@@ -572,7 +572,7 @@ Seguido do esqueleto do template padrão.
   - `[[02 - Zsh essencial]]`
   - `[[03 - History do Zsh]]`
   - `[[04 - Oh-My-Zsh — anatomia e plugins essenciais]]`
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Shell|shell]]`, `[[Dicionário do Terminal#POSIX|POSIX]]`, `[[Dicionário do Terminal#Builtin|builtin]]`
 - **Referências:** Zsh Introduction, Zsh FAQ — Differences from Bash, A User's Guide to the Z-Shell.
 
@@ -605,10 +605,10 @@ Atualizar `updated:` do dicionário para `2026-05-19`.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/01 - Zsh vs Bash.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/01 - Zsh vs Bash.md"
-grep -c '^## ' "03-Dominios/Terminal/Shell/01 - Zsh vs Bash.md"
-grep -E "^### (Builtin|POSIX|Shell)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/01 - Zsh vs Bash.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/01 - Zsh vs Bash.md"
+grep -c '^## ' "03-Dominios/Tecnologia/Terminal/Shell/01 - Zsh vs Bash.md"
+grep -E "^### (Builtin|POSIX|Shell)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥6 wikilinks, ≥5 sub-headings na nota, 3 verbetes novos no Dicionário.
@@ -616,7 +616,7 @@ Expected: arquivo existe, ≥6 wikilinks, ≥5 sub-headings na nota, 3 verbetes 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/01 - Zsh vs Bash.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/01 - Zsh vs Bash.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 01 — Zsh vs Bash"
 ```
 
@@ -625,8 +625,8 @@ git commit -m "feat(terminal-shell): add nota 01 — Zsh vs Bash"
 ## Task 4: Nota 02 — Zsh essencial
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/02 - Zsh essencial.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Alias, Function (shell), Setopt)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/02 - Zsh essencial.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Alias, Function (shell), Setopt)
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -742,7 +742,7 @@ aliases:
   - `[[03 - History do Zsh]]`
   - `[[04 - Oh-My-Zsh — anatomia e plugins essenciais]]`
   - `[[09 - Globbing avançado e parameter expansion]]` — `EXTENDED_GLOB` é pré-req
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Alias|alias]]`, `[[Dicionário do Terminal#Function (shell)|função]]`, `[[Dicionário do Terminal#Setopt|setopt]]`
 - **Referências:** Zsh manual — Options, Shell Builtin Commands, Stephenson's guide.
 
@@ -775,10 +775,10 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/02 - Zsh essencial.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/02 - Zsh essencial.md"
-grep -c '^## ' "03-Dominios/Terminal/Shell/02 - Zsh essencial.md"
-grep -E "^### (Alias|Function|Setopt)" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/02 - Zsh essencial.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/02 - Zsh essencial.md"
+grep -c '^## ' "03-Dominios/Tecnologia/Terminal/Shell/02 - Zsh essencial.md"
+grep -E "^### (Alias|Function|Setopt)" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥6 wikilinks, ≥5 sub-headings, 3 verbetes novos visíveis.
@@ -786,7 +786,7 @@ Expected: arquivo existe, ≥6 wikilinks, ≥5 sub-headings, 3 verbetes novos vi
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/02 - Zsh essencial.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/02 - Zsh essencial.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 02 — Zsh essencial"
 ```
 
@@ -795,8 +795,8 @@ git commit -m "feat(terminal-shell): add nota 02 — Zsh essencial"
 ## Task 5: Nota 03 — History do Zsh
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/03 - History do Zsh.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: History, fc)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/03 - History do Zsh.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: History, fc)
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -902,7 +902,7 @@ aliases:
   - `[[02 - Zsh essencial]]` — `setopt` é pré-req
   - `[[04 - Oh-My-Zsh — anatomia e plugins essenciais]]` — plugin `history-substring-search`
   - `[[06 - Keybindings práticos]]` — bindar `Ctrl-R` custom
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#History|history]]`, `[[Dicionário do Terminal#fc|fc]]`
 - **Referências:** Zsh manual — Options (HIST_*), Shell Builtin (fc), Expansion (History Expansion), atuin docs.
 
@@ -930,9 +930,9 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/03 - History do Zsh.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/03 - History do Zsh.md"
-grep -E "^### (History|fc)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/03 - History do Zsh.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/03 - History do Zsh.md"
+grep -E "^### (History|fc)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥6 wikilinks, 2 verbetes novos visíveis.
@@ -940,7 +940,7 @@ Expected: arquivo existe, ≥6 wikilinks, 2 verbetes novos visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/03 - History do Zsh.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/03 - History do Zsh.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 03 — History do Zsh"
 ```
 
@@ -949,8 +949,8 @@ git commit -m "feat(terminal-shell): add nota 03 — History do Zsh"
 ## Task 6: Nota 04 — Oh-My-Zsh — anatomia e plugins essenciais
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Oh-My-Zsh, Plugin (OMZ), Zsh-autosuggestions, Zsh-syntax-highlighting)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Oh-My-Zsh, Plugin (OMZ), Zsh-autosuggestions, Zsh-syntax-highlighting)
 
 **Conteúdo-chave do spec (§5, Iniciado):**
 
@@ -1071,7 +1071,7 @@ aliases:
   - `[[05 - Powerlevel10k]]` — theme primário (não-OMZ, sourced externamente)
   - `[[08 - Completion system (compsys)]]` — conflito `zsh-autocomplete` aprofundado
   - `[[10 - Plugins, themes e custom no OMZ]]` — escrever seu plugin
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Oh-My-Zsh|Oh-My-Zsh]]`, `[[Dicionário do Terminal#Plugin (OMZ)|plugin]]`, `[[Dicionário do Terminal#Zsh-autosuggestions|zsh-autosuggestions]]`, `[[Dicionário do Terminal#Zsh-syntax-highlighting|zsh-syntax-highlighting]]`
 - **Referências:** Oh-My-Zsh wiki, plugin list, awesome-zsh-plugins, repos zsh-users/.
 
@@ -1109,9 +1109,9 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md"
-grep -E "^### (Oh-My-Zsh|Plugin \(OMZ\)|Zsh-autosuggestions|Zsh-syntax-highlighting)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md"
+grep -E "^### (Oh-My-Zsh|Plugin \(OMZ\)|Zsh-autosuggestions|Zsh-syntax-highlighting)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥8 wikilinks, 4 verbetes novos visíveis.
@@ -1119,7 +1119,7 @@ Expected: arquivo existe, ≥8 wikilinks, 4 verbetes novos visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/04 - Oh-My-Zsh — anatomia e plugins essenciais.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 04 — Oh-My-Zsh anatomia e plugins"
 ```
 
@@ -1130,7 +1130,7 @@ git commit -m "feat(terminal-shell): add nota 04 — Oh-My-Zsh anatomia e plugin
 Após Task 6, a fase Iniciado está completa. Verificar:
 
 ```bash
-ls -1 "03-Dominios/Terminal/Shell/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Shell/" | sort
 git log --oneline | head -7
 ```
 
@@ -1143,8 +1143,8 @@ Pausa pra revisão humana se executando em modo subagent-driven (ler 1-2 notas a
 ## Task 7: Nota 05 — Powerlevel10k
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/05 - Powerlevel10k.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Powerlevel10k, Prompt, Instant prompt, Transient prompt, Nerdfont)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/05 - Powerlevel10k.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Powerlevel10k, Prompt, Instant prompt, Transient prompt, Nerdfont)
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1290,7 +1290,7 @@ Esta é uma nota Adepto densa — usar sub-headings em "O que é / Como funciona
 - **Veja também:**
   - `[[04 - Oh-My-Zsh — anatomia e plugins essenciais]]` — OMZ vs theme externo
   - `[[10 - Plugins, themes e custom no OMZ]]` — escrever theme próprio
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Powerlevel10k|Powerlevel10k]]`, `[[Dicionário do Terminal#Prompt|prompt]]`, `[[Dicionário do Terminal#Instant prompt|instant prompt]]`, `[[Dicionário do Terminal#Transient prompt|transient prompt]]`, `[[Dicionário do Terminal#Nerdfont|nerdfont]]`
 - **Referências:** P10k README, P10k configuration section, Starship, Pure.
 
@@ -1333,9 +1333,9 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/05 - Powerlevel10k.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/05 - Powerlevel10k.md"
-grep -E "^### (Powerlevel10k|Prompt|Instant prompt|Transient prompt|Nerdfont)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/05 - Powerlevel10k.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/05 - Powerlevel10k.md"
+grep -E "^### (Powerlevel10k|Prompt|Instant prompt|Transient prompt|Nerdfont)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥8 wikilinks, 5 verbetes novos.
@@ -1343,7 +1343,7 @@ Expected: arquivo existe, ≥8 wikilinks, 5 verbetes novos.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/05 - Powerlevel10k.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/05 - Powerlevel10k.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 05 — Powerlevel10k"
 ```
 
@@ -1352,8 +1352,8 @@ git commit -m "feat(terminal-shell): add nota 05 — Powerlevel10k"
 ## Task 8: Nota 06 — Keybindings práticos
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/06 - Keybindings práticos.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Bindkey, Widget; expansão de Keymap)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/06 - Keybindings práticos.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Bindkey, Widget; expansão de Keymap)
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1470,7 +1470,7 @@ aliases:
   - `[[07 - ZLE]]` — sistema por trás dos widgets
   - `[[08 - Completion system (compsys)]]` — Tab e completion-related bindings
   - `[[04 - Oh-My-Zsh — anatomia e plugins essenciais]]` — plugins com bindings (sudo, history-substring-search)
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Bindkey|bindkey]]`, `[[Dicionário do Terminal#Widget|widget]]`, `[[Dicionário do Terminal#Keymap|keymap]]`
 - **Referências:** Zsh manual — Zsh Line Editor, bindkey, zsh-history-substring-search README.
 
@@ -1511,10 +1511,10 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/06 - Keybindings práticos.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/06 - Keybindings práticos.md"
-grep -E "^### (Bindkey|Widget)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
-grep -A 3 "^### Keymap$" "03-Dominios/Terminal/Dicionário do Terminal.md" | grep -E "(Neovim|Zsh)"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/06 - Keybindings práticos.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/06 - Keybindings práticos.md"
+grep -E "^### (Bindkey|Widget)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+grep -A 3 "^### Keymap$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | grep -E "(Neovim|Zsh)"
 ```
 
 Expected: arquivo existe, ≥7 wikilinks, 2 verbetes novos, Keymap mostra ambas as sub-sessões.
@@ -1522,7 +1522,7 @@ Expected: arquivo existe, ≥7 wikilinks, 2 verbetes novos, Keymap mostra ambas 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/06 - Keybindings práticos.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/06 - Keybindings práticos.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 06 — Keybindings práticos (Keymap expandido)"
 ```
 
@@ -1531,8 +1531,8 @@ git commit -m "feat(terminal-shell): add nota 06 — Keybindings práticos (Keym
 ## Task 9: Nota 07 — ZLE
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/07 - ZLE.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: ZLE)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/07 - ZLE.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: ZLE)
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1660,7 +1660,7 @@ aliases:
 - **Veja também:**
   - `[[06 - Keybindings práticos]]` — onde widgets viram bindings
   - `[[08 - Completion system (compsys)]]` — completion é categoria de widget
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#ZLE|ZLE]]`, `[[Dicionário do Terminal#Widget|widget]]`
 - **Referências:** Zsh manual — Zsh Line Editor (completo), Widgets, zsh-vim-mode README.
 
@@ -1683,9 +1683,9 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/07 - ZLE.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/07 - ZLE.md"
-grep -E "^### ZLE$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/07 - ZLE.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/07 - ZLE.md"
+grep -E "^### ZLE$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥6 wikilinks, verbete ZLE visível.
@@ -1693,7 +1693,7 @@ Expected: arquivo existe, ≥6 wikilinks, verbete ZLE visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/07 - ZLE.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/07 - ZLE.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 07 — ZLE"
 ```
 
@@ -1702,8 +1702,8 @@ git commit -m "feat(terminal-shell): add nota 07 — ZLE"
 ## Task 10: Nota 08 — Completion system (compsys)
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/08 - Completion system (compsys).md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Compsys, Compinit, Compdef, Fpath, Zstyle)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/08 - Completion system (compsys).md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Compsys, Compinit, Compdef, Fpath, Zstyle)
 
 **Conteúdo-chave do spec (§5, Adepto):**
 
@@ -1886,7 +1886,7 @@ Esta é a nota mais densa do galho. Use sub-headings em "O que é / Como funcion
   - `[[06 - Keybindings práticos]]` — Tab é binding
   - `[[07 - ZLE]]` — widgets de completion vivem aqui
   - `[[10 - Plugins, themes e custom no OMZ]]` — escrever `_<comando>` próprio
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Compsys|compsys]]`, `[[Dicionário do Terminal#Compinit|compinit]]`, `[[Dicionário do Terminal#Compdef|compdef]]`, `[[Dicionário do Terminal#Fpath|fpath]]`, `[[Dicionário do Terminal#Zstyle|zstyle]]`
 - **Referências:** Zsh manual — Completion System, Completion Widgets, fzf-tab README, zsh-autocomplete README.
 
@@ -1929,9 +1929,9 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/08 - Completion system (compsys).md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/08 - Completion system (compsys).md"
-grep -E "^### (Compsys|Compinit|Compdef|Fpath|Zstyle)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/08 - Completion system (compsys).md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/08 - Completion system (compsys).md"
+grep -E "^### (Compsys|Compinit|Compdef|Fpath|Zstyle)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥8 wikilinks, 5 verbetes novos.
@@ -1939,7 +1939,7 @@ Expected: arquivo existe, ≥8 wikilinks, 5 verbetes novos.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/08 - Completion system (compsys).md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/08 - Completion system (compsys).md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 08 — Completion system (compsys)"
 ```
 
@@ -1950,7 +1950,7 @@ git commit -m "feat(terminal-shell): add nota 08 — Completion system (compsys)
 Após Task 10, a fase Adepto está completa. Verificar:
 
 ```bash
-ls -1 "03-Dominios/Terminal/Shell/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Shell/" | sort
 git log --oneline | head -10
 ```
 
@@ -1963,8 +1963,8 @@ Pausa pra revisão humana (se subagent-driven): amostrar 1 nota Adepto (recomend
 ## Task 11: Nota 09 — Globbing avançado e parameter expansion
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/09 - Globbing avançado e parameter expansion.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Globbing, Extended glob, Glob qualifier, Parameter expansion)
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/09 - Globbing avançado e parameter expansion.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Globbing, Extended glob, Glob qualifier, Parameter expansion)
 
 **Conteúdo-chave do spec (§5, Magus):**
 
@@ -2157,7 +2157,7 @@ Nota densa (Magus). Use sub-headings em "O que é / Como funciona" e "Na prátic
 - **Veja também:**
   - `[[02 - Zsh essencial]]` — `setopt EXTENDED_GLOB` pré-req
   - `[[10 - Plugins, themes e custom no OMZ]]` — globbing em scripts de plugin
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Globbing|globbing]]`, `[[Dicionário do Terminal#Extended glob|extended glob]]`, `[[Dicionário do Terminal#Glob qualifier|glob qualifier]]`, `[[Dicionário do Terminal#Parameter expansion|parameter expansion]]`
 - **Referências:** Zsh manual — Expansion (Filename Generation, Parameter Expansion).
 
@@ -2195,9 +2195,9 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/09 - Globbing avançado e parameter expansion.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/09 - Globbing avançado e parameter expansion.md"
-grep -E "^### (Globbing|Extended glob|Glob qualifier|Parameter expansion)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/09 - Globbing avançado e parameter expansion.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/09 - Globbing avançado e parameter expansion.md"
+grep -E "^### (Globbing|Extended glob|Glob qualifier|Parameter expansion)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥6 wikilinks, 4 verbetes novos.
@@ -2205,7 +2205,7 @@ Expected: arquivo existe, ≥6 wikilinks, 4 verbetes novos.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/09 - Globbing avançado e parameter expansion.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/09 - Globbing avançado e parameter expansion.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 09 — Globbing avançado e parameter expansion"
 ```
 
@@ -2214,8 +2214,8 @@ git commit -m "feat(terminal-shell): add nota 09 — Globbing avançado e parame
 ## Task 12: Nota 10 — Plugins, themes e custom no OMZ
 
 **Files:**
-- Create: `03-Dominios/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: Theme (custom OMZ))
+- Create: `03-Dominios/Tecnologia/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: Theme (custom OMZ))
 
 **Conteúdo-chave do spec (§5, Magus):**
 
@@ -2445,7 +2445,7 @@ aliases:
   - `[[04 - Oh-My-Zsh — anatomia e plugins essenciais]]` — pré-req
   - `[[05 - Powerlevel10k]]` — caso de theme externo
   - `[[08 - Completion system (compsys)]]` — completion custom pré-req
-  - `[[03-Dominios/Terminal/Shell/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Shell/index|MOC do galho]]`
   - `[[Dicionário do Terminal#Plugin (OMZ)|plugin]]`, `[[Dicionário do Terminal#Theme (custom OMZ)|theme]]`
 - **Referências:** OMZ Customization wiki, Zsh manual — Prompt Expansion.
 
@@ -2468,9 +2468,9 @@ Atualizar `updated:` do dicionário.
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md"
-grep -c '\[\[' "03-Dominios/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md"
-grep -E "^### Theme \(custom OMZ\)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md"
+grep -E "^### Theme \(custom OMZ\)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: arquivo existe, ≥6 wikilinks, verbete Theme visível.
@@ -2478,7 +2478,7 @@ Expected: arquivo existe, ≥6 wikilinks, verbete Theme visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/10 - Plugins, themes e custom no OMZ.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-shell): add nota 10 — Plugins, themes e custom no OMZ"
 ```
 
@@ -2489,7 +2489,7 @@ git commit -m "feat(terminal-shell): add nota 10 — Plugins, themes e custom no
 Após Task 12, todas as 10 notas estão escritas. Verificar:
 
 ```bash
-ls -1 "03-Dominios/Terminal/Shell/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Shell/" | sort
 git log --oneline | head -12
 ```
 
@@ -2500,7 +2500,7 @@ Expected: 10 notas + `index.md`. Últimos 11 commits do galho (esqueleto MOC + d
 ## Task 13: Pass final no MOC do galho
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Shell/index.md` (preencher versões exatas; confirmar wikilinks)
+- Modify: `03-Dominios/Tecnologia/Terminal/Shell/index.md` (preencher versões exatas; confirmar wikilinks)
 
 **Objetivo:** trocar placeholders de "Versões assumidas" pelos commits/datas reais capturados no Task 0; confirmar que todos os 10 wikilinks de notas estão ativos (vivos).
 
@@ -2536,7 +2536,7 @@ for n in "01 - Zsh vs Bash" "02 - Zsh essencial" "03 - History do Zsh" \
          "04 - Oh-My-Zsh — anatomia e plugins essenciais" "05 - Powerlevel10k" \
          "06 - Keybindings práticos" "07 - ZLE" "08 - Completion system (compsys)" \
          "09 - Globbing avançado e parameter expansion" "10 - Plugins, themes e custom no OMZ"; do
-  test -f "03-Dominios/Terminal/Shell/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
+  test -f "03-Dominios/Tecnologia/Terminal/Shell/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
 done
 ```
 
@@ -2553,7 +2553,7 @@ Edit pra confirmar `updated: 2026-05-19` no frontmatter do MOC.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Shell/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Shell/index.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal-shell): pass final no MOC do galho Shell
 
@@ -2571,7 +2571,7 @@ EOF
 ## Task 14: Pass final no Dicionário do Terminal
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (alfabetização + "Veja também" por verbete + confirmar contagem)
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (alfabetização + "Veja também" por verbete + confirmar contagem)
 
 **Objetivo:** Garantir que o bloco "Shell / Zsh / OMZ" está em ordem alfabética; que cada verbete tem "Veja também:" apontando pra nota(s) relevante(s); que a contagem de verbetes novos ≥ 30.
 
@@ -2580,8 +2580,8 @@ EOF
 Run:
 ```bash
 # Lista verbetes do bloco "Shell / Zsh / OMZ"
-awk '/^## Shell \/ Zsh \/ OMZ$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | sort
-awk '/^## Shell \/ Zsh \/ OMZ$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l
+awk '/^## Shell \/ Zsh \/ OMZ$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | sort
+awk '/^## Shell \/ Zsh \/ OMZ$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l
 ```
 
 Expected: contagem ≥ 30; lista em ordem alfabética. Se desordenada, reordenar manualmente com `Edit` (escolher pares `### Termo\n<def>\n\nVeja também: ...\n\n` e movê-los).
@@ -2624,7 +2624,7 @@ Total esperado: **30 verbetes novos** no bloco Shell/Zsh/OMZ + expansão do Keym
 
 Run:
 ```bash
-sed -n '/^### Keymap$/,/^###/p' "03-Dominios/Terminal/Dicionário do Terminal.md" | head -20
+sed -n '/^### Keymap$/,/^###/p' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | head -20
 ```
 
 Expected: bloco Keymap mostra "Em Neovim" + "Em Zsh (ZLE)", ambas as definições.
@@ -2636,7 +2636,7 @@ Run:
 # Contar verbetes do bloco que não têm "Veja também:" logo após a definição
 awk '/^## Shell \/ Zsh \/ OMZ$/{f=1; next} /^## /{f=0}
      f && /^### / { v=$0; getline; getline; while(NF==0) getline; if ($0 !~ /^Veja também:/) print v " — sem Veja também" }' \
-  "03-Dominios/Terminal/Dicionário do Terminal.md"
+  "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Expected: nenhuma linha de output. Qualquer linha = verbete sem "Veja também" — adicionar manualmente apontando pra nota correspondente.
@@ -2648,12 +2648,12 @@ Edit do frontmatter pra `updated: 2026-05-19`.
 - [ ] **Step 5: Commit (se houve mudanças)**
 
 ```bash
-git status --short "03-Dominios/Terminal/Dicionário do Terminal.md"
+git status --short "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Se houve mudanças (reordenação ou "Veja também" adicionado):
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal): pass final no Dicionário (bloco Shell/Zsh/OMZ)
 
@@ -2673,13 +2673,13 @@ Se não houve mudanças, pular o commit.
 ## Task 15: Atualizar tronco — ativar wikilink do Shell
 
 **Files:**
-- Modify: `03-Dominios/Terminal/index.md` (transformar bullet do Shell em wikilink ativo)
+- Modify: `03-Dominios/Tecnologia/Terminal/index.md` (transformar bullet do Shell em wikilink ativo)
 
-**Objetivo:** Trocar a linha do Shell de `- Shell — galho 2 (planejado): ...` para `- [[03-Dominios/Terminal/Shell/index|Shell]] — galho 2: ...`.
+**Objetivo:** Trocar a linha do Shell de `- Shell — galho 2 (planejado): ...` para `- [[03-Dominios/Tecnologia/Terminal/Shell/index|Shell]] — galho 2: ...`.
 
 - [ ] **Step 1: Edit do tronco**
 
-Use `Edit` em `03-Dominios/Terminal/index.md`:
+Use `Edit` em `03-Dominios/Tecnologia/Terminal/index.md`:
 
 `old_string`:
 ```markdown
@@ -2688,7 +2688,7 @@ Use `Edit` em `03-Dominios/Terminal/index.md`:
 
 `new_string`:
 ```markdown
-- [[03-Dominios/Terminal/Shell/index|Shell]] — galho 2: Zsh + Oh-My-Zsh + Powerlevel10k (config, plugins, completion, ZLE)
+- [[03-Dominios/Tecnologia/Terminal/Shell/index|Shell]] — galho 2: Zsh + Oh-My-Zsh + Powerlevel10k (config, plugins, completion, ZLE)
 ```
 
 - [ ] **Step 2: Atualizar `updated:` do tronco**
@@ -2699,15 +2699,15 @@ Edit do frontmatter pra `updated: 2026-05-19`.
 
 Run:
 ```bash
-grep -n "Shell" "03-Dominios/Terminal/index.md"
+grep -n "Shell" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
-Expected: aparece `[[03-Dominios/Terminal/Shell/index|Shell]]` (wikilink ativo). Bullet antigo `(planejado)` removido.
+Expected: aparece `[[03-Dominios/Tecnologia/Terminal/Shell/index|Shell]]` (wikilink ativo). Bullet antigo `(planejado)` removido.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git commit -m "$(cat <<'EOF'
 feat(terminal): tronco com wikilink ativo pro galho 2 (Shell)
 
@@ -2734,7 +2734,7 @@ Se a skill `/verificar-wikilinks` estiver disponível:
 
 ```
 Skill: verificar-wikilinks
-Args: 03-Dominios/Terminal/Shell/
+Args: 03-Dominios/Tecnologia/Terminal/Shell/
 ```
 
 Expected: zero broken links. Qualquer broken link = corrigir antes de seguir.
@@ -2775,31 +2775,31 @@ else:
 PY
 ```
 
-Expected: `ok: nenhum wikilink quebrado em 03-Dominios/Terminal/Shell`.
+Expected: `ok: nenhum wikilink quebrado em 03-Dominios/Tecnologia/Terminal/Shell`.
 
 - [ ] **Step 2: Sanity check geral**
 
 Run:
 ```bash
 echo "=== Contagem de arquivos no Shell/ ==="
-ls -1 "03-Dominios/Terminal/Shell/" | wc -l    # esperado: 11 (10 notas + index)
+ls -1 "03-Dominios/Tecnologia/Terminal/Shell/" | wc -l    # esperado: 11 (10 notas + index)
 
 echo ""
 echo "=== Frontmatter publish: true em todos? ==="
-for f in "03-Dominios/Terminal/Shell/"*.md; do
+for f in "03-Dominios/Tecnologia/Terminal/Shell/"*.md; do
   head -20 "$f" | grep -q "publish: true" && echo "ok: $(basename "$f")" || echo "FALTA publish: $(basename "$f")"
 done
 
 echo ""
 echo "=== Tronco com wikilink ativo? ==="
-grep -q "\[\[03-Dominios/Terminal/Shell/index|Shell\]\]" "03-Dominios/Terminal/index.md" \
+grep -q "\[\[03-Dominios/Tecnologia/Terminal/Shell/index|Shell\]\]" "03-Dominios/Tecnologia/Terminal/index.md" \
   && echo "ok: wikilink Shell ativo no tronco" \
   || echo "FALTA: wikilink ainda inativo"
 
 echo ""
 echo "=== Verbetes novos no Dicionário ==="
 awk '/^## Shell \/ Zsh \/ OMZ$/{f=1; next} /^## /{f=0} f && /^### /' \
-  "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l    # esperado: ≥ 30
+  "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l    # esperado: ≥ 30
 
 echo ""
 echo "=== Commits do galho ==="
@@ -2845,7 +2845,7 @@ Após Task 16 completar, conferir:
 Comando final pra confirmar:
 ```bash
 echo "=== /home/josenaldo nos arquivos do Shell? ==="
-grep -rn "/home/josenaldo" "03-Dominios/Terminal/Shell/" && echo "REVISAR" || echo "ok: nenhum"
+grep -rn "/home/josenaldo" "03-Dominios/Tecnologia/Terminal/Shell/" && echo "REVISAR" || echo "ok: nenhum"
 
 echo ""
 echo "=== Co-Authored-By Claude nos commits do galho? ==="

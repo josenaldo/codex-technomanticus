@@ -13,7 +13,7 @@ publish: false
 
 Este é o **quarto galho** da trilha Java Senior (roadmap em `docs/superpowers/specs/2026-06-02-java-senior-roadmap-design.md`). Pressupõe leitura do roadmap, que estabelece topologia flat, esquema de 3 fases, padrões editoriais e política de poda. O Galho 1 (`2026-06-02-java-galho-01-linguagem-design.md`) já fechou e mergeou em `main` — seus artefatos (15 notas + MOC + Dicionário) são o **template de padrão e qualidade** deste galho.
 
-O galho refatora o tronco `03-Dominios/Java/Core/Java Concurrency.md` (1579 linhas, `publish: false`, `status: evergreen`). Diferença estrutural em relação ao Galho 1: enquanto `Java Fundamentals` alimenta quatro galhos (1, 2, 3, 4) e sofreu poda **parcial**, o tronco `Java Concurrency` é **integralmente** do Galho 4 — todo o seu conteúdo migra. A poda aqui é **total**: cada seção do tronco vira callout apontando pra nota do galho (ver §6).
+O galho refatora o tronco `03-Dominios/Tecnologia/Java/Core/Java Concurrency.md` (1579 linhas, `publish: false`, `status: evergreen`). Diferença estrutural em relação ao Galho 1: enquanto `Java Fundamentals` alimenta quatro galhos (1, 2, 3, 4) e sofreu poda **parcial**, o tronco `Java Concurrency` é **integralmente** do Galho 4 — todo o seu conteúdo migra. A poda aqui é **total**: cada seção do tronco vira callout apontando pra nota do galho (ver §6).
 
 Concorrência é um dos temas de **mais alto valor de entrevista internacional** e um dos mais densos da plataforma: Java Memory Model, virtual threads (Project Loom) e structured concurrency são tópicos quentes em 2024-2026. Por isso o galho adota **16 notas com Magus pesado** (distribuição 4/6/6), explicitamente autorizado pelo roadmap (§7.2: "Magus pode crescer em galhos complexos como Concorrência, JVM, Reativa").
 
@@ -23,7 +23,7 @@ Concorrência é um dos temas de **mais alto valor de entrevista internacional**
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + poda do tronco + ativação do MOC central**, em `03-Dominios/Java/Concorrência e paralelismo/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 6 Adepto + 6 Magus).
+Produzir, em uma sessão de execução dedicada, **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + poda do tronco + ativação do MOC central**, em `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 6 Adepto + 6 Magus).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -36,7 +36,7 @@ A barra é "decidir, justificar, reconhecer patterns e armadilhas em code review
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Concorrência e paralelismo/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Concorrência e paralelismo/`)
 
 Pasta nova, flat. 16 notas + 1 MOC. Numeração global por galho (não reinicia por fase).
 
@@ -80,7 +80,7 @@ Pasta nova, flat. 16 notas + 1 MOC. Numeração global por galho (não reinicia 
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Concorrência e paralelismo/index.md`:
+`03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Concorrência e paralelismo"`, tags `java`/`concorrencia`/`moc`, aliases `["Concorrência Java", "Galho 4 - Concorrência"]`)
 - TL;DR callout (galho cobre concorrência do Java moderno, das threads ao JMM, executors, CompletableFuture, virtual threads/Loom e structured concurrency)
@@ -97,7 +97,7 @@ Pasta nova, flat. 16 notas + 1 MOC. Numeração global por galho (não reinicia 
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (criado no Galho 1, `type: glossary`, 223 linhas, seções alfabéticas `## A`..`## Y`). Este galho **expande** o arquivo existente inserindo os verbetes de concorrência **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas (`## H`, `## M`, `## N`, `## Q`, etc.) quando necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-03` no frontmatter.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (criado no Galho 1, `type: glossary`, 223 linhas, seções alfabéticas `## A`..`## Y`). Este galho **expande** o arquivo existente inserindo os verbetes de concorrência **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas (`## H`, `## M`, `## N`, `## Q`, etc.) quando necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-03` no frontmatter.
 
 Verbetes a inserir (~28-32):
 
@@ -107,17 +107,17 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 4)
 
-`03-Dominios/Java/index.md` já existe e lista os 18 galhos. Task **mínima**: trocar a linha 28 (atualmente `4. Concorrência e paralelismo *(planejado)* — ...`) por um wikilink ativo no padrão da linha 25 do Galho 1:
+`03-Dominios/Tecnologia/Java/index.md` já existe e lista os 18 galhos. Task **mínima**: trocar a linha 28 (atualmente `4. Concorrência e paralelismo *(planejado)* — ...`) por um wikilink ativo no padrão da linha 25 do Galho 1:
 
 ```markdown
-4. [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]] — Memory Model, locks, atomics, executors, CompletableFuture, Virtual Threads/Loom, structured concurrency
+4. [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]] — Memory Model, locks, atomics, executors, CompletableFuture, Virtual Threads/Loom, structured concurrency
 ```
 
 Atualizar `updated: 2026-06-03`. Não mexer no resto do MOC central.
 
 ### 3.5. Poda do tronco
 
-`03-Dominios/Java/Core/Java Concurrency.md` — poda **integral** (todo o conteúdo migra). Ver §6.
+`03-Dominios/Tecnologia/Java/Core/Java Concurrency.md` — poda **integral** (todo o conteúdo migra). Ver §6.
 
 ## 4. Convenções por nota
 
@@ -151,7 +151,7 @@ aliases:
 - `## Na prática` — exemplos compiláveis, framing neutro ("padrão observado no JDK/Spring", "caso típico em serviço enterprise"); NUNCA "no meu projeto"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — frase pronta em inglês com **3+ sentenças** (trade-off + decisão + caveat) + vocabulário **6+ termos PT→EN**
-- `## Veja também` — wikilinks SEM backticks; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Concorrência e paralelismo/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + tronco `[[Java Concurrency]]` + verbetes do Dicionário
+- `## Veja também` — wikilinks SEM backticks; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + tronco `[[Java Concurrency]]` + verbetes do Dicionário
 - `## Referências` — docs oficiais (dev.java, docs.oracle.com), JEPs relevantes, *Java Concurrency in Practice* (Goetz), talks identificadas
 
 ### 4.3. Restrições absolutas
@@ -197,7 +197,7 @@ Poda **integral** — todo o tronco migra pro Galho 4 (diferente da poda parcial
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> Este tópico foi expandido no galho [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]. Veja em particular [[11 - Java Memory Model em profundidade]] e [[03 - Exclusão mútua com synchronized]].
+> Este tópico foi expandido no galho [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]. Veja em particular [[11 - Java Memory Model em profundidade]] e [[03 - Exclusão mútua com synchronized]].
 ```
 
 Mapeamento de poda (seção do tronco → nota destino):
@@ -229,7 +229,7 @@ Mapeamento de poda (seção do tronco → nota destino):
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 16 notas em `03-Dominios/Java/Concorrência e paralelismo/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/6/6.
+1. 16 notas em `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/6/6.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (index.md presente).
 3. Dicionário de Java **expandido** (não recriado) com ~28-32 verbetes de concorrência em ordem alfabética; verbetes do Galho 1 intactos; `updated` atualizado.
 4. MOC central `Java/index.md` com Galho 4 ativado (linha 28 vira wikilink); resto intacto.
@@ -266,6 +266,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-02-java-senior-roadmap-design.md` — roadmap macro (18 galhos)
 - `2026-06-02-java-galho-01-linguagem-design.md` — spec do Galho 1 (template de qualidade)
 - `2026-06-02-java-galho-01-linguagem-execution.md` — plano do Galho 1 (template de plano)
-- Tronco a podar: `03-Dominios/Java/Core/Java Concurrency.md`
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`
+- Tronco a podar: `03-Dominios/Tecnologia/Java/Core/Java Concurrency.md`
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`
 - Memórias: [[project_trilha_java]], [[project_tronco_galhos_pattern]], [[project_trilhas_fases_aprendizado]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]]

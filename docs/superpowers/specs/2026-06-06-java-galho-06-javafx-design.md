@@ -24,7 +24,7 @@ Galho 6 é o **dono de JavaFX** na trilha: scene graph, FXML, properties/binding
 
 ## 2. Objetivo
 
-Produzir, em sessão de execução dedicada **direto na `main`** ([[feedback_galhos_direto_main]]), **14 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda integral do tronco + quitação da dívida reversa do Galho 5**, em `03-Dominios/Java/JavaFX/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 5 Adepto + 4 Magus).
+Produzir, em sessão de execução dedicada **direto na `main`** ([[feedback_galhos_direto_main]]), **14 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda integral do tronco + quitação da dívida reversa do Galho 5**, em `03-Dominios/Tecnologia/Java/JavaFX/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 5 Adepto + 4 Magus).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -37,7 +37,7 @@ A barra: "construir, decidir e defender em entrevista" — não "dominar cada co
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/JavaFX/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/JavaFX/`)
 
 Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, Quartz folder-link). Numeração global. Tag de galho: `javafx`. (O tronco `Frontend/JavaFX.md` continua existindo como callout — sem conflito.)
 
@@ -82,7 +82,7 @@ Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, Quartz folder-link). Numera�
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/JavaFX/index.md`:
+`03-Dominios/Tecnologia/Java/JavaFX/index.md`:
 - `type: moc`, `status: growing`, `title: "JavaFX"`, tags `java`/`javafx`/`moc`, aliases `["Galho 6 - JavaFX", "OpenJFX"]`
 - TL;DR + "Sobre este galho" (refator com **poda integral** do tronco `Frontend/JavaFX.md`; par desktop com o Galho 5; fronteira: teoria de UI thread é do Galho 5, JPMS é do Galho 3)
 - 3 H2 de fase (5/5/4) com linha descritiva por nota
@@ -107,7 +107,7 @@ Headings 1:1 com as âncoras das notas (extrair e conferir, como nos galhos ante
 Trocar a linha do item 6 (hoje: `6. JavaFX *(planejado)* — scene graph, FXML, properties/binding, CSS, estado atual do projeto`) por:
 
 ```markdown
-6. [[03-Dominios/Java/JavaFX/index|JavaFX]] — scene graph, FXML/Scene Builder, properties e binding, CSS, Task/Service e threading, MVVM, jlink/jpackage, estado do projeto (OpenJFX/Gluon)
+6. [[03-Dominios/Tecnologia/Java/JavaFX/index|JavaFX]] — scene graph, FXML/Scene Builder, properties e binding, CSS, Task/Service e threading, MVVM, jlink/jpackage, estado do projeto (OpenJFX/Gluon)
 ```
 
 Atualizar `updated:`. Editar por conteúdo, não por número de linha.
@@ -122,14 +122,14 @@ Atualizar `updated:`. Editar por conteúdo, não por número de linha.
 Framework para aplicações desktop em Java — scene graph, FXML, properties/binding e CSS. Desacoplado do JDK desde o Java 11; vive como projeto OpenJFX.
 
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/JavaFX/index|JavaFX]]. Veja [[01 - JavaFX — o que é e como chega ao projeto]], [[02 - Scene graph — stage, scene e nodes]], [[07 - Properties e binding]], [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]], [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/JavaFX/index|JavaFX]]. Veja [[01 - JavaFX — o que é e como chega ao projeto]], [[02 - Scene graph — stage, scene e nodes]], [[07 - Properties e binding]], [[10 - A JavaFX Application Thread — Task, Service e Platform.runLater]], [[14 - JavaFX hoje — estado do projeto e Swing vs JavaFX]].
 ```
 
 A poda **elimina a fabricação** (`Patient*`, `Josenaldo`, "da minha experiência", inglês em 1ª pessoa) e o framing desatualizado. `publish: false` permanece. Não deletar o arquivo (wikilinks externos: conferir com grep quem aponta pra `[[JavaFX]]` e validar que continuam resolvendo no callout).
 
 ### 3.6. Dívida reversa (ganchos "JavaFX (planejado)")
 
-O Galho 5 deixou ganchos textuais "JavaFX... (planejado)" (regra do spec dele: sem wikilink pra galho inexistente). Grep na execução: `grep -rn "JavaFX" 03-Dominios/Java/Swing/ 03-Dominios/Java/JVM/ <MOCs>` filtrando "planejado"/"Galho 6". Converter cada um pra wikilink da nota mais específica (capstone 12 do Swing → [[14 - JavaFX hoje...]]; menções genéricas → MOC do galho). O MOC central é a §3.4 (separado).
+O Galho 5 deixou ganchos textuais "JavaFX... (planejado)" (regra do spec dele: sem wikilink pra galho inexistente). Grep na execução: `grep -rn "JavaFX" 03-Dominios/Tecnologia/Java/Swing/ 03-Dominios/Tecnologia/Java/JVM/ <MOCs>` filtrando "planejado"/"Galho 6". Converter cada um pra wikilink da nota mais específica (capstone 12 do Swing → [[14 - JavaFX hoje...]]; menções genéricas → MOC do galho). O MOC central é a §3.4 (separado).
 
 ### 3.7. Reciprocidade de links
 
@@ -199,7 +199,7 @@ Quando faltar fato verificável, **PERGUNTAR** antes de escrever.
 
 ## 7. Critérios de aceitação do galho
 
-1. 14 notas em `03-Dominios/Java/JavaFX/`, frontmatter completo com `fase:`, `publish: true`, distribuição 5/5/4.
+1. 14 notas em `03-Dominios/Tecnologia/Java/JavaFX/`, frontmatter completo com `fase:`, `publish: true`, distribuição 5/5/4.
 2. MOC do galho (3 fases + 5 rotas + dataview + `index.md` presente).
 3. Dicionário **expandido** (~22-26 verbetes, ordem alfabética, âncoras 1:1, sem duplicar, anteriores intactos, `updated` atualizado).
 4. MOC central com Galho 6 ativado; resto intacto.
@@ -237,7 +237,7 @@ Quando faltar fato verificável, **PERGUNTAR** antes de escrever.
 
 - Roadmap: `2026-06-02-java-senior-roadmap-design.md`
 - Specs/planos dos Galhos 1-5 (templates) — em especial Galho 5 (Swing, par desktop) e Galho 4 (poda integral de tronco)
-- Tronco a podar: `03-Dominios/Java/Frontend/JavaFX.md` (poda integral)
-- Artefatos a atualizar: `Dicionário de Java.md`, `03-Dominios/Java/index.md`, notas/MOCs com gancho "JavaFX (planejado)"
+- Tronco a podar: `03-Dominios/Tecnologia/Java/Frontend/JavaFX.md` (poda integral)
+- Artefatos a atualizar: `Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, notas/MOCs com gancho "JavaFX (planejado)"
 - Fontes-base: openjfx.io (+ Javadoc), CSS Reference Guide, gluonhq.com, JEP 392 (fallback), man pages jlink/jpackage
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_galhos_direto_main]], [[feedback_notas_atomicas]]

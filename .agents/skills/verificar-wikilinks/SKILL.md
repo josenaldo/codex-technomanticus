@@ -39,8 +39,8 @@ Leia o JSON. Apresente ao usuário um resumo:
 Encontrei N quebras em M arquivos. Plano de correção:
 
 folder_without_index (K):
-  - [[Anatomia dos LLMs]] em 03-Dominios/IA/index.md:42
-    → criar 03-Dominios/IA/Anatomia dos LLMs/index.md
+  - [[Anatomia dos LLMs]] em 03-Dominios/Tecnologia/IA/index.md:42
+    → criar 03-Dominios/Tecnologia/IA/Anatomia dos LLMs/index.md
   - [...]
 
 target_not_found (K):

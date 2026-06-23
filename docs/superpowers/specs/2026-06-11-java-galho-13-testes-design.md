@@ -21,14 +21,14 @@ Este é o **décimo terceiro galho** da trilha Java Senior (roadmap em `docs/sup
 
 **A fronteira-assinatura é MÚLTIPLA — este é o galho de CONVERGÊNCIA.** Testes é a camada que **testa o que os Galhos 1-12 construíram**. Cada técnica de teste linka de volta ao galho da coisa testada, sem re-explicá-la:
 
-- **Galho 9 (a camada web testada):** `@WebMvcTest` + `MockMvc` exercitam controllers/`@ControllerAdvice`/serialização → [[03-Dominios/Java/Web e APIs REST/02 - @RestController e os mapeamentos|@RestController]], [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|DispatcherServlet]], [[03-Dominios/Java/Web e APIs REST/09 - Tratamento de exceções com @ControllerAdvice|@ControllerAdvice]]. WireMock/`@RestClientTest` testam os clientes HTTP → [[03-Dominios/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP]].
-- **Galho 10 (a persistência testada):** `@DataJpaTest` + `TestEntityManager` + Testcontainers testam repositories/queries → [[03-Dominios/Java/Persistência de dados/04 - Spring Data repositories — JpaRepository e query methods derivados|Spring Data repositories]], [[03-Dominios/Java/Persistência de dados/09 - Consultas com @Query — JPQL, native e @Modifying|Consultas com @Query]]. **Paga a dívida** que o Galho 10 deixou ("testes de repositório com Testcontainers/`@DataJpaTest` = Galho 13").
-- **Galho 11 (o reativo testado):** `StepVerifier` + `@WebFluxTest` + `WebTestClient` testam Mono/Flux → [[03-Dominios/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]]. **Paga a dívida** que o Galho 11 deixou explícita (`index:35` "testes reativos com `StepVerifier` = Galho 13").
-- **Galho 12 (a segurança testada):** `@WithMockUser`/`with(jwt())`/`with(csrf())` no MockMvc testam authn/authz → [[03-Dominios/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Autorização baseada em URL]], [[03-Dominios/Java/Segurança/07 - Method security — @PreAuthorize, @PostAuthorize e SpEL|Method security]]. **Paga a dívida** da nota 18 do Galho 12 ("a stack de teste = Galho 13").
-- **Galho 8 (o container que os slices carregam):** o contexto de teste É um `ApplicationContext`; os slices auto-configuram um subconjunto → [[03-Dominios/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext]], [[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
-- **Galho 4 (a concorrência testada):** Awaitility testa consistência eventual/código assíncrono → [[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]].
-- **Galho 3 (a performance medida):** JMH lida com warmup/JIT/dead-code elimination → [[03-Dominios/Java/JVM/07 - O compilador JIT — C1, C2 e a compilação adaptativa|O compilador JIT]] (por que microbenchmark ingênuo mente).
-- **Galho 1 (a linguagem):** `assertThrows`/`assertThatThrownBy` testam o contrato de exceção → [[03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]].
+- **Galho 9 (a camada web testada):** `@WebMvcTest` + `MockMvc` exercitam controllers/`@ControllerAdvice`/serialização → [[03-Dominios/Tecnologia/Java/Web e APIs REST/02 - @RestController e os mapeamentos|@RestController]], [[03-Dominios/Tecnologia/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|DispatcherServlet]], [[03-Dominios/Tecnologia/Java/Web e APIs REST/09 - Tratamento de exceções com @ControllerAdvice|@ControllerAdvice]]. WireMock/`@RestClientTest` testam os clientes HTTP → [[03-Dominios/Tecnologia/Java/Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate|Clientes HTTP]].
+- **Galho 10 (a persistência testada):** `@DataJpaTest` + `TestEntityManager` + Testcontainers testam repositories/queries → [[03-Dominios/Tecnologia/Java/Persistência de dados/04 - Spring Data repositories — JpaRepository e query methods derivados|Spring Data repositories]], [[03-Dominios/Tecnologia/Java/Persistência de dados/09 - Consultas com @Query — JPQL, native e @Modifying|Consultas com @Query]]. **Paga a dívida** que o Galho 10 deixou ("testes de repositório com Testcontainers/`@DataJpaTest` = Galho 13").
+- **Galho 11 (o reativo testado):** `StepVerifier` + `@WebFluxTest` + `WebTestClient` testam Mono/Flux → [[03-Dominios/Tecnologia/Java/Programação Reativa/10 - Spring WebFlux — o stack não-bloqueante sobre Netty e o DispatcherHandler|Spring WebFlux]]. **Paga a dívida** que o Galho 11 deixou explícita (`index:35` "testes reativos com `StepVerifier` = Galho 13").
+- **Galho 12 (a segurança testada):** `@WithMockUser`/`with(jwt())`/`with(csrf())` no MockMvc testam authn/authz → [[03-Dominios/Tecnologia/Java/Segurança/05 - Autorização baseada em URL — authorizeHttpRequests, roles vs authorities|Autorização baseada em URL]], [[03-Dominios/Tecnologia/Java/Segurança/07 - Method security — @PreAuthorize, @PostAuthorize e SpEL|Method security]]. **Paga a dívida** da nota 18 do Galho 12 ("a stack de teste = Galho 13").
+- **Galho 8 (o container que os slices carregam):** o contexto de teste É um `ApplicationContext`; os slices auto-configuram um subconjunto → [[03-Dominios/Tecnologia/Java/Spring Core e Boot/06 - ApplicationContext — o container e seu ciclo|ApplicationContext]], [[03-Dominios/Tecnologia/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]].
+- **Galho 4 (a concorrência testada):** Awaitility testa consistência eventual/código assíncrono → [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]].
+- **Galho 3 (a performance medida):** JMH lida com warmup/JIT/dead-code elimination → [[03-Dominios/Tecnologia/Java/JVM/07 - O compilador JIT — C1, C2 e a compilação adaptativa|O compilador JIT]] (por que microbenchmark ingênuo mente).
+- **Galho 1 (a linguagem):** `assertThrows`/`assertThatThrownBy` testam o contrato de exceção → [[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]].
 
 Os Galhos 10, 11 e 12 deixaram **ganchos "Galho 13 (planejado)"** em texto esperando exatamente essas notas (dívida reversa — §3.6). Este galho **quita** essa dívida.
 
@@ -36,7 +36,7 @@ Testes é a **disciplina que sustenta os 12 galhos anteriores**: como testar a l
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **21 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda INTEGRAL do tronco `Testes em Java.md` + quitação da dívida reversa**, em `03-Dominios/Java/Testes/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 7 Adepto + 9 Magus**).
+Produzir, em uma sessão de execução dedicada, **21 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda INTEGRAL do tronco `Testes em Java.md` + quitação da dívida reversa**, em `03-Dominios/Tecnologia/Java/Testes/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 7 Adepto + 9 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -50,7 +50,7 @@ A barra é "projetar e justificar uma suíte de testes que protege o stack intei
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Testes/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Testes/`)
 
 Pasta **nova**, flat. 21 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase).
 
@@ -102,7 +102,7 @@ Pasta **nova**, flat. 21 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Testes/index.md`:
+`03-Dominios/Tecnologia/Java/Testes/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Testes"`, tags `java`/`testes`/`moc`, aliases `["Testes", "Testes em Java", "Testing", "Galho 13 - Testes"]`)
 - TL;DR callout (galho cobre a disciplina que testa os Galhos 1-12: JUnit 5/AssertJ/Mockito, os slices do Spring, Testcontainers e integração, testes de segurança/async/reativo, e o que vai além do verde — mutation testing, performance, fitness functions, contratos)
@@ -114,12 +114,12 @@ Pasta **nova**, flat. 21 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **Os slices do Spring** — 08 → 09 → 10 → 11 → 12 → 13 (contexto, web, data, Testcontainers, integração, segurança)
   - **Indo além do verde** — 17 → 18 → 19 → 20 (mutation, performance, arquitetura, contrato)
   - **Testando o stack reativo** (ponte com o Galho 11) — 01 → 08 → 15 + notas do Galho 11 (WebFlux, WebClient)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **Galho 8** (o container que os slices carregam), **Galho 9** (a web testada), **Galho 10** (a persistência testada), **Galho 11** (o reativo testado), **Galho 12** (a segurança testada), Dicionário de Java; Galhos 14/16/17 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **Galho 8** (o container que os slices carregam), **Galho 9** (a web testada), **Galho 10** (a persistência testada), **Galho 11** (o reativo testado), **Galho 12** (a segurança testada), Dicionário de Java; Galhos 14/16/17 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**366 verbetes** após o Galho 12, `type: glossary`, `updated: 2026-06-10`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` para `2026-06-11`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**366 verbetes** após o Galho 12, `type: glossary`, `updated: 2026-06-10`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` para `2026-06-11`.
 
 Verbetes a inserir (~38, conferir dups antes):
 
@@ -129,10 +129,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 13)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha 43 (atualmente `13. Testes *(planejado)* — JUnit 5, Mockito, AssertJ, Spring Boot Test, Testcontainers`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha 43 (atualmente `13. Testes *(planejado)* — JUnit 5, Mockito, AssertJ, Spring Boot Test, Testcontainers`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-13. [[03-Dominios/Java/Testes/index|Testes]] — a pirâmide e o stack moderno, JUnit 5/AssertJ/Mockito, os slices do Spring Boot, Testcontainers e integração, testes de segurança/async/reativo, mutation testing, performance, fitness functions e contract testing
+13. [[03-Dominios/Tecnologia/Java/Testes/index|Testes]] — a pirâmide e o stack moderno, JUnit 5/AssertJ/Mockito, os slices do Spring Boot, Testcontainers e integração, testes de segurança/async/reativo, mutation testing, performance, fitness functions e contract testing
 ```
 
 Atualizar `updated` para `2026-06-11`. Não mexer no resto do MOC central.
@@ -147,7 +147,7 @@ O tronco dedicado deste galho (1616 linhas, `publish: false`). **Poda integral**
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Testes/index|Testes]]. Veja [[03-Dominios/Java/Testes/01 - O que é testar em Java — a pirâmide e o stack moderno|O que é testar em Java]], [[03-Dominios/Java/Testes/06 - Mockito — mocks, stubbing e matchers|Mockito]], [[03-Dominios/Java/Testes/09 - @WebMvcTest — testando controllers com MockMvc|@WebMvcTest]], [[03-Dominios/Java/Testes/10 - @DataJpaTest — testando repositories|@DataJpaTest]], [[03-Dominios/Java/Testes/12 - Testes de integração ponta a ponta|Testes de integração]] e o [[03-Dominios/Java/Testes/21 - Capstone — a estratégia de testes de uma app Spring production-grade|Capstone]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/Testes/index|Testes]]. Veja [[03-Dominios/Tecnologia/Java/Testes/01 - O que é testar em Java — a pirâmide e o stack moderno|O que é testar em Java]], [[03-Dominios/Tecnologia/Java/Testes/06 - Mockito — mocks, stubbing e matchers|Mockito]], [[03-Dominios/Tecnologia/Java/Testes/09 - @WebMvcTest — testando controllers com MockMvc|@WebMvcTest]], [[03-Dominios/Tecnologia/Java/Testes/10 - @DataJpaTest — testando repositories|@DataJpaTest]], [[03-Dominios/Tecnologia/Java/Testes/12 - Testes de integração ponta a ponta|Testes de integração]] e o [[03-Dominios/Tecnologia/Java/Testes/21 - Capstone — a estratégia de testes de uma app Spring production-grade|Capstone]].
 ```
 
 **Toda a fabricação some** (`Patient`/`PatientService`/`PatientController`/`Maria`/`PatientBuilder`/`PatientAssert`, `## Na prática (da minha experiência)` com a "evolução da stack do MedEspecialista" e o "incidente de flakiness no Kafka", `## How to explain in English` 1ª pessoa, `### Frases úteis em entrevista`). O nome de arquivo `Testes em Java.md` permanece. Confirmar números de linha na execução (lendo o tronco primeiro — política §9 do roadmap).
@@ -207,7 +207,7 @@ H1 `# Título` após o frontmatter (padrão dos galhos publicados).
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`Order`/`Customer`/`User`/`Product`/`OrderService`/`OrderRepository`/`OrderController`); "padrão observado em suítes de teste"; NUNCA `Patient`/`MedEspecialista`/"da minha experiência"/"quando comecei o projeto" (o tronco está cheio disso — **contraexemplo**)
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com `### (N) Título` (H3 numerado, NÃO callout `[!warning]`) + descrição + exemplo curto + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + subheading `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Testes/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando testa uma camada) a nota do galho correspondente (G9 controllers, G10 repos, G11 reativo, G12 segurança, G8 container, G4 async, G3 JIT, G1 exceções) + verbetes do Dicionário
+- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Testes/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando testa uma camada) a nota do galho correspondente (G9 controllers, G10 repos, G11 reativo, G12 segurança, G8 container, G4 async, G3 JIT, G1 exceções) + verbetes do Dicionário
 - `## Referências` — docs oficiais (junit.org, javadoc Mockito, docs.spring.io testing, testcontainers.org, assertj, pitest.org, archunit.org, docs.pact.io, openjdk JMH)
 
 ### 4.3. Restrições absolutas
@@ -258,7 +258,7 @@ Executado nesta fase de brainstorming (2026-06-11); itens version-specific re-co
 3. **Convergência-assinatura confirmada** — Galhos 9 (controllers/clientes HTTP), 10 (repos/queries), 11 (WebFlux), 12 (authz/method security), 8 (container/auto-config), 4 (concorrência), 3 (JIT), 1 (exceções) existem em `main`. Os Galhos 10/11/12 **esperam** o link-back deste galho.
 4. **Dívida reversa localizada** — 1 ponteiro inline (Segurança/18:98) + 5 parágrafos de fronteira (Segurança/index:32, Persistência/index:32, Reativa/index:35, Spring Core/index:32, Web/index:32) + MOC central :43. **NÃO quitar**: horizonte-lists de uma linha (Spring Core:97, Web:95, Persistência:92). Confirmar linhas na execução.
 5. **Dicionário** — **366 verbetes** após o Galho 12; seções alfabéticas únicas `## A`…`## Z`; verbetes `### `; `updated: 2026-06-10`. Possíveis dups (Galhos 9-11): `WebTestClient`/`WebClient`, `MockMvc` — conferir e linkar, nunca duplicar. Expansão alfabética (~38), nunca recriar/reordenar.
-6. **MOC central** — `03-Dominios/Java/index.md:43` é a linha do Galho 13 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-10`.
+6. **MOC central** — `03-Dominios/Tecnologia/Java/index.md:43` é a linha do Galho 13 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-10`.
 7. **Troncos intocáveis** — `Backend/Spring Boot.md`, `Backend/Spring Data JPA.md` (hub Galho 10), `Backend/Spring Security.md` (hub Galho 12), `Backend/Kafka/` + `Backend/gRPC e Go.md` (Galho 14). Pasta `Testes/` ainda **não existe**; não há colisão com nota geral `[[Testes]]` (link morto no tronco).
 8. **Versões a cravar via WebFetch na execução** — JUnit 5.x, Mockito 5.x, AssertJ, Testcontainers (todas as versões atuais); **`@MockitoBean` Boot 3.4+ substituiu `@MockBean`**; **`@ServiceConnection` Boot 3.1+**; static mocking nativo Mockito 5; `reactor-test`/`StepVerifier`; `spring-security-test`; PIT/`pitest-junit5-plugin`; ArchUnit; JMH. Baseline Boot 3.x (`jakarta.*`, Java 17), citando Boot 4.x como "mais recente". Fonte: docs oficiais.
 
@@ -268,7 +268,7 @@ Nenhum número de adoção é inventado. Quando faltar fato verificável, **PERG
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 21 notas em `03-Dominios/Java/Testes/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/9.
+1. 21 notas em `03-Dominios/Tecnologia/Java/Testes/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/9.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~38 verbetes; verbetes dos Galhos 1-12 intactos; `updated: 2026-06-11`; dups conferidos e linkados (não duplicar `WebTestClient`/`MockMvc`/`WebClient` se vierem dos Galhos 9-11).
 4. MOC central `Java/index.md` com Galho 13 ativado (linha 43 vira wikilink); resto intacto.
@@ -314,6 +314,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-08-java-galho-09-web-rest-design.md` — Galho 9 (dono dos controllers que `@WebMvcTest` testa)
 - `2026-06-08-java-galho-08-spring-core-design.md` — Galho 8 (dependência: o container que os slices carregam)
 - Galho 6 (JavaFX) — template de **poda integral** de tronco monolítico
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Testes em Java.md` (poda integral), `Segurança/18 - Capstone`, `Segurança/index.md`, `Persistência de dados/index.md`, `Programação Reativa/index.md`, `Spring Core e Boot/index.md`, `Web e APIs REST/index.md` (dívida reversa)
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Testes em Java.md` (poda integral), `Segurança/18 - Capstone`, `Segurança/index.md`, `Persistência de dados/index.md`, `Programação Reativa/index.md`, `Spring Core e Boot/index.md`, `Web e APIs REST/index.md` (dívida reversa)
 - Fontes-base do galho: `junit.org/junit5/docs/current/user-guide/`, `javadoc.io/doc/org.mockito`, `docs.spring.io/spring-boot/reference/testing/`, `java.testcontainers.org`, `assertj.github.io`, `pitest.org`, `archunit.org`, `docs.pact.io`, `github.com/openjdk/jmh`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]], [[feedback_notas_atomicas]], [[feedback_enriquecimento_feynman]]

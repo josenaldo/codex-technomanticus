@@ -88,9 +88,9 @@ planejar → confirmar → executar. Nunca edita sem confirmação prévia.
 Exemplos:
 ```
 /enriquecer-nota
-/enriquecer-nota 03-Dominios/IA/Economia de Tokens/02 - Anatomia.md
-/enriquecer-nota 03-Dominios/IA/02 - Anatomia.md foca na parte de reasoning
-/enriquecer-nota 03-Dominios/IA/02 - Anatomia.md https://example.com/artigo
+/enriquecer-nota 03-Dominios/Tecnologia/IA/Economia de Tokens/02 - Anatomia.md
+/enriquecer-nota 03-Dominios/Tecnologia/IA/02 - Anatomia.md foca na parte de reasoning
+/enriquecer-nota 03-Dominios/Tecnologia/IA/02 - Anatomia.md https://example.com/artigo
 ```
 
 ## Quando usar
@@ -146,7 +146,7 @@ Append ao SKILL.md:
 3. Lê o arquivo inteiro (frontmatter + corpo).
 
 4. Identifica o **domínio** da nota pelo path:
-   - `03-Dominios/IA/...` → domínio IA
+   - `03-Dominios/Tecnologia/IA/...` → domínio IA
    - `03-Dominios/Programacao/...` → domínio Programação
    - Nota fora de `03-Dominios/` → domínio indefinido (continua sem dicionário)
 
@@ -408,7 +408,7 @@ Se algum item do plano foi pulado (usuário editou para remover), indica com `�
 ## Exemplo completo
 
 ```
-Usuário: /enriquecer-nota 03-Dominios/IA/Economia de Tokens/02 - Anatomia.md
+Usuário: /enriquecer-nota 03-Dominios/Tecnologia/IA/Economia de Tokens/02 - Anatomia.md
 
 Skill:
 1. Lê a nota. Domínio: IA. Localiza Dicionário de IA.md.

@@ -19,7 +19,7 @@ Lazygit e Lazydocker são TUIs do mesmo autor (Jesse Duffield) com filosofia sem
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **7 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Terminal/TUIs/` e `03-Dominios/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (2 Iniciado + 3 Adepto + 2 Magus).
+Produzir, em uma sessão de execução dedicada, **7 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Tecnologia/Terminal/TUIs/` e `03-Dominios/Tecnologia/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (2 Iniciado + 3 Adepto + 2 Magus).
 
 A trilha precisa ser:
 
@@ -29,7 +29,7 @@ A trilha precisa ser:
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Terminal/TUIs/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Terminal/TUIs/`)
 
 Pasta nova, flat. 7 notas + 1 MOC:
 
@@ -57,7 +57,7 @@ Pasta nova, flat. 7 notas + 1 MOC:
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Terminal/TUIs/index.md`:
+`03-Dominios/Tecnologia/Terminal/TUIs/index.md`:
 - `type: moc`, `status: growing`, `progresso: andamento`
 - Frontmatter padrão (`title: "TUIs de Dev"`, tags `terminal/tuis/lazygit/lazydocker/moc`, aliases `TUIs de Dev`/`Lazygit`/`Lazydocker`)
 - Conteúdo agrupado em 3 H3 (Iniciado/Adepto/Magus)
@@ -69,7 +69,7 @@ Pasta nova, flat. 7 notas + 1 MOC:
 
 ### 3.3. Expansão do Dicionário do Terminal
 
-`03-Dominios/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## TUIs de Dev / Lazygit / Lazydocker` (após `## Multiplexer / Zellij`), com 14 verbetes em ordem alfabética case-insensitive:
+`03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## TUIs de Dev / Lazygit / Lazydocker` (após `## Multiplexer / Zellij`), com 14 verbetes em ordem alfabética case-insensitive:
 
 | Verbete | Resumo |
 |---|---|
@@ -92,7 +92,7 @@ Cada verbete tem `Veja também:` apontando pra nota canônica do tópico.
 
 ### 3.4. Tronco — ativar wikilink
 
-`03-Dominios/Terminal/index.md`: trocar `- TUIs de Dev — galho 4 (planejado): Lazygit, Lazydocker` por `- [[03-Dominios/Terminal/TUIs/index|TUIs de Dev]] — galho 4: Lazygit + Lazydocker (operações, config, debugging)`.
+`03-Dominios/Tecnologia/Terminal/index.md`: trocar `- TUIs de Dev — galho 4 (planejado): Lazygit, Lazydocker` por `- [[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs de Dev]] — galho 4: Lazygit + Lazydocker (operações, config, debugging)`.
 
 ## 4. Convenções por nota
 
@@ -133,8 +133,8 @@ aliases:
 - `## Em inglês` — bullets bilíngues `- **PT** — *EN*. "frase técnica curta em PT."` (8-10 termos). NUNCA tabela.
 - `## Veja também` — wikilinks SEM backticks; inclui sempre:
   - Notas relacionadas do galho
-  - `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - Wikilinks pros verbetes do Dicionário usados na nota
 - `## Referências` — docs oficiais Lazygit/Lazydocker + posts canônicos
 
@@ -146,7 +146,7 @@ aliases:
 4. **Paths generalizados** pra `~/...`.
 5. **Wikilinks sem backticks** em "Veja também".
 6. **Tronco wikilink obrigatório** em "Veja também".
-7. **MOC wikilink** em "Veja também": `[[03-Dominios/Terminal/TUIs/index|MOC do galho]]`.
+7. **MOC wikilink** em "Veja também": `[[03-Dominios/Tecnologia/Terminal/TUIs/index|MOC do galho]]`.
 8. **Code fences corretos:** ` ```yaml ` pra config, ` ```bash ` pra shell, ` ```text ` ou ` ```diff ` pra exemplos de diff/hunk.
 9. **Defaults documentados** — se comportamento é default na versão atual, mencionar.
 10. **Custom commands com sintaxe válida** — verificar contra https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Command_Keybindings.md.
@@ -285,7 +285,7 @@ Cada nota começa com **Step 1: Pesquisa-âncora** — WebFetch em paralelo de d
 
 ## 8. Critério de pronto
 
-- 8 arquivos em `03-Dominios/Terminal/TUIs/`: 7 notas + `index.md`
+- 8 arquivos em `03-Dominios/Tecnologia/Terminal/TUIs/`: 7 notas + `index.md`
 - ≥12 verbetes novos no bloco `## TUIs de Dev / Lazygit / Lazydocker` do Dicionário
 - Tronco `Terminal/index.md` com wikilink ativo
 - `verificar-wikilinks` em `TUIs/` sem broken links

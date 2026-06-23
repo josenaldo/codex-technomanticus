@@ -35,28 +35,28 @@ tempo de execução.
 - **Teoria da Computação** (galho 10, existe) — dona da TEORIA: autômatos finitos (DFA/NFA), linguagens
   regulares e expressões regulares como objeto formal, hierarquia de Chomsky, gramáticas livres de contexto e
   autômatos de pilha, o pumping lemma. As notas 03 (léxica) e 04 (gramáticas) deste galho **LINKAM**
-  `[[03-Dominios/Fundamentos/Teoria da Computação/03 - Autômatos finitos - DFA e NFA]]`,
-  `[[03-Dominios/Fundamentos/Teoria da Computação/04 - Linguagens regulares e expressões regulares]]` e
-  `[[03-Dominios/Fundamentos/Teoria da Computação/06 - Autômatos de pilha e gramáticas livres de contexto]]`
+  `[[03-Dominios/Ciência/Teoria da Computação/03 - Autômatos finitos - DFA e NFA]]`,
+  `[[03-Dominios/Ciência/Teoria da Computação/04 - Linguagens regulares e expressões regulares]]` e
+  `[[03-Dominios/Ciência/Teoria da Computação/06 - Autômatos de pilha e gramáticas livres de contexto]]`
   e usam o *aplicado* (construir um scanner a partir de regex; construir um parser a partir de uma CFG) —
   NUNCA reescrevem a teoria de autômatos nem o pumping lemma. A regra de ouro: Teoria prova *que* uma
   linguagem é reconhecível; Compiladores *constrói* o reconhecedor.
 - **Organização de Computadores** (galho 13, existe) — dona da ISA e do assembly como objeto
   (von Neumann, registradores, modos de execução). As notas 13 (geração de código) e 15 (runtime) deste galho
-  **LINKAM** `[[03-Dominios/Fundamentos/Organização de Computadores/08 - ISA - a interface hardware-software]]`
-  e `[[03-Dominios/Fundamentos/Organização de Computadores/09 - Assembly e o modelo de execução]]` e tratam o
+  **LINKAM** `[[03-Dominios/Ciência/Organização de Computadores/08 - ISA - a interface hardware-software]]`
+  e `[[03-Dominios/Ciência/Organização de Computadores/09 - Assembly e o modelo de execução]]` e tratam o
   assembly como *alvo* (o que o back-end emite), sem reensinar a ISA.
 - **Paradigmas de Programação** (galho 7, existe) — dono dos SISTEMAS DE TIPOS como ideia de design
   (estático × dinâmico, nominal × estrutural, o que um tipo significa). A nota 10 deste galho (análise
-  semântica) **LINKA** `[[03-Dominios/Fundamentos/Paradigmas/13 - Sistemas de tipos]]` e é dona do
+  semântica) **LINKA** `[[03-Dominios/Ciência/Paradigmas/13 - Sistemas de tipos]]` e é dona do
   *algoritmo* de checagem/inferência (como o compilador *verifica* tipos), não da taxonomia de sistemas.
 - **Sistemas Operacionais** (galho 9, existe) — dono de processo, memória virtual e do carregamento de
   programas como MECANISMO DO SO. As notas 15 (runtime/stack frames) e 19 (linking e loading) deste galho
-  **LINKAM** `[[03-Dominios/Fundamentos/Sistemas Operacionais/index]]` e são donas do ângulo do *compilador/
+  **LINKAM** `[[03-Dominios/Ciência/Sistemas Operacionais/index]]` e são donas do ângulo do *compilador/
   toolchain* (o que o linker resolve, o layout que o compilador assume); a execução do processo é do SO.
 - **Segurança Conceitual** (galho 14, existe) — dona de "Trusting Trust" pelo ângulo de confiança sob
   adversário. A nota 20 deste galho (bootstrapping/self-hosting) **LINKA**
-  `[[03-Dominios/Fundamentos/Segurança Conceitual/17 - Confiança transitiva e Trusting Trust]]` e é dona do
+  `[[03-Dominios/Engenharia/Segurança/17 - Confiança transitiva e Trusting Trust]]` e é dona do
   ângulo do *compilador* (o mecanismo técnico do compilador que se auto-infecta, bootstrapping, self-hosting);
   Segurança é dona do ângulo de supply-chain/confiança.
 - **Estruturas de Dados** (galho 1, existe) — dona de árvores e do percurso. A nota 06 (AST/visitor) menciona
@@ -191,7 +191,7 @@ end-to-end de uma expressão da fonte ao assembly e o cheat-sheet "estágio → 
    conferir `wc -l` REAL → 2ª passada de enriquecimento nos floors → commit.
 3. **Fase Adepto (07–12)** → idem, 6 notas → commit.
 4. **Fase Magus (13–20)** → idem, 8 notas → commit.
-5. **MOCs do domínio** (`03-Dominios/Fundamentos/index.md` + `Fundamentos.md`) apontam ao galho → commit.
+5. **MOCs do domínio** (`03-Dominios/Ciência/index.md` + `Fundamentos.md`) apontam ao galho → commit.
 6. Checks finais: NN-links resolvem, cross-galho verificados, zero link quebrado/relativo, zero xychart, zero
    entidade HTML na prosa, `[[...]]` literal só dentro de code fence, todas as cercas = `mermaid`. Atualizar
    memória (Camada D 3/3 → domínio Fundamentos COMPLETO).

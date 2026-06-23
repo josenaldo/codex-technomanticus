@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Criar 12 notas atômicas + 1 MOC em `03-Dominios/Node/Observability e produção/` cobrindo os três pilares de observability (logs, métricas, traces), ferramentas idiomáticas do ecossistema Node (pino, prom-client, OpenTelemetry), diagnóstico avançado (clinic.js, heap snapshots) e patterns de resiliência (graceful shutdown, circuit breaker, connection pool tuning), e podar as seções correspondentes do tronco `Node.js.md`.
+**Goal:** Criar 12 notas atômicas + 1 MOC em `03-Dominios/Tecnologia/Node/Observability e produção/` cobrindo os três pilares de observability (logs, métricas, traces), ferramentas idiomáticas do ecossistema Node (pino, prom-client, OpenTelemetry), diagnóstico avançado (clinic.js, heap snapshots) e patterns de resiliência (graceful shutdown, circuit breaker, connection pool tuning), e podar as seções correspondentes do tronco `Node.js.md`.
 
-**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/Node/Observability e produção/`. O MOC serve como ponto de entrada com rotas alternativas. O tronco é podado ao final com callouts de migração.
+**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/Tecnologia/Node/Observability e produção/`. O MOC serve como ponto de entrada com rotas alternativas. O tronco é podado ao final com callouts de migração.
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks `[[]]`, callouts `[!abstract]`, dataview query no MOC. Ferramentas cobertas: pino 9, prom-client 15, OpenTelemetry JS 2, clinic.js, 0x, opossum 8+, asyncLocalStorage (Node 16+).
 
@@ -44,7 +44,7 @@
 **Criar:**
 
 ```
-03-Dominios/Node/Observability e produção/
+03-Dominios/Tecnologia/Node/Observability e produção/
 ├── Observability e produção.md          (MOC)
 ├── 01 - Os três pilares - logs, métricas e traces.md
 ├── 02 - Logging estruturado com pino.md
@@ -63,8 +63,8 @@
 **Modificar:**
 
 ```
-03-Dominios/JavaScript/Backend/Node.js.md     (poda: 4 seções → callouts)
-03-Dominios/Node/index.md                     (adicionar galho 5)
+03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md     (poda: 4 seções → callouts)
+03-Dominios/Tecnologia/Node/index.md                     (adicionar galho 5)
 ```
 
 ---
@@ -72,11 +72,11 @@
 ## Task 1: MOC — Observability e produção
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/Observability e produção.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/Observability e produção.md`
 
 - [ ] **Step 1: Criar o arquivo MOC**
 
-Criar `03-Dominios/Node/Observability e produção/Observability e produção.md` com o conteúdo abaixo:
+Criar `03-Dominios/Tecnologia/Node/Observability e produção/Observability e produção.md` com o conteúdo abaixo:
 
 ```markdown
 ---
@@ -168,25 +168,25 @@ Este galho cobre **observability e produção em Node.js**: os três pilares (lo
 
 ```dataview
 TABLE status, updated
-FROM "03-Dominios/Node/Observability e produção"
+FROM "03-Dominios/Tecnologia/Node/Observability e produção"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 
 ## Veja também
 
-- [[03-Dominios/Node/index|Node.js (MOC central)]]
+- [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
 - [[Node.js]] — tronco
-- [[03-Dominios/Node/Runtime e Event Loop/index]] — galho 1
-- [[03-Dominios/Node/Paralelismo/index]] — galho 2
-- [[03-Dominios/Node/Streams/index]] — galho 3
-- [[03-Dominios/Node/Frameworks e arquitetura/index]] — galho 4
+- [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] — galho 1
+- [[03-Dominios/Tecnologia/Node/Paralelismo/index]] — galho 2
+- [[03-Dominios/Tecnologia/Node/Streams/index]] — galho 3
+- [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index]] — galho 4
 ```
 
 - [ ] **Step 2: Verificar se a pasta foi criada corretamente**
 
 ```bash
-ls "03-Dominios/Node/Observability e produção/"
+ls "03-Dominios/Tecnologia/Node/Observability e produção/"
 ```
 
 Expected: `Observability e produção.md`
@@ -194,7 +194,7 @@ Expected: `Observability e produção.md`
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/Observability e produção.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/Observability e produção.md"
 git commit -m "feat(node/g5): add MOC - Observability e produção"
 ```
 
@@ -203,13 +203,13 @@ git commit -m "feat(node/g5): add MOC - Observability e produção"
 ## Task 2: Nota 01 — Os três pilares
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/01 - Os três pilares - logs, métricas e traces.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/01 - Os três pilares - logs, métricas e traces.md`
 
 **Mínimo:** 380 linhas. **Código mínimo:** 5 exemplos.
 
 - [ ] **Step 1: Criar a nota 01**
 
-Criar `03-Dominios/Node/Observability e produção/01 - Os três pilares - logs, métricas e traces.md` com o seguinte conteúdo **completo**. A nota deve cobrir obrigatoriamente:
+Criar `03-Dominios/Tecnologia/Node/Observability e produção/01 - Os três pilares - logs, métricas e traces.md` com o seguinte conteúdo **completo**. A nota deve cobrir obrigatoriamente:
 
 **Frontmatter:**
 ```yaml
@@ -308,7 +308,7 @@ Rodar o self-check da seção de regras críticas. Verificar contagem de linhas 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/01 - Os três pilares - logs, métricas e traces.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/01 - Os três pilares - logs, métricas e traces.md"
 git commit -m "feat(node/g5): add 01 - Os três pilares - logs, métricas e traces"
 ```
 
@@ -317,7 +317,7 @@ git commit -m "feat(node/g5): add 01 - Os três pilares - logs, métricas e trac
 ## Task 3: Nota 02 — Logging estruturado com pino
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/02 - Logging estruturado com pino.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/02 - Logging estruturado com pino.md`
 
 **Mínimo:** 350 linhas. **Código mínimo:** 6 exemplos.
 
@@ -456,7 +456,7 @@ Verificar contagem de linhas >= 350. Verificar 6+ exemplos de código.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/02 - Logging estruturado com pino.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/02 - Logging estruturado com pino.md"
 git commit -m "feat(node/g5): add 02 - Logging estruturado com pino"
 ```
 
@@ -465,7 +465,7 @@ git commit -m "feat(node/g5): add 02 - Logging estruturado com pino"
 ## Task 4: Nota 03 — Correlation IDs e context propagation
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/03 - Correlation IDs e context propagation.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/03 - Correlation IDs e context propagation.md`
 
 **Mínimo:** 380 linhas. **Código mínimo:** 5 exemplos.
 
@@ -604,7 +604,7 @@ aliases:
 
 9. **Fontes**: [AsyncLocalStorage MDN/Node docs](https://nodejs.org/api/async_context.html), [W3C Trace Context](https://www.w3.org/TR/trace-context/).
 
-10. **Veja também**: nota 02 (pino), nota 06 (OTEL), [[03-Dominios/Node/Runtime e Event Loop/index]] (Worker Threads e contexto).
+10. **Veja também**: nota 02 (pino), nota 06 (OTEL), [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] (Worker Threads e contexto).
 
 - [ ] **Step 2: Self-check**
 
@@ -613,7 +613,7 @@ Verificar contagem de linhas >= 380.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/03 - Correlation IDs e context propagation.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/03 - Correlation IDs e context propagation.md"
 git commit -m "feat(node/g5): add 03 - Correlation IDs e context propagation"
 ```
 
@@ -622,7 +622,7 @@ git commit -m "feat(node/g5): add 03 - Correlation IDs e context propagation"
 ## Task 5: Nota 04 — Métricas com prom-client
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/04 - Métricas com prom-client.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/04 - Métricas com prom-client.md`
 
 **Mínimo:** 400 linhas. **Código mínimo:** 6 exemplos.
 
@@ -761,7 +761,7 @@ Verificar contagem de linhas >= 400. Verificar 6+ exemplos.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/04 - Métricas com prom-client.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/04 - Métricas com prom-client.md"
 git commit -m "feat(node/g5): add 04 - Métricas com prom-client"
 ```
 
@@ -770,7 +770,7 @@ git commit -m "feat(node/g5): add 04 - Métricas com prom-client"
 ## Task 6: Nota 05 — Node-specific metrics
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/05 - Node-specific metrics - event loop lag, GC, heap.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/05 - Node-specific metrics - event loop lag, GC, heap.md`
 
 **Mínimo:** 380 linhas. **Código mínimo:** 5 exemplos.
 
@@ -909,7 +909,7 @@ aliases:
 
 9. **Fontes**: [Node.js perf_hooks](https://nodejs.org/api/perf_hooks.html), [Node.js diagnostics guide](https://nodejs.org/en/docs/guides/diagnostics).
 
-10. **Veja também**: notas 04, 07, 08 do galho + [[03-Dominios/Node/Runtime e Event Loop/index]] (galho 1).
+10. **Veja também**: notas 04, 07, 08 do galho + [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] (galho 1).
 
 - [ ] **Step 2: Self-check**
 
@@ -918,7 +918,7 @@ Verificar contagem de linhas >= 380.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/05 - Node-specific metrics - event loop lag, GC, heap.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/05 - Node-specific metrics - event loop lag, GC, heap.md"
 git commit -m "feat(node/g5): add 05 - Node-specific metrics - event loop lag, GC, heap"
 ```
 
@@ -927,7 +927,7 @@ git commit -m "feat(node/g5): add 05 - Node-specific metrics - event loop lag, G
 ## Task 7: Nota 06 — Tracing distribuído com OpenTelemetry
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/06 - Tracing distribuído com OpenTelemetry.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/06 - Tracing distribuído com OpenTelemetry.md`
 
 **Mínimo:** 420 linhas. **Código mínimo:** 6 exemplos.
 
@@ -1091,7 +1091,7 @@ Verificar contagem de linhas >= 420. Verificar 6+ exemplos.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/06 - Tracing distribuído com OpenTelemetry.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/06 - Tracing distribuído com OpenTelemetry.md"
 git commit -m "feat(node/g5): add 06 - Tracing distribuído com OpenTelemetry"
 ```
 
@@ -1100,7 +1100,7 @@ git commit -m "feat(node/g5): add 06 - Tracing distribuído com OpenTelemetry"
 ## Task 8: Nota 07 — Profiling avançado com clinic.js
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/07 - Profiling avançado com clinic.js.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/07 - Profiling avançado com clinic.js.md`
 
 **Mínimo:** 380 linhas. **Código mínimo:** 5 exemplos.
 
@@ -1236,7 +1236,7 @@ aliases:
 
 9. **Fontes**: [clinic.js](https://clinicjs.org/), [0x GitHub](https://github.com/davidmarkclements/0x), [autocannon](https://github.com/mcollina/autocannon).
 
-10. **Veja também**: notas 05, 08, 12 do galho + [[03-Dominios/Node/Runtime e Event Loop/index]] (galho 1, event loop blocking).
+10. **Veja também**: notas 05, 08, 12 do galho + [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] (galho 1, event loop blocking).
 
 - [ ] **Step 2: Self-check**
 
@@ -1245,7 +1245,7 @@ Verificar contagem de linhas >= 380.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/07 - Profiling avançado com clinic.js.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/07 - Profiling avançado com clinic.js.md"
 git commit -m "feat(node/g5): add 07 - Profiling avançado com clinic.js"
 ```
 
@@ -1254,7 +1254,7 @@ git commit -m "feat(node/g5): add 07 - Profiling avançado com clinic.js"
 ## Task 9: Nota 08 — Detecção e diagnóstico de memory leaks
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/08 - Detecção e diagnóstico de memory leaks.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/08 - Detecção e diagnóstico de memory leaks.md`
 
 **Mínimo:** 380 linhas. **Código mínimo:** 5 exemplos.
 
@@ -1400,7 +1400,7 @@ aliases:
 
 9. **Fontes**: [Node.js memory debugging](https://nodejs.org/en/docs/guides/diagnostics/memory), [clinic heapprof](https://clinicjs.org/heapprof/).
 
-10. **Veja também**: notas 05, 07, 12 do galho + [[03-Dominios/Node/Runtime e Event Loop/index]] (galho 1).
+10. **Veja também**: notas 05, 07, 12 do galho + [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] (galho 1).
 
 - [ ] **Step 2: Self-check**
 
@@ -1409,7 +1409,7 @@ Verificar contagem de linhas >= 380.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/08 - Detecção e diagnóstico de memory leaks.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/08 - Detecção e diagnóstico de memory leaks.md"
 git commit -m "feat(node/g5): add 08 - Detecção e diagnóstico de memory leaks"
 ```
 
@@ -1418,7 +1418,7 @@ git commit -m "feat(node/g5): add 08 - Detecção e diagnóstico de memory leaks
 ## Task 10: Nota 09 — Graceful shutdown profundo
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/09 - Graceful shutdown profundo.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/09 - Graceful shutdown profundo.md`
 
 **Mínimo:** 420 linhas. **Código mínimo:** 6 exemplos.
 
@@ -1593,7 +1593,7 @@ aliases:
 
 9. **Fontes**: [Kubernetes pod lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/), [Node.js process signals](https://nodejs.org/api/process.html#signal-events).
 
-10. **Veja também**: notas 10, 11 do galho + [[03-Dominios/Node/Frameworks e arquitetura/index]] (galho 4).
+10. **Veja também**: notas 10, 11 do galho + [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index]] (galho 4).
 
 - [ ] **Step 2: Self-check**
 
@@ -1602,7 +1602,7 @@ Verificar contagem de linhas >= 420.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/09 - Graceful shutdown profundo.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/09 - Graceful shutdown profundo.md"
 git commit -m "feat(node/g5): add 09 - Graceful shutdown profundo"
 ```
 
@@ -1611,7 +1611,7 @@ git commit -m "feat(node/g5): add 09 - Graceful shutdown profundo"
 ## Task 11: Nota 10 — Circuit breaker e fallback com opossum
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/10 - Circuit breaker e fallback com opossum.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/10 - Circuit breaker e fallback com opossum.md`
 
 **Mínimo:** 380 linhas. **Código mínimo:** 5 exemplos.
 
@@ -1750,7 +1750,7 @@ Verificar contagem de linhas >= 380.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/10 - Circuit breaker e fallback com opossum.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/10 - Circuit breaker e fallback com opossum.md"
 git commit -m "feat(node/g5): add 10 - Circuit breaker e fallback com opossum"
 ```
 
@@ -1759,7 +1759,7 @@ git commit -m "feat(node/g5): add 10 - Circuit breaker e fallback com opossum"
 ## Task 12: Nota 11 — Connection pool tuning
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/11 - Connection pool tuning.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/11 - Connection pool tuning.md`
 
 **Mínimo:** 380 linhas. **Código mínimo:** 5 exemplos.
 
@@ -1949,7 +1949,7 @@ Verificar contagem de linhas >= 380.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/11 - Connection pool tuning.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/11 - Connection pool tuning.md"
 git commit -m "feat(node/g5): add 11 - Connection pool tuning"
 ```
 
@@ -1958,7 +1958,7 @@ git commit -m "feat(node/g5): add 11 - Connection pool tuning"
 ## Task 13: Nota 12 — SLOs, dashboards, alertas e cheatsheet
 
 **Files:**
-- Create: `03-Dominios/Node/Observability e produção/12 - SLOs, dashboards, alertas e cheatsheet.md`
+- Create: `03-Dominios/Tecnologia/Node/Observability e produção/12 - SLOs, dashboards, alertas e cheatsheet.md`
 
 **Mínimo:** 420 linhas. **Código mínimo:** 6 exemplos (incluindo PromQL e Alertmanager).
 
@@ -2171,7 +2171,7 @@ Verificar contagem de linhas >= 420. Verificar 6+ exemplos incluindo PromQL e Al
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Observability e produção/12 - SLOs, dashboards, alertas e cheatsheet.md"
+git add "03-Dominios/Tecnologia/Node/Observability e produção/12 - SLOs, dashboards, alertas e cheatsheet.md"
 git commit -m "feat(node/g5): add 12 - SLOs, dashboards, alertas e cheatsheet"
 ```
 
@@ -2180,15 +2180,15 @@ git commit -m "feat(node/g5): add 12 - SLOs, dashboards, alertas e cheatsheet"
 ## Task 14: Poda do tronco + atualização do index
 
 **Files:**
-- Modify: `03-Dominios/JavaScript/Backend/Node.js.md`
-- Modify: `03-Dominios/Node/index.md`
+- Modify: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- Modify: `03-Dominios/Tecnologia/Node/index.md`
 
 **IMPORTANTE:** Ler o tronco antes de modificar para confirmar os níveis reais de heading das seções a podar.
 
 - [ ] **Step 1: Ler o tronco e identificar as seções**
 
 ```bash
-grep -n "### Connection pool\|### Memory leak\|### Graceful shutdown\|### Circuit breaker" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -n "### Connection pool\|### Memory leak\|### Graceful shutdown\|### Circuit breaker" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 Anotar os números de linha das 4 seções.
@@ -2253,7 +2253,7 @@ Adicionar no `## Veja também` do tronco:
 
 - [ ] **Step 8: Atualizar index.md**
 
-Em `03-Dominios/Node/index.md`, na seção "Galhos da trilha Node Senior", adicionar após a linha do galho 4:
+Em `03-Dominios/Tecnologia/Node/index.md`, na seção "Galhos da trilha Node Senior", adicionar após a linha do galho 4:
 
 ```markdown
 - [[Observability e produção]] — galho 5: os três pilares (logs, métricas, traces), pino, prom-client, OpenTelemetry, profiling com clinic.js, memory leaks, graceful shutdown, circuit breaker e SLOs
@@ -2262,7 +2262,7 @@ Em `03-Dominios/Node/index.md`, na seção "Galhos da trilha Node Senior", adici
 - [ ] **Step 9: Commit da poda + index**
 
 ```bash
-git add "03-Dominios/JavaScript/Backend/Node.js.md" "03-Dominios/Node/index.md"
+git add "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md" "03-Dominios/Tecnologia/Node/index.md"
 git commit -m "chore(node/g5): prune trunk - 4 sections migrated to observability galho"
 ```
 
@@ -2270,21 +2270,21 @@ git commit -m "chore(node/g5): prune trunk - 4 sections migrated to observabilit
 
 ## Verificação final
 
-- [ ] Pasta `03-Dominios/Node/Observability e produção/` tem 13 arquivos (1 MOC + 12 notas)
+- [ ] Pasta `03-Dominios/Tecnologia/Node/Observability e produção/` tem 13 arquivos (1 MOC + 12 notas)
 - [ ] Todos com `publish: true`
-- [ ] `03-Dominios/Node/index.md` lista galho 5
-- [ ] `03-Dominios/JavaScript/Backend/Node.js.md` tem 4 callouts de migração para G5
+- [ ] `03-Dominios/Tecnologia/Node/index.md` lista galho 5
+- [ ] `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` tem 4 callouts de migração para G5
 - [ ] Total de commits: 15 (1 MOC + 12 notas + 1 poda + 1 index combinado com poda)
 
 ```bash
 # Verificar arquivos
-ls -la "03-Dominios/Node/Observability e produção/" | wc -l
+ls -la "03-Dominios/Tecnologia/Node/Observability e produção/" | wc -l
 
 # Verificar commits do galho
 git log --oneline | grep "node/g5"
 
 # Verificar callouts no tronco
-grep -c "Migrado para galho próprio" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -c "Migrado para galho próprio" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 Expected: 13+ arquivos, 14 commits feat/chore g5, 11+ callouts no tronco (7 anteriores + 4 novos).

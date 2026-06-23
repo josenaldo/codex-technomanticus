@@ -19,26 +19,14 @@ aliases:
 
 A zona **Domínios** é o terceiro estágio do pipeline canônico do Codex: aqui o material capturado e fichado nas glosas vira conhecimento organizado, com MOCs, conceitos, dicionários e fases de aprendizado (Iniciado / Adepto / Magus). Cada subpasta funciona como uma **estante** — um recorte temático com seu próprio `index.md` (MOC) e trilha de notas atômicas. Enquanto cada domínio tem seu MOC próprio, as **[[04-Sendas/index|Sendas]]** cruzam vários domínios para compor jornadas de estudo ou projetos.
 
-## Conteúdo
+Os domínios se organizam em **quatro camadas** — três técnicas (o *porquê*, o *como-bem* e o *como-em-X*) e uma de carreira. A regra de colocação: pergunte se o assunto é ciência atemporal, disciplina de engenharia neutra, ou implementação concreta de uma tecnologia.
 
-- [[03-Dominios/Arquitetura/index|Arquitetura]] — padrões e decisões de arquitetura de software
-- [[03-Dominios/Empreendedorismo/index|Empreendedorismo]] — indie hacking, freelance internacional, tributação PJ
-- [[03-Dominios/Entrevistas/index|Entrevistas]] — preparação para entrevistas técnicas internacionais
-- [[03-Dominios/Ferramentas/index|Ferramentas]] — ferramentas do dia a dia do dev
-- [[03-Dominios/Frontend/index|Frontend]] — desenvolvimento de interfaces
-- [[03-Dominios/Fundamentos/index|Fundamentos]] — base teórica de ciência da computação
-- [[03-Dominios/Go/index|Go]] — linguagem Go
-- [[03-Dominios/IA/index|IA]] — inteligência artificial e LLMs
-- [[03-Dominios/Infraestrutura/index|Infraestrutura]] — infra, cloud, deploy
-- [[03-Dominios/Inglês/index|Inglês]] — inglês técnico para devs
-- [[03-Dominios/Java/index|Java]] — linguagem Java e ecossistema JVM
-- [[03-Dominios/JavaScript/index|JavaScript]] — linguagem JavaScript
-- [[03-Dominios/Node/index|Node]] — runtime Node.js
-- [[03-Dominios/Python/index|Python]] — linguagem Python
-- [[03-Dominios/React/index|React]] — biblioteca React
-- [[03-Dominios/RPA/index|RPA]] — automação de processos
-- [[03-Dominios/Terminal/index|Terminal]] — shell, dotfiles, CLI
-- [[03-Dominios/TypeScript/index|TypeScript]] — linguagem TypeScript
+## Camadas
+
+- [[03-Dominios/Ciência/index|Ciência da Computação]] — o *porquê* funciona (atemporal): algoritmos, teoria, complexidade, compiladores, SO, redes, paradigmas
+- [[03-Dominios/Engenharia/index|Engenharia]] — o *como construir e operar bem* (neutro de stack): arquitetura, testes, segurança, design, comunicação, dados, operação
+- [[03-Dominios/Tecnologia/index|Tecnologia]] — o *como fazer em X*: Java, Node, React, Go, Python, IA, infra, ferramentas
+- [[03-Dominios/Carreira/index|Carreira]] — não-técnico: entrevistas, inglês, empreendedorismo
 
 ## Veja também
 

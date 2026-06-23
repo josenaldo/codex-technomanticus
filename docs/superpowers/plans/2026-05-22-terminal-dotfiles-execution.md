@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Entregar o galho 5 da trilha Terminal — 9 notas atômicas (3 Iniciado + 3 Adepto + 3 Magus) sobre dotfiles em `03-Dominios/Terminal/Dotfiles/`, MOC do galho, expansão do Dicionário com bloco `## Dotfiles`, e ativação do wikilink no tronco. Formato catálogo comparativo das 3 ferramentas principais (stow, chezmoi, bare repo).
+**Goal:** Entregar o galho 5 da trilha Terminal — 9 notas atômicas (3 Iniciado + 3 Adepto + 3 Magus) sobre dotfiles em `03-Dominios/Tecnologia/Terminal/Dotfiles/`, MOC do galho, expansão do Dicionário com bloco `## Dotfiles`, e ativação do wikilink no tronco. Formato catálogo comparativo das 3 ferramentas principais (stow, chezmoi, bare repo).
 
 **Architecture:** Mesmo padrão consolidado nos galhos 2-4. Estrutura H2 fixa. Tom pedagógico — user em adoção zero. Exemplos sempre neutros (`alice`, `bob`, `myproj`) ou hipotéticos explícitos. Fluxo SDD: implementer → reviewer combinado → fix se Critical/Important. Pesquisa-âncora em docs oficiais antes de cada nota.
 
@@ -21,8 +21,8 @@
 3. **Sem `Co-Authored-By: Claude`**. **Sem `--no-verify`**.
 4. **Paths generalizados** pra `~/...`.
 5. **Wikilinks sem backticks** em `## Veja também`.
-6. **Tronco wikilink obrigatório**: `[[03-Dominios/Terminal/index|Trilha Terminal]]`.
-7. **MOC wikilink** em "Veja também": `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`.
+6. **Tronco wikilink obrigatório**: `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`.
+7. **MOC wikilink** em "Veja também": `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`.
 8. **≥5 armadilhas** por nota, cada uma com 4 labels (Causa / Sintoma / Como detectar / Solução).
 9. **"Em inglês" em bullets bilíngues** `- **PT** — *EN*. "frase técnica curta em PT."` (8-10 termos). NUNCA tabela.
 10. **Code fences corretos:** `bash` pra shell, `yaml`/`toml` pra config, `text` pra ASCII.
@@ -68,17 +68,17 @@ Anotar — informa Magus 07.
 ## Task 1: MOC do galho Dotfiles — esqueleto
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/index.md`
 
 - [ ] **Step 1: Criar pasta**
 
 ```bash
-mkdir -p "03-Dominios/Terminal/Dotfiles"
+mkdir -p "03-Dominios/Tecnologia/Terminal/Dotfiles"
 ```
 
 - [ ] **Step 2: Escrever MOC**
 
-Use `Write` em `03-Dominios/Terminal/Dotfiles/index.md`:
+Use `Write` em `03-Dominios/Tecnologia/Terminal/Dotfiles/index.md`:
 
 ```markdown
 ---
@@ -140,13 +140,13 @@ Esse galho parte do zero (o que são dotfiles, por que versionar) até workflows
 ## Veja também
 
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/index.md"
 git commit -m "feat(terminal-dotfiles): MOC do galho 5 — esqueleto"
 ```
 
@@ -155,7 +155,7 @@ git commit -m "feat(terminal-dotfiles): MOC do galho 5 — esqueleto"
 ## Task 2: Dicionário — bloco "Dotfiles" esqueleto
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 - [ ] **Step 1: Localizar fim do bloco TUIs**
 
@@ -179,7 +179,7 @@ Frontmatter deve ter `updated: 2026-05-22`. Se não, Edit.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): adiciona bloco 'Dotfiles' ao Dicionário"
 ```
 
@@ -188,8 +188,8 @@ git commit -m "feat(terminal-dotfiles): adiciona bloco 'Dotfiles' ao Dicionário
 ## Task 3: Nota 01 — Princípios: o que são dotfiles e por que versionar
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: Dotfile)
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: Dotfile)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -339,8 +339,8 @@ Formato `- **PT** — *EN*. "frase técnica curta em PT."`.
 - `[[03 - Cross-OS — Linux vs macOS vs WSL]]` — diferenças entre OSes
 - `[[04 - GNU stow — symlinks declarativos]]` — ferramenta mais simples pra começar
 - `[[07 - Secrets em dotfiles — git-crypt, age, sops]]` — encryption pra dados sensíveis
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Dotfile|dotfile]]`
 
 **Referências:**
@@ -361,9 +361,9 @@ Veja também: [[01 - Princípios — o que são dotfiles e por que versionar]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md"
-grep -E "^### Dotfile$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md"
+grep -E "^### Dotfile$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe, ≥7 wikilinks, verbete Dotfile visível.
@@ -371,7 +371,7 @@ Esperado: arquivo existe, ≥7 wikilinks, verbete Dotfile visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/01 - Princípios — o que são dotfiles e por que versionar.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 01 — Princípios"
 ```
 
@@ -380,8 +380,8 @@ git commit -m "feat(terminal-dotfiles): add nota 01 — Princípios"
 ## Task 4: Nota 02 — Anatomia: estrutura típica + XDG Base Directory spec
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: XDG Base Directory)
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: XDG Base Directory)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -552,8 +552,8 @@ Termos: spec, base directory, environment variable, fallback, cache, state, name
 - `[[01 - Princípios — o que são dotfiles e por que versionar]]` — pré-req
 - `[[03 - Cross-OS — Linux vs macOS vs WSL]]` — XDG em outros OSes
 - `[[04 - GNU stow — symlinks declarativos]]` — stow respeita XDG naturalmente
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#XDG Base Directory|XDG]]`, `[[Dicionário do Terminal#Dotfile|dotfile]]`
 
 **Referências:**
@@ -574,15 +574,15 @@ Inserir em ordem alfabética. Bloco atual: Dotfile. XDG vem depois de Dotfile al
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md"
-grep -E "^### XDG Base Directory$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md"
+grep -E "^### XDG Base Directory$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/02 - Anatomia — estrutura típica e XDG Base Directory.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 02 — Anatomia + XDG"
 ```
 
@@ -591,8 +591,8 @@ git commit -m "feat(terminal-dotfiles): add nota 02 — Anatomia + XDG"
 ## Task 5: Nota 03 — Cross-OS: Linux vs macOS vs WSL
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: WSL)
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: WSL)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -812,8 +812,8 @@ Termos: cross-platform, OS detection, package manager, utility, interop, path tr
 - `[[02 - Anatomia — estrutura típica e XDG Base Directory]]` — pré-req
 - `[[05 - chezmoi — manager completo com templates]]` — templates são solução pra cross-OS
 - `[[09 - Sync entre máquinas heterogêneas]]` — sync entre OSes diferentes
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#WSL|WSL]]`, `[[Dicionário do Terminal#Dotfile|dotfile]]`
 
 **Referências:**
@@ -834,15 +834,15 @@ Ordem alfabética no bloco. Atualmente: Dotfile, XDG. WSL entra antes de XDG (W 
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md"
-grep -E "^### WSL$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md"
+grep -E "^### WSL$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/03 - Cross-OS — Linux vs macOS vs WSL.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 03 — Cross-OS"
 ```
 
@@ -857,8 +857,8 @@ Após Task 5, 3 notas de Iniciado entregues. Total no galho: 3 notas + MOC.
 ## Task 6: Nota 04 — GNU stow: symlinks declarativos
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Stow, Symlink)
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Stow, Symlink)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1059,8 +1059,8 @@ Termos: symlink, package, target, source, adopt, conflict, dry-run, declarative,
 - `[[05 - chezmoi — manager completo com templates]]` — alternativa com templates
 - `[[06 - Bare git repo — abordagem minimalista]]` — alternativa minimalista
 - `[[08 - Bootstrap — máquina nova zero-to-ready]]` — usa stow no bootstrap
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Stow|stow]]`, `[[Dicionário do Terminal#Symlink|symlink]]`
 
 **Referências:**
@@ -1086,15 +1086,15 @@ Ordem alfabética no bloco. Atualmente: Dotfile, WSL, XDG. Adicionar Stow e Syml
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md"
-grep -E "^### (Stow|Symlink)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md"
+grep -E "^### (Stow|Symlink)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/04 - GNU stow — symlinks declarativos.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 04 — GNU stow"
 ```
 
@@ -1103,8 +1103,8 @@ git commit -m "feat(terminal-dotfiles): add nota 04 — GNU stow"
 ## Task 7: Nota 05 — chezmoi: manager completo com templates
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: chezmoi, Template (dotfiles))
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: chezmoi, Template (dotfiles))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1339,8 +1339,8 @@ Termos: source, target, template, render, state machine, idempotent, encrypted, 
 - `[[04 - GNU stow — symlinks declarativos]]` — alternativa mais simples
 - `[[06 - Bare git repo — abordagem minimalista]]` — alternativa minimalista
 - `[[07 - Secrets em dotfiles — git-crypt, age, sops]]` — encryption nativa do chezmoi
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#chezmoi|chezmoi]]`, `[[Dicionário do Terminal#Template (dotfiles)|template]]`
 
 **Referências:**
@@ -1367,15 +1367,15 @@ Ordem alfabética: chezmoi (c) e Template (T) entram no bloco. Atual: Dotfile, S
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md"
-grep -E "^### (chezmoi|Template \(dotfiles\))$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md"
+grep -E "^### (chezmoi|Template \(dotfiles\))$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/05 - chezmoi — manager completo com templates.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 05 — chezmoi"
 ```
 
@@ -1384,8 +1384,8 @@ git commit -m "feat(terminal-dotfiles): add nota 05 — chezmoi"
 ## Task 8: Nota 06 — Bare git repo: abordagem minimalista
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Bare repo (dotfiles), Whitelist (.gitignore))
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Bare repo (dotfiles), Whitelist (.gitignore))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1613,8 +1613,8 @@ Termos: bare, working tree, alias, whitelist, checkout, force, untracked, native
 - `[[04 - GNU stow — symlinks declarativos]]` — alternativa
 - `[[05 - chezmoi — manager completo com templates]]` — alternativa completa
 - `[[08 - Bootstrap — máquina nova zero-to-ready]]` — bootstrap com bare repo
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Bare repo (dotfiles)|bare repo]]`, `[[Dicionário do Terminal#Whitelist (.gitignore)|whitelist]]`
 
 **Referências:**
@@ -1642,15 +1642,15 @@ Ordem final do bloco: Bare repo (dotfiles) → chezmoi → Dotfile → Stow → 
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md"
-grep -E "^### (Bare repo \(dotfiles\)|Whitelist \(\.gitignore\))$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md"
+grep -E "^### (Bare repo \(dotfiles\)|Whitelist \(\.gitignore\))$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/06 - Bare git repo — abordagem minimalista.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 06 — Bare git repo"
 ```
 
@@ -1665,8 +1665,8 @@ Após Task 8, 3 notas Adepto entregues. Total: 6 notas + MOC.
 ## Task 9: Nota 07 — Secrets em dotfiles: git-crypt, age, sops
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: git-crypt, age, sops, Secret (dotfiles))
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: git-crypt, age, sops, Secret (dotfiles))
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1947,8 +1947,8 @@ Termos: encryption, decrypt, key, public key, private key, ciphertext, plaintext
 - `[[05 - chezmoi — manager completo com templates]]` — encryption nativa
 - `[[06 - Bare git repo — abordagem minimalista]]` — git-crypt funciona aqui também
 - `[[08 - Bootstrap — máquina nova zero-to-ready]]` — bootstrap precisa cuidar de keys
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#git-crypt|git-crypt]]`, `[[Dicionário do Terminal#age|age]]`, `[[Dicionário do Terminal#sops|sops]]`, `[[Dicionário do Terminal#Secret (dotfiles)|secret]]`
 
 **Referências:**
@@ -1989,15 +1989,15 @@ Ordem final esperada: age → Bare repo → chezmoi → Dotfile → git-crypt �
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md"
-grep -E "^### (age|git-crypt|Secret \(dotfiles\)|sops)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md"
+grep -E "^### (age|git-crypt|Secret \(dotfiles\)|sops)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/07 - Secrets em dotfiles — git-crypt, age, sops.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 07 — Secrets (git-crypt, age, sops)"
 ```
 
@@ -2006,8 +2006,8 @@ git commit -m "feat(terminal-dotfiles): add nota 07 — Secrets (git-crypt, age,
 ## Task 10: Nota 08 — Bootstrap: máquina nova zero-to-ready
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: Bootstrap, Idempotente, Provisioning)
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: Bootstrap, Idempotente, Provisioning)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -2323,8 +2323,8 @@ Termos: bootstrap, provisioning, idempotent, modular, recovery, dependency, pack
 - `[[06 - Bare git repo — abordagem minimalista]]` — alternativa
 - `[[07 - Secrets em dotfiles — git-crypt, age, sops]]` — bootstrap cuida de keys
 - `[[09 - Sync entre máquinas heterogêneas]]` — bootstrap branched por host
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#Bootstrap|bootstrap]]`, `[[Dicionário do Terminal#Idempotente|idempotente]]`, `[[Dicionário do Terminal#Provisioning|provisioning]]`
 
 **Referências:**
@@ -2360,15 +2360,15 @@ Ordem final completa: age → Bare repo → **Bootstrap** → chezmoi → Dotfil
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md"
-grep -E "^### (Bootstrap|Idempotente|Provisioning)$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md"
+grep -E "^### (Bootstrap|Idempotente|Provisioning)$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/08 - Bootstrap — máquina nova zero-to-ready.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-dotfiles): add nota 08 — Bootstrap"
 ```
 
@@ -2377,7 +2377,7 @@ git commit -m "feat(terminal-dotfiles): add nota 08 — Bootstrap"
 ## Task 11: Nota 09 — Sync entre máquinas heterogêneas
 
 **Files:**
-- Create: `03-Dominios/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md`
 - (Sem verbetes novos.)
 
 - [ ] **Step 1: Pesquisa-âncora**
@@ -2673,8 +2673,8 @@ Termos: sync, hostname, conditional, branch, merge, override, fleet, heterogeneo
 - `[[05 - chezmoi — manager completo com templates]]` — sync via chezmoi data
 - `[[06 - Bare git repo — abordagem minimalista]]` — sync via branches
 - `[[08 - Bootstrap — máquina nova zero-to-ready]]` — bootstrap conhece host
-- `[[03-Dominios/Terminal/Dotfiles/index|MOC do galho]]`
-- `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+- `[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|MOC do galho]]`
+- `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
 - `[[Dicionário do Terminal#chezmoi|chezmoi]]`, `[[Dicionário do Terminal#Template (dotfiles)|template]]`
 
 **Referências:**
@@ -2687,14 +2687,14 @@ Termos: sync, hostname, conditional, branch, merge, override, fleet, heterogeneo
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md"
-grep -c '\[\[' "03-Dominios/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md"
+test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md"
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/09 - Sync entre máquinas heterogêneas.md"
 git commit -m "feat(terminal-dotfiles): add nota 09 — Sync máquinas heterogêneas"
 ```
 
@@ -2709,7 +2709,7 @@ Após Task 11, todas as 9 notas escritas. Total: 9 notas + MOC.
 ## Task 12: Pass final no MOC do galho
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dotfiles/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dotfiles/index.md`
 
 - [ ] **Step 1: Substituir placeholders de versão**
 
@@ -2735,7 +2735,7 @@ Se ferramenta não instalada, escrever "não instalada localmente (notas pesquis
 
 ```bash
 for n in "01 - Princípios — o que são dotfiles e por que versionar" "02 - Anatomia — estrutura típica e XDG Base Directory" "03 - Cross-OS — Linux vs macOS vs WSL" "04 - GNU stow — symlinks declarativos" "05 - chezmoi — manager completo com templates" "06 - Bare git repo — abordagem minimalista" "07 - Secrets em dotfiles — git-crypt, age, sops" "08 - Bootstrap — máquina nova zero-to-ready" "09 - Sync entre máquinas heterogêneas"; do
-  test -f "03-Dominios/Terminal/Dotfiles/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
+  test -f "03-Dominios/Tecnologia/Terminal/Dotfiles/${n}.md" && echo "ok: $n" || echo "FALTA: $n"
 done
 ```
 
@@ -2744,7 +2744,7 @@ Esperado: 9 `ok:`.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dotfiles/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Dotfiles/index.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal-dotfiles): pass final no MOC do galho
 
@@ -2759,12 +2759,12 @@ EOF
 ## Task 13: Pass final no Dicionário do Terminal
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 - [ ] **Step 1: Listar verbetes do bloco**
 
 ```bash
-awk '/^## Dotfiles$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md"
+awk '/^## Dotfiles$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Verbetes esperados (16) em ordem alfabética case-insensitive:
@@ -2794,7 +2794,7 @@ Use Edit pra mover blocos fora de ordem.
 ```bash
 awk '/^## Dotfiles$/{f=1; next} /^## /{f=0}
      f && /^### / { v=$0; getline; getline; while(NF==0) getline; if ($0 !~ /^Veja também:/) print v " — sem Veja também" }' \
-  "03-Dominios/Terminal/Dicionário do Terminal.md"
+  "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: vazio.
@@ -2802,7 +2802,7 @@ Esperado: vazio.
 - [ ] **Step 4: Contagem**
 
 ```bash
-awk '/^## Dotfiles$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l
+awk '/^## Dotfiles$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l
 ```
 
 Esperado: 16.
@@ -2810,12 +2810,12 @@ Esperado: 16.
 - [ ] **Step 5: Commit (se houve mudança)**
 
 ```bash
-git status --short "03-Dominios/Terminal/Dicionário do Terminal.md"
+git status --short "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Se modificado:
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "$(cat <<'EOF'
 docs(terminal): pass final no Dicionário (bloco Dotfiles)
 
@@ -2832,7 +2832,7 @@ Sem mudanças = pular.
 ## Task 14: Atualizar tronco — ativar wikilink
 
 **Files:**
-- Modify: `03-Dominios/Terminal/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/index.md`
 
 - [ ] **Step 1: Edit tronco**
 
@@ -2843,7 +2843,7 @@ Sem mudanças = pular.
 
 `new_string`:
 ```markdown
-- [[03-Dominios/Terminal/Dotfiles/index|Dotfiles]] — galho 5: princípios, ferramentas (stow/chezmoi/bare), secrets, bootstrap, sync
+- [[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles]] — galho 5: princípios, ferramentas (stow/chezmoi/bare), secrets, bootstrap, sync
 ```
 
 - [ ] **Step 2: `updated:` do tronco**
@@ -2853,7 +2853,7 @@ Edit pra `updated: 2026-05-22`.
 - [ ] **Step 3: Confirmar**
 
 ```bash
-grep -n "Dotfiles" "03-Dominios/Terminal/index.md"
+grep -n "Dotfiles" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Esperado: wikilink ativo; `(planejado)` desaparece.
@@ -2861,12 +2861,12 @@ Esperado: wikilink ativo; `(planejado)` desaparece.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git commit -m "$(cat <<'EOF'
 feat(terminal): tronco com wikilink ativo pro galho 5 (Dotfiles)
 
 Substitui bullet "Dotfiles (planejado)" por wikilink ativo
-[[03-Dominios/Terminal/Dotfiles/index|Dotfiles]] após entrega do galho 5.
+[[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles]] após entrega do galho 5.
 EOF
 )"
 ```
@@ -2881,7 +2881,7 @@ EOF
 - [ ] **Step 1: verificar-wikilinks**
 
 ```bash
-python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py "03-Dominios/Terminal/Dotfiles/" --respect-public-only
+python3 .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py "03-Dominios/Tecnologia/Terminal/Dotfiles/" --respect-public-only
 ```
 
 Lê o JSON em `/tmp/wikilinks-report-*.json`. Esperado: `links_broken: 0`.
@@ -2889,7 +2889,7 @@ Lê o JSON em `/tmp/wikilinks-report-*.json`. Esperado: `links_broken: 0`.
 - [ ] **Step 2: Sanity check**
 
 ```bash
-ls -1 "03-Dominios/Terminal/Dotfiles/" | sort
+ls -1 "03-Dominios/Tecnologia/Terminal/Dotfiles/" | sort
 git log --oneline | head -18
 git log --format="%H %s" -18 | grep -i "co-authored" || echo "ok: nenhum commit com Co-Authored-By"
 ```
@@ -2902,7 +2902,7 @@ Esperado:
 - [ ] **Step 3: Contagem final do Dicionário**
 
 ```bash
-awk '/^## Dotfiles$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Terminal/Dicionário do Terminal.md" | wc -l
+awk '/^## Dotfiles$/{f=1; next} /^## /{f=0} f && /^### /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | wc -l
 ```
 
 Esperado: 16.

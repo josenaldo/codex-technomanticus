@@ -13,7 +13,7 @@ publish: false
 
 Este é o **primeiro galho** da trilha Java Senior (roadmap em `docs/superpowers/specs/2026-06-02-java-senior-roadmap-design.md`). Pressupõe leitura do roadmap, que estabelece topologia flat, esquema de 3 fases, padrões editoriais e política de poda.
 
-O galho refatora a **espinha de linguagem** do tronco `03-Dominios/Java/Core/Java Fundamentals.md` (1660 linhas, `publish: false`, `status: evergreen`). O tronco é abrangente mas saturado: cobre desde sintaxe básica até features Java 25, misturando JVM, Collections, Streams e Concorrência — temas que pertencem a outros galhos (3, 2, 2, 4 respectivamente).
+O galho refatora a **espinha de linguagem** do tronco `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` (1660 linhas, `publish: false`, `status: evergreen`). O tronco é abrangente mas saturado: cobre desde sintaxe básica até features Java 25, misturando JVM, Collections, Streams e Concorrência — temas que pertencem a outros galhos (3, 2, 2, 4 respectivamente).
 
 Este galho extrai e faz **florescer** apenas a camada de linguagem: tipos, controle de fluxo, OOP, e o conjunto de features modernas que definem o Java atual (records, sealed classes, pattern matching, switch expressions). É a fundação didática de toda a trilha.
 
@@ -21,7 +21,7 @@ Este galho extrai e faz **florescer** apenas a camada de linguagem: tipos, contr
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **15 notas atômicas + 1 MOC do galho + criação e semeadura do Dicionário de Java**, em `03-Dominios/Java/Linguagem e sintaxe moderna/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 6 Adepto + 4 Magus).
+Produzir, em uma sessão de execução dedicada, **15 notas atômicas + 1 MOC do galho + criação e semeadura do Dicionário de Java**, em `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 6 Adepto + 4 Magus).
 
 A trilha precisa ser:
 
@@ -32,7 +32,7 @@ A trilha precisa ser:
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Linguagem e sintaxe moderna/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/`)
 
 Pasta nova, flat. 15 notas + 1 MOC. Numeração global por galho (não reinicia por fase).
 
@@ -73,7 +73,7 @@ Pasta nova, flat. 15 notas + 1 MOC. Numeração global por galho (não reinicia 
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Linguagem e sintaxe moderna/index.md`:
+`03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Linguagem e sintaxe moderna"`, tags `java/linguagem/moc`, aliases `["Linguagem Java", "Galho 1"]`)
 - TL;DR callout (galho cobre a camada de linguagem do Java moderno, da sintaxe a records/sealed/pattern matching)
@@ -90,7 +90,7 @@ Pasta nova, flat. 15 notas + 1 MOC. Numeração global por galho (não reinicia 
 
 ### 3.3. Dicionário de Java (criação + semeadura)
 
-`03-Dominios/Java/Dicionário de Java.md` — **criado neste galho**, `type: glossary`, no padrão dos outros domínios (estrutura com seções alfabéticas, frontmatter `type: glossary`, `publish: true`). Semeado com os verbetes da camada de linguagem (~30-35), em ordem alfabética case-insensitive (sem acento na ordenação). Exemplos de verbetes:
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` — **criado neste galho**, `type: glossary`, no padrão dos outros domínios (estrutura com seções alfabéticas, frontmatter `type: glossary`, `publish: true`). Semeado com os verbetes da camada de linguagem (~30-35), em ordem alfabética case-insensitive (sem acento na ordenação). Exemplos de verbetes:
 
 `autoboxing`, `bytecode`, `checked exception`, `compact constructor`, `default method`, `enhanced for`, `enum`, `exhaustiveness`, `generics`, `guard (pattern)`, `immutability`, `inferência de tipo (var)`, `LTS`, `overloading`, `overriding`, `pattern matching`, `PECS`, `polimorfismo`, `preview feature`, `record`, `record pattern`, `sealed class`, `String pool`, `switch expression`, `text block`, `try-with-resources`, `type erasure`, `unchecked exception`, `varargs`, `wildcard`, `WORA`, `yield`.
 
@@ -98,13 +98,13 @@ Cada verbete: definição curta (1-3 linhas) + `Veja também:` apontando pra not
 
 ### 3.4. MOC central reescrito
 
-`03-Dominios/Java/index.md` reescrito no estilo `Node/index.md`: TL;DR da trilha de 18 galhos, lista de galhos (Galho 1 linkado e ativo; demais como "planejado"), "Veja também" (JavaScript, TypeScript, Dicionário de Java). O `Java/Java.md` duplicado recebe nota de deprecação apontando pro `index.md` (não apagar — histórico). Os MOCs `Core/index.md`, `Backend/index.md`, `Frontend/index.md` permanecem por enquanto (serão absorvidos quando os galhos correspondentes migrarem); o `index.md` central passa a ser a entrada canônica.
+`03-Dominios/Tecnologia/Java/index.md` reescrito no estilo `Node/index.md`: TL;DR da trilha de 18 galhos, lista de galhos (Galho 1 linkado e ativo; demais como "planejado"), "Veja também" (JavaScript, TypeScript, Dicionário de Java). O `Java/Java.md` duplicado recebe nota de deprecação apontando pro `index.md` (não apagar — histórico). Os MOCs `Core/index.md`, `Backend/index.md`, `Frontend/index.md` permanecem por enquanto (serão absorvidos quando os galhos correspondentes migrarem); o `index.md` central passa a ser a entrada canônica.
 
 > **Caveat Quartz:** `index.md` é obrigatório e NÃO pode ser removido (ver [[feedback_quartz_index]]). A pasta `Linguagem e sintaxe moderna/` precisa de seu próprio `index.md` como MOC (folder-link exige index.md — regra do Quartz).
 
 ### 3.5. Poda do tronco
 
-`03-Dominios/Java/Core/Java Fundamentals.md` — poda **parcial** (só a camada de linguagem). Ver §6.
+`03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` — poda **parcial** (só a camada de linguagem). Ver §6.
 
 ## 4. Convenções por nota
 
@@ -138,7 +138,7 @@ aliases:
 - `## Na prática` — exemplos compiláveis, framing neutro ("padrão observado no JDK/Spring", "caso típico em..."); NUNCA "no meu projeto"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — frase pronta em inglês com **3+ sentenças** (trade-off + decisão + caveat) + vocabulário **6+ termos PT→EN** com tradução de cada
-- `## Veja também` — wikilinks SEM backticks; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + verbetes do Dicionário relevantes
+- `## Veja também` — wikilinks SEM backticks; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + verbetes do Dicionário relevantes
 - `## Referências` — docs oficiais (dev.java, docs.oracle.com), JEPs relevantes, talks identificadas
 
 ### 4.3. Restrições absolutas
@@ -183,7 +183,7 @@ Poda **parcial** — só a camada de linguagem migra; JVM/Collections/Streams/Co
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> A camada de linguagem (tipos, OOP, records, sealed, pattern matching, generics, exceções) foi expandida no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja em particular [[13 - Records e record patterns]] e [[14 - Sealed classes e pattern matching]].
+> A camada de linguagem (tipos, OOP, records, sealed, pattern matching, generics, exceções) foi expandida no galho [[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja em particular [[13 - Records e record patterns]] e [[14 - Sealed classes e pattern matching]].
 ```
 
 3. **MANTER** intactas: "JVM" (vai pro Galho 3), "Collections Framework", "Lambdas e Interfaces Funcionais", "Streams API", "Date/Time API", "I/O", "Optional" (vão pro Galho 2), "Concorrência (visão geral)" (vai pro Galho 4). Adicionar callout `[!info]` no topo dessas indicando que migrarão em galhos futuros.
@@ -197,7 +197,7 @@ Decisão sobre o destino final do tronco (MOC enxuto? deprecação?) só após g
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 15 notas em `03-Dominios/Java/Linguagem e sintaxe moderna/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/6/4.
+1. 15 notas em `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/6/4.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview.
 3. Dicionário de Java criado (`type: glossary`) e semeado com ~30 verbetes da camada de linguagem.
 4. MOC central `Java/index.md` reescrito; `Java.md` com nota de deprecação.
@@ -230,6 +230,6 @@ Além dos critérios gerais (§10 do roadmap):
 ## 10. Documentos relacionados
 
 - `2026-06-02-java-senior-roadmap-design.md` — roadmap macro (18 galhos)
-- Tronco a podar: `03-Dominios/Java/Core/Java Fundamentals.md`
+- Tronco a podar: `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md`
 - Specs de referência: `2026-05-07-node-runtime-event-loop-design.md`, `2026-05-22-terminal-cli-utils-design.md` (formato 3-fases)
 - Memórias: [[project_tronco_galhos_pattern]], [[project_trilhas_fases_aprendizado]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]]

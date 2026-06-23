@@ -11,9 +11,9 @@ publish: false
 
 ## 1. Contexto e motivação
 
-O Codex Technomanticus tem um deep dive monolítico em `03-Dominios/JavaScript/Backend/Node.js.md` (~26K, `publish: false`, status `evergreen`) que cobre desde arquitetura V8/libuv até troubleshooting em produção. É denso, panorâmico, e funciona como referência pessoal — mas é privado, monolítico, e a profundidade de cada tema é limitada pelo formato.
+O Codex Technomanticus tem um deep dive monolítico em `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` (~26K, `publish: false`, status `evergreen`) que cobre desde arquitetura V8/libuv até troubleshooting em produção. É denso, panorâmico, e funciona como referência pessoal — mas é privado, monolítico, e a profundidade de cada tema é limitada pelo formato.
 
-Em paralelo existe uma pasta `03-Dominios/Node/` recém-criada com um MOC vazio (`index.md`, `publish: true`, status `seedling`) esperando ser povoada.
+Em paralelo existe uma pasta `03-Dominios/Tecnologia/Node/` recém-criada com um MOC vazio (`index.md`, `publish: true`, status `seedling`) esperando ser povoada.
 
 A tensão é clara: o conteúdo precisa **florescer**. Conceitos que merecem nota própria estão amassados em uma seção; armadilhas que merecem cheatsheet visual estão soltas em parágrafo; vocabulário de entrevista internacional não tem onde morar.
 
@@ -37,7 +37,7 @@ Este roadmap **não detalha** o nota-a-nota das sub-trilhas. Cada sub-trilha gan
 
 ### Em escopo
 
-- 6 sub-trilhas (galhos) progressivamente publicadas em `03-Dominios/Node/<Nome do Galho>/`
+- 6 sub-trilhas (galhos) progressivamente publicadas em `03-Dominios/Tecnologia/Node/<Nome do Galho>/`
 - Padrões editoriais comuns que toda sub-trilha herda
 - Política de poda do `JavaScript/Backend/Node.js.md` à medida que galhos fecham
 - Critérios de aceitação aplicáveis a qualquer galho
@@ -47,7 +47,7 @@ Este roadmap **não detalha** o nota-a-nota das sub-trilhas. Cada sub-trilha gan
 - **Detalhamento nota-a-nota** dos galhos 2-6 — cada um ganha seu spec quando começar
 - **Refactor estrutural do tronco** antes do galho 1 fechar — a decisão sobre o que fazer com o tronco emerge da experiência de podar uma vez
 - **Versão em inglês** das notas — derivação futura, projeto separado
-- **Migração do conteúdo de `03-Dominios/Node/Ferramentas Node.md`** — esse placeholder fica intocado por enquanto; pode virar parte do galho 4 ou ganhar trilha própria
+- **Migração do conteúdo de `03-Dominios/Tecnologia/Node/Ferramentas Node.md`** — esse placeholder fica intocado por enquanto; pode virar parte do galho 4 ou ganhar trilha própria
 - **Cobertura de Bun, Deno** como runtimes alternativos — escopo é Node.js especificamente; menções pontuais quando relevante (ex: Web Streams interop)
 
 ## 4. Audiência e barra de qualidade
@@ -143,10 +143,10 @@ Toda sub-trilha herda os seguintes padrões. Onde uma sub-trilha precise desviar
 
 ### Localização e nomenclatura
 
-- Pasta `03-Dominios/Node/<Nome do Galho>/`
+- Pasta `03-Dominios/Tecnologia/Node/<Nome do Galho>/`
 - Numeração local dentro de cada galho (`01 - <título>.md`, `02 - ...`)
 - MOC do galho em `<Nome do Galho>.md` na raiz da pasta (homônimo da pasta) com rotas alternativas
-- MOC central `03-Dominios/Node/index.md` atualizado a cada galho que fecha
+- MOC central `03-Dominios/Tecnologia/Node/index.md` atualizado a cada galho que fecha
 
 ### Frontmatter padrão por nota
 
@@ -268,7 +268,7 @@ A decisão final sobre o destino do tronco (vira MOC enxuto? continua como visã
 
 Um galho está fechado quando:
 
-1. Todas as notas do galho existem em `03-Dominios/Node/<Nome do Galho>/` com frontmatter completo e `publish: true`
+1. Todas as notas do galho existem em `03-Dominios/Tecnologia/Node/<Nome do Galho>/` com frontmatter completo e `publish: true`
 2. MOC do galho tem todas as notas linkadas + 2+ rotas alternativas + dataview de "Todas as notas do galho"
 3. Cada nota satisfaz a rubrica padrão:
    - TL;DR existe e é compreensível em <30 segundos
@@ -282,7 +282,7 @@ Um galho está fechado quando:
    - **Zero atribuição de experiência pessoal ao autor**
    - Nenhuma alegação técnica não-trivial sem fonte ou code sample que comprove
 4. Tronco podado: seções correspondentes substituídas por callouts + wikilinks
-5. MOC central `03-Dominios/Node/index.md` atualizado linkando o novo galho
+5. MOC central `03-Dominios/Tecnologia/Node/index.md` atualizado linkando o novo galho
 6. Quartz publica sem erros (`npm run quartz build` ou equivalente)
 
 ## 10. Riscos e mitigações
@@ -309,6 +309,6 @@ Um galho está fechado quando:
 
 - `2026-05-07-node-runtime-event-loop-design.md` — spec detalhado da sub-trilha #1
 - Plano de execução (criado depois): `docs/superpowers/plans/2026-05-07-node-runtime-event-loop-execution.md`
-- Tronco a ser podado: `03-Dominios/JavaScript/Backend/Node.js.md`
-- MOC central: `03-Dominios/Node/index.md`
+- Tronco a ser podado: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- MOC central: `03-Dominios/Tecnologia/Node/index.md`
 - Spec de referência (formato análogo): `2026-04-26-typescript-react-design.md`

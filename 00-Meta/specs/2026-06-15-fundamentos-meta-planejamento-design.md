@@ -15,7 +15,7 @@ tags:
 
 ## Contexto e objetivo
 
-O domínio `03-Dominios/Fundamentos/` reúne os fundamentos de Ciência da Computação
+O domínio `03-Dominios/Ciência/` reúne os fundamentos de Ciência da Computação
 e Engenharia de Software que **sobrevivem à troca de linguagem, framework ou stack**.
 Hoje ele está exatamente onde a trilha Java estava antes dos galhos: seis notas
 monolíticas, maduras (`evergreen`) mas planas, **todas no teto de ~600 linhas** — o
@@ -35,7 +35,7 @@ entrevista.
 
 ## Estado atual (ponto de partida)
 
-Sob `03-Dominios/Fundamentos/`:
+Sob `03-Dominios/Ciência/`:
 
 | Nota | Linhas | Status | Destino |
 | --- | --- | --- | --- |
@@ -55,7 +55,7 @@ Fundamentos (origem: cluster "O Lado Sombrio da IA") — também absorvida pelo 
 
 ## Princípios de estrutura
 
-1. **Modelo de galhos (mesmo do Java):** galhos *flat* sob `03-Dominios/Fundamentos/`,
+1. **Modelo de galhos (mesmo do Java):** galhos *flat* sob `03-Dominios/Ciência/`,
    cada galho = uma pasta dedicada de notas atômicas. Padrão tronco/galhos: o monólito
    é podado em sub-trilha de notas atômicas, com callouts no tronco apontando para os galhos.
 2. **Três fases de aprendizado:** notas de cada galho organizadas em Iniciado / Adepto / Magus
@@ -63,7 +63,7 @@ Fundamentos (origem: cluster "O Lado Sombrio da IA") — também absorvida pelo 
 3. **Notas atômicas:** dividir quando uma nota cobre 2+ tópicos ou passa de ~600 linhas.
 4. **Regra de fronteira (anti-duplicação):** *o que já tem domínio próprio não entra em
    Fundamentos.* Fundamentos no máximo linka para a estante dona. Consequência direta:
-   **Design Patterns** e **Arquitetura de Software** permanecem em `03-Dominios/Arquitetura/`
+   **Design Patterns** e **Arquitetura de Software** permanecem em `03-Dominios/Engenharia/Arquitetura/`
    (já existem lá); Fundamentos não os duplica.
 
 ## Roster de galhos
@@ -182,7 +182,7 @@ Ordem aprovada (override da sugestão A-first):
 
 ## Fora de escopo
 
-- **Design Patterns** e **Arquitetura de Software** — permanecem em `03-Dominios/Arquitetura/`
+- **Design Patterns** e **Arquitetura de Software** — permanecem em `03-Dominios/Engenharia/Arquitetura/`
   (regra anti-duplicação). System Design, API Design, Mensageria e Event Storming idem.
 - Processos/metodologia (scrum, estimativa, requisitos) — não são fundamento stack-agnóstico;
   fora do galho 12 e do domínio.

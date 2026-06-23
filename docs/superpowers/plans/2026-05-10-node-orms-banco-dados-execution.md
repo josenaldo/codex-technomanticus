@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Criar 10 notas atômicas + 1 MOC em `03-Dominios/Node/ORMs e banco de dados/` cobrindo os principais ORMs do ecossistema Node.js (Sequelize, Prisma, TypeORM, Drizzle), padrões de banco de dados (N+1, migrations, transações, paginação), e podar as seções correspondentes do tronco `Node.js.md`. Contexto: maio de 2026 — Prisma v6+, Drizzle ORM consolidado, Node 22 LTS, TypeScript nativo.
+**Goal:** Criar 10 notas atômicas + 1 MOC em `03-Dominios/Tecnologia/Node/ORMs e banco de dados/` cobrindo os principais ORMs do ecossistema Node.js (Sequelize, Prisma, TypeORM, Drizzle), padrões de banco de dados (N+1, migrations, transações, paginação), e podar as seções correspondentes do tronco `Node.js.md`. Contexto: maio de 2026 — Prisma v6+, Drizzle ORM consolidado, Node 22 LTS, TypeScript nativo.
 
-**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/Node/ORMs e banco de dados/`. O MOC serve como ponto de entrada com rotas alternativas. O tronco é podado ao final com callouts de migração.
+**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/Tecnologia/Node/ORMs e banco de dados/`. O MOC serve como ponto de entrada com rotas alternativas. O tronco é podado ao final com callouts de migração.
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks `[[]]`, callouts `[!abstract]`, dataview query no MOC. ORMs cobertos: Sequelize v7, Prisma v6, TypeORM v0.3, Drizzle ORM v0.30+. Runtime: Node 22 LTS + TypeScript nativo. Bancos: PostgreSQL (primário), MySQL/SQLite (menção).
 
@@ -46,7 +46,7 @@
 **Criar:**
 
 ```
-03-Dominios/Node/ORMs e banco de dados/
+03-Dominios/Tecnologia/Node/ORMs e banco de dados/
 ├── ORMs e banco de dados.md              (MOC — Task 1)
 ├── 01 - Panorama de ORMs.md              (Task 2)
 ├── 02 - Sequelize - queries e associações.md   (Task 3)
@@ -63,8 +63,8 @@
 **Modificar:**
 
 ```
-03-Dominios/JavaScript/Backend/Node.js.md     (poda: 2 seções → callouts — Task 12)
-03-Dominios/Node/index.md                     (adicionar galho 6 — Task 12)
+03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md     (poda: 2 seções → callouts — Task 12)
+03-Dominios/Tecnologia/Node/index.md                     (adicionar galho 6 — Task 12)
 ```
 
 ---
@@ -72,13 +72,13 @@
 ## Task 1: MOC — ORMs e banco de dados
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/ORMs e banco de dados.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/ORMs e banco de dados.md`
 
 **Commit:** `feat(node/g6): add MOC - ORMs e banco de dados`
 
 - [ ] **Step 1: Criar o arquivo MOC**
 
-Criar `03-Dominios/Node/ORMs e banco de dados/ORMs e banco de dados.md` com:
+Criar `03-Dominios/Tecnologia/Node/ORMs e banco de dados/ORMs e banco de dados.md` com:
 
 ```markdown
 ---
@@ -126,12 +126,12 @@ Conteúdo do MOC deve incluir:
 5. **Seção `## Todas as notas`** com query dataview:
    ```dataview
    TABLE status, updated
-   FROM "03-Dominios/Node/ORMs e banco de dados"
+   FROM "03-Dominios/Tecnologia/Node/ORMs e banco de dados"
    WHERE type = "concept"
    SORT file.name ASC
    ```
 
-6. **Seção `## Veja também`** com wikilinks para: `[[Node.js]]`, `[[Frameworks e arquitetura]]`, galhos anteriores, `[[03-Dominios/Node/index|Node.js (MOC central)]]`.
+6. **Seção `## Veja também`** com wikilinks para: `[[Node.js]]`, `[[Frameworks e arquitetura]]`, galhos anteriores, `[[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]`.
 
 **Mínimo de linhas:** 80
 
@@ -140,7 +140,7 @@ Conteúdo do MOC deve incluir:
 ## Task 2: Nota 01 — Panorama de ORMs
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/01 - Panorama de ORMs.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/01 - Panorama de ORMs.md`
 
 **Commit:** `feat(node/g6): add 01 - Panorama de ORMs`
 
@@ -240,7 +240,7 @@ publish: false
 ## Task 3: Nota 02 — Sequelize — queries e associações
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/02 - Sequelize - queries e associações.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/02 - Sequelize - queries e associações.md`
 
 **Commit:** `feat(node/g6): add 02 - Sequelize - queries e associações`
 
@@ -322,7 +322,7 @@ publish: false
 ## Task 4: Nota 03 — Prisma — schema-first e type safety
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/03 - Prisma - schema-first e type safety.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/03 - Prisma - schema-first e type safety.md`
 
 **Commit:** `feat(node/g6): add 03 - Prisma - schema-first e type safety`
 
@@ -410,7 +410,7 @@ publish: false
 ## Task 5: Nota 04 — TypeORM — decorators ao estilo JPA
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/04 - TypeORM - decorators ao estilo JPA.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/04 - TypeORM - decorators ao estilo JPA.md`
 
 **Commit:** `feat(node/g6): add 04 - TypeORM - decorators ao estilo JPA`
 
@@ -493,7 +493,7 @@ publish: false
 ## Task 6: Nota 05 — Drizzle — ORM lightweight e type-safe
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/05 - Drizzle - ORM lightweight e type-safe.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/05 - Drizzle - ORM lightweight e type-safe.md`
 
 **Commit:** `feat(node/g6): add 05 - Drizzle - ORM lightweight e type-safe`
 
@@ -575,7 +575,7 @@ publish: false
 ## Task 7: Nota 06 — N+1 queries — detecção e DataLoader
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/06 - N+1 queries - detecção e DataLoader.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/06 - N+1 queries - detecção e DataLoader.md`
 
 **Commit:** `feat(node/g6): add 06 - N+1 queries - detecção e DataLoader`
 
@@ -658,7 +658,7 @@ publish: false
 ## Task 8: Nota 07 — Migrations e versionamento de schema
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/07 - Migrations e versionamento de schema.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/07 - Migrations e versionamento de schema.md`
 
 **Commit:** `feat(node/g6): add 07 - Migrations e versionamento de schema`
 
@@ -745,7 +745,7 @@ publish: false
 ## Task 9: Nota 08 — Transações — gerenciamento manual vs automático
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/08 - Transações - gerenciamento manual vs automático.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/08 - Transações - gerenciamento manual vs automático.md`
 
 **Commit:** `feat(node/g6): add 08 - Transações - gerenciamento manual vs automático`
 
@@ -830,7 +830,7 @@ publish: false
 ## Task 10: Nota 09 — Paginação — offset, cursor e keyset
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/09 - Paginação - offset, cursor e keyset.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/09 - Paginação - offset, cursor e keyset.md`
 
 **Commit:** `feat(node/g6): add 09 - Paginação - offset, cursor e keyset`
 
@@ -911,7 +911,7 @@ publish: false
 ## Task 11: Nota 10 — Cheatsheet e decision tree de ORMs
 
 **Files:**
-- Create: `03-Dominios/Node/ORMs e banco de dados/10 - Cheatsheet e decision tree de ORMs.md`
+- Create: `03-Dominios/Tecnologia/Node/ORMs e banco de dados/10 - Cheatsheet e decision tree de ORMs.md`
 
 **Commit:** `feat(node/g6): add 10 - Cheatsheet e decision tree de ORMs`
 
@@ -993,8 +993,8 @@ Esta nota é uma referência consolidada — priorizando densidade e escaneabili
 ## Task 12: Poda do tronco + atualização do índice
 
 **Files:**
-- Modify: `03-Dominios/JavaScript/Backend/Node.js.md`
-- Modify: `03-Dominios/Node/index.md`
+- Modify: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- Modify: `03-Dominios/Tecnologia/Node/index.md`
 
 **Commit:** `chore(node/g6): prune trunk - 2 sections migrated to orms galho`
 
@@ -1028,7 +1028,7 @@ Adicionar a linha após `[[Observability e produção]]`:
 - [[ORMs e banco de dados]] — galho 6 da trilha Node Senior; os 4 ORMs (Sequelize, Prisma, TypeORM, Drizzle), N+1, migrations, transações, paginação e decision tree
 ```
 
-**Step 4: Adicionar galho 6 em `03-Dominios/Node/index.md`**
+**Step 4: Adicionar galho 6 em `03-Dominios/Tecnologia/Node/index.md`**
 
 Na seção `### Galhos da trilha Node Senior`, adicionar após a linha do galho 5:
 

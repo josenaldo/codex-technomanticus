@@ -25,9 +25,9 @@ Exemplos:
 
 ```
 /enriquecer-nota
-/enriquecer-nota 03-Dominios/IA/Economia de Tokens/02 - Anatomia.md
-/enriquecer-nota 03-Dominios/IA/02 - Anatomia.md foca na parte de reasoning
-/enriquecer-nota 03-Dominios/IA/02 - Anatomia.md https://example.com/artigo
+/enriquecer-nota 03-Dominios/Tecnologia/IA/Economia de Tokens/02 - Anatomia.md
+/enriquecer-nota 03-Dominios/Tecnologia/IA/02 - Anatomia.md foca na parte de reasoning
+/enriquecer-nota 03-Dominios/Tecnologia/IA/02 - Anatomia.md https://example.com/artigo
 ```
 
 ---
@@ -37,7 +37,7 @@ Exemplos:
 1. Se `path` foi fornecido, valida que o arquivo existe.
 2. Se não foi fornecido, pergunta ao usuário o path ou título da nota.
 3. Lê o arquivo inteiro (frontmatter + corpo).
-4. Identifica o **domínio** da nota pelo path (ex: `03-Dominios/IA/` → domínio IA).
+4. Identifica o **domínio** da nota pelo path (ex: `03-Dominios/Tecnologia/IA/` → domínio IA).
 5. Localiza o **dicionário do domínio**: arquivo com `type: glossary` na mesma pasta de domínio (ou pai mais próximo). Se houver mais de um, lista e pergunta.
 
 ---

@@ -367,7 +367,7 @@ Se aparecer "No results" em algum bloco: provavelmente o symlink não resolve OU
 
 - [ ] **Step 4: Smoke test cruzado**
 
-Pegar 1 domínio (ex: `JavaScript`). Contar manualmente notas em `Codex/03-Dominios/JavaScript/` (ou `~/repos/personal/codex-technomanticus/03-Dominios/JavaScript/`):
+Pegar 1 domínio (ex: `JavaScript`). Contar manualmente notas em `Codex/03-Dominios/Tecnologia/JavaScript/` (ou `~/repos/personal/codex-technomanticus/03-Dominios/Tecnologia/JavaScript/`):
 
 ```bash
 find ~/repos/personal/codex-technomanticus/03-Dominios/JavaScript -name "*.md" | wc -l

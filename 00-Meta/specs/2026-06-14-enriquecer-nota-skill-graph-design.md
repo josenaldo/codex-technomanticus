@@ -18,7 +18,7 @@ A skill `enriquecer-nota` hoje é monolítica: uma skill com 4 lentes (profundid
 lacunas, novidade, conexões) + higiene + um subagente crítico. Ela **fecha lacunas factuais
 com fonte**, mas não **ensina**.
 
-Diagnóstico a partir do diff de `03-Dominios/IA/Anatomia dos LLMs/03 - A janela de contexto.md`
+Diagnóstico a partir do diff de `03-Dominios/Tecnologia/IA/Anatomia dos LLMs/03 - A janela de contexto.md`
 (versão original 128 linhas → versão enriquecida à mão 382 linhas):
 
 1. **A skill produz esqueleto; o usuário produz carne.** A versão original era bullets +

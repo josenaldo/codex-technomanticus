@@ -11,7 +11,7 @@ publish: false
 
 ## 1. Contexto e motivação
 
-O Codex Technomanticus cresce como commonplace book pessoal — cada vez mais notas em [[IA]], [[Arquitetura]], [[03-Dominios/JavaScript/index]], etc. Mas há uma lacuna: **artigos lidos não viram nada**. Hoje o fluxo é:
+O Codex Technomanticus cresce como commonplace book pessoal — cada vez mais notas em [[IA]], [[Arquitetura]], [[03-Dominios/Tecnologia/JavaScript/index]], etc. Mas há uma lacuna: **artigos lidos não viram nada**. Hoje o fluxo é:
 
 1. Achar um link interessante → cola em `00 - Inbox/Entradas.md`
 2. Ler o artigo no navegador
@@ -150,8 +150,8 @@ codex-technomanticus/
 | `Aprendizado/RPA/`                  | `04-Sendas/rpa/`                              |
 | `00 - Inbox/Entradas.md`            | `01-Pergaminhos/entradas.md`                  |
 | `00 - Inbox/Avaliar.md`             | `01-Pergaminhos/avaliar.md`                   |
-| `00 - Inbox/entradas/inglês.md`     | `03-Dominios/Inglês/Inglês — entradas.md`    |
-| `Arquitetura/` … `Python/`          | `03-Dominios/Arquitetura/` … `03-Dominios/Python/` |
+| `00 - Inbox/entradas/inglês.md`     | `03-Dominios/Carreira/Inglês/Inglês — entradas.md`    |
+| `Arquitetura/` … `Python/`          | `03-Dominios/Engenharia/Arquitetura/` … `03-Dominios/Tecnologia/Python/` |
 
 ## 6. Template da Glosa
 
@@ -327,7 +327,7 @@ Todos os movimentos via `git mv` pra preservar histórico:
 7. `rmdir Aprendizado` (vazia agora)
 8. `git mv "00 - Inbox/Entradas.md" 01-Pergaminhos/entradas.md`
 9. `git mv "00 - Inbox/Avaliar.md" 01-Pergaminhos/avaliar.md`
-10. `git mv "00 - Inbox/entradas/inglês.md" "03-Dominios/Inglês/Inglês — entradas.md"`
+10. `git mv "00 - Inbox/entradas/inglês.md" "03-Dominios/Carreira/Inglês/Inglês — entradas.md"`
 11. `rmdir "00 - Inbox/entradas" "00 - Inbox"`
 12. `git mv Arquitetura 03-Dominios/Arquitetura` (e idem pras outras 9 pastas de domínio: Ferramentas, Fundamentos, Go, IA, Infraestrutura, Inglês, Java, JavaScript, Python)
 13. Criar `02-Glosas/.gitkeep`, `04-Sendas/senda-frontend/.gitkeep`

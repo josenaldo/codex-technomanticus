@@ -11,7 +11,7 @@ publish: false
 
 ## 1. Contexto e motivação
 
-O Codex Technomanticus tem em `03-Dominios/Java/` um conjunto de **troncos densos** acumulados — notas monolíticas, em sua maioria `publish: false`/`status: evergreen`, que cobrem grandes áreas da plataforma Java com profundidade real mas formato saturado:
+O Codex Technomanticus tem em `03-Dominios/Tecnologia/Java/` um conjunto de **troncos densos** acumulados — notas monolíticas, em sua maioria `publish: false`/`status: evergreen`, que cobrem grandes áreas da plataforma Java com profundidade real mas formato saturado:
 
 | Tronco | Linhas | Cobertura |
 |---|---|---|
@@ -38,7 +38,7 @@ A tensão é a mesma que originou a trilha Node: o conteúdo precisa **florescer
 
 Definir o roadmap de **18 sub-trilhas temáticas (galhos)** que progressivamente enriquecem e substituem os troncos monolíticos, estabelecendo:
 
-- **Topologia** flat sob `03-Dominios/Java/` (abandonando `Core/Backend/Frontend`), consistente com Node e IA
+- **Topologia** flat sob `03-Dominios/Tecnologia/Java/` (abandonando `Core/Backend/Frontend`), consistente com Node e IA
 - **Padrões editoriais comuns** herdados por todos os galhos (frontmatter, estrutura de nota, 3 fases, idioma, audiência, restrições)
 - **Escopo de blocos** de cada galho (sem nomear notas individuais — isso fica pro spec específico de cada galho)
 - **Dependências** entre galhos e **ordem sugerida**
@@ -52,7 +52,7 @@ Este roadmap **não detalha** o nota-a-nota dos galhos. Cada galho ganha seu pr�
 
 ### Em escopo
 
-- 18 sub-trilhas (galhos) progressivamente publicadas em `03-Dominios/Java/<Nome do Galho>/`
+- 18 sub-trilhas (galhos) progressivamente publicadas em `03-Dominios/Tecnologia/Java/<Nome do Galho>/`
 - Reorganização da topologia para flat temático (migração de `Core/Backend/Frontend` para galhos)
 - Padrões editoriais comuns + esquema de 3 fases que todo galho herda
 - Política de poda dos troncos à medida que galhos fecham
@@ -84,7 +84,7 @@ Este roadmap **não detalha** o nota-a-nota dos galhos. Cada galho ganha seu pr�
 
 ## 5. Topologia e os 18 galhos
 
-Estrutura **flat** sob `03-Dominios/Java/` — cada galho é uma pasta com numeração local e MOC homônimo (`index.md`). O agrupamento `Core/Backend/Frontend` é abandonado; os MOCs antigos `Core/index.md`, `Backend/index.md`, `Frontend/index.md` são absorvidos pelo MOC central reescrito.
+Estrutura **flat** sob `03-Dominios/Tecnologia/Java/` — cada galho é uma pasta com numeração local e MOC homônimo (`index.md`). O agrupamento `Core/Backend/Frontend` é abandonado; os MOCs antigos `Core/index.md`, `Backend/index.md`, `Frontend/index.md` são absorvidos pelo MOC central reescrito.
 
 Ordem **didática** (= ordem de leitura recomendada). A ordem de **execução** (qual galho construir primeiro) é decisão separada — ver §6.
 
@@ -212,10 +212,10 @@ Todo galho herda os padrões abaixo. Desvios são justificados no spec do galho.
 
 ### 7.1. Localização e nomenclatura
 
-- Pasta `03-Dominios/Java/<Nome do Galho>/`, flat (sem subpastas por fase — fase é organização lógica)
+- Pasta `03-Dominios/Tecnologia/Java/<Nome do Galho>/`, flat (sem subpastas por fase — fase é organização lógica)
 - Numeração local global por galho (`01 - <título>.md`, `02 - ...`), **não reinicia por fase**
 - MOC do galho em `index.md` na raiz da pasta, `type: moc`
-- MOC central `03-Dominios/Java/index.md` atualizado a cada galho que fecha
+- MOC central `03-Dominios/Tecnologia/Java/index.md` atualizado a cada galho que fecha
 
 ### 7.2. As 3 fases de aprendizado
 
@@ -310,7 +310,7 @@ Variações permitidas quando o conteúdo pedir (nota de fechamento pode ter "Ch
   - Outras notas do mesmo galho
   - Notas de outros galhos quando o conceito conectar (ex: pattern matching ↔ sealed classes)
   - Verbetes do **Dicionário de Java**
-  - `[[03-Dominios/Java/index|Java (MOC central)]]`
+  - `[[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]`
 
 ### 7.9. Restrição absoluta de fabricação
 
@@ -337,11 +337,11 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 ### 8.1. Dicionário de Java (novo)
 
-`03-Dominios/Java/Dicionário de Java.md`, `type: glossary`, no padrão dos outros domínios (`Dicionário de IA`, `Dicionário do Terminal`, `Dicionário de React`). **Criado e semeado pelo Galho 1**, expandido por cada galho subsequente com seus verbetes. Cada verbete tem `Veja também:` apontando pras notas canônicas. Inserção em ordem alfabética case-insensitive.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `type: glossary`, no padrão dos outros domínios (`Dicionário de IA`, `Dicionário do Terminal`, `Dicionário de React`). **Criado e semeado pelo Galho 1**, expandido por cada galho subsequente com seus verbetes. Cada verbete tem `Veja também:` apontando pras notas canônicas. Inserção em ordem alfabética case-insensitive.
 
 ### 8.2. MOC central reescrito
 
-`03-Dominios/Java/index.md` reescrito no estilo `Node/index.md`: TL;DR descrevendo a trilha de 18 galhos, lista de galhos com descrição (agregada à medida que fecham), "Veja também" (JavaScript, TypeScript). O `Java/Java.md` duplicado é deprecado/fundido nessa reescrita; os MOCs `Core/Backend/Frontend/index.md` são absorvidos.
+`03-Dominios/Tecnologia/Java/index.md` reescrito no estilo `Node/index.md`: TL;DR descrevendo a trilha de 18 galhos, lista de galhos com descrição (agregada à medida que fecham), "Veja também" (JavaScript, TypeScript). O `Java/Java.md` duplicado é deprecado/fundido nessa reescrita; os MOCs `Core/Backend/Frontend/index.md` são absorvidos.
 
 ## 9. Política de poda dos troncos
 
@@ -366,7 +366,7 @@ Troncos como `Java Fundamentals` alimentam **múltiplos galhos** (1, 2, 3, 4) �
 
 Um galho está fechado quando:
 
-1. Todas as notas existem em `03-Dominios/Java/<Nome do Galho>/` com frontmatter completo (incluindo `fase:`) e `publish: true`
+1. Todas as notas existem em `03-Dominios/Tecnologia/Java/<Nome do Galho>/` com frontmatter completo (incluindo `fase:`) e `publish: true`
 2. MOC do galho tem todas as notas linkadas em 3 subseções de fase + 4-5 rotas alternativas + dataview
 3. Cada nota satisfaz a rubrica:
    - TL;DR compreensível em <30s
@@ -408,7 +408,7 @@ Um galho está fechado quando:
 
 - `2026-06-02-java-galho-01-linguagem-design.md` — spec detalhado do Galho 1
 - Plano de execução (criado depois): `docs/superpowers/plans/2026-06-02-java-galho-01-linguagem-execution.md`
-- Troncos a podar: `03-Dominios/Java/Core/*.md`, `03-Dominios/Java/Backend/*.md`, `03-Dominios/Java/Frontend/JavaFX.md`
-- MOC central: `03-Dominios/Java/index.md`
+- Troncos a podar: `03-Dominios/Tecnologia/Java/Core/*.md`, `03-Dominios/Tecnologia/Java/Backend/*.md`, `03-Dominios/Tecnologia/Java/Frontend/JavaFX.md`
+- MOC central: `03-Dominios/Tecnologia/Java/index.md`
 - Specs de referência (formato análogo): `2026-05-07-node-roadmap-design.md` (tronco/galhos), `2026-05-18-trilha-terminal-design.md` (3 fases)
 - Memórias: [[project_tronco_galhos_pattern]], [[project_trilhas_fases_aprendizado]], [[feedback_no_fabrication]]

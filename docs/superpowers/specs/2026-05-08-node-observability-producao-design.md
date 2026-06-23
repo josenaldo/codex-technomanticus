@@ -23,7 +23,7 @@ Pré-requisitos:
 
 ## 2. Objetivo
 
-Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Node/Observability e produção/`, todas `publish: true`, em PT-BR, cobrindo os três pilares de observability, ferramentas idiomáticas do ecossistema, diagnóstico avançado e patterns de resiliência.
+Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Tecnologia/Node/Observability e produção/`, todas `publish: true`, em PT-BR, cobrindo os três pilares de observability, ferramentas idiomáticas do ecossistema, diagnóstico avançado e patterns de resiliência.
 
 A trilha precisa ser:
 
@@ -38,7 +38,7 @@ A trilha precisa ser:
 
 ### Em escopo
 
-- 13 arquivos markdown em `03-Dominios/Node/Observability e produção/`
+- 13 arquivos markdown em `03-Dominios/Tecnologia/Node/Observability e produção/`
 - Todos com `publish: true`
 - Idioma: PT-BR; termos técnicos em inglês mantidos (log, metric, span, trace, heap, event loop, etc.)
 - Wikilinks densos para `[[Node.js]]` (tronco), `[[Runtime e Event Loop]]` (galho 1, especialmente event loop lag e bloqueio), `[[Frameworks e arquitetura]]` (galho 4, hooks de shutdown)
@@ -498,7 +498,7 @@ aliases:
 
 ### Atualização do index.md
 
-`03-Dominios/Node/index.md` deve ganhar uma linha na seção "Galhos da trilha Node Senior":
+`03-Dominios/Tecnologia/Node/index.md` deve ganhar uma linha na seção "Galhos da trilha Node Senior":
 
 ```markdown
 - [[Observability e produção]] — galho 5: os três pilares (logs, métricas, traces), pino, prom-client, OpenTelemetry, profiling com clinic.js, memory leaks, graceful shutdown, circuit breaker e SLOs
@@ -636,7 +636,7 @@ Antes de commitar cada nota, verificar:
 - Ler o tronco antes de podar para confirmar níveis de heading reais
 - Substituir as 4 seções conforme § 6 deste spec
 - Atualizar `updated:` no frontmatter do tronco
-- Adicionar link para [[03-Dominios/Node/Observability e produção/index]] no ## Veja também do tronco
+- Adicionar link para [[03-Dominios/Tecnologia/Node/Observability e produção/index]] no ## Veja também do tronco
 - 1 commit para a poda: `chore(node/g5): prune trunk - 4 sections migrated`
 
 ---

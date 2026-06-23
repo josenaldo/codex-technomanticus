@@ -16,7 +16,7 @@ tags:
 ## Contexto
 Primeiro galho da **Camada A** do meta-plano de Fundamentos
 (`00-Meta/specs/2026-06-15-fundamentos-meta-planejamento-design.md`): refatorar o monólito
-`03-Dominios/Fundamentos/Estruturas de Dados.md` (620 linhas) numa sub-trilha de notas atômicas
+`03-Dominios/Ciência/Estruturas de Dados.md` (620 linhas) numa sub-trilha de notas atômicas
 em 3 fases. Interview-critical (★, Fase 1 da Senda Entrevistas).
 
 ## Padrão por nota (herdado do galho Complexidade + acréscimos do usuário)
@@ -68,7 +68,7 @@ em 3 fases. Interview-critical (★, Fase 1 da Senda Entrevistas).
 13. Escolhendo a estrutura certa (capstone) — tabela comparativa, patterns de entrevista, armadilhas, prep bilíngue
 
 ## Tronco e MOC
-- Criar pasta `03-Dominios/Fundamentos/Estruturas de Dados/` com `index.md` (MOC, `type: moc`,
+- Criar pasta `03-Dominios/Ciência/Estruturas de Dados/` com `index.md` (MOC, `type: moc`,
   `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - O `index.md` recebe **alias "Estruturas de Dados"** (+ "Estruturas de dados") para que os links de
   entrada existentes (`[[Estruturas de Dados]]` em Algoritmos, Senda Entrevistas, etc.) resolvam.

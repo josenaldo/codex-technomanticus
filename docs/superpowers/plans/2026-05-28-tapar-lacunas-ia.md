@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) ou `superpowers:executing-plans` pra implementar task-by-task. Steps usam checkbox (`- [ ]`) syntax pra tracking.
 
-**Goal:** Tapar as 10 lacunas no domínio `03-Dominios/IA/` identificadas a partir do artigo "Become an AI Engineer" (@hooeem, X/Twitter), criando 7 trilhas novas + 1 nota avulsa + atualizações em notas existentes — cerca de **70 notas + 8 índices** mais atualização do índice-raiz e do dicionário.
+**Goal:** Tapar as 10 lacunas no domínio `03-Dominios/Tecnologia/IA/` identificadas a partir do artigo "Become an AI Engineer" (@hooeem, X/Twitter), criando 7 trilhas novas + 1 nota avulsa + atualizações em notas existentes — cerca de **70 notas + 8 índices** mais atualização do índice-raiz e do dicionário.
 
-**Architecture:** Cada trilha segue o padrão `tronco/galhos` do vault: pasta com `index.md` (MOC) + notas atômicas `NN - Título.md` em ordem sequencial, blocos temáticos no MOC, frontmatter padrão (`type: concept|moc`, `progress`, `status`, `publish`, tags). Wikilinks internos por nome curto (`[[NN - Título]]`), cross-trilha por path (`[[03-Dominios/IA/Pasta|alias]]`). Sem subpastas de "fases" (Iniciado/Adepto/Magus) — trilhas novas seguem o padrão **plano** das trilhas existentes (Anatomia dos LLMs, Context Engineering, RAG, etc.).
+**Architecture:** Cada trilha segue o padrão `tronco/galhos` do vault: pasta com `index.md` (MOC) + notas atômicas `NN - Título.md` em ordem sequencial, blocos temáticos no MOC, frontmatter padrão (`type: concept|moc`, `progress`, `status`, `publish`, tags). Wikilinks internos por nome curto (`[[NN - Título]]`), cross-trilha por path (`[[03-Dominios/Tecnologia/IA/Pasta|alias]]`). Sem subpastas de "fases" (Iniciado/Adepto/Magus) — trilhas novas seguem o padrão **plano** das trilhas existentes (Anatomia dos LLMs, Context Engineering, RAG, etc.).
 
 **Tech Stack:** Markdown CommonMark + Obsidian Flavored Markdown · Quartz v4 publish (frontmatter `publish: true` torna público) · skill `verificar-wikilinks` pra auditoria final · skill `obsidian-markdown` pra formato Obsidian (callouts, embeds).
 
@@ -46,20 +46,20 @@ Cada trilha = 1 commit no padrão `feat(ia): adicionar trilha <nome>`. Nota avul
 **Por que primeiro:** É o "atlas" que mapeia as 11 camadas do artigo (#18) contra todas as trilhas existentes. Funciona como nota-tronco integradora — todas as outras trilhas novas vão linkar pra cá. Tapa **lacuna #7**.
 
 **Files:**
-- Create: `03-Dominios/IA/AI Engineering Stack/index.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/01 - As 11 camadas — visão geral.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/02 - Purpose Layer — o que o sistema é.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/03 - Prompt Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/04 - Context Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/05 - Output Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/06 - Retrieval Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/07 - Tool Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/08 - Workflow vs Agent Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/09 - Evaluation Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/10 - Guardrail Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/11 - Logging Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/12 - Improvement Layer.md`
-- Create: `03-Dominios/IA/AI Engineering Stack/13 - Setup completo — do zero ao sistema de produção.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/index.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/01 - As 11 camadas — visão geral.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/02 - Purpose Layer — o que o sistema é.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/04 - Context Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/05 - Output Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/06 - Retrieval Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/07 - Tool Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/08 - Workflow vs Agent Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/09 - Evaluation Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/10 - Guardrail Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/11 - Logging Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer.md`
+- Create: `03-Dominios/Tecnologia/IA/AI Engineering Stack/13 - Setup completo — do zero ao sistema de produção.md`
 
 **Filosofia das notas desta trilha:** cada nota de camada (02-12) é **fina** (1-2 páginas). Cada uma responde 3 perguntas:
 1. O que essa camada é, e qual problema resolve?
@@ -136,7 +136,7 @@ Esperado: 0 wikilinks quebrados (notas das outras trilhas novas ainda não exist
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/IA/AI Engineering Stack"
+git add "03-Dominios/Tecnologia/IA/AI Engineering Stack"
 git commit -m "feat(ia): adicionar trilha AI Engineering Stack — as 11 camadas
 
 Tronco integrador que mapeia as 11 camadas de sistemas de IA contra
@@ -151,16 +151,16 @@ identificada na análise do artigo Become an AI Engineer (@hooeem)."
 **Por que segundo:** Tapa **lacunas #1 e #10**. O Codex pulou direto pra Context Engineering, deixando órfã a camada de craft do prompt. Esta trilha inclui o mega-prompt do Karpathy como artefato canônico.
 
 **Files:**
-- Create: `03-Dominios/IA/Prompt Engineering/index.md`
-- Create: `03-Dominios/IA/Prompt Engineering/01 - Por que prompt engineering ainda importa.md`
-- Create: `03-Dominios/IA/Prompt Engineering/02 - Especificidade — a primeira disciplina.md`
-- Create: `03-Dominios/IA/Prompt Engineering/03 - Roles e personas — escolhendo o juízo do modelo.md`
-- Create: `03-Dominios/IA/Prompt Engineering/04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy.md`
-- Create: `03-Dominios/IA/Prompt Engineering/05 - Few-shot examples — exemplos como contrato.md`
-- Create: `03-Dominios/IA/Prompt Engineering/06 - Constraints declarativas — boundaries como engenharia.md`
-- Create: `03-Dominios/IA/Prompt Engineering/07 - Iteration patterns — keep, change, do-not.md`
-- Create: `03-Dominios/IA/Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought.md`
-- Create: `03-Dominios/IA/Prompt Engineering/09 - Anti-patterns e tells de IA — o que evitar.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/index.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/01 - Por que prompt engineering ainda importa.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/02 - Especificidade — a primeira disciplina.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/03 - Roles e personas — escolhendo o juízo do modelo.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/05 - Few-shot examples — exemplos como contrato.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/06 - Constraints declarativas — boundaries como engenharia.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/07 - Iteration patterns — keep, change, do-not.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/08 - Reasoning models — audit trail, não chain-of-thought.md`
+- Create: `03-Dominios/Tecnologia/IA/Prompt Engineering/09 - Anti-patterns e tells de IA — o que evitar.md`
 
 - [ ] **Step 1: Criar index.md**
 
@@ -223,7 +223,7 @@ Nota culturalmente importante. Conteúdo: TL;DR. `## Frases bandeira-vermelha` (
 - [ ] **Step 12: Commit**
 
 ```bash
-git add "03-Dominios/IA/Prompt Engineering"
+git add "03-Dominios/Tecnologia/IA/Prompt Engineering"
 git commit -m "feat(ia): adicionar trilha Prompt Engineering
 
 Tapa lacunas #1 (prompt engineering como disciplina autônoma) e #10
@@ -239,15 +239,15 @@ reasoning models e anti-patterns."
 **Por que terceiro:** Tapa **lacuna #2**. Tópico que existe espalhado em `Anatomia dos LLMs/09` mas sem tratamento como disciplina. Linkada pelo `AI Engineering Stack/05 - Output Layer`.
 
 **Files:**
-- Create: `03-Dominios/IA/Structured Outputs/index.md`
-- Create: `03-Dominios/IA/Structured Outputs/01 - O problema do output não estruturado.md`
-- Create: `03-Dominios/IA/Structured Outputs/02 - JSON Schema como contrato.md`
-- Create: `03-Dominios/IA/Structured Outputs/03 - Function calling como mecanismo de output.md`
-- Create: `03-Dominios/IA/Structured Outputs/04 - OpenAI Structured Outputs — strict mode.md`
-- Create: `03-Dominios/IA/Structured Outputs/05 - Anthropic tool use para forçar formato.md`
-- Create: `03-Dominios/IA/Structured Outputs/06 - Gemini structured output.md`
-- Create: `03-Dominios/IA/Structured Outputs/07 - Validação e retry — Pydantic, Zod.md`
-- Create: `03-Dominios/IA/Structured Outputs/08 - Streaming de structured outputs.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/index.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/01 - O problema do output não estruturado.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/02 - JSON Schema como contrato.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/03 - Function calling como mecanismo de output.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/04 - OpenAI Structured Outputs — strict mode.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/05 - Anthropic tool use para forçar formato.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/06 - Gemini structured output.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/07 - Validação e retry — Pydantic, Zod.md`
+- Create: `03-Dominios/Tecnologia/IA/Structured Outputs/08 - Streaming de structured outputs.md`
 
 - [ ] **Step 1: index.md**
 
@@ -305,7 +305,7 @@ Conteúdo: TL;DR. O problema: JSON parcial não é parseável. Soluções: strea
 - [ ] **Step 9: Commit**
 
 ```bash
-git add "03-Dominios/IA/Structured Outputs"
+git add "03-Dominios/Tecnologia/IA/Structured Outputs"
 git commit -m "feat(ia): adicionar trilha Structured Outputs
 
 8 notas + index sobre JSON Schema, function calling como output shape,
@@ -320,15 +320,15 @@ Pydantic/Zod e streaming. Tapa lacuna #2."
 **Por que quarto:** Tapa **lacuna #3**. Consolida tema fragmentado em 3 notas existentes (Anatomia de Agents/09, Anatomia dos LLMs/17, RAG/09). Esta trilha vira a "casa mestre" — as 3 notas existentes serão atualizadas em Task 13 pra linkar pra cá.
 
 **Files:**
-- Create: `03-Dominios/IA/Evaluation/index.md`
-- Create: `03-Dominios/IA/Evaluation/01 - Eval-driven development — a disciplina.md`
-- Create: `03-Dominios/IA/Evaluation/02 - Golden datasets — como construir.md`
-- Create: `03-Dominios/IA/Evaluation/03 - Scoring rubrics e critérios.md`
-- Create: `03-Dominios/IA/Evaluation/04 - LLM-as-judge — quando e como.md`
-- Create: `03-Dominios/IA/Evaluation/05 - Regression testing em LLMs.md`
-- Create: `03-Dominios/IA/Evaluation/06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix.md`
-- Create: `03-Dominios/IA/Evaluation/07 - Eval em CI-CD.md`
-- Create: `03-Dominios/IA/Evaluation/08 - Eval por contexto — LLM, RAG, agent, prompt.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/index.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/01 - Eval-driven development — a disciplina.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/02 - Golden datasets — como construir.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/03 - Scoring rubrics e critérios.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — quando e como.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/05 - Regression testing em LLMs.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD.md`
+- Create: `03-Dominios/Tecnologia/IA/Evaluation/08 - Eval por contexto — LLM, RAG, agent, prompt.md`
 
 - [ ] **Step 1: index.md**
 
@@ -370,7 +370,7 @@ Esqueleto por nota (lista resumida — o executor abre cada uma com TL;DR + 4-6 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/IA/Evaluation"
+git add "03-Dominios/Tecnologia/IA/Evaluation"
 git commit -m "feat(ia): adicionar trilha Evaluation
 
 8 notas + index consolidando eval como disciplina contínua: golden
@@ -386,8 +386,8 @@ em commit subsequente."
 **Por que aqui:** Tapa **lacuna #4**. Vai em `Anatomia de Agents/` como nota 10 (após `09 - Evaluation de agents`). Decisão arquitetural crisp do framework Anthropic.
 
 **Files:**
-- Create: `03-Dominios/IA/Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um.md`
-- Modify: `03-Dominios/IA/Anatomia de Agents/index.md` (adicionar a nota nos blocos)
+- Create: `03-Dominios/Tecnologia/IA/Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um.md`
+- Modify: `03-Dominios/Tecnologia/IA/Anatomia de Agents/index.md` (adicionar a nota nos blocos)
 
 - [ ] **Step 1: Criar a nota 10**
 
@@ -431,7 +431,7 @@ Adicionar a nota nos blocos do MOC (provavelmente em "Bloco 4 — Produção" ou
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/IA/Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um.md" "03-Dominios/IA/Anatomia de Agents/index.md"
+git add "03-Dominios/Tecnologia/IA/Anatomia de Agents/10 - Workflow vs Agent — quando usar cada um.md" "03-Dominios/Tecnologia/IA/Anatomia de Agents/index.md"
 git commit -m "feat(ia): adicionar nota Workflow vs Agent em Anatomia de Agents
 
 Tapa lacuna #4. Framework Anthropic Building Effective Agents para
@@ -446,14 +446,14 @@ agent (descoberta dinâmica)."
 **Por que aqui:** Tapa **lacuna #5**. Zero notas hoje sobre dar screenshots/PDFs/áudio como input.
 
 **Files:**
-- Create: `03-Dominios/IA/Multimodal Prompting/index.md`
-- Create: `03-Dominios/IA/Multimodal Prompting/01 - O salto multimodal — por que isso importa.md`
-- Create: `03-Dominios/IA/Multimodal Prompting/02 - Imagens como input — screenshots, charts, mockups.md`
-- Create: `03-Dominios/IA/Multimodal Prompting/03 - PDFs e documentos — extração e análise.md`
-- Create: `03-Dominios/IA/Multimodal Prompting/04 - Áudio e vídeo — Whisper, Gemini Live, Sora-class.md`
-- Create: `03-Dominios/IA/Multimodal Prompting/05 - Tabelas e spreadsheets como input estruturado.md`
-- Create: `03-Dominios/IA/Multimodal Prompting/06 - Como dizer ao modelo o tipo de leitura.md`
-- Create: `03-Dominios/IA/Multimodal Prompting/07 - Limites e armadilhas multimodais.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/index.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/01 - O salto multimodal — por que isso importa.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/02 - Imagens como input — screenshots, charts, mockups.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/03 - PDFs e documentos — extração e análise.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/04 - Áudio e vídeo — Whisper, Gemini Live, Sora-class.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/05 - Tabelas e spreadsheets como input estruturado.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/06 - Como dizer ao modelo o tipo de leitura.md`
+- Create: `03-Dominios/Tecnologia/IA/Multimodal Prompting/07 - Limites e armadilhas multimodais.md`
 
 - [ ] **Step 1: index.md**
 
@@ -494,7 +494,7 @@ Fonte: artigo @hooeem cap #17.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/IA/Multimodal Prompting"
+git add "03-Dominios/Tecnologia/IA/Multimodal Prompting"
 git commit -m "feat(ia): adicionar trilha Multimodal Prompting
 
 7 notas + index sobre input de imagens, PDFs, áudio/vídeo, tabelas e
@@ -508,14 +508,14 @@ como dirigir o tipo de leitura do modelo. Tapa lacuna #5."
 **Por que aqui:** Tapa **lacuna #6**. Framework "deliverable-first" é generalizável e útil pra qualquer engenheiro produzindo material visual.
 
 **Files:**
-- Create: `03-Dominios/IA/Image Prompting/index.md`
-- Create: `03-Dominios/IA/Image Prompting/01 - Image prompting como engenharia.md`
-- Create: `03-Dominios/IA/Image Prompting/02 - Deliverable-first, não scene-first.md`
-- Create: `03-Dominios/IA/Image Prompting/03 - Modelos de imagem 2026 — DALL-E, Imagen, Midjourney, FLUX, SD.md`
-- Create: `03-Dominios/IA/Image Prompting/04 - Anatomia de um prompt visual — canvas, composição, estilo.md`
-- Create: `03-Dominios/IA/Image Prompting/05 - Templates por entregável — poster, infográfico, mockup, thumbnail.md`
-- Create: `03-Dominios/IA/Image Prompting/06 - Iteração visual — controlled changes.md`
-- Create: `03-Dominios/IA/Image Prompting/07 - Geração de diagramas e ilustrações técnicas.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/index.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/01 - Image prompting como engenharia.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/02 - Deliverable-first, não scene-first.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/03 - Modelos de imagem 2026 — DALL-E, Imagen, Midjourney, FLUX, SD.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/04 - Anatomia de um prompt visual — canvas, composição, estilo.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/05 - Templates por entregável — poster, infográfico, mockup, thumbnail.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/06 - Iteração visual — controlled changes.md`
+- Create: `03-Dominios/Tecnologia/IA/Image Prompting/07 - Geração de diagramas e ilustrações técnicas.md`
 
 - [ ] **Step 1: index.md**
 
@@ -556,7 +556,7 @@ Fonte: artigo @hooeem cap #16.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/IA/Image Prompting"
+git add "03-Dominios/Tecnologia/IA/Image Prompting"
 git commit -m "feat(ia): adicionar trilha Image Prompting
 
 7 notas + index sobre image prompting deliverable-first, modelos 2026,
@@ -570,15 +570,15 @@ templates por entregável e iteração visual. Tapa lacuna #6."
 **Por que aqui:** Tapa **lacuna #8**. `Economia de Tokens/04` toca observability só pelo ângulo custo — falta o ângulo de tracing/debugging/versioning.
 
 **Files:**
-- Create: `03-Dominios/IA/Observability/index.md`
-- Create: `03-Dominios/IA/Observability/01 - Por que LLMs precisam de observabilidade.md`
-- Create: `03-Dominios/IA/Observability/02 - Anatomia de um trace LLM.md`
-- Create: `03-Dominios/IA/Observability/03 - Langfuse — open-source standard.md`
-- Create: `03-Dominios/IA/Observability/04 - Helicone, Phoenix, OpenLLMetry — alternativas.md`
-- Create: `03-Dominios/IA/Observability/05 - Versionamento de prompts.md`
-- Create: `03-Dominios/IA/Observability/06 - Session replay e debugging.md`
-- Create: `03-Dominios/IA/Observability/07 - Métricas que importam — latência, custo, qualidade.md`
-- Create: `03-Dominios/IA/Observability/08 - Privacy e PII em logs.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/index.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/01 - Por que LLMs precisam de observabilidade.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/02 - Anatomia de um trace LLM.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/03 - Langfuse — open-source standard.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/04 - Helicone, Phoenix, OpenLLMetry — alternativas.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/06 - Session replay e debugging.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/07 - Métricas que importam — latência, custo, qualidade.md`
+- Create: `03-Dominios/Tecnologia/IA/Observability/08 - Privacy e PII em logs.md`
 
 - [ ] **Step 1: index.md**
 
@@ -618,7 +618,7 @@ Introdução: "Sem observability, debugar LLM em produção é arqueologia — v
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/IA/Observability"
+git add "03-Dominios/Tecnologia/IA/Observability"
 git commit -m "feat(ia): adicionar trilha Observability
 
 8 notas + index sobre tracing LLM, Langfuse/Helicone/Phoenix, prompt
@@ -632,14 +632,14 @@ versioning, session replay, métricas e PII. Tapa lacuna #8."
 **Por que aqui:** Tapa **lacuna #9**. Depende conceitualmente de Evaluation e Observability — por isso vem depois.
 
 **Files:**
-- Create: `03-Dominios/IA/Improvement Loop/index.md`
-- Create: `03-Dominios/IA/Improvement Loop/01 - O ciclo eval → diff → ship.md`
-- Create: `03-Dominios/IA/Improvement Loop/02 - A-B testing de prompts.md`
-- Create: `03-Dominios/IA/Improvement Loop/03 - Prompt versioning — semver para prompts.md`
-- Create: `03-Dominios/IA/Improvement Loop/04 - Champion-challenger em produção.md`
-- Create: `03-Dominios/IA/Improvement Loop/05 - Auto-prompt optimization — DSPy e além.md`
-- Create: `03-Dominios/IA/Improvement Loop/06 - Capturando feedback do usuário como sinal.md`
-- Create: `03-Dominios/IA/Improvement Loop/07 - Eval gates em CI — quando bloquear merge.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/index.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/01 - O ciclo eval → diff → ship.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/02 - A-B testing de prompts.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/03 - Prompt versioning — semver para prompts.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/04 - Champion-challenger em produção.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/05 - Auto-prompt optimization — DSPy e além.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/06 - Capturando feedback do usuário como sinal.md`
+- Create: `03-Dominios/Tecnologia/IA/Improvement Loop/07 - Eval gates em CI — quando bloquear merge.md`
 
 - [ ] **Step 1: index.md**
 
@@ -679,7 +679,7 @@ Fonte: artigo @hooeem caps #11, #18 Step 11.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/IA/Improvement Loop"
+git add "03-Dominios/Tecnologia/IA/Improvement Loop"
 git commit -m "feat(ia): adicionar trilha Improvement Loop
 
 7 notas + index sobre ciclo eval→diff→ship, A/B testing, semver de
@@ -692,7 +692,7 @@ Tapa lacuna #9."
 ## Task 10 — Atualizar Dicionário de IA
 
 **Files:**
-- Modify: `03-Dominios/IA/Dicionário de IA.md`
+- Modify: `03-Dominios/Tecnologia/IA/Dicionário de IA.md`
 
 Adicionar verbetes em ordem alfabética nas seções existentes. Verbetes obrigatórios:
 
@@ -731,7 +731,7 @@ Usar skill `verbete` se possível (`/verbete <termo>: <definição>`) — ela lo
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/IA/Dicionário de IA.md"
+git add "03-Dominios/Tecnologia/IA/Dicionário de IA.md"
 git commit -m "docs(ia): adicionar 19 verbetes ao Dicionário de IA
 
 Verbetes novos referenciados pelas trilhas Prompt Engineering,
@@ -744,7 +744,7 @@ Observability e Improvement Loop."
 ## Task 11 — Atualizar index.md raiz do IA
 
 **Files:**
-- Modify: `03-Dominios/IA/index.md`
+- Modify: `03-Dominios/Tecnologia/IA/index.md`
 
 Mudanças obrigatórias:
 
@@ -849,7 +849,7 @@ Cuidado com indentação YAML do frontmatter (apenas atualizar `updated:`).
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/IA/index.md"
+git add "03-Dominios/Tecnologia/IA/index.md"
 git commit -m "feat(ia): atualizar index raiz para 17 trilhas + tronco
 
 Inclui AI Engineering Stack como tronco integrador e 7 trilhas novas
@@ -863,9 +863,9 @@ sendas transversais, glossário cross-trilha e bibliografia mestra."
 ## Task 12 — Cross-links das 3 notas de Evaluation existentes
 
 **Files:**
-- Modify: `03-Dominios/IA/Anatomia de Agents/09 - Evaluation de agents.md`
-- Modify: `03-Dominios/IA/Anatomia dos LLMs/17 - Evaluation de LLMs em produção.md`
-- Modify: `03-Dominios/IA/RAG e Vector Databases/09 - Evaluation de RAG.md`
+- Modify: `03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents.md`
+- Modify: `03-Dominios/Tecnologia/IA/Anatomia dos LLMs/17 - Evaluation de LLMs em produção.md`
+- Modify: `03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG.md`
 
 Em cada uma, adicionar callout no topo (depois do TL;DR) e link na seção `## Veja também`.
 
@@ -889,7 +889,7 @@ Padrão a inserir (adaptando "agents", "LLM em produção", "RAG"):
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/IA/Anatomia de Agents/09 - Evaluation de agents.md" "03-Dominios/IA/Anatomia dos LLMs/17 - Evaluation de LLMs em produção.md" "03-Dominios/IA/RAG e Vector Databases/09 - Evaluation de RAG.md"
+git add "03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents.md" "03-Dominios/Tecnologia/IA/Anatomia dos LLMs/17 - Evaluation de LLMs em produção.md" "03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG.md"
 git commit -m "docs(ia): cross-linkar 3 notas Evaluation com trilha mestre
 
 Cada nota agora aponta pra trilha [[Evaluation]] como casa mestre do
@@ -909,7 +909,7 @@ Esperado: 0 wikilinks quebrados. Se quebrados aparecerem, são bugs de digitaç�
 
 ```bash
 # Validar que todas as notas têm os campos obrigatórios
-find "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/IA" -name "*.md" -newer "/home/josenaldo/repos/personal/codex-technomanticus/docs/superpowers/plans/2026-05-28-tapar-lacunas-ia.md" -exec grep -L "^title:" {} \;
+find "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/Tecnologia/IA" -name "*.md" -newer "/home/josenaldo/repos/personal/codex-technomanticus/docs/superpowers/plans/2026-05-28-tapar-lacunas-ia.md" -exec grep -L "^title:" {} \;
 ```
 Esperado: vazio.
 
@@ -917,7 +917,7 @@ Esperado: vazio.
 
 ```bash
 for d in "AI Engineering Stack" "Prompt Engineering" "Structured Outputs" "Evaluation" "Multimodal Prompting" "Image Prompting" "Observability" "Improvement Loop"; do
-  count=$(ls "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/IA/$d/" 2>/dev/null | grep -c "\.md$")
+  count=$(ls "/home/josenaldo/repos/personal/codex-technomanticus/03-Dominios/Tecnologia/IA/$d/" 2>/dev/null | grep -c "\.md$")
   echo "$d: $count arquivos"
 done
 ```

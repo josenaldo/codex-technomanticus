@@ -1716,8 +1716,8 @@ Leia o JSON. Apresente ao usuário um resumo:
 Encontrei N quebras em M arquivos. Plano de correção:
 
 folder_without_index (K):
-  - [[Anatomia dos LLMs]] em 03-Dominios/IA/index.md:42
-    → criar 03-Dominios/IA/Anatomia dos LLMs/index.md
+  - [[Anatomia dos LLMs]] em 03-Dominios/Tecnologia/IA/index.md:42
+    → criar 03-Dominios/Tecnologia/IA/Anatomia dos LLMs/index.md
   - [...]
 
 target_not_found (K):
@@ -1828,7 +1828,7 @@ Run:
 ```bash
 cd /home/josenaldo/repos/personal/codex-technomanticus
 python .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py \
-  "03-Dominios/IA" --output /tmp/moc-ia-report.json
+  "03-Dominios/Tecnologia/IA" --output /tmp/moc-ia-report.json
 ```
 
 Expected: stdout imprime `/tmp/moc-ia-report.json`.
@@ -1846,18 +1846,18 @@ Expected: lista contendo pelo menos os wikilinks suspeitos da MOC IA com `reason
 
 Run:
 ```bash
-time python .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py "03-Dominios/IA" --output /tmp/moc-ia-report.json
+time python .agents/skills/verificar-wikilinks/scripts/check_wikilinks.py "03-Dominios/Tecnologia/IA" --output /tmp/moc-ia-report.json
 ```
 
 Expected: real < 5s (critério de aceite).
 
 - [ ] **Step 5: Conferência manual cruzada (sem código)**
 
-Abra `03-Dominios/IA/index.md`. Para cada wikilink listado como `folder_without_index` no relatório, confirme via `ls` que a pasta existe e não tem `index.md`. Se algum wikilink suspeito **não** apareceu no relatório, registrar como bug e ajustar parser (não previsto no plano — abrir nova task).
+Abra `03-Dominios/Tecnologia/IA/index.md`. Para cada wikilink listado como `folder_without_index` no relatório, confirme via `ls` que a pasta existe e não tem `index.md`. Se algum wikilink suspeito **não** apareceu no relatório, registrar como bug e ajustar parser (não previsto no plano — abrir nova task).
 
 Run (exemplo de verificação):
 ```bash
-ls "03-Dominios/IA/Anatomia dos LLMs/" 2>/dev/null | grep -i 'index.md' || echo "SEM INDEX (confirma quebra)"
+ls "03-Dominios/Tecnologia/IA/Anatomia dos LLMs/" 2>/dev/null | grep -i 'index.md' || echo "SEM INDEX (confirma quebra)"
 ```
 
 - [ ] **Step 6: Commit do estado final (se houver algo pendente)**

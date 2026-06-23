@@ -30,17 +30,17 @@ probabilidade — ferramentas que outros galhos já usam sem ensinar.
 ## Decisão de fronteira (rígido — linka, não duplica)
 - **Teoria da Computação** (galho 10, existe) — USA lógica/provas/diagonalização mas não as ensina.
   Matemática é a DONA. A nota 13 (Cardinalidade) é dona de contável×incontável e da **diagonalização de
-  Cantor**, e LINKA `[[03-Dominios/Fundamentos/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]`
+  Cantor**, e LINKA `[[03-Dominios/Ciência/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]`
   (o uso em computabilidade), sem repetir.
 - **Algoritmos** (galho 2, existe) — dono de análise assintótica/Big-O (nota 02), recorrências e Teorema
   Mestre (nota 05). A nota 08 (Somatórios, logaritmos e crescimento) dá a BASE matemática (logaritmos,
   somatórios, crescimento, resolução geral de recorrências) e LINKA
-  `[[03-Dominios/Fundamentos/Algoritmos/02 - Análise de complexidade - Big-O]]` e
-  `[[03-Dominios/Fundamentos/Algoritmos/05 - Recorrências e o Teorema Mestre]]`; **NÃO reescreve o Teorema Mestre.**
+  `[[03-Dominios/Ciência/Algoritmos/02 - Análise de complexidade - Big-O]]` e
+  `[[03-Dominios/Ciência/Algoritmos/05 - Recorrências e o Teorema Mestre]]`; **NÃO reescreve o Teorema Mestre.**
 - **Estruturas de Dados** (galho 1, existe) — dona de grafos como ESTRUTURA e dos ALGORITMOS de grafo
   (BFS/DFS/Dijkstra em ED/11). As notas 16/17 (grafos) e 18 (árvores) fazem o lado MATEMÁTICO (definições,
   Euler/Hamilton, planaridade, coloração, matching, árvore como objeto) e LINKAM
-  `[[03-Dominios/Fundamentos/Estruturas de Dados/11 - Grafos - travessia e algoritmos]]` pro lado algorítmico.
+  `[[03-Dominios/Ciência/Estruturas de Dados/11 - Grafos - travessia e algoritmos]]` pro lado algorítmico.
   A nota 21 (aleatorizadas) linka ED/12 (Bloom/skip list). Fronteira delicada — explicitar em prosa.
 - **Segurança Conceitual** (galho 14, Camada D, **NÃO existe**) — dona de criptografia/hashing aplicados.
   As notas 14/15 (teoria dos números) são donas da TEORIA (divisibilidade, primos, Euclides, modular,
@@ -69,7 +69,7 @@ prova → quando usar; ramo da matemática → aplicação em CS).
    discreta (estados, passos, estruturas finitas/enumeráveis); o mapa do galho (lógica → prova → estruturas
    → contagem → números → grafos → acaso); a fronteira cravada: *matemática é a ferramenta; Teoria da
    Computação é a teoria dos limites*. Menciona em prosa que outros galhos (Algoritmos, ED, Teoria da
-   Computação) já usam essas ferramentas. **Linka [[03-Dominios/Fundamentos/Teoria da Computação/index]]** em prosa.
+   Computação) já usam essas ferramentas. **Linka [[03-Dominios/Ciência/Teoria da Computação/index]]** em prosa.
 2. **Lógica proposicional** — proposições, conectivos (¬ ∧ ∨ → ↔), tabelas-verdade, tautologia/contradição/
    contingência, equivalências lógicas (De Morgan, distributiva, contrapositiva), implicação × recíproca ×
    contrapositiva × inversa, formas normais (DNF/CNF em prosa), satisfatibilidade (gancho leve pra SAT).
@@ -92,7 +92,7 @@ prova → quando usar; ramo da matemática → aplicação em CS).
 6. **Indução matemática (e forte)** — princípio da boa ordenação; indução fraca (base + passo P(n)→P(n+1));
    indução forte (assume P(1..n)); por que funciona (efeito dominó / descida infinita); exemplos canônicos
    (∑i = n(n+1)/2, ∑2ⁱ, 2ⁿ > n). **Prática: corretude de algoritmos recursivos e loop invariants** (a mesma
-   estrutura: inicialização = base, manutenção = passo, término). **Linka [[03-Dominios/Fundamentos/Algoritmos/05 - Recorrências e o Teorema Mestre]]**.
+   estrutura: inicialização = base, manutenção = passo, término). **Linka [[03-Dominios/Ciência/Algoritmos/05 - Recorrências e o Teorema Mestre]]**.
 7. **Indução estrutural e definições recursivas** — definição recursiva (caso base + regra); estruturas
    indutivamente definidas (naturais, listas, árvores, expressões/ASTs, palavras); indução estrutural como a
    generalização da matemática pra dados recursivos; por que é A técnica de prova da CS. **Prática: provar
@@ -103,8 +103,8 @@ prova → quando usar; ramo da matemática → aplicação em CS).
    base, por que log aparece (dividir pela metade); crescimento de funções e a hierarquia (log < poli < exp);
    resolução *geral* de recorrências (substituição, árvore de recursão, expansão) **sem reescrever o Teorema
    Mestre**. **Dona da base matemática que Algoritmos usa — linka
-   [[03-Dominios/Fundamentos/Algoritmos/02 - Análise de complexidade - Big-O]]** e
-   **[[03-Dominios/Fundamentos/Algoritmos/05 - Recorrências e o Teorema Mestre]]**.
+   [[03-Dominios/Ciência/Algoritmos/02 - Análise de complexidade - Big-O]]** e
+   **[[03-Dominios/Ciência/Algoritmos/05 - Recorrências e o Teorema Mestre]]**.
 9. **Funções** — função como mapeamento; domínio, contradomínio, imagem; injetora (1-1), sobrejetora,
    bijetora; composição (∘); função inversa; funções parciais × totais; piso/teto (⌊⌋ ⌈⌉). Prática: funções
    de hash (e por que colisão = não-injetividade), mapeamentos chave→valor, idempotência (f∘f = f), funções
@@ -128,7 +128,7 @@ prova → quando usar; ramo da matemática → aplicação em CS).
 13. **Cardinalidade: contável × incontável** — bijeção como "mesmo tamanho"; conjuntos finitos × infinitos;
     ℕ, ℤ, ℚ são **contáveis** (enumeráveis) × ℝ é **incontável**; **diagonalização de Cantor** (a DONA da
     técnica); o argumento de contagem que garante o incomputável (há mais funções/linguagens que programas).
-    **Linka [[03-Dominios/Fundamentos/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]**
+    **Linka [[03-Dominios/Ciência/Teoria da Computação/10 - Decidível, reconhecível e a máquina universal]]**
     (o uso: existem problemas sem máquina). Prática: por que "quase todo número real é incomputável", por que
     não há bijeção tipos↔programas.
 
@@ -146,7 +146,7 @@ prova → quando usar; ramo da matemática → aplicação em CS).
     lemma** (∑grau = 2|E|); caminho, ciclo, conexidade, componentes; grafos especiais (completo Kₙ, bipartido,
     regular, ciclo, roda); **caminho/ciclo de Euler** (pontes de Königsberg — todos os graus pares) ×
     **Hamilton** (NP-difícil — gancho leve); representação (matriz × lista — linka ED). **Linka
-    [[03-Dominios/Fundamentos/Estruturas de Dados/11 - Grafos - travessia e algoritmos]]** pro lado algorítmico.
+    [[03-Dominios/Ciência/Estruturas de Dados/11 - Grafos - travessia e algoritmos]]** pro lado algorítmico.
 17. **Grafos avançados: planaridade, coloração e matching** — planaridade (desenhar sem cruzar), **fórmula de
     Euler** (V − E + F = 2), K₅ e K₃,₃ (Kuratowski em prosa); coloração de vértices, número cromático, o
     **teorema das 4 cores**; coloração de arestas; **matching** (emparelhamento), teorema de Hall (casamento),
@@ -172,7 +172,7 @@ prova → quando usar; ramo da matemática → aplicação em CS).
     probabilidade — fechando 19/20); **hashing universal** e por que random hash evita o pior caso;
     **skip list** (balanceamento por moeda); **power-of-two-choices** / load balancing; reservoir sampling;
     Miller-Rabin (primalidade probabilística — fecha 14/15); base probabilística de ML em prosa. **Linka
-    [[03-Dominios/Fundamentos/Estruturas de Dados/12 - Estruturas especializadas - LRU, Bloom, skip list, union-find]]**.
+    [[03-Dominios/Ciência/Estruturas de Dados/12 - Estruturas especializadas - LRU, Bloom, skip list, union-find]]**.
     (Confirmar nome exato do arquivo ED/12 no scaffold.)
 22. **Capstone: a matemática na vida do dev / em entrevista** — recapitula cada ramo → seu uso prático;
     **cheat-sheet mestre** (técnica de prova → quando usar; ramo da matemática → onde aparece em CS); o que
@@ -204,7 +204,7 @@ prova → quando usar; ramo da matemática → aplicação em CS).
   diagonalização de Cantor). [[feedback-no-fabrication]].
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Matemática para Computação/` com `index.md` (`type: moc`, `status: growing`,
+- Pasta `03-Dominios/Ciência/Matemática para Computação/` com `index.md` (`type: moc`, `status: growing`,
   `publish: true`, fases, rotas alternativas, dataview, "Veja também").
 - Aliases do index: **"Matemática para Computação"** + **"Matemática Discreta"** + **"Discrete Mathematics"**
   + **"Math for CS"** + **"Galho - Matemática para Computação"**.

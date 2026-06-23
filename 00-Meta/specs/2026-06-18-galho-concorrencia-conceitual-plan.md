@@ -24,12 +24,12 @@ da linguagem canônica, como ED comparava Java·TS·Python·Go por estrutura) + 
 "Escolhendo a estrutura certa"), teto de prosa generoso, muitos diagramas.
 
 ## Decisão de fronteira (a chave — rígido)
-Existe um galho Java DEDICADO e completo: `03-Dominios/Java/Concorrência e paralelismo/index` (16 notas:
+Existe um galho Java DEDICADO e completo: `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index` (16 notas:
 threads, `synchronized`, JMM, locks, atomics, executors, `CompletableFuture`, virtual threads/Loom,
 structured concurrency, scoped values, fork-join) + `[[Java Concurrency]]` (Core). ESTE galho é o andar
 **CONCEITUAL e STACK-AGNÓSTICO**: os problemas universais e os MODELOS de concorrência. Sempre que for pra
 mecânica Java específica, LINKA o galho Java — não duplica.
-- **Java específico** (java.util.concurrent, JMM happens-before na API, Loom) → `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência (Java)]]` / `[[Java Concurrency]]`. A nota 10 (memória compartilhada) usa Java como showcase e linka pesado.
+- **Java específico** (java.util.concurrent, JMM happens-before na API, Loom) → `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência (Java)]]` / `[[Java Concurrency]]`. A nota 10 (memória compartilhada) usa Java como showcase e linka pesado.
 - **Imutabilidade como arma contra concorrência** → `[[08 - Imutabilidade e estado]]` (galho Paradigmas) forward-linka pra cá; aqui aprofunda o lado concorrência.
 - **Isolamento/MVCC/locking de BANCO** → `[[Banco de Dados]]` (e sua nota 11 Concorrência e locking). A nota 09 (STM) cruza, sem duplicar.
 - **Assincronia/reativo** → `[[12 - Programação reativa e dataflow]]` (Paradigmas) e `[[Programação Reativa]]` (Java). A nota 14 (event loop) linka.
@@ -58,7 +58,7 @@ mecânica Java específica, LINKA o galho Java — não duplica.
 14. **Modelo 4 — loop de eventos e assincronia** — single-thread + event loop + callbacks/promises/async-await; concorrência sem paralelismo; *showcase* **JavaScript** (event loop, micro/macrotasks) + o **GIL do Python**/asyncio. Cruza `[[12 - Programação reativa e dataflow]]`.
 15. **Modelo 5 — paralelismo de dados** — mesma operação sobre muitos dados; SIMD, GPU/CUDA, MapReduce, fork-join/work-stealing, parallel streams; *showcase* fork-join + GPU. Quando paralelizar de verdade.
 16. **As leis da escala: Amdahl, Gustafson e os limites do paralelismo** — speedup teórico, a fração serial que limita (Amdahl), o contraponto de carga crescente (Gustafson), overhead de coordenação, lei de Little/contenção; por que "mais núcleos" nem sempre ajuda. (split do "expandir")
-17. **Padrões de concorrência** — thread pool, produtor-consumidor/blocking queue, fan-out/fan-in (scatter-gather), pipeline, futures/promises, work-stealing, bulkhead; o vocabulário de design concorrente. Linka resiliência de `[[03-Dominios/Fundamentos/Redes e Protocolos/14 - Resiliência de rede|Resiliência de rede]]`. (split do "expandir")
+17. **Padrões de concorrência** — thread pool, produtor-consumidor/blocking queue, fan-out/fan-in (scatter-gather), pipeline, futures/promises, work-stealing, bulkhead; o vocabulário de design concorrente. Linka resiliência de `[[03-Dominios/Ciência/Redes e Protocolos/14 - Resiliência de rede|Resiliência de rede]]`. (split do "expandir")
 18. **Capstone: escolher o modelo e concorrência em entrevista** — **tabela comparativa dos 5 modelos** (o análogo de "Escolhendo a estrutura certa" de ED): modelo × como coordena × estado × erro × brilha em × linguagem canônica; como Java/Go/Erlang/JS/Python/Rust escolheram; escolher por problema; "How to explain in English"; vocabulário PT→EN; armadilhas consolidadas; recursos.
 
 ## Padrão por nota ("caprichar nível ED")
@@ -80,7 +80,7 @@ mecânica Java específica, LINKA o galho Java — não duplica.
   ([[feedback-no-fabrication]]).
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Concorrência e Paralelismo/` com `index.md` (MOC, `type: moc`,
+- Pasta `03-Dominios/Ciência/Concorrência e Paralelismo/` com `index.md` (MOC, `type: moc`,
   `status: growing`, `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - Alias do `index.md`: **"Concorrência e Paralelismo"** + **"Concorrência"** + **"Concorrência conceitual"** +
   **"Concurrency"** + **"Paralelismo"**. (Galho novo; alias prepara o terreno e evita colidir com o alias

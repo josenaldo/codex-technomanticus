@@ -2,7 +2,7 @@
 
 - **Data:** 2026-06-13
 - **Trilha:** Java Senior (último galho — fecha a trilha de 18 galhos)
-- **Pasta destino:** `03-Dominios/Java/Certificação OCP/`
+- **Pasta destino:** `03-Dominios/Tecnologia/Java/Certificação OCP/`
 - **Branch:** `main` (autorização durável — galhos Java direto na main desde o Galho 6)
 
 ---
@@ -64,7 +64,7 @@ O valor **não** é re-ensinar `switch`/generics/streams — é o **ângulo de c
 
 ## 4. Mapa de notas (17 notas de conteúdo)
 
-Pasta: `03-Dominios/Java/Certificação OCP/`. Tag do galho: **`certificacao-ocp`**.
+Pasta: `03-Dominios/Tecnologia/Java/Certificação OCP/`. Tag do galho: **`certificacao-ocp`**.
 
 ### Grupo 1 — Sobre a prova (`fase: sobre-a-prova`)
 
@@ -143,19 +143,19 @@ Estrutura mais discursiva (o template padrão O-que-é/Por-que/Como-funciona enc
 
 ## 6. Trabalho fora das notas de conteúdo
 
-1. **Poda do tronco legado** `03-Dominios/Java/Core/Certificação Java OCP.md`: após colher o conteúdo, reduzir a um **stub-hub** curto (mantém `publish: false`) que aponta para o galho 18 (`[[03-Dominios/Java/Certificação OCP/index|Certificação OCP (Galho 18)]]`). Não deletar (preserva ponto de entrada legado e wikilinks históricos).
-2. **`index.md` central** (`03-Dominios/Java/index.md`):
-   - Linha 54: trocar `18. Certificação Java OCP *(planejado)*` por wikilink ativo `[[03-Dominios/Java/Certificação OCP/index|Certificação Java OCP]] — …`.
+1. **Poda do tronco legado** `03-Dominios/Tecnologia/Java/Core/Certificação Java OCP.md`: após colher o conteúdo, reduzir a um **stub-hub** curto (mantém `publish: false`) que aponta para o galho 18 (`[[03-Dominios/Tecnologia/Java/Certificação OCP/index|Certificação OCP (Galho 18)]]`). Não deletar (preserva ponto de entrada legado e wikilinks históricos).
+2. **`index.md` central** (`03-Dominios/Tecnologia/Java/index.md`):
+   - Linha 54: trocar `18. Certificação Java OCP *(planejado)*` por wikilink ativo `[[03-Dominios/Tecnologia/Java/Certificação OCP/index|Certificação Java OCP]] — …`.
    - Linha 61: atualizar o "(vira Galho 18)" para apontar ao galho ativo.
    - Atualizar `updated:`.
-3. **Dicionário de Java** (`03-Dominios/Java/Dicionário de Java.md`, `type: glossary`, A-Z): adicionar verbetes **sem duplicar** (linkar aos existentes). Candidatos: OCP, OCA, 1Z0-830, 1Z0-831, exam objective, passing score, online proctored, voucher, Enthuware, CertView, Credly, Pearson VUE. **Antes de inserir, grep cada termo** no Dicionário; se já existir, linkar em vez de recriar. Inserção em ordem alfabética na seção da letra correta.
+3. **Dicionário de Java** (`03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `type: glossary`, A-Z): adicionar verbetes **sem duplicar** (linkar aos existentes). Candidatos: OCP, OCA, 1Z0-830, 1Z0-831, exam objective, passing score, online proctored, voucher, Enthuware, CertView, Credly, Pearson VUE. **Antes de inserir, grep cada termo** no Dicionário; se já existir, linkar em vez de recriar. Inserção em ordem alfabética na seção da letra correta.
 4. **verificar-wikilinks** na pasta do galho + index central, no fim. Validar **programaticamente** todos os wikilinks (lição recorrente dos galhos 12/16/17: subagentes alucinam títulos plausíveis-mas-errados).
 
 ---
 
 ## 7. Anti-alucinação de wikilinks — títulos EXATOS dos alvos
 
-**Regra:** ao pedir wikilinks a subagentes, passar SEMPRE os títulos exatos abaixo. Validar com `verificar-wikilinks` + grep no fim. Formato do wikilink: `[[03-Dominios/Java/<Galho>/<arquivo sem .md>|<rótulo>]]`.
+**Regra:** ao pedir wikilinks a subagentes, passar SEMPRE os títulos exatos abaixo. Validar com `verificar-wikilinks` + grep no fim. Formato do wikilink: `[[03-Dominios/Tecnologia/Java/<Galho>/<arquivo sem .md>|<rótulo>]]`.
 
 **Galho 1 — `Linguagem e sintaxe moderna/`:**
 `01 - O modelo da linguagem Java` · `02 - Tipos, variáveis e operadores` · `03 - Estruturas de controle e fluxo` · `04 - Strings e text blocks` · `05 - Arrays e varargs` · `06 - Classes, objetos e encapsulamento` · `07 - Herança e polimorfismo` · `08 - Interfaces e classes abstratas` · `09 - Enums` · `10 - Exceções e tratamento de erros` · `11 - Annotations` · `12 - Generics em profundidade` · `13 - Records e record patterns` · `14 - Sealed classes e pattern matching` · `15 - A evolução do Java (8 a 25)`

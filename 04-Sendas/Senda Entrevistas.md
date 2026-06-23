@@ -41,7 +41,7 @@ Roteiro de preparação para entrevistas de Senior Fullstack Developer em vagas 
 - [ ] [[Event Storming]]
 - [ ] [[Mensageria]]
 - [ ] [[Event Streaming]]
-- [ ] [[03-Dominios/Java/Backend/Kafka/Kafka]]
+- [ ] [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]]
 - [ ] [[RabbitMQ]]
 - [ ] [[BullMQ]]
 
@@ -51,7 +51,7 @@ Roteiro de preparação para entrevistas de Senior Fullstack Developer em vagas 
 
 - [ ] [[Java Fundamentals]]
 - [ ] [[Spring Boot]]
-- [ ] [[03-Dominios/Java/Backend/Kafka/Kafka]]
+- [ ] [[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]]
 - [ ] [[JavaFX]]
 
 ## Fase 4 — Stack JavaScript/TypeScript
@@ -65,7 +65,7 @@ Roteiro de preparação para entrevistas de Senior Fullstack Developer em vagas 
 - [ ] [[HTML e CSS]]
 - [ ] [[Bootstrap]]
 - [ ] [[Material UI]]
-- [ ] [[03-Dominios/React/Mantine]]
+- [ ] [[03-Dominios/Tecnologia/React/Mantine]]
 
 ## Fase 4.5 — Infraestrutura & DevOps
 
@@ -81,7 +81,7 @@ Roteiro de preparação para entrevistas de Senior Fullstack Developer em vagas 
 
 > IA como ferramenta de produtividade e feature de produto.
 
-- [ ] [[03-Dominios/IA/index|Inteligência Artificial]]
+- [ ] [[03-Dominios/Tecnologia/IA/index|Inteligência Artificial]]
 - [ ] [[Anatomia dos LLMs|LLMs]]
 - [ ] [[Anatomia de Agents|Agents]]
 - [ ] [[Context Engineering]]

@@ -1,7 +1,7 @@
 ---
 type: trail
 title: Senda Frontend
-domain: "[[03-Dominios/Frontend/index]]"
+domain: "[[03-Dominios/Tecnologia/Frontend/index]]"
 maturity: minimal
 status: active
 publish: true
@@ -22,27 +22,27 @@ tags:
 
 ## Sequência
 
-1. [[03-Dominios/Frontend/index|Frontend (engenharia)]]
-2. [[03-Dominios/JavaScript/index|JavaScript]]
-3. [[03-Dominios/TypeScript/index|TypeScript]]
-4. [[03-Dominios/React/index|React]]
+1. [[03-Dominios/Tecnologia/Frontend/index|Frontend (engenharia)]]
+2. [[03-Dominios/Tecnologia/JavaScript/index|JavaScript]]
+3. [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]
+4. [[03-Dominios/Tecnologia/React/index|React]]
 5. [[MUI|Material UI (MUI)]]
-6. [[03-Dominios/React/Mantine|Mantine]]
+6. [[03-Dominios/Tecnologia/React/Mantine|Mantine]]
 7. [[Ícones|Ícones em React]]
 8. [[TanStack Query|TanStack Query]]
 9. [[TanStack Form|TanStack Form]]
 10. [[React Hook Form|React Hook Form]]
 11. [[Next.js|Next.js]]
-12. [[03-Dominios/Frontend/Validação/index|Validação no Frontend]]
+12. [[03-Dominios/Tecnologia/Frontend/Validação/index|Validação no Frontend]]
 13. [[Zod|Zod]]
 14. [[Yup|Yup]]
 15. [[Joi|Joi]]
-16. [[03-Dominios/Frontend/Networking/index|Networking no Frontend]]
+16. [[03-Dominios/Tecnologia/Frontend/Networking/index|Networking no Frontend]]
 17. [[Axios|Axios]]
 18. [[Fetch|Fetch API]]
 19. [[React Data Table|React Data Table Component]]
 20. [[React Admin|React Admin]]
-21. [[03-Dominios/React/Charts/index|Charts em React]]
+21. [[03-Dominios/Tecnologia/React/Charts/index|Charts em React]]
 22. [[Lightweight Charts|TradingView Lightweight Charts]]
 23. [[ApexCharts|ApexCharts]]
 24. [[Recharts|Recharts]]

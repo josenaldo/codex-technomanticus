@@ -10,7 +10,7 @@ publish: false
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Node/Paralelismo/`, em PT-BR, todas `publish: true`, cobrindo Worker Threads (fundamentos, comunicação, SharedArrayBuffer/Atomics, pool), Cluster, child_process (exec/spawn, fork), contexto de produção (PM2/K8s) e decision tree — para um dev senior em prep para entrevista internacional. Ao final, podar a seção correspondente do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central de `03-Dominios/Node/index.md`.
+**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Tecnologia/Node/Paralelismo/`, em PT-BR, todas `publish: true`, cobrindo Worker Threads (fundamentos, comunicação, SharedArrayBuffer/Atomics, pool), Cluster, child_process (exec/spawn, fork), contexto de produção (PM2/K8s) e decision tree — para um dev senior em prep para entrevista internacional. Ao final, podar a seção correspondente do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central de `03-Dominios/Tecnologia/Node/index.md`.
 
 **Architecture:** Sub-trilha sequencial em 5 blocos (Mental model + fundamentos → Worker Threads → Multi-processo → Produção → Fechamento) + 1 MOC com 5 rotas alternativas. Pressupõe galho 1 (Runtime e Event Loop) como pré-requisito; em particular as notas 09 (async/await desmistificado) e 10 (Bloqueio do event loop) são wikilinks frequentes. Cada nota é atômica, segue estrutura híbrida (TL;DR + corpo técnico), com code samples em JS ou TS (Node 22 LTS / 24, `worker_threads` estável, `cluster` estável), e seção "Em entrevista" para preparação internacional.
 
@@ -36,10 +36,10 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 ## File Structure
 
-13 arquivos novos em `03-Dominios/Node/Paralelismo/`:
+13 arquivos novos em `03-Dominios/Tecnologia/Node/Paralelismo/`:
 
 ```
-03-Dominios/Node/Paralelismo/
+03-Dominios/Tecnologia/Node/Paralelismo/
 ├── Paralelismo.md                                                        # MOC (Task 1)
 ├── 01 - Por que paralelismo em Node.md                                   # Task 2
 ├── 02 - As 3 ferramentas - Worker Threads, Cluster, child_process.md     # Task 3
@@ -57,8 +57,8 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 **Final integration (Task 14, 15, 16):**
 - Pass final no MOC inserindo todos os wikilinks + dataview
-- Poda do tronco `03-Dominios/JavaScript/Backend/Node.js.md` (uma seção)
-- Atualização do MOC central `03-Dominios/Node/index.md` + verificação de build do Quartz
+- Poda do tronco `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` (uma seção)
+- Atualização do MOC central `03-Dominios/Tecnologia/Node/index.md` + verificação de build do Quartz
 
 ---
 
@@ -155,11 +155,11 @@ aliases:
 
 ### Notas no vault (referências paralelas)
 
-- `03-Dominios/JavaScript/Backend/Node.js.md` — tronco a ser podado (uma seção)
-- `03-Dominios/Node/index.md` — MOC central a ser atualizado
-- `03-Dominios/Node/Runtime e Event Loop/` — galho 1, pré-requisito; em particular notas 09 (async/await) e 10 (Bloqueio)
-- `03-Dominios/JavaScript/Core/JavaScript Fundamentals.md` (caminho confirmado em galho 1 Task 0)
-- `03-Dominios/JavaScript/Core/TypeScript.md` (caminho confirmado)
+- `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` — tronco a ser podado (uma seção)
+- `03-Dominios/Tecnologia/Node/index.md` — MOC central a ser atualizado
+- `03-Dominios/Tecnologia/Node/Runtime e Event Loop/` — galho 1, pré-requisito; em particular notas 09 (async/await) e 10 (Bloqueio)
+- `03-Dominios/Tecnologia/JavaScript/Core/JavaScript Fundamentals.md` (caminho confirmado em galho 1 Task 0)
+- `03-Dominios/Tecnologia/JavaScript/Core/TypeScript.md` (caminho confirmado)
 
 ### A buscar conforme necessidade
 
@@ -173,18 +173,18 @@ aliases:
 ## Task 0: Pré-flight
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/` (diretório)
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/` (diretório)
 
 - [ ] **Step 1: Criar o diretório**
 
 ```bash
-mkdir -p "03-Dominios/Node/Paralelismo"
+mkdir -p "03-Dominios/Tecnologia/Node/Paralelismo"
 ```
 
 Verificar com:
 
 ```bash
-ls -la "03-Dominios/Node/Paralelismo"
+ls -la "03-Dominios/Tecnologia/Node/Paralelismo"
 ```
 
 Esperado: diretório vazio.
@@ -207,14 +207,14 @@ Esperado: linha referenciando `project_tronco_galhos_pattern.md`. Se não estive
 
 - [ ] **Step 4: Sanity check do tronco — confirmar a seção a podar**
 
-Ler `03-Dominios/JavaScript/Backend/Node.js.md` e confirmar que existe a seção:
+Ler `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` e confirmar que existe a seção:
 
 - `### Worker Threads, cluster, child_process — as 3 formas de paralelismo`
 
 Anotar o número da linha exato onde a seção começa e onde termina (próxima `###` ou `##`). Se o nome estiver diferente, anotar exatamente como aparece.
 
 ```bash
-grep -n "Worker Threads.*paralelismo\|Worker Threads.*cluster" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -n "Worker Threads.*paralelismo\|Worker Threads.*cluster" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 - [ ] **Step 5: Confirmar wikilinks do galho 1 funcionando**
@@ -222,7 +222,7 @@ grep -n "Worker Threads.*paralelismo\|Worker Threads.*cluster" "03-Dominios/Java
 O galho 2 vai linkar pro galho 1 frequentemente. Confirmar que os arquivos existem:
 
 ```bash
-ls "03-Dominios/Node/Runtime e Event Loop/" | grep -E "(09|10|MOC|Runtime)"
+ls "03-Dominios/Tecnologia/Node/Runtime e Event Loop/" | grep -E "(09|10|MOC|Runtime)"
 ```
 
 Esperado: ver `09 - async-await - o que é, o que não é.md`, `10 - Bloqueio do event loop - sintomas e causas.md`, `Runtime e Event Loop.md` (MOC).
@@ -254,11 +254,11 @@ git commit -m "feat(node-paralelismo): create directory for Paralelismo sub-trai
 ## Task 1: MOC esqueleto
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/Paralelismo.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/Paralelismo.md`
 
 - [ ] **Step 1: Criar o MOC esqueleto**
 
-Criar `03-Dominios/Node/Paralelismo/Paralelismo.md` com este conteúdo (a seção "Sobre este galho" tem placeholder a preencher na Task 14):
+Criar `03-Dominios/Tecnologia/Node/Paralelismo/Paralelismo.md` com este conteúdo (a seção "Sobre este galho" tem placeholder a preencher na Task 14):
 
 ```markdown
 ---
@@ -337,14 +337,14 @@ aliases:
 
 \`\`\`dataview
 TABLE status, updated
-FROM "03-Dominios/Node/Paralelismo"
+FROM "03-Dominios/Tecnologia/Node/Paralelismo"
 WHERE type = "concept"
 SORT file.name ASC
 \`\`\`
 
 ## Veja também
 
-- [[03-Dominios/Node/index|Node.js (MOC central)]]
+- [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
 - [[Node.js]] — tronco (deep dive panorâmico)
 - [[Runtime e Event Loop]] — galho 1 (pré-requisito)
 ```
@@ -364,7 +364,7 @@ Confirmar:
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/Paralelismo.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/Paralelismo.md"
 git commit -m "feat(node-paralelismo): add MOC skeleton for Paralelismo branch"
 ```
 
@@ -373,7 +373,7 @@ git commit -m "feat(node-paralelismo): add MOC skeleton for Paralelismo branch"
 ## Task 2: Nota 01 — Por que paralelismo em Node
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/01 - Por que paralelismo em Node.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/01 - Por que paralelismo em Node.md`
 
 **Conteúdo-chave do spec (Bloco A):**
 
@@ -383,8 +383,8 @@ git commit -m "feat(node-paralelismo): add MOC skeleton for Paralelismo branch"
 
 Sem WebFetch nessa nota — é síntese do galho 1 + framing do galho 2. Reler:
 
-- `03-Dominios/Node/Runtime e Event Loop/09 - async-await - o que é, o que não é.md` (mito da performance)
-- `03-Dominios/Node/Runtime e Event Loop/10 - Bloqueio do event loop - sintomas e causas.md` (sintomas)
+- `03-Dominios/Tecnologia/Node/Runtime e Event Loop/09 - async-await - o que é, o que não é.md` (mito da performance)
+- `03-Dominios/Tecnologia/Node/Runtime e Event Loop/10 - Bloqueio do event loop - sintomas e causas.md` (sintomas)
 
 para garantir vocabulário e pontes coesos.
 
@@ -457,7 +457,7 @@ Cobrir, em PT-BR, em ordem:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/01 - Por que paralelismo em Node.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/01 - Por que paralelismo em Node.md"
 git commit -m "feat(node-paralelismo): add note 01 — Por que paralelismo em Node"
 ```
 
@@ -466,7 +466,7 @@ git commit -m "feat(node-paralelismo): add note 01 — Por que paralelismo em No
 ## Task 3: Nota 02 — As 3 ferramentas (visão geral)
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/02 - As 3 ferramentas - Worker Threads, Cluster, child_process.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/02 - As 3 ferramentas - Worker Threads, Cluster, child_process.md`
 
 **Conteúdo-chave do spec:**
 
@@ -552,7 +552,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/02 - As 3 ferramentas - Worker Threads, Cluster, child_process.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/02 - As 3 ferramentas - Worker Threads, Cluster, child_process.md"
 git commit -m "feat(node-paralelismo): add note 02 — As 3 ferramentas"
 ```
 
@@ -561,7 +561,7 @@ git commit -m "feat(node-paralelismo): add note 02 — As 3 ferramentas"
 ## Task 4: Nota 03 — Worker Threads (fundamentos)
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/03 - Worker Threads - fundamentos.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/03 - Worker Threads - fundamentos.md`
 
 **Conteúdo-chave do spec:**
 
@@ -662,7 +662,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/03 - Worker Threads - fundamentos.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/03 - Worker Threads - fundamentos.md"
 git commit -m "feat(node-paralelismo): add note 03 — Worker Threads fundamentos"
 ```
 
@@ -671,7 +671,7 @@ git commit -m "feat(node-paralelismo): add note 03 — Worker Threads fundamento
 ## Task 5: Nota 04 — Comunicação entre workers
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/04 - Comunicação entre workers - postMessage e MessageChannel.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/04 - Comunicação entre workers - postMessage e MessageChannel.md`
 
 **Conteúdo-chave do spec:**
 
@@ -765,7 +765,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/04 - Comunicação entre workers - postMessage e MessageChannel.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/04 - Comunicação entre workers - postMessage e MessageChannel.md"
 git commit -m "feat(node-paralelismo): add note 04 — Comunicação entre workers"
 ```
 
@@ -774,7 +774,7 @@ git commit -m "feat(node-paralelismo): add note 04 — Comunicação entre worke
 ## Task 6: Nota 05 — SharedArrayBuffer e Atomics
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/05 - Memória compartilhada - SharedArrayBuffer e Atomics.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/05 - Memória compartilhada - SharedArrayBuffer e Atomics.md`
 
 **Conteúdo-chave do spec:** Concorrência real em JS. `SharedArrayBuffer` (visível em múltiplos workers, sem clone). `Atomics` para operações atômicas: `Atomics.load/store/add/sub/compareExchange`. `Atomics.wait` / `Atomics.notify` para sincronização. Race conditions canônicas. Casos legítimos. Restrições de segurança.
 
@@ -875,7 +875,7 @@ Cobrir, em PT-BR:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/05 - Memória compartilhada - SharedArrayBuffer e Atomics.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/05 - Memória compartilhada - SharedArrayBuffer e Atomics.md"
 git commit -m "feat(node-paralelismo): add note 05 — SharedArrayBuffer e Atomics"
 ```
 
@@ -884,7 +884,7 @@ git commit -m "feat(node-paralelismo): add note 05 — SharedArrayBuffer e Atomi
 ## Task 7: Nota 06 — Pool de workers
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/06 - Pool de workers - pattern de produção.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/06 - Pool de workers - pattern de produção.md`
 
 **Conteúdo-chave do spec:** Reusar workers, queue, bounded concurrency, `piscina` como referência, lifecycle, graceful shutdown.
 
@@ -998,7 +998,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/06 - Pool de workers - pattern de produção.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/06 - Pool de workers - pattern de produção.md"
 git commit -m "feat(node-paralelismo): add note 06 — Pool de workers"
 ```
 
@@ -1007,7 +1007,7 @@ git commit -m "feat(node-paralelismo): add note 06 — Pool de workers"
 ## Task 8: Nota 07 — Cluster
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/07 - Cluster - escalando HTTP por CPU.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/07 - Cluster - escalando HTTP por CPU.md`
 
 **Conteúdo-chave do spec:** API: `cluster.isPrimary`, `cluster.fork()`, eventos. Restart automático. Port sharing. Sticky sessions. Graceful shutdown.
 
@@ -1080,7 +1080,7 @@ Estrutura padrão. Cobrir:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/07 - Cluster - escalando HTTP por CPU.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/07 - Cluster - escalando HTTP por CPU.md"
 git commit -m "feat(node-paralelismo): add note 07 — Cluster"
 ```
 
@@ -1089,7 +1089,7 @@ git commit -m "feat(node-paralelismo): add note 07 — Cluster"
 ## Task 9: Nota 08 — child_process com exec e spawn
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/08 - child_process com exec e spawn.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/08 - child_process com exec e spawn.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1172,7 +1172,7 @@ Estrutura padrão. Cobrir:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/08 - child_process com exec e spawn.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/08 - child_process com exec e spawn.md"
 git commit -m "feat(node-paralelismo): add note 08 — child_process exec e spawn"
 ```
 
@@ -1181,7 +1181,7 @@ git commit -m "feat(node-paralelismo): add note 08 — child_process exec e spaw
 ## Task 10: Nota 09 — child_process com fork
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/09 - child_process com fork - Node child com IPC.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/09 - child_process com fork - Node child com IPC.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1252,7 +1252,7 @@ Estrutura padrão. Cobrir:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/09 - child_process com fork - Node child com IPC.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/09 - child_process com fork - Node child com IPC.md"
 git commit -m "feat(node-paralelismo): add note 09 — child_process fork"
 ```
 
@@ -1261,7 +1261,7 @@ git commit -m "feat(node-paralelismo): add note 09 — child_process fork"
 ## Task 11: Nota 10 — Cluster vs PM2 vs Kubernetes
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/10 - Cluster vs PM2 vs Kubernetes - quem orquestra.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/10 - Cluster vs PM2 vs Kubernetes - quem orquestra.md`
 
 **Conteúdo-chave do spec:** Histórico (cluster brilhou ~2014-2018, PM2 fez cluster + watchdog ~2018-2020, hoje K8s/ECS são default). Quando cluster ainda faz sentido em 2026.
 
@@ -1324,7 +1324,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/10 - Cluster vs PM2 vs Kubernetes - quem orquestra.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/10 - Cluster vs PM2 vs Kubernetes - quem orquestra.md"
 git commit -m "feat(node-paralelismo): add note 10 — Cluster vs PM2 vs K8s"
 ```
 
@@ -1333,7 +1333,7 @@ git commit -m "feat(node-paralelismo): add note 10 — Cluster vs PM2 vs K8s"
 ## Task 12: Nota 11 — Decision tree
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/11 - Decision tree - qual ferramenta para qual problema.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/11 - Decision tree - qual ferramenta para qual problema.md`
 
 **Conteúdo-chave do spec:** Síntese com fluxograma. Decision tree em ASCII. Tabela problema → ferramenta → razão.
 
@@ -1427,7 +1427,7 @@ Estrutura tópica (não narrativa pura — combina prosa com fluxograma e tabela
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/11 - Decision tree - qual ferramenta para qual problema.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/11 - Decision tree - qual ferramenta para qual problema.md"
 git commit -m "feat(node-paralelismo): add note 11 — Decision tree"
 ```
 
@@ -1436,7 +1436,7 @@ git commit -m "feat(node-paralelismo): add note 11 — Decision tree"
 ## Task 13: Nota 12 — Armadilhas e cheatsheet
 
 **Files:**
-- Create: `03-Dominios/Node/Paralelismo/12 - Armadilhas, regras práticas, cheatsheet.md`
+- Create: `03-Dominios/Tecnologia/Node/Paralelismo/12 - Armadilhas, regras práticas, cheatsheet.md`
 
 **Conteúdo-chave do spec:** Top 10 armadilhas, cheatsheet visual (3 ferramentas × 5 atributos), decision tree compactada, vocabulário PT→EN consolidado, apontador pros próximos galhos.
 
@@ -1514,7 +1514,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/12 - Armadilhas, regras práticas, cheatsheet.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/12 - Armadilhas, regras práticas, cheatsheet.md"
 git commit -m "feat(node-paralelismo): add note 12 — Armadilhas, cheatsheet"
 ```
 
@@ -1523,18 +1523,18 @@ git commit -m "feat(node-paralelismo): add note 12 — Armadilhas, cheatsheet"
 ## Task 14: Pass final no MOC
 
 **Files:**
-- Modify: `03-Dominios/Node/Paralelismo/Paralelismo.md`
+- Modify: `03-Dominios/Tecnologia/Node/Paralelismo/Paralelismo.md`
 
 - [ ] **Step 1: Confirmar 12 notas existem**
 
 ```bash
-ls "03-Dominios/Node/Paralelismo/" | wc -l
+ls "03-Dominios/Tecnologia/Node/Paralelismo/" | wc -l
 # Esperado: 13 (12 notas + MOC)
 ```
 
 - [ ] **Step 2: Substituir o placeholder de intro**
 
-Em `03-Dominios/Node/Paralelismo/Paralelismo.md`, encontrar:
+Em `03-Dominios/Tecnologia/Node/Paralelismo/Paralelismo.md`, encontrar:
 
 ```markdown
 ## Sobre este galho
@@ -1562,7 +1562,7 @@ Confirmar que cada `[[01 - ...]]` até `[[12 - ...]]` corresponde a um arquivo e
 
 ```bash
 for i in 01 02 03 04 05 06 07 08 09 10 11 12; do
-  ls "03-Dominios/Node/Paralelismo/" | grep "^$i" || echo "MISSING: nota $i"
+  ls "03-Dominios/Tecnologia/Node/Paralelismo/" | grep "^$i" || echo "MISSING: nota $i"
 done
 ```
 
@@ -1570,12 +1570,12 @@ Esperado: 12 linhas mostrando arquivos existentes; nenhum "MISSING".
 
 - [ ] **Step 4: Verificar dataview**
 
-Garantir que o bloco dataview tem o caminho `"03-Dominios/Node/Paralelismo"` (não `"Runtime e Event Loop"` por copy-paste do galho 1).
+Garantir que o bloco dataview tem o caminho `"03-Dominios/Tecnologia/Node/Paralelismo"` (não `"Runtime e Event Loop"` por copy-paste do galho 1).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Paralelismo/Paralelismo.md"
+git add "03-Dominios/Tecnologia/Node/Paralelismo/Paralelismo.md"
 git commit -m "feat(node-paralelismo): finalize MOC with all wikilinks and intro"
 ```
 
@@ -1584,14 +1584,14 @@ git commit -m "feat(node-paralelismo): finalize MOC with all wikilinks and intro
 ## Task 15: Poda do tronco
 
 **Files:**
-- Modify: `03-Dominios/JavaScript/Backend/Node.js.md`
+- Modify: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
 
 Esta é uma poda **mais simples** que a do galho 1 (uma seção só vs cinco).
 
 - [ ] **Step 1: Localizar a seção a podar**
 
 ```bash
-grep -n "^### Worker Threads.*paralelismo\|^### Worker Threads.*cluster" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -n "^### Worker Threads.*paralelismo\|^### Worker Threads.*cluster" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 Esperado: 1 match. Anotar o número da linha. Depois encontrar onde termina (próxima `###` ou `##`).
@@ -1624,7 +1624,7 @@ Mudar `updated: 2026-05-07` (já estava nesse valor desde o galho 1) — confirm
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/JavaScript/Backend/Node.js.md"
+git add "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 git commit -m "refactor(node): prune trunk Node.js.md, link to Paralelismo branch"
 ```
 
@@ -1633,11 +1633,11 @@ git commit -m "refactor(node): prune trunk Node.js.md, link to Paralelismo branc
 ## Task 16: MOC central + verificação final
 
 **Files:**
-- Modify: `03-Dominios/Node/index.md`
+- Modify: `03-Dominios/Tecnologia/Node/index.md`
 
 - [ ] **Step 1: Atualizar MOC central**
 
-Em `03-Dominios/Node/index.md`, encontrar a seção:
+Em `03-Dominios/Tecnologia/Node/index.md`, encontrar a seção:
 
 ```markdown
 ### Galhos da trilha Node Senior
@@ -1656,7 +1656,7 @@ Atualizar `updated: 2026-05-07` no frontmatter (se ainda não estiver).
 - [ ] **Step 2: Commit MOC central**
 
 ```bash
-git add "03-Dominios/Node/index.md"
+git add "03-Dominios/Tecnologia/Node/index.md"
 git commit -m "feat(node-paralelismo): wire branch into central Node MOC"
 ```
 
@@ -1664,22 +1664,22 @@ git commit -m "feat(node-paralelismo): wire branch into central Node MOC"
 
 ```bash
 # 1. 13 arquivos no diretório
-ls "03-Dominios/Node/Paralelismo/" | wc -l
+ls "03-Dominios/Tecnologia/Node/Paralelismo/" | wc -l
 # Esperado: 13
 
 # 2. Todos com publish: true
-grep -l "publish: true" "03-Dominios/Node/Paralelismo/"*.md | wc -l
+grep -l "publish: true" "03-Dominios/Tecnologia/Node/Paralelismo/"*.md | wc -l
 # Esperado: 13
 
 # 3. Total de linhas do galho
-wc -l "03-Dominios/Node/Paralelismo/"*.md | tail -1
+wc -l "03-Dominios/Tecnologia/Node/Paralelismo/"*.md | tail -1
 
 # 4. Tronco tem agora 5 callouts (4 do galho 1 + 1 do galho 2)
-grep -c "Migrado para galho próprio" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -c "Migrado para galho próprio" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 # Esperado: 5
 
 # 5. MOC central linka pros 2 galhos
-grep -E "Runtime e Event Loop|Paralelismo" "03-Dominios/Node/index.md" | grep -v "^#" | wc -l
+grep -E "Runtime e Event Loop|Paralelismo" "03-Dominios/Tecnologia/Node/index.md" | grep -v "^#" | wc -l
 # Esperado: pelo menos 2 matches (1 por galho)
 ```
 
@@ -1690,7 +1690,7 @@ Reportar o resultado de cada check.
 ```bash
 git commit --allow-empty -m "chore(node-paralelismo): close branch Galho 2 — Paralelismo
 
-12 atomic notes + MOC published in 03-Dominios/Node/Paralelismo/.
+12 atomic notes + MOC published in 03-Dominios/Tecnologia/Node/Paralelismo/.
 Trunk Node.js.md pruned (single section). Central Node MOC updated.
 All acceptance criteria from 2026-05-07-node-paralelismo-design.md met."
 ```

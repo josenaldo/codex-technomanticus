@@ -20,8 +20,8 @@ Este é o **nono galho** da trilha Java Senior (roadmap em `docs/superpowers/spe
 
 **A fronteira-assinatura é DUPLA.** O Galho 7 plantou ganchos mostrando que o Spring MVC implementa as specs HTTP da plataforma; o Galho 8 plantou ganchos mostrando que a camada web roda sobre o container. Este galho **linka de volta aos dois**, sem re-explicar nenhum:
 
-- **Galho 7 (specs que o Spring MVC implementa/abstrai):** o `DispatcherServlet` **é** um servlet → Servlet API ([[03-Dominios/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API]]); `@RestController` é **o caminho do Spring** pro mesmo problema do JAX-RS ([[03-Dominios/Java/Jakarta EE/07 - JAX-RS — REST declarativo|JAX-RS]]); `@Valid` no controller aciona **a spec Bean Validation** ([[03-Dominios/Java/Jakarta EE/08 - Bean Validation|Bean Validation]]); `HandlerInterceptor` vs **Servlet Filter** (a spec).
-- **Galho 8 (o container sob a camada web):** controllers e `@ControllerAdvice` **são beans** ([[03-Dominios/Java/Spring Core e Boot/03 - Beans e estereótipos — @Component, @Service, @Repository, @Controller|Beans e estereótipos]]); o `@RestControllerAdvice`/`@ExceptionHandler` usam **o mecanismo AOP/proxy** ([[03-Dominios/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies]]); o `DispatcherServlet` sobe no `ApplicationContext` e o embedded server o registra ([[03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication e o embedded server]]); `@Validated` é a porta da config ([[03-Dominios/Java/Spring Core e Boot/12 - Configuração e profiles|Configuração e profiles]]).
+- **Galho 7 (specs que o Spring MVC implementa/abstrai):** o `DispatcherServlet` **é** um servlet → Servlet API ([[03-Dominios/Tecnologia/Java/Jakarta EE/03 - Servlet API — o alicerce HTTP|Servlet API]]); `@RestController` é **o caminho do Spring** pro mesmo problema do JAX-RS ([[03-Dominios/Tecnologia/Java/Jakarta EE/07 - JAX-RS — REST declarativo|JAX-RS]]); `@Valid` no controller aciona **a spec Bean Validation** ([[03-Dominios/Tecnologia/Java/Jakarta EE/08 - Bean Validation|Bean Validation]]); `HandlerInterceptor` vs **Servlet Filter** (a spec).
+- **Galho 8 (o container sob a camada web):** controllers e `@ControllerAdvice` **são beans** ([[03-Dominios/Tecnologia/Java/Spring Core e Boot/03 - Beans e estereótipos — @Component, @Service, @Repository, @Controller|Beans e estereótipos]]); o `@RestControllerAdvice`/`@ExceptionHandler` usam **o mecanismo AOP/proxy** ([[03-Dominios/Tecnologia/Java/Spring Core e Boot/09 - AOP e proxies no Spring|AOP e proxies]]); o `DispatcherServlet` sobe no `ApplicationContext` e o embedded server o registra ([[03-Dominios/Tecnologia/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication e o embedded server]]); `@Validated` é a porta da config ([[03-Dominios/Tecnologia/Java/Spring Core e Boot/12 - Configuração e profiles|Configuração e profiles]]).
 
 O Galho 7 e o Galho 8 deixaram **ganchos "Galho 9 (planejado)"** em texto esperando exatamente esses wikilinks (dívida reversa — §3.6). Este galho **quita** essa dívida.
 
@@ -29,7 +29,7 @@ Web e APIs REST é a **camada web sobre o container do Galho 8**: como um HTTP r
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda parcial do tronco (seção MVC) + quitação da dívida reversa**, em `03-Dominios/Java/Web e APIs REST/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 7 Adepto + 4 Magus**).
+Produzir, em uma sessão de execução dedicada, **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda parcial do tronco (seção MVC) + quitação da dívida reversa**, em `03-Dominios/Tecnologia/Java/Web e APIs REST/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 7 Adepto + 4 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -43,7 +43,7 @@ A barra é "explicar o pipeline, reconhecer as specs por baixo e projetar uma AP
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Web e APIs REST/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Web e APIs REST/`)
 
 Pasta **nova**, flat. 16 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase).
 
@@ -93,7 +93,7 @@ Pasta **nova**, flat. 16 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Web e APIs REST/index.md`:
+`03-Dominios/Tecnologia/Java/Web e APIs REST/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Web e APIs REST"`, tags `java`/`web`/`moc`, aliases `["Web e APIs REST", "Spring MVC", "REST API", "Galho 9 - Web"]`)
 - TL;DR callout (galho cobre a camada web sobre o container do Galho 8: Spring MVC e o pipeline do `DispatcherServlet`, REST controllers, content negotiation, validação na borda, tratamento de erro com Problem Details, OpenAPI, HATEOAS, versionamento e clientes HTTP)
@@ -105,12 +105,12 @@ Pasta **nova**, flat. 16 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **O pipeline desmontado** — 01 → 06 → 07 → 11 → 16 (front controller, pipeline, content negotiation, interceptors/filters, capstone)
   - **Projetando uma REST API production-grade** — 02 → 04 → 05 → 08 → 09 → 10 → 12 → 13 (mapeamentos, status, DTO, validação, erro, Problem Details, OpenAPI, versionamento)
   - **Spring MVC sobre Jakarta EE** (a ponte com o Galho 7) — 01 → 06 → 02 → 08 → 11 + notas do Galho 7 (Servlet API, JAX-RS, Bean Validation)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **Galho 8** (Spring Core e Boot — o container sob a camada web), **Galho 7** (Jakarta EE — as specs HTTP que o Spring MVC implementa), Galho 1 (Annotations), Dicionário de Java; Galhos 10/11/12/13/16/17 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **Galho 8** (Spring Core e Boot — o container sob a camada web), **Galho 7** (Jakarta EE — as specs HTTP que o Spring MVC implementa), Galho 1 (Annotations), Dicionário de Java; Galhos 10/11/12/13/16/17 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**240 verbetes** após o Galho 8, `type: glossary`, `updated: 2026-06-08`, seção alfabética única `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**240 verbetes** após o Galho 8, `type: glossary`, `updated: 2026-06-08`, seção alfabética única `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter.
 
 Verbetes a inserir (~30):
 
@@ -120,10 +120,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 9)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha 39 (atualmente `9. Web e APIs REST *(planejado)* — Spring MVC, REST, exception handling, validation, OpenAPI`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha 39 (atualmente `9. Web e APIs REST *(planejado)* — Spring MVC, REST, exception handling, validation, OpenAPI`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-9. [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]] — Spring MVC e o pipeline do DispatcherServlet, REST controllers, content negotiation, validação na borda, exception handling (@ControllerAdvice, Problem Details), OpenAPI, HATEOAS, versionamento, clientes HTTP
+9. [[03-Dominios/Tecnologia/Java/Web e APIs REST/index|Web e APIs REST]] — Spring MVC e o pipeline do DispatcherServlet, REST controllers, content negotiation, validação na borda, exception handling (@ControllerAdvice, Problem Details), OpenAPI, HATEOAS, versionamento, clientes HTTP
 ```
 
 Atualizar `updated`. Não mexer no resto do MOC central.
@@ -134,7 +134,7 @@ Atualizar `updated`. Não mexer no resto do MOC central.
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Web e APIs REST/index|Web e APIs REST]]. Veja [[03-Dominios/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]], [[03-Dominios/Java/Web e APIs REST/09 - Tratamento de exceções com @ControllerAdvice|Tratamento de exceções]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/Web e APIs REST/index|Web e APIs REST]]. Veja [[03-Dominios/Tecnologia/Java/Web e APIs REST/06 - O pipeline do DispatcherServlet|O pipeline do DispatcherServlet]], [[03-Dominios/Tecnologia/Java/Web e APIs REST/09 - Tratamento de exceções com @ControllerAdvice|Tratamento de exceções]].
 ```
 
 **Seção a podar (core — deste galho):**
@@ -208,7 +208,7 @@ H1 `# Título` após o frontmatter (padrão dos galhos publicados).
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`Order`/`Customer`/`Product`/`OrderController`/`CustomerService`); "padrão observado em APIs Spring"; NUNCA `Patient`/`MedEspecialista`/"no meu projeto" (o tronco está cheio disso — **contraexemplo**)
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + subheading `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Web e APIs REST/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando espelhar spec) a nota do **Galho 7** correspondente + (quando usar o container) a nota do **Galho 8** + Galho 1 (Annotations) quando tocar em anotações + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
+- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Web e APIs REST/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando espelhar spec) a nota do **Galho 7** correspondente + (quando usar o container) a nota do **Galho 8** + Galho 1 (Annotations) quando tocar em anotações + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
 - `## Referências` — docs oficiais (`docs.spring.io/spring-framework/reference/web/...`, `docs.spring.io/spring-boot/...`, `springdoc.org`, RFC 9457). Afirmações version-specific fundadas em fonte verificada via WebFetch.
 
 ### 4.3. Restrições absolutas
@@ -254,7 +254,7 @@ Executado nesta fase de brainstorming (2026-06-08); itens version-specific re-co
 3. **HTTP clients ausentes no tronco** — grep `RestClient`/`RestTemplate`/`WebClient` no tronco = **vazio**. Nota 15 é **pesquisa pura**. O `### Alternativa moderna` (~487) é sobre Kubernetes/Envoy/Vault (Spring Cloud), **não** RestClient — não confundir; é do Galho 16, intacto.
 4. **Dívida reversa localizada** — 9 ponteiros em 8 arquivos (§3.6): Servlet API 03:24, JAX-RS 07:24, JAX-RS 07:44, Bean Validation 08:24, Jakarta index:30, Spring Core index:32, Spring Core 03:39/47/110/112, Spring Core 16:144, Linguagem 10:361. Confirmar linhas na execução.
 5. **Dicionário** — **240 verbetes** após o Galho 8; seção alfabética única `## A`…`## Z`; verbetes `### `; `updated: 2026-06-08`. Verbetes Spring core (do Galho 8) existem; web ainda não. Expansão alfabética, nunca recriar/reordenar; conferir dups (`Bean Validation`, `@Validated`, `Servlet`, `@Component / estereótipos`) e linkar entre si.
-6. **MOC central** — `03-Dominios/Java/index.md:39` é a linha do Galho 9 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-08`.
+6. **MOC central** — `03-Dominios/Tecnologia/Java/index.md:39` é a linha do Galho 9 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-08`.
 7. **Troncos intocáveis** — `Backend/Spring Data JPA.md` (Galho 10), `Backend/Kafka/` (Galho 14).
 8. **Versões a cravar via WebFetch na execução** — `ProblemDetail` (Spring Framework 6+) e **RFC 9457** (obsoletou 7807); `RestClient` (Spring Framework 6.1+); **springdoc-openapi** (mantido) vs **springfox** (morto); Spring Boot 3.x baseline (Java 17, `jakarta.*`). Spring Boot 4.0.x / Framework 7.0.x já são as releases atuais — manter **3.x/6.x como baseline** (como o Galho 8), citando 4/7 como "mais recente" quando relevante. Fonte: `docs.spring.io`, `springdoc.org`, `datatracker.ietf.org`.
 
@@ -264,7 +264,7 @@ Nenhum número de adoção é inventado. Quando faltar fato verificável, **PERG
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 16 notas em `03-Dominios/Java/Web e APIs REST/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/4.
+1. 16 notas em `03-Dominios/Tecnologia/Java/Web e APIs REST/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/4.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~30 verbetes; verbetes dos Galhos 1-8 intactos; `updated` atualizado; dups conferidos e linkados (não duplicar `Bean Validation`/`@Validated`/`Servlet`/`@Component`); headings conferidos 1:1 com as âncoras usadas nas notas (via grep).
 4. MOC central `Java/index.md` com Galho 9 ativado (linha 39 vira wikilink); resto intacto.
@@ -307,6 +307,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-08-java-galho-08-spring-core-design.md` / `...-execution.md` — Galho 8 (dependência direta; o container sob a camada web; molde mais recente de poda parcial + dupla natureza)
 - `2026-06-07-java-galho-07-jakarta-ee-design.md` — Galho 7 (dependência conceitual; dono das specs HTTP que o Spring MVC implementa: Servlet API, JAX-RS, Bean Validation)
 - `2026-06-04-java-galho-02-collections-streams-design.md`, `2026-06-05-java-galho-03-jvm-design.md` — templates de **poda parcial** de tronco monolítico
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Spring Boot.md` (poda parcial — seção MVC), `Jakarta EE/03 - Servlet API`, `07 - JAX-RS`, `08 - Bean Validation`, `Jakarta EE/index.md`, `Spring Core e Boot/index.md`, `Spring Core e Boot/03 - Beans e estereótipos`, `Spring Core e Boot/16 - SpringApplication`, `Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md` (dívida reversa)
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Spring Boot.md` (poda parcial — seção MVC), `Jakarta EE/03 - Servlet API`, `07 - JAX-RS`, `08 - Bean Validation`, `Jakarta EE/index.md`, `Spring Core e Boot/index.md`, `Spring Core e Boot/03 - Beans e estereótipos`, `Spring Core e Boot/16 - SpringApplication`, `Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md` (dívida reversa)
 - Fontes-base do galho: `docs.spring.io/spring-framework/reference/web/webmvc.html`, `docs.spring.io/spring-boot/`, `springdoc.org`, RFC 9457 (`datatracker.ietf.org`)
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]]

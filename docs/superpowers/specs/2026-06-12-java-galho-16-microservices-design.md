@@ -30,7 +30,7 @@ Este é o **décimo sexto galho** da trilha Java Senior (roadmap em `docs/superp
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **24 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central (Galho 16) + poda reversa substancial em `Backend/Spring Boot.md` + quitação dos ganchos "(planejado) G16" + correção de numeração defasada + cross-links**, em `03-Dominios/Java/Microservices e sistemas distribuídos/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 14 Adepto + 5 Magus**).
+Produzir, em uma sessão de execução dedicada, **24 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central (Galho 16) + poda reversa substancial em `Backend/Spring Boot.md` + quitação dos ganchos "(planejado) G16" + correção de numeração defasada + cross-links**, em `03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 14 Adepto + 5 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -45,7 +45,7 @@ A barra é "projetar, justificar e operar uma plataforma de microservices Java p
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Microservices e sistemas distribuídos/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/`)
 
 Pasta **nova**, flat. 24 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase). **Nome da pasta no disco: `Microservices e sistemas distribuídos`** (sem vírgula, casa com o padrão "X e Y" das pastas-irmãs; espelha o título do roadmap).
 
@@ -101,7 +101,7 @@ Pasta **nova**, flat. 24 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Microservices e sistemas distribuídos/index.md`:
+`03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/index.md`:
 - `type: moc`, `status: growing`, `publish: true`, `created`/`updated: 2026-06-12`
 - Frontmatter padrão (`title: "Microservices e sistemas distribuídos"`, tags `java`/`microservices`/`moc`, aliases `["Microservices e sistemas distribuídos", "Microservices", "Microsserviços", "Spring Cloud", "Sistemas distribuídos", "Galho 16 - Microservices"]`)
 - `> [!abstract] TL;DR` callout — 2-4 linhas: galho cobre como vários serviços formam uma plataforma distribuída (modelo + tese honesta, Spring Cloud, discovery, gateway, resiliência/Resilience4j, comunicação síncrona, segurança entre serviços, tracing/OpenTelemetry, consistência, service mesh); a tese (microservices = trade-off, não default; o monólito modular basta; a rede é o inimigo); **24 notas em 3 fases**
@@ -113,12 +113,12 @@ Pasta **nova**, flat. 24 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **A plataforma Spring Cloud na prática** — 04 → 06 → 08 → 09 → 10 → 11 → 12 (panorama, discovery, LB, síncrono, gateway, variantes, config)
   - **Resiliência (meio galho, cai muito)** — 13 → 14 → 15 → 16 → 21 (circuit breaker, retry/timeout, bulkhead/ratelimit, composição, padrões de falha)
   - **Arquitetura e julgamento** — 01 → 02 → 03 → 20 → 22 → 23 (modelo, repos, 12-factor, consistência, mesh, quando-não)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **G14** (Mensageria — saga/gRPC/eventos), **G12** (Segurança — OAuth2/JWT), **G11** (Reativa — WebFlux/Netty do gateway), **G9** (Web/REST — clientes HTTP), **G15** (Build — multi-módulo), Dicionário de Java; Galhos 17/18 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **G14** (Mensageria — saga/gRPC/eventos), **G12** (Segurança — OAuth2/JWT), **G11** (Reativa — WebFlux/Netty do gateway), **G9** (Web/REST — clientes HTTP), **G15** (Build — multi-módulo), Dicionário de Java; Galhos 17/18 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho" (TABLE fase/status; **inline code nunca começa com `=`** — lição da memória `feedback_dataview_inline_code`)
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**~475 verbetes** após o Galho 15, `type: glossary`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo inserindo os verbetes **em ordem alfabética case-insensitive (sem acento, ignorando símbolos iniciais)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-12`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**~475 verbetes** após o Galho 15, `type: glossary`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo inserindo os verbetes **em ordem alfabética case-insensitive (sem acento, ignorando símbolos iniciais)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-12`.
 
 Verbetes a inserir (~40, conferir dups antes via grep):
 
@@ -128,10 +128,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 16)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 16 (atualmente, na **linha 49**, `16. Microservices e sistemas distribuídos *(planejado)* — Spring Cloud, gateway, resilience, sagas, tracing`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 16 (atualmente, na **linha 49**, `16. Microservices e sistemas distribuídos *(planejado)* — Spring Cloud, gateway, resilience, sagas, tracing`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-16. [[03-Dominios/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]] — o modelo e a tese honesta (microservices vs monólito modular), Spring Cloud (service discovery, gateway, config centralizado), resiliência com Resilience4j (circuit breaker, retry, bulkhead, rate limiter, time limiter), comunicação síncrona (OpenFeign/@HttpExchange), segurança entre serviços, tracing distribuído (Micrometer Tracing/OpenTelemetry), consistência (CAP/PACELC) e service mesh
+16. [[03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]] — o modelo e a tese honesta (microservices vs monólito modular), Spring Cloud (service discovery, gateway, config centralizado), resiliência com Resilience4j (circuit breaker, retry, bulkhead, rate limiter, time limiter), comunicação síncrona (OpenFeign/@HttpExchange), segurança entre serviços, tracing distribuído (Micrometer Tracing/OpenTelemetry), consistência (CAP/PACELC) e service mesh
 ```
 
 Atualizar `updated` para `2026-06-12`. Não mexer no resto do MOC central. **Confirmar o número da linha na execução** (lendo o arquivo primeiro — hoje é a linha 49).
@@ -155,7 +155,7 @@ O pré-flight achou ~10 ganchos "(planejado) Galho 16" deixados por galhos anter
 
 | # | Arquivo | Ação |
 |---|---|---|
-| 1 | `03-Dominios/Java/index.md` | ativação do Galho 16 (§3.4) |
+| 1 | `03-Dominios/Tecnologia/Java/index.md` | ativação do Galho 16 (§3.4) |
 | 2 | `Web e APIs REST/15 - Clientes HTTP — RestClient, WebClient, RestTemplate.md` (~303) | a menção "@FeignClient ... é tema do Galho 16 (planejado)" → **wikilink ativo** pra **nota 09** |
 | 3 | `Web e APIs REST/index.md` (~32) | "Microservices (Galho 16) ... planejados" → ativar o link de microservices pra **MOC do galho** (manter G17 como "(planejado)") |
 | 4 | `Programação Reativa/index.md` (~35) | "resiliência/backpressure distribuído (Galho 16) ... planejados" → **wikilink** pra **nota 21** |
@@ -203,7 +203,7 @@ H1 `# Título` após o frontmatter.
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`com.example`, serviços `order-service`/`payment-service`, classes `Order`/`Payment`/`OrderService`); "padrão observado em plataformas Java"; NUNCA `MedEspecialista`/"da minha experiência"/"no meu projeto"/"quando montei a plataforma"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com `### (N) Título` (H3 numerado, NÃO callout `[!warning]`) + descrição + exemplo curto + fix em 1 linha
 - `## Em entrevista` — `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Microservices e sistemas distribuídos/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando aplicável) a nota da fronteira (G14 saga/gRPC/eventos, G12 OAuth2/JWT, G11 WebFlux/Netty, G9 clientes HTTP, G15 multi-módulo) + verbetes do Dicionário
+- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando aplicável) a nota da fronteira (G14 saga/gRPC/eventos, G12 OAuth2/JWT, G11 WebFlux/Netty, G9 clientes HTTP, G15 multi-módulo) + verbetes do Dicionário
 - `## Referências` — docs oficiais (`spring.io`, `docs.spring.io`, `resilience4j.readme.io`, `micrometer.io`, `opentelemetry.io`, `12factor.net`, `martinfowler.com`, `istio.io`, `linkerd.io`)
 
 ### 4.3. Restrições absolutas
@@ -222,7 +222,7 @@ H1 `# Título` após o frontmatter.
    - **Conceitos:** **CAP** (Brewer conjectura 2000; Gilbert-Lynch prova 2002 — sob partição, escolha C **ou** A). **PACELC** (Abadi 2010 blog / 2012 paper — se Partição: A/C; senão (Else): Latency/Consistency). **12-factor** (Adam Wiggins/Heroku, 2011); **Beyond the Twelve-Factor App** (Kevin Hoffman, 2016). **MonolithFirst** e **Microservice Premium** (Fowler, 2015). **Service mesh**: data plane (sidecar Envoy) + control plane; **Istio** (sidecar vs **ambient** = ztunnel + waypoint; ambient GA single-cluster desde **1.22**; doc ~**1.30.x**); **Linkerd** (**2.19**, micro-proxy em Rust).
 4. **Code samples compiláveis/válidos** — Java (`@FeignClient`, `@HttpExchange`, `@CircuitBreaker`, `@LoadBalanced`, config beans), `application.yml`/`.properties` (Resilience4j, gateway routes, config client, tracing), `pom.xml`/`build.gradle.kts` (starters com coordenadas reais e versões cravadas). Fences corretas: ` ```java `, ` ```yaml `, ` ```properties `, ` ```xml ` (POM), ` ```kotlin ` (build.gradle.kts), ` ```bash ` (CLI), ` ```text ` (diagramas/output/waterfall). Sempre fechadas. **Usar os nomes de starter cravados** (ex.: `spring-cloud-starter-gateway-server-webflux`, não o nome antigo).
 5. **Comparações justas** — microservices vs monólito modular, síncrono vs assíncrono, Eureka vs Consul vs k8s-native, client-side vs server-side discovery/LB, gateway reativo vs MVC, OpenFeign vs `@HttpExchange`, in-app resilience (Resilience4j) vs mesh, strong vs eventual consistency: sempre "quando X" E "quando Y". A nota 23 (quando NÃO) e a 24 (capstone) são o ápice do julgamento, sem dogma.
-6. **Wikilinks sem backticks** em "Veja também"; MOC do galho + MOC central obrigatórios. **Não linkar galhos inexistentes** (17/18) — texto "(planejado)". Wikilinks pras notas-fronteira usam **path completo** e o **título EXATO** do arquivo (conferir 1:1 — lição do Galho 12: os paths de fronteira têm nomes longos com em-dash `—`, ex.: `[[03-Dominios/Java/Mensageria/22 - Saga — transações distribuídas por eventos|Saga]]`).
+6. **Wikilinks sem backticks** em "Veja também"; MOC do galho + MOC central obrigatórios. **Não linkar galhos inexistentes** (17/18) — texto "(planejado)". Wikilinks pras notas-fronteira usam **path completo** e o **título EXATO** do arquivo (conferir 1:1 — lição do Galho 12: os paths de fronteira têm nomes longos com em-dash `—`, ex.: `[[03-Dominios/Tecnologia/Java/Mensageria/22 - Saga — transações distribuídas por eventos|Saga]]`).
 7. **`fase:` no frontmatter + na tag** — obrigatório.
 8. **Higiene de commits** — sem `Co-Authored-By: Claude` (memória `feedback_commits`), sem `--no-verify`, `git add <path>` nominal (nunca `-A` — bot de backup Obsidian Git roda em timer), 1 commit por nota/artefato, controlador commita (subagents write-only). Guardar contra `.git/index.lock`.
 9. **Tom pedagógico graduado** — Iniciado assume Galhos 1-9 (linguagem + Spring + Web) e que o leitor já fez uma API REST monolítica; Adepto assume que já usou Spring Boot a sério (G8) e quer distribuir; Magus assume o stack inteiro + a tese honesta (microservices é trade-off; a rede é o inimigo; o mesh redistribui responsabilidades).
@@ -261,7 +261,7 @@ Notas de pesquisa fundadas em doc oficial via WebFetch. Fontes-base: `spring.io/
 
 Executado na fase de pré-flight + brainstorming (2026-06-12); itens version-specific re-confirmados na execução de cada nota via WebFetch:
 
-1. **Estrutura da trilha confirmada** — MOC central é `03-Dominios/Java/index.md` (`Java.md` é legado); Galho 16 listado como `*(planejado)*` na **linha 49**. Padrão de nota `type: concept`/`fase`/`publish: true`; template de MOC e de nota = Galhos 14/15.
+1. **Estrutura da trilha confirmada** — MOC central é `03-Dominios/Tecnologia/Java/index.md` (`Java.md` é legado); Galho 16 listado como `*(planejado)*` na **linha 49**. Padrão de nota `type: concept`/`fase`/`publish: true`; template de MOC e de nota = Galhos 14/15.
 2. **Galho HÍBRIDO confirmado** — pesquisa pesada (Spring Cloud é território novo no vault) + **poda reversa substancial** em `Backend/Spring Boot.md`: `## Spring Cloud — visão geral` (~102-175), `### API timeout e cascading failures`/Resilience4j (~577-619), `### Distributed tracing` (~672-691). Tronco `publish: false` já em poda progressiva (WebFlux/Spring Core já viraram callout). **Poda com callout "Migrado para galho próprio"** (§3.5).
 3. **Fronteira-assinatura dupla confirmada (paths exatos a linkar):**
    - **G14** (atrás) → `Mensageria/22 - Saga — transações distribuídas por eventos.md`, `Mensageria/20 - Idempotência — o pilar do at-least-once.md`, `Mensageria/21 - O padrão Outbox.md`, `Mensageria/23 - Event sourcing e CQRS.md`, `Mensageria/28 - gRPC em Java — RPC síncrono sobre HTTP_2.md`, `Mensageria/27 - Protocol Buffers — a IDL e a serialização binária.md`
@@ -282,7 +282,7 @@ Nenhum número de adoção/market-share é inventado (o pré-flight não achou f
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 24 notas em `03-Dominios/Java/Microservices e sistemas distribuídos/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/14/5.
+1. 24 notas em `03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/14/5.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview (inline code nunca inicia com `=`) + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~40 verbetes; verbetes dos Galhos 1-15 intactos; `updated: 2026-06-12`; dups conferidos e linkados (não duplicar `retry`/`saga`/`Spring Cloud Stream`).
 4. MOC central `Java/index.md` com Galho 16 ativado (linha 49 vira wikilink); resto intacto; `updated: 2026-06-12`.
@@ -330,6 +330,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-10-java-galho-11-reativa-design.md` — Galho 11 (dono de WebFlux/Netty/backpressure — fronteira das notas 11/21; alvo de quitação de gancho)
 - Galho 9 (Web e APIs REST) — dono dos clientes HTTP (fronteira da nota 09; alvo de quitação de gancho)
 - Galhos 5/7/11/14/15 — template de **galho de pesquisa/híbrido**
-- Artefatos a criar/atualizar: `03-Dominios/Java/Microservices e sistemas distribuídos/**` (24 notas + MOC), `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Spring Boot.md` (poda substancial), e os ~10 arquivos de quitação de gancho (§3.6)
+- Artefatos a criar/atualizar: `03-Dominios/Tecnologia/Java/Microservices e sistemas distribuídos/**` (24 notas + MOC), `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Spring Boot.md` (poda substancial), e os ~10 arquivos de quitação de gancho (§3.6)
 - Fontes-base do galho: `spring.io/projects/spring-cloud`, `docs.spring.io` (gateway/config/netflix/consul/kubernetes/openfeign/circuitbreaker/security/actuator), `resilience4j.readme.io`, `micrometer.io`, `opentelemetry.io`, `12factor.net`, `martinfowler.com`, `istio.io`, `linkerd.io`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]], [[feedback_notas_atomicas]], [[feedback_enriquecimento_feynman]], [[feedback_redundancia_entre_notas]]

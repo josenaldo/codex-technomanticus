@@ -24,7 +24,7 @@ Galho 2 é o **dono dos conceitos de coleções, streams e programação funcion
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada **direto na `main`** (sem branch dedicada — ver [[feedback_galhos_direto_main]]), **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda parcial do tronco + quitação da dívida de linkback do Galho 4**, em `03-Dominios/Java/Collections e Streams/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 7 Adepto + 4 Magus).
+Produzir, em uma sessão de execução dedicada **direto na `main`** (sem branch dedicada — ver [[feedback_galhos_direto_main]]), **16 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda parcial do tronco + quitação da dívida de linkback do Galho 4**, em `03-Dominios/Tecnologia/Java/Collections e Streams/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 7 Adepto + 4 Magus).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -37,7 +37,7 @@ A barra é "decidir, justificar, reconhecer patterns e armadilhas em code review
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Collections e Streams/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Collections e Streams/`)
 
 Pasta **nova**, flat. 16 notas + 1 MOC. Numeração global por galho (não reinicia por fase). Pasta precisa de `index.md` (Quartz folder-link). Tag de galho: `collections`.
 
@@ -74,15 +74,15 @@ Pasta **nova**, flat. 16 notas + 1 MOC. Numeração global por galho (não reini
 
 **Decisões de fronteira (escopo NÃO coberto aqui ou de outro dono):**
 
-- **Paralelismo (parallel streams, fork/join, spliterators)** → **Galho 4 é dono** (nota 15). O Galho 2 é dono do *pipeline* da Stream API (notas 05, 07, 08); menciona `parallelStream`/`parallel()` como existência e **linka** `[[03-Dominios/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join|Parallel streams e fork-join]]` — **não re-explica** fork/join nem decompõe o `ForkJoinPool`. (`mapConcurrent` na nota 15 é a exceção controlada: é um Gatherer da Stream API base, não paralelismo de fork/join — citar como concorrência estruturada leve, com link pro Galho 4.)
+- **Paralelismo (parallel streams, fork/join, spliterators)** → **Galho 4 é dono** (nota 15). O Galho 2 é dono do *pipeline* da Stream API (notas 05, 07, 08); menciona `parallelStream`/`parallel()` como existência e **linka** `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join|Parallel streams e fork-join]]` — **não re-explica** fork/join nem decompõe o `ForkJoinPool`. (`mapConcurrent` na nota 15 é a exceção controlada: é um Gatherer da Stream API base, não paralelismo de fork/join — citar como concorrência estruturada leve, com link pro Galho 4.)
 - **Concurrent collections (`ConcurrentHashMap`, `CopyOnWriteArrayList`, etc.)** → **Galho 4 é dono** (nota 07). O Galho 2 é dono do Collections Framework base (notas 01-03); **cita** as variantes thread-safe e **linka** pra lá, sem re-explicar concorrência.
-- **Interfaces, OOP, genéricos, records, exceções** → **Galho 1 é dono**. A nota 04 (lambdas) linka `[[03-Dominios/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas|Interfaces e classes abstratas]]`; notas com generics linkam `[[03-Dominios/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade|Generics]]`; exemplos com record linkam `[[03-Dominios/Java/Linguagem e sintaxe moderna/13 - Records e record patterns|Records]]`; try-with-resources linka `[[03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções]]`. **Sem re-explicar.**
+- **Interfaces, OOP, genéricos, records, exceções** → **Galho 1 é dono**. A nota 04 (lambdas) linka `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas|Interfaces e classes abstratas]]`; notas com generics linkam `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade|Generics]]`; exemplos com record linkam `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/13 - Records e record patterns|Records]]`; try-with-resources linka `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções]]`. **Sem re-explicar.**
 - **JVM (memory model, GC)** → **Galho 3** (próximo). Quando uma nota tocar em custo de memória (boxing, treeification, heap), citar como texto "ver Galho 3 (JVM), planejado" — **sem wikilink quebrado**.
 - **`JTable` model / Swing** → Galho 5; sem sobreposição (Swing models usam Collections mas o Galho 5 já é dono dos seus models).
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Collections e Streams/index.md`:
+`03-Dominios/Tecnologia/Java/Collections e Streams/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Collections, Streams e Programação Funcional"`, tags `java`/`collections`/`moc`, aliases `["Collections e Streams", "Galho 2 - Collections, Streams e Programação Funcional"]`)
 - TL;DR callout (galho cobre Collections Framework, Stream API, programação funcional/lambdas, Optional, Date/Time e I/O moderno)
@@ -94,12 +94,12 @@ Pasta **nova**, flat. 16 notas + 1 MOC. Numeração global por galho (não reini
   - **Domine Streams** — 05 → 07 → 08 → 09 → 15 (pipeline → operações → collectors → primitivos → Gatherers) — liga ao Galho 4 pro paralelismo
   - **Escolha de estrutura de dados** — 01 → 02 → 03 → 06 → 16 (hierarquia, impls, mapas, ordenação, decisão)
   - **Programação funcional** — 04 → 13 → 10 → 07 (lambdas, composição, Optional, operações de stream)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, Galho 1 (Linguagem), Galho 4 (Concorrência), Galho 3 (JVM, **planejado** — texto sem wikilink), Dicionário de Java, tronco `[[Java Fundamentals]]` (em transição)
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, Galho 1 (Linguagem), Galho 4 (Concorrência), Galho 3 (JVM, **planejado** — texto sem wikilink), Dicionário de Java, tronco `[[Java Fundamentals]]` (em transição)
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (criado no Galho 1, expandido nos Galhos 4 e 5, `type: glossary`, seções alfabéticas A–Y). Este galho **expande** o arquivo inserindo os verbetes de Collections/Streams/funcional **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas se necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-04`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (criado no Galho 1, expandido nos Galhos 4 e 5, `type: glossary`, seções alfabéticas A–Y). Este galho **expande** o arquivo inserindo os verbetes de Collections/Streams/funcional **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas se necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated: 2026-06-04`.
 
 Verbetes a inserir (~24-28, lista de referência — ajustar na execução conforme as âncoras reais das notas):
 
@@ -109,10 +109,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 2)
 
-`03-Dominios/Java/index.md` já existe e lista os 18 galhos. Task **mínima**: trocar a **linha 26** (atualmente `2. Collections, Streams e Programação Funcional *(planejado)* — Collections Framework, Stream API, lambdas, Optional, Date/Time, I/O`) por um wikilink ativo no padrão das linhas 25/28/32:
+`03-Dominios/Tecnologia/Java/index.md` já existe e lista os 18 galhos. Task **mínima**: trocar a **linha 26** (atualmente `2. Collections, Streams e Programação Funcional *(planejado)* — Collections Framework, Stream API, lambdas, Optional, Date/Time, I/O`) por um wikilink ativo no padrão das linhas 25/28/32:
 
 ```markdown
-2. [[03-Dominios/Java/Collections e Streams/index|Collections, Streams e Programação Funcional]] — Collections Framework, Stream API, lambdas e interfaces funcionais, Optional, Date/Time (java.time), I/O moderno (java.nio.file)
+2. [[03-Dominios/Tecnologia/Java/Collections e Streams/index|Collections, Streams e Programação Funcional]] — Collections Framework, Stream API, lambdas e interfaces funcionais, Optional, Date/Time (java.time), I/O moderno (java.nio.file)
 ```
 
 Atualizar `updated: 2026-06-04`. Não mexer no resto do MOC central.
@@ -136,7 +136,7 @@ Modelo de callout (padrão §9 do roadmap):
 ## Collections Framework
 
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Collections e Streams/index|Collections, Streams e Programação Funcional]]. Veja [[01 - O Collections Framework]], [[02 - Listas, conjuntos e filas]], [[03 - Mapas]], [[06 - Comparable e Comparator]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/Collections e Streams/index|Collections, Streams e Programação Funcional]]. Veja [[01 - O Collections Framework]], [[02 - Listas, conjuntos e filas]], [[03 - Mapas]], [[06 - Comparable e Comparator]].
 ```
 
 **NÃO podar:**
@@ -160,18 +160,18 @@ O Galho 4 fechou antes do Galho 2 existir, então linka o tronco `[[Java Fundame
 
 | Arquivo | Linha | Hoje | Passa a apontar pra |
 |---|---|---|---|
-| `Concorrência e paralelismo/07 - Concurrent collections.md` | ~31 (corpo) | "O framework [[Java Fundamentals]] define as interfaces `Map`, `List`, `Queue` e `Set`" | `[[03-Dominios/Java/Collections e Streams/01 - O Collections Framework\|Collections Framework]]` |
-| `Concorrência e paralelismo/07 - Concurrent collections.md` | ~399 (Veja também) | `[[Java Fundamentals]]` | `[[03-Dominios/Java/Collections e Streams/01 - O Collections Framework\|Collections Framework]]` (e/ou 03 Mapas) |
-| `Concorrência e paralelismo/15 - Parallel streams e fork-join.md` | ~49 (corpo) | "o pipeline... pertence ao Galho 2 (Stream API); consulte [[Java Fundamentals]] para essa base" | `[[03-Dominios/Java/Collections e Streams/05 - Introdução à Stream API\|Stream API]]` (e/ou 07 Operações) |
-| `Concorrência e paralelismo/15 - Parallel streams e fork-join.md` | ~450 (Veja também) | `[[Java Fundamentals]]` | `[[03-Dominios/Java/Collections e Streams/07 - Operações de Stream — intermediárias e terminais\|Operações de Stream]]` |
+| `Concorrência e paralelismo/07 - Concurrent collections.md` | ~31 (corpo) | "O framework [[Java Fundamentals]] define as interfaces `Map`, `List`, `Queue` e `Set`" | `[[03-Dominios/Tecnologia/Java/Collections e Streams/01 - O Collections Framework\|Collections Framework]]` |
+| `Concorrência e paralelismo/07 - Concurrent collections.md` | ~399 (Veja também) | `[[Java Fundamentals]]` | `[[03-Dominios/Tecnologia/Java/Collections e Streams/01 - O Collections Framework\|Collections Framework]]` (e/ou 03 Mapas) |
+| `Concorrência e paralelismo/15 - Parallel streams e fork-join.md` | ~49 (corpo) | "o pipeline... pertence ao Galho 2 (Stream API); consulte [[Java Fundamentals]] para essa base" | `[[03-Dominios/Tecnologia/Java/Collections e Streams/05 - Introdução à Stream API\|Stream API]]` (e/ou 07 Operações) |
+| `Concorrência e paralelismo/15 - Parallel streams e fork-join.md` | ~450 (Veja também) | `[[Java Fundamentals]]` | `[[03-Dominios/Tecnologia/Java/Collections e Streams/07 - Operações de Stream — intermediárias e terminais\|Operações de Stream]]` |
 
 As ocorrências em `11 - Java Memory Model` (~518) e `12 - Virtual Threads` (~394) linkam `[[Java Fundamentals]]` em "Veja também" como **referência geral ao tronco** (não Collections/Streams) — **não são dívida**; deixar como estão. (O tronco segue existindo "em transição".) As linhas exatas serão reconfirmadas na execução (podem ter mudado).
 
 ### 3.7. Reciprocidade de links Galho 2 → Galho 4
 
 As notas do Galho 2 que tocam fronteira **linkam de volta** pro Galho 4 (mão dupla):
-- Nota 01 (framework) e 03 (mapas) → `[[03-Dominios/Java/Concorrência e paralelismo/07 - Concurrent collections|Concurrent collections]]`.
-- Nota 05 (intro stream) e 07 (operações) → `[[03-Dominios/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join|Parallel streams]]`.
+- Nota 01 (framework) e 03 (mapas) → `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/07 - Concurrent collections|Concurrent collections]]`.
+- Nota 05 (intro stream) e 07 (operações) → `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/15 - Parallel streams e fork-join|Parallel streams]]`.
 
 ## 4. Convenções por nota
 
@@ -205,7 +205,7 @@ aliases:
 - `## Na prática` — exemplos compiláveis; framing neutro ("padrão observado no JDK/no ecossistema", "caso típico em serviço enterprise"); NUNCA "no meu projeto"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com frase de **3+ sentenças** (trade-off + decisão + caveat) + vocabulário **6+ termos PT→EN**
-- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Collections e Streams/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando o conceito conectar) Galho 1 / Galho 4 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
+- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Collections e Streams/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando o conceito conectar) Galho 1 / Galho 4 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
 - `## Referências` — docs oficiais (`dev.java`, `docs.oracle.com`/Javadoc, The Java Tutorials), JEPs quando relevantes.
 
 ### 4.3. Restrições absolutas
@@ -257,7 +257,7 @@ Quando faltar fato verificável, **PERGUNTAR** antes de escrever.
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 16 notas em `03-Dominios/Java/Collections e Streams/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/4.
+1. 16 notas em `03-Dominios/Tecnologia/Java/Collections e Streams/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/4.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~24-28 verbetes em ordem alfabética; verbetes dos Galhos 1/4/5 intactos; `updated` atualizado; headings dos verbetes conferidos 1:1 com as âncoras usadas nas notas; sem duplicar verbetes pré-existentes.
 4. MOC central `Java/index.md` com Galho 2 ativado (linha 26 vira wikilink); resto intacto.
@@ -298,7 +298,7 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-02-java-galho-01-linguagem-design.md` / `...-execution.md` — Galho 1 (dono de interfaces/generics/records que o Galho 2 linka)
 - `2026-06-03-java-galho-04-concorrencia-design.md` / `...-execution.md` — Galho 4 (dono de paralelismo/concurrent collections; alvo da quitação de linkback)
 - `2026-06-03-java-galho-05-swing-design.md` / `...-execution.md` — Galho 5 (template mais recente de spec/plano)
-- Tronco a podar: `03-Dominios/Java/Core/Java Fundamentals.md` (poda parcial — 6 seções)
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `Concorrência e paralelismo/07 - Concurrent collections.md`, `Concorrência e paralelismo/15 - Parallel streams e fork-join.md`
+- Tronco a podar: `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` (poda parcial — 6 seções)
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `Concorrência e paralelismo/07 - Concurrent collections.md`, `Concorrência e paralelismo/15 - Parallel streams e fork-join.md`
 - Fontes-base do galho: Javadoc `java.util`/`java.util.stream`/`java.util.function`/`java.time`/`java.nio.file`, The Java Tutorials (Collections, Lambdas, Aggregate Operations, Date-Time, File I/O), `dev.java`, JEP 431 (Sequenced Collections), JEP 485 (Stream Gatherers)
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_galhos_direto_main]]

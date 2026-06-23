@@ -6,7 +6,7 @@ Criar o galho 8 da trilha Node Senior no vault `codex-technomanticus`. O galho c
 
 ## Architecture
 
-Pasta destino: `03-Dominios/Node/Segurança/`
+Pasta destino: `03-Dominios/Tecnologia/Node/Segurança/`
 
 Cada nota é atômica — cobre um tópico com profundidade suficiente para responder perguntas de entrevista senior. As notas seguem o padrão canônico do vault: frontmatter completo, TL;DR, seções de conteúdo, "Em entrevista" em inglês, vocabulário técnico e "Veja também".
 
@@ -55,7 +55,7 @@ Cada nota é atômica — cobre um tópico com profundidade suficiente para resp
 ## Estrutura de arquivos
 
 ```
-03-Dominios/Node/Segurança/
+03-Dominios/Tecnologia/Node/Segurança/
 ├── index.md
 ├── 01 - Supply chain attacks e npm audit.md
 ├── 02 - Segredos e variáveis de ambiente.md
@@ -75,7 +75,7 @@ Cada nota é atômica — cobre um tópico com profundidade suficiente para resp
 
 ### Task 1 — index.md (MOC do galho)
 
-**Files:** `03-Dominios/Node/Segurança/index.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/index.md` (criar)
 
 **Commit:** `feat(node/g8): add index - Segurança MOC`
 
@@ -101,7 +101,7 @@ aliases:
 - TL;DR resumindo os 10 tópicos do galho
 - Parágrafo de introdução contextualizando segurança em Node.js senior
 - Lista de links para todas as 10 notas do galho com descrição de 1 linha cada
-- Seção "Veja também" com links para `[[Node.js]]` e `[[03-Dominios/Node/index]]`
+- Seção "Veja também" com links para `[[Node.js]]` e `[[03-Dominios/Tecnologia/Node/index]]`
 
 **Mínimo de linhas:** 80
 
@@ -111,7 +111,7 @@ aliases:
 
 ### Task 2 — 01 - Supply chain attacks e npm audit
 
-**Files:** `03-Dominios/Node/Segurança/01 - Supply chain attacks e npm audit.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/01 - Supply chain attacks e npm audit.md` (criar)
 
 **Commit:** `feat(node/g8): add 01 - Supply chain attacks e npm audit`
 
@@ -152,7 +152,7 @@ aliases:
 
 ### Task 3 — 02 - Segredos e variáveis de ambiente
 
-**Files:** `03-Dominios/Node/Segurança/02 - Segredos e variáveis de ambiente.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/02 - Segredos e variáveis de ambiente.md` (criar)
 
 **Commit:** `feat(node/g8): add 02 - Segredos e variáveis de ambiente`
 
@@ -194,7 +194,7 @@ aliases:
 
 ### Task 4 — 03 - Validação de entrada com Zod e Joi
 
-**Files:** `03-Dominios/Node/Segurança/03 - Validação de entrada com Zod e Joi.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/03 - Validação de entrada com Zod e Joi.md` (criar)
 
 **Commit:** `feat(node/g8): add 03 - Validação de entrada com Zod e Joi`
 
@@ -238,7 +238,7 @@ aliases:
 
 ### Task 5 — 04 - JWT e autenticação com jsonwebtoken
 
-**Files:** `03-Dominios/Node/Segurança/04 - JWT e autenticação com jsonwebtoken.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken.md` (criar)
 
 **Commit:** `feat(node/g8): add 04 - JWT e autenticação com jsonwebtoken`
 
@@ -281,7 +281,7 @@ aliases:
 
 ### Task 6 — 05 - OAuth 2.0 e OIDC com openid-client
 
-**Files:** `03-Dominios/Node/Segurança/05 - OAuth 2.0 e OIDC com openid-client.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/05 - OAuth 2.0 e OIDC com openid-client.md` (criar)
 
 **Commit:** `feat(node/g8): add 05 - OAuth 2.0 e OIDC com openid-client`
 
@@ -324,7 +324,7 @@ aliases:
 
 ### Task 7 — 06 - RBAC e ABAC com casl e casbin
 
-**Files:** `03-Dominios/Node/Segurança/06 - RBAC e ABAC com casl e casbin.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/06 - RBAC e ABAC com casl e casbin.md` (criar)
 
 **Commit:** `feat(node/g8): add 06 - RBAC e ABAC com casl e casbin`
 
@@ -369,7 +369,7 @@ aliases:
 
 ### Task 8 — 07 - Rate limiting com express-rate-limit
 
-**Files:** `03-Dominios/Node/Segurança/07 - Rate limiting com express-rate-limit.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/07 - Rate limiting com express-rate-limit.md` (criar)
 
 **Commit:** `feat(node/g8): add 07 - Rate limiting com express-rate-limit`
 
@@ -411,7 +411,7 @@ aliases:
 
 ### Task 9 — 08 - Helmet.js e hardening HTTP
 
-**Files:** `03-Dominios/Node/Segurança/08 - Helmet.js e hardening HTTP.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/08 - Helmet.js e hardening HTTP.md` (criar)
 
 **Commit:** `feat(node/g8): add 08 - Helmet.js e hardening HTTP`
 
@@ -453,7 +453,7 @@ aliases:
 
 ### Task 10 — 09 - OWASP Top 10 para Node
 
-**Files:** `03-Dominios/Node/Segurança/09 - OWASP Top 10 para Node.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node.md` (criar)
 
 **Commit:** `feat(node/g8): add 09 - OWASP Top 10 para Node`
 
@@ -497,7 +497,7 @@ aliases:
 
 ### Task 11 — 10 - Cheatsheet e decision tree de segurança
 
-**Files:** `03-Dominios/Node/Segurança/10 - Cheatsheet e decision tree de segurança.md` (criar)
+**Files:** `03-Dominios/Tecnologia/Node/Segurança/10 - Cheatsheet e decision tree de segurança.md` (criar)
 
 **Commit:** `feat(node/g8): add 10 - Cheatsheet e decision tree de segurança`
 
@@ -537,21 +537,21 @@ aliases:
 ### Task 12 — Atualizar index.md do Node e Node.js.md
 
 **Files:**
-- `03-Dominios/Node/index.md` (editar)
-- `03-Dominios/JavaScript/Backend/Node.js.md` (editar)
+- `03-Dominios/Tecnologia/Node/index.md` (editar)
+- `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` (editar)
 
 **Commit:** `feat(node/g8): register galho 8 in Node MOC and trunk`
 
 **Passos:**
 
-1. Em `03-Dominios/Node/index.md`, adicionar na lista de galhos (após a linha do galho 7, se existir, ou no final da lista existente):
+1. Em `03-Dominios/Tecnologia/Node/index.md`, adicionar na lista de galhos (após a linha do galho 7, se existir, ou no final da lista existente):
    ```
-   - [[03-Dominios/Node/Segurança/index]] — galho 8: supply chain, segredos, validação de entrada (Zod/Joi), JWT, OAuth 2.0 e OIDC, RBAC, rate limiting, Helmet.js e OWASP Top 10
+   - [[03-Dominios/Tecnologia/Node/Segurança/index]] — galho 8: supply chain, segredos, validação de entrada (Zod/Joi), JWT, OAuth 2.0 e OIDC, RBAC, rate limiting, Helmet.js e OWASP Top 10
    ```
 
-2. Em `03-Dominios/JavaScript/Backend/Node.js.md`, adicionar na seção `## Veja também` (após linha do galho 7, se existir, ou antes das demais entradas de galho):
+2. Em `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`, adicionar na seção `## Veja também` (após linha do galho 7, se existir, ou antes das demais entradas de galho):
    ```
-   - [[03-Dominios/Node/Segurança/index|Segurança]] — galho 8 da trilha Node Senior; supply chain, segredos, validação, JWT, OAuth 2.0, RBAC, rate limiting, Helmet.js e OWASP Top 10
+   - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — galho 8 da trilha Node Senior; supply chain, segredos, validação, JWT, OAuth 2.0, RBAC, rate limiting, Helmet.js e OWASP Top 10
    ```
 
 3. Atualizar campo `updated:` em ambos os arquivos para `2026-05-12`.

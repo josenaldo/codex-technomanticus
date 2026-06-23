@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Entregar o galho 7 e final da trilha Terminal — 10 notas atômicas (3 Iniciado + 4 Adepto + 3 Magus) em `03-Dominios/Terminal/Workflow/`, MOC do galho, expansão do Dicionário com bloco `## Workflow`, ativação do wikilink no tronco e fechamento da trilha (`progresso: completo`). 5 playbooks que recombinam galhos 1-6 + 4 meta-práticas + 1 capstone híbrido sintetizando a trilha.
+**Goal:** Entregar o galho 7 e final da trilha Terminal — 10 notas atômicas (3 Iniciado + 4 Adepto + 3 Magus) em `03-Dominios/Tecnologia/Terminal/Workflow/`, MOC do galho, expansão do Dicionário com bloco `## Workflow`, ativação do wikilink no tronco e fechamento da trilha (`progresso: completo`). 5 playbooks que recombinam galhos 1-6 + 4 meta-práticas + 1 capstone híbrido sintetizando a trilha.
 
 **Architecture:** Mesmo padrão consolidado nos galhos 2-6. Estrutura H2 fixa pras notas 01-09; estrutura diferente pro capstone (10) que NÃO re-explica e compõe via cenário cronológico + fluxo + decisões em bifurcações. Tom pedagógico mas assume galhos 1-6 dominados. Exemplos sempre neutros (`alice`, `bob`, `myproj`) ou hipotéticos explícitos. Fluxo SDD: implementer → reviewer combinado → fix se Critical/Important.
 
@@ -21,8 +21,8 @@
 3. **Sem `Co-Authored-By: Claude`**. **Sem `--no-verify`**.
 4. **Paths generalizados** pra `~/...`.
 5. **Wikilinks sem backticks** em `## Veja também`.
-6. **Tronco wikilink obrigatório**: `[[03-Dominios/Terminal/index|Trilha Terminal]]`.
-7. **MOC wikilink** em "Veja também": `[[03-Dominios/Terminal/Workflow/index|MOC do galho]]`.
+6. **Tronco wikilink obrigatório**: `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`.
+7. **MOC wikilink** em "Veja também": `[[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]`.
 8. **≥4 armadilhas** por nota regular (01-09), cada uma com 4 labels (Causa / Sintoma / Como detectar / Solução). Capstone (10) tem padrão diferente: ≥5 decisões em bifurcações.
 9. **"Em inglês" em bullets bilíngues** `- **PT** — *EN*. "frase técnica curta em PT."` (8-10 termos). NUNCA tabela.
 10. **Code fences corretos:** `bash` pra shell, `yaml`/`toml`/`kdl` pra config, `text` pra ASCII.
@@ -64,8 +64,8 @@ Anotar versões pra usar nas notas e MOC (Task 11).
 - [ ] **Step 2: Verificar pasta destino**
 
 ```bash
-ls -la "03-Dominios/Terminal/" 2>&1 | head -20
-test -d "03-Dominios/Terminal/Workflow" && echo "JÁ EXISTE — abortar" || echo "ok, pasta nova"
+ls -la "03-Dominios/Tecnologia/Terminal/" 2>&1 | head -20
+test -d "03-Dominios/Tecnologia/Terminal/Workflow" && echo "JÁ EXISTE — abortar" || echo "ok, pasta nova"
 ```
 
 Esperado: pasta `Workflow/` ainda não existe.
@@ -73,8 +73,8 @@ Esperado: pasta `Workflow/` ainda não existe.
 - [ ] **Step 3: Verificar tronco e dicionário**
 
 ```bash
-grep -n "Workflow" "03-Dominios/Terminal/index.md"
-grep -E "^## " "03-Dominios/Terminal/Dicionário do Terminal.md" | head -20
+grep -n "Workflow" "03-Dominios/Tecnologia/Terminal/index.md"
+grep -E "^## " "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | head -20
 ```
 
 Esperado: tronco tem bullet `Workflow — galho 7 (planejado)` (linha 33); dicionário tem blocos por galho (Editor, Shell, Multiplexer, TUIs, Dotfiles, CLI Utils) mas NÃO tem ainda bloco Workflow.
@@ -82,8 +82,8 @@ Esperado: tronco tem bullet `Workflow — galho 7 (planejado)` (linha 33); dicio
 - [ ] **Step 4: Criar pasta**
 
 ```bash
-mkdir -p "03-Dominios/Terminal/Workflow"
-ls -la "03-Dominios/Terminal/Workflow"
+mkdir -p "03-Dominios/Tecnologia/Terminal/Workflow"
+ls -la "03-Dominios/Tecnologia/Terminal/Workflow"
 ```
 
 Esperado: pasta vazia criada.
@@ -97,12 +97,12 @@ Não há nada pra commitar ainda — pasta vazia não é versionada por git. Pul
 ## Task 1: Dicionário — bloco "Workflow" esqueleto
 
 **Files:**
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
 
 - [ ] **Step 1: Localizar onde inserir**
 
 ```bash
-grep -n "^## " "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -n "^## " "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Identificar último bloco H2 (último galho — CLI Utils). Inserir `## Workflow` depois dele e antes de eventuais seções finais (## Veja também, ## Referências).
@@ -124,8 +124,8 @@ E bump `updated:` no frontmatter pra `2026-05-24`.
 - [ ] **Step 3: Validar**
 
 ```bash
-grep -E "^## Workflow$" "03-Dominios/Terminal/Dicionário do Terminal.md"
-grep "^updated:" "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -E "^## Workflow$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+grep "^updated:" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: bloco existe; `updated: 2026-05-24`.
@@ -133,7 +133,7 @@ Esperado: bloco existe; `updated: 2026-05-24`.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): bloco 'Workflow' no Dicionário (esqueleto)"
 ```
 
@@ -142,8 +142,8 @@ git commit -m "feat(terminal-workflow): bloco 'Workflow' no Dicionário (esquele
 ## Task 2: Nota 01 — Filosofia keyboard-first: quando vale e quando NÃO
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: keyboard-first, RSI)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: keyboard-first, RSI)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -229,7 +229,7 @@ aliases:
 - SIM mantenha mouse à mão pros casos onde compensa
 
 ### Caminho mínimo viável
-- Dia 1: ler [[03-Dominios/Terminal/Editor/01 - Modal editing|modal editing]] e instalar Neovim
+- Dia 1: ler [[03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing|modal editing]] e instalar Neovim
 - Semana 1-2: hjkl, modes, telescope
 - Mês 1: rg + fzf no shell, leader keys, prefix Zellij
 - Mês 2+: customização própria, scripts
@@ -272,9 +272,9 @@ Termos: keyboard-first, modal editing, leader key, mouse-first, RSI, ergonomics,
 **Veja também:**
 - [[02 - Anatomia da sessão de trabalho]]
 - [[06 - Ergonomia das mãos]]
-- [[03-Dominios/Terminal/Editor/01 - Modal editing|Modal editing (galho 1)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/01 - Modal editing|Modal editing (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#keyboard-first|keyboard-first]]
 - [[Dicionário do Terminal#RSI|RSI]]
 
@@ -301,10 +301,10 @@ Veja também: [[06 - Ergonomia das mãos]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md"
-grep -E "^### keyboard-first$" "03-Dominios/Terminal/Dicionário do Terminal.md"
-grep -E "^### RSI$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md"
+grep -E "^### keyboard-first$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+grep -E "^### RSI$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥7 wikilinks; verbetes visíveis.
@@ -312,7 +312,7 @@ Esperado: arquivo existe; ≥7 wikilinks; verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/01 - Filosofia keyboard-first — quando vale e quando não.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 01 — Filosofia keyboard-first"
 ```
 
@@ -321,8 +321,8 @@ git commit -m "feat(terminal-workflow): add nota 01 — Filosofia keyboard-first
 ## Task 3: Nota 02 — Anatomia da sessão de trabalho
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: ephemeral session, named session, focus mode, sessão de trabalho)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: ephemeral session, named session, focus mode, sessão de trabalho)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -443,10 +443,10 @@ Termos: session, tab, pane, layout, attach, detach, focus mode, window manager, 
 - [[01 - Filosofia keyboard-first — quando vale e quando não]]
 - [[04 - Setup matinal e tear-down]]
 - [[07 - Worktrees + Zellij paralelos]]
-- [[03-Dominios/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes|Modelo mental Multiplexer]]
-- [[03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/02 - Modelo mental — sessions, tabs, panes|Modelo mental Multiplexer]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#named session|named session]]
 - [[Dicionário do Terminal#ephemeral session|ephemeral session]]
 - [[Dicionário do Terminal#focus mode|focus mode]]
@@ -485,10 +485,10 @@ Veja também: [[02 - Anatomia da sessão de trabalho]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md"
-grep -E "^### named session$" "03-Dominios/Terminal/Dicionário do Terminal.md"
-grep -E "^### focus mode$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md"
+grep -E "^### named session$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+grep -E "^### focus mode$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥10 wikilinks; 4 verbetes visíveis.
@@ -496,7 +496,7 @@ Esperado: arquivo existe; ≥10 wikilinks; 4 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/02 - Anatomia da sessão de trabalho.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 02 — Anatomia da sessão"
 ```
 
@@ -505,8 +505,8 @@ git commit -m "feat(terminal-workflow): add nota 02 — Anatomia da sessão"
 ## Task 4: Nota 03 — Onboarding em projeto novo
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/03 - Onboarding em projeto novo.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (sem verbete novo — é playbook que reusa termos)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/03 - Onboarding em projeto novo.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (sem verbete novo — é playbook que reusa termos)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -638,13 +638,13 @@ Termos: onboarding, entry point, codebase, scratch file, time-box, exploration, 
 - [[02 - Anatomia da sessão de trabalho]]
 - [[05 - Code review no terminal]]
 - [[08 - Refactoring multi-arquivo]]
-- [[03-Dominios/Terminal/Editor/04 - LazyVim — instalação, tour, navegação|LazyVim — Telescope (galho 1)]]
-- [[03-Dominios/Terminal/TUIs/01 - Lazygit — overview|Lazygit overview (galho 4)]]
-- [[03-Dominios/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes|ripgrep (galho 6)]]
-- [[03-Dominios/Terminal/CLI Utils/04 - eza — ls moderno|eza (galho 6)]]
-- [[03-Dominios/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency|zoxide (galho 6)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/04 - LazyVim — instalação, tour, navegação|LazyVim — Telescope (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/01 - Lazygit — overview|Lazygit overview (galho 4)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes|ripgrep (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/04 - eza — ls moderno|eza (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/05 - zoxide — cd inteligente com frecency|zoxide (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 
 **Referências:**
 - (sem refs externas; é playbook que compõe galhos 1-6)
@@ -656,8 +656,8 @@ Esta nota NÃO adiciona verbetes ao Dicionário — playbook reusa termos já de
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/03 - Onboarding em projeto novo.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/03 - Onboarding em projeto novo.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/03 - Onboarding em projeto novo.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/03 - Onboarding em projeto novo.md"
 ```
 
 Esperado: arquivo existe; ≥10 wikilinks.
@@ -665,7 +665,7 @@ Esperado: arquivo existe; ≥10 wikilinks.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/03 - Onboarding em projeto novo.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/03 - Onboarding em projeto novo.md"
 git commit -m "feat(terminal-workflow): add nota 03 — Onboarding em projeto novo"
 ```
 
@@ -674,8 +674,8 @@ git commit -m "feat(terminal-workflow): add nota 03 — Onboarding em projeto no
 ## Task 5: Nota 04 — Setup matinal e tear-down
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/04 - Setup matinal e tear-down.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: tear-down)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/04 - Setup matinal e tear-down.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: tear-down)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -838,12 +838,12 @@ Termos: setup, tear-down, ritual, attach, detach, kill, layout, auto-start, idem
 - [[02 - Anatomia da sessão de trabalho]]
 - [[07 - Worktrees + Zellij paralelos]]
 - [[09 - Transições de contexto]]
-- [[03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
-- [[03-Dominios/Terminal/Multiplexer/05 - Layouts declarativos em KDL|Layouts KDL (galho 3)]]
-- [[03-Dominios/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync|atuin (galho 6)]]
-- [[03-Dominios/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/05 - Layouts declarativos em KDL|Layouts KDL (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/06 - atuin — history shell com SQLite e sync|atuin (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#tear-down|tear-down]]
 - [[Dicionário do Terminal#named session|named session]]
 
@@ -863,9 +863,9 @@ Veja também: [[04 - Setup matinal e tear-down]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/04 - Setup matinal e tear-down.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/04 - Setup matinal e tear-down.md"
-grep -E "^### tear-down$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/04 - Setup matinal e tear-down.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/04 - Setup matinal e tear-down.md"
+grep -E "^### tear-down$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥10 wikilinks; verbete visível.
@@ -873,7 +873,7 @@ Esperado: arquivo existe; ≥10 wikilinks; verbete visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/04 - Setup matinal e tear-down.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/04 - Setup matinal e tear-down.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 04 — Setup matinal e tear-down"
 ```
 
@@ -882,8 +882,8 @@ git commit -m "feat(terminal-workflow): add nota 04 — Setup matinal e tear-dow
 ## Task 6: Nota 05 — Code review no terminal
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/05 - Code review no terminal.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: `gh CLI`, PR checkout)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/05 - Code review no terminal.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: `gh CLI`, PR checkout)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1025,11 +1025,11 @@ Termos: code review, pull request (PR), checkout, diff, hunk, approve, request c
 - [[03 - Onboarding em projeto novo]]
 - [[07 - Worktrees + Zellij paralelos]]
 - [[08 - Refactoring multi-arquivo]]
-- [[03-Dominios/Terminal/TUIs/01 - Lazygit — overview|Lazygit overview (galho 4)]]
-- [[03-Dominios/Terminal/TUIs/03 - Lazygit — operações intermediárias|Lazygit intermediário (galho 4)]]
-- [[03-Dominios/Terminal/CLI Utils/10 - delta — pager moderno pra git diff|delta (galho 6)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/01 - Lazygit — overview|Lazygit overview (galho 4)]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/03 - Lazygit — operações intermediárias|Lazygit intermediário (galho 4)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/10 - delta — pager moderno pra git diff|delta (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#gh CLI|gh CLI]]
 - [[Dicionário do Terminal#PR checkout|PR checkout]]
 
@@ -1054,10 +1054,10 @@ Veja também: [[05 - Code review no terminal]], [[07 - Worktrees + Zellij parale
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/05 - Code review no terminal.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/05 - Code review no terminal.md"
-grep -E "^### gh CLI$" "03-Dominios/Terminal/Dicionário do Terminal.md"
-grep -E "^### PR checkout$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/05 - Code review no terminal.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/05 - Code review no terminal.md"
+grep -E "^### gh CLI$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+grep -E "^### PR checkout$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥10 wikilinks; 2 verbetes visíveis.
@@ -1065,7 +1065,7 @@ Esperado: arquivo existe; ≥10 wikilinks; 2 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/05 - Code review no terminal.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/05 - Code review no terminal.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 05 — Code review no terminal"
 ```
 
@@ -1074,8 +1074,8 @@ git commit -m "feat(terminal-workflow): add nota 05 — Code review no terminal"
 ## Task 7: Nota 06 — Ergonomia das mãos
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/06 - Ergonomia das mãos.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: leader key)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/06 - Ergonomia das mãos.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: leader key)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1219,11 +1219,11 @@ Termos: ergonomics, leader key, prefix key, modifier key, keybinding, keymap, RS
 **Veja também:**
 - [[01 - Filosofia keyboard-first — quando vale e quando não]]
 - [[09 - Transições de contexto]]
-- [[03-Dominios/Terminal/Editor/02 - Motions e operadores|Motions Vim (galho 1)]]
-- [[03-Dominios/Terminal/Shell/06 - ZLE — Zsh Line Editor|ZLE (galho 2)]]
-- [[03-Dominios/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais|Keybindings Zellij (galho 3)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/02 - Motions e operadores|Motions Vim (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/Shell/06 - ZLE — Zsh Line Editor|ZLE (galho 2)]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/03 - Modos básicos e keybindings essenciais|Keybindings Zellij (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#leader key|leader key]]
 - [[Dicionário do Terminal#RSI|RSI]]
 
@@ -1242,9 +1242,9 @@ Veja também: [[06 - Ergonomia das mãos]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/06 - Ergonomia das mãos.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/06 - Ergonomia das mãos.md"
-grep -E "^### leader key$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/06 - Ergonomia das mãos.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/06 - Ergonomia das mãos.md"
+grep -E "^### leader key$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥10 wikilinks; verbete visível.
@@ -1252,7 +1252,7 @@ Esperado: arquivo existe; ≥10 wikilinks; verbete visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/06 - Ergonomia das mãos.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/06 - Ergonomia das mãos.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 06 — Ergonomia das mãos"
 ```
 
@@ -1261,8 +1261,8 @@ git commit -m "feat(terminal-workflow): add nota 06 — Ergonomia das mãos"
 ## Task 8: Nota 07 — Worktrees + Zellij paralelos
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: worktree)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: worktree)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1427,10 +1427,10 @@ Termos: worktree, branch, checkout, stash, lock file, dependencies, dirty workin
 - [[04 - Setup matinal e tear-down]]
 - [[05 - Code review no terminal]]
 - [[08 - Refactoring multi-arquivo]]
-- [[03-Dominios/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
-- [[03-Dominios/Terminal/TUIs/01 - Lazygit — overview|Lazygit overview (galho 4)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/04 - Sessões persistentes|Sessões persistentes (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/01 - Lazygit — overview|Lazygit overview (galho 4)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#worktree|worktree]]
 - [[Dicionário do Terminal#named session|named session]]
 
@@ -1449,9 +1449,9 @@ Veja também: [[07 - Worktrees + Zellij paralelos]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md"
-grep -E "^### worktree$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md"
+grep -E "^### worktree$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥9 wikilinks; verbete visível.
@@ -1459,7 +1459,7 @@ Esperado: arquivo existe; ≥9 wikilinks; verbete visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/07 - Worktrees + Zellij paralelos.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 07 — Worktrees + Zellij paralelos"
 ```
 
@@ -1468,8 +1468,8 @@ git commit -m "feat(terminal-workflow): add nota 07 — Worktrees + Zellij paral
 ## Task 9: Nota 08 — Refactoring multi-arquivo
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/08 - Refactoring multi-arquivo.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: quickfix)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/08 - Refactoring multi-arquivo.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: quickfix)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1626,11 +1626,11 @@ Termos: refactoring, quickfix, location list, find and replace, language server,
 - [[03 - Onboarding em projeto novo]]
 - [[05 - Code review no terminal]]
 - [[09 - Transições de contexto]]
-- [[03-Dominios/Terminal/Editor/09 - LSP no Neovim — Mason, nvim-lspconfig, nvim-cmp|LSP no Neovim (galho 1)]]
-- [[03-Dominios/Terminal/Editor/11 - Workflow avançado — quickfix, sessions, refactoring pesado|Quickfix avançado (galho 1)]]
-- [[03-Dominios/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes|ripgrep (galho 6)]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/09 - LSP no Neovim — Mason, nvim-lspconfig, nvim-cmp|LSP no Neovim (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/11 - Workflow avançado — quickfix, sessions, refactoring pesado|Quickfix avançado (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/02 - ripgrep e fd — buscar conteúdo e nomes|ripgrep (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#quickfix|quickfix]]
 - [[Dicionário do Terminal#LSP|LSP]]
 
@@ -1650,9 +1650,9 @@ Veja também: [[08 - Refactoring multi-arquivo]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/08 - Refactoring multi-arquivo.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/08 - Refactoring multi-arquivo.md"
-grep -E "^### quickfix$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/08 - Refactoring multi-arquivo.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/08 - Refactoring multi-arquivo.md"
+grep -E "^### quickfix$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥10 wikilinks; verbete visível.
@@ -1660,7 +1660,7 @@ Esperado: arquivo existe; ≥10 wikilinks; verbete visível.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/08 - Refactoring multi-arquivo.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/08 - Refactoring multi-arquivo.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 08 — Refactoring multi-arquivo"
 ```
 
@@ -1669,8 +1669,8 @@ git commit -m "feat(terminal-workflow): add nota 08 — Refactoring multi-arquiv
 ## Task 10: Nota 09 — Transições de contexto
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/09 - Transições de contexto.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbetes: deep work, switching cost, shallow task, context switching cost)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/09 - Transições de contexto.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbetes: deep work, switching cost, shallow task, context switching cost)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1818,8 +1818,8 @@ Termos: deep work, shallow task, context switching, switching cost, attention re
 - [[02 - Anatomia da sessão de trabalho]]
 - [[04 - Setup matinal e tear-down]]
 - [[06 - Ergonomia das mãos]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#deep work|deep work]]
 - [[Dicionário do Terminal#shallow task|shallow task]]
 - [[Dicionário do Terminal#switching cost|switching cost]]
@@ -1856,10 +1856,10 @@ Veja também: [[09 - Transições de contexto]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/09 - Transições de contexto.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/09 - Transições de contexto.md"
-grep -E "^### deep work$" "03-Dominios/Terminal/Dicionário do Terminal.md"
-grep -E "^### switching cost$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/09 - Transições de contexto.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/09 - Transições de contexto.md"
+grep -E "^### deep work$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
+grep -E "^### switching cost$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥10 wikilinks; 4 verbetes visíveis.
@@ -1867,7 +1867,7 @@ Esperado: arquivo existe; ≥10 wikilinks; 4 verbetes visíveis.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/09 - Transições de contexto.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/09 - Transições de contexto.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 09 — Transições de contexto"
 ```
 
@@ -1876,8 +1876,8 @@ git commit -m "feat(terminal-workflow): add nota 09 — Transições de contexto
 ## Task 11: Nota 10 — Capstone: Sessão ideal — anatomia de um dia keyboard-first
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md`
-- Modify: `03-Dominios/Terminal/Dicionário do Terminal.md` (verbete: capstone)
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (verbete: capstone)
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -2120,14 +2120,14 @@ Termos vindos da composição:
 - [[07 - Worktrees + Zellij paralelos]]
 - [[08 - Refactoring multi-arquivo]]
 - [[09 - Transições de contexto]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/Editor/index|Editor (galho 1)]]
-- [[03-Dominios/Terminal/Shell/index|Shell (galho 2)]]
-- [[03-Dominios/Terminal/Multiplexer/index|Multiplexer (galho 3)]]
-- [[03-Dominios/Terminal/TUIs/index|TUIs de Dev (galho 4)]]
-- [[03-Dominios/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
-- [[03-Dominios/Terminal/CLI Utils/index|CLI Utils (galho 6)]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/index|Editor (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/Shell/index|Shell (galho 2)]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/index|Multiplexer (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs de Dev (galho 4)]]
+- [[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|CLI Utils (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#capstone|capstone]]
 
 ## Referências
@@ -2147,9 +2147,9 @@ Veja também: [[10 - Sessão ideal — anatomia de um dia keyboard-first]].
 - [ ] **Step 5: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md"
-grep -E "^### capstone$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md"
+grep -E "^### capstone$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: arquivo existe; ≥18 wikilinks (capstone referencia todas anteriores + 6 galhos); verbete visível.
@@ -2157,7 +2157,7 @@ Esperado: arquivo existe; ≥18 wikilinks (capstone referencia todas anteriores 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md" "03-Dominios/Terminal/Dicionário do Terminal.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 git commit -m "feat(terminal-workflow): add nota 10 — Capstone: Sessão ideal"
 ```
 
@@ -2166,7 +2166,7 @@ git commit -m "feat(terminal-workflow): add nota 10 — Capstone: Sessão ideal"
 ## Task 12: MOC do galho
 
 **Files:**
-- Create: `03-Dominios/Terminal/Workflow/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/Workflow/index.md`
 
 - [ ] **Step 1: Frontmatter**
 
@@ -2255,21 +2255,21 @@ Este galho assume galhos 1-6 dominados. Notas referenciam mas NÃO re-explicam f
 ## Veja também
 
 - [[Dicionário do Terminal]] (bloco ## Workflow)
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
-- [[03-Dominios/Terminal/Editor/index|Editor (galho 1)]]
-- [[03-Dominios/Terminal/Shell/index|Shell (galho 2)]]
-- [[03-Dominios/Terminal/Multiplexer/index|Multiplexer (galho 3)]]
-- [[03-Dominios/Terminal/TUIs/index|TUIs de Dev (galho 4)]]
-- [[03-Dominios/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
-- [[03-Dominios/Terminal/CLI Utils/index|CLI Utils (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/index|Editor (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/Shell/index|Shell (galho 2)]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/index|Multiplexer (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs de Dev (galho 4)]]
+- [[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|CLI Utils (galho 6)]]
 ```
 
 - [ ] **Step 3: Validar**
 
 ```bash
-test -f "03-Dominios/Terminal/Workflow/index.md"
-grep -c '\[\[' "03-Dominios/Terminal/Workflow/index.md"
-grep -E "^### Iniciado$|^### Adepto$|^### Magus$" "03-Dominios/Terminal/Workflow/index.md"
+test -f "03-Dominios/Tecnologia/Terminal/Workflow/index.md"
+grep -c '\[\[' "03-Dominios/Tecnologia/Terminal/Workflow/index.md"
+grep -E "^### Iniciado$|^### Adepto$|^### Magus$" "03-Dominios/Tecnologia/Terminal/Workflow/index.md"
 ```
 
 Esperado: arquivo existe; ≥18 wikilinks; 3 H3s de fases visíveis.
@@ -2277,7 +2277,7 @@ Esperado: arquivo existe; ≥18 wikilinks; 3 H3s de fases visíveis.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/Workflow/index.md"
+git add "03-Dominios/Tecnologia/Terminal/Workflow/index.md"
 git commit -m "feat(terminal-workflow): add MOC do galho 7"
 ```
 
@@ -2286,12 +2286,12 @@ git commit -m "feat(terminal-workflow): add MOC do galho 7"
 ## Task 13: Tronco — ativar wikilink e fechar trilha
 
 **Files:**
-- Modify: `03-Dominios/Terminal/index.md`
+- Modify: `03-Dominios/Tecnologia/Terminal/index.md`
 
 - [ ] **Step 1: Ler tronco atual**
 
 ```bash
-head -50 "03-Dominios/Terminal/index.md"
+head -50 "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Localizar linha 33: `- Workflow — galho 7 (planejado): playbooks cross-tool`.
@@ -2301,7 +2301,7 @@ Localizar linha 33: `- Workflow — galho 7 (planejado): playbooks cross-tool`.
 Substituir linha 33 por:
 
 ```markdown
-- [[03-Dominios/Terminal/Workflow/index|Workflow]] — galho 7: playbooks cross-tool (onboarding, review, worktrees, refactoring) + meta-práticas (filosofia keyboard-first, ergonomia, transições de contexto) + capstone (anatomia de um dia)
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|Workflow]] — galho 7: playbooks cross-tool (onboarding, review, worktrees, refactoring) + meta-práticas (filosofia keyboard-first, ergonomia, transições de contexto) + capstone (anatomia de um dia)
 ```
 
 - [ ] **Step 3: Atualizar frontmatter**
@@ -2322,9 +2322,9 @@ Substituir o callout TL;DR atual por:
 - [ ] **Step 5: Validar**
 
 ```bash
-grep -E "^- \[\[03-Dominios/Terminal/Workflow/index\|Workflow\]\]" "03-Dominios/Terminal/index.md"
-grep "^updated:" "03-Dominios/Terminal/index.md"
-grep "^progresso:" "03-Dominios/Terminal/index.md"
+grep -E "^- \[\[03-Dominios/Tecnologia/Terminal/Workflow/index\|Workflow\]\]" "03-Dominios/Tecnologia/Terminal/index.md"
+grep "^updated:" "03-Dominios/Tecnologia/Terminal/index.md"
+grep "^progresso:" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Esperado: wikilink ativo; `updated: 2026-05-24`; `progresso: completo`.
@@ -2332,7 +2332,7 @@ Esperado: wikilink ativo; `updated: 2026-05-24`; `progresso: completo`.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git commit -m "feat(terminal): tronco com wikilink ativo pro galho 7 e trilha completa"
 ```
 
@@ -2345,8 +2345,8 @@ git commit -m "feat(terminal): tronco com wikilink ativo pro galho 7 e trilha co
 - [ ] **Step 1: Estrutura de arquivos**
 
 ```bash
-ls -la "03-Dominios/Terminal/Workflow/" | head -20
-ls "03-Dominios/Terminal/Workflow/" | wc -l
+ls -la "03-Dominios/Tecnologia/Terminal/Workflow/" | head -20
+ls "03-Dominios/Tecnologia/Terminal/Workflow/" | wc -l
 ```
 
 Esperado: 11 arquivos (10 notas + 1 MOC).
@@ -2354,7 +2354,7 @@ Esperado: 11 arquivos (10 notas + 1 MOC).
 - [ ] **Step 2: Frontmatter consistente**
 
 ```bash
-for f in "03-Dominios/Terminal/Workflow"/*.md; do
+for f in "03-Dominios/Tecnologia/Terminal/Workflow"/*.md; do
     echo "=== $f ==="
     head -20 "$f" | grep -E "^(title|publish|fase|tags|created|updated):"
 done
@@ -2365,7 +2365,7 @@ Esperado: cada nota tem `title`, `publish: true`, `fase: iniciado|adepto|magus`,
 - [ ] **Step 3: Estrutura H2 das notas regulares (01-09)**
 
 ```bash
-for f in "03-Dominios/Terminal/Workflow"/0[1-9]\ -*.md; do
+for f in "03-Dominios/Tecnologia/Terminal/Workflow"/0[1-9]\ -*.md; do
     echo "=== $f ==="
     grep "^## " "$f"
 done
@@ -2376,7 +2376,7 @@ Esperado em cada uma das 9 notas regulares: `## O que é / Como funciona`, `## N
 - [ ] **Step 4: Estrutura do capstone (10)**
 
 ```bash
-grep "^## " "03-Dominios/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md"
+grep "^## " "03-Dominios/Tecnologia/Terminal/Workflow/10 - Sessão ideal — anatomia de um dia keyboard-first.md"
 ```
 
 Esperado: `## Cenário`, `## Fluxo (cronológico)`, `## Decisões em pontos de bifurcação`, `## Em inglês`, `## Veja também`, `## Referências`.
@@ -2384,7 +2384,7 @@ Esperado: `## Cenário`, `## Fluxo (cronológico)`, `## Decisões em pontos de b
 - [ ] **Step 5: Armadilhas count (≥4 em cada nota regular)**
 
 ```bash
-for f in "03-Dominios/Terminal/Workflow"/0[1-9]\ -*.md; do
+for f in "03-Dominios/Tecnologia/Terminal/Workflow"/0[1-9]\ -*.md; do
     count=$(grep -E "^[0-9]+\. \*\*" "$f" | wc -l)
     echo "$f: $count armadilhas"
 done
@@ -2395,7 +2395,7 @@ Esperado: cada nota com ≥4 armadilhas.
 - [ ] **Step 6: Bullets "Em inglês" (8-10 em cada nota)**
 
 ```bash
-for f in "03-Dominios/Terminal/Workflow"/*.md; do
+for f in "03-Dominios/Tecnologia/Terminal/Workflow"/*.md; do
     section=$(awk '/^## Em inglês/,/^## Veja também/' "$f")
     count=$(echo "$section" | grep -E "^- \*\*" | wc -l)
     echo "$f: $count bullets"
@@ -2409,7 +2409,7 @@ Esperado: 8-10 bullets em cada nota.
 Usar a skill:
 
 ```text
-verificar-wikilinks 03-Dominios/Terminal/Workflow
+verificar-wikilinks 03-Dominios/Tecnologia/Terminal/Workflow
 ```
 
 Esperado: 0 broken links.
@@ -2418,14 +2418,14 @@ Esperado: 0 broken links.
 
 ```bash
 # Bloco Workflow existe
-grep -E "^## Workflow$" "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep -E "^## Workflow$" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 
 # Verbetes em ordem alfabética (case-insensitive)
-awk '/^## Workflow$/,/^## /' "03-Dominios/Terminal/Dicionário do Terminal.md" | grep -E "^### " | sort -fc 2>&1
+awk '/^## Workflow$/,/^## /' "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md" | grep -E "^### " | sort -fc 2>&1
 # (saída vazia = ordem alfabética correta; senão mostra primeiro fora de ordem)
 
 # Updated bump
-grep "^updated:" "03-Dominios/Terminal/Dicionário do Terminal.md"
+grep "^updated:" "03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md"
 ```
 
 Esperado: bloco existe; verbetes ordenados; `updated: 2026-05-24`.
@@ -2433,8 +2433,8 @@ Esperado: bloco existe; verbetes ordenados; `updated: 2026-05-24`.
 - [ ] **Step 9: Tronco com galho 7 ativo**
 
 ```bash
-grep -E "\[\[03-Dominios/Terminal/Workflow/index\|Workflow\]\]" "03-Dominios/Terminal/index.md"
-grep "^progresso:" "03-Dominios/Terminal/index.md"
+grep -E "\[\[03-Dominios/Tecnologia/Terminal/Workflow/index\|Workflow\]\]" "03-Dominios/Tecnologia/Terminal/index.md"
+grep "^progresso:" "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Esperado: wikilink presente; `progresso: completo`.
@@ -2465,7 +2465,7 @@ Usar tool Agent com:
 Prompt do subagent:
 
 ```text
-Você é um cross-task reviewer pra um galho de trilha de notas Obsidian. 11 arquivos foram escritos em `03-Dominios/Terminal/Workflow/` (10 notas + 1 MOC) + Dicionário expandido + tronco atualizado.
+Você é um cross-task reviewer pra um galho de trilha de notas Obsidian. 11 arquivos foram escritos em `03-Dominios/Tecnologia/Terminal/Workflow/` (10 notas + 1 MOC) + Dicionário expandido + tronco atualizado.
 
 Sua tarefa: revisar **consistência cross-arquivo** das 11 notas + MOC + bloco "Workflow" do Dicionário.
 
@@ -2487,7 +2487,7 @@ Hard constraints (qualquer violação = Critical):
 
 Liste TODOS os arquivos do galho:
 ```bash
-ls "03-Dominios/Terminal/Workflow/"
+ls "03-Dominios/Tecnologia/Terminal/Workflow/"
 ```
 
 Use grep/Read pra inspecionar. Reporte breve (≤500 palavras), priorizando Critical/Important. Nice-to-have só se relevante.
@@ -2518,12 +2518,12 @@ Re-rodar steps relevantes da Task 14.
 
 ## Task 16: Critério de pronto final
 
-- [ ] 11 arquivos em `03-Dominios/Terminal/Workflow/` (10 notas + MOC)
+- [ ] 11 arquivos em `03-Dominios/Tecnologia/Terminal/Workflow/` (10 notas + MOC)
 - [ ] Notas 01-09 com TL;DR `[!abstract]`, ≥4 armadilhas no padrão completo, 8-10 bullets "Em inglês"
 - [ ] Capstone (10) com estrutura própria (Cenário/Fluxo/Decisões), compondo as 9 anteriores
 - [ ] `## Workflow` no Dicionário com 10-15 verbetes em ordem alfabética; `updated: 2026-05-24`
 - [ ] Tronco (`Terminal/index.md`) com wikilink ativo pro galho 7; `progresso: completo`; `updated: 2026-05-24`
-- [ ] `verificar-wikilinks 03-Dominios/Terminal/Workflow/` → 0 broken
+- [ ] `verificar-wikilinks 03-Dominios/Tecnologia/Terminal/Workflow/` → 0 broken
 - [ ] Cross-task review subagent sem Critical/Important pendentes
 - [ ] Nenhum commit com `Co-Authored-By: Claude`
 - [ ] Nenhum `git add -A`; apenas stages explícitos

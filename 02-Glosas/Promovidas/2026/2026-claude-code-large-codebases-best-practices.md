@@ -7,7 +7,7 @@ site: Claude Blog
 published: 2026-05-14
 read: 2026-05-25
 promovida_em:
-  - "[[03-Dominios/IA/Claude Code/Mental Model/09 - O harness como terceira camada]]"
+  - "[[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/09 - O harness como terceira camada]]"
 type: glosa
 progress: backlog
 status: lido

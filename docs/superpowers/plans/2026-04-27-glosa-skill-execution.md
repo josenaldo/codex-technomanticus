@@ -256,7 +256,7 @@ Expected: sucesso silencioso. Se falhar com "directory not empty", investigue an
 
 - Move: `00 - Inbox/Entradas.md` → `01-Pergaminhos/entradas.md`
 - Move: `00 - Inbox/Avaliar.md` → `01-Pergaminhos/avaliar.md`
-- Move: `00 - Inbox/entradas/inglês.md` → `03-Dominios/Inglês/Inglês — entradas.md` (decisão da spec §11.2, default)
+- Move: `00 - Inbox/entradas/inglês.md` → `03-Dominios/Carreira/Inglês/Inglês — entradas.md` (decisão da spec §11.2, default)
 
 - [ ] **Step 1: Mover Entradas.md (renomeando pra lowercase)**
 
@@ -293,7 +293,7 @@ NÃO remova `00 - Inbox/` ainda — fica para o Task A7.
 **Files:**
 
 - Move: `Arquitetura/`, `Ferramentas/`, `Fundamentos/`, `Go/`, `IA/`, `Infraestrutura/`, `Inglês/`, `Java/`, `JavaScript/`, `Python/` → `03-Dominios/<nome>/`
-- Move: `00 - Inbox/entradas/inglês.md` → `03-Dominios/Inglês/Inglês — entradas.md`
+- Move: `00 - Inbox/entradas/inglês.md` → `03-Dominios/Carreira/Inglês/Inglês — entradas.md`
 - Cleanup: `00 - Inbox/`
 
 - [ ] **Step 1: Mover as 10 pastas de domínio**
@@ -315,10 +315,10 @@ cd /home/josenaldo/repos/personal/codex-technomanticus && git mv Python 03-Domin
 
 - [ ] **Step 2: Mover `inglês.md` que estava em `00 - Inbox/entradas/`**
 
-Agora que `03-Dominios/Inglês/` existe:
+Agora que `03-Dominios/Carreira/Inglês/` existe:
 
 ```bash
-cd /home/josenaldo/repos/personal/codex-technomanticus && git mv "00 - Inbox/entradas/inglês.md" "03-Dominios/Inglês/Inglês — entradas.md"
+cd /home/josenaldo/repos/personal/codex-technomanticus && git mv "00 - Inbox/entradas/inglês.md" "03-Dominios/Carreira/Inglês/Inglês — entradas.md"
 ```
 
 - [ ] **Step 3: Cleanup `00 - Inbox/`**

@@ -40,7 +40,7 @@ Promove **uma** glosa para o status de fonte de uma nota nova de domínio. A glo
    - `promovida_em` (lista atual; se já tiver itens, será incrementada).
 
 3. **Sugerir domínio destino.** Heurística:
-   - Mapear cada tag pra um domínio candidato olhando `03-Dominios/`. Ex.: tag `react` → `03-Dominios/React/`. Tag `validacao` → `03-Dominios/Frontend/Validação/`.
+   - Mapear cada tag pra um domínio candidato olhando `03-Dominios/`. Ex.: tag `react` → `03-Dominios/Tecnologia/React/`. Tag `validacao` → `03-Dominios/Tecnologia/Frontend/Validação/`.
    - Apresentar a sugestão com a tag correspondente. Se múltiplas tags casam com domínios diferentes, listar todas e pedir escolha.
    - Permitir o usuário corrigir/digitar outro caminho.
 

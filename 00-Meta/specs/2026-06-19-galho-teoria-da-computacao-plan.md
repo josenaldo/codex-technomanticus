@@ -23,7 +23,7 @@ muitos diagramas). Depois deste, só falta Matemática para Computação (11) pr
 ## Decisão de fronteira (rígido — linka, não duplica)
 - **Algoritmos/13 (Intratabilidade)** = FACE PRÁTICA de P/NP (NP-difícil como sinal, aproximação/heurística;
   defere o formal "pro galho Teoria da Computação"). ESTE galho é DONO do tratamento FORMAL. Notas 14/15
-  **linkam** `[[03-Dominios/Fundamentos/Algoritmos/13 - Intratabilidade]]` e NÃO repetem a face prática.
+  **linkam** `[[03-Dominios/Ciência/Algoritmos/13 - Intratabilidade]]` e NÃO repetem a face prática.
 - **Matemática para Computação** (galho 11, NÃO existe ainda) = lógica/provas/conjuntos/combinatória. Teoria
   USA prova/diagonalização mas não as ENSINA. Mencionar em PROSA, SEM wikilink quebrado.
 - **Compiladores e Linguagens** (Camada D, futuro) = parsing/lexing na PRÁTICA. Teoria é dona das LINGUAGENS
@@ -44,7 +44,7 @@ infinito; Rice → análise estática perfeita não existe; NP-completo → pare
 1. **O que é computação (e por que estudar seus limites)** *(âncora)* — o que é um modelo de computação e por
    que formalizar; decidir × reconhecer × computar função; problema = linguagem; a "torre de poder" (AF < AP <
    MT) como mapa do galho; as duas grandes perguntas (o que pode ser computado / a que custo); quem é dono de
-   quê. **Linka [[03-Dominios/Fundamentos/Algoritmos/13 - Intratabilidade]]** (a face prática mora lá).
+   quê. **Linka [[03-Dominios/Ciência/Algoritmos/13 - Intratabilidade]]** (a face prática mora lá).
 2. **Linguagens formais e a hierarquia de Chomsky** — alfabeto, palavra, linguagem (conjunto de palavras),
    operações (concatenação, Kleene star); gramática formal (produções); a hierarquia de Chomsky (tipo 3
    regular / 2 livre-de-contexto / 1 sensível-ao-contexto / 0 irrestrita) como mapa-mestre que organiza o
@@ -95,7 +95,7 @@ infinito; Rice → análise estática perfeita não existe; NP-completo → pare
 14. **Complexidade computacional formal: classes de tempo, P e NP** — MT com relógio (tempo como função do
     tamanho da entrada); a classe **P** (decidível em tempo polinomial = "tratável"); a classe **NP** (duas
     definições equivalentes: verificável em tempo polinomial / MT não-determinística); por que P ⊆ NP; o
-    certificado/testemunha. ESTE é o formalismo que `[[03-Dominios/Fundamentos/Algoritmos/13 - Intratabilidade]]`
+    certificado/testemunha. ESTE é o formalismo que `[[03-Dominios/Ciência/Algoritmos/13 - Intratabilidade]]`
     deferiu — linka de volta.
 15. **NP-completude: Cook-Levin e a cadeia de Karp** — redução polinomial (≤ₚ); NP-difícil × NP-completo;
     **teorema de Cook-Levin** (SAT é NP-completo — o primeiro, do qual todos descendem); a cascata de 21
@@ -128,7 +128,7 @@ infinito; Rice → análise estática perfeita não existe; NP-completo → pare
   (a*b*, aⁿbⁿ, o problema da parada, SAT, caixeiro-viajante).
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Teoria da Computação/` com `index.md` (`type: moc`, `status: growing`,
+- Pasta `03-Dominios/Ciência/Teoria da Computação/` com `index.md` (`type: moc`, `status: growing`,
   `publish: true`, fases, rotas, dataview, "Veja também").
 - Aliases do index: **"Teoria da Computação"** + **"Teoria da Computação"** + **"Computability"** +
   **"Theory of Computation"** + **"Galho - Teoria da Computação"**.

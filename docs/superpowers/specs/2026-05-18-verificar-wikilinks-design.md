@@ -4,7 +4,7 @@ created: 2026-05-18
 status: spec
 domain: ferramentas-do-vault
 related:
-  - "[[03-Dominios/IA/index.md]]"
+  - "[[03-Dominios/Tecnologia/IA/index.md]]"
   - ".agents/skills/deadlink/"
   - ".agents/skills/obsidian-markdown/"
 ---
@@ -13,7 +13,7 @@ related:
 
 ## Motivação
 
-A MOC `03-Dominios/IA/index.md` contém wikilinks como `[[Anatomia dos LLMs]]`, `[[MCP]]`, `[[Context Engineering]]` que apontam para **pastas** sem `index.md`. No Obsidian funcionam (resolução por basename pula folders); no site gerado pelo Quartz **quebram**, porque Quartz não converte `[[Pasta]]` em `[[Pasta/index]]` quando a pasta não tem arquivo de índice.
+A MOC `03-Dominios/Tecnologia/IA/index.md` contém wikilinks como `[[Anatomia dos LLMs]]`, `[[MCP]]`, `[[Context Engineering]]` que apontam para **pastas** sem `index.md`. No Obsidian funcionam (resolução por basename pula folders); no site gerado pelo Quartz **quebram**, porque Quartz não converte `[[Pasta]]` em `[[Pasta/index]]` quando a pasta não tem arquivo de índice.
 
 Esse padrão deve estar replicado em outras MOCs do vault. Precisamos de uma ferramenta para:
 
@@ -114,7 +114,7 @@ python check_wikilinks.py <pasta-alvo> [--vault-root <path>] [--output <json-pat
 {
   "scanned_at": "2026-05-18T14:32:00Z",
   "vault_root": "/home/josenaldo/repos/personal/codex-technomanticus",
-  "target_folder": "03-Dominios/IA",
+  "target_folder": "03-Dominios/Tecnologia/IA",
   "stats": {
     "files_scanned": 47,
     "links_total": 312,
@@ -127,7 +127,7 @@ python check_wikilinks.py <pasta-alvo> [--vault-root <path>] [--output <json-pat
   },
   "broken": [
     {
-      "file": "03-Dominios/IA/index.md",
+      "file": "03-Dominios/Tecnologia/IA/index.md",
       "line": 42,
       "raw": "[[Anatomia dos LLMs]]",
       "target": "Anatomia dos LLMs",
@@ -137,7 +137,7 @@ python check_wikilinks.py <pasta-alvo> [--vault-root <path>] [--output <json-pat
       "in_frontmatter": false,
       "reason": "folder_without_index",
       "candidates": [
-        "03-Dominios/IA/Anatomia dos LLMs/01 - O que é um LLM.md"
+        "03-Dominios/Tecnologia/IA/Anatomia dos LLMs/01 - O que é um LLM.md"
       ]
     }
   ],

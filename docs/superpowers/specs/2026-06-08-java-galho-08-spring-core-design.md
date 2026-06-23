@@ -18,13 +18,13 @@ Este é o **oitavo galho** da trilha Java Senior (roadmap em `docs/superpowers/s
 - **Parte REFATOR (poda parcial):** existe o tronco `Backend/Spring Boot.md` (1848 linhas, `publish: false`, `status: evergreen`) com conteúdo core rico — `## Spring IoC Container`, `## AOP e proxies`, `## Configuração e Profiles`, `## Actuator`. Essas seções são **matéria-prima a refinar** e depois **podar** (callout + wikilinks). O tronco está **cheio de fabricação** (33 ocorrências de `Patient`/`MedEspecialista`/1ª pessoa) — é **contraexemplo a higienizar, nunca copiar**.
 - **Parte PESQUISA:** o tronco é **fino** em auto-configuration (só menciona em `## O que é` e na subseção `### Conditional beans`), starters, eventos do `ApplicationContext`, `SpringApplication`/bootstrap e AOT. Essas notas **nascem de docs oficiais** (`docs.spring.io`, `spring.io/projects/...`) verificadas via WebFetch — atenção redobrada à fabricação.
 
-**A fronteira-assinatura, invertida em relação ao Galho 7.** No Galho 7 o Spring era **proibido** (só motivação, sem wikilink). Aqui o Spring **é o assunto** — mas a regra agora é **LINKAR DE VOLTA ao Galho 7** mostrando como o Spring implementa/abstrai cada spec, **sem re-explicar a spec**. Ex.: a nota de IoC/DI explica o container do Spring e linka `[[03-Dominios/Java/Jakarta EE/04 - CDI — beans e injeção|CDI]]` ("é a mesma ideia da spec CDI, com container próprio — é isso que o `@Autowired` esconde"); AOP linka interceptors do CDI; eventos linkam `@Observes`; post-processors linkam portable extensions. O Galho 7 plantou **9 ganchos "Galho 8 (planejado)"** esperando exatamente esses wikilinks (dívida reversa — §3.6). Este galho **quita** essa dívida.
+**A fronteira-assinatura, invertida em relação ao Galho 7.** No Galho 7 o Spring era **proibido** (só motivação, sem wikilink). Aqui o Spring **é o assunto** — mas a regra agora é **LINKAR DE VOLTA ao Galho 7** mostrando como o Spring implementa/abstrai cada spec, **sem re-explicar a spec**. Ex.: a nota de IoC/DI explica o container do Spring e linka `[[03-Dominios/Tecnologia/Java/Jakarta EE/04 - CDI — beans e injeção|CDI]]` ("é a mesma ideia da spec CDI, com container próprio — é isso que o `@Autowired` esconde"); AOP linka interceptors do CDI; eventos linkam `@Observes`; post-processors linkam portable extensions. O Galho 7 plantou **9 ganchos "Galho 8 (planejado)"** esperando exatamente esses wikilinks (dívida reversa — §3.6). Este galho **quita** essa dívida.
 
 Spring Core e Boot é o **container que implementa as ideias do Galho 7**: IoC/DI no Spring, ciclo de vida e escopos de beans, AOP e proxies (o mecanismo sob `@Transactional`/`@Async`), configuração e profiles, auto-configuration e starters (o coração do Boot), `@ConfigurationProperties`, eventos do contexto e os fundamentos do Boot. Depende dos Galhos 1 (annotations/reflection) e 7 (specs Jakarta).
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **18 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda parcial do tronco + quitação da dívida reversa**, em `03-Dominios/Java/Spring Core e Boot/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 7 Adepto + 6 Magus**).
+Produzir, em uma sessão de execução dedicada, **18 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda parcial do tronco + quitação da dívida reversa**, em `03-Dominios/Tecnologia/Java/Spring Core e Boot/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**5 Iniciado + 7 Adepto + 6 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -37,7 +37,7 @@ A barra é "explicar o mecanismo, reconhecer a spec por baixo e decidir com crit
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Spring Core e Boot/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Spring Core e Boot/`)
 
 Pasta **nova**, flat. 18 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase).
 
@@ -83,7 +83,7 @@ Pasta **nova**, flat. 18 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Spring Core e Boot/index.md`:
+`03-Dominios/Tecnologia/Java/Spring Core e Boot/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Spring Core e Boot"`, tags `java`/`spring`/`moc`, aliases `["Spring Core e Boot", "Spring", "Spring Framework", "Spring Boot", "Galho 8 - Spring"]`)
 - TL;DR callout (galho cobre o container que implementa as specs do Galho 7: IoC/DI, beans e escopos, AOP/proxies, configuração e profiles, conditional/auto-configuration, eventos, fundamentos do Boot e Actuator)
@@ -95,12 +95,12 @@ Pasta **nova**, flat. 18 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **O que o Spring esconde** — 02 → 05 → 09 → 13 → 15 → 18 (DI, `@Configuration`, AOP, post-processors, auto-config, capstone — a mágica desmontada)
   - **Boot sob o capô** — 14 → 15 → 16 → 17 → 13 → 18 (conditional, auto-config, bootstrap, Actuator, post-processors, capstone)
   - **Spring vs Jakarta EE** (a ponte com o Galho 7) — 02 → 07 → 09 → 11 → 18 + notas do Galho 7 (CDI, interceptors, eventos)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, Galho 7 (Jakarta EE — a plataforma sob o Spring), Galho 1 (Annotations), Galho 4 (Concorrência — `@Async`/threads), Dicionário de Java; Galhos 9/10/11/12/13/16/17 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, Galho 7 (Jakarta EE — a plataforma sob o Spring), Galho 1 (Annotations), Galho 4 (Concorrência — `@Async`/threads), Dicionário de Java; Galhos 9/10/11/12/13/16/17 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**202 verbetes** após o Galho 7, `type: glossary`, seção alfabética única `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter. Nenhum verbete Spring existe ainda (só `client proxy (CDI)` é adjacente — é do Galho 7, intacto).
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**202 verbetes** após o Galho 7, `type: glossary`, seção alfabética única `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter. Nenhum verbete Spring existe ainda (só `client proxy (CDI)` é adjacente — é do Galho 7, intacto).
 
 Verbetes a inserir (~37):
 
@@ -110,10 +110,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 8)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha 38 (atualmente `8. Spring Core e Boot *(planejado)* — IoC/DI, AOP, auto-configuration, profiles, Actuator`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha 38 (atualmente `8. Spring Core e Boot *(planejado)* — IoC/DI, AOP, auto-configuration, profiles, Actuator`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-8. [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]] — IoC/DI, beans e escopos, AOP/proxies, configuração e profiles, conditional/auto-configuration, eventos do contexto, fundamentos do Boot, Actuator
+8. [[03-Dominios/Tecnologia/Java/Spring Core e Boot/index|Spring Core e Boot]] — IoC/DI, beans e escopos, AOP/proxies, configuração e profiles, conditional/auto-configuration, eventos do contexto, fundamentos do Boot, Actuator
 ```
 
 Atualizar `updated`. Não mexer no resto do MOC central.
@@ -124,7 +124,7 @@ Atualizar `updated`. Não mexer no resto do MOC central.
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Spring Core e Boot/index|Spring Core e Boot]]. Veja [[01 - ...]], [[02 - ...]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/Spring Core e Boot/index|Spring Core e Boot]]. Veja [[01 - ...]], [[02 - ...]].
 ```
 
 **Seções a podar (core — deste galho):**
@@ -203,7 +203,7 @@ H1 `# Título` após o frontmatter (padrão dos galhos publicados; o Galho 7 cor
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`Order`/`Customer`/`Product`/`OrderService`/`CustomerRepository`); "padrão observado em aplicações Spring"; NUNCA `Patient`/`MedEspecialista`/"no meu projeto" (o tronco está cheio disso — **contraexemplo**)
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + subheading `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Spring Core e Boot/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando espelhar spec) a nota do **Galho 7** correspondente + Galho 1 (Annotations) quando tocar em anotações + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
+- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Spring Core e Boot/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando espelhar spec) a nota do **Galho 7** correspondente + Galho 1 (Annotations) quando tocar em anotações + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
 - `## Referências` — docs oficiais (`docs.spring.io/spring-boot/...`, `docs.spring.io/spring-framework/reference/...`, `spring.io/projects/...`). Afirmações version-specific fundadas em fonte verificada via WebFetch.
 
 ### 4.3. Restrições absolutas
@@ -250,7 +250,7 @@ Executado nesta fase de brainstorming (2026-06-08); itens version-specific re-co
 2. **Fabricação confirmada** — 33 ocorrências de `Patient`/`Josenaldo`/`MedEspecialista`/1ª pessoa (grep). Pior bloco: `## Na prática (da minha experiência)` (linha 1799, MedEspecialista 1ª pessoa). **Decisão do brainstorming: higienizar agora** (bloco órfão, sem dono em galho futuro). Demais ocorrências em seções core somem com a poda (substituídas por callout); as em seções de galhos 9/10 ficam pra eles.
 3. **Dívida reversa localizada** — 9 ganchos em 6 arquivos (§3.6); confirmar linhas na execução.
 4. **Dicionário** — **202 verbetes** (não 166); seção alfabética única `## A`…`## Z`; verbetes `### `; `updated: 2026-06-07`; nenhum verbete Spring (`client proxy (CDI)` é do Galho 7, intacto). Expansão alfabética, nunca recriar/reordenar.
-5. **MOC central** — `03-Dominios/Java/index.md:38` é a linha do Galho 8 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-07`.
+5. **MOC central** — `03-Dominios/Tecnologia/Java/index.md:38` é a linha do Galho 8 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-07`.
 6. **Troncos intocáveis** — `Backend/Spring Data JPA.md` (Galho 10), `Backend/Kafka/` (Galho 14).
 7. **Versões a cravar via WebFetch na execução** — Spring Boot 3.x atual e Spring Framework 6.x (baseline Java 17, namespace `jakarta.*`); `AutoConfiguration.imports` vs `spring.factories` (Boot 2.7+/3.x); deps circulares proibidas por default Boot 2.6+. Fonte: `docs.spring.io` / `spring.io/projects/...`.
 
@@ -260,7 +260,7 @@ Nenhum número de adoção é inventado. Quando faltar fato verificável, **PERG
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 18 notas em `03-Dominios/Java/Spring Core e Boot/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/6.
+1. 18 notas em `03-Dominios/Tecnologia/Java/Spring Core e Boot/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/7/6.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~37 verbetes; verbetes dos Galhos 1-7 intactos; `updated` atualizado; `@Transactional (Spring)` desambiguado do `@Transactional (Jakarta)`; headings conferidos 1:1 com as âncoras usadas nas notas (via grep).
 4. MOC central `Java/index.md` com Galho 8 ativado (linha 38 vira wikilink); resto intacto.
@@ -301,6 +301,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-02-java-senior-roadmap-design.md` — roadmap macro (18 galhos)
 - `2026-06-07-java-galho-07-jakarta-ee-design.md` / `...-execution.md` — Galho 7 (dependência direta; template mais recente; dono das specs que o Spring implementa)
 - `2026-06-04-java-galho-02-collections-streams-design.md`, `2026-06-05-java-galho-03-jvm-design.md` — templates de **poda parcial** de tronco monolítico
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Spring Boot.md` (poda parcial + higiene), `Linguagem e sintaxe moderna/11 - Annotations.md`, `Jakarta EE/index.md`, `Jakarta EE/04`, `05`, `06`, `12`, `13`, `JavaFX/11 - Arquitetura — MVC, MVVM e injeção de dependência.md` (dívida reversa)
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Spring Boot.md` (poda parcial + higiene), `Linguagem e sintaxe moderna/11 - Annotations.md`, `Jakarta EE/index.md`, `Jakarta EE/04`, `05`, `06`, `12`, `13`, `JavaFX/11 - Arquitetura — MVC, MVVM e injeção de dependência.md` (dívida reversa)
 - Fontes-base do galho: `docs.spring.io/spring-boot/reference/`, `docs.spring.io/spring-framework/reference/core/`, `spring.io/projects/spring-boot`, `spring.io/projects/spring-framework`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]]

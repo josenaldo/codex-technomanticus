@@ -44,7 +44,7 @@ a prática cravada na skill `enriquecer-nota`.
 
 ## Migrações (da raiz de Fundamentos para a pasta do galho)
 
-Duas notas existentes na raiz de `03-Dominios/Fundamentos/` viram notas-âncora do galho:
+Duas notas existentes na raiz de `03-Dominios/Ciência/` viram notas-âncora do galho:
 
 | Nota atual (raiz) | Vira | Fase |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ do Naur mantém os demais aliases (theory building, etc.).
 
 ## Estrutura do galho
 
-- Pasta: `03-Dominios/Fundamentos/Complexidade de Software/`
+- Pasta: `03-Dominios/Engenharia/Complexidade de Software/`
 - Notas atômicas `NN - Título.md`, flat, com frontmatter incluindo `fase: iniciado|adepto|magus`
   e tags com a fase + `complexidade-de-software` + `fundamentos`.
 - `index.md` (`type: moc`) no padrão do vault: TL;DR, "Sobre este galho" (com o que **não**

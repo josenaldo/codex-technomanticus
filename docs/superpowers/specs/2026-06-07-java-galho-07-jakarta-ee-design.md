@@ -25,7 +25,7 @@ Jakarta EE abre o bloco enterprise da trilha: é **a plataforma que o Spring abs
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **14 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + quitação da dívida reversa**, em `03-Dominios/Java/Jakarta EE/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 6 Adepto + 4 Magus). **Sem poda** (galho novo).
+Produzir, em uma sessão de execução dedicada, **14 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + quitação da dívida reversa**, em `03-Dominios/Tecnologia/Java/Jakarta EE/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 6 Adepto + 4 Magus). **Sem poda** (galho novo).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -38,7 +38,7 @@ A barra é "explicar a spec, reconhecer o mecanismo por baixo do framework e dec
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Jakarta EE/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Jakarta EE/`)
 
 Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase).
 
@@ -81,7 +81,7 @@ Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Jakarta EE/index.md`:
+`03-Dominios/Tecnologia/Java/Jakarta EE/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Jakarta EE"`, tags `java`/`jakarta-ee`/`moc`, aliases `["Jakarta EE", "Galho 7 - Jakarta EE", "Java EE"]`)
 - TL;DR callout (galho cobre a plataforma de especificações enterprise: spec vs impl, transição Java EE → Jakarta EE, Servlet, CDI, JAX-RS, Bean Validation, JPA spec, JTA, legado EJB e estado atual)
@@ -93,12 +93,12 @@ Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **O que o Spring esconde** — 04 → 05 → 06 → 13 → 14 (a trilha CDI completa + capstone — o mecanismo por baixo do `@Autowired`/`@Transactional`)
   - **REST do zero na plataforma** — 03 → 04 → 07 → 08 (Servlet, beans, JAX-RS, validação — uma API REST só com specs)
   - **Persistência e transações** — 09 → 10 → 11 (JPA spec, EntityManager, JTA — o contrato antes do Hibernate)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, Galho 1 (Linguagem — Annotations), Galho 4 (Concorrência), Dicionário de Java; Galhos 8/9/10 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, Galho 1 (Linguagem — Annotations), Galho 4 (Concorrência), Dicionário de Java; Galhos 8/9/10 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**166 verbetes** após o Galho 6, `type: glossary`, seções alfabéticas). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas quando necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**166 verbetes** após o Galho 6, `type: glossary`, seções alfabéticas). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas quando necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated` no frontmatter.
 
 Verbetes a inserir (~35):
 
@@ -108,10 +108,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 7)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha 37 (atualmente `7. Jakarta EE *(planejado)* — CDI, Servlet, JAX-RS, Bean Validation, JPA spec, JTA`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha 37 (atualmente `7. Jakarta EE *(planejado)* — CDI, Servlet, JAX-RS, Bean Validation, JPA spec, JTA`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-7. [[03-Dominios/Java/Jakarta EE/index|Jakarta EE]] — spec vs implementação, transição javax→jakarta, Servlet, CDI, JAX-RS, Bean Validation, JPA spec, JTA, legado EJB, estado atual da plataforma
+7. [[03-Dominios/Tecnologia/Java/Jakarta EE/index|Jakarta EE]] — spec vs implementação, transição javax→jakarta, Servlet, CDI, JAX-RS, Bean Validation, JPA spec, JTA, legado EJB, estado atual da plataforma
 ```
 
 Atualizar `updated`. Não mexer no resto do MOC central.
@@ -124,7 +124,7 @@ Atualizar `updated`. Não mexer no resto do MOC central.
 
 Pré-flight localizou **3 arquivos** com ponteiros a quitar após as notas existirem:
 
-1. `03-Dominios/Java/index.md:37` — linha do galho no MOC central (já coberta pela task 3.4).
+1. `03-Dominios/Tecnologia/Java/index.md:37` — linha do galho no MOC central (já coberta pela task 3.4).
 2. `Linguagem e sintaxe moderna/11 - Annotations.md:309` — "Este é o ponto de conexão com os **Galhos 7 e 8** (Spring e Jakarta EE)." → vira wikilink pro MOC do galho (Jakarta EE) mantendo o Galho 8 como texto "(planejado)". Opcional, se natural: linha 383 (Bean Validation) ganha wikilink pra nota 08.
 3. `JavaFX/11 - Arquitetura — MVC, MVVM e injeção de dependência.md:35,110` — **atribuição incorreta a corrigir**: o texto aponta CDI/Weld pro "Galho 8 (planejado)", mas CDI é deste galho. Fix: CDI/Weld → wikilink pra nota 04 (CDI — beans e injeção); Spring continua texto "Galho 8 (planejado)".
 
@@ -162,7 +162,7 @@ aliases:
 - `## Na prática` — exemplos compiláveis; framing neutro (`Order`/`Customer`/`Product`, "padrão observado em aplicações Jakarta EE"); NUNCA "no meu projeto"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto de código demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + vocabulário **6+ termos** em tabela `| Termo PT | Termo EN |`
-- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Jakarta EE/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando conectar) Galho 1 (Annotations) / Galho 4 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
+- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Jakarta EE/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando conectar) Galho 1 (Annotations) / Galho 4 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
 - `## Referências` — docs oficiais (jakarta.ee/specifications/..., Javadoc Jakarta, eclipse.org). **Toda nota é fundada em fonte oficial verificada via WebFetch** (galho de pesquisa). openjdk.org costuma dar 403 no WebFetch — para JEPs usar fallback Oracle/dev.java.
 
 ### 4.3. Restrições absolutas
@@ -201,7 +201,7 @@ Esboço do recorte. **Toda nota funda-se em doc oficial verificada via WebFetch.
 
 Executado nesta fase de brainstorming (2026-06-07); itens version-specific re-confirmados na execução de cada nota:
 
-1. **Sem conteúdo Jakarta preexistente** — grep por "Jakarta", "javax", "JAX-RS", "CDI" em `03-Dominios/Java/`: só menções de passagem (Annotations, troncos Spring dos Galhos 8/10, `javax.swing` do Galho 5). Nenhuma pasta/nota Jakarta EE. Pasta `Jakarta EE/` é nova.
+1. **Sem conteúdo Jakarta preexistente** — grep por "Jakarta", "javax", "JAX-RS", "CDI" em `03-Dominios/Tecnologia/Java/`: só menções de passagem (Annotations, troncos Spring dos Galhos 8/10, `javax.swing` do Galho 5). Nenhuma pasta/nota Jakarta EE. Pasta `Jakarta EE/` é nova.
 2. **Versões cravadas via WebFetch em jakarta.ee (2026-06-07):** plataforma atual **Jakarta EE 11 (26/jun/2025)**, EE 12 em desenvolvimento. Specs no EE 11: **CDI 4.1, Servlet 6.1, RESTful Web Services 4.0, Validation 3.1, Persistence 3.2, Transactions 2.0, Enterprise Beans 4.0** (todas com sucessoras "under development"). Releases históricas: EE 8 (10/set/2019), EE 9 (08/dez/2020 — rename), EE 9.1 (25/mai/2021), EE 10 (22/set/2022), EE 11 (26/jun/2025).
 3. **Dívida reversa localizada** (§3.6): MOC central linha 37; Annotations.md:309; JavaFX/11:35,110 (com atribuição CDI→Galho 8 a corrigir).
 4. **Dicionário**: 166 verbetes; expansão alfabética, nunca recriar.
@@ -213,7 +213,7 @@ Nenhum número de adoção é inventado. Quando faltar fato verificável, **PERG
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 14 notas em `03-Dominios/Java/Jakarta EE/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/6/4.
+1. 14 notas em `03-Dominios/Tecnologia/Java/Jakarta EE/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 4/6/4.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~35 verbetes; verbetes dos Galhos 1-6 intactos; `updated` atualizado; headings conferidos 1:1 com as âncoras usadas nas notas (via grep).
 4. MOC central `Java/index.md` com Galho 7 ativado (linha 37 vira wikilink); resto intacto.
@@ -253,6 +253,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-02-java-senior-roadmap-design.md` — roadmap macro (18 galhos)
 - `2026-06-03-java-galho-05-swing-design.md` / `...-execution.md` — Galho 5 (template de galho de PESQUISA)
 - `2026-06-06-java-galho-06-javafx-design.md` / `...-execution.md` — Galho 6 (template mais recente)
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `Linguagem e sintaxe moderna/11 - Annotations.md`, `JavaFX/11 - Arquitetura — MVC, MVVM e injeção de dependência.md`
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `Linguagem e sintaxe moderna/11 - Annotations.md`, `JavaFX/11 - Arquitetura — MVC, MVVM e injeção de dependência.md`
 - Fontes-base do galho: `jakarta.ee/specifications/...` (spec documents + Javadoc), `jakarta.ee` (releases, blog), `eclipse.org`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]]

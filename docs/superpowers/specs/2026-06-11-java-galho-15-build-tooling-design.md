@@ -21,10 +21,10 @@ Este é o **décimo quinto galho** da trilha Java Senior (roadmap em `docs/super
 
 **A fronteira-assinatura é QUÁDRUPLA.** O build é a camada que monta o que outros galhos já explicaram. Cada nota linka de volta sem re-explicar:
 
-- **Galho 3 (JVM/JPMS):** módulos (JPMS), `jlink` (runtime customizado), GraalVM/AOT/native image → `[[03-Dominios/Java/JVM/08 - JPMS — o sistema de módulos|JPMS]]` e `[[03-Dominios/Java/JVM/01 - A JVM — o que é e o pipeline de execução|A JVM]]` (distribuições/Temurin/Corretto no ângulo de runtime). A nota 13 (toolchains) e a 15 (empacotamento) apontam pra cá. **GraalVM native image é Galho 17 (planejado)** — o galho 15 só menciona o conceito de AOT como fronteira.
-- **Galho 6 (JavaFX):** `jpackage` (empacotamento nativo/instaladores) **já está coberto lá** → `[[03-Dominios/Java/JavaFX/13 - Empacotamento — módulos, jlink e jpackage|Empacotamento (JavaFX)]]`. A nota 15 linka, **não re-explica jpackage**.
-- **Galho 8 (Spring Boot):** starters, auto-configuration, `spring-boot-maven-plugin`/`repackage` → `[[03-Dominios/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]]` e `[[03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication]]`. O `spring-boot-dependencies`/`starter-parent` é a **fronteira de BOM** (nota 11): o galho explica o **mecanismo de BOM**, e linka o Boot como o BOM concreto que o leitor já conhece.
-- **Galho 13 (Testes):** Surefire/Failsafe (os runners), JaCoCo (cobertura), PIT (mutation testing) → `[[03-Dominios/Java/Testes/17 - Mutation testing — PIT e cobertura honesta|Mutation testing — PIT]]` e `[[03-Dominios/Java/Testes/01 - O que é testar em Java — a pirâmide e o stack moderno|A pirâmide de testes]]`. A nota 16 (quality gates) cobre o **ângulo de build** (plugar a ferramenta no lifecycle, falhar o build no threshold), **não a teoria de teste/cobertura** — isso é o Galho 13.
+- **Galho 3 (JVM/JPMS):** módulos (JPMS), `jlink` (runtime customizado), GraalVM/AOT/native image → `[[03-Dominios/Tecnologia/Java/JVM/08 - JPMS — o sistema de módulos|JPMS]]` e `[[03-Dominios/Tecnologia/Java/JVM/01 - A JVM — o que é e o pipeline de execução|A JVM]]` (distribuições/Temurin/Corretto no ângulo de runtime). A nota 13 (toolchains) e a 15 (empacotamento) apontam pra cá. **GraalVM native image é Galho 17 (planejado)** — o galho 15 só menciona o conceito de AOT como fronteira.
+- **Galho 6 (JavaFX):** `jpackage` (empacotamento nativo/instaladores) **já está coberto lá** → `[[03-Dominios/Tecnologia/Java/JavaFX/13 - Empacotamento — módulos, jlink e jpackage|Empacotamento (JavaFX)]]`. A nota 15 linka, **não re-explica jpackage**.
+- **Galho 8 (Spring Boot):** starters, auto-configuration, `spring-boot-maven-plugin`/`repackage` → `[[03-Dominios/Tecnologia/Java/Spring Core e Boot/15 - Auto-configuration e starters|Auto-configuration e starters]]` e `[[03-Dominios/Tecnologia/Java/Spring Core e Boot/16 - SpringApplication e o embedded server|SpringApplication]]`. O `spring-boot-dependencies`/`starter-parent` é a **fronteira de BOM** (nota 11): o galho explica o **mecanismo de BOM**, e linka o Boot como o BOM concreto que o leitor já conhece.
+- **Galho 13 (Testes):** Surefire/Failsafe (os runners), JaCoCo (cobertura), PIT (mutation testing) → `[[03-Dominios/Tecnologia/Java/Testes/17 - Mutation testing — PIT e cobertura honesta|Mutation testing — PIT]]` e `[[03-Dominios/Tecnologia/Java/Testes/01 - O que é testar em Java — a pirâmide e o stack moderno|A pirâmide de testes]]`. A nota 16 (quality gates) cobre o **ângulo de build** (plugar a ferramenta no lifecycle, falhar o build no threshold), **não a teoria de teste/cobertura** — isso é o Galho 13.
 
 **A tese honesta do galho:** um build tool não "compila" — ele resolve o **grafo de dependências** e produz um artefato **reprodutível**. A escolha **Maven vs Gradle** é **convenção/declarativo vs flexibilidade/imperativo**, não "melhor vs pior": Maven vence em projetos convencionais e onboarding; Gradle vence em builds grandes/heterogêneos pela performance incremental. E o "ecossistema do JDK" pós-2019 é uma **questão de licença e suporte**, não de tecnologia: o bytecode é o mesmo — Temurin, Corretto, Zulu e Oracle JDK são o mesmo OpenJDK com selos de suporte/licença diferentes. A cadeia de suprimentos (reproducible builds, SBOM) deixou de ser opcional pós-Log4Shell.
 
@@ -32,7 +32,7 @@ Este é o **décimo quinto galho** da trilha Java Senior (roadmap em `docs/super
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **20 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central (Galho 15) + poda reversa conservadora em `Backend/Spring Boot.md` + cross-links**, em `03-Dominios/Java/Build e tooling/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**9 Iniciado + 6 Adepto + 5 Magus**).
+Produzir, em uma sessão de execução dedicada, **20 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central (Galho 15) + poda reversa conservadora em `Backend/Spring Boot.md` + cross-links**, em `03-Dominios/Tecnologia/Java/Build e tooling/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**9 Iniciado + 6 Adepto + 5 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -47,7 +47,7 @@ A barra é "projetar, justificar e endurecer o build de um projeto Java producti
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Build e tooling/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Build e tooling/`)
 
 Pasta **nova**, flat. 20 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase). **Nome da pasta no disco: `Build e tooling`** (decisão do brainstorming — sem vírgula, casa com o padrão "X e Y" das pastas-irmãs como "Collections e Streams"/"Spring Core e Boot"). O **título** no frontmatter/MOC/aliases continua "Build, tooling e ecossistema" (espelha o roadmap).
 
@@ -99,7 +99,7 @@ Pasta **nova**, flat. 20 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Build e tooling/index.md`:
+`03-Dominios/Tecnologia/Java/Build e tooling/index.md`:
 - `type: moc`, `status: growing`, `publish: true`, `created`/`updated: 2026-06-11`
 - Frontmatter padrão (`title: "Build, tooling e ecossistema"`, tags `java`/`build`/`moc`, aliases `["Build, tooling e ecossistema", "Build e tooling", "Build Tools", "Maven e Gradle", "Galho 15 - Build"]`)
 - `> [!abstract] TL;DR` callout — 2-4 linhas: galho cobre como um projeto Java é construído/versionado/empacotado/publicado (Maven, Gradle, dependências/BOM, multi-módulo, JDK distributions, annotation processing, packaging, quality gates, supply chain); a tese (build tool resolve grafo de deps + reprodutibilidade; Maven vs Gradle = convenção vs flexibilidade); **20 notas em 3 fases**
@@ -111,12 +111,12 @@ Pasta **nova**, flat. 20 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **Maven na prática** — 02 → 03 → 04 → 10 → 11 → 12 → 15 → 19 (modelo, deps/scopes, plugins, conflitos, BOM, multi-módulo, packaging, publicar)
   - **Gradle na prática** — 05 → 06 → 07 → 10 → 11 → 12 (modelo, deps/catalogs, performance, conflitos, platform/BOM, multi-project)
   - **Build production-grade / supply chain** — 09 → 16 → 17 → 18 → 19 (JDK, quality gates, reprodutibilidade, SBOM, publicação)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **G3** (JVM/JPMS/jlink), **G6** (jpackage), **G8** (starters/repackage), **G13** (testes/JaCoCo/PIT), Dicionário de Java; Galhos 16/17/18 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **G3** (JVM/JPMS/jlink), **G6** (jpackage), **G8** (starters/repackage), **G13** (testes/JaCoCo/PIT), Dicionário de Java; Galhos 16/17/18 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho" (TABLE fase/status; **inline code nunca começa com `=`** — lição da memória)
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**437 verbetes** após o Galho 14, `type: glossary`, `updated: 2026-06-11`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo inserindo os verbetes **em ordem alfabética case-insensitive (sem acento, ignorando símbolos iniciais)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Manter `updated: 2026-06-11`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**437 verbetes** após o Galho 14, `type: glossary`, `updated: 2026-06-11`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo inserindo os verbetes **em ordem alfabética case-insensitive (sem acento, ignorando símbolos iniciais)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Manter `updated: 2026-06-11`.
 
 Verbetes a inserir (~32, conferir dups antes via grep):
 
@@ -126,10 +126,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 15)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 15 (atualmente `15. Build, tooling e ecossistema *(planejado)* — Maven, Gradle, BOM, multi-module, JDK distributions`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 15 (atualmente `15. Build, tooling e ecossistema *(planejado)* — Maven, Gradle, BOM, multi-module, JDK distributions`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-15. [[03-Dominios/Java/Build e tooling/index|Build, tooling e ecossistema]] — Maven e Gradle (modelo, lifecycle/tasks, performance), gestão de dependências (resolução transitiva, conflitos, BOM), multi-módulo, distribuições do JDK e licenciamento, annotation processing (Lombok/MapStruct), empacotamento, quality gates no build e cadeia de suprimentos (reproducible builds, SBOM, Maven Central)
+15. [[03-Dominios/Tecnologia/Java/Build e tooling/index|Build, tooling e ecossistema]] — Maven e Gradle (modelo, lifecycle/tasks, performance), gestão de dependências (resolução transitiva, conflitos, BOM), multi-módulo, distribuições do JDK e licenciamento, annotation processing (Lombok/MapStruct), empacotamento, quality gates no build e cadeia de suprimentos (reproducible builds, SBOM, Maven Central)
 ```
 
 Atualizar `updated` para `2026-06-11`. Não mexer no resto do MOC central. **Confirmar o número da linha na execução** (lendo o arquivo primeiro — hoje é a linha 48).
@@ -150,7 +150,7 @@ O pré-flight confirmou **dívida reversa pequena e localizada**, toda em `Backe
 
 | # | Arquivo | Ação |
 |---|---|---|
-| 1 | `03-Dominios/Java/index.md` | ativação do Galho 15 (§3.4) |
+| 1 | `03-Dominios/Tecnologia/Java/index.md` | ativação do Galho 15 (§3.4) |
 | 2 | `JVM/08 - JPMS — o sistema de módulos.md` (se houver gancho/"Veja também") | cross-link pra **nota 13/15** (toolchains/empacotamento) — **só se já houver seção "Veja também"**; não forçar |
 | 3 | `JavaFX/13 - Empacotamento — módulos, jlink e jpackage.md` | cross-link pra **nota 15** (empacotamento, ângulo build) no "Veja também", se existir |
 | 4 | `Spring Core e Boot/15 - Auto-configuration e starters.md` | cross-link pra **nota 11** (BOM) se houver "Veja também"; menção do `spring-boot-dependencies` como BOM |
@@ -194,7 +194,7 @@ H1 `# Título` após o frontmatter.
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`com.example`, `Order`/`Payment`/`OrderService`, módulos `app`/`core`/`domain`); "padrão observado em projetos Java"; NUNCA `MedEspecialista`/"da minha experiência"/"no meu projeto"/"quando configurei o build"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com `### (N) Título` (H3 numerado, NÃO callout `[!warning]`) + descrição + exemplo curto + fix em 1 linha
 - `## Em entrevista` — `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Build e tooling/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando aplicável) a nota da fronteira (G3 JPMS/jlink, G6 jpackage, G8 starters/repackage, G13 testes) + verbetes do Dicionário
+- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Build e tooling/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando aplicável) a nota da fronteira (G3 JPMS/jlink, G6 jpackage, G8 starters/repackage, G13 testes) + verbetes do Dicionário
 - `## Referências` — docs oficiais (`maven.apache.org`, `docs.gradle.org`, `oracle.com/java`, `adoptium.net`, `projectlombok.org`, `mapstruct.org`, `cyclonedx.org`, `central.sonatype.org`)
 
 ### 4.3. Restrições absolutas
@@ -248,7 +248,7 @@ Notas de pesquisa fundadas em doc oficial via WebFetch. Fontes-base: `maven.apac
 
 Executado nesta fase de brainstorming (2026-06-11); itens version-specific re-confirmados na execução de cada nota via WebFetch:
 
-1. **Estrutura da trilha confirmada** — MOC central é `03-Dominios/Java/index.md` (`Java.md` é legado); Galho 15 listado como `*(planejado)*` na linha 48. Padrão de nota `type: concept`/`fase`/`publish: true`; template de MOC e de nota = Galho 14 (Mensageria).
+1. **Estrutura da trilha confirmada** — MOC central é `03-Dominios/Tecnologia/Java/index.md` (`Java.md` é legado); Galho 15 listado como `*(planejado)*` na linha 48. Padrão de nota `type: concept`/`fase`/`publish: true`; template de MOC e de nota = Galho 14 (Mensageria).
 2. **Galho NOVO/PESQUISA confirmado** — pré-flight não achou tronco de build disperso. Só menções pontuais em `Backend/Spring Boot.md` (Lombok ~297-307, MapStruct ~297-305, `spring-boot-maven-plugin`/layered jar ~313) e auto-reconhecimento em `Spring Core e Boot/16` ("coberto no Galho 15/17 (planejado)"). **Poda reversa conservadora** (§3.5).
 3. **Fronteira-assinatura quádrupla confirmada (paths exatos):**
    - G3 → `JVM/08 - JPMS — o sistema de módulos.md`, `JVM/01 - A JVM — o que é e o pipeline de execução.md`
@@ -266,7 +266,7 @@ Nenhum número de adoção/market-share é inventado (o pré-flight não achou f
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 20 notas em `03-Dominios/Java/Build e tooling/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 9/6/5.
+1. 20 notas em `03-Dominios/Tecnologia/Java/Build e tooling/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 9/6/5.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview (inline code nunca inicia com `=`) + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~32 verbetes; verbetes dos Galhos 1-14 intactos; `updated: 2026-06-11`; dups conferidos e linkados (não duplicar `auto-configuration`/`starter`/`JaCoCo`/`PIT`/`GraalVM`/`jpackage`).
 4. MOC central `Java/index.md` com Galho 15 ativado (linha 48 vira wikilink); resto intacto; `updated: 2026-06-11`.
@@ -315,6 +315,6 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-05-java-galho-03-jvm-design.md` — Galho 3 (dono de JPMS/jlink/GraalVM — fronteira das notas 13/15)
 - Galho 6 (JavaFX) — dono de jpackage (fronteira da nota 15)
 - Galhos 5/7/11/14 — template de **galho de pesquisa** (sem tronco a podar)
-- Artefatos a criar/atualizar: `03-Dominios/Java/Build e tooling/**` (20 notas + MOC), `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/Spring Boot.md` (poda conservadora), `03-Dominios/Java/Spring Core e Boot/16 - SpringApplication e o embedded server.md` (wikilink), cross-links opcionais (§3.6)
+- Artefatos a criar/atualizar: `03-Dominios/Tecnologia/Java/Build e tooling/**` (20 notas + MOC), `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/Spring Boot.md` (poda conservadora), `03-Dominios/Tecnologia/Java/Spring Core e Boot/16 - SpringApplication e o embedded server.md` (wikilink), cross-links opcionais (§3.6)
 - Fontes-base do galho: `maven.apache.org`, `docs.gradle.org`/`gradle.org`, `oracle.com/java` (roadmap/faqs), `adoptium.net`, `bell-sw.com`/`azul.com`, `projectlombok.org`, `mapstruct.org`, `cyclonedx.org`, `slsa.dev`, `central.sonatype.org`, `sdkman.io`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]], [[feedback_notas_atomicas]], [[feedback_enriquecimento_feynman]]

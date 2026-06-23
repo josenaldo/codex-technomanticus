@@ -2,7 +2,7 @@
 
 **Data:** 2026-05-13  
 **Status:** aprovado  
-**Domínio:** `03-Dominios/IA/Claude Code/`
+**Domínio:** `03-Dominios/Tecnologia/IA/Claude Code/`
 
 ---
 
@@ -25,7 +25,7 @@ O vault já possui uma nota `05 - Claude Code — terminal-first agent.md` dentr
 ## Estrutura
 
 ```
-03-Dominios/IA/Claude Code/
+03-Dominios/Tecnologia/IA/Claude Code/
 ├── index.md                    ← tronco: mapa + rota por persona
 ├── Mental Model/
 ├── Configuração/

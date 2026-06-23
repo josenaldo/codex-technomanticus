@@ -23,12 +23,12 @@ Este é o **décimo quarto galho** da trilha Java Senior (roadmap em `docs/super
 
 **A fronteira-assinatura é MÚLTIPLA (sêxtupla).** A camada de aplicação da mensageria sobe sobre infra e mecanismos que outros galhos (ou o cluster existente) já cobrem. Cada nota linka de volta sem re-explicar:
 
-- **Cluster Kafka existente (a infra):** internals do Kafka (partições, offsets, replication, consumer groups, KRaft, log compaction) → `[[03-Dominios/Java/Backend/Kafka/Kafka Concepts/index|Kafka Concepts]]` e notas específicas (ex.: `[[03-Dominios/Java/Backend/Kafka/Kafka Concepts/9. Producers|Producers]]`, `[[03-Dominios/Java/Backend/Kafka/Kafka Concepts/11. Consumer Groups|Consumer Groups]]`, `[[03-Dominios/Java/Backend/Kafka/Kafka Concepts/12. Consumer Offsets|Consumer Offsets]]`). O galho assume esses fundamentos.
-- **Galho 8 (o event bus in-process):** `@EventListener`/`@TransactionalEventListener`/`ApplicationEvent` → `[[03-Dominios/Java/Spring Core e Boot/11 - Eventos do ApplicationContext|Eventos do ApplicationContext]]`. A nota 16 linka de volta sem re-explicar o mecanismo (ângulo: "quando o event bus interno substitui um broker").
-- **Galho 10 (transação/persistência):** o padrão Outbox é dual-write + transação → `[[03-Dominios/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Transações operacionais]]`. `@TransactionalEventListener` depende do ciclo transacional.
-- **Galho 11 (reativo):** mensageria reativa/Reactor Kafka, backpressure no consumo → `[[03-Dominios/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure]]`, `[[03-Dominios/Java/Programação Reativa/index|Programação Reativa]]`. **Paga a dívida** que o Galho 11 deixou explícita (`Reativa/index:35` "Mensageria reativa/Reactor Kafka (Galho 14)").
-- **Galho 4 (concorrência):** threads de consumo, `ConcurrentKafkaListenerContainerFactory`, blocking no listener → `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]`.
-- **Galho 13 (testes):** testar mensageria com `@EmbeddedKafka`/Testcontainers/Awaitility → `[[03-Dominios/Java/Testes/11 - Testcontainers — infra real em testes|Testcontainers]]`, `[[03-Dominios/Java/Testes/14 - Testando código assíncrono — Awaitility|Awaitility]]`. O Galho 13 (notas 11/14) **deixou ganchos** "Kafka = Galho 14 (planejado)".
+- **Cluster Kafka existente (a infra):** internals do Kafka (partições, offsets, replication, consumer groups, KRaft, log compaction) → `[[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka Concepts/index|Kafka Concepts]]` e notas específicas (ex.: `[[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka Concepts/9. Producers|Producers]]`, `[[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka Concepts/11. Consumer Groups|Consumer Groups]]`, `[[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka Concepts/12. Consumer Offsets|Consumer Offsets]]`). O galho assume esses fundamentos.
+- **Galho 8 (o event bus in-process):** `@EventListener`/`@TransactionalEventListener`/`ApplicationEvent` → `[[03-Dominios/Tecnologia/Java/Spring Core e Boot/11 - Eventos do ApplicationContext|Eventos do ApplicationContext]]`. A nota 16 linka de volta sem re-explicar o mecanismo (ângulo: "quando o event bus interno substitui um broker").
+- **Galho 10 (transação/persistência):** o padrão Outbox é dual-write + transação → `[[03-Dominios/Tecnologia/Java/Persistência de dados/12 - Transações operacionais — @Transactional propagação, isolamento, rollback, readOnly|Transações operacionais]]`. `@TransactionalEventListener` depende do ciclo transacional.
+- **Galho 11 (reativo):** mensageria reativa/Reactor Kafka, backpressure no consumo → `[[03-Dominios/Tecnologia/Java/Programação Reativa/09 - Backpressure — request(n) e as estratégias BUFFER, DROP, LATEST|Backpressure]]`, `[[03-Dominios/Tecnologia/Java/Programação Reativa/index|Programação Reativa]]`. **Paga a dívida** que o Galho 11 deixou explícita (`Reativa/index:35` "Mensageria reativa/Reactor Kafka (Galho 14)").
+- **Galho 4 (concorrência):** threads de consumo, `ConcurrentKafkaListenerContainerFactory`, blocking no listener → `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo]]`.
+- **Galho 13 (testes):** testar mensageria com `@EmbeddedKafka`/Testcontainers/Awaitility → `[[03-Dominios/Tecnologia/Java/Testes/11 - Testcontainers — infra real em testes|Testcontainers]]`, `[[03-Dominios/Tecnologia/Java/Testes/14 - Testando código assíncrono — Awaitility|Awaitility]]`. O Galho 13 (notas 11/14) **deixou ganchos** "Kafka = Galho 14 (planejado)".
 
 **A tese honesta do galho:** mensageria é **desacoplamento temporal e espacial**, não "velocidade". O `exactly-once` distribuído é majoritariamente um **mito operacional** — o que existe na prática é **at-least-once + consumidor idempotente**. Por isso confiabilidade (idempotência, outbox, DLQ) ocupa metade do bloco Magus, e o contraste **RPC síncrono (gRPC) vs mensageria assíncrona** fecha o galho como decisão de arquitetura, não como hype de tecnologia.
 
@@ -36,7 +36,7 @@ Os Galhos 11 e 13 deixaram **ganchos "Galho 14 (planejado)"** em texto esperando
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **29 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + migração/higiene do `gRPC e Go.md` + cross-link do cluster Kafka existente + quitação da dívida reversa**, em `03-Dominios/Java/Mensageria/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**6 Iniciado + 12 Adepto + 11 Magus**).
+Produzir, em uma sessão de execução dedicada, **29 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + migração/higiene do `gRPC e Go.md` + cross-link do cluster Kafka existente + quitação da dívida reversa**, em `03-Dominios/Tecnologia/Java/Mensageria/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (**6 Iniciado + 12 Adepto + 11 Magus**).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -50,7 +50,7 @@ A barra é "projetar e justificar uma arquitetura orientada a eventos production
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/Mensageria/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/Mensageria/`)
 
 Pasta **nova**, flat. 29 notas + 1 MOC (`index.md`, obrigatório pro folder-link do Quartz). Numeração global por galho (não reinicia por fase).
 
@@ -112,7 +112,7 @@ Pasta **nova**, flat. 29 notas + 1 MOC (`index.md`, obrigatório pro folder-link
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/Mensageria/index.md`:
+`03-Dominios/Tecnologia/Java/Mensageria/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "Mensageria e eventos"`, tags `java`/`mensageria`/`moc`, aliases `["Mensageria e eventos", "Mensageria", "Messaging", "Event-Driven", "Galho 14 - Mensageria"]`)
 - TL;DR callout (galho cobre a camada de aplicação Java/Spring da mensageria: modelo e garantias de entrega, Spring Kafka e RabbitMQ, eventos in-process, padrões de confiabilidade — idempotência/outbox/DLQ/exactly-once —, arquitetura event-driven — saga/event sourcing/CQRS —, mensageria reativa, observabilidade e o contraste com gRPC; **29 notas em 3 fases**)
@@ -124,12 +124,12 @@ Pasta **nova**, flat. 29 notas + 1 MOC (`index.md`, obrigatório pro folder-link
   - **Spring Kafka operacional** — 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13 (Kafka, produção, consumo, serialização, ack, erro, DLQ, transação)
   - **Confiabilidade e arquitetura event-driven** — 03 → 20 → 21 → 22 → 23 → 24 (garantias, idempotência, outbox, saga, event sourcing/CQRS, versionamento)
   - **Síncrono vs assíncrono (a ponte com gRPC)** — 01 → 02 → 27 → 28 → 29 (modelo, queue vs topic, Protobuf, gRPC, o mapa de decisão)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, **cluster Kafka existente** `[[03-Dominios/Java/Backend/Kafka/index|Kafka]]` (a infra), **Galho 8** (o event bus in-process), **Galho 4** (concorrência/threads de consumo), **Galho 11** (mensageria reativa), **Galho 13** (testar mensageria), Dicionário de Java; Galhos 16/17 como texto "(planejado)" sem wikilink
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, **cluster Kafka existente** `[[03-Dominios/Tecnologia/Java/Backend/Kafka/index|Kafka]]` (a infra), **Galho 8** (o event bus in-process), **Galho 4** (concorrência/threads de consumo), **Galho 11** (mensageria reativa), **Galho 13** (testar mensageria), Dicionário de Java; Galhos 16/17 como texto "(planejado)" sem wikilink
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (**403 verbetes** após o Galho 13, `type: glossary`, `updated: 2026-06-11`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento, ignorando `@`)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Manter `updated: 2026-06-11`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (**403 verbetes** após o Galho 13, `type: glossary`, `updated: 2026-06-11`, seções alfabéticas únicas `## A`…`## Z` com verbetes `### `). Este galho **expande** o arquivo existente inserindo os verbetes **em ordem alfabética case-insensitive (sem acento, ignorando `@`)** nas seções de letra apropriadas. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Manter `updated: 2026-06-11`.
 
 Verbetes a inserir (~35, conferir dups antes):
 
@@ -139,10 +139,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 14)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 14 (atualmente `14. Mensageria e eventos *(planejado)* — ...`) por wikilink ativo no padrão dos galhos fechados:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a linha do Galho 14 (atualmente `14. Mensageria e eventos *(planejado)* — ...`) por wikilink ativo no padrão dos galhos fechados:
 
 ```markdown
-14. [[03-Dominios/Java/Mensageria/index|Mensageria e eventos]] — o modelo de mensageria e as garantias de entrega, Spring Kafka e RabbitMQ, eventos in-process, padrões de confiabilidade (idempotência, outbox, DLQ, exactly-once), arquitetura event-driven (saga, event sourcing, CQRS), mensageria reativa, observabilidade e o contraste com gRPC
+14. [[03-Dominios/Tecnologia/Java/Mensageria/index|Mensageria e eventos]] — o modelo de mensageria e as garantias de entrega, Spring Kafka e RabbitMQ, eventos in-process, padrões de confiabilidade (idempotência, outbox, DLQ, exactly-once), arquitetura event-driven (saga, event sourcing, CQRS), mensageria reativa, observabilidade e o contraste com gRPC
 ```
 
 Atualizar `updated` para `2026-06-11`. Não mexer no resto do MOC central. **Confirmar o número da linha na execução** (lendo o arquivo primeiro).
@@ -211,7 +211,7 @@ H1 `# Título` após o frontmatter (padrão dos galhos publicados).
 - `## Na prática` — exemplos compiláveis; framing **neutro** (`Order`/`Customer`/`Payment`/`OrderEvent`/`OrderService`/`OrderPlacedEvent`); "padrão observado em sistemas event-driven"; NUNCA `Patient`/`MedEspecialista`/"da minha experiência"/"quando comecei o projeto"/"incidente no Kafka"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com `### (N) Título` (H3 numerado, NÃO callout `[!warning]`) + descrição + exemplo curto + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com **3+ sentenças** (trade-off + decisão + caveat) + subheading `### Vocabulário` com tabela `| Termo PT | Termo EN |` de **6+ termos**
-- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/Mensageria/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando aplicável) a nota da camada/galho dono (cluster Kafka de infra, G8 eventos, G10 transação, G11 reativo, G4 concorrência, G13 testes) + verbetes do Dicionário
+- `## Veja também` — wikilinks **SEM backticks**, **SEM âncoras same-file**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Mensageria/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando aplicável) a nota da camada/galho dono (cluster Kafka de infra, G8 eventos, G10 transação, G11 reativo, G4 concorrência, G13 testes) + verbetes do Dicionário
 - `## Referências` — docs oficiais (docs.spring.io spring-kafka/spring-amqp/spring-cloud-stream, kafka.apache.org, docs.confluent.io, rabbitmq.com, projectreactor.io reactor-kafka, debezium.io, protobuf.dev, grpc.io)
 
 ### 4.3. Restrições absolutas
@@ -221,7 +221,7 @@ H1 `# Título` após o frontmatter (padrão dos galhos publicados).
 3. **Sem invenção** de APIs/comportamentos/versões. WebFetch obrigatório no Step 1 das notas version-specific e pra **toda afirmação version-specific**. Pontos minados a verificar via WebFetch: **KRaft / remoção do Zookeeper no Kafka 4.0**; versão atual do **Spring Kafka** (3.x) e Spring Boot baseline; **`DefaultErrorHandler` substituiu `SeekToCurrentErrorHandler` (Spring Kafka 2.8+)**; **`@RetryableTopic`**; **`@StreamListener` removido** (Spring Cloud Stream modelo funcional `Supplier`/`Function`/`Consumer`); EOS v2 (exactly-once semantics); `enable.idempotence` default; Spring AMQP (quorum queues, streams no RabbitMQ); **Reactor Kafka** (`KafkaReceiver`/`KafkaSender`); Debezium atual; Avro/Confluent Schema Registry; proto3; `grpc-java`/grpc-spring-boot-starter atual; context propagation/tracing (Micrometer Observation). Spring Boot 3.x baseline (`jakarta.*`, Java 17), citando Boot 4.x como "mais recente" quando relevante. Fonte: docs oficiais. Nada "de memória".
 4. **Code samples compiláveis** — Java moderno (records pra eventos/DTO, `var`, text blocks); imports corretos (`org.springframework.kafka.*`, `org.springframework.amqp.*`, `org.apache.kafka.clients.*`, `io.grpc.*`); fences corretas (`java`/`xml`/`yaml`/`properties`/`protobuf`/`bash`/`json`/`text`). Snippets de `.proto` com fence ` ```protobuf ` (ou ` ```proto `).
 5. **Comparações justas** — Kafka vs RabbitMQ, queue vs topic, síncrono-RPC vs assíncrono-evento, broker vs event bus in-process, coreografia vs orquestração, at-least-once vs exactly-once, polling publisher vs CDC: sempre "quando X" E "quando Y". O capstone (29) é o ápice (o mapa de decisão, sem dogma de tecnologia).
-6. **Wikilinks sem backticks** em "Veja também"; MOC do galho + MOC central obrigatórios. **Não linkar galhos inexistentes** (15/16/17/18) — texto "(planejado)". Os wikilinks pro cluster Kafka de infra usam o **path completo** (`[[03-Dominios/Java/Backend/Kafka/...]]`) — conferir que resolvem (a pasta de infra tem `index.md`).
+6. **Wikilinks sem backticks** em "Veja também"; MOC do galho + MOC central obrigatórios. **Não linkar galhos inexistentes** (15/16/17/18) — texto "(planejado)". Os wikilinks pro cluster Kafka de infra usam o **path completo** (`[[03-Dominios/Tecnologia/Java/Backend/Kafka/...]]`) — conferir que resolvem (a pasta de infra tem `index.md`).
 7. **Code fences corretos:** ` ```java ` pra código, ` ```xml `/` ```yaml `/` ```properties ` pra config/pom, ` ```protobuf ` pra `.proto`, ` ```bash ` pra CLI, ` ```json ` pra payloads, ` ```text ` pra diagramas. Sempre fechadas.
 8. **`fase:` no frontmatter + na tag** — obrigatório.
 9. **Higiene de commits** — sem `Co-Authored-By: Claude`, sem `--no-verify`, `git add <path>` nominal (nunca `-A` — bot de backup Obsidian Git roda em timer), 1 commit por nota, controlador commita (subagents write-only). Guardar contra `.git/index.lock`.
@@ -270,7 +270,7 @@ Executado nesta fase de brainstorming (2026-06-11); itens version-specific re-co
 3. **Fronteira-assinatura confirmada** — cluster Kafka de infra (internals), Galho 8 (event bus in-process, nota 11), Galho 10 (transação/outbox), Galho 11 (reativo/backpressure), Galho 4 (concorrência), Galho 13 (testes/Testcontainers/Awaitility) existem em `main`. Os Galhos 11/13 **deixaram ganchos** "Galho 14 (planejado)".
 4. **Dívida reversa localizada** — `Reativa/index:35` (Reactor Kafka Galho 14 → nota 25); cross-link de `Backend/Kafka/index.md` + `Backend/index.md` pro MOC do galho; possíveis ganchos inline em `Testes/11`, `Testes/14`, `Spring Core/11` (confirmar via grep na execução). MOC central: linha do galho 14. **NÃO quitar**: horizonte-lists de uma linha.
 5. **Dicionário** — **403 verbetes** após o Galho 13; seções alfabéticas únicas `## A`…`## Z`; verbetes `### `; `updated: 2026-06-11`. Possíveis dups: `@EventListener`/`@TransactionalEventListener`/`ApplicationEvent`/`evento` (G8), `backpressure` (G11). Conferir e linkar, nunca duplicar. Expansão alfabética (~35), nunca recriar/reordenar.
-6. **MOC central** — `03-Dominios/Java/index.md` tem a linha do Galho 14 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-11`. Confirmar o número da linha na execução.
+6. **MOC central** — `03-Dominios/Tecnologia/Java/index.md` tem a linha do Galho 14 (`*(planejado)*`); galhos ativos usam `N. [[path/index|Title]] — summary`; `updated: 2026-06-11`. Confirmar o número da linha na execução.
 7. **Troncos/arquivos intocáveis** — `Backend/Spring Boot.md`, `Backend/Spring Data JPA.md` (hub G10), `Backend/Spring Security.md` (hub G12), `Backend/Testes em Java.md` (hub G13), e **todo o `Backend/Kafka/**`** (coexistência). Só toca `Backend/gRPC e Go.md` (migração) + cross-link dos índices `Backend/index.md` e `Backend/Kafka/index.md`. Pasta `Mensageria/` ainda **não existe**.
 8. **Versões a cravar via WebFetch na execução** — **Zookeeper removido no Kafka 4.0 / KRaft only**; Spring Kafka 3.x atual; **`DefaultErrorHandler` (ex-`SeekToCurrentErrorHandler`, 2.8+)**; **`@RetryableTopic`**; EOS v2; `enable.idempotence` default true (producers modernos); **`@StreamListener` removido** (Cloud Stream funcional); Spring AMQP (quorum queues/streams); Reactor Kafka (`KafkaReceiver`/`KafkaSender`); Debezium; Avro/Confluent Schema Registry; proto3; grpc-java/grpc-spring-boot-starter; Micrometer Observation (tracing). Baseline Spring Boot 3.x (`jakarta.*`, Java 17), citando Boot 4.x como "mais recente". Fonte: docs oficiais.
 
@@ -280,7 +280,7 @@ Nenhum número de adoção é inventado. Quando faltar fato verificável, **PERG
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 29 notas em `03-Dominios/Java/Mensageria/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 6/12/11.
+1. 29 notas em `03-Dominios/Tecnologia/Java/Mensageria/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 6/12/11.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~35 verbetes; verbetes dos Galhos 1-13 intactos; `updated: 2026-06-11`; dups conferidos e linkados (não duplicar `@EventListener`/`@TransactionalEventListener`/`backpressure` se vierem dos Galhos 8/11).
 4. MOC central `Java/index.md` com Galho 14 ativado (linha vira wikilink); resto intacto.
@@ -329,7 +329,7 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-09-java-galho-10-persistencia-design.md` — Galho 10 (a transação que o outbox usa)
 - `2026-06-03-java-galho-04-concorrencia-design.md` — Galho 4 (dependência: threads de consumo/async)
 - Galhos 5/7/11 — template de **galho de pesquisa** (sem tronco a podar)
-- Artefatos a criar/atualizar: `03-Dominios/Java/Mensageria/**` (29 notas + MOC), `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, `03-Dominios/Java/Backend/gRPC e Go.md` (migração/hub), `03-Dominios/Java/Backend/Kafka/index.md` + `03-Dominios/Java/Backend/index.md` (cross-link), `Programação Reativa/index.md` (dívida reversa), e ganchos inline em `Testes/11`/`Testes/14`/`Spring Core e Boot/11` (se existirem)
-- Cluster de infra (coexistência, fronteira de link): `03-Dominios/Java/Backend/Kafka/Kafka Concepts/**` (19 notas), `Backend/Kafka/Kafka.md`, `Setting Up Kafka.md`
+- Artefatos a criar/atualizar: `03-Dominios/Tecnologia/Java/Mensageria/**` (29 notas + MOC), `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, `03-Dominios/Tecnologia/Java/Backend/gRPC e Go.md` (migração/hub), `03-Dominios/Tecnologia/Java/Backend/Kafka/index.md` + `03-Dominios/Tecnologia/Java/Backend/index.md` (cross-link), `Programação Reativa/index.md` (dívida reversa), e ganchos inline em `Testes/11`/`Testes/14`/`Spring Core e Boot/11` (se existirem)
+- Cluster de infra (coexistência, fronteira de link): `03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka Concepts/**` (19 notas), `Backend/Kafka/Kafka.md`, `Setting Up Kafka.md`
 - Fontes-base do galho: `docs.spring.io/spring-kafka`, `docs.spring.io/spring-amqp`, `docs.spring.io/spring-cloud-stream`, `kafka.apache.org/documentation`, `docs.confluent.io`, `rabbitmq.com`, `projectreactor.io/docs/kafka`, `debezium.io`, `protobuf.dev`, `grpc.io`
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_galhos_direto_main]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_dataview_inline_code]], [[feedback_notas_atomicas]], [[feedback_enriquecimento_feynman]]

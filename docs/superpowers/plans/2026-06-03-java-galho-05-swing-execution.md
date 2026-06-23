@@ -4,7 +4,7 @@
 
 **Goal:** Criar o Galho 5 da trilha Java Senior — 12 notas atômicas de Swing (GUI desktop) em 3 fases + MOC do galho + expansão do Dicionário de Java + ativação do MOC central. **Galho novo, construído por pesquisa: sem tronco a podar.**
 
-**Architecture:** Padrão galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Java/Swing/`, notas atômicas `publish: true` em PT-BR, numeração global 01-12 (4 Iniciado / 5 Adepto / 3 Magus). Diferença-chave dos Galhos 1/4: **não há monolito de origem**. Cada nota **nasce de doc oficial verificada via WebFetch** (The Java Tutorials — *Creating a GUI with Swing*, `dev.java`, Javadoc `javax.swing`). O galho é dono do "como o Swing usa threads" (EDT/SwingWorker) e **linka** pro Galho 4 (Concorrência) pros primitivos, sem re-explicar. JavaFX (Galho 6) é só gancho na capstone. Branch dedicada `java-galho-05-swing` (NÃO em `main`) — **já criada e com o spec commitado**.
+**Architecture:** Padrão galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Tecnologia/Java/Swing/`, notas atômicas `publish: true` em PT-BR, numeração global 01-12 (4 Iniciado / 5 Adepto / 3 Magus). Diferença-chave dos Galhos 1/4: **não há monolito de origem**. Cada nota **nasce de doc oficial verificada via WebFetch** (The Java Tutorials — *Creating a GUI with Swing*, `dev.java`, Javadoc `javax.swing`). O galho é dono do "como o Swing usa threads" (EDT/SwingWorker) e **linka** pro Galho 4 (Concorrência) pros primitivos, sem re-explicar. JavaFX (Galho 6) é só gancho na capstone. Branch dedicada `java-galho-05-swing` (NÃO em `main`) — **já criada e com o spec commitado**.
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks, callouts, Dataview, Quartz v4 (publicação). Verificação de fonte via WebFetch (docs.oracle.com/javase/tutorial/uiswing, dev.java, Javadoc Java 21/25).
 
@@ -43,7 +43,7 @@ aliases:
 5. `## Na prática` — exemplos compiláveis, framing neutro ("padrão observado no JDK / em IDEs Swing", "caso típico em ferramenta interna", hipotético explícito `// hipotético:`). NUNCA "no meu projeto". Ao demonstrar violação da EDT (tocar componente fora da EDT), declarar que o sintoma é **não-determinístico/intermitente**.
 6. `## Armadilhas` — ≥2 (Iniciado) / ≥3 (Adepto/Magus). Cada armadilha: `### (N) Título` + descrição + exemplo curto de código demonstrando o problema + fix em 1 linha.
 7. `## Em entrevista` — frase pronta em inglês com **3+ sentenças** (trade-off + decisão + caveat) + sub-bloco "Vocabulário" com **6+ termos PT→EN** traduzidos.
-8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Java/Swing/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando o conceito conectar) `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência]]` / `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem]]` + verbetes do Dicionário relevantes.
+8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Swing/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando o conceito conectar) `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência]]` / `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem]]` + verbetes do Dicionário relevantes.
 9. `## Referências` — docs oficiais (The Java Tutorials, dev.java, Javadoc) + (quando pertinente) JEPs e projetos open-source identificados (FlatLaf, OpenJDK).
 
 **Tamanho:** 200-500 linhas (notas Magus densas até 700).
@@ -58,7 +58,7 @@ aliases:
 - Code fences: ` ```java ` pra código, ` ```text ` pra output/stack trace. Sempre fechadas.
 - Commits: sem `Co-Authored-By: Claude`; sem `--no-verify`; `git add <path>` nominal (nunca `git add -A`); 1 commit por nota.
 
-**Material de origem:** NÃO há tronco. Fontes-base (conferir o trail específico por nota): The Java Tutorials — *Creating a GUI with Swing* (`https://docs.oracle.com/javase/tutorial/uiswing/`), `dev.java`, Javadoc `javax.swing` (Java 21). Spec de referência: `docs/superpowers/specs/2026-06-03-java-galho-05-swing-design.md` §5. Template de qualidade: notas dos Galhos 1 e 4 em `03-Dominios/Java/Linguagem e sintaxe moderna/` e `03-Dominios/Java/Concorrência e paralelismo/`.
+**Material de origem:** NÃO há tronco. Fontes-base (conferir o trail específico por nota): The Java Tutorials — *Creating a GUI with Swing* (`https://docs.oracle.com/javase/tutorial/uiswing/`), `dev.java`, Javadoc `javax.swing` (Java 21). Spec de referência: `docs/superpowers/specs/2026-06-03-java-galho-05-swing-design.md` §5. Template de qualidade: notas dos Galhos 1 e 4 em `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/` e `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/`.
 
 **Modelo por nota:** sonnet por padrão; **opus** nas notas 05 (EDT), 06 (SwingWorker), 07 (MVC/models) e 12 (capstone estado atual) — as mais densas/sensíveis.
 
@@ -69,7 +69,7 @@ aliases:
 ## Task 0: Pré-flight — branch, pasta e verificação de status (substitui leitura de tronco)
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/` (pasta)
+- Create: `03-Dominios/Tecnologia/Java/Swing/` (pasta)
 
 - [ ] **Step 1: Confirmar a branch dedicada**
 
@@ -81,7 +81,7 @@ Expected: `java-galho-05-swing` (já criada na fase de brainstorming, com o spec
 - [ ] **Step 2: Criar a pasta do galho**
 
 ```bash
-mkdir -p "03-Dominios/Java/Swing"
+mkdir -p "03-Dominios/Tecnologia/Java/Swing"
 ```
 
 - [ ] **Step 3: Verificar status de manutenção/adoção do Swing (pré-flight, no lugar da leitura de tronco)**
@@ -106,7 +106,7 @@ Baseline: **Java 21 LTS** / **Java 25 LTS**. A API Swing é estável desde o JDK
 ### Task 1: Nota 01 — O modelo do Swing
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/01 - O modelo do Swing.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/01 - O modelo do Swing.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -124,7 +124,7 @@ Conteúdo:
 - `## Na prática` — "Hello World" Swing mínimo construído na EDT (`SwingUtilities.invokeLater`), com `JFrame`+`JPanel`+`JLabel`.
 - `## Armadilhas` — ≥2: (1) misturar componentes AWT e Swing (problemas de z-order/repaint) → preferir Swing puro; (2) construir/mostrar a UI fora da EDT (teaser da 05) → `invokeLater`. Exemplo + fix.
 - `## Em entrevista` — frase 3+ sentenças sobre lightweight vs heavyweight e pluggable L&F; vocabulário 6+ termos.
-- `## Veja também` — 02, 03, 04, 05, 12, MOC galho, MOC central, `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem]]` (OOP), verbetes `AWT (Abstract Window Toolkit)`/`componente lightweight / heavyweight`/`content pane`/`JComponent`.
+- `## Veja também` — 02, 03, 04, 05, 12, MOC galho, MOC central, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem]]` (OOP), verbetes `AWT (Abstract Window Toolkit)`/`componente lightweight / heavyweight`/`content pane`/`JComponent`.
 - `## Referências` — The Java Tutorials (About the JFC and Swing), dev.java, Javadoc `javax.swing`.
 
 Tamanho: 220-340 linhas (abertura, conceitual).
@@ -132,15 +132,15 @@ Tamanho: 220-340 linhas (abertura, conceitual).
 - [ ] **Step 3: Verificar**
 
 ```bash
-head -20 "03-Dominios/Java/Swing/01 - O modelo do Swing.md"
-grep -cE "^## (O que é|Como funciona|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Java/Swing/01 - O modelo do Swing.md"
+head -20 "03-Dominios/Tecnologia/Java/Swing/01 - O modelo do Swing.md"
+grep -cE "^## (O que é|Como funciona|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Tecnologia/Java/Swing/01 - O modelo do Swing.md"
 ```
 Expected: frontmatter com `fase: iniciado`; grep ≥6.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/01 - O modelo do Swing.md"
+git add "03-Dominios/Tecnologia/Java/Swing/01 - O modelo do Swing.md"
 git commit -m "feat(java): galho 5 nota 01 — o modelo do Swing"
 ```
 
@@ -149,7 +149,7 @@ git commit -m "feat(java): galho 5 nota 01 — o modelo do Swing"
 ### Task 2: Nota 02 — Componentes e containers
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/02 - Componentes e containers.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/02 - Componentes e containers.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -171,13 +171,13 @@ Tamanho: 260-400 linhas (panorâmica de vocabulário).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "JButton|JLabel|JTable|JScrollPane|JOptionPane|JPanel" "03-Dominios/Java/Swing/02 - Componentes e containers.md" | head
+grep -E "JButton|JLabel|JTable|JScrollPane|JOptionPane|JPanel" "03-Dominios/Tecnologia/Java/Swing/02 - Componentes e containers.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/02 - Componentes e containers.md"
+git add "03-Dominios/Tecnologia/Java/Swing/02 - Componentes e containers.md"
 git commit -m "feat(java): galho 5 nota 02 — componentes e containers"
 ```
 
@@ -186,7 +186,7 @@ git commit -m "feat(java): galho 5 nota 02 — componentes e containers"
 ### Task 3: Nota 03 — Layout managers
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/03 - Layout managers.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/03 - Layout managers.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -208,13 +208,13 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "BorderLayout|FlowLayout|GridBagLayout|BoxLayout|preferredSize|null layout" "03-Dominios/Java/Swing/03 - Layout managers.md" | head
+grep -E "BorderLayout|FlowLayout|GridBagLayout|BoxLayout|preferredSize|null layout" "03-Dominios/Tecnologia/Java/Swing/03 - Layout managers.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/03 - Layout managers.md"
+git add "03-Dominios/Tecnologia/Java/Swing/03 - Layout managers.md"
 git commit -m "feat(java): galho 5 nota 03 — layout managers"
 ```
 
@@ -223,7 +223,7 @@ git commit -m "feat(java): galho 5 nota 03 — layout managers"
 ### Task 4: Nota 04 — O modelo de eventos
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/04 - O modelo de eventos.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/04 - O modelo de eventos.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -238,20 +238,20 @@ Conteúdo:
 - `## Como funciona` — H3s: "Source, event e listener (o triângulo)", "Listeners comuns (`ActionListener`, `MouseListener`, `KeyListener`, `FocusListener`, `WindowListener`)", "Event objects (`ActionEvent`, `MouseEvent`)", "Lambda vs classe anônima vs adapter (`MouseAdapter`)", "Registrar/remover listeners". **Linka pro Galho 1** (interfaces funcionais / lambdas) onde o conceito conecta.
 - `## Na prática` — botão com `ActionListener` via lambda; `MouseAdapter` só pra `mouseClicked`.
 - `## Armadilhas` — ≥2: (1) trabalho pesado/IO dentro do listener (roda na EDT → congela a UI; aponta pra 05/06) → `SwingWorker`; (2) implementar a interface `MouseListener` inteira só pra um método (5 métodos vazios) → usar `MouseAdapter`; (3) `KeyListener` para atalho de teclado (depende de foco — aponta pra 11) → `InputMap`/`ActionMap`. Exemplo + fix.
-- `## Em entrevista` + `## Veja também` (01, 05, 11, MOC, central, `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem]]`, verbetes `delegation event model`/`listener (event listener)`/`adapter (event adapter)`) + `## Referências`.
+- `## Em entrevista` + `## Veja também` (01, 05, 11, MOC, central, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem]]`, verbetes `delegation event model`/`listener (event listener)`/`adapter (event adapter)`) + `## Referências`.
 
 Tamanho: 260-400 linhas.
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "ActionListener|MouseAdapter|delegation|KeyListener|ActionEvent" "03-Dominios/Java/Swing/04 - O modelo de eventos.md" | head
+grep -E "ActionListener|MouseAdapter|delegation|KeyListener|ActionEvent" "03-Dominios/Tecnologia/Java/Swing/04 - O modelo de eventos.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/04 - O modelo de eventos.md"
+git add "03-Dominios/Tecnologia/Java/Swing/04 - O modelo de eventos.md"
 git commit -m "feat(java): galho 5 nota 04 — o modelo de eventos"
 ```
 
@@ -262,7 +262,7 @@ git commit -m "feat(java): galho 5 nota 04 — o modelo de eventos"
 ### Task 5: Nota 05 — A Event Dispatch Thread (EDT)  ⟦opus⟧
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/05 - A Event Dispatch Thread.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/05 - A Event Dispatch Thread.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus)**
 
@@ -279,20 +279,20 @@ Conteúdo (DONO do "como o Swing usa threads"):
 - `## Na prática` — atualizar um `JLabel` a partir de uma thread de background corretamente via `invokeLater`; iniciar a UI na EDT.
 - `## Armadilhas` — ≥3: (1) atualizar componente de uma thread de background (corrupção/erro intermitente — **declarar não-determinístico**) → `invokeLater`; (2) `invokeAndWait` chamado a partir da própria EDT (lança exceção/deadlock) → checar `isEventDispatchThread`; (3) operação longa/IO direto num listener (congela a UI) → mover pra background (aponta pra 06). Exemplo + fix.
 - `## Em entrevista` — frase 3+ sentenças sobre a single-thread rule e o trade-off (simplicidade vs responsabilidade do dev); vocabulário 6+ termos.
-- `## Veja também` (04, 06, 11, MOC, central, `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência]]` + `[[03-Dominios/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida|Threads]]`, verbetes `EDT (Event Dispatch Thread)`/`invokeLater / invokeAndWait`) + `## Referências`.
+- `## Veja também` (04, 06, 11, MOC, central, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência]]` + `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/02 - Threads e seu ciclo de vida|Threads]]`, verbetes `EDT (Event Dispatch Thread)`/`invokeLater / invokeAndWait`) + `## Referências`.
 
 Tamanho: 320-480 linhas (densa; usar opus).
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "EDT|invokeLater|invokeAndWait|isEventDispatchThread|single-thread" "03-Dominios/Java/Swing/05 - A Event Dispatch Thread.md" | head
+grep -E "EDT|invokeLater|invokeAndWait|isEventDispatchThread|single-thread" "03-Dominios/Tecnologia/Java/Swing/05 - A Event Dispatch Thread.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/05 - A Event Dispatch Thread.md"
+git add "03-Dominios/Tecnologia/Java/Swing/05 - A Event Dispatch Thread.md"
 git commit -m "feat(java): galho 5 nota 05 — a Event Dispatch Thread (EDT)"
 ```
 
@@ -301,7 +301,7 @@ git commit -m "feat(java): galho 5 nota 05 — a Event Dispatch Thread (EDT)"
 ### Task 6: Nota 06 — SwingWorker e tarefas em background  ⟦opus⟧
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/06 - SwingWorker e tarefas em background.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/06 - SwingWorker e tarefas em background.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus)**
 
@@ -317,20 +317,20 @@ Conteúdo:
 - `## Na prática` — carregar dados de uma fonte lenta (hipotética) com `SwingWorker`, publicando progresso numa `JProgressBar`.
 - `## Armadilhas` — ≥3: (1) chamar `get()` na EDT antes de `done` (bloqueia a EDT — congela) → ler em `done()`; (2) tocar componentes dentro de `doInBackground` (fora da EDT) → usar `publish`/`process`; (3) exceção engolida silenciosamente (só aparece ao chamar `get` em `done`) → sempre tratar em `done`. Exemplo + fix.
 - `## Em entrevista` — frase 3+ sentenças sobre o handoff worker→EDT; vocabulário 6+ termos.
-- `## Veja também` (05, 11, MOC, central, `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência]]` + `[[03-Dominios/Java/Concorrência e paralelismo/08 - Executors e thread pools|Executors]]`, verbete `SwingWorker`) + `## Referências`.
+- `## Veja também` (05, 11, MOC, central, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência]]` + `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/08 - Executors e thread pools|Executors]]`, verbete `SwingWorker`) + `## Referências`.
 
 Tamanho: 300-460 linhas (densa; usar opus).
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "SwingWorker|doInBackground|publish|process|done|javax.swing.Timer" "03-Dominios/Java/Swing/06 - SwingWorker e tarefas em background.md" | head
+grep -E "SwingWorker|doInBackground|publish|process|done|javax.swing.Timer" "03-Dominios/Tecnologia/Java/Swing/06 - SwingWorker e tarefas em background.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/06 - SwingWorker e tarefas em background.md"
+git add "03-Dominios/Tecnologia/Java/Swing/06 - SwingWorker e tarefas em background.md"
 git commit -m "feat(java): galho 5 nota 06 — SwingWorker e tarefas em background"
 ```
 
@@ -339,7 +339,7 @@ git commit -m "feat(java): galho 5 nota 06 — SwingWorker e tarefas em backgrou
 ### Task 7: Nota 07 — MVC em Swing e os models  ⟦opus⟧
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/07 - MVC em Swing e os models.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/07 - MVC em Swing e os models.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus)**
 
@@ -362,13 +362,13 @@ Tamanho: 320-480 linhas (densa; usar opus).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "TableModel|AbstractTableModel|ListModel|separable|fireTable" "03-Dominios/Java/Swing/07 - MVC em Swing e os models.md" | head
+grep -E "TableModel|AbstractTableModel|ListModel|separable|fireTable" "03-Dominios/Tecnologia/Java/Swing/07 - MVC em Swing e os models.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/07 - MVC em Swing e os models.md"
+git add "03-Dominios/Tecnologia/Java/Swing/07 - MVC em Swing e os models.md"
 git commit -m "feat(java): galho 5 nota 07 — MVC em Swing e os models"
 ```
 
@@ -377,7 +377,7 @@ git commit -m "feat(java): galho 5 nota 07 — MVC em Swing e os models"
 ### Task 8: Nota 08 — Renderers e editors
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/08 - Renderers e editors.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/08 - Renderers e editors.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -399,13 +399,13 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "TableCellRenderer|ListCellRenderer|rubber-stamp|DefaultTableCellRenderer|stopCellEditing" "03-Dominios/Java/Swing/08 - Renderers e editors.md" | head
+grep -E "TableCellRenderer|ListCellRenderer|rubber-stamp|DefaultTableCellRenderer|stopCellEditing" "03-Dominios/Tecnologia/Java/Swing/08 - Renderers e editors.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/08 - Renderers e editors.md"
+git add "03-Dominios/Tecnologia/Java/Swing/08 - Renderers e editors.md"
 git commit -m "feat(java): galho 5 nota 08 — renderers e editors"
 ```
 
@@ -414,7 +414,7 @@ git commit -m "feat(java): galho 5 nota 08 — renderers e editors"
 ### Task 9: Nota 09 — Look & Feel e temas
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/09 - Look and Feel e temas.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/09 - Look and Feel e temas.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -436,15 +436,15 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "UIManager|Nimbus|FlatLaf|setLookAndFeel|updateComponentTreeUI" "03-Dominios/Java/Swing/09 - Look and Feel e temas.md" | head
-grep -iE "third-party|não-Oracle|dependência" "03-Dominios/Java/Swing/09 - Look and Feel e temas.md" | head
+grep -E "UIManager|Nimbus|FlatLaf|setLookAndFeel|updateComponentTreeUI" "03-Dominios/Tecnologia/Java/Swing/09 - Look and Feel e temas.md" | head
+grep -iE "third-party|não-Oracle|dependência" "03-Dominios/Tecnologia/Java/Swing/09 - Look and Feel e temas.md" | head
 ```
 Expected: cobre L&F bundled + UIManager; FlatLaf rotulado como third-party.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/09 - Look and Feel e temas.md"
+git add "03-Dominios/Tecnologia/Java/Swing/09 - Look and Feel e temas.md"
 git commit -m "feat(java): galho 5 nota 09 — Look and Feel e temas"
 ```
 
@@ -455,7 +455,7 @@ git commit -m "feat(java): galho 5 nota 09 — Look and Feel e temas"
 ### Task 10: Nota 10 — Custom painting e componentes customizados
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/10 - Custom painting e componentes customizados.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/10 - Custom painting e componentes customizados.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -477,13 +477,13 @@ Tamanho: 300-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "paintComponent|Graphics2D|double buffering|repaint|revalidate|super.paintComponent" "03-Dominios/Java/Swing/10 - Custom painting e componentes customizados.md" | head
+grep -E "paintComponent|Graphics2D|double buffering|repaint|revalidate|super.paintComponent" "03-Dominios/Tecnologia/Java/Swing/10 - Custom painting e componentes customizados.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/10 - Custom painting e componentes customizados.md"
+git add "03-Dominios/Tecnologia/Java/Swing/10 - Custom painting e componentes customizados.md"
 git commit -m "feat(java): galho 5 nota 10 — custom painting e componentes customizados"
 ```
 
@@ -492,7 +492,7 @@ git commit -m "feat(java): galho 5 nota 10 — custom painting e componentes cus
 ### Task 11: Nota 11 — Action API, key bindings e performance
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/11 - Action API, key bindings e performance.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/11 - Action API, key bindings e performance.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -514,13 +514,13 @@ Tamanho: 300-440 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "AbstractAction|InputMap|ActionMap|KeyListener|WHEN_IN_FOCUSED_WINDOW|setEnabled" "03-Dominios/Java/Swing/11 - Action API, key bindings e performance.md" | head
+grep -E "AbstractAction|InputMap|ActionMap|KeyListener|WHEN_IN_FOCUSED_WINDOW|setEnabled" "03-Dominios/Tecnologia/Java/Swing/11 - Action API, key bindings e performance.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/11 - Action API, key bindings e performance.md"
+git add "03-Dominios/Tecnologia/Java/Swing/11 - Action API, key bindings e performance.md"
 git commit -m "feat(java): galho 5 nota 11 — Action API, key bindings e performance"
 ```
 
@@ -529,7 +529,7 @@ git commit -m "feat(java): galho 5 nota 11 — Action API, key bindings e perfor
 ### Task 12: Nota 12 — Swing hoje: estado atual  ⟦opus⟧ (capstone)
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/12 - Swing hoje - estado atual.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/12 - Swing hoje - estado atual.md`
 
 - [ ] **Step 1: Pesquisar fonte (usar modelo opus) — VERIFICAÇÃO OBRIGATÓRIA**
 
@@ -553,22 +553,22 @@ Conteúdo (capstone — decisão de arquitetura HONESTA, nem obituário nem panf
 - `## Armadilhas` (de raciocínio) — ≥3: (1) tratar Swing como "morto" (é suportado e core) → declarar o status correto; (2) escolher Swing por inércia para um app moderno greenfield → avaliar web/JavaFX; (3) assumir que virtual threads "consertam" a natureza single-thread da EDT → não mudam o modelo da EDT. Cada uma com o raciocínio correto.
 - `## Em entrevista` — frase 3+ sentenças enquadrando Swing como decisão de arquitetura honesta (quando sim/quando não + caveat de status); vocabulário 6+ termos.
 - `### Cheatsheet do galho` — tabela "qual nota pra qual problema" (modelo→07, threading→05/06, aparência→09/10, atalhos→11).
-- `## Veja também` (01, 05, 07, 09, MOC, central, `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência]]`, `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem]]`; Galho 6 JavaFX como **texto "(planejado)"**, sem wikilink) + `## Referências` (Oracle Java Client Roadmap 2018/2020 com data, dev.java, cross-ref Galho 4 nota 12).
+- `## Veja também` (01, 05, 07, 09, MOC, central, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência]]`, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem]]`; Galho 6 JavaFX como **texto "(planejado)"**, sem wikilink) + `## Referências` (Oracle Java Client Roadmap 2018/2020 com data, dev.java, cross-ref Galho 4 nota 12).
 
 Tamanho: 300-480 linhas (nota de fechamento; usar opus).
 
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -iE "core Java SE|roadmap|manutenção|virtual thread|JavaFX|planejado" "03-Dominios/Java/Swing/12 - Swing hoje - estado atual.md" | head
-grep -iE "[0-9]+%|porcento|por cento" "03-Dominios/Java/Swing/12 - Swing hoje - estado atual.md"
+grep -iE "core Java SE|roadmap|manutenção|virtual thread|JavaFX|planejado" "03-Dominios/Tecnologia/Java/Swing/12 - Swing hoje - estado atual.md" | head
+grep -iE "[0-9]+%|porcento|por cento" "03-Dominios/Tecnologia/Java/Swing/12 - Swing hoje - estado atual.md"
 ```
 Expected: cobre status oficial + comunidade + virtual threads + gancho JavaFX (planejado, sem wikilink); **segundo grep retorna VAZIO** (zero estatística inventada).
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/12 - Swing hoje - estado atual.md"
+git add "03-Dominios/Tecnologia/Java/Swing/12 - Swing hoje - estado atual.md"
 git commit -m "feat(java): galho 5 nota 12 — Swing hoje: estado atual (capstone)"
 ```
 
@@ -577,13 +577,13 @@ git commit -m "feat(java): galho 5 nota 12 — Swing hoje: estado atual (capston
 ## Task 13: MOC do galho
 
 **Files:**
-- Create: `03-Dominios/Java/Swing/index.md`
+- Create: `03-Dominios/Tecnologia/Java/Swing/index.md`
 
 - [ ] **Step 1: Escrever o MOC**
 
 Frontmatter: `type: moc`, `status: growing`, `publish: true`, `title: "Swing"`, tags `[java, swing, moc]`, aliases `["Swing", "Galho 5 - Swing"]`, `created`/`updated: 2026-06-03`.
 
-Conteúdo (modelar pelo `03-Dominios/Java/Concorrência e paralelismo/index.md`):
+Conteúdo (modelar pelo `03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index.md`):
 - `> [!abstract] TL;DR` — Galho 5 da trilha Java Senior; GUI desktop com Swing: componentes/containers, layouts, eventos, EDT/SwingWorker, MVC/models, L&F, custom painting e o estado atual da API.
 - `## Sobre este galho` — escopo + audiência primária (senior em prep de entrevista) + secundária (decisão de arquitetura/manutenção de apps Swing) + nota de que é o **primeiro galho construído por pesquisa** (sem tronco).
 - `## Iniciado` — wikilinks 01-04 (uma linha descritiva cada).
@@ -600,27 +600,27 @@ Conteúdo (modelar pelo `03-Dominios/Java/Concorrência e paralelismo/index.md`)
 ````markdown
 ```dataview
 TABLE fase, status, updated
-FROM "03-Dominios/Java/Swing"
+FROM "03-Dominios/Tecnologia/Java/Swing"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 ````
 
-- `## Veja também` — `[[03-Dominios/Java/index|Java (MOC central)]]`, `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]`, `[[03-Dominios/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (Galho 4)]]`, `[[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]`. Galho 6 (JavaFX) como texto "(planejado)", SEM wikilink.
+- `## Veja também` — `[[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]`, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (Galho 1)]]`, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/index|Concorrência e paralelismo (Galho 4)]]`, `[[03-Dominios/Tecnologia/Java/Dicionário de Java|Dicionário de Java]]`. Galho 6 (JavaFX) como texto "(planejado)", SEM wikilink.
 
 - [ ] **Step 2: Verificar**
 
 ```bash
-grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Java/Swing/index.md"
-grep -c "\[\[" "03-Dominios/Java/Swing/index.md"
-grep -i "JavaFX" "03-Dominios/Java/Swing/index.md"
+grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Tecnologia/Java/Swing/index.md"
+grep -c "\[\[" "03-Dominios/Tecnologia/Java/Swing/index.md"
+grep -i "JavaFX" "03-Dominios/Tecnologia/Java/Swing/index.md"
 ```
 Expected: 4 headings de seção; ≥12 wikilinks; "JavaFX" aparece como texto "(planejado)" SEM `[[`.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Java/Swing/index.md"
+git add "03-Dominios/Tecnologia/Java/Swing/index.md"
 git commit -m "feat(java): galho 5 MOC — Swing"
 ```
 
@@ -629,16 +629,16 @@ git commit -m "feat(java): galho 5 MOC — Swing"
 ## Task 14: Expandir o Dicionário de Java (NÃO recriar)
 
 **Files:**
-- Modify: `03-Dominios/Java/Dicionário de Java.md`
+- Modify: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`
 
 - [ ] **Step 1: Reler o Dicionário existente**
 
-Ler `03-Dominios/Java/Dicionário de Java.md` inteiro. Mapear as seções alfabéticas existentes e os verbetes já presentes (Galhos 1 e 4). **NÃO recriar o arquivo; NÃO reordenar verbetes existentes.** Confirmar o formato de verbete (`### Termo` + definição 1-3 linhas + `Veja também: [[nota]].`).
+Ler `03-Dominios/Tecnologia/Java/Dicionário de Java.md` inteiro. Mapear as seções alfabéticas existentes e os verbetes já presentes (Galhos 1 e 4). **NÃO recriar o arquivo; NÃO reordenar verbetes existentes.** Confirmar o formato de verbete (`### Termo` + definição 1-3 linhas + `Veja também: [[nota]].`).
 
 - [ ] **Step 2: Extrair as âncoras de Dicionário usadas nas notas 01-12**
 
 ```bash
-grep -rhoE "Dicionário de Java#[^]|]+" "03-Dominios/Java/Swing/"
+grep -rhoE "Dicionário de Java#[^]|]+" "03-Dominios/Tecnologia/Java/Swing/"
 ```
 Anotar cada âncora referenciada pelas notas. **Cada verbete inserido deve ter heading que bate EXATAMENTE (case/acento) com a âncora usada** (regra do Galho 4). Se uma nota referencia `#cell renderer`, o heading é `### cell renderer`.
 
@@ -680,15 +680,15 @@ Atualizar frontmatter `updated: 2026-06-03`.
 - [ ] **Step 4: Verificar**
 
 ```bash
-grep -E "^### (EDT|SwingWorker|FlatLaf|paintComponent|separable model|Action API)" "03-Dominios/Java/Dicionário de Java.md"
-grep -cE "^### " "03-Dominios/Java/Dicionário de Java.md"
+grep -E "^### (EDT|SwingWorker|FlatLaf|paintComponent|separable model|Action API)" "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
+grep -cE "^### " "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 ```
 Expected: verbetes de Swing presentes; contagem total de `###` subiu ~24 vs o baseline (Galhos 1+4). Verbetes anteriores intactos.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Java/Dicionário de Java.md"
+git add "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 git commit -m "feat(java): expande Dicionário de Java com verbetes de Swing (galho 5)"
 ```
 
@@ -697,14 +697,14 @@ git commit -m "feat(java): expande Dicionário de Java com verbetes de Swing (ga
 ## Task 15: Ativar o Galho 5 no MOC central `Java/index.md`
 
 **Files:**
-- Modify: `03-Dominios/Java/index.md`
+- Modify: `03-Dominios/Tecnologia/Java/index.md`
 
 - [ ] **Step 1: Trocar a linha do Galho 5 por wikilink ativo**
 
 Substituir a linha 32 (atualmente `5. Swing *(planejado)* — componentes, layout managers, EDT, MVC, estado atual de adoção`) por:
 
 ```markdown
-5. [[03-Dominios/Java/Swing/index|Swing]] — componentes e containers, layout managers, modelo de eventos, EDT/SwingWorker, MVC/models, Look & Feel, custom painting, estado atual da API
+5. [[03-Dominios/Tecnologia/Java/Swing/index|Swing]] — componentes e containers, layout managers, modelo de eventos, EDT/SwingWorker, MVC/models, Look & Feel, custom painting, estado atual da API
 ```
 
 Atualizar `updated: 2026-06-03`. **Não mexer no resto do MOC** (galhos 2/3 e 6-18 permanecem como texto "(planejado)").
@@ -712,15 +712,15 @@ Atualizar `updated: 2026-06-03`. **Não mexer no resto do MOC** (galhos 2/3 e 6-
 - [ ] **Step 2: Verificar**
 
 ```bash
-grep -E "Swing/index" "03-Dominios/Java/index.md"
-grep -E "updated: 2026-06-03" "03-Dominios/Java/index.md"
+grep -E "Swing/index" "03-Dominios/Tecnologia/Java/index.md"
+grep -E "updated: 2026-06-03" "03-Dominios/Tecnologia/Java/index.md"
 ```
 Expected: wikilink ativo do Galho 5; `updated` atualizado.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Java/index.md"
+git add "03-Dominios/Tecnologia/Java/index.md"
 git commit -m "feat(java): ativa Galho 5 (Swing) no MOC central"
 ```
 
@@ -733,21 +733,21 @@ git commit -m "feat(java): ativa Galho 5 (Swing) no MOC central"
 - [ ] **Step 1: Conferir as 12 notas + MOC presentes**
 
 ```bash
-ls "03-Dominios/Java/Swing/" | sort
+ls "03-Dominios/Tecnologia/Java/Swing/" | sort
 ```
 Expected: 01..12 + index.md (13 arquivos .md).
 
 - [ ] **Step 2: Conferir frontmatter `fase` e distribuição**
 
 ```bash
-for f in "03-Dominios/Java/Swing/"[0-9]*.md; do grep -H "^fase:" "$f"; done
+for f in "03-Dominios/Tecnologia/Java/Swing/"[0-9]*.md; do grep -H "^fase:" "$f"; done
 ```
 Expected: toda nota 01-12 tem `fase:`; distribuição 4 iniciado / 5 adepto / 3 magus.
 
 - [ ] **Step 3: Conferir seções obrigatórias em todas as notas**
 
 ```bash
-for f in "03-Dominios/Java/Swing/"[0-9]*.md; do
+for f in "03-Dominios/Tecnologia/Java/Swing/"[0-9]*.md; do
   echo "$f: $(grep -cE '^## (Em entrevista|Armadilhas|Veja também)' "$f")"
 done
 ```
@@ -756,14 +756,14 @@ Expected: cada nota retorna 3.
 - [ ] **Step 4: Conferir ausência de fabricação e de wikilinks pro Galho 6**
 
 ```bash
-grep -riE "minha experiência|no meu projeto|josenaldo" "03-Dominios/Java/Swing/"
-grep -rE "\[\[[^]]*JavaFX" "03-Dominios/Java/Swing/"
+grep -riE "minha experiência|no meu projeto|josenaldo" "03-Dominios/Tecnologia/Java/Swing/"
+grep -rE "\[\[[^]]*JavaFX" "03-Dominios/Tecnologia/Java/Swing/"
 ```
 Expected: ambos VAZIOS (zero fabricação; JavaFX nunca como wikilink — só texto "(planejado)").
 
 - [ ] **Step 5: Rodar a skill de wikilinks**
 
-Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Java/Swing/` + `03-Dominios/Java/index.md` + `03-Dominios/Java/Dicionário de Java.md`. Corrigir quebrados (folder-links exigem index.md — regra Quartz). **Lembrar:** o checker dá falso-positivo em self-anchors `[[#Heading]]` — as notas evitam âncoras same-file; ignorar esse falso-positivo. **Conferir que as âncoras de `Dicionário de Java#...` usadas nas notas resolvem 1:1 com os headings dos verbetes inseridos (Task 14 Step 2).** Se houver correções, commitar à parte.
+Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Tecnologia/Java/Swing/` + `03-Dominios/Tecnologia/Java/index.md` + `03-Dominios/Tecnologia/Java/Dicionário de Java.md`. Corrigir quebrados (folder-links exigem index.md — regra Quartz). **Lembrar:** o checker dá falso-positivo em self-anchors `[[#Heading]]` — as notas evitam âncoras same-file; ignorar esse falso-positivo. **Conferir que as âncoras de `Dicionário de Java#...` usadas nas notas resolvem 1:1 com os headings dos verbetes inseridos (Task 14 Step 2).** Se houver correções, commitar à parte.
 
 - [ ] **Step 6: Build Quartz (se disponível)**
 

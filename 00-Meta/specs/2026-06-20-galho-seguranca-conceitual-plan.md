@@ -31,20 +31,20 @@ de acesso**. O fio: criptografia não é o assunto, é uma ferramenta; o assunto
 ## Decisão de fronteira (rígido — linka, não duplica)
 - **Matemática para Computação** (galho 11, existe) — dona da TEORIA DOS NÚMEROS (primos, fatoração, aritmética
   modular, Fermat-Euler) que sustenta RSA e Diffie-Hellman. Notas 08/09 deste galho LINKAM
-  `[[03-Dominios/Fundamentos/Matemática para Computação/14 - Teoria dos números - divisibilidade e primos]]` e
-  `[[03-Dominios/Fundamentos/Matemática para Computação/15 - Aritmética modular e Fermat-Euler]]` e usam o
+  `[[03-Dominios/Ciência/Matemática para Computação/14 - Teoria dos números - divisibilidade e primos]]` e
+  `[[03-Dominios/Ciência/Matemática para Computação/15 - Aritmética modular e Fermat-Euler]]` e usam o
   *aplicado* (a chave pública, o problema do log discreto como caixa-preta) — NUNCA reescrevem a matemática.
 - **Redes e Protocolos** (galho existe) — dona do TLS/HTTPS como PROTOCOLO (handshake real, versões, cifras
   negociadas). Nota 14 deste galho é dona do TLS como CONCEITO (por que cripto híbrida + PKI + PFS se combinam),
-  LINKA `[[03-Dominios/Fundamentos/Redes e Protocolos/05 - TLS e HTTPS]]`; nota 11 (PKI) também linka. Não
+  LINKA `[[03-Dominios/Ciência/Redes e Protocolos/05 - TLS e HTTPS]]`; nota 11 (PKI) também linka. Não
   reescreve o protocolo.
 - **Organização de Computadores** (galho 13, existe) — dona de Spectre/Meltdown como MECANISMO DE HARDWARE
   (especulação, branch prediction). Nota 15 deste galho é dona do side-channel como CLASSE DE ATAQUE (timing,
   cache, o conceito de canal lateral), LINKA
-  `[[03-Dominios/Fundamentos/Organização de Computadores/14 - Branch prediction e execução especulativa]]`.
+  `[[03-Dominios/Ciência/Organização de Computadores/14 - Branch prediction e execução especulativa]]`.
 - **Teoria da Computação** (galho 10, existe) — dona das classes de complexidade (P/NP/BQP). Nota 21
   (pós-quântica) menciona em PROSA que Shor coloca fatoração em BQP; linka opcional a
-  `[[03-Dominios/Fundamentos/Teoria da Computação/16 - P vs NP e o mapa das classes]]` se couber natural.
+  `[[03-Dominios/Ciência/Teoria da Computação/16 - P vs NP e o mapa das classes]]` se couber natural.
 - **Sistemas Operacionais** (galho 9, existe) — dono de permissões de processo/usuário, isolamento, sandbox
   como MECANISMO DO SO. Nota 13 (autorização) linka o *modelo* (DAC/MAC/RBAC); SO é dono da implementação.
 - **Complexidade de Software** (galho 12, existe) — "Trusting Trust" toca confiança transitiva; a nota 17
@@ -155,7 +155,7 @@ o argumento de Thompson passo a passo (compilador que se auto-infecta). O **caps
    conferir `wc -l` REAL → 2ª passada de enriquecimento nos floors → commit.
 3. **Fase Adepto (07–13)** → idem, 7 notas → commit.
 4. **Fase Magus (14–22)** → idem, 9 notas → commit.
-5. **MOCs do domínio** (`03-Dominios/Fundamentos/index.md` + `Fundamentos.md`) apontam ao galho → commit.
+5. **MOCs do domínio** (`03-Dominios/Ciência/index.md` + `Fundamentos.md`) apontam ao galho → commit.
 6. Checks finais: NN-links resolvem, cross-galho verificados, zero link quebrado/relativo, zero xychart, zero
    entidade HTML na prosa, `[[...]]` literal só dentro de code fence. Atualizar memória.
 

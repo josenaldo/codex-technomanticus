@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Criar 10 notas atômicas + 1 MOC em `03-Dominios/Node/Tooling e ecossistema moderno/` cobrindo o ecossistema de ferramentas modernas do Node.js (package managers, semver, ESM vs CJS, TypeScript nativo, test runner, DX flags, SEA, Promise APIs e Bun), e podar as seções correspondentes do tronco `Node.js.md`. Contexto: maio de 2026 — npm v10, pnpm v9, yarn v4 (Berry), Bun (adquirido pela Anthropic), Node 22.18 LTS com `--experimental-strip-types`, Node 24 com TypeScript nativo estável.
+**Goal:** Criar 10 notas atômicas + 1 MOC em `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/` cobrindo o ecossistema de ferramentas modernas do Node.js (package managers, semver, ESM vs CJS, TypeScript nativo, test runner, DX flags, SEA, Promise APIs e Bun), e podar as seções correspondentes do tronco `Node.js.md`. Contexto: maio de 2026 — npm v10, pnpm v9, yarn v4 (Berry), Bun (adquirido pela Anthropic), Node 22.18 LTS com `--experimental-strip-types`, Node 24 com TypeScript nativo estável.
 
-**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/Node/Tooling e ecossistema moderno/`. O MOC serve como ponto de entrada com rotas alternativas. O tronco `Node.js.md` é podado ao final com callouts de migração.
+**Architecture:** Cada nota é um arquivo Markdown independente em `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/`. O MOC serve como ponto de entrada com rotas alternativas. O tronco `Node.js.md` é podado ao final com callouts de migração.
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks `[[]]`, callouts `[!abstract]`, dataview query no MOC. Package managers: npm v10, pnpm v9, yarn v4 Berry, Bun v1.1+. Runtime: Node 22.18 LTS (`--experimental-strip-types`), Node 24 (TypeScript estável). Módulos: ESM (padrão 2026), CJS (legado/libs). Bundlers mencionados: esbuild, Rollup, tsup.
 
@@ -46,7 +46,7 @@
 **Criar:**
 
 ```
-03-Dominios/Node/Tooling e ecossistema moderno/
+03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/
 ├── index.md                                                (MOC — Task 1)
 ├── 01 - Package managers - npm, pnpm, yarn e bun.md       (Task 2)
 ├── 02 - Semver e gerenciamento de dependências.md         (Task 3)
@@ -63,8 +63,8 @@
 **Modificar:**
 
 ```
-03-Dominios/JavaScript/Backend/Node.js.md     (poda: 2 seções → callouts — Task 12)
-03-Dominios/Node/index.md                     (adicionar galho 7 — Task 12)
+03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md     (poda: 2 seções → callouts — Task 12)
+03-Dominios/Tecnologia/Node/index.md                     (adicionar galho 7 — Task 12)
 ```
 
 ---
@@ -72,13 +72,13 @@
 ## Task 1: MOC — Tooling e ecossistema moderno
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/index.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index.md`
 
 **Commit:** `feat(node/g7): add MOC - Tooling e ecossistema moderno`
 
 - [ ] **Step 1: Criar o arquivo MOC**
 
-Criar `03-Dominios/Node/Tooling e ecossistema moderno/index.md` com:
+Criar `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index.md` com:
 
 ```markdown
 ---
@@ -110,7 +110,7 @@ Conteúdo do MOC deve incluir:
 
 2. **Seção `## Sobre este galho`** com:
    - Descrição do escopo (2-3 parágrafos)
-   - Pré-requisitos: `[[Node.js]]` (tronco), `[[03-Dominios/Node/Runtime e Event Loop/index|Runtime e Event Loop]]` (galho 1)
+   - Pré-requisitos: `[[Node.js]]` (tronco), `[[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Runtime e Event Loop]]` (galho 1)
    - Audiência primária: dev senior prep entrevista internacional
    - Audiência secundária: dev modernizando toolchain de projeto Node existente
 
@@ -130,12 +130,12 @@ Conteúdo do MOC deve incluir:
 5. **Seção `## Todas as notas`** com query dataview:
    ```dataview
    TABLE status, updated
-   FROM "03-Dominios/Node/Tooling e ecossistema moderno"
+   FROM "03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno"
    WHERE type = "concept"
    SORT file.name ASC
    ```
 
-6. **Seção `## Veja também`** com wikilinks para: `[[Node.js]]`, `[[03-Dominios/Node/index|Node.js (MOC central)]]`, `[[03-Dominios/Node/Runtime e Event Loop/index|Runtime e Event Loop]]`, galhos anteriores relevantes.
+6. **Seção `## Veja também`** com wikilinks para: `[[Node.js]]`, `[[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]`, `[[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Runtime e Event Loop]]`, galhos anteriores relevantes.
 
 **Mínimo de linhas:** 80
 
@@ -144,7 +144,7 @@ Conteúdo do MOC deve incluir:
 ## Task 2: Nota 01 — Package managers - npm, pnpm, yarn e bun
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/01 - Package managers - npm, pnpm, yarn e bun.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/01 - Package managers - npm, pnpm, yarn e bun.md`
 
 **Commit:** `feat(node/g7): add 01 - Package managers - npm, pnpm, yarn e bun`
 
@@ -237,7 +237,7 @@ tags:
 ## Task 3: Nota 02 — Semver e gerenciamento de dependências
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/02 - Semver e gerenciamento de dependências.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/02 - Semver e gerenciamento de dependências.md`
 
 **Commit:** `feat(node/g7): add 02 - Semver e gerenciamento de dependências`
 
@@ -319,7 +319,7 @@ tags:
 ## Task 4: Nota 03 — ESM vs CJS - módulos no Node moderno
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/03 - ESM vs CJS - módulos no Node moderno.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/03 - ESM vs CJS - módulos no Node moderno.md`
 
 **Commit:** `feat(node/g7): add 03 - ESM vs CJS - módulos no Node moderno`
 
@@ -404,7 +404,7 @@ tags:
 ## Task 5: Nota 04 — TypeScript nativo - strip types e integração
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/04 - TypeScript nativo - strip types e integração.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/04 - TypeScript nativo - strip types e integração.md`
 
 **Commit:** `feat(node/g7): add 04 - TypeScript nativo - strip types e integração`
 
@@ -487,7 +487,7 @@ tags:
 ## Task 6: Nota 05 — Built-in test runner - node-test
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/05 - Built-in test runner - node-test.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/05 - Built-in test runner - node-test.md`
 
 **Commit:** `feat(node/g7): add 05 - Built-in test runner - node-test`
 
@@ -578,7 +578,7 @@ aliases:
 ## Task 7: Nota 06 — DX flags modernos - watch, env-file e import
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/06 - DX flags modernos - watch, env-file e import.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/06 - DX flags modernos - watch, env-file e import.md`
 
 **Commit:** `feat(node/g7): add 06 - DX flags modernos - watch, env-file e import`
 
@@ -664,7 +664,7 @@ aliases:
 ## Task 8: Nota 07 — Single Executable Apps (SEA)
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/07 - Single Executable Apps (SEA).md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/07 - Single Executable Apps (SEA).md`
 
 **Commit:** `feat(node/g7): add 07 - Single Executable Apps (SEA)`
 
@@ -736,7 +736,7 @@ aliases:
 ## Task 9: Nota 08 — Promise-based core APIs
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/08 - Promise-based core APIs.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/08 - Promise-based core APIs.md`
 
 **Commit:** `feat(node/g7): add 08 - Promise-based core APIs`
 
@@ -808,7 +808,7 @@ aliases:
 
 8. **Seção `## Fontes`** com link para docs Node.js de cada submódulo.
 
-9. **Seção `## Veja também`** com `[[Tooling e ecossistema moderno]]`, `[[Node.js]]`, `[[03-Dominios/Node/Streams/index|Streams]]` (galho 3).
+9. **Seção `## Veja também`** com `[[Tooling e ecossistema moderno]]`, `[[Node.js]]`, `[[03-Dominios/Tecnologia/Node/Streams/index|Streams]]` (galho 3).
 
 **Mínimo de código:** 6 snippets (fs/promises, stream/promises.pipeline, timers setTimeout, timers setInterval generator, readline linha a linha, dns.promises)
 
@@ -817,7 +817,7 @@ aliases:
 ## Task 10: Nota 09 — Bun como runtime alternativo
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/09 - Bun como runtime alternativo.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/09 - Bun como runtime alternativo.md`
 
 **Commit:** `feat(node/g7): add 09 - Bun como runtime alternativo`
 
@@ -907,7 +907,7 @@ aliases:
 ## Task 11: Nota 10 — Cheatsheet e decision tree de tooling
 
 **Files:**
-- Create: `03-Dominios/Node/Tooling e ecossistema moderno/10 - Cheatsheet e decision tree de tooling.md`
+- Create: `03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/10 - Cheatsheet e decision tree de tooling.md`
 
 **Commit:** `feat(node/g7): add 10 - Cheatsheet e decision tree de tooling`
 
@@ -987,47 +987,47 @@ aliases:
 ## Task 12: Poda do tronco e atualização do índice
 
 **Files:**
-- Modify: `03-Dominios/JavaScript/Backend/Node.js.md`
-- Modify: `03-Dominios/Node/index.md`
+- Modify: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- Modify: `03-Dominios/Tecnologia/Node/index.md`
 
 **Commit:** `chore(node/g7): prune trunk - 2 sections migrated to tooling galho`
 
 - [ ] **Step 1: Podar `### npm e Package Management` em Node.js.md**
 
-Localizar a seção `### npm e Package Management` (aproximadamente linha 96 de `03-Dominios/JavaScript/Backend/Node.js.md`) e **substituir todo o conteúdo da seção** (mantendo apenas o heading) pelo callout de migração:
+Localizar a seção `### npm e Package Management` (aproximadamente linha 96 de `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`) e **substituir todo o conteúdo da seção** (mantendo apenas o heading) pelo callout de migração:
 
 ```markdown
 ### npm e Package Management
 
 > [!nota] Migrado para galho próprio
-> Package managers, semver e ecossistema npm foram expandidos em [[03-Dominios/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] (galho 7). Veja em particular [[01 - Package managers - npm, pnpm, yarn e bun]] (comparativo dos 4 gerenciadores: npm v10, pnpm v9, yarn v4 Berry, bun v1.1+) e [[02 - Semver e gerenciamento de dependências]] (versionamento semântico, lockfiles e estratégias de atualização automatizada com Renovate/Dependabot).
+> Package managers, semver e ecossistema npm foram expandidos em [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] (galho 7). Veja em particular [[01 - Package managers - npm, pnpm, yarn e bun]] (comparativo dos 4 gerenciadores: npm v10, pnpm v9, yarn v4 Berry, bun v1.1+) e [[02 - Semver e gerenciamento de dependências]] (versionamento semântico, lockfiles e estratégias de atualização automatizada com Renovate/Dependabot).
 ```
 
 - [ ] **Step 2: Podar `### Node moderno — features que você deveria usar` em Node.js.md**
 
-Localizar a seção `### Node moderno — features que você deveria usar` (aproximadamente linha 103 de `03-Dominios/JavaScript/Backend/Node.js.md`) e **substituir todo o conteúdo da seção** (incluindo todos os snippets TypeScript e bash, mantendo apenas o heading) pelo callout de migração:
+Localizar a seção `### Node moderno — features que você deveria usar` (aproximadamente linha 103 de `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`) e **substituir todo o conteúdo da seção** (incluindo todos os snippets TypeScript e bash, mantendo apenas o heading) pelo callout de migração:
 
 ```markdown
 ### Node moderno — features que você deveria usar
 
 > [!nota] Migrado para galho próprio
-> As features modernas do Node foram expandidas em [[03-Dominios/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] (galho 7). Veja em particular [[04 - TypeScript nativo - strip types e integração]] (`--experimental-strip-types` no Node 22.18+), [[05 - Built-in test runner - node-test]] (`node:test` com mock e watch), [[06 - DX flags modernos - watch, env-file e import]] (`--watch`, `--env-file`), [[07 - Single Executable Apps (SEA)]] e [[08 - Promise-based core APIs]] (`fs/promises`, `timers/promises`, `stream/promises`).
+> As features modernas do Node foram expandidas em [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] (galho 7). Veja em particular [[04 - TypeScript nativo - strip types e integração]] (`--experimental-strip-types` no Node 22.18+), [[05 - Built-in test runner - node-test]] (`node:test` com mock e watch), [[06 - DX flags modernos - watch, env-file e import]] (`--watch`, `--env-file`), [[07 - Single Executable Apps (SEA)]] e [[08 - Promise-based core APIs]] (`fs/promises`, `timers/promises`, `stream/promises`).
 ```
 
 - [ ] **Step 3: Adicionar link ao `## Veja também` em Node.js.md**
 
-Localizar a seção `## Veja também` em `03-Dominios/JavaScript/Backend/Node.js.md` e adicionar após a linha de galho 6:
+Localizar a seção `## Veja também` em `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` e adicionar após a linha de galho 6:
 
 ```markdown
-- [[03-Dominios/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] — galho 7 da trilha Node Senior; package managers (npm, pnpm, yarn, Bun), semver, ESM vs CJS, TypeScript nativo, test runner nativo, DX flags, SEA e Bun como runtime
+- [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] — galho 7 da trilha Node Senior; package managers (npm, pnpm, yarn, Bun), semver, ESM vs CJS, TypeScript nativo, test runner nativo, DX flags, SEA e Bun como runtime
 ```
 
-- [ ] **Step 4: Adicionar galho 7 ao `03-Dominios/Node/index.md`**
+- [ ] **Step 4: Adicionar galho 7 ao `03-Dominios/Tecnologia/Node/index.md`**
 
-Localizar a linha de galho 6 em `03-Dominios/Node/index.md` e adicionar após ela:
+Localizar a linha de galho 6 em `03-Dominios/Tecnologia/Node/index.md` e adicionar após ela:
 
 ```markdown
-- [[03-Dominios/Node/Tooling e ecossistema moderno/index]] — galho 7: package managers (npm, pnpm, yarn, Bun), semver, ESM vs CJS, TypeScript nativo, test runner nativo (`node:test`), DX flags e SEA
+- [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index]] — galho 7: package managers (npm, pnpm, yarn, Bun), semver, ESM vs CJS, TypeScript nativo, test runner nativo (`node:test`), DX flags e SEA
 ```
 
 ---

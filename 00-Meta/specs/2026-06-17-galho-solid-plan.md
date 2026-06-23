@@ -16,7 +16,7 @@ tags:
 ## Contexto
 Galho **spin-off do galho Orientação a Objetos** (`2026-06-17-galho-orientacao-a-objetos-plan.md`),
 aprovado pelo usuário em 2026-06-17: SOLID sai do galho OO e vira galho próprio, irmão sob
-`03-Dominios/Fundamentos/`. Isso **altera o meta-plano**: a Camada A passa de 6 → 7 galhos
+`03-Dominios/Ciência/`. Isso **altera o meta-plano**: a Camada A passa de 6 → 7 galhos
 (ED, Algoritmos, OO, **SOLID**, Banco, Redes, Testes). Interview-critical (★).
 
 A semente de conteúdo é a seção **SOLID** do monólito `Orientação a Objetos.md` (os 5 princípios já
@@ -86,7 +86,7 @@ Experiência REAL do usuário, relocada do monólito ([[feedback-no-fabrication]
 - `publish: false` nas notas; `publish: true` só no `index.md`. Frontmatter `fase:`, tags.
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/SOLID/` com `index.md` (MOC, `type: moc`, `publish: true`,
+- Pasta `03-Dominios/Engenharia/SOLID/` com `index.md` (MOC, `type: moc`, `publish: true`,
   agrupado por fase, rota de entrevista, dataview, "Veja também").
 - Alias do `index.md`: **"SOLID"** (+ "Princípios SOLID", "SOLID Principles") para resolver links de
   entrada (Arquitetura de Software, Java, etc. referenciam SOLID).

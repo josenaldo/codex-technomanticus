@@ -40,7 +40,7 @@ domínio é opcional e fica pro fluxo downstream (`/promover-glosa`).
 - `<url>` — **obrigatório**. Playlist OU vídeo único do YouTube
   (`youtube.com/watch`, `youtu.be`, `youtube.com/playlist`).
 - `[pasta-alvo]` — **opcional**. Dica de domínio pra estreitar a busca de "Ver
-  também" (ex: `03-Dominios/IA/Anatomia dos LLMs`). Se omitido, a skill escaneia
+  também" (ex: `03-Dominios/Tecnologia/IA/Anatomia dos LLMs`). Se omitido, a skill escaneia
   o vault inteiro e sugere as notas de melhor encaixe por tags/tema.
 
 ## Detecção de tipo de input

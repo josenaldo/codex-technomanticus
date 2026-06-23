@@ -10,7 +10,7 @@ publish: false
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Node/Frameworks e arquitetura/`, em PT-BR, todas `publish: true`, cobrindo os 4 frameworks principais (Express, NestJS, Fastify, Hono), patterns transversais (middleware, error handling Problem Details, schema validation), Clean Architecture em Node, e DI manual vs container — para um dev senior em prep para entrevista internacional. Ao final, podar 2 seções do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central.
+**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/`, em PT-BR, todas `publish: true`, cobrindo os 4 frameworks principais (Express, NestJS, Fastify, Hono), patterns transversais (middleware, error handling Problem Details, schema validation), Clean Architecture em Node, e DI manual vs container — para um dev senior em prep para entrevista internacional. Ao final, podar 2 seções do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central.
 
 **Architecture:** Sub-trilha sequencial em 6 blocos (Visão geral → Frameworks principais → Edge runtimes → Patterns transversais → Arquitetura → Fechamento) + 1 MOC com 5 rotas alternativas. Pressupõe galho 1 (Runtime e Event Loop) como base. Cada nota é atômica, segue estrutura híbrida (TL;DR + corpo técnico), com code samples em TypeScript moderno (Node 22 LTS / 24, Express 5, NestJS 10+, Fastify 5, Hono 4+), seção "Em entrevista" pra preparação internacional. Padrão "sem dogma" — cada framework apresentado com trade-offs explícitos.
 
@@ -36,10 +36,10 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 ## File Structure
 
-13 arquivos novos em `03-Dominios/Node/Frameworks e arquitetura/`:
+13 arquivos novos em `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/`:
 
 ```
-03-Dominios/Node/Frameworks e arquitetura/
+03-Dominios/Tecnologia/Node/Frameworks e arquitetura/
 ├── Frameworks e arquitetura.md                                       # MOC (Task 1)
 ├── 01 - Os 4 frameworks - Express, NestJS, Fastify, Hono.md          # Task 2
 ├── 02 - Express idiomático.md                                        # Task 3
@@ -57,7 +57,7 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 **Final integration (Task 14, 15, 16):**
 - Pass final no MOC inserindo intro + verificações
-- Poda do tronco `03-Dominios/JavaScript/Backend/Node.js.md` (2 seções)
+- Poda do tronco `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` (2 seções)
 - Atualização do MOC central + verificação Quartz
 
 ---
@@ -141,10 +141,10 @@ aliases:
 
 ### Notas no vault
 
-- `03-Dominios/JavaScript/Backend/Node.js.md` — tronco (2 seções a podar)
-- `03-Dominios/Node/index.md` — MOC central
-- `03-Dominios/Node/Runtime e Event Loop/` — galho 1 (pré-requisito)
-- `03-Dominios/Node/Streams/` — galho 3 (frameworks abstraem multipart/streaming)
+- `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` — tronco (2 seções a podar)
+- `03-Dominios/Tecnologia/Node/index.md` — MOC central
+- `03-Dominios/Tecnologia/Node/Runtime e Event Loop/` — galho 1 (pré-requisito)
+- `03-Dominios/Tecnologia/Node/Streams/` — galho 3 (frameworks abstraem multipart/streaming)
 
 ### A buscar conforme necessidade
 
@@ -157,13 +157,13 @@ aliases:
 ## Task 0: Pré-flight
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/` (diretório)
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/` (diretório)
 
 - [ ] **Step 1: Criar o diretório**
 
 ```bash
-mkdir -p "03-Dominios/Node/Frameworks e arquitetura"
-ls -la "03-Dominios/Node/Frameworks e arquitetura"
+mkdir -p "03-Dominios/Tecnologia/Node/Frameworks e arquitetura"
+ls -la "03-Dominios/Tecnologia/Node/Frameworks e arquitetura"
 ```
 
 Esperado: diretório vazio.
@@ -179,7 +179,7 @@ Esperado: linhas referenciando `feedback_no_fabrication.md` e `project_tronco_ga
 - [ ] **Step 3: Sanity check do tronco — 2 seções a podar**
 
 ```bash
-grep -nE "^### Frameworks|^### Error Handling" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -nE "^### Frameworks|^### Error Handling" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 Esperado: 2 matches. Anotar números de linha exatos. Confirmar que cada seção termina antes da próxima `###` ou `##`. Se nomes divergirem, anotar exatamente.
@@ -187,11 +187,11 @@ Esperado: 2 matches. Anotar números de linha exatos. Confirmar que cada seção
 - [ ] **Step 4: Confirmar wikilinks dos galhos anteriores resolvem**
 
 ```bash
-ls "03-Dominios/Node/Runtime e Event Loop/" | wc -l   # esperado 13
-ls "03-Dominios/Node/Paralelismo/" | wc -l            # esperado 13
-ls "03-Dominios/Node/Streams/" | wc -l                # esperado 13
-ls "03-Dominios/Node/index.md"
-ls "03-Dominios/JavaScript/Backend/Node.js.md"
+ls "03-Dominios/Tecnologia/Node/Runtime e Event Loop/" | wc -l   # esperado 13
+ls "03-Dominios/Tecnologia/Node/Paralelismo/" | wc -l            # esperado 13
+ls "03-Dominios/Tecnologia/Node/Streams/" | wc -l                # esperado 13
+ls "03-Dominios/Tecnologia/Node/index.md"
+ls "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 - [ ] **Step 5: Sanity check das fontes-âncora**
@@ -221,7 +221,7 @@ git commit -m "feat(node-frameworks): create directory for Frameworks e arquitet
 ## Task 1: MOC esqueleto
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/Frameworks e arquitetura.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/Frameworks e arquitetura.md`
 
 - [ ] **Step 1: Criar MOC**
 
@@ -311,14 +311,14 @@ aliases:
 
 \`\`\`dataview
 TABLE status, updated
-FROM "03-Dominios/Node/Frameworks e arquitetura"
+FROM "03-Dominios/Tecnologia/Node/Frameworks e arquitetura"
 WHERE type = "concept"
 SORT file.name ASC
 \`\`\`
 
 ## Veja também
 
-- [[03-Dominios/Node/index|Node.js (MOC central)]]
+- [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
 - [[Node.js]] — tronco (deep dive panorâmico)
 - [[Runtime e Event Loop]] — galho 1 (pré-requisito)
 - [[Paralelismo]] — galho 2
@@ -328,7 +328,7 @@ SORT file.name ASC
 - [ ] **Step 2: Cleanup `.gitkeep`** (se foi criado em Task 0)
 
 ```bash
-ls "03-Dominios/Node/Frameworks e arquitetura/.gitkeep" 2>/dev/null && git rm "03-Dominios/Node/Frameworks e arquitetura/.gitkeep" || echo "no .gitkeep"
+ls "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/.gitkeep" 2>/dev/null && git rm "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/.gitkeep" || echo "no .gitkeep"
 ```
 
 - [ ] **Step 3: Verificar**
@@ -336,13 +336,13 @@ ls "03-Dominios/Node/Frameworks e arquitetura/.gitkeep" 2>/dev/null && git rm "0
 - `type: moc`, `publish: true`
 - 12 notas em 6 blocos (A-F)
 - 5 rotas alternativas (entrevista, produção, NestJS-first, patterns, edge)
-- Dataview path: `"03-Dominios/Node/Frameworks e arquitetura"`
+- Dataview path: `"03-Dominios/Tecnologia/Node/Frameworks e arquitetura"`
 - Wikilinks pro MOC central, tronco, galhos 1+2+3
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/Frameworks e arquitetura.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/Frameworks e arquitetura.md"
 git commit -m "feat(node-frameworks): add MOC skeleton for Frameworks e arquitetura branch"
 ```
 
@@ -351,7 +351,7 @@ git commit -m "feat(node-frameworks): add MOC skeleton for Frameworks e arquitet
 ## Task 2: Nota 01 — Os 4 frameworks
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/01 - Os 4 frameworks - Express, NestJS, Fastify, Hono.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/01 - Os 4 frameworks - Express, NestJS, Fastify, Hono.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -443,7 +443,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/01 - Os 4 frameworks - Express, NestJS, Fastify, Hono.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/01 - Os 4 frameworks - Express, NestJS, Fastify, Hono.md"
 git commit -m "feat(node-frameworks): add note 01 — Os 4 frameworks"
 ```
 
@@ -452,7 +452,7 @@ git commit -m "feat(node-frameworks): add note 01 — Os 4 frameworks"
 ## Task 3: Nota 02 — Express idiomático
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/02 - Express idiomático.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/02 - Express idiomático.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -569,7 +569,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/02 - Express idiomático.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/02 - Express idiomático.md"
 git commit -m "feat(node-frameworks): add note 02 — Express idiomático"
 ```
 
@@ -578,7 +578,7 @@ git commit -m "feat(node-frameworks): add note 02 — Express idiomático"
 ## Task 4: Nota 03 — NestJS fundamentos
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/03 - NestJS - fundamentos.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/03 - NestJS - fundamentos.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -704,7 +704,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/03 - NestJS - fundamentos.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/03 - NestJS - fundamentos.md"
 git commit -m "feat(node-frameworks): add note 03 — NestJS fundamentos"
 ```
 
@@ -713,7 +713,7 @@ git commit -m "feat(node-frameworks): add note 03 — NestJS fundamentos"
 ## Task 5: Nota 04 — NestJS guards, interceptors, pipes, filters
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/04 - NestJS - guards, interceptors, pipes, filters.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/04 - NestJS - guards, interceptors, pipes, filters.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -854,7 +854,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/04 - NestJS - guards, interceptors, pipes, filters.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/04 - NestJS - guards, interceptors, pipes, filters.md"
 git commit -m "feat(node-frameworks): add note 04 — NestJS lifecycle hooks"
 ```
 
@@ -863,7 +863,7 @@ git commit -m "feat(node-frameworks): add note 04 — NestJS lifecycle hooks"
 ## Task 6: Nota 05 — Fastify
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/05 - Fastify - schema-first, plugins, performance.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/05 - Fastify - schema-first, plugins, performance.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1001,7 +1001,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/05 - Fastify - schema-first, plugins, performance.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/05 - Fastify - schema-first, plugins, performance.md"
 git commit -m "feat(node-frameworks): add note 05 — Fastify"
 ```
 
@@ -1010,7 +1010,7 @@ git commit -m "feat(node-frameworks): add note 05 — Fastify"
 ## Task 7: Nota 06 — Hono e edge runtimes
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/06 - Hono e edge runtimes.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/06 - Hono e edge runtimes.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1122,7 +1122,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/06 - Hono e edge runtimes.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/06 - Hono e edge runtimes.md"
 git commit -m "feat(node-frameworks): add note 06 — Hono e edge runtimes"
 ```
 
@@ -1131,7 +1131,7 @@ git commit -m "feat(node-frameworks): add note 06 — Hono e edge runtimes"
 ## Task 8: Nota 07 — Middleware pipeline
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/07 - Middleware pipeline.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/07 - Middleware pipeline.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1240,7 +1240,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/07 - Middleware pipeline.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/07 - Middleware pipeline.md"
 git commit -m "feat(node-frameworks): add note 07 — Middleware pipeline"
 ```
 
@@ -1249,7 +1249,7 @@ git commit -m "feat(node-frameworks): add note 07 — Middleware pipeline"
 ## Task 9: Nota 08 — Error handling estruturado
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/08 - Error handling estruturado.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/08 - Error handling estruturado.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1399,7 +1399,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/08 - Error handling estruturado.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/08 - Error handling estruturado.md"
 git commit -m "feat(node-frameworks): add note 08 — Error handling"
 ```
 
@@ -1408,7 +1408,7 @@ git commit -m "feat(node-frameworks): add note 08 — Error handling"
 ## Task 10: Nota 09 — Validation com schema
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/09 - Validation com schema.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/09 - Validation com schema.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1560,7 +1560,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/09 - Validation com schema.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/09 - Validation com schema.md"
 git commit -m "feat(node-frameworks): add note 09 — Validation com schema"
 ```
 
@@ -1569,7 +1569,7 @@ git commit -m "feat(node-frameworks): add note 09 — Validation com schema"
 ## Task 11: Nota 10 — Clean Architecture em Node
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/10 - Clean Architecture em Node.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/10 - Clean Architecture em Node.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1707,7 +1707,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/10 - Clean Architecture em Node.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/10 - Clean Architecture em Node.md"
 git commit -m "feat(node-frameworks): add note 10 — Clean Architecture"
 ```
 
@@ -1716,7 +1716,7 @@ git commit -m "feat(node-frameworks): add note 10 — Clean Architecture"
 ## Task 12: Nota 11 — DI manual vs container
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/11 - DI - manual vs container.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/11 - DI - manual vs container.md`
 
 - [ ] **Step 1: Pesquisa-âncora**
 
@@ -1852,7 +1852,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/11 - DI - manual vs container.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/11 - DI - manual vs container.md"
 git commit -m "feat(node-frameworks): add note 11 — DI manual vs container"
 ```
 
@@ -1861,7 +1861,7 @@ git commit -m "feat(node-frameworks): add note 11 — DI manual vs container"
 ## Task 13: Nota 12 — Decision tree + cheatsheet
 
 **Files:**
-- Create: `03-Dominios/Node/Frameworks e arquitetura/12 - Decision tree + cheatsheet.md`
+- Create: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/12 - Decision tree + cheatsheet.md`
 
 - [ ] **Step 1: Síntese das 11 notas anteriores**
 
@@ -1961,7 +1961,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/12 - Decision tree + cheatsheet.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/12 - Decision tree + cheatsheet.md"
 git commit -m "feat(node-frameworks): add note 12 — Decision tree + cheatsheet"
 ```
 
@@ -1970,12 +1970,12 @@ git commit -m "feat(node-frameworks): add note 12 — Decision tree + cheatsheet
 ## Task 14: Pass final no MOC
 
 **Files:**
-- Modify: `03-Dominios/Node/Frameworks e arquitetura/Frameworks e arquitetura.md`
+- Modify: `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/Frameworks e arquitetura.md`
 
 - [ ] **Step 1: Confirmar 12 notas existem**
 
 ```bash
-ls "03-Dominios/Node/Frameworks e arquitetura/" | wc -l
+ls "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/" | wc -l
 # Esperado: 13
 ```
 
@@ -1996,19 +1996,19 @@ Pré-requisito: galho 1 ([[Runtime e Event Loop]]) — pressupõe entender event
 - [ ] **Step 3: Verificar 12 wikilinks**
 
 ```bash
-ls "03-Dominios/Node/Frameworks e arquitetura/"
+ls "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/"
 ```
 
 Confirmar 13 arquivos. Se algum nome diverge, BLOCKED.
 
 - [ ] **Step 4: Verificar dataview path**
 
-Confirmar `"03-Dominios/Node/Frameworks e arquitetura"`.
+Confirmar `"03-Dominios/Tecnologia/Node/Frameworks e arquitetura"`.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Frameworks e arquitetura/Frameworks e arquitetura.md"
+git add "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/Frameworks e arquitetura.md"
 git commit -m "feat(node-frameworks): finalize MOC with all wikilinks and intro"
 ```
 
@@ -2017,12 +2017,12 @@ git commit -m "feat(node-frameworks): finalize MOC with all wikilinks and intro"
 ## Task 15: Poda do tronco (2 seções)
 
 **Files:**
-- Modify: `03-Dominios/JavaScript/Backend/Node.js.md`
+- Modify: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
 
 - [ ] **Step 1: Localizar seções**
 
 ```bash
-grep -nE "^### Frameworks|^### Error Handling" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -nE "^### Frameworks|^### Error Handling" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 Esperado: 2 matches. Anotar números de linha. Identificar próxima seção após cada para definir boundary.
@@ -2060,7 +2060,7 @@ Mudar pra `updated: 2026-05-08`.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add "03-Dominios/JavaScript/Backend/Node.js.md"
+git add "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 git commit -m "refactor(node): prune trunk Node.js.md, link to Frameworks e arquitetura branch"
 ```
 
@@ -2069,7 +2069,7 @@ git commit -m "refactor(node): prune trunk Node.js.md, link to Frameworks e arqu
 ## Task 16: MOC central + verificação final
 
 **Files:**
-- Modify: `03-Dominios/Node/index.md`
+- Modify: `03-Dominios/Tecnologia/Node/index.md`
 
 - [ ] **Step 1: Atualizar MOC central**
 
@@ -2084,7 +2084,7 @@ Atualizar `updated: 2026-05-08`.
 - [ ] **Step 2: Commit**
 
 ```bash
-git add "03-Dominios/Node/index.md"
+git add "03-Dominios/Tecnologia/Node/index.md"
 git commit -m "feat(node-frameworks): wire branch into central Node MOC"
 ```
 
@@ -2092,20 +2092,20 @@ git commit -m "feat(node-frameworks): wire branch into central Node MOC"
 
 ```bash
 # 1. 13 arquivos
-ls "03-Dominios/Node/Frameworks e arquitetura/" | wc -l   # Esperado: 13
+ls "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/" | wc -l   # Esperado: 13
 
 # 2. Todos publish: true
-grep -l "publish: true" "03-Dominios/Node/Frameworks e arquitetura/"*.md | wc -l   # Esperado: 13
+grep -l "publish: true" "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/"*.md | wc -l   # Esperado: 13
 
 # 3. Total de linhas
-wc -l "03-Dominios/Node/Frameworks e arquitetura/"*.md | tail -1
+wc -l "03-Dominios/Tecnologia/Node/Frameworks e arquitetura/"*.md | tail -1
 
 # 4. Tronco tem 11 callouts (5 G1 + 1 G2 + 4 G3 + 2 G4 = 12... wait, actually 4 + 1 + 4 + 2 = 11)
-grep -c "Migrado para galho próprio" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -c "Migrado para galho próprio" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 # Esperado: 11 (4 do galho 1 + 1 do galho 2 + 4 do galho 3 + 2 do galho 4)
 
 # 5. MOC central com 4 galhos
-grep -E "Runtime e Event Loop|Paralelismo|Streams|Frameworks e arquitetura" "03-Dominios/Node/index.md" | grep -v "^#" | wc -l
+grep -E "Runtime e Event Loop|Paralelismo|Streams|Frameworks e arquitetura" "03-Dominios/Tecnologia/Node/index.md" | grep -v "^#" | wc -l
 # Esperado: pelo menos 4
 ```
 
@@ -2114,7 +2114,7 @@ grep -E "Runtime e Event Loop|Paralelismo|Streams|Frameworks e arquitetura" "03-
 ```bash
 git commit --allow-empty -m "chore(node-frameworks): close branch Galho 4 — Frameworks e arquitetura
 
-12 atomic notes + MOC published in 03-Dominios/Node/Frameworks e arquitetura/.
+12 atomic notes + MOC published in 03-Dominios/Tecnologia/Node/Frameworks e arquitetura/.
 Trunk Node.js.md pruned (2 sections — Frameworks + Error Handling).
 Central Node MOC updated. All acceptance criteria from
 2026-05-08-node-frameworks-arquitetura-design.md met."

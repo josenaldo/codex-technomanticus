@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Materializar o tronco da trilha Terminal — criar `03-Dominios/Terminal/index.md` como MOC umbrella, listando os 7 galhos planejados (Editor, Shell, Multiplexer, TUIs de Dev, Dotfiles, CLI Utils, Workflow) com bullets de texto puro até nascerem.
+**Goal:** Materializar o tronco da trilha Terminal — criar `03-Dominios/Tecnologia/Terminal/index.md` como MOC umbrella, listando os 7 galhos planejados (Editor, Shell, Multiplexer, TUIs de Dev, Dotfiles, CLI Utils, Workflow) com bullets de texto puro até nascerem.
 
 **Architecture:** Conteúdo único de markdown (Obsidian Flavored), seguindo o padrão MOC do vault (frontmatter `type: moc`, callout TL;DR, seção Conteúdo com bullets, Veja também). Galhos pendentes ficam como bullets de texto puro marcados `(planejado)` — sem wikilink — pra evitar red links no graph view. Nenhuma pasta de galho é criada nesta sessão.
 
@@ -10,13 +10,13 @@
 
 **Referências:**
 - Spec: `docs/superpowers/specs/2026-05-18-trilha-terminal-design.md`
-- Padrão MOC de referência: `03-Dominios/Node/index.md` (estilo do tronco da trilha Node)
+- Padrão MOC de referência: `03-Dominios/Tecnologia/Node/index.md` (estilo do tronco da trilha Node)
 
 ---
 
 ## File Structure
 
-- **Create:** `03-Dominios/Terminal/index.md` — MOC tronco da trilha Terminal
+- **Create:** `03-Dominios/Tecnologia/Terminal/index.md` — MOC tronco da trilha Terminal
 - Nenhum arquivo modificado.
 - Nenhum galho/subpasta criado.
 
@@ -25,7 +25,7 @@
 ## Pré-requisitos
 
 - Estar na working tree do repo `codex-technomanticus` (branch `main`).
-- Wikilink externo `[[03-Dominios/Ferramentas/Ferramentas|Ferramentas]]` aponta pra folder note existente (`03-Dominios/Ferramentas/Ferramentas.md`). Verificado.
+- Wikilink externo `[[03-Dominios/Tecnologia/Ferramentas/Ferramentas|Ferramentas]]` aponta pra folder note existente (`03-Dominios/Tecnologia/Ferramentas/Ferramentas.md`). Verificado.
 - Linux ainda não tem `index.md` próprio → não incluímos wikilink pra Linux nesta versão (ativar em sessão futura quando Linux ganhar tronco).
 
 ---
@@ -33,13 +33,13 @@
 ## Task 1: Criar o tronco MOC da trilha Terminal
 
 **Files:**
-- Create: `03-Dominios/Terminal/index.md`
+- Create: `03-Dominios/Tecnologia/Terminal/index.md`
 
 - [ ] **Step 1: Verificar que o destino ainda não existe e o parent existe**
 
 Run:
 ```bash
-ls -d "03-Dominios/Terminal" 2>/dev/null && echo "ALREADY EXISTS — abort" || echo "ok: dir does not exist yet"
+ls -d "03-Dominios/Tecnologia/Terminal" 2>/dev/null && echo "ALREADY EXISTS — abort" || echo "ok: dir does not exist yet"
 ls -d "03-Dominios" && echo "ok: parent exists"
 ```
 
@@ -49,7 +49,7 @@ Se `03-Dominios/Terminal` já existir, **parar** e investigar — pode ter sido 
 
 - [ ] **Step 2: Criar a pasta e escrever o arquivo `index.md`**
 
-Crie o arquivo `03-Dominios/Terminal/index.md` com **exatamente** o conteúdo abaixo:
+Crie o arquivo `03-Dominios/Tecnologia/Terminal/index.md` com **exatamente** o conteúdo abaixo:
 
 ````markdown
 ---
@@ -96,18 +96,18 @@ Cada galho organiza suas notas em 3 fases progressivas:
 
 ## Veja também
 
-- [[03-Dominios/Ferramentas/Ferramentas|Ferramentas]]
+- [[03-Dominios/Tecnologia/Ferramentas/Ferramentas|Ferramentas]]
 ````
 
-Use a ferramenta `Write` com `file_path: <repo>/03-Dominios/Terminal/index.md` e o conteúdo acima exatamente como está (incluindo a linha em branco final). A ferramenta `Write` cria a pasta `Terminal/` automaticamente.
+Use a ferramenta `Write` com `file_path: <repo>/03-Dominios/Tecnologia/Terminal/index.md` e o conteúdo acima exatamente como está (incluindo a linha em branco final). A ferramenta `Write` cria a pasta `Terminal/` automaticamente.
 
 - [ ] **Step 3: Verificar que o arquivo foi criado e o conteúdo está correto**
 
 Run:
 ```bash
-test -f "03-Dominios/Terminal/index.md" && echo "ok: file exists"
-wc -l "03-Dominios/Terminal/index.md"
-head -16 "03-Dominios/Terminal/index.md"
+test -f "03-Dominios/Tecnologia/Terminal/index.md" && echo "ok: file exists"
+wc -l "03-Dominios/Tecnologia/Terminal/index.md"
+head -16 "03-Dominios/Tecnologia/Terminal/index.md"
 ```
 
 Expected:
@@ -122,7 +122,7 @@ Run (qualquer um dos dois):
 # Opção A — Python (sempre disponível)
 python3 -c "
 import yaml, sys
-content = open('03-Dominios/Terminal/index.md').read()
+content = open('03-Dominios/Tecnologia/Terminal/index.md').read()
 # extrai frontmatter entre os dois '---'
 parts = content.split('---', 2)
 if len(parts) < 3:
@@ -142,7 +142,7 @@ Expected: `ok: frontmatter valid`. Qualquer outra saída = falha; corrigir o fro
 
 Run:
 ```bash
-test -f "03-Dominios/Ferramentas/Ferramentas.md" && echo "ok: wikilink target exists"
+test -f "03-Dominios/Tecnologia/Ferramentas/Ferramentas.md" && echo "ok: wikilink target exists"
 ```
 
 Expected: `ok: wikilink target exists`. Se falhar, o folder note do Ferramentas foi renomeado/removido — investigar antes de prosseguir.
@@ -151,18 +151,18 @@ Expected: `ok: wikilink target exists`. Se falhar, o folder note do Ferramentas 
 
 Run:
 ```bash
-git add "03-Dominios/Terminal/index.md"
+git add "03-Dominios/Tecnologia/Terminal/index.md"
 git status
 ```
 
-Expected: status mostra apenas `new file: 03-Dominios/Terminal/index.md` em "Changes to be committed". Se outros arquivos aparecerem em staging, abortar e investigar.
+Expected: status mostra apenas `new file: 03-Dominios/Tecnologia/Terminal/index.md` em "Changes to be committed". Se outros arquivos aparecerem em staging, abortar e investigar.
 
 Then:
 ```bash
 git commit -m "$(cat <<'EOF'
 feat(terminal): scaffold tronco da trilha Terminal
 
-Cria 03-Dominios/Terminal/index.md como MOC umbrella da trilha
+Cria 03-Dominios/Tecnologia/Terminal/index.md como MOC umbrella da trilha
 Terminal. Lista os 7 galhos planejados (Editor, Shell, Multiplexer,
 TUIs de Dev, Dotfiles, CLI Utils, Workflow) como bullets de texto
 puro (sem wikilink) até cada galho nascer em sua própria sessão.
@@ -186,13 +186,13 @@ git show --stat HEAD
 
 Expected:
 - Última linha do log: `<hash> feat(terminal): scaffold tronco da trilha Terminal`
-- `git show --stat` mostra exatamente 1 file changed (`03-Dominios/Terminal/index.md`), com `30+ insertions(+)`.
+- `git show --stat` mostra exatamente 1 file changed (`03-Dominios/Tecnologia/Terminal/index.md`), com `30+ insertions(+)`.
 
 ---
 
 ## Critério de pronto
 
-- `03-Dominios/Terminal/index.md` existe e tem o conteúdo exato da Step 2.
+- `03-Dominios/Tecnologia/Terminal/index.md` existe e tem o conteúdo exato da Step 2.
 - Frontmatter YAML válido (Step 4 passa).
 - Commit `feat(terminal): scaffold tronco...` está no `git log`, sem `Co-Authored-By: Claude`.
 - Nenhuma pasta de galho foi criada nesta sessão.

@@ -16,7 +16,7 @@ tags:
 ## Contexto
 
 Diferente dos galhos de Fundamentos (refator de monólito → notas atômicas), este é uma
-**reformulação de um galho já existente e já atômico**: `03-Dominios/IA/Anatomia dos LLMs/`
+**reformulação de um galho já existente e já atômico**: `03-Dominios/Tecnologia/IA/Anatomia dos LLMs/`
 (20 notas: 01–19 + "02b"). Três motores:
 
 1. **Defeito de ordem (confirmado com o usuário).** Hoje a janela de contexto (03) vem *antes* do

@@ -17,7 +17,7 @@ tags:
 
 **Goal:** Construir o galho 12 de Fundamentos — "Complexidade de Software" — como uma sub-trilha de 16 notas atômicas em 3 fases, migrando duas notas existentes e cruzando com o cluster IA/Lado Sombrio.
 
-**Architecture:** Pasta `03-Dominios/Fundamentos/Complexidade de Software/` com notas `NN - Título.md` (frontmatter `fase:`), um `index.md` (MOC) agrupado por fase, e callout no MOC do domínio. Conteúdo em registro didático Feynman; afirmações factuais com fonte verificada.
+**Architecture:** Pasta `03-Dominios/Engenharia/Complexidade de Software/` com notas `NN - Título.md` (frontmatter `fase:`), um `index.md` (MOC) agrupado por fase, e callout no MOC do domínio. Conteúdo em registro didático Feynman; afirmações factuais com fonte verificada.
 
 **Tech Stack:** Obsidian Flavored Markdown; Dataview; skills do vault (`verbete`, `verificar-wikilinks`, `enriquecer-nota`); git.
 
@@ -47,7 +47,7 @@ Afirmações com dado factual (datas, autores, números, citações) devem ser c
 ## Task 1: Scaffold da pasta e MOC do galho
 
 **Files:**
-- Create: `03-Dominios/Fundamentos/Complexidade de Software/index.md`
+- Create: `03-Dominios/Engenharia/Complexidade de Software/index.md`
 
 - [ ] **Step 1: Criar o MOC com as 16 entradas como esqueleto**
 
@@ -86,8 +86,8 @@ falham (abstração, information hiding, módulos, carga cognitiva), as três d�
 Debt Model (Storey) e a gestão da complexidade no tempo e no todo (entropia, manutenção,
 pensamento sistêmico, Lei de Conway).
 
-**Não cobre:** Design Patterns e estilos arquiteturais (ficam em [[03-Dominios/Arquitetura/index|Arquitetura]]);
-as manifestações AI-specific dos débitos (ficam em [[03-Dominios/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]],
+**Não cobre:** Design Patterns e estilos arquiteturais (ficam em [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]);
+as manifestações AI-specific dos débitos (ficam em [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]],
 sob a lente da IA — este galho trata sob a lente geral/atemporal, cross-linkado).
 
 ## Iniciado
@@ -119,15 +119,15 @@ sob a lente da IA — este galho trata sob a lente geral/atemporal, cross-linkad
 
 ```dataview
 TABLE fase, status, updated
-FROM "03-Dominios/Fundamentos/Complexidade de Software"
+FROM "03-Dominios/Engenharia/Complexidade de Software"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 
 ## Veja também
 
-- [[03-Dominios/Fundamentos/index|Fundamentos (MOC do domínio)]]
-- [[03-Dominios/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]] — os débitos sob a lente da IA
+- [[03-Dominios/Ciência/index|Fundamentos (MOC do domínio)]]
+- [[03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/index|O Lado Sombrio da IA]] — os débitos sob a lente da IA
 - [[Dicionário de Fundamentos]]
 ```
 
@@ -136,7 +136,7 @@ SORT file.name ASC
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Fundamentos/Complexidade de Software/index.md"
+git add "03-Dominios/Engenharia/Complexidade de Software/index.md"
 git commit -m "feat(fundamentos): scaffold do galho Complexidade de Software (MOC)"
 ```
 
@@ -145,13 +145,13 @@ git commit -m "feat(fundamentos): scaffold do galho Complexidade de Software (MO
 ## Task 2: Migrar a nota do Naur → `04 - O programa como teoria`
 
 **Files:**
-- Move: `03-Dominios/Fundamentos/O programa como teoria.md` → `03-Dominios/Fundamentos/Complexidade de Software/04 - O programa como teoria.md`
+- Move: `03-Dominios/Ciência/O programa como teoria.md` → `03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria.md`
 
 - [ ] **Step 1: Mover com git (preserva histórico)**
 
 ```bash
-git mv "03-Dominios/Fundamentos/O programa como teoria.md" \
-       "03-Dominios/Fundamentos/Complexidade de Software/04 - O programa como teoria.md"
+git mv "03-Dominios/Ciência/O programa como teoria.md" \
+       "03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria.md"
 ```
 
 - [ ] **Step 2: Ajustar frontmatter** — adicionar `fase: iniciado`; adicionar tag `complexidade-de-software` e `iniciado`; **remover** o alias `Teoria do sistema` (vai pra nota 15); manter `title: "O programa como teoria"` e os demais aliases. Manter o corpo intacto.
@@ -161,7 +161,7 @@ git mv "03-Dominios/Fundamentos/O programa como teoria.md" \
 - [ ] **Step 4: Commit**
 
 ```bash
-git add -A "03-Dominios/Fundamentos/"
+git add -A "03-Dominios/Ciência/"
 git commit -m "refactor(fundamentos): migra 'O programa como teoria' p/ galho Complexidade (nota 04)"
 ```
 
@@ -170,13 +170,13 @@ git commit -m "refactor(fundamentos): migra 'O programa como teoria' p/ galho Co
 ## Task 3: Migrar a nota do Spolsky → `06 - Abstrações que vazam`
 
 **Files:**
-- Move: `03-Dominios/Fundamentos/Abstrações que vazam.md` → `03-Dominios/Fundamentos/Complexidade de Software/06 - Abstrações que vazam.md`
+- Move: `03-Dominios/Ciência/Abstrações que vazam.md` → `03-Dominios/Engenharia/Complexidade de Software/06 - Abstrações que vazam.md`
 
 - [ ] **Step 1: Mover com git**
 
 ```bash
-git mv "03-Dominios/Fundamentos/Abstrações que vazam.md" \
-       "03-Dominios/Fundamentos/Complexidade de Software/06 - Abstrações que vazam.md"
+git mv "03-Dominios/Ciência/Abstrações que vazam.md" \
+       "03-Dominios/Engenharia/Complexidade de Software/06 - Abstrações que vazam.md"
 ```
 
 - [ ] **Step 2: Ajustar frontmatter** — adicionar `fase: adepto` e tags `complexidade-de-software`, `adepto`; manter título/aliases/corpo.
@@ -186,7 +186,7 @@ git mv "03-Dominios/Fundamentos/Abstrações que vazam.md" \
 - [ ] **Step 4: Commit**
 
 ```bash
-git add -A "03-Dominios/Fundamentos/"
+git add -A "03-Dominios/Ciência/"
 git commit -m "refactor(fundamentos): migra 'Abstrações que vazam' p/ galho Complexidade (nota 06)"
 ```
 
@@ -195,23 +195,23 @@ git commit -m "refactor(fundamentos): migra 'Abstrações que vazam' p/ galho Co
 ## Task 4: Atualizar o MOC do domínio Fundamentos
 
 **Files:**
-- Modify: `03-Dominios/Fundamentos/index.md`
-- Modify: `03-Dominios/Fundamentos/Fundamentos.md`
+- Modify: `03-Dominios/Ciência/index.md`
+- Modify: `03-Dominios/Ciência/Fundamentos.md`
 
 - [ ] **Step 1: Em `index.md`** — na seção "Conteúdo", remover as linhas de `[[O programa como teoria]]` e `[[Abstrações que vazam]]` da raiz; adicionar entrada do galho:
 
 ```markdown
-- [[03-Dominios/Fundamentos/Complexidade de Software/index|Complexidade de Software]] — galho 12: o que torna software difícil e como gerenciá-lo (essencial vs. acidental, abstração, dívidas, sistemas)
+- [[03-Dominios/Engenharia/Complexidade de Software/index|Complexidade de Software]] — galho 12: o que torna software difícil e como gerenciá-lo (essencial vs. acidental, abstração, dívidas, sistemas)
 ```
 
 - [ ] **Step 2: Em `Fundamentos.md`** — adicionar seção/linha para o galho sob um agrupamento adequado (ex.: nova seção "Engenharia e Complexidade") apontando para o `index` do galho.
 
-- [ ] **Step 3: Verificar** — `verificar-wikilinks` na pasta `03-Dominios/Fundamentos/`; zero quebrados; o folder-link do galho resolve pro `index.md`.
+- [ ] **Step 3: Verificar** — `verificar-wikilinks` na pasta `03-Dominios/Ciência/`; zero quebrados; o folder-link do galho resolve pro `index.md`.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Fundamentos/index.md" "03-Dominios/Fundamentos/Fundamentos.md"
+git add "03-Dominios/Ciência/index.md" "03-Dominios/Ciência/Fundamentos.md"
 git commit -m "docs(fundamentos): registra galho Complexidade no MOC do domínio"
 ```
 
@@ -262,7 +262,7 @@ Cada tarefa de nota segue: escrever → verificar (frontmatter/links/fontes/pont
 
 ## Task 5: Nota `01 - A complexidade como problema central` (Iniciado)
 
-**Files:** Create `03-Dominios/Fundamentos/Complexidade de Software/01 - A complexidade como problema central.md`
+**Files:** Create `03-Dominios/Engenharia/Complexidade de Software/01 - A complexidade como problema central.md`
 
 - [ ] **Step 1: Escrever.** Pontos-chave: complexidade como a dificuldade-raiz do software (não a única, mas a central); por que complexidade importa (custo de mudança cresce com ela); panorama do galho (mapa das 16 notas); definição operacional de complexidade (Ousterhout: "tudo que torna o sistema difícil de entender e modificar"). Fonte: Brooks, *No Silver Bullet*; Ousterhout, *A Philosophy of Software Design* (cap. 1-2). Tags: `complexidade`, `brooks`. Sem "Em entrevista".
 - [ ] **Step 2: Verificar** — Brooks/Ousterhout citados corretamente (ano, obra); links pras notas 02–04 resolvem.
@@ -378,8 +378,8 @@ Cada tarefa de nota segue: escrever → verificar (frontmatter/links/fontes/pont
 ## Task 19: Cross-links recíprocos com IA/Lado Sombrio
 
 **Files:**
-- Modify: `03-Dominios/IA/O Lado Sombrio da IA/Débito cognitivo.md`
-- Modify: `03-Dominios/IA/O Lado Sombrio da IA/index.md`
+- Modify: `03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/Débito cognitivo.md`
+- Modify: `03-Dominios/Tecnologia/IA/O Lado Sombrio da IA/index.md`
 
 - [ ] **Step 1:** Em `Débito cognitivo.md`, na seção "Veja também", adicionar link pra `[[11 - Dívida cognitiva]]` com nota de que é o conceito-mãe sob a perspectiva geral; reforçar no corpo que esta nota trata a **aceleração por IA**. Atualizar `updated`.
 - [ ] **Step 2:** No `index.md` do Lado Sombrio, na seção "Fundamento", adicionar link pro `index` do galho Complexidade (além do já existente p/ O programa como teoria).
@@ -388,7 +388,7 @@ Cada tarefa de nota segue: escrever → verificar (frontmatter/links/fontes/pont
 
 ## Task 20: Verbetes no Dicionário de Fundamentos
 
-**Files:** Modify `03-Dominios/Fundamentos/Dicionário de Fundamentos.md` (via skill `/verbete`)
+**Files:** Modify `03-Dominios/Ciência/Dicionário de Fundamentos.md` (via skill `/verbete`)
 
 - [ ] **Step 1:** Adicionar verbetes (em ordem alfabética, na seção certa) para termos novos: complexidade essencial, complexidade acidental, débito técnico, débito cognitivo, débito de intenção, carga cognitiva, entropia de software, Lei de Conway, Lei de Hyrum, information hiding. (Abstração que vaza já existe.) Cada verbete: termo + definição curta + link pra nota do galho.
 - [ ] **Step 2: Verificar** — ordem alfabética; sem duplicar verbetes existentes; links resolvem.
@@ -396,7 +396,7 @@ Cada tarefa de nota segue: escrever → verificar (frontmatter/links/fontes/pont
 
 ## Task 21: Verificação final do galho
 
-- [ ] **Step 1:** Rodar `verificar-wikilinks` em `03-Dominios/Fundamentos/Complexidade de Software/` e em `03-Dominios/Fundamentos/` — corrigir quaisquer quebrados.
+- [ ] **Step 1:** Rodar `verificar-wikilinks` em `03-Dominios/Engenharia/Complexidade de Software/` e em `03-Dominios/Ciência/` — corrigir quaisquer quebrados.
 - [ ] **Step 2:** Conferir o dataview do `index.md` lista as 16 notas; todas com `fase` e `status`.
 - [ ] **Step 3:** Atualizar `status` do `index.md` do galho de `seedling` → `growing`; `updated` na data de fechamento.
 - [ ] **Step 4: Commit** `chore(fundamentos): fecha 1ª passada do galho Complexidade de Software`.

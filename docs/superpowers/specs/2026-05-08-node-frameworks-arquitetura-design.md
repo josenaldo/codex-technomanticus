@@ -34,7 +34,7 @@ A sub-trilha existe para dar ao leitor:
 
 ## 2. Objetivo
 
-Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Node/Frameworks e arquitetura/`, todas `publish: true`, em PT-BR, cobrindo os 4 frameworks principais, patterns transversais, Clean Architecture, e DI.
+Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/`, todas `publish: true`, em PT-BR, cobrindo os 4 frameworks principais, patterns transversais, Clean Architecture, e DI.
 
 A trilha precisa ser:
 
@@ -48,7 +48,7 @@ A trilha precisa ser:
 
 ### Em escopo
 
-- 13 arquivos markdown em `03-Dominios/Node/Frameworks e arquitetura/`
+- 13 arquivos markdown em `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/`
 - Todos com `publish: true`
 - Idioma: PT-BR; termos técnicos em inglês mantidos (middleware, decorator, dependency injection, etc.)
 - Wikilinks densos para `[[Node.js]]` (tronco), `[[Runtime e Event Loop]]` (galho 1), `[[Streams]]` (galho 3 — frameworks abstraem multipart/streaming)
@@ -240,7 +240,7 @@ Sequencial 01 → 12. Recomendada na primeira leitura.
 
 ## 10. Tasks de poda do tronco
 
-Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
+Ao fechar o galho, executar no `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`:
 
 1. Substituir seção **`### Frameworks`** por callout `[!nota]` apontando pra:
    - `[[Frameworks e arquitetura]]` (MOC)
@@ -252,7 +252,7 @@ Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
 2. Substituir seção **`### Error Handling`** por callout apontando pra `[[08 - Error handling estruturado]]`
 3. Adicionar `[[Frameworks e arquitetura]]` no `## Veja também` do tronco como **quarto bullet** (após `[[Runtime e Event Loop]]`, `[[Paralelismo]]`, `[[Streams]]`)
 4. Atualizar `updated:` no frontmatter do tronco
-5. Atualizar `03-Dominios/Node/index.md` (MOC central) adicionando `[[Frameworks e arquitetura]]` na seção "Galhos da trilha Node Senior"
+5. Atualizar `03-Dominios/Tecnologia/Node/index.md` (MOC central) adicionando `[[Frameworks e arquitetura]]` na seção "Galhos da trilha Node Senior"
 
 Confirmar nomes exatos das seções no Task 0 do plano (podem ter variações pós-podas anteriores).
 
@@ -272,7 +272,7 @@ Confirmar nomes exatos das seções no Task 0 do plano (podem ter variações p�
 
 A sub-trilha está completa quando:
 
-1. Todos os 13 arquivos existem em `03-Dominios/Node/Frameworks e arquitetura/`
+1. Todos os 13 arquivos existem em `03-Dominios/Tecnologia/Node/Frameworks e arquitetura/`
 2. Todos têm frontmatter completo com `publish: true`
 3. MOC `Frameworks e arquitetura.md` tem 12 notas linkadas + 5 rotas alternativas + dataview
 4. Cada nota satisfaz a rubrica padrão:
@@ -285,7 +285,7 @@ A sub-trilha está completa quando:
    - PT-BR natural; termos técnicos em inglês mantidos
    - **Zero atribuição de experiência pessoal ao autor**
 5. Tasks de poda do tronco (seção 10) executadas
-6. MOC central `03-Dominios/Node/index.md` atualizado (4 galhos listados)
+6. MOC central `03-Dominios/Tecnologia/Node/index.md` atualizado (4 galhos listados)
 7. Quartz publica corretamente
 8. Pelo menos 4 notas têm code sample testável em script standalone (ex: Express handler com error wrapper, Fastify schema route, NestJS module + controller, zod schema com infer)
 
@@ -312,6 +312,6 @@ A ordem de execução recomendada:
 - `2026-05-07-node-paralelismo-design.md` — galho 2
 - `2026-05-08-node-streams-design.md` — galho 3
 - Plano de execução do galho 4 (criado depois): `2026-05-08-node-frameworks-arquitetura-execution.md`
-- Tronco a ser podado: `03-Dominios/JavaScript/Backend/Node.js.md`
-- MOC central: `03-Dominios/Node/index.md`
-- Galhos anteriores fechados: `03-Dominios/Node/Runtime e Event Loop/`, `03-Dominios/Node/Paralelismo/`, `03-Dominios/Node/Streams/`
+- Tronco a ser podado: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- MOC central: `03-Dominios/Tecnologia/Node/index.md`
+- Galhos anteriores fechados: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`, `03-Dominios/Tecnologia/Node/Paralelismo/`, `03-Dominios/Tecnologia/Node/Streams/`

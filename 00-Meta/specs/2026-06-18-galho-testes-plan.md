@@ -17,7 +17,7 @@ tags:
 Sétimo e ÚLTIMO galho da Camada A do meta-plano de Fundamentos
 (`2026-06-15-fundamentos-meta-planejamento-design.md`), depois de Estruturas de Dados, Algoritmos, OO,
 SOLID, Banco de Dados e Redes e Protocolos (todos COMPLETOS). Refatora o monólito
-`03-Dominios/Fundamentos/Testes.md` (584 ln, evergreen) no padrão tronco/galhos + 3 fases.
+`03-Dominios/Ciência/Testes.md` (584 ln, evergreen) no padrão tronco/galhos + 3 fases.
 Interview-critical (★). Roster aprovado pelo usuário em 2026-06-18 (expandido p/ 16 notas).
 
 A semente é o monólito inteiro: função estratégica, pirâmide/troféu, tipos de teste, test doubles, TDD,
@@ -28,7 +28,7 @@ F.I.R.S.T/AAA, flaky tests, coverage, edge cases, CI/CD, armadilhas, e 5 experi�
 Este galho é **stack-agnóstico**: a TEORIA e ESTRATÉGIA de testes (o que testar, qual tipo, por quê).
 O ferramental concreto JÁ tem dono e NÃO é reimplementado aqui — só linkado via callout/tabela:
 - **Java** (JUnit 5, AssertJ, Mockito, Testcontainers, Spring Boot Test, MockMvc, WireMock, Awaitility,
-  JQwik, PITest, JMH, REST-assured) → `[[Testes em Java]]` e o galho `03-Dominios/Java/Testes/index`.
+  JQwik, PITest, JMH, REST-assured) → `[[Testes em Java]]` e o galho `03-Dominios/Tecnologia/Java/Testes/index`.
 - **JavaScript/TS** (Vitest, Jest, Testing Library, MSW, Playwright, Cypress, fast-check) →
   `[[Testes em JavaScript]]`.
 As notas raciocinam sobre conceitos; exemplos de código são ilustrativos e mínimos, sempre com o ponteiro
@@ -36,12 +36,12 @@ pro galho de stack que aprofunda o ferramental.
 
 ## Outras fronteiras (linka, não duplica)
 - **Complexidade de Software** — testes como rede de segurança contra entropia/bit rot →
-  `[[03-Dominios/Fundamentos/Complexidade de Software/14 - Manutenção e evolução|Manutenção e evolução]]`
+  `[[03-Dominios/Engenharia/Complexidade de Software/14 - Manutenção e evolução|Manutenção e evolução]]`
   forward-linka pra cá; aqui mencionamos a relação sem reescrever a tese.
 - **OO / SOLID** — "código difícil de testar é código mal desenhado" (DIP, injeção de dependência) →
-  `[[03-Dominios/Fundamentos/SOLID/index|SOLID]]` / `[[03-Dominios/Fundamentos/Orientação a Objetos/index|OO]]`.
+  `[[03-Dominios/Engenharia/SOLID/index|SOLID]]` / `[[03-Dominios/Engenharia/Orientação a Objetos/index|OO]]`.
 - **Arquitetura** — hexagonal/ports&adapters como design testável → `[[Arquitetura de Software]]`.
-- **Redes** — resiliência/chaos como teste de falha → `[[03-Dominios/Fundamentos/Redes e Protocolos/index|Redes]]`.
+- **Redes** — resiliência/chaos como teste de falha → `[[03-Dominios/Ciência/Redes e Protocolos/index|Redes]]`.
 
 ## Preservação (rígido) — experiências REAIS, relocadas do monólito ([[feedback-no-fabrication]])
 - **Stack MedEspecialista** (JUnit 5 + AssertJ + Mockito + Testcontainers; suíte ~800 testes em ~3 min no
@@ -120,7 +120,7 @@ pro galho de stack que aprofunda o ferramental.
 - **NUNCA fabricar** experiências/dados do usuário; preservar e relocar as 5 experiências reais (mapa acima).
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Testes/` com `index.md` (MOC, `type: moc`, `status: growing`,
+- Pasta `03-Dominios/Engenharia/Testes/` com `index.md` (MOC, `type: moc`, `status: growing`,
   `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - Alias do `index.md`: **"Testes"** + **"Testes de Software"** + **"Testing"** + **"Testes Automatizados"**
   para resolver os ~9 links de entrada (Spring Boot, API Design, Senda Entrevistas, Testes em JavaScript,

@@ -39,7 +39,7 @@ A sub-trilha existe para dar ao leitor:
 
 ## 2. Objetivo
 
-Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Node/Streams/`, todas `publish: true`, em PT-BR, cobrindo do mental model dos 4 tipos ao tuning de performance, passando pelos padrões idiomáticos de 2026 (async iteration, Web Streams).
+Produzir **12 notas atômicas + 1 MOC** (13 arquivos) em `03-Dominios/Tecnologia/Node/Streams/`, todas `publish: true`, em PT-BR, cobrindo do mental model dos 4 tipos ao tuning de performance, passando pelos padrões idiomáticos de 2026 (async iteration, Web Streams).
 
 A trilha precisa ser:
 
@@ -53,7 +53,7 @@ A trilha precisa ser:
 
 ### Em escopo
 
-- 13 arquivos markdown em `03-Dominios/Node/Streams/`
+- 13 arquivos markdown em `03-Dominios/Tecnologia/Node/Streams/`
 - Todos com `publish: true`
 - Idioma: PT-BR; termos técnicos em inglês mantidos (stream, backpressure, pipeline, transform, etc.)
 - Wikilinks densos para `[[Node.js]]` (tronco), `[[Runtime e Event Loop]]` (galho 1, em particular notas 04 e 10), `[[Paralelismo]]` (galho 2) onde workers + streams se cruzam
@@ -239,7 +239,7 @@ Sequencial 01 → 12. Recomendada na primeira leitura.
 
 ## 10. Tasks de poda do tronco
 
-Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
+Ao fechar o galho, executar no `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`:
 
 1. Substituir seção **`### Streams — deep dive`** por callout `[!nota]` apontando pra `[[Streams]]` (MOC) + `[[02 - Os 4 tipos - Readable, Writable, Duplex, Transform]]` + `[[03 - Readable streams]]` + `[[04 - Writable streams]]` + `[[05 - Duplex e Transform]]`
 2. Substituir seção **`### Backpressure`** por callout apontando pra `[[06 - Backpressure]]`
@@ -247,7 +247,7 @@ Ao fechar o galho, executar no `03-Dominios/JavaScript/Backend/Node.js.md`:
 4. Substituir seção **`### Stream patterns`** por callout apontando pra `[[10 - Padrões práticos]]`
 5. Adicionar `[[Streams]]` no `## Veja também` do tronco como **terceiro bullet** (após `[[Runtime e Event Loop]]` e `[[Paralelismo]]`)
 6. Atualizar `updated:` no frontmatter do tronco
-7. Atualizar `03-Dominios/Node/index.md` (MOC central) adicionando `[[Streams]]` na seção "Galhos da trilha Node Senior"
+7. Atualizar `03-Dominios/Tecnologia/Node/index.md` (MOC central) adicionando `[[Streams]]` na seção "Galhos da trilha Node Senior"
 
 Nota: poda mais agressiva que galho 2 (4 seções vs 1).
 
@@ -266,7 +266,7 @@ Nota: poda mais agressiva que galho 2 (4 seções vs 1).
 
 A sub-trilha está completa quando:
 
-1. Todos os 13 arquivos existem em `03-Dominios/Node/Streams/`
+1. Todos os 13 arquivos existem em `03-Dominios/Tecnologia/Node/Streams/`
 2. Todos têm frontmatter completo com `publish: true`
 3. MOC `Streams.md` tem 12 notas linkadas + 5 rotas alternativas + dataview
 4. Cada nota satisfaz a rubrica padrão:
@@ -279,7 +279,7 @@ A sub-trilha está completa quando:
    - PT-BR natural; termos técnicos em inglês mantidos
    - **Zero atribuição de experiência pessoal ao autor**
 5. Tasks de poda do tronco (seção 10) executadas
-6. MOC central `03-Dominios/Node/index.md` atualizado
+6. MOC central `03-Dominios/Tecnologia/Node/index.md` atualizado
 7. Quartz publica corretamente
 8. Pelo menos 4 notas têm code sample testável em script standalone (ex: line parser minimal, fetch streaming, pipeline com 3 transforms)
 
@@ -305,6 +305,6 @@ A ordem de execução recomendada:
 - `2026-05-07-node-runtime-event-loop-design.md` — spec do galho 1
 - `2026-05-07-node-paralelismo-design.md` — spec do galho 2
 - Plano de execução do galho 3 (criado depois): `2026-05-08-node-streams-execution.md`
-- Tronco a ser podado: `03-Dominios/JavaScript/Backend/Node.js.md`
-- MOC central: `03-Dominios/Node/index.md`
-- Galhos anteriores fechados: `03-Dominios/Node/Runtime e Event Loop/`, `03-Dominios/Node/Paralelismo/`
+- Tronco a ser podado: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
+- MOC central: `03-Dominios/Tecnologia/Node/index.md`
+- Galhos anteriores fechados: `03-Dominios/Tecnologia/Node/Runtime e Event Loop/`, `03-Dominios/Tecnologia/Node/Paralelismo/`

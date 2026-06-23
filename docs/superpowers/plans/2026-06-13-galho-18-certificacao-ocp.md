@@ -4,7 +4,7 @@
 
 **Goal:** Construir o Galho 18 (Certificação Java OCP) — 17 notas atômicas + MOC mapeando o syllabus oficial (1Z0-830/1Z0-831) aos galhos 1-4 da trilha, colher e podar o tronco legado, integrar índice central e Dicionário.
 
-**Architecture:** Pasta `03-Dominios/Java/Certificação OCP/` com 17 notas + `index.md` (MOC). Espinha = 10 domínios oficiais; cada nota de domínio mapeia para notas exatas dos galhos via wikilink (linka, não re-explica). Grupos de certificação (não 3 fases). Subagentes write-only; controller commita nominal por fase.
+**Architecture:** Pasta `03-Dominios/Tecnologia/Java/Certificação OCP/` com 17 notas + `index.md` (MOC). Espinha = 10 domínios oficiais; cada nota de domínio mapeia para notas exatas dos galhos via wikilink (linka, não re-explica). Grupos de certificação (não 3 fases). Subagentes write-only; controller commita nominal por fase.
 
 **Tech Stack:** Obsidian Flavored Markdown, wikilinks, callouts, frontmatter YAML, Dataview. Skill `verificar-wikilinks` para validação.
 
@@ -18,7 +18,7 @@
 - **Direto na main**, sem branch. Sem push (manual pelo usuário).
 - **Validação por fase:** após cada fase de notas, rodar grep dos wikilinks contra arquivos reais. Validação final completa via `verificar-wikilinks` na Fase 6.
 - **Voz de plano:** onde colher 1ª pessoa do tronco, reescrever como preparação ("meu plano é…", "estou me preparando…") — nunca afirmar prova feita/credencial obtida.
-- **Fonte de colheita:** tronco legado `03-Dominios/Java/Core/Certificação Java OCP.md` (878 linhas). Mapa de seções:
+- **Fonte de colheita:** tronco legado `03-Dominios/Tecnologia/Java/Core/Certificação Java OCP.md` (878 linhas). Mapa de seções:
   - L19-38 (o que é / vantagens / desvantagens) → nota 01
   - L42-57 (versões + OCA) → nota 02
   - L61-100 (formato + online vs físico) → nota 03
@@ -34,19 +34,19 @@
 
 ## Convenções de wikilink (copiar exato)
 
-Formato: `[[03-Dominios/Java/<Pasta>/<arquivo sem .md>|<rótulo>]]`. Lista canônica de títulos exatos dos galhos 1-4 e G6·13 está em **§7 do spec** — é a fonte. Exemplos:
-- `[[03-Dominios/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores|Tipos, variáveis e operadores (G1)]]`
-- `[[03-Dominios/Java/Collections e Streams/12 - I-O moderno com java.nio.file|I/O moderno com java.nio.file (G2)]]`
-- `[[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads (G4)]]`
+Formato: `[[03-Dominios/Tecnologia/Java/<Pasta>/<arquivo sem .md>|<rótulo>]]`. Lista canônica de títulos exatos dos galhos 1-4 e G6·13 está em **§7 do spec** — é a fonte. Exemplos:
+- `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores|Tipos, variáveis e operadores (G1)]]`
+- `[[03-Dominios/Tecnologia/Java/Collections e Streams/12 - I-O moderno com java.nio.file|I/O moderno com java.nio.file (G2)]]`
+- `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads (G4)]]`
 
-Wikilinks internos do galho: `[[03-Dominios/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova|o mapa objetivo → galho]]`.
+Wikilinks internos do galho: `[[03-Dominios/Tecnologia/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova|o mapa objetivo → galho]]`.
 
 ---
 
 ## File Structure
 
 ```
-03-Dominios/Java/Certificação OCP/
+03-Dominios/Tecnologia/Java/Certificação OCP/
 ├── index.md                                  (MOC do galho)
 ├── 01 - A certificação OCP — o que é, por que (e por que não) fazer.md
 ├── 02 - Qual prova mirar — Java 21 (1Z0-830) vs Java 25 (1Z0-831).md
@@ -75,7 +75,7 @@ Também tocados: `Core/Certificação Java OCP.md` (poda), `index.md` central, `
 ### Task 0.1: Criar a pasta e o MOC esqueleto
 
 **Files:**
-- Create: `03-Dominios/Java/Certificação OCP/index.md`
+- Create: `03-Dominios/Tecnologia/Java/Certificação OCP/index.md`
 
 - [ ] **Step 1: Criar o MOC** com frontmatter + estrutura completa, listando os 17 títulos como wikilinks (o esqueleto fica pronto; as notas serão preenchidas depois).
 
@@ -114,26 +114,26 @@ Corpo (seções, nesta ordem):
    - **Só-pegadinhas:** 15 → domínios com mais armadilhas (07, 10, 12).
    - **Por-domínio:** 04 → escolher domínio fraco → nota de domínio → galho mapeado.
    - **Decidir a prova:** 01 → 02 → 03.
-8. `## Veja também` — `[[03-Dominios/Java/index|Trilha Java]]`, galhos 1-4, `[[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]`, tronco `[[03-Dominios/Java/Core/Certificação Java OCP|Certificação OCP (tronco legado)]]`.
+8. `## Veja também` — `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, galhos 1-4, `[[03-Dominios/Tecnologia/Java/Dicionário de Java|Dicionário de Java]]`, tronco `[[03-Dominios/Tecnologia/Java/Core/Certificação Java OCP|Certificação OCP (tronco legado)]]`.
 9. `## Notas do galho` — bloco dataview:
 ````
 ```dataview
 TABLE fase, status
-FROM "03-Dominios/Java/Certificação OCP"
+FROM "03-Dominios/Tecnologia/Java/Certificação OCP"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 ````
 
-Os wikilinks das notas 01-17 usam o path completo `[[03-Dominios/Java/Certificação OCP/<arquivo sem .md>|<rótulo curto>]]` com os nomes de arquivo exatos da File Structure acima.
+Os wikilinks das notas 01-17 usam o path completo `[[03-Dominios/Tecnologia/Java/Certificação OCP/<arquivo sem .md>|<rótulo curto>]]` com os nomes de arquivo exatos da File Structure acima.
 
 - [ ] **Step 2: Validar** que o arquivo existe e os 17 wikilinks internos apontam para nomes de arquivo idênticos aos da File Structure.
 
-Run: `ls "03-Dominios/Java/Certificação OCP/"` (deve mostrar só index.md por ora).
+Run: `ls "03-Dominios/Tecnologia/Java/Certificação OCP/"` (deve mostrar só index.md por ora).
 
 - [ ] **Step 3: Commit**
 ```bash
-git add "03-Dominios/Java/Certificação OCP/index.md"
+git add "03-Dominios/Tecnologia/Java/Certificação OCP/index.md"
 git commit -m "feat(java): scaffolding do Galho 18 (Certificação OCP) — MOC esqueleto"
 ```
 
@@ -146,7 +146,7 @@ git commit -m "feat(java): scaffolding do Galho 18 (Certificação OCP) — MOC 
 ### Task 1.1: Nota 01 — A certificação OCP (o que é / por que)
 
 **Files:**
-- Create: `03-Dominios/Java/Certificação OCP/01 - A certificação OCP — o que é, por que (e por que não) fazer.md`
+- Create: `03-Dominios/Tecnologia/Java/Certificação OCP/01 - A certificação OCP — o que é, por que (e por que não) fazer.md`
 
 - [ ] **Step 1: Criar a nota.** Frontmatter `fase: sobre-a-prova`, tags `[java, certificacao-ocp, sobre-a-prova]`, aliases `["Certificação OCP", "Por que fazer OCP"]`.
 
@@ -157,7 +157,7 @@ Seções:
 - `## Por que talvez não` — conhecimento acadêmico (corner cases de bytecode ≠ arquitetura), não substitui experiência, custo (USD 245), versão fica datada. Colher L31-38. **Honesto.**
 - `## OCA acabou` — desde Java 11 prova OCP única, sem OCA separada (ver nota 02). Colher L55-57.
 - `## Em entrevista` — frase EN demonstrando *por que* a pessoa busca a cert (forcing function), **voz de preparação** (não "I have", e sim "I'm pursuing / preparing for"). Vocabulário PT/EN (certificação→certification, forcing function, credencial→credential).
-- `## Veja também` — notas 02, 03, 16 do galho; `[[03-Dominios/Java/index|Trilha Java]]`.
+- `## Veja também` — notas 02, 03, 16 do galho; `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`.
 - `## Referências` — `https://education.oracle.com/java-certification`.
 
 - [ ] **Step 2: Validar** wikilinks internos (notas 02/03/16 + trilha) batem com nomes de arquivo.
@@ -165,7 +165,7 @@ Seções:
 ### Task 1.2: Nota 02 — Qual prova mirar (21 vs 25)
 
 **Files:**
-- Create: `03-Dominios/Java/Certificação OCP/02 - Qual prova mirar — Java 21 (1Z0-830) vs Java 25 (1Z0-831).md`
+- Create: `03-Dominios/Tecnologia/Java/Certificação OCP/02 - Qual prova mirar — Java 21 (1Z0-830) vs Java 25 (1Z0-831).md`
 
 - [ ] **Step 1: Criar a nota.** Frontmatter `fase: sobre-a-prova`, aliases `["1Z0-830", "1Z0-831", "OCP Java 21 vs 25"]`.
 
@@ -175,13 +175,13 @@ Seções:
 - `## A linhagem (OCA→OCP único)` — 1Z0-815+816 → 1Z0-819 (ago/2020) → 1Z0-829 → 1Z0-830 → 1Z0-831. Java 8 ainda exigia OCA. Colher L55-57.
 - `## Os 10 domínios são quase iguais` — callout/tabela com os dois conjuntos de títulos oficiais (copiar a tabela do §3 do spec). Mensagem: o mapeamento objetivo→galho (nota 04) serve as duas provas.
 - `## Qual escolher` — recomendação honesta por perfil: 21 se quer material maduro (Sybex/Enthuware), 25 se quer a LTS mais nova e já estudou Java 25 features pela trilha. Sem dogma.
-- `## Veja também` — nota 04 (mapa), nota 03, `[[03-Dominios/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25)|A evolução do Java (G1)]]`.
+- `## Veja também` — nota 04 (mapa), nota 03, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25)|A evolução do Java (G1)]]`.
 - `## Referências` — as 4 URLs do §3 do spec (Oracle 830/831 + Enthuware 290/297).
 
 ### Task 1.3: Nota 03 — Formato, logística e mecânica
 
 **Files:**
-- Create: `03-Dominios/Java/Certificação OCP/03 - Formato, logística e mecânica da prova.md`
+- Create: `03-Dominios/Tecnologia/Java/Certificação OCP/03 - Formato, logística e mecânica da prova.md`
 
 - [ ] **Step 1: Criar a nota.** Frontmatter `fase: sobre-a-prova`, aliases `["Formato da prova OCP", "Online proctored"]`.
 
@@ -196,7 +196,7 @@ Seções:
 ### Task 1.4: Nota 04 — O mapa objetivo → galho (NOTA-CORAÇÃO)
 
 **Files:**
-- Create: `03-Dominios/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova.md`
+- Create: `03-Dominios/Tecnologia/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova.md`
 
 - [ ] **Step 1: Criar a nota.** Frontmatter `fase: sobre-a-prova`, aliases `["Mapa objetivo galho", "Revisar a trilha pra OCP"]`. **Esta é a nota mais importante — o hub de revisão.**
 
@@ -214,10 +214,10 @@ Seções:
 ### Task 1.5: Commit da Fase 1
 - [ ] Review das 4 notas (controller lê cada uma; checa voz de plano na 01, divergência de duração na 03, wikilinks na 04).
 ```bash
-git add "03-Dominios/Java/Certificação OCP/01 - A certificação OCP — o que é, por que (e por que não) fazer.md" \
-        "03-Dominios/Java/Certificação OCP/02 - Qual prova mirar — Java 21 (1Z0-830) vs Java 25 (1Z0-831).md" \
-        "03-Dominios/Java/Certificação OCP/03 - Formato, logística e mecânica da prova.md" \
-        "03-Dominios/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova.md"
+git add "03-Dominios/Tecnologia/Java/Certificação OCP/01 - A certificação OCP — o que é, por que (e por que não) fazer.md" \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/02 - Qual prova mirar — Java 21 (1Z0-830) vs Java 25 (1Z0-831).md" \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/03 - Formato, logística e mecânica da prova.md" \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/04 - O mapa objetivo → galho — revisar a trilha pra prova.md"
 git commit -m "feat(java): Galho 18 — grupo 'Sobre a prova' (notas 01-04, mapa objetivo→galho)"
 ```
 
@@ -233,61 +233,61 @@ git commit -m "feat(java): Galho 18 — grupo 'Sobre a prova' (notas 01-04, mapa
 **Files:** Create `…/05 - Domínio 1 — Datas, texto, números e booleanos.md`
 - [ ] **Step 1: Criar.** Cobertura **Cheia**.
   - O que a Oracle cobra: primitivos/wrappers/autoboxing, literais numéricos (`100_000`,`0b`,`0x`,`L`,`f`), operadores/precedência/short-circuit, String (imutabilidade/pool/equals vs ==/text blocks), StringBuilder, `java.time` (LocalDate/Time/DateTime/ZonedDateTime/Instant/Duration/Period), DateTimeFormatter, BigDecimal/RoundingMode. Colher L108-118.
-  - Mapa de revisão (wikilinks exatos): `[[03-Dominios/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores|Tipos, variáveis e operadores]]`, `[[03-Dominios/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks|Strings e text blocks]]`, `[[03-Dominios/Java/Collections e Streams/11 - java.time — Date e Time API|java.time — Date e Time API]]`.
+  - Mapa de revisão (wikilinks exatos): `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores|Tipos, variáveis e operadores]]`, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks|Strings e text blocks]]`, `[[03-Dominios/Tecnologia/Java/Collections e Streams/11 - java.time — Date e Time API|java.time — Date e Time API]]`.
   - Pegadinhas do domínio: Integer cache (-128..127), BigDecimal vs float p/ dinheiro. Linka nota 15.
 
 ### Task 2.2: Nota 06 — Domínio 2 (Controle de fluxo)
 **Files:** Create `…/06 - Domínio 2 — Controle de fluxo.md`
 - [ ] **Step 1: Criar.** Cobertura **Cheia**.
   - O que a Oracle cobra: if/else, switch statement vs switch expression, pattern matching em switch (Java 21), loops (for/enhanced/while/do-while), labels (`break label`), return/break/continue. Colher L122-130.
-  - Mapa: `[[03-Dominios/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo|Estruturas de controle e fluxo]]`, `[[03-Dominios/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching|Sealed classes e pattern matching]]`.
+  - Mapa: `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo|Estruturas de controle e fluxo]]`, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching|Sealed classes e pattern matching]]`.
   - Pegadinhas: switch fall-through (statement) vs sem fall-through (arrow), exaustividade com sealed/`yield`. Linka nota 15.
 
 ### Task 2.3: Nota 07 — Domínio 3 (Orientação a objetos)
 **Files:** Create `…/07 - Domínio 3 — Orientação a objetos.md`
 - [ ] **Step 1: Criar.** Cobertura **Cheia**. (Domínio mais denso.)
   - O que a Oracle cobra: classes/objetos/construtores/ordem de init, métodos/varargs/covariância, encapsulamento/modificadores, herança/`@Override`/polimorfismo/dynamic dispatch, casting/`instanceof`/pattern matching, abstratas vs interfaces, default methods/diamond, static/final, inner classes (static nested/inner/local/anonymous), enums, records (compact constructor), sealed classes. Colher L134-148 + L298-326 (records/sealed).
-  - Mapa (wikilinks exatos): `06 - Classes, objetos e encapsulamento`, `07 - Herança e polimorfismo`, `08 - Interfaces e classes abstratas`, `09 - Enums`, `11 - Annotations`, `12 - Generics em profundidade`, `13 - Records e record patterns`, `14 - Sealed classes e pattern matching` (todos `[[03-Dominios/Java/Linguagem e sintaxe moderna/<arquivo>|<rótulo>]]`).
+  - Mapa (wikilinks exatos): `06 - Classes, objetos e encapsulamento`, `07 - Herança e polimorfismo`, `08 - Interfaces e classes abstratas`, `09 - Enums`, `11 - Annotations`, `12 - Generics em profundidade`, `13 - Records e record patterns`, `14 - Sealed classes e pattern matching` (todos `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/<arquivo>|<rótulo>]]`).
   - Pegadinhas: ordem de init (static→instance→constructor), static hiding ≠ override, enum constructor private, record component final, generics type erasure. Linka nota 15.
 
 ### Task 2.4: Nota 08 — Domínio 4 (Exceções)
 **Files:** Create `…/08 - Domínio 4 — Exceções.md`
 - [ ] **Step 1: Criar.** Cobertura **Cheia**.
   - O que a Oracle cobra: hierarquia (Throwable/Error/Exception/RuntimeException), checked vs unchecked, try/catch/finally/multi-catch, try-with-resources (AutoCloseable/suppressed/ordem de close), throws/overriding rules, custom exceptions, assertions. Colher L158-165.
-  - Mapa: `[[03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]]`.
+  - Mapa: `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros|Exceções e tratamento de erros]]`.
   - Pegadinhas: try/finally com return, try-with-resources ordem reversa, multi-catch com exceções relacionadas (não compila), override não adiciona checked. Linka nota 15.
 
 ### Task 2.5: Nota 09 — Domínio 5 (Arrays e coleções)
 **Files:** Create `…/09 - Domínio 5 — Arrays e coleções.md`
 - [ ] **Step 1: Criar.** Cobertura **Cheia**.
   - O que a Oracle cobra: arrays (decl/init/multi-dim/Arrays.sort/binarySearch), List/Set/Map/Queue + implementações, ArrayList vs LinkedList, HashMap/TreeMap/LinkedHashMap, Deque/Stack/Queue ops, Iterator/Iterable (fail-fast vs fail-safe), Comparable/Comparator, imutáveis (List.of/unmodifiableList — view vs cópia), ConcurrentModificationException, SequencedCollection. Colher L186-194 + L357-364.
-  - Mapa (wikilinks exatos): `[[03-Dominios/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs|Arrays e varargs]]`, `01 - O Collections Framework`, `02 - Listas, conjuntos e filas`, `03 - Mapas`, `06 - Comparable e Comparator`, `14 - SequencedCollection e SequencedMap` (estes 5 em `[[03-Dominios/Java/Collections e Streams/<arquivo>|…]]`).
+  - Mapa (wikilinks exatos): `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs|Arrays e varargs]]`, `01 - O Collections Framework`, `02 - Listas, conjuntos e filas`, `03 - Mapas`, `06 - Comparable e Comparator`, `14 - SequencedCollection e SequencedMap` (estes 5 em `[[03-Dominios/Tecnologia/Java/Collections e Streams/<arquivo>|…]]`).
   - Pegadinhas: `Arrays.asList` tamanho fixo (UnsupportedOperationException no add), init de arrays (0/null/false), view vs cópia. Linka nota 15.
 
 ### Task 2.6: Nota 10 — Domínio 6 (Streams e lambdas)
 **Files:** Create `…/10 - Domínio 6 — Streams e lambdas.md`
 - [ ] **Step 1: Criar.** Cobertura **Cheia**.
   - O que a Oracle cobra: lambda syntax/effectively final, method references, interfaces funcionais (Function/Predicate/Consumer/Supplier/BiFunction/UnaryOperator + primitivas), stream creation, intermediate ops (filter/map/flatMap/distinct/sorted/peek/limit/skip/takeWhile/dropWhile), terminal ops (forEach/toList/collect/reduce/count/min/max/find/match), Collectors (toMap/groupingBy/partitioningBy/joining/…), Optional, parallel streams, Gatherers. Colher L201-211.
-  - Mapa (wikilinks exatos, `[[03-Dominios/Java/Collections e Streams/<arquivo>|…]]`): `04 - Lambdas e interfaces funcionais`, `05 - Introdução à Stream API`, `07 - Operações de Stream — intermediárias e terminais`, `08 - Collectors e agrupamento`, `09 - Streams primitivos`, `10 - Optional`, `13 - Composição funcional e funções de alta ordem`, `15 - Collectors customizados e Gatherers`.
+  - Mapa (wikilinks exatos, `[[03-Dominios/Tecnologia/Java/Collections e Streams/<arquivo>|…]]`): `04 - Lambdas e interfaces funcionais`, `05 - Introdução à Stream API`, `07 - Operações de Stream — intermediárias e terminais`, `08 - Collectors e agrupamento`, `09 - Streams primitivos`, `10 - Optional`, `13 - Composição funcional e funções de alta ordem`, `15 - Collectors customizados e Gatherers`.
   - Pegadinhas: stream one-shot (IllegalStateException), peek lazy, `Optional.orElse` sempre executa vs `orElseGet`, `Collectors.toMap` chave duplicada. Linka nota 15.
 
 ### Task 2.7: Nota 12 — Domínio 8 (Concorrência)
 **Files:** Create `…/12 - Domínio 8 — Concorrência.md`
 - [ ] **Step 1: Criar.** Cobertura **Cheia**.
   - O que a Oracle cobra: thread creation (Thread vs Runnable, start vs run), thread states, lifecycle (sleep/join/interrupt), synchronized/volatile/wait-notify, ExecutorService (fixed/single/cached/scheduled + **newVirtualThreadPerTaskExecutor**), Callable/Future, CompletableFuture, atomics, concurrent collections, Virtual Threads (Java 21), locks (ReentrantLock/ReadWriteLock). Colher L230-246.
-  - Mapa (wikilinks exatos, `[[03-Dominios/Java/Concorrência e paralelismo/<arquivo>|…]]`): `02 - Threads e seu ciclo de vida`, `03 - Exclusão mútua com synchronized`, `06 - Atômicos e operações lock-free`, `07 - Concurrent collections`, `08 - Executors e thread pools`, `10 - CompletableFuture e composição assíncrona`, `11 - Java Memory Model em profundidade`, `12 - Virtual Threads e Project Loom`, `15 - Parallel streams e fork-join`.
+  - Mapa (wikilinks exatos, `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/<arquivo>|…]]`): `02 - Threads e seu ciclo de vida`, `03 - Exclusão mútua com synchronized`, `06 - Atômicos e operações lock-free`, `07 - Concurrent collections`, `08 - Executors e thread pools`, `10 - CompletableFuture e composição assíncrona`, `11 - Java Memory Model em profundidade`, `12 - Virtual Threads e Project Loom`, `15 - Parallel streams e fork-join`.
   - Pegadinhas: `t.run()` não cria thread (roda no caller), `t.start()` sim. Linka nota 15.
 
 ### Task 2.8: Commit da Fase 2
 - [ ] Review das 7 notas (controller checa wikilinks contra arquivos reais).
 ```bash
-git add "03-Dominios/Java/Certificação OCP/05 - Domínio 1"*.md \
-        "03-Dominios/Java/Certificação OCP/06 - Domínio 2"*.md \
-        "03-Dominios/Java/Certificação OCP/07 - Domínio 3"*.md \
-        "03-Dominios/Java/Certificação OCP/08 - Domínio 4"*.md \
-        "03-Dominios/Java/Certificação OCP/09 - Domínio 5"*.md \
-        "03-Dominios/Java/Certificação OCP/10 - Domínio 6"*.md \
-        "03-Dominios/Java/Certificação OCP/12 - Domínio 8"*.md
+git add "03-Dominios/Tecnologia/Java/Certificação OCP/05 - Domínio 1"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/06 - Domínio 2"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/07 - Domínio 3"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/08 - Domínio 4"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/09 - Domínio 5"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/10 - Domínio 6"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/12 - Domínio 8"*.md
 git commit -m "feat(java): Galho 18 — domínios de cobertura cheia (notas 05-10, 12)"
 ```
 > Nota: o glob `"05 - Domínio 1"*.md` casa só o arquivo do galho 18 porque o controller roda do repo root e o path é específico. Conferir `git status` antes do commit para garantir que nada do bot entrou.
@@ -302,29 +302,29 @@ git commit -m "feat(java): Galho 18 — domínios de cobertura cheia (notas 05-1
 **Files:** Create `…/11 - Domínio 7 — Empacotamento, deployment e módulos.md`
 - [ ] **Step 1: Criar.** Cobertura **Parcial**.
   - O que a Oracle cobra: JPMS (module-info: requires/exports/opens/uses/provides), tipos de módulo (named/unnamed/automatic), ServiceLoader, jlink, migração classpath→modulepath; jar/MANIFEST, jpackage, javac/java/classpath/modulepath, JShell, implicit classes & instance main methods. Colher L273-292.
-  - Mapa: `[[03-Dominios/Java/JVM/08 - JPMS — o sistema de módulos|JPMS — o sistema de módulos (G3)]]`, `[[03-Dominios/Java/JavaFX/13 - Empacotamento — módulos, jlink e jpackage|Empacotamento — jlink e jpackage (G6)]]`, `[[03-Dominios/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25)|A evolução do Java (G1)]]` (p/ implicit classes/instance main).
+  - Mapa: `[[03-Dominios/Tecnologia/Java/JVM/08 - JPMS — o sistema de módulos|JPMS — o sistema de módulos (G3)]]`, `[[03-Dominios/Tecnologia/Java/JavaFX/13 - Empacotamento — módulos, jlink e jpackage|Empacotamento — jlink e jpackage (G6)]]`, `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25)|A evolução do Java (G1)]]` (p/ implicit classes/instance main).
   - `## Lacuna da trilha`: a trilha não tem nota dedicada a `jar`/`META-INF/MANIFEST.MF`, `jShell`, nem aos *implicit classes & instance main methods* como tópico de prova. Conteúdo autocontido mínimo desses 3 + fontes (docs Oracle). **JPMS pouco usado em produção mas cai muito** — estudar mesmo assim.
 
 ### Task 3.2: Nota 13 — Domínio 9 (I/O)
 **Files:** Create `…/13 - Domínio 9 — I/O.md`
 - [ ] **Step 1: Criar.** Cobertura **Parcial**.
   - O que a Oracle cobra: java.io (InputStream/OutputStream bytes, Reader/Writer chars), Buffered*, File*Stream/File*Reader/Writer, try-with-resources, java.nio.file (Path/Paths/Files/Files.lines/walk), serialization (Serializable/transient/serialVersionUID/ObjectI-O-Stream), Console. Colher L250-258.
-  - Mapa: `[[03-Dominios/Java/Collections e Streams/12 - I-O moderno com java.nio.file|I/O moderno com java.nio.file (G2)]]`.
+  - Mapa: `[[03-Dominios/Tecnologia/Java/Collections e Streams/12 - I-O moderno com java.nio.file|I/O moderno com java.nio.file (G2)]]`.
   - `## Lacuna da trilha`: a trilha cobre `java.nio.file` mas **não** `java.io` clássico (byte/char streams, Buffered*), **nem serialização**, **nem Console** — tópicos de prova. Conteúdo autocontido mínimo dos 3 + fontes. Nota: serialização cai pouco (1-2 questões).
 
 ### Task 3.3: Nota 14 — Domínio 10 (Localização)
 **Files:** Create `…/14 - Domínio 10 — Localização.md`
 - [ ] **Step 1: Criar.** Cobertura **Parcial**.
   - O que a Oracle cobra: Locale (criação/getDefault), ResourceBundle (properties/fallback), NumberFormat (currency/percent/locale), DateTimeFormatter (FormatStyle SHORT/MEDIUM/LONG/FULL). Colher L221-226.
-  - Mapa: `[[03-Dominios/Java/Collections e Streams/11 - java.time — Date e Time API|java.time (G2)]]` (cobre DateTimeFormatter parcialmente).
+  - Mapa: `[[03-Dominios/Tecnologia/Java/Collections e Streams/11 - java.time — Date e Time API|java.time (G2)]]` (cobre DateTimeFormatter parcialmente).
   - `## Lacuna da trilha`: a trilha **não cobre** Locale/ResourceBundle/NumberFormat — domínio inteiro precisa de estudo à parte. Conteúdo autocontido mínimo + fontes. Menor peso na prova, mas cai.
 
 ### Task 3.4: Commit da Fase 3
 - [ ] Review (controller checa wikilinks + que a seção "Lacuna da trilha" existe nas 3).
 ```bash
-git add "03-Dominios/Java/Certificação OCP/11 - Domínio 7"*.md \
-        "03-Dominios/Java/Certificação OCP/13 - Domínio 9"*.md \
-        "03-Dominios/Java/Certificação OCP/14 - Domínio 10"*.md
+git add "03-Dominios/Tecnologia/Java/Certificação OCP/11 - Domínio 7"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/13 - Domínio 9"*.md \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/14 - Domínio 10"*.md
 git commit -m "feat(java): Galho 18 — domínios de cobertura parcial com 'Lacuna da trilha' (notas 11, 13, 14)"
 ```
 
@@ -358,9 +358,9 @@ git commit -m "feat(java): Galho 18 — domínios de cobertura parcial com 'Lacu
 ### Task 4.4: Commit da Fase 4
 - [ ] Review (controller checa **voz de plano** nas 16/17 — nenhuma afirmação de prova feita/credencial obtida).
 ```bash
-git add "03-Dominios/Java/Certificação OCP/15 - O catálogo de pegadinhas clássicas.md" \
-        "03-Dominios/Java/Certificação OCP/16 - Estratégia de estudo e recursos.md" \
-        "03-Dominios/Java/Certificação OCP/17 - O dia da prova e depois.md"
+git add "03-Dominios/Tecnologia/Java/Certificação OCP/15 - O catálogo de pegadinhas clássicas.md" \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/16 - Estratégia de estudo e recursos.md" \
+        "03-Dominios/Tecnologia/Java/Certificação OCP/17 - O dia da prova e depois.md"
 git commit -m "feat(java): Galho 18 — grupo estratégia (pegadinhas, estudo, dia da prova; voz de plano)"
 ```
 
@@ -369,44 +369,44 @@ git commit -m "feat(java): Galho 18 — grupo estratégia (pegadinhas, estudo, d
 # FASE 5 — Integração
 
 ### Task 5.1: Podar o tronco legado a stub-hub
-**Files:** Modify `03-Dominios/Java/Core/Certificação Java OCP.md`
+**Files:** Modify `03-Dominios/Tecnologia/Java/Core/Certificação Java OCP.md`
 - [ ] **Step 1:** Substituir o corpo (878 linhas) por um stub-hub curto. Manter frontmatter (`publish: false`), atualizar `updated: 2026-06-13`. Adicionar callout no topo:
   ```
   > [!info] Este tronco foi podado
-  > O conteúdo virou o **Galho 18 — Certificação OCP**, em notas atômicas. Comece pelo MOC: [[03-Dominios/Java/Certificação OCP/index|Certificação OCP (Galho 18)]].
+  > O conteúdo virou o **Galho 18 — Certificação OCP**, em notas atômicas. Comece pelo MOC: [[03-Dominios/Tecnologia/Java/Certificação OCP/index|Certificação OCP (Galho 18)]].
   ```
   Corpo: 1 parágrafo + lista de atalhos pras notas-chave (01, 04, 15). Não deletar o arquivo.
 - [ ] **Step 2: Commit**
 ```bash
-git add "03-Dominios/Java/Core/Certificação Java OCP.md"
+git add "03-Dominios/Tecnologia/Java/Core/Certificação Java OCP.md"
 git commit -m "refactor(java): poda do tronco legado de OCP — vira stub-hub do Galho 18"
 ```
 
 ### Task 5.2: Ativar o galho no índice central
-**Files:** Modify `03-Dominios/Java/index.md`
+**Files:** Modify `03-Dominios/Tecnologia/Java/index.md`
 - [ ] **Step 1:** Linha 54: trocar `18. Certificação Java OCP *(planejado)*` por:
-  `18. [[03-Dominios/Java/Certificação OCP/index|Certificação Java OCP]] — guia das provas OCP Java SE 21 (1Z0-830) e 25 (1Z0-831): os 10 domínios oficiais mapeados às notas dos galhos 1-4, pegadinhas clássicas, formato e estratégia de prova`
+  `18. [[03-Dominios/Tecnologia/Java/Certificação OCP/index|Certificação Java OCP]] — guia das provas OCP Java SE 21 (1Z0-830) e 25 (1Z0-831): os 10 domínios oficiais mapeados às notas dos galhos 1-4, pegadinhas clássicas, formato e estratégia de prova`
 - [ ] **Step 2:** Linha 61: atualizar o item do tronco para indicar que virou o Galho 18 (apontar ao galho ativo, manter link ao tronco como legado).
 - [ ] **Step 3:** Atualizar `updated: 2026-06-13` no frontmatter.
 - [ ] **Step 4: Commit**
 ```bash
-git add "03-Dominios/Java/index.md"
+git add "03-Dominios/Tecnologia/Java/index.md"
 git commit -m "feat(java): ativa Galho 18 (Certificação OCP) no MOC central — trilha completa"
 ```
 
 ### Task 5.3: Expandir o Dicionário de Java
-**Files:** Modify `03-Dominios/Java/Dicionário de Java.md`
+**Files:** Modify `03-Dominios/Tecnologia/Java/Dicionário de Java.md`
 - [ ] **Step 1: Grep cada termo candidato** antes de inserir (linkar se já existe, não duplicar):
   ```bash
   for t in OCP OCA "1Z0-830" "1Z0-831" "exam objective" "passing score" "online proctored" voucher Enthuware CertView Credly "Pearson VUE"; do
-    echo "== $t =="; grep -in "$t" "03-Dominios/Java/Dicionário de Java.md" | head -3
+    echo "== $t =="; grep -in "$t" "03-Dominios/Tecnologia/Java/Dicionário de Java.md" | head -3
   done
   ```
 - [ ] **Step 2:** Inserir os verbetes ausentes em ordem alfabética na seção da letra correta (formato `### Termo` + definição curta + wikilink ao galho/notas). Linkar verbetes a termos já existentes (ex.: Integer cache, type erasure provavelmente já existem — só referenciar).
 - [ ] **Step 3:** Atualizar `updated: 2026-06-13`.
 - [ ] **Step 4: Commit**
 ```bash
-git add "03-Dominios/Java/Dicionário de Java.md"
+git add "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 git commit -m "feat(java): expande Dicionário com verbetes de certificação OCP (Galho 18)"
 ```
 
@@ -415,24 +415,24 @@ git commit -m "feat(java): expande Dicionário com verbetes de certificação OC
 # FASE 6 — Validação
 
 ### Task 6.1: Validar wikilinks programaticamente
-- [ ] **Step 1: Grep de cada wikilink de destino** das notas do galho contra arquivos reais. Para cada `[[03-Dominios/Java/.../<arquivo>|...]]`, confirmar que `03-Dominios/Java/.../<arquivo>.md` existe:
+- [ ] **Step 1: Grep de cada wikilink de destino** das notas do galho contra arquivos reais. Para cada `[[03-Dominios/Tecnologia/Java/.../<arquivo>|...]]`, confirmar que `03-Dominios/Tecnologia/Java/.../<arquivo>.md` existe:
   ```bash
   cd /home/josenaldo/repos/personal/codex-technomanticus
-  grep -rhoE '\[\[03-Dominios/Java/[^|]+' "03-Dominios/Java/Certificação OCP/" \
+  grep -rhoE '\[\[03-Dominios/Tecnologia/Java/[^|]+' "03-Dominios/Tecnologia/Java/Certificação OCP/" \
     | sed -E 's/^\[\[//' | sort -u \
     | while IFS= read -r p; do [ -f "${p}.md" ] || echo "QUEBRADO: $p"; done
   ```
   Expected: nenhuma linha "QUEBRADO". Corrigir os que aparecerem (provável causa: título alucinado — conferir contra §7 do spec).
-- [ ] **Step 2: Rodar a skill `verificar-wikilinks`** na pasta `03-Dominios/Java/Certificação OCP/` e no `index.md` central. Corrigir o que apontar.
+- [ ] **Step 2: Rodar a skill `verificar-wikilinks`** na pasta `03-Dominios/Tecnologia/Java/Certificação OCP/` e no `index.md` central. Corrigir o que apontar.
 
 ### Task 6.2: Review final e commit de fechamento
 - [ ] **Step 1:** Conferir: 17 notas + index existem; dataview do MOC lista as 17; nenhuma afirmação de prova feita; divergência de duração registrada; os 3 domínios parciais têm "Lacuna da trilha".
   ```bash
-  ls "03-Dominios/Java/Certificação OCP/" | wc -l   # esperado: 18 (17 notas + index)
+  ls "03-Dominios/Tecnologia/Java/Certificação OCP/" | wc -l   # esperado: 18 (17 notas + index)
   ```
 - [ ] **Step 2:** Se houve correções nas Tasks 6.1, commit:
 ```bash
-git add "03-Dominios/Java/Certificação OCP/" "03-Dominios/Java/index.md"
+git add "03-Dominios/Tecnologia/Java/Certificação OCP/" "03-Dominios/Tecnologia/Java/index.md"
 git commit -m "fix(java): corrige wikilinks do Galho 18 e fecha a trilha Java (18/18 galhos)"
 ```
 - [ ] **Step 3:** Reportar ao usuário: trilha Java completa (18/18). **Não fazer push** (manual).

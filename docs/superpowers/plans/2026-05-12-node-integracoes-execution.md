@@ -9,7 +9,7 @@ O conteúdo de integrações não existia como seção dedicada no tronco (`Node
 ## Arquitetura do galho
 
 ```
-03-Dominios/Node/Integrações/
+03-Dominios/Tecnologia/Node/Integrações/
   index.md                                           ← MOC do galho
   01 - PostgreSQL com node-postgres.md
   02 - Redis e ioredis.md
@@ -61,7 +61,7 @@ O conteúdo de integrações não existia como seção dedicada no tronco (`Node
 ## Estrutura de arquivos
 
 ```
-03-Dominios/Node/Integrações/
+03-Dominios/Tecnologia/Node/Integrações/
   index.md
   01 - PostgreSQL com node-postgres.md
   02 - Redis e ioredis.md
@@ -82,7 +82,7 @@ O conteúdo de integrações não existia como seção dedicada no tronco (`Node
 ### Tarefa 1 — MOC do galho
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/index.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/index.md`
 
 **Commit:** `feat(node/g9): add index - moc integracoes`
 
@@ -119,7 +119,7 @@ aliases:
 ### Tarefa 2 — PostgreSQL com node-postgres
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/01 - PostgreSQL com node-postgres.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/01 - PostgreSQL com node-postgres.md`
 
 **Commit:** `feat(node/g9): add 01 - postgresql com node-postgres`
 
@@ -164,7 +164,7 @@ aliases:
 ### Tarefa 3 — Redis e ioredis
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/02 - Redis e ioredis.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/02 - Redis e ioredis.md`
 
 **Commit:** `feat(node/g9): add 02 - redis e ioredis`
 
@@ -209,7 +209,7 @@ aliases:
 ### Tarefa 4 — BullMQ: filas de tarefas
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/03 - BullMQ - filas de tarefas.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/03 - BullMQ - filas de tarefas.md`
 
 **Commit:** `feat(node/g9): add 03 - bullmq filas de tarefas`
 
@@ -254,7 +254,7 @@ aliases:
 ### Tarefa 5 — Kafka com kafkajs
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/04 - Kafka com kafkajs.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/04 - Kafka com kafkajs.md`
 
 **Commit:** `feat(node/g9): add 04 - kafka com kafkajs`
 
@@ -299,7 +299,7 @@ aliases:
 ### Tarefa 6 — gRPC com grpc-js
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/05 - gRPC com grpc-js.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/05 - gRPC com grpc-js.md`
 
 **Commit:** `feat(node/g9): add 05 - grpc com grpc-js`
 
@@ -344,7 +344,7 @@ aliases:
 ### Tarefa 7 — GraphQL com Apollo Server e Mercurius
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/06 - GraphQL com Apollo Server e Mercurius.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/06 - GraphQL com Apollo Server e Mercurius.md`
 
 **Commit:** `feat(node/g9): add 06 - graphql com apollo server e mercurius`
 
@@ -389,7 +389,7 @@ aliases:
 ### Tarefa 8 — WebSockets com ws e Socket.io
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/07 - WebSockets com ws e Socket.io.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/07 - WebSockets com ws e Socket.io.md`
 
 **Commit:** `feat(node/g9): add 07 - websockets com ws e socket-io`
 
@@ -434,7 +434,7 @@ aliases:
 ### Tarefa 9 — Clientes HTTP: fetch, axios, got e undici
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/08 - Clientes HTTP - fetch, axios, got e undici.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/08 - Clientes HTTP - fetch, axios, got e undici.md`
 
 **Commit:** `feat(node/g9): add 08 - clientes http fetch axios got undici`
 
@@ -480,7 +480,7 @@ aliases:
 ### Tarefa 10 — Padrões de resiliência: retry, circuit breaker e bulkhead
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead.md`
 
 **Commit:** `feat(node/g9): add 09 - padroes de resiliencia`
 
@@ -525,7 +525,7 @@ aliases:
 ### Tarefa 11 — Cheatsheet e decision tree de integrações
 
 **Arquivos:**
-- Criar: `03-Dominios/Node/Integrações/10 - Cheatsheet e decision tree de integrações.md`
+- Criar: `03-Dominios/Tecnologia/Node/Integrações/10 - Cheatsheet e decision tree de integrações.md`
 
 **Commit:** `feat(node/g9): add 10 - cheatsheet e decision tree de integracoes`
 
@@ -571,27 +571,27 @@ aliases:
 ### Tarefa 12 — Registrar galho no índice e no tronco
 
 **Arquivos a editar:**
-- `03-Dominios/Node/index.md` — adicionar linha do galho 9 na seção `### Galhos da trilha Node Senior`
-- `03-Dominios/JavaScript/Backend/Node.js.md` — adicionar linha do galho 9 na seção `## Veja também`
+- `03-Dominios/Tecnologia/Node/index.md` — adicionar linha do galho 9 na seção `### Galhos da trilha Node Senior`
+- `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` — adicionar linha do galho 9 na seção `## Veja também`
 
 **Commit:** `chore(node/g9): register galho 9 in node index and trunk`
 
 **Edições:**
 
-Em `03-Dominios/Node/index.md`, adicionar após a linha do galho 6:
+Em `03-Dominios/Tecnologia/Node/index.md`, adicionar após a linha do galho 6:
 
 ```
-- [[03-Dominios/Node/Tooling e ecossistema/index]] — galho 7: npm, pnpm, yarn e bun, semver, ESM vs CJS, TypeScript nativo, built-in test runner, DX flags modernos, SEA e APIs Promise-based
-- [[03-Dominios/Node/Segurança/index]] — galho 8: supply chain, segredos, validação de entrada (Zod/Joi), JWT, OAuth 2.0 e OIDC, RBAC, rate limiting, Helmet.js e OWASP Top 10
-- [[03-Dominios/Node/Integrações/index]] — galho 9: PostgreSQL (node-postgres), Redis (ioredis), BullMQ, Kafka (kafkajs), gRPC, GraphQL, WebSockets, HTTP clients e padrões de resiliência
+- [[03-Dominios/Tecnologia/Node/Tooling e ecossistema/index]] — galho 7: npm, pnpm, yarn e bun, semver, ESM vs CJS, TypeScript nativo, built-in test runner, DX flags modernos, SEA e APIs Promise-based
+- [[03-Dominios/Tecnologia/Node/Segurança/index]] — galho 8: supply chain, segredos, validação de entrada (Zod/Joi), JWT, OAuth 2.0 e OIDC, RBAC, rate limiting, Helmet.js e OWASP Top 10
+- [[03-Dominios/Tecnologia/Node/Integrações/index]] — galho 9: PostgreSQL (node-postgres), Redis (ioredis), BullMQ, Kafka (kafkajs), gRPC, GraphQL, WebSockets, HTTP clients e padrões de resiliência
 ```
 
 > **Nota:** Se os galhos 7 e 8 já tiverem sido registrados em execuções anteriores, adicionar apenas a linha do galho 9.
 
-Em `03-Dominios/JavaScript/Backend/Node.js.md`, adicionar na seção `## Veja também`:
+Em `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`, adicionar na seção `## Veja também`:
 
 ```
-- [[03-Dominios/Node/Integrações/index|Integrações]] — galho 9 da trilha Node Senior; PostgreSQL, Redis, BullMQ, Kafka, gRPC, GraphQL, WebSockets, HTTP clients e padrões de resiliência
+- [[03-Dominios/Tecnologia/Node/Integrações/index|Integrações]] — galho 9 da trilha Node Senior; PostgreSQL, Redis, BullMQ, Kafka, gRPC, GraphQL, WebSockets, HTTP clients e padrões de resiliência
 ```
 
 **Verificação:** Confirmar que o TL;DR do `index.md` menciona os 9 galhos e que `Node.js.md` lista todos os galhos na seção Veja também.

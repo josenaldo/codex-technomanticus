@@ -19,7 +19,7 @@ Zellij é mais enxuto que o stack Zsh+OMZ+P10k do galho 2: uma única ferramenta
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **7 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Terminal/Multiplexer/` e `03-Dominios/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (3 Iniciado + 2 Adepto + 2 Magus).
+Produzir, em uma sessão de execução dedicada, **7 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Tecnologia/Terminal/Multiplexer/` e `03-Dominios/Tecnologia/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (3 Iniciado + 2 Adepto + 2 Magus).
 
 A trilha precisa ser:
 
@@ -29,7 +29,7 @@ A trilha precisa ser:
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Terminal/Multiplexer/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Terminal/Multiplexer/`)
 
 Pasta nova, flat. 7 notas + 1 MOC:
 
@@ -57,7 +57,7 @@ Pasta nova, flat. 7 notas + 1 MOC:
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Terminal/Multiplexer/index.md`:
+`03-Dominios/Tecnologia/Terminal/Multiplexer/index.md`:
 - `type: moc`, `status: growing`, `progresso: andamento`
 - Frontmatter padrão (`title: "Multiplexer"`, tags `terminal/multiplexer/zellij/moc`, aliases `Multiplexer`/`Zellij`)
 - Conteúdo agrupado em 3 H3 (Iniciado/Adepto/Magus)
@@ -66,7 +66,7 @@ Pasta nova, flat. 7 notas + 1 MOC:
 
 ### 3.3. Expansão do Dicionário do Terminal
 
-`03-Dominios/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## Multiplexer / Zellij` (após `## Shell / Zsh / OMZ`), com 16 verbetes em ordem alfabética case-insensitive:
+`03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## Multiplexer / Zellij` (após `## Shell / Zsh / OMZ`), com 16 verbetes em ordem alfabética case-insensitive:
 
 | Verbete | Resumo |
 |---|---|
@@ -91,7 +91,7 @@ Cada verbete tem `Veja também:` apontando pra nota canônica do tópico.
 
 ### 3.4. Tronco — ativar wikilink
 
-`03-Dominios/Terminal/index.md`: trocar `- Multiplexer — galho 3 (planejado): Zellij` por `- [[03-Dominios/Terminal/Multiplexer/index|Multiplexer]] — galho 3: Zellij (sessions, layouts KDL, plugins WASM)`.
+`03-Dominios/Tecnologia/Terminal/index.md`: trocar `- Multiplexer — galho 3 (planejado): Zellij` por `- [[03-Dominios/Tecnologia/Terminal/Multiplexer/index|Multiplexer]] — galho 3: Zellij (sessions, layouts KDL, plugins WASM)`.
 
 ## 4. Convenções por nota
 
@@ -132,8 +132,8 @@ aliases:
 - `## Em inglês` — bullets `- **PT** — *EN*. "frase técnica curta."` (8-10 termos). **NUNCA tabela.**
 - `## Veja também` — wikilinks **sem backticks**; inclui sempre:
   - Notas relacionadas do mesmo galho
-  - `[[03-Dominios/Terminal/Multiplexer/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/Multiplexer/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - Wikilinks pros verbetes do Dicionário usados na nota
 - `## Referências` — docs oficiais Zellij + posts canônicos verificados
 
@@ -258,7 +258,7 @@ Cada nota começa com **Step 1: Pesquisa-âncora** — WebFetch em paralelo de d
 
 ## 8. Critério de pronto
 
-- 8 arquivos em `03-Dominios/Terminal/Multiplexer/`: 7 notas + `index.md`
+- 8 arquivos em `03-Dominios/Tecnologia/Terminal/Multiplexer/`: 7 notas + `index.md`
 - ≥15 verbetes novos no bloco `## Multiplexer / Zellij` do Dicionário
 - Tronco `Terminal/index.md` com wikilink ativo pro Multiplexer
 - `verificar-wikilinks` em `Multiplexer/` sem broken links

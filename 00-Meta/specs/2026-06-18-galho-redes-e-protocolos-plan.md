@@ -16,7 +16,7 @@ tags:
 ## Contexto
 Sexto galho da Camada A do meta-plano de Fundamentos (`2026-06-15-fundamentos-meta-planejamento-design.md`),
 depois de **Estruturas de Dados**, **Algoritmos**, **OO**, **SOLID** e **Banco de Dados** (todos COMPLETOS,
-2026-06-17). Refatora o monólito `03-Dominios/Fundamentos/Redes e Protocolos.md` (653 ln, evergreen) no
+2026-06-17). Refatora o monólito `03-Dominios/Ciência/Redes e Protocolos.md` (653 ln, evergreen) no
 padrão tronco/galhos + 3 fases. Interview-critical (★). Roster aprovado pelo usuário em 2026-06-18.
 
 A semente é o monólito inteiro: modelo de camadas, TCP/UDP, DNS, TLS, HTTP (métodos/status/caching/CORS),
@@ -44,13 +44,13 @@ usuário (preservar, [[feedback-no-fabrication]]).
   HATEOAS, Richardson Maturity Model. A nota 10 trata REST/GraphQL/gRPC **como protocolo** e linka.
 - **System Design** (`[[System Design]]`) — escala e composição de sistema. As notas 12 (números),
   13 (LB/CDN) e 14 (resiliência) são fundamento de rede e **forward-linkam** pra lá.
-- **Mensageria / Kafka** (`[[Mensageria]]`, `[[03-Dominios/Java/Backend/Kafka/Kafka]]`) — comunicação
+- **Mensageria / Kafka** (`[[Mensageria]]`, `[[03-Dominios/Tecnologia/Java/Backend/Kafka/Kafka]]`) — comunicação
   assíncrona. A nota 10 menciona mensageria como alternativa a chamadas síncronas e linka.
 - **Segurança Conceitual** (futuro galho, Camada D) — primitivas cripto. A nota 05 (TLS) menciona DH/PKI
   em PROSA, sem wikilink (evita link quebrado).
 - **Java** (`[[Spring Boot]]`) — OkHttp/connection pool, Resilience4j (circuit breaker/retry/rate limit),
   HikariCP. Callout linkando, não corpo. (Resilience4j já é tratado no galho Java/Microservices.)
-- **Infraestrutura** (`[[03-Dominios/Infraestrutura/Linux|Linux]]`, K8s networking, `[[Nginx]]`) — operar
+- **Infraestrutura** (`[[03-Dominios/Tecnologia/Infraestrutura/Linux|Linux]]`, K8s networking, `[[Nginx]]`) — operar
   o stack. Linka.
 
 ## Preservação (rígido) — experiências REAIS, relocadas do monólito ([[feedback-no-fabrication]])
@@ -128,7 +128,7 @@ usuário (preservar, [[feedback-no-fabrication]]).
 - **NUNCA fabricar** experiências/dados do usuário; preservar e relocar as 5 experiências reais (mapa acima).
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Redes e Protocolos/` com `index.md` (MOC, `type: moc`, `status: growing`,
+- Pasta `03-Dominios/Ciência/Redes e Protocolos/` com `index.md` (MOC, `type: moc`, `status: growing`,
   `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - Alias do `index.md`: **"Redes e Protocolos"** + **"Redes"** + **"Redes de Computadores"** + **"Networking"**
   para resolver os ~15 links de entrada (API Design, System Design, Kafka/Mensageria, Banco de Dados,

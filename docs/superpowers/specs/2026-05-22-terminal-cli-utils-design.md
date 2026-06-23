@@ -25,7 +25,7 @@ O master roadmap previu **9 notas** (4+3+2). Após brainstorm, o escopo é expan
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **13 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Terminal/CLI Utils/` e `03-Dominios/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 4 Adepto + 5 Magus).
+Produzir, em uma sessão de execução dedicada, **13 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Tecnologia/Terminal/CLI Utils/` e `03-Dominios/Tecnologia/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 4 Adepto + 5 Magus).
 
 A trilha precisa ser:
 
@@ -35,7 +35,7 @@ A trilha precisa ser:
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Terminal/CLI Utils/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Terminal/CLI Utils/`)
 
 Pasta nova, flat. 13 notas + 1 MOC:
 
@@ -69,7 +69,7 @@ Pasta nova, flat. 13 notas + 1 MOC:
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Terminal/CLI Utils/index.md`:
+`03-Dominios/Tecnologia/Terminal/CLI Utils/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "CLI Utils"`, tags `terminal/cli-utils/moc`, aliases `["MOC CLI Utils", "Galho 6"]`)
 - TL;DR callout (galho cobre subs UNIX modernas + fluxo interativo + processamento estruturado)
@@ -80,7 +80,7 @@ Pasta nova, flat. 13 notas + 1 MOC:
 
 ### 3.3. Expansão do Dicionário do Terminal
 
-`03-Dominios/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## CLI Utils` (após `## Dotfiles`, linha 562+), com ~40 verbetes em ordem alfabética case-insensitive (sem acento).
+`03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` ganha **novo bloco** `## CLI Utils` (após `## Dotfiles`, linha 562+), com ~40 verbetes em ordem alfabética case-insensitive (sem acento).
 
 **Verbetes já existentes que apenas serão wikilinkados** (sem duplicar):
 
@@ -139,7 +139,7 @@ Cada verbete tem `Veja também:` apontando pras notas canônicas.
 
 ### 3.4. Tronco — ativar wikilink
 
-`03-Dominios/Terminal/index.md` linha 32: trocar `- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, eza, zoxide…` por `- [[03-Dominios/Terminal/CLI Utils/index|CLI Utils]] — galho 6: substituições modernas de utilitários UNIX (cat/ls/grep/find/du/top) + fluxo interativo (fzf/zoxide/atuin) + processamento estruturado (jq/yq)`.
+`03-Dominios/Tecnologia/Terminal/index.md` linha 32: trocar `- CLI Utils — galho 6 (planejado): fzf, ripgrep, bat, eza, zoxide…` por `- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|CLI Utils]] — galho 6: substituições modernas de utilitários UNIX (cat/ls/grep/find/du/top) + fluxo interativo (fzf/zoxide/atuin) + processamento estruturado (jq/yq)`.
 
 ## 4. Convenções por nota
 
@@ -175,8 +175,8 @@ aliases:
 - `## Em inglês` — bullets bilíngues `- **PT** — *EN*. "frase técnica curta em PT."` (8-10 termos). NUNCA tabela.
 - `## Veja também` — wikilinks SEM backticks; sempre inclui:
   - Notas relacionadas do galho
-  - `[[03-Dominios/Terminal/CLI Utils/index|MOC do galho]]`
-  - `[[03-Dominios/Terminal/index|Trilha Terminal]]`
+  - `[[03-Dominios/Tecnologia/Terminal/CLI Utils/index|MOC do galho]]`
+  - `[[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]`
   - Wikilinks pros verbetes do Dicionário
 - `## Referências` — docs oficiais + posts canônicos
 
@@ -411,7 +411,7 @@ Cada nota começa com **Step 1: Pesquisa-âncora** — WebFetch em paralelo de d
 
 ## 8. Critério de pronto
 
-- **14 arquivos** em `03-Dominios/Terminal/CLI Utils/`: 13 notas + `index.md` (MOC)
+- **14 arquivos** em `03-Dominios/Tecnologia/Terminal/CLI Utils/`: 13 notas + `index.md` (MOC)
 - **~40 verbetes novos** no bloco `## CLI Utils` do Dicionário (largamente acima do mínimo de 15)
 - **Tronco** `Terminal/index.md` com wikilink ativo pro galho 6
 - **`verificar-wikilinks`** em `CLI Utils/` sem broken links (`--respect-public-only`)

@@ -19,7 +19,7 @@ As 10 notas cobrem do "Zsh vs Bash" até "escrevendo seu plugin OMZ". A ordem é
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **10 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Terminal/Shell/` e `03-Dominios/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 4 Adepto + 2 Magus).
+Produzir, em uma sessão de execução dedicada, **10 notas atômicas + 1 MOC do galho + expansão do Dicionário do Terminal** em `03-Dominios/Tecnologia/Terminal/Shell/` e `03-Dominios/Tecnologia/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (4 Iniciado + 4 Adepto + 2 Magus).
 
 A trilha precisa ser:
 
@@ -34,10 +34,10 @@ A trilha precisa ser:
 ### Em escopo
 
 - 11 arquivos markdown:
-  - 10 notas em `03-Dominios/Terminal/Shell/`
-  - 1 MOC do galho em `03-Dominios/Terminal/Shell/index.md`
-- Expansão do `03-Dominios/Terminal/Dicionário do Terminal.md` com **≥30 verbetes novos** (bloco "Shell / Zsh / OMZ"); verbetes existentes "Keymap" e "Plugin" expandidos com sub-definições Zsh
-- Atualização do tronco `03-Dominios/Terminal/index.md` ativando o wikilink do Shell
+  - 10 notas em `03-Dominios/Tecnologia/Terminal/Shell/`
+  - 1 MOC do galho em `03-Dominios/Tecnologia/Terminal/Shell/index.md`
+- Expansão do `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` com **≥30 verbetes novos** (bloco "Shell / Zsh / OMZ"); verbetes existentes "Keymap" e "Plugin" expandidos com sub-definições Zsh
+- Atualização do tronco `03-Dominios/Tecnologia/Terminal/index.md` ativando o wikilink do Shell
 - Todos os arquivos com `publish: true`
 - Idioma: PT-BR; termos técnicos em inglês mantidos; cada nota tem seção "Em inglês" com 5-10 termos PT→EN
 - Pesquisa baseada em fontes primárias verificadas (links concretos no spec)
@@ -80,7 +80,7 @@ Dev individual operando shell interativo no setup OMZ + P10k. Comandos do dia-a-
 
 ### MOC do galho
 
-Arquivo: `03-Dominios/Terminal/Shell/index.md` (mesmo padrão do MOC do Editor).
+Arquivo: `03-Dominios/Tecnologia/Terminal/Shell/index.md` (mesmo padrão do MOC do Editor).
 
 Estrutura:
 
@@ -117,7 +117,7 @@ Estrutura:
 
 ## Veja também
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ```
 
 ### Fase Iniciado (4 notas)
@@ -432,7 +432,7 @@ Estrutura do corpo:
 
 ### Localização e estrutura
 
-**Caminho:** `03-Dominios/Terminal/Dicionário do Terminal.md` (já existe; criado no galho 1).
+**Caminho:** `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (já existe; criado no galho 1).
 
 **Estrutura:** verbetes organizados por bloco temático. Cada verbete é `### <Termo>` dentro de um `## <Bloco>`. Verbetes em ordem alfabética dentro de cada bloco. Inserção do bloco novo "Shell / Zsh / OMZ" **após** o último bloco atual ("Avançado"), preservando estabilidade dos verbetes já linkados.
 
@@ -551,7 +551,7 @@ Além da sequência 01→10, o MOC oferece 3 rotas curtas pra entradas focadas:
 
 O galho está pronto quando:
 
-1. **11 arquivos** existem em `03-Dominios/Terminal/Shell/`: 10 notas atômicas + 1 MOC do galho.
+1. **11 arquivos** existem em `03-Dominios/Tecnologia/Terminal/Shell/`: 10 notas atômicas + 1 MOC do galho.
 2. **Dicionário do Terminal** ganha **≥30 verbetes novos** no bloco "Shell / Zsh / OMZ"; verbete "Keymap" expandido com sub-sessões Neovim/Zsh sem quebrar wikilinks existentes; verbete novo "Plugin (OMZ)" criado standalone.
 3. **Todos os arquivos** com `publish: true`, `fase` declarada (notas) ou `type: moc` (MOC), tags consistentes (`terminal`, `shell`, `zsh`, `<fase>`).
 4. **MOC do galho** tem:
@@ -571,10 +571,10 @@ O galho está pronto quando:
    - PT-BR natural; termos técnicos em inglês mantidos
    - Paths generalizados (`~/...`, sem `/home/josenaldo/...`)
    - **Zero atribuição de experiência pessoal fabricada** ao autor
-6. **Tronco** `03-Dominios/Terminal/index.md` atualizado: bullet do Shell vira wikilink ativo `[[03-Dominios/Terminal/Shell/index|Shell]]`.
+6. **Tronco** `03-Dominios/Tecnologia/Terminal/index.md` atualizado: bullet do Shell vira wikilink ativo `[[03-Dominios/Tecnologia/Terminal/Shell/index|Shell]]`.
 7. **Quartz publica** corretamente em josenaldo.github.io (rodar build local antes do close).
 8. **Pelo menos 4 notas** com config/comando testado localmente (rodar snippet no shell e validar output esperado).
-9. **`verificar-wikilinks`** passa em `03-Dominios/Terminal/Shell/` sem broken links.
+9. **`verificar-wikilinks`** passa em `03-Dominios/Tecnologia/Terminal/Shell/` sem broken links.
 10. **Commits sem `Co-Authored-By: Claude`**, sem `--no-verify`.
 
 ## 13. Riscos e mitigações
@@ -619,6 +619,6 @@ Execução com `superpowers:subagent-driven-development`. **Sequential** (dicion
 - `2026-05-19-terminal-editor-design.md` — spec do galho 1, formato e rubrica de referência
 - `2026-05-19-terminal-editor-execution.md` — plano de execução do galho 1 (~21 tasks, proven)
 - Plano de execução (criado a seguir): `2026-05-19-terminal-shell-execution.md`
-- Tronco: `03-Dominios/Terminal/index.md`
-- Dicionário a expandir: `03-Dominios/Terminal/Dicionário do Terminal.md`
-- Pasta a criar: `03-Dominios/Terminal/Shell/`
+- Tronco: `03-Dominios/Tecnologia/Terminal/index.md`
+- Dicionário a expandir: `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`
+- Pasta a criar: `03-Dominios/Tecnologia/Terminal/Shell/`

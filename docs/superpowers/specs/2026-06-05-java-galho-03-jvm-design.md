@@ -27,7 +27,7 @@ Galho 3 é o **dono dos conceitos de runtime/JVM** da trilha: memória de runtim
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada **direto na `main`** (sem branch dedicada — ver [[feedback_galhos_direto_main]]), **14 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda da seção JVM do tronco**, em `03-Dominios/Java/JVM/` e `03-Dominios/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 5 Adepto + 4 Magus).
+Produzir, em uma sessão de execução dedicada **direto na `main`** (sem branch dedicada — ver [[feedback_galhos_direto_main]]), **14 notas atômicas + 1 MOC do galho + expansão do Dicionário de Java + ativação do MOC central + poda da seção JVM do tronco**, em `03-Dominios/Tecnologia/Java/JVM/` e `03-Dominios/Tecnologia/Java/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (5 Iniciado + 5 Adepto + 4 Magus).
 
 Ao terminar o galho, o leitor deve conseguir:
 
@@ -40,7 +40,7 @@ A barra é "operar, diagnosticar e decidir sobre a JVM em produção e defender 
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Java/JVM/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Java/JVM/`)
 
 Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório — Quartz folder-link). Numeração global por galho (não reinicia por fase). Tag de galho: `jvm`.
 
@@ -49,7 +49,7 @@ Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório — Quartz fold
 | # | Nota | Escopo nuclear |
 |---|------|----------------|
 | 01 | A JVM — o que é e o pipeline de execução | JVM vs JRE vs JDK; "write once, run anywhere"; pipeline `javac` → bytecode → classload → verify → interpret → JIT; HotSpot como implementação de referência; outras implementações (OpenJ9, GraalVM — menção). Porta de entrada do galho. |
-| 02 | Áreas de memória de runtime | Heap (Young: Eden/S0/S1; Old/Tenured; humongous objects no G1), Metaspace (Java 8+, vs PermGen), stack por thread (frames, variáveis locais, operandos), PC register, native method stack, code cache. Mapa de erros por área: variantes de `OutOfMemoryError` (heap, metaspace, native) vs `StackOverflowError`. **Fronteira:** visibilidade entre threads → linka [[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade\|Java Memory Model]], sem re-explicar happens-before. |
+| 02 | Áreas de memória de runtime | Heap (Young: Eden/S0/S1; Old/Tenured; humongous objects no G1), Metaspace (Java 8+, vs PermGen), stack por thread (frames, variáveis locais, operandos), PC register, native method stack, code cache. Mapa de erros por área: variantes de `OutOfMemoryError` (heap, metaspace, native) vs `StackOverflowError`. **Fronteira:** visibilidade entre threads → linka [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade\|Java Memory Model]], sem re-explicar happens-before. |
 | 03 | Garbage Collection — o conceito | O que é coleta de lixo (reachability, GC roots), weak generational hypothesis, minor/major/mixed collections, stop-the-world e safepoints, por que não chamar `System.gc()`; soft/weak/phantom references em visão geral. Conceito **sem** catálogo de coletores (vai na 06). |
 | 04 | Bytecode por dentro — anatomia e javap | Anatomia do `.class` (magic number, constant pool, métodos, atributos), JVM stack-based vs register-based, instruções principais (`iload`/`istore`/`iadd`/`invokevirtual`/`invokestatic`/`invokedynamic`), inspeção com `javap -c -v`. `invokedynamic` cita lambdas → linka Galho 2 ([[04 - Lambdas e interfaces funcionais]]), sem re-explicar. |
 | 05 | Classloading e o delegation model | Fases: loading → linking (verification, preparation, resolution) → initialization; hierarquia Bootstrap → Platform → Application; parent delegation e por que existe (proteger classes core); custom classloaders (app servers, plugins, hot reload); `ClassNotFoundException` vs `NoClassDefFoundError`. |
@@ -71,11 +71,11 @@ Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório — Quartz fold
 | 11 | Tuning de GC — metodologia e prática *(opus)* | O triângulo latency/throughput/footprint (escolha 2); metodologia disciplinada (baseline → meta explícita → mudar UMA flag → medir → repetir); tuning de G1 (`MaxGCPauseMillis`, `G1HeapRegionSize`, `InitiatingHeapOccupancyPercent`); tuning de ZGC (heap, `SoftMaxHeapSize`); quando **trocar** de coletor em vez de tunar; quando o problema **não é** GC (alocação excessiva, leak); anti-patterns (cargo cult flags copiadas de blog, tunar sem baseline, otimizar pausa que ninguém sente). |
 | 12 | Diagnóstico — heap dumps, thread dumps e jcmd | `jcmd` como ferramenta canônica (`GC.heap_dump`, `Thread.print`, `VM.flags`, `GC.heap_info`, `VM.native_memory`); `jstat`/`jmap`/`jstack` (legado vivo); heap dump (`-XX:+HeapDumpOnOutOfMemoryError`, análise com Eclipse MAT: dominator tree, leak suspects, anatomia de um memory leak típico — cache sem bound, listener não removido); thread dumps (estados, deadlock detection); NMT (Native Memory Tracking). |
 | 13 | JFR e JMC — observabilidade de produção | Java Flight Recorder: arquitetura de events, overhead baixo (~1%) que permite sempre-ligado em produção; OSS desde Java 11 (JEP 328 — confirmar); gravação via flags e `jcmd JFR.start/dump/stop`; análise no JDK Mission Control (JMC — projeto separado); JFR Event Streaming (JEP 349, Java 14); custom events (API `jdk.jfr`). Posicionamento vs profilers e vs APM. |
-| 14 | Performance da JVM — síntese *(capstone, opus)* | Decision tree de coletor (consolidando 06/10/11); o eixo startup vs warmup vs peak performance; CDS/AppCDS e o caminho AOT (Project Leyden — JEP 483 Java 24, e JEPs subsequentes — confirmar status atual via WebFetch, hedge no que for preview); checklist de troubleshooting (OOM por área, latência alta, CPU alto); cheatsheet "qual nota pra qual problema". Cita o impacto de Virtual Threads na JVM (stacks no heap, carrier threads) → **linka** [[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom\|Virtual Threads]], não re-explica Loom. Liga o galho inteiro. |
+| 14 | Performance da JVM — síntese *(capstone, opus)* | Decision tree de coletor (consolidando 06/10/11); o eixo startup vs warmup vs peak performance; CDS/AppCDS e o caminho AOT (Project Leyden — JEP 483 Java 24, e JEPs subsequentes — confirmar status atual via WebFetch, hedge no que for preview); checklist de troubleshooting (OOM por área, latência alta, CPU alto); cheatsheet "qual nota pra qual problema". Cita o impacto de Virtual Threads na JVM (stacks no heap, carrier threads) → **linka** [[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom\|Virtual Threads]], não re-explica Loom. Liga o galho inteiro. |
 
 **Decisões de fronteira (escopo NÃO coberto aqui ou de outro dono):**
 
-- **Java Memory Model (happens-before, volatile, visibilidade, publicação segura)** → **Galho 4 é dono** (nota 11). Galho 3 é dono do *memory model de runtime* (layout de memória, alocação, GC). Notas 02/03 linkam `[[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]` ao tocar visibilidade — **sem re-explicar**.
+- **Java Memory Model (happens-before, volatile, visibilidade, publicação segura)** → **Galho 4 é dono** (nota 11). Galho 3 é dono do *memory model de runtime* (layout de memória, alocação, GC). Notas 02/03 linkam `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]` ao tocar visibilidade — **sem re-explicar**.
 - **Virtual Threads / carrier threads / pinning / structured concurrency** → **Galho 4 é dono** (nota 12). Galho 3 pode citar impacto na JVM (nota 14); **linka, não re-explica**. A sub `### Project Loom e Virtual Threads` do tronco morre na poda (já era só um ponteiro).
 - **Lambdas e `invokedynamic` como API** → Galho 2 (nota 04). A nota 04 deste galho explica a *instrução* `invokedynamic` e linka pra lá no uso em lambdas.
 - **Boxing/alocação em streams** → Galho 2 (nota 09). A nota 07 (escape analysis) linka.
@@ -86,7 +86,7 @@ Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório — Quartz fold
 
 ### 3.2. MOC do galho
 
-`03-Dominios/Java/JVM/index.md`:
+`03-Dominios/Tecnologia/Java/JVM/index.md`:
 - `type: moc`, `status: growing`
 - Frontmatter padrão (`title: "JVM por dentro"`, tags `java`/`jvm`/`moc`, aliases `["JVM", "Galho 3 - JVM por dentro"]`)
 - TL;DR callout (galho cobre memória de runtime, GC, JIT, classloading, bytecode, JPMS, diagnóstico/JFR e performance)
@@ -98,12 +98,12 @@ Pasta **nova**, flat. 14 notas + 1 MOC (`index.md`, obrigatório — Quartz fold
   - **Sobrevivência em produção** — 09 → 10 → 12 → 13 → 11 (flags/containers, ler logs, diagnosticar, JFR, tunar)
   - **Por dentro do runtime** — 04 → 05 → 07 → 08 (bytecode, classloading, JIT, módulos)
   - **Tuning de memória e GC** — 02 → 03 → 06 → 10 → 11 (áreas, conceito, coletores, logs, tuning)
-- "Veja também": MOC central `[[03-Dominios/Java/index|Trilha Java]]`, Galho 1 (Linguagem), Galho 2 (Collections/Streams), Galho 4 (Concorrência), Dicionário de Java, tronco `[[Java Fundamentals]]` (em transição)
+- "Veja também": MOC central `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]`, Galho 1 (Linguagem), Galho 2 (Collections/Streams), Galho 4 (Concorrência), Dicionário de Java, tronco `[[Java Fundamentals]]` (em transição)
 - Dataview "Todas as notas do galho"
 
 ### 3.3. Dicionário de Java (EXPANSÃO — não recriar)
 
-`03-Dominios/Java/Dicionário de Java.md` já existe (criado no Galho 1, expandido nos Galhos 2/4/5, `type: glossary`, seções alfabéticas). Este galho **expande** o arquivo inserindo os verbetes de JVM/GC/JIT/JPMS **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas se necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated:`.
+`03-Dominios/Tecnologia/Java/Dicionário de Java.md` já existe (criado no Galho 1, expandido nos Galhos 2/4/5, `type: glossary`, seções alfabéticas). Este galho **expande** o arquivo inserindo os verbetes de JVM/GC/JIT/JPMS **em ordem alfabética case-insensitive (sem acento)** nas seções apropriadas, criando seções novas se necessário. **Nunca recriar o arquivo nem reordenar verbetes existentes.** Atualizar `updated:`.
 
 Verbetes a inserir (~24-28, lista de referência — ajustar na execução conforme as âncoras reais das notas):
 
@@ -113,10 +113,10 @@ Cada verbete: definição curta (1-3 linhas) em PT-BR + `Veja também:` apontand
 
 ### 3.4. MOC central (ativação do Galho 3)
 
-`03-Dominios/Java/index.md` já existe. Task **mínima**: trocar a **linha 27** (atualmente `3. JVM por dentro *(planejado)* — memory model, GC (G1/ZGC), JIT, classloading, bytecode, módulos (JPMS), tuning`) por um wikilink ativo no padrão das linhas 25/26/28/32:
+`03-Dominios/Tecnologia/Java/index.md` já existe. Task **mínima**: trocar a **linha 27** (atualmente `3. JVM por dentro *(planejado)* — memory model, GC (G1/ZGC), JIT, classloading, bytecode, módulos (JPMS), tuning`) por um wikilink ativo no padrão das linhas 25/26/28/32:
 
 ```markdown
-3. [[03-Dominios/Java/JVM/index|JVM por dentro]] — memória de runtime, GC (G1/ZGC/Shenandoah), JIT e tiered compilation, classloading, bytecode, módulos (JPMS), diagnóstico (JFR/jcmd) e tuning
+3. [[03-Dominios/Tecnologia/Java/JVM/index|JVM por dentro]] — memória de runtime, GC (G1/ZGC/Shenandoah), JIT e tiered compilation, classloading, bytecode, módulos (JPMS), diagnóstico (JFR/jcmd) e tuning
 ```
 
 Atualizar `updated:`. Não mexer no resto do MOC central. (Reconfirmar o número da linha na execução — editar por conteúdo.)
@@ -129,7 +129,7 @@ Atualizar `updated:`. Não mexer no resto do MOC central. (Reconfirmar o número
 ## JVM (Java Virtual Machine)
 
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/JVM/index|JVM por dentro]]. Veja [[01 - A JVM — o que é e o pipeline de execução]], [[02 - Áreas de memória de runtime]], [[03 - Garbage Collection — o conceito]], [[06 - Os coletores do HotSpot]], [[07 - JIT — C1, C2 e tiered compilation]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/JVM/index|JVM por dentro]]. Veja [[01 - A JVM — o que é e o pipeline de execução]], [[02 - Áreas de memória de runtime]], [[03 - Garbage Collection — o conceito]], [[06 - Os coletores do HotSpot]], [[07 - JIT — C1, C2 e tiered compilation]].
 ```
 
 A poda absorve **todas** as subseções (`### Pipeline de compilação e execução`, `### Bytecode — uma olhada`, `### Memory areas`, `### Garbage Collection`, `### Como escolher GC`, `### JIT Compiler`, `### Classloader`, `### Project Loom e Virtual Threads` — esta última já era só ponteiro pro Galho 4 e morre sem substituição própria).
@@ -153,10 +153,10 @@ Após a poda deste galho, o tronco fica: intro + ~17 callouts de migração + `#
 ### 3.7. Reciprocidade de links (Galho 3 ↔ vizinhos)
 
 As notas do Galho 3 que tocam fronteira linkam os donos (mão dupla; os galhos vizinhos já fecharam, então não há dívida de linkback a quitar — só links de ida):
-- Notas 02, 03 → `[[03-Dominios/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]`.
-- Nota 14 → `[[03-Dominios/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads]]` (confirmar título exato da nota na execução).
-- Nota 04 → `[[03-Dominios/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas]]` (invokedynamic).
-- Nota 07 → `[[03-Dominios/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]]` (boxing/alocação).
+- Notas 02, 03 → `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/11 - Java Memory Model em profundidade|Java Memory Model]]`.
+- Nota 14 → `[[03-Dominios/Tecnologia/Java/Concorrência e paralelismo/12 - Virtual Threads e Project Loom|Virtual Threads]]` (confirmar título exato da nota na execução).
+- Nota 04 → `[[03-Dominios/Tecnologia/Java/Collections e Streams/04 - Lambdas e interfaces funcionais|Lambdas]]` (invokedynamic).
+- Nota 07 → `[[03-Dominios/Tecnologia/Java/Collections e Streams/09 - Streams primitivos|Streams primitivos]]` (boxing/alocação).
 
 Dívida de linkback REVERSA a verificar na execução: os Galhos 1/2/4 podem ter texto "Galho 3 (JVM), planejado" esperando virar wikilink (o Galho 2 cravou esse padrão em §3.1 do spec dele). **Grep por "Galho 3" nas pastas dos galhos fechados** e quitar o que for ponteiro textual → wikilink pra nota real correspondente.
 
@@ -193,7 +193,7 @@ aliases:
 - `## Na prática` — exemplos compiláveis/executáveis (código Java, comandos `java`/`jcmd`/`javap` com output realista em ` ```text `); framing neutro ("padrão observado em serviços enterprise", "caso típico de JVM containerizada"); NUNCA "no meu projeto"
 - `## Armadilhas` — **≥2** (Iniciado) / **≥3** (Adepto/Magus), cada uma com descrição + exemplo curto demonstrando o problema + fix em 1 linha
 - `## Em entrevista` — subheading `### Frase pronta (inglês)` com frase de **3+ sentenças** (trade-off + decisão + caveat) + vocabulário **6+ termos PT→EN**
-- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Java/JVM/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + (quando o conceito conectar) Galhos 1/2/4 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
+- `## Veja também` — wikilinks **SEM backticks**; sempre inclui notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/JVM/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + (quando o conceito conectar) Galhos 1/2/4 + verbetes do Dicionário. **Evitar âncoras same-file `[[#Heading]]`** (falso-positivo no checker).
 - `## Referências` — docs oficiais (Oracle JVM Guide/GC Tuning Guide, Javadoc, dev.java), JEPs quando relevantes (openjdk.org costuma dar 403 no WebFetch — citar como referência é ok, verificar conteúdo via fallback Oracle/dev.java).
 
 ### 4.3. Restrições absolutas
@@ -243,7 +243,7 @@ Quando faltar fato verificável, **PERGUNTAR** antes de escrever.
 
 Além dos critérios gerais (§10 do roadmap):
 
-1. 14 notas em `03-Dominios/Java/JVM/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/5/4.
+1. 14 notas em `03-Dominios/Tecnologia/Java/JVM/`, frontmatter completo com `fase:`, `publish: true`, distribuídas 5/5/4.
 2. MOC do galho com 3 subseções de fase + 5 rotas alternativas + dataview + folder-link resolve (`index.md` presente).
 3. Dicionário de Java **expandido** (não recriado) com ~24-28 verbetes em ordem alfabética; verbetes dos Galhos 1/2/4/5 intactos; `updated` atualizado; headings dos verbetes conferidos 1:1 com as âncoras usadas nas notas; sem duplicar verbetes pré-existentes.
 4. MOC central `Java/index.md` com Galho 3 ativado (linha do item 3 vira wikilink); resto intacto.
@@ -285,7 +285,7 @@ Além dos critérios gerais (§10 do roadmap):
 - `2026-06-04-java-galho-02-collections-streams-design.md` / `...-execution.md` — Galho 2 (refator de tronco — template direto deste)
 - `2026-06-03-java-galho-04-concorrencia-design.md` / `...-execution.md` — Galho 4 (dono do JMM e de Virtual Threads)
 - `2026-06-03-java-galho-05-swing-design.md` / `...-execution.md` — Galho 5
-- Tronco a podar: `03-Dominios/Java/Core/Java Fundamentals.md` (seção JVM)
-- Artefatos a atualizar: `03-Dominios/Java/Dicionário de Java.md`, `03-Dominios/Java/index.md`, notas dos galhos 1/2/4/5 com ponteiro textual "Galho 3"
+- Tronco a podar: `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` (seção JVM)
+- Artefatos a atualizar: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`, `03-Dominios/Tecnologia/Java/index.md`, notas dos galhos 1/2/4/5 com ponteiro textual "Galho 3"
 - Fontes-base: Oracle JVM Guide + GC Tuning Guide, dev.java, Javadoc (`jdk.jfr`), JEPs 158, 248, 261, 318, 328, 349, 363, 377, 379, 404, 439, 483, 490 (openjdk.org 403 → fallback)
 - Memórias: [[project_trilha_java]], [[project_trilhas_fases_aprendizado]], [[project_tronco_galhos_pattern]], [[feedback_no_fabrication]], [[feedback_quartz_index]], [[feedback_commits]], [[feedback_galhos_direto_main]], [[feedback_notas_atomicas]]

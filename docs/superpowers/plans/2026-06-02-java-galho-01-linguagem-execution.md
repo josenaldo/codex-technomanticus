@@ -4,7 +4,7 @@
 
 **Goal:** Criar o Galho 1 da trilha Java Senior — 15 notas atômicas de linguagem em 3 fases + MOC do galho + Dicionário de Java + reescrita do MOC central + poda parcial do tronco `Java Fundamentals`.
 
-**Architecture:** Padrão tronco/galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Java/Linguagem e sintaxe moderna/`, notas atômicas `publish: true` em PT-BR, numeração global 01-15. Cada nota refatora/expande material do tronco `Core/Java Fundamentals.md` (matéria-prima, não cópia 1:1); features version-specific verificadas via doc oficial/JEP. Ao fim, o tronco é podado (só a camada de linguagem) e a fabricação higienizada.
+**Architecture:** Padrão tronco/galhos + 3 fases (Iniciado/Adepto/Magus). Pasta flat `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/`, notas atômicas `publish: true` em PT-BR, numeração global 01-15. Cada nota refatora/expande material do tronco `Core/Java Fundamentals.md` (matéria-prima, não cópia 1:1); features version-specific verificadas via doc oficial/JEP. Ao fim, o tronco é podado (só a camada de linguagem) e a fabricação higienizada.
 
 **Tech Stack:** Obsidian Flavored Markdown, frontmatter YAML, wikilinks, callouts, Dataview, Quartz v4 (publicação). Verificação de fonte via WebFetch (dev.java, docs.oracle.com, openjdk.org/jeps).
 
@@ -43,7 +43,7 @@ aliases:
 5. `## Na prática` — exemplos compiláveis, framing neutro ("padrão observado no JDK/Spring", hipotético explícito `// hipotético:`). NUNCA "no meu projeto".
 6. `## Armadilhas` — ≥2 (Iniciado) / ≥3 (Adepto/Magus). Cada armadilha: `### (N) Título` + descrição + exemplo curto de código demonstrando o problema + fix em 1 linha.
 7. `## Em entrevista` — frase pronta em inglês com **3+ sentenças** (trade-off + decisão + caveat) + sub-bloco "Vocabulário" com **6+ termos PT→EN** traduzidos.
-8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|MOC do galho]]` + `[[03-Dominios/Java/index|Trilha Java]]` + `[[Java Fundamentals]]` (tronco) + verbetes do Dicionário relevantes.
+8. `## Veja também` — wikilinks SEM backticks. Sempre inclui: notas relacionadas do galho + `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|MOC do galho]]` + `[[03-Dominios/Tecnologia/Java/index|Trilha Java]]` + `[[Java Fundamentals]]` (tronco) + verbetes do Dicionário relevantes.
 9. `## Referências` — docs oficiais + JEPs.
 
 **Tamanho:** 200-500 linhas (notas Magus densas até 700).
@@ -56,25 +56,25 @@ aliases:
 - Code fences: ` ```java ` pra código, ` ```text ` pra output/bytecode/erro. Sempre fechadas.
 - Commits: sem `Co-Authored-By: Claude`; sem `--no-verify`; `git add <path>` nominal (nunca `git add -A`); 1 commit por nota.
 
-**Material de origem:** `03-Dominios/Java/Core/Java Fundamentals.md` (ler a seção indicada em cada task como matéria-prima; expandir, não copiar). Spec de referência: `docs/superpowers/specs/2026-06-02-java-galho-01-linguagem-design.md` §5.
+**Material de origem:** `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` (ler a seção indicada em cada task como matéria-prima; expandir, não copiar). Spec de referência: `docs/superpowers/specs/2026-06-02-java-galho-01-linguagem-design.md` §5.
 
 ---
 
 ## Task 0: Pré-flight — pasta, versões e leitura do tronco
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/` (pasta)
-- Read: `03-Dominios/Java/Core/Java Fundamentals.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/` (pasta)
+- Read: `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md`
 
 - [ ] **Step 1: Criar a pasta do galho**
 
 ```bash
-mkdir -p "03-Dominios/Java/Linguagem e sintaxe moderna"
+mkdir -p "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna"
 ```
 
 - [ ] **Step 2: Ler o tronco e confirmar headings reais**
 
-Ler `03-Dominios/Java/Core/Java Fundamentals.md` inteiro. Anotar os números de linha REAIS das seções a podar (podem ter divergido do spec): "Sintaxe básica e tipos", "Estruturas de controle", "Strings", "Arrays", "OOP em Java", "Records", "Sealed Classes", "Pattern Matching", "Annotations", "Generics", "Exceções", "Features modernas por versão", e a seção "Na prática (da minha experiência)".
+Ler `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md` inteiro. Anotar os números de linha REAIS das seções a podar (podem ter divergido do spec): "Sintaxe básica e tipos", "Estruturas de controle", "Strings", "Arrays", "OOP em Java", "Records", "Sealed Classes", "Pattern Matching", "Annotations", "Generics", "Exceções", "Features modernas por versão", e a seção "Na prática (da minha experiência)".
 
 - [ ] **Step 3: Fixar versões assumidas do galho**
 
@@ -89,7 +89,7 @@ Baseline: **Java 21 LTS** e **Java 25 LTS** (2025). Mencionar Java 17 LTS quando
 ### Task 1: Nota 01 — O modelo da linguagem Java
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -107,7 +107,7 @@ Conteúdo (matéria-prima: tronco "## O que é" + intro de "JVM" no nível menta
 - `### Releases e LTS` — modelo 6-em-6-meses + LTS (8/11/17/21/25); o que "LTS" significa pra empresas.
 - `## Armadilhas` — ≥2: (1) confundir versão da linguagem com versão da JVM; (2) achar que "compilado" = nativo (é bytecode + JIT).
 - `## Em entrevista` — frase 3+ sentenças sobre WORA/bytecode/JIT trade-off; vocabulário 6+ termos.
-- `## Veja também` — 02, 03, 15, MOC galho, MOC central, tronco, `[[03-Dominios/Java/Core/Helsinki MOOC - Guia de Revisão|Helsinki MOOC]]`, verbetes `bytecode`/`WORA`/`LTS`.
+- `## Veja também` — 02, 03, 15, MOC galho, MOC central, tronco, `[[03-Dominios/Tecnologia/Java/Core/Helsinki MOOC - Guia de Revisão|Helsinki MOOC]]`, verbetes `bytecode`/`WORA`/`LTS`.
 - `## Referências` — dev.java, docs Oracle.
 
 Tamanho: 200-320 linhas (nota de abertura, pode ser mais conceitual).
@@ -115,15 +115,15 @@ Tamanho: 200-320 linhas (nota de abertura, pode ser mais conceitual).
 - [ ] **Step 3: Verificar a nota**
 
 ```bash
-head -20 "03-Dominios/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md"
-grep -cE "^## (O que é|Como funciona|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md"
+head -20 "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md"
+grep -cE "^## (O que é|Como funciona|Armadilhas|Em entrevista|Veja também|Referências)" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md"
 ```
 Expected: frontmatter com `fase: iniciado`; grep retorna ≥6.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/01 - O modelo da linguagem Java.md"
 git commit -m "feat(java): galho 1 nota 01 — o modelo da linguagem Java"
 ```
 
@@ -132,7 +132,7 @@ git commit -m "feat(java): galho 1 nota 01 — o modelo da linguagem Java"
 ### Task 2: Nota 02 — Tipos, variáveis e operadores
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -154,15 +154,15 @@ Tamanho: 250-380 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "^fase: iniciado" "03-Dominios/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md"
-grep -cE "^### \(" "03-Dominios/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md"
+grep -E "^fase: iniciado" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md"
+grep -cE "^### \(" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md"
 ```
 Expected: `fase: iniciado` presente; ≥2 armadilhas numeradas.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/02 - Tipos, variáveis e operadores.md"
 git commit -m "feat(java): galho 1 nota 02 — tipos, variáveis e operadores"
 ```
 
@@ -171,7 +171,7 @@ git commit -m "feat(java): galho 1 nota 02 — tipos, variáveis e operadores"
 ### Task 3: Nota 03 — Estruturas de controle e fluxo
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -192,14 +192,14 @@ Tamanho: 220-350 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "switch expression|->|yield" "03-Dominios/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo.md" | head
+grep -E "switch expression|->|yield" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo.md" | head
 ```
 Expected: cobre switch expression.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/03 - Estruturas de controle e fluxo.md"
 git commit -m "feat(java): galho 1 nota 03 — estruturas de controle e fluxo"
 ```
 
@@ -208,7 +208,7 @@ git commit -m "feat(java): galho 1 nota 03 — estruturas de controle e fluxo"
 ### Task 4: Nota 04 — Strings e text blocks
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -229,13 +229,13 @@ Tamanho: 250-380 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "text block|String pool|StringBuilder" "03-Dominios/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks.md" | head
+grep -E "text block|String pool|StringBuilder" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/04 - Strings e text blocks.md"
 git commit -m "feat(java): galho 1 nota 04 — strings e text blocks"
 ```
 
@@ -244,7 +244,7 @@ git commit -m "feat(java): galho 1 nota 04 — strings e text blocks"
 ### Task 5: Nota 05 — Arrays e varargs
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -264,13 +264,13 @@ Tamanho: 200-320 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "varargs|heap pollution|SafeVarargs" "03-Dominios/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs.md" | head
+grep -E "varargs|heap pollution|SafeVarargs" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/05 - Arrays e varargs.md"
 git commit -m "feat(java): galho 1 nota 05 — arrays e varargs"
 ```
 
@@ -281,7 +281,7 @@ git commit -m "feat(java): galho 1 nota 05 — arrays e varargs"
 ### Task 6: Nota 06 — Classes, objetos e encapsulamento
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -302,15 +302,15 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "^fase: adepto" "03-Dominios/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md"
-grep -cE "^### \([0-9]" "03-Dominios/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md"
+grep -E "^fase: adepto" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md"
+grep -cE "^### \([0-9]" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md"
 ```
 Expected: `fase: adepto`; ≥3 armadilhas.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/06 - Classes, objetos e encapsulamento.md"
 git commit -m "feat(java): galho 1 nota 06 — classes, objetos e encapsulamento"
 ```
 
@@ -319,7 +319,7 @@ git commit -m "feat(java): galho 1 nota 06 — classes, objetos e encapsulamento
 ### Task 7: Nota 07 — Herança e polimorfismo
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/07 - Herança e polimorfismo.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/07 - Herança e polimorfismo.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -340,13 +340,13 @@ Tamanho: 320-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "overriding|overloading|equals|hashCode" "03-Dominios/Java/Linguagem e sintaxe moderna/07 - Herança e polimorfismo.md" | head
+grep -E "overriding|overloading|equals|hashCode" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/07 - Herança e polimorfismo.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/07 - Herança e polimorfismo.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/07 - Herança e polimorfismo.md"
 git commit -m "feat(java): galho 1 nota 07 — herança e polimorfismo"
 ```
 
@@ -355,7 +355,7 @@ git commit -m "feat(java): galho 1 nota 07 — herança e polimorfismo"
 ### Task 8: Nota 08 — Interfaces e classes abstratas
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -376,13 +376,13 @@ Tamanho: 280-420 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "default method|abstract|diamante|diamond" "03-Dominios/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas.md" | head
+grep -E "default method|abstract|diamante|diamond" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/08 - Interfaces e classes abstratas.md"
 git commit -m "feat(java): galho 1 nota 08 — interfaces e classes abstratas"
 ```
 
@@ -391,7 +391,7 @@ git commit -m "feat(java): galho 1 nota 08 — interfaces e classes abstratas"
 ### Task 9: Nota 09 — Enums
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/09 - Enums.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/09 - Enums.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -411,13 +411,13 @@ Tamanho: 260-400 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "EnumMap|EnumSet|ordinal|sealed" "03-Dominios/Java/Linguagem e sintaxe moderna/09 - Enums.md" | head
+grep -E "EnumMap|EnumSet|ordinal|sealed" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/09 - Enums.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/09 - Enums.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/09 - Enums.md"
 git commit -m "feat(java): galho 1 nota 09 — enums"
 ```
 
@@ -426,7 +426,7 @@ git commit -m "feat(java): galho 1 nota 09 — enums"
 ### Task 10: Nota 10 — Exceções e tratamento de erros
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -447,13 +447,13 @@ Tamanho: 320-460 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "checked|unchecked|try-with-resources|AutoCloseable" "03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md" | head
+grep -E "checked|unchecked|try-with-resources|AutoCloseable" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/10 - Exceções e tratamento de erros.md"
 git commit -m "feat(java): galho 1 nota 10 — exceções e tratamento de erros"
 ```
 
@@ -462,7 +462,7 @@ git commit -m "feat(java): galho 1 nota 10 — exceções e tratamento de erros"
 ### Task 11: Nota 11 — Annotations
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/11 - Annotations.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/11 - Annotations.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -482,13 +482,13 @@ Tamanho: 260-400 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "Retention|Target|RUNTIME|FunctionalInterface" "03-Dominios/Java/Linguagem e sintaxe moderna/11 - Annotations.md" | head
+grep -E "Retention|Target|RUNTIME|FunctionalInterface" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/11 - Annotations.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/11 - Annotations.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/11 - Annotations.md"
 git commit -m "feat(java): galho 1 nota 11 — annotations"
 ```
 
@@ -499,7 +499,7 @@ git commit -m "feat(java): galho 1 nota 11 — annotations"
 ### Task 12: Nota 12 — Generics em profundidade
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -520,13 +520,13 @@ Tamanho: 350-520 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "PECS|type erasure|wildcard|reified" "03-Dominios/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade.md" | head
+grep -E "PECS|type erasure|wildcard|reified" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/12 - Generics em profundidade.md"
 git commit -m "feat(java): galho 1 nota 12 — generics em profundidade"
 ```
 
@@ -535,7 +535,7 @@ git commit -m "feat(java): galho 1 nota 12 — generics em profundidade"
 ### Task 13: Nota 13 — Records e record patterns
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/13 - Records e record patterns.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/13 - Records e record patterns.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -556,13 +556,13 @@ Tamanho: 350-520 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "compact constructor|record pattern|imutabilidade" "03-Dominios/Java/Linguagem e sintaxe moderna/13 - Records e record patterns.md" | head
+grep -E "compact constructor|record pattern|imutabilidade" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/13 - Records e record patterns.md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/13 - Records e record patterns.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/13 - Records e record patterns.md"
 git commit -m "feat(java): galho 1 nota 13 — records e record patterns"
 ```
 
@@ -573,7 +573,7 @@ git commit -m "feat(java): galho 1 nota 13 — records e record patterns"
 > **Contingência:** se esta nota passar de ~700 linhas, dividir em `14 - Sealed classes` + `15 - Pattern matching` e renumerar a evolução pra `16` (galho vira 16 notas). Atualizar MOC e numeração das tasks 15+ se isso ocorrer.
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -594,15 +594,15 @@ Tamanho: 400-650 linhas (nota mais densa do galho).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "sealed|permits|switch pattern|exaustiv|guard|when" "03-Dominios/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md" | head
-wc -l "03-Dominios/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md"
+grep -E "sealed|permits|switch pattern|exaustiv|guard|when" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md" | head
+wc -l "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md"
 ```
 Expected: cobre sealed+patterns+exaustividade; se `wc -l` > 700, aplicar contingência de divisão.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/14 - Sealed classes e pattern matching.md"
 git commit -m "feat(java): galho 1 nota 14 — sealed classes e pattern matching"
 ```
 
@@ -611,7 +611,7 @@ git commit -m "feat(java): galho 1 nota 14 — sealed classes e pattern matching
 ### Task 15: Nota 15 — A evolução do Java (8 → 25)
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25).md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25).md`
 
 - [ ] **Step 1: Pesquisar fonte**
 
@@ -634,13 +634,13 @@ Tamanho: 300-450 linhas.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "LTS|preview|enable-preview|virtual threads" "03-Dominios/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25).md" | head
+grep -E "LTS|preview|enable-preview|virtual threads" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25).md" | head
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25).md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/15 - A evolução do Java (8 a 25).md"
 git commit -m "feat(java): galho 1 nota 15 — a evolução do Java (8 a 25)"
 ```
 
@@ -649,7 +649,7 @@ git commit -m "feat(java): galho 1 nota 15 — a evolução do Java (8 a 25)"
 ## Task 16: MOC do galho
 
 **Files:**
-- Create: `03-Dominios/Java/Linguagem e sintaxe moderna/index.md`
+- Create: `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index.md`
 
 - [ ] **Step 1: Escrever o MOC**
 
@@ -667,26 +667,26 @@ Conteúdo:
 ````markdown
 ```dataview
 TABLE fase, status, updated
-FROM "03-Dominios/Java/Linguagem e sintaxe moderna"
+FROM "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna"
 WHERE type = "concept"
 SORT file.name ASC
 ```
 ````
 
-- `## Veja também` — `[[03-Dominios/Java/index|Java (MOC central)]]`, `[[Java Fundamentals]]` (tronco), `[[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]`, `[[03-Dominios/Java/Core/Helsinki MOOC - Guia de Revisão|Helsinki MOOC]]`.
+- `## Veja também` — `[[03-Dominios/Tecnologia/Java/index|Java (MOC central)]]`, `[[Java Fundamentals]]` (tronco), `[[03-Dominios/Tecnologia/Java/Dicionário de Java|Dicionário de Java]]`, `[[03-Dominios/Tecnologia/Java/Core/Helsinki MOOC - Guia de Revisão|Helsinki MOOC]]`.
 
 - [ ] **Step 2: Verificar**
 
 ```bash
-grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Java/Linguagem e sintaxe moderna/index.md"
-grep -c "\[\[" "03-Dominios/Java/Linguagem e sintaxe moderna/index.md"
+grep -cE "^## (Iniciado|Adepto|Magus|Rotas alternativas)" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index.md"
+grep -c "\[\[" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index.md"
 ```
 Expected: 4 headings de seção; ≥15 wikilinks (uma por nota).
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Java/Linguagem e sintaxe moderna/index.md"
+git add "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index.md"
 git commit -m "feat(java): galho 1 MOC — linguagem e sintaxe moderna"
 ```
 
@@ -695,11 +695,11 @@ git commit -m "feat(java): galho 1 MOC — linguagem e sintaxe moderna"
 ## Task 17: Dicionário de Java (criação + semeadura)
 
 **Files:**
-- Create: `03-Dominios/Java/Dicionário de Java.md`
+- Create: `03-Dominios/Tecnologia/Java/Dicionário de Java.md`
 
 - [ ] **Step 1: Inspecionar um glossário existente como template**
 
-Ler `03-Dominios/Terminal/Dicionário do Terminal.md` (primeiras ~40 linhas) pra herdar frontmatter `type: glossary`, estrutura de seções alfabéticas e formato de verbete + `Veja também:`.
+Ler `03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md` (primeiras ~40 linhas) pra herdar frontmatter `type: glossary`, estrutura de seções alfabéticas e formato de verbete + `Veja também:`.
 
 - [ ] **Step 2: Escrever o Dicionário semeado**
 
@@ -713,15 +713,15 @@ Ordenação alfabética case-insensitive, sem acento.
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -E "type: glossary" "03-Dominios/Java/Dicionário de Java.md"
-grep -c "Veja também" "03-Dominios/Java/Dicionário de Java.md"
+grep -E "type: glossary" "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
+grep -c "Veja também" "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 ```
 Expected: `type: glossary`; ≥30 ocorrências de "Veja também".
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/Dicionário de Java.md"
+git add "03-Dominios/Tecnologia/Java/Dicionário de Java.md"
 git commit -m "feat(java): cria Dicionário de Java semeado com verbetes de linguagem"
 ```
 
@@ -730,8 +730,8 @@ git commit -m "feat(java): cria Dicionário de Java semeado com verbetes de ling
 ## Task 18: Reescrever o MOC central `Java/index.md`
 
 **Files:**
-- Modify: `03-Dominios/Java/index.md`
-- Modify: `03-Dominios/Java/Java.md` (nota de deprecação)
+- Modify: `03-Dominios/Tecnologia/Java/index.md`
+- Modify: `03-Dominios/Tecnologia/Java/Java.md` (nota de deprecação)
 
 - [ ] **Step 1: Reescrever `Java/index.md` no estilo Node**
 
@@ -739,9 +739,9 @@ Manter frontmatter `type: moc`, `publish: true`; atualizar `updated: 2026-06-02`
 
 Conteúdo:
 - `> [!abstract] TL;DR` — Trilha Java Senior em 18 galhos (linguagem → JVM → concorrência → desktop → Jakarta EE → Spring → reativa → segurança → testes → mensageria → build → microservices → cloud-native → OCP).
-- `## Galhos da trilha` — lista dos 18 galhos. Galho 1 com wikilink ativo `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]` + descrição; galhos 2-18 como texto "(planejado)" com descrição curta (NÃO criar wikilinks pra pastas inexistentes — quebraria o Quartz; ver [[feedback_quartz_index]]).
-- `## Referência` — `[[03-Dominios/Java/Dicionário de Java|Dicionário de Java]]`, `[[Java Fundamentals]]` (tronco), `[[03-Dominios/Java/Core/Helsinki MOOC - Guia de Revisão|Helsinki MOOC]]`, `[[03-Dominios/Java/Core/Certificação Java OCP|Certificação OCP]]`.
-- `## Veja também` — `[[03-Dominios/JavaScript/index|JavaScript]]`.
+- `## Galhos da trilha` — lista dos 18 galhos. Galho 1 com wikilink ativo `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]` + descrição; galhos 2-18 como texto "(planejado)" com descrição curta (NÃO criar wikilinks pra pastas inexistentes — quebraria o Quartz; ver [[feedback_quartz_index]]).
+- `## Referência` — `[[03-Dominios/Tecnologia/Java/Dicionário de Java|Dicionário de Java]]`, `[[Java Fundamentals]]` (tronco), `[[03-Dominios/Tecnologia/Java/Core/Helsinki MOOC - Guia de Revisão|Helsinki MOOC]]`, `[[03-Dominios/Tecnologia/Java/Core/Certificação Java OCP|Certificação OCP]]`.
+- `## Veja também` — `[[03-Dominios/Tecnologia/JavaScript/index|JavaScript]]`.
 
 - [ ] **Step 2: Adicionar nota de deprecação em `Java/Java.md`**
 
@@ -749,7 +749,7 @@ No topo do corpo (após frontmatter), inserir callout:
 
 ```markdown
 > [!warning] Nota legada
-> Este MOC foi substituído por [[03-Dominios/Java/index|Java (índice central)]], reorganizado na trilha Java Senior de 18 galhos. Mantido por compatibilidade de wikilinks; não atualizar.
+> Este MOC foi substituído por [[03-Dominios/Tecnologia/Java/index|Java (índice central)]], reorganizado na trilha Java Senior de 18 galhos. Mantido por compatibilidade de wikilinks; não atualizar.
 ```
 
 NÃO apagar o arquivo (histórico + wikilinks existentes).
@@ -757,16 +757,16 @@ NÃO apagar o arquivo (histórico + wikilinks existentes).
 - [ ] **Step 3: Verificar**
 
 ```bash
-grep -cE "Galho|galho|planejado" "03-Dominios/Java/index.md"
-grep -E "Linguagem e sintaxe moderna/index" "03-Dominios/Java/index.md"
-grep -E "Nota legada" "03-Dominios/Java/Java.md"
+grep -cE "Galho|galho|planejado" "03-Dominios/Tecnologia/Java/index.md"
+grep -E "Linguagem e sintaxe moderna/index" "03-Dominios/Tecnologia/Java/index.md"
+grep -E "Nota legada" "03-Dominios/Tecnologia/Java/Java.md"
 ```
 Expected: lista dos galhos presente; wikilink ativo do Galho 1; callout de deprecação no Java.md.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "03-Dominios/Java/index.md" "03-Dominios/Java/Java.md"
+git add "03-Dominios/Tecnologia/Java/index.md" "03-Dominios/Tecnologia/Java/Java.md"
 git commit -m "feat(java): reescreve MOC central (trilha de 18 galhos) e deprecia Java.md"
 ```
 
@@ -775,7 +775,7 @@ git commit -m "feat(java): reescreve MOC central (trilha de 18 galhos) e depreci
 ## Task 19: Poda parcial do tronco `Java Fundamentals.md`
 
 **Files:**
-- Modify: `03-Dominios/Java/Core/Java Fundamentals.md`
+- Modify: `03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md`
 
 - [ ] **Step 1: Reler o tronco e confirmar headings (usar notas do Task 0)**
 
@@ -787,7 +787,7 @@ Para CADA uma das seções migradas — "Sintaxe básica e tipos", "Estruturas d
 
 ```markdown
 > [!nota] Migrado para galho próprio
-> Expandido no galho [[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[03-Dominios/Java/Linguagem e sintaxe moderna/<nota canônica do tópico>|<título>]].
+> Expandido no galho [[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna]]. Veja [[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/<nota canônica do tópico>|<título>]].
 ```
 
 (Apontar a nota canônica certa por tópico: tipos→02, controle→03, strings→04, arrays→05, OOP→06/07/08, records→13, sealed/pattern→14, annotations→11, generics→12, exceções→10, features→15.)
@@ -807,20 +807,20 @@ Localizar `## Na prática (da minha experiência)` (≈ linha 1614) e reescrever
 
 - [ ] **Step 5: Atualizar frontmatter e "Veja também"**
 
-`updated: 2026-06-02`. Em "Veja também", adicionar `[[03-Dominios/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (galho)]]`.
+`updated: 2026-06-02`. Em "Veja também", adicionar `[[03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/index|Linguagem e sintaxe moderna (galho)]]`.
 
 - [ ] **Step 6: Verificar**
 
 ```bash
-grep -c "Migrado para galho próprio" "03-Dominios/Java/Core/Java Fundamentals.md"
-grep -iE "da minha experiência|na minha experiência" "03-Dominios/Java/Core/Java Fundamentals.md"
+grep -c "Migrado para galho próprio" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
+grep -iE "da minha experiência|na minha experiência" "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
 ```
 Expected: ≥10 callouts de migração; ZERO ocorrências de "minha experiência".
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add "03-Dominios/Java/Core/Java Fundamentals.md"
+git add "03-Dominios/Tecnologia/Java/Core/Java Fundamentals.md"
 git commit -m "refactor(java): poda parcial de Java Fundamentals (camada de linguagem → galho 1) + higieniza fabricação"
 ```
 
@@ -833,22 +833,22 @@ git commit -m "refactor(java): poda parcial de Java Fundamentals (camada de ling
 - [ ] **Step 1: Conferir as 15 notas + MOC presentes**
 
 ```bash
-ls "03-Dominios/Java/Linguagem e sintaxe moderna/" | sort
+ls "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/" | sort
 ```
 Expected: 01..15 + index.md (16 arquivos .md).
 
 - [ ] **Step 2: Conferir frontmatter `fase` em todas**
 
 ```bash
-grep -rL "^fase:" "03-Dominios/Java/Linguagem e sintaxe moderna/"*" - "*.md 2>/dev/null | grep -v index.md
-for f in "03-Dominios/Java/Linguagem e sintaxe moderna/"[0-9]*.md; do grep -H "^fase:" "$f"; done
+grep -rL "^fase:" "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/"*" - "*.md 2>/dev/null | grep -v index.md
+for f in "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/"[0-9]*.md; do grep -H "^fase:" "$f"; done
 ```
 Expected: toda nota 01-15 tem `fase:`; distribuição 5 iniciado / 6 adepto / 4 magus.
 
 - [ ] **Step 3: Conferir seções obrigatórias em todas as notas**
 
 ```bash
-for f in "03-Dominios/Java/Linguagem e sintaxe moderna/"[0-9]*.md; do
+for f in "03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/"[0-9]*.md; do
   echo "$f: $(grep -cE '^## (Em entrevista|Armadilhas|Veja também)' "$f")"
 done
 ```
@@ -856,7 +856,7 @@ Expected: cada nota retorna 3 (tem "Em entrevista", "Armadilhas", "Veja também"
 
 - [ ] **Step 4: Rodar a skill de wikilinks**
 
-Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Java/Linguagem e sintaxe moderna/` + `03-Dominios/Java/index.md`. Corrigir quebrados (especialmente folder-links que exigem index.md — regra Quartz).
+Invocar a skill `verificar-wikilinks` na pasta `03-Dominios/Tecnologia/Java/Linguagem e sintaxe moderna/` + `03-Dominios/Tecnologia/Java/index.md`. Corrigir quebrados (especialmente folder-links que exigem index.md — regra Quartz).
 
 - [ ] **Step 5: Build Quartz (se disponível no repo do site)**
 

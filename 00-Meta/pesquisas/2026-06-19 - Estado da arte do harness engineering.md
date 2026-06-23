@@ -77,6 +77,6 @@ Em junho de 2026 o campo consolidou o **harness** como uma terceira camada de en
 - simonwillison.net/2025/Nov/4/code-execution-with-mcp/
 
 ## Notas que este dossiê alimentou
-- [[03-Dominios/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada]]
-- [[03-Dominios/IA/Claude Code/Mental Model/09 - O harness como terceira camada]]
+- [[03-Dominios/Tecnologia/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada]]
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/09 - O harness como terceira camada]]
 - (+ enriquecimentos Tier 2 em Evaluation, Agentes de Codificação, MCP, Context Engineering, Improvement Loop)

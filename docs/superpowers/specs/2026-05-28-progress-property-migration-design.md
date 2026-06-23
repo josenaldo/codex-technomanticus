@@ -93,7 +93,7 @@ Cutover completo. Sem alias `progresso` na transição. Notas, skills e dashboar
 ### Apocrypha (`codex-technomanticus-apocrypha`)
 
 - **21 notas** com frontmatter `progresso:` (20 `pendente`, 1 `andamento`); 15 delas em `03-Dominios/Ingles/Lucy/` (lessons e workbooks)
-- **GCA**: 36 notas em `03-Dominios/Inglês/GCA/` cobrindo tipos consumíveis (`community-*`, `lesson*`, `mock-interview*`) — nenhuma tem `progresso:` hoje; todas recebem `progress: backlog` (regra "Lucy + GCA seguem o mesmo esquema" confirmada pelo usuário)
+- **GCA**: 36 notas em `03-Dominios/Carreira/Inglês/GCA/` cobrindo tipos consumíveis (`community-*`, `lesson*`, `mock-interview*`) — nenhuma tem `progresso:` hoje; todas recebem `progress: backlog` (regra "Lucy + GCA seguem o mesmo esquema" confirmada pelo usuário)
 - 4 notas raiz do GCA são não consumíveis (`index.md` trail-index, `Roadmap.md` roadmap, `Tarefas.md` todo-list, `Entradas.md` sem frontmatter): não recebem
 - **3 templates próprios**: `Template - Nota.md`, `Template - Glosa.md` (ambos com o campo); `trail.md` (sem o campo, **não adicionar**)
 - **Templates Lucy** (`00-Meta/templates/Lucy/Lucy - *.md`): aplicar regra automática por `type:` — `Lucy - Processed.md` (provavelmente `lesson`) e `Lucy - Workbook.md` (provavelmente `workbook`) recebem; `Lucy - Ebook MOC.md` (`moc`) não recebe

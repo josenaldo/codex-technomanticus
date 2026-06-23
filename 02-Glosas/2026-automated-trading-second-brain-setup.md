@@ -43,4 +43,4 @@ Um setup de trading individual que utiliza um "Segundo Cérebro" no Obsidian int
 
 ## Ver também
 
-- [[03-Dominios/Empreendedorismo/How-To Freelance Internacional com IA]]
+- [[03-Dominios/Carreira/Empreendedorismo/How-To Freelance Internacional com IA]]

@@ -10,7 +10,7 @@ publish: false
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Node/Streams/`, em PT-BR, todas `publish: true`, cobrindo do mental model dos 4 tipos ao tuning de performance, passando por backpressure, pipeline, async iteration, Web Streams interop e padrões práticos — para um dev senior em prep para entrevista internacional. Ao final, podar 4 seções do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central de `03-Dominios/Node/index.md`.
+**Goal:** Produzir 12 notas atômicas + 1 MOC em `03-Dominios/Tecnologia/Node/Streams/`, em PT-BR, todas `publish: true`, cobrindo do mental model dos 4 tipos ao tuning de performance, passando por backpressure, pipeline, async iteration, Web Streams interop e padrões práticos — para um dev senior em prep para entrevista internacional. Ao final, podar 4 seções do tronco `JavaScript/Backend/Node.js.md` e atualizar o MOC central de `03-Dominios/Tecnologia/Node/index.md`.
 
 **Architecture:** Sub-trilha sequencial em 5 blocos (Mental model → Tipos aprofundados → Backpressure e pipeline → Streams modernos → Padrões e fechamento) + 1 MOC com 5 rotas alternativas. Pressupõe galho 1 (Runtime e Event Loop) como pré-requisito, com referências cruzadas pro galho 2 (Paralelismo) onde workers + streams se cruzam. Cada nota é atômica, segue estrutura híbrida (TL;DR + corpo técnico), com code samples em JS ou TS (Node 22 LTS / 24, `stream/promises` mainstream, Web Streams interop estável), e seção "Em entrevista" para preparação internacional.
 
@@ -36,10 +36,10 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 ## File Structure
 
-13 arquivos novos em `03-Dominios/Node/Streams/`:
+13 arquivos novos em `03-Dominios/Tecnologia/Node/Streams/`:
 
 ```
-03-Dominios/Node/Streams/
+03-Dominios/Tecnologia/Node/Streams/
 ├── Streams.md                                                    # MOC (Task 1)
 ├── 01 - Por que streams.md                                       # Task 2
 ├── 02 - Os 4 tipos - Readable, Writable, Duplex, Transform.md    # Task 3
@@ -57,8 +57,8 @@ Quando faltar contexto factual, **PERGUNTAR antes de escrever** — nunca preenc
 
 **Final integration (Task 14, 15, 16):**
 - Pass final no MOC inserindo todos os wikilinks + dataview
-- Poda do tronco `03-Dominios/JavaScript/Backend/Node.js.md` (4 seções)
-- Atualização do MOC central `03-Dominios/Node/index.md` + verificação de build do Quartz
+- Poda do tronco `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` (4 seções)
+- Atualização do MOC central `03-Dominios/Tecnologia/Node/index.md` + verificação de build do Quartz
 
 ---
 
@@ -156,10 +156,10 @@ aliases:
 
 ### Notas no vault
 
-- `03-Dominios/JavaScript/Backend/Node.js.md` — tronco (4 seções a podar)
-- `03-Dominios/Node/index.md` — MOC central
-- `03-Dominios/Node/Runtime e Event Loop/` — galho 1 (em particular notas 04 fases do event loop, 10 bloqueio)
-- `03-Dominios/Node/Paralelismo/` — galho 2 (workers + streams cruzam em postMessage + transferList)
+- `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md` — tronco (4 seções a podar)
+- `03-Dominios/Tecnologia/Node/index.md` — MOC central
+- `03-Dominios/Tecnologia/Node/Runtime e Event Loop/` — galho 1 (em particular notas 04 fases do event loop, 10 bloqueio)
+- `03-Dominios/Tecnologia/Node/Paralelismo/` — galho 2 (workers + streams cruzam em postMessage + transferList)
 
 ### A buscar conforme necessidade
 
@@ -172,13 +172,13 @@ aliases:
 ## Task 0: Pré-flight
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/` (diretório)
+- Create: `03-Dominios/Tecnologia/Node/Streams/` (diretório)
 
 - [ ] **Step 1: Criar o diretório**
 
 ```bash
-mkdir -p "03-Dominios/Node/Streams"
-ls -la "03-Dominios/Node/Streams"
+mkdir -p "03-Dominios/Tecnologia/Node/Streams"
+ls -la "03-Dominios/Tecnologia/Node/Streams"
 ```
 
 Esperado: diretório vazio.
@@ -194,7 +194,7 @@ Esperado: linhas referenciando `feedback_no_fabrication.md` e `project_tronco_ga
 - [ ] **Step 3: Sanity check do tronco — 4 seções a podar**
 
 ```bash
-grep -nE "^### Streams|^### Backpressure|^### Web Streams|^### Stream patterns" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -nE "^### Streams|^### Backpressure|^### Web Streams|^### Stream patterns" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 Esperado: 4 matches. Anotar números de linha de cada uma:
@@ -208,10 +208,10 @@ Se algum nome divergir do esperado, anotar exatamente como aparece.
 - [ ] **Step 4: Confirmar wikilinks dos galhos anteriores resolvem**
 
 ```bash
-ls "03-Dominios/Node/Runtime e Event Loop/" | wc -l   # esperado 13
-ls "03-Dominios/Node/Paralelismo/" | wc -l            # esperado 13
-ls "03-Dominios/Node/index.md"                        # esperado existir
-ls "03-Dominios/JavaScript/Backend/Node.js.md"        # esperado existir
+ls "03-Dominios/Tecnologia/Node/Runtime e Event Loop/" | wc -l   # esperado 13
+ls "03-Dominios/Tecnologia/Node/Paralelismo/" | wc -l            # esperado 13
+ls "03-Dominios/Tecnologia/Node/index.md"                        # esperado existir
+ls "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"        # esperado existir
 ```
 
 Notas referenciadas com mais frequência no galho 3:
@@ -250,11 +250,11 @@ git commit -m "feat(node-streams): create directory for Streams sub-trail"
 ## Task 1: MOC esqueleto
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/Streams.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/Streams.md`
 
 - [ ] **Step 1: Criar MOC**
 
-Criar `03-Dominios/Node/Streams/Streams.md` com este conteúdo (substituir `\`\`\`` por triple backticks reais — escapes apenas neste plano):
+Criar `03-Dominios/Tecnologia/Node/Streams/Streams.md` com este conteúdo (substituir `\`\`\`` por triple backticks reais — escapes apenas neste plano):
 
 ```markdown
 ---
@@ -333,14 +333,14 @@ aliases:
 
 \`\`\`dataview
 TABLE status, updated
-FROM "03-Dominios/Node/Streams"
+FROM "03-Dominios/Tecnologia/Node/Streams"
 WHERE type = "concept"
 SORT file.name ASC
 \`\`\`
 
 ## Veja também
 
-- [[03-Dominios/Node/index|Node.js (MOC central)]]
+- [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
 - [[Node.js]] — tronco (deep dive panorâmico)
 - [[Runtime e Event Loop]] — galho 1 (pré-requisito)
 - [[Paralelismo]] — galho 2 (referência cruzada onde workers + streams)
@@ -352,13 +352,13 @@ SORT file.name ASC
 - `publish: true` presente
 - 12 notas em 5 blocos (A, B, C, D, E)
 - 4 rotas alternativas (entrevista, produção, async-first, custom streams) + "Comece por aqui" implícito como completa
-- Dataview path: `"03-Dominios/Node/Streams"`
+- Dataview path: `"03-Dominios/Tecnologia/Node/Streams"`
 - Wikilinks pro MOC central, tronco, galho 1, galho 2
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add "03-Dominios/Node/Streams/Streams.md"
+git add "03-Dominios/Tecnologia/Node/Streams/Streams.md"
 git commit -m "feat(node-streams): add MOC skeleton for Streams branch"
 ```
 
@@ -367,7 +367,7 @@ git commit -m "feat(node-streams): add MOC skeleton for Streams branch"
 ## Task 2: Nota 01 — Por que streams
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/01 - Por que streams.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/01 - Por que streams.md`
 
 **Conteúdo-chave do spec (Bloco A):**
 
@@ -432,7 +432,7 @@ aliases:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Streams/01 - Por que streams.md"
+git add "03-Dominios/Tecnologia/Node/Streams/01 - Por que streams.md"
 git commit -m "feat(node-streams): add note 01 — Por que streams"
 ```
 
@@ -441,7 +441,7 @@ git commit -m "feat(node-streams): add note 01 — Por que streams"
 ## Task 3: Nota 02 — Os 4 tipos
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/02 - Os 4 tipos - Readable, Writable, Duplex, Transform.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/02 - Os 4 tipos - Readable, Writable, Duplex, Transform.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -512,7 +512,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/02 - Os 4 tipos - Readable, Writable, Duplex, Transform.md"
+git add "03-Dominios/Tecnologia/Node/Streams/02 - Os 4 tipos - Readable, Writable, Duplex, Transform.md"
 git commit -m "feat(node-streams): add note 02 — Os 4 tipos"
 ```
 
@@ -521,7 +521,7 @@ git commit -m "feat(node-streams): add note 02 — Os 4 tipos"
 ## Task 4: Nota 03 — Readable streams
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/03 - Readable streams.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/03 - Readable streams.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -622,7 +622,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/03 - Readable streams.md"
+git add "03-Dominios/Tecnologia/Node/Streams/03 - Readable streams.md"
 git commit -m "feat(node-streams): add note 03 — Readable streams"
 ```
 
@@ -631,7 +631,7 @@ git commit -m "feat(node-streams): add note 03 — Readable streams"
 ## Task 5: Nota 04 — Writable streams
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/04 - Writable streams.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/04 - Writable streams.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -741,7 +741,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/04 - Writable streams.md"
+git add "03-Dominios/Tecnologia/Node/Streams/04 - Writable streams.md"
 git commit -m "feat(node-streams): add note 04 — Writable streams"
 ```
 
@@ -750,7 +750,7 @@ git commit -m "feat(node-streams): add note 04 — Writable streams"
 ## Task 6: Nota 05 — Duplex e Transform
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/05 - Duplex e Transform.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/05 - Duplex e Transform.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -855,7 +855,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/05 - Duplex e Transform.md"
+git add "03-Dominios/Tecnologia/Node/Streams/05 - Duplex e Transform.md"
 git commit -m "feat(node-streams): add note 05 — Duplex e Transform"
 ```
 
@@ -864,7 +864,7 @@ git commit -m "feat(node-streams): add note 05 — Duplex e Transform"
 ## Task 7: Nota 06 — Backpressure
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/06 - Backpressure.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/06 - Backpressure.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -946,7 +946,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/06 - Backpressure.md"
+git add "03-Dominios/Tecnologia/Node/Streams/06 - Backpressure.md"
 git commit -m "feat(node-streams): add note 06 — Backpressure"
 ```
 
@@ -955,7 +955,7 @@ git commit -m "feat(node-streams): add note 06 — Backpressure"
 ## Task 8: Nota 07 — pipeline vs pipe
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/07 - pipeline vs pipe - error handling.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/07 - pipeline vs pipe - error handling.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -1061,7 +1061,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/07 - pipeline vs pipe - error handling.md"
+git add "03-Dominios/Tecnologia/Node/Streams/07 - pipeline vs pipe - error handling.md"
 git commit -m "feat(node-streams): add note 07 — pipeline vs pipe"
 ```
 
@@ -1070,7 +1070,7 @@ git commit -m "feat(node-streams): add note 07 — pipeline vs pipe"
 ## Task 9: Nota 08 — Async iteration de streams
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/08 - Async iteration de streams.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/08 - Async iteration de streams.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -1169,7 +1169,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/08 - Async iteration de streams.md"
+git add "03-Dominios/Tecnologia/Node/Streams/08 - Async iteration de streams.md"
 git commit -m "feat(node-streams): add note 08 — Async iteration"
 ```
 
@@ -1178,7 +1178,7 @@ git commit -m "feat(node-streams): add note 08 — Async iteration"
 ## Task 10: Nota 09 — Web Streams interop
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/09 - Web Streams - interop com padrão universal.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/09 - Web Streams - interop com padrão universal.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -1287,7 +1287,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/09 - Web Streams - interop com padrão universal.md"
+git add "03-Dominios/Tecnologia/Node/Streams/09 - Web Streams - interop com padrão universal.md"
 git commit -m "feat(node-streams): add note 09 — Web Streams interop"
 ```
 
@@ -1296,7 +1296,7 @@ git commit -m "feat(node-streams): add note 09 — Web Streams interop"
 ## Task 11: Nota 10 — Padrões práticos
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/10 - Padrões práticos.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/10 - Padrões práticos.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -1372,7 +1372,7 @@ Estrutura tópica: cada padrão em sub-seção compacta de 30-50 linhas.
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/10 - Padrões práticos.md"
+git add "03-Dominios/Tecnologia/Node/Streams/10 - Padrões práticos.md"
 git commit -m "feat(node-streams): add note 10 — Padrões práticos"
 ```
 
@@ -1381,7 +1381,7 @@ git commit -m "feat(node-streams): add note 10 — Padrões práticos"
 ## Task 12: Nota 11 — Performance e tuning
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/11 - Performance e tuning.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/11 - Performance e tuning.md`
 
 ### Step 1: Pesquisa-âncora
 
@@ -1462,7 +1462,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/11 - Performance e tuning.md"
+git add "03-Dominios/Tecnologia/Node/Streams/11 - Performance e tuning.md"
 git commit -m "feat(node-streams): add note 11 — Performance e tuning"
 ```
 
@@ -1471,7 +1471,7 @@ git commit -m "feat(node-streams): add note 11 — Performance e tuning"
 ## Task 13: Nota 12 — Armadilhas e cheatsheet
 
 **Files:**
-- Create: `03-Dominios/Node/Streams/12 - Armadilhas, regras práticas, cheatsheet.md`
+- Create: `03-Dominios/Tecnologia/Node/Streams/12 - Armadilhas, regras práticas, cheatsheet.md`
 
 ### Step 1: Síntese das 11 notas anteriores
 
@@ -1571,7 +1571,7 @@ aliases:
 ### Step 5: Commit
 
 ```bash
-git add "03-Dominios/Node/Streams/12 - Armadilhas, regras práticas, cheatsheet.md"
+git add "03-Dominios/Tecnologia/Node/Streams/12 - Armadilhas, regras práticas, cheatsheet.md"
 git commit -m "feat(node-streams): add note 12 — Armadilhas, cheatsheet"
 ```
 
@@ -1580,12 +1580,12 @@ git commit -m "feat(node-streams): add note 12 — Armadilhas, cheatsheet"
 ## Task 14: Pass final no MOC
 
 **Files:**
-- Modify: `03-Dominios/Node/Streams/Streams.md`
+- Modify: `03-Dominios/Tecnologia/Node/Streams/Streams.md`
 
 - [ ] **Step 1: Confirmar 12 notas existem**
 
 ```bash
-ls "03-Dominios/Node/Streams/" | wc -l
+ls "03-Dominios/Tecnologia/Node/Streams/" | wc -l
 # Esperado: 13 (12 notas + MOC)
 ```
 
@@ -1606,19 +1606,19 @@ Pré-requisito: galho 1 ([[Runtime e Event Loop]]) — pressupõe entender event
 - [ ] **Step 3: Verificar 12 wikilinks**
 
 ```bash
-ls "03-Dominios/Node/Streams/"
+ls "03-Dominios/Tecnologia/Node/Streams/"
 ```
 
 Confirmar todos os 12 nomes de nota + `Streams.md` (MOC). Se algum estiver faltando ou com nome diferente, BLOCKED.
 
 - [ ] **Step 4: Verificar dataview path**
 
-Confirmar `"03-Dominios/Node/Streams"` no bloco dataview (não outro caminho).
+Confirmar `"03-Dominios/Tecnologia/Node/Streams"` no bloco dataview (não outro caminho).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add "03-Dominios/Node/Streams/Streams.md"
+git add "03-Dominios/Tecnologia/Node/Streams/Streams.md"
 git commit -m "feat(node-streams): finalize MOC with all wikilinks and intro"
 ```
 
@@ -1627,14 +1627,14 @@ git commit -m "feat(node-streams): finalize MOC with all wikilinks and intro"
 ## Task 15: Poda do tronco (4 seções)
 
 **Files:**
-- Modify: `03-Dominios/JavaScript/Backend/Node.js.md`
+- Modify: `03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md`
 
 Esta é a poda mais agressiva (4 seções, vs 1 no galho 2 e 5 no galho 1).
 
 - [ ] **Step 1: Localizar 4 seções**
 
 ```bash
-grep -nE "^### Streams — deep dive|^### Backpressure|^### Web Streams vs Node streams|^### Stream patterns" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -nE "^### Streams — deep dive|^### Backpressure|^### Web Streams vs Node streams|^### Stream patterns" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 ```
 
 Esperado: 4 matches. Anotar números de linha. **Cuidado:** as 4 seções são consecutivas em ordem (Streams deep dive → Backpressure → Web Streams → Stream patterns), todas dentro de `## Como funciona`. Após elas vem outra seção (provavelmente `### npm e Package Management` ou similar).
@@ -1694,7 +1694,7 @@ Mudar para `updated: 2026-05-08`.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add "03-Dominios/JavaScript/Backend/Node.js.md"
+git add "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 git commit -m "refactor(node): prune trunk Node.js.md, link to Streams branch"
 ```
 
@@ -1703,11 +1703,11 @@ git commit -m "refactor(node): prune trunk Node.js.md, link to Streams branch"
 ## Task 16: MOC central + verificação final
 
 **Files:**
-- Modify: `03-Dominios/Node/index.md`
+- Modify: `03-Dominios/Tecnologia/Node/index.md`
 
 - [ ] **Step 1: Atualizar MOC central**
 
-Em `03-Dominios/Node/index.md`, na seção "Galhos da trilha Node Senior", adicionar como **terceiro bullet**:
+Em `03-Dominios/Tecnologia/Node/index.md`, na seção "Galhos da trilha Node Senior", adicionar como **terceiro bullet**:
 
 ```markdown
 - [[Streams]] — galho 3: abstração fundamental para processar dados em chunks (4 tipos, backpressure, pipeline, async iter, Web Streams, padrões práticos, performance)
@@ -1718,7 +1718,7 @@ Atualizar `updated: 2026-05-08`.
 - [ ] **Step 2: Commit MOC central**
 
 ```bash
-git add "03-Dominios/Node/index.md"
+git add "03-Dominios/Tecnologia/Node/index.md"
 git commit -m "feat(node-streams): wire branch into central Node MOC"
 ```
 
@@ -1726,22 +1726,22 @@ git commit -m "feat(node-streams): wire branch into central Node MOC"
 
 ```bash
 # 1. 13 arquivos no diretório
-ls "03-Dominios/Node/Streams/" | wc -l
+ls "03-Dominios/Tecnologia/Node/Streams/" | wc -l
 # Esperado: 13
 
 # 2. Todos com publish: true
-grep -l "publish: true" "03-Dominios/Node/Streams/"*.md | wc -l
+grep -l "publish: true" "03-Dominios/Tecnologia/Node/Streams/"*.md | wc -l
 # Esperado: 13
 
 # 3. Total de linhas do galho
-wc -l "03-Dominios/Node/Streams/"*.md | tail -1
+wc -l "03-Dominios/Tecnologia/Node/Streams/"*.md | tail -1
 
 # 4. Tronco tem 9 callouts (5 do galho 1 + 1 do galho 2 + 4 do galho 3 = 10) — wait, 5+1+4 = 10, not 9
-grep -c "Migrado para galho próprio" "03-Dominios/JavaScript/Backend/Node.js.md"
+grep -c "Migrado para galho próprio" "03-Dominios/Tecnologia/JavaScript/Backend/Node.js.md"
 # Esperado: 10 (5 do galho 1 + 1 do galho 2 + 4 do galho 3)
 
 # 5. MOC central linka pros 3 galhos
-grep -E "Runtime e Event Loop|Paralelismo|Streams" "03-Dominios/Node/index.md" | grep -v "^#" | wc -l
+grep -E "Runtime e Event Loop|Paralelismo|Streams" "03-Dominios/Tecnologia/Node/index.md" | grep -v "^#" | wc -l
 # Esperado: pelo menos 3 matches
 ```
 
@@ -1752,7 +1752,7 @@ Reportar resultados.
 ```bash
 git commit --allow-empty -m "chore(node-streams): close branch Galho 3 — Streams
 
-12 atomic notes + MOC published in 03-Dominios/Node/Streams/.
+12 atomic notes + MOC published in 03-Dominios/Tecnologia/Node/Streams/.
 Trunk Node.js.md pruned (4 sections — most aggressive yet). Central
 Node MOC updated. All acceptance criteria from
 2026-05-08-node-streams-design.md met."

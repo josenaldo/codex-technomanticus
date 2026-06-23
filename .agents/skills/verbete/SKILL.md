@@ -222,7 +222,7 @@ Skill:
 Usuário: /verbete LoRA
 
 Skill:
-1. Localiza glossário (CWD em 03-Dominios/IA/)
+1. Localiza glossário (CWD em 03-Dominios/Tecnologia/IA/)
 2. Pesquisa LoRA
 3. Apresenta:
 

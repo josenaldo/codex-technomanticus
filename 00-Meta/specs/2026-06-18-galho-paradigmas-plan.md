@@ -21,7 +21,7 @@ Escopo do spec-mãe (galho 7): "imperativo, OO, funcional, lógico, declarativo;
 colaterais. (cai parcialmente em entrevista)". Roster aprovado pelo usuário em 2026-06-18 (expandido p/ 16).
 
 ## Decisão de fronteira (a chave — rígido, anti-duplicação)
-- **OO já tem galho próprio** (`03-Dominios/Fundamentos/Orientação a Objetos/`). Aqui OO entra como **um
+- **OO já tem galho próprio** (`03-Dominios/Engenharia/Orientação a Objetos/`). Aqui OO entra como **um
   paradigma entre vários** (objetos = estado + mensagens; como se compara ao imperativo e ao funcional) —
   **linka [[Orientação a Objetos]]** pros 4 pilares, NÃO os reensina.
 - **Concorrência conceitual** será galho próprio (Camada B, galho 8, ainda NÃO existe). Atores/CSP/memória
@@ -29,7 +29,7 @@ colaterais. (cai parcialmente em entrevista)". Roster aprovado pelo usuário em 
   imutabilidade ↔ concorrência. O paralelismo aparece como *benefício* da pureza, não como tema.
 - **Programação Reativa** tem galho Java próprio → **linka [[Programação Reativa]]**; aqui fica o conceito
   de paradigma reativo/dataflow, não o ferramental (Reactor/WebFlux).
-- **Funcional no Java/TS** → linka `[[03-Dominios/Java/Collections e Streams/index|Streams]]` e
+- **Funcional no Java/TS** → linka `[[03-Dominios/Tecnologia/Java/Collections e Streams/index|Streams]]` e
   `[[TypeScript]]` pro ferramental concreto; o galho é stack-agnóstico.
 - **SOLID** → linka `[[SOLID]]`. **Complexidade de Software** (simplicidade, raciocínio sobre estado) →
   linka `[[Complexidade de Software]]`.
@@ -98,7 +98,7 @@ colaterais. (cai parcialmente em entrevista)". Roster aprovado pelo usuário em 
   invente cliente/projeto real ([[feedback-no-fabrication]]).
 
 ## Tronco e MOC
-- Pasta `03-Dominios/Fundamentos/Paradigmas/` com `index.md` (MOC, `type: moc`, `status: growing`,
+- Pasta `03-Dominios/Ciência/Paradigmas/` com `index.md` (MOC, `type: moc`, `status: growing`,
   `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - Alias do `index.md`: **"Paradigmas"** + **"Paradigmas de Programação"** + **"Programming Paradigms"** +
   **"Paradigmas de programação"**. (Galho novo — sem links de entrada a herdar, mas alias prepara o terreno.)

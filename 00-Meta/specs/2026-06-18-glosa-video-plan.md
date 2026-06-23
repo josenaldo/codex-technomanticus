@@ -266,7 +266,7 @@ Valida o pipeline ponta a ponta num único vídeo antes de processar a playlist 
 - Consumes: o `SKILL.md` da Task 1.
 
 - [ ] **Step 1: Executar a skill** seguindo o Fluxo de execução do `SKILL.md`, com:
-  `/glosa-video https://youtube.com/watch?v=Am73u_4y0ok 03-Dominios/IA/Anatomia dos LLMs`
+  `/glosa-video https://youtube.com/watch?v=Am73u_4y0ok 03-Dominios/Tecnologia/IA/Anatomia dos LLMs`
 
 - [ ] **Step 2: Validar a glosa gerada** (gate)
 
@@ -315,7 +315,7 @@ git commit -m "glosa(video): Tokens Explicados (Sandeco) — smoke-test /glosa-v
 - Consumes: o `SKILL.md` da Task 1.
 
 - [ ] **Step 1: Executar a skill na playlist**
-  `/glosa-video https://youtube.com/playlist?list=PLbmt8d_ueDMVMW1Iu4OcmlQGisGhxAmMy 03-Dominios/IA/Anatomia dos LLMs`
+  `/glosa-video https://youtube.com/playlist?list=PLbmt8d_ueDMVMW1Iu4OcmlQGisGhxAmMy 03-Dominios/Tecnologia/IA/Anatomia dos LLMs`
 
   A skill pula a glosa do vídeo já fichado na Task 2 (colisão de slug → reaproveitar, não duplicar) e gera as 5 restantes + a glosa-índice.
 

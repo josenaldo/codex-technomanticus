@@ -16,7 +16,7 @@ tags:
 ## Contexto
 Terceiro galho da **Camada A** do meta-plano de Fundamentos
 (`00-Meta/specs/2026-06-15-fundamentos-meta-planejamento-design.md`): refatorar o monólito
-`03-Dominios/Fundamentos/Orientação a Objetos.md` (554 linhas) numa sub-trilha de notas atômicas
+`03-Dominios/Ciência/Orientação a Objetos.md` (554 linhas) numa sub-trilha de notas atômicas
 em 3 fases. Interview-critical (★, Fase 1 da Senda Entrevistas). Mesmo padrão tronco/galhos dos
 galhos Complexidade de Software, Estruturas de Dados (ED) e Algoritmos.
 
@@ -126,7 +126,7 @@ O bloco **"How to explain in English"** + frases de pivô + vocabulário bilíng
 - Frontmatter com `fase: iniciado|adepto|magus`, tags.
 
 ## Tronco e MOC
-- Criar pasta `03-Dominios/Fundamentos/Orientação a Objetos/` com `index.md` (MOC, `type: moc`,
+- Criar pasta `03-Dominios/Engenharia/Orientação a Objetos/` com `index.md` (MOC, `type: moc`,
   `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - O `index.md` recebe **alias "Orientação a Objetos"** (+ "Orientação a objetos", "OO",
   "Object-Oriented Programming") para que os 13 links de entrada existentes resolvam (README,

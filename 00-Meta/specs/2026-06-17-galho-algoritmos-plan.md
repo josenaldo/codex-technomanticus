@@ -16,7 +16,7 @@ tags:
 ## Contexto
 Segundo galho da **Camada A** do meta-plano de Fundamentos
 (`00-Meta/specs/2026-06-15-fundamentos-meta-planejamento-design.md`): refatorar o monólito
-`03-Dominios/Fundamentos/Algoritmos.md` (601 linhas) numa sub-trilha de notas atômicas em 3 fases.
+`03-Dominios/Ciência/Algoritmos.md` (601 linhas) numa sub-trilha de notas atômicas em 3 fases.
 Interview-critical (★, Fase 1 da Senda Entrevistas). Mesmo padrão tronco/galhos dos galhos
 Complexidade de Software e Estruturas de Dados (ED).
 
@@ -126,7 +126,7 @@ migrar (capstone 14 + por nota onde couber).
 - Frontmatter com `fase: iniciado|adepto|magus`, tags.
 
 ## Tronco e MOC
-- Criar pasta `03-Dominios/Fundamentos/Algoritmos/` com `index.md` (MOC, `type: moc`,
+- Criar pasta `03-Dominios/Ciência/Algoritmos/` com `index.md` (MOC, `type: moc`,
   `publish: true`, agrupado por fase, rotas alternativas, dataview, "Veja também").
 - O `index.md` recebe **alias "Algoritmos"** (+ "algoritmos") para que os 10 links de entrada
   existentes (`[[Algoritmos]]` em README, Senda Entrevistas, Coding Challenges Strategy, Helsinki

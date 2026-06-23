@@ -2,7 +2,7 @@
 
 **Data:** 2026-05-18
 **Status:** rascunho
-**Domínio:** `03-Dominios/Terminal/`
+**Domínio:** `03-Dominios/Tecnologia/Terminal/`
 **Tipo:** roadmap da trilha (umbrella) — cada galho terá seu próprio spec + execução
 
 ---
@@ -11,7 +11,7 @@
 
 O usuário acaba de instalar um stack de ferramentas TUI/keyboard-first pra trabalhar no terminal: **Neovim + LazyVim, Lazygit, Lazydocker, Zellij, Zsh + Oh-My-Zsh + Powerlevel10k**. Ainda não domina o conjunto — quer uma trilha de domínio nova que sirva tanto como referência por ferramenta quanto como playbook de workflow.
 
-Hoje o vault não tem trilha pra esse stack. Notas avulsas de ferramenta vivem em `03-Dominios/Ferramentas/` (Vite, IntelliJ shortcuts, Monorepos, Prompts), mas o conjunto Terminal é coeso e denso demais pra caber lá — vira trilha própria.
+Hoje o vault não tem trilha pra esse stack. Notas avulsas de ferramenta vivem em `03-Dominios/Tecnologia/Ferramentas/` (Vite, IntelliJ shortcuts, Monorepos, Prompts), mas o conjunto Terminal é coeso e denso demais pra caber lá — vira trilha própria.
 
 **Objetivo:** trilha completa que leve o usuário a **domínio pleno do stack**. O processo de implementação é o próprio caminho de aprendizado: cada galho envolve pesquisa real das ferramentas (docs oficiais, posts canônicos) e produção das notas atômicas que consolidam esse aprendizado.
 
@@ -73,7 +73,7 @@ O MOC do galho agrupa visualmente:
 ## Estrutura
 
 ```
-03-Dominios/Terminal/
+03-Dominios/Tecnologia/Terminal/
 ├── index.md              ← tronco MOC (roadmap interativo da trilha)
 ├── Editor/               ← galho 1: Neovim + LazyVim
 │   └── index.md          ← galho MOC (agrupado por fase) + notas atômicas (flat)
@@ -366,13 +366,13 @@ aliases:
 - Workflow — galho 7 (planejado): playbooks cross-tool
 
 ## Veja também
-- [[03-Dominios/Infraestrutura/Linux/index|Linux]]
-- [[03-Dominios/Ferramentas|Ferramentas]]
+- [[03-Dominios/Tecnologia/Infraestrutura/Linux/index|Linux]]
+- [[03-Dominios/Tecnologia/Ferramentas|Ferramentas]]
 ```
 
 Quando um galho é implementado, seu bullet vira wikilink ativo:
 ```markdown
-- [[03-Dominios/Terminal/Editor/index]] — galho 1: Neovim + LazyVim (modal editing, plugins, LSP)
+- [[03-Dominios/Tecnologia/Terminal/Editor/index]] — galho 1: Neovim + LazyVim (modal editing, plugins, LSP)
 ```
 
 ### Galho MOC (`<Galho>/index.md`)
@@ -406,7 +406,7 @@ tags: [terminal, <galho-slug>, moc]
 - ...
 
 ## Veja também
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 ```
 
 ### Nota atômica
@@ -454,9 +454,9 @@ A skill `glosa` pode ser usada pra fichar artigos relevantes antes de virarem no
 
 | Existente | Relação |
 |---|---|
-| `03-Dominios/Infraestrutura/Linux/Comandos para entender agentes.md` | Permanece; Terminal não duplica comandos shell genéricos. Wikilink mútuo no "Veja também". |
-| `03-Dominios/Ferramentas/` | Permanece pra tools fora do stack terminal-first (IntelliJ, Vite). Nada migra. |
-| `03-Dominios/IA/Claude Code/` | Cruza com Workflow (Claude Code também é terminal-first). Wikilinks recíprocos quando relevante. |
+| `03-Dominios/Tecnologia/Infraestrutura/Linux/Comandos para entender agentes.md` | Permanece; Terminal não duplica comandos shell genéricos. Wikilink mútuo no "Veja também". |
+| `03-Dominios/Tecnologia/Ferramentas/` | Permanece pra tools fora do stack terminal-first (IntelliJ, Vite). Nada migra. |
+| `03-Dominios/Tecnologia/IA/Claude Code/` | Cruza com Workflow (Claude Code também é terminal-first). Wikilinks recíprocos quando relevante. |
 
 ---
 

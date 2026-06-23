@@ -21,7 +21,7 @@ O roadmap original (2026-05-18) previa galho 7 com **7 notas focadas em playbook
 
 ## 2. Objetivo
 
-Produzir, em uma sessão de execução dedicada, **10 notas atômicas + 1 MOC do galho + bloco novo no Dicionário do Terminal + ativação do wikilink no tronco** em `03-Dominios/Terminal/Workflow/` e `03-Dominios/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (3 Iniciado + 4 Adepto + 3 Magus).
+Produzir, em uma sessão de execução dedicada, **10 notas atômicas + 1 MOC do galho + bloco novo no Dicionário do Terminal + ativação do wikilink no tronco** em `03-Dominios/Tecnologia/Terminal/Workflow/` e `03-Dominios/Tecnologia/Terminal/`, todas `publish: true`, em PT-BR, distribuídas em 3 fases (3 Iniciado + 4 Adepto + 3 Magus).
 
 A trilha precisa ser:
 
@@ -32,7 +32,7 @@ A trilha precisa ser:
 
 ## 3. Saídas concretas
 
-### 3.1. Notas (`03-Dominios/Terminal/Workflow/`)
+### 3.1. Notas (`03-Dominios/Tecnologia/Terminal/Workflow/`)
 
 Pasta nova, flat. 10 notas + 1 MOC:
 
@@ -127,28 +127,28 @@ aliases: [MOC Workflow, Galho 7]
 ## Veja também
 
 - [[Dicionário do Terminal]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
-- [[03-Dominios/Terminal/Editor/index|Editor (galho 1)]]
-- [[03-Dominios/Terminal/Shell/index|Shell (galho 2)]]
-- [[03-Dominios/Terminal/Multiplexer/index|Multiplexer (galho 3)]]
-- [[03-Dominios/Terminal/TUIs/index|TUIs de Dev (galho 4)]]
-- [[03-Dominios/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
-- [[03-Dominios/Terminal/CLI Utils/index|CLI Utils (galho 6)]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Editor/index|Editor (galho 1)]]
+- [[03-Dominios/Tecnologia/Terminal/Shell/index|Shell (galho 2)]]
+- [[03-Dominios/Tecnologia/Terminal/Multiplexer/index|Multiplexer (galho 3)]]
+- [[03-Dominios/Tecnologia/Terminal/TUIs/index|TUIs de Dev (galho 4)]]
+- [[03-Dominios/Tecnologia/Terminal/Dotfiles/index|Dotfiles (galho 5)]]
+- [[03-Dominios/Tecnologia/Terminal/CLI Utils/index|CLI Utils (galho 6)]]
 ```
 
-### 3.3. Tronco (`03-Dominios/Terminal/index.md`)
+### 3.3. Tronco (`03-Dominios/Tecnologia/Terminal/index.md`)
 
 Mudanças:
 
 - Linha 33: `Workflow — galho 7 (planejado): playbooks cross-tool` vira:
   ```
-  - [[03-Dominios/Terminal/Workflow/index|Workflow]] — galho 7: playbooks cross-tool (onboarding, review, worktrees, refactoring) + meta-práticas (filosofia keyboard-first, ergonomia, transições de contexto) + capstone (anatomia de um dia)
+  - [[03-Dominios/Tecnologia/Terminal/Workflow/index|Workflow]] — galho 7: playbooks cross-tool (onboarding, review, worktrees, refactoring) + meta-práticas (filosofia keyboard-first, ergonomia, transições de contexto) + capstone (anatomia de um dia)
   ```
 - Frontmatter: `progresso: andamento` → `progresso: completo` (trilha fechada com 7 galhos)
 - Frontmatter: `updated: 2026-05-21` → `updated: 2026-05-24`
 - TL;DR: bump "~57 notas" → "~67 notas" e refletir que a trilha está completa
 
-### 3.4. Dicionário do Terminal (`03-Dominios/Terminal/Dicionário do Terminal.md`)
+### 3.4. Dicionário do Terminal (`03-Dominios/Tecnologia/Terminal/Dicionário do Terminal.md`)
 
 Novo bloco `## Workflow` com **10-15 verbetes** próprios de meta-práticas/workflow. Ordem alfabética (case-insensitive). Cada verbete com "Veja também" linkando a nota relevante.
 
@@ -248,8 +248,8 @@ Termos técnicos que aparecem ao ler docs e fóruns sobre o tópico:
 ## Veja também
 
 - [[<nota irmã>]]
-- [[03-Dominios/Terminal/Workflow/index|MOC do galho]]
-- [[03-Dominios/Terminal/index|Trilha Terminal]]
+- [[03-Dominios/Tecnologia/Terminal/Workflow/index|MOC do galho]]
+- [[03-Dominios/Tecnologia/Terminal/index|Trilha Terminal]]
 - [[Dicionário do Terminal#<verbete>|<verbete>]]
 
 ## Referências
@@ -338,7 +338,7 @@ Capstone NÃO segue o padrão acima. Compõe ao invés de re-explicar.
 - **Pré-flight:** checar versões de `gh`, `git worktree`, Zellij (já capturadas em galhos anteriores; reusar).
 - **Implementação task a task,** uma nota por commit, com `git add <path>` explícito (**nunca `git add -A`**).
 - **Cross-task review subagent ao final** (Sonnet, **não 1M context** — dá erro de créditos).
-- **Validação:** `verificar-wikilinks` na pasta `03-Dominios/Terminal/Workflow/` + Dicionário consistente + tronco com wikilink ativo + frontmatter do tronco em `progresso: completo`.
+- **Validação:** `verificar-wikilinks` na pasta `03-Dominios/Tecnologia/Terminal/Workflow/` + Dicionário consistente + tronco com wikilink ativo + frontmatter do tronco em `progresso: completo`.
 
 ### 5.3. Hard constraints (continuam de galhos anteriores)
 
@@ -378,14 +378,14 @@ Notas do galho 7 **não re-explicam** ferramentas dos galhos anteriores — apen
 
 A sessão de execução estará pronta quando:
 
-- [ ] 11 arquivos em `03-Dominios/Terminal/Workflow/` (10 notas + MOC)
+- [ ] 11 arquivos em `03-Dominios/Tecnologia/Terminal/Workflow/` (10 notas + MOC)
 - [ ] Todas as 10 notas com frontmatter consistente (`publish: true`, `fase:`, tags corretas)
 - [ ] Notas 01-09 com TL;DR `[!abstract]`, ≥4 armadilhas no padrão completo, 8-10 bullets "Em inglês"
 - [ ] Capstone (10) compondo (sem re-explicar) e referenciando as 9 anteriores
 - [ ] `## Workflow` no Dicionário com 10-15 verbetes em ordem alfabética, todos com "Veja também"
 - [ ] `Dicionário do Terminal` com `updated: 2026-05-24`
 - [ ] Tronco (`Terminal/index.md`) com wikilink ativo pro galho 7 e `progresso: completo`
-- [ ] `verificar-wikilinks 03-Dominios/Terminal/Workflow/` → 0 broken
+- [ ] `verificar-wikilinks 03-Dominios/Tecnologia/Terminal/Workflow/` → 0 broken
 - [ ] Cross-task review subagent (Sonnet) sem Critical/Important pendentes
 - [ ] Nenhum commit com `Co-Authored-By: Claude`
 - [ ] Nenhum `git add -A`; apenas stages explícitos de arquivos do galho
