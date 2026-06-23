@@ -3544,4 +3544,4 @@ Todas as fontes usadas na consolidação deste manual. Numeração citada no fin
 - [[JavaScript Fundamentals]] — base de JS moderno
 - [[TypeScript]] — tipagem e patterns
 - [[Testes em JavaScript]] — characterization tests, Testing Library
-- [[HTML e CSS]] — fundamentos de UI e semântica
+- [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]] — fundamentos de UI e semântica

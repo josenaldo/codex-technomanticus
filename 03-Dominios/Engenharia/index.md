@@ -38,6 +38,8 @@ particularidades** (ex.: os princípios de RBAC ficam em [[03-Dominios/Engenhari
 - [[03-Dominios/Engenharia/Testes/index|Testes]] — pirâmide de testes, TDD, mocking, cobertura
 - [[03-Dominios/Engenharia/Design de Software/index|Design de Software]] — OO como craft, SOLID, design patterns, clean code
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] — APIs, REST, GraphQL, gRPC, mensageria, contratos
+- [[03-Dominios/Engenharia/Dados/index|Dados]] — engenharia de dados em escala: modelagem dimensional, warehousing, pipelines
+- [[03-Dominios/Engenharia/Operação/index|Operação]] — operar em produção: SRE, SLO/SLI, deploy, observabilidade, incidentes
 
 ## Veja também
 

@@ -124,7 +124,7 @@ const theme = createTheme({
 
 ## Veja também
 
-- [[HTML e CSS]]
+- [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]]
 - [[React]]
 - [[MUI|Material UI]]
 - [[Bootstrap]]

@@ -54,7 +54,7 @@ Sequencial 01 → 15. Recomendada na primeira leitura.
 
 ```dataview
 LIST file.frontmatter.title
-FROM "JavaScript/Frontend/TypeScript com React"
+FROM "03-Dominios/Tecnologia/React/TypeScript com React"
 WHERE type != "moc"
 SORT file.name ASC
 ```

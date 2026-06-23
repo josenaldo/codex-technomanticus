@@ -1551,7 +1551,7 @@ Não precisa mais de `tsx` ou `ts-node`. Em Node 24+, é estável.
 - [[Node.js]] — runtime server-side
 - [[Testes em JavaScript]] — Jest, Vitest, Testing Library, Playwright
 - [[React]] — framework UI
-- [[HTML e CSS]] — base do frontend
+- [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]] — base do frontend
 - [[Full Stack Open - Guia de Revisão]] — resumo do curso
 - [[API Design]] — consumindo APIs em JS/TS
 - [[System Design]] — JavaScript em system design

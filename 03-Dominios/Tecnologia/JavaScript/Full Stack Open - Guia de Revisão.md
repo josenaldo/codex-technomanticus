@@ -531,12 +531,12 @@ const style = {
 - **CSS Modules** — scoping automático
 - **styled-components/Emotion** — CSS-in-JS (menos popular hoje)
 
-Ver [[HTML e CSS]] para deep dive.
+Ver [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]] para deep dive.
 
 ### Conexões
 
 - Fetch e APIs: [[API Design]]
-- Estilos: [[HTML e CSS]]
+- Estilos: [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]]
 - React Query (melhor que useEffect+fetch): [[React]]
 
 ---
@@ -1304,13 +1304,13 @@ const { id } = useParams();
 
 ### UI frameworks
 
-Curso menciona Bootstrap, Material UI, Tailwind. Em 2026, **Tailwind CSS + shadcn/ui** é a stack mais popular. Ver [[HTML e CSS]] e [[React]].
+Curso menciona Bootstrap, Material UI, Tailwind. Em 2026, **Tailwind CSS + shadcn/ui** é a stack mais popular. Ver [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]] e [[React]].
 
 ### Conexões
 
 - React deep dive: [[React]]
 - Testing JS deep dive: [[Testes em JavaScript]]
-- HTML/CSS: [[HTML e CSS]]
+- HTML/CSS: [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]]
 
 ### Armadilhas comuns parte 5
 
@@ -2312,7 +2312,7 @@ Parte do material do curso está traduzido para português, mas a recomendação
 - [[Testes em JavaScript]] — Vitest, Testing Library, Playwright
 - [[React]] — framework UI
 - [[Node.js]] — runtime backend
-- [[HTML e CSS]] — fundação do frontend
+- [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]] — fundação do frontend
 - [[API Design]] — REST, GraphQL, JWT
 - [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — MongoDB, PostgreSQL, modelagem
 - [[Spring Security]] — JWT e auth (conceitos transferíveis)
