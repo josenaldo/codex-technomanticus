@@ -14,7 +14,7 @@ type: glosa
 progress: done
 status: lido
 promovida_em:
-  - "[[02b - Embeddings — do token ao vetor]]"
+  - "[[03 - Embeddings — do token ao vetor]]"
 tags: [embeddings, llm, transformers, representacao-vetorial, janela-de-contexto]
 lang: pt
 publish: false
@@ -72,4 +72,4 @@ Embeddings são a ponte entre palavras (mundo humano) e números (mundo computac
 
 - [[03 - Embeddings — representação semântica]] <!-- sugestão; validar -->
 - [[02 - Tokens e tokenização]] <!-- sugestão; validar -->
-- [[03 - A janela de contexto]] <!-- sugestão; validar -->
+- [[06 - A janela de contexto]] <!-- sugestão; validar -->
