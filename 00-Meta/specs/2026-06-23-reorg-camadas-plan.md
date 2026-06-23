@@ -58,15 +58,17 @@ Seam-chave (anti-duplicação): a **fundamentação** fica na camada de Engenhar
 
 ## Batches restantes (ORDEM: limpeza antes de conteúdo)
 
-### 🧹 Batch 1 — Reword Fundamentos → Ciência da Computação
-- Renomear `Ciência/Dicionário de Fundamentos.md` → `Dicionário de Ciência da Computação.md`
-- Atualizar títulos/aliases/tags em `Ciência/index.md`, `Ciência/Fundamentos.md` (→ revisar se vira o MOC da camada ou se funde no index), e nas notas que se intitulam "Galho N de Fundamentos"
-- Trocar alias de exibição `|Fundamentos]]` por `|Ciência da Computação]]` onde fizer sentido
-- Tag `camada: Ciência` no index
+### ✅ Batch 1 — Reword Fundamentos → Ciência da Computação (FEITO 2026-06-23, tag `pre-batch1`, commits 9bc478e + 76405fc)
+- `Dicionário de Fundamentos.md` → `Dicionário de Ciência da Computação.md` (aliases antigos preservados p/ links históricos dos specs)
+- `index.md` virou a MOC da camada (agrupamento temático portado do `Fundamentos.md`; lista só os 11 galhos de Ciência; OO/SOLID/Testes/Segurança/Complexidade → Veja também da Engenharia); `camada: Ciência` + tags
+- `Fundamentos.md` **deletado** (MOC duplicado, Dataview já quebrado); 4 inbound `[[Fundamentos]]` redirecionados
+- Prosa "Galho de Fundamentos" reescrita respeitando o novo lar (Ciência vs Engenharia); aliases `|Fundamentos]]` → `|Ciência da Computação]]`
+- **Batch 1b:** tag `fundamentos` → `ciencia-da-computacao` (195 notas) / `engenharia` (80 notas); Tecnologia mantém `fundamentos` (marcador de conteúdo); specs preservados
 
-### 🧹 Batch 2 — Limpar 47 links quebrados pré-existentes
-- Rodar `/verificar-wikilinks 03-Dominios`
-- Casos conhecidos: casing `Banco de dados`→`Banco de Dados`; notas de IA renomeadas na reformulação (`O que é IA`, `Tokenização`, `LLMs vs ML clássico`…); nota faltante em Estruturas de Dados; forward-refs a `HTML/index`/`CSS/index` (resolvem quando os domínios nascerem no Batch 4)
+### ✅ Batch 2 — Resolver links quebrados (FEITO 2026-06-23, tag `pre-batch2`, commit 5dabeb1)
+- Escopo real: **739 reportados → 0 quebras genuínas** (não os ~47 estimados). 319 links corrigidos em 128 arquivos.
+- Casos: normalização full-path (cluster IA path-relativo), casing `Banco de dados`→`Banco de Dados/index`, `[[Testes]]` por contexto (Engenharia vs Java), `[[index]]`→pasta-própria, Anatomia LLMs 13→15 (renumerado), headings de vídeo com `|`→`—` (WSL/RPA), forward-refs HTML/CSS → fonte interina
+- **GOTCHA:** o `check_wikilinks.py` reporta ~420 FALSOS POSITIVOS estruturais (âncoras same-file 384, imagens existentes 20, em-dash em `[nota](…)` 9, placeholders em comentário 7, crase em âncora 4). NÃO são quebras — validar contra heading/arquivo real antes de "consertar". Vale melhorar o script.
 
 ### 🧹 Batch 3 — Dissolver o resto do cluster JS (dedup + distribuir)
 - **Dedup primeiro**: `Mantine.md` e MUI existem em `React/` E `JavaScript/Frontend/` (Material UI.md vs MUI.md) — decidir versão canônica, fundir
