@@ -1,7 +1,7 @@
 ---
 title: "Como usar este vault"
 created: 2026-04-01
-updated: 2026-04-28
+updated: 2026-06-20
 type: how-to
 status: seedling
 tags:
@@ -88,6 +88,26 @@ Sendas são trilhas de estudo que **sequenciam Domínios** num caminho que atend
 3. [[Sendas]] — MOC de todas as sendas
 4. [[workflow]] — fluxo do codex e da skill `/glosa`
 5. **Wikilinks** `[[Nome]]` conectam conceitos entre zonas
+
+## Estudar e evoluir o texto com suas dúvidas
+
+As notas de trilha são escritas como **capítulo de livro** (ver [[Convenções de escrita]]) — feitas para ensinar do zero, não só consultar. Quando você relê para estudar e **trava** num ponto, essa dificuldade é o sinal mais valioso para melhorar o texto. Há um loop para capturá-la: **capturar → colher → evoluir.**
+
+**Capturar.** No exato ponto em que travar, largue um callout `> [!duvida]` com a pergunta como ela nasceu na sua cabeça:
+
+```md
+> [!duvida] por que dividir por √d_k, e não por d_k?
+> as peças não se encaixam aqui — parece lista de ingredientes
+```
+
+**Colher.** A skill `/colher-duvidas` (ver [[skills]]) varre os `[!duvida]` de uma nota ou galho e, para cada um, decide entre **consertar o fluxo** (dúvida sobre algo essencial) ou virar um `> [!question]` permanente (tangente legítima). Assim o texto vira uma conversa construída a partir de confusão **real** — algo que livro nenhum tem. Você também pode só tirar a dúvida comigo no chat e pedir para colher dali.
+
+**Prevenir.** `/plantar-duvidas` lê a nota como um iniciante e **planta** `[!duvida]` nos pontos de "lista de ingredientes" antes de você travar neles — o par preventivo da colheita.
+
+**Sensores extras.** Cards do Arcana (Anki) que você erra apontam de volta para o trecho fraco do texto.
+
+> [!warning] `[!duvida]` é transitório
+> Esses marcadores renderizam no site Quartz. Rode a colheita antes de publicar (`git push`).
 
 ## Templates disponíveis
 

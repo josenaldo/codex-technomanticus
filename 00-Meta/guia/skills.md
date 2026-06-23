@@ -1,7 +1,7 @@
 ---
 title: "Skills do vault (Codex)"
 created: 2026-05-24
-updated: 2026-06-03
+updated: 2026-06-20
 type: how-to
 status: seedling
 tags:
@@ -13,9 +13,9 @@ publish: false
 
 # Skills do vault (Codex)
 
-Catálogo das **15 skills** salvas em `.agents/skills/` — expostas ao Claude Code pelo symlink `.claude/skills → ../.agents/skills`. Dividem-se em dois grupos:
+Catálogo das **17 skills** salvas em `.agents/skills/` — expostas ao Claude Code pelo symlink `.claude/skills → ../.agents/skills`. Dividem-se em dois grupos:
 
-- **9 skills autorais** (PT-BR), construídas pro pipeline deste vault.
+- **11 skills autorais** (PT-BR), construídas pro pipeline deste vault.
 - **6 ferramentas de terceiros** (utilitários genéricos de Obsidian/web), versionadas no repo.
 
 Skills globais do Claude Code (Anthropic, superpowers) não estão aqui — só o que vive neste repositório.
@@ -29,7 +29,7 @@ Para o pipeline geral do vault, veja [[workflow]]. Para o mapa das zonas, [[Como
 | Domínio                                | Skills                                                                                   | Quando entra no fluxo                                       |
 | -------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | **Fichamento de leitura (Glosas)**     | `/glosa`, `/arquivar-glosas`, `/acordar-glosas`, `/promover-glosa`, `/sintetizar-glosas` | Captura → destilação → integração de artigos web            |
-| **Enriquecimento e manutenção**        | `/enriquecer-nota`, `/verificar-wikilinks`                                               | Refino de notas + higiene de links antes de publicar        |
+| **Enriquecimento e manutenção**        | `/enriquecer-nota`, `/plantar-duvidas`, `/colher-duvidas`, `/verificar-wikilinks`        | Refino de notas + dúvidas de leitura + higiene de links     |
 | **Glossários (transversal)**           | `/verbete`                                                                               | Adicionar termo a qualquer glossário do vault               |
 | **Revisão & Meta**                     | `/revisao-semanal`                                                                       | Relatório semanal (release notes) do trabalho no vault      |
 | **Ferramentas instaladas (terceiros)** | `defuddle`, `deadlink`, `obsidian-markdown`, `obsidian-bases`, `obsidian-cli`, `json-canvas` | Utilitários genéricos acionados sob demanda                 |
@@ -99,6 +99,25 @@ Enriquece uma nota com **lentes selecionáveis** (profundidade, lacunas, novidad
 - **Sem `path`:** pergunta qual nota enriquecer. **Com `path`:** usa o arquivo indicado (relativo à raiz do vault).
 - **Instrução complementar:** texto livre como contexto extra — foco temático, URLs a incorporar, ênfase numa seção.
 - **Quando usar:** "enriquecer", "melhorar", "atualizar" ou "revisar" uma nota.
+
+O loop de dúvidas de leitura é um **par simétrico**: `/plantar-duvidas` (preventiva) encontra a confusão; `/colher-duvidas` (resolutiva) a transforma em texto melhor. Ambas operam sobre callouts `> [!duvida]` — matéria-prima transitória que **não deve sobreviver a um `git push`**.
+
+### `/plantar-duvidas [path]`
+
+A ponta **preventiva**: lê a nota/galho como um iniciante e **planta** callouts `> [!duvida]` nos pontos que travam o aprendizado — peças sem encaixe ("lista de ingredientes"), saltos de dependência, essencial escondido em callout colapsado.
+
+- **Só planta, não resolve** — a resolução é da `/colher-duvidas`, rodada em seguida.
+- Escreve a pergunta **na voz do iniciante** (calibrada pela `fase:` da nota); confirma antes de gravar; não altera o conteúdo.
+- **Quando usar:** "plantar dúvidas", "ler como cético/iniciante", "achar os pontos confusos antes de eu travar".
+
+### `/colher-duvidas [path] [dúvidas soltas]`
+
+A ponta **resolutiva**: varre os `> [!duvida]` da nota/galho (ou dúvidas ditas na conversa) e, para cada um, faz a **decisão editorial** — **consertar o fluxo** (dúvida essencial) ou promover a um `> [!question]` polido (tangente legítima). Fecha o loop **capturar → colher → evoluir** do padrão [[Convenções de escrita|capítulo de livro]].
+
+- Plano com diff; nunca edita sem confirmar.
+- Regra de ouro: callout é para o *interessante saber*; o fluxo é para o *preciso saber* — nunca remendar conceito central num FAQ.
+- **`[!duvida]` é transitório** — renderiza no site; colha antes do `git push`.
+- **Quando usar:** "colher dúvidas", "evoluir a nota com minhas dúvidas", ou depois de travar num capítulo durante o estudo.
 
 ### `/verificar-wikilinks <pasta>`
 
