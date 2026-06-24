@@ -1,11 +1,11 @@
 ---
 title: "Encolhendo o KV cache — MHA, MQA, GQA, MLA"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-06-24
 type: concept
 status: growing
 fase: Magus
-progress: in-progress
+progress: done
 publish: true
 tags:
   - anatomia-llm
@@ -27,48 +27,179 @@ aliases:
 > Nota **Magus**. Continuação direta de [[04a - KV cache, prefill e decode — a física da inferência|KV cache, prefill e decode]] — leia aquele broto primeiro: ele mostra *por que* o KV cache domina a memória do decode. Aqui a pergunta é o passo seguinte: **como encolher esse cache sem destruir a qualidade do modelo?**
 
 > [!abstract] TL;DR
-> Olhe a fórmula do tamanho do cache — `2 × L × n_kv × d_head × bytes`. Camadas (L) e dimensão por head (d_head) são fixas pela arquitetura. A **única alavanca real é n_kv**: quantos conjuntos de Key/Value o modelo precisa guardar. Boa parte da evolução da atenção nos últimos anos é uma briga por esse número. **MHA** (original) dá um K/V por head — qualidade máxima, cache máximo. **MQA** faz todos os heads dividirem um único K/V — cache mínimo, mas a qualidade cai. **GQA** é o meio-termo que venceu: grupos de heads compartilham K/V. **MLA** muda a estratégia: comprime K/V num vetor latente low-rank — cache *menor que o MQA* e qualidade *acima do MHA*.
+> A fórmula do cache é `2 × L × n_kv × d_head × seq_len × bytes`. Camadas (L) e dimensão por head (d_head) são fixas. A **única alavanca real é n_kv** — quantos conjuntos distintos de Key/Value o modelo precisa guardar. MHA (original): n_kv = n_heads. MQA: n_kv = 1. GQA: n_kv = poucos grupos. MLA: comprime K/V em vetor latente low-rank, quebrando o trade-off qualidade vs. memória. A evolução de MHA → MQA → GQA → MLA é a história de como os modelos modernos tornaram viável contexto de 100k–1M tokens.
 
-## Por que isso importa
+## Por que isso importa: o impasse da janela longa
 
-[[04a - KV cache, prefill e decode — a física da inferência|Você já viu]] que o KV cache de um contexto de 100k tokens em MHA puro não cabe numa H100. Sem uma solução para isso, contexto longo seria economicamente impossível e nenhum dos modelos de janela gigante existiria. Esta é a corrida de engenharia que tornou viável o que hoje parece banal — e cai em entrevista de qualquer vaga de infra de LLM.
+[[04a - KV cache, prefill e decode — a física da inferência|Você já viu]] que o KV cache de um contexto de 100k tokens em MHA puro não cabe em uma GPU. Sem uma solução para isso, contexto longo seria economicamente impossível. Nenhum dos modelos com janela de 128k, 200k ou 1M tokens existiria.
+
+Esta é a corrida de engenharia que tornou viável o que hoje parece banal — e cai em entrevista de qualquer vaga de infra de LLM.
 
 ## A única alavanca: n_kv
 
-Olhe de novo a fórmula do cache: `2 × L × n_kv × d_head × bytes`. L e d_head são fixos pela arquitetura. A única alavanca real é **n_kv** — quantos conjuntos de Key/Value o modelo precisa guardar. Toda a tabela abaixo é uma forma diferente de mexer nesse número.
+Olhe de novo a fórmula:
 
-| Variante | Como compartilha K/V | KV cache | Trade-off |
-| -------- | -------------------- | -------- | --------- |
-| **MHA** (Multi-Head) | Cada head tem seu próprio K/V | Máximo (n_kv = n_heads) | Qualidade máxima, cache máximo |
-| **MQA** (Multi-Query) | *Todos* os heads dividem **um** K/V | Mínimo (n_kv = 1) | Cache despenca, qualidade cai em escala |
-| **GQA** (Grouped-Query) | Grupos de heads dividem K/V | Intermediário (n_kv = grupos) | O dial entre MHA e MQA |
-| **MLA** (Multi-head Latent) | Comprime K/V num vetor latente low-rank | Menor que MQA | Cache mínimo *e* qualidade acima do MHA |
+$$\text{KV cache} = 2 \times L \times n_{kv} \times d_{head} \times T \times \text{bytes}$$
 
-## A evolução, uma pancada de cada vez
+Onde:
+- $2$ = Key + Value (dois tensores)
+- $L$ = número de camadas (e.g., 32 para Llama 3 70B)
+- $n_{kv}$ = número de grupos de K/V **← a única alavanca livre**
+- $d_{head}$ = dimensão por head (e.g., 128)
+- $T$ = número de tokens no contexto
+- $bytes$ = 2 (FP16) ou 1 (INT8)
 
-- **MHA** é o original do paper de 2017: 32 heads → 32 conjuntos de K/V no cache. Cada head tem total liberdade para olhar para onde quiser, com seu próprio par Key/Value. Qualidade máxima — e cache caro.
-- **MQA** foi a primeira pancada (Shazeer, 2019): e se *todos* os heads consultassem o **mesmo** K/V, variando só a Query? O cache encolhe ~n_heads vezes de uma só vez. O problema: com um único K/V, o modelo perde nuance e degrada conforme a escala cresce — barato demais, e a qualidade cobra.
-- **GQA** é o meio-termo que venceu: divide os heads em **poucos grupos** (ex.: 32 heads em 8 grupos), cada grupo com seu K/V. Pega quase toda a economia do MQA sem a queda de qualidade. É o padrão de [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM|Qwen]], Llama 2/3 e Mistral — o dial sintonizado no ponto certo entre os dois extremos.
-- **MLA** muda a estratégia em vez de só mexer no dial: em vez de cortar heads, **comprime** Key e Value juntos num vetor latente de baixa dimensão antes de cachear, e os reconstrói na hora da atenção. Cache menor que o do MQA e, surpreendentemente, qualidade *acima* do MHA — a compressão funciona como um gargalo regularizador. É a aposta da família [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM|DeepSeek]] (V2/V3).
+Para um modelo com $L=32$, $d_{head}=128$, $T=100.000$, em FP16 ($bytes=2$):
 
-> [!tip] A intuição do MLA em uma frase
-> MQA/GQA economizam **jogando informação fora** (menos K/V distintos). MLA economiza **comprimindo** (guarda uma versão enxuta e reconstrói quando precisa) — por isso consegue cache pequeno *sem* o sacrifício de qualidade. É a diferença entre apagar fotos e zipar a pasta.
+| Variante | n_kv | KV cache (100k tokens) | vs. MHA |
+|----------|------|------------------------|---------|
+| MHA | 32 | **52 GB** | 1× |
+| GQA (8 grupos) | 8 | **13 GB** | 4× menor |
+| MQA | 1 | **1,6 GB** | 32× menor |
+| MLA | ~3–4 equiv.* | **~1,4 GB** | 37× menor |
+
+*MLA comprime em dimensão latente (~512), não em n_kv diretamente — o equivalente é aproximado.*
+
+Toda a tabela abaixo é uma forma diferente de mexer no n_kv — ou de atacar o problema de ângulo diferente (MLA).
+
+## A evolução em quatro movimentos
+
+```mermaid
+graph LR
+    A["MHA\n1 K/V por head\nn_kv = 32\nQualidade máxima\nCache máximo"] --> B["MQA\n1 K/V para todos\nn_kv = 1\nCache mínimo\nQualidade cai"]
+    B --> C["GQA\nGrupos de heads\nn_kv = 2–8\nEquilíbrio\nO padrão atual"]
+    C --> D["MLA\nCompressão low-rank\nn_kv = latente\nCache menor que MQA\nQualidade acima MHA"]
+    style A fill:#ff9999,stroke:#cc0000
+    style B fill:#ffeb99,stroke:#cc9900
+    style C fill:#99ff99,stroke:#009900
+    style D fill:#99ccff,stroke:#0066cc
+```
+
+### MHA — Multi-Head Attention (2017)
+
+O original. 32 heads → 32 conjuntos independentes de K/V. Cada head tem total liberdade para "olhar" para o que quiser no contexto, com seu próprio par Key/Value.
+
+- **Vantagem:** qualidade máxima — cada head pode especializar sua atenção de forma independente
+- **Problema:** cache proporcional a n_heads. Com 32 heads e 100k tokens, ~52 GB. Impraticável para janelas longas.
+
+### MQA — Multi-Query Attention (Shazeer, 2019)
+
+Primeira grande pancada: e se *todos* os heads compartilhassem **um único** par K/V, mudando apenas a Query entre heads?
+
+```mermaid
+graph TD
+    subgraph "MQA: 4 heads, 1 K/V"
+        KV["K/V único\n(único par no cache)"]
+        Q1["Query 1"] --> KV
+        Q2["Query 2"] --> KV
+        Q3["Query 3"] --> KV
+        Q4["Query 4"] --> KV
+        KV --> O["Outputs\ncombinados"]
+    end
+    style KV fill:#99ff99,stroke:#00cc00
+```
+
+O cache encolhe de n_heads × (K+V) para apenas 1 × (K+V). Para 32 heads: **32× menor**. De 52 GB → 1,6 GB.
+
+O custo: com um único par K/V, todos os heads "veem" o mesmo contexto comprimido. O modelo perde nuance — em modelos grandes, a qualidade degrada de forma perceptível em tarefas que exigem raciocínio de múltiplos ângulos sobre o contexto.
+
+### GQA — Grouped-Query Attention (Google, 2023)
+
+O meio-termo que venceu. Em vez de 1 K/V para todos ou n_heads K/Vs distintos, GQA divide os heads em **G grupos** (e.g., G=8), cada grupo com seu próprio K/V:
+
+```mermaid
+graph TD
+    subgraph "GQA: 8 heads, 2 grupos (G=2)"
+        KV1["K/V Grupo 1"]
+        KV2["K/V Grupo 2"]
+        Q1["Q head 1"] --> KV1
+        Q2["Q head 2"] --> KV1
+        Q3["Q head 3"] --> KV1
+        Q4["Q head 4"] --> KV1
+        Q5["Q head 5"] --> KV2
+        Q6["Q head 6"] --> KV2
+        Q7["Q head 7"] --> KV2
+        Q8["Q head 8"] --> KV2
+    end
+    style KV1 fill:#ffe0b3,stroke:#ff9800
+    style KV2 fill:#ffe0b3,stroke:#ff9800
+```
+
+Com G=8 grupos (de 32 heads), o cache encolhe 4× comparado ao MHA — de 52 GB → 13 GB para 100k tokens. A perda de qualidade é mínima: os heads dentro de um grupo ainda têm Queries independentes; só o K/V é compartilhado.
+
+GQA é o padrão de Llama 2/3, Mistral e Qwen: o dial sintonizado no ponto certo entre MHA e MQA.
 
 > [!question]- Dá para ligar GQA num modelo já treinado em MHA?
-> Não dá para simplesmente "ativar" — mas dá para converter com *uptraining*: agrupam-se os K/V heads (média dos pesos) e re-treina-se com uma fração pequena do compute original (~5%) para o modelo se reacomodar. Foi assim que o Llama 2 ganhou suas versões GQA. Trocar a arquitetura de atenção não é de graça, mas é muito mais barato que treinar do zero.
+> Não é troca imediata — mas dá para converter com *uptraining*: agrupam-se os K/V heads (média dos pesos) e re-treina-se com uma fração pequena do compute original (~5%). O modelo se reacomoda ao novo regime de compartilhamento. Foi assim que o Llama 2 adicionou as versões GQA. Trocar a arquitetura de atenção tem custo — mas é ordens de grandeza mais barato que treinar do zero.
 
-| Variante | Redução de memória típica | Em produção |
-| -------- | ------------------------- | ----------- |
-| **GQA** | 2-8x menos que MHA | Llama 2/3, Mistral, Qwen |
-| **MLA** | ~1 ordem de grandeza menor que MHA | DeepSeek-V2/V3 |
+### MLA — Multi-head Latent Attention (DeepSeek, 2024)
+
+MLA muda a estratégia completamente. Em vez de reduzir o número de K/V (dial MQA/GQA), MLA **comprime** Key e Value num vetor latente de baixa dimensão antes de armazenar no cache:
+
+```mermaid
+graph LR
+    A["K, V originais\nd_model × n_heads\n(dados no forward pass)"] --> B["Projeção de compressão\nW_DKV: down-projection"]
+    B --> C["Vetor latente c_KV\n~512 dims\n← APENAS ISSO vai pro cache"]
+    C --> D["Projeção de reconstrução\nW_UK, W_UV: up-projection"]
+    D --> E["K, V reconstruídos\npara calcular atenção"]
+    style C fill:#99ccff,stroke:#0066cc
+    style A fill:#ff9999,stroke:#cc0000
+```
+
+O cache armazena apenas o vetor comprimido (~512 dimensões) em vez dos K/V completos (n_heads × d_head = 32 × 128 = 4096 por camada). Na hora de calcular a atenção, o vetor latente é "descomprimido" via up-projection.
+
+**O resultado surpreendente:** o MLA consegue cache *menor que o MQA* e qualidade *acima do MHA*. Por quê? A compressão low-rank atua como um regularizador que força o modelo a extrair representações mais compactas e generalizáveis — é um gargalo de informação que, paradoxalmente, melhora a qualidade.
+
+> [!tip] A intuição do MLA em uma frase
+> MQA/GQA economizam **jogando informação fora** (menos K/V distintos). MLA economiza **comprimindo** (guarda uma versão enxuta e reconstrói quando precisa) — por isso consegue cache pequeno *sem* o sacrifício de qualidade. É a diferença entre apagar fotos e zipar a pasta de fotos.
+
+## Comparativo final: o que cada variante escolhe sacrificar
+
+```mermaid
+xychart-beta
+    title "KV cache (GB) — 100k tokens, 32 camadas, 32 heads, d_head=128, FP16"
+    x-axis ["MHA (n_kv=32)", "GQA (n_kv=8)", "MQA (n_kv=1)", "MLA (~latente)"]
+    y-axis "GB" 0 --> 55
+    bar [52, 13, 1.6, 1.4]
+```
+
+| Variante | Sacrifício | Ganho | Em produção |
+|----------|-----------|-------|-------------|
+| **MHA** | Cache máximo (~52 GB/100k) | Qualidade máxima | GPT-2, BERT, modelos antigos |
+| **MQA** | Qualidade cai em escala | Cache 32× menor | PaLM, alguns modelos de edge |
+| **GQA** | Leve perda de nuance | Cache 4–8× menor | Llama 2/3, Mistral, Qwen |
+| **MLA** | Custo de up-projection em cada step | Cache 37× menor que MHA, qualidade acima | DeepSeek V2/V3 |
+
+## Como explicar em inglês
+
+Multi-Head Attention variants all address the same bottleneck: the KV cache grows linearly with sequence length, making long contexts prohibitively expensive. The key parameter is n_kv — how many distinct Key/Value sets the model stores. MHA keeps one per head (maximum quality, maximum cache). MQA collapses all heads to a single KV pair (minimum cache, quality degrades at scale). GQA groups heads to share KV pairs, hitting the sweet spot between the two. MLA takes a different approach: it compresses K and V into a low-rank latent vector before caching, then reconstructs them at attention time — achieving smaller cache than MQA while matching or exceeding MHA quality.
+
+| PT | EN |
+|----|---|
+| Atenção multi-cabeça | Multi-Head Attention (MHA) |
+| Atenção multi-query | Multi-Query Attention (MQA) |
+| Atenção de query agrupada | Grouped-Query Attention (GQA) |
+| Atenção latente multi-cabeça | Multi-head Latent Attention (MLA) |
+| Vetor latente | Latent vector |
+| Projeção de compressão | Down-projection / compression projection |
+| Projeção de reconstrução | Up-projection / reconstruction projection |
+| Matriz de baixo rank | Low-rank matrix |
+| Grupos de heads | Head groups |
+| Re-treinamento de conversão | Uptraining |
+
+## Ver mais
+
+- **[Understand Grouped Query Attention — MHA, MQA e GQA (2025)](https://www.youtube.com/watch?v=kx3rETIxo4Q)** — cobertura da progressão MHA → MQA → GQA enquadrando o GQA como ponte para a atenção latente. Publicado abr/2025.
+- **[Gen AI Transformer Attention — MHA, MQA & GQA (2024)](https://www.youtube.com/watch?v=p7tkYIH46zg)** — visão compacta das três variantes em um único vídeo. Publicado jun/2024.
+- **[Flash Attention from First Principles — Umar Jamil](https://www.youtube.com/watch?v=zy8ChVd_oTM)** — derivação matemática do FlashAttention (IO-aware, tiling) e implementação em Triton. Complemento ideal para a nota [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]].
 
 ## Veja também
 
 - [[04a - KV cache, prefill e decode — a física da inferência]] — por que o cache importa (pré-requisito desta nota)
-- [[04 - Atenção e o mecanismo transformer]] — a nota-mãe: o que são os heads e o multi-head
-- [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]] — o outro ataque: a conta O(n²)
-- [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — MLA e GQA em produção
-- [[09 - Dense vs Mixture-of-Experts]] — a outra grande alavanca de eficiência (FFN esparsa)
+- [[04 - Atenção e o mecanismo transformer]] — a nota-mãe: o que são os heads e o mecanismo de atenção
+- [[04c - Atenção eficiente — FlashAttention, sparse e híbrida]] — o outro ataque: reduzir o custo O(n²) do cálculo da atenção
+- [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] — MLA e GQA em produção no DeepSeek e Qwen
+- [[09 - Dense vs Mixture-of-Experts]] — a outra grande alavanca de eficiência (FFN esparsa vs. densa)
 
 ## Referências
 
