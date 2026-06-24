@@ -1,10 +1,10 @@
 ---
 title: "Como LLMs são treinados — pretraining, SFT, RLHF"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-24
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-llm
@@ -23,6 +23,17 @@ aliases:
 
 > [!abstract] TL;DR
 > O pipeline canônico tem **quatro estágios** que explicam quase todo o comportamento que você vê na API. **Pretraining** "decora a internet" (predict next token, custo de centenas de milhões em compute). **SFT** ensina formato de assistente. **RLHF** alinha com preferências humanas. **Constitutional AI** (Anthropic) reduz dependência de labelers via princípios escritos. Saber esse pipeline explica por que modelos são bajuladores, recusam tarefas inofensivas, e por que [[Dicionário de IA#fine-tuning|fine-tuning]] posterior muda menos do que você espera.
+
+## O comportamento que você vê são camadas, não traços
+
+Você usa Claude todos os dias e percebe padrões de comportamento estranhos: começa respostas com "Certamente!", às vezes recusa uma tarefa perfeitamente razoável, insiste em disclaimers quando você não pediu, e de vez em quando "alucina" um fato com absoluta confiança. Esses comportamentos parecem aleatórios, mas cada um vem de um estágio diferente do treinamento.
+
+- O "Certamente!" e a bajulação → **RLHF**: humanos avaliadores deram feedback positivo para respostas afirmativas e amigáveis
+- A recusa excessiva → **RLHF + Constitutional AI**: calibração de safety às vezes excessivamente conservadora
+- A alucinação confiante → **Pretraining**: o modelo aprendeu a prever texto plausível, não a saber quando não sabe
+- A qualidade geral da resposta → **SFT**: o formato de assistente foi ensinado aqui
+
+Entender essas camadas tem valor prático: saber que recusas excessivas são artefatos de RLHF e não do modelo base significa que um system prompt claro frequentemente as reverte. Saber que alucinação vem do mecanismo central de pretraining significa que não há "modo de certeza" — RAG ou tool use são as únicas soluções reais.
 
 ## O pipeline em uma imagem
 
@@ -141,6 +152,27 @@ Para modelos MoE (DeepSeek, Mixtral), pós-training tem cuidados específicos co
 
 Modelos modernos (Claude 200K+, Gemini 1M+, GPT-5) precisam de SFT/RLHF em prompts longos para evitar [[06 - A janela de contexto|context rot]] muito severo.
 
+## Escala do treinamento: comparando os estágios
+
+Os quatro estágios têm custos, durações e volumes de dados radicalmente diferentes. Entender essas proporções ajuda a calibrar expectativas:
+
+```mermaid
+xychart-beta
+    title "Volume de dados por estágio de treinamento (escala relativa)"
+    x-axis ["Pretraining", "SFT", "RLHF", "Constitutional AI"]
+    y-axis "Volume relativo (log scale)" 0 --> 100
+    bar [100, 2, 5, 1]
+```
+
+| Estágio | Dados | Custo estimado | Duração |
+|---|---|---|---|
+| **Pretraining** | Trilhões de tokens (web, livros, código) | $10M–$500M | Meses em milhares de GPUs |
+| **SFT** | 10k–500k pares de instrução/resposta | $10k–$500k | Dias |
+| **RLHF** | 100k–1M comparações humanas | $1M–$10M (labelers) | Semanas |
+| **Constitutional AI** | Princípios escritos + self-play | Menor que RLHF | Dias |
+
+A implicação: **pretraining domina**. Todo o conhecimento e capacidade do modelo vem de lá. SFT, RLHF e CAI são ajustes finos de comportamento — não adicionam conhecimento novo, ajustam como o modelo o aplica.
+
 ## Implicações práticas para você
 
 ### 1. Fine-tuning posterior do usuário muda **pouco**
@@ -184,12 +216,35 @@ Escolha de modelo é também escolha de **persona** moldada pelo pós-training.
 
 Ver [[16 - Fine-tuning vs prompting vs RAG]] para árvore de decisão.
 
+## Como explicar em inglês
+
+LLM training has four sequential stages that explain almost all model behavior. **Pretraining** trains on trillions of internet tokens to predict the next token — the model learns language, facts, and code but doesn't know how to be an assistant. **SFT** (Supervised Fine-Tuning) trains on thousands of instruction-response pairs written by humans, teaching the model to answer in assistant format. **RLHF** (Reinforcement Learning from Human Feedback) trains a reward model from human preference comparisons, then uses RL (usually PPO or DPO) to optimize the LLM to maximize that reward — producing helpful, harmless, honest behavior, but also side effects like sycophancy and excessive refusals. **Constitutional AI** (Anthropic-specific) uses a written set of principles and the model itself as an evaluator to reduce dependence on human labelers. The key engineering insight: most of a model's capability comes from pretraining; the other stages shape *how* it applies that capability, not how much it has.
+
+| PT | EN |
+|----|---|
+| Pré-treinamento | Pretraining |
+| Ajuste fino supervisionado | Supervised Fine-Tuning (SFT) |
+| Aprendizado por reforço com feedback humano | Reinforcement Learning from Human Feedback (RLHF) |
+| IA constitucional | Constitutional AI |
+| Modelo de recompensa | Reward model |
+| Otimização de política proximal | Proximal Policy Optimization (PPO) |
+| Otimização direta de preferência | Direct Preference Optimization (DPO) |
+| Bajulação | Sycophancy |
+| Esquecimento catastrófico | Catastrophic forgetting |
+| Labeler | Human labeler / human rater |
+
+## Ver mais
+
+- **[Andrej Karpathy — State of GPT (2023)](https://www.youtube.com/watch?v=bZQun8Y4L2A)** — a apresentação canônica do pipeline de treinamento. Karpathy explica cada estágio com diagramas, incluindo os side effects do RLHF e por que DPO está substituindo PPO. Ainda é a melhor introdução ao tema.
+- **[Ouyang et al. — InstructGPT (2022)](https://arxiv.org/abs/2203.02155)** — o paper da OpenAI que introduziu RLHF para LLMs (base do ChatGPT). Mostra a diferença de comportamento entre modelo só com pretraining vs modelo com SFT vs modelo com RLHF.
+- **[Anthropic — Constitutional AI (2022)](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)** — o paper descrevendo como a Anthropic usa princípios escritos e o próprio modelo como avaliador, reduzindo dependência de labelers humanos para safety.
+
 ## Veja também
 
 - [[01 - O que é um LLM]]
 - [[16 - Fine-tuning vs prompting vs RAG]]
 - [[19 - Evaluation de LLMs em produção]]
-- [[Spec-Driven Development|02 - O que é Spec-Driven Development]]
+- [[21 - Fine-tuning na prática — LoRA, QLoRA, DPO]]
 
 ## Referências
 

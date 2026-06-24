@@ -1,10 +1,10 @@
 ---
 title: "Fine-tuning vs prompting vs RAG"
 created: 2026-05-02
-updated: 2026-06-15
+updated: 2026-06-24
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-llm
@@ -21,6 +21,18 @@ aliases:
 
 > [!abstract] TL;DR
 > Três técnicas para adaptar um LLM ao seu caso de uso: **prompting** (instruções no contexto — custo zero, efeito imediato), **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]]** (busca e injeta informação relevante no contexto — custo moderado, dados sempre atualizados), e **[[Dicionário de IA#fine-tuning|fine-tuning]]** (retreina o modelo nos seus dados — custo alto, muda o comportamento do modelo). Em 2026, a maioria dos engenheiros resolve 95% dos problemas com prompting + RAG. Fine-tuning é reservado para tarefas de alta especialização com volume massivo.
+
+## O erro de $5.000 que você não precisa cometer
+
+Você está construindo um chatbot de suporte técnico. O modelo usa terminologia genérica demais, o tom está errado, e às vezes inventa informações. Alguém da equipe sugere: "vamos fazer fine-tuning". Três semanas depois, $5.000 em compute e 200 horas de engenharia, você tem um modelo fine-tuned que... performa exatamente igual ao original com um bom system prompt.
+
+Esse cenário é repetido em dezenas de equipes por ano. A causa: confundir *qual camada do problema* cada técnica resolve.
+
+- O modelo usa terminologia errada → **prompting** resolve (adicione exemplos e glossário ao system prompt)
+- O modelo inventa informações sobre o produto → **RAG** resolve (injete a documentação atualizada a cada chamada)
+- O modelo precisa classificar 50.000 tickets por dia com padrão específico → **fine-tuning** resolve (o único caso onde o custo se justifica)
+
+O fine-tuning é a técnica mais cara e menos flexível das três. A árvore de decisão desta nota existe precisamente para você exaurir as duas primeiras antes de cogitar a terceira.
 
 ## O que é
 
@@ -171,6 +183,23 @@ graph TD
 - **Solução:** RAG com vector DB de papers + prompting
 - **Motivo:** Base de conhecimento grande e especializada
 
+## Comparativo de custo e tempo de setup
+
+```mermaid
+xychart-beta
+    title "Tempo de setup (dias) até produção"
+    x-axis ["Prompting", "RAG", "Fine-tuning"]
+    y-axis "Dias" 0 --> 90
+    bar [0, 14, 60]
+```
+
+| Critério | Prompting | RAG | Fine-tuning |
+|---|---|---|---|
+| **Custo inicial** | $0 | $100–$1k | $1k–$50k |
+| **Custo/chamada** | tokens de input | tokens + retrieval | hosting do modelo |
+| **Flexibilidade** | Altíssima (muda o prompt) | Alta (muda o index) | Baixa (retreinar) |
+| **Dados atualizados** | Manual | ✅ Automático | ❌ Retreinar |
+
 ## Armadilhas
 
 - **"Fine-tuning é sempre melhor"** — é o mais caro e menos flexível. Use apenas quando prompting + RAG comprovadamente falham.
@@ -178,6 +207,28 @@ graph TD
 - **"Prompting não escala"** — com context engineering disciplinado (caching, state files, context pruning), prompting escala para a maioria dos casos.
 - **Fine-tuning com poucos dados** — menos de 1000 exemplos de alta qualidade geralmente não produz melhoria significativa. O modelo pode memorizar em vez de generalizar.
 - **Combinar errado** — RAG + fine-tuning pode degradar se o modelo fine-tuned ignora o contexto retrieved em favor do "conhecimento" aprendido.
+
+## Como explicar em inglês
+
+Three techniques to adapt an LLM to your use case, operating at different layers. **Prompting** (context engineering) puts instructions and examples in the input at call time — zero setup, immediately reversible. **RAG** (Retrieval-Augmented Generation) queries a vector index at call time and injects retrieved documents into the prompt — the model never "knows" the information, it reads it fresh each time, so it's always current. **Fine-tuning** modifies the model's weights on your data — the only technique that changes the model's behavior permanently, but also the most expensive to set up and the least flexible to update. In 2026, prompting + RAG handles 95%+ of use cases. Fine-tuning only wins when: (1) you have high daily call volume with a repetitive pattern, (2) your task requires very specific output format the base model won't follow reliably, or (3) you need to reduce latency by eliminating long system prompts.
+
+| PT | EN |
+|----|---|
+| Ajuste fino | Fine-tuning |
+| Engenharia de contexto | Context engineering |
+| Geração aumentada por recuperação | Retrieval-Augmented Generation (RAG) |
+| Índice vetorial | Vector index |
+| Recuperador | Retriever |
+| Ajuste fino com supervisão | Supervised Fine-Tuning (SFT) |
+| Aprendizado de poucos exemplos | Few-shot learning |
+| Aprendizado de nenhum exemplo | Zero-shot learning |
+| Memorização catastrófica | Catastrophic forgetting |
+
+## Ver mais
+
+- **[Anthropic — Prompt Engineering Guide (2026)](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)** — guia oficial com técnicas avançadas de context engineering. O ponto de partida antes de cogitar RAG ou fine-tuning.
+- **[Lewis et al. — RAG: Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (2020)](https://arxiv.org/abs/2005.11401)** — o paper fundador de RAG, que demonstrou que recuperar documentos e injetá-los no prompt supera o fine-tuning para tarefas de knowledge-intensive.
+- **[Jerry Liu (LlamaIndex) — When to use RAG vs fine-tuning (2024)](https://www.llamaindex.ai)** — análise prática do criador do LlamaIndex: quando cada técnica ganha, com exemplos de arquiteturas reais de produção.
 
 ## Veja também
 
