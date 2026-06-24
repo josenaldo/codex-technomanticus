@@ -46,14 +46,14 @@ Da gestão de dependências aos bundlers, passando por transpilação, qualidade
 - [[19 - Test runner nativo (node-test) e o cenário de testes]] — node:test, Vitest, Jest, Bun
 - [[20 - Bun como runtime e toolkit all-in-one]] — o toolkit unificado
 
-## 🔴 Magus — escala, produção, futuro *(a escrever)*
+## 🔴 Magus — escala, produção, futuro
 
-- 21 — Monorepos: workspaces, Turborepo, Nx e changesets
-- 22 — Single Executable Apps (SEA) e empacotamento
-- 23 — Build em produção, CI e determinismo
-- 24 — Supply chain e segurança de dependências
-- 25 — IA no tooling e build
-- 26 — Decision tree, futuro e entrevista (capstone)
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — workspaces, caching de tasks, release com changesets
+- [[22 - Single Executable Apps (SEA) e empacotamento]] — empacotar um app num binário único (Node/Bun/Deno)
+- [[23 - Build em produção, CI e determinismo]] — build reprodutível, cache de CI, source maps em prod
+- [[24 - Supply chain e segurança de dependências]] — integridade, provenance, typosquatting, dependency confusion
+- [[25 - IA no tooling e build]] — agentes, codegen, MCP no dev loop; o que muda e o que não
+- [[26 - Decision tree, futuro e entrevista]] — capstone: que ferramenta pra que projeto + revisão + entrevista
 
 ## Referência
 
