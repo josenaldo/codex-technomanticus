@@ -1,10 +1,10 @@
 ---
 title: "APIs de LLM — anatomia de uma chamada"
 created: 2026-05-02
-updated: 2026-05-25
+updated: 2026-06-24
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-llm
@@ -20,6 +20,19 @@ aliases:
 
 > [!abstract] TL;DR
 > Uma chamada de API de LLM é um POST HTTP com um array de mensagens (system, user, assistant), parâmetros de controle (temperature, max_tokens) e opcionalmente definições de tools. A resposta vem com o texto gerado e metadados de uso (tokens consumidos). Entender essa anatomia é fundamental para debugar problemas, otimizar custos e construir agentes — porque cada "conversa" com um LLM é na verdade uma série de chamadas HTTP stateless.
+
+## O que ninguém te conta sobre "memória" de conversa
+
+Você abre o Claude, faz uma pergunta, e na segunda mensagem pergunta "pode expandir o ponto 3?". O modelo responde como se lembrasse o que acabou de dizer. Parece memória. Não é.
+
+Cada chamada de API é **completamente stateless**. O servidor não guarda nada entre requests. Quando você envia a segunda mensagem, sua ferramenta (Claude.ai, Cursor, API direta) está enviando **toda a conversa desde o início** de volta ao servidor: a mensagem 1, a resposta 1, a mensagem 2 — tudo num único array `messages`. O modelo vê o histórico completo a cada vez porque você reenviu tudo.
+
+Isso tem duas consequências que afetam custo e arquitetura:
+
+1. **Custo cresce com o número de turns.** Numa conversa de 10 messages com sistema de 2k tokens, a décima chamada já envia ~15-20k tokens de input antes mesmo de você digitar sua pergunta. É custo acumulativo, não fixo.
+2. **Você controla o que "o modelo lembra".** Como você monta o array `messages` é uma decisão de engenharia. Pode truncar histórico antigo, resumir turnos, excluir mensagens irrelevantes. "Memória" de LLM é sempre implementada, nunca mágica.
+
+Essa compreensão é o que separa quem *usa* uma API de LLM de quem *entende* o que está fazendo — e o segundo tipo constrói sistemas mais baratos, mais rápidos e mais confiáveis.
 
 ## O que é
 
@@ -151,6 +164,20 @@ Três implicações práticas pro que vem a seguir neste artigo:
 | `cache_read_input_tokens`     | Tokens lidos do cache (mais baratos)                  |
 | `cache_creation_input_tokens` | Tokens escritos no cache (custo normal)               |
 
+### O custo acumulativo de uma conversa de agente
+
+Cada turn de uma conversa de agente reenvia o histórico inteiro. O custo de input cresce quase linearmente com os turns:
+
+```mermaid
+xychart-beta
+    title "Tokens de input acumulados por turn (system 2k + tool schemas 3k)"
+    x-axis ["Turn 1", "Turn 5", "Turn 10", "Turn 20", "Turn 50"]
+    y-axis "Input tokens (k)" 0 --> 300
+    line [6, 22, 50, 110, 280]
+```
+
+Turn 50 de uma sessão de agente envia ~280k tokens de input — só em histórico acumulado, antes de qualquer work novo. Por isso sessões longas de agente são desproporcionalmente caras, e por isso técnicas como **prompt caching** (cachear o system prompt e início do histórico) e **context compression** (resumir turnos antigos) são essenciais em agentes de produção.
+
 ### Temperature e suas consequências
 
 | Temperature | Comportamento                            | Quando usar                             |
@@ -193,6 +220,30 @@ Cada seta para a API é uma chamada HTTP completa, com o histórico inteiro reen
 - **max_tokens muito alto** — não custa nada configurar, mas se o modelo gerar até o limite, você paga. Defina o mínimo razoável para a tarefa.
 - **Temperature 0 para tudo** — temperature 0 é boa para código, mas pode causar repetição em texto longo. Para documentação, use 0.2-0.4.
 - **Não monitorar `usage`** — se você não loga os tokens consumidos por chamada, não tem como identificar onde está o desperdício.
+
+## Como explicar em inglês
+
+An LLM API call is a stateless HTTP POST containing a `messages` array (system, user, assistant roles), control parameters (temperature, max_tokens), and optional tool definitions. The server holds no state between requests — "conversation memory" is an illusion maintained by the client resending the full message history on every call. This has a critical cost implication: in an agentic session, turn 10 sends 10× the tokens of turn 1, because it includes the entire prior conversation as input tokens. The `usage` field in the response is the authoritative cost meter — input_tokens counts everything you sent (messages + system prompt + tool definitions), output_tokens counts what the model generated. Tool definitions are a hidden input cost: 10 tools with verbose descriptions can consume 5k+ input tokens per call before the model even reads your message.
+
+| PT | EN |
+|----|---|
+| Chamada de API | API call |
+| Sem estado | Stateless |
+| Mensagens | Messages |
+| Papel / função | Role |
+| Prompt de sistema | System prompt |
+| Tokens de entrada | Input tokens |
+| Tokens de saída | Output tokens |
+| Definições de ferramentas | Tool definitions |
+| Esquema de ferramenta | Tool schema |
+| Motivo de parada | Stop reason / finish reason |
+| Streaming de eventos enviados pelo servidor | Server-Sent Events (SSE) streaming |
+
+## Ver mais
+
+- **[Anthropic — Messages API Reference (2026)](https://docs.anthropic.com/en/api/messages)** — a referência completa do formato Anthropic: campos, roles, tool use, streaming. O ponto de partida para qualquer integração com Claude.
+- **[OpenAI — Chat Completions API Reference (2026)](https://platform.openai.com/docs/api-reference/chat)** — o formato que se tornou o padrão da indústria (OpenAI-compatible API). Quase todos os providers (Ollama, vLLM, SiliconFlow) implementam essa interface.
+- **[Simon Willison — Understanding LLM APIs (2024)](https://simonwillison.net)** — Willison (criador do Datasette, co-criador do Django) escreve análises acessíveis e precisas sobre APIs de LLM, com foco em casos de uso práticos e armadilhas comuns.
 
 ## Veja também
 

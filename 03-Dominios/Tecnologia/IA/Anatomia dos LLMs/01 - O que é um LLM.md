@@ -1,7 +1,7 @@
 ---
 title: O que é um LLM
 created: 2026-05-02
-updated: 2026-06-21
+updated: 2026-06-24
 type: concept
 status: evergreen
 progress: done
@@ -179,6 +179,24 @@ E o começo desse ciclo é o primeiro passo do diagrama lá em cima — **quebra
 - [[06 - A janela de contexto]] — o limite de tokens que o modelo enxerga
 - [[15 - Reasoning models e chain-of-thought]] — o compute de inferência que virou o novo eixo
 - [[20 - Compressão de modelos — quantização e destilação]] — por que um modelo menor pode bater um maior (o caso T5/PaLM)
+
+## Como explicar em inglês
+
+A **Large Language Model** (LLM) is a neural network trained on billions of tokens of text to predict the next token in a sequence. This single objective — given all previous context, what comes next? — when applied at massive scale, produces models capable of coding, reasoning, translating, and following complex instructions. The key mental model: an LLM doesn't "know" things in the human sense; it learns statistical correlations between tokens. When it generates text, it's sampling from a probability distribution over all possible next tokens. This is why it can produce confident-sounding hallucinations — there's no internal "truth flag," only what's statistically plausible given the context. In 2026, LLMs span from 7B open-weight models (running on consumer hardware) to 1T+ parameter frontier models (accessible only via API), organized into tiers by capability and cost.
+
+| PT | EN |
+|----|---|
+| Modelo de linguagem grande | Large Language Model (LLM) |
+| Parâmetros / pesos | Parameters / weights |
+| Janela de contexto | Context window |
+| Incorporação | Embedding |
+| Geração autoregressiva | Autoregressive generation |
+| Aprendizado em contexto | In-context learning |
+| Modelo de pesos abertos | Open-weight model |
+| Modelo de fronteira | Frontier model |
+| Modelos de mistura de especialistas | Mixture of Experts (MoE) |
+| Capacidades emergentes | Emergent capabilities |
+| Alucinação | Hallucination |
 
 ## Ver mais
 
