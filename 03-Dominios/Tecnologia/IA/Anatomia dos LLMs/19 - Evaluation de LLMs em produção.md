@@ -1,10 +1,10 @@
 ---
 title: "Evaluation de LLMs em produção"
 created: 2026-04-11
-updated: 2026-05-29
+updated: 2026-06-24
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-llm
@@ -20,6 +20,12 @@ aliases:
 ---
 
 # Evaluation de LLMs em produção
+
+Você mudou o system prompt na terça. Na quarta, o VP de produto perguntou se a qualidade estava melhor. Você respondeu "acho que sim". Na sexta, um usuário reportou que o modelo estava gerando respostas mais longas e com mais jargão técnico. Mais um. Ou não. Você não sabe — e esse é exatamente o problema.
+
+Em software tradicional, essa cena seria impensável. Você tem testes. Uma mudança que quebra comportamento esperado falha no CI antes de chegar em produção. Em LLM, a maioria dos times opera no "olhei e achei melhor" — a versão de engenharia de superstição. Você troca prompt B por prompt C, a equipe acha que ficou melhor, e seis semanas depois você não consegue explicar por que a satisfação do usuário caiu 8%.
+
+Evaluation não é "fase de QA". É o que separa engenharia de LLM de adivinhação sistemática.
 
 > [!abstract] TL;DR
 > LLM em produção sem evaluation é aposta. Não é tradeoff — é dívida. **Práticas mínimas:** golden set de 30-100 exemplos representativos rodado a cada mudança de prompt/modelo; **LLM-as-judge** para tarefas subjetivas (com cuidado de viés); **[[Dicionário de IA#tracing|traces]] e [[Dicionário de IA#Observability|observabilidade]]** instrumentando toda chamada (tokens, latência, custo, taxa de erro); **A/B test** em produção com métricas de negócio. Sem isso, "prompt engineering" vira superstição — mudou prompt, ninguém sabe se melhorou.
@@ -241,6 +247,20 @@ def get_response(user_id, query):
 >
 > Maioria dos times está em Nível 0-1. Nível 2 é meta para 2026.
 
+## O ROI de evaluation
+
+O argumento financeiro é simples: eval é barato; bug em produção não é.
+
+```mermaid
+xychart-beta
+    title "Custo estimado: eval vs bug não detectado (USD)"
+    x-axis ["Golden set 100ex", "LLM-as-judge 50ex", "Bug 1 semana prod", "Bug 1 mês prod"]
+    y-axis "Custo ($)" 0 --> 30000
+    bar [50, 200, 5000, 25000]
+```
+
+Um golden set de 100 exemplos rodando em CI custa ~$1/rodada (Sonnet × $0.01/exemplo) e ~$50/mês com 50 rodadas. Um bug de regressão de prompt que passa despercebido por uma semana — usuários recebendo respostas incorretas, suporte escalado, confiança perdida — custa ordens de magnitude mais. **O ROI de eval se paga na primeira regressão detectada antes de ir a produção.**
+
 ## Anti-patterns
 
 - **Eval só "no final"** — após shippar, nunca mais
@@ -260,6 +280,31 @@ def get_response(user_id, query):
 | **Custo de eval / custo total** | <5% |
 | **Time to detect prompt regression** | <1 dia |
 | **A/B test em features novas** | Sempre |
+
+## Como explicar em inglês
+
+Evaluating LLMs in production requires semantic metrics instead of exact equality — because LLM outputs are stochastic, the same input produces different outputs on different runs, and "correct" is often contextual. The four-pillar model: (1) **golden set** — 30–100 labeled examples representing the real input distribution, run automatically on every prompt or model change; (2) **LLM-as-judge** — a stronger model evaluates generated responses for subjective tasks using a rubric prompt to produce a structured score (beware: judge bias toward its own family's style); (3) **traces** — instrument every API call to capture tokens, latency, cost, and error rate, enabling regression detection and cost attribution; (4) **A/B testing** — route a percentage of production traffic to variant prompts and compare using business metrics (resolution rate, churn, NPS), not just model accuracy scores. The core engineering discipline: treat eval as continuous production infrastructure, not a one-time test phase.
+
+| PT | EN |
+|----|---|
+| Avaliação | Evaluation (eval) |
+| Conjunto dourado | Golden set |
+| LLM como juiz | LLM-as-judge |
+| Viés do juiz | Judge bias |
+| Métricas de negócio | Business metrics |
+| Rastreabilidade | Tracing / traces |
+| Observabilidade | Observability |
+| Regressão de prompt | Prompt regression |
+| Cobertura de eval | Eval coverage |
+| Calibração | Calibration |
+| Gabarito | Ground truth |
+| Teste A/B | A/B test / A/B testing |
+
+## Ver mais
+
+- **[Hamel Husain — Your AI product needs evals (2023)](https://hamel.ai/blog/posts/evals/)** — o post que colocou evaluation no mapa para engenheiros de LLM. Husain (ex-Fast.ai, GitHub Copilot) argumenta que a ausência de eval é o problema número 1 em projetos de LLM, e apresenta um framework prático para construir o primeiro golden set em horas — sem esperar infraestrutura ou aprovação de produto.
+- **[Langfuse — LLM Observability and Evaluation (2026)](https://langfuse.com/docs)** — documentação do Langfuse: como instrumentar chamadas com `@observe()`, criar datasets de eval, configurar LLM-as-judge automático por trace, e comparar versões de prompt side-by-side no dashboard. O melhor ponto de partida para Pilar 3 (traces) e Pilar 2 (judge) simultaneamente.
+- **[Eugene Yan — Patterns for Building LLM-based Systems (2024)](https://eugeneyan.com/writing/llm-patterns/)** — Eugene Yan (Amazon, ML Systems) cataloga os patterns de produção mais recorrentes em sistemas LLM. O padrão "Evals First" e a arquitetura de eval contínua são referências para qualquer equipe que quer passar do Nível 1 para o Nível 3 de maturidade.
 
 ## Veja também
 

@@ -1,10 +1,10 @@
 ---
 title: "Prompt caching e otimizações de API"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-06-24
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-llm
@@ -17,6 +17,12 @@ aliases:
 ---
 
 # Prompt caching e otimizações de API
+
+Você olha a fatura de LLM do mês. São $2.700. Você esperava $500. Você audita o uso token a token e descobre: 70% do custo vem do mesmo system prompt de 6.000 tokens sendo reenviado e reprocessado do zero em cada uma das 5.000 chamadas diárias. O texto não muda. A instrução não muda. Mas a conta cresce a cada request como se fosse sempre a primeira vez.
+
+Esse cenário é a regra, não a exceção — e a solução existe desde 2024: prompt caching. O provider computa o KV cache do seu system prompt uma vez, armazena por 5 minutos, e nas chamadas seguintes apenas lê da memória, cobrando 10% do preço normal de input. Naquele exemplo de $2.700/mês, habilitar caching para o system prompt reduziria para ~$270/mês. A diferença — $2.430 — é literalmente queimar compute que você já pagou uma vez.
+
+Esta nota explica como o mecanismo funciona, como configurar em cada provider, e como combinar caching com Batch API e model routing para reduzir a conta mensal em 70-80%.
 
 > [!abstract] TL;DR
 > Prompt caching permite reutilizar tokens de input que não mudam entre chamadas (system prompt, documentação, esquemas), reduzindo custo de input em até 90%. Em 2026, Anthropic, OpenAI e Google oferecem caching nativo. A combinação de caching + Batch API + model routing pode reduzir a conta mensal de LLM em 70-80%. Não usar essas otimizações é literalmente queimar dinheiro.
@@ -206,6 +212,20 @@ Depois (economiza ~60% dos tokens de tool definitions):
 | Compactação de histórico       | 20-40% em sessões longas   | Médio   |
 | **Combinação de todas**        | **60-80% do total**        | Médio   |
 
+## O que caching significa em números
+
+Para tornar concreto: 5.000 chamadas por dia com um system prompt de 6.000 tokens — cenário típico de produto com assistente IA. O custo mensal varia radicalmente dependendo do provider e se caching está habilitado:
+
+```mermaid
+xychart-beta
+    title "Custo mensal (USD) — 5k chamadas/dia, system prompt 6k tokens"
+    x-axis ["Sem caching", "OpenAI (50%)", "Google (75%)", "Anthropic (90%)"]
+    y-axis "USD/mês" 0 --> 3000
+    bar [2700, 1350, 675, 270]
+```
+
+A diferença entre "sem caching" e "Anthropic com caching" é **$2.430/mês** — com três linhas de configuração. Nos provedores onde o caching é automático (OpenAI), o ganho vem sem configuração nenhuma, mas é menor (50%). A Anthropic exige `cache_control` explícito, mas entrega o maior desconto da indústria.
+
 ## Armadilhas
 
 - **"Caching resolve tudo"** — só funciona para partes estáticas do prompt. Se cada chamada tem contexto completamente diferente, [[Dicionário de IA#Cache hit rate|cache hit rate]] é zero.
@@ -213,6 +233,31 @@ Depois (economiza ~60% dos tokens de tool definitions):
 - **Custo de escrita do cache** — na Anthropic, a primeira chamada custa 25% a mais. Se o padrão de uso é chamada única sem reuso, caching é mais caro.
 - **Comprimir demais as tools** — tool descriptions muito curtas podem confundir o modelo sobre quando e como usar a ferramenta. Encontre o equilíbrio.
 - **Não medir o impacto** — implementar otimização sem comparar `cache_read_input_tokens` antes e depois é otimizar às cegas.
+
+## Como explicar em inglês
+
+Prompt caching is a provider-side optimization where the KV cache of repeated prompt sections (typically the system prompt, tool definitions, or reference documents) is computed once, stored for a TTL window (5 minutes for Anthropic), and read from memory on subsequent calls at a steep discount — 90% off for Anthropic, 75% for Google, 50% for OpenAI. The constraint is strict prefix matching: the cached content must be identical and appear at the same position in the request. Anthropic requires explicit `cache_control: {type: "ephemeral"}` markers; OpenAI caches automatically. The Batch API is a complementary technique: bundling non-time-sensitive requests for asynchronous processing at 50% cost reduction with up to 24h turnaround. Model routing (also called cascading) routes simple tasks to cheaper models, reserving expensive frontier models only for tasks that genuinely require them.
+
+| PT | EN |
+|----|---|
+| Cache de prompt | Prompt caching |
+| Cache de contexto | Context caching |
+| Acerto de cache | Cache hit |
+| Erro de cache | Cache miss |
+| Cache frio / cache quente | Cold cache / warm cache |
+| Prefixo de prompt | Prompt prefix |
+| Controle de cache | Cache control |
+| API em lote | Batch API |
+| Roteamento de modelo | Model routing / model cascading |
+| Tempo de expiração | TTL (Time-to-Live) |
+| Tokens lidos do cache | Cache read tokens |
+| Tokens escritos no cache | Cache write tokens |
+
+## Ver mais
+
+- **[Anthropic — Prompt Caching (2026)](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)** — documentação oficial com exemplos de `cache_control`, tabela de mínimos por modelo (1.024 tokens para Sonnet/Opus, 2.048 para Haiku), e análise de quando caching cobra 25% a mais na primeira chamada. O ponto de partida para qualquer implementação com Claude.
+- **[Anthropic — Message Batches API (2026)](https://docs.anthropic.com/en/docs/build-with-claude/message-batches)** — guia da Batch API com formato de request, limite de 10.000 requests por batch, e padrões para workflows assíncronos — geração de documentação, testes em massa, refactoring de datasets — onde latência de até 24h é aceitável em troca de 50% de desconto.
+- **[OpenAI — Prompt Caching (2026)](https://platform.openai.com/docs/guides/prompt-caching)** — documentação do caching automático da OpenAI: sem `cache_control` explícito, 50% de desconto em prefixos elegíveis, e como verificar cache hits via `cached_tokens` no campo `usage` do response. Útil para entender as diferenças entre abordagens automáticas vs. explícitas.
 
 ## Veja também
 
