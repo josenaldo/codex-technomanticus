@@ -396,6 +396,25 @@ Você reparou que esta nota não falou de KV cache, FlashAttention ou das varian
 
 Se for para guardar uma coisa só: **a atenção faz cada token se reescrever como uma média ponderada dos outros, onde os pesos saem do alinhamento entre Queries e Keys, e o conteúdo misturado são os Values.** Tudo o mais é consequência disso — o multi-head faz a mistura por várias lentes em paralelo; a máscara causal proíbe olhar para o futuro; o positional encoding devolve a noção de ordem; o fluxo residual deixa o enriquecimento acumular camada a camada; e a FFN, entre uma atenção e outra, guarda o conhecimento. O Transformer é essa peça repetida dezenas de vezes — e foi ela que tornou os LLMs possíveis.
 
+## Como explicar em inglês
+
+The attention mechanism computes, for each token, a weighted average of all other tokens' values, where the weights come from the alignment between the current token's **Query** vector and other tokens' **Key** vectors — formalized as `softmax(QKᵀ/√d_k)V`. The three projections (Q, K, V) are learned linear maps of the input embeddings: Q asks "what am I looking for?", K signals "what do I offer?", V carries "what I contribute if attended." **Multi-head attention** runs this in parallel across H independent heads, each attending to different semantic or syntactic patterns. The **causal mask** prevents each position from seeing future tokens (decoder-only). **Positional encoding** (RoPE in modern models) injects position into Q and K. The **feed-forward layers** between attention blocks (~2/3 of parameters) act as key-value memories storing factual knowledge. The **residual stream** — a skip connection accumulating outputs layer by layer — is what makes stacking dozens of layers possible without gradient vanishing.
+
+| PT | EN |
+|----|---|
+| Atenção | Attention |
+| Atenção de múltiplas cabeças | Multi-head attention (MHA) |
+| Consulta / Chave / Valor | Query / Key / Value (Q/K/V) |
+| Máscara causal | Causal mask |
+| Codificação posicional | Positional encoding |
+| Incorporação posicional rotacional | Rotary Position Embedding (RoPE) |
+| Fluxo residual | Residual stream |
+| Camada feed-forward | Feed-forward layer (FFN) |
+| Normalização de camada | Layer normalization |
+| Cabeça de atenção | Attention head |
+| Autoatenção | Self-attention |
+| Escalamento | Scaling (the √d_k factor) |
+
 ## Veja também
 
 - [[01 - O que é um LLM]] — contexto geral da arquitetura
