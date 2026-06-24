@@ -3,7 +3,7 @@ title: "Plano — Trilha TypeScript"
 type: spec
 created: 2026-06-23
 updated: 2026-06-23
-status: in_progress
+status: done
 tags:
   - spec
   - trilha
@@ -77,6 +77,7 @@ A tese da trilha: **TypeScript é um sistema de tipos *estrutural* e *gradual* c
 
 > **Status:** ✅ **Iniciado (1-10) FEITO** (2026-06-23, commit 07c9730) — 10 notas ~415-685 ln, 3-5 Mermaid cada, MOC por fase. Monólito mantido. Próximo: Adepto (11-20).
 > **Status:** ✅ **Adepto (11-20) FEITO** (2026-06-24) — 10 notas ~441-793 ln. MOC atualizado. Monólito mantido. Próximo: Magus (21-27), e aposentar o monólito.
+> **Status:** ✅ **Magus (21-27) FEITO + monólito APOSENTADO** (2026-06-24, commit ac31faf) — 7 notas ~588-871 ln. 'Na prática (MedEspecialista)' preservada na nota 27. **TRILHA COMPLETA: 27/27.** 0 quebras reais.
 
 1. **Iniciado (1-10)** primeiro — base que o resto pressupõe; minerar as seções do monólito.
 2. **Adepto (11-20)** — type-level; a nota 18 (utility types) consolida 13-16.
