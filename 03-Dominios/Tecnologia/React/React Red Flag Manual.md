@@ -24,7 +24,7 @@ sources:
 
 # React Red Flag Manual
 
-Catálogo autoral, em português, dos **sinais de alerta** mais relevantes em codebases React — para code review, entrevistas de senior/staff e auditoria de arquitetura. Consolidado a partir de múltiplas fontes (ver [[#Bibliografia]]), com comentários próprios e exemplos adaptados. Para fundamentos de React, ver [[React]]. Para TS, ver [[TypeScript]]. Para testes, ver [[Testes em JavaScript]].
+Catálogo autoral, em português, dos **sinais de alerta** mais relevantes em codebases React — para code review, entrevistas de senior/staff e auditoria de arquitetura. Consolidado a partir de múltiplas fontes (ver [[#Bibliografia]]), com comentários próprios e exemplos adaptados. Para fundamentos de React, ver [[React]]. Para TS, ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]. Para testes, ver [[Testes em JavaScript]].
 
 > [!info] Como usar este manual
 > Cada item segue o padrão: **problema → exemplo ruim → solução com exemplo → nuances e exceções → fonte**. Callouts `[!info]-` colapsáveis trazem definições de conceitos de apoio (shim, polyfill, focus trap, discriminated union, etc.) pra leitura autocontida. A numeração é contínua (1–56) para facilitar citação ("red flag #33"). Use os capítulos como índice e o [[#Checklist para code review]] como ferramenta rápida.
@@ -3542,6 +3542,6 @@ Todas as fontes usadas na consolidação deste manual. Numeração citada no fin
 
 - [[React]] — deep dive na biblioteca
 - [[JavaScript Fundamentals]] — base de JS moderno
-- [[TypeScript]] — tipagem e patterns
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — tipagem e patterns
 - [[Testes em JavaScript]] — characterization tests, Testing Library
 - [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]] — fundamentos de UI e semântica

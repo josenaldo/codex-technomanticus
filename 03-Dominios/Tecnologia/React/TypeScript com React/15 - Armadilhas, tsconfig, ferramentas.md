@@ -39,7 +39,7 @@ Lista numerada de armadilhas que aparecem em PRs reais e custam horas para diagn
 
 7. **`e.target.value` em handlers que não são input** — `target` é qualquer node descendente do elemento que disparou o evento (por bubbling), não necessariamente o elemento listening. Em `<button onClick={e => e.target.value}>`, `target` pode ser um `<span>` filho do botão e não tem `.value`. Use `e.currentTarget` para acessar o elemento que tem o listener. Veja [[06 - Tipando event handlers|nota 06]].
 
-8. **`Object.keys(obj)` retorna `string[]`** — não `(keyof T)[]`. O TS é correto aqui: objetos em JS podem ter chaves não declaradas em runtime, então `keyof T` seria mentira. O fix é castar quando se tem certeza: `(Object.keys(obj) as (keyof typeof obj)[])` — ou usar `for...in` com type guard. Veja [[TypeScript]] seção armadilhas.
+8. **`Object.keys(obj)` retorna `string[]`** — não `(keyof T)[]`. O TS é correto aqui: objetos em JS podem ter chaves não declaradas em runtime, então `keyof T` seria mentira. O fix é castar quando se tem certeza: `(Object.keys(obj) as (keyof typeof obj)[])` — ou usar `for...in` com type guard. Veja [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] seção armadilhas.
 
 9. **`JSON.parse` retorna `any`** — `const data = JSON.parse(response)` injeta `any` no código, contaminando tudo que toca `data`. Sempre validar com Zod no boundary: `const data = userSchema.parse(JSON.parse(response))`. Veja [[10 - Tipando formulários|nota 10]] e [[11 - Tipando data fetching|nota 11]].
 
@@ -252,5 +252,5 @@ Em Next.js 16, ativar via `experimental.reactCompiler: true` no `next.config.js`
 - [[12 - Generic components]]
 - [[13 - Polymorphic components com as prop]]
 - [[14 - Compound components, slots, render props]]
-- [[TypeScript]] — nota mãe
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — nota mãe
 - [[React]] — nota mãe

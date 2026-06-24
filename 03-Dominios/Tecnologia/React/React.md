@@ -14,7 +14,7 @@ publish: true
 
 # React
 
-Deep dive em **React** — biblioteca para construção de interfaces via componentes declarativos. Foco em React 19+ (2026), Hooks, state management, performance e patterns modernos. Para JavaScript base, ver [[JavaScript Fundamentals]]. Para TypeScript com React, ver [[TypeScript]]. Para testes de componentes, ver [[Testes em JavaScript]]. Para HTML/CSS, ver [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]].
+Deep dive em **React** — biblioteca para construção de interfaces via componentes declarativos. Foco em React 19+ (2026), Hooks, state management, performance e patterns modernos. Para JavaScript base, ver [[JavaScript Fundamentals]]. Para TypeScript com React, ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]. Para testes de componentes, ver [[Testes em JavaScript]]. Para HTML/CSS, ver [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]].
 
 ## O que é
 
@@ -1636,7 +1636,7 @@ describe('LoginForm', () => {
 ## Veja também
 
 - [[JavaScript Fundamentals]] — linguagem base
-- [[TypeScript]] — tipagem em React
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — tipagem em React
 - [[TypeScript com React]] — trilha completa sobre tipagem em React (mental model, idiomas práticos, type-level avançado)
 - [[Testes em JavaScript]] — Testing Library, Playwright
 - [[03-Dominios/Tecnologia/HTML/index|HTML]] e [[03-Dominios/Tecnologia/CSS/index|CSS]] — fundação do frontend

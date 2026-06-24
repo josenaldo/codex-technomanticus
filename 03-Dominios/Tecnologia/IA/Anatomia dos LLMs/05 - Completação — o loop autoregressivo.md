@@ -45,7 +45,6 @@ Entender a completação como **loop**, e não como uma "resposta mágica", é o
 - **`temperature`, `top_p`, `top_k`** só fazem sentido quando você sabe que eles atuam na *escolha* do token, não no "pensamento" do modelo (ver [[11 - APIs de LLM — anatomia de uma chamada]]).
 - **Não-determinismo**: por que a mesma pergunta dá respostas diferentes? Porque a amostragem sorteia. Saber disso é saber quando travar (`temperature=0`) e quando soltar.
 - **Alucinação** tem raiz aqui: o modelo *sempre* tem uma distribuição de próximos tokens e *sempre* amostra um — ele nunca "não sabe", apenas atribui probabilidade. Confiança não é verdade.
-
 ## Como funciona: a camada de saída
 
 Depois que o texto passa por [[02 - Tokens e tokenização|tokenização]], [[03 - Embeddings — do token ao vetor|embeddings]] e por todas as camadas de [[04 - Atenção e o mecanismo transformer|atenção]], o modelo tem, para a **última posição**, um vetor de estado final. Falta o passo que vira texto:

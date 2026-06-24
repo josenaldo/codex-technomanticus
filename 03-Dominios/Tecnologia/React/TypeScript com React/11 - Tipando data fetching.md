@@ -266,4 +266,4 @@ A escolha entre `useQuery` e `use()` + Suspense não é exclusiva. TanStack exp�
 - [[07 - Tipando hooks customizados]] — useQuery é o exemplo canônico de hook genérico
 - [[09 - Tipando reducers e state machines]] — discriminated `status` da TanStack Query
 - [[10 - Tipando formulários]] — schema Zod compartilhado entre form e fetch
-- [[TypeScript]] — seção "Runtime validation — Zod"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "Runtime validation — Zod"

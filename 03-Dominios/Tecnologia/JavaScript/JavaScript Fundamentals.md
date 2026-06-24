@@ -13,7 +13,7 @@ publish: false
 
 # JavaScript Fundamentals
 
-Guia comprehensive da linguagem JavaScript moderna — do modelo de execução (event loop, call stack, microtasks) aos recursos mais recentes do ES2025/ES2026. Para um senior fullstack, dominar JavaScript significa entender **como a linguagem realmente funciona por baixo**, não apenas a sintaxe. Para tipagem estática, ver [[TypeScript]]. Para concorrência e Node.js-specific, ver [[Node.js]]. Para testes, ver [[Testes em JavaScript]].
+Guia comprehensive da linguagem JavaScript moderna — do modelo de execução (event loop, call stack, microtasks) aos recursos mais recentes do ES2025/ES2026. Para um senior fullstack, dominar JavaScript significa entender **como a linguagem realmente funciona por baixo**, não apenas a sintaxe. Para tipagem estática, ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]. Para concorrência e Node.js-specific, ver [[Node.js]]. Para testes, ver [[Testes em JavaScript]].
 
 ## O que é
 
@@ -1413,7 +1413,7 @@ Não precisa mais de `tsx` ou `ts-node`. Em Node 24+, é estável.
 
 > **Patterns que padronizei:**
 >
-> **1. TypeScript estrito desde o dia 1.** JavaScript puro em projeto novo é negligência. TS `strict: true`, `noUncheckedIndexedAccess`. Detalhes em [[TypeScript]].
+> **1. TypeScript estrito desde o dia 1.** JavaScript puro em projeto novo é negligência. TS `strict: true`, `noUncheckedIndexedAccess`. Detalhes em [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]].
 >
 > **2. ESM em todo lugar.** `"type": "module"` no package.json. Node 22+. Top-level await, tree shaking, código mais limpo.
 >
@@ -1547,7 +1547,7 @@ Não precisa mais de `tsx` ou `ts-node`. Em Node 24+, é estável.
 
 ## Veja também
 
-- [[TypeScript]] — sistema de tipos estáticos
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — sistema de tipos estáticos
 - [[Node.js]] — runtime server-side
 - [[Testes em JavaScript]] — Jest, Vitest, Testing Library, Playwright
 - [[React]] — framework UI

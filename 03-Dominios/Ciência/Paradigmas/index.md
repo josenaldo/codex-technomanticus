@@ -38,7 +38,7 @@ linguagens e ponteiros para o ferramental concreto.
   tratado *como um paradigma entre vários*.
 - **Programação reativa com Reactor/WebFlux** → [[Programação Reativa]] (estante Java). Aqui fica o conceito
   de paradigma reativo/dataflow.
-- **Funcional na prática com ferramental** → [[03-Dominios/Tecnologia/Java/Collections e Streams/index|Streams (Java)]] e [[TypeScript]].
+- **Funcional na prática com ferramental** → [[03-Dominios/Tecnologia/Java/Collections e Streams/index|Streams (Java)]] e [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]].
 - **Concorrência e paralelismo** (atores, CSP, memória compartilhada) → futuro galho da Camada B; aqui só
   mencionados em prosa, como benefício da imutabilidade.
 - **Princípios de design** → [[SOLID]]; **raciocínio sobre complexidade/estado** → [[Complexidade de Software]].

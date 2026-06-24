@@ -268,4 +268,4 @@ Em design systems internos, `<List<T>>` / `<Select<T>>` / `<Table<T>>` formam a 
 - [[04 - interface vs type vs satisfies para props]]
 - [[07 - Tipando hooks customizados]] — generics em hooks (mesma mecânica)
 - [[13 - Polymorphic components com as prop]] — generic + polymorphic combinados
-- [[TypeScript]] — seção "Generics"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "Generics"

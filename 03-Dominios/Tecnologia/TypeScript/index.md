@@ -4,12 +4,13 @@ type: moc
 publish: true
 created: 2026-05-03
 updated: 2026-06-23
-status: growing
+status: evergreen
 tags:
   - typescript
   - moc
 aliases:
   - TS
+  - TypeScript
 ---
 
 # TypeScript
@@ -45,22 +46,19 @@ Estante de TypeScript: do sistema de tipos do dia a dia até programação no n�
 - [[19 - Enums, const objects e modelagem de constantes]] — como modelar conjuntos fechados
 - [[20 - tsconfig e strict mode a fundo]] — o compilador como type-checker configurável
 
-## 🔴 Magus — fronteiras, runtime, escala, produção *(a escrever)*
+## 🔴 Magus — fronteiras, runtime, escala, produção
 
-- 21 — Modules: ESM, CJS e type-only imports
-- 22 — Declaration files (`.d.ts`) e o ecossistema de tipos
-- 23 — A fronteira type↔runtime: parse, don't validate
-- 24 — Type-driven design: branded types, Result e estados impossíveis
-- 25 — TypeScript em escala: performance do compilador e project references
-- 26 — Lendo o compilador: erros comuns e como decifrar mensagens
-- 27 — TypeScript em entrevista
+- [[21 - Modules - ESM, CJS e type-only imports]] — ESM×CJS, `import type`, resolução
+- [[22 - Declaration files (.d.ts) e o ecossistema de tipos]] — `.d.ts`, `@types`, declaration merging
+- [[23 - A fronteira type↔runtime - parse, don't validate]] — tipos somem; valide nos boundaries
+- [[24 - Type-driven design - branded types, Result e estados impossíveis]] — modelar com tipos
+- [[25 - TypeScript em escala - performance do compilador e project references]] — type-check rápido em monorepo
+- [[26 - Lendo o compilador - erros comuns e como decifrar mensagens]] — decifrar mensagens de tipo
+- [[27 - TypeScript em entrevista]] — capstone: síntese, revisão e inglês
 
 ## Referência
 
 - [[Biblioteca de TypeScript]] — recursos externos curados (Total TypeScript, TS Handbook, Effective TS, Type Challenges)
-
-> [!note] Migração em curso
-> A nota monolítica `TypeScript.md` está sendo dissolvida nesta trilha (fase Iniciado feita); será aposentada quando Adepto e Magus estiverem escritas.
 
 ## Veja também
 

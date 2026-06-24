@@ -1253,7 +1253,7 @@ Hint para o browser otimizar:
 
 - [[React]] — integração com React
 - [[JavaScript Fundamentals]] — base da web
-- [[TypeScript]] — tipagem
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — tipagem
 - [[Testes em JavaScript]] — testes de componentes e a11y
 - [[Full Stack Open - Guia de Revisão]] — CSS em React apps
 - [[API Design]] — APIs que alimentam UIs

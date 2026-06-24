@@ -135,5 +135,5 @@ Esse pattern é convenção do ecossistema porque resolve um problema real: rede
 - [[05 - Tipando state e refs]] — aprofundamento da fonte 2 (state) e refs em React 19
 - [[12 - Generic components]] — quando os componentes viram fontes inferidas pelo consumidor
 - [[13 - Polymorphic components com as prop]] — `ComponentPropsWithoutRef` aplicado a fundo
-- [[TypeScript]] — seções "Generics" e "TypeScript em frontend (React)"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seções "Generics" e "TypeScript em frontend (React)"
 - [[React]] — seção "Componentes e JSX"

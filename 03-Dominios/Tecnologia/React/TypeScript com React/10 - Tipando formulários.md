@@ -244,4 +244,4 @@ Forms multi-step (wizards, checkout em fases) merecem tratamento específico: ca
 - [[06 - Tipando event handlers]] — quando você precisa de `onChange` manual (controlled inputs, `<Controller />`)
 - [[09 - Tipando reducers e state machines]] — multi-step forms como state machine
 - [[11 - Tipando data fetching]] — submit de form via mutação tipada
-- [[TypeScript]] — seção "Runtime validation — Zod"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "Runtime validation — Zod"

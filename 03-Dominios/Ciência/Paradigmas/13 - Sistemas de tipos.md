@@ -190,7 +190,7 @@ Os exemplos vivos:
 - **Python com type hints + mypy** — desde o Python 3.5 você anota o que quiser; o `mypy` checa as partes anotadas e ignora o resto. O runtime continua dinâmico; a checagem estática é opcional, externa, incremental.
 
 > [!example] Por que isso ganhou o mundo
-> Bases de código gigantes em JS e Python não podiam parar tudo para uma reescrita tipada. Tipagem gradual permite tipar o módulo crítico hoje, o resto quando der. É a ponte entre "nada tipado" e "tudo tipado" — e foi exatamente o que levou TypeScript a dominar o ecossistema JS. Veja o concreto em `[[TypeScript]]`.
+> Bases de código gigantes em JS e Python não podiam parar tudo para uma reescrita tipada. Tipagem gradual permite tipar o módulo crítico hoje, o resto quando der. É a ponte entre "nada tipado" e "tudo tipado" — e foi exatamente o que levou TypeScript a dominar o ecossistema JS. Veja o concreto em `[[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]`.
 
 ## Tipos como ferramenta de design
 
@@ -241,5 +241,5 @@ A type system is an orthogonal dimension, not a paradigm — it cuts across impe
 - `[[11 - O paradigma lógico]]` — a unificação que move a inferência Hindley-Milner
 - `[[14 - Linguagens multi-paradigma]]` — como tipos e paradigmas se combinam livremente
 - `[[16 - Paradigmas na prática e em entrevista]]` — fechando o domínio
-- `[[TypeScript]]` — tipagem gradual e estrutural na prática
+- `[[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]` — tipagem gradual e estrutural na prática
 - `[[03-Dominios/Ciência/Paradigmas/index|Paradigmas de Programação]]`

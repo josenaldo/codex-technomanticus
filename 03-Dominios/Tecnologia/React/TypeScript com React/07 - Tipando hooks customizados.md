@@ -260,4 +260,4 @@ A regra prática derivada: comece simples (tupla), promova para objeto quando pa
 - [[05 - Tipando state e refs]] — `useState`/`useRef` que esses hooks compõem por dentro
 - [[09 - Tipando reducers e state machines]] — discriminated unions em ação
 - [[12 - Generic components]] — generics em React além de hooks
-- [[TypeScript]] — seções "Generics", "Discriminated unions"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seções "Generics", "Discriminated unions"

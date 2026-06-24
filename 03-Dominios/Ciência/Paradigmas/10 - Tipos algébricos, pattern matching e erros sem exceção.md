@@ -232,7 +232,7 @@ Você não precisa de Haskell pra usar nada disso. O mainstream absorveu o pacot
 
 - **Java**: `Optional<T>` no lugar do null; `sealed classes` + `switch` com pattern matching e exaustividade (Java 21 estabilizou record patterns e switch patterns). Veja [[13 - Sistemas de tipos]].
 - **Rust**: `Option<T>` e `Result<T, E>` são o coração da linguagem; `match` é exaustivo por construção; não existe null.
-- **TypeScript**: *discriminated unions* (sum types via campo `tag`/`kind`) com narrowing no `switch`. Veja [[TypeScript]].
+- **TypeScript**: *discriminated unions* (sum types via campo `tag`/`kind`) com narrowing no `switch`. Veja [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]].
 - **Kotlin/Scala/Swift**: `sealed`/`enum` com dados, `when`/`match` exaustivo, `Option`/`Result`.
 
 A lição que viaja entre linguagens: prefira tornar estados ilegais irrepresentáveis e tratar erro como valor, mesmo quando a sintaxe não for tão elegante quanto a de uma linguagem ML.

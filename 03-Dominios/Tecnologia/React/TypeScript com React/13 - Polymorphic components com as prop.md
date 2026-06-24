@@ -238,5 +238,5 @@ A escolha entre `as`/`component` polymorphic e `Slot`/`asChild` é uma das decis
 - [[05 - Tipando state e refs]] — ref em React 19 como prop normal
 - [[12 - Generic components]] — generics em React (mecânica base)
 - [[14 - Compound components, slots, render props]] — Slot/asChild como alternativa
-- [[TypeScript]] — seção "Generics" e "TypeScript em frontend (React)"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "Generics" e "TypeScript em frontend (React)"
 - [[React]] — seção "Componentes e JSX"

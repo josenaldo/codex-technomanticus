@@ -19,7 +19,7 @@ aliases:
 
 ## O que é
 
-Os três construtores resolvem problemas distintos. Para detalhes da diferença em geral (não só em props), ver [[TypeScript]] na seção "Interfaces e Type aliases".
+Os três construtores resolvem problemas distintos. Para detalhes da diferença em geral (não só em props), ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] na seção "Interfaces e Type aliases".
 
 `interface` define o **shape de um objeto**. Tem duas características que `type` não tem: **declaration merging** (duas declarações da mesma `interface User { ... }` no mesmo escopo se fundem em uma só) e a sintaxe `extends` para herança de shape. É a ferramenta canônica para tipos que outros vão **estender** — a partir do código próprio (`extends`) ou do código deles (re-declarando a mesma interface).
 
@@ -139,4 +139,4 @@ A regra prática derivada: **`interface` quando outros vão estender; `type` qua
 - [[02 - Inferir vs anotar - quando deixar o TS trabalhar]]
 - [[09 - Tipando reducers e state machines]] — discriminated unions em ação
 - [[12 - Generic components]]
-- [[TypeScript]] — seção "Interfaces e Type aliases"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "Interfaces e Type aliases"

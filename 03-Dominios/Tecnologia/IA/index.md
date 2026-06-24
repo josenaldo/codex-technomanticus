@@ -1,5 +1,5 @@
 ---
-title: IA — Formação Engenheiro de IA
+title: IA
 type: moc
 publish: true
 tags:

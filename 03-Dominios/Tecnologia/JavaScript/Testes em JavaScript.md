@@ -1356,7 +1356,7 @@ export default defineConfig({
 ## Veja também
 
 - [[JavaScript Fundamentals]] — linguagem base
-- [[TypeScript]] — tipagem em testes
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — tipagem em testes
 - [[React]] — React-specific testing
 - [[Node.js]] — backend testing
 - [[03-Dominios/Engenharia/Testes/index|Testes]] — fundamentos gerais

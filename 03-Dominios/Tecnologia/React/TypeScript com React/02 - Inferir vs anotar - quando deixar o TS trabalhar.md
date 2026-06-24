@@ -173,4 +173,4 @@ Esse princípio é convenção do ecossistema porque resolve um trade-off real: 
 - [[01 - A tripla inferência - props, state, hooks]] — o mental model que esta nota refina em regra prática
 - [[04 - interface vs type vs satisfies para props]] — `satisfies` aplicado especificamente a props de componentes
 - [[07 - Tipando hooks customizados]] — return types como contrato, overloads, generics em hooks
-- [[TypeScript]] — seção "Tipos básicos" para fundamentos de inferência e widening
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "Tipos básicos" para fundamentos de inferência e widening

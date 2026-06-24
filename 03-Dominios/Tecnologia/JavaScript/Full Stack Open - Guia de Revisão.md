@@ -19,7 +19,7 @@ Resumo comprehensive em português do curso **[Full Stack Open](https://fullstac
 
 Esta nota serve como **guia de consulta rápida para revisão** — organizada parte a parte, com os conceitos essenciais de cada tópico, exemplos de código, armadilhas comuns e conexões com as outras notas técnicas do notebook.
 
-Para fundamentos da linguagem, ver [[JavaScript Fundamentals]]. Para TypeScript, ver [[TypeScript]]. Para React, ver [[React]]. Para testes, ver [[Testes em JavaScript]]. Para Node.js, ver [[Node.js]].
+Para fundamentos da linguagem, ver [[JavaScript Fundamentals]]. Para TypeScript, ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]. Para React, ver [[React]]. Para testes, ver [[Testes em JavaScript]]. Para Node.js, ver [[Node.js]].
 
 ## Sobre o curso
 
@@ -1836,7 +1836,7 @@ Real-time updates via WebSocket.
 
 ## 9.a — Background and introduction
 
-TypeScript é superset tipado de JavaScript. Ver [[TypeScript]] para deep dive.
+TypeScript é superset tipado de JavaScript. Ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] para deep dive.
 
 ## 9.b — First steps with TypeScript
 
@@ -1957,7 +1957,7 @@ Projeto prático — aplicação de clínica médica em React + Express + TypeSc
 
 ### Conexões
 
-- Deep dive TypeScript: [[TypeScript]]
+- Deep dive TypeScript: [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]
 - React com TS: [[React]]
 
 ---
@@ -2251,7 +2251,7 @@ Faça sequencialmente — cada parte depende da anterior.
 
 1. **Construa um projeto próprio** — aplique o que aprendeu em algo que importa pra você
 2. **Contribua em open source** — ache projetos Node/React que aceitam PRs
-3. **Aprofunde** — ver [[React]], [[Node.js]], [[TypeScript]], [[Testes em JavaScript]]
+3. **Aprofunde** — ver [[React]], [[Node.js]], [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]], [[Testes em JavaScript]]
 4. **Trilha de arquitetura** → [[System Design]], [[Arquitetura de Software]], [[API Design]]
 5. **Interview prep** — LeetCode, System Design interviews
 
@@ -2289,7 +2289,7 @@ Parte do material do curso está traduzido para português, mas a recomendação
 
 - [Total TypeScript](https://www.totaltypescript.com/) — Matt Pocock
 - [Type Challenges](https://github.com/type-challenges/type-challenges)
-- Ver [[TypeScript]]
+- Ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]
 
 ### Node.js
 
@@ -2308,7 +2308,7 @@ Parte do material do curso está traduzido para português, mas a recomendação
 ## Veja também
 
 - [[JavaScript Fundamentals]] — linguagem base
-- [[TypeScript]] — sistema de tipos
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — sistema de tipos
 - [[Testes em JavaScript]] — Vitest, Testing Library, Playwright
 - [[React]] — framework UI
 - [[Node.js]] — runtime backend

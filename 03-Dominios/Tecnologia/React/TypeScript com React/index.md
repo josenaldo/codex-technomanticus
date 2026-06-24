@@ -14,7 +14,7 @@ Esta trilha cobre a intersecção idiomática entre TypeScript e React — não 
 Em 15 notas, a trilha vai do mental model fundamental ("como o TS pensa em React") ao type-level avançado (polymorphic components, compound components tipados), passando pelos idiomas práticos do dia a dia. Cada nota tem seção "Em entrevista" para preparação internacional.
 
 > [!info] Como ler
-> A trilha pressupõe que você consultará [[TypeScript]] e [[React]] como referências paralelas. Cada nota linka explicitamente para a seção mãe quando precisa de um conceito de TS ou React que não é o foco. Para uma primeira leitura, siga a sequência 01 → 15. Para reforço pontual ou preparação de entrevista, use as rotas alternativas abaixo.
+> A trilha pressupõe que você consultará [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] e [[React]] como referências paralelas. Cada nota linka explicitamente para a seção mãe quando precisa de um conceito de TS ou React que não é o foco. Para uma primeira leitura, siga a sequência 01 → 15. Para reforço pontual ou preparação de entrevista, use as rotas alternativas abaixo.
 
 ## Comece por aqui
 
@@ -61,7 +61,7 @@ SORT file.name ASC
 
 ## Veja também
 
-- [[TypeScript]] — deep dive da linguagem (referência paralela)
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — deep dive da linguagem (referência paralela)
 - [[React]] — deep dive da biblioteca (referência paralela)
 - [[JavaScript Fundamentals]] — base da linguagem
 - [[Testes em JavaScript]] — para testes de componentes tipados

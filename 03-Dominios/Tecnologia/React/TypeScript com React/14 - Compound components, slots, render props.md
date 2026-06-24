@@ -284,4 +284,4 @@ A linha geral: bibliotecas headless (que entregam comportamento + acessibilidade
 - [[12 - Generic components]] — generics em render props
 - [[13 - Polymorphic components com as prop]] — alternativa relacionada (asChild vs as)
 - [[React]] — seção "Componentes e JSX"
-- [[TypeScript]] — seção "TypeScript em frontend (React)"
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "TypeScript em frontend (React)"

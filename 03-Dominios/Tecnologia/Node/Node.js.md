@@ -14,7 +14,7 @@ publish: false
 
 # Node.js
 
-Deep dive em **Node.js** como runtime JavaScript para backend — event-driven, non-blocking I/O, ecossistema npm. Para fundamentos da linguagem (event loop, closures, async), ver [[JavaScript Fundamentals]]. Para TypeScript, ver [[TypeScript]]. Para testes, ver [[Testes em JavaScript]].
+Deep dive em **Node.js** como runtime JavaScript para backend — event-driven, non-blocking I/O, ecossistema npm. Para fundamentos da linguagem (event loop, closures, async), ver [[JavaScript Fundamentals]]. Para TypeScript, ver [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]. Para testes, ver [[Testes em JavaScript]].
 
 ## O que é
 
@@ -268,7 +268,7 @@ const doctors = await prisma.doctor.findMany({
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — galho 8 da trilha Node Senior; supply chain, segredos, validação, JWT, OAuth 2.0, RBAC, rate limiting, Helmet.js e OWASP Top 10
 - [[03-Dominios/Tecnologia/Node/Integrações/index]] — galho 9 da trilha Node Senior; PostgreSQL, Redis, BullMQ, Kafka, gRPC, GraphQL, WebSockets, HTTP clients e padrões de resiliência
 - [[JavaScript Fundamentals]] — linguagem, event loop, async
-- [[TypeScript]] — tipagem em Node
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — tipagem em Node
 - [[Testes em JavaScript]] — Vitest, MSW, built-in test runner
 - [[React]] — frontend companion
 - [[API Design]] — REST, JWT, contratos

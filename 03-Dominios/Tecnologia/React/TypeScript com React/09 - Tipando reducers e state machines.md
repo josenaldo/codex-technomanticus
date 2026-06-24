@@ -297,4 +297,4 @@ O denominador comum entre as três: **estado é uma união discriminada, não um
 - [[04 - interface vs type vs satisfies para props]] — `type` é o tool certo para discriminated unions; `interface` não suporta union types diretos.
 - [[07 - Tipando hooks customizados]] — discriminated union no return de hook (Sample 5: `useFetchUser` com status).
 - [[11 - Tipando data fetching]] — TanStack Query usa o `status` discriminado como API pública.
-- [[TypeScript]] — seção "Discriminated unions" cobre o pattern fora do contexto React (Result types, branded types, state machines).
+- [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — seção "Discriminated unions" cobre o pattern fora do contexto React (Result types, branded types, state machines).
