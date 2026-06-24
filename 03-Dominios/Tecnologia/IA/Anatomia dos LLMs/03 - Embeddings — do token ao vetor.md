@@ -1,10 +1,10 @@
 ---
 title: "Embeddings — do token ao vetor"
 created: 2026-06-19
-updated: 2026-06-21
+updated: 2026-06-24
 type: concept
 status: growing
-progress: in-progress
+progress: done
 publish: true
 tags:
   - anatomia-llm
@@ -72,6 +72,20 @@ vetor("rei") - vetor("homem") + vetor("mulher") ≈ vetor("rainha")
 
 A "direção" que separa *homem* de *mulher* é mais ou menos a mesma que separa *rei* de *rainha*. O espaço aprendeu, sozinho, um eixo aproximado de "gênero" — sem ninguém ter programado isso. Padrões análogos aparecem para tempo verbal, plural, capital-de-país, e muitos outros.
 
+```mermaid
+graph TD
+    subgraph "Espaço de embedding (simplificado a 2D)"
+        REI["rei 👑"]
+        RAINHA["rainha 👑"]
+        HOMEM["homem"]
+        MULHER["mulher"]
+        REI -. "- homem + mulher" .-> RAINHA
+        HOMEM -. "mesma direção\nde gênero" .-> MULHER
+    end
+    note["Na realidade: 4096+ dimensões\nO espaço aprende eixos de gênero,\ntempo verbal, país-capital,\nsingular-plural, etc."]
+    style note fill:#fff3cd
+```
+
 A proximidade entre dois embeddings costuma ser medida por **similaridade de cosseno** (o ângulo entre os vetores, não a distância absoluta): cosseno perto de `1` = muito parecidos; perto de `0` = sem relação.
 
 > [!question]- Por que medir por ângulo (cosseno), e não por distância?
@@ -86,14 +100,16 @@ Por dentro, a camada de embedding é simples: uma **tabela de consulta** (lookup
 
 ```mermaid
 flowchart LR
-    A["Token: 'gato'"] --> B["ID: 1842<br/>(tokenização)"]
-    B --> C["Linha 1842 da matriz<br/>de embedding<br/>(V linhas × d_model colunas)"]
-    C --> D["Vetor de d_model números<br/>[0.12, -0.88, 0.34, …]"]
+    A["Texto:\n'O gato dorme'"] --> B["Tokenização"]
+    B --> C["IDs:\n[450, 1842, 3301]"]
+    C --> D["Lookup na\nmatriz de embedding\n(V × d_model)"]
+    D --> E["Vetores:\n[v450, v1842, v3301]\ncada um com d_model números"]
+    E --> F["Atenção +\nCamadas do Transformer"]
 ```
 
 1. **Uma matriz gigante.** O modelo guarda uma matriz com `V` linhas (uma por token do vocabulário) e `d_model` colunas. Cada linha *é* o embedding daquele token. É a **mesma tabela de embedding** dimensionada pelo tamanho do vocabulário discutida em [[02 - Tokens e tokenização]].
 2. **A consulta.** Para o token de ID `1842`, o modelo simplesmente pega a linha `1842` da matriz. Sem cálculo — é um acesso por índice.
-3. **De onde vêm os números.** No começo do treino, a matriz é preenchida com **valores aleatórios**. Durante o pré-treinamento, o **backpropagation** (o algoritmo que treina toda rede neural: mede o quanto cada número contribuiu para o erro da previsão e o ajusta na direção que reduz esse erro) refina esses vetores milhões de vezes: prevê o próximo token, mede o erro, corrige na direção que o reduz. Aos poucos, tokens que aparecem em contextos parecidos são empurrados para perto uns dos outros. A semântica não é injetada — é **destilada dos dados**.
+3. **De onde vêm os números.** No começo do treino, a matriz é preenchida com **valores aleatórios**. Durante o pré-treinamento, o **backpropagation** refina esses vetores milhões de vezes: prevê o próximo token, mede o erro, corrige na direção que o reduz. Aos poucos, tokens que aparecem em contextos parecidos são empurrados para perto uns dos outros. A semântica não é injetada — é **destilada dos dados**.
 
 É também por isso que `d_model` define o tamanho do modelo: cada token ocupa uma linha de `d_model` números na entrada (e outra na saída), então dobrar `d_model` infla a contagem de parâmetros. O salto de dimensão é parte de por que modelos "maiores" têm mais parâmetros.
 
@@ -145,17 +161,28 @@ Se for para guardar uma coisa só: **um embedding troca o ID sem-sentido de um t
 
 Mas esse vetor de entrada é só a **semente**: ele é estático, o mesmo para o `"banco"` de praça e o de dinheiro. Falta o contexto entrar em cena e diferenciar os dois. Esse é o trabalho da próxima nota — o **mecanismo de atenção**, que pega esses vetores e deixa cada um "olhar" para os outros, reescrevendo-se conforme a vizinhança. É a [[04 - Atenção e o mecanismo transformer]].
 
-## Veja também
+## Como explicar em inglês
 
-- [[01 - O que é um LLM]] — o panorama: onde os embeddings entram no modelo
-- [[02 - Tokens e tokenização]] — o passo anterior: como o texto vira IDs
-- [[04 - Atenção e o mecanismo transformer]] — o que contextualiza os embeddings camada a camada
-- [[03 - Embeddings — representação semântica]] — embeddings aplicados a busca/RAG (escolha de modelo, matryoshka, cosine)
-- [[06 - A janela de contexto]] — quantos tokens (e portanto embeddings) o modelo processa por vez
+An **embedding** converts a token ID (just a number with no semantic content) into a dense vector of floating-point numbers learned during training, placed in a high-dimensional space where **semantic similarity becomes geometric proximity**. The classic demonstration is the Word2Vec analogy: `vec("king") - vec("man") + vec("woman") ≈ vec("queen")` — the model learned a "gender direction" in vector space without any explicit programming. In Transformers, the lookup-table embedding is **static** (the same vector for "bank" regardless of context), but it's **contextualized** layer by layer by the attention mechanism: after passing through the model, "bank" in a river sentence has a different vector than "bank" in a finance sentence.
+
+| PT | EN |
+|----|---|
+| Incorporação / representação vetorial | Embedding |
+| Espaço vetorial | Vector space |
+| Tabela de consulta | Lookup table |
+| Dimensão do modelo | Model dimension (d_model) |
+| Similaridade de cosseno | Cosine similarity |
+| Embedding estático | Static embedding |
+| Embedding contextual | Contextual embedding |
+| Codificação posicional | Positional encoding |
+| Vocabulário | Vocabulary |
+| Polissemia | Polysemy |
+| Analogia vetorial | Vector analogy |
 
 ## Ver mais
 
 - [3Blue1Brown — *Transformers, the tech behind LLMs (Chapter 5)*](https://www.youtube.com/watch?v=wjZofJX0v4M) (2024, 27 min) — a partir da ideia de "embutir uma palavra", trata os embeddings como pontos e direções num espaço de significado (a aritmética rei−homem+mulher, os 12.288 eixos do GPT-3). O tratamento visual definitivo.
+- **[Jay Alammar — The Illustrated Word2vec](https://jalammar.github.io/illustrated-word2vec/)** — Alammar desenha embeddings de forma visual e progressiva, mostrando como o treino por coocorrência empurra tokens parecidos para perto. O complemento ideal para quem quer ver o espaço em 2D antes de imaginar em 4096 dimensões.
 
 ## Fontes
 

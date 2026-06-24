@@ -1,15 +1,16 @@
 ---
 title: "Fine-tuning na prática — LoRA, QLoRA, DPO"
 created: 2026-06-15
-updated: 2026-06-15
+updated: 2026-06-24
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-llm
   - ia
   - tokens
+  - fine-tuning
 aliases:
   - Fine-tuning na prática
   - PEFT
@@ -24,6 +25,14 @@ aliases:
 
 > [!abstract] TL;DR
 > A nota [[16 - Fine-tuning vs prompting vs RAG]] decide **quando** fine-tunar; esta mostra **como**. Três camadas. **Full fine-tuning** atualiza todos os pesos — máximo poder, custo proibitivo (precisa do modelo inteiro + estados do otimizador na memória). **PEFT** (parameter-efficient fine-tuning) congela o modelo base e treina só um punhado de pesos novos: **LoRA** injeta matrizes de baixo posto e treina <1% dos parâmetros; **QLoRA** põe LoRA em cima de um base quantizado em 4 bits, e aí um modelo de 65B fine-tuna numa única GPU. E depois do SFT vem o **alinhamento por preferência**: **DPO** substitui o RLHF (reward model + PPO) por uma perda direta sobre pares "resposta boa / resposta ruim" — mais barato e mais estável. A regra de bolso de 2026: **QLoRA para o SFT, DPO para o polimento**, full fine-tuning quase nunca.
+
+## O insight que tornou fine-tuning acessível
+
+Em 2021, fine-tunar um modelo de 65B parâmetros exigia um cluster de GPUs, semanas de computação e equipe especializada. Em 2023, um pesquisador com uma única GPU de consumidor (RTX 3090) podia fazer a mesma coisa em horas. O que mudou não foi o hardware — foi a descoberta de que **você não precisa atualizar todos os pesos para mudar o comportamento do modelo**.
+
+A intuição veio de uma observação empírica: durante o fine-tuning, as atualizações de peso (ΔW) têm *posto intrínseco baixo*. Isso significa que, mesmo que ΔW seja uma matriz gigante (ex.: 4096×4096), ela pode ser aproximada por duas matrizes pequenas multiplicadas. Em vez de treinar 16 milhões de pesos, você treina apenas alguns milhares. O resultado? 99% do compute de treino reduzido, com perda de qualidade desprezível em tarefas de domínio.
+
+Isso não era óbvio. A intuição dominante até então era "mais parâmetros = mais capacidade = melhor resultado". LoRA mostrou que, para adaptar um modelo que já sabe muita coisa, a maioria dos parâmetros é ruído — você precisa mudar uma direção específica no espaço de pesos, não todos os eixos.
 
 ## O que é
 
@@ -65,26 +74,76 @@ W_efetivo = W_congelado + (alpha/r)·B·A
             └─ não treina ─┘  └── treina (LoRA) ──┘
 ```
 
+```mermaid
+graph LR
+    subgraph "Camada de atenção com LoRA"
+        X["Input x"] --> W["W original\n4096×4096\n(16.7M params)\n🔒 congelado"]
+        X --> A["Matriz A\n4096×8\n(32k params)\n✏️ treina"]
+        A --> B["Matriz B\n8×4096\n(32k params)\n✏️ treina"]
+        W --> SUM["Σ soma"]
+        B --> SUM
+        SUM --> Y["Output h"]
+    end
+    note1["Total treinável: 64k params\nvs 16.7M do original\n= 0.38%"]
+    style W fill:#cccccc,stroke:#666666
+    style A fill:#99ff99,stroke:#009900
+    style B fill:#99ff99,stroke:#009900
+    style note1 fill:#fff3cd
+```
+
 Consequências práticas:
 
 - **Memória despenca** — sem estados de otimizador para bilhões de pesos; o grande custo vira só o base congelado em fp16 (~14GB para um 7B).
 - **Adapters são plugáveis** — o `B·A` treinado é um arquivo de poucos MB. Você troca de "personalidade" trocando o adapter, sobre o **mesmo** base. Dá para ter dezenas.
 - **Hiperparâmetros que importam:** `r` (posto — capacidade), `alpha` (escala do update), e os **target modules** (em quais projeções injetar — começa por `q_proj`/`v_proj`, expande para MLP se precisar).
 
+> [!question]- Por que ΔW é naturalmente de posto baixo?
+> Durante o fine-tuning para uma tarefa específica, o modelo está essencialmente aprendendo a "virar" sua representação interna em uma direção específica no espaço de embeddings. Essa direção é muito mais simples que o espaço completo — é como a diferença entre girar uma bússola (1 grau de liberdade) e redesenhar o mapa (infinitos). A tarefa de "aprender a responder em JSON" ou "aprender terminologia médica" requer uma transformação no espaço de saída muito mais simples que os pesos pré-treinados em sua totalidade.
+
 ### QLoRA — onde compressão e fine-tuning se encontram
 
 QLoRA (Dettmers et al., 2023) leva LoRA ao extremo: **quantiza o base congelado para 4 bits** (formato NF4) e prende os adapters LoRA, em precisão maior, por cima. O gradiente passa **através** do base quantizado, mas só os adapters aprendem.
 
-```
-[Base 4-bit NF4 — congelado]  ──>  [Adapters LoRA — fp16, treináveis]
-        ~3.5GB p/ um 7B                  poucos MB
+```mermaid
+graph TD
+    subgraph "QLoRA: arquitetura de memória"
+        BASE["Modelo base\n65B params\nQuantizado NF4 (4 bits)\n~33 GB na GPU\n🔒 congelado"]
+        LORA["Adapters LoRA\nFP16 (16 bits)\n~30 MB\n✏️ treináveis"]
+        PAGED["Paged Optimizers\nEstados em CPU RAM\nem vez de GPU VRAM"]
+        BASE -- "gradiente passa\nthrough (STE)" --> LORA
+        PAGED -- "swap sob\ndemanda" --> LORA
+    end
+    RESULT["🎯 Resultado:\nFine-tuning de 65B\nem 1 GPU de 48GB\n(ex: A6000)"]
+    LORA --> RESULT
+    style BASE fill:#ffcc99,stroke:#cc6600
+    style LORA fill:#99ff99,stroke:#009900
+    style PAGED fill:#e6e6ff,stroke:#6666cc
 ```
 
-Com *double quantization* e *paged optimizers*, isso põe o fine-tuning de um **33B/65B numa única GPU**. É a ponte literal com a nota [[20 - Compressão de modelos — quantização e destilação]]: a [[Dicionário de IA#fine-tuning|quantização]] aqui não é só para *rodar* barato, é para *treinar* barato. Em 2026, QLoRA é o default de quem fine-tuna modelo aberto fora de um cluster.
+Com *double quantization* e *paged optimizers*, isso põe o fine-tuning de um **33B/65B numa única GPU**. É a ponte literal com a nota [[20 - Compressão de modelos — quantização e destilação]]: a quantização aqui não é só para *rodar* barato, é para *treinar* barato. Em 2026, QLoRA é o default de quem fine-tuna modelo aberto fora de um cluster.
 
 ### DPO — alinhamento por preferência sem o circo do RLHF
 
 Depois do SFT, você quer ajustar **julgamento**. O caminho clássico, o RLHF ([[18 - Como LLMs são treinados — pretraining, SFT, RLHF]]), treina um *reward model* e depois roda PPO — duas etapas, instável, caro de acertar. O **DPO** (Rafailov et al., 2023) reformula tudo como **uma perda direta**: dado um triplo `(prompt, resposta escolhida, resposta rejeitada)`, otimize o modelo para dar mais probabilidade à escolhida que à rejeitada — sem reward model, sem loop de RL.
+
+```mermaid
+graph TD
+    subgraph "RLHF (clássico) — 3 etapas"
+        SFT_A["1. SFT"]
+        RM["2. Reward Model\n(treinar separado)"]
+        PPO["3. PPO\n(loop de RL instável)"]
+        SFT_A --> RM --> PPO
+    end
+    subgraph "DPO — 1 etapa"
+        DATA["Pares\n(prompt, chosen, rejected)"]
+        DPO_LOSS["Perda DPO\n(log(σ(log π(chosen) - log π(rejected)))"]
+        SFT_B["Modelo SFT\n(referência congelada)"]
+        DATA --> DPO_LOSS
+        SFT_B -- "KL regularization" --> DPO_LOSS
+    end
+    style PPO fill:#ff9999,stroke:#cc0000
+    style DPO_LOSS fill:#99ff99,stroke:#009900
+```
 
 Um **modelo de referência** congelado (o próprio SFT) segura a rédea (um termo de KL) para o modelo não desandar. Variantes que você vai encontrar:
 
@@ -94,17 +153,20 @@ Um **modelo de referência** congelado (o próprio SFT) segura a rédea (um term
 
 ## A pipeline típica de um modelo aberto
 
-```
-Base (Llama/Qwen/Mistral)
-   │  SFT com QLoRA   → ensina formato e comportamento
-   ▼
-Modelo instruído
-   │  DPO/ORPO        → alinha julgamento (útil, conciso, seguro)
-   ▼
-Modelo alinhado
-   │  merge + quantiza (nota 18)
-   ▼
-Deploy local/edge (nota 08)
+```mermaid
+flowchart TD
+    BASE["Base pré-treinado\n(Llama 4 / Qwen 3 / Mistral)"]
+    SFT["SFT com QLoRA\n→ Aprende formato, tom, jargão\nDados: pares entrada→saída\n~1k-100k exemplos"]
+    INST["Modelo instruído"]
+    DPO["DPO / ORPO\n→ Polimento de julgamento\nDados: triplos chosen/rejected\n~1k-10k pares"]
+    ALIGN["Modelo alinhado"]
+    MERGE["Merge adapter → base\nQuantiza para GGUF/GPTQ\n(opcional)"]
+    DEPLOY["Deploy\nLocal (Ollama) / Edge / API"]
+
+    BASE --> SFT --> INST --> DPO --> ALIGN --> MERGE --> DEPLOY
+    style SFT fill:#99ccff,stroke:#0066cc
+    style DPO fill:#99ff99,stroke:#009900
+    style MERGE fill:#ffcc99,stroke:#cc6600
 ```
 
 ## Quando usar qual
@@ -137,6 +199,31 @@ O formato do dado é metade do jogo: SFT pede pares `instrução → resposta`; 
 - **DPO sobre-otimizado** — preferência empurrada longe demais degrada qualidade geral; o termo de KL contra o modelo de referência existe para isso — não o zere.
 - **Merge de LoRA em base quantizado** — fundir o adapter de volta num base 4-bit perde precisão; sirva o adapter separado ou faça o merge em fp16.
 - **Destilar de API fechada** — treinar com saídas de um modelo comercial de terceiros costuma violar os ToS do provider (mesma armadilha da [[20 - Compressão de modelos — quantização e destilação|destilação]]).
+
+## Como explicar em inglês
+
+Fine-tuning updates model weights (unlike prompting/RAG, which only modify inputs). In practice, **full fine-tuning** (all weights) is rarely viable outside of ML labs due to memory cost (~16-20 bytes per parameter for optimizer states). **LoRA** makes fine-tuning practical by exploiting the empirical observation that weight updates are low-rank: instead of training ΔW (the full weight delta), it trains two small matrices A and B such that ΔW ≈ BA, reducing trainable parameters by 99%+. **QLoRA** extends LoRA by quantizing the frozen base model to 4-bit NF4, reducing GPU memory enough to fine-tune a 65B model on a single GPU. After supervised fine-tuning (SFT), **DPO** replaces the unstable RLHF pipeline (reward model + PPO) with a direct loss over preference pairs — simpler, cheaper, and more stable.
+
+| PT | EN |
+|----|---|
+| Ajuste fino | Fine-tuning |
+| Ajuste fino supervisionado | Supervised fine-tuning (SFT) |
+| Ajuste fino eficiente em parâmetros | Parameter-Efficient Fine-Tuning (PEFT) |
+| Adaptação de baixo posto | Low-Rank Adaptation (LoRA) |
+| Adaptador | Adapter |
+| Posto da matriz | Matrix rank |
+| Esquecimento catastrófico | Catastrophic forgetting |
+| Otimização direta de preferência | Direct Preference Optimization (DPO) |
+| Modelo de recompensa | Reward model |
+| Par de preferência | Preference pair (chosen/rejected) |
+| Quantização de 4 bits | 4-bit quantization / NF4 |
+| Otimizadores paginados | Paged optimizers |
+
+## Ver mais
+
+- **[Umar Jamil — LoRA from Scratch (2024)](https://www.youtube.com/watch?v=PXWYUTMt-AU)** — implementação matemática de LoRA passo a passo em PyTorch, derivando a decomposição de posto baixo e os gradientes. Canal técnico com implementações de paper.
+- **[Sebastian Raschka — Fine-tuning LLMs (2024)](https://www.youtube.com/@SebastianRaschka)** — Raschka é o autor de "Build a Large Language Model from Scratch"; seus vídeos de fine-tuning incluem comparativos detalhados entre técnicas PEFT.
+- **[HuggingFace Blog — RLHF e DPO](https://huggingface.co/blog/dpo-trl)** — implementação de referência com TRL, incluindo `DPOTrainer` e exemplos de dataset de preferência.
 
 ## Veja também
 
