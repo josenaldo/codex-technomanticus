@@ -1,10 +1,10 @@
 ---
 title: "Modelos chineses — DeepSeek, Qwen, Kimi, GLM"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-06-24
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-llm
@@ -22,6 +22,16 @@ aliases:
 > [!abstract] TL;DR
 > Os modelos chineses deixaram de ser "alternativa barata" e viraram competidores de fronteira. DeepSeek V4 compete com Claude em raciocínio puro sob licença MIT. Qwen 3.6 é o melhor modelo open-weight para workflows agentic com 1M de contexto. Kimi K2.6 domina sub-agentes. GLM-5.1 é forte em engenharia de longo prazo. Todos são significativamente mais baratos que equivalentes ocidentais e a maioria tem licenças permissivas (MIT ou Apache 2.0).
 
+## O choque de janeiro de 2025
+
+Em janeiro de 2025, a DeepSeek publicou o relatório técnico do V3: treinado por **$6 milhões**, performance equivalente ao GPT-4o em benchmarks de matemática e coding. O GPT-4o custou estimados $100 milhões para treinar.
+
+Duas hipóteses: ou a equipe de Hangzhou descobriu algo que o restante da indústria de IA — com seus $10 bilhões em GPUs H100 — havia perdido; ou os números de custo ocidentais eram inflados. A resposta foi "os dois": DeepSeek publicou inovações genuínas em eficiência de treinamento (MLA, DeepSeekMoE), *e* os custos da OpenAI e Anthropic incluem muito além do compute puro.
+
+O impacto foi concreto. Em fevereiro de 2025, o governo americano incluiu a DeepSeek na lista de entidades de segurança nacional. A Nvidia perdeu $500 bilhões de capitalização em um dia. A tese de que "quem tem mais GPUs ganha" ficou mais frágil.
+
+Para engenheiros, a questão prática é mais simples: modelos chineses open-weight são competitivos em qualidade e custam 5-20x menos por token nas APIs. Ignorá-los é deixar dinheiro na mesa.
+
 ## O que é
 
 O ecossistema chinês de LLMs open-weight amadureceu em 2025-2026 a ponto de oferecer alternativas viáveis — e em alguns casos superiores — aos modelos ocidentais para tarefas específicas. Os quatro players principais são:
@@ -38,17 +48,25 @@ O ecossistema chinês de LLMs open-weight amadureceu em 2025-2026 a ponto de ofe
 - **Self-hosting** — VRAM requirements são otimizados via MoE, viabilizando rodar localmente
 - **Competição** — a qualidade desses modelos força Anthropic, OpenAI e Google a baixar preços
 
+```mermaid
+xychart-beta
+    title "Custo por 1M tokens de input (USD) — modelos equivalentes, 2026"
+    x-axis ["GPT-5", "Claude Opus", "Gemini Pro", "DeepSeek V4", "Qwen 3.6", "GLM-5"]
+    y-axis "$/1M tokens" 0 --> 20
+    bar [15, 15, 7, 0.27, 0.9, 0.7]
+```
+
 ## Como funciona
 
 ### DeepSeek V4
 
-| Aspecto             | Detalhe                                                  |
+| Aspecto | Detalhe |
 | ------------------- | -------------------------------------------------------- |
-| **Arquitetura**     | Mixture-of-Experts                                       |
-| **Contexto**        | 128k–163k tokens                                         |
-| **Licença**         | MIT                                                      |
+| **Arquitetura** | Mixture-of-Experts |
+| **Contexto** | 128k–163k tokens |
+| **Licença** | MIT |
 | **Força principal** | Raciocínio matemático, coding defensivo, lógica complexa |
-| **Self-hosting**    | Viável com multi-GPU (otimizado para MoE [[Dicionário de IA#inference\|inference]])      |
+| **Self-hosting** | Viável com multi-GPU (otimizado para MoE [[Dicionário de IA#inference\|inference]]) |
 
 DeepSeek se destacou por publicar papers detalhados sobre suas técnicas de treinamento, incluindo **Multi-Head Latent Attention (MLA)** e **DeepSeekMoE** — inovações que influenciaram toda a indústria.
 
@@ -60,13 +78,13 @@ DeepSeek se destacou por publicar papers detalhados sobre suas técnicas de trei
 
 ### Qwen 3.6 (Alibaba Cloud)
 
-| Aspecto             | Detalhe                                                  |
+| Aspecto | Detalhe |
 | ------------------- | -------------------------------------------------------- |
-| **Arquitetura**     | Mixture-of-Experts otimizado para agentes                |
-| **Contexto**        | Até 1M tokens                                            |
-| **Licença**         | Apache 2.0                                               |
+| **Arquitetura** | Mixture-of-Experts otimizado para agentes |
+| **Contexto** | Até 1M tokens |
+| **Licença** | Apache 2.0 |
 | **Força principal** | Workflows agentic, multimodal (visão/vídeo), multilíngue |
-| **Self-hosting**    | Ollama suporta, múltiplas quantizações disponíveis       |
+| **Self-hosting** | Ollama suporta, múltiplas quantizações disponíveis |
 
 Qwen é o modelo chinês mais versátil. A série 3.6 trouxe melhorias significativas em:
 
@@ -82,11 +100,11 @@ Qwen é o modelo chinês mais versátil. A série 3.6 trouxe melhorias significa
 
 ### Kimi K2.6 (Moonshot AI)
 
-| Aspecto             | Detalhe                                                |
+| Aspecto | Detalhe |
 | ------------------- | ------------------------------------------------------ |
-| **Disponibilidade** | API (não totalmente open-weight)                       |
+| **Disponibilidade** | API (não totalmente open-weight) |
 | **Força principal** | Sub-agentes, edição multi-arquivo, workflows paralelos |
-| **Contexto**        | Longo (detalhes variam por tier)                       |
+| **Contexto** | Longo (detalhes variam por tier) |
 
 Kimi se diferencia por ser otimizado para **orquestração de sub-agentes**. Enquanto outros modelos são bons em tarefas isoladas, Kimi é projetado para:
 
@@ -102,11 +120,11 @@ Kimi se diferencia por ser otimizado para **orquestração de sub-agentes**. Enq
 
 ### GLM-5.1 (Zhipu AI)
 
-| Aspecto             | Detalhe                                                  |
+| Aspecto | Detalhe |
 | ------------------- | -------------------------------------------------------- |
-| **Licença**         | MIT (algumas variantes)                                  |
-| **Força principal** | Engenharia de software complexa, tarefas de longo prazo  |
-| **Diferencial**     | Performance estável em sessões longas de desenvolvimento |
+| **Licença** | MIT (algumas variantes) |
+| **Força principal** | Engenharia de software complexa, tarefas de longo prazo |
+| **Diferencial** | Performance estável em sessões longas de desenvolvimento |
 
 GLM é menos conhecido no Ocidente mas tem adoção significativa em empresas chinesas de tecnologia para engenharia de software.
 
@@ -117,15 +135,33 @@ GLM é menos conhecido no Ocidente mas tem adoção significativa em empresas ch
 
 ## Comparativo
 
-| Critério           | DeepSeek V4  | Qwen 3.6          | Kimi K2.6    | GLM-5.1  |
+| Critério | DeepSeek V4 | Qwen 3.6 | Kimi K2.6 | GLM-5.1 |
 | ------------------ | ------------ | ----------------- | ------------ | -------- |
-| **Reasoning puro** | ★★★★★        | ★★★★              | ★★★          | ★★★★     |
-| **Agentic coding** | ★★★          | ★★★★★             | ★★★★★        | ★★★★     |
-| **Context window** | 163k         | 1M                | Variável     | Variável |
-| **Self-hosting**   | Viável (MoE) | Viável (Ollama)   | Não          | Parcial  |
-| **Licença**        | MIT          | Apache 2.0        | Proprietário | MIT      |
-| **Custo via API**  | Muito barato | Barato            | Moderado     | Barato   |
-| **Multimodal**     | Texto+código | Texto+visão+vídeo | Texto        | Texto    |
+| **Reasoning puro** | ★★★★★ | ★★★★ | ★★★ | ★★★★ |
+| **Agentic coding** | ★★★ | ★★★★★ | ★★★★★ | ★★★★ |
+| **Context window** | 163k | 1M | Variável | Variável |
+| **Self-hosting** | Viável (MoE) | Viável (Ollama) | Não | Parcial |
+| **Licença** | MIT | Apache 2.0 | Proprietário | MIT |
+| **Custo via API** | Muito barato | Barato | Moderado | Barato |
+| **Multimodal** | Texto+código | Texto+visão+vídeo | Texto | Texto |
+
+```mermaid
+graph TD
+    A{O que você precisa?} --> B[Raciocínio puro\nMatemática/lógica]
+    A --> C[Agente autônomo\nTool use / longo contexto]
+    A --> D[Multi-arquivo\nSub-agente orchestration]
+    A --> E[Self-hosting\nLicença MIT]
+
+    B --> F["DeepSeek V4\n~$0.27/1M input\nMIT, MoE eficiente"]
+    C --> G["Qwen 3.6\n~$0.9/1M input\n1M contexto, multimodal"]
+    D --> H["Kimi K2.6\nAPI only\nOtimizado para sub-agentes"]
+    E --> I["DeepSeek V4 ou GLM-5.1\nambos MIT\nself-host com Ollama/vLLM"]
+
+    style F fill:#99ccff,stroke:#0066cc
+    style G fill:#99ff99,stroke:#009900
+    style H fill:#ffcc99,stroke:#cc6600
+    style I fill:#ff99cc,stroke:#cc0066
+```
 
 ## Na prática
 
@@ -160,6 +196,27 @@ curl https://api.siliconflow.cn/v1/chat/completions \
 - **Latência de API** — APIs hospedadas na China podem ter latência alta para usuários nas Américas/Europa. Use provedores intermediários (Together, Fireworks, Groq).
 - **Versioning confuso** — a nomenclatura muda rapidamente. "DeepSeek V3" pode se referir a versões diferentes dependendo da data. Sempre verifique o modelo exato na documentação.
 - **Suporte e documentação** — documentação primária frequentemente em mandarim. Comunidades em inglês são menores.
+
+## Como explicar em inglês
+
+Chinese open-weight models became frontier competitors in 2025-2026. **DeepSeek V3/V4** demonstrated that training efficiency innovations (Multi-Head Latent Attention, Mixture-of-Experts sparsity) could close the gap with Western models at 1/15 the compute cost. **Qwen** (Alibaba) leads on agentic workflows and has the longest context window (1M tokens) of any open-weight model. **Kimi** (Moonshot AI) is optimized for multi-agent orchestration — decomposing complex tasks across parallel sub-agents. The key practical consideration for Western developers is accessing these models through intermediary APIs (Together, Fireworks, SiliconFlow) to avoid high latency from Chinese data centers. All major Chinese models expose OpenAI-compatible APIs, so integration is usually a one-line change.
+
+| PT | EN |
+|----|---|
+| Modelos chineses | Chinese models / Chinese open-weight models |
+| Modelo de fronteira | Frontier model |
+| Orquestração de sub-agentes | Sub-agent orchestration |
+| Atenção de cabeça múltipla latente | Multi-Head Latent Attention (MLA) |
+| Modelo aberto | Open-weight model |
+| Provedor intermediário | Intermediary API provider |
+| Licença permissiva | Permissive license |
+| Soberania de modelo | Model sovereignty |
+
+## Ver mais
+
+- **[DeepSeek AI — DeepSeek-V3 Technical Report (2024)](https://arxiv.org/abs/2412.19437)** — o paper que sacudiu a indústria. Detalha MLA (Multi-Head Latent Attention), DeepSeekMoE e as técnicas de treinamento que permitiram performance de fronteira com ~$6M de compute.
+- **[Sebastian Raschka — Understanding DeepSeek's Architecture (2025)](https://magazine.sebastianraschka.com)** — análise linha a linha das inovações técnicas do DeepSeek, comparando com GPT e Llama. Raschka é um dos melhores explicadores de arquiteturas de LLM.
+- **[SiliconFlow — Open Model API Hosting](https://siliconflow.cn)** — plataforma de hospedagem para modelos chineses com API OpenAI-compatible, baixíssima latência para regiões asiáticas e suporte a DeepSeek/Qwen/GLM.
 
 ## Veja também
 

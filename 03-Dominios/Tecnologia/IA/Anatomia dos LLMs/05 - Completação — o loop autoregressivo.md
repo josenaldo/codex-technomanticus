@@ -1,10 +1,10 @@
 ---
 title: "Completação — o loop autoregressivo"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-06-24
 type: concept
-status: seedling
-progress: in-progress
+status: growing
+progress: done
 publish: true
 tags:
   - anatomia-llm
@@ -24,6 +24,16 @@ aliases:
 
 > [!abstract] TL;DR
 > Um LLM não escreve a resposta inteira de uma vez — ele gera **um token por vez**, em loop. A cada passo, a [[04 - Atenção e o mecanismo transformer|passada pelo transformer]] produz um **logit** (uma pontuação crua) para *cada* token do vocabulário; o **softmax** transforma esses logits numa distribuição de probabilidade; uma **estratégia de amostragem** (greedy, top-k, top-p, temperatura) escolhe o próximo token; ele é **anexado** ao texto, e tudo recomeça — agora com um token a mais de entrada. Isso é a **completação**: o modelo "completa" a sequência, relendo o que ele mesmo acabou de escrever, até soltar um token de parada. Toda a criatividade aparente mora num único ponto — a amostragem.
+
+## Por que você precisa entender o loop
+
+Você acabou de colocar em produção a primeira versão do seu app com LLM. Nos testes, tudo parecia consistente. Mas os usuários começam a reportar: "a IA deu duas respostas diferentes para a mesma pergunta". Alguém posta um screenshot mostrando o modelo gerando algo inconsistente. Você vai no código e vê `temperature=0.7` no payload. Você não entendia que `temperature > 0` significa sortear.
+
+Ou o cenário inverso: você travou em `temperature=0` para garantir determinismo, mas em produção o modelo ainda varia às vezes. Você não entendia que GPUs em paralelo introduzem non-determinismo numérico mesmo no greedy.
+
+Ou: você passou `max_tokens=500` e a resposta chega truncada no meio de uma frase JSON. A API retornou `finish_reason: length` em vez de `stop`, mas você não estava checando.
+
+Esses três cenários — não-determinismo inesperado, output truncado, looping de repetição — têm todos a mesma causa raiz: não entender que a completação é um **loop de um token por vez**, onde cada passo é uma decisão estocástica com parâmetros controláveis. Esta nota desmonta esse loop.
 
 ## O que é
 
@@ -45,6 +55,7 @@ Entender a completação como **loop**, e não como uma "resposta mágica", é o
 - **`temperature`, `top_p`, `top_k`** só fazem sentido quando você sabe que eles atuam na *escolha* do token, não no "pensamento" do modelo (ver [[11 - APIs de LLM — anatomia de uma chamada]]).
 - **Não-determinismo**: por que a mesma pergunta dá respostas diferentes? Porque a amostragem sorteia. Saber disso é saber quando travar (`temperature=0`) e quando soltar.
 - **Alucinação** tem raiz aqui: o modelo *sempre* tem uma distribuição de próximos tokens e *sempre* amostra um — ele nunca "não sabe", apenas atribui probabilidade. Confiança não é verdade.
+
 ## Como funciona: a camada de saída
 
 Depois que o texto passa por [[02 - Tokens e tokenização|tokenização]], [[03 - Embeddings — do token ao vetor|embeddings]] e por todas as camadas de [[04 - Atenção e o mecanismo transformer|atenção]], o modelo tem, para a **última posição**, um vetor de estado final. Falta o passo que vira texto:
@@ -124,6 +135,14 @@ Antes do softmax, divide-se cada logit por um número `T`, a **temperatura** —
 >
 > Mesma rede, mesmos logits — só o `T` muda. Em `T=0,5` o modelo quase sempre escolhe A; em `T=2` C ganha uma chance real de aparecer. É o mesmo mecanismo que a [[04 - Atenção e o mecanismo transformer|nota da atenção]] descreve para o softmax dos scores, agora aplicado à saída.
 
+```mermaid
+xychart-beta
+    title "Efeito da temperatura — probabilidade do token mais provável"
+    x-axis ["T=0.1", "T=0.3", "T=0.5", "T=0.7", "T=1.0", "T=1.5", "T=2.0"]
+    y-axis "P(token mais provável) %" 0 --> 100
+    line [99, 95, 86, 78, 66, 55, 50]
+```
+
 ### Top-k
 
 Mantém só os **`k` tokens mais prováveis**, zera o resto, renormaliza e amostra. Limita o estrago (nunca escolhe um token absurdo), mas `k` é fixo: num momento em que só 2 tokens fazem sentido, um `k=50` ainda deixa entrar 48 ruins; num momento ambíguo, pode cortar opções legítimas.
@@ -131,6 +150,20 @@ Mantém só os **`k` tokens mais prováveis**, zera o resto, renormaliza e amost
 ### Top-p (nucleus sampling)
 
 Mantém o **menor conjunto de tokens cuja probabilidade acumulada ≥ `p`** (ex.: `p=0,9` → o "núcleo" que cobre 90% da massa), renormaliza e amostra. A vantagem sobre o top-k é ser **adaptativo**: quando o modelo está confiante (um token domina), o núcleo encolhe; quando está incerto (massa espalhada), o núcleo cresce. Hoje é o default mais comum, frequentemente combinado com temperatura.
+
+```mermaid
+graph LR
+    subgraph "Top-p adaptativo"
+        A["Distribuição concentrada\n(modelo confiante)"] --> B["Núcleo pequeno\n(2-3 tokens cobrem 90%)"]
+        C["Distribuição espalhada\n(modelo incerto)"] --> D["Núcleo grande\n(20+ tokens cobrem 90%)"]
+    end
+    subgraph "Top-k fixo"
+        E["Qualquer distribuição"] --> F["Sempre k tokens\n(pode ser demais\nou de menos)"]
+    end
+    style B fill:#99ff99,stroke:#009900
+    style D fill:#99ff99,stroke:#009900
+    style F fill:#ffcc99,stroke:#cc6600
+```
 
 > [!tip] Como pensar nos três juntos
 > **Temperatura** decide o quão "ousada" é a distribuição; **top-k** e **top-p** decidem quais caudas cortar antes de sortear. Para saída factual/estruturada: `temperature` baixa (ou 0). Para texto criativo: `temperature` ~0,7–1,0 + `top_p` ~0,9. Mexa em **um** de cada vez — `temperature` e `top_p` juntos no talo brigam entre si.
@@ -157,6 +190,29 @@ O loop não roda para sempre. Ele termina quando:
 - **Mexer em `temperature` e `top_p` ao mesmo tempo, no escuro.** São dois cortes na mesma distribuição; combinados sem critério, dão resultado imprevisível.
 - **Esperar determinismo com `temperature > 0`.** Qualquer temperatura positiva sorteia. Para reprodutibilidade, `temperature=0` (greedy) — e ainda assim pode haver pequena variação por causa de não-determinismo numérico em GPU/batch.
 - **Ignorar o motivo de parada.** Tratar toda saída como completa, sem checar se foi EOS ou truncamento por `max_tokens`.
+
+## Como explicar em inglês
+
+An LLM generates text **one token at a time in a loop** — not by writing the full response at once. At each step: (1) the transformer forward pass produces **logits** (raw scores for each vocabulary token), (2) **softmax** converts them into a probability distribution, (3) a **sampling strategy** picks the next token. That token is appended to the sequence, and the whole process repeats — the model reads what it just wrote. **Temperature** controls how sharp or flat the distribution is: `T<1` concentrates probability on the top token (more deterministic), `T>1` spreads it (more creative). **Top-p nucleus sampling** dynamically shrinks the candidate set to the smallest group of tokens whose cumulative probability exceeds `p` — adaptive in ways that fixed top-k isn't. The loop ends on EOS (model learned to stop), `max_tokens` (hard cutoff → truncated response), or a stop sequence.
+
+| PT | EN |
+|----|---|
+| Completação | Completion |
+| Loop autoregressivo | Autoregressive loop / decoding loop |
+| Logit | Logit (same word) |
+| Amostragem | Sampling |
+| Temperatura | Temperature |
+| Amostragem por núcleo | Nucleus sampling (top-p) |
+| Greedy / guloso | Greedy decoding |
+| Token de parada | End-of-sequence token (EOS) |
+| Penalidade de repetição | Repetition penalty |
+| Motivo de parada | Finish reason / stop reason |
+
+## Ver mais
+
+- **[Andrej Karpathy — Let's build GPT from scratch (2023)](https://www.youtube.com/watch?v=kCc8FmEb1nY)** — Karpathy implementa o loop de geração e as estratégias de amostragem do zero em PyTorch. Ver especialmente a seção de sampling (~1h00-1h20) onde ele demonstra ao vivo como temperatura e greedy mudam o output.
+- **[Jay Alammar — The Illustrated GPT-2](https://jalammar.github.io/illustrated-gpt2/)** — visualização animada de como a camada de saída projeta o vetor final sobre o vocabulário para produzir logits. Complemento visual desta nota.
+- **[Holtzman et al. — The Curious Case of Neural Text Degeneration (2019)](https://arxiv.org/abs/1904.09751)** — o paper que introduziu nucleus sampling (top-p) e demonstrou empiricamente que greedy e beam search geram texto degenerado (loops, incoerências). A Fig. 1 do paper é especialmente ilustrativa.
 
 ## Veja também
 
