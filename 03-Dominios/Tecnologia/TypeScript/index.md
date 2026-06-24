@@ -32,18 +32,18 @@ Estante de TypeScript: do sistema de tipos do dia a dia até programação no n�
 - [[09 - Type narrowing e type guards]] — como o TS estreita tipos via control flow
 - [[10 - Tipando funções - assinaturas, overloads, contextual typing]] — funções, overloads e inferência contextual
 
-## 🟡 Adepto — type-level programming e configuração *(a escrever)*
+## 🟡 Adepto — type-level programming e configuração
 
-- 11 — Generics: funções e constraints
-- 12 — Generics: defaults, classes e interfaces genéricas
-- 13 — Conditional types
-- 14 — `infer` e extração de tipos
-- 15 — `keyof`, `typeof` e indexed access types
-- 16 — Mapped types e key remapping
-- 17 — Template literal types
-- 18 — Utility types — e como reconstruí-los
-- 19 — Enums, `const` objects e modelagem de constantes
-- 20 — `tsconfig` e strict mode a fundo
+- [[11 - Generics - funções e constraints]] — `<T>`, inferência de type args e constraints
+- [[12 - Generics - defaults, classes e interfaces genéricas]] — defaults, containers genéricos, variância
+- [[13 - Conditional types]] — `T extends U ? X : Y` e distribuição sobre unions
+- [[14 - infer e extração de tipos]] — pattern matching no nível de tipos
+- [[15 - keyof, typeof e indexed access types]] — a ponte valor↔tipo
+- [[16 - Mapped types e key remapping]] — iterar sobre chaves pra construir tipos
+- [[17 - Template literal types]] — strings no nível de tipos
+- [[18 - Utility types - e como reconstruí-los]] — os embutidos, desmontados (consolidação)
+- [[19 - Enums, const objects e modelagem de constantes]] — como modelar conjuntos fechados
+- [[20 - tsconfig e strict mode a fundo]] — o compilador como type-checker configurável
 
 ## 🔴 Magus — fronteiras, runtime, escala, produção *(a escrever)*
 

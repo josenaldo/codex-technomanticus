@@ -20,7 +20,6 @@ tags:
 > TypeScript é uma **camada de tipos** colada sobre o JavaScript: o compilador `tsc` verifica os tipos e emite JS puro — os tipos somem completamente em runtime. Três propriedades explicam quase toda decisão de design e quase toda armadilha: é **gradual** (você adota aos poucos, `any` é a válvula de escape), **estrutural** (compatibilidade por forma, não por nome — o que diferencia de Java/C#) e **apagado** (zero custo em runtime, mas nenhuma garantia do tipo sobrevive à fronteira de execução). Se você entender essas três palavras, entenderá 80% do que acontece nos erros de tipo que vai encontrar na carreira.
 
 ---
-
 ## Por que tipos importam — e por que JavaScript precisava deles
 
 Pense num projeto JavaScript médio de 2012: uma `app.js` com quinhentas linhas, algumas funções expostas globalmente, nenhuma documentação. Você pega uma função assim:
@@ -31,7 +30,7 @@ function calcularFrete(pedido, opcao) {
 }
 ```
 
-Qual é o tipo de `pedido`? Tem `itens`? Tem `enderecoEntrega`? E `opcao` — é uma string `"express"` ou um objeto `{ tipo: "express", prazo: 2 }`? Não tem como saber sem ler o corpo da função inteiro, rastrear todos os chamadores, torcer pra não ter monkey-patching. E se você passar o parâmetro errado? O bug só aparece quando aquela linha específica roda em produção, num edge case, às 2h da manhã.
+Qual é o tipo de `pedido`? Tem `itens`? Tem `enderecoEntrega`? E `opcao` — é uma string `"express"` ou um objeto `{ tipo: "express", prazo: 2 }`? Não tem como saber sem ler o corpo da função inteiro, rastrear todos os chamadores, torcer pra não ter [[Dicionário de Ciência da Computação#monkey-patching|monkey-patching]]. E se você passar o parâmetro errado? O bug só aparece quando aquela linha específica roda em produção, num edge case, às 2h da manhã.
 
 Esse é o custo de trabalhar sem tipos num codebase grande: o cérebro precisa fazer o trabalho que um compilador poderia fazer por você. Você memoriza contratos implícitos. Você tem medo de renomear um campo porque não sabe onde mais ele é usado. Cada refactor é uma aposta.
 
@@ -43,7 +42,6 @@ Tipos não provam que sua lógica de negócio está correta — mas provam que v
 Essa era a aposta do TypeScript quando a Microsoft o lançou em 2012, guiado por Anders Hejlsberg — o mesmo engenheiro por trás do C# e do Turbo Pascal. A aposta valeu: em 2026, TypeScript é a linguagem mais usada no GitHub.
 
 ---
-
 ## TypeScript como camada — o modelo mental fundamental
 
 Antes de ir às três propriedades, precisa fixar o modelo arquitetural. TypeScript **não** é uma linguagem que substitui JavaScript. É uma **camada** adicionada sobre ele. Pense assim:
@@ -51,16 +49,16 @@ Antes de ir às três propriedades, precisa fixar o modelo arquitetural. TypeScr
 ```mermaid
 flowchart TD
     subgraph TS["TypeScript (você escreve)"]
-        CODE["código .ts\ncom anotações de tipo"]
+        CODE["código .ts com anotações de tipo"]
     end
     subgraph TSC["tsc — compilador TypeScript"]
-        TC["type checker\n(verifica tipos)"]
-        EMIT["emissão\n(apaga tipos, gera .js)"]
+        TC["type checker (verifica tipos)"]
+        EMIT["emissão (apaga tipos, gera .js)"]
         TC --> EMIT
     end
     subgraph JS["JavaScript (o que roda)"]
-        JSOUT["código .js\nsem tipos"]
-        RUNTIME["runtime\n(Node, browser, Deno)"]
+        JSOUT["código .js sem tipos"]
+        RUNTIME["runtime (Node, browser, Deno)"]
         JSOUT --> RUNTIME
     end
 
