@@ -1,10 +1,10 @@
 ---
 title: "Logging Layer"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-24
 type: concept
 status: seedling
-progress: in_progress
+fase: Iniciado
 tags:
   - ai-engineering-stack
   - ia
@@ -19,56 +19,139 @@ aliases:
 # Logging Layer
 
 > [!abstract] TL;DR
-> A Logging Layer registra **o que aconteceu em cada run**, de forma estruturada e queryable: task, input, versão do prompt, tools chamadas, fontes usadas, output, score da eval, falhas, sugestões de melhoria. É o que permite debugar incidentes, calcular custo por usuário, achar regressões, identificar drift. Sem essa camada, o sistema é caixa-preta — você pode ver que algo deu errado mas não consegue dizer **onde** nem **por quê**. Observability em IA é exigência operacional, não nice-to-have.
+> A Logging Layer registra **o que aconteceu em cada execução**, de forma estruturada e queryável: task, input (com PII redacted), versão do prompt, tools chamadas, fontes usadas, output, score de eval, guardrails disparados, latência e custo. Sem essa camada, o sistema é caixa-preta: você sabe que algo deu errado, mas não consegue dizer onde, quando, nem em que contexto. E sem os logs, o Improvement Loop não tem nada para ler. Observability em IA não é nice-to-have — é pré-requisito para operar.
+
+## O problema que a Logging Layer resolve
+
+Incidente em produção: o assistente de suporte respondeu algo incorreto para um cliente. Qual foi exatamente o input do usuário? Qual versão do prompt estava ativa? O modelo fez alguma tool call antes de responder? A Retrieval Layer buscou algum documento? O guardrail disparou e foi ignorado?
+
+Sem a Logging Layer, a resposta para todas essas perguntas é: "não sabemos". Você pode ver o output errado (o usuário mandou screenshot), mas não tem o trace completo da execução. Não tem como reproduzir o problema. Não tem como saber se é bug do prompt, do retrieval, da tool, ou do modelo. E não tem como garantir que a correção que você fez resolve o problema — porque não tem como comparar com o antes.
+
+Log pós-incidente é tão útil quanto airbag depois do acidente. A Logging Layer precisa estar configurada antes do primeiro usuário real, não depois do primeiro incidente.
 
 ## O que é esta camada
 
-A Logging Layer é o **gravador estruturado** do sistema. Cada chamada do sistema produz um registro com identificadores (trace_id, span_id), insumos (prompt_version, model, params), passos (tool calls, retrieval queries), resultado (output, eval_score, custo), e flags (guardrails que dispararam, falhas).
+A Logging Layer é o **gravador estruturado** do sistema. Cada execução produz um registro completo com todos os elementos que produziram o output.
 
 Template mínimo (adaptado do thread @hooeem):
 
 ```yaml
-record_per_run:
-  - task_id e trace_id
-  - input (com PII redacted se preciso)
-  - prompt_version e model_version
-  - tools_called: [{name, args, latency, success}]
-  - sources_used: [{id, score, citation}]
-  - output (raw + structured)
-  - eval_score
-  - guardrails_triggered
-  - failures
-  - improvement_suggestions
+log_per_run:
+  identifiers:
+    - trace_id: "<UUID único por execução>"
+    - span_id: "<UUID por sub-operação (model call, tool call, retrieval)>"
+    - session_id: "<agrupa execuções de uma sessão do usuário>"
+  inputs:
+    - user_input: "<input com PII redacted se necessário>"
+    - prompt_version: "v2.3.1"
+    - model_version: "claude-3-5-sonnet-20241022"
+    - context_template_version: "v1.1"
+  steps:
+    - tools_called: [{name, args_redacted, latency_ms, success, error}]
+    - retrieval_queries: [{query, sources_found, top_score}]
+    - intermediate_outputs: "<em pipelines multi-step>"
+  result:
+    - output_raw: "<output antes de qualquer post-processing>"
+    - eval_score: {accuracy: 4, completeness: 3, overall: 3.7}
+    - cost_usd: 0.0023
+    - latency_ms: 1847
+  flags:
+    - guardrails_triggered: []
+    - failure_type: null
+    - confidence: "high"
+  metadata:
+    - user_id: "<hashed>"
+    - environment: "production"
+    - timestamp_utc: "2026-06-24T14:32:11Z"
 ```
 
-Padrão emergente: **[[Dicionário de IA#OpenTelemetry GenAI|OpenTelemetry GenAI]]** — semantic conventions específicas pra LLM (`gen_ai.system`, `gen_ai.request.model`, `gen_ai.usage.input_tokens`). Adotá-las dá interoperabilidade com Langfuse, Phoenix, Datadog, etc.
+O padrão emergente para a implementação é **OpenTelemetry GenAI** — semantic conventions específicas para LLMs que garantem interoperabilidade com ferramentas como Langfuse, Phoenix e Datadog.
 
 ## Decisões-chave
 
-1. **O que NÃO logar.** Logs de IA muitas vezes contêm PII em input/output. Política de redaction é parte do design — não escolha tardia. Sem redaction estruturada, log vira ativo de risco.
+**1. O que NÃO logar.** Logs de IA frequentemente contêm PII em input e output — nomes, CPFs, emails, histórico de saúde. Política de redação de PII antes de gravar no log não é opcional: sem ela, o log vira ativo de risco regulatório (LGPD, GDPR). Defina quais campos recebem redação automática antes de gravar a primeira linha.
 
-2. **Estrutura vs free-form.** Log livre é fácil de gerar, impossível de queryar. Schema estrito (campos tipados) é caro de manter mas viabiliza analytics. Comece com schema básico e expanda; nunca volte de estruturado pra livre.
+**2. Schema estruturado vs free-form.** Log em formato livre (texto puro, JSON ad-hoc) é fácil de gerar e impossível de analisar em escala. Schema estrito com campos tipados viabiliza queries, dashboards e alertas. A regra: comece com schema mínimo fixo e expanda; nunca volte de estruturado para livre.
 
-3. **Trace vs log.** Trace agrupa todas as spans de uma execução (modelo + retrievals + tool calls + sub-agentes). Log é evento solto. Sistemas com agents precisam de trace; sistemas simples sobrevivem só com log.
+**3. Log vs trace.** Log é um evento isolado. Trace agrupa todos os spans de uma execução: a chamada ao modelo, as tool calls, as retrieval queries, os sub-agentes — todos com relação de causa-e-efeito preservada. Sistemas simples (uma chamada ao modelo, resposta) sobrevivem com log. Sistemas com agents ou pipelines multi-step precisam de trace para reconstruir o que aconteceu.
 
-4. **Sample rate.** Logar 100% em produção alto-volume custa caro. Sampling estratificado (todos os erros, alguns sucessos) preserva sinal economizando custo.
+**4. Taxa de amostragem em volume.** Logar 100% das execuções em alto volume custa caro — tanto em storage quanto em processamento. Sampling estratificado resolve: 100% de erros (sempre log os casos que falharam), 100% de guardrail disparados, e amostra aleatória de sucessos (5-10%). Esse padrão preserva sinal operacional com custo controlado.
 
-5. **Retenção.** Logs com PII têm prazo legal (GDPR, LGPD). Logs sem PII podem ficar mais. Política clara evita acumular passivo.
+**5. Política de retenção.** Logs com PII têm prazo legal de retenção — no Brasil, LGPD define obrigações; na Europa, GDPR. Logs sem PII podem ser retidos por mais tempo para análise de tendências e treinamento futuro. A política precisa estar definida antes de acumular volume: limpar retroativamente é muito mais difícil.
 
-## Onde aprofundar no Codex
+## Casos práticos
 
-- **[[Observability]]** — trilha-irmã sobre observabilidade de sistemas de IA (em construção).
-- **[[Dicionário de IA#tracing|Dicionário: tracing]]**, **[[Dicionário de IA#span|span]]**.
-- **[[Dicionário de IA#Langfuse|Langfuse]]** e **[[Dicionário de IA#Arize Phoenix|Arize Phoenix]]** — duas ferramentas comuns.
+### Cenário 1 — Incidente sem trace
+
+Sistema de recomendação de conteúdo. Um usuário reclama que o sistema recomendou conteúdo inadequado. A equipe tem: o user_id, o timestamp, e o screenshot do output. Não tem: qual versão do prompt estava ativa, quais documentos foram recuperados, qual score de relevância levou àquela recomendação, se o guardrail foi chamado e por que não bloqueou.
+
+Investigação: 3 dias de análise manual em logs de sistema genérico. Conclusão: "provavelmente foi o documento X da base de retrieval, mas não temos certeza". Correção: especulativa. O mesmo problema pode ocorrer de novo.
+
+Com Logging Layer: o trace_id do incidente leva direto ao log completo. Em 20 minutos, a equipe sabe: versão do prompt era v1.8.2, o retrieval buscou com query Q e retornou documentos D1, D2, D3 com scores 0.91, 0.88, 0.72. O documento D1 continha o conteúdo problemático. O guardrail de toxicidade não disparou porque o score ficou abaixo do threshold. Correção: ajuste do threshold do guardrail + remoção de D1 da base de retrieval.
+
+### Cenário 2 — Dashboard operacional com OpenTelemetry
+
+Sistema de suporte técnico com 8.000 chamadas/dia. Logging Layer implementada com OpenTelemetry GenAI + Langfuse como backend. Dashboard mostra em tempo real:
+
+- Latência p50/p95/p99 por tipo de consulta
+- Custo por usuário por dia (alerta quando ultrapassa orçamento)
+- Taxa de guardrail disparado (spike → possível ataque)
+- Eval score médio por dia (queda → possível drift do modelo)
+- Tool failure rate por tool (>5% → bug na integração)
+
+Quando a latência p95 sobe 40% em uma hora, o time investiga e descobre: retrieval está fazendo queries redundantes (bug introduzido no último deploy). Identificação: 15 minutos. Rollback: imediato. Sem o dashboard, o problema teria sido descoberto pelo usuário reclamando.
+
+## Armadilhas comuns
+
+> [!warning] Configurar logging depois do primeiro incidente
+> "Vamos adicionar logging quando algo der errado" garante que o primeiro incidente vai ser investigado no escuro — sem trace, sem versão do prompt, sem contexto. Logging precisa estar ativo antes do primeiro usuário real. O incidente é tarde demais para instrumentar.
+
+> [!warning] Log não-queryável
+> Log em texto livre, JSON sem schema fixo, ou mistura de formatos por data é praticamente inútil para análise em volume. Você tem os dados, mas não consegue responder "qual é o eval score médio das chamadas da semana passada que tiveram guardrail disparado?" sem parsear linha a linha. Schema estruturado desde o início é investimento com retorno imediato.
+
+> [!warning] Logar PII sem política de redação
+> Logs de sistemas de IA frequentemente contêm PII sensível nos inputs e outputs dos usuários. Sem redação automática, o log se torna um arquivo de dados pessoais — com todas as obrigações legais que isso implica. Implemente redação como parte do pipeline de logging, não como step opcional.
+
+## Como explicar em inglês
+
+The Logging Layer is the structured recorder of the AI system. It captures everything that happened in each execution: the versioned prompt, model parameters, tool calls (with arguments and results), retrieval queries and sources, the raw output, evaluation scores, guardrail triggers, latency, and cost. Without structured logging, the system is a black box — you can see that something went wrong, but not where, when, or why. The Improvement Layer reads logs; without them, it has nothing to work with. The emerging standard is OpenTelemetry GenAI semantic conventions, which provide interoperability with observability tools like Langfuse, Phoenix, and Datadog.
+
+| PT | EN |
+|----|----|
+| Camada de logging | Logging Layer |
+| Rastreamento | Tracing |
+| Span de execução | Execution span |
+| Identificador de rastreamento | Trace ID |
+| Redação de PII | PII redaction |
+| Taxa de amostragem | Sampling rate |
+| Política de retenção | Retention policy |
+| Observabilidade | Observability |
+| Deriva do modelo | Model drift |
+| Dashboard operacional | Operational dashboard |
+
+## O que vem a seguir
+
+Com Evaluation, Guardrail e Logging em operação, o bloco de controle está completo. A última camada fecha o loop: a **Improvement Layer** lê os logs, os scores e os padrões de falha, e retroalimenta as camadas de definição — atualizando o prompt, adicionando casos ao dataset de eval, criando novos guardrails, ou revisando o escopo da Purpose Layer.
+
+O Improvement Loop é o que transforma o sistema de uma implementação estática em um sistema vivo que evolui com o uso.
+
+- [[12 - Improvement Layer]] — como o sistema evolui a partir do que aprende
+- [[Observability]] — trilha completa: métricas, traces, alertas, dashboards para IA
+
+## Onde aprofundar
+
+- **[[Observability]]** — trilha completa de observabilidade para sistemas de IA (8 notas).
+- **OpenTelemetry** — [*Semantic Conventions for Generative AI*](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Padrão emergente.
 
 ## Veja também
 
-- [[09 - Evaluation Layer]] — scores entram aqui
-- [[10 - Guardrail Layer]] — incidentes de guardrail são registrados aqui
-- [[12 - Improvement Layer]] — improvement lê estes logs
+- [[09 - Evaluation Layer]] — scores de eval entram nos logs
+- [[10 - Guardrail Layer]] — guardrails disparados são registrados aqui
+- [[12 - Improvement Layer]] — lê estes logs para alimentar melhorias
+- [[08 - Workflow vs Agent Layer]] — agents precisam de trace (não só log)
 
 ## Fontes
 
-- **@hooeem** — *Become an AI Engineer*, chapter #18, Step 10 (Logging layer template).
-- **OpenTelemetry** — [*Semantic Conventions for Generative AI*](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Padrão emergente.
-- **Langfuse** — [*Tracing concept*](https://langfuse.com/docs/tracing). Implementação concreta.
+- **@hooeem** — *Become an AI Engineer*, chapter #18, Step 10 (Logging layer template). X/Twitter, 2025.
+- **OpenTelemetry** — [*Semantic Conventions for Generative AI*](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Padrão emergente de instrumentação.
+- **Langfuse** — [*Tracing concept*](https://langfuse.com/docs/tracing). Implementação concreta de trace para sistemas LLM.

@@ -1,10 +1,10 @@
 ---
 title: "Setup completo — do zero ao sistema de produção"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-24
 type: concept
 status: seedling
-progress: in_progress
+fase: Adepto
 tags:
   - ai-engineering-stack
   - ia
@@ -295,6 +295,34 @@ Antes de publicar pra primeiro grupo de assinantes:
 - [ ] Improvement Layer com cadência agendada no calendário
 - [ ] Plano de rollback (versionado) caso a edição 1 falhe feio
 
+## Armadilhas comuns ao montar o stack completo
+
+> [!warning] Construir na ordem errada
+> A tentação é começar pelo Prompt Layer — é a parte mais visível e divertida. Mas sem Purpose Layer fechada, o system prompt vira um documento sem critério de sucesso. Sem Output Layer definida, o prompt não sabe o que produzir. A ordem natural é Purpose → Workflow → Output → Prompt — não o contrário. Cada retrabalho de prompt gerado por Purpose indefinida custa mais do que o tempo de fechar o escopo antes.
+
+> [!warning] Pular a Evaluation Layer porque "é óbvio quando está bom"
+> No sistema de newsletter, "está bom" é claramente definível — link válido, resumo de 80 palavras, sem hype. Mesmo assim, sem dataset e rubrica formal, você não detectará regressão quando trocar de modelo ou atualizar o prompt. O passo mínimo — 20 edições anteriores anotadas como dataset de regressão — leva 2 horas e evita meses de degradação silenciosa.
+
+> [!warning] Colocar em produção sem Logging Layer
+> Sem o trace por execução, o primeiro incidente real (newsletter sai com link quebrado, item com hype passa, edição atrasada) vai ser investigado no escuro. Você tem o output final, mas não tem: qual versão do prompt estava ativa, quais candidatos foram descartados, qual guardrail disparou ou não disparou, qual foi o custo. Logging precisa estar ativo antes do primeiro assinante real, não depois do primeiro incidente.
+
+## Como explicar em inglês
+
+This note walks through all 11 layers of the AI engineering stack applied to a concrete example: an automated AI newsletter generator. The key insight it demonstrates: the layers aren't independent building blocks you can assemble in any order — they reference each other. The Purpose Layer's success criteria become the Evaluation rubric. The Prompt Layer's forbidden actions become the Guardrail's enforcement rules. The Context Layer's known failure modes become new guardrails after incidents. Building the stack means deciding in the right order: purpose, then architecture, then output contract, then prompt, then control layers.
+
+| PT | EN |
+|----|----|
+| Recipe completo | End-to-end recipe |
+| Ordem de construção | Build order |
+| Camadas que se referenciam | Cross-referencing layers |
+| Artefato versionado | Versioned artifact |
+| Replay de semanas históricas | Historical replay |
+| Dataset de regressão | Regression dataset |
+| Schema de output | Output schema |
+| Allowlist de domínios | Domain allowlist |
+| Aprovação humana | Human approval / Human-in-the-loop |
+| Plano de rollback | Rollback plan |
+
 ## O que esta recipe demonstra
 
 Três coisas que não aparecem olhando camada por camada:
@@ -304,6 +332,19 @@ Três coisas que não aparecem olhando camada por camada:
 2. **A ordem natural não é numérica.** Construímos Purpose → Workflow → Output → Prompt+Context → Retrieval → Tool → Eval → Guardrail → Logging → Improvement. Pular pra Prompt Layer antes de fechar Purpose e Output é receita de retrabalho.
 
 3. **Cada camada produz artefato versionado.** Nada disso é "documento de design que ninguém vê". É arquivo de configuração, schema, rubrica, prompt versionado — todos em git, todos com diff revisável.
+
+## O que vem a seguir
+
+Esta trilha cobriu o blueprint: o que cada camada é, por que existe, e como as 11 conversam entre si. O próximo passo natural é aprofundar cada camada nas trilhas especializadas — onde cada conceito tem 8 a 12 notas dedicadas.
+
+A ordem de aprofundamento sugerida para quem quer ir a produção:
+1. **[[Evaluation]]** — sem evals, você não tem sinal; é o que mais impacta a qualidade percebida
+2. **[[RAG e Vector Databases]]** — a Retrieval Layer é onde a maioria dos sistemas falha em produção
+3. **[[Anatomia de Agents]]** — se seu sistema for agentic, aqui está o detalhe de orquestração
+4. **[[Segurança e Guardrails]]** — pirâmide de validação, prompt injection, Llama Guard
+5. **[[Observability]]** — implementar o Logging Layer de verdade com OpenTelemetry
+6. **[[Context Engineering]]** — a Context Layer é mais rica do que parece
+7. **[[Improvement Loop]]** — fechar o ciclo operacional de melhoria contínua
 
 ## Veja também
 

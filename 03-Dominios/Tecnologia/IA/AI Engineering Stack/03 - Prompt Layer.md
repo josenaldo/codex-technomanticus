@@ -1,10 +1,10 @@
 ---
 title: "Prompt Layer"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-24
 type: concept
 status: seedling
-progress: in_progress
+fase: Iniciado
 tags:
   - ai-engineering-stack
   - ia
@@ -18,56 +18,129 @@ aliases:
 # Prompt Layer
 
 > [!abstract] TL;DR
-> A Prompt Layer define **como o modelo deve se comportar** — não o que ele sabe (isso é Context Layer), nem o que ele entrega (isso é Output Layer). Aqui ficam role, primary job, padrões obrigatórios, ações permitidas, ações proibidas, comportamento sob incerteza, estilo de raciocínio. É o [[Dicionário de IA#system prompt|system prompt]] tratado como artefato versionado, não como bloco de texto improvisado. Quando bem feita, a Prompt Layer transforma o modelo num executor com persona estável; quando mal feita, o sistema é instável a cada mudança de input.
+> A Prompt Layer define **como o modelo deve se comportar** — não o que ele sabe (isso é Context Layer), nem o que ele entrega (isso é Output Layer). Aqui ficam: role, `primary_job` herdado da Purpose, padrões de qualidade, ações permitidas, ações proibidas, comportamento sob incerteza e estilo de raciocínio. É o system prompt tratado como **artefato versionado**, não como bloco de texto improvisado. Quando bem feita, estabiliza o comportamento do modelo em mil chamadas diferentes; quando mal feita, o sistema oscila a cada mudança de input.
+
+## O problema que a Prompt Layer resolve
+
+"Seja útil, amigável e preciso." Isso é um system prompt? É — mas é tão vago que o modelo vai preencher o restante com os defaults do treino. Para uma aplicação genérica talvez seja suficiente. Para um sistema em produção que precisa de comportamento consistente e auditável, não é.
+
+O que acontece sem Prompt Layer bem estruturada: o modelo decide sozinho qual é o role (às vezes vira assistente entusiasmado, às vezes vira especialista formal), inventa critérios de qualidade que não foram definidos, e quando não sabe a resposta, pode inventar ao invés de escalá-la. Cada novo sistema prompt escrito para cobrir um novo caso é um sinal de que o original não tinha estrutura.
+
+A Prompt Layer transforma intenção em especificação. O campo `uncertainty_behavior` — o que fazer quando o modelo não sabe — é um dos mais importantes e raramente preenchido. Sem ele, o modelo decide por conta própria o que fazer nas bordas. Nas bordas é onde os incidentes acontecem.
 
 ## O que é esta camada
 
-A Prompt Layer materializa **comportamento desejado** em texto. É o lugar onde você converte "queremos um assistente cuidadoso e direto" em instruções que o modelo segue de forma reprodutível.
+A Prompt Layer materializa **comportamento desejado** em texto. É o lugar onde "queremos um assistente cuidadoso e direto" vira instruções que o modelo segue de forma reprodutível.
 
-O template mínimo (adaptado do thread @hooeem):
+Template mínimo (adaptado do thread @hooeem):
 
 ```yaml
-role: <quem o modelo é nesta interação>
-primary_job: <herda do Purpose Layer>
-primary_standard: <o critério principal pelo qual o modelo se autoavalia>
+role: "<quem o modelo é nesta interação>"
+primary_job: "<herda do Purpose Layer — não reescrever>"
+primary_standard: "<o critério principal pelo qual o modelo se autoavalia>"
 allowed_actions:
-  - <ação 1>
-  - <ação 2>
+  - "<ação permitida 1>"
+  - "<ação permitida 2>"
 forbidden_actions:
-  - <proibição 1>
-  - <proibição 2>
-uncertainty_behavior: <o que fazer quando não sabe>
-reasoning_style: <conciso, exploratório, step-by-step, ...>
+  - "<proibição 1 — comportamento a evitar>"
+  - "<proibição 2>"
+uncertainty_behavior: "<o que fazer quando não sabe: perguntar / avisar / escalar>"
+reasoning_style: "<conciso | exploratório | step-by-step | ...>"
 ```
 
-Note que **forbidden_actions na Prompt Layer não substitui Guardrail Layer**. Prompt Layer pede comportamento; Guardrail Layer **impõe** comportamento por código fora do modelo. As duas trabalham juntas — ver [[10 - Guardrail Layer]].
+> [!question]- `forbidden_actions` no Prompt vs Guardrail Layer: qual a diferença?
+> O Prompt Layer **pede** comportamento ao modelo. O `forbidden_actions` aqui é uma instrução — o modelo pode ignorá-la sob pressão de jailbreak ou em edge cases incomuns. A Guardrail Layer **impõe** comportamento por código fora do modelo (regex, classificador, validador) — não depende do modelo obedecer. As duas trabalham juntas: Prompt reduz frequência de comportamentos indesejados; Guardrail elimina os que passaram. Ver [[10 - Guardrail Layer]].
 
 ## Decisões-chave
 
-1. **Role específico vs genérico.** "Você é um assistente útil" é zero informação. "Você é editor sênior de uma revista de tecnologia que prioriza clareza e ceticismo" molda decisões reais.
+**1. Role específico vs genérico.** "Você é um assistente útil" é zero informação — o modelo vai preencher o resto com os padrões do treinamento. "Você é editor sênior de uma revista de tecnologia que prioriza clareza sobre abrangência e ceticismo sobre entusiasmo" molda decisões reais: quando o modelo está em dúvida entre ser abrangente ou ser claro, escolhe claro. Um role específico reduz variância de comportamento.
 
-2. **Tom do `uncertainty_behavior`.** Três comportamentos comuns: (a) *ask back* — pede esclarecimento; (b) *flag and proceed* — segue com aviso de baixa confiança; (c) *stop and escalate* — recusa e pede humano. A escolha define UX inteira.
+**2. Tom do `uncertainty_behavior`.** Três comportamentos comuns: **(a) ask back** — pede esclarecimento antes de responder (bom para tarefas abertas); **(b) flag and proceed** — responde com aviso de baixa confiança (bom para perguntas com resposta aproximada); **(c) stop and escalate** — recusa e encaminha para humano (bom para domínios de alto risco). A escolha define a UX nas bordas — que é justamente onde os usuários mais precisam de consistência.
 
-3. **Tamanho do system prompt.** Prompt longo gasta tokens em **todo** request ([[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/06 - A janela de contexto|janela de contexto]] mais cheia, custo a cada chamada). Use [[Dicionário de IA#Prompt caching|prompt caching]] quando disponível; ainda assim, prune o que não muda comportamento.
+**3. Tamanho do system prompt.** Prompt longo gasta tokens em **toda** chamada. Um system prompt de 2000 tokens chamado 10.000 vezes por dia é 20 milhões de tokens de contexto/dia só de overhead. Use prompt caching quando disponível. E primeiro: prune o que não muda comportamento — instruções decorativas que o modelo seguiria de qualquer forma são desperdício.
 
-4. **Few-shot vs zero-shot.** Adicionar 2-3 exemplos no system prompt geralmente sobe qualidade mais do que reescrever instruções. Custa tokens, mas é a alavanca de melhor ROI quando o modelo "quase acerta".
+**4. Few-shot vs zero-shot.** Adicionar 2-3 exemplos de input→output no system prompt geralmente eleva qualidade mais do que reescrever as instruções. Custa tokens, mas é a alavanca de melhor ROI quando o modelo "quase acerta mas com formato errado". Coloque os exemplos como últimas seções antes do `</instructions>` — proximidade com a chamada importa.
 
-5. **Versionamento.** Trate o system prompt como código: arquivo separado, diff no PR, número de versão. A nota [[11 - Logging Layer]] precisa registrar qual versão rodou em cada chamada.
+**5. Versionamento como código.** O system prompt é um artefato de produto. Trate como código: arquivo separado no repositório, diff em PR, número de versão no nome do arquivo (`system_prompt_v1.2.txt`). A Logging Layer precisa registrar qual versão rodou em cada chamada — sem isso, você não sabe se uma melhoria de qualidade veio do novo prompt ou do novo contexto.
 
-## Onde aprofundar no Codex
+## Casos práticos
 
-- **[[Prompt Engineering]]** — trilha-irmã dedicada a técnicas (CoT, few-shot, ToT, role prompting). Em construção.
-- **[[03-Dominios/Tecnologia/IA/Context Engineering/01 - De prompt engineering a context engineering|De prompt engineering a context engineering]]** — onde a Prompt Layer se posiciona no panorama maior.
-- **[[Dicionário de IA#prompt engineering|Dicionário: prompt engineering]]**.
+### Cenário 1 — O prompt que cresce sem parar
+
+Assistente de Q&A jurídico. Toda vez que o modelo responde de forma incorreta, o time adiciona uma nova instrução ao system prompt: "nunca cite o artigo X sem citar o Y", "sempre avise se a lei mudou recentemente", "não responda sobre direito penal sem avisar que não é advogado"... Após seis meses, o prompt tem 4.000 tokens e ainda oscila.
+
+O problema não é o tamanho — é que cada instrução foi adicionada para cobrir um caso específico sem um princípio subjacente. Sem `primary_standard` ("aplica sempre o princípio da cautela máxima em respostas sobre consequências legais"), cada novo caso requer nova instrução.
+
+### Cenário 2 — Role + uncertainty_behavior + versão
+
+Mesmo assistente, reconstruído:
+
+```yaml
+role: "Consultor jurídico de triagem que identifica a área de direito relevante e 
+      orienta sobre próximos passos — sem substituir advogado"
+primary_job: "identificar área jurídica e orientar próximos passos para consulta"
+primary_standard: "cautela máxima — prefira reconhecer limite a especular sobre consequências legais"
+uncertainty_behavior: "stop and escalate: 'não tenho informação suficiente pra orientar 
+                       este caso com segurança. Recomendo consulta com advogado especializado em [área].'"
+forbidden_actions:
+  - "afirmar qual será o resultado de um processo"
+  - "citar legislação sem verificar se ainda está em vigor"
+```
+
+Com esse template, o model sabe o que fazer nas bordas — e as bordas são a maioria dos casos jurídicos difíceis.
+
+## Armadilhas comuns
+
+> [!warning] Não versionar o system prompt
+> System prompt sem versão é sistema sem histórico de decisões. Quando o comportamento muda depois de uma "pequena edição", você não sabe o que mudou e por quê. Trate o system prompt como código de produção: Git, PR, revisão, versão semântica. A Logging Layer vai precisar do número de versão para correlacionar problemas com mudanças.
+
+> [!warning] Confundir Prompt Layer com Context Layer
+> O system prompt define **comportamento estático** — o role, os padrões, o que é permitido. O que muda a cada chamada (goal da sessão, histórico de decisões, documentos relevantes) é Context Layer. Misturar os dois no system prompt cria um prompt que precisa ser atualizado a cada chamada — o que anula o benefício do prompt caching e encarece cada requisição.
+
+> [!warning] Forbidden_actions como única linha de defesa
+> Uma instrução no system prompt é um pedido ao modelo, não uma garantia. Sob pressão de jailbreak, instruções de contexto longo, ou edge cases incomuns, modelos podem violar `forbidden_actions`. Se a consequência de violar uma regra é grave (dados sensíveis expostos, ações irreversíveis), a regra precisa estar na Guardrail Layer — não só no Prompt.
+
+## Como explicar em inglês
+
+The Prompt Layer is where you translate desired behavior into text that the model follows consistently. It defines the model's role, the primary job inherited from the Purpose Layer, quality standards, allowed and forbidden actions, and what to do under uncertainty. The key insight: the Prompt Layer *asks* for behavior — it does not *guarantee* it. For guaranteed enforcement, use the Guardrail Layer. Think of the Prompt as shaping 95% of cases correctly; the Guardrail catches the remaining 5%.
+
+| PT | EN |
+|----|----|
+| Camada de prompt | Prompt Layer |
+| Prompt de sistema | System prompt |
+| Instruções de comportamento | Behavioral instructions |
+| Ações permitidas | Allowed actions |
+| Ações proibidas | Forbidden actions |
+| Comportamento sob incerteza | Uncertainty behavior |
+| Estilo de raciocínio | Reasoning style |
+| Versionamento de prompt | Prompt versioning |
+| Poucos exemplos | Few-shot examples |
+| Zero exemplos | Zero-shot |
+
+## O que vem a seguir
+
+Com o comportamento do modelo definido no Prompt, a próxima decisão é o que o modelo **sabe** sobre esta execução específica: goal da sessão, audience, contexto do projeto, histórico de decisões. Isso é responsabilidade da Context Layer — montada dinamicamente a cada chamada, enquanto o Prompt permanece estático.
+
+A distinção é importante: mudar o que o modelo sabe não exige mudar o prompt. Isso mantém o sistema estável e o prompt cacheável.
+
+- [[04 - Context Layer]] — o que o modelo precisa saber nesta execução
+- [[10 - Guardrail Layer]] — onde `forbidden_actions` são impostos por código
+- [[Context Engineering]] — a trilha completa de como montar contexto dinâmico
+
+## Onde aprofundar
+
+- **[[Context Engineering]]** — especialmente [[01 - De prompt engineering a context engineering]] para entender onde a Prompt Layer se posiciona no panorama maior.
+- **[[Prompt Engineering]]** — trilha dedicada a técnicas avançadas (CoT, ToT, few-shot, role prompting).
 
 ## Veja também
 
-- [[02 - Purpose Layer — o que o sistema é]] — `primary_job` desta camada vem de lá
-- [[04 - Context Layer]] — separa conhecimento do sistema (lá) de comportamento (aqui)
+- [[02 - Purpose Layer — o que o sistema é]] — `primary_job` vem de lá
+- [[04 - Context Layer]] — comportamento (aqui) vs conhecimento (lá)
 - [[10 - Guardrail Layer]] — `forbidden_actions` aqui é aspiracional; lá é imposto
+- [[11 - Logging Layer]] — precisa do número de versão do prompt em cada log
 
 ## Fontes
 
-- **@hooeem** — *Become an AI Engineer*, chapter #18, Step 2 (Prompt layer template).
+- **@hooeem** — *Become an AI Engineer*, chapter #18, Step 2 (Prompt layer template). X/Twitter, 2025.
 - **Anthropic** — [*Prompt engineering overview*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview). Estrutura recomendada de system prompt.
-- **OpenAI** — [*Prompt engineering guide*](https://platform.openai.com/docs/guides/prompt-engineering).
+- **Anthropic** — [*Prompt caching*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching). Custo de system prompts longos e como mitigar.

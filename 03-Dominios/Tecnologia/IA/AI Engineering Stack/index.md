@@ -8,7 +8,7 @@ tags:
   - moc
   - arquitetura
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-24
 aliases:
   - AI Engineer Stack
   - Stack de Engenharia de IA
@@ -23,7 +23,7 @@ Construir sistemas com [[Dicionário de IA#LLM (Large Language Model)|LLM]] em p
 > Conhecimento básico de [[Anatomia dos LLMs]] e [[Anatomia de Agents]]. Útil ter passado por [[Context Engineering]] e [[Spec-Driven Development]] antes — essas trilhas alimentam, respectivamente, a Context Layer e a Purpose Layer.
 
 > [!tip] Como ler esta trilha
-> As notas 02 a 12 são deliberadamente **finas** — 1 a 2 telas cada. Quando você quiser ir fundo numa camada, siga o wikilink "Onde aprofundar" pro Codex. A nota 13 (Setup completo) é a única longa: ela costura tudo num exemplo end-to-end.
+> As notas 02 a 12 cobrem cada camada em profundidade: problema que resolve, template YAML da camada, decisões-chave em prosa, casos práticos, armadilhas e vocabulário PT↔EN. Quando quiser ir ainda mais fundo, siga o wikilink "Onde aprofundar" para a trilha especializada. A nota 13 (Setup completo) costura tudo num exemplo end-to-end — todas as 11 camadas aplicadas a um único sistema.
 
 ## Comece por aqui
 
@@ -91,16 +91,16 @@ Como o sistema deixa de ser one-off e vira sistema vivo.
 
 ## Leituras recomendadas
 
-| Fonte | Tipo | Cobertura |
-|-------|------|-----------|
-| *@hooeem — Become an AI Engineer (thread)* | Thread X | Trilha inteira (chapter #18) |
-| *Anthropic — Effective context engineering for AI agents* | Artigo | Notas 04, 06 |
-| *Anthropic — Building effective agents* | Artigo | Notas 07, 08 |
-| *OpenAI — Structured Outputs guide* | Doc | Nota 05 |
-| *Lilian Weng — LLM-powered Autonomous Agents* | Artigo | Notas 07, 08 |
-| *Eugene Yan — Evals are all you need* | Artigo | Nota 09 |
-| *NIST — AI Risk Management Framework* | Spec | Nota 10 |
-| *OpenTelemetry GenAI Semantic Conventions* | Spec | Nota 11 |
+| Fonte                                                     | Tipo     | Cobertura                    |
+| --------------------------------------------------------- | -------- | ---------------------------- |
+| *@hooeem — Become an AI Engineer (thread)*                | Thread X | Trilha inteira (chapter #18) |
+| *Anthropic — Effective context engineering for AI agents* | Artigo   | Notas 04, 06                 |
+| *Anthropic — Building effective agents*                   | Artigo   | Notas 07, 08                 |
+| *OpenAI — Structured Outputs guide*                       | Doc      | Nota 05                      |
+| *Lilian Weng — LLM-powered Autonomous Agents*             | Artigo   | Notas 07, 08                 |
+| *Eugene Yan — Evals are all you need*                     | Artigo   | Nota 09                      |
+| *NIST — AI Risk Management Framework*                     | Spec     | Nota 10                      |
+| *OpenTelemetry GenAI Semantic Conventions*                | Spec     | Nota 11                      |
 
 ## Veja também
 
