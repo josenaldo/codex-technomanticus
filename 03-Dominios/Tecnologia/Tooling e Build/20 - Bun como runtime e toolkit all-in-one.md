@@ -1,0 +1,765 @@
+---
+title: "Bun como runtime e toolkit all-in-one"
+created: 2026-06-24
+updated: 2026-06-24
+type: concept
+fase: adepto
+status: seedling
+publish: true
+tags:
+  - tooling
+  - bun
+  - runtime
+  - toolkit
+  - adepto
+  - entrevista
+---
+
+# Bun como runtime e toolkit all-in-one
+
+> [!abstract] TL;DR
+> Bun é uma aposta radical: em vez de compor runtime + package manager + bundler + test runner de fornecedores diferentes, uma única ferramenta escrita em Zig cobre tudo. O motor é o JavaScriptCore (o mesmo do Safari), não o V8 do Node — o que entrega cold starts de ~8ms contra ~45ms do Node e 2–4× mais throughput em benchmarks de HTTP puro. Em 2026, a compatibilidade com Node chegou a ~98% da suite oficial, mas N-API (addons nativos C++) segue fora do escopo. O caso de uso natural é greenfield TypeScript puro, CLIs, serverless e CI-heavy; produção madura em Node, APM completo ou addons nativos justificam ficar no Node. Deno 2 é a alternativa, com ênfase em segurança e suporte mais formal a TypeScript, mas velocidade inferior. A tensão central: **toolkit unificado** (Bun) vs **ferramentas especializadas componíveis** (Node + npm + esbuild + Jest).
+
+---
+
+## A aposta de uma ferramenta pra tudo
+
+Existe um momento na carreira de todo dev JS em que alguém abre o `package.json` de um projeto saudável e conta as devDependencies de tooling: `esbuild`, `vitest`, `tsx`, `rollup`, `@types/node`, `eslint`, `prettier`… dez, quinze pacotes apenas para que o código possa ser escrito, executado, testado e distribuído. Cada um deles é excelente no que faz. Mas o conjunto é uma torre de Babel silenciosa — configurações em formatos diferentes, versões que podem conflitar, bugs que surgem na interseção de dois deles.
+
+O Bun surgiu em 2021 como uma resposta direta a esse problema. A proposta de Jarred Sumner (fundador da Oven, a empresa por trás do Bun) era simples ao nível da audácia: reescrever toda a camada de tooling do zero, em Zig — uma linguagem de sistemas com controle fino de memória, sem garbage collector e com compilação nativa — e fazê-la *rápida de verdade*. Não 10% mais rápida. Dez vezes mais rápida onde for possível.
+
+O resultado é uma ferramenta com quatro papéis distintos que compartilham o mesmo binário:
+
+1. **Runtime** — executa JavaScript e TypeScript nativamente (sem `tsc` separado)
+2. **Package manager** — `bun install`, `bun add`, `bun remove` (já visto na [[03 - Package managers - npm, pnpm, yarn e Bun]])
+3. **Bundler** — `bun build` para output de browser, Node, ou executáveis standalone
+4. **Test runner** — `bun test` com API compatível com Jest
+
+```mermaid
+graph TD
+    subgraph "Stack Node tradicional (2020)"
+        N["node (V8)"]
+        NM["npm / pnpm"]
+        EB["esbuild / rollup"]
+        JT["Jest / Vitest"]
+        TX["tsx / ts-node"]
+        N --- NM
+        N --- EB
+        N --- JT
+        N --- TX
+    end
+
+    subgraph "Bun all-in-one (2026)"
+        BUN["bun\n(JavaScriptCore + Zig)"]
+        BR["bun run\n(runtime + TS nativo)"]
+        BI["bun install\n(package manager)"]
+        BB["bun build\n(bundler)"]
+        BT["bun test\n(test runner)"]
+        BUN --- BR
+        BUN --- BI
+        BUN --- BB
+        BUN --- BT
+    end
+
+    style BUN fill:#f5a623,color:#000
+```
+
+> [!info] Bun como package manager: nota irmã
+> O `bun install` e o modelo de `node_modules` flat foram cobertos em detalhe na [[03 - Package managers - npm, pnpm, yarn e Bun]]. Esta nota foca nos outros três papéis: runtime, bundler e test runner — e na pergunta central de quando Bun substitui Node.
+
+---
+
+## O motor: JavaScriptCore vs V8
+
+O Node.js usa o V8 — o motor JavaScript do Chrome, desenvolvido pelo Google. É excelente, maduro, tem dois JITs (TurboFan e Maglev) e é a referência de performance para workloads de longa duração.
+
+O Bun usa o **JavaScriptCore** (JSC) — o motor do Safari, desenvolvido pela Apple. A diferença não é apenas de logotipo: os dois engines fazem apostas diferentes no trade-off *startup vs throughput de pico*.
+
+O V8 tem uma estratégia de JIT mais agressiva para workloads de longa duração. O JSC tem uma estratégia em camadas — `LLInt` (bytecode interpretado), `Baseline JIT`, `DFG` (*Data Flow Graph*) e `FTL` (*Faster Than Light*, baseado em LLVM) — que prioriza compilar rápido logo no início e ir aprofundando a otimização conforme o código roda. O resultado prático:
+
+| Métrica | Node.js 22 (V8) | Bun 1.3 (JSC) |
+|---|---|---|
+| Cold start | ~45ms | ~8ms |
+| HTTP throughput (raw) | ~14.000 req/s | ~52.000 req/s |
+| Throughput (workload real) | baseline | +20–40% |
+| Compatibilidade Node | N/A | ~98% da suite oficial |
+
+> [!warning] Sobre benchmarks de runtime
+> Os ~52.000 req/s vs ~14.000 req/s são benchmarks de HTTP puro — servidor minimal, sem middleware, sem banco, sem serialização. Com uma workload realista (auth + query via ORM + JSON + log estruturado), a diferença cai para 20–40%. Ainda relevante, mas muito longe do "4x mais rápido" que os títulos prometem.
+
+O cold start, por outro lado, é consistente: Bun inicia em ~8ms, Node em ~45ms. Para CLIs, serverless (funções que "acordam" a cada requisição), e scripts de CI que rodam milhares de vezes por dia, essa diferença é real e acumulada.
+
+```mermaid
+graph LR
+    subgraph "Estratégia de JIT: JavaScriptCore (Bun)"
+        JSC1["LLInt\n(bytecode\n→ imediato)"]
+        JSC2["Baseline JIT\n(compilação rápida\nem segundos)"]
+        JSC3["DFG JIT\n(otimização\nmoderada)"]
+        JSC4["FTL JIT\n(LLVM — máxima\nperformance)"]
+        JSC1 -->|"hot path"| JSC2 -->|"mais hot"| JSC3 -->|"muito hot"| JSC4
+    end
+```
+
+---
+
+## TypeScript nativo: sem configuração, sem tsc, sem tsx
+
+A primeira coisa que impressiona quem migra do Node para o Bun é poder fazer isso:
+
+```bash
+# Node.js — exige tsx, ts-node, ou compilar antes
+node src/index.ts  # erro: unknown file extension ".ts"
+
+# Bun — funciona diretamente
+bun run src/index.ts  # funciona imediatamente
+bun src/index.ts      # atalho equivalente
+```
+
+O Bun transpila TypeScript em memória antes de executar — sem `tsconfig.json` obrigatório, sem passo de build, sem `--loader ts`. Ele usa o próprio parser Zig para fazer *type stripping*: remove as anotações TypeScript e executa o JavaScript resultante com JavaScriptCore.
+
+Isso tem uma implicação importante que confunde alguns: o Bun **não faz type-checking**. Ele ignora tipos — interpreta TypeScript como JavaScript anotado e descarta as anotações. Se você tem um erro de tipo, o Bun não avisa. Para type-checking, você ainda precisa do `tsc --noEmit` separado (geralmente no script `typecheck` do `package.json` e no CI).
+
+```typescript
+// src/index.ts
+interface User {
+  id: number;
+  name: string;
+}
+
+// Erro de tipo: falta 'name'
+const user: User = { id: 1 }; // TypeScript reclamaria
+
+// O Bun executa sem reclamar — ignora o tipo
+console.log(user.id); // 1 (funciona em runtime, mas é inseguro)
+```
+
+```bash
+# O workflow correto com Bun em projetos TypeScript sérios:
+bun run src/index.ts  # execução rápida sem type-check
+bun typecheck         # roda "tsc --noEmit" via script no package.json
+```
+
+```json
+// package.json — scripts recomendados
+{
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "bun build src/index.ts --outdir dist",
+    "test": "bun test"
+  }
+}
+```
+
+O `--watch` do Bun reinicia o processo quando qualquer arquivo muda — equivalente ao `node --watch` da [[18 - O runtime como ferramenta de DX]], mas com cold start mais baixo.
+
+---
+
+## APIs nativas: Bun.serve, Bun.file e SQLite embutido
+
+O Bun não é apenas um runtime que roda JavaScript mais rápido. Ele vem com um conjunto de APIs nativas — implementadas em Zig — que substituem pacotes de terceiros com desempenho substancialmente maior.
+
+### Bun.serve — servidor HTTP nativo
+
+Em vez de `express`, `fastify` ou mesmo `http` do Node, o Bun oferece `Bun.serve()` — um servidor HTTP implementado diretamente em Zig, sem a camada de binding JS→C++ que o Node usa.
+
+```typescript
+// servidor HTTP mínimo com Bun.serve
+const server = Bun.serve({
+  port: 3000,
+  fetch(req: Request): Response {
+    const url = new URL(req.url);
+
+    if (url.pathname === "/health") {
+      return Response.json({ status: "ok", timestamp: Date.now() });
+    }
+
+    if (url.pathname === "/echo" && req.method === "POST") {
+      // req é a Web API Request — padrão WinterTC/WinterCG
+      return new Response(req.body, {
+        headers: { "content-type": req.headers.get("content-type") ?? "text/plain" },
+      });
+    }
+
+    return new Response("Not found", { status: 404 });
+  },
+});
+
+console.log(`Ouvindo em ${server.url}`); // http://localhost:3000
+```
+
+> [!tip] API baseada em Web Standards
+> O Bun.serve usa a `Request`/`Response` da Web API — os mesmos tipos que o browser e o Service Worker usam. Isso é intencional: o Bun adota os padrões WinterTC (antes WinterCG), o consórcio de padronização de runtimes server-side JS. O mesmo código que roda em Bun.serve pode rodar em Cloudflare Workers, Deno.serve e outros runtimes compatíveis — com zero adaptação.
+
+O `Bun.serve` suporta WebSocket nativo, TLS (HTTPS sem dependências), rotas estáticas, e a partir do 1.3 recebeu suporte a HTTP/3 e ETag automático para rotas estáticas.
+
+### Bun.file — leitura de arquivos lazy
+
+`Bun.file()` retorna um objeto `BunFile` — um wrapper lazy sobre um arquivo em disco que só lê o conteúdo quando você pede, e no formato que você precisa.
+
+```typescript
+// Bun.file — lazy, só lê quando necessário
+const arquivo = Bun.file("dados.json"); // ainda não leu nada
+
+// Lê como texto
+const texto = await arquivo.text();
+
+// Lê como JSON (parse embutido)
+const dados = await arquivo.json<{ users: User[] }>();
+
+// Lê como ArrayBuffer (para binários)
+const buffer = await arquivo.arrayBuffer();
+
+// Metadados sem ler o conteúdo
+console.log(arquivo.size);    // tamanho em bytes
+console.log(arquivo.type);    // MIME type inferido
+
+// Resposta HTTP com arquivo — eficiente: usa sendfile(2) internamente
+Bun.serve({
+  fetch(req) {
+    return new Response(Bun.file("public/index.html"));
+  }
+});
+```
+
+O detalhe de performance: quando você passa um `BunFile` diretamente para uma `Response`, o Bun usa `sendfile(2)` — a syscall do Linux que transfere bytes do disco para o socket sem passar pelo espaço de usuário. É o máximo de eficiência possível para servir arquivos estáticos.
+
+### bun:sqlite — SQLite embutido sem dependências
+
+O Bun vem com um driver SQLite escrito em Zig — não um binding para a biblioteca `sqlite3` do sistema, mas uma implementação própria que evita o overhead de marshaling que addons N-API têm.
+
+```typescript
+import { Database } from "bun:sqlite";
+
+// Abre (ou cria) o banco — zero dependências extras
+const db = new Database("meu.db");
+
+// Criação de tabela
+db.exec(`
+  CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    criado_em TEXT DEFAULT (datetime('now'))
+  )
+`);
+
+// Prepared statements — reutilizáveis e seguros contra SQL injection
+const inserir = db.prepare("INSERT INTO usuarios (nome, email) VALUES ($nome, $email)");
+const buscar = db.prepare("SELECT * FROM usuarios WHERE email = $email");
+
+// Inserção — parâmetros nomeados com $
+inserir.run({ $nome: "Alice", $email: "alice@exemplo.com" });
+
+// Query — retorna objeto tipado
+const usuario = buscar.get({ $email: "alice@exemplo.com" }) as {
+  id: number;
+  nome: string;
+  email: string;
+  criado_em: string;
+} | null;
+
+// Transação — atômica, muito mais rápida que N inserts individuais
+const inserirLote = db.transaction((usuarios: Array<{ nome: string; email: string }>) => {
+  for (const u of usuarios) {
+    inserir.run({ $nome: u.nome, $email: u.email });
+  }
+});
+
+inserirLote([
+  { nome: "Bob", email: "bob@exemplo.com" },
+  { nome: "Carol", email: "carol@exemplo.com" },
+]);
+
+db.close();
+```
+
+Benchmarks do bun:sqlite mostram 3–6× mais rápido que `better-sqlite3` (o melhor driver SQLite para Node) em leituras, e 4–6× mais rápido em inserções em lote com WAL mode — porque evita inteiramente o N-API marshaling. Para projetos que precisam de persistência local sem querer lidar com um banco de dados separado (CLIs, scripts de ETL, testes de integração), o bun:sqlite é uma escolha natural.
+
+---
+
+## O bundler: `bun build`
+
+O `bun build` é o bundler nativo do Bun — construído sobre o mesmo parser e linker Zig que alimenta o runtime. Ele não é baseado em esbuild, Rollup ou webpack: é um bundler proprietário.
+
+### Casos de uso principais
+
+```bash
+# Bundle para browser (ESM)
+bun build src/index.ts --outdir dist --target browser
+# → dist/index.js (bundle otimizado, TS transpilado)
+
+# Bundle para Node.js (CJS ou ESM)
+bun build src/cli.ts --outdir dist --target node --format cjs
+
+# Bundle para Bun (com APIs nativas preservadas)
+bun build src/server.ts --outdir dist --target bun
+
+# Standalone executable — binário que não precisa de Bun instalado
+bun build src/cli.ts --outfile minha-cli --compile
+# → ./minha-cli (binário standalone, inclui JSC e código bundlado)
+
+# Minificação
+bun build src/index.ts --outdir dist --minify
+
+# Source maps
+bun build src/index.ts --outdir dist --sourcemap=external
+```
+
+O `--compile` merece destaque: ele gera um executável independente que inclui o runtime Bun embutido. Um TypeScript → um binário de ~90MB que roda em qualquer máquina Linux/macOS/Windows sem precisar do Bun instalado. Equivalente ao `pkg` do Node, mas com o bundler integrado ao invés de ser uma ferramenta separada.
+
+```mermaid
+flowchart LR
+    TS["src/\n*.ts / .tsx"]
+    BunBuild["bun build"]
+    B1["dist/\nbundle.js\n(browser)"]
+    B2["dist/\nbundle.cjs\n(Node/CJS)"]
+    B3["./minha-cli\n(binário standalone)"]
+
+    TS --> BunBuild
+    BunBuild -->|"--target browser"| B1
+    BunBuild -->|"--target node --format cjs"| B2
+    BunBuild -->|"--compile"| B3
+```
+
+**O que o `bun build` não faz (em 2026):** tree-shaking ainda é menos agressivo que o Rollup em edge cases com side-effects; o ecosystem de plugins é menor que o do Vite/webpack; e para projetos frontend complexos com code-splitting avançado, lazy loading por rota e integração com frameworks, **o Vite ainda é a escolha mais madura** (veja [[13 - Vite a fundo]]). O `bun build` brilha em output Node/Bun, CLIs, e quando você quer o mínimo de configuração.
+
+> [!tip] Zero-config frontend no Bun 1.3
+> O Bun 1.3 introduziu um dev server zero-config: `bun index.html` lê o HTML, faz bundling automático do JS/TS/CSS referenciado, e sobe um servidor com HMR e React Fast Refresh. Para projetos simples, é uma alternativa ao `vite dev` sem nenhum arquivo de config.
+
+---
+
+## O test runner: `bun test`
+
+O `bun test` é um test runner com API compatível com Jest — mesmo que Vitest, mas integrado ao binário do Bun.
+
+```typescript
+// src/__tests__/calculadora.test.ts
+import { describe, it, expect, beforeEach, mock } from "bun:test";
+
+// Função a testar
+function calcularDesconto(preco: number, percentual: number): number {
+  if (percentual < 0 || percentual > 100) throw new Error("Percentual inválido");
+  return preco * (1 - percentual / 100);
+}
+
+describe("calcularDesconto", () => {
+  it("aplica desconto corretamente", () => {
+    expect(calcularDesconto(100, 20)).toBe(80);
+    expect(calcularDesconto(200, 50)).toBe(100);
+  });
+
+  it("retorna preço cheio com desconto zero", () => {
+    expect(calcularDesconto(99.90, 0)).toBe(99.90);
+  });
+
+  it("lança erro para percentual inválido", () => {
+    expect(() => calcularDesconto(100, -1)).toThrow("Percentual inválido");
+    expect(() => calcularDesconto(100, 101)).toThrow("Percentual inválido");
+  });
+});
+
+// Mocks — API compatível com Jest
+describe("mock de função", () => {
+  it("registra chamadas", () => {
+    const fn = mock((x: number) => x * 2);
+    fn(5);
+    fn(10);
+
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).toHaveBeenCalledWith(10);
+    expect(fn.mock.results[0].value).toBe(10);
+  });
+});
+```
+
+```bash
+# Rodar todos os testes
+bun test
+
+# Watch mode — re-roda ao salvar
+bun test --watch
+
+# Filtrar por nome
+bun test --test-name-pattern "calcularDesconto"
+
+# Filtrar por arquivo
+bun test src/__tests__/calculadora.test.ts
+
+# Com cobertura (experimental em 2026)
+bun test --coverage
+```
+
+A velocidade é o diferencial: o `bun test` é citado como ~20× mais rápido que o Jest em suites com muitos testes — principalmente porque não precisa transformar TypeScript antes de rodar (o Bun já faz isso nativamente) e porque o overhead por-teste é menor.
+
+O que o `bun test` **não implementa** completamente em 2026: `jest.mock()` com factory functions complexas, alguns matchers do Jest como `toMatchSnapshot()` (snapshots funcionam, mas com restrições), e alguns padrões de mock de módulos ESM. Para projetos que dependem de mocking pesado ou do ecossistema de plugins do Jest, o **Vitest** (veja [[19 - Test runner nativo (node-test) e o cenário de testes]]) pode ser a escolha mais segura.
+
+---
+
+## Compatibilidade com Node: o que funciona e o que quebra
+
+A pergunta mais comum sobre o Bun é: "posso simplesmente trocar `node` por `bun` no meu projeto existente?" A resposta honesta em 2026 é: *provavelmente sim*, mas com asteriscos importantes.
+
+### O que funciona
+
+```mermaid
+graph TD
+    subgraph "✓ Compatível com Bun 1.3 (~98% da suite Node)"
+        A["Módulos Node.js built-in\n(fs, path, http, crypto, stream,\nbuffer, events, os, url...)"]
+        B["CommonJS (require)\ne ESM (import)"]
+        C["TypeScript + JSX\n(sem config)"]
+        D["npm packages JS/TS puros\n(Express, Fastify, Zod, Prisma...)"]
+        E["Worker threads\n(API principal)"]
+        F["process, __dirname,\n__filename, global"]
+    end
+
+    subgraph "✗ Fora do escopo ou parcial"
+        G["N-API native addons\n(sharp, bcrypt-native, canvas)"]
+        H["APM agents\n(Datadog, New Relic)\nauto-instrumentation V8"]
+        I["Worker threads\n(SharedArrayBuffer\n+ workerData complexo)"]
+        J["OpenTelemetry Node SDK\nauto-instrumentation"]
+    end
+```
+
+O núcleo do problema com N-API é estrutural: os addons nativos são compilados contra as APIs internas do V8. O Bun usa JavaScriptCore. São dois motores diferentes com estruturas de memória internas incompatíveis. Não existe shim que resolva isso — seria necessário recompilar o addon contra as APIs do JSC, o que praticamente nenhum pacote faz.
+
+### Teste rápido de compatibilidade
+
+```bash
+# Forma mais rápida de testar se seu projeto roda no Bun:
+bun install          # instala deps (compatível com package.json existente)
+bun run src/index.ts # tenta rodar
+
+# Se usar ts-node ou tsx, remova — o Bun não precisa
+# package.json antes:
+#   "dev": "tsx watch src/index.ts"
+# package.json depois:
+#   "dev": "bun run --watch src/index.ts"
+```
+
+> [!example] Migração pontual de scripts de CI
+> Uma estratégia de adoção incremental que funciona bem: manter o Node em produção, mas substituir o Bun em scripts e testes. `bun test` em vez de `jest` reduz o tempo de CI sem tocar no runtime de produção. `bun build` em vez de `tsc && esbuild` para o step de build. Você captura os ganhos de tooling sem assumir o risco de incompatibilidade em produção.
+
+---
+
+## Comparação: Bun vs Deno 2
+
+Quando alguém questiona "por que não simplesmente usar Deno?", a comparação vale ser feita explicitamente, porque as duas ferramentas fazem apostas filosóficas diferentes.
+
+```mermaid
+graph LR
+    subgraph "Deno 2 — segurança como princípio"
+        D1["Permissões explícitas\n(--allow-net, --allow-read...)"]
+        D2["TypeScript first-class\n(type-check nativo + tsc)"]
+        D3["Deno.land/x + JSR\n(registry próprio)"]
+        D4["npm compat\n(~95%, Node compat via flags)"]
+        D5["V8 (Google)"]
+    end
+
+    subgraph "Bun — velocidade como princípio"
+        B1["Drop-in Node compat\n(sem permissões extras)"]
+        B2["TypeScript via strip\n(sem type-check)"]
+        B3["npm registry\n(node_modules flat)"]
+        B4["Node compat\n(~98%, mais transparente)"]
+        B5["JavaScriptCore (Apple)"]
+    end
+```
+
+| Aspecto | Deno 2 | Bun 1.3 |
+|---|---|---|
+| Cold start | ~28ms | ~8ms |
+| HTTP throughput | ~29.000 req/s | ~52.000 req/s |
+| Filosofia de segurança | Permissões explícitas (sandbox por padrão) | Mesmas permissões do Node (sem sandbox) |
+| Type-check nativo | Sim (integrado ao runtime) | Não (só strip) |
+| Node compat | ~95% | ~98% |
+| Registry | npm + JSR (próprio) | npm |
+| Respaldo corporativo | Deno Land Inc. | Anthropic (adquiriu em nov/2025) |
+
+**Quando Deno 2 faz mais sentido que Bun:**
+- Ambientes onde segurança por princípio importa: o modelo de permissões do Deno — você explicitamente autoriza o que o processo pode fazer (`--allow-net=api.exemplo.com`) — é genuinamente mais seguro para scripts que você não controla completamente ou para ambientes multi-tenant.
+- Projetos que querem type-checking automático durante o desenvolvimento (o `deno check` roda `tsc` nativamente, o Bun não).
+- Times que preferem a filosofia de imports por URL (padrão do JSR/Deno) e querem evitar `node_modules`.
+
+**Quando Bun faz mais sentido:**
+- Máxima compatibilidade com o ecossistema npm existente.
+- Cold start mínimo para CLIs e serverless.
+- Projetos que querem o toolkit unificado (runtime + pm + bundler + test) sem pagar o custo de aprender o modelo do Deno.
+
+---
+
+## A tensão central: toolkit unificado vs ferramentas componíveis
+
+Existe um debate legítimo por trás da escolha entre Bun e a stack tradicional do Node. Não é só sobre velocidade.
+
+A filosofia Unix histórica diz: faça uma coisa, faça bem, componha com outros. O npm, o esbuild, o Vitest e o tsx são exemplos disso — cada um resolveu um problema específico melhor do que qualquer ferramenta anterior. Você combina os melhores de cada categoria.
+
+O Bun apostou no oposto: **integração como vantagem**. Quando o runtime, o bundler e o test runner compartilham o mesmo parser, o mesmo sistema de módulos e a mesma engine TypeScript, não há overhead de conversão entre eles. Um plugin que estende o bundler pode ser usado no runtime também (`Bun.plugin()`). O test runner não precisa de um transformador separado porque o runtime já transpila TypeScript. O lockfile binário é rápido de ler porque foi projetado para o instalador, não como um formato genérico.
+
+```mermaid
+graph TD
+    subgraph "Custo de integração — stack Node fragmentada"
+        SRC2["src/index.ts"]
+        TSX["tsx\n(transpila para executar)"]
+        ESB["esbuild\n(transpila para build)"]
+        JT2["Jest\n(precisa de babel-jest\nou ts-jest para TS)"]
+
+        SRC2 --> TSX
+        SRC2 --> ESB
+        SRC2 --> JT2
+
+        TSX -->|"config: tsconfig.json\n+ tsx config"| X1[" "]
+        ESB -->|"config: esbuild.config.js\n+ tsconfig"| X2[" "]
+        JT2 -->|"config: jest.config.js\n+ ts-jest config\n+ tsconfig"| X3[" "]
+    end
+
+    subgraph "Bun — integração zero-config"
+        SRC1["src/index.ts"]
+        BRUN["bun run"]
+        BBUILD["bun build"]
+        BTEST["bun test"]
+
+        SRC1 --> BRUN
+        SRC1 --> BBUILD
+        SRC1 --> BTEST
+    end
+```
+
+O contra-argumento legítimo: ferramentas especializadas chegam mais longe. O Vitest tem integração com Vite, hot reload de testes, UI visual, cobertura madura — coisas que o `bun test` ainda não tem. O Rollup tem tree-shaking com análise estática mais profunda. O pnpm tem strict isolation que o Bun (com flat hoisting) não tem. A composabilidade permite que cada peça seja substituída pela melhor da categoria sem refazer tudo.
+
+**A resposta prática** depende da fase do projeto:
+- **Novo projeto, time pequeno, TypeScript puro:** Bun reduz atrito e oferece velocity.
+- **Projeto crescendo, com necessidades específicas de bundling ou testing:** o ecossistema de ferramentas especializadas tem mais profundidade.
+- **Projeto legado em Node:** migração incremental (começar pelos scripts e testes) é mais segura do que migração completa.
+
+---
+
+## O mesmo projeto pequeno: Bun vs stack Node
+
+Para tornar concreto, compare o setup de um servidor HTTP simples com SQLite — um caso de uso real para um MVP ou microserviço interno.
+
+```bash
+# ── Stack Node tradicional ──────────────────────────────────────────────────
+
+# 1. Inicializar e instalar deps
+npm init -y
+npm install better-sqlite3 express
+npm install -D typescript ts-node @types/express @types/node esbuild
+
+# 2. Configuração necessária
+# tsconfig.json — obrigatório
+# .npmrc ou jsconfig — opcional
+# package.json scripts — manual
+
+# Número de arquivos de config: 2+ (tsconfig + scripts manuais)
+# Tempo de install (deps + devDeps): ~13-20s
+# Para executar: npx ts-node src/server.ts (ou tsx)
+# Para testar: jest (+ jest.config.js + ts-jest ou babel-jest)
+# Para build: tsc + esbuild separados
+
+# ── Bun ────────────────────────────────────────────────────────────────────
+
+# 1. Inicializar — sem instalar nada de tooling
+bun init
+
+# 2. Sem deps de tooling — sqlite e http são built-in
+# (se quiser express, instala; se preferir Bun.serve, zero deps extras)
+
+# Número de arquivos de config: 0 (tsconfig opcional)
+# Tempo de install: ~0.8s (só se adicionar deps de produto)
+# Para executar: bun src/server.ts
+# Para testar: bun test (zero config)
+# Para build: bun build src/server.ts --target bun
+```
+
+O código do servidor com Bun — sem nenhuma dependência além das built-in:
+
+```typescript
+// src/server.ts — zero dependências externas
+import { Database } from "bun:sqlite";
+
+// Inicialização do banco
+const db = new Database(":memory:"); // banco em memória para o exemplo
+db.exec(`CREATE TABLE tarefas (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, feita INTEGER DEFAULT 0)`);
+
+// Servidor HTTP com Bun.serve + Request/Response da Web API
+const server = Bun.serve({
+  port: 3000,
+  async fetch(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+
+    // GET /tarefas
+    if (url.pathname === "/tarefas" && req.method === "GET") {
+      const tarefas = db.query("SELECT * FROM tarefas").all();
+      return Response.json(tarefas);
+    }
+
+    // POST /tarefas
+    if (url.pathname === "/tarefas" && req.method === "POST") {
+      const { titulo } = await req.json() as { titulo: string };
+      const stmt = db.prepare("INSERT INTO tarefas (titulo) VALUES ($titulo) RETURNING *");
+      const nova = stmt.get({ $titulo: titulo });
+      return Response.json(nova, { status: 201 });
+    }
+
+    // PATCH /tarefas/:id/feita
+    const match = url.pathname.match(/^\/tarefas\/(\d+)\/feita$/);
+    if (match && req.method === "PATCH") {
+      const id = parseInt(match[1]);
+      db.prepare("UPDATE tarefas SET feita = 1 WHERE id = $id").run({ $id: id });
+      const tarefa = db.query("SELECT * FROM tarefas WHERE id = ?").get(id);
+      return tarefa ? Response.json(tarefa) : new Response("Não encontrado", { status: 404 });
+    }
+
+    return new Response("Não encontrado", { status: 404 });
+  },
+});
+
+console.log(`API rodando em ${server.url}`);
+```
+
+```bash
+# Rodar sem compilar, sem config, sem deps
+bun src/server.ts
+
+# Testar
+curl http://localhost:3000/tarefas
+curl -X POST http://localhost:3000/tarefas -H "content-type: application/json" -d '{"titulo":"Aprender Bun"}'
+```
+
+---
+
+## Quando usar Bun, quando usar Node
+
+```mermaid
+flowchart TD
+    A["Novo projeto ou\nmigrando o tooling?"]
+
+    A -->|"Novo projeto"| B["Tem native addons\n(sharp, bcrypt-C++, canvas)?"]
+    A -->|"Migrando tooling"| M["Migre scripts/testes primeiro\n(bun test + bun build)\nNode em produção"]
+
+    B -->|"Sim"| C["Node.js\n(N-API indispensável)"]
+    B -->|"Não"| D["TypeScript puro?"]
+
+    D -->|"Sim"| E["Precisa de APM completo\n(Datadog, New Relic)?"]
+    D -->|"Não"| F["Bun\n(compatibilidade alta)"]
+
+    E -->|"Sim"| G["Node.js\n(instrumentação V8 dependente)"]
+    E -->|"Não"| H["Bun\n(cold start, velocidade, zero-config)"]
+
+    subgraph "Bun brilha"
+        H1["CLIs — cold start visível"]
+        H2["Serverless — cold start por req"]
+        H3["Scripts de CI — acumula ganhos"]
+        H4["MVPs — zero-config"]
+        H5["Testes — bun test ~20× mais rápido"]
+    end
+
+    subgraph "Node ainda é a escolha segura"
+        G1["Produção com N-API"]
+        G2["APM + profiling maduro"]
+        G3["Time com deep knowledge de Node"]
+        G4["Ecossistema de plugins de bundling"]
+    end
+
+    H --> H1
+    H --> H2
+    H --> H3
+    H --> H4
+    H --> H5
+
+    C --> G1
+    G --> G2
+    G --> G3
+
+    style H fill:#1a6b1a,color:#fff
+    style C fill:#8b1a1a,color:#fff
+    style G fill:#8b1a1a,color:#fff
+```
+
+### A perspectiva de 2026
+
+O que mudou com a aquisição pela Anthropic (novembro de 2025) é principalmente o risco de abandono. O Bun sempre foi MIT open-source, mas como projeto independente da Oven (startup pequena), havia legítima preocupação com sustentabilidade. Com a Anthropic como backing — que usa o Bun como runtime do Claude Code, aproveitando os cold starts de ~8ms para um CLI que "acorda" constantemente — o projeto ganhou credibilidade de infra crítica. Não muda o código, muda o cálculo de risco para adoção.
+
+O que ainda falta em 2026:
+- **Política LTS formal** — o Node.js tem ciclos de LTS documentados (18 meses de manutenção ativa); o Bun tem releases frequentes mas sem garantia de longo prazo por versão
+- **`bun test` coverage madura** — a cobertura de código está funcional mas experimental
+- **Tree-shaking competitivo com Rollup** para bibliotecas com exports complexos
+- **APM de primeira classe** — Datadog e New Relic precisam de suporte nativo ao JSC
+
+> [!info] Bun e a ausência de LTS
+> Node.js: versões LTS com 30 meses de suporte garantido, datas de EOL publicadas. Bun: sem política LTS documentada em 2026. Se você precisa travar uma versão major de runtime por anos (compliance, SLA, auditoria), o Node é a escolha segura por enquanto.
+
+---
+
+## Como explicar em inglês
+
+Bun is an all-in-one JavaScript toolkit: a runtime, package manager, bundler, and test runner packaged into a single binary written in Zig. Instead of the Node.js engine (V8), Bun uses **JavaScriptCore** — Safari's JS engine — which prioritizes fast startup (around 8ms cold start vs 45ms for Node) and higher initial throughput through a tiered JIT compilation strategy.
+
+The key selling points in an interview context:
+
+**Runtime:** Bun runs TypeScript natively by stripping type annotations before execution — no `tsc`, no `ts-node`, no `tsx`. It does *not* type-check; for that you still need `tsc --noEmit`. Bun provides native Web APIs (`Request`, `Response`, `fetch`, `WebSocket`) aligned with the WinterTC standards for interoperability across server-side JS runtimes.
+
+**Built-in APIs:** `Bun.serve()` is a native HTTP server using Web-standard `Request`/`Response`; `Bun.file()` is a lazy file reader that uses `sendfile(2)` when serving files; `bun:sqlite` is a built-in SQLite driver 3–6× faster than `better-sqlite3` because it avoids N-API marshaling overhead.
+
+**Bundler (`bun build`):** Outputs browser bundles, Node/CJS bundles, or standalone executables (`--compile`) that bundle the Bun runtime. Less mature than Vite for complex frontend projects.
+
+**Test runner (`bun test`):** Jest-compatible API, ~20× faster than Jest because TypeScript transpilation is built-in. Doesn't cover 100% of Jest's mock API surface.
+
+**Node.js compatibility:** ~98% of the official Node.js test suite passes. The main gap is **N-API native addons** — packages compiled against V8 internals (like `sharp`, native `bcrypt`, `canvas`) won't work because Bun uses JavaScriptCore, not V8.
+
+**When to choose Bun:** greenfield TypeScript projects, CLIs (cold start matters), serverless functions, CI scripts where speed accumulates, and any context where native addons aren't needed.
+
+**When to stick with Node:** legacy production services with N-API deps, APM agents that instrument V8 internals (Datadog, New Relic auto-instrumentation), and environments that require a formal LTS policy.
+
+**Deno comparison:** Deno 2 made the opposite bet — security first (explicit permissions model), TypeScript type-checking built-in, own registry (JSR). Bun prioritizes Node compatibility and raw speed. Both are production-ready in 2026; choose Deno for security-sensitive sandboxed scripts, Bun for drop-in Node replacement with better performance.
+
+### Vocabulário-chave
+
+| Português | Inglês |
+|---|---|
+| motor JavaScript | JavaScript engine |
+| tempo de inicialização a frio | cold start / cold start time |
+| toolkit unificado | all-in-one toolkit |
+| compilação JIT em camadas | tiered JIT compilation |
+| addon nativo | native addon |
+| remoção de tipos | type stripping |
+| executável standalone | standalone executable |
+| driver de banco embutido | built-in database driver |
+| servidor de desenvolvimento | dev server |
+| compatibilidade retroativa | backward compatibility |
+| sandboxing / isolamento | sandboxing |
+| empacotamento | bundling |
+| divisão de código | code splitting |
+| cobertura de testes | code coverage |
+| suite de testes | test suite |
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Armadilha 1: confundir "roda TypeScript" com "valida TypeScript"
+> O Bun transpila TypeScript por stripping — remove as anotações e executa o JS. Erros de tipo não impedem a execução. Se você vem do `ts-node` (que também não faz type-check por padrão) isso é familiar. Mas se vem do `tsc --watch`, vai sentir a ausência. Adicione `"typecheck": "tsc --noEmit"` no `package.json` e rode-o em CI.
+
+> [!warning] Armadilha 2: assumir que N-API funciona
+> Qualquer pacote que usa `node-gyp` para compilar addons nativos (canvas, sharp, bcrypt via versão nativa, algumas bibliotecas de crypto) não vai funcionar. `bun install` instala sem reclamar — o erro aparece só em runtime. Verifique se seus pacotes têm versões pure-JS antes de migrar.
+
+> [!warning] Armadilha 3: `bun test` não é Jest completo
+> A API de mocks do `bun:test` cobre os casos mais comuns (mock de funções, spy, mock manual), mas não implementa `jest.mock()` com factory de módulo completa, alguns matchers de snapshot, e `jest.spyOn()` em alguns cenários de ESM. Se sua suite depende desses recursos avançados, valide antes de assumir compatibilidade total.
+
+> [!warning] Armadilha 4: confundir performance em benchmark vs produção
+> "Bun é 4× mais rápido que Node" é um benchmark de HTTP puro. Com auth + ORM + JSON + log, o ganho real é 20–40%. Ainda significativo, mas não compare o número do benchmark com a workload de produção.
+
+> [!warning] Armadilha 5: usar Bun.serve sem conhecer o modelo de erros
+> O `Bun.serve` não tem um handler de erro global por padrão — erros dentro do `fetch()` que não são capturados derrubam a requisição silenciosamente. Sempre envolva o corpo do `fetch()` em try/catch e retorne uma `Response` de erro explícita. Frameworks como Elysia.js (construído sobre o Bun) lidam com isso automaticamente.
+
+> [!warning] Armadilha 6: não ter política LTS implica risco de upgrade
+> O Bun lança novas versões frequentemente e pode ter breaking changes entre minors. Para produção, pregue a versão no Dockerfile ou no `engines` do `package.json` e monitore as release notes antes de atualizar.
+
+---
+
+## Veja também
+
+- [[03 - Package managers - npm, pnpm, yarn e Bun]] — o Bun como `bun install`: velocidade, flat hoisting, lockfile binário, comparação com npm/pnpm
+- [[18 - O runtime como ferramenta de DX]] — `--watch`, `--env-file`, TypeScript nativo no Node (strip types), tsx/ts-node — a história do lado Node que o Bun complementa
+- [[19 - Test runner nativo (node-test) e o cenário de testes]] — `node:test` vs `bun test` vs Vitest: qual test runner pra qual projeto
+- [[03-Dominios/Tecnologia/Node/index|Node]] — runtime, event loop, arquitetura do Node.js — base conceitual que o Bun expande e desafia

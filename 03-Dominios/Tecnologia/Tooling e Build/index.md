@@ -32,19 +32,19 @@ Da gestão de dependências aos bundlers, passando por transpilação, qualidade
 - [[08 - Transpilação e targets]] — Babel/SWC/esbuild/tsc, downleveling, polyfills
 - [[09 - Dev server e HMR]] — dev × prod, ESM nativo, Hot Module Replacement
 
-## 🟡 Adepto — as ferramentas (legadas e modernas) e a qualidade *(a escrever)*
+## 🟡 Adepto — as ferramentas (legadas e modernas) e a qualidade
 
-- 10 — Ferramentas legadas: Grunt, Gulp, Bower, Browserify, RequireJS/AMD
-- 11 — webpack — o veterano
-- 12 — Create React App e a era dos scaffolders
-- 13 — Vite a fundo
-- 14 — Rollup, esbuild e Rolldown
-- 15 — Turbopack, Rspack e a corrida Rust/Go
-- 16 — Linting, formatting e git hooks
-- 17 — Otimização de bundle
-- 18 — O runtime como ferramenta de DX
-- 19 — Test runner nativo (node:test) e o cenário de testes
-- 20 — Bun como runtime e toolkit all-in-one
+- [[10 - Ferramentas legadas - Grunt, Gulp, Bower, Browserify e RequireJS]] — o que eram, estado hoje, por que caíram
+- [[11 - webpack - o veterano]] — entry/output/loaders/plugins; Module Federation
+- [[12 - Create React App e a era dos scaffolders]] — a morte de um padrão (CRA sunset 2025)
+- [[13 - Vite a fundo]] — o padrão moderno; dois motores → Rolldown
+- [[14 - Rollup, esbuild e Rolldown]] — bundlers de baixo nível e pra libs
+- [[15 - Turbopack, Rspack e a corrida Rust-Go]] — bundlers nativos e o porquê da migração
+- [[16 - Linting, formatting e git hooks]] — ESLint/Prettier/Biome/oxlint + Husky/lint-staged
+- [[17 - Otimização de bundle]] — tree-shaking, code splitting, lazy loading
+- [[18 - O runtime como ferramenta de DX]] — --watch, --env-file, TS nativo, tsx
+- [[19 - Test runner nativo (node-test) e o cenário de testes]] — node:test, Vitest, Jest, Bun
+- [[20 - Bun como runtime e toolkit all-in-one]] — o toolkit unificado
 
 ## 🔴 Magus — escala, produção, futuro *(a escrever)*
 
