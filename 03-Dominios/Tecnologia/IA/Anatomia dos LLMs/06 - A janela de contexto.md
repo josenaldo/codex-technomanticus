@@ -1,10 +1,10 @@
 ---
 title: A janela de contexto
 created: 2026-05-02
-updated: 2026-06-05
+updated: 2026-06-24
 type: concept
 status: evergreen
-progress: in_progress
+progress: done
 publish: true
 tags:
   - anatomia-llm
@@ -16,6 +16,12 @@ aliases:
   - Context length
 ---
 # A janela de contexto
+
+Você está construindo um agente que processa tickets de suporte. Nas primeiras sessões, tudo funciona. Na semana três, o agente começa a "esquecer" contexto — ignora resoluções discutidas 30 mensagens atrás, repete perguntas já respondidas, perde o fio da conversa. A equipe decide: "vamos usar um modelo com janela maior". Você migra para um com 200k tokens. A fatura dobra. O problema persiste.
+
+O que ninguém disse antes: janela maior não corrige falta de cuidado com o contexto. Um modelo de 1M tokens pode ter recall pior que um de 200k se você encher a janela sem curadoria — porque atenção é um recurso finito que se dilui com mais tokens. A informação colocada no meio do prompt é a mais ignorada, independentemente do tamanho da janela.
+
+Esta nota explica por que isso acontece, o que muda com contextos maiores, e como construir sistemas que usam a janela de contexto com eficiência.
 
 > [!abstract] TL;DR
 > A janela de contexto é o limite máximo de tokens que um LLM pode processar de uma vez — incluindo input (prompt, histórico, system instructions) E output (resposta gerada). Em 2026, janelas de 1M+ tokens são comuns nos modelos frontier, mas ter 1M de contexto não significa que o modelo é bom em usá-lo todo. Atenção degrada com distância, custo cresce linearmente, e contexto grande sem curadoria desperdiça dinheiro e qualidade.
@@ -347,6 +353,20 @@ Ferramentas como Claude Code e Cursor implementam **[[Dicionário de IA#context 
 | Agente autônomo (longa sessão)     | Compactação + state files                                                        | Gerenciado ativamente    |
 | Processamento de documentos longos | Modelo com 1M+ contexto                                                          | 200k–1M tokens           |
 
+## O padrão em números
+
+O gráfico abaixo visualiza a curva em U do Lost in the Middle: recall é alto no início e no final do contexto, e cai no meio — exatamente onde a atenção é mais diluída.
+
+```mermaid
+xychart-beta
+    title "Acurácia de recall por posição no contexto (padrão Lost in the Middle)"
+    x-axis ["Início", "25%", "50%", "75%", "Fim"]
+    y-axis "Acurácia (%)" 50 --> 100
+    line [92, 68, 53, 65, 90]
+```
+
+A leitura prática: se você tem informação crítica para a tarefa (a instrução central, a restrição mais importante), não a coloque no meio. Início e fim têm vantagem estrutural — e o início tem bônus extra: é a parte que o [[Dicionário de IA#Prompt caching|prompt caching]] armazena primeiro.
+
 ## Armadilhas
 
 - **"Mais contexto = melhor resposta"** — falso. Contexto irrelevante dilui a atenção do modelo e aumenta custo sem melhorar qualidade. Curadoria > quantidade.
@@ -354,6 +374,31 @@ Ferramentas como Claude Code e Cursor implementam **[[Dicionário de IA#context 
 - **Confiar no truncamento silencioso** — quando o contexto excede o limite, o que é cortado depende da implementação. Pode ser justamente a informação mais importante.
 - **"O modelo lembra tudo"** — não lembra. Cada chamada de API é stateless. O "histórico" é reenviado a cada turn, consumindo tokens de input.
 - **Não distinguir input de output tokens** — output é 3-5x mais caro. Um modelo verboso que gera respostas longas custa muito mais que um conciso.
+
+## Como explicar em inglês
+
+The context window is the maximum number of tokens an LLM can process in a single call — it includes everything: system prompt, conversation history, retrieved documents, tool definitions, and the model's response. The mental model that trips people up: a larger context window does not automatically mean better recall. Attention distributes a fixed "budget" across all tokens (softmax normalization forces the weights to sum to 1), so as context grows, each individual token receives proportionally less attention weight. The empirical result is the **U-curve** (Lost in the Middle, Liu et al. 2023): recall is highest at the beginning and end of the context, lowest in the middle. Beyond ~50% fill, recency bias takes over and the model starts ignoring the beginning. The practical engineering rule: content placement matters as much as what you include — critical instructions go at the beginning (also optimal for caching), critical task-specific constraints go at the end.
+
+| PT | EN |
+|----|---|
+| Janela de contexto | Context window |
+| Comprimento de contexto | Context length |
+| Janela efetiva | Effective context length |
+| Perdido no meio | Lost in the Middle |
+| Viés de recência | Recency bias |
+| Pia de atenção | Attention sink |
+| Apodrecimento de contexto | Context rot |
+| Prefill | Prefill (phase) |
+| Decode | Decode (phase) |
+| Cache KV | KV cache |
+| Compactação de contexto | Context compaction |
+| Truncamento | Truncation |
+
+## Ver mais
+
+- **[Liu et al. — Lost in the Middle: How Language Models Use Long Contexts (2023)](https://arxiv.org/abs/2307.03172)** — o paper da Stanford que documentou empiricamente a curva em U. Testou modelos de tamanhos variados em tarefas de multi-document QA e mostrou que a degradação no meio não é bug de implementação — é propriedade emergente da atenção. Ainda é a referência mais citada para decisões de posicionamento de conteúdo em prompts longos.
+- **[Chroma Research — Context Rot (2025)](https://research.trychroma.com/context-rot)** — o estudo mais sistemático sobre degradação em produção. Testou 18 modelos frontier e quantificou quando cada um começa a degradar (muito antes do limite nominal) e como o padrão em U muda para recency-bias conforme a janela enche. Essencial para calibrar qual modelo escolher para cada uso, com dados reais em vez de spec sheets.
+- **[Jay Alammar — The Illustrated Transformer (2018)](https://jalammar.github.io/illustrated-transformer/)** — a visualização interativa mais clara do mecanismo de atenção. Entender visualmente como o softmax distribui "luz" entre tokens explica intuitivamente por que mais tokens = menos atenção por token = degradação. Ainda é o melhor ponto de partida para entender a causa raiz do Lost in the Middle.
 
 ## Veja também
 

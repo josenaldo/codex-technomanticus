@@ -215,6 +215,25 @@ Mas repare onde paramos: ao fim da tokenização, cada token virou apenas um **I
 - [[06 - A janela de contexto]] — como tokens definem os limites do que o modelo "vê"
 - [[12 - Pricing de APIs — como calcular custos]] — impacto direto da contagem de tokens no bolso
 
+## Como explicar em inglês
+
+Tokenization converts raw text into a sequence of integer IDs called tokens, using a fixed vocabulary learned during a separate pre-training phase. The dominant algorithm is **BPE (Byte Pair Encoding)**: start with individual bytes (256 entries), iteratively find the most frequent adjacent pair in the training corpus, merge it into a new token, and repeat until the vocabulary reaches the target size (typically 32k–200k tokens). The critical mental model: tokens are neither characters nor words — they're variable-length subword chunks, fixed forever after training. A common English word is usually 1 token; a Portuguese word with diacritics may fragment into 2–3. The practical implication: API pricing and context window limits are both measured in tokens, not words or characters, so non-English text is disproportionately expensive — the vocabulary has fewer high-frequency merges for non-English character patterns.
+
+| PT | EN |
+|----|---|
+| Tokenização | Tokenization |
+| Tokenizador | Tokenizer |
+| Vocabulário | Vocabulary |
+| Token especial | Special token |
+| Token de início de sequência | BOS token (Beginning of Sequence) |
+| Token de fim de sequência | EOS token (End of Sequence) |
+| Codificação por pares de bytes | Byte Pair Encoding (BPE) |
+| Subpalavra | Subword |
+| Comprimento de sequência | Sequence length |
+| Pré-tokenização | Pre-tokenization |
+| Token de vocabulário (entrada) | Vocabulary entry / token ID |
+| Fusão | Merge (in BPE context) |
+
 ## Ver mais
 
 - [Andrej Karpathy — *Let's build the GPT Tokenizer*](https://www.youtube.com/watch?v=zduSFxRajkE) (2024, 2h13) — constrói um tokenizador BPE do zero, em código, e no fim revisita os "quirks" da tokenização (o strawberry, a aritmética, por que às vezes YAML bate JSON). O recurso definitivo para ir além do conceito.
