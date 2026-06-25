@@ -1,10 +1,10 @@
 ---
 title: "Frameworks 2026 — Claude Agent SDK, LangGraph, AutoGen, CrewAI"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-25
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-agents
@@ -21,6 +21,12 @@ aliases:
 ---
 
 # Frameworks 2026 — Claude Agent SDK, LangGraph, AutoGen, CrewAI
+
+A equipe escolheu LangChain porque "tem tudo". Seis semanas depois, estavam gastando mais tempo depurando a camada de abstração do framework do que escrevendo lógica de negócio. A versão do LangChain atualizou duas vezes durante o desenvolvimento, quebrando o código nas duas ocasiões. Três dos cinco engenheiros nunca haviam depurado os internos do LangChain e ficaram bloqueados por dias tentando rastrear bugs que estavam no framework, não no código deles.
+
+O projeto teria levado duas semanas com SDK raw e 400 linhas de código próprio. Em vez disso, levou oito — e entregou um sistema que o time tinha medo de atualizar.
+
+Escolher framework é uma decisão de arquitetura com efeitos duradouros. A questão correta não é "qual framework usar?" mas "o pain de manter código próprio excede o pain de manter este framework?" Esta nota mapeia as opções reais de 2026 com os critérios honestos para cada escolha.
 
 > [!abstract] TL;DR
 > O ecossistema de frameworks para agents em 2026 estabilizou em 5 grandes opções: **Claude Agent SDK** (oficial Anthropic), **LangGraph** (mais popular para workflows complexos), **CrewAI** (multi-agent role-based), **AutoGen** (Microsoft, conversational), **Pydantic AI** (TypeScript/Python type-safe). Mas o movimento crescente é **"sem framework"**: SDK raw + 500 linhas de código próprio. Frameworks engessam, mudam frequentemente, são difíceis de debugar. **Use framework quando o pain de não ter excede o pain de ter.**
@@ -223,6 +229,34 @@ graph TB
 Se sim → use framework.
 Se não → comece sem.
 
+```mermaid
+xychart-beta
+    title "Semanas até primeiro agent em produção — por stack (task equivalente)"
+    x-axis ["SDK raw", "Pydantic AI", "Claude SDK", "LangGraph", "CrewAI"]
+    y-axis "Semanas estimadas" 0 --> 8
+    bar [2, 2.5, 3, 5, 7]
+```
+
+> SDK raw é mais rápido para uso cases simples e estáveis. Frameworks ganham quando o time precisa de integrações ou de acelerar prototipagem. A curva inverte depois de 2 semanas: frameworks poupam integração mas cobram dívida de abstração em debugging e upgrades.
+
+```mermaid
+quadrantChart
+    title Controle vs Velocidade de prototipagem — por framework
+    x-axis Baixo Controle --> Alto Controle
+    y-axis Lenta Prototipagem --> Rápida Prototipagem
+    quadrant-1 Melhor dos dois mundos
+    quadrant-2 Velocidade, pouco controle
+    quadrant-3 Evitar
+    quadrant-4 Controle, mas lento
+    CrewAI: [0.35, 0.85]
+    AutoGen: [0.3, 0.7]
+    LangGraph: [0.5, 0.75]
+    Pydantic_AI: [0.65, 0.7]
+    Claude_SDK: [0.7, 0.65]
+    SDK_raw: [0.95, 0.3]
+    Vercel_AI: [0.45, 0.9]
+```
+
 ## Anti-patterns
 
 - **Framework como religião** — escolheu LangChain, força em tudo
@@ -239,6 +273,31 @@ Se não → comece sem.
 | **Linhas de código de glue** | <500 |
 | **% de bugs que vêm do framework** | <30% |
 | **Curva de onboarding novo dev** | <1 semana |
+
+## Como explicar em inglês
+
+The agent framework landscape in 2026 has consolidated around a handful of options with distinct positions. LangGraph (the graph-execution layer built on top of LangChain) is the most popular choice for complex stateful workflows — its `StateGraph` abstraction handles branching, cycles, and multi-agent coordination well, but carries significant abstraction overhead and a steep learning curve. Claude Agent SDK is Anthropic's native offering, optimized for Claude with built-in MCP support and observability. Pydantic AI prioritizes type-safe structured outputs with full Pydantic validation, which appeals to teams that want guaranteed output schemas. CrewAI offers a role-based multi-agent paradigm useful for rapid prototyping but less suited for production systems. The growing counter-movement is "no framework" — raw SDK with bespoke orchestration code. For stable use cases on experienced teams, 300–500 lines of custom code with direct API calls is often faster to ship, easier to debug, cheaper to operate, and simpler to upgrade than any framework. The right question isn't "which framework" but "does the cost of maintaining this framework exceed the cost of maintaining custom code?"
+
+| Português | English |
+|---|---|
+| framework de agents | agent framework |
+| lock-in de framework | framework lock-in |
+| sem framework (abordagem) | no-framework approach / raw SDK |
+| abstração | abstraction |
+| grafo de execução | execution graph / state graph |
+| observabilidade | observability |
+| integração de ferramentas | tool integration |
+| output estruturado | structured output |
+| prototipagem rápida | rapid prototyping |
+| custo de manutenção | maintenance cost |
+| multi-agente baseado em papéis | role-based multi-agent |
+| engessamento de framework | framework rigidity |
+
+## Ver mais
+
+- **LangGraph — *documentation*** (langchain-ai.github.io/langgraph, 2026): Documentação oficial do LangGraph — StateGraph, nodes, edges, parallelism, checkpointing. Referência técnica indispensável antes de adotar LangGraph em produção.
+- **Pydantic AI — *documentation*** (ai.pydantic.dev, 2026): Como construir agents type-safe com validação Pydantic nativa, streaming, e structured outputs garantidos. Melhor introdução para times que já usam Pydantic.
+- **Simon Willison — *blog on agents and frameworks*** (simonwillison.net, 2024-2026): Cobertura consistente e crítica do ecossistema de frameworks, com post-mortems de adoções problemáticas. Perspectiva pragmática de "sem framework" que equilibra o entusiasmo padrão.
 
 ## Veja também
 
