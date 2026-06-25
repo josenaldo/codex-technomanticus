@@ -19,6 +19,12 @@ publish: true
 > [!abstract] TL;DR
 > O ECMAScript evolui via TC39, um processo de 5 estágios (0–4) que garante consenso antes de standardização. Em 2026, as maiores adições são: **Temporal API** (stage 4 — substituto imutável e timezone-aware do `Date` quebrado), **Explicit Resource Management** (`using`/`await using`, stage 4 — limpeza determinística de recursos) e **Decorators** (stage 3 — metaprogramação declarativa em classes). Records & Tuples, a proposta mais aguardada de imutabilidade primitiva, foi **retirada em abril de 2025** por expectativas de performance irrealistas. Pattern matching e o pipe operator (`|>`) ainda navegam stages iniciais sem previsão de landing.
 
+> [!tip] Vídeos recomendados — Temporal API e TC39
+> - 🎬 [**Temporal API Crash Course (JavaScript's Biggest Upgrade)**](https://www.youtube.com/watch?v=B-EY851chIQ) — visão prática dos tipos principais (`PlainDate`, `ZonedDateTime`, `Duration`), publicado em fev/2026
+> - 🎬 [**Temporal API: A Decade of Waiting Was Worth It (ES2026)**](https://www.youtube.com/watch?v=Q0BOHt6iHAY) — contexto histórico + exemplos com fusos horários reais, publicado em mai/2026
+>
+> Ambos assumem JavaScript moderno; nenhum requer TypeScript. Bons pontos de entrada antes de mergulhar nos exemplos abaixo.
+
 ---
 
 Imagine que você está construindo um sistema de agendamento de consultas médicas. Você precisa calcular "30 dias após hoje, no fuso horário do paciente, sem contar fins de semana". Com o `Date` do JavaScript, essa tarefa — aparentemente simples — vira um pesadelo de bugs silenciosos, fuso horário errado e código ilegível. Você provavelmente vai instalar o `date-fns` ou o `luxon` e torcer pra ninguém tocar no código depois.
@@ -66,6 +72,23 @@ O ECMAScript lança uma versão por ano (ES2020, ES2021, …). Features que atin
 | **Pattern Matching** | 1 | — | Design ainda em aberto |
 | **Pipeline Operator** (`\|>`) | 2 | — | Hack-pipes flavor; sem previsão |
 | **Iterator.range** | 1 | — | Implementação em andamento no SpiderMonkey |
+
+---
+
+> [!info] Status de shipping em engines (junho 2026)
+> Com o stage 4 em março/2026, o Temporal passou de spec para código nativo com velocidade surpreendente:
+>
+> | Engine / Runtime | Versão | Data |
+> |------------------|--------|------|
+> | SpiderMonkey / Firefox | Firefox 139 | mai/2025 |
+> | V8 / Chrome | Chrome 144 | jan/2026 |
+> | V8 / Edge | Edge 144 | jan/2026 |
+> | Node.js | Node.js 26 (sem flag) | mai/2026 |
+> | Safari | Parcial (Technology Preview) | previsão: final 2026 |
+>
+> A implementação do V8 é baseada em `temporal_rs`, uma biblioteca Rust construída em colaboração com a equipe do motor Boa. O `@js-temporal/polyfill` continua recomendado para Safari até suporte completo chegar.
+>
+> Fontes: [Bryntum Blog](https://bryntum.com/blog/javascript-temporal-is-it-finally-here/) · [NodeSource](https://nodesource.com/blog/javascript-temporal-history-nodejs-26) · [Socket.dev](https://socket.dev/blog/tc39-advances-temporal-to-stage-4)
 
 ---
 
@@ -580,11 +603,11 @@ Você chegou ao fim da trilha principal de JavaScript do Codex. Cada proposta de
 
 O próximo passo natural é a aplicação: frameworks, tooling, Node.js e o ecossistema. Mas para o núcleo da linguagem, você tem agora o mapa completo — do `typeof` ao futuro da TC39.
 
-- [[20 - Cópia, serialização e imutabilidade]] — imutabilidade hoje, sem aguardar Records & Tuples
-- [[22 - Metaprogramação]] — Proxy, Reflect e Symbols: a base sobre a qual Decorators operam
+- [[20 - Cópia, serialização e imutabilidade]] — imutabilidade hoje, sem aguardar Records & Tuples; contexto para entender o que se perdeu com a retirada de Records & Tuples
+- [[22 - Metaprogramação]] — Proxy, Reflect e Symbols: a base sobre a qual Decorators operam; `Symbol.dispose` e `Symbol.asyncDispose` são well-known Symbols do ERM
 - [[18 - Error handling]] — por que `SuppressedError` do ERM é uma extensão natural do modelo de erros
-- [[13 - Números, BigInt e precisão]] — raízes dos bugs numéricos que Temporal também resolve
-- [[Dicionário de JavaScript]] — glossário de termos da linguagem e do ecossistema
+- [[13 - Números, BigInt e precisão]] — raízes dos bugs numéricos que Temporal também resolve; parsing inconsistente e overflow silencioso têm a mesma causa IEEE 754
+- [[Dicionário de JavaScript#TC39|Dicionário → TC39]] — o processo de padronização explicado em verbete; Temporal, Decorator e `using` têm entradas próprias
 
 ---
 

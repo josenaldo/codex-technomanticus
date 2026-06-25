@@ -1,7 +1,7 @@
 ---
 title: "Armadilhas e quirks do JavaScript"
 created: 2026-06-25
-updated: 2026-06-25
+updated: 2026-06-26
 type: concept
 status: seedling
 fase: Magus
@@ -523,7 +523,64 @@ arr.forEach(v => console.log(v));
 
 ---
 
-## Categoria 6 — Conversões e coerções numéricas
+## Categoria 6 — Funções matemáticas e edge cases
+
+### `Math.max()` sem args = `-Infinity`: o acumulador neutro
+
+```js
+Math.max()          // -Infinity
+Math.min()          // Infinity
+Math.max(1, 2, 3)   // 3   — comportamento esperado
+Math.min(1, 2, 3)   // 1   — comportamento esperado
+```
+
+Parece invertido — mas faz sentido quando você entende que essas funções são redutores.
+
+**Por quê:** `Math.max()` e `Math.min()` são implementados como reduções comparativas: cada argumento é comparado ao acumulador e "vence" se for maior (ou menor). Para que essa redução funcione com qualquer conjunto de argumentos, o acumulador inicial precisa ser o **elemento neutro** da operação:
+
+- O elemento neutro do `max` é o menor valor possível: `-Infinity` (qualquer número é maior que `-Infinity`).
+- O elemento neutro do `min` é o maior valor possível: `Infinity` (qualquer número é menor que `Infinity`).
+
+Com zero argumentos, o acumulador neutro é retornado sem ser alterado. A matemática está correta — o instinto humano é que falha.
+
+```js
+// Visualizando como redução:
+Math.max(1, 3, 2)
+// → max(-Infinity, 1) = 1
+// → max(1, 3) = 3
+// → max(3, 2) = 3  ← resultado final
+
+Math.max()
+// → nenhum argumento: retorna -Infinity diretamente
+```
+
+**Armadilha real — spread de array vazio:**
+
+```js
+const nums = [];
+const maior = Math.max(...nums);  // -Infinity — não NaN, não erro!
+
+// Esse -Infinity pode silenciosamente contaminar cálculos:
+const bonus = maior * 0.1;  // -Infinity * 0.1 = -Infinity
+```
+
+**Regra prática:**
+
+```js
+// ✅ guarda antes do spread
+const maior = nums.length ? Math.max(...nums) : 0;
+
+// ✅ ou reduce com fallback explícito
+const maior2 = nums.reduce((acc, v) => Math.max(acc, v), -Infinity);
+
+// ❌ não assume que Math.max de array vazio é seguro — é -Infinity silencioso
+```
+
+> Aprofundamento em representação numérica: [[13 - Números, BigInt e precisão]].
+
+---
+
+## Categoria 7 — Conversões e coerções numéricas
 
 ### `+""` e o operador de conversão silenciosa
 
@@ -730,6 +787,21 @@ Estas quirks são o campo de batalha, mas as notas a seguir aprofundam cada terr
 - [[13 - Números, BigInt e precisão]] — IEEE 754 a fundo, `Number.EPSILON`, representação de inteiros seguros, e quando usar `BigInt`
 - [[04 - Variáveis e escopo]] — hoisting completo, TDZ, diferenças entre `var`/`let`/`const` e escopo de bloco vs. função
 - [[Dicionário de JavaScript]] — termos técnicos de todo o galho, incluindo os usados neste capítulo
+
+---
+
+## Mídia
+
+> [!tip] Assistir — WAT: a palestra que viralizou os quirks de JS (Gary Bernhardt, 4 min)
+> **"WAT"** — Gary Bernhardt, CodeMash 2012. Uma relâmpago de 4 minutos que demonstra ao vivo os comportamentos mais absurdos de Ruby e JavaScript: `[] + []`, `[] + {}`, `{} + []`, NaN e coerção. A reação da platéia captura exatamente o choque que todo desenvolvedor sente antes de entender os mecanismos por trás dos quirks. Assista **antes** de explicar coerção para alguém.
+> - Vídeo: [https://www.destroyallsoftware.com/talks/wat](https://www.destroyallsoftware.com/talks/wat)
+> - YouTube (espelho): [https://www.youtube.com/watch?v=20BySC_6HyY](https://www.youtube.com/watch?v=20BySC_6HyY)
+>
+> Após assistir, leia [[03 - Coerção e igualdade]] para o mecanismo por trás de cada slide.
+
+> [!tip] Assistir — "JavaScript: The Good Parts" (Douglas Crockford, Google Tech Talks, 2009)
+> Crockford cataloga sistematicamente as partes ruins e as boas de JavaScript, incluindo coerção, `typeof null`, e por que `==` é um design mistake. Contexto histórico indispensável para entender por que tantos quirks existem e são impossíveis de corrigir.
+> - YouTube: [https://www.youtube.com/watch?v=hQVTIJBZook](https://www.youtube.com/watch?v=hQVTIJBZook)
 
 ---
 

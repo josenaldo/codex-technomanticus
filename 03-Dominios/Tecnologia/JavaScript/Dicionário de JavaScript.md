@@ -22,6 +22,9 @@ publish: true
 ### ECMAScript
 A especificação que define a linguagem JavaScript, mantida pelo TC39 e publicada anualmente (ES2015, ES2016, …). "JavaScript" é a implementação dessa spec pelas engines; "ECMAScript" é o contrato.
 
+### TC39
+Comitê técnico da ECMA International responsável por padronizar o ECMAScript. Reúne representantes de empresas (Google, Apple, Mozilla, Microsoft, Bloomberg, etc.) e contribuidores independentes. Toda proposta passa por 5 estágios: **Stage 0** (ideia); **Stage 1** (problema definido, champion designado); **Stage 2** (spec inicial rascunhada); **Stage 3** (spec completa, feedback de implementação em engines reais); **Stage 4** (aprovado para merge na spec anual — feature "pronta"). Features atingindo Stage 4 até o início de um ano entram no corte daquele ECMAScript (ex.: Stage 4 em março/2026 → ES2026). Ver [[24 - ES2026 e o futuro]] para exemplos concretos do processo.
+
 ### event loop
 O mecanismo que coordena a execução de código síncrono e a fila de tarefas assíncronas numa thread única. A *spec* da linguagem define só a fila de jobs (microtasks); as fases completas são detalhe do runtime — ver [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Node/Runtime e Event Loop]].
 
@@ -40,6 +43,12 @@ Unidade de trabalho assíncrono com prioridade sobre tarefas comuns (macrotasks)
 ### TDZ (Temporal Dead Zone)
 A janela entre o início do escopo e a linha de declaração de uma variável `let`/`const`, na qual acessá-la lança `ReferenceError`. É o que distingue o hoisting de `let`/`const` do de `var`.
 
+### Temporal
+Namespace global introduzido no ES2026 (Stage 4 em março/2026) que substitui a API `Date` com tipos imutáveis e timezone-aware. Cada tipo representa uma semântica distinta: `Temporal.Instant` (momento exato, timestamp UTC), `Temporal.ZonedDateTime` (data + hora + timezone, o mais completo), `Temporal.PlainDate` (data sem hora/tz, ex.: datas de nascimento), `Temporal.PlainTime`, `Temporal.PlainDateTime`, `Temporal.PlainYearMonth`, `Temporal.PlainMonthDay` e `Temporal.Duration`. Meses são **1-indexed** (12 = dezembro). Todos os métodos de modificação retornam novos objetos — nunca mutam o original. Shipping nativo: Firefox 139+ (mai/2025), Chrome/Edge 144+ (jan/2026), Node.js 26+ (mai/2026); Safari em Technology Preview. O polyfill `@js-temporal/polyfill` cobre Safari. Ver [[24 - ES2026 e o futuro#Temporal API: o Date finalmente consertado|ES2026 → Temporal]].
+
+### using / Explicit Resource Management
+Declaração introduzida no ES2026 (Stage 4 em junho/2025) que garante chamada automática de `Symbol.dispose` ao sair do escopo — seja por execução normal, `return`, `throw` ou `break`. Para recursos com cleanup assíncrono, usa-se `await using` (que chama `Symbol.asyncDispose`). Múltiplos recursos são descartados em ordem LIFO (último aberto, primeiro fechado). Se o `dispose` lançar enquanto já há um erro em voo, ambos são encapsulados em `SuppressedError { error, suppressed }` — nenhum contexto é perdido. Equivalente conceitual ao `with` do Python e ao `using` do C#. Para implementar: adicione `[Symbol.dispose]()` ou `[Symbol.asyncDispose]()` à sua classe. Ver [[24 - ES2026 e o futuro#Explicit Resource Management: `using` e `await using`|ES2026 → ERM]].
+
 ## Tipos e valores
 
 ### autoboxing
@@ -50,6 +59,9 @@ Tipo primitivo introduzido no ES2020 para representar inteiros com **precisão a
 
 ### coerção
 A conversão implícita de um valor de um tipo para outro, disparada por operadores (`+`, `==`) ou contextos (condições). A fonte de boa parte das armadilhas clássicas da linguagem.
+
+### footgun
+Jargão da área para uma funcionalidade de uma linguagem ou API que é válida e documentada, mas tão propensa a erros não-óbvios que o usuário acaba "atirando no próprio pé". Em JavaScript, os candidatos clássicos são o operador `==` (coerção silenciosa), `sort()` sem comparador (ordena como string) e `typeof null === "object"` (bug histórico). O termo não é exclusivo do JS — existe em toda a engenharia de software — mas a combinação de coerção implícita + herança legacy faz do JavaScript um campo especialmente fértil. Ver [[25 - Armadilhas e quirks]].
 
 ### IEEE 754
 Padrão internacional que define a representação e aritmética de números em ponto flutuante. JavaScript usa **double-precision** (64 bits): 1 bit de sinal, 11 bits de expoente e 52 bits de mantissa (+ 1 implícito), totalizando ~15–17 dígitos decimais significativos. A consequência prática é que nem todo decimal base-10 tem representação binária exata — `0.1` em binário é uma dízima infinita truncada, o que explica `0.1 + 0.2 !== 0.3`. Inteiros são exatos até `2⁵³ − 1` (`Number.MAX_SAFE_INTEGER`); acima disso, dois inteiros distintos podem ter a mesma representação float. Valores especiais do padrão incluídos no `number` do JavaScript: `NaN`, `Infinity`, `-Infinity` e `-0`.
@@ -121,6 +133,9 @@ Quando uma variável em um escopo interno declara o mesmo nome de uma variável 
 Modo de execução ativado com a diretiva `"use strict"` (no topo de um arquivo ou função) ou automaticamente em módulos ESM e corpos de classe. Em strict mode: funções chamadas sem contexto têm `this === undefined` em vez de receber o objeto global; atribuições a variáveis não declaradas lançam `ReferenceError`; e vários comportamentos silenciosamente problemáticos do JavaScript legado se tornam erros explícitos.
 
 ## Metaprogramação
+
+### Decorator (TC39)
+Função que recebe um valor decorado (classe, método, campo ou acessor) mais um objeto `context` (com `.name`, `.kind`, `.metadata`, etc.) e opcionalmente retorna um substituto. A sintaxe usa `@` antes da declaração. Permite cross-cutting concerns (logging, validação, memoização, autorização) declarativamente, sem repetição no corpo de cada método. Stage 3 desde 2022; suportado via TypeScript 5.0+ (sem `experimentalDecorators`), Babel e Deno. **Atenção:** a spec Stage 3 é incompatível com o modo legado `experimentalDecorators: true` do TypeScript — APIs e semântica mudaram completamente; não misture as duas formas no mesmo projeto. Ver [[24 - ES2026 e o futuro#Decorators: metaprogramação declarativa em classes|ES2026 → Decorators]].
 
 ### metaprogramação
 Técnica em que código observa, intercepta ou modifica o comportamento da própria linguagem em tempo de execução — sem alterar a lógica de negócio diretamente. Em JavaScript, os três pilares são: **Symbol** (chaves primitivas únicas que permitem ao objeto participar de protocolos nativos como `for...of` e `instanceof`), **Proxy** (intercepta operações fundamentais como leitura, escrita e deleção de propriedades) e **Reflect** (repassa a operação padrão com a semântica correta a partir de dentro de um trap). Ver [[22 - Metaprogramação]].

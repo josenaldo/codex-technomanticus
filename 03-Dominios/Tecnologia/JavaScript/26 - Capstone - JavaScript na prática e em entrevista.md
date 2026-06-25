@@ -108,6 +108,9 @@ O nível que diferencia quem escreve código de quem entende o que o código faz
 | 20 | [[03-Dominios/Tecnologia/JavaScript/20 - Cópia, serialização e imutabilidade\|Cópia, serialização e imutabilidade]] | Shallow vs deep copy, `structuredClone`, `Object.freeze`, imutabilidade |
 | 21 | [[03-Dominios/Tecnologia/JavaScript/21 - Memory management\|Memory management]] | GC, reachability, vazamentos comuns (closures, event listeners, timers) |
 | 22 | [[03-Dominios/Tecnologia/JavaScript/22 - Metaprogramação\|Metaprogramação]] | Proxy, Reflect, Symbol, `Symbol.iterator`, interceptação de operações |
+| 23 | [[03-Dominios/Tecnologia/JavaScript/23 - Recursos modernos (ES2020 a ES2025)\|Recursos modernos (ES2020–ES2025)]] | Optional chaining, nullish coalescing, `at()`, `Object.groupBy`, top-level await |
+| 24 | [[03-Dominios/Tecnologia/JavaScript/24 - ES2026 e o futuro\|ES2026 e o futuro]] | Pipeline operator, `Error.isError`, `RegExp.escape`, o que está no Stage 3/4 |
+| 25 | [[03-Dominios/Tecnologia/JavaScript/25 - Armadilhas e quirks\|Armadilhas e quirks]] | Os comportamentos mais surpreendentes da linguagem reunidos em um atlas de armadilhas |
 
 ---
 
@@ -158,6 +161,14 @@ ESM (`import`/`export`) é analisado estaticamente — o bundler sabe o grafo de
 
 **"O que é um Proxy e quando você usaria?"**
 `Proxy` intercepta operações fundamentais em objetos: leitura, escrita, deleção, chamada de função. Casos de uso reais: validação reativa (interceptar `set` para validar antes de atribuir), logging transparente, objetos observáveis (Vue 3 usa Proxy para reatividade), mocking em testes. O custo é overhead de runtime — não use sem necessidade. Veja [[03-Dominios/Tecnologia/JavaScript/22 - Metaprogramação|Metaprogramação]].
+
+### Recursos modernos e armadilhas
+
+**"O que é optional chaining e qual armadilha ela esconde?"**
+`?.` curto-circuita a expressão para `undefined` se o operando esquerdo for `null` ou `undefined`. O risco: silencia erros legítimos — se `user?.address.city` retorna `undefined`, você não sabe se `user` é nulo ou se `address` não tem `city`. Em código crítico, prefira checar a presença do objeto antes de acessar propriedades aninhadas. Veja [[03-Dominios/Tecnologia/JavaScript/23 - Recursos modernos (ES2020 a ES2025)|Recursos modernos (ES2020–ES2025)]].
+
+**"Qual a diferença entre `??` (nullish coalescing) e `||`?"**
+`||` usa o valor direito quando o esquerdo é *falsy* — isso inclui `0`, `""` e `false`, o que frequentemente não é o que você quer. `??` usa o valor direito *somente* quando o esquerdo é `null` ou `undefined`. Para valores default de configuração (onde `0` ou `""` são válidos), `??` é o correto. Veja [[03-Dominios/Tecnologia/JavaScript/23 - Recursos modernos (ES2020 a ES2025)|Recursos modernos (ES2020–ES2025)]].
 
 ---
 
@@ -352,6 +363,9 @@ graph TD
     PRD --> P3["20 Imutabilidade"]
     PRD --> P4["21 Memory management"]
     PRD --> P5["22 Metaprogramação"]
+    PRD --> P6["23 Recursos modernos"]
+    PRD --> P7["24 ES2026 e o futuro"]
+    PRD --> P8["25 Armadilhas e quirks"]
 
     M1 -.-> M2
     M5 -.-> M6
@@ -564,6 +578,184 @@ class EventEmitter {
 // Private fields (#) — evita que código externo acesse _listeners diretamente.
 // on() retorna função de unsubscribe — padrão do React useEffect.
 ```
+
+---
+
+## Casos práticos
+
+Saber o mecanismo é necessário; saber aplicá-lo em situações reais é o que o entrevistador quer ver. Cada cenário abaixo é uma situação de produção com causa raiz, diagnóstico e solução idiomática.
+
+### Cenário 1 — Refactor de callback hell para async/await numa feature de checkout
+
+**Contexto:** feature de checkout num e-commerce legado. O fluxo original: validar estoque → reservar item → cobrar cartão → enviar e-mail de confirmação. O código estava assim:
+
+```js
+// ANTES: callback hell — difícil de ler, tratar erro é pesadelo
+function checkout(cartId, cardToken, cb) {
+  validateStock(cartId, function(err, stockOk) {
+    if (err) return cb(err);
+    if (!stockOk) return cb(new Error("Fora de estoque"));
+    reserveItem(cartId, function(err, reservation) {
+      if (err) return cb(err);
+      chargeCard(cardToken, reservation.total, function(err, charge) {
+        if (err) {
+          // E agora? O item foi reservado mas o pagamento falhou.
+          // Rollback aqui seria outro callback aninhado.
+          return cb(err);
+        }
+        sendConfirmationEmail(charge.orderId, function(err) {
+          if (err) console.warn("E-mail falhou, mas pedido OK:", err);
+          cb(null, charge.orderId);
+        });
+      });
+    });
+  });
+}
+```
+
+O problema além da legibilidade: rollback em caso de falha de pagamento exigiria mais um nível de aninhamento, e o tratamento de erro estava espalhado.
+
+```js
+// DEPOIS: async/await com tratamento de erro explícito e rollback limpo
+async function checkout(cartId, cardToken) {
+  const stockOk = await validateStock(cartId);
+  if (!stockOk) throw new Error("Fora de estoque", { cause: { cartId } });
+
+  const reservation = await reserveItem(cartId);
+
+  let charge;
+  try {
+    charge = await chargeCard(cardToken, reservation.total);
+  } catch (err) {
+    // Rollback isolado: só chega aqui se o pagamento falhou após reserva
+    await releaseReservation(reservation.id).catch(rollbackErr =>
+      logger.error("Rollback falhou", { rollbackErr, reservation })
+    );
+    throw new Error("Falha no pagamento", { cause: err });
+  }
+
+  // E-mail é best-effort: falha não cancela o pedido
+  await sendConfirmationEmail(charge.orderId).catch(err =>
+    logger.warn("E-mail de confirmação falhou", { err, orderId: charge.orderId })
+  );
+
+  return charge.orderId;
+}
+```
+
+**O que o refactor ganhou:** rollback isolado no bloco `try/catch` certo, sem aninhar callbacks; `cause` preserva o erro original para observabilidade; e-mail best-effort sem esconder a falha; código linear e legível como prose.
+
+**Lição de entrevista:** quando perguntarem "como você migraria código legado de callbacks para async/await", este padrão — isolar etapas com rollback em try/catch granulares, e-mail/notificação como best-effort — demonstra entendimento operacional, não só conhecimento de sintaxe.
+
+### Cenário 2 — Debug de memory leak num SPA de dashboard
+
+**Contexto:** SPA de analytics com gráficos em tempo real. Após algumas horas de uso, o browser começava a travar. O heap crescia linearmente. Ferramentas: DevTools > Memory > Heap Snapshot.
+
+**Diagnóstico:** ao comparar dois snapshots (antes e depois de navegar entre rotas), o heap mostrava acúmulo de objetos `ChartData` — instâncias que deveriam ser coletadas quando o componente desmontasse. A causa raiz:
+
+```js
+// Componente React (classe) — ANTES: vazamento
+class RealtimeChart extends React.Component {
+  componentDidMount() {
+    // Problema 1: referência ao componente capturada no handler
+    window.addEventListener("resize", () => {
+      this.chart.resize(); // `this` mantém o componente vivo
+    });
+
+    // Problema 2: intervalo nunca cancelado na desmontagem
+    this.intervalId = setInterval(() => {
+      this.setState({ data: fetchLatestData() });
+    }, 1000);
+  }
+
+  // componentWillUnmount ausente — nem o intervalo nem o listener são removidos
+}
+```
+
+Todo componente desmontado mantinha: (1) uma referência via closure no `resize` listener que impedia o GC de coletar `this`; (2) um `setInterval` rodando para sempre, impedindo a coleta do estado.
+
+```js
+// DEPOIS: desmontagem limpa
+class RealtimeChart extends React.Component {
+  #resizeHandler = null;
+
+  componentDidMount() {
+    this.#resizeHandler = () => this.chart?.resize();
+    window.addEventListener("resize", this.#resizeHandler);
+
+    this.intervalId = setInterval(() => {
+      if (this.chart) this.setState({ data: fetchLatestData() });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.#resizeHandler);
+    clearInterval(this.intervalId);
+    this.chart = null; // quebra referência explicitamente
+  }
+}
+```
+
+**Regra de produção:** qualquer coisa que você registra em `componentDidMount` ou `useEffect` e que não é coletável automaticamente (listeners, timers, subscriptions) precisa de cleanup em `componentWillUnmount` / função de retorno do `useEffect`. Veja [[03-Dominios/Tecnologia/JavaScript/21 - Memory management|Memory management]].
+
+**Lição de entrevista:** ao descrever o processo de debug, mencione: (1) Heap Snapshot antes/depois para identificar o que está crescendo; (2) verificar retainment path para descobrir *quem* mantém a referência; (3) a correção é sempre remover a referência, nunca apenas "não criar o objeto".
+
+### Cenário 3 — Escolha Map vs Object num cache de alto volume
+
+**Contexto:** serviço de resolução de permissões num SaaS multi-tenant. Para cada request, o serviço verificava se o usuário tinha acesso a um recurso. O cache inicial usava um objeto simples:
+
+```js
+// ANTES: Object como cache — problemas em alto volume
+const permissionCache = {};
+
+function hasPermission(userId, resourceId) {
+  const key = `${userId}:${resourceId}`;
+  if (permissionCache[key] !== undefined) {
+    return permissionCache[key];
+  }
+  const result = checkPermissionInDB(userId, resourceId);
+  permissionCache[key] = result;
+  return result;
+}
+```
+
+**Problemas identificados em produção:**
+1. **Colisão com prototype:** se `userId:resourceId` formasse uma string como `"toString"` ou `"hasOwnProperty"`, `permissionCache[key]` retornaria a função do prototype, não `undefined`.
+2. **Performance em insert/delete:** com milhares de entradas e rotação de cache (TTL), `delete permissionCache[key]` em objetos JS é menos eficiente do que `Map.delete`.
+3. **Tamanho:** `Object.keys(permissionCache).length` percorre todas as chaves; `Map.size` é O(1).
+
+```js
+// DEPOIS: Map como cache — semântica correta e melhor performance em alto volume
+const permissionCache = new Map();
+const CACHE_TTL_MS = 60_000;
+
+function hasPermission(userId, resourceId) {
+  const key = `${userId}:${resourceId}`;
+  const cached = permissionCache.get(key);
+  if (cached !== undefined) return cached.value;
+
+  const result = checkPermissionInDB(userId, resourceId);
+  permissionCache.set(key, { value: result, expiresAt: Date.now() + CACHE_TTL_MS });
+  return result;
+}
+
+// Limpeza periódica — trivial com Map.forEach
+function evictExpired() {
+  const now = Date.now();
+  permissionCache.forEach((v, k) => {
+    if (v.expiresAt < now) permissionCache.delete(k);
+  });
+}
+```
+
+**Quando Object ainda ganha:** se as chaves são conhecidas em compile time e a estrutura é estática (ex: `config` com campos fixos), Object é mais ergonômico — desestruturação, spread e JSON.stringify funcionam diretamente. Veja [[03-Dominios/Tecnologia/JavaScript/12 - Map, Set, WeakMap, WeakSet|Map, Set, WeakMap, WeakSet]].
+
+**Lição de entrevista:** a pergunta "Map vs Object" é uma das mais frequentes em entrevistas sênior. A resposta que impressiona não é "use Map quando as chaves não são strings" — é articular os trade-offs operacionais: colisão com prototype, performance de mutação frequente, e o custo de `size` em objetos.
+
+> [!tip] Vídeo recomendado — Event loop e performance assíncrona
+> **Jake Archibald — "In the Loop"** (JSConf Asia 2018, 35 min)
+> [https://www.youtube.com/watch?v=cCOL7MC4Pl0](https://www.youtube.com/watch?v=cCOL7MC4Pl0)
+> A melhor explicação visual do event loop, task queue vs microtask queue e como o browser usa cada uma para rendering. Fundamental para entender por que `.then()` roda antes de `setTimeout(..., 0)` e como evitar jank de UI. Complementa diretamente as notas 14, 15 e 19 desta trilha.
 
 ---
 
