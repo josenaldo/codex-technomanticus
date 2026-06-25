@@ -1,7 +1,7 @@
 ---
 title: "Decision tree, futuro e entrevista"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: magus
 status: seedling
@@ -140,14 +140,17 @@ Referência: [[14 - Rollup, esbuild e Rolldown]].
 
 A tendência de reescrever ferramentas JS em Rust ou Go — que estudamos em [[15 - Turbopack, Rspack e a corrida Rust-Go]] — atingiu maturidade em 2026. O padrão emergente não é mais "ferramenta isolada em Rust" mas **toolchain unificado**:
 
-**VoidZero / Vite+**: combina Vite 8 + Vitest + oxlint + oxfmt + Rolldown + tsdown em um único zero-config entrypoint. A aquisição pela Cloudflare (junho/2026) colocou muscle financeiro atrás do projeto, com compromisso público de manter MIT e vendor-agnostic.
+**VoidZero / Vite+**: o binário `vp` combina Vite 8 + Vitest + oxlint + oxfmt + Rolldown + tsdown em um único zero-config entrypoint com task runner nativo (Vite Task), caching integrado e suporte a monorepo. A aquisição pela Cloudflare (junho/2026) colocou muscle financeiro atrás do projeto, com compromisso público de manter MIT e vendor-agnostic. Performance reportada: oxlint 50–100× mais rápido que ESLint; oxfmt até 30× mais rápido que Prettier. Fonte: [VoidZero — Announcing Vite+](https://voidzero.dev/posts/announcing-vite-plus).
 
-**OXC (oxc-project)**: a ambição é um toolchain completo — parser, linter, formatter, minifier, transformer — todos em Rust, todos integrados. Em 2026: oxlint 1.0 (produção), oxfmt beta, minifier e transformer em progresso.
+**OXC (oxc-project)**: a ambição é um toolchain completo — parser, linter, formatter, minifier, transformer — todos em Rust, todos integrados. Em 2026: oxlint 1.0 (produção), oxfmt beta, minifier e transformer em progresso. A vantagem arquitetural: quando todos os componentes compartilham o mesmo AST Rust, elimina-se a serialização/desserialização entre etapas — o parser produz um AST que o linter, formatter e bundler consomem diretamente.
 
 **Bun**: continua sua aposta de ser tudo — runtime, package manager, test runner, bundler, e runtime TypeScript nativo. Na versão 1.3.x (2026): production-grade, usado em produção por projetos reais.
 
 > [!question]- Por que a unificação importa para além da performance?
-> O problema não é só velocidade — é consistência. Quando parser, linter, formatter, bundler e test runner compartilham o mesmo AST e o mesmo modelo de módulos, você elimina toda uma categoria de bugs que surgem de ferramentas com interpretações diferentes do mesmo código. Biome, oxc, Rolldown e Vite+ estão todos caminhando nessa direção.
+> Pense em como um time de arquitetos trabalha quando cada um usa um sistema de medidas diferente — metros, polegadas, palmos. O prédio pode ficar em pé, mas na junção das partes surgem erros que nenhum arquiteto individualmente cometeu. É exatamente isso que acontece quando parser, linter, formatter, bundler e test runner têm implementações independentes do mesmo JavaScript. Cada um tem sua interpretação do AST, do escopo de variáveis, da resolução de módulos. Bugs surgem na *interface* entre ferramentas, não dentro delas. A unificação resolve o problema na raiz: um único AST, uma única interpretação, zero interface bugs. Biome, OXC, Rolldown e Vite+ estão todos caminhando nessa direção — e a convergência acelerou em 2026.
+
+> [!info] Vite+ em uma linha
+> `npm create vite-plus@latest` → projeto com Vite + Vitest + oxlint + oxfmt + Rolldown configurados e integrados. Zero decisões de tooling para um projeto novo greenfield em 2026.
 
 ### 3.4 Biome e oxlint — o fim do duopólio ESLint + Prettier
 
@@ -233,6 +236,9 @@ Em dev, o Vite serve os módulos diretamente via ESM nativo — o browser faz os
 
 **Frase EN:** *"In dev, Vite serves raw ES modules — the browser handles the imports, so there's nothing to bundle. In production, Rolldown kicks in: it resolves the full module graph, applies tree-shaking, code splitting, and minification. Vite 8 unified both modes under Rolldown, which eliminated an entire class of dev/prod divergence bugs."*
 
+> [!question]- O trade-off oculto do ESM nativo no dev — cold start em apps grandes
+> ESM nativo é imbatível em HMR: 87ms de mediana vs 2.1s do webpack em apps com 50k linhas. Mas há um trade-off que aparece em apps muito grandes (centenas de módulos): o cold start. Quando você abre o browser pela primeira vez, o servidor precisa servir cada módulo individualmente — e o browser faz centenas de requisições HTTP. Em apps pequenas e médias, isso é imperceptível. Em apps com 1000+ módulos, o primeiro carregamento pode ser mais lento que no webpack, que entrega tudo bundlado. O Turbopack (Vercel/Next.js) tomou a decisão oposta: usa bundling incremental mesmo no dev, evitando o cold start às custas de HMR ligeiramente mais lento. Para entrevistas: articular esse trade-off é o que distingue quem entende a arquitetura de quem decorou que "Vite é mais rápido".
+
 ---
 
 ### "O que é tree-shaking e por que ele exige ESM?"
@@ -312,6 +318,10 @@ Parágrafos-modelo calibrados para entrevista. Primeira pessoa, postura técnica
 
 > The most important thing I've learned about build tooling is that configuration complexity is a cost, not a feature. The ideal is a tool that works correctly with zero config and lets you opt into complexity when your use case genuinely requires it. That's the direction the ecosystem has moved — Vite, Biome, Bun, Rolldown are all designed around that principle.
 
+> When it comes to system design questions around CI build performance, my frame is always: measure first, parallelize second, cache third. The common mistake is adding caching before you understand which steps are actually slow. Once you have visibility, parallelize the independent steps — typecheck, lint, and test can usually run concurrently. Then add remote caching — in a monorepo, Turborepo's remote cache with affected-only task runs is the biggest single lever. Only after those do you look at replacing tools — switching from Jest to Vitest, or from ESLint to oxlint, gives real wins but requires migration effort.
+
+> On module federation in 2026: MF2 changed the picture significantly. It's no longer a webpack-exclusive concern — the `@module-federation/enhanced` package works across webpack, Rspack, Vite, and Rollup with a unified runtime. For teams doing micro-frontends, MF2 on Rspack is the pragmatic path: you get webpack API compatibility, Rust-level build performance, and MF2's type-sharing and manifest-based host discovery.
+
 ---
 
 ## 7. Vocabulário-chave PT→EN consolidado
@@ -356,6 +366,32 @@ Parágrafos-modelo calibrados para entrevista. Primeira pessoa, postura técnica
 | alvo de compilação | compilation target |
 | polyfill | polyfill |
 | shim | shim |
+| compilação cruzada | cross-compilation |
+| camada de compatibilidade | compatibility shim / compat layer |
+| resolução de módulos | module resolution |
+| mapa de exportações | exports map |
+| condição de exportação | export condition |
+| dependência transitiva | transitive dependency |
+| dependência par | peer dependency |
+| dependência aninhada | nested dependency |
+| empacotamento de executável | executable bundling |
+| análise estática | static analysis |
+| árvore de chamadas | call tree |
+| grafo de dependências | dependency graph |
+| arquivo de manifesto | manifest file |
+| linha de base amplamente disponível | widely available baseline |
+| efeito colateral de importação | import side effect |
+| declaração de tipo | type declaration / .d.ts |
+| inferência de tipo | type inference |
+| modo estrito | strict mode |
+| registro de pacotes | package registry |
+| assinatura de proveniência | provenance attestation |
+| lista de materiais de software | software bill of materials (SBOM) |
+| build distribuído | distributed build |
+| build afetado | affected build |
+| grafo de tarefas | task graph |
+| cache de artefato | artifact cache |
+| paralelismo de tarefas | task parallelism |
 
 ---
 
@@ -381,6 +417,9 @@ Parágrafos-modelo calibrados para entrevista. Primeira pessoa, postura técnica
 - **Ter opinião fundamentada sobre Biome vs oxlint** — não é "uma é melhor"; é "Biome tem mais regras e melhor DX; oxlint é mais rápido e tem JS plugin API chegando — para legados com ESLint, oxlint como camada é o caminho."
 - **Falar sobre supply chain** — `npm audit`, lockfiles, provenance, SBOM. Ver [[24 - Supply chain e segurança de dependências]]. Mostra que você pensa em produção, não só em DX.
 - **Mencionar determinismo no CI** — builds determinísticos, lockfiles commitados, pinning de versões, reproducible builds. Ver [[23 - Build em produção, CI e determinismo]].
+- **Citar tsdown para bibliotecas** — saber que existe uma camada acima do Rolldown, otimizada para autores de biblioteca, com geração de DTS nativa, é um sinal de atualização do ecossistema.
+- **Saber quando NÃO usar Vite** — em apps com milhares de módulos onde o cold start importa mais que o HMR, Turbopack ou bundling incremental pode ser melhor escolha. Saber a exceção é tão importante quanto saber a regra.
+- **Articular Module Federation 2.0** — não só "webpack tem MF"; saber que MF2 funciona em Vite, Rspack e webpack via `@module-federation/enhanced`, e que type sharing automático é o diferencial da versão 2.
 
 ---
 
@@ -505,6 +544,217 @@ flowchart LR
 
 ---
 
+## 11. Perguntas de system design — tooling em escala
+
+System design de tooling aparece em entrevistas Staff e Principal. Diferente das perguntas de conceito (seção 5), aqui o entrevistador quer ver como você projeta um sistema inteiro, não responde uma questão pontual.
+
+### "Projete o pipeline de build de uma aplicação com 500 mil linhas de código TypeScript em monorepo."
+
+**Como estruturar a resposta (5 minutos):**
+
+```
+1. Clarificação (1 min)
+   - Quantos pacotes no monorepo? Apps ou libs?
+   - Alvos: browser, Node, ambos?
+   - Time size e frequência de deploy?
+   - Constraint de latência de CI?
+
+2. Decisões de estrutura (2 min)
+   - Package manager: pnpm (isolamento de phantom deps)
+   - Task runner: Turborepo (cache incremental de tarefas, afetados por mudança)
+   - Bundler: Vite 8 por app browser; tsdown para libs npm-bound
+   - Lint/format: Biome (zero config, zero deps, um binário)
+
+3. Estratégia de cache (1 min)
+   - Turborepo remote cache (Vercel ou self-hosted)
+   - Artifact caching no CI: só rebuilda o que mudou no grafo de deps
+   - Content hashing nos assets de produção
+
+4. Trade-offs explícitos (1 min)
+   - Nx vs Turborepo: Nx tem plugin ecosystem mais rico e affected builds granulares;
+     Turborepo tem curva menor e performance similar para <50 pacotes
+   - Rolldown vs Rollup para libs: Rolldown é mais rápido;
+     Rollup tem mais casos de edge documentados para dual ESM+CJS exótico
+```
+
+**Frase EN de abertura:** *"Before choosing tools, I'd clarify the shape of the monorepo — number of packages, deploy cadence, and whether CI latency is a hard constraint. For a repo at this scale, the central architectural decision is task orchestration with remote caching, not which bundler to use."*
+
+---
+
+### "Como você garantiria determinismo de build em CI?"
+
+Determinismo de build significa: mesma entrada → mesma saída, em qualquer máquina, em qualquer momento. Um build não determinístico é um bug esperando para aparecer em produção às 2h da manhã.
+
+**As quatro camadas de determinismo:**
+
+1. **Lockfile commitado e respeitado** — `package-lock.json`, `pnpm-lock.yaml` ou `bun.lockb` no repositório. CI roda `pnpm install --frozen-lockfile`, não `pnpm install`. Diferença: `--frozen-lockfile` falha se o lockfile está desatualizado em vez de atualizá-lo silenciosamente.
+
+2. **Versão fixa de Node/runtime** — `.nvmrc`, `.node-version` ou `engines` no `package.json`, reforçado com `volta` ou `mise` no CI. Runtime diferente pode mudar output do `node:crypto`, comportamento do `--experimental-vm-modules`, etc.
+
+3. **Sem timestamps e sem IDs randômicos nos assets** — bundlers modernos usam content hashing por padrão; confirmar que plugins customizados não injetam `Date.now()` ou `Math.random()` em nomes de arquivo.
+
+4. **Cache de CI parametrizado pela chave correta** — a chave de cache do GitHub Actions / GitLab CI deve incluir o hash do lockfile, não só o branch. Se o lockfile muda, o cache invalida. Se não, você reusa um `node_modules` de uma versão anterior e a build parece passar, mas o runtime é diferente do declarado.
+
+> [!tip] O teste do determinismo
+> Se você pode fazer `git checkout <sha>` em qualquer máquina e `pnpm build` produz byte-a-byte o mesmo output que a build original, você tem determinismo real. Se não, você tem builds que "geralmente funcionam".
+
+Referência: [[23 - Build em produção, CI e determinismo]].
+
+---
+
+### "Como você migraria um projeto de webpack para Vite sem quebrar produção?"
+
+A resposta sênior não é "trocar o `webpack.config.js` por `vite.config.ts`". É um processo em etapas que minimiza risco:
+
+```mermaid
+%%{init: {"theme": "base"}}%%
+flowchart TD
+    A["Auditoria inicial\n(plugins, loaders, Module Federation?)"]
+    A --> B{"Tem Module\nFederation?"}
+    B -->|"Sim"| MF["Caminho MF2:\nRspack + @module-federation/enhanced\n(drop-in, não precisa reescrever)"]
+    B -->|"Não"| C{"Tem loaders\nwebpack-specific?"}
+    C -->|"Sim (SVG transforms,\nworkers manuais, etc.)"| Rspack["Rspack como\nbridge (step 1):\nmesma API webpack,\n5-10× mais rápido"]
+    C -->|"Não / poucos"| Direct["Migração direta\npara Vite 8"]
+    Rspack --> D["Migrar loaders para\nplugins Vite gradualmente\n(feature flag por módulo)"]
+    Direct --> E["vite.config.ts mínimo\n+ resolver aliases\n+ variáveis de ambiente"]
+    D --> E
+    E --> F["Comparar bundle\nanalysis antes/depois\n(Rollup Visualizer)"]
+    F --> G["Shadow deploy:\nbuild Vite em paralelo\n(sem servir)"]
+    G --> H["A/B test:\n10% tráfego → Vite\nmonitorar error rate"]
+    H --> I["Rollout completo\n+ remover webpack"]
+```
+
+**O que frequentemente quebra na migração:**
+- **`require()` dinâmico** — Vite ESM não suporta `require()` em runtime; precisa converter para `import()` dinâmico ou usar `createRequire`.
+- **Aliases de path** — `@/` funcionando em webpack com `resolve.alias`; em Vite precisa de `resolve.alias` equivalente e confirmar que o `tsconfig.json` `paths` bate.
+- **Variáveis de ambiente** — webpack usa `process.env.X`; Vite usa `import.meta.env.X`. Frequentemente há shim necessário.
+- **Workers** — `new Worker(new URL('./worker.js', import.meta.url))` é ESM; webpack tinha sintaxe diferente.
+
+**Frase EN:** *"I'd start by auditing webpack-specific plugins and loaders. If there's Module Federation, Rspack is the bridge — same API, Rust performance, and MF2 support. For direct migration, the critical items are dynamic require calls, environment variable syntax (process.env vs import.meta.env), and Worker instantiation patterns."*
+
+---
+
+### "Como você diagnosticaria um bundle de produção que cresceu 40% depois de uma sprint?"
+
+Esta é uma pergunta de debugging de build, mas sêniors a abordam sistematicamente:
+
+```
+1. Quantificar: bundle analyzer (Rollup Visualizer, webpack-bundle-analyzer)
+   → visualiza o grafo de chunks; identifica os maiores módulos
+
+2. Hipóteses por categoria:
+   (a) Dep nova ou actualizada com peso inesperado?
+       → git diff package.json; verificar tamanho da nova dep no bundlephobia.com
+   (b) Tree-shaking falhou?
+       → checar se a lib tem "sideEffects: false" no package.json
+       → checar se é CJS (não tree-shakeable) ou ESM
+   (c) Importação barrel file?
+       → import { Button } from 'ui-lib' que importa o pacote inteiro; usar import direto
+   (d) Code splitting quebrado?
+       → um chunk que deveria ser lazy-loaded entrou no bundle principal
+       → verificar se import() dinâmico foi convertido acidentalmente para estático
+
+3. Validar: buildar antes do commit que causou o crescimento
+   → comparar chunk sizes; isolar o delta
+
+4. Instrumentar para o futuro: bundlesize ou size-limit no CI
+   → pull request falha se bundle passar de X KB
+```
+
+**Frase EN:** *"My first step is always to open the bundle visualizer and look at the module graph. Growth almost always falls into four buckets: a new dependency that wasn't tree-shaken, a barrel import that pulled in more than intended, a dynamic import that got inlined, or a code path that bypassed code splitting. I'd then instrument CI with size-limit to catch regressions automatically."*
+
+Referência: [[17 - Otimização de bundle]].
+
+---
+
+## 12. Cenários avançados de entrevista
+
+### Cenário: "Você assumiu um projeto com 8 minutos de CI. O que você faz?"
+
+Este é o tipo de pergunta open-ended que separa sênior de pleno. Resposta estruturada em camadas:
+
+**Camada 1 — Diagnóstico (antes de otimizar, medir):**
+- Onde o tempo vai? `time` por etapa: install, typecheck, lint, test, build.
+- Quanto é paralelo e quanto é sequencial? Jobs paralelos no CI têm overhead de startup; etapas sequenciais são o gargalo real.
+
+**Camada 2 — Vitórias rápidas (sem mudança de arquitetura):**
+- Cache do `node_modules` parametrizado pelo hash do lockfile.
+- Rodar lint, typecheck e test em paralelo (jobs separados).
+- Substituir Jest por Vitest ou Bun test — Vitest em projetos modernos é 3–10× mais rápido que Jest por usar esbuild para transpilação.
+- Substituir tsc para typecheck por `tsc --noEmit` sem build, ou usar `ts-blank-space`/`oxc-transform` para transpilação.
+
+**Camada 3 — Otimização estrutural:**
+- Em monorepo: Turborepo remote cache — só rebuilda pacotes com mudança no grafo.
+- Afected-only tests: rodar apenas testes dos pacotes afetados pelo diff.
+- Build de produção: Rolldown/Vite 8 é 4–20× mais rápido que Rollup puro.
+
+**Camada 4 — Arquitetura (investimento maior):**
+- Separar typecheck de build — são processos diferentes com objetivos diferentes.
+- Considerar distributed test execution (sharding nativo do Vitest, ou via TestOps).
+- Docker layer caching para builds que empacotam contêineres.
+
+**Frase EN:** *"Eight minutes tells me something is sequential that shouldn't be — probably install, typecheck, lint, and tests running in order on one machine. I'd parallelize aggressively first, add lockfile-keyed cache for node_modules, and switch to Vitest if still on Jest. In a monorepo, Turborepo remote cache with affected-only runs is usually the biggest single improvement."*
+
+---
+
+### Cenário: "O que você faria diferente se tivesse que fazer o projeto atual de zero, do ponto de vista de tooling?"
+
+Esta é uma pergunta de reflexão estratégica. O entrevistador quer ver:
+1. Que você aprendeu com decisões passadas
+2. Que você conhece o ecossistema atual
+3. Que você articula trade-offs, não só moda
+
+**Estrutura de resposta (sem inventar projeto específico):**
+
+> *"If I were starting fresh with the current ecosystem, I'd lean on convention over configuration from the start. Vite 8 as the dev and build engine — the Rolldown unification means I don't have to maintain separate dev and prod configurations. pnpm workspaces for dependency management with strict isolation from day one — phantom dependencies are much harder to eliminate than to prevent. Biome for lint and format — one binary, zero config, zero CI dependency on Node version for tooling. And I'd set up size-limit in CI from the first PR, not after the bundle becomes a problem."*
+
+> *"The thing I'd do differently is not treat tooling as a one-time setup. Config files rot. Deps drift. The teams that win are the ones that have a quarterly tooling hygiene check — update deps, run the audit, re-evaluate whether the tool still fits the use case."*
+
+---
+
+### tsdown — o bundler elegante para bibliotecas
+
+[[14 - Rollup, esbuild e Rolldown]] introduz os motores. `tsdown` é a camada de DX acima deles, otimizada para autores de biblioteca.
+
+| Aspecto | tsdown | Rollup 4 | esbuild |
+|---|---|---|---|
+| Baseado em | Rolldown (Rust) | Rollup (JS) | Go |
+| Velocidade | ~Rolldown (muito rápido) | Mais lento | Muito rápido |
+| DTS geração | Nativa via isolatedDeclarations | Plugin `rollup-plugin-dts` | Não nativo |
+| Dual ESM+CJS | Automático | Manual com config | Manual |
+| Parte do ecossistema | VoidZero / Vite+ | Standalone | Standalone |
+| Config mínima | Zero (auto-detect entry) | Média | Alta para libs |
+
+tsdown é o que `vite lib mode` usará internamente a partir do Vite 8+, e faz parte do toolchain `vp` (Vite+). Para libs novas com TypeScript, é a escolha com menor custo de manutenção em 2026.
+
+Fonte: [tsdown.dev](https://tsdown.dev/) — documentação oficial.
+
+---
+
+### Module Federation 2.0 — o mapa real em 2026
+
+A nota da árvore de decisão (seção 2) menciona Module Federation; aqui o detalhe que aparece em perguntas avançadas.
+
+**O que MF 2.0 adicionou (estável desde abril/2026):**
+
+| Recurso | MF 1.x (webpack) | MF 2.0 (@module-federation/enhanced) |
+|---|---|---|
+| Suporte a bundlers | webpack only | webpack, Rspack, Vite, Rollup |
+| TypeScript types | Manual (sem sharing) | Type sharing automático entre remotes |
+| Host discovery | Estático (URL hardcoded) | Manifest-based (dynamic runtime discovery) |
+| Runtime | webpack runtime | Runtime unificado cross-bundler |
+| Maturidade | Produção (anos) | Estável desde abr/2026 |
+
+**Quando a resposta é ainda webpack + MF1:**
+Equipes com MF1 em produção por anos, com comportamento documentado e testado. Migrar para MF2 é válido, mas o risco de regressão em produção às vezes não justifica. Rspack + MF2 é o caminho de menor risco: drop-in API, build muito mais rápido.
+
+**Quando é MF2 novo projeto:**
+Sempre. MF2 é tecnicamente superior em todos os aspectos e funciona cross-bundler.
+
+Fonte: [InfoQ — Module Federation 2.0 Reaches Stable Release](https://www.infoq.com/news/2026/04/module-federation-2-stable/).
+
+---
+
 ## O que vem a seguir
 
 Tooling e Build como disciplina para aqui. O próximo horizonte natural é a aplicação do tooling dentro de frameworks:
@@ -517,24 +767,62 @@ Tooling e Build como disciplina para aqui. O próximo horizonte natural é a apl
 
 ## Veja também
 
-- [[index|trilha Tooling e Build]] — o índice completo da trilha
+### Notas da trilha (confirmadas via ls)
+
+- [[index|trilha Tooling e Build]] — o índice completo da trilha com 26 notas
 - [[Biblioteca de Tooling e Build]] — recursos externos curados
-- [[01 - Por que tooling e build existem]] — a nota que abre a trilha
-- [[13 - Vite a fundo]] — o padrão moderno em detalhe
-- [[17 - Otimização de bundle]] — tree-shaking, code splitting, lazy loading
-- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — escala
-- [[03-Dominios/Tecnologia/TypeScript/27 - TypeScript em entrevista|capstone de TypeScript]] — a trilha irmã
+
+**Fundações (Iniciado):**
+- [[01 - Por que tooling e build existem]] — o pipeline completo; a nota que abre a trilha
+- [[02 - A evolução do tooling JS - de script ao bundler moderno]] — narrativa histórica; contexto de cada geração
+- [[03 - Package managers - npm, pnpm, yarn e Bun]] — phantom deps, content-addressable store, workspaces
+- [[04 - Gerenciando versões de Node]] — nvm/fnm/Volta/mise, corepack, engines
+- [[05 - Semver e o grafo de dependências]] — semver ranges, lockfiles, resolução de conflitos
+- [[06 - ESM e CJS e o sistema de módulos]] — a dualidade que funda tree-shaking
+- [[07 - O grafo de módulos e o que é bundling]] — como bundlers constroem o grafo
+- [[08 - Transpilação e targets]] — Babel/SWC/esbuild; browserslist; polyfills
+- [[09 - Dev server e HMR]] — ESM nativo no dev; WebSocket; invalidação de grafo
+
+**Ferramentas (Adepto):**
+- [[10 - Ferramentas legadas - Grunt, Gulp, Bower, Browserify e RequireJS]] — contexto histórico; por que morreram
+- [[11 - webpack - o veterano]] — entry/output/loaders/plugins; Module Federation
+- [[12 - Create React App e a era dos scaffolders]] — CRA sunset; o problema dos scaffolders
+- [[13 - Vite a fundo]] — o padrão moderno; Rolldown; Vite 8
+- [[14 - Rollup, esbuild e Rolldown]] — bundlers de baixo nível; trade-offs entre os três
+- [[15 - Turbopack, Rspack e a corrida Rust-Go]] — bundlers nativos; Rspack como bridge
+- [[16 - Linting, formatting e git hooks]] — Biome/oxlint; Husky/lint-staged; nova paisagem
+- [[17 - Otimização de bundle]] — tree-shaking, code splitting, lazy loading, sideEffects
+- [[18 - O runtime como ferramenta de DX]] — tsx; --watch; TS nativo no Node 23+
+- [[19 - Test runner nativo (node-test) e o cenário de testes]] — Vitest vs Jest vs node:test
+- [[20 - Bun como runtime e toolkit all-in-one]] — all-in-one; compatibilidade Node
+
+**Escala e Produção (Magus):**
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — task cache; affected builds; changesets
+- [[22 - Single Executable Apps (SEA) e empacotamento]] — Node SEA; Bun --compile; CLIs distribuídas
+- [[23 - Build em produção, CI e determinismo]] — builds determinísticos; lockfiles; cache no CI
+- [[24 - Supply chain e segurança de dependências]] — npm audit; SBOM; provenance; CVEs
+- [[25 - IA no tooling e build]] — IA gerando config; codemod; análise de bundle por IA
+
+**Trilha irmã:**
+- [[03-Dominios/Tecnologia/TypeScript/27 - TypeScript em entrevista|capstone de TypeScript]] — formato idêntico ao desta nota; TypeScript e tooling são inseparáveis
 
 ---
 
-## Fontes
+## Referências
 
 - **Vite team** — [*Vite 8.0 is out!*](https://vite.dev/blog/announcing-vite8) — anúncio oficial do Vite 8 com Rolldown como motor unificado (março/2026)
 - **VoidZero** — [*Announcing Rolldown 1.0*](https://voidzero.dev/posts/announcing-rolldown-1-0) — Rolldown 1.0 GA, maio/2025
-- **Cloudflare** — [*Cloudflare Acquires VoidZero*](https://www.cloudflare.com/press/press-releases/2026/cloudflare-acquires-voidzero-to-build-the-future-of-the-ai-native-web/) — aquisição da VoidZero, junho/2026, com compromisso de manter MIT open source
-- **VoidZero** — [*Announcing Vite+ Alpha*](https://voidzero.dev/posts/announcing-vite-plus-alpha) — toolchain unificado: Vite + Vitest + oxlint + oxfmt + Rolldown
+- **VoidZero** — [*Announcing Vite+*](https://voidzero.dev/posts/announcing-vite-plus) — toolchain unificado GA: Vite + Vitest + oxlint + oxfmt + Rolldown + tsdown (maio/2026; alpha desde março/2026)
+- **VoidZero** — [*Announcing Vite+ Alpha*](https://voidzero.dev/posts/announcing-vite-plus-alpha) — anúncio original alpha do toolchain unificado (março/2026)
+- **VoidZero** — [*Tales from the Void: March 2026 Recap*](https://voidzero.dev/posts/whats-new-mar-2026) — changelog março/2026 incluindo Vite 8, tsdown e Vite+
+- **Cloudflare** — [*Cloudflare Acquires VoidZero*](https://www.cloudflare.com/press/press-releases/2026/cloudflare-acquires-voidzero-to-build-the-future-of-the-ai-native-web/) — aquisição da VoidZero, junho/2026, compromisso MIT open source
+- **tsdown.dev** — [*The Elegant Bundler for Libraries*](https://tsdown.dev/) — documentação oficial do tsdown; powered by Rolldown
+- **InfoQ** — [*Module Federation 2.0 Reaches Stable Release*](https://www.infoq.com/news/2026/04/module-federation-2-stable/) — MF2 estável abril/2026; cross-bundler (webpack, Rspack, Vite, Rollup)
 - **pkgpulse** — [*Biome vs ESLint vs Oxlint 2026*](https://www.pkgpulse.com/guides/biome-vs-eslint-vs-oxlint-2026) — comparativo prático dos três linters em 2026
+- **pkgpulse** — [*Module Federation 2.0: webpack vs Rspack vs Vite 2026*](https://www.pkgpulse.com/guides/module-federation-2-webpack-rspack-vite-micro-frontends-2026) — guia de micro-frontends com MF2
 - **techinterview.org** — [*Frontend Build Tools: Vite, Turbopack, and the Modern Pipeline*](https://www.techinterview.org/post/3233475109/frontend-build-tools-vite-turbopack-2026/) — perguntas de entrevista de build tools para 2026
+- **techinterview.net** — [*Vite vs esbuild vs Webpack: Architecture Guide 2026*](https://www.techinterview.net/blog/vite-vs-esbuild-vs-webpack-architectural-guide) — comparativo arquitetural para candidatos Staff/Principal
+- **oxc.rs** — [*What is Oxc?*](https://oxc.rs/docs/guide/what-is-oxc) — documentação do projeto OXC; roadmap parser, linter, formatter, minifier, transformer em Rust
 
 > [!info] Lastro
 > Esta nota é o CAPSTONE da trilha Tooling e Build (nota 26/26). As seções técnicas sintetizam as notas 01–25, que carregam o lastro técnico de cada afirmação. Os parágrafos em inglês da seção 6 são postura técnica genérica — NÃO são relatos de projetos, clientes ou experiências específicas do autor. Os dados sobre Vite 8, Rolldown, Biome, oxlint e VoidZero são baseados em fontes primárias (anúncios oficiais) de 2025–2026 listadas na seção Fontes.

@@ -1,7 +1,7 @@
 ---
 title: "Supply chain e segurança de dependências"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: magus
 status: seedling
@@ -571,6 +571,197 @@ updates:
 
 A diferença prática: Dependabot é mais simples, perfeito para projetos GitHub sem necessidade de customização. Renovate é mais poderoso — agrupa PRs para reduzir ruído, suporta auto-merge por tipo de update, e funciona em GitLab, Bitbucket e auto-hosted.
 
+### `minimumReleaseAge`: a quarentena de novas versões
+
+Existe uma janela perigosa entre a publicação de um pacote e a detecção de código malicioso. Typosquats e contas comprometidas tipicamente são identificados em horas ou dias — mas não em segundos. Se o seu Renovate ou Dependabot aplica patches automaticamente assim que são publicados, você está no grupo mais exposto.
+
+O `minimumReleaseAge` do Renovate resolve isso: só propõe ou auto-merge uma versão depois de N dias desde a publicação, dando tempo para a comunidade detectar problemas.
+
+```json
+// renovate.json — quarentena de 3 dias para patches automáticos
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      // ↓ Só auto-merge depois de 3 dias de "silêncio" após publicação
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      // Major updates: 7 dias de quarentena antes de abrir o PR
+      "minimumReleaseAge": "7 days"
+    }
+  ]
+}
+```
+
+> [!tip] Trade-off: segurança vs. velocidade de resposta
+> Para CVEs críticos com patch disponível, 3 dias de quarentena é frustrante — você quer o fix agora. O equilíbrio padrão recomendado: `minimumReleaseAge: "3 days"` para atualizações regulares + `vulnerabilityAlerts.minimumReleaseAge: "0 days"` (ou simplesmente sobrescrever para alertas de segurança). O Renovate respeita essa distinção via `matchCategories: ["security"]` nos `packageRules`.
+
+---
+
+## pnpm security-by-default: isolamento estrutural
+
+O pnpm tem uma diferença arquitetural importante frente ao npm que afeta supply chain: seu modelo de resolução é **strict by default** — cada pacote só enxerga as dependências que declarou explicitamente.
+
+```
+# Estrutura no npm (hoisting tradicional):
+node_modules/
+  express/
+  accepts/        ← transitiva de express, mas acessível por QUALQUER pacote
+  lodash/         ← qualquer pacote pode require('lodash') mesmo sem declarar
+
+# Estrutura no pnpm (strict, sem hoisting):
+node_modules/
+  .pnpm/
+    express@4.21.2/node_modules/
+      accepts/    ← visível APENAS para express
+  express -> .pnpm/express@4.21.2/...  ← symlink para o pacote raiz
+  # lodash NÃO aparece em node_modules/ a menos que seu package.json declare
+```
+
+Isso importa para supply chain de duas formas:
+
+**1. Fantôme deps bloqueadas**: com npm, um pacote malicioso pode usar módulos do seu projeto que ele não declarou (ex: ler variáveis de ambiente via um módulo do host). Com pnpm strict, o pacote só enxerga suas próprias deps declaradas.
+
+**2. Superfície reduzida em monorepos**: em workspaces npm, todos os pacotes da repo compartilham o mesmo `node_modules` achatado. No pnpm, cada workspace tem acesso apenas ao que declarou — isolamento real.
+
+```bash
+# pnpm: instalar com frozen lockfile (equivale ao npm ci)
+pnpm install --frozen-lockfile
+
+# pnpm audit — equivalente ao npm audit
+pnpm audit
+
+# pnpm audit com fix automático
+pnpm audit --fix
+
+# pnpm: verificar que não há phantom deps (pacotes usados mas não declarados)
+pnpm ls --depth 0    # lista apenas deps diretas
+```
+
+> [!question]- Devo migrar de npm para pnpm por razões de segurança?
+> Depende do contexto. Para monorepos novos ou projetos onde isolamento é prioritário: sim, pnpm strict é uma melhoria estrutural. Para projetos npm existentes com muitas deps que usam phantom deps (padrão infelizmente comum): a migração vai quebrar coisas — e pode não valer o custo imediato. O ganho é real, mas não é gratuito.
+
+---
+
+## npm Trusted Publishing: sem tokens de longa duração
+
+Uma das mudanças de 2024 que passa despercebida mas tem impacto sênior: o **npm Trusted Publishing** (disponível desde outubro 2024, baseado no modelo do PyPI).
+
+O problema com `NPM_TOKEN` clássico em CI: é um token de longa duração, com validade de meses ou anos, armazenado como secret no CI. Se vazar (rotação negligenciada, log de CI exposto, repositório comprometido), um atacante pode publicar qualquer versão de qualquer pacote da sua conta.
+
+O Trusted Publishing elimina o token permanente:
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+sequenceDiagram
+    participant GHA as GitHub Actions
+    participant OIDC as GitHub OIDC Provider
+    participant NPM as npm registry
+
+    Note over GHA: npm publish (sem NPM_TOKEN)
+    GHA->>OIDC: Solicita token OIDC efêmero
+    OIDC-->>GHA: JWT assinado com claims:<br/>{ repo, branch, workflow, sha }
+    GHA->>NPM: Envia JWT como autenticação
+    NPM->>OIDC: Verifica JWT (repositório + workflow permitidos)
+    OIDC-->>NPM: Válido
+    NPM-->>GHA: Autorizado — publica pacote
+    Note over NPM: JWT expira em minutos;<br/>nenhum token permanente existiu
+```
+
+Configuração no npmjs.com:
+1. No painel do pacote → "Publishing" → "Configure Trusted Publishers"
+2. Adicionar: owner/repo do GitHub + nome do workflow que pode publicar
+
+```yaml
+# .github/workflows/publish.yml — com Trusted Publishing (sem NPM_TOKEN!)
+name: Publish
+on:
+  push:
+    tags: ['v*']
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # ← permissão para obter token OIDC do GitHub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm publish --provenance --access public
+        # ↑ sem ENV NPM_TOKEN — autenticação via OIDC automaticamente
+```
+
+> [!tip] Trusted Publishing + Provenance juntos
+> Quando você usa Trusted Publishing, `--provenance` funciona automaticamente com o mesmo token OIDC — você resolve dois problemas com uma configuração: elimina o token permanente E adiciona attestation de build. O JWT efêmero é o mesmo usado para assinar a provenance no Sigstore Fulcio.
+
+---
+
+## Vendoring: quando o registry é o problema
+
+Todas as estratégias anteriores assumem que você ainda vai baixar pacotes do npm em tempo de CI/CD. Mas e quando o problema é justamente a dependência do registro externo?
+
+**Vendoring** é copiar as dependências para dentro do repositório — remover a dependência em tempo de build do registry externo completamente.
+
+```bash
+# Estratégia 1: vendor directory manual (pnpm)
+pnpm install
+# Copia node_modules para o repositório como "vendor"
+# Comitar node_modules/ no git (funciona, mas pesado)
+
+# Estratégia 2: pnpm com --virtual-store-dir customizado
+pnpm install --virtual-store-dir vendor/.pnpm
+
+# Estratégia 3: npm pack + armazenar tarballs
+npm pack lodash@4.17.21              # cria lodash-4.17.21.tgz
+# Armazenar tarballs em S3/Artifactory interno
+# No .npmrc apontar para o storage interno
+
+# Estratégia 4: registry proxy/mirror interno (Verdaccio, Artifactory, Nexus)
+# .npmrc no projeto:
+registry=https://artifactory.minha-empresa.com/npm/
+# O Artifactory cacheia do npm público, faz scanning interno, e serve localmente
+```
+
+**Quando faz sentido vendorizar:**
+
+| Contexto | Vendoring faz sentido? |
+|---|---|
+| Builds aéreos (air-gapped), sem acesso à internet | **Sim** — única opção |
+| Compliance que exige auditoria de cada byte deployado | **Sim** — SBOM + vendor é auditável |
+| Startups com CI rápido e dependências bem auditadas | **Não** — overhead não compensa |
+| Projetos com 500+ deps transitivas | **Não** — git vira elefante; use mirror interno |
+| Ambientes regulados (FIPS, FedRAMP, ISO 27001) | **Sim** — mirror interno pelo menos |
+
+> [!warning] O problema do vendor no git
+> Commitar `node_modules/` no git tem um custo escondido: o histórico do repositório explode em tamanho. Um `node_modules` típico tem 50.000-200.000 arquivos. Depois de 6 meses de updates, o `.git` pode ultrapassar 10GB — tornando `git clone` impraticável. A alternativa mais madura é um registry interno (Verdaccio, Artifactory, Nexus) que age como proxy/cache do npm público: builds dependem do servidor interno, que cacheia e faz scanning antes de servir.
+
+```yaml
+# verdaccio/config.yaml — registry interno mínimo
+storage: ./storage
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+packages:
+  '@minha-empresa/*':
+    access: $authenticated
+    publish: $authenticated
+    # Sem uplink: pacote interno nunca vai para o npm público
+  '**':
+    access: $all
+    publish: $authenticated
+    proxy: npmjs    # Tudo mais: proxy do npm, com cache local
+```
+
 ---
 
 ## Minimizar superfície: a melhor dependência é a que não existe
@@ -643,6 +834,10 @@ Entender os ataques históricos ajuda a compreender por que cada prática de seg
 
 **xz Utils (2024)** — Não é npm, mas é a referência em supply chain de software compilado. Um contribuidor passou *dois anos* construindo reputação em um projeto open source de compressão (`xz`) antes de introduzir uma backdoor sofisticada no processo de build que afetaria OpenSSH em distribuições Linux. Detectado por acidente por um engenheiro da Microsoft que notou que o SSH estava 500ms mais lento. *Lição: ataques de supply chain são pacientes; confiança conquistada ao longo do tempo pode ser subvertida.*
 
+**Polyfill.io (junho 2024)** — O domínio `polyfill.io` foi adquirido por uma empresa chinesa (Funnull CDN) e imediatamente começou a servir JavaScript malicioso para mais de 100.000 sites que usavam o serviço de polyfill via CDN. O script original era legítimo; a propriedade do domínio mudou de mãos e o serviço foi weaponizado. Sites como Warner Bros, Hulu, e múltiplos portais governamentais foram afetados. *Lição: dependências de runtime via CDN são supply chain também — e com blast radius ordens de magnitude maior. Sempre self-host scripts críticos.*
+
+**Lottie Player (@lottiefiles/lottie-player, outubro 2024)** — Em 31 de outubro de 2024, versões 2.0.5, 2.0.6 e 2.0.7 do pacote `@lottiefiles/lottie-player` foram publicadas com código malicioso que injetava um prompt para conectar carteiras de criptomoeda. O pacote tinha 130.000+ downloads semanais. O NPM removeu as versões maliciosas em horas, mas sites que usavam `@latest` sem lockfile já tinham servido o código malicioso para usuários. *Lição: usar `@latest` ou versões sem lockfile em produção é uma aposta permanente que você vai perder eventualmente.*
+
 **Mini Shai-Hulud (2025-2026)** — Série de ataques de worm auto-replicante onde atacantes do grupo TeamPCP comprometeram contas de mantenedores e usaram os pipelines de CI legítimos para publicar código malicioso *com provenance SLSA Build Level 3 válido*. Em um episódio, 84 versões de 42 pacotes TanStack foram publicadas em menos de 6 minutos. *Lição: provenance não é suficiente quando a conta que controla o pipeline está comprometida.*
 
 > [!danger] O padrão que conecta todos
@@ -684,8 +879,19 @@ Não existe uma única medida que resolve tudo. A segurança de supply chain é 
 
 ### Atualizações automáticas
 - [ ] Dependabot ou Renovate configurado no repositório
-- [ ] Auto-merge de patches após CI verde (opcional, mas reduz ruído)
-- [ ] `vulnerabilityAlerts: true` no Renovate
+- [ ] `minimumReleaseAge: "3 days"` para auto-merge (quarentena de novas publicações)
+- [ ] Auto-merge de patches após CI verde + quarentena (reduz ruído sem expor janela de ataque)
+- [ ] `vulnerabilityAlerts: true` no Renovate (override sem quarentena para CVEs confirmados)
+
+### Trusted Publishing e tokens
+- [ ] npm Trusted Publishing configurado (sem NPM_TOKEN permanente em CI)
+- [ ] Se ainda em NPM_TOKEN clássico: escopo `publish only`, rotação semestral
+- [ ] `npm publish --provenance` emparelhado ao Trusted Publishing
+
+### Isolamento e vendoring
+- [ ] pnpm strict mode avaliado para projetos novos (phantom deps bloqueadas)
+- [ ] Scripts críticos de terceiros self-hosted (não via CDN de terceiro em runtime)
+- [ ] Registry interno (Verdaccio/Artifactory) para ambientes regulados ou air-gapped
 
 ### Minimizar superfície
 - [ ] Cada nova dep tem justificativa (PR ou ADR)
@@ -720,6 +926,12 @@ Não existe uma única medida que resolve tudo. A segurança de supply chain é 
 > [!warning] Armadilha 6: não auditar devDependencies
 > `npm audit --omit=dev` é adequado para avaliar risco em produção, mas postinstall scripts de devDeps executam na máquina do desenvolvedor e no CI. Um cryptominer em uma devDep é menos crítico que em produção, mas ainda é um incidente de segurança.
 
+> [!warning] Armadilha 7: Renovate sem `minimumReleaseAge`
+> Renovate com `automerge: true` sem `minimumReleaseAge` vai aplicar automaticamente qualquer patch assim que for publicado — incluindo versões maliciosas. Essa janela de minutos entre publicação e auto-merge é exatamente o vetor que os ataques de 2024-2026 exploram. O padrão razoável é `minimumReleaseAge: "3 days"` para auto-merge e `"0 days"` apenas para `matchCategories: ["security"]` (CVEs confirmados). Não confundir velocidade de automação com velocidade de resposta a incidentes.
+
+> [!warning] Armadilha 8: scripts críticos via CDN em runtime
+> Usar `<script src="https://cdn.polyfill.io/...">` ou similar em HTML/bundle é supply chain de runtime, não de build. O lockfile não protege isso — o script é baixado pelo browser do usuário, não pelo seu CI. O caso Polyfill.io (junho 2024) provou que a propriedade de um domínio CDN pode mudar overnight. Scripts críticos de terceiros devem ser self-hosted, versionados, e servidos do seu próprio CDN/assets.
+
 ---
 
 ## Como explicar em inglês
@@ -742,6 +954,14 @@ Key attack vectors to know for an interview:
 
 **SBOM** (Software Bill of Materials): `npm sbom --sbom-format cyclonedx` generates a machine-readable inventory of all dependencies with versions, hashes, and licenses. Required by CISA guidelines and useful for responding to new vulnerabilities without scanning code.
 
+**Trusted Publishing** (npm, October 2024): eliminates long-lived `NPM_TOKEN` secrets in CI. Instead, GitHub Actions requests a short-lived OIDC token from GitHub's identity provider; npm verifies the token against a pre-configured allowlist (repo + workflow). No permanent secret exists to leak. Works alongside `--provenance` — both use the same ephemeral OIDC token.
+
+**Minimum Release Age** (Renovate): a quarantine period between when a version is published and when Renovate opens or auto-merges the PR. Set `minimumReleaseAge: "3 days"` for regular updates to give the community time to detect malicious packages before you install them automatically. Override to `"0 days"` for confirmed security alerts where you want the fix immediately.
+
+**pnpm strict mode**: pnpm's symlinked `node_modules` structure means each package can only access what it explicitly declares in its own `package.json`. This blocks phantom dependencies — packages importing modules they didn't declare, a common pattern that supply-chain attackers can exploit to reach host environment variables or credentials.
+
+**Runtime CDN supply chain** (Polyfill.io, June 2024): the lockfile only protects build-time dependencies. JavaScript loaded at runtime via `<script src="https://cdn.third-party.io/...">` is a separate supply chain — one that the browser downloads directly from a third-party domain. When that domain changes ownership (as happened with polyfill.io in June 2024), 100,000+ sites served malicious JavaScript to users overnight. Critical third-party scripts must be self-hosted.
+
 | Português | Inglês |
 |---|---|
 | cadeia de fornecimento de software | software supply chain |
@@ -759,6 +979,11 @@ Key attack vectors to know for an interview:
 | análise comportamental | behavioral analysis |
 | installs imutáveis | immutable installs / frozen installs |
 | registro privado | private registry |
+| fornecimento confiável | trusted publishing |
+| quarentena de versão | release quarantine / minimum release age |
+| espelhamento interno | internal registry mirror / proxy registry |
+| vendorização | vendoring |
+| dependência fantasma | phantom dependency |
 
 ---
 
@@ -769,6 +994,7 @@ Segurança de supply chain é um problema que se resolve em múltiplos níveis: 
 - [[23 - Build em produção, CI e determinismo]] — como determinismo no build e lockfiles imutáveis se conectam ao problema de reproducibilidade — a base técnica que torna os hashes de integridade significativos
 - [[05 - Semver e o grafo de dependências]] — o modelo de resolução de versões que é o terreno onde dependency confusion e typosquatting operam
 - [[03 - Package managers - npm, pnpm, yarn e Bun]] — como pnpm strict mode e hoisting afetam o isolamento de pacotes e a superfície de ataque
+- [[25 - IA no tooling e build]] — modelos de linguagem sendo integrados ao pipeline de build; a IA que sugere deps ou auto-aceita upgrades cria novos vetores de supply chain (prompt injection, dependências sugeridas por LLMs sem verificação humana)
 - [[index|trilha Tooling e Build]] — visão completa da trilha
 - [[03-Dominios/Engenharia/Segurança/17 - Confiança transitiva e Trusting Trust|Confiança transitiva e Trusting Trust]] — o ensaio de Ken Thompson sobre como a confiança em compiladores e ferramentas é fundamentalmente recursiva — a base filosófica de toda supply chain security
 
@@ -785,6 +1011,11 @@ Segurança de supply chain é um problema que se resolve em múltiplos níveis: 
 - **The Hacker News** — [*GitHub to Disable npm Install Scripts by Default*](https://thehackernews.com/2026/06/github-to-disable-npm-install-scripts.html) — anúncio do npm v12 com scripts desabilitados por padrão
 - **Microsoft Security Blog** — [*33 malicious npm packages abuse dependency confusion*](https://www.microsoft.com/en-us/security/blog/2026/05/29/33-malicious-npm-packages-abuse-dependency-confusion-profile-developer-environments/) — análise de ataque de dependency confusion em 2026
 - **Mondoo** — [*npm Supply Chain Security in 2026*](https://mondoo.com/blog/npm-supply-chain-security-package-manager-defenses-2026) — panorama atual das defesas disponíveis
+- **npm Docs** — [*Configuring Trusted Publishing*](https://docs.npmjs.com/using-npm/trusted-publishing/) — guia oficial de setup do Trusted Publishing com GitHub Actions (sem NPM_TOKEN permanente)
+- **Sansec** — [*Polyfill supply chain attack hits 100K+ sites*](https://sansec.io/research/polyfill-supply-chain-attack) — análise técnica do ataque ao domínio polyfill.io (junho 2024)
+- **Checkmarx** — [*Lottie Player npm Supply Chain Attack*](https://checkmarx.com/blog/lottie-player-supply-chain-attack-october-2024/) — post-mortem do ataque de outubro 2024 ao @lottiefiles/lottie-player
+- **Renovate Docs** — [*minimumReleaseAge*](https://docs.renovatebot.com/configuration-options/#minimumreleaseage) — referência da opção de quarentena de publicações no Renovate
+- **pnpm Docs** — [*Symlinked node_modules structure*](https://pnpm.io/symlinked-node-modules-structure) — explicação técnica do modelo de isolamento strict do pnpm vs npm hoisting
 
 ---
 

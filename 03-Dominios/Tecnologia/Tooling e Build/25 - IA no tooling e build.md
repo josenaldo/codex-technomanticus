@@ -1,7 +1,7 @@
 ---
 title: "IA no tooling e build"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: magus
 status: seedling
@@ -366,6 +366,17 @@ A regra prática: lint determinístico bloqueia o merge. Review por IA informa a
 
 Veja [[16 - Linting, formatting e git hooks]] para o setup completo do lint determinístico, que permanece a base mesmo com IA no pipeline.
 
+### Oxlint, Biome e o lint como feedback loop para agentes
+
+Uma mudança sutil mas importante aconteceu em 2026: linters rápidos como **oxlint** (50–100× mais rápido que ESLint, escrito em Rust) deixaram de ser só uma ferramenta humana e passaram a funcionar como *mecanismo de back-pressure para agentes*.
+
+A lógica é simples: se o agente escreve código e leva 30 segundos para receber feedback do ESLint, ele vai acumular erros antes de corrigir. Com oxlint rodando em milissegundos, o ciclo de correção cabe dentro do loop agêntico — o agente escreve, recebe feedback instantâneo, corrige, itera. A configuração do linter vira parte do contrato que guia o agente.
+
+> [!info] Seu eslint.config.js é parte do prompt
+> Em 2026, a frase que circula nos times que trabalham com agentes de codificação é: "sua configuração de lint é parte do seu prompt." As regras que você define determinam o nível de qualidade que o agente vai perseguir em cada iteração. Um config frouxo produz código frouxo — mesmo com agente.
+
+Ferramentas como **Ultracite** (zero-config preset para ESLint, Biome e oxlint) vão nessa direção: padronizar as regras de um jeito que funciona bem tanto para devs humanos quanto para agentes. E o **AgentLint** vai além — é um linter específico para arquivos de configuração de agentes (CLAUDE.md, AGENTS.md), detectando paths mortos, scripts obsoletos e "context rot" antes que eles tornem os agentes caros e incorretos.
+
 ---
 
 ## O que NÃO muda: o que o tooling determinístico continua garantindo
@@ -458,6 +469,112 @@ Esse tipo de revisão detecta erros sutis de mapeamento de config que um dev dis
 
 ---
 
+## Slopsquatting: quando a alucinação vira vetor de ataque
+
+Mencionamos "alucinação de dependências" rapidamente na seção de migração assistida. Mas em 2026, esse problema ganhou nome, escala e um relatório da CSA (Cloud Security Alliance) dedicado — merece uma seção própria.
+
+**Slopsquatting** é o nome dado ao ataque que combina dois fenômenos: (1) LLMs alucinam nomes de pacotes que não existem, e (2) atacantes registram esses nomes no npm antes que alguém perceba — e os preenchem com malware.
+
+A escala em números concretos:
+
+- Modelos open-source alucinam pacotes a uma taxa média de **21,7%** das sugestões. Modelos comerciais: **5,2%** (com GPT-4 Turbo em 3,59% e CodeLlama em 33%+ em algumas configurações). Fonte: USENIX research, replicada pela CSA em 2026.
+- Um pesquisador de segurança documentou um pacote alucinado se propagando por **237 repositórios** via agent skills gerados por IA — sem nenhum humano copiando o código manualmente. Os agentes executavam seus próprios outputs.
+- Um pacote de teste sob um nome alucinado (`huggingface-cli`) acumulou **30.000 downloads** em três meses — puxados principalmente por agentes, não por devs humanos.
+
+O que torna o slopsquatting qualitativamente diferente do typosquatting clássico é o **loop autônomo**. No typosquatting, um humano precisa digitar errado. No slopsquatting com agentes autônomos, o agente instala a dependência alucinada por conta própria — sem ninguém revisar.
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+flowchart TD
+    LLM["LLM alucina\nnome de pacote\n(ex: vite-plugin-meu-plugin)"]
+    ATCK["Atacante registra\no nome no npm\ncom payload malicioso"]
+    AGT["Agente executa\nnpm install sem revisão"]
+    INF["Pacote malicioso\nentra no projeto"]
+    CI["CI roda com dep infectada\n(build passa, malware ativo)"]
+
+    LLM -->|"taxa: 5-22% dependendo do modelo"| ATCK
+    ATCK --> AGT
+    AGT --> INF
+    INF --> CI
+
+    style LLM fill:#F5A623,color:#000
+    style ATCK fill:#c0392b,color:#fff
+    style INF fill:#c0392b,color:#fff
+    style CI fill:#c0392b,color:#fff
+    style AGT fill:#F5A623,color:#000
+```
+
+### Como mitigar
+
+A defesa não é "não usar agentes" — é **colocar gates no loop agêntico**:
+
+1. **Lockfile obrigatório e pinado**: qualquer mudança em `package-lock.json` ou `pnpm-lock.yaml` deve ser revisada por humano antes do merge. Sem exceção.
+2. **Allowlist de pacotes para agentes**: agents que têm capacidade de instalar dependências devem operar contra uma allowlist explícita — não o registry livre.
+3. **Verificação de existência antes de instalar**: antes de sugerir ou instalar qualquer pacote, o agente deve verificar no registry que ele existe, tem downloads ativos (>1k/semana), e tem mantedor ativo. Um MCP server de registry pode fazer isso programaticamente.
+4. **`npm audit` e Dependabot continuam sendo obrigatórios** — agora com a camada extra de revisar *por que* a dependência foi adicionada (humano vs. agente).
+
+Veja [[24 - Supply chain e segurança de dependências]] para o contexto completo de supply chain — slopsquatting é o novo vetor que se encaixa nos vetores já cobertos lá.
+
+---
+
+## IA no CI: agentes que operam o pipeline
+
+Até 2025, IA no CI significava basicamente um review bot comentando em PRs. Em 2026, o conceito expandiu: os próprios pipelines de CI passaram a executar agentes.
+
+O movimento mais significativo foi o **GitHub Agentic Workflows** (technical preview em fevereiro de 2026) — a possibilidade de rodar agentes de codificação diretamente dentro de GitHub Actions, triggados por eventos (nova issue, comentário em PR, schedule, falha de build).
+
+O fluxo prático:
+
+```yaml
+# .github/workflows/agent-on-issue.yml (exemplo conceitual)
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  agent-fix:
+    if: github.event.label.name == 'fix-me'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            Analise a issue #${{ github.event.issue.number }},
+            reproduza o bug, proponha um fix mínimo, rode os testes,
+            e abra um PR com a solução se os testes passarem.
+          allowed_tools: "filesystem,github"
+```
+
+Quando a label "fix-me" é aplicada a uma issue, o agente acorda, lê o codebase, tenta reproduzir o bug, propõe uma solução, roda os testes, e abre um PR — tudo sem intervenção humana no loop.
+
+**O que isso muda na prática para um time:**
+
+| Antes (2024) | Agora (2026) |
+|---|---|
+| CI roda testes → notifica humano → humano investiga | CI roda testes → agente diagnostica → agente propõe fix → humano revisa PR |
+| Issues ficam abertas até alguém ter tempo | Issues com label "agent-fix" têm PR em minutos |
+| Bumps de dependência: Dependabot cria PR, humano revisa | Dependabot + agente: agente roda testes, resolve conflitos, sinaliza breaking changes |
+| Análise de log de build: manual | Agente lê log, identifica causa raiz, sugere fix |
+
+### O que o agente de CI *não* deve fazer sozinho
+
+> [!warning] Gates de segurança no loop agêntico de CI
+> A arquitetura do GitHub Agentic Workflows é intencionalmente assimétrica: o agente lê o estado do GitHub via MCP server em modo read-only, mas **escreve apenas através de um "safe output server"** que bufferiza as intenções do agente sem executá-las. Isso é segurança por design.
+>
+> Em qualquer pipeline agêntico de CI que você construir: o agente *nunca* deve ter permissão de write direta em branches protegidas, de publicar pacotes, ou de alterar secrets. Tudo que sai do agente deve passar por um PR ou um gate humano antes de afetar produção.
+
+### Nx Agentic Migrate: o caso de uso de monorepo
+
+Em maio de 2026, o Nx 23 lançou **Agentic Nx Migrate** — a primeira ferramenta de migração de monorepo que usa um agente para lidar com os casos que scripts de codemod não conseguem automatizar.
+
+O problema clássico do `nx migrate`: scripts capturavam 80% da migração automaticamente (rename de imports, mudanças de API determinísticas), mas os outros 20% envolviam configs one-off, plugins proprietários, ou padrões que o script não reconhecia. Esses 20% ficavam com o dev.
+
+Com Agentic Migrate, o agente lida com esses 20%: lê o seu `project.json`, entende a stack exata, consulta o changelog da nova versão via MCP, e propõe as mudanças que o script não consegue. O resultado: migrações que levavam semanas passaram a levar dias ou horas.
+
+O **Nx Polygraph** vai além: conecta múltiplos repositórios em um "synthetic monorepo" para que agentes possam trabalhar cross-repo como se fosse um único repo — abrindo PRs coordenados em repos separados.
+
+---
+
 ## Armadilhas comuns
 
 > [!warning] Armadilha 1: confiar no agente para gerar lockfile
@@ -474,6 +591,38 @@ Esse tipo de revisão detecta erros sutis de mapeamento de config que um dev dis
 
 > [!warning] Armadilha 5: delegar type-checking ao agente
 > Agentes como Claude Code rodam `tsc --noEmit` como ferramenta, mas podem parar de iterar antes de resolver todos os erros de tipo se o prompt não for preciso. `tsc --noEmit` deve ser uma etapa obrigatória e bloqueante no CI — não uma etapa "o agente vai rodar se achar necessário".
+
+> [!warning] Armadilha 6: slopsquatting — o agente instala o que alucionou
+> Modelos comerciais alucinam nomes de pacotes em ~5% das sugestões. Em agentes com acesso a `npm install`, isso significa que o loop agêntico pode introduzir uma dependência que não existe (erro de build) — ou pior, uma que foi registrada por um atacante. Sempre revise mudanças em lockfiles geradas por agentes. Considere uma allowlist de pacotes para agentes que operam com autonomia alta.
+
+> [!warning] Armadilha 7: agente de CI sem gate de write
+> Um agente de CI que pode escrever diretamente em branches protegidas ou publicar pacotes é um vetor de risco sério. A arquitetura correta é: agente lê em read-only, escreve apenas através de PRs que um humano aprova. GitHub Agentic Workflows implementa isso via "safe output server" por design — replique esse padrão em qualquer pipeline agêntico que você construir.
+
+---
+
+## Trade-offs sênior: o que o hype não conta
+
+Antes de levar IA para o seu toolchain de produção, é honesto nomear os trade-offs reais que a maioria dos artigos de 2026 ignora.
+
+### Velocidade vs. auditabilidade
+
+Agentes de CI que abrem PRs automaticamente são mais rápidos — mas criam um novo problema: **audit trail fragmentado**. Quem tomou a decisão de instalar aquela dependência? O agente. Quem escolheu aquele padrão de código? O agente. Em times com requisitos de compliance (SOC 2, ISO 27001, regulatório financeiro), toda ação que afeta o código deve ter um responsável humano identificável. Agentes autônomos complicam isso, e a solução (gates humanos obrigatórios em cada PR) anula parte do ganho de velocidade.
+
+### Custo de LLM vs. custo de dev time
+
+Um agente de CI que roda em cada falha de build, lê 50 arquivos para diagnóstico, e propõe um fix consome tokens — e tokens têm custo. Em repos com centenas de builds por dia, o custo de API de um agente de diagnóstico pode ser não-trivial. Times maduros instrumentam esse custo (tokens consumidos por workflow, por PR, por mês) antes de escalar. A regra prática: agente faz sentido quando o dev time economizado supera o custo de API + custo de review do output do agente.
+
+### Confiança calibrada vs. viés de automação
+
+O risco mais silencioso de IA no tooling não é o erro óbvio — é o erro que ninguém percebe porque "o agente fez". Viés de automação (automation bias) é bem documentado em aviação, medicina, e agora em dev: quando um sistema automatizado produz um output, humanos tendem a confiar mais do que deveriam. Um PR aberto por um agente recebe menos scrutiny do que um PR escrito por um dev humano — mesmo que tenha mais bugs.
+
+A defesa é comportamental, não técnica: **tratar o output de agentes com o mesmo ceticismo que você trataria código de um dev júnior que acabou de entrar no time**. Leia o diff. Entenda o que foi gerado. Não aprove porque "o CI passou".
+
+### O resumo honesto para entrevistas
+
+Em uma entrevista técnica sênior em 2026, a resposta esperada sobre IA no tooling não é entusiasmo irrestrito nem ceticismo reativo. É nuance:
+
+*"IA acelerou as partes mecânicas do tooling — diagnóstico, migração, review de padrões óbvios. Mas introduziu riscos novos (slopsquatting, automation bias, audit trail fragmentado) que exigem gates explícitos. O pipeline determinístico — lockfiles, CI reprodutível, type-check — continua sendo o que você não delega. O que muda é que um agente agora pode iterar dentro desse pipeline, não fora dele."*
 
 ---
 
@@ -514,11 +663,15 @@ Com IA no tooling, a pergunta natural é: onde isso tudo converge? A próxima no
 
 - [[index|trilha Tooling e Build]] — visão geral das 3 fases e onde esta nota se encaixa
 - [[16 - Linting, formatting e git hooks]] — o lint determinístico que continua sendo a base: ESLint, Biome, oxlint, Husky
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — Nx Agentic Migrate e Polygraph: monorepos + agentes em detalhe
+- [[23 - Build em produção, CI e determinismo]] — o pipeline determinístico que IA não substitui
 - [[24 - Supply chain e segurança de dependências]] — alucinação de deps encontra supply chain: o risco combinado de IA + dependências maliciosas
 - [[03-Dominios/Tecnologia/IA/Agentes de Codificação/05 - Claude Code — terminal-first agent|Claude Code — terminal-first agent]] — o agente usado como exemplo nesta nota em profundidade
+- [[03-Dominios/Tecnologia/IA/Agentes de Codificação/02 - Vibe coding vs engenharia disciplinada|Vibe coding vs engenharia disciplinada]] — o contraponto disciplinar ao entusiasmo agêntico
 - [[03-Dominios/Tecnologia/IA/MCP/01 - O que é MCP e por que importa|O que é MCP e por que importa]] — o protocolo que conecta IA ao tooling, com os três primitivos (tools, resources, prompts)
 - [[03-Dominios/Tecnologia/IA/Anatomia de Agents/02 - O loop ReAct e native tool use|O loop ReAct e native tool use]] — a mecânica do loop agêntico que explica como agentes de codificação iteram
 - [[03-Dominios/Tecnologia/IA/Agentes de Codificação/16 - O loop agentic — plan, act, observe|O loop agentic — plan, act, observe]] — plan/act/observe aplicado a tarefas de dev
+- [[03-Dominios/Tecnologia/IA/Agentes de Codificação/17 - Human-in-the-loop — quando (não) confiar|Human-in-the-loop — quando (não) confiar]] — onde exigir gate humano no loop agêntico de CI
 
 ---
 
@@ -528,7 +681,7 @@ IA entrou no tooling como copiloto — acelera diagnóstico, migração e review
 
 ---
 
-## Fontes
+## Referências
 
 - **WorkOS** — [*Everything your team needs to know about MCP in 2026*](https://workos.com/blog/everything-your-team-needs-to-know-about-mcp-in-2026) — visão geral de adoção e ecossistema MCP em 2026
 - **Greptile** — [*Best Code Review Tools 2026: AI Code Review Tools Compared*](https://www.greptile.com/content-library/best-ai-code-review-tools) — benchmark comparativo de ferramentas de AI review com taxas de detecção
@@ -536,3 +689,12 @@ IA entrou no tooling como copiloto — acelera diagnóstico, migração e review
 - **Codemod.com** — [*From Mocha to Vitest migration*](https://codemod.com/blog/mocha-to-vitest-migration) — exemplo de migração assistida por codemod com IA
 - **PkgPulse** — [*Webpack to Vite Migration: Large Codebases 2026*](https://www.pkgpulse.com/blog/webpack-to-vite-migration-large-codebases-2026) — contexto de migração em projetos grandes com dados do Vite 8 / Rolldown
 - **Builder.io** — [*Claude Code vs Cursor: What to Choose in 2026*](https://www.builder.io/blog/cursor-vs-claude-code) — comparativo de filosofia e uso dos dois agentes líderes
+- **CSA (Cloud Security Alliance)** — [*Slopsquatting: AI Code Hallucinations Fuel Supply Chain Attacks*](https://labs.cloudsecurityalliance.org/research/csa-research-note-slopsquatting-ai-supply-chain-20260419-csa/) — research note de abril de 2026 com dados de hallucination rate por modelo e casos de propagação via agentes
+- **Trend Micro** — [*Slopsquatting: When AI Agents Hallucinate Malicious Packages*](https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/slopsquatting-when-ai-agents-hallucinate-malicious-packages) — análise do vetor de ataque e as mitigações recomendadas
+- **Snyk** — [*Slopsquatting Mitigation Strategies*](https://snyk.io/articles/slopsquatting-mitigation-strategies/) — guia prático de defesa: allowlists, lockfile gates, verificação de registry
+- **Nx Blog** — [*Nx 23: 4x Faster Nx Agents, Agentic Nx Migrate*](https://nx.dev/blog/nx-23-release) — release notes do Agentic Migrate e Polygraph (synthetic monorepo para agentes)
+- **The New Stack** — [*Nx debuts Polygraph, taking aim at what's stalling AI coding agents*](https://thenewstack.io/nx-polygraph-synthetic-monorepo-agents/) — Nx Polygraph conectando múltiplos repos como synthetic monorepo
+- **GitHub / Medium** — [*GitHub just made AI agents part of CI/CD*](https://medium.com/@Micheal-Lanham/github-just-made-ai-agents-part-of-ci-cd-heres-how-to-build-your-first-agentic-workflow-d6f7d9fe62ff) — overview dos GitHub Agentic Workflows (fev/2026)
+- **Microsoft Security Blog** — [*Securing CI/CD in an agentic world: Claude Code Github action case*](https://www.microsoft.com/en-us/security/blog/2026/06/05/securing-ci-cd-in-agentic-world-claude-code-github-action-case/) — arquitetura de segurança (read-only MCP + safe output server) para agentes em CI
+- **InfoQ** — [*Oxlint v1.0 Stable Released*](https://www.infoq.com/news/2025/08/oxlint-v1-released/) — oxlint estável com 520+ regras e 50–100× mais rápido que ESLint
+- **adlrocha.substack.com** — [*Taming the Agents: My "Spec-Test-Lint" Workflow for AI Coding*](https://adlrocha.substack.com/p/adlrocha-taming-the-agents-my-spec) — lint como back-pressure para agentes: o argumento prático de usar linters rápidos no loop agêntico
