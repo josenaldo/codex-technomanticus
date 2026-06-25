@@ -110,6 +110,9 @@ node --watch-path=./src --watch-path=./templates src/server.js
 > [!warning] `--watch-path` só funciona em macOS e Windows
 > O `--watch-path` depende de APIs de watch nativas do SO (`kqueue` no macOS, `ReadDirectoryChangesW` no Windows) e **não está disponível no Linux**. No Linux, use `--watch` sem path (rastreamento por import) ou recorra ao nodemon para casos avançados.
 
+> [!duvida] Se `--watch-path` não está disponível no Linux, o que acontece quando você usa a flag lá?
+> A seção diz "não está disponível", mas a seção "Armadilhas comuns" diz que no Linux a flag "silenciosamente não faz nada ou lança erro dependendo da versão". Qual é o comportamento real — silêncio ou erro? Posso confiar que o CI me avisa, ou preciso testar ativamente?
+
 ### O que `--watch` não faz (que o nodemon faz)
 
 O nodemon acumulou uma década de features opcionais. O `--watch` nativo não tem:
@@ -195,6 +198,9 @@ node --experimental-strip-types meu-script.ts
 ```
 
 O mecanismo é deliberadamente simples: o Node lê o arquivo `.ts`, substitui cada anotação de tipo por **espaços em branco** (whitespace), e executa o JavaScript resultante. Por que espaços e não remoção? Para preservar os números de linha e colunas nas stack traces — um erro na linha 42 do `.ts` ainda aparece como linha 42.
+
+> [!duvida] Como espaços em branco preservam a linha 42 se uma interface de 10 linhas vira 10 linhas em branco?
+> Faz sentido para anotações inline (`a: number`), mas e uma `interface Usuario { ... }` com várias linhas? Ela seria substituída por um bloco de linhas vazias, ou o Node colapsa tudo em um único espaço? E se a interface estiver no meio do arquivo — o código abaixo dela não seria empurrado para outras linhas?
 
 ```mermaid
 flowchart LR
@@ -361,6 +367,9 @@ O motivo pelo qual o tsx existe — e vai continuar existindo mesmo com o stripp
 
 O tsx não checa tipos — essa responsabilidade fica com `tsc --noEmit`, rodado separadamente (em CI, em pre-commit, ou no editor). O tsx só transforma e executa. Esse design intencional o torna 25× mais rápido que o `ts-node` clássico no startup.
 
+> [!duvida] De onde vem o número "25× mais rápido"?
+> O 25× aparece duas vezes na nota sem referência ou contexto (tamanho de projeto, máquina, versões comparadas). Se o ts-node demora ~500ms e o tsx ~20ms, isso é ~25×, mas esse número se mantém em projetos maiores com muitos imports ou fica proporcional?
+
 ### tsx vs ts-node: o estado em 2026
 
 O `ts-node` foi por anos a única opção séria para rodar TypeScript no Node. Hoje está em declínio:
@@ -505,6 +514,9 @@ graph TD
 ### A flag `--experimental-require-module` e o futuro do CJS/ESM
 
 Um detalhe que aparece pouco nos tutoriais mas importa em 2026: o Node 22 introduziu `--experimental-require-module`, que permite `require()` de módulos ESM sincrônica (sem `await import()`). No Node 24 isso ainda está em experimentação, mas representa a direção de convergência do CJS e ESM — a barreira histórica de "não dá pra dar `require` em ESM" começa a cair.
+
+> [!duvida] Por que `require()` de ESM era proibido antes e agora está sendo liberado?
+> A nota menciona a flag como "direção de convergência", mas não explica qual era o problema fundamental que impedia `require()` de ESM. Era uma limitação do formato, do loader, ou do event loop? Entender o motivo original ajuda a avaliar se a flag experimental é segura de usar ou se ainda há riscos ocultos.
 
 Para projetos TypeScript que usam `tsx` ou `node` nativo, o impacto prático em 2026 é pequeno. O que importa saber: se você vê `ERR_REQUIRE_ESM` num projeto Node 22+, verifique se `--experimental-require-module` pode resolver sem reescrever os imports.
 

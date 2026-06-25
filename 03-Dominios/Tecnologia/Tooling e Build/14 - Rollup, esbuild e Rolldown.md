@@ -71,6 +71,9 @@ Uma biblioteca bem publicada em 2026 precisa ser consumível em cenários difere
 - **UMD** (Universal Module Definition): para uso em `<script>` sem bundler, com fallback para CommonJS e AMD. Cada vez mais raro, mas ainda necessário pra CDN.
 - **IIFE** (Immediately Invoked Function Expression): para `<script>` direto no browser, sem bundler, sem `export`.
 
+> [!duvida] O que são "exports condicionais" no `package.json` e por que são necessários?
+> A nota apresenta a estrutura JSON com `"import"`, `"require"` e `"types"` dentro de `"exports"` sem explicar o mecanismo que os ativa — quem lê esse campo, em que momento, e o que acontece se ele não existir?
+
 O `package.json` moderno de uma lib usa **exports condicionais** para apontar para o formato correto:
 
 ```json
@@ -102,6 +105,9 @@ O mecanismo depende de três condições:
 1. **ES modules estáticos**: `import`/`export` resolvidos em parse time, antes de executar. `require()` dinâmico quebra a análise.
 2. **Marcação de side effects**: o Rollup precisa saber que uma função pode ser removida com segurança. Se um módulo tem efeitos colaterais (modifica globals, registra listeners), o bundler precisa preservá-lo mesmo que nenhum export seja importado.
 3. **`sideEffects: false` no `package.json`**: sinaliza ao bundler que nenhum arquivo do pacote tem side effects — pode remover o que não for importado.
+
+> [!duvida] O que exatamente conta como "side effect" num módulo, e como o Rollup decide que um módulo tem efeito colateral sem `sideEffects: false`?
+> A nota lista as três condições do tree-shaking mas não exemplifica o que é um side effect concreto — o leitor que nunca viu um módulo com side effect real não sabe o que evitar ao escrever sua lib.
 
 ```mermaid
 flowchart TD
@@ -248,6 +254,9 @@ O resultado: `date-utils` pode ser importada em qualquer ambiente, e bundlers qu
 ---
 
 ## esbuild: Go, velocidade e o motor do Vite
+
+> [!duvida] Por que "sem GC pesado" é uma vantagem para um bundler?
+> O argumento de performance cita "Go compila para binário nativo, sem GC de JavaScript" — mas não fica claro por que o GC é o gargalo num processo de build que roda por segundos e termina, diferente de um servidor de longa duração.
 
 **esbuild** surgiu em 2020 como um experimento de Evan Wallace, então CTO da Figma, para responder uma pergunta simples: *o que acontece se você implementar um bundler em Go, aproveitando paralelismo real e sem GC pesado?*
 
@@ -474,6 +483,9 @@ export default defineBuildConfig({
 ```
 
 Stub mode é o diferencial: em vez de um build real, `unbuild --stub` cria arquivos proxy que apontam diretamente para o código TypeScript. Quando você desenvolve um monorepo com `lib-a` sendo dependência de `app-b`, não precisa rodar `tsup --watch` — o stub faz `app-b` ler o source diretamente. O preço: o Node precisa de `tsx` ou suporte nativo a TypeScript para executar esses stubs.
+
+> [!duvida] Como o Node resolve o stub para o source TypeScript se o Node não entende `.ts` nativamente?
+> A nota diz que "o Node precisa de `tsx` ou suporte nativo" mas não explica como esse requisito é satisfeito num projeto real — se é uma flag no `package.json`, uma variável de ambiente, ou algo que o monorepo precisa configurar antes de o stub funcionar.
 
 ```mermaid
 graph LR
@@ -751,6 +763,9 @@ Esse padrão é usado extensivamente no ecossistema Vite — `import.meta.env`, 
 ### Hook filters no Rolldown: eficiência por design
 
 O Rolldown introduziu um mecanismo que o Rollup original não tem: **hook filters**. Como o Rolldown é escrito em Rust e os plugins são JavaScript, cada vez que um hook de plugin é chamado há uma transição Rust→JS com overhead de serialização. Para plugins que só processam alguns tipos de arquivo (por exemplo, um plugin de `.svg`), esse overhead é pago desnecessariamente para cada `.ts`, `.js`, `.css` que passa pelo pipeline.
+
+> [!duvida] O que é exatamente a "transição Rust→JS" e qual é o custo real dessa serialização por arquivo?
+> A nota justifica hook filters pelo overhead de "serialização" a cada chamada JS→Rust, mas não deixa claro o que é serializado (o código-fonte inteiro? metadados? o AST?), nem uma ordem de grandeza do custo — sem isso é difícil avaliar quando filtros valem o esforço.
 
 Hook filters permitem que o plugin declare antecipadamente quais arquivos lhe interessam:
 

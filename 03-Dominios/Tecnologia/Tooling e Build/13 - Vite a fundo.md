@@ -365,6 +365,9 @@ export default defineConfig(({ command, mode }) => {
 
 O aspecto mais estratégico do Vite é que ele **não é um bundler vertical** — é uma plataforma de plugins. O ecossistema Rollup (que existia desde 2015) foi integralmente reaproveitado. Qualquer plugin Rollup compatível com a API de hooks funciona no Vite com zero modificações para a maioria dos casos.
 
+> [!duvida] O que faz um plugin Rollup não funcionar no Vite?
+> A nota diz "para a maioria dos casos" mas não explica o que é minoria. Quais tipos de plugin ou quais hooks específicos podem falhar — e por quê? É por causa dos hooks Vite-only que o Rollup não conhece, ou porque o Rolldown implementa a API diferente do Rollup original?
+
 ### Anatomia de um plugin Vite
 
 Um plugin Vite é um objeto (ou uma função que retorna um objeto) com hooks que o Vite invoca em momentos específicos do pipeline:
@@ -418,6 +421,9 @@ export function svgrPlugin(): Plugin {
       if (!id.endsWith('.svg?component')) return null
       // retornar null → continua para o próximo plugin
       // retornar string → usa esse conteúdo como o módulo
+
+> [!duvida] O `id` no hook `load()` inclui a query string?
+> O código checa `id.endsWith('.svg?component')`, o que pressupõe que a query string do import faz parte do `id` recebido pelo hook. Mas por que? Se o browser faz `GET /src/logo.svg?component`, o Vite passa a URL inteira como `id`, ou só o path? A nota não explica como o `id` é formado — e isso muda completamente como se escreve a condição do if.
 
       const svgPath = id.replace('?component', '')
       const svgContent = await fs.readFile(svgPath, 'utf-8')
@@ -666,6 +672,9 @@ const mod = await import(moduleName)
 
 Para esses casos, `optimizeDeps.include` garante que a dep seja pré-bundlada mesmo sem ser detectada:
 
+> [!duvida] O que acontece concretamente se uma dep CJS não for pré-bundlada?
+> A nota explica quando o scan estático não detecta a dep, mas não explica qual é a falha em runtime. O browser vai ver um erro? O Vite vai travar? Vai silenciosamente servir o arquivo CJS que o browser não entende? Saber o sintoma ajuda a diagnosticar o problema quando ele aparecer.
+
 ```ts
 optimizeDeps: {
   include: [
@@ -704,6 +713,9 @@ export function routeConfigPlugin(routes: RouteConfig[]): Plugin {
   const RESOLVED_VIRTUAL_ID = '\0virtual:route-config'
   // Convenção: prefixo '\0' marca módulos virtuais
   // Evita que outros plugins tentem processar o mesmo ID
+
+> [!duvida] O prefixo `\0` é enforçado pelo Vite ou é só uma convenção?
+> A nota diz que o `\0` "evita que outros plugins tentem processar o mesmo ID" — mas como? O Vite trata IDs com `\0` de forma especial no core, ou é apenas uma convenção que cada plugin deve respeitar manualmente? Se for convenção, um plugin mal-escrito pode ignorá-la e ainda conflitar com o módulo virtual.
 
   return {
     name: 'vite-plugin-route-config',
@@ -876,6 +888,9 @@ export default defineConfig({
         // options.ssr ainda funciona para backward compat (client vs não-client)
         // mas o novo modelo usa this.environment?.name
         const envName = (this as any).environment?.name ?? 'client'
+
+> [!duvida] Por que `(this as any)` é necessário aqui?
+> O código usa um cast `as any` para acessar `this.environment` — o que significa que essa propriedade não existe no tipo oficial do contexto de plugin. Se a Environment API foi introduzida no Vite 6 e está estabilizando, por que os tipos ainda não foram atualizados? Isso é um bug de tipagem, uma API experimental que não entrou nos tipos oficiais, ou o padrão correto é outro?
 
         if (envName === 'edge') {
           // transformações específicas para edge runtime

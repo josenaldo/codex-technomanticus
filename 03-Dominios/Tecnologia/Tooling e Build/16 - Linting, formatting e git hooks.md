@@ -241,6 +241,9 @@ flowchart TD
 
 O preset `tseslint.configs.recommendedTypeChecked` ativa apenas as regras type-aware consideradas seguras para a maioria dos projetos. O `strictTypeChecked` adiciona mais regras que podem gerar falsos positivos em codebases que usam `any` intencionalmente em pontos de integração.
 
+> [!duvida] O que são "pontos de integração com `any` intencional"?
+> A nota menciona que `any` intencional aparece em "pontos de integração", mas não explica o que isso significa na prática. Quando e por que um projeto TypeScript usaria `any` intencionalmente, em vez de tipar corretamente? E por que esses pontos específicos causariam falsos positivos com `strictTypeChecked`?
+
 ---
 
 ## ESLint em projetos grandes: performance e diagnóstico
@@ -441,6 +444,9 @@ npx @biomejs/biome migrate prettier --write # lê .prettierrc, ajusta biome.json
 
 O `biome migrate` é ponto de partida, não solução completa — regras sem equivalente no Biome são listadas num relatório para decisão manual.
 
+> [!duvida] O que acontece com as regras do ESLint que não têm equivalente no Biome?
+> A nota diz que o `biome migrate` lista as regras sem equivalente, mas não explica o que se faz com elas. Se o projeto dependia de uma dessas regras (como `no-floating-promises`), simplesmente migrar para Biome significa perder essa cobertura sem aviso? Quais seriam as opções — manter ESLint só para essas regras, desativar a regra, ou aceitar a lacuna?
+
 ---
 
 ## oxlint: o linter Rust que compete com ESLint
@@ -541,6 +547,9 @@ npx lint-staged
 ```
 
 O `"prepare": "husky"` é a chave: quando um novo desenvolvedor clona o repositório e roda `npm install`, o Husky instala os hooks automaticamente. Nenhuma etapa manual, nenhuma documentação extra.
+
+> [!duvida] Como o `"prepare": "husky"` instala os hooks se só roda no `npm install`?
+> A nota diz que o script `prepare` roda no `npm install` e que isso instala os hooks, mas não explica o mecanismo: onde ficam os hooks depois de instalados, como o Git passa a reconhecê-los, e o que exatamente o `husky` cria em `.husky/`. O script em `.husky/pre-commit` precisa existir antes, ou é criado pelo `husky init`?
 
 ### Alternativa: lefthook (Go, paralelo, monorepo-first)
 
@@ -830,6 +839,9 @@ jobs:
 ```
 
 As três etapas são independentes e poderiam rodar em paralelo com jobs separados para economizar tempo. O ponto crucial é que **typecheck, lint e format check são etapas distintas** — uma falha em qualquer uma bloqueia o merge.
+
+> [!duvida] Por que o `prettier --check` é uma etapa separada do `eslint` se o `eslint-config-prettier` já resolve o conflito?
+> A nota explica que `eslint-config-prettier` desativa as regras de formatação do ESLint para evitar conflito com Prettier. Mas então por que o CI ainda precisa rodar `prettier --check` separadamente? O ESLint não detecta os problemas de formatação que o Prettier corrigiria?
 
 > [!info] `--max-warnings 0`
 > O flag `--max-warnings 0` faz o ESLint falhar se houver qualquer warning, não só errors. Isso é deliberado: warnings que nunca viram errors acabam acumulando e sendo ignorados. Forçar `0 warnings` mantém a lista de regras honesta — se você não vai enforçar uma regra como error, remova-a do config.

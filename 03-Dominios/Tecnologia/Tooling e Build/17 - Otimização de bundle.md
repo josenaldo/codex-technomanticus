@@ -188,6 +188,9 @@ export const colors = { primary: '#007bff' }
 
 Se o bundler eliminar `polyfill.js` porque nenhum export é usado, ele quebra o runtime. Se eliminar `theme.css` porque não é um export JS, o visual do app quebra.
 
+> [!duvida] O bundler inclui `polyfill.js` *sempre* que detecta que ele pode ter side effect — mesmo se nenhum módulo da aplicação faz `import './polyfill.js'`? Ou o bundler só fica conservador quando o arquivo *é* importado mas seus exports não são usados?
+> Smell: salto de raciocínio — o problema foi enunciado (remover o arquivo pode quebrar o runtime), mas não ficou claro o *gatilho* para o bundler considerar ou não remover o arquivo.
+
 O campo `sideEffects` no `package.json` resolve isso explicitamente:
 
 ```json
@@ -288,6 +291,9 @@ const EnhancedButton = /*#__PURE__*/ withAppProvider()(Button)
 ```
 
 A anotação `/*#__PURE__*/` (ou `/*@__PURE__*/`) diz ao minificador (geralmente terser) que aquela chamada de função não tem side effects — pode ser removida se o resultado não for usado.
+
+> [!duvida] Quem aplica a anotação `/*#__PURE__*/` na prática — o desenvolvedor da lib, o desenvolvedor da aplicação, ou o compilador (Babel/SWC) automaticamente? Se o Babel gera isso automaticamente ao compilar JSX ou class components, por que ainda é necessário anotar manualmente casos como `withAppProvider()(Button)`?
+> Smell: ponteiro sem ponte — a anotação é apresentada como solução, mas não fica claro quem tem a responsabilidade de aplicá-la e quando o compilador já cobre esse trabalho.
 
 **6. Dynamic `require()` e imports condicionais**
 
@@ -462,6 +468,9 @@ dist/
 
 Sem configuração, cada chunk pode incluir suas próprias cópias de módulos compartilhados. Se `Home` e `Admin` ambos usam `date-fns`, sem chunk compartilhado, `date-fns` vai aparecer em ambos os arquivos.
 
+> [!duvida] Quando dois chunks precisam de `date-fns` e o bundler não cria um chunk compartilhado, cada chunk recebe uma *cópia completa* de `date-fns`? Isso significa que o browser baixa e parseia `date-fns` duas vezes em sessões onde o usuário navega pelas duas rotas?
+> Smell: peça sem encaixe — o problema de duplicação é mencionado, mas o mecanismo concreto (duas cópias no disco vs. dois downloads) não foi explicitado antes de apresentar a solução.
+
 O `manualChunks` no Vite resolve isso:
 
 ```js
@@ -603,6 +612,9 @@ sequenceDiagram
 > Cada requisição é sequencial porque o browser não sabe do próximo chunk até executar o anterior. Quatro round-trips sequenciais numa conexão com 50ms de latência = +200ms só de overhead de descoberta, antes de qualquer byte de código ser executado.
 
 **Solução**: o Vite 5+ resolve isso automaticamente gerando tags `<link rel="modulepreload">` para todas as dependências transitivas de cada entry point — o browser baixa toda a árvore de dependências em paralelo, eliminando o waterfall.
+
+> [!duvida] Se o Vite já resolve o waterfall automaticamente com `modulepreload`, por que a seção "Preloading" anterior apresentou o `webpackPrefetch` e o `prefetchAdmin()` manual como técnicas separadas? Qual é a diferença entre o `modulepreload` automático do Vite (que elimina o waterfall) e o prefetch manual descrito antes?
+> Smell: densidade irregular — as soluções parecem se sobrepor sem que a distinção entre elas seja delimitada claramente.
 
 Para casos manuais, você pode usar `import.meta.glob` com `{ eager: false }` e `prefetch` explícito:
 

@@ -80,6 +80,9 @@ A diferença arquitetural do Turbopack não é simplesmente "é em Rust". É o m
 
 Pense assim: quando você muda uma linha num arquivo, o webpack 5 precisa reanalisar esse arquivo, qualquer arquivo que o importe, e potencialmente invalidar chunks inteiros. O Turbo Engine rastreia dependências em granularidade mais fina. Se você mudou uma função que só é usada por um componente folha, apenas aquele componente é recomputado — e apenas as partes do bundle que dependem dele.
 
+> [!duvida] Como o Turbo Engine sabe quais funções cada arquivo usa sem ter feito o bundle completo primeiro?
+> A nota diz que ele rastreia dependências "em granularidade de função", mas não explica quando/como esse mapa é construído. O engine faz uma passagem de análise estática antes de começar a buildar? Ou vai construindo o grafo on-the-fly à medida que processa os arquivos pela primeira vez?
+
 ```mermaid
 flowchart TB
     subgraph webpack5["webpack 5 — invalidação por arquivo"]
@@ -290,6 +293,9 @@ Em **abril de 2026**, o Rspack lançou a **versão 2.0**, chegando a **5 milhõe
 
 A compatibilidade com webpack é de ~85% dos 50 plugins mais baixados. Para o uso típico (TypeScript, React/Vue, CSS Modules, assets), a cobertura é praticamente 100%.
 
+> [!duvida] Como um plugin webpack escrito em JavaScript consegue rodar num bundler cujo core é Rust?
+> A nota diz que o Rspack "implementa a webpack API em Rust" e que plugins JS funcionam, mas não explica a ponte. O Rspack chama o Node.js de volta para executar o plugin JS? Existe algum overhead dessa travessia Rust↔JS que anula parte do ganho de performance?
+
 ---
 
 ## oxc — o toolchain unificado em Rust
@@ -322,6 +328,9 @@ flowchart LR
 ```
 
 A chave é que **parser, resolver e transformer são compartilhados**. Quando o oxlint analisa um arquivo, ele usa o mesmo parser que o Rolldown usa ao bundlar. Quando você roda o formatter, não há segunda passagem de parsing. Isso elimina redundância e garante que todas as ferramentas concordam sobre como o código é estruturado — sem discrepâncias silenciosas entre "como o linter lê" e "como o bundler lê".
+
+> [!duvida] "Sem segunda passagem de parsing" funciona quando oxlint e Rolldown rodam em momentos diferentes do pipeline?
+> Num workflow real, o lint corre em CI e o bundle corre no build — processos separados. Como o parser "compartilhado" evita o double-parsing nesses cenários? Ou o benefício só vale quando as ferramentas rodam dentro do mesmo processo (ex: Vite dev server)?
 
 ### oxlint — 50-100x mais rápido que ESLint
 
@@ -362,6 +371,9 @@ O **Rolldown** é o bundler do ecossistema VoidZero. Escrito em Rust, com API co
 | **Vite 8** | **Rolldown (Rust)** | **Rolldown (Rust)** |
 
 O Rolldown elimina a inconsistência entre dev e prod que era um ponto fraco histórico do Vite. Com um único motor para os dois modos, o comportamento de produção e desenvolvimento é idêntico — builds que passam em dev sempre passam em prod.
+
+> [!duvida] Por que o Vite 5/6/7 usava motores diferentes para dev e produção se isso gerava inconsistência?
+> A nota menciona que o Vite usou esbuild em dev e Rollup em prod por anos, e que isso era um "ponto fraco histórico". O que impedia juntar os dois antes? Era uma limitação técnica do Rollup (não tinha modo de dev), uma decisão de performance, ou algo da história do projeto?
 
 Performance real reportada por empresas que migraram para Vite 8/Rolldown:
 
