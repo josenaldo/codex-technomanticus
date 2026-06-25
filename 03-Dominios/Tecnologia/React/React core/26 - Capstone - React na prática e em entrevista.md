@@ -134,6 +134,8 @@ mindmap
 | [[03-Dominios/Tecnologia/React/React core/21 - O hook use()\|21 - O hook use()]] | `use(promise)` e `use(context)`; integração com Suspense |
 | [[03-Dominios/Tecnologia/React/React core/22 - Actions no React 19\|22 - Actions no React 19]] | useFormStatus; useActionState; useOptimistic; form actions |
 | [[03-Dominios/Tecnologia/React/React core/23 - Server Components (RSC)\|23 - Server Components (RSC)]] | Modelo RSC; client boundary; streaming; integração com Next.js |
+| [[03-Dominios/Tecnologia/React/React core/24 - Arquitetura de componentes\|24 - Arquitetura de componentes]] | Colocation; composição; onde o estado mora; estrutura de pastas |
+| [[03-Dominios/Tecnologia/React/React core/25 - Testing React\|25 - Testing React]] | Testing Library; testar comportamento, não implementação; user-event |
 
 ---
 
