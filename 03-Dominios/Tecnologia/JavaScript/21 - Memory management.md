@@ -526,6 +526,10 @@ O diagnóstico de memory leaks segue uma sequência simples no Chrome DevTools (
 
 No Node.js, você pode usar `--expose-gc` + `process.memoryUsage()` para inspecionar o heap programaticamente, ou usar o módulo `v8.writeHeapSnapshot()` para gerar um arquivo `.heapsnapshot` analisável no Chrome.
 
+> [!tip] Vídeo: Memory Leaks in JavaScript — jsday 2025
+> **[Memory Leaks in JavaScript | Daniel Danielecki | jsday 2025](https://www.youtube.com/watch?v=R16Ra3zAeBk)** (YouTube, ~40 min)
+> Palestra de conferência que percorre todo o fluxo prático: identificação com MemLab (ferramenta open-source do Meta para detecção automática de leaks), heap snapshots no Chrome DevTools, e padrões de vazamento em React/Node. Complemento direto ao fluxo de diagnóstico descrito acima — boa para ver o processo ao vivo antes de aplicar no seu próprio código.
+
 ---
 
 ## Fundamento teórico: por que GC geracional funciona
@@ -575,6 +579,7 @@ Internamente ao vault:
 
 - [[10 - Closures]] — closures são o vetor mais frequente de retenção acidental; entenda o modelo de escopo léxico por completo
 - [[12 - Map, Set, WeakMap, WeakSet]] — detalhe completo de WeakMap e WeakSet, incluindo casos de uso e limitações
+- [[19 - Modelo de execução a fundo]] — como o event loop, microtask queue e call stack interagem com o ciclo de vida do GC; entender o modelo de execução é pré-requisito para raciocinar sobre quando objetos tornam-se inacessíveis
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Node — Runtime e Event Loop]] — como o event loop, o V8 heap e o libuv thread pool interagem no contexto do Node.js
 - [[Dicionário de JavaScript]] — glossário de termos do ecossistema JS
 

@@ -749,6 +749,23 @@ Entender a ordem sync → microtask → macrotask é o mapa. As notas a seguir p
 
 ---
 
+## Mídia recomendada
+
+> [!tip] Vídeos essenciais — assistir nesta ordem
+> **1. Jake Archibald — "In The Loop" (JSConf Asia 2018)**
+> [youtube.com/watch?v=cCOL7MC4Pl0](https://www.youtube.com/watch?v=cCOL7MC4Pl0) — 35 min
+> A palestra de referência absoluta sobre o event loop do browser. Archibald é editor da spec HTML/Fetch no WHATWG; ele explica o rendering pipeline, o microtask checkpoint, e por que `requestAnimationFrame` não é o que você pensa — com animações ao vivo do loop. Se você só puder assistir a um vídeo sobre o assunto, é este.
+>
+> **2. Lydia Hallie — "JavaScript Visualized: Event Loop" (2019, atualizado 2023)**
+> [youtube.com/watch?v=eiC58R16hb8](https://www.youtube.com/watch?v=eiC58R16hb8) — 20 min (ou o post de blog: [dev.to/lydiahallie/javascript-visualized-event-loop-3dif](https://dev.to/lydiahallie/javascript-visualized-event-loop-3dif))
+> Visualização animada da call stack, Web API, callback queue e microtask queue em tempo real. Ótimo para solidificar a intuição antes de mergulhar nas nuances da spec. O post de blog tem os GIFs que você pode pausar e reanalisar.
+>
+> **3. Philip Roberts — "What the heck is the event loop anyway?" (JSConf EU 2014)**
+> [youtube.com/watch?v=8aGhZQkoFbQ](https://www.youtube.com/watch?v=8aGhZQkoFbQ) — 26 min
+> A palestra clássica que popularizou o entendimento do event loop. Apresenta o [Loupe](http://latentflip.com/loupe/) — ferramenta visual interativa onde você pode colar código e ver a call stack, event queue e WebAPIs em tempo real. Histórica, mas o modelo ensinado ainda é válido.
+
+---
+
 ## Fontes
 
 - **MDN Web Docs** — [*JavaScript execution model*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model) — documentação oficial do modelo de execução, referência para comportamento garantido pela spec

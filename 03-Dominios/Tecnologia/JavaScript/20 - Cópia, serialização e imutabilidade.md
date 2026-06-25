@@ -142,6 +142,11 @@ O nível amarelo (aninhado) é compartilhado — qualquer mutação lá reflete 
 
 ### `structuredClone()` — a solução moderna
 
+> [!tip] Vídeos recomendados
+> - **Web Dev Simplified** — [*I Didn't Know JavaScript Had THIS!*](https://www.youtube.com/watch?v=LB6RnfblQl8) — cobertura direta do `structuredClone` com casos de uso reais (12 min)
+> - **Fireship** — [*JavaScript Immutability*](https://www.youtube.com/watch?v=7PolyDM9Ias) — visão geral rápida de imutabilidade, `freeze` vs bibliotecas (8 min)
+> - **Theo - t3.gg** — [*Deep Clone in JavaScript - Stop Doing It Wrong*](https://www.youtube.com/watch?v=bW5G_5kZh5s) — compara `structuredClone`, JSON e lodash cloneDeep com benchmarks (14 min)
+
 Introduzida no Node.js 17 (2021) e disponível em todos os browsers modernos desde 2022
 (Chrome 98+, Firefox 94+, Safari 15.4+), `structuredClone()` usa o [Structured Clone
 Algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm)
@@ -461,11 +466,21 @@ console.log(cart.items[0].qty);     // → 2  (original intacto)
 console.log(nextCart.items[0].qty); // → 5  (novo)
 ```
 
-> [!info] Records & Tuples — proposta retirada
+> [!info] Records & Tuples — proposta retirada; o que veio depois
 > A proposta TC39 de Records & Tuples (primitivos imutáveis com comparação por valor, `#{ a: 1 }`)
-> foi **retirada em abril de 2025** após não conseguir consenso para adicionar novos primitivos à
-> linguagem. Imutabilidade nativa de valor ainda não existe em JavaScript; use convenções ou
-> bibliotecas.
+> foi **retirada em abril de 2025** (issue #394) após não conseguir consenso no comitê para
+> adicionar novos primitivos à linguagem — a principal objeção foi o custo de semântica nova de
+> valor para objetos. Em 2026, a área permanece sem substituto oficial em estágio avançado.
+> As alternativas práticas: **Immer** (`produce`) para estado imutável por convenção; **Immutable.js**
+> para coleções persistentes com structural sharing; TypeScript com `Readonly<T>` e `as const`
+> para garantia estática (sem custo em runtime). A proposta **Value Objects** (exploratória, 2025)
+> busca um caminho mais conservador, mas ainda em fase de discussão.
+
+> [!info] `structuredClone` — suporte em 2026
+> Em junho de 2026, `structuredClone` é Baseline Widely Available: suportado em todos os
+> ambientes relevantes (Chrome 98+, Firefox 94+, Safari 15.4+, Node.js 17+, Deno 1.14+, Bun 0.1+).
+> Não há razão para usar `JSON.parse(JSON.stringify())` em código novo, exceto quando a serialização
+> para string JSON é o objetivo em si (ex: persistência, transporte HTTP).
 
 ---
 
@@ -621,6 +636,7 @@ libera objetos, e o que pode causar vazamentos de memória em aplicações de lo
 - [[21 - Memory management]] — garbage collection, referências fracas, WeakMap/WeakRef e como evitar memory leaks
 - [[07 - Objetos]] — modelo de propriedades, descritores, prototype chain — a base sobre a qual cópia e freeze operam
 - [[08 - Arrays e métodos]] — métodos imutáveis vs. mutáveis de array; como `slice`, `map`, `filter` se encaixam no padrão imutável
+- [[12 - Map, Set, WeakMap, WeakSet]] — por que `structuredClone` suporta `Map` e `Set` mas `JSON.stringify` não — estrutura interna dessas coleções
 - [[Dicionário de JavaScript]] — termos canônicos do ecossistema
 
 ---

@@ -145,6 +145,13 @@ Object.prototype.toString.call(new MinhaColecao()); // "[object MinhaColecao]"
 
 ---
 
+> [!tip] Vídeo — Proxy e Reflect em ação
+> **Fireship** — [JavaScript Proxy in 100 Seconds](https://www.youtube.com/watch?v=kT1J6P5IJss) — visão relâmpago de Proxy + casos de uso em menos de 2 minutos. Ideal para ancorar o mental model antes de mergulhar nos traps.
+>
+> **Akshay Saini (Namaste JavaScript)** — [Proxy & Reflect in JavaScript](https://www.youtube.com/watch?v=eNsJCq3WUTM) — deep dive de ~30 min que cobre todos os traps principais, o papel do Reflect como parceiro obrigatório e o exemplo de objeto reativo do zero. Segue a mesma lógica da seção de reatividade desta nota.
+>
+> **Web Dev Simplified** — [JavaScript Proxy](https://www.youtube.com/watch?v=SYwR8DQALMc) — foco em casos práticos: validação, logging, índices negativos e a armadilha do loop infinito sem Reflect. Recomendado após ler os exemplos de código abaixo.
+
 ## Proxy — interceptando operações fundamentais
 
 Um Proxy é literalmente um intermediário entre o código que acessa um objeto e o objeto em si. Quando você faz `proxy.nome`, o motor não vai direto ao objeto — passa pelo **handler** primeiro.
@@ -302,6 +309,141 @@ const obj = {
 Object.keys(obj);         // ["nome"] — sem Symbols
 Reflect.ownKeys(obj);     // ["nome", Symbol(id)] — tudo
 ```
+
+---
+
+## Proxy.revocable — Proxy com prazo de validade
+
+Todo `new Proxy(target, handler)` é permanente: uma vez criado, o interceptador existe enquanto existir referência ao proxy. `Proxy.revocable` resolve o problema oposto — como criar um proxy que pode ser **desativado explicitamente**, tornando-se inacessível depois.
+
+```javascript
+const { proxy, revoke } = Proxy.revocable({ saldo: 1000 }, {
+  get(target, prop, receiver) {
+    console.log(`[auditoria] leitura: ${prop}`);
+    return Reflect.get(target, prop, receiver);
+  }
+});
+
+proxy.saldo; // [auditoria] leitura: saldo → 1000
+
+revoke(); // desativa o proxy — nenhum trap é chamado após isso
+
+proxy.saldo; // TypeError: Cannot perform 'get' on a proxy that has been revoked
+```
+
+**Quando isso importa de verdade:**
+
+- **Tokens temporários de acesso**: um módulo recebe um proxy de um objeto sensível (configurações, dados de usuário) para uma janela de tempo. Ao encerrar a operação, o proxy é revogado — o módulo não pode mais "guardar" o acesso nem acessar o target diretamente.
+- **Sandboxing de terceiros**: código de plugin recebe um proxy revocable do ambiente host. Se o plugin for descarregado, `revoke()` garante que nenhuma referência retida consiga fazer chamadas.
+- **Recursos com ciclo de vida explícito**: a proposta TC39 `using` (Stage 4 no ES2026, via **Explicit Resource Management**) combina naturalmente com Proxy.revocable — o `[Symbol.dispose]` pode chamar `revoke()` ao sair do escopo.
+
+```javascript
+// ES2026 — Explicit Resource Management + Proxy.revocable
+{
+  await using recurso = {
+    proxy: null,
+    revoke: null,
+    [Symbol.asyncDispose]() { this.revoke?.(); }
+  };
+
+  const { proxy, revoke } = Proxy.revocable(dadosSensiveis, handler);
+  recurso.proxy = proxy;
+  recurso.revoke = revoke;
+
+  await processarDados(recurso.proxy);
+} // aqui: Symbol.asyncDispose → revoke() automático ao sair do bloco
+```
+
+> [!tip] Vídeo — Proxy.revocable e resource management
+> Não existe um vídeo canônico dedicado exclusivamente a Proxy.revocable, mas o contexto de Explicit Resource Management (que fecha o loop com revocable proxies) está bem coberto em:
+> - **Jake Archibald / Google Chrome Developers** — [Explicit Resource Management in JavaScript](https://www.youtube.com/watch?v=yDY-0QIIL3Q) — cobre `using`, `Symbol.dispose` e o padrão de ciclo de vida explícito que torna Proxy.revocable ainda mais relevante no ES2026.
+
+---
+
+## Invariantes que o motor JS impõe — e quando ele lança TypeError
+
+Proxy não é onipotente. A spec ECMAScript define **invariantes de integridade** que o motor verifica *após* o trap retornar. Se um trap violar uma invariante, o motor lança `TypeError` antes de entregar o valor ao chamador — o handler não tem como evitar isso.
+
+As invariantes mais importantes que pegam desenvolvedores de surpresa:
+
+### 1. Propriedade non-configurable non-writable — o trap `get` é obrigado a retornar o valor exato
+
+```javascript
+const target = {};
+Object.defineProperty(target, "PI", {
+  value: 3.14159,
+  writable: false,
+  configurable: false
+});
+
+const proxy = new Proxy(target, {
+  get(t, prop) {
+    return 42; // tentando mentir sobre o valor
+  }
+});
+
+proxy.PI;
+// TypeError: 'get' on proxy: property 'PI' is a non-configurable and
+//            non-writable data property on the proxy target but the
+//            proxy did not return its actual value
+```
+
+**Regra**: se a propriedade é `writable: false` E `configurable: false`, o trap `get` deve retornar exatamente o mesmo valor que `target[prop]`. O motor compara com `SameValue`.
+
+### 2. Propriedade non-configurable — o trap `set` não pode mudar `writable` de false para true
+
+```javascript
+const target = {};
+Object.defineProperty(target, "x", { value: 10, writable: false, configurable: false });
+
+const proxy = new Proxy(target, {
+  set(t, prop, value) {
+    // ignora e retorna true — mentindo ao chamador
+    return true;
+  }
+});
+
+proxy.x = 99;
+// TypeError: 'set' on proxy: trap returned truthy for property 'x'
+//            which exists in the proxy target as a non-configurable
+//            and non-writable data property
+```
+
+### 3. O trap `has` não pode esconder propriedades non-configurable
+
+```javascript
+const target = {};
+Object.defineProperty(target, "segredo", { value: "ops", configurable: false });
+
+const proxy = new Proxy(target, {
+  has(t, prop) {
+    return false; // tentando esconder
+  }
+});
+
+"segredo" in proxy;
+// TypeError: 'has' on proxy: trap returned falsy for property 'segredo'
+//            but the proxy target is not extensible
+```
+
+### 4. O trap `deleteProperty` não pode deletar propriedade non-configurable
+
+```javascript
+Object.defineProperty(target, "eterno", { value: 1, configurable: false });
+
+const proxy = new Proxy(target, {
+  deleteProperty(t, prop) { return true; } // mentindo
+});
+
+delete proxy.eterno;
+// TypeError: 'deleteProperty' on proxy: trap returned truthy
+//            for property 'eterno' which is non-configurable in the proxy target
+```
+
+> [!warning] Regra prática sobre invariantes
+> **Nunca use `Object.freeze()`, `Object.seal()` ou `Object.defineProperty` com `configurable: false` no mesmo objeto que serve de `target` de um Proxy que altera comportamento**. O target deve ser um objeto "neutro" que o handler pode manipular livremente. As restrições de acesso (somente leitura, etc.) devem ser impostas *pelo handler*, não pelas propriedades do target.
+>
+> A invariante existe por um motivo: garantir que código que inspeciona o target diretamente (via `Object.getOwnPropertyDescriptor`) veja um estado consistente com o que o proxy reporta.
 
 ---
 
@@ -483,8 +625,9 @@ Você acabou de ver como interceptar operações fundamentais do motor JavaScrip
 
 - [[16 - Iterators e generators]] — `Symbol.iterator` é a ponte entre metaprogramação e protocolos de iteração; se você quiser criar objetos iteráveis complexos com estado (geradores assíncronos, pipelines lazy), é o próximo passo.
 - [[03 - Coerção e igualdade]] — `Symbol.toPrimitive` controla coerção, mas para entender *quando* e *por que* o motor escolhe o hint `"number"` vs `"string"` vs `"default"`, o contexto completo de coerção é indispensável.
+- [[24 - ES2026 e o futuro]] — Decorators (Stage 4 desde 2023, TC39 standardized) e Explicit Resource Management (`using` + `Symbol.dispose`) são as evoluções mais relevantes da metaprogramação no JavaScript moderno. Decorators oferecem um caminho declarativo para o que Proxy faz de forma programática; a seção de decorators em `[[24]]` explica a diferença de filosofia entre os dois modelos.
 
-Consulte também o [[Dicionário de JavaScript]] para os termos técnicos desta nota.
+Consulte também o [[Dicionário de JavaScript]] para os termos técnicos desta nota — incluindo os verbetes Proxy, Reflect, trap, metaprogramação e Proxy.revocable.
 
 ---
 
@@ -504,3 +647,6 @@ Metaprogramação é o ato de programar *o comportamento da linguagem* em vez de
 - **Vue.js** — [Reactivity in Depth](https://vuejs.org/guide/extras/reactivity-in-depth.html) — como Vue 3 usa Proxy internamente para rastreamento de dependências.
 - **javascript.info** — [Proxy and Reflect](https://javascript.info/proxy) — tutorial com foco em casos de uso e armadilhas.
 - **EisenbergEffect / Medium** — [The Prickly Case of JavaScript Proxies](https://eisenbergeffect.medium.com/the-prickly-case-of-javascript-proxies-b6c3833b738) — análise de performance e edge cases em produção.
+- **TC39** — [Explicit Resource Management (Stage 4)](https://github.com/tc39/proposal-explicit-resource-management) — proposta aprovada para ES2026; cobre `using`, `await using`, `Symbol.dispose` e `Symbol.asyncDispose` — o padrão que fecha o ciclo de vida de `Proxy.revocable` de forma ergonômica (2026).
+- **TC39** — [Decorators (Stage 4)](https://github.com/tc39/proposal-decorators) — spec final de decorators; metaprogramação declarativa em nível de classe como alternativa/complemento ao modelo programático de Proxy (ratificado ES2026).
+- **V8 Blog** — [Elements Kinds in V8](https://v8.dev/blog/elements-kinds) — contexto de otimização JIT; explica por que Proxy é tratado como "megamórfico" e por que o overhead de 5–20% em hot paths é estrutural, não acidental.

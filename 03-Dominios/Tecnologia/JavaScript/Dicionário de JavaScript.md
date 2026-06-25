@@ -61,6 +61,12 @@ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(12
 // "R$ 1.234,56"
 ```
 
+### nullish coalescing (`??`)
+Operador binário introduzido no ES2020 que retorna o operando direito apenas se o esquerdo for `null` ou `undefined`. Diferente de `||`, não considera `0`, `''`, `false` ou `NaN` como "ausentes" — esses valores legítimos são mantidos. Uso canônico: `const porta = config.port ?? 3000` preserva `port = 0`, enquanto `|| 3000` erroneamente usaria o padrão. Compõe naturalmente com optional chaining: `usuario?.perfil?.nome ?? 'Anônimo'`.
+
+### optional chaining (`?.`)
+Operador introduzido no ES2020 que curto-circuita o acesso a propriedades quando o receptor é `null` ou `undefined`, retornando `undefined` em vez de lançar `TypeError`. Funciona em três formas: acesso a propriedade (`obj?.prop`), acesso dinâmico (`obj?.[expr]`) e chamada de método (`obj?.method()`). O curto-circuito se propaga: `a?.b.c` não avalia `.c` se `a` for nullish. Substitui cadeias defensivas como `a && a.b && a.b.c`. Ver [[23 - Recursos modernos (ES2020 a ES2025)]] para contexto de uso.
+
 ### NaN
 *Not a Number* — valor especial do padrão IEEE 754 produzido por operações aritméticas indeterminadas (`0/0`, `Math.sqrt(-1)`, `Number("abc")`). Propriedade única no JavaScript: `NaN !== NaN` (`NaN` é o único valor não igual a si mesmo). Para detectar corretamente, use `Number.isNaN(valor)` — nunca compare diretamente com `NaN` nem use o global `isNaN()` (que coerce o argumento antes de testar). `NaN` é "contagioso": qualquer operação com ele produz `NaN`. Em contexto booleano, é *falsy*. `Map` e `Set` tratam `NaN` como chave válida via [[Dicionário de JavaScript#SameValueZero\|SameValueZero]] (`NaN === NaN` é `true` nesse algoritmo).
 
@@ -114,6 +120,26 @@ Quando uma variável em um escopo interno declara o mesmo nome de uma variável 
 ### strict mode (modo estrito)
 Modo de execução ativado com a diretiva `"use strict"` (no topo de um arquivo ou função) ou automaticamente em módulos ESM e corpos de classe. Em strict mode: funções chamadas sem contexto têm `this === undefined` em vez de receber o objeto global; atribuições a variáveis não declaradas lançam `ReferenceError`; e vários comportamentos silenciosamente problemáticos do JavaScript legado se tornam erros explícitos.
 
+## Metaprogramação
+
+### metaprogramação
+Técnica em que código observa, intercepta ou modifica o comportamento da própria linguagem em tempo de execução — sem alterar a lógica de negócio diretamente. Em JavaScript, os três pilares são: **Symbol** (chaves primitivas únicas que permitem ao objeto participar de protocolos nativos como `for...of` e `instanceof`), **Proxy** (intercepta operações fundamentais como leitura, escrita e deleção de propriedades) e **Reflect** (repassa a operação padrão com a semântica correta a partir de dentro de um trap). Ver [[22 - Metaprogramação]].
+
+### Proxy
+Objeto que envolve ("wraps") outro objeto (o *target*) e intercepta operações fundamentais por meio de funções chamadas *traps*, definidas em um *handler*. Criado com `new Proxy(target, handler)`. O motor JS executa o trap em vez da operação original; se o trap chamar `Reflect.<método>`, a operação padrão é repassada. Proxies são detectados como "megamórficos" pelo JIT do V8, o que gera overhead de 5–20% em hot paths — use fora de loops críticos. Ver [[22 - Metaprogramação#Proxy — interceptando operações fundamentais|Proxy]].
+
+### Proxy.revocable
+Variante de Proxy que retorna `{ proxy, revoke }`. Chamar `revoke()` desativa permanentemente o proxy — qualquer acesso posterior lança `TypeError: Cannot perform 'get' on a proxy that has been revoked`. Útil para tokens temporários de acesso, sandboxing de plugins e ciclos de vida explícitos via `Symbol.dispose` (ES2026). Ver [[22 - Metaprogramação#Proxy.revocable — Proxy com prazo de validade|Proxy.revocable]].
+
+### Reflect
+Objeto estático (sem construtor) cujos métodos espelham os traps de Proxy um-a-um: `Reflect.get`, `Reflect.set`, `Reflect.has`, `Reflect.apply`, `Reflect.construct`, etc. Dentro de um trap, usar `Reflect.<método>` em vez de `target[prop]` preserva o `receiver` correto (o `this` para getters em protótipos) e evita loops infinitos. `Reflect.ownKeys(obj)` é o único jeito nativo de listar todas as chaves próprias, incluindo Symbols.
+
+### trap (armadilha de Proxy)
+Função definida no `handler` de um `Proxy` que intercepta uma operação específica do motor JavaScript. Cada trap corresponde a um método interno (`[[Get]]`, `[[Set]]`, `[[Has]]`, etc.) da spec ECMAScript. O motor verifica **invariantes** após o retorno do trap — se o resultado violar uma propriedade `non-configurable` ou `non-writable` do target, lança `TypeError` automaticamente, independente do que o trap retornou.
+
+### well-known Symbol
+Symbol pré-definido no motor JavaScript (registrado em `Symbol.*`) que serve como "gancho" para protocolos nativos da linguagem. Os mais usados: `Symbol.iterator` (habilita `for...of`), `Symbol.asyncIterator` (`for await...of`), `Symbol.toPrimitive` (coerção de tipo), `Symbol.hasInstance` (`instanceof`), `Symbol.toStringTag` (tag em `Object.prototype.toString`), `Symbol.species` (construtor usado em métodos como `map`). Ver [[22 - Metaprogramação#Well-known Symbols — protocolos da linguagem|Well-known Symbols]].
+
 ## Objetos e protótipos
 
 ### accessor descriptor (descriptor acessor)
@@ -136,8 +162,14 @@ Referência cujo valor é determinado por *como* a função é chamada (não ond
 
 ## Coleções
 
+### cópia profunda (deep copy)
+Uma cópia onde todos os níveis da estrutura são duplicados — nenhum objeto interno é compartilhado entre o original e a cópia. Qualquer mutação em um lado não afeta o outro. Em JavaScript, `structuredClone()` é a solução nativa moderna (Baseline Widely Available em 2026); `JSON.parse(JSON.stringify())` funciona para dados JSON-safe mas perde tipos ricos (`Date` vira string, `Map`/`Set` viram `{}`/`[]`, `undefined` e funções somem). Veja detalhes em [[20 - Cópia, serialização e imutabilidade]].
+
 ### cópia rasa (shallow copy)
 Uma cópia onde apenas o primeiro nível é duplicado — elementos primitivos são copiados por valor, mas elementos que são objetos ou arrays ainda compartilham a mesma referência. Em JavaScript, `[...arr]`, `arr.slice()` e `Array.from(arr)` produzem cópia rasa. Consequência: mutar um objeto dentro da cópia muta também o original. Para cópia que atravessa todos os níveis, use `structuredClone()`.
+
+### imutabilidade
+Propriedade de um valor ou estrutura que não pode ser alterada após a criação. Em JavaScript, primitivos são imutáveis por natureza. Objetos e arrays são mutáveis por padrão — `Object.freeze()` congela apenas o nível superficial; para imutabilidade profunda real é preciso `deepFreeze` recursivo ou bibliotecas como **Immer** (imutabilidade por convenção via `produce`) ou **Immutable.js** (coleções persistentes com [[Dicionário de JavaScript#structural sharing (compartilhamento estrutural)|structural sharing]]). A proposta TC39 de Records & Tuples (primitivos imutáveis com comparação por valor) foi retirada em abril de 2025. Veja em [[20 - Cópia, serialização e imutabilidade]].
 
 ### Iterator Helpers
 Conjunto de métodos introduzidos no ES2025 em `Iterator.prototype` que permitem pipelines lazy sobre qualquer iterável: `filter()`, `map()`, `flatMap()`, `take()`, `drop()`, `reduce()`, `forEach()`, `some()`, `find()`, `toArray()`. Diferente dos métodos de array, são **lazy** — processam um elemento por vez sem criar arrays intermediários, o que reduz uso de memória para conjuntos grandes. Disponível em Node 22 LTS+, Bun 1.1.31+ e browsers modernos (Baseline Newly Available, março 2025). `Iterator.from(qualquerIteravel)` envolve qualquer iterável na cadeia.
@@ -154,11 +186,34 @@ Coleção de valores únicos com inserção ordenada. Adicionar um valor já exi
 ### SameValueZero
 Algoritmo de comparação de igualdade usado por Map e Set: idêntico a `===` exceto que `NaN === NaN` é `true`. É o motivo pelo qual `NaN` pode ser usado como chave de Map de forma confiável.
 
+### structural sharing (compartilhamento estrutural)
+Técnica usada por bibliotecas de imutabilidade (Immer, Immutable.js) onde, ao "modificar" uma estrutura, apenas o caminho até o nó alterado é copiado — o restante da árvore é compartilhado entre a versão antiga e a nova. Isso torna atualizações imutáveis O(log n) em vez de O(n), evitando a necessidade de copiar estruturas inteiras a cada mudança. É o que torna Redux eficiente com estado profundo. Veja contexto em [[20 - Cópia, serialização e imutabilidade]].
+
 ### WeakMap
 Variante de Map onde as chaves devem ser objetos e são mantidas por referência fraca. O GC pode coletar a chave (e a entrada correspondente) quando não houver outras referências ao objeto-chave. Não é iterável — não expõe `.size`, `.keys()` ou `.entries()`.
 
+### WeakRef
+Referência fraca a um objeto (ES2021): não impede a coleta pelo GC. O objeto-alvo é acessado via `.deref()`, que retorna `undefined` se já foi coletado. A semântica é intencionalmente não-determinística — o GC pode coletar o objeto a qualquer momento após ele perder todas as referências fortes, e o tempo varia por motor, geração e pressão de memória. Use apenas como otimização não-crítica (ex: caches best-effort). Para lógica de negócio, sempre trate o retorno `undefined`. Prefira [[Dicionário de JavaScript#WeakMap\|WeakMap]] quando a associação é objeto→dado.
+
 ### WeakSet
-Variante de Set onde os valores devem ser objetos mantidos por referência fraca. Usado para rastrear objetos sem impedir sua coleta pelo GC. Não é iterável.
+Variante de Set onde os valores devem ser objetos mantidos por referência fraca. Usado para rastrear conjuntos de objetos sem impedir sua coleta pelo GC. Não é iterável.
+
+## Memória e GC
+
+### FinalizationRegistry
+API (ES2021) que permite registrar um callback a ser chamado *após* um objeto ser coletado pelo GC. O callback recebe um valor de limpeza (*held value*) previamente registrado. Semântica não-garantida: a spec permite que o callback seja chamado muito tarde, raramente ou nunca — por questões de portabilidade entre engines e para evitar timing attacks via observabilidade do GC. Use apenas para cleanup não-crítico (logs, debugging). Para recursos críticos (handles de arquivo, conexões), use `try/finally`, `Symbol.dispose` (ES2026) ou métodos `dispose()`/`close()` explícitos. Ver [[21 - Memory management]].
+
+### GC roots (raízes do GC)
+Conjunto de pontos de ancoragem a partir dos quais o garbage collector percorre o grafo de referências para determinar o que é alcançável. Em JavaScript: variáveis globais (`window`, `globalThis`), a call stack atual (variáveis locais de funções em execução), closures ativas e referências internas do motor (inline caches). Qualquer objeto alcançável a partir de um root está protegido da coleta; objetos sem caminho de referência até nenhum root são elegíveis para liberação.
+
+### mark-and-sweep
+Algoritmo base de coleta de lixo em JavaScript: (1) o GC parte dos roots, percorre o grafo de referências e *marca* todos os objetos alcançáveis; (2) percorre o heap e *libera* os não-marcados. Resolve referências circulares porque o critério é alcançabilidade, não contagem de referências. O V8 usa uma versão incremental e concurrent desse algoritmo no old generation (projeto Orinoco). Ver [[21 - Memory management]].
+
+### reachability (alcançabilidade)
+Critério usado pelo GC para decidir o que pode ser liberado: um objeto é *alcançável* se existe algum caminho de referência partindo de um [[Dicionário de JavaScript#GC roots (raízes do GC)\|root]] até ele. O conceito substitui a noção intuitiva de "objeto ainda está sendo usado" — um objeto pode estar sendo "guardado" mas nunca mais ser acessado, e ainda assim bloquear a coleta enquanto houver referência forte.
+
+### retained size (tamanho retido)
+No contexto de heap profiling (DevTools Memory, `v8.writeHeapSnapshot()`): a quantidade total de memória que seria liberada se um determinado objeto fosse coletado — incluindo todos os objetos que só são alcançáveis *através* dele. Contrasta com *shallow size* (apenas a memória do objeto em si, sem o que ele referencia). Um objeto com shallow size de 64 bytes mas retained size de 20 MB está "segurando" a vida de muita coisa. Métrica essencial para priorizar investigações de vazamento. Ver [[21 - Memory management]].
 
 ## Assíncrono
 
@@ -173,6 +228,9 @@ Função passada como argumento para `new Promise(executor)`. É chamada **sincr
 
 ### Promise
 Objeto que representa o resultado eventual de uma operação assíncrona, em um de três estados: pending, fulfilled ou rejected. Base sintática de `async/await`.
+
+### Promise.withResolvers
+Método estático introduzido no ES2024 que retorna um objeto com três propriedades: `{ promise, resolve, reject }`. Evita o padrão verbose de vazar `resolve`/`reject` para fora do construtor via variáveis auxiliares. Útil para integrar callbacks legados com código baseado em Promise ou para criar canais de sinalização entre partes assíncronas desconexas. Internamente equivale a criar uma Promise cujo executor apenas captura as referências.
 
 ### thenable
 Qualquer objeto que possua um método `.then(onFulfilled, onRejected)`, independente de ser uma Promise nativa. O algoritmo `Promise.resolve()` detecta thenables e os "assimila" — chama `.then(resolve, reject)` e adota o estado resultante. Isso garante interoperabilidade com bibliotecas Promise de terceiros (jQuery Deferred, Bluebird, etc.) sem conversão explícita. A spec ECMAScript define thenable assimilation em §27.2.1.1.

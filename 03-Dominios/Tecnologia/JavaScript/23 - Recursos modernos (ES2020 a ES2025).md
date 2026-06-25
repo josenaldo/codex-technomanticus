@@ -22,6 +22,15 @@ Você já escreveu `obj && obj.prop && obj.prop.sub` dezenas de vezes. Ou `val !
 
 Entre ES2020 e ES2025, o TC39 fechou sistematicamente esses gaps. Este tour percorre os recursos por ano, foca no *por que* cada um importa, e aponta onde a trilha aprofunda cada tema.
 
+> [!tip]- Assista: tour em vídeo das features ES2020–2025
+> **JavaScript ES2020-ES2025 — All New Features Explained** · Academind (Maximilian Schwarzmüller) · ~25 min
+> [▶ Assistir no YouTube](https://www.youtube.com/watch?v=c0tMZztzQEs)
+> Percorre optional chaining, nullish coalescing, top-level await, private fields, métodos imutáveis de array e Iterator Helpers com exemplos práticos. Bom como revisão rápida antes de entrevista.
+>
+> **What's NEW in JavaScript 2024 & 2025** · Fireship · ~8 min
+> [▶ Assistir no YouTube](https://www.youtube.com/watch?v=AoU6E54bDok)
+> Cobertura rápida e densa de ES2024 (groupBy, Promise.withResolvers) e ES2025 (Set methods, Iterator Helpers, Promise.try). Estilo característico Fireship: máxima densidade em mínimo tempo.
+
 ---
 
 ## Timeline geral
