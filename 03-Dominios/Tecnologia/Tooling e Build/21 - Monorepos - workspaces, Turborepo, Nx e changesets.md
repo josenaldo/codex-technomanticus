@@ -402,8 +402,7 @@ Antes do 2.9, qualquer ciclo no grafo de pacotes (`A → B → A`) bloqueava o T
 
 A distinção conceitual que o 2.9 formaliza: **grafo de pacotes** pode ter ciclos; **grafo de tasks** nunca pode (tarefas em ciclo seriam executadas indefinidamente). O Turborepo agora valida o grafo de *tasks*, não o de *pacotes* — o que é matematicamente correto. Ciclos de pacote são um code smell arquitetural, mas não impedem mais a adoção do Turborepo.
 
-> [!duvida] Como o Turborepo monta o task graph de um pacote com ciclo sem criar um ciclo no task graph?
-> Se `A` e `B` se importam mutuamente (ciclo de pacote), e ambos têm `"dependsOn": ["^build"]`, como o Turborepo resolve a ordem de `A#build` e `B#build`? A nota diz que o grafo de tasks "nunca pode ter ciclos" — mas não explica o mecanismo pelo qual um ciclo de pacote deixa de virar um ciclo de task. O `^build` de `A` puxa `B#build` que puxa `A#build` — o que quebra o ciclo nessa cadeia?
+A distinção é estrutural: o `^build` percorre as arestas do **task graph**, não do package graph. Quando `A` e `B` têm um ciclo de pacote entre si, o Turborepo não cria automaticamente arestas de dependência de task entre `A#build` e `B#build` — o `^build` só gera aresta de task se a dependência de pacote for acíclica. Pacotes em ciclo são tratados como um componente fortemente conectado (Tarjan's algorithm detecta o ciclo no package graph), e as tasks desse componente podem rodar em qualquer ordem entre si, já que não há como estabelecer precedência. O resultado prático: `A#build` e `B#build` rodam em paralelo, sem dependência entre si, e ambos dependem de tudo que está *fora* do ciclo. O Turborepo ainda exige que o task graph resultante seja DAG — ciclo de pacote deixa de ser bloqueante porque não se propaga para o task graph.
 
 #### OpenTelemetry e logs estruturados (experimental)
 
@@ -467,8 +466,8 @@ Nx (Nrwl/Nrwl) é uma aposta diferente da do Turborepo. Em vez de "faça uma coi
 
 O Turborepo infere dependências dos `package.json`. O Nx constrói um **project graph** a partir do código — ele analisa os imports estáticos para entender quais pacotes dependem de quais. Isso permite executar apenas os projetos *affected* por uma mudança com mais precisão.
 
-> [!duvida] "Mais precisão" que o Turborepo em quê cenário concreto?
-> A nota afirma que o Nx é "mais preciso" porque analisa imports estáticos em vez de `package.json`. Mas o Turborepo também lê os `package.json` — e se `ui` lista `utils` como dependência, qualquer mudança em `utils` afeta `ui` nos dois orquestradores. Qual é o cenário real onde análise de imports dá resultado diferente do `package.json`? Por exemplo: um arquivo novo em `utils` que nenhum pacote importa ainda — o Nx excluiria `ui` do affected e o Turborepo não?
+> [!question]- Quando análise de imports é mais precisa que `package.json` na prática?
+> O package.json diz "ui depende de utils" — binário. O Nx vai além: analisa quais arquivos de `ui` importam quais arquivos de `utils`. Se você mudou `utils/formatDate.ts` e `ui` só importa `utils/validators.ts`, o Nx pode excluir `ui` do affected; o Turborepo (que opera no nível do pacote, não do arquivo) considera `ui` afetado por qualquer mudança em `utils`. A granularidade intra-pacote é o cenário onde a diferença aparece. Nx também captura dependências implícitas (arquivos carregados via File System API, globs dinâmicos) que não são visíveis em `package.json` nem em imports — mas essas precisam ser declaradas manualmente via `implicitDependencies` no `project.json`.
 
 ```bash
 # Instalar o Nx em um monorepo existente
@@ -814,8 +813,7 @@ A distinção entre `linked` e `fixed` é sutil mas crítica:
 - **`linked`**: se `ui` recebe minor e `ui-react` não mudou, `ui-react` fica na versão anterior — mas quando `ui-react` for bumpar, não pode ir abaixo da versão do grupo.
 - **`fixed`**: se qualquer pacote do grupo muda, todos bumpar para a mesma versão. Nenhum fica para trás.
 
-> [!duvida] O que "não pode ir abaixo da versão do grupo" significa na prática para `linked`?
-> A nota diz que `ui-react` "fica na versão anterior" quando não muda — então `ui@1.2.0` e `ui-react@1.1.0` coexistem. Mas o que acontece no próximo patch de `ui-react`? Ela vai para `1.1.1` ou precisa pular para `1.2.0`? Qual é a regra que o changeset version aplica aqui — e o que acontece com o CHANGELOG de `ui-react` para versões onde ela "pulou" sem mudança de código?
+A regra que o `changeset version` aplica para `linked` é: cada pacote do grupo com changeset vai para `max(versão atual do grupo) + bump`. Então se `ui` foi para `1.2.0` e `ui-react` ainda está em `1.1.0`, no próximo changeset de `ui-react` (digamos, um `patch`), ela vai diretamente para `1.2.1` — pulando `1.1.1` e `1.2.0` sem gerar versões intermediárias. O CHANGELOG de `ui-react` registra apenas o bump com changeset real; as versões "puladas" não existem nem no npm nem no CHANGELOG. Pacotes *sem* changeset no ciclo não são publicados, então `ui-react@1.1.0` e `ui@1.2.0` coexistem no npm por tempo indeterminado — o `linked` só entra em ação quando `ui-react` recebe um changeset novo.
 
 **Quando `fixed` é a escolha certa:** bibliotecas que os consumers instalam em conjunto e onde versões diferentes entre si causam bugs de peer dependency. Pensa no ecossistema Babel: instalar `@babel/core@7.26` com `@babel/parser@7.24` vai quebrar. O `fixed` garante que isso nunca aconteça no monorepo.
 
@@ -1060,8 +1058,7 @@ graph LR
 
 O Turborepo não tem equivalente nativo ao DTE — paralelismo no Turborepo é local (um máquina, múltiplos cores). Nx Cloud distribui em máquinas distintas. Isso é o principal diferenciador do Nx para repos grandes.
 
-> [!duvida] Como o Nx Cloud distribui as tasks entre agentes sem violar a ordem do task graph?
-> A nota mostra que o task graph tem dependências estritas (B_APP depende de B_UI, que depende de B_UTILS). Se o Scheduler distribuir tasks entre 3 agentes independentes, quem garante que o Agente 2 não começa `app#build` antes do Agente 1 terminar `ui#build`? A nota afirma "CI de 30 min → 4 min" mas não explica o mecanismo de sincronização — se é via poll, via artefato compartilhado no cache, ou se o Scheduler retém tasks dependentes até os pré-requisitos estarem prontos.
+O mecanismo é um scheduler centralizado com estado de conclusão por task: o main job envia o task graph completo ao Nx Cloud antes de qualquer execução começar. O Scheduler conhece todas as arestas de dependência e mantém um registro de quais tasks já completaram. Ele só libera uma task para um agente quando *todos* os pré-requisitos daquela task marcaram conclusão no registro central. Os artefatos (outputs de build) são enviados ao remote cache ao término de cada task; quando o Agente 2 recebe `app#build`, os outputs de `ui#build` já estão no cache e ele os baixa antes de executar. Não há poll — o Scheduler usa um modelo push: quando `ui#build` conclui, o Scheduler reavalia quais tasks no grafo ficaram "prontas" e as distribui imediatamente.
 
 ### Quando NÃO cachear
 
@@ -1220,3 +1217,8 @@ O monorepo cuida de como você organiza e executa o código internamente. A pró
 - **pnpm** — [*pnpm.io/catalogs*](https://pnpm.io/catalogs) — documentação do catalog protocol (pnpm 9.5+); catalogMode strict/prefer/manual (10.12.1+)
 - **socket.dev** — [*pnpm 9.5 Introduces Catalogs*](https://socket.dev/blog/pnpm-9-5-introduces-catalogs-shareable-dependency-version-specifiers) — análise do lançamento do catalog:
 - **Vercel Academy** — [*Changesets for Versioning*](https://vercel.com/academy/production-monorepos/changesets-versioning) — guia prático de changesets em monorepos de produção
+- **changesets** — [*linked-packages.md*](https://github.com/changesets/changesets/blob/main/docs/linked-packages.md) — especificação do comportamento de `linked`: "versioned to the highest current version in the set + highest bump type from changesets in the set"
+- **Nx** — [*Distribute Task Execution (Nx Agents)*](https://nx.dev/docs/features/ci-features/distribute-task-execution) — documentação do DTE: Scheduler envia task graph, agentes executam tasks em ordem de pré-requisito, artefatos passam pelo remote cache
+- **Nx** — [*Parallelization and Distribution*](https://nx.dev/concepts/more-concepts/illustrated-dte) — diagrama do mecanismo de push do Scheduler (task liberada apenas após todos os pré-requisitos concluídos)
+- **Nx** — [*Disable Graph Links from Source Files*](https://nx.dev/recipes/tips-n-tricks/analyze-source-files) — `analyzeSourceFiles: true` (default); diferença entre análise de imports e package.json na precisão do affected
+- **Turborepo** — [*Package and Task Graphs*](https://turborepo.dev/docs/core-concepts/package-and-task-graph) — separação conceitual dos dois grafos; Tarjan's algorithm para detecção de ciclo no task graph

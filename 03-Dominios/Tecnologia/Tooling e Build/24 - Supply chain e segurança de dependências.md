@@ -214,7 +214,7 @@ A defesa é fixar o escopo do pacote privado usando `.npmrc` com `@escopo:regist
 # Nunca pode ser "confundido" com o npm público
 ```
 
-> [!duvida] Como o npm resolve qual registry usar quando há ambos (público e privado) sem o `.npmrc` de escopo? O diagrama mostra o package manager "buscando no público primeiro" — mas se a empresa usa um proxy que mescla os dois, como o proxy decide qual versão serve? O mecanismo de precedência de registry (escopo, URL, proxy-merge) não foi explicado antes do ataque.
+**Como o npm decide qual registry consultar?** A regra é simples: se o pacote tem um escopo (`@minha-empresa/`) e o `.npmrc` mapeia esse escopo para um registry específico, aquele registry é consultado *exclusivamente* — sem fallback para o público. Se o pacote *não tem escopo* e a empresa usa um proxy (Artifactory, Nexus, Verdaccio) como registry padrão, o proxy tipicamente faz upstream ao npmjs.org para qualquer pacote que não encontrar localmente. É exatamente aí que o dependency confusion opera: o proxy busca `utils-internos` no público, encontra `v9.9.9` (versão maior que a interna `v1.2.0`) e serve a versão maliciosa. O escopo elimina esse caminho porque o npm nunca consulta o upstream público para um escopo fixado.
 
 ```json
 // package.json — use sempre @escopo para pacotes internos
@@ -230,9 +230,7 @@ A defesa é fixar o escopo do pacote privado usando `.npmrc` com `@escopo:regist
 
 Em outubro de 2021, o pacote `ua-parser-js` — com mais de 8 milhões de downloads semanais — teve três versões maliciosas publicadas em menos de uma semana. O atacante comprometeu a conta do mantenedor e publicou `0.7.29`, `0.8.0` e `1.0.0` com um script que instalava um cryptominer e um trojan.
 
-Em setembro de 2025, o ataque escalou para um novo patamar: atacantes comprometeram a conta de um mantenedor e publicaram 84 versões maliciosas de 42 pacotes TanStack em menos de seis minutos — todos com provenance SLSA Build Level 3 válido da Sigstore.
-
-> [!duvida] Se a conta do mantenedor foi comprometida, como o atacante conseguiu gerar provenance SLSA Build Level 3 válido? O CI que gera o artefato exige acesso ao repositório — se o atacante só comprometeu a conta npm (credencial do registry), ele não teria acesso ao GitHub Actions para disparar o workflow. A nota não conecta "conta npm comprometida" com "acesso ao pipeline de CI".
+Em setembro de 2025, o ataque escalou para um novo patamar com o incidente TanStack (Mini Shai-Hulud): atacantes publicaram 84 versões maliciosas de 42 pacotes TanStack em menos de seis minutos — todos com provenance SLSA Build Level 3 válido da Sigstore. O vetor *não foi* comprometimento de conta npm. O atacante encadeou três técnicas: o padrão "Pwn Request" via `pull_request_target` (que dá permissões do repositório base a PRs de forks), cache poisoning atravessando o limite fork↔base no GitHub Actions, e extração do token OIDC efêmero da memória do runner em tempo de execução. Com o OIDC token em mãos, o atacante publicou os pacotes *de dentro do pipeline legítimo* — com assinatura, provenance e hash todos válidos. Nenhuma credencial npm foi roubada.
 
 > [!danger] O ataque mais difícil de detectar
 > Quando um atacante usa a conta legítima do mantenedor, o npm recebe um package com assinatura válida, hash correto, e até provenance de CI verificado. O `npm ci` instala sem reclamar. O `npm audit` não encontra nada. É malicioso por definição, não por comportamento conhecido.
@@ -270,7 +268,9 @@ Quando você executa `npm install`, **todos** os lifecycle scripts de **todos** 
 
 **A mudança histórica do npm v12 (julho 2026):** a partir do npm v12, install scripts são **desabilitados por padrão**. Pacotes que precisam de scripts devem ser explicitamente aprovados via `npm approve-scripts`. Isso é o fim de uma era de execução implícita que durou décadas.
 
-> [!duvida] O `npm approve-scripts` é por projeto ou global? Se for global, um dev que aprova `esbuild` em um projeto está aprovando para todos os outros projetos no mesmo ambiente? E a aprovação persiste entre versões — se `esbuild@0.21` foi aprovado, `esbuild@0.22` (com postinstall novo) requer reaprovação?
+A aprovação é **por projeto**: o `npm approve-scripts` escreve a allowlist no `package.json` do projeto, e esse arquivo deve ser commitado no git para que o CI use as mesmas aprovações que o desenvolvedor local. Aprovar `esbuild` no Projeto A não afeta o Projeto B. Para instalações globais (`npm install -g`), existe o `.npmrc` com `allow-scripts` global, mas isso é exceção — o padrão é sempre por projeto.
+
+Quanto à reaprovação por versão: por padrão, `approve-scripts` registra aprovações com versão fixada (ex: `esbuild@0.21.5`). Quando você atualiza para `esbuild@0.22.0`, a nova versão aparece como *pendente* até que você re-aprove explicitamente — é exatamente esse o ponto: se a nova versão adicionou um postinstall que não existia antes, você precisa revisar e aprovar. Você pode usar `--no-allow-scripts-pin` para aprovar por nome sem versão, mas perde essa garantia de revisão por versão.
 
 ```bash
 # Antes do npm v12 — proteção manual
@@ -491,9 +491,9 @@ npm sbom --sbom-format cyclonedx --omit=dev
 }
 ```
 
-O SBOM responde perguntas que `npm audit` não consegue: "Tenho algum componente com licença GPL que não deveria estar no produto?" "Quais versões de OpenSSL transitivas estou carregando quando o NIST publicar uma nova vulnerabilidade?" "Consigo provar para um auditor o que exatamente estava no artefato que deployamos em produção?"
+O SBOM responde perguntas que `npm audit` não consegue: "Tenho algum componente com licença GPL que não deveria estar no produto?" "Consigo provar para um auditor o que exatamente estava no artefato que deployamos em produção?"
 
-> [!duvida] O SBOM gerado pelo `npm sbom` lista OpenSSL como componente? OpenSSL é uma biblioteca nativa — não é uma dependência npm, ela nem aparece no `package-lock.json`. O exemplo sugere que o SBOM cobre libs nativas transitivas (usadas por bindings Node como `node-gyp`), mas o formato CycloneDX mostrado só lista pacotes npm com `purl: pkg:npm/...`. Como o SBOM npm responde à pergunta sobre versões de OpenSSL?
+Uma limitação importante que a nota precisa ser honesta sobre: **o `npm sbom` não lista OpenSSL nem outras bibliotecas nativas do sistema operacional**. O comando opera sobre o grafo de dependências npm — o que está em `package-lock.json` com `purl: pkg:npm/...`. Bibliotecas como OpenSSL, libssl, ou as dependências nativas que `node-gyp` compila não aparecem no SBOM gerado pelo npm porque elas não são pacotes npm; elas são instaladas pelo gerenciador de pacotes do SO (apt, yum, Alpine apk). Para inventariar libs nativas junto com dependências npm, é necessário complementar com ferramentas de SBOM de sistema (Syft, Trivy, ou cdxgen com suporte a múltiplos ecossistemas), que escaneia tanto o `node_modules` quanto os binários instalados no SO. Em contêineres Docker, uma abordagem comum é gerar o SBOM sobre a imagem final — o que captura o que o apt instalou e o que o npm instalou na mesma varredura.
 
 ---
 
@@ -634,9 +634,10 @@ node_modules/
 
 Isso importa para supply chain de duas formas:
 
-**1. Fantôme deps bloqueadas**: com npm, um pacote malicioso pode usar módulos do seu projeto que ele não declarou (ex: ler variáveis de ambiente via um módulo do host). Com pnpm strict, o pacote só enxerga suas próprias deps declaradas.
+**1. Fantôme deps bloqueadas**: com npm hoisting, um pacote malicioso pode fazer `require('algum-outro-pacote')` que não declarou como dependência — porque esse pacote está achatado em `node_modules/` e acessível por todos. Isso permite que um pacote mal-intencionado acesse, por exemplo, um módulo de autenticação interno do seu projeto sem declarar dependência dele. Com pnpm strict, o `require` de um pacote não declarado falha com erro de resolução.
 
-> [!duvida] Como um pacote malicioso "usa módulos do host que não declarou" para ler variáveis de ambiente? `process.env` é global em Node — qualquer pacote acessa sem precisar de `require`. E `os.homedir()` ou `fs.readFile` também são globais. A vantagem do pnpm aqui seria bloquear acesso a *outros pacotes* (ex: ler um token de autenticação armazenado por outro módulo via require), não ao ambiente do processo em si — a nota confunde os dois.
+> [!warning] O que o pnpm *não* isola
+> O isolamento do pnpm é sobre o grafo de módulos Node — o que pode ser `require()`-ado. Ele *não* isola variáveis de ambiente: `process.env` é global no processo Node e qualquer pacote instalado pode lê-lo, independente do package manager. Da mesma forma, `os.homedir()`, `fs.readFile`, acesso à rede e acesso a `~/.ssh` são igualmente acessíveis a qualquer código que execute — o isolamento de sistema operacional exigiria sandbox (ex: deno permissions, ou containers com seccomp). A defesa contra leitura de `process.env` por pacotes maliciosos é `--ignore-scripts` / `npm approve-scripts`, não o modo strict do pnpm.
 
 **2. Superfície reduzida em monorepos**: em workspaces npm, todos os pacotes da repo compartilham o mesmo `node_modules` achatado. No pnpm, cada workspace tem acesso apenas ao que declarou — isolamento real.
 
@@ -1026,6 +1027,9 @@ Segurança de supply chain é um problema que se resolve em múltiplos níveis: 
 - **Checkmarx** — [*Lottie Player npm Supply Chain Attack*](https://checkmarx.com/blog/lottie-player-supply-chain-attack-october-2024/) — post-mortem do ataque de outubro 2024 ao @lottiefiles/lottie-player
 - **Renovate Docs** — [*minimumReleaseAge*](https://docs.renovatebot.com/configuration-options/#minimumreleaseage) — referência da opção de quarentena de publicações no Renovate
 - **pnpm Docs** — [*Symlinked node_modules structure*](https://pnpm.io/symlinked-node-modules-structure) — explicação técnica do modelo de isolamento strict do pnpm vs npm hoisting
+- **TanStack Blog** — [*Postmortem: TanStack npm supply-chain compromise*](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem) — análise técnica do vetor real do ataque Mini Shai-Hulud: Pwn Request + cache poisoning + extração de OIDC token do runner
+- **StepSecurity** — [*Mini Shai-Hulud Is Back: A Self-Spreading Supply Chain Attack*](https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem) — detalhamento da cadeia pull_request_target → cache poisoning → OIDC token extraction
+- **GitHub Blog (Changelog)** — [*Upcoming breaking changes for npm v12*](https://github.blog/changelog/2026-06-09-upcoming-breaking-changes-for-npm-v12/) — anúncio oficial das breaking changes do npm v12, incluindo o comportamento por projeto do `approve-scripts`
 
 ---
 

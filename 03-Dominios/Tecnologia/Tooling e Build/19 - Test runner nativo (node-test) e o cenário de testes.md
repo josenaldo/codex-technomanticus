@@ -164,18 +164,21 @@ describe('mocking', () => {
   });
 
   it('mocka um módulo ESM', async () => {
-    // mock.module intercepta imports — precisa ser chamado ANTES do import
+    // mock.module funciona APENAS com import() dinâmico — não intercepta imports estáticos
+    // que já foram resolvidos no topo do arquivo antes do teste rodar.
     mock.module('./math.ts', {
       namedExports: { add: mock.fn(() => 42) },
     });
 
+    // import() dinâmico dentro do it — o módulo é carregado agora, APÓS o mock ser registrado
     const { add } = await import('./math.ts');
     assert.equal(add(1, 1), 42); // retorna 42, não 2
   });
-
-> [!duvida] O comentário diz que `mock.module` "precisa ser chamado ANTES do import" — mas se o arquivo já tem `import { add, divide } from './math.ts'` no topo (como nos exemplos anteriores), esse import estático acontece antes de qualquer código do `it` rodar. Como o `mock.module` dentro de um `it` pode interceptar um import estático que já aconteceu?
 });
 ```
+
+> [!info] `mock.module` e imports estáticos — a regra de ouro
+> `mock.module` **não intercepta imports estáticos** (`import { add } from './math.ts'` no topo do arquivo). Esses imports são resolvidos quando o arquivo de teste é carregado — antes de qualquer `it` rodar. Para mockar um módulo com `mock.module`, o import do código testado também precisa ser dinâmico (`await import('./math.ts')`) e acontecer *depois* de `mock.module` ser chamado. Em testes onde o código sob teste já está importado estaticamente no topo, a alternativa é usar `mock.method(obj, 'método', ...)` para substituir métodos no objeto já carregado.
 
 ### Coverage nativo
 
@@ -247,7 +250,12 @@ graph LR
 
 O trade-off: `worker` é mais rápido (menos overhead de fork), mas módulos com estado singleton podem vazar se o worker for reusado. `process` é mais caro, mas o isolamento é absoluto — cada arquivo começa em um processo limpo.
 
-> [!duvida] O que exatamente é um "singleton de módulo" que pode vazar entre workers? Se cada worker thread tem seu próprio contexto de módulo, por que um singleton vazaria? A nota diz que isso acontece "se o worker for reusado" — quando e por que o node:test reusa o mesmo worker para múltiplos arquivos?
+> [!info] Singleton de módulo e reuso de worker — o que vaza e quando
+> Um **singleton de módulo** é qualquer estado que vive fora de uma função — a variável de contador global `let count = 0`, a conexão de banco iniciada na primeira importação, o array de listeners acumulado por `addEventListener`. Em Node.js, módulos são cached: uma vez importado, o mesmo objeto é retornado em toda importação subsequente *dentro do mesmo processo ou worker thread*.
+>
+> No modo `--test-isolation=worker`, o `node:test` cria um pool de worker threads e pode **reutilizar o mesmo worker** para rodar múltiplos arquivos de teste em sequência (especialmente quando há muitos arquivos e poucos workers no pool). Quando o arquivo `a.test.ts` incrementa `count` para 3 e o worker passa para `b.test.ts` sem ser destruído, o módulo `count.ts` ainda está no cache do worker com `count = 3`. O `b.test.ts` vai importar o mesmo objeto e ver `count = 3` em vez de `0`.
+>
+> O modo `--test-isolation=process` elimina esse risco porque cada arquivo recebe um processo filho virgem — o cache de módulos está vazio. O custo é o overhead de fork (~50–200ms por arquivo). A escolha prática: prefira `worker` para testes sem estado global compartilhado; use `process` se módulos de infraestrutura (clientes de banco, singletons de config) precisam começar limpos a cada arquivo.
 
 ### Parallelismo em CI: `--test-shard`
 
@@ -343,7 +351,10 @@ graph LR
 
 Esse diagrama explica por que o Jest tem problemas com ESM: ele converte tudo para CJS internamente antes de executar, o que quebra com pacotes ESM-only (como `p-limit@5+`, `chalk@5+`, `node-fetch@3+`). O Vitest simplesmente não faz essa conversão — ESM é o formato nativo.
 
-> [!duvida] O diagrama mostra que o Vitest usa "ESM nativo" no worker, mas a linha anterior menciona `isolate: false` como opção para melhorar throughput. Se o isolamento é desligado mas o Vitest ainda usa workers com ESM nativo, o que exatamente "vaza" entre arquivos nesses workers? É diferente do que vaza no modo `none` do `node:test`?
+> [!info] `isolate: false` — o que vaza e como difere do modo `none` do `node:test`
+> Com `isolate: true` (padrão), o Vitest **limpa o cache de módulos** entre arquivos de teste dentro do mesmo worker: cada arquivo começa com uma cópia fresca de todos os módulos. Com `isolate: false`, esse cache persiste — o que vaza são variáveis de módulo com estado (singletons, contadores, listeners acumulados) que não foram revertidas entre arquivos.
+>
+> A diferença para o modo `none` do `node:test` é de escopo: no Vitest com `isolate: false`, o vazamento ocorre *dentro de um único worker* processando múltiplos arquivos em sequência — workers diferentes permanecem isolados entre si. No modo `none` do `node:test`, não há workers: todos os arquivos rodam no mesmo processo principal, sem nenhuma separação — o vazamento é irrestrito e mais difícil de rastrear porque qualquer arquivo pode afetar qualquer outro.
 
 ### Configuração e compatibilidade com Jest
 
@@ -578,7 +589,8 @@ graph TD
 
 **Istanbul** (usado pelo `@vitest/coverage-istanbul` e historicamente pelo Jest com `babel-jest`) injeta contadores no AST do código antes de executar. Vantagem: preciso ao nível de statement, suporta bem TypeScript após transform. Desvantagem: transforma o código — o que você testa não é exatamente o que roda.
 
-> [!duvida] A nota diz que Istanbul "transforma o código" como desvantagem — mas o Vitest com esbuild já transforma TypeScript de qualquer forma. Qual é o risco concreto de usar Istanbul no Vitest se o código já passou por um transform antes de Istanbul injetar os contadores? Em que cenário real o "o que você testa não é exatamente o que roda" causa um problema perceptível?
+> [!question] A desvantagem do Istanbul importa quando o Vitest já transforma o código?
+> No Vitest, o código já passa pelo esbuild antes de Istanbul injetar contadores — você sempre está testando código transformado, não o TypeScript original. Nesse contexto, o "o que você testa não é o que roda em produção" aplica-se a ambos os providers; a diferença é de grau. O risco concreto do Istanbul aparece em dois casos: (1) instrumentação de branches gera ramificações extras que esbuild pode otimizar de forma diferente, causando divergência sutil no comportamento de error-handling; (2) em código com decorators ou metaprogramação complexa, a instrumentação pode alterar a ordem de execução de side-effects. Na prática, esses casos são raros — a recomendação de usar V8 como padrão é mais sobre overhead zero do que sobre risco real de comportamento divergente.
 
 **V8 Coverage** (usado pelo `@vitest/coverage-v8`, `node --experimental-test-coverage`, e `bun test --coverage`) usa o profiler nativo do V8 via CDP (Chrome DevTools Protocol). O código roda sem instrumentação; o V8 registra quais ranges de bytecode foram executados. Vantagem: o código executado é idêntico ao código de produção. Desvantagem: source maps precisam ser precisos para mapear bytecode→TypeScript original — em alguns cenários de transform complexo, linhas podem ficar mal atribuídas.
 

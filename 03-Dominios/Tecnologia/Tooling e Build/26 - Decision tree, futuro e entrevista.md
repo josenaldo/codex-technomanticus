@@ -60,10 +60,7 @@ flowchart TD
 
     Lib --> Q_Lib{"Precisa de dual\nESM + CJS?"}
     Q_Lib -->|"Sim (lib para npm amplo)"| Rollup["✅ Rollup 4\nou tsdown (VoidZero)\nmelhor tree-shaking para libs"]
-    Q_Lib -->|"Não / ESM only"| EsbuildLib["✅ esbuild bundler\nou tsdown — velocidade máxima"]
-
-> [!duvida] Por que esbuild é recomendado para libs ESM-only se esbuild não gera .d.ts nativamente?
-> A árvore coloca esbuild como opção de "velocidade máxima" para libs ESM-only, mas esbuild não produz declarações TypeScript (`.d.ts`) — exige um passo separado com `tsc --emitDeclarationOnly`. Para libs publicadas no npm, a geração de tipos não é opcional. O critério "ESM-only" justifica pular DTS? Ou tsdown (que tem DTS nativo via `isolatedDeclarations`) deveria ser a recomendação primária mesmo aqui?
+    Q_Lib -->|"Não / ESM only"| EsbuildLib["✅ tsdown (DTS nativo)\nou esbuild se DTS\nnão é necessário"]
 
     Q_CLI --> Q_CLItype{"Precisa de\nbundler CLI?"}
     Q_CLItype -->|"Não — só rodar TS"| Runtime["✅ Node + tsx\nou Bun (nativo)"]
@@ -89,6 +86,9 @@ flowchart TD
 
 > [!info] Leitura do diagrama
 > As setas sólidas são decisões de bundler/framework. As setas tracejadas lembram que a camada de qualidade (lint/format) é ortogonal — você escolhe Biome, oxlint ou ESLint independentemente do bundler escolhido acima.
+
+> [!info] Por que tsdown para libs ESM-only — e não esbuild direto?
+> A árvore lista `esbuild bundler ou tsdown` para libs ESM-only. A distinção importa: **esbuild não gera `.d.ts` nativamente** — exige um passo separado com `tsc --emitDeclarationOnly`, o que adiciona configuração e um segundo processo de build. Para qualquer lib publicada no npm com TypeScript, tipos não são opcionais. **tsdown** — baseado em Rolldown, parte do ecossistema VoidZero — tem geração de DTS nativa via `isolatedDeclarations`, zero config, e dual ESM+CJS automático. Use esbuild direto apenas em ferramentas internas ou scripts onde você controla o consumidor e tipos não são necessários. Para libs npm, tsdown é a escolha com menor custo de manutenção.
 
 ### Quando cada ferramenta ganha
 
@@ -137,8 +137,12 @@ Vite 8 (março/2026) resolveu isso: **Rolldown é o motor único**. O dev server
 
 O ganho de performance: builds de produção 4–20× mais rápidos que Rollup. Rolldown é na faixa de performance do esbuild, mas com a compatibilidade de plugins do Rollup.
 
-> [!duvida] O range "4–20×" é amplo demais — em que condições vale cada extremo?
-> Um range de 4× a 20× cobre cenários radicalmente diferentes. O que determina onde um projeto específico cai nesse range — número de módulos, volume de tree-shaking, plugins usados? Sem esse critério, a afirmação não orienta decisão: um projeto legado com muitos plugins webpack-compat pode ficar próximo do 4×, enquanto um projeto greenfield simples chega ao 20×. Qual é a variável dominante?
+O range é amplo porque duas variáveis dominam em direções opostas:
+
+- **Número de módulos e tamanho do grafo**: projetos com centenas de módulos ganham mais do paralelismo Rust — o overhead de serialização do Rollup JS cresce linearmente com o grafo. Um projeto com 500+ módulos tende ao extremo de 10–20×.
+- **Plugins JS pesados**: cada plugin Vite/Rollup escrito em JavaScript introduz um salto de contexto entre o runtime Rust e o V8. Projetos com muitos plugins JS (transforms de SVG, Workers com config manual, codemods em plugin) ficam próximos do 4× porque o gargalo se torna a camada JS, não o bundler em si.
+
+Para a decisão prática: projetos novos, greenfield, com poucos plugins → espere o extremo superior. Projetos com plugin ecosystem pesado herdado → o ganho real fica na faixa de 4–6×, ainda significativo, mas não revolucionário.
 
 Referência: [[14 - Rollup, esbuild e Rolldown]].
 
@@ -166,10 +170,8 @@ Em 2025–2026, a pergunta deixou de ser "ESLint ou Prettier?" e passou a ser "B
 |---|---|---|---|
 | Performance (lint) | Muito rápido | 2× mais rápido que Biome | Linha de base |
 | Performance (format) | Muito rápido | 3× mais rápido que Biome, 35× que Prettier | Linha de base |
-| Regras de lint | ~200 | ~500 mas selecionadas | +1000 (via plugins) |
-
-> [!duvida] O que significa "selecionadas" em oxlint e por que isso seria vantagem?
-> A tabela apresenta "~500 mas selecionadas" como característica do oxlint sem explicar o critério de seleção. Selecionadas por quê — cobertura dos erros mais comuns, regras com menor taxa de falso-positivo, ou algum outro critério? Para um entrevistador que perguntar "por que oxlint tem menos regras que ESLint e isso é bom?", qual é a resposta articulada?
+| Regras de lint | ~200 | ~500 curadas (alta relação sinal/ruído, baixo falso-positivo) | +1000 (via plugins) |
+| Por que menos regras pode ser vantagem | ESLint com plugins acumula regras que, em produção, geram ruído — o time começa a ignorar o linter. Biome e oxlint selecionam regras com alta relação sinal/ruído: cobrem os erros que realmente causam bugs, com taxa de falso-positivo baixa. Estilo fica para o formatter. | — | — |
 | Plugin ecosystem | Crescendo | JS plugins alpha (2026) | Maduro e vasto |
 | Config necessária | Zero | Zero | Alta (sem preset) |
 | Dependências | Zero | Zero | Múltiplas |
@@ -278,12 +280,13 @@ pnpm resolve o problema de **phantom dependencies** — quando você usa um paco
 
 ### "O que é HMR e como funciona no Vite?"
 
-HMR (Hot Module Replacement) é a atualização de um módulo no browser sem recarregar a página inteira, preservando o estado da aplicação. No Vite, o dev server mantém uma conexão WebSocket com o browser. Quando um arquivo muda, o servidor invalida apenas aquele módulo e seus dependentes diretos no grafo, e envia uma mensagem ao browser com o módulo atualizado. O browser recebe o novo módulo via ESM dinâmico e o framework (React, Vue) aplica a atualização sem perder o estado.
+HMR (Hot Module Replacement) é a atualização de um módulo no browser sem recarregar a página inteira. No Vite, o dev server mantém uma conexão WebSocket com o browser. Quando um arquivo muda, o servidor invalida apenas aquele módulo e seus dependentes diretos no grafo, e envia uma mensagem ao browser com o módulo atualizado.
 
-> [!duvida] "Aplica a atualização sem perder o estado" é sempre verdade, ou depende do módulo implementar a HMR API?
-> A afirmação generaliza o comportamento do HMR, mas React Fast Refresh e Vue HMR só preservam estado porque implementam a HMR API (`import.meta.hot.accept`). Um módulo utilitário sem esse handler dispara um full reload quando alterado. Para entrevista, a resposta deveria qualificar: "quando o módulo implementa HMR API, ou quando o framework fornece essa camada automaticamente." Sem essa qualificação, a resposta-modelo está incompleta. A velocidade vem do escopo: o Vite nunca rebundla a aplicação inteira — só revalida o subgrafo afetado.
+A preservação de estado **não é automática** — ela depende do módulo registrar um handler na HMR API (`import.meta.hot.accept`). Frameworks como React (via React Fast Refresh) e Vue fazem isso automaticamente para componentes: os plugins Vite injetam os handlers durante a transpilação, por isso os componentes React e Vue atualizam sem perder estado de formulário, scroll ou dados locais. Mas um módulo utilitário sem handler registrado dispara um full reload quando alterado — o Vite não tem como saber se o novo valor é compatível com o estado atual do app.
 
-**Frase EN:** *"HMR works through a WebSocket connection between the dev server and the browser. When a file changes, Vite invalidates just that module and its direct dependents in the module graph, sends the updated module to the browser, and the framework applies the change without a full reload. It's fast because the scope is narrow — never the full app, only the affected subgraph."*
+A velocidade vem do escopo: o Vite nunca rebundla a aplicação inteira — só revalida o subgrafo do módulo alterado.
+
+**Frase EN:** *"HMR works through a WebSocket connection between the dev server and the browser. When a file changes, Vite invalidates just that module and its direct dependents in the module graph, then sends the updated module to the browser. State preservation depends on the module implementing the HMR API — React Fast Refresh and Vue's HMR plugin inject those handlers automatically for components. A plain utility module without a handler triggers a full reload. The speed comes from scope: Vite never re-bundles the whole app, only the affected subgraph."*
 
 Referência: [[09 - Dev server e HMR]].
 
@@ -633,11 +636,15 @@ flowchart TD
     E --> F["Comparar bundle\nanalysis antes/depois\n(Rollup Visualizer)"]
     F --> G["Shadow deploy:\nbuild Vite em paralelo\n(sem servir)"]
     G --> H["A/B test:\n10% tráfego → Vite\nmonitorar error rate"]
-
-> [!duvida] Como se faz A/B test de dois builds estáticos diferentes — qual infraestrutura é necessária?
-> O diagrama salta de "shadow deploy" para "A/B test: 10% tráfego → Vite" sem explicar o mecanismo. Para um build estático de SPA, o A/B test de bundler requer infraestrutura de roteamento na borda (CDN, feature flag, reverse proxy) que decide qual `index.html` servir por requisição. Isso é trivial num contexto com Cloudflare Workers ou split testing no CDN, mas não existe "out of the box". Qual é o mecanismo concreto assumido aqui?
     H --> I["Rollout completo\n+ remover webpack"]
 ```
+
+> [!info] Como funciona o A/B test de dois builds estáticos
+> Para uma SPA, o A/B test de bundler requer roteamento na borda — não existe nativamente. O mecanismo: dois deploys separados coexistem (ex.: `/dist-webpack/` e `/dist-vite/`), e um proxy ou CDN rule decide qual `index.html` servir com base em um cookie ou percentual de tráfego. As opções mais comuns:
+> - **Cloudflare Workers**: um Worker intercepta a requisição e redireciona baseado em cookie ou random hash — zero infraestrutura nova se você já usa Cloudflare.
+> - **CDN split testing**: Vercel, Netlify e Cloudflare Pages têm split testing nativo via painel — dois branches, cada um com seu build.
+> - **Reverse proxy**: nginx ou Caddy com `split_clients` por porcentagem de IP hash.
+> O monitoramento é o ponto crítico: error rate no Sentry/DataDog por `build_variant` cookie. Se o Vite build tiver mais erros JS não capturados, você vê o delta antes de afetar 100% dos usuários.
 
 **O que frequentemente quebra na migração:**
 - **`require()` dinâmico** — Vite ESM não suporta `require()` em runtime; precisa converter para `import()` dinâmico ou usar `createRequire`.

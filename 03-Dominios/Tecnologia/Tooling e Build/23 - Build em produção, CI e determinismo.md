@@ -114,8 +114,8 @@ lockfile-version=3
 engine-strict=true
 ```
 
-> [!duvida] O `.npmrc` com `engine-strict=true` afeta o `npm ci` em CI, ou só o npm install local?
-> A nota apresenta o `.npmrc` como forma de "reforçar o comportamento para toda a equipe", mas não fica claro se `engine-strict` também é lido pelo `npm ci` rodando no runner do GitHub Actions — ou se o CI já usa a versão de Node fixada pelo `actions/setup-node` e ignora o `.npmrc`. Se o runner já está com Node 22 e o projeto exige `>=22.0.0`, o `engine-strict` só adiciona ruído, ou tem alguma garantia extra que o `setup-node` não oferece?
+> [!question]- `engine-strict` acrescenta algo se `setup-node` já fixa a versão do Node?
+> Sim — e os dois mecanismos operam em camadas diferentes. O `actions/setup-node` garante que o runner use a versão correta do Node antes de qualquer npm command. O `engine-strict=true` no `.npmrc` faz o próprio `npm ci` verificar, durante a instalação, se a versão ativa satisfaz o campo `engines` do `package.json` — e falhar se não satisfizer. Isso pega dois casos que o `setup-node` sozinho não cobre: (1) um dev que ignora o `.nvmrc` e roda `npm ci` localmente com a versão errada; (2) outro runner (ex: self-hosted, Dockerfile de dev) que não usa `actions/setup-node`. Em suma: `setup-node` é a garantia de CI, `engine-strict` é a rede de segurança universal — os dois coexistem sem conflito, e quando a versão bate (o caso normal no CI), `engine-strict` adiciona zero overhead.
 
 ```json
 // package.json — cravar a versão do Node esperada
@@ -354,8 +354,33 @@ flowchart TD
 
 **Abordagem 2 — `window.env` via `envsubst`:** o bundle usa `window.env.VITE_API_URL` em vez de o valor hardcoded. O `index.html` tem um placeholder `"${VITE_API_URL}"`. No startup do container, um script roda `envsubst` e substitui o placeholder pelo valor real da variável de ambiente do container. Você tem um único bundle; só o HTML muda por ambiente. Esta é a abordagem **build once, deploy many** de verdade.
 
-> [!duvida] Como o bundle passa a ler `window.env.VITE_API_URL` se o Vite substitui `import.meta.env.VITE_*` em build-time?
-> A nota descreve o resultado (bundle usa `window.env`), mas não explica como chegar lá. O código TypeScript de origem provavelmente ainda usa `import.meta.env.VITE_API_URL` — se o Vite substitui esse valor em build-time, a troca para `window.env` precisaria ser feita no código-fonte antes do build, não depois. Como fica o código TypeScript? Existe um plugin Vite que reescreve `import.meta.env.*` para `window.env.*`? Ou o dev precisa trocar manualmente todas as referências no código?
+O mecanismo que torna isso possível é um plugin Vite — como o [`vite-plugin-runtime-env`](https://github.com/micha149/vite-plugin-runtime-env). O plugin intercepta o build e faz duas coisas: (1) reescreve automaticamente todas as ocorrências de `import.meta.env.VITE_*` no bundle gerado para `window.env.VITE_*`; (2) injeta no `index.html` um bloco `<script>` com os placeholders que o `envsubst` vai substituir. O código TypeScript que você escreve não muda — você continua usando `import.meta.env.VITE_API_URL` normalmente; o plugin faz a reescrita durante o bundle. O resultado é que o bundle é estático e cacheável, e apenas o HTML varia por ambiente.
+
+```typescript
+// vite.config.ts — habilitando runtime env
+import { defineConfig } from 'vite';
+import runtimeEnv from 'vite-plugin-runtime-env';
+
+export default defineConfig({
+  plugins: [runtimeEnv()],
+  // Não inclua VITE_API_URL nas env vars de build — deixe vazio ou use placeholder
+});
+```
+
+```html
+<!-- index.html gerado pelo plugin — placeholder para envsubst -->
+<script>
+  window.env = {
+    VITE_API_URL: "${VITE_API_URL}"  // substituído no startup do container
+  };
+</script>
+```
+
+```bash
+# entrypoint.sh do container — roda antes de nginx/node servir o app
+envsubst < /usr/share/nginx/html/index.html > /tmp/index.html
+cp /tmp/index.html /usr/share/nginx/html/index.html
+```
 
 **Abordagem 3 — Sem variáveis de API no cliente:** o frontend só chama `/api/*` (relativo ao próprio domínio); um servidor na borda (nginx, BFF Node) proxia para a API real. Nenhuma URL de API fica no bundle. Mais robusto, mais complexo.
 
@@ -450,8 +475,18 @@ Um build que acessa a rede pode ser **interceptado**. Um atacante com acesso ao 
 
 O projeto Bazel do Google, adotado em larga escala para builds C++/Java, foi projetado com hermeticidade como propriedade central. Para o ecossistema JS, a abordagem mais próxima é um Dockerfile **multi-stage** onde a fase de instalação de dependências é executada em uma camada separada e o resultado (node_modules snapshottado) é copiado para a fase de build — sem acesso à internet nesta segunda fase:
 
-> [!duvida] O Docker multi-stage realmente executa o Stage 2 sem acesso à rede, ou isso é só uma convenção sem enforcement?
-> A nota diz que Stage 2 roda "sem acesso à internet", mas não explica o mecanismo que garante isso. Por padrão, o Docker não bloqueia rede durante o build — nada impede que um `RUN curl ...` no Stage 2 funcione. Seria necessário passar `--network=none` no `docker build`? E se sim, o CI precisa de configuração extra para isso? A distinção entre "convenção de não chamar npm install" e "isolamento real de rede" é crítica para um build genuinamente hermético.
+> [!warning] Multi-stage não garante isolamento de rede por padrão — precisa de `--network=none`
+> Por padrão, o Docker não bloqueia acesso à rede em nenhum stage. Omitir `npm install` no Stage 2 é uma convenção arquitetural, não um enforcement. Se qualquer script do Stage 2 fizer `curl` ou `wget`, vai funcionar — e você não vai saber. Para isolamento real, passe `--network=none` no comando de build, ou por stage via `RUN --network=none`:
+>
+> ```bash
+> # Isola o build inteiro da rede
+> docker build --network=none -t meu-app .
+>
+> # Ou por stage (BuildKit) — isola só o Stage 2
+> # No Dockerfile: RUN --network=none npm run build
+> ```
+>
+> No GitHub Actions, o runner tem acesso à internet por padrão; adicionar `--network=none` ao step de `docker build` é o que transforma a convenção em garantia. Aceite que para o típico deploy de SPA em CDN, a convenção é suficiente — o risco é baixo quando o Stage 2 genuinamente não precisa de rede. Para artefatos de produção crítica com requisitos de auditoria, `--network=none` é o enforcement correto.
 
 ```dockerfile
 # Dockerfile multi-stage com build hermético
@@ -539,8 +574,8 @@ jobs:
 
 O attestation gerado é um JSON assinado (usando Sigstore/cosign por baixo) que qualquer pessoa pode verificar independentemente. Isso é o que significa "provenance verificável" na prática.
 
-> [!duvida] O que impede alguém de gerar um attestation falso rodando o mesmo workflow numa fork?
-> A nota diz que "o runner do GitHub (não o seu código) assina o attestation com a chave do GitHub" e que "você não pode forjar isso localmente" — mas não explica por que. A chave privada do GitHub nunca sai do runner efêmero? Existe algum mecanismo de OIDC que vincula o token ao repositório de origem, tornando um attestation gerado numa fork de um repositório diferente verificavelmente distinto? Sem entender o mecanismo de confiança, fica difícil saber o que o Nível 2 realmente garante versus o que ainda é vulnerável.
+> [!question]- Por que um attestation gerado numa fork não é válido para o repositório original?
+> O mecanismo é OIDC + Sigstore. Quando o runner executa `actions/attest-build-provenance`, ele requisita ao GitHub um OIDC token efêmero — um JWT assinado pelo GitHub que inclui claims como `repository` (`owner/repo`), `workflow`, `ref` e `sha`. Esse token é enviado ao Fulcio (CA do Sigstore), que emite um certificado X.509 de curta duração vinculado exatamente àquelas claims. O attestation é assinado com esse certificado, e o par (attestation + certificado) é registrado no Rekor, o transparency log público do Sigstore. A chave privada nunca sai do runner — ela é gerada efêmeramente e o certificado expira em minutos. Uma fork em `attacker/myrepo` receberia um OIDC token com `repository: attacker/myrepo` — um attestation verificável como "gerado nessa fork", mas que falha ao verificar contra `owner/myrepo`. O `gh attestation verify dist/index.js --repo owner/myrepo` rejeita porque o certificado no attestation vincula a fork, não o repo original. O que ainda é vulnerável: um mantenedor com write access ao repo original pode gerar um attestation legítimo com código adulterado — SLSA Nível 3+ mitiga isso exigindo runners efêmeros e fonte verificável por commit SHA.
 
 ### O que é um SBOM (Software Bill of Materials)
 
@@ -979,3 +1014,6 @@ Com o pipeline de build sólido — determinístico, hermético, com provenance 
 - **Turborepo Docs** — [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) — configuração de remote cache self-hosted e Vercel, modelo de confiança e cache keys
 - **Sigstore / cosign** — [Sigstore Overview](https://www.sigstore.dev/) — infraestrutura de assinatura transparente usada por baixo do `actions/attest-build-provenance` e de toda a cadeia SLSA
 - **Google OSS Rebuild** — [OSS Rebuild Project](https://github.com/google/oss-rebuild) — ferramenta do Google que re-cria builds de pacotes npm/PyPI/etc. independentemente e compara hashes; lançada em 2025
+- **micha149/vite-plugin-runtime-env** — [GitHub](https://github.com/micha149/vite-plugin-runtime-env) — plugin Vite que reescreve `import.meta.env.VITE_*` para `window.env.VITE_*` no bundle e injeta placeholders no `index.html` para `envsubst`; habilita o padrão build once, deploy many sem alterar o código TypeScript
+- **Docker Docs** — [None network driver](https://docs.docker.com/engine/network/drivers/none/) — documentação oficial do flag `--network=none` para isolamento total de rede em containers; aplicável por stage em BuildKit via `RUN --network=none`
+- **Sigstore Blog** — [cosign Verification of npm Provenance, GitHub Artifact Attestations](https://blog.sigstore.dev/cosign-verify-bundles/) — explica o mecanismo OIDC + Fulcio + Rekor por trás dos attestations do GitHub Actions e como o certificado vincula o attestation ao repositório de origem, impedindo forjamento por forks

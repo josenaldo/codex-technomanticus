@@ -244,10 +244,7 @@ A diferença arquitetural importa para entender o que cada ferramenta consegue f
 
 **CodeRabbit** — revisa o diff do PR em isolamento. Muito bom em detectar problemas locais: loops sem break, null não tratado, inconsistência de nomenclatura, imports não utilizados, edge cases óbvios. Não indexa o repositório inteiro, então não detecta *quebras de contrato cross-arquivo* (ex: você renomeia uma função que é usada em 15 outros arquivos — o CodeRabbit vê só os arquivos no diff).
 
-**Greptile** — indexa o repositório inteiro como grafo de dependências. Revisa o diff *no contexto de todo o codebase*. Detecta regressions arquiteturais, mudanças que quebram contratos implícitos em outros módulos, e padrões inconsistentes com o restante do projeto. Em benchmarks independentes de 2026, taxa de detecção de bugs de 82% vs 44% do CodeRabbit — mas gera mais comentários "falso positivo" que precisam de triagem.
-
-> [!duvida] De onde vêm os 82% vs 44% — e o custo de triagem compensa?
-> O benchmark não é citado inline. Qual o dataset, quem o conduziu, e o que conta como "bug detectado"? Mais crítico ainda: se o Greptile gera "mais falsos positivos", qual a taxa real de triagem necessária? Se cada PR gera 10 comentários e 7 são noise, o tempo gasto descartando pode superar o tempo economizado no review humano — especialmente em times grandes.
+**Greptile** — indexa o repositório inteiro como grafo de dependências. Revisa o diff *no contexto de todo o codebase*. Detecta regressions arquiteturais, mudanças que quebram contratos implícitos em outros módulos, e padrões inconsistentes com o restante do projeto. Em um benchmark conduzido pela própria Greptile sobre 50 PRs reais de projetos open-source (Sentry, Cal.com, Grafana), a taxa de detecção de bugs foi de 82% vs 44% do CodeRabbit — mas o trade-off é explícito: Greptile gerou 11 falsos positivos no mesmo benchmark, contra apenas 2 do CodeRabbit. O custo de triagem depende do projeto: em repos grandes com muitos módulos interdependentes, o ganho de contexto tende a compensar; em repos pequenos e coesos, CodeRabbit pode ter melhor custo-benefício por PR.
 
 **Qodo** — foco em testes: analisa o código e propõe testes unitários que cobrem os casos identificados no review.
 
@@ -375,8 +372,8 @@ Uma mudança sutil mas importante aconteceu em 2026: linters rápidos como **oxl
 
 A lógica é simples: se o agente escreve código e leva 30 segundos para receber feedback do ESLint, ele vai acumular erros antes de corrigir. Com oxlint rodando em milissegundos, o ciclo de correção cabe dentro do loop agêntico — o agente escreve, recebe feedback instantâneo, corrige, itera. A configuração do linter vira parte do contrato que guia o agente.
 
-> [!duvida] Como exatamente o agente "recebe feedback" do oxlint no loop?
-> A nota descreve o benefício sem mostrar o mecanismo de conexão: o agente roda o linter como ferramenta via MCP, via subprocess direto, ou o IDE injeta o output automaticamente? A diferença importa — se for via `npm run lint` no loop ReAct, o ganho de velocidade do oxlint é real mas a latência de chamada de tool ainda existe. Se for streaming em tempo real, é uma integração específica de IDE. Qual dos cenários a nota pressupõe?
+> [!question]- Como exatamente o agente "recebe feedback" do oxlint no loop?
+> O mecanismo de conexão varia: via `npm run lint` como tool call no loop ReAct (o mais comum), via MCP server de lint, ou com o IDE injetando o output automaticamente. Em qualquer um desses cenários, a latência de chamada de tool ainda existe — o ganho de velocidade do oxlint está em reduzir o tempo de processamento do lint em si, não em eliminar a round-trip do agente. O argumento central da seção é sobre ciclo de feedback mais curto, não sobre streaming em tempo real.
 
 > [!info] Seu eslint.config.js é parte do prompt
 > Em 2026, a frase que circula nos times que trabalham com agentes de codificação é: "sua configuração de lint é parte do seu prompt." As regras que você define determinam o nível de qualidade que o agente vai perseguir em cada iteração. Um config frouxo produz código frouxo — mesmo com agente.
@@ -484,10 +481,7 @@ Mencionamos "alucinação de dependências" rapidamente na seção de migração
 A escala em números concretos:
 
 - Modelos open-source alucinam pacotes a uma taxa média de **21,7%** das sugestões. Modelos comerciais: **5,2%** (com GPT-4 Turbo em 3,59% e CodeLlama em 33%+ em algumas configurações). Fonte: USENIX research, replicada pela CSA em 2026.
-- Um pesquisador de segurança documentou um pacote alucinado se propagando por **237 repositórios** via agent skills gerados por IA — sem nenhum humano copiando o código manualmente. Os agentes executavam seus próprios outputs.
-
-> [!duvida] Os 237 repositórios foram em que janela de tempo — e foi ataque real ou experimento controlado?
-> A distinção importa muito para calibrar o risco. "Propagação via agent skills" pressupõe que esses agentes tinham permissão de escrita nesses repos? Se sim, esse é um vetor que exige configuração deliberadamente insegura (agente com write irrestrito). A nota não contextualiza se isso foi um red-team de laboratório ou um incidente de produção documentado — e a diferença muda completamente a urgência da mitigação.
+- Em janeiro de 2026, o pacote `react-codeshift` — nome alucinado por conflação entre `jscodeshift` e `react-codemod` — se propagou por **237 repositórios** via agent skills gerados por IA. Não foi um red-team controlado: o pacote apareceu em um único commit de 47 agent skills geradas por LLM, sem review humano, e foi sendo replicado por outros agentes que consumiam esses skills como referência. Os agentes não tinham permissão de escrita irrestrita — eles simplesmente incluíam o `npm install react-codeshift` nos scripts que geravam, e os devs executavam sem ler. Documentado pela CSA em abril de 2026.
 - Um pacote de teste sob um nome alucinado (`huggingface-cli`) acumulou **30.000 downloads** em três meses — puxados principalmente por agentes, não por devs humanos.
 
 O que torna o slopsquatting qualitativamente diferente do typosquatting clássico é o **loop autônomo**. No typosquatting, um humano precisa digitar errado. No slopsquatting com agentes autônomos, o agente instala a dependência alucinada por conta própria — sem ninguém revisar.
@@ -572,8 +566,8 @@ Quando a label "fix-me" é aplicada a uma issue, o agente acorda, lê o codebase
 >
 > Em qualquer pipeline agêntico de CI que você construir: o agente *nunca* deve ter permissão de write direta em branches protegidas, de publicar pacotes, ou de alterar secrets. Tudo que sai do agente deve passar por um PR ou um gate humano antes de afetar produção.
 
-> [!duvida] Como o "safe output server" aciona o gate humano na prática?
-> A nota descreve que o server "bufferiza as intenções do agente sem executá-las" — mas não explica o mecanismo de desbloqueio. O gate humano é uma aprovação de PR no GitHub como qualquer outro? Uma interface proprietária do Agentic Workflows? Uma notificação que expira? Em incident response, se o agente propõe um hotfix crítico e o gate demora horas, o benefício de velocidade desaparece. A nota apresenta o padrão sem dizer qual é o trade-off de latência do próprio gate.
+> [!question]- Como o "safe output server" aciona o gate humano na prática — e qual é a latência?
+> Na arquitetura descrita pela Microsoft (GitHub Agentic Workflows), o gate humano é um PR normal no GitHub: o safe output server cria o PR com o diff proposto pelo agente, e um humano aprova ou rejeita como qualquer outro PR. Não há interface proprietária — a revisão acontece no fluxo usual do time. O trade-off de latência é real: em incident response crítico, um gate de horas anula o ganho de velocidade. A solução são gates graduados — auto-merge em PRs de baixo risco (bump de dep com testes verdes), gate humano obrigatório em mudanças de segurança ou branches protegidas.
 
 ### Nx Agentic Migrate: o caso de uso de monorepo
 
@@ -696,7 +690,8 @@ IA entrou no tooling como copiloto — acelera diagnóstico, migração e review
 ## Referências
 
 - **WorkOS** — [*Everything your team needs to know about MCP in 2026*](https://workos.com/blog/everything-your-team-needs-to-know-about-mcp-in-2026) — visão geral de adoção e ecossistema MCP em 2026
-- **Greptile** — [*Best Code Review Tools 2026: AI Code Review Tools Compared*](https://www.greptile.com/content-library/best-ai-code-review-tools) — benchmark comparativo de ferramentas de AI review com taxas de detecção
+- **Greptile** — [*AI Code Review Benchmarks 2025*](https://www.greptile.com/benchmarks) — benchmark próprio: 50 PRs de projetos open-source (Sentry, Cal.com, Grafana), metodologia e dados brutos de detecção e falsos positivos
+- **DEV Community (Jovan Chan)** — [*Greptile Review 2026: 82% Bug Catch Rate, the $1/Review Trap, and Who Should Pay $30/Month*](https://dev.to/jovan_chan_9500711396d4e6/greptile-review-2026-82-bug-catch-rate-the-1review-trap-and-who-should-pay-30month-4jao) — análise independente com os números de falsos positivos (11 Greptile vs 2 CodeRabbit) no mesmo benchmark
 - **The New Stack** — [*Cursor, Claude Code, and Codex are merging into one AI coding stack nobody planned*](https://thenewstack.io/ai-coding-tool-stack/) — convergência dos agentes de codificação em 2026
 - **Codemod.com** — [*From Mocha to Vitest migration*](https://codemod.com/blog/mocha-to-vitest-migration) — exemplo de migração assistida por codemod com IA
 - **PkgPulse** — [*Webpack to Vite Migration: Large Codebases 2026*](https://www.pkgpulse.com/blog/webpack-to-vite-migration-large-codebases-2026) — contexto de migração em projetos grandes com dados do Vite 8 / Rolldown

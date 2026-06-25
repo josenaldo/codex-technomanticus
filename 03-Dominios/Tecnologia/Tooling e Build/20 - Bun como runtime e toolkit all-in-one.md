@@ -30,8 +30,7 @@ O Bun surgiu em 2021 como uma resposta direta a esse problema. A proposta de Jar
 
 O resultado é uma ferramenta com quatro papéis distintos que compartilham o mesmo binário:
 
-> [!duvida] O que exatamente é Zig e por que ele importa aqui?
-> A nota apresenta Zig como linguagem de sistemas "com controle fino de memória, sem garbage collector", mas não explica o que isso significa na prática para o Bun. Por que escrever o runtime em Zig (e não em C, Rust, ou Go) resulta em velocidade? Qual é a relação entre "sem garbage collector" e "cold start de 8ms"?
+Por que Zig — e não C, Rust ou Go? A resposta está no que Zig *elimina*: garbage collector e alocações ocultas. Linguagens como Go e Java pausam o programa periodicamente para liberar memória — o famoso "stop-the-world". Zig não tem GC: memória é alocada e liberada de forma explícita e determinística, sem pausas. Rust tem o mesmo princípio, mas exige um sistema de propriedade de memória (borrow checker) com complexidade considerável. Zig faz a mesma coisa com menos cerimônia: "sem alocação oculta" é uma garantia do compilador, não uma convenção. O resultado prático para o Bun é que ao iniciar, o binário não precisa inicializar um runtime de GC, não há janela de aquecimento — daí o cold start de ~8ms.
 
 1. **Runtime** — executa JavaScript e TypeScript nativamente (sem `tsc` separado)
 2. **Package manager** — `bun install`, `bun add`, `bun remove` (já visto na [[03 - Package managers - npm, pnpm, yarn e Bun]])
@@ -164,8 +163,9 @@ O `--watch` do Bun reinicia o processo quando qualquer arquivo muda — equivale
 
 O Bun não é apenas um runtime que roda JavaScript mais rápido. Ele vem com um conjunto de APIs nativas — implementadas em Zig — que substituem pacotes de terceiros com desempenho substancialmente maior.
 
-> [!duvida] O que é "marshaling" e por que evitá-lo é vantagem?
-> A nota menciona repetidamente que o Bun é mais rápido por "evitar o overhead de marshaling N-API" (em bun:sqlite, bun:postgres, Bun.password). Um pleno que nunca trabalhou com addons nativos pode não saber o que é marshaling, por que o N-API introduz esse custo, e por que o fato de o Bun ser escrito em Zig elimina esse problema. O mecanismo está oculto — a nota afirma o resultado (3–6× mais rápido) sem mostrar o porquê. As três mais importantes para o dia a dia são `Bun.serve`, `Bun.file` e `bun:sqlite`. Mas o ecossistema de APIs built-in é mais amplo: inclui `Bun.password`, `Bun.spawn`, variáveis de ambiente inline, e WebSocket nativo.
+As três mais importantes para o dia a dia são `Bun.serve`, `Bun.file` e `bun:sqlite`. Mas o ecossistema de APIs built-in é mais amplo: inclui `Bun.password`, `Bun.spawn`, variáveis de ambiente inline, e WebSocket nativo.
+
+**Por que "sem marshaling" importa?** Marshaling é a conversão de dados entre representações de memória incompatíveis — no caso do N-API, é a tradução que acontece cada vez que JavaScript chama código nativo (C/C++): os tipos JS precisam ser convertidos para tipos C, executados, e o resultado convertido de volta. Toda essa tradução tem custo de CPU. O `better-sqlite3` (driver SQLite para Node) funciona exatamente assim: código JS → N-API → C. No Bun, o driver SQLite é escrito em Zig e roda no mesmo processo que o runtime — sem fronteira de linguagem para cruzar, sem conversão. O dado vai de Zig para JS diretamente, pelo mesmo heap. Daí o 3–6× de vantagem em benchmarks.
 
 ### Bun.serve — servidor HTTP nativo
 
@@ -444,8 +444,7 @@ bun build src/index.ts --outdir dist --sourcemap=external
 
 O `--compile` merece destaque: ele gera um executável independente que inclui o runtime Bun embutido. Um TypeScript → um binário de ~90MB que roda em qualquer máquina Linux/macOS/Windows sem precisar do Bun instalado. Equivalente ao `pkg` do Node, mas com o bundler integrado ao invés de ser uma ferramenta separada.
 
-> [!duvida] Por que o binário standalone tem ~90MB se o código-fonte é pequeno?
-> Um TypeScript com poucas centenas de linhas gera um executável de ~90MB. A nota não explica o que ocupa esse espaço — é o runtime completo do Bun (JavaScriptCore) embutido? Se sim, como isso se compara ao `node --experimental-sea-config` (referenciado em [[22 - Single Executable Apps (SEA) e empacotamento]])? Qual é o tamanho típico do SEA do Node?
+Os ~90MB não são do seu código — são do runtime inteiro do Bun embutido: o JavaScriptCore (motor da Apple), o linker Zig, o parser TypeScript e as APIs nativas. O seu TypeScript ocupa alguns KBs; o restante é o runtime que garante que o executável rode em qualquer máquina sem Bun instalado. Para comparação: um SEA do Node (`node --experimental-sea-config`) produz arquivos de ~82MB pela mesma razão — inclui o binário do Node (V8 + libs). O Bun é ~8MB maior porque o JavaScriptCore pesa um pouco mais que o V8 nessa configuração. O `--compile` do Bun tem a vantagem de ser um único comando vs o processo multi-etapa do SEA — detalhes em [[22 - Single Executable Apps (SEA) e empacotamento]].
 
 ```mermaid
 flowchart LR
@@ -980,8 +979,9 @@ flowchart TD
 
 O que mudou com a aquisição pela Anthropic (novembro de 2025) é principalmente o risco de abandono.
 
-> [!duvida] O que significa "Anthropic usa o Bun como runtime do Claude Code"?
-> A nota afirma que a Anthropic usa o Bun para o Claude Code "aproveitando os cold starts de ~8ms para um CLI que acorda constantemente". Mas um CLI não é um processo serverless — uma vez iniciado, ele fica ativo enquanto o usuário trabalha. Em que sentido um CLI "acorda constantemente"? Esse modelo de uso é diferente de um servidor HTTP de longa duração? O Bun sempre foi MIT open-source, mas como projeto independente da Oven (startup pequena), havia legítima preocupação com sustentabilidade. Com a Anthropic como backing — que usa o Bun como runtime do Claude Code, aproveitando os cold starts de ~8ms para um CLI que "acorda" constantemente — o projeto ganhou credibilidade de infra crítica. Não muda o código, muda o cálculo de risco para adoção.
+O Bun sempre foi MIT open-source, mas como projeto independente da Oven (startup pequena), havia legítima preocupação com sustentabilidade. A aquisição pela Anthropic (anunciada em dezembro de 2025) muda esse cálculo: o Claude Code — que atingiu US$1B de receita anual recorrente em novembro de 2025 — é distribuído como um executável Bun para milhões de usuários. O Bun tornou-se infra crítica da Anthropic, não um experimento de startup.
+
+A questão do cold start para um CLI merece precisão: diferentemente de um servidor de longa duração, um CLI como o Claude Code é invocado muitas vezes ao dia (cada chamada no terminal é um processo separado) e é instalado via binário compilado com `bun build --compile`. O cold start de ~8ms é relevante na **experiência de instalação e no tempo de resposta da primeira invocação** — não no modelo de execução contínua. Para uso interativo prolongado (sessões abertas), o ganho de startup é menos perceptível; para uso em scripts e CI que invocam o CLI repetidamente, o acúmulo é real.
 
 O que ainda falta em 2026:
 - **Política LTS formal** — o Node.js tem ciclos de LTS documentados (18 meses de manutenção ativa); o Bun tem releases frequentes mas sem garantia de longo prazo por versão
@@ -1090,6 +1090,11 @@ The key selling points in an interview context:
 - [WinterTC — Server-side JS runtimes interoperability](https://wintercg.org/) — padrão Request/Response para Bun, Deno, Cloudflare Workers
 - [OWASP — Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) — recomendações Argon2id vs bcrypt
 - [Bun GitHub — Node.js test suite compat tracker](https://github.com/oven-sh/bun/issues/1844) — acompanhamento dos ~98% de compatibilidade
+- [Bun Single-file executable — documentação oficial](https://bun.com/docs/bundler/executables) — `--compile`, tamanho do executável (~90MB), runtime embutido
+- [Anthropic acquires Bun — press release](https://www.anthropic.com/news/anthropic-acquires-bun-as-claude-code-reaches-usd1b-milestone) — aquisição dezembro/2025, Claude Code como caso de uso central
+- [Bun is joining Anthropic — Bun Blog](https://bun.com/blog/bun-joins-anthropic) — perspectiva da equipe do Bun sobre a aquisição
+- [Why Zig When There is Already C++, D, and Rust?](https://ziglang.org/learn/why_zig_rust_d_cpp/) — fundamentos de design do Zig: sem GC, sem alocações ocultas
+- [Node.js N-API — documentação oficial](https://nodejs.org/api/n-api.html) — interface estável C para addons nativos; overhead de marshaling
 
 ---
 
