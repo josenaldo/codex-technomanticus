@@ -519,7 +519,7 @@ Props são suficientes para dados que vêm de fora — mas e os dados que o pró
 precisa controlar? Um contador, um campo de formulário, se um modal está aberto? Para isso existe
 o `useState` — o hook que dá ao componente sua própria memória entre renders.
 
-- [[03-Dominios/Tecnologia/React/React core/04 - useState e estado local|04 - useState e estado local]] — como um componente lembra de informações entre renders
+- [[05 - useState e estado local]] — como um componente lembra de informações entre renders
 - [[03-Dominios/Tecnologia/React/React core/08 - Renderização condicional e composição|08 - Renderização condicional e composição]] — composição e slots a fundo: render props, children como função
 - [[03-Dominios/Tecnologia/React/React core/11 - useContext e Context API|11 - useContext e Context API]] — a solução canônica para prop drilling: dados globais sem repasse manual
 - [[03-Dominios/Tecnologia/React/TypeScript com React/index|TypeScript com React]] — tipagem avançada de props: generics, polymorphic components, `as` prop
