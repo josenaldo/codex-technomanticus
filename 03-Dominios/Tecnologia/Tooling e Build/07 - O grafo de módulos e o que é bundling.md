@@ -157,10 +157,15 @@ flowchart LR
 > [!note] Leitura do diagrama
 > As quatro etapas são sequenciais mas iterativas: parsear um módulo revela novos imports que precisam ser resolvidos e parseados, repetindo o ciclo até o grafo estar completo. Somente depois do grafo completo é que o chunking acontece.
 
-**1. Parsear e descobrir.** O bundler lê o arquivo do entry point, analisa o AST (Árvore Sintática Abstrata) em busca de `import` e `require`, e enfileira cada dependência descoberta para processamento. Para cada dependência, repete o processo. É uma travessia em largura (BFS) ou profundidade (DFS) do grafo — o Rolldown usa BFS explicitamente.
+**1. Parsear e descobrir.** O bundler lê o arquivo do entry point e constrói o **AST** — a Árvore Sintática Abstrata (Abstract Syntax Tree). Pense no AST como a radiografia do código: o parser lê o texto do arquivo e produz uma estrutura em árvore onde cada nó representa um elemento da linguagem (uma declaração `import`, uma função, uma variável). O bundler não precisa entender a semântica do programa — só precisa encontrar os nós do tipo `ImportDeclaration` e extrair o especificador de módulo (o `"./ui/render.js"` do `import { render } from "./ui/render.js"`).
 
-> [!duvida] O que é AST e o que é "travessia em largura (BFS) ou profundidade (DFS)"?
-> O texto menciona "Árvore Sintática Abstrata" e as siglas BFS/DFS de passagem, mas não explica o que são. O bundler "analisa o AST" — mas como isso funciona na prática? E qual a diferença entre percorrer o grafo em largura vs. profundidade? Isso muda o resultado final do bundle?
+Cada dependência descoberta vai para uma fila de processamento. A forma de percorrer essa fila determina a estratégia de travessia:
+
+- **BFS (Breadth-First Search, ou busca em largura)**: o bundler processa todos os vizinhos diretos de um nó antes de descer para os nós mais profundos. Começando em `main.js`, primeiro processa `render.js` e `client.js` (filhos diretos), depois `format.js` e `config.js` (netos). O Rolldown usa BFS explicitamente — isso favorece paralelismo, porque os módulos do mesmo nível podem ser parseados em paralelo.
+
+- **DFS (Depth-First Search, ou busca em profundidade)**: o bundler desce por um caminho até a folha antes de voltar e explorar outro ramo. Começando em `main.js`, vai direto para `render.js → format.js`, depois volta e processa `client.js → config.js`.
+
+O resultado final do bundle é idêntico nas duas estratégias — todos os módulos alcançáveis são visitados. O que muda é a **ordem de descoberta** durante o processamento, o que afeta oportunidades de paralelismo: BFS descobre mais módulos independentes mais cedo, permitindo que o bundler paralelize mais trabalho de parsing e transformação.
 
 **2. Resolver.** Um `import { render } from "./ui/render.js"` é um caminho relativo — fácil. Mas `import React from "react"` é um **bare import** — não tem caminho, é só um nome. O resolver traduz esse nome para o caminho físico real em `node_modules/react/index.js`, seguindo as regras do `package.json` do pacote (campo `main`, `exports`, condicionais de ambiente). Essa resolução é o motivo pelo qual bundlers precisam conhecer `node_modules` — o browser não sabe resolver bare imports sozinho.
 
@@ -278,10 +283,21 @@ graph LR
 > [!note] Leitura do diagrama
 > O grafo tem um ciclo: `a.js → b.js → a.js`. Para o bundler percorrer esse grafo, ele precisa detectar o ciclo e parar de recursar, senão entraria em loop infinito.
 
-**O que acontece em runtime:** quando o bundler (ou o Node com ESM) encontra um ciclo, ele usa o que já processou até aquele ponto. O módulo que está sendo importado no meio da sua própria inicialização retorna um "live binding" ainda não resolvido — tipicamente `undefined` no momento em que o módulo dependente lê o valor.
+**O que acontece em runtime:** quando o bundler (ou o Node com ESM) encontra um ciclo, ele usa o que já processou até aquele ponto. Para entender por que isso causa `undefined`, você precisa entender o que é um **live binding**.
 
-> [!duvida] O que é "live binding" e por que ele pode ser `undefined`?
-> A nota usa o termo "live binding" sem nunca ter explicado o que é. Por que um módulo no meio da inicialização retorna `undefined` em vez de simplesmente travar ou dar erro? O que torna um binding "live" (vivo) em vez de uma cópia normal do valor?
+Em ESM, quando você faz `import { a } from "./a.js"`, você não recebe uma cópia do valor de `a` no momento do import — você recebe uma **referência viva** para a variável `a` no escopo do módulo exportador. É como se o import fosse um ponteiro que sempre aponta para o slot de memória onde `a` vive no módulo `a.js`. Quando `a.js` muda o valor de `a`, qualquer módulo que importou `a` enxerga o novo valor automaticamente — sem precisar re-importar.
+
+Isso contrasta com CommonJS (`require`), onde você recebe uma cópia do valor no momento da chamada. Em CommonJS, se o módulo exportador mudar o valor depois, o módulo importador não enxerga a mudança.
+
+O problema com ciclos é de **ordem de inicialização**. Quando `a.js` é carregado:
+
+1. O motor ESM cria o slot de memória para `a` (o live binding), mas ainda não executa o código de `a.js`.
+2. `a.js` começa a executar e tenta importar `b` de `b.js`.
+3. `b.js` começa a executar e tenta importar `a` de `a.js`.
+4. O motor detecta que `a.js` já está em processo de carregamento — não entra em loop, mas devolve o live binding atual de `a`.
+5. O live binding de `a` existe, mas o código de `a.js` ainda não terminou de executar — então o slot de `a` ainda não foi atribuído. O valor lido por `b.js` é `undefined`.
+
+O módulo não trava nem lança erro porque o live binding é um mecanismo válido — ele simplesmente aponta para um slot ainda não inicializado. O bug é silencioso: `b` termina de inicializar com `a === undefined`, e esse valor incorreto pode se propagar.
 
 ```js
 // Resultado real do exemplo acima (em ESM):
@@ -317,10 +333,18 @@ Dependências circulares em projetos React frequentemente emergem de index files
 
 ## Scope hoisting: uma otimização invisível que muda o comportamento
 
-Bundlers ingênuos simplesmente concatenam os módulos, embrulhando cada um em uma função para criar escopo isolado:
+Bundlers ingênuos simplesmente concatenam os módulos, embrulhando cada um em uma função para criar escopo isolado. Por que é necessário? Porque JavaScript tem escopo léxico: variáveis declaradas com `var` em nível de script vazam para o escopo global. Se você simplesmente concatenasse os arquivos, dois módulos que declaram `var helper = ...` teriam um conflito — o segundo `helper` sobrescreveria o primeiro, silenciosamente.
 
-> [!duvida] Por que embalar cada módulo em uma função cria "escopo isolado"? O que aconteceria sem isso?
-> A nota diz que o bundler "embrulha cada módulo em uma função para criar escopo isolado", mas não explica por que isso é necessário. Se dois módulos diferentes definem uma variável com o mesmo nome, o que aconteceria sem esse isolamento? E o que exatamente é uma IIFE?
+A solução clássica é embrulhar cada módulo numa **IIFE** (Immediately Invoked Function Expression — "Expressão de Função Imediatamente Invocada"). Uma IIFE é uma função que se define e já se chama na mesma expressão:
+
+```js
+(function() {
+  // tudo aqui está no escopo da função, não no escopo global
+  var helper = "valor local"; // não conflita com outros módulos
+})(); // os parênteses do final chamam a função imediatamente
+```
+
+O truque é que funções criam um escopo próprio em JavaScript. Qualquer `var` declarada dentro da função existe apenas dentro dela. Então, cada módulo ganha seu próprio "bolsão" de escopo, e variáveis com o mesmo nome em módulos diferentes não se atropelam.
 
 ```js
 // bundle.js (sem scope hoisting) — cada módulo em sua própria IIFE
@@ -552,8 +576,12 @@ Com bundling, o app que antes fazia 30 requisições HTTP passou a fazer 2 ou 3 
 1. **Minificação e tree-shaking**: um bundler elimina código morto e comprime o que sobra. Módulos individuais não-minificados somam mais bytes do que um bundle otimizado.
 2. **Otimizações intermodulares**: o bundler vê o grafo inteiro e pode fazer inlining de funções pequenas, constant folding entre módulos, e outras otimizações que o browser executando módulos individuais não consegue.
 
-> [!duvida] O que é "constant folding" e "inlining de funções"?
-> A nota lista essas otimizações como argumento moderno para bundling, mas não explica o que são. O que significa "fazer inlining" de uma função? E o que o bundler dobra (fold) quando faz "constant folding"? Sem entender o que são, fica difícil avaliar se valem o custo do bundler.
+> [!question] O que são inlining de funções e constant folding?
+> **Inlining de funções** é substituir a chamada de uma função pelo seu corpo diretamente no ponto onde ela é chamada. Se `formatName(user)` é uma função de uma linha que só retorna `${user.firstName} ${user.lastName}`, o minificador pode eliminar a função e escrever a expressão inline onde ela era chamada — removendo o overhead de chamada de função. O bundler consegue fazer isso porque, com scope hoisting, vê que `formatName` é chamada em exatamente um lugar e é pequena o suficiente para ser substituída.
+>
+> **Constant folding** é avaliar expressões constantes em tempo de build em vez de deixar o browser calcular em runtime. Se um módulo exporta `export const MAX_RETRIES = 3` e outro faz `if (retries >= MAX_RETRIES)`, o bundler pode substituir `MAX_RETRIES` pelo literal `3` e avaliar a expressão `retries >= 3` diretamente — eliminando a variável exportada inteiramente. O bundler "dobra" (fold) a expressão num valor fixo.
+>
+> Ambas as otimizações dependem de o bundler ver o grafo completo. Módulos individuais não têm visibilidade de como são usados por quem os importa — só o bundler tem essa visão global.
 3. **Cache granular via code splitting**: com chunks bem segmentados, você invalida cache só do que mudou — melhor que um bundle monolítico onde qualquer mudança invalida tudo.
 4. **Compatibilidade**: transformar para targets de browsers mais antigos ainda é necessário em muitos produtos, e o bundler é o lugar certo para isso.
 

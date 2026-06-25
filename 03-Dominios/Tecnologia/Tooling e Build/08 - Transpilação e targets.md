@@ -88,8 +88,31 @@ function buscarUsuario(id) {
 
 A função assíncrona virou uma state machine com `__awaiter` e `__generator` — helpers injetados inline (ou importados de `tslib`). O optional chaining `?.` virou a guarda manual `data === null || data === void 0`.
 
-> [!duvida] O que é `tslib` e quando os helpers são "importados" em vez de "injetados inline"?
-> A nota menciona duas opções (inline ou via tslib) mas não explica a diferença nem quando se usa cada uma. Se os helpers são injetados em todo arquivo, eles não se repetem no bundle final? O template literal virou concatenação de string. Tudo isso para uma função de três linhas.
+**Por que existem helpers e por que eles se repetem?** Quando o tsc gera `__awaiter` e `__generator` por padrão, ele injeta o código completo de cada helper em *cada arquivo* que usa `async/await`. Em um projeto com 50 arquivos, isso significa 50 cópias idênticas de `__awaiter` no bundle final — duplicação pura.
+
+A solução é a flag `importHelpers: true` no `tsconfig.json`, que instrui o tsc a importar os helpers de **`tslib`** (um pacote npm oficial do TypeScript) em vez de injetá-los inline:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "importHelpers": true   // requer: npm install tslib
+  }
+}
+```
+
+Com isso, o output gerado troca o bloco inline por uma importação:
+
+```js
+// COM importHelpers: true
+import { __awaiter, __generator } from "tslib";
+
+function buscarUsuario(id) {
+    return __awaiter(this, void 0, void 0, function () { /* ... */ });
+}
+```
+
+O bundler (Rollup, webpack, esbuild) vê que todos os arquivos importam de `tslib` e deduplica — uma única cópia no bundle. A regra prática: **sempre use `importHelpers: true` com `tslib` em projetos com múltiplos arquivos e target ≤ ES2015**. Para SWC, a configuração equivalente é `externalHelpers: true` com `@swc/helpers` (coberto na seção de configuração SWC adiante).
 
 Se o target for ES2017 em vez de ES5, a transformação é quase nula: o `async/await` fica como está, só o TypeScript é apagado:
 
@@ -153,8 +176,6 @@ module.exports = {
 
 Com `useBuiltIns: "usage"`, o Babel analisa o código e injeta apenas os polyfills realmente usados — se seu código nunca usa `Promise.allSettled`, o polyfill não entra no bundle.
 
-> [!duvida] O exemplo de configuração do Babel acima ainda funciona ou está desatualizado?
-> A nota mostra `useBuiltIns` como "integração mais comum" e logo em seguida diz que o Babel 8 removeu essa opção. Projetos novos devem usar o exemplo acima ou já precisam usar `babel-plugin-polyfill-corejs3`? Quando usar Babel 7 vs Babel 8?
 
 > [!warning] Babel 8 mudou isso
 > Em **Babel 8** (lançado em junho de 2026), as opções `useBuiltIns` e `corejs` foram **removidas** do `@babel/preset-env`. A injeção de polyfills agora é feita pelo pacote separado `babel-plugin-polyfill-corejs3`. A migração é mecânica mas necessária — projetos que ainda usam Babel 7 com `useBuiltIns` continuam funcionando, mas quem migrar para Babel 8 precisa ajustar a configuração.
@@ -227,8 +248,8 @@ baseline newly available            # risco calculado mas sem legado
 
 Usar `baseline 2020` com Babel pode reduzir o bundle em 80–90% comparado a `target: ES5` — o artigo da web.dev demonstrou isso com um arquivo indo de 12KB para 1.5KB.
 
-> [!duvida] De onde vem a redução de 12KB para 1.5KB — do downleveling ou dos polyfills?
-> A nota explica que targets mais modernos geram menos helpers de downleveling, e também menos polyfills do core-js. Não fica claro quanto cada um contribui para a redução. Se eu só mudar o target mas não configurar o core-js, ainda terei a redução?
+> [!question] De onde vem a redução de 12KB para 1.5KB — do downleveling ou dos polyfills?
+> Na prática, a redução vem das duas fontes juntas: menos helpers de downleveling (sem `__awaiter`/`__generator` injetados em cada arquivo) e menos polyfills de `core-js` (APIs que browsers modernos já implementam nativamente). Mudar só o target sem configurar `core-js` já reduz o bundle — você elimina os helpers de sintaxe — mas deixa polyfills desnecessários se o `useBuiltIns` ou `babel-plugin-polyfill-corejs3` ainda estiver calculando cobertura para targets antigos. O ganho máximo vem de alinhar as duas configurações.
 
 ```mermaid
 graph LR
@@ -559,8 +580,9 @@ Para o tsc com acesso completo ao projeto, `User` e `UserId` são tipos — eles
 
 O resultado: imports de tipos mortos aparecem no bundle, o que pode causar problemas circulares ou imports de módulos que não existem em runtime.
 
-> [!duvida] Por que esbuild processa cada arquivo isoladamente — não seria mais seguro ler todos?
-> A nota diz que essa isolação é o que permite a velocidade, mas não explica o tradeoff. Se olhar todos os arquivos daria a resposta certa sobre tipos vs valores, por que o esbuild escolhe não fazer isso?
+O tradeoff é deliberado. Para saber se `User` em `import { User } from "./types"` é um tipo ou um valor runtime, o compilador precisaria ler `types.ts`, construir o grafo de todos os exports, inferir se cada um tem representação em runtime — e fazer isso para *todas* as dependências transitivas de *todos* os arquivos. Isso é exatamente o que o tsc faz: análise cross-file completa. O custo é proporcional ao tamanho do projeto.
+
+O esbuild opta por processar cada arquivo como se fosse o único no mundo — sem resolver imports, sem rastrear tipos entre arquivos. O que parece um atalho inseguro na verdade funciona bem com o auxílio de dois flags do `tsconfig.json` (`isolatedModules` e `verbatimModuleSyntax`, descritos a seguir): eles garantem que o código TypeScript já seja escrito de forma que a transpilação isolada seja segura, tornando a distinção tipo/valor explícita no próprio código-fonte.
 
 A solução são dois flags do `tsconfig.json`:
 
