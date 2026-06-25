@@ -188,8 +188,7 @@ export const colors = { primary: '#007bff' }
 
 Se o bundler eliminar `polyfill.js` porque nenhum export é usado, ele quebra o runtime. Se eliminar `theme.css` porque não é um export JS, o visual do app quebra.
 
-> [!duvida] O bundler inclui `polyfill.js` *sempre* que detecta que ele pode ter side effect — mesmo se nenhum módulo da aplicação faz `import './polyfill.js'`? Ou o bundler só fica conservador quando o arquivo *é* importado mas seus exports não são usados?
-> Smell: salto de raciocínio — o problema foi enunciado (remover o arquivo pode quebrar o runtime), mas não ficou claro o *gatilho* para o bundler considerar ou não remover o arquivo.
+O bundler só age quando o arquivo **é alcançado pelo grafo de módulos** — ou seja, quando algum módulo da aplicação (direta ou indiretamente) faz `import './polyfill.js'`. Se nenhum módulo importar o arquivo, o bundler simplesmente não o inclui; não há nada a preservar. O comportamento conservador entra quando o arquivo *foi importado* mas nenhum de seus exports foi utilizado: sem `sideEffects: false`, o bundler presume que o simples ato de importar o arquivo já pode ter produzido efeitos colaterais (como o monkey-patch de `Array.prototype`), e por isso mantém o arquivo no bundle.
 
 O campo `sideEffects` no `package.json` resolve isso explicitamente:
 
@@ -292,8 +291,13 @@ const EnhancedButton = /*#__PURE__*/ withAppProvider()(Button)
 
 A anotação `/*#__PURE__*/` (ou `/*@__PURE__*/`) diz ao minificador (geralmente terser) que aquela chamada de função não tem side effects — pode ser removida se o resultado não for usado.
 
-> [!duvida] Quem aplica a anotação `/*#__PURE__*/` na prática — o desenvolvedor da lib, o desenvolvedor da aplicação, ou o compilador (Babel/SWC) automaticamente? Se o Babel gera isso automaticamente ao compilar JSX ou class components, por que ainda é necessário anotar manualmente casos como `withAppProvider()(Button)`?
-> Smell: ponteiro sem ponte — a anotação é apresentada como solução, mas não fica claro quem tem a responsabilidade de aplicá-la e quando o compilador já cobre esse trabalho.
+Na prática, a responsabilidade é dividida em três camadas:
+
+- **O compilador** (Babel/SWC/TypeScript) anota automaticamente expressões que ele *sabe* serem puras: chamadas de `React.createElement`, `jsx()`, e instanciações de class components compiladas. Por isso, código JSX comum raramente precisa de anotação manual.
+- **O desenvolvedor da lib** é quem deve anotar funções de factory e HOCs que a lib expõe — porque só ele sabe se `withAppProvider()` registra listeners, modifica estado global, ou apenas decora o componente.
+- **O desenvolvedor da aplicação** anota no próprio código quando usa um HOC de terceiros sem anotação e quer garantir remoção caso o resultado não seja utilizado.
+
+O caso de `withAppProvider()(Button)` escapa do compilador porque não é JSX — é uma chamada de função genérica. O compilador não tem como inferir se ela tem side effects. A anotação `/*#__PURE__*/` é a forma explícita de dizer: *"prometo que esta chamada não tem side effects e o resultado pode ser descartado sem consequências"*.
 
 **6. Dynamic `require()` e imports condicionais**
 
@@ -468,8 +472,7 @@ dist/
 
 Sem configuração, cada chunk pode incluir suas próprias cópias de módulos compartilhados. Se `Home` e `Admin` ambos usam `date-fns`, sem chunk compartilhado, `date-fns` vai aparecer em ambos os arquivos.
 
-> [!duvida] Quando dois chunks precisam de `date-fns` e o bundler não cria um chunk compartilhado, cada chunk recebe uma *cópia completa* de `date-fns`? Isso significa que o browser baixa e parseia `date-fns` duas vezes em sessões onde o usuário navega pelas duas rotas?
-> Smell: peça sem encaixe — o problema de duplicação é mencionado, mas o mecanismo concreto (duas cópias no disco vs. dois downloads) não foi explicitado antes de apresentar a solução.
+Sim, exatamente. Quando não há chunk compartilhado, o bundler emite uma cópia completa de `date-fns` dentro de cada chunk que o utiliza — dois arquivos separados no disco, dois downloads distintos, e dois ciclos de parse+compilação se o usuário navegar pelas duas rotas na mesma sessão. O browser não deduplica automaticamente: cada arquivo é uma unidade independente de cache. É por isso que chunks compartilhados não são apenas uma economia de bytes no servidor — eles evitam que o browser processe o mesmo módulo duas vezes.
 
 O `manualChunks` no Vite resolve isso:
 
@@ -613,8 +616,7 @@ sequenceDiagram
 
 **Solução**: o Vite 5+ resolve isso automaticamente gerando tags `<link rel="modulepreload">` para todas as dependências transitivas de cada entry point — o browser baixa toda a árvore de dependências em paralelo, eliminando o waterfall.
 
-> [!duvida] Se o Vite já resolve o waterfall automaticamente com `modulepreload`, por que a seção "Preloading" anterior apresentou o `webpackPrefetch` e o `prefetchAdmin()` manual como técnicas separadas? Qual é a diferença entre o `modulepreload` automático do Vite (que elimina o waterfall) e o prefetch manual descrito antes?
-> Smell: densidade irregular — as soluções parecem se sobrepor sem que a distinção entre elas seja delimitada claramente.
+> [!question] O `modulepreload` automático do Vite elimina o waterfall de dependências transitivas — e o `webpackPrefetch` / `prefetchAdmin()` manual antecipa chunks de *outras rotas* que o usuário *provavelmente* vai visitar. São eixos perpendiculares: um resolve o carregamento interno do chunk atual, o outro resolve a descoberta antecipada de chunks futuros. Vale aprofundar quando e como as duas estratégias interagem em SPAs complexas com muitas rotas aninhadas.
 
 Para casos manuais, você pode usar `import.meta.glob` com `{ eager: false }` e `prefetch` explícito:
 

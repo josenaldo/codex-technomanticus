@@ -71,8 +71,9 @@ Uma biblioteca bem publicada em 2026 precisa ser consumível em cenários difere
 - **UMD** (Universal Module Definition): para uso em `<script>` sem bundler, com fallback para CommonJS e AMD. Cada vez mais raro, mas ainda necessário pra CDN.
 - **IIFE** (Immediately Invoked Function Expression): para `<script>` direto no browser, sem bundler, sem `export`.
 
-> [!duvida] O que são "exports condicionais" no `package.json` e por que são necessários?
-> A nota apresenta a estrutura JSON com `"import"`, `"require"` e `"types"` dentro de `"exports"` sem explicar o mecanismo que os ativa — quem lê esse campo, em que momento, e o que acontece se ele não existir?
+**Exports condicionais** são o mecanismo pelo qual o Node.js e os bundlers modernos escolhem automaticamente qual arquivo da lib carregar, dependendo de como a importação acontece. Quando você escreve `import { format } from 'minha-lib'` num módulo ESM, o Node.js lê o campo `"exports"` do `package.json` e seleciona a entrada `"import"`. Quando um `require('minha-lib')` antigo é chamado, a entrada `"require"` é selecionada. O campo `"types"` é lido pelo TypeScript Language Server para encontrar as declarações de tipo.
+
+Sem o campo `"exports"`, o Node.js usa `"main"` como fallback único — o que significa que `require()` e `import` recebem o mesmo arquivo, frequentemente causando erros em contextos ESM puro. Com `"exports"`, você descreve o mapa completo de pontos de entrada da lib: qual arquivo para ESM, qual para CJS, qual para tipos, e quais sub-caminhos são públicos (qualquer sub-caminho não listado em `"exports"` é automaticamente privado).
 
 O `package.json` moderno de uma lib usa **exports condicionais** para apontar para o formato correto:
 
@@ -106,8 +107,31 @@ O mecanismo depende de três condições:
 2. **Marcação de side effects**: o Rollup precisa saber que uma função pode ser removida com segurança. Se um módulo tem efeitos colaterais (modifica globals, registra listeners), o bundler precisa preservá-lo mesmo que nenhum export seja importado.
 3. **`sideEffects: false` no `package.json`**: sinaliza ao bundler que nenhum arquivo do pacote tem side effects — pode remover o que não for importado.
 
-> [!duvida] O que exatamente conta como "side effect" num módulo, e como o Rollup decide que um módulo tem efeito colateral sem `sideEffects: false`?
-> A nota lista as três condições do tree-shaking mas não exemplifica o que é um side effect concreto — o leitor que nunca viu um módulo com side effect real não sabe o que evitar ao escrever sua lib.
+Um **side effect de módulo** é qualquer código que executa algo além de definir e exportar símbolos — código que tem efeito no ambiente global quando o módulo é importado, mesmo que nenhum export seja usado.
+
+Exemplos concretos de side effects:
+
+```js
+// ❌ Side effect: modifica o prototype global
+Array.prototype.last = function() { return this[this.length - 1] }
+
+// ❌ Side effect: registra um service worker
+navigator.serviceWorker.register('/sw.js')
+
+// ❌ Side effect: adiciona estilos ao DOM
+const style = document.createElement('style')
+document.head.appendChild(style)
+
+// ❌ Side effect: logs no console (efeito observável)
+console.log('lib carregada')
+
+// ✅ Sem side effect: só define e exporta
+export function formatDate(date) { return date.toISOString() }
+```
+
+O Rollup é **conservador por padrão**: se um arquivo pode ter side effects (e sem `sideEffects: false`, o Rollup assume que pode), ele preserva o módulo inteiro mesmo que nenhum export seja utilizado. Isso garante que efeitos colaterais como registro de providers ou polyfills não sejam acidentalmente removidos.
+
+Com `"sideEffects": false` no `package.json`, você está prometendo que nenhum arquivo do pacote tem side effects — o Rollup pode então remover módulos inteiros que não têm exports utilizados.
 
 ```mermaid
 flowchart TD
@@ -255,14 +279,11 @@ O resultado: `date-utils` pode ser importada em qualquer ambiente, e bundlers qu
 
 ## esbuild: Go, velocidade e o motor do Vite
 
-> [!duvida] Por que "sem GC pesado" é uma vantagem para um bundler?
-> O argumento de performance cita "Go compila para binário nativo, sem GC de JavaScript" — mas não fica claro por que o GC é o gargalo num processo de build que roda por segundos e termina, diferente de um servidor de longa duração.
-
 **esbuild** surgiu em 2020 como um experimento de Evan Wallace, então CTO da Figma, para responder uma pergunta simples: *o que acontece se você implementar um bundler em Go, aproveitando paralelismo real e sem GC pesado?*
 
 A resposta foi um choque: 10–100× mais rápido que qualquer alternativa JavaScript. Um benchmark canônico (bundle de `three.js`) que levava 41 segundos no webpack 4 com Babel levava 0,37 segundos no esbuild. A diferença vem de três fatores:
 
-1. **Go compila para binário nativo** — sem JIT warm-up, sem GC de JavaScript, sem overhead do Node.js.
+1. **Go compila para binário nativo** — sem JIT warm-up, sem overhead do Node.js. O GC do Go é leve e de baixa latência, mas o ponto mais importante é que o processo inteiro é nativo: sem a camada V8, sem parsing do próprio runtime JS antes de começar o trabalho. Em builds grandes que processam milhares de módulos, o overhead de cada alocação e coleta de lixo do V8 se acumula — o GC do JavaScript é otimizado para processos de longa duração, não para rajadas intensas de curta duração como um build.
 2. **Paralelismo real** — Go usa goroutines que aproveitam múltiplos cores; Node.js é single-threaded por design (workers têm overhead de serialização).
 3. **Parsing e geração em um único passe** — esbuild foi desenhado para nunca materializar uma AST completa quando não precisa.
 
@@ -484,8 +505,23 @@ export default defineBuildConfig({
 
 Stub mode é o diferencial: em vez de um build real, `unbuild --stub` cria arquivos proxy que apontam diretamente para o código TypeScript. Quando você desenvolve um monorepo com `lib-a` sendo dependência de `app-b`, não precisa rodar `tsup --watch` — o stub faz `app-b` ler o source diretamente. O preço: o Node precisa de `tsx` ou suporte nativo a TypeScript para executar esses stubs.
 
-> [!duvida] Como o Node resolve o stub para o source TypeScript se o Node não entende `.ts` nativamente?
-> A nota diz que "o Node precisa de `tsx` ou suporte nativo" mas não explica como esse requisito é satisfeito num projeto real — se é uma flag no `package.json`, uma variável de ambiente, ou algo que o monorepo precisa configurar antes de o stub funcionar.
+O stub gerado pelo unbuild é um arquivo `.mjs` que contém apenas um `import()` dinâmico apontando para o `.ts` de origem — algo como `export * from '../src/index.ts'`. O Node.js não entende `.ts` nativamente, então o ambiente de execução precisa interceptar essa importação e transpilar on-the-fly.
+
+Na prática, isso é configurado de uma de duas formas:
+
+```bash
+# Opção 1: tsx como loader (mais comum em monorepos 2024+)
+# O package.json do workspace root adiciona tsx como executor
+node --import tsx src/main.ts
+
+# Opção 2: variável de ambiente NODE_OPTIONS
+NODE_OPTIONS='--import tsx' pnpm dev
+
+# Opção 3: Node.js 22.6+ tem suporte nativo a TypeScript com flag
+node --experimental-strip-types src/main.ts
+```
+
+Em monorepos gerenciados por Turborepo ou pnpm workspaces, o padrão típico é ter `tsx` instalado na raiz e configurar `NODE_OPTIONS=--import tsx` no `.env` ou no script de dev. O stub do unbuild pressupõe esse ambiente — é por isso que está mais associado ao ecossistema Nuxt/UnJS, onde essa configuração já está estabelecida. Para projetos que não usam tsx, o stub mode não funciona sem ajuste inicial.
 
 ```mermaid
 graph LR
@@ -764,8 +800,8 @@ Esse padrão é usado extensivamente no ecossistema Vite — `import.meta.env`, 
 
 O Rolldown introduziu um mecanismo que o Rollup original não tem: **hook filters**. Como o Rolldown é escrito em Rust e os plugins são JavaScript, cada vez que um hook de plugin é chamado há uma transição Rust→JS com overhead de serialização. Para plugins que só processam alguns tipos de arquivo (por exemplo, um plugin de `.svg`), esse overhead é pago desnecessariamente para cada `.ts`, `.js`, `.css` que passa pelo pipeline.
 
-> [!duvida] O que é exatamente a "transição Rust→JS" e qual é o custo real dessa serialização por arquivo?
-> A nota justifica hook filters pelo overhead de "serialização" a cada chamada JS→Rust, mas não deixa claro o que é serializado (o código-fonte inteiro? metadados? o AST?), nem uma ordem de grandeza do custo — sem isso é difícil avaliar quando filtros valem o esforço.
+> [!question] O que exatamente é serializado na transição Rust→JS por chamada de hook?
+> O Rolldown serializa o código-fonte? O AST? Apenas metadados (id, moduleType)? E qual é a ordem de grandeza do custo — microssegundos por arquivo? Isso determinaria quando hook filters valem o esforço de declarar vs. ter uma verificação interna (`if (!id.endsWith('.svg')) return`).
 
 Hook filters permitem que o plugin declare antecipadamente quais arquivos lhe interessam:
 

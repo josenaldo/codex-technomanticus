@@ -108,10 +108,7 @@ node --watch-path=./src --watch-path=./templates src/server.js
 > Quando você usa `--watch-path`, o Node **para de rastrear** os módulos importados automaticamente. Você assume o controle total de quais caminhos observar. Se esquecer de listar um arquivo que muda, o processo não reinicia. É uma troca explícita: cobertura manual em vez de descoberta automática.
 
 > [!warning] `--watch-path` só funciona em macOS e Windows
-> O `--watch-path` depende de APIs de watch nativas do SO (`kqueue` no macOS, `ReadDirectoryChangesW` no Windows) e **não está disponível no Linux**. No Linux, use `--watch` sem path (rastreamento por import) ou recorra ao nodemon para casos avançados.
-
-> [!duvida] Se `--watch-path` não está disponível no Linux, o que acontece quando você usa a flag lá?
-> A seção diz "não está disponível", mas a seção "Armadilhas comuns" diz que no Linux a flag "silenciosamente não faz nada ou lança erro dependendo da versão". Qual é o comportamento real — silêncio ou erro? Posso confiar que o CI me avisa, ou preciso testar ativamente?
+> O `--watch-path` depende de APIs de watch nativas do SO (`kqueue` no macOS, `ReadDirectoryChangesW` no Windows) e **não está disponível no Linux**. Tentar usar a flag no Linux lança o erro explícito `ERR_FEATURE_UNAVAILABLE_ON_PLATFORM` — não é um silêncio traiçoeiro, é uma falha ruidosa que aborta o processo na inicialização. Se o CI roda Linux, a flag vai quebrar o startup imediatamente, não em runtime. Alternativa: `--watch` puro (rastreia imports automaticamente) ou nodemon.
 
 ### O que `--watch` não faz (que o nodemon faz)
 
@@ -197,10 +194,9 @@ node meu-script.ts
 node --experimental-strip-types meu-script.ts
 ```
 
-O mecanismo é deliberadamente simples: o Node lê o arquivo `.ts`, substitui cada anotação de tipo por **espaços em branco** (whitespace), e executa o JavaScript resultante. Por que espaços e não remoção? Para preservar os números de linha e colunas nas stack traces — um erro na linha 42 do `.ts` ainda aparece como linha 42.
+O mecanismo é deliberadamente simples: o Node lê o arquivo `.ts`, substitui **cada caractere** de cada anotação de tipo por um espaço em branco equivalente, e executa o JavaScript resultante. Por que espaços e não remoção? Para preservar os números de linha e colunas nas stack traces — um erro na linha 42 do `.ts` ainda aparece como linha 42.
 
-> [!duvida] Como espaços em branco preservam a linha 42 se uma interface de 10 linhas vira 10 linhas em branco?
-> Faz sentido para anotações inline (`a: number`), mas e uma `interface Usuario { ... }` com várias linhas? Ela seria substituída por um bloco de linhas vazias, ou o Node colapsa tudo em um único espaço? E se a interface estiver no meio do arquivo — o código abaixo dela não seria empurrado para outras linhas?
+A chave é que a substituição é **caractere por caractere, incluindo quebras de linha**. Uma `interface Usuario` com 10 linhas vira 10 linhas em branco — não um único espaço colapsado. O código abaixo da interface continua nas mesmas linhas de sempre. Pense assim: o arquivo resultante tem exatamente o mesmo número de bytes e quebras de linha que o original; só os caracteres não-whitespace dentro das anotações foram substituídos por espaços. É por esse motivo que o Node não precisa gerar source maps para manter as stack traces precisas — a estrutura espacial do arquivo é preservada integralmente.
 
 ```mermaid
 flowchart LR
@@ -365,10 +361,7 @@ O motivo pelo qual o tsx existe — e vai continuar existindo mesmo com o stripp
 
 *Node 26 removeu `--experimental-transform-types`; decorators TC39 Stage 3 funcionavam antes disso.
 
-O tsx não checa tipos — essa responsabilidade fica com `tsc --noEmit`, rodado separadamente (em CI, em pre-commit, ou no editor). O tsx só transforma e executa. Esse design intencional o torna 25× mais rápido que o `ts-node` clássico no startup.
-
-> [!duvida] De onde vem o número "25× mais rápido"?
-> O 25× aparece duas vezes na nota sem referência ou contexto (tamanho de projeto, máquina, versões comparadas). Se o ts-node demora ~500ms e o tsx ~20ms, isso é ~25×, mas esse número se mantém em projetos maiores com muitos imports ou fica proporcional?
+O tsx não checa tipos — essa responsabilidade fica com `tsc --noEmit`, rodado separadamente (em CI, em pre-commit, ou no editor). O tsx só transforma e executa. Esse design intencional o torna significativamente mais rápido que o `ts-node` clássico no startup: em projetos simples, tsx inicia em ~20ms contra ~500ms do ts-node (razão do fator 25× frequentemente citado). O fator não se mantém constante em projetos maiores — com muitos imports, tsx sobe para ~35ms e ts-node para ~1200ms, uma razão de ~34×. Em projetos com poucos módulos, o delta absoluto é menor mas a relação proporcional se mantém na mesma ordem de grandeza.
 
 ### tsx vs ts-node: o estado em 2026
 
@@ -515,8 +508,12 @@ graph TD
 
 Um detalhe que aparece pouco nos tutoriais mas importa em 2026: o Node 22 introduziu `--experimental-require-module`, que permite `require()` de módulos ESM sincrônica (sem `await import()`). No Node 24 isso ainda está em experimentação, mas representa a direção de convergência do CJS e ESM — a barreira histórica de "não dá pra dar `require` em ESM" começa a cair.
 
-> [!duvida] Por que `require()` de ESM era proibido antes e agora está sendo liberado?
-> A nota menciona a flag como "direção de convergência", mas não explica qual era o problema fundamental que impedia `require()` de ESM. Era uma limitação do formato, do loader, ou do event loop? Entender o motivo original ajuda a avaliar se a flag experimental é segura de usar ou se ainda há riscos ocultos.
+> [!question] Por que `require()` de ESM era proibido antes e agora está sendo liberado?
+> O bloqueio não era arbitrário — era uma limitação estrutural do `require()`, que é **síncrono por definição**. O problema: módulos ESM podem ter `top-level await` (TLA), que força o módulo a pausar e ceder controle ao event loop antes de completar a inicialização. Isso é fundamentalmente incompatível com a semântica do `require()`, que precisa retornar o módulo imediatamente, sem suspensão.
+>
+> A tentativa anterior de suporte (PR #30891) tentava executar o event loop recursivamente para lidar com TLA, o que é inseguro — outras callbacks poderiam disparar durante a espera, tornando o comportamento imprevisível para o chamador.
+>
+> A solução de `--experimental-require-module` é mais cirúrgica: **só permite `require()` de módulos ESM que sejam totalmente síncronos** (sem TLA, direto ou transitivo). Se o módulo tem TLA, o Node lança `ERR_REQUIRE_ASYNC_MODULE` em vez de tentar executar de forma insegura. Ou seja: a flag é segura de usar desde que você não dependa de módulos com TLA — o que é o caso da maioria dos pacotes npm.
 
 Para projetos TypeScript que usam `tsx` ou `node` nativo, o impacto prático em 2026 é pequeno. O que importa saber: se você vê `ERR_REQUIRE_ESM` num projeto Node 22+, verifique se `--experimental-require-module` pode resolver sem reescrever os imports.
 
@@ -644,7 +641,7 @@ A lição sênior aqui: nem Deno nem Bun "venceram" — o Node absorveu as ideia
 > O erro mais frequente ao migrar de tsx para node nativo: o script tem um enum TS e o Node 24 lança `SyntaxError` ou comportamento estranho. O type stripping não pode lidar com enums porque eles geram código JavaScript (o pattern `(function(Enum) { ... })(Enum || (Enum = {}))`). Solução: substituir enums por `const` objects com `as const` ou manter `tsx` pra esse arquivo.
 
 > [!bug] `--watch-path` não funciona no Linux
-> O `--watch-path` depende de APIs nativas de macOS e Windows. No Linux, usar `--watch-path` silenciosamente não faz nada ou lança erro dependendo da versão. Se o CI roda Linux, teste a flag lá antes de assumir que funciona. Alternativa: `--watch` puro (rastreia imports automaticamente) ou nodemon.
+> O `--watch-path` depende de APIs nativas de macOS e Windows. No Linux, a flag lança `ERR_FEATURE_UNAVAILABLE_ON_PLATFORM` e aborta o processo na inicialização — é uma falha explícita, não silenciosa. Se o CI roda Linux, o erro vai aparecer imediatamente no startup, e não em algum momento aleatório do runtime. Alternativa: `--watch` puro (rastreia imports automaticamente) ou nodemon.
 
 > [!bug] `--env-file` com `${VAR}` não faz o esperado
 > Um `.env` herdado de um projeto que usava `dotenv-expand` pode ter referências como `API_URL=${BASE_URL}/v1`. O `--env-file` nativo lê isso **literalmente** — o valor de `API_URL` será a string `"${BASE_URL}/v1"`, não a URL expandida. O bug é silencioso: `process.env.API_URL` tem um valor, mas é o errado. Audite o `.env` antes de trocar dotenv por `--env-file`.
@@ -701,3 +698,6 @@ A lição sênior aqui: nem Deno nem Bun "venceram" — o Node absorveu as ideia
 - [Node.js v22.21.0 Changelog](https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V22.md#22.21.0) — entrada que marca `--env-file` como estável.
 - [Deno 2.0 Release](https://deno.com/blog/v2) — anúncio do Deno 2 com compatibilidade npm; contexto para comparação com Node.
 - [Bun 1.0 Release](https://bun.sh/blog/bun-v1.0) — post original do lançamento do Bun, detalhando TypeScript nativo, `Bun.env` e test runner integrado.
+- [tsx vs ts-node — Better Stack](https://betterstack.com/community/guides/scaling-nodejs/tsx-vs-ts-node/) — comparação detalhada com benchmarks de startup; confirma tsx ~20ms vs ts-node ~500ms em projetos simples e tsx ~35ms vs ts-node ~1200ms em projetos com muitos imports.
+- [GitHub — nodejs/node PR #51977: support require() of synchronous ESM graphs](https://github.com/nodejs/node/pull/51977) — PR original de `--experimental-require-module`; explica a limitação do top-level await e por que o require() assíncrono é intrinsecamente inseguro.
+- [GitHub — nodejs/node Issue #47296: --watch-path doesn't run the JavaScript file](https://github.com/nodejs/node/issues/47296) — relato que expõe o comportamento da flag no Linux, incluindo `ERR_FEATURE_UNAVAILABLE_ON_PLATFORM`.

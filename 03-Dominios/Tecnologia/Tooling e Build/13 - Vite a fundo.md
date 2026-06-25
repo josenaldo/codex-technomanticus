@@ -365,8 +365,15 @@ export default defineConfig(({ command, mode }) => {
 
 O aspecto mais estratégico do Vite é que ele **não é um bundler vertical** — é uma plataforma de plugins. O ecossistema Rollup (que existia desde 2015) foi integralmente reaproveitado. Qualquer plugin Rollup compatível com a API de hooks funciona no Vite com zero modificações para a maioria dos casos.
 
-> [!duvida] O que faz um plugin Rollup não funcionar no Vite?
-> A nota diz "para a maioria dos casos" mas não explica o que é minoria. Quais tipos de plugin ou quais hooks específicos podem falhar — e por quê? É por causa dos hooks Vite-only que o Rollup não conhece, ou porque o Rolldown implementa a API diferente do Rollup original?
+A minoria que pode falhar são casos específicos do Rolldown ou do contexto de dev server:
+
+- **`moduleParsed`**: esse hook do Rollup não funciona no contexto do dev server do Vite — ele só roda no build de produção, porque em dev o Vite não constrói um bundle completo.
+- **Hooks paralelos vs. sequenciais**: hooks que o Rollup executa em paralelo são executados sequencialmente pelo Rolldown. Plugins que dependem da semântica de paralelismo do Rollup podem ter comportamento diferente.
+- **Output formats não suportados**: Rolldown não suporta `format: 'system'` e `format: 'amd'`. Plugins que configuram esses formatos falham em build.
+- **APIs internas do Rollup**: plugins que usam `this.parse()` para análise de AST ou acessam internals do Rollup (não a API pública) podem ter comportamentos diferentes no Rolldown — que implementa a API pública mas não os internals.
+- **Comentários no `renderChunk`**: o Rolldown remove comentários antes do hook `renderChunk` (o Rollup os remove depois). Plugins de transformação que dependem de comentários no código ainda presente nesse hook podem não funcionar.
+
+Em resumo: plugins que usam apenas os hooks canônicos (`resolveId`, `load`, `transform`, `generateBundle`) funcionam sem modificação. Os que exploram comportamentos específicos do Rollup — paralelismo, hooks raros, internals — precisam ser testados após migrar para Vite 8.
 
 ### Anatomia de um plugin Vite
 
@@ -416,14 +423,17 @@ export function svgrPlugin(): Plugin {
     // sem enforce: roda no meio (padrão para plugins de usuário)
 
     async load(id) {
-      // id é o path resolvido do módulo
-      // ?component no query string: importar como componente React
+      // id é o path resolvido do módulo — inclui a query string do import
+      // Quando o código escreve: import Logo from './logo.svg?component'
+      // o Vite resolve o path completo e mantém o ?component como parte do id.
+      // Isso é intencional: a query string é o que diferencia dois imports do mesmo arquivo
+      // com tratamentos diferentes. O browser não vê esse id — quem faz a requisição ao
+      // dev server usa a URL, mas o pipeline de plugins usa o id resolvido com a query.
+      // ATENÇÃO: no hook transform(), a query string é normalmente removida do id —
+      // apenas em load() o id inclui a query completa (quando vem do resolveId).
       if (!id.endsWith('.svg?component')) return null
       // retornar null → continua para o próximo plugin
       // retornar string → usa esse conteúdo como o módulo
-
-> [!duvida] O `id` no hook `load()` inclui a query string?
-> O código checa `id.endsWith('.svg?component')`, o que pressupõe que a query string do import faz parte do `id` recebido pelo hook. Mas por que? Se o browser faz `GET /src/logo.svg?component`, o Vite passa a URL inteira como `id`, ou só o path? A nota não explica como o `id` é formado — e isso muda completamente como se escreve a condição do if.
 
       const svgPath = id.replace('?component', '')
       const svgContent = await fs.readFile(svgPath, 'utf-8')
@@ -672,8 +682,14 @@ const mod = await import(moduleName)
 
 Para esses casos, `optimizeDeps.include` garante que a dep seja pré-bundlada mesmo sem ser detectada:
 
-> [!duvida] O que acontece concretamente se uma dep CJS não for pré-bundlada?
-> A nota explica quando o scan estático não detecta a dep, mas não explica qual é a falha em runtime. O browser vai ver um erro? O Vite vai travar? Vai silenciosamente servir o arquivo CJS que o browser não entende? Saber o sintoma ajuda a diagnosticar o problema quando ele aparecer.
+> [!warning] O que acontece quando uma dep CJS não é pré-bundlada
+> O sintoma mais comum é um erro no console do browser:
+> ```
+> The requested module '/node_modules/.pnpm/alguma-lib@1.2.3/node_modules/alguma-lib/index.js'
+> does not provide an export named 'default'
+> ```
+> O motivo: o Vite serve o arquivo CJS diretamente ao browser, mas o browser entende apenas ESM. Um `module.exports = { ... }` não é uma exportação ESM válida — o browser tenta interpretar `module` como identificador de variável e falha. Às vezes o erro é mais genérico ("Failed to fetch module"), mas a causa é a mesma: arquivo CJS sem conversão ESM sendo servido num contexto que exige ESM.
+> O diagnóstico é direto: se o import funciona em build (onde o Rolldown bundla tudo) mas falha em dev, a dep CJS não foi pré-bundlada. Solução: adicionar em `optimizeDeps.include`.
 
 ```ts
 optimizeDeps: {
@@ -714,8 +730,8 @@ export function routeConfigPlugin(routes: RouteConfig[]): Plugin {
   // Convenção: prefixo '\0' marca módulos virtuais
   // Evita que outros plugins tentem processar o mesmo ID
 
-> [!duvida] O prefixo `\0` é enforçado pelo Vite ou é só uma convenção?
-> A nota diz que o `\0` "evita que outros plugins tentem processar o mesmo ID" — mas como? O Vite trata IDs com `\0` de forma especial no core, ou é apenas uma convenção que cada plugin deve respeitar manualmente? Se for convenção, um plugin mal-escrito pode ignorá-la e ainda conflitar com o módulo virtual.
+> [!question] O prefixo `\0` é só convenção ou há enforcement do Vite?
+> O Vite trata o `\0` de duas formas concretas: (1) módulos com `\0` no ID não são resolvidos pelo sistema de arquivos — o core pula a resolução de disco; (2) em dev, a URL gerada para o browser usa uma codificação especial (`/@id/__x00__...`) porque `\0` não é um caractere válido em URLs. Isso é enforcement parcial: o core conhece o prefixo. Mas não há uma barreira que impeça um plugin mal-escrito de processar qualquer ID — é uma convenção com suporte ativo do core, não uma sandbox isolada. A segurança real vem de que plugins bem-escritos checam o ID antes de agir, e o `\0` sinaliza "esse módulo não existe no disco".
 
   return {
     name: 'vite-plugin-route-config',
@@ -887,10 +903,14 @@ export default defineConfig({
       transform(code, id, options) {
         // options.ssr ainda funciona para backward compat (client vs não-client)
         // mas o novo modelo usa this.environment?.name
-        const envName = (this as any).environment?.name ?? 'client'
-
-> [!duvida] Por que `(this as any)` é necessário aqui?
-> O código usa um cast `as any` para acessar `this.environment` — o que significa que essa propriedade não existe no tipo oficial do contexto de plugin. Se a Environment API foi introduzida no Vite 6 e está estabilizando, por que os tipos ainda não foram atualizados? Isso é um bug de tipagem, uma API experimental que não entrou nos tipos oficiais, ou o padrão correto é outro?
+        // Em Vite 6+, this.environment é parte do PluginContext — sem cast necessário:
+        const envName = this.environment?.name ?? 'client'
+        // Se você ver (this as any) em código de exemplo mais antigo, é porque foi escrito
+        // antes dos tipos serem atualizados. A partir do Vite 6 estável, this.environment
+        // está tipado no PluginContext. Em versões de transição (Vite 6 beta / RC),
+        // o cast as any era necessário porque a propriedade existia em runtime mas ainda
+        // não havia entrado na definição de tipo do @types — o código funcionava, mas o
+        // TypeScript reclamava em tempo de compilação.
 
         if (envName === 'edge') {
           // transformações específicas para edge runtime
@@ -1302,3 +1322,7 @@ The Environment API, stabilizing in 2026, formalizes multiple deployment targets
 - `vite-plugin-dts` — geração de declarações TypeScript: https://github.com/qmhc/vite-plugin-dts
 - State of JavaScript 2025 — seção Bundlers: https://2025.stateofjs.com/en-US/other-tools/#bundlers
 - Benchmark Rolldown vs Rollup (Linear, Ramp, Beehiiv): https://vite.dev/blog/announcing-vite8#performance
+- Vite Plugin API — hooks, virtual modules, \0 convention: https://vite.dev/guide/api-plugin
+- Vite Environment API for Plugins — this.environment e PluginContext: https://vite.dev/guide/api-environment-plugins
+- Vite Migration from v7 — breaking changes do Rolldown: https://vite.dev/guide/migration
+- Vite Dependency Pre-Bundling — comportamento com CJS não detectado: https://vite.dev/guide/dep-pre-bundling

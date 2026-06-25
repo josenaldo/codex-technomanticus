@@ -80,8 +80,10 @@ A diferença arquitetural do Turbopack não é simplesmente "é em Rust". É o m
 
 Pense assim: quando você muda uma linha num arquivo, o webpack 5 precisa reanalisar esse arquivo, qualquer arquivo que o importe, e potencialmente invalidar chunks inteiros. O Turbo Engine rastreia dependências em granularidade mais fina. Se você mudou uma função que só é usada por um componente folha, apenas aquele componente é recomputado — e apenas as partes do bundle que dependem dele.
 
-> [!duvida] Como o Turbo Engine sabe quais funções cada arquivo usa sem ter feito o bundle completo primeiro?
-> A nota diz que ele rastreia dependências "em granularidade de função", mas não explica quando/como esse mapa é construído. O engine faz uma passagem de análise estática antes de começar a buildar? Ou vai construindo o grafo on-the-fly à medida que processa os arquivos pela primeira vez?
+A resposta é: **on-the-fly, durante a primeira execução**. Não há passagem de análise estática separada antes do build. O Turbo Engine funciona assim: cada operação do bundler é anotada com `#[turbo_tasks::function]` em Rust. Quando uma função é executada pela primeira vez, o engine registra automaticamente cada `Vc` (Value Container — a unidade de valor cacheável) que ela acessa ou aguarda. Esses acessos se tornam as arestas do grafo de dependências. Na primeira execução de um projeto, o grafo é construído progressivamente à medida que o build acontece. Nas execuções subsequentes — ou quando um arquivo muda —, o engine já tem o grafo e sabe exatamente quais nós invalidar sem reprocessar o resto.
+
+Em termos concretos: quando o Turbopack processa `utils.ts` pela primeira vez, ele executa a análise de `calcularDesconto` e `formatarMoeda` e registra quem as acessou. Se `ProductCard.tsx` acessou o nó de `calcularDesconto`, essa aresta existe no grafo. Se você mudar `calcularDesconto` depois, o engine consulta o grafo e invalida exatamente `ProductCard.tsx` — sem reanalizar `utils.ts` inteiro nem consultar `CheckoutSummary.tsx`.
+Fonte: [Inside Turbopack: Building Faster by Building Less — nextjs.org](https://nextjs.org/blog/turbopack-incremental-computation) (2025); [Turbopack incremental computation docs — turbo.build](https://turbo.build/pack/docs/incremental-computation)
 
 ```mermaid
 flowchart TB
@@ -293,8 +295,10 @@ Em **abril de 2026**, o Rspack lançou a **versão 2.0**, chegando a **5 milhõe
 
 A compatibilidade com webpack é de ~85% dos 50 plugins mais baixados. Para o uso típico (TypeScript, React/Vue, CSS Modules, assets), a cobertura é praticamente 100%.
 
-> [!duvida] Como um plugin webpack escrito em JavaScript consegue rodar num bundler cujo core é Rust?
-> A nota diz que o Rspack "implementa a webpack API em Rust" e que plugins JS funcionam, mas não explica a ponte. O Rspack chama o Node.js de volta para executar o plugin JS? Existe algum overhead dessa travessia Rust↔JS que anula parte do ganho de performance?
+A ponte é o **NAPI-RS** — uma biblioteca que compila código Rust como um addon binário para Node.js (um arquivo `.node`). O processo funciona assim: o Rspack compila seu core Rust para um módulo nativo Node.js. Quando você executa `rspack build`, o Node.js carrega esse módulo nativo, repassa a configuração (incluindo seus plugins JS) para o core Rust, e o Rspack orquestra a compilação. Quando um hook de plugin precisa ser chamado (ex: `compiler.hooks.emit`), o core Rust faz uma chamada de volta (callback) para o JS via NAPI-RS — e o plugin JavaScript executa normalmente no V8, com acesso ao objeto `compiler` que o Rspack expõe.
+
+O overhead da travessia Rust↔JS existe, mas é marginal na prática. Plugins JS são chamados em hooks bem definidos (início/fim de fase, processamento de asset), não dentro dos loops críticos de parse/transform onde o Rust opera. O hot path do bundling — parsear arquivos, resolver imports, transformar TypeScript — é 100% Rust, sem cruzar a fronteira JS. Um plugin que registra hooks de compilação e manipula assets cruza a fronteira algumas dezenas de vezes por build, enquanto o Rust processa milhares de módulos sem sair do Rust. O ganho de 5-10x permanece mesmo com plugins JS.
+Fonte: [Plugin Architecture — deepwiki.com/web-infra-dev/rspack](https://deepwiki.com/web-infra-dev/rspack/4.1-compiler-and-compilation); [Implementing webpack in Rust with NAPI-RS — dev.to](https://dev.to/paradeto/implementing-webpack-from-scratch-but-in-rust-3-using-napi-rs-to-create-nodejs-addons-347h)
 
 ---
 
@@ -329,7 +333,7 @@ flowchart LR
 
 A chave é que **parser, resolver e transformer são compartilhados**. Quando o oxlint analisa um arquivo, ele usa o mesmo parser que o Rolldown usa ao bundlar. Quando você roda o formatter, não há segunda passagem de parsing. Isso elimina redundância e garante que todas as ferramentas concordam sobre como o código é estruturado — sem discrepâncias silenciosas entre "como o linter lê" e "como o bundler lê".
 
-> [!duvida] "Sem segunda passagem de parsing" funciona quando oxlint e Rolldown rodam em momentos diferentes do pipeline?
+> [!question] "Sem segunda passagem de parsing" funciona quando oxlint e Rolldown rodam em momentos diferentes do pipeline?
 > Num workflow real, o lint corre em CI e o bundle corre no build — processos separados. Como o parser "compartilhado" evita o double-parsing nesses cenários? Ou o benefício só vale quando as ferramentas rodam dentro do mesmo processo (ex: Vite dev server)?
 
 ### oxlint — 50-100x mais rápido que ESLint
@@ -372,8 +376,10 @@ O **Rolldown** é o bundler do ecossistema VoidZero. Escrito em Rust, com API co
 
 O Rolldown elimina a inconsistência entre dev e prod que era um ponto fraco histórico do Vite. Com um único motor para os dois modos, o comportamento de produção e desenvolvimento é idêntico — builds que passam em dev sempre passam em prod.
 
-> [!duvida] Por que o Vite 5/6/7 usava motores diferentes para dev e produção se isso gerava inconsistência?
-> A nota menciona que o Vite usou esbuild em dev e Rollup em prod por anos, e que isso era um "ponto fraco histórico". O que impedia juntar os dois antes? Era uma limitação técnica do Rollup (não tinha modo de dev), uma decisão de performance, ou algo da história do projeto?
+A separação foi uma decisão pragmática com duas forças em direções opostas. Em **desenvolvimento**, o esbuild era ordens de magnitude mais rápido para pré-bundlar dependências (`node_modules`) e transformar código TypeScript/JSX — ideal para o ciclo de edição-salva-HMR. Em **produção**, o Rollup tinha um ecossistema de plugins maduro e uma API de hooks (`renderChunk`, `generateBundle`, `resolveId`) que o ecossistema inteiro havia adotado. A API de plugins do Vite foi construída *sobre* a API do Rollup — e essa compatibilidade com o ecossistema foi um dos fatores centrais do sucesso do Vite.
+
+O que impedia usar só esbuild ou só Rollup: o esbuild não implementava a API de plugins do Rollup (sistemas incompatíveis), e o Rollup em JavaScript era lento demais para o ciclo de dev. Juntar os dois exigia um motor que fosse rápido como o esbuild *e* implementasse a API do Rollup — o que só foi possível com o Rolldown em Rust. O Rolldown foi projetado desde o início para ser compatível com a API do Rollup e nativo o suficiente para substituir o esbuild no dev. Por isso a unificação só veio com o Vite 8.
+Fonte: [Why does Vite use both Rollup and esbuild? — github.com/vitejs/vite/discussions](https://github.com/vitejs/vite/discussions/7622); [Rolldown and Vite 8: What Changed — certificates.dev](https://certificates.dev/blog/rolldown-and-vite-8-what-changed)
 
 Performance real reportada por empresas que migraram para Vite 8/Rolldown:
 
@@ -846,3 +852,9 @@ O espaço de bundlers nativos em Rust/Go ainda está em movimento rápido. Ferra
 - Oven (Bun): [Bun 1.2 release](https://bun.sh/blog/bun-v1.2) (janeiro 2026)
 - Rsbuild docs: [Migrating from webpack to Rsbuild](https://rsbuild.rs/guide/migration/webpack) (2026)
 - Nicholas C. Zakas: [ESLint performance comparisons with oxlint](https://eslint.org/blog/) (2025)
+- Next.js Engineering: [Inside Turbopack: Building Faster by Building Less](https://nextjs.org/blog/turbopack-incremental-computation) (2025)
+- Turbo.build docs: [Turbopack incremental computation](https://turbo.build/pack/docs/incremental-computation) (2026)
+- DeepWiki: [Plugin Architecture — web-infra-dev/rspack](https://deepwiki.com/web-infra-dev/rspack/4.1-compiler-and-compilation) (2026)
+- Dev.to: [Implementing webpack in Rust with NAPI-RS](https://dev.to/paradeto/implementing-webpack-from-scratch-but-in-rust-3-using-napi-rs-to-create-nodejs-addons-347h) (2024)
+- Vite GitHub Discussions: [Why does Vite use both Rollup and esbuild?](https://github.com/vitejs/vite/discussions/7622) (2022)
+- Certificates.dev: [Rolldown and Vite 8: What Changed](https://certificates.dev/blog/rolldown-and-vite-8-what-changed) (2026)

@@ -241,8 +241,17 @@ flowchart TD
 
 O preset `tseslint.configs.recommendedTypeChecked` ativa apenas as regras type-aware consideradas seguras para a maioria dos projetos. O `strictTypeChecked` adiciona mais regras que podem gerar falsos positivos em codebases que usam `any` intencionalmente em pontos de integração.
 
-> [!duvida] O que são "pontos de integração com `any` intencional"?
-> A nota menciona que `any` intencional aparece em "pontos de integração", mas não explica o que isso significa na prática. Quando e por que um projeto TypeScript usaria `any` intencionalmente, em vez de tipar corretamente? E por que esses pontos específicos causariam falsos positivos com `strictTypeChecked`?
+"Pontos de integração com `any` intencional" são os lugares do código onde o TypeScript encontra dados vindos de fora do sistema de tipos — geralmente de APIs externas, JSON parseado, bibliotecas sem typings, ou objetos de configuração genéricos. Nesses pontos, o desenvolvedor sabe que o tipo é dinamicamente indeterminado e usa `any` (ou `unknown` com cast explícito) de forma deliberada:
+
+```ts
+// Resposta de API sem typing definido — any é intencional aqui
+const data: any = await response.json();
+const userId = data.user.id; // no-unsafe-member-access dispara aqui
+```
+
+A regra `no-unsafe-member-access` do `strictTypeChecked` dispara toda vez que você acessa uma propriedade em algo tipado como `any` — mesmo que você tenha validado o dado antes. O resultado é uma cascata de warnings em todo o código que consome dados externos, onde o `any` foi uma escolha consciente para adiar a definição de tipos ou lidar com dados genuinamente dinâmicos.
+
+A solução pragmática: usar `recommendedTypeChecked` como baseline e adicionar regras do `strictTypeChecked` seletivamente, desativando as que geram ruído excessivo em pontos onde `any` é legítimo — ou criar interfaces para as APIs externas e eliminar o `any` na fonte.
 
 ---
 
@@ -444,8 +453,15 @@ npx @biomejs/biome migrate prettier --write # lê .prettierrc, ajusta biome.json
 
 O `biome migrate` é ponto de partida, não solução completa — regras sem equivalente no Biome são listadas num relatório para decisão manual.
 
-> [!duvida] O que acontece com as regras do ESLint que não têm equivalente no Biome?
-> A nota diz que o `biome migrate` lista as regras sem equivalente, mas não explica o que se faz com elas. Se o projeto dependia de uma dessas regras (como `no-floating-promises`), simplesmente migrar para Biome significa perder essa cobertura sem aviso? Quais seriam as opções — manter ESLint só para essas regras, desativar a regra, ou aceitar a lacuna?
+Para cada regra sem equivalente, há três caminhos:
+
+1. **Manter ESLint para essas regras específicas** — a abordagem híbrida: Biome cuida de formatting e das regras que cobre, ESLint roda apenas para as regras que faltam. Funciona, mas perde parte da simplicidade que motivou a migração. Para regras type-aware como `no-floating-promises`, essa é frequentemente a única opção real.
+
+2. **Desativar a regra** — aceitável se ela cobria algo raro ou se a equipe confia no typecheck do TypeScript para pegar o bug de outra forma. Antes de desativar, vale revisar o histórico: a regra já capturou bugs reais? Se sim, desativar é um risco deliberado.
+
+3. **Aceitar a lacuna temporariamente** — se a regra está no roadmap do Biome (como o suporte a type-aware "late 2026"), pode ser válido aceitar a ausência enquanto aguarda a implementação, desde que o CI tenha outras guards (typecheck, testes) que reduzam o risco.
+
+O relatório do `biome migrate` categoriza as regras em "migradas com equivalente", "migradas sem equivalente" e "ignoradas" — revise a lista antes de fazer o switch, especialmente para regras que detectam bugs async.
 
 ---
 
@@ -548,8 +564,16 @@ npx lint-staged
 
 O `"prepare": "husky"` é a chave: quando um novo desenvolvedor clona o repositório e roda `npm install`, o Husky instala os hooks automaticamente. Nenhuma etapa manual, nenhuma documentação extra.
 
-> [!duvida] Como o `"prepare": "husky"` instala os hooks se só roda no `npm install`?
-> A nota diz que o script `prepare` roda no `npm install` e que isso instala os hooks, mas não explica o mecanismo: onde ficam os hooks depois de instalados, como o Git passa a reconhecê-los, e o que exatamente o `husky` cria em `.husky/`. O script em `.husky/pre-commit` precisa existir antes, ou é criado pelo `husky init`?
+O mecanismo por baixo: o Git tem um conceito de **hooks directory** — por padrão é `.git/hooks/`, mas pode ser redirecionado via `core.hooksPath`. Quando você roda `npx husky init`, ele:
+
+1. Cria a pasta `.husky/` na raiz do repositório (comitada no Git)
+2. Cria o arquivo `.husky/pre-commit` com um exemplo básico (`npx lint-staged`)
+3. Configura `git config core.hooksPath .husky` — instrui o Git a ler hooks de `.husky/` em vez de `.git/hooks/`
+4. Adiciona `"prepare": "husky"` no `package.json`
+
+Quando outro desenvolvedor clona o repositório e roda `npm install`, o npm executa o script `prepare` automaticamente (é um lifecycle hook do npm). O `husky` (sem argumentos) reaplica o `git config core.hooksPath .husky` no repositório local do novo desenvolvedor. A partir daí, o Git encontra os hooks em `.husky/` — os mesmos arquivos que já estavam comitados.
+
+O resultado: `.husky/pre-commit` existe no repositório (comitado), e após o `npm install`, o Git sabe onde procurá-lo. Novos membros da equipe não precisam fazer nada além do `npm install` de sempre.
 
 ### Alternativa: lefthook (Go, paralelo, monorepo-first)
 
@@ -840,8 +864,15 @@ jobs:
 
 As três etapas são independentes e poderiam rodar em paralelo com jobs separados para economizar tempo. O ponto crucial é que **typecheck, lint e format check são etapas distintas** — uma falha em qualquer uma bloqueia o merge.
 
-> [!duvida] Por que o `prettier --check` é uma etapa separada do `eslint` se o `eslint-config-prettier` já resolve o conflito?
-> A nota explica que `eslint-config-prettier` desativa as regras de formatação do ESLint para evitar conflito com Prettier. Mas então por que o CI ainda precisa rodar `prettier --check` separadamente? O ESLint não detecta os problemas de formatação que o Prettier corrigiria?
+O `eslint-config-prettier` e o `prettier --check` resolvem problemas diferentes — por isso os dois aparecem no CI.
+
+O `eslint-config-prettier` **desativa** as regras de formatação do ESLint (como `indent`, `quotes`, `semi`). Isso evita que o ESLint conflite com o Prettier — mas **não faz o ESLint verificar se o Prettier foi aplicado**. O ESLint simplesmente não opina mais sobre formatação.
+
+O `prettier --check` **verifica ativamente** se cada arquivo está formatado exatamente como o Prettier produziria. Ele roda o formatador internamente e compara com o arquivo em disco — se houver qualquer diferença, falha. É a única forma de garantir que alguém não commitou código que o Prettier formataria diferente.
+
+Se o CI rodar apenas ESLint (com `eslint-config-prettier`), arquivos desformatados entram silenciosamente — o ESLint não detecta nada porque as regras de formatação foram desativadas. O `prettier --check` é a gate que fecha essa lacuna.
+
+Analogia: `eslint-config-prettier` é o árbitro que diz "ESLint, não é da sua conta o estilo". `prettier --check` é o inspetor que chega depois e confere se o estilo está correto.
 
 > [!info] `--max-warnings 0`
 > O flag `--max-warnings 0` faz o ESLint falhar se houver qualquer warning, não só errors. Isso é deliberado: warnings que nunca viram errors acabam acumulando e sendo ignorados. Forçar `0 warnings` mantém a lista de regras honesta — se você não vai enforçar uma regra como error, remova-a do config.
