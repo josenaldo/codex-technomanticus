@@ -1,10 +1,10 @@
 ---
 title: "O que é um agent"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-25
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-agents
@@ -18,6 +18,12 @@ aliases:
 ---
 
 # O que é um agent
+
+Às 3h da manhã, um pipeline de triagem de suporte ao cliente parou de responder — sem erro, sem log, sem stack trace. Quarenta minutos depois, a causa: o LLM retornou uma categoria que não estava no `if/elif` do passo seguinte, e o sistema silenciosamente travou em vez de escalar para atendimento humano. O produto chamava aquilo de "agent inteligente". No código, era uma sequência de cinco chamadas LLM onde **o programador tinha decidido cada passo de antemão** — a ordem, as condições de transição, o que fazer com cada resultado.
+
+Nenhum agent estava presente para tomar uma decisão adaptativa. E é exatamente por isso que o sistema quebrou quando o mundo real trouxe uma entrada que o programador não previu.
+
+Essa distinção não é filosófica. Ela tem consequências diretas no custo de manutenção, no blast radius de falhas, e na velocidade com que o sistema lida com o inesperado. Construir um workflow e chamá-lo de agent é o anti-pattern que esta nota existe para prevenir.
 
 > [!abstract] TL;DR
 > Um **AI agent** é um sistema que combina um [[Dicionário de IA#LLM (Large Language Model)|LLM]] (cérebro), um conjunto de **ferramentas** (mãos), e um **loop de execução** com autonomia de decisão. Dado um objetivo, o agent decide sozinho o que fazer em cada passo: qual tool chamar, com quais argumentos, quando pedir mais informação, quando terminar. Isso é o que distingue agent de chat, de pipeline RAG, e de workflow hardcoded. **Autonomia de decisão no loop é o que define um agent.**
@@ -35,6 +41,16 @@ A linha que separa: **quem decide a próxima ação?**
 
 - Chat / RAG / Workflow: você decide (no código).
 - Agent: o LLM decide (em runtime).
+
+```mermaid
+xychart-beta
+    title "Chamadas de LLM por tarefa equivalente de 5 etapas"
+    x-axis ["Chat (1 resp)", "RAG", "Workflow 5 steps", "Agent ~8 steps", "Agent verbose ~20"]
+    y-axis "Chamadas LLM" 0 --> 20
+    bar [1, 2, 5, 8, 20]
+```
+
+> Agents custam mais tokens por tarefa do que workflows equivalentes — o preço da autonomia. A decisão de usar agent deve ser justificada pelo valor da adaptabilidade dinâmica, não pelo fascínio técnico.
 
 ## Anatomia mínima
 
@@ -57,6 +73,35 @@ graph TB
 **Workflow hardcoded:** sequência fixa de chamadas LLM. Programador desenhou a ordem.
 
 **Agent:** dada a tarefa, o LLM decide a cada turno. Decisão iterativa, não-determinística.
+
+```mermaid
+flowchart LR
+    subgraph Determinístico
+        C["Chat\n1 call → 1 resposta"]
+        R["RAG\nretrieve → LLM → output"]
+        W["Workflow\nstep1 → step2 → stepN\n(ordem em código)"]
+    end
+    subgraph Autônomo
+        A["Agent\nLLM decide próximo step\na cada iteração"]
+    end
+    Determinístico -->|"escalar autonomia\n(quando necessário)"| Autônomo
+```
+
+```mermaid
+quadrantChart
+    title Autonomia vs Previsibilidade por padrão
+    x-axis Baixa Autonomia --> Alta Autonomia
+    y-axis Baixa Previsibilidade --> Alta Previsibilidade
+    quadrant-1 Ideal para produção crítica
+    quadrant-2 Evitar (risco sem controle)
+    quadrant-3 Protótipos / exploração
+    quadrant-4 Workflows bem definidos
+    Chat: [0.1, 0.9]
+    RAG: [0.2, 0.85]
+    Workflow: [0.3, 0.95]
+    Agent simples: [0.65, 0.55]
+    Multi-agent: [0.9, 0.3]
+```
 
 ## Quando NÃO usar agent
 
@@ -102,6 +147,31 @@ Exemplos: research assistant, coding agent (Claude Code, Cursor), debugging agen
 
 Se você consegue escrever em código → workflow.
 Se não consegue → talvez agent.
+
+## Como explicar em inglês
+
+An AI agent is a system where an LLM makes decisions autonomously at runtime — choosing which tool to call, with what arguments, and whether to continue or stop. The key differentiator from chatbots, RAG pipelines, and hardcoded workflows is *where decision-making lives*: in a workflow, the programmer encodes every transition in code; in an agent, the model decides the next step given intermediate results. The canonical structure is a while-loop — the LLM picks an action, the harness executes it, the result comes back as an observation, and the model decides what to do next. This non-deterministic, adaptive execution is powerful for open-ended tasks but comes with real costs: unpredictability, harder debugging, and higher token spend per request. The senior judgment call in agent design isn't "how do I build the loop" — it's recognizing when a deterministic workflow would have been cheaper, faster, and more reliable.
+
+| Português | English |
+|---|---|
+| agente de IA | AI agent |
+| chamada de ferramenta | tool call |
+| loop de execução | execution loop / agent loop |
+| autonomia de decisão | decision autonomy |
+| fluxo determinístico | deterministic workflow |
+| resultado intermediário | intermediate result |
+| espaço de busca aberto | open-ended search space |
+| human-in-the-loop | human-in-the-loop |
+| guardrail | guardrail |
+| decomposição de tarefas | task decomposition |
+| agente prematuro (anti-pattern) | premature agent |
+| passo de execução | execution step |
+
+## Ver mais
+
+- **Anthropic — *Building Effective Agents*** (2024): O guia oficial que estabelece a distinção entre workflows e agents com exemplos de produção reais. Cobre os cinco padrões de workflow canônicos, os critérios para escalar para agent, e as armadilhas de implementação mais custosas. Ponto de partida obrigatório antes de qualquer arquitetura.
+- **OpenAI — *A Practical Guide to Building Agents*** (2025): Perspectiva prática e provider-agnóstica sobre arquitetura de agents — escolha de modelo, design de tools, orquestração e avaliação. Bom complemento ao guia Anthropic por abordar pattern selection com exemplos de múltiplas verticais (suporte, pesquisa, coding).
+- **Lilian Weng — *LLM Powered Autonomous Agents*** (lilianweng.github.io, 2023): O survey mais citado sobre anatomia de agents — planning, memory e tool use como três dimensões ortogonais. Base teórica para entender os componentes antes de estudar frameworks modernos ou debater arquitetura com colegas.
 
 ## Veja também
 

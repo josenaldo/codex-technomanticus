@@ -1,9 +1,9 @@
 ---
 title: "O loop ReAct e native tool use"
 created: 2026-04-11
-updated: 2026-06-19
+updated: 2026-06-25
 type: concept
-progress: backlog
+progress: done
 status: growing
 publish: true
 tags:
@@ -20,6 +20,12 @@ aliases:
 ---
 
 # O loop ReAct e native tool use
+
+O agent estava em produção há dois dias quando o monitoramento começou a acusar timeout em 100% das requisições acima de um certo threshold de complexidade. Nenhuma exception, nenhum erro de tool — o processo simplesmente nunca terminava. Reproduzindo localmente, o problema ficou visível: o handler do while-loop verificava `stop_reason == "tool_use"` para saber se devia continuar, mas não tinha nenhum branch para `stop_reason == "end_turn"`. Toda vez que o LLM terminava normalmente, o loop não saía — ficava esperando uma próxima tool call que nunca viria.
+
+O bug foi escrito por alguém que entendia ReAct como conceito mas não tinha mapeado como ele se traduz para a API moderna. No paper original de 2022, o loop era textual — você lia "Final Answer:" no output e saía. Em 2026, com native tool use, o contrato é diferente: é o `stop_reason` que governa a saída, não o conteúdo do texto. Confundir os dois modelos custa um incidente de produção.
+
+Esta nota cobre os dois contratos — o mental model do ReAct e a mecânica real da API — e os pontos onde eles divergem de formas que ficam invisíveis até virarem bug.
 
 > [!abstract] TL;DR
 > **[[Dicionário de IA#ReAct|ReAct]]** (Reasoning + Acting), introduzido por Yao et al. em 2022, virou o padrão mental de agents. Combina raciocínio (*"thoughts"*) com ações (tool calls) e observações em loop. Em 2026, ninguém mais formata ReAct textualmente — LLMs modernos têm **[[Dicionário de IA#tool use|native tool use]]** (Anthropic, OpenAI, Google), e o loop é gerenciado pelo SDK. **Mas o mental model é o mesmo.** Um agent é um while loop que termina quando o LLM diz "acabei" (`end_turn`) ou bate `max_steps`.
@@ -180,6 +186,33 @@ Agent chama mesma tool com mesmos args repetidamente. **Fix:** detectar duplica�
 | **Tree-of-Thought** | Explora múltiplos caminhos, escolhe melhor (custo muito alto) |
 
 ReAct continua sendo o **default certo** na maioria dos casos.
+
+```mermaid
+xychart-beta
+    title "Passos LLM médios por tarefa de pesquisa — por padrão de loop"
+    x-axis ["ReAct padrão", "Plan-then-exec", "Self-ask", "Reflexion", "Tree-of-Thought"]
+    y-axis "Chamadas LLM médias" 0 --> 25
+    bar [5, 8, 6, 12, 22]
+```
+
+> ReAct é o mais eficiente para a maioria dos casos. Reflexion e Tree-of-Thought entregam qualidade superior em tarefas abertas, mas o custo em tokens pode ser 4–5× o de ReAct simples. Escolha pelo custo de erro, não pela elegância do padrão.
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant LLM
+    participant Tool
+
+    App->>LLM: messages + tools schema
+    LLM-->>App: stop_reason=tool_use, tool_use blocks
+    loop Para cada tool call
+        App->>Tool: execute(name, input)
+        Tool-->>App: result
+    end
+    App->>LLM: messages + tool_results
+    LLM-->>App: stop_reason=end_turn, texto final
+    App-->>App: return final text
+```
 
 ## Do pattern à camada: loop engineering (2026)
 
