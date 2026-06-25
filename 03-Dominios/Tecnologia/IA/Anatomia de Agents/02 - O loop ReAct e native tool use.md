@@ -233,6 +233,31 @@ Há ainda uma forma de **externalizar** esse design: os **NLAHs (Natural-Languag
 > [!summary] Em uma frase
 > ReAct te dá o passo; loop engineering te dá a camada que governa a sequência de passos — e o Runtime do CAR é o nome pra parte dela que nenhum diagrama de loop desenha.
 
+## Como explicar em inglês
+
+The ReAct pattern — Reasoning + Acting — is the foundational mental model for AI agents. At each step, the model produces a thought (reasoning about what to do next), selects an action (a tool call), and receives an observation (the tool result), then repeats. In modern LLM APIs this is implemented via native tool use: you define tool schemas, the model returns structured tool-call blocks rather than free text, and your code executes them and feeds results back as tool-result messages. The loop exits when `stop_reason` is `end_turn` (the model is done) or when `max_steps` is reached. The practical discipline around this loop — stop conditions beyond `max_steps`, stuck-loop detection, retry escalation, and where human approval gates belong — is what "loop engineering" names. ReAct gives you the step; loop engineering gives you the control layer that governs the sequence of steps.
+
+| Português | English |
+|---|---|
+| loop do agent | agent loop |
+| pensamento / raciocínio | thought / reasoning |
+| ação | action |
+| observação | observation |
+| uso nativo de ferramentas | native tool use |
+| schema de ferramenta | tool schema |
+| razão de parada | stop reason |
+| turno de execução | execution turn |
+| passos máximos | max steps |
+| engenharia de loop | loop engineering |
+| auto-correção | self-correction |
+| uso paralelo de ferramentas | parallel tool use |
+
+## Ver mais
+
+- **Yao et al. — *ReAct: Synergizing Reasoning and Acting in Language Models*** (arxiv:2210.03629, 2022): O paper original que nomeou o padrão. Fundamental para entender o fundamento teórico antes de usar implementações modernas — especialmente a justificativa de por que intercalar raciocínio com ação melhora a qualidade versus chain-of-thought puro.
+- **Anthropic — *Tool use documentation*** (docs.anthropic.com, 2026): Referência técnica canônica para implementar o loop com a API Claude — schemas de tools, parallel tool calls, handling de erros, streaming com tool use. Leitura obrigatória antes de qualquer implementação em produção.
+- **Harness Engineering for Language Agents** (preprints.org:10.20944/preprints202603.1756, 2026): Formaliza o loop engineering como disciplina com a decomposição CAR (Control/Agency/Runtime). O eixo Runtime cobre exatamente o que o diagrama ReAct básico não mostra: como estado é carregado entre passos e como falhas são tratadas ao longo do tempo. *Preprint não revisado por pares — vocabulário emergente.*
+
 ## Veja também
 
 - [[01 - O que é um agent]]
