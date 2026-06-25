@@ -693,9 +693,8 @@ Agora que você entende como os objetos se ligam via prototype, o próximo passo
 
 - [[03-Dominios/Tecnologia/JavaScript/06 - this|06 - this]] — como o `this` de um método se comporta ao longo da cadeia de herança; por que arrow functions em métodos de classe mudam o binding
 - [[03-Dominios/Tecnologia/JavaScript/07 - Objetos|07 - Objetos]] — fundamentos de criação e descriptores que alimentam a cadeia de protótipos
-- [[03-Dominios/Tecnologia/JavaScript/10 - Symbols e iterators|10 - Symbols e iterators]] — `Symbol.species`, `Symbol.iterator` e os outros well-known symbols que integram sua classe ao protocolo da linguagem
-- [[03-Dominios/Tecnologia/JavaScript/08 - Closures e escopo|08 - Closures e escopo]] — campos privados `#` são escopo léxico por dentro; closures e privacidade têm fundamentos relacionados
-- [[03-Dominios/Tecnologia/JavaScript/12 - Proxies e Reflect|12 - Proxies e Reflect]] — interceptar e customizar operações da prototype chain com `Proxy` e `Reflect`
+- [[22 - Metaprogramação]] — `Symbol.species` e os well-known symbols que integram sua classe ao protocolo da linguagem; interceptar e customizar operações da prototype chain com `Proxy` e `Reflect`
+- [[10 - Closures]] — campos privados `#` são escopo léxico por dentro; closures e privacidade têm fundamentos relacionados
 
 ---
 
