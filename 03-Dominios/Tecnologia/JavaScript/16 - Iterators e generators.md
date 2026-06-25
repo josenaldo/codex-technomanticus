@@ -3,7 +3,7 @@ title: "Iterators e generators"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: adepto
 tags:
   - javascript
@@ -197,6 +197,56 @@ const dez = Array.from({ length: 10 }, () => gen.next().value);
 > [!info] O generator infinito não trava o processo
 > O loop `while(true)` dentro do generator não trava o JavaScript porque o código só avança até o próximo `yield` a cada chamada de `next()`. A suspensão é real — o call stack do generator fica preservado entre chamadas.
 
+### Comunicação bidirecional: `next(valor)` e o yield como receptor
+
+A maioria usa generators como emissores unilaterais de valores — mas o canal vai nos dois sentidos. O valor passado para `next(valor)` é capturado como resultado da expressão `yield` corrente no body do generator.
+
+Pense assim: do ponto de vista do generator, `yield X` é uma operação em dois tempos. Primeiro, ele **emite** `X` para quem chamou `next()`. Depois, quando o próximo `next(Y)` é chamado, o generator **recebe** `Y` como resultado dessa mesma expressão `yield`. É uma pausa com handshake.
+
+```js
+function* acumulador() {
+  let total = 0;
+  while (true) {
+    const n = yield total; // emite total, depois recebe n
+    total += n ?? 0;
+  }
+}
+
+const acc = acumulador();
+acc.next();    // inicia — { value: 0, done: false }
+acc.next(10);  // envia 10 → total = 10 — { value: 10, done: false }
+acc.next(5);   // envia 5  → total = 15 — { value: 15, done: false }
+```
+
+> [!warning] O primeiro `next()` descarta o argumento
+> Não existe `yield` anterior para capturar o valor passado no **primeiro** `next()` — o generator ainda não atingiu nenhum `yield`. Por isso, a convenção é sempre chamar o primeiro `next()` sem argumento, apenas para armar o generator no primeiro `yield`.
+
+Essa característica torna generators úteis para implementar **co-rotinas** e **state machines** — o caller controla o fluxo enviando dados, e o generator reage. Bibliotecas de gerenciamento de efeitos colaterais como `redux-saga` constroem toda a sua arquitetura sobre esse mecanismo.
+
+### O valor de retorno do generator: o detalhe silencioso
+
+Quando um generator termina — seja chegando ao fim do corpo ou executando um `return valor` — o último `next()` retorna `{ value: valor, done: true }`. Mas `for...of` e o spread operator **descartam esse valor** silenciosamente: eles simplesmente param quando `done: true`, sem capturar `value`.
+
+```js
+function* gen() {
+  yield 1;
+  yield 2;
+  return 'fim'; // for...of e spread nunca veem isso
+}
+
+// Consumidores idiomáticos descartam o return value
+for (const x of gen()) console.log(x); // 1, 2  — 'fim' ignorado
+console.log([...gen()]);                 // [1, 2] — 'fim' ignorado
+
+// Para capturar, use next() diretamente
+const g = gen();
+g.next(); // { value: 1, done: false }
+g.next(); // { value: 2, done: false }
+g.next(); // { value: 'fim', done: true } ← só aqui
+```
+
+Isso importa na prática quando você compõe generators com `yield*` — o valor de `return` do sub-generator trafega pelo `yield*` e fica disponível para o pai, mesmo sendo invisível para o consumidor externo. Detalhe da próxima seção.
+
 ---
 
 ## `yield*`: delegação entre generators
@@ -233,11 +283,36 @@ function* flatten(arr) {
 console.log([...flatten([1, [2, [3, 4]], 5])]); // [1, 2, 3, 4, 5]
 ```
 
+### O valor de retorno do `yield*`
+
+Por que isso importa para um adepto? Porque `yield*` é uma **expressão com valor de retorno** — e isso cria uma assimetria invisível que pega até desenvolvedores experientes.
+
+Quando um sub-generator executa `return valor`, esse valor aparece em `{ done: true, value: valor }`. O `yield*` captura esse `value` e o disponibiliza para o generator pai. Mas o consumidor externo (`for...of`, spread) nunca vê esse valor — ele para assim que `done: true` chega.
+
+```js
+function* sub() {
+  yield 1;
+  yield 2;
+  return 'retorno-do-sub'; // não emitido como yield — vai no { done: true, value }
+}
+
+function* pai() {
+  const resultado = yield* sub(); // captura 'retorno-do-sub'
+  console.log(resultado);          // 'retorno-do-sub'
+  yield 3;
+}
+
+console.log([...pai()]); // [1, 2, 3] — 'retorno-do-sub' não aparece aqui
+```
+
+> [!info] A assimetria do `yield*`
+> O que o pai vê (o valor de retorno do sub-generator) é diferente do que o consumidor vê (apenas os valores yielded). Isso significa que você pode usar o `return` de um sub-generator como um **canal de comunicação** entre generators compostos — sem expor o dado para fora. Uma forma elegante de implementar protocolos internos.
+
 ---
 
 ## Iterator Helpers — ES2025
 
-Antes do ES2025, transformar iterators exigia materializar arrays intermediários ou escrever generators manualmente. O ES2025 resolveu isso com métodos nativos em `Iterator.prototype`:
+Antes do ES2025, transformar iterators exigia materializar arrays intermediários ou escrever generators manualmente. O ES2025 resolveu isso com [[Dicionário de JavaScript#Iterator Helpers\|Iterator Helpers]] nativos em `Iterator.prototype`:
 
 ```js
 // ANTES: criava 3 arrays intermediários
@@ -288,14 +363,60 @@ Iterator.from(sieve())
   .toArray(); // [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 ```
 
+### O que vem depois: Async Iterator Helpers (ES2026)
+
+Os helpers do ES2025 são síncronos. Para async iterators, a proposta `AsyncIterator.prototype` (TC39, Stage 2.7 em abril 2026) espelha a mesma API — `.map()`, `.filter()`, `.take()`, etc. — mas com um diferencial arquitetural importante: os métodos produtores podem suportar **concorrência controlada**.
+
+Pense no caso de filtrar 1000 URLs fazendo `fetch()` para checar disponibilidade. Com a versão síncrona, você processa uma por vez. Com concorrência controlada nos async helpers, o runtime pode iniciar N fetches em paralelo, mantendo a ordem de saída. Um trade-off que a API síncrona não tem como oferecer.
+
+Até a proposta ser finalizada, `Iterator.from()` (ES2025) só funciona com iterables síncronos — você precisará de `for await...of` manual ou bibliotecas como `iter-tools` para pipelines async.
+
 ---
+
+## Protocolo completo: `return()` e `throw()`
+
+O protocolo de iteração tem dois métodos além de `next()` que raramente aparecem em tutoriais, mas são fundamentais para código robusto: `return(valor)` e `throw(erro)`.
+
+**Por que existem?** Porque o consumidor pode querer encerrar a iteração antes do fim — seja por `break`, exceção ou lógica de negócio. Sem um canal de comunicação de volta, o generator ficaria suspenso para sempre, mantendo recursos (conexões, handles de arquivo) abertos.
+
+```js
+function* comRecurso() {
+  const conn = abrirConexao();
+  try {
+    while (true) {
+      yield conn.lerProximo();
+    }
+  } finally {
+    conn.fechar(); // sempre executa — mesmo com return() externo
+  }
+}
+
+const gen = comRecurso();
+gen.next();          // abre conexão, primeiro valor
+gen.return('stop');  // força o generator a executar o finally
+// → conn.fechar() é chamado; retorna { value: 'stop', done: true }
+```
+
+O ponto crítico: **`for...of` chama `return()` implicitamente** quando você usa `break` ou lança uma exceção dentro do loop. O generator recebe o sinal e executa qualquer bloco `finally` pendente — sem você precisar fazer nada.
+
+```js
+for (const item of comRecurso()) {
+  if (condicao(item)) break; // ← chama gen.return() automaticamente
+  // conn.fechar() executa mesmo com break
+}
+```
+
+**`gen.throw(erro)`** injeta um erro no ponto de pausa, como se um `throw` fosse inserido ali. O generator pode capturar com `try/catch` e continuar, ou deixar propagar para o caller.
+
+> [!summary]
+> Use `try/finally` dentro de generators que gerenciam recursos. O `finally` é a garantia de cleanup — ativado tanto pela conclusão normal quanto por `return()` e `throw()` externos.
 
 ## Async iterators e `for await...of`
 
 Tudo o que vimos até aqui é síncrono: `next()` retorna o valor imediatamente. Mas e quando cada valor envolve uma operação assíncrona — buscar uma página de API, ler um chunk de arquivo, consumir um stream?
 
 A versão async do protocolo:
-- **Async iterable**: objeto com `[Symbol.asyncIterator]()` retornando um async iterator
+- **Async iterable**: objeto com `[Symbol.asyncIterator]()` retornando um [[Dicionário de JavaScript#async iterator\|async iterator]]
 - **Async iterator**: `next()` retorna uma **Promise** de `{ value, done }`
 - **Async generator**: `async function*` com `yield` e `await` no mesmo corpo
 
@@ -527,6 +648,7 @@ O protocolo de iteração foi projetado para funcionar tanto em contextos síncr
 - [[03-Dominios/Tecnologia/JavaScript/14 - Promises|14 - Promises]] — a primitiva sobre a qual async/await e async generators são construídos
 - [[03-Dominios/Tecnologia/JavaScript/08 - Arrays e métodos|08 - Arrays e métodos]] — os métodos de array que inspiraram os Iterator Helpers do ES2025, e quando preferir um ao outro
 - [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript|Dicionário de JavaScript]] — termos de iteração e protocolo
+- [[03-Dominios/Tecnologia/Node/Streams/08 - Async iteration de streams|Node/Streams 08 — Async iteration de streams]] — como `Readable` implementa `Symbol.asyncIterator` e por que `Readable.from(asyncGen())` une o protocolo de generators com streams do Node
 
 ---
 
@@ -534,7 +656,11 @@ O protocolo de iteração foi projetado para funcionar tanto em contextos síncr
 
 - **MDN Web Docs** — [*Iteration protocols*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) — referência canônica do protocolo iterable/iterator com exemplos de implementação
 - **MDN Web Docs** — [*Iterators and Generators*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_generators) — guia completo cobrindo generators, `yield*` e async generators
+- **MDN Web Docs** — [*Generator.prototype.next()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/next) — documentação da comunicação bidirecional via `next(valor)` e expressão `yield`
+- **MDN Web Docs** — [*Generator.prototype.return()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/return) — protocolo de limpeza com `return()` e `finally`
+- **MDN Web Docs** — [*Generator.prototype.throw()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw) — injeção de erros em generators com `throw()`
 - **LogRocket Blog** — [*Iterator helpers: The most underrated feature in ES2025*](https://blog.logrocket.com/iterator-helpers-es2025/) — cobertura detalhada dos helpers, casos de uso e comparação de performance
 - **Axel Rauschmayer (exploringjs.com)** — [*Synchronous iteration ES6 (ES2025 Edition)*](https://exploringjs.com/js/book/ch_sync-iteration.html) — análise aprofundada do protocolo com especificação formal
 - **MDN Web Docs** — [*async function\**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function*) — referência de async generators com exemplos de streaming
 - **DEV Community** — [*Native Iterator Helpers Just Shipped*](https://dev.to/gabrielanhaia/native-iterator-helpers-just-shipped-heres-what-you-stop-doing-2i0m) — comparações práticas antes/depois dos helpers nativos
+- **TC39** — [*proposal-async-iterator-helpers*](https://github.com/tc39/proposal-async-iterator-helpers) — proposta Stage 2.7 (abril 2026) de async iterator helpers com concorrência controlada

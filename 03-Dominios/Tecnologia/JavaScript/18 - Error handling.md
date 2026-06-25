@@ -3,7 +3,7 @@ title: "Error handling"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: adepto
 tags:
   - javascript
@@ -17,6 +17,8 @@ publish: true
 
 > [!abstract] TL;DR
 > Em JavaScript, erros são objetos da classe `Error` (ou subclasses) lançados com `throw` e capturados com `try/catch/finally`. O bloco `finally` sempre executa — seja qual for o caminho. Erros em código assíncrono exigem `await` dentro de `try/catch` **ou** `.catch()` em Promises; `try/catch` em volta de um callback assíncrono *não* pega o erro. Desde ES2022, `Error.cause` permite encadear erros preservando a causa raiz. `AggregateError` agrupa múltiplas falhas (como as de `Promise.any`). Erros não tratados em Promises travam o processo Node.js (desde v15) — nunca deixe uma Promise flutuando.
+> 
+> Dois gotchas de produção frequentemente ignorados: (1) `Error.cause` é **não-enumerável** por spec — `JSON.stringify(err)` retorna `{}`, silenciando a causa em muitos loggers; (2) handlers **async** em `EventEmitter` criam unhandled rejections invisíveis sem `captureRejections: true`.
 
 ---
 
@@ -155,6 +157,45 @@ graph TD
 
 > [!info] Suporte
 > `Error.cause` está disponível desde Node.js 16.9+ e em todos os browsers modernos (Chrome 93, Firefox 91, Safari 15).
+
+### Percorrendo a cadeia de `cause`
+
+A nota mostra como *criar* a cadeia — mas como *ler* ela inteira para logging estruturado? Com múltiplos níveis de encadeamento, acessar apenas `err.cause.message` perde os elos intermediários. Um utilitário simples percorre a cadeia sem assumir profundidade máxima:
+
+```js
+function extrairCadeia(err, profundidade = 0) {
+  if (!err || profundidade > 10) return []; // guard: evita ciclos acidentais
+  return [
+    { name: err.name, message: err.message, stack: err.stack },
+    ...extrairCadeia(err.cause, profundidade + 1),
+  ];
+}
+
+// uso em logger estruturado:
+logger.error({ cadeia: extrairCadeia(err) });
+// → [
+//     { name: "AppError",   message: "Falha ao buscar usuário 42", ... },
+//     { name: "FetchError", message: "Failed to fetch", ... },
+//     { name: "TypeError",  message: "network error", ... }
+//   ]
+```
+
+O guard de profundidade existe porque a especificação ECMAScript não proíbe ciclos em `cause` — embora raros em código real, um `cause` circular travaria a recursão sem ele.
+
+> [!warning] `Error.cause` é não-enumerável — cuidado com loggers e `JSON.stringify`
+> Por especificação, `Error.cause` (assim como `message`, `name` e `stack`) é uma propriedade **não-enumerável**. Isso significa que `JSON.stringify(err)` retorna `{}` — silenciando a causa —, e loggers que serializam só propriedades enumeráveis (como certos transportes do Winston/Pino com configuração padrão) descartam a causa inteira sem aviso.
+>
+> Para logar corretamente, acesse explicitamente:
+> ```js
+> logger.error({
+>   message: err.message,
+>   cause: err.cause?.message,
+>   causeStack: err.cause?.stack,
+> });
+> // ou use libs como serialize-error que percorrem non-enumerables
+> ```
+>
+> Isso não é um bug do logger — é o comportamento especificado. A armadilha está em supor que serializar o objeto de erro via JSON captura tudo.
 
 ---
 
@@ -315,7 +356,7 @@ naoAsync().catch(...); // TypeError: naoAsync(...).catch is not a function
 
 ## Unhandled rejection
 
-Uma Promise rejeitada sem nenhum `.catch()` (ou `await` em `try/catch`) gera um **unhandled rejection**. No browser, dispara o evento `unhandledrejection`. No Node.js (v15+), **encerra o processo**:
+Uma [[Dicionário de JavaScript#Promise|Promise]] rejeitada sem nenhum `.catch()` (ou `await` em `try/catch`) gera um **unhandled rejection**. No browser, dispara o evento `unhandledrejection`. No Node.js (v15+), **encerra o processo**:
 
 ```js
 // ❌ Promise flutuante — perigoso em produção
@@ -341,6 +382,44 @@ window.addEventListener("unhandledrejection", event => {
   console.error("Unhandled:", event.reason);
 });
 ```
+
+### `captureRejections` no `EventEmitter` — o vetor esquecido
+
+Existe um segundo vetor de unhandled rejection que pega a maioria dos devs de surpresa: handlers **async** em `EventEmitter`. Quando você registra um listener assíncrono e ele rejeita, o EventEmitter não tem como interceptar a Promise — a rejeição escapa para o nível do processo como unhandled rejection.
+
+```js
+// ❌ Rejeição do handler async escapa para o processo
+const ee = new EventEmitter();
+ee.on('data', async (payload) => {
+  await processarAsync(payload); // se rejeitar → unhandled rejection
+});
+```
+
+A solução é o opt-in `captureRejections: true` (disponível desde Node.js 12.16), que instala um handler `.then(undefined, handler)` em cada listener async e roteia a rejeição para o evento `'error'` do emitter:
+
+```js
+// ✅ captureRejections roteia a rejeição para o handler 'error'
+const ee = new EventEmitter({ captureRejections: true });
+
+ee.on('data', async (payload) => {
+  const result = await processarAsync(payload); // rejeição → vai para 'error'
+  ee.emit('result', result);
+});
+
+ee.on('error', (err) => {
+  logger.error('Erro no handler async:', err); // capturado aqui
+});
+```
+
+Para habilitar globalmente em toda a aplicação:
+
+```js
+const { EventEmitter } = require('events');
+EventEmitter.captureRejections = true; // afeta todas as novas instâncias
+```
+
+> [!warning] Não use função async como handler de `'error'`
+> A doc do Node.js alerta: se o próprio handler de `'error'` for async e rejeitar, você entra em loop infinito de emissão de erros. Handlers de `'error'` devem ser síncronos.
 
 ---
 
@@ -653,6 +732,7 @@ When asked in a technical interview: *"How do you handle errors in async JavaScr
 Erros assíncronos foram mencionados aqui no nível das Promises. Para entender completamente por que `try/catch` com `await` funciona e por que callbacks síncronos de `setTimeout` ficam fora do alcance, você precisa entender como Promises funcionam internamente — o mecanismo de microtask queue e o event loop.
 
 - [[14 - Promises]] — como Promises propagam rejeições pela cadeia e por que `.catch()` ao final captura erros de qualquer `.then()` anterior
+- [[15 - async-await]] — `async/await` como açúcar sobre Promises e por que `await` dentro de `try/catch` converte rejeições em exceções síncronas
 - [[Dicionário de JavaScript]] — termos técnicos do capítulo (Error, cause, AggregateError, unhandled rejection)
 
 ---
@@ -666,3 +746,8 @@ Erros assíncronos foram mencionados aqui no nível das Promises. Para entender 
 - **javascript.info** — [*Custom errors, extending Error*](https://javascript.info/custom-errors) — guia prático de hierarquias de erros personalizadas
 - **Bugfender** — [*JavaScript Exception Handling: try, catch, throw, async & Best Practices*](https://bugfender.com/blog/javascript-exception-handling/) — visão geral moderna com padrões async (2026)
 - **certificates.dev** — [*Custom Errors in JavaScript: Extending Error the Right Way*](https://certificates.dev/blog/custom-errors-in-javascript-extending-error-the-right-way) — boas práticas atuais para subclasses de Error
+- **Node.js Docs** — [*Events: captureRejections*](https://nodejs.org/docs/latest/api/events.html) — documentação oficial do `captureRejections` no EventEmitter
+- **Matt Smith (allthingssmitty)** — [*Error chaining in JavaScript: cleaner debugging with Error.cause*](https://allthingssmitty.com/2025/11/10/error-chaining-in-javascript-cleaner-debugging-with-error-cause/) — análise prática de Error.cause com foco em produção (2025)
+
+> [!tip] Vídeo recomendado
+> **Wes Bos** — [*5 Async + Await Error Handling Strategies*](https://www.youtube.com/watch?v=wsoQ-fgaoyQ) (YouTube, 2022) — percorre 5 estratégias distintas para tratar erros com async/await: try/catch simples, mix com `.catch()`, HOF wrappers e mais. Excelente complemento prático à teoria desta nota.

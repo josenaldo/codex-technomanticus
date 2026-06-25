@@ -324,6 +324,150 @@ console.log(d.hasOwnProperty("falar")); // false — está no prototype
 
 ---
 
+## `Object.setPrototypeOf`: mutação perigosa de protótipo
+
+`Object.setPrototypeOf(obj, proto)` redefine o `[[Prototype]]` de um objeto **depois** de ele ter sido criado. É o equivalente ao operador `extends` em tempo de execução — mas com uma diferença crítica: o motor JavaScript otimiza objetos assumindo que sua cadeia de protótipos não muda. Quando você muta um protótipo existente, você **invalida todas as otimizações de JIT** feitas para aquele objeto.
+
+```js
+const a = { falar() { return "A"; } };
+const b = { falar() { return "B"; } };
+
+const obj = Object.create(a);
+console.log(obj.falar()); // "A"
+
+Object.setPrototypeOf(obj, b);  // ⚠️ muta o [[Prototype]]
+console.log(obj.falar()); // "B"
+```
+
+O V8 classifica objetos em **hidden classes** (shapes): dois objetos com a mesma estrutura compartilham a mesma hidden class, o que permite acesso a propriedades via offset fixo (rápido como C++). Mutar o protótipo força a engine a **deoptimizar** o objeto, que passa a usar o caminho lento de lookup em dicionário. Para toda uma base de código que escala a cadeia com frequência, o impacto é mensurável.
+
+> [!warning] Regra prática: use `Object.create` na criação, nunca `setPrototypeOf` em loop
+> `Object.setPrototypeOf` tem dois usos legítimos: (1) a desugarização manual de `extends` (como na seção acima — uma vez, na inicialização da classe), e (2) testes/debugging. Fora desses contextos, evite. A MDN categoriza explicitamente a operação como de **"muito baixa performance"** por seu impacto nas hidden classes do V8, SpiderMonkey e JavaScriptCore.
+
+### `new.target`: saber quem chamou o construtor
+
+`new.target` é uma meta-propriedade disponível dentro de funções construtoras e classes. Ela aponta para a **função/classe que foi diretamente chamada com `new`** — não para o protótipo, não para a classe pai.
+
+```js
+class Forma {
+  constructor() {
+    if (new.target === Forma) {
+      throw new Error("Forma é uma classe abstrata — instancie uma subclasse.");
+    }
+    console.log("Criando:", new.target.name);
+  }
+}
+
+class Circulo extends Forma {
+  constructor(raio) {
+    super();           // new.target aqui dentro ainda é Circulo
+    this.raio = raio;
+  }
+}
+
+new Forma();           // Error: Forma é uma classe abstrata
+new Circulo(5);        // "Criando: Circulo" — correto
+```
+
+Dois padrões clássicos com `new.target`:
+
+1. **Classes abstratas em runtime** — lance erro se `new.target` for a própria classe base (como acima).
+2. **Funções construtoras seguras** — detecte chamada sem `new`:
+
+```js
+function Usuario(nome) {
+  if (!new.target) {
+    // Chamado sem new: corrige silenciosamente ou lança
+    return new Usuario(nome);
+  }
+  this.nome = nome;
+}
+
+const u = Usuario("Ana"); // funciona mesmo sem new
+console.log(u.nome); // "Ana"
+```
+
+Em ambos os casos, `new.target` é `undefined` se a função foi chamada normalmente (sem `new`). Isso é diferente de `this`, que pode ser o objeto global ou `undefined` (strict mode).
+
+### Brand check com campos privados `#`
+
+Antes dos campos privados, não havia forma nativa de verificar se um objeto era *genuinamente* uma instância de uma classe — você podia criar um objeto com a mesma estrutura e enganar o `instanceof`. Com campos `#` (privados), surgiu o **brand check**: a única forma de verificar se um objeto tem o `#campo` é tentar acessá-lo e capturar o erro — ou usar `#campo in obj` (ES2022+).
+
+```js
+class Token {
+  #valor;
+
+  constructor(v) {
+    this.#valor = v;
+  }
+
+  // Brand check: só instâncias reais de Token têm #valor
+  static isToken(obj) {
+    try {
+      obj.#valor;       // acessa o privado
+      return true;
+    } catch {
+      return false;     // TypeError: obj não é instância de Token
+    }
+  }
+
+  // Forma idiomática (ES2022): operador `in` com campos privados
+  static isTokenModerno(obj) {
+    return #valor in obj;
+  }
+}
+
+const t = new Token("abc");
+console.log(Token.isToken(t));         // true
+console.log(Token.isToken({ }));       // false
+console.log(Token.isTokenModerno(t));  // true
+
+// Nem mesmo um objeto idêntico na estrutura passa:
+const fake = { valueOf() { return "abc"; } };
+console.log(Token.isToken(fake));      // false
+```
+
+O operador `#campo in obj` (introduzido na proposta *ergonomic brand checks for private fields*, parte do ES2022) é a forma canônica. Ele retorna `true` apenas se o objeto foi **efetivamente construído** pela classe que possui o campo `#campo` — não pode ser forjado via duck typing ou `Object.create`. Isso fecha a lacuna que tornava `instanceof` frágil em cenários de múltiplos realms.
+
+> [!info] Fonte: TC39 Proposal — *Ergonomic Brand Checks for Private Fields* (ES2022)
+> A proposta foi editada por Jordan Harband e chegou ao stage 4 em novembro de 2021, entrando na spec formal do ES2022. Referência: [tc39/proposal-private-fields-in-in](https://github.com/tc39/proposal-private-fields-in-in)
+
+### `super` em métodos de objeto literal
+
+`super` não é exclusivo de classes — funciona em **object literals** usando a sintaxe de método abreviada. A restrição é que o objeto deve ter sido atribuído a uma variável ou propriedade, pois `super` resolve o protótipo via o slot interno `[[HomeObject]]` do método, que é configurado no momento da definição.
+
+```js
+const base = {
+  saudacao() {
+    return "Olá do base!";
+  }
+};
+
+const derivado = {
+  __proto__: base,   // liga o protótipo (não recomendado em prod, mas válido aqui)
+
+  saudacao() {
+    // super. resolve via [[HomeObject]], não via this
+    return super.saudacao() + " (e do derivado!)";
+  }
+};
+
+console.log(derivado.saudacao());
+// "Olá do base! (e do derivado!)"
+```
+
+O detalhe técnico importante: `super` usa `[[HomeObject]]` do método — um slot interno configurado em compile-time para o objeto onde o método foi definido. Por isso, *extrair* um método para outra variável **quebra** o `super`:
+
+```js
+const metodoExtraido = derivado.saudacao;
+metodoExtraido(); // RangeError ou resultado errado — [[HomeObject]] ainda aponta para `derivado`
+```
+
+> [!question]- Por que `super` não é apenas `Object.getPrototypeOf(this)`?
+> Porque `this` muda com a chamada — se um neto herdar o método, `this` seria o neto, mas `super` ainda deve chamar o método do pai imediato do objeto onde o método foi **definido**. O `[[HomeObject]]` garante isso. Se `super` usasse `this`, haveria recursão infinita em cadeias de herança de três níveis.
+
+---
+
 ## Casos práticos
 
 ### Cenário 1: Mixin — composição em vez de herança profunda
@@ -367,6 +511,52 @@ console.log(p.validar(schema)); // true
 
 Mixins com funções de ordem superior (`(Base) => class extends Base`) funcionam porque `extends` aceita qualquer expressão que resulte em uma função construtora, não apenas um nome de classe literal.
 
+#### Mixins avançados: deduplificação e preservação de metadados
+
+O padrão acima tem uma limitação: se dois mixins definem o mesmo método, o mais externo vence silenciosamente. Uma versão mais robusta inclui deduplificação de nomes e preservação do `name` da classe original:
+
+```js
+// Aplicar múltiplos mixins com nome preservado
+function applyMixins(Base, ...mixins) {
+  const Mixed = mixins.reduce((Acc, mixin) => mixin(Acc), Base);
+  Object.defineProperty(Mixed, "name", { value: Base.name });
+  return Mixed;
+}
+
+// Verificação de conflito (opcional, dev-only)
+function safeMixin(mixin) {
+  return (Base) => {
+    const Mixed = mixin(Base);
+    const mixinKeys = Object.getOwnPropertyNames(mixin.prototype ?? {});
+    const baseKeys  = Object.getOwnPropertyNames(Base.prototype);
+    const conflicts = mixinKeys.filter(k => baseKeys.includes(k) && k !== "constructor");
+    if (conflicts.length) console.warn(`Mixin conflito: ${conflicts.join(", ")}`);
+    return Mixed;
+  };
+}
+
+class Animal {
+  constructor(nome) { this.nome = nome; }
+  falar() { return `${this.nome} faz um som.`; }
+}
+
+const ComLog     = safeMixin((Base) => class extends Base {
+  falar() { console.log(`[LOG] ${this.nome}`); return super.falar(); }
+});
+const ComHistorico = safeMixin((Base) => class extends Base {
+  historico = [];
+  falar() { const r = super.falar(); this.historico.push(r); return r; }
+});
+
+class AnimalComLog extends applyMixins(Animal, ComLog, ComHistorico) {}
+
+const a = new AnimalComLog("Leão");
+a.falar(); // log + registro no histórico
+console.log(a.historico); // ["Leão faz um som."]
+```
+
+A cadeia de protótipos final é: `AnimalComLog → (ComHistorico(ComLog(Animal))) → Object.prototype`. Cada mixin adiciona uma camada, então a cadeia cresce com o número de mixins — mantenha o número razoável (até 4-5) para não degradar lookup.
+
 ### Cenário 2: Estender built-ins com cuidado
 
 Estender `Array`, `Error` ou `Map` tem armadilhas históricas — principalmente porque esses built-ins criam instâncias do tipo original internamente, não do subtipo. A partir do ES2015, `class extends` resolve isso corretamente:
@@ -392,8 +582,54 @@ console.log(lista.somente(n => n > 2) instanceof ListaOrdenada); // true
 
 O motivo de `filter` retornar `ListaOrdenada` e não `Array` é o `Symbol.species`. Por padrão, `Array` usa `this.constructor` para criar resultados de métodos derivados. Como `ListaOrdenada` estende `Array`, `this.constructor` é `ListaOrdenada`.
 
+#### `Symbol.species`: controlar o tipo do resultado derivado
+
+`Symbol.species` é um well-known symbol que define qual construtor usar ao criar objetos "derivados" dentro de métodos como `map`, `filter`, `slice`, `Promise.then`, etc. Quando você quer que esses métodos retornem um `Array` simples em vez de uma subclasse, sobreponha `Symbol.species`:
+
+```js
+class ListaComLog extends Array {
+  log(msg) { console.log(msg, [...this]); return this; }
+
+  // Força retorno de Array puro em métodos derivados
+  static get [Symbol.species]() { return Array; }
+}
+
+const lista = ListaComLog.from([1, 2, 3]);
+const filtrada = lista.filter(n => n > 1); // retorna Array, não ListaComLog
+
+console.log(filtrada instanceof ListaComLog); // false
+console.log(filtrada instanceof Array);       // true
+lista.log("original");  // funciona — ainda é ListaComLog
+filtrada.log("filtrada"); // TypeError: filtrada.log is not a function
+```
+
+> [!warning] `Symbol.species` foi **removido** de `Array`, `RegExp` e `Map` no ES2023
+> A proposta [tc39/proposal-rm-builtin-subclassing](https://github.com/tc39/proposal-rm-builtin-subclassing) removeu o suporte a `Symbol.species` dos built-ins padrão a partir do ES2023 (implementado no V8 v11.3, Chrome 113, Node.js 20+). Para novas extensões de built-ins, o comportamento de retorno agora é sempre o tipo original — `filter` em `ListaComLog` retorna `Array` independente de `Symbol.species`. O symbol ainda existe no spec para outros usos (como `Promise`), mas a semântica mudou. Sempre teste em Node 20+.
+
+Para **`Promise`**, o `Symbol.species` ainda é relevante e funciona:
+
+```js
+class MeuPromise extends Promise {
+  static get [Symbol.species]() { return Promise; }
+}
+
+MeuPromise.resolve(42)
+  .then(v => v * 2)   // retorna Promise nativo, não MeuPromise
+  .then(v => console.log(v)); // 84
+```
+
 > [!warning] Estender built-ins com funções construtoras (pré-ES6) é quebrado
 > Com funções construtoras clássicas, `extends` equivalente não funciona para built-ins: `Array.call(this)` não inicializa o array corretamente porque `Array` ignora o `this` passado por `call`. Com `class extends`, o motor usa o mecanismo interno correto via `Reflect.construct`. Se você ainda suporta ambientes muito antigos e usa transpilação, verifique: Babel e TypeScript em alvos ES5 podem quebrar `extends Array`.
+
+---
+
+## Para visualizar
+
+> [!tip] Vídeo recomendado — Prototype chain na prática
+> **"JavaScript Prototype Explained"** — canal Fireship (YouTube). Em ~8 minutos cobre `[[Prototype]]`, `__proto__`, `Object.create`, o que `new` faz e como `class` é açúcar. Ideal para fixar visualmente a cadeia antes de mergulhar em `setPrototypeOf` e `Symbol.species`.
+> Busque diretamente: [youtube.com/watch?v=wstwjQ1yqWQ](https://www.youtube.com/watch?v=wstwjQ1yqWQ)
+>
+> **"The Prototype Chain in Depth"** — Kyle Simpson (You Don't Know JS - Objects & Classes), capítulo disponível gratuitamente em [github.com/getify/You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS/blob/2nd-ed/objects-classes/README.md). Abordagem mais rigorosa sobre delegação vs. herança.
 
 ---
 
@@ -457,18 +693,27 @@ Agora que você entende como os objetos se ligam via prototype, o próximo passo
 
 - [[03-Dominios/Tecnologia/JavaScript/06 - this|06 - this]] — como o `this` de um método se comporta ao longo da cadeia de herança; por que arrow functions em métodos de classe mudam o binding
 - [[03-Dominios/Tecnologia/JavaScript/07 - Objetos|07 - Objetos]] — fundamentos de criação e descriptores que alimentam a cadeia de protótipos
+- [[03-Dominios/Tecnologia/JavaScript/10 - Symbols e iterators|10 - Symbols e iterators]] — `Symbol.species`, `Symbol.iterator` e os outros well-known symbols que integram sua classe ao protocolo da linguagem
+- [[03-Dominios/Tecnologia/JavaScript/08 - Closures e escopo|08 - Closures e escopo]] — campos privados `#` são escopo léxico por dentro; closures e privacidade têm fundamentos relacionados
+- [[03-Dominios/Tecnologia/JavaScript/12 - Proxies e Reflect|12 - Proxies e Reflect]] — interceptar e customizar operações da prototype chain com `Proxy` e `Reflect`
 
 ---
 
 ## Veja também
 
 - [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript#prototype chain|Dicionário de JavaScript · prototype chain]] — definição concisa do mecanismo
+- [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript#Object.hasOwn|Dicionário de JavaScript · Object.hasOwn]] — alternativa moderna a `hasOwnProperty` para brand checks seguros
 
 ---
 
-## Fontes
+## Referências
 
 - **MDN Web Docs** — [*Inheritance and the prototype chain*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain) — referência canônica do spec, atualizada até novembro de 2025
 - **MDN Web Docs** — [*Object prototypes*](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Advanced_JavaScript_objects/Object_prototypes) — tutorial com exemplos de `Object.create` e cadeia
 - **Dr. Axel Rauschmayer** — [*Classes ES6 · Exploring JavaScript (ES2025 Edition)*](https://exploringjs.com/js/book/ch_classes.html) — cobertura completa de `class`, desugarização, private fields e static blocks
 - **MDN Web Docs** — [*Object.setPrototypeOf()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf) — cuidados de performance e equivalência com `extends`
+- **TC39 Proposal** — [*Ergonomic Brand Checks for Private Fields*](https://github.com/tc39/proposal-private-fields-in-in) — operador `#campo in obj` (ES2022), Jordan Harband
+- **TC39 Proposal** — [*Remove @@species*](https://github.com/tc39/proposal-rm-builtin-subclassing) — remoção de `Symbol.species` dos built-ins (ES2023), implementado em Chrome 113 / Node 20
+- **MDN Web Docs** — [*new.target*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new.target) — meta-propriedade para classes abstratas e construtores seguros
+- **Kyle Simpson** — [*You Don't Know JS: Objects & Classes (2ª ed.)*](https://github.com/getify/You-Dont-Know-JS/blob/2nd-ed/objects-classes/README.md) — delegação vs. herança, leitura gratuita no GitHub
+- **Dr. Axel Rauschmayer** — [*JavaScript for Impatient Programmers · Mixins*](https://exploringjs.com/impatient-js/ch_proto-chains.html) — mixins funcionais com `extends`

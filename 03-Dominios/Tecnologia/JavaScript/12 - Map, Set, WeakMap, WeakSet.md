@@ -397,6 +397,215 @@ Hoje em dia, `#campos` privados nativos são preferíveis para essa finalidade. 
 
 ---
 
+## Performance: Map vs objeto em hot paths
+
+> [!tip] Regra prática
+> Para leituras/escritas simples com chaves string em código que roda uma vez, a diferença é negligenciável. Em hot paths — loops de milhares de iterações, processamento de streams, algoritmos de grafos — `Map` costuma vencer por duas razões: estrutura interna dedicada e ausência de prototype chain.
+
+Engines modernas como V8 otimizam objetos "monomorph" (forma fixa) de forma agressiva usando inline caches. Quando você usa um objeto como dicionário dinâmico — adicionando e removendo propriedades em runtime — a engine precisa fazer transições de forma ("hidden class transitions"), o que deoptimiza o inline cache e gera overhead.
+
+`Map` não tem esse problema: sua estrutura interna é uma hash table dedicada, sem o maquinário de prototype e sem transições de forma.
+
+```js
+// Benchmark ilustrativo: inserção + leitura em 100k operações
+// (números aproximados, variam por engine e carga do sistema)
+
+// Objeto como dicionário dinâmico
+const obj = {};
+for (let i = 0; i < 100_000; i++) {
+  obj[`key_${i}`] = i;       // hidden class transition a cada inserção
+}
+for (let i = 0; i < 100_000; i++) {
+  const v = obj[`key_${i}`]; // prototype chain lookup
+}
+
+// Map
+const m = new Map();
+for (let i = 0; i < 100_000; i++) {
+  m.set(`key_${i}`, i);       // hash table insert, sem transições
+}
+for (let i = 0; i < 100_000; i++) {
+  const v = m.get(`key_${i}`); // hash table lookup direto
+}
+```
+
+Em benchmarks do V8 (Node.js 20+), `Map` é ~20-40% mais rápido que objeto para dicionários dinâmicos com muitas inserções e deleções. Para objetos com forma fixa conhecida em tempo de compilação, objetos são mais rápidos — a engine os especializa como structs.
+
+O operador `delete` em objetos é especialmente problemático: ele causa deoptimização permanente da hidden class, degradando leituras subsequentes. `Map.delete()` nunca tem esse efeito.
+
+```js
+// Padrão anti-performance com objetos
+const cache = {};
+cache["key1"] = computar();
+delete cache["key1"];  // ⚠️ deoptimiza o objeto permanentemente
+cache["key2"] = computar();  // mais lento agora
+
+// Alternativa correta
+const cache = new Map();
+cache.set("key1", computar());
+cache.delete("key1");  // sem deoptimização
+cache.set("key2", computar());
+```
+
+### Map como cache LRU
+
+Um padrão sênior relevante: `Map` preserva **ordem de inserção**, o que o torna a base perfeita para uma LRU (Least Recently Used) cache com API mínima. A técnica consiste em mover a chave acessada para o fim do Map (deletar e reinserir) para que o início sempre represente o elemento menos recentemente usado:
+
+```js
+class LRUCache {
+  #cache;
+  #capacidade;
+
+  constructor(capacidade) {
+    this.#cache = new Map();
+    this.#capacidade = capacidade;
+  }
+
+  get(chave) {
+    if (!this.#cache.has(chave)) return undefined;
+    const valor = this.#cache.get(chave);
+    // Mover para o fim = marcar como "mais recentemente usado"
+    this.#cache.delete(chave);
+    this.#cache.set(chave, valor);
+    return valor;
+  }
+
+  set(chave, valor) {
+    if (this.#cache.has(chave)) {
+      this.#cache.delete(chave);  // remove posição antiga
+    } else if (this.#cache.size >= this.#capacidade) {
+      // O primeiro elemento é o menos recente (LRU) — expira
+      const chaveAntiga = this.#cache.keys().next().value;
+      this.#cache.delete(chaveAntiga);
+    }
+    this.#cache.set(chave, valor);
+  }
+
+  get size() { return this.#cache.size; }
+}
+
+const lru = new LRUCache(3);
+lru.set("a", 1);
+lru.set("b", 2);
+lru.set("c", 3);
+lru.get("a");     // acessa "a" → move para o fim
+lru.set("d", 4);  // capacidade cheia → expira "b" (LRU, primeiro do Map)
+console.log(lru.get("b")); // undefined — foi expirado
+console.log(lru.get("a")); // 1 — ainda presente
+```
+
+Essa implementação é O(1) para `get` e `set` porque `Map.delete` + `Map.set` são ambas operações constantes, e `Map.keys().next()` acessa o primeiro elemento em O(1) também.
+
+---
+
+## Serialização de Map e Set: o que JSON não vê
+
+> [!warning] `JSON.stringify` ignora Map e Set silenciosamente
+> `JSON.stringify(new Map([["a", 1]]))` retorna `"{}"` — o objeto vazio. Não lança erro, não avisa, simplesmente descarta tudo. O mesmo vale para `Set`: `JSON.stringify(new Set([1,2,3]))` retorna `"{}"`.
+
+### Por que JSON não suporta Map e Set
+
+`JSON.stringify` serializa objetos percorrendo suas propriedades enumeráveis. `Map` e `Set` não armazenam dados como propriedades enumeráveis — eles usam estruturas internas da engine. Do ponto de vista do JSON, são objetos vazios com um prototype especial.
+
+```js
+// Armadilha silenciosa
+const dados = new Map([["usuario", "Alice"], ["pontos", 42]]);
+const json = JSON.stringify(dados);
+console.log(json);         // "{}"  ← dados perdidos!
+JSON.parse(json);          // {}    ← Map não foi restaurado
+
+// Set igualmente problemático
+const tags = new Set(["js", "node", "ts"]);
+JSON.stringify(tags);      // "{}"  ← silêncio total
+```
+
+### structuredClone: a alternativa correta para cópia profunda
+
+`structuredClone()` (ES2022, disponível em Node 17+ e todos os browsers modernos) usa o algoritmo Structured Clone — o mesmo que o browser usa para `postMessage` e Web Workers. Ele entende `Map`, `Set`, `Date`, `ArrayBuffer`, `RegExp` e muitos outros tipos que JSON não suporta:
+
+```js
+const original = new Map([
+  ["config", new Set(["debug", "verbose"])],
+  ["data", [1, 2, 3]],
+]);
+
+// JSON falha silenciosamente
+const perdido = JSON.parse(JSON.stringify(original)); // {}
+
+// structuredClone funciona corretamente
+const copia = structuredClone(original);
+console.log(copia.get("config")); // Set {"debug", "verbose"}
+console.log(copia.get("data"));   // [1, 2, 3]
+
+// Cópia PROFUNDA: modificar a cópia não afeta o original
+copia.get("data").push(4);
+original.get("data"); // [1, 2, 3] — original intacto
+```
+
+### Serialização manual quando JSON é obrigatório
+
+Quando você precisa serializar Map/Set para JSON (API externa, localStorage, etc.), a abordagem padrão é converter para estruturas que JSON entende:
+
+```js
+// Map → JSON
+function serializarMap(m) {
+  return JSON.stringify([...m.entries()]); // array de pares [chave, valor]
+}
+function deserializarMap(json) {
+  return new Map(JSON.parse(json));
+}
+
+// Set → JSON
+function serializarSet(s) {
+  return JSON.stringify([...s]); // array de valores
+}
+function deserializarSet(json) {
+  return new Set(JSON.parse(json));
+}
+
+// Uso
+const m = new Map([["a", 1], ["b", 2]]);
+const json = serializarMap(m);           // '[["a",1],["b",2]]'
+const restaurado = deserializarMap(json); // Map {"a" => 1, "b" => 2}
+```
+
+Para estruturas aninhadas (Map dentro de Map, Map com valores Set), use o replacer/reviver do JSON:
+
+```js
+// Serialização com tipo explícito para estruturas complexas
+function replacer(chave, valor) {
+  if (valor instanceof Map) {
+    return { __tipo__: "Map", dados: [...valor.entries()] };
+  }
+  if (valor instanceof Set) {
+    return { __tipo__: "Set", dados: [...valor] };
+  }
+  return valor;
+}
+
+function reviver(chave, valor) {
+  if (valor?.__tipo__ === "Map") return new Map(valor.dados);
+  if (valor?.__tipo__ === "Set") return new Set(valor.dados);
+  return valor;
+}
+
+const complexo = new Map([
+  ["tags", new Set(["js", "ts"])],
+  ["config", new Map([["debug", true]])],
+]);
+
+const json = JSON.stringify(complexo, replacer);
+const restaurado = JSON.parse(json, reviver);
+console.log(restaurado.get("tags")); // Set {"js", "ts"}
+```
+
+> [!tip] Quando usar cada abordagem
+> - **structuredClone**: cópia profunda interna (mesma aba/worker, sem rede)
+> - **Serialização manual com array de entries**: API REST ou localStorage com Map simples
+> - **replacer/reviver**: estruturas aninhadas complexas que precisam sobreviver ao JSON
+
+---
+
 ## Armadilhas comuns
 
 > [!warning] Comparar objetos por valor no Map/Set
@@ -465,7 +674,10 @@ Hoje em dia, `#campos` privados nativos são preferíveis para essa finalidade. 
 Você agora tem as ferramentas de coleção do JavaScript moderno. O próximo passo natural é entender **como essas coleções se comportam na fronteira assíncrona** — quando Map e Set precisam ser atualizados de forma concorrente, ou quando WeakMap é usado em generators e iteradores lazy.
 
 - `[[07 - Objetos]]` — a base que antecede Map: prototype chain, property descriptors, como objetos puros funcionam internamente e por que Map os supera em casos dinâmicos
-- `[[Dicionário de JavaScript]]` — glossário com termos-chave da linguagem usados nesta nota
+- `[[20 - Cópia, serialização e imutabilidade]]` — aprofunda structuredClone, JSON replacer/reviver, e o espectro cópia-rasa vs cópia-profunda em todo o ecossistema JS
+- `[[21 - Memory management]]` — WeakRef, FinalizationRegistry e como o GC do V8 trata referências fracas na prática
+- `[[08 - Arrays e métodos]]` — complemento natural: Arrays são a estrutura iterável mais próxima de Set, e a interação Array↔Map é frequente em pipelines de dados
+- `[[Dicionário de JavaScript]]` — glossário com termos-chave da linguagem usados nesta nota: SameValueZero, structuredClone, referência fraca
 
 ---
 
@@ -478,3 +690,6 @@ Você agora tem as ferramentas de coleção do JavaScript moderno. O próximo pa
 - **Sonar** — [*Union, intersection, difference are coming to JavaScript Sets*](https://www.sonarsource.com/blog/union-intersection-difference-javascript-sets/) — análise prática dos novos métodos com exemplos
 - **Builder.io (Steve Sewell)** — [*Use Maps More and Objects Less*](https://www.builder.io/blog/maps) — argumentos práticos para preferir Map em código de produção
 - **javascript.info** — [*WeakMap and WeakSet*](https://javascript.info/weakmap-weakset) — explicação com analogias e casos de uso canônicos
+- **MDN Web Docs** — [*structuredClone()*](https://developer.mozilla.org/en-US/docs/Web/API/structuredClone) — API de cópia profunda que suporta Map, Set e outros tipos não cobertos pelo JSON
+- **V8 Blog** — [*Elements kinds in V8*](https://v8.dev/blog/elements-kinds) — explica hidden class transitions e por que deleção de propriedades em objetos degrada performance
+- **Jake Archibald / web.dev** — [*Structured clone*](https://web.dev/articles/structured-clone) — guia sobre o algoritmo Structured Clone e diferenças com JSON e outros métodos de cópia
