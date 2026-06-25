@@ -1,7 +1,7 @@
 ---
 title: "Vite a fundo"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -232,9 +232,19 @@ export default defineConfig(({ command, mode }) => {
 
     // ─── CSS ────────────────────────────────────────────────────────────
     css: {
-      // Vite 8 usa LightningCSS por padrão (substitui PostCSS para transformações básicas)
-      // Para PostCSS com plugins avançados:
+      // Vite 6+: LightningCSS é o processador padrão para transformações básicas
+      // (prefixes, nesting nativo, color-mix, etc.) — escrito em Rust, muito mais rápido
+      // que PostCSS para operações comuns. Para plugins PostCSS avançados (Tailwind v3):
       // postcss: { plugins: [tailwindcss(), autoprefixer()] }
+      // Tailwind v4 já não precisa de PostCSS — usa seu próprio plugin Vite.
+
+      // Para configurar LightningCSS explicitamente (Vite 6+):
+      // lightningcss: {
+      //   targets: browserslistToTargets(browserslist('>= 0.25%')),
+      //   drafts: { customMedia: true },  // media queries customizadas (draft)
+      // },
+      // transformer: 'lightningcss',  // ou 'postcss' para forçar PostCSS
+
       modules: {
         // Convenção de naming para CSS Modules: .module.css → classe local por padrão
         localsConvention: 'camelCase',
@@ -594,6 +604,138 @@ const router = Object.entries(pages).map(([path, loader]) => ({
 
 > [!tip] Glob imports e tree-shaking
 > No modo eager, todos os módulos são importados e incluídos no bundle. No modo lazy (padrão), cada módulo vira um chunk separado que o browser só baixa quando necessário. Para um router com dezenas de páginas, o modo lazy é essencial para não enviar todo o app no primeiro load.
+
+---
+
+## Dependency optimization: o pré-bundling em detalhe
+
+O pré-bundling é uma das peças mais importantes da arquitetura Vite que fica invisível na experiência cotidiana — até quebrar. Entender como funciona é essencial para diagnosticar problemas de inicialização lenta, CJS incompatível, ou módulos que "somem" do grafo.
+
+### O que é e por que existe
+
+O browser não entende CommonJS. Ele também trava se um `import 'react'` gera 300 requisições HTTP separadas (o React é composto de muitos módulos internos). O pré-bundling resolve os dois problemas de uma vez: converte pacotes CJS em ESM e agrupa os internos num único arquivo.
+
+```mermaid
+flowchart LR
+    subgraph NPM["node_modules (raw)"]
+        CJS1["react/index.js\n(CommonJS, ~300 internals)"]
+        CJS2["lodash/index.js\n(CommonJS, ~600 internals)"]
+        ESM1["@floating-ui/dom\n(ESM puro — sem problema)"]
+    end
+
+    subgraph CACHE[".vite/deps/ (após pré-bundling)"]
+        PB1["react.js\n(ESM único, ~15KB)"]
+        PB2["lodash.js\n(ESM único, tree-shaken)"]
+        PB3["@floating-ui_dom.js\n(cópia quase direta)"]
+    end
+
+    NPM --> |"Rolldown (Vite 8)\nanterior: esbuild"| CACHE
+```
+
+> [!info] Leitura do diagrama
+> O pré-bundling acontece apenas uma vez (ou quando as deps mudam) e o resultado fica em `.vite/deps/`. Em dev, quando o browser faz `import 'react'`, o Vite serve `/.vite/deps/react.js` — um ESM único — em vez de deixar o browser resolver centenas de arquivos internos do React.
+
+### Quando o cache invalida
+
+O Vite invalida o cache de `.vite/deps/` automaticamente quando detecta mudanças em:
+
+- `package.json` (versão de dep mudou)
+- `package-lock.json`, `pnpm-lock.yaml` ou `yarn.lock` (lockfile mudou)
+- `vite.config.ts` (configuração mudou — afeta `optimizeDeps`)
+- `node_modules/.package-lock.json` (npm mudou o registro interno)
+
+Quando o cache invalida, o Vite refaz o pré-bundling na próxima inicialização. Você vê o log `Pre-bundling dependencies...` e uma lista de pacotes. Se estiver em CI ou em containers onde o cache não persiste, isso acontece em toda execução — configurar `--force` explicitamente ou montar `.vite/deps/` num volume resolve.
+
+> [!tip] Cache manual
+> Para forçar re-pré-bundling sem reiniciar: `vite --force`. Para pular: defina `optimizeDeps.disabled: true` (raramente necessário — só se o pré-bundling estiver causando problema em um pacote específico e você quiser isolar).
+
+### Deps que precisam de inclusão explícita
+
+O Rolldown (e antes o esbuild) detecta automaticamente quais deps precisam de pré-bundling fazendo scan estático dos imports. Mas há casos em que o scan não alcança:
+
+```ts
+// Caso 1: import dinâmico condicional — o scan estático não vê
+const chartLib = await import(useWebGL ? 'd3' : 'chart.js')
+
+// Caso 2: import via variável de string — impossível de resolver estaticamente
+const mod = await import(moduleName)
+
+// Caso 3: lib que o Vite não inclui na varredura inicial
+// (ex: deep inside node_modules de outra lib)
+```
+
+Para esses casos, `optimizeDeps.include` garante que a dep seja pré-bundlada mesmo sem ser detectada:
+
+```ts
+optimizeDeps: {
+  include: [
+    'd3',
+    'chart.js',
+    // Notação de sub-path para sub-exports específicos:
+    'some-lib > nested-dep',  // nested-dep como dep de some-lib
+  ],
+}
+```
+
+### Diferença Rolldown vs esbuild no pré-bundling
+
+Com Vite 8, o Rolldown assumiu o pré-bundling antes feito pelo esbuild. A diferença mais prática:
+
+| Aspecto | esbuild (Vite ≤ 7) | Rolldown (Vite 8) |
+|---|---|---|
+| Linguagem | Go | Rust |
+| CJS detection | Heurísticas simples | Análise semântica mais profunda |
+| `package.json` exports | Parcial | Completo (todos os `exports` fields) |
+| Velocidade | Muito rápido | Comparável ou superior |
+| Consistência com build prod | Parcial (motor diferente) | Total (mesmo motor) |
+
+A análise semântica mais profunda do Rolldown significa que ele detecta mais casos de CJS implícito — o que pode mudar quais pacotes entram em `optimizeDeps.include` automaticamente. Após migrar para Vite 8, verifique se houve regressões na inicialização.
+
+---
+
+## Módulos virtuais: pattern central de plugins
+
+Um padrão menos documentado mas que aparece em quase todo plugin sério: **módulos virtuais** — módulos que o Vite "inventa" sob demanda, sem arquivo físico correspondente.
+
+```ts
+// plugin que expõe configuração de rota como módulo virtual
+export function routeConfigPlugin(routes: RouteConfig[]): Plugin {
+  const VIRTUAL_ID = 'virtual:route-config'
+  const RESOLVED_VIRTUAL_ID = '\0virtual:route-config'
+  // Convenção: prefixo '\0' marca módulos virtuais
+  // Evita que outros plugins tentem processar o mesmo ID
+
+  return {
+    name: 'vite-plugin-route-config',
+
+    resolveId(id) {
+      if (id === VIRTUAL_ID) {
+        // Diz ao Vite: esse import existe, e o ID resolvido é este
+        return RESOLVED_VIRTUAL_ID
+      }
+    },
+
+    load(id) {
+      if (id === RESOLVED_VIRTUAL_ID) {
+        // Retorna o conteúdo do módulo gerado dinamicamente
+        return `
+          export const routes = ${JSON.stringify(routes)};
+          export const routeCount = ${routes.length};
+        `
+      }
+    },
+  }
+}
+
+// uso no app:
+// import { routes } from 'virtual:route-config'
+// Nenhum arquivo routes.ts precisa existir
+```
+
+> [!tip] O prefixo `\0` como convenção
+> O `\0` (null byte) no ID resolvido é uma convenção do Rollup (e portanto do Vite) para indicar "esse módulo é virtual — não tente carregar do disco". Sem ele, outros plugins que tentam processar todos os módulos podem entrar em conflito com o módulo virtual.
+
+Módulos virtuais são a base de como ferramentas como Vite PWA, UnoCSS, e plugins de rota automática (como os do SvelteKit e Nuxt) funcionam — eles geram código em runtime baseado na configuração, sem criar arquivos temporários.
 
 ---
 
@@ -969,6 +1111,97 @@ export default defineConfig({
 > [!warning] `external` em bibliotecas é obrigatório
 > Se você não externalizar `react` e `react-dom` na sua lib, o bundle vai incluir uma cópia do React. Quem instalar sua lib vai ter **dois Reacts** no projeto — e o React vai reclamar que não pode ter múltiplas instâncias. Sempre externalize peerDependencies.
 
+### Gerando declarações TypeScript com `vite-plugin-dts`
+
+O Vite em modo `lib` **não** gera arquivos `.d.ts` por padrão. Para uma biblioteca TypeScript profissional, você precisa de declarações de tipo — sem elas, consumidores não têm autocomplete nem checagem de tipos. O plugin `vite-plugin-dts` resolve isso:
+
+```ts
+// vite.config.ts para lib com tipos
+import { defineConfig } from 'vite'
+import dts from 'vite-plugin-dts'
+
+export default defineConfig({
+  plugins: [
+    dts({
+      // Gera .d.ts na mesma pasta do build
+      outDir: 'dist',
+      // Inclui apenas src/ (exclui testes, stories)
+      include: ['src'],
+      // Elimina comentários internos dos .d.ts
+      cleanVueFileName: false,
+      // Consolida tudo em um único arquivo de declaração (opcional)
+      // rollupTypes: true,
+    }),
+  ],
+
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+    },
+  },
+})
+```
+
+E no `package.json` da lib, os campos de export devem apontar para os arquivos corretos:
+
+```json
+{
+  "main": "./dist/my-lib.cjs",
+  "module": "./dist/my-lib.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/my-lib.js" },
+      "require": { "types": "./dist/index.d.ts", "default": "./dist/my-lib.cjs" }
+    }
+  }
+}
+```
+
+> [!tip] `exports` com `types` primeiro
+> A ordem dos campos no `exports` importa para o TypeScript: o campo `types` deve vir antes de `default`. O TypeScript 5.x resolve condições na ordem declarada e para no primeiro match. Colocar `default` antes de `types` faz o TypeScript ignorar as declarações.
+
+### `resolve.conditions` e package exports
+
+Quando o Vite (ou Rolldown) resolve um import, ele consulta o campo `exports` do `package.json` da dependência. As "conditions" definem qual variante do pacote usar:
+
+```ts
+// vite.config.ts
+resolve: {
+  conditions: [
+    'browser',    // variante para browser (padrão para client)
+    'module',     // ESM explícito (alguns pacotes expõem 'module')
+    'import',     // import() — ESM
+    'default',    // fallback
+  ],
+  // Para SSR/Node: adicionar 'node' antes de 'browser'
+  // O servidor node-ssr usa: ['node', 'import', 'module', 'default']
+}
+```
+
+Isso explica por que a mesma lib pode se comportar diferente em dev, build e SSR — as conditions ativas são diferentes em cada ambiente. Um pacote que exporta `{ "browser": "dist/browser.js", "node": "dist/node.js" }` usa o arquivo errado em SSR se `browser` vier antes de `node` nas conditions.
+
+```json
+// package.json de uma lib com múltiplos alvos
+{
+  "exports": {
+    ".": {
+      "node": "./dist/server.cjs",      // Node.js
+      "browser": "./dist/browser.js",   // browser/bundlers
+      "worker": "./dist/worker.js",     // Cloudflare Workers
+      "default": "./dist/browser.js"    // fallback
+    }
+  }
+}
+```
+
+> [!note] Relação com a Environment API
+> A Environment API usa `resolve.conditions` por ambiente: o ambiente `client` usa conditions de browser, o `server` usa conditions de node, o `edge` usa conditions de worker. Antes da Environment API, isso era configurado globalmente e causava problemas em projetos com múltiplos alvos.
+
 ---
 
 ## Como explicar em inglês
@@ -1024,6 +1257,10 @@ The Environment API, stabilizing in 2026, formalizes multiple deployment targets
 
 **Migrar para Vite 8 sem verificar `optimizeDeps.include`.** O Rolldown é mais agressivo que o esbuild na detecção de CJS. Algumas libs que o esbuild detectava automaticamente para pré-bundling podem precisar de listagem explícita em `optimizeDeps.include` com Rolldown. Verifique o log de inicialização.
 
+**Usar LightningCSS e Tailwind v3 ao mesmo tempo sem configurar PostCSS explicitamente.** A partir do Vite 6, o LightningCSS é o transformer padrão. Tailwind v3 funciona via PostCSS — se você não declarar `css.transformer: 'postcss'` (ou configurar `postcss` explicitamente), o Tailwind pode não processar os arquivos CSS. Tailwind v4 resolve isso com um plugin Vite próprio que não precisa de PostCSS.
+
+**Esquecer o `\0` (null byte) no ID resolvido de módulos virtuais.** Sem o prefixo `\0`, outros plugins que varreram todos os módulos (como plugins de análise ou source maps) tentam processar o módulo virtual como se fosse um arquivo em disco — e falham ou geram warnings.
+
 **Usar `ssr.noExternal: true` desnecessariamente.** Em SSR, externalizar dependências (padrão) é mais rápido — o Node carrega os módulos diretamente. `noExternal` força o bundling, o que pode resolver problemas de transformação de ESM puro, mas aumenta o tempo de build e pode criar problemas de duplicação.
 
 ---
@@ -1034,4 +1271,19 @@ The Environment API, stabilizing in 2026, formalizes multiple deployment targets
 - [[14 - Rollup, esbuild e Rolldown]] — as três ferramentas que o Vite usa (ou usou) como motor: Rollup como bundler de referência, esbuild como motor Go, Rolldown como sucessor unificado em Rust; aqui cobrimos como o Vite os usa, lá a fundo de cada um
 - [[15 - Turbopack, Rspack e a corrida Rust-Go]] — os competidores: Turbopack (Next.js) e Rspack (webpack-compat); a corrida por performance nativa no ecossistema JS
 - [[12 - Create React App e a era dos scaffolders]] — o que havia antes do Vite, por que o CRA foi descontinuado em 2025 e o Vite virou o scaffolder padrão para projetos React
-- [[03-Dominios/Tecnologia/React/index|React]] — o principal framework usado com Vite no ecossistema; `@vitejs/plugin-react` e Fast Refresh
+- [[17 - Otimização de bundle]] — técnicas avançadas de code splitting, tree-shaking e análise de bundle; complementa a seção de `manualChunks` e o uso do visualizer
+- [[06 - ESM e CJS e o sistema de módulos]] — a base que explica por que o pré-bundling CJS→ESM existe e o que são `exports` conditions no package.json
+
+---
+
+## Referências
+
+- Vite 8 release blog (mar 2026): https://vite.dev/blog/announcing-vite8
+- Rolldown 1.0 stable (mai 2026): https://rolldown.rs/blog/rolldown-1-0
+- VoidZero — empresa fundada por Evan You (2024): https://voidzero.dev/posts/announcing-voidzero-inc
+- Environment API RFC e docs: https://vite.dev/guide/api-environment
+- Vite Plugin Guide (hooks, virtual modules): https://vite.dev/guide/api-plugin
+- LightningCSS em Vite: https://vite.dev/guide/features#lightningcss
+- `vite-plugin-dts` — geração de declarações TypeScript: https://github.com/qmhc/vite-plugin-dts
+- State of JavaScript 2025 — seção Bundlers: https://2025.stateofjs.com/en-US/other-tools/#bundlers
+- Benchmark Rolldown vs Rollup (Linear, Ramp, Beehiiv): https://vite.dev/blog/announcing-vite8#performance

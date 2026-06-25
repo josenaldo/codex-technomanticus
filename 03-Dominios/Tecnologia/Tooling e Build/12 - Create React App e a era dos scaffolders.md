@@ -1,7 +1,7 @@
 ---
 title: "Create React App e a era dos scaffolders"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -137,7 +137,7 @@ package.json tem 1 dependência: react-scripts
 
 # Depois do eject:
 package.json tem 40+ dependências
-webpack.config.js com 300+ linhas aparece na raiz
+webpack.config.js com ~800 linhas aparece na raiz   ← você é dono disso para sempre
 .babelrc aparece
 babel.config.js aparece
 config/ com múltiplos arquivos aparece
@@ -145,6 +145,9 @@ scripts/ com start.js, build.js, test.js aparece
 ```
 
 O eject era **irreversível**. Uma vez ejetado, você estava responsável por manter toda aquela configuração — e quando `react-scripts` lançava uma nova versão com melhorias, você não recebia automaticamente. Você tinha que fazer o merge à mão.
+
+> [!quote] O custo real
+> "By ejecting, you become solely responsible for maintaining 800 lines of highly complex build configuration forever, just because you wanted to add a single path alias." — [sebhastian.com](https://sebhastian.com/create-react-app-eject/)
 
 ```mermaid
 flowchart LR
@@ -170,10 +173,40 @@ flowchart LR
     magico -->|"npm run eject\n(IRREVERSÍVEL)"| ejetado
 ```
 
-Esse era o sinal de que havia algo estruturalmente errado. Quando você precisava de controle que o CRA não expunha — adicionar um plugin de webpack, mudar uma opção do Babel, integrar com um bundler diferente — suas opções eram: ejetar (e assumir a dívida), usar uma fork unofficial como `react-app-rewired` (que hackeava o `react-scripts` por fora, quebrando sem aviso a cada atualização), ou trocar de ferramenta.
+Esse era o sinal de que havia algo estruturalmente errado. Quando você precisava de controle que o CRA não expunha — adicionar um plugin de webpack, mudar uma opção do Babel, integrar com um bundler diferente — suas opções eram três, todas imperfeitas:
+
+1. **Ejetar** — assumir a dívida de 800 linhas de webpack para sempre.
+2. **react-app-rewired ou CRACO** — ferramentas de terceiros que "hackeavam" o `react-scripts` por fora, sobrescrevendo a configuração antes de ela ser usada. Funcionavam enquanto o CRA não mudava internamente; quebravam sem aviso a cada atualização major.
+3. **Trocar de ferramenta** — a opção que eventualmente todo mundo tomou.
+
+```mermaid
+flowchart TD
+    NEED["Preciso customizar\na config de build"]
+    E["Eject\n(800 linhas, irreversível)"]
+    R["react-app-rewired\n(hack frágil, deprecado)"]
+    C["CRACO\n(override um pouco menos frágil)"]
+    T["Trocar para Vite\n(solução real)"]
+
+    NEED --> E
+    NEED --> R
+    NEED --> C
+    NEED --> T
+
+    E -->|"dívida permanente"| X1["❌ Preso"]
+    R -->|"quebra a cada update"| X2["❌ Frágil"]
+    C -->|"ainda acoplado ao CRA\nagora deprecado"| X3["❌ Sem futuro"]
+    T -->|"config explícita\nsuportada"| OK["✅ Sustentável"]
+```
+
+**O que eram react-app-rewired e CRACO?**
+
+- **`react-app-rewired`** (Tim Arney, 2017): modificava o webpack config do CRA interceptando as chamadas do `react-scripts`. A ideia era criar um arquivo `config-overrides.js` na raiz onde você podia retornar uma versão alterada da configuração. Em manutenção mínima desde CRA 2; oficialmente aposentado com a deprecação do CRA.
+- **CRACO** (Create React App Configuration Override, 2019): abordagem similar mas com API mais estruturada — um `craco.config.js` com seções para plugins, loaders, e opções do Jest. Mais robusto que o rewired, mas igualmente dependente dos internos do `react-scripts`. Com o CRA deprecado, CRACO entrou no mesmo limbo.
+
+Ambos ilustravam o problema fundamental: quando uma abstração é opaca, as pessoas constroem camadas sobre camadas para obter controle — até que o custo de manutenção supera qualquer benefício.
 
 > [!warning] A dívida de abstração
-> Toda abstração tem um custo escondido: quando você precisa sair dela, o custo vira explícito de uma vez só. O eject do CRA era o momento em que a dívida acumulada da abstração se tornava visível — décadas de configuração comprimidas num único commit irreversível. Ferramentas bem projetadas permitem escape gradual. O CRA não permitia.
+> Toda abstração tem um custo escondido: quando você precisa sair dela, o custo vira explícito de uma vez só. O eject do CRA era o momento em que a dívida acumulada da abstração se tornava visível — anos de configuração comprimidos num único commit irreversível. Ferramentas bem projetadas permitem escape gradual. O CRA não permitia. O Vite, por contraste, mostra a config desde o primeiro dia — o `vite.config.ts` é legível, incremental e você próprio pode extendê-lo.
 
 ---
 
@@ -373,6 +406,38 @@ Note a diferença fundamental em relação ao CRA: o `vite.config.ts` está ali,
 
 ---
 
+## degit: scaffolding sem framework
+
+Antes do `npm create` se consolidar, havia uma abordagem mais simples — e ainda relevante em contextos específicos: o `degit`, criado por Rich Harris (o mesmo autor do Svelte e do Rollup).
+
+```bash
+# Clonar qualquer repositório sem o histórico git (só os arquivos)
+npx degit user/repo meu-projeto
+
+# Clonar uma branch ou tag específica
+npx degit user/repo#minha-branch meu-projeto
+
+# Funciona com GitHub, GitLab, Bitbucket, Sourcehut
+npx degit github:user/repo
+npx degit gitlab:user/repo
+```
+
+A ideia do `degit` é mais primitiva que a do CRA — ele não instala nada, não configura nada, não perguntar sobre frameworks. Ele simplesmente faz um download do snapshot mais recente do repositório (sem o histórico do git), entrega os arquivos e sai. O resultado é uma pasta limpa que você pode usar como ponto de partida para qualquer coisa.
+
+Por que isso é útil?
+
+- Templates muito específicos que não existem nos scaffolders oficiais
+- Projetos internos que servem como ponto de partida para outros
+- Situações onde você quer copiar uma estrutura mas não manter vínculo com o repositório de origem
+- Reprodução rápida de um exemplo de documentação
+
+O `degit` não concorre com `npm create vite@latest` — ele resolve um problema diferente. É como `git clone` sem o histórico e sem o remote configurado. O ecossistema moderno usa os dois: `npm create` para projetos novos com stack conhecida, `degit` para templates personalizados ou menos convencionais.
+
+> [!info] Por que sem histórico?
+> Quando você usa `git clone` para copiar um template, carrega consigo todo o histórico de commits do template — centenas de commits que têm zero relevância para o seu projeto novo. O `degit` baixa apenas o tar.gz do snapshot mais recente via API do GitHub/GitLab, resultando num clone instantâneo independente do tamanho do histórico.
+
+---
+
 ## A era dos scaffolders: `npm create` como protocolo
 
 Uma mudança que veio junto com a consolidação pós-CRA foi a padronização do protocolo `npm create` (e seu equivalente `npm init`) como forma canônica de scaffold no ecossistema npm.
@@ -542,6 +607,27 @@ On February 14, 2025, the React team officially deprecated CRA for new apps. The
 | framework opinativo | opinionated framework |
 | tempo de startup do dev server | dev server startup time |
 | bundler subjacente | underlying bundler |
+
+---
+
+## Lacunas e tópicos a explorar
+
+> [!question] Dúvidas de leitura
+> - **Migração CRA → Vite em projeto real:** quais os pontos de fricção que a tabela de diferenças não captura? CSS-in-JS, lazy imports absolutos, proxy de API — há gotchas práticos documentados?
+> - **RSBuild como alternativa compatível:** o Rspack/RSBuild oferece compatibilidade quase direta com a config do webpack 5; seria uma rota de migração menos traumática para projetos CRA legados grandes?
+> - **Nx e projetos CRA em monorepo:** há projetos que migraram de CRA para Nx sem trocar o bundler — como isso se relaciona com a deprecação?
+
+---
+
+## Referências
+
+- [Sunsetting Create React App](https://react.dev/blog/2025/02/14/sunsetting-create-react-app) — react.dev, 14 fev 2025. Post oficial do time do React declarando a deprecação do CRA para novos projetos.
+- [GitHub: Rich-Harris/degit](https://github.com/Rich-Harris/degit) — Repositório oficial do degit, criado por Rich Harris.
+- [Should you eject your Create React App?](https://sebhastian.com/create-react-app-eject/) — sebhastian.com. Análise dos trade-offs do eject, incluindo a estimativa das ~800 linhas de webpack config.
+- [react-app-rewired](https://github.com/timarney/react-app-rewired) — GitHub, Tim Arney. Ferramenta de override sem eject; em manutenção mínima desde CRA 2.
+- [CRACO — Docs](https://craco.js.org/docs/) — Site oficial do CRACO (Create React App Configuration Override).
+- [npm-compare: craco vs customize-cra vs react-app-rewired](https://npm-compare.com/craco,customize-cra,react-app-rewired) — Comparativo de downloads e manutenção das alternativas ao eject.
+- [Vite: Getting Started](https://vitejs.dev/guide/) — Documentação oficial do Vite, incluindo templates via `npm create vite@latest`.
 
 ---
 

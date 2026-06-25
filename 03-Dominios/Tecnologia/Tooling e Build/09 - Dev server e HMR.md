@@ -1,7 +1,7 @@
 ---
 title: "Dev server e HMR"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
 status: seedling
@@ -228,6 +228,96 @@ A maioria dos desenvolvedores nunca escreve `import.meta.hot` diretamente — fr
 > [!question] Mas o que acontece quando o HMR não consegue atualizar?
 > Se o grafo de invalidação chega até um módulo que não aceitou HMR (não tem `import.meta.hot.accept`), o Vite faz um **full reload** automático. Você vê no terminal: `page reload src/main.ts`. É o fallback seguro. Em projetos bem configurados (com plugins de framework), isso raramente acontece para mudanças em componentes — apenas para mudanças em arquivos de configuração ou de bootstrapping da aplicação.
 
+### HMR boundaries: onde a propagação para
+
+Quando você salva um arquivo, o Vite precisa responder a uma pergunta: "quem mais precisa saber que este módulo mudou?" Ele faz isso percorrendo o grafo de importações para cima (dos importados para os importadores) até encontrar um **HMR boundary** — um módulo que declarou `import.meta.hot.accept()`, dizendo "eu sei me atualizar".
+
+```mermaid
+graph TD
+    A["App.tsx\n(não tem accept())"]
+    B["Layout.tsx\n(não tem accept())"]
+    C["Counter.tsx\n✓ self-accepting\n(plugin React injetou accept())"]
+    D["utils.ts\n(sem accept())"]
+
+    A --> B
+    B --> C
+    C --> D
+
+    style C fill:#1e3a1e,color:#fff
+```
+
+> [!info] Leitura do diagrama
+> Se `utils.ts` mudar, o Vite percorre para cima: `Counter.tsx` tem `accept()` → propagação para aqui. O `Layout.tsx` e o `App.tsx` nunca ficam sabendo. Se `Layout.tsx` mudar, o Vite sobe até `App.tsx` — e `App.tsx` não tem `accept()`, então faz full reload.
+
+A estrutura interna do Vite define uma interface `PropagationBoundary` com três campos: `boundary` (o nó do grafo que aceitou), `acceptedVia` (o módulo que acionou a atualização) e `isWithinCircularImport` (se o caminho cruzou uma importação circular). Quando há importação circular no grafo, o Vite marca isso e usa heurísticas conservadoras — geralmente preferindo full reload para evitar estado inconsistente.
+
+> [!warning] O módulo que não tem `accept()` bloqueia o HMR
+> Se a propagação chegar a um módulo que não declarou `accept()` e não há nenhum ancestral que aceite, o Vite cai no full reload. Você vê no terminal: `[vite] page reload src/main.ts`. A solução típica é garantir que os módulos de entrada (entry points) — aqueles que o browser carrega primeiro — estejam fora do grafo de invalidação, ou que os componentes de framework sejam self-accepting via plugin.
+
+### React Fast Refresh: as regras de preservação de estado
+
+O `@vitejs/plugin-react` usa a biblioteca **React Fast Refresh** (originalmente desenvolvida pela equipe do React Native, depois adotada em React DOM). O plugin injeta automaticamente `import.meta.hot.accept()` em cada componente — mas com regras específicas sobre quando o estado é preservado e quando é descartado.
+
+**Quando o estado É preservado:**
+- `useState` e `useRef` mantêm seus valores anteriores, desde que a ordem dos hooks não mude.
+- Adicionar, remover ou editar o corpo de um componente funcional — sem mudar os hooks.
+
+**Quando o estado É descartado (remount completo):**
+- A ordem das chamadas de hook muda (ex: você adiciona um hook no meio da lista).
+- O arquivo exporta algo além de componentes React (ex: uma constante ou função utilitária). Se o módulo mistura exportações React e não-React, o Fast Refresh não consegue identificar o boundary com segurança e força reload.
+- Componentes de classe (`class MyComp extends Component`) — Fast Refresh só preserva estado em componentes funcionais.
+
+```ts
+// ✗ PROBLEMA: arquivo misturando componente e exportação não-React
+export function Button() { return <button /> }
+export const MAX_RETRIES = 3  // isso impede preservação de estado!
+
+// ✓ SOLUÇÃO: separar em dois arquivos
+// constants.ts → export const MAX_RETRIES = 3
+// Button.tsx   → export function Button() { return <button /> }
+```
+
+> [!tip] O pragma `@refresh reset`
+> Você pode forçar um remount completo a cada edição adicionando `// @refresh reset` em qualquer lugar do arquivo. Útil para componentes que dependem de estado inicial não reproduzível — por exemplo, animações de entrada que você quer ver do zero a cada mudança.
+
+**O comportamento especial de `useEffect`:** hooks com dependências como `useEffect`, `useMemo` e `useCallback` **sempre re-executam** durante um Fast Refresh — mesmo que o array de dependências seja `[]`. Isso é intencional: garante que efeitos colaterais sejam "re-sincronizados" após uma atualização. Se você tem um `useEffect(() => { fetchData() }, [])` e salva o arquivo, o fetch vai rodar de novo.
+
+### Comunicação bidirecional: `import.meta.hot.send()`
+
+A nota mencionou WebSocket como canal de comunicação, mas omitiu a direção inversa: o **browser pode enviar eventos para o servidor Vite**, não só receber. Isso habilita fluxos avançados de dev tooling:
+
+```ts
+if (import.meta.hot) {
+  // Enviar evento customizado do browser para o servidor
+  import.meta.hot.send('meu-plugin:evento', { dados: 'payload' })
+
+  // Receber resposta do servidor
+  import.meta.hot.on('meu-plugin:resposta', (data) => {
+    console.log('Servidor respondeu:', data)
+  })
+}
+```
+
+No lado do servidor (plugin Vite):
+```ts
+// vite plugin — servidor escuta eventos do browser
+export function meuPlugin(): Plugin {
+  return {
+    name: 'meu-plugin',
+    configureServer(server) {
+      server.hot.on('meu-plugin:evento', (data, client) => {
+        // data: payload enviado pelo browser
+        // client: o cliente WebSocket específico
+        client.send('meu-plugin:resposta', { ok: true })
+      })
+    }
+  }
+}
+```
+
+> [!info] Por que WebSocket e não SSE (Server-Sent Events)?
+> SSE (Server-Sent Events) é unidirecional: só o servidor envia, o cliente só recebe. Para HMR simples (servidor avisa browser de mudança) isso bastaria. Mas o Vite usa WebSocket porque precisa de comunicação bidirecional: o browser envia eventos customizados de volta para o servidor via `import.meta.hot.send()`. Plugins de dev tools, como visualizadores de roteamento e inspecionadores de estado, dependem dessa capacidade. O protocolo real é um WebSocket na mesma porta do dev server (configurável em `server.ws`).
+
 ### HMR events: o que o browser pode ouvir
 
 Além de `import.meta.hot`, a aplicação pode escutar eventos globais de HMR para reagir ao ciclo de atualização:
@@ -345,6 +435,41 @@ export default defineConfig({
 
 ---
 
+## Vite 8: o que mudou além do motor
+
+O Vite 8 (lançado 2026-03-12) não trocou só o bundler de build — trouxe mudanças arquiteturais que afetam diretamente o dev server e o HMR.
+
+### Oxc Transforms: transpilação em Rust
+
+O Vite 8 adota o **Oxc** (The JavaScript Oxidation Compiler) para transpilação de TypeScript e JSX. Antes, esbuild (Go) era responsável por converter `.tsx` para `.js` a cada request. Agora, Oxc (Rust) faz isso — e é substancialmente mais rápido, especialmente em projetos com muitos arquivos TypeScript com decorators e tipos complexos.
+
+> [!note] Oxc e Rolldown são projetos distintos
+> Oxc é o transpilador (TS→JS, JSX→JS, transformações de sintaxe). Rolldown é o bundler (resolve grafo, agrupa módulos, tree-shaking). O Vite 8 usa ambos: Oxc transforma individualmente cada arquivo servido em dev, Rolldown bundla as dependências (pré-bundling) e produz o output de build. São componentes complementares da toolchain Rust da VoidZero.
+
+### Bundled dev mode: HMR escalável para apps gigantes
+
+O modelo ESM-sob-demanda tem um limite: em aplicações com milhares de componentes, o browser faz centenas de requests na inicialização. Em testes com apps de 10.000 componentes React, o cold start ficava lento por pura latência de HTTP.
+
+O Vite 8 introduz um **bundled dev mode** opcional: em vez de servir cada módulo individualmente, o Rolldown agrupa módulos em chunks menores — mantendo HMR granular por módulo, mas reduzindo o número de requests de inicialização.
+
+```ts
+// vite.config.ts — Vite 8 bundled dev mode (experimental em 8.0)
+export default defineConfig({
+  dev: {
+    bundleMode: 'bundle',  // 'module' é o padrão ESM-sob-demanda
+  }
+})
+```
+
+> [!note] Para a maioria dos projetos, `bundleMode: 'module'` é o default correto
+> O bundled mode é útil em monorepos e apps com >1000 módulos onde o overhead de requests se torna perceptível. Para projetos normais (dezenas ou centenas de módulos), o modo ESM clássico é mais rápido no HMR porque o browser substitui exatamente um arquivo.
+
+### Cloudflare e VoidZero
+
+Em 2026, a Cloudflare adquiriu a **VoidZero** — a empresa fundada por Evan You para desenvolver Rolldown, Oxc e a próxima geração do Vite. Isso não mudou a governança open-source do Vite (que permanece na Vite Core Team), mas consolidou o financiamento e a infraestrutura de desenvolvimento da toolchain Rust subjacente.
+
+---
+
 ## O trade-off dev↔prod no Vite 8: motores unificados
 
 A tensão dev/prod que descrevemos tem uma história de ferramentas no Vite. Durante anos (Vite 1–7), a situação era:
@@ -384,11 +509,12 @@ graph LR
 |-----|-------|
 | 2021 | Vite 1 lançado — ESM nativo + esbuild para dev |
 | 2022 | Vite 3 — ecossistema de plugins explode; padrão de facto para SPA |
-| 2024 | VoidZero fundada por Evan You; Rolldown anunciado |
+| 2024 | VoidZero fundada por Evan You; Rolldown e Oxc anunciados |
 | mai/2025 | `rolldown-vite` preview técnico disponível |
 | dez/2025 | Vite 8 beta com Rolldown como padrão |
-| mar/2026 | **Vite 8 estável** — Rolldown GA, motor único |
-| mai/2026 | Rolldown 1.0 estável lançado |
+| mar/2026 | **Vite 8 estável** — Rolldown + Oxc, motor único; HMR bundled mode |
+| mai/2026 | Rolldown 1.0 estável lançado; Cloudflare adquire VoidZero |
+| mai/2026 | **Vite 8.1** lançado — refinamentos do bundled dev mode, fixes de HMR |
 
 ---
 
@@ -476,14 +602,31 @@ Vite 8 (stable March 2026) unified the dev and build engines under Rolldown, a R
 
 **Editar arquivos em `node_modules` e esperar HMR.** O Vite monitora seu código-fonte, não `node_modules`. Mudanças em dependências exigem reiniciar o servidor (ou deletar `.vite/deps/` e reiniciar).
 
+**Misturar exportações React e não-React no mesmo arquivo.** Se um arquivo exporta um componente React e também uma constante ou função utilitária, o React Fast Refresh não consegue garantir o boundary — ele descarta o estado e faz full reload. O aviso no terminal é: `"Fast refresh only works when a file only exports components"`. A solução é mover a constante para um arquivo separado.
+
+**Assumir que `useEffect` não vai reexecutar durante Fast Refresh.** Todo `useEffect`, `useMemo` e `useCallback` re-executa sempre que Fast Refresh aplica uma atualização — independentemente do array de dependências. Se você tem um efeito com dependência vazia (`[]`) que faz uma chamada de API, ela vai disparar de novo toda vez que você salvar o arquivo. Em dev isso é intencional e geralmente inofensivo; mas se o efeito tem side effects pesados (ex: conectar a um WebSocket, inicializar um SDK), pode gerar comportamento confuso.
+
 **Migrar para Vite 8 sem testar plugins.** A troca esbuild→Rolldown é transparente para a maioria dos casos, mas alguns plugins usavam APIs internas do esbuild. Verifique a lista de plugins do seu projeto antes de atualizar.
 
 **Assumir que o modelo ESM do Vite funciona em produção sem bundler.** O Vite serve ESM sob demanda em dev porque o browser faz dezenas de requests individuais — aceitável em localhost. Em produção, você precisa do `vite build` para gerar um bundle otimizado; sem ele, o usuário faria centenas de requests HTTP.
 
 ---
 
+## Referências
+
+- [HMR API | Vite (oficial)](https://vite.dev/guide/api-hmr) — documentação da `import.meta.hot` API, incluindo `send()`, `on()`, `dispose()` e `invalidate()`
+- [Vite 8.0 is out! | vite.dev](https://vite.dev/blog/announcing-vite8) — notas de lançamento do Vite 8 estável (2026-03-12); Rolldown + Oxc como motor unificado
+- [Vite 8.1 is out! | vite.dev](https://vite.dev/blog/announcing-vite8-1) — refinamentos do bundled dev mode e fixes de HMR
+- [Hot Module Replacement is Easy | Bjorn Lu](https://bjornlu.com/blog/hot-module-replacement-is-easy) — explicação profunda do algoritmo de propagação HMR; análise da `propagateUpdate` no código do Vite
+- [Beyond HMR: Understanding React's Fast Refresh | Leapcell / Medium](https://leapcell.medium.com/beyond-hmr-understanding-reacts-fast-refresh-d6d80ef0fe4e) — regras de preservação de estado, comportamento de hooks e module boundary no Fast Refresh
+- [Fast Refresh | React Native docs](https://reactnative.dev/docs/fast-refresh) — spec original do Fast Refresh; regras de reset de estado, `@refresh reset`
+- [Architecture: Fast Refresh | Next.js](https://nextjs.org/docs/architecture/fast-refresh) — implementação do Fast Refresh no Next.js; edge cases de exportações mistas
+- [Vite team boasts 10-30x faster builds with Rust-powered Rolldown | DevClass](https://www.devclass.com/development/2026/03/17/vite-team-boasts-10-30x-faster-builds-with-rust-powered-rolldown/5209472) — benchmarks do Vite 8 vs Vite 7
+
 ## Veja também
 
 - [[07 - O grafo de módulos e o que é bundling]] — o grafo de imports que o HMR percorre ao propagar invalidações; o conceito de bundling que o dev server deliberadamente evita
-- [[08 - Transpilação e targets]] — o que acontece na transformação individual de cada arquivo (TS→JS, JSX→JS) que o Vite executa por request
+- [[08 - Transpilação e targets]] — o que acontece na transformação individual de cada arquivo (TS→JS, JSX→JS) que o Vite executa por request; Oxc como novo transpilador no Vite 8
 - [[13 - Vite a fundo]] — configuração detalhada, sistema de plugins, diferenças entre `vite.config.ts` e o comportamento do dev server; este aqui cobre o modelo conceitual
+- [[14 - Rollup, esbuild e Rolldown]] — história e trade-offs dos três motores; por que Rolldown unificou o que esbuild e Rollup faziam separadamente
+- [[15 - Turbopack, Rspack e a corrida Rust-Go]] — concorrentes do Vite em dev server e HMR; como Turbopack (Next.js) e Rspack implementam o mesmo ciclo com trade-offs diferentes

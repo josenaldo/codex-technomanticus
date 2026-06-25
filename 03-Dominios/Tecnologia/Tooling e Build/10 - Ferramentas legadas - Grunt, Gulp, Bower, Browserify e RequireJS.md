@@ -1,7 +1,7 @@
 ---
 title: "Ferramentas legadas - Grunt, Gulp, Bower, Browserify e RequireJS"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -58,6 +58,85 @@ graph TD
 ```
 
 Cada ferramenta nasceu para resolver um desses quadrantes. Nenhuma resolveu o problema inteiro — e foi exatamente isso que abriu espaço para as ferramentas modernas que engoliram todas de uma vez.
+
+---
+
+## A guerra de módulos: AMD vs CommonJS vs UMD
+
+Antes de entrar nas ferramentas, vale entender o campo de batalha conceitual que dividiu o ecossistema por quase cinco anos (2009–2015). A nota [[06 - ESM e CJS e o sistema de módulos]] conta a história do ponto de vista do JavaScript moderno; aqui o foco é no conflito que criou RequireJS e Browserify.
+
+### CommonJS: o lado server-first
+
+A especificação CommonJS surgiu em 2009 com foco em JavaScript fora do browser — Node.js a adotou como seu sistema de módulos nativo. O modelo é **síncrono**: `require('modulo')` bloqueia a thread até carregar o arquivo do disco. Isso é aceitável em servidor (disco é rápido), mas problemático no browser (carregar um arquivo significa um roundtrip de rede que pode levar centenas de milissegundos).
+
+```javascript
+// CommonJS — funciona em Node, não funciona no browser sem build step
+const _ = require('lodash');       // síncrono: bloqueia até lodash ser carregado
+module.exports = { processa };
+```
+
+### AMD: o lado browser-first
+
+Um grupo de desenvolvedores insatisfeitos com a direção server-centric do CommonJS separou-se e criou a especificação AMD em 2010. O requisito central era: **o browser precisa carregar módulos de forma assíncrona** — você não pode bloquear o thread principal esperando um arquivo de rede.
+
+AMD resolveu isso com a sintaxe `define()`: você declara dependências antes da execução e recebe um callback que só é chamado quando todas estão disponíveis.
+
+```javascript
+// AMD — funciona no browser sem build step, mas verboso
+define(['lodash', './utils'], function(_, utils) {
+  // Só executa após lodash e utils carregados pela rede
+  return { processa: utils.processar };
+});
+```
+
+### Por que o CommonJS "ganhou" na prática
+
+A ironia é que o CommonJS — o formato server-first — se tornou dominante no front-end também, por uma razão pragmática: **o npm**. Quando o npm se tornou o repositório universal de JavaScript, e quando o Browserify (e depois o webpack) resolveram o "problema de browser" em build time (ao invés de runtime), o custo de adotar CommonJS caiu para zero. Você escrevia `require()` como no Node, e o bundler resolveu o resto.
+
+AMD sobreviveu principalmente em ambientes onde "sem build step" era um requisito — projetos empresariais que não tinham pipeline de CI sofisticado, ou que precisavam de carregamento dinâmico granular de módulos em runtime.
+
+### UMD: a tentativa de paz
+
+Com dois sistemas incompatíveis — AMD para browser e CommonJS para Node — surgiu em 2011 o **UMD (Universal Module Definition)**: um padrão de código boilerplate que tentava fazer um módulo funcionar em ambos os contextos.
+
+```javascript
+// UMD — o "padrão" que ninguém queria escrever manualmente
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // Contexto AMD (RequireJS): registra como módulo AMD
+    define(['lodash'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Contexto CommonJS (Node / Browserify): exporta como CJS
+    module.exports = factory(require('lodash'));
+  } else {
+    // Browser global (sem loader): expõe como variável global
+    root.MinhaLib = factory(root._);
+  }
+}(typeof self !== 'undefined' ? self : this, function (_) {
+  // Implementação real aqui
+  return { processa: function(data) { return _.sortBy(data); } };
+}));
+```
+
+UMD foi amplamente adotado por autores de bibliotecas — Lodash, Underscore.js, Backbone.js e Moment.js publicavam builds UMD. A sintaxe é verbosa e difícil de ler, mas funcionava. O ESM nativo do ES2015 finalmente tornou o UMD desnecessário ao oferecer um formato que ferramentas de build podiam converter automaticamente.
+
+> [!info] O legado do UMD em 2026
+> Você ainda encontra builds UMD em CDNs antigas e em bibliotecas que mantêm compatibilidade retroativa. Quando você baixa Bootstrap 4 ou Lodash via CDN no formato "non-module", o que recebe é provavelmente um bundle UMD. A nota [[06 - ESM e CJS e o sistema de módulos]] detalha como os bundlers modernos lidam com o legado UMD via campo `main` vs `module` no `package.json`.
+
+```mermaid
+timeline
+    title A guerra de formatos de módulo JS
+    2009 : CommonJS nasce (foco server-side, Node.js)
+    2010 : AMD nasce como alternativa async para browsers
+    2011 : UMD tenta unificar CJS + AMD
+         : RequireJS se torna referência do AMD
+    2011 : Browserify lança: CJS no browser via compilação
+    2013 : Browserify 2.x – ecosistema amadurece
+    2015 : ES2015 especifica ESM nativo (import/export)
+    2017 : Bower descontinuado / CommonJS vence na prática
+    2019 : Todos os browsers modernos suportam ESM nativo
+    2023 : Import Maps suportados em todos os browsers modernos
+```
 
 ---
 
@@ -224,6 +303,11 @@ Três problemas mataram o Grunt:
 
 **3. npm scripts tornaram o Grunt redundante para casos simples.** Com o `scripts` do `package.json`, você conseguia chamar `tsc && node esbuild.js && cp -r assets dist/` diretamente, sem camada de abstração. Para os casos que ficaram complexos demais para npm scripts, a resposta foi o webpack — que não era um task runner, mas um bundler que resolvia o problema na raiz.
 
+**4. O modelo de plugin criou fragmentação de manutenção.** O Grunt dependia de plugins de terceiros para cada transformação. Com 6.000+ plugins no pico, a qualidade variava imensamente — e quando um plugin deixava de ser mantido (ex: `grunt-contrib-handlebars`, `grunt-contrib-coffee`), você ficava preso. O ecossistema do Grunt era mais largo que fundo. Isso contrasta com o webpack, onde o core resolvia os casos principais e plugins eram adendos opcionais, não pré-requisitos.
+
+> [!question] Mas por que o Grunt não simplesmente adotou streams como o Gulp?
+> A resposta é arquitetural: o modelo de configuração JSON-first do Grunt tornava impossível introduzir streams de forma natural. Adicionar streams ao Grunt exigiria reescrever o core e quebrar todo o ecossistema de plugins existentes. O Gulp foi criado do zero com streams como princípio fundante — não era uma feature, era a arquitetura. Este é um caso clássico de path dependency: inovar dentro de uma arquitetura existente é às vezes mais caro do que criar do zero.
+
 ### Estado em 2026
 
 O Grunt continua tendo uma vida mais longa do que qualquer um esperaria. Na semana de 17–23 de junho de 2026, o Grunt teve **1.228.474 downloads**. Esses downloads não são pessoas escolhendo Grunt — são pipelines de CI, projetos legados e, principalmente, dependências transitivas (outros pacotes que dependem de grunt para seus próprios testes internos).
@@ -334,11 +418,48 @@ flowchart LR
     end
 ```
 
+### O modelo Vinyl: por que os streams do Gulp eram elegantes
+
+O Gulp introduziu um conceito central que não aparece nos tutoriais básicos: o **objeto Vinyl**. Em vez de passar paths de arquivo entre plugins (como o Grunt fazia — cada plugin resolvia caminhos de disco), o Gulp passava objetos Vinyl — representações em memória de um arquivo, com `path`, `contents` (o buffer do arquivo), `stat` e `base`.
+
+Isso tinha uma consequência importante: você podia manipular o conteúdo e o destino do arquivo *em memória* antes de gravar. Um plugin podia renomear o arquivo (`gulp-rename`), adicionar prefixos ao path, ou modificar o conteúdo sem tocar o disco. O resultado final era gravado uma única vez com `dest()`.
+
+```javascript
+// O objeto Vinyl fluindo entre plugins — sem I/O intermediário
+src('src/**/*.scss')           // cria Vinyl objects com contents = bytes do arquivo
+  .pipe(sourcemaps.init())     // lê contents, não toca o disco
+  .pipe(sass())                // transforma contents: SCSS → CSS bytes (em memória)
+  .pipe(autoprefixer())        // modifica contents: adiciona vendor prefixes (em memória)
+  .pipe(rename({ suffix: '.min' }))  // altera o path do Vinyl object (sem criar arquivo)
+  .pipe(sourcemaps.write('.'))       // ainda em memória para o CSS, escreve .map como Vinyl separado
+  .pipe(dest('dist/css'));     // AGORA grava tudo no disco
+```
+
+Essa abstração influenciou ferramentas posteriores — o conceito de "transformar arquivos como stream" aparece no `rollup-plugin-*` API e nos `vite-plugin-*` com hooks `transform()`.
+
 ### Por que o Gulp foi relevante
 
 O Gulp resolveu o problema de I/O do Grunt e simplificou a API. Em vez de um objeto de configuração de 500 linhas, você tinha funções JavaScript reutilizáveis. `series()` e `parallel()` eram legíveis. Os streams eram elegantes. Em 2014–2018, o Gulp foi a ferramenta preferida para projetos que precisavam de build customizado.
 
-O Gulp 4 (2018) trouxe uma API completamente reformulada, eliminando o sistema de dependências por strings do Gulp 3 (`gulp.task('build', ['css', 'js'], ...)`) por composição explícita (`series(css, js)`). Foi uma melhoria real.
+**Gulp 3 → Gulp 4: uma migração quebrada que ainda assombra projetos**
+
+O Gulp 4 (lançado em dezembro de 2017 após quatro anos de desenvolvimento paralelo) trouxe uma API completamente reformulada. A mudança central:
+
+```javascript
+// Gulp 3: dependências declaradas como array de strings — opaco e frágil
+gulp.task('build', ['css', 'js', 'lint'], function() {
+  // executa após css, js, lint — mas qual é a ordem exata? Paralelo ou serial?
+});
+
+// Gulp 4: composição explícita com series() e parallel()
+exports.build = series(
+  lint,               // primeiro: lint (falha rápido)
+  parallel(css, js),  // depois: css e js em paralelo (ambos independentes)
+  bundle             // por último: bundle (depende do output de css e js)
+);
+```
+
+A migração de Gulp 3 para Gulp 4 **não era automática** — todo `Gruntfile.js` com API antiga quebrava. Muitos projetos ficaram presos no Gulp 3 porque a migration cost era alta. E Gulp 3 + Node.js 18+ não funciona — o Node 18 removeu APIs internas que o Gulp 3 usava (especialmente relacionadas a streams legados). Se você herda um projeto com `"gulp": "^3"` no `package.json`, prepare-se para problemas no Node moderno antes de qualquer outra coisa.
 
 ### Por que caiu — e onde ainda existe
 
@@ -519,6 +640,55 @@ O impacto cultural do Browserify foi imenso. Ele popularizou a ideia de que **c�
 
 Isso é o que o webpack herdou e expandiu massivamente.
 
+### Diferenciais técnicos que a nota omite: shims e watchify
+
+**Node builtins no browser — o truque dos shims:**
+
+Um aspecto pouco discutido do Browserify é que ele não apenas compilava `require()` — ele também incluía **shims** (polyfills) de módulos internos do Node para o browser. Se um módulo que você importava usava `Buffer`, `process`, `stream` ou `path` internamente, o Browserify detectava isso e injetava implementações browser-compatíveis automaticamente.
+
+```javascript
+// Código que usa Buffer do Node — você não precisava pensar nisso
+const myModule = require('./processador');
+// Se processador.js usa: const buf = Buffer.from('data')
+// O Browserify injeta automaticamente o shim de Buffer para o browser
+// (via pacote 'buffer' — typed arrays com fallbacks)
+```
+
+Isso significava que bibliotecas escritas para Node.js podiam "só funcionar" no browser via Browserify — um salto conceitual que a web-platform pura não conseguia. Bibliotecas de crypto, parsing, encoding que eram Node-only viraram front-end code. O webpack herdou e expandiu esse comportamento com o campo `browser` no `package.json` para overrides mais granulares.
+
+**watchify — rebuild incremental:**
+
+O `watchify` era o equivalente do `grunt-contrib-watch` para Browserify — mas com uma diferença arquitetural importante: ele mantinha o **grafo de módulos em memória** entre builds. Mudou apenas um arquivo? Só o bundle que dependia daquele arquivo era recalculado.
+
+```bash
+# Sem watchify: cada mudança = rebuild completo (pode ser 30s em projeto grande)
+browserify src/main.js -o dist/bundle.js
+
+# Com watchify: primeiro build é lento, rebuilds subsequentes em ~100ms
+watchify src/main.js -o dist/bundle.js
+
+# Com output verbose para ver o que mudou:
+watchify src/main.js -o dist/bundle.js --verbose
+# 731ms bytes written to dist/bundle.js  (primeira vez)
+# 86ms bytes written to dist/bundle.js   (rebuild após mudança em 1 arquivo)
+```
+
+A ideia de "manter o grafo em memória e recomputar só o delta" é exatamente o que o Vite generalizou com HMR no nível de módulo — mas o watchify foi o precursor prático dessa intuição no ecossistema Browserify.
+
+**factor-bundle — a tentativa de code splitting:**
+
+O Browserify não tinha code splitting nativo (um dos motivos da migração para webpack). O `factor-bundle` era o plugin que tentava endereçar isso: você podia fatorar múltiplos entry points em um bundle compartilhado de código comum + bundles específicos por página.
+
+```bash
+# factor-bundle: multi-entry com bundle de código comum
+browserify x.js y.js \
+  -p [ factor-bundle -o dist/x.js -o dist/y.js ] \
+  -o dist/common.js
+# Gera: common.js (deps compartilhadas) + x.js (específico) + y.js (específico)
+```
+
+Era frágil comparado ao `splitChunks` do webpack 4+ ou ao `build.rollupOptions.output.manualChunks` do Vite — mas mostrava que a comunidade Browserify reconhecia a limitação e tentava compensar. A nota [[07 - O grafo de módulos e o que é bundling]] detalha por que code splitting eficiente requer entender o grafo de módulos — algo que o Browserify fazia de forma mais limitada.
+
 ### Por que perdeu para o webpack
 
 O Browserify era focado e simples. Isso era uma virtude e um limite.
@@ -645,6 +815,67 @@ sequenceDiagram
     Servidor-->>RequireJS: home.js ✓
     RequireJS->>Browser: Executa main() com todas as deps resolvidas
 ```
+
+### r.js — o otimizador que fez o RequireJS escalar para produção
+
+O RequireJS tinha um problema inerente para produção: o modelo de carregamento assíncrono de módulos individuais significava dezenas ou centenas de requests de rede separados. A latência se acumulava — cada módulo precisava ser descoberto, solicitado e avaliado em sequência (ou em paralelo limitado pelo HTTP/1.1).
+
+A solução era o **r.js** — o otimizador do RequireJS. Em desenvolvimento, você usava o carregamento AMD normal (arquivo por arquivo). Em produção, o r.js concatenava tudo em um único bundle (ou em alguns bundles), muito como o que o Browserify fazia.
+
+```javascript
+// build.js — configuração do r.js (equivalente ao Gruntfile para RequireJS)
+({
+  // Entry point da aplicação
+  name: 'main',
+
+  // Diretório de saída
+  out: 'dist/main-built.js',
+
+  // Paths de módulos (mesmo da configuração requirejs.config)
+  paths: {
+    jquery:     'vendor/jquery-2.1.4.min',
+    backbone:   'vendor/backbone-1.3.3'
+  },
+
+  // Minificar com UglifyJS
+  optimize: 'uglify',
+
+  // Incluir baseUrl para resolução de caminhos
+  baseUrl: 'scripts'
+})
+```
+
+```bash
+# Rodar o otimizador em Node.js
+node r.js -o build.js
+
+# Resultado: dist/main-built.js
+# Contém: todos os módulos AMD concatenados + minificados
+# O HTML de produção referenciava APENAS esse arquivo, não o require.js dinâmico
+```
+
+O r.js também tinha uma feature sofisticada chamada "multi-page optimization" — você podia otimizar vários entry points e ele calculava automaticamente qual código era comum (equivalente rudimentar ao code splitting). Era poderoso para a época, mas exigia configuração de build separada do código de aplicação — exatamente o problema que os bundlers modernos resolveram ao tornar build e dev uma mesma ferramenta coesa.
+
+```mermaid
+flowchart LR
+    subgraph "RequireJS em desenvolvimento"
+        B1["Browser carrega require.js"]
+        B2["require.js carrega main.js"]
+        B3["main.js define deps:\n[jquery, backbone, router]"]
+        B4["require.js faz 3 GETs paralelos"]
+        B5["router.js define deps:\n[views/home]"]
+        B6["GET views/home.js"]
+        B1 --> B2 --> B3 --> B4 --> B5 --> B6
+    end
+
+    subgraph "RequireJS em produção (com r.js)"
+        P1["Browser carrega\ndist/main-built.js"]
+        P2["1 arquivo, sem GETs adicionais\n(todos os módulos já concatenados)"]
+        P1 --> P2
+    end
+```
+
+A separação dev/produção do RequireJS (loader dinâmico em dev, r.js bundle em produção) prefigurou o que o Vite formalizou: dev server baseado em módulos nativos, build otimizado para produção. A diferença é que o Vite mantém um modelo mental unificado — você não precisa de uma ferramenta de build separada (r.js) nem de um arquivo de configuração separado.
 
 ### Por que o AMD existiu e por que ESM o substituiu
 
@@ -881,8 +1112,27 @@ The pattern: each tool solved one problem. The modern bundler (Vite, webpack) so
 ## Veja também
 
 - [[02 - A evolução do tooling JS - de script ao bundler moderno]] — a narrativa cronológica que contextualiza estas ferramentas na história do ecossistema
+- [[06 - ESM e CJS e o sistema de módulos]] — detalha os três formatos (CJS, AMD, ESM) e como o campo `module` no `package.json` resolveu o legado UMD
+- [[07 - O grafo de módulos e o que é bundling]] — explica por que entender o grafo de dependências é o que diferencia bundlers (webpack/Vite) de task runners (Grunt/Gulp)
 - [[11 - webpack - o veterano]] — o bundler que herdou o papel do Browserify e expandiu a ideia de grafo de módulos
 - [[13 - Vite a fundo]] — a ferramenta que unificou o que Grunt/Gulp/Browserify faziam separadamente
+
+---
+
+---
+
+## Referências
+
+- [JavaScript Module Systems Showdown: CommonJS vs AMD vs ES2015 — Auth0 Blog](https://auth0.com/blog/javascript-module-systems-showdown/) — análise técnica das diferenças entre CJS, AMD e ESM; explica por que AMD surgiu como alternativa browser-first ao CommonJS
+- [What the heck are CJS, AMD, UMD, and ESM in Javascript? — DEV Community](https://dev.to/iggredible/what-the-heck-are-cjs-amd-umd-and-esm-ikm) — referência prática sobre os quatro formatos de módulo, com exemplos de código UMD
+- [GitHub — umdjs/umd](https://github.com/umdjs/umd) — repositório original da especificação UMD, com padrões e exemplos canônicos
+- [RequireJS Optimizer Documentation](https://requirejs.org/docs/optimization.html) — documentação oficial do r.js, descrevendo como o otimizador concatena e minifica módulos AMD para produção
+- [GitHub — browserify/watchify](https://github.com/browserify/watchify) — repositório do watchify, com documentação sobre rebuild incremental (mantém grafo em memória)
+- [GitHub — browserify/factor-bundle](https://github.com/browserify/factor-bundle) — plugin de code splitting para Browserify; mostra as limitações de arquitetura que o webpack resolveu nativamente
+- [Browserify Handbook](https://github.com/browserify/browserify-handbook) — guia canônico do ecossistema Browserify, incluindo shims de builtins Node e transforms
+- [npm trends: grunt vs gulp vs webpack](https://npmtrends.com/grunt-vs-gulp-vs-webpack) — série histórica de downloads comparando os três; mostra a ascensão do webpack sobre Grunt/Gulp a partir de 2016
+- [AMD is better for the web than CommonJS modules — Miller Medeiros Blog](https://blog.millermedeiros.com/amd-is-better-for-the-web-than-commonjs-modules/) — post histórico de 2011 que articula os argumentos originais pró-AMD; contexto para entender por que a "module war" aconteceu
+- [A brief history of ES modules — DEV Community](https://dev.to/dodson/a-brief-history-of-es-modules-2fld) — narrativa da evolução de CJS→AMD→UMD→ESM e como cada formato respondeu às limitações do anterior
 
 ---
 

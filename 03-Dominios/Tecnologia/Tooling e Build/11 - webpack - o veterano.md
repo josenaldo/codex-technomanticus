@@ -1,7 +1,7 @@
 ---
 title: "webpack - o veterano"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -223,6 +223,82 @@ flowchart LR
 
 ---
 
+## Tapable: o coração dos plugins
+
+Antes de entender plugins de verdade, você precisa entender Tapable — a biblioteca de hooks que o webpack usa internamente para expor seu ciclo de build. Tapable não é um detalhe de implementação obscuro; é o que torna o ecossistema de plugins do webpack tão poderoso e extensível.
+
+> [!abstract] Tapable em uma linha
+> Tapable é um sistema de hooks tipados que permite registrar callbacks (taps) em pontos específicos do ciclo de build e garantir a ordem e o tipo de execução entre eles.
+
+Existem três famílias principais de hooks:
+
+| Tipo | Comportamento | Uso típico |
+|---|---|---|
+| `SyncHook` | Síncrono, sem retorno | Notificação simples (ex: `compiler.hooks.done`) |
+| `SyncBailHook` | Síncrono, para se algum tap retornar não-undefined | Decisões de curto-circuito |
+| `SyncWaterfallHook` | Síncrono, passa resultado de um tap pro próximo | Transformações em cadeia |
+| `AsyncSeriesHook` | Assíncrono, taps rodam em série | I/O (ex: `compiler.hooks.emit`) |
+| `AsyncParallelHook` | Assíncrono, taps rodam em paralelo | Otimizações independentes |
+
+```mermaid
+flowchart TD
+    subgraph COMPILER["compiler (ciclo de build inteiro)"]
+        C1["hooks.beforeRun\n(SyncHook)"]
+        C2["hooks.run\n(AsyncSeriesHook)"]
+        C3["hooks.make\n(AsyncParallelHook)\n← aqui o compilation começa"]
+        C4["hooks.emit\n(AsyncSeriesHook)\n← aqui os assets são escritos em disco"]
+        C5["hooks.done\n(AsyncSeriesHook)\n← build completo"]
+    end
+
+    subgraph COMPILATION["compilation (um build específico)"]
+        D1["hooks.buildModule\n(SyncHook)\n← cada módulo sendo processado"]
+        D2["hooks.seal\n(SyncHook)\n← grafo fechado, nenhum módulo novo"]
+        D3["hooks.optimize\n(SyncHook)\n← otimizações (tree-shaking, split)"]
+        D4["hooks.processAssets\n(AsyncSeriesHook)\n← assets prontos pra emissão"]
+    end
+
+    C3 --> D1 --> D2 --> D3 --> D4 --> C4 --> C5
+
+    style COMPILER fill:#1a2e3d,color:#fff
+    style COMPILATION fill:#2d1a3d,color:#fff
+```
+
+> [!note] Leitura do diagrama
+> `compiler` representa o processo de build inteiro — ele persiste entre builds em modo watch. `compilation` representa um build específico (cada rebuild gera uma nova compilation). Plugins se registram em hooks de ambos: `compiler.hooks.emit` para emitir arquivos adicionais ao final; `compilation.hooks.processAssets` para manipular assets já gerados; `compilation.hooks.optimize` para otimizações pós-seal.
+
+Um plugin mínimo que demonstra o sistema Tapable:
+
+```js
+// webpack.config.js — plugin customizado mínimo
+class TimingPlugin {
+  apply(compiler) {
+    let start;
+
+    // tap: registra callback síncrono no hook
+    compiler.hooks.run.tapAsync('TimingPlugin', (compiler, callback) => {
+      start = Date.now();
+      callback(); // obrigatório em hooks async
+    });
+
+    compiler.hooks.done.tap('TimingPlugin', (stats) => {
+      const duration = Date.now() - start;
+      console.log(`Build completed in ${duration}ms`);
+    });
+  }
+}
+
+module.exports = { plugins: [new TimingPlugin()] };
+```
+
+> [!tip] Tap vs TapAsync vs TapPromise
+> - `tap(name, fn)` — callback síncrono, sem espera
+> - `tapAsync(name, (args..., callback) => ...)` — callback-style assíncrono; você chama `callback()` quando terminar
+> - `tapPromise(name, (...args) => Promise)` — Promise-style; o hook espera a Promise resolver
+>
+> O tipo de hook determina quais variantes são permitidas. `SyncHook` só aceita `tap`. `AsyncSeriesHook` aceita os três.
+
+---
+
 ## Plugins: orquestração do ciclo de build
 
 Se loaders transformam módulos, plugins observam e controlam o build inteiro. O webpack expõe um sistema de hooks baseado em Tapable (a lib de hooks interna do webpack) em cada fase do ciclo de compilação. Um plugin se registra em algum desses hooks e executa lógica customizada.
@@ -329,6 +405,197 @@ dist/
 
 > [!info] Por que `runtimeChunk: 'single'` importa
 > O runtime do webpack é o bootstrap que, em runtime no browser, sabe quais chunks existem e como carregá-los sob demanda. Sem extraí-lo, ele fica embutido em cada chunk inicial — e se qualquer chunk mudar, o hash do runtime muda, invalidando o cache de todos os outros chunks. Extraindo em `runtime.js` separado, só o runtime muda quando a topologia de chunks muda.
+
+---
+
+## Cache persistente: o maior ganho do webpack 5
+
+Um dos features mais subestimados do webpack 5 é o **filesystem cache** — uma cache que persiste entre builds em disco. Em projetos grandes, isso transforma "rebuild de 40 segundos" em "rebuild de 2-3 segundos" nos builds subsequentes.
+
+```js
+// webpack.config.js — cache persistente
+module.exports = {
+  cache: {
+    type: 'filesystem',              // persiste em disco (vs 'memory', default em dev)
+    cacheDirectory: path.resolve(__dirname, '.webpack_cache'),
+    buildDependencies: {
+      // invalida o cache se qualquer um desses arquivos mudar
+      config: [__filename],          // próprio webpack.config.js
+      tsconfig: [path.resolve(__dirname, 'tsconfig.json')],
+    },
+    // Versão do cache — incrementar força invalidação total (útil em CI)
+    version: '1.0',
+    // Compressão automática (gzip) dos artefatos de cache
+    compression: 'gzip',
+  },
+};
+```
+
+> [!info] Como o cache filesystem funciona
+> O webpack serializa o estado interno de cada módulo (código processado por loaders, metadados de resolução, resultado de tree-shaking parcial) para arquivos binários em `.webpack_cache/`. No próximo build, antes de reprocessar um módulo, ele verifica se o hash do arquivo-fonte + todos os loaders + dependências de config mudou. Se não mudou, usa o resultado em cache. O ganho é mais dramático nos primeiros builds após o cold start — e é cumulativo: quanto mais estável o código, mais o cache funciona.
+
+```mermaid
+flowchart LR
+    subgraph "Build 1 (cold)"
+        B1_SRC["src/**\n(600 módulos)"]
+        B1_PROC["processamento completo\nbabel, ts, css, assets"]
+        B1_CACHE["serialização\n→ .webpack_cache/\n~50-100MB"]
+        B1_TIME["⏱ 35s"]
+        B1_SRC --> B1_PROC --> B1_CACHE
+    end
+
+    subgraph "Build 2 (warm cache)"
+        B2_SRC["src/**\n(2 arquivos mudaram)"]
+        B2_CHECK["verifica hash\n598 cache hits\n2 misses"]
+        B2_PROC["reprocessa só\nos 2 módulos alterados"]
+        B2_TIME["⏱ 2-3s"]
+        B2_SRC --> B2_CHECK --> B2_PROC
+    end
+
+    B1_CACHE -.->|"cache read"| B2_CHECK
+
+    style B1_TIME fill:#3d1a00,color:#fff
+    style B2_TIME fill:#1a3d1a,color:#fff
+```
+
+> [!note] Leitura do diagrama
+> O ganho de cache não é incremental proporcional — é quase constante. Dois módulos mudados ou duzentos módulos mudados, o overhead base de "verificar hashes" é similar. O que varia é o tempo de reprocessar os módulos que deram miss. Em projetos estáveis (maioria do código não muda entre builds), o filesystem cache é o equivalente a ter um build de produção em 3 segundos.
+
+> [!warning] Cache filesystem em CI
+> O cache filesystem funciona melhor quando persiste entre runs de CI. Em GitHub Actions, use `actions/cache` para restaurar `.webpack_cache/` com chave baseada em `package-lock.json`. Sem isso, cada run começa cold e o ganho some. Com isso, builds de CI caem de 5 minutos para 45-60 segundos em projetos médios.
+
+---
+
+## `mode` e o que ele ativa automaticamente
+
+`mode` é uma das adições mais úteis do webpack 4 que muita gente não explora além de `'development'` vs `'production'`. Saber exatamente o que cada mode faz evita configuração redundante e explica comportamentos que parecem mágica.
+
+```js
+// Os três modes possíveis
+module.exports = { mode: 'production' }  // | 'development' | 'none'
+```
+
+O que cada mode configura automaticamente:
+
+| Configuração | `development` | `production` | `none` |
+|---|---|---|---|
+| `process.env.NODE_ENV` | `'development'` | `'production'` | (não define) |
+| `devtool` | `eval` | `false` | `false` |
+| Tree-shaking | desativado | ativado (`usedExports`, `sideEffects`) | desativado |
+| Minificação (Terser) | desativado | ativado | desativado |
+| `optimization.moduleIds` | `named` (legível) | `deterministic` (hashes) | `natural` |
+| `optimization.chunkIds` | `named` | `deterministic` | `natural` |
+| `cache.type` | `memory` | `memory` | `memory` |
+| Scope hoisting | desativado | ativado (`concatenateModules`) | desativado |
+
+> [!tip] `DefinePlugin` implícito no mode
+> `mode: 'production'` implicitamente adiciona `new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify('production') })`. Isso significa que código guardado por `if (process.env.NODE_ENV !== 'production')` é eliminado pelo Terser em produção — é assim que React remove seus warnings de dev sem code splitting manual.
+
+Se você precisar de um DefinePlugin explícito (para injetar outras variáveis de build):
+
+```js
+const webpack = require('webpack');
+
+plugins: [
+  new webpack.DefinePlugin({
+    // NÃO usar process.env.NODE_ENV aqui se já usa mode — seria duplicado
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    __FEATURE_FLAG_EDITOR__: JSON.stringify(process.env.FEATURE_EDITOR === 'true'),
+  }),
+],
+```
+
+No código, essas constantes são substituídas em tempo de build:
+
+```js
+// Antes do build (fonte):
+if (__FEATURE_FLAG_EDITOR__) {
+  import('./Editor').then(m => render(m.Editor));
+}
+
+// Depois de mode: 'production' + Terser (se FEATURE_EDITOR=false):
+// Bloco inteiro eliminado — nem o dynamic import existe no bundle
+```
+
+---
+
+## `externals` e `resolve`: além do básico
+
+Duas configurações que aparecem em configs de produção sérios mas raramente são explicadas com profundidade.
+
+### `externals` — excluir deps do bundle
+
+`externals` diz ao webpack "não inclua esse módulo no bundle — ele vai estar disponível no ambiente de runtime (global ou CDN)". Usado em dois cenários principais:
+
+**Cenário 1: Libs entregues via CDN (bibliotecas de UI em legado)**
+
+```html
+<!-- index.html -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+```
+
+```js
+// webpack.config.js
+module.exports = {
+  externals: {
+    // Quando o código faz `import React from 'react'`,
+    // webpack resolve como `window.React` em vez de incluir no bundle.
+    react: 'React',
+    'react-dom': 'ReactDOM',
+  },
+};
+```
+
+**Cenário 2: Bibliotecas sendo criadas (não apps)**
+
+Ao criar uma lib que vai ser publicada no npm, você nunca deve incluir React (ou outras peer deps) no bundle — o consumidor já tem. `externals` garante que o bundle da lib não carregue React de novo:
+
+```js
+// webpack.config.js de uma lib
+module.exports = {
+  externals: {
+    react: { commonjs: 'react', commonjs2: 'react', amd: 'React', root: 'React' },
+    'react-dom': { commonjs: 'react-dom', commonjs2: 'react-dom', amd: 'ReactDOM', root: 'ReactDOM' },
+  },
+  output: { library: { name: 'MyLib', type: 'umd' } },
+};
+```
+
+### `resolve` — como módulos são encontrados
+
+`resolve` vai além de alias. Configurações úteis que aparecem em projetos reais:
+
+```js
+resolve: {
+  // Extensões: webpack tenta cada uma em ordem ao importar sem extensão
+  extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+
+  // Alias: atalhos de caminho (evita '../../../')
+  alias: {
+    '@': path.resolve(__dirname, 'src'),
+    '@tests': path.resolve(__dirname, 'tests'),
+    // Alias condicional: troca uma implementação por outra
+    'lodash-es': 'lodash', // força CJS lodash em ambientes que não suportam ESM
+  },
+
+  // mainFields: ordem de campos do package.json que webpack prefere ao importar uma lib
+  // Default pra targets web: ['browser', 'module', 'main']
+  // Isso explica por que importar 'react' pega o CJS — o package.json do React não tem 'module'
+  mainFields: ['browser', 'module', 'main'],
+
+  // fallback: polyfills para módulos Node em ambientes browser (webpack 5 não polyfilla automaticamente)
+  fallback: {
+    buffer: require.resolve('buffer/'),   // libs que usam Buffer no browser
+    crypto: false,                        // 'false' = não polyfilla, apenas ignorar o import
+    path: require.resolve('path-browserify'),
+  },
+},
+```
+
+> [!info] Por que webpack 5 quebrou muitas bibliotecas com "Buffer is not defined"
+> webpack 4 incluía polyfills para módulos Node (`buffer`, `crypto`, `path`, `stream`, etc.) automaticamente. webpack 5 removeu isso — se uma lib de terceiros usa `require('crypto')`, você precisa explicitamente configurar `resolve.fallback`. Isso foi intencional (não faz sentido empacotar polyfills que 90% das apps não usam), mas causou quebras na migração de projetos que usavam libs de Node no frontend sem perceber.
 
 ---
 
@@ -831,12 +1098,142 @@ webpack dominated frontend tooling from 2015 to ~2021, but its JavaScript archit
 
 ---
 
+## Tree-shaking no webpack: o que funciona e o que não funciona
+
+Tree-shaking (eliminação de código morto baseado em análise estática de exports/imports) é um dos recursos mais importantes de `mode: 'production'`, mas tem limitações que todo dev webpack precisa conhecer.
+
+### O que o webpack analisa
+
+webpack usa dois mecanismos complementares:
+
+1. **`usedExports`** (ativado por mode production): marca quais exports de cada módulo são realmente usados. Terser então elimina os não-usados.
+2. **`sideEffects`** (lê do `package.json` da lib): se `"sideEffects": false`, webpack pode eliminar módulos inteiros que só são importados para side effects mas cujos exports não são usados.
+
+```js
+// Exemplo: você importa só uma função de lodash-es
+import { debounce } from 'lodash-es';
+
+// Com sideEffects: false no package.json do lodash-es:
+// webpack elimina os outros 200 módulos do lodash-es que você não usou.
+// Sem sideEffects: false:
+// webpack inclui o módulo inteiro por segurança.
+```
+
+### Limitações estruturais do tree-shaking no webpack
+
+| Situação | Resultado |
+|---|---|
+| Módulo ESM com exports estáticos | Tree-shaking funciona bem |
+| Módulo CJS (`module.exports = ...`) | Tree-shaking NÃO funciona — exports são dinâmicos |
+| Re-export de barrel file (`export * from '...'`) | Pode funcionar, mas barrels grandes degradam o tree-shaking |
+| Side effects em módulos (ex: auto-registro de plugins) | `sideEffects: false` quebraria o comportamento — não declare |
+| Dynamic import com variável (`import(variable)`) | webpack não pode analisar estaticamente — inclui tudo |
+| Classe com métodos não usados | Terser elimina o método, mas webpack inclui a classe |
+
+```js
+// Anti-padrão comum: barrel file que quebra tree-shaking
+// src/components/index.ts
+export { Button } from './Button';
+export { Modal } from './Modal';
+export { Table } from './Table';
+// ... 50 exports
+
+// O problema: mesmo que você importe só Button, o webpack precisa
+// processar o grafo completo do barrel pra saber que os outros não têm side effects.
+// Com 50 exports, isso cria 50 módulos no grafo mesmo que 48 sejam eliminados depois.
+
+// Solução: import direto (mais verboso, mas otimizado)
+import { Button } from './components/Button'; // não passa pelo barrel
+```
+
+> [!warning] CJS e tree-shaking: o elefante na sala
+> A maioria das libs de UI no npm ainda publica CJS como formato principal (mesmo em 2026). `react`, `lodash`, `moment`, e muitas outras usam CJS — e webpack não consegue fazer tree-shaking em CJS. A solução de longo prazo é que libs publiquem ESM (via campo `"exports"` no package.json). Enquanto isso: use alternativas ESM-first quando disponíveis (lodash-es em vez de lodash, date-fns em vez de moment).
+
+---
+
+## webpack em 2026: onde está e para onde vai
+
+A percepção de que "webpack está morto" é errada — ele está em manutenção ativa e tem um roadmap ambicioso. O que mudou é o contexto: ele não é mais a escolha default para projetos novos, mas continua sendo um player importante.
+
+### Estado atual: webpack 5.107+ (junho 2026)
+
+webpack 5 está em versão `5.107+` no momento desta escrita (junho 2026). As adições mais significativas desde o lançamento do 5.0 (2020):
+
+- **Asset Modules nativos** (5.0): substituiu file-loader, url-loader, raw-loader
+- **Module Federation 1.x** (5.0): micro-frontends em runtime
+- **Persistent Cache filesystem** (5.0): cache em disco, invalidação inteligente
+- **Improved tree-shaking** (5.x): `sideEffects` mais preciso, inner-module tree-shaking
+- **Real Content Hash** (5.x): content hash agora é baseado no conteúdo real do asset, não no conteúdo intermediário — evita invalidação desnecessária
+- **Lazy Compilation** (experimental, 5.x): em dev, compila entry points e chunks assíncronos só quando são acessados pela primeira vez — reduz cold start em MPAs grandes
+
+### Roadmap webpack v6 (publicado fev. 2026)
+
+O roadmap oficial (publicado no blog do webpack em fevereiro de 2026) anuncia features que chegarão no webpack 6:
+
+```
+Roadmap webpack 6 (previsão 2026-2027):
+├── Native CSS: processar CSS sem css-loader (como Asset Modules fez pra imagens)
+│   → import './styles.css' funcionará sem nenhum loader instalado
+├── Universal Target: um único target que funciona em browser, Node, Bun, Deno e Edge Workers
+│   → elimina a necessidade de configs separados por ambiente
+├── TypeScript transpilation builtin: transpilação TS nativa sem ts-loader ou swc-loader
+│   → webpack core em TS → pode usar o próprio compilador internamente
+└── Path to v6: API de plugin mais limpa, remoção de deprecated APIs do v4/v5
+```
+
+> [!info] Native CSS no webpack 6 vs. css-loader hoje
+> Native CSS não elimina todas as funcionalidades do css-loader — CSS Modules, PostCSS, autoprefixer ainda precisam de processamento. O que elimina é a necessidade de loaders para o caso básico: `import './reset.css'` funcionará out-of-the-box, assim como já funciona no Vite. Para CSS Modules e PostCSS, ainda haverá configuração, mas mais simples.
+
+### webpack vs. concorrentes em 2026: posicionamento real
+
+```mermaid
+quadrantChart
+    title Bundlers em 2026: Velocidade vs. Compatibilidade com ecossistema webpack
+    x-axis Baixa compatibilidade --> Alta compatibilidade webpack
+    y-axis Lento --> Rápido
+    quadrant-1 Ideal para migração
+    quadrant-2 Novo projeto
+    quadrant-3 Legacy lock-in
+    quadrant-4 Drop-in upgrade
+    webpack: [0.9, 0.2]
+    Rspack: [0.85, 0.75]
+    Vite: [0.2, 0.85]
+    Turbopack: [0.5, 0.88]
+    esbuild: [0.15, 0.95]
+    Rollup: [0.2, 0.5]
+```
+
+> [!note] Leitura do quadrante
+> webpack tem altíssima compatibilidade com seu próprio ecossistema (plugins, loaders, config) mas é o mais lento. Rspack é o único que combina alta compatibilidade com boa velocidade — daí sua proposta de "drop-in replacement". Vite e esbuild são rápidos mas requerem reaprender ou reconfigurar o ecossistema. Turbopack (Next.js) fica no meio: mais rápido que webpack, mas ainda longe de ser compatível com plugins webpack arbitrários.
+
+### Downloads e saúde do ecossistema (2026)
+
+| Ferramenta | Downloads semanais (aprox. jun. 2026) | Tendência |
+|---|---|---|
+| webpack | ~30M | estável (não cresce, não cai) |
+| Vite | ~25M | crescimento acelerado |
+| esbuild | ~40M | estável (usado por Vite internamente) |
+| Rspack | ~2M | crescimento forte |
+| Turbopack | incluído no Next.js | n/d |
+
+> [!important] A leitura correta dos números
+> webpack ter 30M downloads semanais não significa que 30M projetos novos/semana estão escolhendo webpack. Significa que 30M builds/semana acontecem em projetos existentes — muitos deles em CI de projetos legados, Next.js (que usa webpack em prod), e Angular pré-17. É uso inercial, não adoção nova. A diferença importa para entender o futuro.
+
+---
+
 ## Veja também
 
 - [[07 - O grafo de módulos e o que é bundling]] — o modelo mental de entry point, grafo de dependências, e o que um bundler faz antes de chegar no webpack especificamente
+- [[06 - ESM e CJS e o sistema de módulos]] — por que CJS quebra tree-shaking e por que ESM é pré-requisito para análise estática de exports; essencial para entender as limitações do webpack com libs legadas
+- [[08 - Transpilação e targets]] — babel-loader e swc-loader no contexto do webpack: o que transpilação faz, por que SWC é 5-20x mais rápido que Babel, e como `targets` determina o output
+- [[09 - Dev server e HMR]] — o conceito de HMR em profundidade: como o protocolo WebSocket funciona, o papel do `module.hot.accept`, e como Vite implementa HMR diferente do webpack
+- [[10 - Ferramentas legadas - Grunt, Gulp, Bower, Browserify e RequireJS]] — o contexto do "mundo antes do webpack": por que Browserify não era suficiente e o que o webpack resolveu que os task runners não resolviam
+- [[12 - Create React App e a era dos scaffolders]] — como o CRA popularizou webpack sem expor a complexidade, criando uma geração de devs que usavam webpack sem saber configurá-lo
 - [[13 - Vite a fundo]] — a alternativa moderna ao webpack para projetos novos: ESM nativo em dev, Rollup em prod, zero-config para TypeScript/JSX/CSS
+- [[14 - Rollup, esbuild e Rolldown]] — as ferramentas que influenciaram Vite e que frequentemente aparecem como alternativas ao webpack em contextos de lib (Rollup) ou performance extrema (esbuild)
 - [[15 - Turbopack, Rspack e a corrida Rust-Go]] — Rspack (drop-in replacement do webpack em Rust) e Turbopack (substituto do webpack no Next.js)
 - [[17 - Otimização de bundle]] — tree-shaking a fundo, estratégias de code splitting, análise de bundle, e o que impede o webpack (e outros bundlers) de eliminar código morto
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — como webpack se comporta em monorepos, o problema de resolução cross-workspace, e como ferramentas como Nx abstraem configs de webpack por cima
 
 ---
 
@@ -844,9 +1241,13 @@ webpack dominated frontend tooling from 2015 to ~2021, but its JavaScript archit
 > 1. webpack — Documentação oficial, Concepts (entry, output, loaders, plugins, mode). Disponível em: https://webpack.js.org/concepts/
 > 2. webpack — "Under The Hood" (documentação oficial). Descreve `ModuleGraph`, `ChunkGraph`, a hierarquia entry → chunk group → chunk → asset, e os tipos initial vs. non-initial. Disponível em: https://webpack.js.org/concepts/under-the-hood/
 > 3. webpack — "Roadmap 2026" (blog oficial, fev. 2026). Native CSS support, universal target, TypeScript transpilation builtin, path to v6. Disponível em: https://webpack.js.org/blog/2026-02-04-roadmap-2026/
-> 4. InfoQ — "Module Federation 2.0 Reaches Stable Release with Wider Support outside of Webpack" (abr. 2026). Cross-bundler support (webpack, Rspack, Vite, Rolldown), TypeScript type sharing, Node.js runtime. Disponível em: https://www.infoq.com/news/2026/04/module-federation-2-stable/
-> 5. InfoQ — "Webpack Publishes 2026 Roadmap with Native CSS Support, Universal Target, and Path to Version 6" (mar. 2026). Disponível em: https://www.infoq.com/news/2026/03/webpack-2026-roadmap/
-> 6. PkgPulse — "Rspack vs Webpack in 2026: The Rust-Powered Drop-In Replacement" (2026). ByteDance migração de 100K+ módulos, benchmark comparativo. Disponível em: https://www.pkgpulse.com/blog/rspack-vs-webpack-2026
-> 7. Tech Insider — "Vite vs Webpack 2026: 24x HMR Speed and 115M Downloads" (2026). Disponível em: https://tech-insider.org/vite-vs-webpack-2026-2/
-> 8. DEV Community — "Native Federation vs Webpack Module Federation — Which Should You Choose in 2026?" (2026). Disponível em: https://dev.to/mhmoud_ashour_5547515422e/native-federation-vs-webpack-module-federation-which-should-you-choose-in-2026-109m
-> 9. FrontScope — "Vite vs Webpack vs Rspack: The Build Tool Showdown (2026)" (2026). Disponível em: https://frontscope.dev/blog/vite-vs-webpack-vs-rspack-2026/
+> 4. webpack — Documentação oficial, Tapable (Plugins API). Explica os tipos de hooks (SyncHook, AsyncSeriesHook, etc.), o sistema `tap`/`tapAsync`/`tapPromise`, e como escrever plugins customizados. Disponível em: https://webpack.js.org/api/plugins/
+> 5. webpack — Documentação oficial, Cache (filesystem cache). Explica `cache.type: 'filesystem'`, `buildDependencies`, invalidação de cache e integração com CI. Disponível em: https://webpack.js.org/configuration/cache/
+> 6. webpack — Documentação oficial, Externals. Explica como excluir dependências do bundle (CDN, peer deps de libs), incluindo as formas por target (UMD, CommonJS). Disponível em: https://webpack.js.org/configuration/externals/
+> 7. webpack — Documentação oficial, Tree Shaking guide. Explica `usedExports`, `sideEffects`, e as limitações do tree-shaking com módulos CJS vs ESM. Disponível em: https://webpack.js.org/guides/tree-shaking/
+> 8. InfoQ — "Module Federation 2.0 Reaches Stable Release with Wider Support outside of Webpack" (abr. 2026). Cross-bundler support (webpack, Rspack, Vite, Rolldown), TypeScript type sharing, Node.js runtime. Disponível em: https://www.infoq.com/news/2026/04/module-federation-2-stable/
+> 9. InfoQ — "Webpack Publishes 2026 Roadmap with Native CSS Support, Universal Target, and Path to Version 6" (mar. 2026). Disponível em: https://www.infoq.com/news/2026/03/webpack-2026-roadmap/
+> 10. PkgPulse — "Rspack vs Webpack in 2026: The Rust-Powered Drop-In Replacement" (2026). ByteDance migração de 100K+ módulos, benchmark comparativo. Disponível em: https://www.pkgpulse.com/blog/rspack-vs-webpack-2026
+> 11. Tech Insider — "Vite vs Webpack 2026: 24x HMR Speed and 115M Downloads" (2026). Disponível em: https://tech-insider.org/vite-vs-webpack-2026-2/
+> 12. DEV Community — "Native Federation vs Webpack Module Federation — Which Should You Choose in 2026?" (2026). Disponível em: https://dev.to/mhmoud_ashour_5547515422e/native-federation-vs-webpack-module-federation-which-should-you-choose-in-2026-109m
+> 13. FrontScope — "Vite vs Webpack vs Rspack: The Build Tool Showdown (2026)" (2026). Disponível em: https://frontscope.dev/blog/vite-vs-webpack-vs-rspack-2026/
