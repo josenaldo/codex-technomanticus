@@ -126,6 +126,9 @@ nvm ls-remote --lts
 
 O auto-switch no nvm **não vem habilitado por padrão**. Você precisa adicionar um hook manualmente ao `.zshrc`:
 
+> [!duvida] O que é `.zshrc` e por que só ele é mencionado — e o `.bashrc`?
+> A nota assume que o leitor usa zsh como shell. E se eu usar bash ou outro shell? Preciso de um arquivo de configuração diferente? Onde fica esse arquivo normalmente?
+
 ```bash
 # ~/.zshrc — auto-switch com nvm
 autoload -U add-zsh-hook
@@ -286,6 +289,9 @@ volta list
 
 O mecanismo do Volta é diferente: em vez de hooks de shell, ele intercepta as chamadas por meio de binários wrappers no PATH. Cada chamada a `node` verifica o `package.json` mais próximo em tempo de execução. Isso significa que o auto-switch acontece mesmo dentro de scripts que não passam pelo hook de shell — por exemplo, `npm run build` dentro de um Makefile chama o Node correto automaticamente.
 
+> [!duvida] O que é um "Makefile" e por que scripts "não passam pelo hook de shell"?
+> A nota menciona Makefile como exemplo de contexto sem hook de shell, mas não explica o que é ou por que é diferente de rodar um comando no terminal. Qual é a diferença entre executar algo no terminal interativo e executar via Makefile ou subshell?
+
 ```mermaid
 flowchart LR
     CMD["node index.js\n(ou npm run build)"]
@@ -443,6 +449,9 @@ Existe uma sobreposição de formas de declarar a versão de Node de um projeto.
 
 O campo `"engines"` no `package.json` é frequentemente confundido com uma forma de pinagem — mas ele não faz switch. Ele declara compatibilidade e pode fazer o `npm install` emitir warning (ou erro com `engine-strict=true`):
 
+> [!duvida] O que significa "pinagem" nesse contexto e qual a diferença entre "declarar compatibilidade" e "pinar" uma versão?
+> A nota usa "pinada" e "pinagem" várias vezes, mas nunca define o termo. Entendo que `engines` "não pina" — mas o que exatamente pinar significa? E se `engines` não faz switch, o que acontece na prática quando eu tenho Node 20 instalado mas declaro `>=22`?
+
 ```json
 {
   "engines": {
@@ -484,6 +493,9 @@ Com corepack habilitado:
 - Chamar `npm` num projeto com `"packageManager": "pnpm@9"` emite um erro educativo.
 - O pnpm correto é baixado automaticamente se não estiver em cache.
 - CI e devs ficam sincronizados.
+
+> [!duvida] Por que chamar `npm` num projeto que usa `pnpm` seria um problema — e o que é esse "erro educativo"?
+> Entendo que usar o gerenciador errado pode causar inconsistências, mas a nota não explica o que concretamente quebra (o `node_modules` fica diferente? o lockfile muda?). E "erro educativo" é um erro que impede a execução ou só avisa?
 
 ```bash
 # Habilitar corepack (Node 16-24, já vem bundled)

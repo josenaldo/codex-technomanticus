@@ -71,6 +71,9 @@ O identificador vem após um hífen, separado por pontos. A precedência é: `al
 1.0.0-alpha.1 < 1.0.0-alpha.2 < 1.0.0-beta.1 < 1.0.0-rc.1 < 1.0.0
 ```
 
+> [!duvida] O que "precedência" significa aqui na prática?
+> A nota diz que `alpha < rc < estável` em termos de precedência — mas precedência em relação a quê? Quando o npm está escolhendo qual versão instalar, ele prefere a de maior precedência? E se eu tiver `^1.0.0` no package.json e existir uma `1.0.0-rc.1`, o npm escolhe a rc ou a estável `1.0.0`?
+
 Por padrão, ranges não incluem pre-releases — você precisa especificar explicitamente (`^1.0.0-beta.1`) para incluí-las.
 
 Há ainda os **build metadata** (após `+`, ex: `1.0.0+sha.abc123`), que são ignorados na comparação de precedência — servem apenas como informação para sistemas de build.
@@ -111,6 +114,9 @@ graph LR
 ```
 
 A regra mnemônica: **`^` move pela direita mantendo o primeiro dígito não-zero fixo**. Para `^4.17.21`, o primeiro dígito não-zero é `4` (MAJOR) — então pode mover MINOR e PATCH livremente, até `<5.0.0`. Para `^0.2.3`, o primeiro dígito não-zero é `2` (MINOR) — pode mover só PATCH, até `<0.3.0`.
+
+> [!duvida] "Primeiro dígito não-zero" — por que essa regra estranha?
+> A lógica do `^0.2.3` ficar preso em `0.2.x` não ficou clara. Se o caret significa "compatibilidade de API", por que o comportamento muda dependendo de qual dígito é zero? Qual é a conexão com a regra do semver sobre versões `0.x.y` serem instáveis?
 
 O **`~`** é mais conservador: se você especificou MINOR, fica dentro desse MINOR. `~4.17.21` aceita patches em `4.17.x`, mas não `4.18.0`.
 
@@ -187,6 +193,9 @@ A distinção importa por dois motivos: **manutenção** (vulnerabilidades podem
 Quando o npm encontra que `react-testing-library` quer `react@^18.0.0` e que seu projeto também quer `react@^18.0.0`, ele precisa decidir: instala uma cópia ou duas?
 
 O algoritmo do npm usa **hoisting** (içamento): ele tenta colocar pacotes no nível mais alto possível do `node_modules`, de forma que múltiplos consumidores compartilhem uma única cópia.
+
+> [!duvida] Por que o Node.js permite duas cópias do mesmo pacote em subpastas diferentes?
+> O diagrama mostra `react@18.2.0` aninhado dentro de `react-testing-library/node_modules/` quando as versões conflitam. Mas como isso funciona na prática — não haveria conflito de nomes? O Node.js consegue distinguir qual cópia carregar dependendo de quem está importando?
 
 ```mermaid
 graph TD
@@ -418,6 +427,9 @@ O caso de uso mais legítimo: você recebe um alerta de CVE crítico numa dep tr
 `peerDependencies` é o mecanismo que diz: *"Para funcionar, preciso que o consumidor tenha este pacote instalado — mas não vou instalá-lo eu mesmo."*
 
 O caso arquetípico é um plugin de framework. `react-dom` não instala o React dentro de si mesmo — espera que o projeto consumidor já tenha React. Se instalasse, você teria duas cópias de React em `node_modules`, e React não funciona com múltiplas instâncias (usa singletons internos):
+
+> [!duvida] O que são "singletons internos" do React e por que duas cópias quebram tudo?
+> A nota diz que React "usa singletons internos" e que duas instâncias causam bugs — mas não explica o mecanismo. Se o código importa `react` de dois lugares diferentes, o que exatamente quebra? Por que o React foi projetado assim, em vez de tolerar múltiplas instâncias?
 
 ```json
 // package.json de um plugin de componente

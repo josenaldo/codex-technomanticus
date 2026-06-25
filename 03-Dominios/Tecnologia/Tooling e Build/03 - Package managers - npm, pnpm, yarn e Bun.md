@@ -28,6 +28,9 @@ Antes de comparar npm com pnpm com Yarn com Bun, vale perguntar: o que exatament
 
 **Primeira etapa: resolução.** Dado um `package.json` com `"express": "^4.18.0"`, o package manager precisa determinar qual versão exata instalar — e quais versões exatas de *todas as dependências de express* também. Isso é um problema de resolução de grafo: express depende de body-parser, que depende de iconv-lite, que depende de safer-buffer. O grafo tem dezenas ou centenas de nós, e cada nó tem ranges de versão como restrição. Quem quer o quê, em qual versão compatível? Esse problema é tecnicamente NP-completo na forma geral, mas na prática é resolvido com heurísticas eficientes. O resultado fica gravado no lockfile (a nota [[05 - Semver e o grafo de dependências]] entra fundo nisso).
 
+> [!duvida] O que significa "NP-completo" aqui? Isso quer dizer que pode demorar muito? Por que mencionar isso se na prática "é resolvido com heurísticas"?
+> Salto de raciocínio: o texto introduz um conceito de teoria da computação sem explicar o que implica para o dia-a-dia — fica parecendo aviso de perigo sem dizer qual é o perigo.
+
 **Segunda etapa: download.** Uma vez resolvidas as versões exatas, o pm baixa os tarballs do registry (geralmente `registry.npmjs.org`). Aqui entra integridade: cada tarball tem um hash SHA-512 que é verificado após o download. Se o hash não bater, a instalação falha — é a primeira linha de defesa contra supply-chain attacks. O download pode ser pulado se o pacote já está em cache local.
 
 **Terceira etapa: instalação.** O tarball baixado precisa ser extraído e colocado num lugar onde `require('express')` ou `import express from 'express'` funcione. Esta é a etapa onde os package managers divergem radicalmente — e onde mora boa parte das diferenças de velocidade, uso de disco e segurança.
@@ -172,7 +175,10 @@ O pnpm (performant npm) nasceu em 2016 com uma pergunta simples: e se, em vez de
 
 O pnpm mantém um store global em `~/.local/share/pnpm/store` (Linux) / `~/Library/pnpm/store` (macOS). Cada arquivo de cada pacote é armazenado uma vez, indexado pelo hash do seu conteúdo — daí "content-addressable". Se `lodash@4.17.21` tem 100 arquivos, eles aparecem no store exatamente uma vez, independente de quantos projetos na sua máquina usem `lodash@4.17.21`.
 
-Quando você instala, o pnpm não *copia* — ele cria **hard links**. Hard links são simplesmente dois nomes apontando para o mesmo inode no filesystem. Zero custo de disco extra, zero tempo de cópia. O arquivo existe uma vez no store, e cada projeto tem um hard link para ele.
+Quando você instala, o pnpm não *copia* — ele cria **hard links**. Hard links são simplesmente dois nomes apontando para o mesmo inode no filesystem.
+
+> [!duvida] O que é um "inode"? Por que isso importa para entender hard links?
+> O texto usa o termo sem explicar. Fica difícil saber se "mesmo inode" é só jargão técnico ou se é essencial para entender por que hard links não ocupam espaço extra. Zero custo de disco extra, zero tempo de cópia. O arquivo existe uma vez no store, e cada projeto tem um hard link para ele.
 
 ```mermaid
 flowchart LR
@@ -208,6 +214,9 @@ O pnpm 11 substituiu o índice do store de JSON para SQLite, reduzindo drasticam
 ### Security by Default: por que o pnpm bloqueou os lifecycle scripts
 
 Você sabia que instalar um pacote npm pode executar código arbitrário na sua máquina sem pedir permissão? Quando o npm (ou Bun) instala um pacote, qualquer script `postinstall` declarado no `package.json` do pacote é executado automaticamente — com as permissões do seu usuário, com acesso ao sistema de arquivos, rede e variáveis de ambiente.
+
+> [!duvida] Por que um pacote legítimo precisaria rodar código no meu computador durante a instalação?
+> A nota explica o risco, mas não explica primeiro para que serve esse mecanismo. Parece uma brecha perigosa por design — mas deve ter um motivo. Exemplos como `esbuild` e `sharp` aparecem mais à frente sem explicar por que eles precisam de um script de instalação.
 
 Ataques reais exploraram isso. O caso mais famoso: o **evento-stream** (2018), quando um colaborador malicioso adicionou um pacote que rodava um postinstall para roubar carteiras de criptomoedas. O pacote tinha 2 milhões de downloads por semana. O npm não avisava; instalava e executava em silêncio.
 
@@ -488,6 +497,9 @@ O Bun pode ler `package-lock.json` e `yarn.lock` para uma migração sem `instal
 ## Corepack: cravar o package manager por projeto
 
 O corepack é uma ferramenta que funciona como um shim — um proxy — para `yarn` e `pnpm`. Quando você chama `yarn` ou `pnpm`, o corepack intercepta, verifica qual versão o projeto exige, baixa se necessário e executa.
+
+> [!duvida] Como o corepack "intercepta" minha chamada ao pnpm? Ele substitui o executável do pnpm no sistema?
+> Ponteiro sem ponte: o texto diz que o corepack age como um "shim" mas não explica como isso funciona na prática — se já tenho o pnpm instalado globalmente, como o corepack interfere no caminho?
 
 **Por que isso importa:** sem o corepack, um time pode ter desenvolvedores usando pnpm 10 e pnpm 11 ao mesmo tempo, com lockfiles gerados de formas ligeiramente diferentes. O corepack garante que todos usem exatamente a versão declarada no projeto.
 

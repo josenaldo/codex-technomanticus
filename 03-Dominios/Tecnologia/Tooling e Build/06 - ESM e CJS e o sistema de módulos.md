@@ -81,6 +81,9 @@ flowchart LR
     style ESM fill:#001525,color:#ddd
 ```
 
+> [!duvida] O que é "live binding" na prática? Como é diferente de CJS que "copia o valor"?
+> O diagrama menciona que ESM tem "referência viva ao exportado (não cópia)" enquanto CJS "copia o valor". O que muda para quem consome o módulo? Se a lib atualiza um valor exportado, quem importou via CJS não vê a mudança? Um exemplo concreto ajudaria.
+
 A diferença mais importante para o **bundler** é que ESM é estático: o bundler pode ler todos os `import` de um arquivo sem executá-lo. Isso permite construir o grafo de módulos completo em tempo de build, o que habilita **tree-shaking** — remover exports que ninguém importa. CJS dinâmico torna tree-shaking muito mais difícil ou impossível (um `require(variavel)` não tem grafo analisável).
 
 A diferença mais importante para o **runtime** é que `require()` é síncrono: ele carrega o arquivo, avalia, e retorna o valor antes de continuar. ESM é assíncrono: o runtime precisa resolver o grafo completo de imports antes de começar a avaliar qualquer módulo — o que é incompatível com `require()` síncrono quando o módulo ESM tem `await` no top-level.
@@ -152,6 +155,9 @@ import { somar, subtrair } from 'pacote-cjs';
 ```
 
 ### O cjs-module-lexer e seus limites
+
+> [!duvida] Por que o Node precisa de um "lexer" separado para detectar os exports? Não bastaria executar o arquivo CJS e ver o que ficou em `module.exports`?
+> Parece que o Node *poderia* simplesmente rodar o módulo CJS e inspecionar `module.exports` depois. Por que ele usa uma análise estática do texto em vez disso? Qual é o problema de executar o módulo para descobrir o que ele exporta?
 
 O Node usa internamente o projeto [`cjs-module-lexer`](https://github.com/nodejs/cjs-module-lexer) para tentar detectar os named exports de um módulo CJS sem executá-lo. Ele procura padrões como `exports.foo = ...` e `module.exports = { foo, bar }` no texto do arquivo.
 
@@ -288,6 +294,9 @@ A lógica de quem usa cada condição:
 | `import` ou `import()` em Node moderno | `import` | ESM |
 | `require()` em Node 20.19+/22.12+ | `module-sync` | ESM (síncrono) |
 | `require()` em Node mais antigo | `require` | CJS |
+
+> [!duvida] Como usar o mesmo arquivo ESM nos dois casos (import e require) elimina o hazard? O Node não ia criar duas instâncias de qualquer forma?
+> A nota diz que `module-sync` resolve o hazard porque `import` e `require` carregam o mesmo arquivo. Mas o hazard ocorre quando há "dois contextos de módulo separados". Se `require(esm)` carrega o mesmo arquivo `.js`, o cache do módulo é realmente compartilhado entre as duas chamadas? O que garante isso?
 
 Isso resolve o dual package hazard de forma elegante: em vez de dois arquivos (um ESM, um CJS), o estado vive só no ESM. O CJS é um fallback para runtimes antigos, não o caminho principal.
 
@@ -815,6 +824,9 @@ Esse é um dos tópicos favoritos de entrevistas técnicas para vagas sênior em
 | **Sênior** | Explica o **motivo da incompatibilidade de timing** (síncrono vs. assíncrono), sabe o que é dual package hazard e quando ele importa, conhece `require(esm)` e suas condições, entende `module-sync`, e sabe como o campo `exports` funciona para bundler e Node separadamente. |
 
 A pergunta-armadilha mais comum: *"Por que um `require()` não pode importar ESM?"* — a resposta rasa é "porque são sistemas diferentes". A resposta sênior é: **porque `require()` é síncrono e ESM é assíncrono por design** — o runtime ESM precisa resolver o grafo completo de módulos antes de avaliar qualquer um, e isso é fundamentalmente incompatível com um sistema que bloqueia a thread esperando o resultado. A exceção (`require(esm)` no Node 20.19+) só funciona porque o Node detecta módulos ESM sem top-level await e os avalia de forma síncrona internamente.
+
+> [!duvida] Como o Node consegue avaliar ESM de forma síncrona se ESM é descrito como "assíncrono por design"?
+> A nota inteira explica que a incompatibilidade existe porque ESM é assíncrono. Mas aqui diz que o Node "avalia de forma síncrona internamente" quando não há top-level await. O que muda sem o `await`? A resolução do grafo de módulos não continua sendo assíncrona de qualquer forma?
 
 Outra pergunta frequente: *"O que é dual package hazard e quando você se preocupa com ele?"* — a resposta correta inclui: (1) condição de ocorrência (mesma lib, dois formatos, dois `require`/`import` no mesmo processo), (2) sintoma (singletons duplicados, `instanceof` falha), (3) quando não importa (libs stateless), (4) solução moderna (`module-sync` + ESM-only em Node 20.19+).
 

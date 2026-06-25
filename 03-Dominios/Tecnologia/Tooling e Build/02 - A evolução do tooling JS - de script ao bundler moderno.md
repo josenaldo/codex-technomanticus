@@ -181,6 +181,9 @@ Quando o Node.js foi lançado em 2009 por Ryan Dahl, ele adotou CommonJS como si
 
 O problema? **CommonJS era síncrono**. `require()` bloqueia a execução até o módulo estar carregado. No servidor, isso é aceitável: ler um arquivo do disco é rápido. No browser, carregar um módulo pela rede de forma síncrona significa travar a página inteira durante o request. Era uma não-starter para o front-end.
 
+> [!duvida] Por que travar a página é tão ruim no browser, mas não no servidor?
+> O texto diz que `require()` é síncrono e que isso "trava a página" no browser — mas não fica claro o que "travar" significa aqui. O browser para de responder ao usuário enquanto espera o download? E por que o servidor consegue fazer a mesma coisa sem problema?
+
 A solução veio com o **AMD (Asynchronous Module Definition)**, cujo principal implementador foi o **RequireJS**, lançado por James Burke por volta de 2010 a partir de discussões na comunidade CommonJS:
 
 ```javascript
@@ -354,6 +357,8 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']  // CSS vira JS!
       },
+> [!duvida] Como "CSS vira JS"? Isso não quebra o CSS?
+> O comentário diz que CSS vira JS, mas não explica o que isso significa na prática. O browser vai receber um arquivo `.js` onde deveria ter um `.css`? Como o estilo ainda é aplicado na página se o CSS foi "transformado em JS"?
       {
         test: /\.(png|jpg|gif)$/,
         use: 'file-loader'       // imagens recebem hash no nome
@@ -432,6 +437,9 @@ Essa observação foi a semente do **Vite**, criado por Evan You (o criador do V
 webpack dev (antigo):     mudança → reconstruir bundle → recarregar
 Vite dev:                 mudança → servir o arquivo modificado via ESM → HMR cirúrgico
 ```
+
+> [!duvida] Por que o Vite precisa de dois motores diferentes em vez de usar só um?
+> A nota vai explicar que o Vite usa esbuild em desenvolvimento e Rollup em produção — mas não fica claro por que não é possível usar o mesmo motor nos dois casos. Se o esbuild é mais rápido, por que não usar esbuild também em produção?
 
 O Vite usava **dois motores** com propósitos diferentes:
 - Em **desenvolvimento**: o browser pedia cada módulo via ESM nativo; o Vite servia diretamente, usando o **esbuild** para pré-bundlar as dependências de `node_modules` (que não são ESM). O resultado: inicialização quase instantânea, independente do tamanho do projeto.
@@ -515,6 +523,9 @@ O Next.js adotou o SWC como transpilador padrão a partir da versão 12 (2021), 
 ### Turbopack — o bundler incremental da Vercel (2022)
 
 O **Turbopack** foi anunciado pela Vercel em outubro de 2022, na Next.js Conf, como o "successor to webpack". Escrito em Rust, o Turbopack usa uma arquitetura de **incrementalidade fina** — em vez de invalidar grandes partes do grafo, ele rastreia dependências no nível de funções individuais e só recomputa o que mudou.
+
+> [!duvida] O que significa "rastrear dependências no nível de funções individuais"?
+> O webpack invalida "grandes partes do grafo" e o Turbopack só recomputa o que mudou — mas não fica claro o que o webpack faz quando você muda um arquivo. Ele recompila tudo de novo? Só o arquivo? E como o Turbopack consegue ser mais preciso do que isso?
 
 A promessa: builds 700x mais rápidas que webpack, 10x mais rápidas que Vite. Os benchmarks foram contestados, mas a direção era clara. Em janeiro de 2026, com o Next.js 16.1, o Turbopack passou todos os 8.302 testes de integração do Next.js e se tornou o bundler padrão de produção do framework.
 
