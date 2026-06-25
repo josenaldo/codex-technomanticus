@@ -3,8 +3,8 @@ title: "React"
 type: moc
 publish: true
 created: 2026-05-03
-updated: 2026-05-03
-status: seedling
+updated: 2026-06-25
+status: evergreen
 tags:
   - react
   - moc
@@ -15,33 +15,30 @@ aliases:
 
 # React
 
-Estante de React: a biblioteca, seu ecossistema, frameworks que rodam sobre ela (Next.js, Remix), bibliotecas de UI (MUI, Mantine), gerenciamento de formulários e estado, padrões e idiomas.
+> [!abstract] TL;DR
+> Domínio multi-galho de React: a biblioteca, sua tipagem, seus padrões, o framework (Next.js) e o ecossistema. A base da linguagem vive em [[03-Dominios/Tecnologia/JavaScript/index|JavaScript]] e [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]; as APIs do navegador em [[03-Dominios/Tecnologia/Plataforma Web/index|Plataforma Web]].
 
-## Conteúdo
+## Galhos
 
-- [[React]] — a biblioteca: visão geral, hooks, patterns, performance
+- 🟩 [[03-Dominios/Tecnologia/React/React core/index|React core]] — **a biblioteca em 3 fases** (26 notas, TS-first, React 19): JSX, componentes, hooks, estado, efeitos, performance, concurrent, RSC, Actions.
+- 🟦 [[03-Dominios/Tecnologia/React/TypeScript com React/index|TypeScript com React]] — tipagem avançada de componentes, hooks, props, generics, polymorphic, compound (15 notas).
+- 🟨 [[03-Dominios/Tecnologia/React/Charts/index|Charts]] — bibliotecas de gráficos.
+- ⬜ **React Design Patterns** — *galho planejado* (padrões consolidados: compound, render props, HOC, custom hooks, provider). Ver [[00-Meta/Roadmap|Roadmap]].
+- ⬜ **Next.js** — *galho planejado* (App Router, RSC em produção, server actions, caching, deploy; Pages Router de leve).
+- ⬜ **Ecossistema** — *galho planejado* (MUI, Mantine, TanStack Query).
+
+## Recursos e libs
+
 - [[React Red Flag Manual]] — antipatterns e armadilhas (manual extenso)
-- [[03-Dominios/Tecnologia/React/TypeScript com React/index|TypeScript com React]] — tipando componentes, hooks, forms
-- [[Next.js]] — o framework full-stack sobre React
+- [[Dicionário de React]] — glossário do domínio
 - [[MUI|Material UI]] · [[Mantine]] — bibliotecas de componentes
 - [[React Hook Form]] · [[TanStack Form]] · [[TanStack Query]] — formulários e estado de servidor
 - [[React Admin]] · [[React Data Table]] · [[Ícones]] — utilitários
-- [[03-Dominios/Tecnologia/React/Charts/index|Charts]] — bibliotecas de gráficos
-- [[Dicionário de React]] — glossário
-
-## Aprofundamento
-
-> [!convite] Aprofundamento — React essentials
-> - [Documentação oficial — Learn](https://react.dev/learn) — react.dev
-> - [Documentação oficial — Reference](https://react.dev/reference/react) — react.dev
-> - [React Architecture Patterns](https://www.etatvasoft.com/blog/react-architecture-patterns/) — eTatvaSoft
-> - [Modularizing React Apps](https://martinfowler.com/articles/modularizing-react-apps.html) — Martin Fowler
-> - [React Components Demystified](https://dev.to/vyan/react-components-demystified-your-ultimate-guide-from-newbie-to-ninja-3l1n?ref=dailydev) — dev.to
->
-> Consumiu? Faça uma glosa em `02-Glosas/` e amadureça pro domínio quando fizer sentido.
+- [[Next.js]] · [[React]] — visões-gerais / pontos de entrada
 
 ## Veja também
 
 - [[Senda Frontend]]
 - [[03-Dominios/Tecnologia/JavaScript/index|JavaScript]]
 - [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]
+- [[03-Dominios/Tecnologia/Tooling e Build/index|Tooling e Build]]
