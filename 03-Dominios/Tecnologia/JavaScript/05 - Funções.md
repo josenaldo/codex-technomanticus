@@ -54,7 +54,7 @@ function saudar(nome) {
 Por quê? Durante a fase de parsing, antes de executar qualquer código, o mecanismo JavaScript varre o arquivo, encontra declarações de função, e as coloca na memória inteiras — com o corpo completo, não só o nome.
 
 > [!question]- Por que só declarações de função são hoisted assim?
-> Porque a especificação ECMAScript trata declarações de função como parte da fase de *binding* do escopo (também chamada de criação de ambiente léxico), que acontece antes da execução. Expressões de função e arrow functions, por outro lado, são **valores atribuídos a variáveis** — e variáveis com `let`/`const` ficam na TDZ até sua declaração; com `var`, a variável é hoisted mas como `undefined` (o valor ainda não foi atribuído). Ver [[04 - Variáveis e Escopo]].
+> Porque a especificação ECMAScript trata declarações de função como parte da fase de *binding* do escopo (também chamada de criação de ambiente léxico), que acontece antes da execução. Expressões de função e arrow functions, por outro lado, são **valores atribuídos a variáveis** — e variáveis com `let`/`const` ficam na TDZ até sua declaração; com `var`, a variável é hoisted mas como `undefined` (o valor ainda não foi atribuído). Ver [[04 - Variáveis e escopo]].
 
 ### Function Expression (expressão de função)
 
