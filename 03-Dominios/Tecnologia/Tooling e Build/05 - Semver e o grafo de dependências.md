@@ -1,7 +1,7 @@
 ---
 title: "Semver e o grafo de dependências"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
 status: seedling
@@ -119,6 +119,23 @@ O **`~`** é mais conservador: se você especificou MINOR, fica dentro desse MIN
 
 O npm disponibiliza uma calculadora online em [semver.npmjs.com](https://semver.npmjs.com) para verificar quais versões um range específico aceita.
 
+> [!tip] Como verificar ranges na linha de comando
+> O `node-semver` pode ser usado diretamente:
+> ```bash
+> # Instalar uma vez globalmente
+> npm install -g semver
+>
+> # Verificar se uma versão satisfaz um range
+> semver -r "^4.17.21" 4.18.0   # → 4.18.0 (satisfaz)
+> semver -r "^4.17.21" 5.0.0    # → (sem saída — não satisfaz)
+> semver -r "~4.17.21" 4.18.0   # → (sem saída — tilde fica em 4.17.x)
+>
+> # Listar versões disponíveis de um pacote que satisfazem um range
+> npm view lodash versions --json | node -e \
+>   "const s=require('semver'); const vs=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log(vs.filter(v=>s.satisfies(v,'^4.17.0')))"
+> ```
+> Menos glamouroso que a calculadora web, mas funciona offline e em scripts.
+
 ---
 
 ## O grafo de dependências: de uma linha a milhares de pacotes
@@ -204,6 +221,11 @@ pkg-b requer: lodash@^4.0.0  (quer 4.x)
 
 Semver garante que `3.x` e `4.x` são breaking changes — o npm não pode satisfazer os dois com uma cópia só. Resultado: duas cópias de `lodash`, em versões diferentes, no mesmo projeto. Código cresce, bundle cresce, e às vezes surgem bugs sutis se instâncias diferentes de um pacote são esperadas ser a *mesma* (ex.: React, que depende de singletons internos).
 
+> [!info] Como o npm diagnóstica conflitos de grafo
+> O comando `npm ls <pacote>` mostra o caminho completo no grafo para cada instância de um pacote — essencial para entender de onde vem uma versão específica. `npm why <pacote>` (alias de `npm explain`) descreve por que um pacote está instalado e qual dep direta o puxa. Ambos são ferramentas de diagnóstico, não de instalação.
+
+O algoritmo de resolução do npm (chamado **Arborist** desde o npm v7) usa um modelo de resolução de satisfação de restrições: tenta encontrar o conjunto de versões que satisfaz todas as restrições declaradas no grafo simultaneamente. Quando não consegue (conflito real), ele instala cópias em subpastas aninhadas de `node_modules` — o modelo "nested" que o Node.js suporta por design desde a criação do sistema de módulos CommonJS.
+
 ---
 
 ## O lockfile: congelando o grafo
@@ -287,8 +309,18 @@ packages:
 
 O Bun v1.2 (início de 2025) mudou o lockfile padrão de binário (`bun.lockb`) para texto (`bun.lock`), tornando-o legível e diffável no git. O Bun migra automaticamente lockfiles de outros package managers ao rodar `bun install`. O formato usa arrays posicionais para compactar dados (o que o torna frágil para parsers externos, mas eficiente).
 
+### yarn.lock (Yarn Classic vs. Berry)
+
+O Yarn tem dois formatos distintos: o Yarn Classic (v1, ainda comum em projetos mais antigos) usa um formato de texto proprietário (não JSON, não YAML); o Yarn Berry (v2+) usa o mesmo formato de texto, mas a estrutura interna mudou e os dois são incompatíveis. O Yarn Berry com PnP (Plug'n'Play) nem usa `node_modules` — armazena pacotes em `.yarn/cache` como ZIPs e usa um resolver de módulos customizado. Isso elimina o hoisting e a duplicação, mas exige compatibilidade dos pacotes com o modo PnP.
+
 > [!info] Commitar o lockfile é regra, não opção
 > O lockfile deve sempre ser commitado no repositório. Sem ele, cada `npm install` pode resolver o grafo diferentemente. A única exceção são bibliotecas publicadas no npm: seu lockfile é irrelevante para quem instala a lib (eles têm seu próprio grafo e lockfile).
+
+### npm v10 e v11: o que mudou nos lockfiles recentes
+
+O npm v10 (Node.js 18+, 2023) e o npm v11 (Node.js 20+, 2024) mantiveram o formato `lockfileVersion: 3`, mas introduziram melhorias no Arborist: resolução mais rápida (~30% em grafos grandes), melhor detecção de ciclos, e suporte a `overrides` aninhados (`"pkg-a>lodash": "^4.17.21"` para forçar versão só em deps de `pkg-a`). A partir do npm v10, `npm audit` também verifica as deps listadas em `overrides` — antes elas eram opacas para o auditor.
+
+Fonte: [npm v10 release notes](https://github.com/npm/cli/releases/tag/v10.0.0) e [npm v11 changelog](https://github.com/npm/cli/blob/latest/CHANGELOG.md).
 
 ---
 
@@ -499,6 +531,20 @@ npm outdated
 npm audit
 ```
 
+> [!tip] Lendo o output do npm audit
+> O `npm audit` cruza as versões no lockfile com o banco de vulnerabilidades do Advisory Database. A saída mostra:
+> - **severity**: `critical`, `high`, `moderate`, `low` — priorize `critical` e `high`
+> - **via**: o caminho no grafo — se a vuln está em uma dep transitiva, mostra qual dep direta a puxa
+> - **fix available**: se `npm audit fix` pode resolver automaticamente (via update dentro do range) ou se precisa de `--force` (update que quebra semver)
+>
+> ```bash
+> npm audit fix          # aplica fixes que respeitam os ranges do package.json
+> npm audit fix --force  # aplica updates de MAJOR — pode quebrar a API; revisar depois
+> npm audit --json       # output em JSON para integrar com CI ou scripts
+> ```
+>
+> Nunca rode `npm audit fix --force` cegamente em produção. Verifique o diff do lockfile e rode os testes antes.
+
 ---
 
 ## Ferramentas de atualização automática: Renovate e Dependabot
@@ -527,6 +573,104 @@ graph LR
 
 > [!tip] Regra de ouro: mantenha deps atualizadas regularmente
 > Deixar deps acumular durante meses transforma cada atualização em um risco. Bots de atualização + CI rigoroso tornam as atualizações frequentes e pequenas — menos risco, menos dor.
+
+---
+
+## A perspectiva júnior vs. sênior
+
+Esse é um dos temas em que a diferença de maturidade aparece de forma clara — não no conhecimento dos comandos, mas no julgamento sobre quando e como usá-los.
+
+**O júnior** tende a tratar o lockfile como arquivo de "configuração interna", muitas vezes excluído do `.gitignore` por engano ou por instrução de tutorial desatualizado. Quando o CI quebra por versão de dep, a reação instintiva é rodar `npm install --force` e torcer. `--legacy-peer-deps` vira solução padrão porque "funcionou". O `npm update` é usado livremente, sem entender o que mudou no grafo.
+
+**O sênior** mantém uma relação diferente com o lockfile: ele é um artefato de segurança tanto quanto de reprodutibilidade. Antes de aprovar um PR que "só atualiza deps", o sênior verifica `git diff package-lock.json` para entender *quais* transitivas mudaram — porque foi exatamente assim que uma vulnerabilidade entrou no Polyfill.io em 2024 (mudança de mantenedor + pacote comprometido). Ele reserva `overrides` para emergências, documenta o motivo no código, e planeja a remoção. Quando `--legacy-peer-deps` é necessário, abre uma issue para rastrear a dívida técnica.
+
+A diferença central: o júnior pensa em *pacotes como itens de lista*; o sênior pensa em *grafos como contratos entre equipes*.
+
+> [!tip] O sinal de maturidade em entrevista
+> Uma pergunta eficaz de senior screen: *"Você recebeu um alerta de CVE crítico numa dep transitiva às 23h. O mantenedor não responde. O que você faz?"* A resposta esperada articula a cadeia: `npm audit --json` para confirmar o CVE, `npm ls <pacote>` para mapear quem puxa aquela dep, `overrides` para fixar a versão corrigida, commit do lockfile atualizado, CI verde, PR revisado, issue aberta no upstream. O júnior responde "atualizo a versão" sem saber que não é uma dep direta.
+
+---
+
+## Casos práticos
+
+### Cenário 1: o bug que só aparecia na máquina do CI
+
+**Contexto**: Uma startup de fintech com time de 8 devs. O build passava localmente para todos os três desenvolvedores que trabalharam na feature. Ao chegar no CI (GitHub Actions), os testes de integração quebravam com `TypeError: Cannot read properties of undefined (reading 'format')`.
+
+**Diagnóstico**: O lockfile não estava commitado no repositório (excluído do `.gitignore` por um tutorial antigo de 2018). Localmente, os três devs tinham instalado em datas diferentes — e a versão resolvida de `date-fns` variava entre `2.29.3` e `2.30.0`. A `2.30.0` mudou a assinatura de uma função utilitária de forma silenciosa (breaking change em MINOR — violação do semver pelo mantenedor). O CI sempre instalava a mais recente.
+
+**Solução**: commitar o lockfile, usar `npm ci` no pipeline, e adicionar `date-fns` à lista de monitoramento do Renovate. Custo total: ~6h de debugging.
+
+**Lição**: o lockfile não é opcional — é o contrato que garante que o CI testa exatamente o que você desenvolveu.
+
+---
+
+### Cenário 2: a atualização que quebrou o bundle de produção
+
+**Contexto**: Um time de e-commerce rodando React 17. O Dependabot abriu um PR de rotina atualizando `react-scripts` de `5.0.0` para `5.0.1`. O merge foi aprovado sem revisão detalhada do lockfile diff (era "só um patch").
+
+**Diagnóstico**: `react-scripts@5.0.1` atualizou uma dep transitiva interna — `webpack` — de `5.74.0` para `5.75.0`. Essa versão do webpack tinha uma regressão no tree-shaking que aumentou o bundle de produção em 340KB e introduziu um bug de carregamento de chunk no Safari 15.
+
+**Solução**: reverter para o lockfile anterior via `git revert`, adicionar `overrides.webpack` no `package.json` fixando `5.74.0`, abrir issue no webpack. O Renovate (que o time adotou depois) teria capturado isso via `packageRules` com `automergeType: "pr"` e review obrigatório para mudanças de build tools.
+
+**Lição**: patches não são sempre inofensivos. Revisar o diff do lockfile antes de fazer merge — especialmente em ferramentas de build — é hábito de sênior.
+
+---
+
+### Cenário 3: dependency hell em monorepo React + plugin legacy
+
+**Contexto**: Um SaaS B2B migrava de React 17 para React 18. Tinha 47 dependências diretas, incluindo `react-beautiful-dnd` (arraste-e-solte), que declarava `peerDependencies: react@^16.8.0 || ^17.0.0` — sem suporte a React 18.
+
+**Diagnóstico**: `npm install` com React 18 falhava com conflito de peer dep. A opção `--legacy-peer-deps` "funcionava" mas introduzia duas instâncias de React no bundle (a do projeto + a que `react-beautiful-dnd` carregava de forma implícita), causando o erro clássico: `Warning: Invalid hook call. Hooks can only be called inside of the body of a function component`.
+
+**Solução**: migrar para `@hello-pangea/dnd` (fork com suporte React 18 mantido pela comunidade), seguindo o padrão documentado na [migração oficial](https://github.com/hello-pangea/dnd/blob/main/docs/about/react-18.md). Isso eliminou o conflito de peer deps e a instância duplicada de React.
+
+**Lição**: `--legacy-peer-deps` mascara o problema; a solução real é migrar para versão compatível ou fork ativo. `peerDependencies` com ranges desatualizados são dívida técnica visível — o `npm audit` não captura isso, mas o `npm ls` mostra.
+
+---
+
+### Cenário 4: CVE crítico em dep transitiva — resposta de produção
+
+**Contexto**: Julho de 2021. Um time recebe alerta do Dependabot: `CVE-2021-3807` em `ansi-regex@3.0.0` (ReDoS — expressão regular catastrófica). Nenhum dev tinha instalado `ansi-regex` diretamente.
+
+**Diagnóstico**:
+```bash
+npm ls ansi-regex
+# meu-projeto@1.0.0
+# └── jest@27.0.6
+#     └── jest-worker@27.0.6
+#         └── supports-color@8.1.1
+#             └── ansi-regex@3.0.0  ← quatro níveis abaixo
+```
+
+O pacote estava quatro níveis abaixo no grafo. A versão corrigida era `ansi-regex@5.0.1`.
+
+**Solução**:
+```json
+// package.json
+{
+  "overrides": {
+    "ansi-regex": ">=5.0.1"
+  }
+}
+```
+Rodar `npm install` para regenerar o lockfile com a versão fixada, verificar com `npm ls ansi-regex` que todas as instâncias apontam para `5.0.1`, commitar, abrir PR documentando o CVE e o override. O override foi removido três semanas depois quando `jest` publicou nova versão com a dep atualizada.
+
+**Lição**: overrides são a ferramenta certa para CVEs em deps transitivas. A chave é: (1) usar `npm ls` para confirmar o caminho no grafo, (2) documentar o override com o número do CVE, (3) rastrear a remoção futura.
+
+---
+
+## O que vem a seguir
+
+Você agora entende o contrato do semver, sabe como o npm resolve o grafo de dependências, e tem as ferramentas para diagnosticar e resolver conflitos. Mas há uma camada que vai além do gerenciamento de versões: o que garante que um pacote no registry é o que o mantenedor publicou?
+
+O hash `integrity` no lockfile é a primeira linha de defesa — mas a cadeia de supply chain é mais longa. [[24 - Supply chain e segurança de dependências]] explora o que acontece quando a conta do npm de um mantenedor é comprometida (caso `event-stream`, 2018), quando um pacote popular é "abandonado" e transferido para atores maliciosos (caso `ua-parser-js`, 2021), e como mecanismos como **npm provenance** (2023), **Sigstore** e **Socket.dev** adicionam camadas de verificação além do hash.
+
+O outro caminho natural é entender o que acontece com essas dependências no momento do build. [[23 - Build em produção, CI e determinismo]] conecta o grafo de deps com a reprodutibilidade do artefato de produção: como o cache do CI usa o lockfile como chave de hash, por que `npm ci` é mais rápido que `npm install` em pipelines, e como garantir que dois builds do mesmo commit produzam bytes idênticos.
+
+E para quem trabalha com monorepos — onde o grafo de dependências se multiplica por cada workspace — [[03 - Package managers - npm, pnpm, yarn e Bun]] explora como o store virtual do pnpm elimina duplicatas fisicamente no disco, como o `workspace:` protocol funciona, e por que hoisting em monorepos é uma fonte própria de bugs sutis.
+
+O semver é a gramática. O lockfile é a memória. O grafo é a estrutura. Juntos, eles são o que torna possível que milhares de equipes independentes publiquem código que pode ser combinado de forma confiável — na maior parte do tempo.
 
 ---
 
@@ -594,9 +738,10 @@ A **lockfile** (`package-lock.json`, `pnpm-lock.yaml`, `bun.lock`) is a snapshot
 
 ## Veja também
 
-- [[03 - Package managers - npm, pnpm, yarn e Bun]] — os modelos de `node_modules`, o store do pnpm, corepack; o "como instalar" antes do "o que instala"
-- [[24 - Supply chain e segurança de dependências]] — integridade de lockfile, `npm audit`, provenance, typosquatting; o que o hash `integrity` do lockfile protege
-- [[23 - Build em produção, CI e determinismo]] — build reprodutível, cache de CI, artefatos, env/secrets; o `npm ci` em contexto completo de pipeline
+- [[03 - Package managers - npm, pnpm, yarn e Bun]] — os modelos de `node_modules`, o store do pnpm, corepack; o "como instalar" antes do "o que instala". Ver também: como o Corepack gerencia versões do próprio package manager via `packageManager` no `package.json` — um meta-semver.
+- [[24 - Supply chain e segurança de dependências]] — integridade de lockfile, `npm audit`, provenance, typosquatting; o que o hash `integrity` do lockfile protege e onde ele falha (o caso Polyfill.io, 2024).
+- [[23 - Build em produção, CI e determinismo]] — build reprodutível, cache de CI, artefatos, env/secrets; o `npm ci` em contexto completo de pipeline e como o lockfile é a chave de cache.
+- [[04 - Monorepos com Turborepo e Nx]] — como o protocolo `workspace:` do pnpm e as `workspaceProtocol` do Yarn funcionam num monorepo; hoisting de deps em monorepos e por que `shamefully-hoist` existe.
 
 ---
 
@@ -609,3 +754,8 @@ A **lockfile** (`package-lock.json`, `pnpm-lock.yaml`, `bun.lock`) is a snapshot
 > 6. **Andrew Nesbitt** — *Lockfile Format Design and Tradeoffs* (2026). Disponível em: https://nesbitt.io/2026/01/17/lockfile-format-design-and-tradeoffs.html
 > 7. **npm Docs** — *npm-dedupe* (algoritmo de hoisting e deduplicação). Disponível em: https://docs.npmjs.com/cli/v11/commands/npm-dedupe/
 > 8. **Mend** — *Renovate vs. Dependabot* comparação de capacidades 2026. Disponível em: https://docs.renovatebot.com/bot-comparison/
+> 9. **npm Blog** — *npm v7 is now generally available* (mudanças no comportamento de peerDependencies e introdução do Arborist). Disponível em: https://github.blog/open-source/npm/npm-v7-series-arborist-deep-dive/
+> 10. **GitHub Advisory Database** — *CVE-2021-3807: ansi-regex ReDoS* (2021). Disponível em: https://github.com/advisories/GHSA-93q8-gq69-wqmw
+> 11. **Socket.dev Blog** — *Polyfill supply chain attack* (compromisso do domínio polyfill.io por novo proprietário chinês, 2024). Disponível em: https://socket.dev/blog/polyfill-io-supply-chain-attack
+> 12. **npm Docs** — *npm-overrides* (semântica de overrides aninhados, suporte a path selectors). Disponível em: https://docs.npmjs.com/cli/v11/configuring-npm/package-json#overrides
+> 13. **hello-pangea/dnd** — *Migrating from react-beautiful-dnd to @hello-pangea/dnd* (fork com suporte React 18). Disponível em: https://github.com/hello-pangea/dnd/blob/main/docs/about/react-18.md

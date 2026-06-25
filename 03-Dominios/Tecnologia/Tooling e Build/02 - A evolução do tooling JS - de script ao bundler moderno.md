@@ -1,7 +1,7 @@
 ---
 title: "A evolução do tooling JS - de script ao bundler moderno"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
 status: seedling
@@ -575,6 +575,22 @@ flowchart TB
 
 ---
 
+## Armadilhas comuns
+
+> [!warning] Confundir task runner com bundler
+> Grunt e Gulp não entendem o grafo de módulos — eles só orquestram tarefas. Se você inclui um Gulpfile num projeto moderno e espera que ele resolva imports, vai se decepcionar. A concatenação de Gulp é **burra**: ela junta arquivos na ordem que você definir, sem verificar dependências. Para resolver imports, você precisa de um bundler (webpack, Vite, esbuild).
+
+> [!warning] Acreditar que "ESM nativo em dev = ESM em produção"
+> O Vite serve módulos via ESM nativo no browser durante o desenvolvimento — mas a build de produção (com Rollup/Rolldown) gera um bundle concatenado e otimizado, que é bem diferente do que o browser recebeu em dev. Isso cria um gap: código que funciona em dev pode falhar em produção se depender de comportamentos específicos do servidor de dev do Vite (como tratamento de `import.meta.env`, resolução de aliases ou plugins que transformam assets de forma diferente). **Sempre teste a build de produção antes de mergear.**
+
+> [!warning] Assumir que o webpack está "morto"
+> Com 35 milhões de downloads semanais em 2026 e a adoção ubíqua em projetos legados, o webpack ainda é a ferramenta que você vai encontrar na maioria dos jobs sênior. Mais: Module Federation — o caso de uso de micro-frontends — ainda tem o webpack como implementação de referência mais madura. Discord, por exemplo, explicitamente justificou não migrar para Vite em dezembro de 2025 citando a maturidade do Module Federation no webpack. Saber ler e modificar um `webpack.config.js` é habilidade de produção, não curiosidade histórica.
+
+> [!warning] Tratar o histórico de módulos como irrelevante
+> Em 2026, você ainda vai encontrar pacotes no npm distribuídos em CJS puro (sem campo `exports`, sem suporte a `"type": "module"`). O Vite e o Node.js moderno tentam compatibilizar — mas quando falham, você precisa entender a diferença entre CJS e ESM para diagnosticar. "Funcionou no Vite dev mas quebrou no build" ou "require is not defined" são erros que exigem que você saiba de onde vem cada sistema de módulos. Veja [[06 - ESM e CJS e o sistema de módulos]] para o diagnóstico completo.
+
+---
+
 ## O fio narrativo: por que cada geração existiu
 
 Olhando para trás, é tentador ver a evolução como um progresso linear óbvio. Mas cada ferramenta foi criada por pessoas resolvendo problemas reais que sentiam na pele — não por visão abstrata do futuro.
@@ -602,6 +618,98 @@ Três tensões recorrentes moldaram cada geração:
 2. **Desenvolvimento vs. produção**: as necessidades são opostas. Em dev, você quer velocidade de iteração — HMR cirúrgico, sem rebuild de bundle. Em prod, você quer otimização — tree-shaking, minificação, code splitting, hashes de conteúdo para cache. Vite foi o primeiro a tornar essa separação explícita e elegante.
 
 3. **JavaScript compila JavaScript**: compiladores escritos em JavaScript têm um limite físico de velocidade. Node.js é rápido para um interpretador, mas é ordem de magnitude mais lento que código compilado nativo. Quando os projetos cresceram além de um certo tamanho, reescrever em Go ou Rust foi a única saída que mantinha DX aceitável.
+
+---
+
+## Casos práticos: o que cada geração resolve em produção
+
+Teoria só faz sentido quando você vê ela quebrando ou funcionando num projeto real. Abaixo, quatro cenários concretos que ilustram por que as escolhas de tooling importam — com números reais de equipes que fizeram a transição.
+
+### Cenário 1: startup de dev server de 12 s para 800 ms (Shopify, 2024–2025)
+
+A equipe de engenharia da Shopify migrou vários projetos internos de webpack para Vite entre 2024 e 2025. O resultado: dev server startup caindo de ~12 segundos para menos de 800 milissegundos no Hydrogen (o framework React deles). Em escala de 240 repositórios, a mediana de boot melhorou 7 segundos e o tempo de CI caiu 41%.
+
+O que explica esse salto? Não é magia — é a arquitetura ESM-first do Vite. Com webpack, cada vez que você iniciava o dev server, ele **bundlava tudo antes de servir qualquer coisa**: criava o grafo de dependências inteiro, aplicava loaders, gerava um bundle enorme em memória. Com Vite, o dev server sobe primeiro e **serve os módulos sob demanda** — o browser só pede (e o Vite só processa) o que a página atual precisa. Num projeto com 200 arquivos, webpack processa os 200 no boot; Vite processa talvez 15.
+
+**Lição para entrevistas**: saber articular *por que* o Vite é mais rápido em dev (lazy bundling via ESM + pre-bundling de deps com esbuild) é mais valioso do que saber que ele é mais rápido.
+
+### Cenário 2: build de produção de 46 s para 6 s (Linear, migração para Rolldown, 2026)
+
+O Linear (ferramenta de gestão de projetos) foi um dos early adopters do Rolldown como motor de produção do Vite 8. O resultado: build time caindo de 46 segundos para 6 segundos — redução de 87%. Ramp reportou -57%, Beehiiv -64%.
+
+O que muda? Rolldown é um bundler Rust que rodar paralelamente em múltiplos threads, sem o overhead do event loop do Node.js. O Rollup (predecessor) processava o grafo de módulos sequencialmente em JavaScript. Em projetos com milhares de módulos, a diferença é de ordens de magnitude.
+
+**Lição para entrevistas**: benchmarks de bundler dependem muito do tamanho e topologia do grafo. Para projetos pequenos (< 100 módulos), webpack e Vite+Rollup já são rápidos o suficiente. O gargalo aparece conforme o projeto cresce. Mencionar isso diferencia um desenvolvedor sênior de um que só repetiu número de benchmark.
+
+### Cenário 3: "não migramos porque precisamos de Module Federation" (Discord, 2025)
+
+Em dezembro de 2025, o time de engenharia do Discord publicou internamente os motivos pelos quais ainda não haviam migrado do webpack para Vite: a maturidade do Module Federation no webpack não tinha equivalente estável no ecossistema Vite/Rolldown. Module Federation permite que aplicações separadas compartilhem módulos em runtime (sem rebundlar) — é o padrão para micro-frontends em larga escala.
+
+A partir de abril de 2026, o Module Federation 2.0 atingiu estabilidade com suporte ao Rspack e suporte experimental ao Vite. Mas para quem já tinha Module Federation maduro em webpack, a migração ainda exige validação extensiva.
+
+**Lição para entrevistas**: a pergunta "Vite ou webpack?" não tem resposta universal. A resposta correta começa com "depende — você tem micro-frontends com Module Federation?". Demonstrar que você conhece esse trade-off é diferencial sênior.
+
+### Cenário 4: Cloudflare padroniza em Vite (2025–2026)
+
+A Cloudflare padronizou o Vite como bundler recomendado para projetos Workers em 2025, publicando plugins de primeira classe para Pages, Workers e Workers Sites. A equipe interna do Workers Builds reportou redução de 6,2x no tempo médio de build após migrar os templates de referência de wrangler v2 (webpack) para wrangler v4 (Vite), no início de 2026.
+
+**Lição para entrevistas**: o Vite não é "apenas para front-end no browser". Ele está se tornando o padrão de build para edge computing e serverless também — o que expande o contexto onde você precisa conhecê-lo.
+
+---
+
+## Profundidade: trade-offs, edge cases e o que o júnior não vê
+
+Esta seção existe para calibrar uma distinção importante: saber *que* o webpack é lento e o Vite é rápido é conhecimento de nível iniciado. Saber *quando* e *por que* essa afirmação é falsa — isso é conhecimento sênior.
+
+### Trade-off 1: velocidade de dev vs. fidelidade do ambiente de prod
+
+O maior risco arquitetural do Vite é o **gap dev↔prod**. Em dev, o browser recebe ESM nativo — cada arquivo é um módulo HTTP separado. Em prod, o Rolldown (ou Rollup) gera um bundle onde os módulos foram transformados. Isso significa:
+
+- Plugins que se comportam diferente em dev vs. prod podem gerar bugs silenciosos
+- Imagens e assets processados diferente em dev vs. prod
+- Variáveis de ambiente (`import.meta.env`) resolvidas em momentos diferentes do pipeline
+
+**A regra prática**: nunca declarar uma feature "pronta" sem rodar `vite build && vite preview`. O `vite preview` serve a build de produção localmente e é o ambiente mais próximo do que o usuário vai ver.
+
+### Trade-off 2: configuração webpack complexa vs. ecosistema de plugins Vite
+
+O webpack tem um ecossistema de plugins e loaders maduro, com soluções estabelecidas para edge cases obscuros (arquivos .ejs no bundle, assets legados, worker threads, workers em SharedArrayBuffer). O Vite tem plugins para os 90% mais comuns, mas o 10% restante pode forçar você a escrever um plugin customizado — o que exige entender a API de plugins do Rollup.
+
+**O sinal de alerta**: se você está escrevendo um plugin Vite customizado complexo para reproduzir um comportamento que o webpack fazia nativamente, questione se a migração faz sentido agora.
+
+### Trade-off 3: CommonJS puro em node_modules
+
+O Vite pré-bundla dependências CJS usando esbuild — mas alguns pacotes têm comportamentos que o esbuild não consegue transpor fielmente (como `require()` dinâmico com expressões variáveis, circular dependencies com side effects específicos, ou uso de `__dirname`/`__filename` de formas não convencionais). O erro mais comum é `[plugin vite:dep-scan] Failed to resolve import "..."` — e o diagnóstico exige saber a diferença entre CJS e ESM. Veja [[06 - ESM e CJS e o sistema de módulos]].
+
+### Edge case: "funciona em dev, quebra em build de produção"
+
+Este é o bug de tooling mais irritante e mais comum em projetos Vite. As causas mais frequentes:
+
+1. **Import dinâmico com variáveis**: `import(path)` onde `path` é calculado em runtime — o Rollup não consegue fazer análise estática e pode omitir o módulo do bundle
+2. **Dependência não listada em `dependencies`**: disponível em dev (via `node_modules` hoisting) mas não em prod se o bundler for mais estrito
+3. **CSS Modules com nomes de classe em camelCase**: o Vite em dev não transforma, mas o Rollup em prod pode — resultado: `.myClass` em dev vs. `styles["my-class"]` em prod
+
+---
+
+## O que vem a seguir
+
+Esta nota é a visão de 30.000 pés. Você mapeou *por que* cada ferramenta existiu. Agora a escolha natural é entender *como* cada uma funciona de dentro — e para isso, as notas estão organizadas em sequência deliberada.
+
+**Próximo passo imediato**: se você não tem clareza sobre por que o browser precisa de um bundler (o gap source↔runtime), leia [[01 - Por que tooling e build existem]] antes de continuar — ela é o fundamento conceitual desta nota.
+
+**Sequência recomendada para aprofundar cada geração**:
+
+1. **O sistema de módulos em detalhe** → [[06 - ESM e CJS e o sistema de módulos]] — entenda CJS vs. ESM no nível do runtime, não só da sintaxe. Isso desbloqueia o diagnóstico de 80% dos bugs de bundler.
+2. **O grafo em detalhe** → [[07 - O grafo de módulos e o que é bundling]] — o que é um grafo de dependências, como o bundler o constrói, o que é tree-shaking estático vs. dinâmico.
+3. **As ferramentas legadas** → [[10 - Ferramentas legadas - Grunt, Gulp, Bower, Browserify e RequireJS]] — você vai encontrar Grunt/Gulp em codebases de 2014–2018. Saber ler e manter é diferencial.
+4. **O veterano** → [[11 - webpack - o veterano]] — entry/output/loaders/plugins em detalhe. Obrigatório para qualquer senior que trabalhe com projetos legados ou precisar configurar Module Federation.
+5. **O presente** → [[13 - Vite a fundo]] — como os dois motores (esbuild dev + Rolldown prod) funcionam, como configurar, como escrever plugins.
+6. **A corrida Rust/Go** → [[14 - Rollup, esbuild e Rolldown]] e [[15 - Turbopack, Rspack e a corrida Rust-Go]] — onde o ecossistema está indo e por que a reescrita em linguagens de sistemas foi inevitável.
+
+**Para quem quer a visão de produção completa** (CI, determinismo, otimização de bundle): [[17 - Otimização de bundle]] e [[23 - Build em produção, CI e determinismo]] fecham o ciclo — você sai de "sei o que é bundler" para "consigo configurar um pipeline de build de produção robusto".
+
+> [!tip] Pelo que começar se você tem 30 minutos?
+> Leia [[06 - ESM e CJS e o sistema de módulos]] e depois [[11 - webpack - o veterano]]. Essas duas notas, combinadas com esta, cobrem ~70% do que aparece em entrevistas de tooling nível pleno/sênior.
 
 ---
 
@@ -639,8 +747,34 @@ JavaScript build tooling evolved in generations, each solving the pain left by t
 
 ## Veja também
 
+**Fundação e contexto**
 - [[01 - Por que tooling e build existem]] — o gap source↔runtime em detalhe; o pipeline canônico
+- [[06 - ESM e CJS e o sistema de módulos]] — CJS vs ESM a fundo; diagnóstico de erros de import
+- [[07 - O grafo de módulos e o que é bundling]] — como o bundler constrói o grafo; tree-shaking estático vs dinâmico
+
+**Ferramentas em detalhe**
 - [[10 - Ferramentas legadas - Grunt, Gulp, Bower, Browserify e RequireJS]] — o que eram, estado hoje, substitutos
 - [[11 - webpack - o veterano]] — entry/output/loaders/plugins; por que dominou e por que perde espaço
+- [[12 - Create React App e a era dos scaffolders]] — zero-config como abstração; CRA e o que veio depois
 - [[13 - Vite a fundo]] — dois motores, config, plugins, o modelo ESM-first
+- [[14 - Rollup, esbuild e Rolldown]] — tree-shaking, Go vs Rust, a transição para Rolldown
 - [[15 - Turbopack, Rspack e a corrida Rust-Go]] — bundlers em Rust; webpack-compat; por que o ecossistema migrou de linguagem
+
+**Produção e operação**
+- [[17 - Otimização de bundle]] — code splitting, lazy loading, análise de bundle
+- [[23 - Build em produção, CI e determinismo]] — lockfiles, builds reprodutíveis, CI otimizado
+- [[08 - Transpilação e targets]] — Babel, SWC, oxc, targets de browser
+
+---
+
+## Referências
+
+- [Vite 8.0 is out! — vite.dev](https://vite.dev/blog/announcing-vite8) — anúncio oficial do Vite 8 com Rolldown como motor único (março 2026)
+- [Vite 8 Beta: The Rolldown-powered Vite — vite.dev](https://vite.dev/blog/announcing-vite8-beta) — detalhes técnicos da migração para Rolldown
+- [Vite Version 8: Unified Rust-Based Bundler — InfoQ](https://www.infoq.com/news/2026/05/vite-v8-rust/) — análise independente; benchmarks Linear (46s→6s), Ramp (-57%), Beehiiv (-64%)
+- [Best-in-Class Developer Experience with Vite and Hydrogen — Shopify Engineering](https://shopify.engineering/developer-experience-with-hydrogen-and-vite) — migração do Hydrogen para Vite; dev server 12s→800ms
+- [Migrating from Webpack to Vite: Real-World Lessons — Medium](https://medium.com/@ratchapol.thaworn/migrating-from-webpack-to-vite-real-world-lessons-from-a-production-frontend-project-ea4bb53a9d58) — lições práticas de migração em produção
+- [Module Federation 2.0 Reaches Stable Release — InfoQ](https://www.infoq.com/news/2026/04/module-federation-2-stable/) — MF2 estável no Rspack/Vite em abril 2026; o principal argumento para manter webpack
+- [Vite vs. Webpack for React apps in 2025: A senior engineer's perspective — LogRocket](https://blog.logrocket.com/vite-vs-webpack-react-apps-2025-senior-engineer/) — comparação de trade-offs por perspectiva sênior
+- [Cloudflare Buys VoidZero: Vite 8, Rolldown & What Changes — nexgismo.com](https://www.nexgismo.com/blog/cloudflare-voidzero-vite-8-rolldown-guide-2026-3) — aquisição da VoidZero pela Cloudflare e impacto no Vite/Rolldown
+- [Vite vs Webpack 2026: Is the Migration Worth It? — PkgPulse Blog](https://www.pkgpulse.com/blog/vite-vs-webpack-2026-migration-worth-it) — análise de custo-benefício da migração em 2026

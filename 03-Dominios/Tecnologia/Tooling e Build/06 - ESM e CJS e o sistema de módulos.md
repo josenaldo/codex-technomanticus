@@ -1,7 +1,7 @@
 ---
 title: "ESM e CJS e o sistema de módulos"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
 status: seedling
@@ -127,6 +127,64 @@ Essa regra das extensões **importa para o tooling**: quando você configura o o
 
 ---
 
+## Importar CJS de dentro do ESM: a ponte mais antiga (e suas pegadinhas)
+
+Antes de falar da ponte nova (`require(esm)`), vale entender a que sempre existiu: ESM pode importar módulos CJS. Mas não sem armadilhas.
+
+Quando você escreve `import algo from 'pacote-cjs'`, o Node precisa expor o `module.exports` do CJS como se fosse um módulo ESM. Ele faz isso assim:
+
+- O **`module.exports` inteiro vira o `default` export** do módulo ESM. Isso funciona de forma confiável.
+- **Named exports** (como `import { foo } from 'pacote-cjs'`) dependem de uma análise estática do código CJS — e essa análise tem limites.
+
+```js
+// pacote-cjs.js
+module.exports = {
+  somar: (a, b) => a + b,
+  subtrair: (a, b) => a - b,
+};
+
+// consumidor ESM ✅ confiável
+import cjs from 'pacote-cjs';
+const { somar } = cjs; // destructuring do default
+
+// consumidor ESM ⚠️ funciona SE a análise estática encontrar "somar" e "subtrair"
+import { somar, subtrair } from 'pacote-cjs';
+```
+
+### O cjs-module-lexer e seus limites
+
+O Node usa internamente o projeto [`cjs-module-lexer`](https://github.com/nodejs/cjs-module-lexer) para tentar detectar os named exports de um módulo CJS sem executá-lo. Ele procura padrões como `exports.foo = ...` e `module.exports = { foo, bar }` no texto do arquivo.
+
+O problema: o análise é **heurística e conservadora**. Se os exports são construídos dinamicamente (via loop, `Object.assign`, `Proxy`, ou qualquer padrão não reconhecido pelo lexer), o Node só enxerga o `default` — e os named exports não aparecem.
+
+```js
+// pacote com exports dinâmicos — o lexer NÃO consegue detectar named exports
+const keys = ['alpha', 'beta', 'gamma'];
+keys.forEach(k => { exports[k] = () => k; });
+// ESM só vê: import pkg from 'pacote'; pkg.alpha()
+// import { alpha } from 'pacote' → undefined (silencioso ou erro de tipo)
+```
+
+> [!warning] Named imports de CJS: não confie sem verificar
+> Se você está importando um pacote CJS antigo com `import { algo }` e `algo` aparece como `undefined`, provavelmente o lexer não conseguiu detectar o export. A solução segura é `import pkg from 'pacote'; const { algo } = pkg;`. Ferramentas como esbuild e Rollup têm análise própria mais sofisticada, mas o comportamento nativo do Node é o cjs-module-lexer.
+
+```mermaid
+flowchart LR
+    CJS["módulo CJS\nmodule.exports = { ... }"]
+    LEXER["cjs-module-lexer\n(análise estática do texto)"]
+    NAMED["named exports detectados\nimport { foo } ✅"]
+    DEFAULT_ONLY["só default export\nimport pkg (destructuring manual) ⚠️"]
+
+    CJS --> LEXER
+    LEXER -->|"exports.foo = ...\nmodule.exports = { foo }"| NAMED
+    LEXER -->|"exports computados\ndinâmicos / Proxy"| DEFAULT_ONLY
+
+    style NAMED fill:#0a2a0a,color:#ddd
+    style DEFAULT_ONLY fill:#2a1500,color:#ddd
+```
+
+---
+
 ## require(esm): a ponte que finalmente chegou
 
 Durante anos, a única ponte entre os dois mundos era unidirecional: ESM podia importar CJS (`import` de um arquivo CJS funciona no Node), mas CJS não podia importar ESM (um `require()` de um arquivo ESM lançava erro).
@@ -162,6 +220,79 @@ const { config } = require('./modulo-com-await.mjs'); // ❌ ERRO em runtime
 > Com `require(esm)` estável, uma lib que publica **apenas ESM** já pode ser consumida por código CJS em Node 20.19+/22.12+. Isso significa que, para bases de código novas ou que controlam seu ambiente Node, publicar ESM-only é uma opção legítima — sem abandonar usuários CJS. A análise dos 5.000 pacotes npm mais populares mostrou que menos de 0,02% têm top-level await indispensável que impediria esse caminho.
 
 Mas há um "mas": se você precisa suportar Node 16, 18, ou 20 antes da v20.19.0, `require(esm)` não está disponível. Para esses casos, o dual package ainda é a resposta.
+
+### Top-level await em profundidade: por que ele quebra o require(esm)
+
+O top-level await (`await` fora de qualquer `async function`, diretamente no corpo do módulo) é uma das features mais transformadoras do ESM — e o motivo exato pelo qual `require(esm)` tem essa condição inegociável de "módulo síncrono".
+
+Quando um módulo ESM tem top-level await, ele vira essencialmente uma Promise que precisa ser resolvida antes do módulo estar disponível. O runtime ESM lida com isso de forma assíncrona: pausa a avaliação do módulo pai enquanto espera, usando a fila de microtasks. Um `require()` síncrono não tem como entrar nessa fila — ele bloqueia a thread de forma síncrona.
+
+```js
+// ✅ Top-level await: casos de uso legítimos
+
+// 1. Inicialização condicional por plataforma
+const fs = await import(
+  process.platform === 'win32' ? 'node:fs/win32' : 'node:fs'
+);
+
+// 2. Carregar configuração de banco antes de exportar o cliente
+const config = await fetch('https://config.example.com/db').then(r => r.json());
+export const db = new DatabaseClient(config);
+
+// 3. Fallback com import() dinâmico
+const sharp = await import('sharp').catch(() => null);
+export const processImage = sharp
+  ? (buf) => sharp(buf).resize(800).toBuffer()
+  : (buf) => buf; // fallback sem processamento
+```
+
+> [!warning] Top-level await é um "contrato de assincronicidade" com quem importa
+> Se o seu módulo tem top-level await, **todo módulo que o importar** também espera — de forma transitiva. É como um vírus assíncrono: um módulo com `await` no topo "contamina" a cadeia de imports. Para libs, isso é um odor de design: você está impondo latência de inicialização para todos os consumidores, mesmo os que não precisam da parte assíncrona.
+>
+> A alternativa mais limpa: inicialize de forma lazy (na primeira chamada da função, não no corpo do módulo). Assim o consumidor paga o custo só quando precisa.
+
+```js
+// ❌ Evitar em libs: top-level await em módulo shared
+const config = await loadConfig(); // bloqueia todos os importadores
+export const client = createClient(config);
+
+// ✅ Preferir: lazy initialization
+let _client;
+export async function getClient() {
+  if (!_client) _client = createClient(await loadConfig());
+  return _client;
+}
+```
+
+### A condição `module-sync`: o elo perdido
+
+Com `require(esm)` estável, surgiu uma nova condição de export: **`"module-sync"`**. Ela serve como um sinal explícito de que o módulo ESM apontado **não tem top-level await** — e portanto é seguro para `require()`.
+
+```json
+{
+  "exports": {
+    ".": {
+      "module-sync": "./dist/index.js",   ← ESM síncrono (safe para require(esm))
+      "import":      "./dist/index.js",   ← ESM (qualquer Node com suporte)
+      "require":     "./dist/index.cjs",  ← CJS fallback
+      "default":     "./dist/index.js"
+    }
+  }
+}
+```
+
+A lógica de quem usa cada condição:
+
+| Quem resolve | Condição escolhida | Arquivo recebido |
+|---|---|---|
+| `import` ou `import()` em Node moderno | `import` | ESM |
+| `require()` em Node 20.19+/22.12+ | `module-sync` | ESM (síncrono) |
+| `require()` em Node mais antigo | `require` | CJS |
+
+Isso resolve o dual package hazard de forma elegante: em vez de dois arquivos (um ESM, um CJS), o estado vive só no ESM. O CJS é um fallback para runtimes antigos, não o caminho principal.
+
+> [!info] `module-sync` é o futuro da transição
+> Pacotes como React Router já adotaram `module-sync` no `exports`. O benefício: em Node 22.12+, `import` e `require` do mesmo pacote carregam o **mesmo arquivo ESM** — o cache do módulo é compartilhado, e o dual package hazard desaparece por design. Joyee Cheung (core do Node.js) recomenda `module-sync` como o padrão para qualquer lib que possa garantir ausência de top-level await. [Fonte: blog da autora, 2025-12-30](https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-from-experiment-to-stability/)
 
 ---
 
@@ -243,6 +374,28 @@ Uma lib pode expor vários caminhos:
 ```
 
 Cada chave que começa com `"."` é um sub-path export. O consumidor pode escrever `import { debounce } from 'minha-lib/utils'` e o Node entrega o arquivo certo — sem acessar nada que não foi explicitamente exposto.
+
+### Subpath patterns: wildcards para libs com muitos entry points
+
+Para libs com dezenas de sub-paths (component libraries, icon packs, utilitários modulares), listar cada caminho individualmente inflaria o `package.json`. O Node suporta **subpath patterns** com o caractere `*`:
+
+```json
+{
+  "exports": {
+    ".": "./dist/index.js",
+    "./components/*": "./dist/components/*.js",
+    "./icons/*": {
+      "import": "./dist/icons/*.js",
+      "require": "./dist/icons/*.cjs"
+    }
+  }
+}
+```
+
+O consumidor pode escrever `import Button from 'minha-lib/components/Button'` e o Node substitui `*` por `Button`, entregando `./dist/components/Button.js`. O mesmo padrão de `*` aparece nos dois lados da mapping — e o valor à direita recebe o mesmo segmento capturado à esquerda.
+
+> [!warning] Restrições dos wildcards
+> O `*` captura tudo, inclusive separadores de path (`/`). Mas o Node bloqueia caminhos que contenham `..`, `.`, ou `node_modules` na parte substituída — é uma proteção contra path traversal. Se você expõe `"./utils/*"`, um atacante não consegue escrever `'minha-lib/utils/../../../etc/passwd'`.
 
 ---
 
@@ -329,8 +482,9 @@ flowchart TD
 
 **Como evitar**:
 1. **Stateless-first**: desenhe sua lib sem estado global de módulo quando possível.
-2. **Wrapper CJS sobre ESM** (o padrão mais limpo em Node 20.19+/22.12+): publique apenas ESM, e se precisar de CJS, faça o CJS ser um wrapper fino que re-exporta do ESM via `require(esm)`. O estado vive em um lugar só.
-3. **ESM-only** se o ambiente suporta: deixe o consumidor usar `import()` dinâmico se precisar de compatibilidade.
+2. **`module-sync` + ESM-only** (o padrão mais limpo em Node 20.19+/22.12+): publique apenas ESM, exponha a condição `"module-sync"` para sinalizar que é síncrono. `require()` e `import` carregam o mesmo arquivo — mesma instância, sem hazard.
+3. **Wrapper CJS sobre ESM**: se o ambiente não garante Node 20.19+, faça o CJS ser um wrapper fino que re-exporta do ESM via `require(esm)`. O estado vive em um lugar só.
+4. **ESM-only com `import()` dinâmico**: deixe o consumidor CJS usar `import()` assíncrono se precisar de compatibilidade total — pagando custo de assincronicidade.
 
 ---
 
@@ -645,12 +799,47 @@ Bundlers use **conditions** — a set of string hints — when resolving `export
 > [!warning] Armadilha 6: `module` e `browser` são campos não-padronizados
 > `"module"` no `package.json` (apontando para o build ESM) não é um campo Node padrão — é uma convenção que bundlers adotaram. O Node ignora. O webpack 5 não adiciona `"module"` nas suas conditions de `exports`. Rollup e esbuild adicionam. Para comportamento consistente, use `"exports"` com conditional exports explícitos e não dependa de `"module"`.
 
+> [!warning] Armadilha 7: `module-sync` pode causar hazard com libs que ainda publicam dual
+> A condição `module-sync` resolve o hazard quando a lib só publica ESM. Mas se a lib publica dual (ESM + CJS) **e** inclui `module-sync`, o resultado depende de como o consumidor e a lib se encaixam. Em testes com Vitest + React Router, Node 22.12+ carregava o `module-sync` (ESM), enquanto ambientes mais antigos carregavam o CJS — duas instâncias em contextos distintos de um mesmo processo de teste. Diagnóstico: inspecione o módulo cache com `require.cache` ou adicione logs de inicialização.
+
+---
+
+## Junior vs. Sênior: como pensar sobre módulos em entrevista
+
+Esse é um dos tópicos favoritos de entrevistas técnicas para vagas sênior em frontend/Node. A diferença entre uma resposta mediana e uma resposta forte:
+
+| Nível | O que diz |
+|---|---|
+| **Júnior** | "ESM usa `import/export` e CJS usa `require`. ESM é mais moderno." |
+| **Pleno** | "A diferença principal é static vs. dynamic. ESM permite tree-shaking porque o bundler pode analisar o grafo sem executar. CJS não pode." |
+| **Sênior** | Explica o **motivo da incompatibilidade de timing** (síncrono vs. assíncrono), sabe o que é dual package hazard e quando ele importa, conhece `require(esm)` e suas condições, entende `module-sync`, e sabe como o campo `exports` funciona para bundler e Node separadamente. |
+
+A pergunta-armadilha mais comum: *"Por que um `require()` não pode importar ESM?"* — a resposta rasa é "porque são sistemas diferentes". A resposta sênior é: **porque `require()` é síncrono e ESM é assíncrono por design** — o runtime ESM precisa resolver o grafo completo de módulos antes de avaliar qualquer um, e isso é fundamentalmente incompatível com um sistema que bloqueia a thread esperando o resultado. A exceção (`require(esm)` no Node 20.19+) só funciona porque o Node detecta módulos ESM sem top-level await e os avalia de forma síncrona internamente.
+
+Outra pergunta frequente: *"O que é dual package hazard e quando você se preocupa com ele?"* — a resposta correta inclui: (1) condição de ocorrência (mesma lib, dois formatos, dois `require`/`import` no mesmo processo), (2) sintoma (singletons duplicados, `instanceof` falha), (3) quando não importa (libs stateless), (4) solução moderna (`module-sync` + ESM-only em Node 20.19+).
+
 ---
 
 ## Veja também
 
-- [[07 - O grafo de módulos e o que é bundling]] — como o bundler constrói o grafo de imports e o que acontece depois da resolução
-- [[03 - Package managers - npm, pnpm, yarn e Bun]] — quem instala os pacotes no `node_modules` e como o lockfile afeta a resolução
-- [[14 - Rollup, esbuild e Rolldown]] — bundlers que consomem o grafo de módulos e geram os outputs ESM/CJS
-- [[03-Dominios/Tecnologia/TypeScript/21 - Modules - ESM, CJS e type-only imports|Modules no TypeScript]] — a semântica da linguagem: `import type`, `verbatimModuleSyntax`, `moduleResolution`, extensões `.js` em projetos NodeNext
-- [[03-Dominios/Tecnologia/Node/index|Node]] — runtime de módulos no Node em profundidade: a implementação do algoritmo de resolução, flags, ciclo de vida de módulos
+- [[07 - O grafo de módulos e o que é bundling]] — como o bundler constrói o grafo de imports e o que acontece depois da resolução; tree-shaking depende diretamente do ESM estático desta nota
+- [[03 - Package managers - npm, pnpm, yarn e Bun]] — quem instala os pacotes no `node_modules` e como o lockfile afeta a resolução; hoisting e deduplicação interagem com o dual package hazard
+- [[05 - Semver e o grafo de dependências]] — como versões e o grafo de dependências determinam quantas cópias de uma lib chegam no `node_modules` — fator crítico para o hazard
+- [[08 - Transpilação e targets]] — quando você transpila ESM → CJS (ou vice-versa) e como isso afeta as extensões e o campo `type`
+- [[11 - webpack - o veterano]] — como o webpack 5 resolve `exports`, `mainFields` e condições; divergência do Rollup na condição `"module"`
+- [[13 - Vite a fundo]] — condições ativas no Vite (dev vs. build), `resolve.conditions` customizável, como o Vite lida com `"module-sync"`
+- [[14 - Rollup, esbuild e Rolldown]] — bundlers que consomem o grafo de módulos e geram os outputs ESM/CJS; análise de CJS para named exports no esbuild
+- [[17 - Otimização de bundle]] — tree-shaking profundo depende de módulos ESM estáticos; `sideEffects: false` no `package.json` complementa o campo `exports`
+- [[03-Dominios/Tecnologia/TypeScript/21 - Modules - ESM, CJS e type-only imports|Modules no TypeScript]] — a semântica da linguagem: `import type`, `verbatimModuleSyntax`, `moduleResolution`, extensões `.js` em projetos NodeNext; a condição `"types"` no `exports` conecta os dois mundos
+- [[03-Dominios/Tecnologia/Node/index|Node]] — runtime de módulos no Node em profundidade: a implementação do algoritmo de resolução, flags, ciclo de vida de módulos; cjs-module-lexer e o namespace ESM
+
+## Referências
+
+- [Joyee Cheung — require(esm) in Node.js: from experiment to stability (2025-12-30)](https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-from-experiment-to-stability/) — artigo definitivo da autora da feature sobre o histórico, limitações e `module-sync`
+- [Node.js 22.12.0 release notes](https://nodejs.org/en/blog/release/v22.12.0) — `require(esm)` unflagged na linha v22 LTS
+- [Node.js 20.19.0 release notes](https://nodejs.org/en/blog/release/v20.19.0) — backport de `require(esm)` para v20 LTS
+- [Node.js Docs — ECMAScript modules](https://nodejs.org/api/esm.html) — documentação oficial: interop, named exports de CJS, condições, top-level await
+- [Node.js Docs — Packages (exports field)](https://nodejs.org/api/packages.html) — referência completa do campo `exports`, subpath patterns, conditional exports
+- [nodejs/cjs-module-lexer](https://github.com/nodejs/cjs-module-lexer) — o lexer que o Node usa para detectar named exports de módulos CJS
+- [Dual package hazard com `module-sync` — vitest issue #7692](https://github.com/vitest-dev/vitest/issues/7692) — caso real de hazard com React Router em Node 22.12+
+- [Socket.dev — Node.js Delivers First LTS with require(esm) Enabled](https://socket.dev/blog/node-js-delivers-first-lts-with-require-esm-enabled) — análise de impacto nos 5.000 pacotes npm mais populares

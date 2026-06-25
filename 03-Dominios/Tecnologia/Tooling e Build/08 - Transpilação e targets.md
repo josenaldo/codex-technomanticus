@@ -1,7 +1,7 @@
 ---
 title: "Transpilação e targets"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
 status: seedling
@@ -11,6 +11,8 @@ tags:
   - transpilacao
   - babel
   - swc
+  - esbuild
+  - oxc
   - iniciado
   - entrevista
 ---
@@ -306,6 +308,48 @@ Para detalhes sobre `--incremental`, `composite`, project references e o desempe
 
 ---
 
+## Oxc: o próximo round da corrida por velocidade
+
+> [!info] Estado: projeto em amadurecimento rápido (junho 2026)
+> O oxc ainda não é uma ferramenta de produção com a mesma maturidade do SWC ou esbuild, mas já está sendo integrado em toolchains reais (Vite via Rolldown, Biome via oxlint). É importante conhecer porque representa a próxima onda de velocidade no ecossistema.
+
+**Oxc** (*The JavaScript Oxidation Compiler*) é um projeto Rust iniciado por Boshen Chen em 2023, com o objetivo de construir toda a infraestrutura de tooling JS/TS do zero em Rust: parser, linter, formatter, transpilador, resolver, minificador. Não é uma ferramenta única — é uma *coleção de ferramentas* que compartilham o mesmo parser de alto desempenho.
+
+A promessa de velocidade é agressiva. Benchmarks publicados pela equipe oxc em 2025 mostram:
+
+- **Parser**: 3× mais rápido que o parser do SWC no mesmo corpus de código JavaScript.
+- **oxlint**: 50–100× mais rápido que ESLint para regras equivalentes — benchmarks que a equipe Biome replicou de forma independente.
+- **Transpilador (oxc-transform)**: ainda em desenvolvimento ativo; a meta declarada é superar o SWC.
+
+O Rolldown — o futuro bundler Rust que deve substituir o Rollup no Vite — usa o parser do oxc internamente. Isso significa que quando o Vite migrar para Rolldown (planejado para Vite 7/8), o oxc já estará embaixo do capô. Ver [[14 - Rollup, esbuild e Rolldown]] para esse contexto.
+
+```mermaid
+flowchart TB
+    subgraph "Geração 1 (JS)\n~2014-2018"
+        BA["Babel\n(JS, plugins)"]
+    end
+    subgraph "Geração 2 (Rust/Go)\n~2019-2022"
+        SWC2["SWC\n(Rust, ~20× Babel)"]
+        EB2["esbuild\n(Go, ~45× tsc)"]
+    end
+    subgraph "Geração 3 (Rust nativo)\n~2023-2026+"
+        OXC["oxc\n(Rust, ~3× SWC parser)\nstill maturing"]
+    end
+
+    BA -->|"drop-in replacement"| SWC2
+    SWC2 -->|"parser compartilhado"| OXC
+    OXC -->|"alimenta"| RD["Rolldown\n(bundler do Vite 7+)"]
+
+    style OXC fill:#5a2d00,color:#fff
+    style RD fill:#004d20,color:#fff
+```
+
+Para 2026, o oxc ainda não é o padrão para transpilação TypeScript em projetos novos — use SWC ou esbuild. Mas é o nome a observar para 2027: se o Rolldown for adotado pelo Vite e o oxc-transform amadurecer, pode deslocar esbuild do papel de transpilador padrão do ecossistema.
+
+**Fonte**: [oxc.rs](https://oxc.rs) — documentação oficial, benchmarks independentes e roadmap público (junho 2026).
+
+---
+
 ## A divisão crucial: type-check ≠ transpile
 
 Este é o ponto que mais confunde desenvolvedores migrando de um workflow baseado em `tsc` puro para um baseado em esbuild ou SWC.
@@ -366,6 +410,9 @@ No CI: o build de produção usa esbuild/SWC para gerar o output rápido, e `tsc
 
 ¹ SWC tem capacidade de bundling via `@swc/core` mas não é seu papel principal — é transpilador.
 
+> [!question] Por que o tsc é tão mais lento?
+> O tsc faz algo fundamentalmente diferente dos outros: ele constrói um **grafo de tipos cross-file**. Para saber se `user.nome` é válido, ele precisa encontrar a declaração de `User`, rastrear onde o objeto foi criado, inferir o tipo de retorno das funções que o produziram, e checar compatibilidade. Isso envolve leitura de múltiplos arquivos, resolução de módulos, e manter um cache de tipos em memória. esbuild e SWC pulam tudo isso — tratam tipos como comentários e seguem em frente. A velocidade é consequência de fazer menos, não de ser mais eficiente na mesma tarefa.
+
 ```mermaid
 flowchart LR
     subgraph "Strip TS/JSX\n(apaga sem checar)"
@@ -389,6 +436,199 @@ flowchart LR
     BL -->|"informa"| TSC
     BL -->|"informa"| CJ
     BA -->|"delega polyfills"| CJ
+```
+
+---
+
+## Sourcemaps: como debugar código transpilado
+
+Depois da transpilação, o arquivo JS que o browser executa nada tem a ver com o TypeScript que você escreveu. Arrow functions viraram `function`, tipos sumiram, linhas mudaram. Quando um erro acontece em produção e o stack trace aponta para `main.min.js:1:8423`, como você sabe qual linha do código-fonte causou o problema?
+
+A resposta é o **sourcemap** — um arquivo auxiliar (`.js.map`) que mapeia cada posição no output para a posição correspondente no source original. O browser DevTools, o Sentry, e qualquer ferramenta de observabilidade que entenda sourcemaps exibem o stack trace no TypeScript original, não no JavaScript gerado.
+
+```
+src/UserCard.tsx (linha 14) ←→ dist/bundle.js (offset 8423)
+```
+
+O sourcemap é um JSON estruturado com a chave `mappings` — uma string de Base64 VLQ que codifica a relação entre posições de forma compacta. Você nunca lê isso diretamente; as ferramentas fazem a tradução.
+
+### Configurando sourcemaps no tsc
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "sourceMap": true,          // gera arquivo .js.map ao lado do .js
+    "inlineSources": true,      // embute o source original no .map (útil para libs)
+    "declarationMap": true      // gera .d.ts.map (mapeia .d.ts de volta ao .ts — para libs)
+  }
+}
+```
+
+Com `sourceMap: true`, o tsc gera `dist/UserCard.js` e `dist/UserCard.js.map`. O JS gerado termina com um comentário que aponta para o map:
+
+```js
+// dist/UserCard.js
+// ... código gerado ...
+//# sourceMappingURL=UserCard.js.map
+```
+
+Com `inlineSources: true`, o arquivo `.map` inclui o conteúdo original do `.ts` — útil para bibliotecas publicadas no npm, onde o consumidor não tem acesso ao source.
+
+### Sourcemaps no esbuild e SWC
+
+esbuild gera sourcemaps por padrão quando o flag está ativo:
+
+```bash
+esbuild src/index.ts --bundle --sourcemap --outdir=dist
+```
+
+SWC via `.swcrc`:
+
+```json
+// .swcrc
+{
+  "jsc": {
+    "target": "es2020",
+    "parser": { "syntax": "typescript", "tsx": true }
+  },
+  "sourceMaps": true
+}
+```
+
+### Sourcemaps em produção: expor ou não expor?
+
+Há uma tensão real aqui. Sourcemaps com `inlineSources: true` expõem seu código-fonte original a quem baixar o bundle — basta abrir o DevTools. Para aplicações internas ou open source, isso é irrelevante. Para SaaS com propriedade intelectual sensível, a prática comum é:
+
+1. Gerar sourcemaps no CI mas **não publicar** o arquivo `.map` junto com o bundle.
+2. Fazer upload dos sourcemaps para o Sentry (ou similar) usando a CLI deles. O Sentry os usa internamente para decodificar stack traces, mas eles não ficam acessíveis publicamente.
+
+```bash
+# Exemplo com Sentry CLI
+sentry-cli releases files "$RELEASE" upload-sourcemaps ./dist
+```
+
+```mermaid
+flowchart LR
+    TS["UserCard.tsx\n(source original)"]
+    JS["UserCard.js\n(transpilado)"]
+    MAP[".js.map\n(sourcemap)"]
+    BROWSER["Browser / DevTools\n(stack trace legível)"]
+    SENTRY["Sentry\n(stack traces em produção)"]
+
+    TS -->|"transpilador"| JS
+    TS -->|"transpilador"| MAP
+    JS -->|"executa"| BROWSER
+    MAP -->|"DevTools lê"| BROWSER
+    MAP -->|"upload CI"| SENTRY
+
+    style MAP fill:#1e3a5f,color:#fff
+    style SENTRY fill:#4a0e6e,color:#fff
+```
+
+> [!note] Hidden sourcemaps
+> Uma alternativa é usar `//# sourceMappingURL=` apontando para uma URL protegida por autenticação. Ferramentas de observabilidade conseguem acessar com credenciais; usuários comuns não. É mais complexo de configurar mas elimina a necessidade de um serviço externo.
+
+---
+
+## `isolatedModules` e `verbatimModuleSyntax`: a ponte entre tsc e transpiladores rápidos
+
+Quando você usa esbuild ou SWC para transpilar arquivo por arquivo, eles processam cada `.ts` de forma **isolada** — sem visibilidade sobre outros arquivos. Isso é o que permite a velocidade, mas cria um problema sutil.
+
+Considere este código TypeScript:
+
+```ts
+// types.ts
+export interface User { id: string; name: string; }
+export type UserId = string;
+
+// main.ts
+import { User, UserId } from "./types";   // importa dois tipos
+```
+
+Para o tsc com acesso completo ao projeto, `User` e `UserId` são tipos — eles desaparecem no output JS. Mas o esbuild, processando `main.ts` isoladamente, não sabe se `User` é um tipo ou um valor runtime. Ele mantém o import para não correr o risco de quebrar algo.
+
+O resultado: imports de tipos mortos aparecem no bundle, o que pode causar problemas circulares ou imports de módulos que não existem em runtime.
+
+A solução são dois flags do `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true    // recomendado em projetos novos (TypeScript 5.0+)
+  }
+}
+```
+
+**`isolatedModules: true`** faz o tsc emitir um erro se você usar construções que não são seguras para transpilação isolada — como `export { User }` sem `type` quando `User` é um tipo. Ele não muda o output; apenas valida que o código é compatível com transpilação por arquivo.
+
+**`verbatimModuleSyntax: true`** (TypeScript 5.0, 2023) é mais forte: exige que imports de tipo usem `import type`, e garante que o import seja apagado completamente no output. É o padrão recomendado para projetos que usam esbuild ou SWC:
+
+```ts
+// Com verbatimModuleSyntax: true — obrigatório usar import type
+import type { User, UserId } from "./types";   // será apagado
+import { createUser } from "./userFactory";    // será mantido (é um valor)
+```
+
+Sem `verbatimModuleSyntax`, o transpilador isolado pode gerar imports zumbis que causam erros em runtime quando o módulo importado só exporta tipos — situação comum em projetos com muitos arquivos de tipos puros.
+
+> [!note] verbatimModuleSyntax substitui isolatedModules
+> Em TypeScript 5.0+, `verbatimModuleSyntax: true` torna `isolatedModules` redundante — ele é mais estrito e cobre os mesmos casos. Para projetos novos com esbuild ou SWC, use só `verbatimModuleSyntax`. Para projetos legados que precisam manter `isolatedModules`, os dois podem coexistir sem conflito. Ver [[03-Dominios/Tecnologia/TypeScript/21 - Modules - ESM, CJS e type-only imports|Modules - ESM, CJS e type-only imports]] para a distinção `import` vs `import type` em profundidade.
+
+---
+
+## Configurando o SWC standalone
+
+Quando você usa SWC fora de um bundler (Next.js ou Rspack já configuram automaticamente), a configuração vive em `.swcrc` ou `swc.config.js` na raiz do projeto.
+
+```json
+// .swcrc — configuração mínima para projeto TypeScript com React
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "decorators": true         // necessário para NestJS, TypeORM
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic"   // JSX automatic transform (React 17+)
+      }
+    },
+    "target": "es2020",
+    "externalHelpers": true      // usa @swc/helpers em vez de injetar inline
+  },
+  "module": {
+    "type": "es6"                // output em ESM
+  },
+  "sourceMaps": true
+}
+```
+
+A opção `externalHelpers: true` é análoga ao `importHelpers: true` do tsc com `tslib`: em vez de injetar os helpers de downleveling (`__awaiter`, `__generator`, etc.) em cada arquivo transpilado, o SWC importa de `@swc/helpers`. Para projetos com muitos arquivos, isso reduz o tamanho do bundle total porque os helpers são compartilhados.
+
+```bash
+# Instalação
+npm install --save-dev @swc/core @swc/cli
+npm install @swc/helpers   # se usar externalHelpers
+
+# Transpilar um arquivo
+npx swc src/index.ts -o dist/index.js
+
+# Watch mode
+npx swc src --watch -d dist
+```
+
+Para integrar com Jest (um caso de uso comum), o `@swc/jest` substitui `ts-jest` com ganhos de performance expressivos:
+
+```js
+// jest.config.js
+module.exports = {
+  transform: {
+    "^.+\\.(t|j)sx?$": "@swc/jest",
+  },
+};
 ```
 
 ---
@@ -579,19 +819,29 @@ A diferença é visível: o output ES2020 é quase idêntico ao fonte original �
 
 ## Veja também
 
+- [[06 - ESM e CJS e o sistema de módulos]] — o sistema de módulos que a transpilação precisa respeitar; `import`/`require`, interop, e por que o output format importa tanto quanto o target de sintaxe
 - [[07 - O grafo de módulos e o que é bundling]] — o que acontece *depois* da transpilação: como os módulos transpilados viram um bundle
-- [[14 - Rollup, esbuild e Rolldown]] — esbuild como bundler completo (não só transpilador); Rolldown como futuro motor do Vite
-- [[16 - Linting, formatting e git hooks]] — a camada de qualidade que roda sobre o mesmo código transpilado; oxlint, Biome, Prettier
+- [[09 - Dev server e HMR]] — como o dev server usa transpilação a frio (esbuild) para HMR ultra-rápido; a diferença entre transpilação de módulo único e bundle completo
+- [[14 - Rollup, esbuild e Rolldown]] — esbuild como bundler completo (não só transpilador); Rolldown como futuro motor do Vite e usuário do parser oxc
+- [[16 - Linting, formatting e git hooks]] — a camada de qualidade que roda sobre o mesmo código transpilado; oxlint (motor oxc), Biome, Prettier
+- [[20 - Bun como runtime e toolkit all-in-one]] — Bun tem transpilador TypeScript e JSX nativo sem configuração; como o Bun.Transpiler se relaciona com esbuild e SWC
+- [[03-Dominios/Tecnologia/TypeScript/20 - tsconfig e strict mode a fundo|tsconfig e strict mode a fundo]] — opções do `tsconfig.json` que controlam transpilação: `target`, `lib`, `module`, `moduleResolution`, `isolatedModules`, `verbatimModuleSyntax`
+- [[03-Dominios/Tecnologia/TypeScript/21 - Modules - ESM, CJS e type-only imports|Modules - ESM, CJS e type-only imports]] — `import type` vs `import`; por que `verbatimModuleSyntax` exige distingui-los; interop entre ESM e CJS no tsc
 - [[03-Dominios/Tecnologia/TypeScript/25 - TypeScript em escala - performance do compilador e project references|TypeScript em escala]] — `tsc` como type-checker em profundidade: `--incremental`, `.tsbuildinfo`, project references, `--noEmit`; a fronteira entre type-check e transpile explicada do lado do TypeScript
 - [[03-Dominios/Ciência/Compiladores e Linguagens/index|Compiladores e Linguagens]] — a teoria do pipeline parse → transform → generate; autômatos, gramáticas, análise semântica
 
 ---
 
-> [!info] Lastro
-> - **Babel 8 release post** (junho 2026): ESM-only, sem ES5 por default, `useBuiltIns` removido — [babeljs.io/blog/2026/06/16/8.0.0](https://babeljs.io/blog/2026/06/16/8.0.0/)
-> - **SWC documentation** — benchmarks, configuração de compilation targets, suporte a JSX e decorators: [swc.rs/docs/benchmarks](https://swc.rs/docs/benchmarks)
-> - **esbuild content types** — como esbuild lida com TypeScript e JSX, limitações de type-checking: [esbuild.github.io/content-types](https://esbuild.github.io/content-types/)
-> - **web.dev: Use Baseline with Browserslist** — queries `baseline widely available`, impacto no tamanho do bundle: [web.dev/articles/use-baseline-with-browserslist](https://web.dev/articles/use-baseline-with-browserslist)
-> - **PkgPulse: esbuild vs SWC in 2026** — diferenças de papel (bundler vs transpilador), adoção, downloads semanais: [pkgpulse.com/guides/esbuild-vs-swc-2026](https://www.pkgpulse.com/guides/esbuild-vs-swc-2026)
-> - **Marius Schulz: Compiling async/await to ES3/ES5 in TypeScript** — análise detalhada do downleveling de funções assíncronas: [mariusschulz.com/blog/compiling-async-await-to-es3-es5-in-typescript](https://mariusschulz.com/blog/compiling-async-await-to-es3-es5-in-typescript)
-> - **core-js npm** — cobertura de polyfills até ES2026, integração com browserslist via `core-js-compat`: [npmjs.com/package/core-js](https://www.npmjs.com/package/core-js)
+## Referências
+
+- **Babel 8 release post** (junho 2026): ESM-only, sem ES5 por default, `useBuiltIns` removido — [babeljs.io/blog/2026/06/16/8.0.0](https://babeljs.io/blog/2026/06/16/8.0.0/)
+- **SWC documentation** — benchmarks, configuração de compilation targets, suporte a JSX e decorators: [swc.rs/docs/benchmarks](https://swc.rs/docs/benchmarks)
+- **esbuild content types** — como esbuild lida com TypeScript e JSX, limitações de type-checking: [esbuild.github.io/content-types](https://esbuild.github.io/content-types/)
+- **web.dev: Use Baseline with Browserslist** — queries `baseline widely available`, impacto no tamanho do bundle: [web.dev/articles/use-baseline-with-browserslist](https://web.dev/articles/use-baseline-with-browserslist)
+- **PkgPulse: esbuild vs SWC in 2026** — diferenças de papel (bundler vs transpilador), adoção, downloads semanais: [pkgpulse.com/guides/esbuild-vs-swc-2026](https://www.pkgpulse.com/guides/esbuild-vs-swc-2026)
+- **Marius Schulz: Compiling async/await to ES3/ES5 in TypeScript** — análise detalhada do downleveling de funções assíncronas: [mariusschulz.com/blog/compiling-async-await-to-es3-es5-in-typescript](https://mariusschulz.com/blog/compiling-async-await-to-es3-es5-in-typescript)
+- **core-js npm** — cobertura de polyfills até ES2026, integração com browserslist via `core-js-compat`: [npmjs.com/package/core-js](https://www.npmjs.com/package/core-js)
+- **oxc.rs** — documentação oficial do Oxidation Compiler; benchmarks do parser vs SWC, roadmap do oxc-transform e integração com Rolldown: [oxc.rs](https://oxc.rs)
+- **TypeScript 5.0 verbatimModuleSyntax** — anúncio e motivação da flag que substitui `isolatedModules` para transpilação isolada: [devblogs.microsoft.com/typescript/announcing-typescript-5-0/#verbatimmodulesyntax](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/#verbatimmodulesyntax)
+- **Sentry: Upload Source Maps** — workflow de CI para sourcemaps em produção sem expor código-fonte: [docs.sentry.io/platforms/javascript/sourcemaps/uploading](https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/)
+- **Source Map v3 spec (TC39)** — especificação do formato `.map`, campo `mappings` em Base64 VLQ, `inlineSources`: [tc39.es/source-map](https://tc39.es/source-map/)

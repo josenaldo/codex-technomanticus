@@ -1,7 +1,7 @@
 ---
 title: "O grafo de módulos e o que é bundling"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
 status: seedling
@@ -164,6 +164,227 @@ flowchart LR
 **3. Transformar.** Cada módulo pode precisar de transformação antes de entrar no bundle: TypeScript vira JavaScript, JSX vira `React.createElement(...)`, sintaxe ES2024 vira ES5 se o target exigir. Bundlers modernos delegam essa etapa para transpiladores fast (esbuild, SWC) — o assunto da nota [[08 - Transpilação e targets]].
 
 **4. Chunkar e emitir.** Com o grafo completo e todos os módulos transformados, o bundler decide como agrupá-los em arquivos de output — os **chunks**. O caso mais simples é um único arquivo com tudo concatenado. Mas há estratégias mais sofisticadas que veremos a seguir.
+
+---
+
+## Resolução de módulos em profundidade
+
+A etapa de resolução é onde a maioria dos erros misteriosos de bundling nasce. Vale entender o algoritmo com precisão.
+
+Quando o bundler encontra `import { render } from "./ui/render.js"`, a resolução é trivial: caminho relativo, arquivo físico. Mas quando encontra `import React from "react"`, precisa percorrer um algoritmo que o Node.js estabeleceu e os bundlers herdaram:
+
+```mermaid
+flowchart TD
+    BARE["import X from 'react'"]
+    CHECK_CORE{"É módulo\nbuilt-in do Node?\n(path, fs, url...)"}
+    CHECK_NM["Procura em node_modules/react/"]
+    PKG["Lê package.json\ndo pacote"]
+    EXPORTS{"Tem campo\n'exports'?"}
+    EXP_COND["Resolve via\nexports map\n(com condicionais)"]
+    MAIN{"Tem campo\n'main' ou 'module'?"}
+    MAIN_RESOLVE["Usa esse caminho"]
+    INDEX["Fallback:\nindex.js"]
+
+    BARE --> CHECK_CORE
+    CHECK_CORE -->|"Sim"| RESOLVED["Módulo built-in\nresolvido"]
+    CHECK_CORE -->|"Não"| CHECK_NM
+    CHECK_NM --> PKG
+    PKG --> EXPORTS
+    EXPORTS -->|"Sim (moderno)"| EXP_COND
+    EXPORTS -->|"Não (legado)"| MAIN
+    MAIN -->|"Sim"| MAIN_RESOLVE
+    MAIN -->|"Não"| INDEX
+
+    style RESOLVED fill:#2d4a1e,color:#fff
+    style EXP_COND fill:#1a2e3d,color:#fff
+```
+
+> [!note] Leitura do diagrama
+> O campo `exports` tem precedência sobre `main` e `module` em bundlers modernos e no Node 12+. Pacotes que definem `exports` podem bloquear acesso a qualquer sub-caminho não explicitamente listado — isso é o **encapsulamento de pacote**, e é por isso que `import { something } from "lodash/internal"` pode quebrar mesmo que o arquivo físico exista.
+
+### O campo `exports` e os condicionais
+
+O campo `exports` no `package.json` é o mecanismo mais poderoso (e mais confuso) da resolução moderna. Ele permite que um pacote exponha diferentes versões do mesmo módulo dependendo do contexto:
+
+```json
+// package.json de um pacote moderno (ex: React 19)
+{
+  "name": "react",
+  "exports": {
+    ".": {
+      "react-server": "./react.react-server.js",
+      "edge-light": "./react.edge-light.js",
+      "worker": "./react.worker.js",
+      "browser": "./index.js",
+      "node": {
+        "development": "./cjs/react.development.js",
+        "production": "./cjs/react.production.min.js",
+        "default": "./cjs/react.development.js"
+      },
+      "default": "./index.js"
+    },
+    "./jsx-runtime": "./jsx-runtime.js",
+    "./package.json": "./package.json"
+  }
+}
+```
+
+O bundler avalia as condições na ordem em que aparecem, usando as condições que ele mesmo declara suportar. O Vite, por exemplo, declara a condição `browser` no build de produção. O webpack usa `browser`, `module`, ou `main` dependendo da configuração. Node usa `node`.
+
+> [!warning] Sub-caminhos não exportados são privados
+> Se você tentar `import { internal } from "algum-pacote/internal/helper"` e o campo `exports` não listar `"./internal/helper"`, você vai receber `ERR_PACKAGE_PATH_NOT_EXPORTED`. Isso é intencional: o pacote está declarando que `./internal/helper` é API privada. A solução é usar apenas a API pública do pacote ou, se você controla o pacote, adicionar o sub-caminho ao `exports`.
+
+### Por que bare imports não funcionam no browser sem bundler
+
+O browser segue a especificação HTML+ESM, que exige que `import` receba uma URL ou um caminho relativo começando com `./`, `../`, ou `/`. Um bare specifier como `"react"` é um erro de sintaxe em runtime:
+
+```
+TypeError: Failed to resolve module specifier "react".
+Relative references must start with either "/", "./", or "../".
+```
+
+O bundler resolve esse problema em build time, substituindo o bare specifier pelo caminho físico real antes que o código chegue ao browser. Sem bundler, você precisa de import maps (que fazem a resolução em runtime no browser) ou de URLs absolutas.
+
+---
+
+## Dependências circulares: quando o grafo tem ciclos
+
+O grafo de módulos deveria ser acíclico — DAG (Directed Acyclic Graph). Mas na prática, dependências circulares acontecem, e bundlers precisam lidar com elas.
+
+Uma dependência circular acontece quando A importa B, e B importa A (diretamente ou via intermediários):
+
+```js
+// a.js
+import { b } from "./b.js";
+export const a = `A usa: ${b}`;
+
+// b.js
+import { a } from "./a.js";
+export const b = `B usa: ${a}`;
+```
+
+```mermaid
+graph LR
+    A["a.js"] -->|"import b"| B["b.js"]
+    B -->|"import a"| A
+
+    style A fill:#3d2020,color:#fff
+    style B fill:#3d2020,color:#fff
+```
+
+> [!note] Leitura do diagrama
+> O grafo tem um ciclo: `a.js → b.js → a.js`. Para o bundler percorrer esse grafo, ele precisa detectar o ciclo e parar de recursar, senão entraria em loop infinito.
+
+**O que acontece em runtime:** quando o bundler (ou o Node com ESM) encontra um ciclo, ele usa o que já processou até aquele ponto. O módulo que está sendo importado no meio da sua própria inicialização retorna um "live binding" ainda não resolvido — tipicamente `undefined` no momento em que o módulo dependente lê o valor.
+
+```js
+// Resultado real do exemplo acima (em ESM):
+// a.js é carregado primeiro
+// a.js importa b.js
+// b.js importa a.js — mas a.js ainda não terminou de inicializar
+// b.js lê `a` como undefined (live binding não inicializado ainda)
+// b = "B usa: undefined"
+// a = "A usa: B usa: undefined"
+```
+
+> [!bug] Circular dependency warning no bundler
+> Quando você vê `"Circular dependency: a.js → b.js → a.js"` no output do Rollup, não é apenas aviso cosmético. Significa que pelo menos um dos módulos no ciclo vai ler um valor `undefined` de outro módulo na primeira execução. O bug pode ser silencioso: o valor pode parecer correto depois que os módulos terminam de inicializar, mas se algum código de inicialização de nível superior usar o valor antes disso, quebra.
+
+**A solução canônica** é quebrar o ciclo extraindo o que é compartilhado para um terceiro módulo:
+
+```js
+// shared.js — sem dependências externas
+export const SHARED_VALUE = "algo compartilhado";
+
+// a.js — importa só de shared.js
+import { SHARED_VALUE } from "./shared.js";
+export const a = `A usa: ${SHARED_VALUE}`;
+
+// b.js — importa só de shared.js
+import { SHARED_VALUE } from "./shared.js";
+export const b = `B usa: ${SHARED_VALUE}`;
+```
+
+Dependências circulares em projetos React frequentemente emergem de index files que re-exportam tudo (`export * from "./Button"`; `export * from "./Modal"`) em combinação com componentes que importam uns aos outros indiretamente. A nota [[15 - React e Gerenciamento de Estado]] tem exemplos práticos desse padrão em apps React.
+
+---
+
+## Scope hoisting: uma otimização invisível que muda o comportamento
+
+Bundlers ingênuos simplesmente concatenam os módulos, embrulhando cada um em uma função para criar escopo isolado:
+
+```js
+// bundle.js (sem scope hoisting) — cada módulo em sua própria IIFE
+var module_format = (function() {
+  function formatName(user) {
+    return `${user.firstName} ${user.lastName}`;
+  }
+  return { formatName };
+})();
+
+var module_render = (function() {
+  var formatName = module_format.formatName;
+  function render(user) {
+    document.body.innerHTML = `<h1>${formatName(user)}</h1>`;
+  }
+  return { render };
+})();
+```
+
+Cada módulo é uma IIFE (Immediately Invoked Function Expression) — executada para criar um objeto com os exports. O problema: cada chamada de função tem overhead, e o bundler não consegue otimizar entre módulos (não pode fazer inlining porque não vê o código de outro módulo diretamente).
+
+**Scope hoisting** (ou *module concatenation*, como o webpack chama) resolve isso elevando o código de todos os módulos para o mesmo escopo léxico, renomeando variáveis para evitar conflitos:
+
+```js
+// bundle.js (com scope hoisting) — um único escopo plano
+// format.js inlined
+function format_formatName(user) {
+  return `${user.firstName} ${user.lastName}`;
+}
+
+// render.js inlined — usa format_formatName diretamente
+function render_render(user) {
+  document.body.innerHTML = `<h1>${format_formatName(user)}</h1>`;
+}
+
+// main.js — usa render_render diretamente
+render_render(await fetchUser(1));
+```
+
+O minificador (Terser, esbuild) agora pode ver `format_formatName` sendo chamada em apenas um lugar, e pode fazer inlining da função inteira, eliminando o overhead de chamada:
+
+```js
+// Após minificação com scope hoisting
+render_render(await fetchUser(1));
+
+function render_render(u) {
+  document.body.innerHTML = `<h1>${u.firstName} ${u.lastName}</h1>`;
+}
+```
+
+> [!tip] Scope hoisting e tree-shaking trabalham juntos
+> Scope hoisting é o que torna o tree-shaking eficaz: quando tudo está no mesmo escopo, o bundler consegue rastrear quais funções e variáveis são realmente usadas e quais são dead code. Com módulos isolados em IIFEs, não é possível fazer essa análise inter-módulos. Para scope hoisting funcionar, os módulos precisam ser ESM puro — CommonJS (`require`/`module.exports`) não pode ser hoisted porque tem resolução dinâmica.
+
+Rollup foi pioneiro no scope hoisting (chamava de *tree-shaking-friendly concatenation*). O webpack implementou como `ModuleConcatenationPlugin`, ativado por padrão em produção com `mode: "production"`.
+
+---
+
+## O que diferencia quem entende bundling de verdade
+
+> [!info] Júnior vs. Sênior
+> **Júnior** usa bundler porque o tutorial mandou. Sabe que precisa rodar `npm run build` antes de fazer deploy, mas não sabe explicar o que o build está fazendo. Quando o bundle explode de tamanho, abre uma issue no GitHub do framework.
+>
+> **Pleno** consegue explicar o que um bundler faz, sabe configurar entry points e code splitting básico, consegue ler o output e identificar o que está pesando. Quando o bundle explode, usa o Bundle Analyzer e sabe o que procurar.
+>
+> **Sênior** entende os trade-offs: sabe quando não usar bundler, sabe o impacto de cada configuração (scope hoisting, granularidade de chunks, condicionais de exports), consegue diagnosticar dependências circulares e sabe por que causam bugs sutis. Entende a dicotomia dev/prod e os bugs que ela cria. Toma decisões de tooling com critério, não por convenção.
+
+A diferença prática aparece em situações como:
+
+- **Diagnóstico de bundle grande**: um pleno procura o pacote mais pesado; um sênior também olha para duplicação (React aparecendo duas vezes por chunks sem shared config), código de desenvolvimento incluído em produção (`process.env.NODE_ENV` não substituído), e módulos não tree-shakeable por usarem `module.exports`.
+
+- **Debug de erro de resolução**: um júnior googla o erro; um pleno sabe verificar o campo `exports` do package.json; um sênior também sabe verificar as condições que o bundler está passando (que podem diferir entre dev e prod).
+
+- **Decisão de code splitting**: um pleno aplica onde o tutorial ensinou (rotas); um sênior decide a granularidade baseado nos padrões de navegação dos usuários, no tamanho dos chunks gerados, e no impacto no tempo de parse de cada chunk.
 
 ---
 
@@ -575,6 +796,8 @@ For small projects, prototypes, or tools, you may genuinely not need a bundler. 
 - [[09 - Dev server e HMR]] — como o bundler se comporta em desenvolvimento vs. produção; ESM nativo + esbuild no modelo Vite
 - [[17 - Otimização de bundle]] — tree-shaking, code splitting a fundo, shared chunks, análise de bundle, minificação
 - [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]] — HTTP/1.1 vs HTTP/2 (multiplexing, header compression, server push), fundamentos do protocolo que motivaram o bundling
+- [[03-Dominios/Tecnologia/Node/06 - Módulos no Node.js — CommonJS vs ESM|Módulos no Node.js]] — como o algoritmo de resolução de módulos funciona no Node: `require`, `exports` field, dual CJS/ESM packages
+- [[15 - React e Gerenciamento de Estado]] — padrões de code splitting em apps React com React.lazy e Suspense; como dependências circulares emergem em componentes React
 
 ---
 
@@ -585,3 +808,6 @@ For small projects, prototypes, or tools, you may genuinely not need a bundler. 
 > 4. Steve Coffey — "ES Modules + Importmaps: a modern JS stack" (2025). Demonstração prática de ESM nativo com import maps, HTTP/2, e o stack sem bundler. Disponível em: https://www.stevendcoffey.com/blog/esmodules-importmaps-modern-js-stack/
 > 5. Siddharth — "JavaScript Modules in 2025: ESM, Import Maps & Best Practices" (2025). Cobertura do estado atual de ESM, import maps e browser support em 2025/2026. Disponível em: https://siddsr0015.medium.com/javascript-modules-in-2025-esm-import-maps-best-practices-7b6996fa8ea3
 > 6. AlternativeTo — "Vite 8.1 brings faster dev mode, chunk import maps, and Wasm ESM support" (2026). Cobertura do experimento de chunk import maps no Vite 8.1 e benchmarks de performance. Disponível em: https://alternativeto.net/news/2026/6/vite-8-1-brings-faster-dev-mode-chunk-import-maps-and-wasm-esm-support/
+> 7. Node.js Docs — "Modules: Packages — Subpath exports" (documentação oficial). Especifica como o campo `exports` funciona, a ordem de avaliação de condicionais, e o encapsulamento de sub-caminhos privados. Disponível em: https://nodejs.org/api/packages.html#subpath-exports
+> 8. Rollup Docs — "ES Module Syntax — Circular Dependencies" (documentação oficial). Explica como Rollup lida com ciclos no grafo de módulos, live bindings em ESM, e por que ciclos causam valores `undefined` em inicializações de nível de módulo. Disponível em: https://rollupjs.org/faqs/#why-do-additional-imports-of-the-same-module-behave-as-no-ops
+> 9. webpack Docs — "Module Concatenation Plugin" (documentação oficial). Cobre scope hoisting no webpack: o que é, quando se aplica (somente ESM, sem CommonJS), e como habilitar/desabilitar. Disponível em: https://webpack.js.org/plugins/module-concatenation-plugin/
