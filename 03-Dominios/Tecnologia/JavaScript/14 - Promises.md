@@ -3,7 +3,7 @@ title: "Promises"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: adepto
 tags:
   - javascript
@@ -88,7 +88,7 @@ stateDiagram-v2
 
 ## Criando uma Promise com `new Promise(executor)`
 
-O modo mais explícito de criar uma Promise é passando uma função **executor** que recebe `resolve` e `reject`:
+O modo mais explícito de criar uma Promise é passando uma função **[[Dicionário de JavaScript#executor\|executor]]** que recebe `resolve` e `reject`:
 
 ```javascript
 function delay(ms) {
@@ -134,6 +134,49 @@ promise.then(v => console.log(`Recebido: ${v}`));
 ```
 
 `resolve` e `reject` ficam no mesmo escopo que `promise`, sem gambiarra. Útil em streams, filas de eventos e quando integramos com APIs baseadas em eventos.
+
+### Promise.try() — ES2025
+
+Há uma armadilha sutil que plenos frequentemente ignoram: e se você quer iniciar uma cadeia de Promises a partir de uma função que *pode* ser síncrona ou assíncrona?
+
+O impulso natural é usar `Promise.resolve(fn())`:
+
+```javascript
+// Parece razoável — mas tem uma armadilha
+Promise.resolve(getUserById(id))
+  .then(user => processUser(user))
+  .catch(err => handleError(err)); // NÃO captura erros síncronos de getUserById
+```
+
+O problema: se `getUserById` lança sincronamente (validação de `id`, acesso a propriedade `undefined`), o erro **estoura na call stack antes de `Promise.resolve` ser chamado**. O `.catch` nunca vê esse erro — ele vira uma exceção não-tratada.
+
+> [!question]- Por que o .catch não captura o erro síncrono?
+> `Promise.resolve(fn())` avalia `fn()` **antes** de criar a Promise. Se `fn()` lança, a exceção sai para o chamador imediatamente — não há contexto de Promise ainda para capturá-la. O `.catch` só intercepta rejeições que ocorrem *dentro* de uma Promise já criada.
+
+`Promise.try()` (ES2025, Stage 4 — disponível em Node 22+ e browsers modernos) resolve isso envolvendo toda a chamada no contexto de Promise:
+
+```javascript
+// Promise.try() — captura sync throw e async reject no mesmo .catch
+Promise.try(() => getUserById(id))
+  .then(user => processUser(user))
+  .catch(err => handleError(err)); // captura TUDO: sync throw E rejeição async
+```
+
+A função passada para `Promise.try` é chamada **dentro** do contexto da Promise — qualquer exceção síncrona é convertida em rejeição. Semântica unificada: um `.catch` para governar todos os erros.
+
+```javascript
+// Antes do ES2025 — workaround verboso
+function safeChain(fn) {
+  return new Promise(resolve => resolve(fn())); // executor captura o sync throw
+}
+
+// Com ES2025
+Promise.try(fn)          // limpo, canônico, mesma semântica
+  .then(process)
+  .catch(handle);
+```
+
+Use `Promise.try` sempre que a função inicial puder ser síncrona — é mais seguro que `Promise.resolve(fn())` e mais legível que envolver em `new Promise`.
 
 ---
 
@@ -261,7 +304,7 @@ function getConfig() {
 ```
 
 > [!info] `Promise.resolve(thenable)`
-> Se você passar um objeto que tem um método `.then` (um *thenable*), `Promise.resolve` irá "assimilá-lo" — chama `.then(resolve, reject)` e adota o estado resultante. Isso garante interop com bibliotecas Promise de terceiros.
+> Se você passar um objeto que tem um método `.then` (um *[[Dicionário de JavaScript#thenable\|thenable]]*), `Promise.resolve` irá "assimilá-lo" — chama `.then(resolve, reject)` e adota o estado resultante. Isso garante interop com bibliotecas Promise de terceiros.
 
 ---
 
@@ -366,7 +409,7 @@ Use quando: você tem múltiplos provedores/endpoints alternativos e qualquer um
 
 ## Microtask timing
 
-Quando uma Promise settle e você tem callbacks registrados via `.then`, esses callbacks **não rodam imediatamente**. Eles entram na **fila de microtasks** (também chamada de PromiseJobs na spec).
+Quando uma Promise settle e você tem callbacks registrados via `.then`, esses callbacks **não rodam imediatamente**. Eles entram na **[[Dicionário de JavaScript#microtask\|fila de microtasks]]** (também chamada de PromiseJobs na spec).
 
 ```javascript
 console.log("1");
@@ -395,7 +438,7 @@ console.log(value); // "original" — o .then ainda não rodou
 Os internals completos — fases do event loop, diferença entre microtasks e macrotasks, `process.nextTick` no Node — ficam em [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Node/Runtime e Event Loop]]. Aqui o que importa: callbacks de Promise sempre rodam antes do próximo timer ou evento de I/O, mas depois do código síncrono atual.
 
 > [!info] Nota 19 — Modelo de execução a fundo
-> A nota "19 - Modelo de execução a fundo" (planejada) irá detalhar a interação entre microtask queue, task queue e rendering pipeline no browser. Por ora, o modelo mental acima é suficiente.
+> [[03-Dominios/Tecnologia/JavaScript/19 - Modelo de execução a fundo|19 - Modelo de execução a fundo]] detalha a interação entre microtask queue, task queue e rendering pipeline no browser. Por ora, o modelo mental acima é suficiente.
 
 ---
 
@@ -490,6 +533,53 @@ async function syncUsers(userIds) {
 }
 ```
 
+### Caso 4: concorrência limitada — quando `Promise.all` demais derruba tudo
+
+`Promise.all` dispara **todas** as Promises simultaneamente. Para arrays pequenos, ótimo. Para arrays de 100, 500 ou 10.000 itens, você acabou de abrir um thundering herd: conexões simultâneas que esgotam o pool do banco, requisições que excedem o rate-limit da API externa, ou alocação de memória que trava o processo.
+
+O modelo mental correto: `Promise.all` é paralelismo irrestrito, não um pool de workers. Pense num restaurante onde todos os 500 pedidos chegam ao mesmo tempo na cozinha — a cozinha entra em colapso antes de preparar qualquer prato.
+
+```javascript
+// PROBLEMA: dispara todas as 500 requisições ao mesmo tempo
+const results = await Promise.all(
+  userIds.map(id => callExternalApi(id)) // 500 simultâneas → rate-limit ou crash do DB
+);
+```
+
+**Solução 1 — lotes manuais** (sem dependência externa):
+
+```javascript
+async function processBatch(items, batchSize, fn) {
+  const results = [];
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    // Cada lote roda em paralelo; próximo lote só começa após o atual terminar
+    const batchResults = await Promise.all(batch.map(fn));
+    results.push(...batchResults);
+  }
+  return results;
+}
+
+// Processa 500 usuários em lotes de 10
+const results = await processBatch(userIds, 10, id => callExternalApi(id));
+```
+
+**Solução 2 — `p-limit`** (semáforo: nunca mais de N simultâneos):
+
+```javascript
+import pLimit from "p-limit";
+
+const limit = pLimit(10); // máximo 10 simultâneos em qualquer momento
+
+const results = await Promise.all(
+  userIds.map(id => limit(() => callExternalApi(id)))
+);
+// Cada slot abre assim que uma tarefa termina — sem esperar o lote inteiro
+```
+
+> [!info] Lotes vs semáforo
+> Com lotes manuais, o lote 2 só começa quando **todos** do lote 1 terminaram — o mais lento segura o grupo. Com `p-limit`, cada slot abre tão logo uma tarefa termina, independente das outras: throughput mais suave e sem starvation por um item lento.
+
 ---
 
 ## Armadilhas comuns
@@ -543,6 +633,36 @@ async function syncUsers(userIds) {
 > **Por quê:** `race` resolve/rejeita com o primeiro *settled* (qualquer estado). `any` aguarda o primeiro *fulfilled*.
 > **Como evitar:** use `race` para timeouts e corridas onde o "mais rápido" inclui falhas. Use `any` para fallbacks e redundância onde você quer ignorar rejeições.
 
+> [!warning] `Promise.race` não cancela a Promise perdedora — e isso vaza recursos
+> **O que acontece:** ao usar `Promise.race` para timeout, a operação "perdida" (ex: query ao banco) continua rodando em background, consumindo conexão, memória e CPU.
+> **Por quê:** `Promise.race` apenas ignora o resultado da Promise perdedora — não há mecanismo de cancelamento embutido. A operação segue até concluir, mesmo que você não use mais o resultado.
+> **Como evitar:** use `AbortController` para cancelar operações que suportam `signal`. O padrão correto combina `Promise.race` com `AbortController`:
+>
+> ```javascript
+> async function withCancellableTimeout(asyncFn, ms) {
+>   const controller = new AbortController();
+>   const timeout = new Promise((_, reject) =>
+>     setTimeout(() => {
+>       controller.abort();           // cancela a operação real
+>       reject(new Error(`Timeout: ${ms}ms`));
+>     }, ms)
+>   );
+>   try {
+>     return await Promise.race([asyncFn(controller.signal), timeout]);
+>   } finally {
+>     clearTimeout; // boas práticas: limpar timer se asyncFn venceu
+>   }
+> }
+>
+> // Uso com fetch (suporta AbortSignal nativamente)
+> const data = await withCancellableTimeout(
+>   signal => fetch("/api/data", { signal }).then(r => r.json()),
+>   3000
+> );
+> ```
+>
+> `AbortSignal.any([signal1, signal2])` (ES2023, suporte amplo em 2024+) permite combinar múltiplos sinais: timeout E cancelamento manual pelo usuário, por exemplo.
+
 ---
 
 ## Como explicar em inglês
@@ -574,7 +694,7 @@ Promise em uma frase: um contrato que representa um valor *futuro* — você enc
 
 Promises são a fundação — mas escrever `.then().then().then()` ainda pode ficar verboso. `async/await` é açúcar sintático sobre Promises: por baixo, tudo continua sendo `.then` e `.catch`, só que o código parece síncrono. Entender Promises a fundo é o que torna o comportamento do `async/await` previsível — especialmente nos casos de erro e de paralelismo.
 
-- **15 - async-await** (nota a criar) — como `async/await` desaçucara para Promises e onde o modelo mental diverge
+- [[03-Dominios/Tecnologia/JavaScript/15 - async-await|15 - async-await]] — como `async/await` desaçucara para Promises e onde o modelo mental diverge
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Node/Runtime e Event Loop]] — internals do event loop, fases de execução e onde microtasks se encaixam no ciclo completo
 - [[Dicionário de JavaScript#Promise]] — verbete de referência rápida
 
@@ -589,3 +709,6 @@ Promises são a fundação — mas escrever `.then().then().then()` ainda pode f
 - **MDN Web Docs** — [*Promise.withResolvers()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers) — documentação do método ES2024
 - **LogRocket Blog** — [*JavaScript Promises: race, all, allSettled, and then*](https://blog.logrocket.com/javascript-promises-race-all-allsettled-then/) — comparação prática dos combinadores com exemplos de produção
 - **javascript.info** — [*Microtasks*](https://javascript.info/microtask-queue) — explicação clara da fila de microtasks e seu papel no event loop
+- **MDN Web Docs** — [*Promise.try()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/try) — documentação do método ES2025 com suporte a erros síncronos e assíncronos
+- **AppSignal Blog** — [*Managing Asynchronous Operations in Node.js with AbortController*](https://blog.appsignal.com/2025/02/12/managing-asynchronous-operations-in-nodejs-with-abortcontroller.html) (2025) — padrões de cancelamento com AbortController, incluindo vazamento de recursos e boas práticas
+- **MDN Web Docs** — [*AbortSignal.any()*](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/any_static) — combinação de múltiplos sinais de cancelamento (ES2023+)

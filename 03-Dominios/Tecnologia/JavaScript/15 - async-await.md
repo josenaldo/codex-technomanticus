@@ -3,7 +3,7 @@ title: "async/await"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: adepto
 tags:
   - javascript
@@ -90,7 +90,7 @@ async function buscarUsuario(id) {
 }
 ```
 
-Durante essa pausa, **a thread JavaScript não fica bloqueada**. O controle retorna ao event loop, que continua processando callbacks, timers e eventos de I/O. Quando a Promise liquida, a continuação da função é enfileirada como **microtask** e retoma na próxima oportunidade.
+Durante essa pausa, **a thread JavaScript não fica bloqueada**. O controle retorna ao [[Dicionário de JavaScript#event loop|event loop]], que continua processando callbacks, timers e eventos de I/O. Quando a Promise liquida, a continuação da função é enfileirada como **[[Dicionário de JavaScript#microtask|microtask]]** e retoma na próxima oportunidade.
 
 A analogia útil: pense em `await` como um "pino de pausa" que diz ao event loop "quando essa promise resolver, volte aqui e continue". Enquanto isso, a thread é livre para fazer outra coisa. Para o mecanismo detalhado de microtasks e event loop, ver [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Node — Runtime e Event Loop]].
 
@@ -170,6 +170,42 @@ async function processarPedido(pedidoId) {
 }
 ```
 
+### O gotcha sutil: `try/catch` que não captura o que você pensa
+
+Um erro que adepto comete: um `await` lançado dentro de uma **callback `async`** não é capturado pelo `try/catch` da função pai.
+
+```javascript
+async function exemplo() {
+  try {
+    // Parece que o try cobre tudo aqui dentro...
+    [1, 2, 3].forEach(async (n) => {
+      await operacaoQuePoderFalhar(n); // ← exceção aqui NÃO sobe para o try/catch de cima
+    });
+  } catch (err) {
+    console.error('Capturou:', err); // ← nunca executa
+  }
+}
+```
+
+Por que isso acontece? A callback `async` tem sua **própria Promise**. Quando ela rejeita, a rejeição vai para essa Promise interna — que ninguém está observando. O `try/catch` externo só captura exceções que ocorrem no fluxo síncrono da função `async` pai, ou em Promises que têm `await` direto nela.
+
+A correção: use `for...of` com `await` direto (a exceção sobe naturalmente), ou `Promise.all(array.map(...))` — que propaga a primeira rejeição para quem faz `await` nele.
+
+```javascript
+// Correto — exceção sobe para o try/catch da função async
+async function exemplo() {
+  try {
+    for (const n of [1, 2, 3]) {
+      await operacaoQuePoderFalhar(n); // await direto: exceção capturável
+    }
+  } catch (err) {
+    console.error('Capturou:', err); // ← executa corretamente
+  }
+}
+```
+
+> [!summary] A regra é simples: `try/catch` só captura o que está no fluxo de `await` direto da função. Callbacks `async` têm suas próprias Promises — e se ninguém as observa, rejeições desaparecem.
+
 ---
 
 ## O padrão mais importante: sequencial vs paralelo
@@ -214,6 +250,46 @@ async function carregarPerfil(userId) {
 
 > [!tip] Regra de ouro
 > Use `await` em série apenas quando cada operação **depende do resultado da anterior**. Quando as operações são independentes, dispare todas as Promises primeiro e `await Promise.all` depois.
+
+### Quando `Promise.all` demais quebra o servidor: concurrency pool
+
+`Promise.all` com um array grande dispara **todas** as Promises simultaneamente. Para 1.000 IDs, isso significa 1.000 requisições em paralelo — o que pode derrubar uma API com rate limiting ou saturar o pool de conexões de um banco de dados.
+
+O padrão correto nesses casos é o **concurrency pool**: processar no máximo N itens em paralelo, avançando à medida que cada um termina — uma janela deslizante.
+
+```javascript
+async function mapWithConcurrency(items, fn, concurrency = 5) {
+  const results = [];
+  const executing = new Set();
+
+  for (const item of items) {
+    const p = fn(item).then(result => {
+      executing.delete(p);
+      return result;
+    });
+    executing.add(p);
+    results.push(p);
+
+    if (executing.size >= concurrency) {
+      await Promise.race(executing); // aguarda o mais rápido terminar para liberar espaço
+    }
+  }
+
+  return Promise.all(results);
+}
+
+// Uso: processa 1.000 IDs com no máximo 5 em voo simultâneo
+const resultados = await mapWithConcurrency(
+  ids,
+  id => processarItem(id),
+  5
+);
+```
+
+Por que `Promise.race` e não `Promise.all`? `Promise.race` resolve assim que **qualquer** Promise do `executing` terminar — isso libera uma vaga no pool para o próximo item entrar. Com `Promise.all` você esperaria todas terminarem antes de avançar, derrotando o propósito. A janela deslizante mantém sempre exatamente N tarefas em voo — nunca mais, nunca menos.
+
+> [!question]- Existe alguma lib que faz isso por mim?
+> Sim: `p-limit` (a mais usada) e `p-map` são wrappers de produção para este padrão. Para a maioria dos projetos, instalar uma das duas é preferível a manter a utility inline.
 
 ### Visualizando a diferença
 
@@ -283,7 +359,7 @@ async function processarLote(ids) {
 
 ## `for await...of`: iterando sobre async iterables
 
-`for await...of` é a versão assíncrona do `for...of`. Funciona com qualquer objeto que implemente o protocolo de **async iterator** — incluindo Readable streams, generators assíncronos, e APIs que expõem dados em páginas.
+`for await...of` é a versão assíncrona do `for...of`. Funciona com qualquer objeto que implemente o protocolo de **[[Dicionário de JavaScript#async iterator|async iterator]]** — incluindo Readable streams, generators assíncronos, e APIs que expõem dados em páginas.
 
 ```javascript
 // Iterando sobre um stream (Node.js)
@@ -356,6 +432,49 @@ console.log(config.apiUrl); // config já está disponível
 > Quando um módulo usa top-level await, **todo módulo que o importa espera** até que as Promises do módulo resolvam. Uma cadeia de módulos com top-level await pode atrasar significativamente o startup da aplicação. Use com moderação.
 
 Top-level await **não funciona em CommonJS** (`.cjs` ou Node sem `"type": "module"`).
+
+---
+
+## `await using` — gerenciamento explícito de recursos (ES2026)
+
+JavaScript sempre exigiu `try/finally` manual para fechar recursos (conexões de banco, streams, file handles). Esquecer o `finally` vaza recursos silenciosamente. ES2026 resolve isso com `using` e `await using`.
+
+A ideia: declarar um recurso com `await using` faz com que seu método `Symbol.asyncDispose` seja chamado automaticamente ao sair do bloco — inclusive em caso de exceção.
+
+```javascript
+// Sem await using — try/finally obrigatório e fácil de esquecer
+async function processarDB() {
+  const conn = await db.connect();
+  try {
+    const dados = await conn.query('SELECT ...');
+    return dados;
+  } finally {
+    await conn.close(); // fácil de esquecer; vaza conexão se esquecido
+  }
+}
+
+// Com await using (ES2026) — cleanup automático
+async function processarDB() {
+  await using conn = await db.connect(); // Symbol.asyncDispose chamado ao sair do bloco
+  const dados = await conn.query('SELECT ...');
+  return dados;
+} // conn[Symbol.asyncDispose]() executado aqui — mesmo se a query lançar exceção
+```
+
+Para que um objeto seja compatível com `await using`, ele precisa implementar `Symbol.asyncDispose`:
+
+```javascript
+class ConexaoDB {
+  async [Symbol.asyncDispose]() {
+    await this.close();
+  }
+}
+```
+
+> [!info] `using` vs `await using`
+> `using` é a versão síncrona — chama `Symbol.dispose` (sem await). Use `await using` para recursos com cleanup assíncrono: conexões de rede, streams, locks distribuídos. Múltiplos `using` no mesmo bloco são descartados em ordem reversa (LIFO), como destruidores em C++.
+
+**Suporte em 2026:** TypeScript 5.2+; Node.js 22+ nativo; Vite, webpack e esbuild transpilam para ambientes antigos.
 
 ---
 
@@ -481,6 +600,36 @@ async function carregarComFallback(productId) {
 > **Por quê:** todo módulo que importa um módulo com top-level await fica bloqueado até que as Promises desse módulo resolvam. Módulos de inicialização são importados por muita coisa.
 > **Como evitar:** limite top-level await a módulos de carregamento lento/configuração que são importados depois do startup principal. Prefira inicialização lazy ou um `init()` explícito.
 
+> [!warning] Cancelamento ignorado — `fetch` sem `AbortSignal`
+> **O que acontece:** a requisição continua em voo mesmo depois que o resultado já não é necessário (componente desmontou, usuário navegou, nova requisição substituiu a anterior). Respostas chegam fora de ordem e sobrescrevem state mais recente — race condition clássica.
+> **Por quê:** `async/await` com `fetch` não tem cancelamento nativo. A Promise resolve (ou rejeita) quando o servidor responde, independente de o chamador ainda querer o resultado.
+> **Como evitar:** passe um `AbortSignal` para o `fetch` e aborte quando necessário. Para timeout, `AbortSignal.timeout(ms)` é a forma moderna — sem criar `AbortController` nem timer manual. Para combinar timeout + cancel manual, use `AbortSignal.any([s1, s2])`.
+>
+> ```javascript
+> // Timeout automático — sem AbortController manual
+> async function buscarComTimeout(url, ms = 5000) {
+>   try {
+>     const resp = await fetch(url, { signal: AbortSignal.timeout(ms) });
+>     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+>     return resp.json();
+>   } catch (err) {
+>     if (err.name === 'TimeoutError') throw new Error(`Timeout após ${ms}ms`);
+>     throw err;
+>   }
+> }
+>
+> // Combinando timeout + cancel manual
+> const controller = new AbortController();
+> const resp = await fetch(url, {
+>   signal: AbortSignal.any([
+>     controller.signal,         // cancel manual (ex: botão "cancelar")
+>     AbortSignal.timeout(5000), // timeout automático
+>   ]),
+> });
+> ```
+>
+> `AbortSignal.timeout()` requer Chrome 115+, Firefox 122+, Safari 17+. `AbortSignal.any()` requer suporte a múltiplos sinais (verifique antes de usar em produção sem polyfill).
+
 ---
 
 ## Como explicar em inglês
@@ -505,6 +654,16 @@ async function carregarComFallback(productId) {
 
 ---
 
+## Mídia recomendada
+
+> [!tip] Fireship — The Async Await Episode I Promised (2019)
+> [📺 The Async Await Episode I Promised](https://www.youtube.com/watch?v=vn3tm0quoqE) — Jeff Delaney (Fireship). ~7 min. Demonstração visual rápida de como `async/await` transforma Promises em código legível: refatora callbacks → `.then` → `async/await` em ritmo acelerado. Ideal para fixar a progressão conceitual.
+
+> [!tip] Jake Archibald — In The Loop (JSConf Asia)
+> [📺 In The Loop](https://www.youtube.com/watch?v=cCOL7MC4Pl0) — Jake Archibald (Google Chrome). ~35 min. A palestra de referência sobre o event loop: tasks, microtasks, `requestAnimationFrame`, `requestIdleCallback` — e por que a ordem importa para entender o que acontece durante um `await`. Essencial para quem quer o modelo mental completo.
+
+---
+
 ## O que vem a seguir
 
 Com `async/await`, você domina como escrever e consumir operações assíncronas. O próximo passo natural é entender os **mecanismos** que tornam isso possível: como o event loop processa microtasks, o que acontece por dentro quando uma Promise resolve, e por que código síncrono pesado ainda bloqueia mesmo com `async`.
@@ -524,3 +683,6 @@ Com `async/await`, você domina como escrever e consumir operações assíncrona
 - **V8 Blog** — [*Top-level await*](https://v8.dev/features/top-level-await) — como o motor implementa top-level await e os trade-offs de carregamento de módulos
 - **LogRocket Blog** — [*Is Promise.all still relevant in 2025?*](https://blog.logrocket.com/promise-all-modern-async-patterns/) — padrões modernos de paralelismo com `async/await`
 - **The Code Barbarian** — [*Async Await Error Handling in JavaScript*](https://thecodebarbarian.com/async-await-error-handling-in-javascript.html) — análise aprofundada de patterns de tratamento de erro
+- **MDN Web Docs** — [*AbortSignal: timeout() static method*](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static) — referência de `AbortSignal.timeout()` e `AbortSignal.any()`, suporte por browser
+- **V8 Blog** — [*Explicit Resource Management*](https://v8.dev/features/explicit-resource-management) — como o motor implementa `using` e `await using` (ES2026); Symbol.dispose e Symbol.asyncDispose
+- **AppSignal Blog** — [*Managing Asynchronous Operations in Node.js with AbortController*](https://blog.appsignal.com/2025/02/12/managing-asynchronous-operations-in-nodejs-with-abortcontroller.html) (2025) — padrões modernos de cancelamento com AbortController em Node.js
