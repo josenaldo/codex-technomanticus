@@ -302,7 +302,7 @@ Mês 12+   | Fase 6: Especialização
 
 ### Notas de apoio (Fase 5)
 
-- [[Anatomia dos LLMs|17 - Evaluation de LLMs em produção]] — golden set, LLM-as-judge, traces
+- [[Anatomia dos LLMs|19 - Evaluation de LLMs em produção]] — golden set, LLM-as-judge, traces
 - [[Anatomia de Agents|09 - Evaluation de agents]] — task completion, regression tests
 - [[Economia de Tokens]] — trilha completa: monitoramento, hard limits, ROI
 - [[Segurança e Guardrails]] — trilha completa: SAST, sandbox, slopsquat, EU AI Act

@@ -3,7 +3,7 @@ title: "Mestres"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-05-25
+updated: 2026-06-25
 status: seedling
 tags:
   - moc
@@ -20,13 +20,17 @@ Esta pasta agrupa perfis enxutos de pessoas cujo trabalho é citado recorrenteme
 
 ## Conteúdo
 
+- [[Addy Osmani]] — referência internacional em performance web e IA na prática do engenheiro sênior
 - [[Andrej Karpathy]] — referência internacional em IA, deep learning e educação em LLMs
 - [[Bruno Souza]] — referência brasileira em Java e comunidade
+- [[Grant Sanderson (3Blue1Brown)]] — referência internacional em visualizações matemáticas, redes neurais e transformers
 - [[Eduardo Mendes (Dunossauro)]] — referência brasileira em Python
 - [[Elemar Júnior]] — referência brasileira em .NET e arquitetura
 - [[Fernanda Kipper]] — referência brasileira em frontend e desenvolvimento web
 - [[Giuliana Bezerra]] — referência brasileira em Java e arquitetura
+- [[Jay Alammar]] — referência internacional em visualizações de ML (série "The Illustrated…", BERT, GPT, transformer)
 - [[Loiane Groner]] — referência brasileira em frontend e Angular
+- [[Maarten Grootendorst]] — referência internacional em NLP (BERTopic, KeyBERT, Hands-On LLMs)
 - [[Lucas Gertel]] — referência brasileira em desenvolvimento
 - [[Lucas Montano]] — referência brasileira em carreira e desenvolvimento
 - [[Luciano Ramalho]] — referência brasileira em Python (autor de Fluent Python)
@@ -36,7 +40,9 @@ Esta pasta agrupa perfis enxutos de pessoas cujo trabalho é citado recorrenteme
 - [[Otávio Lemos]] — referência brasileira em engenharia de software
 - [[Rodrigo Branas]] — referência brasileira em arquitetura e práticas de software
 - [[Rodrigo Manguinho]] — referência brasileira em Clean Architecture e TDD
+- [[Sebastian Raschka]] — referência internacional em LLMs (Build a LLM from Scratch, newsletter Ahead of AI)
 - [[Theo Calvo]] — referência brasileira em desenvolvimento e carreira
+- [[Umar Jamil]] — referência internacional em implementação de LLMs do zero em PyTorch (LLaMA, Mistral, FlashAttention)
 - [[Vaughn Vernon]] — referência internacional em DDD
 - [[Wesley Williams]] — referência brasileira em desenvolvimento
 - [[Willian Justen]] — referência brasileira em frontend

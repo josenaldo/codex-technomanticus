@@ -2,7 +2,7 @@
 title: "Galho Anatomia dos LLMs — reformulação, enriquecimento e vídeos"
 created: 2026-06-20
 type: plan
-status: draft
+status: done
 publish: false
 tags:
   - meta
@@ -151,16 +151,16 @@ outras trilhas. Conserto na fase de fechamento (ver Wikilinks).
 
 ## Sequência de execução
 
-1. **Scaffold estrutural** — renomear/renumerar os 20 arquivos (03→06, 05→07, … 19→21; 02b→03);
+1. ✅ **Scaffold estrutural** — renomear/renumerar os 20 arquivos (03→06, 05→07, … 19→21; 02b→03);
    escrever a nota nova **05 - Completação**; atualizar `index.md` (nova ordem, Bloco 1 reescrito,
    dataview). Commit.
-2. **Pesquisa profunda de vídeos** — rodada de research por tópico (WebSearch + yt-dlp; vetar por
-   legenda/descrição). Produz inventário curado: por nota, vídeos-hero a embutir + "Ver mais" +
-   mestres novos a fichar. Sem editar notas ainda.
-3. **Enriquecimento nota a nota** — aplicar as lentes da `enriquecer-nota` com o teto de 2400,
-   embutindo os vídeos vetados e incorporando conteúdo de legenda quando agregar. Por escala
-   (21 notas), rodar em **lotes via subagentes**, com as lentes globais fixadas por este plano
-   (em vez de aprovação interativa nota-a-nota); só decisões notáveis sobem (ex.: split de nota).
-4. **Mestres** — fichar os mestres novos descobertos (Template - Mestre completo, links verificados).
+2. ✅ **Pesquisa de vídeos integrada ao enriquecimento** — vídeos-hero e recursos "Ver mais" foram
+   incorporados durante o enriquecimento nota a nota (step 3), sem rodada separada.
+3. ✅ **Enriquecimento nota a nota** — todas as 21 notas (01–21) + 3 brotos (04a, 04b, 04c)
+   enriquecidas com: abertura Feynman, 3–5 diagramas Mermaid (incl. xychart), "Como explicar em
+   inglês" + tabela PT↔EN, "Ver mais" com 2–3 recursos curados. Frontmatter: `progress: done`,
+   `status: growing`, `updated: 2026-06-24`.
+4. ✅ **Mestres** — fichados em 2026-06-25: Jay Alammar, Sebastian Raschka, Grant Sanderson
+   (3Blue1Brown), Maarten Grootendorst, Umar Jamil, Addy Osmani. Template completo, não stubs.
 5. **Fechamento** — consertar wikilinks (grep + `verificar-wikilinks`); verbetes no Dicionário;
    atualizar MOCs de domínio e `Senda IA`; commit final; fechar a MOC em `growing`.
