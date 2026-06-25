@@ -46,7 +46,7 @@ aliases:
 | ------ | ------ | ---- |
 | [[03-Dominios/Tecnologia/TypeScript/index\|TypeScript]] | ✅ | 27 notas, 3 fases |
 | [[03-Dominios/Tecnologia/Tooling e Build/index\|Tooling e Build]] | ✅ | 26 notas, concluída 2026-06-25 |
-| [[03-Dominios/Tecnologia/JavaScript/index\|JavaScript (core)]] | 🧱 | só `JavaScript Fundamentals.md`; **base de toda a stack frontend, ainda não atomizada** |
+| [[03-Dominios/Tecnologia/JavaScript/index\|JavaScript (core)]] | ✅ | 26 notas, 3 fases, concluída 2026-06-25 (monólito aposentado em stub) |
 | [[03-Dominios/Tecnologia/React/index\|React (core)]] | 🧱 | só `React.md` + galho `TypeScript com React` (15 notas); falta a trilha atômica do core |
 | [[03-Dominios/Tecnologia/HTML/index\|HTML]] | 🧱 | só `HTML semântico.md`; falta forms, a11y, ARIA, SEO, metadados |
 | [[03-Dominios/Tecnologia/CSS/index\|CSS]] | 🧱 | só `CSS.md` + Bootstrap; falta layout (flex/grid), cascade, responsivo, design system |
@@ -109,7 +109,7 @@ aliases:
 > A lógica: fechar primeiro o **tripé frontend** (a maior lacuna do perfil, já que backend Java está maduro), depois subir para **system design / operação** (profundidade de senior), e em paralelo as **reformas** de consolidação.
 
 ### Onda A — Tripé Frontend (prioridade máxima)
-1. ⬜→✅ **JavaScript (core)** — closures, protótipos & `this`, coerção, async no nível da linguagem, iterators/generators, módulos. *É a base que o índice do TypeScript já referencia e não existe.*
+1. ✅ **JavaScript (core)** — **CONCLUÍDA 2026-06-25** (26 notas, 3 fases): closures, protótipos & `this`, coerção, async no nível da linguagem, iterators/generators, módulos, metaprogramação, ES2026. Base que o índice do TypeScript referencia.
 2. 🧱→✅ **React (core)** — render model, hooks a fundo, reconciliation, estado, Suspense/RSC, performance. *Central para qualquer entrevista frontend.*
 3. 🧱→✅ **HTML** — semântica, forms, acessibilidade (ARIA/a11y), SEO, metadados.
 4. 🧱→✅ **CSS** — box model, flex/grid, cascade & specificity, responsivo, design tokens.

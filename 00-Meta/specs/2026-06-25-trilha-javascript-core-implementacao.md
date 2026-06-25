@@ -3,7 +3,7 @@ title: "Plano de Implementação — Trilha JavaScript core"
 type: spec
 created: 2026-06-25
 updated: 2026-06-25
-status: draft
+status: done
 tags:
   - spec
   - plano
