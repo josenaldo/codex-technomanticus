@@ -1,7 +1,7 @@
 ---
 title: "Test runner nativo (node-test) e o cenário de testes"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -121,6 +121,21 @@ node --test --watch
 > [!info] `node:assert` vs `expect()`
 > O `node:test` usa `node:assert` para asserções — não tem o estilo `expect(x).toBe(y)` que o Jest popularizou. Isso é a maior diferença ergonômica. O `assert.strictEqual(a, b)` é mais verboso mas semanticamente idêntico. A partir do Node 22, `t.assert.snapshot()` adicionou snapshot testing ao estilo Jest diretamente na API de contexto.
 
+> [!tip] Context API — o argumento `t` que muda tudo
+> Cada `it` e `describe` recebe um argumento `t` (o contexto do teste) que expõe asserções, sub-testes, mocks locais e diagnóstico:
+> ```ts
+> it('contexto explícito', (t) => {
+>   t.assert.equal(2 + 2, 4);          // asserção via contexto (rastreia origem no relatório)
+>   t.diagnostic('cálculo verificado'); // mensagem diagnóstica no output TAP
+>
+>   // Sub-testes — agrupamento inline sem describe
+>   t.test('sub-caso edge', (t2) => {
+>     t2.assert.throws(() => divide(0, 0));
+>   });
+> });
+> ```
+> O `t.mock` restrito ao contexto é especialmente útil: o mock é restaurado automaticamente ao final do teste sem chamar `mock.restoreAll()` no hook `afterEach`. Em suítes grandes, isso elimina uma classe inteira de vazamentos de mock entre testes.
+
 ### Mocking nativo
 
 O sistema de mocks do `node:test` chegou estável no Node 20 e cobre os casos mais comuns:
@@ -182,6 +197,71 @@ node --test --experimental-test-coverage \
 > [!warning] `--experimental-test-coverage` em 2026
 > A flag ainda carrega o prefixo `--experimental-` mesmo no Node 26. Isso não significa instabilidade do runner — significa que o *formato do relatório e as opções de configuração* podem mudar. Para uso em CI produtivo, combine com um threshold manual ou use `c8` como pós-processador do output lcov se precisar de thresholds `--branches=80`.
 
+### Isolamento de testes: `--test-isolation`
+
+Por padrão, o `node:test` executa cada arquivo de teste em um **worker thread** separado (Node.js 22+). Isso significa que arquivos não compartilham estado global — `global`, módulos cached via `require`, variáveis de módulo. Para desabilitar o isolamento (útil quando os arquivos precisam compartilhar um servidor de teste já iniciado):
+
+```bash
+# Sem isolamento — todos os arquivos rodam no mesmo processo
+node --test --test-isolation=none
+
+# Com isolamento por worker thread (padrão Node 22+)
+node --test --test-isolation=worker
+
+# Com isolamento por processo filho (fork — custo maior, isolamento total)
+node --test --test-isolation=process
+```
+
+```mermaid
+graph LR
+    subgraph "none — processo único"
+        P0["Processo principal"]
+        F0a["arquivo-a.test.ts"] --> P0
+        F0b["arquivo-b.test.ts"] --> P0
+        P0 -- "módulos compartilhados\n⚠️ estado vaza" --> P0
+    end
+
+    subgraph "worker (padrão)"
+        PW["Processo principal\n(orquestrador)"]
+        W1["Worker Thread 1\narquivo-a.test.ts"]
+        W2["Worker Thread 2\narquivo-b.test.ts"]
+        PW --> W1
+        PW --> W2
+    end
+
+    subgraph "process"
+        PP["Processo principal\n(orquestrador)"]
+        C1["Child Process 1\narquivo-a.test.ts"]
+        C2["Child Process 2\narquivo-b.test.ts"]
+        PP --> C1
+        PP --> C2
+    end
+
+    style W1 fill:#1a5b5b,color:#fff
+    style W2 fill:#1a5b5b,color:#fff
+    style C1 fill:#5b1a1a,color:#fff
+    style C2 fill:#5b1a1a,color:#fff
+```
+
+O trade-off: `worker` é mais rápido (menos overhead de fork), mas módulos com estado singleton podem vazar se o worker for reusado. `process` é mais caro, mas o isolamento é absoluto — cada arquivo começa em um processo limpo.
+
+### Parallelismo em CI: `--test-shard`
+
+O Node 22 introduziu `--test-shard=x/y`, que divide a suíte em `y` partes e executa a `x`-ésima. Usado em pipelines de CI para paralelizar across machines:
+
+```bash
+# Matrix CI — 4 máquinas, cada uma roda 1/4 dos testes
+# Máquina 1:
+node --test --test-shard=1/4
+
+# Máquina 2:
+node --test --test-shard=2/4
+
+# ... e assim por diante
+```
+
+Isso replica o que `jest --shard` e `vitest --shard` oferecem — importante para suítes grandes onde o CI demora mais de alguns minutos.
+
 ### Quando `node:test` é a escolha certa
 
 O caso de uso principal do `node:test` é preciso: **você quer testar código Node.js puro sem adicionar uma dependência de dev ao projeto**. Isso aparece em:
@@ -203,6 +283,35 @@ O que ainda falta, em comparação com Vitest: sem transform nativo de TypeScrip
 O Vitest foi criado pelo time do Vite (Anthony Fu) com uma premissa clara: se seu projeto já usa o Vite, por que testar com uma ferramenta que não entende a sua config do Vite? O resultado é um runner que compartilha o mesmo pipeline de transformação do Vite — os mesmos aliases, os mesmos plugins, o mesmo entendimento de `import.meta.env`.
 
 **Versão atual:** Vitest 4.x (lançado em outubro/2025). O Vitest 4 estabilizou o modo browser e adicionou visual regression testing (`toMatchScreenshot`).
+
+> [!info] Vitest 3 → 4: o que mudou de relevante (fonte: [changelog oficial Vitest](https://github.com/vitest-dev/vitest/releases))
+> - **Vitest 3 (jan/2025):** `--reporter=verbose` tornou-se o padrão em modo interativo; `pool: 'vmThreads'` foi removido (substituído por `pool: 'threads'` com `isolate: true`); `globalSetup` passou a ter acesso ao `provide()`/`inject()` para compartilhar estado entre arquivos; `.toMatchInlineSnapshot()` ganhou suporte a template strings ES2024.
+> - **Vitest 4 (out/2025):** browser mode saiu de experimental (suporte a Playwright e WebdriverIO como providers); `toMatchScreenshot()` para visual regression; `--test-timeout` global configurável; melhorias de performance de ~20% no modo `threads` via reuso de workers.
+
+### Pool modes do Vitest: `threads`, `forks`, `vmThreads` (histórico)
+
+O Vitest tem três modos de execução configuráveis via `pool` no config:
+
+```ts
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    // 'threads'  — worker threads (padrão Vitest 4). Isolamento via módulos clonados.
+    // 'forks'    — processos filhos (Node child_process). Isolamento total, mais lento.
+    // 'vmThreads'— worker threads + vm.Module (removido no Vitest 3; era frágil)
+    pool: 'threads',
+
+    // Dentro de 'threads', controla se módulos são re-importados entre arquivos
+    poolOptions: {
+      threads: {
+        isolate: true, // padrão; false = 3x mais rápido, mas vaza singletons entre arquivos
+      },
+    },
+  },
+});
+```
+
+A escolha prática: para testes que manipulam `process.env` ou singletons de módulo (ex.: clientes de banco de dados, conexões WebSocket), `isolate: true` é obrigatório. Para testes puros de lógica sem side-effects de módulo, `isolate: false` com `pool: 'threads'` dá o melhor throughput.
 
 Mas há algo mais fundamental: o Vitest foi desenhado para ESM e TypeScript de verdade, não como afterthought.
 
@@ -318,13 +427,31 @@ pnpm vitest --coverage   # com coverage
 pnpm vitest --ui
 ```
 
+### `vitest --shard` e paralelismo em CI
+
+O Vitest também suporta sharding para CI paralelo, com a mesma semântica do `node:test`:
+
+```bash
+# CI matrix: 3 jobs, cada um roda 1/3 dos arquivos de teste
+# Job 1:
+vitest run --shard=1/3
+
+# Job 2:
+vitest run --shard=2/3
+
+# Job 3:
+vitest run --shard=3/3
+```
+
+O shard é determinístico (baseado na ordem de descoberta de arquivos), então o mesmo arquivo sempre cai no mesmo shard — a menos que você adicione novos arquivos. Combina com `--reporter=junit` para agregar resultados no CI.
+
 ### O Vitest em números (2026)
 
 Os dados de 2025–2026 pintam um quadro claro da virada:
 
-- **Downloads npm (maio/2026):** Vitest ~45,1M/semana vs. Jest ~44,8M — o Vitest passou o Jest em volume absoluto
-- **State of JS 2024:** Vitest com 96% de retenção (maior de qualquer ferramenta de teste JS), Jest com ~74%
-- **Angular 21 (out/2025):** adotou Vitest como runner padrão, substituindo o Karma definitivamente
+- **Downloads npm (maio/2026):** Vitest ~45,1M/semana vs. Jest ~44,8M — o Vitest passou o Jest em volume absoluto (fonte: [npm trends, maio 2026](https://npmtrends.com/jest-vs-vitest))
+- **State of JS 2024:** Vitest com 96% de retenção (maior de qualquer ferramenta de teste JS), Jest com ~74% (fonte: [stateofjs.com/2024/testing](https://stateofjs.com/en-US/2024/#testing))
+- **Angular 21 (out/2025):** adotou Vitest como runner padrão, substituindo o Karma definitivamente (fonte: [angular.dev/guide/testing](https://angular.dev/guide/testing))
 - **Nuxt e SvelteKit:** recomendam Vitest para projetos novos há vários anos
 - **Speed gap vs Jest:** 2,1× mais rápido em cold run (500 testes: 7,4s vs 15,6s); 8,5× mais rápido em watch mode (340ms vs 2.890ms); 27% menos memória
 
@@ -410,6 +537,68 @@ O Jest não é uma ferramenta morta — é uma ferramenta estável com casos de 
 
 > [!warning] Não comece projetos novos com Jest em 2026
 > A recomendação do ecossistema convergiu: projetos *novos* devem usar Vitest (com Vite) ou `node:test` (sem bundler). Escolher Jest em um projeto verde hoje significa herdar os problemas de ESM, a lentidão de watch mode, e a necessidade de configurar transform desde o início — sem ganho equivalente.
+
+---
+
+## Coverage em profundidade: V8, istanbul e c8
+
+O coverage de código é uma das áreas onde os runners divergem mais na forma como funcionam internamente — e isso tem impacto prático em CI.
+
+### Dois motores de instrumentação
+
+Existem dois mecanismos para coletar coverage em Node.js:
+
+```mermaid
+graph TD
+    subgraph "Istanbul (instrumentation-based)"
+        IS["Código fonte original"]
+        IT["Babel/SWC injeta contadores\nem cada branch/statement"]
+        IE["Código instrumentado roda"]
+        IR["Contadores coletados → lcov/json"]
+        IS --> IT --> IE --> IR
+    end
+
+    subgraph "V8 Coverage (built-in)"
+        VS["Código fonte original"]
+        VR["V8 rastreia ranges de bytecode\nexecutados internamente"]
+        VM["Source maps revertem\npara linhas originais"]
+        VO["Output: lcov/json via CDP"]
+        VS --> VR --> VM --> VO
+    end
+
+    style IT fill:#553333,color:#eee
+    style VR fill:#1a5b5b,color:#fff
+```
+
+**Istanbul** (usado pelo `@vitest/coverage-istanbul` e historicamente pelo Jest com `babel-jest`) injeta contadores no AST do código antes de executar. Vantagem: preciso ao nível de statement, suporta bem TypeScript após transform. Desvantagem: transforma o código — o que você testa não é exatamente o que roda.
+
+**V8 Coverage** (usado pelo `@vitest/coverage-v8`, `node --experimental-test-coverage`, e `bun test --coverage`) usa o profiler nativo do V8 via CDP (Chrome DevTools Protocol). O código roda sem instrumentação; o V8 registra quais ranges de bytecode foram executados. Vantagem: o código executado é idêntico ao código de produção. Desvantagem: source maps precisam ser precisos para mapear bytecode→TypeScript original — em alguns cenários de transform complexo, linhas podem ficar mal atribuídas.
+
+### c8 como pós-processador
+
+Antes de o Vitest existir, o `c8` era a forma padrão de usar V8 coverage com qualquer runner:
+
+```bash
+# c8 envolve o comando e coleta V8 coverage
+pnpm add -D c8
+
+# Uso com node:test
+c8 node --test
+
+# Uso com qualquer script
+c8 node src/server.js
+
+# Thresholds — falha se coverage < mínimo
+c8 --branches 80 --functions 90 --lines 85 node --test
+
+# Formato de relatório
+c8 --reporter=lcov --reporter=text node --test
+```
+
+O `c8` ainda é útil com `node:test` quando você precisa de thresholds precisos — a flag `--experimental-test-coverage` do Node não expõe thresholds configuráveis nativamente até o Node 26.
+
+> [!question] Qual escolher: V8 ou Istanbul?
+> Se você usa Vitest, comece com `@vitest/coverage-v8` (zero overhead de instrumentação, mais próximo do comportamento real). Se perceber que relatórios de branch coverage estão imprecisos em código TypeScript complexo (condicionals em tipos, narrowing), troque para `@vitest/coverage-istanbul`. Para node:test em CI com thresholds, use `c8` como wrapper. (Fonte: [vitest.dev/guide/coverage](https://vitest.dev/guide/coverage))
 
 ---
 
@@ -636,13 +825,15 @@ flowchart TD
 | **TypeScript** | via `--experimental-strip-types` ou tsx | nativo (esbuild) | via ts-jest/SWC | nativo |
 | **API de asserção** | `assert.*` | `expect()` Jest-compat | `expect()` | `expect()` Jest-compat |
 | **Mocking** | `mock.fn/method/module` | `vi.fn/mock/spyOn` | `jest.fn/mock/spyOn` | `mock()` Jest-compat |
-| **Coverage** | `--experimental-test-coverage` | `@vitest/coverage-v8` | `--coverage` | `--coverage` |
+| **Coverage** | `--experimental-test-coverage` (ou c8) | `@vitest/coverage-v8` ou istanbul | `--coverage` (istanbul) | `--coverage` (V8) |
 | **Watch mode** | experimental | estável, HMR | estável | estável |
 | **Snapshot testing** | a partir Node 22 | ✓ | ✓ | ✓ |
+| **Test sharding (CI)** | `--test-shard=x/y` (Node 22+) | `--shard=x/y` | `--shard=x/y` | ✗ |
+| **Isolamento** | `--test-isolation=worker/process/none` | `pool: threads/forks` | `--runInBand` | por processo |
 | **Browser testing** | ✗ | ✓ (modo browser estável Vitest 4) | via jsdom | ✗ |
 | **React Native** | ✗ | ✗ | ✓ | ✗ |
 | **Startup** | ~0,5s | ~0,9s | ~1,2s | ~0,08s |
-| **State of JS 2024 retenção** | — | 96% 🏆 | 74% | — |
+| **State of JS 2024 retenção** | — | 96% | 74% | — |
 | **Melhor para** | libs sem deps | apps Vite, tudo novo | RN, legado | apps Bun |
 
 ---
@@ -708,4 +899,20 @@ In the Node.js ecosystem, there are four main options in 2026:
 - [[18 - O runtime como ferramenta de DX]] — `node --watch`, `--env-file`, `--experimental-strip-types`; o contexto de como o Node.js virou uma ferramenta de DX ativa que dispensa tsx/ts-node para muitos casos
 - [[13 - Vite a fundo]] — o motor do Vitest: como o esbuild + Rollup do Vite se torna o pipeline de transform dos testes
 - [[20 - Bun como runtime e toolkit all-in-one]] — o Bun além do test runner: runtime, bundler, package manager integrados
+- [[23 - Build em produção, CI e determinismo]] — onde sharding de testes se encaixa no pipeline CI: determinismo, cache de artefatos e paralelismo de jobs
+- [[03-Dominios/Tecnologia/Tooling e Build/17 - Otimização de bundle|17 - Otimização de bundle]] — tree shaking e code splitting impactam o que coverage realmente mede em projetos com bundler
 - [[03-Dominios/Engenharia/Testes/index|Testes]] — estratégia, pirâmide, TDD, test doubles — o que esta nota deliberadamente não cobre; o ângulo aqui é a ferramenta, não a filosofia
+- [[03-Dominios/Engenharia/Testes/12 - Coverage e mutation testing|12 - Coverage e mutation testing]] — profundidade sobre o que coverage mede (e não mede): line vs branch vs mutation; complementar à seção de coverage desta nota
+
+---
+
+## Referências
+
+- [Node.js docs — `node:test` (stable)](https://nodejs.org/api/test.html) — documentação oficial, inclui context API, mock.module, sharding, isolation
+- [Node.js 22 changelog — test isolation e sharding](https://nodejs.org/en/blog/release/v22.0.0) — `--test-isolation`, `--test-shard`, `--test-randomize` adicionados
+- [Vitest docs — coverage](https://vitest.dev/guide/coverage) — V8 vs istanbul, thresholds, providers
+- [Vitest GitHub releases — changelog 3.x e 4.x](https://github.com/vitest-dev/vitest/releases) — pool modes, browser mode GA, vmThreads deprecation
+- [State of JS 2024 — Testing](https://stateofjs.com/en-US/2024/#testing) — dados de retenção e satisfação por ferramenta
+- [npm trends: jest vs vitest](https://npmtrends.com/jest-vs-vitest) — downloads semanais históricos
+- [Angular 21 migration guide](https://angular.dev/guide/testing) — adoção do Vitest como runner padrão
+- [c8 — V8 coverage as CLI](https://github.com/bcoe/c8) — pós-processador de V8 coverage para uso com node:test e thresholds

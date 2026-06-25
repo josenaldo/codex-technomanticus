@@ -1,7 +1,7 @@
 ---
 title: "Bun como runtime e toolkit all-in-one"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -74,6 +74,8 @@ graph TD
 O Node.js usa o V8 — o motor JavaScript do Chrome, desenvolvido pelo Google. É excelente, maduro, tem dois JITs (TurboFan e Maglev) e é a referência de performance para workloads de longa duração.
 
 O Bun usa o **JavaScriptCore** (JSC) — o motor do Safari, desenvolvido pela Apple. A diferença não é apenas de logotipo: os dois engines fazem apostas diferentes no trade-off *startup vs throughput de pico*.
+
+Pense assim: o V8 é como um coureur de fundo que aquece devagar mas sustenta o ritmo por horas. O JSC é como um velocista — explode nos primeiros metros (startup) e vai aprofundando a otimização enquanto corre. Para workloads efêmeras (CLI, serverless, CI), o velocista ganha; para processos de longa duração com JIT aquecido, a diferença diminui.
 
 O V8 tem uma estratégia de JIT mais agressiva para workloads de longa duração. O JSC tem uma estratégia em camadas — `LLInt` (bytecode interpretado), `Baseline JIT`, `DFG` (*Data Flow Graph*) e `FTL` (*Faster Than Light*, baseado em LLVM) — que prioriza compilar rápido logo no início e ir aprofundando a otimização conforme o código roda. O resultado prático:
 
@@ -155,9 +157,9 @@ O `--watch` do Bun reinicia o processo quando qualquer arquivo muda — equivale
 
 ---
 
-## APIs nativas: Bun.serve, Bun.file e SQLite embutido
+## APIs nativas: Bun.serve, Bun.file, SQLite embutido e mais
 
-O Bun não é apenas um runtime que roda JavaScript mais rápido. Ele vem com um conjunto de APIs nativas — implementadas em Zig — que substituem pacotes de terceiros com desempenho substancialmente maior.
+O Bun não é apenas um runtime que roda JavaScript mais rápido. Ele vem com um conjunto de APIs nativas — implementadas em Zig — que substituem pacotes de terceiros com desempenho substancialmente maior. As três mais importantes para o dia a dia são `Bun.serve`, `Bun.file` e `bun:sqlite`. Mas o ecossistema de APIs built-in é mais amplo: inclui `Bun.password`, `Bun.spawn`, variáveis de ambiente inline, e WebSocket nativo.
 
 ### Bun.serve — servidor HTTP nativo
 
@@ -275,6 +277,134 @@ db.close();
 ```
 
 Benchmarks do bun:sqlite mostram 3–6× mais rápido que `better-sqlite3` (o melhor driver SQLite para Node) em leituras, e 4–6× mais rápido em inserções em lote com WAL mode — porque evita inteiramente o N-API marshaling. Para projetos que precisam de persistência local sem querer lidar com um banco de dados separado (CLIs, scripts de ETL, testes de integração), o bun:sqlite é uma escolha natural.
+
+### Bun.serve com WebSocket nativo
+
+O `Bun.serve` não é só HTTP — ele suporta WebSocket de forma nativa, sem pacotes extras como `ws` ou `socket.io`.
+
+```typescript
+// WebSocket server nativo — sem dependências
+const server = Bun.serve<{ username: string }>({
+  port: 3000,
+
+  fetch(req, server) {
+    const url = new URL(req.url);
+
+    // Upgrade da conexão HTTP → WebSocket
+    if (url.pathname === "/chat") {
+      const username = url.searchParams.get("user") ?? "anônimo";
+      // upgrade retorna undefined se bem-sucedido, Response se falhar
+      const upgraded = server.upgrade(req, { data: { username } });
+      return upgraded ?? new Response("Upgrade esperado", { status: 426 });
+    }
+
+    return new Response("Use /chat com WebSocket", { status: 404 });
+  },
+
+  websocket: {
+    // Chamado quando uma mensagem chega
+    message(ws, mensagem) {
+      // ws.data tem o tipo genérico { username: string }
+      console.log(`[${ws.data.username}]: ${mensagem}`);
+      // broadcast para todos os clientes conectados
+      server.publish("sala-geral", `${ws.data.username}: ${mensagem}`);
+    },
+
+    open(ws) {
+      ws.subscribe("sala-geral"); // inscreve no canal de broadcast
+      server.publish("sala-geral", `${ws.data.username} entrou`);
+    },
+
+    close(ws) {
+      server.publish("sala-geral", `${ws.data.username} saiu`);
+    },
+  },
+});
+```
+
+> [!tip] WebSocket sem biblioteca de terceiros
+> O Bun implementa a especificação RFC 6455 nativamente em Zig. O sistema de pub/sub via `server.publish()` e `ws.subscribe()` é built-in — sem precisar de Redis ou qualquer broker externo para broadcast local. Para chat de sala única ou notificações em tempo real em um único processo, é suficiente.
+
+### Bun.password — bcrypt e Argon2 nativos
+
+Uma das adições práticas que evita instalar `bcrypt` (que exige N-API compilado):
+
+```typescript
+// Hashing de senha — suporta bcrypt e argon2id
+const hash = await Bun.password.hash("minha-senha", {
+  algorithm: "argon2id", // ou "bcrypt"
+  // argon2id: padrão recomendado (resistente a GPU e side-channel)
+  memoryCost: 4,   // em KiB (4 = 4096 KiB = 4 MB)
+  timeCost: 3,     // iterações
+});
+
+// Verificação — compara sem timing attack
+const valida = await Bun.password.verify("minha-senha", hash);
+console.log(valida); // true
+
+// bcrypt — parâmetro de cost (rounds)
+const hashBcrypt = await Bun.password.hash("senha", {
+  algorithm: "bcrypt",
+  cost: 12,        // 2^12 rounds (padrão seguro)
+});
+```
+
+> [!info] Argon2id vs bcrypt
+> Argon2id ganhou o Password Hashing Competition em 2015 e é a recomendação atual do OWASP. É resistente a ataques de GPU (memory-hard) e side-channel (hybrid). bcrypt ainda é muito usado e seguro, mas não é memory-hard. Em projetos novos, prefira `argon2id`.
+
+### Bun.spawn — subprocessos nativos
+
+Em vez de `child_process` do Node (que funciona via N-API), o Bun tem `Bun.spawn`:
+
+```typescript
+// Executa um subprocesso
+const proc = Bun.spawn(["git", "log", "--oneline", "-5"], {
+  cwd: "./meu-repo",        // diretório de trabalho
+  stdout: "pipe",           // captura stdout
+  stderr: "pipe",
+  env: {
+    ...process.env,
+    GIT_AUTHOR_NAME: "Bot",
+  },
+});
+
+// Lê a saída como texto
+const saida = await new Response(proc.stdout).text();
+const exitCode = await proc.exited; // aguarda encerramento
+
+console.log(saida);      // os 5 commits
+console.log(exitCode);   // 0 se sucesso
+
+// Atalho para capturar stdout como string
+const { stdout } = await Bun.spawn(["ls", "-la"]).exited;
+```
+
+### Bun.env e dotenv nativo
+
+O Bun carrega automaticamente o arquivo `.env` presente na raiz do projeto — sem precisar instalar `dotenv`:
+
+```bash
+# .env na raiz do projeto
+DATABASE_URL=postgres://localhost:5432/meudb
+API_KEY=secret-key-aqui
+DEBUG=true
+```
+
+```typescript
+// Acesso via process.env — funciona igual ao Node
+console.log(process.env.DATABASE_URL); // "postgres://localhost:5432/meudb"
+
+// Ou via Bun.env — alias direto
+console.log(Bun.env.API_KEY);          // "secret-key-aqui"
+```
+
+```bash
+# Arquivo .env específico com --env-file
+bun run --env-file=.env.production src/server.ts
+```
+
+> [!tip] Sem `dotenv` no Bun
+> Em projetos Node você instala `dotenv` e chama `require('dotenv').config()` ou usa `--require dotenv/config`. No Bun, o `.env` é carregado automaticamente. Se você migrar do Node, pode remover o `dotenv` como dependência — o comportamento é equivalente.
 
 ---
 
@@ -439,6 +569,167 @@ bun run src/index.ts # tenta rodar
 
 > [!example] Migração pontual de scripts de CI
 > Uma estratégia de adoção incremental que funciona bem: manter o Node em produção, mas substituir o Bun em scripts e testes. `bun test` em vez de `jest` reduz o tempo de CI sem tocar no runtime de produção. `bun build` em vez de `tsc && esbuild` para o step de build. Você captura os ganhos de tooling sem assumir o risco de incompatibilidade em produção.
+
+---
+
+## Bun 1.2 e o bun.lock JSONC — novidade de 2025
+
+> [!info] Fonte: [Bun 1.2 Release Notes](https://bun.sh/blog/bun-v1.2) — Janeiro 2025
+
+O Bun 1.2 (lançado em janeiro de 2025) foi um release significativo com mudanças que impactam diretamente projetos em produção:
+
+### bun.lock: de binário para JSONC legível
+
+Antes do 1.2, o lockfile do Bun (`bun.lockb`) era **binário** — rápido de ler, mas ilegível para humanos e diff tools. Isso criava atrito em code review: `git diff` mostrava bytes, não mudanças de dependências.
+
+O Bun 1.2 introduziu um novo lockfile padrão: `bun.lock`, em formato **JSONC** (JSON with Comments). É legível, diff-amigável, e mantém a compatibilidade com o `package.json` existente.
+
+```bash
+# Gera o novo lockfile JSONC (padrão no Bun 1.2+)
+bun install
+# → cria bun.lock (JSONC, legível)
+
+# Para forçar o formato binário legado
+bun install --frozen-lockfile  # não muda o lockfile existente
+```
+
+```jsonc
+// bun.lock (trecho) — formato JSONC, legível no git diff
+{
+  "lockfileVersion": 0,
+  "packages": {
+    "zod@3.22.4": {
+      "resolved": "https://registry.npmjs.org/zod/-/zod-3.22.4.tgz",
+      "integrity": "sha512-...",
+      "dependencies": {}
+    }
+  }
+}
+```
+
+> [!warning] Migração do bun.lockb para bun.lock
+> Se seu projeto usa `bun.lockb` (binário), rode `bun install` com Bun 1.2+ para regenerar o lockfile no formato JSONC. Adicione `bun.lockb` ao `.gitignore` e comite o novo `bun.lock`. Não mantenha os dois — causará conflito.
+
+### Outros destaques do Bun 1.2
+
+- **`bun.lock` JSONC** — lockfile legível (detalhe acima)
+- **`bun publish`** — publicação de pacotes npm sem precisar do `npm publish`; suporta registros privados
+- **`bun pm pack`** — equivalente ao `npm pack` para inspecionar o tarball antes de publicar
+- **S3 nativo** — `Bun.s3` como API built-in para leitura/escrita em buckets S3 (sem `@aws-sdk/client-s3`)
+- **Postgres built-in** — `bun:postgres` como módulo nativo para PostgreSQL, similar ao `bun:sqlite` (sem `pg` ou `postgres` como dep)
+- **Node.js ~98% compat** — suite oficial de compatibilidade alcançou 98% neste release
+- **`bun:crypto`** — bindings para operações criptográficas nativas sem overhead N-API
+
+```typescript
+// Exemplo: S3 nativo no Bun 1.2
+import { s3 } from "bun";
+
+const arquivo = s3("meu-bucket/dados.json", {
+  region: "us-east-1",
+  // credenciais via AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, ou IAM role
+});
+
+// Lê como JSON — lazy, igual ao Bun.file
+const dados = await arquivo.json();
+
+// Escreve
+await arquivo.write(JSON.stringify({ atualizado: Date.now() }));
+
+// Serve diretamente como Response (sem baixar pro servidor)
+Bun.serve({
+  fetch() {
+    return new Response(arquivo); // stream direto do S3
+  },
+});
+```
+
+### Bun 1.3: dev server zero-config e mais
+
+O Bun 1.3 (lançado em 2025) adicionou:
+
+- **Dev server zero-config** — `bun index.html` sobe um servidor com HMR e React Fast Refresh sem nenhum arquivo de configuração (alternativa ao `vite dev`)
+- **HTTP/3 no Bun.serve** — suporte nativo a QUIC/HTTP3 (experimental)
+- **ETag automático** para rotas estáticas
+- **`bun:postgres`** estabilizado (saiu de experimental)
+- **`bun test --coverage`** melhorado — relatórios compatíveis com Istanbul (lcov)
+
+> [!info] Fonte: [Bun 1.3 Release Notes](https://bun.sh/blog/bun-v1.3) — 2025
+
+---
+
+## Elysia.js: o framework web nativo do Bun
+
+Assim como o Node tem Express, Fastify e Hono, o Bun tem seu próprio framework de destaque construído especificamente para explorar as APIs nativas: **Elysia.js**.
+
+Elysia foi construído sobre `Bun.serve` e usa um sistema de validação de tipos em runtime (com Zod-like) chamado TypeBox, que ao mesmo tempo gera os tipos TypeScript e valida os dados em runtime — sem duplicar a definição.
+
+```typescript
+import { Elysia, t } from "elysia";
+
+const app = new Elysia()
+  .get("/", () => "Hello Elysia")
+  .post(
+    "/usuarios",
+    ({ body }) => ({
+      criado: true,
+      nome: body.nome,
+    }),
+    {
+      body: t.Object({
+        nome: t.String({ minLength: 2 }),
+        email: t.String({ format: "email" }),
+      }),
+    }
+  )
+  // Grupos de rotas com prefixo
+  .group("/api/v1", (app) =>
+    app
+      .get("/health", () => ({ status: "ok" }))
+      .get("/version", () => ({ version: "1.0.0" }))
+  )
+  // Plugin de autenticação (exemplo)
+  .derive(({ headers }) => ({
+    user: headers.authorization ? { id: 1, role: "admin" } : null,
+  }))
+  .guard(
+    { beforeHandle: ({ user }) => !user && new Response("Não autorizado", { status: 401 }) },
+    (app) => app.get("/me", ({ user }) => user)
+  )
+  .listen(3000);
+
+console.log(`Rodando em ${app.server?.url}`);
+```
+
+> [!tip] Por que Elysia e não Express no Bun?
+> O Express funciona no Bun (compatibilidade ~98%), mas usa `http` do Node via binding — não aproveita o `Bun.serve` nativo. O Elysia usa `Bun.serve` diretamente, resultando em throughput 2–3× maior que Express no mesmo código. Em benchmarks públicos, Elysia é frequentemente o framework Node/Bun mais rápido (às vezes superando Fastify).
+
+```mermaid
+graph LR
+    subgraph "Express no Bun — camadas extra"
+        EXP["Express\n(middleware)"]
+        HTTP_MOD["módulo http do Node\n(binding)"]
+        BUNSERVE1["Bun.serve interno\n(Zig)"]
+        EXP --> HTTP_MOD --> BUNSERVE1
+    end
+
+    subgraph "Elysia no Bun — direto ao metal"
+        ELY["Elysia\n(middleware)"]
+        BUNSERVE2["Bun.serve\n(Zig nativo)"]
+        ELY --> BUNSERVE2
+    end
+
+    style BUNSERVE2 fill:#f5a623,color:#000
+```
+
+**Quando escolher Elysia sobre Bun.serve puro:**
+- Projeto com múltiplas rotas e validação de entrada
+- Quando você quer type-safety end-to-end (Elysia gera tipos de runtime e compile-time juntos)
+- Quando quer um ecossistema de plugins (auth, swagger, cors já disponíveis)
+
+**Quando ficar no Bun.serve puro:**
+- Microserviços com poucas rotas (o overhead do framework não compensa)
+- Quando o código precisa rodar em múltiplos runtimes (WinterTC: Cloudflare Workers, Deno)
+- Quando você quer zero dependências além do Bun
 
 ---
 
@@ -699,7 +990,7 @@ The key selling points in an interview context:
 
 **Runtime:** Bun runs TypeScript natively by stripping type annotations before execution — no `tsc`, no `ts-node`, no `tsx`. It does *not* type-check; for that you still need `tsc --noEmit`. Bun provides native Web APIs (`Request`, `Response`, `fetch`, `WebSocket`) aligned with the WinterTC standards for interoperability across server-side JS runtimes.
 
-**Built-in APIs:** `Bun.serve()` is a native HTTP server using Web-standard `Request`/`Response`; `Bun.file()` is a lazy file reader that uses `sendfile(2)` when serving files; `bun:sqlite` is a built-in SQLite driver 3–6× faster than `better-sqlite3` because it avoids N-API marshaling overhead.
+**Built-in APIs:** `Bun.serve()` is a native HTTP server using Web-standard `Request`/`Response`, with built-in WebSocket (pub/sub via `server.publish()`); `Bun.file()` is a lazy file reader that uses `sendfile(2)` when serving files; `bun:sqlite` is a built-in SQLite driver 3–6× faster than `better-sqlite3` because it avoids N-API marshaling. Other notable built-ins: `Bun.password` (bcrypt/Argon2id hashing without native addons), `Bun.spawn` (subprocess management), `Bun.env` (dotenv auto-loaded), and from Bun 1.2: `bun:postgres` (PostgreSQL driver) and `Bun.s3` (S3 client).
 
 **Bundler (`bun build`):** Outputs browser bundles, Node/CJS bundles, or standalone executables (`--compile`) that bundle the Bun runtime. Less mature than Vite for complex frontend projects.
 
@@ -712,6 +1003,10 @@ The key selling points in an interview context:
 **When to stick with Node:** legacy production services with N-API deps, APM agents that instrument V8 internals (Datadog, New Relic auto-instrumentation), and environments that require a formal LTS policy.
 
 **Deno comparison:** Deno 2 made the opposite bet — security first (explicit permissions model), TypeScript type-checking built-in, own registry (JSR). Bun prioritizes Node compatibility and raw speed. Both are production-ready in 2026; choose Deno for security-sensitive sandboxed scripts, Bun for drop-in Node replacement with better performance.
+
+**Bun 1.2 key changes (January 2025):** `bun.lock` JSONC lockfile (human-readable, diff-friendly, replaces binary `bun.lockb`); `bun publish` for npm publishing; native S3 client (`Bun.s3`); native PostgreSQL driver (`bun:postgres`).
+
+**Framework ecosystem:** Elysia.js is the idiomatic Bun-first web framework — built on `Bun.serve`, uses TypeBox for runtime+compile-time type safety, 2–3× faster than Express on the same Bun runtime because it talks directly to native APIs instead of going through Node's `http` module layer.
 
 ### Vocabulário-chave
 
@@ -732,6 +1027,15 @@ The key selling points in an interview context:
 | divisão de código | code splitting |
 | cobertura de testes | code coverage |
 | suite de testes | test suite |
+| arquivo de bloqueio | lockfile |
+| arquivo de bloqueio legível | human-readable lockfile |
+| hash de senha | password hashing |
+| subprocesso | subprocess / child process |
+| variáveis de ambiente | environment variables |
+| driver de banco nativo | built-in database driver |
+| framework web nativo | native web framework |
+| cliente S3 | S3 client |
+| pub/sub | publish/subscribe |
 
 ---
 
@@ -755,11 +1059,34 @@ The key selling points in an interview context:
 > [!warning] Armadilha 6: não ter política LTS implica risco de upgrade
 > O Bun lança novas versões frequentemente e pode ter breaking changes entre minors. Para produção, pregue a versão no Dockerfile ou no `engines` do `package.json` e monitore as release notes antes de atualizar.
 
+> [!warning] Armadilha 7: manter bun.lockb e bun.lock ao mesmo tempo
+> O Bun 1.2+ usa `bun.lock` (JSONC) por padrão. Se você tem um projeto antigo com `bun.lockb` (binário), pode acabar com os dois no repositório após um `bun install`. Isso causa comportamento indefinido. Migre: rode `bun install` com Bun 1.2+, verifique que `bun.lock` foi criado, adicione `bun.lockb` ao `.gitignore`, comite só o JSONC. Em CI, use `--frozen-lockfile` para não regenerar.
+
+> [!warning] Armadilha 8: bun:postgres vs bun:sqlite — sintaxe de parâmetros diferente
+> O `bun:sqlite` usa `$nome` como placeholder nomeado. O `bun:postgres` usa `$1, $2...` como placeholders posicionais (igual ao `postgres.js` e ao driver nativo `pg`). Se você migra entre os dois, adapte as queries — erros de runtime aparecem apenas quando a query é executada, não na compilação.
+
+---
+
+## Referências
+
+- [Bun.sh — documentação oficial](https://bun.sh/docs) — referência de todas as APIs, guias de migração e configuração
+- [Bun 1.2 Release Notes](https://bun.sh/blog/bun-v1.2) — lockfile JSONC, S3 nativo, bun:postgres, bun publish — Janeiro 2025
+- [Bun 1.3 Release Notes](https://bun.sh/blog/bun-v1.3) — dev server zero-config, HTTP/3 experimental — 2025
+- [Bun Node.js compatibility](https://bun.sh/docs/runtime/nodejs-apis) — lista atualizada do que é e não é suportado
+- [JavaScriptCore — Apple Open Source](https://webkit.org/blog/tag/javascriptcore/) — internals do motor JSC (LLInt, DFG, FTL)
+- [Elysia.js — documentação oficial](https://elysiajs.com/introduction.html) — framework web nativo do Bun
+- [WinterTC — Server-side JS runtimes interoperability](https://wintercg.org/) — padrão Request/Response para Bun, Deno, Cloudflare Workers
+- [OWASP — Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) — recomendações Argon2id vs bcrypt
+- [Bun GitHub — Node.js test suite compat tracker](https://github.com/oven-sh/bun/issues/1844) — acompanhamento dos ~98% de compatibilidade
+
 ---
 
 ## Veja também
 
-- [[03 - Package managers - npm, pnpm, yarn e Bun]] — o Bun como `bun install`: velocidade, flat hoisting, lockfile binário, comparação com npm/pnpm
+- [[03 - Package managers - npm, pnpm, yarn e Bun]] — o Bun como `bun install`: velocidade, flat hoisting, lockfile JSONC (1.2+), comparação com npm/pnpm
 - [[18 - O runtime como ferramenta de DX]] — `--watch`, `--env-file`, TypeScript nativo no Node (strip types), tsx/ts-node — a história do lado Node que o Bun complementa
 - [[19 - Test runner nativo (node-test) e o cenário de testes]] — `node:test` vs `bun test` vs Vitest: qual test runner pra qual projeto
+- [[22 - Single Executable Apps (SEA) e empacotamento]] — `bun build --compile` vs `node --experimental-sea-config`: executáveis standalone comparados
+- [[14 - Rollup, esbuild e Rolldown]] — bundlers especializados que o `bun build` ainda não supera em tree-shaking avançado e library output
+- [[13 - Vite a fundo]] — quando Vite ainda é a escolha mais madura para frontend complexo vs `bun build`
 - [[03-Dominios/Tecnologia/Node/index|Node]] — runtime, event loop, arquitetura do Node.js — base conceitual que o Bun expande e desafia

@@ -1,7 +1,7 @@
 ---
 title: "Build em produção, CI e determinismo"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: magus
 status: seedling
@@ -19,7 +19,7 @@ tags:
 # Build em produção, CI e determinismo
 
 > [!abstract] TL;DR
-> Um build "que funcionou ontem" pode produzir um binário diferente hoje — por causa de timestamps, versões flutuantes de dependências ou variáveis de ambiente implícitas. **Determinismo** é a garantia de que código + inputs idênticos sempre geram o mesmo artefato. Em CI, isso se traduz em três práticas concretas: (1) travar dependências com lockfile + `npm ci`/`pnpm install --frozen-lockfile`; (2) fazer cache inteligente do resultado — sem cache ou com cache ruim, CI é o gargalo mais visível do dev workflow; (3) separar o que entra no bundle em build-time (Vite `import.meta.env`) do que entra em runtime, para poder fazer **build once, deploy many**: um artefato único que percorre todos os ambientes sem ser recompilado. Source maps completam o quadro: essenciais para depurar erros de produção, perigosos se expostos publicamente — a solução é hidden source maps + upload pro Sentry antes do deploy.
+> Um build "que funcionou ontem" pode produzir um binário diferente hoje — por causa de timestamps, versões flutuantes de dependências ou variáveis de ambiente implícitas. **Determinismo** é a garantia de que código + inputs idênticos sempre geram o mesmo artefato. Em CI, isso se traduz em quatro camadas: (1) travar dependências com lockfile + `npm ci`/`pnpm install --frozen-lockfile`; (2) fazer cache inteligente por chave — sem cache ou com cache ruim, CI é o gargalo mais visível; (3) separar o que entra no bundle em build-time (Vite `import.meta.env`) do que entra em runtime, para **build once, deploy many**; (4) — a fronteira sênior — garantir **hermeticidade** (build sem acesso à rede) e **provenance verificável** (SLSA + SBOM) para artefatos que precisam de auditoria de supply chain. Source maps fecham o ciclo: `sourcemap: 'hidden'` + upload pro Sentry antes do deploy. Cache poisoning é o risco que o próprio cache introduz — `restore-keys` relaxa as garantias; para jobs críticos, instale do zero.
 
 ---
 
@@ -406,6 +406,208 @@ Nem todas as ferramentas do ecossistema JS respeitam `SOURCE_DATE_EPOCH` ainda (
 
 ---
 
+## Hermetic builds: isolamento total como propriedade de segurança
+
+"Determinístico" e "hermético" são frequentemente confundidos em entrevistas — e a distinção importa.
+
+**Determinístico** significa: mesmos inputs → mesmo output. Você pode ter um build determinístico que ainda acessa a rede durante a execução (baixa uma tool, consulta uma API de licenças) — desde que o resultado seja sempre idêntico.
+
+**Hermético** significa: o build **não acessa nenhum recurso externo** durante sua execução. Ele opera em sandbox total, com todas as dependências provisionadas antes do início. Se qualquer coisa está faltando, o build falha — não improvisa.
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+graph TD
+    subgraph "Build não-hermético (típico de npm run build)"
+        NB["Build inicia"] --> NPM_REG["❌ npm install acessa registry"]
+        NB --> CURL_TOOL["❌ script baixa ferramenta via curl"]
+        NB --> API["❌ script checa versão via API"]
+        NPM_REG --> OUT1["Output (talvez diferente)"]
+        CURL_TOOL --> Out1
+        API --> Out1
+    end
+
+    subgraph "Build hermético (ex: Bazel, Nix, Docker multi-stage com COPY pre-fetched)"
+        HB["Build inicia\n(sandbox sem rede)"] --> PRE["Deps pré-provisionadas\n(node_modules snapshot,\nbinários pinados)"]
+        PRE --> OUT2["Output garantidamente idêntico\n(hash verificável)"]
+    end
+
+    style NPM_REG fill:#D0021B,color:#fff
+    style CURL_TOOL fill:#D0021B,color:#fff
+    style API fill:#D0021B,color:#fff
+    style HB fill:#1a6b1a,color:#fff
+    style OUT2 fill:#1a6b1a,color:#fff
+```
+
+### Por que hermeticidade é importante para segurança — não só para determinismo
+
+Um build que acessa a rede pode ser **interceptado**. Um atacante com acesso ao DNS da rede do runner, ou que comprometeu um CDN de ferramentas, pode substituir o que seu build baixa. Um build hermético elimina esse vetor — se o conteúdo está em sandbox, não há rede para interceptar.
+
+O projeto Bazel do Google, adotado em larga escala para builds C++/Java, foi projetado com hermeticidade como propriedade central. Para o ecossistema JS, a abordagem mais próxima é um Dockerfile **multi-stage** onde a fase de instalação de dependências é executada em uma camada separada e o resultado (node_modules snapshottado) é copiado para a fase de build — sem acesso à internet nesta segunda fase:
+
+```dockerfile
+# Dockerfile multi-stage com build hermético
+# Stage 1: dependências (acessa rede, mas isolado e cacheável por layer)
+FROM node:22.13.0-alpine3.21@sha256:abc123... AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --ignore-scripts  # instala deps; --ignore-scripts reduz surface de ataque
+
+# Stage 2: build (sem acesso à rede — usa deps do stage anterior)
+FROM node:22.13.0-alpine3.21@sha256:abc123... AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules  # copia do stage deps
+COPY . .
+RUN npm run build  # sem npm install aqui — tudo que o build precisa já está em /app
+
+# Stage 3: runtime (imagem mínima)
+FROM nginx:1.27-alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+```
+
+A nota [[03 - Package managers - npm, pnpm, yarn e Bun]] cobre `--ignore-scripts` em detalhe: é um dos vetores mais ignorados em auditorias — scripts de install rodam código arbitrário no seu runner.
+
+### Trade-offs de hermeticidade
+
+| | Build tradicional (`npm run build`) | Build hermético (multi-stage) |
+|---|---|---|
+| Velocidade de setup | Rápido — npm ci resolve a partir do cache | Mais lento — Docker build + layer caching |
+| Segurança | Moderada — depende de lockfile | Alta — superficie de ataque eliminada |
+| Complexidade | Baixa | Média-alta (Dockerfile, layer strategy) |
+| Reprodutibilidade | Boa (com lockfile) | Excelente (layers são conteúdo-addressable) |
+| Adequado para | Apps web, bibliotecas | Produção crítica, imagens de container |
+
+> [!question]- Em qual cenário vale a pena ir para build hermético completo?
+> Quando você publica pacotes npm (seu artefato é consumido por outros), quando o pipeline de CI tem acesso a credenciais de produção e você quer minimizar risco de comprometimento, ou quando um auditor de segurança precisa verificar o que foi compilado. Para a maioria das SPAs que apenas fazem deploy em CDN, lockfile + `npm ci` + pinagem do runner são suficientes.
+
+---
+
+## Provenance, SBOM e SLSA: a fronteira sênior de 2025–2026
+
+Esta é a área que separa quem "faz CI" de quem "pensa em supply chain como propriedade de segurança". O tema se tornou central depois dos ataques à SolarWinds (2020) e XZ Utils (2024), que mostraram que o artefato compilado pode ser diferente do que o código-fonte sugere.
+
+### O que é SLSA (Supply-chain Levels for Software Artifacts)
+
+SLSA (pronunciado "salsa") é um framework de segurança criado pelo Google e formalizado pela OpenSSF (Open Source Security Foundation) que define **quatro níveis de garantia** sobre como um artefato foi produzido. Não é uma ferramenta — é uma especificação de requisitos que ferramentas implementam.
+
+```
+SLSA Nível 1: Provenance existe e está documentada (automatizada)
+SLSA Nível 2: Provenance é gerada pelo serviço de build (não pelo dev)
+SLSA Nível 3: Build roda em ambiente isolado; fonte verificável
+SLSA Nível 4: Build hermético; dois builds independentes produzem o mesmo hash
+```
+
+Para JavaScript, o que isso significa na prática:
+
+- **Nível 1:** GitHub Actions gera automaticamente um attestation assinado quando você usa `actions/attest-build-provenance`. O attestation diz: "este artefato foi produzido neste workflow, a partir deste commit, nesta hora."
+- **Nível 2:** O runner do GitHub (não o seu código) assina o attestation com a chave do GitHub. Você não pode forjar isso localmente.
+- **Nível 3:** O job roda em um runner efêmero, sem estado anterior, e o código-fonte foi verificado via `actions/checkout` com commit SHA pinado.
+
+```yaml
+# GitHub Actions — gerando provenance SLSA Level 2 automaticamente
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # necessário para assinar o attestation
+      contents: read
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+
+      - run: npm ci && npm run build
+
+      # Gera o attestation de provenance assinado pelo GitHub
+      - name: Gerar provenance attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/  # o artefato a ser atestado
+          # Gera um attestation no formato SLSA que qualquer um pode verificar via:
+          # gh attestation verify dist/index.js --repo minha-org/meu-repo
+```
+
+O attestation gerado é um JSON assinado (usando Sigstore/cosign por baixo) que qualquer pessoa pode verificar independentemente. Isso é o que significa "provenance verificável" na prática.
+
+### O que é um SBOM (Software Bill of Materials)
+
+SBOM é o inventário completo de tudo que compõe seu artefato: cada biblioteca, versão, licença e hash de conteúdo. Pense em um SBOM como o `package-lock.json`, mas mais formal, padronizado e incluindo dependências transitivas que não aparecem no `package.json` diretamente.
+
+Os formatos padrão de SBOM são:
+- **SPDX** — padrão ISO/IEC 5962:2021, suportado por ferramentas de compliance e governos
+- **CycloneDX** — padrão OWASP, mais voltado para security analysis
+
+```bash
+# Gerando SBOM com syft (ferramenta open-source da Anchore)
+# Instalar: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+
+# SBOM do código-fonte (antes do build)
+syft dir:. -o cyclonedx-json=sbom-source.json
+
+# SBOM do container (depois do build)
+syft your-org/your-image:latest -o spdx-json=sbom-container.json
+
+# SBOM do node_modules diretamente (útil para auditar deps transitivas)
+syft dir:node_modules -o cyclonedx-json=sbom-deps.json
+```
+
+```yaml
+# Integrado ao pipeline de CI
+- name: Gerar SBOM
+  run: |
+    curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+    syft dir:dist -o cyclonedx-json=sbom.json
+
+- name: Upload SBOM como artefato
+  uses: actions/upload-artifact@v4
+  with:
+    name: sbom-${{ github.sha }}
+    path: sbom.json
+    retention-days: 90  # manter por 3 meses para auditoria
+```
+
+> [!info] Por que SBOM está virando requisito em 2025–2026
+> O Executive Order 14028 dos EUA (2021) exige SBOMs de todos os fornecedores de software do governo federal americano. A EU Cyber Resilience Act (CRA), que entra em vigor progressivamente até 2027, vai impor requisitos similares para produtos digitais no mercado europeu. Para times que vendem software para clientes enterprise ou governamentais, gerar SBOM está deixando de ser "good practice" e virando requisito contratual.
+> Fonte: [CISA SBOM Resources](https://www.cisa.gov/sbom) e [EU CRA overview, 2024](https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act)
+
+### Content addressing: o que garante que o artefato é o que deveria ser
+
+Content addressing é o mecanismo fundamental por trás de todo o resto: em vez de identificar arquivos por nome e localização, você os identifica pelo **hash do seu conteúdo**. Se o conteúdo mudar, o hash muda — e você sabe que algo foi alterado.
+
+O `package-lock.json` já usa content addressing: cada entrada tem um campo `integrity` com o hash SHA-512 do tarball do pacote. Quando você roda `npm ci`, o npm verifica esse hash antes de usar o pacote — se o hash não bater, o install falha.
+
+```json
+// Trecho de package-lock.json — content addressing em ação
+{
+  "node_modules/lodash": {
+    "version": "4.17.21",
+    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+    "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
+    //           ^^ SHA-512 do conteúdo do .tgz — qualquer alteração muda esse hash
+  }
+}
+```
+
+Para Docker, o equivalente é usar o **digest da imagem** em vez da tag:
+
+```dockerfile
+# ❌ Tag é mutável — node:22-alpine pode apontar para conteúdos diferentes ao longo do tempo
+FROM node:22-alpine
+
+# ✅ Digest é imutável — este hash identifica exatamente esta imagem, para sempre
+FROM node:22.13.0-alpine3.21@sha256:4a5b3c8d9e1f2a7b6c4d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b
+```
+
+O digest pode ser obtido com:
+```bash
+docker pull node:22-alpine
+docker inspect node:22-alpine --format='{{index .RepoDigests 0}}'
+# node@sha256:4a5b3c...
+```
+
+---
+
 ## Source maps em produção: a faca de dois gumes
 
 Source maps resolvem um problema real: código minificado em produção é ilegível. Um stack trace como `at f.t.n (index-a1b2c3.js:1:94821)` não diz nada. Com source maps, o Sentry (ou qualquer error tracker) consegue mostrar a linha exata do seu TypeScript original.
@@ -606,6 +808,67 @@ const publicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY; // ok, isso é públic
 
 ---
 
+## Cache poisoning: o risco que o cache introduz
+
+Cache é um otimização poderosa — mas introduz um novo vetor de ataque: **cache poisoning**. A ideia é simples: se você consegue injetar conteúdo malicioso no cache de CI, o próximo job que restaurar esse cache vai executar código comprometido sem saber.
+
+Isso não é teórico. Em 2023, um paper de pesquisa da ETH Zürich documentou vulnerabilidades de cache poisoning em GitHub Actions que permitiam que um atacante com acesso de write ao repositório (ou via fork + PR) injetasse conteúdo malicioso no cache compartilhado entre branches.
+
+### Como o cache poisoning funciona em GitHub Actions
+
+O sistema de cache do GitHub Actions tem regras de acesso por branch:
+
+```
+Branch main pode ler caches de: main, branches que passaram por main
+Branch de feature pode ler caches de: main (o branch base)
+PR de fork NÃO pode ler caches do repositório original (proteção do GH)
+PR interno (mesma org) PODE ler caches — esse é o vetor de risco
+```
+
+O ataque clássico:
+1. Atacante cria um branch interno e faz um PR
+2. PR roda CI, que restaura o cache de `main` (a restore-key encontra um cache compatível)
+3. O job modifica o `node_modules` cacheado (injetando um script malicioso em um pacote)
+4. O job salva o cache com uma nova chave que vai ser encontrada por `main`
+5. Próximos jobs de `main` restauram o cache envenenado
+
+### Mitigações práticas
+
+```yaml
+# 1. Use chaves de cache com hash do lockfile — garante que só um lockfile idêntico restaura o cache
+key: deps-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+# A chave inclui o hash do lockfile; um atacante que mudou o lockfile tem uma chave diferente
+
+# 2. Para trabalhos críticos de segurança, nunca restaure do cache — instale do zero
+- name: Install (sem cache, para job de security audit)
+  run: npm ci
+  # sem actions/cache aqui — instala diretamente do registry
+
+# 3. Verifique integridade após restaurar o cache
+- name: Verificar integridade do cache de dependências
+  run: npm ci --ignore-scripts  # re-verifica hashes mesmo com cache restaurado
+```
+
+> [!warning] O `restore-keys` é o vetor mais perigoso
+> A diretiva `restore-keys` existe para restaurar um cache "próximo o suficiente" quando a chave exata não existe. Mas ela relaxa as garantias: você pode restaurar um `node_modules` que corresponde a um lockfile *diferente* do atual. Para dependências de builds de produção, pense duas vezes antes de usar `restore-keys` — o risco de restaurar um estado inconsistente (ou envenenado) supera o benefício de velocidade.
+
+### Remote cache: o nível seguinte
+
+Para monorepos e times maiores, o cache local do GitHub Actions tem um limite de 10GB por repositório e não é compartilhado entre repositórios diferentes. A solução é **remote cache**: um servidor de cache externo que armazena os outputs de build e é acessível por todos os runners.
+
+O [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] cobre Turborepo Remote Cache em detalhe. Mas o mecanismo é: Turborepo (ou Nx) faz hash de cada task (inputs + configuração), verifica se o hash existe no remote cache (self-hosted ou Vercel), e se sim, baixa o output diretamente em vez de executar a task.
+
+```bash
+# Turborepo com remote cache habilitado
+TURBO_TOKEN=<token> TURBO_TEAM=<team> turbo build
+# Se o cache hit: "cache hit, replaying output" — zero tempo de build
+# Se o cache miss: executa, então faz upload do resultado pro cache remoto
+```
+
+A diferença de velocidade pode ser dramática: um monorepo com 50 packages que levaria 20 minutos para buildar pode levar 30 segundos se tudo estiver no remote cache. Mas a responsabilidade de segurança aumenta: o servidor de remote cache passa a ser um ponto crítico de confiança — um servidor comprometido pode servir outputs de build adulterados.
+
+---
+
 ## Armadilhas comuns
 
 > [!warning] Armadilha 1: commitar `node_modules` em vez do lockfile
@@ -637,11 +900,18 @@ Third, **build-time vs runtime environment separation**: Vite bakes `VITE_*` var
 
 For source maps: use `sourcemap: 'hidden'` in Vite so maps are generated but the `//# sourceMappingURL` comment is omitted. Upload maps to Sentry via `sentry-cli` before deleting them from the deploy artifact. This gives you readable stack traces in your error tracker without exposing source code publicly.
 
+If you're asked about supply chain security specifically: distinguish between **deterministic** (same inputs → same output) and **hermetic** (no external network access during build). A hermetic build, ideally using multi-stage Docker with pre-fetched dependencies, eliminates the network interception vector entirely. For artifacts that need to be audited — especially in enterprise or government contexts — SLSA Level 2 provenance attestations (generated automatically by `actions/attest-build-provenance`) and CycloneDX/SPDX SBOMs are becoming standard requirements under mandates like the US EO 14028 and EU Cyber Resilience Act.
+
+On cache: understand that `restore-keys` relaxes the guarantee that the cache matches the current lockfile. For security-sensitive jobs, install from scratch rather than restoring cache. For monorepos, remote cache (Turborepo, Nx) shares build outputs across runners but creates a new trust boundary — a compromised cache server can serve tampered outputs.
+
 | Português | Inglês |
 |---|---|
 | build determinístico | deterministic build / reproducible build |
+| build hermético | hermetic build |
 | lockfile | lockfile (sem tradução) |
 | cache de dependências | dependency cache |
+| envenenamento de cache | cache poisoning |
+| cache remoto | remote cache |
 | artefato de build | build artifact |
 | variável de ambiente | environment variable |
 | build-time vs runtime | build-time vs runtime |
@@ -651,6 +921,10 @@ For source maps: use `sourcemap: 'hidden'` in Vite so maps are generated but the
 | pipeline de CI | CI pipeline / CI workflow |
 | secrets no build | build secrets / secrets leaking into bundle |
 | hash de artefato | artifact hash / content hash |
+| proveniência de build | build provenance |
+| lista de materiais de software | Software Bill of Materials (SBOM) |
+| endereçamento por conteúdo | content addressing |
+| atestação | attestation |
 
 ---
 
@@ -662,12 +936,14 @@ Build determinístico em CI é a prática de garantir que código + lockfile + c
 
 ## O que vem a seguir
 
-Com o pipeline de build sólido — determinístico, cacheado, com artefatos auditáveis — a próxima camada de risco é o que você está colocando no bundle: as dependências em si. De onde vieram? São confiáveis? Há vulnerabilidades conhecidas? Alguém pode ter comprometido o pacote?
+Com o pipeline de build sólido — determinístico, hermético, com provenance verificável e artefatos auditáveis — a próxima camada de risco é o que você está colocando no bundle: as dependências em si. De onde vieram? São confiáveis? Há vulnerabilidades conhecidas? Alguém pode ter comprometido o pacote?
 
-- [[24 - Supply chain e segurança de dependências]] — a segurança das dependências em si: provenance, SBOMs, auditoria automática e proteção contra supply chain attacks
-- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — caching de tasks em monorepo (Turborepo remote cache) é a extensão natural do cache de CI para projetos multi-pacote
+- [[24 - Supply chain e segurança de dependências]] — a segurança das dependências em si: provenance npm, SBOMs, npm audit automático, typosquatting e proteção contra supply chain attacks; continua diretamente daqui
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — caching de tasks em monorepo (Turborepo remote cache) é a extensão natural do cache de CI para projetos multi-pacote; o remote cache discutido nesta nota vive aqui
 - [[17 - Otimização de bundle]] — o que fazer com o artefato depois que ele é determinístico: tree-shaking, code splitting, análise de tamanho
-- [[05 - Semver e o grafo de dependências]] — o mecanismo por trás do lockfile: como o npm resolve versões e por que o lockfile é a âncora do determinismo
+- [[05 - Semver e o grafo de dependências]] — o mecanismo por trás do lockfile: como o npm resolve versões e por que o lockfile é a âncora do determinismo; o campo `integrity` (content addressing) discutido nesta nota vem de lá
+- [[03 - Package managers - npm, pnpm, yarn e Bun]] — `--ignore-scripts` como vetor de ataque: scripts de install rodados no seu runner durante `npm ci`
+- [[13 - Vite a fundo]] — o mecanismo de `import.meta.env`, VITE_ prefix e build-time replacement em detalhe; o que permite (e o que impede) o padrão build once, deploy many
 - [[index|trilha Tooling e Build]] — visão geral da trilha
 
 ---
@@ -683,3 +959,11 @@ Com o pipeline de build sólido — determinístico, cacheado, com artefatos aud
 - **reproducible-builds.org** — [SOURCE_DATE_EPOCH specification](https://reproducible-builds.org/specs/source-date-epoch/) — padrão de timestamp fixo para builds reprodutíveis
 - **Andrew Nesbitt** — [Reproducible Builds in Language Package Managers](https://nesbitt.io/2026/02/24/reproducible-builds-in-language-package-managers.html) — estudo de 2026 sobre determinismo entre ecossistemas (npm, PyPI, etc.)
 - **Polar Signals Blog** — [Reproducible Builds with Next.js: A Practical Guide](https://www.polarsignals.com/blog/posts/2025/07/23/reproducible-builds-with-next-js-a-practical-guide) — exemplos práticos de builds reprodutíveis com Next.js/webpack
+- **OpenSSF** — [SLSA Framework](https://slsa.dev/) — especificação oficial dos quatro níveis de garantia de supply chain; includes getting started para GitHub Actions
+- **GitHub Docs** — [Generating build provenance attestations](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) — `actions/attest-build-provenance`, verificação com `gh attestation verify`
+- **Anchore** — [Syft: SBOM generator](https://github.com/anchore/syft) — ferramenta open-source para gerar SBOMs em SPDX e CycloneDX a partir de diretórios, containers e imagens
+- **CISA** — [SBOM Resources](https://www.cisa.gov/sbom) — recursos oficiais sobre SBOMs, incluindo frameworks e requisitos para fornecedores do governo americano
+- **Adnan Khan (2023)** — [GitHub Actions Cache Poisoning](https://adnanthekhan.com/2024/05/06/the-unpatchable-cache-poisoning-in-github-actions/) — pesquisa detalhando o mecanismo de cache poisoning em GitHub Actions e como explorar restore-keys
+- **Turborepo Docs** — [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) — configuração de remote cache self-hosted e Vercel, modelo de confiança e cache keys
+- **Sigstore / cosign** — [Sigstore Overview](https://www.sigstore.dev/) — infraestrutura de assinatura transparente usada por baixo do `actions/attest-build-provenance` e de toda a cadeia SLSA
+- **Google OSS Rebuild** — [OSS Rebuild Project](https://github.com/google/oss-rebuild) — ferramenta do Google que re-cria builds de pacotes npm/PyPI/etc. independentemente e compara hashes; lançada em 2025

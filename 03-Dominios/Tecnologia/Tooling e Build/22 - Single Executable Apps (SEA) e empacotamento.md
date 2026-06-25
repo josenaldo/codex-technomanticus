@@ -1,7 +1,7 @@
 ---
 title: "Single Executable Apps (SEA) e empacotamento"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: magus
 status: seedling
@@ -21,6 +21,8 @@ tags:
 
 > [!abstract] TL;DR
 > Empacotar um app JS/TS num binário único significa que o usuário final executa um arquivo só, sem precisar instalar Node, Bun ou Deno. O Node.js tem suporte nativo desde v19.7 (stability 1.1 — desenvolvimento ativo): gera um blob com `sea-config.json`, injeta no binário com `--build-sea` (Node 25.5+, antigo fluxo usava `postject`). O `pkg` da Vercel foi descontinuado em janeiro de 2024; o fork ativo é `@yao-pkg/pkg`. O Bun oferece `bun build --compile` com cross-compilation nativa e flag `--bytecode` que dobra o startup. O Deno tem `deno compile` desde v1.6, maduro e estável em 2026. Os trade-offs são constantes: o binário carrega o runtime inteiro (~90-130 MB), módulos nativos (N-API) exigem tratamento especial, e assets precisam ser embutidos explicitamente. O caso de uso natural é CLIs distribuídas, scripts internos e ferramentas onde instalar um runtime não é opção.
+>
+> **Node 24/25 (2026):** o `--build-sea` substituiu `postject` como mecanismo oficial; o SEA ganhou suporte a ESM como `mainFormat`, e a limitação de Alpine (musl libc) ainda persiste na série 22/24 mas foi mitigada com LIEF em 25.x. Deno 2.x compilou para binários menores (~60-90 MB vs ~100 MB na série 1.x). Bun 1.2.x estabilizou a API de cross-compilation e reduziu o overhead de size com compressão LZ4 do snapshot.
 
 ---
 
@@ -498,6 +500,344 @@ graph TD
 
 ---
 
+## Profundidade técnica: o que acontece por dentro do SEA
+
+### A anatomia do blob e do sentinel fuse
+
+Quando o Node gera um SEA, o código do usuário — depois de bundlado — é serializado como um blob e embutido no binário do Node como uma seção de recurso do formato executável da plataforma:
+
+- **Linux (ELF):** seção `.note` — exige `readelf -n` para inspecionar
+- **Windows (PE/COFF):** recurso do tipo `RT_RCDATA` com nome `NODE_SEA_BLOB`
+- **macOS (Mach-O):** seção `__TEXT,__node_sea` no segment correspondente
+
+O **sentinel fuse** (`NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`) é um marcador de 40 bytes que existe no binário do Node vanilla com o bit de fuse desligado. Ao injetar o blob (tanto via `postject` quanto via `--build-sea`), o bit é ligado. Quando o Node inicia, ele verifica esse fuse antes de carregar o V8 — se estiver ligado, redireciona o bootstrap para o blob embutido ao invés de `process.argv[1]`. Isso é o que permite o mesmo binário do Node funcionar como SEA ou como runtime normal.
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+sequenceDiagram
+    participant OS as Sistema Operacional
+    participant ELF as Loader ELF/PE/Mach-O
+    participant Node as Node Bootstrap
+    participant V8 as V8 Engine
+    participant SEA as SEA Module
+
+    OS->>ELF: executa binário
+    ELF->>Node: carrega na memória
+    Node->>Node: verifica sentinel fuse
+    alt fuse == 0 (runtime normal)
+        Node->>V8: carrega process.argv[1]
+    else fuse == 1 (SEA)
+        Node->>SEA: lê blob da seção de recurso
+        SEA->>V8: executa blob (code cache ou snapshot)
+    end
+```
+
+### V8 startup snapshot vs. code cache: a diferença que importa
+
+São dois mecanismos diferentes e frequentemente confundidos:
+
+**Code cache (`useCodeCache: true`):** o V8 compila o script em tempo de build (parse + bytecode compilation) e grava o resultado. Em runtime, o V8 pula a fase de compilação e executa o bytecode diretamente. Ganho típico: 20-40% de redução no startup. **Restrição:** incompatível com `import()` dinâmico, pois o grafo de módulos não é completamente conhecido em build time.
+
+**V8 startup snapshot (`useSnapshot: true`):** vai além. Executa o módulo principal em build time, grava o estado completo do heap V8 (objetos, closures, protótipos inicializados) como snapshot. Em runtime, o heap é restaurado diretamente — o código não é nem re-executado. Ganho típico: 60-80% de redução no startup para apps que fazem muito trabalho de inicialização (parsing de config, construção de árvores de objetos). **Restrições severas:** incompatível com ESM, com código que usa `Date.now()` ou `Math.random()` na inicialização, com timers, e com qualquer side effect que dependa do ambiente de execução.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Hierarquia de velocidade de startup                        │
+├────────────────────┬────────────┬────────────────────────── │
+│ Configuração       │ Startup    │ Limitações                │
+├────────────────────┼────────────┼────────────────────────── │
+│ Sem otimização     │ ~35ms      │ nenhuma                   │
+│ useCodeCache       │ ~22ms      │ sem import() dinâmico     │
+│ useSnapshot        │ ~8ms       │ sem ESM, sem side effects │
+│ Bun --bytecode     │ ~4ms       │ JavaScriptCore only       │
+└────────────────────┴────────────┴────────────────────────── ┘
+(valores típicos para uma CLI simples; variam com o tamanho do app)
+```
+
+### Módulos nativos (N-API): o problema que não some
+
+Addons nativos (`.node` files compilados com `node-gyp`) são shared libraries do sistema operacional. Eles não podem ser embutidos no blob do SEA como arquivos de dados — o sistema operacional precisa carregá-los via `dlopen`/`LoadLibrary`, e isso exige um path em disco.
+
+A estratégia padrão para SEAs com addons nativos é extrair os `.node` files para um diretório temporário em runtime e carregá-los com `process.dlopen()`:
+
+```javascript
+// Estratégia de extração de addon nativo dentro de um SEA
+const { getAsset } = require('node:sea');
+const os = require('node:os');
+const path = require('node:path');
+const fs = require('node:fs');
+
+function loadNativeAddon(addonName) {
+  // Extrai o .node para um temp dir
+  const addonBuffer = getAsset(`addons/${addonName}.node`);
+  const tempPath = path.join(os.tmpdir(), `sea-addon-${process.pid}-${addonName}.node`);
+  fs.writeFileSync(tempPath, Buffer.from(addonBuffer));
+
+  // Carrega dinamicamente
+  const addon = {};
+  process.dlopen(addon, tempPath);
+
+  // Limpa ao sair (opcional — o OS limpa no exit de qualquer forma)
+  process.on('exit', () => {
+    try { fs.unlinkSync(tempPath); } catch {}
+  });
+
+  return addon.exports;
+}
+
+// Uso
+const sharp = loadNativeAddon('sharp');
+```
+
+> [!warning] Extração de `.node` files para `tmpdir` tem implicações de segurança
+> Em ambientes com proteções de execução em `/tmp` (noexec mount), a extração vai falhar silenciosamente ou com erro de permissão. Em ambientes corporativos com hardening de sistema, sempre verifique se `/tmp` é executável. A alternativa é extrair para o mesmo diretório do binário (`path.dirname(process.execPath)`), mas isso pode falhar se o diretório for read-only (como `/usr/local/bin`).
+
+O Bun tem uma abordagem diferente: ele suporta embutir arquivos `.node` diretamente no binário e usa um mecanismo interno para extraí-los automaticamente em runtime, sem que o código do usuário precise fazer nada. Essa é uma das vantagens práticas do Bun para apps com addons nativos.
+
+### Code signing: o que realmente acontece
+
+Assinar o binário SEA é obrigatório no macOS (sem assinatura, o Gatekeeper bloqueia) e fortemente recomendado no Windows (sem assinatura, o SmartScreen alerta). Mas assinar um SEA tem uma pegadinha: você modifica o binário (injetando o blob) *depois* de ter obtido o binário do Node, que já vem assinado pela equipe do Node.js. Ao modificar, a assinatura original é invalidada.
+
+O fluxo correto é:
+
+```bash
+# 1. macOS: remover assinatura anterior do binário copiado
+codesign --remove-signature ./minha-cli
+
+# 2. Injetar o blob (com postject ou --build-sea)
+node --build-sea sea-config.json
+
+# 3. Re-assinar com sua identidade de desenvolvedor
+# Ad-hoc (sem conta de desenvolvedor Apple — local only):
+codesign --sign - ./minha-cli
+
+# Com certificado Developer ID (distribuição via Gatekeeper):
+codesign --sign "Developer ID Application: Nome Sobrenome (TEAM_ID)" \
+  --entitlements entitlements.plist \
+  --options runtime \
+  ./minha-cli
+
+# 4. Notarizar para distribuição pública (macOS 10.15+)
+xcrun notarytool submit ./minha-cli.zip \
+  --apple-id "seu@email.com" \
+  --password "app-specific-password" \
+  --team-id TEAM_ID \
+  --wait
+```
+
+No Windows, o processo é análogo com `signtool.exe` da Windows SDK. Sem um certificado EV (Extended Validation), o SmartScreen vai exibir aviso mesmo com a assinatura — o sistema de reputação da Microsoft leva tempo para reconhecer novos certificados.
+
+---
+
+## Profundidade: distribuição cross-platform de verdade
+
+A ergonomia de empacotar é uma coisa; distribuir para múltiplas plataformas é outra. O que os projetos maduros fazem:
+
+### GitHub Releases + goreleaser-style para Node/Bun
+
+O padrão de distribuição de CLIs em Go (goreleaser) pode ser replicado para SEAs:
+
+```yaml
+# .github/workflows/release.yml
+name: Release
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          # Node SEA — precisa de cada plataforma
+          - os: ubuntu-latest
+            target: linux-x64
+            binary: minha-cli-linux-x64
+          - os: macos-14
+            target: darwin-arm64
+            binary: minha-cli-darwin-arm64
+          - os: windows-latest
+            target: win32-x64
+            binary: minha-cli-windows-x64.exe
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm ci && npm run build:sea
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.binary }}
+          path: ${{ matrix.binary }}
+
+  # Bun — um job só basta para todos os targets
+  build-bun:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: |
+          bun build src/cli.ts --compile --minify --bytecode \
+            --target=bun-linux-x64    --outfile dist/minha-cli-linux-x64
+          bun build src/cli.ts --compile --minify --bytecode \
+            --target=bun-darwin-arm64 --outfile dist/minha-cli-darwin-arm64
+          bun build src/cli.ts --compile --minify --bytecode \
+            --target=bun-windows-x64 --outfile dist/minha-cli-windows.exe
+
+  release:
+    needs: [build, build-bun]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            minha-cli-linux-x64
+            minha-cli-darwin-arm64
+            minha-cli-windows-x64.exe
+```
+
+**O assimetria de CI é real:** o Node SEA exige matriz de CI (um runner por plataforma); o Bun compila tudo de um runner Linux. Para projetos com budget limitado de CI, essa diferença de 3 jobs vs 1 job importa.
+
+### Distribuição via shell script (o padrão curl | sh)
+
+```bash
+#!/bin/sh
+# install.sh — detector de plataforma para download do binário correto
+set -e
+
+REPO="minha-org/minha-cli"
+VERSION="${1:-latest}"
+
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+case "$ARCH" in
+  x86_64) ARCH="x64" ;;
+  aarch64|arm64) ARCH="arm64" ;;
+  *) echo "Arquitetura $ARCH não suportada" && exit 1 ;;
+esac
+
+if [ "$OS" = "darwin" ]; then
+  BINARY="minha-cli-darwin-${ARCH}"
+elif [ "$OS" = "linux" ]; then
+  BINARY="minha-cli-linux-${ARCH}"
+else
+  echo "Windows: baixe o .exe em https://github.com/$REPO/releases"
+  exit 1
+fi
+
+BASE_URL="https://github.com/$REPO/releases/download/$VERSION"
+curl -fsSL "$BASE_URL/$BINARY" -o /usr/local/bin/minha-cli
+chmod +x /usr/local/bin/minha-cli
+echo "Instalado: $(minha-cli --version)"
+```
+
+Esse padrão é o que ferramentas como Bun, Deno, mise e fnm usam em seus próprios instaladores. A vantagem: o usuário roda um curl, o script detecta a plataforma, baixa o binário certo. Zero dependências de runtime.
+
+---
+
+## Novidade: estado do SEA em Node 24/25 e Deno 2.x (2026)
+
+### Node 24 (abril 2025) e 25 (outubro 2025)
+
+**Node 24** não trouxe mudanças arquiteturais no SEA, mas estabilizou o suporte a `mainFormat: "module"` (ESM) — que estava documentado mas com bugs em 22/23. A grande ressalva: `useSnapshot` com ESM ainda é incompatível e provavelmente continuará sendo, porque snapshots V8 exigem um grafo de módulos estático conhecido em build time, o que ESM com `import()` dinâmico viola por design.
+
+**Node 25.5 (janeiro 2026):** mudança de maior impacto — eliminação do `postject`. O `--build-sea` passou a ser o único mecanismo suportado. O `postject` ainda funciona como ferramenta externa (o npm package não foi removido), mas a documentação oficial o marcou como legado. A transição para LIEF resolveu um problema histórico: o `postject` usava WebAssembly internamente para manipular binários, o que causava falhas intermitentes em ambientes com políticas de segurança que bloqueavam a execução de WASM em child processes.
+
+> [!info] Fonte: Node.js CHANGELOG v25.5.0
+> A PR #57038 adicionou o `--build-sea` e marcou o fluxo `postject` como legado. A PR anterior #56463 adicionou o LIEF como dependência. Ambas são de Janeiro de 2026.
+> [Node.js v25.5.0 Changelog](https://nodejs.org/en/blog/release/v25.5.0)
+
+**Node 24 LTS (out/2025)** é a versão de suporte longo da série 24 — ainda usa `postject` como mecanismo padrão nos docs, pois `--build-sea` chegou no 25.5. Para projetos em produção que usam LTS e querem o novo fluxo, a recomendação prática é: use `postject` em 22/24, use `--build-sea` em 25+.
+
+### Deno 2.x: binários menores e `deno compile` mais poderoso
+
+O Deno 2.0 (lançado em outubro de 2024) trouxe mudanças significativas no `deno compile`:
+
+- **Binários menores:** a série 2.x reduziu o tamanho do runtime embutido de ~100 MB para ~60-90 MB com compressão LZ4 do snapshot V8. O Deno embedda o runtime Rust (Tokio + V8) + Deno APIs, mas passou a excluir partes do runtime que não são usadas pela aplicação (dead code elimination do lado do runtime, não só do JS do usuário).
+- **Suporte a npm completo no `deno compile`:** no Deno 1.x, `deno compile` com pacotes npm era experimental e frequentemente quebrava. No Deno 2.x, a compatibilidade npm é estável — você pode compilar apps que usam pacotes npm normais (via `npm:` specifiers) para um binário standalone.
+- **Workers embutidos:** `deno compile` agora suporta `new Worker()` com módulos embutidos no binário — antes, os workers tentavam carregar arquivos do disco (que não existiriam no binário distribuído).
+
+> [!info] Fonte: Deno 2.0 release notes
+> [Deno 2.0 é estável](https://deno.com/blog/v2.0) — outubro de 2024. Compatibilidade npm e `deno compile` melhorado documentados em [Deno compile reference](https://docs.deno.com/runtime/reference/cli/compile/).
+
+### Bun 1.2.x: cross-compilation estabilizada
+
+O Bun 1.2 (fevereiro de 2025) estabilizou a API de cross-compilation e adicionou:
+
+- **Target `bun-linux-x64-musl` e `bun-linux-arm64-musl`:** Alpine Linux finalmente suportado, ao contrário do Node SEA.
+- **`--windows-icon` e `--windows-hide-console`:** flags para customização do executável Windows (ícone personalizado, supressão da janela de console para apps GUI-like).
+- **Redução de tamanho:** compressão do snapshot JavaScriptCore com LZ4 + remoção de partes não usadas do runtime, levando o binário de ~130 MB para ~80-100 MB nos benchmarks típicos.
+
+> [!info] Fonte: Bun 1.2 release blog
+> [Bun 1.2](https://bun.sh/blog/bun-v1.2) — fevereiro de 2025. Documentação de `--compile` em [bun.sh/docs/bundler/executables](https://bun.sh/docs/bundler/executables).
+
+---
+
+## Trade-offs sênior: o que a entrevista quer ouvir
+
+Em entrevistas de nível sênior, as perguntas sobre SEA costumam ser sobre trade-offs de arquitetura, não sobre sintaxe. O que saber responder:
+
+### "Por que não usar SEA para tudo?"
+
+**Tamanho por instância vs. overhead de instalação de runtime:**
+
+Um container Docker com Node 22 slim é ~150 MB de imagem base. Um SEA é ~80-100 MB por binário. Se você tem 10 CLIs internas, com containers você compartilha a layer do Node entre todas; com SEA cada CLI carrega seu próprio runtime. Para distribuição interna via containers, o overhead de layer sharing do Docker frequentemente torna os containers mais econômicos que SEAs por instância.
+
+A math muda quando o target é desenvolvimento local ou máquinas sem Docker — lá, o SEA é quase sempre menor em overhead total (vs. "instala Node, instala npm, instala pacotes globais").
+
+### "Como você gerencia atualizações de segurança no runtime embutido?"
+
+Esse é o ponto de atrito principal. Quando sai um CVE no Node (ex: vulnerabilidade no HTTP parser), apps distribuídas como containers se atualizam trocando a imagem base. Apps distribuídas como SEA precisam:
+
+1. O desenvolvedor recompila o SEA com a nova versão do Node
+2. Publica um novo release
+3. Os usuários atualizam manualmente (ou via mecanismo de auto-update que você precisou implementar)
+
+Não existe equivalente automático ao `docker pull`. Para CLIs internas, isso é geralmente aceitável. Para ferramentas de terceiros distribuídas externamente, você precisa de um mecanismo de auto-update (similar ao que o VS Code, Bun e Deno fazem internamente).
+
+### "Como lidar com startup time em CLIs que chamam código pesado?"
+
+A cadeia de otimização de startup para um SEA Node, do mais simples ao mais agressivo:
+
+```
+1. useCodeCache: true         → pula compilação JS (mais simples, seguro)
+2. useSnapshot: true          → pré-executa inicialização (requer CJS, sem side effects)
+3. Lazy loading de módulos    → `require()` só quando necessário, não no topo
+4. Tree shaking no bundle     → esbuild/rollup remove código morto antes do SEA
+5. Minimizar trabalho no init → defer parsing de config, argparse, etc.
+```
+
+Um erro comum: usar `useSnapshot` em código que chama `Date.now()` ou acessa variáveis de ambiente no módulo top-level. O snapshot é gerado em build time, então esses valores ficam congelados no snapshot — a CLI sempre vai mostrar a data do build, não de execução.
+
+### "Qual é a superfície de segurança de um SEA vs. um npm package?"
+
+Um SEA tem o código embutido em bytecode/blob — não é trivialmente legível. Um npm package tem `node_modules` em plaintext. Para proteção de propriedade intelectual, o SEA é melhor, mas:
+
+1. O blob pode ser extraído do binário com ferramentas como `readelf` (Linux) ou Resource Hacker (Windows)
+2. O bytecode V8 pode ser decompilado parcialmente — não é proteção séria
+3. Se o adversário tem acesso ao binário e motivação, o código pode ser recuperado
+
+O modelo de segurança do Deno (permissões embutidas no binário) é diferente: o binário não pode fazer mais do que foi especificado em build time, independentemente de como é explorado. Isso é relevante para ferramentas corporativas onde você quer garantir que a CLI nunca vai exfiltrar dados para endpoints não autorizados.
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+graph LR
+    subgraph "Superfície de segurança"
+        SEA_N["Node SEA\nCódigo em blob\nPermissões: ilimitadas"]
+        SEA_B["Bun --compile\nCódigo em bytecode\nPermissões: ilimitadas"]
+        SEA_D["Deno compile\nCódigo em snapshot\nPermissões: embutidas\nem compile time"]
+        NPM["npm global install\nCódigo em plaintext\nPermissões: ilimitadas"]
+    end
+
+    SEA_D -->|"sandboxed"| SAFE["Menor superfície\nde ataque"]
+    NPM -->|"transparent"| AUDIT["Auditável\npor qualquer um"]
+```
+
+---
+
 ## Como explicar em inglês
 
 Single Executable Applications let you distribute a JavaScript or TypeScript CLI as a self-contained binary — no Node, Bun, or Deno installation required on the target machine.
@@ -531,18 +871,36 @@ Key trade-offs in interviews: all three runtimes produce binaries of 80-130 MB b
 
 Empacotar um binário resolve *onde* o app roda. A próxima dimensão é *como* ele é construído de forma reproduzível — o mesmo input, o mesmo output, em qualquer máquina. Isso é o território de builds determinísticos, CI e gestão de artefatos, que a nota seguinte cobre.
 
-- [[23 - Build em produção, CI e determinismo]] — lockfiles, cache de build, pipelines reproduzíveis
+- [[23 - Build em produção, CI e determinismo]] — lockfiles, cache de build, pipelines reproduzíveis; inclui estratégias de CI matrix para SEA multi-plataforma
 - [[20 - Bun como runtime e toolkit all-in-one]] — `bun build --compile` no contexto do toolkit all-in-one; bundler, runtime e test runner num só binário
 - [[04 - Gerenciando versões de Node]] — nvm/fnm/Volta/mise; quando o controle de versão de runtime é suficiente e o empacotamento é desnecessário
 - [[18 - O runtime como ferramenta de DX]] — `--watch`, `--env-file`, TypeScript nativo; o runtime como ferramenta antes de chegar ao empacotamento
+- [[14 - Rollup, esbuild e Rolldown]] — bundlers que preparam o JS para o SEA; `esbuild --bundle --platform=node` é o passo que antecede o `node --build-sea`
+- [[08 - Transpilação e targets]] — targets de compilação TypeScript → JavaScript; o `--target=node22` no esbuild mapeia para o motor V8 da versão alvo
+- [[17 - Otimização de bundle]] — tree shaking e code splitting; técnicas que reduzem o tamanho do JS antes de embutir no SEA
+- [[24 - Supply chain e segurança de dependências]] — auditoria de dependências; addons nativos N-API são surface de ataque relevante em SEAs
 - [[index|trilha Tooling e Build]] — visão geral da trilha
 
 ---
 
-## Fontes
+## Veja também
+
+- [[14 - Rollup, esbuild e Rolldown]] — o bundler que transforma TypeScript em CJS/ESM antes do SEA
+- [[20 - Bun como runtime e toolkit all-in-one]] — cross-compilation e `--bytecode` no contexto amplo do Bun
+- [[23 - Build em produção, CI e determinismo]] — CI matrix para builds cross-platform
+- [[24 - Supply chain e segurança de dependências]] — riscos de addons nativos no pipeline de empacotamento
+
+---
+
+## Referências
 
 - **Node.js Core Docs** — [*Single executable applications*](https://nodejs.org/api/single-executable-applications.html) — documentação oficial, referência para status, API `node:sea`, flags e limitações
-- **Joyee Cheung** — [*Improving Single Executable Application Building for Node.js*](https://joyeecheung.github.io/blog/2026/01/26/improving-single-executable-application-building-for-node-js/) — post detalhado sobre o `--build-sea` (Node 25.5) e o histórico de `postject`
-- **Bun Docs** — [*Single-file executable*](https://bun.com/docs/bundler/executables) — documentação oficial do `bun build --compile`, cross-compilation, assets, `--bytecode`
-- **Deno Docs** — [*deno compile*](https://docs.deno.com/runtime/reference/cli/compile/) — referência do `deno compile`, permissões embutidas, targets
-- **Vercel/pkg GitHub** — [*vercel/pkg (archived)*](https://github.com/vercel/pkg) — repositório arquivado, nota de descontinuação oficial
+- **Joyee Cheung** — [*Improving Single Executable Application Building for Node.js*](https://joyeecheung.github.io/blog/2026/01/26/improving-single-executable-application-building-for-node-js/) — post detalhado sobre o `--build-sea` (Node 25.5), histórico de `postject` e migração para LIEF
+- **Node.js v25.5.0 Changelog** — [*nodejs.org/en/blog/release/v25.5.0*](https://nodejs.org/en/blog/release/v25.5.0) — PRs #57038 e #56463: introdução do `--build-sea` e LIEF como dependência oficial
+- **Bun Docs** — [*Single-file executable*](https://bun.sh/docs/bundler/executables) — documentação oficial do `bun build --compile`, cross-compilation, assets, `--bytecode`, targets musl
+- **Bun 1.2 release blog** — [*bun.sh/blog/bun-v1.2*](https://bun.sh/blog/bun-v1.2) — Alpine Linux support, redução de tamanho de binário, `--windows-icon`
+- **Deno Docs** — [*deno compile*](https://docs.deno.com/runtime/reference/cli/compile/) — referência do `deno compile`, permissões embutidas, targets, Workers embutidos
+- **Deno 2.0 release blog** — [*deno.com/blog/v2.0*](https://deno.com/blog/v2.0) — compatibilidade npm estável, binários menores, melhorias no `deno compile`
+- **Vercel/pkg GitHub** — [*vercel/pkg (archived)*](https://github.com/vercel/pkg) — repositório arquivado, nota de descontinuação oficial (janeiro 2024)
+- **@yao-pkg/pkg** — [*npmjs.com/package/@yao-pkg/pkg*](https://www.npmjs.com/package/@yao-pkg/pkg) — fork ativo mantido pela comunidade
+- **LIEF project** — [*lief.re*](https://lief.re/) — Library to Instrument Executable Formats; base da manipulação de binários no `--build-sea`
