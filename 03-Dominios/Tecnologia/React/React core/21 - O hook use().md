@@ -562,7 +562,7 @@ A resposta é que o React serializa o *resultado* da Promise, não a Promise em 
 
 ## `use(Context)` condicional: o caso que `useContext` não permite
 
-Esta seção é intencionalmente curta porque o exemplo prático já apareceu em [[#Cenário 2 Contexto condicional para permissões]] e em [[#Uso 2 — `use(Context)` contexto sem as amarras de posição]]. O que vale detalhar aqui é *por que* a restrição existe no `useContext` e o que exatamente `use()` desbloqueia.
+Esta seção é intencionalmente curta porque o exemplo prático já apareceu no Cenário 2 (contexto condicional para permissões) e no Uso 2 (`use(Context)` sem as amarras de posição). O que vale detalhar aqui é *por que* a restrição existe no `useContext` e o que exatamente `use()` desbloqueia.
 
 ### A restrição do `useContext` e sua origem
 
