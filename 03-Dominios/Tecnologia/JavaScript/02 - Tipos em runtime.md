@@ -3,7 +3,7 @@ title: "Tipos em runtime"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: Iniciado
 tags:
   - javascript
@@ -35,7 +35,7 @@ string · number · bigint · boolean · undefined · symbol · null  →  primi
 object                                                           →  o "resto" (1)
 ```
 
-Funções, arrays, datas, mapas — tudo isso é `object`. A distinção real está entre os 7 primitivos e o `object`.
+Funções, arrays, datas, mapas — tudo isso é `object`. A distinção real está entre os 7 [[Dicionário de JavaScript#primitivo|primitivos]] e o `object`.
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9", "primaryTextColor": "#fff", "edgeLabelBackground": "#fff"}}}%%
@@ -89,6 +89,19 @@ Number.MAX_SAFE_INTEGER  // 9007199254740991 (2^53 - 1)
 
 Acima de `MAX_SAFE_INTEGER`, inteiros não são representados com precisão exata. Para isso existe o `bigint`.
 
+> [!warning] Números em dinheiro: nunca use `number` diretamente
+> **O que acontece:** `0.1 + 0.2 === 0.30000000000000004` — erro imperceptível em tela, mas catastrófico em finanças.
+> **Padrão de produção:** trabalhar em **centavos** (inteiros) em vez de reais/dólares. Multiplique antes de operar, divida só para exibir:
+> ```js
+> // ❌ Arriscado em sistemas financeiros
+> const total = 19.9 * 3; // 59.699999999999996
+>
+> // ✅ Em centavos — cálculo exato
+> const totalCents = 1990 * 3; // 5970
+> const display = (totalCents / 100).toFixed(2); // "59.70"
+> ```
+> Para sistemas mais complexos, use `dinero.js` ou `big.js`, que implementam aritmética de precisão sobre inteiros.
+
 ### bigint
 
 Inteiros de precisão arbitrária, sem limite de tamanho. Criado com o sufixo `n`:
@@ -102,7 +115,7 @@ Não mistura com `number` — a soma `1 + 1n` lança `TypeError`.
 
 ### boolean
 
-Apenas dois valores: `true` e `false`. Simples, mas importante entender como valores de outros tipos se comportam em contexto booleano (truthy/falsy) — tema da nota de coerção.
+Apenas dois valores: `true` e `false`. Simples, mas importante entender como valores de outros tipos se comportam em contexto booleano ([[Dicionário de JavaScript#truthy/falsy\|truthy/falsy]]) — tema da nota de [[03-Dominios/Tecnologia/JavaScript/03 - Coerção e igualdade|coerção]].
 
 ### undefined
 
@@ -123,6 +136,29 @@ id1 === id2  // false — mesmo rótulo, valores diferentes
 ```
 
 O uso principal é criar **chaves de propriedade que não colidem** com outras. Símbolos não aparecem em iterações normais (`for...in`, `Object.keys`), o que os torna úteis para metadados "invisíveis".
+
+Mas símbolos têm um papel mais profundo: os **well-known symbols** são pontos de extensão que permitem sobrescrever o comportamento nativo da linguagem. Imagine que você quer que um objeto seu "saiba" como se converter para número ou como se comportar num `for...of`. É exatamente para isso que existem:
+
+- `Symbol.iterator` — torna qualquer objeto iterável com `for...of` e spread
+- `Symbol.toPrimitive` — controla como o objeto se converte para primitivo (número, string ou padrão)
+- `Symbol.hasInstance` — redefine o comportamento de `instanceof`
+
+```js
+class Temperatura {
+    constructor(celsius) { this.celsius = celsius; }
+    [Symbol.toPrimitive](hint) {
+        if (hint === "number") return this.celsius;
+        if (hint === "string") return `${this.celsius}°C`;
+        return this.celsius;
+    }
+}
+
+const t = new Temperatura(22);
+console.log(+t);      // 22      — hint: number
+console.log(`${t}`);  // "22°C" — hint: string
+```
+
+Well-known symbols aparecem com mais frequência em nota de [[03-Dominios/Tecnologia/JavaScript/22 - Metaprogramação|Metaprogramação]], mas é importante saber que `Symbol` não é só "chave privada".
 
 ### null
 
@@ -147,6 +183,16 @@ O valor "nenhum objeto aqui, intencionalmente". Enquanto `undefined` é "ainda n
 | `function(){}` | `"function"` |
 | `null` | `"object"` ⚠️ |
 
+> [!warning] `typeof` lança `ReferenceError` em variáveis na TDZ
+> **O que acontece:** `typeof` tem reputação de operador seguro — retorna `"undefined"` para variáveis não declaradas. Mas com `let`/`const` na [[Dicionário de JavaScript#TDZ (Temporal Dead Zone)\|Temporal Dead Zone]], ele quebra essa promessa:
+> ```js
+> console.log(typeof foo);  // "undefined" — variável não declarada, seguro
+> console.log(typeof bar);  // ReferenceError! — bar existe mas está na TDZ
+> let bar = 42;
+> ```
+> **Por quê:** O motor sabe que `bar` existe (foi hoisted), mas a TDZ proíbe qualquer acesso antes da inicialização — inclusive `typeof`. É uma quebra deliberada: `foo` é verdadeiramente inexistente; `bar` existe mas está "bloqueado".
+> **Como evitar:** Declare variáveis `let`/`const` antes de qualquer acesso — inclusive antes de testes de tipo.
+
 > [!warning] A pegadinha histórica: `typeof null === "object"`
 > **O que acontece:** `typeof null` retorna `"object"`, mas `null` é um primitivo — não é um objeto.
 > **Por quê:** Na implementação original do JavaScript em 1995, valores eram armazenados com uma tag de tipo nos bits menos significativos. A tag `000` significava "object". `null` era representado internamente como o ponteiro nulo (todos os bits zero) — então a tag de tipo `000` era lida erroneamente como "object".
@@ -160,6 +206,19 @@ O valor "nenhum objeto aqui, intencionalmente". Enquanto `undefined` é "ainda n
 > ```
 
 `typeof` tem um comportamento especial para `function`: apesar de funções serem objetos (`typeof function(){} === "function"` é a única exceção na qual `typeof` retorna algo que não é o nome do tipo real), elas são identificadas como `"function"` por conveniência.
+
+> [!info] `Object.is()` — quando `===` não é preciso o suficiente
+> O operador `===` tem duas inconsistências que surpreendem: trata `NaN` como diferente de si mesmo e trata `-0` como igual a `+0`. `Object.is(a, b)` usa o algoritmo **SameValue** e acerta os dois casos:
+> ```js
+> // NaN
+> NaN === NaN           // false — comportamento de IEEE 754
+> Object.is(NaN, NaN)  // true ✓
+>
+> // -0 vs +0
+> -0 === +0             // true (igualdade matemática)
+> Object.is(-0, +0)    // false (bits realmente diferentes)
+> ```
+> Isso explica por que `NaN` funciona corretamente como chave de `Map` — o `Map` usa **SameValueZero** (variante de `Object.is` que trata `-0 === +0`). Raro no código de aplicação, mas entender isso responde a uma pergunta frequente de entrevista: "Como `NaN` pode ser chave de Map se `NaN !== NaN`?"
 
 ---
 
@@ -235,7 +294,7 @@ console.log(alice.nome); // "Bob" — foi modificado!
 
 Se `"hello"` é um primitivo imutável, como `"hello".toUpperCase()` funciona? Primitivos não têm métodos.
 
-A resposta é o **autoboxing**: quando você acessa uma propriedade ou chama um método em um primitivo, o JavaScript cria automaticamente um objeto wrapper temporário, usa o método, e descarta o objeto:
+A resposta é o **[[Dicionário de JavaScript#autoboxing\|autoboxing]]**: quando você acessa uma propriedade ou chama um método em um primitivo, o JavaScript cria automaticamente um objeto wrapper temporário, usa o método, e descarta o objeto:
 
 ```
 "hello".toUpperCase()
@@ -398,6 +457,67 @@ console.log(pessoa);       // { idade: 30 }
 > const copiaProfunda = structuredClone(original);
 > ```
 
+> [!warning] `structuredClone` não clona funções nem nós do DOM
+> **O que acontece:** `structuredClone` lida bem com `Date`, `Map`, `Set` e referências circulares — mas lança `DataCloneError` para funções e elementos DOM.
+> ```js
+> structuredClone({ fn: () => {} }) // DataCloneError: () => {} could not be cloned
+> structuredClone(document.body)    // DataCloneError: HTMLBodyElement
+> ```
+> **Benchmark:** `JSON.stringify` é ~2-3× mais rápido para objetos simples, mas perde `Date` (vira string), `undefined`, `Map` e `Set`. `structuredClone` é a escolha correta para estado rico; `JSON.stringify` para payloads simples de serialização/cache.
+> **Alternativa para funções:** `lodash.cloneDeep` ou serialização manual campo a campo.
+
+---
+
+## Casos práticos
+
+### Detectar o tipo real de um valor em runtime
+
+`typeof` é insuficiente para distinguir `null`, arrays e objetos comuns — todos retornam `"object"`. Em produção, você precisa de verificações compostas:
+
+```js
+function tipoReal(val) {
+    if (val === null) return "null";
+    if (Array.isArray(val)) return "array";
+    return typeof val;
+}
+
+tipoReal(null);       // "null"
+tipoReal([1, 2, 3]);  // "array"
+tipoReal({});         // "object"
+tipoReal(42);         // "number"
+```
+
+Essa função aparece frequentemente em utilitários de serialização, validadores de API e funções de log diagnóstico.
+
+### Cópia segura de estado em React/Redux
+
+Modificar objeto aninhado sem clonar corretamente quebra a detecção de mudança por referência — o `===` no `shouldComponentUpdate` (ou no Redux selector) compara referências, não conteúdo:
+
+```js
+// ❌ Mutação direta — React/Redux não detecta mudança
+const novoEstado = estado;
+novoEstado.usuario.nome = "Bob"; // mutou a referência original
+
+// ✅ Cópia profunda nativa (Node 17+ / browsers modernos)
+const novoEstado = structuredClone(estado);
+novoEstado.usuario.nome = "Bob"; // original intacto
+```
+
+### Guarda de nullabilidade em dados de API
+
+Dados externos chegam com `null` ou propriedades ausentes. Acessar sem guarda lança o TypeError mais frequente de JS:
+
+```js
+// ❌ TypeError se usuario for null ou undefined
+const nome = usuario.nome;
+
+// ✅ Optional chaining + nullish coalescing
+const nome = usuario?.nome ?? "Anônimo";
+
+// ✅ Também funciona em cadeia longa
+const cidade = perfil?.endereco?.cidade ?? "Não informado";
+```
+
 ---
 
 ## Como explicar em inglês
@@ -423,7 +543,9 @@ In JavaScript, there are seven primitive types — string, number, bigint, boole
 
 Saber que os tipos existem é o primeiro passo — mas o JavaScript não para por aí. Quando você mistura tipos em operações (`"5" + 3`, `null == 0`, `[] == false`), a linguagem aplica **coerção**: conversão implícita de tipo. Essa mecânica explica grande parte das "esquisitices" famosas do JS e é essencial para entender o operador `==` vs. `===`.
 
-- **03 - Coerção e igualdade** — como o JS converte tipos implicitamente, `==` vs `===`, e as armadilhas de truthy/falsy em comparações *(nota ainda não criada)*
+- [[03-Dominios/Tecnologia/JavaScript/03 - Coerção e igualdade|03 - Coerção e igualdade]] — como o JS converte tipos implicitamente, `==` vs `===`, e as armadilhas de truthy/falsy em comparações
+- [[03-Dominios/Tecnologia/JavaScript/13 - Números, BigInt e precisão|13 - Números, BigInt e precisão]] — detalhes de IEEE 754, `bigint`, aritmética de precisão e casos de uso em produção
+- [[03-Dominios/Tecnologia/JavaScript/20 - Cópia, serialização e imutabilidade|20 - Cópia, serialização e imutabilidade]] — spread, `structuredClone`, `Object.freeze` e imutabilidade defensiva
 - [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — como adicionar tipagem **estática** sobre esse sistema dinâmico de runtime; o TS não muda o comportamento em runtime, só adiciona verificações em tempo de compilação
 
 ---
@@ -436,3 +558,11 @@ Saber que os tipos existem é o primeiro passo — mas o JavaScript não para po
 - **Dmitri Pavlutin** — [*The Difference Between Values and References in JavaScript*](https://dmitripavlutin.com/value-vs-reference-javascript/) — explicação clara e visual de valor vs. referência com exemplos práticos
 - **Alexander Obregon / Medium** — [*The Real Reason JavaScript typeof Null Returns Object*](https://medium.com/@AlexanderObregon/the-real-reason-javascript-typeof-null-returns-object-f41d39c9fe5b) — história e mecânica interna do bug do `typeof null`
 - **FreeCodeCamp** — [*JavaScript Primitive Values vs Reference Values*](https://www.freecodecamp.org/news/javascript-assigning-values-vs-assigning-references/) — exemplos práticos de passagem por valor e referência
+- **MDN Web Docs** — [*`let` — Temporal Dead Zone*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let) — comportamento de `typeof` em variáveis na TDZ
+- **MDN Web Docs** — [*`Object.is()`*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) — algoritmo SameValue vs `===`, casos de NaN e -0
+- **Dmitri Pavlutin** — [*Detailed Overview of Well-Known Symbols*](https://dmitripavlutin.com/detailed-overview-of-well-known-symbols/) — Symbol.iterator, Symbol.toPrimitive e outros pontos de extensão da linguagem
+- **Benjamin Renoux / DEV** — [*Financial Precision in JavaScript: Handle Money Without Losing a Cent*](https://dev.to/benjamin_renoux/financial-precision-in-javascript-handle-money-without-losing-a-cent-1chc) — padrão centavos e libs para aritmética financeira
+- **BounDev** — [*JavaScript Deep Cloning: structuredClone vs JSON.stringify*](https://www.boundev.com/blog/javascript-deep-cloning-structured-clone-2026) — limites do `structuredClone` e benchmark de performance
+
+> [!tip] Vídeo recomendado
+> **[JavaScript Types Explained: Primitive vs. Reference](https://www.youtube.com/watch?v=ZmoLbxd_41E)** (2024) — explica visualmente a diferença entre primitivos e objetos, passagem por valor vs. referência, e como a memória (stack/heap) entra no jogo. Bom ponto de partida antes de ler sobre coerção.

@@ -95,7 +95,7 @@ const somar = (a, b) => {
 };
 ```
 
-Arrow functions têm **duas diferenças cruciais** em relação às outras formas — e ambas são tema frequente de entrevista:
+[[Dicionário de JavaScript#arrow function\|Arrow functions]] têm **duas diferenças cruciais** em relação às outras formas — e ambas são tema frequente de entrevista:
 
 1. **Não têm `this` próprio** — herdam o `this` do escopo léxico onde foram criadas.
 2. **Não têm o objeto `arguments`** — mas podem usar rest parameters (veremos adiante).
@@ -114,6 +114,21 @@ Além disso, arrow functions **não podem ser usadas como construtoras** (chamar
 | Pode usar `new` | ✅ Sim | ✅ Sim | ❌ Não |
 | Pode ser generator | ✅ Sim | ✅ Sim | ❌ Não |
 | Sintaxe concisa | ❌ Verbosa | ❌ Verbosa | ✅ Sim |
+
+> [!info] A propriedade `name` — o nome da função no stack trace
+> Toda função em JavaScript tem uma propriedade `name` (somente leitura) que aparece no stack trace quando algo dá errado. Funções anônimas aparecem como `(anonymous)` — inútil em produção.
+>
+> ```js
+> // Arrow anônima: stack trace inútil
+> const calcular = () => { throw new Error("ops"); };
+> calcular(); // Error at (anonymous)
+>
+> // Expression nomeada: trace legível
+> const calcular = function calcularTotal() { throw new Error("ops"); };
+> calcular(); // Error at calcularTotal
+> ```
+>
+> Motores modernos **inferem** o nome quando você atribui a função a uma variável: `const fn = () => {}` resulta em `fn.name === "fn"`. Mas o nome inferido desaparece quando a função é passada diretamente como argumento: `arr.map(() => {})` fica `(anonymous)`. Prefira sempre nomear callbacks passados diretamente.
 
 ---
 
@@ -178,7 +193,7 @@ function criarUsuario(nome, id = gerarId()) {
 
 ### Rest parameters (`...args`)
 
-Quando você não sabe quantos argumentos virão, o rest parameter coleta todos os extras em um **array real**:
+Quando você não sabe quantos argumentos virão, o [[Dicionário de JavaScript#rest parameter (parâmetro rest)\|rest parameter]] coleta todos os extras em um **array real**:
 
 ```js
 function somar(...numeros) {
@@ -331,7 +346,7 @@ const objeto = n => ({ x: n }); // parênteses forçam interpretação como obje
 
 ## IIFE — Immediately Invoked Function Expression
 
-Uma IIFE é uma função que se define e se executa imediatamente:
+Uma [[Dicionário de JavaScript#IIFE (Immediately Invoked Function Expression)\|IIFE]] é uma função que se define e se executa imediatamente:
 
 ```js
 (function() {
@@ -364,7 +379,7 @@ console.log(resultado); // 20
 
 ## Funções de primeira classe e higher-order functions
 
-"Primeira classe" (first-class) significa que funções são **valores** — podem ir para qualquer lugar que um valor pode ir.
+"[[Dicionário de JavaScript#first-class function (função de primeira classe)\|Primeira classe]]" (first-class) significa que funções são **valores** — podem ir para qualquer lugar que um valor pode ir.
 
 ```js
 // 1. Atribuída a uma variável
@@ -388,7 +403,7 @@ const cumprimentar = criarSaudacao("Bom dia");
 cumprimentar("Carlos"); // "Bom dia, Carlos!"
 ```
 
-Uma **higher-order function** é qualquer função que recebe outra função como argumento ou retorna uma função. Os exemplos mais conhecidos:
+Uma [[Dicionário de JavaScript#higher-order function (função de ordem superior)\|**higher-order function**]] é qualquer função que recebe outra função como argumento ou retorna uma função. Os exemplos mais conhecidos:
 
 ```js
 const numeros = [1, 2, 3, 4, 5];
@@ -407,6 +422,65 @@ const soma = numeros.reduce((acc, n) => acc + n, 0); // 15
 > São conceitos relacionados mas distintos: **primeira classe** é uma propriedade da linguagem (funções podem ser usadas como valores). **Higher-order** é uma propriedade de uma função específica (ela opera sobre outras funções). Em linguagens com funções de primeira classe, higher-order functions emergem naturalmente — JS é um exemplo.
 
 Higher-order functions são a porta de entrada para closures (como `criarSaudacao` acima captura `prefixo`) — tema da [[10 - Closures]].
+
+---
+
+## Casos práticos
+
+Higher-order functions aparecem em todo código JavaScript moderno. Três padrões são especialmente comuns no dia a dia:
+
+**1. Pipeline de transformação**
+
+Você pode compor funções em sequência para transformar dados passo a passo — o mesmo princípio de `map().filter().reduce()`:
+
+```js
+const pipeline = (...fns) => (x) => fns.reduce((v, f) => f(v), x);
+
+const processarSlug = pipeline(
+  s => s.trim(),
+  s => s.toLowerCase(),
+  s => s.replace(/\s+/g, '-')
+);
+
+processarSlug("  Olá Mundo  "); // "olá-mundo"
+```
+
+**2. Fábricas de validadores**
+
+Ao invés de repetir lógica de validação, você cria uma função que retorna uma função de validação especializada:
+
+```js
+const criarValidador = (min, max) => (valor) => {
+  if (valor < min) return `Mínimo é ${min}`;
+  if (valor > max) return `Máximo é ${max}`;
+  return null; // sem erro
+};
+
+const validarIdade = criarValidador(0, 120);
+const validarPercentual = criarValidador(0, 100);
+
+validarIdade(25);      // null (válido)
+validarIdade(200);     // "Máximo é 120"
+validarPercentual(75); // null
+```
+
+**3. Event handlers com referência nomeada**
+
+Arrow functions anônimas passadas para `addEventListener` não podem ser removidas depois — a referência se perde:
+
+```js
+// Armadilha: cria uma nova função a cada vez; removeEventListener não funciona
+button.addEventListener('click', () => contadorCliques++);
+button.removeEventListener('click', () => contadorCliques++); // ❌ não remove!
+
+// Correto: salvar a referência
+const aoClicar = () => contadorCliques++;
+button.addEventListener('click', aoClicar);
+button.removeEventListener('click', aoClicar); // ✅ funciona
+```
+
+> [!tip] Regra de produção
+> Se você precisa remover um listener depois, sempre armazene a referência da função em uma variável. Callbacks anônimos inline são convenientes para listeners permanentes — problemáticos para listeners temporários.
 
 ---
 
@@ -484,3 +558,4 @@ Entender funções abre duas portas imediatamente. A primeira é o `this` — um
 - **James Sinclair** — [*What's the difference between ordinary functions and arrow functions in JavaScript?*](https://jrsinclair.com/articles/2025/whats-the-difference-between-named-functions-and-arrow-functions/) (2025) — análise aprofundada das diferenças práticas e de semântica
 - **Axel Rauschmayer** — [*Exploring ES6 — Parameter handling*](https://exploringjs.com/es6/ch_parameter-handling.html) — cobertura completa de default params, rest e destructuring de parâmetros no ES6
 - **GeeksforGeeks** — [*Difference between First-Class and Higher-Order Functions*](https://www.geeksforgeeks.org/javascript/difference-between-first-class-and-higher-order-functions-in-javascript/) — distinção conceitual clara para entrevistas
+- **MDN Web Docs** — [*Function: name*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name) — comportamento da propriedade `name`, inferência em arrow functions e function expressions, impacto em stack traces

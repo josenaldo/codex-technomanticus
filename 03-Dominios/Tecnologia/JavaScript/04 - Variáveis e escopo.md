@@ -74,12 +74,20 @@ graph TD
 
 ### Escopo global
 
-Variáveis declaradas fora de qualquer função ou bloco vivem no escopo global. No browser, ficam penduradas no objeto `window`. Qualquer código pode acessá-las — o que parece conveniente, mas é uma armadilha de manutenção.
+Variáveis declaradas fora de qualquer função ou bloco vivem no escopo global. No browser, `var` declarada no nível de módulo fica pendurada no objeto `window`; no Node, vai no objeto `global`. Código de qualquer lugar pode acessá-las — o que parece conveniente, mas é uma armadilha de manutenção.
 
 ```javascript
 var cor = "azul";
-console.log(window.cor); // "azul" — no browser
+console.log(window.cor); // "azul" — só no browser
+
+// Modern: globalThis unifica browser, Node e workers
+console.log(globalThis.cor); // "azul" em qualquer ambiente
 ```
+
+> [!info] `globalThis` — o objeto global portável (ES2020)
+> Antes, cada ambiente tinha seu nome: `window` no browser, `global` no Node, `self` em workers. `globalThis` resolve isso: funciona em todos os ambientes sem `typeof` defensivo. Ver [[23 - Recursos modernos (ES2020 a ES2025)]] para outros recursos do ES2020.
+
+Note que `let` e `const` no nível global **não** criam propriedades no `globalThis`, mesmo que vivam no escopo global — são ligadas ao módulo/script, mas inacessíveis via objeto global.
 
 ### Escopo de função
 
@@ -154,7 +162,69 @@ externa(); // imprime: "olá do escopo externo"
 
 `interna()` foi definida no escopo global, então ela enxerga o `mensagem` global — não o local de `externa()`. O local de chamada não importa.
 
-Esse conceito é a base das [[Dicionário de JavaScript#closure|closures]] — quando uma função "lembra" o escopo onde foi criada.
+Esse conceito é a base das [[Dicionário de JavaScript#closure|closures]] — quando uma função "lembra" o escopo onde foi criada. A nota [[10 - Closures]] detalha isso com exemplos práticos de module pattern e memoização.
+
+---
+
+## Shadowing: quando escopos internos cobrem os externos
+
+**Shadowing** (sombreamento — ver [[Dicionário de JavaScript#shadowing (sombreamento)|Dicionário]]) acontece quando uma variável em um escopo interno tem o mesmo nome que outra em um escopo externo. A variável interna "cobre" a externa enquanto o escopo interno está ativo:
+
+```javascript
+const x = "global";
+
+function externa() {
+  const x = "função"; // shadowing de x global
+
+  function interna() {
+    const x = "bloco"; // shadowing de x de externa
+    console.log(x);    // "bloco"
+  }
+
+  interna();
+  console.log(x); // "função" — x global ainda intacto
+}
+
+externa();
+console.log(x); // "global" — nunca foi tocado
+```
+
+O shadowing não modifica a variável do escopo externo — cria uma nova variável local com o mesmo nome. Quando o escopo interno encerra, a variável interna desaparece e a externa volta a ser visível.
+
+> [!warning] Shadowing acidental com parâmetros
+> Um parâmetro de função faz shadowing de qualquer variável do escopo externo com o mesmo nome:
+> ```javascript
+> const nome = "Ada";
+>
+> function saudar(nome) { // parâmetro faz shadow do 'nome' global
+>   console.log(`Olá, ${nome}!`);
+> }
+>
+> saudar("Alan"); // "Olá, Alan!" — usa o parâmetro
+> console.log(nome); // "Ada" — global intacto
+> ```
+> Isso é útil — permite funções independentes do estado externo — mas nomear parâmetros igual a variáveis externas pode causar confusão em bases de código maiores.
+
+### Como o motor resolve nomes: a scope chain
+
+Quando o JavaScript precisa resolver um nome de variável, percorre a **scope chain** (cadeia de escopos — ver [[Dicionário de JavaScript#scope chain (cadeia de escopos)|Dicionário]]) do escopo mais interno para o mais externo até encontrar a declaração — ou lançar `ReferenceError` se chegar ao global sem encontrar.
+
+```mermaid
+%%{init: {"theme": "base"}}%%
+graph LR
+    A["Escopo do bloco\n(busca aqui primeiro)"]
+    B["Escopo da função\n(se não achou)"]
+    C["Escopo global\n(última parada)"]
+    D["ReferenceError\n(não encontrado)"]
+
+    A -->|"não tem"| B
+    B -->|"não tem"| C
+    C -->|"não tem"| D
+```
+
+Isso é implementado internamente via **Environment Records** (registros de ambiente) encadeados. Cada função ou bloco cria um novo Environment Record com referência ao externo — formando a cadeia. É essa estrutura que closures mantêm viva: guardam a referência ao Environment Record do escopo onde foram criadas.
+
+> [!tip] Para o nível de detalhe dos Environment Records e como o motor cria e destrói escopos durante a execução, ver [[19 - Modelo de execução a fundo]].
 
 ---
 
@@ -283,6 +353,46 @@ numeros = [5, 6];  // ❌ TypeError
 > [!info] Quando precisar de imutabilidade real
 > Use `Object.freeze()` para congelar um objeto superficialmente, ou bibliotecas como Immer para imutabilidade profunda em estruturas complexas.
 
+`Object.freeze()` é a solução imediata, mas tem um limite importante: é **rasa** (shallow). Congela o objeto em si, mas objetos aninhados continuam mutáveis:
+
+```javascript
+const config = Object.freeze({
+  porta: 3000,
+  db: { host: "localhost" }, // objeto aninhado NÃO está congelado
+});
+
+config.porta = 9000;         // ❌ silenciosamente ignorado em strict mode, TypeError em strict
+config.db.host = "remoto";   // ✅ funciona — freeze não é profundo
+console.log(config.db.host); // "remoto"
+```
+
+Para imutabilidade profunda em produção, use `structuredClone` + freeze recursivo, ou a biblioteca Immer (que usa Proxy para simular imutabilidade com sintaxe mutável). Ver [[20 - Cópia, serialização e imutabilidade]] para o panorama completo.
+
+---
+
+## Novidade: `using` — uma quarta forma de declarar (ES2026)
+
+O **Explicit Resource Management** (Stage 4, ES2026) introduz `using` e `await using` para declarar recursos que precisam ser limpos automaticamente ao sair do escopo — arquivos, conexões, locks:
+
+```javascript
+// 'using' garante que dispose() é chamado ao sair do bloco
+{
+  using arquivo = abrirArquivoSync('dados.csv');
+  processarDados(arquivo.ler());
+} // arquivo.dispose() é chamado automaticamente aqui — mesmo se lançar exceção
+
+// 'await using' para recursos assíncronos
+async function query() {
+  await using conn = await pool.getConnection();
+  return conn.executar('SELECT ...');
+} // conn[Symbol.asyncDispose]() chamado ao sair
+```
+
+`using` segue escopo de bloco como `let`/`const`, mas com a semântica adicional de cleanup garantido. O objeto precisa implementar `[Symbol.dispose]()` (ou `[Symbol.asyncDispose]()` para a versão async).
+
+> [!info] Fonte
+> TC39 Proposal: [Explicit Resource Management](https://github.com/tc39/proposal-explicit-resource-management) — Stage 4 (junho/2025, incluído no ES2026). Ver [[24 - ES2026 e o futuro]] para o contexto completo da proposta.
+
 ---
 
 ## Perigos do escopo global
@@ -376,11 +486,18 @@ In JavaScript, `var` is function-scoped and gets hoisted with an initial value o
 
 ---
 
+> [!tip] Vídeo recomendado
+> **JavaScript Visualized - Scope (Chains)** — Lydia Hallie explica scope chain com animações que tornam visível como o motor percorre os escopos. [youtube.com/watch?v=QyUFheng6J0](https://www.youtube.com/watch?v=QyUFheng6J0)
+
+---
+
 ## O que vem a seguir
 
 Com escopo bem entendido, você está pronto para o conceito que o transforma em superpoder: funções que lembram o escopo onde foram criadas, mesmo depois que esse escopo fechou.
 
-- **10 - Closures** — quando uma função carrega o escopo léxico consigo; base de currying, memoização e module pattern
+- **[[10 - Closures]]** — quando uma função carrega o escopo léxico consigo; base de currying, memoização e module pattern
+- **[[19 - Modelo de execução a fundo]]** — Environment Records, call stack e como o motor gerencia escopos em tempo de execução
+- **[[20 - Cópia, serialização e imutabilidade]]** — imutabilidade profunda, `structuredClone` e alternativas ao `Object.freeze()`
 
 ---
 
@@ -390,10 +507,13 @@ Com escopo bem entendido, você está pronto para o conceito que o transforma em
 
 ---
 
-## Fontes
+## Referências
 
 - **MDN Web Docs** — [*let — JavaScript*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let) — documentação oficial com exemplos de TDZ e escopo de bloco
 - **freeCodeCamp** — [*Temporal Dead Zone and Hoisting in JavaScript*](https://www.freecodecamp.org/news/javascript-temporal-dead-zone-and-hoisting-explained/) — explicação didática com diagramas e exemplos práticos
 - **Perficient Blog** — [*Scoping, Hoisting and Temporal Dead Zone in JavaScript*](https://blogs.perficient.com/2025/04/17/scoping-hoisting-and-temporal-dead-zone-in-javascript/) — análise prática com casos de uso reais (2025)
 - **GeeksforGeeks** — [*Temporal Dead Zone in JavaScript*](https://www.geeksforgeeks.org/javascript/temporal-dead-zone-in-javascript/) — referência rápida com tabela comparativa var/let/const
 - **Codesmith Blog** — [*JavaScript Scope: Lexical, Block, and Hoisting Basics*](https://www.codesmith.io/blog/understanding-javascript-scope) — foco em escopo léxico e closures como fundação
+- **TC39 Proposal** — [*Explicit Resource Management (`using`)*](https://github.com/tc39/proposal-explicit-resource-manager) — spec da proposta Stage 4 (ES2026)
+- **ECMA-262** — [*Environment Records*](https://tc39.es/ecma262/#sec-environment-records) — especificação formal de como o motor implementa escopos via registros de ambiente
+- **Lydia Hallie** — [*JavaScript Visualized: Scope (Chains)*](https://www.youtube.com/watch?v=QyUFheng6J0) — animação visual da scope chain e resolução de nomes (2024)

@@ -3,7 +3,7 @@ title: "O que é JavaScript"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: iniciado
 tags:
   - javascript
@@ -106,6 +106,38 @@ flowchart LR
 > [!question]- Por que não compilar tudo de uma vez, como Java ou C?
 > Porque JavaScript é carregado *na hora da visita* — o usuário não pode esperar segundos para compilar o site inteiro. O JIT é o meio-termo: começa rápido (interpretando) e acelera onde importa (compilando os caminhos quentes). É o mesmo princípio de aquecer só o que você vai comer, não o freezer inteiro.
 
+> [!info]- O V8 tem 4 camadas, não 2: Ignition → Sparkplug → Maglev → TurboFan
+> O diagrama acima simplifica o V8 em duas camadas (interpretador + JIT). Na prática, o pipeline tem quatro:
+>
+> | Camada | Tipo | Velocidade de compilação | Qualidade do código |
+> |--------|------|--------------------------|---------------------|
+> | **Ignition** | Interpretador de bytecode | Imediata | Básica (interpreta) |
+> | **Sparkplug** | Compilador baseline | ~1µs por função | Rápido, sem otimizações |
+> | **Maglev** | Compilador otimizador médio | ~10x mais rápido que TurboFan | Bom — suficiente para 90% dos casos |
+> | **TurboFan** | Compilador de alta otimização | Mais lento | Máxima — para os caminhos super-quentes |
+>
+> A lógica é: começar imediatamente com Ignition, promover funções frequentes para Sparkplug, promover funções muito quentes para Maglev, e reservar TurboFan apenas para os caminhos absolutamente críticos. Isso é por que apps JS "aceleram" nos primeiros segundos — as camadas superiores do pipeline vão sendo ativadas progressivamente. A progressão Maglev → TurboFan responde pela sensação de que "JS ficou rápido de verdade nos últimos anos".
+
+> [!info]- [[Dicionário de JavaScript#hidden class\|Hidden classes]]: o segredo do JIT rápido (e como quebrá-lo)
+> Quando o JIT compila uma função que acessa `obj.x`, ele não quer fazer uma busca dinâmica em hash toda vez — isso seria lento. Em vez disso, o V8 cria uma *hidden class* (também chamada de *shape* ou *map*) para cada formato de objeto: se dois objetos têm as mesmas propriedades na mesma ordem, compartilham a mesma hidden class. Com ela, o JIT sabe que `x` está *sempre* no offset 8 bytes — acesso direto como em C.
+>
+> O problema surge quando você quebra essa estabilidade:
+>
+> ```javascript
+> // ✓ Boa prática — mesmo shape, hidden class compartilhada
+> const p1 = { x: 1, y: 2 };
+> const p2 = { x: 3, y: 4 };
+>
+> // ✗ Shapes diferentes — hidden classes separadas, JIT não otimiza
+> const p3 = { x: 1, y: 2 };
+> const p4 = { y: 4, x: 3 };  // ordem diferente!
+>
+> // ✗ delete força "modo dicionário" — abandona a hidden class
+> delete p1.y;  // p1 vira um hash map lento
+> ```
+>
+> Quando o JIT detecta que um site de chamada recebe objetos com *shapes* demais (megamorphic), ele desiste de otimizar e reverte para o interpretador — *deoptimização* silenciosa. Por isso, a regra prática é: inicialize todas as propriedades do objeto no construtor, na mesma ordem, e evite `delete` em caminhos quentes.
+
 ---
 
 ## Single-thread e assíncrono: a aparente contradição
@@ -114,7 +146,7 @@ JavaScript tem **uma única thread de execução**. Isso significa que só uma c
 
 Mas então como funciona uma requisição de rede que não trava a página? Como o `setTimeout` "espera" sem bloquear tudo?
 
-A resposta está no **event loop** — um mecanismo que permite adiar trabalho, delegá-lo ao ambiente (browser ou runtime) e retomar quando estiver pronto. Em vez de bloquear esperando a resposta do servidor, a engine registra "me avise quando terminar" e segue executando outro código. Quando a resposta chega, o callback vai para a fila e o event loop o executa na próxima oportunidade.
+A resposta está no **[[Dicionário de JavaScript#event loop\|event loop]]** — um mecanismo que permite adiar trabalho, delegá-lo ao ambiente (browser ou runtime) e retomar quando estiver pronto. Em vez de bloquear esperando a resposta do servidor, a engine registra "me avise quando terminar" e segue executando outro código. Quando a resposta chega, o callback vai para a fila e o event loop o executa na próxima oportunidade.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -160,6 +192,11 @@ JavaScript nasceu no navegador, mas hoje roda em muitos ambientes:
 | **Mobile** | React Native (Hermes) | Apps iOS/Android |
 
 Todos eles compartilham o **núcleo da linguagem** (ECMAScript), mas cada ambiente expõe APIs diferentes: o browser tem `document`, `window`, `fetch`; o Node tem `fs`, `process`, `http`. A spec não define essas APIs — elas são acréscimos de cada runtime.
+
+> [!info] Hermes: a engine que não faz JIT (de propósito)
+> A tabela lista **Hermes** para React Native — e vale entender por que a Meta não usou V8 ou JSC. Em um smartphone com memória limitada, o JIT consome RAM e tempo de CPU exatamente no momento mais crítico: a inicialização do app. A solução da Meta foi inverter o modelo: o Hermes compila o JavaScript para bytecode **durante o build do app** (AOT — Ahead-of-Time), antes de chegar no dispositivo. Em runtime, não há parse, não há compilação — a engine executa o bytecode diretamente.
+>
+> O resultado: apps React Native com Hermes iniciam 30–50% mais rápido que com V8/JSC, e o bytecode Hermes é tipicamente 10–30% menor que o JavaScript minificado equivalente. No React Native 0.70+, Hermes é o padrão — você pode verificar com `HermesInternal` no console. A Meta está desenvolvendo o *Static Hermes*, que vai um passo além: compila JS direto para código de máquina nativo, como um compilador AOT tradicional.
 
 ---
 
@@ -275,7 +312,7 @@ Em JavaScript, `number` é um tipo único que cobre inteiros e decimais — ambo
 
 Esses dois termos aparecem juntos e são frequentemente confundidos. A distinção é simples e vale gravar:
 
-**Engine** é o motor que executa JavaScript — o software que recebe código-fonte, o compila e o roda. É o V8, o SpiderMonkey, o JavaScriptCore. A engine implementa a spec ECMAScript: sabe o que é uma closure, como funciona o prototype chain, o que `typeof` deve retornar.
+**Engine** é o motor que executa JavaScript — o software que recebe código-fonte, o compila e o roda. É o V8, o SpiderMonkey, o JavaScriptCore. A engine implementa a spec ECMAScript: sabe o que é uma [[Dicionário de JavaScript#closure\|closure]], como funciona o [[Dicionário de JavaScript#prototype chain\|prototype chain]], o que `typeof` deve retornar.
 
 **Runtime** é o ambiente completo em volta da engine. O runtime pega a engine e acrescenta APIs, abstrações de sistema operacional, protocolos de rede, APIs de arquivo, timers, e tudo mais que um programa real precisa para funcionar.
 
@@ -295,6 +332,19 @@ Esses dois termos aparecem juntos e são frequentemente confundidos. A distinç�
 ```
 
 Quando alguém diz "JavaScript roda no Node", está dizendo: o runtime Node.js (que usa V8 internamente) executa seu código. A engine lida com a linguagem; o runtime lida com o mundo externo.
+
+**`globalThis` — o global portável da spec:** por muito tempo, acessar o objeto global de forma portável era um problema: no browser era `window`, no Node era `global`, em Web Workers era `self`. O ES2020 adicionou `globalThis` à especificação ECMAScript como o ponto de acesso unificado ao objeto global em qualquer ambiente. É o exemplo mais concreto de como a spec evoluiu para cobrir lacunas que antes eram responsabilidade (e inconsistência) de cada runtime.
+
+```javascript
+// Antes do ES2020 — frágil e verboso
+const globalObj = (typeof window !== 'undefined') ? window
+                : (typeof global !== 'undefined') ? global
+                : self;
+
+// A partir do ES2020 — funciona em qualquer runtime
+console.log(globalThis === window);  // true no browser
+console.log(globalThis === global);  // true no Node
+```
 
 ---
 
@@ -323,6 +373,15 @@ Agora que você entende o que é JavaScript, de onde vem, e o que a engine faz c
 
 - [[03-Dominios/Tecnologia/JavaScript/index|JavaScript (MOC)]] — visão geral da trilha
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Node / Runtime e Event Loop]] — internals do event loop, call stack, filas e fases
+- [[03-Dominios/Tecnologia/JavaScript/19 - Modelo de execução a fundo|Modelo de execução a fundo]] — call stack, heap, microtasks, event loop em detalhe
+- [[03-Dominios/Tecnologia/JavaScript/25 - Armadilhas e quirks|Armadilhas e quirks]] — catálogo completo de gotchas da linguagem
+- [[03-Dominios/Tecnologia/JavaScript/13 - Números, BigInt e precisão|Números, BigInt e precisão]] — IEEE 754 em profundidade, BigInt e aritmética de precisão
+
+---
+
+> [!tip] Vídeo: como o V8 realmente executa seu código
+> **[How Does JavaScript Work? The V8 Engine, Ignition, Sparkplug and TurboFan](https://www.youtube.com/watch?v=pzMj_r8jFdk)** (~30 min, legendas disponíveis)
+> Walkthrough visual do pipeline completo do V8 — desde o parse do texto até o TurboFan gerar código de máquina — usando os mesmos termos e conceitos desta nota (Ignition, Sparkplug, Maglev, TurboFan). Bom para fixar o modelo mental antes de ir para [[03-Dominios/Tecnologia/JavaScript/19 - Modelo de execução a fundo|Modelo de execução a fundo]].
 
 ---
 
@@ -335,3 +394,7 @@ Agora que você entende o que é JavaScript, de onde vem, e o que a engine faz c
 - **DEV Community / Artem Turlenko** — [*Inside the V8 JavaScript Engine: A Comprehensive Exploration*](https://dev.to/artem_turlenko/inside-the-v8-javascript-engine-a-comprehensive-exploration-5g1p) — detalhamento do pipeline Ignition → Sparkplug → Maglev → TurboFan
 - **Frontend Dogma** — [*JavaScript Engines Explained — Comparing V8, SpiderMonkey, JavaScriptCore, and More*](https://frontenddogma.com/posts/2025/javascript-engines-explained/) — análise comparativa de engines em 2025
 - **daily.dev** — [*Bun vs Node.js vs Deno: Which Runtime in 2026?*](https://daily.dev/blog/javascript-runtimes-bun-vs-node-js-vs-deno-comparison/) — comparativo de runtimes JS modernos
+- **V8 Blog** — [*Maglev — V8's Fastest Optimizing JIT*](https://v8.dev/blog/maglev) — detalhes da camada Maglev e do pipeline 4-tier do V8
+- **The Node Book** — [*V8 JavaScript Engine in Node.js: Architecture, Tiers, Shapes, and Deoptimization*](https://www.thenodebook.com/node-arch/v8-engine-intro) — hidden classes, inline caches e deoptimização
+- **React Native Docs** — [*Using Hermes*](https://reactnative.dev/docs/hermes) — compilação AOT e integração padrão desde RN 0.70
+- **MDN Web Docs** — [*globalThis*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis) — padronização do objeto global em ES2020

@@ -3,7 +3,7 @@ title: "Coerção e igualdade"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: iniciado
 tags:
   - javascript
@@ -16,7 +16,7 @@ publish: true
 # Coerção e igualdade
 
 > [!abstract] TL;DR
-> JavaScript converte valores entre tipos automaticamente — isso se chama **coerção implícita**. O operador `==` aplica o algoritmo de *Abstract Equality* antes de comparar, o que gera resultados contraintuitivos. `===` compara sem converter. Os únicos **8 valores falsy** da linguagem são `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN` — todo o resto é truthy, incluindo `[]` e `{}`. Use sempre `===`, com a única exceção deliberada do idiom `== null`.
+> JavaScript converte valores entre tipos automaticamente — isso se chama **[[Dicionário de JavaScript#coerção\|coerção implícita]]**. O operador `==` aplica o algoritmo de *Abstract Equality* antes de comparar, o que gera resultados contraintuitivos. `===` compara sem converter. Os únicos **8 valores [[Dicionário de JavaScript#truthy/falsy\|falsy]]** da linguagem são `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN` — todo o resto é truthy, incluindo `[]` e `{}`. Use sempre `===`, com a única exceção deliberada do idiom `== null`.
 
 ---
 
@@ -49,6 +49,40 @@ Existem dois sabores:
 
 ---
 
+## ToPrimitive: o algoritmo por trás das conversões de objeto
+
+Quando o JavaScript precisa converter um **objeto** para um [[Dicionário de JavaScript#primitivo|primitivo]] — ao usar `+`, `==`, template literals ou operações aritméticas — ele chama internamente o algoritmo **[[Dicionário de JavaScript#ToPrimitive\|ToPrimitive]](input, hint)**. O `hint` pode ser `"default"`, `"string"` ou `"number"`, e muda a ordem em que os métodos são tentados:
+
+| Hint | Tenta primeiro | Tenta depois |
+|---|---|---|
+| `"number"` | `valueOf()` | `toString()` |
+| `"string"` | `toString()` | `valueOf()` |
+| `"default"` | `valueOf()` | `toString()` |
+
+Por que `[].valueOf()` não resolve? Porque `valueOf()` de um array retorna o próprio array — um objeto, não um primitivo. Quando o resultado não é primitivo, o algoritmo tenta o segundo método. `[].toString()` retorna `""`, que é primitivo — e é por isso que `[] + ""` vira `""`.
+
+Você pode sobrescrever esse comportamento via `Symbol.toPrimitive`:
+
+```js
+const obj = {
+  [Symbol.toPrimitive](hint) {
+    if (hint === "number") return 42;
+    if (hint === "string") return "quarenta e dois";
+    return true; // hint === "default"
+  }
+};
+
++obj          // 42            — hint: number
+`${obj}`      // "quarenta e dois" — hint: string
+obj + ""      // "true"        — hint: default → true → "true"
+obj == 42     // false         — hint: default → true → Number(true) → 1 ≠ 42
+```
+
+> [!question]- Quando o hint é "default" e quando é "number"?
+> O hint `"default"` aparece no operador `==` e no operador `+` binário quando um dos lados é objeto. O hint `"number"` aparece em operadores aritméticos puros (`-`, `*`, `/`, `**`). A distinção só importa quando você implementa `Symbol.toPrimitive` — para objetos comuns, `"default"` e `"number"` têm o mesmo comportamento (valorOf primeiro).
+
+---
+
 ## O operador `+`: o camaleão
 
 O `+` é o único operador aritmético que também serve para concatenar strings. Essa dualidade é a fonte de muita confusão.
@@ -68,6 +102,19 @@ undefined + 1 // NaN    — undefined vira NaN
 
 > [!question]- Por que `"5" + 3` é `"53"` mas `"5" - 3` é `2`?
 > O `+` tem dupla personalidade: soma números *e* concatena strings. Quando vê uma string, assume papel de concatenador. Já `-`, `*` e `/` são *exclusivamente* aritméticos — não há semântica de string, então convertem tudo para número antes de operar.
+
+### A exceção do `Date`: hint "default" age como "string"
+
+A maioria dos objetos trata o hint `"default"` igual ao `"number"` — mas `Date` é a exceção notável da spec. `Date[Symbol.toPrimitive]("default")` retorna string (o mesmo que hint `"string"`), não número.
+
+```js
+new Date() + 1       // "Wed Jun 25 2026...1"  — Date usa toString(), concatena
+new Date() - 1       // número em ms           — "-" força hint "number", usa getTime()
+new Date() * 1       // número em ms           — mesmo motivo
+```
+
+> [!warning] Armadilha: `new Date() + new Date()` concatena strings
+> Em cálculos de data, `new Date() - new Date()` dá a diferença em milissegundos (correto). Mas `new Date() + new Date()` concatena duas strings de data — uma armadilha silenciosa em código real. Se precisar somar timestamps, use `date.getTime()` ou `+date` (unário) para forçar conversão numérica explícita.
 
 ---
 
@@ -264,6 +311,31 @@ Object.is(0, -0)   // false — Object.is preserva o sinal
 1 / -0             // -Infinity — aqui a diferença aparece
 ```
 
+## Os quatro algoritmos de igualdade do JavaScript
+
+A spec define não um, mas **quatro algoritmos** de igualdade, cada um com características diferentes:
+
+| Algoritmo | Onde é usado | `NaN == NaN`? | `0 == -0`? |
+|---|---|---|---|
+| Abstract Equality (`==`) | operador `==` | `false` | `true` |
+| Strict Equality (`===`) | operador `===`, `switch/case`, `Array.indexOf` | `false` | `true` |
+| SameValue (`Object.is`) | `Object.is()`, `Object.defineProperty` | `true` | `false` |
+| SameValueZero | `Map`, `Set`, `Array.includes`, `Array.findIndex` | `true` | `true` |
+
+**[[Dicionário de JavaScript#SameValueZero\|SameValueZero]]** é o que `Map` e `Set` usam internamente. É idêntico a `Object.is` exceto que trata `0` e `-0` como iguais — por isso `new Set([0, -0]).size === 1`, mas `Object.is(0, -0) === false`.
+
+```js
+// SameValueZero em ação
+new Set([NaN, NaN]).size      // 1 — NaN é deduplicado (SameValueZero trata NaN == NaN)
+new Map([[NaN, "ok"]]).get(NaN)  // "ok" — NaN funciona como chave de Map
+new Set([0, -0]).size         // 1 — SameValueZero: 0 e -0 são iguais
+[NaN].includes(NaN)           // true — Array.includes usa SameValueZero
+[NaN].indexOf(NaN)            // -1  — Array.indexOf usa ===, que diz NaN ≠ NaN
+```
+
+> [!question]- Por que `indexOf` e `includes` se comportam diferente com `NaN`?
+> `indexOf` foi especificado antes do ES2015, usando `===`. `includes` foi introduzido no ES2016 com o algoritmo SameValueZero, que foi considerado mais útil na prática. O resultado: para verificar se um array contém `NaN`, use sempre `includes`, não `indexOf`.
+
 ---
 
 ## Boas práticas
@@ -300,6 +372,25 @@ if (!x)           // se você quer falsy explicitamente (documente o motivo)
 if (x == null)    // único == tolerado — null ou undefined
 ```
 
+### Linting: deixe a ferramenta guardar as regras por você
+
+O ESLint tem duas regras específicas para coerção que valem ativar em projetos sérios:
+
+- **`eqeqeq`** — proíbe `==`, com a opção `"smart"` para permitir somente o idiom `== null`.
+- **`no-implicit-coercion`** — proíbe atalhos como `+x`, `!!x`, `"" + x` em favor de `Number(x)`, `Boolean(x)`, `String(x)` explícitos. Reduz surpresas em code review e deixa a intenção clara.
+
+```json
+// .eslintrc
+{
+  "rules": {
+    "eqeqeq": ["error", "smart"],
+    "no-implicit-coercion": ["warn", { "boolean": true, "number": true }]
+  }
+}
+```
+
+A vantagem prática: você para de depender de memória para as 8+ regras do `==` e deixa o linter fazer o trabalho mecânico. Reserve a atenção mental para as decisões que realmente importam.
+
 ---
 
 ## Armadilhas comuns
@@ -315,6 +406,31 @@ if (x == null)    // único == tolerado — null ou undefined
 
 > [!warning] Armadilha 4: `parseInt` e coerção de string
 > `parseInt("10px")` retorna `10` — para de converter no primeiro caractere não-numérico. `Number("10px")` retorna `NaN`. Em validação de inputs, `Number()` é mais seguro porque rejeita strings parcialmente numéricas.
+
+> [!warning] Armadilha 5: `switch/case` usa `===`, não `==`
+> `switch` compara os cases com **igualdade estrita** (`===`), não com `==`. Isso significa que `switch("1")` não entra no `case 1:` — o tipo importa. O erro é sutil porque visualmente `switch(x) { case 1: }` parece que pode aplicar coerção, mas não aplica.
+>
+> ```js
+> switch ("1") {
+>   case 1:   console.log("número"); break;  // não entra — tipo diferente
+>   case "1": console.log("string"); break;  // entra aqui
+> }
+> ```
+
+> [!warning] Armadilha 6: `+` unário converte para número — não é soma
+> O `+` unário (sem operando à esquerda) é um atalho para `Number()`. Parece inócuo, mas aparece em código minificado e em padrões como `+new Date()`:
+>
+> ```js
+> +"42"        // 42   — string → número
+> +true        // 1
+> +null        // 0
+> +undefined   // NaN
+> +[]          // 0    — [] → "" → 0
+> +{}          // NaN  — {} → "[object Object]" → NaN
+> +"0x10"      // 16   — parsing hexadecimal!
+> ```
+>
+> Diferente de `parseInt`, o `+` unário não para no primeiro caractere inválido — converte tudo ou retorna `NaN`. Para código legível, prefira `Number(x)` explícito.
 
 ---
 
@@ -340,8 +456,15 @@ In JavaScript, **type coercion** is the automatic conversion of values between t
 
 Coerção e tipos caminham juntos — entender *quais* tipos existem em JavaScript e como eles se comportam em memória é o passo natural antes (ou imediatamente depois) de dominar as regras de coerção.
 
-- `[[02 - Tipos em runtime]]` — os 8 tipos primitivos e o tipo `object`: como são representados, como verificar com `typeof`/`instanceof`, e por que isso importa para coerção (nota a ser criada)
-- `[[Dicionário de JavaScript]]` — definições canônicas de coerção, truthy/falsy e primitivo no contexto do vault
+- [[02 - Tipos em runtime]] — os 8 tipos primitivos e o tipo `object`: como são representados, como verificar com `typeof`/`instanceof`, e por que isso importa para coerção
+- [[Dicionário de JavaScript]] — definições canônicas de coerção, truthy/falsy e primitivo no contexto do vault
+- [[25 - Armadilhas e quirks]] — catálogo amplo das pegadinhas da linguagem, incluindo coerção em contextos menos óbvios
+
+---
+
+## Veja também
+
+- [[03-Dominios/Ciência/Paradigmas/13 - Sistemas de tipos|Paradigmas — Sistemas de tipos]] — a dimensão ortogonal que explica *por que* JavaScript é dinamicamente tipado e quais garantias isso sacrifica em troca de flexibilidade; entender tipagem dinâmica vs. estática dá contexto para as regras de coerção
 
 ---
 
@@ -352,3 +475,7 @@ Coerção e tipos caminham juntos — entender *quais* tipos existem em JavaScri
 - **Dr. Axel Rauschmayer / ExploringJS** — [*Type coercion in JavaScript*](https://exploringjs.com/deep-js/ch_type-coercion.html) — análise profunda das regras de coerção, com foco em ToPrimitive e Abstract Equality; fonte autoritativa
 - **FreeCodeCamp** — [*JavaScript type coercion explained*](https://www.freecodecamp.org/news/js-type-coercion-explained-27ba3d9a2839/) — exemplos práticos das pegadinhas clássicas (`[] + []`, `[] == ![]`) com passo a passo
 - **Stefan Judis** — [*+-0, NaN and Object.is in JavaScript*](https://www.stefanjudis.com/today-i-learned/0-nan-and-object-is-in-javascript/) — explicação concisa dos edge cases de `Object.is()` vs `===`
+- **TC39 / ECMAScript spec** — [*ToPrimitive (§7.1.1)*](https://tc39.es/ecma262/#sec-toprimitive) — algoritmo canônico com as regras de hint e Symbol.toPrimitive
+- **TC39 / ECMAScript spec** — [*SameValueZero (§7.2.11)*](https://tc39.es/ecma262/#sec-samevaluezero) — o algoritmo usado por Map, Set e Array.includes; difere de Object.is apenas no tratamento de ±0
+- **TC39 / ECMAScript spec** — [*Date[@@toPrimitive] (§21.4.4.45)*](https://tc39.es/ecma262/#sec-date.prototype-@@toprimitive) — a exceção do Date no hint "default" (age como "string")
+- **ESLint** — [*eqeqeq rule*](https://eslint.org/docs/latest/rules/eqeqeq) — documentação da regra com a opção "smart" para permitir o idiom `== null`

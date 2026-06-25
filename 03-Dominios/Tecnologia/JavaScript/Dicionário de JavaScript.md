@@ -25,6 +25,9 @@ A especificação que define a linguagem JavaScript, mantida pelo TC39 e publica
 ### event loop
 O mecanismo que coordena a execução de código síncrono e a fila de tarefas assíncronas numa thread única. A *spec* da linguagem define só a fila de jobs (microtasks); as fases completas são detalhe do runtime — ver [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Node/Runtime e Event Loop]].
 
+### hidden class
+Estrutura interna (também chamada *shape* ou *map*) que o V8 cria para rastrear o formato de um objeto JavaScript — quais propriedades existem e em que offset de memória cada uma fica. Objetos com as mesmas propriedades na mesma ordem compartilham uma hidden class, permitindo que o JIT faça acesso direto à memória em vez de buscas dinâmicas. Mudar a ordem das propriedades, adicionar propriedades após a criação ou usar `delete` cria novas hidden classes e pode causar deoptimização.
+
 ### hoisting
 O comportamento pelo qual declarações de `var` e funções são "elevadas" ao topo do escopo durante a fase de criação, antes da execução. `let`/`const` também são hoisted, mas ficam na TDZ até a declaração.
 
@@ -39,22 +42,55 @@ A janela entre o início do escopo e a linha de declaração de uma variável `l
 
 ## Tipos e valores
 
+### autoboxing
+O mecanismo pelo qual o JavaScript envolve automaticamente um valor primitivo num objeto wrapper temporário (`String`, `Number`, `Boolean`) quando você acessa uma propriedade ou chama um método nele — e descarta o wrapper em seguida. É o que permite `"hello".toUpperCase()` funcionar sem que você precise escrever `new String("hello")`. Não se aplica a `null` e `undefined`.
+
 ### coerção
 A conversão implícita de um valor de um tipo para outro, disparada por operadores (`+`, `==`) ou contextos (condições). A fonte de boa parte das armadilhas clássicas da linguagem.
 
 ### primitivo
 Um dos 7 tipos de valor imutável: `string`, `number`, `bigint`, `boolean`, `undefined`, `symbol`, `null`. Tudo que não é primitivo é `object`.
 
+### ToPrimitive
+Algoritmo interno da spec (ECMAScript §7.1.1) que converte um objeto para um valor primitivo quando necessário (em `+`, `==`, template literals, operações aritméticas). Recebe um `hint` (`"number"`, `"string"` ou `"default"`) que determina a ordem de chamada: hint `"number"` tenta `valueOf()` primeiro; hint `"string"` tenta `toString()` primeiro. Pode ser sobrescrito via `Symbol.toPrimitive`. `Date` é a única exceção nativa: trata hint `"default"` como `"string"`.
+
 ### truthy/falsy
 Como um valor é avaliado em contexto booleano. Os falsy são exatamente: `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN`. Todo o resto é truthy.
 
 ## Funções e escopo
 
+### arrow function
+Sintaxe de função introduzida no ES6 (`=>`). Diferencia-se das funções regulares em três aspectos fundamentais: não tem `this` próprio (herda o `this` léxico do escopo onde foi criada), não tem o objeto `arguments`, e não pode ser usada como construtora com `new`.
+
 ### closure
 Função que "lembra" o escopo léxico onde foi criada, mantendo acesso às variáveis daquele escopo mesmo depois que ele terminou de executar. Base de module pattern, currying e memoização.
 
+### escopo de bloco
+Regra aplicada a `let` e `const`: a variável existe apenas dentro do par de `{}` onde foi declarada. Qualquer `if`, `for`, `while` ou bloco avulso cria uma barreira — a variável não vaza para fora.
+
+### escopo de função
+Regra aplicada a `var`: a variável existe em toda a função onde foi declarada, independente do bloco onde está. Blocos `if`, `for` e similares não criam barreiras para `var` — apenas `function` cria.
+
 ### escopo léxico
 A regra de que o escopo de uma variável é determinado pela posição dela no código-fonte (onde foi escrita), não por onde a função é chamada. É o que torna closures previsíveis.
+
+### first-class function (função de primeira classe)
+Propriedade de uma linguagem em que funções são tratadas como valores de pleno direito: podem ser atribuídas a variáveis, passadas como argumentos e retornadas de outras funções — exatamente como números ou strings. JavaScript é uma linguagem com funções de primeira classe.
+
+### higher-order function (função de ordem superior)
+Função que recebe outra função como argumento, retorna uma função, ou ambos. `Array.prototype.map`, `filter` e `reduce` são os exemplos mais conhecidos. É uma consequência natural das funções de primeira classe.
+
+### IIFE (Immediately Invoked Function Expression)
+Função que é definida e executada imediatamente na mesma expressão: `(function() { ... })()`. Cria um escopo privado para variáveis sem poluir o escopo global. Padrão legado substituído em boa parte por módulos ESM e `let`/`const`, mas ainda presente em código mais antigo.
+
+### rest parameter (parâmetro rest)
+Sintaxe `...nome` na assinatura de uma função que coleta todos os argumentos excedentes em um **Array real**. Substitui o objeto legado `arguments` (que não é um array). Deve ser o último parâmetro da lista: `function fn(a, b, ...resto)`.
+
+### scope chain (cadeia de escopos)
+A sequência de Environment Records percorrida pelo motor para resolver um nome de variável: do escopo mais interno ao mais externo, até o global. Se o nome não for encontrado em nenhum nível, lança `ReferenceError`.
+
+### shadowing (sombreamento)
+Quando uma variável em um escopo interno declara o mesmo nome de uma variável em escopo externo. A variável interna "cobre" a externa dentro de seu escopo, sem modificá-la.
 
 ## Objetos e protótipos
 
