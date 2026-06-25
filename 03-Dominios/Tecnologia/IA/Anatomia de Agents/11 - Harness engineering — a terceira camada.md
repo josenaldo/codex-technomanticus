@@ -1,10 +1,10 @@
 ---
 title: "Harness engineering — a terceira camada"
 created: 2026-06-19
-updated: 2026-06-19
+updated: 2026-06-25
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+progress: done
 tags:
   - anatomia-agents
   - ia
@@ -21,6 +21,12 @@ aliases:
 ---
 
 # Harness engineering — a terceira camada
+
+A equipe atualizou o modelo de v1 para v2 e a performance do agent caiu 12%. Não era o modelo novo — em benchmarks isolados, v2 era claramente superior. O problema estava no harness: quinze hooks, prompts customizados e lógicas de retry construídos ao longo de seis meses para compensar limitações específicas do v1. Quando v2 chegou com raciocínio melhor e saídas mais estruturadas, algumas dessas compensações passaram a *brigar* com as capacidades naturais do novo modelo. Um sistema que não deveria existir — prompt que inibia tool-use paralelo porque v1 ficava confuso — agora causava regressão em v2, que lidava bem com paralelismo.
+
+O diagnóstico levou duas semanas porque o time não sabia distinguir o que era capacidade do modelo e o que era artefato do harness. Não havia separação clara entre "decisão do modelo" e "comportamento injetado pelo runtime". A solução foi auditar o harness peça a peça, documentar o motivo de cada hook, e remover o que era compensação por limitação já resolvida.
+
+Esse episódio captura a tese central desta nota: **o harness determina tanto quanto o modelo**. E por isso precisa ser tratado como um artefato de engenharia que envelhece, com ownership, ciclo de manutenção, e documentação do porquê de cada decisão — não só do quê.
 
 > [!abstract] TL;DR
 > O **harness** é a camada de runtime que envolve o [[Dicionário de IA#LLM (Large Language Model)|LLM]] e transforma capacidade bruta em ação governada: memória externa, registries de tools, protocolos, sandboxes, orquestração de sub-agentes e pipelines de compressão. Em 2026 o campo o nomeou como a **terceira era** da capacidade de agentes — depois dos *pesos* e do *contexto* — e começou a formalizá-lo academicamente. A tese dura, repetida da academia à Anthropic: **boa parte do ganho que se credita ao "modelo novo" é na verdade do harness.** Mas há um porém honesto — existem pelo menos quatro taxonomias concorrentes do harness e **nenhuma venceu**; trate-as como lentes complementares, não como verdade assentada.
@@ -120,6 +126,16 @@ graph TD
 
 Cada dimensão tem um galho do vault que a aprofunda: o **loop** em [[02 - O loop ReAct e native tool use]] e [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic|O loop agentic]]; **sandboxing/permissions** em [[Segurança e Guardrails]] e [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]]; **observabilidade** em [[Observability]]; **context budget** em [[Context Engineering]] e [[Economia de Tokens]]. O harness, nesse sentido, não é um galho novo — é o **nome da costura** entre os galhos que você já tem.
 
+```mermaid
+xychart-beta
+    title "Taxa de resolução SWE-bench — mesmo modelo base, harnesses diferentes"
+    x-axis ["Sem harness", "Harness básico", "Harness intermediário", "Harness avançado"]
+    y-axis "Taxa de resolução (%)" 0 --> 60
+    bar [8, 22, 38, 55]
+```
+
+> A variação de 8% para 55% com o **mesmo modelo** ilustra a tese CAR: muito do que se credita a "modelo melhor" em leaderboards é ganho de harness. Um HarnessCard — reportando o contexto de execução além do modelo — seria necessário para comparações honestas.
+
 ## Ganhos harness-sensitive: por que o benchmark mente um pouco
 
 Aqui está a contribuição mais afiada de 2026, do preprint *Harness Engineering for Language Agents* (a proposta CAR). Os autores argumentam que muito do ganho de performance reportado de agentes é **atribuível à camada de harness, não ao modelo base** — *"many reported agent gains may be partly harness-sensitive rather than purely model-driven"*.
@@ -157,6 +173,31 @@ O valor de nomear o harness é que ele organiza galhos que pareciam soltos. Use 
 | Avaliação (do modelo **e** do harness) | [[Evaluation]] |
 | Orquestração de sub-agentes | [[06 - Multi-agent — orchestrator e sub-agents]] |
 | Instanciação concreta (Claude Code) | [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/09 - O harness como terceira camada\|O harness como terceira camada]] |
+
+## Como explicar em inglês
+
+Harness engineering is the discipline of designing the runtime layer that wraps an LLM and transforms raw model capability into governed, reliable action. The model is the reasoning engine — it decides what to do next — but it cannot read files, query databases, remember what it did yesterday, or enforce safety constraints on its own. All of that operational intelligence is externalized into the harness: memory stores, tool registries, sandboxes, context compression pipelines, sub-agent orchestration, approval gates, and observability infrastructure. The 2026 academic framing names three eras of agent capability gains — the Weights Era (more parameters), the Context Era (better prompting and retrieval), and the Harness Era (better runtime engineering) — and argues that many reported agent performance gains are harness-sensitive rather than purely model-driven. The CAR decomposition (Control/Agency/Runtime) provides the most useful lens for harness design: Control is what instructions remain authoritative over what the model decides; Agency is what actions are available; Runtime is how state and failures persist across the loop over time. The practical implication for engineering: the harness ages independently of the model, compensating behaviors become liabilities when the model improves, and "build to delete" means keeping each harness component justifiable and removable.
+
+| Português | English |
+|---|---|
+| harness (camada) | harness |
+| engenharia de harness | harness engineering |
+| externalização cognitiva | cognitive externalization |
+| era dos pesos | weights era |
+| era do contexto | context era |
+| era do harness | harness era |
+| decomposição CAR | CAR decomposition (Control/Agency/Runtime) |
+| ganhos harness-sensíveis | harness-sensitive gains |
+| cartão de harness | HarnessCard |
+| construir para deletar | build to delete |
+| mediadores (harness) | harness mediators |
+| loop de aprovação | approval loop |
+
+## Ver mais
+
+- **Zhou et al. — *Externalization in LLM Agents: A Unified Review*** (arXiv:2604.08224, 2026): O survey mais abrangente sobre o que agentes externalizam — Memory, Skills, Protocols — e o harness como runtime que hospeda tudo isso. A progressão weights→context→harness vem daqui. *Preprint.*
+- **Anthropic Applied AI — *Effective harnesses for long-running agents*** (anthropic.com/engineering, nov/2025): A perspectiva prática da Anthropic sobre design de harness com o Claude Agent SDK — o que "build to delete" significa em produção e como o Claude Code instancia os princípios desta nota.
+- **Harness Engineering for Language Agents** (preprints.org:10.20944/preprints202603.1756, abr/2026): Propõe a decomposição CAR e o HarnessCard, e argumenta que performance em benchmarks deve reportar o harness junto ao modelo. Inclui auditoria de 63 trabalhos anteriores. *Preprint, não peer-reviewed — vocabulário emergente.*
 
 ## Fontes
 
