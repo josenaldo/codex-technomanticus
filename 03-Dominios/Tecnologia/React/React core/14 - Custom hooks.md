@@ -527,7 +527,7 @@ Custom hooks are functions prefixed with `use` that extract stateful logic — n
 
 Custom hooks são a fundação para abstrações mais poderosas. O próximo passo natural é entender como organizar hooks que dependem de dados assíncronos — onde o estado de loading, error e data precisam ser coordenados.
 
-- [[15 - Suspense e transições]] — Suspense como alternativa declarativa ao padrão `isLoading/error/data` que os hooks de fetch costumam expor; como `use()` do React 19 muda o modelo.
+- [[19 - Suspense e data fetching no cliente]] — Suspense como alternativa declarativa ao padrão `isLoading/error/data` que os hooks de fetch costumam expor; como `use()` do React 19 muda o modelo.
 - [[03-Dominios/Tecnologia/React/TypeScript com React/07 - Tipando hooks customizados|Tipando hooks customizados]] — Tipagem avançada: genéricos, overloads, inferência de retorno, padrões para hooks com múltiplos modos.
 
 ---
