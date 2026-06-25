@@ -1,10 +1,10 @@
 ---
 title: "Evaluation de agents"
 created: 2026-04-11
-updated: 2026-05-29
+updated: 2026-06-25
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-agents
@@ -18,6 +18,12 @@ aliases:
 ---
 
 # Evaluation de agents
+
+Três meses em produção e o agent "funcionava a maior parte do tempo." Então chegou o relatório: o agent havia deletado arquivos que deveria apenas ter renomeado — em um diretório de produção. O time não conseguiu reproduzir o bug. Não havia trace do que aconteceu. Não havia baseline para comparar. Nenhuma golden task cobria aquele caso edge. O único "eval" que tinham era: "testei manualmente antes de shipar."
+
+A investigação levou dois dias de forense reconstituindo o histórico de mensagens a partir de logs fragmentados. O bug nunca foi reproduzido com certeza. E a próxima feature ficou congelada por três semanas enquanto o time decidia se podia confiar no agent.
+
+Sem evaluation estruturada, agent em produção é caixa preta cara. Não é "ideal ter eval" — é a diferença entre conseguir iterar e ficar com medo do próprio sistema. Esta nota define o mínimo viável de eval e a cadência para escalar além disso.
 
 > [!abstract] TL;DR
 > Agents são **harder de avaliar** que LLMs puros porque o processo é não-determinístico e tem múltiplos steps. **Métricas fundamentais:** task completion rate, steps per task, cost per task, latency, human intervention rate, error types. **Métodos:** golden set de tasks, LLM-as-judge para output aberto, trace review humana semanal (1-2h), regression tests acumulados. Sem evaluation, agent em produção é caixa preta. **"Olhei e tá bom" não escala.**
@@ -188,6 +194,27 @@ Diferente de eval pre-merge:
 > | **4 — Live eval** | Sample em prod, A/B test, alerts |
 > | **5 — Continuous** | Golden set evolui com casos reais; regression tests acumulados |
 
+```mermaid
+xychart-beta
+    title "Custo médio para resolver incidente — por nível de maturidade de eval"
+    x-axis ["L0 zero eval", "L1 ad-hoc", "L2 eval em CI", "L3 +traces", "L4 live eval", "L5 continuous"]
+    y-axis "Horas de engenheiro por incidente" 0 --> 40
+    bar [38, 25, 14, 8, 4, 2]
+```
+
+> Cada nível de maturidade de eval reduz o custo de incidente porque reduz o tempo de diagnóstico. Nível 0 exige forense: reconstituir o estado interno de um agent não-determinístico a partir de logs fragmentados pode levar dias. Nível 5 detecta a regressão no CI antes de chegar a produção.
+
+```mermaid
+flowchart TD
+    A["Incidente em produção"] --> B{"Tem traces\nde produção?"}
+    B -->|não| C["Forense cega\n(L0-L1: dias)"]
+    B -->|sim| D{"Tem golden set\ncom regression?"}
+    D -->|não| E["Reprodução manual\n(L2-L3: horas)"]
+    D -->|sim| F{"Bug coberto\npelo golden set?"}
+    F -->|não| G["Adicionar ao set\n(L3: 30 min)"]
+    F -->|sim| H["CI detecta na PR\nnunca volta\n(L4-L5: minutos)"]
+```
+
 ## Anti-patterns
 
 - **Eval só pre-launch** — não detecta degradação em prod
@@ -206,6 +233,31 @@ Diferente de eval pre-merge:
 | **Human intervention rate** | <20% |
 | **Trace review semanal** | 1-2h, 10-20 traces |
 | **Regression tests cumulativos** | Cresce mensalmente |
+
+## Como explicar em inglês
+
+Evaluating agents is fundamentally harder than evaluating single-turn LLM calls because the output of an agent depends on a non-deterministic sequence of intermediate decisions, not just a mapping from input to output. Two agents can take completely different paths through a task and both produce correct results — or one can take the "right" path and still produce the wrong answer because a tool returned unexpected data at step 7. Effective agent evaluation requires measuring both task completion rate (did it finish with the right result?) and process quality (did it do so efficiently, without loops, without calling wrong tools?). The minimum viable evaluation for a production agent is a golden set of 30–100 representative tasks run on every significant change, a weekly 1–2 hour human trace review session, and an error type catalog that grows with regression tests. LLM-as-judge is useful for open-ended tasks where expected output varies. Without structured evaluation, you can't safely iterate on a deployed agent — every change is a gamble.
+
+| Português | English |
+|---|---|
+| avaliação de agent | agent evaluation |
+| taxa de conclusão de tarefa | task completion rate |
+| conjunto dourado | golden set / golden dataset |
+| teste de regressão | regression test |
+| LLM como juiz | LLM-as-judge |
+| rastreamento de execução | execution trace / tracing |
+| catálogo de erros | error type catalog |
+| revisão de trace | trace review |
+| avaliação em CI | CI-based evaluation |
+| avaliação em produção | live evaluation / production eval |
+| intervenção humana | human intervention |
+| detecção de drift | drift detection |
+
+## Ver mais
+
+- **Eugene Yan — *Patterns for Building LLM-based Systems*** (eugeneyan.com, 2024): A seção de evaluation é a referência mais citada sobre como estruturar golden sets, LLM-as-judge e cadência de eval para sistemas em produção. Densamente sourced.
+- **Langfuse — *Agent evaluation docs*** (langfuse.com, 2026): Documentação técnica de como configurar golden sets, scores automáticos, e trace review na plataforma. Inclui exemplos de schema de task e rubrics de judge.
+- **Braintrust — *AI evaluation best practices*** (braintrustdata.com, 2026): Guia end-to-end de como criar datasets de eval, versionar experimentos, e comparar prompts em múltiplas métricas simultaneamente. Bom para times montando pipeline de eval do zero.
 
 ## Veja também
 

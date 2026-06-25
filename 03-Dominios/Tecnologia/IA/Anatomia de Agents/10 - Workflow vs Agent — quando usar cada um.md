@@ -1,10 +1,10 @@
 ---
 title: "Workflow vs Agent — quando usar cada um"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-25
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+progress: done
 tags:
   - anatomia-agents
   - ia
@@ -16,6 +16,12 @@ aliases:
 ---
 
 # Workflow vs Agent — quando usar cada um
+
+A equipe levou três semanas construindo um "agent inteligente" para geração de relatórios de pesquisa. O pipeline tinha quatro etapas fixas e conhecidas de antemão: classificar tópico, recuperar fontes, sumarizar, formatar. A justificativa foi "agents são mais espertos". O resultado: 4× mais caro que o necessário, 30 segundos por relatório em vez de 4, e um padrão de loop na etapa de sumarização toda vez que as fontes eram ambíguas — loop sem condição de parada explícita que queimava o budget inteiro. Cada falha exigia rastrear 15 steps para descobrir onde o agent havia divergido.
+
+Um workflow determinístico com quatro nós teria levado três dias, custado 1/4, e terminado em tempo previsível — sem possibilidade de loop. Mas ninguém fez a pergunta antes de começar: "consigo desenhar o flowchart desta tarefa antes de rodar?"
+
+Esta é a decisão arquitetural mais consequente em sistemas LLM. Errar aqui custa semanas de desenvolvimento e incidentes de produção que não precisavam acontecer.
 
 > [!abstract] TL;DR
 > A decisão arquitetural mais consequente em sistemas com [[Dicionário de IA#LLM (Large Language Model)|LLM]]: **workflow** quando o caminho é previsível, **agent** quando o caminho precisa ser descoberto em runtime. Workflow é mais barato, mais testável, mais debugável — e resolve a maioria dos casos. Agent é mais caro, mais frágil, propenso a loop infinito — e ainda assim é necessário quando a tarefa exige escolha dinâmica de ferramentas e iteração de plano. A regra cardinal da Anthropic: *"workflows when you can, agents when you must"*. Não construa agent por padrão.
@@ -105,6 +111,17 @@ agent_loop(goal):
 
 Repare na assimetria: workflow tem `steps:` listados; agent tem `while not complete:`. Essa é a diferença essencial — caminho declarado vs caminho descoberto.
 
+```mermaid
+xychart-beta
+    title "Workflow vs Agent — 5 dimensões (5=melhor)"
+    x-axis ["Custo/task", "Testabilidade", "Debug", "Flexibilidade", "Tolerância ao inesperado"]
+    y-axis "Score" 0 --> 5
+    bar [5, 5, 5, 1, 2]
+    line [2, 2, 2, 5, 5]
+```
+
+> A barra é workflow; a linha é agent. Workflow vence em tudo que é operacional (custo, testabilidade, debug). Agent vence quando a tarefa genuinamente não tem caminho previsível. O engano clássico é confundir "minha tarefa é complexa" com "minha tarefa requer agent" — complexidade não é critério; imprevisibilidade do caminho é.
+
 ## Custos e riscos
 
 Agent não é "workflow com mais inteligência" — é uma máquina mais cara e mais frágil. Os custos não são só financeiros:
@@ -133,6 +150,31 @@ workflow process_research_request:
 A pesquisa profunda é genuinamente exploratória — agent faz sentido ali. Mas classificar tópico, buscar fontes iniciais e formatar relatório são previsíveis — workflow puro é mais barato e confiável.
 
 Detalhamento dessa coordenação em [[06 - Multi-agent — orchestrator e sub-agents]].
+
+## Como explicar em inglês
+
+The workflow vs agent decision is the most consequential architectural choice in LLM-powered systems. A workflow is a deterministic pipeline where the programmer defines every step, transition, and branching condition in code — the LLM fills specific slots (classify, summarize, extract) but never decides what happens next. An agent is a system where the LLM decides the next action at each iteration, given the previous result, until a stopping condition is met. Workflows are cheaper, testable at the node level, and fail predictably. Agents are more expensive, harder to evaluate (because the path varies), and can loop or diverge in novel ways. The right question is not "which is smarter" but "can I draw the flowchart before running the first line?" If yes — workflow. If the path genuinely depends on what each step discovers — agent, but only with proper guardrails: `max_steps`, cost limits, tracing, and human-in-the-loop for destructive actions. The most common production architecture is a hybrid: a deterministic workflow that invokes an agent as a sub-task only at the steps where flexibility is genuinely needed.
+
+| Português | English |
+|---|---|
+| fluxo de trabalho | workflow |
+| agente | agent |
+| caminho previsível | predictable path |
+| caminho descoberto em runtime | runtime-discovered path |
+| orquestrador determinístico | deterministic orchestrator |
+| passo de workflow | workflow step |
+| condição de parada | stopping condition |
+| loop infinito | infinite loop |
+| guardrails | guardrails |
+| padrão híbrido | hybrid pattern |
+| falha previsível | predictable failure |
+| custo espiral | cost spiral |
+
+## Ver mais
+
+- **Anthropic — *Building Effective Agents*** (2024): Fonte da distinção canônica building blocks → workflows → agents, e dos cinco padrões de workflow (chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer). Ponto de partida obrigatório para entender o vocabulário da indústria.
+- **@hooeem — *Become an AI Engineer***, capítulos 13 e 18 (Workflow vs Agent e templates pseudo-code): Formaliza os templates de receita (workflow) e loop (agent) que esta nota apresenta. Útil para quem precisa explicar a diferença para um time não-técnico.
+- **Anthropic — *Effective Context Engineering for AI Agents*** (2025): Cobre como o custo em tokens de agents difere estruturalmente de workflows — contexto replicado a cada iteração, crescimento quadrático sem compactação. Fundamenta a seção de custos desta nota.
 
 ## Fontes
 
