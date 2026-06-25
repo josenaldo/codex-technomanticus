@@ -1,7 +1,7 @@
 ---
 title: "Rollup, esbuild e Rolldown"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -601,6 +601,296 @@ Isso significa que a escolha de Rolldown como motor do Vite 8 não foi só uma d
 
 ---
 
+## O sistema de plugin hooks: como o Rollup (e o Rolldown) funciona por dentro
+
+Entender a API de plugins é o que separa alguém que *usa* o Rollup de alguém que *domina* o ecossistema. Cada transformação que o Rollup aplica — resolver caminhos, carregar arquivos, transpilar TypeScript, gerar sourcemaps — acontece através de hooks. Um plugin é, essencialmente, um objeto que implementa um subconjunto desses hooks.
+
+### As duas fases e seus hooks
+
+O pipeline do Rollup é dividido em duas fases distintas:
+
+```mermaid
+flowchart LR
+    subgraph "Fase de Build (input)"
+        BS["buildStart\n(inicializa o build)"]
+        RI["resolveId\n(resolve caminhos de import)"]
+        L["load\n(carrega conteúdo do módulo)"]
+        T["transform\n(transpila/modifica código)"]
+        MP["moduleParsed\n(módulo totalmente parseado)"]
+        BE["buildEnd\n(grafo completo)"]
+        BS --> RI --> L --> T --> MP --> BE
+    end
+
+    subgraph "Fase de Output (geração)"
+        OO["outputOptions\n(modifica opções de output)"]
+        RS["renderStart\n(início da geração)"]
+        AH["augmentChunkHash\n(modifica hash do chunk)"]
+        RC["renderChunk\n(transforma código do chunk)"]
+        GB["generateBundle\n(manipula todos os assets)"]
+        WB["writeBundle\n(após escrita em disco)"]
+        OO --> RS --> AH --> RC --> GB --> WB
+    end
+
+    BE --> OO
+
+    style BS fill:#003a1f,color:#fff
+    style GB fill:#1a1a5e,color:#fff
+    style RC fill:#3a1a00,color:#fff
+```
+
+**Hooks da fase de build** — executam enquanto o grafo de módulos é construído:
+
+| Hook | Quando executa | Para que serve |
+|---|---|---|
+| `buildStart` | Início do build | Inicializar estado do plugin, ler config externa |
+| `resolveId` | Para cada `import` encontrado | Mapear paths virtuais, aliased modules, externais |
+| `load` | Para cada módulo resolvido | Carregar conteúdo virtual (sem arquivo físico) |
+| `transform` | Para cada módulo carregado | Transpilar (TypeScript→JS, JSX→JS, SVG→componente) |
+| `moduleParsed` | Módulo totalmente parseado | Inspecionar AST, coletar metadados de exports |
+| `buildEnd` | Grafo completo | Limpar recursos, reportar erros |
+
+**Hooks da fase de output** — executam enquanto os chunks são gerados:
+
+| Hook | Quando executa | Para que serve |
+|---|---|---|
+| `outputOptions` | Início da fase de output | Modificar opções de output de forma encadeada |
+| `renderStart` | Antes da renderização | Preparar estrutura de output |
+| `augmentChunkHash` | Para cada chunk | Adicionar entropy ao hash (ex: forçar cache bust) |
+| `renderChunk` | Para cada chunk gerado | Pós-processar código (adicionar banner, minificar) |
+| `generateBundle` | Todos os chunks prontos | Adicionar/remover/modificar assets; emitir arquivos extras |
+| `writeBundle` | Após escrita em disco | Notificações pós-build, copiar arquivos, CI hooks |
+| `closeBundle` | Após bundle fechado | Limpar recursos de longa duração |
+
+### Exemplo trabalhado: plugin de banner
+
+Um uso clássico de `renderChunk` é injetar um comentário de licença no topo de cada arquivo gerado:
+
+```js
+// rollup-plugin-license-banner.js
+export function licenseBanner(options = {}) {
+  const banner = options.banner ?? `/*! ${options.name} — MIT License */`
+
+  return {
+    name: 'license-banner',
+
+    // renderChunk é chamado APÓS tree-shaking e code splitting
+    // recebe o código final do chunk, não o módulo individual
+    renderChunk(code, chunk, outputOptions) {
+      // chunk.fileName: nome do arquivo de saída (ex: 'index.mjs')
+      // chunk.exports: exports públicos desse chunk
+      // outputOptions.format: 'esm' | 'cjs' | 'umd' | 'iife'
+
+      // Só adiciona banner em chunks de entry, não em chunks internos
+      if (!chunk.isEntry) return null   // null = "não modifica"
+
+      return {
+        code: `${banner}\n${code}`,
+        map: null,  // null = "sem sourcemap modification"
+      }
+    },
+  }
+}
+```
+
+```js
+// rollup.config.js
+import { licenseBanner } from './rollup-plugin-license-banner.js'
+
+export default {
+  input: 'src/index.ts',
+  output: { format: 'esm', file: 'dist/index.mjs' },
+  plugins: [licenseBanner({ name: 'date-utils v1.0.0' })],
+}
+```
+
+### Exemplo trabalhado: plugin de módulo virtual
+
+`resolveId` + `load` permitem criar módulos que não existem em disco — útil para injetar configuração em build time:
+
+```js
+// rollup-plugin-build-info.js
+// Injeta um módulo virtual com informações do build
+export function buildInfo() {
+  const VIRTUAL_ID = 'virtual:build-info'
+  const RESOLVED_ID = '\0virtual:build-info'  // \0 = convenção "virtual"
+
+  return {
+    name: 'build-info',
+
+    resolveId(source) {
+      // source = o string do import: "virtual:build-info"
+      if (source === VIRTUAL_ID) return RESOLVED_ID
+      return null  // null = "deixa outro plugin ou o padrão resolver"
+    },
+
+    load(id) {
+      if (id === RESOLVED_ID) {
+        return `
+          export const BUILD_TIME = '${new Date().toISOString()}'
+          export const BUILD_HASH = '${Math.random().toString(36).slice(2)}'
+          export const VERSION = '${process.env.npm_package_version}'
+        `
+      }
+      return null
+    },
+  }
+}
+```
+
+```ts
+// src/utils.ts — consome o módulo virtual
+import { BUILD_TIME, VERSION } from 'virtual:build-info'
+
+export function getVersion() {
+  return `${VERSION} (built at ${BUILD_TIME})`
+}
+```
+
+Esse padrão é usado extensivamente no ecossistema Vite — `import.meta.env`, módulos de tema, configs de ambiente — todos são módulos virtuais injetados via plugin.
+
+### Hook filters no Rolldown: eficiência por design
+
+O Rolldown introduziu um mecanismo que o Rollup original não tem: **hook filters**. Como o Rolldown é escrito em Rust e os plugins são JavaScript, cada vez que um hook de plugin é chamado há uma transição Rust→JS com overhead de serialização. Para plugins que só processam alguns tipos de arquivo (por exemplo, um plugin de `.svg`), esse overhead é pago desnecessariamente para cada `.ts`, `.js`, `.css` que passa pelo pipeline.
+
+Hook filters permitem que o plugin declare antecipadamente quais arquivos lhe interessam:
+
+```js
+// Plugin de SVG com hook filter (específico Rolldown/Vite)
+export function svgPlugin() {
+  return {
+    name: 'svg-transform',
+
+    transform: {
+      // filter: Rolldown não invoca o JS handler se o arquivo não bater
+      filter: {
+        id: /\.svg$/,           // só arquivos .svg
+        code: /^<svg/,          // e cujo conteúdo começa com <svg
+      },
+      handler(code, id) {
+        // Só chegam aqui arquivos que passaram no filtro
+        return {
+          code: `export default \`${code}\``,
+          map: null,
+        }
+      },
+    },
+  }
+}
+```
+
+> [!info] Hook filters são opcionais e backward-compatible
+> Um plugin Rollup que não declara filtros funciona no Rolldown — apenas sem a otimização. É uma feature de performance, não uma breaking change. Plugins que processam muitos arquivos ganham mais com filtros; plugins que já têm verificação interna (`if (!id.endsWith('.svg')) return`) ganham menos, pois evitavam o processamento de qualquer forma.
+
+---
+
+## Trade-offs sênior: quando usar o quê
+
+A resposta "depende" é o começo, não o fim. Um engenheiro sênior sabe articular *de que* depende.
+
+### Rollup direto: quando vale a complexidade
+
+Use Rollup com config manual quando você precisa de controle que wrappers não expõem:
+
+- **`preserveModules: true`** — emite cada módulo como arquivo separado, mantendo a estrutura de pastas. Essencial para libs que publicam sub-caminhos (`import { Button } from 'ui/Button'` em vez de `import { Button } from 'ui'`).
+- **Múltiplas entradas com cross-chunk sharing** — se sua lib tem `input: ['src/core.ts', 'src/react.ts', 'src/vue.ts']`, o Rollup automaticamente faz chunk splitting dos módulos compartilhados entre entradas. tsup e tsdown suportam múltiplas entradas, mas com menos controle sobre o sharing.
+- **Plugins altamente customizados** com `generateBundle` que manipulam o `bundle` objeto diretamente — mover arquivos, renomear chunks, injetar meta-assets.
+- **UMD/IIFE para CDN** com `globals` mapeando peerDeps para variáveis globais — ainda é o caso de uso mais robusto do Rollup.
+
+### esbuild direto: quando faz sentido em 2026
+
+esbuild sozinho (sem tsup/tsdown) ainda tem casos:
+
+- **Pipelines de CI que precisam de transpilação pura, sem bundle** — `esbuild src/**/*.ts --outdir=dist` transpila toda uma árvore TypeScript para JavaScript preservando a estrutura de arquivos, sem resolver imports. Mais rápido que `tsc` para esse caso específico.
+- **Build tools e CLIs de desenvolvimento** onde os types serão gerados separadamente por `tsc --emitDeclarationOnly`.
+- **Projetos que não usam decorators legados** (NestJS, TypeORM, Angular legado) — se o projeto é TypeScript moderno sem `experimentalDecorators`, esbuild não tem limitações práticas.
+
+> [!warning] O problema de esbuild com decorators é estrutural
+> `emitDecoratorMetadata` — o mecanismo que permite que frameworks como NestJS e TypeORM injetem tipos em runtime via `Reflect.metadata` — depende do sistema de tipos do TypeScript. esbuild apaga os tipos sem analisá-los, então simplesmente não tem como implementar esse recurso. A solução prática: usar `tsup` (que contorna via `tsc --emitDeclarationOnly`) ou `swc-loader` quando decorators são necessários. Veja o issue [#3045 do esbuild](https://github.com/evanw/esbuild/issues/3045) para o estado atual.
+
+### Rolldown/tsdown: quando migrar faz sentido agora
+
+Migrar de tsup para tsdown hoje faz sentido quando:
+
+- **CI leva mais de 30s de build de libs** — a diferença 3–5× de Rolldown sobre esbuild (em builds maiores) se torna relevante.
+- **Monorepo com dezenas de pacotes** — cada pacote individual pode não ganhar muito, mas o custo acumulado de builds paralelas é reduzido.
+- **Você já usa Vite 8** — padronizar o bundler entre dev server e publicação de libs elimina edge cases de divergência.
+
+O risco de migrar hoje: Rolldown 1.0 tem compatibilidade alta mas não perfeita. Plugins que usam `renderChunk` com acesso ao AST via `this.parse()`, ou que dependem de comportamento específico de `moduleParsed` retornando AST detalhado, podem precisar de ajustes. O issue [#819 do repositório Rolldown](https://github.com/rolldown/rolldown/issues/819) rastreia o status de compatibilidade de plugins populares.
+
+```mermaid
+quadrantChart
+    title Rollup vs esbuild vs Rolldown — posicionamento 2026
+    x-axis "Controle / Flexibilidade" --> "Velocidade / DX"
+    y-axis "Libs" --> "Apps"
+    quadrant-1 Apps rápidas
+    quadrant-2 Apps flexíveis
+    quadrant-3 Libs com controle total
+    quadrant-4 Libs zero-config
+    Rollup: [0.15, 0.15]
+    esbuild: [0.80, 0.50]
+    Rolldown: [0.65, 0.50]
+    tsup: [0.85, 0.20]
+    tsdown: [0.90, 0.25]
+    Vite 8: [0.70, 0.90]
+    webpack: [0.10, 0.80]
+```
+
+---
+
+## Novidades: o que mudou em 2026
+
+### Rolldown 1.0 GA — 7 de maio de 2026
+
+O Rolldown 1.0 estável foi lançado em 7 de maio de 2026, marcando a primeira versão com semântica de versionamento garantida (`^1.0.0` com backward compatibility). O lançamento coincidiu com o Vite 8 consolidado como bundler único. As principais garantias do 1.0:
+
+- **API semântica versionada**: nomes de opções, tipos, e assinaturas de hooks de plugin ficam backward-compatible dentro da série 1.x
+- **Rollup Plugin Compat rastreado publicamente**: o time mantém o issue #819 com status de cada plugin popular do ecossistema
+- **Hook filters estáveis**: a API de filtros (`filter.id`, `filter.code`, `filter.moduleType`) é parte da API pública
+
+### VoidZero → Cloudflare (4 de junho de 2026)
+
+Em 4 de junho de 2026, a Cloudflare adquiriu a VoidZero — a empresa fundada por Evan You que mantinha Rolldown, Oxc, Vite e Vitest. A aquisição trouxe preocupações iniciais sobre vendor lock-in, mas a equipe publicou compromissos públicos: todos os projetos continuam MIT-licensed, Evan You e o time continuam liderando o desenvolvimento, e o roadmap permanece orientado à comunidade. Na prática, o efeito imediato foi **mais funding para desenvolvimento full-time**, não mudança de direção.
+
+> [!info] Por que a Cloudflare quer isso?
+> A Cloudflare opera Workers (runtime JS/WASM na edge) e Pages (hosting de apps Vite/Next). Ter o ecossistema de tooling mais rápido do mundo alinhado com sua infra é uma vantagem competitiva direta. O interesse é real, não filantropia.
+
+### Oxc: o motor compartilhado
+
+O **Oxc** (criado pela VoidZero) é a base que une toda a stack: um único parser Rust, um único resolver de módulos, e um único transformer compartilhados por Rolldown, oxlint (linter 50–100× mais rápido que ESLint) e oxfmt (formatter ~30× mais rápido que Prettier). Isso significa que ferramentas diferentes no pipeline — bundler, linter, formatter — não reparsam o mesmo arquivo várias vezes. É a mesma aposta que o Rust toolchain fez: compartilhar primitivos em vez de replicar.
+
+```mermaid
+flowchart TD
+    OXC["Oxc Core\n(Rust)"]
+    PARSER["Parser"]
+    RESOLVER["Module Resolver"]
+    TRANSFORMER["Transformer"]
+    MINIFIER["Minifier (oxc-minifier)"]
+
+    OXC --> PARSER
+    OXC --> RESOLVER
+    OXC --> TRANSFORMER
+    OXC --> MINIFIER
+
+    PARSER --> ROLLDOWN["Rolldown\n(bundler)"]
+    PARSER --> OXLINT["oxlint\n(linter 50–100× ESLint)"]
+    PARSER --> OXFMT["oxfmt\n(formatter ~30× Prettier)"]
+    RESOLVER --> ROLLDOWN
+    TRANSFORMER --> ROLLDOWN
+    MINIFIER --> ROLLDOWN
+
+    ROLLDOWN --> VITE8["Vite 8\n(dev + prod)"]
+
+    style OXC fill:#5a0000,color:#fff
+    style ROLLDOWN fill:#1a1a5e,color:#fff
+    style VITE8 fill:#003a1f,color:#fff
+```
+
+### tsdown v0.x → consolidação em 2026
+
+tsdown saiu de zero para ~500K downloads semanais em menos de 12 meses. A API é quase idêntica ao tsup, mas a postura estratégica difere: tsdown é **ESM-first por padrão** (não precisa de configuração explícita para extensões corretas em output ESM), enquanto tsup é CJS-first histórico com suporte a ESM "que às vezes tem buracos". Para novas libs que não precisam de compatibilidade CJS legada, tsdown entrega output mais correto com zero config.
+
+---
+
 ## Armadilhas comuns
 
 > [!warning] Armadilha 1: usar esbuild pra lib e esquecer o `.d.ts`
@@ -629,13 +919,21 @@ Isso significa que a escolha de Rolldown como motor do Vite 8 não foi só uma d
 - [[15 - Turbopack, Rspack e a corrida Rust-Go]] — outros bundlers escritos em Rust/Go (Turbopack, Rspack) que miram aplicações, não libs; por que o ecossistema migrou de linguagem
 - [[17 - Otimização de bundle]] — tree-shaking a fundo: o que impede eliminação de código morto, `@__PURE__`, `sideEffects`, análise de bundle com rollup-plugin-visualizer e bundlephobia
 - [[08 - Transpilação e targets]] — esbuild como transpilador puro (sem bundle); como Rollup, esbuild e tsc se dividem as responsabilidades de transpilação, type-check e emissão de `.d.ts`
+- [[07 - O grafo de módulos e o que é bundling]] — fundamentos do grafo de módulos que todos esses bundlers constroem; por que a estrutura do grafo determina o que pode ser tree-shaken
+- [[16 - Linting, formatting e git hooks]] — oxlint e oxfmt como parte da stack Oxc/VoidZero; como o ecossistema Rust está unificando parser e linter no mesmo core
 
 ---
 
-> [!info] Lastro
-> - **Rolldown 1.0 GA** (maio 2026) — API semântica versionada, compatibilidade Rollup, motor do Vite 8: [voidzero.dev/posts/announcing-rolldown-1-0](https://voidzero.dev/posts/announcing-rolldown-1-0)
-> - **Vite 8.0** (março 2026) — Rolldown como bundler único, abandono do split esbuild/Rollup: [vite.dev/blog/announcing-vite8](https://vite.dev/blog/announcing-vite8)
-> - **Rollup CHANGELOG** — versão 4.60.x, histórico de releases 2026: [github.com/rollup/rollup/blob/master/CHANGELOG.md](https://github.com/rollup/rollup/blob/master/CHANGELOG.md)
-> - **esbuild GitHub** — versão atual, CHANGELOG, posicionamento explícito abaixo de 1.0: [github.com/evanw/esbuild](https://github.com/evanw/esbuild)
-> - **tsup vs tsdown vs unbuild 2026** — downloads semanais, stub mode, quando usar cada um: [pkgpulse.com/guides/tsup-vs-tsdown-vs-unbuild-typescript-library-bundling-2026](https://www.pkgpulse.com/guides/tsup-vs-tsdown-vs-unbuild-typescript-library-bundling-2026)
-> - **Announcing Rolldown-Vite** — a transição técnica de dois motores para um: [voidzero.dev/posts/announcing-rolldown-vite](https://voidzero.dev/posts/announcing-rolldown-vite)
+## Referências
+
+- [Announcing Rolldown 1.0 — VoidZero](https://voidzero.dev/posts/announcing-rolldown-1-0) — API semântica versionada, compatibilidade Rollup, motor do Vite 8; maio 2026
+- [Rolldown Plugin API — rolldown.rs](https://rolldown.rs/apis/plugin-api) — documentação oficial de hooks, filtros e interface de plugin
+- [Rollup Plugin Compat Status — issue #819](https://github.com/rolldown/rolldown/issues/819) — rastreamento público de compatibilidade de plugins populares com Rolldown
+- [Plugin Development — rollupjs.org](https://rollupjs.org/plugin-development/) — documentação oficial dos hooks do Rollup (buildStart, resolveId, load, transform, renderChunk, generateBundle)
+- [VoidZero is Joining Cloudflare — VoidZero](https://voidzero.dev/posts/voidzero-cloudflare) — aquisição de 4 de junho de 2026; compromissos MIT open-source; junho 2026
+- [What is Oxc — oxc.rs](https://oxc.rs/docs/guide/what-is-oxc) — parser, resolver, transformer, linter e minifier compartilhados
+- [tsup vs tsdown vs unbuild 2026 — PkgPulse](https://www.pkgpulse.com/guides/tsup-vs-tsdown-vs-unbuild-typescript-library-bundling-2026) — downloads semanais, stub mode, quando usar cada um
+- [Rolldown and Vite 8: What Changed — certificates.dev](https://certificates.dev/blog/rolldown-and-vite-8-what-changed) — a transição técnica de dois motores para um
+- [esbuild does not support method decorators in class expressions — issue #3045](https://github.com/evanw/esbuild/issues/3045) — limitação estrutural de decorators no esbuild
+- [Vite 8.0 — vite.dev](https://vite.dev/blog/announcing-vite8) — Rolldown como bundler único, março 2026
+- [Announcing Rolldown-Vite — VoidZero](https://voidzero.dev/posts/announcing-rolldown-vite) — detalhes técnicos da integração Rolldown no Vite

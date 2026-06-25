@@ -1,7 +1,7 @@
 ---
 title: "Linting, formatting e git hooks"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -243,6 +243,91 @@ O preset `tseslint.configs.recommendedTypeChecked` ativa apenas as regras type-a
 
 ---
 
+## ESLint em projetos grandes: performance e diagnóstico
+
+Uma queixa comum em codebases maiores é que o ESLint fica lento — e desenvolvedores começam a desativar regras ou pular o lint por impaciência. Antes de remover regras, existem ferramentas de diagnóstico que identificam *o que* está demorando.
+
+### `TIMING=1`: identificando regras lentas
+
+A variável de ambiente `TIMING=1` faz o ESLint imprimir o tempo gasto por regra ao final da execução:
+
+```bash
+TIMING=1 npx eslint src/
+```
+
+Output (exemplo):
+```
+Rule                                  | Time (ms) | Relative
+:-------------------------------------|----------:|--------:
+@typescript-eslint/no-unsafe-member-access |   1203.2 |    42.1%
+@typescript-eslint/no-floating-promises    |    823.4 |    28.8%
+import/no-cycle                            |    412.1 |    14.4%
+@typescript-eslint/await-thenable          |    198.6 |     6.9%
+```
+
+Regras type-aware (`@typescript-eslint/*`) e regras de análise de grafo (`import/no-cycle`) são as candidatas número um a lentidão. `import/no-cycle` especialmente tem custo O(n²) sobre o grafo de módulos — desativá-la em CI pode ser necessário em monorepos.
+
+### `--cache`: incremental entre execuções
+
+O flag `--cache` salva o resultado do lint por arquivo num arquivo `.eslintcache`. Nas execuções seguintes, arquivos não modificados são pulados:
+
+```bash
+npx eslint src/ --cache --cache-location .eslintcache
+```
+
+O `.eslintcache` **não deve ser commitado** (adicione ao `.gitignore`), mas pode ser preservado entre runs de CI usando cache de dependências (GitHub Actions: `actions/cache` com a chave baseada no hash do `package-lock.json`).
+
+```yaml
+# .github/workflows/quality.yml — cache do ESLint entre runs de CI
+- name: Cache ESLint
+  uses: actions/cache@v4
+  with:
+    path: .eslintcache
+    key: eslint-${{ hashFiles('package-lock.json', 'eslint.config.js') }}
+```
+
+### `@eslint/config-inspector`: depurando o que está ativo
+
+Uma adição recente ao ecossistema ESLint é o `@eslint/config-inspector` — um servidor web local que mostra visualmente quais regras estão ativas para cada arquivo:
+
+```bash
+npx @eslint/config-inspector
+```
+
+Abre em `http://localhost:7777`. Você digita o caminho de um arquivo (ex.: `src/components/Button.tsx`) e ele lista todas as regras que se aplicam, de onde vieram (qual objeto no array), e qual valor (`error`, `warn`, `off`). Indispensável para depurar um flat config complexo com múltiplos plugins.
+
+### `projectService` vs `project`: qual usar?
+
+| Opção | Comportamento | Quando usar |
+|---|---|---|
+| `project: './tsconfig.json'` | ESLint cria um programa TypeScript independente. Lento em monorepos. | Projetos menores sem tsserver rodando |
+| `project: true` | ESLint infere o tsconfig.json mais próximo do arquivo lintado. | Monorepos com múltiplos tsconfigs |
+| `projectService: true` | Reutiliza o tsserver já rodando (mesmos arquivos que o editor abre). Mais rápido para edição interativa. | Padrão recomendado desde typescript-eslint v7 |
+| `projectService: { defaultProject: 'tsconfig.json' }` | Igual ao anterior, mas com fallback explícito para arquivos fora de qualquer tsconfig. | Projetos com arquivos soltos na raiz |
+
+O `projectService: true` é a opção correta para novos projetos desde typescript-eslint v7 (2024). O `project: './tsconfig.json'` ainda funciona mas cria um segundo servidor TypeScript paralelo ao do editor — desnecessário e mais lento.
+
+```mermaid
+flowchart LR
+    subgraph "project: './tsconfig.json' — legado"
+        E1["ESLint cria tsc program\nindependente"]
+        T1["TypeScript #1\n(editor)"]
+        T2["TypeScript #2\n(ESLint)"]
+    end
+    subgraph "projectService: true — recomendado"
+        E2["ESLint reutiliza\ntsserver existente"]
+        T3["TypeScript #1\n(editor + ESLint)"]
+    end
+    E1 --> T2
+    T1 -.->|"não compartilha"| T2
+    E2 --> T3
+
+    style T2 fill:#3a1a1a,color:#fff
+    style T3 fill:#1e3a1e,color:#fff
+```
+
+---
+
 ## Prettier: o formatador que encerra a discussão
 
 O Prettier existe desde 2017 com uma proposta deliberadamente radical: **não há nada para configurar**. Ele tem um conjunto fixo de opções (largura de linha, aspas, vírgulas finais — um punhado) e para todo o resto toma a decisão sozinho. Você não escolhe se prefere espaço antes de chave, ou como quebrar arrays longos — o Prettier decide.
@@ -337,6 +422,24 @@ O comando central é `biome check --write` — linta, formata e ordena imports e
 
 > [!info] Biome também não tem plugins customizados
 > Não existe ainda um API de plugin para Biome. Se a equipe tem regras customizadas (regras de naming convention específicas, regras de domínio, restrições de import entre camadas), ESLint ainda é a única opção.
+
+### Biome 2.x: o que mudou em 2025-2026
+
+O Biome 2.0 foi lançado em maio de 2025 com mudanças que afetam a configuração existente:
+
+- **Assistants (antes "actions")**: a API de code actions foi renomeada e estabilizada. Regras de lint agora declaram explicitamente se têm fix automático seguro (`safefix`) ou potencialmente destrutivo (`unsafefix`).
+- **Domínios de regras expandidos**: além de `correctness`, `suspicious`, `style` e `performance`, surgiram novos grupos como `nursery` (regras em incubação) e `a11y` (acessibilidade).
+- **Configuração de projeto multi-arquivo**: `biome.json` passou a suportar `extends` para composição de configs em monorepos, aproximando-se do flat config do ESLint em expressividade.
+- **CSS e GraphQL stabis**: suporte a lint e format de CSS e GraphQL saiu do experimental.
+- **CLI `biome migrate`**: ferramenta para migrar de ESLint + Prettier para Biome com mapeamento automático de regras equivalentes.
+
+```bash
+# Migração de ESLint + Prettier para Biome (Biome 2.x)
+npx @biomejs/biome migrate eslint --write  # lê eslint.config.js, gera biome.json
+npx @biomejs/biome migrate prettier --write # lê .prettierrc, ajusta biome.json
+```
+
+O `biome migrate` é ponto de partida, não solução completa — regras sem equivalente no Biome são listadas num relatório para decisão manual.
 
 ---
 
@@ -466,6 +569,72 @@ pre-push:
 ```
 
 O `stage_fixed: true` é o equivalente do lint-staged auto-adicionando arquivos fixados pelo `--fix` — uma feature que o lint-staged tem por padrão mas que no Husky puro exige script extra.
+
+### Além do pre-commit: outros hooks úteis
+
+O hook `pre-commit` é o mais usado, mas existem outros pontos no ciclo Git que valem a atenção:
+
+```bash
+# .husky/commit-msg — valida o formato da mensagem de commit
+# (requer commitlint ou script manual)
+npx --no -- commitlint --edit "$1"
+```
+
+```bash
+# .husky/pre-push — roda testes antes de enviar ao remote
+npm test
+```
+
+```js
+// commitlint.config.js — convencional commits
+export default {
+  extends: ['@commitlint/config-conventional'],
+  // prefixos aceitos: feat, fix, docs, style, refactor, test, chore, ci, build
+  rules: {
+    'scope-enum': [2, 'always', ['api', 'ui', 'auth', 'ci']],
+  },
+};
+```
+
+O `commit-msg` hook com commitlint é particularmente útil em equipes que usam Conventional Commits para gerar changelogs automaticamente (ferramentas como `semantic-release` ou `changesets` consomem esse histórico padronizado).
+
+> [!tip] Pre-push vs pre-commit: onde colocar os testes
+> Rodar toda a suite de testes no `pre-commit` é muito lento — vai irritar o desenvolvedor e ele vai usar `--no-verify`. O padrão prático é: **pre-commit** para lint + format rápidos (segundos); **pre-push** para testes de unidade; CI para testes de integração e e2e. Cada nível tem custo de feedback diferente.
+
+### Configs compartilhadas: pacotes npm de eslint config
+
+Em organizações com múltiplos repositórios, duplicar o `eslint.config.js` em cada repo é um anti-padrão. A solução é publicar um pacote npm interno com a configuração base:
+
+```js
+// Pacote: @minha-org/eslint-config/index.js
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import prettierConfig from "eslint-config-prettier";
+
+export const base = tseslint.config(
+  js.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  prettierConfig,
+);
+```
+
+```js
+// eslint.config.js no projeto consumidor
+import { base } from "@minha-org/eslint-config";
+
+export default [
+  ...base,
+  // regras específicas do projeto por cima
+  {
+    files: ["**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error", // mais estrito que o base
+    },
+  },
+];
+```
+
+Isso centraliza upgrades de versão e mudanças de política. Quando a organização migra de ESLint 9 para 10 ou ativa uma nova regra, basta atualizar o pacote compartilhado e os projetos absorvem via bump de versão.
 
 ```mermaid
 sequenceDiagram
@@ -667,6 +836,78 @@ As três etapas são independentes e poderiam rodar em paralelo com jobs separad
 
 ---
 
+## Trade-offs para decisão sênior
+
+Aqui é onde a discussão fica mais interessante — e mais honesta. Ferramentas de qualidade de código têm custos reais que precisam ser balanceados.
+
+### O custo real do type-aware linting
+
+Type-aware linting é poderoso, mas tem um preço:
+
+| Aspecto | Custo | Mitigação |
+|---|---|---|
+| Tempo de inicialização | TypeScript precisa construir o programa completo antes do lint. Em projetos grandes, 30–90s. | `projectService: true` + `--cache` |
+| Consumo de memória | O tsserver pode usar 500MB+ em monorepos grandes | Project references para dividir o grafo |
+| Falsos positivos | Regras como `no-unsafe-*` disparam em pontos de integração com `any` intencional | Configurar `strictTypeChecked` só onde faz sentido |
+| Manutenção de config | `tsconfigRootDir` + `projectService` exige atenção em mudanças de estrutura | Testes do `eslint.config.js` com `@eslint/config-inspector` |
+
+A pergunta que um sênior faz antes de ativar `recommendedTypeChecked`: "Qual bug real essa regra teria capturado no nosso histórico?" Se a resposta for "raramente", o custo de performance talvez não valha.
+
+### Quando Biome faz mais sentido que ESLint
+
+Existe um perfil de projeto onde Biome é claramente a escolha certa:
+
+- **Frontend puro sem integração com backends tipados**: tipos são para o editor, não para lint de runtime behavior
+- **Time pequeno que vai manter uma ferramenta, não duas**: menos para configurar, atualizar e documentar
+- **CI com orçamento de tempo apertado**: 3–5s de lint vs 45s é uma diferença que acumula em centenas de PRs por mês
+- **Ausência de regras de domínio customizadas**: se o projeto não tem `no-import-from-layer-x`, não precisa do API de plugin do ESLint
+
+O problema de Biome não é "ser pior que ESLint" — é ser *diferente* de um jeito que pode surpreender equipes que assumiram paridade.
+
+### Estratégia híbrida: oxlint + ESLint mínimo
+
+A estratégia que mais cresce em times de alta performance em 2026:
+
+```mermaid
+flowchart LR
+    subgraph "Pre-commit (rápido)"
+        OX["oxlint\n838 regras nativas\n50-100× mais rápido"]
+    end
+    subgraph "CI (completo)"
+        OX2["oxlint\n(mesmas regras)"]
+        ESL["ESLint mínimo\n(só type-aware)\nno-floating-promises\nawait-thenable\nno-unsafe-*"]
+    end
+    subgraph "Editor (tempo real)"
+        IDE["ESLint plugin\n+ typescript-eslint\n+ Prettier"]
+    end
+
+    OX --> |"passa"| COMMIT["git commit"]
+    COMMIT --> CI["CI pipeline"]
+    CI --> OX2 & ESL
+    IDE -.->|"feedback contínuo"| SRC["código"]
+
+    style OX fill:#3a2a00,color:#fff
+    style OX2 fill:#3a2a00,color:#fff
+    style ESL fill:#1e3a5f,color:#fff
+```
+
+O raciocínio: o desenvolvedor recebe feedback de tipo no editor (IDE com ESLint + typescript-eslint). O pre-commit roda apenas oxlint — rápido o suficiente para ser tolerado. O CI roda oxlint + ESLint mínimo como gate definitivo. Ninguém espera 60 segundos em nenhum ponto do fluxo.
+
+### Comparativo honesto das ferramentas em 2026
+
+| Critério | ESLint+Prettier | Biome 2.x | oxlint | lefthook |
+|---|---|---|---|---|
+| Type-aware linting | ✅ Completo | ❌ Não tem | ❌ Não tem | N/A (hook runner) |
+| Plugins customizados | ✅ Extensível | ❌ Não tem | ⚠️ JS plugins alpha | N/A |
+| Velocidade | ⚠️ Lento | ✅ 24-56× mais rápido | ✅ 50-100× mais rápido | ✅ Paralelo |
+| Configuração | ⚠️ Verbosa | ✅ Um arquivo | ✅ Simples | ✅ YAML |
+| Ecossistema | ✅ Maduro | ⚠️ Em crescimento | ⚠️ Em crescimento | ✅ Drop-in |
+| Monorepo | ⚠️ Exige cuidado | ✅ `extends` nativo | ✅ Simples | ✅ Nativo |
+| Formatação | Via Prettier | ✅ Integrado | ❌ Só linting | N/A |
+| Maturidade (2026) | ✅ Estável 13 anos | ⚠️ 3 anos | ⚠️ 2 anos | ✅ Estável |
+
+---
+
 ## Decision tree: ESLint+Prettier vs Biome vs oxlint em 2026
 
 A escolha não é óbvia porque as ferramentas estão em momentos diferentes de maturidade:
@@ -771,17 +1012,27 @@ Em resumo: projetos TypeScript sérios com preocupação com bugs async/await ai
 ## Veja também
 
 - [[08 - Transpilação e targets]] — o que acontece com o código *antes* do lint: como TypeScript é transformado para JS, o papel do tsc, esbuild e SWC
-- [[23 - Build em produção, CI e determinismo]] — CI em profundidade: cache, artefatos, source maps em produção; lint e typecheck como etapas do pipeline de build
+- [[23 - Build em produção, CI e determinismo]] — CI em profundidade: cache, artefatos, source maps em produção; lint e typecheck como etapas do pipeline de build; caching de `.eslintcache` no GitHub Actions
 - [[15 - Turbopack, Rspack e a corrida Rust-Go]] — o contexto maior da migração de ferramentas JS para Rust/Go, onde Biome e oxlint se encaixam
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — configs compartilhadas de ESLint em monorepos, onde publicar o pacote `@org/eslint-config`, como Turborepo cacheia o lint entre pacotes
+- [[03 - Package managers - npm, pnpm, yarn e Bun]] — publicar pacotes de config interno, workspaces e como `prepare` do Husky se comporta em diferentes package managers
 - [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — type-aware linting pressupõe um tsconfig bem configurado; project references e performance do tsc são abordados na trilha TypeScript
 
 ---
 
-> [!info] Lastro
-> - **ESLint 10 release (fevereiro 2026)**: flat config obrigatório, `.eslintrc` removido — [eslint.org/blog/2026/02/eslint-v10.0.0-released](https://eslint.org/blog/2026/02/eslint-v10.0.0-released/)
-> - **ESLint 10 Flat Config Migration Guide 2026** (PkgPulse) — estrutura do array, migração de plugins, globals: [pkgpulse.com/guides/eslint-10-flat-config-migration-guide-2026](https://www.pkgpulse.com/guides/eslint-10-flat-config-migration-guide-2026)
-> - **typescript-eslint: Typed Linting** — `projectService: true`, custo de performance, configuração: [typescript-eslint.io/getting-started/typed-linting](https://typescript-eslint.io/getting-started/typed-linting/)
-> - **Biome vs ESLint+Prettier 2026** (PkgPulse) — benchmarks reais, limitações, quando usar: [pkgpulse.com/guides/biome-vs-eslint-prettier-linting-2026](https://www.pkgpulse.com/guides/biome-vs-eslint-prettier-linting-2026)
-> - **Oxlint JS Plugins Alpha** (março 2026) — API compatível com ESLint v9, 838 regras nativas: [oxc.rs/blog/2026-03-11-oxlint-js-plugins-alpha](https://oxc.rs/blog/2026-03-11-oxlint-js-plugins-alpha)
-> - **Husky vs Lefthook vs Lint-staged 2026** (PkgPulse) — comparação, configs concretas, casos de uso: [pkgpulse.com/guides/husky-vs-lefthook-vs-lint-staged-git-hooks-nodejs-2026](https://www.pkgpulse.com/guides/husky-vs-lefthook-vs-lint-staged-git-hooks-nodejs-2026)
-> - **OXC vs ESLint vs Biome: JavaScript Linting in 2026** (PkgPulse): [pkgpulse.com/guides/oxc-vs-eslint-vs-biome-javascript-linting-2026](https://www.pkgpulse.com/guides/oxc-vs-eslint-vs-biome-javascript-linting-2026)
+## Referências
+
+- **ESLint 10 release (fevereiro 2026)**: flat config obrigatório, `.eslintrc` removido — [eslint.org/blog/2026/02/eslint-v10.0.0-released](https://eslint.org/blog/2026/02/eslint-v10.0.0-released/)
+- **ESLint 10 Flat Config Migration Guide 2026** (PkgPulse) — estrutura do array, migração de plugins, globals: [pkgpulse.com/guides/eslint-10-flat-config-migration-guide-2026](https://www.pkgpulse.com/guides/eslint-10-flat-config-migration-guide-2026)
+- **typescript-eslint: Typed Linting** — `projectService: true`, custo de performance, configuração: [typescript-eslint.io/getting-started/typed-linting](https://typescript-eslint.io/getting-started/typed-linting/)
+- **typescript-eslint: `projectService`** — comparação com `project: true`, defaults, monorepo: [typescript-eslint.io/packages/parser/#projectservice](https://typescript-eslint.io/packages/parser/#projectservice)
+- **ESLint Performance Profiling** — `TIMING=1`, `--cache`, diagnóstico de regras lentas: [eslint.org/docs/latest/extend/custom-rules#performance-testing](https://eslint.org/docs/latest/extend/custom-rules#performance-testing)
+- **`@eslint/config-inspector`** — UI visual para depurar flat config: [github.com/eslint/config-inspector](https://github.com/eslint/config-inspector)
+- **Biome 2.0 release (maio 2025)** — Assistants API, CSS/GraphQL stable, multi-arquivo extends: [biomejs.dev/blog/biome-v2](https://biomejs.dev/blog/biome-v2/)
+- **Biome `migrate` CLI** — migração de ESLint + Prettier para Biome: [biomejs.dev/guides/migrate-eslint-prettier](https://biomejs.dev/guides/migrate-eslint-prettier/)
+- **Biome vs ESLint+Prettier 2026** (PkgPulse) — benchmarks reais, limitações, quando usar: [pkgpulse.com/guides/biome-vs-eslint-prettier-linting-2026](https://www.pkgpulse.com/guides/biome-vs-eslint-prettier-linting-2026)
+- **Oxlint JS Plugins Alpha** (março 2026) — API compatível com ESLint v9, 838 regras nativas: [oxc.rs/blog/2026-03-11-oxlint-js-plugins-alpha](https://oxc.rs/blog/2026-03-11-oxlint-js-plugins-alpha)
+- **Husky vs Lefthook vs Lint-staged 2026** (PkgPulse) — comparação, configs concretas, casos de uso: [pkgpulse.com/guides/husky-vs-lefthook-vs-lint-staged-git-hooks-nodejs-2026](https://www.pkgpulse.com/guides/husky-vs-lefthook-vs-lint-staged-git-hooks-nodejs-2026)
+- **OXC vs ESLint vs Biome: JavaScript Linting in 2026** (PkgPulse): [pkgpulse.com/guides/oxc-vs-eslint-vs-biome-javascript-linting-2026](https://www.pkgpulse.com/guides/oxc-vs-eslint-vs-biome-javascript-linting-2026)
+- **Commitlint** — validação de mensagem de commit com Conventional Commits: [commitlint.js.org](https://commitlint.js.org/)
+- **Lefthook docs** — `stage_fixed`, `parallel`, monorepo support: [lefthook.dev/docs](https://lefthook.dev/docs/)

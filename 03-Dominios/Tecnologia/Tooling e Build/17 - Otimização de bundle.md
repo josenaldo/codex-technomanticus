@@ -1,7 +1,7 @@
 ---
 title: "Otimização de bundle"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -326,6 +326,41 @@ flowchart TD
 > [!note] Leitura do diagrama
 > A decisão de tree-shaking passa por dois filtros: o formato do módulo (ESM obrigatório) e a declaração de side effects. Barrel files criam um terceiro filtro que só é superado com `sideEffects: false` explícito na cadeia de reexports.
 
+### Anotações de pureza — além do `/*#__PURE__*/`
+
+Além do `/*#__PURE__*/` por chamada de função, a Webpack 5.107.0+ (maio 2025) adicionou `/*#__NO_SIDE_EFFECTS__*/` no nível de módulo — uma alternativa programática ao `sideEffects` no `package.json`:
+
+```js
+// lib/utils.js — anotação inline, sem precisar do package.json
+/*#__NO_SIDE_EFFECTS__*/
+
+export function formatDate(date) { /* ... */ }
+export function parseISO(str) { /* ... */ }
+```
+
+A diferença de `sideEffects: false` no `package.json`: a anotação inline funciona por arquivo, é versionável com o código, e funciona mesmo sem controle do `package.json` da lib (ex: libs de terceiros wrappeadas internamente).
+
+> [!info] Estado 2026: suporte parcial
+> `/*#__NO_SIDE_EFFECTS__*/` é suportado pelo Webpack 5.107+ e pelo Rolldown (o substituto do Rollup, usado no Vite 6+). O Rollup clássico e o esbuild ainda não suportam — verificar a documentação do bundler antes de depender da anotação.
+
+### Limite fundamental: closures capturam tudo
+
+Há um caso que nenhum bundler resolve sem heurísticas agressivas: funções que retornam closures. O bundler não pode saber qual propriedade do closure é acessada externamente:
+
+```js
+// lib.js
+export function createStore(initialState) {
+  let state = initialState
+  return {
+    getState: () => state,
+    setState: (s) => { state = s },
+    subscribe: (fn) => { /* ... */ }
+  }
+}
+```
+
+Se você usa só `createStore(x).getState()`, o bundler não pode eliminar `setState` e `subscribe` do bundle — porque eles estão embutidos no objeto retornado e o bundler não rastreia uso de propriedades de objetos locais a menos que use análise de escape (cara computacionalmente). Esse é um limite real do tree-shaking atual; a solução é expor cada função separadamente como named export.
+
 ---
 
 ## Code splitting: dividindo o grafo em chunks inteligentes
@@ -501,6 +536,86 @@ function prefetchAdmin() {
 </button>
 ```
 
+#### Magic comments: `webpackPrefetch` e `webpackPreload`
+
+O Webpack (e Vite via plugin) suporta *magic comments* dentro do `import()` para controlar como o browser trata o chunk:
+
+```js
+// webpackPrefetch: true — baixa durante idle time (baixa prioridade)
+// O browser adiciona <link rel="prefetch"> automaticamente
+const AdminPanel = lazy(() =>
+  import(/* webpackChunkName: "admin", webpackPrefetch: true */ './pages/Admin')
+)
+
+// webpackPreload: true — carrega junto com o chunk pai (alta prioridade)
+// Análogo a <link rel="preload"> — use com cautela
+const HeroBanner = lazy(() =>
+  import(/* webpackChunkName: "hero", webpackPreload: true */ './components/HeroBanner')
+)
+```
+
+A distinção é importante:
+
+| Magic comment | Quando dispara | Prioridade | Uso ideal |
+|---------------|----------------|------------|-----------|
+| `webpackPrefetch` | Após a página carregar (idle) | Baixa | Rotas que o usuário *provavelmente* vai visitar |
+| `webpackPreload` | Junto com o chunk pai | Alta | Recursos que o chunk pai *certamente* precisa logo |
+
+> [!warning] `webpackPreload` mal usado piora a performance
+> Preload com alta prioridade compete com recursos críticos (CSS, fontes, imagens LCP). Use só para recursos que o chunk corrente genuinamente precisa em < 1s. Prefetch é a opção mais segura para a maioria dos casos.
+
+#### `<link rel="modulepreload">` — o nativo do browser
+
+O HTML permite declarar preload de módulos ES diretamente, sem depender de bundler:
+
+```html
+<!-- No <head> — o browser baixa e parseia o chunk antes de precisar dele -->
+<link rel="modulepreload" href="/assets/vendor-react-BkxSgIJ7.js" />
+<link rel="modulepreload" href="/assets/Home-CqD8Xwkl.js" />
+```
+
+O Vite gera essas tags automaticamente para todos os chunks do bundle inicial. Para chunks lazy, a geração é opcional via `build.modulePreload`. A diferença de `rel="preload"` para `rel="modulepreload"`: o segundo parseia e compila o módulo JS antecipadamente (não só baixa), e também pré-carrega as dependências do módulo declarado.
+
+#### O problema do chunk waterfall
+
+Code splitting ingênuo cria um problema em cascata: para renderizar a página A, o browser precisa de `main.js` → que importa `router.js` → que lazy-carrega `pageA.js` → que descobre que precisa de `shared-utils.js`. Cada chunk só é descoberto quando o anterior termina de executar.
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant S as Servidor
+
+    B->>S: GET main.js
+    S-->>B: main.js (50KB)
+    Note over B: executa main.js, descobre router
+    B->>S: GET router.js
+    S-->>B: router.js (30KB)
+    Note over B: executa router, descobrindo pageA
+    B->>S: GET pageA.js
+    S-->>B: pageA.js (80KB)
+    Note over B: executa pageA, descobre shared-utils
+    B->>S: GET shared-utils.js
+    S-->>B: shared-utils.js (40KB)
+    Note over B: finalmente renderiza
+```
+
+> [!note] Leitura do diagrama
+> Cada requisição é sequencial porque o browser não sabe do próximo chunk até executar o anterior. Quatro round-trips sequenciais numa conexão com 50ms de latência = +200ms só de overhead de descoberta, antes de qualquer byte de código ser executado.
+
+**Solução**: o Vite 5+ resolve isso automaticamente gerando tags `<link rel="modulepreload">` para todas as dependências transitivas de cada entry point — o browser baixa toda a árvore de dependências em paralelo, eliminando o waterfall.
+
+Para casos manuais, você pode usar `import.meta.glob` com `{ eager: false }` e `prefetch` explícito:
+
+```js
+// Pré-carrega todas as rotas antecipadamente após idle
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(() => {
+    import('./pages/About')
+    import('./pages/Checkout')
+  })
+}
+```
+
 ---
 
 ## Minificação: comprimindo o que sobra
@@ -587,6 +702,114 @@ O código é semanticamente idêntico, mas os nomes das variáveis locais encurt
 
 ---
 
+## Compressão: Gzip vs. Brotli e o que acontece no servidor
+
+Minificação reduz o código JavaScript. Compressão reduz o que é enviado pelo fio. São etapas complementares: minificação opera antes do build, compressão opera no momento da transferência HTTP.
+
+O browser anuncia quais algoritmos suporta via header `Accept-Encoding`:
+
+```
+Accept-Encoding: gzip, deflate, br, zstd
+```
+
+O servidor escolhe o melhor disponível e responde com `Content-Encoding: br` (Brotli) ou `Content-Encoding: gzip`.
+
+### Gzip vs. Brotli: trade-offs concretos
+
+| Algoritmo | Ratio (JS típico) | Velocidade compressão | Suporte browser | Caso de uso |
+|-----------|------------------|-----------------------|-----------------|-------------|
+| Gzip (nível 6) | ~65-70% de redução | Rápida | 100% | Compatibilidade máxima, compressão dinâmica |
+| Gzip (nível 9) | ~67-72% de redução | Lenta (3-5x nível 6) | 100% | Assets estáticos pré-comprimidos |
+| Brotli (nível 6) | ~72-78% de redução | Moderada | 96%+ | Padrão para assets estáticos |
+| Brotli (nível 11) | ~74-80% de redução | Muito lenta (40-60x Gzip) | 96%+ | Pré-compressão offline (vale a pena em CI) |
+| Zstd | ~70-75% de redução | Muito rápida | Chrome 123+, FF 126+ | Emergente — ainda sem suporte Safari |
+
+Na prática, para JS minificado (que já é relativamente incompressível por ter pouca redundância), Brotli nível 6 oferece ~8-12% a menos de bytes que Gzip nível 6 com custo de servidor aceitável.
+
+> [!tip] Pré-compressão em build time vs. compressão dinâmica
+> Compressão dinâmica no servidor (nginx, caddy, cloudflare) é rápida mas usa Brotli em nível baixo (4-6) para não bloquear o response. Pré-compressão em build time — gerando `.js.br` e `.js.gz` — permite usar Brotli nível 11 sem impacto de latência. O servidor serve o arquivo pré-comprimido diretamente.
+
+### Pré-compressão com Vite
+
+```bash
+npm install --save-dev vite-plugin-compression2
+```
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite'
+import { compression } from 'vite-plugin-compression2'
+
+export default defineConfig({
+  plugins: [
+    // Gera .js.br (Brotli nível 11) para todos os assets > 10KB
+    compression({
+      algorithm: 'brotliCompress',
+      exclude: [/\.(br|gz)$/],
+      threshold: 10240,  // 10KB — não comprime arquivos pequenos (overhead)
+    }),
+    // Também gera .js.gz como fallback para servidores sem Brotli
+    compression({
+      algorithm: 'gzip',
+      exclude: [/\.(br|gz)$/],
+    }),
+  ]
+})
+```
+
+Configuração correspondente no nginx para servir arquivos pré-comprimidos:
+
+```nginx
+# nginx.conf
+server {
+  # Tenta servir .br → .gz → original (nessa ordem de preferência)
+  gzip_static on;
+  brotli_static on;  # requer módulo ngx_brotli
+
+  location /assets/ {
+    expires 1y;                         # cache longo para assets com hash
+    add_header Cache-Control "public, immutable";
+    add_header Vary "Accept-Encoding";  # importante: instrui CDNs e proxies
+  }
+}
+```
+
+> [!info] Por que `Vary: Accept-Encoding` importa
+> Sem esse header, um proxy ou CDN pode cachear a versão Brotli e servir para um cliente que declarou só suportar Gzip — quebrando a descompressão. `Vary: Accept-Encoding` instrui intermediários a manter versões separadas por encoding.
+
+### O custo real de JS comprimido: parse ≠ download
+
+Um conceito que confunde até engenheiros sênior: **o tamanho que o browser baixa não é o tamanho que ele processa**.
+
+```
+arquivo original:   500KB (o que o engine parseia e compila)
+   ↓ minificação
+arquivo minificado: 320KB (ainda é o que o engine processa)
+   ↓ compressão Brotli nível 6
+transferência:       96KB (o que o browser baixa)
+```
+
+O browser baixa 96KB, mas ao descomprimir e executar, trabalha com 320KB de JS. Em CPUs lentas (dispositivos de entrada, 1-2 GHz single-core), o custo dominante de um bundle grande é **parse + compilação JIT**, não download. Isso explica por que Lighthouse e web.dev medem o *tamanho do arquivo original* para alertas de "Reduce unused JavaScript", não o tamanho comprimido.
+
+```mermaid
+graph TD
+    DL["Download\n96KB (Brotli)\n~0.4s em 3G"]
+    DC["Descompressão\n96KB → 320KB\n~5ms (CPU)"]
+    PARSE["Parse + AST\n320KB de tokens\n~180ms (CPU mid-range)"]
+    COMPILE["JIT Compilation\n~120ms (CPU mid-range)"]
+    EXEC["Execução\nHydration, event listeners\n~variable"]
+
+    DL --> DC --> PARSE --> COMPILE --> EXEC
+
+    style PARSE fill:#3a3a10,color:#fff
+    style COMPILE fill:#3a3a10,color:#fff
+```
+
+> [!note] Leitura do diagrama
+> O download é a menor fração do custo total em redes modernas (4G+). Parse e compilação dominam — e não são afetados por Brotli. A única solução para o custo de parse é **ter menos JS**: tree-shaking + code splitting, não apenas melhor compressão.
+
+---
+
 ## Orçamento de performance e Core Web Vitals
 
 Bundle analysis e otimizações não têm sentido sem uma métrica de sucesso. **Performance budget** é um limite declarativo: "o bundle inicial não pode passar de X KB".
@@ -628,6 +851,50 @@ Alvos práticos (2026, Gzip):
 
 > [!info] Parse time vs. tamanho de download
 > 1MB de JS comprimido com Brotli pode ser 300KB no download, mas continua sendo 1MB para parsear e compilar no browser. Em dispositivos móveis de entrada (CPU single-core a 1GHz), parsear 1MB de JS pode levar 3-5 segundos. O tamanho pós-Gzip que o DevTools mostra é o custo de rede; o tamanho antes da compressão é o custo de CPU. Ambos importam.
+
+---
+
+## Estado 2026: Rolldown, Vite 6 e oxc-minify
+
+O ecossistema de bundling está em transição acelerada em 2026. Três movimentos afetam diretamente otimização de bundle:
+
+### Rolldown como motor do Vite 6
+
+O Vite 6 (lançado novembro 2024, estável em 2025) migrou para o **Rolldown** como bundler interno, substituindo o Rollup para builds de produção. O Rolldown é uma reimplementação do Rollup em Rust — com API compatível, mas velocidade de build até 10-20x maior em projetos grandes.
+
+O impacto na otimização de bundle:
+- **Mesma semântica de tree-shaking** do Rollup (ESM estático, `sideEffects`), mas mais rápida
+- **`manualChunks`** funciona identicamente — código de configuração não muda
+- **Suporte a `/*#__NO_SIDE_EFFECTS__*/`** (o Rollup clássico não suportava)
+- **`rollup-plugin-visualizer`** ainda funciona via compatibilidade de plugin API
+
+> [!info] Rolldown em 2026 — fonte
+> O Rolldown foi integrado ao Vite como dependência interna a partir da versão 6.1+. O Vite 6 usa Rolldown para prod builds e mantém Rollup como opção de fallback. Fonte: Vite docs (https://vite.dev/guide/rolldown), junho 2026.
+
+### `oxc-minify` como alternativa emergente
+
+O **oxc-minify** é o minificador do ecossistema `oxc` (Rust), integrado ao Rolldown. Nos benchmarks de abril 2026:
+
+- **3ms** em `react@18.2.0` (vs 215ms do Terser — 70x mais rápido)
+- **57.2% de compressão** (vs 57.8% do Terser — diferença desprezível)
+- **Integrado automaticamente** quando Rolldown é usado como bundler
+
+Na prática, para projetos Vite 6+, `oxc-minify` passa a ser o padrão de fato sem configuração adicional. Para projetos Webpack ou Rollup clássico, a opção continua sendo SWC ou Terser.
+
+```js
+// vite.config.js — Vite 6+ com Rolldown
+// oxc-minify é o padrão; para usar terser explicitamente:
+export default defineConfig({
+  build: {
+    minify: 'terser',  // opt-in em terser (máxima compressão, mais lento)
+    // minify: true,   // padrão: oxc-minify via Rolldown
+  }
+})
+```
+
+### Consequência para análise de bundle
+
+Com Rolldown, o `rollup-plugin-visualizer` continua funcionando (API de plugin compatível). Mas surgiu o **Rsbuild bundle analyzer** — integrado ao Rspack/Rsbuild — que oferece visualização similar sem precisar de plugin externo. Para projetos Vite 6+, `rollup-plugin-visualizer` ainda é a escolha principal.
 
 ---
 
@@ -816,10 +1083,10 @@ window.addEventListener('vite:preloadError', (event) => {
 
 - [[07 - O grafo de módulos e o que é bundling]] — fundamento: o que é o grafo que tree-shaking poda e code splitting fragmenta
 - [[06 - ESM e CJS e o sistema de módulos]] — por que ESM é pré-requisito de tree-shaking; a semântica de import/export estático
-- [[14 - Rollup, esbuild e Rolldown]] — ferramentas específicas de bundling: como Rollup implementa tree-shaking; esbuild como motor de minificação
+- [[14 - Rollup, esbuild e Rolldown]] — ferramentas específicas de bundling: como Rollup implementa tree-shaking; esbuild como motor de minificação; Rolldown como substituto Rust
 - [[23 - Build em produção, CI e determinismo]] — como bundle analysis e performance budget entram no pipeline de CI
-- [[03-Dominios/Tecnologia/CSS/index|CSS]] — performance de CSS também afeta Core Web Vitals; critical CSS, code splitting de estilos
-- [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]] — HTTP/2 multiplexing (por que ter múltiplos chunks é viável); Gzip vs Brotli; cache-control headers
+- [[03-Dominios/Ciência/Redes e Protocolos/08 - Caching HTTP|Caching HTTP]] — cache-control headers e estratégia de cache longa para vendor chunks; `immutable` e fingerprinting de assets
+- [[03-Dominios/Ciência/Redes e Protocolos/07 - A evolução do HTTP|A evolução do HTTP]] — HTTP/2 multiplexing (por que múltiplos chunks em paralelo é viável); HTTP/3 e impacto em estratégia de chunking
 
 ---
 
@@ -831,3 +1098,7 @@ window.addEventListener('vite:preloadError', (event) => {
 > 5. Soledad Penadés — "Use manual chunks with Vite to facilitate dependency caching" (2025). Guia prático de `manualChunks` e estratégia de cache vendor/app. Disponível em: https://soledadpenades.com/posts/2025/use-manual-chunks-with-vite-to-facilitate-dependency-caching/
 > 6. btd/rollup-plugin-visualizer (GitHub). Documentação dos modos de visualização (treemap, sunburst, flamegraph) e integração com Vite. Disponível em: https://github.com/btd/rollup-plugin-visualizer
 > 7. Shehzad Ahmed — "Optimizing Your React Vite Application: A Guide to Reducing Bundle Size" (Medium, 2025). Caso prático de diagnóstico e otimização com Vite + React. Disponível em: https://shaxadd.medium.com/optimizing-your-react-vite-application-a-guide-to-reducing-bundle-size-6b7e93891c62
+> 8. Vite — "Rolldown" (documentação oficial, 2026). Explica a integração do Rolldown no Vite 6 como substituto do Rollup em builds de produção, API de plugin compatível e ganhos de velocidade. Disponível em: https://vite.dev/guide/rolldown
+> 9. web.dev — "Reduce JavaScript payloads with code splitting" (Google, 2019, atualizado 2023). Fundamentos de `import()` dinâmico, `React.lazy`, prefetch vs preload, e impacto em Core Web Vitals. Disponível em: https://web.dev/articles/reduce-javascript-payloads-with-code-splitting
+> 10. MDN Web Docs — `<link rel="modulepreload">` (2024). Especificação do comportamento de modulepreload: pré-parse, pré-compilação e carregamento de dependências transitivas. Disponível em: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/modulepreload
+> 11. Addy Osmani — "The Cost of JavaScript in 2019" (v8.dev). Análise seminal do custo de parse + compilação JS em dispositivos móveis; base para entender por que tamanho pré-compressão é o custo de CPU. Disponível em: https://v8.dev/blog/cost-of-javascript-2019

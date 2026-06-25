@@ -1,7 +1,7 @@
 ---
 title: "O runtime como ferramenta de DX"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: adepto
 status: seedling
@@ -491,6 +491,57 @@ graph TD
 
 ---
 
+## Node 24/25 e o estado atual do type stripping (2026)
+
+> [!info] Novidade — Node 24 e além
+> O Node 24 se tornou a **Active LTS** em outubro de 2024 e permanece como a linha recomendada para produção em 2026. Algumas mudanças relevantes para DX que solidificam o que foi discutido acima:
+>
+> - **Node 24**: type stripping é estável e ativado por padrão; `--env-file` estável desde 22.21 e backportado; `node:test` com cobertura de código integrada.
+> - **Node 22.21.0** (LTS Jod, abril 2025): `--env-file` sai de experimental — o flag final de estabilização.
+> - **Node 26** (current em 2026): remove `--experimental-transform-types` conforme anunciado; enums/namespaces definitivamente fora do escopo do runtime nativo. Também eleva o requisito mínimo de V8 e inclui suporte inicial a `import.meta.url` em CJS via flag.
+>
+> Fontes: [Node.js blog — v24 release](https://nodejs.org/en/blog/release/v24.0.0), [Node.js Changelog v22.21.0](https://github.com/nodejs/node/blob/main/CHANGELOG.md), [Node.js — type stripping tracking issue](https://github.com/nodejs/node/issues/53987)
+
+### A flag `--experimental-require-module` e o futuro do CJS/ESM
+
+Um detalhe que aparece pouco nos tutoriais mas importa em 2026: o Node 22 introduziu `--experimental-require-module`, que permite `require()` de módulos ESM sincrônica (sem `await import()`). No Node 24 isso ainda está em experimentação, mas representa a direção de convergência do CJS e ESM — a barreira histórica de "não dá pra dar `require` em ESM" começa a cair.
+
+Para projetos TypeScript que usam `tsx` ou `node` nativo, o impacto prático em 2026 é pequeno. O que importa saber: se você vê `ERR_REQUIRE_ESM` num projeto Node 22+, verifique se `--experimental-require-module` pode resolver sem reescrever os imports.
+
+---
+
+## `--run`: o script runner que simplifica scripts de package.json
+
+Uma adição menos conhecida do Node 22 é a flag `--run`, que executa scripts definidos no `package.json` **sem precisar do `npm run`**:
+
+```bash
+# Antes: npm run build, yarn build, pnpm build
+npm run build
+
+# Com node --run (Node 22+):
+node --run build
+node --run dev
+node --run test
+```
+
+A diferença prática parece pequena, mas há um motivo para existir: `node --run` é mais rápido que `npm run` porque pula a inicialização do npm (que carrega o resolver de workspace, verifica o lockfile etc.). Em pipelines de CI onde cada milissegundo conta e o script em questão é simples, isso pode ser relevante.
+
+Mais importante: `node --run` não tem todas as features do `npm run` (sem `pre`/`post` scripts, sem `--` para passar args adicionais da mesma forma). Para casos simples, é uma alternativa limpa. Para scripts complexos com lifecycle hooks, fique com o gerenciador de pacotes.
+
+```bash
+# FUNCIONA com node --run
+node --run build          # roda "build": "tsc --project tsconfig.build.json"
+node --run lint           # roda "lint": "eslint src --ext .ts"
+
+# NÃO funciona (pre/post hooks ignorados)
+# "prebuild": "node -e \"console.log('pre')\""  — silenciosamente ignorado
+```
+
+> [!info] Fonte
+> `node --run` foi introduzido no Node.js 22.3.0 (experimental) e segue experimental no Node 24. Documentação oficial: [Node.js CLI flags — --run](https://nodejs.org/api/cli.html#--run).
+
+---
+
 ## A tendência: "menos tooling, mais runtime"
 
 O que aconteceu com `--watch`, `--env-file` e type stripping é parte de uma tendência maior. O Deno e o Bun apontaram o caminho: runtimes com TypeScript nativo, env files embutidos, test runner integrado. O Node.js está respondendo.
@@ -511,6 +562,35 @@ flowchart LR
 A pergunta que vale fazer antes de instalar qualquer ferramenta de dev é: **o Node já faz isso?** Frequentemente a resposta mudou de "não" para "sim" nos últimos dois anos.
 
 Isso não significa que ferramentas externas vão desaparecer. O tsx ainda tem razão de existir para enums e transformações complexas. O nodemon ainda ganha em projetos com configuração avançada de watch. O dotenv ainda é necessário quando você precisa de expansão de variáveis. A diferença é que o caso de uso simples — o mais comum — agora tem resposta nativa.
+
+### O que o Deno e o Bun ensinaram ao Node
+
+O Deno (Ryan Dahl, 2018) e o Bun (Jarred Sumner, 2022) não foram apenas runtimes alternativos — foram **experimentos de DX** que testaram o que acontece quando você coloca TypeScript, env files, test runner e formater dentro do runtime desde o dia 1.
+
+O Node observou e aprendeu. Não copiou mecanicamente — cada feature nativa do Node passou por processo de RFC e design de compatibilidade retroativa — mas o vetor ficou claro: **menos dependências de `devDependencies`, mais capacidade nativa**.
+
+```mermaid
+graph TD
+    subgraph "Deno 1.x (2018)"
+        D1["TypeScript nativo\n--env-file equivalente\nPermissões granulares\nTest runner integrado\nFormater (deno fmt)"]
+    end
+
+    subgraph "Bun (2022)"
+        B1["TypeScript nativo\nBun.env (variáveis)\nWatch mode embutido\nTest runner integrado\nBundler integrado\n~3x mais rápido que Node"]
+    end
+
+    subgraph "Node.js responde (2023-2026)"
+        N1["--env-file (Node 20.6)\n--watch estável (Node 20.13)\n--experimental-strip-types (Node 22.6)\nstrip-types default (Node 23.6)\nnode:test estável (Node 22)"]
+    end
+
+    D1 -->|"pressão de ecossistema"| N1
+    B1 -->|"pressão de performance"| N1
+```
+
+A lição sênior aqui: nem Deno nem Bun "venceram" — o Node absorveu as ideias boas enquanto mantinha compatibilidade retroativa com o ecossistema npm de 2 milhões de pacotes. É um padrão clássico de plataforma madura respondendo à inovação de challengers.
+
+> [!tip] Trade-off sênior: nativo vs. ferramenta dedicada
+> A escolha entre "usar o que o Node oferece" e "usar a ferramenta especializada" raramente é técnica pura — é uma decisão de manutenibilidade. Ferramentas nativas têm zero dependências e zero custo de upgrade, mas têm menos features. Ferramentas dedicadas têm releases próprias e podem quebrar em upgrades de Node. Para equipes pequenas com infraestrutura simples, nativo é quase sempre a escolha. Para projetos com monorepo complexo, aliases de path, ou grandes bases de código TypeScript com enums espalhados, tsx + tsc continua sendo a combinação mais robusta.
 
 ---
 
@@ -573,10 +653,39 @@ Isso não significa que ferramentas externas vão desaparecer. O tsx ainda tem r
 
 ---
 
+## Lacunas conhecidas
+
+> [!question] Pontos que merecem aprofundamento
+> - **Checagem de tipos em CI com `tsc --noEmit`**: a nota menciona a necessidade mas não detalha como integrar ao pipeline (pre-push hook, GitHub Actions step, `turbo` task). Isso cabe em [[23 - Build em produção, CI e determinismo]].
+> - **tsx com path aliases**: `tsconfig.paths` funciona no tsx, mas o comportamento em resolução de módulos no Node ESM tem nuances. Não detalhado aqui.
+> - **Deno 2.x e compatibilidade npm**: Deno 2 (out 2024) adicionou compatibilidade quase total com npm, incluindo `node_modules`. Isso muda o argumento "ecossistema npm = Node" que justifica permanecer no Node. Nota [[20 - Bun como runtime e toolkit all-in-one]] pode cobrir parte disso.
+> - **`node --loader` vs `--import`**: a API de hooks de loader do Node mudou bastante entre Node 16 e Node 22. A nota menciona `--import tsx/esm` mas não explica por que `--import` substituiu `--loader` para a maioria dos casos.
+> - **Performance de startup em scripts de CI**: tsx em ~20ms vs `tsc` em ~500ms+ tem impacto em pipelines com muitos scripts pequenos. Um benchmark comparativo seria útil.
+
+---
+
 ## Veja também
 
 - [[04 - Gerenciando versões de Node]] — como garantir que todos usam o Node 23.6+ ou 24 onde type stripping está disponível; versão como contrato de equipe.
 - [[08 - Transpilação e targets]] — quando o stripping não é suficiente e você precisa de transformação real: downleveling, polyfills, targets de browser; o papel do esbuild, swc e tsc.
+- [[19 - Test runner nativo (node-test) e o cenário de testes]] — `node:test`, o test runner integrado que completa o stack nativo do Node junto com `--watch` e `--env-file`.
 - [[20 - Bun como runtime e toolkit all-in-one]] — o runtime alternativo que tem TypeScript nativo, env files, watch mode e test runner desde o dia 1; como o Bun influenciou o Node a absorver essas features.
+- [[23 - Build em produção, CI e determinismo]] — como integrar `tsc --noEmit` (checagem de tipos separada) em pipelines de CI ao lado do tsx.
 - [[03-Dominios/Tecnologia/Node/index|Node]] — runtime, event loop, APIs nativas: o que muda entre versões e por que a versão do Node importa pra DX.
 - [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — a linguagem que gerou a necessidade de type stripping; enums, decorators e o que o TypeScript compila vs o que é apenas anotação.
+- [[03-Dominios/Tecnologia/TypeScript/19 - Enums, const objects e modelagem de constantes|19 - Enums, const objects e modelagem de constantes]] — por que enums geram código JavaScript e const objects com `as const` são a alternativa compatível com o type stripping nativo.
+
+---
+
+## Referências
+
+- [Node.js v24.0.0 Release](https://nodejs.org/en/blog/release/v24.0.0) — anúncio oficial do Node 24, incluindo confirmação de type stripping como padrão e `--env-file` estável.
+- [Node.js — Type Stripping (nodejs.org)](https://nodejs.org/en/learn/typescript/run-natively) — documentação oficial sobre como rodar TypeScript nativamente no Node.
+- [Node.js CLI flags reference — `--env-file`](https://nodejs.org/api/cli.html#--env-fileconfig) — referência completa da flag, incluindo `--env-file-if-exists`.
+- [Node.js CLI flags reference — `--watch`](https://nodejs.org/api/cli.html#--watch) — documentação de `--watch` e `--watch-path`, incluindo limitações por plataforma.
+- [Node.js CLI flags reference — `--run`](https://nodejs.org/api/cli.html#--run) — documentação da flag de script runner.
+- [tsx — TypeScript Execute (npm)](https://www.npmjs.com/package/tsx) — página do pacote tsx com exemplos de uso como loader (`--import tsx/esm`) e substituto direto do ts-node.
+- [GitHub — nodejs/node Issue #53987: tracking type stripping](https://github.com/nodejs/node/issues/53987) — issue de rastreamento das decisões de design do type stripping, incluindo a decisão de não incluir enums.
+- [Node.js v22.21.0 Changelog](https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V22.md#22.21.0) — entrada que marca `--env-file` como estável.
+- [Deno 2.0 Release](https://deno.com/blog/v2) — anúncio do Deno 2 com compatibilidade npm; contexto para comparação com Node.
+- [Bun 1.0 Release](https://bun.sh/blog/bun-v1.0) — post original do lançamento do Bun, detalhando TypeScript nativo, `Bun.env` e test runner integrado.
