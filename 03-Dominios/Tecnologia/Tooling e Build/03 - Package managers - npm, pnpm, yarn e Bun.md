@@ -1,10 +1,10 @@
 ---
 title: "Package managers - npm, pnpm, yarn e Bun"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
-status: seedling
+status: growing
 publish: true
 tags:
   - tooling
@@ -18,7 +18,7 @@ tags:
 # Package managers: npm, pnpm, yarn e Bun
 
 > [!abstract] TL;DR
-> Um package manager resolve três problemas: **descobrir** onde uma dependência está (registry), **baixar** ela com integridade verificada e **instalá-la** de forma que o código possa importá-la. O npm inventou o modelo; o pnpm o tornou eficiente com um content-addressable store e symlinks que eliminam dependências fantasma; o Yarn Berry trocou `node_modules` pelo Plug'n'Play; o Bun faz tudo isso em Zig, 10–30× mais rápido. Em 2026, o pnpm é o padrão de facto em projetos novos sérios, o npm ainda domina em volume (49,6%), e o Bun cresce rápido entre quem quer velocidade máxima. O corepack permite cravar qual pm e qual versão cada projeto usa — mas foi removido do bundle do Node.js 25+ e agora é instalado separadamente.
+> Um package manager resolve três problemas: **descobrir** onde uma dependência está (registry), **baixar** ela com integridade verificada e **instalá-la** de forma que o código possa importá-la. O npm inventou o modelo; o pnpm o tornou eficiente com um content-addressable store e symlinks que eliminam dependências fantasma — e desde o pnpm 10/11 também bloqueia lifecycle scripts e pacotes "zero-day" por padrão (única escolha com security-by-default); o Yarn Berry trocou `node_modules` pelo Plug'n'Play; o Bun faz tudo em Zig, 10–30× mais rápido, e desde a v1.2 usa um lockfile JSONC legível (`bun.lock`) em vez do binário. Em 2026, o pnpm é o padrão de facto em projetos novos sérios, o npm ainda domina em volume (49,6%), e o Bun cresce rápido entre quem quer velocidade máxima. O corepack permite cravar qual pm e qual versão cada projeto usa — mas foi removido do bundle do Node.js 25+ e agora é instalado separadamente.
 
 ---
 
@@ -50,6 +50,8 @@ flowchart LR
 
 > [!info] Leitura do diagrama
 > O fluxo de instalação tem três fases independentes: resolver o grafo produz o lockfile; o lockfile direciona os downloads (com cache); os tarballs baixados são instalados na estrutura que o runtime vai encontrar. Cada pm faz as três etapas — as diferenças estão em *como* fazem a terceira.
+>
+> Cada pm gera um lockfile diferente: `package-lock.json` (npm), `pnpm-lock.yaml` (pnpm), `yarn.lock` (Yarn Berry), `bun.lock` (Bun 1.2+, JSONC). Nunca commite mais de um lockfile no mesmo projeto — é sinal de que dois pms foram usados.
 
 O registry padrão é o `registry.npmjs.org`, mantido pela npm Inc. (parte da GitHub, que é parte da Microsoft). Ele serve todos os quatro gerenciadores — npm, pnpm, yarn e Bun todos publicam e consomem o mesmo registry. A diferença entre eles está exclusivamente em como instalam, não em de onde baixam.
 
@@ -139,6 +141,25 @@ npm install -g pnpm
 
 O arquivo gerado é o `package-lock.json` — um snapshot exato de todo o grafo resolvido, com hashes de integridade para cada pacote.
 
+### Provenance e trusted publishing (npm 11.5+)
+
+Quando você publica um pacote npm do GitHub Actions, o fluxo tradicional exige um token de API armazenado como secret do repositório — que pode vazar, ser roubado ou ter escopo excessivo. O npm introduziu **trusted publishing** (disponibilidade geral em julho/2025, requer npm CLI 11.5.1+): o GitHub emite um token OIDC efêmero que o npm valida sem que você precise gerenciar nenhum secret.
+
+Junto com trusted publishing, o npm gera automaticamente um **provenance attestation** — um atestado criptográfico assinado pela infraestrutura OIDC do GitHub que vincula o tarball publicado ao commit e ao workflow exatos que o geraram. Usuários do pacote podem verificar: "esse `express@5.0.0` foi gerado pelo workflow `release.yml` no commit `abc123` do repositório `expressjs/express`?"
+
+```bash
+# Publicar com provenance manual (em CI com OIDC configurado)
+npm publish --provenance
+
+# Com trusted publishing (npm 11.5.1+), provenance é gerado automaticamente
+# Sem flag necessária
+```
+
+> [!info] O que o provenance não garante
+> Provenance prova a cadeia de custódia do build — que o código do repositório virou aquele tarball. Não garante que o código do repositório é seguro. Supply chain attacks que modificam o repositório fonte (como comprometer o token git) ainda são possíveis. Provenance é uma camada, não uma solução completa.
+
+O arquivo gerado é o `package-lock.json` — um snapshot exato de todo o grafo resolvido, com hashes de integridade para cada pacote.
+
 ---
 
 ## pnpm: content-addressable store + symlinks = eficiência e correção
@@ -183,6 +204,33 @@ flowchart LR
 **Uma limitação técnica importante:** hard links não funcionam entre filesystems diferentes (devices distintos). Se o seu projeto está num SSD externo e o store está no disco interno, o pnpm detecta isso e faz cópias em vez de hard links — você perde o benefício de espaço, mas não o de velocidade de resolução.
 
 O pnpm 11 substituiu o índice do store de JSON para SQLite, reduzindo drasticamente o I/O — antes, milhões de arquivos JSON pequenos; agora, um banco de dados.
+
+### Security by Default: por que o pnpm bloqueou os lifecycle scripts
+
+Você sabia que instalar um pacote npm pode executar código arbitrário na sua máquina sem pedir permissão? Quando o npm (ou Bun) instala um pacote, qualquer script `postinstall` declarado no `package.json` do pacote é executado automaticamente — com as permissões do seu usuário, com acesso ao sistema de arquivos, rede e variáveis de ambiente.
+
+Ataques reais exploraram isso. O caso mais famoso: o **evento-stream** (2018), quando um colaborador malicioso adicionou um pacote que rodava um postinstall para roubar carteiras de criptomoedas. O pacote tinha 2 milhões de downloads por semana. O npm não avisava; instalava e executava em silêncio.
+
+O **pnpm 10** (2025) tomou uma decisão estrutural: postinstall e preinstall scripts **não rodam mais por padrão**. Para um pacote legítimo que precisa de script de build (como `esbuild`, `sharp`, `node-gyp`, `sqlite3`), você lista explicitamente em `pnpm-workspace.yaml`:
+
+```yaml
+# pnpm-workspace.yaml
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - "@parcel/watcher"
+```
+
+O **pnpm 11** (abril/2026) foi além. Ativou dois defaults adicionais de supply chain:
+
+- **`minimumReleaseAge: 1440`** — pacotes publicados há menos de 24 horas não são instalados. Isso bloqueia "zero-day poisoning": atacante publica versão maliciosa de um pacote popular e a janela de 24 horas dá tempo para a comunidade detectar e sinalizar.
+- **`blockExoticSubdeps: true`** — bloqueia dependências com protocolos não-padrão que poderiam escapar da verificação de integridade.
+
+> [!warning] npm e Bun ainda rodam scripts por padrão
+> Se você usa npm ou Bun, postinstall scripts continuam rodando automaticamente em toda instalação. Se supply chain security é preocupação real (projetos com dados sensíveis, ambientes corporativos), o pnpm é o único pm que oferece essa proteção por padrão em 2026.
+
+> [!tip] Como verificar quais pacotes rodam scripts
+> `pnpm ls --filter "has:postinstall"` lista pacotes com scripts de lifecycle no seu projeto. Em npm, `npm ls --parseable | xargs -I{} cat {}/package.json 2>/dev/null | jq -r 'select(.scripts.postinstall) | .name'` faz o mesmo (mais verboso).
 
 ### A estrutura de symlinks que elimina phantom deps
 
@@ -258,6 +306,44 @@ pnpm ci
 ```
 
 O lockfile do pnpm é o `pnpm-lock.yaml`.
+
+### O protocolo `catalog:` — versões centralizadas em monorepos
+
+Em monorepos com dezenas de pacotes, manter as versões de dependências sincronizadas é uma fonte de atrito: você declara `"react": "^19.0.0"` em 15 `package.json` diferentes, alguém atualiza em 10 deles e esquece os outros 5, e você começa a ter versões diferentes de React convivendo no mesmo repositório — com bugs difíceis de rastrear.
+
+O pnpm resolveu isso com o **protocolo `catalog:`** (estável desde o pnpm 9, consolidado no 10). A ideia: defina as versões uma única vez em `pnpm-workspace.yaml`, e nos `package.json` dos pacotes individuais referencie com `"react": "catalog:"`.
+
+```yaml
+# pnpm-workspace.yaml — definição centralizada
+catalog:
+  react: "^19.0.0"
+  typescript: "^5.4.0"
+  vitest: "^3.0.0"
+
+# Catalogs nomeados para casos diferentes
+catalogs:
+  react18:
+    react: "^18.3.0"
+  react19:
+    react: "^19.0.0"
+```
+
+```json
+// packages/meu-componente/package.json
+{
+  "dependencies": {
+    "react": "catalog:"        // usa o catalog default
+  },
+  "devDependencies": {
+    "react": "catalog:react18" // usa o catalog nomeado
+  }
+}
+```
+
+Quando você precisa atualizar `react` para `^19.1.0`, muda **uma linha** no `pnpm-workspace.yaml` — todos os pacotes do monorepo são atualizados na próxima instalação, com um único commit, zero merge conflicts de `package.json`.
+
+> [!info] Três modos de catalog
+> O campo `catalogMode` no `pnpm-workspace.yaml` controla como o `pnpm add` interage com catalogs: `strict` (só aceita versões do catalog — erro se tentar adicionar fora dele), `prefer` (usa o catalog quando compatível, cai back para dep direta), e `manual` (default — não adiciona ao catalog automaticamente, você gerencia manualmente).
 
 > [!tip] pnpm em CI é especialmente vantajoso
 > Em pipelines de CI que rodam muitos jobs em paralelo (monorepos, matrix builds), o store compartilhado do pnpm é especialmente valioso. O primeiro job baixa os pacotes para o store; os jobs seguintes só criam hard links — sem novo download, sem nova cópia. Tempo de install: benchmark de monorepo com 800 deps — npm 134s vs pnpm 18s (~7× mais rápido).
@@ -363,7 +449,7 @@ A velocidade não é mágica — é consequência de escolhas técnicas específ
 
 2. **Menos syscalls:** uma instalação típica com npm faz mais de 1.000.000 de syscalls. O Bun faz ~165.000. Cada syscall tem overhead — menos syscalls = mais rápido, especialmente com muitas dependências.
 
-3. **Lockfile binário:** o `bun.lockb` é binário, não JSON/YAML. Parsear JSON é mais lento que ler um formato binário com estrutura fixa. O lockfile do Bun é menor e mais rápido de ler/escrever.
+3. **Lockfile texto (JSONC):** desde o Bun 1.2 (janeiro/2025), o lockfile padrão mudou do binário `bun.lockb` para o `bun.lock` — um arquivo JSONC (JSON with Comments), legível e que aparece em diffs do GitHub. O formato binário ainda é suportado, mas o texto é o novo padrão. Antes dessa mudança, revisar mudanças de dependência em pull requests era impossível com o Bun.
 
 4. **Paralelismo agressivo:** downloads e I/O acontecem em paralelo com maximização de concorrência.
 
@@ -564,8 +650,8 @@ bun add -d typescript @types/express vitest
 # ── O que cada um gera ────────────────────────────────────────────────────
 # npm:     package-lock.json + node_modules/ (flat)
 # pnpm:    pnpm-lock.yaml + node_modules/ (symlinks) + .pnpm/
-# yarn:    yarn.lock + .pnpm.cjs + .yarn/cache/ (sem node_modules com PnP)
-# bun:     bun.lockb + node_modules/ (flat)
+# yarn:    yarn.lock + .pnp.cjs + .yarn/cache/ (sem node_modules com PnP)
+# bun:     bun.lock (JSONC, desde v1.2) + node_modules/ (flat)
 
 # ── Instalar de um lockfile existente (CI) ────────────────────────────────
 
@@ -725,7 +811,9 @@ The key technical differences between package managers come down to how they han
 
 - **Yarn Berry** uses **Plug'n'Play** (PnP): instead of `node_modules/`, it generates a single `.pnp.cjs` file mapping each package to its allowed dependencies. Importing an undeclared package fails immediately with a semantic error.
 
-- **Bun** is written in **Zig** (systems language), uses ~165k syscalls vs npm's 1M+, and has a binary lockfile — making it 10–30× faster than npm. It uses the same flat hoisting as npm, so phantom dependencies are still possible.
+- **Bun** is written in **Zig** (systems language), uses ~165k syscalls vs npm's 1M+, and since v1.2 uses a text-based JSONC lockfile (`bun.lock`) instead of the former binary `bun.lockb` — making it 10–30× faster than npm while now producing human-readable diffs. It uses the same flat hoisting as npm, so phantom dependencies are still possible.
+
+**pnpm 10/11 introduced security-by-default**: lifecycle scripts (`postinstall`/`preinstall`) no longer run automatically — packages must be explicitly allowlisted via `onlyBuiltDependencies`. pnpm 11 also defaults `minimumReleaseAge` to 1440 minutes (24 hours), blocking newly published packages from being resolved until the community has had time to flag malicious releases.
 
 **Corepack** is a tool that pins the package manager version per project via the `packageManager` field in `package.json`. It ships with Node.js 22/24 but was removed from Node.js 25+ bundle and must be installed separately.
 
@@ -748,6 +836,11 @@ The key technical differences between package managers come down to how they han
 | instalar | install |
 | publicar | publish |
 | monorepo / espaços de trabalho | monorepo / workspaces |
+| atestado de procedência | provenance attestation |
+| script de ciclo de vida | lifecycle script |
+| ataque à cadeia de suprimentos | supply chain attack |
+| catálogo de versões | version catalog |
+| dependência entre pares | peer dependency |
 
 ---
 
@@ -776,14 +869,89 @@ The key technical differences between package managers come down to how they han
 
 ---
 
+## Workspaces: monorepos nativos
+
+Todo pm moderno suporta **workspaces** — a capacidade de gerenciar múltiplos pacotes em um único repositório compartilhando um lockfile e (no caso de npm/pnpm/Bun) um único `node_modules`. A alternativa clássica sem workspaces é uma pasta de repos separados, cada um com seu próprio `node_modules` duplicado.
+
+```
+meu-monorepo/
+├── package.json          # root (com "workspaces": ["packages/*"])
+├── pnpm-workspace.yaml   # (pnpm) ou campo workspaces no package.json (npm/yarn/bun)
+└── packages/
+    ├── frontend/         # um workspace
+    ├── backend/          # outro workspace
+    └── shared/           # biblioteca compartilhada
+```
+
+Diferenças práticas entre os pms em contexto de workspaces:
+
+| Feature | npm | pnpm | Yarn Berry | Bun |
+|---|---|---|---|---|
+| Store compartilhado entre workspaces | Sim (flat) | Sim (hard links do store) | Sim (.yarn/cache) | Sim (flat) |
+| Dependências cruzadas entre workspaces | `workspace:*` | `workspace:*` | `workspace:*` | `workspace:*` |
+| Protocolo `catalog:` | Não | **Sim** | Não | Não |
+| Filtrar scripts por workspace afetado | Limitado | `--filter` poderoso | `--filter` | `--filter` |
+| Base de ferramentas como Turborepo/Nx | Usa npm workspaces | **Preferido** | Suportado | Experimental |
+
+> [!tip] O protocolo `workspace:*`
+> Quando um workspace depende de outro no mesmo monorepo (`"shared": "workspace:*"`), o pm cria um link simbólico ao invés de baixar do registry. Isso significa que mudanças em `shared/` são imediatamente visíveis em `frontend/` sem precisar publicar ou reinstalar. Todos os quatro pms suportam esse protocolo.
+
+Para aprofundar workspaces em contexto de monorepo e ferramentas de orquestração como Turborepo e Nx, veja [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]].
+
+---
+
+## peerDependencies: dependências que você precisa fornecer
+
+Uma pergunta que confunde todo iniciante: por que um pacote às vezes instala sem erro mas depois trava na importação com "Cannot find module react"?
+
+A resposta está nas **`peerDependencies`**. São diferentes das `dependencies` normais: em vez de o pacote instalar a dependência para si mesmo, ele *declara* que precisa que o **consumidor** forneça aquela dependência.
+
+O caso canônico: um componente React (`meu-button`) usa `import React from 'react'`. Se `meu-button` declarasse `react` em `dependencies`, cada projeto que instalasse `meu-button` poderia ter duas versões de React — a dele e a do `meu-button` — e React tem estado global (o contexto) que não funciona com duas instâncias. A solução: `meu-button` declara `react` em `peerDependencies`:
+
+```json
+{
+  "name": "meu-button",
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  }
+}
+```
+
+Isso diz: "eu uso React, mas espero que quem me instala já tenha React no projeto". A instalação funciona; apenas na hora de importar é que o react do *projeto consumidor* é usado.
+
+**Como cada pm trata peerDeps:**
+
+- **npm:** instala automaticamente (na versão que satisfaz o range), às vezes gerando conflitos silenciosos. Desde npm 7, `--legacy-peer-deps` existe para o comportamento antigo de ignorar peerDeps.
+- **pnpm:** avisa quando uma peerDependency está faltante, mas não instala automaticamente. É mais estrito que o npm — você verá warnings claros e deve adicionar as peers explicitamente.
+- **Yarn Berry:** comportamento configurável; PnP é especialmente rigoroso (verifica peers em tempo de import).
+- **Bun:** similar ao npm — instala peers automaticamente.
+
+> [!warning] O warning de peer dep do pnpm não é opcional
+> Quando o pnpm avisa `WARN Issues with peer dependencies`, não ignore. Ao contrário do npm, onde o warning é "algo pode não funcionar", no pnpm o warning significa que o grafo de dependências está incompleto. Adicione as peers explicitamente ao seu `package.json`.
+
+---
+
+## Referências
+
+- **pnpm** — [*pnpm 11.0 — Release Notes*](https://pnpm.io/blog/releases/11.0) (2026). Detalhes do `minimumReleaseAge`, `blockExoticSubdeps`, store SQLite e ESM puro.
+- **pnpm** — [*pnpm in 2025*](https://pnpm.io/blog/2025/12/29/pnpm-in-2025) (2025). Balanço de features: JSR, catalogs, runtime management, Security by Default.
+- **pnpm** — [*Catalogs*](https://pnpm.io/catalogs) (docs). Protocolo `catalog:`, modos strict/prefer/manual.
+- **pnpm** — [*Mitigating supply chain attacks*](https://pnpm.io/supply-chain-security) (docs). `allowBuilds`, lifecycle scripts e defesas de supply chain.
+- **npm** — [*Trusted Publishers*](https://docs.npmjs.com/trusted-publishers/) (docs). OIDC, provenance attestations, trusted publishing sem tokens.
+- **Bun** — [*Bun's new text-based lockfile*](https://bun.com/blog/bun-lock-text-lockfile) (2025). Migração de `bun.lockb` para `bun.lock` JSONC no Bun 1.2.
+- **InfoQ** — [*pnpm 11 RC: ESM Distribution, Supply Chain Defaults and a New Store Format*](https://www.infoq.com/news/2026/04/pnpm-11-rc-release/) (2026).
+
+---
+
 ## Veja também
 
 - [[04 - Gerenciando versões de Node]] — nvm, fnm, Volta e asdf: como controlar qual versão do Node.js cada projeto usa; complementa o corepack (que controla o pm)
 - [[05 - Semver e o grafo de dependências]] — semver, lockfiles, resolução de versões, peerDependencies, `overrides` — o que esta nota mencionou brevemente, a nota 05 entra a fundo
 - [[20 - Bun como runtime e toolkit all-in-one]] — o Bun como runtime (não o pm): event loop, APIs nativas, bundler integrado, quando Bun substitui Node.js
-- [[24 - Supply chain e segurança de dependências]] — integridade de lockfile, `npm audit`, provenance, typosquatting, as implicações de segurança das phantom deps
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — workspaces aprofundados: como Turborepo e Nx orquestram builds em monorepos, changesets para versionamento de pacotes
+- [[24 - Supply chain e segurança de dependências]] — integridade de lockfile, `npm audit`, provenance, typosquatting, as implicações de segurança das phantom deps e dos lifecycle scripts
 
 ---
 
 > [!abstract] Resumo em uma linha
-> O npm inventou o modelo (flat + hoisting), o pnpm o corrigiu (store + symlinks eliminam phantom deps, 79% menos disco), o Yarn Berry o reinventou (PnP sem node_modules), e o Bun fez tudo de novo em Zig (10–30× mais rápido, flat como npm); o corepack pina a versão do pm por projeto via `packageManager` no package.json, mas foi removido do bundle do Node.js 25+.
+> O npm inventou o modelo (flat + hoisting) e ganhou provenance attestations; o pnpm o corrigiu (store + symlinks, phantom deps eliminadas, 79% menos disco) e adicionou security-by-default (sem lifecycle scripts, sem pacotes zero-day); o Yarn Berry reinventou com PnP (sem node_modules, constraints engine em JS); o Bun reescreveu em Zig (10–30× mais rápido, flat como npm, lockfile JSONC legível desde v1.2); o corepack pina a versão do pm por projeto via `packageManager` no package.json, mas foi removido do bundle do Node.js 25+.

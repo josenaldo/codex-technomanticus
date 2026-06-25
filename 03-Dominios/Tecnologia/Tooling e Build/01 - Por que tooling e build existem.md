@@ -1,10 +1,10 @@
 ---
 title: "Por que tooling e build existem"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
-status: seedling
+status: growing
 publish: true
 tags:
   - tooling
@@ -123,6 +123,13 @@ Transpilação é a conversão de uma linguagem (ou dialeto) em outro. No contex
 
 Ferramentas que fazem isso: `tsc` (TypeScript), Babel, esbuild, SWC. As últimas duas são implementadas em Go e Rust, respectivamente — daí a velocidade. (Ver [[08 - Transpilação e targets]] e [[03-Dominios/Ciência/Compiladores e Linguagens/index|Compiladores e Linguagens]] para o modelo conceitual de pipelines de tradução.)
 
+> [!warning] "Transpilar TypeScript" ≠ "checar TypeScript"
+> Esta é a confusão mais cara para um iniciado. esbuild e SWC fazem **type erasure** — apagam as anotações de tipo sem analisá-las semanticamente. Se você escrever `const x: number = "oi"`, esbuild transpila sem reclamar. Só o `tsc --noEmit` faz a verificação real dos tipos.
+>
+> A consequência prática: pipelines de CI que usam apenas esbuild/SWC para build podem embarcar bugs de tipo em produção sem nenhum erro de compilação. A solução padrão é rodar `tsc --noEmit` **em paralelo**, como etapa separada de validação — não como transpilador, mas como type-checker.
+>
+> Pense assim: esbuild é o copiloto que remove os post-its de anotação do documento (os tipos) antes de imprimir. Ele não lê o conteúdo — só retira os post-its. `tsc --noEmit` é o revisor que lê o documento completo antes de remover qualquer coisa.
+
 ### 3 · Empacotar (bundle)
 
 Empacotamento é montar o grafo de módulos. A partir de um entry point (`main.tsx`), o bundler segue todos os `import`s recursivamente, constrói um grafo de dependências e funde os módulos num conjunto de arquivos de saída.
@@ -134,10 +141,17 @@ Por que fundir? Porque 500 requisições HTTP separadas (uma por módulo) em pro
 Com o grafo montado, várias otimizações se tornam possíveis:
 
 - **Tree-shaking**: eliminar código que nunca é importado/usado. Se você só usa `formatDate` do `date-fns`, o resto da biblioteca não vai para o bundle.
+
+> [!warning] O gotcha do `sideEffects` no `package.json`
+> Tree-shaking depende de uma declaração no `package.json` da biblioteca: `"sideEffects": false`. Sem ela, o bundler assume que qualquer `import` pode ter efeitos colaterais (modificar globals, registrar polyfills, importar CSS) e mantém o arquivo inteiro — mesmo que você use zero exports.
+>
+> Este é o motivo mais comum de "por que minha lib de ícones ficou gigante no bundle" — o autor não marcou a lib como side-effect-free. E o pior caso: se `sideEffects: false` estiver incorreto (a lib tem CSS imports não declarados), o resultado é ainda mais traiçoeiro — o CSS some em produção e o bug só aparece depois do deploy.
+
 - **Minificação**: remover espaços, encurtar nomes de variáveis, eliminar comentários.
 - **Code splitting**: dividir o bundle em chunks que o browser carrega sob demanda (lazy loading de rotas, por exemplo).
 - **Hash de assets**: `logo.svg` vira `logo.abc123f7.svg` — o hash muda só quando o conteúdo muda, permitindo cache agressivo no browser.
 - **Compressão**: gzip/brotli.
+- **Source maps**: arquivos `.map` que mapeiam o código minificado de volta ao código-fonte original. Em desenvolvimento, gerados em formato rápido (inline ou `eval`). Em produção, a prática recomendada é gerar source maps "hidden" — o arquivo `.map` existe, mas não é referenciado no bundle público; você faz upload para seu serviço de rastreamento de erros (Sentry, Datadog) e não os expõe no CDN. Sem source maps, debugar um erro em produção é tentar ler `a.b.c(d,e,f)` em vez do nome real das funções.
 
 ### 5 · Servir / emitir
 
@@ -145,6 +159,11 @@ Em desenvolvimento: um **dev server** serve os arquivos com Hot Module Replaceme
 
 > [!tip] Dev vs Prod — pipelines diferentes
 > Em desenvolvimento, velocidade de feedback importa mais do que tamanho do bundle. Em produção, o oposto. Por isso, ferramentas modernas como Vite usam estratégias diferentes: em dev, serve ESM nativo sem bundle; em prod, empacota e otimiza. A nota [[09 - Dev server e HMR]] detalha esse split.
+
+> [!warning] O gotcha dev-vs-prod mais perigoso
+> Até o Vite 7, o pipeline de dev usava esbuild e o de prod usava Rollup — ferramentas diferentes com estratégias de resolução ligeiramente distintas. Um módulo que funcionava perfeitamente em `npm run dev` podia quebrar no `npm run build` — tipicamente quando uma biblioteca exporta CJS em vez de ESM, ou quando um `import.meta.env` não está definido no contexto correto.
+>
+> Com Vite 8 e Rolldown unificado, essa divergência diminuiu — mas a regra prática continua válida: **sempre rode `npm run build` antes de abrir um PR importante**, não apenas `npm run dev`. O custo de descobrir isso em CI é muito menor do que em produção.
 
 ---
 
@@ -192,7 +211,10 @@ Os números do **State of JS 2024** (com ~11.000 respondentes) revelam o estado 
 | SWC | 1.613 respondentes | 86% de satisfação |
 | Turbopack | 1.191 respondentes | Novo, crescendo com Next.js |
 
-Em julho de 2025, Vite ultrapassou Webpack em downloads semanais — um marco simbólico. Em 2026, Vite 8 lançou Rolldown como motor de produção (Rust), substituindo o pipeline duplo esbuild-dev + Rollup-prod.
+Em julho de 2025, Vite ultrapassou Webpack em downloads semanais — um marco simbólico. Em **12 de março de 2026**, Vite 8 foi lançado com Rolldown como motor unificado (Rust), substituindo definitivamente o pipeline duplo esbuild-dev + Rollup-prod. Builds de produção são 4–20x mais rápidos; no benchmark do Linear, o tempo de build caiu de 46 segundos para 6 segundos. No lançamento, Vite tinha 65 milhões de downloads semanais no npm.
+
+> [!info] Quem está por trás do Rolldown
+> O Rolldown foi desenvolvido pela **VoidZero** — empresa criada por Evan You (criador do Vite e Vue) especificamente para financiar ferramentas de build de próxima geração. Em 2026, a **Cloudflare adquiriu a VoidZero**, tornando-se a patrocinadora principal do ecossistema Rolldown/Vite. Isso explica por que o Vite tem um futuro de longo prazo garantido: não é um projeto de um desenvolvedor solo, mas uma infraestrutura corporativa.
 
 > [!warning] "Mas por que isso muda tão rápido?"
 > Essa é a pergunta que frustra todo desenvolvedor que entra no ecossistema JS. A resposta curta: porque as **restrições do ambiente** mudaram dramaticamente e continuam mudando. Browsers ganharam ESM nativo, HTTP/2, service workers. O Node ganhou ESM nativo. Rust e Go tornaram possível um nível de performance que fazia Webpack parecer comparativamente lento. E frameworks com opiniões fortes (React, Vue, Svelte) adoptam e impõem ferramentas, criando efeitos de rede.
@@ -324,6 +346,8 @@ Essa seção prepara você para entrevistas onde as perguntas virão em inglês.
 | Artefato de saída | Build artifact / output |
 | Minificação | Minification |
 | Mapa de origem | Source map |
+| Apagamento de tipos | Type erasure |
+| Efeitos colaterais | Side effects |
 | Servidor de desenvolvimento | Dev server |
 | Pipeline de build | Build pipeline |
 | Dependência de terceiros | Third-party dependency |
@@ -358,6 +382,9 @@ Esta nota estabeleceu o *por quê* — o gap que o tooling fecha, o pipeline que
 - [[02 - A evolução do tooling JS - de script ao bundler moderno]]
 - [[07 - O grafo de módulos e o que é bundling]]
 - [[08 - Transpilação e targets]]
+- [[09 - Dev server e HMR]]
+- [[17 - Otimização de bundle]]
+- [[23 - Build em produção, CI e determinismo]]
 - [[03-Dominios/Tecnologia/JavaScript/index|JavaScript]]
 - [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]]
 - [[03-Dominios/Ciência/Compiladores e Linguagens/index|Compiladores e Linguagens]]
@@ -372,3 +399,8 @@ Esta nota estabeleceu o *por quê* — o gap que o tooling fecha, o pipeline que
 - npm trends — esbuild vs rollup vs vite vs webpack — https://npmtrends.com/esbuild-vs-rollup-vs-rspack-vs-snowpack-vs-vite-vs-webpack
 - Technology Checker — Companies Using Vite in 2026 — https://technologychecker.io/technology/vite
 - DEV Community — Vite vs. Webpack in 2026 — https://dev.to/pockit_tools/vite-vs-webpack-in-2026-a-complete-migration-guide-and-deep-performance-analysis-5ej5
+- **Vite** — [*Announcing Vite 8*](https://vite.dev/blog/announcing-vite8) (2026). Lançamento oficial com Rolldown unificado: stats de performance, downloads e breaking changes.
+- **VoidZero** — [*Announcing Rolldown 1.0*](https://voidzero.dev/posts/announcing-rolldown-1-0) (2026). Contexto sobre a empresa criada por Evan You e a aquisição pela Cloudflare.
+- **Leapcell** — [*Navigating TypeScript Transpilers: tsc, esbuild, and SWC*](https://leapcell.io/blog/navigating-typescript-transpilers-a-guide-to-tsc-esbuild-and-swc) (2025). Comparação detalhada de trade-offs entre transpiladores, incluindo a distinção type erasure vs type checking.
+- **Webpack** — [*Tree Shaking Guide*](https://webpack.js.org/guides/tree-shaking/) (doc oficial). Explica `sideEffects` no `package.json` e as armadilhas de configuração.
+- **This Dot Labs** — [*Understanding Sourcemaps: From Development to Production*](https://www.thisdot.co/blog/understanding-sourcemaps-from-development-to-production) (2025). Estratégias de source maps em dev vs prod, incluindo hidden source maps e upload para error tracking.

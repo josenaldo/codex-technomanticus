@@ -1,10 +1,10 @@
 ---
 title: "Gerenciando versões de Node"
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 type: concept
 fase: iniciado
-status: seedling
+status: growing
 publish: true
 tags:
   - tooling
@@ -222,6 +222,33 @@ O fnm lê `.node-version` com prioridade sobre `.nvmrc` (mas lê os dois). Recom
 > [!tip] fnm em 2026
 > fnm é a recomendação padrão para novos setups individuais. Rápido, compatível com nvm, funciona no Windows, auto-switch nativo. Se você usa nvm hoje e o único motivo é inércia, migrar leva 10 minutos e não quebra nada — seus `.nvmrc` continuam funcionando.
 
+### `--resolve-engines`: o fallback silencioso do fnm
+
+O fnm tem uma flag pouco conhecida que fecha uma lacuna real: `--resolve-engines`. Quando habilitada, o fnm lê o campo `engines.node` do `package.json` como fallback — ou seja, se não houver `.node-version` nem `.nvmrc` no diretório, ele usa o range declarado em `engines` para determinar qual versão ativar.
+
+Por que isso importa? Porque muitos projetos declaram compatibilidade em `engines` mas esquecem de criar o arquivo de switch. Sem essa flag, o fnm ignora `engines` e usa a versão global. Com ela, projetos que só têm `"engines": { "node": ">=22" }` ainda se beneficiam do auto-switch.
+
+```bash
+# Habilitar --resolve-engines no hook do shell
+eval "$(fnm env --use-on-cd --resolve-engines --shell zsh)"
+```
+
+A flag vem habilitada por padrão desde fnm 1.37. Para desabilitar explicitamente (caso cause conflito):
+
+```bash
+eval "$(fnm env --use-on-cd --resolve-engines=false --shell zsh)"
+```
+
+Prioridade de resolução do fnm:
+1. Versão explícita no comando (`fnm use 22`)
+2. `.node-version` no diretório
+3. `.nvmrc` no diretório
+4. `package.json#engines#node` (via `--resolve-engines`)
+5. Versão global padrão
+
+> [!info] `engines` como fallback, não como pinagem
+> Mesmo com `--resolve-engines`, o fnm resolve o range mais amplo (ex.: `>=22` pode ativar a Node 24 instalada). Para determinismo total, continue usando `.node-version` com versão exata. O `--resolve-engines` é um seguro para quando o arquivo de versão está faltando.
+
 ---
 
 ## Volta — versão pinada via package.json
@@ -273,6 +300,39 @@ flowchart LR
 
 > [!note] Quando escolher Volta
 > Volta brilha em **times** onde a fonte da verdade é o `package.json` — você não precisa lembrar de criar `.nvmrc` separado. O custo é que o package.json fica com um campo extra `"volta"` que não é padrão do npm. Para projetos solo ou open-source amplamente distribuídos, `.node-version` é mais neutro. Para times fechados com CI controlada, Volta é excelente.
+
+### Volta em CI: o gotcha do download on-demand
+
+O modelo do Volta tem uma consequência que pega iniciados de surpresa em ambientes de CI: quando a versão pinada não está em cache local, **o Volta tenta baixá-la em tempo de execução**. Numa CI sem cache aquecido (nova máquina, novo runner), o primeiro build vai fazer download da versão de Node durante o passo de execução — não no setup explícito.
+
+Isso tem dois problemas:
+
+1. **Ambiente offline ou rede restrita**: runners de CI corporativos com proxy ou sem acesso externo vão falhar silenciosamente.
+2. **Tempo não contabilizado**: o download aparece no meio do job, não no passo de setup, dificultando a análise de performance do pipeline.
+
+A solução é usar `volta fetch` explicitamente no step de setup:
+
+```yaml
+# .github/workflows/ci.yml — setup explícito com Volta
+- name: Instalar Volta
+  run: curl https://get.volta.sh | bash
+
+- name: Pre-fetch da versão de Node pinada
+  run: volta fetch node  # lê o package.json e faz download antecipado
+  
+- name: Instalar dependências
+  run: npm install
+```
+
+Ou usar a action oficial que cuida disso automaticamente:
+
+```yaml
+- uses: volta-cli/action@v4
+  # lê o bloco "volta" do package.json e instala tudo antes dos steps seguintes
+```
+
+> [!tip] `volta fetch` no onboarding
+> O mesmo vale para máquinas novas de devs: adicionar `volta fetch` ao script de onboarding do time garante que a versão correta está em cache antes da primeira execução, sem depender de conexão no momento do `npm run dev`.
 
 ---
 
@@ -340,6 +400,32 @@ graph TD
 
 > [!info] asdf ainda vale?
 > asdf continua sólido se você já tem uma equipe padronizada nele — a migração para mise é one-way (mise lê `.tool-versions`, asdf não lê `.mise.toml`). Para novos setups polyglot, mise é a escolha de 2026: mesma ideia, Rust, mais features.
+
+### PATH direto vs shims: por que isso importa na prática
+
+Aqui está uma diferença arquitetural entre mise e asdf que vai além de "mise é mais rápido": o **modelo de resolução de versão**.
+
+O asdf usa **shims** — binários intermediários que, quando chamados, localizam e delegam para o runtime correto. O overhead é pequeno, mas existe em cada invocação. Mais importante: `which node` retorna o caminho do shim, não do binário real.
+
+O mise **modifica o PATH diretamente** antes da execução. Isso significa:
+- `which node` retorna o caminho real do binário (`~/.local/share/mise/installs/node/24.1.0/bin/node`)
+- Overhead zero por chamada — não há intermediário
+- Shebangs como `#!/usr/bin/env node` funcionam corretamente sem wrapper
+
+Na prática, isso muda o comportamento em dois cenários comuns:
+
+```bash
+# Com asdf: which node → ~/.asdf/shims/node (shim)
+# Com mise: which node → ~/.local/share/mise/installs/node/24.1.0/bin/node (real)
+
+# Scripts com shebang direto
+#!/usr/bin/env node
+# Com asdf: pode falhar se o shim não está no PATH do subshell
+# Com mise: funciona porque o PATH já aponta pro binário correto
+```
+
+> [!question]- Mas o modelo de shim não é transparente?
+> Quase. O shim é transparente para a maioria dos casos, mas falha quando o runtime é chamado de contextos que não herdam o PATH completo do shell (scripts de sistema, `exec()` em linguagens compiladas, alguns runners de CI). O PATH direto do mise evita essa classe de problema.
 
 ---
 
@@ -418,6 +504,11 @@ COREPACK_ENABLE_AUTO_PIN=1 pnpm install
 > ```
 > Isso afeta CI, Dockerfiles e scripts de onboarding. Se você usa Node 24 hoje, funciona sem mudar nada. Se migrar para Node 25+, adicione o passo explícito antes de `corepack enable`.
 
+> [!info] Por que o Corepack foi removido do bundle
+> Não foi um bug ou descuido — foi uma decisão formal do Node.js TSC (Technical Steering Committee), votada e registrada publicamente. A proposta "Phase out later" venceu: Corepack permanece no Node 24 como feature experimental, mas não será distribuído nas versões futuras. O argumento central foi que bundlar um gerenciador de package managers no runtime cria acoplamento desnecessário e confunde a linha de responsabilidade entre o Node.js core e o ecossistema de tooling.
+>
+> Para times que dependem de Corepack: **nada muda no Node 24** (EOL em abril/2028). O planejamento de migração é para quando/se atualizarem para Node 26+.
+
 ```mermaid
 flowchart TD
     DEV["Dev digita: pnpm install"]
@@ -431,6 +522,57 @@ flowchart TD
     CHECK -->|não| DOWNLOAD --> EXEC
     CHECK -->|sim| EXEC
 ```
+
+---
+
+## Quando NÃO usar um version manager: containers e produção
+
+Toda essa nota fala sobre development local e CI. Mas existe um contexto importante onde version managers **não se aplicam**: ambientes containerizados com Docker.
+
+Por que? Porque a imagem Docker já resolve o problema de versão de outra forma: a instrução `FROM` define a versão exata do Node de forma declarativa e imutável.
+
+```dockerfile
+# Dockerfile — a versão é controlada pela imagem base, não por um version manager
+FROM node:24.1.0-alpine
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production
+COPY . .
+CMD ["node", "server.js"]
+```
+
+Instalar fnm, nvm ou mise num Dockerfile seria:
+1. **Redundante** — a imagem já está fixada em `node:24.1.0`
+2. **Contraproducente** — adiciona camadas desnecessárias à imagem
+3. **Incoerente** — version managers são ferramentas de shell interativo; containers não têm shell interativo em produção
+
+```mermaid
+flowchart LR
+    subgraph "Desenvolvimento local"
+        VM["Version manager\n(fnm / Volta / mise)"]
+        NVMRC[".node-version\n24.1.0"]
+        SHELL["Shell interativo"]
+        VM --- NVMRC
+        VM --- SHELL
+    end
+
+    subgraph "Container / Produção"
+        FROM["FROM node:24.1.0-alpine"]
+        IMG["Imagem imutável\n(versão fixada no build)"]
+        FROM --> IMG
+    end
+
+    NVMRC -.->|"versão sincronizada"| FROM
+```
+
+O ponto de sincronia entre os dois mundos é o arquivo `.node-version` e o `Dockerfile`: ambos devem apontar para a mesma versão. A prática recomendada é manter os dois em sincronia via automação (Dependabot/Renovate atualiza o `FROM node:X` no Dockerfile, e você atualiza o `.node-version` junto).
+
+> [!tip] Resumo de quando usar cada abordagem
+> - **Máquina local do dev**: version manager (fnm, Volta, mise)
+> - **CI que roda scripts de shell**: `actions/setup-node` + `.node-version`
+> - **Container Docker**: imagem oficial `node:X-alpine` na instrução `FROM`
+> - **Produção**: nunca um version manager; a imagem é a fonte de verdade
 
 ---
 
@@ -609,8 +751,20 @@ jobs:
 
 ---
 
+## Referências
+
+- **fnm** — [*fnm configuration reference*](https://github.com/Schniz/fnm/blob/master/docs/configuration.md) (2026). Documentação oficial da flag `--resolve-engines` e ordem de prioridade de resolução de versão.
+- **Node.js TSC** — [*Node.js TSC Votes to Stop Distributing Corepack*](https://socket.dev/blog/node-js-tsc-votes-to-stop-distributing-corepack) (Socket.dev, 2025). Cobertura da votação formal sobre remoção do Corepack do bundle do Node.
+- **Node.js Releases** — [*Node.js release schedule oficial*](https://nodejs.org/en/about/previous-releases) (nodejs.org, 2026). Datas de LTS, Maintenance e EOL de cada linha de Node.
+- **Volta** — [*Understanding Volta — toolchain fetching*](https://docs.volta.sh/guide/understanding) (docs.volta.sh, 2026). Modelo de download on-demand e comportamento em ambientes sem cache.
+- **mise** — [*mise-en-place: dev tools, env vars, task runner*](https://mise.jdx.dev/) (mise.jdx.dev, 2026). Arquitetura PATH-direto vs shims; comparação com asdf.
+
+---
+
 ## Veja também
 
 - [[03 - Package managers - npm, pnpm, yarn e Bun]] — o que acontece _depois_ de ter a versão certa de Node: modelos de `node_modules`, lockfiles, corepack como orquestrador de PM.
 - [[23 - Build em produção, CI e determinismo]] — como garantir builds reprodutíveis em CI: cache de artefatos, env/secrets, source maps em produção — e como a versão do Node entra nessa equação.
 - [[03-Dominios/Tecnologia/Node/index|Node]] — runtime, event loop, módulos nativos e o que muda entre versões do Node que torna o gerenciamento de versão necessário.
+- [[18 - O runtime como ferramenta de DX]] — como Bun, Deno e o próprio Node evoluíram como ferramentas de developer experience — contexto para entender por que versões distintas do runtime importam.
+- [[20 - Bun como runtime e toolkit all-in-one]] — Bun tem gerenciamento de versão próprio (via `bun upgrade`); entender suas diferenças ajuda a decidir se um version manager externo ainda é necessário num stack Bun-first.
