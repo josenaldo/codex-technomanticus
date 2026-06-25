@@ -3,7 +3,7 @@ title: "Plano — Trilha Tooling e Build"
 type: spec
 created: 2026-06-24
 updated: 2026-06-24
-status: in_progress
+status: done
 tags:
   - spec
   - trilha
@@ -95,7 +95,18 @@ A tese: **tooling existe pra fechar o gap entre o que você escreve** (ESM, TS, 
 2. **Cleanup estrutural** (commit próprio, no fim): remover galho `Node/Tooling e ecossistema moderno` (exceto `08`, realocada), absorver/remover `Ferramentas/Vite.md`, repointar inbounds, atualizar MOCs de Node/Ferramentas/Tooling. Verificar 0 quebras.
 3. MOC por fase.
 
-## Decisões — todas fechadas (ver acima). Pronto pra executar mediante teu OK final.
+## Status final — COMPLETA (2026-06-24)
+
+Trilha **26/26 feita, escrita do zero com pesquisa web, e pushada** (público).
+
+- 🟢 Iniciado 9/9 — commit `8181909`
+- 🟡 Adepto 11/11 — commit `37322ff`
+- 🔴 Magus 6/6 — commit `a0637fa` (21 Monorepos · 22 SEA · 23 Build/CI · 24 Supply chain · 25 IA no tooling · 26 capstone entrevista). ~3.880 linhas, ~26 diagramas Mermaid.
+- ♻️ Cleanup estrutural — commit `34d043a`: galho `Node/Tooling e ecossistema moderno` **promovido a domínio próprio** (extinto do Node). Nota `08 - Promise-based core APIs` realocada p/ `Node/Runtime e Event Loop/13` (é stdlib async, não tooling — decisão revista vs. checkpoint, que supunha nº 11 livre; galho já ia até 12). Stub `Ferramentas/Vite.md` removido (reescrito na nota 13 - Vite a fundo). Inbounds repointados: Node MOC + tronco `Node.js.md`, `Segurança/index` + `Segurança/01`, `Ferramentas/index`, `Senda Frontend`. Node passou de 9→8 galhos (numeração 8/9 de Segurança/Integrações mantida, com nota de graduação — sem renumerar internals).
+- Checker: 0 quebras reais. Resíduos = falso-positivo `[[index]]` (ambíguo, Obsidian resolve local) + 1 quebra pré-existente alheia em `02 - Sequelize`.
+- Biblioteca de Tooling e Build criada (na fase Iniciado).
+
+## Decisões — todas fechadas (ver acima).
 
 ## Âncoras
 - Padrões: [[project_trilhas_fases_aprendizado]], [[feedback_padrao_capitulo_livro]], [[feedback_notas_profundas_diagramas]], [[feedback_notas_atomicas]] (teto 2400), [[project_artefatos_dominio]], [[project_camadas_reorg]].
