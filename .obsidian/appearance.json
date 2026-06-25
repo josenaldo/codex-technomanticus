@@ -1,8 +1,11 @@
 {
-  "cssTheme": "Obuntu",
+  "cssTheme": "Cupertino",
   "accentColor": "#0b9b9d",
-  "theme": "obsidian",
+  "theme": "moonstone",
   "enabledCssSnippets": [
     "mermaid-tema"
-  ]
+  ],
+  "showViewHeader": true,
+  "showRibbon": true,
+  "nativeMenus": false
 }

@@ -1,7 +1,7 @@
 ---
 title: "Skills do vault (Codex)"
 created: 2026-05-24
-updated: 2026-06-20
+updated: 2026-06-24
 type: how-to
 status: seedling
 tags:
@@ -13,9 +13,9 @@ publish: false
 
 # Skills do vault (Codex)
 
-Catálogo das **17 skills** salvas em `.agents/skills/` — expostas ao Claude Code pelo symlink `.claude/skills → ../.agents/skills`. Dividem-se em dois grupos:
+Catálogo das **20 skills** salvas em `.agents/skills/` — expostas ao Claude Code pelo symlink `.claude/skills → ../.agents/skills`. Dividem-se em dois grupos:
 
-- **11 skills autorais** (PT-BR), construídas pro pipeline deste vault.
+- **14 skills autorais** (PT-BR), construídas pro pipeline deste vault.
 - **6 ferramentas de terceiros** (utilitários genéricos de Obsidian/web), versionadas no repo.
 
 Skills globais do Claude Code (Anthropic, superpowers) não estão aqui — só o que vive neste repositório.
@@ -26,13 +26,72 @@ Para o pipeline geral do vault, veja [[workflow]]. Para o mapa das zonas, [[Como
 
 ## Mapa por domínio
 
-| Domínio                                | Skills                                                                                   | Quando entra no fluxo                                       |
-| -------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| **Fichamento de leitura (Glosas)**     | `/glosa`, `/arquivar-glosas`, `/acordar-glosas`, `/promover-glosa`, `/sintetizar-glosas` | Captura → destilação → integração de artigos web            |
-| **Enriquecimento e manutenção**        | `/enriquecer-nota`, `/plantar-duvidas`, `/colher-duvidas`, `/verificar-wikilinks`        | Refino de notas + dúvidas de leitura + higiene de links     |
-| **Glossários (transversal)**           | `/verbete`                                                                               | Adicionar termo a qualquer glossário do vault               |
-| **Revisão & Meta**                     | `/revisao-semanal`                                                                       | Relatório semanal (release notes) do trabalho no vault      |
-| **Ferramentas instaladas (terceiros)** | `defuddle`, `deadlink`, `obsidian-markdown`, `obsidian-bases`, `obsidian-cli`, `json-canvas` | Utilitários genéricos acionados sob demanda                 |
+| Domínio                                | Skills                                                                                       | Quando entra no fluxo                                   |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Fichamento de leitura (Glosas)**     | `/glosa`, `/arquivar-glosas`, `/acordar-glosas`, `/promover-glosa`, `/sintetizar-glosas`     | Captura → destilação → integração de artigos web        |
+| **Escrita e qualidade**                | `/escrever-nota`, `/verificar-nota`, `/adicionar-midia`                                      | Criação de notas + gate de qualidade + enriquecimento com mídia |
+| **Enriquecimento e manutenção**        | `/enriquecer-nota`, `/plantar-duvidas`, `/colher-duvidas`, `/verificar-wikilinks`            | Refino de notas + dúvidas de leitura + higiene de links |
+| **Glossários (transversal)**           | `/verbete`                                                                                   | Adicionar termo a qualquer glossário do vault           |
+| **Revisão & Meta**                     | `/revisao-semanal`                                                                           | Relatório semanal (release notes) do trabalho no vault  |
+| **Ferramentas instaladas (terceiros)** | `defuddle`, `deadlink`, `obsidian-markdown`, `obsidian-bases`, `obsidian-cli`, `json-canvas` | Utilitários genéricos acionados sob demanda             |
+
+---
+
+## Escrita e qualidade
+
+Pipeline de criação e verificação de notas de domínio. Três skills formam um ciclo: `/escrever-nota`
+cria com padrão "capítulo de livro"; `/verificar-nota` audita o resultado; `/adicionar-midia` enriquece
+com fontes multimídia. O mesmo ciclo se aplica quando `/enriquecer-nota` ativa o Modo B (elevação
+estrutural de notas antigas).
+
+O eixo intelectual de tudo é a **Técnica Feynman**: escrever como quem ensina, não como quem cataloga.
+Problema-primeiro, analogia antes da técnica, mecanismo explicado (por quê, não só o quê), pergunta
+do leitor antecipada.
+
+### `/escrever-nota [path] [instrução]`
+
+Cria nota nova de domínio do zero. **Núcleo mínimo obrigatório** (frontmatter, TL;DR, abertura com
+problema, mecanismo, O que vem a seguir, fontes) + **menu de seções opcionais** escolhido por tema
+(diagramas Mermaid, casos práticos, armadilhas, inglês, código, teoria). Sem template rígido — cada
+tema escolhe o que faz sentido.
+
+- **Registro Feynman explícito** em cada seção de conteúdo: problema-primeiro, analogia concreta,
+  por quê (não só o quê), pergunta retórica do leitor, resumo em 1 linha.
+- **Pesquisa antes de escrever** (3-5 fontes autoritativas por WebSearch).
+- **Confirmação antes de salvar** — mostra rascunho completo.
+- **Invoca `/verificar-nota`** automaticamente ao final como gate de qualidade.
+- **Quando usar:** "criar nota", "escrever nota sobre X", "nova nota", "começar o galho Y".
+
+### `/verificar-nota [path]`
+
+Constraint-skill: audita a qualidade estrutural de uma nota contra o padrão do vault. **Não edita.**
+Reporta score por seção e sugere qual skill usar para corrigir cada item faltando.
+
+Cinco seções auditadas:
+
+- **ESTRUTURA** (8 itens): TL;DR denso, abertura com problema, diagrama Mermaid, casos práticos,
+  "O que vem a seguir", seção de inglês, tabela PT↔EN, armadilhas comuns.
+- **PROFUNDIDADE** (3 itens): código com falha, mecanismo explicado, teoria subjacente (Magus).
+- **TAMANHO** (1 item por fase): ≥300 linhas (Iniciado), ≥400 (Adepto), ≥500 (Magus).
+- **LINKS** (2 itens): wikilink cross-galho, referência externa.
+- **MÍDIA** (1 item): callout `[!tip]` com vídeo/podcast.
+
+Score de aprovação: ≥9/12 ✓. Score crítico: <6/12 → ativa Modo B em `/enriquecer-nota`.
+
+- **Quando usar:** "verificar nota", "auditar qualidade", "gate de qualidade". Roda automaticamente
+  após `/escrever-nota` e na Fase 0 do `/enriquecer-nota`.
+
+### `/adicionar-midia [path] [instrução]`
+
+Pesquisa vídeos (YouTube) e podcasts (com transcrição disponível), baixa legendas via `uvx yt-dlp`,
+analisa relevância e embute os aprovados como callouts `[!tip]` na nota.
+
+- **Regra de ouro:** nunca embutir sem ter lido a transcrição. Sem legenda = descarta.
+- **Podcasts:** EN apenas, transcrição obrigatória.
+- **Score de relevância** (0-10): alinhamento, profundidade, qualidade pedagógica. Threshold: ≥7.
+- **Máximo 2 mídias por nota** (exceção: capstone >600 linhas → até 3).
+- **Quando usar:** "adicionar vídeo", "embutir vídeo", "buscar vídeo sobre X", "podcast sobre X".
+  Também invocada pela lente Mídia do `/enriquecer-nota`.
 
 ---
 
@@ -93,11 +152,15 @@ Skills que atuam sobre notas já existentes em `03-Dominios/` — refinando cont
 
 ### `/enriquecer-nota [path] [instrução]`
 
-Enriquece uma nota com **lentes selecionáveis** (profundidade, lacunas, novidade com fonte, conexões), filtradas por um **subagente crítico calibrado pela fase** da nota. 7 fases: **identificar alvo → escolher lentes → analisar → criticar → planejar → executar → reportar**. Nunca edita sem confirmação; reescritas aparecem como diff.
+Enriquece uma nota com **5 lentes selecionáveis** (profundidade, lacunas, novidade com fonte, conexões, mídia), filtradas por um **subagente crítico calibrado pela fase**. 8 fases: **diagnosticar → identificar alvo → escolher lentes → analisar → criticar → planejar → executar → reportar**. Nunca edita sem confirmação; reescritas aparecem como diff.
+
+**Dois modos de operação** (escolhidos automaticamente pela Fase 0 com `/verificar-nota`):
+- **Modo A — Incremental** (score ≥6/12): enriquece conteúdo via lentes selecionadas.
+- **Modo B — Elevação** (score <6/12): reconstrói seções estruturais ausentes com Registro Feynman, depois enriche. Para notas antigas e fracas (ex: notas do período inicial do vault).
 
 - Adiciona wikilinks para termos já presentes no dicionário do domínio, cria verbetes ausentes (via `/verbete`), busca referências externas e atualiza frontmatter.
+- **Lente Mídia** delega para `/adicionar-midia` ao final da execução.
 - **Sem `path`:** pergunta qual nota enriquecer. **Com `path`:** usa o arquivo indicado (relativo à raiz do vault).
-- **Instrução complementar:** texto livre como contexto extra — foco temático, URLs a incorporar, ênfase numa seção.
 - **Quando usar:** "enriquecer", "melhorar", "atualizar" ou "revisar" uma nota.
 
 O loop de dúvidas de leitura é um **par simétrico**: `/plantar-duvidas` (preventiva) encontra a confusão; `/colher-duvidas` (resolutiva) a transforma em texto melhor. Ambas operam sobre callouts `> [!duvida]` — matéria-prima transitória que **não deve sobreviver a um `git push`**.
@@ -192,7 +255,7 @@ Utilitários genéricos versionados em `.agents/skills/`. Não são autorais do 
 Quando adicionar/remover uma skill autoral:
 
 1. Edita `.agents/skills/<nova-skill>/SKILL.md`.
-2. **Atualiza esta página** com a entrada nova no domínio correto (e ajusta a contagem no topo).
+2. **Atualiza esta página** com a entrada nova no domínio correto (ajusta contagem no topo: 20 total, 14 autorais).
 3. Se a skill é parte do pipeline principal, atualiza também [[workflow]].
 4. Se a skill é nova no fluxo central do vault, considera um atalho no `CLAUDE.md` raiz.
 
