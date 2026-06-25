@@ -181,8 +181,9 @@ Quando o Node.js foi lançado em 2009 por Ryan Dahl, ele adotou CommonJS como si
 
 O problema? **CommonJS era síncrono**. `require()` bloqueia a execução até o módulo estar carregado. No servidor, isso é aceitável: ler um arquivo do disco é rápido. No browser, carregar um módulo pela rede de forma síncrona significa travar a página inteira durante o request. Era uma não-starter para o front-end.
 
-> [!duvida] Por que travar a página é tão ruim no browser, mas não no servidor?
-> O texto diz que `require()` é síncrono e que isso "trava a página" no browser — mas não fica claro o que "travar" significa aqui. O browser para de responder ao usuário enquanto espera o download? E por que o servidor consegue fazer a mesma coisa sem problema?
+O problema não é o `require()` em si — é o que ele faz enquanto carrega. JavaScript tem uma thread principal única: ela executa código, processa eventos e atualiza a interface. Quando `require()` síncrono precisa carregar um módulo pela rede, essa thread fica bloqueada — o browser para de responder a cliques, scrolls e animações até o download terminar. Para o usuário, a página simplesmente congela.
+
+No servidor, a situação é diferente por dois motivos. Primeiro, os arquivos estão no disco local: ler do disco leva microssegundos, não os 50-300ms de uma round-trip de rede. Segundo, e mais importante, o Node.js foi projetado para I/O assíncrono com callbacks — quando ele precisa esperar algo lento, não bloqueia o processo inteiro. Mas mesmo no servidor, bloquear a thread para carregar do disco é aceitável no boot (quando você ainda não está servindo requisições), e é por isso que o CommonJS funciona: o `require()` acontece na inicialização, não durante uma requisição ativa.
 
 A solução veio com o **AMD (Asynchronous Module Definition)**, cujo principal implementador foi o **RequireJS**, lançado por James Burke por volta de 2010 a partir de discussões na comunidade CommonJS:
 
@@ -357,8 +358,6 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']  // CSS vira JS!
       },
-> [!duvida] Como "CSS vira JS"? Isso não quebra o CSS?
-> O comentário diz que CSS vira JS, mas não explica o que isso significa na prática. O browser vai receber um arquivo `.js` onde deveria ter um `.css`? Como o estilo ainda é aplicado na página se o CSS foi "transformado em JS"?
       {
         test: /\.(png|jpg|gif)$/,
         use: 'file-loader'       // imagens recebem hash no nome
@@ -371,6 +370,8 @@ module.exports = {
   ]
 };
 ```
+
+O comentário "CSS vira JS!" merece uma pausa. O `css-loader` lê o arquivo `.css` e o converte numa string JavaScript — a regra CSS literal vira um valor de string dentro do bundle. O `style-loader` pega essa string e injeta um elemento `<style>` no DOM em runtime, quando o módulo é carregado. O resultado é que os estilos aparecem na página, mas o browser nunca recebeu um arquivo `.css` separado — recebeu um `.js` que criou o `<style>` via código. É por isso que a configuração inclui o `MiniCssExtractPlugin`: em produção, ele recolhe todas essas strings CSS do bundle e as extrai de volta para arquivos `.css` reais, que o browser carrega de forma mais eficiente.
 
 O webpack foi uma revolução. Pela primeira vez, você tinha um grafo completo de todas as dependências do seu projeto — JS, CSS, imagens, tudo. Code splitting, lazy loading, hot module replacement (HMR), cache busting com hashes de conteúdo, bundle analysis. O Create React App (2016) e o Vue CLI adotaram webpack como seu coração, e ele se tornou o bundler dominante por praticamente uma década.
 
@@ -437,9 +438,6 @@ Essa observação foi a semente do **Vite**, criado por Evan You (o criador do V
 webpack dev (antigo):     mudança → reconstruir bundle → recarregar
 Vite dev:                 mudança → servir o arquivo modificado via ESM → HMR cirúrgico
 ```
-
-> [!duvida] Por que o Vite precisa de dois motores diferentes em vez de usar só um?
-> A nota vai explicar que o Vite usa esbuild em desenvolvimento e Rollup em produção — mas não fica claro por que não é possível usar o mesmo motor nos dois casos. Se o esbuild é mais rápido, por que não usar esbuild também em produção?
 
 O Vite usava **dois motores** com propósitos diferentes:
 - Em **desenvolvimento**: o browser pedia cada módulo via ESM nativo; o Vite servia diretamente, usando o **esbuild** para pré-bundlar as dependências de `node_modules` (que não são ESM). O resultado: inicialização quase instantânea, independente do tamanho do projeto.
@@ -524,8 +522,11 @@ O Next.js adotou o SWC como transpilador padrão a partir da versão 12 (2021), 
 
 O **Turbopack** foi anunciado pela Vercel em outubro de 2022, na Next.js Conf, como o "successor to webpack". Escrito em Rust, o Turbopack usa uma arquitetura de **incrementalidade fina** — em vez de invalidar grandes partes do grafo, ele rastreia dependências no nível de funções individuais e só recomputa o que mudou.
 
-> [!duvida] O que significa "rastrear dependências no nível de funções individuais"?
-> O webpack invalida "grandes partes do grafo" e o Turbopack só recomputa o que mudou — mas não fica claro o que o webpack faz quando você muda um arquivo. Ele recompila tudo de novo? Só o arquivo? E como o Turbopack consegue ser mais preciso do que isso?
+Para entender o que "nível de funções individuais" significa, é preciso comparar com o webpack. Quando você salva um arquivo no webpack, ele invalida o **chunk** inteiro que contém aquele arquivo — um chunk é um grupo de módulos agrupados pelo algoritmo de code splitting. Se `utils.js` pertence ao mesmo chunk que `app.js`, ambos são reprocessados, mesmo que você tenha mudado apenas uma linha de `utils.js`. Em projetos grandes, um chunk pode ter centenas de módulos.
+
+O Turbopack vai mais fundo: ele rastreia dependências no nível de **funções de transformação**. Em vez de dizer "este módulo mudou, reprocesse o chunk", ele diz "a função que transforma `utils.js` dependia dessas entradas específicas; só essas entradas mudaram; portanto só este resultado precisa ser recomputado". É o mesmo princípio de um sistema de build incremental como o Bazel ou o Gradle com caching fino — mas aplicado dentro do bundler.
+
+Na prática: se você tem um projeto com 5.000 módulos e edita uma linha num utilitário, o webpack potencialmente reprocessa centenas de módulos no mesmo chunk; o Turbopack reprocessa apenas o que depende diretamente do que mudou naquele arquivo, muitas vezes em menos de 10 ms.
 
 A promessa: builds 700x mais rápidas que webpack, 10x mais rápidas que Vite. Os benchmarks foram contestados, mas a direção era clara. Em janeiro de 2026, com o Next.js 16.1, o Turbopack passou todos os 8.302 testes de integração do Next.js e se tornou o bundler padrão de produção do framework.
 

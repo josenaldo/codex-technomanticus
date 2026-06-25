@@ -26,10 +26,9 @@ tags:
 
 Antes de comparar npm com pnpm com Yarn com Bun, vale perguntar: o que exatamente um package manager precisa fazer? A resposta tem três etapas distintas, e entendê-las separadas ajuda a ver por que cada ferramenta faz escolhas diferentes.
 
-**Primeira etapa: resolução.** Dado um `package.json` com `"express": "^4.18.0"`, o package manager precisa determinar qual versão exata instalar — e quais versões exatas de *todas as dependências de express* também. Isso é um problema de resolução de grafo: express depende de body-parser, que depende de iconv-lite, que depende de safer-buffer. O grafo tem dezenas ou centenas de nós, e cada nó tem ranges de versão como restrição. Quem quer o quê, em qual versão compatível? Esse problema é tecnicamente NP-completo na forma geral, mas na prática é resolvido com heurísticas eficientes. O resultado fica gravado no lockfile (a nota [[05 - Semver e o grafo de dependências]] entra fundo nisso).
+**Primeira etapa: resolução.** Dado um `package.json` com `"express": "^4.18.0"`, o package manager precisa determinar qual versão exata instalar — e quais versões exatas de *todas as dependências de express* também. Isso é um problema de resolução de grafo: express depende de body-parser, que depende de iconv-lite, que depende de safer-buffer. O grafo tem dezenas ou centenas de nós, e cada nó tem ranges de versão como restrição. Quem quer o quê, em qual versão compatível?
 
-> [!duvida] O que significa "NP-completo" aqui? Isso quer dizer que pode demorar muito? Por que mencionar isso se na prática "é resolvido com heurísticas"?
-> Salto de raciocínio: o texto introduz um conceito de teoria da computação sem explicar o que implica para o dia-a-dia — fica parecendo aviso de perigo sem dizer qual é o perigo.
+Na forma geral, esse problema pertence à classe NP-completo — o que, na prática, significa que não existe algoritmo garantidamente rápido para *qualquer* grafo de dependências possível. Dependendo da estrutura do grafo (muitos pacotes com ranges conflitantes e overlapping), o solver pode explodir exponencialmente. Isso explica por que instalações com conflitos severos de versão ficam travadas "calculando" por muito tempo — o solver está tentando todas as combinações. Na maioria dos projetos reais, o grafo é bem-comportado e heurísticas resolvem em milissegundos. Mas saber que o problema tem essa natureza ajuda a entender por que o pnpm e o Yarn Berry investiram em solvers alternativos — e por que lockfiles existem: uma vez resolvido, o resultado é gravado e nunca precisa ser recalculado enquanto o lockfile não mudar. O resultado fica gravado no lockfile (a nota [[05 - Semver e o grafo de dependências]] entra fundo nisso).
 
 **Segunda etapa: download.** Uma vez resolvidas as versões exatas, o pm baixa os tarballs do registry (geralmente `registry.npmjs.org`). Aqui entra integridade: cada tarball tem um hash SHA-512 que é verificado após o download. Se o hash não bater, a instalação falha — é a primeira linha de defesa contra supply-chain attacks. O download pode ser pulado se o pacote já está em cache local.
 
@@ -175,10 +174,9 @@ O pnpm (performant npm) nasceu em 2016 com uma pergunta simples: e se, em vez de
 
 O pnpm mantém um store global em `~/.local/share/pnpm/store` (Linux) / `~/Library/pnpm/store` (macOS). Cada arquivo de cada pacote é armazenado uma vez, indexado pelo hash do seu conteúdo — daí "content-addressable". Se `lodash@4.17.21` tem 100 arquivos, eles aparecem no store exatamente uma vez, independente de quantos projetos na sua máquina usem `lodash@4.17.21`.
 
-Quando você instala, o pnpm não *copia* — ele cria **hard links**. Hard links são simplesmente dois nomes apontando para o mesmo inode no filesystem.
+Quando você instala, o pnpm não *copia* — ele cria **hard links**. Para entender por que isso importa, um passo atrás: no sistema de arquivos, todo arquivo tem dois componentes separados — os **dados** (os bytes em si, gravados em blocos no disco) e o **inode** (uma entrada de metadados que guarda o tamanho, permissões, timestamps e onde estão os blocos). O nome que você vê no terminal (`cloneDeep.js`) é apenas um ponteiro para um inode. Um hard link é um segundo ponteiro para o *mesmo* inode — mesmos blocos, mesmo conteúdo, zero bytes extras no disco. Deletar um dos ponteiros não apaga os dados; o sistema operacional só libera os blocos quando o contador de ponteiros chega a zero.
 
-> [!duvida] O que é um "inode"? Por que isso importa para entender hard links?
-> O texto usa o termo sem explicar. Fica difícil saber se "mesmo inode" é só jargão técnico ou se é essencial para entender por que hard links não ocupam espaço extra. Zero custo de disco extra, zero tempo de cópia. O arquivo existe uma vez no store, e cada projeto tem um hard link para ele.
+Isso significa que o pnpm pode ter `lodash@4.17.21` referenciado em 30 projetos diferentes e o arquivo `cloneDeep.js` existe fisicamente *uma única vez* no store. Cada projeto tem seu ponteiro (hard link), mas nenhuma cópia. Zero custo de disco extra, zero tempo de cópia — apenas a criação do ponteiro, que é instantânea.
 
 ```mermaid
 flowchart LR
@@ -215,8 +213,9 @@ O pnpm 11 substituiu o índice do store de JSON para SQLite, reduzindo drasticam
 
 Você sabia que instalar um pacote npm pode executar código arbitrário na sua máquina sem pedir permissão? Quando o npm (ou Bun) instala um pacote, qualquer script `postinstall` declarado no `package.json` do pacote é executado automaticamente — com as permissões do seu usuário, com acesso ao sistema de arquivos, rede e variáveis de ambiente.
 
-> [!duvida] Por que um pacote legítimo precisaria rodar código no meu computador durante a instalação?
-> A nota explica o risco, mas não explica primeiro para que serve esse mecanismo. Parece uma brecha perigosa por design — mas deve ter um motivo. Exemplos como `esbuild` e `sharp` aparecem mais à frente sem explicar por que eles precisam de um script de instalação.
+O mecanismo existe por um motivo legítimo: alguns pacotes precisam compilar código nativo para a sua plataforma específica. O `sharp` (processamento de imagens) contém código C++ que precisa ser compilado para o seu sistema operacional, arquitetura (x86, ARM) e versão do Node.js. O `esbuild` distribui binários pré-compilados para cada plataforma — o `postinstall` detecta qual plataforma você está e baixa o binário certo. O `node-gyp` compila módulos nativos (SQLite, bcrypt, certas libs de criptografia) diretamente do código C++ via compilador local. Sem lifecycle scripts, nenhum desses pacotes funcionaria out-of-the-box.
+
+O problema é que o mecanismo não distingue "compilar binário legítimo" de "exfiltrar variáveis de ambiente": qualquer `postinstall` roda com as mesmas permissões e sem sandbox.
 
 Ataques reais exploraram isso. O caso mais famoso: o **evento-stream** (2018), quando um colaborador malicioso adicionou um pacote que rodava um postinstall para roubar carteiras de criptomoedas. O pacote tinha 2 milhões de downloads por semana. O npm não avisava; instalava e executava em silêncio.
 
@@ -496,10 +495,11 @@ O Bun pode ler `package-lock.json` e `yarn.lock` para uma migração sem `instal
 
 ## Corepack: cravar o package manager por projeto
 
-O corepack é uma ferramenta que funciona como um shim — um proxy — para `yarn` e `pnpm`. Quando você chama `yarn` ou `pnpm`, o corepack intercepta, verifica qual versão o projeto exige, baixa se necessário e executa.
+O corepack é uma ferramenta que funciona como um shim — um proxy — para `yarn` e `pnpm`. A mecânica é simples: quando você roda `corepack enable`, ele coloca executáveis chamados `pnpm`, `yarn` (e opcionalmente `npm`) num diretório que aparece *antes* de qualquer outra instalação no seu `$PATH`. Esses executáveis são o shim do corepack — não são o pnpm real, são scripts que interceptam a chamada.
 
-> [!duvida] Como o corepack "intercepta" minha chamada ao pnpm? Ele substitui o executável do pnpm no sistema?
-> Ponteiro sem ponte: o texto diz que o corepack age como um "shim" mas não explica como isso funciona na prática — se já tenho o pnpm instalado globalmente, como o corepack interfere no caminho?
+Quando você digita `pnpm install`, o shim do corepack é encontrado primeiro no `$PATH`. Ele sobe a árvore de diretórios procurando o `package.json` mais próximo, lê o campo `packageManager`, determina qual versão do pnpm real precisa, baixa essa versão se não estiver em cache local (~/.node/corepack) e executa. Se você tiver o pnpm 10 instalado globalmente "atrás" do shim, ele nunca é chamado — o corepack já encaminhou para a versão correta.
+
+Se o `packageManager` declarar `yarn` mas você digitar `pnpm`, o shim detecta a discrepância e aborta com um erro antes de executar qualquer coisa.
 
 **Por que isso importa:** sem o corepack, um time pode ter desenvolvedores usando pnpm 10 e pnpm 11 ao mesmo tempo, com lockfiles gerados de formas ligeiramente diferentes. O corepack garante que todos usem exatamente a versão declarada no projeto.
 
@@ -876,8 +876,8 @@ The key technical differences between package managers come down to how they han
 > [!warning] Armadilha 6: Yarn PnP e ferramentas incompatíveis
 > O Yarn PnP não funciona com ferramentas que resolvem módulos manualmente (em vez de usar a API de resolução do Node.js). Antes de adotar Yarn Berry com PnP, verifique compatibilidade de todas as ferramentas do seu stack — especialmente bundlers, test runners e plugins mais obscuros. Em caso de dúvida, use o modo `nodeLinker: node-modules` do Yarn Berry, que mantém o comportamento clássico.
 
-> [!duvida] Devo deletar e reinstalar `node_modules` se algo parece errado?
-> Sim — e é mais rápido do que parece com pnpm e Bun (porque o store/cache está quente). Em npm: `rm -rf node_modules && npm install`. Em pnpm: `pnpm install` (ou `pnpm ci` no pnpm 11 para clean install). A maioria dos "meus imports estão estranhos" resolve com reinstalação limpa.
+> [!tip] Armadilha 7: imports estranhos ou erros inexplicáveis de módulo
+> Se algo parece errado com imports mas o código está correto, tente uma reinstalação limpa — é mais rápido do que parece, porque o store/cache está quente. Em npm: `rm -rf node_modules && npm install`. Em pnpm: `pnpm ci` (pnpm 11+, clean install) ou `rm -rf node_modules && pnpm install`. A maioria dos "meus imports estão estranhos" resolve com reinstalação limpa.
 
 ---
 

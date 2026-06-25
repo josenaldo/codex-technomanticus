@@ -67,10 +67,7 @@ Cada item do lado esquerdo tem um motivo para não rodar diretamente:
 
 - **TypeScript** tem tipos — o browser não entende tipos. O `tsc` ou o esbuild/SWC precisam apagar as anotações antes de qualquer execução. (O trail de [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] explica a fundo esse "type erasure".)
 - **JSX** é açúcar sintático — `<Button />` vira `React.createElement(Button, null)` ou `_jsx(Button, {})`. Nenhum ambiente de execução entende JSX nativo.
-- **ESM com `import`** funciona no browser moderno — mas requer que o servidor sirva os arquivos com `Content-Type: application/javascript`, e cada `import` gera uma requisição HTTP separada. Com 500 módulos, isso mata o tempo de carregamento (HTTP/1.1) ou desperdiça multiplexing (HTTP/2). E no Node antigo, CJS ainda era o padrão.
-
-> [!duvida] O que é uma "requisição HTTP separada" e por que ter 500 delas é ruim?
-> A nota fala que cada `import` vira uma requisição, mas não explica o que acontece fisicamente: o browser precisa pedir cada arquivo para o servidor individualmente. Por que isso é lento? E o que é HTTP/1.1 vs HTTP/2 — essas versões mudam alguma coisa no problema? Salto de dependência: o iniciante precisaria de uma breve explicação de que o browser "busca" cada arquivo da rede antes de conseguir executar o código.
+- **ESM com `import`** funciona no browser moderno — mas cada `import` exige que o browser faça uma **requisição HTTP separada**: ele precisa pedir o arquivo ao servidor, baixar, e só então consegue processar os imports internos daquele arquivo — que por sua vez disparam mais requisições. É como uma cadeia em que você só descobre o próximo elo depois de buscar o anterior. Com 500 módulos, essa cadeia cria centenas de idas e vindas pela rede antes do código começar a rodar. No HTTP/1.1 (protocolo mais antigo), o browser limitava a quantidade de requisições paralelas por domínio a 6, então 500 arquivos viravam fila. No HTTP/2 (mais moderno), múltiplas requisições podem trafegar em paralelo no mesmo canal — mas 500 arquivos ainda geram overhead de protocolo e latência acumulada. A solução é o bundler juntar tudo em poucos arquivos antes de servir. E no Node antigo, CJS ainda era o padrão.
 - **CSS Modules / `@layer`** precisam de processamento para gerar classes com escopo único ou combinar regras em ordem correta.
 - **Assets** precisam de URLs com hash de conteúdo para cache-busting correto (`logo.abc123.png`), não podem ser importados como módulos JS por padrão.
 - **`node_modules/`** tem centenas de megabytes de arquivos. O browser não tem acesso ao sistema de arquivos. Alguém precisa resolver quais partes do `node_modules` entram no bundle — e eliminar o que não é usado.
@@ -135,10 +132,7 @@ Ferramentas que fazem isso: `tsc` (TypeScript), Babel, esbuild, SWC. As últimas
 
 ### 3 · Empacotar (bundle)
 
-Empacotamento é montar o grafo de módulos. A partir de um entry point (`main.tsx`), o bundler segue todos os `import`s recursivamente, constrói um grafo de dependências e funde os módulos num conjunto de arquivos de saída.
-
-> [!duvida] O que é "entry point" e por que o bundler começa por ele?
-> O termo aparece aqui sem ter sido definido antes. Pelo contexto parece ser "o primeiro arquivo", mas não fica claro: eu escolho qual é o entry point? Ele é sempre `main.tsx`? O que acontece se tiver mais de um? Salto de dependência: conceito essencial para entender bundling, introduzido sem motivação.
+Empacotamento é montar o grafo de módulos. O bundler precisa de um **ponto de entrada** (*entry point*) — o arquivo raiz da aplicação, aquele que você define na configuração do bundler e que importa tudo o mais. Em projetos React é tipicamente `main.tsx` ou `index.tsx`; em bibliotecas, costuma ser `src/index.ts`. Você escolhe qual é. A partir daí, o bundler segue todos os `import`s recursivamente, constrói um grafo de dependências e funde os módulos num conjunto de arquivos de saída. É possível ter mais de um entry point — uma SPA pode ter `main.tsx` (app principal) e `sw.ts` (service worker), gerando bundles separados para cada um.
 
 Por que fundir? Porque 500 requisições HTTP separadas (uma por módulo) em produção é mais lento do que poucas requisições de arquivos otimizados — especialmente em conexões de alta latência. (A nota [[07 - O grafo de módulos e o que é bundling]] vai fundo nesse trade-off.)
 
@@ -148,8 +142,7 @@ Com o grafo montado, várias otimizações se tornam possíveis:
 
 - **Tree-shaking**: eliminar código que nunca é importado/usado. Se você só usa `formatDate` do `date-fns`, o resto da biblioteca não vai para o bundle.
 
-> [!duvida] O que é um "efeito colateral" de um import — e por que o bundler tem medo disso?
-> O callout abaixo fala em "efeitos colaterais (modificar globals, registrar polyfills, importar CSS)", mas não explica o que significa um import "fazer alguma coisa" além de exportar funções. Por que simplesmente importar um arquivo poderia modificar o comportamento do programa inteiro? Essencial escondido: a ideia de que código pode executar ao ser importado (não só ao ser chamado) é o núcleo do problema — sem isso, o gotcha não faz sentido.
+Para entender o gotcha abaixo, é preciso entender um detalhe que surpreende quem está começando: **um arquivo pode executar código no momento em que é importado**, não só quando você chama uma função dele. Por exemplo, um arquivo que faz `window.myLib = { version: '1.0' }` no nível do módulo — fora de qualquer função — executa essa linha imediatamente ao ser importado, modificando o objeto global do browser. Arquivos que importam CSS (`import './styles.css'`) também são um caso: o efeito é o CSS ser injetado na página. Esse código que roda "ao entrar no arquivo" é chamado de **efeito colateral** (*side effect*). Se um arquivo tem efeitos colaterais, o bundler não pode removê-lo do bundle — mesmo que você não use nenhum de seus exports — porque removê-lo mudaria o comportamento da aplicação.
 
 > [!warning] O gotcha do `sideEffects` no `package.json`
 > Tree-shaking depende de uma declaração no `package.json` da biblioteca: `"sideEffects": false`. Sem ela, o bundler assume que qualquer `import` pode ter efeitos colaterais (modificar globals, registrar polyfills, importar CSS) e mantém o arquivo inteiro — mesmo que você use zero exports.
@@ -216,8 +209,8 @@ Os números do **State of JS 2024** (com ~11.000 respondentes) revelam o estado 
 | Vite | 7.909 respondentes | Crescimento mais rápido do mercado |
 | esbuild | 4.112 respondentes | Usado como motor, não bundler direto |
 
-> [!duvida] O que significa esbuild ser um "motor" em vez de um bundler direto?
-> A tabela diz que esbuild é "usado como motor", mas a nota nunca explicou o que diferencia um motor de um bundler. O Vite usa esbuild por baixo — mas o usuário não configura esbuild diretamente? Peça sem encaixe: o conceito de "ferramenta que usa outra ferramenta por baixo" não foi introduzido.
+> [!question] O que significa esbuild ser um "motor" em vez de um bundler direto?
+> Você raramente abre o terminal e digita `esbuild main.ts` — em vez disso, o Vite (e outras ferramentas) usam o esbuild *por baixo dos panos* para fazer as transformações rápidas (transpilar TS, converter JSX, pré-empacotar dependências). O esbuild funciona como o motor de um carro: quem dirige é o Vite, mas quem converte combustível em velocidade é o esbuild. O desenvolvedor configura o Vite; o Vite, por sua vez, fala com o esbuild. O resultado: você ganha a velocidade do esbuild (escrito em Go, muito mais rápido que ferramentas escritas em JS) sem precisar configurá-lo diretamente. A partir do Vite 8, o papel de motor principal passou para o Rolldown (Rust), mas o esbuild ainda é usado em etapas específicas.
 | tsc CLI | 3.051 respondentes | Só compilação TS |
 | Rollup | 2.889 respondentes | Foco em bibliotecas |
 | SWC | 1.613 respondentes | 86% de satisfação |

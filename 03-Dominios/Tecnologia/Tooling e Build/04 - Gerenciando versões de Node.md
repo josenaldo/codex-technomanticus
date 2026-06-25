@@ -124,10 +124,7 @@ nvm ls
 nvm ls-remote --lts
 ```
 
-O auto-switch no nvm **não vem habilitado por padrão**. Você precisa adicionar um hook manualmente ao `.zshrc`:
-
-> [!duvida] O que é `.zshrc` e por que só ele é mencionado — e o `.bashrc`?
-> A nota assume que o leitor usa zsh como shell. E se eu usar bash ou outro shell? Preciso de um arquivo de configuração diferente? Onde fica esse arquivo normalmente?
+O auto-switch no nvm **não vem habilitado por padrão**. Você precisa adicionar um hook manualmente ao arquivo de configuração do seu shell — `.zshrc` para zsh (padrão no macOS desde Catalina e em muitas distros Linux modernas), `.bashrc` para bash. Ambos ficam em `~` (seu home). Os exemplos aqui usam zsh; para bash, troque `add-zsh-hook chpwd` por um `PROMPT_COMMAND` equivalente — mas o mecanismo é o mesmo:
 
 ```bash
 # ~/.zshrc — auto-switch com nvm
@@ -289,8 +286,10 @@ volta list
 
 O mecanismo do Volta é diferente: em vez de hooks de shell, ele intercepta as chamadas por meio de binários wrappers no PATH. Cada chamada a `node` verifica o `package.json` mais próximo em tempo de execução. Isso significa que o auto-switch acontece mesmo dentro de scripts que não passam pelo hook de shell — por exemplo, `npm run build` dentro de um Makefile chama o Node correto automaticamente.
 
-> [!duvida] O que é um "Makefile" e por que scripts "não passam pelo hook de shell"?
-> A nota menciona Makefile como exemplo de contexto sem hook de shell, mas não explica o que é ou por que é diferente de rodar um comando no terminal. Qual é a diferença entre executar algo no terminal interativo e executar via Makefile ou subshell?
+> [!question]- E por que scripts "fora do shell interativo" são um caso especial?
+> Quando você digita um comando no terminal, o shell já carregou seu `.zshrc` e registrou os hooks do nvm/fnm. Mas existem contextos onde o shell não é interativo: um script chamado via `make`, um processo filho lançado por `exec()` em código compilado, ou um runner de CI que abre subshells mínimos. Nesses casos, `.bashrc`/`.zshrc` não é carregado — e portanto os hooks de nvm/fnm não existem. O nvm deixa de funcionar nesse contexto; o fnm fica dependente do PATH herdado. O Volta resolve isso colocando shims permanentes no PATH do sistema (não no hook do shell) — qualquer processo que chame `node`, de qualquer contexto, passa pelo shim e encontra a versão correta.
+
+
 
 ```mermaid
 flowchart LR
@@ -447,10 +446,10 @@ Existe uma sobreposição de formas de declarar a versão de Node de um projeto.
 | `package.json "engines"` | npm/pnpm/yarn (warning/error) | Validação, não switch |
 | `.mise.toml / .tool-versions` | mise / asdf | Switch polyglot |
 
-O campo `"engines"` no `package.json` é frequentemente confundido com uma forma de pinagem — mas ele não faz switch. Ele declara compatibilidade e pode fazer o `npm install` emitir warning (ou erro com `engine-strict=true`):
+**Pinar** uma versão significa travar o projeto em uma versão específica e exata — de forma que qualquer ferramenta que leia essa declaração vá buscar e usar exatamente aquela versão, sem margem de interpretação. "Pinado" vem do inglês *pin* (fixar): você cravar um prego na versão `22.14.0`, não num range como `>=22`.
 
-> [!duvida] O que significa "pinagem" nesse contexto e qual a diferença entre "declarar compatibilidade" e "pinar" uma versão?
-> A nota usa "pinada" e "pinagem" várias vezes, mas nunca define o termo. Entendo que `engines` "não pina" — mas o que exatamente pinar significa? E se `engines` não faz switch, o que acontece na prática quando eu tenho Node 20 instalado mas declaro `>=22`?
+O campo `"engines"` no `package.json` é frequentemente confundido com uma forma de pinagem — mas ele não faz switch. Ele declara compatibilidade e pode fazer o `npm install` emitir warning (ou erro com `engine-strict=true`). Na prática: se você declara `"node": ">=22"` mas tem Node 20 ativo, o npm pode avisar — mas ele não muda a versão do Node nem impede a execução. A versão que roda é a que o version manager deixou ativa. Pinar de verdade é criar o `.node-version` (ou o bloco `"volta"` no `package.json`):
+
 
 ```json
 {
@@ -490,12 +489,11 @@ O **Corepack** é a resposta do Node.js para esse problema. É uma camada de shi
 ```
 
 Com corepack habilitado:
-- Chamar `npm` num projeto com `"packageManager": "pnpm@9"` emite um erro educativo.
+- Chamar `npm` num projeto com `"packageManager": "pnpm@9"` emite um erro que **bloqueia a execução** e explica o problema — algo como `"This project is configured to use pnpm"`. Não é só um aviso: o comando não roda.
 - O pnpm correto é baixado automaticamente se não estiver em cache.
 - CI e devs ficam sincronizados.
 
-> [!duvida] Por que chamar `npm` num projeto que usa `pnpm` seria um problema — e o que é esse "erro educativo"?
-> Entendo que usar o gerenciador errado pode causar inconsistências, mas a nota não explica o que concretamente quebra (o `node_modules` fica diferente? o lockfile muda?). E "erro educativo" é um erro que impede a execução ou só avisa?
+Por que isso importa? Os gerenciadores de pacotes **não são intercambiáveis no nível do lockfile**. npm gera `package-lock.json`; pnpm gera `pnpm-lock.yaml`; yarn gera `yarn.lock`. Se um dev roda `npm install` num projeto que usa pnpm, ele pode criar um `package-lock.json` paralelo no repositório (ou poluir o `node_modules` com a estrutura flat do npm, diferente da estrutura simbólica do pnpm). O resultado é um build que parece funcionar localmente mas quebra em CI, ou dependências transientes que "somem" em produção porque o lockfile foi gerado com regras diferentes. O Corepack fecha essa porta antes que ela abra.
 
 ```bash
 # Habilitar corepack (Node 16-24, já vem bundled)

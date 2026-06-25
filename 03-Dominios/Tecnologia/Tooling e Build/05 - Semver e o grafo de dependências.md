@@ -71,8 +71,7 @@ O identificador vem após um hífen, separado por pontos. A precedência é: `al
 1.0.0-alpha.1 < 1.0.0-alpha.2 < 1.0.0-beta.1 < 1.0.0-rc.1 < 1.0.0
 ```
 
-> [!duvida] O que "precedência" significa aqui na prática?
-> A nota diz que `alpha < rc < estável` em termos de precedência — mas precedência em relação a quê? Quando o npm está escolhendo qual versão instalar, ele prefere a de maior precedência? E se eu tiver `^1.0.0` no package.json e existir uma `1.0.0-rc.1`, o npm escolhe a rc ou a estável `1.0.0`?
+Precedência aqui significa **ordem de comparação**: quando o semver precisa decidir qual versão é "maior" (mais recente, mais avançada), ele usa essa ordenação. O npm usa isso ao resolver ranges — ele escolhe a versão de maior precedência que satisfaça o range. Na prática: se existem `1.0.0-rc.1` e `1.0.0` e você tem `^1.0.0` no `package.json`, o npm escolhe `1.0.0` — a estável. O `rc.1` tem precedência *menor* que `1.0.0`, apesar de numericamente parecer "quase igual".
 
 Por padrão, ranges não incluem pre-releases — você precisa especificar explicitamente (`^1.0.0-beta.1`) para incluí-las.
 
@@ -115,8 +114,7 @@ graph LR
 
 A regra mnemônica: **`^` move pela direita mantendo o primeiro dígito não-zero fixo**. Para `^4.17.21`, o primeiro dígito não-zero é `4` (MAJOR) — então pode mover MINOR e PATCH livremente, até `<5.0.0`. Para `^0.2.3`, o primeiro dígito não-zero é `2` (MINOR) — pode mover só PATCH, até `<0.3.0`.
 
-> [!duvida] "Primeiro dígito não-zero" — por que essa regra estranha?
-> A lógica do `^0.2.3` ficar preso em `0.2.x` não ficou clara. Se o caret significa "compatibilidade de API", por que o comportamento muda dependendo de qual dígito é zero? Qual é a conexão com a regra do semver sobre versões `0.x.y` serem instáveis?
+A lógica do caret é exatamente a extensão da regra de instabilidade do `0.x.y`: o caret significa "não quebre minha API", e a API "estável" começa no primeiro dígito não-zero. Para `^4.17.21`, a API está no MAJOR (`4`) — então pode subir MINOR e PATCH livremente. Para `^0.2.3`, o MAJOR é zero (a versão inteira é instável), então a API "estável" está no MINOR (`2`) — sair dele seria potencialmente uma breaking change. Para `^0.0.3`, o risco é ainda maior: a API só está cravada naquele PATCH específico. Em outras palavras: o caret protege o dígito mais à esquerda que não é zero — porque é esse dígito que a spec do semver diz ser o "guardião da compatibilidade".
 
 O **`~`** é mais conservador: se você especificou MINOR, fica dentro desse MINOR. `~4.17.21` aceita patches em `4.17.x`, mas não `4.18.0`.
 
@@ -194,8 +192,7 @@ Quando o npm encontra que `react-testing-library` quer `react@^18.0.0` e que seu
 
 O algoritmo do npm usa **hoisting** (içamento): ele tenta colocar pacotes no nível mais alto possível do `node_modules`, de forma que múltiplos consumidores compartilhem uma única cópia.
 
-> [!duvida] Por que o Node.js permite duas cópias do mesmo pacote em subpastas diferentes?
-> O diagrama mostra `react@18.2.0` aninhado dentro de `react-testing-library/node_modules/` quando as versões conflitam. Mas como isso funciona na prática — não haveria conflito de nomes? O Node.js consegue distinguir qual cópia carregar dependendo de quem está importando?
+O Node.js resolve módulos com uma busca hierárquica: quando `react-testing-library` chama `require('react')`, o Node começa procurando em `react-testing-library/node_modules/react` — e só sobe para `node_modules/react` (raiz) se não encontrar ali. Isso é o **algoritmo de resolução de módulos do Node.js**: procurar do diretório atual subindo até a raiz, nível por nível. A consequência direta é que cada pacote carrega a cópia do módulo que está mais próxima de si no sistema de arquivos. Não há conflito de nomes porque cada processo de `require` parte do contexto do arquivo que chamou — e encontra a cópia "local" antes de chegar à global. O Node.js foi deliberadamente projetado assim para suportar exatamente esse cenário de versões diferentes coexistindo no mesmo processo.
 
 ```mermaid
 graph TD
@@ -428,8 +425,7 @@ O caso de uso mais legítimo: você recebe um alerta de CVE crítico numa dep tr
 
 O caso arquetípico é um plugin de framework. `react-dom` não instala o React dentro de si mesmo — espera que o projeto consumidor já tenha React. Se instalasse, você teria duas cópias de React em `node_modules`, e React não funciona com múltiplas instâncias (usa singletons internos):
 
-> [!duvida] O que são "singletons internos" do React e por que duas cópias quebram tudo?
-> A nota diz que React "usa singletons internos" e que duas instâncias causam bugs — mas não explica o mecanismo. Se o código importa `react` de dois lugares diferentes, o que exatamente quebra? Por que o React foi projetado assim, em vez de tolerar múltiplas instâncias?
+O React mantém estado interno em variáveis de módulo — por exemplo, uma referência ao "dispatcher" atual (o objeto que sabe qual hook está sendo chamado durante a renderização). Quando você chama `useState`, o React consulta esse dispatcher global para saber a qual componente atribuir o estado. Se existem duas cópias de `react` em memória (cada uma com seu próprio dispatcher), uma chamada de hook pode chegar ao dispatcher errado — que está fora de contexto de renderização. O resultado é o erro: `Invalid hook call. Hooks can only be called inside of the body of a function component`. O React foi projetado assim (estado em módulo) por performance e simplicidade de implementação interna, e a consequência é que o runtime inteiro depende de uma única instância. Daí o papel crítico do `peerDependencies`: garantir que há um único `react` no grafo.
 
 ```json
 // package.json de um plugin de componente
