@@ -1,10 +1,10 @@
 ---
 title: "Memory em agents"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-25
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-agents
@@ -18,6 +18,12 @@ aliases:
 ---
 
 # Memory em agents
+
+Três horas dentro de uma sessão de debugging assistida por agent, o sistema começou a contradizer a si mesmo. Recomendou adicionar um índice a uma coluna que tinha rejeitado 40 passos atrás por cardinalidade baixa. Releu um arquivo de configuração que já havia analisado. Propôs um fix para um bug que ele mesmo tinha marcado como resolvido na hora 2.
+
+Não era o modelo piorando ao longo do tempo. Era o contexto: 180K tokens de histórico carregados integralmente em cada requisição. A atenção do modelo se dissolvia no oceano de turnos anteriores — call stack do passo 12, observação do passo 27, raciocínio do passo 43 — todos presentes, nenhum com peso suficiente para ser confiável. Sem compactação, cada requisição ficava mais cara e menos útil ao mesmo tempo.
+
+Esse é o problema que o design de memória em agents existe para resolver. Memory não é uma feature opcional — é o que separa um agent que funciona por 50 turnos de um que para de ser confiável no turno 8. A questão não é "preciso de long-term memory?", mas "o que precisa sobreviver ao turno atual, e em qual formato?"
 
 > [!abstract] TL;DR
 > Agents precisam **lembrar** entre passos. Três tipos coexistem: **short-term** ([[Dicionário de IA#working memory|working memory]] carregada no prompt, limitada pela context window, descarta ao terminar), **long-term** (persistente entre sessões, em arquivo/DB/[[Dicionário de IA#vector store|vector store]]), e **structured state** (NOTES.md, TODO.md). Compactação é essencial — context cresce, atenção dilui ([[Context Engineering|03 - Context rot e atenção diluída]]). Para deep dive em sistemas avançados (MemGPT, Letta, Mem0, Zep), ver a trilha [[Memória de Agentes]].
@@ -139,6 +145,61 @@ graph TB
 ## Para deep dive
 
 A trilha [[Memória de Agentes]] tem 24 notas dedicadas: taxonomia ([[Dicionário de IA#episodic memory|episódica]], [[Dicionário de IA#semantic memory|semântica]], procedural), implementações (OpenKB, MemGPT/Letta, Mem0, Zep, Graphiti, Generative Agents Stanford), comparativo crítico, guia de implementação.
+
+```mermaid
+xychart-beta
+    title "Custo por requisição — com vs sem compactação (sessão de 30 turnos)"
+    x-axis ["Turn 5", "Turn 10", "Turn 15", "Turn 20", "Turn 25", "Turn 30"]
+    y-axis "Tokens enviados por req (K)" 0 --> 200
+    bar [15, 30, 55, 90, 140, 200]
+    line [15, 18, 20, 21, 22, 23]
+```
+
+> A barra mostra o custo sem compactação (crescimento linear). A linha mostra com compactação ativa a cada ~5 turnos — o custo se estabiliza porque o histórico é resumido em vez de acumulado. Em sessions longas, a diferença é de 5–10× em tokens e a qualidade de resposta é melhor, não pior.
+
+```mermaid
+graph LR
+    subgraph "Curto prazo (sessão)"
+        WM["Working memory\nturn atual, descarta"]
+        ST["Short-term\nhistórico completo"]
+    end
+    subgraph "Longo prazo (persistente)"
+        FB["File-based\nmarkdown, git-friendly"]
+        VS["Vector store\nbusca semântica"]
+        DB["Structured DB\nentidades + relações"]
+        SE["Self-editing\nMemGPT / Letta"]
+    end
+    WM -->|"compactar quando\n>70% window"| ST
+    ST -->|"sessões recorrentes\nou fatos importantes"| FB
+    ST -->|"muitos fatos\nousca por similaridade"| VS
+    VS -->|"compliance / auditoria"| DB
+    SE -.->|"risco: memory poisoning"| VS
+```
+
+## Como explicar em inglês
+
+Memory in agents refers to the mechanisms by which a system retains and retrieves information across turns and sessions. Working memory is the current-turn scratch space — typically the model's extended thinking block, which doesn't persist. Short-term memory is the conversation history appended to each request; it grows linearly and is the most common source of runaway costs in long sessions. Without compaction — summarizing and replacing old turns — every request after the first 20 or 30 turns sends the full accumulated history, making each call simultaneously more expensive and less reliable as attention dilutes. Long-term memory encompasses anything that survives session boundaries: markdown files in the agent's workspace (simple, inspectable, git-friendly), vector stores (semantic retrieval at scale), structured databases (entities and relations for compliance-heavy use cases), and self-editing memory systems like MemGPT/Letta where the model itself manages read/write/prune operations on its own memory store.
+
+| Português | English |
+|---|---|
+| memória de trabalho | working memory |
+| memória de curto prazo | short-term memory |
+| memória de longo prazo | long-term memory |
+| janela de contexto | context window |
+| compactação de contexto | context compaction / summarization |
+| armazenamento vetorial | vector store |
+| memória episódica | episodic memory |
+| memória semântica | semantic memory |
+| estado estruturado | structured state |
+| recuperação por similaridade | semantic retrieval |
+| diluição de atenção | attention dilution / context rot |
+| memória auto-editável | self-editing memory |
+
+## Ver mais
+
+- **Packer et al. — *MemGPT: Towards LLMs as Operating Systems*** (arxiv:2310.08560, 2023): O paper que introduziu a ideia de memory management auto-editável — o LLM decide o que mover entre working memory e long-term storage. Base teórica para entender sistemas como Letta.
+- **Anthropic — *Effective Context Engineering for AI Agents*** (2025): Cobre compaction strategies, structured state tracking, e como projetar sistemas de memória que escalam com sessões longas. Referência prática diretamente aplicável.
+- **Lilian Weng — *LLM Powered Autonomous Agents*** (lilianweng.github.io, 2023): A seção de Memory ainda é a melhor introdução concisa à taxonomia completa: sensory, short-term, long-term — com exemplos de implementação de cada tipo.
 
 ## Veja também
 
