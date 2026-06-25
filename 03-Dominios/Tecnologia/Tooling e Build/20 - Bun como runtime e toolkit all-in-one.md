@@ -30,6 +30,9 @@ O Bun surgiu em 2021 como uma resposta direta a esse problema. A proposta de Jar
 
 O resultado é uma ferramenta com quatro papéis distintos que compartilham o mesmo binário:
 
+> [!duvida] O que exatamente é Zig e por que ele importa aqui?
+> A nota apresenta Zig como linguagem de sistemas "com controle fino de memória, sem garbage collector", mas não explica o que isso significa na prática para o Bun. Por que escrever o runtime em Zig (e não em C, Rust, ou Go) resulta em velocidade? Qual é a relação entre "sem garbage collector" e "cold start de 8ms"?
+
 1. **Runtime** — executa JavaScript e TypeScript nativamente (sem `tsc` separado)
 2. **Package manager** — `bun install`, `bun add`, `bun remove` (já visto na [[03 - Package managers - npm, pnpm, yarn e Bun]])
 3. **Bundler** — `bun build` para output de browser, Node, ou executáveis standalone
@@ -159,7 +162,10 @@ O `--watch` do Bun reinicia o processo quando qualquer arquivo muda — equivale
 
 ## APIs nativas: Bun.serve, Bun.file, SQLite embutido e mais
 
-O Bun não é apenas um runtime que roda JavaScript mais rápido. Ele vem com um conjunto de APIs nativas — implementadas em Zig — que substituem pacotes de terceiros com desempenho substancialmente maior. As três mais importantes para o dia a dia são `Bun.serve`, `Bun.file` e `bun:sqlite`. Mas o ecossistema de APIs built-in é mais amplo: inclui `Bun.password`, `Bun.spawn`, variáveis de ambiente inline, e WebSocket nativo.
+O Bun não é apenas um runtime que roda JavaScript mais rápido. Ele vem com um conjunto de APIs nativas — implementadas em Zig — que substituem pacotes de terceiros com desempenho substancialmente maior.
+
+> [!duvida] O que é "marshaling" e por que evitá-lo é vantagem?
+> A nota menciona repetidamente que o Bun é mais rápido por "evitar o overhead de marshaling N-API" (em bun:sqlite, bun:postgres, Bun.password). Um pleno que nunca trabalhou com addons nativos pode não saber o que é marshaling, por que o N-API introduz esse custo, e por que o fato de o Bun ser escrito em Zig elimina esse problema. O mecanismo está oculto — a nota afirma o resultado (3–6× mais rápido) sem mostrar o porquê. As três mais importantes para o dia a dia são `Bun.serve`, `Bun.file` e `bun:sqlite`. Mas o ecossistema de APIs built-in é mais amplo: inclui `Bun.password`, `Bun.spawn`, variáveis de ambiente inline, e WebSocket nativo.
 
 ### Bun.serve — servidor HTTP nativo
 
@@ -437,6 +443,9 @@ bun build src/index.ts --outdir dist --sourcemap=external
 ```
 
 O `--compile` merece destaque: ele gera um executável independente que inclui o runtime Bun embutido. Um TypeScript → um binário de ~90MB que roda em qualquer máquina Linux/macOS/Windows sem precisar do Bun instalado. Equivalente ao `pkg` do Node, mas com o bundler integrado ao invés de ser uma ferramenta separada.
+
+> [!duvida] Por que o binário standalone tem ~90MB se o código-fonte é pequeno?
+> Um TypeScript com poucas centenas de linhas gera um executável de ~90MB. A nota não explica o que ocupa esse espaço — é o runtime completo do Bun (JavaScriptCore) embutido? Se sim, como isso se compara ao `node --experimental-sea-config` (referenciado em [[22 - Single Executable Apps (SEA) e empacotamento]])? Qual é o tamanho típico do SEA do Node?
 
 ```mermaid
 flowchart LR
@@ -969,7 +978,10 @@ flowchart TD
 
 ### A perspectiva de 2026
 
-O que mudou com a aquisição pela Anthropic (novembro de 2025) é principalmente o risco de abandono. O Bun sempre foi MIT open-source, mas como projeto independente da Oven (startup pequena), havia legítima preocupação com sustentabilidade. Com a Anthropic como backing — que usa o Bun como runtime do Claude Code, aproveitando os cold starts de ~8ms para um CLI que "acorda" constantemente — o projeto ganhou credibilidade de infra crítica. Não muda o código, muda o cálculo de risco para adoção.
+O que mudou com a aquisição pela Anthropic (novembro de 2025) é principalmente o risco de abandono.
+
+> [!duvida] O que significa "Anthropic usa o Bun como runtime do Claude Code"?
+> A nota afirma que a Anthropic usa o Bun para o Claude Code "aproveitando os cold starts de ~8ms para um CLI que acorda constantemente". Mas um CLI não é um processo serverless — uma vez iniciado, ele fica ativo enquanto o usuário trabalha. Em que sentido um CLI "acorda constantemente"? Esse modelo de uso é diferente de um servidor HTTP de longa duração? O Bun sempre foi MIT open-source, mas como projeto independente da Oven (startup pequena), havia legítima preocupação com sustentabilidade. Com a Anthropic como backing — que usa o Bun como runtime do Claude Code, aproveitando os cold starts de ~8ms para um CLI que "acorda" constantemente — o projeto ganhou credibilidade de infra crítica. Não muda o código, muda o cálculo de risco para adoção.
 
 O que ainda falta em 2026:
 - **Política LTS formal** — o Node.js tem ciclos de LTS documentados (18 meses de manutenção ativa); o Bun tem releases frequentes mas sem garantia de longo prazo por versão

@@ -62,6 +62,9 @@ flowchart TD
     Q_Lib -->|"Sim (lib para npm amplo)"| Rollup["✅ Rollup 4\nou tsdown (VoidZero)\nmelhor tree-shaking para libs"]
     Q_Lib -->|"Não / ESM only"| EsbuildLib["✅ esbuild bundler\nou tsdown — velocidade máxima"]
 
+> [!duvida] Por que esbuild é recomendado para libs ESM-only se esbuild não gera .d.ts nativamente?
+> A árvore coloca esbuild como opção de "velocidade máxima" para libs ESM-only, mas esbuild não produz declarações TypeScript (`.d.ts`) — exige um passo separado com `tsc --emitDeclarationOnly`. Para libs publicadas no npm, a geração de tipos não é opcional. O critério "ESM-only" justifica pular DTS? Ou tsdown (que tem DTS nativo via `isolatedDeclarations`) deveria ser a recomendação primária mesmo aqui?
+
     Q_CLI --> Q_CLItype{"Precisa de\nbundler CLI?"}
     Q_CLItype -->|"Não — só rodar TS"| Runtime["✅ Node + tsx\nou Bun (nativo)"]
     Q_CLItype -->|"Sim — empacotar\nem único executável"| SEA["✅ esbuild / ncc\n+ Node SEA\nou Bun --compile"]
@@ -134,6 +137,9 @@ Vite 8 (março/2026) resolveu isso: **Rolldown é o motor único**. O dev server
 
 O ganho de performance: builds de produção 4–20× mais rápidos que Rollup. Rolldown é na faixa de performance do esbuild, mas com a compatibilidade de plugins do Rollup.
 
+> [!duvida] O range "4–20×" é amplo demais — em que condições vale cada extremo?
+> Um range de 4× a 20× cobre cenários radicalmente diferentes. O que determina onde um projeto específico cai nesse range — número de módulos, volume de tree-shaking, plugins usados? Sem esse critério, a afirmação não orienta decisão: um projeto legado com muitos plugins webpack-compat pode ficar próximo do 4×, enquanto um projeto greenfield simples chega ao 20×. Qual é a variável dominante?
+
 Referência: [[14 - Rollup, esbuild e Rolldown]].
 
 ### 3.3 A corrida Rust/Go e o toolchain unificado
@@ -161,6 +167,9 @@ Em 2025–2026, a pergunta deixou de ser "ESLint ou Prettier?" e passou a ser "B
 | Performance (lint) | Muito rápido | 2× mais rápido que Biome | Linha de base |
 | Performance (format) | Muito rápido | 3× mais rápido que Biome, 35× que Prettier | Linha de base |
 | Regras de lint | ~200 | ~500 mas selecionadas | +1000 (via plugins) |
+
+> [!duvida] O que significa "selecionadas" em oxlint e por que isso seria vantagem?
+> A tabela apresenta "~500 mas selecionadas" como característica do oxlint sem explicar o critério de seleção. Selecionadas por quê — cobertura dos erros mais comuns, regras com menor taxa de falso-positivo, ou algum outro critério? Para um entrevistador que perguntar "por que oxlint tem menos regras que ESLint e isso é bom?", qual é a resposta articulada?
 | Plugin ecosystem | Crescendo | JS plugins alpha (2026) | Maduro e vasto |
 | Config necessária | Zero | Zero | Alta (sem preset) |
 | Dependências | Zero | Zero | Múltiplas |
@@ -269,7 +278,10 @@ pnpm resolve o problema de **phantom dependencies** — quando você usa um paco
 
 ### "O que é HMR e como funciona no Vite?"
 
-HMR (Hot Module Replacement) é a atualização de um módulo no browser sem recarregar a página inteira, preservando o estado da aplicação. No Vite, o dev server mantém uma conexão WebSocket com o browser. Quando um arquivo muda, o servidor invalida apenas aquele módulo e seus dependentes diretos no grafo, e envia uma mensagem ao browser com o módulo atualizado. O browser recebe o novo módulo via ESM dinâmico e o framework (React, Vue) aplica a atualização sem perder o estado. A velocidade vem do escopo: o Vite nunca rebundla a aplicação inteira — só revalida o subgrafo afetado.
+HMR (Hot Module Replacement) é a atualização de um módulo no browser sem recarregar a página inteira, preservando o estado da aplicação. No Vite, o dev server mantém uma conexão WebSocket com o browser. Quando um arquivo muda, o servidor invalida apenas aquele módulo e seus dependentes diretos no grafo, e envia uma mensagem ao browser com o módulo atualizado. O browser recebe o novo módulo via ESM dinâmico e o framework (React, Vue) aplica a atualização sem perder o estado.
+
+> [!duvida] "Aplica a atualização sem perder o estado" é sempre verdade, ou depende do módulo implementar a HMR API?
+> A afirmação generaliza o comportamento do HMR, mas React Fast Refresh e Vue HMR só preservam estado porque implementam a HMR API (`import.meta.hot.accept`). Um módulo utilitário sem esse handler dispara um full reload quando alterado. Para entrevista, a resposta deveria qualificar: "quando o módulo implementa HMR API, ou quando o framework fornece essa camada automaticamente." Sem essa qualificação, a resposta-modelo está incompleta. A velocidade vem do escopo: o Vite nunca rebundla a aplicação inteira — só revalida o subgrafo afetado.
 
 **Frase EN:** *"HMR works through a WebSocket connection between the dev server and the browser. When a file changes, Vite invalidates just that module and its direct dependents in the module graph, sends the updated module to the browser, and the framework applies the change without a full reload. It's fast because the scope is narrow — never the full app, only the affected subgraph."*
 
@@ -621,6 +633,9 @@ flowchart TD
     E --> F["Comparar bundle\nanalysis antes/depois\n(Rollup Visualizer)"]
     F --> G["Shadow deploy:\nbuild Vite em paralelo\n(sem servir)"]
     G --> H["A/B test:\n10% tráfego → Vite\nmonitorar error rate"]
+
+> [!duvida] Como se faz A/B test de dois builds estáticos diferentes — qual infraestrutura é necessária?
+> O diagrama salta de "shadow deploy" para "A/B test: 10% tráfego → Vite" sem explicar o mecanismo. Para um build estático de SPA, o A/B test de bundler requer infraestrutura de roteamento na borda (CDN, feature flag, reverse proxy) que decide qual `index.html` servir por requisição. Isso é trivial num contexto com Cloudflare Workers ou split testing no CDN, mas não existe "out of the box". Qual é o mecanismo concreto assumido aqui?
     H --> I["Rollout completo\n+ remover webpack"]
 ```
 

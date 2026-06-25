@@ -402,6 +402,9 @@ Antes do 2.9, qualquer ciclo no grafo de pacotes (`A → B → A`) bloqueava o T
 
 A distinção conceitual que o 2.9 formaliza: **grafo de pacotes** pode ter ciclos; **grafo de tasks** nunca pode (tarefas em ciclo seriam executadas indefinidamente). O Turborepo agora valida o grafo de *tasks*, não o de *pacotes* — o que é matematicamente correto. Ciclos de pacote são um code smell arquitetural, mas não impedem mais a adoção do Turborepo.
 
+> [!duvida] Como o Turborepo monta o task graph de um pacote com ciclo sem criar um ciclo no task graph?
+> Se `A` e `B` se importam mutuamente (ciclo de pacote), e ambos têm `"dependsOn": ["^build"]`, como o Turborepo resolve a ordem de `A#build` e `B#build`? A nota diz que o grafo de tasks "nunca pode ter ciclos" — mas não explica o mecanismo pelo qual um ciclo de pacote deixa de virar um ciclo de task. O `^build` de `A` puxa `B#build` que puxa `A#build` — o que quebra o ciclo nessa cadeia?
+
 #### OpenTelemetry e logs estruturados (experimental)
 
 ```bash
@@ -463,6 +466,9 @@ Nx (Nrwl/Nrwl) é uma aposta diferente da do Turborepo. Em vez de "faça uma coi
 ### Diferença conceitual: project graph explícito
 
 O Turborepo infere dependências dos `package.json`. O Nx constrói um **project graph** a partir do código — ele analisa os imports estáticos para entender quais pacotes dependem de quais. Isso permite executar apenas os projetos *affected* por uma mudança com mais precisão.
+
+> [!duvida] "Mais precisão" que o Turborepo em quê cenário concreto?
+> A nota afirma que o Nx é "mais preciso" porque analisa imports estáticos em vez de `package.json`. Mas o Turborepo também lê os `package.json` — e se `ui` lista `utils` como dependência, qualquer mudança em `utils` afeta `ui` nos dois orquestradores. Qual é o cenário real onde análise de imports dá resultado diferente do `package.json`? Por exemplo: um arquivo novo em `utils` que nenhum pacote importa ainda — o Nx excluiria `ui` do affected e o Turborepo não?
 
 ```bash
 # Instalar o Nx em um monorepo existente
@@ -808,6 +814,9 @@ A distinção entre `linked` e `fixed` é sutil mas crítica:
 - **`linked`**: se `ui` recebe minor e `ui-react` não mudou, `ui-react` fica na versão anterior — mas quando `ui-react` for bumpar, não pode ir abaixo da versão do grupo.
 - **`fixed`**: se qualquer pacote do grupo muda, todos bumpar para a mesma versão. Nenhum fica para trás.
 
+> [!duvida] O que "não pode ir abaixo da versão do grupo" significa na prática para `linked`?
+> A nota diz que `ui-react` "fica na versão anterior" quando não muda — então `ui@1.2.0` e `ui-react@1.1.0` coexistem. Mas o que acontece no próximo patch de `ui-react`? Ela vai para `1.1.1` ou precisa pular para `1.2.0`? Qual é a regra que o changeset version aplica aqui — e o que acontece com o CHANGELOG de `ui-react` para versões onde ela "pulou" sem mudança de código?
+
 **Quando `fixed` é a escolha certa:** bibliotecas que os consumers instalam em conjunto e onde versões diferentes entre si causam bugs de peer dependency. Pensa no ecossistema Babel: instalar `@babel/core@7.26` com `@babel/parser@7.24` vai quebrar. O `fixed` garante que isso nunca aconteça no monorepo.
 
 **O problema do `fixed` em escala:** em um monorepo com 20 pacotes em `fixed`, qualquer mudança em qualquer pacote bumpa todos os 20. Se você tem consumidores que usam apenas `@empresa/utils` e não a `@empresa/ui`, eles vão receber bumps desnecessários com notas de changelog que não os afetam. A maioria dos monorepos de produto usa `linked` (ou nenhum dos dois); `fixed` é para ecossistemas de plugin/toolchain.
@@ -1050,6 +1059,9 @@ graph LR
 ```
 
 O Turborepo não tem equivalente nativo ao DTE — paralelismo no Turborepo é local (um máquina, múltiplos cores). Nx Cloud distribui em máquinas distintas. Isso é o principal diferenciador do Nx para repos grandes.
+
+> [!duvida] Como o Nx Cloud distribui as tasks entre agentes sem violar a ordem do task graph?
+> A nota mostra que o task graph tem dependências estritas (B_APP depende de B_UI, que depende de B_UTILS). Se o Scheduler distribuir tasks entre 3 agentes independentes, quem garante que o Agente 2 não começa `app#build` antes do Agente 1 terminar `ui#build`? A nota afirma "CI de 30 min → 4 min" mas não explica o mecanismo de sincronização — se é via poll, via artefato compartilhado no cache, ou se o Scheduler retém tasks dependentes até os pré-requisitos estarem prontos.
 
 ### Quando NÃO cachear
 

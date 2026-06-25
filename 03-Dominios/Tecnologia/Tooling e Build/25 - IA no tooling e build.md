@@ -246,6 +246,9 @@ A diferença arquitetural importa para entender o que cada ferramenta consegue f
 
 **Greptile** — indexa o repositório inteiro como grafo de dependências. Revisa o diff *no contexto de todo o codebase*. Detecta regressions arquiteturais, mudanças que quebram contratos implícitos em outros módulos, e padrões inconsistentes com o restante do projeto. Em benchmarks independentes de 2026, taxa de detecção de bugs de 82% vs 44% do CodeRabbit — mas gera mais comentários "falso positivo" que precisam de triagem.
 
+> [!duvida] De onde vêm os 82% vs 44% — e o custo de triagem compensa?
+> O benchmark não é citado inline. Qual o dataset, quem o conduziu, e o que conta como "bug detectado"? Mais crítico ainda: se o Greptile gera "mais falsos positivos", qual a taxa real de triagem necessária? Se cada PR gera 10 comentários e 7 são noise, o tempo gasto descartando pode superar o tempo economizado no review humano — especialmente em times grandes.
+
 **Qodo** — foco em testes: analisa o código e propõe testes unitários que cobrem os casos identificados no review.
 
 ```mermaid
@@ -372,6 +375,9 @@ Uma mudança sutil mas importante aconteceu em 2026: linters rápidos como **oxl
 
 A lógica é simples: se o agente escreve código e leva 30 segundos para receber feedback do ESLint, ele vai acumular erros antes de corrigir. Com oxlint rodando em milissegundos, o ciclo de correção cabe dentro do loop agêntico — o agente escreve, recebe feedback instantâneo, corrige, itera. A configuração do linter vira parte do contrato que guia o agente.
 
+> [!duvida] Como exatamente o agente "recebe feedback" do oxlint no loop?
+> A nota descreve o benefício sem mostrar o mecanismo de conexão: o agente roda o linter como ferramenta via MCP, via subprocess direto, ou o IDE injeta o output automaticamente? A diferença importa — se for via `npm run lint` no loop ReAct, o ganho de velocidade do oxlint é real mas a latência de chamada de tool ainda existe. Se for streaming em tempo real, é uma integração específica de IDE. Qual dos cenários a nota pressupõe?
+
 > [!info] Seu eslint.config.js é parte do prompt
 > Em 2026, a frase que circula nos times que trabalham com agentes de codificação é: "sua configuração de lint é parte do seu prompt." As regras que você define determinam o nível de qualidade que o agente vai perseguir em cada iteração. Um config frouxo produz código frouxo — mesmo com agente.
 
@@ -479,6 +485,9 @@ A escala em números concretos:
 
 - Modelos open-source alucinam pacotes a uma taxa média de **21,7%** das sugestões. Modelos comerciais: **5,2%** (com GPT-4 Turbo em 3,59% e CodeLlama em 33%+ em algumas configurações). Fonte: USENIX research, replicada pela CSA em 2026.
 - Um pesquisador de segurança documentou um pacote alucinado se propagando por **237 repositórios** via agent skills gerados por IA — sem nenhum humano copiando o código manualmente. Os agentes executavam seus próprios outputs.
+
+> [!duvida] Os 237 repositórios foram em que janela de tempo — e foi ataque real ou experimento controlado?
+> A distinção importa muito para calibrar o risco. "Propagação via agent skills" pressupõe que esses agentes tinham permissão de escrita nesses repos? Se sim, esse é um vetor que exige configuração deliberadamente insegura (agente com write irrestrito). A nota não contextualiza se isso foi um red-team de laboratório ou um incidente de produção documentado — e a diferença muda completamente a urgência da mitigação.
 - Um pacote de teste sob um nome alucinado (`huggingface-cli`) acumulou **30.000 downloads** em três meses — puxados principalmente por agentes, não por devs humanos.
 
 O que torna o slopsquatting qualitativamente diferente do typosquatting clássico é o **loop autônomo**. No typosquatting, um humano precisa digitar errado. No slopsquatting com agentes autônomos, o agente instala a dependência alucinada por conta própria — sem ninguém revisar.
@@ -562,6 +571,9 @@ Quando a label "fix-me" é aplicada a uma issue, o agente acorda, lê o codebase
 > A arquitetura do GitHub Agentic Workflows é intencionalmente assimétrica: o agente lê o estado do GitHub via MCP server em modo read-only, mas **escreve apenas através de um "safe output server"** que bufferiza as intenções do agente sem executá-las. Isso é segurança por design.
 >
 > Em qualquer pipeline agêntico de CI que você construir: o agente *nunca* deve ter permissão de write direta em branches protegidas, de publicar pacotes, ou de alterar secrets. Tudo que sai do agente deve passar por um PR ou um gate humano antes de afetar produção.
+
+> [!duvida] Como o "safe output server" aciona o gate humano na prática?
+> A nota descreve que o server "bufferiza as intenções do agente sem executá-las" — mas não explica o mecanismo de desbloqueio. O gate humano é uma aprovação de PR no GitHub como qualquer outro? Uma interface proprietária do Agentic Workflows? Uma notificação que expira? Em incident response, se o agente propõe um hotfix crítico e o gate demora horas, o benefício de velocidade desaparece. A nota apresenta o padrão sem dizer qual é o trade-off de latência do próprio gate.
 
 ### Nx Agentic Migrate: o caso de uso de monorepo
 

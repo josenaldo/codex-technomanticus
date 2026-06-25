@@ -214,6 +214,8 @@ A defesa é fixar o escopo do pacote privado usando `.npmrc` com `@escopo:regist
 # Nunca pode ser "confundido" com o npm público
 ```
 
+> [!duvida] Como o npm resolve qual registry usar quando há ambos (público e privado) sem o `.npmrc` de escopo? O diagrama mostra o package manager "buscando no público primeiro" — mas se a empresa usa um proxy que mescla os dois, como o proxy decide qual versão serve? O mecanismo de precedência de registry (escopo, URL, proxy-merge) não foi explicado antes do ataque.
+
 ```json
 // package.json — use sempre @escopo para pacotes internos
 {
@@ -229,6 +231,8 @@ A defesa é fixar o escopo do pacote privado usando `.npmrc` com `@escopo:regist
 Em outubro de 2021, o pacote `ua-parser-js` — com mais de 8 milhões de downloads semanais — teve três versões maliciosas publicadas em menos de uma semana. O atacante comprometeu a conta do mantenedor e publicou `0.7.29`, `0.8.0` e `1.0.0` com um script que instalava um cryptominer e um trojan.
 
 Em setembro de 2025, o ataque escalou para um novo patamar: atacantes comprometeram a conta de um mantenedor e publicaram 84 versões maliciosas de 42 pacotes TanStack em menos de seis minutos — todos com provenance SLSA Build Level 3 válido da Sigstore.
+
+> [!duvida] Se a conta do mantenedor foi comprometida, como o atacante conseguiu gerar provenance SLSA Build Level 3 válido? O CI que gera o artefato exige acesso ao repositório — se o atacante só comprometeu a conta npm (credencial do registry), ele não teria acesso ao GitHub Actions para disparar o workflow. A nota não conecta "conta npm comprometida" com "acesso ao pipeline de CI".
 
 > [!danger] O ataque mais difícil de detectar
 > Quando um atacante usa a conta legítima do mantenedor, o npm recebe um package com assinatura válida, hash correto, e até provenance de CI verificado. O `npm ci` instala sem reclamar. O `npm audit` não encontra nada. É malicioso por definição, não por comportamento conhecido.
@@ -265,6 +269,8 @@ O vetor mais direto de ataque: npm suporta lifecycle scripts que executam automa
 Quando você executa `npm install`, **todos** os lifecycle scripts de **todos** os pacotes instalados executam com as suas permissões de usuário. Não existe sandbox. Não existe prompt de confirmação.
 
 **A mudança histórica do npm v12 (julho 2026):** a partir do npm v12, install scripts são **desabilitados por padrão**. Pacotes que precisam de scripts devem ser explicitamente aprovados via `npm approve-scripts`. Isso é o fim de uma era de execução implícita que durou décadas.
+
+> [!duvida] O `npm approve-scripts` é por projeto ou global? Se for global, um dev que aprova `esbuild` em um projeto está aprovando para todos os outros projetos no mesmo ambiente? E a aprovação persiste entre versões — se `esbuild@0.21` foi aprovado, `esbuild@0.22` (com postinstall novo) requer reaprovação?
 
 ```bash
 # Antes do npm v12 — proteção manual
@@ -487,6 +493,8 @@ npm sbom --sbom-format cyclonedx --omit=dev
 
 O SBOM responde perguntas que `npm audit` não consegue: "Tenho algum componente com licença GPL que não deveria estar no produto?" "Quais versões de OpenSSL transitivas estou carregando quando o NIST publicar uma nova vulnerabilidade?" "Consigo provar para um auditor o que exatamente estava no artefato que deployamos em produção?"
 
+> [!duvida] O SBOM gerado pelo `npm sbom` lista OpenSSL como componente? OpenSSL é uma biblioteca nativa — não é uma dependência npm, ela nem aparece no `package-lock.json`. O exemplo sugere que o SBOM cobre libs nativas transitivas (usadas por bindings Node como `node-gyp`), mas o formato CycloneDX mostrado só lista pacotes npm com `purl: pkg:npm/...`. Como o SBOM npm responde à pergunta sobre versões de OpenSSL?
+
 ---
 
 ## Dependabot e Renovate: atualizações automatizadas com controle
@@ -627,6 +635,8 @@ node_modules/
 Isso importa para supply chain de duas formas:
 
 **1. Fantôme deps bloqueadas**: com npm, um pacote malicioso pode usar módulos do seu projeto que ele não declarou (ex: ler variáveis de ambiente via um módulo do host). Com pnpm strict, o pacote só enxerga suas próprias deps declaradas.
+
+> [!duvida] Como um pacote malicioso "usa módulos do host que não declarou" para ler variáveis de ambiente? `process.env` é global em Node — qualquer pacote acessa sem precisar de `require`. E `os.homedir()` ou `fs.readFile` também são globais. A vantagem do pnpm aqui seria bloquear acesso a *outros pacotes* (ex: ler um token de autenticação armazenado por outro módulo via require), não ao ambiente do processo em si — a nota confunde os dois.
 
 **2. Superfície reduzida em monorepos**: em workspaces npm, todos os pacotes da repo compartilham o mesmo `node_modules` achatado. No pnpm, cada workspace tem acesso apenas ao que declarou — isolamento real.
 

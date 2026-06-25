@@ -172,6 +172,8 @@ describe('mocking', () => {
     const { add } = await import('./math.ts');
     assert.equal(add(1, 1), 42); // retorna 42, não 2
   });
+
+> [!duvida] O comentário diz que `mock.module` "precisa ser chamado ANTES do import" — mas se o arquivo já tem `import { add, divide } from './math.ts'` no topo (como nos exemplos anteriores), esse import estático acontece antes de qualquer código do `it` rodar. Como o `mock.module` dentro de um `it` pode interceptar um import estático que já aconteceu?
 });
 ```
 
@@ -244,6 +246,8 @@ graph LR
 ```
 
 O trade-off: `worker` é mais rápido (menos overhead de fork), mas módulos com estado singleton podem vazar se o worker for reusado. `process` é mais caro, mas o isolamento é absoluto — cada arquivo começa em um processo limpo.
+
+> [!duvida] O que exatamente é um "singleton de módulo" que pode vazar entre workers? Se cada worker thread tem seu próprio contexto de módulo, por que um singleton vazaria? A nota diz que isso acontece "se o worker for reusado" — quando e por que o node:test reusa o mesmo worker para múltiplos arquivos?
 
 ### Parallelismo em CI: `--test-shard`
 
@@ -338,6 +342,8 @@ graph LR
 ```
 
 Esse diagrama explica por que o Jest tem problemas com ESM: ele converte tudo para CJS internamente antes de executar, o que quebra com pacotes ESM-only (como `p-limit@5+`, `chalk@5+`, `node-fetch@3+`). O Vitest simplesmente não faz essa conversão — ESM é o formato nativo.
+
+> [!duvida] O diagrama mostra que o Vitest usa "ESM nativo" no worker, mas a linha anterior menciona `isolate: false` como opção para melhorar throughput. Se o isolamento é desligado mas o Vitest ainda usa workers com ESM nativo, o que exatamente "vaza" entre arquivos nesses workers? É diferente do que vaza no modo `none` do `node:test`?
 
 ### Configuração e compatibilidade com Jest
 
@@ -571,6 +577,8 @@ graph TD
 ```
 
 **Istanbul** (usado pelo `@vitest/coverage-istanbul` e historicamente pelo Jest com `babel-jest`) injeta contadores no AST do código antes de executar. Vantagem: preciso ao nível de statement, suporta bem TypeScript após transform. Desvantagem: transforma o código — o que você testa não é exatamente o que roda.
+
+> [!duvida] A nota diz que Istanbul "transforma o código" como desvantagem — mas o Vitest com esbuild já transforma TypeScript de qualquer forma. Qual é o risco concreto de usar Istanbul no Vitest se o código já passou por um transform antes de Istanbul injetar os contadores? Em que cenário real o "o que você testa não é exatamente o que roda" causa um problema perceptível?
 
 **V8 Coverage** (usado pelo `@vitest/coverage-v8`, `node --experimental-test-coverage`, e `bun test --coverage`) usa o profiler nativo do V8 via CDP (Chrome DevTools Protocol). O código roda sem instrumentação; o V8 registra quais ranges de bytecode foram executados. Vantagem: o código executado é idêntico ao código de produção. Desvantagem: source maps precisam ser precisos para mapear bytecode→TypeScript original — em alguns cenários de transform complexo, linhas podem ficar mal atribuídas.
 

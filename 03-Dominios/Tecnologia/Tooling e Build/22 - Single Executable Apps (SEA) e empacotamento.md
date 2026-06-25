@@ -87,6 +87,9 @@ signtool sign /fd SHA256 minha-cli.exe  # Windows
 
 O `postject` era uma ferramenta separada que injetava um blob de dados como uma seção de recurso no binário ELF (Linux), PE (Windows) ou Mach-O (macOS). Funcionava, mas era um passo extra com dependência externa.
 
+> [!duvida] Por que copiar o binário do Node em vez de usar o que já está no PATH — o `cp $(which node)` não gera um binário idêntico para todas as máquinas de CI mesmo em versões diferentes?
+> Salto de dependência: a nota mostra o `cp $(which node)` sem explicar que o blob é vinculado à versão exata do Node presente naquela máquina. Se o CI usa Node 22 e o dev local usa Node 24, os binários gerados são diferentes — e a nota não menciona que isso é intencional ou problemático.
+
 **Era 2 (v25.5+, janeiro de 2026): `--build-sea`**
 
 O Node 25.5 trouxe uma mudança significativa de UX: a injeção foi movida para dentro do core do Node. O fluxo agora é:
@@ -311,6 +314,9 @@ import iconPng from "./assets/icon.png" with { type: "file" };
 // Em runtime, o import retorna o path do arquivo temporário extraído
 // ou o blob embutido dependendo do contexto
 console.log(configTemplate); // path para o arquivo extraído
+
+> [!duvida] O import com `{ type: "file" }` extrai o asset para um arquivo temporário em disco — isso significa que assets grandes (ex: banco SQLite) são copiados inteiros a cada execução da CLI, ou o Bun tem algum mecanismo de cache?
+> Ponteiro sem ponte: a nota mostra a sintaxe de `dbPath` embutido mas não explica o custo de runtime da extração. Para um banco de 50 MB embutido, o comportamento na inicialização importa e não está descrito.
 
 // SQLite embutido — o banco pode ser embutido no binário
 import dbPath from "./data/seed.db" with { type: "file", embed: "true" };
@@ -538,7 +544,10 @@ São dois mecanismos diferentes e frequentemente confundidos:
 
 **Code cache (`useCodeCache: true`):** o V8 compila o script em tempo de build (parse + bytecode compilation) e grava o resultado. Em runtime, o V8 pula a fase de compilação e executa o bytecode diretamente. Ganho típico: 20-40% de redução no startup. **Restrição:** incompatível com `import()` dinâmico, pois o grafo de módulos não é completamente conhecido em build time.
 
-**V8 startup snapshot (`useSnapshot: true`):** vai além. Executa o módulo principal em build time, grava o estado completo do heap V8 (objetos, closures, protótipos inicializados) como snapshot. Em runtime, o heap é restaurado diretamente — o código não é nem re-executado. Ganho típico: 60-80% de redução no startup para apps que fazem muito trabalho de inicialização (parsing de config, construção de árvores de objetos). **Restrições severas:** incompatível com ESM, com código que usa `Date.now()` ou `Math.random()` na inicialização, com timers, e com qualquer side effect que dependa do ambiente de execução.
+**V8 startup snapshot (`useSnapshot: true`):** vai além. Executa o módulo principal em build time, grava o estado completo do heap V8
+
+> [!duvida] O que exatamente "executar o módulo principal em build time" significa na prática — o código de inicialização roda de verdade, com acesso ao sistema de arquivos e à rede, ou num sandbox?
+> Salto de raciocínio: a nota diz que código com `Date.now()` ou `Math.random()` congela o valor, mas não deixa claro o escopo de execução: o Node inicia normalmente e executa o entrypoint, ou há um ambiente restrito? Consequências de uma chamada HTTP acidental no init durante o build não são endereçadas. (objetos, closures, protótipos inicializados) como snapshot. Em runtime, o heap é restaurado diretamente — o código não é nem re-executado. Ganho típico: 60-80% de redução no startup para apps que fazem muito trabalho de inicialização (parsing de config, construção de árvores de objetos). **Restrições severas:** incompatível com ESM, com código que usa `Date.now()` ou `Math.random()` na inicialização, com timers, e com qualquer side effect que dependa do ambiente de execução.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -599,6 +608,9 @@ O Bun tem uma abordagem diferente: ele suporta embutir arquivos `.node` diretame
 Assinar o binário SEA é obrigatório no macOS (sem assinatura, o Gatekeeper bloqueia) e fortemente recomendado no Windows (sem assinatura, o SmartScreen alerta). Mas assinar um SEA tem uma pegadinha: você modifica o binário (injetando o blob) *depois* de ter obtido o binário do Node, que já vem assinado pela equipe do Node.js. Ao modificar, a assinatura original é invalidada.
 
 O fluxo correto é:
+
+> [!duvida] O `--build-sea` do Node 25.5 já cuida de remover a assinatura anterior automaticamente, ou o passo `codesign --remove-signature` ainda é necessário com o novo fluxo?
+> Densidade irregular: a seção de code signing descreve o fluxo de remoção antes da injeção, mas o diagrama "Era 2" mostra o `--build-sea` como passo único. Se o Node agora gerencia a injeção internamente, ele também invalida e resolveu a assinatura anterior, ou o desenvolvedor ainda precisa fazer `remove-signature` manualmente antes de chamar `--build-sea`?
 
 ```bash
 # 1. macOS: remover assinatura anterior do binário copiado

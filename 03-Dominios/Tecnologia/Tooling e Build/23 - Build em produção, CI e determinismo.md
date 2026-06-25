@@ -114,6 +114,9 @@ lockfile-version=3
 engine-strict=true
 ```
 
+> [!duvida] O `.npmrc` com `engine-strict=true` afeta o `npm ci` em CI, ou só o npm install local?
+> A nota apresenta o `.npmrc` como forma de "reforçar o comportamento para toda a equipe", mas não fica claro se `engine-strict` também é lido pelo `npm ci` rodando no runner do GitHub Actions — ou se o CI já usa a versão de Node fixada pelo `actions/setup-node` e ignora o `.npmrc`. Se o runner já está com Node 22 e o projeto exige `>=22.0.0`, o `engine-strict` só adiciona ruído, ou tem alguma garantia extra que o `setup-node` não oferece?
+
 ```json
 // package.json — cravar a versão do Node esperada
 {
@@ -351,6 +354,9 @@ flowchart TD
 
 **Abordagem 2 — `window.env` via `envsubst`:** o bundle usa `window.env.VITE_API_URL` em vez de o valor hardcoded. O `index.html` tem um placeholder `"${VITE_API_URL}"`. No startup do container, um script roda `envsubst` e substitui o placeholder pelo valor real da variável de ambiente do container. Você tem um único bundle; só o HTML muda por ambiente. Esta é a abordagem **build once, deploy many** de verdade.
 
+> [!duvida] Como o bundle passa a ler `window.env.VITE_API_URL` se o Vite substitui `import.meta.env.VITE_*` em build-time?
+> A nota descreve o resultado (bundle usa `window.env`), mas não explica como chegar lá. O código TypeScript de origem provavelmente ainda usa `import.meta.env.VITE_API_URL` — se o Vite substitui esse valor em build-time, a troca para `window.env` precisaria ser feita no código-fonte antes do build, não depois. Como fica o código TypeScript? Existe um plugin Vite que reescreve `import.meta.env.*` para `window.env.*`? Ou o dev precisa trocar manualmente todas as referências no código?
+
 **Abordagem 3 — Sem variáveis de API no cliente:** o frontend só chama `/api/*` (relativo ao próprio domínio); um servidor na borda (nginx, BFF Node) proxia para a API real. Nenhuma URL de API fica no bundle. Mais robusto, mais complexo.
 
 > [!warning] O que NÃO colocar em variáveis VITE_*
@@ -444,6 +450,9 @@ Um build que acessa a rede pode ser **interceptado**. Um atacante com acesso ao 
 
 O projeto Bazel do Google, adotado em larga escala para builds C++/Java, foi projetado com hermeticidade como propriedade central. Para o ecossistema JS, a abordagem mais próxima é um Dockerfile **multi-stage** onde a fase de instalação de dependências é executada em uma camada separada e o resultado (node_modules snapshottado) é copiado para a fase de build — sem acesso à internet nesta segunda fase:
 
+> [!duvida] O Docker multi-stage realmente executa o Stage 2 sem acesso à rede, ou isso é só uma convenção sem enforcement?
+> A nota diz que Stage 2 roda "sem acesso à internet", mas não explica o mecanismo que garante isso. Por padrão, o Docker não bloqueia rede durante o build — nada impede que um `RUN curl ...` no Stage 2 funcione. Seria necessário passar `--network=none` no `docker build`? E se sim, o CI precisa de configuração extra para isso? A distinção entre "convenção de não chamar npm install" e "isolamento real de rede" é crítica para um build genuinamente hermético.
+
 ```dockerfile
 # Dockerfile multi-stage com build hermético
 # Stage 1: dependências (acessa rede, mas isolado e cacheável por layer)
@@ -529,6 +538,9 @@ jobs:
 ```
 
 O attestation gerado é um JSON assinado (usando Sigstore/cosign por baixo) que qualquer pessoa pode verificar independentemente. Isso é o que significa "provenance verificável" na prática.
+
+> [!duvida] O que impede alguém de gerar um attestation falso rodando o mesmo workflow numa fork?
+> A nota diz que "o runner do GitHub (não o seu código) assina o attestation com a chave do GitHub" e que "você não pode forjar isso localmente" — mas não explica por que. A chave privada do GitHub nunca sai do runner efêmero? Existe algum mecanismo de OIDC que vincula o token ao repositório de origem, tornando um attestation gerado numa fork de um repositório diferente verificavelmente distinto? Sem entender o mecanismo de confiança, fica difícil saber o que o Nível 2 realmente garante versus o que ainda é vulnerável.
 
 ### O que é um SBOM (Software Bill of Materials)
 
