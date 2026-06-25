@@ -30,7 +30,7 @@ Este galho cobre o **motor** do Node.js — como uma única thread JS atende mil
 
 **Audiência secundária:** o mesmo dev em produção, debugando "comportamentos estranhos" (latência subindo, requests travando). Use a rota "debugging em produção".
 
-## Comece por aqui — trilha completa (12 notas)
+## Comece por aqui — trilha completa (13 notas)
 
 ### Bloco A — Mental model
 
@@ -58,6 +58,10 @@ Este galho cobre o **motor** do Node.js — como uma única thread JS atende mil
 ### Bloco E — Fechamento
 
 12. [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/12 - Armadilhas, regras práticas, cheatsheet]]
+
+### Bloco F — APIs práticas do runtime
+
+13. [[13 - Promise-based core APIs]] — `fs/promises`, `stream/promises`, `timers/promises`: o stdlib async sem wrappers
 
 ## Rotas alternativas
 

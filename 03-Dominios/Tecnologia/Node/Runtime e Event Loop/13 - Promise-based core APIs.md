@@ -1,7 +1,7 @@
 ---
 title: "Promise-based core APIs"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-24
 type: concept
 status: seedling
 progress: in_progress
@@ -11,7 +11,7 @@ tags:
   - promises
   - async
   - core-apis
-  - tooling
+  - runtime
 aliases:
   - fs/promises
   - timers/promises
@@ -355,9 +355,9 @@ The callback-based `setInterval` fires a function repeatedly on a timer, but coo
 
 ## Veja também
 
-- [[Tooling e ecossistema moderno]]
-- [[07 - Single Executable Apps (SEA)]]
-- [[09 - Bun como runtime alternativo]]
-- [[03-Dominios/Tecnologia/Node/Streams/index|Streams (galho 3)]]
+- [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Runtime e Event Loop]] — galho 1, o arco async (promises por dentro, async/await)
+- [[03-Dominios/Tecnologia/Node/Streams/index|Streams (galho 3)]] — `stream/promises.pipeline()` em detalhe
+- [[03-Dominios/Tecnologia/Tooling e Build/22 - Single Executable Apps (SEA) e empacotamento|Single Executable Apps (SEA)]] — domínio Tooling e Build
+- [[03-Dominios/Tecnologia/Tooling e Build/20 - Bun como runtime e toolkit all-in-one|Bun como runtime e toolkit]] — domínio Tooling e Build
 - [[Node.js]]
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]

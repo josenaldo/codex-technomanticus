@@ -96,13 +96,13 @@ Em entrevistas, o que diferencia um senior em Node.js:
 
 ### npm e Package Management
 
-> [!nota] Migrado para galho próprio
-> Package managers, semver e ecossistema npm foram expandidos em [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index]] (galho 7). Veja em particular [[01 - Package managers - npm, pnpm, yarn e bun]] (comparativo dos 4 gerenciadores: npm v10, pnpm v9, yarn v4 Berry, bun v1.1+) e [[02 - Semver e gerenciamento de dependências]] (versionamento semântico, lockfiles e estratégias de atualização automatizada com Renovate/Dependabot).
+> [!nota] Promovido a domínio próprio
+> Package managers, semver e ecossistema npm foram promovidos ao domínio [[03-Dominios/Tecnologia/Tooling e Build/index|Tooling e Build]]. Veja em particular [[03-Dominios/Tecnologia/Tooling e Build/03 - Package managers - npm, pnpm, yarn e Bun|Package managers]] (comparativo dos gerenciadores e seus modelos de `node_modules`) e [[03-Dominios/Tecnologia/Tooling e Build/05 - Semver e o grafo de dependências|Semver e o grafo de dependências]] (ranges, lockfiles, resolução de deps transitivas).
 
 ### Node moderno — features que você deveria usar
 
-> [!nota] Migrado para galho próprio
-> As features modernas do Node foram expandidas em [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index]] (galho 7). Veja em particular [[04 - TypeScript nativo - strip types e integração]] (`--experimental-strip-types` no Node 22.18+), [[05 - Built-in test runner - node-test]] (`node:test` com mock e watch), [[06 - DX flags modernos - watch, env-file e import]] (`--watch`, `--env-file`), [[07 - Single Executable Apps (SEA)]] e [[08 - Promise-based core APIs]] (`fs/promises`, `timers/promises`, `stream/promises`).
+> [!nota] Promovido a domínio próprio
+> As features modernas do Node estão cobertas em dois lugares. O **ferramental** foi promovido ao domínio [[03-Dominios/Tecnologia/Tooling e Build/index|Tooling e Build]]: [[03-Dominios/Tecnologia/Tooling e Build/18 - O runtime como ferramenta de DX|O runtime como ferramenta de DX]] (`--watch`, `--env-file`, TS nativo via strip types, tsx/ts-node), [[03-Dominios/Tecnologia/Tooling e Build/19 - Test runner nativo (node-test) e o cenário de testes|Test runner nativo]] (`node:test`) e [[03-Dominios/Tecnologia/Tooling e Build/22 - Single Executable Apps (SEA) e empacotamento|Single Executable Apps (SEA)]]. As **APIs core em forma de promise** (`fs/promises`, `timers/promises`, `stream/promises`) ficaram neste galho: [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/13 - Promise-based core APIs|Promise-based core APIs]].
 
 ## Quando usar
 
@@ -264,11 +264,11 @@ const doctors = await prisma.doctor.findMany({
 - [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index]] — galho 4 da trilha Node Senior; os 4 frameworks principais (Express, NestJS, Fastify, Hono), patterns transversais e arquitetura
 - [[03-Dominios/Tecnologia/Node/Observability e produção/index]] — galho 5 da trilha Node Senior; logs, métricas, traces, profiling, SLOs, dashboards, alertas e checklists de produção
 - [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index]] — galho 6 da trilha Node Senior; os 4 ORMs principais (Sequelize, Prisma, TypeORM, Drizzle), N+1, migrations, transações, decision tree
-- [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index]] — galho 7 da trilha Node Senior; package managers (npm, pnpm, yarn, Bun), semver, ESM vs CJS, TypeScript nativo, test runner nativo, DX flags, SEA e Bun como runtime
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — galho 8 da trilha Node Senior; supply chain, segredos, validação, JWT, OAuth 2.0, RBAC, rate limiting, Helmet.js e OWASP Top 10
 - [[03-Dominios/Tecnologia/Node/Integrações/index]] — galho 9 da trilha Node Senior; PostgreSQL, Redis, BullMQ, Kafka, gRPC, GraphQL, WebSockets, HTTP clients e padrões de resiliência
 - [[JavaScript Fundamentals]] — linguagem, event loop, async
 - [[03-Dominios/Tecnologia/TypeScript/index|TypeScript]] — tipagem em Node
+- [[03-Dominios/Tecnologia/Tooling e Build/index|Tooling e Build]] — package managers, bundlers, transpilação e build (ex-galho 7)
 - [[Testes em JavaScript]] — Vitest, MSW, built-in test runner
 - [[React]] — frontend companion
 - [[API Design]] — REST, JWT, contratos

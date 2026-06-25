@@ -376,7 +376,7 @@ A: Dependency confusion is an attack where an adversary registers a package on t
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — MOC do galho 8; visão completa da trilha de segurança Node.js
 - [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha; fundamentos de Node.js
-- [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] — galho 7; npm, package managers e ecossistema de ferramentas
+- [[03-Dominios/Tecnologia/Tooling e Build/24 - Supply chain e segurança de dependências|Supply chain e segurança de dependências]] — domínio Tooling e Build; integridade de deps, npm audit, provenance, dependency confusion
 - [npm audit — documentação oficial](https://docs.npmjs.com/auditing-package-dependencies-for-security-vulnerabilities)
 - [socket.dev](https://socket.dev) — análise comportamental de pacotes npm
 - [OSV — Open Source Vulnerabilities](https://osv.dev) — banco de dados de vulnerabilidades open source do Google

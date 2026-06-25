@@ -47,7 +47,7 @@ tags:
 23. [[ApexCharts|ApexCharts]]
 24. [[Recharts|Recharts]]
 25. [[Debugging|Frontend Debugging]]
-26. [[Vite|Vite]]
+26. [[03-Dominios/Tecnologia/Tooling e Build/13 - Vite a fundo|Vite]]
 27. [[Monorepos|Monorepos]]
 
 ## Trilhas relacionadas

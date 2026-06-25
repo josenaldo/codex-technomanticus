@@ -99,4 +99,4 @@ SORT file.name ASC
 - [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha Node Senior
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]] — visão geral de todos os galhos
 - [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index|Frameworks e arquitetura]] — galho 4, base para middlewares de segurança
-- [[03-Dominios/Tecnologia/Node/Tooling e ecossistema moderno/index|Tooling e ecossistema moderno]] — galho 7, supply chain e package managers
+- [[03-Dominios/Tecnologia/Tooling e Build/24 - Supply chain e segurança de dependências|Supply chain e segurança de dependências]] — domínio Tooling e Build; provenance, typosquatting, integridade de lockfile

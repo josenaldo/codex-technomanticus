@@ -26,4 +26,4 @@ Esta estante reúne ferramentas que não se ligam a uma única linguagem ou dom�
 - [[Monorepos]] — organização de código em monorepo
 - [[Prompts]] — prompts reutilizáveis
 - [[Versionamento]] — versionamento de código com Git
-- [[Vite]] — bundler e dev server Vite
+- [[03-Dominios/Tecnologia/Tooling e Build/13 - Vite a fundo|Vite a fundo]] — bundler e dev server (no domínio Tooling e Build)
