@@ -21,6 +21,7 @@ Esta pasta agrupa tudo que descreve o próprio vault — como ele é organizado,
 
 ## Conteúdo
 
+- [[00-Meta/Roadmap|Roadmap de Trilhas]] — fonte única da ordem de construção do vault (o que existe, o que falta, o que reformar)
 - [[00-Meta/guia/index|Guia]] — guias operacionais do vault (escrita, publicação, manutenção, pipeline)
 - [[00-Meta/mestres/index|Mestres]] — referências humanas recorrentes (autores, criadores, profissionais)
 - [[00-Meta/templates/index|Templates]] — modelos reutilizáveis para criar novas notas
