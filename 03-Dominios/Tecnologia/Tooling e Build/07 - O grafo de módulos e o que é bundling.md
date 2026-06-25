@@ -305,7 +305,7 @@ import { SHARED_VALUE } from "./shared.js";
 export const b = `B usa: ${SHARED_VALUE}`;
 ```
 
-Dependências circulares em projetos React frequentemente emergem de index files que re-exportam tudo (`export * from "./Button"`; `export * from "./Modal"`) em combinação com componentes que importam uns aos outros indiretamente. A nota [[15 - React e Gerenciamento de Estado]] tem exemplos práticos desse padrão em apps React.
+Dependências circulares em projetos React frequentemente emergem de index files que re-exportam tudo (`export * from "./Button"`; `export * from "./Modal"`) em combinação com componentes que importam uns aos outros indiretamente. Esse padrão é uma das fontes mais comuns de ciclos em apps React de médio porte.
 
 ---
 
@@ -796,8 +796,8 @@ For small projects, prototypes, or tools, you may genuinely not need a bundler. 
 - [[09 - Dev server e HMR]] — como o bundler se comporta em desenvolvimento vs. produção; ESM nativo + esbuild no modelo Vite
 - [[17 - Otimização de bundle]] — tree-shaking, code splitting a fundo, shared chunks, análise de bundle, minificação
 - [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]] — HTTP/1.1 vs HTTP/2 (multiplexing, header compression, server push), fundamentos do protocolo que motivaram o bundling
-- [[03-Dominios/Tecnologia/Node/06 - Módulos no Node.js — CommonJS vs ESM|Módulos no Node.js]] — como o algoritmo de resolução de módulos funciona no Node: `require`, `exports` field, dual CJS/ESM packages
-- [[15 - React e Gerenciamento de Estado]] — padrões de code splitting em apps React com React.lazy e Suspense; como dependências circulares emergem em componentes React
+- [[06 - ESM e CJS e o sistema de módulos]] — como o algoritmo de resolução de módulos funciona: `require`, `exports` field, dual CJS/ESM packages
+- [[Node.js|Módulos no Node.js]] — resolução de módulos no runtime do Node, `require` vs `import`, condicionais de `exports`
 
 ---
 

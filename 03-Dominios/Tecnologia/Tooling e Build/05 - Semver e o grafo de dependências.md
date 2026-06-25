@@ -741,7 +741,7 @@ A **lockfile** (`package-lock.json`, `pnpm-lock.yaml`, `bun.lock`) is a snapshot
 - [[03 - Package managers - npm, pnpm, yarn e Bun]] — os modelos de `node_modules`, o store do pnpm, corepack; o "como instalar" antes do "o que instala". Ver também: como o Corepack gerencia versões do próprio package manager via `packageManager` no `package.json` — um meta-semver.
 - [[24 - Supply chain e segurança de dependências]] — integridade de lockfile, `npm audit`, provenance, typosquatting; o que o hash `integrity` do lockfile protege e onde ele falha (o caso Polyfill.io, 2024).
 - [[23 - Build em produção, CI e determinismo]] — build reprodutível, cache de CI, artefatos, env/secrets; o `npm ci` em contexto completo de pipeline e como o lockfile é a chave de cache.
-- [[04 - Monorepos com Turborepo e Nx]] — como o protocolo `workspace:` do pnpm e as `workspaceProtocol` do Yarn funcionam num monorepo; hoisting de deps em monorepos e por que `shamefully-hoist` existe.
+- [[21 - Monorepos - workspaces, Turborepo, Nx e changesets]] — como o protocolo `workspace:` do pnpm e as `workspaceProtocol` do Yarn funcionam num monorepo; hoisting de deps em monorepos e por que `shamefully-hoist` existe.
 
 ---
 
