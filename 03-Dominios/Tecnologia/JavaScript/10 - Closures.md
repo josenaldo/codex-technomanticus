@@ -3,7 +3,7 @@ title: "Closures"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: Adepto
 tags:
   - javascript
@@ -347,7 +347,7 @@ O `cache` não é global e não é exposto para o chamador. Vive exatamente onde
 
 ### Caso 3: Debounce — atrasar execução até o usuário parar
 
-Debounce é um padrão essencial para lidar com eventos de alta frequência (digitação, scroll, resize). A closure mantém o `timer` entre chamadas.
+[[Dicionário de JavaScript#debounce\|Debounce]] é um padrão essencial para lidar com eventos de alta frequência (digitação, scroll, resize). A closure mantém o `timer` entre chamadas.
 
 ```javascript
 function debounce(fn, espera) {
@@ -399,6 +399,56 @@ Sem a closure sobre `timer`, cada chamada criaria um timer independente e a fun�
 > **Por quê:** Cada closure cria um novo objeto de ambiente. Em JavaScript moderno, engines como V8 otimizam closures de forma agressiva (escape analysis, stack allocation), mas o custo existe em casos extremos.
 > **Como evitar:** Em código de performance crítica (tight loops, rendering), prefira passar estado por argumento em vez de capturar por closure. Meça antes de otimizar.
 
+> [!warning] `using` + closure: recurso descartado ainda capturado
+> **O que acontece:** O keyword `using` (Explicit Resource Management, TC39 Stage 4 — disponível no Chrome 127+, Node.js recente e Deno) garante que `Symbol.dispose()` seja chamado ao sair do bloco. A armadilha: retornar uma closure que captura um recurso `using` faz com que a closure continue viva apontando para um objeto **já descartado**.
+>
+> ```javascript
+> function criarHandler() {
+>   using resource = openResource(); // Symbol.dispose chamado ao sair
+>   return () => resource.read();    // ❌ closure captura resource descartado
+> }
+> const fn = criarHandler(); // fn() vai falhar — resource foi disposed
+> ```
+>
+> **Por quê:** O `Symbol.dispose()` é chamado quando `criarHandler` encerra, mas a closure retornada mantém o `[[Environment]]` vivo — com o objeto em estado inválido. Diferente de `null`, o ponteiro existe; o objeto, não.
+> **Como evitar:** Nunca retorne closures que capturam objetos `using` além do escopo do bloco que os declarou. Se precisar do resultado, extraia-o antes de retornar: `const result = resource.read(); return () => result;`
+
+> [!info] V8 e a localização física do contexto de closure
+> O V8 aplica **escape analysis** para decidir onde alocar o contexto léxico de uma closure. Se a engine prova que a closure **não escapa** da função que a criou (não é retornada, não é passada para outro contexto), ela pode manter o contexto na stack — custo zero de GC. Quando a closure **escapa** (o caso mais comum: callbacks, event listeners, módulos), o contexto vai para o heap e fica sob gestão do garbage collector. Isso explica por que closures de longa duração e closures em cadeias de callbacks de streaming custam mais do que parecem: cada contexto é um objeto heap distinto com referências que o GC precisa rastrear. Ver também: [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/03 - Call stack, heap e queues|Node · Call stack, heap e queues]].
+
+---
+
+## Closures e `this`: a armadilha do contexto perdido
+
+Closures capturam o **escopo léxico** (variáveis), mas `this` em funções regulares depende de **como a função é chamada** — não de onde foi escrita. São dois mecanismos independentes. Confundir os dois é uma das fontes de bug mais frequentes em código orientado a objetos com callbacks.
+
+> [!question]- Por que `this` não funciona dentro de um callback regular?
+> Porque `this` é atribuído dinamicamente: quem chama a função decide o valor. Quando `setTimeout` ou `addEventListener` chama seu callback, eles geralmente chamam sem contexto (`this === undefined` em strict mode ou `window` em sloppy mode) — não com a instância que você esperava.
+
+```javascript
+class Timer {
+  constructor() {
+    this.ticks = 0;
+  }
+
+  iniciar() {
+    // ❌ função regular: this é undefined (strict mode) ou window (sloppy)
+    setInterval(function () {
+      this.ticks++; // TypeError: Cannot set property 'ticks' of undefined
+    }, 1000);
+
+    // ✅ arrow function: captura o this léxico do método iniciar()
+    setInterval(() => {
+      this.ticks++; // funciona — this é a instância do Timer
+    }, 1000);
+  }
+}
+```
+
+A regra prática: use **arrow function** quando o callback precisa herdar o `this` do contexto externo (métodos de classe, event handlers de componentes). Use **função regular** quando o chamador precisa determinar o `this` (ex: métodos de protótipo acessados via `element.addEventListener` onde você quer `event.currentTarget`).
+
+> [!summary] Closure captura variáveis; arrow function captura `this`. São duas capturas distintas.
+
 ---
 
 ## Como explicar em inglês
@@ -423,10 +473,10 @@ Sem a closure sobre `timer`, cada chamada criaria um timer independente e a fun�
 ## Veja também
 
 - [[04 - Variáveis e escopo]] — escopo léxico, `var`/`let`/`const`, hoisting; a fundação conceitual que torna closures previsíveis
+- [[05 - Funções]] — funções de primeira classe, higher-order functions e o ponto de entrada para closures
+- [[21 - Memory management]] — como o GC trata referências de closures; WeakRef, WeakMap e detecção de leaks com DevTools
 - [[Dicionário de JavaScript#closure]] — definição rápida de referência
-
-> [!info] Memory management (nota 21)
-> A nota sobre gerenciamento de memória em JavaScript (quando criada) aprofundará como o garbage collector trata referências de closures, WeakRef e WeakMap como alternativas para referências fracas, e estratégias para detectar memory leaks com DevTools.
+- [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/03 - Call stack, heap e queues|Node · Call stack, heap e queues]] — onde o Lexical Environment das closures vive fisicamente: heap vs. stack no V8
 
 ---
 
@@ -452,3 +502,5 @@ Closure em uma frase: uma função que carrega consigo o ambiente léxico onde f
 - **Amandeep Singh / Medium** — [*Lexical Environment — The hidden part to understand Closures*](https://amnsingh.medium.com/lexical-environment-the-hidden-part-to-understand-closures-71d60efac0e0) — detalha Environment Record e scope chain
 - **DigitalOcean** — [*An Introduction to Closures and Currying in JavaScript*](https://www.digitalocean.com/community/tutorials/an-introduction-to-closures-and-currying-in-javascript) — currying e aplicação parcial com closures
 - **jsdev.space** — [*Mastering JavaScript Closures*](https://jsdev.space/howto/mastering-js-closures/) — padrões práticos: module, factory, memoization, debounce
+- **TC39 / GitHub** — [*Explicit Resource Management proposal*](https://github.com/tc39/proposal-explicit-resource-management) (Stage 4, 2025) — spec do `using` keyword e `Symbol.dispose`; Chrome 127+, Node.js
+- **V8 Blog** — [*Disabling escape analysis*](https://v8.dev/blog/disabling-escape-analysis) — contexto sobre como o V8 decide alocar contextos de closure no heap vs. stack via escape analysis

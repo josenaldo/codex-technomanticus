@@ -3,7 +3,7 @@ title: "Arrays e métodos"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: iniciado
 tags:
   - javascript
@@ -65,11 +65,24 @@ const letras = Array.from("abc");         // ["a", "b", "c"]
 const range = Array.from({ length: 5 }, (_, i) => i + 1); // [1, 2, 3, 4, 5]
 
 // 3. Spread — para combinar ou copiar
-const copia = [...nums];                  // [1, 2, 3] — cópia rasa
+const copia = [...nums];                  // [1, 2, 3] — [[Dicionário de JavaScript#cópia rasa (shallow copy)\|cópia rasa]]
 const combinado = [...nums, 4, 5];       // [1, 2, 3, 4, 5]
 ```
 
 `Array.from` é especialmente útil para converter **NodeLists** (resultado de `querySelectorAll`), **Sets**, **Maps** e qualquer outro iterável em array de verdade.
+
+**Array.fromAsync** (ES2024) é o irmão assíncrono: recebe um iterável assíncrono e retorna uma `Promise` que resolve para o array resultante. O detalhe crítico que o diferencia de `Promise.all()`: ele resolve os valores **sequencialmente**, não concorrentemente — útil quando a ordem importa ou quando um resultado depende do anterior.
+
+```js
+// Materializando um async generator em array
+async function* paginados() {
+  yield await fetchPagina(1);
+  yield await fetchPagina(2);
+}
+
+const todos = await Array.fromAsync(paginados());
+// aguarda cada página em sequência, não dispara todas de uma vez
+```
 
 ### Acesso e modificação direta
 
@@ -196,6 +209,11 @@ O comparador retorna:
 - positivo → `b` vem antes de `a`
 - zero → mantém a ordem entre eles
 
+> [!info] sort é estável desde ES2019
+> Desde ES2019 (V8 7.0 / Chrome 70), `sort` é **garantidamente estável** pela spec: elementos com chaves iguais mantêm a ordem relativa original. Antes disso, o V8 usava QuickSort instável para arrays com mais de 10 elementos, e a ordem relativa era imprevisível.
+>
+> Por que isso importa na prática? Se você sortear uma lista de usuários primeiro por nome e depois por sobrenome, usuários com o mesmo sobrenome manterão a ordem-pelo-nome que você estabeleceu no sort anterior. Em browsers antigos (pré-2019), essa garantia não existia.
+
 ### reverse — inverte no lugar
 
 ```js
@@ -207,6 +225,18 @@ console.log(arr); // [3, 2, 1] — original mutado
 ---
 
 ## Métodos imutáveis — os favoritos do código funcional
+
+Como `map`, `filter`, `slice`, `flat` e companhia todos retornam um novo array, eles podem ser **encadeados** diretamente — cada método recebe o resultado do anterior. Isso é o [[Dicionário de JavaScript#method chaining (encadeamento de métodos)\|**method chaining**]]: a leitura flui da esquerda para a direita, descrevendo a transformação em etapas.
+
+```js
+const resultado = produtos
+  .filter(p => p.disponivel)     // 1: filtra
+  .map(p => p.preco)             // 2: extrai preço
+  .sort((a, b) => a - b);        // 3: ordena
+```
+
+> [!question]- Qual o custo do encadeamento?
+> Cada método cria um array intermediário completo na memória. Para conjuntos grandes, `filter().map()` cria dois arrays antes do resultado final. Para dados pequenos (< mil itens), isso é irrelevante. Para volumes grandes, [[Dicionário de JavaScript#Iterator Helpers\|Iterator Helpers]] (ES2025) eliminam esses intermediários — veja a seção dedicada abaixo.
 
 ### map — transforma cada elemento
 
@@ -301,6 +331,37 @@ console.log(semPrimeiro);  // [1, 2]
 
 ---
 
+## Iterator Helpers — pipeline sem arrays intermediários (ES2025)
+
+Existe um custo invisível no encadeamento clássico de métodos: cada `map`, `filter` ou `slice` cria um **array intermediário completo** na memória. Para uma lista de 100.000 produtos, `produtos.filter(...).map(...)` cria dois arrays de até 100.000 elementos antes de você ter o resultado final.
+
+**Iterator Helpers** (ES2025) resolvem isso com **avaliação lazy**: os elementos são processados um a um, sem materializar arrays intermediários.
+
+```js
+const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Forma clássica — cria 2 arrays intermediários
+const resultado = nums
+  .filter(n => n % 2 === 0)   // → [2, 4, 6, 8, 10]   (array intermediário)
+  .map(n => n * n)             // → [4, 16, 36, 64, 100] (outro array)
+  .slice(0, 3);                // → [4, 16, 36]
+
+// Com Iterator Helpers — zero arrays intermediários
+const resultadoLazy = nums.values()    // transforma em Iterator
+  .filter(n => n % 2 === 0)            // lazy: não computa ainda
+  .map(n => n * n)                     // lazy: não computa ainda
+  .take(3)                             // lazy: vai parar no 3º par
+  .toArray();                          // materializa só o necessário
+// → [4, 16, 36] — processou apenas os primeiros 4 elementos!
+```
+
+> [!info] Quando usar Iterator Helpers?
+> Para listas pequenas (< mil itens), o ganho é irrelevante — o código clássico é mais simples. Iterator Helpers brilham em conjuntos grandes ou quando você quer processar streams e generators sem materializar tudo. Disponível em Node 22 LTS+, Bun 1.1.31+ e todos os browsers modernos (Baseline Newly Available, março 2025).
+
+Os principais helpers disponíveis: `filter()`, `map()`, `flatMap()`, `take()`, `drop()`, `reduce()`, `forEach()`, `some()`, `find()`, `toArray()`. Também existe `Iterator.from(qualquerIteravel)` para envolver qualquer iterável na cadeia.
+
+---
+
 ## reduce — o canivete suíço
 
 `reduce` é o método mais poderoso e o que mais assusta iniciantes. Vale a pena destrinchar passo a passo.
@@ -392,8 +453,20 @@ const porCidade = pessoas.reduce((acc, p) => {
 // { SP: [{Ana}, {Cia}], RJ: [{Bob}] }
 ```
 
-> [!info] Object.groupBy — alternativa moderna
-> Em ambientes ES2024+, `Object.groupBy(pessoas, p => p.cidade)` faz o mesmo que o `reduce` de agrupamento acima. Mais legível, menos boilerplate. Disponível em Node 21+ e browsers modernos desde 2024.
+> [!info] Object.groupBy e Map.groupBy — alternativas modernas (ES2024)
+> `Object.groupBy(pessoas, p => p.cidade)` faz o mesmo que o `reduce` de agrupamento acima — mais legível, menos boilerplate. Mas há um irmão menos conhecido: `Map.groupBy()`. A diferença é a chave de agrupamento:
+>
+> - **Object.groupBy**: as chaves do resultado são sempre **strings** (o que a função retornar é coercido). Use quando os grupos têm nomes naturais de string.
+> - **Map.groupBy**: as chaves podem ser **qualquer valor** — objetos, números, referências. O resultado é um `Map`, não um objeto plain.
+>
+> ```js
+> // Agrupar por objeto de referência — impossível com Object.groupBy
+> const categorias = [{ nome: "A" }, { nome: "B" }];
+> const agrupado = Map.groupBy(produtos, p => categorias.find(c => c.nome === p.cat));
+> // chaves são os próprios objetos categoria, não strings
+> ```
+>
+> Disponível em Node 21+ e todos os browsers modernos desde março 2024.
 
 ---
 
@@ -585,6 +658,12 @@ Arrays são objetos — atribuição copia a **referência**, não o valor. Esse
 > [!warning] indexOf não detecta NaN
 > `[NaN].indexOf(NaN)` retorna `-1`. Use `includes` para verificar presença de `NaN`.
 
+> [!warning] sort com comparador `a - b` quebra com strings
+> O padrão `(a, b) => a - b` funciona para números, mas se aplicado a strings retorna `NaN` — que o motor trata como `0`, mantendo a ordem atual de forma imprevisível. Bug silencioso clássico: um array de strings parece ordenado nos testes, mas está errado em produção. Para strings, use `(a, b) => a.localeCompare(b, 'pt-BR')`.
+
+> [!warning] cópia rasa não copia objetos aninhados
+> `[...arr]`, `arr.slice()` e `Array.from(arr)` fazem **cópia rasa**: os elementos primitivos são copiados, mas elementos que são objetos ou arrays ainda apontam para a mesma referência. Mutações em um nível abaixo afetam ambos. Para cópia profunda, use `structuredClone(arr)` (Node 17+, browsers modernos) — mais rápido que `JSON.parse(JSON.stringify())` e suporta Map, Set, Date e referências circulares. Limitação: não clona funções.
+
 ---
 
 ## Como explicar em inglês
@@ -617,7 +696,8 @@ Arrays in JavaScript are objects indexed by integers. The key distinction to und
 Agora que você domina arrays e seus métodos, dois temas importantes se abrem. O primeiro é entender como JS lida com cópias de objetos e arrays aninhados — um `[...arr]` só copia o primeiro nível, e isso causa bugs sutis. O segundo é entender o mecanismo por trás de `for-of`: os **iterators**, que são o protocolo que qualquer objeto pode implementar para se tornar iterável.
 
 - [[20 - Cópia, serialização e imutabilidade]] — entender a diferença entre cópia rasa e profunda é a extensão natural de trabalhar com arrays de objetos
-- [[16 - Iterators e generators]] — o protocolo que faz `for-of` funcionar com arrays, Maps, Sets e qualquer objeto customizado
+- [[16 - Iterators e generators]] — o protocolo que faz `for-of` funcionar com arrays, Maps, Sets e qualquer objeto customizado; base dos Iterator Helpers ES2025
+- [[23 - Recursos modernos (ES2020 a ES2025)]] — panorama de Array.fromAsync, Object.groupBy, Map.groupBy e Iterator Helpers em contexto
 - [[Dicionário de JavaScript]] — glossário de termos do ecossistema JS
 
 ---
@@ -627,6 +707,11 @@ Agora que você domina arrays e seus métodos, dois temas importantes se abrem. 
 - **MDN Web Docs** — [*Array — JavaScript Reference*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) — documentação canônica de todos os métodos com exemplos e compatibilidade de browsers
 - **MDN Web Docs** — [*Array.prototype.toSorted()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted) — especificação e exemplos dos métodos imutáveis ES2023
 - **MDN Web Docs** — [*Object.groupBy()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy) — agrupamento ES2024, substituto moderno do reduce de agrupamento
+- **MDN Web Docs** — [*Map.groupBy()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy) — variante de groupBy com chaves não-string (ES2024)
+- **MDN Web Docs** — [*Array.fromAsync()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fromAsync) — equivalente assíncrono de Array.from() (ES2024)
+- **MDN Web Docs** — [*Iterator*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator) — documentação de Iterator Helpers ES2025 com todos os métodos
+- **V8 Blog** — [*Stable Array.prototype.sort*](https://v8.dev/features/stable-sort) — histórico da mudança de QuickSort instável para Timsort estável no Chrome 70 / ES2019
+- **LogRocket Blog** — [*Iterator helpers: The most underrated feature in ES2025*](https://blog.logrocket.com/iterator-helpers-es2025/) — visão geral dos Iterator Helpers com exemplos de lazy evaluation
 - **InfoWorld** — [*All the new features in ECMAScript 2023 (ES14)*](https://www.infoworld.com/article/2338840/all-the-new-features-in-ecmascript-2023-es14.html) — visão geral de toSorted, toReversed, with, findLast e findLastIndex
 - **ECMA International** — [*ECMAScript 2025 Language Specification*](https://262.ecma-international.org/) — especificação oficial da linguagem
 - **LogRocket Blog** — [*A guide to the 4 new Array.prototype methods in JavaScript*](https://blog.logrocket.com/guide-four-new-array-prototype-methods-javascript/) — exemplos práticos dos métodos ES2023

@@ -3,7 +3,7 @@ title: "this em JavaScript"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: iniciado
 tags:
   - javascript
@@ -77,8 +77,20 @@ function quemSouEuStrict() {
 quemSouEuStrict(); // undefined
 ```
 
-> [!info] Por que strict mode muda isso?
+> [!info] Por que [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript#strict mode (modo estrito)\|strict mode]] muda isso?
 > Em JavaScript pré-strict, o motor "embrulhava" `this` no objeto global quando nenhum contexto era fornecido. O strict mode aboliu esse embrulho automático porque ele causava bugs silenciosos: ao invés de um erro claro, o código mutava variáveis globais sem querer.
+
+> [!question]- O que acontece quando você passa `null` ou `undefined` para `call` ou `apply`?
+> É uma armadilha sutil do binding explícito. Em **sloppy mode**, o motor ignora o argumento e cai no default binding — `this` vira o objeto global. Em **strict mode**, `this` é literalmente `null` ou `undefined`, sem embrulho.
+>
+> ```js
+> function quem() { return this; }
+>
+> quem.call(null);      // window (sloppy) ou null (strict)
+> quem.call(undefined); // window (sloppy) ou undefined (strict)
+> ```
+>
+> Você vai ver esse padrão em código como `Math.max.apply(null, arr)`: o `null` é passado como placeholder proposital, porque `Math.max` não usa `this` de jeito nenhum. Para essas situações, a recomendação moderna é usar spread: `Math.max(...arr)`.
 
 ---
 
@@ -175,7 +187,23 @@ const fusca = new Carro("Fusca");
 fusca.ligar(); // "Fusca ligado."
 ```
 
-`new` tem a maior precedência de todas as regras: mesmo que você tente usar `call`/`apply`/`bind` junto com `new`, o `new` vence (com uma ressalva técnica sobre `bind` retornando uma hardbound function que `new` pode sobrepor).
+`new` tem a maior precedência de todas as regras: mesmo que você tente usar `call`/`apply`/`bind` junto com `new`, o `new` vence.
+
+> [!question]- Mas `bind` não fixa o `this` permanentemente? Como `new` consegue sobrepor?
+> Boa pergunta — essa é a ressalva que a MDN chama de *bound functions used as constructors*.
+> Quando você usa `bind` para criar uma *hardbound function* e depois a chama com `new`, a spec ECMAScript define que construtores invocados com `new` **sempre** recebem um objeto recém-alocado como `this`, ignorando qualquer bind anterior.
+>
+> ```js
+> function Carro(modelo) { this.modelo = modelo; }
+>
+> const CarroFixo = Carro.bind({ marca: "Toyota" }); // bind "fixa" o this
+> const c = new CarroFixo("Corolla");
+>
+> console.log(c.modelo); // "Corolla"  ← new criou um objeto novo
+> console.log(c.marca);  // undefined  ← { marca: "Toyota" } foi ignorado
+> ```
+>
+> Na prática, criar uma classe com `bind` e depois usar `new` é um padrão incomum — mas entender por que `new` vence explica a precedência da tabela acima de forma sólida.
 
 ---
 
@@ -215,7 +243,7 @@ flowchart TD
 
 ## Arrow functions: `this` léxico
 
-Arrow functions são a exceção a todas as quatro regras acima. Elas **não têm `this` próprio**. Quando você escreve `() => {}`, o motor não cria um binding de `this` para essa função — ele simplesmente captura o `this` do escopo léxico onde a arrow function foi **definida**.
+Arrow functions são a exceção a todas as quatro regras acima. Elas **não têm `this` próprio**. Quando você escreve `() => {}`, o motor não cria um binding de `this` para essa função — ele simplesmente captura o `this` do [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript#escopo léxico|escopo léxico]] onde a [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript#arrow function|arrow function]] foi **definida**.
 
 ```js
 const obj = {
@@ -258,6 +286,19 @@ obj2.saudar(); // undefined
 > const arrow = () => console.log(this);
 > arrow.call({ x: 42 }); // ainda imprime o this léxico, ignora o argumento
 > ```
+
+> [!warning] `this` no nível de módulo ESM é sempre `undefined`
+> Em módulos ESM (arquivos `.mjs` ou `<script type="module">`), o `this` no **topo do arquivo** é sempre `undefined` — não `window`, não `globalThis`. Isso surpreende quem migra código de `<script>` comum para módulo.
+>
+> ```js
+> // script comum (sloppy mode)
+> console.log(this); // window
+>
+> // módulo ESM (strict mode implícito)
+> console.log(this); // undefined
+> ```
+>
+> O motivo: módulos ESM executam em [strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode) por padrão — e no nível superior de um módulo não há objeto de chamada, então o default binding retorna `undefined`. Arrow functions no topo de um módulo capturam esse `undefined` léxico. Se você precisa do objeto global, use `globalThis` explicitamente.
 
 ---
 
@@ -487,9 +528,10 @@ cumprimentar2(); // "Olá, Diana!"
 
 ## O que vem a seguir
 
-Agora que você entende como `this` se comporta, o próximo território natural é entender **closures**: funções que capturam variáveis do escopo onde foram criadas. A relação entre `this` léxico das arrows e closures é mais próxima do que parece — as duas exploram o conceito de "escopo léxico".
+Agora que você entende como `this` se comporta, o próximo território natural é entender **[[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript#closure|closures]]**: funções que capturam variáveis do escopo onde foram criadas. A relação entre `this` léxico das arrows e closures é mais próxima do que parece — as duas exploram o conceito de [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript#escopo léxico|escopo léxico]].
 
 - [[03-Dominios/Tecnologia/JavaScript/05 - Funções|05 - Funções]] — tudo sobre como funções funcionam por dentro: declaração, expressão, first-class functions e mais
+- [[03-Dominios/Tecnologia/JavaScript/10 - Closures|10 - Closures]] — o mecanismo de captura léxica que se relaciona diretamente com o `this` das arrow functions
 - [[03-Dominios/Tecnologia/JavaScript/Dicionário de JavaScript|Dicionário de JavaScript]] — verbetes de `this`, binding e contexto de execução
 
 ---
@@ -503,3 +545,6 @@ Agora que você entende como `this` se comporta, o próximo território natural 
 - **Fireship** — [*Understanding the this keyword, call, apply, and bind in JavaScript*](https://fireship.io/this-keyword-call-apply-bind-javascript) — explicação visual das 4 regras de binding
 - **FreeCodeCamp** — [*The JavaScript `this` Keyword + 5 Key Binding Rules*](https://www.freecodecamp.org/news/javascript-this-keyword-binding-rules/) — guia completo de binding com exemplos para iniciantes
 - **DigitalOcean** — [*Understanding This, Bind, Call, and Apply in JavaScript*](https://www.digitalocean.com/community/conceptual-articles/understanding-this-bind-call-and-apply-in-javascript) — visão prática de `call`, `apply` e `bind`
+- **MDN Web Docs** — [*Function.prototype.call() — thisArg*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call) — comportamento de `null`/`undefined` como `thisArg` em sloppy vs strict mode
+- **MDN Web Docs** — [*Bound functions used as constructors*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind#bound_functions_used_as_constructors) — como `new` sobrepõe o `this` fixado por `bind`
+- **MDN Web Docs** — [*`this` in modules*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#this_in_modules) — por que `this` é `undefined` no topo de um módulo ESM

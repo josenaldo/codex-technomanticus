@@ -3,7 +3,7 @@ title: "07 - Objetos"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: iniciado
 tags:
   - javascript
@@ -168,6 +168,46 @@ Object.keys(usuario);    // [] — "id" não é enumerável
 > **O que acontece:** Tentar escrever em uma propriedade `writable: false` não lança erro por padrão — só ignora silenciosamente.
 > **Por quê:** Herança do JavaScript antigo onde exceções eram raras.
 > **Como evitar:** Use `"use strict"` ou módulos ES (que já são strict) para que violações de descriptor lancem `TypeError`.
+
+### Dois tipos de descriptor: data vs. accessor
+
+Existe uma regra que a maioria dos iniciantes não encontra nos tutoriais: um descriptor não pode ser **data** e **accessor** ao mesmo tempo.
+
+- **[[Dicionário de JavaScript#data descriptor (descriptor de dado)\|Data descriptor]]** carrega `value` e `writable`.
+- **[[Dicionário de JavaScript#accessor descriptor (descriptor acessor)\|Accessor descriptor]]** carrega `get` e/ou `set`.
+
+Propriedades compartilhadas pelos dois tipos são `enumerable` e `configurable`. Mas misturar `value` (ou `writable`) com `get`/`set` no mesmo `Object.defineProperty` lança `TypeError` imediatamente — mesmo fora do strict mode:
+
+```js
+const obj = {};
+Object.defineProperty(obj, "x", {
+  value: 42,
+  get() { return 0; } // TypeError: descriptor cannot be both data and accessor!
+});
+```
+
+Isso explica um comportamento que confunde: getters e setters criados no literal `{}` usam automaticamente um accessor descriptor — sem `value` nem `writable`.
+
+> [!info] Como verificar o tipo de um descriptor
+> `Object.getOwnPropertyDescriptor(obj, "prop")` mostra o que existe: se o resultado tiver `value`/`writable`, é data; se tiver `get`/`set`, é accessor.
+
+### `configurable: false` é (quase) permanente
+
+Uma vez que você define `configurable: false`, não há como desfazer com `Object.defineProperty`. A única exceção permitida pela spec é mudar `writable` de `true` para `false` (uma transição unidirecional). Qualquer outra tentativa de redefinir o descriptor lança `TypeError`.
+
+```js
+const obj = {};
+Object.defineProperty(obj, "id", { value: 1, configurable: false, writable: true });
+
+// Ainda permitido: true → false
+Object.defineProperty(obj, "id", { writable: false }); // ok
+
+// Proibido: tentar mudar qualquer outra coisa
+Object.defineProperty(obj, "id", { value: 2 }); // TypeError!
+```
+
+> [!warning] Armadilha de biblioteca
+> Se uma biblioteca de terceiros usar `Object.defineProperty` com `configurable: false` em um objeto que você recebeu, você não pode reconfigurar nem deletar essa propriedade — mesmo que o objeto em si não esteja congelado.
 
 ---
 
@@ -364,6 +404,53 @@ console.log(CONFIG.timeout); // 5000 — não mudou
 
 `Object.isFrozen(CONFIG)` retorna `true`.
 
+### `Object.hasOwn` — substituto seguro de `hasOwnProperty` (ES2022)
+
+Verificar se um objeto tem uma propriedade própria com `obj.hasOwnProperty(key)` parece inofensivo, mas tem dois pontos cegos silenciosos:
+
+1. **Objetos sem protótipo** (criados com `Object.create(null)`) não herdam `hasOwnProperty`. Chamá-lo lança `TypeError`.
+2. **Shadowing**: se alguém definiu `hasOwnProperty` como propriedade do próprio objeto, o método herdado fica encoberto — e a resposta retornada é errada.
+
+Desde ES2022, [[Dicionário de JavaScript#Object.hasOwn|`Object.hasOwn(obj, key)`]] resolve os dois casos sem gambiarras:
+
+```js
+// Caso 1: objeto sem protótipo
+const semProto = Object.create(null);
+semProto.nome = "João";
+// semProto.hasOwnProperty("nome"); // TypeError!
+Object.hasOwn(semProto, "nome"); // true ✅
+
+// Caso 2: hasOwnProperty encoberto
+const armadilha = { hasOwnProperty: () => false, x: 1 };
+armadilha.hasOwnProperty("x"); // false — errado!
+Object.hasOwn(armadilha, "x"); // true ✅
+```
+
+ESLint inclui a regra `prefer-object-has-own` para migrar o código existente. Se precisar suportar ambientes pré-ES2022, o padrão seguro é `Object.prototype.hasOwnProperty.call(obj, key)`.
+
+### `Object.groupBy` — agrupamento nativo (ES2024)
+
+Agrupar objetos de um array por uma propriedade é um padrão recorrente. Antes do ES2024, isso exigia um `reduce` manual. Agora há `Object.groupBy`:
+
+```js
+const produtos = [
+  { nome: "Notebook", categoria: "tech" },
+  { nome: "Mouse",    categoria: "tech" },
+  { nome: "Caderno",  categoria: "papelaria" }
+];
+
+const grupos = Object.groupBy(produtos, ({ categoria }) => categoria);
+// {
+//   tech:      [{ nome: "Notebook" }, { nome: "Mouse" }],
+//   papelaria: [{ nome: "Caderno" }]
+// }
+```
+
+O callback deve retornar uma string (ou symbol) que vira a chave do grupo. Se as chaves precisam ser de tipos arbitrários (objetos, números), use `Map.groupBy` — que devolve um `Map` em vez de um objeto puro.
+
+> [!info] Suporte e disponibilidade
+> `Object.groupBy` foi padronizado no ES2024 e está disponível em todos os browsers modernos e Node.js 21+. Verifique o suporte antes de usar em projetos que precisam de compatibilidade com ambientes mais antigos.
+
 ---
 
 ## Shallow copy — a pegadinha de referência aninhada
@@ -401,7 +488,33 @@ graph TD
     style banco fill:#F5A623,color:#fff
 ```
 
-Para uma cópia verdadeiramente independente, você precisa de **cópia profunda** — tema tratado em `20 - Cópia, serialização e imutabilidade` (ver nota quando disponível).
+Para uma cópia verdadeiramente independente, você precisa de **cópia profunda** — tema tratado em `[[20 - Cópia, serialização e imutabilidade]]`.
+
+### `structuredClone` — cópia profunda nativa (desde 2022)
+
+Antes de mergulhar nos detalhes da nota 20, vale saber que a solução nativa existe e tem nome: [[Dicionário de JavaScript#structuredClone|`structuredClone(obj)`]].
+
+Ela percorre todos os níveis aninhados e cria cópias independentes de cada um — incluindo `Map`, `Set`, `Date` e referências circulares. Ao contrário de `JSON.parse(JSON.stringify(obj))`, não corrompe tipos: `Date` continua sendo `Date`, `undefined` não desaparece.
+
+```js
+const original = {
+  nome: "Config",
+  banco: { host: "localhost", porta: 5432 },
+  criado: new Date("2026-01-01")
+};
+
+const copia = structuredClone(original);
+copia.banco.porta = 9999;
+copia.criado.setFullYear(2099);
+
+console.log(original.banco.porta); // 5432 — intacto!
+console.log(original.criado.getFullYear()); // 2026 — intacto!
+```
+
+**Limitação importante:** `structuredClone` lança `TypeError` se o objeto contiver funções. Para objetos com métodos, a nota 20 apresenta as alternativas completas.
+
+> [!tip] `structuredClone` vs `JSON.parse(JSON.stringify())`
+> O `JSON.stringify` é ~2-3x mais rápido para objetos simples, mas perde tipos: `Date` vira string, `undefined` e funções desaparecem, `NaN` vira `null`, e referências circulares travam. Use `structuredClone` como padrão; migre para JSON só se profiling mostrar que importa.
 
 > [!warning] `Object.freeze` também é shallow
 > **O que acontece:** `Object.freeze` congela só o primeiro nível. Objetos aninhados continuam mutáveis.
@@ -542,9 +655,12 @@ Objetos armazenam dados e comportamento — mas como um objeto herda comportamen
 
 ## Referências
 
-- **MDN Web Docs** — [Object.defineProperty()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty) — especificação completa dos descriptors e flags
+- **MDN Web Docs** — [Object.defineProperty()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty) — especificação completa dos descriptors e flags, incluindo a restrição data vs. accessor
 - **MDN Web Docs** — [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring) — sintaxe completa com defaults, renomear e nested
 - **javascript.info** — [Property getters and setters](https://javascript.info/property-accessors) — tutorial aprofundado de accessors com exemplos práticos
 - **FreeCodeCamp** — [JavaScript Object Destructuring, Spread Syntax, and the Rest Parameter](https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/) — guia prático com casos de uso reais
 - **DigitalOcean** — [Copying Objects in JavaScript](https://www.digitalocean.com/community/tutorials/copying-objects-in-javascript) — explica shallow vs. deep copy com exemplos de referência aninhada
 - **MDN Web Docs** — [Object.getOwnPropertyDescriptors()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors) — inspecionar todos os descriptors de uma vez
+- **MDN Web Docs** — [Object.hasOwn()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn) — substituto seguro de `hasOwnProperty` (ES2022), inclui casos com `Object.create(null)` e shadowing
+- **MDN Web Docs** — [Object.groupBy()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy) — agrupamento nativo de iteráveis por categoria (ES2024)
+- **web.dev** — [Deep-copying in JavaScript using structuredClone](https://web.dev/articles/structured-clone) — guia completo de `structuredClone` com comparação a `JSON.parse/stringify`, tipos suportados e limitações

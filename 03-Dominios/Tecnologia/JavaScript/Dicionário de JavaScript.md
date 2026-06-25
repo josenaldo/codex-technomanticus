@@ -65,6 +65,9 @@ Sintaxe de função introduzida no ES6 (`=>`). Diferencia-se das funções regul
 ### closure
 Função que "lembra" o escopo léxico onde foi criada, mantendo acesso às variáveis daquele escopo mesmo depois que ele terminou de executar. Base de module pattern, currying e memoização.
 
+### debounce
+Técnica que adia a execução de uma função até que um determinado tempo de inatividade passe após a última invocação. Em vez de executar a cada disparo (ex: cada keystroke), aguarda o "silêncio" de N ms antes de agir. Implementado via closure que mantém um `timer` entre chamadas: cada nova invocação cancela o timer anterior e agenda um novo. Ver padrão em [[10 - Closures]].
+
 ### escopo de bloco
 Regra aplicada a `let` e `const`: a variável existe apenas dentro do par de `{}` onde foi declarada. Qualquer `if`, `for`, `while` ou bloco avulso cria uma barreira — a variável não vaza para fora.
 
@@ -92,18 +95,42 @@ A sequência de Environment Records percorrida pelo motor para resolver um nome 
 ### shadowing (sombreamento)
 Quando uma variável em um escopo interno declara o mesmo nome de uma variável em escopo externo. A variável interna "cobre" a externa dentro de seu escopo, sem modificá-la.
 
+### strict mode (modo estrito)
+Modo de execução ativado com a diretiva `"use strict"` (no topo de um arquivo ou função) ou automaticamente em módulos ESM e corpos de classe. Em strict mode: funções chamadas sem contexto têm `this === undefined` em vez de receber o objeto global; atribuições a variáveis não declaradas lançam `ReferenceError`; e vários comportamentos silenciosamente problemáticos do JavaScript legado se tornam erros explícitos.
+
 ## Objetos e protótipos
+
+### accessor descriptor (descriptor acessor)
+Tipo de descriptor de propriedade que define `get` e/ou `set` em vez de um `value`. Quando a propriedade é lida, o getter executa; quando é escrita, o setter executa. Incompatível com data descriptor — tentar combinar `get` com `value` ou `writable` no mesmo `Object.defineProperty` lança `TypeError`. Compartilha `enumerable` e `configurable` com o data descriptor.
+
+### data descriptor (descriptor de dado)
+Tipo de descriptor de propriedade que armazena um `value` diretamente e controla se ele pode ser alterado via `writable`. Incompatível com accessor descriptor — não pode coexistir com `get` ou `set` no mesmo descriptor. Compartilha `enumerable` e `configurable` com o accessor descriptor.
+
+### Object.hasOwn
+Método estático introduzido no ES2022 que verifica se um objeto possui uma propriedade própria (não herdada) sem os riscos de `hasOwnProperty`. Funciona corretamente para objetos sem protótipo (`Object.create(null)`) e para objetos onde `hasOwnProperty` foi sobrescrito como propriedade própria. Uso recomendado: `Object.hasOwn(obj, "chave")` em vez de `obj.hasOwnProperty("chave")`.
 
 ### prototype chain
 A cadeia de objetos pela qual o JavaScript resolve propriedades: se um objeto não tem a propriedade, busca no seu `[[Prototype]]`, e assim por diante até `null`. É o mecanismo de herança da linguagem.
+
+### structuredClone
+Função global (disponível desde 2022 em browsers modernos e Node.js 17+) que cria uma cópia profunda de um objeto, incluindo todos os níveis aninhados. Suporta `Map`, `Set`, `Date`, `RegExp` e referências circulares. Diferente de `JSON.parse(JSON.stringify())`, preserva os tipos originais. Lança `TypeError` ao tentar clonar funções ou nós do DOM.
 
 ### this
 Referência cujo valor é determinado por *como* a função é chamada (não onde é definida): binding default, implícito, explícito (`call`/`apply`/`bind`) ou `new`. Arrow functions não têm `this` próprio — herdam do escopo léxico.
 
 ## Coleções
 
+### cópia rasa (shallow copy)
+Uma cópia onde apenas o primeiro nível é duplicado — elementos primitivos são copiados por valor, mas elementos que são objetos ou arrays ainda compartilham a mesma referência. Em JavaScript, `[...arr]`, `arr.slice()` e `Array.from(arr)` produzem cópia rasa. Consequência: mutar um objeto dentro da cópia muta também o original. Para cópia que atravessa todos os níveis, use `structuredClone()`.
+
+### Iterator Helpers
+Conjunto de métodos introduzidos no ES2025 em `Iterator.prototype` que permitem pipelines lazy sobre qualquer iterável: `filter()`, `map()`, `flatMap()`, `take()`, `drop()`, `reduce()`, `forEach()`, `some()`, `find()`, `toArray()`. Diferente dos métodos de array, são **lazy** — processam um elemento por vez sem criar arrays intermediários, o que reduz uso de memória para conjuntos grandes. Disponível em Node 22 LTS+, Bun 1.1.31+ e browsers modernos (Baseline Newly Available, março 2025). `Iterator.from(qualquerIteravel)` envolve qualquer iterável na cadeia.
+
 ### Map
 Coleção de pares chave→valor onde a chave pode ser de qualquer tipo (objeto, número, função, etc.), ao contrário do objeto puro que coerce tudo para string. Preserva ordem de inserção e expõe `.size` nativo. Usa SameValueZero para comparação de chaves.
+
+### method chaining (encadeamento de métodos)
+Padrão onde chamadas de método são encadeadas diretamente no retorno da chamada anterior, formando uma pipeline de transformações legível da esquerda para a direita. Possível em arrays porque `map`, `filter`, `slice`, `flat` e similares retornam novos arrays. Custo: cada método na cadeia cria um array intermediário completo — para volumes grandes, [[Dicionário de JavaScript#Iterator Helpers\|Iterator Helpers]] (ES2025) eliminam esse overhead com avaliação lazy.
 
 ### Set
 Coleção de valores únicos com inserção ordenada. Adicionar um valor já existente é ignorado. A partir do ES2025, suporta métodos nativos de teoria dos conjuntos: `.union()`, `.intersection()`, `.difference()`, `.symmetricDifference()`, `.isSubsetOf()`, `.isSupersetOf()`, `.isDisjointFrom()`.
