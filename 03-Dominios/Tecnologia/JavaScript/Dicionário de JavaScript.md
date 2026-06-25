@@ -64,6 +64,23 @@ A cadeia de objetos pela qual o JavaScript resolve propriedades: se um objeto n�
 ### this
 Referência cujo valor é determinado por *como* a função é chamada (não onde é definida): binding default, implícito, explícito (`call`/`apply`/`bind`) ou `new`. Arrow functions não têm `this` próprio — herdam do escopo léxico.
 
+## Coleções
+
+### Map
+Coleção de pares chave→valor onde a chave pode ser de qualquer tipo (objeto, número, função, etc.), ao contrário do objeto puro que coerce tudo para string. Preserva ordem de inserção e expõe `.size` nativo. Usa SameValueZero para comparação de chaves.
+
+### Set
+Coleção de valores únicos com inserção ordenada. Adicionar um valor já existente é ignorado. A partir do ES2025, suporta métodos nativos de teoria dos conjuntos: `.union()`, `.intersection()`, `.difference()`, `.symmetricDifference()`, `.isSubsetOf()`, `.isSupersetOf()`, `.isDisjointFrom()`.
+
+### SameValueZero
+Algoritmo de comparação de igualdade usado por Map e Set: idêntico a `===` exceto que `NaN === NaN` é `true`. É o motivo pelo qual `NaN` pode ser usado como chave de Map de forma confiável.
+
+### WeakMap
+Variante de Map onde as chaves devem ser objetos e são mantidas por referência fraca. O GC pode coletar a chave (e a entrada correspondente) quando não houver outras referências ao objeto-chave. Não é iterável — não expõe `.size`, `.keys()` ou `.entries()`.
+
+### WeakSet
+Variante de Set onde os valores devem ser objetos mantidos por referência fraca. Usado para rastrear objetos sem impedir sua coleta pelo GC. Não é iterável.
+
 ## Assíncrono
 
 ### Promise
