@@ -303,6 +303,9 @@ module.exports = { plugins: [new TimingPlugin()] };
 
 Se loaders transformam módulos, plugins observam e controlam o build inteiro. O webpack expõe um sistema de hooks baseado em Tapable (a lib de hooks interna do webpack) em cada fase do ciclo de compilação. Um plugin se registra em algum desses hooks e executa lógica customizada.
 
+> [!duvida] A seção anterior já explicou Tapable em detalhe — por que esta seção re-introduz o sistema de hooks como se fosse contexto novo?
+> A seção "Tapable: o coração dos plugins" apresentou `compiler.hooks`, `compilation.hooks`, `tap`/`tapAsync`/`tapPromise`, e até um plugin de exemplo completo. Esta seção começa do zero outra vez ("Plugin = observa e controla o build inteiro") sem referenciar o que acabou de ser explicado. Além disso, o callout ao final desta seção menciona `compiler.hooks.emit` e `compilation.hooks.optimize` como exemplos — mas no diagrama Tapable, `optimize` aparece em `compilation` e `emit` em `compiler`. A fronteira entre o que pertence a cada objeto (`compiler` vs `compilation`) ainda não está clara para quem está absorvendo pela primeira vez.
+
 Os plugins mais usados em qualquer config de produção:
 
 ```js
@@ -406,6 +409,9 @@ dist/
 > [!info] Por que `runtimeChunk: 'single'` importa
 > O runtime do webpack é o bootstrap que, em runtime no browser, sabe quais chunks existem e como carregá-los sob demanda. Sem extraí-lo, ele fica embutido em cada chunk inicial — e se qualquer chunk mudar, o hash do runtime muda, invalidando o cache de todos os outros chunks. Extraindo em `runtime.js` separado, só o runtime muda quando a topologia de chunks muda.
 
+> [!duvida] Se o `vendor.[hash].js` raramente muda, por que ele teria seu hash invalidado quando um chunk de página muda — sem o `runtimeChunk: 'single'`?
+> O callout explica que o runtime embutido invalida "o cache de todos os outros chunks" quando qualquer chunk muda. Mas a lógica não é imediata: se o conteúdo de `vendor.js` não mudou, por que seu hash mudaria só porque o runtime dentro dele precisa registrar um chunk novo de página? O mecanismo de contágio entre o runtime e o hash de conteúdo do vendor não é explicado.
+
 ---
 
 ## Cache persistente: o maior ganho do webpack 5
@@ -488,6 +494,9 @@ O que cada mode configura automaticamente:
 | `cache.type` | `memory` | `memory` | `memory` |
 | Scope hoisting | desativado | ativado (`concatenateModules`) | desativado |
 
+> [!duvida] O que é "scope hoisting" e por que ele só funciona em production?
+> A tabela lista "Scope hoisting (`concatenateModules`)" como feature ativada por `mode: 'production'`, mas o termo não é explicado em nenhuma parte da nota — nem na seção de tree-shaking nem no modelo mental entry→loaders→plugins→output. O que exatamente é "hoist" aqui, e qual o impacto prático no bundle (tamanho? performance? compatibilidade com módulos CJS)?
+
 > [!tip] `DefinePlugin` implícito no mode
 > `mode: 'production'` implicitamente adiciona `new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify('production') })`. Isso significa que código guardado por `if (process.env.NODE_ENV !== 'production')` é eliminado pelo Terser em produção — é assim que React remove seus warnings de dev sem code splitting manual.
 
@@ -562,6 +571,9 @@ module.exports = {
   output: { library: { name: 'MyLib', type: 'umd' } },
 };
 ```
+
+> [!duvida] Por que o externals da lib precisa de `{ commonjs, commonjs2, amd, root }` em vez da string simples usada no Cenário 1?
+> No Cenário 1 (CDN) o `externals` é `{ react: 'React' }` — simples. No Cenário 2 (lib para npm) virou um objeto com quatro chaves (`commonjs`, `commonjs2`, `amd`, `root`). A nota não explica o que cada chave representa nem quando essa forma objeto é obrigatória. Parece ligado ao `output.library.type: 'umd'`, mas a conexão não é feita explicitamente.
 
 ### `resolve` — como módulos são encontrados
 
@@ -912,6 +924,9 @@ export function CheckoutRoute() {
 ```
 
 ### Module Federation 2.0 — o que mudou
+
+> [!duvida] O que acontece em runtime quando shell e remote têm versões *incompatíveis* de React com `singleton: true`?
+> A seção de configuração diz que `singleton: true` "usa a primeira que foi carregada" e que ele "avisa se houver incompatibilidade de versão" — mas a armadilha de "Module Federation: remote carrega mas dá erro de versão de React" descreve um erro real (`React error #321`). Qual é o comportamento exato quando `requiredVersion: '^18.0.0'` é declarado mas o remote traz `react@17`? O MF bloqueia o carregamento? Usa mesmo assim e quebra silenciosamente? Lança o erro #321?
 
 Em 2024, Module Federation ganhou versão 2.0, que chegou a estável em abril de 2026, e desacoplou o runtime do webpack completamente:
 

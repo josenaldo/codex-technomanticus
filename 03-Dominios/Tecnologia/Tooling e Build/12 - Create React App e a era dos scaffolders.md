@@ -201,6 +201,9 @@ flowchart TD
 **O que eram react-app-rewired e CRACO?**
 
 - **`react-app-rewired`** (Tim Arney, 2017): modificava o webpack config do CRA interceptando as chamadas do `react-scripts`. A ideia era criar um arquivo `config-overrides.js` na raiz onde você podia retornar uma versão alterada da configuração. Em manutenção mínima desde CRA 2; oficialmente aposentado com a deprecação do CRA.
+
+> [!duvida] Como o react-app-rewired "interceptava as chamadas do react-scripts"?
+> A nota diz que o rewired interceptava as chamadas do `react-scripts`, mas não mostra o mecanismo. Ele substituía o binário? Envolvia a função que gerava a config de webpack antes de ela ser passada ao compiler? Sem entender como a interceptação funcionava, fica difícil entender por que "quebrava a cada update major" do CRA — qual era o ponto exato de fragilidade?
 - **CRACO** (Create React App Configuration Override, 2019): abordagem similar mas com API mais estruturada — um `craco.config.js` com seções para plugins, loaders, e opções do Jest. Mais robusto que o rewired, mas igualmente dependente dos internos do `react-scripts`. Com o CRA deprecado, CRACO entrou no mesmo limbo.
 
 Ambos ilustravam o problema fundamental: quando uma abstração é opaca, as pessoas constroem camadas sobre camadas para obter controle — até que o custo de manutenção supera qualquer benefício.
@@ -261,6 +264,9 @@ O CRA foi projetado num momento específico — 2016 — e carreguou as premissa
 O problema é que o React evoluiu em direções que o CRA nunca acompanhou.
 
 **Velocidade de build.** O webpack 4 com Babel era a combinação mais lenta possível para um projeto médio. Um cold start de dev server levava 15-30 segundos em projetos de tamanho razoável. Quando o Vite apareceu com seu dev server sobre ESM nativo, a comparação era cruel: o Vite iniciava em menos de 500ms, independente do tamanho do projeto. O CRA não conseguia competir — estava preso a uma arquitetura que requeria bundlar tudo antes de servir qualquer coisa.
+
+> [!duvida] Por que o ESM nativo elimina a necessidade de bundlar antes de servir?
+> A nota diz que o Vite usa "ESM nativo" e por isso não precisa bundlar tudo antes de servir — mas não explica o mecanismo. O que muda quando o browser lida diretamente com módulos ESM? Como o dev server sabe quais arquivos servir sem construir um grafo de dependência completo antes? A nota 13 promete cobrir isso, mas fica difícil entender *por que* a diferença de startup é tão grande sem essa peça.
 
 **O modelo de aplicação mudou.** React passou a recomendar SSR (renderização no servidor), Server Components, roteamento do lado do servidor, streaming de HTML, e integração de data fetching com Suspense. Todas essas funcionalidades exigiam um servidor — não apenas um bundler. O CRA era fundamentalmente uma ferramenta de SPA client-side; não havia forma de fazer SSR sem saair do ecossistema CRA.
 
@@ -444,6 +450,9 @@ Uma mudança que veio junto com a consolidação pós-CRA foi a padronização d
 
 O protocolo é simples: `npm create foo@latest` é equivalente a `npx create-foo@latest`. Qualquer pacote npm publicado com o nome `create-<algo>` pode ser invocado assim. Isso criou um ecossistema de scaffolders padronizados:
 
+> [!duvida] Esse protocolo `npm create` é uma convenção ou um recurso formal do npm?
+> A nota descreve `npm create foo` como equivalente a `npx create-foo`, mas não fica claro se isso é um comportamento documentado e garantido do npm ou uma convenção de nomenclatura que a comunidade adotou por costume. Isso importa porque, se for formal, qualquer pacote `create-*` obedece à mesma regra; se for convencional, pode haver edge cases. Qual é a origem desse protocolo?
+
 ```bash
 npm create vite@latest          # → executa create-vite
 npm create next-app@latest      # → executa create-next-app
@@ -499,6 +508,9 @@ O que muda estruturalmente:
 | Assets estáticos | `public/` | `public/` (mesma semântica) |
 | Configuração | zero (oculta) | `vite.config.ts` explícito |
 | TypeScript | via Babel (sem type-check em build) | via esbuild (strip types) + `tsc` separado |
+
+> [!duvida] O que significa "strip types" vs transpilação real do TypeScript?
+> A tabela diz que o Vite usa esbuild para "strip types" enquanto o CRA transpilava via Babel. Mas ambos resultam em JavaScript — qual é a diferença prática? E por que o Vite precisa do `tsc` separado se o esbuild já converte o arquivo? A impressão é que o Vite faz menos que o CRA nesse ponto, mas a nota apresenta isso como vantagem sem explicar o raciocínio.
 
 A sequência de migração mental é:
 

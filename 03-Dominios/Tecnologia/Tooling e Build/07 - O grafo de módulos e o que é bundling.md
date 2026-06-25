@@ -159,6 +159,9 @@ flowchart LR
 
 **1. Parsear e descobrir.** O bundler lê o arquivo do entry point, analisa o AST (Árvore Sintática Abstrata) em busca de `import` e `require`, e enfileira cada dependência descoberta para processamento. Para cada dependência, repete o processo. É uma travessia em largura (BFS) ou profundidade (DFS) do grafo — o Rolldown usa BFS explicitamente.
 
+> [!duvida] O que é AST e o que é "travessia em largura (BFS) ou profundidade (DFS)"?
+> O texto menciona "Árvore Sintática Abstrata" e as siglas BFS/DFS de passagem, mas não explica o que são. O bundler "analisa o AST" — mas como isso funciona na prática? E qual a diferença entre percorrer o grafo em largura vs. profundidade? Isso muda o resultado final do bundle?
+
 **2. Resolver.** Um `import { render } from "./ui/render.js"` é um caminho relativo — fácil. Mas `import React from "react"` é um **bare import** — não tem caminho, é só um nome. O resolver traduz esse nome para o caminho físico real em `node_modules/react/index.js`, seguindo as regras do `package.json` do pacote (campo `main`, `exports`, condicionais de ambiente). Essa resolução é o motivo pelo qual bundlers precisam conhecer `node_modules` — o browser não sabe resolver bare imports sozinho.
 
 **3. Transformar.** Cada módulo pode precisar de transformação antes de entrar no bundle: TypeScript vira JavaScript, JSX vira `React.createElement(...)`, sintaxe ES2024 vira ES5 se o target exigir. Bundlers modernos delegam essa etapa para transpiladores fast (esbuild, SWC) — o assunto da nota [[08 - Transpilação e targets]].
@@ -277,6 +280,9 @@ graph LR
 
 **O que acontece em runtime:** quando o bundler (ou o Node com ESM) encontra um ciclo, ele usa o que já processou até aquele ponto. O módulo que está sendo importado no meio da sua própria inicialização retorna um "live binding" ainda não resolvido — tipicamente `undefined` no momento em que o módulo dependente lê o valor.
 
+> [!duvida] O que é "live binding" e por que ele pode ser `undefined`?
+> A nota usa o termo "live binding" sem nunca ter explicado o que é. Por que um módulo no meio da inicialização retorna `undefined` em vez de simplesmente travar ou dar erro? O que torna um binding "live" (vivo) em vez de uma cópia normal do valor?
+
 ```js
 // Resultado real do exemplo acima (em ESM):
 // a.js é carregado primeiro
@@ -312,6 +318,9 @@ Dependências circulares em projetos React frequentemente emergem de index files
 ## Scope hoisting: uma otimização invisível que muda o comportamento
 
 Bundlers ingênuos simplesmente concatenam os módulos, embrulhando cada um em uma função para criar escopo isolado:
+
+> [!duvida] Por que embalar cada módulo em uma função cria "escopo isolado"? O que aconteceria sem isso?
+> A nota diz que o bundler "embrulha cada módulo em uma função para criar escopo isolado", mas não explica por que isso é necessário. Se dois módulos diferentes definem uma variável com o mesmo nome, o que aconteceria sem esse isolamento? E o que exatamente é uma IIFE?
 
 ```js
 // bundle.js (sem scope hoisting) — cada módulo em sua própria IIFE
@@ -542,6 +551,9 @@ Com bundling, o app que antes fazia 30 requisições HTTP passou a fazer 2 ou 3 
 
 1. **Minificação e tree-shaking**: um bundler elimina código morto e comprime o que sobra. Módulos individuais não-minificados somam mais bytes do que um bundle otimizado.
 2. **Otimizações intermodulares**: o bundler vê o grafo inteiro e pode fazer inlining de funções pequenas, constant folding entre módulos, e outras otimizações que o browser executando módulos individuais não consegue.
+
+> [!duvida] O que é "constant folding" e "inlining de funções"?
+> A nota lista essas otimizações como argumento moderno para bundling, mas não explica o que são. O que significa "fazer inlining" de uma função? E o que o bundler dobra (fold) quando faz "constant folding"? Sem entender o que são, fica difícil avaliar se valem o custo do bundler.
 3. **Cache granular via code splitting**: com chunks bem segmentados, você invalida cache só do que mudou — melhor que um bundle monolítico onde qualquer mudança invalida tudo.
 4. **Compatibilidade**: transformar para targets de browsers mais antigos ainda é necessário em muitos produtos, e o bundler é o lugar certo para isso.
 

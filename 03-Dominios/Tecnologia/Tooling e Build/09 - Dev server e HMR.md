@@ -54,6 +54,9 @@ graph LR
 
 O webpack (e antes dele, o Browserify) tomou uma decisão que fazia sentido em 2012: bundlar tudo em um único arquivo. Browsers não entendiam módulos. Cada `require()` precisava ser resolvido estaticamente e embutido no bundle. O servidor de dev era um processo de build completo a cada mudança. Funcionava — mas à medida que os projetos cresceram para centenas de módulos, o cold start passou de segundos para dezenas de segundos.
 
+> [!duvida] O que é "bundlar" e o que é "bundle"?
+> A nota usa "bundle" e "bundlar" como se eu já soubesse o que são. O que exatamente acontece quando um bundler "agrupa" módulos? Um único arquivo .js que contém todo o código? Por que browsers antigos precisavam disso e browsers modernos não?
+
 O Vite foi criado em 2021 por Evan You (criador do Vue) com uma observação simples: **browsers modernos já entendem ESM nativamente**. Se o browser consegue carregar `import { foo } from './utils.js'` diretamente, por que bundlar tudo durante o desenvolvimento? A resposta foi: não precisa.
 
 ---
@@ -93,6 +96,9 @@ Esse modelo tem uma propriedade fundamental: **o tempo de cold start não cresce
 ### O problema das dependências: pré-bundling com Rolldown
 
 Porém, tem um problema. A maioria das bibliotecas do npm foi publicada como CommonJS (`module.exports = ...`), não como ESM. E mesmo as que são ESM, como o lodash-es, podem ter centenas de arquivos internos — o que significa centenas de requests HTTP separados apenas para carregar uma biblioteca.
+
+> [!duvida] O que é CommonJS e o que é ESM? Por que existem dois sistemas de módulos?
+> A nota cita `module.exports = ...` (CommonJS) e ESM como formatos opostos, mas não explica o que são. São formas diferentes de escrever `import`/`export`? Por que o npm publicou tudo em CommonJS se o ESM é melhor?
 
 O Vite resolve isso com o **pré-bundling de dependências**: antes de iniciar o servidor, ele analisa quais pacotes você usa, converte cada um para um único arquivo ESM, e armazena em `.vite/deps/`. Isso acontece uma vez, na primeira inicialização (ou quando o `package.json` muda).
 
@@ -251,6 +257,9 @@ graph TD
 
 A estrutura interna do Vite define uma interface `PropagationBoundary` com três campos: `boundary` (o nó do grafo que aceitou), `acceptedVia` (o módulo que acionou a atualização) e `isWithinCircularImport` (se o caminho cruzou uma importação circular). Quando há importação circular no grafo, o Vite marca isso e usa heurísticas conservadoras — geralmente preferindo full reload para evitar estado inconsistente.
 
+> [!duvida] O que é uma "importação circular" e por que ela causa problema?
+> A nota menciona que importações circulares fazem o Vite usar "heurísticas conservadoras" e preferir full reload. O que é uma importação circular? Por que ela é problemática especificamente para o HMR e não apenas para o código em geral?
+
 > [!warning] O módulo que não tem `accept()` bloqueia o HMR
 > Se a propagação chegar a um módulo que não declarou `accept()` e não há nenhum ancestral que aceite, o Vite cai no full reload. Você vê no terminal: `[vite] page reload src/main.ts`. A solução típica é garantir que os módulos de entrada (entry points) — aqueles que o browser carrega primeiro — estejam fora do grafo de invalidação, ou que os componentes de framework sejam self-accepting via plugin.
 
@@ -374,6 +383,9 @@ function Button({ onClick, children }) {
 ```
 
 O campo `mappings` usa o formato **VLQ Base64** (Variable Length Quantity) — uma codificação compacta que mapeia cada posição no output para uma posição no source. O DevTools lê isso e executa o mapeamento transparentemente.
+
+> [!duvida] Como o DevTools "executa o mapeamento"? Isso acontece automaticamente sem eu fazer nada?
+> A nota descreve o formato técnico do source map (VLQ Base64, JSON com campos `sources` e `mappings`) mas não explica como o DevTools detecta e usa esses arquivos na prática. Eu preciso configurar alguma coisa no browser, ou ele simplesmente funciona quando abre o DevTools?
 
 ### Os três tipos de source maps
 

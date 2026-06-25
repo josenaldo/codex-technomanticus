@@ -86,7 +86,10 @@ function buscarUsuario(id) {
 }
 ```
 
-A função assíncrona virou uma state machine com `__awaiter` e `__generator` — helpers injetados inline (ou importados de `tslib`). O optional chaining `?.` virou a guarda manual `data === null || data === void 0`. O template literal virou concatenação de string. Tudo isso para uma função de três linhas.
+A função assíncrona virou uma state machine com `__awaiter` e `__generator` — helpers injetados inline (ou importados de `tslib`). O optional chaining `?.` virou a guarda manual `data === null || data === void 0`.
+
+> [!duvida] O que é `tslib` e quando os helpers são "importados" em vez de "injetados inline"?
+> A nota menciona duas opções (inline ou via tslib) mas não explica a diferença nem quando se usa cada uma. Se os helpers são injetados em todo arquivo, eles não se repetem no bundle final? O template literal virou concatenação de string. Tudo isso para uma função de três linhas.
 
 Se o target for ES2017 em vez de ES5, a transformação é quase nula: o `async/await` fica como está, só o TypeScript é apagado:
 
@@ -149,6 +152,9 @@ module.exports = {
 ```
 
 Com `useBuiltIns: "usage"`, o Babel analisa o código e injeta apenas os polyfills realmente usados — se seu código nunca usa `Promise.allSettled`, o polyfill não entra no bundle.
+
+> [!duvida] O exemplo de configuração do Babel acima ainda funciona ou está desatualizado?
+> A nota mostra `useBuiltIns` como "integração mais comum" e logo em seguida diz que o Babel 8 removeu essa opção. Projetos novos devem usar o exemplo acima ou já precisam usar `babel-plugin-polyfill-corejs3`? Quando usar Babel 7 vs Babel 8?
 
 > [!warning] Babel 8 mudou isso
 > Em **Babel 8** (lançado em junho de 2026), as opções `useBuiltIns` e `corejs` foram **removidas** do `@babel/preset-env`. A injeção de polyfills agora é feita pelo pacote separado `babel-plugin-polyfill-corejs3`. A migração é mecânica mas necessária — projetos que ainda usam Babel 7 com `useBuiltIns` continuam funcionando, mas quem migrar para Babel 8 precisa ajustar a configuração.
@@ -220,6 +226,9 @@ baseline newly available            # risco calculado mas sem legado
 ```
 
 Usar `baseline 2020` com Babel pode reduzir o bundle em 80–90% comparado a `target: ES5` — o artigo da web.dev demonstrou isso com um arquivo indo de 12KB para 1.5KB.
+
+> [!duvida] De onde vem a redução de 12KB para 1.5KB — do downleveling ou dos polyfills?
+> A nota explica que targets mais modernos geram menos helpers de downleveling, e também menos polyfills do core-js. Não fica claro quanto cada um contribui para a redução. Se eu só mudar o target mas não configurar o core-js, ainda terei a redução?
 
 ```mermaid
 graph LR
@@ -549,6 +558,9 @@ import { User, UserId } from "./types";   // importa dois tipos
 Para o tsc com acesso completo ao projeto, `User` e `UserId` são tipos — eles desaparecem no output JS. Mas o esbuild, processando `main.ts` isoladamente, não sabe se `User` é um tipo ou um valor runtime. Ele mantém o import para não correr o risco de quebrar algo.
 
 O resultado: imports de tipos mortos aparecem no bundle, o que pode causar problemas circulares ou imports de módulos que não existem em runtime.
+
+> [!duvida] Por que esbuild processa cada arquivo isoladamente — não seria mais seguro ler todos?
+> A nota diz que essa isolação é o que permite a velocidade, mas não explica o tradeoff. Se olhar todos os arquivos daria a resposta certa sobre tipos vs valores, por que o esbuild escolhe não fazer isso?
 
 A solução são dois flags do `tsconfig.json`:
 

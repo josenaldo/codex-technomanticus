@@ -93,6 +93,9 @@ define(['lodash', './utils'], function(_, utils) {
 
 A ironia é que o CommonJS — o formato server-first — se tornou dominante no front-end também, por uma razão pragmática: **o npm**. Quando o npm se tornou o repositório universal de JavaScript, e quando o Browserify (e depois o webpack) resolveram o "problema de browser" em build time (ao invés de runtime), o custo de adotar CommonJS caiu para zero. Você escrevia `require()` como no Node, e o bundler resolveu o resto.
 
+> [!duvida] O que significa "resolver em build time" aqui?
+> A nota diz que o Browserify resolveu o problema de browser "em build time", mas ainda não explicou o que o Browserify faz. O leitor sem contexto fica sem entender: o que exatamente acontece no build time que torna o `require()` funcionar no browser? O Browserify é explicado detalhadamente só seções depois.
+
 AMD sobreviveu principalmente em ambientes onde "sem build step" era um requisito — projetos empresariais que não tinham pipeline de CI sofisticado, ou que precisavam de carregamento dinâmico granular de módulos em runtime.
 
 ### UMD: a tentativa de paz
@@ -122,6 +125,9 @@ UMD foi amplamente adotado por autores de bibliotecas — Lodash, Underscore.js,
 
 > [!info] O legado do UMD em 2026
 > Você ainda encontra builds UMD em CDNs antigas e em bibliotecas que mantêm compatibilidade retroativa. Quando você baixa Bootstrap 4 ou Lodash via CDN no formato "non-module", o que recebe é provavelmente um bundle UMD. A nota [[06 - ESM e CJS e o sistema de módulos]] detalha como os bundlers modernos lidam com o legado UMD via campo `main` vs `module` no `package.json`.
+
+> [!duvida] O que são os campos `main` e `module` no `package.json`?
+> A nota menciona "campo `main` vs `module` no `package.json`" como se o leitor já soubesse o que são. Esses campos determinam qual arquivo o bundler carrega dependendo do formato (CJS ou ESM)? Se sim, uma frase explicando isso aqui evitaria o salto — a nota referenciada só aparece bem depois no mapa da trilha.
 
 ```mermaid
 timeline
@@ -307,6 +313,9 @@ Três problemas mataram o Grunt:
 
 > [!question] Mas por que o Grunt não simplesmente adotou streams como o Gulp?
 > A resposta é arquitetural: o modelo de configuração JSON-first do Grunt tornava impossível introduzir streams de forma natural. Adicionar streams ao Grunt exigiria reescrever o core e quebrar todo o ecossistema de plugins existentes. O Gulp foi criado do zero com streams como princípio fundante — não era uma feature, era a arquitetura. Este é um caso clássico de path dependency: inovar dentro de uma arquitetura existente é às vezes mais caro do que criar do zero.
+
+> [!duvida] O que é "path dependency" nesse contexto?
+> O termo é emprestado da economia/teoria institucional (decisões passadas constrangem opções futuras), mas é jogado sem definição. Para um leitor que não conhece o conceito, fica soando como jargão vago. Uma frase de ancoragem — "path dependency: quando decisões de design tomadas cedo criam custos altos demais para reverter depois" — tornaria o argumento concreto.
 
 ### Estado em 2026
 
@@ -655,6 +664,9 @@ const myModule = require('./processador');
 ```
 
 Isso significava que bibliotecas escritas para Node.js podiam "só funcionar" no browser via Browserify — um salto conceitual que a web-platform pura não conseguia. Bibliotecas de crypto, parsing, encoding que eram Node-only viraram front-end code. O webpack herdou e expandiu esse comportamento com o campo `browser` no `package.json` para overrides mais granulares.
+
+> [!duvida] O que é o campo `browser` no `package.json` e o que são "overrides mais granulares"?
+> A nota menciona que o webpack usava o campo `browser` para substituições mais precisas, mas não explica o mecanismo: o campo `browser` permite que uma biblioteca declare "quando compilado para browser, use este arquivo no lugar daquele" — o oposto do shim automático do Browserify. Sem isso, a comparação entre as duas abordagens fica no ar.
 
 **watchify — rebuild incremental:**
 
