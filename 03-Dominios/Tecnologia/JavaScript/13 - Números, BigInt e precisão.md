@@ -3,7 +3,7 @@ title: "13 - Números, BigInt e precisão"
 created: 2026-06-25
 updated: 2026-06-25
 type: concept
-status: seedling
+status: growing
 fase: adepto
 tags:
   - javascript
@@ -28,7 +28,7 @@ Esse é o bug mais famoso do JavaScript, e ele não é um erro: é uma consequê
 
 ## Como o JavaScript armazena números
 
-Antes de corrigir o problema, vale entender o mecanismo. JavaScript usa **um único tipo numérico** para tudo: inteiros, decimais, `Infinity`, `NaN`. Todos são armazenados no mesmo formato de 64 bits definido pelo padrão IEEE 754.
+Antes de corrigir o problema, vale entender o mecanismo. JavaScript usa **um único tipo numérico** para tudo: inteiros, decimais, `Infinity`, `NaN`. Todos são armazenados no mesmo formato de 64 bits definido pelo padrão [[Dicionário de JavaScript#IEEE 754|IEEE 754]].
 
 Esses 64 bits são divididos em três campos:
 
@@ -84,7 +84,7 @@ function isEqual(a, b, epsilon = Number.EPSILON) {
 isEqual(0.1 + 0.2, 0.3); // true
 ```
 
-Cuidado: `Number.EPSILON` é `2.220446049250313e-16` — adequado para comparações de valores próximos de 1. Para valores muito grandes ou muito pequenos, ajuste o fator de escala.
+Cuidado: `Number.EPSILON` é precisamente `2^-52 ≈ 2.220446049250313e-16` — a diferença entre `1.0` e o próximo float64 acima de `1.0`. O equívoco mais comum é usar comparação absoluta bruta (`Math.abs(a - b) < Number.EPSILON`) para qualquer par de floats, mas isso só funciona para números próximos de 1. Na faixa de 1000, o gap entre floats adjacentes já é ~10^-13, maior que EPSILON — então valores que "deveriam ser iguais" falham na comparação. A função `isEqual` acima usa **epsilon relativo** (escala com `Math.max(|a|, |b|)`), que é o padrão correto para qualquer magnitude.
 
 ### Estratégia 2: aritmética em inteiros (centavos)
 
@@ -119,7 +119,7 @@ console.log(a.plus(b).toString()); // "0.3" — exato
 ```
 
 > [!info] Proposta TC39: Decimal nativo
-> O TC39 mantém a proposta **`proposal-decimal`** (Stage 1 em 2026), baseada no padrão IEEE 754-2019 Decimal128. Se aprovada, trará aritmética decimal nativa sem bibliotecas externas. O progresso é lento — Stage 1 ainda é exploratório; não dependa disso para código de produção hoje.
+> O TC39 mantém a proposta **`proposal-decimal`** (Stage 1 — confirmado até a plenária de maio/2025), baseada em IEEE 754-2019 Decimal128 (34 dígitos significativos). Três decisões arquiteturais importantes foram consolidadas em 2025: (1) **BigDecimal foi explicitamente rejeitado** em favor de Decimal128 por questões de interop e hardware; (2) o **sufixo literal `1.5m` foi abandonado** pelos implementadores de engines — aritmética usará métodos explícitos (`.add()`, `.multiply()`); (3) o companion proposal **`proposal-amount`** (Decimal com metadados de precisão para i18n) chegou a Stage 2 em 2025, mas as propostas foram mantidas separadas. Não dependa de Decimal nativo para código de produção.
 
 ---
 
@@ -150,7 +150,7 @@ Cenários onde isso é crítico: IDs de banco de dados (especialmente IDs de sis
 
 ---
 
-## BigInt — inteiros sem limite de precisão
+## [[Dicionário de JavaScript#BigInt|BigInt]] — inteiros sem limite de precisão
 
 `BigInt` (introduzido no ES2020) resolve exatamente o problema de precisão em inteiros grandes. Ele representa inteiros com precisão arbitrária, sem teto.
 
@@ -190,7 +190,7 @@ JSON.stringify(3n); // TypeError: Do not know how to serialize a BigInt
 
 Esses três valores especiais fazem parte do padrão IEEE 754 e têm comportamentos que surpreendem quem os encontra pela primeira vez.
 
-### NaN — Not a Number
+### [[Dicionário de JavaScript#NaN|NaN]] — Not a Number
 
 ```javascript
 // Quando surge NaN
@@ -209,7 +209,7 @@ Number.isNaN("abc");   // false — string não é NaN
 isNaN("abc");          // true  — PERIGOSO: coerce para number antes de testar
 ```
 
-`NaN` é "contagioso": qualquer operação com `NaN` produz `NaN`. Se um cálculo retorna `NaN` inesperadamente, a causa pode estar muitas operações atrás.
+`NaN` é "contagioso": qualquer operação com `NaN` produz `NaN`. Se um cálculo retorna `NaN` inesperadamente, a causa pode estar muitas operações atrás. Curiosidade: `Map` e `Set` usam o algoritmo [[Dicionário de JavaScript#SameValueZero\|SameValueZero]], que considera `NaN === NaN` verdadeiro — então `NaN` funciona como chave de `Map` de forma previsível, ao contrário do `===` comum.
 
 ### Infinity
 
@@ -297,7 +297,12 @@ Math.floor(4.9);  // 4  — sempre para baixo (floor = chão)
 Math.ceil(4.1);   // 5  — sempre para cima (ceil = teto)
 Math.trunc(4.9);  // 4  — descarta a parte decimal (igual a floor para positivos)
 Math.trunc(-4.9); // -4 — diferente de floor para negativos! floor(-4.9) === -5
+```
 
+> [!question]- `Math.round(-1.5)` é `-1` ou `-2`?
+> É **`-1`**. O JavaScript usa *"round half toward +∞"* (em direção ao infinito positivo), não *"round half away from zero"* como Java, Python e Ruby. A spec ECMA-262 define: quando a parte fracionária é exatamente 0.5, retorne `floor(x) + 1`. Para `-1.5`: `floor(-1.5) + 1 = -2 + 1 = -1`. Consequência extra: `Math.round(-0.5)` retorna `-0` — a interação com zero negativo aparece aqui. Se você precisar de "round half away from zero" (o comportamento intuitivo): `Math.sign(x) * Math.round(Math.abs(x))`.
+
+```javascript
 // Outros úteis
 Math.abs(-7);          // 7
 Math.max(1, 2, 3);     // 3
@@ -315,9 +320,29 @@ Math.random();         // [0, 1) — não criptograficamente seguro
 
 Para random criptograficamente seguro, use `crypto.getRandomValues()` (Node.js e browsers).
 
+> [!warning] `Math.random()` não é seguro para tokens ou IDs
+> O V8 implementa `Math.random()` com o algoritmo **xorshift128+**: estado de 128 bits, algebricamente invertível. Com ~5 outputs consecutivos é possível reconstruir o estado completo e prever **todos os valores futuros** — e retrospectivamente os passados. Não use `Math.random()` para tokens de sessão, IDs de uso único, códigos de redefinição de senha ou qualquer coisa com implicação de segurança.
+>
+> Para floats uniformes em `[0, 1)` criptograficamente seguros:
+> ```javascript
+> // 32 bits — suficiente para a maioria dos casos não-criptográficos
+> function secureRandom() {
+>   const buf = new Uint32Array(1);
+>   crypto.getRandomValues(buf);
+>   return buf[0] / 0x100000000; // divide por 2^32
+> }
+>
+> // 53 bits — mesma precisão que o V8 gera internamente
+> function secureRandomFloat53() {
+>   const buf = new Uint32Array(2);
+>   crypto.getRandomValues(buf);
+>   return (buf[0] * 2 ** 21 + (buf[1] >>> 11)) / 2 ** 53;
+> }
+> ```
+
 ---
 
-## Formatação com Intl.NumberFormat
+## Formatação com [[Dicionário de JavaScript#Intl.NumberFormat|Intl.NumberFormat]]
 
 Exibir números para usuários é diferente de calcular com eles. O objeto `Intl.NumberFormat` formata números conforme as convenções de um locale, eliminando a necessidade de manipulação manual de strings:
 
@@ -461,6 +486,11 @@ Uma gotcha comum: ao usar `JSON.parse`, IDs grandes já chegam como `number` tru
 > **Por quê:** JSON não tem representação para esses valores IEEE 754 especiais. A spec do JSON.stringify converte silenciosamente os inválidos para `null`.
 > **Como evitar:** Sanitize valores numéricos antes de serializar. Se precisar preservar `BigInt`, serialize como string: `{ id: valor.toString() }`.
 
+> [!warning] Number.toFixed() opera sobre o valor armazenado, não o literal
+> **O que acontece:** `(1.005).toFixed(2)` retorna `"1.00"` em vez de `"1.01"` em todos os engines modernos (V8, SpiderMonkey, JavaScriptCore).
+> **Por quê:** `1.005` não é representável exatamente em float64 — é armazenado como `1.00499999999999989...`. A ECMA-262 §21.1.3.3 especifica que `toFixed` opera sobre o *valor matemático exato do double armazenado*, então vê a terceira casa como `4` e arredonda para baixo. Esse é comportamento normativo, não um bug.
+> **Como evitar:** Use o padrão de notação exponencial para arredondamento confiável: `+(Math.round(+(num + 'e+' + places)) + 'e-' + places)`. Ao usar `decimal.js`, sempre passe o valor como **string**, não como float: `new Decimal('1.005').toFixed(2)` → `"1.01"` ✓; `new Decimal(1.005).toFixed(2)` → pode ser `"1.00"` ✗ (o float já chegou danificado).
+
 > [!warning] Number("") e Number(null) são 0, não NaN
 > **O que acontece:** `Number("")` retorna `0`; `Number(null)` retorna `0`. Isso pode mascarar ausência de valor como zero válido.
 > **Por quê:** A especificação define que string vazia e `null` convertem para `0` — um legado da era em que JavaScript precisava ser tolerante com formulários HTML.
@@ -497,6 +527,10 @@ In JavaScript, all numbers use IEEE 754 double-precision floating-point format, 
 
 ---
 
+> [!tip] Vídeos recomendados
+> - [**⚖️ JavaScript Floating-Point Numbers: Fix Precision Errors (2024 Guide)**](https://www.youtube.com/watch?v=ICuCcdYLpZo) — cobre o `0.1 + 0.2` com soluções profissionais (bibliotecas, centavos, toFixed caveats). Ótimo complemento visual para a seção de estratégias deste capítulo.
+> - [**JavaScript Big Integers: Represent Very Large Integers With Precision**](https://www.youtube.com/watch?v=JEKS4qOIooo) — explora `BigInt` na prática, casos de uso com IDs e APIs (abr/2025).
+
 ## O que vem a seguir
 
 Agora que você entende como os valores numéricos se comportam internamente, o próximo passo natural é entender como eles interagem com outros tipos — o que acontece quando você some um `number` com uma `string`, ou compara um `BigInt` com `undefined`. Esse comportamento é governado pelas regras de coerção.
@@ -517,3 +551,8 @@ Agora que você entende como os valores numéricos se comportam internamente, o 
 - **Sergio Lema** — [*Why JavaScript Floating Point Math Breaks Your App*](https://sergiolema.dev/2026/04/06/why-javascript-floating-point-math-breaks-your-app-and-how-to-fix-it/) — análise prática das implicações de produção do IEEE 754
 - **Frido Verweij** — [*Floating points in JavaScript*](https://library.fridoverweij.com/docs/floating_points_in_js/) — explicação detalhada da representação binária de decimais
 - **Stefan Judis** — [*+/-0, NaN and Object.is in JavaScript*](https://www.stefanjudis.com/today-i-learned/0-nan-and-object-is-in-javascript/) — comportamento de zero negativo e NaN
+- **MDN Web Docs** — [*Number.prototype.toFixed()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) (2025) — especificação e comportamento de toFixed com valores IEEE 754
+- **MDN Web Docs** — [*Math.round()*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round) (2025) — semântica "round half toward +∞" e divergência de outras linguagens
+- **MDN Web Docs** — [*Number.EPSILON*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON) (2025) — definição de machine epsilon e uso correto em comparações
+- **V8 Blog** — [*There's Math.random(), and then there's Math.random()*](https://v8.dev/blog/math-random) (2015) — internals do xorshift128+ e por que Math.random() é previsível
+- **Igalia Compilers** — [*Summary of the April 2025 TC39 Plenary*](https://blogs.igalia.com/compilers/2025/05/20/summary-of-the-april-2025-tc39-plenary/) (2025) — decisões arquiteturais de proposal-decimal e status de proposal-amount

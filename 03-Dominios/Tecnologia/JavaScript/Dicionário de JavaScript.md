@@ -45,8 +45,24 @@ A janela entre o início do escopo e a linha de declaração de uma variável `l
 ### autoboxing
 O mecanismo pelo qual o JavaScript envolve automaticamente um valor primitivo num objeto wrapper temporário (`String`, `Number`, `Boolean`) quando você acessa uma propriedade ou chama um método nele — e descarta o wrapper em seguida. É o que permite `"hello".toUpperCase()` funcionar sem que você precise escrever `new String("hello")`. Não se aplica a `null` e `undefined`.
 
+### BigInt
+Tipo primitivo introduzido no ES2020 para representar inteiros com **precisão arbitrária**, sem o teto de `Number.MAX_SAFE_INTEGER` (`2⁵³ − 1`). Criado com o sufixo `n` (`9007199254740993n`) ou via `BigInt(valor)`. Restrições fundamentais: não aceita decimais (`3n / 2n === 1n`, trunca), não se mistura com `number` em operações aritméticas (lança `TypeError`), e não é serializável com `JSON.stringify` (também lança `TypeError`). Comparação com `==` funciona por coerção (`3n == 3` é `true`), mas `===` não (`3n === 3` é `false`). Use para IDs além do safe range, criptografia e timestamps em nanossegundos.
+
 ### coerção
 A conversão implícita de um valor de um tipo para outro, disparada por operadores (`+`, `==`) ou contextos (condições). A fonte de boa parte das armadilhas clássicas da linguagem.
+
+### IEEE 754
+Padrão internacional que define a representação e aritmética de números em ponto flutuante. JavaScript usa **double-precision** (64 bits): 1 bit de sinal, 11 bits de expoente e 52 bits de mantissa (+ 1 implícito), totalizando ~15–17 dígitos decimais significativos. A consequência prática é que nem todo decimal base-10 tem representação binária exata — `0.1` em binário é uma dízima infinita truncada, o que explica `0.1 + 0.2 !== 0.3`. Inteiros são exatos até `2⁵³ − 1` (`Number.MAX_SAFE_INTEGER`); acima disso, dois inteiros distintos podem ter a mesma representação float. Valores especiais do padrão incluídos no `number` do JavaScript: `NaN`, `Infinity`, `-Infinity` e `-0`.
+
+### Intl.NumberFormat
+API nativa de formatação de números com suporte a locales, definida pelo padrão ECMA-402 (internacionalização do ECMAScript). Formata números como moeda, porcentagem, unidade de medida e notação compacta, seguindo as convenções do locale especificado. Criar o objeto tem custo (carrega tabelas de locale) — deve ser instanciado fora de laços e reutilizado. Disponível em todos os browsers modernos e Node.js desde a v13.
+```js
+new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(1234.56)
+// "R$ 1.234,56"
+```
+
+### NaN
+*Not a Number* — valor especial do padrão IEEE 754 produzido por operações aritméticas indeterminadas (`0/0`, `Math.sqrt(-1)`, `Number("abc")`). Propriedade única no JavaScript: `NaN !== NaN` (`NaN` é o único valor não igual a si mesmo). Para detectar corretamente, use `Number.isNaN(valor)` — nunca compare diretamente com `NaN` nem use o global `isNaN()` (que coerce o argumento antes de testar). `NaN` é "contagioso": qualquer operação com ele produz `NaN`. Em contexto booleano, é *falsy*. `Map` e `Set` tratam `NaN` como chave válida via [[Dicionário de JavaScript#SameValueZero\|SameValueZero]] (`NaN === NaN` é `true` nesse algoritmo).
 
 ### primitivo
 Um dos 7 tipos de valor imutável: `string`, `number`, `bigint`, `boolean`, `undefined`, `symbol`, `null`. Tudo que não é primitivo é `object`.
@@ -146,8 +162,20 @@ Variante de Set onde os valores devem ser objetos mantidos por referência fraca
 
 ## Assíncrono
 
+### AbortController
+Interface da Web API que permite cancelar operações assíncronas (como `fetch`) que suportam `AbortSignal`. O controller expõe um `signal` que é passado para a operação e um método `abort()` que dispara o cancelamento. Métodos estáticos modernos: `AbortSignal.timeout(ms)` cria um sinal que aborta automaticamente após o prazo; `AbortSignal.any([s1, s2])` combina múltiplos sinais em um, abortando quando qualquer deles disparar. Suporte: browsers modernos (Chrome 66+) e Node.js 15+.
+
+### async iterator
+Objeto que implementa o protocolo de iteração assíncrona: possui um método `[Symbol.asyncIterator]()` que retorna um objeto com `.next()` retornando uma Promise de `{ value, done }`. Consumível via `for await...of`. Generators assíncronos (`async function*`) implementam o protocolo automaticamente. Diferentemente de iterables síncronos, cada passo pode aguardar I/O antes de produzir o próximo valor.
+
+### executor
+Função passada como argumento para `new Promise(executor)`. É chamada **sincronamente** no momento da criação da Promise e recebe dois callbacks: `resolve` (para marcar a Promise como fulfilled com um valor) e `reject` (para rejeitá-la com um motivo). Qualquer código após chamar `resolve` ou `reject` ainda executa — use `return` para encerrar o executor após a decisão. Erros lançados dentro do executor são automaticamente convertidos em rejeição da Promise.
+
 ### Promise
 Objeto que representa o resultado eventual de uma operação assíncrona, em um de três estados: pending, fulfilled ou rejected. Base sintática de `async/await`.
+
+### thenable
+Qualquer objeto que possua um método `.then(onFulfilled, onRejected)`, independente de ser uma Promise nativa. O algoritmo `Promise.resolve()` detecta thenables e os "assimila" — chama `.then(resolve, reject)` e adota o estado resultante. Isso garante interoperabilidade com bibliotecas Promise de terceiros (jQuery Deferred, Bluebird, etc.) sem conversão explícita. A spec ECMAScript define thenable assimilation em §27.2.1.1.
 
 ## Módulos
 
