@@ -1,10 +1,10 @@
 ---
 title: "Multi-agent — orchestrator e sub-agents"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-25
 type: concept
-progress: backlog
-status: seedling
+progress: done
+status: growing
 publish: true
 tags:
   - anatomia-agents
@@ -18,6 +18,12 @@ aliases:
 ---
 
 # Multi-agent — orchestrator e sub-agents
+
+A sprint durou três dias para implementar o que parecia ser uma análise de código. O sistema tinha cinco agents: um orchestrator, um explorer de código, um analyzer de segurança, um formatter de relatório, e um validator. O problema: a tarefa real era "ler 10 arquivos, identificar imports não-utilizados, listar no relatório". Dois LLM calls com boas tools teriam resolvido em 30 segundos.
+
+Em vez disso, três dias foram gastos depurando a camada de coordenação — handoffs que perdiam contexto, orchestrator que entrava em loop quando um sub-agent retornava formato diferente do esperado, e custo de tokens 3× maior que o necessário porque cada sub-agent recebia um histórico inflado. O sistema funcionou, eventualmente, mas o custo de construí-lo excedeu por muito o valor que entregou.
+
+Multi-agent é arquitetura de escala, não de elegância. Antes de partir para ele, a pergunta certa é: um único agent bem desenhado, com boas tools e um system prompt focado, resolve isso? Se sim — fique no single.
 
 > [!abstract] TL;DR
 > Para tarefas grandes, um **[[Dicionário de IA#orchestrator-worker|agent orchestrator]]** delega para **[[Dicionário de IA#subagent|sub-agents]] especializados**. Cada sub-agent tem contexto pequeno e focado, falhas localizadas não contaminam o todo, paralelização vira possível, e cada sub-agent pode usar modelo diferente (Haiku para Explorer, Sonnet para Implementer, Opus para Reviewer). Custo: overhead de coordenação, handoff é onde info se perde, debugging mais complexo. **Single agent bem desenhado > multi-agent confuso.** Use sub-agents quando tarefa não cabe num contexto só, ou quando especialização claramente ajuda.
@@ -179,6 +185,68 @@ Custo total **menor** que single Opus. Latência total similar (paralelismo comp
 > 3. Sub-agent é arquitetura ou complexidade gratuita?
 >
 > Se resposta é "sim" para 1-2, **fique single**.
+
+```mermaid
+xychart-beta
+    title "Overhead de coordenação como % do custo total — por complexidade da tarefa"
+    x-axis ["Tarefa 3 steps", "Tarefa 10 steps", "Tarefa 30 steps", "Paralela 10 sub-tasks"]
+    y-axis "% tokens em coordenação" 0 --> 60
+    bar [55, 35, 18, 10]
+```
+
+> Para tarefas pequenas, mais da metade dos tokens vão para coordenação (handoff summaries, routing, retry logic) — não para o trabalho real. Multi-agent só fica eficiente quando a tarefa é grande o suficiente para diluir esse overhead.
+
+```mermaid
+flowchart TD
+    A["Tarefa complexa"] --> B{"Cabe em\num contexto único?"}
+    B -->|sim| C["Single agent\n(mais simples, mais barato)"]
+    B -->|não| D{"Sub-tarefas são\nindependentes?"}
+    D -->|não| E["Single agent\n+ tools melhores"]
+    D -->|sim| F{"Precisam de\nmodelos diferentes?"}
+    F -->|não| G["Single agent\n+ paralelismo de tools"]
+    F -->|sim| H["Multi-agent\ncom especialização por modelo"]
+```
+
+```mermaid
+sequenceDiagram
+    participant O as Orchestrator
+    participant Explorer as Explorer (Haiku)
+    participant Impl as Implementor (Sonnet)
+    participant Rev as Reviewer (Opus)
+
+    O->>Explorer: Analise o código: intent + dados
+    Explorer-->>O: Resumo estruturado
+    O->>Impl: Implemente: resumo + spec enxuta
+    Impl-->>O: PR diff
+    O->>Rev: Revise: diff + critérios
+    Rev-->>O: Aprovado / comentários
+    O-->>O: Integra resultado
+```
+
+## Como explicar em inglês
+
+A multi-agent system is an architecture where a primary agent (the orchestrator) delegates subtasks to specialized sub-agents, each with its own isolated context and, optionally, a different model. The core benefits are context isolation (each sub-agent sees only what it needs to decide), parallelism (independent sub-tasks run concurrently), and model specialization (cheap, fast models for exploration; expensive, capable models for review). The core costs are coordination overhead (tokens spent on handoffs, routing, and retry logic that don't contribute to the task), handoff quality (information is always lost or distorted when summarized across agents), and debugging complexity (a bug can live in any agent or in the coordination layer). The most common mistake is premature multi-agent — building five specialized agents for a task that a single well-prompted agent with two good tools would handle faster, cheaper, and more reliably.
+
+| Português | English |
+|---|---|
+| orquestrador | orchestrator |
+| sub-agente | sub-agent |
+| handoff | handoff |
+| isolamento de contexto | context isolation |
+| especialização por papel | role specialization |
+| sobrecarga de coordenação | coordination overhead |
+| agente especialista | specialist agent |
+| paralelismo de agentes | agent parallelism |
+| arquitetura multi-agente | multi-agent architecture |
+| agent prematuro | premature agent / premature multi-agent |
+| trilha de auditoria | audit trail |
+| fallback de coordenação | coordination fallback |
+
+## Ver mais
+
+- **Anthropic — *Building Effective Agents*** (2024): A seção sobre multi-agent tem os critérios canônicos de quando escalar de single para multi — incluindo a regra "single agent bem desenhado > multi-agent confuso". Fonte das boas práticas de handoff e especialização por modelo.
+- **Anthropic — *Claude Agent SDK: Subagents and Tasks*** (2025): Documentação técnica do mecanismo de sub-agents na API Claude — como despachar, como receber resultados, como isolar contexto. Referência de implementação.
+- **Augment Code — *Coordinator-Implementor-Verifier Pattern*** (2026): Descreve o padrão CIV peer-reviewed, com DAG de tasks, implementors paralelos e validação antes de aceitar. Modelo arquitetural concreto para sistemas multi-agent em coding.
 
 ## Veja também
 
