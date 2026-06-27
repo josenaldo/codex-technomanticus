@@ -47,7 +47,7 @@ graph TB
     H --> A
 ```
 
-Cada caixa é decisão de engenharia com trade-offs reais. Coletores ineficientes aumentam latência. Seleção mal calibrada produz rot. Ordenação errada desperdiça atenção. A pipeline não é um loop simples — é um sistema com múltiplas camadas de política.
+Cada caixa é decisão de engenharia com trade-offs reais. Coletores ineficientes aumentam latência. Seleção mal calibrada produz rot (→ [[03 - Context rot e atenção diluída]]). Ordenação errada desperdiça atenção. Validação ausente deixa o provider truncar silenciosamente. A pipeline não é um loop simples — é um sistema com múltiplas camadas de política, cada uma com seu próprio espaço de falha.
 
 ---
 
@@ -61,7 +61,7 @@ Cada caixa é decisão de engenharia com trade-offs reais. Coletores ineficiente
 | **Retrieval dinâmico** | Tools, MCP servers, APIs | Sob demanda | Just-in-time |
 | **Tool definitions** | Schemas de funções disponíveis | 2-15K tokens | Cacheável |
 
-A pipeline decide para cada turno: *quanto* de cada fonte entra, *em que posição*, *com que compressão*. Essas três dimensões — quantidade, posição, compressão — são os três graus de liberdade que o engenheiro de contexto controla.
+A pipeline decide para cada turno: *quanto* de cada fonte entra, *em que posição*, *com que compressão*. Essas três dimensões — quantidade, posição, compressão — são os três graus de liberdade que o engenheiro de contexto controla. Note que essas decisões são feitas **por turno** — o contexto ideal para "me explique este conceito" é diferente do contexto ideal para "corrija este bug" mesmo dentro da mesma sessão.
 
 ---
 
@@ -83,7 +83,9 @@ Pre-indexed retrieval ←——————————————→ Just-in-t
 > [!example] Claude Code (híbrido)
 > `CLAUDE.md` e arquivos de memória são carregados **uma vez no início** (pre-indexed). `glob`/`grep`/`read_file` recuperam código **sob demanda durante a sessão** (JIT). Resultado: regras estáveis sempre presentes; código sempre atualizado. Nenhum dos dois extremos sozinho resolveria o problema.
 
-A maioria dos sistemas de produção usa o modelo híbrido. A decisão de o que vai para cada extremo deve ser guiada por: **estabilidade** (quanto muda?) e **volume** (quanto cabe?). Informação estável e pequena → pre-indexed. Informação dinâmica ou grande → JIT.
+A maioria dos sistemas de produção usa o modelo híbrido. A decisão de o que vai para cada extremo deve ser guiada por: **estabilidade** (quanto muda?), **volume** (quanto cabe?) e **latência** (quanto tempo para recuperar?). Informação estável e pequena → pre-indexed. Informação dinâmica ou grande → JIT. Informação que raramente é necessária mas crítica quando é → JIT com fallback explícito para "não tenho essa informação, peço ao usuário".
+
+A regra prática: se você está incerto, comece com JIT. É mais simples de implementar, sempre fresco, e você pode pré-indexar depois quando a latência se provar um problema.
 
 ---
 
@@ -165,7 +167,7 @@ Uma pipeline bem projetada executa as quatro operações em cada fonte, em cada 
 - Produto enterprise com múltiplos agentes e memória longa: avaliar Zep ou Letta
 - Necessidade específica de entity resolution (ex: CRM, saúde): Graphlit
 
-Em junho de 2026, Zep e Mem0 dominam o mercado de agent memory SaaS; Letta (ex-MemGPT) ganhou tração com a arquitetura inspirada em OS para agentes de longa duração.
+Em junho de 2026, Zep e Mem0 dominam o mercado de agent memory SaaS; Letta (ex-MemGPT) ganhou tração com a arquitetura inspirada em OS para agentes de longa duração. A tendência de 2026 é os próprios providers de modelo integrarem primitivas de memória nativas (Anthropic e Google anunciaram roadmaps nessa direção) — o que pode tornar engines externos desnecessários para casos simples, mas não para arquiteturas enterprise com requisitos específicos de compliance, audibilidade e multi-tenant.
 
 ---
 
@@ -175,9 +177,14 @@ Uma boa pipeline é **observável**, **versionada** e **testável**:
 
 **Observável** — para cada turno, você sabe quais fontes contribuíram, com quanto, e em que posição. Sem observabilidade, você depura comportamento de modelo que na verdade é problema de contexto — dois problemas completamente diferentes com soluções completamente diferentes.
 
-**Versionada** — mudança de pipeline é deploy, não edição ad-hoc. A política de compactação, o top-k do retrieval, quais ferramentas são filtradas — cada mudança deve ser rastreada. Quando o comportamento do agente piora, você precisa saber: foi o modelo que mudou, ou foi a pipeline?
+**Versionada** — mudança de pipeline é deploy, não edição ad-hoc. A política de compactação, o top-k do retrieval, quais ferramentas são filtradas — cada mudança deve ser rastreada em controle de versão como qualquer outro código. Quando o comportamento do agente piora, você precisa saber: foi o modelo que mudou, ou foi a pipeline? Sem versionamento, essa pergunta não tem resposta.
 
-**Testável** — você roda a mesma pipeline contra inputs gold e checa outputs. Uma eval suite de 50 casos representativos, executada antes de cada mudança de pipeline, pega 80% das regressões antes de ir para produção.
+Uma prática que emerge em 2025-2026: manter um "pipeline changelog" separado do código — um registro das políticas que mudaram, com a razão e o impacto observado. Isso porque mudanças de política raramente deixam rastro legível em diffs de código.
+
+**Testável** — você roda a mesma pipeline contra inputs gold e checa outputs. Isso inclui testar não só "a resposta foi correta" mas "o contexto que entrou era o esperado" — dois tipos distintos de falha que exigem soluções distintas. Uma eval suite de 50 casos representativos, executada antes de cada mudança de pipeline, pega 80% das regressões antes de ir para produção.
+
+Os três critérios formam um triângulo de maturidade: possível ter uma pipeline observável mas não testada (logs existem sem dataset gold), testada mas não versionada (evals existem sem rastrear mudanças), ou versionada sem observabilidade (git history sem logs de runtime). Os três juntos são o mínimo para operar com confiança em produção.
+
 
 > [!tip] Métrica essencial para pipeline health
 > *"Para esta classe de query, qual fração do contexto enviado foi efetivamente útil?"* — se >50% do contexto não influenciou a resposta, a pipeline está mal calibrada. Ferramentas como LangSmith e Weave oferecem attribution tracking para estimar esse número.
@@ -306,6 +313,8 @@ O "meio" da janela — onde a atenção é mais fraca — é reservado para o qu
 - "Our pipeline is ad-hoc right now — retrieval logic is scattered across 12 functions. We need to centralize it as a first-class component"
 - "We're seeing context bloat because the pipeline is loading all tool definitions every turn — we need to filter by task relevance"
 - "The handoff between agents needs to be structured JSON, not raw context dump — otherwise the receiving agent drowns in distractors"
+- "We need observability at the pipeline layer — before we can fix the model behavior, we need to know what's actually going into the context"
+- "The compaction policy is a business decision, not a technical detail — let's get a domain expert to define what the agent needs to remember across sessions"
 
 ### Tabela PT ↔ EN
 
@@ -387,4 +396,5 @@ Uma forma de pensar no arco: sem pipeline, você tem um modelo com um prompt. Co
 - **Braintrust** — *Eval-driven development for LLM applications* (2025). Framework de avaliação que inclui testes de pipeline isolados dos testes de qualidade end-to-end — base para o ciclo de maturidade de testes.
 - **Adam Azzam** — *Context window economics: how pipeline design affects your AI bill* (2026). Análise quantitativa do impacto de diferentes estratégias de pipeline no custo de produção — dados reais de empresas em scale.
 - **Anthropic** — *Prompt caching best practices* (2025). Guia técnico sobre como estruturar o contexto para maximizar cache hits — inclui o princípio "stable first, dynamic last" com dados de redução de custo.
+- **Hamel Husain** — *Your AI product needs evals* (2024). Guia prático sobre como construir o dataset gold a partir de logs de produção e automatizar evals de pipeline — https://hamel.dev/blog/posts/evals/
 - **Model Context Protocol Specification** — Anthropic (2024). Especificação do protocolo padrão para integração de fontes JIT em pipelines de contexto — https://spec.modelcontextprotocol.io
