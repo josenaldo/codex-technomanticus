@@ -76,6 +76,7 @@ Todos os comandos usam `uvx yt-dlp` (não instalar global; o `uv` já está na m
 - **Citações** — 3-5 trechos verbatim **na língua original**, cada um com `[mm:ss]`.
 - **Meu comentário** — placeholder literal, nunca preenchido.
 - **Ver também** — 1-4 wikilinks pras notas existentes de melhor encaixe. `[pasta-alvo]` é só uma **dica de prioridade**, NÃO um escopo exclusivo: sempre varra TAMBÉM o vault inteiro (sobretudo galhos vizinhos em `03-Dominios/`) por interseção de tags/tema. Antes de declarar lacuna, confirme com uma busca global (ex: `find 03-Dominios -iname "*<tema>*"`) — um tema pode ter nota em outro domínio (ex: Embeddings vive em `RAG e Vector Databases`, não em `Anatomia dos LLMs`). Marcar como sugestão (`<!-- sugestão; validar -->`). Só declare 💡 lacuna se a busca global não achar nada. Sem match → `-`.
+- **Frases para entrevista** *(somente em vídeos sobre carreira, liderança técnica, soft skills ou desenvolvimento profissional)* — 15-25 frases verbatim da transcrição diretamente reutilizáveis em entrevistas de emprego. Por frase: trecho exato em negrito, timestamp `[mm:ss]`, gatilho de pergunta mais provável ("quando usar") e explicação de por que funciona naquele contexto de entrevista. Ordenar por força/versatilidade. Se o vídeo for técnico puro (ex.: tutorial de framework, demo de ferramenta), omitir a seção completamente — não forçar frases de carreira onde não existem.
 
 ## Template do arquivo (vídeo)
 
@@ -126,6 +127,23 @@ publish: false
 > "<citação 1 na língua original>" — [mm:ss]
 
 > "<citação 2 na língua original>" — [mm:ss]
+
+## Frases para entrevista
+
+> [!tip] Como usar
+> As frases estão na língua original. Use diretamente ou adapte. Cada uma tem o gatilho de pergunta mais provável.
+
+---
+
+**1. "<frase verbatim>"** — [mm:ss]
+*Quando usar:* <gatilho de pergunta>. <Por que funciona nesse contexto de entrevista>.
+
+---
+
+**2. "<frase verbatim>"** — [mm:ss]
+*Quando usar:* <gatilho>. <Explicação de por que funciona>.
+
+*(seção presente somente em vídeos de carreira/liderança/soft skills — omitir em vídeos técnicos puros)*
 
 ## Meu comentário
 
@@ -195,3 +213,5 @@ publish: false
 | Ver também sem match              | Deixa `-`                                                     |
 | Playlist com 1 vídeo              | Trata como vídeo único; sem glosa-índice                      |
 | `uvx`/`yt-dlp` falha              | Reporta comando que falhou; não escreve arquivo              |
+| Vídeo de carreira / liderança / soft skills | Incluir seção "Frases para entrevista" com 15-25 frases |
+| Vídeo técnico puro (ex.: tutorial, demo)    | Omitir seção "Frases para entrevista" completamente     |

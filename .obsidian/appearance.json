@@ -1,7 +1,7 @@
 {
   "cssTheme": "Cupertino",
   "accentColor": "#0b9b9d",
-  "theme": "moonstone",
+  "theme": "obsidian",
   "enabledCssSnippets": [
     "mermaid-tema"
   ],
