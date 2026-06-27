@@ -1,11 +1,11 @@
 ---
 title: "Skills em time — versionar, manter, compartilhar"
 type: concept
-progress: backlog
+progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: evergreen
 tags:
   - claude-code
   - skills
@@ -17,25 +17,41 @@ tags:
 # Skills em time — versionar, manter, compartilhar
 
 > [!abstract] TL;DR
-> Skills em `.claude/skills/` são versionadas junto ao código — qualquer dev que clona o repo tem acesso imediato. O desafio não é técnico: é manter as skills atualizadas conforme o projeto evolui e garantir que o time as conhece e as usa. Skills desatualizadas são ativamente prejudiciais: o [[Dicionário de IA#Agent|agente]] segue um processo que o projeto abandonou.
+> Skills em `.claude/skills/` são versionadas junto ao código — qualquer dev que clona o repo tem acesso imediato. O desafio não é técnico: é manter as skills atualizadas conforme o projeto evolui. Skills desatualizadas são ativamente prejudiciais: o [[Dicionário de IA#Agent|agente]] segue um processo que o projeto abandonou, com confiança e sem aviso.
 
-## Por que versionar no repo
+## A analogia do manual de processos
 
-Skills em `.claude/skills/` são commitadas junto ao código. Vantagens:
+Todo time tem um manual de processos: como fazer deploy, como revisar código, quais são as convenções de nomenclatura. Mas manuais têm um problema clássico: eles envelhecem. O time evolui, o projeto muda, e o manual continua descrevendo como as coisas eram feitas — não como são feitas agora.
 
-- Todo dev que clona o repo tem as mesmas skills
-- Mudanças nas skills aparecem no histórico git — você sabe quando e por que uma convenção mudou
-- Code review de skills funciona igual a code review de código
-- CI pode verificar se as skills estão consistentes com o código
+Skills têm o mesmo problema, mas com uma agravante: o agente *obedece o manual literalmente*. Um humano lê um manual desatualizado e desconfia. O agente lê e segue.
 
-Comparando com `~/.claude/skills/` (global, pessoal):
+A solução não é técnica — qualquer arquivo Markdown num diretório é suficiente. A solução é cultural: tratar skills como código, com owner, review, e atualização sistemática.
 
-| | `.claude/skills/` (projeto) | `~/.claude/skills/` (global) |
-|--|---------------------------|------------------------------|
-| Escopo | Este projeto | Todos os projetos |
-| Versionamento | git do projeto | Só em você |
-| Compartilhamento | Automático via clone | Manual |
-| Quando usar | Convenções do projeto | Seus workflows pessoais |
+> [!question] Como saber se uma skill está desatualizada?
+> Se um dev experiente do time olhar a skill e disser "mas a gente não faz mais assim" — a skill está desatualizada. Esse momento de estranhamento é o sinal.
+
+## Por que versionar no repositório
+
+Skills em `.claude/skills/` são commitadas junto ao código. Comparando com a alternativa (skills pessoais em `~/.claude/skills/`):
+
+| Dimensão | `.claude/skills/` (projeto) | `~/.claude/skills/` (pessoal) |
+|---|---|---|
+| Escopo | Este projeto | Todos os projetos do dev |
+| Disponível para o time | Sim, via clone | Não |
+| Histórico de mudanças | git log | Só no seu sistema |
+| Code review de skills | Sim, via PR | Não |
+| Novo dev no time | Recebe skills automaticamente | Precisa configurar manualmente |
+| Quando usar | Convenções e processos do projeto | Seus workflows pessoais |
+
+**A vantagem mais subestimada**: o git log de uma skill mostra *quando* uma convenção mudou e *por quê* — se o commit message for bom. É documentação histórica gratuita.
+
+```bash
+# Ver histórico de uma skill
+git log --oneline .claude/skills/convencoes.md
+
+# Comparar com versão anterior
+git diff HEAD~5 .claude/skills/convencoes.md
+```
 
 ## Estrutura recomendada
 
@@ -45,50 +61,76 @@ Comparando com `~/.claude/skills/` (global, pessoal):
     processo/
       tdd.md
       code-review.md
+      debugging.md
       deploy-checklist.md
     dominio/
       arquitetura.md
       convencoes.md
       regras-negocio.md
-  settings.json
+      banco.md
+  settings.json   ← configuração MCP
 ```
 
-Subpastas por tipo tornam o catálogo legível. [[Dicionário de IA#Claude Code|Claude Code]] encontra skills em qualquer nível dentro de `.claude/skills/`.
+Subpastas por tipo tornam o catálogo legível. O [[Dicionário de IA#Claude Code|Claude Code]] encontra skills em qualquer nível dentro de `.claude/skills/`.
 
-## Ciclo de vida de uma skill
+Organize conforme o catálogo cresce — mas comece flat (sem subpastas) até ter 4+ skills. Organização prematura de um conjunto pequeno é overhead sem benefício.
 
+## O ciclo de vida completo de uma skill
+
+```mermaid
+flowchart TD
+    N["Necessidade identificada\n'O agente está tomando decisão errada'"] --> D["Skill escrita\n(rascunho em linguagem natural)"]
+    D --> T["Testada em uso real\n(tarefa representativa)"]
+    T --> I{"Funciona?"}
+    I -->|"Gaps encontrados"| FIX["Iterar — adicionar, remover, clarificar"]
+    FIX --> T
+    I -->|"Sim"| C["Commitada e adicionada ao catálogo\n(CLAUDE.md)"]
+    C --> USE["Usada pelo time"]
+    USE --> CHANGE{"Projeto mudou?"}
+    CHANGE -->|"Sim"| UPD["Skill atualizada\n(PR com review)"]
+    UPD --> USE
+    CHANGE -->|"Processo abandonado"| REM["Skill removida\n(não marcada como obsoleta)"]
 ```
-1. Necessidade identificada
-   ↓
-2. Skill escrita (rascunho)
-   ↓
-3. Testada em uso real
-   ↓
-4. Commitada e documentada no catálogo
-   ↓
-5. Usada pelo time
-   ↓
-6. Atualizada quando o processo muda
-   ↓
-7. Arquivada se o processo é abandonado
-```
 
-O passo que mais falha é o 6. Skills são escritas e nunca mais tocadas — mesmo quando o projeto muda completamente.
+O passo que mais falha é a atualização. Skills são escritas e nunca mais tocadas — mesmo quando o projeto evolui completamente. Sem um trigger explícito para atualização, a skill envelhece silenciosamente.
 
-## Manter skills atualizadas
+## Mantendo skills atualizadas: o sistema de triggers
 
-### Trigger de atualização
+### Trigger 1: mudança de processo
 
 Toda vez que o time toma uma decisão que mudaria o comportamento do agente, é um trigger para atualizar a skill:
 
-- Adotou uma nova convenção de nomenclatura → atualizar `convencoes.md`
+- Adotou nova convenção de nomenclatura → atualizar `convencoes.md`
 - Mudou o processo de deploy → atualizar `deploy-checklist.md`
-- Adicionou uma regra de negócio crítica → atualizar `regras-negocio.md`
-- Abandonou uma prática → remover da skill ou adicionar nota de "não fazer mais"
+- Adicionou regra de negócio crítica → atualizar `regras-negocio.md`
+- Abandonou uma prática → remover da skill ou adicionar seção "não fazer mais"
 
-### Ownership por skill
+### Trigger 2: PR no módulo coberto pela skill
 
-Defina um owner para cada skill. Sem owner, a skill não será mantida:
+Se um PR toca `src/orders/`, o code review deveria incluir a pergunta: "a skill `arquitetura-orders.md` precisa ser atualizada?" Isso transforma a atualização em parte natural do processo de mudança.
+
+```markdown
+<!-- PR template -->
+
+## Checklist
+
+- [ ] Testes passando
+- [ ] CHANGELOG atualizado
+- [ ] Skills atualizadas se o PR muda convenções ou arquitetura
+```
+
+### Trigger 3: revisão periódica
+
+Inclua skills na revisão de documentação técnica (sprint review, quarterly). Perguntas:
+
+- Esta skill ainda reflete como o time trabalha?
+- Há passos que foram adicionados à prática mas não à skill?
+- Há passos na skill que o time parou de fazer?
+- A skill tem exemplos com código desatualizado?
+
+## Ownership: quem cuida de cada skill
+
+Sem owner definido, nenhuma skill será mantida. A responsabilidade difusa é responsabilidade de ninguém.
 
 ```markdown
 ---
@@ -96,115 +138,134 @@ name: deploy-checklist
 description: Checklist de deploy para staging
 metadata:
   type: process
-  owner: @dev-infra-team
-  last_reviewed: 2026-03-01
+  owner: "@time-infra"
+  last_reviewed: "2026-03-01"
 ---
 ```
 
-O `owner` é o responsável por atualizar quando o processo muda.
+**Regra de ownership**:
+- Skill de processo → tech lead ou quem definiu o processo
+- Skill de domínio → quem mais trabalha no módulo coberto
 
-### Revisão periódica
+Quando o owner sai do time, o owner da skill deve ser reatribuído antes que ela envelheça.
 
-Inclua skills na revisão de documentação técnica (sprint review, quarterly tech review). Perguntas a fazer:
+## Catálogo no CLAUDE.md
 
-- Esta skill ainda reflete como o time trabalha?
-- Há passos que foram adicionados à prática mas não à skill?
-- Há passos na skill que o time parou de fazer?
-- A skill tem exemplos que ficaram desatualizados com o código?
-
-## Catálogo de skills
-
-Documente as skills disponíveis no `CLAUDE.md` do projeto:
+Documente as skills disponíveis no `CLAUDE.md` do projeto para que o time saiba o que existe:
 
 ```markdown
 ## Skills disponíveis
 
 ### Processo
-| Skill | Uso |
-|-------|-----|
-| `/tdd` | Desenvolvimento orientado a testes — red/green/refactor |
-| `/code-review` | Checklist de revisão antes de merge |
-| `/deploy-checklist` | Verificações antes de deploy para staging |
+| Skill | Quando usar | Owner |
+|---|---|---|
+| `/tdd` | Ao implementar features ou corrigir bugs | @tech-lead |
+| `/code-review` | Antes de solicitar review num PR | @tech-lead |
+| `/deploy-checklist` | Antes de qualquer deploy para staging | @time-infra |
+| `/debugging` | Ao investigar um bug em produção | @tech-lead |
 
 ### Domínio
-| Skill | Uso |
-|-------|-----|
-| `/arquitetura` | Mapa de módulos e responsabilidades |
-| `/convencoes` | Nomenclatura, estrutura de arquivos, padrões |
-| `/regras-negocio` | Invariantes do domínio que não podem ser violadas |
+| Skill | Quando usar | Owner |
+|---|---|---|
+| `/arquitetura` | Início de qualquer sessão de desenvolvimento | @tech-lead |
+| `/convencoes` | Ao escrever código novo ou refatorar | @tech-lead |
+| `/regras-negocio` | Ao implementar ou alterar lógica de negócio | @product-eng |
+| `/banco` | Ao escrever queries ou migrations | @backend-lead |
 ```
 
-Isso garante que novos devs no time sabem quais skills existem sem precisar explorar `.claude/skills/`.
+Sem esse catálogo, novos devs descobrem as skills por acidente — ou não descobrem.
+
+## Code review de skills
+
+Skills passam pelo mesmo processo de review que código. Um PR que adiciona ou muda uma skill deve ser revisado como qualquer mudança de comportamento:
+
+**Checklist de review de skill:**
+- O processo descrito reflete como o time realmente trabalha (não como gostaria)?
+- A mudança não contradiz outra skill existente?
+- Há exemplos concretos de output para o agente?
+- O owner está definido no frontmatter?
+- A skill tem critério de saída claro?
+
+```mermaid
+sequenceDiagram
+    participant D as Dev
+    participant PR as Pull Request
+    participant R as Revisor
+    participant CC as Claude Code
+
+    D->>PR: Cria PR com mudança em convencoes.md
+    R->>PR: Review: "O processo reflete a realidade atual?"
+    R->>PR: Review: "Não contradiz arquitetura.md?"
+    R->>PR: Aprova
+    D->>PR: Merge
+    CC->>CC: Na próxima sessão, agente segue o processo atualizado
+```
+
+Uma skill errada é pior que código com bug — o bug aparece nos testes; a skill errada orienta o agente silenciosamente na direção errada.
+
+## Quando aposentar uma skill
+
+Uma skill que descreve um processo abandonado deve ser **removida**, não marcada como obsoleta. O agente não entende "obsoleto" — ele vai seguir a instrução da mesma forma.
+
+```bash
+# Remove a skill (histórico fica no git)
+git rm .claude/skills/processo/deploy-manual.md
+git commit -m "chore: remove skill de deploy manual — substituída por CI/CD (ver pipeline.yml)"
+```
+
+O histórico de por que o processo existia e por que foi abandonado fica no commit message e no git log. A skill não fica no repo confundindo o agente.
 
 ## Onboarding de novos devs
 
-Inclua as skills no checklist de onboarding:
+Skills são parte do onboarding. Um dev que clona o repo e configura o Claude Code tem acesso imediato ao processo do time:
 
 ```markdown
 ## Setup do Claude Code
 
 1. Clone o repo (as skills em `.claude/skills/` já estão incluídas)
-2. Configure `~/.claude/settings.json` com os MCP servers do projeto (ver `docs/setup.md`)
-3. Skills disponíveis: `/help` no Claude Code lista todas
-4. Para desenvolvimento: sempre invoque `/convencoes` e `/tdd` antes de começar
+2. Configure as variáveis de ambiente (ver `docs/env-setup.md`)
+3. Configure `~/.claude/settings.json` com os MCP servers (ver `docs/mcp-setup.md`)
+4. Skills disponíveis: consulte a seção "Skills disponíveis" neste CLAUDE.md
+5. Para desenvolvimento: sempre invoque `/arquitetura` e `/tdd` antes de começar
 ```
 
-O novo dev não precisa aprender as convenções do zero — o agente as segue automaticamente.
-
-## Code review de skills
-
-Skills passam pelo mesmo processo de review que código:
-
-- PR com mudança na skill → revisão obrigatória
-- Checklist de review de skill:
-  - O processo descrito ainda está correto?
-  - A mudança não contradiz outra skill existente?
-  - Há exemplos atualizados?
-  - O formato de output está claro?
-
-Uma skill errada é pior que código com bug — porque o bug aparece nos testes, mas a skill errada vai orientar o agente silenciosamente na direção errada.
-
-## Quando aposentar uma skill
-
-Uma skill que descreve um processo abandonado deve ser removida, não apenas marcada como obsoleta. O agente não sabe que algo está "obsoleto" — ele vai seguir a instrução da mesma forma.
-
-Se você quer manter o histórico, use git:
-
-```bash
-git rm .claude/skills/deploy-manual.md
-git commit -m "chore: remove skill de deploy manual — substituída por CI/CD automático"
-```
-
-O histórico fica no git. A skill não fica no repo confundindo o agente.
+O novo dev não precisa aprender as convenções do zero — o agente as segue automaticamente depois que as skills são carregadas.
 
 ## Distribuição via plugin
 
 Para skills que você quer compartilhar entre projetos sem copiar arquivos:
 
 ```bash
-# Criar estrutura de plugin
+# Criar estrutura de plugin local
 mkdir -p ~/.claude/plugins/meu-plugin/skills
 
-# Adicionar skills
-cp .claude/skills/processo/*.md ~/.claude/plugins/meu-plugin/skills/
+# Adicionar skills genéricas (TDD, debugging, que valem em qualquer projeto)
+cp .claude/skills/processo/tdd.md ~/.claude/plugins/meu-plugin/skills/
+cp .claude/skills/processo/debugging.md ~/.claude/plugins/meu-plugin/skills/
 ```
 
-Plugins são carregados automaticamente em todos os projetos. Útil para skills de processo genéricas (TDD, debugging) que você usa em qualquer projeto.
+Plugins globais são carregados em todos os projetos. Útil para skills de processo genéricas. Skills de domínio não devem virar plugin — elas são específicas do projeto.
 
-## Armadilhas
+## Como explicar em inglês
 
-**Skills que nunca são usadas**: se o time não invoca as skills, elas têm valor zero. O problema pode ser descoberta (o catálogo não está visível) ou adoção (o time não desenvolveu o hábito). Inclua no `CLAUDE.md` quando usar cada skill.
+**"Skills as team artifacts"** — treating skill files as first-class artifacts that live in source control, get reviewed, have owners, and evolve with the codebase.
 
-**Skills de domínio sem owner**: skills de processo mudam devagar. Skills de domínio mudam com o projeto — sem owner, ficam desatualizadas em semanas.
+**Key points:**
+- "We commit skills in `.claude/skills/`. When someone clones the repo, they get the team's process knowledge immediately."
+- "Skills have owners. Domain skills especially — they go stale fast. Without an owner, a skill becomes a liability."
+- "The risk of a stale skill is worse than no skill: the agent confidently follows a process the team abandoned months ago."
+- "We added skills to our PR checklist: if the PR changes architecture or conventions, update the relevant skill as part of the same PR."
 
-**Skill conflitante com outra skill**: se `/convencoes.md` diz "use kebab-case para variáveis" e `/arquitetura.md` tem exemplos com camelCase, o agente vai fazer escolhas inconsistentes. Revise conflitos periodicamente.
+**Common follow-up questions:**
+- *"How do you prevent skills from drifting out of sync?"* — Ownership, PR templates that include skill updates, and periodic review during sprint demos.
+- *"What if two devs have conflicting opinions about the skill?"* — Same process as any technical decision: discuss in PR review, reach consensus, document in the commit message.
+- *"Should skills be tested?"* — Test them the same way you'd test documentation: run a representative task and verify the agent behaves as the skill describes. If not, update the skill.
 
-**Skill que documenta aspiração, não realidade**: "sempre escreva testes para todos os casos de borda" pode ser uma aspiração, não o processo real. Skills que descrevem como o time gostaria de trabalhar criam fricção. Documente como o time realmente trabalha.
-
-## Veja também
+## Referências
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/01 - Anatomia de uma skill|01 - Anatomia de uma skill]] — estrutura e frontmatter
-- [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/02 - Skills de processo vs domínio|02 - Skills de processo vs domínio]] — ciclos de vida diferentes
+- [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/02 - Skills de processo vs domínio|02 - Skills de processo vs domínio]] — ciclos de vida diferentes (processo vs domínio)
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/03 - Criar sua primeira skill|03 - Criar sua primeira skill]] — criar antes de distribuir
-- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — onde documentar o catálogo de skills
+- [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/07 - Compondo skills e MCP|07 - Compondo skills e MCP]] — skills em composição com MCP servers
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/index|Skills e MCP]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/index|Claude Code]] — tronco da trilha
