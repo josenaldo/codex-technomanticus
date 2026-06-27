@@ -350,7 +350,13 @@ A skill instrui o processo, mas se não menciona quais tools MCP usar, o agente 
 Uma skill de "atualizar dados de pedido" + MCP postgres de produção é uma combinação perigosa. Garanta que o MCP server aponta para o ambiente certo. Nomeie os servers com o ambiente: `postgres-dev`, `postgres-staging`, nunca só `postgres`.
 
 **Muitas skills na mesma sessão**
-O agente tenta reconciliar todas as instruções. Três skills simultâneas com instruções conflitantes geram comportamento imprevisível. Prefira duas skills focadas por sessão.
+O agente tenta reconciliar todas as instruções. Três skills simultâneas com instruções conflitantes geram comportamento imprevisível. Prefira duas skills focadas por sessão. Se o workflow exige muitas instruções, consolide numa skill de onboarding que referencia as outras.
+
+**Ordem de invocação importa**
+Carregue sempre o domínio antes do processo. Se você invoca `/tdd` antes de `/arquitetura-projeto`, o agente pode tomar decisões de design antes de entender as restrições do projeto. Domínio → processo → tarefa.
+
+**Falta de feedback de erro claro**
+Se o MCP server está offline ou o token expirou, o agente falha com mensagem vaga. Antes de começar um workflow, confirme que os servers estão ativos com `/mcp` — ele lista os servers configurados e suas capabilities.
 
 **Skill que assume MCP disponível sem verificação**
 Se a skill instrui o agente a usar uma tool que não está configurada, o agente vai falhar com erro pouco informativo. Documente na skill quais MCP servers são pré-requisito.
