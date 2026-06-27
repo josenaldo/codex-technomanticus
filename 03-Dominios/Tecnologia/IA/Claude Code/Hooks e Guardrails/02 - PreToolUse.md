@@ -1,11 +1,11 @@
 ---
 title: "PreToolUse — interceptar e validar antes de executar"
 type: concept
-progress: backlog
+progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: growing
 tags:
   - claude-code
   - hooks
@@ -17,47 +17,144 @@ tags:
 # PreToolUse — interceptar e validar antes de executar
 
 > [!abstract] TL;DR
-> PreToolUse é o hook que executa antes de qualquer [[Dicionário de IA#tool call|tool call]]. É o ponto de controle principal do [[Dicionário de IA#Claude Code|Claude Code]]: intercepta, valida, e pode bloquear. Exit code 0 = aprovado, exit code não-zero = bloqueado. O agente recebe o resultado do hook e decide como proceder. É onde [[Dicionário de IA#Guardrail|guardrails]], auditoria e aprovação humana são implementados.
+> PreToolUse é o hook que executa **antes** de qualquer tool call. É o ponto de controle principal do Claude Code: recebe o input que o agente quer usar, pode inspecionar, pode bloquear (exit ≠ 0), pode modificar (JSON no stdout). O agente recebe o resultado do hook e decide como proceder. É onde guardrails, auditoria e aprovação humana são implementados — com semântica determinística, não com instruções em linguagem natural.
 
-## Como funciona
+---
 
-Quando o agente decide executar uma tool call (ex: `Bash("git push --force origin main")`), o runtime:
+## A analogia: a portaria de segurança antes do datacenter
 
-1. Serializa o input como JSON e passa para o hook via stdin ou variável de ambiente
-2. Executa o hook command
-3. Se exit code = 0: executa a tool
-4. Se exit code ≠ 0: bloqueia a execução e retorna o stderr do hook ao agente como mensagem de erro
+Imagine um datacenter com portaria de segurança. Cada engenheiro que tenta entrar — mesmo um sênior confiável — para na portaria: apresenta crachá, o sistema valida, e só então a catraca abre. A portaria não convence ninguém, não negocia, não aceita "mas é urgente" — é um processo mecânico. O engenheiro sabe disso, planeja considerando isso, e quando é bloqueado, busca outra rota.
 
-O agente recebe o bloqueio como feedback e pode tentar uma abordagem alternativa.
+O PreToolUse é essa portaria. Toda vez que o agente decide executar uma ação — rodar um comando Bash, editar um arquivo, buscar na web — o runtime para e executa o hook antes de liberar. O hook recebe o que o agente quer fazer, tem um segundo para inspecionar, e responde com: passa (exit 0) ou bloqueia (exit ≠ 0).
 
-## Estrutura do input
+O que torna isso poderoso: o agente sabe que foi bloqueado. Recebe o stderr do hook como feedback e pode recalcular. Um hook bem escrito não é um muro cego — é um sinal que redireciona o agente.
 
-O hook recebe via stdin um JSON com o input da tool call:
+---
+
+## O mecanismo exato
+
+Quando o agente decide executar uma tool call, o runtime:
+
+```mermaid
+sequenceDiagram
+    participant Agent as Agente (modelo)
+    participant Runtime as Runtime CC
+    participant Hook as PreToolUse script
+    participant Tool as Tool (Bash, Edit...)
+
+    Agent->>Runtime: Tool call com input JSON
+    Runtime->>Hook: stdin = JSON do input
+    Note over Hook: Script inspeciona,<br>decide, responde
+
+    alt exit 0
+        Hook-->>Runtime: Aprovado (stdout opcional = input modificado)
+        Runtime->>Tool: Executa com input (original ou modificado)
+        Tool-->>Runtime: Output
+        Runtime-->>Agent: Resultado da tool
+    else exit ≠ 0
+        Hook-->>Runtime: Bloqueado (stderr = motivo)
+        Runtime-->>Agent: Erro: "hook bloqueou — [stderr]"
+        Note over Agent: Recalcula e tenta<br>abordagem alternativa
+    end
+```
+
+1. O runtime serializa o input como JSON e passa via **stdin** ao script
+2. O script executa (lê stdin, inspeciona, decide)
+3. **Exit 0:** tool executa (com input original ou modificado via stdout)
+4. **Exit ≠ 0:** tool não executa; stderr é injetado no contexto do agente
+
+O agente vê o stderr como mensagem de erro da tool call. Se o script escreve uma mensagem clara — "BLOQUEADO: force push não permitido neste projeto. Use --force-with-lease ou abra um PR" — o agente usa isso para escolher uma abordagem alternativa.
+
+---
+
+## Estrutura do input recebido pelo hook
+
+O hook recebe via stdin um JSON com o nome da tool e todos os parâmetros que o agente quer usar:
+
+### Bash
 
 ```json
 {
   "tool_name": "Bash",
   "tool_input": {
-    "command": "git push --force origin main"
+    "command": "git push --force origin main",
+    "description": "Push forçado para publicar refactor"
   }
 }
 ```
 
-Para Edit:
+### Edit
+
 ```json
 {
   "tool_name": "Edit",
   "tool_input": {
     "file_path": "/projeto/src/config/database.ts",
-    "old_string": "password: 'prod_secret'",
+    "old_string": "password: 'prod_secret_hardcoded'",
     "new_string": "password: process.env.DB_PASSWORD"
   }
 }
 ```
 
-## Bloqueio simples — exit 1
+### Write
 
-O hook mais simples: bloquear um padrão e retornar mensagem de erro.
+```json
+{
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "/projeto/.env",
+    "content": "DATABASE_URL=postgresql://user:senha@localhost/db"
+  }
+}
+```
+
+O hook tem acesso total ao que o agente quer fazer — caminho, conteúdo, argumentos. Essa é a base para todos os padrões: inspecionar o input e decidir com base nele.
+
+---
+
+## Variáveis de ambiente disponíveis
+
+Além do stdin, o runtime injeta variáveis de ambiente úteis:
+
+```bash
+$CLAUDE_TOOL_NAME      # Nome da tool: "Bash", "Edit", "Write", etc.
+$CLAUDE_TOOL_INPUT     # Input completo serializado como JSON string
+$CLAUDE_SESSION_ID     # ID único da sessão atual
+```
+
+Você pode usar stdin (mais preciso, via `jq`) ou `$CLAUDE_TOOL_INPUT` (mais conveniente para scripts simples):
+
+```bash
+#!/bin/bash
+# Via stdin (recomendado para parsing preciso)
+INPUT=$(cat)
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
+
+# Via variável de ambiente (útil para verificações rápidas)
+if echo "$CLAUDE_TOOL_INPUT" | grep -q "push --force"; then
+  echo "BLOQUEADO." >&2
+  exit 1
+fi
+```
+
+---
+
+## Semântica dos exit codes
+
+| Exit code | Significado | Resultado |
+|-----------|-------------|-----------|
+| `0` | Aprovado | Tool executa normalmente |
+| `1` | Bloqueado | Tool não executa; stderr vai ao agente |
+| `2+` | Bloqueado | Mesmo comportamento que exit 1 |
+| Script falha a executar | Erro de hook | Tool pode executar dependendo da config |
+
+O padrão mais simples e robusto: `exit 0` para aprovação, `exit 1` para bloqueio. Qualquer exit code diferente de zero bloqueia. A mensagem no stderr é o canal de feedback ao agente.
+
+---
+
+## Padrão 1 — Bloqueio simples (exit 1)
+
+O hook mais direto: verifica padrão, bloqueia com mensagem clara.
 
 ```bash
 #!/bin/bash
@@ -66,15 +163,16 @@ O hook mais simples: bloquear um padrão e retornar mensagem de erro.
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
 
-if echo "$COMMAND" | grep -q "push --force\|push -f"; then
-  echo "BLOQUEADO: force push não permitido. Use --force-with-lease ou abra PR." >&2
+if echo "$COMMAND" | grep -qE "push --force|push -f"; then
+  echo "BLOQUEADO: force push não permitido neste projeto." >&2
+  echo "Alternativa: use --force-with-lease para push seguro, ou abra um PR." >&2
   exit 1
 fi
 
 exit 0
 ```
 
-Configuração:
+Configuração em `settings.json`:
 ```json
 {
   "hooks": {
@@ -88,9 +186,13 @@ Configuração:
 }
 ```
 
-## Bloqueio por padrão de arquivo
+A mensagem no `>&2` vai para o stderr — esse texto aparece no contexto do agente como feedback do bloqueio. Escreva mensagens que expliquem o porquê e sugiram a alternativa correta.
 
-Proteger arquivos sensíveis de edição:
+---
+
+## Padrão 2 — Proteção de arquivos sensíveis
+
+Impedir edição de arquivos que jamais devem ser modificados pelo agente:
 
 ```bash
 #!/bin/bash
@@ -101,14 +203,18 @@ FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // ""')
 
 PROTECTED_PATTERNS=(
   ".*\.env$"
+  ".*\.env\..*"
   ".*credentials.*"
   ".*\.pem$"
-  ".*secrets.*"
+  ".*\.key$"
+  ".*secrets\.(json|yaml|yml)$"
+  ".*/\.ssh/.*"
 )
 
 for pattern in "${PROTECTED_PATTERNS[@]}"; do
   if echo "$FILE" | grep -qE "$pattern"; then
-    echo "BLOQUEADO: $FILE é um arquivo protegido. Edite manualmente." >&2
+    echo "BLOQUEADO: '$FILE' é um arquivo protegido." >&2
+    echo "Edite manualmente — o agente não tem permissão para modificar arquivos de credencial." >&2
     exit 1
   fi
 done
@@ -116,9 +222,30 @@ done
 exit 0
 ```
 
-## Logging de auditoria
+Esse hook deve ser configurado para tanto `Edit` quanto `Write`:
 
-Hook que não bloqueia, só registra:
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [{ "type": "command", "command": "~/.claude/hooks/protect-sensitive-files.sh" }]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [{ "type": "command", "command": "~/.claude/hooks/protect-sensitive-files.sh" }]
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Padrão 3 — Auditoria sem bloqueio
+
+Hook que apenas registra — não bloqueia, só cria trilha de auditoria:
 
 ```bash
 #!/bin/bash
@@ -126,20 +253,30 @@ Hook que não bloqueia, só registra:
 
 INPUT=$(cat)
 TOOL=$(echo "$INPUT" | jq -r '.tool_name')
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // .tool_input.file_path // ""')
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // .tool_input.file_path // "(sem argumento principal)"')
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 SESSION_ID="${CLAUDE_SESSION_ID:-unknown}"
 
+# Registra no log de auditoria
 echo "$TIMESTAMP | $SESSION_ID | $TOOL | $COMMAND" >> ~/.claude/audit.log
 
+# Sempre exit 0 — não bloqueia, só registra
 exit 0
 ```
 
-O arquivo `~/.claude/audit.log` acumula todas as tool calls da sessão — útil para debugging e compliance.
+O arquivo `~/.claude/audit.log` acumula todas as tool calls de todas as sessões. Útil para:
+- Debugging de sessões longas ("o que o agente fez afinal?")
+- Compliance ("liste todas as ações do agente neste sprint")
+- Diagnóstico de comportamento inesperado
 
-## Aprovação humana interativa
+> [!tip] Combinar auditoria com bloqueio
+> Configure múltiplos hooks — o de auditoria roda primeiro (exit 0, só loga), depois o de bloqueio roda em seguida. Assim todas as tentativas são registradas, incluindo as bloqueadas.
 
-Para comandos de alto risco, pedir aprovação antes de executar:
+---
+
+## Padrão 4 — Aprovação humana interativa
+
+Para comandos de alto risco, exigir aprovação explícita antes de executar:
 
 ```bash
 #!/bin/bash
@@ -152,19 +289,24 @@ HIGH_RISK_PATTERNS=(
   "rm -rf"
   "DROP TABLE"
   "DELETE FROM"
+  "TRUNCATE"
   "git push"
   "kubectl delete"
+  "terraform destroy"
 )
 
 for pattern in "${HIGH_RISK_PATTERNS[@]}"; do
   if echo "$COMMAND" | grep -qi "$pattern"; then
-    echo "APROVAÇÃO NECESSÁRIA: $COMMAND"
+    echo "" >&2
+    echo "APROVAÇÃO NECESSÁRIA" >&2
+    echo "Comando: $COMMAND" >&2
     echo "Confirma? (s/N): " >&2
     read -r response < /dev/tty
     if [[ ! "$response" =~ ^[Ss]$ ]]; then
-      echo "Bloqueado pelo usuário." >&2
+      echo "Cancelado pelo usuário." >&2
       exit 1
     fi
+    echo "Aprovado pelo usuário." >&2
     break
   fi
 done
@@ -173,60 +315,104 @@ exit 0
 ```
 
 > [!warning] Aprovação interativa só funciona em sessão interativa
-> Em modo headless (CI/CD, `--print`), não há terminal para leitura. Para headless, use bloqueio direto em vez de aprovação interativa.
+> Em modo headless (`--print`, CI/CD, MCP server), não há terminal para leitura. O `read < /dev/tty` vai falhar silenciosamente ou bloquear para sempre. Para headless: use bloqueio direto (`exit 1`) em vez de aprovação interativa. Ou detecte o modo e adapte:
+> ```bash
+> if [ -t 0 ]; then
+>   read -r response < /dev/tty
+> else
+>   echo "Modo headless: bloqueando por segurança." >&2
+>   exit 1
+> fi
+> ```
 
-## Delegação a outro LLM
+---
 
-Para validações complexas que precisam de raciocínio:
+## Padrão 5 — Modificação de input
+
+O hook pode modificar o input antes de executar, retornando JSON estruturado via stdout:
 
 ```bash
 #!/bin/bash
-# hooks/llm-validator.sh
+# hooks/force-interactive-rm.sh
 
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
 
-# Delegar a decisão a outro LLM
-DECISION=$(echo "$COMMAND" | claude --print \
-  "Este comando bash é seguro para executar num servidor de produção?
-   Responda apenas: SAFE ou UNSAFE: MOTIVO" \
-  --max-tokens 50)
-
-if echo "$DECISION" | grep -q "^UNSAFE"; then
-  MOTIVO=$(echo "$DECISION" | sed 's/^UNSAFE: //')
-  echo "LLM bloqueou: $MOTIVO" >&2
-  exit 1
-fi
-
-exit 0
-```
-
-Ver [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/06 - Delegar permissão|06 - Delegar permissão]] para o padrão completo.
-
-## Modificação de input
-
-O hook pode modificar o input antes de executar, retornando JSON via stdout:
-
-```bash
-#!/bin/bash
-# hooks/sanitize-rm.sh
-
-INPUT=$(cat)
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
-
-# Adicionar --interactive em todo rm
-if echo "$COMMAND" | grep -q "^rm "; then
+# Adiciona -i (interactive) em todo rm que não tem -i nem -rf
+if echo "$COMMAND" | grep -qE "^rm " && ! echo "$COMMAND" | grep -q " -[ri]"; then
   SAFE_COMMAND=$(echo "$COMMAND" | sed 's/^rm /rm -i /')
-  echo '{"decision": "approve", "modified_input": {"command": "'"$SAFE_COMMAND"'"}}'
+  # Retorna JSON estruturado para modificar o input
+  echo "{\"decision\": \"approve\", \"modified_input\": {\"command\": \"$SAFE_COMMAND\"}}"
   exit 0
 fi
 
 exit 0
 ```
 
+Quando o stdout contém JSON estruturado com `"decision": "approve"` e `"modified_input"`, o runtime usa o input modificado ao chamar a tool. O agente não sabe que o input foi alterado — executa com o comando já sanitizado.
+
+Estrutura do JSON de resposta:
+
+```json
+{
+  "decision": "approve",
+  "modified_input": {
+    "command": "rm -i arquivo.txt"
+  }
+}
+```
+
+Ou para bloquear com JSON:
+
+```json
+{
+  "decision": "block",
+  "reason": "Comando rm -rf em diretório protegido /var/www"
+}
+```
+
+---
+
+## Padrão 6 — Delegação a outro LLM
+
+Para validações que requerem raciocínio contextual — quando a decisão não é um pattern simples, mas uma questão de "esse comando faz sentido dado o projeto?":
+
+```bash
+#!/bin/bash
+# hooks/llm-security-review.sh
+
+INPUT=$(cat)
+TOOL=$(echo "$INPUT" | jq -r '.tool_name')
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
+
+# Só delega se for Bash e o comando for não trivial
+if [ "$TOOL" != "Bash" ] || [ -z "$COMMAND" ]; then
+  exit 0
+fi
+
+# Delegar a decisão a outro Claude
+DECISION=$(echo "$COMMAND" | claude --print \
+  "Você é um revisor de segurança para um servidor de produção Linux.
+   Este comando bash é seguro para executar?
+   Responda apenas: SAFE ou UNSAFE: <motivo em uma linha>" \
+  --max-tokens 60 2>/dev/null)
+
+if echo "$DECISION" | grep -q "^UNSAFE"; then
+  MOTIVO=$(echo "$DECISION" | sed 's/^UNSAFE: //')
+  echo "Revisão de segurança (LLM): $MOTIVO" >&2
+  exit 1
+fi
+
+exit 0
+```
+
+Ver [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/06 - Delegar permissão|06 - Delegar permissão]] para o padrão completo com meta-agente e controle de timeout.
+
+---
+
 ## Múltiplos hooks em sequência
 
-Quando há múltiplos hooks configurados para o mesmo matcher, todos executam em sequência. Se qualquer um retornar exit ≠ 0, a tool call é bloqueada.
+Quando há múltiplos hooks configurados para o mesmo matcher, todos executam em sequência. O primeiro a retornar exit ≠ 0 interrompe a cadeia — a tool não executa.
 
 ```json
 {
@@ -237,6 +423,13 @@ Quando há múltiplos hooks configurados para o mesmo matcher, todos executam em
         "hooks": [
           { "type": "command", "command": "~/.claude/hooks/audit-log.sh" },
           { "type": "command", "command": "~/.claude/hooks/block-force-push.sh" },
+          { "type": "command", "command": "~/.claude/hooks/block-sudo.sh" }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          { "type": "command", "command": "~/.claude/hooks/audit-log.sh" },
           { "type": "command", "command": "~/.claude/hooks/protect-sensitive-files.sh" }
         ]
       }
@@ -245,10 +438,140 @@ Quando há múltiplos hooks configurados para o mesmo matcher, todos executam em
 }
 ```
 
+Ordem de execução: `audit-log.sh` → `block-force-push.sh` → `block-sudo.sh`. Se o primeiro bloqueia, os demais não rodam. Coloque auditoria primeiro (sempre exit 0) para garantir que todas as tentativas sejam registradas.
+
+---
+
+## Exemplo real — guardrails PCI-DSS
+
+Um time com processamento de pagamentos configurou:
+
+```bash
+#!/bin/bash
+# hooks/check-pci-patterns.sh
+# Bloqueia edições que introduzem padrões de PAN ou CVV em código
+
+INPUT=$(cat)
+TOOL=$(echo "$INPUT" | jq -r '.tool_name')
+NEW_CONTENT=""
+
+case "$TOOL" in
+  "Edit")
+    NEW_CONTENT=$(echo "$INPUT" | jq -r '.tool_input.new_string // ""')
+    ;;
+  "Write")
+    NEW_CONTENT=$(echo "$INPUT" | jq -r '.tool_input.content // ""')
+    ;;
+  *)
+    exit 0
+    ;;
+esac
+
+# Padrão de PAN: 13-19 dígitos em formato de cartão
+if echo "$NEW_CONTENT" | grep -qE '[0-9]{4}[- ]?[0-9]{4}[- ]?[0-9]{4}[- ]?[0-9]{4}'; then
+  echo "BLOQUEADO: possível número de cartão (PAN) detectado no código." >&2
+  echo "Dados de cartão nunca devem aparecer em código-fonte. Use tokenização." >&2
+  exit 1
+fi
+
+# CVV: 3-4 dígitos após padrão "cvv", "cvc", "security_code"
+if echo "$NEW_CONTENT" | grep -qiE '(cvv|cvc|security.?code)["\s:=]+[0-9]{3,4}'; then
+  echo "BLOQUEADO: possível CVV detectado no código." >&2
+  exit 1
+fi
+
+exit 0
+```
+
+Configurado para `Edit` e `Write`. O agente jamais consegue persistir dados de cartão em código — mesmo que tente, o hook bloqueia antes.
+
+---
+
+## Fluxo de decisão do hook PreToolUse
+
+```mermaid
+flowchart TD
+    Receive["Hook recebe JSON via stdin"]
+    Parse["Parse: tool_name + tool_input"]
+    Check{"Condição verificada\n(padrão, arquivo, conteúdo)"}
+    Block["exit 1\nstderr = motivo"]
+    Modify{"Precisa modificar\no input?"}
+    ReturnJSON["stdout = JSON com modified_input\nexit 0"]
+    Approve["exit 0\n(sem stdout)"]
+
+    Receive --> Parse --> Check
+    Check -- "condição perigosa" --> Block
+    Check -- "ok" --> Modify
+    Modify -- "sim" --> ReturnJSON
+    Modify -- "não" --> Approve
+
+    style Block fill:#c0392b,color:#fff
+    style Approve fill:#27ae60,color:#fff
+    style ReturnJSON fill:#2980b9,color:#fff
+```
+
+---
+
+## Quando usar PreToolUse vs. allow/deny
+
+| Cenário | Use |
+|---------|-----|
+| Bloquear categoricamente (ex: nunca `git push --force`) | `deny` em settings.json |
+| Bloquear condicionalmente (ex: `rm -rf` apenas fora de `/tmp`) | Hook PreToolUse |
+| Pedir aprovação humana antes de ação crítica | Hook PreToolUse |
+| Logar todas as ações para auditoria | Hook PreToolUse |
+| Modificar input antes de executar | Hook PreToolUse |
+| Validar conteúdo que o agente vai escrever | Hook PreToolUse |
+| Delegar decisão a outro modelo | Hook PreToolUse |
+
+`deny` é mais simples e mais rápido para bloqueios incondicionais. Hooks são necessários quando a lógica é condicional, quando você precisa de feedback rico ao agente, ou quando quer fazer mais do que apenas bloquear.
+
+---
+
+## Checklist — PreToolUse
+
+- [ ] Scripts são executáveis: `chmod +x hooks/*.sh`
+- [ ] Testados isoladamente: `echo '{"tool_name":"Bash","tool_input":{"command":"git push --force"}}' | ./hooks/block-force-push.sh`
+- [ ] Mensagens no `>&2` são claras e sugerem alternativas
+- [ ] Exit 0 em todos os caminhos de aprovação
+- [ ] Scripts têm timeout implícito (hooks que travam bloqueiam o agente)
+- [ ] Auditoria configurada como primeiro hook na cadeia
+- [ ] Aprovação interativa tem fallback para modo headless
+
+---
+
+## Como explicar em inglês
+
+| Português | Inglês |
+|-----------|--------|
+| Hook de pré-execução | PreToolUse hook |
+| Interceptar | Intercept |
+| Bloquear a tool call | Block the tool call / veto the action |
+| Modificar o input | Modify the input / rewrite the input |
+| Feedback ao agente | Feedback to the agent |
+| Modo headless | Headless mode / non-interactive mode |
+
+**Frases úteis:**
+- "PreToolUse hooks intercept every tool call before it runs — you inspect the input, and either approve (exit 0), block (exit 1 with a reason in stderr), or modify the input before execution."
+- "The stderr from a blocking hook is injected into the agent's context as an error message — a good hook gives the agent enough information to try a different approach."
+- "Unlike CLAUDE.md instructions, which the model may interpret flexibly, PreToolUse hooks are deterministic: a matching exit code blocks unconditionally, no matter how much the model 'wants' to proceed."
+
+---
+
 ## Veja também
 
-- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/01 - Sistema de hooks|01 - Sistema de hooks]] — lifecycle e configuração
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/01 - Sistema de hooks|01 - Sistema de hooks]] — lifecycle e configuração geral
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/03 - PostToolUse|03 - PostToolUse]] — reações pós-execução
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/05 - Guardrails|05 - Guardrails]] — conjunto completo de guardrails recomendados
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/06 - Delegar permissão|06 - Delegar permissão]] — meta-agente para validação com LLM
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/07 - Segurança com hooks|07 - Segurança com hooks]] — hardening do próprio hook
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/08 - Testando hooks|08 - Testando hooks]] — como testar e debugar hooks
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — índice do galho
+
+---
+
+## Referências
+
+- **Anthropic** — *Claude Code hooks* (2026). Documentação oficial do PreToolUse e semântica de exit codes — https://docs.anthropic.com/pt/docs/claude-code/hooks
+- **Anthropic** — *Claude Code security* (2026). Uso de hooks para guardrails e auditoria de segurança — https://docs.anthropic.com/pt/docs/claude-code/security
+- **Anthropic** — *Claude Code best practices* (2026). Padrões de hooks recomendados para projetos de produção — https://www.anthropic.com/engineering/claude-code-best-practices
