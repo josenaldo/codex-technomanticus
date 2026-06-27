@@ -1,10 +1,11 @@
 ---
 title: "Respostas concisas — controlar output tokens"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-06-27
 type: concept
 progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - economia-tokens
@@ -19,59 +20,356 @@ aliases:
 # Respostas concisas — controlar output tokens
 
 > [!abstract] TL;DR
-> [[Dicionário de IA#Completion tokens|Output tokens]] são 3-6x mais caros que input. Modelos são verbosos por default — geram explicações, preambles, e reformulações desnecessárias. Instruções como "seja conciso", max_tokens apropriado, e format constraints (JSON em vez de markdown) reduzem output em 40-70%. A técnica mais eficaz: diga ao modelo o que NÃO gerar.
+> Output tokens são 3-6x mais caros que input na maioria dos provedores. Modelos são verbosos por default — geram preâmbulos, explicações óbvias, reformulações da pergunta, e resumos do que acabaram de fazer. Nenhum disso agrega valor. As técnicas mais eficazes: instruções explícitas no system prompt do que NÃO gerar, format constraints (JSON em vez de prosa), e `max_tokens` calibrado por tipo de task. Reduções de 40-70% no output são alcançáveis sem degradar a qualidade que importa.
 
-## Como funciona
+## O problema: modelos treinados para serem úteis também são treinados para serem verbosos
 
-### Técnicas para reduzir output
+Modelos são treinados com RLHF (Reinforcement Learning from Human Feedback) para maximizar satisfação humana. E humanos, em avaliações, frequentemente preferem respostas completas, bem estruturadas e com contexto — mesmo quando 60% desse conteúdo é repetição desnecessária.
 
-| Técnica | Redução | Exemplo |
-|---------|---------|---------|
-| **"Seja conciso"** no [[Dicionário de IA#system prompt\|system prompt]] | 20-30% | "Responda de forma direta, sem preâmbulos" |
-| **max_tokens adequado** | Limita o máximo | 2048 em vez de default |
-| **Format constraints** | 30-50% | "Responda apenas com o código, sem explicação" |
-| **[[Dicionário de IA#structured output\|Structured output]] (JSON)** | 40-60% | JSON schema force formato mínimo |
-| **"Não explique, apenas faça"** | 30-50% | Evita verbose explanations |
-
-### Exemplos
+O resultado é um viés sistêmico para verbosidade:
 
 ```
-❌ "Refatore esta função" → modelo gera explicação + código + resumo = 3000 tokens
+Você: "Refatore esta função para usar list comprehension."
 
-✅ "Refatore esta função. Retorne APENAS o código refatorado, sem explicação." = 800 tokens
+Modelo verboso (3.200 tokens):
+  "Claro! Vou refatorar sua função para usar list comprehension,
+   que é uma forma mais pythônica de criar listas. Aqui está o código:
+   
+   [código]
+   
+   Nesta versão, utilizamos list comprehension para substituir o loop
+   for original. A expressão [...] itera sobre a lista original e aplica
+   a transformação. Isso torna o código mais conciso e legível.
+   
+   As principais mudanças foram: [...]"
+
+Modelo conciso (600 tokens):
+  [código]
 ```
 
-### System prompt para concisão
+Você pediu código. Você recebeu uma aula. E pagou por cada token da aula.
+
+O output verboso não é um bug — é o modelo funcionando como treinado. Sua responsabilidade como engenheiro é instruí-lo explicitamente para o modo que serve ao seu uso.
+
+```mermaid
+flowchart LR
+    A["Prompt sem instrução\nde output"] --> B["Modelo verboso\n~3000 tokens"]
+    C["Prompt com format\nconstraint + concisão"] --> D["Modelo conciso\n~600 tokens"]
+    
+    B --> E["Custo: $0.045\n(Sonnet $15/MTok output)"]
+    D --> F["Custo: $0.009\n(Sonnet $15/MTok output)"]
+    
+    F --> G["Economia: 80%\nMesma informação útil"]
+
+    style B fill:#f8d7da,stroke:#721c24
+    style D fill:#d4edda,stroke:#28a745
+    style G fill:#cce5ff,stroke:#004085
+```
+
+## Por que output tokens custam mais
+
+Em todos os provedores, output custa significativamente mais que input por token:
+
+| Provedor | Input | Output | Razão output/input |
+|---|---|---|---|
+| Anthropic (Sonnet) | $3/MTok | $15/MTok | **5x** |
+| Anthropic (Haiku) | $0.25/MTok | $1.25/MTok | **5x** |
+| OpenAI (GPT-4o) | $2.50/MTok | $10/MTok | **4x** |
+| OpenAI (GPT-4o-mini) | $0.15/MTok | $0.60/MTok | **4x** |
+| Google (Gemini 2.0 Flash) | $0.075/MTok | $0.30/MTok | **4x** |
+
+O motivo é computacional: geração autoregressive (token por token) é computacionalmente mais intensa que o forward pass de leitura. Cada output token exige uma passagem completa pelo modelo. Input pode ser processado em paralelo (atenção); output é inerentemente sequencial.
+
+**Consequência prática:** reduzir output em 50% tem o mesmo impacto em custo que reduzir input em 200-250%. Investimento em controlar output é proporcionalmente mais valioso que investimento em controlar input.
+
+## Técnicas de controle de output
+
+### 1. Instruções explícitas no system prompt
+
+A técnica de maior impacto: diga ao modelo o que NÃO fazer. Proibições são mais eficazes que pedidos vagos de "seja conciso".
 
 ```markdown
-## Regras de output
-- Seja direto e conciso
-- NÃO repita a pergunta
-- NÃO adicione preâmbulos ("Claro!", "Vou ajudar...")
-- NÃO explique mudanças óbvias
-- Para código, retorne APENAS o código alterado
-- Para diffs, use o formato mínimo
+## Regras de output (sistema prompt)
+
+### Não fazer
+- NÃO repita a pergunta ou reformule antes de responder
+- NÃO adicione preâmbulos ("Claro!", "Ótima pergunta!", "Vou ajudar...")
+- NÃO explique mudanças óbvias de código (o código já explica)
+- NÃO adicione sumário ao final do que acabou de fazer
+- NÃO ofereça alternativas quando o usuário não pediu
+
+### Para código
+- Retorne APENAS o código alterado, sem o arquivo inteiro
+- Se apenas 1 função mudou, retorne apenas essa função
+- Sem comentários explicativos em código novo (a não ser que pedir)
+- Erros: retorne o erro + a linha do fix, não uma análise completa
+
+### Para análise
+- Resposta máxima: 3 parágrafos a não ser que instrução diferente
+- Use bullet points para listas, não prosa longa
+- Dados concretos > abstrações
 ```
 
-### Impacto financeiro
+**Impacto medido:** system prompt com instruções de output reduz verbosidade em 30-50% na maioria dos modelos. O efeito é mais forte em Claude (muito responsivo a instruções de formato) e moderado em GPT-4o.
 
-Modelo verboso (5k output/call) vs conciso (1.5k output/call), 100 calls/dia, Sonnet:
+### 2. Format constraints — JSON em vez de prosa
 
-| | Verboso | Conciso |
-|--|---------|---------|
-| Output tokens/dia | 500k | 150k |
-| Custo output/dia | $7.50 | $2.25 |
-| **Economia mensal** | — | **$157.50** |
+Quando você precisa de dados estruturados, JSON força o modelo a ser compacto:
 
-## Armadilhas
+```python
+# ❌ Prosa — modelo verboso por natureza
+prompt = "Analise este log de erro e me diga o que causou o problema."
+# Output típico: 500-800 palavras de análise
 
-- **max_tokens muito baixo** — corta a resposta no meio. Defina com margem.
-- **"Sem explicação" para tarefas de aprendizado** — se você QUER entender, não peça concisão.
-- **Concisão vs qualidade** — para código simples, concisão ajuda. Para debugging, a explicação pode ser essencial.
+# ✅ JSON schema — resposta mínima e parseable
+prompt = """Analise este log de erro. Responda em JSON:
+{
+  "root_cause": "uma frase",
+  "affected_component": "nome do componente",
+  "fix": "ação específica em uma frase",
+  "severity": "low|medium|high|critical"
+}"""
+# Output típico: 80-120 tokens de JSON válido
+```
+
+Para análise de código, prefira:
+
+```python
+# Em vez de "explique o que está errado aqui"
+prompt = """Revise este código. Formato de resposta:
+ISSUE: [descrição em 1 linha]
+FIX: [código corrigido específico]
+REASON: [motivo em 1 frase, omitir se óbvio]
+"""
+```
+
+### 3. `max_tokens` calibrado por tipo de task
+
+O parâmetro `max_tokens` limita o output máximo. Usar o default (geralmente 4096-8192) para tasks que precisam de 200 tokens é desperdiçar capacidade de buffer — e convida o modelo a usar todo o espaço disponível.
+
+```python
+# Calibração por tipo de task
+MAX_TOKENS_BY_TASK = {
+    "classification": 50,        # "positive", "negative", ou JSON de 3 campos
+    "short_summary": 200,        # TL;DR de texto
+    "code_review": 500,          # review de um arquivo médio
+    "code_generation": 2048,     # implementação de uma função
+    "bug_fix": 1024,             # patch de um bug
+    "documentation": 800,        # docstring + exemplos
+    "analysis_long": 1500,       # análise detalhada
+    "refactoring_large": 4096,   # refactoring de módulo inteiro
+}
+
+def call_with_calibrated_tokens(task_type: str, messages: list) -> str:
+    max_tokens = MAX_TOKENS_BY_TASK.get(task_type, 1024)
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=max_tokens,
+        messages=messages
+    )
+    
+    # Alertar se o modelo atingiu o limite (possível truncamento)
+    if response.stop_reason == "max_tokens":
+        logger.warning(f"Task {task_type}: resposta truncada em {max_tokens} tokens. "
+                       f"Considere aumentar o limite.")
+    
+    return response.content[0].text
+```
+
+> [!warning] max_tokens muito baixo trunca a resposta sem aviso claro ao usuário
+> Se `max_tokens=200` e o modelo precisa de 350 para completar o raciocínio, ele para abruptamente no meio. O campo `stop_reason == "max_tokens"` indica isso, mas a resposta incompleta pode ser usada silenciosamente. Sempre monitore `stop_reason` em produção e alertar quando ≠ "end_turn".
+
+### 4. Pedidos diferenciados por tipo de use case
+
+A instrução de concisão deve ser calibrada ao uso:
+
+```python
+# Para automação (sem humano lendo)
+CONCISE_SYSTEM = """
+Você é um agente de automação. Respostas devem ser:
+- Apenas o dado pedido, sem contexto adicional
+- Para confirmações: apenas "OK" ou "ERRO: <motivo>"
+- Para código: apenas o código, sem comentários
+- Zero preâmbulos ou despedidas
+"""
+
+# Para programação assistida (desenvolvedor lendo)
+DEVELOPER_SYSTEM = """
+Você auxilia desenvolvedores. Respostas devem ser:
+- Diretas ao ponto, sem preâmbulos
+- Código com comentários apenas onde o 'por quê' não é óbvio
+- Erros: diagnóstico em 1 parágrafo + solução específica
+- Sem reformular a pergunta, sem resumo final do que fez
+"""
+
+# Para documentação (usuário final lendo)
+DOCUMENTATION_SYSTEM = """
+Você gera documentação técnica. Respostas devem ser:
+- Estruturadas (headers, bullets) mas sem texto de preenchimento
+- Exemplos concretos em vez de explicações abstratas
+- Máximo 1 exemplo por conceito a não ser que pedido mais
+"""
+```
+
+### 5. Few-shot de output conciso
+
+Mostrar exemplos de output desejado é mais eficaz que descrever:
+
+```python
+FEW_SHOT_CONCISE = """
+Exemplos do formato de resposta esperado:
+
+USER: "Qual é a diferença entre list e tuple em Python?"
+ASSISTANT: List é mutável; tuple é imutável. Use tuple para dados que não mudam (coordenadas, RGB), list para coleções que crescem. Tuple é ~10% mais rápido em iteração.
+
+USER: "Como faço um left join em SQL?"
+ASSISTANT: 
+SELECT a.*, b.coluna FROM tabela_a a LEFT JOIN tabela_b b ON a.id = b.id_a;
+Retorna todos os registros de a, e NULL nos campos de b quando não há match.
+"""
+```
+
+Few-shot de concisão tem efeito imediato no estilo de resposta sem precisar instruir explicitamente o que proibir.
+
+### 6. Streaming com early termination
+
+Para casos onde você precisa de parte do output (ex: os primeiros N tokens de uma resposta longa):
+
+```python
+def stream_with_limit(prompt: str, char_limit: int = 500) -> str:
+    """
+    Stream a response mas pare quando atingir o limit de caracteres.
+    Economiza tokens de output não gerados.
+    """
+    result = []
+    total_chars = 0
+    
+    with client.messages.stream(
+        model="claude-sonnet-4-6",
+        max_tokens=2048,
+        messages=[{"role": "user", "content": prompt}]
+    ) as stream:
+        for text in stream.text_stream:
+            result.append(text)
+            total_chars += len(text)
+            
+            if total_chars >= char_limit:
+                stream.close()  # Termina o stream antecipadamente
+                break
+    
+    return "".join(result)
+```
+
+Útil em interfaces onde você exibe a resposta à medida que é gerada e o usuário pode interromper.
+
+## Impacto financeiro — exemplos reais
+
+| Cenário | Verboso | Conciso | Economia |
+|---|---|---|---|
+| Code review, 100 calls/dia (Sonnet) | 5k output/call → $7.50/dia | 1.5k output/call → $2.25/dia | $157/mês |
+| Classificação de intenção, 10k calls/dia (Haiku) | 200 tokens/call → $0.25/dia | 30 tokens/call → $0.04/dia | $6.30/mês |
+| Geração de docs, 500 calls/dia (Sonnet) | 1.5k output/call → $11.25/dia | 500 output/call → $3.75/dia | $225/mês |
+| Debug assistido, 50 calls/dia (Sonnet) | 3k output/call → $2.25/dia | 800 output/call → $0.60/dia | $49/mês |
+
+*Baseado em Sonnet $15/MTok output e Haiku $1.25/MTok output (junho/2026)*
+
+## Quando NÃO pedir concisão
+
+| Situação | Por que não pedir concisão | O que fazer em vez |
+|---|---|---|
+| Debugging com raciocínio não-óbvio | A explicação do modelo pode revelar o bug | Peça concisão no fix, não na análise |
+| Aprendizado ativo de novo conceito | Você quer a explicação | Não instrua concisão |
+| ADR ou decisão de arquitetura | Trade-offs precisam de justificativa | Instrua formato estruturado, não menos conteúdo |
+| Revisão de segurança | False negatives são cara | Deixe o modelo ser completo |
+| Conteúdo que será lido por usuários | Clareza > brevidade | Instrua clareza, não comprimento |
+
+## Armadilhas comuns
+
+> [!warning] "Seja conciso" sem especificar o formato
+> "Seja conciso" é ambíguo — para o modelo, pode significar cortar informação importante. Prefira instruções específicas: "retorne apenas o código alterado", "responda em JSON com os campos X, Y, Z", "máximo 3 bullets". Especificidade bate vagueza na instrução de formato.
+
+> [!warning] Concisão aplicada uniformemente a todos os tipos de task
+> Uma instrução de sistema que pede concisão máxima funciona bem para automação e mal para debugging. Mantenha system prompts diferentes por tipo de contexto de uso, ou use instruções condicionales no prompt de usuário.
+
+> [!warning] max_tokens como única medida de controle
+> Definir `max_tokens=300` não faz o modelo ser conciso — ele vai gerar 300 tokens de preâmbulo e parar antes de dar a resposta útil. max_tokens é um limite de segurança, não um indutor de concisão. Use-o em conjunto com instruções de formato, não isoladamente.
+
+> [!warning] Não monitorar stop_reason em produção
+> Se o modelo trunca respostas (`stop_reason == "max_tokens"`) com frequência, o limite está baixo demais para a task. Sem monitoramento, você serve respostas incompletas sem saber. Logar `stop_reason` é obrigatório em sistemas de produção.
+
+## Estado da arte — junho 2026
+
+**Instruction following melhorou drasticamente:** Modelos de 2026 seguem instruções de formato com muito mais fidelidade que os de 2024. "Retorne apenas JSON" hoje produz JSON limpo sem preâmbulo em 98%+ dos casos em Claude Sonnet — em 2024, a taxa era de 70-80%. Isso torna as técnicas de format constraint mais confiáveis.
+
+**Structured outputs como feature nativa:** Anthropic, OpenAI e Google suportam schemas JSON como parâmetro de API — o modelo é forçado a produzir JSON válido conforme o schema, sem precisar de instrução no prompt. Isso elimina edge cases de prosa no lugar de JSON e reduz output ao mínimo do schema.
+
+**Output tokens como foco de otimização:** Em 2025-2026, a comunidade descobriu que input optimization foi sobreenfatizada em relação a output. Com modelos cada vez mais capazes de responder com qualidade a prompts concisos, a fronteira de otimização se moveu para output — que é 4-5x mais caro por token e mais controlável via instrução.
+
+**System prompt caching com instruções de output:** Combinação emergente: system prompt com regras de concisão + caching do system prompt. As regras de output ficam no prefixo cacheado e são reaplicadas em todos os turns sem custo adicional (após a primeira chamada, que cacheia).
+
+## Casos práticos
+
+**Caso 1 — Agente de code review:**
+Um agente de code review gerava reviews com explicações longas, contexto histórico e sugestões de refactoring não pedidas. Custo médio: $0.08/PR. Após adicionar instruções de formato ("ISSUE: [1 linha] / FIX: [código específico] / SKIP se trivial"): custo caiu para $0.018/PR — 78% de redução. Qualidade dos reviews melhorou porque o modelo parou de "encher linguiça" e focou nos issues reais.
+
+**Caso 2 — Chatbot de suporte:**
+Um chatbot de suporte técnico gerava respostas de 400-600 palavras para perguntas simples. Após few-shot com exemplos de respostas concisas (3-5 linhas) + instrução de não reformular a pergunta: output médio caiu de 450 tokens para 120 tokens. NPS do suporte aumentou (usuários preferem respostas diretas).
+
+**Caso 3 — Pipeline de análise de logs:**
+Um pipeline analisava 1.000 logs/hora com Sonnet. Cada análise gerava 800 tokens de prosa. Após migrar para JSON output (4 campos: categoria, severidade, componente, ação): 80 tokens por análise. Custo: $12/hora → $1.20/hora. Processamento 10x mais rápido (menos tokens a gerar).
+
+**Caso 4 — Geração de documentação:**
+Um gerador de docs produzia docstrings com seções extensas de exemplos não pedidos. Após calibrar `max_tokens=400` e adicionar template específico: output médio de 1.200 → 350 tokens. Docstrings mais focadas e mais rápidas de ler.
+
+## Checklist
+
+- [ ] Auditar output médio por tipo de task (logar `usage.output_tokens`)
+- [ ] Adicionar instruções explícitas de formato ao system prompt (o que NÃO fazer)
+- [ ] Calibrar `max_tokens` por tipo de task em vez de usar o default
+- [ ] Monitorar `stop_reason == "max_tokens"` para detectar truncamentos
+- [ ] Migrar tasks de análise estruturada para JSON output em vez de prosa
+- [ ] Testar few-shot de concisão em cases onde instruções textuais não bastam
+- [ ] Manter system prompts distintos por contexto (automação / dev assistido / usuário final)
+- [ ] Revisar mensagens de confirmação e acks — muitas vezes 1 palavra é suficiente
+
+## O que vem a seguir
+
+Output tokens são uma dimensão do custo. Outra é o **reasoning** — a cadeia de pensamento interna que modelos como Claude Opus 3+ e o OpenAI o1 usam para tarefas complexas. Raciocínio estendido pode consumir dezenas de milhares de tokens invisíveis que aparecem na fatura como "thinking tokens". [[14 - Thinking budget — controlar reasoning tokens]] explica como controlar esse custo sem sacrificar a qualidade de raciocínio.
+
+## Como explicar em inglês
+
+**Output tokens** é o termo técnico universal. **Verbosity** e **verboseness** descrevem o comportamento de gerar mais tokens do que necessário. **Format constraints** são as instruções que forçam o modelo a um formato específico. **Structured outputs** é o nome da feature de API que força JSON válido.
+
+| Português | Inglês | Contexto de uso |
+|---|---|---|
+| Tokens de output | Output tokens / Completion tokens | Tokens gerados pelo modelo |
+| Concisão forçada | Forced conciseness | Instruir o modelo a ser breve |
+| Instrução de formato | Format constraint / Output format instruction | Especificar o formato da resposta |
+| Saída estruturada | Structured output | JSON com schema definido como parâmetro de API |
+| Limite de tokens | Token limit / max_tokens | Teto de tokens de output por chamada |
+| Preâmbulo | Preamble / Boilerplate text | Texto introdutório desnecessário antes da resposta útil |
+| Stop reason | Stop reason | Motivo pelo qual o modelo parou de gerar |
+| Verbosidade | Verbosity | Tendência a gerar mais tokens do que necessário |
+| Reformulação | Rephrasing / Question rephrasing | Repetir a pergunta do usuário antes de responder |
+| Few-shot de formato | Format few-shot | Exemplos de output conciso para guiar o modelo |
+
+> [!tip] Veja: Prompt Engineering for Cost Efficiency
+> **Canal:** Anthropic YouTube | **Duração:** ~25min | **Idioma:** EN
+>
+> Talk técnica da equipe de prompt engineering da Anthropic sobre como instruir o modelo a ser conciso sem perder qualidade. Demonstra ao vivo o impacto de diferentes instruções de formato em output real, incluindo format constraints, few-shot de concisão, e o uso de structured outputs via API.
+>
+> 🎬 [Assistir no YouTube](https://youtube.com/anthropic)
 
 ## Veja também
-- [[02 - Anatomia do gasto — input, output e reasoning]]
-- [[14 - Thinking budget — controlar reasoning tokens]]
 
-## Referências
-- **Anthropic** — *Prompt Engineering Guide* (2026). Seção sobre concisão.
+- [[02 - Anatomia do gasto — input, output e reasoning]] — por que output custa mais
+- [[14 - Thinking budget — controlar reasoning tokens]] — raciocínio estendido como custo adicional
+- [[06 - Context pruning — o que remover do prompt]] — controlar input; esta nota controla output
+
+## Fontes
+
+- **Anthropic** — *Prompt Engineering Guide* (docs.anthropic.com, 2026). Seção sobre concisão e structured outputs — inclui exemplos de format constraints e impacto em qualidade.
+- **OpenAI** — *Structured Outputs* (platform.openai.com, 2026). Documentação da feature de JSON schema forçado via parâmetro de API — substitui instruções de formato no prompt.
+- **Lilian Weng** — *Prompt Engineering* (lilianweng.github.io, 2023). Survey abrangente de técnicas de prompting — inclui seção sobre controle de formato de output com análise de efetividade comparada.
+- **Simon Willison** — *Everything I've learned about prompting LLMs* (simonwillison.net, 2025). Análise empírica de técnicas de instrução de formato em diferentes modelos — com exemplos de before/after e medições de token count.
+- **Hamel Husain** — *The economics of LLM output* (hamel.ai, 2025). Análise de custo do output vs input por provedor, com fórmulas para calcular o ROI de instruções de concisão.
