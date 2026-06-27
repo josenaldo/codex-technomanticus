@@ -1,134 +1,400 @@
 ---
-title: "Compaction — como o Claude Code gerencia contextos longos"
+title: "Compaction — gerenciando sessões longas sem perder o contexto"
 type: concept
-progress: backlog
+progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: growing
 tags:
   - claude-code
   - mental-model
   - compaction
   - context
+  - sessao
 ---
-# Compaction — como o Claude Code gerencia contextos longos
+
+# Compaction — gerenciando sessões longas sem perder o contexto
 
 > [!abstract] TL;DR
-> Compaction é o mecanismo que permite continuar sessões quando a context window está quase cheia. O Claude Code resume o histórico de conversa em um snapshot denso, preservando informação essencial e descartando detalhes. Auto compaction acontece automaticamente; `/compact` permite triggerar manualmente com foco explícito. O custo: alguns detalhes são perdidos. A prática saudável é compactar cedo e reiniciar para tarefas não relacionadas.
+> Compaction é o mecanismo pelo qual Claude Code condensa o histórico de uma sessão em um resumo quando a janela de contexto se aproxima do limite. Acontece automaticamente (~80% de capacidade) ou pode ser acionado manualmente com `/compact`. O modelo continua com o resumo em vez do histórico completo — mantendo a essência do trabalho, perdendo alguns detalhes. Saber o que é preservado e o que é perdido, e como ancorar as informações críticas via CLAUDE.md, é fundamental para sessões longas e produtivas.
 
-## O que é
+---
 
-Quando a [[Dicionário de IA#Context window|context window]] se aproxima do limite, o [[Dicionário de IA#Claude Code|Claude Code]] pode [[Dicionário de IA#context compaction|compactar]] a sessão: em vez de ter o histórico completo de tool calls, mensagens e outputs, o contexto passa a ter um **summary** desse histórico seguido pelas mensagens mais recentes em forma completa.
+## O problema fundamental: contexto finito, tarefas infinitas
 
-```
-Antes da compaction:
-[system prompt] [CLAUDE.md] [turn1][tool1][turn2][tool2]...[turn25][tool25]
+A janela de contexto do Claude é finita — 200k tokens. Uma sessão típica de refactoring pesado pode consumir 50-80k tokens em uma hora. Uma tarefa de migração pode precisar de 10 horas de trabalho. Como resolver esse conflito?
 
-Depois da compaction:
-[system prompt] [CLAUDE.md] [SUMMARY: resumo dos turns 1-20] [turn21][tool21]...[turn25][tool25]
-```
+A resposta óbvia seria: terminar a sessão, começar outra. Mas isso tem um custo: o agente perde todo o contexto acumulado — as decisões tomadas, os padrões descobertos, as convenções identificadas, o estado atual da tarefa.
 
-## Auto compaction vs manual
+Compaction resolve isso. Em vez de apagar o histórico, o agente o **condensa**: transforma os últimos N tokens de histórico em um resumo compacto que captura a essência sem copiar cada detalhe.
 
-### Auto compaction
+É como um arquivista que transforma 500 páginas de atas de reuniões em um memorando de 10 páginas com as decisões-chave. O memorando não é perfeito — alguns detalhes se perdem — mas você ainda sabe para onde o projeto estava indo e o que foi decidido.
 
-Acontece automaticamente quando o contexto atinge ~80% da janela disponível. Você verá uma notificação:
+---
 
-```
-[Conversation compacted to preserve context]
-```
+## Como compaction funciona por dentro
 
-O Claude Code chama a API uma vez para gerar o summary, então continua a sessão com o contexto compactado.
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant C as Claude Code
+    participant M as Model
 
-### Manual: `/compact`
-
-```
-/compact
-```
-
-Trigga compaction quando você decide, independente do tamanho do contexto. Útil antes de entrar em uma fase nova da sessão.
-
-Você pode passar um foco para o summary:
-
-```
-/compact Focus on the authentication changes made so far
+    U->>C: Continua sessão longa
+    Note over C: Contexto em ~80% da capacidade
+    C->>M: Aciona compaction automática
+    M->>M: Gera resumo do histórico
+    M->>C: Substitui histórico pelo resumo
+    Note over C: Contexto reduzido para ~20-30%
+    C->>U: Continua sessão com contexto condensado
 ```
 
-Com foco, o summary prioriza o que você especificou ao resumir — muito mais útil que um summary genérico.
+**O que o modelo faz ao compactar:**
+1. Analisa o histórico da sessão (todas as mensagens, tool calls, resultados)
+2. Identifica: objetivo da sessão, decisões tomadas, estado atual das tarefas, arquivos modificados
+3. Gera um resumo em linguagem natural que captura esses elementos
+4. Substitui o histórico bruto pelo resumo
+5. O CLAUDE.md e o system prompt permanecem intocados no início do contexto
 
-## O que é preservado vs descartado
+---
 
-**Preservado com fidelidade:**
-- Decisões de design explícitas ("decidimos usar JWT em vez de sessions")
-- Arquivos editados e suas mudanças
-- Erros encontrados e como foram resolvidos
-- Instruções explícitas do usuário
-- Estado final dos trabalhos em andamento
+## Compaction automática vs manual
 
-**Comprimido ou descartado:**
-- Tool outputs detalhados de chamadas antigas
-- Explorações que não levaram a nada
-- Conteúdo de arquivos lidos (o arquivo em si não muda — pode ser relido)
-- Raciocínio intermediário de turns anteriores
-
-## Por que isso importa
-
-### Continuidade de sessão
-
-Sem compaction, sessões longas travavam ou exigiam reinício. Com compaction, você pode trabalhar em uma feature por horas em uma única sessão.
-
-### Custo
-
-Após compaction, cada novo turn processa menos tokens (o summary é mais denso que o histórico completo). Custo por turn cai.
-
-### Risco de perda de informação
-
-O summary é uma aproximação. Detalhes específicos de turns antigos podem ser perdidos. Se você disse "não use lodash" no turn 3 e a sessão foi compactada duas vezes desde então, o agente pode não lembrar dessa restrição.
-
-**Mitigação:** coloque restrições importantes no CLAUDE.md, não confie só no histórico da sessão.
-
-## Estratégias práticas
-
-### Compactar antes, não depois
+### Automática
 
 ```
-/compact Focus on the API design decisions made so far
+# Acontece sem intervenção quando o contexto atinge ~80% de capacidade
+# Claude Code exibe uma notificação:
+⚡ Context compacted (saved ~120k tokens). Continuing...
 ```
 
-Compacte quando a sessão está ~50% do limite, não quando já está 90%. Você tem mais controle sobre o que é preservado.
+Você não precisa fazer nada. Claude Code monitora a ocupação do contexto e aciona compaction automaticamente quando necessário. A sessão continua — do seu ponto de vista, é quase transparente.
 
-### CLAUDE.md como âncora
+**Quando acontece:** quando o total de tokens no contexto ultrapassa aproximadamente 80% do limite do modelo (160k de 200k para Claude Sonnet/Opus).
 
-Qualquer coisa que precisa sobreviver entre compactions e entre sessões deve estar no CLAUDE.md. O summary pode perder detalhes; o CLAUDE.md é lido no início de cada sessão.
-
-### Reiniciar para tarefas não relacionadas
-
-Se acabou uma feature e vai começar outra não relacionada, inicie uma nova sessão. Uma sessão compactada com histórico de outra feature é ruído.
-
-### `--resume` com consciência
+### Manual com `/compact`
 
 ```bash
-claude --resume SESSION_ID
+# Aciona compaction imediatamente
+/compact
+
+# Aciona com foco específico
+/compact Focus on the authentication module changes
+/compact Preserve the API design decisions we made
+/compact Keep the list of failing tests and our debugging approach
 ```
 
-Retoma uma sessão (incluindo compacted). Útil para continuar trabalho; mas o contexto é o compacted, não o original completo.
+**Por que acionar manualmente:**
+- Você sabe que vai entrar em uma fase nova e complexa — limpe o contexto antes
+- O foco da sessão mudou e você quer que o resumo reflita a nova prioridade
+- Você quer controlar o que fica enfatizado no resumo
 
-## Armadilhas
+**A diretiva de foco é poderosa:** sem ela, o modelo decide o que é mais importante para o resumo. Com ela, você guia: "preserve especificamente isso".
 
-**Confiar no histórico para restrições críticas**: "não faça X" dito há 30 turns pode não sobreviver à compaction. Repita restrições importantes ou coloque no CLAUDE.md.
+---
 
-**Compaction automática em momento ruim**: se você está no meio de um refactoring complexo quando a compaction auto dispara, pode perder contexto crítico. Compacte manualmente antes de atingir o limite.
+## O que é preservado vs perdido na compaction
 
-**`/compact` sem foco**: sem um foco explícito, o summary é genérico. Para sessões de debugging, `/compact Focus on the root cause investigation and findings` é muito melhor que `/compact` sozinho.
+| Elemento | Preservado? | Notas |
+|----------|-------------|-------|
+| CLAUDE.md (project + user) | ✅ Sempre | Relido a cada sessão, não faz parte do histórico |
+| Objetivo geral da sessão | ✅ Geralmente | Principal âncora do resumo |
+| Decisões de design tomadas | ✅ Geralmente | Mencionadas explicitamente se importantes |
+| Lista de arquivos modificados | ✅ Geralmente | Rastreados no resumo |
+| Estado das tarefas pendentes | ✅ Geralmente | "Completei X, falta Y e Z" |
+| Conteúdo exato de arquivos lidos | ❌ Perdido | Só a referência aos arquivos |
+| Output verboso de comandos | ❌ Perdido | Apenas o resultado/conclusão |
+| Conversas exploratórias | ⚠️ Parcial | Resumidas, não palavra por palavra |
+| Erros e suas soluções | ⚠️ Parcial | O que foi tentado e resultado final |
+| Preferências de estilo | ⚠️ Parcial | Se explícitas, provavelmente preservadas |
+
+**Insight crítico:** o conteúdo dos arquivos que foram lidos NÃO é preservado no resumo. Se o agente leu `auth/session.ts` inteiro na primeira hora, após compaction ele sabe que leu e o que encontrou, mas não o conteúdo. Se precisar do conteúdo novamente, vai reler o arquivo — o que é exatamente o comportamento correto.
+
+---
+
+## CLAUDE.md como âncora de compaction
+
+CLAUDE.md é lido no início de cada sessão e fica no topo do contexto — antes de qualquer histórico. Isso tem uma implicação crucial para compaction: **CLAUDE.md sobrevive a qualquer número de compactions**.
+
+```
+Contexto após compaction:
+
+[TOPO — alta atenção]
+├── System prompt
+├── ~/.claude/CLAUDE.md (convenções globais)
+├── .claude/CLAUDE.md (instruções do projeto)
+│
+[MEIO — após compaction]
+├── Resumo da sessão (gerado por compaction)
+│   ├── Objetivo: implementar autenticação JWT
+│   ├── Completado: session.ts, middleware.ts
+│   └── Pendente: testes, documentação
+│
+[FIM — alta atenção]
+└── Sua próxima mensagem
+```
+
+**O que colocar no CLAUDE.md para sobreviver à compaction:**
+- Decisões de arquitetura permanentes: "Use dependency injection via constructor, not service locator"
+- Convenções de código: "Errors are typed as `AppError`, never raw `Error`"
+- Restrições: "Never use `any` in TypeScript. Always use explicit types."
+- Estado do projeto: "Auth module is being migrated. Old: src/auth/legacy.ts. New: src/auth/v2/"
+
+**O que NÃO colocar no CLAUDE.md:**
+- Estado temporário de uma tarefa específica — pertence ao contexto da sessão
+- Listas de tarefas in-progress — pertence ao sistema de tasks do projeto
+
+---
+
+## Como fica o contexto após compaction — exemplo real
+
+Antes de compaction, o contexto contém a conversa inteira:
+
+```
+[Turno 1] Usuário: "Adicione autenticação JWT ao projeto"
+[Turno 2] Claude: [leu src/auth/session.ts — 280 linhas de código]
+[Turno 3] Claude: [editou session.ts — resultado completo com diff]
+[Turno 4] Usuário: "Os testes estão quebrando"
+[Turno 5] Claude: [rodou npm test — 200 linhas de output]
+[Turno 6] Claude: "O problema é X. Vou corrigir."
+[Turno 7] Claude: [editou tests/auth.test.ts]
+[Turno 8] Claude: [rodou npm test novamente — 180 linhas de output]
+... (12 turnos mais)
+Total: ~85.000 tokens
+```
+
+Após compaction, o contexto contém o resumo:
+
+```
+[RESUMO — gerado por compaction]
+Objetivo: Adicionar autenticação JWT ao projeto.
+
+Progresso:
+- Modificado: src/auth/session.ts — substituiu cookie-session por jwt.sign/verify
+- Modificado: src/auth/middleware.ts — verifica token no header Authorization
+- Modificado: tests/auth.test.ts — testes atualizados para JWT
+
+Estado atual: Todos os 42 testes passam. Pendente: atualizar documentação.
+
+Decisões tomadas:
+- Token expira em 24h (configurável via JWT_EXPIRY env var)
+- Refresh token armazenado em Redis (chave: session:${userId})
+- Erro de token expirado retorna 401, não 403
+
+Total: ~1.200 tokens
+```
+
+O resumo é ~70× menor que o histórico original. O agente tem o essencial para continuar: o que foi feito, o que está pendente, as decisões de design.
+
+---
+
+## Impacto da compaction na qualidade das respostas
+
+Compaction não é gratuita — tem custo de qualidade. Entender esse custo ajuda a usar o recurso de forma inteligente.
+
+**O que fica mais frágil após compaction:**
+- Referências a código específico: o agente pode lembrar que modificou `session.ts` mas não o conteúdo exato que escreveu
+- Contexto de debugging: a cadeia de hipóteses e tentativas se perde; apenas o resultado final fica
+- Nuances de decisões: "escolhemos JWT porque avaliamos 3 alternativas e JWT ganhou por X, Y, Z" vira "usamos JWT"
+
+**O que continua robusto:**
+- Objetivos de alto nível: o agente sabe o que está construindo
+- Estado das tarefas: completado/pendente/bloqueado
+- Decisões explícitas: se você disse "use JWT", isso fica
+- Arquivos modificados: o agente sabe onde trabalhou
+
+**Estratégia de mitigação:** para nuances importantes, diga explicitamente antes da compaction:
+
+```
+/compact Focus on: the decision to use Redis for refresh tokens (not database),
+         the 24h expiry requirement from the product spec,
+         and the fact that middleware must be stateless
+```
+
+Isso direciona o modelo a priorizar essas informações no resumo.
+
+---
+
+## Compaction em sessões multi-agente
+
+Quando Claude Code usa subagentes (Agent tool), cada subagente tem seu próprio contexto. Compaction no orquestrador não afeta os contextos dos subagentes — e vice-versa.
+
+```mermaid
+graph TD
+    O[Orquestrador\n contexto principal] --> SA1[Subagente 1\n contexto próprio]
+    O --> SA2[Subagente 2\n contexto próprio]
+    O --> SA3[Subagente 3\n contexto próprio]
+
+    SA1 -->|retorna resultado| O
+    SA2 -->|retorna resultado| O
+    SA3 -->|retorna resultado| O
+
+    style O fill:#4a90d9,color:#fff
+    style SA1 fill:#7b7b7b,color:#fff
+    style SA2 fill:#7b7b7b,color:#fff
+    style SA3 fill:#7b7b7b,color:#fff
+```
+
+O orquestrador recebe os resultados dos subagentes. Se o orquestrador sofre compaction, os resultados dos subagentes (que já foram incorporados ao histórico) são incluídos no resumo — mas de forma condensada. Se um subagente individualmente atinge o limite, ele pode sofrer compaction internamente, transparente para o orquestrador.
+
+---
+
+## Retomando sessões após compaction ou pausa
+
+```bash
+# Ver sessões disponíveis
+claude sessions list
+
+# Retomar a sessão mais recente
+claude --continue
+
+# Retomar sessão específica por ID
+claude --resume SESSION_ID
+
+# Retomar em modo headless
+claude -p "continue the refactoring" --resume SESSION_ID
+```
+
+**O que você encontra ao retomar:**
+- O resumo compilado (se houve compaction)
+- O histórico desde a última compaction
+- CLAUDE.md relido — o agente tem todas as instruções permanentes
+
+**O que não está disponível:**
+- Histórico completo antes da última compaction
+- Conteúdo de arquivos que foram lidos antes da compaction (serão relidos se necessário)
+
+---
+
+## Estratégias para sessões muito longas
+
+**Estratégia 1: CLAUDE.md como checkpoint de estado**
+
+Para tarefas que duram dias, documente o estado atual no CLAUDE.md temporariamente:
+
+```markdown
+## Estado atual da migração (atualizar conforme avança)
+- [x] Fase 1: auth module
+- [x] Fase 2: user module
+- [ ] Fase 3: payment module — em andamento
+- [ ] Fase 4: notification module
+```
+
+Remova quando a tarefa terminar.
+
+**Estratégia 2: `/compact` com foco antes de fases críticas**
+
+Antes de começar uma fase nova que exigirá muito contexto:
+
+```bash
+/compact Focus on the payment module design decisions and the API contract
+# Agora o contexto está limpo, preservando exatamente o que importa para a próxima fase
+```
+
+**Estratégia 3: Sessões menores por domínio**
+
+Em vez de uma sessão longa cobrindo tudo:
+- Sessão 1: auth module (compact ao terminar)
+- Sessão 2: user module (compact ao terminar)
+- Sessão 3: payment module
+
+O CLAUDE.md documenta convenções descobertas em cada sessão, tornando-as disponíveis para as próximas.
+
+**Estratégia 4: `/clear` entre tarefas independentes**
+
+Para tarefas completamente independentes, `/clear` é melhor que compaction: descarta TODO o histórico (que para tarefas novas é só ruído) e começa limpo. Compaction faz sentido apenas quando o histórico tem valor para o trabalho seguinte.
+
+---
+
+## Compaction vs `/clear` — quando usar cada um
+
+| Situação | Compaction | `/clear` |
+|----------|-----------|---------|
+| Sessão longa, mesma tarefa | ✅ Ideal | ❌ Perde contexto valioso |
+| Tarefa nova, projeto diferente | ❌ Ruído de contexto | ✅ Ideal |
+| Pausa e retomada no mesmo dia | ✅ Via `--resume` | ❌ |
+| Mudança de foco radical | `/compact Focus on...` | ✅ Se for nova sessão |
+| Debug de problema novo | ❌ | ✅ Começa limpo |
+| Contexto cheio de erros e tentativas | ❌ Resumo fica bagunçado | ✅ |
+
+---
+
+## Checklist — boas práticas de compaction
+
+- [ ] Documente decisões permanentes no CLAUDE.md — elas sobrevivem a qualquer compaction
+- [ ] Use `/compact Focus on X` quando a próxima fase exige foco diferente do histórico
+- [ ] Use `/clear` (não `/compact`) quando vai começar uma tarefa completamente nova
+- [ ] Guarde o SESSION_ID em tarefas longas — permite retomar com `--resume`
+- [ ] Antes de uma fase crítica, compacte manualmente para entrar com contexto limpo
+- [ ] Para tarefas multi-dia, atualize CLAUDE.md com o estado do progresso — não confie no resumo de compaction para estado de longo prazo
+- [ ] Monitore o uso de contexto com `--verbose` para saber quando compaction está próximo
+- [ ] Para nuances de decisão importantes, explicite-as antes de compactar com `/compact Focus on...`
+- [ ] Após compaction, releia o resumo para verificar se capturou o que importa
+- [ ] Em sessões multi-agente, lembre que cada subagente tem seu próprio contexto — compaction no orquestrador não afeta subagentes
+
+---
+
+## Perguntas que compaction ajuda a responder — e as que não ajuda
+
+**Compaction responde bem:**
+- "O que já fizemos até agora?" — o resumo cobre completado vs pendente
+- "Qual foi a decisão sobre X?" — decisões explícitas ficam no resumo
+- "Quais arquivos modificamos?" — rastreado no resumo
+
+**Compaction responde mal (releia o arquivo):**
+- "Qual é o conteúdo atual de `auth.ts`?" — reler é mais confiável que o resumo
+- "O que exatamente o teste 42 verifica?" — detalhes de código se perdem
+- "Como o erro apareceu exatamente?" — mensagens de erro verbosas não sobrevivem
+
+**Regra prática:** se a resposta depende de texto exato (código, output de comando, mensagem de erro), não confie no resumo — leia o arquivo ou rode o comando novamente. O resumo é confiável para estado de alto nível, não para detalhes de implementação.
+
+Pensar em compaction como um colaborador que mantém notas de projeto: ele sabe o que o time decidiu e quais marcos foram atingidos, mas se você perguntar "qual é exatamente a linha 47 do arquivo?", ele vai dizer "é melhor verificar no código diretamente". Isso não é uma falha — é o comportamento correto para o propósito de um resumo de sessão.
+
+Esta é também a razão pela qual ferramentas como `git log` e `git diff` são mais confiáveis que a memória do agente para rastrear o que foi mudado: o repositório tem o estado real do código; o resumo de compaction tem a intenção e as decisões.
+
+---
+
+## Como explicar em inglês
+
+| Português | Inglês |
+|-----------|--------|
+| Compactação | Compaction |
+| Resumo da sessão | Session summary / context summary |
+| Contexto condensado | Compacted context |
+| Janela de contexto cheia | Context window full / context limit reached |
+| Retomar sessão | Resume session |
+| Preservado após compaction | Preserved across compaction |
+| Âncora de contexto | Context anchor |
+
+**Frases úteis:**
+- "After compaction, the model continues with a summary rather than the full history — so CLAUDE.md is critical for anchoring persistent decisions."
+- "I use `/compact Focus on X` before switching to a new phase, so the summary is biased toward what I need next."
+- "For multi-day tasks, I document progress in CLAUDE.md so it survives compaction and is available in the next session."
+- "Compaction vs /clear: use compaction when the history is valuable, /clear when it's just noise for the next task."
+- "Compaction is like a meeting note-taker who summarizes what was decided, not a transcript — great for decisions, not for exact code."
+- "The deny list in settings.json prevents destructive actions even after compaction resets the agent's short-term caution."
+
+---
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]
-- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]]
-- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — CLAUDE.md como âncora entre sessões
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]] — o que entra no contexto e como otimizar
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase|02 - Como Claude Code lê um codebase]] — CLAUDE.md como mapa de projeto
+- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/01 - CLAUDE.md|01 - CLAUDE.md]] — configuração avançada do arquivo
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/05 - Modos de operação|05 - Modos de operação]] — modos e composição de sessões
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
+
+---
 
 ## Referências
 
-- [Claude Code — Managing context](https://docs.anthropic.com/pt/docs/claude-code/memory)
+- **Anthropic** — *Claude Code concepts* (2026). Compaction e gerenciamento de sessão longa — https://docs.anthropic.com/pt/docs/claude-code/concepts
+- **Anthropic** — *Claude Code CLI reference* (2026). Flags `--continue` e `--resume` — https://docs.anthropic.com/pt/docs/claude-code/cli-reference
+- **Anthropic** — *Claude Code CLAUDE.md* (2026). Como CLAUDE.md sobrevive à compaction — https://docs.anthropic.com/pt/docs/claude-code/memory
+- **Liu et al.** — *Lost in the Middle: How Language Models Use Long Contexts* (2023). Atenção degrada para o meio do contexto — base teórica para por que CLAUDE.md no início importa — https://arxiv.org/abs/2307.03172
+- **Anthropic** — *Claude Code agentic patterns* (2026). Compaction em sessões multi-agente e subagentes — https://docs.anthropic.com/pt/docs/claude-code/sub-agents
+- **Anthropic** — *Model context window* (2026). Limites de contexto por modelo e como compaction se relaciona com o limite de 200k tokens — https://docs.anthropic.com/pt/docs/about-claude/models
+- **Anthropic** — *Claude Code prompt caching* (2026). Interação entre compaction, caching e custo de tokens — https://docs.anthropic.com/pt/docs/build-with-claude/prompt-caching
+- **Anthropic** — *Claude Code sessions* (2026). Gerenciamento de sessões, SESSION_ID, e comportamento de `--continue` vs `--resume` — https://docs.anthropic.com/pt/docs/claude-code/cli-reference#session-management
+
