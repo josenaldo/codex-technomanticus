@@ -269,6 +269,14 @@ export const config = {
 }
 ```
 
+> [!tip] Assista: Next.js App Router Authentication (Sessions, Cookies, JWTs)
+> **Canal:** leerob (Lee Robinson, Vercel) | **Duração:** ~11min | **Idioma:** EN
+>
+> Lee Robinson constrói ao vivo a camada de auth mínima do App Router sem bibliotecas externas: criptografa um JWT com `jose`, armazena-o como cookie `httpOnly`, e usa o middleware para chamar `updateSession` — que renova o `expires` a cada request com `NextResponse.next()` + `cookies.set()`. O vídeo torna concreto o padrão de "middleware como portaria + DAL como cofre" ao mostrar por que a verificação real da sessão fica em `getSession`, não no middleware.
+> Trecho de destaque [4:47]: *"This file is going to run in front of every request in our application, and it's calling 'update session' with that web request — otherwise, refresh that session so it doesn't expire."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=DJvM2lSPn6w)
+
 > [!warning] Middleware não substitui verificação no DAL
 > **O que acontece:** você protege `/dashboard` no middleware e assume que quem chegou ao Server
 > Component está autorizado. Uma requisição direta a um Route Handler que não está no `matcher`

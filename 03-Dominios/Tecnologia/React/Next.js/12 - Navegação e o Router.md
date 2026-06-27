@@ -128,6 +128,14 @@ A prop `prefetch` controla esse comportamento:
 > Em modo de desenvolvimento (`next dev`), o prefetch é desabilitado. Os testes de performance
 > de prefetch precisam ser feitos com `next build && next start`.
 
+> [!tip] Assista: The Recommended Way To Link In Next.js 15
+> **Canal:** Code Ryan | **Duração:** ~10min | **Idioma:** EN
+>
+> O vídeo percorre as três opções do prop `prefetch` (`null`, `true`, `false`) com exemplos no browser — deixando claro que `null` não significa "ativo por padrão", mas sim "Next.js decide pelo tipo de rota". Detalhe que reforça o warning acima: o narrador explica por que o prefetch parece idêntico com ou sem o prop durante o desenvolvimento (ele está silenciosamente desativado em `next dev`).
+> Trecho de destaque [7:48]: *"null is prefetched behavior depends on whether the route is static or dynamic — for static the full route will be prefetched, for dynamic routes the partial route down to the nearest loading.js boundary will be prefetched."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ETVRpNG-pgM)
+
 ### Scroll e âncora
 
 Por padrão, toda navegação faz scroll ao topo da nova página. Para suprimir:

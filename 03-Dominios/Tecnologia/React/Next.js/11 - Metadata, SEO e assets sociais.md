@@ -561,6 +561,14 @@ export async function generateMetadata(
 > Quando a filha não exporta, o Next usa `title.default` (string simples, sem substituição).
 > **Como evitar:** sempre defina `title.default` junto com `title.template` no layout raiz.
 
+> [!tip] Assista: Next.js 15 Tutorial - 17 - Routing Metadata
+> **Canal:** Codevolution | **Duração:** ~8min | **Idioma:** EN
+>
+> Cobre static metadata, generateMetadata e merge no App Router com código real em Next.js 15 — incluindo uma armadilha crítica que a nota não menciona: exportar `metadata` de uma page marcada com `"use client"` gera erro em build. A solução canônica é manter o Server Component como page e extrair a lógica client-side para um componente filho separado.
+> Trecho de destaque [5:48]: *"there is one crucial limitation you need to be aware of when working with metadata — it will not work in pages that are marked with the use client directive"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=OldUurB0Wx8)
+
 ---
 
 ## Como explicar em inglês
