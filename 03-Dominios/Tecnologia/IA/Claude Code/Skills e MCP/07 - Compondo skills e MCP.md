@@ -266,6 +266,81 @@ Invoke: `/arquitetura-projeto` depois `/tdd`
 
 Isso garante que qualquer dev do time sabe o que configurar antes de usar os workflows — e previne o erro de apontar o server errado para o workflow errado.
 
+## Padrões avançados de composição
+
+### O agente como orquestrador de multi-step
+
+A composição skills + MCP transforma o agente em um orquestrador que executa sequências de passos envolvendo múltiplos sistemas. Cada passo usa o resultado do anterior:
+
+```mermaid
+flowchart LR
+    S1["Lê issue #247\n(GitHub MCP)"] --> S2["Verifica schema\n(Postgres MCP)"]
+    S2 --> S3["Escreve teste\n(tool nativa Edit)"]
+    S3 --> S4["Implementa\n(tool nativa Edit)"]
+    S4 --> S5["Verifica UI\n(Puppeteer MCP)"]
+    S5 --> S6["Cria PR\n(GitHub MCP)"]
+```
+
+Sem composição, você seria o orquestrador — copiando dados de um sistema para outro. Com composição, o agente faz isso autonomamente.
+
+### Escalando a composição por complexidade
+
+| Complexidade | Composição |
+|---|---|
+| Tarefa simples | Tools nativas |
+| Tarefa com acesso externo | MCP server relevante |
+| Tarefa repetitiva com processo | Skill de processo |
+| Feature nova no projeto | Skill de domínio + MCP de banco/git |
+| Workflow completo do time | Skill processo + domínio + MCP |
+| Automação de CI/CD | MCP remoto + skill + hooks |
+
+### Composição com hooks para automação
+
+Skills e MCP podem ser combinados com hooks para criar automações que rodam sem invocação manual. Um hook `PostToolUse` pode carregar uma skill de validação automaticamente após certos eventos:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "..." }]
+      }
+    ]
+  }
+}
+```
+
+Ver [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] para o mecanismo completo. A composição com hooks é o nível mais avançado: skill define o processo, MCP dá o acesso, e o hook garante que o processo é sempre seguido.
+
+### Versionando a composição como código
+
+A composição ideal é declarativa — documentada de forma que qualquer dev do time possa replicar:
+
+```markdown
+<!-- CLAUDE.md do projeto -->
+
+## Workflows de agente
+
+### Bug triage
+```bash
+# 1. Certifique-se que DATABASE_PROD_READONLY_URL está exportada
+# 2. Invoque as skills na ordem:
+/bug-triage
+```
+MCP necessário: postgres-prod-ro (read-only), github
+
+### Feature nova
+```bash
+/arquitetura-projeto
+/tdd
+# Descreva a feature ou referencie o número da issue
+```
+MCP necessário: postgres-dev, github
+```
+
+O `CLAUDE.md` do projeto documenta quais skills invocar, em que ordem, e quais MCP servers configurar. Trata a composição como código — versionada, revisável, replicável.
+
 ## Armadilhas
 
 **Skill sem mencionar os MCP necessários**
