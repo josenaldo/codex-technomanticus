@@ -1,11 +1,11 @@
 ---
-title: "Hooks para segurança — commits, push force, rm -rf"
+title: "Segurança com hooks — defesa em profundidade"
 type: concept
-progress: backlog
+progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: growing
 tags:
   - claude-code
   - hooks
@@ -14,24 +14,49 @@ tags:
   - guardrails
 ---
 
-# Hooks para segurança — commits, push force, rm -rf
+# Segurança com hooks — defesa em profundidade
 
 > [!abstract] TL;DR
-> Segurança com hooks vai além de [[Dicionário de IA#Guardrail|guardrails]] individuais: é uma estratégia em camadas que cobre o fluxo de trabalho inteiro — desde bloquear comandos destrutivos até proteger o histórico git, controlar o que pode ser commitado, e detectar commits com credenciais. A diferença entre guardrails (bloquear ações) e segurança (política sistêmica para o fluxo completo).
+> Segurança com hooks vai além de guardrails individuais: é uma estratégia em camadas que cobre o fluxo de trabalho inteiro — desde bloquear comandos destrutivos até proteger arquivos sensíveis, controlar o que pode ser commitado, e detectar credenciais antes de ir ao git. Guardrail bloqueia uma ação. Segurança sistêmica cobre o ciclo completo: o que pode executar, o que pode editar, o que pode commitar, o que pode publicar.
 
-## A diferença entre guardrail e segurança
+---
 
-Um guardrail bloqueia um comando. Uma estratégia de segurança com hooks cobre:
+## A analogia: a auditoria de acesso em um ambiente regulado
 
-1. **O que pode ser executado** (PreToolUse para Bash)
-2. **O que pode ser editado** (PreToolUse para Edit/Write)
-3. **O que pode ser commitado** (PostToolUse no Bash — interceptar git add/commit)
-4. **O que pode ser publicado** (PreToolUse — bloquear git push em condições)
-5. **Detecção de vazamentos** (verificar credenciais antes de commit)
+Em ambientes regulados (bancos, hospitais, sistemas de saúde), não basta bloquear ações perigosas na porta. A segurança é sistêmica: cada ação é registrada, o que pode ser lido está definido, o que pode ser modificado requer aprovação, e o histórico é imutável para auditoria. Não é desconfiança — é accountability.
 
-## Proteção de arquivos sensíveis
+Hooks bem configurados fazem o mesmo para o Claude Code. Não se trata de desconfiar do agente — se trata de ter um registro confiável de o que aconteceu, garantir que arquivos críticos nunca foram tocados, e que o histórico git permanece intacto. É a diferença entre "usamos IA com auto mode" e "usamos IA com auto mode em ambiente auditável".
 
-A primeira linha: impedir edição de arquivos que nunca devem ser tocados pelo agente.
+---
+
+## A diferença entre guardrail e segurança sistêmica
+
+Um guardrail bloqueia um comando. Uma estratégia de segurança com hooks cobre o ciclo completo:
+
+```mermaid
+flowchart LR
+    A["O que pode\nexecutar?"] --> B["PreToolUse\nBash"]
+    C["O que pode\neditar?"] --> D["PreToolUse\nEdit/Write"]
+    E["O que pode\ncommitar?"] --> F["PreToolUse\ngit commit"]
+    G["O que pode\nser publicado?"] --> H["PreToolUse\ngit push"]
+    I["Credenciais\nno código?"] --> J["PostToolUse\ngit add"]
+    K["Histórico\nde auditoria"] --> L["PreToolUse\nmatcher vazio"]
+
+    style A fill:#2980b9,color:#fff
+    style C fill:#2980b9,color:#fff
+    style E fill:#2980b9,color:#fff
+    style G fill:#2980b9,color:#fff
+    style I fill:#2980b9,color:#fff
+    style K fill:#2980b9,color:#fff
+```
+
+Cinco camadas, cinco hooks distintos. Cada um protege um ponto diferente do fluxo.
+
+---
+
+## Camada 1 — Proteção de arquivos sensíveis
+
+A primeira linha: impedir que o agente leia ou edite arquivos que nunca devem ser tocados.
 
 ```bash
 #!/bin/bash
@@ -41,6 +66,7 @@ INPUT=$(cat)
 TOOL=$(echo "$INPUT" | jq -r '.tool_name')
 FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // ""')
 
+# Bloquear Edit, Write E Read em arquivos sensíveis
 if [[ "$TOOL" != "Edit" && "$TOOL" != "Write" && "$TOOL" != "Read" ]]; then exit 0; fi
 
 BLOCKED_PATTERNS=(
@@ -49,16 +75,17 @@ BLOCKED_PATTERNS=(
   ".*\.pem$"
   ".*\.key$"
   ".*\.pfx$"
-  ".*credentials.*"
-  ".*secret.*"
+  ".*credentials\.json$"
+  ".*secret(s)?\.(json|yaml|yml)$"
   ".*/\.ssh/.*"
-  ".*id_rsa.*"
-  ".*id_ed25519.*"
+  ".*id_rsa$"
+  ".*id_ed25519$"
 )
 
 for pattern in "${BLOCKED_PATTERNS[@]}"; do
   if echo "$FILE" | grep -qiE "$pattern"; then
-    echo "SEGURANÇA: $FILE é um arquivo sensível. Acesso bloqueado." >&2
+    echo "SEGURANÇA: $FILE é um arquivo sensível." >&2
+    echo "Leitura e edição pelo agente bloqueadas. Acesse manualmente." >&2
     exit 1
   fi
 done
@@ -66,12 +93,14 @@ done
 exit 0
 ```
 
-> [!info] Bloquear Read também
-> Além de Edit/Write, considere bloquear Read em arquivos sensíveis. Um agente que lê suas chaves privadas pode inadvertidamente incluí-las em output, logs, ou contexto de uma chamada API.
+> [!info] Por que bloquear Read também
+> Um agente que lê suas chaves privadas pode inadvertidamente incluí-las em output, logs, ou como conteúdo de uma chamada API subsequente. Bloquear Read é conservative — se o agente precisa de alguma credencial, forneça via variável de ambiente, não via arquivo.
 
-## Detecção de credenciais antes de commit
+---
 
-PostToolUse no Bash: interceptar git add/commit e verificar se há credenciais.
+## Camada 2 — Detecção de credenciais antes de commit
+
+Interceptar `git add` e `git commit` para verificar se o staged content tem credenciais:
 
 ```bash
 #!/bin/bash
@@ -80,39 +109,55 @@ PostToolUse no Bash: interceptar git add/commit e verificar se há credenciais.
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
 
-# Só age depois de git add ou git commit
+# Intercepta git add e git commit (PreToolUse)
 if ! echo "$COMMAND" | grep -qE "^git (add|commit)"; then exit 0; fi
 
-# Padrões comuns de credenciais em staged files
+# Verifica o staged content atual
 STAGED_CONTENT=$(git diff --staged 2>/dev/null)
 
 PATTERNS=(
-  "AKIA[0-9A-Z]{16}"          # AWS Access Key ID
-  "sk-[a-zA-Z0-9]{48}"        # OpenAI API key
-  "ghp_[a-zA-Z0-9]{36}"       # GitHub PAT
-  "password\s*=\s*['\"][^'\"]+['\"]"  # password = "valor"
-  "secret\s*=\s*['\"][^'\"]+['\"]"    # secret = "valor"
-  "api_key\s*=\s*['\"][^'\"]+['\"]"   # api_key = "valor"
+  "AKIA[0-9A-Z]{16}"                          # AWS Access Key ID
+  "sk-[a-zA-Z0-9]{48}"                         # OpenAI API key
+  "ghp_[a-zA-Z0-9]{36}"                        # GitHub PAT
+  "ya29\.[a-zA-Z0-9_-]+"                       # Google OAuth token
+  "password\s*[:=]\s*['\"][^'\"]{6,}['\"]"     # password = "valor"
+  "secret\s*[:=]\s*['\"][^'\"]{6,}['\"]"       # secret = "valor"
+  "api.?key\s*[:=]\s*['\"][^'\"]{6,}['\"]"     # api_key = "valor"
+  "token\s*[:=]\s*['\"][^'\"]{10,}['\"]"       # token = "valor longo"
 )
 
 for pattern in "${PATTERNS[@]}"; do
   if echo "$STAGED_CONTENT" | grep -qE "$pattern"; then
     echo "SEGURANÇA: possível credencial detectada no staged content." >&2
-    echo "Pattern: $pattern" >&2
-    echo "Revise com: git diff --staged" >&2
-    exit 0  # Não bloqueia — avisa. Mude para exit 1 para bloquear.
+    echo "Padrão detectado: $pattern" >&2
+    echo "Revise com: git diff --staged | grep -E '$pattern'" >&2
+    exit 1
   fi
 done
 
 exit 0
 ```
 
-> [!warning] PostToolUse detecta, mas não previne
-> Como PostToolUse não bloqueia, use esse hook como detector. Para prevenir, use um PreToolUse hook que intercepta `git commit` antes de executar.
+Configure como PreToolUse (não PostToolUse) — assim bloqueia antes de o commit acontecer:
 
-## Proteção do histórico git
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "~/.claude/hooks/detect-credentials-on-commit.sh" }]
+      }
+    ]
+  }
+}
+```
 
-Bloquear operações que reescrevem histórico e podem causar perda de trabalho:
+---
+
+## Camada 3 — Proteção do histórico git
+
+Bloquear operações que reescrevem histórico e podem causar perda de trabalho dos colegas:
 
 ```bash
 #!/bin/bash
@@ -123,34 +168,36 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
 
 echo "$COMMAND" | grep -q "^git " || exit 0
 
-# force push em qualquer forma
+# Force push — reescreve histórico remoto
 if echo "$COMMAND" | grep -qE "push.*(--force\b|-f\b)"; then
-  echo "SEGURANÇA: force push bloqueado. Isso pode apagar commits de outros." >&2
+  echo "SEGURANÇA: force push bloqueado — pode apagar commits de outros." >&2
   echo "Use --force-with-lease para verificar que não houve push externo." >&2
   exit 1
 fi
 
-# rebase em branches compartilhadas
-BRANCH=$(git branch --show-current 2>/dev/null)
+# Rebase em branches compartilhadas — reescreve histórico local e depois force push
+BRANCH=$(git branch --show-current 2>/dev/null || echo "")
 if echo "$COMMAND" | grep -qE "^git rebase" && [[ "$BRANCH" =~ ^(main|master|develop)$ ]]; then
-  echo "SEGURANÇA: git rebase em $BRANCH bloqueado. Rebase em branches compartilhadas é perigoso." >&2
+  echo "SEGURANÇA: git rebase em branch compartilhada ($BRANCH) bloqueado." >&2
+  echo "Rebase é seguro apenas em feature branches pessoais." >&2
   exit 1
 fi
 
-# reset --hard (descarta trabalho não commitado permanentemente)
+# Reset --hard — descarta trabalho não commitado permanentemente
 if echo "$COMMAND" | grep -qE "reset\s+--hard"; then
-  echo "SEGURANÇA: git reset --hard bloqueado. Use git stash para preservar trabalho." >&2
+  echo "SEGURANÇA: git reset --hard bloqueado." >&2
+  echo "Use git stash para preservar o trabalho antes de resetar." >&2
   exit 1
 fi
 
-# amend de commits já publicados
+# Amend de commits já publicados
 if echo "$COMMAND" | grep -qE "commit.*--amend"; then
   REMOTE_TRACKING=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
   if [[ -n "$REMOTE_TRACKING" ]]; then
     LOCAL=$(git rev-parse HEAD 2>/dev/null)
-    REMOTE=$(git rev-parse "$REMOTE_TRACKING" 2>/dev/null)
-    if [[ "$LOCAL" == "$REMOTE" || $(git merge-base HEAD "$REMOTE_TRACKING" 2>/dev/null) == "$LOCAL" ]]; then
-      echo "SEGURANÇA: --amend em commit já publicado bloqueado." >&2
+    REMOTE_HASH=$(git rev-parse "$REMOTE_TRACKING" 2>/dev/null)
+    if [[ "$LOCAL" == "$REMOTE_HASH" ]]; then
+      echo "SEGURANÇA: --amend em commit já publicado no remote bloqueado." >&2
       exit 1
     fi
   fi
@@ -159,9 +206,11 @@ fi
 exit 0
 ```
 
-## Controle de branches protegidas
+---
 
-Impedir commits diretos em branches protegidas:
+## Camada 4 — Controle de branches protegidas
+
+Impedir commits diretos em branches de longa vida — force branch workflow:
 
 ```bash
 #!/bin/bash
@@ -173,8 +222,8 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
 # Só age em git commit
 echo "$COMMAND" | grep -qE "^git commit" || exit 0
 
-BRANCH=$(git branch --show-current 2>/dev/null)
-PROTECTED_BRANCHES=("main" "master" "develop" "release" "production")
+BRANCH=$(git branch --show-current 2>/dev/null || echo "")
+PROTECTED_BRANCHES=("main" "master" "develop" "release" "production" "staging")
 
 for protected in "${PROTECTED_BRANCHES[@]}"; do
   if [[ "$BRANCH" == "$protected" ]]; then
@@ -187,9 +236,11 @@ done
 exit 0
 ```
 
-## Auditoria completa de segurança
+---
 
-Para projetos que precisam de auditoria formal, logar todas as tool calls sensíveis:
+## Camada 5 — Auditoria de segurança
+
+Logar todas as ações sensíveis para registro imutável — independente de bloqueio:
 
 ```bash
 #!/bin/bash
@@ -203,52 +254,139 @@ TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 USER=$(whoami)
 PROJECT=$(basename "$(pwd)")
 
-# Logar apenas ações com potencial de impacto
 IS_SENSITIVE=false
 
 case "$TOOL" in
   Bash)
-    echo "$COMMAND" | grep -qiE "(git push|git commit|rm |mv |npm publish|deploy|kubectl)" \
+    echo "$COMMAND" | grep -qiE "(git push|git commit|rm |mv |npm publish|deploy|kubectl|terraform)" \
       && IS_SENSITIVE=true
     ;;
   Edit|Write)
-    echo "$FILE" | grep -qiE "\.(env|json|yaml|yml|toml|sh|config)" \
+    echo "$FILE" | grep -qiE "\.(env|json|yaml|yml|toml|sh|tf|config)" \
       && IS_SENSITIVE=true
     ;;
 esac
 
 if [[ "$IS_SENSITIVE" == "true" ]]; then
-  echo "$TIMESTAMP | $USER | $PROJECT | $TOOL | ${COMMAND:-$FILE}" >> ~/.claude/security-audit.log
+  SUBJECT="${COMMAND:-$FILE}"
+  echo "$TIMESTAMP | $USER | $PROJECT | $TOOL | $SUBJECT" >> ~/.claude/security-audit.log
 fi
 
-exit 0
+exit 0  # Auditoria nunca bloqueia
 ```
 
-## Estratégia de defesa em profundidade
+---
 
-Não confie em uma única camada. Combine:
+## Configuração completa em camadas
 
-| Camada | Hook | O que protege |
-|--------|------|---------------|
-| Arquivos | PreToolUse Edit/Write | Credenciais, configs prod |
-| Comandos | PreToolUse Bash | rm -rf, force push, deploys |
-| Commits | PostToolUse Bash | Detecção de credenciais staged |
-| Histórico | PreToolUse Bash | Rewrite de histórico público |
-| Branches | PreToolUse Bash | Commits diretos em protected |
-| Auditoria | PreToolUse `""` | Log de todas as ações sensíveis |
+```json
+// ~/.claude/settings.json (global — aplica em todos os projetos)
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "~/.claude/hooks/security-audit.sh" },
+          { "type": "command", "command": "~/.claude/hooks/protect-files.sh" },
+          { "type": "command", "command": "~/.claude/hooks/protect-git-history.sh" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+```json
+// .claude/settings.json (projeto — específico do contexto)
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": ".claude/hooks/detect-credentials-on-commit.sh" },
+          { "type": "command", "command": ".claude/hooks/protect-branches.sh" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+A auditoria fica global (todos os projetos). Os hooks específicos de workflow git ficam no projeto (onde as políticas de branch são definidas).
+
+---
+
+## Tabela de defesa em profundidade
+
+| Camada | Hook type | Matcher | O que protege |
+|--------|-----------|---------|---------------|
+| Arquivos sensíveis | PreToolUse | Edit, Write, Read | `.env`, `.pem`, `.key`, credenciais |
+| Credenciais em código | PreToolUse | Bash | `git add`/`git commit` com secret no staged |
+| Histórico git | PreToolUse | Bash | force push, reset --hard, rebase em main |
+| Branches protegidas | PreToolUse | Bash | commit direto em main/master/develop |
+| Auditoria | PreToolUse | `""` (tudo) | Log imutável de todas as ações sensíveis |
+
+---
 
 ## Armadilhas
 
-**Falsa sensação de segurança**: hooks protegem contra ações do agente. Não protegem contra você mesmo executando comandos no terminal. Os hooks são uma política para o [[Dicionário de IA#Claude Code|Claude Code]], não para o shell.
+**Falsa sensação de segurança.** Hooks protegem contra ações do agente via Claude Code. Não protegem contra você mesmo executando `git push --force` no terminal. São política para o agente, não para o shell.
 
-**Hooks commitados no projeto**: se você commitar um hook que bloqueia `git commit`, pode criar uma situação impossível. Hooks de projeto devem ser revisados pelo time.
+**Hooks sem logging.** Bloquear sem logar significa que você não sabe o que o agente tentou fazer. Inclua auditoria como primeiro hook da cadeia (exit 0, só loga) antes dos bloqueios.
 
-**Ausência de logging**: bloquear sem logar significa que você não sabe o que o agente tentou fazer. Sempre inclua logging nas regras de bloqueio.
+**Detect-credentials como PostToolUse.** Se você configurar detecção de credenciais em PostToolUse do Bash, o commit já aconteceu quando o hook roda. Use PreToolUse para interceptar antes.
+
+**Hooks muito específicos de um projeto commitados globalmente.** Um hook que bloqueia `git commit` em `main` pode causar problemas em projetos que usam `main` como branch de trabalho legítima.
+
+---
+
+## Checklist — segurança com hooks
+
+- [ ] PreToolUse para arquivos sensíveis (.env, .pem, credenciais) com Read bloqueado também
+- [ ] Detecção de credenciais em staged content (PreToolUse em `git add`/`git commit`)
+- [ ] Proteção de histórico git (force push, reset --hard, rebase em main)
+- [ ] Proteção de branches protegidas (commits diretos)
+- [ ] Auditoria como primeiro hook da cadeia (exit 0, só loga)
+- [ ] Mensagens de erro incluem a alternativa segura
+- [ ] Scripts de hook com `chmod +x`
+- [ ] Testados com JSON de exemplo antes de ativar
+- [ ] Logs não contêm dados sensíveis (logar apenas metadata, não conteúdo)
+- [ ] Hooks globais separados dos hooks de projeto (global = universal, projeto = específico)
+
+---
+
+## Como explicar em inglês
+
+| Português | Inglês |
+|-----------|--------|
+| Defesa em profundidade | Defense in depth |
+| Arquivo sensível | Sensitive file / credential file |
+| Histórico git | Git history / commit history |
+| Branch protegida | Protected branch |
+| Auditoria | Audit trail / audit log |
+| Detecção de credenciais | Credential detection / secret scanning |
+
+**Frases úteis:**
+- "Defense in depth with hooks means not just one guardrail, but five layers: what can run, what can be edited, what can be committed, what can be pushed, and a full audit trail of sensitive actions."
+- "Configure credential detection as PreToolUse on 'git add' and 'git commit' — not PostToolUse. PostToolUse fires after the commit already happened; you want to intercept before."
+- "Hooks are policy for the agent, not for the shell. A developer can still run git push --force directly — hooks only govern what Claude Code does on your behalf."
+
+---
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/02 - PreToolUse|02 - PreToolUse]] — controle de execução
-- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/05 - Guardrails|05 - Guardrails]] — guardrails gerais
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/02 - PreToolUse|02 - PreToolUse]] — controle de execução e semântica de exit codes
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/05 - Guardrails|05 - Guardrails]] — guardrails de bloqueio geral
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/06 - Delegar permissão|06 - Delegar permissão]] — meta-agente para decisões complexas
-- [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/06 - Segurança organizacional|06 - Segurança organizacional]] — segurança em contexto de time
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/08 - Testando hooks|08 - Testando hooks]] — como testar cada camada de segurança
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — índice do galho
+
+---
+
+## Referências
+
+- **Anthropic** — *Claude Code hooks* (2026). Documentação oficial de hooks e estratégias de segurança — https://docs.anthropic.com/pt/docs/claude-code/hooks
+- **Anthropic** — *Claude Code security* (2026). Melhores práticas de segurança para agentes de código — https://docs.anthropic.com/pt/docs/claude-code/security
+- **OWASP** — *Secret Management Cheat Sheet* (2024). Padrões de detecção de credenciais em código — https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
