@@ -1,11 +1,11 @@
 ---
-title: "CLAUDE.md — receitas para Node, Python, Go, monorepos"
+title: "CLAUDE.md — receitas para Node, Python, Go, Java, monorepos"
 type: concept
-progress: backlog
+progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: growing
 tags:
   - claude-code
   - configuracao
@@ -13,18 +13,33 @@ tags:
   - receitas
 ---
 
-# CLAUDE.md — receitas para Node, Python, Go, monorepos
+# CLAUDE.md — receitas para Node, Python, Go, Java, monorepos
 
 > [!abstract] TL;DR
-> Templates prontos de CLAUDE.md para os stacks mais comuns. Adapte copiando o template relevante e preenchendo os campos marcados com `[...]`. Cada receita cobre: visão geral, estrutura, stack, convenções e restrições. Um CLAUDE.md com 80% de preenchimento é infinitamente melhor que nenhum.
+> Templates prontos de CLAUDE.md para os stacks mais comuns, com exemplos preenchidos (não apenas placeholders). Copie, adapte, teste uma sessão, e corrija o que o agente interpretar errado. Um CLAUDE.md com 80% de preenchimento é infinitamente melhor que nenhum.
 
-## Receita: Node.js / TypeScript
+---
+
+## A lógica das receitas
+
+Receitas não substituem o julgamento — são pontos de partida que cobrem os erros mais comuns. O agente não conhece seu projeto, não sabe qual lib de logger você escolheu, não sabe que nunca deve fazer push direto. As receitas cobrem o que é quase sempre verdade para cada stack; você adiciona o que é específico do seu contexto.
+
+Cada receita vem em dois formatos:
+- **Template** — campos `[...]` para preenchimento
+- **Exemplo preenchido** — como fica com valores reais (para você ver antes de copiar)
+
+---
+
+## Receita 1: Node.js / TypeScript
+
+### Template
 
 ```markdown
 ## Projeto
 
 [Nome]: [descrição em 1-2 frases. Contexto de negócio.]
-[Tipo: API REST / GraphQL / CLI / fullstack Next.js / etc.]
+[Tipo: API REST / GraphQL / CLI / fullstack Next.js]
+[Escala relevante: usuários, transações/dia, SLA]
 
 ## Arquitetura
 
@@ -35,37 +50,95 @@ tags:
 - `src/utils/` — utilitários compartilhados
 - `tests/` — [jest / vitest], espelhando estrutura de src/
 
+Fluxo: [ex: rota → service → repository. Services não importam outros services.]
+
 ## Stack
 
 - Node [versão], TypeScript [versão]
 - [Framework: Express / Fastify / NestJS / Next.js]
 - [ORM/DB: Prisma / TypeORM / node-postgres / Drizzle]
-- [Testes: Jest / Vitest + [supertest / @testing-library]]
-- Logger: [winston / pino] em `src/utils/logger.ts` — use `logger.info/warn/error`, não `console.*`
+- [Testes: Jest / Vitest + supertest]
+- Logger: [winston / pino] em `src/utils/logger.ts` — use logger.*, NUNCA console.*
+- [Validação: zod / class-validator]
 
 ## Convenções
 
-- Erros: [AppError / HttpException / custom class] em `src/errors/`
-- Nomes de arquivos: [kebab-case / camelCase]
+- Erros: [AppError / HttpException] em `src/errors/` (nunca `throw new Error()` raw)
+- Nomes de arquivos: kebab-case (`order-service.ts`)
 - Imports absolutos via `@/` mapeado para `src/`
-- [Adicionar convenções do projeto]
+- Testes: [um arquivo por módulo / co-located]
 
 ## Comandos
 
 - `npm test` — toda a suite
 - `npm test -- --testPathPattern=[padrão]` — filtrar testes
 - `npm run lint` — ESLint
-- `npm run build` — compilar
+- `npm run type-check` — TypeScript sem emit
 - `npm run dev` — desenvolvimento local
 
 ## Restrições
 
 - Não use `any` — prefira `unknown` com type guard
 - Não instale dependências sem perguntar
-- [Adicionar restrições específicas]
+- [Adicionar restrições específicas do projeto]
 ```
 
-## Receita: Python
+### Exemplo preenchido — API de pagamentos
+
+```markdown
+## Projeto
+
+PayHub: API REST de pagamentos para marketplace B2C (~2M transações/mês).
+Domínio crítico — erros de cobrança têm impacto financeiro e regulatório (PCI-DSS).
+
+## Arquitetura
+
+- `src/routes/` — rotas Express (um arquivo por domínio: payments.ts, users.ts)
+- `src/services/` — lógica de negócio (injetada via construtor)
+- `src/db/queries/` — todas as queries SQL (sem ORM, sem inline)
+- `src/middleware/` — auth JWT, rate limiting, auditoria PCI
+- `tests/` — jest + supertest; espelha src/ 1:1
+
+Fluxo: rota → service → query. Services não importam outros services diretamente.
+
+## Stack
+
+- Node 20, TypeScript 5, Express 4
+- PostgreSQL 15 com node-postgres (sem ORM)
+- Redis 7 para sessão e idempotência (ioredis em `src/db/redis.ts`)
+- Jest + supertest para integração
+- Logger: pino em `src/utils/logger.ts` — NUNCA console.* (correlação de traces quebra)
+- Validação: zod em `src/validators/[domínio].ts`
+
+## Convenções
+
+- Erros de negócio: `PaymentError` de `src/errors/PaymentError.ts`
+- Erros genéricos: `AppError` de `src/errors/AppError.ts`
+- Toda mutação de saldo: use `src/payments/ledger.ts` (auditoria automática)
+- SQL: placeholders parametrizados obrigatórios (nunca interpolação)
+- Commits: conventional commits em português
+
+## Comandos
+
+- `npm test` — toda a suite (requer Postgres + Redis locais)
+- `npm test -- --testPathPattern=payments` — testes de pagamento
+- `npm run lint` — ESLint (falha = CI falha)
+- `npm run db:migrate` — rodar migrations pendentes
+- `docker-compose up -d` — iniciar infraestrutura local
+
+## Restrições
+
+- NUNCA logue dados de cartão ou CVV (PCI-DSS — penalidade real)
+- Não faça rollback de transação Stripe sem consultar `docs/rollback-policy.md`
+- Não altere `src/db/migrations/` — use `npm run db:migrate:create`
+- Não faça git push direto — sempre via PR com code review
+```
+
+---
+
+## Receita 2: Python
+
+### Template
 
 ```markdown
 ## Projeto
@@ -76,9 +149,9 @@ tags:
 ## Arquitetura
 
 - `[app|src]/` — código-fonte principal
-- `[app|src]/[routers|views|controllers]/` — entry points
+- `[app|src]/[routers|views]/` — entry points
 - `[app|src]/services/` — lógica de negócio
-- `[app|src]/models/` — modelos de dados [SQLAlchemy / Pydantic / dataclasses]
+- `[app|src]/models/` — modelos [SQLAlchemy / Pydantic / dataclasses]
 - `tests/` — pytest, espelhando estrutura do app
 
 ## Stack
@@ -86,16 +159,16 @@ tags:
 - Python [versão]
 - [Framework: FastAPI / Django / Flask]
 - [ORM/DB: SQLAlchemy / Django ORM / psycopg2]
-- [Testes: pytest + [httpx / pytest-django]]
-- [Gerenciador de pacotes: pip + requirements.txt / poetry / uv]
-- [Linter/formatter: ruff / black + isort]
+- [Testes: pytest + httpx / pytest-django]
+- [Gerenciador: pip+requirements.txt / poetry / uv]
+- [Linter: ruff / black + isort]
 
 ## Convenções
 
 - Type hints obrigatórios em todas as funções públicas
-- Schemas de validação: [Pydantic / marshmallow] em `[app]/schemas/`
+- Schemas de validação: [Pydantic] em `[app]/schemas/`
 - [Estilo de imports: absolutos / relativos]
-- [Convenções específicas do projeto]
+- [Convenções específicas]
 
 ## Comandos
 
@@ -103,16 +176,65 @@ tags:
 - `pytest tests/[módulo]/ -v` — módulo específico
 - `ruff check .` — lint
 - `ruff format .` — formatação
-- `[uvicorn app.main:app --reload / python manage.py runserver]` — dev
+- `[uvicorn app.main:app --reload]` — dev
 
 ## Restrições
 
 - Não use `type: ignore` sem comentário explicativo
-- Não modifique migrations manualmente — use `alembic revision` / `manage.py makemigrations`
-- [Adicionar restrições específicas]
+- Não modifique migrations manualmente — use `alembic revision`
+- [Restrições específicas]
 ```
 
-## Receita: Go
+### Exemplo preenchido — API FastAPI
+
+```markdown
+## Projeto
+
+Analytica: API de analytics para dashboards internos.
+FastAPI + PostgreSQL. Uso interno (time de data, ~20 usuários). Sem SLA crítico.
+
+## Arquitetura
+
+- `app/routers/` — endpoints FastAPI (um arquivo por domínio)
+- `app/services/` — lógica de consulta e agregação
+- `app/models/` — modelos SQLAlchemy
+- `app/schemas/` — schemas Pydantic (request/response)
+- `tests/` — pytest + httpx, espelha app/
+
+## Stack
+
+- Python 3.12, FastAPI 0.115
+- PostgreSQL 16, SQLAlchemy 2.0 (async), asyncpg
+- Alembic para migrations
+- pytest + httpx para integração; factory_boy para fixtures
+- ruff para lint e formatação
+
+## Convenções
+
+- Type hints obrigatórios (ruff enforça)
+- Schemas Pydantic em `app/schemas/` — não use dicts para request/response
+- Serviços recebem a session do banco como parâmetro (não criam dentro)
+- Nomear endpoints: `POST /[recurso]` (plural), `GET /[recurso]/{id}`
+
+## Comandos
+
+- `pytest` — toda a suite (requer Postgres de teste)
+- `alembic upgrade head` — aplicar migrations
+- `alembic revision --autogenerate -m "descrição"` — nova migration
+- `uvicorn app.main:app --reload` — dev local
+
+## Restrições
+
+- Não faça queries raw na camada de router — use services
+- Não use `select *` em queries SQL explícitas
+- Não commite dados de usuário em fixtures (use faker)
+```
+
+---
+
+## Receita 3: Go
+
+### Template
 
 ```markdown
 ## Projeto
@@ -124,11 +246,11 @@ tags:
 
 - `cmd/[nome]/` — entry point (main.go)
 - `internal/` — código privado do projeto
-- `internal/[handlers|transport]/` — HTTP handlers / gRPC
+- `internal/[handlers|transport]/` — HTTP handlers
 - `internal/service/` — lógica de negócio (interfaces + implementações)
 - `internal/repository/` — acesso a dados
-- `pkg/` — código exportável / bibliotecas internas
-- `[nome]_test.go` — testes ao lado do código (convenção Go)
+- `pkg/` — código exportável
+- `[nome]_test.go` — testes ao lado do código
 
 ## Stack
 
@@ -141,85 +263,162 @@ tags:
 ## Convenções
 
 - Interfaces definidas onde são usadas (não onde são implementadas)
-- Erros: retorno explícito, sem panic fora de init
-- Nomes exportados: PascalCase. Internos: camelCase
-- [Convenções específicas do projeto]
+- Erros: retorno explícito, sem panic fora de init e main
+- Exportados: PascalCase. Internos: camelCase
 
 ## Comandos
 
 - `go test ./...` — toda a suite
-- `go test ./internal/[pacote]/... -v` — pacote específico
 - `go vet ./...` — análise estática
-- `golangci-lint run` — lint (se instalado)
+- `golangci-lint run` — lint
 - `go build ./cmd/[nome]/` — compilar
 
 ## Restrições
 
 - Não use `interface{}` / `any` sem necessidade forte
-- Não ignore erros retornados — use `_` explicitamente quando intencional
-- [Adicionar restrições específicas]
+- Não ignore erros — use `_` explicitamente quando intencional
+- [Restrições específicas]
 ```
 
-## Receita: Monorepo
+---
+
+## Receita 4: Java / Spring Boot
+
+```markdown
+## Projeto
+
+[Nome]: [descrição em 1-2 frases.]
+[Tipo: REST API / microserviço / batch / monólito]
+[Spring Boot versão, Java versão]
+
+## Arquitetura
+
+- `src/main/java/[pacote]/` — código-fonte
+- `[pacote]/controller/` — REST controllers (@RestController)
+- `[pacote]/service/` — lógica de negócio (@Service)
+- `[pacote]/repository/` — acesso a dados (Spring Data JPA / JDBC)
+- `[pacote]/domain/` — entidades e value objects
+- `src/test/java/` — testes (JUnit 5 + Mockito / Testcontainers)
+
+## Stack
+
+- Java [versão (ex: 21 LTS)], Spring Boot [versão]
+- [DB: PostgreSQL / MySQL / H2 (só test)]
+- [ORM: Spring Data JPA + Hibernate / JDBC Template]
+- [Testes: JUnit 5, Mockito, Testcontainers, AssertJ]
+- [Logger: SLF4J + Logback] — use `log.info/warn/error`, nunca `System.out`
+- [Build: Maven / Gradle]
+
+## Convenções
+
+- Exceções de negócio: [BusinessException] (nunca RuntimeException raw)
+- Validação: Bean Validation (@Valid, @NotNull, @Size) em DTOs
+- DTOs em [pacote]/dto/ — nunca expor entidades JPA diretamente
+- Testes de integração: @SpringBootTest + Testcontainers para banco real
+- Commits: conventional commits em português
+
+## Comandos
+
+- `./mvnw test` — toda a suite
+- `./mvnw test -Dtest=[Classe]Test` — classe específica
+- `./mvnw spring-boot:run` — rodar localmente
+- `./mvnw clean package -DskipTests` — buildar JAR
+
+## Restrições
+
+- Não use `@Autowired` em fields — prefira injeção por construtor
+- Não faça lazy loading fora de transação (LazyInitializationException)
+- Não altere migrations Flyway existentes — crie novas
+- Não exponha entidades JPA como response body — use DTOs
+```
+
+---
+
+## Receita 5: Monorepo
 
 ```markdown
 ## Projeto
 
 [Nome]: monorepo com [N] pacotes/apps.
-[Contexto: quem são os consumidores, qual o domínio]
+[Contexto: domínio, consumidores, relações entre apps]
 
-## Estrutura do monorepo
+## Estrutura
 
 - `apps/` — aplicações deployáveis
   - `apps/api/` — [descrição]
   - `apps/web/` — [descrição]
 - `packages/` — bibliotecas compartilhadas
   - `packages/shared/` — tipos e utilitários comuns
-  - `packages/ui/` — componentes de UI
+  - `packages/ui/` — componentes compartilhados
 
-## Tooling de monorepo
+## Tooling
 
-- [Turborepo / Nx / Lerna / pnpm workspaces]
-- Todos os comandos de build/test usam o runner do monorepo
-
-## Convenções por workspace
-
-- Cada `app/` e `package/` tem seu próprio `README.md` e testes
-- Dependências entre pacotes: `"@[escopo]/[pacote]": "workspace:*"`
-- [Convenções de naming de pacotes]
+- [Turborepo / Nx / pnpm workspaces]
+- Todos os comandos usam o runner do monorepo (não `cd app && npm test`)
 
 ## Comandos
 
-- `[turbo / nx] run test` — testes em todos os pacotes
-- `[turbo / nx] run test --filter=[app]` — pacote específico
-- `[turbo / nx] run build` — build de todos
-- `[pnpm / npm] -w [comando]` — rodar na raiz
+- `turbo run test` — testes em todos os pacotes
+- `turbo run test --filter=[app]` — pacote específico
+- `turbo run build` — build de todos
 
 ## Restrições
 
 - Não importe de `apps/` para `packages/` — fluxo é unidirecional
-- Alterações em `packages/shared` podem quebrar múltiplos consumers — testar todos
-- [Restrições específicas do monorepo]
+- Mudanças em `packages/shared` podem quebrar múltiplos consumers — rodar `turbo run test` antes de commitar
+- [Restrições específicas]
 ```
+
+---
 
 ## Como adaptar as receitas
 
-1. Copie o template relevante para `.claude/CLAUDE.md`
-2. Substitua os `[campos]` com valores reais do projeto
-3. Remova seções que não se aplicam
+1. Copie o template para `.claude/CLAUDE.md`
+2. Substitua todos os `[campos]` — não deixe nenhum placeholder
+3. Remova seções que não se aplicam ao projeto
 4. Adicione seções específicas que o template não cobre
-5. Teste uma sessão — se o agente tomar uma decisão errada, adicione contexto
+5. Teste uma sessão com uma tarefa real
+6. Se o agente tomar uma decisão errada, adicione o contexto que faltou
 
-## Armadilhas
+---
 
-**Deixar campos `[...]` preenchidos**: um CLAUDE.md com placeholders confunde mais do que ajuda. Preencha ou remova.
+## Checklist de adaptação
 
-**Copiar o template inteiro sem adaptar**: o template tem seções genéricas. Seu projeto tem particularidades — adicione-as.
+- [ ] Nenhum campo `[...]` permanece no arquivo
+- [ ] A seção "Restrições" foi preenchida com pelo menos 3 itens reais
+- [ ] A seção "Stack" inclui versões específicas
+- [ ] A seção "Comandos" foi testada — todos os comandos funcionam
+- [ ] O fluxo de dados foi documentado (rota → service → repo, ou equivalente)
+- [ ] O que NÃO usar foi explicitado (não só o que usar)
 
-**Não adicionar o `## Restrições`**: é a seção mais impactante. Sem ela, o agente vai tomar decisões que violam as convenções do time.
+---
+
+## Como explicar em inglês
+
+| Português | Inglês |
+|-----------|--------|
+| Receita / template | Recipe / starter template |
+| Preenchido / placeholder | Filled in / placeholder |
+| Adaptação | Customization / adaptation |
+| Fluxo de dados | Data flow |
+| Restrições | Constraints / guardrails |
+
+**Frases úteis:**
+- "Copy the recipe, fill in the brackets, delete what doesn't apply — a partially-filled CLAUDE.md beats an empty one."
+- "The restrictions section is the most impactful part to customize — it prevents the agent from making decisions that violate team conventions."
+- "Test with one real task, then add whatever context the agent got wrong."
+
+---
 
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — estrutura e princípios
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/04 - settings.json|04 - settings.json]] — configurações além do CLAUDE.md
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — índice do galho
+
+---
+
+## Referências
+
+- **Anthropic** — *Claude Code memory and CLAUDE.md* (2026). Estrutura recomendada e boas práticas — https://docs.anthropic.com/pt/docs/claude-code/memory
+- **Anthropic** — *Claude Code best practices* (2026). Exemplos de CLAUDE.md por stack — https://www.anthropic.com/engineering/claude-code-best-practices
