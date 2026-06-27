@@ -342,6 +342,22 @@ A combinação ideal: regex para certezas absolutas, meta-agente para a zona cin
 
 ---
 
+## Prompt engineering para o meta-agente
+
+A qualidade da decisão do meta-agente depende diretamente do prompt. Algumas diretrizes:
+
+**Dê uma identidade clara.** "Você é um guardrail de segurança" funciona melhor que "avalie este comando". A identidade ancora o comportamento.
+
+**Peça formato de saída controlado.** "Responda APENAS com SAFE ou UNSAFE: <motivo>" garante que o script pode fazer parsing confiável. Respostas livres são difíceis de parsear.
+
+**Instrua o conservadorismo.** "Em caso de dúvida, responda UNSAFE" define o comportamento para casos ambíguos — que são exatamente o que você quer que o LLM avalie.
+
+**Use `--max-tokens` baixo.** 80-150 tokens são suficientes para a resposta. Tokens extras custam tempo e dinheiro sem benefício.
+
+**Evite prompts que pedem explicação longa.** "Explique detalhadamente por que este comando é ou não seguro" produz saída longa que demora mais e é mais difícil de parsear. Mantenha simples.
+
+---
+
 ## Checklist — meta-agente
 
 - [ ] Pré-filtro de regex antes de invocar LLM (bloqueio imediato / permissão imediata)
