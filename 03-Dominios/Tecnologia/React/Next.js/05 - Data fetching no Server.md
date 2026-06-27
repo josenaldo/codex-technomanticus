@@ -246,6 +246,14 @@ async function Playlists({ artistId }: { artistId: string }) {
 }
 ```
 
+> [!tip] Assista: Next.js App Router: Routing, Data Fetching, Caching
+> **Canal:** Vercel | **Duração:** ~14min | **Idioma:** EN
+>
+> Demonstração oficial mostrando que estratégias de cache diferentes — estático, dinâmico (`no-store`) e ISR (`revalidate`) — podem coexistir no mesmo componente via `Promise.all`. A nota explica o *porquê* do padrão paralelo; este vídeo mostra o efeito ao vivo: dados que permanecem estáticos enquanto outros mudam a cada 5 segundos na mesma página.
+> Trecho de destaque [11:03]: *"I'm using promise.all to fetch these in parallel and then I render out the name of the repository as well as the datetime."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=gSSsZReIFRk)
+
 ## Request memoization — deduplicação automática no render
 
 Imagine uma aplicação com layout, página e componente filho que todos precisam dos dados do usuário autenticado. Sem algum mecanismo de deduplicação, você teria três requests idênticas ao mesmo endpoint.

@@ -275,6 +275,14 @@ O mesmo padrão funciona com qualquer prop do tipo `React.ReactNode`:
 <Modal triggerLabel="Ver resumo" conteudo={<ResumoCarrinho itens={itens} />} />
 ```
 
+> [!tip] Assista: Server Components in Client Components?? (React / Next.js)
+> **Canal:** ByteGrad | **Duração:** ~7min | **Idioma:** EN
+>
+> O vídeo demonstra ao vivo o que acontece quando você *importa* um Server Component dentro de um Client Component (ele vira cliente por contágio) e por que o padrão de `children` é a saída correta — incluindo o caso real de um Provider (ThemeProvider) que envolve o app inteiro sem transformar tudo em componente de cliente.
+> Trecho de destaque [4:14]: *"If you want to have a server component in a client component, you have to use this children pattern."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=9YuHTGAAyu0)
+
 ---
 
 ## Árvore real: como Server e Client se intercalam

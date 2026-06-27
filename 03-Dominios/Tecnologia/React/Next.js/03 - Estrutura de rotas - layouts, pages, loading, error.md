@@ -78,6 +78,16 @@ graph TD
 
 ---
 
+> [!tip] Assista: Learn Next.js 15 Routing Files in 30 Minutes
+> **Canal:** Codevolution | **Duração:** ~33min | **Idioma:** EN
+>
+> Walkthrough prático dos 9 arquivos especiais do App Router no Next.js 15 — cada arquivo com demo ao vivo no VS Code mostrando o comportamento real no browser: `layout.tsx` persistindo enquanto só o `page.tsx` troca, o spinner do `loading.tsx` aparecendo e sumindo, o `error.tsx` com botão de recuperação chamando `reset()`. Uma forma de *ver em ação* os mesmos mecanismos que esta nota explica conceitualmente.
+> Trecho de destaque [9:33]: *"loading.tsx leverages React Suspense under the hood to automatically wrap your route segments and pages."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5z_iuK4i3js)
+
+---
+
 ## `page.tsx` — tornando a rota acessível
 
 Sem `page.tsx`, a pasta existe no sistema de arquivos mas a rota **não é acessível ao público**. O arquivo é a porta de entrada de cada URL.
