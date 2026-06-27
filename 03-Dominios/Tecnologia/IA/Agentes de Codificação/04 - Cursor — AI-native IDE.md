@@ -3,7 +3,7 @@ title: "Cursor — AI-native IDE"
 created: 2026-05-02
 updated: 2026-06-27
 type: concept
-progress: in_progress
+progress: done
 status: growing
 publish: true
 fase: Adepto

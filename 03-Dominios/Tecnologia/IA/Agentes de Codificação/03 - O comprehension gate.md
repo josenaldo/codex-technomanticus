@@ -13,7 +13,7 @@ aliases:
   - Comprehension gate
   - Portão de compreensão
   - Code review AI
-progress: in_progress
+progress: done
 fase: Adepto
 ---
 

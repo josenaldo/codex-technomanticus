@@ -4,7 +4,7 @@ created: 2026-05-02
 updated: 2026-06-27
 type: concept
 fase: Adepto
-progress: in_progress
+progress: done
 status: growing
 publish: true
 tags:

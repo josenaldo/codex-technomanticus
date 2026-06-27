@@ -3,7 +3,7 @@ title: "Benchmarks e avaliação — SWE-bench e além"
 created: 2026-05-02
 updated: 2026-06-27
 type: concept
-progress: backlog
+progress: done
 status: growing
 fase: Adepto
 publish: true
