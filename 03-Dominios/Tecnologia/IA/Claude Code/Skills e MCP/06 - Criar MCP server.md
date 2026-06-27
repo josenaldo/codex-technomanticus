@@ -292,6 +292,20 @@ O agente acessa `projeto://servicos` como referência enquanto trabalha — sem 
 
 `tsx` executa TypeScript diretamente sem compilar — conveniente durante o desenvolvimento do server.
 
+## Checklist antes de publicar o server
+
+Antes de commitar o server e anunciar para o time:
+
+| Item | Verificação |
+|---|---|
+| Descriptions das tools | Claras sobre *quando* usar, não só *o que* fazem |
+| Limite de retorno | Tools com resultado potencialmente grande têm paginação? |
+| Tratamento de SIGTERM | Conexões de banco fecham corretamente ao encerrar? |
+| Validação de input | Erros de input geram mensagens úteis, não stack traces? |
+| Segredos | Nenhum hardcoded em args ou no código? |
+| README | Como configurar as env vars e rodar o server? |
+| Teste manual | Rodou o server e chamou cada tool antes de commitar? |
+
 ## Onde versionar o server
 
 ```
