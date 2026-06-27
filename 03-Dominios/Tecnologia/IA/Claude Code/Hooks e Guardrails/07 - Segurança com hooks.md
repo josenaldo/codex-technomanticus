@@ -357,6 +357,23 @@ A auditoria fica global (todos os projetos). Os hooks específicos de workflow g
 
 ---
 
+## Ordem dos hooks na cadeia importa
+
+Quando múltiplos hooks rodam em sequência para o mesmo matcher, a ordem define o comportamento:
+
+```
+1. security-audit.sh    → exit 0 (sempre — loga antes de qualquer bloqueio)
+2. protect-files.sh     → exit 0 ou exit 1
+3. protect-git-history.sh → exit 0 ou exit 1
+4. detect-credentials.sh  → exit 0 ou exit 1
+```
+
+A auditoria deve ser **sempre o primeiro hook**. Se vier depois de um hook de bloqueio, ações bloqueadas não são registradas — você perde o rastro do que o agente tentou fazer e foi impedido.
+
+O bloqueio mais específico deve vir **antes do mais genérico**. Se `protect-files.sh` bloqueia `.env`, e `guardrails.sh` também bloqueia `.env` — não há problema, o primeiro que bloqueia vence. Mas organizações claras de responsabilidade facilitam manutenção.
+
+---
+
 ## Como explicar em inglês
 
 | Português | Inglês |
