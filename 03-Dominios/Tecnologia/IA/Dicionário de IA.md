@@ -1,7 +1,7 @@
 ---
 title: "Dicionário de IA"
 created: 2026-05-03
-updated: 2026-06-21
+updated: 2026-06-27
 type: glossary
 status: seedling
 aliases:
@@ -77,6 +77,9 @@ Um coding agent open-source de linha de comando que edita código diretamente no
 
 ### autonomous coding loop
 Um modo de operação em que um coding agent executa o ciclo completo — escrever código, rodar testes, ler erros e corrigir — repetidamente e sem intervenção humana a cada passo, até a tarefa passar nos critérios ou atingir um limite. Maximiza autonomia, mas exige guardrails e verificação para evitar desvios silenciosos.
+
+### background agent
+Um coding agent que executa tarefas de forma assíncrona, sem bloquear o desenvolvedor. O usuário delega uma tarefa, o agente trabalha de forma independente — minutos a horas — e notifica quando termina, como um colega assíncrono. Contrasta com agentes interativos que aguardam aprovação a cada passo. Permite despachar múltiplas tarefas em paralelo e revisar os PRs gerados quando conveniente. Ferramentas como Claude Code (modo headless), Devin e Copilot Workspace operam nesse modo. Principal risco: perda de supervisão granular — o [[Dicionário de IA#Comprehension gate|comprehension gate]] se torna crítico para evitar horas de trabalho na direção errada.
 
 ### Claude Code
 O coding agent oficial da Anthropic, operando como CLI no terminal (e também via app desktop, web e extensões de IDE). Lê e edita arquivos, executa comandos de shell, roda testes e itera de forma agêntica; é extensível via skills, hooks, subagentes e servidores MCP.
