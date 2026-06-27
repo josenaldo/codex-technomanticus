@@ -222,6 +222,17 @@ sequenceDiagram
 
 Uma skill errada é pior que código com bug — o bug aparece nos testes; a skill errada orienta o agente silenciosamente na direção errada.
 
+## A skill como documentação viva
+
+Uma skill bem mantida tem um efeito colateral valioso: ela documenta o processo para humanos também. Qualquer membro do time pode ler `.claude/skills/` e entender como as coisas são feitas. Isso é especialmente valioso em momentos de:
+
+- **Onboarding**: o novo dev lê as skills e já tem uma visão de como o time trabalha
+- **Auditoria**: revisar as skills revela se o processo documentado bate com o praticado
+- **Retrospectiva**: skills antigas mostram como o processo evoluiu — o git log das skills é um histórico da maturidade técnica do time
+
+> [!tip] Trate o código de skill como código de produção
+> Assim como código mal nomeado dificulta a manutenção, skill mal escrita dificulta o trabalho do agente. Invista no mesmo rigor de clareza e revisão que você aplica ao código.
+
 ## Quando aposentar uma skill
 
 Uma skill que descreve um processo abandonado deve ser **removida**, não marcada como obsoleta. O agente não entende "obsoleto" — ele vai seguir a instrução da mesma forma.
