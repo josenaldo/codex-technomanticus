@@ -69,8 +69,8 @@ Orquestrador **commita por sub-lote** (paths EXPLÍCITOS — working tree pode t
 
 ## Wave 1 — Iniciado (notas 01–05)
 
-- [ ] **01 - O que é o Next.js e por que existe** — meta-framework sobre React; o que resolve (routing, rendering, data, bundling, otimização); App Router como padrão; posição no ecossistema; quando NÃO usar.
-- [ ] **02 - App Router vs Pages Router** — file-system routing; salto de paradigma (RSC-first vs `getServerSideProps`/`getStaticProps`); **Pages Router "de leve" mora aqui** (o que é, por que ainda existe, noções de coexistência/migração).
+- [x] **01 - O que é o Next.js e por que existe** — meta-framework sobre React; o que resolve (routing, rendering, data, bundling, otimização); App Router como padrão; posição no ecossistema; quando NÃO usar. ✅ 439 linhas, commitada.
+- [x] **02 - App Router vs Pages Router** — file-system routing; salto de paradigma (RSC-first vs `getServerSideProps`/`getStaticProps`); **Pages Router "de leve" mora aqui** (o que é, por que ainda existe, noções de coexistência/migração). ✅ 470 linhas, commitada.
 - [ ] **03 - Estrutura de rotas: layouts, pages, loading, error** — arquivos especiais (`page`/`layout`/`loading`/`error`/`not-found`/`template`); nested layouts; route groups `(grupo)`; rotas dinâmicas `[slug]`/`[...catch]`. (callout error.tsx → React core 18)
 - [ ] **04 - Server vs Client Components** — conceito central do App Router; boundary `'use client'`; árvore de RSC; serialização de props; padrões de composição (client dentro de server). (callout → React core 23)
 - [ ] **05 - Data fetching no Server** — `async`/`await` em Server Components; `fetch` no server; sequencial vs paralelo; request memoization; padrões de erro/`not-found`. (callout → React core 21/19)
