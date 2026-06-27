@@ -1,43 +1,12 @@
 ---
 title: "React Admin"
-created: 2026-05-04
-updated: 2026-05-04
-type: concept
-status: seedling
-progress: backlog
-tags:
-  - react
+type: pointer
+created: 2026-06-27
+updated: 2026-06-27
 publish: true
 ---
 
 # React Admin
 
-Framework para construção de painéis de administração com React, baseado em data providers e recursos declarativos.
-
-## O que é
-
-<!-- Definição clara e objetiva -->
-
-## Como funciona
-
-<!-- Mecanismo, funcionamento, detalhes relevantes -->
-
-## Quando usar
-
-<!-- Casos de uso, contexto adequado -->
-
-## Armadilhas comuns
-
-<!-- O que evitar, erros frequentes -->
-
-## Aprofundamento
-
-> [!convite] Aprofundamento — React Admin
-> - [Site oficial](https://marmelab.com/react-admin/) — site oficial
-> - [Vídeo introdutório](https://www.youtube.com/watch?v=PyaSnpXssks) — YouTube
->
-> Consumiu? Faça uma glosa em `02-Glosas/` e amadureça pro domínio quando fizer sentido.
-
-## Veja também
-
-- [[03-Dominios/Tecnologia/React/index|React]]
+> [!info] Conteúdo absorvido
+> O conteúdo sobre React Admin foi absorvido na [[03-Dominios/Tecnologia/React/Ecossistema/10 - Tabelas e data grids - TanStack Table|Nota 10 — Tabelas e data grids: TanStack Table]] do Galho Ecossistema React.

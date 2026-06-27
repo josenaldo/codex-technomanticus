@@ -1,43 +1,12 @@
 ---
 title: "React Data Table Component"
-created: 2026-05-04
-updated: 2026-05-04
-type: concept
-status: seedling
-progress: backlog
-tags:
-  - react
-  - ui
+type: pointer
+created: 2026-06-27
+updated: 2026-06-27
 publish: true
 ---
 
 # React Data Table Component
 
-Componente de tabela de dados para React com suporte a ordenação, paginação e customização de estilos.
-
-## O que é
-
-<!-- Definição clara e objetiva -->
-
-## Como funciona
-
-<!-- Mecanismo, funcionamento, detalhes relevantes -->
-
-## Quando usar
-
-<!-- Casos de uso, contexto adequado -->
-
-## Armadilhas comuns
-
-<!-- O que evitar, erros frequentes -->
-
-## Aprofundamento
-
-> [!convite] Aprofundamento — React Data Table Component
-> - [Site oficial](https://react-data-table-component.netlify.app/) — netlify.app
->
-> Consumiu? Faça uma glosa em `02-Glosas/` e amadureça pro domínio quando fizer sentido.
-
-## Veja também
-
-- [[03-Dominios/Tecnologia/React/index|React]]
+> [!info] Conteúdo absorvido
+> O conteúdo sobre tabelas de dados foi absorvido na [[03-Dominios/Tecnologia/React/Ecossistema/10 - Tabelas e data grids - TanStack Table|Nota 10 — Tabelas e data grids: TanStack Table]] do Galho Ecossistema React.

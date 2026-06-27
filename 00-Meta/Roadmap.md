@@ -47,7 +47,7 @@ aliases:
 | [[03-Dominios/Tecnologia/TypeScript/index\|TypeScript]] | ✅ | 27 notas, 3 fases |
 | [[03-Dominios/Tecnologia/Tooling e Build/index\|Tooling e Build]] | ✅ | 26 notas, concluída 2026-06-25 |
 | [[03-Dominios/Tecnologia/JavaScript/index\|JavaScript (core)]] | ✅ | 26 notas, 3 fases, concluída 2026-06-25 (monólito aposentado em stub) |
-| [[03-Dominios/Tecnologia/React/index\|React]] | 🟡 | domínio multi-galho; **React core ✅** (26) + **Design Patterns ✅** (12, 2026-06-26) + **Next.js ✅** (16, 2026-06-27, baseline Next 15) + TypeScript com React (15); falta Ecossistema |
+| [[03-Dominios/Tecnologia/React/index\|React]] | ✅ | domínio multi-galho **COMPLETO** (2026-06-27): **React core ✅** (26) + **Design Patterns ✅** (12) + **Next.js ✅** (16, baseline Next 15) + **Ecossistema ✅** (13, server state/client state/forms/UI/tables/charts) + TypeScript com React (15) + Charts (sub-área) |
 | [[03-Dominios/Tecnologia/HTML/index\|HTML]] | 🧱 | só `HTML semântico.md`; falta forms, a11y, ARIA, SEO, metadados |
 | [[03-Dominios/Tecnologia/CSS/index\|CSS]] | 🧱 | só `CSS.md` + Bootstrap; falta layout (flex/grid), cascade, responsivo, design system |
 | [[03-Dominios/Tecnologia/Plataforma Web/index\|Plataforma Web]] | 🟡 | só galho Networking; falta DOM, eventos, rendering, Web APIs, storage, Workers |
@@ -110,7 +110,7 @@ aliases:
 
 ### Onda A — Tripé Frontend (prioridade máxima)
 1. ✅ **JavaScript (core)** — **CONCLUÍDA 2026-06-25** (26 notas, 3 fases): closures, protótipos & `this`, coerção, async no nível da linguagem, iterators/generators, módulos, metaprogramação, ES2026. Base que o índice do TypeScript referencia.
-2. 🟡 **React** — domínio multi-galho. **Galho React core CONCLUÍDO 2026-06-25** (26 notas, TS-first): render model, hooks a fundo, reconciliation, estado, Suspense/concurrent/RSC, Actions, performance, testing. Galhos restantes do domínio: **React Design Patterns**, **Next.js** (App Router + Pages Router), **Ecossistema** (MUI, Mantine, TanStack Query) — specs próprios.
+2. ✅ **React** — domínio multi-galho **COMPLETO 2026-06-27**: React core (26) + Design Patterns (12) + Next.js (16, baseline Next 15) + Ecossistema (13, server state/client state/forms/UI/tables/charts). TypeScript com React (15) e Charts já existiam.
 3. 🧱→✅ **HTML** — semântica, forms, acessibilidade (ARIA/a11y), SEO, metadados.
 4. 🧱→✅ **CSS** — box model, flex/grid, cascade & specificity, responsivo, design tokens.
 5. 🟡→✅ **Plataforma Web** — DOM, event loop no browser, rendering pipeline, Web APIs, storage, Service Workers.

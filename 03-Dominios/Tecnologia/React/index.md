@@ -25,7 +25,7 @@ aliases:
 - 🟨 [[03-Dominios/Tecnologia/React/Charts/index|Charts]] — bibliotecas de gráficos.
 - 🟩 [[03-Dominios/Tecnologia/React/Design Patterns/index|React Design Patterns]] — **catálogo de padrões em 3 fases** (12 notas, TS-first): container/presentational, custom hooks, provider, composição, compound, render props, HOC, state reducer/prop getters, headless.
 - 🟩 [[03-Dominios/Tecnologia/React/Next.js/index|Next.js]] — **o framework em 3 fases** (16 notas, TS-first, baseline Next 15): App Router, Server/Client Components, data fetching, Server Actions, caching, rendering (SSR/SSG/ISR/PPR), streaming, route handlers, metadata, navegação, middleware, otimizações, deploy. Pages Router de leve.
-- ⬜ **Ecossistema** — *galho planejado* (MUI, Mantine, TanStack Query).
+- 🟩 [[03-Dominios/Tecnologia/React/Ecossistema/index|Ecossistema]] — **bibliotecas do ecossistema em 3 fases** (13 notas, TS-first, 2026-06-27): server state (TanStack Query), client state (Zustand/Redux/Jotai), forms (RHF+Zod), component libraries (MUI/Mantine/shadcn/Radix), tabelas (TanStack Table), data viz (Recharts/visx), TQ+RSC.
 
 ## Recursos e libs
 
