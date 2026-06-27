@@ -297,6 +297,63 @@ Você pode ter múltiplos servers ativos simultaneamente. O agente escolhe qual 
 5. `puppeteer_screenshot("feature-done")` — documenta o resultado
 6. `create_pull_request(...)` — abre o PR sem sair do Claude Code
 
+## Outros servers notáveis
+
+Além dos quatro essenciais, alguns servers merecem destaque por casos de uso específicos:
+
+### server-brave-search
+
+Pesquisa web estruturada. Útil quando o agente precisa de informações atualizadas que não estão no codebase ou na documentação local.
+
+```json
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+**Quando usar:** pesquisar CVEs recentes de uma dependência; encontrar exemplos de uso de uma API; verificar se uma biblioteca tem bugs conhecidos com uma versão específica.
+
+### server-sqlite
+
+Para projetos que usam SQLite como banco de dados (ou como banco de testes). Mesmo interface do server-postgres, sem precisar de servidor externo.
+
+```json
+{
+  "mcpServers": {
+    "sqlite": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sqlite", "/path/to/database.db"]
+    }
+  }
+}
+```
+
+### server-slack
+
+Lê e envia mensagens no Slack. Útil para criar bots de notificação ou para o agente buscar contexto de discussões do time.
+
+> [!warning] Use com cuidado em produção
+> O agente com acesso ao Slack pode enviar mensagens para canais reais. Teste em workspace de desenvolvimento antes de conectar ao workspace de produção.
+
+## Diagnóstico de problemas comuns
+
+| Problema | Causa provável | Solução |
+|---|---|---|
+| "Server não aparece em /mcp" | npx falhou no download | Instale globalmente: `npm i -g @mcp/server-...` |
+| "Tool X não existe" | Server não inicializou | Rode `npx @mcp/server-X` manualmente e veja o erro |
+| "${VAR} não resolvida" | Variável não exportada | Adicione `export VAR=...` ao `.bashrc`/`.zshrc` |
+| "Acesso negado ao diretório" | MCP filesystem configurado | Adicione o path à lista de diretórios permitidos |
+| "Timeout na tool" | Sistema externo lento | Verifique a conectividade do banco/API |
+| "Tool chamada errada" | Dois servers com nome similar | Renomeie os servers para nomes únicos e descritivos |
+
 ## Verificar servers na sessão
 
 ```
