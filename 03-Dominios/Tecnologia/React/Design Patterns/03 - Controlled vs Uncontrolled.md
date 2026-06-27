@@ -385,7 +385,7 @@ Agora o componente funciona nos dois cenários:
 
 Agora que você entende quem detém o valor (React ou DOM), o próximo passo natural é aprender como **compor comportamento entre múltiplos componentes sem acoplar a implementação**. O padrão Compound Components resolve exatamente isso: como um conjunto de componentes relacionados compartilham estado sem que os filhos precisem conhecer os detalhes uns dos outros.
 
-- [[03-Dominios/Tecnologia/React/Design Patterns/04 - Compound Components|04 — Compound Components]] — componentes que colaboram via Context sem prop drilling
+- [[07 - Compound components]] — componentes que colaboram via Context sem prop drilling
 - [[01 - Padrões no React e a evolução]] — mapa do catálogo completo
 
 ---
