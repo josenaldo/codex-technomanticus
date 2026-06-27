@@ -283,6 +283,14 @@ export function SubmitButton({ label }: { label: string }) {
 
 `useFormStatus` funciona em qualquer componente que seja **descendente direto** do `<form>` na árvore React — não importa se o componente é importado de fora. Isso permite um `<SubmitButton>` reutilizável sem acoplamento com a lógica específica de cada ação.
 
+> [!tip] Assista: Next.js Forms Are Different Now (Server Actions, useActionState, Form Component)
+> **Canal:** ByteGrad | **Duração:** ~14min | **Idioma:** EN
+>
+> O vídeo constrói ao vivo a progressão de form HTML puro → Server Action → `useActionState`, deixando visível o que a nota descreve em prosa: a mudança obrigatória na assinatura da ação (o `prevState` que vira primeiro parâmetro), como o hook devolve loading state, error state e a `action` pronta para o form, e a demo de progressive enhancement funcionando sem JavaScript no browser.
+> Trecho de destaque [4:06]: *"The one tricky thing with this Hook is that if you use a Server Action your signature of your function actually changes — this is going to be the previous state, so basically what you returned from the function previously."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=DK7WqcL9Qq4)
+
 ## Progressive enhancement: funciona sem JavaScript
 
 Quando um `<form action={serverAction}>` está num Server Component, o Next serializa a referência da ação no HTML de forma que o browser possa enviar o formulário como um `POST` HTML nativo — sem precisar do JavaScript do React.

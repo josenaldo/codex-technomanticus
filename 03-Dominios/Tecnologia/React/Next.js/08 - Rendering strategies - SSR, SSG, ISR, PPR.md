@@ -293,6 +293,14 @@ export default async function ProductPage({
 }
 ```
 
+> [!tip] Assista: Partial Prerender - The Next.js Feature I've Wanted For Years
+> **Canal:** Theo - t3.gg | **Duração:** ~25min | **Idioma:** EN
+>
+> Theo reage ao anúncio do PPR no Next.js Conf 2023 analisando ao vivo a demo de Lee Robinson e o blog post da equipe da Vercel. O vídeo explica o *porquê* do PPR existir — a tensão entre "a primeira resposta deve sempre vir de um CDN" e "conteúdo dinâmico precisa ser fresco" — e mostra como as `<Suspense>` boundaries são o único primitivo que decide o que é shell estático e o que é buraco dinâmico.
+> Trecho de destaque [5:08]: *"you have that Dynamic control Now by using suspense as the boundary where things become Dynamic"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Yp7Ldrnk8ic)
+
 ### Status do PPR em 2026
 
 > [!warning] PPR é experimental no Next 15 — não use em produção sem avaliar

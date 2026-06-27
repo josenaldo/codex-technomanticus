@@ -305,6 +305,14 @@ export async function GET() { ... }
 > [!warning] Diff Next 14 → 15: Router Cache pages opt-out
 > Em Next 14, page segments ficavam no Router Cache por 30s (dinâmico) ou 5min (estático). Em Next 15, pages são excluídas do Router Cache por default — cada navegação para uma page faz uma request ao servidor. Para restaurar caching: `experimental.staleTimes.dynamic` em `next.config.ts`. Layouts continuam cacheados igual ao comportamento anterior.
 
+> [!tip] Assista: use cache — NextJS's Latest Take on Data Caching
+> **Canal:** Jack Herrington | **Duração:** ~17min | **Idioma:** EN
+>
+> Jack compara os três modelos de caching do Next.js 15 (Pages Router, App Router padrão e dynamicIO experimental) usando um e-commerce real com 9 requests e requisitos de cache diferentes por dado — preço nunca cacheia, produtos cacheiam por hora. A demonstração mostra *por que* o Next 15 virou a mesa: quando você precisa de granularidade por fetch, o "cache tudo implicitamente" do Next 14 se torna um pesadelo de debugging.
+> Trecho de destaque [6:23]: *"by default with Next.js 15 these fetches are uncached — with Next.js 14 all of the fetches were aggressively cached, so this time we have to ask for a cache"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ZDRGEewXkrs)
+
 ---
 
 ## Interações entre os caches

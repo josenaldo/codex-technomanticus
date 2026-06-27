@@ -241,6 +241,14 @@ export default async function ProductPage({
 
 O boundary externo mostra "Carregando detalhes..." até `ProductDetails` resolver. O boundary interno então aparece e mostra "Carregando avaliações..." até `Reviews` resolver. Revelação progressiva em duas etapas.
 
+> [!tip] Assista: Next.js Streaming Tutorial — SSR, React Suspense & Loading Skeleton in Next.js 15
+> **Canal:** logicBase Labs | **Duração:** ~25min | **Idioma:** EN
+>
+> O vídeo começa mostrando o problema real: página que trava enquanto todos os dados carregam de uma vez, incluindo o bug de "interação fantasma" que some após a hidratação. A segunda metade demonstra ao vivo a migração de `Promise.all` (tudo de uma vez) para o padrão de promise-por-componente dentro de `<Suspense>` individuais — o mesmo padrão com `use()` que a seção acima descreve, agora com código rodando na tela.
+> Trecho de destaque [23:07]: *"If you want to stream at the page level, just use a loading.js file. That way the whole page shows a loading state. But if you want to stream things individually — different components or sections — you can simply wrap them in separate suspense boundaries and handle it your own way."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xTT_Sd_xqh0)
+
 ## Como o streaming melhora os Core Web Vitals
 
 **Sem streaming:** TTFB = tempo da query mais lenta. O browser espera o HTML completo antes de pintar qualquer coisa.
