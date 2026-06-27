@@ -3,7 +3,7 @@ title: "Plano de Implementação — Galho Next.js (App Router)"
 type: spec
 created: 2026-06-27
 updated: 2026-06-27
-status: in_progress
+status: done
 tags:
   - spec
   - plano

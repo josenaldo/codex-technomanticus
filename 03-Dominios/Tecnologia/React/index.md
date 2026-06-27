@@ -24,7 +24,7 @@ aliases:
 - 🟦 [[03-Dominios/Tecnologia/React/TypeScript com React/index|TypeScript com React]] — tipagem avançada de componentes, hooks, props, generics, polymorphic, compound (15 notas).
 - 🟨 [[03-Dominios/Tecnologia/React/Charts/index|Charts]] — bibliotecas de gráficos.
 - 🟩 [[03-Dominios/Tecnologia/React/Design Patterns/index|React Design Patterns]] — **catálogo de padrões em 3 fases** (12 notas, TS-first): container/presentational, custom hooks, provider, composição, compound, render props, HOC, state reducer/prop getters, headless.
-- ⬜ **Next.js** — *galho planejado* (App Router, RSC em produção, server actions, caching, deploy; Pages Router de leve).
+- 🟩 [[03-Dominios/Tecnologia/React/Next.js/index|Next.js]] — **o framework em 3 fases** (16 notas, TS-first, baseline Next 15): App Router, Server/Client Components, data fetching, Server Actions, caching, rendering (SSR/SSG/ISR/PPR), streaming, route handlers, metadata, navegação, middleware, otimizações, deploy. Pages Router de leve.
 - ⬜ **Ecossistema** — *galho planejado* (MUI, Mantine, TanStack Query).
 
 ## Recursos e libs
