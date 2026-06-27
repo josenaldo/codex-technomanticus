@@ -175,6 +175,25 @@ Documente as skills disponíveis no `CLAUDE.md` do projeto para que o time saiba
 
 Sem esse catálogo, novos devs descobrem as skills por acidente — ou não descobrem.
 
+## Versionamento semântico para skills
+
+Assim como pacotes de software têm versão semântica, skills de alta criticidade podem ter versionamento explícito no frontmatter:
+
+```markdown
+---
+name: deploy-checklist
+description: Checklist de deploy para staging
+metadata:
+  type: process
+  version: "2.3"
+  owner: "@time-infra"
+  last_reviewed: "2026-06-01"
+  breaking_changes: "v2.0 — removido step de rollback manual (agora automatizado via CI)"
+---
+```
+
+O campo `breaking_changes` ajuda qualquer dev que conhecia a versão anterior a entender o que mudou. Não é obrigatório, mas em skills críticas (deploy, segurança) o custo de não ter é alto.
+
 ## Code review de skills
 
 Skills passam pelo mesmo processo de review que código. Um PR que adiciona ou muda uma skill deve ser revisado como qualquer mudança de comportamento:
