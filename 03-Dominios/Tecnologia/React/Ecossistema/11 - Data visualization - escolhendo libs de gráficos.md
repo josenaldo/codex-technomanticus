@@ -33,7 +33,8 @@ Gráficos parecem simples — barras, linhas, pizza. Você joga os dados, aparec
 - **Animações e responsividade**: gráfico que não reage ao resize do contêiner ou que pisca feio na animação de entrada afasta usuários.
 - **Tooltips acessíveis**: `<svg>` sem semântica não é lido por screen readers; pouquíssimas libs resolvem isso de graça.
 
-A sub-área [[03-Dominios/Tecnologia/React/Charts/index|Charts]] contém deep-dives por biblioteca — Recharts, ApexCharts e Lightweight Charts — com exemplos avançados e comparações detalhadas. Esta nota cobre a camada acima: como escolher, quando migrar e por que cada categoria existe.
+> [!info] Deep-dives por biblioteca
+> A sub-área [[03-Dominios/Tecnologia/React/Charts/index|Charts]] contém deep-dives por biblioteca — Recharts, ApexCharts e Lightweight Charts — com exemplos avançados e comparações detalhadas. Esta nota cobre a camada acima: como escolher, quando migrar e por que cada categoria existe.
 
 ---
 
