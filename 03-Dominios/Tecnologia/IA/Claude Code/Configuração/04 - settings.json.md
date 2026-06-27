@@ -1,11 +1,11 @@
 ---
 title: "settings.json — permissões, comportamentos, env vars"
 type: concept
-progress: backlog
+progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: growing
 tags:
   - claude-code
   - configuracao
@@ -16,71 +16,112 @@ tags:
 # settings.json — permissões, comportamentos, env vars
 
 > [!abstract] TL;DR
-> `settings.json` é o arquivo de configuração estruturada do [[Dicionário de IA#Claude Code|Claude Code]] — controla permissões (allow/deny de tools e comandos), comportamentos globais, variáveis de ambiente e hooks. Existe em três locais: global (`~/.claude/`), projeto (`.claude/`) e local (`.claude/settings.local.json`). A maioria dos projetos precisa no mínimo configurar permissões de Bash.
+> `settings.json` é a configuração estruturada do Claude Code — controla permissões (allow/deny de tools), variáveis de ambiente, hooks e comportamentos como o modelo padrão. Existe em três locais: global (`~/.claude/`), projeto (`.claude/`) e local (`.claude/settings.local.json`). A camada mais específica sobrescreve. Diferente do CLAUDE.md, é interpretado pelo runtime — não pelo modelo.
 
-## O que é
+---
 
-Enquanto CLAUDE.md é texto livre (instrução em linguagem natural), `settings.json` é configuração estruturada em JSON. O que você define aqui é interpretado pelo Claude Code diretamente — não pelo modelo.
+## A distinção fundamental: runtime vs. modelo
+
+Claude Code tem dois tipos de configuração:
+
+- **CLAUDE.md** — instrução em linguagem natural, lida pelo modelo. O modelo decide como interpretar.
+- **settings.json** — configuração estruturada, interpretada pelo runtime do Claude Code. Sem ambiguidade: `"deny": ["Bash(rm -rf *)"]` bloqueia mecanicamente, não sugere ao modelo que talvez seja melhor não fazer.
+
+```mermaid
+flowchart LR
+    Settings["settings.json\n(runtime)"] -- "bloqueia/permite\nmecanicamente" --> ToolCall["Tool call"]
+    CLAUDE["CLAUDE.md\n(modelo)"] -- "instrui o modelo\ncomportamentalmente" --> ToolCall
+    ToolCall --> Exec["Execução"]
+    style Settings fill:#e8e8f4
+    style CLAUDE fill:#e8f4e8
+    style ToolCall fill:#f4f0e8
+```
+
+Essa distinção importa: um `deny` no settings.json não pode ser "convencido" por uma instrução no prompt. É uma barreira de runtime. Uma instrução no CLAUDE.md ("não faça push diretamente") pode ser ignorada se o modelo avaliar que o contexto justifica. Use `settings.json` para o que deve ser inegociável.
+
+---
+
+## Estrutura do arquivo
 
 ```json
-// .claude/settings.json
 {
   "permissions": {
-    "allow": ["Bash(npm test)", "Bash(npm run lint)", "Edit(*)"],
-    "deny": ["Bash(rm -rf *)"]
-  }
+    "allow": [...],
+    "deny": [...]
+  },
+  "env": {
+    "VARIAVEL": "valor"
+  },
+  "hooks": {
+    "PreToolUse": [...],
+    "PostToolUse": [...]
+  },
+  "model": "claude-sonnet-4-6",
+  "includeCoAuthoredBy": false
 }
 ```
 
-## Campos principais
+---
 
-### `permissions`
+## Campo `permissions` — allow e deny
 
-Controla quais tools e comandos o agente pode executar sem pedir confirmação.
+O campo mais usado. Define quais ferramentas o agente pode usar sem pedir confirmação (`allow`) e quais estão bloqueadas mesmo que o modelo tente usá-las (`deny`).
 
+**Sintaxe geral:**
 ```json
 {
   "permissions": {
     "allow": [
+      "Tool(padrão)",
       "Bash(npm test)",
-      "Bash(npm run *)",
-      "Bash(git status)",
-      "Bash(git log)",
-      "Bash(git diff)",
       "Edit(*)",
       "Read(*)"
     ],
     "deny": [
-      "Bash(rm -rf *)",
       "Bash(git push --force)",
-      "Bash(DROP TABLE *)"
+      "Bash(rm -rf *)"
     ]
   }
 }
 ```
 
-Ver [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/05 - Permissions|05 - Permissions]] para sintaxe completa de allow/deny.
+**Padrões de glob suportados:**
+- `Bash(npm test)` — comando exato
+- `Bash(npm run *)` — qualquer subcomando de `npm run`
+- `Bash(git *)` — qualquer comando git
+- `Edit(src/*)` — editar apenas arquivos dentro de src/
+- `Read(*)` — qualquer leitura (geralmente seguro liberar)
+- `Bash(*)` — qualquer bash (cuidado — libera tudo)
 
-### `env`
+**Prioridade:** `deny` tem precedência sobre `allow`. Se um padrão aparece nos dois, o deny vence.
 
-Variáveis de ambiente disponíveis para o agente durante a sessão. Útil para apontar para ambientes de desenvolvimento.
+---
+
+## Campo `env` — variáveis de ambiente
+
+Variáveis disponíveis para o agente durante a sessão. O agente as enxerga no ambiente de execução dos comandos Bash.
 
 ```json
 {
   "env": {
     "DATABASE_URL": "postgresql://localhost:5432/myapp_dev",
     "NODE_ENV": "development",
-    "LOG_LEVEL": "debug"
+    "LOG_LEVEL": "debug",
+    "API_BASE_URL": "http://localhost:3000"
   }
 }
 ```
 
-> [!warning] Segurança
-> Nunca coloque secrets (API keys, passwords de produção) em `settings.json`. Esse arquivo vai para o git. Use `.claude/settings.local.json` (no .gitignore) para variáveis sensíveis locais.
+**Caso de uso típico:** apontar o agente para o ambiente de desenvolvimento correto sem que ele precise perguntar qual banco usar.
 
-### `hooks`
+> [!warning] Segurança — nunca coloque secrets em settings.json
+> `settings.json` vai para o git. Qualquer secret (API key, password de banco de produção, token) que você colocar aqui estará exposto no repositório. Use `.claude/settings.local.json` (no .gitignore) para variáveis sensíveis locais. Ou use variáveis de ambiente do sistema — o agente herda o ambiente do shell.
 
-Configura scripts que rodam antes/depois de tool calls. Alternativa ao CLAUDE.md para hooks que precisam de execução (não só instrução textual).
+---
+
+## Campo `hooks` — scripts automáticos
+
+Configura scripts que rodam automaticamente antes ou depois de tool calls. Diferente de instruir o modelo ("sempre rode lint depois de editar"), hooks são executados mecanicamente pelo runtime.
 
 ```json
 {
@@ -91,7 +132,7 @@ Configura scripts que rodam antes/depois de tool calls. Alternativa ao CLAUDE.md
         "hooks": [
           {
             "type": "command",
-            "command": "scripts/validate-bash.sh"
+            "command": "echo 'Comando: $TOOL_INPUT' >> ~/.claude/audit.log"
           }
         ]
       }
@@ -102,7 +143,7 @@ Configura scripts que rodam antes/depois de tool calls. Alternativa ao CLAUDE.md
         "hooks": [
           {
             "type": "command",
-            "command": "npm run lint -- --fix $FILE"
+            "command": "npm run lint -- --fix"
           }
         ]
       }
@@ -111,11 +152,13 @@ Configura scripts que rodam antes/depois de tool calls. Alternativa ao CLAUDE.md
 }
 ```
 
-Ver [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] para o sistema completo de hooks.
+Os hooks mais comuns em `settings.json` são simples — auto-format após edição, auditoria de comandos, notificações. Para lógica mais complexa (bloqueio condicional, transformação de output), ver o galho [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]].
 
-### `model`
+---
 
-Seleciona o modelo padrão para o projeto. Útil para forçar um modelo específico independente do default do usuário.
+## Campo `model` — modelo padrão
+
+Seleciona o modelo padrão para o projeto. Útil quando o time quer garantir que todos usam o mesmo modelo, independente da configuração pessoal.
 
 ```json
 {
@@ -123,9 +166,16 @@ Seleciona o modelo padrão para o projeto. Útil para forçar um modelo específ
 }
 ```
 
-### `includeCoAuthoredBy`
+Modelos disponíveis (conforme dados de 2026):
+- `claude-opus-4-8` — mais capaz, mais caro, mais lento
+- `claude-sonnet-4-6` — padrão recomendado (custo × qualidade)
+- `claude-haiku-4-5-20251001` — rápido e barato, para tarefas simples
 
-Controla se Claude adiciona Co-Authored-By em commits. Default: `true`.
+---
+
+## Campo `includeCoAuthoredBy` — assinatura de commits
+
+Controla se Claude adiciona `Co-Authored-By: Claude` em commits. Default: `true`.
 
 ```json
 {
@@ -133,10 +183,13 @@ Controla se Claude adiciona Co-Authored-By em commits. Default: `true`.
 }
 ```
 
-## Configuração mínima recomendada
+Definir como `false` no nível de projeto garante consistência para o time inteiro, sem depender da configuração pessoal de cada desenvolvedor.
 
-Para a maioria dos projetos Node/TypeScript, um `settings.json` mínimo útil:
+---
 
+## Configuração mínima recomendada — por stack
+
+**Node.js / TypeScript:**
 ```json
 {
   "permissions": {
@@ -144,58 +197,233 @@ Para a maioria dos projetos Node/TypeScript, um `settings.json` mínimo útil:
       "Bash(npm test)",
       "Bash(npm test -- *)",
       "Bash(npm run lint)",
+      "Bash(npm run type-check)",
       "Bash(npm run build)",
-      "Bash(npm run dev)",
       "Bash(git status)",
-      "Bash(git log)",
-      "Bash(git diff)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
       "Bash(git add *)",
       "Bash(git commit *)"
     ],
     "deny": [
-      "Bash(git push --force)",
+      "Bash(git push --force *)",
       "Bash(rm -rf *)",
-      "Bash(git reset --hard)"
+      "Bash(git reset --hard *)"
     ]
   },
   "includeCoAuthoredBy": false
 }
 ```
 
-## Global vs projeto vs local
-
+**Python / pytest:**
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(pytest)",
+      "Bash(pytest *)",
+      "Bash(ruff check *)",
+      "Bash(ruff format *)",
+      "Bash(alembic upgrade head)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(rm -rf *)",
+      "Bash(alembic downgrade *)"
+    ]
+  },
+  "includeCoAuthoredBy": false
+}
 ```
-~/.claude/settings.json        → preferências pessoais (todos os projetos)
-.claude/settings.json          → configurações do projeto (vai pro git, time inteiro)
-.claude/settings.local.json    → sobrescritas pessoais (não vai pro git)
+
+**Java / Maven:**
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw test)",
+      "Bash(./mvnw test *)",
+      "Bash(./mvnw compile)",
+      "Bash(./mvnw clean package *)",
+      "Bash(./mvnw spring-boot:run)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(rm -rf *)"
+    ]
+  },
+  "includeCoAuthoredBy": false
+}
 ```
 
-**Quando usar cada um:**
+---
 
-| Configuração | Onde |
-|-------------|------|
-| Ferramentas comuns a todos os projetos (`git status`, `ls`) | `~/.claude/settings.json` |
-| Scripts específicos do projeto (`npm test`, `cargo build`) | `.claude/settings.json` |
-| Variáveis de ambiente locais, paths pessoais | `.claude/settings.local.json` |
-| Secrets para desenvolvimento local | `.claude/settings.local.json` |
+## Exemplo completo anotado — projeto fullstack
+
+Um `settings.json` real para um projeto Next.js + PostgreSQL, com comentários sobre cada decisão:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      // Leitura — sempre seguro liberar
+      "Read(*)",
+
+      // Git de consulta — nunca muda estado
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+
+      // Git de escrita — somente o básico do fluxo local
+      "Bash(git add *)",
+      "Bash(git commit *)",
+
+      // Testes e qualidade — CI vai rodar mesmo, é seguro liberar
+      "Bash(npm test)",
+      "Bash(npm test -- *)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint -- *)",
+      "Bash(npm run type-check)",
+
+      // Build e dev — necessário para verificar mudanças
+      "Bash(npm run build)",
+      "Bash(npm run dev)",
+
+      // Banco de dados — só operações seguras
+      "Bash(npm run db:migrate)",
+      "Bash(npm run db:status)",
+
+      // Utilitários de leitura comuns
+      "Bash(ls *)",
+      "Bash(find * -name *)",
+      "Bash(wc -l *)"
+    ],
+    "deny": [
+      // Destrutivos — bloquear independente do contexto
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -f *)",
+
+      // Banco — operações de reversão precisam de atenção humana
+      "Bash(npm run db:rollback)",
+      "Bash(npm run db:drop)",
+
+      // Publicação — precisa de aprovação consciente
+      "Bash(npm publish *)",
+      "Bash(git push * main)"
+    ]
+  },
+  "env": {
+    "DATABASE_URL": "postgresql://localhost:5432/myapp_dev",
+    "NODE_ENV": "development"
+  },
+  "includeCoAuthoredBy": false,
+  "model": "claude-sonnet-4-6"
+}
+```
+
+Note que `git push * main` está no deny mas `git push` (sem filtro de branch) não está — push para branches de feature é permitido, mas push direto para main requer confirmação.
+
+---
+
+## Diagrama de resolução de permissões
+
+```mermaid
+flowchart TD
+    Tool["Agente quer executar\nferramenta X"]
+    Deny{"X está em algum\ndeny list?"}
+    Allow{"X está em algum\nallow list?"}
+    Block["Bloqueado\n(runtime error)"]
+    AutoExec["Executa\nautomaticamente"]
+    AskUser["Pede confirmação\nao usuário"]
+
+    Tool --> Deny
+    Deny -- "sim" --> Block
+    Deny -- "não" --> Allow
+    Allow -- "sim" --> AutoExec
+    Allow -- "não" --> AskUser
+```
+
+---
+
+## Global vs. projeto vs. local
+
+| Configuração | Onde colocar | Versionado? |
+|-------------|-------------|------------|
+| Git básico (`git status`, `git log`) | `~/.claude/settings.json` | Não (pessoal) |
+| Scripts do projeto (`npm test`, `cargo build`) | `.claude/settings.json` | Sim |
+| `includeCoAuthoredBy` para o time | `.claude/settings.json` | Sim |
+| DATABASE_URL local, paths pessoais | `.claude/settings.local.json` | Não |
+| Secrets para desenvolvimento local | `.claude/settings.local.json` | Não |
+
+Lembre: settings.json usa **sobrescrita** (não concatenação). A camada mais específica substitui a menos específica. Se o projeto define `allow: ["npm test"]`, sem incluir os allows do global, o agente perde as permissões globais naquela sessão.
+
+---
 
 ## Armadilhas
 
-**Nenhum allow configurado**: sem `allow`, cada Bash que o agente tenta rodar pede confirmação — include `git status`, `ls`, tudo. Lento e frustrante. Configure pelo menos os comandos básicos.
+**Sem nenhum allow configurado.** Sem `allow`, cada Bash que o agente tenta rodar — inclusive `git status`, `ls`, `wc -l` — pede confirmação. Sessão fica extremamente lenta. Configure pelo menos os comandos de leitura básicos.
 
-**Deny muito amplo**: `"deny": ["Bash(*)"]` bloqueia tudo. O agente fica preso. Deny deve ser cirúrgico — bloqueie o que é perigoso, não tudo.
+**Deny muito amplo.** `"deny": ["Bash(*)"]` bloqueia tudo. O agente fica preso. Deny deve ser cirúrgico — bloqueie o que é perigoso, não tudo.
 
-**Secrets no settings.json**: o arquivo vai para o git. Use `settings.local.json` para qualquer coisa sensível.
+**Secrets no `settings.json`.** O arquivo vai pro git. Se commitar, o secret está exposto no histórico para sempre. Use `.claude/settings.local.json` para qualquer coisa sensível.
 
-**Esquecer o .gitignore**: se criar `settings.local.json`, adicione ao `.gitignore`. Do contrário o arquivo sensível entra no repositório.
+**Esquecer o `.gitignore`.** Se criar `settings.local.json`, adicione ao `.gitignore` imediatamente. Do contrário o arquivo sensível entra no repositório sem aviso.
+
+**Sobrescrita inesperada.** O projeto define um allow list pequeno, sobrescrevendo o global mais amplo — o agente perde permissões que funcionavam antes. Inclua explicitamente o que quer manter de camadas anteriores.
+
+---
+
+## Checklist — settings.json
+
+- [ ] Allow list inclui os comandos de teste e lint do projeto
+- [ ] Deny list bloqueia as ações mais destrutivas (rm -rf, push --force)
+- [ ] `includeCoAuthoredBy: false` se o time não quer assinatura Claude
+- [ ] Secrets não estão no settings.json (verificar com `git diff`)
+- [ ] `settings.local.json` está no `.gitignore`
+- [ ] Allow list do projeto inclui o que precisa do global (não deixar sobrescrever implicitamente)
+
+---
+
+## Como explicar em inglês
+
+| Português | Inglês |
+|-----------|--------|
+| Lista de permissões | Allow list / permissions list |
+| Lista de bloqueio | Deny list / blocklist |
+| Configuração estruturada | Structured configuration |
+| Variáveis de ambiente | Environment variables |
+| Sobrescrita de camada | Layer override |
+
+**Frases úteis:**
+- "settings.json is interpreted by the Claude Code runtime, not the model — a deny rule can't be overridden by a prompt instruction."
+- "Without an allow list, every Bash command triggers a confirmation prompt — even `git status`. Configure at least the basics."
+- "Never put secrets in settings.json — it goes to git. Use settings.local.json (gitignored) for local credentials."
+
+---
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/05 - Permissions|05 - Permissions]] — sintaxe detalhada de allow/deny
+- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/05 - Permissions|05 - Permissions]] — sintaxe completa de allow/deny
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/01 - Hierarquia de configuração|01 - Hierarquia de configuração]] — como settings.json se combina entre camadas
-- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — configuração de hooks em profundidade
+- [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — hooks em profundidade
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — índice do galho
+
+---
 
 ## Referências
 
-- [Claude Code — Settings](https://docs.anthropic.com/pt/docs/claude-code/settings)
+- **Anthropic** — *Claude Code settings reference* (2026). Estrutura completa do settings.json — https://docs.anthropic.com/pt/docs/claude-code/settings
+- **Anthropic** — *Claude Code permissions* (2026). Sintaxe de allow/deny e ordem de precedência — https://docs.anthropic.com/pt/docs/claude-code/settings#permissions
