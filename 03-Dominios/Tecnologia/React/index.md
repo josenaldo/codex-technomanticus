@@ -23,7 +23,7 @@ aliases:
 - 🟩 [[03-Dominios/Tecnologia/React/React core/index|React core]] — **a biblioteca em 3 fases** (26 notas, TS-first, React 19): JSX, componentes, hooks, estado, efeitos, performance, concurrent, RSC, Actions.
 - 🟦 [[03-Dominios/Tecnologia/React/TypeScript com React/index|TypeScript com React]] — tipagem avançada de componentes, hooks, props, generics, polymorphic, compound (15 notas).
 - 🟨 [[03-Dominios/Tecnologia/React/Charts/index|Charts]] — bibliotecas de gráficos.
-- ⬜ **React Design Patterns** — *galho planejado* (padrões consolidados: compound, render props, HOC, custom hooks, provider). Ver [[00-Meta/Roadmap|Roadmap]].
+- 🟩 [[03-Dominios/Tecnologia/React/Design Patterns/index|React Design Patterns]] — **catálogo de padrões em 3 fases** (12 notas, TS-first): container/presentational, custom hooks, provider, composição, compound, render props, HOC, state reducer/prop getters, headless.
 - ⬜ **Next.js** — *galho planejado* (App Router, RSC em produção, server actions, caching, deploy; Pages Router de leve).
 - ⬜ **Ecossistema** — *galho planejado* (MUI, Mantine, TanStack Query).
 

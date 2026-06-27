@@ -47,7 +47,7 @@ aliases:
 | [[03-Dominios/Tecnologia/TypeScript/index\|TypeScript]] | ✅ | 27 notas, 3 fases |
 | [[03-Dominios/Tecnologia/Tooling e Build/index\|Tooling e Build]] | ✅ | 26 notas, concluída 2026-06-25 |
 | [[03-Dominios/Tecnologia/JavaScript/index\|JavaScript (core)]] | ✅ | 26 notas, 3 fases, concluída 2026-06-25 (monólito aposentado em stub) |
-| [[03-Dominios/Tecnologia/React/index\|React]] | 🟡 | domínio multi-galho; **galho React core ✅** (26 notas, 3 fases, TS-first, 2026-06-25) + TypeScript com React (15); faltam Design Patterns, Next.js, Ecossistema |
+| [[03-Dominios/Tecnologia/React/index\|React]] | 🟡 | domínio multi-galho; **React core ✅** (26) + **Design Patterns ✅** (12, 2026-06-26) + TypeScript com React (15); faltam Next.js, Ecossistema |
 | [[03-Dominios/Tecnologia/HTML/index\|HTML]] | 🧱 | só `HTML semântico.md`; falta forms, a11y, ARIA, SEO, metadados |
 | [[03-Dominios/Tecnologia/CSS/index\|CSS]] | 🧱 | só `CSS.md` + Bootstrap; falta layout (flex/grid), cascade, responsivo, design system |
 | [[03-Dominios/Tecnologia/Plataforma Web/index\|Plataforma Web]] | 🟡 | só galho Networking; falta DOM, eventos, rendering, Web APIs, storage, Workers |

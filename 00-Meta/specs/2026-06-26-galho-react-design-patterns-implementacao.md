@@ -3,7 +3,7 @@ title: "Plano de Implementação — Galho React Design Patterns"
 type: spec
 created: 2026-06-26
 updated: 2026-06-26
-status: draft
+status: done
 tags:
   - spec
   - plano
