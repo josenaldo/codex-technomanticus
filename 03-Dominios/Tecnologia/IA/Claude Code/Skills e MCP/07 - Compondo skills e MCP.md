@@ -1,11 +1,11 @@
 ---
 title: "Compondo skills e MCP — agentes especializados"
 type: concept
-progress: backlog
+progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: evergreen
 tags:
   - claude-code
   - skills
@@ -17,46 +17,62 @@ tags:
 # Compondo skills e MCP — agentes especializados
 
 > [!abstract] TL;DR
-> Skills e [[Dicionário de IA#MCP server|MCP servers]] são complementares: skills ensinam o [[Dicionário de IA#Agent|agente]] *como* trabalhar; MCP servers dão ao agente *acesso* ao que ele precisa para trabalhar. Um agente especializado para um domínio específico combina as duas coisas: uma skill que define o processo e os MCP servers que expõem os sistemas necessários. A composição acontece na sessão, não em código.
+> Skills e [[Dicionário de IA#MCP server|MCP servers]] são complementares: skills ensinam o [[Dicionário de IA#Agent|agente]] *como* trabalhar; MCP servers dão ao agente *acesso* ao que ele precisa para trabalhar. Combinados, eles criam um agente especializado que executa workflows completos sem intermediário humano. A composição acontece na sessão — você invoca skills, o MCP está configurado, e o agente une os dois.
 
-## Por que compor em vez de usar separado
+## A analogia do especialista completo
 
-Só com skill: o agente sabe o processo mas não consegue acessar os sistemas externos — precisa pedir para você executar comandos.
+Imagine contratar um engenheiro sênior que conhece profundamente as melhores práticas de TDD (processo) mas que ao chegar no primeiro dia de trabalho descobre que não tem acesso ao banco de dados, não consegue abrir o GitHub, e não pode rodar testes de UI.
 
-Só com MCP: o agente tem acesso aos sistemas mas vai tomar decisões genéricas — vai rodar queries que não seguem os padrões do projeto, criar issues no formato errado.
+Ele sabe *como* fazer — mas não tem acesso ao que precisa para *fazer de fato*.
 
-Combinado: o agente tem contexto específico do domínio (skill) e acesso autônomo aos sistemas (MCP) — pode executar workflows completos sem intermediário.
+Agora imagine o inverso: um dev com acesso total ao banco, ao GitHub, ao browser — mas sem nenhum processo. Ele cria issues no formato errado, faz queries que não seguem as convenções do projeto, e ignora o checklist de deploy.
 
-## Padrão de composição
+Skills sem MCP = processo sem acesso.
+MCP sem skills = acesso sem processo.
 
-Uma sessão de agente especializado tem três componentes:
+**A composição entrega o especialista completo**: processo correto + acesso autônomo + contexto do projeto.
 
+> [!question] Como saber o que falta?
+> Se o agente está pedindo para você copiar e colar dados de um sistema externo, está faltando MCP.
+> Se o agente está tomando decisões que violam as convenções do projeto, está faltando uma skill de domínio.
+> Se o agente está executando os passos errados, está faltando uma skill de processo.
+
+## Os três componentes de um agente especializado
+
+```mermaid
+flowchart TD
+    subgraph Session["Sessão do agente especializado"]
+        SD["Skill de domínio\n'O que é este projeto,\nquais são as regras'"]
+        SP["Skill de processo\n'Como executar esta\ntarefa aqui'"]
+        MCP["MCP server(s)\n'Acesso autônomo aos\nsistemas externos'"]
+    end
+    SD --> AGENT["Agente especializado"]
+    SP --> AGENT
+    MCP --> AGENT
+    AGENT --> RESULT["Workflow executado\nsem intermediário humano"]
 ```
-1. Skill de domínio    → "O que é este projeto, quais são as regras"
-2. Skill de processo   → "Como fazer esta tarefa aqui"
-3. MCP server(s)       → Acesso aos sistemas externos necessários
-```
 
-Exemplo: agente de triagem de bugs
+| Componente | Pergunta que responde | Exemplo |
+|---|---|---|
+| Skill de domínio | O que é este projeto? | Arquitetura, convenções, regras de negócio |
+| Skill de processo | Como fazer esta tarefa? | TDD, deploy checklist, bug triage |
+| MCP server | Com o quê o agente trabalha? | Postgres, GitHub, browser |
 
-```
-/convencoes-projeto      ← skill de domínio: estrutura do projeto, convenções
-/bug-triage              ← skill de processo: como investigar e priorizar bugs
-                         ← MCP postgres: consultar tabela de logs
-                         ← MCP github: criar issues, ler issues abertas
-```
+Nem toda sessão precisa dos três. Use o mínimo necessário para a tarefa.
 
-## Exemplo completo: agente de deploy
+## Exemplo 1: agente de triagem de bugs
+
+**Objetivo**: investigar bugs reportados, verificar logs no banco, e criar issues estruturadas no GitHub.
 
 **Configuração MCP** em `settings.json`:
 
 ```json
 {
   "mcpServers": {
-    "postgres": {
+    "postgres-prod-ro": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-postgres"],
-      "env": { "DATABASE_URL": "${DATABASE_URL_STAGING}" }
+      "env": { "DATABASE_URL": "${DATABASE_PROD_READONLY_URL}" }
     },
     "github": {
       "command": "npx",
@@ -67,64 +83,75 @@ Exemplo: agente de triagem de bugs
 }
 ```
 
-**Skill de processo** em `.claude/skills/deploy-checklist.md`:
+**Skill de processo** em `.claude/skills/bug-triage.md`:
 
 ```markdown
 ---
-name: deploy-checklist
-description: Guia o agente pelo checklist de deploy para staging — verifica PRs, banco, e notifica time
+name: bug-triage
+description: Guia a investigação de bugs reportados — verifica logs, reproduz, prioriza e cria issue
 metadata:
   type: process
-  tags: [deploy, staging, checklist]
+  tags: [bug, triage, debugging]
 ---
 
-# Deploy para Staging — Checklist
+# Bug Triage — Processo
 
-## Antes de deployar
+## Passo 1: Reproduzir o contexto
 
-1. Verificar se há PRs abertos que precisam estar neste deploy
-   - Listar PRs mesclados desde o último deploy
-   - Confirmar que todos estão marcados como "ready for staging"
+Para cada bug reportado:
+1. Entenda o comportamento esperado vs observado
+2. Verifique os logs do banco: `SELECT * FROM error_logs WHERE created_at > NOW() - INTERVAL '24h' AND message ILIKE '%<termo-do-bug>%'`
+3. Identifique o endpoint ou fluxo afetado
 
-2. Verificar banco de dados
-   - Checar se há migrations pendentes (`SELECT * FROM migrations WHERE applied_at IS NULL`)
-   - Se houver migration, confirmar que foi testada localmente
+## Passo 2: Priorizar
 
-3. Executar deploy
-   - Rodar `npm run deploy:staging`
-   - Aguardar confirmação de sucesso
+**P1 — Crítico**: dado corrompido, perda de transação, acesso indevido
+**P2 — Alto**: funcionalidade principal quebrada para múltiplos usuários
+**P3 — Médio**: funcionalidade degradada ou workaround existe
+**P4 — Baixo**: UX ruim, caso de borda
 
-## Após o deploy
+## Passo 3: Criar issue estruturada
 
-4. Smoke test
-   - Verificar endpoints críticos na URL de staging
-
-5. Criar issue de tracking
-   - Criar issue no GitHub com: lista de PRs incluídos, migrations aplicadas, resultado dos smoke tests
+Use `create_issue` (GitHub MCP) com este formato:
+- **Título**: `[P{nível}] Descrição curta do comportamento observado`
+- **Corpo**: Comportamento esperado / Observado / Reprodução / Logs relevantes / Hipótese inicial
+- **Labels**: `bug`, `p{nível}`, módulo afetado
 ```
 
-**Invocação na sessão**:
+**Sessão**:
 
 ```
-/deploy-checklist
-Estamos deployando para staging a branch release/2.4.0
+/bug-triage
+Investigar o bug reportado: usuários reclamam que checkout está falhando silenciosamente
 ```
 
-O agente:
-1. Lê a skill e segue o processo
-2. Usa `list_pull_requests` (GitHub MCP) para buscar PRs prontos
-3. Usa `query` (Postgres MCP) para verificar migrations pendentes
-4. Cria issue de tracking no GitHub com `create_issue`
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant CC as Claude Code
+    participant PG as MCP Postgres (read-only)
+    participant GH as MCP GitHub
 
-## Exemplo completo: agente de onboarding de feature
+    U->>CC: /bug-triage — checkout falhando silenciosamente
+    CC->>PG: query("SELECT * FROM error_logs WHERE message ILIKE '%checkout%' AND created_at > NOW() - INTERVAL '24h'")
+    PG-->>CC: [{"level": "error", "message": "Payment gateway timeout", "count": 147}]
+    CC->>CC: Analisa: 147 timeouts em 24h = P2 (múltiplos usuários)
+    CC->>GH: create_issue("minha-org/api", "[P2] Checkout falhando por timeout no gateway de pagamento", body...)
+    GH-->>CC: issue_id: 892
+    CC-->>U: Issue #892 criada com P2. Root cause provável: timeout no gateway. 147 ocorrências em 24h.
+```
+
+## Exemplo 2: agente de onboarding de feature
+
+**Objetivo**: implementar uma feature descrita em uma issue, seguindo TDD, com acesso ao schema do banco.
 
 **Skills**:
-- `/arquitetura-projeto` — skill de domínio com mapa de módulos
-- `/tdd` — skill de processo para desenvolvimento orientado a testes
+- `/arquitetura-projeto` — domínio: módulos, responsabilidades, convenções
+- `/tdd` — processo: red → green → refactor
 
 **MCP servers**:
-- Postgres — verificar schema enquanto implementa
-- GitHub — ler issue com requisitos da feature, criar PR ao final
+- `postgres-dev` — verificar schema enquanto implementa
+- `github` — ler issue com requisitos, criar PR ao final
 
 **Sessão**:
 
@@ -134,56 +161,89 @@ O agente:
 Implementa a feature descrita na issue #247
 ```
 
-O agente lê a issue (#247 via GitHub MCP), verifica o schema das tabelas envolvidas (Postgres MCP), segue o processo TDD da skill, e ao final cria o PR (GitHub MCP) com referência à issue.
+O agente:
+1. Lê a issue #247 via `get_issue` (GitHub MCP) — entende os requisitos
+2. Verifica o schema das tabelas envolvidas via `describe_table` (Postgres MCP)
+3. Segue o processo TDD da skill: escreve o teste falhando primeiro
+4. Implementa o mínimo para passar
+5. Refatora respeitando as convenções da skill de arquitetura
+6. Cria o PR via `create_pull_request` (GitHub MCP) com referência à issue
 
-## Skill que instrui uso de MCP
+## Exemplo 3: agente de deploy
 
-Você pode incluir na skill instrução explícita sobre quais tools MCP usar:
+**Skill de processo** em `.claude/skills/deploy-checklist.md`:
 
 ```markdown
 ---
-name: review-migration
-description: Revisa uma migration de banco — analisa impacto, testa em staging, documenta
+name: deploy-checklist
+description: Checklist de deploy para staging — verifica PRs, migrations, e documenta o deploy
+metadata:
+  type: process
+  tags: [deploy, staging, checklist]
 ---
 
-# Review de Migration
+# Deploy para Staging — Checklist
+
+## MCP servers necessários
+- `postgres-staging` — verificar migrations pendentes
+- `github` — listar PRs e criar issue de tracking
 
 ## Passos
 
-1. Ler a migration em `db/migrations/` mais recente
-2. Usar `describe_table` (MCP postgres-staging) para ver estado atual da tabela
-3. Rodar a migration em staging: `npm run migrate:staging`
-4. Usar `query` (MCP postgres-staging) para verificar que a estrutura ficou correta
-5. Documentar no PR: impacto da migration, rollback procedure
+1. Listar PRs mesclados desde o último deploy via `list_pull_requests`
+2. Verificar migrations pendentes: `SELECT name FROM migrations WHERE applied_at IS NULL ORDER BY created_at`
+3. Se há migrations: confirmar que foram testadas em dev antes de prosseguir
+4. Criar issue de tracking com: PRs incluídos, migrations aplicadas, data/hora do deploy
+5. Reportar resultado: sucesso ou falha com stack trace
 ```
 
-A referência explícita a "MCP postgres-staging" remove ambiguidade quando há múltiplos servers com tools de mesmo nome.
+**Sessão**:
+
+```
+/deploy-checklist
+Deploying release/2.4.0 to staging
+```
+
+O agente segue o checklist, usa os MCP servers para cada etapa e cria a issue de documentação.
+
+## Skill que instrui uso de MCP explicitamente
+
+Você pode incluir na skill referência explícita a quais tools MCP usar. Isso remove ambiguidade quando há múltiplos servers com tools de mesmo nome:
+
+```markdown
+## Verificar schema
+
+Use `describe_table` do `postgres-staging` (não do `postgres-dev`) para confirmar o estado da tabela no ambiente alvo.
+
+## Criar documentação
+
+Use `create_issue` do GitHub com o template de deploy:
+```
+[DEPLOY] {versão} → staging — {data}
+PRs: #{lista}
+Migrations: {sim/não, quais}
+Resultado: {sucesso/falha}
+```
+```
+
+A referência explícita ao nome do server (`postgres-staging`) garante que o agente usa o server correto quando há múltiplos configurados.
 
 ## Quando a composição não é necessária
 
-Nem toda tarefa precisa de composição completa. Use o mínimo necessário:
+Adicionar componentes sem necessidade aumenta a superfície de risco e o overhead cognitivo do agente.
 
-| Tarefa | O que é suficiente |
-|--------|-------------------|
-| Implementar uma função nova | Só o código + tools nativas |
-| Refatorar código existente | Skills de processo (TDD, review) |
-| Investigar bug em produção | MCP postgres (logs) + skill de debugging |
+| Tarefa | Suficiente |
+|---|---|
+| Implementar uma função nova | Tools nativas (`Edit`, `Write`) |
+| Refatorar código existente | Skill de processo (TDD, review) |
+| Investigar bug em produção | MCP postgres read-only + skill de debugging |
 | Feature com requisito em issue | MCP github + skill de domínio |
-| Deploy com checklist | Skill de processo + MCP de monitoramento |
+| Deploy com checklist | Skill de processo + MCP de banco e git |
+| Code review de PR | Skill de processo (sem MCP necessário) |
 
-Adicionar MCP servers sem necessidade aumenta a superfície de ataque e o overhead de cada sessão.
+Regra: adicione um componente só quando ele resolve algo que o agente não consegue fazer sem ele.
 
-## Armadilhas
-
-**Skill que descreve o processo sem instrução sobre os sistemas**: "verifique o banco" sem especificar qual tool MCP usar leva o agente a tentar acesso via Bash — que pode estar bloqueado por [[Dicionário de IA#Guardrail|guardrails]].
-
-**MCP server de produção com skill que permite mutações**: uma skill de "atualizar dados" + MCP de produção é uma combinação perigosa. Garanta que o MCP server aponta para o ambiente certo para o workflow da skill.
-
-**Muitas skills na mesma sessão**: o agente tenta reconciliar todas. Três skills simultâneas com instruções conflitantes criam comportamento imprevisível. Prefira skills focadas e combine no máximo duas por sessão.
-
-**Skill que assume que MCP está disponível**: se a skill instrui o agente a usar uma tool que não está configurada, o agente vai falhar com erro obscuro. Documente na skill quais MCP servers são necessários.
-
-## Documentar a composição
+## Documentar a composição para o time
 
 Para workflows que o time vai repetir, documente a composição no `CLAUDE.md` do projeto:
 
@@ -191,21 +251,55 @@ Para workflows que o time vai repetir, documente a composição no `CLAUDE.md` d
 ## Workflows disponíveis
 
 ### Deploy para staging
-Requer: MCP `postgres-staging`, MCP `github`
+Requer MCP: `postgres-staging`, `github`
 Invoke: `/deploy-checklist`
+Nota: postgres-staging é read-write — use com cuidado.
 
 ### Triagem de bugs
-Requer: MCP `postgres-prod` (read-only), MCP `github`
-Invoke: `/convencoes-projeto` + `/bug-triage`
+Requer MCP: `postgres-prod-ro` (read-only), `github`
+Invoke: `/convencoes-projeto` depois `/bug-triage`
+
+### Feature do zero
+Requer MCP: `postgres-dev`, `github`
+Invoke: `/arquitetura-projeto` depois `/tdd`
 ```
 
-Isso garante que qualquer dev do time sabe o que configurar antes de usar os workflows.
+Isso garante que qualquer dev do time sabe o que configurar antes de usar os workflows — e previne o erro de apontar o server errado para o workflow errado.
 
-## Veja também
+## Armadilhas
+
+**Skill sem mencionar os MCP necessários**
+A skill instrui o processo, mas se não menciona quais tools MCP usar, o agente pode tentar acesso via Bash ou simplesmente falhar. Documente os MCP necessários no início da skill.
+
+**MCP de produção com skill que permite mutações**
+Uma skill de "atualizar dados de pedido" + MCP postgres de produção é uma combinação perigosa. Garanta que o MCP server aponta para o ambiente certo. Nomeie os servers com o ambiente: `postgres-dev`, `postgres-staging`, nunca só `postgres`.
+
+**Muitas skills na mesma sessão**
+O agente tenta reconciliar todas as instruções. Três skills simultâneas com instruções conflitantes geram comportamento imprevisível. Prefira duas skills focadas por sessão.
+
+**Skill que assume MCP disponível sem verificação**
+Se a skill instrui o agente a usar uma tool que não está configurada, o agente vai falhar com erro pouco informativo. Documente na skill quais MCP servers são pré-requisito.
+
+## Como explicar em inglês
+
+**"Composing skills and MCP"** — combining process instructions (skills) with external system access (MCP servers) to create an agent that can execute complete workflows autonomously.
+
+**The key insight:**
+- "Skills give the agent *how*; MCP gives the agent *with what*. Neither is sufficient alone."
+- "A specialized agent for bug triage needs three things: knowledge of what the project considers a bug (domain skill), a process for investigating and categorizing (process skill), and access to the logs and issue tracker (MCP servers)."
+- "The composition is lightweight — you invoke the skills and the MCP is configured. No glue code. The agent connects the dots."
+
+**Common follow-up questions:**
+- *"Isn't this just prompt engineering?"* — Skills are versioned Markdown files, not chat prompts. They're reusable artifacts that evolve with the project. The composition is session-level, not conversation-level.
+- *"How do you test the composed agent?"* — Run a representative task and observe where it deviates from expected behavior. Each deviation tells you what to add or clarify — in the skill, the MCP server description, or the tool's description.
+
+## Referências
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/01 - Anatomia de uma skill|01 - Anatomia de uma skill]] — estrutura de skills
+- [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/02 - Skills de processo vs domínio|02 - Skills de processo vs domínio]] — qual tipo de skill compor
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/04 - MCP overview|04 - MCP overview]] — arquitetura MCP
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/05 - MCP servers essenciais|05 - MCP servers essenciais]] — servers prontos para usar
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/06 - Criar MCP server|06 - Criar MCP server]] — criar server para sistemas internos
-- [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/08 - Skills em time|08 - Skills em time]] — versionar e manter skills em equipe
+- [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/08 - Skills em time|08 - Skills em time]] — versionar e manter a composição em equipe
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/index|Skills e MCP]] — índice do galho
+- [[03-Dominios/Tecnologia/IA/Claude Code/index|Claude Code]] — tronco da trilha
