@@ -37,6 +37,9 @@ A disciplina emergente — nomeada e institucionalizada em 2026, com workshop pr
 ### agentic loop
 O ciclo iterativo fundamental de um agente de IA, composto por etapas de percepção, planejamento, ação e observação. O agente processa uma entrada, decide por uma ação (frequentemente uma chamada de ferramenta), observa o resultado e repete o processo até que o objetivo final seja alcançado ou um critério de parada seja atingido.
 
+### AgentOps
+A disciplina de operar sistemas agênticos em produção — o DevOps dos agentes. Abrange observabilidade (logging de turnos, rastreamento de tool calls), monitoramento de custo e latência por sessão, gestão de versões de agente (prompt, model, harness), pipelines de rollback, e avaliação contínua de qualidade de output. O termo foi popularizado pelo AGENT 2026 workshop (ICSE 2026) como subárea da [[Dicionário de IA#agentic engineering|agentic engineering]]. Assim como DevOps é o que separa "software que funciona no dev" de "software que opera em produção", AgentOps é o que separa "agente que funciona no demo" de "agente que opera com confiabilidade".
+
 ### CAR (Control, Agency, Runtime)
 Decomposição da camada de [[Dicionário de IA#harness|harness]] proposta em 2026 (preprint *Harness Engineering for Language Agents*) em três eixos: **Control** (quais instruções permanecem autoritativas), **Agency** (quais ações estão disponíveis) e **Runtime** (como o estado é carregado adiante e como falhas são tratadas ao longo do tempo). É uma de várias taxonomias concorrentes do harness — nenhuma virou consenso. *Preprint não peer-reviewed.* Ver [[03-Dominios/Tecnologia/IA/Anatomia de Agents/11 - Harness engineering — a terceira camada|harness engineering]].
 
