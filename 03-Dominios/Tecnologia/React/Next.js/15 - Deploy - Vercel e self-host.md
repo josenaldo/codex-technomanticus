@@ -482,7 +482,7 @@ Com o `cacheHandler` apontando para Redis e a chave de criptografia compartilhad
 
 Deploy é a dimensão operacional do Next.js — mas a próxima note fecha o galho com a dimensão estratégica: escolher entre Server e Client Components, entre estratégias de render, entre caches. O capstone é o lugar onde todas as decisões se tornam trade-offs explícitos.
 
-- [[03-Dominios/Tecnologia/React/Next.js/16 - Capstone — arquitetura, decisões e entrevista|Nota 16 — Capstone]] — decision tree, anti-patterns e perguntas de entrevista
+- [[03-Dominios/Tecnologia/React/Next.js/16 - Capstone - arquitetura, decisões e entrevista|Nota 16 — Capstone]] — decision tree, anti-patterns e perguntas de entrevista
 
 ---
 
