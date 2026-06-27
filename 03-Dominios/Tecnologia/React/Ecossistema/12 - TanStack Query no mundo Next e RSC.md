@@ -181,6 +181,7 @@ const mutation = useMutation({
 
 Este padrão — cancelar query, atualizar cache otimisticamente, reverter em erro, invalidar ao final — é nativo no TanStack Query. Replicá-lo com `useState` + `useEffect` é possível, mas doloroso e propenso a race conditions.
 
+> [!info] Aprofundamento
 > Veja o padrão completo em [[03-Dominios/Tecnologia/React/Ecossistema/05 - TanStack Query II - mutations e optimistic updates|Nota 05 — TanStack Query II]].
 
 ### Background refetch e focus tracking
@@ -408,6 +409,7 @@ const getCachedUsers = unstable_cache(
 - O padrão de prefetch + `HydrationBoundary` funciona exatamente da mesma forma
 - O comportamento do `useQuery` no cliente não é afetado pelas mudanças de caching do servidor
 
+> [!info] Modelo de caching
 > Veja o modelo completo de caching do Next 15 em [[03-Dominios/Tecnologia/React/Next.js/07 - O modelo de caching do Next 15|Next.js 07 — Caching]].
 
 ---
