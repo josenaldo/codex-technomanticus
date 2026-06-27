@@ -258,6 +258,72 @@ Uma skill de 3 meses sem dono vira orfã. Quando a convenção muda, ninguém sa
 
 **Como evitar:** owner obrigatório no frontmatter. Quando o owner sai do time, o novo owner é atribuído antes da saída.
 
+## Escalando o catálogo conforme o time cresce
+
+O mesmo sistema que funciona para 3 devs fica pesado para 30. A estrutura evolui com o time.
+
+**Time pequeno (1-3 devs)**
+Um `CLAUDE.md` + 2-3 skills básicas. Foco em processo (TDD, deploy) mais do que domínio — com 3 pessoas, o conhecimento do projeto ainda cabe na cabeça de todos.
+
+```
+.claude/skills/
+  tdd.md
+  code-review.md
+  convencoes.md
+```
+
+**Time médio (4-15 devs)**
+Skills por tipo e por módulo. Um dev de backend não precisa carregar skills de frontend ao desenvolver sua parte.
+
+```
+.claude/skills/
+  processo/   ← vale para todos
+    tdd.md
+    code-review.md
+    deploy.md
+  dominio/    ← vale para qualquer área
+    arquitetura.md
+    convencoes.md
+  backend/    ← específico
+    payments.md
+    orders.md
+  frontend/   ← específico
+    components.md
+    testes-ui.md
+```
+
+**Time grande (15+ devs) ou múltiplos serviços**
+Skills distribuídas por serviço, com skills de processo compartilhadas via plugin global da organização.
+
+```
+# Plugin global (processo comum a todos)
+~/.claude/plugins/org-skills/skills/
+  tdd.md
+  code-review.md
+
+# Por serviço (domínio específico)
+payments-api/.claude/skills/
+  payments-domain.md
+  payments-db.md
+
+orders-api/.claude/skills/
+  orders-domain.md
+```
+
+## Métricas simples de saúde do catálogo
+
+Não precisa de automação para começar — uma revisão manual por sprint resolve os problemas mais comuns:
+
+| Métrica | Sinal de saúde | Sinal de alerta |
+|---|---|---|
+| `last_reviewed` | < 30 dias para skills de domínio | > 90 dias sem review |
+| Owner definido | Toda skill tem `owner:` no frontmatter | Qualquer skill sem owner |
+| Taxa de uso | Devs invocam skills regularmente | "Eu não sabia que isso existia" |
+| Conflitos | Skills consistentes entre si | Dois arquivos dizem coisas opostas |
+| Tamanho médio | 100-300 linhas por skill | Skill com > 500 linhas (provavelmente são duas) |
+
+Uma pergunta na retrospectiva a cada sprint basta: "Alguma skill impediu seu trabalho ou levou o agente na direção errada esta semana?" A resposta positiva é o trigger para revisão imediata.
+
 ## Distribuição via plugin
 
 Para skills que você quer compartilhar entre projetos sem copiar arquivos:
