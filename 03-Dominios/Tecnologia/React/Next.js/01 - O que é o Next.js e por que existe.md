@@ -137,7 +137,7 @@ sequenceDiagram
     N-->>B: fragmento dinâmico via streaming
 ```
 
-Mais detalhes sobre cada estratégia estão em [[03-Dominios/Tecnologia/React/Next.js/08 - Rendering strategies SSR SSG ISR PPR|nota 08 — Rendering strategies]].
+Mais detalhes sobre cada estratégia estão em [[03-Dominios/Tecnologia/React/Next.js/08 - Rendering strategies - SSR, SSG, ISR, PPR|nota 08 — Rendering strategies]].
 
 ### 3. Data fetching integrado com o servidor
 
@@ -233,7 +233,7 @@ const inter = Inter({ subsets: ['latin'] })
 <body className={inter.className}>...</body>
 ```
 
-Esses otimizadores são explorados em [[03-Dominios/Tecnologia/React/Next.js/14 - Otimizações Image Font bundle Turbopack|nota 14 — Otimizações]].
+Esses otimizadores são explorados em [[03-Dominios/Tecnologia/React/Next.js/14 - Otimizações - Image, Font, bundle, Turbopack|nota 14 — Otimizações]].
 
 ---
 
@@ -366,24 +366,24 @@ Esta nota estabeleceu o contexto — por que o Next.js existe, o que ele entrega
 
 **Fase Iniciado** (fundação — você está aqui):
 - [[03-Dominios/Tecnologia/React/Next.js/02 - App Router vs Pages Router|02 — App Router vs Pages Router]] — o salto de paradigma em detalhe; coexistência e migração
-- [[03-Dominios/Tecnologia/React/Next.js/03 - Estrutura de rotas layouts pages loading error|03 — Estrutura de rotas]] — arquivos especiais, layouts aninhados, grupos de rotas `(grupo)`, rotas dinâmicas
+- [[03-Dominios/Tecnologia/React/Next.js/03 - Estrutura de rotas - layouts, pages, loading, error|03 — Estrutura de rotas]] — arquivos especiais, layouts aninhados, grupos de rotas `(grupo)`, rotas dinâmicas
 - [[03-Dominios/Tecnologia/React/Next.js/04 - Server vs Client Components|04 — Server vs Client Components]] — a fronteira `'use client'`; composição de RSC; serialização de props
 - [[03-Dominios/Tecnologia/React/Next.js/05 - Data fetching no Server|05 — Data fetching no Server]] — `async/await` em Server Components; sequencial vs paralelo; request memoization
 
 **Fase Adepto** (mecanismos internos):
 - [[03-Dominios/Tecnologia/React/Next.js/06 - Server Actions e mutations|06 — Server Actions e mutations]] — `'use server'`, formulários, revalidação, segurança
 - [[03-Dominios/Tecnologia/React/Next.js/07 - O modelo de caching do Next 15|07 — O modelo de caching do Next 15]] — os 4 caches; `force-cache`/`no-store`/`revalidate`; diffs do 14; horizonte do 16
-- [[03-Dominios/Tecnologia/React/Next.js/08 - Rendering strategies SSR SSG ISR PPR|08 — Rendering strategies]] — SSR, SSG, ISR, PPR; `generateStaticParams`; como o Next decide
-- [[03-Dominios/Tecnologia/React/Next.js/09 - Streaming Suspense e loading.tsx|09 — Streaming, Suspense e `loading.tsx`]]
+- [[03-Dominios/Tecnologia/React/Next.js/08 - Rendering strategies - SSR, SSG, ISR, PPR|08 — Rendering strategies]] — SSR, SSG, ISR, PPR; `generateStaticParams`; como o Next decide
+- [[03-Dominios/Tecnologia/React/Next.js/09 - Streaming, Suspense e loading.tsx|09 — Streaming, Suspense e `loading.tsx`]]
 - [[03-Dominios/Tecnologia/React/Next.js/10 - Route Handlers e APIs|10 — Route Handlers e APIs]] — `route.ts`; `NextRequest`/`NextResponse`; quando usar vs Server Actions
-- [[03-Dominios/Tecnologia/React/Next.js/11 - Metadata SEO e assets sociais|11 — Metadata, SEO e assets sociais]] — Metadata API; OG images; `sitemap.ts`/`robots.ts`
+- [[03-Dominios/Tecnologia/React/Next.js/11 - Metadata, SEO e assets sociais|11 — Metadata, SEO e assets sociais]] — Metadata API; OG images; `sitemap.ts`/`robots.ts`
 - [[03-Dominios/Tecnologia/React/Next.js/12 - Navegação e o Router|12 — Navegação e o Router]] — `<Link>`; `useRouter`; `staleTimes`; `redirect`/`notFound`
 
 **Fase Magus** (produção e decisões):
 - [[03-Dominios/Tecnologia/React/Next.js/13 - Middleware e auth na borda|13 — Middleware e auth na borda]] — `middleware.ts`; matcher; Edge runtime e limites
-- [[03-Dominios/Tecnologia/React/Next.js/14 - Otimizações Image Font bundle Turbopack|14 — Otimizações]] — `next/image`, `next/font`, `dynamic()`, bundle analyzer, Turbopack
-- [[03-Dominios/Tecnologia/React/Next.js/15 - Deploy Vercel e self-host|15 — Deploy]] — Vercel zero-config; `output: standalone`; env vars; self-host
-- [[03-Dominios/Tecnologia/React/Next.js/16 - Capstone arquitetura decisões e entrevista|16 — Capstone]] — decision tree; anti-patterns; perguntas de entrevista; mapa do galho
+- [[03-Dominios/Tecnologia/React/Next.js/14 - Otimizações - Image, Font, bundle, Turbopack|14 — Otimizações]] — `next/image`, `next/font`, `dynamic()`, bundle analyzer, Turbopack
+- [[03-Dominios/Tecnologia/React/Next.js/15 - Deploy - Vercel e self-host|15 — Deploy]] — Vercel zero-config; `output: standalone`; env vars; self-host
+- [[03-Dominios/Tecnologia/React/Next.js/16 - Capstone - arquitetura, decisões e entrevista|16 — Capstone]] — decision tree; anti-patterns; perguntas de entrevista; mapa do galho
 
 A próxima nota natural é entender a diferença entre App Router e Pages Router — porque em qualquer time com projeto Next.js existente, você vai se deparar com os dois modelos ao mesmo tempo.
 
