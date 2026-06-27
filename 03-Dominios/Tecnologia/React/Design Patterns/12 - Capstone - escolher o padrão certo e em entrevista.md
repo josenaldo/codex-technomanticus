@@ -267,10 +267,9 @@ Isso é inversão de controle em múltiplas camadas: compound para o caso comum,
 | 06 | [[03-Dominios/Tecnologia/React/Design Patterns/06 - Composição - slots, layout e children-as-API\|Composição — slots, layout e children-as-API]] | children como contrato de API | Adepto |
 | 07 | [[03-Dominios/Tecnologia/React/Design Patterns/07 - Compound components\|Compound components]] | Subcomponentes com Context interno | Magus |
 | 08 | [[03-Dominios/Tecnologia/React/Design Patterns/08 - Render props e function-as-child\|Render props e function-as-child]] | IoC via função como prop | Magus |
-| 09 | [[03-Dominios/Tecnologia/React/Design Patterns/09 - Higher-Order Components (HOC)\|Higher-Order Components (HOC)]] | Wrapper de componente + injeção de props | Magus |
-
-> [!info] Notas 10 e 11 (State Reducer e Prop Getters / Headless UI)
-> O galho estava planejado para 11 notas; os padrões State Reducer e Headless UI (prop getters) são cobertos sinteticamente neste capstone e nos exemplos de composição acima. Se você quiser profundidade nesses padrões antes de seguir adiante, vale criar as notas dedicadas antes de passar para Next.js.
+| 09 | [[03-Dominios/Tecnologia/React/Design Patterns/09 - Higher-Order Components (HOC)\|Higher-Order Components (HOC)]] | Wrapper de componente + injeção de props | Adepto |
+| 10 | [[03-Dominios/Tecnologia/React/Design Patterns/10 - State reducer e prop getters\|State reducer e prop getters]] | Inversão de controle: usuário customiza o estado interno | Magus |
+| 11 | [[03-Dominios/Tecnologia/React/Design Patterns/11 - Headless components e headless hooks\|Headless components e headless hooks]] | Lógica/a11y sem apresentação (Radix, TanStack) | Magus |
 
 ## Padrão de composição: custom hook + slots de override
 
