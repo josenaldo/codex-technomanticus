@@ -231,6 +231,33 @@ Skills são parte do onboarding. Um dev que clona o repo e configura o Claude Co
 
 O novo dev não precisa aprender as convenções do zero — o agente as segue automaticamente depois que as skills são carregadas.
 
+## Anti-padrões comuns em times
+
+**O museu de skills**
+O time cria skills com entusiasmo no início, mas ninguém as mantém. Meses depois, `.claude/skills/` parece um museu: documentos que descrevem práticas abandonadas, libs trocadas, convenções que ninguém mais segue. O agente segue o museu com confiança.
+
+**Como evitar:** todo frontmatter de skill de domínio tem `last_reviewed`. Skills com mais de 90 dias sem revisão entram em pauta na retrospectiva — revisar ou remover.
+
+**A skill aspiracional**
+O time escreve o processo que *gostaria* de seguir, não o que *realmente* segue. A skill de TDD diz "escreva o teste primeiro, sempre" — mas na prática o time escreve testes depois, exceto para código crítico. O agente trava tentando seguir o ideal.
+
+**Como evitar:** documente o processo real com as exceções reais. "Escreva o teste primeiro — exceto para scripts de migração one-off" é mais útil que a versão idealizada.
+
+**A skill monolítica**
+Um `convenções.md` com 800 linhas cobrindo nomenclatura, estrutura de pastas, segurança, banco, e linting. O agente lê tudo, mas prioriza o que vem primeiro ou o que é mais recente no texto.
+
+**Como evitar:** skills focadas, 100-200 linhas cada. `nomenclatura.md`, `banco.md`, `segurança.md`. O agente carrega o que for relevante para a tarefa.
+
+**O conflito silencioso**
+`convencoes.md` diz camelCase. `arquitetura.md` tem exemplos com snake_case (legado não atualizado). O agente tenta reconciliar e escolhe arbitrariamente.
+
+**Como evitar:** ao atualizar uma skill, grep por termos que possam conflitar com outras. `grep -r "snake_case" .claude/skills/` antes de commitar uma mudança de convenção.
+
+**Skill sem owner em time que cresce**
+Uma skill de 3 meses sem dono vira orfã. Quando a convenção muda, ninguém sabe que a skill precisa ser atualizada. O novo dev ou o agente segue a skill — e está errado.
+
+**Como evitar:** owner obrigatório no frontmatter. Quando o owner sai do time, o novo owner é atribuído antes da saída.
+
 ## Distribuição via plugin
 
 Para skills que você quer compartilhar entre projetos sem copiar arquivos:
