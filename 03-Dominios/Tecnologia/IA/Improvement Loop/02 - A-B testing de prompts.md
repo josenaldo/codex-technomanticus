@@ -1,9 +1,10 @@
 ---
 title: "02 - A-B testing de prompts"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - improvement-loop
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > A/B testing de prompt é o experimento que valida o diff: mesmo input, dois prompts (control = champion, treatment = challenger), métrica primária pré-declarada, sample size suficiente, gate de decisão objetivo. Especificidade do contexto LLM: **variância é alta** (mesmo `temperature=0` varia entre snapshots do modelo), **N pequeno mente** (200 por arm é piso razoável pra eval score; mais pra feedback do usuário), e **bayesiano costuma ser mais adequado** que frequentista (small N, prior de eval offline, decisão sequencial). Anti-padrão central: **peeking** — parar o experimento cedo porque o resultado "tá bom". Tools 2026: Statsig, GrowthBook, Eppo pra A/B com estatística pronta; muitas equipes rodam custom em cima do registry de prompt (Langfuse Prompts, Braintrust) com cálculo bayesiano caseiro.
+
+> [!question]- Quando o resultado offline (golden set) e o resultado online (canary) divergem — qual acreditar?
+> Acredite no online — mas investigue o porquê da divergência antes de decidir. Divergências comuns: (a) golden set não representa a cauda longa do tráfego real (offline passa, online falha no percentil 90 de inputs incomuns); (b) métricas de negócio (conversão, NPS) não têm proxy no offline; (c) o sinal de feedback do usuário reage a fatores além da qualidade do prompt (UX, velocidade, contexto de sessão). O que fazer: adicione os casos onde online falhou ao golden set (para capturar essa cauda nas próximas iterações) e use o resultado online como métrica primária para a decisão de ship. O offline serve como gate de regressão (filtrar os candidatos ruins), não como substituto do online.
 
 ## A unidade de teste — o que é "control" e "treatment"
 
@@ -200,6 +204,22 @@ def analyze(experiment_id: str):
 
 O fluxo: routing determinístico no entrypoint, atributo `arm` no span (chave de análise), cálculo offline em job/notebook. Sem precisar de SDK de A/B externo pra começar.
 
+O maior risco nessa abordagem é o cálculo bayesiano caseiro — erros de implementação no `beta_binomial_posterior` são silenciosos. Valide contra um caso com resultado conhecido antes de usar em decisões reais, e documente as suposições do prior (beta(1,1) = prior plano; beta(α,β) com α,β > 1 = prior informado baseado em eval offline).
+
+## Quando NÃO fazer A/B
+
+A/B tem custo: overhead de instrumentação, tempo de coleta de amostra, complexidade de análise. Nem toda mudança justifica:
+
+| Situação | Abordagem alternativa |
+|----------|----------------------|
+| Bug crítico em prod (comportamento perigoso, resposta errada a caso grave) | Ship direto com rollback pronto; A/B viria tarde demais |
+| Mudança cosmética sem impacto no comportamento (ajuste de tom menor) | Eval offline + review humano; sem canary |
+| Mudança de schema obrigatória (novo campo requerido pelo consumer) | Coordenação técnica; métrica não é "melhor", é "correto/incorreto" |
+| Produto sem volume suficiente | Avalie se N é atingível em tempo razoável; se não, use eval offline + shadow |
+| Prompt de fallback / caso raramente exercido | Eval manual nos casos afetados; não há tráfego pra A/B |
+
+Regra de bolso: **A/B vale quando o efeito esperado é ≥ 2-5% em métrica importante E o produto tem volume suficiente pra chegar ao N em tempo razoável**. Fora disso, eval offline bem feito + review humano é mais honesto que um A/B sub-amostrado.
+
 ## Anti-padrões
 
 - **Peeking** — discutido acima; o mais comum e mais danoso
@@ -210,6 +230,44 @@ O fluxo: routing determinístico no entrypoint, atributo `arm` no span (chave de
 - **Routing não-determinístico** — mesmo usuário vê arms diferentes em sessões diferentes; ruído enorme
 - **Esquecer offline antes do canary** — exposição de usuário a treatment pior por economia de tempo
 - **Promover sem postmortem do experimento** — perde aprendizado pro próximo ciclo
+- **Analisar subgrupos não pré-declarados** — "ficou melhor pra usuários em PT-BR" descoberto após o fato; data dredging; declare subgrupos de interesse antes de rodar
+- **Atribuir resultado ao challenger sem isolar confounders** — horário de pico, evento externo, mudança de UX coincidindo com o experimento; monitore métricas de saúde paralelas durante o A/B
+- **Reusar golden set sem atualização** — golden set de 6 meses atrás não representa a distribuição atual; revisar periodicamente (trimestral ou após mudança de produto)
+
+## Armadilhas comuns
+
+> [!warning] Peeking — parar o experimento cedo porque "parece bom o bastante"
+> É o erro estatístico mais comum em A/B de produto e é ainda mais perigoso em prompt A/B porque a variância de LLM é alta. Você olha depois de 2 dias, vê treatment +9%, promove. O resultado era ruído — o N ainda era 40% do necessário. Com N completo, o ganho seria 2% — abaixo do threshold de decisão. A correção é simples: **declare N e duração antes de rodar e não olhe até chegar lá** (frequentista) ou use um threshold de parada bayesiano explícito, como P(B>A) > 0.95 AND expected loss < 0.5%. Se você sente o impulso de "só olhar" antes do N, é o momento de rever a cultura de experimentação do time.
+
+> [!warning] Routing não-determinístico — mesmo usuário vê arms diferentes por sessão
+> Se o routing usa `random.random()` sem seed fixo por usuário, o mesmo usuário pode ver a versão `production` numa sessão e `canary` na próxima. O resultado: contaminação entre arms (o usuário carrega memória de uma versão pra outra), métricas de comportamento erradas (qual arm causou o click?), e análise de cohort impossível. A solução é routing determinístico: `bucket = hash(user_id) % 100` garante que o mesmo usuário sempre caia no mesmo arm durante o experimento. Pra requests sem user_id, use `session_id` ou `request_id` como chave — qualquer identificador estável por "unidade de análise".
+
+> [!warning] Múltiplas variáveis no mesmo experimento — e não saber o que causou o resultado
+> "Testei prompt + modelo + temperatura juntos porque queria economizar tempo" é a versão A/B do anti-padrão de iteração caótica. O experimento dá resultado — positivo ou negativo — e você não consegue atribuir a nenhuma variável específica. Na próxima iteração, você chuta de novo. O ciclo não aprende. A correção é factorial design ou, mais pragmaticamente, experimentos sequenciais: test A (só prompt), depois test B (só modelo), depois test C (só temperatura). Mais lento, mas o resultado de cada experimento é interpretável e acumula conhecimento real sobre o sistema.
+
+## Como explicar em inglês
+
+**Interview quote:** *"Prompt A/B testing is the experiment that validates a diff: same input, two prompts — control being the current champion, treatment being the challenger — with a pre-declared primary metric and objective decision gates. The LLM-specific challenge is high variance even at temperature zero, which means you need more samples than intuition suggests — at least 200 per arm for an eval score, more for user feedback. We use Bayesian testing because our N is small, we have a strong prior from offline eval, and we need sequential decision-making without heavy peeking corrections."*
+
+| Português | Inglês |
+|---|---|
+| Braço de controle (champion) | Control arm (champion) |
+| Braço de tratamento (challenger) | Treatment arm (challenger) |
+| Olhar antes do tempo (peeking) | Peeking |
+| Tamanho de amostra | Sample size |
+| Efeito mínimo detectável | Minimum detectable effect (MDE) |
+| Gate de decisão | Decision gate |
+| Lançamento gradual (canary) | Canary / traffic ramp |
+| Inferência sempre-válida | Always-valid inference |
+| Probabilidade de B ser melhor que A | P(B > A) / probability of outperformance |
+| Análise de subgrupo | Subgroup analysis |
+| Tamanho de efeito mínimo | Minimum detectable effect |
+| Poder estatístico | Statistical power |
+| Intervalo de confiança | Confidence interval |
+
+## O que vem a seguir
+
+A/B determina se o challenger é melhor que o champion com dados suficientes. A nota 03 sobe um nível: **como versionar** os prompts que entram nesses experimentos, com semver adaptado ao comportamento de LLM — quando é patch, quando é minor, quando é major, e como o versioning se integra ao registry e ao CI.
 
 ## Fontes
 
@@ -219,6 +277,8 @@ O fluxo: routing determinístico no entrypoint, atributo `arm` no span (chave de
 - **Kohavi, Tang, Xu** — *Trustworthy Online Controlled Experiments* (2020). Livro canônico sobre A/B; tudo que não é específico de LLM se aplica.
 - **Howard, Ramdas et al.** — *Time-uniform, nonparametric, nonasymptotic confidence sequences* ([arxiv:1810.08240](https://arxiv.org/abs/1810.08240)). Base teórica de always-valid inference.
 - **OpenAI** — [*Evals cookbook — comparison patterns*](https://github.com/openai/openai-cookbook/tree/main/examples/evaluation). Padrões de comparação offline.
+- **Braintrust** — [*Prompt comparison guide*](https://www.braintrustdata.com/docs). Eval offline e comparison view nativa.
+- **Langfuse** — [*Prompt management docs*](https://langfuse.com/docs/prompts). Labels `production`/`canary` e metadata de experimento.
 
 ## Veja também
 
@@ -228,3 +288,13 @@ O fluxo: routing determinístico no entrypoint, atributo `arm` no span (chave de
 - [[03-Dominios/Tecnologia/IA/Evaluation/02 - Golden datasets — como construir]] — o dataset onde o A/B offline roda
 - [[03-Dominios/Tecnologia/IA/Observability/05 - Versionamento de prompts]] — o registry que viabiliza o routing
 - [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — A/B em prod como pilar de eval contextual
+- [[Dicionário de IA#A/B testing|Dicionário: A/B testing]]
+- [[Dicionário de IA#Peeking|Dicionário: Peeking]]
+- [[Dicionário de IA#Canary deployment|Dicionário: Canary deployment]]
+- [[Dicionário de IA#Bayesian testing|Dicionário: Bayesian testing]]
+- [[Dicionário de IA#Champion-challenger|Dicionário: Champion-challenger]]
+- [[06 - Capturando feedback do usuário como sinal]] — fonte do sinal que alimenta as métricas de negócio do A/B
+- [[07 - Eval gates em CI — quando bloquear merge]] — onde o eval offline do A/B se torna gate automático
+- [[05 - Auto-prompt optimization — DSPy e além]] — quando A/B manual vira otimização automatizada em loop fechado
+- [[03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — padrões e pitfalls]] — o judge que gera os scores usados nas métricas do A/B
+- [[Dicionário de IA#Minimum detectable effect|Dicionário: Minimum detectable effect]]
