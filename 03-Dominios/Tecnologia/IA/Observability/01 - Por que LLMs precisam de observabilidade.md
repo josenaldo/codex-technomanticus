@@ -277,6 +277,15 @@ Com o argumento estabelecido, a nota 02 entra no que vai dentro de cada trace: a
 
 Ver [[02 - Anatomia de um trace LLM]].
 
+## Veja também
+
+- [[02 - Anatomia de um trace LLM]] — o que vai dentro de cada trace
+- [[07 - Métricas que importam — latência, custo, qualidade]] — quais dashboards montar
+- [[03 - Langfuse — open-source standard]] — a ferramenta OSS canônica
+- [[08 - Privacy e PII em logs]] — como mascarar PII nos traces
+- [[03-Dominios/Tecnologia/IA/AI Engineering Stack/11 - Logging Layer]] — onde isso entra no stack
+- [[03-Dominios/Tecnologia/IA/Economia de Tokens/04 - Monitoramento — ccusage, Langfuse, dashboards]] — ângulo de custo desse mesmo problema
+
 ## Fontes
 
 - **Anthropic** — [*Building effective agents*](https://www.anthropic.com/research/building-effective-agents). Seção sobre tracing como pré-requisito de agent confiável.
