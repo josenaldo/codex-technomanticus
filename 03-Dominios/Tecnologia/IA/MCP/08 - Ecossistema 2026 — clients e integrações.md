@@ -1,8 +1,9 @@
 ---
 title: "Ecossistema 2026 — clients e integrações"
 created: 2026-04-11
-updated: 2026-06-19
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: growing
 publish: true
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] virou padrão **inter-vendor** em 2025-2026. Suporte nativo: Claude Desktop, [[Dicionário de IA#Claude Code|Claude Code]], Cursor, Windsurf, Cline, Aider, Zed, Copilot Studio (Microsoft), ChatGPT Desktop (OpenAI), Codex, Gemini Code Assist (Google). Ecossistema de servers passa de 3000+ entradas no Awesome MCP Servers. Hosting managed disponível (Smithery, Anthropic-hosted beta). Em 2026, MCP é **infrastructure-grade** — não experimento.
+
+> [!question]- Por que o ecossistema MCP cresceu tão rápido em 2025-2026?
+> Dois fatores se reforçaram mutuamente. Primeiro, o timing: MCP chegou quando o mercado de coding agents explodiu — Cursor, Windsurf, Cline, e uma dúzia de outros tools precisavam de um padrão de integração e adotaram MCP porque era a melhor opção disponível. Segundo, o efeito de rede: uma vez que Anthropic, OpenAI e Microsoft adotaram o mesmo protocolo, qualquer server escrito passou a funcionar em todos os clients. Isso reduziu o custo de escrever um server (escreva uma vez, funciona em todos) e de descobrir servers (marketplace unificado), criando o flywheel clássico de plataforma: mais servers atraem mais clients, mais clients atraem mais servers.
 
 ## Os clients que falam MCP
 
@@ -297,6 +301,17 @@ Como saber se server "mcp-totally-safe-postgres" não é malicioso? Audit é res
 | % de coding agents com MCP | ~80% |
 | Companies usando MCP em prod | 1000+ (Fortune 500) |
 
+## Armadilhas comuns
+
+> [!warning] Tratar MCP Tasks como feature estável em produção
+> A proposta SEP-1686 (MCP Tasks) está marcada como "Accepted" no GitHub mas o roadmap autoritativo de 2026 do MCP a chama explicitamente de **feature experimental** com gaps de lifecycle ainda abertos: retry semantics quando uma task falha por erro transitório e políticas de expiração de resultados não estão definidas. Construir workflows de produção que dependem de MCP Tasks sem plano de fallback é apostar em uma spec que pode mudar — monitore o roadmap antes de adotar.
+
+> [!warning] Ignorar o discovery overhead em setups com muitos servers
+> Cada MCP server instalado adiciona suas tools ao contexto do model via discovery. Dez servers com 15 tools cada somam 150 definições de tools carregadas no contexto inicial — potencialmente 5-10K tokens antes de o usuário digitar uma palavra. Além do custo financeiro, isso degrada a qualidade da escolha de tools pelo LLM. A solução é curar: instale só os servers que o workflow realmente usa, e considere o padrão code-execution (o modelo escreve código que chama tools via API, reduzindo o número de tools no contexto) para setups com muitas integrações.
+
+> [!warning] Confiar em marketplace sem hierarquia de confiança
+> Em 2026, com 3000+ servers no Awesome MCP Servers e múltiplos marketplaces, a barreira de publicar um server malicioso é baixa. Não existe um registro confiável com auditoria centralizada. A hierarquia de confiança que você deve aplicar: oficial Anthropic > projeto de empresa reconhecida > comunidade com histórico (Awesome MCP curado, 500+ stars) > projeto individual > anônimo. Marketplace "shady" não é só estético — é vetor de supply chain attack documentado.
+
 ## Anti-patterns ao adotar
 
 - **Instalar 20+ servers no mesmo client** — context rot na descoberta
@@ -304,6 +319,35 @@ Como saber se server "mcp-totally-safe-postgres" não é malicioso? Audit é res
 - **Ignorar managed hosting** — operar tudo on-prem quando managed funciona
 - **Não pin de versões** — auto-update introduzindo bugs
 - **Adotar marketplace shady** — sem audit, virando supply chain attack
+
+## Como explicar em inglês
+
+The MCP ecosystem in 2026 demonstrates what a successful open protocol adoption looks like: cross-vendor support (Anthropic, OpenAI, Google, Microsoft), a thriving third-party server market (3000+ entries), managed hosting options, and framework-level integrations in LangChain, LlamaIndex, and Vercel AI SDK. This didn't happen by accident — it happened because MCP solved a real N×M problem at the exact moment when the market for coding agents exploded, and the network effects compounded quickly once the major players adopted the same standard.
+
+Two technical developments in 2026 mark the protocol's maturation under production load: MCP Tasks (SEP-1686) introduces an async "call-now, fetch-later" pattern for long-running operations, and the code-execution pattern (documented by Simon Willison) addresses context cost when connecting many servers. Both are responses to real-world pressure — the first from workflows that need to kick off slow jobs, the second from setups where discovery overhead becomes a meaningful cost.
+
+**In a technical interview**, you might say:
+
+> "MCP's ecosystem growth follows a classic platform flywheel: Anthropic, OpenAI, and Microsoft adopting the same protocol reduced the cost of writing a server to once-and-available-everywhere. In 2026, the focus has shifted from adoption to production hardening — MCP Tasks for async operations, managed hosting via Smithery and Cloudflare Workers, and the code-execution pattern to manage context overhead when you have dozens of tools. The discovery overhead is the main scaling challenge right now: 10 servers with 15 tools each means 150 tool definitions in context before the user types a word."
+
+| PT | EN |
+|----|-----|
+| Ecossistema | Ecosystem |
+| Adoção entre fornecedores | Cross-vendor adoption |
+| Hospedagem gerenciada | Managed hosting |
+| Efeito de rede | Network effect |
+| Sobrecarga de descoberta | Discovery overhead |
+| Operação assíncrona | Async operation |
+| Padrão de execução de código | Code-execution pattern |
+| Maturação do protocolo | Protocol maturation |
+| Plataforma de marketplace | Marketplace platform |
+| Frameworkde agentes | Agent SDK / Agent framework |
+
+## O que vem a seguir
+
+Com a visão do ecossistema, o próximo passo é entender os casos de uso concretos que aparecem com mais frequência no mercado — dev tools internos, integrações cross-tool, agentes corporativos, assistentes pessoais. Reconhecer em qual categoria o seu problema se encaixa é metade do trabalho de design.
+
+- [[09 - Casos comuns no mercado]] — padrões recorrentes e como escolher o setup certo para cada contexto
 
 ## Veja também
 
