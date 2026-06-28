@@ -1,8 +1,9 @@
 ---
 title: "Setup completo + best practices"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Esta nota fecha a trilha com checklist end-to-end para construir e operar [[Dicionário de IA#MCP server|MCP servers]] em produção. Stack base: Python [[Dicionário de IA#SDK|SDK]] + Pydantic + FastMCP + uvx para distribuição. Roadmap de 4 fases × ~1 semana cada. Best practices distiladas: tool design rigoroso, schemas tipados, audit log, versioning semver, MCP Inspector na CI. **Investimento total: ~4 semanas para server interno production-ready.**
+
+> [!question]- Qual o erro mais comum ao integrar MCP em produção?
+> O erro mais comum é pular a Fase 2 (quality) e ir direto de "funciona no Inspector" para "está em produção". Isso deixa tools com descrições genéricas que o LLM usa incorretamente, schemas primitivos sem validação que aceitam inputs inválidos, e erros que não dão feedback útil ao modelo para auto-correção. O resultado é uma experiência de produção onde "funciona às vezes" — o agente chama a tool errada, passa argumentos malformados, e falha silenciosamente. A semana de qualidade não é opcional; ela é o que separa um server que funciona de um server que é confiável.
 
 ## Stack recomendada (2026)
 
@@ -322,6 +326,17 @@ class JSONFormatter(logging.Formatter):
 
 Logs estruturados → ship to Loki/CloudWatch para analysis.
 
+## Armadilhas comuns
+
+> [!warning] Pular a validação no MCP Inspector antes do deploy
+> O Inspector é a única forma de ver o que o server está expondo antes que o LLM o consuma. Sem ele, você descobre bugs de schema e descrições problemáticas no momento em que o agent chama a tool errada em produção — com usuário esperando. A heurística é simples: toda tool nova, toda mudança de schema, e todo release candidate passa pelo Inspector antes de subir. É 5 minutos de verificação que previnem horas de debugging.
+
+> [!warning] Não incluir o MCP Inspector na pipeline de CI
+> Se o Inspector só roda localmente na máquina do dev, ele cai no esquecimento quando há pressão de prazo. Integrar o Inspector na CI garante que toda mudança de interface do server seja validada automaticamente — schema inválido, tool sem descrição, resource com URI mal formado falham o build antes de chegar em produção. O comando é simples: `npx @modelcontextprotocol/inspector --ci python -m my_server`.
+
+> [!warning] Versionar como 0.x indefinidamente
+> Servers internos que ficam em `0.x` por meses são um sinal de que não há disciplina de breaking changes. Quando alguém muda uma tool signature sem bumpar a versão, todos os clients que dependem do contrato anterior quebram silenciosamente. Comece em `1.0.0` quando o server estiver estável o suficiente para outros dependerem, siga semver estritamente (breaking = major), e mantenha um CHANGELOG.md que documente migrations. Versioning não é burocracia — é comunicação com quem usa o server.
+
 ## Anti-patterns (evite!)
 
 - **`-y` install sem audit** — supply chain risk
@@ -355,6 +370,29 @@ Logs estruturados → ship to Loki/CloudWatch para analysis.
 | Compliance entra em jogo | Audit log persistente + retenção |
 | Custo cresce | Rate limiting + caching de outputs |
 | Feedback de users | Versioning rigoroso + CHANGELOG |
+
+## Como explicar em inglês
+
+A production-ready MCP server is the output of four sequential phases, each with a clear acceptance criterion. Phase 1 gets stdio working with MCP Inspector validation. Phase 2 adds Pydantic schemas, informative errors, compact outputs, and unit tests. Phase 3 migrates to HTTP+SSE with auth, rate limiting, structured audit logging, and observability. Phase 4 deploys with Dockerfile, CI/CD, TLS, monitoring, and semver releases. Each phase builds trust in the server: Phase 1 proves it works, Phase 2 proves it's robust, Phase 3 proves it's safe for multiple users, Phase 4 proves it's operable at scale.
+
+The best practices that matter most distill to: typed schemas so the LLM always passes valid arguments, informative errors so the model can self-correct, compact outputs to avoid context rot, audit logging at 100% coverage, and MCP Inspector in the CI pipeline so regressions are caught before deployment. These aren't preferences — they're the difference between a server that works in a demo and one that your team depends on daily.
+
+**In a technical interview**, you might say:
+
+> "I think about MCP server development in four phases. Phase 1 is 'does it work' — stdio, FastMCP, Inspector validation. Phase 2 is 'is it robust' — Pydantic schemas, informative errors, output pagination, unit tests. Phase 3 is 'is it safe for a team' — HTTP+SSE, auth, rate limiting, structured audit logs. Phase 4 is 'can it be operated' — Dockerfile, CI/CD, monitoring, semver. Each phase has a clear gate. Most people skip to Phase 4 and wonder why the server is unreliable. The quality work in Phase 2 is what makes everything else work."
+
+| PT | EN |
+|----|-----|
+| Roadmap de implantação | Deployment roadmap |
+| Validação de esquema | Schema validation |
+| Tratamento de erros | Error handling |
+| Paginação de resultados | Output pagination |
+| Log estruturado | Structured logging |
+| Pipeline de CI/CD | CI/CD pipeline |
+| Imagem Docker | Docker image |
+| Checklist de release | Release checklist |
+| Idempotência | Idempotency |
+| Retrocompatibilidade | Backward compatibility |
 
 ## Veja também
 
