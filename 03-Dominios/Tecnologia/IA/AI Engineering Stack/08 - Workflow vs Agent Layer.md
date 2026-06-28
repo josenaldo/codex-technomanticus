@@ -21,6 +21,9 @@ aliases:
 > [!abstract] TL;DR
 > A pergunta mais consequente do stack: **caminho fixo (workflow) ou descoberto dinamicamente (agent)?** Workflow quando o passo-a-passo é conhecido e pode ser codificado — você orquestra LLMs em nós de um pipeline determinístico. Agent quando o caminho precisa ser descoberto em tempo de execução — o LLM escolhe a próxima ação em loop até decidir parar. A regra cardinal: **não construa agent por padrão**. Agent custa mais, falha de formas mais criativas, e debuga pior. Use workflow até provar que não resolve — e esse limiar é mais alto do que parece.
 
+> [!question]- Quando realmente vale a pena construir um agent?
+> A resposta honesta: quase nunca na primeira versão. Agent parece a escolha natural quando o domínio é "complexo" — mas complexidade no domínio não implica que o *caminho de solução* precisa ser descoberto em tempo de execução. Na maioria dos casos, a tarefa tem estrutura — você só não mapeou ainda. Workflows com routing e padrões intermediários resolvem ~80% dos problemas que as equipes acreditam precisar de agent. Use agent quando você puder provar que o caminho não pode ser predefinido.
+
 ## O problema que esta camada resolve
 
 Você tem um modelo que responde bem. Você tem tools. Você tem contexto. Agora a pergunta que define a arquitetura inteira: como esses blocos se conectam?
@@ -28,6 +31,34 @@ Você tem um modelo que responde bem. Você tem tools. Você tem contexto. Agora
 Se a resposta é "o modelo decide em tempo de execução" — você escolheu agent. Se a resposta é "o código define a sequência de passos" — você escolheu workflow. A diferença não é de poder expressivo: qualquer coisa que um agent faz pode ser modelada como workflow com caminhos condicionais suficientes. A diferença é de **custo de engenharia, confiabilidade e debugabilidade**.
 
 O erro mais frequente: construir agent porque o domínio parece "complexo" ou porque a demo com agent ficou impressionante. A maioria dos sistemas de produção que parecem precisar de agent funcionam bem — e melhor — como workflow com um conjunto rico de nós condicionais.
+
+## Workflow vs Agent: o contraste
+
+```mermaid
+flowchart LR
+    subgraph "Workflow (caminho fixo)"
+        A1["Input"]
+        A2["Nó A\npré-definido"]
+        A3["Nó B\npré-definido"]
+        A4["Output previsível\ne auditável"]
+    end
+
+    subgraph "Agent (caminho dinâmico)"
+        B1["Input"]
+        B2["LLM decide\npróxima ação"]
+        B3["Executa ação\nou ferramenta"]
+        B4["LLM decide\nparar ou continuar"]
+        B5["Output variável\nper execução"]
+    end
+
+    A1 --> A2 --> A3 --> A4
+    B1 --> B2 --> B3 --> B4
+    B4 -->|"continua"| B2
+    B4 -->|"para"| B5
+
+    style A4 fill:#f0fff4,stroke:#51cf66
+    style B5 fill:#fff9e6,stroke:#f59f00
+```
 
 ## O que é esta camada
 
@@ -90,9 +121,42 @@ Este é um caso genuíno de agent: o caminho não pode ser predefinido porque de
 > [!warning] Agent sem kill switch
 > Loop agentic sem condição de parada explícita pode rodar indefinidamente — ou até atingir o limite de contexto da API e falhar com erro. Defina sempre: número máximo de iterações, custo máximo por sessão, e comportamento quando esses limites são atingidos. Esses kill switches vivem na Guardrail Layer.
 
+## Critérios objetivos para a decisão workflow vs agent
+
+Em vez de intuição, use estas perguntas como checklist antes de decidir:
+
+**O caminho tem estrutura previsível?**
+- Sim, sempre os mesmos passos → workflow puro
+- Sim, mas com condicionais → workflow com routing
+- Depende do input em formas que não consigo antecipar → candidate a agent
+
+**Qual é o custo tolerável por execução?**
+- Orçamento muito apertado por query → workflow (custo fixo e previsível)
+- Pode absorver variabilidade → agent pode ser aceitável
+
+**Qual é o custo do erro?**
+- Ação irreversível, impacto financeiro, segurança → workflow (falha previsível)
+- Erro recuperável, ambiente exploratório → agent pode ser aceitável
+
+**A equipe tem capacidade de debugar agent?**
+- Sem Logging Layer forte e tracing → não construa agent ainda
+- Instrumentação completa, observabilidade em place → agent é mais viável
+
+**O loop precisaria de quantas iterações em média?**
+- 1-3 iterações → talvez seja só um workflow com retentativas
+- 4-10 → agent legítimo com kill switch
+- 10+ → provavelmente um workflow mal modelado
+
+> [!summary] Regra de ouro
+> Workflow é o padrão. Agent é a exceção. O ônus da prova é sempre do agent.
+
 ## Como explicar em inglês
 
 The Workflow vs Agent Layer is the most consequential architectural decision in the stack. Workflows are LLM-powered pipelines where the sequence of steps is predetermined by code — predictable, debuggable, cost-controlled. Agents are LLMs in a loop that decide their own next action — flexible, powerful, but expensive and harder to debug. The default should be workflow. Build agents only when you can prove the path cannot be predetermined. Most production systems that seem to need agents are actually best served by richer workflow patterns: routing, parallelization, orchestrator-workers, or evaluator-optimizer.
+
+The nuance that separates a strong candidate in interviews: workflows can look very "smart" through rich routing and conditional logic without any agentic loop. The signal is whether the *path itself* needs to be discovered at runtime, not whether the individual steps require intelligence. A classification step that routes to one of five specialized sub-pipelines is still a workflow — the model is reasoning, but the overall structure is fixed.
+
+> *"Most of what people call 'agents' in production are actually workflows with LLM nodes — and that's a good thing. The agentic loop should be the last resort, not the default architecture."* — Anthropic, Building effective agents (2024)
 
 | PT | EN |
 |----|----|
@@ -135,3 +199,104 @@ A decisão mais urgente depois de workflow vs agent é a Evaluation Layer — se
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 7 (Workflow vs Agent). X/Twitter, 2025.
 - **Anthropic** — [*Building effective agents*](https://www.anthropic.com/engineering/building-effective-agents) (2024). Definição de building blocks → workflows → agents + patterns intermediários.
 - **Lilian Weng** — [*LLM-powered Autonomous Agents*](https://lilianweng.github.io/posts/2023-06-23-agent/) (2023). Planning, memory e tool use como componentes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
