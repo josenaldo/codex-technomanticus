@@ -135,12 +135,82 @@ flowchart TD
 
 O fluxograma é heurístico, não normativo. Existem casos legítimos de combinar duas ferramentas — por exemplo, basic-memory para o vault pessoal e Mem0 para um agente em produção — e existem casos em que nenhuma das opções serve e o melhor é construir uma solução custom seguindo o gist do [[Andrej Karpathy|Karpathy]]. O ponto é eliminar paralisia: dado um caso de uso, o fluxograma aponta um candidato razoável de partida.
 
+## Maturidade técnica vs recência: lendo os sinais
+
+Uma decisão arquitetural real exige distinguir "surgiu recentemente" de "está pronto para produção". O campo de memória de agentes teve explosão de lançamentos em 2025–2026, e a velocidade de novidades cria pressão para adotar o que saiu mais recentemente — que não é o mesmo que o que está mais estável.
+
+Sinais que indicam **maturidade técnica real** (não marketing):
+
+- **Issues documentados e resolvidos.** Um repositório com 200+ issues fechados, incluindo bugs não-triviais, é sinal de que o projeto passou por iteração real. Repositório com 3 issues abertos pode significar que ninguém está usando o suficiente para encontrar bugs.
+- **Breaking changes documentadas.** Changelogs que listam o que quebrou entre versões e como migrar indicam que o projeto está evoluindo com responsabilidade. Ausência de changelog em projeto "maduro" é sinal de alerta.
+- **Casos de uso de produção com nome.** "Usamos em produção para X" com nome da organização e contexto. Não depoimentos genéricos de "ótima ferramenta" em README.
+- **Benchmark próprio publicado e replicável.** O código de avaliação está no repo, alguém além da equipe pode rodar. Scores anunciados em blog sem código são marketing.
+- **Provider agnostic.** Funciona com OpenAI, Anthropic, e modelos locais (Ollama, LiteLLM). Lock-in em provider único é risco operacional.
+
+Sinais de **recência sem maturidade**:
+
+- Lançado há menos de 6 meses sem releases relevantes depois do anúncio inicial.
+- README excelente, docs escassas, exemplos que não rodam out-of-the-box.
+- Issues respondidos com "working on it" por meses sem commit.
+- Benchmark feito pela própria equipe, não replicado por terceiros.
+- Nenhum caso de uso de produção mencionado (apenas "ideal para" e "pode ser usado para").
+
+> [!info] MemPalace vs Letta: exemplo do contraste
+> Em abril de 2026, MemPalace tem benchmark impressionante (96,6% R@5) e interface elegante, mas é projeto de meses. Letta tem anos de iteração desde a publicação do MemGPT paper (Park et al., 2023), comunidade ativa, issues bem documentados e casos de uso verificáveis. Os dois são válidos — para propósitos diferentes: MemPalace para local-first pessoal com tolerância a instabilidades; Letta para produção que precisa de ecossistema maduro.
+
+## Família 1 em profundidade: o que "Karpathy-inspired" significa na prática
+
+A inspiração no gist do Karpathy não é apenas filosófica — se traduz em escolhas arquiteturais específicas que todas as ferramentas da família 1 compartilham, com variações:
+
+| Característica | LLM-knowledge-base | OpenKB | graphify | basic-memory |
+|---|---|---|---|---|
+| Operação central | Ingest → Query → Lint | Compile → Chat | Graph build → Query | Write → Search → Read |
+| Substrato de conteúdo | Markdown `.md` | Markdown wiki | Knowledge Graph (JSON) | Markdown `.md` + SQLite |
+| Índice de busca | BM25 + RRF | PageIndex (PDFs) | NetworkX (grafo) | SQLite FTS + MCP tools |
+| Automação de ingestão | Semi-manual | Manual (upload) | Automática (scraping) | MCP (agente escreve direto) |
+| Conteúdo binário | Não nativo | PDFs nativos | Imagens, vídeos, código | Não nativo |
+| Self-host obrigatório | Sim | Sim | Sim | Sim (open-source AGPL) |
+| Legibilidade humana | Alta | Alta | Baixa (grafo JSON) | Alta (arquivos markdown) |
+
+A diferença mais significativa dentro da família 1 é a legibilidade do storage intermediário: `LLM-knowledge-base` e `basic-memory` mantêm arquivos markdown que qualquer humano pode abrir e ler; `graphify` armazena o grafo em JSON/NetworkX que é legível em princípio mas não em prática sem ferramenta de visualização. Isso não é crítica de graphify — é trade-off deliberado para suportar conteúdo mixed-media com traversal de grafo eficiente.
+
 ## Quando NÃO usar implementação pronta
 
 - **Quando o objetivo é dominar profundamente o LLM Wiki Pattern.** Escrever do zero a partir do gist do Karpathy ([[06 - O LLM Wiki Pattern (gist do Karpathy)]]) é um exercício pedagógico sem substituto. Frameworks abstraem decisões que vale a pena tomar manualmente pelo menos uma vez.
 - **Quando o caso é tão específico que adaptação custa mais que construir.** Schema customizado, regras de retenção idiossincráticas, integrações exóticas — em algum ponto o esforço de domar uma framework supera o de escrever a coisa.
 - **Quando o volume é baixo demais para justificar overhead.** Para um conjunto pequeno de notas e um agente que o consulta esporadicamente, **markdown puro + Claude Code com `CLAUDE.md` schema** já resolve. Adicionar SQLite, vetor e grafo cria operação que não se paga.
 - **Quando o requisito principal é auditoria forte.** Algumas frameworks armazenam memórias em estruturas opacas (vetor + JSON ofuscado). Se o caso exige inspeção humana fácil, markdown legível ([[07 - Por que Obsidian e markdown como substrato]]) ganha de qualquer abstração.
+
+## Família 2 em profundidade: o espectro de produção
+
+A família 2 cobre um espectro amplo — de projetos totalmente open-source e self-hostáveis até SaaS proprietários. O eixo mais útil para comparação é **transparência vs conveniência**:
+
+```mermaid
+graph LR
+    subgraph Transparente_selfhost ["Transparente + Self-host"]
+        L[Letta<br/>open-source, self-editável]
+        Z[Zep/Graphiti<br/>open-source + cloud optional]
+        MP[MemPalace<br/>SQLite local, sem cloud]
+        CO[Cognee<br/>pipeline declarativo, open]
+    end
+
+    subgraph Hibrido ["Híbrido"]
+        M0[Mem0<br/>freemium, open-source core]
+        LM[LangMem<br/>plug-in LangChain, open]
+    end
+
+    subgraph Opaco_SaaS ["Opaco / SaaS"]
+        SM[SuperMemory<br/>UI proprietária, SaaS]
+    end
+
+    Transparente_selfhost -->|"mais controle,<br/>mais operação"| x[ ]
+    Hibrido -->|"equilíbrio"| x
+    Opaco_SaaS -->|"menos controle,<br/>menos operação"| x
+```
+
+A escolha entre transparência e conveniência não é moral — é funcional. Para um caso de uso com requisito de auditoria forte (compliance, dados sensíveis), transparência é obrigação. Para um prototype rápido que precisa estar em ar em uma semana, conveniência ganha. A heurística: **quanto mais crítica a memória para o negócio, mais você quer transparência** — porque vai precisar depurar, auditar e migrar em algum momento.
+
+Outro eixo relevante é **integração de stack**. LangMem faz sentido se você já tem LangGraph/LangChain; Mem0 tem a rede de integrações mais ampla; Letta tem SDK próprio. Adotar Mem0 num stack que não é LangChain-based é possível, mas você perde parte do valor das integrações.
 
 ## Armadilhas comuns
 
@@ -155,6 +225,18 @@ O fluxograma é heurístico, não normativo. Existem casos legítimos de combina
 
 > [!warning] Armadilha 4: Tratar a tabela como autoridade final
 > Esta nota é um instantâneo de abril de 2026. O campo se move rápido: "estável hoje" pode ser "deprecated em seis meses". Antes de tomar uma decisão arquitetural real, abrir os repos e blogs primários para ver o que mudou desde esta nota é obrigatório — não opcional. A tabela é ponto de partida para orientação, não fonte de verdade para escolha definitiva.
+
+## Como manter este panorama atualizado
+
+O panorama de implementações muda em ciclos de meses. A tabela acima representa um instantâneo de abril de 2026 — não uma lista permanente. Para reavaliar periodicamente sem reescrever esta nota inteira, o processo recomendado é:
+
+1. **Checar o repo primário de cada implementação listada.** Commits recentes? Issues fechados? Release nos últimos 3 meses? Se não, marcá-la como "possivelmente inativa".
+2. **Consultar fontes de curadoria.** Vectorize.io, Atlan, DEV.to têm comparativos editoriais que atualizam com certa frequência. São fontes secundárias — úteis para descoberta, não para especificação técnica.
+3. **Checar MemAgents workshop** (ICLR 2025 foi o primeiro; os anuais seguintes trazem novas implementações validadas academicamente).
+4. **Critério de remoção da lista:** implementação sem commit há 6+ meses, issues críticos sem resposta, repositório arquivado. Implementações removidas deveriam ir para uma seção de `Obsolescência` com data e motivo — para não perder o registro histórico.
+
+> [!tip] A lista de implementações é um artefato vivo
+> Esta nota tem `status: seedling` deliberadamente — é ponto de partida, não enciclopédia definitiva. Revisar anualmente com os critérios acima e atualizar o `updated:` no frontmatter é o ciclo de manutenção correto. Não esperar que fique "completa" — o campo nunca para de mover.
 
 ## Como explicar em inglês
 
@@ -214,3 +296,5 @@ Com o panorama do mercado em mãos e o vocabulário arquitetural da [[08 - Arqui
     - `https://github.com/agiresearch/A-mem` e `https://github.com/WujiangXu/AgenticMemory` (A-MEM)
 - Zep blog — *State of the Art Agent Memory* (números de + 18,5% sobre baseline com GPT-4o): `https://blog.getzep.com/state-of-the-art-agent-memory/`
 - Karpathy gist do LLM Wiki Pattern (3 de abril de 2026) — referenciado em [[06 - O LLM Wiki Pattern (gist do Karpathy)]]
+- Park, J. S. et al. (2023). *Generative Agents*. `https://arxiv.org/abs/2304.03442` — base do ciclo observation/reflection/planning que fundamenta o mecanismo reflective self-improvement
+- MemAgents Workshop, ICLR 2025 — `https://sites.google.com/view/memagents/home` — primeiro workshop dedicado a memória de agentes em venue top-tier; surveya implementações e propõe taxonomia do campo
