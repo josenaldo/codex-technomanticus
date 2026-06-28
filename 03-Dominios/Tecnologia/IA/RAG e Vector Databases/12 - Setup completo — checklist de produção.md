@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Esta nota fecha a trilha com o checklist end-to-end para colocar [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] em produção. Stack base: pgvector + Cohere Rerank + Sonnet + Ragas + [[Dicionário de IA#Langfuse|Langfuse]]. Roadmap: 4 fases × 2 semanas. Saída: RAG funcional com observabilidade, evaluation em CI, fallback, citação obrigatória, custo previsível. Pular fases = retrabalho. **Investimento total: ~6-8 semanas part-time.**
+
+> [!question]- Por que a ordem do checklist importa?
+> Porque cada fase depende do resultado da anterior: você não pode medir regressão em CI (Fase 3) se não tem golden set — e não sabe o que incluir no golden set se não viu o sistema falhar em produção real. Pior, adicionar observabilidade (Fase 4) antes de resolver qualidade (Fase 2) é monitorar um sistema ruim com mais detalhes. A ordem não é burocracia — é dependência técnica: retrieval funcional → qualidade medida → regressão detectada → produção com confiança.
 
 ## Stack recomendada (2026)
 
@@ -276,6 +280,46 @@ Sinais que indicam mudança ([[11 - Padrões avançados — Graph RAG, Agentic R
 - **Re-indexação manual** — inconsistência inevitável
 - **Mesmo embedding model em domínios diferentes** — qualidade desigual
 - **Cost dashboard "depois"** — descoberta de gasto alto = surpresa
+
+## Armadilhas comuns
+
+> [!warning] Pular a Fase 3 (Evaluation) e ir direto para produção
+> O impulso de "já está funcionando nos testes manuais" é perigoso: sem golden set e Ragas em CI, qualquer mudança no prompt, modelo ou chunker pode regredir qualidade sem aviso. Você descobre em produção quando usuário reclama. A Fase 3 é o gate de qualidade — ela não é opcional, é o que transforma "parece funcionar" em "sabemos que funciona".
+
+> [!warning] Sem fallback para provider externo
+> Cohere Rerank, OpenAI Embedding e Anthropic Claude são serviços externos com SLA menor que 100%. Se qualquer um cair sem fallback, o RAG inteiro para. A Fase 4 exige fallback explícito: se Cohere fail, seguir sem rerank com degradação controlada; se embedding provider fail, retornar erro claro em vez de resposta silenciosamente incorreta. Planeje o fallback antes de ir para produção, não depois.
+
+> [!warning] Cost dashboard "depois"
+> "Vamos adicionar monitoramento de custo quando estabilizar" é uma das frases mais caras em AI engineering. Chamadas de reranking, embedding e generation acumulam de forma não linear — uma query vaga que dispara Agentic RAG pode custar 20x o normal. Configurar cost/query dashboard na Fase 4 (não depois) é o que permite detectar abuse, queries anormalmente caras e tendências de custo antes da surpresa na fatura.
+
+## O que vem a seguir
+
+Esta nota fecha o ciclo operacional da trilha. O checklist de 4 fases cobre do protótipo ao RAG em produção com observabilidade e gate de qualidade automatizado. Se ao longo da operação você identificar que o pipeline básico não alcança a qualidade necessária para uma classe específica de documentos, o passo natural é PageIndex — uma abordagem alternativa de retrieval para documentos longos e estruturados que dispensa o chunking e o vector DB tradicional.
+
+- [[13 - PageIndex — RAG vectorless por árvore de documentos]] — quando o retrieval vetorial falha em PDFs longos estruturados e como a navegação hierárquica por árvore resolve onde embeddings não chegam
+
+## Como explicar em inglês
+
+Shipping a RAG system to production is not just about making it work — it's about making it trustworthy and maintainable. The four-phase roadmap structures that journey deliberately: build a working pipeline first, then improve retrieval quality, then add automated quality gates, and only then add production observability. Each phase depends on the previous one; jumping ahead means building on an unknown foundation.
+
+The recommended stack — pgvector for hybrid search, Cohere Rerank-3 for relevance, Anthropic Sonnet for generation, Ragas for evaluation, and Langfuse for observability — is not arbitrary. Each component was chosen for a specific role in the quality chain: pgvector unifies vector and BM25 search in Postgres, avoiding a second database; Cohere Rerank improves precision without changing the retrieval infra; Ragas provides the canonical four-metric quadrant for automated evaluation; Langfuse enables trace-level debugging when something goes wrong in production. The total cost of $50-200/month for 100K queries makes this stack accessible for most teams.
+
+**In a technical interview**, you might say:
+
+> "I follow a four-phase rollout for RAG production. First two weeks: get the basic pipeline end-to-end — parse, chunk, embed into pgvector, generate with citations. Weeks three and four: quality improvements — hybrid search with BM25 via ts_vector, Cohere reranking, query rewriting, and a confidence threshold for 'I don't know' responses. Weeks five and six: evaluation infrastructure — golden set of 80 questions across factual, multi-hop, and out-of-scope categories, Ragas metrics in CI blocking merges on regression. Final two weeks: production hardening — Langfuse tracing, cost dashboard, fallbacks for each external provider, rate limiting, and a feedback widget. The phase order is deliberate: you can't automate quality gates before you know what quality looks like."
+
+| PT | EN |
+|----|-----|
+| Lista de verificação | Checklist |
+| Busca híbrida | Hybrid search |
+| Reordenação | Reranking |
+| Citação clicável | Clickable citation |
+| Limite de taxa | Rate limiting |
+| Retroalimentação do usuário | User feedback |
+| Rastreabilidade | Traceability |
+| Observabilidade | Observability |
+| Degradação controlada | Graceful degradation |
+| Custo por query | Cost per query |
 
 ## Veja também
 
