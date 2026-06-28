@@ -1,8 +1,9 @@
 ---
 title: "Comparativo de LLMs"
 created: 2026-04-01
-updated: 2026-04-11
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: evergreen
 tags:
@@ -16,6 +17,9 @@ publish: true
 # Comparativo de LLMs
 
 > "Qual [[Dicionário de IA#LLM (Large Language Model)|LLM]] devo usar?" é a pergunta que todo senior fullstack responde dezenas de vezes por ano. Esta nota é um framework de decisão prático, destilado de literatura técnica, post-mortems públicos, e benchmarks independentes. **Não existe "o melhor LLM"** — existe o melhor para cada combinação de (task, restrições de custo, restrições de latência, stack, compliance). Esta nota dá: uma matriz de decisão prática, trade-offs reais (não marketing), e critérios para escolher entre Claude, GPT, Gemini e ferramentas derivadas em 2026. Para notas individuais, ver [[Claude]], [[GitHub Copilot]], [[Codex]], [[Gemini]]. Para fundamentos de LLMs em geral, [[Anatomia dos LLMs|LLMs]].
+
+> [!question]- Como responder "qual LLM devo usar?" em entrevista sem parecer que não sei?
+> Mostre que a pergunta tem contexto, não uma resposta universal. Estrutura de resposta: "Depende de três critérios: (1) tipo de task — raciocínio complexo favorece Claude/Sonnet, multimodal favorece Gemini, volume alto de tasks simples favorece Flash/Haiku; (2) restrições — latência, custo por request, compliance/data residency; (3) stack existente — se a empresa vive no Google Cloud, Vertex AI reduz fricção; se vive no GitHub, Copilot é natural. O padrão maduro é multi-provider com tiering: modelo pesado para tarefas difíceis, modelo leve para triagem, fallback entre providers para resiliência."
 
 ## A pergunta errada e a pergunta certa
 
@@ -323,6 +327,15 @@ Custo previsível + qualidade em edge cases.
 
 ## Armadilhas comuns
 
+> [!warning] Benchmark público como proxy do seu caso de uso
+> MMLU, HumanEval e GSM8K medem habilidades específicas em distribuições controladas. "Gemini supera Claude em X benchmark" não prediz que Gemini vai superar Claude no seu workload. O único benchmark que importa para decisão de produção é um golden set do seu próprio problema, com distribuição real dos seus inputs. Decida com dados seus, não com leaderboards.
+
+> [!warning] Escolher modelo pelo preço sem medir custo por output correto
+> Flash-Lite é 10-20x mais barato por token do que Sonnet. Mas se Flash-Lite resolve 75% das tasks corretamente e Sonnet resolve 95%, o custo real por output útil pode ser maior com Flash — sem contar o custo de fallback, reprocessamento e erros que chegam a produção. A métrica certa é "custo por output correto", não "custo por token".
+
+> [!warning] Ignorar custo de migração ao trocar de modelo
+> "Vamos trocar de Claude para GPT" parece simples. Na prática: system prompts precisam de re-tuning (prompts otimizados para um modelo não portam direto), eval do golden set precisa ser reexecutado, a equipe precisa adaptar workflow. Switching cost é real e frequentemente subestimado. Inclua sempre no cálculo; modelos com compatibilidade de API similar (OpenAI-compatible endpoints) reduzem mas não eliminam o custo.
+
 ### 1. "Claude é sempre melhor" / "GPT é sempre melhor"
 
 Dogma. Nenhum modelo domina em tudo. **Fix:** benchmark próprio.
@@ -431,18 +444,20 @@ For enterprise, platform choice matters as much as model choice — Azure OpenAI
 - "Fallback multi-provider saves you in outages. One incident teaches the lesson."
 - "Separate model choice from tool choice."
 
-### Key vocabulary
+### Tabela PT↔EN
 
-- estratégia multi-provedor → multi-provider strategy
-- tier de modelo → model tier
-- fallback → fallback
-- conjunto dourado → golden set
-- custo por resultado correto → cost per correct output
-- preço por região → regional pricing
-- custo total de propriedade → total cost of ownership (TCO)
-- fidelidade de saída → output faithfulness
-- ecossistema de ferramentas → tooling ecosystem
-- lock-in → vendor lock-in
+| Português | Inglês |
+|---|---|
+| estratégia multi-provedor | multi-provider strategy |
+| camada / tier de modelo | model tier |
+| conjunto dourado | golden set |
+| custo por resultado correto | cost per correct output |
+| custo total de propriedade | total cost of ownership (TCO) |
+| fidelidade de saída | output faithfulness |
+| lock-in de fornecedor | vendor lock-in |
+| custo de migração | switching cost |
+| preço por região | regional pricing |
+| fallback automático | automatic fallback |
 
 ## Recursos
 
@@ -693,6 +708,10 @@ Padrões frequentes em times escolhendo e migrando entre LLMs em 2026.
 3. Estime tempo e custo.
 4. Compare vs ganho esperado.
 5. Escreva ADR (architecture decision record) da decisão.
+
+## O que vem a seguir
+
+Esta nota fecha o galho **Ferramentas de IA**. Você mapeou Claude, Codex, Gemini, Copilot e o framework de decisão entre eles. O próximo passo natural dentro do domínio de IA é aprofundar os fundamentos que sustentam todas essas ferramentas — a [[Anatomia dos LLMs|Anatomia dos LLMs]] cobre transformer, tokenização, e mecanismos de atenção; [[Context Engineering]] explora como estruturar contexto para extrair o melhor de qualquer modelo. Para aplicações práticas avançadas, a trilha de [[Anatomia de Agents|Agents]] e [[RAG e Vector Databases]] dão o próximo nível de profundidade.
 
 ## Veja também
 
