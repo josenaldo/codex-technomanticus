@@ -170,6 +170,17 @@ Custo de **não** fazer eval, em produto com LLM em prod:
 
 O ROI é claro. A objeção real raramente é custo; é cultura.
 
+## O que "um eval" inclui
+
+Uma confusão comum é pensar em eval como "rodar o modelo e olhar o output". Um eval completo tem quatro componentes:
+
+1. **Dataset:** os inputs de teste. Pode ser golden set curado, amostras de produção, casos sintéticos, ou combinação.
+2. **Sistema de inferência:** o pipeline que roda o modelo com os inputs — prompt, temperatura, modelo, parâmetros. Tudo fixado e versionado.
+3. **Scorer:** o que avalia o output. Pode ser comparação contra ground truth (exata ou fuzzy), rubrica manual, LLM-as-judge, ou combinação (nota 04).
+4. **Comparação:** o report que confronta o score atual com o baseline. Sem isso, um eval é só um snapshot — sem contexto histórico, inútil pra decisão.
+
+Os componentes 1 e 4 são os mais frequentemente negligenciados. Times que têm 2 e 3 (modelo rodando, output sendo avaliado) mas não têm 1 e 4 (dataset curado, histórico comparativo) têm automação mas não têm EDD.
+
 ## OpenAI sobre evals no core
 
 A OpenAI documenta o framework OpenAI Evals com a frase *"evals are at the core of how we develop our models"*. A mensagem implícita pra quem constrói **em cima** dos modelos é a mesma — se o lab que treinou o modelo trata eval como infraestrutura crítica, quem usa o modelo em produto não pode tratar como afterthought.
