@@ -174,6 +174,14 @@ O ROI é claro. A objeção real raramente é custo; é cultura.
 
 A OpenAI documenta o framework OpenAI Evals com a frase *"evals are at the core of how we develop our models"*. A mensagem implícita pra quem constrói **em cima** dos modelos é a mesma — se o lab que treinou o modelo trata eval como infraestrutura crítica, quem usa o modelo em produto não pode tratar como afterthought.
 
+## EDD como documentação viva
+
+Um efeito colateral de EDD que times raramente antecipam: o golden set + rubrica + histórico de scores vira documentação viva do comportamento esperado do sistema. É mais útil do que qualquer README ou spec de produto, porque é executável e verificável.
+
+Quando alguém pergunta "o que exatamente o sistema faz no caso X?", você não precisa explicar — você mostra o caso X no golden set, o output esperado, e o score atual. Se o score é 4.5/5 em X, o sistema lida bem com X. Se é 2/5, você sabe onde está o problema.
+
+Esse artefato também é o que permite auditorias reais em sistemas críticos. Em finance, healthcare e legal, reguladores frequentemente pedem evidência de que o sistema funciona como documentado. Um golden set com histórico de scores é exatamente essa evidência. Documentação textual de comportamento esperado não é.
+
 ## Anti-patterns
 
 - **Eval só pre-launch** — escreve eval pra lançar, nunca mais roda
