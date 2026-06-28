@@ -1,8 +1,9 @@
 ---
 title: "GitHub Copilot"
 created: 2026-04-01
-updated: 2026-04-11
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: evergreen
 tags:
@@ -16,6 +17,9 @@ publish: true
 # GitHub Copilot
 
 > Copilot foi o primeiro [[Dicionário de IA#Coding agent|coding assistant]] de IA que um dev normal podia usar em produção. Lançado em 2021, em 2026 virou um ecossistema completo: completions no editor, chat contextual, agent mode, workspace para features multi-arquivo, integração nativa com Pull Requests, GitHub Actions, e Issues. Se você vive no GitHub, Copilot é onde a IA aparece sem você precisar trocar de janela. Esta nota cobre as capabilities, como configurar bem (skills, instructions, chat modes), workflows reais, e quando usar Copilot em vez de (ou junto com) Claude Code. Para fundamentos de LLMs ver [[Anatomia dos LLMs|LLMs]]; para comparação geral ver [[Comparativo de LLMs]].
+
+> [!question]- Copilot substitui Claude Code ou os dois coexistem?
+> Coexistem em papéis distintos. Copilot é o assistente always-on no IDE — baixa fricção, sempre ativo, ótimo para completions inline e contexto de PR. Claude Code é o ambiente de trabalho pesado — context window maior, customização via CLAUDE.md, skills próprias, subagents, e hooks. O padrão senior em 2026 é: Copilot para fluxo contínuo e PR automation, Claude Code para refactors amplos, debugging complexo e workflows customizados. Escolher um e excluir o outro é falso dilema; o tradeoff real é custo de assinatura dupla.
 
 ## O que é
 
@@ -353,6 +357,15 @@ jobs:
 
 ## Armadilhas comuns
 
+> [!warning] Copilot sem `copilot-instructions.md`
+> Sem o arquivo de instruções, o Copilot chuta a arquitetura, as convenções e os padrões do projeto. Sugestões ficam genéricas e frequentemente erradas para o contexto específico. O arquivo `.github/copilot-instructions.md` é o equivalente do CLAUDE.md — descreva a arquitetura, convenções de código, comandos de build/test, e coisas que o modelo não deve fazer. É o passo de maior ROI antes de qualquer outra configuração.
+
+> [!warning] Aceitar ghost text sem ler
+> Ghost text parece certo visualmente mas pode conter bugs sutis — variável com nome quase certo, lógica invertida, import de módulo inexistente. Tab em piloto automático é o caminho mais rápido para introduzir bugs difíceis de rastrear. Regra: leia o bloco completo antes de aceitar; prefira aceitar palavra a palavra (`Ctrl+→`) em completions longas.
+
+> [!warning] `.copilotignore` ausente em projetos com secrets
+> Sem `.copilotignore`, arquivos `.env`, arquivos de credencial, dados sensíveis de tests e migration files com PII podem entrar no contexto do modelo. Copilot usa arquivos abertos e recentes como contexto. Adicionar `.copilotignore` com os mesmos padrões do `.gitignore` para dados sensíveis é segurança mínima em projetos comerciais.
+
 ### 1. Sem `copilot-instructions.md`
 
 Copilot adivinha arquitetura → sugestões genéricas. **Fix:** escrever uma instruções decente.
@@ -461,18 +474,20 @@ The strong pairing is Copilot with Claude Code rather than choosing one. Copilot
 - "Copilot plus Claude Code, not Copilot or Claude Code."
 - "Agent mode is great in well-configured projects, risky in unknown ones."
 
-### Key vocabulary
+### Tabela PT↔EN
 
-- completação de código → code completion
-- texto fantasma → ghost text
-- sugestão inline → inline suggestion
-- modo chat → chat mode
-- modo de edição → edit mode
-- modo agente → agent mode
-- espaço de trabalho → workspace
-- instruções do projeto → project instructions
-- referência de arquivo → file reference
-- comando de barra → slash command
+| Português | Inglês |
+|---|---|
+| completação de código | code completion |
+| texto fantasma | ghost text |
+| sugestão inline | inline suggestion |
+| modo agente | agent mode |
+| espaço de trabalho | workspace (Copilot Workspace) |
+| instruções do projeto | project instructions / instructions file |
+| referência de arquivo | file reference |
+| filtro de código público | public code filter |
+| revisão de PR | PR review / pull request review |
+| modo de edição | edit mode |
 
 ## Recursos
 
@@ -671,6 +686,10 @@ Meça diferença em qualidade com/sem referências.
 2. Use Copilot Workspace desde issue.
 3. Revise cada stage (specs, plan, implementation).
 4. Compare vs fazer manualmente.
+
+## O que vem a seguir
+
+Com Claude, Codex, Gemini e Copilot mapeados, o fechamento natural é o [[Comparativo de LLMs]] — a nota que coloca todos lado a lado em critérios de decisão práticos: custo, qualidade de raciocínio, multimodalidade, contexto, e casos de uso ideais. É o mapa de escolha para quando a pergunta for "qual ferramenta serve para esse workload específico?"
 
 ## Veja também
 
