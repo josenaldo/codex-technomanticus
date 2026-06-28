@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - structured-outputs
   - ia
@@ -19,6 +20,9 @@ aliases:
 
 > [!abstract] TL;DR
 > JSON Schema é a linguagem padrão pra declarar a forma do output esperado: `type`, `properties`, `required`, `enum`, `additionalProperties`. Todos os providers (OpenAI, Anthropic, Gemini) aceitam JSON Schema (ou um subset dele) como entrada do mecanismo de enforcement. Escrever o schema bem — `enum` pra dimensões fechadas, `required` pra campos críticos, `additionalProperties: false` pra travar alucinação de chaves — é metade do trabalho. Esta nota cobre o subset que importa na prática, traz o schema canônico do @hooeem como exemplo completo, e identifica quando schema é exagero.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende o problema da nota anterior — que "pedir JSON no prompt" não é suficiente em produção. Esta nota resolve a linguagem: como escrever formalmente o que você quer. JSON Schema é uma especificação independente de LLM, usada em APIs REST, validadores de banco, configurações de serviço — você pode já ter encontrado ele no contexto de OpenAPI. Aqui o uso é diferente: o schema não documenta o output, ele *força* o output. Mas a sintaxe é a mesma, então qualquer familiaridade com JSON Schema / OpenAPI acelera a leitura.
 
 ## JSON Schema 101
 
@@ -259,6 +263,42 @@ Heurística: se downstream é **código**, schema. Se downstream é **humano**, 
 | **Gemini** | OpenAPI 3.0 subset | Subset menor — sem `$ref` cross-schema, sem `enum` em arrays aninhados em certos modos |
 
 Detalhes específicos nas notas 04, 05, 06.
+
+## Armadilhas comuns
+
+> [!warning] Esquecer `additionalProperties: false`
+> O default de JSON Schema é `additionalProperties: true` — qualquer chave extra é permitida. Na prática isso significa que o modelo pode adicionar campos que achei úteis mas você não pediu: `confidence_reasoning`, `observacao`, `nota_do_analista`. Esses campos chegam ao seu código silenciosamente, ou quebram parsers que validam shape. Coloque `additionalProperties: false` explicitamente em todo schema de LLM — nunca confie no default.
+
+> [!warning] Usar texto livre onde enum resolve
+> Quando um campo tem uma lista fechada de valores válidos — status de pedido, categoria de bug, nível de prioridade — é tentador usar `"type": "string"` e confiar que o modelo vai escolher bem. Sem `enum`, o modelo é livre para inventar variantes: `"medium-high"`, `"baixo"`, `"med"`, `"3/5"`. Com `enum`, o provider rejeita ou regenera. A tentação de deixar texto livre costuma vir de preguiça de listar os valores — e cria inconsistências que só aparecem downstream.
+
+> [!warning] Schema inconsistente com o comportamento real esperado
+> Schema é uma forma de comunicação com o modelo — e ele o lê. Se você quer que `confidence` seja baixo/médio/alto mas coloca `"enum": ["low", "medium", "high"]` enquanto o restante do prompt está em português, pode haver tensão entre o schema e o contexto. O modelo pode preencher `confidence` literalmente como `"low"` mas tratar isso como EN no raciocínio. Mais importante: se `required` lista campos que às vezes não fazem sentido (ex: `next_steps` em resposta a um erro), o modelo é forçado a inventar algo. Revise se cada campo required realmente se aplica em todos os casos do schema.
+
+## Como explicar em inglês
+
+Em entrevistas sobre design de sistemas de IA, a pergunta sobre structured outputs frequentemente vem junto com a pergunta sobre "how do you handle LLM output reliability":
+
+> "JSON Schema is the standard language for declaring the expected shape of LLM output. All major providers — OpenAI, Anthropic, Gemini — accept it as input to their enforcement mechanism. The key fields in practice are `type`, `properties`, `required` to lock in mandatory fields, `enum` for closed-vocabulary dimensions, and `additionalProperties: false` to prevent hallucinated extra keys. Schema guarantees shape, not semantics — once you have a valid object, you still need validation logic for business rules."
+
+| Português | Inglês |
+|-----------|--------|
+| schema como contrato | schema as contract |
+| campo obrigatório | required field |
+| campo adicional proibido | no additional properties |
+| dimensão fechada | closed-vocabulary dimension / enum |
+| aninhamento | nesting |
+| tipo primitivo | primitive type |
+| sub-schema | sub-schema / nested schema |
+| limites do provider | provider-specific constraints |
+| modo strict | strict mode |
+| schema muito rígido | overly rigid schema |
+
+## O que vem a seguir
+
+Você sabe escrever o contrato. Agora precisa de um mecanismo que faça o modelo respeitá-lo — não por instrução de prompt, mas por enforcement de API. A nota 03 cobre function calling, o mecanismo original de structured output: como o conceito de "ferramenta com schema" foi repropositado para forçar formato de output.
+
+Ver [[03 - Function calling como mecanismo de output]].
 
 ## Fontes
 
