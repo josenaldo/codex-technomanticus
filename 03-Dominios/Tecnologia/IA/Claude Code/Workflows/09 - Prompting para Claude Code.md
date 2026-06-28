@@ -1,11 +1,12 @@
 ---
 title: "Prompting para Claude Code — comunicar tarefas com precisão"
 type: concept
-progress: backlog
+fase: Adepto
+progress: in_progress
 publish: true
 created: 2026-05-13
-updated: 2026-05-13
-status: seedling
+updated: 2026-06-27
+status: growing
 tags:
   - claude-code
   - workflows
@@ -17,11 +18,39 @@ tags:
 # Prompting para Claude Code — comunicar tarefas com precisão
 
 > [!abstract] TL;DR
-> Prompts vagos produzem implementações que "funcionam" mas não fazem o que você queria. A diferença entre um prompt eficaz e um ineficaz está em especificar: o que você sabe (contexto relevante), o que você quer (comportamento esperado), e o que não quer (restrições). O [[Dicionário de IA#Agent|agente]] toma decisões para preencher lacunas — sua job é minimizar as lacunas.
+> Prompts vagos produzem implementações que "funcionam" mas não fazem o que você queria. A diferença entre um prompt eficaz e um ineficaz está em especificar: o que você sabe (contexto relevante), o que você quer (comportamento esperado), e o que não quer (restrições). O [[Dicionário de IA#Agent|agente]] toma decisões para preencher lacunas — sua job é minimizar as lacunas. Prompts eficazes não são mais longos: são mais densos em sinal. A maior habilidade de prompting não é saber escrever mais — é saber o que omitir.
+
+## Por que funciona — o mecanismo
+
+> [!question]- Por que um prompt preciso produz código melhor do que um prompt vago?
+
+Porque o [[Dicionário de IA#Claude Code|Claude Code]] toma decisões para preencher cada lacuna no seu prompt. Um prompt vago não é "mais fácil para o agente" — é mais difícil, porque ele precisa fazer mais suposições. E cada suposição é uma chance de divergir do que você queria.
+
+Pense assim: você contratou um desenvolvedor sênior para implementar uma feature. Se você diz "melhore a performance do serviço de orders", ele vai otimizar o que *ele* acha que está lento, usando as técnicas *que ele* prefere, com as constraints *que ele* assume. Pode ou não ser o que você queria. Se você diz "o método findByCustomer tem N+1 query quando o cliente tem >100 pedidos — corrija com JOIN mantendo a assinatura atual e os testes passando", ele vai exatamente isso.
+
+```mermaid
+flowchart TD
+    vago["Prompt vago\n'melhore a performance'"]
+    preciso["Prompt preciso\n'findByCustomer tem N+1\nfixe com JOIN\nmantenha assinatura\ntestes devem passar'"]
+
+    dec_vago["Agente toma N decisões:\n- O que otimizar?\n- Qual abordagem?\n- O que preservar?\n- Como medir sucesso?"]
+    dec_preciso["Agente toma 0 decisões de contexto:\nsó executa o que foi especificado"]
+
+    result_vago["Resultado pode ou não\nser o que você queria"]
+    result_preciso["Resultado previsível\ne verificável"]
+
+    vago --> dec_vago --> result_vago
+    preciso --> dec_preciso --> result_preciso
+
+    style result_vago fill:#fff5f5,stroke:#ff6b6b
+    style result_preciso fill:#f0fff4,stroke:#51cf66
+```
+
+> [!summary] Prompts eficazes minimizam as decisões que o agente precisa tomar. Cada lacuna que você deixa é uma decisão que o agente vai fazer — sem o contexto que você tem.
 
 ## O que o agente faz com um prompt
 
-Quando você dá uma instrução ao [[Dicionário de IA#Claude Code|Claude Code]], o agente:
+Quando você dá uma instrução ao Claude Code, o agente:
 
 1. Lê o CLAUDE.md para entender o contexto do projeto
 2. Examina os arquivos relevantes para entender o estado atual
@@ -47,6 +76,8 @@ Quando você especifica o "porquê", o agente entende o objetivo e pode:
 - Identificar que sua solução proposta não resolve o problema
 - Sugerir uma abordagem melhor
 - Fazer a implementação correta mesmo em edge cases não especificados
+
+A exceção: quando você tem uma restrição técnica específica (requisito de biblioteca, compatibilidade de sistema), aí é apropriado especificar o "como" — e explicar por quê essa restrição existe.
 
 ## Quatro elementos de um prompt eficaz
 
@@ -129,6 +160,83 @@ Escreva um teste em tests/routes/admin.test.ts que verifica:
 3. Request com token de admin retorna 200"
 ```
 
+## Casos práticos
+
+### Caso 1: bug com comportamento observável preciso
+
+O pior prompt de bug: "está quebrando". O melhor:
+
+```
+"Bug: OrderService.createOrder() lança TypeError quando
+order.items está vazio.
+
+Reprodução:
+1. Criar pedido com items: [] (array vazio)
+2. OrderService.createOrder(order) lança:
+   'Cannot read property 'total' of undefined'
+3. Stack trace aponta para src/services/orders.ts linha 87
+
+Comportamento esperado: pedido com items vazio deve retornar
+erro AppError('EMPTY_ORDER', 'Pedido não pode ter itens vazios')
+com status 422.
+
+Não adicione validação em outros lugares — só em createOrder()."
+```
+
+---
+
+### Caso 2: feature com múltiplos critérios de aceitação
+
+```
+"Implemente paginação no endpoint GET /api/products.
+
+Parâmetros a aceitar: ?page=1&limit=20 (defaults: page=1, limit=20, max: 100)
+
+Response esperado:
+{
+  data: Product[],
+  pagination: {
+    total: number,     // total de produtos
+    page: number,      // página atual
+    limit: number,     // items por página
+    totalPages: number
+  }
+}
+
+Constraints:
+- Clientes existentes que não passam page/limit devem receber a primeira
+  página com 20 items (backward compatible)
+- Não use offset para paginação — use cursor (next_cursor no response)
+  se a performance com >10k produtos importar; se não, offset está ok
+- Testes: tests/routes/products.test.ts — adicione casos para:
+  - Request sem parâmetros
+  - page=2&limit=5
+  - limit=200 (deve retornar 400)"
+```
+
+---
+
+### Caso 3: exploração antes de implementação
+
+```
+"Precisamos implementar rate limiting na nossa API.
+Stack: Node.js/Express, Postgres, sem Redis ainda.
+Volumes: ~1k req/min normalmente, pico de 5k req/min.
+Casos que queremos limitar: brute force em /api/auth/login
+e scraping em /api/products.
+
+Não implemente ainda. Análise as opções disponíveis:
+1. Middleware em memória (express-rate-limit)
+2. Postgres-based (store customizado)
+3. Redis + express-rate-limit
+4. Serviço dedicado (NGINX, Cloudflare)
+
+Para cada: como funciona, quando faz sentido, trade-off principal
+para nossa situação específica. Recomende uma e justifique."
+```
+
+Pedir análise antes da implementação economiza tokens de retrabalho.
+
 ## Prompts para exploração
 
 Quando você genuinamente não sabe o que quer, diga isso explicitamente:
@@ -141,6 +249,17 @@ Não implemente ainda — só me explique as opções com trade-offs."
 ```
 
 Pedir análise antes de implementação é válido — e mais eficiente do que receber uma implementação que você vai rejeitar.
+
+## Prompts de diagnóstico
+
+Para entender o que o agente entendeu antes de ele implementar:
+
+```
+"Antes de implementar, explique em 3 bullet points como você
+vai resolver o problema. Não escreva código ainda."
+```
+
+Se a explicação estiver errada, corrija antes de gastar tokens na implementação. Isso é o Plan Mode aplicado inline — sem precisar do flag `--plan`.
 
 ## Tamanho do prompt
 
@@ -174,31 +293,110 @@ Corrija só esses 3 pontos. O resto está certo."
 
 Prompt de correção específico é mais rápido do que refazer tudo — e preserva o que estava bom.
 
-## Prompts de diagnóstico
+## Armadilhas comuns
 
-Para entender o que o agente entendeu:
+> [!warning] "Faça o melhor possível" como critério de sucesso
+> Sem critério verificável de conclusão, o agente define o próprio critério — que pode não ser o seu. Se você não especifica o que "pronto" significa, o agente vai parar quando achar que fez o suficiente. Critérios verificáveis: testes passando, endpoint retornando X, função com assinatura Y.
 
-```
-"Antes de implementar, explique em 3 bullet points como você
-vai resolver o problema. Não escreva código ainda."
-```
+> [!warning] Prompt que descreve a solução, não o problema
+> Se você descreve a solução, o agente implementa a solução descrita — mesmo que haja uma melhor, ou mesmo que a solução que você descreveu não resolva o problema. Descreva o problema: comportamento observado, comportamento esperado, restrições. Deixe o agente propor a solução.
 
-Se a explicação estiver errada, corrija antes de gastar tokens na implementação.
+> [!warning] Restrições implícitas que você assumiu
+> Se você assume que o agente vai preservar um comportamento existente, mas não disse isso, ele pode refatorar de forma que quebra o comportamento. Se a assinatura de uma função não pode mudar, diga explicitamente. Se um endpoint não pode ter breaking changes, diga. Tudo que for implícito é uma lacuna.
 
-## Armadilhas
+> [!warning] Contexto demais sem relevância
+> Um prompt com 500 linhas de contexto irrelevante é tão ruim quanto sem contexto — o agente vai processar tudo igualmente e perder o sinal no ruído. Inclua só o que muda a decisão: arquivos relacionados ao problema, restrições que contradizem o comportamento padrão, o contexto de negócio que justifica uma escolha técnica específica.
 
-**"Faça o melhor possível"**: sem critério de sucesso, o agente define o próprio critério — que pode não ser o seu.
+## Como explicar em inglês
 
-**Prompt que descreve a solução, não o problema**: se você descreve a solução, o agente implementa a solução descrita, mesmo que haja uma melhor. Descreva o problema.
+**Effective prompting for Claude Code** is about minimizing the decisions the agent makes on your behalf. Every gap in your prompt is a decision the agent will fill with its own assumptions — without the business context, historical knowledge, or implicit constraints that you have.
 
-**Restrições implícitas**: se você assume que o agente vai preservar um comportamento existente, mas não disse isso, ele pode refatorar de forma que quebra o comportamento.
+The most impactful shift is "why before how": describe the problem and success criteria, not the implementation. An agent given the problem can propose and validate a solution; an agent given the implementation can only execute it — even when the implementation doesn't actually solve the problem.
 
-**Contexto demais sem relevância**: um prompt com 500 linhas de contexto irrelevante é tão ruim quanto sem contexto — o agente vai ponderar tudo igualmente.
+**In a technical interview**, you might say:
+
+> "The main skill in prompting Claude Code is density, not length. A 10-line prompt can be better than a 100-line one if it's precise about what matters: the observable behavior you want, the constraints you can't violate, and the files to focus on. Anything the prompt leaves implicit becomes a decision the agent makes alone — and it makes those decisions without the business context you have. So you minimize gaps, not pad with prose."
+
+### Tabela PT ↔ EN
+
+| Português | English | Contexto |
+|-----------|---------|----------|
+| Prompt vago | Vague prompt | prompt sem critérios ou restrições |
+| Prompt preciso | Precise prompt | prompt com contexto, critério, restrições |
+| Relação sinal/ruído | Signal-to-noise ratio | proporção de contexto útil vs. irrelevante |
+| Lacuna | Gap | o que o agente tem que assumir por conta |
+| Critério de sucesso | Success criterion | o que define "pronto" |
+| Comportamento esperado | Expected behavior | como o sistema deve se comportar após a mudança |
+| Restrição explícita | Explicit constraint | o que não pode mudar |
+| Prompt de diagnóstico | Diagnostic prompt | pedir explicação antes de implementação |
+| Iteração | Iteration | rodada de correção sobre resultado parcial |
+
+## O que vem a seguir
+
+Prompts eficazes são o núcleo da interação com o agente. A outra metade é gerenciar o contexto da sessão — que afeta tanto a qualidade das respostas quanto o custo de tokens.
+
+- **[[03-Dominios/Tecnologia/IA/Claude Code/Workflows/10 - Gestão de contexto|10 - Gestão de contexto]]** — como usar `/clear`, checkpoints e CLAUDE.md para manter sessões eficientes
+- **[[03-Dominios/Tecnologia/IA/Claude Code/Workflows/01 - Plan Mode|01 - Plan Mode]]** — usar Plan Mode como protocolo de confirmação de entendimento antes da execução
 
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/01 - Plan Mode|01 - Plan Mode]] — Plan Mode para confirmar entendimento antes de executar
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/04 - Debugging complexo|04 - Debugging complexo]] — descrever comportamento observado vs. esperado
-- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide|08 - Como o agente decide]] — como o agente preenche lacunas
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — contexto permanente que reduz repetição de prompts
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] — índice do galho
+
+## Referências
+
+- [Anthropic — prompt engineering guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview) — guia oficial de prompt engineering da Anthropic
+- [Claude Code — best practices](https://docs.anthropic.com/en/docs/claude-code/best-practices) — boas práticas oficiais para prompting no Claude Code
+- [Google — prompt design strategies](https://ai.google.dev/gemini-api/docs/prompting-strategies) — referência comparativa de estratégias de prompt design para LLMs de código
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
