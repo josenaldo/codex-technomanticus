@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Três caminhos para fazer [[Dicionário de IA#LLM (Large Language Model)|LLM]] "saber seus dados": **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]]** (busca em runtime), **long context** (joga tudo no prompt), **[[Dicionário de IA#fine-tuning|fine-tuning]]** (treina modelo). Não competem — resolvem problemas diferentes. Long context vence em corpus pequeno e estável. RAG vence em corpus grande, dinâmico, com requisito de citação. Fine-tuning vence em mudar **comportamento**, não conhecimento. **Híbridos são comuns:** fine-tuning de tom + RAG de fatos é padrão maduro em 2026.
+
+> [!question]- Quando long context supera RAG?
+> Long context vence quando o corpus é pequeno, estável e cabe na janela com custo aceitável — especialmente com prompt caching, que elimina o custo de retransmitir o mesmo contexto a cada query. O ponto de virada acontece quando o corpus cresce além de ~200K tokens úteis (context rot deteriora a atenção do modelo) ou quando atualização frequente invalida o cache e reverte a vantagem de custo. A regra prática: se você consegue cachear o contexto inteiro e o corpus não muda mais que uma vez por semana, long context ganha em simplicidade e latência; caso contrário, RAG escala melhor.
 
 ## A confusão comum
 
@@ -178,6 +182,46 @@ Compare experimentalmente em **golden set**:
 - **Hibrido prematuro** (fine-tune + RAG) sem provar que cada componente vale
 - **Comparar approaches sem golden set** — opinião, não dado
 
+## Armadilhas comuns
+
+> [!warning] Fine-tuning para ensinar fatos
+> É o erro mais comum: o time quer que o modelo "saiba" os documentos internos e parte direto para fine-tuning porque parece mais definitivo. Na prática, fine-tuning codifica padrões de comportamento, não fatos declarativos. O conhecimento fica difuso nos pesos, não endereçável, e qualquer atualização exige re-treino completo. Use RAG para fatos; use fine-tuning para tom, formato e vocabulário de domínio.
+
+> [!warning] Comparar abordagens sem golden set
+> "O long context pareceu melhor" e "RAG deu resposta mais rápida" são observações anedóticas. Sem golden set com perguntas representativas e métricas definidas (accuracy, latência, custo por query), você está otimizando intuição. Qualquer decisão entre RAG, long context e fine-tuning deve ter número por trás — mesmo que um golden set rápido de 20-30 perguntas representativas.
+
+> [!warning] Híbrido prematuro sem provar os componentes
+> Fine-tune + RAG é o padrão maduro, mas adotar os dois de início sem evidência de que cada componente vale é engenharia por ansiedade. Comece com long context ou RAG puro; adicione fine-tuning só quando tiver dado concreto de que o comportamento base está prejudicando o output e que prompts sozinhos não resolvem.
+
+## O que vem a seguir
+
+Com o mapa de decisão entre RAG, long context e fine-tuning, você sabe quando RAG é a escolha certa. Mas RAG não é um monolito — quando o pipeline básico não alcança a qualidade necessária, existem padrões avançados que ampliam o que é possível: retrieval multi-hop, Graph RAG para domínios com entidades relacionadas, e Agentic RAG para queries de complexidade variável.
+
+- [[11 - Padrões avançados — Graph RAG, Agentic RAG, multi-hop]] — quando vanilla RAG não resolve e como escalar para os 20% de casos mais difíceis
+
+## Como explicar em inglês
+
+Choosing between RAG, long context, and fine-tuning is a common interview question that trips up candidates who treat them as competing alternatives. The key insight is that they solve fundamentally different problems: RAG and long context both add knowledge at inference time, while fine-tuning modifies the model's behavior and style at training time. The practical consequence is that "should I RAG or fine-tune?" is almost always the wrong question — the right question is "what's missing: knowledge or behavior?"
+
+Long context wins when the corpus is small, stable, and can be loaded into the prompt with caching enabled. RAG wins when the corpus is large, frequently updated, or requires traceable citations. Fine-tuning wins when you need consistent tone, domain-specific vocabulary, or rigid output formats that prompting alone can't produce reliably. The mature pattern in 2026 is the hybrid: a fine-tuned model for behavior, RAG for facts.
+
+**In a technical interview**, you might say:
+
+> "I evaluate all three against a golden set before committing. Long context is my first attempt for small corpora — if I can fit the knowledge with caching, I avoid the infra overhead of RAG. When the corpus exceeds roughly 200K useful tokens or updates frequently, RAG scales better. Fine-tuning is off the table unless I need consistent tone or output format that prompts alone can't reliably produce — it's expensive to update and doesn't handle factual recall as well as retrieval does. The hybrid of fine-tuned style plus RAG facts is the pattern I've seen work best in production for legal and medical domains."
+
+| PT | EN |
+|----|-----|
+| Contexto longo | Long context |
+| Ajuste fino | Fine-tuning |
+| Atualização do corpus | Corpus update |
+| Cache de prompt | Prompt caching |
+| Degradação de atenção | Context rot |
+| Tom e estilo | Tone and style |
+| Vocabulário de domínio | Domain vocabulary |
+| Custo por query | Cost per query |
+| Combinação híbrida | Hybrid approach |
+| Raciocínio multi-hop | Multi-hop reasoning |
+
 ## Veja também
 
 - [[01 - O que é RAG e quando usar]]
@@ -193,3 +237,69 @@ Compare experimentalmente em **golden set**:
 - **Anthropic** — *Long context best practices* (2026)
 - **Chip Huyen** — *AI Engineering* (2025), capítulos sobre customization
 - **Eugene Yan** — *Patterns for Building LLM-based Systems* (2024)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
