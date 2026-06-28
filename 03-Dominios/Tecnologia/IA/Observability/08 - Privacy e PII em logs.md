@@ -1,9 +1,10 @@
 ---
 title: "08 - Privacy e PII em logs"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - observability
@@ -26,6 +27,9 @@ aliases:
 > [!abstract] TL;DR
 > Prompt e output de LLM contêm PII por default — usuário cola CPF na pergunta, conta detalhes de saúde, copia trecho de contrato. Logar trace cheio = construir base de PII com retenção indefinida e múltiplos acessos, exatamente o que LGPD, GDPR e EU AI Act regulam pesado. Solução não é "não logar"; é **redaction em captura** (Presidio, Google DLP, AWS Comprehend, regex caseiro pra padrões locais como CPF/CNPJ) + **políticas explícitas de retenção** (7-90 dias dependendo do propósito) + **consentimento explícito** pra uso em eval/treino. Em 2026: EU AI Act traz obrigações específicas pra sistemas de alto risco (saúde, jurídico, decisão de crédito); GDPR já cobria; LGPD traz mesmo princípio no Brasil. Sem política de PII no design da Logging Layer, observability vira passivo legal.
 
+> [!question]- Qual é a diferença entre redactar PII "em captura" versus "na exibição" — e por que a escolha importa tanto?
+> **Redaction em exibição** = o trace armazena o dado real, mas a UI mostra um placeholder ao abrir. O dado real continua no storage — se o Langfuse for comprometido, ou se um dev com acesso de debug exportar o trace, a PII vaza. **Redaction em captura** = o placeholder vai pro storage desde o início. Jamais existiu dado real no sistema de observability. A diferença regulatória é enorme: em LGPD/GDPR, manter dado pessoal em sistema sem base legal explícita é infração, independente de exibir ou não. Se a redaction é em captura, o sistema de observability simplesmente não tem PII pra declarar — o escopo do DPIA e dos Data Processing Agreements diminui substancialmente.
+
 ## Por que PII em log LLM é mais perigoso que em log tradicional
 
 Log tradicional (Apache, app server) já é regulado, mas LLM amplifica três coisas:
@@ -35,6 +39,8 @@ Log tradicional (Apache, app server) já é regulado, mas LLM amplifica três co
 3. **Trace é granular e fica acessível** — diferente de log de app server (consultado em incidente), trace é consultado todo dia por dev, PM, eval team. Mais acessos = mais vetores
 
 Combinação: input livre + output amplificador + acesso amplo + retenção longa = base de PII "ad hoc" não declarada formalmente. Auditor de LGPD não vai gostar.
+
+O ponto menos óbvio é o **output amplificador**: quando o modelo cita "você mencionou que seu CPF é 123.456.789-00", esse dado agora aparece no span de output também — e eventualmente em evals que comparam outputs. PII que entrou em um campo pode vazar em múltiplos campos antes de chegar ao storage.
 
 ## O que conta como PII em LLM (categorias práticas)
 
@@ -48,6 +54,8 @@ Combinação: input livre + output amplificador + acesso amplo + retenção long
 | **Conteúdo proprietário** | Código-fonte, contrato, documento interno | Variável — IP, NDA |
 
 Lista regula o **mínimo a redactar**. Política de produto pode ampliar (ex: remover qualquer menção a nome próprio).
+
+Quasi-identifiers são frequentemente subestimados: "João Silva, gerente de TI, empresa X, 38 anos" não tem CPF, mas é suficiente para identificar a pessoa univocamente em bancos de dados públicos. Modelos de NER (Presidio, spaCy) capturam nome e cargo mas não o que torna a combinação identificável — julgamento humano é necessário na definição de política.
 
 ## Redaction em captura — o padrão certo
 
@@ -92,6 +100,10 @@ def redact(text: str) -> str:
 
 Combinar regex (recall alto pra padrões estruturados) + Presidio/DLP (precision em entidades como nome, endereço) cobre o espectro.
 
+Teste de falsos negativos é tão importante quanto a implementação: injete PII sintética conhecida no pipeline de redaction e meça quantas passam. Um rate de falsos negativos abaixo de 1% é razoável pra produção; acima disso, a política não está funcionando na prática. Automatize esse teste no CI/CD junto com os testes de regressão da redaction.
+
+**Problema de recall em português:** Presidio foi treinado primariamente em inglês. Para português brasileiro, a precisão de NER cai para nome de pessoas, cargos, e endereços. O modelo multilingual do Presidio (`transformers`-based) melhora isso mas é mais lento (~3-5× vs regex). Uma abordagem pragmática: regex pra padrões estruturados (CPF, CNPJ, email, cartão) + Presidio multilingual pra entidades de texto livre + revisão periódica de falsos negativos.
+
 ### Integração com o pipeline de captura
 
 Em Langfuse SDK:
@@ -131,6 +143,8 @@ Retention é **política explícita**, não default infinito.
 
 Implementação: TTL no backend de storage (ClickHouse, S3 com lifecycle policy), separado por tabela/bucket. Traces vão pra "hot" (7d), "warm" (30d), "cold" (180d) com schemas progressivamente mais redacted.
 
+Atenção ao **direito ao esquecimento**: mesmo que a retenção seja de 30 dias, se um usuário solicitar deleção antes desse prazo, o sistema deve conseguir deletar por `user_id` imediatamente. Isso exige que traces sejam particionados ou indexados por `user_id` — nem todos os backends de trace fazem isso por padrão. Valide antes de declarar compliance.
+
 ## Marco regulatório — em uma página
 
 ### EU AI Act (em vigor desde 2024, full enforcement 2026)
@@ -161,6 +175,8 @@ Implementação: TTL no backend de storage (ClickHouse, S3 com lifecycle policy)
 - **Deletabilidade por usuário** (right to be forgotten)
 - **Auditoria de acesso** — quem acessou que trace, quando
 
+Na prática, o maior risco de não-conformidade não vem de ignorar as leis — vem de declarar compliance sem verificar a implementação. Um checklist de conformidade desenhado por jurídico não vale nada se a equipe de engenharia não rodou o teste de falsos negativos da redaction, não configurou o TTL no ClickHouse, ou não validou que o DPA com o provider cobre o regime de retenção prometido aos usuários. Compliance de logging exige colaboração jurídico-engenharia, não documentos isolados.
+
 ## Consentimento — onde sinalizar
 
 Em produto end-user:
@@ -169,6 +185,13 @@ Em produto end-user:
 - Opt-out granular: usuário pode pedir não-uso pra treino, mantendo trace pra debug operacional
 - Indicador visual: ícone "this conversation is being recorded for quality" em algumas UIs (estilo call center)
 - Modo privado / incognito: trace mínimo (só erros), sem captura de prompt/output
+
+Em produto B2B / enterprise:
+
+- Consentimento vem do DPA com o cliente, não do usuário final individual (que é funcionário do cliente)
+- Cliente define a política de uso de dados dos seus usuários
+- Você (vendor) segue o DPA assinado — que precisa permitir explicitamente debug operacional, eval, e melhoria de produto (ou proibir cada um separadamente)
+- Manter log de qual versão do DPA estava em vigor na data de cada trace — em caso de disputa, você precisa saber qual contrato cobria aquele dado
 
 ## Checklist mínimo pra Logging Layer compliant
 
@@ -181,6 +204,77 @@ Em produto end-user:
 - [ ] DPIA documentada se sistema é de alto risco (EU AI Act / GDPR)
 - [ ] DPA assinada com providers (Anthropic, OpenAI, Google)
 - [ ] Política de incident response em caso de leak
+- [ ] Log de versão de DPA por trace (em contexto B2B)
+- [ ] Teste de falsos negativos da redaction (qual % de PII passa pelo filtro?)
+- [ ] Verificação de que output também é redacted (não só input)
+- [ ] Revisão semestral da política de retenção vs regulatório vigente
+- [ ] Treinamento do time de engenharia sobre o que é PII e onde ela aparece em traces
+
+## Impacto de redaction no eval e replay
+
+O trade-off mais concreto de redaction em captura é que **eval e replay ficam menos fiéis**:
+
+- Se o bug depende de como o modelo processa um CPF específico (ex: validação num contrato), replay com `<CPF>` não reproduz o comportamento
+- Se o eval usa o input original como parte da rubrica ("o modelo citou o nome do cliente?"), o campo `input` redacted elimina essa verificação
+
+Estratégias de mitigação:
+
+1. **Synthetic PII:** antes de salvar no trace, troca PII real por PII sintética plausível (CPF válido gerado, nome aleatório da mesma etnia) — mantém estrutura linguística sem dado real
+2. **Cifragem de campo:** armazena PII cifrada com chave separada; campo exibido é o placeholder; replay autenticado descriptografa. Mais complexo mas preserva fidelidade.
+3. **Segmentação de eval:** avalia sem input PII (métricas de qualidade que não precisam do dado bruto) e avalia com input sintético (métricas que precisam de estrutura similar)
+
+A escolha da estratégia depende do domínio: em assistente de escrita, redaction simples basta. Em aplicativo de saúde onde o modelo interpreta contexto clínico, synthetic PII ou cifragem são necessários.
+
+Independente da estratégia escolhida, documente no DPA qual estratégia está em uso e por que — o auditor vai perguntar não só "vocês redactam?" mas "vocês conseguem reproduzir um bug que envolve dado sensível sem expor PII real?"
+
+## Zero Data Retention (ZDR) com providers
+
+Providers como Anthropic e OpenAI oferecem **Zero Data Retention** (ZDR) via contrato enterprise: o provider não armazena inputs/outputs após o processamento da requisição.
+
+Implicações:
+
+- **Sem risco de leak no provider:** ZDR elimina o vetor de "Anthropic sofre breach e nossos dados de usuário aparecem"
+- **Sem uso pra treino:** os ToS padrão permitem uso de inputs pra melhoria do modelo (com opt-out). ZDR garante que isso não acontece.
+- **Custo:** ZDR geralmente exige contrato enterprise (acima de um threshold de spend ou via acordo direto)
+- **Compatibilidade:** algumas features (prompt caching, fine-tuning) podem ser limitadas ou indisponíveis com ZDR
+
+Para sistemas em domínios regulados (LGPD art. 5º, II; GDPR art. 9º) processando dados sensíveis, ZDR é o mínimo razoável — e deve aparecer como cláusula no DPIA/DPA.
+
+Uma distinção importante: ZDR cobre o **provider de modelo** (Anthropic, OpenAI), não a sua própria stack de observabilidade. Você pode ter ZDR com o Anthropic e ainda assim estar armazenando PII por anos no seu Langfuse self-hosted, porque ninguém configurou TTL no ClickHouse. As duas camadas exigem política separada: uma pra o fluxo de dados pra fora do seu sistema (provider), outra pra o fluxo de dados interno (trace backend).
+
+Verifique a Trust Center de cada provider pra status atual: [trust.anthropic.com](https://trust.anthropic.com), [openai.com/security](https://openai.com/security).
+
+## Armadilhas comuns
+
+> [!warning] Logar o prompt em `span.set_attribute` em vez de `span.add_event` — PII indexada como coluna
+> Backends OTel indexam atributos de span (aparecem como colunas no ClickHouse, no Datadog). Se você coloca `span.set_attribute("prompt", user_input)`, o conteúdo fica indexado, searchable, e potencialmente em dashboards. A prática correta é colocar prompt e resposta como **span events** (não atributos indexados) — aparecem nos detalhes do span mas não viram colunas pesquisáveis. Reserve atributos indexados pra metadata anônima (`prompt_version`, `feature`, `model`).
+
+> [!warning] Acreditar que o provider não retém dados porque o ToS padrão diz "optamos você para fora"
+> Os ToS de Anthropic, OpenAI e Google têm opt-out de uso de dados pra treino acessível via configuração — mas isso é diferente de Zero Data Retention. Por padrão, providers retêm inputs/outputs por 30-60 dias pra abuse detection, compliance interno, e logging de API. ZDR real exige contrato específico. Verifique a Trust Center e o DPA assinado antes de declarar que "dados de usuário não ficam no provider".
+
+> [!warning] Política de retenção documentada mas sem TTL implementado no backend
+> Muitas equipes documentam "retemos traces por 30 dias" mas não configuram lifecycle policy no backend (ClickHouse TTL, S3 lifecycle rules). Dados ficam indefinidamente por inércia. Em caso de auditoria, a declaração e a prática divergem — o auditor vai encontrar traces de 2 anos no bucket onde a política diz 30 dias. Implemente TTL no mesmo sprint em que escreve a política.
+
+## Como explicar em inglês
+
+**Interview quote:** *"We treat our observability stack as a PII processor under LGPD. We redact at capture time before anything hits storage — placeholders in, full text out to the model. We have explicit retention TTLs per data class, a signed DPA with Anthropic for Zero Data Retention, and a user-facing opt-out for eval usage. The logging layer went through a DPIA before we launched."*
+
+| Português | Inglês |
+|---|---|
+| Redação de PII no momento da captura | PII redaction at capture time |
+| Dado pessoal identificável | Personally Identifiable Information (PII) |
+| Minimização de dados (princípio) | Data minimization (principle) |
+| Retenção de dados por prazo definido | Data retention with defined TTL |
+| Direito ao esquecimento / deleção | Right to erasure / right to be forgotten |
+| Avaliação de impacto de proteção de dados | Data Protection Impact Assessment (DPIA) |
+| Acordo de processamento de dados | Data Processing Agreement (DPA) |
+| Retenção zero de dados pelo provider | Zero Data Retention (ZDR) |
+| Consentimento informado pra uso em treino | Informed consent for training usage |
+| Auditoria de acesso ao trace | Trace access audit log |
+
+## O que vem a seguir
+
+Com o galho Observability completo — de por que logar (01) à anatomia do trace (02), ferramentas (03-04), versionamento (05), replay (06), métricas (07) e privacy (08) — a stack de observabilidade de LLM está completa. O próximo galho, Multimodal Prompting, abre um domínio diferente: como estruturar inputs que misturam texto, imagens, áudio e documentos — e as peculiaridades de cada modalidade no contexto de modelos como Claude e GPT-4o.
 
 ## Fontes
 
@@ -191,7 +285,9 @@ Em produto end-user:
 - **Google Cloud DLP** — [Documentação](https://cloud.google.com/dlp/docs).
 - **AWS Comprehend** — [PII detection](https://docs.aws.amazon.com/comprehend/latest/dg/pii.html).
 - **Anthropic** — [Trust Center](https://trust.anthropic.com/) · Data Processing Addendum.
-- **OWASP** — [LLM Top 10 (2025)](https://owasp.org/www-project-top-10-for-large-language-model-applications/), incluindo LLM02 (Sensitive Information Disclosure).
+- **OWASP** — [LLM Top 10 (2025)](https://owasp.org/www-project-top-10-for-large-language-model-applications/), incluindo LLM02 (Sensitive Information Disclosure) e LLM06 (Sensitive Information Disclosure via output).
+- **ANPD** — [Gov.br/anpd](https://www.gov.br/anpd/pt-br). Guias de boas práticas e resoluções sobre IA (publicados em 2024-2025).
+- **Trask (homomorphic encryption for PII)** — abordagem alternativa emergente: processar dado cifrado sem descriptografar.
 
 ## Veja também
 
@@ -200,3 +296,5 @@ Em produto end-user:
 - [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/11 - Governance as architecture — EU AI Act, GDPR, licenças]] — visão de governança end-to-end
 - [[03-Dominios/Tecnologia/IA/AI Engineering Stack/11 - Logging Layer]] — onde a política de PII se materializa
 - [[Dicionário de IA#LGPD|Dicionário: LGPD]], [[Dicionário de IA#GDPR|Dicionário: GDPR]], [[Dicionário de IA#EU AI Act|Dicionário: EU AI Act]]
+- [[Dicionário de IA#Redaction|Dicionário: Redaction]], [[Dicionário de IA#Zero Data Retention|Dicionário: ZDR]]
+- [[Dicionário de IA#DPIA|Dicionário: DPIA]], [[Dicionário de IA#DPA|Dicionário: DPA (Data Processing Agreement)]]
