@@ -1,8 +1,9 @@
 ---
 title: "Críticas, limitações e armadilhas"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,10 @@ aliases:
 
 > [!abstract] TL;DR
 > O campo de memória de agentes em 2026 mistura inovação técnica real com hype de marketing. Esta nota é a auditoria honesta da trilha: o que **não funciona** como prometido, onde os benchmarks enganam, quando memória persistente é over-engineered, e o que a literatura crítica está apontando. O paper arxiv 2604.21284 sobre MemPalace, a análise externa em `lhl/agentic-memory` e o post DEV.to de awrshift formam um pequeno corpus de revisão pública que diferencia este material de cobertura amplificadora. Material essencial para discurso público equilibrado.
+
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: o paper crítico arxiv 2604.21284 foi ele mesmo revisado por pares? O campo tem revisão por pares funcionando rápido o suficiente para papers críticos sobre papers de benchmark, ou o ciclo demorar meses significa que a crítica chega obsoleta?
+> - Lacuna potencial: a nota trata riscos de privacidade em alto nível (GDPR/LGPD) mas não aprofunda como implementações concretas (MemPalace, Letta, Mem0) endereçam — ou não — o direito ao esquecimento operacionalmente. Uma análise comparativa de `forget policy` por framework seria valiosa.
 
 ## O que é
 
@@ -43,24 +48,35 @@ O que esta nota faz é a contrapartida: **reconhecer avanços e ressalvas no mes
 A primeira categoria é a mais visível: a distância entre o que o material de marketing afirma e o que código + paper revisado por terceiros mostram.
 
 - **MemPalace 96,6% / 98,4% hybrid.** Score auto-reportado em LongMemEval — alto, e um dos motivos pelos quais o projeto ganhou tração. O **paper crítico arxiv 2604.21284** ("Spatial Metaphors for LLM Memory: A Critical Analysis of MemPalace", 2026-04-23) argumenta que o ganho real vem **principalmente de armazenamento verbatim + ChromaDB default**, não da spatial palace hierarchy. A metáfora do palácio mental — wings, rooms, drawers — vende; a engenharia que move o número é mais convencional. O paper não diz que MemPalace é fraude; diz que a **inovação real está em outras dimensões** (zero-LLM write path, 170-token startup, deterministic offline operation), só que a metáfora espacial chama mais atenção. Caso clássico em que branding técnico desvia o foco.
+
 - **AAAK 30x compression.** A análise externa em `lhl/agentic-memory/blob/main/ANALYSIS-mempalace.md` testou o claim de "zero information loss" da AAAK (Adaptive Agent Aware Knowledge compression). Resultado: **drop de 12,4 pontos percentuais** em qualidade (96,6% → 84,2%) em workloads adversariais, contradizendo o claim de zero perda. Compressão de 30x sem perda é, em geral, promessa que sobrevive até alguém testar fora do conjunto onde foi calibrada.
+
 - **20 MCP tools auditadas (vs 29 anunciadas).** A mesma análise externa contou ferramentas efetivamente implementadas no código e encontrou 20, não as 29 anunciadas. Diferença pequena em valor absoluto, grande em sinal — mostra que ninguém está validando o que é dito.
+
 - **"Bypass de RAG" do LLM Wiki Pattern.** Há leituras do gist do Karpathy que vendem o pattern como "morte do RAG". É exagero. RAG continua valioso, especialmente quando o corpus é vasto e estável. Discussão completa em [[04 - RAG vs memória de longo prazo]]: o pattern é **alternativa em cenários específicos**, não substituto universal.
+
+- **"Karpathy-endossado" vs "Karpathy-inspirado".** Vários projetos se posicionam como implementações do "Karpathy approach" de forma que implica endosso direto. Karpathy publicou um gist pessoal. Isso não é endosso de nenhum projeto específico — é um ponto de partida público que qualquer um pode estender. A distinção entre filiação técnica informal e endosso real é crucial para quem cita esses projetos em contextos profissionais.
 
 ### 2. Overfitting de benchmark
 
 Benchmarks são úteis até virarem alvo. LongMemEval é um benchmark vivo, com queries conhecidas, e isso tem implicações.
 
 - **LongMemEval pode ser overfit** por implementações que conhecem o benchmark. É possível tunar prompts de extração, esquemas de chunking e configurações de retrieval para os tipos de query do test set. Tecnicamente válido — mas degrada a generalização.
+
 - **"100% em hybrid mode"** apareceu em algumas coberturas externas como número do MemPalace. A análise no DEV.to (awrshift, "I Over-Engineered Karpathy's Agent Memory. Here's What Actually Works") descreve esse score como tendo sido *"engineered through a process that most benchmark-literate engineers would consider overfitting"*. Não é acusação de fraude — é diagnóstico de que o caminho até 100% provavelmente passa por escolhas que não generalizam.
+
 - **Sem evaluation independente, scores reportados pelo próprio fornecedor são suspeitos** no sentido estatístico clássico: o experimentador tem incentivo para mostrar o melhor número, e mil micro-decisões implícitas (modelo, versão, prompt template, seed) podem mover o score. Regra de ouro: **número auto-reportado vale como hipótese, não como conclusão**.
+
+- **A reprodutibilidade costuma ser esquecida.** Para validar um score você precisa conhecer: qual modelo base, qual temperatura, qual versão do benchmark, qual modo de avaliação (raw vs. hybrid), qual seed. A maioria das publicações de benchmark em memória de agentes não fornece esses dados todos de forma acessível. Sem eles, replicar o número é impossível — e testar se generaliza para seu workload, idem.
 
 ### 3. Viés de auto-publicação
 
 Quem publica score em LongMemEval está se sujeitando a uma comparação pública. Quem **não** publica está, de algum jeito, opting out dessa comparação. Em abril de 2026 o cenário é: **Letta, Cognee, LangMem e SuperMemory não publicaram scores** ([[21 - Comparativo crítico (LongMemEval)|21 - Comparativo crítico]] consolida).
 
 - Isso é **sinal, não condenação**. Razões possíveis: score baixo, custo alto de avaliação, workload-alvo diferente (Letta otimiza agentic loop, não QA multi-session), prioridades comerciais sobre publicações acadêmicas, ou simplesmente que o benchmark não captura o que o sistema otimiza. Sem mais informação, é indeterminado.
+
 - Mas falta de transparência é **red flag**, mesmo quando justificável. Se duas ferramentas têm features comparáveis e uma publicou scores e a outra não, a que publicou parte com vantagem de credibilidade técnica. Heurística, não regra.
+
 - **A ausência também é informação.** Notas de implementação que listam só os scores publicados sem mencionar quem optou por não publicar pintam quadro incompleto.
 
 ### 4. Quando NÃO usar memória de agentes
@@ -68,34 +84,51 @@ Quem publica score em LongMemEval está se sujeitando a uma comparação públic
 Há o impulso, em qualquer tema novo, de aplicar a solução em todo lugar. Memória persistente para agentes é solução boa para um conjunto de problemas, não para todos. Casos onde **não vale a pena**:
 
 - **Tarefas one-shot.** Se o agente vai responder uma pergunta e nunca mais será chamado, [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] ou prompt direto bastam. Adicionar memória persistente é over-engineering.
+
 - **Dados sensíveis sem proteção.** Memória persistente sobre conversas com usuários vira risco LGPD/GDPR. Sem política clara de retenção, anonimização e *right to be forgotten*, memória de agentes em produto B2C tem custo regulatório que pode dominar qualquer ganho de UX.
+
 - **Baixo orçamento de manutenção.** Wiki/KG sem lint, sem revisão e sem política de descarte vira lixo em 6 meses. Notas órfãs, links quebrados, contradições acumuladas. Sistema de memória **não cuida sozinho do próprio jardim**.
+
 - **Equipes que não dominam observabilidade.** Memória sem trace é debug impossível. Quando o agente "lembra errado" de algo, é preciso conseguir reconstruir o caminho — qual evento gerou qual nota, qual retrieval trouxe qual contexto, qual edição do agente alterou qual estado. Equipes sem essa cultura vão sofrer mais do que ganhar.
+
 - **Volume de uso que não justifica.** Sistema de memória adiciona dependências ([[Dicionário de IA#vector store|vector store]], KG, possivelmente Neo4j ou Chroma), CI, testes, monitoring. Em produto pequeno com poucos usuários, esse custo de infraestrutura pode dominar.
+
+- **Quando o usuário não sabe o que o sistema sabe sobre ele.** Isso não é falha técnica — é falha de UX e de consentimento que vai explodir como reclamação de suporte ou compliance later.
 
 ### 5. Custo computacional escondido
 
 Os números de "ganho de tokens" e "redução de latência" comparam, em geral, **agente com memória contra agente com janela cheia**. Mas a operação da própria camada de memória tem custo que costuma ficar fora dessa comparação.
 
 - **Cada interação com memory layer costuma adicionar uma [[Dicionário de IA#LLM (Large Language Model)|LLM]] call extra.** Mem0 faz extract; A-MEM faz evolve; Letta faz self-edit; MemPalace decide drawer. **Infra-LLM** — LLM chamando LLM por baixo, com custo monetário e de latência.
+
 - **Em escala, multiplica custo por 2-5x facilmente.** Um agente que faz 1 chamada por interação passa a fazer 2-5 se a memória ativa fizer extract no write, evolve em background e rerank no read.
+
 - **Latência sobe.** Memory ops adicionam tipicamente **200-500ms** por interação. Em UX síncrona (chat), é visível. Em backend batch, é absorvível.
+
 - **Comparações de "ganho de tokens" ignoram custo das operações de memória.** Tokens para extrair um fato, sumarizar uma sessão e indexar embeddings, somados, costumam ser comparáveis aos tokens economizados na janela. Comparação honesta inclui os dois lados.
+
+- **Custo de embedding.** Cada novo chunk ingerido precisa ser vetorizado. Em corpus grande com ingestão frequente, o custo de embedding (via API externa ou GPU própria) é linha de custo real que benchmarks de "tokens poupados" raramente medem.
 
 ### 6. "Context pollution"
 
 A premissa intuitiva é: mais memória → melhores respostas. Na prática, **memória mal curada** pode produzir o oposto.
 
 - Quando o retrieval traz contexto irrelevante, o LLM gasta atenção em distrações e degrada a resposta. Em casos extremos, contexto enganador leva a [[Dicionário de IA#Hallucination|alucinação]] dirigida — o modelo segue uma pista falsa fornecida pelo próprio sistema de memória.
+
 - O fenômeno *lost-in-the-middle* (ver [[02 - O problema das janelas de contexto]]) continua aplicável **dentro do retrieved context**. Se o retrieval traz 10 chunks e o relevante está no meio, a atenção do modelo cai. Sistemas de memória que retornam top-k grandes sem reranking vão sofrer disso.
+
 - Curadoria, lint, política de aposentadoria de notas e priorização de retrieval **não são opcionais** em sistemas de memória maduros. Sem isso, o sistema cresce até virar ruído.
+
+- **Memória desatualizada é pior que ausência de memória.** Um fato correto há 12 meses pode ser diretamente falso hoje (endereço, cargo, versão de API). O sistema de memória precisa de timestamping e de política de decay — sem isso, o agente age com convicção sobre informação velha.
 
 ### 7. Inconsistência entre claims acadêmicos e produção
 
 Papers mostram ganhos em benchmarks; produção tem custo, latência, observabilidade, governance. **"Funciona em paper" ≠ "funciona em produção"**.
 
 - O caso **Mem0g** é exemplo claro. O paper original descreve graph store externo (Neo4j) com pipeline de extração de entidades e relações; o SDK atual usa entity linking embedded, mais leve, sem dependência externa. Não é necessariamente regressão — pode ser escolha de simplicidade — mas é **divergência paper-vs-código** que o adotante precisa conhecer. Quem cita o paper esperando o sistema do paper vai instalar uma coisa diferente.
+
 - Generalizando: artigos descrevem sistemas idealizados; SDKs descrevem o que é mantenível. Adotar com base só no paper, sem ler o código atual, é receita para frustração.
+
 - **Reprodutibilidade dos números do paper** é outro eixo. Quantos dos benchmarks publicados em papers de memória de agentes em 2026 têm scaffolding público que permite reexecutar? A resposta honesta é: poucos. LongMemEval é exceção, não regra.
 
 ### 8. Os 2 links descartados (relevantes só como exemplo de confusão de nome)
@@ -103,6 +136,7 @@ Papers mostram ganhos em benchmarks; produção tem custo, latência, observabil
 Esta seção referencia uma decisão tomada no MOC da trilha. Durante a pesquisa, dois links apareceram em buscas por "memória de agentes" / "Karpathy memory" e foram descartados:
 
 - **`Mattbusel/srfm-lab`** — quant trading framework, **não é sobre memória**. Aparece em buscas por overlap de termos (alguns abstracts de quant lab usam "memory" no sentido de buffer de mercado).
+
 - **`forrestchang/andrej-karpathy-skills`** — princípios de coding do Karpathy (Think Before Coding, Simplicity First, etc.). É um repositório útil em si, mas trata de **estilo de programação**, não de memória de agentes. Confusão por associação ao nome do Karpathy, que também é autor do gist do LLM Wiki Pattern.
 
 Ambos servem como ilustração honesta de **nome próximo ≠ tema próximo**. Vale o registro porque, em pesquisa rápida, é fácil deslizar para qualquer um deles e perder tempo. Quem está montando trilha sobre o tema deve aprender o reflexo de **abrir o README e checar a primeira frase** antes de aceitar o link como referência.
@@ -112,27 +146,74 @@ Ambos servem como ilustração honesta de **nome próximo ≠ tema próximo**. V
 Memória persistente sobre usuários levanta questões que o campo, em abril/2026, ainda discute pouco em público.
 
 - **Consentimento.** Em UX típica, o usuário sabe que o agente "se lembra de coisas"? Foi avisado quais coisas? Pode revisar o que está armazenado? Em B2C, raramente. Em B2B com SaaS, depende muito do fornecedor.
+
 - **Retenção.** Quanto tempo a memória sobre uma conversa fica viva? Há política de descarte? Em quais casos o sistema esquece automaticamente? Implementações sem `forget policy` clara estão construindo dívida regulatória.
+
 - **Right to be forgotten.** GDPR, LGPD e regulamentações análogas garantem direito ao esquecimento. Sistema de memória que não tem operação de remoção endereçável (por usuário, por sessão, por chave de conteúdo) é compliance-incompatível por construção.
+
 - **Pouca discussão pública até abril/2026.** O tema aparece em rodapés de papers e em posts esparsos, mas não há ainda corpus consolidado de boas práticas. É **gap** a ser preenchido pelo campo nos próximos ciclos.
+
 - **Casos de saúde/finance.** Em domínios regulados, a regulamentação ainda está se ajustando ao que sistemas de memória de agentes implicam. Adotar nessas áreas sem revisão jurídica é risco organizacional, não só técnico.
 
 ## Armadilhas comuns
 
-Recap consolidado das categorias acima. Em formato de checklist para quem está revisando uma decisão de arquitetura ou um material público sobre memória de agentes:
+> [!warning] Armadilha 1: Confiar em score sem verificação independente
+> Score auto-reportado em LongMemEval vale como **hipótese**, não como conclusão. Antes de citar ou adotar com base num número, verifique: (1) quem mediu — o próprio fornecedor ou terceiro?, (2) qual modelo base, qual versão do benchmark, qual modo (raw vs. hybrid)?, (3) há paper crítico ou análise externa que matize? Se a resposta a qualquer das três é desconhecida, **cite com hedge**. Sem isso, você amplifica sem verificar — posição fraca em qualquer audiência técnica.
 
-- Confiar em score sem verificação independente — e sem rastrear modelo base, modo de avaliação e versão do benchmark.
-- Não testar em workload próprio antes de adotar. Score público em LongMemEval não diz como o sistema vai performar no seu corpus específico.
-- Subestimar custo de manutenção. Wiki/KG sem governance vira lixo em 6 meses.
-- Confundir hype com maturidade. Tração de marketing em 2026 não equivale a sistema battle-tested.
-- Não ter `forget policy` clara — risco regulatório acumulando silenciosamente.
-- Esperar que **substrate** (markdown vs vector vs grafo) seja a feature. Substrate é coadjuvante; **schema** (qual unidade de informação, qual ciclo de vida, qual política de retrieval) é o que diferencia. [[08 - Arquitetura de um sistema de memória]] desenvolve.
-- Confundir "Karpathy-inspired" como **filiação técnica oficial** do Karpathy ao projeto. Karpathy publicou um gist; muitos projetos são "inspirados" no gist; nenhum é endossado oficialmente. É **mainstream interpretive label**, não claim do projeto. Atribuir autoria informal a alguém que só publicou um gist é over-claim.
-- Adotar memória por *FOMO* em vez de necessidade. Se a tarefa não exige persistência cross-session, RAG ou prompt direto bastam.
-- Tratar números auto-reportados como verdade de bula. **Hipóteses até verificação independente.**
+> [!warning] Armadilha 2: Não testar no próprio workload
+> Score público em LongMemEval não prediz performance no corpus específico do seu projeto. Tipos de query, idioma, densidade de entidades, padrão de updates — tudo isso varia. A única forma de saber se um sistema funciona para você é **medir no seu conjunto de dados**, com métricas que capturam o que importa para o seu caso de uso. Adotar antes de testar é escolher o framework pela embalagem.
 
-> [!warning] Critério mínimo de discurso público sobre memória de agentes
-> Antes de citar um número em entrevista, talk ou material de venda, verifique três coisas: (1) o número é auto-reportado ou foi auditado externamente? (2) qual modelo base, qual versão do benchmark, qual modo (raw vs hybrid)? (3) há paper crítico ou análise externa que matize esse número? Se a resposta para qualquer das três é desconhecida, **cite com hedge** ("o projeto reporta X em condições Y, com paper crítico apontando Z").
+> [!warning] Armadilha 3: Subestimar o custo de manutenção e governança
+> Wiki/KG sem lint, sem revisão periódica e sem política de descarte **apodrece em 6 meses**. Notas órfãs acumulam, wikilinks quebram silenciosamente, contradições se cristalizam. O sistema de memória não cuida do próprio jardim — isso é trabalho humano ou de processo automatizado. Equipes que adotam achando que o sistema se mantém sozinho pagam esse custo mais tarde, com juros: debug de "por que o agente lembrou errado" é ordens de magnitude mais caro que lint preventivo.
+
+> [!warning] Armadilha 4: Usar memória persistente em dados sensíveis sem política de privacidade
+> Memória persistente sobre conversas de usuários é **acumulação de PII** (Personally Identifiable Information). Sem `forget policy` explícita, sem operação de remoção endereçável por usuário, sem timestamping para expiração, você está construindo dívida regulatória silenciosamente. GDPR, LGPD e regulações análogas não são opcionais. Em domínios de saúde e finanças, a exposição é ainda maior.
+
+> [!warning] Armadilha 5: Confundir "Karpathy-inspired" com endosso oficial
+> O gist de Karpathy é um documento público de 2023. Dezenas de projetos o usam como ponto de partida e se posicionam como "Karpathy-inspired" — o que é honesto. Mas algumas coberturas implicam endosso direto do Karpathy ao projeto específico. Esse gap entre inspiração e endosso é relevante em dois cenários: ao citar o projeto para audiências que conhecem Karpathy, e ao avaliar credibilidade técnica de um framework que "ele aprova".
+
+> [!warning] Armadilha 6: Adotar memória por FOMO em vez de necessidade
+> Se a tarefa não exige persistência cross-session — ou se RAG simples resolve — adicionar memória persistente é over-engineering. Antes de qualquer adoção, responda: "qual problema concreto memória persistente resolve que RAG não resolve?" Se a resposta for vaga, a necessidade não está clara o suficiente para justificar a complexidade.
+
+Recap consolidado em formato de checklist para quem está revisando uma decisão de arquitetura ou um material público:
+
+- Número auto-reportado sem verificação independente → cite com hedge
+- Não testou no próprio workload → não adote ainda
+- Sem lint periódico planejado → a wiki vai apodrecer
+- Dados sensíveis sem forget policy → risco regulatório acumulando
+- Cita "Karpathy-endossa" → ajuste para "Karpathy-inspirado"
+- Adota por FOMO → pergunte "qual problema específico isso resolve?"
+- Compara tokens sem incluir custo de memory ops → análise incompleta
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "Agent memory systems in 2026 show real technical progress, but benchmark scores are frequently self-reported, overfitted to LongMemEval, and don't account for the hidden compute cost of memory operations themselves — so I always validate on my own workload before adopting."
+
+| Português | Inglês |
+|-----------|--------|
+| Auditoria honesta | Honest audit / Critical review |
+| Hype vs realidade | Hype vs reality / Marketing claims vs engineering reality |
+| Overfitting de benchmark | Benchmark overfitting |
+| Custo computacional escondido | Hidden compute cost |
+| Context pollution | Context pollution / Retrieval noise |
+| Política de descarte | Forget policy / Retention policy |
+| Score auto-reportado | Self-reported score |
+| Viés de auto-publicação | Self-publication bias / Reporting bias |
+| Direito ao esquecimento | Right to be forgotten |
+| Memória desatualizada | Stale memory / Outdated context |
+
+### Como usar em entrevista
+
+Quando perguntarem sobre memória de agentes, a postura de "auditoria honesta" é diferenciadora:
+
+- "I find that most benchmark numbers in this space are self-reported on LongMemEval, which can be overfitted. So I look for third-party audits before trusting a score."
+- "The hidden cost is memory operations themselves — each interaction can add 2-5 extra LLM calls for extract, evolve, and rerank. The 'tokens saved' comparison often ignores this."
+- "Memory without a forget policy is regulatory debt. GDPR requires addressable deletion, and most open-source implementations don't have that out of the box."
+
+## O que vem a seguir
+
+Esta nota encerrou a dimensão crítica da trilha — o contrapeso necessário para qualquer discurso público equilibrado sobre memória de agentes. Com o mapa completo de onde o campo avança e onde promete mais do que entrega, a próxima nota traduz tudo isso em ação prática: como efetivamente sair do zero e ter uma base de memória rodando no mesmo dia, com os dois caminhos concretos que a trilha revisou e os critérios para escolher entre eles. Conhecer as armadilhas desta nota antes de implementar é exatamente o que diferencia uma implementação que sobrevive seis meses de uma que apodrece em seis semanas. Veja [[23 - Guia de implementação do zero]].
 
 ## Veja também
 
