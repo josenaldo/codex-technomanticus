@@ -124,6 +124,19 @@ APM não tem noção de "tipo de pergunta". Observability, com `session_id`, `us
 
 APM pode correlacionar latência com deploy. Observability permite correlacionar **qualidade da resposta** (via score de eval automaticamente registrado por trace) com deploy. Você plota score médio over time e vê que caiu exatamente na quinta às 14h, quando o model provider atualizou silenciosamente de `claude-sonnet-4-6-20250514` pra `claude-sonnet-4-6-20260418`.
 
+## Quando ativar observability — não espere incidente
+
+O erro de timing mais comum: "vamos adicionar observability depois que o produto estiver estável". Esse depois nunca chega, e quando o primeiro incidente sério acontece, o time não tem dados pra diagnosticar.
+
+A regra prática:
+
+- **Antes do primeiro usuário externo**: log mínimo (prompt_id, model, tokens, cost, finish_reason)
+- **Antes de 100 usuários ativos**: ferramenta dedicada (Langfuse dev ou Braintrust free tier)
+- **Antes de $500/mês em provider**: sampling configurado, dashboard de custo por feature
+- **Antes de compliance ou regulação**: PII masking ativo, retenção configurada, audit log funcional
+
+Observability retroativa não existe. Um trace que você não gravou é um incidente que você vai investigar no escuro.
+
 ## Mínimo viável: o que gravar antes de ter Langfuse
 
 Se você ainda não tem ferramenta de LLM observability, o mínimo que vale gravar no log estruturado:
