@@ -1,9 +1,10 @@
 ---
 title: "04 - Champion-challenger em produção"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - improvement-loop
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Champion-challenger é a operação de ship em produção: a versão atual (champion) serve a maior parte do tráfego (90-95%), a versão candidata (challenger) serve canary (5-10%), métricas-gate decidem promoção automática (challenger vira champion) ou rollback (challenger sai). Setup pragmático: feature flag (LaunchDarkly, GrowthBook, OpenFeature) ou routing logic em código. Critérios de promoção objetivos e pré-declarados: **(1)** eval score do challenger ≥ champion com significância; **(2)** zero regressão na golden subset crítica; **(3)** custo médio não sobe > X%; **(4)** latência p95 não sobe > Y%. Rollback automático em três sinais: error rate spike, latência spike, eval score drop. Anti-padrão: **challenger eterno** — nunca promove, nunca rola back, fica 50/50 pra sempre porque ninguém decide.
+
+> [!question]- O que fazer quando o challenger está melhor em quality mas pior em custo ou latência — como decidir?
+> Essa é a decisão de trade-off mais comum em champion-challenger e não tem resposta automática — exige judgment humano. O processo: (a) calcule o valor esperado do ganho de qualidade (redução de re-prompts, aumento de conversão, menos tickets de suporte) e compare com o custo adicional em termos de dinheiro/tempo; (b) se custo extra é < 10% e ganho de qualidade é > 5%, geralmente vale promover (regra de bolso, não lei); (c) se latência p95 sobe além do SLA declarado, não promove — independente de quality — porque SLA é compromisso com usuário. A boa prática é declarar antes de rodar a tolerância por dimensão: "custo +15% é OK, latência +20% é OK" — isso elimina a negociação post-hoc que é onde o viés de confirmação entra. Se não declarou antes, use os valores da última versão promovida como referência, e anote no postmortem que a próxima vez precisa de critérios explícitos.
 
 ## A mecânica básica
 
@@ -290,6 +294,38 @@ Nível 5 — Loop totalmente fechado
 ```
 
 Meta pragmática: **nível 3 estável** pra time de IA serio em 2026. Nível 4-5 é fronteira, vale pra produto crítico/volume alto.
+
+## Armadilhas comuns
+
+> [!warning] Challenger eterno — 50/50 em produção sem ninguém decidir
+> O cenário: canary foi pro ar, dados chegaram, semana passou. "Vou olhar amanhã" vira "preciso de mais dados" vira "ah, perdemos o contexto". O challenger fica indefinidamente em produção servindo 10% do tráfego sem promoção nem rollback. Danos: tráfego em dois códigos diferentes aumenta chance de inconsistência; dados do canary viram ruído porque o tráfego mistura comportamentos; nenhum novo challenger pode entrar sem colapsar o setup. A correção é sistemática: defina data de decisão **antes** de subir o canary (dia D + duração mínima em horas), coloque lembrete no calendário, e atribua owner. Se o dia chegou e o resultado é inconclusivo — decida rollback como default conservador, não continue indefinidamente.
+
+> [!warning] Critérios de promoção negociados depois do resultado — viés de confirmação garantido
+> O experimento terminou. Challenger melhorou em quality, mas custo subiu 25%. "25% de custo tá bem, o ganho compensa." Se você tivesse declarado antes que 15% era o teto — esse challenger não passa. Mas como não declarou, você negocia post-hoc. O problema é que sua avaliação do trade-off é contaminada pelo resultado já conhecido. Você tende a aprovar challenges que têm resultado positivo em quality e rejeitar em cenários simétricos sem conseguir articular um princípio diferente. Declare critérios em YAML ou documento antes de subir o canary. Esse documento é revisado no postmortem — se você não seguiu, o postmortem registra a divergência e o próximo ciclo começa com critérios mais claros.
+
+> [!warning] Rollback sem comunicação — time descobre pelo comportamento do produto
+> O rollback foi automático, challenger saiu, champion voltou a servir 100%. Ninguém avisou ninguém. Uma semana depois alguém percebe no dashboard que "era o canary que estava causando aquele comportamento". Quando rollback acontece (especialmente automático), é evento de aprendizado: o que disparou, qual o sinal, o que o challenger fez de errado. Sem comunicação, esse aprendizado morre. Padrão mínimo: alerta no Slack/Teams no momento do rollback com motivo + link pro trace. Postmortem assíncrono (thread de 5 linhas) pra registrar a hipótese que falhou. Postmortem não é punição — é o mecanismo de aprendizado do loop.
+
+## Como explicar em inglês
+
+**Interview quote:** *"Champion-challenger is the production ship operation: the current version serves 90-95% of traffic as champion while a challenger runs as a 5-10% canary. Pre-declared criteria determine automatic promotion or rollback — eval score improvement with statistical significance, zero regression on the critical golden subset, cost within tolerance, latency within SLA. Rollback triggers fire automatically: error rate spike, latency spike, eval score drop. The key discipline is declaring criteria before running the canary — post-hoc negotiation is how confirmation bias sneaks into the process."*
+
+| Português | Inglês |
+|---|---|
+| Campeão (versão atual em prod) | Champion |
+| Desafiante (versão candidata) | Challenger |
+| Canário (tráfego de teste) | Canary / canary release |
+| Promoção automática | Automatic promotion |
+| Rollback automático | Automatic rollback |
+| Critérios de promoção pré-declarados | Pre-declared promotion criteria |
+| Feature flag de roteamento | Routing feature flag |
+| Taxa de erro (spike) | Error rate spike |
+| Tolerância de custo | Cost tolerance |
+| Challenger eterno (anti-padrão) | Eternal challenger (anti-pattern) |
+
+## O que vem a seguir
+
+Com champion-challenger cobrindo o ship em produção, a nota 05 sobe pra automação do loop inteiro: **DSPy e auto-prompt optimization**, onde os prompts são compilados automaticamente contra a eval function — fechando o loop sem intervenção manual no diff.
 
 ## Fontes
 
