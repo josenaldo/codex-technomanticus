@@ -1,9 +1,10 @@
 ---
 title: "03 - PDFs e documentos — extração e análise"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - multimodal
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Em 2026, três caminhos cobrem PDF: nativo (Claude, Gemini, OpenAI Files), página-a-página como imagem, e híbrido (PageIndex pra escolher páginas + multimodal pra ler). PDF nativo trata o documento como sequência de páginas-imagem + texto extraído internamente — o modelo vê layout, gráfico, tabela e texto no mesmo passo. Funciona bem até ~100 páginas (Claude) ou docs muito grandes (Gemini). Acima disso, PageIndex como retrieval ([[03-Dominios/Tecnologia/IA/RAG e Vector Databases/13 - PageIndex — RAG vectorless por árvore de documentos]]) escolhe páginas relevantes e o LLM multimodal lê só essas. OCR + texto puro segue válido pra docs sem layout relevante, mas perdeu o trono como default.
+
+> [!question]- Qual a diferença real entre mandar o PDF nativo vs converter cada página em PNG e mandar como imagem?
+> Resultado final tende a ser muito similar pra documentos com texto digital limpo, porque internamente o provider converte o PDF em imagens de qualquer forma. A diferença prática está em três pontos: (1) conveniência — PDF nativo não exige código de renderização (PyMuPDF, pdf2image); (2) custo de token por página — PDF nativo em Claude tem custo fixo ~1500-2000 tokens/página que pode ser menor ou maior que a imagem equivalente dependendo do DPI; (3) controle — renderizando você escolhe DPI (200 costuma ser bom pra texto), cropping exato, e tem a imagem como artefato auditável. Para documentos com handwriting, PDF nativo tende a ser melhor porque o provider pode usar texto interno extraído como âncora. Para debug e compliance, imagem renderizada é preferível porque você vê exatamente o que o modelo recebeu.
 
 ## Três caminhos
 
@@ -227,6 +231,61 @@ Depois manda `page_8.png` como imagem (ver [[02 - Imagens como input — screens
 - **Cite a página no prompt.** "Cite a página de cada campo extraído" — força o modelo a usar a referência espacial, reduz alucinação.
 - **Pra docs gigantes, retrieval primeiro.** PageIndex ou hierarchical chunking pra escolher páginas; multimodal pra ler.
 - **Não compare PDF nativo vs OCR no benchmark errado.** Acerto de extração de tabela formatada: nativo ganha. Acerto de texto corrido: empate. Custo: OCR ganha. Tempo de dev: nativo ganha por largo.
+
+**Estrutura de prompt recomendada pra extração de documento:**
+
+```
+Você está analisando [tipo do documento: contrato, extrato, NF, laudo].
+
+Extraia os seguintes campos em JSON:
+- [campo_1]: [descrição de o que é e como identificar]
+- [campo_2]: ...
+
+Regras:
+- Se um campo não aparecer no documento, retorne null.
+- Para cada campo encontrado, inclua "pagina": N indicando a página de origem.
+- Se um valor for ilegível, retorne "ilegivel" (não adivinhe).
+- Não invente campos não listados.
+```
+
+Esse template — tipo do doc explícito + campos descritos + null como opção + citação de página + proibição de invenção — cobre as principais fontes de erro de extração em documento.
+
+**Cache de arquivo pra múltiplas queries no mesmo PDF:**
+
+Quando você vai fazer várias perguntas diferentes sobre o mesmo documento (ex: primeiro extrai campos, depois verifica compliance, depois gera resumo), re-enviar o PDF inteiro em cada chamada é caro. Prefer:
+- **Anthropic prompt caching** — adiciona `cache_control: {"type": "ephemeral"}` ao bloco `document`; o PDF fica em cache por 5 minutos na camada ephemeral.
+- **Gemini Files API** — faça upload uma vez, reutilize o `file.uri` em múltiplas chamadas sem re-subir os bytes.
+
+## Armadilhas comuns
+
+> [!warning] Mandar o PDF inteiro quando só uma página importa — custo e latência desnecessários
+> PDF nativo em Claude custa ~1500-2000 tokens por página. Um relatório de 200 páginas onde a pergunta é sobre a página 47 custa ~300-400k tokens de input para ler o doc inteiro — caro e lento. O padrão certo é retrieval-first: PageIndex identifica as páginas relevantes, multimodal lê só essas. Pra documentos abaixo de 30 páginas com perguntas que podem se referir a qualquer parte, PDF nativo inteiro é razoável. Acima disso, retrieval-first.
+
+> [!warning] Usar OCR + texto como default em 2026 — documentos com layout perdem sinal crítico
+> Muitos pipelines criados em 2022-2023 usam `pdfplumber` / `pdfminer` / `Textract` + LLM texto e funcionam "bem o suficiente". Mas "bem o suficiente" oculta a perda silenciosa de layout: tabelas ficam linearizadas, cabeçalhos viram texto plano, a tabela de um contrato que tem colunas "parte A / parte B / obrigação" vira uma string sem estrutura. O modelo raciocina em cima de input degradado e pode tirar conclusões erradas. Antes de deixar o pipeline OCR no ar, teste com PDF nativo e compare acurácia de extração em 10 documentos representativos.
+
+> [!warning] Não citar a página no prompt — modelo extrai sem referência e torna o output não-auditável
+> "Extraia os campos do contrato" sem pedir referência de página entrega um JSON limpo que parece correto mas que você não consegue verificar. Se o model alucinação uma data de vigência, você não sabe nem em que página procurar. Sempre peça: "Cite a página de cada campo extraído." O modelo passa a incluir `"pagina": 12` junto com cada valor, o que transforma qualquer discrepância em auditoria de 30 segundos em vez de revisão completa do documento.
+
+## Como explicar em inglês
+
+**Interview quote:** *"For document-heavy workflows in 2026, we default to native PDF — Claude, Gemini, and OpenAI Files all handle it without us writing rendering code. For large documents over 100 pages, we use PageIndex to identify relevant pages first, then pass only those pages to the multimodal model. We always ask the model to cite the page number for each extracted field — that makes hallucinations auditable in seconds."*
+
+| Português | Inglês |
+|---|---|
+| PDF nativo (suporte nativo do provider) | Native PDF support |
+| Extração de campos de documento | Document field extraction |
+| Renderização de página como imagem | Rendering page as image |
+| Chunk de páginas com overlap | Page chunk with overlap |
+| Retrieval por árvore de índice (PageIndex) | Structural retrieval / PageIndex |
+| Citar a página de cada campo | Cite the page number per field |
+| OCR + texto puro | OCR-plus-text pipeline |
+| Upload via Files API | Files API upload |
+| Custo por token de PDF | Token cost per PDF page |
+
+## O que vem a seguir
+
+Com PDFs e documentos cobertos, a nota 04 entra em **áudio e vídeo** — as modalidades com maior custo de contexto e onde a escolha de provider (Whisper vs GPT-4o Realtime vs Gemini nativo) faz mais diferença do que em qualquer outra. Geração de áudio e vídeo também aparecem brevemente, mas o foco é no uso como input.
 
 ## Fontes
 
