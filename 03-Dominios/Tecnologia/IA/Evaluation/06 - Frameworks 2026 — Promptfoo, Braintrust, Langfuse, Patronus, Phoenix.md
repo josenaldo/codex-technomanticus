@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -24,6 +25,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Em 2026, cinco frameworks dominam o eval em LLMs, cada um com um nicho. **Promptfoo** — CLI OSS, eval-as-code com YAML, ideal pra integração CI/CD. **Braintrust** — SaaS comercial, observabilidade + eval em um produto, foco em iteração rápida. **Langfuse** — OSS + cloud, padrão de fato pra LLM Ops em open-source, traces + datasets + evals. **Patronus** — comercial, foco em guardrails de produção e eval com domínio (Lynx, Glider). **Arize Phoenix** — OSS ML-native, OpenTelemetry-based, forte em debugging visual. Há também **lm-evaluation-harness** (EleutherAI) pra benchmarks acadêmicos, que é categoria à parte. Escolha por: open vs commercial, eval-only vs full ops, self-host vs SaaS.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende os fundamentos de eval: golden sets (nota 02), scoring rubrics (nota 03), LLM-as-judge (nota 04), e regression testing (nota 05). Esta nota é sobre tooling — quais frameworks implementam esses conceitos na prática, e como escolher entre eles. Não é necessário ter usado qualquer um deles antes; é suficiente entender o problema que cada um resolve. A nota ajuda a escolher o stack de eval, não a ensinar EDD do zero.
 
 ## A taxonomia dos cinco
 
@@ -377,6 +381,42 @@ Setup recomendado pra time típico:
 ```
 
 Em 80% dos casos, **Promptfoo + Langfuse** já resolve. Os outros entram quando há necessidade específica (SaaS + compliance + multimodal).
+
+## Armadilhas comuns
+
+> [!warning] Adotar múltiplos frameworks para cobrir "todas as necessidades"
+> A tentação ao ver a comparação é concluir que "preciso de Promptfoo para CI, Langfuse para prod, Braintrust para iteração e Patronus para guardrails". Na prática isso cria quatro sistemas parcialmente sobrepostos, quatro integrações pra manter, quatro lugares pra procurar quando algo quebra. O custo não é só financeiro — é cognitivo. Em 80% dos casos, dois frameworks são suficientes: um para eval pré-deploy (Promptfoo) e um para observabilidade de produção (Langfuse ou Braintrust). Adicione os outros somente quando houver necessidade específica demonstrada, não antecipada.
+
+> [!warning] Usar lm-evaluation-harness para avaliar seu produto
+> Benchmarks acadêmicos (MMLU, HumanEval, GSM8K) medem capacidade geral do modelo, não desempenho na sua tarefa específica. Um modelo que domina MMLU pode falhar no seu domínio vertical. A armadilha é usar benchmarks como proxy de qualidade do produto porque é mais fácil rodar — os resultados já vêm prontos, documentados, comparáveis. Em produção, esses números não predizem se sua classificação de tickets vai melhorar. Use lm-eval-harness quando você está avaliando um modelo base ou fazendo fine-tuning; use golden set + rubrica customizada quando você está avaliando um produto.
+
+> [!warning] SaaS comercial sem revisar a política de PII de dados de produção
+> Ao usar Braintrust, Patronus, ou Langfuse Cloud, os traces de produção — que incluem inputs reais de usuários — vão para servidores do vendor. Se seu produto toca PII (nome, email, CPF, dados de saúde, dados financeiros), você precisa revisar a política de dados antes de mandar qualquer trace de produção. "Dados são criptografados" não é suficiente — você precisa saber sobre retenção, uso para treinamento de modelos, localização de dados, e mecanismos de deletação. A alternativa é self-host (Langfuse, Phoenix) ou usar ferramentas que só rodam localmente (Promptfoo).
+
+## Como explicar em inglês
+
+Em entrevistas sobre tooling de avaliação de LLMs, mencionar frameworks específicos com seus trade-offs demonstra experiência de produção — é diferente de descrever eval apenas em termos conceituais:
+
+> "In 2026, the eval tooling landscape splits roughly by use case. For eval-as-code in CI/CD, Promptfoo is the standard — YAML-declarative, runs in any CI runner, easy to version in git. For production observability plus datasets and evals, Langfuse is the OSS default — you self-host it or use their cloud. For fast iteration with visual comparison, Braintrust is the commercial option. For runtime guardrails in regulated domains, Patronus has purpose-built models like Lynx for hallucination detection. In practice, most teams need just two: a CI eval tool and a production monitoring tool."
+
+| Português | Inglês |
+|-----------|--------|
+| framework de avaliação | eval framework |
+| eval como código | eval-as-code |
+| hospedagem própria | self-hosted |
+| observabilidade de LLM | LLM observability |
+| benchmark acadêmico | academic benchmark |
+| guardrail em runtime | runtime guardrail |
+| detector de alucinação | hallucination detector |
+| trace de produção | production trace |
+| dataset versionado | versioned dataset |
+| política de PII | PII data policy |
+
+## O que vem a seguir
+
+Com o panorama de frameworks em mãos, a nota 07 entra em como integrar eval em CI/CD de forma prática: quando rodar, quais checks bloquear merge, como manter o pipeline rápido o suficiente para não ser ignorado.
+
+Ver [[07 - Eval em CI-CD]].
 
 ## Veja também
 
