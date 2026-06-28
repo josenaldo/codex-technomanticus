@@ -30,25 +30,24 @@ tags:
 | React — Design Patterns | 12 | 2026-06-26 |
 | React — Next.js (App Router) | 16 | 2026-06-27 |
 | React — Ecossistema | 13 | 2026-06-27 |
+| HTML | 12 (4/4/4) | 2026-06-27 |
 
 ---
 
 ## Onda A — Tripé Frontend (prioridade máxima)
 
-### A3 — HTML
+### A3 — HTML ✅ CONCLUÍDO 2026-06-27
 
-- **Estado:** monólito `HTML semântico.md` (293 ln) + `index.md` stub
-- **Plano detalhado:** a criar (`2026-XX-XX-trilha-html-plan.md`)
-- **Escopo:** semântica estrutural, formulários nativos, acessibilidade (ARIA/a11y), SEO técnico, metadados e Open Graph
-- **Estimativa:** ~10–14 notas (3 fases)
-- **Dependências:** nenhuma (é base)
-- **Anti-duplicação:** CSS trata visual; Plataforma Web trata DOM/eventos; React trata JSX/components
+- **12 notas** (4 Iniciado / 4 Adepto / 4 Magus)
+- Plano: `2026-06-27-trilha-html-plan.md`
+- Monólito `HTML semântico.md` aposentado (redirector para index)
+- Roadmap atualizado
 - **Status:**
-  - [ ] Plano detalhado escrito e aprovado
-  - [ ] Fase Iniciado executada e commitada
-  - [ ] Fase Adepto executada e commitada
-  - [ ] Fase Magus executada e commitada
-  - [ ] Teardown: monólito aposentado, index.md MOC, Roadmap atualizado
+  - [x] Plano detalhado escrito e aprovado
+  - [x] Fase Iniciado executada e commitada
+  - [x] Fase Adepto executada e commitada
+  - [x] Fase Magus executada e commitada
+  - [x] Teardown: monólito aposentado, index.md MOC, Roadmap atualizado
 
 ---
 

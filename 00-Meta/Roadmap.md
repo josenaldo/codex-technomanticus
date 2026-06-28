@@ -3,7 +3,7 @@ title: "Roadmap de Trilhas"
 type: moc
 publish: true
 created: 2026-06-25
-updated: 2026-06-25
+updated: 2026-06-27
 status: growing
 tags:
   - moc
@@ -48,7 +48,7 @@ aliases:
 | [[03-Dominios/Tecnologia/Tooling e Build/index\|Tooling e Build]] | ✅ | 26 notas, concluída 2026-06-25 |
 | [[03-Dominios/Tecnologia/JavaScript/index\|JavaScript (core)]] | ✅ | 26 notas, 3 fases, concluída 2026-06-25 (monólito aposentado em stub) |
 | [[03-Dominios/Tecnologia/React/index\|React]] | ✅ | domínio multi-galho **COMPLETO** (2026-06-27): **React core ✅** (26) + **Design Patterns ✅** (12) + **Next.js ✅** (16, baseline Next 15) + **Ecossistema ✅** (13, server state/client state/forms/UI/tables/charts) + TypeScript com React (15) + Charts (sub-área) |
-| [[03-Dominios/Tecnologia/HTML/index\|HTML]] | 🧱 | só `HTML semântico.md`; falta forms, a11y, ARIA, SEO, metadados |
+| [[03-Dominios/Tecnologia/HTML/index\|HTML]] | ✅ | 12 notas, 3 fases (Iniciado/Adepto/Magus), concluída 2026-06-27 (monólito aposentado) |
 | [[03-Dominios/Tecnologia/CSS/index\|CSS]] | 🧱 | só `CSS.md` + Bootstrap; falta layout (flex/grid), cascade, responsivo, design system |
 | [[03-Dominios/Tecnologia/Plataforma Web/index\|Plataforma Web]] | 🟡 | só galho Networking; falta DOM, eventos, rendering, Web APIs, storage, Workers |
 
