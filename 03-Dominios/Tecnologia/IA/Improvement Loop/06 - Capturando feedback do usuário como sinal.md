@@ -228,6 +228,8 @@ O feedback vira parte do loop quando segue um fluxo:
 
 Sem o passo 4 (backlog), feedback nunca vira ação. Sem o passo 8 (métrica de fechamento), o time não sabe se resolveu mesmo.
 
+Uma variante para times com produto B2B: adicione passo 2.5 entre Agregação e Triagem — **priorização por impacto de cliente**. Se um cliente Enterprise está 80% do thumbs-down volume, isso tem prioridade de investigação diferente de 80 usuários free-tier. Feedback de cliente de contrato pesa mais do que o número bruto sugere — tanto pelo impacto comercial quanto pela qualidade do sinal (usuários Enterprise geralmente articulam melhor o que está errado).
+
 ## Armadilhas comuns
 
 > [!warning] Coletar tudo e não analisar nada — feedback morre no banco
@@ -269,6 +271,10 @@ Com feedback do usuário capturado e integrado ao loop, a nota 07 fecha o galho 
 - **Sharma et al.** — *Towards Understanding Sycophancy in Language Models* ([arxiv:2310.13548](https://arxiv.org/abs/2310.13548)). Risco de treinar em thumbs up bruto.
 - **Anthropic** — [*Constitutional AI*](https://www.anthropic.com/research/constitutional-ai). Padrão pra reduzir dependência de feedback humano cru.
 - **Eugene Yan** — [*Evals are all you need*](https://eugeneyan.com/writing/evals/). Discute peso relativo de eval vs feedback.
+- **Aman Khan** — [*The anatomy of user feedback in LLM apps*](https://aman.ai/primers/ai/llm-feedback/). Taxonomia de sinais.
+- **Cohere** — [*Human preference data*](https://cohere.com/blog/preference-data). Como preference data de usuário vira sinal de fine-tuning.
+- **OpenAI** — [*Learning to summarize from human feedback*](https://openai.com/research/learning-to-summarize-with-human-feedback). Origem acadêmica do pipeline de feedback humano.
+- **Gallot et al.** — *Feedback Collection in the Wild* (2025). Estudo empírico de padrões de feedback em produtos de LLM.
 
 ## Veja também
 
@@ -277,3 +283,10 @@ Com feedback do usuário capturado e integrado ao loop, a nota 07 fecha o galho 
 - [[Observability]] — feedback como sinal no observability stack
 - [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]] — A/B em prod cruza com feedback
 - [[Segurança e Guardrails]] — sycophancy é falha de guardrail comportamental
+- [[02 - A-B testing de prompts]] — sinais de feedback alimentam métricas do A/B
+- [[05 - Auto-prompt optimization — DSPy e além]] — feedback curado entra no trainset do compiler
+- [[03-Dominios/Tecnologia/IA/Observability/03 - Tracing de LLMs — OpenTelemetry e Langfuse]] — trace_id que linkeia feedback ao log
+- [[Dicionário de IA#Thumbs up/down|Dicionário: Thumbs feedback]]
+- [[Dicionário de IA#Re-prompt rate|Dicionário: Re-prompt rate]]
+- [[Dicionário de IA#Sycophancy|Dicionário: Sycophancy]]
+- [[Dicionário de IA#Implicit feedback|Dicionário: Implicit feedback]]
