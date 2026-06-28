@@ -3,6 +3,7 @@ title: "Governance as architecture — EU AI Act, GDPR, licenças"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -24,6 +25,9 @@ aliases:
 
 > [!abstract] TL;DR
 > EU AI Act fica **totalmente aplicável em 2 de agosto de 2026**. Para times que usam ou desenvolvem IA, isso muda nível de obrigação. Para code generation: documentar qual modelo GPAI foi usado, qual spec governou geração, qual revisão humana ocorreu, quais modificações foram feitas. **Logs por mínimo 6 meses (Art. 19)**. GDPR continua valendo paralelamente: dados pessoais usados em treino, validação ou operação caem sob ambos. Para sair com isso de pé, tratar **governance as architecture**: gates de compliance no pipeline, não em PDF.
+
+> [!question]- Por que EU AI Act muda a arquitetura do sistema, não só a documentação?
+> Compliance tratado como documentação retroativa — "vamos documentar o que fizemos" — falha quando o sistema não foi projetado para gerar os registros que o compliance exige. EU AI Act Art. 19 exige logs automáticos de decisões, retenção mínima de 6 meses, rastreabilidade de qual modelo foi usado em qual saída. Isso não pode ser adicionado depois sem refatoração significativa. Sistemas que não têm audit trail imutável, que não registram qual versão do modelo gerou qual código, que não rastreiam revisão humana por PR — esses sistemas precisam ser redesenhados, não documentados. Daí "governance as architecture": os controles de compliance são gates no pipeline de CI/CD, não PDFs no Google Drive.
 
 ## O que muda em agosto de 2026
 
@@ -249,6 +253,46 @@ LGPD é o equivalente brasileiro do GDPR. Em estrutura, similar. **Não há aind
 - **Confundir AI Act com GDPR** — são complementares, ambos aplicam
 - **Open source = isento de tudo** — só de obrigações específicas, não de deployer
 - **License check superficial** — pacote dependency-of-dependency pode introduzir AGPL
+
+## Armadilhas comuns
+
+> [!warning] "Somos empresa brasileira/americana, EU AI Act não se aplica"
+> A lei tem efeito extraterritorial: qualquer empresa que oferece produtos ou serviços com IA para usuários na União Europeia está sujeita ao EU AI Act — independentemente de onde a empresa está sediada. Empresa brasileira com clientes na Alemanha, francesa, ou italiana precisa cumprir as mesmas obrigações de deployer. "Não temos sede na UE" não é isenção.
+
+> [!warning] Compliance via PDF não resiste a auditoria
+> Um relatório anual de compliance em PDF que descreve as práticas de 2026 não satisfaz Art. 19 — que exige logs automáticos e imutáveis, por evento, com timestamp verificável. Se um auditor pede o audit trail de quais decisões o modelo tomou em um sistema de crédito em março, a resposta não pode ser "está documentado no nosso processo de revisão". Compliance AI Act exige registros técnicos automáticos, não narrativa retroativa.
+
+> [!warning] License check superficial não pega dependency-of-dependency
+> Uma biblioteca com licença MIT pode depender de outra com licença AGPL em suas dependências transitivas. SCA que verifica só as dependências diretas declara o projeto "limpo" enquanto AGPL está dois níveis abaixo. O ataque via slopsquat torna isso especialmente perigoso: pacote malicioso com licença copyleft introduzido por alucinação pode "contaminar" a codebase proprietária. SCA precisa varrer a árvore completa de dependências, não só o primeiro nível.
+
+## Como explicar em inglês
+
+The EU AI Act's practical implication for software teams is not primarily a legal compliance exercise — it is an architectural one. The law requires automatic logging of AI system decisions, minimum six-month retention, traceability of which model version was used for which output, and documented human oversight per deployment. None of these can be bolted on after the system is built without significant refactoring.
+
+"Governance as architecture" means encoding compliance requirements as technical gates in the development pipeline: a CI job that attaches AI attribution metadata to every AI-generated PR, a license check that blocks AGPL and SSPL dependencies in SCA, PII detection that scans prompt logs before they're stored, and retention enforcement that verifies audit data is flowing to long-term storage. When compliance is code, it fails like code — and failing is auditable, fixable, and improvable. When compliance is documentation, it passes by assertion until an actual audit reveals the gap.
+
+**In a technical interview**, you might say:
+
+> "We treat regulatory compliance as an architectural concern, not a legal afterthought. EU AI Act Art. 19 requires six-month minimum retention of audit logs for AI system decisions — that's a pipeline requirement, not a documentation requirement. In practice, we have a CI job that attaches AI attribution metadata to every PR: which model was used, which spec governed generation, who reviewed it. License check in SCA blocks copyleft licenses at the dependency tree level. PII redaction runs before any prompt log is persisted. These are all code — they fail CI if not satisfied, which means they're enforced by the same mechanisms as our security controls."
+
+| PT | EN |
+|----|-----|
+| governança como arquitetura | governance as architecture |
+| avaliação de impacto | impact assessment |
+| trilha de auditoria | audit trail |
+| modelo de risco alto | high-risk AI system |
+| retenção de logs | log retention |
+| compliance como código | compliance as code |
+| extraterritorialidade | extraterritorial applicability |
+| licença de copyleft | copyleft license |
+| verificação de licenças | license check |
+| obrigação de deployer | deployer obligation |
+
+## O que vem a seguir
+
+Governance estabelece o framework regulatório. A nota final deste galho sintetiza tudo em um roadmap concreto: por onde começar, como sequenciar os controles, e como maturar a postura de segurança progressivamente ao longo do tempo, sem tentar implementar tudo de uma vez.
+
+- [[12 - O roadmap de segurança para times]] — sequência prática de implementação dos controles deste galho
 
 ## Veja também
 
