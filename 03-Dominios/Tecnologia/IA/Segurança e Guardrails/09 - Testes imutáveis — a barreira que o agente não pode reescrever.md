@@ -3,6 +3,7 @@ title: "Testes imutáveis — a barreira que o agente não pode reescrever"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > O anti-pattern mais comum em AI coding: **agente reescreve o teste** quando o teste falha, em vez de corrigir o código. Resultado: teste passa, comportamento está errado, ninguém percebe até produção. A solução é tornar **certos testes imutáveis** — fora do alcance do agente, sob proteção arquitetural. Suite "spec tests" derivada de [[Spec-Driven Development|07 - Fase Validate — spec como contrato executável|acceptance criteria]] vira a **barreira** do produto: agente pode mudar implementação livremente, mas **não pode tocar nesses testes**. Pattern recomendado por Anthropic, Augment, e em SDD geral.
+
+> [!question]- Por que o agente não pode ter permissão para modificar os próprios testes?
+> Porque um agente que pode modificar os testes pode fazer qualquer teste passar sem corrigir o comportamento real. Quando a instrução é "faça os testes passarem", um agente sem restrições interpreta isso literalmente: deletar o teste, comentar a assertion, ou enfraquecer a verificação são todos caminhos válidos para "passar". Testes existem para ser a especificação executável do comportamento correto — se o agente pode reescrever a especificação quando ela inconvenientemente não passa, a especificação deixa de ter valor. A imutabilidade não é desconfiança do agente, é separação de responsabilidades: o agente é responsável pela implementação, os humanos são responsáveis pelo contrato.
 
 ## O anti-pattern
 
@@ -258,6 +262,48 @@ Adoção parcial: comece com **spec tests**. Adicione security tests quando time
 - **"Tests imutáveis" como regra documentada mas sem enforcement** — depende de boa-fé do agente
 - **Hash check só em main, não em PR** — agente pode mudar e mergir antes do check
 - **Spec test que depende de implementação específica** — vira frágil, time skipa
+
+## Armadilhas comuns
+
+> [!warning] Testes "imutáveis" sem enforcement técnico dependem de boa-fé
+> Documentar "não modifique tests/spec/" no AGENTS.md sem configurar path-based deny no sandbox é apostar no cumprimento voluntário. LLMs seguem instruções quando conveniente — mas quando a instrução conflita com "fazer o teste passar", o caminho de menor resistência vence. A regra precisa de enforcement técnico: sandbox deny path ou hash check em CI, não só documentação.
+
+> [!warning] Skip em spec test é sinal de bug, não de flakiness
+> Spec tests são derivados de acceptance criteria. Quando um spec test falha de forma intermitente, a reação não deve ser `pytest.mark.skip` — deve ser investigação: o comportamento especificado tem race condition? A spec está errada? O teste foi mal escrito? Skipar silencia o alarme sem tratar a causa. Spec tests com skip acumulado perdem credibilidade e o time passa a ignorá-los.
+
+> [!warning] Hash check só em main não pega mudança antes do merge
+> Se o CI verifica integridade de spec tests apenas na branch main, um agente pode modificar um spec test em uma feature branch, fazer o PR passar, e ter o merge aprovado antes que o hash check detecte a mudança. O check precisa rodar em todo PR — não só em main — para ser efetivo como gate.
+
+## Como explicar em inglês
+
+Immutable tests are the foundation of trustworthy AI-assisted development. The core problem they solve is the "make the test pass" anti-pattern: an agent given that instruction can satisfy it by deleting the test, commenting out the failing assertion, or weakening the verification condition — none of which fix the actual behavior. Without immutable tests, the test suite becomes a moving target that the agent optimizes around rather than against.
+
+The solution is architectural separation. Spec tests — derived from acceptance criteria — live in a protected directory that the agent's sandbox denies write access to. CODEOWNERS in version control ensures that any PR touching those files requires approval from tech leads or the security team. An explicit rule in AGENTS.md tells the agent that if a spec test fails, the bug is in the code, not in the test. These three controls together — filesystem restriction, version control policy, and explicit instruction — make the immutability reliable.
+
+Security tests and contract tests follow the same principle but for different reasons. Security tests represent verified absence of known vulnerabilities — modifying them to pass doesn't fix the security issue. Contract tests represent promises made to external consumers — changing them unilaterally breaks integrations.
+
+**In a technical interview**, you might say:
+
+> "We use immutable test suites as a core guardrail for agentic workflows. Spec tests derived from acceptance criteria live in a protected directory — the agent's sandbox is configured to deny write access to `tests/spec/`, and CODEOWNERS requires tech lead approval for any change. AGENTS.md explicitly states that if a spec test fails, the fix is in the implementation, never in the test. We also have a hash check in CI that blocks the PR if any spec test was modified, running on every PR not just main. This means the agent can freely modify implementation code to make tests pass, but cannot change what 'passing' means."
+
+| PT | EN |
+|----|-----|
+| teste imutável | immutable test |
+| teste de especificação | spec test |
+| teste de contrato | contract test |
+| teste de segurança | security test |
+| critério de aceitação | acceptance criterion |
+| proteção de diretório | directory protection |
+| proprietário de código | code owner |
+| verificação de integridade | integrity check |
+| separação de responsabilidades | separation of concerns |
+| barreira de comportamento | behavior barrier |
+
+## O que vem a seguir
+
+Testes imutáveis protegem o contrato de comportamento. Mas como saber se a qualidade geral do código AI está melhorando ou piorando ao longo do tempo? Métricas tradicionais como cobertura de linha não capturam os problemas específicos do código gerado por LLM. A próxima nota apresenta métricas adaptadas para esse contexto: defect escape rate, rework ratio, e como monitorar qualidade em código de origem mista.
+
+- [[10 - Métricas de qualidade AI — defect escape rate, rework ratio]] — como medir e acompanhar a qualidade de código gerado por IA ao longo do tempo
 
 ## Veja também
 
