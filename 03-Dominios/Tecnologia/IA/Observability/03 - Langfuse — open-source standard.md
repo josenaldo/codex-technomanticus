@@ -1,9 +1,10 @@
 ---
 title: "03 - Langfuse — open-source standard"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - observability
@@ -22,7 +23,12 @@ aliases:
 > [!abstract] TL;DR
 > Langfuse virou referência OSS em LLM observability em 2026 — licença MIT, adoção significativa em times de produção, com SDK em múltiplas linguagens. Arquitetura é PostgreSQL (metadados) + ClickHouse (traces de alto volume) + Next.js (UI), tudo open. Dois jeitos de rodar: **Cloud** (`cloud.langfuse.com`, free tier generoso, pago acima de 50k observações/mês) ou **self-hosted** (Docker Compose em 5 min; Helm pra produção). O API surface é mínimo: decorator `@observe()` em Python ou wrappers em JS/TS/integrações com LangChain/LlamaIndex/Vercel AI SDK. Features além de tracing: **prompt management versionado**, **datasets pra eval offline**, **evaluators built-in (LLM-as-judge)**. Escolha Langfuse quando quer OSS sério, time de 3+ pessoas, e quer manter dados (self-host) ou quer começar rápido sem trocar de stack depois (Cloud é o mesmo produto).
 
+> [!question]- Qual é a diferença prática entre usar Langfuse Cloud e self-host — e quando a migração vale?
+> O produto é **idêntico**: o mesmo binário roda nos dois modos. Cloud poupa infra no começo; self-host dá controle total de dados (compliance, PII, custo de volume alto). A migração é direta porque não há formatos proprietários: traces estão no Postgres/ClickHouse que você já conhece. Regra prática: começa no Cloud, auto-hospeda quando o custo de observações ultrapassa ~$200/mês ou quando compliance exige dado no seu VPC.
+
 ## Por que Langfuse virou referência
+
+O ecossistema de LLM observability está maduro o suficiente pra ter um "padrão de fato" emergindo — e em 2026 Langfuse é o candidato mais sólido no espaço OSS. Por quê?
 
 Três fatores empilhados:
 
@@ -53,7 +59,9 @@ Helicone é friction-light (integra mudando `base_url`), mas é proxy-only — n
 - **ClickHouse** pra colunas — traces e observations chegam em volume alto, ClickHouse é o que aguenta queries analíticas em bilhões de linhas
 - **API server + UI** num único monólito Next.js — simplifica deploy
 
-Self-host mínimo: `docker compose up` puxa os 4 serviços e roda.
+Self-host mínimo: `docker compose up` puxa os 4 serviços e roda. Para produção, o Helm chart oficial adiciona réplicas, PVCs separados para Postgres e ClickHouse, e ingress configurável. A separação de bancos é intencional: Postgres lida com transações (prompts, projetos, usuários) enquanto ClickHouse aguentar o volume de append-only de traces sem degradar queries transacionais.
+
+Uma nota sobre versões: Langfuse tem releases mensais frequentes. O SDK Python v3 (`from langfuse import observe`) quebrou compatibilidade com v2 (`from langfuse.decorators import observe`) — ao atualizar, verifique o changelog antes de rodar `pip upgrade` em produção.
 
 ## Cloud vs self-host — decisão
 
@@ -201,7 +209,37 @@ Trace em produção vira candidato a dataset:
 
 Loop completo: produção → trace → dataset → eval → nova versão de prompt → deploy → produção.
 
-## Quando escolher Langfuse
+O ponto crítico é que dataset e eval vivem no mesmo produto que o tracing — sem exportar CSV nem integrar APIs diferentes. Isso encurta o ciclo de experimentação de dias pra horas.
+
+## Monitorando custo e uso no dashboard
+
+Além de qualidade, Langfuse agrega custo por modelo automaticamente se você passar `usage.input` e `usage.output` nos spans (ou usar integrações que fazem isso de graça).
+
+O dashboard mostra:
+
+- **Custo total por período** (diário/semanal/mensal)
+- **Custo por model** — detecta se um Claude Opus escapou quando deveria ser Sonnet
+- **Custo por usuário/sessão** — identifica uso anômalo
+- **Latência p50/p95/p99** por endpoint instrumentado
+
+Pra funcionar bem, o `usage` precisa ter preço por token configurado. Langfuse mantém preços de LLMs conhecidos (OpenAI, Anthropic, Google) atualizados na UI — modelos customizados ou self-hosted precisam de cadastro manual.
+
+```python
+langfuse_context.update_current_observation(
+    usage={
+        "input": response.usage.input_tokens,
+        "output": response.usage.output_tokens,
+        "unit": "TOKENS",       # default, pode omitir
+        "total_cost": 0.003,    # opcional: se você calculou fora
+    }
+)
+```
+
+Se a feature de custo automático não ativar, verifique se o `model` do span bate exatamente com o nome que Langfuse registra (ex: `claude-sonnet-4-6`, não `claude-sonnet`).
+
+## Quando escolher Langfuse — e quando não
+
+A decisão não é só técnica: é sobre onde está o gargalo da equipe. Se o gargalo é *velocidade de experimentação de prompt*, prompt management integrado poupa mais do que qualquer otimização de infra. Se o gargalo é *compliance de dado*, self-host é o desbloqueador.
 
 Aplica:
 
@@ -215,6 +253,38 @@ Não aplica (ou tem alternativa melhor):
 - **Dev solo com Claude Code** — overkill; ccusage + planilha basta
 - **Quer só proxy "drop in"** — Helicone resolve com mudança de `base_url`; OpenLLMetry resolve com OTel direto
 - **Já tem stack OTel madura (Datadog, Honeycomb)** — OpenLLMetry exporta pra eles direto, sem trazer outro backend
+
+## Armadilhas comuns
+
+> [!warning] Usar `langfuse.flush()` só em scripts de linha — e esquecer em workers de longa duração
+> O decorator `@observe()` envia spans em **batch assíncrono**. Num script curto que termina logo, o processo encerra antes do batch ir — e você perde todos os traces. `langfuse.flush()` no final do script resolve. Em workers de longa duração (FastAPI, Lambda quente), o flush automático por timeout cuida disso — forçar flush manual em cada request gera latência desnecessária. Saiba em qual contexto você está antes de copiar o exemplo.
+
+> [!warning] Confundir `score` de eval built-in com métrica de negócio
+> O LLM-as-judge do Langfuse gera um `score` de 0–1 configurável — útil pra detectar regressão de qualidade. Mas esse score é tão bom quanto a rubrica que você definiu. Times iniciantes configuram um avaliador genérico ("esta resposta é boa?") e passam a tratar o score como KPI de produto. Se a rubrica não está alinhada com o que o usuário valoriza, o score vai se movimentar independentemente da satisfação real. Calibre o rubric com exemplos reais antes de alertar sobre ele.
+
+> [!warning] Subir PII nos atributos principais do span em vez de span events
+> Langfuse indexa atributos principais (input, output, metadata) pra filtros e buscas — o que significa que chegam ao ClickHouse em claro e aparecem em dashboards. Se o input contém nome, CPF ou e-mail do usuário, vai poluir a UI e pode violar compliance. A prática correta é tratar PII antes de logar, ou mandar o dado bruto como **span event** (não indexado como coluna) e só indexar metadados anônimos. Veja [[08 - Privacy e PII em logs]] para o padrão de mascaramento.
+
+## Como explicar em inglês
+
+**Interview quote:** *"We use Langfuse as our central observability backend — it gives us trace hierarchies, prompt versioning, and offline eval datasets in a single MIT-licensed product we can self-host when compliance requires it."*
+
+| Português | Inglês |
+|---|---|
+| Decorator de observabilidade | Observability decorator |
+| Span filho vinculado automaticamente | Automatically linked child span |
+| Prompt versionado | Versioned prompt |
+| Eval offline com datasets | Offline eval with datasets |
+| Avaliador built-in (LLM-as-judge) | Built-in evaluator (LLM-as-judge) |
+| Self-hosted (própria infra) | Self-hosted (your own infrastructure) |
+| Flush assíncrono de batch | Async batch flush |
+| Migrar do Cloud pro self-host | Migrate from Cloud to self-hosted |
+
+## O que vem a seguir
+
+Com Langfuse configurado, você tem tracing, prompt versioning e eval num produto só.
+
+Langfuse é OSS e o mais completo — mas não é o único player. A nota 04 apresenta as alternativas: Helicone (proxy friction-light), Phoenix (foco em eval), e OpenLLMetry (camada de instrumentação OTel que exporta pra qualquer backend). Entender onde cada um se encaixa evita troca de stack custosa depois que o volume cresce.
 
 ## Fontes
 
