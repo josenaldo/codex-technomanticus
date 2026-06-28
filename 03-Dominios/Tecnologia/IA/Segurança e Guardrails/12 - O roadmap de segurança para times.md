@@ -3,6 +3,7 @@ title: "O roadmap de segurança para times"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Esta nota fecha a Trilha 6 com **plano de adoção progressiva** — semana a semana, do zero a um pipeline de segurança maduro para AI code. Não tente tudo de uma vez. Padrão recomendado: **3 fases**, cada uma de 4-6 semanas. Fase 1 instala **fundamentos** (type check, lint, test obrigatórios em CI); fase 2 adiciona **camadas defensivas** (SAST, SCA, sandbox, prompting policies); fase 3 traz **governance** (métricas, compliance, response playbooks). Ao final: time vai gerar com IA **mais rápido E mais seguro** que a baseline pré-IA.
+
+> [!question]- Por que o roadmap de segurança começa com observabilidade, não com controles?
+> Começar com controles avançados (SAST, sandbox, compliance) sem baseline de observabilidade é instalar alarme sem saber o que deveria soar. As semanas 1-4 estabelecem fundamentos que também criam observabilidade: type check em CI revela quantas alucinações chegam por semana, test coverage revela onde o código não tem verificação, lint failures revelam padrões problemáticos recorrentes. Sem essa linha de base, você não sabe se o SAST da semana 5 está bloqueando algo relevante, ou se sua intervenção de prompting da semana 8 teve algum efeito. Observabilidade primeiro significa que cada controle subsequente tem dados para provar seu valor.
 
 ## A premissa
 
@@ -303,6 +307,50 @@ Se sim → adoção bem-sucedida.
 Se não → ajuste calibração, talvez voltar uma fase.
 
 Sem essa pergunta sendo respondida com **dados**, adoção é fé.
+
+## Armadilhas comuns
+
+> [!warning] Implementar tudo de uma vez garante abandono
+> O roadmap em 3 fases não é burocracia — é psicologia de adoção. Times que tentam ativar SAST, SCA, sandbox, spec tests, compliance e métricas simultaneamente em duas semanas invariavelmente enfrentam resistência: muitas mudanças de processo ao mesmo tempo, muitos falsos positivos não calibrados, muito atrito antes de qualquer benefício percebido. O resultado é "o time desativou tudo e voltou ao anterior". Adoção progressiva significa que cada fase é estabilizada antes de adicionar a próxima.
+
+> [!warning] Pular Fase 1 para "ir logo para o relevante" destrói o roadmap
+> A tentação é pular para SAST e compliance porque "parece mais sério". Mas SAST sem type check configurado e sem test suite obrigatório é ruído sobre ruído — o time não tem baseline para distinguir vulnerabilidade nova de problema existente, e os findings de SAST não têm contexto de "isso passa nos testes?". Fase 1 é fundação, não preliminar.
+
+> [!warning] Gates sem buy-in do time tornam-se gates burlados
+> CI que bloqueia PRs sem explicar por que, sem treinamento sobre o que o gate está protegendo, sem espaço para discussão de falsos positivos — esse CI gera ressentimento. Devs aprendem a forçar merge, desativar rules localmente, ou criar PRs que contornam os gates. Buy-in técnico (explicar o problema que o gate resolve) e buy-in cultural (o time decide as regras juntos) são pré-requisitos para que os gates funcionem.
+
+## Como explicar em inglês
+
+A security roadmap for AI-assisted development needs to be progressive because two failure modes exist: moving too slowly leaves the production environment vulnerable to the 45% defect rate that Veracode documented, and moving too fast creates compliance theater — a set of gates that look rigorous but that the team has learned to route around because they're miscalibrated and disruptive.
+
+The three-phase structure addresses this. Phase one establishes observability: type checking and linting in CI reveal what categories of hallucinations are occurring; test coverage gives a baseline for measuring improvement; pre-commit hooks give developers immediate feedback before they reach CI. Only with this instrumentation in place does phase two make sense — you can now see whether SAST is catching real vulnerabilities or generating noise, and calibrate accordingly. Phase three adds governance on top of a functional security foundation, which means the metrics are meaningful and the compliance automation is enforcing something real.
+
+The closing question for the entire roadmap is empirical: after twelve weeks, are we generating code faster and at equal or better quality than before AI adoption? If the data says yes, adoption succeeded. If not, the roadmap tells you exactly which phase needs attention.
+
+**In a technical interview**, you might say:
+
+> "When I introduce AI security tooling to a team, I follow a three-phase roadmap that prioritizes observability before controls. Phase one — type check, linting, test coverage, basic sandbox — establishes what the baseline looks like and gives us data to prove subsequent phases are working. Phase two adds SAST with two complementary scanners, SCA for supply chain, and refined permission boundaries. Phase three is governance: quality metrics dashboard, immutable spec tests, and compliance pipeline for AI Act if relevant. The key principle is progressive adoption: each phase is stabilized before adding the next, and buy-in from the team precedes gate enforcement."
+
+| PT | EN |
+|----|-----|
+| adoção progressiva | progressive adoption |
+| fundamentos de segurança | security foundations |
+| camadas defensivas | defensive layers |
+| governança como código | governance as code |
+| buy-in da equipe | team buy-in |
+| calibração de regras | rule calibration |
+| falso positivo de SAST | SAST false positive |
+| linha de base | baseline |
+| roadmap de 12 semanas | 12-week roadmap |
+| velocity líquida | net velocity |
+
+## O que vem a seguir
+
+Esta é a nota de fechamento da Trilha 6 — Segurança e Guardrails. O roadmap de 12 semanas sintetiza tudo o que o galho construiu: código AI é untrusted (nota 01), ataques via alucinação existem (notas 02-03), validação precisa de camadas (nota 04), ferramentas automatizam parte dela (notas 05-06), prompting e review mudam o processo (notas 07-08), testes imutáveis protegem o contrato (nota 09), métricas revelam se funciona (nota 10), e governance embute compliance na arquitetura (nota 11).
+
+O próximo passo natural não é mais uma ferramenta ou controle — é execução. Volte à nota 01 e trace o caminho completo: qual das 3 fases do roadmap você já tem? O que está faltando? O roadmap existe para ser personalizado ao contexto do seu time, não seguido cegamente.
+
+- [[01 - Código gerado por IA é untrusted]] — o ponto de partida do galho: por que todo código AI precisa de validação externa
 
 ## Veja também
 
