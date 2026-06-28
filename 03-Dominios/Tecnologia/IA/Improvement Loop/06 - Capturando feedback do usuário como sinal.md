@@ -1,9 +1,10 @@
 ---
 title: "06 - Capturando feedback do usuário como sinal"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - improvement-loop
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Feedback do usuário é o sinal **mais rico e mais ruidoso** que entra no Improvement Loop. Dividir em **explícito** (thumbs up/down, star rating, free-text complaint) e **implícito** (re-prompt rate, abandonment, edit-after-paste, copy/share, time-to-action). Cada sinal tem **custo de coleta** diferente e **noise-to-signal** diferente; tratá-los uniformemente é erro comum. Pegadinhas: confirmation bias (usuário fica feliz com resposta confirmadora mas errada), popularity ≠ qualidade (resposta mais reaproveitada pode ser a mais genérica). Quando feedback contradiz eval automatizado: depende do que cada um mede. Eval mede **alinhamento com rubrica**; feedback mede **utilidade percebida**. Os dois importam, mas servem decisões diferentes. Tools 2026: Langfuse, Braintrust, Helicone têm feedback API nativa; rolar próprio é tabela `feedbacks` com FK no trace + endpoint.
+
+> [!question]- Como começar a coletar feedback sem interromper o fluxo do usuário nem adicionar fadiga de feedback?
+> A receita minimal: uma única linha de thumbs up/down ao lado de cada resposta, sem modal obrigatório. Se o usuário clica no thumbs down, aparece (opcionalmente) um campo de texto "o que deu errado?". Esse fluxo tem o menor custo cognitivo possível e captura o sinal mais acionável. Não implemente star rating como primeiro passo — escala de 5 pontos não é calibrada entre usuários e gera dados ruidosos que exigem modelagem mais complexa. Não implemente obrigatoriedade — feedback forçado vira viés de aborrecimento. Em relação ao timing: mostrar o botão de feedback 3-5 segundos após a resposta aparecer (não imediatamente) aumenta CTR porque o usuário já leu a resposta. Depois de 30 dias coletando dados, avalie se faz sentido adicionar categorias (free-text ou dropdown) pra casos de thumbs down.
 
 ## Por que feedback do usuário entra no loop
 
@@ -223,6 +227,38 @@ O feedback vira parte do loop quando segue um fluxo:
 ```
 
 Sem o passo 4 (backlog), feedback nunca vira ação. Sem o passo 8 (métrica de fechamento), o time não sabe se resolveu mesmo.
+
+## Armadilhas comuns
+
+> [!warning] Coletar tudo e não analisar nada — feedback morre no banco
+> A ilusão do "coletamos feedback" é acumular thumbs em tabela sem processo de triagem regular. Dados crescem, ninguém lê. Meses depois, o time descobre que havia padrão de reclamação sobre o idioma PT-EU que nunca chegou ao backlog. O feedback precisa de **dono** e **cadência**: uma person designada revisa amostra de feedbacks negativos semanalmente, categoriza, e atualiza o backlog. Sem cadência, feedback é métrica de vaidade (taxa de thumbs up no dashboard) que não vira ação. A triagem não precisa ser longa — 30 minutos semanais revisando amostras estratificadas por tipo já é suficiente pra identificar padrões novos.
+
+> [!warning] Treinar judge em feedback de usuário sem filtrar sycophancy — o modelo aprende a bajular
+> Feedback explícito de usuário tem confirmation bias estrutural: respostas que concordam com a hipótese do usuário recebem mais thumbs up, independente de correção factual. Se você usa esse feedback pra treinar (ou calibrar) um LLM-as-judge, o judge aprende a dar score alto pra respostas que confirmam, não pra respostas corretas. O sinal de treinamento entra, a sycophancy sai. A correção começa antes da coleta: identifique no seu dataset feedbacks onde o usuário deu thumbs up em resposta que você sabe ser factualmente errada — esses casos mostram a magnitude do bias. Depois, filtre ou pese por tipo de feedback: pese thumbs down mais do que thumbs up; priorize bug reports sobre star ratings; use sinais implícitos (re-prompt rate) como sanity check do explícito.
+
+> [!warning] Feedback sem trace_id — não saber qual versão de prompt gerou aquela resposta
+> Thumbs down chegou. Ótimo. Mas: de qual resposta? Com qual versão do prompt? Com qual modelo? Em qual contexto? Sem o `trace_id` vinculado ao feedback, você não consegue responder nenhuma dessas perguntas — o feedback é sinal de que há um problema, mas não onde. O sistema de coleta deve linkar cada feedback ao `trace_id` no momento da coleta, não depois. É responsabilidade do frontend passar o trace_id como parâmetro quando renderiza o botão de feedback. Na dúvida de como estruturar, siga o padrão da Score API do Langfuse: feedback é um score com `trace_id` como FK.
+
+## Como explicar em inglês
+
+**Interview quote:** *"We capture two kinds of user signals: explicit — thumbs up/down and structured complaints — and implicit — re-prompt rate, abandonment, edit-after-paste, copy rate. Each signal has a different noise-to-signal ratio and collection cost, so we weight them differently. Explicit feedback is sparse but high-signal when negative; implicit is high-volume but requires modeling to interpret. The key discipline is linking every feedback to a trace_id so we can always answer: which prompt version, which model, what context produced this?"*
+
+| Português | Inglês |
+|---|---|
+| Curtida / descurtida (thumbs) | Thumbs up / thumbs down |
+| Taxa de re-prompt | Re-prompt rate |
+| Abandono da sessão | Session abandonment |
+| Editar após colar (implícito) | Edit-after-paste (implicit signal) |
+| Viés de confirmação | Confirmation bias |
+| Popularidade ≠ qualidade | Popularity ≠ quality |
+| Feedback explícito | Explicit feedback |
+| Sinal implícito | Implicit signal |
+| Relação de ruído por sinal | Noise-to-signal ratio |
+| Sycofantia (bajulação) | Sycophancy |
+
+## O que vem a seguir
+
+Com feedback do usuário capturado e integrado ao loop, a nota 07 fecha o galho cobrindo o **portão final**: eval gates em CI — como transformar o golden set em bloqueio automático de PR, impedindo que mudanças de prompt que causem regressão cheguem à produção sem aviso.
 
 ## Fontes
 
