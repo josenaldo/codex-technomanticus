@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Eval em CI/CD é o que transforma EDD ([[01 - Eval-driven development — a disciplina]]) de boa intenção em disciplina forçada. Padrão canônico: **eval gate em PR** que bloqueia merge se regressão > threshold X. Cada PR de prompt/modelo dispara golden set; merge em main dispara full eval + atualização de baseline. Decisões de design: tamanho de sample por PR (subset top-N pra velocidade vs full pra rigor), threshold por categoria (safety = 0, calibration = 5-10%), quarentena de evals flaky (não-determinísticos precisam tolerância), failing loudly (Slack/PR comment) vs graciosamente (warn-only em early stage). Custo realista de eval por PR: $0.50-$5. Pivot quando custo cresce: amostragem estratificada.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende os princípios de EDD (nota 01), o que é um golden set (nota 02), como funciona regression testing (nota 05), e o básico de CI/CD — o que é um pull request, o que é um pipeline automatizado, o que significa "bloquear merge". Esta nota não ensina CI/CD geral; assume que você já tem GitHub Actions ou equivalente, e foca nas decisões específicas de como plugar eval nesse pipeline. Se você nunca configurou um pipeline de CI, leia primeiro sobre GitHub Actions.
 
 ## O contrato eval-em-CI
 
@@ -397,6 +401,42 @@ Observações:
 | 5 | + A/B em prod; baseline auto-update; dashboard ops |
 
 Meta pra 2026: nível 3 como padrão; nível 5 em produtos críticos.
+
+## Armadilhas comuns
+
+> [!warning] Bloquear merge desde o primeiro dia sem calibração gradual
+> A intuição é razoável: se evals importam, devem bloquear desde o início. Na prática, quando o pipeline bloqueia com thresholds não-calibrados, a primeira semana produz falsos positivos, o time passa a semana "brigando com o CI" em vez de trabalhar, e alguém propõe desativar o eval gate. A adoção que funciona é gradual: começa warn-only com comentário em PR, em 30-45 dias você tem dados sobre a taxa de falsos positivos, calibra os thresholds, e aí ativa o bloqueio. Começar com block em safety apenas (tolerance zero) é razoável desde o dia 1 — é um caso específico bem definido. Bloquear em correctness antes de calibrar o que "correctness" significa no seu sistema é pedir para o time desativar o eval.
+
+> [!warning] Evals flaky sem quarentena — CI que ninguém acredita
+> LLMs são não-determinísticos. Com `temperature=0`, ainda há variação por infra (cache, versão de modelo, tokenizer update). Alguns itens do golden set vão ser flaky — passam em 85% das runs, falham em 15%. Se esses itens bloqueiam merge, você cria "CIs fantasmas": rerun do CI resolve, ninguém investiga a raiz. Em semanas, todo mundo aprende a simplesmente reruns até passar. O eval gate vira ruído. A solução é quarentena formal: itens flaky detectados são marcados, rodam em CI mas não bloqueiam merge, entram em revisão periódica (60-90 dias). CI que o time confia é CI que só falha quando há regressão real.
+
+> [!warning] Rodar full eval com modelo forte em todo PR — custo incontrolável
+> Full eval com LLM-as-judge usando Opus 4 ou GPT-5 em 200 itens pode custar $15-40 por run. Com 10 PRs/dia, isso é $150-400/dia antes de contar o custo do modelo em produção. Times que não colocam custo no radar descobrem isso na fatura do mês. A estrutura certa é fast/full split: PR roda subset crítico (top-20-30 itens, $0.15-1.50 por run) com judge barato (Sonnet, Flash); merge em main roda full eval, opcionalmente com judge forte. Judge forte entra no full eval semanal, não em cada PR. Configure budget alerts no provider antes de expandir o golden set.
+
+## Como explicar em inglês
+
+Em entrevistas sobre engineering practices em times de IA, eval em CI é o que separa times que operam com confiança de times que "pray before deploy":
+
+> "We treat prompt changes like code changes — they go through a CI gate. Every pull request that touches prompts or LLM config triggers a fast eval on the critical subset of our golden set. If there's a safety regression, the merge is blocked, full stop. Correctness regression above threshold also blocks. Calibration and latency have looser tolerance. When we merge to main, a full eval runs and updates the baseline in git. The key design decisions are: graduated rollout starting with warn-only, separate thresholds per category, quarantining flaky items, and keeping PR eval cheap with a small subset and a lighter judge model."
+
+| Português | Inglês |
+|-----------|--------|
+| gate de eval em CI | CI eval gate |
+| bloquear merge | block merge |
+| subset crítico | critical subset |
+| amostragem estratificada | stratified sampling |
+| baseline versionado | versioned baseline |
+| quarentena de eval flaky | flaky eval quarantine |
+| bloqueio progressivo | graduated block rollout |
+| notificação de regressão | regression notification |
+| split rápido/completo | fast/full eval split |
+| custo por run | cost per eval run |
+
+## O que vem a seguir
+
+Com CI/CD cobrindo o ciclo de deploy, a nota 08 fecha o galho com o panorama completo: como a estratégia de eval muda dependendo do contexto — sistema puro de LLM, RAG, agente, ou comparação de prompts. Cada contexto tem métricas específicas, armadilhas específicas, e onde o golden set foca.
+
+Ver [[08 - Eval por contexto — LLM, RAG, agent, prompt]].
 
 ## Veja também
 
