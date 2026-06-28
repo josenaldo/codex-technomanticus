@@ -1,9 +1,10 @@
 ---
 title: "07 - Eval gates em CI — quando bloquear merge"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - improvement-loop
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[03-Dominios/Tecnologia/IA/Evaluation/07 - Eval em CI-CD|Evaluation/07]] cobre o **pipeline** de eval em CI/CD (configuração, sampling, GitHub Actions). Esta nota foca o **gate mechanism do Improvement Loop**: regra de regressão por categoria que bloqueia merge, calibração do threshold, sampling pra fast feedback em PR, quarentena de evals flaky, e quando falhar **graciosamente** (warn) vs **alto** (block). Princípio central: threshold uniforme é anti-padrão (safety = 0 tolerância, calibration = 5-10% tolerância). Métrica do gate é "regression delta" (vs baseline da main), não "score absoluto". Sem quarentena de flaky, gate vira ruído e time ignora; sem audit de override, gate vira teatro. Custo realista: $0.50-5 por PR pra time típico (golden set 100-300, modelo médio). Onde mora o gate: GitHub Actions / GitLab CI / similar; integração com Promptfoo, Braintrust, Langfuse.
+
+> [!question]- Quando devo bloquear vs apenas avisar?
+> Bloqueie quando o custo de deixar passar é alto: regressão em safety, quebra de schema, correctness acima do threshold. Use warn-only quando a regressão é em categorias subjetivas (tom, estilo) ou quando o gate ainda está em fase de calibração. A regra prática: se você voltaria ao PR em caso de falha, bloqueie; se olharia só "para saber", avise. Em adoção inicial, comece tudo como warn-only por 2-4 semanas para calibrar os thresholds com dados reais antes de ativar bloqueios.
 
 ## Ponte com Evaluation/07
 
@@ -315,6 +319,17 @@ Princípios do comment:
 - **Link pra dashboard** — pra investigação profunda, não tudo no comment
 - **Reposta atualiza em vez de duplicar** — PR não vira lixão de comments
 
+## Armadilhas comuns
+
+> [!warning] Threshold uniforme para todas as categorias
+> Usar um único threshold para safety, correctness e tom é o erro mais comum. Safety com 5% de tolerância deixa passar falhas críticas; tom com 0% de tolerância bloqueia merges em variância natural. Defina `regression_max` por categoria e deixe `block_action` variar: `block` para críticas, `warn` para subjetivas.
+
+> [!warning] Ativar block desde o primeiro dia
+> Gate que bloqueia sem calibração gera pushback imediato — o time vira adversário do gate, não aliado. Evals flaky bloqueiam merges legítimos; thresholds mal calibrados bloqueiam quase tudo. O padrão correto: warn-only por 2-4 semanas, depois block gradual começando pelas categorias críticas. Gate que o time resiste é gate desativado.
+
+> [!warning] Override sem audit log
+> `[skip-eval]` sem registro é um gate com porta dos fundos permanentemente aberta. Sem audit, o time usa o override como rotina, não como válvula de emergência. Sempre log: quem usou, quando, qual PR, e dispare alerta de Slack. Se overrides ultrapassam N por mês, é sinal de gate mal calibrado — revisite os thresholds.
+
 ## Fontes
 
 - **Promptfoo** — [*CI/CD integration*](https://www.promptfoo.dev/docs/integrations/ci-cd/).
@@ -323,6 +338,30 @@ Princípios do comment:
 - **Hamel Husain** — [*Your AI Product Needs Evals*](https://hamel.dev/blog/posts/evals/).
 - **GitHub Actions** — [docs](https://docs.github.com/en/actions).
 - **Anthropic** — *Anthropic cookbook — eval patterns* (2026).
+
+## Como explicar em inglês
+
+*"An eval gate is a CI check that compares metrics from a PR's prompt changes against a baseline and automatically blocks merge if a regression exceeds the declared threshold — zero tolerance for safety, up to 15% for subjective categories like tone."*
+
+| Português | Inglês |
+|---|---|
+| gate de eval | eval gate / quality gate |
+| limiar / threshold | threshold / regression budget |
+| delta de regressão | regression delta |
+| bloquear merge | block merge / fail the gate |
+| aviso sem bloqueio | warn-only |
+| golden set | golden set / evaluation dataset |
+| item flaky | flaky eval item |
+| quarentena de eval | eval quarantine |
+| override com audit | audited override |
+| rebless do baseline | baseline rebless / baseline update |
+| subset crítico | critical subset / priority subset |
+
+## O que vem a seguir
+
+Este é o último capítulo do galho **Improvement Loop**. Você percorreu o ciclo completo: medir (eval → diff → ship), experimentar (A/B testing), versionar (semver para prompts), operacionalizar em produção (champion-challenger), automatizar a otimização (DSPy), capturar sinal de usuário, e fechar o ciclo com gates de qualidade em CI.
+
+O próximo passo natural é **instrumentar o ambiente de desenvolvimento com ferramentas de IA** — não apenas usar o loop, mas integrar assistentes que aceleram a escrita de prompts, código, e evals. Esse é o tema do galho [[03-Dominios/Tecnologia/IA/Ferramentas de IA/]] — começando pelo ecossistema de LLMs disponíveis hoje e as ferramentas que os acessam.
 
 ## Veja também
 
