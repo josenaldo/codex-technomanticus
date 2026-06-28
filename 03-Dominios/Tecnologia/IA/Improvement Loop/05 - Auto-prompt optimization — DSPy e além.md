@@ -294,3 +294,7 @@ Auto-prompt cobre a otimização do diff. A nota 06 fecha um outro ângulo do lo
 - [[Dicionário de IA#Teleprompter|Dicionário: Teleprompter (DSPy)]]
 - [[Dicionário de IA#Auto-prompt|Dicionário: Auto-prompt optimization]]
 - [[Dicionário de IA#BootstrapFewShot|Dicionário: BootstrapFewShot]]
+- [[Dicionário de IA#MIPRO|Dicionário: MIPRO]]
+- [[Dicionário de IA#Eval function|Dicionário: Eval function]]
+- [[Dicionário de IA#Trainset|Dicionário: Trainset (prompt optimization)]]
+- [[07 - Eval gates em CI — quando bloquear merge]] — onde o eval function do DSPy vira gate de pipeline
