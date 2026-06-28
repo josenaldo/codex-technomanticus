@@ -1,9 +1,10 @@
 ---
 title: "06 - Iteração visual — controlled changes"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - image-prompting
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Iteração em image prompting é o mesmo princípio da iteração em prompt engineering pra texto: **uma mudança por vez, com hipótese explícita**. O padrão `Keep: / Change: / Do not:` adaptado pra imagem economiza horas. Quando muda demais de uma vez, perde a referência do que funcionou. Além de re-prompting, modelos modernos oferecem ferramentas de edição cirúrgica: inpainting (mudar só uma região), image-to-image (variação controlada), reference image (`--cref`, IP-Adapter), e ControlNet (controlar pose/edge/depth). Esta nota cobre o padrão Keep/Change/Do-not pra imagem e as principais ferramentas de edição em 2026.
+
+> [!question]- Quantas iterações são "normais"? E quando devo aceitar que o output é "bom o suficiente"?
+> Para assets simples (hero de blog, thumbnail), 3-5 iterações focadas são normais; acima de 10, é sinal de brief vago ou modelo errado pra entregável. Para assets complexos (poster com texto crítico, ilustração de brand), 5-15 iterações podem ser necessárias antes de entrar em pós-processamento. O critério "bom o suficiente" não é "perfeito" — é "cumpre o brief e funciona no canal". Reveja o Goal do template (nota 02): o output serve ao objetivo? Vai funcionar em thumbnail small? Tem espaço suficiente pra overlay de texto? Se sim, aceite. Perfeição visual sem critério é a maior fonte de iteração desnecessária.
 
 ## O princípio: uma mudança por vez
 
@@ -146,6 +150,78 @@ Caso clássico: mockup precisa ter exatamente esse layout de UI. Sketch o wirefr
 | Layout estrutural exato | ControlNet (SD/FLUX) | Força estrutura |
 | Tipografia importante (texto preciso) | Gerar background sem texto + Figma | Modelo erra texto |
 
+## Código: image-to-image e inpainting via API
+
+### OpenAI — inpainting via `images.edit`
+
+```python
+from openai import OpenAI
+from pathlib import Path
+
+client = OpenAI()
+
+# Inpainting: mudar só a região coberta pela máscara
+# Máscara: PNG com RGBA onde alpha=0 = região a mudar; alpha=255 = preservar
+response = client.images.edit(
+    model="dall-e-2",    # dall-e-2 é o que suporta edit em 2026
+    image=open("hero_rag_v2.png", "rb"),
+    mask=open("mask_subject_only.png", "rb"),  # alfa transparente onde mudar
+    prompt=(
+        "Substitua o elemento na região mascarada por uma estante de livros "
+        "translúcida com fluxo de luz azul por entre as prateleiras. "
+        "Mantenha o estilo flat-isometric e a paleta dark blue + ciano."
+    ),
+    n=2,
+    size="1024x1024",
+)
+
+for i, img_data in enumerate(response.data):
+    # URL temporária — baixe o output antes de expirar
+    print(f"v{i+1}: {img_data.url}")
+```
+
+### FLUX.1 Fill — inpainting/outpainting via BFL API
+
+```python
+import requests, time
+
+BFL_KEY = "SUA_CHAVE_BFL"
+headers = {"x-key": BFL_KEY, "Content-Type": "application/json"}
+
+import base64
+from pathlib import Path
+
+image_b64 = base64.b64encode(Path("hero_rag_v2.png").read_bytes()).decode()
+mask_b64 = base64.b64encode(Path("mask_right_region.png").read_bytes()).decode()
+
+# Submit task
+resp = requests.post(
+    "https://api.bfl.ml/v1/flux-fill-pro",
+    json={
+        "image": image_b64,
+        "mask": mask_b64,
+        "prompt": "espaço negativo limpo à direita, gradiente suave de dark blue pra transparência",
+        "steps": 30,
+    },
+    headers=headers,
+)
+task_id = resp.json()["id"]
+
+# Poll result
+while True:
+    result = requests.get(
+        "https://api.bfl.ml/v1/get_result",
+        params={"id": task_id},
+        headers=headers,
+    ).json()
+    if result["status"] == "Ready":
+        print(result["result"]["sample"])
+        break
+    time.sleep(2)
+```
+
+Outpainting: passe mask cobrindo a borda que quer expandir; ajuste o tamanho do canvas no request.
+
 ## A armadilha das 30 iterações
 
 Tendência humana: vai iterando, vai iterando, e cada vez fica mais distante do output que era "bom o bastante" 5 iterações atrás. Sintomas:
@@ -165,6 +241,39 @@ Antídotos:
 
 Antes de cada iteração, escreva o `Keep / Change / Do not` em texto curto. Mesmo que pra você mesmo num scratchpad. Esse hábito força a articular hipótese e proíbe a mudança caótica.
 
+Uma variante útil pra trabalho em equipe: compartilhe o Keep/Change/Do-not junto com o output ao pedir feedback. "Aqui está a v3 — estou preservando X e Y, quero mudar Z na próxima iteração, e não quero que apareça W. O que você vê que eu não vi?" Isso evita feedback que reverte o que você intencionalmente preservou.
+
+## Armadilhas comuns
+
+> [!warning] Mudar 3+ variáveis por iteração — perde a referência do que funcionou
+> "Vou mudar a paleta, o subject, a composição e adicionar constraints de texto" numa única iteração entrega um output que não você não consegue rastrear pra hipótese alguma. Se o output melhorou, não sabe o que ajudou. Se piorou, não sabe o que reverter. A disciplina de uma variável por vez — com o Keep/Change/Do-not escrito antes de enviar — é o que separa iteração convergente de reroll aleatório. O investimento de 2 minutos por iteração de planejamento economiza 30 minutos de retrabalho.
+
+> [!warning] Continuar iterando após "bom o suficiente" sem reler o brief — deriva do objetivo original
+> Após 5+ iterações, o objetivo subconsciente muda de "cumprir o brief" para "melhorar o último output". Você começa a ajustar coisas que não estavam no brief. O output pode estar tecnicamente superior à v3 mas longe do brief original. Antes de cada iteração, releia o Goal/Deliverable do template. Se a v4 já cumpria → aceite a v4. Se a v7 está melhor mas não cumpre o brief melhor → reveja qual critério você está otimizando.
+
+> [!warning] Usar reroll aleatório em vez de edição cirúrgica quando só uma parte está errada
+> "O hero ficou perfeito menos a sombra que ficou estranha no canto superior esquerdo" → reroll regenera o hero inteiro, incluindo as partes que estavam boas. Com 50-60% de chance, a nova versão tem o mesmo problema em lugar diferente ou perde o que estava bom. A ferramenta certa é inpaint: máscara sobre a região problemática, prompt descrevendo a solução, regeneração cirúrgica. Economiza o DNA do hero que funcionou.
+
+## Como explicar em inglês
+
+**Interview quote:** *"Visual iteration follows the same principle as text prompt iteration: change one variable at a time with an explicit hypothesis. The Keep/Change/Do-not pattern adapted for images prevents chaotic rerolls. For surgical fixes, we use inpainting instead of full regeneration — mask the problem region, describe the fix, preserve what's working. Beyond 10 iterations without convergence, it's usually a brief problem, not a prompt problem."*
+
+| Português | Inglês |
+|---|---|
+| Uma mudança por vez com hipótese | One variable at a time with hypothesis |
+| Keep / Change / Do not | Keep / Change / Do not |
+| Reroll aleatório | Random reroll |
+| Edição cirúrgica (inpainting) | Surgical editing (inpainting) |
+| Outpainting (estender canvas) | Outpainting (canvas extension) |
+| Image-to-image (variação controlada) | Image-to-image (controlled variation) |
+| Força de denoise (`strength`) | Denoising strength |
+| Consistência de estilo entre peças | Style consistency across pieces |
+| Versionar prompts e outputs | Version prompts and outputs |
+
+## O que vem a seguir
+
+Com iteração disciplinada coberta, a nota 07 fecha o galho com os **limites reais** em 2026 — onde iteração visual, independente de quanta disciplina você aplique, não resolve: diagramas técnicos precisos, texto exato em múltiplas caixas, org charts, ER diagrams. E o padrão híbrido que separa o visual estético (modelo de imagem) do visual preciso (Mermaid/Excalidraw).
+
 ## Fontes
 
 - **@hooeem** — *Become an AI Engineer*, cap #16 (Image Prompting). Padrão de iteração.
@@ -172,9 +281,20 @@ Antes de cada iteração, escreva o `Keep / Change / Do not` em texto curto. Mes
 - **Black Forest Labs** — *FLUX.1 Tools* ([docs](https://docs.bfl.ai/)). Fill, Depth, Canny, Redux.
 - **Midjourney** — *Documentation* ([docs](https://docs.midjourney.com/)). `--sref`, `--cref`.
 - **Stability AI** — *ControlNet docs* ([docs](https://stability.ai/stable-image)). Controle estrutural.
+- **Automatic1111 / ComfyUI** — *img2img guide* (wiki.oobabooga.ml). `strength`/denoising.
+- **IP-Adapter** — *Reference image without LoRA* (arxiv 2308.06721). IP-Adapter pra consistência sem finetune.
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/IA/Prompt Engineering/07 - Iteration patterns — keep, change, do-not]] — padrão original em texto, fonte do adaptado aqui
+- [[02 - Deliverable-first, não scene-first]] — o brief que define o critério de "bom o suficiente"
+- [[03 - Modelos de imagem 2026 — DALL-E, Imagen, Midjourney, FLUX, SD]] — ferramentas de inpainting por provider
 - [[05 - Templates por entregável — poster, infográfico, mockup, thumbnail]] — ponto de partida das iterações
 - [[07 - Geração de diagramas e ilustrações técnicas]] — onde a iteração visual encontra limite real
+- [[03-Dominios/Tecnologia/IA/Prompt Engineering/07 - Iteration patterns — keep, change, do-not]] — padrão original em texto, fonte do adaptado aqui
+- [[Dicionário de IA#Inpainting|Dicionário: Inpainting]]
+- [[Dicionário de IA#ControlNet|Dicionário: ControlNet]]
+- [[Dicionário de IA#Image-to-image|Dicionário: Image-to-image]]
+- [[Dicionário de IA#Outpainting|Dicionário: Outpainting]]
+- [[Dicionário de IA#Reference image|Dicionário: Reference image]]
+- [[Dicionário de IA#Strength (denoising)|Dicionário: Strength]]
+- [[04 - Anatomia de um prompt visual — canvas, composição, estilo]] — vocabulário que entra no Keep/Change/Do-not
