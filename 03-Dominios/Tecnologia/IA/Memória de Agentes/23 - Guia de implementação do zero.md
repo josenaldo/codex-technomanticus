@@ -1,8 +1,9 @@
 ---
 title: "Guia de implementação do zero"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,10 @@ aliases:
 
 > [!abstract] TL;DR
 > Existem dois caminhos práticos para implementar memória de agentes baseada no LLM Wiki Pattern: **(1) minimal seguindo o gist do Karpathy** — pasta `raw/` + `wiki/` + `CLAUDE.md` montada manualmente em cerca de 30 minutos; **(2) pronto via basic-memory MCP** — Obsidian + Claude com integração nativa em cerca de 10 minutos. Esta nota guia ambos passo a passo, mostra um template de `CLAUDE.md` reutilizável e fornece critério para decidir quando ir além do mínimo. A escolha não é "qual é melhor" e sim "qual encaixa no objetivo": aprender o pattern por dentro vs. produzir resultado rápido com ferramenta madura.
+
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: o template de `CLAUDE.md` apresentado aqui é genérico — como adaptar as seções de "operações" para domínios altamente especializados (ex: jurídico, médico) sem tornar o schema tão denso que o agente ignore partes dele? Existe pesquisa ou prática consolidada sobre o tamanho ideal de um `CLAUDE.md`?
+> - Lacuna potencial: a nota descreve a estrutura de pastas e as operações mas não aprofunda como lidar com conflitos de schema — quando o agente interpreta uma regra de forma inesperada, qual processo iterativo (testar → observar desvio → ajustar regra) funciona melhor na prática?
 
 ## O que é
 
@@ -107,12 +112,34 @@ Este é um ponto de partida funcional. Copie, ajuste o tom para o domínio e ite
 - Quando detectar contradições não-triviais
 ````
 
-Pontos de atenção no schema:
+### Por dentro do template — o que cada seção faz
 
-- **Operações nomeadas** (`Ingest`, `Query`, `Lint`) viram vocabulário compartilhado: você diz "lint" e o agente sabe o procedimento.
-- **Append-only log** em `wiki/log.md` é barato e funciona como diário do agente — útil para entender o que mudou e quando.
-- **Limite de palavras por página** força subdivisão. Sem isso, o LLM tende a inflar páginas até virarem inúteis.
-- **Cláusula "perguntar antes"** é um freio explícito: sem ela, o agente toma decisões irreversíveis em silêncio.
+Entender por que cada bloco existe é o que permite iterar o schema quando ele não funciona:
+
+**Seção Estrutura:** estabelece o contrato de pastas. O agente precisa saber exatamente onde cada tipo de arquivo mora — sem isso, cria pastas ad hoc que quebram o pattern. A separação `concepts/` vs `entities/` não é estética: conceitos são abstrações (o que é RAG?), entidades são concretos (o que é o projeto Mem0?). Misturar os dois tipos produz páginas híbridas difíceis de navegar.
+
+**Seção Operações:** nomeia os procedimentos. "Ingest", "Query" e "Lint" viram vocabulário compartilhado — você diz "faz um lint" e o agente sabe o que fazer. Sem isso, cada pedido exige descrição do zero. O `log.md` append-only é especialmente importante: sem ele, não há como reconstruir o que o agente fez em uma sessão passada — é o diário de auditoria do sistema.
+
+**Seção Convenções:** os detalhes que parecem menores mas fazem diferença. O limite de 1500 palavras por página força subdivisão — sem ele o agente infla páginas até virarem paredes de texto. A citação inline `[fonte: raw/articles/foo.md]` resolve um problema real: sem rastreabilidade, você não sabe de onde veio um fato na wiki.
+
+**Seção "Quando perguntar":** o freio mais importante. Sem ela, o agente reestrutura silenciosamente — move pastas, renomeia páginas, resolve contradições pela própria lógica. A cláusula ">5 páginas" é um limiar concreto que você calibra conforme ganha confiança no agente.
+
+### Como iterar o schema efetivamente
+
+A primeira versão do `CLAUDE.md` vai errar. Isso é esperado e é parte do método. O loop de melhoria funciona assim:
+
+1. **Rodar operação** → observar onde o agente desviou do esperado
+2. **Identificar a lacuna** no schema: faltou uma regra? A regra existente é ambígua?
+3. **Adicionar ou clarificar** a regra no `CLAUDE.md`
+4. **Repetir** com a mesma operação no mesmo corpus
+
+Exemplos de desvios comuns e ajustes correspondentes:
+
+- Agente cria página para cada entidade mencionada, mesmo secundárias → adicionar regra: "Crie página de entidade só se aparecer em ≥ 3 fontes ou tiver papel central em ≥ 1 fonte"
+- Páginas de conceito ficam vagas demais → adicionar regra: "Cada página de conceito deve ter: definição em 1 parágrafo, exemplo concreto, links para conceitos relacionados"
+- Índice fica desatualizado → adicionar regra: "Sempre que criar ou atualizar página de conceito, verifique se `index.md` a lista"
+
+Após 3-4 iterações, o schema tende a estabilizar. A partir daí, desvios são sinais de edge case genuíno, não de schema vago.
 
 ## Caminho B — basic-memory MCP (pronto)
 
@@ -184,12 +211,50 @@ Em todos esses casos, o tempo gasto avaliando frameworks rende mais investido em
 
 ## Armadilhas comuns
 
-- **Esquecer o lint.** Wiki rot é inevitável sem health check periódico — páginas órfãs, links quebrados, índice desatualizado. Trate `lint` como rotina, não como conserto.
-- **`CLAUDE.md` vago demais.** Schema impreciso produz output ruim. Itere o schema baseado nos erros — quando o agente desvia, é sinal de que falta uma regra explícita.
-- **Não revisar páginas geradas pelo LLM.** Drift, alucinação e contradições silenciosas são reais. Revisão humana periódica é parte do pattern, não opcional.
-- **Misturar `raw/` com `wiki/`.** Editar fontes em `raw/` ou pedir ao agente que escreva lá quebra a auditabilidade. A separação é o que torna o pattern confiável.
-- **Esperar resultado out-of-the-box.** O pattern requer 2-3 iterações no schema antes de funcionar bem. Quem desiste depois da primeira passagem perde o efeito.
-- **Confiar cegamente em estatísticas auto-reportadas** de framework. Benchmarks de fornecedor frequentemente são otimizados para o caso ideal — ver [[22 - Críticas, limitações e armadilhas]] para auditoria honesta dos números mais citados.
+> [!warning] Armadilha 1: Esquecer o lint
+> Wiki rot é inevitável sem health check periódico. Páginas órfãs acumulam silenciosamente, wikilinks quebram quando páginas são renomeadas, e o índice fica desatualizado após cada lote de ingestão. A diferença entre uma wiki útil após seis meses e uma wiki abandonada é um `lint` periódico — semanal em bases ativas, quinzenal em bases estáveis. Trate lint como rotina de manutenção, não como operação de emergência.
+
+> [!warning] Armadilha 2: `CLAUDE.md` vago demais
+> Schema impreciso é a causa mais comum de output inconsistente. Quando o agente cria páginas que misturam conceitos com entidades, ou quando o índice fica desatualizado mesmo após instrução explícita, o problema raramente é o modelo — é falta de regra clara. O diagnóstico correto é: "qual instrução faltou no `CLAUDE.md` para o agente ter feito a escolha certa?" Itere o schema baseado nos desvios, não nos outputs esperados.
+
+> [!warning] Armadilha 3: Não revisar páginas geradas pelo LLM
+> Drift, alucinação silenciosa e contradições entre páginas são reais e se acumulam. O agente pode extrair um fato ligeiramente errado de uma fonte ambígua, e esse fato se propaga para outras páginas via wikilink. Revisão humana periódica não é overhead — é o mecanismo de controle de qualidade que separa uma wiki confiável de uma wiki aparentemente organizada mas factualmente degradada.
+
+> [!warning] Armadilha 4: Misturar `raw/` com `wiki/`
+> Editar fontes em `raw/` ou pedir ao agente que escreva lá quebra a auditabilidade. A separação `raw/` (imutável) vs `wiki/` (mantida pelo LLM) é o que torna possível responder "de onde veio esse fato?" em qualquer momento. Sem ela, não há como distinguir o que entrou como fonte do que o LLM sintetizou — e alucinações se tornam indistinguíveis de fatos documentados.
+
+> [!warning] Armadilha 5: Esperar resultado out-of-the-box
+> O pattern requer 2-3 iterações no schema antes de funcionar bem. Na primeira ingestão, é normal que o agente crie páginas com granularidade errada, misture tipos de entidade ou use wikilinks inconsistentes. Isso não é falha do pattern — é calibração necessária. Quem desiste depois da primeira passagem perde exatamente o ciclo onde o schema se ajusta ao domínio e o output começa a convergir para o esperado.
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "I implement the LLM Wiki Pattern in two steps: first a minimal setup with a `raw/` folder for immutable sources and a `wiki/` folder the LLM maintains, governed by a `CLAUDE.md` schema file; then I iterate the schema based on where the agent deviates from expected behavior."
+
+| Português | Inglês |
+|-----------|--------|
+| Fontes brutas imutáveis | Immutable raw sources |
+| Schema do agente | Agent schema / CLAUDE.md contract |
+| Ingestão de fontes | Source ingestion |
+| Páginas órfãs | Orphan pages |
+| Lint periódico | Periodic lint / Health check |
+| Índice desatualizado | Stale index |
+| Drift de conteúdo | Content drift |
+| Caminho didático vs direto | Hands-on path vs fast path |
+| Wikilinks interlinkados | Interlinked wikilinks |
+| Append-only log | Append-only operation log |
+
+### Como usar em entrevista
+
+Quando perguntarem sobre implementação de memória de agentes, a estrutura dual-path é concisa e mostra julgamento:
+
+- "For prototyping, I use the minimal setup: a `CLAUDE.md` schema, a `raw/` folder for immutable sources, and a `wiki/` the LLM maintains. It takes 30 minutes and teaches you the pattern from the inside."
+- "The key insight is that the schema file is the contract — vague schema produces inconsistent output. I iterate it based on deviations, not on wishful expectations."
+- "Lint is the maintenance operation people skip and then wonder why their wiki decayed. I treat it as a weekly routine, not a one-time cleanup."
+
+## O que vem a seguir
+
+Com o guia prático em mãos — dois caminhos concretos, um template de schema testável e as armadilhas que derrubam implementações em campo — a trilha fecha no plano econômico: o que há de valor comercial ao redor desse pattern, quem paga, quanto se observa em ofertas públicas comparáveis e quando recusar o trabalho. A dimensão de negócio não é apêndice opcional: saber monetizar o conhecimento técnico é o que transforma domínio do tema em carreira sustentável. Veja [[24 - Aplicações comerciais e modelo de negócio]].
 
 ## Veja também
 
