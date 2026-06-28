@@ -111,6 +111,48 @@ O risco de fazer EDD prematuro é gastar 2 semanas montando golden set pra um pr
 
 Meta para 2026, segundo Hamel: nível 2 como mínimo absoluto pra qualquer produto com LLM em prod.
 
+## O que entra no golden set
+
+Hamel Husain detalha os tipos de casos que devem entrar num golden set bem calibrado:
+
+**Casos de sucesso claro:** inputs onde o output esperado é unânime — qualquer engenheiro do time concordaria. Estes são os mais fáceis de construir e estabelecem o piso.
+
+**Casos difíceis mas resolvíveis:** inputs onde você precisou pensar pra definir o output esperado — ambíguos, com múltiplas interpretações razoáveis, onde a resposta depende de contexto específico do domínio. Esses casos são os mais valiosos porque expõem o que o modelo erra quando não tem contexto extra.
+
+**Casos de anti-test:** inputs onde a resposta correta é "recusar", "não sei", "informação insuficiente". Em produção, modelos que sempre tentam responder falham nesses casos sistematicamente. Se você não os inclui no golden set, você não sabe se o modelo falha neles.
+
+**Casos de regressão:** bugs reais que apareceram em produção. Todo caso que chegou via incident deve entrar no golden set — é a única forma de garantir que o bug não volta silenciosamente.
+
+Proporção sugerida para um golden set inicial de 50 casos: 20 sucesso claro, 20 difíceis, 5 anti-tests, 5 regressões conhecidas.
+
+## EDD em times vs solos
+
+Em times, EDD tem uma dimensão organizacional que vai além da técnica. O golden set externaliza o conhecimento sobre o que "bom" significa — que de outra forma fica distribuído nas cabeças das pessoas (e sai com elas quando saem do time). O rubrica documenta o julgamento coletivo.
+
+Isso tem um efeito colateral valioso: onboarding de novos engenheiros fica mais rápido porque eles podem rodar os evals e ver por si mesmos o que o sistema está fazendo bem e mal, sem precisar pedir para alguém "ensinar" o que é qualidade.
+
+Em projetos solos, EDD ainda aplica — mas o benefício é mais pessoal. Você usa evals pra não confiar só na sua memória do que funcionava antes, e pra não ter que re-testar manualmente toda vez que mudar alguma coisa.
+
+## O pipeline de EDD em uma tarde
+
+Para times que querem experimentar EDD num projeto real antes de comprometer com a prática:
+
+```
+Manhã (2h):
+  - Identificar o prompt mais crítico do sistema
+  - Coletar 20-30 inputs reais de logs de produção
+  - Escrever o output esperado pra cada um (à mão, brutalmente)
+  - Definir 3 dimensões de avaliação e o que score 1/3/5 significa em cada
+
+Tarde (2h):
+  - Codificar o eval runner básico (roda prompt em cada input, guarda output)
+  - Rodar baseline
+  - Checar se scores refletem sua intuição (calibração manual)
+  - Integrar no CI como job opcional (não bloqueante ainda)
+```
+
+Resultado: você tem dados reais sobre o seu sistema em quatro horas. É isso. O resto é refinamento.
+
 ## A objeção comum — *"evals são caros"*
 
 Custo típico de eval (Sonnet 4.6, golden set de 100 itens):
