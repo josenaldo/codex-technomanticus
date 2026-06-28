@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > LLM-as-judge é usar um modelo (geralmente forte) pra **avaliar output de outro modelo** aplicando uma rubrica. Resolve o gargalo de eval subjetivo em escala — humano não revisa 1000 outputs por iteração; judge sim. Funciona bem em tarefas subjetivas calibradas; falha silenciosamente em domínios especializados, em tarefas novas, e por causa de **vieses sistemáticos**: posicional (prefere primeira opção em A/B), verbosidade (prefere resposta mais longa), self-preference (modelo prefere o próprio estilo). Mitigações: chain-of-thought judging, **pairwise** em vez de score absoluto, randomização de posição, swap-judge check, e — sempre — calibração contra humano antes de confiar. Verbete: [[Dicionário de IA#LLM-as-judge|LLM-as-judge]].
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende que EDD requer medição sistemática (nota 01), que o golden set é o conjunto de casos de teste (nota 02), e que a rubrica define o que "bom" significa em termos numéricos (nota 03). Esta nota cobre o mecanismo que permite escalar a anotação: substituir (parcialmente) o humano por outro LLM. O conceito central é simples — um modelo forte julga o output de outro — mas a armadilha é confiar no judge sem calibração. Você não precisa de background em ML formal; familiaridade com chamadas de API LLM e o problema de eval subjetivo é suficiente.
 
 ## Quando faz sentido
 
@@ -272,6 +276,42 @@ Judge é ~10x mais barato e 50x mais rápido. Por isso vale escalar — **depois
 - **Eval só absoluto, nunca pairwise** — perde sinal em comparação A/B de prompts
 - **Ignora outliers do judge** — quando judge diverge muito do humano, item ambíguo é informação
 - **Re-roll até score subir** — circular, viola toda a noção de eval
+
+## Armadilhas comuns
+
+> [!warning] Judge não calibrado sendo tratado como fonte de verdade
+> O erro mais custoso é rodar LLM-as-judge, ver scores bonitos, e tomar decisões de produto sem jamais ter comparado esses scores com julgamento humano. O judge vai ter calibração intrínseca — mas pode ser sistematicamente enviesada pro seu domínio específico. Texto técnico médico avaliado por um judge treinado em texto genérico vai inflar scores onde a precisão factual importa. A regra é inegociável: antes de promover judge a tomador de decisão, calcule correlação com 30-50 itens anotados por humano. Correlação abaixo de 0.7 significa que o judge está medindo outra coisa do que você pensa.
+
+> [!warning] Self-preference quando avaliado e judge são o mesmo modelo
+> Usar GPT-5 pra avaliar outputs do GPT-5, ou Claude pra avaliar Claude, cria um sistema que aprova a si mesmo. A literatura (Zheng et al., 2023) documenta isso: modelos preferem respostas geradas na própria família em 55-58% dos casos em avaliação blind — bem acima dos 50% esperados por acaso. Em produção, isso se traduz em: seu pipeline parece ótimo no eval, mas é porque o judge é condescendente com o modelo que conhece. Sempre use judge de família diferente do modelo em produção. Se precisar do mesmo modelo, use pelo menos versão diferente ou cross-judge com dois modelos opostos.
+
+> [!warning] Pairwise sem randomização de ordem — position bias inflando silenciosamente
+> Em avaliação A vs B, se A aparece sempre no topo e B embaixo, o judge vai preferir A em ~57% dos casos independente do conteúdo — isso é position bias documentado. A armadilha é não perceber o viés porque o sistema parece funcionar (judge dá scores, decisões são tomadas). O erro só fica visível quando você inverte A e B e os resultados mudam. A mitigação é simples mas precisa ser implementada conscientemente: randomize a ordem de apresentação em cada avaliação pairwise. Se você está acumulando scores sem randomização, os números históricos estão enviesados.
+
+## Como explicar em inglês
+
+Em entrevistas sobre avaliação de sistemas LLM, LLM-as-judge aparece como a solução de escala — e a resposta que demonstra experiência real inclui os vieses e as mitigações, não só o happy path:
+
+> "LLM-as-judge solves the scaling problem in subjective eval: you can't have a human review a thousand outputs per iteration, but you can run a model. The catch is systematic biases — position bias in pairwise comparisons, verbosity bias where longer responses score higher, and self-preference where a model judges its own outputs more favorably. Mitigations are: chain-of-thought prompting before the score, pairwise over absolute scoring, randomizing order, and — non-negotiable — calibrating against human judgment before trusting the numbers. A judge that correlates below 0.7 with humans is just producing noise with the appearance of rigor."
+
+| Português | Inglês |
+|-----------|--------|
+| juiz LLM | LLM judge / LLM-as-judge |
+| viés posicional | position bias |
+| viés de verbosidade | verbosity bias |
+| auto-preferência | self-preference bias |
+| avaliação pairwise | pairwise evaluation |
+| julgamento em cadeia de pensamento | chain-of-thought judging |
+| randomização de ordem | position randomization |
+| calibração com humano | human calibration |
+| correlação com julgamento humano | correlation with human judgment |
+| check de consistência por inversão | swap-judge consistency check |
+
+## O que vem a seguir
+
+Com LLM-as-judge cobrindo a escala de avaliação, a nota 05 entra no uso contínuo desses evals: regression testing. Como garantir que cada mudança no prompt ou no modelo não quebra o que já estava funcionando — e como montar um pipeline que pega regressões antes de chegarem à produção.
+
+Ver [[05 - Regression testing em LLMs]].
 
 ## Veja também
 
