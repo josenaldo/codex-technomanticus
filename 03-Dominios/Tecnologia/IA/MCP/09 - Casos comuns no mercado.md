@@ -1,8 +1,9 @@
 ---
 title: "Casos comuns no mercado"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Em 2026, [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] virou padrão em **5 categorias** de uso: (1) **dev tools internos** (codebase, internal APIs), (2) **integrações cross-tool** (mesmo server, múltiplos clients), (3) **[[Dicionário de IA#Agent|agents]] corporativos** (workflows internos), (4) **assistentes pessoais** (vault, calendar, email), (5) **distribuição de capabilities** (publicar server público). Esta nota dá exemplos concretos por categoria + boas práticas. Reconhecer o caso certo é metade do trabalho.
+
+> [!question]- Como MCP muda o que o produto pode fazer vs o que o LLM consegue fazer sozinho?
+> O LLM sozinho tem conhecimento até o cutoff de treinamento, não acessa sistemas em tempo real, e não pode executar ações com efeitos no mundo. MCP é o que expande esses limites: com os servers certos, o mesmo modelo passa a consultar seu banco de dados ao vivo, criar issues no Jira, enviar mensagens no Slack e ler arquivos do filesystem — tudo em uma conversa. O produto muda de "assistente de texto" para "agente que age nos seus sistemas". Esse é o salto qualitativo: sem MCP, o produto é limitado pela memória do modelo; com MCP, o produto é limitado pela extensão dos servers disponíveis.
 
 ## Caso 1 — Dev tools internos
 
@@ -231,6 +235,17 @@ async def query_data(request, query: str):
     return db.query_filtered_by_tenant(tenant, query)
 ```
 
+## Armadilhas comuns
+
+> [!warning] Expor tools de write sem human-in-the-loop
+> Agentes corporativos que executam ações irreversíveis (reembolsos, deleções, deploys) sem um gate de aprovação humana são um risco operacional e de compliance. O caso real de customer success com 70% de automação funciona porque o 30% que vai para humano é exatamente o que deveria ir: ações acima de threshold, casos ambíguos, e qualquer coisa que gere audit trail para regulação. Automatizar sem gate é apostar que o LLM nunca comete erros — e ele comete.
+
+> [!warning] Não distinguir servers internos de externos na estratégia
+> Times que adotam MCP sem separar "nossos servers internos com dados confidenciais" de "servers externos do Awesome MCP" criam risco de supply chain confuso. Um dev que instala um server de terceiros no mesmo client que conecta ao server interno com dados de clientes cria um caminho potencial de exfiltração. A estratégia deve ser explícita: servers internos ficam em client corporativo configurado centralmente; servers externos ficam separados, com paths e scopes restritos.
+
+> [!warning] Ignorar o impacto em onboarding depois de adotar MCP
+> Um dos benefícios mais subestimados de MCP é o onboarding — o caso de telecom que reduziu onboard de 2 semanas para 3 dias existe porque novos devs chegam com o MCP server interno já configurado e podem conversar com as APIs em linguagem natural. Mas esse benefício só se realiza se o time investiu em boas descriptions de tools e documentação mínima do server. Um MCP server com tools mal descritas prejudica o onboarding tanto quanto não ter o server.
+
 ## Quando NÃO usar MCP em produção
 
 ❌ **Latência ultra-crítica (<50ms total)** — overhead do protocol
@@ -259,6 +274,35 @@ async def query_data(request, query: str):
 | Custo per call | Budget |
 | % com human approval | Compliance |
 | Audit log completeness | Auditability |
+
+## Como explicar em inglês
+
+MCP use cases in production cluster into five patterns: internal dev tooling (exposing internal APIs as MCP servers so developers can query them in natural language from any client), cross-tool integrations (same server, multiple clients — GitHub + Linear + Slack in one conversation), corporate agents (workflows with human-in-the-loop gates for compliance), personal assistants (vault, calendar, email, tasks accessible from a single agent), and capability distribution (publishing a server publicly so others can reuse it).
+
+The common thread across all five is the N×M reduction: instead of building separate integrations for each client-system pair, teams build one server and connect any client. The case that illustrates the business impact most clearly is the corporate agent scenario — 70% automation of repetitive actions with 30% escalation to humans via Slack approval, dropping average resolution time by 60%. MCP isn't just a developer productivity tool; it's infrastructure for automating workflows at the business level.
+
+**In a technical interview**, you might say:
+
+> "In production, I've seen five recurring MCP patterns: internal API servers for dev tooling, cross-tool workflow integrations, corporate agents with compliance audit trails and human approval gates, personal knowledge management, and server distribution. The business case that resonates most in enterprise is the corporate agent: you get 70% automation of repetitive tasks with a human-in-the-loop gate for the irreversible ones, full audit log for compliance, and you deploy once and all clients benefit. The design principle across all cases is the same — expose the minimum necessary, require human approval for irreversible actions, and log everything."
+
+| PT | EN |
+|----|-----|
+| Dev tools internos | Internal dev tooling |
+| Automação de workflow | Workflow automation |
+| Humano no ciclo | Human-in-the-loop |
+| Trilha de auditoria | Audit trail |
+| Assistente pessoal | Personal assistant |
+| Distribuição de capabilities | Capability distribution |
+| Aprovação por Slack | Slack approval flow |
+| Multitenant | Multi-tenant |
+| Servidor especializado | Specialized server |
+| Agente corporativo | Corporate agent |
+
+## O que vem a seguir
+
+Os casos de uso mostram o que é possível. A nota final da trilha fecha o ciclo com um roadmap end-to-end para colocar um MCP server em produção: stack recomendada, 4 fases de desenvolvimento (local → quality → auth → deploy), e best practices distiladas de todas as notas anteriores. É o checklist que sintetiza tudo.
+
+- [[10 - Setup completo + best practices]] — roadmap de 4 semanas do zero ao server production-ready
 
 ## Veja também
 
