@@ -3,6 +3,7 @@ title: "A pirâmide de validação AI"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Nenhuma camada sozinha protege contra os 45% de [[01 - Código gerado por IA é untrusted|código inseguro]] e [[02 - Slopsquatting — o ataque via alucinação|supply chain attacks]]. A solução é **defesa em profundidade** estruturada como pirâmide: na base, **automação massiva** (linters, type checkers, SAST escalando para milhares de PRs); no meio, **[[Dicionário de IA#Guardrail|guardrails]] determinísticos** ([[Context Engineering|12 - Guardrails determinísticos]]) que param classes de ataque conhecidas; no topo, **human oversight** focado nos poucos casos que merecem revisão humana profunda. Triângulo invertido onde tem o problema.
+
+> [!question]- Por que pirâmide e não checklist plano de validação?
+> Um checklist plano trata todos os itens como equivalentes e atribui o trabalho de revisão ao humano. Com o volume de código gerado por IA, um checklist de 20 itens por PR significa que um time que revisa 100 PRs/semana faz 2.000 revisões manuais — impraticável. A pirâmide resolve isso pela especialização: automação faz o que é codificável (90%+ dos casos), guardrails determinísticos fazem o que tem regra clara, e o humano faz apenas o que exige julgamento real. Cada camada filtra o que não devia chegar à camada seguinte, reduzindo o volume e aumentando a qualidade da revisão humana.
 
 ## A pirâmide
 
@@ -185,6 +189,50 @@ Não tente tudo de uma vez. Roadmap típico (ver também [[12 - O roadmap de seg
 - **Métricas só em camada 3** — perde sinal das anteriores
 - **Single-vendor SAST** — Veracode mostra: 78% dos issues só pegos por uma das ferramentas; **rode 2+**
 
+## Armadilhas comuns
+
+> [!warning] Camada 1 lenta vira camada ignorada
+> CI que demora 20 minutos leva desenvolvedores a abrir PRs sem esperar o resultado, ou a pular validações locais "para ganhar tempo". O sinal de alerta é quando o time começa a fazer merge antes do CI terminar. Se a camada 1 fica lenta, paralelize as etapas, use cache agressivo de dependências, e separe checks rápidos (linter, type check) dos lentos (testes de integração) em jobs distintos.
+
+> [!warning] Usar LLM como validador da camada 2 é circular
+> Alguns times tentam usar um "AI critic" para revisar o output de outro LLM como guardrail da camada 2. O problema: o validador tem os mesmos pontos cegos que o gerador, pode ser iludido pelas mesmas construções plausíveis, e não tem garantia determinística. Guardrails da camada 2 precisam ser regras codificáveis com resultado binário — não "o outro LLM achou OK".
+
+> [!warning] SAST único vendor garante cobertura falsa
+> O relatório Veracode mostra que 78% das vulnerabilidades são detectadas por apenas uma das ferramentas SAST testadas. Rodar só Semgrep ou só CodeQL deixa classes inteiras de problema sem cobertura. A pirâmide precisa de pelo menos dois scanners na camada 1, complementares em cobertura.
+
+## Como explicar em inglês
+
+The validation pyramid for AI-generated code solves a fundamental throughput problem: a human reviewer cannot keep pace with the volume that an LLM-assisted team produces. The pyramid structures validation so that the high-volume, codifiable checks happen automatically — type checking, linting, SAST, SCA — and only the edge cases that genuinely require judgment reach a human reviewer.
+
+The key insight is specialization by layer. Machines are better than humans at consistently catching XSS patterns, missing type declarations, and vulnerable dependency versions — tasks that are repetitive, well-defined, and don't benefit from context. Humans are better at evaluating architectural trade-offs, security implications of cross-cutting changes, and intent alignment. Mixing those responsibilities in a single flat checklist wastes human capacity on mechanical tasks and exhausts reviewers before they reach the decisions that matter.
+
+A well-implemented pyramid means that 90-95% of issues are caught before a human sees the PR, and the human reviewer spends their time on the 5-10% where their judgment creates real value.
+
+**In a technical interview**, you might say:
+
+> "We structure AI code validation as a three-layer pyramid. The base is full automation — type checker, linter, SAST with two complementary scanners, SCA for dependency safety, and a test suite — all as hard blocks in CI. The middle layer is deterministic guardrails specific to our domain: schema validation with `extra=forbid`, tool allowlists for agents, and human approval gates for destructive operations. The top is human review, but only for the PRs that actually need judgment — architecture decisions, cross-cutting security changes, intent verification. This way our reviewers see maybe 5-10% of PRs, but those are the ones where human judgment matters."
+
+| PT | EN |
+|----|-----|
+| defesa em profundidade | defense in depth |
+| pirâmide de validação | validation pyramid |
+| automação de base | base automation layer |
+| guardrail determinístico | deterministic guardrail |
+| revisão humana | human oversight |
+| taxa de escape de defeitos | defect escape rate |
+| fadiga de revisão | review fatigue |
+| roteamento de revisão | review routing |
+| validação em camadas | layered validation |
+| pipeline de CI | CI pipeline |
+
+## O que vem a seguir
+
+A pirâmide define a estrutura. A camada 1 — automação — é a mais larga e a mais crítica para escalar. Mas ferramentas SAST e SCA genéricas não foram projetadas para código gerado por IA: elas não sabem distinguir padrões que humanos evitariam mas que LLMs reproduzem sistematicamente, e precisam de ajuste para lidar com o volume e os padrões específicos desse fluxo.
+
+A próxima nota detalha como calibrar SAST e SCA especificamente para código AI, incluindo quais regras ativar, quais ferramentas combinar, e como evitar que falsos positivos tornem a camada ineficaz.
+
+- [[05 - SAST e SCA para código AI]] — calibrando as ferramentas de análise estática para o contexto de geração por LLM
+
 ## Veja também
 
 - [[05 - SAST e SCA para código AI]]
@@ -200,3 +248,58 @@ Não tente tudo de uma vez. Roadmap típico (ver também [[12 - O roadmap de seg
 - **NVIDIA** — *Practical Security Guidance for Sandboxing Agentic Workflows* (2026).
 - **Anthropic** — *Engineering Claude Code Sandboxing* (2026).
 - **OWASP Top 10 for LLM Applications* (2025-2026).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
