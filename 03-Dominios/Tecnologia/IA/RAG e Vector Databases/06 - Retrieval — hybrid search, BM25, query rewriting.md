@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Pure vector search é o **default ingênuo**. Em produção, ninguém ganha. Padrão profissional em 2026: **[[Dicionário de IA#hybrid search|hybrid search]] ([[Dicionário de IA#BM25|BM25]] + vector) + query rewriting + [[Dicionário de IA#reranking|reranking]]**. BM25 pega exact match (nomes, IDs, termos técnicos); vector pega semântica. Combinados via Reciprocal Rank Fusion (RRF). Query rewriting (incluindo HyDE) transforma a pergunta do usuário em queries melhores. Pesquisa mostra: hybrid bate pure vector em ~95% dos casos.
+
+> [!question]- Por que hybrid search (BM25 + vector) e não só vector search melhor?
+> Vector search resolve um problema de semântica — "o quê o usuário quer dizer?" — mas falha em um problema diferente: "o usuário quer exatamente essa palavra". Um embedding de "CPF-123-456" e "CPF-123-457" vai ser quase idêntico porque os modelos generalizam padrões semânticos. BM25 trata cada token como símbolo, não significado — encontra "CPF-123-456" onde ele aparece literalmente. Hybrid não é sobre ter vector "melhor"; é sobre usar a ferramenta certa para cada tipo de query. RRF combina os dois rankings sem precisar calibrar pesos.
 
 ## Por que pure vector falha
 
@@ -234,6 +238,17 @@ Latência total: ~500-1500ms.
 | **Cost por query** | <$0.001 |
 | **% queries com rewrite que mudou top-k** | 20-50% |
 
+## Armadilhas comuns
+
+> [!warning] Usar HyDE em domínio que o LLM não conhece
+> HyDE funciona gerando uma "resposta hipotética" para a pergunta e buscando por ela. O truque assume que o LLM tem conhecimento suficiente para gerar algo próximo do documento real. Em domínios muito específicos (termos proprietários, legislação local, sistemas internos), o LLM gera hipótese vaga ou incorreta — e a busca retorna ruído. Valide HyDE com recall@10 antes de usar em produção; se não bater baseline, use multi-query em vez de HyDE.
+
+> [!warning] Tunar o parâmetro alpha do weighted score sem golden set
+> `alpha = 0.5 * vector + 0.5 * bm25` parece equilibrado, mas BM25 e similaridade vetorial vivem em escalas diferentes (BM25 pode chegar a 20+, vector vai de 0 a 1). Sem normalização e sem um golden set para medir qual `alpha` melhora o recall, você está girando um botão às cegas. Prefira RRF: ele é parâmetro-free, robusto e geralmente bate weighted score sem calibração.
+
+> [!warning] Aplicar query rewriting em queries simples — adiciona latência sem ganho
+> Reescrever "o que é HNSW?" com um LLM vai provavelmente devolver "o que é HNSW?" reformulado — custo de 50-200ms de LLM para zero ganho. Reserve query rewriting para casos onde há pronomes anafóricos ("ele disse isso antes"), ambiguidade real ou perguntas muito vagas. Uma heurística simples: se a query tem mais de 10 tokens e usa pronomes, reescreva; abaixo disso, vá direto para o retrieval.
+
 ## Anti-patterns
 
 - **Pure vector em produção** — perde em ~30% dos casos
@@ -242,6 +257,37 @@ Latência total: ~500-1500ms.
 - **HyDE em domínio onde modelo não tem conhecimento** — gera hipótese ruim
 - **Sem metadata filtering** — busca em corpus inteiro quando podia filtrar 90%
 - **Top-k = 5 sem rerank** — perde recall
+
+## Como explicar em inglês
+
+Retrieval is the step that determines which chunks the LLM will actually see. Pure vector search is the intuitive starting point — embed the question, find the most similar chunks — but it has a structural blind spot: semantic similarity is not the same as lexical relevance. A user searching for "Invoice #A-2024-007" gets poor results from vector search because the embedding model collapses numeric identifiers into similar representations. BM25 treats each token as a literal symbol, so exact matches score high regardless of semantic proximity.
+
+Hybrid search combines both signals: vector for semantic intent and BM25 for exact-match recall. Reciprocal Rank Fusion is the standard way to merge the two ranked lists — it rewards documents that appear high in both rankings without requiring you to normalize incompatible score scales. The result is consistently better than either approach alone, with the Anthropic Contextual Retrieval paper showing hybrid reduces failed retrievals from 5.7% to 3.4% before even adding a reranker.
+
+Query rewriting adds another layer: the user's raw question is often suboptimal as a search query. Pronoun resolution, typo correction, and HyDE (generating a hypothetical answer and searching for that) all improve retrieval quality. The cost is extra LLM calls, so the tradeoff depends on query complexity and latency budget.
+
+**In a technical interview**, you might say:
+
+> "In production RAG, I always use hybrid search — BM25 combined with vector search via Reciprocal Rank Fusion. Pure vector search fails on a predictable class of queries: proper nouns, product codes, version numbers, anything where the exact string matters. BM25 handles those perfectly. I use RRF to merge the rankings because it's robust without needing to tune weights — documents that rank high in both signals rise to the top naturally. On top of that, I add query rewriting for long or ambiguous queries and always retrieve top-50 to feed into a reranker rather than sending top-5 directly to the LLM."
+
+| PT | EN |
+|----|-----|
+| busca híbrida | hybrid search |
+| fusão de ranking recíproca | Reciprocal Rank Fusion (RRF) |
+| reescrita de query | query rewriting |
+| frequência de termos | term frequency (TF) |
+| frequência inversa de documentos | inverse document frequency (IDF) |
+| documento hipotético | hypothetical document (HyDE) |
+| múltiplas queries | multi-query |
+| filtro por metadados | metadata filtering |
+| decomposição de subperguntas | subquestion decomposition |
+| recuperação semântica | semantic retrieval |
+
+## O que vem a seguir
+
+Hybrid search com RRF entrega um top-50 de candidatos bem combinados — mas candidatos ainda não são a resposta final. O problema é que o retrieval otimiza para recall (trazer o máximo de material relevante), e o LLM precisa do inverso: poucos chunks, altamente precisos. A ponte entre recall alto e precisão alta é o reranking. A próxima nota explica por que cross-encoders fazem um trabalho que bi-encoders estruturalmente não conseguem, e como Cohere Rerank corta o top-50 em top-5 com 67% menos erros de retrieval.
+
+- [[07 - Reranking — Cohere, Voyage, cross-encoders]] — refinar ranking do top-50 com cross-encoders
 
 ## Veja também
 
