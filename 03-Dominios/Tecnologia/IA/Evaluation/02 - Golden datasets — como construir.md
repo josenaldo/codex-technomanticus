@@ -180,6 +180,9 @@ Sem versionamento, *"score subiu de 78 pra 84"* perde sentido — pode ter sido 
 
 A regra de ouro: **todo bug em prod vira novo caso no golden set**.
 
+> [!tip] Pense em "imunidade" — não em "completude"
+> Você nunca vai ter um golden set completo. A meta não é cobrir todos os casos possíveis — é que o sistema fique imune a regredir nos casos que já falharam. Um golden set de 50 casos onde todos representam falhas reais é mais valioso que um de 500 casos onde 450 são casos fáceis que nunca quebraram.
+
 ```
 1. Bug reportado: "modelo retornou JSON quebrado pro input X"
 2. Reproduzir input X local
