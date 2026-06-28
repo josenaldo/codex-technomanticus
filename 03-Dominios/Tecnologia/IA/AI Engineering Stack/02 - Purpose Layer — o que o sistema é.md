@@ -22,11 +22,40 @@ aliases:
 
 ## O problema que a Purpose Layer resolve
 
+> [!question]- Por que o campo `not_in_scope` importa mais do que o `primary_job`?
+> Porque o `primary_job` define o que o sistema tenta fazer — e o modelo vai tentar, com ou sem esse campo. O `not_in_scope` é o que dá ao sistema o direito de recusar. Sem ele, cada pedido fora de escopo vira improvisação: o modelo tenta ajudar de alguma forma, cria expectativas que não podem ser cumpridas, e deixa o usuário mais insatisfeito do que se tivesse ouvido "isso não é comigo" desde o início.
+
 Pergunte a cinco pessoas do mesmo time o que o sistema de IA faz. Se você receber cinco respostas diferentes, o sistema não tem Purpose Layer — cada pessoa construiu a sua parte baseada na interpretação que fez de uma reunião de kick-off.
 
 O resultado é um sistema que tenta fazer tudo: aceita pedidos fora do escopo porque não sabe que estão fora, improvisa respostas em situações para as quais não foi projetado, e não tem como ser avaliado porque "ser útil" não é critério mensurável. Quando algo der errado, ninguém sabe se o problema é o modelo, o prompt, ou o escopo indefinido.
 
 A Purpose Layer força uma decisão antes do código: **o que este sistema é** — e o que ele não é. O campo `not_in_scope` é o mais valioso do documento. É o que dá ao sistema o direito de dizer "não" com confiança e escalar para um humano em vez de improvisar uma resposta incorreta.
+
+```mermaid
+flowchart LR
+    subgraph "Sem Purpose Layer"
+        A1["Pedido do usuário"]
+        A2["Modelo improvisa\n(tenta ser útil)"]
+        A3["Expectativa criada\n(que não pode ser cumprida)"]
+        A4["Insatisfação\nou incidente"]
+    end
+
+    subgraph "Com Purpose Layer"
+        B1["Pedido do usuário"]
+        B2{"Está no\nnot_in_scope?"}
+        B3["Escalação com\ncontexto para humano"]
+        B4["Resposta confiante\ndentro do escopo"]
+    end
+
+    A1 --> A2 --> A3 --> A4
+    B1 --> B2
+    B2 -- sim --> B3
+    B2 -- não --> B4
+
+    style A4 fill:#fff5f5,stroke:#ff6b6b
+    style B3 fill:#f0fff4,stroke:#51cf66
+    style B4 fill:#f0fff4,stroke:#51cf66
+```
 
 ## O que é esta camada
 
@@ -87,6 +116,35 @@ purpose:
 
 Com esse documento aprovado: o system prompt tem um critério — instrui o modelo a reconhecer pedidos no `not_in_scope` e escalar com contexto. A Evaluation sabe o que medir. A Guardrail sabe o que bloquear. O Improvement Loop sabe o que é "melhoria". O time inteiro fala a mesma língua.
 
+## Quando revisar a Purpose Layer
+
+A Purpose Layer **deve** ser revisada — mas não a cada sprint. A regra é: revisar quando houver mudança de produto, não mudança de prompt.
+
+Gatilhos que justificam revisão:
+
+- Novo segmento de usuário (persona diferente exige contexto diferente → talvez sistema separado)
+- Restrição legal ou regulatória nova (ex: LGPD, norma setorial) que altera o `not_in_scope`
+- O Improvement Loop identificou que um caso de uso cresceu e agora merece ser `primary_job` em vez de edge case
+- O sistema vai atender volume 10× maior — escala às vezes muda as suposições de `success_criteria`
+
+Gatilhos que **não** justificam revisão (só prompt):
+
+- O modelo está respondendo de forma estranha → Prompt Layer, não Purpose
+- A busca no RAG está imprecisa → Retrieval Layer
+- O custo por run aumentou → Tool Layer ou Logging + otimização
+
+A Purpose Layer estável e bem-definida é o que permite que as outras camadas evoluam sem retrabalho. Cada revisão de Purpose deve ser tratada como uma decisão de produto: aprovada com o mesmo rigor de um PRD, não silenciosa.
+
+## Como explicar em inglês
+
+The Purpose Layer is the founding document of an AI system — the only layer that doesn't inherit from any other. It defines what the system does (`primary_job`), who it's for (`target_user`), what it explicitly does not do (`not_in_scope`), and the measurable definition of success (`success_criteria`). Every downstream layer — Prompt, Evaluation, Guardrail — inherits constraints from what Purpose defines. Without a closed Purpose Layer, you're not writing a system prompt; you're writing a wish list.
+
+The most underrated field is `not_in_scope`: it's what gives the system the right to say "no" confidently and escalate to a human with context instead of improvising. Teams that skip it end up with models that over-promise and under-deliver — not because the model is bad, but because the model was never told it could refuse.
+
+**In a technical interview**, you might say:
+
+> "Before writing any prompt, I close the Purpose Layer: `primary_job`, `target_user`, `not_in_scope`, and `success_criteria`. The `not_in_scope` field is the most important — it's what gives the system the right to say 'not with this system' and escalate with context instead of improvising. Without it, every out-of-scope request becomes model improvisation, which creates expectations the system can't fulfill. With it, the whole team has the same mental model of what the system is — and what it isn't."
+
 ## Armadilhas comuns
 
 > [!warning] Descrever a tecnologia em vez do propósito
@@ -101,6 +159,12 @@ Com esse documento aprovado: o system prompt tem um critério — instrui o mode
 ## Como explicar em inglês
 
 The Purpose Layer is the founding document of an AI system — the only layer that doesn't inherit from any other. It defines what the system does (`primary_job`), who it's for (`target_user`), what it explicitly does not do (`not_in_scope`), and the measurable definition of success (`success_criteria`). Every downstream layer — Prompt, Evaluation, Guardrail — inherits constraints from what Purpose defines. Without a closed Purpose Layer, you're not writing a system prompt; you're writing a wish list.
+
+The most underrated field is `not_in_scope`: it gives the system the right to say "no" confidently and escalate to a human with context instead of improvising. Teams that skip it end up with models that over-promise — not because the model is bad, but because it was never told it could refuse.
+
+**In a technical interview**, you might say:
+
+> "Before writing any prompt, I close the Purpose Layer: primary_job, target_user, not_in_scope, and success_criteria. The not_in_scope field is the most important — it gives the system the right to say 'that's not for this system' and escalate with context instead of improvising an answer. Without it, every out-of-scope request becomes model improvisation, which creates expectations the system can't fulfill. With it, the whole team has the same mental model of what the system is — and what it isn't."
 
 | PT | EN |
 |----|----|
@@ -138,3 +202,103 @@ Na sequência numérica, a próxima camada é o [[03 - Prompt Layer]] — que he
 
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 1 (Purpose layer template). X/Twitter, 2025.
 - **Anthropic** — [*Building effective agents*](https://www.anthropic.com/engineering/building-effective-agents) (2024). Seção sobre definir escopo e critérios antes da arquitetura.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
