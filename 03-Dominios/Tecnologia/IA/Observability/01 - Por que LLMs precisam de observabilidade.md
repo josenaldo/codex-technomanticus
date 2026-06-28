@@ -256,6 +256,17 @@ Em entrevistas sobre reliability de sistemas LLM, a distinção entre APM e LLM 
 | pipeline RAG com spans | RAG pipeline with spans |
 | sinal de qualidade por trace | per-trace quality signal |
 
+## Checklist — antes de ir pra produção
+
+> [!tip] Mínimo antes de colocar LLMs em produção
+> - [ ] Log estruturado com model, prompt_id, input_tokens, output_tokens, cost_usd, finish_reason
+> - [ ] Session ID e user ID em cada trace
+> - [ ] Alert em taxa de finish_reason == `max_tokens` > 5%
+> - [ ] Dashboard de custo por feature (mesmo que manual no início)
+> - [ ] Ferramenta de traces escolhida (Langfuse dev ou equivalente)
+> - [ ] Política de retenção de traces definida (LGPD, GDPR se applicável)
+> - [ ] PII masking ativo se os inputs podem conter dados pessoais
+
 ## O que vem a seguir
 
 Com o argumento estabelecido, a nota 02 entra no que vai dentro de cada trace: a anatomia exata de um trace LLM, quais spans compõem cada tipo de pipeline, e como ler um trace pra debugar.
