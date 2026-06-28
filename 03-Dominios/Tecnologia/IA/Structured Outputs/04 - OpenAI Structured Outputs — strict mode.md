@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - structured-outputs
   - ia
@@ -19,6 +20,9 @@ aliases:
 
 > [!abstract] TL;DR
 > OpenAI oferece duas formas de structured output: via `response_format: { type: "json_schema", strict: true }` (mais simples, recomendada pra output único) e via `tools` + `tool_choice` forçado (necessária quando você já tem pipeline de tools). Em strict mode, a aderência ao schema é **garantida pelo provider** — o decoder é restringido pra só emitir tokens válidos. Custo: subset de JSON Schema (sem `additionalProperties: true`, todos campos `required`), pequena latência adicional. Compatível com gpt-4o-2024-08-06+, gpt-4.1 e família gpt-5. SDK Python tem helper `parse()` que integra direto com Pydantic.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende JSON Schema básico (nota 02) e o conceito de tool use como mecanismo de structured output (nota 03). Esta nota é específica da OpenAI: ela tem uma API dedicada de structured output que simplifica o pattern de tool-fake em alguns casos. Se você usa Claude ou Gemini, pode pular esta nota e ir direto para a 05 ou 06, mas o conceito de constrained decoding que aparece aqui se aplica a todos os providers modernos.
 
 ## O mecanismo — strict mode
 
@@ -245,6 +249,42 @@ A ergonomia compensa. Em produção Python, Pydantic + `parse()` é o caminho de
 ### Não confunda strict com semantic
 
 Strict garante shape. Semântica (valores fazem sentido?) é outra camada. Ver [nota 07](07%20-%20Validação%20e%20retry%20—%20Pydantic,%20Zod.md).
+
+## Armadilhas comuns
+
+> [!warning] Esquecer `"additionalProperties": false` nos objetos aninhados
+> Em strict mode, `additionalProperties: false` é obrigatório — mas a exigência se aplica a **todo objeto no schema**, incluindo aninhados. Um schema com objeto de alto nível correto mas sub-objeto sem `additionalProperties: false` gera um erro de schema que pode ser silencioso (o SDK rejeita mas a mensagem de erro não indica onde). Regra prática: ao escrever o schema, passe em cada `"type": "object"` e verifique que tem `"additionalProperties": false`. Com Pydantic, o SDK cuida disso automaticamente — mais um motivo para usar `parse()`.
+
+> [!warning] Tentar usar validações que strict mode ignora
+> O subset de strict mode parece completo até você precisar de `minLength` em uma string ou `minItems` em um array — e descobrir que strict mode aceita o schema mas não enforça essas restrições no decoder. O output vai com o shape certo mas pode ter string vazia ou array vazio que o schema "proibiu". Quem não sabe disso age como se o schema garantisse todo o contrato, passa dados inválidos downstream, e o erro aparece longe da origem. Tudo que não é `type`/`enum`/`required`/`additionalProperties`/`$ref` precisa de validação manual pós-schema.
+
+> [!warning] Confundir `json_object` mode com structured outputs
+> A OpenAI tem dois modos distintos: `response_format: {"type": "json_object"}` (JSON mode antigo, garante JSON válido mas sem schema) e `response_format: {"type": "json_schema", ...}` com strict (garante shape). O JSON mode antigo é útil para modelos legados que não suportam strict, mas não é o mesmo mecanismo. Em código legado, você pode encontrar JSON mode e assumir que tem garantia de schema — não tem. Se o schema importa, verifique que `"type": "json_schema"` e `"strict": true` estão configurados, não apenas `"type": "json_object"`.
+
+## Como explicar em inglês
+
+Em entrevistas na FAANG e empresas tech, perguntas sobre OpenAI structured outputs aparecem em contexto de "como você garante confiabilidade de output em produção":
+
+> "OpenAI strict mode uses constrained decoding — the provider builds a grammar from the JSON Schema and restricts the decoder to only emit tokens that keep the output valid. This gives 100% schema adherence by architecture, not by probability. The trade-off is a restricted subset of JSON Schema: all fields must be required, every object needs `additionalProperties: false`, and constraints like `minLength` or `minItems` are accepted in the schema but not enforced at decode time. For Python, the `parse()` method with Pydantic handles schema generation, strict mode setup, and deserialization in one call."
+
+| Português | Inglês |
+|-----------|--------|
+| decodificação restrita | constrained decoding |
+| modo strict | strict mode |
+| formato de resposta | response format |
+| schema de resposta | response schema |
+| helper de parse | parse helper |
+| campo obrigatório em strict | required field (all fields required in strict) |
+| subset de JSON Schema | JSON Schema subset |
+| modelo compatível | compatible model |
+| garantia por arquitetura | architectural guarantee |
+| modo JSON antigo | JSON object mode (legacy) |
+
+## O que vem a seguir
+
+Strict mode resolve structured output na OpenAI. O próximo provider é o Anthropic — que não tem API dedicada equivalente, o que significa que tool use forçado é o único mecanismo oficial. A nota 05 cobre como implementar isso com Claude, incluindo os detalhes de `tool_choice` e como o provider lida com validação.
+
+Ver [[05 - Anthropic tool use para forçar formato]].
 
 ## Fontes
 
