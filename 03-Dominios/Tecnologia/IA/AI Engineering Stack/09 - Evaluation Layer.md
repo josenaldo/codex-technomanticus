@@ -20,6 +20,9 @@ aliases:
 > [!abstract] TL;DR
 > A Evaluation Layer responde **como saber se o output está bom** — de forma reproduzível, não por intuição. É uma rubrica de múltiplas dimensões (acurácia, completude, utilidade, aderência ao formato, qualidade da fonte) aplicada a um dataset curado. Sem evals, "ficou melhor" vira sentimento; com evals, vira número comparável. A regra que separa sistemas maduros de demos: o sistema que itera com sinal melhora. O que itera no escuro não sabe se está melhorando ou piorando.
 
+> [!question]- Como você sabe se uma mudança no sistema melhorou ou piorou?
+> Sem evals, a resposta é: você não sabe. Você tem impressões, você tem feedback de dois colegas, você tem o instinto do PM. Em produção com milhares de chamadas por dia, isso é como navegar um navio sem instrumentos — você sente que está indo na direção certa até bater nos recifes. A Evaluation Layer é o painel de instrumentos que transforma "parece melhor" em "melhorou X% na dimensão Y sem regredir em Z".
+
 ## O problema que a Evaluation Layer resolve
 
 Você mudou o system prompt. O modelo parece responder melhor. Você mostra para dois colegas — um acha que melhorou, o outro acha que piorou. Como você decide?
@@ -27,6 +30,31 @@ Você mudou o system prompt. O modelo parece responder melhor. Você mostra para
 Sem a Evaluation Layer, a resposta é: por intuição, por votação, ou pela opinião do stakeholder mais vocal na reunião. Isso funciona para um protótipo com 10 casos de uso testados manualmente. Não funciona para um sistema em produção com 10.000 chamadas por dia e 200 tipos de input diferentes.
 
 A Evaluation Layer cria o **sinal** que permite iterar com objetividade. Sem ela, você não sabe se uma mudança de modelo, prompt ou retrieval melhorou ou piorou a qualidade do sistema. Com ela, você tem um número: a mudança moveu o score de 3.2 para 3.7 nas métricas que importam para o negócio, e não regrediu em nenhuma das condições de falha automática.
+
+## Sem Evaluation Layer vs com Evaluation Layer
+
+```mermaid
+flowchart LR
+    subgraph "Sem Evaluation Layer"
+        A1["Mudança no sistema\n(prompt/modelo/retrieval)"]
+        A2["Teste manual\npor 2-3 pessoas"]
+        A3["Deploy baseado\nem intuição"]
+        A4["Regressão detectada\nem produção tarde"]
+    end
+
+    subgraph "Com Evaluation Layer"
+        B1["Mudança no sistema\n(prompt/modelo/retrieval)"]
+        B2["Regression eval\nno PR (automático)"]
+        B3["Score comparado\ncom baseline"]
+        B4["Deploy com sinal\nde qualidade verificado"]
+    end
+
+    A1 --> A2 --> A3 --> A4
+    B1 --> B2 --> B3 --> B4
+
+    style A4 fill:#fff5f5,stroke:#ff6b6b
+    style B4 fill:#f0fff4,stroke:#51cf66
+```
 
 ## O que é esta camada
 
@@ -95,9 +123,38 @@ A calibração é o que valida o judge. Sem ela, o dashboard seria um número qu
 > [!warning] LLM-as-judge sem calibração
 > Usar GPT-4 para avaliar outputs de Claude (ou vice-versa) sem calibração contra avaliação humana é transferir o viés do judge para a métrica. Modelos têm viés em direção ao seu próprio estilo de output. Calibre o judge contra humano antes de confiar no número que ele produz.
 
+## Como montar o dataset mínimo viável
+
+O maior bloqueio na prática não é a rubrica — é "de onde vêm os exemplos do dataset?". Resposta em três passos:
+
+**Passo 1 — Colete casos da fase de design.** Antes de ter dados reais, você tem a definição do propósito do sistema (Purpose Layer). Liste os 10-15 casos de uso mais frequentes que o sistema deve resolver. Escreva 2-4 exemplos por caso de uso — input + output esperado ou critérios de avaliação.
+
+**Passo 2 — Adicione casos difíceis e edge cases.** Para cada caso de uso principal, adicione ao menos um caso que está no limite do escopo ("não sei" esperado), um caso ambíguo, e um caso que parece fácil mas tem um gotcha. Esses são os casos que vão revelar regressões quando o sistema mudar.
+
+**Passo 3 — Alimente com incidentes reais.** Cada vez que um output problemático chega da produção: capture o input, o output ruim, e anote o que deveria ter sido diferente. Esse caso entra imediatamente no dataset de regressão. Com o tempo, o dataset vira a memória histórica de falhas do sistema — e cada rodada de evals garante que esses erros não se repitam.
+
+> [!info] 20 casos bem curados > 200 casos aleatórios
+> Dataset de qualidade vem de seleção deliberada, não de volume. Um dataset com 20 casos representando as dimensões críticas do sistema dá sinal mais confiável do que 200 outputs de produção aleatórios sem curadoria.
+
+## Tipos de eval e quando usar cada um
+
+Cada tipo de eval tem força em domínios diferentes. Na prática, um sistema maduro usa os três em combinação:
+
+**Reference-based eval:** você tem a resposta certa. Usado para Q&A sobre documentação interna, extração de informação de contrato, classificação de intent onde o label existe. Alta objetividade, mas exige ground truth — o que nem sempre é viável.
+
+**Reference-free eval:** você checa propriedades do output sem saber a resposta certa. Formato válido (JSON parseable, campos obrigatórios presentes), ausência de PII, comprimento dentro do range esperado, linguagem detectada. Automatizável por código, sem custo de model.
+
+**LLM-as-judge:** um modelo aplica a rubrica em escala. Poderoso para dimensões qualitativas (utilidade, clareza, tom). Exige: (a) prompt de judge bem especificado com a rubrica completa e definições por ponto; (b) calibração contra avaliação humana em amostra representativa para validar que o judge e humanos concordam; (c) monitoramento de deriva — o judge também pode mudar com atualizações de modelo.
+
 ## Como explicar em inglês
 
 The Evaluation Layer is the measurement system of the AI stack. It defines how to determine whether the system's output is good — through a scoring rubric applied to a curated dataset, not through intuition or manual spot-checks. The key insight: teams that iterate with evaluation scores improve predictably; teams that iterate by gut feel don't know whether they're improving or degrading. The three types of eval — reference-based, reference-free, and LLM-as-judge — complement each other. LLM-as-judge scales quality assessment beyond what human review can cover, but only after calibration against human judgment.
+
+Think of it as the difference between a pilot flying by feel versus flying with instruments. Both might make it on a clear day — but only the pilot with instruments can fly in fog, hand off to another pilot, or know exactly what went wrong when something goes wrong. The Evaluation Layer is the instrument panel for your AI system.
+
+In interviews, the signal question is usually: "how would you evaluate whether your system is working?" A weak answer describes manual review. A strong answer describes a rubric with specific dimensions tied to the purpose of the system, a dataset strategy (including how you collect cases from production incidents), and the role of LLM-as-judge versus reference-based eval for different types of outputs.
+
+> *"Evals are not about catching every bug — they're about making sure you know when your system is getting better or worse."* — Eugene Yan, Evals are all you need
 
 | PT | EN |
 |----|----|
@@ -139,3 +196,107 @@ Depois de Evaluation e Guardrail, a Logging Layer fecha o bloco de controle: reg
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 8 (Evaluation layer template). X/Twitter, 2025.
 - **Eugene Yan** — [*Evals are all you need*](https://eugeneyan.com/writing/evals/). Argumento por evals como vantagem competitiva sustentável.
 - **Hamel Husain** — [*Your AI product needs evals*](https://hamel.dev/blog/posts/evals/). Guia prático de como começar com dataset mínimo.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
