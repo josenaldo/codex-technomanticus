@@ -151,6 +151,77 @@ Um framework complementar — frequentemente referenciado na literatura como "Fr
 
 A utilidade prática deste framework é classificar maturidade. Quando se avalia uma ferramenta nova, perguntar "isto está em qual estágio?" é frequentemente mais informativo do que comparar features. Um sistema em estágio Storage com retrieval impecável ainda é menos poderoso do que um sistema em estágio Experience com retrieval mediano — porque o segundo destila conhecimento, e o primeiro só preserva.
 
+## Detalhando os 5 mecanismos com exemplos práticos
+
+A classificação de Du et al. ganha substância quando associada a exemplos concretos e ao custo relativo de cada mecanismo.
+
+```mermaid
+graph LR
+    subgraph M1 ["① Context-resident compression"]
+        C1["Resumir turnos antigos<br/>no próprio contexto"]
+        C2["Custo: compute de summarize<br/>Limite: context window"]
+    end
+
+    subgraph M2 ["② Retrieval-augmented stores"]
+        R1["RAG clássico aplicado à memória<br/>Vector DB / grafo / markdown"]
+        R2["Custo: embedding + query<br/>Escala: ilimitada"]
+    end
+
+    subgraph M3 ["③ Reflective self-improvement"]
+        RE1["Agente reflete sobre memória<br/>extrai padrões, consolida"]
+        RE2["Custo: chamada LLM extra<br/>Valor: conhecimento destilado"]
+    end
+
+    subgraph M4 ["④ Hierarchical virtual context"]
+        H1["Tiers RAM/disco<br/>Paginação entre níveis"]
+        H2["Custo: orchestração de tiers<br/>Exemplar: Letta/MemGPT"]
+    end
+
+    subgraph M5 ["⑤ Policy-learned management"]
+        P1["RL decide quando armazenar<br/>esquecer, consolidar"]
+        P2["Custo: treino + inferência<br/>Maturidade: research"]
+    end
+```
+
+**① Context-resident compression** na prática. Imagine um chatbot de suporte com histórico de 50 turnos. Em vez de truncar os turnos mais antigos (perdendo contexto) ou carregar todos (estourando o context window), o sistema compacta os 40 turnos mais antigos em um resumo de 5 parágrafos. O agente responde com os 10 turnos recentes mais o resumo. Claude Code usa variação desse mecanismo ao compactar sessões longas com `/compact`. O limite é claro: se o resumo falha em preservar um fato crítico, ele se perde para sempre — não há armazenamento externo de fallback.
+
+**② Retrieval-augmented stores** na prática. O mesmo chatbot de suporte agora persiste cada preferência extraída do usuário em um vector DB. Quando o usuário retorna semanas depois, o agente faz similarity search de "preferências do usuário X" e recupera os fragmentos mais relevantes. `basic-memory`, Mem0 e Zep caem aqui. A diferença entre eles está no que indexam (markdown puro, fatos extraídos, grafo temporal) e como recuperam.
+
+**③ Reflective self-improvement** na prática. O sistema de generative agents de Park et al. (2023) faz isso explicitamente: após um conjunto de interações, o agente reflete — "o que aprendi de importante sobre essa pessoa?" — e gera uma observação de alto nível que persiste. Não é só lembrar fatos; é sintetizar insights. Custo: uma chamada LLM extra a cada ciclo de reflexão. Valor: o sistema acumula conhecimento de ordem superior que não existia nos episódios brutos.
+
+**④ Hierarchical virtual context** na prática. Letta (ex-MemGPT) mantém um "core memory" (informações essenciais sobre o usuário, sempre no contexto), um "archival memory" (base persistida fora do contexto, recuperada via função) e um "recall memory" (histórico de conversas). O agente pode mover informação entre tiers — promoção e evicção explícitas. A metáfora SO/memória virtual é literal: há paginação de conteúdo entre memória "quente" e "fria" exatamente como um OS faz com RAM e swap.
+
+**⑤ Policy-learned management** na prática. Research ativa: o sistema observa quais memórias foram úteis nas queries subsequentes (sinal de relevância), quais não foram (sinal de noise), e aprende uma política de quando persistir, quando consolidar, quando esquecer. O obstáculo para produção é o reward signal — definir o que é "útil" de forma estável é não-trivial, e instabilidades no RL se propagam para a qualidade da memória.
+
+## O write-manage-read loop em ciclo contínuo
+
+O loop não é linear — é iterativo. A cada ciclo, o sistema aprende com o que foi recuperado e usa esse aprendizado para refinar o que mantém.
+
+```mermaid
+graph LR
+    W["WRITE<br/>Ingestão"] -->|"filtra e estrutura"| M["MANAGE<br/>Manutenção"]
+    M -->|"compacta, deduplica, esquece"| ST[("Storage<br/>Indexado")]
+    ST -->|"recupera top-k"| R["READ<br/>Retrieval"]
+    R -->|"alimenta resposta"| AG["Agente<br/>(responde)"]
+    AG -->|"nova interação gera nova entrada"| W
+    AG -->|"feedback implícito: foi útil?"| M
+```
+
+O ciclo revela uma propriedade importante: **manage não é pós-processamento periódico, é integrante do loop**. Todo ciclo de ingestão deveria disparar verificação de duplicatas; todo ciclo de recuperação deveria alimentar algum sinal de relevância que a manutenção usa. Implementações que tratam manage como "tarefa do fim de semana" deixam o loop incompleto — e a degradação acumula entre as execuções manuais de limpeza.
+
+Na prática, a frequência de cada operação difere:
+
+| Operação | Frequência recomendada | Custo por execução |
+|---|---|---|
+| Ingestão | A cada interação | Baixo (extract + write) |
+| Deduplicação | A cada ingestão ou diária | Médio (comparação vetorial) |
+| Compactação | Semanal ou por trigger de tamanho | Alto (LLM summarize) |
+| Lint (links, schema) | Diário via CI | Baixo (parse de arquivos) |
+| Forget policy (evicção) | Mensal ou por TTL | Baixo (filter por data/score) |
+| Reflexão (self-improvement) | Semanal ou por threshold de volume | Alto (LLM reflection) |
+
+A coluna de custo explica por que a maior parte dos sistemas skipa compactação e reflexão: são as operações mais caras e os benefícios aparecem no longo prazo, não na demo. É exatamente aí que sistemas amadurecem ou apodrecem.
+
 ## Quando NÃO usar uma arquitetura completa
 
 Não há virtude em sobre-engenharia. Há cenários onde implementar todos os cinco componentes é desperdício:
@@ -162,6 +233,19 @@ Não há virtude em sobre-engenharia. Há cenários onde implementar todos os ci
 
 > [!warning] Manutenção sem evaluation é teatro
 > O componente de manutenção é especialmente vulnerável a virar atividade performática. Compactação que não preserva fatos críticos, lint que não detecta contradições reais, forget policy que evicta o que importava — sem métricas que validem cada operação, manutenção piora o sistema em vez de melhorar. Antes de implementar manage, definir como medir se está funcionando.
+
+## Exercício de mapeamento: diagnosticar um sistema existente
+
+A utilidade prática do mapa de cinco componentes é que ele permite diagnosticar qualquer sistema — próprio ou de terceiro — com um checklist rápido. Para um sistema em avaliação, pergunte:
+
+> [!example] Checklist de arquitetura
+> - **Ingestão:** O que filtra o que entra? É manual, automático ou híbrido? A granularidade é fato atômico, parágrafo ou documento?
+> - **Indexação:** Qual o substrato? Vetorial, grafo, hierárquico, flat? Write-heavy ou read-heavy por design?
+> - **Retrieval:** Similarity search pura, graph traversal, híbrida (BM25 + vetor)? Tem reranking? Qual o top-k padrão?
+> - **Manutenção:** Existe compactação? Com que frequência? Há forget policy? Quem roda o lint?
+> - **Governance:** Existe CLAUDE.md, AGENTS.md ou documento de regras? O schema de frontmatter é validado?
+
+Sistemas que respondem "não existe" para manutenção e governance estão, quase sem exceção, no caminho de se tornarem lixão. Não por mal design — por omissão que parece razoável no começo e compõe negativamente com o tempo.
 
 ## Armadilhas comuns
 
