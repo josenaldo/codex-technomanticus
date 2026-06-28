@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - structured-outputs
   - ia
@@ -19,6 +20,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Streaming clássico de texto funciona bem porque cada chunk é um pedaço válido por si só. Streaming de JSON estruturado tem o problema: um pedaço de JSON no meio (`{"answer": "Sim, mas`) não é parseável. Três caminhos resolvem: (1) streaming nativo de `tool_use` blocks da Anthropic, com `input_json_delta` parcial; (2) parsers de JSON parcial (`json-repair` em Python, `partial-json` em TS) que aceitam JSON incompleto e fecham o que falta; (3) emitir só campos completos pra UI, mantendo o JSON acumulando em buffer. Útil pra UX em chat e canvas longos; quase sempre dispensável em backend pipelines. Validação semântica acontece só no final.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende o problema básico de structured output (nota 01) e como providers garantem schema (notas 03-06). Streaming de texto em LLMs — onde a resposta chega token a token — é um conceito que você provavelmente já conhece. Esta nota trata da intersecção: quando você combina output estruturado com streaming, você perde a capacidade de parsear JSON no meio do caminho. A nota apresenta três padrões que resolvem isso. O contexto principal é UX em aplicações com usuário — em backend pipelines, streaming de structured output raramente vale a complexidade.
 
 ## Por que streaming de JSON é diferente
 
@@ -243,6 +247,42 @@ Se streaming complica demais, considere chamar sem stream e mostrar loading boni
 ### Considere `useObject` / Vercel AI SDK
 
 Em React/Next.js, Vercel AI SDK tem `useObject` que abstrai streaming structured. Vale conhecer se está nessa stack.
+
+## Armadilhas comuns
+
+> [!warning] Tentar validar semanticamente no parcial
+> A armadilha clássica é invocar Pydantic ou Zod no objeto parcial durante o streaming — seja por conveniência ("já que tenho o objeto, valido logo") ou por medo de chegar ao final sem validar. Validators com model_validator (cross-field) vão falhar porque campos ainda não chegaram. O objeto parcial do json-repair não respeita tipos ou enums. Resultado: exceções espúrias, resets de stream desnecessários, UX quebrada. Regra: validação semântica só no evento `message_stop` ou equivalente. No parcial, no máximo sanity checks simples (campo emitido cedo com valor obviamente errado).
+
+> [!warning] Confundir streaming com coleta mais rápida do output completo
+> Streaming mostra a UI mais cedo, mas o output completo chega no mesmo tempo. Se você acumula o buffer e só processa no final, você pagou a complexidade do streaming sem nenhum ganho. Streaming só faz sentido quando você processa ou renderiza os dados à medida que chegam — campos emitidos progressivamente na tela, progress indicator real, capacidade de abortar cedo. Se você vai aguardar o objeto completo de qualquer forma, desative streaming e simplifique.
+
+> [!warning] Não tratar stream cortado como caso de retry
+> Streaming por HTTP é suscetível a cortes de rede, timeouts do cliente, e rate limit do provider no meio da geração. Quando o stream corta sem `message_stop`, você tem um buffer parcial que pode não ser JSON válido nem com json-repair. O código ingênuo descarta o parcial e reporta erro genérico. O correto: detectar stream cortado (ausência de evento final), logar o parcial para diagnóstico, e fazer retry completo. Em alguns casos, o parcial pode ser útil como contexto pra nova chamada.
+
+## Como explicar em inglês
+
+Em entrevistas sobre design de aplicações com LLM, streaming structured output aparece quando o entrevistador quer ver se você entende a diferença entre streaming de texto e streaming de dados estruturados:
+
+> "Streaming JSON is different from streaming text because intermediate JSON states aren't parseable. You can't just call `JSON.parse` on each chunk. Three patterns handle this: native streaming with typed deltas from Anthropic's `input_json_delta`; partial JSON parsers like json-repair that close incomplete JSON in a best-effort way; or field-by-field emission detection for flat schemas. In all cases, full semantic validation — Pydantic, Zod — only runs at the end. Streaming is a UX concern for user-facing applications; backend pipelines should skip it."
+
+| Português | Inglês |
+|-----------|--------|
+| streaming de output estruturado | structured output streaming |
+| parser de JSON parcial | partial JSON parser |
+| delta de JSON de input | input JSON delta |
+| buffer acumulado | accumulated buffer |
+| emissão por campo | field-by-field emission |
+| stream cortado | interrupted stream |
+| throttle de renderização | render throttling |
+| skeleton de loading | loading skeleton |
+| evento de parada | stop event / message_stop |
+| latência percebida | perceived latency |
+
+## O que vem a seguir
+
+Esta nota fecha a trilha de Structured Outputs. Os próximos galhos do domínio IA aprofundam aspectos que foram mencionados ao longo das notas 01-08: Evaluation (como medir se o pipeline está funcionando), Observability (como monitorar em produção), e Improvement Loop (como melhorar iterativamente). Todos esses galhos pressupõem que você tem output estruturado confiável — o que essas 8 notas construíram.
+
+Próximo galho: Evaluation.
 
 ## Fontes
 
