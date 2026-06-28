@@ -153,7 +153,7 @@ Trace (id: 7f3a...) — "estado da arte de fine-tuning em 2026?"
     └── user.feedback: thumbs_up
 ```
 
-Cada span carrega `parent_span_id` apontando pro pai. A árvore inteira é reconstruída na UI do Langfuse/Phoenix por essa relação.
+Cada span carrega `parent_span_id` apontando pro pai. A árvore inteira é reconstruída na UI do Langfuse/Phoenix por essa relação. Um trace sem hierarquia de spans — onde tudo aparece no mesmo nível — é tão informativo quanto um stack trace sem frames: você sabe que algo aconteceu, mas não onde.
 
 ## Required vs nice-to-have
 
