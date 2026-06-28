@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > **[[Dicionário de IA#embedding|Embedding]]** é a representação vetorial de texto (ou outro dado) como array de números, tipicamente 256-3072 dimensões. Textos com significado similar ficam próximos nesse espaço. Modelos modernos (OpenAI text-embedding-3, Voyage 3, Cohere Embed v4) têm propriedades específicas: matryoshka (truncar dimensões preserva qualidade), domain-specific (legal, código), multilingue. Custo é baixo: $0.02-$0.13/M tokens. **A escolha do [[Dicionário de IA#embedding model|modelo de embedding]] é decisão arquitetural** — você fica casado com ele para o lifecycle do índice.
+
+> [!question]- Por que a distância de cosseno e não distância euclidiana para embeddings?
+> Distância euclidiana mede o comprimento do segmento entre dois pontos — e embeddings de textos longos tendem a ter magnitudes maiores do que textos curtos, independentemente do significado. Isso distorce o resultado: um parágrafo de 5 frases estaria "mais longe" de uma query curta mesmo que o conteúdo seja idêntico. Cosseno mede o **ângulo** entre os vetores, ignorando magnitude — apenas a direção importa. Como modelos de embedding codificam semântica na direção dos vetores, não no comprimento, cosseno é a métrica correta. É por isso que todo vector DB usa cosine similarity ou produto interno (inner product) como default, não distância L2.
 
 ## A intuição
 
@@ -165,6 +169,48 @@ Use case: busca visual ("encontre páginas com diagramas similares").
 - **Embedding chunks gigantes** — atenção do encoder dilui
 - **Single dimension fits all** — domínios diferentes podem precisar de modelos diferentes
 
+## Armadilhas comuns
+
+> [!warning] Trocar modelo de embedding sem re-indexar
+> Se você mudar o modelo de embedding após indexar, os vetores antigos e os novos vivem em espaços matemáticos completamente diferentes — e não há como compará-los. Queries vão retornar resultados aleatórios sem nenhum erro explícito. Mudar de modelo exige re-embed de **toda** a base. Planeje essa decisão com o mesmo cuidado de uma migração de banco de dados.
+
+> [!warning] Usar embedding de texto bruto sem pré-processamento
+> HTML com tags, JSON com chaves, PDFs mal-parseados com caracteres lixo — tudo isso degrada a qualidade do embedding. O modelo de embedding foi treinado em texto limpo e natural. Texto sujo entra, vetor sem sentido sai. Sempre limpe o texto antes de embedar: remova markup, normalize espaços, decodifique entidades HTML.
+
+> [!warning] Assumir que embeddings multilíngues são iguais para todas as línguas
+> Modelos "multilíngues" têm desempenho desigual entre idiomas — geralmente inglês tem qualidade muito superior ao PT-BR, Árabe ou Japonês. Para aplicações em português que exijam alta qualidade, valide o modelo no seu domínio específico antes de assumir que o multilíngue resolve. Às vezes modelos menores fine-tuned em PT-BR superam modelos maiores genéricos.
+
+## Como explicar em inglês
+
+An embedding is the transformation of text into a dense numerical vector — think of it as a coordinate in a high-dimensional semantic space, where similar meanings cluster together and dissimilar meanings are far apart. When you embed the word "king" and "queen," their vectors end up close in that space; "table" ends up far from both. This geometric property is what makes similarity search possible.
+
+Modern embedding models are transformer-based encoder architectures — distinct from the decoder-only LLMs used for generation. They're trained with contrastive loss objectives: similar sentence pairs are pulled together in vector space, dissimilar pairs are pushed apart. The key metric used for comparison is cosine similarity, which measures the angle between vectors rather than their distance, making it scale-invariant.
+
+The architectural decision that matters most is model selection — you're committing to a particular embedding space for the entire lifecycle of your index. Switching models means re-embedding everything. In 2026, the practical default is OpenAI text-embedding-3-large for English, Cohere multilingual-v4 for multilingual use cases, and Voyage code-3 for code retrieval. Matryoshka-trained models let you trade off storage and quality by truncating dimensions without retraining.
+
+**In a technical interview**, you might say:
+
+> "Embeddings are the foundation of semantic retrieval in RAG. The embedding model maps text into a vector space where cosine similarity approximates semantic relevance. The key architectural constraint is lock-in: query-time and index-time embeddings must come from the same model, and switching models requires full re-indexing. I treat model selection as an architectural decision with a 12-18 month horizon — I evaluate on a domain-specific golden set before committing, because MTEB rankings don't always translate to production quality on your specific data."
+
+| PT | EN |
+|----|-----|
+| Modelo de embedding | Embedding model |
+| Vetor denso | Dense vector |
+| Similaridade de cosseno | Cosine similarity |
+| Dimensionalidade | Dimensionality |
+| Espaço vetorial | Vector space |
+| Encoder-only | Encoder-only (BERT-style) |
+| Anisotropia | Anisotropy |
+| Embeddings matriciais (aninhados) | Matryoshka embeddings |
+| Produto interno | Inner product / dot product |
+| Lock-in de modelo | Model lock-in |
+
+## O que vem a seguir
+
+Embeddings resolvem *como* textos são representados como vetores comparáveis. Mas antes de chegar ao embedding, há uma decisão ainda mais fundamental que determina o que vai ser embedded: como dividir o documento original em pedaços. Chunking é onde mais de 50% da qualidade do RAG é decidida — porque um embedding perfeito de um chunk ruim ainda retorna contexto inútil.
+
+- [[04 - Chunking — onde 50% da qualidade vive]] — estratégias de divisão (fixed-size, recursive, semantic, structure-aware, contextual), trade-offs de tamanho, overlap e metadata obrigatória
+
 ## Veja também
 
 - [[02 - Anatomia do pipeline RAG]]
@@ -179,3 +225,81 @@ Use case: busca visual ("encontre páginas com diagramas similares").
 - **Cohere** — *Embed v4 documentation* (2026)
 - **MTEB Leaderboard** — *Massive Text Embedding Benchmark* (HuggingFace)
 - **Karpukhin et al.** — *Dense Passage Retrieval* (paper original DPR, 2020)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
