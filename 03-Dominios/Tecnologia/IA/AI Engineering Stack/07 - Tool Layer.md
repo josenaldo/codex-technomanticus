@@ -20,6 +20,9 @@ aliases:
 > [!abstract] TL;DR
 > A Tool Layer define **o que o modelo pode fazer no mundo** — além de gerar texto. Calculadora, busca, query no banco, criar arquivo, enviar email. Cada tool é uma função tipada com efeito colateral — e efeitos colaterais são diferentes de tokens gerados: eles não se apagam. As decisões-chave: quais tools estão disponíveis, quando usar cada uma, quais precisam de aprovação humana, quais são proibidas, e o que fazer quando uma tool falha. Sem essa camada bem definida, agentes fazem ações erradas em produção e o time só descobre depois.
 
+> [!question]- Por que tools com LLMs são diferentes de chamadas de função comuns?
+> Em código convencional, quem chama a função é o programador — e ele sabe exatamente o que está chamando, quando, e com quais parâmetros. Com LLMs, quem decide chamar a tool é o modelo — com base em inferência, não em código determinístico. Isso muda radicalmente o perfil de risco: ações com efeito colateral (enviar email, deletar registro) passam a ser decisões probabilísticas, não determinísticas. A Tool Layer é o sistema de controle que mantém esse poder contido.
+
 ## O problema que a Tool Layer resolve
 
 Gerar texto é reversível. O usuário lê, discorda, pede de novo. Mas quando o modelo clica em "confirmar compra", envia um email para 50.000 clientes, ou deleta um arquivo em produção — não tem desfazer. A Tool Layer existe porque a diferença entre "modelo que sugere ações" e "modelo que executa ações" é a diferença entre ter e não ter um sistema de controle.
@@ -27,6 +30,30 @@ Gerar texto é reversível. O usuário lê, discorda, pede de novo. Mas quando o
 Sem Tool Layer bem definida, três problemas emergem: (1) o modelo recebe tools que não deveria chamar neste contexto e as chama mesmo assim; (2) não há política de aprovação para ações de alto risco; (3) quando uma tool falha, o modelo improvisa — às vezes chamando de novo em loop, às vezes inventando o resultado como se a tool tivesse funcionado.
 
 A Tool Layer não é sobre quais ferramentas usar — é sobre **quem decide o que, quando, com que nível de supervisão humana**.
+
+## Sem Tool Layer vs com Tool Layer
+
+```mermaid
+flowchart LR
+    subgraph "Sem Tool Layer"
+        A1["Modelo recebe tarefa"]
+        A2["Todas as tools disponíveis\nsem política"]
+        A3["Ação irreversível\nexecutada sem controle"]
+    end
+
+    subgraph "Com Tool Layer"
+        B1["Modelo recebe tarefa"]
+        B2["Política filtra tools\npor contexto e risco"]
+        B3["Aprovação humana\nquando necessário"]
+        B4["Ação executada\ncom rastreabilidade"]
+    end
+
+    A1 --> A2 --> A3
+    B1 --> B2 --> B3 --> B4
+
+    style A3 fill:#fff5f5,stroke:#ff6b6b
+    style B4 fill:#f0fff4,stroke:#51cf66
+```
 
 ## O que é esta camada
 
@@ -113,9 +140,42 @@ O mesmo `schedule_email` tem política diferente dependendo do blast radius. O m
 > [!warning] Tool design negligenciado
 > Engenheiros constroem a lógica da tool, escrevem uma descrição de três palavras no schema, e se surpreendem quando o modelo usa a tool errada ou com parâmetros incorretos. Descrição de tool é documentação para o modelo — como o docstring de uma função, mas lido a cada chamada. Inclua: o que a tool faz (em uma frase), quando usar, quando não usar, e um exemplo de input/output.
 
+## Categorias de tools e suas implicações de risco
+
+Nem toda tool tem o mesmo perfil de risco. Classificar antes de categorizar na política de aprovação evita erros grosseiros no design da camada.
+
+**Read-only tools (leitura):** `search`, `get`, `list`, `fetch`, `preview`. Sem efeito colateral permanente — o pior caso é latência desnecessária ou dado desatualizado. Geralmente seguros para `auto-approve`. Cuidado: `fetch` de uma URL pode registrar um acesso em sistemas de analytics — não é puramente "sem efeito".
+
+**Write tools (escrita única):** `create`, `update`, `send`, `schedule`. Efeito colateral permanente, mas escopo limitado. Geralmente: `confirm` para ações que afetam 1 registro ou 1 destinatário; `plan-then-execute` para lotes.
+
+**Destructive tools (destruição):** `delete`, `revoke`, `cancel`, `purge`. Alta irreversibilidade. Padrão seguro: `forbidden` no agente autônomo, disponível apenas via workflow humano-no-loop explícito.
+
+**Compute tools (computação):** `calculate`, `transform`, `generate`. Sem efeito colateral externo, mas podem ter custo computacional ou ser vetores de prompt injection se o input vier de fontes externas (web scraping, documentos de usuário).
+
+**Integration tools (integração):** tools que chamam APIs externas — pagamentos, messaging, auth. Risco depende do que a API faz; tratar como write tools no mínimo, com blast radius avaliado caso a caso.
+
+> [!info] Blast radius como critério de gradação
+> Blast radius = número de entidades afetadas × reversibilidade. Enviar email para 1 usuário: baixo. Enviar para 50k: altíssimo — mesmo que tecnicamente seja "a mesma tool". A política deve graduar por blast radius, não só por tipo de ação.
+
+## Quando criar uma tool vs resolver no prompt
+
+Decisão frequente que muitos times erram por falta de critério explícito.
+
+**Crie uma tool quando:** o modelo precisa de dado em tempo real (que não está no contexto); a ação tem efeito colateral real (escrever, enviar, criar); a computação é mais confiável feita em código do que gerada pelo modelo (cálculos numéricos, parsing de formatos complexos).
+
+**Resolva no prompt quando:** o dado já está no contexto ou pode ser injetado no prompt; a "ação" é apenas formatação ou classificação de texto; criar a tool adicionaria latência sem melhorar confiabilidade.
+
+**Red flag:** tool criada só para "dar ao modelo mais contexto" — isso é job da Context Layer, não da Tool Layer. Muitas tools de leitura no lugar de context management adequado é um sintoma de arquitetura confusa.
+
 ## Como explicar em inglês
 
 The Tool Layer defines what the model can do in the real world beyond generating text: search, calculate, write files, send emails, query databases. The critical distinction from other layers: tool calls have side effects. Unlike generated text, a sent email or deleted record cannot be undone. The layer defines an approval policy (auto-approve, confirm, plan-then-execute) based on blast radius and reversibility, specifies failure handling, and sets forbidden actions. Well-designed tools also require well-written schemas — a poorly described tool is a tool the model will misuse.
+
+Think of it as the difference between giving someone a key to every room in the building versus giving them a key only to the rooms they need for the task at hand. The second isn't about distrust — it's about preventing accidental entries into rooms with dangerous machinery. The Tool Layer is that access control system for model actions.
+
+In interviews, the signal question is usually about approval policies and blast radius — not about which tools to build. A strong answer articulates the three-tier model (auto-approve / confirm / plan-then-execute), explains how blast radius drives the classification, and gives a concrete example of a failure mode that proper policy would have prevented.
+
+> *"The question isn't whether your agent can call the tool — it's whether it should, with what level of human oversight, and what happens when the tool fails."* — common framing in agentic system design reviews
 
 | PT | EN |
 |----|----|
@@ -156,3 +216,87 @@ Com tools definidas, você tem os blocos de construção de execução do sistem
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 6 (Tool layer template). X/Twitter, 2025.
 - **Anthropic** — [*Tool use with Claude*](https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview). Schemas, function calling, efeitos colaterais.
 - **OpenAI** — [*Function calling*](https://platform.openai.com/docs/guides/function-calling). Parallel function calls e structured outputs em tools.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
