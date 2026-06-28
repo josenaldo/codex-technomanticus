@@ -282,3 +282,24 @@ A próxima nota cobre o ciclo completo de desenvolvimento de um MCP server local
 - **mcp.so** — marketplace
 - **smithery.ai** — discovery + install
 - **Anthropic** — *MCP server directory* (2026)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
