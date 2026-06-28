@@ -5,6 +5,7 @@ updated: 2026-06-19
 type: concept
 status: growing
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -24,6 +25,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Eval **não é uma coisa só**. O que você mede muda dramaticamente com o que está avaliando. **Prompt isolado**: golden set + rubrica simples. **RAG pipeline**: retrieval (precision@k, MRR, context recall) **separado** de generation (faithfulness, answer relevance). **Agent**: trajectory eval, tool call success, multi-step reasoning, task completion rate. **LLM base** (provider, modelo): benchmarks padronizados (MMLU, HumanEval, GSM8K, ARC). Cada contexto tem métrica-chave e frameworks indicados diferentes. Esta nota é o **mapa** que liga essa trilha às três notas contextuais existentes: [[03-Dominios/Tecnologia/IA/Anatomia de Agents/09 - Evaluation de agents]], [[03-Dominios/Tecnologia/IA/Anatomia dos LLMs/19 - Evaluation de LLMs em produção]], [[03-Dominios/Tecnologia/IA/RAG e Vector Databases/09 - Evaluation de RAG]].
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você passou pelas notas 01-07 da trilha Evaluation: EDD, golden sets, rubrics, LLM-as-judge, regression testing, frameworks, CI/CD. Esta nota é a síntese — como esses conceitos se adaptam quando você não está avaliando um prompt isolado, mas um sistema RAG, um agent multi-step, ou um modelo base. Se você só vai usar eval pra prompt isolado, as notas anteriores já cobrem tudo. Esta nota importa quando você precisa entender por que as mesmas métricas não funcionam em sistemas mais complexos.
 
 ## Por que eval muda com contexto
 
@@ -284,6 +288,42 @@ Cada estágio com seu eval. Failure em qualquer um sinaliza onde está o problem
 - **Eval de agent sem trace review** — métrica agregada perde bugs sutis em trajetória
 - **Mesmo dataset pra tudo** — eval de prompt, RAG e agent precisam datasets diferentes
 - **Sem isolar componentes** — performance ruim na ponta sem saber qual estágio falhou
+
+## Armadilhas comuns
+
+> [!warning] Usar métrica de prompt isolado em sistema multi-componente
+> A armadilha mais frequente ao expandir de prompt isolado para RAG ou agent é tentar aplicar as mesmas métricas end-to-end. "Answer relevance" num sistema RAG pode estar alta mesmo quando o retrieval está trazendo chunks errados — se o modelo é bom o suficiente, ele responde razoavelmente mesmo com contexto ruim. Você vai otimizar o prompt de generation enquanto o verdadeiro problema está no embedding model ou no reranker. Para cada estágio que pode falhar independentemente, você precisa de métrica isolada daquele estágio. Métricas end-to-end são indicadores de saúde geral, não de diagnóstico.
+
+> [!warning] Benchmark acadêmico como substituto para eval de produto
+> MMLU, HumanEval e GSM8K medem capacidade geral do modelo base — não medem se o modelo vai ser bom na sua tarefa específica. Um modelo que domina MMLU (conhecimento multidisciplinar) pode ser pior em classificação de tickets técnicos do que um modelo menor com prompt bem calibrado. Times que usam benchmarks para escolher modelos de produção sem testar no próprio domínio frequentemente descobrem que o "modelo mais capaz" não entrega o melhor resultado no produto. Benchmarks são úteis para triagem inicial; a decisão final exige golden set + rubrica do seu domínio específico.
+
+> [!warning] Eval de agent sem revisar traces manualmente
+> Métricas de agent (task completion rate, steps per task, tool call success) são números agregados que escondem padrões de falha sutis. Um agent com 80% de completion rate pode estar falhando sempre nos mesmos tipos de input, ou fazendo o caminho certo pelos motivos errados, ou usando tools em ordem desnecessariamente longa. Nenhuma métrica automática captura esses padrões melhor do que um humano lendo 20-30 traces por semana. A trace review manual é trabalhosa mas é o eval mais valioso em sistemas agentic — ela produz os casos de teste de regression mais úteis e a intuição necessária para melhorar o harness.
+
+## Como explicar em inglês
+
+Em entrevistas sobre avaliação de sistemas LLM, a capacidade de adaptar o framework de eval ao tipo de sistema demonstra maturidade de engenharia:
+
+> "Eval isn't one-size-fits-all. For a standalone prompt, a golden set with a rubric is enough. For a RAG pipeline, you need to measure retrieval separately from generation — context precision and recall at the retrieval stage, faithfulness and answer relevance at the generation stage. For agents, output alone isn't enough; you need trajectory eval — tool call success rate, steps per task, human intervention rate. For choosing between model providers, academic benchmarks like MMLU and HumanEval are useful for capability triaging, but the final decision always needs your own domain-specific golden set."
+
+| Português | Inglês |
+|-----------|--------|
+| eval por contexto | context-specific evaluation |
+| prompt isolado | standalone prompt / single-turn prompt |
+| pipeline RAG | RAG pipeline |
+| precisão de contexto | context precision |
+| revocação de contexto | context recall |
+| fidelidade da resposta | answer faithfulness |
+| eval de trajetória | trajectory eval |
+| benchmark acadêmico | academic benchmark |
+| análise de trace | trace review |
+| taxa de completude de tarefa | task completion rate |
+
+## O que vem a seguir
+
+Esta nota fecha o galho de Evaluation. O próximo domínio no caminho de AI Engineering é Observability — como monitorar em produção o que os evals mediram em pré-deploy: traces, métricas de uso, drift de output, e debugging de falhas que só aparecem com tráfego real.
+
+Ver galho Observability em [[03-Dominios/Tecnologia/IA/Observability/]].
 
 ## Veja também
 
