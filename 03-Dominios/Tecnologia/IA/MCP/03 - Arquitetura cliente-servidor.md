@@ -1,8 +1,9 @@
 ---
 title: "Arquitetura cliente-servidor"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] usa modelo **cliente-servidor** sobre **JSON-RPC 2.0**. Três transports: **[[Dicionário de IA#transport (stdio, SSE, HTTP)|stdio]]** (subprocesso local, mais comum), **HTTP+SSE** (remoto, multi-user), e **WebSocket** (bidirecional, casos específicos). Lifecycle típico: client conecta → discovery (list_tools/resources/prompts) → operações → close. Cada client (Claude Desktop, Cursor, [[Dicionário de IA#Claude Code|Claude Code]]) tem mecanismo próprio de configurar servers — geralmente via JSON config file.
+
+> [!question]- Por que arquitetura cliente-servidor e não o LLM chamar APIs diretamente?
+> Porque o LLM não tem identidade de rede, não gerencia conexões persistentes e não sabe nada sobre autenticação de infraestrutura — ele é um modelo de linguagem, não um processo. A arquitetura cliente-servidor coloca o MCP client (Claude Desktop, Cursor) como o processo que gerencia conexões, auth e lifecycle. O LLM decide "quero chamar esta tool", o client executa o JSON-RPC e devolve o resultado. Esse desacoplamento é o que permite trocar o LLM sem mudar os servers, e trocar os servers sem mudar o client — a mesma separação de responsabilidades que HTTP trouxe para a web.
 
 ## O modelo cliente-servidor
 
@@ -290,6 +294,48 @@ graph TD
 - **Server sem capabilities negotiation** — quebra com clients novos
 - **Sem MCP Inspector na stack** — debugging é tortura
 - **Discovery sem cache no client** — listing toda hora é caro
+
+## Armadilhas comuns
+
+> [!warning] Usar HTTP+SSE para single-user
+> HTTP+SSE traz overhead real: TLS, auth, deployment, rede, manutenção de servidor. Para um único usuário rodando tools locais, stdio é superior em todos os eixos — latência mínima (1-5ms vs 30-100ms), sem setup de rede, auth implícita pelo sistema operacional, sem custo de hosting. O erro é tratar HTTP+SSE como "mais profissional" quando na verdade é só mais complexo sem ganho.
+
+> [!warning] Esquecer o MCP Inspector no fluxo de desenvolvimento
+> Plugar um server diretamente em Claude Desktop sem validar com o Inspector primeiro é receita para horas de debugging por tentativa e erro. O Inspector mostra exatamente o que o server está expondo, permite invocar tools manualmente, e exibe os requests/responses raw do JSON-RPC. Sem ele, o único feedback é "o client não mostra a tool" ou "a tool retornou erro" — sem contexto de onde o problema está.
+
+> [!warning] Não cachear o resultado de discovery no client
+> Clientes ingênuos chamam `list_tools`, `list_resources` e `list_prompts` a cada turno de conversa. Em servidores com muitos capabilities, isso adiciona múltiplas roundtrips e pode somar 5-10K tokens de descrições recarregadas desnecessariamente. O padrão correto é descobrir na conexão inicial e atualizar só quando o server sinaliza `listChanged: true` via capabilities negotiation.
+
+## Como explicar em inglês
+
+MCP uses a client-server architecture over JSON-RPC 2.0, with three transport options: stdio for local single-user setups, HTTP+SSE for shared multi-user servers, and WebSocket for bidirectional edge cases. The client (Claude Desktop, Cursor, Claude Code) is responsible for managing connections, authentication, and the session lifecycle — the LLM itself only decides which tool to call and with what arguments.
+
+The lifecycle is straightforward: the client connects and sends an `initialize` message, the server responds with its capabilities, the client performs discovery (`list_tools`, `list_resources`, `list_prompts`), and the session enters active state where the LLM can request tool calls and resource reads. When finished, the client sends a `shutdown`. Every message in between is standard JSON-RPC, which means any language with a JSON library can implement an MCP server.
+
+**In a technical interview**, you might say:
+
+> "MCP's client-server model cleanly separates concerns: the LLM decides what to do, the client manages how to do it. The server exposes capabilities via JSON-RPC over stdio or HTTP+SSE. stdio is a subprocess — zero network overhead, implicit auth, perfect for solo dev. HTTP+SSE is a standalone service with bearer tokens or OAuth 2.1, shared across a team. The key lifecycle moment is capabilities negotiation on initialize — that's where client and server agree on what features are supported, enabling backward compatibility as the protocol evolves."
+
+| PT | EN |
+|----|-----|
+| Transporte | Transport |
+| Subprocesso | Subprocess |
+| Ciclo de vida | Lifecycle |
+| Descoberta | Discovery |
+| Negociação de capacidades | Capabilities negotiation |
+| Protocolo de fio | Wire protocol |
+| Autenticação implícita | Implicit auth |
+| Eventos enviados pelo servidor | Server-Sent Events (SSE) |
+| Bidirecional | Bidirectional |
+| Latência | Latency |
+
+## O que vem a seguir
+
+Com a arquitetura compreendida, o próximo passo natural é ver o ecossistema de servers prontos antes de construir um do zero. Em 2026, existe uma chance real de que o servidor que você precisa já exista — e reusar um server mantido pela comunidade ou pela Anthropic é quase sempre melhor do que construir do zero.
+
+A próxima nota mapeia os servers oficiais e os mais populares por categoria, e dá critérios concretos para decidir quando instalar um pronto versus quando construir o próprio.
+
+- [[04 - MCP servers oficiais e populares]] — catálogo do ecossistema e critérios de escolha
 
 ## Veja também
 
