@@ -42,16 +42,16 @@ Um exemplo concreto: requisição de 4.2 segundos no APM aparece como "/api/chat
 
 Lista mínima do que um trace LLM precisa carregar — fora do que APM tradicional já dá:
 
-- **Tokens** — `input_tokens`, `output_tokens`, `reasoning_tokens`, `cache_read_input_tokens`, `cache_creation_input_tokens` (cada um separado, não agregado)
-- **Versão do prompt** — qual `prompt_id` + `version` foi materializado nessa chamada
-- **Tool calls** — nome da tool, args, resultado, latência, sucesso
-- **Retrieval** — query, top-k, IDs dos chunks retornados, scores
-- **Modelo exato** — não "claude-sonnet" mas `claude-sonnet-4-6` (subversão importa pra debug)
-- **Parâmetros** — `temperature`, `max_tokens`, `top_p`, `thinking_budget`, `tools` schema enviado
-- **Custo da requisição** — calculado em USD, com breakdown por categoria de token
-- **Finish reason** — `end_turn`, `tool_use`, `max_tokens`, `stop_sequence` — porque cortou
-- **Feedback do usuário** (quando existe) — thumbs up/down, edits, re-runs
-- **Score de eval** (quando aplicável) — sinal contínuo de qualidade
+- **Tokens** — `input_tokens`, `output_tokens`, `reasoning_tokens`, `cache_read_input_tokens`, `cache_creation_input_tokens` (cada um separado, não agregado). Agregado em "total tokens" perde o sinal de onde o custo foi.
+- **Versão do prompt** — qual `prompt_id` + `version` foi materializado nessa chamada. Sem isso, você não consegue correlacionar incidente com deploy de prompt.
+- **Tool calls** — nome da tool, args, resultado, latência, sucesso. Cada chamada de tool como span filho. Múltiplas chamadas em sequência ficam visíveis como árvore.
+- **Retrieval** — query, top-k, IDs dos chunks retornados, scores. Sem isso, RAG debug é adivinhação.
+- **Modelo exato** — não "claude-sonnet" mas `claude-sonnet-4-6-20250514`. Subversão importa: provider pode atualizar silenciosamente e mudar o comportamento do modelo.
+- **Parâmetros** — `temperature`, `max_tokens`, `top_p`, `thinking_budget`, `tools` schema enviado.
+- **Custo da requisição** — calculado em USD, com breakdown por categoria de token. Essencial pra atribuição por feature.
+- **Finish reason** — `end_turn`, `tool_use`, `max_tokens`, `stop_sequence` — porque cortou. Isso é onde bugs sutis aparecem: `max_tokens` num campo esperado como completo.
+- **Feedback do usuário** (quando existe) — thumbs up/down, edits, re-runs. Sinal de qualidade direto do usuário.
+- **Score de eval** (quando aplicável) — sinal contínuo de qualidade automatizado.
 
 Sem essa lista, três operações ficam impossíveis: debug de incidente específico, atribuição de custo por feature/usuário, e detecção de regressão de qualidade.
 
