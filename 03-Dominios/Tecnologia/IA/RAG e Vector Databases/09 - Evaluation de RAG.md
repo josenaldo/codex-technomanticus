@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] sem evaluation é aposta. Métricas fundamentais: **context precision** (chunks recuperados são relevantes?), **context recall** (chunks relevantes foram recuperados?), **faithfulness** (resposta é fiel ao contexto?), **answer relevance** (resposta atende à pergunta?). **Crucial:** medir [[Dicionário de IA#retrieval|retrieval]] **separado** de generation. Se retrieval falha, generation não salva. Tools: Ragas (mais popular), TruLens, DeepEval. Golden set de 30-100 perguntas com gabarito é o mínimo.
+
+> [!question]- Por que medir retrieval separado de generation em RAG?
+> Porque são dois mecanismos distintos com falhas distintas: se o retrieval não trouxer o chunk certo, o generation não tem como inventar a resposta correta — e quando inventa, isso é faithfulness ruim, não retrieval bom. Juntar as métricas obscurece a causa raiz: você pode ter faithfulness alta (LLM fiel ao que recebeu) com recall baixo (LLM recebeu lixo). Sem separação, você não sabe se precisa consertar o chunker, o ranker ou o prompt.
 
 > [!info] Trilha mestre
 > Esta nota é o deep-dive de evaluation **no contexto de RAG**. Pra disciplina geral de evaluation (golden datasets, rubrics, LLM-as-judge, frameworks 2026, eval em CI), veja a trilha [[Evaluation]].
@@ -261,6 +265,46 @@ Maioria está em 0-1. Meta para 2026: nível 3.
 | **Citation accuracy** | >0.95 |
 | **% "não sei" apropriado** | >70% das out-of-scope |
 | **Latência p95** | <3s |
+
+## Armadilhas comuns
+
+> [!warning] Avaliar só a última resposta, não o pipeline
+> É tentador olhar a resposta final e dizer "parece boa". Mas uma resposta fluente pode esconder retrieval ruim (LLM completou com conhecimento próprio), rerank ruim (chunk certo ficou fora do top-5) ou generation off-topic. Sem métricas separadas por fase, você está medindo sorte, não qualidade.
+
+> [!warning] Golden set muito pequeno ou viesado
+> Com 5-10 exemplos, qualquer variação aleatória parece tendência. Pior: se o golden set foi gerado pelo mesmo LLM que avalia, você cria circular reasoning — o modelo aprende a parecer bom nos próprios exemplos. Use no mínimo 30-50 perguntas, geradas por humanos, cobrindo factual, multi-hop, out-of-scope e adversarial.
+
+> [!warning] Ragas como substituto de A/B em produção
+> Ragas é ótimo para detectar regressão offline, mas métricas de 0 a 1 não dizem se o usuário ficou satisfeito. Um sistema com faithfulness 0.95 pode ter NPS negativo se a resposta for correta mas verbosa, lenta ou sem citação clicável. Use Ragas para gate em CI; use thumbs up/down em produção para o que realmente importa.
+
+## O que vem a seguir
+
+A nota 09 fecha o ciclo técnico das métricas — você agora sabe o que medir e como automatizar o gate de qualidade. Mas existe um passo anterior ao refinamento do pipeline: **decidir se RAG é a abordagem certa**. Antes de investir semanas otimizando context_precision, vale confrontar RAG com suas alternativas: long context e fine-tuning. Essa decisão muda radicalmente o que você vai construir.
+
+- [[10 - RAG vs long context vs fine-tuning]] — quando RAG perde para long context, quando fine-tuning resolve o que RAG não resolve, e como montar o híbrido maduro
+
+## Como explicar em inglês
+
+Evaluation is the quality gate that separates RAG systems that "seemed to work in my tests" from systems you can actually trust in production. The core insight is deceptively simple: retrieval and generation are distinct failure modes and must be measured independently. A high faithfulness score (the model stays true to what it received) combined with low context recall (it missed the relevant chunk) means you have a polite liar — the model faithfully summarizes the wrong information.
+
+The canonical framework is the Ragas quadrant: context precision and context recall measure retrieval; faithfulness and answer relevance measure generation. You need all four because they catch different bugs. A golden set of 30-100 human-generated questions — covering factual, multi-hop, out-of-scope and adversarial cases — is the minimum infrastructure to detect regression before it reaches users. Plugging that into a CI pipeline that blocks merges on threshold violations is the difference between level 2 and level 3 maturity.
+
+**In a technical interview**, you might say:
+
+> "We instrument RAG evaluation in two layers. Offline, we run Ragas against a golden set of 80 questions every time a PR touches the RAG pipeline — it checks context precision, recall, faithfulness, and answer relevance and blocks the merge if any metric drops below threshold. In production, we complement that with Langfuse tracing and a thumbs-up/down widget: automated metrics tell us *where* the pipeline broke, user feedback tells us *whether* it mattered. The most important design decision was keeping retrieval and generation metrics separate so we can pinpoint root cause quickly."
+
+| PT | EN |
+|----|-----|
+| Conjunto dourado | Golden set |
+| Precisão de contexto | Context precision |
+| Recall de contexto | Context recall |
+| Fidelidade | Faithfulness |
+| Relevância da resposta | Answer relevance |
+| Juiz baseado em LLM | LLM-as-judge |
+| Regressão de qualidade | Quality regression |
+| Pipeline de avaliação em CI | Eval pipeline in CI |
+| Conjunto fora do escopo | Out-of-scope set |
+| Taxa de resolução | Resolution rate |
 
 ## Veja também
 
