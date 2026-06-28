@@ -1,9 +1,10 @@
 ---
 title: "04 - Áudio e vídeo — Whisper, Gemini Live e geração"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - multimodal
@@ -23,6 +24,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Áudio tem dois caminhos: transcrever com Whisper (barato, robusto, é o baseline padrão pra podcast/reunião) ou enviar direto pro modelo multimodal (Gemini Pro, GPT-4o, Claude voice — mais caro, preserva entonação e contexto sonoro). Vídeo é dominado pelo Gemini (até ~2h em alguns tiers, frames + áudio integrados). Geração de vídeo (Sora, Veo, Runway) aparece só pra fechar o panorama — o foco da nota é input. Tempo real (voz/vídeo bidirecional) usa APIs separadas: Gemini Live, GPT-4o Realtime, Claude voice mode. Use cases: resumo de reunião, Q&A em podcast, análise de code walkthrough, tutorial review.
+
+> [!question]- Para uma reunião gravada de 1 hora, vale a pena mandar o áudio direto ao Gemini ou usar Whisper + Claude texto?
+> Depende da tarefa. Para extração de action items, resumo por tópico, ou Q&A textual — Whisper + Claude texto funciona igualmente bem e é mais barato: Whisper custa ~$0.36/hora de áudio; a chamada texto ao Claude com transcrição soma mais ~$0.20 dependendo do tamanho — total ~$0.56. Gemini 2.x Pro com áudio direto de 1h gasta ~115k tokens de input, que pode custar $1.15-$3.45 dependendo do plano. A diferença é que Gemini captura tom, hesitação, quem interrompeu quem — sinais que a transcrição textual não preserva. Use Gemini áudio direto quando a tarefa exige análise de comunicação (reunião de negociação, entrevista de UX, análise de pitch) e Whisper + texto para tudo que precisa apenas do conteúdo semântico.
 
 ## Áudio — dois caminhos
 
@@ -235,6 +239,40 @@ Esses números mudam frequentemente. Confira o doc do provider antes de bater or
 - **Pré-corte vídeo longo.** Mande só os 10min relevantes em vez do vídeo inteiro de 1h.
 - **Áudio em mono, 16kHz pra Whisper.** Estéreo e 48kHz não dão ganho de acurácia, dobram o tamanho.
 - **Cache de upload (Files API).** Reuse o mesmo `file_id` em múltiplas perguntas sobre o mesmo arquivo.
+- **Aguarde o processamento de vídeo antes de fazer queries.** Gemini Files API tem estado `PROCESSING` → `ACTIVE`; poll até `ACTIVE` antes de chamar `generate_content`.
+- **Diarização manual quando precisar de "quem disse o quê":** Whisper não diariza de fábrica — use `pyannote.audio` ou `deepdiar` antes de transcrever, marcando `[Speaker A]`, `[Speaker B]` na transcrição. Passe a transcrição diarizada pra o LLM texto pra analysis de "quem concordou / quem discordou".
+- **Para idioma português, passe `language="pt"` no Whisper.** Sem esse hint, o modelo detecta automaticamente mas pode confundir com espanhol em trechos curtos ou sotaque forte.
+
+## Armadilhas comuns
+
+> [!warning] Mandar vídeo de 1h quando só 10 minutos importam — custo absurdo sem ganho
+> 10 minutos de vídeo no Gemini 2.x Pro ≈ 155k tokens de input; 1 hora ≈ 930k tokens. Se a pergunta é sobre os últimos 10 minutos, pagar por toda a hora é desperdício puro. Pré-corte com ffmpeg é operação de segundos: `ffmpeg -i video.mp4 -ss 00:50:00 -to 01:00:00 -c copy trecho.mp4`. Use vídeo inteiro só quando a pergunta pode se referir a qualquer parte sem você saber qual — e mesmo assim considere dividir em chunks de 15-20 minutos.
+
+> [!warning] Esquecer de pedir timestamp — modelo situa eventos no tempo com "no início" / "no final" e você não consegue verificar
+> "Quais foram os pontos de discordância na reunião?" retorna pontos de discordância sem dizer quando. "Cite o minuto de cada ocorrência" é fundamental. Whisper com `verbose_json` e `timestamp_granularities: ["segment"]` entrega timestamps automáticos — passe-os no prompt pra LLM de análise. Gemini com áudio/vídeo direto gera timestamps quando pedidos explicitamente no prompt. Sem timestamp, você não consegue auditar nem navegar até o momento relevante.
+
+> [!warning] Usar Realtime API pra tarefas batch — latência baixa com custo alto, desnecessário
+> Gemini Live e OpenAI Realtime são projetados para UX conversacional em tempo real — latência <300ms é o diferencial. O custo por token é significativamente mais alto que o caminho batch (upload + generate). Usar Realtime pra processar 50 podcasts em paralelo é pagar latência conversacional sem precisar dela. Use Realtime só quando o caso exige bidirecionalidade (usuário fala, modelo responde enquanto ouve) ou latência percebida (assistente de voz no app). Para tudo batch, use Files API + generate_content.
+
+## Como explicar em inglês
+
+**Interview quote:** *"For audio pipelines in 2026, our default is Whisper for transcription plus a text LLM for analysis — it's cheap, fast, and accurate for semantic tasks. We switch to direct audio input via Gemini when the task needs paralinguistic signals: tone, hesitation, interruptions. For video, Gemini is the only real option with native support; OpenAI and Anthropic require external frame extraction."*
+
+| Português | Inglês |
+|---|---|
+| Transcrição de áudio | Audio transcription |
+| Granularidade de timestamp (por segmento / por palavra) | Timestamp granularity (by segment / by word) |
+| Áudio direto no modelo (sem transcrever) | Direct audio input (without transcription) |
+| Entonação e hesitação | Tone and hesitation / paralinguistic signals |
+| Vídeo — frames + áudio integrados | Video with integrated frames and audio |
+| Reunião de 1h em processamento batch | 1-hour meeting in batch processing |
+| API bidirecional em tempo real | Bidirectional real-time API |
+| Upload via Files API pra reutilização | Files API upload for reuse |
+| Custo por minuto de áudio | Cost per minute of audio |
+
+## O que vem a seguir
+
+Com áudio e vídeo cobertos, a nota 05 entra em **tabelas e spreadsheets** — um caso especial de input estruturado onde a escolha entre CSV/JSON via texto e screenshot/imagem é menos óbvia do que parece, e onde formato de entrega do dado (inline no prompt vs anexo) muda a qualidade do raciocínio.
 
 ## Fontes
 
@@ -244,6 +282,17 @@ Esses números mudam frequentemente. Confira o doc do provider antes de bater or
 - **Google** — *Gemini API — Audio* ([docs](https://ai.google.dev/gemini-api/docs/audio)). Tokenização e limites.
 - **Google** — *Gemini API — Video* ([docs](https://ai.google.dev/gemini-api/docs/vision#video)). Frame rate, duração.
 - **Google** — *Live API* ([docs](https://ai.google.dev/gemini-api/docs/live)). Streaming bidirecional.
+
+## Identificação de falante — diarização
+
+Um ponto que a nota deixa implícito mas merece destaque: Whisper transcreve o que é dito mas não diz *quem* disse. Em reunião com múltiplos participantes, o output é uma sequência de segmentos sem speaker label — "Fulano concordou com isso" fica invisível pra o LLM de análise.
+
+Para diarização:
+- **pyannote.audio** — modelo open-weight, roda local, retorna segmentos `{speaker, start, end}`.
+- **Deepgram, AssemblyAI** — SaaS com diarização + transcrição integrados; mais fácil de integrar, custo por minuto.
+- **Gemini** — com áudio direto, infere falantes distintos pela voz mas sem label consistente entre chamadas; o modelo diz "o segundo participante" e não "João".
+
+Para reuniões onde atribuição importa, a stack que funciona melhor: pyannote + Whisper (diarização precisa + transcrição em português) → merge de segmentos → LLM análise com contexto de "Falante A disse X, Falante B respondeu Y".
 
 ## Veja também
 
