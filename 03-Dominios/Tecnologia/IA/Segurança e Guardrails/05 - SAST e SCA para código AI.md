@@ -3,6 +3,7 @@ title: "SAST e SCA para código AI"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -23,6 +24,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Static Application Security Testing (SAST) analisa código em busca de vulnerabilidades; Software Composition Analysis (SCA) analisa dependências em busca de vulns conhecidas e pacotes maliciosos. Para código IA, **rode os dois, em CI, em todo commit**. Semgrep + Snyk Code (ou CodeQL) é a combinação dominante em 2026. **Use 2+ ferramentas SAST simultaneamente** — pesquisa mostra que 78% dos issues confirmados são pegos por **só uma ferramenta**. Foque rules em CWE-918 (SSRF), CWE-78 (command injection), CWE-89 (SQLi), CWE-798 (hardcoded creds) — os mais comuns em código LLM.
+
+> [!question]- Por que SAST e SCA precisam de ajuste para código gerado por IA?
+> Ferramentas SAST e SCA clássicas foram calibradas para encontrar bugs que humanos cometem com certa frequência. Código AI tem um perfil diferente: algumas classes de vulnerabilidade aparecem com frequência muito maior (CWE-80 XSS em 86% dos samples, hardcoded credentials crônicos), e os padrões específicos são reprodutíveis e previsíveis — não são desvios raros. Isso significa que as regras padrão podem ter sensibilidade insuficiente para os CWEs mais comuns em código LLM, e que rodar apenas uma ferramenta perde até 78% dos issues que outra ferramenta capturaria. O ajuste não é "ativar mais regras" — é entender quais classes de erro o modelo comete sistematicamente e garantir que a cobertura é adequada especificamente para elas.
 
 ## SAST vs SCA — quem pega o quê
 
@@ -227,6 +231,48 @@ Tempo total target: <8min. Custo de NÃO ter: incidente em prod.
 - **Ignorar SCA "porque uso só libs famosas"** — slopsquat ataca exatamente assim
 - **AI auto-fix sem re-scan** — fix pode introduzir issue diferente
 
+## Armadilhas comuns
+
+> [!warning] SAST como warning não para nada
+> A configuração mais perigosa é ter Semgrep ou CodeQL rodando em CI mas sem flag `--error` — os findings aparecem nos logs, o CI passa, e ninguém olha. A diferença entre SAST como gate e SAST como decoração é uma flag de configuração. Times que "têm SAST configurado" mas não bloqueiam PR em findings críticos têm o custo sem o benefício.
+
+> [!warning] Aceitar "AI auto-fix" sem re-scan cria loop de vulnerabilidades
+> Ferramentas como Snyk Code e Semgrep Assistant oferecem correções automáticas geradas por LLM para os findings. O problema é que a correção AI carrega exatamente o mesmo risco que o código original: pode conter vulnerabilidade diferente, pode reintroduzir a mesma vuln com outra forma, pode quebrar a correção semanticamente. AI-fix deve passar pelo mesmo pipeline SAST que qualquer outro código gerado.
+
+> [!warning] Não fazer SCA "porque uso só libs famosas"
+> Slopsquatting não atinge só libs obscuras — atinge exatamente o espaço adjacente às libs mais comuns, onde o modelo confla nomes (`axios-fetch`, `react-codeshift`). E CVEs em libs famosas existem — o npm advisory database tem entradas em Express, lodash, moment. SCA não é opcional para times que usam geração por IA.
+
+## Como explicar em inglês
+
+SAST and SCA are complementary tools that address different layers of security risk in AI-generated code. SAST analyzes the code itself — finding SQL injection patterns, hardcoded credentials, XSS vulnerabilities, and command injection. SCA analyzes the dependency graph — catching known CVEs in libraries and detecting behavioral signals of malicious packages like slopsquat targets.
+
+For AI-generated code specifically, both need calibration. LLMs fail consistently on a predictable set of CWEs: XSS in 86% of samples, SQL injection in ~50%, SSRF increasingly common. Tuning SAST rules to high sensitivity on those specific classes, and accepting some false positives in exchange for lower false negative rate, is the right trade-off when the alternative is a vulnerability in production.
+
+The most important finding from DryRun Security research is the 78% single-tool rule: 78% of confirmed vulnerabilities were found by only one of the tools tested. This means running a single SAST tool gives a false sense of coverage. The minimum viable configuration is two complementary scanners — Semgrep for speed and customizability, CodeQL or Snyk Code for semantic data flow analysis.
+
+**In a technical interview**, you might say:
+
+> "We run two SAST tools in combination — Semgrep with OWASP and secrets rulesets, plus CodeQL for semantic data flow analysis — because research shows 78% of confirmed vulnerabilities are caught by only a single tool. For SCA we use both Snyk Open Source for CVE detection and Socket.dev for behavioral analysis of packages, which is critical for catching slopsquat targets before a CVE is even published. All of these are hard blocks in CI, not warnings. The LLM-specific tuning is high sensitivity on CWE-80, 89, 918, and 798 — the classes where LLMs fail most consistently."
+
+| PT | EN |
+|----|-----|
+| análise estática de segurança | static application security testing (SAST) |
+| análise de composição de software | software composition analysis (SCA) |
+| vulnerabilidade confirmada | confirmed vulnerability |
+| falso positivo | false positive |
+| falso negativo | false negative |
+| injeção SQL | SQL injection |
+| requisição forjada do lado do servidor | server-side request forgery (SSRF) |
+| injeção de comando | command injection |
+| credenciais fixas no código | hardcoded credentials |
+| análise de fluxo de dados | data flow analysis |
+
+## O que vem a seguir
+
+Com SAST e SCA cobrindo análise estática e dependências, a próxima camada de defesa é o ambiente de execução. Mas sandboxing vai além de "rodar em container" — é sobre definir o que o agente pode e não pode fazer: quais sistemas de arquivo pode tocar, quais chamadas de rede pode fazer, quais operações privilegiadas estão fora do alcance. A próxima nota explora permissões e sandboxing como fronteira de contenção para workflows agênticos.
+
+- [[06 - Permissões e sandboxing]] — como configurar o ambiente de execução para que código AI não possa causar dano além do escopo permitido
+
 ## Veja também
 
 - [[01 - Código gerado por IA é untrusted]]
@@ -243,3 +289,17 @@ Tempo total target: <8min. Custo de NÃO ter: incidente em prod.
 - **Rafter** — *Static Code Analysis Tools Comparison 2026* (2026).
 - **Konvu** — *SCA vs SAST 2026: What Each Tool Finds, Misses, and Costs* (2026).
 - **Doyensec** — *Independent SAST testing on OWASP benchmarks* (2025).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
