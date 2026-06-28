@@ -1,8 +1,9 @@
 ---
 title: "MCP servers oficiais e populares"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Em 2026, o ecossistema [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] tem **milhares de servers** disponíveis. Antes de criar próprio, **busque no Awesome MCP Servers** — chance alta de já existir. Categorias principais: filesystem/git, databases, dev tools (GitHub, Linear, Jira), comunicação (Slack, email), browsers (Playwright), busca (web, docs), observabilidade (Sentry, Datadog), AI (Anthropic, OpenAI, Hugging Face). Reuso vence build em 90% dos casos.
+
+> [!question]- Como escolher entre implementar um MCP server próprio ou usar um pronto?
+> A heurística é simples: busque primeiro, construa como último recurso. Servidores existentes com manutenção ativa cobrem ≥80% dos casos comuns — GitHub, Postgres, Slack, filesystem, Playwright. Construir do zero faz sentido em três casos: (1) o domínio é interno e não pode ser exposto (API de RH, dados financeiros proprietários), (2) os servers disponíveis têm qualidade ruim ou estão abandonados, (3) compliance exige zero dependência third-party. Em qualquer outro caso, instalar e auditar um server com 500+ stars e commits recentes é meses de trabalho economizados.
 
 ## Onde achar
 
@@ -221,6 +225,48 @@ Servers MCP **não persistem dados fora do disco** (geralmente). Mas verifique T
 - **Server abandonado em produção** — bug não corrige
 - **Reinventar Postgres MCP** — oficial cobre 95% dos casos
 - **Client com 50 tools de 10 servers** — context rot na descoberta
+
+## Armadilhas comuns
+
+> [!warning] Instalar tudo do Awesome MCP Servers
+> A lista tem mais de 3000 entradas. Instalar dezenas de servers no mesmo client significa que o LLM recebe centenas de definições de tools no contexto inicial — um problema de "context rot" que degrada a qualidade das decisões. A pergunta certa não é "quais servers existem?" mas "quais tools eu realmente preciso neste workflow?". Um conjunto curado de 5-10 servers bem escolhidos supera 30 servers instalados por impulso.
+
+> [!warning] Instalar `npx -y` sem ler o código
+> `npx -y` faz download e executa o pacote sem confirmação. Para servers de terceiros, isso é equivalente a `curl URL | bash` — você está executando código arbitrário no seu ambiente com as permissões do seu usuário. Antes de instalar qualquer server que não seja oficial da Anthropic, verifique o repositório, leia o código dos handlers, e confirme quais env vars são lidas. Ataques de typosquatting em packages NPM/PyPI são documentados e MCP é vetor atrativo.
+
+> [!warning] Usar server abandonado em produção
+> Server com último commit há 8 meses e issues abertas sem resposta é servidor que não recebe updates de segurança e pode quebrar com mudanças de API do sistema integrado. Em produção, prefira servidores com histórico de manutenção ativa. Se depender de um server abandonado for inevitável, faça fork e assuma a manutenção — ou construa um próprio.
+
+## Como explicar em inglês
+
+The MCP ecosystem in 2026 has over 3,000 available servers across categories like databases, developer tools, communication platforms, browser automation, cloud infrastructure, and productivity apps. Before writing a server from scratch, the first step is always to search Awesome MCP Servers, mcp.so, or smithery.ai — the probability that a maintained, well-reviewed server already exists for common systems (GitHub, Postgres, Slack, Jira) is very high.
+
+Evaluating a server for production use follows the same due diligence as any open source dependency: check recency of commits, number of stars and active issues, whether the README has clear setup examples, whether tool schemas are complete and typed, and whether the license is permissive. The source hierarchy matters for trust: official Anthropic servers sit at the top, followed by well-known community projects, with anonymous repositories at the bottom.
+
+**In a technical interview**, you might say:
+
+> "My default is: search before build. Awesome MCP Servers has thousands of entries, and for common systems — Postgres, GitHub, Slack, Playwright — there are official or high-quality community servers with active maintenance. I evaluate them like any dependency: recency, stars, code quality, license, typed schemas. When I do build a server, it's because the domain is internal and can't be exposed, or because compliance rules out third-party code. Installing 30 servers is never the answer — I keep it curated to what the workflow actually needs."
+
+| PT | EN |
+|----|-----|
+| Servidor oficial | Official server |
+| Servidor da comunidade | Community server |
+| Auditoria de código | Code audit |
+| Fixação de versão | Version pinning |
+| Cadeia de fornecimento | Supply chain |
+| Ataque de typosquatting | Typosquatting attack |
+| Dependência terceira | Third-party dependency |
+| Catálogo | Catalog / Registry |
+| Manutenção ativa | Active maintenance |
+| Ecossistema | Ecosystem |
+
+## O que vem a seguir
+
+Quando nenhum server existente cobre o seu domínio — ou quando a qualidade dos disponíveis não satisfaz — o próximo passo é construir o próprio. Isso é mais simples do que parece: o SDK Python do MCP reduz o trabalho básico a decorators e type hints. O desafio real está no design das tools, nos schemas, e nos erros informativos.
+
+A próxima nota cobre o ciclo completo de desenvolvimento de um MCP server local, do hello world ao packaging para distribuição.
+
+- [[05 - Construindo um MCP server local]] — tutorial completo de criação de server próprio
 
 ## Veja também
 
