@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - structured-outputs
   - ia
@@ -19,6 +20,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Anthropic não tem API dedicada de structured output equivalente ao `response_format` da OpenAI ou ao `response_schema` do Gemini. O mecanismo canônico é **tool use forçado**: defina uma tool cujo `input_schema` é seu output, force a chamada via `tool_choice: { type: "tool", name: "..." }`, extraia o `input` do bloco `tool_use`. Funciona em Claude 3.5+, Claude 4.x. Aderência altíssima — Anthropic treina pesadamente em tool use desde Claude 3, e tool_choice forçado tira a possibilidade de "responder em texto livre". Custo: poucos tokens de overhead, pequena latência. Trade-off principal: schema é JSON Schema, mas Anthropic não usa constrained decoding como OpenAI strict — confiabilidade é alta mas não 100% garantida arquiteturalmente.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende o padrão geral de tool use como mecanismo de output (nota 03) e sabe o que é JSON Schema (nota 02). Esta nota é específica do Claude (Anthropic). Se você viu a nota 04 (OpenAI strict mode), o que muda aqui é: Anthropic não tem constrained decoding equivalente. A aderência ao schema é muito alta mas não é garantia arquitetural — o mecanismo depende do treino do modelo em tool use. Isso tem implicações diretas para quando e como validar o output.
 
 ## A diferença de filosofia
 
@@ -232,6 +236,42 @@ Quando OpenAI ou Gemini podem ser melhores:
 
 - **Garantia arquitetural** — strict mode da OpenAI é 100% de shape.
 - **Schemas simples + custo mínimo** — `response_format` da OpenAI tem overhead menor que tool use.
+
+## Armadilhas comuns
+
+> [!warning] Usar `tool_choice: "auto"` e esperar structured output garantido
+> Sem forçar a tool específica com `{ "type": "tool", "name": "nome" }`, o modelo decide por conta se chama ou responde em texto. Em inputs simples e contextos onde a pergunta "parece" pedir uma resposta conversacional, o modelo frequentemente vai direto pra texto livre — e você está de volta ao problema original. Todo pipeline de structured output com Anthropic deve ter `tool_choice` explícito com `type: "tool"`.
+
+> [!warning] Assumir que Anthropic valida o schema completamente
+> Diferente do strict mode da OpenAI, Anthropic não usa constrained decoding — não tem como garantir por arquitetura que o output respeita 100% do schema. Na prática, Claude 4.x tem aderência altíssima, mas em schemas complexos (muitos campos, enums simultâneos, aninhamento profundo), podem escapar inconsistências. O erro mais comum é tratar o `block.input` como se fosse completamente válido sem checar tipos e valores. Use Pydantic ou Zod pra deserializar — se quebrar, a validação captura cedo.
+
+> [!warning] Não tratar o caso em que `stop_reason != "tool_use"`
+> Com `tool_choice` forçado, o esperado é que `stop_reason` seja `"tool_use"`. Mas em cenários onde o modelo atingiu `max_tokens` no meio do output, o `stop_reason` pode ser `"max_length"` e o `tool_use` block pode estar incompleto ou ausente. Em produção, sempre cheque `stop_reason` antes de extrair o bloco, e trate o caso de `tool_use` block ausente com retry — não com crash.
+
+## Como explicar em inglês
+
+Em entrevistas focadas em sistemas Claude ou em multi-provider design, essa diferença de filosofia entre providers é uma pergunta diferenciadora:
+
+> "Anthropic doesn't have a dedicated structured output API equivalent to OpenAI's strict mode. The canonical approach is forced tool use: define a dummy tool with your output schema, set `tool_choice` to that specific tool, and extract the `input` from the `tool_use` block. The trade-off versus OpenAI strict is that Anthropic relies on high-quality training rather than constrained decoding — so adherence is very high in practice but not architecturally guaranteed at 100%. That means you still need output validation and retry logic in production."
+
+| Português | Inglês |
+|-----------|--------|
+| tool use forçado | forced tool use |
+| schema de input da tool | tool input schema |
+| bloco de tool use | tool_use block |
+| razão de parada | stop reason |
+| aderência ao schema | schema adherence |
+| decodificação restrita | constrained decoding |
+| alias datado/pinado | dated alias / pinned alias |
+| cache de prompt | prompt caching |
+| tool de finalização | finalization tool |
+| campo extra inesperado | extra field / unexpected field |
+
+## O que vem a seguir
+
+Com OpenAI e Anthropic cobertos, a nota 06 fecha o triângulo de providers com o Gemini. O Google tem sua própria forma de declarar schema de output — `response_schema` na API Gemini — com um subset de JSON Schema diferente do que OpenAI usa em strict mode.
+
+Ver [[06 - Gemini structured output]].
 
 ## Fontes
 
