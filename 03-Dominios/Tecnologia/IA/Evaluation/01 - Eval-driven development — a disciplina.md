@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Eval-driven development (EDD) é o shift de *"rodei 3 vezes e olhei, parece bom"* pra **medição sistemática contínua**. A analogia com TDD é direta: TDD escreve teste antes do código; EDD escreve eval antes do prompt. O princípio operacional é *"evals first, prompts second"* — sem dataset e rubrica, qualquer mudança de prompt vira aposta. EDD se aplica a qualquer sistema repetível com LLM em produção; é overkill em one-shots, brainstorming e exploração inicial. Parafraseando a tese de Hamel Husain em *Your AI Product Needs Evals*: sem evals você não tem produto, tem demo.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Esta nota não exige conhecimento de código — é conceitual. A premissa é que você já tem algum sistema com LLM: um chatbot, um extrator de dados, um classificador, qualquer coisa que roda mais de uma vez. E que você provavelmente está tomando decisões sobre esse sistema baseado em "rodar algumas vezes e ver se parece bom". EDD é a alternativa sistemática a isso. Se você vem de desenvolvimento de software tradicional, a analogia com TDD é direta e intuitiva. Se você nunca fez TDD, não preocupa — a nota explica do zero.
 
 ## O shift conceitual
 
@@ -137,6 +141,25 @@ A OpenAI documenta o framework OpenAI Evals com a frase *"evals are at the core 
 - **Eval-driven sem driver** — métrica existe, ninguém é responsável por levantar
 - **Eval no humano em vez do humano no loop** — humano só revisando output sem feedback que volta pro dataset
 
+## O custo invisível de não ter evals
+
+Equipes sem evals tomam decisões de prompt da seguinte forma: alguém muda o prompt, roda 5-10 inputs à mão, "acha que melhorou", e dá merge. O problema é que "rodar 5-10 inputs" é viés de confirmação sistemático — você tende a testar os inputs que você acha que funcionam, não os casos de borda que revelam o que não funciona.
+
+O custo acumulado:
+
+- **Merge do merge.** Cada PR muda o prompt baseado em intuição. Sem baseline, ninguém sabe se o sistema melhorou ou piorou no global.
+- **Regressões silenciosas.** Um caso que funcionava bem de repente começa a falhar — mas como ninguém testou aquele específico, só aparece quando usuário reclama.
+- **Paralisia de iteração.** Com o tempo, ninguém quer mudar nada porque "a última mudança quebrou X" — mas sem dataset, ninguém sabe o que X é.
+- **Incapacidade de comparar modelos.** "Devemos migrar de GPT-4o para Claude Sonnet?" Se você não tem golden set com scores, a resposta honesta é "não sabemos".
+
+EDD converte esse custo invisível em custo visível e gerenciável: o custo de manter o golden set e rodar evals é pequeno e previsível.
+
+## A assimetria temporal
+
+A objeção mais comum é que evals custam tempo no início. É verdade — e é a armadilha. O tempo é front-loaded (semana 1-2) mas o retorno é long-tail (meses a anos). Quem avalia o custo de evals só pela semana 1 vai sempre achar caro. Quem avalia pelo custo total do projeto vai sempre achar barato.
+
+A assimetria concreta: montar um golden set de 50 casos custa ~4 horas. Cada incidente de regressão silenciosa que o golden set teria detectado custa ~8-16 horas de debug + rollback + comunicação. Um incidente paga pelo golden set. No segundo, você está lucrando.
+
 ## Como começar amanhã
 
 1. Escolha **um** prompt em produção. O mais crítico.
@@ -147,6 +170,42 @@ A OpenAI documenta o framework OpenAI Evals com a frase *"evals are at the core 
 6. Codifica isso em script. Roda em CI próximo PR.
 
 Em uma semana você tem nível 1. Em duas, nível 2. O resto é refinamento.
+
+## Armadilhas comuns
+
+> [!warning] Montar golden set com casos felizes
+> O instinto é montar o golden set com casos onde o modelo já funciona bem — o que você usou pra demonstrar que o sistema funciona. Esse dataset não detecta regressões, porque os casos problemáticos não estão nele. Golden sets úteis incluem: casos de borda, inputs ambíguos, entradas com formatação estranha, casos onde o modelo falhou historicamente, e casos onde a resposta correta é "não sei" ou "recusar". Quanto mais contra-intuitivos os casos, mais útil o conjunto.
+
+> [!warning] Evals como formalidade de lançamento, não como prática contínua
+> É comum montar evals na semana do lançamento para "ter". O problema: o golden set fica congelado, ninguém roda em PRs subsequentes, e os bugs de produção nunca voltam pro dataset. Dois meses depois, o eval existe mas não detecta nada que importa. EDD é uma prática contínua: todo bug em produção vira caso no golden set, todo PR que toca no prompt roda o eval, e o score vai para o histórico do projeto. Sem o loop de feedback entre produção e golden set, o eval vira fóssil.
+
+> [!warning] Confiar em métricas técnicas sem métricas de negócio
+> Accuracy de 92% no golden set não significa que o produto entregou valor. Um sistema de suporte que acerta o tom mas resolve 30% menos tickets do que a versão anterior está piorando o negócio, mesmo com score técnico alto. EDD completo inclui dois ciclos: evals técnicos (golden set, rubrica) para velocidade de iteração, e evals de negócio (resolution rate, CSAT, tempo de resposta) para confirmar que melhorias técnicas se traduzem em valor. Sem os dois, você pode estar otimizando a métrica errada.
+
+## Como explicar em inglês
+
+Em entrevistas sobre AI Engineering ou em design reviews de sistemas com LLM, a disciplina de EDD aparece como diferenciador entre quem tem experiência de produção e quem tem só experiência de prototipagem:
+
+> "Eval-driven development is the practice of measuring systematically before and after every change to a prompt or model, instead of testing a few cases manually and calling it 'looks good.' The workflow mirrors TDD: you define what good means — golden dataset plus scoring rubric — before writing the first prompt. Every prompt change generates a score against the baseline. Every production bug becomes a new case in the golden set as a permanent regression test. Without evals, you're iterating blind."
+
+| Português | Inglês |
+|-----------|--------|
+| dataset dourado | golden dataset / golden set |
+| rubrica de avaliação | scoring rubric |
+| regressão de qualidade | quality regression |
+| eval baseline | eval baseline |
+| eval em CI/CD | eval in CI/CD |
+| golden set congelado | frozen/stale golden set |
+| caso de borda | edge case |
+| métricas de negócio | business metrics |
+| avaliação graduada | graduated evaluation |
+| juiz LLM | LLM-as-judge |
+
+## O que vem a seguir
+
+Com a disciplina estabelecida, a nota 02 entra nos detalhes práticos do asset mais importante de EDD: o golden dataset. Como construir um conjunto que realmente detecta regressões — quantos exemplos, de onde vêm, como garantem cobertura dos casos que importam.
+
+Ver [[02 - Golden datasets — como construir]].
 
 ## Veja também
 
