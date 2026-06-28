@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Rubrica é o **dicionário operacional** que transforma "esse output é bom?" numa pergunta com resposta reproduzível. Boa rubrica separa critérios **objetivos** (formato, presença de campos, latência — binário ou contagem) de **subjetivos** (acurácia, helpfulness, tom — escala). Escala mais usada é 1-5 Likert com **anchored examples** — cada nível tem 1-2 outputs de referência. Sem anchors, *"score 4"* significa coisas diferentes pra cada anotador. Inter-rater agreement (Cohen's kappa ou simples % agreement) é o teste de qualidade da rubrica: se dois anotadores treinados discordam em >20% dos casos, a rubrica está vaga.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende que EDD requer medição sistemática (nota 01) e que o golden set é o conjunto de casos que serve de régua (nota 02). Esta nota cobre a régua em si: como você define numericamente o que "bom" significa. Não é necessário background em psicometria ou pesquisa quantitativa — mas se você conhece NPS, A/B test ou CSAT, vai reconhecer os padrões. A rubrica é o que transforma julgamento humano em número reproduzível.
 
 ## A função da rubrica
 
@@ -283,6 +287,42 @@ Sem calibração com humano, judge é só mais um modelo opinando — não é ev
 - **Sem critical fields** — output sem campo obrigatório que pontua 4/5 nas outras dimensões
 - **Sem inter-rater check** — rubrica nunca foi testada com 2 humanos
 - **Judge não calibrado** — rodando judge automatizado sem nunca ter comparado com humano
+
+## Armadilhas comuns
+
+> [!warning] Rubrica com critérios vagos — "qualidade" como dimensão
+> A armadilha mais comum é criar dimensões que parecem concretas mas são vazias: "qualidade da resposta", "adequação", "clareza". Sem anchors que mostrem o que é score 1, 3 e 5, cada anotador — humano ou LLM-judge — vai interpretar esses termos de forma diferente. O sintoma é inter-rater agreement baixo (dois anotadores discordam em >30% dos casos). O diagnóstico: não é que os anotadores são ruins, é que a rubrica não operacionalizou o critério. Reescreva os critérios como perguntas binárias ou ancore cada nível com um exemplo.
+
+> [!warning] Misturar critérios objetivos e subjetivos na mesma escala
+> Critérios objetivos são binários: o JSON é válido ou não, o campo existe ou não. Critérios subjetivos são graduados: o tom é adequado numa escala 1-5. Misturar os dois na mesma escala cria confusão — "score 3" em "JSON válido" não faz sentido. A boa prática é tratar objetivos como checklist separado: falha em critério objetivo = automatic failure (não importa score nas outras dimensões). Subjetivos vão na escala. Se um output falhou no JSON, não precisa pedir pra humano avaliar o tom.
+
+> [!warning] Rubrica sem testes de inter-rater antes de automatizar com judge
+> Antes de usar LLM-as-judge com a rubrica, teste com dois humanos em pelo menos 20-30 casos e calcule o agreement. Se agreement está abaixo de 80%, o problema não vai melhorar com LLM — vai piorar, porque o judge vai sistematizar a ambiguidade. Judge é acelerador de anotação humana, não substituto de rubrica bem definida. Judge calibrado assume rubrica clara; judge com rubrica vaga produz scores sem sentido.
+
+## Como explicar em inglês
+
+Em entrevistas sobre sistemas de IA ou ML, perguntas sobre "como você avalia qualidade de output?" são comuns — e a resposta que demonstra experiência de produção menciona rubrica, anchors e inter-rater agreement:
+
+> "A scoring rubric is the operational dictionary that turns 'is this output good?' into a reproducible measurement. Good rubrics separate objective criteria — binary checks like JSON validity or field presence — from subjective ones scored on a 1-5 Likert scale with anchored examples at each level. Inter-rater agreement is the quality test: if two trained annotators disagree on more than 20% of cases, the rubric is too vague, not the annotators. Once the rubric is calibrated with humans, you can scale it with LLM-as-judge."
+
+| Português | Inglês |
+|-----------|--------|
+| rubrica de avaliação | scoring rubric / evaluation rubric |
+| critério ancorado | anchored criterion |
+| escala Likert | Likert scale |
+| inter-rater agreement | inter-rater agreement |
+| coeficiente kappa de Cohen | Cohen's kappa |
+| falha automática | automatic failure |
+| campo obrigatório | critical field |
+| anotador | annotator |
+| prompt de judge | judge prompt |
+| calibração de judge | judge calibration |
+
+## O que vem a seguir
+
+Com dataset e rubrica definidos, a nota 04 entra no mecanismo que permite escalar a anotação: LLM-as-judge. Como configurar um LLM para usar sua rubrica de forma confiável, quando isso funciona, e quando você ainda precisa de humano.
+
+Ver [[04 - LLM-as-judge — quando e como]].
 
 ## Veja também
 
