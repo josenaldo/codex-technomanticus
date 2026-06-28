@@ -1,8 +1,9 @@
 ---
 title: "Os três primitivos — Tools, Resources, Prompts"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] define **três tipos** de capability que servers expõem: **[[Dicionário de IA#tools (MCP)|Tools]]** (funções executáveis com side-effects, query_db, send_email), **[[Dicionário de IA#resources (MCP)|Resources]]** (dados leitáveis estáticos ou dinâmicos, files, schemas), e **[[Dicionário de IA#prompts (MCP)|Prompts]]** (templates parametrizáveis para tarefas comuns). Cada primitivo tem semântica diferente — confundir os três é o erro de design mais comum. **Tools modificam, Resources informam, Prompts parametrizam.**
+
+> [!question]- Por que três primitivos e não um único conceito de "ferramenta"?
+> Porque "ferramenta" é uma abstração vaga que mistura três comportamentos com custos e semânticas diferentes. Tools têm side-effects e precisam ser invocadas ativamente pelo LLM — cada chamada consome orçamento e tempo. Resources são read-only e podem ser carregados pelo client proativamente, antes de o LLM precisar — o schema do banco de dados não precisa ser uma tool call custosa se o client pode pré-carregar como Resource. Prompts não executam nada: são templates que alavancam expertise já escrita. Usar só tools para tudo é como usar HTTP POST para tudo — funciona, mas ignora a semântica de GET e HEAD que existe por razões válidas.
 
 ## A tríade
 
@@ -242,6 +246,48 @@ LLM combina: "leia o PR (resource) → use prompt review-pr → comenta (tool)".
 - **Tool fazendo read** — deveria ser resource
 - **Resource fazendo computação cara** — deveria ser tool
 
+## Armadilhas comuns
+
+> [!warning] Implementar tudo como Tool
+> O anti-pattern mais frequente em MCP: usar Tool para tudo, ignorando Resources e Prompts. Resultado: o LLM precisa "decidir chamar" uma tool para buscar dados que o client poderia carregar proativamente, desperdiçando tool-call budget e adicionando latência. Schemas de banco de dados, configurações de ambiente e documentação de referência são candidatos naturais a Resources — read-only, estáticos, navegáveis pelo client sem envolver o LLM.
+
+> [!warning] Nomes ambíguos em Tools
+> Tools com nomes como `query`, `find`, `get`, `process` são problemas esperando acontecer. O LLM escolhe a tool baseado na descrição e no nome. Nomes ambíguos levam a chamadas erradas, comportamento imprevisível e dificuldade de debug. Use nomes que codificam o domínio e a ação: `search_jira_issues`, `query_postgres_readonly`, `send_slack_message`. A regra: ao ver o nome sem a descrição, deve ser óbvio o que a tool faz.
+
+> [!warning] Prompt como Tool (chamada de LLM dentro de Tool)
+> Implementar uma tool que internamente chama outro LLM para gerar uma resposta e retorna a resposta é um anti-pattern clássico. Você está dobrando o custo de inferência sem ganho real — o LLM cliente poderia usar um Prompt MCP (template) com o mesmo resultado, sem a chamada extra. Tools executam código e retornam dados; não são wrappers de LLMs. Se o objetivo é parametrizar um comportamento textual, use Prompt.
+
+## Como explicar em inglês
+
+MCP organizes server capabilities into three primitives with distinct semantics: Tools, Resources, and Prompts. Understanding which to use isn't just good design — it directly affects performance, security posture, and how well the LLM can reason about what's available.
+
+Tools are executable functions with potential side-effects. The LLM actively decides to call them when it needs something done — run a query, send a message, create a record. Resources are read-only data exposed via URI patterns, similar to files or URLs. Clients can load them proactively into context without the LLM needing to "decide" to call anything. Prompts are parametrized message templates — they encode expert-written prompt patterns that users or LLMs can invoke by name.
+
+**In a technical interview**, you might say:
+
+> "The three-primitive model maps directly to what you want to happen at runtime. Tools are active — the LLM spends a token budget deciding to call them and waits for results. Resources are passive — the client can preload a database schema or configuration file before the conversation even starts. Prompts are templates — they're reusable, shareable patterns that avoid reinventing the same prompt in every conversation. Mixing them up is expensive: a schema exposed as a Tool gets called on demand instead of being preloaded; a prompt implemented as a Tool triggers a second LLM call unnecessarily."
+
+| PT | EN |
+|----|-----|
+| Ferramenta | Tool |
+| Recurso | Resource |
+| Modelo de mensagem | Prompt template |
+| Efeito colateral | Side-effect |
+| Pré-carregamento | Preloading |
+| Descoberta | Discovery |
+| Semântica | Semantics |
+| Invocação | Invocation |
+| Esquema de entrada | Input schema |
+| Operação destrutiva | Destructive operation |
+
+## O que vem a seguir
+
+Os três primitivos definem **o que** um server expõe. A próxima questão é **como** client e server se conectam: qual protocolo de transporte, como funciona o lifecycle de uma sessão, e como o client descobre as capabilities do server na prática. Sem entender a arquitetura, é difícil raciocinar sobre performance, multi-user, e por que stdio e HTTP+SSE têm trade-offs tão diferentes.
+
+A nota seguinte mapeia o modelo cliente-servidor completo, incluindo os três transports e o diagrama de sequência de uma sessão real.
+
+- [[03 - Arquitetura cliente-servidor]] — como client e server se conectam na prática
+
 ## Veja também
 
 - [[01 - O que é MCP e por que importa]]
@@ -254,3 +300,6 @@ LLM combina: "leia o PR (resource) → use prompt review-pr → comenta (tool)".
 - **MCP Spec** — *Tools, Resources, Prompts sections* (modelcontextprotocol.io)
 - **Anthropic** — *Building MCP servers tutorial* (2025)
 - **Awesome MCP Servers** — examples canônicos
+
+
+
