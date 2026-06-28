@@ -1,8 +1,9 @@
 ---
 title: "O que é MCP e por que importa"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > **[[Dicionário de IA#MCP (Model Context Protocol)|MCP (Model Context Protocol)]]** é o "USB-C para agents de IA". Antes dele, cada integração entre [[Dicionário de IA#LLM (Large Language Model)|LLM]] e sistema externo (banco de dados, filesystem, Jira, Slack) era reinventar a roda — cada cliente (Claude, Cursor, Copilot) tinha seu próprio formato de plugin. MCP, lançado pela Anthropic em **novembro de 2024** e adotado em 2025-2026 por OpenAI, Google, Microsoft, é a padronização dessa conexão. Em 2026, **se você está construindo aplicação com agents, MCP é infraestrutura básica, como HTTP**.
+
+> [!question]- Por que MCP e não só function calling diretamente?
+> Function calling resolve o problema local: "este model, neste app, chama esta função". MCP resolve o problema de escala: "qualquer model, em qualquer client, chama esta capability sem que o server precise saber quem está chamando". A diferença é de O(N×M) para O(N+M) — um server implementado uma vez funciona em Claude, Cursor, Copilot e qualquer client futuro, sem mudança. Function calling é adequado para tools acopladas a um produto; MCP é para capabilities que precisam ser compartilhadas ou reutilizadas entre contextos.
 
 ## A premissa
 
@@ -130,6 +134,48 @@ Você não "usa HTTP" como decisão — você usa porque é o padrão. Mesmo com
 > 9. **Aproveita Awesome MCP Servers** — não reinventa o que existe
 > 10. **Não confunde MCP com plugin proprietary** — é spec aberta
 
+## Armadilhas comuns
+
+> [!warning] Usar MCP onde function calling basta
+> MCP faz sentido quando há reutilização entre clients ou servidores compartilhados. Para uma app single-user com tools internas — um chatbot interno com 5 funções fixas — o overhead de setup (servidor separado, configuração no client, JSON-RPC) não traz retorno. A pergunta certa é: "mais de um client vai consumir isso?" Se não, implemente direto com o SDK.
+
+> [!warning] Confundir "MCP" com "plugin proprietary"
+> MCP é especificação aberta (RFC process em github.com/modelcontextprotocol). Um server MCP escrito hoje funciona com Claude, OpenAI Codex, Cursor e qualquer client que implemente o protocolo. O risco de adotar MCP como "plugin da Anthropic" e depois descobrir que é padrão aberto é inversamente proporcional ao risco de tratar standard aberto como solução vendor-lock. Quem já viveu a era pré-REST de APIs proprietárias vai reconhecer o padrão.
+
+> [!warning] Ignorar a hierarquia de primitivos desde o início
+> Muitos times adotam MCP implementando "tudo como tool". Mas Tools, Resources e Prompts têm semânticas distintas com implicações de performance e design. Tratar dados read-only como tool faz o LLM gastar tool-call budget em operações que o client poderia carregar proativamente. Definir a hierarquia certo desde o início evita refatoração dolorosa quando o servidor já tem usuários.
+
+## Como explicar em inglês
+
+MCP — Model Context Protocol — is a standardized, open protocol that defines how AI clients (like Claude, Cursor, or Copilot) connect to external capability servers. Before MCP, every integration between an LLM and an external system (databases, APIs, filesystems) required a custom implementation for each client-server pair. MCP reduces this from an N×M problem to N+M by defining a common wire format (JSON-RPC 2.0), a capability model (Tools, Resources, Prompts), and a discovery mechanism (list_tools, list_resources, list_prompts).
+
+The analogy that holds up well is USB-C: before a universal connector, you needed a different cable for every device-peripheral pair. MCP plays the same role in the AI ecosystem — write a server once, plug it into any compliant client. In 2026, with support from Anthropic, OpenAI, Google, and Microsoft, MCP has achieved the critical mass that makes it a genuine infrastructure standard rather than an experiment.
+
+**In a technical interview**, you might say:
+
+> "MCP gives us N+M instead of N×M integrations. A Postgres MCP server written once works in Claude, Cursor, and any future client without modification. It does this by standardizing three things: the transport layer (JSON-RPC over stdio or HTTP+SSE), the capability model (Tools execute, Resources expose data, Prompts templatize workflows), and the discovery protocol (list_tools on connect). In 2026, if you're building agents for a team, MCP is as foundational as HTTP — you don't decide whether to use it, you decide how to structure your servers."
+
+| PT | EN |
+|----|-----|
+| Protocolo de contexto de modelo | Model Context Protocol |
+| Servidor MCP | MCP server |
+| Cliente MCP | MCP client |
+| Chamada de função | Function calling |
+| Descoberta de capabilities | Capability discovery |
+| Primitivos | Primitives |
+| Transporte | Transport |
+| Integração customizada | Custom integration |
+| Adoção inter-vendor | Cross-vendor adoption |
+| Especificação aberta | Open specification |
+
+## O que vem a seguir
+
+Entender o que MCP é — e por que importa — é o passo zero. O passo seguinte é saber o que um servidor MCP pode efetivamente expor: quais são os "blocos de construção" que o protocolo oferece para modelar qualquer capability. Sem essa distinção, você vai implementar tudo como tool e perder os benefícios de performance e composição que Resources e Prompts oferecem.
+
+A próxima nota mapeia os três primitivos e deixa claro quando usar cada um, com anti-patterns do mundo real que mostram o custo de escolher errado desde o início.
+
+- [[02 - Os três primitivos — Tools, Resources, Prompts]] — os building blocks do que um server pode expor
+
 ## Veja também
 
 - [[02 - Os três primitivos — Tools, Resources, Prompts]]
@@ -143,3 +189,117 @@ Você não "usa HTTP" como decisão — você usa porque é o padrão. Mesmo com
 - **MCP Specification** — *modelcontextprotocol.io* (2026)
 - **GitHub** — *github.com/modelcontextprotocol* (oficial)
 - **Awesome MCP Servers** — *github.com/punkpeye/awesome-mcp-servers*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
