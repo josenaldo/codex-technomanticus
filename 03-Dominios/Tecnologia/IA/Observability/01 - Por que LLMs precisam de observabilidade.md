@@ -57,7 +57,7 @@ Sem essa lista, três operações ficam impossíveis: debug de incidente especí
 
 ## Observability vs APM vs product metrics
 
-São três camadas distintas — confundi-las gera relatórios inúteis pro time errado.
+São três camadas distintas — confundi-las gera relatórios inúteis pro time errado, e pior, leva a decisões erradas. O SRE que olha APM sem LLM observability vai otimizar latência de rede enquanto o gargalo real é o tamanho do prompt. O PM que olha product metrics sem LLM observability vai atribuir churn a UX enquanto o modelo está alucinando em 8% das sessões.
 
 | Camada | Pergunta que responde | Audiência | Granularidade |
 |---|---|---|---|
