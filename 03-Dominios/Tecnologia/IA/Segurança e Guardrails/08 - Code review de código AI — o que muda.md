@@ -3,6 +3,7 @@ title: "Code review de código AI — o que muda"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Code review de código gerado por IA **não é o mesmo** de código humano. Volume é maior (5-10x), velocidade é maior, viés do reviewer é diferente (aceita demais por inércia), e classes de defeito são diferentes ([[Dicionário de IA#Hallucination|alucinações]] + vulnerabilidades sistemáticas). A regra: **delegue o que máquina faz para [[04 - A pirâmide de validação AI|automação]]**, e **foque humano** em arquitetura, intent, e mudanças cross-cutting. Esta nota apresenta o checklist específico, os red flags, e o anti-pattern do "approve fadigado" que está mascarando débito em todo lugar em 2026.
+
+> [!question]- O que muda fundamentalmente no code review quando o autor é IA?
+> Com código humano, bugs são distribuídos pelo estilo individual do autor — você desenvolve intuição para os pontos cegos de cada pessoa no time. Com código AI, os bugs são **sistemáticos por classe**: o mesmo modelo comete o mesmo tipo de erro em todos os PRs. Isso muda o que vale revisar: em vez de procurar bugs idiossincráticos, você procura padrões conhecidos (XSS sem escape, queries com f-string, parâmetros alucinados). Mais importante: o viés de automação inverte — código AI parece confiante e fluente mesmo quando está errado, e reviewers tendem a aprovar por inércia. O volume 5-10x maior amplifica isso a ponto de review manual sem automação se tornar inviável.
 
 ## Por que review tradicional falha
 
@@ -223,6 +227,46 @@ Adapte: peça ao autor para explicar **a decisão arquitetural** — não a muda
 - **Aprovar com testes vermelhos** — destrói o sinal completamente
 - **Sem checklist** — review depende do dia do reviewer
 
+## Armadilhas comuns
+
+> [!warning] "LGTM" como pattern de review mata a segurança
+> Quando "LGTM" (looks good to me) se torna a resposta padrão em PRs de IA, o processo de review virou teatro. Isso acontece quando as camadas de automação são fracas e o reviewer está sobrecarregado com volume. O sinal é o percentual de PRs aprovados sem nenhum comentário subindo acima de 30%. A solução não é "revisar com mais cuidado" — é fortalecer as camadas 1 e 2 para que o reviewer receba menos PRs, mas cada um mereça atenção real.
+
+> [!warning] "O agente fez" é ausência de comprehension gate
+> Se o autor do PR não consegue explicar as decisões arquiteturais presentes no código — apenas que "o agente gerou assim" — o comprehension gate falhou. Código que ninguém no time entende é código que ninguém no time pode manter, depurar, ou evoluir com segurança. Review deve incluir perguntar ao autor sobre as decisões, não só verificar o resultado.
+
+> [!warning] Fazer review depois do merge é política de débito acumulado
+> "Merge first, review later" elimina o único gate humano antes de produção. Em código AI que pode conter alucinações, vulnerabilidades sistemáticas e mudanças cross-cutting não intencionais, essa política garante que problemas entrem na base de código antes de qualquer validação humana. O custo de reverter um merge é quase sempre maior que o custo de fazer review antes.
+
+## Como explicar em inglês
+
+Code review for AI-generated code differs from traditional review in three critical ways. First, volume: an AI-assisted team can generate 5-10x more PRs per week, which makes the traditional one-reviewer-per-PR model unscalable. Second, error distribution: human bugs are idiosyncratic and tied to individual styles; AI bugs are systematic by class — the same model makes the same type of error across all its output. Third, reviewer bias: code that reads fluently and confidently tends to get approved more readily, and AI-generated code is optimized for fluency even when incorrect.
+
+The correct response is not "review harder" — it's a division of labor where automation handles the high-volume mechanical checks (types, linters, SAST, SCA, tests) and humans focus exclusively on what requires judgment: architecture decisions, intent alignment, cross-cutting changes, and sensitive operations. The comprehension gate principle applies directly: if the human author of the PR can't explain the architectural decisions made by the agent, the PR should not be merged.
+
+**In a technical interview**, you might say:
+
+> "We restructured code review around a three-layer model. Layers one and two — automation and deterministic guardrails — handle everything that's codifiable: type errors, SAST findings, SCA vulnerabilities, test coverage. Reviewers only see PRs that pass those layers, which is maybe 30-40% of what gets opened. For those PRs, the review focuses on three things: intent alignment (did the agent solve the right problem?), architectural decisions (does this introduce patterns inconsistent with the project?), and sensitive areas like auth changes or destructive migrations that always require escalated review. We also enforce a comprehension gate — if the developer who opened the PR can't explain why the agent made a particular architectural choice, we require a revision before merge."
+
+| PT | EN |
+|----|-----|
+| revisão de código | code review |
+| fadiga do revisor | reviewer fatigue |
+| bugs sistemáticos | systematic bugs |
+| gate de compreensão | comprehension gate |
+| revisão focada em intent | intent-focused review |
+| mudança transversal | cross-cutting change |
+| roteamento de revisão | review routing |
+| derivação de código | code drift |
+| alucinação de parâmetro | parameter hallucination |
+| aprovação por inércia | rubber-stamp approval |
+
+## O que vem a seguir
+
+Code review é o gate humano sobre o código gerado. Mas há um gate igualmente crítico que o *agente* não pode ultrapassar: os testes. A próxima nota explora o princípio dos testes imutáveis — por que é fundamental que o agente não possa modificar os testes que validam seu próprio comportamento, e como implementar essa barreira técnica e organizacionalmente.
+
+- [[09 - Testes imutáveis — a barreira que o agente não pode reescrever]] — como proteger os testes de modificação pelo próprio agente que está sendo testado
+
 ## Veja também
 
 - [[04 - A pirâmide de validação AI]]
@@ -238,3 +282,24 @@ Adapte: peça ao autor para explicar **a decisão arquitetural** — não a muda
 - **Augment Code** — *AI Spec-Driven Development Workflows* (2026).
 - **Atlassian** — *Code review in the era of AI assistants* (2026).
 - **Plus8Soft** — *The Comprehension Gate* (2025).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
