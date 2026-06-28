@@ -98,6 +98,14 @@ Não aplica (ou é overkill):
 
 O risco de fazer EDD prematuro é gastar 2 semanas montando golden set pra um produto que pivota. O risco de não fazer EDD depois que o produto estabilizou é ficar refém de intuição.
 
+## EDD não é sobre perfeição
+
+Um equívoco que paralisa times: pensar que "fazer EDD" significa ter eval perfeito antes de lançar. Não é. EDD é um espectro — e qualquer nível é melhor que nível 0.
+
+Um golden set de 10 casos mal formados roda em CI é melhor que nenhum golden set. Uma rubrica de 1 dimensão em vez de 5 ainda é melhor que nada. A ideia não é chegar em estado ideal — é começar a gerar signal onde antes não havia nenhum, e ir melhorando iterativamente.
+
+O estado "pronto pra lançar sem nenhum eval" é um estado de dívida técnica. Assim como dívida financeira, ela acumula juros (custo de descobrir bugs em produção em vez de nos testes). Você não precisa pagar tudo de uma vez — mas você precisa começar a pagar.
+
 ## Maturidade EDD
 
 | Nível | Sinal |
