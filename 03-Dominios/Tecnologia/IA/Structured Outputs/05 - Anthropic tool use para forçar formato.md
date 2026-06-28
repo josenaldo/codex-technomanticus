@@ -179,6 +179,27 @@ Modos de falha típicos quando ocorrem:
 
 Heurística: trate tool use como **altamente confiável mas não garantido**. Tenha validação + retry-with-feedback em produção.
 
+## Extraindo texto de raciocínio junto com o output estruturado
+
+Um recurso específico do mecanismo Anthropic: o modelo pode emitir um bloco de `text` antes do `tool_use` block. Isso permite raciocínio explícito antes de preencher os campos:
+
+```python
+# O response pode ter dois blocks:
+# [0] = {"type": "text", "text": "Vou analisar os prós e contras..."}
+# [1] = {"type": "tool_use", "name": "record_analysis", "input": {...}}
+
+text_reasoning = ""
+structured_output = None
+
+for block in response.content:
+    if block.type == "text":
+        text_reasoning = block.text
+    elif block.type == "tool_use" and block.name == "record_analysis":
+        structured_output = block.input
+```
+
+Esse pattern é útil quando você quer o output estruturado pra machine-consumption e também o raciocínio pra auditoria humana — sem precisar de duas chamadas. Contraste com OpenAI strict: `response_format` não suporta texto livre junto com JSON; você precisaria de duas chamadas ou usar `tools` + `tool_choice` da OpenAI.
+
 ## `tool_choice` opções
 
 | Valor | Comportamento |
