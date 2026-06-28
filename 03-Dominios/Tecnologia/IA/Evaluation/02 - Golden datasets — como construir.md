@@ -202,6 +202,17 @@ Mitigação:
 - Quando expected é gerado por LLM, gerar com modelo **diferente** do que você usa em prod
 - Validação humana cruzada em pelo menos 10-20% do dataset
 
+## Ferramentas pra construir e manter o dataset
+
+Não existe ferramenta ideal — o formato mais comum é YAML ou JSON em git. Mas algumas opções ajudam na escala:
+
+- **Planilha compartilhada** — para times pequenos, Google Sheets ou Airtable funciona bem no início. Colunas: id, input, expected, category, added_by, added_at, notes. Limite: sem versionamento nativo.
+- **Arquivo YAML/JSON em git** — padrão open source. Versionamento gratuito, diff legível, CI integrado. Preferido quando o time é técnico.
+- **Langfuse, Braintrust, Promptfoo** (ver [[06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix]]) — gerenciam dataset, anotação, histórico de scores e comparação de prompts na mesma ferramenta. Vale investir quando o golden set supera 200 casos ou quando tem múltiplos contribuidores.
+- **Label Studio, Argilla** — ferramentas open source de anotação, úteis quando anotação humana envolve non-técnicos (ex: SMEs).
+
+A regra: escolha a ferramenta mais simples que ainda permite comparar scores ao longo do tempo. Planilha pra começar; git YAML no primeiro mês; ferramenta dedicada quando a manutenção vira overhead.
+
 ## Anti-patterns
 
 - **Golden set de 5 exemplos** — não é representativo, é placebo
