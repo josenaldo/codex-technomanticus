@@ -92,6 +92,19 @@ APM de servidor mede throughput: quantas requisições por segundo, qual o P99, 
 
 LLMs falham de formas não-binárias: a requisição "completou" com status 200, mas a resposta estava errada, ou cara demais, ou violou uma constraint de negócio. Status 200 não é sinal de sucesso. Você precisa gravar **o prompt que foi usado** (não só o path), **os tokens que foram consumidos** (por categoria), **qual chunk do RAG influenciou a resposta**, e **qual model version respondeu** (o provider pode ter trocado sem avisar).
 
+## Maturidade de observability em produto LLM
+
+| Nível | Sinal |
+|---|---|
+| 0 | Nenhum log além do APM padrão; debug por screenshot |
+| 1 | Log estruturado com prompt_id, model, tokens e cost |
+| 2 | Ferramenta dedicada (Langfuse/Braintrust); traces por sessão |
+| 3 | Sampling configurado; dashboard de custo por feature; PII masking |
+| 4 | Traces conectados a eval scores; feedback de usuário capturado |
+| 5 | Traces alimentam golden set automaticamente; alert em regressão de qualidade |
+
+Meta razoável pra 2026: nível 3 antes de 500 usuários ativos; nível 4-5 antes de monetizar.
+
 ## Como observability fecha o loop de melhoria
 
 O fluxo de melhoria em produto com LLM tem quatro estações:
