@@ -274,6 +274,10 @@ Auto-prompt cobre a otimização do diff. A nota 06 fecha um outro ângulo do lo
 - **Yang et al.** — *Large Language Models as Optimizers* (OPRO, [arxiv:2309.03409](https://arxiv.org/abs/2309.03409)).
 - **Fernando et al.** — *Promptbreeder: Self-Referential Self-Improvement Via Prompt Evolution* ([arxiv:2309.16797](https://arxiv.org/abs/2309.16797)).
 - **Opsahl-Ong et al.** — *Optimizing Instructions and Demonstrations for Multi-Stage Language Model Programs* (MIPROv2, [arxiv:2406.11695](https://arxiv.org/abs/2406.11695)).
+- **Liang et al.** — *HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question Answering* ([arxiv:1809.09600](https://arxiv.org/abs/1809.09600)). Benchmark usado pra avaliar DSPy no paper original.
+- **Langfuse** — [*DSPy integration*](https://langfuse.com/docs/integrations/dspy). Como logar traces de compilação DSPy no Langfuse.
+- **Omar Khattab** — [*DSPy in production*](https://www.youtube.com/watch?v=41EfOY0Ldkc). Talk de 2024 sobre uso real de DSPy em produto.
+- **TextGrad** — [*TextGrad: Automatic Differentiation via Text*](https://textgrad.com/). Abordagem rival/complementar pra auto-otimização de pipeline LLM.
 
 ## Veja também
 
