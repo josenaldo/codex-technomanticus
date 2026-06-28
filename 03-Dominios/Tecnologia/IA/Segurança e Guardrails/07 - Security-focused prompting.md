@@ -3,6 +3,7 @@ title: "Security-focused prompting"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > A primeira linha de defesa **antes** do código existir é o prompt. Não basta dizer "gere código seguro" — modelo concorda e gera inseguro do mesmo jeito ([[01 - Código gerado por IA é untrusted|Veracode 45%]]). Funciona: **constraining explícito** com policies, threat models, exemplos negativos, e schema enforcement. Esta nota dá os patterns que funcionam — e os que parecem funcionar mas não funcionam. Importante: security-focused prompting **não substitui** [[05 - SAST e SCA para código AI|SAST]] e [[06 - Permissões e sandboxing|sandbox]] — é a camada **anterior** delas, não substituta.
+
+> [!question]- Por que security prompting não substitui guardrails de código?
+> Prompting influencia probabilidades — aumenta a chance de o modelo gerar código com certas características, mas não garante. O modelo pode "concordar" com a instrução de segurança e ainda gerar código vulnerável porque seus pesos foram treinados em dados que contêm padrões inseguros. Guardrails de código (SAST, schema validation, sandboxing) são determinísticos — eles verificam o resultado independentemente da intenção declarada do modelo. A analogia: avisar um funcionário novo sobre as regras (prompting) não substitui os controles de acesso no sistema (guardrails). Os dois existem porque o primeiro falha com frequência mensurável.
 
 ## O que NÃO funciona
 
@@ -241,6 +245,48 @@ Agente carrega isso como contexto permanente. Aplica sem precisar repetir.
 - **Prompting como única camada** — não substitui SAST e sandbox
 - **Sem exemplos positivos** — modelo precisa de ground truth, não só proibições
 - **Generalismo** — "use HTTPS, sanitize input, hash senhas" sem especificar como
+
+## Armadilhas comuns
+
+> [!warning] "Gere código seguro" é placebo, não instrução
+> Veracode testou: prompts explícitos de segurança genérica não movem o ponteiro dos 45% de código vulnerável. O modelo concorda com a instrução e reproduz os mesmos padrões inseguros que aprendeu nos dados de treino. O que funciona é instrução acionável e específica: listar quais CWEs são proibidos, dar exemplos negativos concretos, declarar o threat model com atacantes nomeados.
+
+> [!warning] System prompt com 200 linhas de regras de segurança é contraproducente
+> Atenção de LLMs dilui com o tamanho do contexto — regras no final de um prompt extenso têm peso muito menor que regras no início, ou que regras repetidas próximas ao pedido. Um AGENTS.md com 200 regras de segurança dá falsa sensação de cobertura: o modelo tecnicamente "tem" as regras mas não as aplica com consistência. Concentre em 5-10 regras críticas, acionáveis, com exemplos.
+
+> [!warning] Prompting inconsistente entre desenvolvedores anula os benefícios
+> Se cada dev usa seu próprio estilo de prompt de segurança, o time não tem um padrão. Um dev usa threat model explícito, outro usa "escreva código seguro", outro não menciona segurança. O resultado é qualidade de segurança variável dependendo de quem fez o prompt — exatamente o que um processo de segurança deveria eliminar. Centralizar via AGENTS.md resolve isso.
+
+## Como explicar em inglês
+
+Security-focused prompting is the practice of structuring your prompts to shift the probability distribution of LLM output toward more secure patterns — before any of the validation tooling runs. The key word is "shift": prompting doesn't guarantee security, it increases the likelihood of security-conscious patterns in the output.
+
+What doesn't work is vague instruction. Saying "write secure code" or "follow security best practices" has been tested empirically by Veracode and shown not to move the needle on the 45% vulnerability rate. The model agrees with the instruction and still generates the same patterns it learned from training data.
+
+What does work is explicit constraint: declare the threat model with named attackers and specific attack vectors. List what is forbidden with concrete technical specifics — not "validate input" but "use Pydantic with `extra='forbid'` and explicit field validators." Provide positive examples from the codebase so the model has ground truth to replicate rather than patterns to infer. Embed these policies in AGENTS.md so they apply consistently across every session without relying on individual developers to remember.
+
+**In a technical interview**, you might say:
+
+> "We treat security prompting as a probabilistic control, not a deterministic one. We structure it around explicit threat models — naming the attacker and the specific attack vectors for each endpoint — and explicit negative constraints with technical specifics, not philosophy. These live in AGENTS.md so every session starts with the same baseline. But we never rely on prompting alone: SAST with Semgrep and CodeQL catches what the model generates despite the instructions, and sandbox enforcement limits the blast radius if something slips through."
+
+| PT | EN |
+|----|-----|
+| prompt de segurança | security prompt |
+| modelo de ameaça | threat model |
+| ator de ameaça | threat actor |
+| restrição explícita | explicit constraint |
+| lista negativa | negative list / deny list |
+| exemplo positivo | positive example |
+| controle probabilístico | probabilistic control |
+| guardrail determinístico | deterministic guardrail |
+| atenção diluída | diluted attention / context dilution |
+| política de segurança | security policy |
+
+## O que vem a seguir
+
+Prompting tenta constranger a geração antes do código existir. Depois que o código existe, o próximo controle humano é o code review — mas code review de código AI não é igual a code review de código humano. O volume é diferente, os padrões de erro são diferentes, e o que o revisor precisa verificar muda substancialmente. A próxima nota explora como adaptar o processo de revisão para esse contexto.
+
+- [[08 - Code review de código AI — o que muda]] — como o processo de revisão humana precisa ser adaptado quando o autor é um LLM
 
 ## Veja também
 
