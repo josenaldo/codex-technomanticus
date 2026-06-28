@@ -210,6 +210,9 @@ Decisão pragmática: time pequeno usa o que vier com framework já adotado (Lan
 - **Sem postmortem regular** — feedback fica em dashboard, nunca vira backlog
 - **Mostrar agregado sem cohort** — média esconde regressão em segmento específico
 - **Reagir a feedback isolado em produção crítica** — UM bug report dispara mudança no prompt sem investigar
+- **Misturar feedback de diferentes produtos no mesmo dashboard** — taxa de thumbs down do produto A contamina análise do produto B
+- **Não segmentar por cohort** — média global de thumbs esconde regressão crítica em segmento pequeno (e.g., usuários de PT-EU, tier Enterprise, mobile)
+- **Feedback sem data de expiração** — dados de há 12 meses refletem versão antiga do produto; não incluir no treino sem filtro de data
 
 ## Operacionalizando — do feedback à mudança
 
