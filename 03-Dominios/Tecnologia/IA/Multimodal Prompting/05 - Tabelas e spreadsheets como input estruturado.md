@@ -1,9 +1,10 @@
 ---
 title: "05 - Tabelas e spreadsheets como input estruturado"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - multimodal
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Tabela pro LLM tem três modos: como texto (CSV/Markdown colado no prompt — o modelo parsea), como imagem (screenshot — boa pra tabelas com merged cells, charts, layout visual) e como ferramenta (modelo lê arquivo via code interpreter, pandas, ou tool customizado). Texto ganha em precisão de valor; imagem ganha em layout e gráfico; ferramenta ganha em dataset grande onde computação importa. Pra dataset grande, pattern padrão: pandas `describe()` + sample de 10 linhas = contexto suficiente sem mandar 1M de células. Tabela é onde mais se ganha combinando modalidades — relatório financeiro com texto + tabela + gráfico merece todos os três caminhos juntos.
+
+> [!question]- Para uma planilha financeira com 500 linhas e 20 colunas, qual é o melhor modo de input?
+> Depende da pergunta. Se a pergunta é qualitativa ("qual tendência essa planilha mostra?", "há anomalias?"), um resumo textual eficiente — `pandas describe()` + amostra de 10 linhas + lista de colunas — é suficiente, cabe em ~2k tokens e o modelo raciocina bem. Se a pergunta exige operação numérica ("qual a soma de revenda no Q3?", "calcule o CAGR das 5 maiores categorias"), texto pode induzir alucinação de cálculo — use Code Interpreter ou ferramenta com pandas. Se a planilha tem gráfico embutido ou formatação condicional que é parte da informação, mande como imagem em complemento ao texto. O padrão que não funciona é colar as 500 linhas raw no prompt — o modelo perde precisão de valor em contexto longo e o custo sobe desnecessariamente.
 
 ## Os três modos
 
@@ -301,6 +305,37 @@ Vale o custo de token extra quando a resposta precisa ser auditável.
 - **Combine quando o documento é misto.** Relatório financeiro merece PDF + texto + imagem.
 - **Numere as tabelas no prompt.** "Tabela 1", "Tabela 2" facilita referência cruzada.
 - **Cuidado com CSV de português.** Vírgula como separador decimal quebra parsing — converta antes pra `.` ou explicite no prompt.
+
+## Armadilhas comuns
+
+> [!warning] Colar o CSV inteiro quando o dataset tem mais de 50 linhas — modelo perde precisão e gasta contexto
+> Um CSV de 500 linhas ocupa facilmente 5k-10k tokens de contexto. O modelo lê o texto inteiro mas sua capacidade de "lembrar" valores exatos no início da tabela decresce enquanto avança no contexto. Se a pergunta requer cálculo ou comparação de valores, o modelo frequentemente produz números plausíveis mas incorretos. O padrão certo é resumo + amostra: `df.describe().to_markdown()` captura distribuição estatística em ~300 tokens; `df.head(10).to_markdown()` captura estrutura e exemplos em ~200 tokens; juntos cobrem a maioria das perguntas qualitativas. Para cálculo real, use Code Interpreter ou ferramenta com pandas.
+
+> [!warning] Usar screenshot de tabela para extração de valores numéricos — OCR multimodal tem erro silencioso
+> Screenshot de spreadsheet parece conveniente, mas o modelo pode ler "1,234.56" como "1.234,56", "O" como "0", ou errar casas decimais em números com compressão JPEG. Para extração de valores críticos (financeiro, contábil, médico), nunca use imagem como fonte de números — exporte o CSV/JSON e passe como texto. A imagem é útil quando o objetivo é entender o layout, a formatação condicional, ou o gráfico — não os números em si.
+
+> [!warning] Não avisar o modelo sobre o separador decimal brasileiro — cálculos ficam errados silenciosamente
+> Em datasets brasileiros, vírgula é separador decimal e ponto é separador de milhar ("1.234,56"). Modelos treinados com maioria de dados em inglês tendem a parsear "1.234,56" como string sem sentido ou como dois números separados. Antes de mandar CSV com notação BR: (1) converta para ponto decimal no pandas (`df['valor'] = df['valor'].str.replace('.', '').str.replace(',', '.').astype(float)`), ou (2) avise explicitamente no prompt: "Nesta tabela, vírgula é separador decimal e ponto é separador de milhar." Sem isso, cálculos incorretos são gerados silenciosamente.
+
+## Como explicar em inglês
+
+**Interview quote:** *"For tabular data, we pick the mode based on the question: text markdown for qualitative analysis, Code Interpreter with pandas for numeric computation, image for layout and charts. We never paste raw 500-row CSVs — we send a describe-plus-sample summary. Brazilian number formatting needs explicit prompt context or pre-conversion to avoid silent calculation errors."*
+
+| Português | Inglês |
+|---|---|
+| Tabela como texto (CSV/Markdown) | Table as text (CSV/Markdown) |
+| Screenshot de planilha como imagem | Spreadsheet screenshot as image |
+| Code Interpreter / execução de código | Code Interpreter / code execution |
+| Resumo estatístico (`describe()`) | Statistical summary (`describe()`) |
+| Amostra de linhas do dataset | Dataset row sample |
+| Formatação condicional (verde/vermelho) | Conditional formatting |
+| Células mescladas (merged cells) | Merged cells |
+| Separador decimal brasileiro | Brazilian decimal separator |
+| Precisão numérica em contexto longo | Numerical precision in long context |
+
+## O que vem a seguir
+
+Com tabelas e spreadsheets cobertos, a nota 06 trata de algo transversal a todas as modalidades: **como dizer ao modelo que tipo de leitura fazer**. A mesma planilha financeira analisada com "descreva" vs "extraia" vs "compare com o trimestre anterior" entrega outputs radicalmente diferentes — e a próxima nota dá o framework de seis tipos de leitura + template de quatro slots para qualquer input multimodal.
 
 ## Fontes
 
