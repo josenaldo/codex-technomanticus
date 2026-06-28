@@ -199,6 +199,8 @@ def submit_feedback(payload: FeedbackPayload):
 
 Decisão pragmática: time pequeno usa o que vier com framework já adotado (Langfuse Score API, Braintrust Feedback); time grande com privacidade rígida ou stack misto costuma rolar próprio.
 
+Uma cuidado extra de privacy: anonimize `user_id` antes de armazenar — use `hash(user_id + salt)` ou mapeamento opaco. Feedback vinculado a identidade real cria obrigação de GDPR/LGPD no dado mesmo sem o conteúdo da conversa. Com hash, você mantém cohort analysis por usuário sem persistir dado pessoal.
+
 ## Anti-padrões
 
 - **Coletar tudo, analisar nada** — feedback acumula em tabela, ninguém olha
