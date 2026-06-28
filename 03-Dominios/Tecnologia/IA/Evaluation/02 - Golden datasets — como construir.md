@@ -192,6 +192,14 @@ A regra de ouro: **todo bug em prod vira novo caso no golden set**.
 
 Resultado: o mesmo bug **nunca volta**. O golden set vira o sistema imunológico do produto.
 
+## Dataset como base de conhecimento do produto
+
+Além da função técnica (detectar regressões), o golden set tem uma função organizacional que times subestimam: ele externaliza o conhecimento sobre "o que o produto faz bem".
+
+Quando alguém novo entra no time e pergunta "como o modelo se comporta com input ambíguo?", a resposta mais útil não é uma explicação verbal — é mostrar os exemplos de edge cases no dataset, com o expected e o score atual. Isso é mais preciso, verificável, e não depende de quem estava no time quando o edge case foi descoberto.
+
+Times com golden sets bem mantidos têm onboarding mais rápido e menos "hey, você sabe como o modelo lida com X?" em retrospectivas.
+
 ## Pitfall canônico — leaderboard pra um modelo
 
 Se você só testa com GPT-5 e otimiza prompts pro golden set, em algum momento vai descobrir: trocar pra Claude Opus 4.6 quebra tudo. Não porque Claude é pior — porque o golden set virou *"o que GPT-5 acha bom"*, não *"o que a tarefa exige"*.
