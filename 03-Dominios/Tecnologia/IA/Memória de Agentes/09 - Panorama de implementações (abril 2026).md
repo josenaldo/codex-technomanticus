@@ -1,8 +1,9 @@
 ---
 title: "Panorama de implementações (abril 2026)"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,10 @@ aliases:
 > [!abstract] TL;DR
 > Em abril de 2026 há aproximadamente uma dúzia de implementações relevantes de memória de agentes circulando entre conferências, papers, threads no X e repositórios populares. Elas se agrupam em **três famílias**: (1) **inspiradas no LLM Wiki Pattern** do Karpathy — `LLM-knowledge-base` (Wendel), `OpenKB`, `graphify`, `basic-memory`, `NicholasSpisak/second-brain`, Apify Second Brain Builder; (2) **frameworks de produção** — Letta (ex-MemGPT), Mem0, Zep/Graphiti, MemPalace, Cognee, LangMem, SuperMemory; (3) **acadêmicas** — A-MEM. Esta nota é o gateway da Wave 5 da trilha: mapeia o terreno, oferece tabela síntese com hedges nos números e um fluxograma de escolha. As notas seguintes (10–17) detalham implementação por implementação.
 
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: O fluxograma de escolha pressupõe cenários razoavelmente claros (local-first? enterprise? já usa LangChain?), mas não trata o caso de sistemas híbridos — quando faz sentido combinar duas implementações (ex: basic-memory para vault pessoal + Mem0 para agente em produção), e como isso se arquiteta sem duplicar estado?
+> - Lacuna potencial: A tabela cobre o corte de abril de 2026, mas não há critério explícito de quando uma implementação deve ser removida da lista por obsolescência — falta uma seção sobre como manter este panorama atualizado ao longo do tempo.
+
 ## O que é
 
 Esta nota é um **mapa de mercado**, não um catálogo exaustivo. O recorte temporal é deliberado: abril de 2026, momento em que o campo já tem benchmarks consolidados, surveys formais (ver [[20 - Surveys e estado da arte 2026|20 - Surveys]]) e o primeiro workshop dedicado em venue top-tier (MemAgents no ICLR 2026). Ferramentas surgem e somem rápido — três meses atrás MemPalace ainda não existia publicamente; daqui a três meses pode haver outras três que valem a pena. O objetivo aqui não é congelar uma lista definitiva, mas oferecer um esqueleto de orientação que o leitor possa reabrir periodicamente para reatualizar.
@@ -30,10 +35,49 @@ A trilha trata cada implementação relevante em nota própria a partir da [[10 
 
 ## Por que importa
 
-- **Orienta a escolha de ferramenta sem afogamento.** A Lista de implementações de memória cresceu rápido em 2025–2026; sem um mapa, é fácil escolher pela primeira que apareceu no feed.
+- **Orienta a escolha de ferramenta sem afogamento.** A lista de implementações de memória cresceu rápido em 2025–2026; sem um mapa, é fácil escolher pela primeira que apareceu no feed.
 - **Situa cada implementação na trilha.** Cada linha da tabela tem uma nota dedicada; esta página é o índice navegável.
 - **Separa hype recente de maturidade técnica.** "Lançada em abril" e "estável em produção" não são sinônimos. A coluna de maturidade na tabela explicita esse corte.
 - **Dá vocabulário comparativo.** Termos como *LongMemEval*, *self-host*, *audit trail*, *memory palace*, *knowledge graph* têm significado preciso e vêm das fontes primárias — não são marketing.
+
+## As três famílias — visão geral
+
+```mermaid
+graph TD
+    subgraph F1 [Família 1: Karpathy-inspired]
+        K1[LLM-knowledge-base<br/>Wendel]
+        K2[OpenKB]
+        K3[graphify]
+        K4[basic-memory]
+    end
+
+    subgraph F2 [Família 2: Produção]
+        P1[Letta / ex-MemGPT]
+        P2[Mem0]
+        P3[Zep / Graphiti]
+        P4[MemPalace]
+        P5[Cognee]
+        P6[LangMem]
+        P7[SuperMemory]
+    end
+
+    subgraph F3 [Família 3: Acadêmica]
+        A1[A-MEM]
+    end
+
+    LLMWiki([LLM Wiki Pattern<br/>Karpathy gist]) --> F1
+    MemGPT([MemGPT / Park et al.<br/>2023]) --> F2
+    NeurIPS([NeurIPS 2025]) --> F3
+
+    F1 -->|inspira| F2
+    F3 -->|alimenta| F2
+```
+
+**Família 1 — Karpathy-inspired:** Implementações que seguem diretamente o gist do Karpathy — markdown como substrato central, loop Ingest/Query/Lint explícito, filosofia de legibilidade humana. Tendem a ser self-host, mais simples e mais fáceis de entender em profundidade. O trade-off é menos automação: quem implementa toma mais decisões explicitamente. Ideal para quem quer dominar o pattern ou tem requisitos de privacidade/portabilidade fortes.
+
+**Família 2 — Frameworks de produção:** Implementações que abstraem o loop em SDK ou serviço. Oferecem mais automação (extração de fatos automática, compactação, integrações com outros frameworks), ao custo de mais dependência e mais opacidade. O espectro vai do mais transparente (Letta, open-source, self-hostável) ao mais opaco (SuperMemory, SaaS proprietário). Ideal para quem quer velocidade de integração sem reinventar a roda.
+
+**Família 3 — Acadêmica:** Implementações originadas em pesquisa, com foco em técnica de ponta em vez de ergonomia de produção. A-MEM é a mais relevante em 2026 (NeurIPS 2025). Código de pesquisa: útil para estudar a fronteira, não recomendado para produção sem porte significativo.
 
 ## Como funciona — tabela síntese
 
@@ -100,11 +144,39 @@ O fluxograma é heurístico, não normativo. Existem casos legítimos de combina
 
 ## Armadilhas comuns
 
-- **Confundir LongMemEval score com qualidade real em produção.** O benchmark mede capacidades específicas em distribuição específica; sistemas podem estar otimizados para o benchmark sem ganho proporcional em casos reais. Análise crítica em [[22 - Críticas, limitações e armadilhas]].
-- **Escolher por hype recente sem benchmark próprio.** MemPalace é abril/2026 — promissor, mas sem track-record longo. Letta tem vários anos de iteração desde MemGPT. As duas afirmações coexistem; o leitor decide o trade-off.
-- **Não checar se o framework tem fallback de provider.** Se a memória depende exclusivamente de OpenAI ou Anthropic, mudanças de pricing ou rate-limit derrubam o sistema. Frameworks maduros oferecem providers configuráveis.
-- **Achar que "estável" é absoluto.** Em 2026 o campo se move rápido; "estável hoje" pode ser "deprecated em seis meses". Reavaliar periodicamente faz parte da operação de qualquer sistema de memória que o leitor adote.
-- **Tratar a tabela como autoridade final.** Esta nota é instantânea. Antes de tomar uma decisão arquitetural, é obrigatório abrir os repos e blogs primários para ver o que mudou.
+> [!warning] Armadilha 1: Confundir LongMemEval score com qualidade real em produção
+> O benchmark mede capacidades específicas em distribuição específica; sistemas podem estar otimizados para o benchmark sem ganho proporcional em casos reais. A diferença entre 93% e 96% em LongMemEval pode ser irrelevante para o seu caso de uso — e a diferença entre "tem fallback de provider" e "não tem" pode ser crítica. Benchmark é condição necessária para descartar candidatos fracos; não é condição suficiente para escolher entre os bons. Análise crítica detalhada em [[22 - Críticas, limitações e armadilhas]].
+
+> [!warning] Armadilha 2: Escolher por hype recente sem benchmark próprio
+> MemPalace é de abril de 2026 — promissor, benchmark impressionante, mas sem track-record em produção prolongada. Letta tem vários anos de iteração desde MemGPT, com comunidade, issues documentados e bugs já descobertos. As duas afirmações coexistem; o leitor decide o trade-off. A heurística é: para sistema crítico, preferir maturidade sobre novidade; para experimento ou prototipagem, novidade com benchmark forte é candidato válido.
+
+> [!warning] Armadilha 3: Não checar fallback de provider
+> Se a memória depende exclusivamente de OpenAI ou Anthropic, mudanças de pricing, rate-limit ou descontinuação de modelo derrubam o sistema. Frameworks maduros oferecem providers configuráveis (LiteLLM, Ollama, modelos locais). Checar isso antes de adotar — especialmente em sistemas que rodarão por meses sem manutenção ativa — é obrigação, não detalhe.
+
+> [!warning] Armadilha 4: Tratar a tabela como autoridade final
+> Esta nota é um instantâneo de abril de 2026. O campo se move rápido: "estável hoje" pode ser "deprecated em seis meses". Antes de tomar uma decisão arquitetural real, abrir os repos e blogs primários para ver o que mudou desde esta nota é obrigatório — não opcional. A tabela é ponto de partida para orientação, não fonte de verdade para escolha definitiva.
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "The memory framework landscape in 2026 splits into three families: Karpathy-inspired tools that use markdown as substrate and prioritize human readability, production frameworks that abstract the write-manage-read loop behind an SDK, and research implementations that push the state of the art. The right choice depends on privacy requirements, existing stack, and whether you need deep understanding of the pattern or just fast integration."
+
+| Português | Inglês |
+|-----------|--------|
+| panorama de implementações | implementation landscape |
+| framework de memória | memory framework |
+| self-host | self-hosted |
+| código de pesquisa | research code |
+| rastro de auditoria | audit trail |
+| grafo de conhecimento temporal | temporal knowledge graph |
+| busca híbrida | hybrid search |
+| benchmark de memória de longo prazo | long-term memory benchmark |
+| família de implementações | implementation family |
+| maturidade técnica | technical maturity |
+
+## O que vem a seguir
+
+Com o panorama do mercado em mãos e o vocabulário arquitetural da [[08 - Arquitetura de um sistema de memória|nota 08]], as notas seguintes (10 a 17) aprofundam cada implementação individualmente — começando pela [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base do Wendel]], a implementação mais próxima do gist original do Karpathy e portanto o melhor ponto de partida para quem quer entender o pattern de dentro. Cada nota de implementação aplica o mapa arquitetural dos cinco componentes como lente de análise, tornando as comparações técnicas em vez de anedóticas.
 
 ## Veja também
 
