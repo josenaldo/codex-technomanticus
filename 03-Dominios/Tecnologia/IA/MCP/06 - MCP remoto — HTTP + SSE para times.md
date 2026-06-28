@@ -1,8 +1,9 @@
 ---
 title: "MCP remoto — HTTP + SSE para times"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[Dicionário de IA#transport (stdio, SSE, HTTP)|stdio]] é simples mas **single-user**. Para times compartilharem [[Dicionário de IA#MCP server|MCP server]], use **HTTP + SSE** (Server-Sent Events). Setup: server roda como serviço (Docker, K8s, ou managed), client conecta via URL com auth. Adiciona overhead de TLS, auth, deployment, mas habilita: server compartilhado, rate limit centralizado, audit log unificado, atualizações sem update no client. Em 2026, padrão para servers internos enterprise.
+
+> [!question]- Quais os riscos de expor MCP remotamente que não existem no local?
+> Stdio herda a identidade do usuário que executou o client — o sistema operacional faz a "auth". HTTP+SSE abre uma porta de rede, e com ela vêm todos os vetores de ataque de rede: tokens mal gerenciados, interceptação sem TLS, brute force em endpoints, SSRF se o server fizer requisições baseadas em input do usuário, e a superfície de supply chain fica mais visível (servidor acessível por URL pode ser alvo de bots). Além disso, um server HTTP+SSE que loga mal se torna um ponto cego de auditoria — em stdio, cada user tem seu processo; em HTTP, uma action mal logada é uma action que parece não ter acontecido.
 
 ## Quando partir para HTTP+SSE
 
@@ -295,6 +299,17 @@ Server HTTP+SSE rodando 24/7 em produção:
 
 stdio: $0 (roda no machine do user).
 
+## Armadilhas comuns
+
+> [!warning] Server sem health check e sem alertas
+> Um MCP server HTTP que falha silenciosamente é pior do que não ter o servidor: os clients continuam tentando conectar, os usuários veem erros opacos ("tool call failed"), e sem alertas ninguém sabe se o server caiu há 5 minutos ou 5 horas. Health check endpoint (`/health`) + monitoramento com alerta automático (Sentry, PagerDuty) não é overkill — é operação básica de qualquer serviço que impacta o trabalho de um time.
+
+> [!warning] Sem separação entre dev e prod
+> Um server que serve tanto ambiente de desenvolvimento quanto produção é um acidente esperando acontecer. Um dev testando uma tool destrutiva (`delete_record`) em produção por engano, ou um deploy de staging que sobrescreve dados de produção. Mantenha servidores separados com configs separadas, mesmo que sejam deploys do mesmo código. O custo de um segundo servidor é trivial comparado ao custo de um incidente de produção.
+
+> [!warning] Audit log apenas em caso de erro
+> Logar só falhas significa que você sabe o que quebrou, mas não o que funcionou. Em compliance, a pergunta não é só "o que deu errado?" mas "o que foi feito?". Tool calls bem-sucedidas — especialmente as destrutivas — precisam de registro completo: quem chamou, quando, com quais argumentos, e qual foi o resultado. Um audit log com gaps é inutilizável para compliance e dificulta debugging de comportamentos inesperados que não geraram erros explícitos.
+
 ## Anti-patterns
 
 - **HTTP+SSE para single user** — overengineering
@@ -314,6 +329,35 @@ stdio: $0 (roda no machine do user).
 | **Auth failure rate** | <1% |
 | **Rate limit triggers/dia** | <5% das chamadas |
 | **Custo por tool call** | <$0.001 |
+
+## Como explicar em inglês
+
+HTTP+SSE transport turns an MCP server from a local subprocess into a shared microservice. The server runs independently — in Docker, Kubernetes, Fly.io, or a managed platform like Smithery — and clients connect via HTTPS with a bearer token or OAuth 2.1. This enables three things that stdio cannot provide: multiple users sharing a single server instance, centralized auth and rate limiting, and server updates that don't require updating client configurations.
+
+The architecture is similar to any REST API service: a load balancer distributes traffic across server replicas, each replica connects to shared state (a database), and structured logs flow to an observability backend. The difference is that instead of REST endpoints, the server exposes MCP tools via JSON-RPC over SSE — the client sends requests via HTTP POST and receives streaming responses via Server-Sent Events. This asymmetric pattern (POST for requests, SSE for responses) is what enables streaming tool results without full WebSocket complexity.
+
+**In a technical interview**, you might say:
+
+> "HTTP+SSE is the answer when you need to share an MCP server across a team. The server becomes a standalone microservice with bearer token or OAuth 2.1 auth, rate limiting per user, centralized audit logging, and independent deployability. The tradeoff vs stdio is real: you add 30-100ms of network latency, you need TLS, and you need to operate a service. The migration from stdio is low-friction — FastMCP supports both transports, you just change the startup code. The moment you have two developers who need the same MCP capabilities, the shared server pays for itself in eliminated duplication."
+
+| PT | EN |
+|----|-----|
+| Servidor remoto | Remote server |
+| Token de acesso | Bearer token |
+| Limitação de taxa | Rate limiting |
+| Balanceador de carga | Load balancer |
+| Implantação | Deployment |
+| Registro de auditoria | Audit log |
+| Microserviço | Microservice |
+| Fluxo OAuth | OAuth flow |
+| Checagem de saúde | Health check |
+| Estado persistente | Persistent state |
+
+## O que vem a seguir
+
+Expor um MCP server remotamente levanta uma questão imediata: quais são os riscos de segurança específicos de MCP que não existem em APIs REST tradicionais? Prompt injection via tool output, supply chain attacks via servidores de terceiros, e credentials exfiltradas via tool params são vetores que não existiam no mundo de APIs sem LLMs. A próxima nota mapeia esses riscos com defesas concretas em camadas.
+
+- [[07 - Segurança em MCP]] — threat model completo e defesas em profundidade
 
 ## Veja também
 
