@@ -1,9 +1,10 @@
 ---
 title: "05 - Auto-prompt optimization — DSPy e além"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - improvement-loop
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Auto-prompt optimization transforma prompt de "string artesanal" em "programa compilado": você declara o que quer (Signatures de input/output em DSPy), declara a métrica de sucesso (eval function), o compilador otimiza a versão final do prompt contra exemplos. **DSPy** (Stanford, Khattab et al., 2023) é o framework de referência em 2026: Signatures, Modules, Compilers (BootstrapFewShot, MIPRO, COPRO). Vizinhos: **APE** (Zhou et al., 2023) gera candidatos via LLM-meta-prompter, **OPRO** (Yang et al., 2023) trata LLM como otimizador iterativo, **promptbreeder** (Fernando et al., 2023) usa evolução. Quando auto-prompt vence: pipeline com várias chamadas LM, eval claro, iteração repetida. Quando manual vence: one-shot alto-risco, edge-case que exige judgment, ausência de eval confiável. Estado 2026: real e crescente em produção, mas longe de "default" — muito uso ainda é experimental ou em pipeline acadêmico.
+
+> [!question]- Compensa aprender DSPy hoje ou o espaço vai consolidar num único vencedor em breve?
+> Em 2026 vale aprender DSPy mesmo com o espaço em movimento — por duas razões. Primeira: os conceitos (Signature, Module, Compiler, eval function como critério) vão migrar pra qualquer framework que vença, da mesma forma que aprender React ensina component-based thinking que vale em Vue/Svelte também. Segunda: DSPy já tem community e integração com Langfuse, Weaviate, e outros produção-tier, o que sugere que a adoção vai crescer antes de qualquer consolidação. O risco de aprender DSPy agora é tempo de setup — não é risco de apostada errada no framework. Se você vai recompilar prompts contra modelos novos mais de uma vez no próximo ano, o investimento já paga.
 
 ## Por que existe
 
@@ -182,6 +186,24 @@ Auto-prompt é só tão bom quanto sua eval function. Se eval mede a coisa errad
 
 Quando ground truth não existe, LLM-as-judge ([[03-Dominios/Tecnologia/IA/Evaluation/04 - LLM-as-judge — quando e como]]) viabiliza eval automatizado pra DSPy. Cuidado: judge enviesado vira prompt enviesado.
 
+## Como DSPy encaixa no ciclo eval → diff → ship
+
+DSPy não substitui o ciclo — ele automatiza **um passo** do ciclo:
+
+```
+Ciclo canônico:         Com DSPy:
+1. Observability  →     (sem mudança: humano monitora)
+2. Eval mede      →     (sem mudança: golden set + judge)
+3. Diff (hipótese →     DSPy faz o diff automaticamente:
+   vira mudança)        compiler gera candidato vs baseline
+4. A/B test       →     (sem mudança: canary ainda é necessário)
+5. Ship           →     (sem mudança: champion-challenger decide)
+```
+
+O passo 3 era "humano escreve prompt candidato baseado em hipótese". Com DSPy, o passo 3 vira "humano define Signature + trainset, compiler gera candidato". O candidato gerado ainda precisa passar pelo A/B (passo 4) e pelo champion-challenger (passo 5).
+
+O ganho real: em vez de um único candidato por ciclo (custo humano de escrever prompt), DSPy pode gerar e avaliar dezenas de candidatos em paralelo, escolhendo o melhor antes do A/B. Mais candidatos testados = maior chance de encontrar o ótimo no espaço de prompts.
+
 ## Estado 2026
 
 Realidade honesta:
@@ -193,6 +215,14 @@ Realidade honesta:
 
 A escolha "DSPy ou não" em 2026 é típica de adoção de tecnologia em transição: time pequeno em produto early, manual basta; time que vai recompilar contra modelos novos a cada trimestre, vale aprender DSPy mesmo com overhead inicial.
 
+**DSPy integra com o ecossistema existente:**
+- Langfuse: instrumentação de trace + versionamento de prompt compilado
+- Weaviate, Qdrant, Pinecone: retrieval DSPy via `dspy.Retrieve` 
+- MLflow / Weights & Biases: experimentos de compilação logados pra comparação
+
+**Custo real de compilação:**
+Compilar com `BootstrapFewShot` em dataset de 50 exemplos + modelo Sonnet ≈ ~100-200 chamadas de API, custo estimado $2-10 dependendo do modelo e tamanho dos exemplos. `MIPRO` com bayesian search pode ser 5-10x isso. Compensa calcular o custo de compilação antes de incluir num pipeline frequente.
+
 ## Anti-padrões
 
 - **DSPy sem eval function** — compiler precisa de métrica; sem ela, gera lixo otimizado
@@ -202,6 +232,38 @@ A escolha "DSPy ou não" em 2026 é típica de adoção de tecnologia em transi�
 - **DSPy como prata bala em problema mal definido** — se o objetivo é difícil de medir, DSPy não resolve, agrava
 - **Confiar 100% no prompt compilado em prod safety-critical** — humano deve auditar antes de promover
 - **Ignorar custo de compilação** — MIPRO com dataset grande + modelo caro = compilação cara
+
+## Armadilhas comuns
+
+> [!warning] Usar DSPy sem eval function — compilar sem métrica é otimizar em direção desconhecida
+> DSPy sem eval function é como compilar código sem saber o que o programa deve fazer. O `BootstrapFewShot` sem `metric` vai usar um fallback genérico ou simplesmente não filtrar os few-shots — e você vai promover um prompt "compilado" que ninguém avaliou. A eval function não precisa ser perfeita pra começar; ela precisa ser melhor que nada. Um LLM-as-judge simples que responde "pass/fail" com critério claro já é suficiente pra primeira compilação. A evolução natural é: eval simples (boolean) → eval com score (float 0-1) → eval por dimensão (faithfulness, completeness, format). Não espere a eval perfeita pra começar — compile com a que você tem, mede em prod, calibra.
+
+> [!warning] Tratar o prompt compilado como caixa-preta — e não entender o que foi gerado
+> Compiler pode gerar prompts longos, repetitivos, com few-shots questionáveis e linguagem que nenhum humano escolheria. A tentação é "mas funciona no eval" — e promover sem ler. O problema: prompts muito longos têm custo, latência e comportamento inesperado em distribuição diferente do trainset. Além disso, prompts gerados podem ter comportamento emergente (vieses do few-shot, instruções que conflitam) que só aparecem em edge cases. O protocolo mínimo: antes de promover um prompt compilado, ler o prompt gerado inteiramente, rodar manualmente em 5-10 casos variados, e confirmar que o comportamento é o esperado — não só que o score passou.
+
+> [!warning] Compilar uma vez e nunca recompilar — prompt compilado degrada com o tempo
+> O prompt compilado foi otimizado contra um modelo específico (e.g., `claude-sonnet-4-5`) com uma distribuição específica de trainset. Quando o modelo do provider atualiza (mesmo minor snapshot), ou quando a distribuição de input muda significativamente, o prompt compilado pode regredir sem que ninguém perceba — porque não tem mecanismo de recompilação periódica. Recompilar não é "refazer do zero" — é rodar o compiler com o mesmo Signature e uma versão atualizada do trainset, que costuma ser rápido se a infrastructure já está montada. Cadência razoável: recompila quando troca de modelo, quando eval score em prod cai abaixo do threshold, ou trimestralmente como manutenção preventiva.
+
+## Como explicar em inglês
+
+**Interview quote:** *"Auto-prompt optimization treats prompts as compiled artifacts rather than handcrafted strings. You declare the task semantics via a Signature — input and output types with descriptions — and a success metric, and the compiler like DSPy's BootstrapFewShot or MIPRO searches the space of few-shot combinations and instructions to find the version that maximizes your metric. The key insight is that if you can measure it, you can optimize it. It pays when you have multiple LM calls in a pipeline, a clear and cheap eval function, and repeated optimization needs — like recompiling against a new model."*
+
+| Português | Inglês |
+|---|---|
+| Otimização automática de prompt | Auto-prompt optimization |
+| Compilador de prompts | Prompt compiler |
+| Assinatura de input/output | Signature (input/output declaration) |
+| Módulo LM | Language Model module |
+| Função de avaliação | Eval function / metric |
+| Conjunto de treinamento de exemplos | Training set / trainset |
+| Seleção automática de few-shots | Few-shot bootstrapping |
+| Otimização de instrução (texto do system) | Instruction optimization |
+| Recompilação (modelo ou trainset novo) | Recompilation |
+| Prompt compilado vs artesanal | Compiled prompt vs handcrafted prompt |
+
+## O que vem a seguir
+
+Auto-prompt cobre a otimização do diff. A nota 06 fecha um outro ângulo do loop: **capturar o sinal de feedback do usuário** — thumbs up/down, re-prompt rate, abandonment — e transformá-lo em sinal estruturado que alimenta o trainset, o golden set, e as decisões de qual área do pipeline otimizar.
 
 ## Fontes
 
@@ -221,3 +283,10 @@ A escolha "DSPy ou não" em 2026 é típica de adoção de tecnologia em transi�
 - [[03-Dominios/Tecnologia/IA/Evaluation/02 - Golden datasets — como construir]] — dataset que alimenta o compiler
 - [[Prompt Engineering]] — o ofício que auto-prompt automatiza parcialmente
 - [[03-Dominios/Tecnologia/IA/AI Engineering Stack/12 - Improvement Layer]] — onde auto-prompt entra na camada
+- [[06 - Capturando feedback do usuário como sinal]] — fonte do sinal que alimenta o trainset do compiler
+- [[03 - Prompt versioning — semver para prompts]] — prompt compilado também precisa de versão semântica
+- [[Dicionário de IA#DSPy|Dicionário: DSPy]]
+- [[Dicionário de IA#Signature (DSPy)|Dicionário: Signature DSPy]]
+- [[Dicionário de IA#Teleprompter|Dicionário: Teleprompter (DSPy)]]
+- [[Dicionário de IA#Auto-prompt|Dicionário: Auto-prompt optimization]]
+- [[Dicionário de IA#BootstrapFewShot|Dicionário: BootstrapFewShot]]
