@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - observability
   - ia
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > A unidade fundamental é uma hierarquia: **sessão → trace → spans**. Sessão agrupa interações de um mesmo usuário/conversa; trace representa uma "tarefa" completa (uma mensagem do usuário sendo respondida); spans são as etapas dentro da trace (LLM call, tool call, retrieval, sub-agent). O padrão emergente é **OpenTelemetry GenAI Semantic Conventions**, que define atributos como `gen_ai.system`, `gen_ai.request.model`, `gen_ai.usage.input_tokens` — adotá-los garante portabilidade entre Langfuse, Phoenix, Datadog, Grafana. Em agents multi-step, a árvore vira larga e profunda: trace raiz, span por LLM call, span por tool execution, sub-spans pra retrieval e pra sub-agents. Sem hierarquia explícita, debug em agent vira impossível.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende por que LLMs precisam de observabilidade dedicada (nota 01) e o conceito básico de trace distribuído — uma sequência de eventos que representa uma operação completa em sistema distribuído. Se você já trabalhou com Jaeger, Zipkin, ou OpenTelemetry em serviços convencionais, vai reconhecer o modelo hierárquico desta nota. A diferença é que spans LLM carregam atributos extras específicos de IA: tokens, prompts, finish reasons.
 
 ## Os três níveis da hierarquia
 
@@ -188,6 +192,77 @@ Pra cada span LLM, divisão pragmática:
 | Backends suportados | Datadog (nativo), Grafana Tempo (nativo), Langfuse (importa OTel), Phoenix (nativo OTel) |
 
 A direção é convergente, mas em 2026 ainda há divergência entre `gen_ai.usage.input_tokens` (OTel canônico) e `gen_ai.input_tokens` (alguns SDKs). Quando instrumentar manualmente, escolha o padrão da spec e documente.
+
+## Como montar um span mínimo em Python
+
+Sem framework de observability, você pode criar spans manuais com `opentelemetry-sdk`:
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from anthropic import Anthropic
+
+tracer = trace.get_tracer("my-llm-app")
+client = Anthropic()
+
+def call_with_trace(session_id: str, prompt: str) -> str:
+    with tracer.start_as_current_span("llm.chat") as span:
+        span.set_attribute("session.id", session_id)
+        span.set_attribute("gen_ai.system", "anthropic")
+        span.set_attribute("gen_ai.request.model", "claude-sonnet-4-6")
+        span.set_attribute("gen_ai.request.temperature", 0.7)
+
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        span.set_attribute("gen_ai.response.model", response.model)
+        span.set_attribute("gen_ai.usage.input_tokens", response.usage.input_tokens)
+        span.set_attribute("gen_ai.usage.output_tokens", response.usage.output_tokens)
+        span.set_attribute("gen_ai.response.finish_reasons", [response.stop_reason])
+
+        return response.content[0].text
+```
+
+Em produção real, Langfuse e OpenLLMetry instrumentam isso automaticamente — mas entender o span manual ajuda a saber o que está sendo capturado.
+
+## Armadilhas comuns
+
+> [!warning] Não propagar trace_id entre chamadas de agent
+> Em agents que fazem múltiplas chamadas LLM em sequência, cada chamada precisa ter o mesmo `trace_id` com `parent_span_id` apontando pra span pai correta. O erro comum é criar um trace novo pra cada LLM call — isso resulta em traces fragmentados, um por chamada, sem hierarquia. No debug, você vê 8 traces separados pra uma tarefa que deveria aparecer como uma árvore coesa. Frameworks de agent como LangChain e Anthropic SDK com Langfuse SDK resolvem isso automaticamente; quando você instrumenta manualmente, precisa propagar o span context via `Context` do OpenTelemetry.
+
+> [!warning] Colocar PII como atributo de span em vez de span event
+> Atributos de span são indexados e podem ser exportados para múltiplos backends — incluindo logs de infra com menor controle de acesso. Se você coloca o conteúdo do prompt (que pode conter nome, CPF, email do usuário) como `gen_ai.prompt.content` no atributo, esse dado vai parar em todos os sistemas que consumem o trace. A prática correta é usar **span events** para o conteúdo do prompt e da resposta — eventos podem ser redactados ou droppados no exporter sem perder os atributos numéricos e de metadata. Langfuse permite configurar `mask_all_logs: true` e redaction de span events por regex.
+
+> [!warning] Não registrar finish_reason como atributo obrigatório
+> `finish_reason` parece um detalhe óbvio, mas é frequentemente omitido em implementações caseiras. O problema: quando o modelo cortou por `max_tokens` em vez de `end_turn`, o output está incompleto — mas se você não grava o finish_reason, a resposta parece normal nos traces. Em pipelines de extração estruturada, `max_tokens` no meio do JSON retornado resulta em parsing exception — rastreável se você tem o finish_reason; invisível se não tem. Adicione `gen_ai.response.finish_reasons` a todos os spans LLM. Configure alert se taxa de `max_tokens` > 3% (geralmente indica max_tokens muito baixo ou prompt inflado).
+
+## Como explicar em inglês
+
+Em entrevistas sobre arquitetura de sistemas LLM em produção, descrever a hierarquia de trace demonstra que você tem experiência operacional, não só de desenvolvimento:
+
+> "In LLM systems, a trace maps to one user task — one question answered, one document processed. Within that trace, you have spans: one for the LLM call, one for each tool call, child spans for retrieval steps. The key is propagating the trace context across all calls so they form a tree, not separate isolated traces. We follow OpenTelemetry GenAI semantic conventions for the attributes — gen_ai.system, gen_ai.request.model, token counts per category, finish_reason. Prompt and completion content go in span events rather than attributes, so PII can be masked without losing the operational metrics."
+
+| Português | Inglês |
+|-----------|--------|
+| trace de LLM | LLM trace |
+| span filho | child span |
+| span pai | parent span |
+| contexto de trace propagado | propagated trace context |
+| convenções semânticas | semantic conventions |
+| evento de span | span event |
+| razão de finalização | finish reason |
+| redação de PII | PII redaction |
+| exportador de trace | trace exporter |
+| hierarquia de spans | span hierarchy |
+
+## O que vem a seguir
+
+Com a anatomia de trace em mãos, a nota 03 entra no Langfuse — o padrão OSS que materializa essa hierarquia em UI, datasets, e integração com eval.
+
+Ver [[03 - Langfuse — open-source standard]].
 
 ## Fontes
 
