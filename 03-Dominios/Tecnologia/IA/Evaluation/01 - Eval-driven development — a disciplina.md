@@ -232,6 +232,14 @@ A assimetria concreta: montar um golden set de 50 casos custa ~4 horas. Cada inc
 
 Em uma semana você tem nível 1. Em duas, nível 2. O resto é refinamento.
 
+> [!tip] Checklist antes de fazer qualquer mudança de prompt
+> - [ ] Existe golden set com ≥20 casos curados?
+> - [ ] Existe rubrica com dimensões e scores bem definidos?
+> - [ ] Existe baseline de score no estado atual?
+> - [ ] A mudança vai ser validada contra o baseline antes do merge?
+>
+> Se algum item é "não", você está iterando cego — e o próximo PR pode ser uma regressão que você não vai descobrir.
+
 ## Armadilhas comuns
 
 > [!warning] Montar golden set com casos felizes
