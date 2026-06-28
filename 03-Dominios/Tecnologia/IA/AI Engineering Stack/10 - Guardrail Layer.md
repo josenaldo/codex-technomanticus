@@ -21,6 +21,9 @@ aliases:
 > [!abstract] TL;DR
 > A Guardrail Layer define **o que o sistema não pode fazer** e impõe isso por código — não por pedido ao modelo. É o que separa "Prompt Layer pede comportamento" de "sistema garante comportamento". Checks determinísticos antes do input chegar no modelo (redação de PII, detecção de prompt injection), depois do output sair (schema, toxicidade), e antes de toda tool call (blast radius, aprovação). Sem Guardrail Layer, o system prompt é apenas uma intenção — e intenções falham em produção.
 
+> [!question]- Por que o system prompt não é suficiente para garantir comportamento seguro?
+> Porque instruction-following não é 100% determinístico. Modelos são treinados para seguir instruções — mas "seguir instrução" é uma tendência probabilística, não uma garantia. Em edge cases, contextos muito longos, ataques de jailbreak bem construídos, ou simplesmente em cenários que o treino não cobriu, o modelo pode violar instruções do system prompt. Para comportamentos de segurança críticos, "o prompt diz pra não fazer X" é intenção. "O código bloqueia X antes mesmo do modelo ver" é garantia.
+
 ## O problema que a Guardrail Layer resolve
 
 "Nunca compartilhe dados de outros usuários" está no system prompt. Em 99.7% dos casos, o modelo obedece. Nos 0.3% restantes — prompt injection bem construído, contexto muito longo que dilui a instrução, edge case que o treino não cobriu — o modelo falha. Para um sistema com 100.000 chamadas por dia, 0.3% são 300 incidentes por dia.
@@ -28,6 +31,31 @@ aliases:
 A distinção fundamental: **Prompt Layer pede; Guardrail Layer impõe**. Uma instrução no system prompt é um pedido ao modelo — o modelo pode violá-la. Um classificador de PII que redige antes de qualquer chamada ao modelo não pede nada: ele simplesmente remove o dado antes que o modelo o veja. Um kill switch que para o sistema quando o custo da sessão ultrapassa o orçamento não consulta o modelo — ele para.
 
 A Guardrail Layer é o **sistema imunológico** do stack: intercepta antes, valida depois, e para quando necessário.
+
+## Sem Guardrail Layer vs com Guardrail Layer
+
+```mermaid
+flowchart LR
+    subgraph "Sem Guardrail Layer"
+        A1["Input do usuário\n(pode conter PII/injection)"]
+        A2["LLM processa\nbaseado em prompt"]
+        A3["Output sem validação\npode vazar PII ou violar regras"]
+    end
+
+    subgraph "Com Guardrail Layer"
+        B1["Input do usuário"]
+        B2["Pre-LLM:\nredação PII + detecção injection"]
+        B3["LLM processa\ninput sanitizado"]
+        B4["Post-LLM:\nvalidação schema + filtro toxicidade"]
+        B5["Output verificado\ne auditável"]
+    end
+
+    A1 --> A2 --> A3
+    B1 --> B2 --> B3 --> B4 --> B5
+
+    style A3 fill:#fff5f5,stroke:#ff6b6b
+    style B5 fill:#f0fff4,stroke:#51cf66
+```
 
 ## O que é esta camada
 
@@ -106,9 +134,30 @@ O kill switch detecta o padrão anômalo em 3 pedidos — antes de o bug gerar d
 > [!warning] Kill switch como "feature pra depois"
 > Kill switches são frequentemente vistos como gold plating — "vamos adicionar quando precisar". O problema: você precisa do kill switch exatamente quando algo inesperado acontece — e "inesperado" significa que você não sabia que precisaria antes do incidente. Implemente kill switches básicos antes do primeiro lançamento: custo máximo por sessão, número máximo de calls ao modelo, número máximo de tool failures em sequência.
 
+## Calibrando thresholds de guardrail: o problema do falso positivo
+
+Guardrail mal calibrado produz falso positivo: bloqueia input legítimo como se fosse ataque. Isso é custo real — usuário frustrado, caso de suporte, degradação de experiência. A calibração é iterativa:
+
+**Fase 1 — Começar conservador.** No lançamento, thresholds mais altos (menos restritivos) para entender o volume real de casos problemáticos. Melhor bloquear menos e aprender do que bloquear demais e alienar usuários.
+
+**Fase 2 — Analisar logs de disparo.** O que os guardrails estão bloqueando? Qual proporção é legítima vs problema real? Sem log, você não tem dado para calibrar. Com log, você vê: "regex de prompt injection está bloqueando 30% de queries de suporte legítimas que usam a frase 'ignore esta parte e...'" — e ajusta o padrão.
+
+**Fase 3 — Ajustar por categoria de conteúdo.** Classificador de toxicidade calibrado para moderação de fórum público vai produzir falsos positivos em plataforma médica que precisa discutir substâncias controladas. Guardrail tem que ser calibrado para o domínio — não para "conteúdo problemático em geral".
+
+**Fase 4 — Monitorar deriva.** Padrões de ataque evoluem. Usuários contornam guardrails determinísticos descobrindo formulações que escapam. A Improvement Layer deve incluir revisão periódica dos logs de guardrail para identificar padrões novos e atualizar as regras.
+
+> [!info] Falso positivo vs falso negativo: o trade-off
+> Falso positivo = guardrail bloqueia input legítimo → usuário frustrado. Falso negativo = guardrail deixa passar input problemático → incidente de segurança. O equilíbrio certo depende do domínio: sistema médico ou financeiro tolera mais falso positivo; aplicativo de escrita criativa tolera mais falso negativo.
+
 ## Como explicar em inglês
 
 The Guardrail Layer is the enforcement layer of the AI stack — it imposes behavior by code, not by model instruction. The critical distinction from the Prompt Layer: prompts ask the model to behave correctly; guardrails ensure behavior regardless of what the model decides. Pre-LLM guardrails filter what the model sees (PII, prompt injection). Post-LLM guardrails validate what the model generates (schema, toxicity). Tool call guardrails intercept actions before execution. Kill switches stop the system unconditionally when something goes wrong. No mature AI system relies on the model's instruction-following alone for safety-critical behavior.
+
+The analogy that lands well in interviews: a seatbelt doesn't ask you to be a safe driver — it protects you regardless of what the driver does. Guardrails are the seatbelts of the AI stack. They don't replace the model's instruction-following (the driver's skill), but they make the system safe even when the model makes a mistake.
+
+In interviews, the signal question is usually about the boundary between Prompt Layer and Guardrail Layer — why can't you just put everything in the prompt? A strong answer explains the probabilistic vs deterministic distinction: instructions are probabilistic (the model may or may not follow them), code is deterministic (it always runs). For safety-critical properties, deterministic enforcement is non-negotiable.
+
+> *"The Prompt Layer and Guardrail Layer are not alternatives — they're complementary. One is the first line of defense; the other is the guarantee that the first line doesn't need to be perfect."* — common framing in AI system design interviews
 
 | PT | EN |
 |----|----|
@@ -147,3 +196,107 @@ Evaluation mede qualidade. Guardrail impõe limites. A camada que completa o blo
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 9 (Guardrail layer template). X/Twitter, 2025.
 - **NIST** — [*AI Risk Management Framework (AI RMF 1.0)*](https://www.nist.gov/itl/ai-risk-management-framework). Categorização de riscos em sistemas de IA.
 - **Meta** — [*Llama Guard*](https://huggingface.co/meta-llama/Llama-Guard-3-8B). Modelo dedicado a classificação de segurança de input/output.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
