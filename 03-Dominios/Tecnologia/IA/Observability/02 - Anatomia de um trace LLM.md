@@ -109,7 +109,7 @@ span.add_event("gen_ai.content.completion", attributes={
 })
 ```
 
-Política de PII separada — span events podem ser droppados em export sem perder o resto do trace.
+Política de PII separada — span events podem ser droppados em export sem perder o resto do trace. Em compliance pesado (HIPAA, LGPD, GDPR), essa separação é o que permite ter traces completos internamente e exportar métricas sem dados pessoais para ferramentas SaaS.
 
 ## Hierarquia em agents multi-step
 
