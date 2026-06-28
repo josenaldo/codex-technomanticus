@@ -1,9 +1,10 @@
 ---
 title: "06 - Como dizer ao modelo o tipo de leitura"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - multimodal
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > A mesma imagem rende outputs radicalmente diferentes dependendo do **tipo de leitura** que você pede. "Descreva esta tela" vs "Analise esta tela quanto a problemas de acessibilidade" vs "Extraia os campos de formulário desta tela" entregam respostas que mal se reconhecem como vindas do mesmo input. Esta nota cobre seis tipos de leitura — descritiva, analítica, extrativa, comparativa, diagnóstica, avaliativa — e um template prático com quatro slots: **Reading instruction**, **Focus**, **Ignore**, **Output**. É a técnica que mais melhora qualidade sem trocar de modelo, sem subir resolução, sem mais tokens de input.
+
+> [!question]- Se a instrução de leitura muda tanto o output, quando é que "descreva esta imagem" ainda é o prompt certo?
+> Em dois cenários: (1) quando você genuinamente quer o que o modelo priorizou como saliente — pra construir um dataset de descrições humanas-plausíveis, pra alt text automatizado onde você não quer viés da sua pergunta, ou pra exploração inicial de uma imagem antes de saber qual pergunta fazer; (2) quando você vai combinar várias respostas descritivas com retrieval — "descreva tudo" cria índice rico que depois permite busca por qualquer aspecto. Em todos os outros casos, leitura dirigida (analítica, extrativa, diagnóstica etc.) produz output mais útil pro mesmo custo de token.
 
 ## Por que dizer o tipo de leitura importa
 
@@ -219,6 +223,20 @@ Output: JSON array. Schema: [{data, descricao, valor, saldo}]. Use null se
 ```
 Output esperado: JSON estruturado, auditável.
 
+## Compondo tipos — quando encadear chamadas
+
+Algumas tarefas precisam de mais de um tipo de leitura. O padrão correto não é misturá-los no prompt, mas encadeá-los em chamadas separadas, passando o output de uma como contexto pra próxima:
+
+```
+Chamada 1 (Extrativa): extraia campos do formulário → JSON com {label, valor, status}
+Chamada 2 (Analítica):  usando o JSON extraído + a imagem, identifique problemas de UX
+Chamada 3 (Avaliativa): avalie cada problema de UX contra as heurísticas de Nielsen
+```
+
+Vantagens: (1) cada chamada é focada e entrega output de qualidade; (2) debugging simples — se o JSON da chamada 1 está errado, você sabe que o problema está na extração, não na análise; (3) você pode reutilizar o JSON em múltiplas chamadas analíticas sem pagar o custo de extração toda vez.
+
+Desvantagem: mais chamadas = mais latência. Em fluxo interativo onde o usuário espera, concatenar pode ser necessário se latência for crítica — mas aceite qualidade menor como tradeoff.
+
 ## Princípios
 
 - **Modelo default = leitura descritiva.** Tudo o que não for descrição precisa ser pedido explícito.
@@ -234,6 +252,37 @@ Output esperado: JSON estruturado, auditável.
 - **Esquecer o slot Output.** Sem indicar a forma final, o modelo improvisa — geralmente longas frases em prosa que sua aplicação não consegue parsear.
 - **Focus + Ignore contraditórios.** "Foque no header. Ignore tudo no topo da imagem." O modelo escolhe um e o outro vira sorte.
 
+## Armadilhas comuns
+
+> [!warning] "Analise" sem critério — o modelo analisa o que quiser, não o que você precisa
+> "Analise esta imagem" é o prompt mais comum e o mais vago. O modelo vai analisar o que for estatisticamente mais comum nos exemplos de treino — geralmente composição fotográfica, cores, ou descrição de objetos. Se você queria acessibilidade, UX, diagnóstico de bug, ou compliance de brand, vai receber algo diferente. A correção é sempre completar: "Analise esta imagem **quanto a [critério específico]**." Sem critério explícito, a análise é a que o modelo preferir, não a que você precisa.
+
+> [!warning] Misturar extrativa com analítica no mesmo prompt — resultado é nenhuma das duas bem feita
+> "Extraia os campos E analise o problema de UX E compare com a versão anterior" num único prompt tende a gerar um output que faz um pouco de cada coisa e nenhuma a sério. O modelo divide atenção e trunca cada modo. O padrão correto para múltiplos objetivos é chamadas sequenciais: primeiro extrai (extrativa, output JSON), depois analisa (analítica, referenciando o JSON), depois compara (comparativa, com as duas versões explicitadas). Além de melhor resultado, debugging fica mais fácil porque você isola qual etapa errou.
+
+> [!warning] Esquecer o slot "Ignore" quando a imagem tem ruído visual — modelo distrai com o irrelevante
+> Imagens de produção têm notificações, headers, footers, elementos decorativos, marca d'água, dados de outros usuários em screenshots de desktop. Sem slot "Ignore" explícito, o modelo pode incluir esses elementos no output — extraindo o nome do usuário da notificação no topo junto com os dados do formulário, ou analisando o ícone de bateria do celular junto com o bug de UI. "Ignore: notificações, header, footer, qualquer elemento fora da área do formulário" é proteção barata contra output poluído.
+
+## Como explicar em inglês
+
+**Interview quote:** *"Multimodal prompting without a reading instruction is like handing a document to someone without saying what you need from it. We use a four-slot template: Reading instruction (descriptive/analytical/extractive/comparative/diagnostic/evaluative), Focus, Ignore, and Output format. Switching from 'describe this screen' to an explicit reading type often triples output relevance without any other change."*
+
+| Português | Inglês |
+|---|---|
+| Tipo de leitura | Reading type / reading instruction |
+| Leitura descritiva | Descriptive reading |
+| Leitura analítica | Analytical reading |
+| Leitura extrativa | Extractive reading |
+| Leitura comparativa | Comparative reading |
+| Leitura diagnóstica | Diagnostic reading |
+| Leitura avaliativa | Evaluative reading |
+| Slot de foco / ignorar / output | Focus / Ignore / Output slot |
+| Dirigir a leitura do modelo | Steering the model's reading mode |
+
+## O que vem a seguir
+
+Com os tipos de leitura dominados, a nota 07 fecha o galho Multimodal Prompting catalogando **limites e armadilhas** — os casos onde mesmo a instrução de leitura mais cuidadosa não resolve: alucinação visual, OCR fraco, raciocínio espacial, inconsistência entre chamadas, e quando recuar para pipeline tradicional.
+
 ## Fontes
 
 - **@hooeem** — *Become an AI Engineer*, cap #17. Tese central de "dirigir a leitura".
@@ -247,3 +296,5 @@ Output esperado: JSON estruturado, auditável.
 - [[Prompt Engineering]] — princípios de prompt textual estendidos para multimodal
 - [[03-Dominios/Tecnologia/IA/Structured Outputs/02 - JSON Schema como contrato]] — pra forçar o slot Output
 - [[07 - Limites e armadilhas multimodais]] — onde até a leitura bem dirigida falha
+- [[Dicionário de IA#Reading instruction|Dicionário: Reading instruction]]
+- [[Dicionário de IA#Focus Ignore Output|Dicionário: Focus/Ignore/Output (slots de prompt multimodal)]]
