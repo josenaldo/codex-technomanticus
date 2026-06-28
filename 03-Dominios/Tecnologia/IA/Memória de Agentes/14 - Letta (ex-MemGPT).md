@@ -1,8 +1,9 @@
 ---
 title: "Letta (ex-MemGPT)"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -23,6 +24,10 @@ aliases:
 
 > [!abstract] TL;DR
 > **Letta** (`github.com/letta-ai/letta`) é o framework de produção sucessor do projeto **MemGPT** — paper de UC Berkeley apresentado por Packer et al. em outubro de 2023 (arxiv 2310.08560). O posicionamento canônico é **"LLM as OS"**: o agent gerencia hierarquicamente sua própria memória, com analogia explícita a sistemas operacionais — *core memory* sempre presente no contexto (RAM), *archival memory* fora do contexto e recuperada por busca (disco), e histórico de mensagens com paginação. A memória é **self-editing**: o agent decide o que mover entre tiers via tools como `core_memory_append`, `core_memory_replace`, `archival_memory_insert` e `archival_memory_search`. Open-source Apache-2.0 com self-host gratuito; cloud paga em modelo freemium. **Letta não publicou score em LongMemEval** — ponto a notar quando transparência de benchmark importa.
+
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: Se o agent controla sua própria memória via tools, o que acontece quando o LLM "alucina" uma chamada incorreta a `core_memory_replace` e apaga informação crítica de forma irreversível? Existe rollback ou versionamento de memória no Letta?
+> - Lacuna potencial: A nota não explora como o **sleep-time agent** do Letta funciona — esse mecanismo de consolidação assíncrona de memória fora do loop ativo é um diferencial relevante que merece atenção.
 
 ## O que é
 
@@ -62,6 +67,31 @@ A operação central é **self-editing**: o agent invoca tools de memória como 
 - `archival_memory_search` — recupera itens da archival memory por similaridade semântica.
 
 A diferença importante face a sistemas onde a memória é gerida por código externo: aqui o **LLM decide**. Cada vez que o agent percebe um fato que vale a pena reter, **ele próprio** chama `archival_memory_insert`; cada vez que precisa puxar contexto antigo, **ele próprio** chama `archival_memory_search`. O custo disso é o token e a chamada extra; o benefício é não precisar codificar a heurística "quando salvar".
+
+### O ciclo completo em uma sessão típica
+
+Para tornar o mecanismo concreto, considere um agent de suporte ao cliente:
+
+1. Usuário diz: *"Preciso de ajuda com o pedido #12345, o mesmo problema de semana passada."*
+2. O agent, antes de responder, invoca `archival_memory_search("pedido #12345 problema")`.
+3. Recupera de semanas atrás: *"Usuário João, pedido #12345, problema de entrega no endereço X"*.
+4. Inclui esse contexto no prompt e responde de forma personalizada.
+5. Ao final, se surgiu novo fato relevante ("João confirmou novo endereço Y"), o agent chama `core_memory_replace` para atualizar o bloco ou `archival_memory_insert` para preservar o histórico.
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant A as Agent (LLM)
+    participant CM as Core Memory
+    participant AM as Archival Memory
+
+    U->>A: "Mesmo problema do pedido #12345"
+    A->>AM: archival_memory_search("pedido #12345")
+    AM-->>A: fatos relevantes do histórico
+    A->>U: resposta contextualizada
+    A->>CM: core_memory_replace (atualiza endereço)
+    A->>AM: archival_memory_insert (registra novo fato)
+```
 
 ## Anatomia técnica
 
@@ -112,13 +142,47 @@ Os itens abaixo refletem o estado público do projeto em abril de 2026, verifica
 
 ## Armadilhas comuns
 
-- **Confundir Letta com MemGPT.** São coisas relacionadas mas distintas: **MemGPT é o paper e o pattern** (Packer et al., 2023); **Letta é o framework concreto** que sucedeu o projeto open-source de mesmo nome em 2024. Em texto técnico vale ser preciso — "implementa o pattern do MemGPT" e "usa o framework Letta" são afirmações diferentes.
-- **"Self-editing memory" não é mágica.** O agent só armazena ou move conteúdo se as **tools forem expostas e os prompts orientarem o uso**. Sem system prompt e exemplos sólidos, o LLM ignora `archival_memory_insert` na maioria dos turnos. A engenharia de prompt continua exigida.
-- **Hierarchical paginação custa tokens.** Cada vez que o agent decide invocar uma tool de memória, é uma chamada LLM com tokens de input e output. Em loops longos isso acumula — o "free lunch" da metáfora OS é parcial.
-- **Self-host PostgreSQL exige operação real.** Backup, replicação, monitoramento, scaling de pgvector — nada disso vem "grátis" com `docker compose up`. Para casos sérios, a operação do banco é parte do TCO; ignorar isso é uma das armadilhas clássicas de "open-source é grátis".
-- **Sem score LongMemEval público.** Comparações com [[15 - Mem0 — vetorial + grafo|Mem0]], MemPalace e outros que reportam números são, no mínimo, assimétricas. Não é argumento para descartar Letta, mas é argumento para não citar Letta como "comparativamente superior" em texto sem qualificação.
-- **Pricing muda.** Os tiers atuais (Pro, Max Lite, Max, API Plan) **não são** os mesmos descritos em material de 2024–2025 (que mencionavam Free 50 premium / 500 standard, Pro $20, Scale $750, Enterprise custom). Antes de citar valores em texto público, abrir `letta.com/pricing` na data corrente é obrigatório.
-- **Apache-2.0 não é AGPL.** Para quem está acostumado com [[13 - basic-memory — MCP nativo Obsidian|basic-memory]] (AGPL-3.0), assumir as mesmas restrições com Letta é erro: a licença permissiva permite embutir em produto comercial fechado sem obrigação de abrir código derivado. O trade-off, claro, é que o ecossistema também pode ser embutido por concorrentes.
+> [!warning] Armadilha 1: Confundir Letta com MemGPT
+> São coisas relacionadas mas distintas: **MemGPT é o paper e o pattern** (Packer et al., 2023); **Letta é o framework concreto** que sucedeu o projeto open-source de mesmo nome em 2024. Em texto técnico vale ser preciso — "implementa o pattern do MemGPT" e "usa o framework Letta" são afirmações diferentes e implicam trade-offs distintos ao auditar documentação.
+
+> [!warning] Armadilha 2: Achar que "self-editing memory" funciona sozinha
+> O agent só armazena ou move conteúdo se as **tools forem expostas e os prompts orientarem o uso**. Sem system prompt e exemplos sólidos, o LLM ignora `archival_memory_insert` na maioria dos turnos. A engenharia de prompt continua sendo trabalho humano — o framework não elimina essa camada.
+
+> [!warning] Armadilha 3: Subestimar o custo de tokens da hierarquia
+> Cada vez que o agent decide invocar uma tool de memória, é uma chamada LLM com tokens de input e output. Em loops longos isso acumula — o "free lunch" da metáfora OS é parcial. Em produção com alto volume de sessões longas, modelar o custo de tokens antes de comprometer é obrigatório.
+
+> [!warning] Armadilha 4: Tratar PostgreSQL + pgvector como trivial em produção
+> Self-host com Postgres exige operação real: backup, replicação, monitoramento, scaling de pgvector. Nada disso vem "grátis" com `docker compose up`. Para casos sérios, a operação do banco é parte do TCO; ignorar isso é a armadilha clássica de "open-source é grátis" aplicada ao substrato de dados.
+
+> [!warning] Armadilha 5: Citar Letta como "comparativamente superior" sem qualificação
+> Sem score LongMemEval público, comparações com [[15 - Mem0 — vetorial + grafo|Mem0]], MemPalace e outros que reportam números ficam, no mínimo, assimétricas. Não é argumento para descartar Letta, mas é argumento para não afirmar superioridade quantitativa em auditoria técnica ou proposta comercial.
+
+> [!warning] Armadilha 6: Assumir pricing estável
+> Os tiers atuais (Pro, Max Lite, Max, API Plan) **não são** os mesmos descritos em material de 2024–2025 (que mencionavam Free 50 premium / 500 standard, Pro $20, Scale $750, Enterprise custom). Antes de citar valores em texto público, abrir `letta.com/pricing` na data corrente é obrigatório.
+
+> [!warning] Armadilha 7: Transferir restrições da AGPL para a Apache-2.0
+> Para quem está acostumado com [[13 - basic-memory — MCP nativo Obsidian|basic-memory]] (AGPL-3.0), assumir as mesmas restrições com Letta é erro: a licença permissiva permite embutir em produto comercial fechado sem obrigação de abrir código derivado. O trade-off inverso também existe — o ecossistema Letta pode ser embarcado por concorrentes sem reciprocidade.
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "Letta implements a hierarchical memory model inspired by operating systems: core memory lives in-context like RAM, archival memory is retrieved on-demand like disk, and the agent itself decides what to store or recall via memory-editing tools."
+
+| Português | Inglês |
+|-----------|--------|
+| memória hierárquica | hierarchical memory |
+| memória de núcleo (sempre no contexto) | core memory (always in-context) |
+| memória de arquivo (busca vetorial) | archival memory (vector search) |
+| memória auto-editável | self-editing memory |
+| agent persistente com estado | stateful agent |
+| paginação do buffer de mensagens | message buffer pagination |
+| hospedagem própria | self-host |
+| loop do agent | agent loop |
+| invocação de ferramenta de memória | memory tool call |
+
+## O que vem a seguir
+
+Letta representa o extremo do controle explícito: o developer vê cada bloco de core memory, o agent é responsável por suas próprias invocações de tool, e a hierarquia RAM/disco é visível no ADE. O próximo passo natural é conhecer a abordagem oposta — a de uma **memory layer transparente** que se encaixa em qualquer framework sem exigir que o agent conheça suas próprias ferramentas de memória. É exatamente o que o [[15 - Mem0 — vetorial + grafo|Mem0]] propõe: em vez de o agent chamar `archival_memory_insert`, o pipeline de extração roda invisível no `memory.add`, e o desenvolvedor ganha persistência sem reescrever o loop do agent. As diferenças de posicionamento, custo e benchmarks entre Letta e Mem0 são a primeira grande bifurcação de decisão no mercado de memória de produção.
 
 ## Veja também
 
