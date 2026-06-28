@@ -193,6 +193,8 @@ def log_llm_call(span_id, prompt_id, prompt_version, model,
 
 Esse log estruturado já permite: atribuição de custo por feature, detecção de finish_reason inesperado, correlação de latência com model version. É um stepping stone antes de migrar pra Langfuse ou Braintrust.
 
+Quando o log estruturado começa a ser inviável (queries complexas, volume alto, necessidade de UI pra revisar traces), o próximo passo é uma ferramenta dedicada — que é o tema das notas 03-04 desse galho. A decisão de quando migrar tipicamente vem de uma dessas três dores: "não consigo encontrar um trace específico em produção", "não sei qual prompt estava ativo no incidente de ontem", ou "perdi 20min filtrando logs pra responder uma pergunta simples de custo".
+
 ## Sampling — você não precisa gravar tudo
 
 Em produção com volume alto, gravar 100% dos traces vira custo proibitivo. Padrão recomendado:
