@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Regressão em LLM é o cenário canônico do *"prompt v1.2 melhora o caso geral, mas silenciosamente quebra um edge case que v1.1 acertava"*. Sem regression testing automatizado, a quebra só aparece em prod via reclamação. A abordagem é **snapshot diff**: captura outputs do golden set em v1.1, compara com outputs em v1.2, sinaliza divergências. O detalhe não-trivial é que LLMs são **não-determinísticos** — string diff puro acusa diferença em quase tudo. A solução é **semantic diff** (embedding similarity, equivalence judge, schema validation) com tolerância calibrada. Categorias de regression test: correctness, format, safety, calibration. Cada uma com threshold próprio.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende o que é um golden set (nota 02), o que é rubrica e threshold (nota 03), e como LLM-as-judge funciona como equivalence judge (nota 04). Esta nota aplica esses conceitos a um problema de engenharia específico: como garantir que mudanças de prompt não quebrem comportamentos que já funcionavam. Se você já trabalhou com regression testing em software convencional (snapshot tests, golden files), vai reconhecer o padrão — a diferença é que LLMs são não-determinísticos, então string diff puro não funciona.
 
 ## O problema canônico
 
@@ -258,6 +262,42 @@ A regra: **todo bug em prod vira regression test permanente**.
 - **Threshold uniforme** — safety com mesma tolerância de calibration é erro de prioridade
 - **Bugs não viram regression test** — mesmos bugs voltam mês após mês
 - **Rebless sem razão escrita** — em 3 meses ninguém lembra por que aquele item mudou
+
+## Armadilhas comuns
+
+> [!warning] Reblessing automático — eliminar o sinal de regressão sem perceber
+> A armadilha mais insidiosa no regression testing é automatizar o rebless. Parece eficiente: CI falhou, script atualiza o golden set, PR passa verde. Na prática, você acabou de desligar o alarme de incêndio porque ele estava barulhento. Em 3 meses o golden set reflete o comportamento atual do modelo, não o comportamento desejado — e você perdeu a capacidade de detectar regressão. A regra é rigorosa: rebless sempre exige humano lendo o diff e escrevendo a razão. Automatizar pode gerar o arquivo, mas o botão de aprovação deve ser humano.
+
+> [!warning] Threshold único para todas as categorias de regressão
+> Usar o mesmo threshold de tolerância para correctness e para calibration é erro de prioridade. Regressão de correctness significa que o modelo respondeu errado — zero tolerância. Regressão de calibration (confidence scores ligeiramente diferentes, distribuição de severidades levemente deslocada) tem variância natural e pode tolerar 5-10%. Quando você usa threshold único, uma das duas coisas acontece: ou o threshold é alto demais (regressões de correctness passam silenciosamente) ou é baixo demais (ruído de calibration gera falsos positivos que o time ignora). Configure threshold por categoria — é trabalho de uma hora mas salva a sanidade do pipeline.
+
+> [!warning] Bugs de produção não virando regression tests permanentes
+> O ciclo mais comum em times sem regression testing estruturado: bug é reportado em produção → debug → fix → deploy → mesmo bug volta 2 meses depois em mudança diferente de prompt. A raiz é que o bug foi corrigido mas nunca foi capturado como test case. A disciplina certa: cada bug que chega de produção vai imediatamente para o golden set como regression test que **falha** no código atual, e só é fechado quando o fix faz o test passar. Em 6 meses isso constrói um corpus de defesa que cobre todos os bugs reais do sistema — muito mais valioso do que casos sintéticos inventados antes de prod.
+
+## Como explicar em inglês
+
+Em entrevistas sobre qualidade e reliability de sistemas LLM, regression testing é o que separa times que operam em produção de times que operam em demo:
+
+> "Regression testing in LLMs is snapshot diff: capture golden-set outputs for prompt v1, run v2, compare. The non-trivial part is that LLMs are non-deterministic — string equality produces constant false positives. You need semantic diff: schema equality for structured fields, embedding cosine similarity for free text, and equivalence judge for critical subjective cases. You also need categories with separate thresholds — correctness regressions are blockers, calibration regressions tolerate maybe 10%. Every production bug should become a permanent regression test. And rebless decisions — updating approved snapshots — always require a human writing the reason."
+
+| Português | Inglês |
+|-----------|--------|
+| regressão de output | output regression |
+| diff semântico | semantic diff |
+| snapshot de golden set | golden set snapshot |
+| threshold de tolerância | tolerance threshold |
+| rebless (atualizar snapshot) | rebless / update approved baseline |
+| regressão de segurança | safety regression |
+| diff de string puro | raw string diff |
+| similaridade de embedding | embedding cosine similarity |
+| judge de equivalência | equivalence judge |
+| caso de teste de bug | bug regression test case |
+
+## O que vem a seguir
+
+Com regression testing cobrindo a detecção de quebras entre versões, a nota 06 expande o horizonte ferramental: quais frameworks de eval existem em 2026 (Promptfoo, Braintrust, Langfuse, Patronus, Phoenix), o que cada um oferece, e como escolher.
+
+Ver [[06 - Frameworks 2026 — Promptfoo, Braintrust, Langfuse, Patronus, Phoenix]].
 
 ## Veja também
 
