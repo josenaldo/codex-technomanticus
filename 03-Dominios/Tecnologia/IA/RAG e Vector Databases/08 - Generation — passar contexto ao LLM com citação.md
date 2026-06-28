@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: growing
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Geração é onde [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vira **resposta com citação**. Estrutura padrão de prompt: trechos delimitados + pergunta + regras explícitas (citar trecho usado, devolver "não sei" se contexto não cobre). Citação não é nice-to-have — é a feature que diferencia RAG de chatbot. Cuidado com **faithfulness**: [[Dicionário de IA#LLM (Large Language Model)|LLM]] pode misturar contexto com conhecimento próprio. Padrões: [[Dicionário de IA#structured output|structured output]] com source ID, [[Dicionário de IA#system prompt|system prompt]] restritivo, validação de citação no post-processing.
+
+> [!question]- Por que passar citação explícita e não deixar o LLM inferir?
+> Quando você não instrui o LLM a citar, ele vai responder com confiança absoluta — mesclando o contexto recuperado com seu conhecimento de treinamento sem avisar qual é qual. O usuário não tem como distinguir "o documento diz X" de "o modelo acha que X é verdade". Citação explícita cria um contrato verificável: cada afirmação aponta para um trecho numerado, e qualquer pessoa pode checar. Em domínios regulados (legal, médico, financeiro), isso não é opcional — é o que transforma RAG em evidência auditável. "Deixar o LLM inferir" também aumenta hallucination porque o modelo preenche lacunas com conhecimento próprio quando o prompt não proíbe explicitamente.
 
 ## A estrutura do prompt
 
@@ -286,6 +290,48 @@ Streaming é crucial para UX em RAG — usuário vê resposta começando imediat
 - **Modelo grande para tudo** — Haiku resolve a maioria
 - **Sem streaming** — UX ruim
 - **Prompt sem delimitação** — confusão entre context e instruction
+
+## Armadilhas comuns
+
+> [!warning] Temperature alta em geração factual — convida hallucination
+> Temperature controla aleatoriedade do sampling. Em RAG factual (medical, legal, técnico), temperature >0.5 aumenta a probabilidade de o modelo "completar criativamente" onde o contexto é ambíguo. O resultado é uma resposta que parece confiante mas inventou detalhes não presentes nos chunks. Para RAG factual, use temperature 0 ou 0.1. Reserve temperature mais alta para tarefas criativas (resumo narrativo, emails) onde alguma variação é desejável.
+
+> [!warning] Não delimitar chunks — confunde contexto com instrução
+> Se você colocar os chunks diretamente no prompt sem delimitação clara (números, XML tags, separadores), o LLM pode confundir onde terminam as instruções e onde começam os dados — especialmente se um chunk contém texto imperativo ou parece um prompt. Use delimitação explícita: `[1] texto do chunk`, `<doc id="1">...</doc>`, ou blocos separados por `---`. Prompt injection em RAG acontece justamente via chunks não delimitados que contêm instruções adversariais.
+
+> [!warning] Validar citação só visualmente — citação errada passa fácil
+> Citações numéricas `[1]` são fáceis de verificar com regex, mas isso só confirma que o LLM usou um número — não que aquele número aponta para o chunk correto. Em testes, modelos ocasionalmente trocam `[1]` por `[2]` ou citam um chunk que não suporta a afirmação. Adicione validação automática pós-geração: extraia os números de citação, recupere os chunks correspondentes, e use um LLM-as-judge para confirmar que cada afirmação é suportada pelo chunk citado. Isso detecta "citação fantasma" antes de chegar ao usuário.
+
+## Como explicar em inglês
+
+Generation is the final step in the RAG pipeline, where retrieved chunks become a user-facing answer. The core challenge is faithfulness: an LLM trained on the entire internet has strong priors about every topic, and without explicit constraints, it will blend retrieved context with its own knowledge — often without flagging which is which. The solution is a system prompt that creates a contract: the model may only use the provided context, must cite each claim with a chunk reference, and must return a fallback ("I cannot answer based on available information") when the context doesn't cover the question.
+
+Citation is not a cosmetic feature. In regulated domains, it's the difference between a conversational tool and an auditable system. Numbered citations `[1]` allow any claim to be traced back to a source document. Structured output (Pydantic models with `sources: list[int]`) makes citation machine-verifiable. XML delimiters reduce prompt injection risk by separating instruction space from data space.
+
+Beyond prompt structure, context construction matters significantly. The "lost in the middle" phenomenon means LLMs attend most strongly to the beginning and end of long contexts — placing the most relevant chunk in the middle of a 10-chunk context can cause it to be underweighted. Fewer, higher-precision chunks consistently outperform larger context dumps, which is why reranking to top-5 before generation is standard practice.
+
+**In a technical interview**, you might say:
+
+> "In RAG generation, the most important design decision is the system prompt contract. I always include three rules: cite every claim with the chunk number, don't use external knowledge even if you know the answer, and return a specific fallback string if the context doesn't cover the question. I use numbered chunks in the user message and validate citations automatically post-generation — a quick check that [2] actually supports the claim that references it. For temperature, I use 0 or 0.1 for factual RAG. And I always stream the response — in a 1-3 second total pipeline, streaming gives the user something to read while the rest loads."
+
+| PT | EN |
+|----|-----|
+| geração com contexto | context-grounded generation |
+| fidelidade | faithfulness |
+| alucinação | hallucination |
+| citação de fonte | source citation |
+| prompt restritivo | restrictive system prompt |
+| saída estruturada | structured output |
+| temperatura | temperature |
+| resposta de recuo | fallback response |
+| verificação de citação | citation verification |
+| perdido no meio | lost in the middle |
+
+## O que vem a seguir
+
+Você agora tem o pipeline completo: chunking → embedding → retrieval → reranking → generation com citação. Mas como saber se ele funciona bem? A intuição de "parece bom" não escala — você precisa de métricas objetivas para detectar onde o pipeline quebra, comparar versões e justificar mudanças para o time. A próxima nota cobre evaluation de RAG: as métricas de faithfulness, relevância de contexto e qualidade de resposta, e como frameworks como RAGAS automatizam a avaliação com LLM-as-judge.
+
+- [[09 - Evaluation de RAG]] — medir onde o pipeline RAG quebra com métricas objetivas
 
 ## Veja também
 
