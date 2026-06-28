@@ -1,8 +1,9 @@
 ---
 title: "MemPalace (Milla Jovovich)"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -25,6 +26,10 @@ aliases:
 > [!abstract] TL;DR
 > **MemPalace** é um sistema de memória de agentes **local-first** lançado em abril de 2026, mantido por **Milla Jovovich** (sim, literal — é o nome real da mantenedora do repositório `github.com/milla-jovovich/mempalace`; também há a organização `github.com/MemPalace/mempalace`). A arquitetura aplica a metáfora do **memory palace** (método dos loci) numa hierarquia de **wings → rooms → drawers** sobre **SQLite local** + **ChromaDB** como vector store padrão. Reporta **96,6% R@5 raw** e **98,4% no modo hybrid v4** (com LLM reranking — ≥99% reportado em alguns canais externos) no LongMemEval — números altos, mas com **paper crítico** (arxiv 2604.21284) argumentando que o ganho real vem de armazenamento verbatim + ChromaDB, não da hierarquia espacial. Expõe **29 MCP tools** (audit externo de `lhl/agentic-memory` encontrou 20 efetivamente implementadas em 5 categorias), opera offline após primeira ingestão e tem foco explícito em integração com Claude Code.
 
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: se o paper crítico (arxiv 2604.21284) mostra que remover wings/rooms/drawers e manter drawers planos preserva a maior parte do score, por que a hierarquia espacial foi mantida — ela serve alguma função de UX/organização para o agent ou é puramente de marketing?
+> - Lacuna potencial: a nota descreve auto-save hooks e hook pré-compaction, mas não explica como configurar esses hooks no `.claude/` — um exemplo concreto de configuração para Claude Code seria valioso para desenvolvedores que querem testar MemPalace no dia a dia.
+
 > [!danger] Avisos de segurança
 > - O domínio **`mempalace.tech` é impostor com malware**, não relacionado ao projeto oficial.
 > - Fontes oficiais únicas: `github.com/milla-jovovich/mempalace` e `github.com/MemPalace/mempalace`.
@@ -35,6 +40,12 @@ aliases:
 **MemPalace** é um sistema de memória persistente para agentes [[Dicionário de IA#LLM (Large Language Model)|LLM]] lançado publicamente em abril de 2026. A mantenedora é **Milla Jovovich** — nome literal, não pseudônimo de marketing — autora do repositório `github.com/milla-jovovich/mempalace` e da organização paralela `github.com/MemPalace/mempalace`. A coincidência onomástica com a atriz alimenta confusão em threads e posts, mas esses dois são os únicos repositórios oficiais. Repetindo o aviso anterior: **o domínio `mempalace.tech` é impostor com payload de malware** e não tem relação com o projeto.
 
 A arquitetura aplica a metáfora do **memory palace** — também conhecida como **método dos loci**, técnica mnemônica clássica da retórica grega — para organizar a memória em hierarquia espacial: **wings** (dimensões macro como pessoas e projetos), **rooms** (subtópicos dentro de cada wing) e **drawers** (a unidade atômica que guarda conteúdo verbatim). O foco é **local-first**: após a primeira ingestão, a operação é offline, sem chamadas a APIs externas. O substrato técnico combina **SQLite local** (knowledge graph temporal e metadados) com **ChromaDB** como [[Dicionário de IA#vector store|vector store]] padrão, e a interface é **MCP-native** — 29 ferramentas expostas via [[Dicionário de IA#MCP (Model Context Protocol)|Model Context Protocol]], com integração explícita ao Claude Code.
+
+### A metáfora do método dos loci
+
+O **método dos loci** é uma técnica mnemônica com mais de dois milênios de uso documentado. Na retórica grega e romana clássica, oradores como Cícero memorizavam longos discursos "caminhando mentalmente" por locais físicos conhecidos — a casa, o fórum — e "depositando" cada parte do discurso em um cômodo diferente. Para recuperar, bastava revisitar o percurso mental e "ver" os itens em seus lugares.
+
+MemPalace transpõe essa estrutura para memória de agent: em vez de locais físicos, há wings (espaços temáticos macro), rooms (subdivisões de cada wing) e drawers (os itens concretos em cada sala). A promessa é que a hierarquia espacial torna o retrieval mais preciso porque isola semanticamente o espaço de busca — uma pergunta sobre "projeto Alpha" não mistura conteúdo de "projeto Beta" porque cada um está em sua própria room. O paper crítico (arxiv 2604.21284) questiona se esse isolamento é a razão do score alto, ou se é simplesmente filtering categórico padrão de vector DB com nomenclatura nova.
 
 ## Por que importa
 
@@ -68,6 +79,15 @@ Por baixo da metáfora, dois substratos coexistem:
 2. **ChromaDB como vector store padrão.** A escolha é pluggable via `mempalace/backends/base.py` (ver hedge na *Anatomia técnica*) — permite trocar por outros vector DBs em tese.
 
 As **29 MCP tools** cobrem cinco categorias: leituras/escritas no palácio (wings/rooms/drawers), operações no KG (criar nós, ligar relações, consultar timeline), navegação espacial (listar, encontrar caminhos), gerenciamento de drawers (mover, splitar, mesclar) e `agent diaries` (logs de sessão para reflective steps posteriores).
+
+### Fluxo de uma sessão com Claude Code
+
+Em termos práticos, uma sessão com MemPalace integrado ao Claude Code funciona assim:
+
+1. **Início da sessão (~170 tokens).** O agent lê o "lobby" do palácio — um índice compacto de wings e rooms ativas — consumindo cerca de 170 tokens. Esse é o custo de startup, não o custo total da sessão.
+2. **Navegação e retrieval.** Quando o agent precisa de contexto, usa MCP tools para navegar: `list_wings()`, `get_room_contents("projetos/alpha")`, `search_drawers(query="decisão de arquitetura")`. A busca usa ChromaDB (semantic) + SQLite (temporal + filtros categóricos).
+3. **Escrita incremental.** Informação nova vai para drawers específicos via `add_to_drawer()` ou `create_drawer()`. Auto-save hooks periódicos garantem persistência sem ação explícita.
+4. **Pré-compaction hook.** Antes do context window sofrer compaction automática do cliente MCP, um hook salva o estado relevante da sessão como drawer — garantindo que insights da sessão atual sobrevivam para a próxima.
 
 ## Anatomia técnica
 
@@ -117,13 +137,150 @@ Para tratamento integrado das críticas ao panorama (Mem0, Zep, MemPalace, Letta
 
 ## Armadilhas comuns
 
-- **Domínio impostor `mempalace.tech` com malware.** Risco real, não hipotético. Sempre instalar a partir de `github.com/milla-jovovich/mempalace` ou `github.com/MemPalace/mempalace` — nunca de domínio externo.
-- **Citar score 96,6% / 98,4% hybrid sem hedge.** O paper crítico mostra que a origem do ganho não é o que o marketing sugere. Toda menção pública ao número precisa vir acompanhada do hedge (incluindo a nota de que ≥99% circula em canais externos, mas o oficial held-out é 98,4%) — caso contrário, espalha-se desinformação técnica.
-- **AAAK 30x compression como fato com "zero information loss".** O claim é auto-reportado e a auditoria externa de [lhl/agentic-memory](https://github.com/lhl/agentic-memory/blob/main/ANALYSIS-mempalace.md) mediu **12.4pp de drop (96.6% → 84.2%) na qualidade de retrieval** — contradizendo diretamente a promessa de "zero information loss". Citar como "30x" sem este hedge é erro frequente — verificar antes de qualquer afirmação categórica.
-- **170-token startup como custo end-to-end.** A métrica isola componente específico (custo de inicialização da sessão antes de qualquer retrieval). Não é o custo de uma query real, que inclui recuperação, ranking e injeção. Comparar 170 tokens com tokens totais de outros frameworks é categoria errada.
-- **Confiar na "spatial palace hierarchy" como inovação técnica.** O parecer técnico do paper crítico é que a hierarquia funciona como vector DB filtering com nomenclatura nova. A metáfora é didática; o ganho mensurado vem de outros componentes. Adotar por convicção arquitetural sem ler o paper crítico é decisão sub-informada.
-- **Filiação à família "Karpathy-inspired".** O projeto não cita [[Andrej Karpathy|Karpathy]] nominalmente; a relação com o [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]] é interpretativa (mesmo espírito local-first + substrato simples), não reivindicação do gist. Não atribuir descendência direta sem qualificar.
-- **Confundir as duas fontes oficiais.** `github.com/milla-jovovich/mempalace` (repo da mantenedora individual) e `github.com/MemPalace/mempalace` (org paralela) são ambos oficiais. Não confundir nenhum deles com `mempalace.tech`.
+> [!warning] Armadilha 1: Domínio impostor `mempalace.tech` com malware
+> Risco real, não hipotético. O domínio `mempalace.tech` serve payload de malware e não tem relação com o projeto oficial. Sempre instalar a partir de `github.com/milla-jovovich/mempalace` ou `github.com/MemPalace/mempalace` — nunca de domínio externo ou de resultado de busca sem verificar a URL. O fato de o nome coincidir com uma celebridade aumenta o risco de phishing por engenharia social ("link oficial do MemPalace da Milla Jovovich").
+
+> [!warning] Armadilha 2: Citar score 96,6% / 98,4% hybrid sem hedge
+> O paper crítico (arxiv 2604.21284) mostra que a origem do ganho não é a hierarquia espacial que o marketing sugere — é principalmente verbatim storage + ChromaDB. Toda menção pública ao número precisa vir acompanhada do hedge (incluindo a nota de que ≥99% circula em canais externos, mas o oficial held-out é 98,4%). Além disso, a análise do DEV.to argumenta que o modo hybrid v4 é overfitted ao LongMemEval — comparar 98,4% MemPalace com 93,4% Mem0 não é apples-to-apples. Citar o número sem qualificação espalha desinformação técnica.
+
+> [!warning] Armadilha 3: AAAK 30x compression como fato estabelecido
+> O claim de 30x com "zero information loss" é auto-reportado e a auditoria externa de [lhl/agentic-memory](https://github.com/lhl/agentic-memory/blob/main/ANALYSIS-mempalace.md) mediu **12.4pp de drop (96.6% → 84.2%) na qualidade de retrieval** quando AAAK está ativo — contradizendo diretamente a promessa. Citar como "30x sem perda" sem esse hedge é erro frequente que leva a expectativas erradas sobre compressão em produção. Na prática: AAAK pode ser útil como tradeoff explícito (menos espaço, um pouco menos de qualidade), não como fato de "zero perda".
+
+> [!warning] Armadilha 4: Confundir 170-token startup com custo end-to-end
+> A métrica de **170 tokens de startup** isola o custo de inicialização da sessão (ler o índice do palácio) antes de qualquer retrieval. Não é o custo total de uma query real, que inclui recuperação de drawers relevantes, reranking e injeção de contexto no prompt. Comparar "170 tokens do MemPalace" com o total de tokens de outros frameworks é categoria errada — você estaria comparando um componente isolado com o custo sistêmico completo.
+
+> [!warning] Armadilha 5: Adotar a hierarquia espacial como inovação técnica
+> O parecer técnico do paper crítico é que wings/rooms/drawers funcionam como vector DB filtering com nomenclatura espacial sobreposta. A metáfora é didática e pode ser útil para organização mental, mas o ganho de retrieval mensurado vem do armazenamento verbatim + ChromaDB, não da hierarquia em si. Adotar MemPalace pela arquitetura espacial sem ler o paper crítico é decisão sub-informada — escolha MemPalace pelas razões certas (local-first, MCP-native, gratuito, SQLite simples), não pela hierarquia.
+
+> [!warning] Armadilha 6: Confundir os dois repositórios oficiais com o impostor
+> `github.com/milla-jovovich/mempalace` (repo da mantenedora individual) e `github.com/MemPalace/mempalace` (org paralela) são ambos oficiais. Não confundir nenhum deles com `mempalace.tech`. Ao compartilhar links em documentação interna ou Slack, sempre verificar que o domínio começa com `github.com/` — nunca com `mempalace.tech` ou variações.
+
+## MemPalace vs alternativas: posicionamento prático
+
+É útil comparar MemPalace com as alternativas mais próximas para entender onde ele realmente se encaixa, descartando o marketing:
+
+```mermaid
+graph LR
+    subgraph Local-first
+    MP[MemPalace<br/>SQLite + ChromaDB<br/>MCP-native]
+    BM[basic-memory<br/>SQLite + markdown<br/>Obsidian-first]
+    end
+
+    subgraph Cloud-optional / Self-host
+    ZEP[Zep / Graphiti<br/>Neo4j<br/>Bi-temporal]
+    MEM0[Mem0<br/>Vector + KG<br/>Supabase/Qdrant]
+    end
+
+    subgraph SaaS
+    LETTA[Letta (ex-MemGPT)<br/>Hierarchical<br/>Stateful agent]
+    end
+```
+
+| Dimensão | MemPalace | basic-memory | Zep/Graphiti |
+|----------|-----------|--------------|--------------|
+| Substrato principal | SQLite + ChromaDB | SQLite + markdown | Neo4j |
+| Interface | 29 MCP tools | MCP + Obsidian | REST + SDK |
+| Legível por humano | Não (SQLite) | Sim (markdown) | Não (Neo4j) |
+| Temporalidade | Validity intervals básicos | Metadata de data | Bi-temporal rigoroso |
+| Offline após setup | Sim | Sim | Parcial (Zep Cloud = SaaS) |
+| Score LongMemEval | 96,6% raw (com ressalvas) | N/A (não benchmarked) | 71,2% GPT-4o |
+| Custo operacional | Baixo (SQLite local) | Muito baixo | Alto (Neo4j) / Médio (Zep Cloud) |
+| Maturidade | Abril 2026 | Mais estabelecido | Mais estabelecido |
+| Paper crítico externo | Sim (arxiv 2604.21284) | Não | Não |
+
+A tabela revela o perfil real do MemPalace: **melhor score auto-reportado** (com caveats), **menor setup**, **fully offline** — mas **menor maturidade** e **questionamento externo sobre a arquitetura**. O nicho onde ele mais vence é *developer individual com Claude Code que quer memória local sem dependência de cloud e sem Neo4j*.
+
+## Configuração inicial no Claude Code
+
+Para quem quer experimentar MemPalace com Claude Code, o fluxo básico documentado no repositório oficial envolve três passos:
+
+1. **Instalar o servidor MCP:**
+```bash
+# Clonar o repositório oficial
+git clone https://github.com/milla-jovovich/mempalace.git
+cd mempalace
+
+# Instalar dependências (Python + ChromaDB + SQLite)
+pip install -e ".[mcp]"
+```
+
+2. **Registrar como MCP server no Claude Code:**
+```json
+// .claude/mcp_servers.json (ou configuração global do Claude Code)
+{
+  "mempalace": {
+    "command": "python",
+    "args": ["-m", "mempalace.mcp_server"],
+    "env": {
+      "MEMPALACE_DB_PATH": "/home/user/.mempalace/palace.db",
+      "MEMPALACE_CHROMA_PATH": "/home/user/.mempalace/chroma"
+    }
+  }
+}
+```
+
+3. **Configurar hooks de auto-save no CLAUDE.md do projeto:**
+```markdown
+# Memory hooks
+Após decisões importantes, chamar `add_to_drawer` para persistir.
+Antes de encerrar sessão longa, usar `save_session_diary`.
+```
+
+> [!warning] Verificar configuração atual no repositório oficial
+> Os paths e configurações acima refletem o estado do projeto em abril de 2026. O repositório é novo e breaking changes são esperáveis — sempre verificar o README oficial antes de configurar em ambiente de trabalho real.
+
+## O que esperar do AAAK na prática
+
+O **AAAK (Adaptive Attention-Aware Knowledge)** compression é o mecanismo proprietário de MemPalace para compressão de drawers antigos. O nome evoca técnicas sofisticadas de atenção, mas a auditoria externa revelou um quadro mais prosaico:
+
+- **Claim:** ~30x de compressão com zero information loss
+- **Medido externamente (lhl/agentic-memory):** 12,4pp de drop em retrieval quality (96,6% raw → 84,2% com AAAK ativo)
+- **Inferência técnica plausível:** AAAK provavelmente usa sumarização LLM com janela de atenção hierárquica — técnica com upside real de redução de espaço, mas com perda inevitável em edge cases
+
+A forma prática de pensar sobre AAAK: é um tradeoff entre custo de armazenamento e qualidade de retrieval, não uma solução de zero custo. Para drawers de alta importância (decisões, contextos críticos), desativar AAAK e manter verbatim é a opção mais segura. Para drawers de baixa importância ou alta recência de atualização (notas de reunião velhas, rascunhos), AAAK pode ser custo-benefício aceitável.
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "MemPalace is a local-first agent memory system that organizes memories in a spatial hierarchy — wings for broad topics, rooms for subtopics, drawers for atomic content — running on SQLite and ChromaDB with no cloud dependency. It's MCP-native and integrates directly with Claude Code. The important caveat: an independent paper and external audit argue the spatial hierarchy is essentially vector DB filtering with spatial naming — the actual retrieval gains come from verbatim storage and ChromaDB defaults, not the palace structure. It's a practical choice for privacy-sensitive environments, not a benchmark-validated breakthrough."
+
+### Termos para evitar em inglês
+
+Ao falar de MemPalace em inglês técnico, alguns termos comuns em PT-BR podem criar confusão:
+
+- Não dizer "memory castle" — a convenção é **memory palace** (palace, não castle).
+- Não dizer "loci method" — a convenção é **method of loci** (ordem latim: *loci* = "de lugares").
+- Não dizer "drawer compression" como sinônimo de AAAK — AAAK é o nome técnico do mecanismo; drawer é apenas onde o conteúdo vive.
+
+| Português | Inglês |
+|-----------|--------|
+| palácio de memória | memory palace |
+| método dos loci | method of loci |
+| gaveta (unidade atômica) | drawer (atomic memory unit) |
+| asa (dimensão macro) | wing (macro dimension) |
+| sala (subtópico) | room (subtopic) |
+| armazenamento verbatim | verbatim storage |
+| compressão sem perda | lossless compression |
+| local-first (sem cloud) | local-first / offline-first |
+| recuperação por similaridade | similarity retrieval |
+| auditoria de implementação | implementation audit |
+| hook de auto-salvamento | auto-save hook |
+| diário do agent | agent diary |
+| saturação de janela de contexto | context window compaction |
+| overfitting de benchmark | benchmark overfitting |
+| atualização incremental | incremental update |
+
+## Lendo o ecossistema ao redor
+
+O fato de que MemPalace — lançado em abril de 2026 — já tem um paper crítico independente (arxiv 2604.21284), uma auditoria de implementação detalhada (lhl/agentic-memory), e análises em DEV.to e Substack é sinal positivo sobre a maturidade do campo, não negativo sobre o projeto em si. Isso significa que a comunidade de agent memory está desenvolvendo capacidade de avaliação crítica — a mesma que faltou nos primeiros anos de RAG, quando claims de "95% accuracy" eram aceitos sem contestação.
+
+Para o desenvolvedor que está avaliando MemPalace, a presença de crítica independente é valiosa por si mesma: você pode comparar o claim original com a análise externa e tomar decisão mais informada do que teria com um projeto que só tem o próprio README como evidência. O campo está se profissionalizando. MemPalace, com todos os seus hedges, é parte desse processo.
+
+Uma leitura sugerida em sequência: (1) README oficial do MemPalace para entender os claims, (2) arxiv 2604.21284 para a crítica metodológica, (3) lhl/agentic-memory ANALYSIS-mempalace.md para a auditoria de implementação, (4) DEV.to e Substack alexeyondata para cobertura jornalística mais acessível. Lidos nessa ordem, você terá uma visão equilibrada — nem o entusiasmo acrítico do README, nem a rejeição total, mas um entendimento dos tradeoffs reais que o projeto apresenta.
+
+## O que vem a seguir
+
+A próxima nota, [[18 - Generative Agents]], sobe o nível de abstração: em vez de mecanismos de armazenamento e retrieval, passa a discutir agents que simulam comportamento social emergente usando memória como substrato — o trabalho de Park et al. (2023, Stanford) que criou personagens com reflexão, planejamento e memória de longo prazo em um ambiente tipo Sims. O contraste é revelador: onde MemPalace é uma ferramenta de persistência pragmática para developer workflows, Generative Agents é uma demonstração científica de que memória + reflexão + planejamento produzem comportamento convincentemente humano em agents. Entender Generative Agents ajuda a situar por que features como os `agent diaries` do MemPalace — logs de sessão para reflective steps — não são capricho, mas padrão arquitetural com base empírica.
 
 ## Veja também
 
