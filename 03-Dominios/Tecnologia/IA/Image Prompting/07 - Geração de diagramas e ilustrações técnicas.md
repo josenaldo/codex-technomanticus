@@ -297,3 +297,4 @@ A lição mais importante desta nota para levar adiante: saber quando **não usa
 - [[03-Dominios/Tecnologia/Fundamentos/Compiladores e Linguagens/index|Galho Compiladores]] — especificações declarativas têm o mesmo princípio de separação (spec ≠ renderização)
 - [[Dicionário de IA#Spec declarativa|Dicionário: Spec declarativa de diagrama]]
 - [[Dicionário de IA#Layout-aware generation|Dicionário: Layout-aware generation]]
+- [[Dicionário de IA#Icon set|Dicionário: Icon set temático consistente]]
