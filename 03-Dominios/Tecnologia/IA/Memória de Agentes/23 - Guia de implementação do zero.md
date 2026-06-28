@@ -252,6 +252,21 @@ Quando perguntarem sobre implementação de memória de agentes, a estrutura dua
 - "The key insight is that the schema file is the contract — vague schema produces inconsistent output. I iterate it based on deviations, not on wishful expectations."
 - "Lint is the maintenance operation people skip and then wonder why their wiki decayed. I treat it as a weekly routine, not a one-time cleanup."
 
+## Checklist de "pronto para produção"
+
+Antes de considerar a implementação estável o suficiente para uso contínuo, verifique cada item:
+
+- [ ] `CLAUDE.md` tem operações nomeadas explicitamente (`Ingest`, `Query`, `Lint`) com descrição de o que cada uma faz
+- [ ] `raw/` e `wiki/` estão em pastas separadas e o schema proíbe edição de `raw/` pelo agente
+- [ ] `wiki/log.md` existe e está sendo preenchido como append-only em cada operação
+- [ ] Há pelo menos um commit por operação importante (git é parte do pattern)
+- [ ] Foi executado pelo menos um `lint pass` após a primeira ingestão
+- [ ] O schema tem limite de palavras por página para evitar páginas infladas
+- [ ] Há cláusula "perguntar antes" para mudanças que afetem mais de N páginas
+- [ ] Para basic-memory (Caminho B): `VAULT_PATH` aponta para caminho absoluto correto e o MCP server foi testado com pelo menos uma operação de escrita e leitura
+
+Este checklist não garante qualidade — o schema ainda pode ser vago, o corpus pode ser pequeno demais para detectar problemas, e o lint pode não ter sido calibrado para o domínio. Mas garante que os fundamentos estruturais estão no lugar antes de investir em mais conteúdo.
+
 ## O que vem a seguir
 
 Com o guia prático em mãos — dois caminhos concretos, um template de schema testável e as armadilhas que derrubam implementações em campo — a trilha fecha no plano econômico: o que há de valor comercial ao redor desse pattern, quem paga, quanto se observa em ofertas públicas comparáveis e quando recusar o trabalho. A dimensão de negócio não é apêndice opcional: saber monetizar o conhecimento técnico é o que transforma domínio do tema em carreira sustentável. Veja [[24 - Aplicações comerciais e modelo de negócio]].
@@ -272,3 +287,14 @@ Com o guia prático em mãos — dois caminhos concretos, um template de schema 
 - **basic-memory documentation.** `https://docs.basicmemory.com/` — referência canônica do Caminho B (instalação, configuração MCP, convenções).
 - **Notas da trilha:** [[06 - O LLM Wiki Pattern (gist do Karpathy)|06]], [[10 - LLM-knowledge-base (Wendel) — direto do gist|10]], [[13 - basic-memory — MCP nativo Obsidian|12]] — contexto conceitual e de implementação que esta nota assume.
 - **Tutorials editoriais** (aimaker.substack, mattpaige68.substack, thetoolnerd, entre outros). Existem vários walkthroughs públicos sobre basic-memory + Obsidian; **a qualidade varia bastante** — alguns confundem basic-memory com plugin Obsidian, outros tratam o pattern como solução pronta sem mencionar lint nem revisão. Use como complemento, sempre conferindo contra a documentação oficial.
+- **Git** — parte estrutural do Caminho A. `git init` na raiz do projeto + commit por operação é o que habilita auditabilidade. Sem histórico, não há como reconstruir o que o agente fez em sessões passadas ou desfazer uma ingestão ruim.
+- **Claude Code** — o agente que executa as operações `Ingest`, `Query` e `Lint` no Caminho A. As operações definidas no `CLAUDE.md` são instruções para Claude Code — não para Claude Desktop ou API direta. A distinção importa: Claude Code tem acesso ao filesystem e ao git, o que é necessário para o pattern funcionar.
+- **LLM-knowledge-base (Wendel).** `https://github.com/WendellLiu/llm-knowledge-base`. Implementação Python que segue o gist do Karpathy de perto. Boa referência para quem quer ver o Caminho A em código antes de escrever o próprio. Detalhado em [[10 - LLM-knowledge-base (Wendel) — direto do gist|nota 10]].
+- **graphify.** Referenciado em [[12 - graphify — knowledge graph de raw|nota 12]]. Extensão do pattern que converte `raw/` em knowledge graph — passo intermediário entre o Caminho A minimal e frameworks de produção como Zep/Graphiti. Relevante quando o domínio tem relações densas entre entidades que justificam grafo em vez de wiki flat.
+- **[[22 - Críticas, limitações e armadilhas]]** — leitura obrigatória antes de adotar qualquer um dos dois caminhos. Arma o leitor com as perguntas certas antes de investir em implementação.
+- **[[08 - Arquitetura de um sistema de memória]]** — aprofunda a diferença entre substrate (onde se guarda) e schema (o que se guarda e como). O `CLAUDE.md` desta nota é a implementação prática do "schema" discutido lá.
+- **[[21 - Comparativo crítico (LongMemEval)|21 - Comparativo crítico]]** — contexto essencial sobre por que o Caminho A (minimal) às vezes supera frameworks sofisticados em workloads específicos. O argumento de "quando não escalar" desta nota é sustentado pelos dados daquele comparativo.
+- **[[24 - Aplicações comerciais e modelo de negócio]]** — nota seguinte da trilha. Toma como dado que o leitor implementou (ou entendeu como implementar) e avança para o plano econômico: quem paga pelo pattern, em que formato e por quanto.
+- **[[03-Dominios/Tecnologia/IA/Memória de Agentes/index]]** — MOC da trilha. Contexto completo de onde esta nota se situa na sequência de aprendizado e links para todas as outras notas do galho.
+- **[[09 - Panorama de implementações (abril 2026)|09 - Panorama de implementações]]** — mapa de quais ferramentas existem e para qual perfil cada uma serve. Leitura complementar para quem, após o Caminho A ou B, quer entender em que ponto da paisagem cada solução se encaixa antes de escalar.
+- **[[04 - RAG vs memória de longo prazo]]** — fundação conceitual que determina quando RAG basta e quando os caminhos desta nota fazem sentido. Se a distinção ainda não está clara, ler esta nota antes de implementar economiza a tentação de over-engineering.
