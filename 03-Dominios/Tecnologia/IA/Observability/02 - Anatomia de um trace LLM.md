@@ -180,6 +180,20 @@ Pra cada span LLM, divisão pragmática:
 - `user.feedback` (se capturado depois)
 - Métricas de retrieval (top-k, scores) em spans filhos
 
+## Como ler um trace em debug
+
+Quando você abre um trace na UI (Langfuse ou Phoenix), a leitura eficiente segue uma sequência:
+
+1. **Olhe o status geral** — trace completou ou falhou? finish_reason inesperado?
+2. **Veja a duração total e o custo total** — outlier? Fora do baseline?
+3. **Expanda span mais demorado** — onde o tempo foi? Em qual LLM call ou tool?
+4. **Olhe os input_tokens do span mais caro** — prompt inflado? Cache miss inesperado?
+5. **Leia o conteúdo do prompt** (nos span events) — o prompt materializado era o que você esperava?
+6. **Leia o output** — a resposta faz sentido dado o prompt e o contexto?
+7. **Verifique finish_reason** — cortou por `max_tokens` em vez de `end_turn`?
+
+Um trace que demora 3x mais que a mediana e tem finish_reason `max_tokens` já apontou o problema: budget de tokens insuficiente pra esse caso de uso.
+
 ## Status do padrão em 2026
 
 | Item | Status |
