@@ -1,10 +1,11 @@
 ---
 title: "06 - Constraints declarativas — boundaries como engenharia"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - prompt-engineering
   - ia
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Constraints declarativas são **boundaries codificadas no prompt** — não como sugestão ("seja conciso"), mas como cláusula verificável ("máximo 200 palavras; se exceder, recomece"). Funcionam como contrato in-prompt: o modelo se autoavalia contra a cláusula antes de devolver. Esta nota cobre as 8 dimensões em que faz sentido constranger (estilo, escopo, evidência, autoridade, segurança, output, tempo, qualidade), um template plug-and-play, e a diferença crítica entre constraint declarativa (aspiracional) e [[Segurança e Guardrails|guardrail]] de sistema (imposto por código). Constraint dentro do prompt é pedido; guardrail é trava.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você já conhece especificidade ([[02 - Especificidade — a primeira disciplina]]) e roles ([[03 - Roles e personas — escolhendo o juízo do modelo]]). Constraints declarativas são a terceira alavanca do prompt design: enquanto especificidade diz *o que fazer* e role diz *com que juízo fazer*, constraints dizem *o que não fazer e o que fazer quando não conseguir*. Se já sabe o que é um system prompt e já tentou dizer ao modelo "seja conciso" sem resultado consistente, você está exatamente no problema que esta nota resolve.
 
 ## O que é uma constraint declarativa
 
@@ -42,9 +46,21 @@ que está faltando em vez de exceder o limite.
 
 A segunda tem critério, ação sob violação, e força do imperativo.
 
+### O teste da cláusula de violação
+
+A presença da cláusula de violação — o "se não conseguir cumprir, faça X" — é o que distingue uma constraint bem-escrita de uma instrução vagamente imperativa. Pergunte de cada constraint: *o que o modelo deve fazer quando essa constraint entra em conflito com o que o usuário pediu?* Se você não sabe responder, a constraint está incompleta.
+
+Três respostas possíveis para a cláusula de violação:
+- **Devolver flag e prosseguir:** o modelo cumpre o pedido mas sinaliza a violação ("output excede 150 palavras porque a tarefa exigiu — sinalizado: [excedeu limite]").
+- **Pedir clarificação:** o modelo para e faz uma pergunta que destrava a resolução da constraint.
+- **Recusar e parar:** para violações de safety ou escopo, o modelo simplesmente não prossegue e explica por quê.
+
 ## As 8 dimensões
 
 Cada uma cobre uma classe de constraints úteis. Não é necessário usar todas em todo prompt — é necessário **saber** quais foram deixadas em aberto.
+
+> [!tip] Mínimo viável de constraints
+> Para a maioria dos prompts, cobrir Style + Scope + Output já sobe muito a consistência do output. Adicione Evidence quando há risco de afirmações não fundamentadas, Safety quando há dados sensíveis, e Quality quando o critério de "pronto" é subjetivo. As dimensões Authority e Time são para casos específicos — RAG com docs externos, produtos com janela temporal explícita.
 
 ### 1. Style (estilo)
 
@@ -172,7 +188,9 @@ If you cannot comply:
 
 ## Diferença vs guardrails de sistema
 
-A confusão mais comum: tratar constraint declarativa como se fosse guardrail. **Não é.**
+A confusão mais comum: tratar constraint declarativa como se fosse guardrail. **Não é.** E tratar guardrail como substituto de constraint também é erro — são camadas complementares, não alternativas.
+
+Sem constraint declarativa, o modelo vai produzir o comportamento padrão — que pode ser muito bom, mas raramente é o comportamento exato que o produto precisa. Sem guardrail, violations do modelo chegam ao usuário sem filtro. O design correto usa constraint para elevar a probabilidade de comportamento correto, e guardrail para interceptar os casos em que o modelo falha.
 
 | Constraint declarativa | Guardrail de sistema |
 |---|---|
@@ -192,33 +210,16 @@ A regra prática: **constraints declarativas são para comportamento de qualidad
 
 Ver [[Segurança e Guardrails]] para o lado deterministic. Ver [[03-Dominios/Tecnologia/IA/AI Engineering Stack/03 - Prompt Layer|Prompt Layer]] vs [[AI Engineering Stack]] (Guardrail Layer, layer 10) para a separação de camadas.
 
-## Pitfall: constraints contraditórias
+## Armadilhas comuns
 
-Constraints empilhadas que se contradizem destroem o output:
+> [!warning] Constraints contraditórias se cancelam
+> Constraints empilhadas que se contradizem destroem o output: "seja completo e detalhado / máximo 100 palavras / cubra todos os aspectos" é insolúvel. O modelo escolhe uma — geralmente a mais saliente — e ignora as outras. Antes de despachar o prompt, leia as constraints como conjunto. Se duas se contradizem, decida qual fica. Não espere que o modelo faça essa escolha por você.
 
-```
-RUIM:
-- Seja completo e detalhado
-- Máximo 100 palavras
-- Cubra todos os aspectos
-```
+> [!warning] Constraints aspiracionais não movem comportamento
+> "Seja claro / conciso / útil" são intenções, não constraints. O modelo já tenta isso por default. Constraints sem critério verificável só ocupam tokens. Substitua por formulações concretas: "máximo 150 palavras", "sem disclaimers no início", "não use a palavra 'considere'". Se você não consegue checar se a constraint foi cumprida lendo o output, ela provavelmente não está funcionando.
 
-O modelo escolhe uma — geralmente a mais saliente — e ignora a outra. Antes de despachar o prompt, releia as constraints como conjunto. Se duas se contradizem, decida qual fica e qual cai.
-
-## Pitfall: constraints sem critério
-
-```
-RUIM:
-- Seja claro
-- Seja conciso
-- Seja útil
-```
-
-Zero informação. O modelo já tenta isso por default. Constraints assim só ocupam tokens sem mover comportamento. Substitua por critérios verificáveis ("máximo 150 palavras", "sem hedging", "sem disclaimers no início").
-
-## Pitfall: constraint que vira mantra
-
-Repetir a mesma constraint em três variações ("seja direto, sem hedging, sem rodeios") não reforça — confunde. Diga uma vez, com critério.
+> [!warning] Constraint que vira mantra dilui o efeito
+> Repetir a mesma constraint em três variações ("seja direto, sem hedging, sem rodeios") não reforça — confunde e infla o prompt. Diga uma vez, com critério preciso. Se a constraint não está sendo cumprida mesmo com formulação clara, o caminho não é repetir em outras palavras — é elevar a guardrail ou adicionar um exemplo que demonstre o comportamento correto (ver [[05 - Few-shot examples — exemplos como contrato]]).
 
 ## Quando constraints não bastam
 
@@ -227,6 +228,55 @@ Mesmo bem escritas, constraints são pedidos. Quando o custo de violação é al
 - **Eleve a guardrail.** Vira validação determinística pós-LLM.
 - **Combine com few-shot.** Exemplos que demonstram o comportamento constrangido sobem muito a aderência.
 - **Considere fine-tuning.** Se a mesma constraint precisa ser cumprida em 100% das chamadas, talvez seja sinal de que pertence ao próprio modelo.
+
+### Hierarquia de confiança
+
+Uma forma de raciocinar sobre quando confiar em cada mecanismo:
+
+| Mecanismo | Confiança | Custo de violação aceitável |
+|---|---|---|
+| Constraint declarativa | ~70-90% aderência | Qualidade degradada |
+| Constraint + few-shot | ~85-95% | Qualidade degradada leve |
+| Fine-tuning | ~95-99% | Custo de dado e treino |
+| Guardrail determinístico | 100% (ou falha) | Zero — violação inaceitável |
+
+Não existe constraint declarativa com 100% de aderência. O modelo é probabilístico e vai errar em edge cases. Aceitar isso e planejar o fallback é mais honesto e mais seguro do que empilhar constraints esperando perfeição.
+
+## Constraints em system prompts de produto
+
+Em produtos reais, constraints vivem no system prompt e são invisíveis ao usuário. Algumas considerações práticas:
+
+- **Constraints de escopo são as mais críticas.** Um produto de suporte técnico que responde perguntas de negócio vira risível. Scope constraint é a primeira a escrever.
+- **Constraints de evidence sobem credibilidade.** Em produtos B2B com especialistas na ponta, "toda afirmação técnica vem com referência ou marcada como [inferido]" é a diferença entre confiança e desconfiança do usuário.
+- **Constraints de format reduzem parsing.** Se o output vai ser parseado por código, Output constraint que força JSON/markdown estruturado evita regex hacks no código de consumo.
+- **Atualizar constraints sem redesenho.** Diferente de fine-tuning, constraints no system prompt podem ser atualizadas sem nenhum processo de ML — basta editar o texto. Isso é um superpower para produtos com iteração rápida de comportamento.
+
+## Como explicar em inglês
+
+Em entrevistas, a distinção constraint vs. guardrail é um shibboleth — quem entende diz "constraints are in-prompt requests; guardrails are code-enforced checks outside the model." Quem não entende usa os dois termos de forma intercambiável.
+
+Uma resposta sólida para "how do you control LLM behavior in production?":
+
+> "I use constraints declaratively inside the prompt — stating what not to do, what format to follow, and what to do when a constraint can't be met. But constraints are requests, not guarantees. For anything critical — PII exposure, out-of-scope content, safety violations — I layer deterministic guardrails outside the model: regex checks, classifiers, or output validators that block or reroute regardless of what the model produces."
+
+| Português | Inglês |
+|-----------|--------|
+| constraint declarativa | declarative constraint |
+| critério verificável | verifiable criterion |
+| cláusula de violação | fallback clause / violation clause |
+| guardrail de sistema | system-level guardrail |
+| boundary da tarefa | task boundary / scope boundary |
+| comportamento padrão | default behavior |
+| imperativo | imperative (not hedged) |
+| escopo restrito | narrow scope |
+| constraint aspiracional | vague constraint / aspirational wording |
+| constraints contraditórias | conflicting constraints |
+
+## O que vem a seguir
+
+Você agora sabe *como dizer o que não fazer* via constraint declarativa. A próxima nota muda de perspectiva: em vez de constranger o output via declarações estáticas, **você itera o prompt** usando um loop estruturado (keep / change / do-not). Esse padrão é onde a engenharia de prompt se torna processo, não tentativa e erro.
+
+Ver [[07 - Iteration patterns — keep, change, do-not]].
 
 ## Fontes
 
@@ -242,3 +292,4 @@ Mesmo bem escritas, constraints são pedidos. Quando o custo de violação é al
 - [[03 - Roles e personas — escolhendo o juízo do modelo]] — role + constraints são complementares
 - [[04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy]] — prompt saturado de constraints declarativas
 - [[09 - Anti-patterns e tells de IA — o que evitar]] — constraints como bloqueio explícito de clichês
+
