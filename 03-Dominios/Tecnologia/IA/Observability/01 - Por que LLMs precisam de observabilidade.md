@@ -80,6 +80,8 @@ Sem observability dedicada, o que sobra:
 
 Hamel Husain coloca o argumento de forma direta: *"if you can't see what your model did, you can't improve it, debug it, or trust it"*. Observability é o pré-requisito invisível dos outros dois pilares (eval e improvement).
 
+O pior cenário: o produto tem todas essas patologias ao mesmo tempo — debug-por-screenshot, custo opaco, regressão silenciosa — e o time descobre no pior timing: quando um incidente chega ao CEO, ao conselho, ou a um regulador. Reverter sem dados é quase impossível. Adicionar observability retroativamente, enquanto se apaga o incêndio, é o trabalho mais caro e menos bem feito que existe em engenharia de IA.
+
 ## O que LLM observability não é
 
 Vale clarificar os limites pra não inflar o escopo:
