@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Chunks ruins = [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] ruim, sem recuperação possível. **[[Dicionário de IA#chunking|Chunking]] é onde 50% da qualidade vive** — vector DB é commodity, [[Dicionário de IA#embedding|embeddings]] são commodity, [[Dicionário de IA#retrieval|retrieval]] algorithms são commodity. Como você quebra o texto define o que vai ser encontrado. Estratégias do mais simples ao mais sofisticado: fixed size, recursive, semantic, structure-aware, contextual chunks (Anthropic 2024). Default razoável: 512-1024 tokens com 10-20% overlap, structure-aware quando possível. **Investigue chunks gerados antes de seguir** — visualize amostras, valide manualmente.
+
+> [!question]- Por que chunking impacta mais a qualidade que o modelo de embedding?
+> O modelo de embedding recebe um chunk e o projeta no espaço vetorial da melhor forma possível — mas não tem como recuperar informação que não está no chunk. Se uma tabela foi quebrada ao meio, o embedding vai representar fielmente... metade de uma tabela. Um modelo de embedding ruim com chunks perfeitos ainda retorna resultados usáveis; um modelo excelente com chunks fragmentados produz vetores tecnicamente corretos de contextos sem sentido. O "garbage in, garbage out" se aplica literalmente: a qualidade do embedding é limitada pela qualidade do input.
 
 ## A regra de ouro
 
@@ -228,6 +232,48 @@ Pular essa etapa = retrabalho enorme depois.
 - **Chunking igual para tipos diferentes de doc** — Markdown ≠ código ≠ PDF
 - **Não validar manualmente** — descoberta de problema só em produção
 
+## Armadilhas comuns
+
+> [!warning] Usar fixed-size chunking sem validar o output
+> Fixed-size é o padrão de quem quer "colocar RAG pra funcionar rápido" — e funciona mal em produção. Chunks cortam no meio de sentenças, tabelas ficam com header num chunk e dados em outro, código é fragmentado no meio de uma função. Antes de indexar qualquer coisa em escala, inspecione visualmente pelo menos 20-30 chunks gerados. O retrabalho de re-indexar depois é sempre mais caro que validar antes.
+
+> [!warning] Chunks sem metadata perdem rastreabilidade
+> Um chunk sem metadata é um trecho de texto anônimo — não dá para filtrar por data, tipo de documento, seção, idioma ou fonte. Isso significa que não dá para citar fontes corretamente, não dá para fazer retrieval com filtros (WHERE doc_date > '2026-01-01') e não dá para debugar por que um resultado ruim chegou no contexto. Metadata é obrigatória. Sempre. Mesmo em protótipos.
+
+> [!warning] Rechunkar sem re-indexar — ou re-indexar sem re-validar
+> Quando você ajusta parâmetros de chunking (tamanho, overlap, estratégia), os chunks novos são incompatíveis com os embeddings antigos no índice. Você precisa deletar o índice antigo, re-chunkar, re-embedar, e re-indexar — do zero. E depois disso, valide com seu golden set antes de colocar em produção: chunkings diferentes produzem qualidade de retrieval diferente, e só a métrica revela se melhorou ou piorou.
+
+## Como explicar em inglês
+
+Chunking is the process of splitting source documents into smaller pieces — chunks — before embedding them and indexing them in a vector store. It sounds trivial but it's where RAG systems win or lose. The embedding model can only represent what's inside each chunk; if a key fact is split across chunk boundaries, or if a table's header lands in one chunk and its data in another, no retrieval algorithm can recover that information.
+
+There are five main strategies, each with a different cost-quality tradeoff. Fixed-size chunking is the simplest: split at N tokens with overlap. Recursive chunking respects natural separators (double newlines, periods, spaces) in a hierarchical fallback — this is the right default for most use cases. Semantic chunking embeds individual sentences and breaks where adjacent sentence similarity drops below a threshold, which produces more coherent units but is computationally expensive. Structure-aware chunking exploits document markup — Markdown headers, HTML sections, AST nodes for code — and produces the cleanest results when the source has structure. Finally, contextual chunking (Anthropic's 2024 approach) prepends a document-level summary to each chunk before embedding, which reduced failed retrievals by 35% in their evaluation.
+
+The decision that matters most is validation: never index at scale without first generating a sample and inspecting it manually. A 30-minute audit of 30 chunks saves hours of debugging retrieval failures in production.
+
+**In a technical interview**, you might say:
+
+> "I treat chunking as the highest-leverage decision in a RAG pipeline. Before touching embedding models or vector databases, I get chunking right. My default is recursive splitting at 512-1024 tokens with 10-15% overlap, using structure-aware splitting whenever the document has headers or sections. Every chunk carries metadata: source, section, date, document type. I always inspect a random sample before indexing at scale — table headers in the wrong chunk, mid-sentence cuts, code fragments — those are quality killers that no downstream optimization can fix. For high-stakes use cases, I use contextual chunking and add a summary prefix per chunk."
+
+| PT | EN |
+|----|-----|
+| Fragmentação de texto | Chunking / text splitting |
+| Sobreposição | Overlap |
+| Chunk sensível à estrutura | Structure-aware chunk |
+| Fragmentação semântica | Semantic chunking |
+| Fragmentação contextual | Contextual chunking |
+| Tamanho do fragmento | Chunk size |
+| Conjunto de validação | Golden set |
+| Metadados do fragmento | Chunk metadata |
+| Indexação em escala | Large-scale indexing |
+| Limite do fragmento | Chunk boundary |
+
+## O que vem a seguir
+
+Com chunking bem definido e embeddings no lugar, os textos estão indexados e prontos para serem buscados. O próximo passo é entender onde esses vetores vivem: os vector databases. Eles não são todos iguais — a escolha entre pgvector, Pinecone e Qdrant tem implicações de latência, custo, escala e operação que afetam diretamente como o retrieval funciona em produção.
+
+- [[05 - Vector databases — pgvector, Pinecone, Qdrant]] — comparativo de opções, quando usar cada uma, HNSW vs IVF, filtros de metadata, custo e escala
+
 ## Veja também
 
 - [[02 - Anatomia do pipeline RAG]]
@@ -241,3 +287,19 @@ Pular essa etapa = retrabalho enorme depois.
 - **LangChain** — *Text Splitter documentation* (2026)
 - **LlamaIndex** — *Node parsers and chunking* (2026)
 - **Unstructured** — *Document parsing and chunking* (2026)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
