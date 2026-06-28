@@ -184,6 +184,38 @@ Recap consolidado em formato de checklist para quem está revisando uma decisão
 - Cita "Karpathy-endossa" → ajuste para "Karpathy-inspirado"
 - Adota por FOMO → pergunte "qual problema específico isso resolve?"
 - Compara tokens sem incluir custo de memory ops → análise incompleta
+- Latência de memory ops não modelada → SLA irreal em produção
+- Sem estratégia de versão de memória → impossível rollback de estado corrompido
+- Não planejou portabilidade (GDPR Art. 20) → dívida de exportação futura
+- Não diferenciou benchmark de retrieval de benchmark de utilidade → decision-making baseado em métrica errada
+
+## Direito ao esquecimento por framework
+
+A frase "implementamos GDPR" é vaga. O que importa é o mecanismo concreto. Em 2026, os frameworks da trilha oferecem:
+
+| Framework | Operação de remoção | Granularidade | Audit trail |
+|-----------|---------------------|---------------|-------------|
+| basic-memory | Apagar/editar `.md` manualmente ou via MCP tool | Arquivo/entidade | Git history |
+| Letta | `memory_delete` tool + operações via ADE | Bloco de core memory / entrada de archival | ADE log |
+| Mem0 | `memory.delete(memory_id)` + `memory.delete_all(user_id)` | Fato individual / usuário completo | Memory ops log |
+| Zep | `graph.edge.delete(group_id, uuid)` | Edge individual no KG temporal | Timestamps no KG |
+| MemPalace | Sem operação de delete documentada publicamente | Não endereçável externamente | Ausente |
+
+A coluna "granularidade" é a que importa para GDPR Art. 17 / LGPD Art. 18: o titular tem direito a apagar **dados específicos**, não apenas encerrar conta. Um framework sem delete granular por usuário não está operacionalmente pronto para dados regulados — independente do que o README afirma.
+
+> [!warning] GDPR não é só consentimento
+> O erro mais comum em sistemas de memória é tratar GDPR como "pedir permissão para guardar dados". O Art. 17 (direito ao esquecimento), Art. 20 (portabilidade), e Art. 22 (decisões automatizadas) criam obrigações que vão além do consentimento inicial. Memória acumulada sem mecanismo de portabilidade ou remoção granular é passivo legal, não feature.
+
+## Custo operacional oculto: o que os benchmarks não medem
+
+LongMemEval mede qualidade de retrieval — a pergunta é respondida corretamente ou não. O que não aparece:
+
+- **Latência de `memory.add`**: cada chamada pode adicionar 200-800ms ao turn se o pipeline de extração for síncrono.
+- **Custo de tokens de extração**: em produção com 10k usuários fazendo 10 turns/dia, 2 LLM calls extras por turn = 200k chamadas/dia só para extração.
+- **Custo de busca vetorial em escala**: `memory.search` com 100k fatos por usuário em alta concorrência não é gratuito — especialmente em cloud-managed vector stores.
+- **Custo de consolidação (sleep agents)**: frameworks como Letta que rodam consolidação assíncrona adicionam um segundo tier de custo que não aparece na análise de throughput normal.
+
+Para qualquer adoção em produção, o TCO real inclui: (custo base de LLM) + (custo de memory ops) + (custo de infra de vector store) + (custo de manutenção/operação). Ignorar os últimos três itens é o erro mais comum em POCs que não sobrevivem à produção.
 
 ## Como explicar em inglês
 
@@ -202,6 +234,9 @@ Recap consolidado em formato de checklist para quem está revisando uma decisão
 | Viés de auto-publicação | Self-publication bias / Reporting bias |
 | Direito ao esquecimento | Right to be forgotten |
 | Memória desatualizada | Stale memory / Outdated context |
+| Custo operacional total | Total cost of ownership (TCO) |
+| Perda de informação por compressão | Information loss through compression |
+| Latência de operação de memória | Memory operation latency |
 
 ### Como usar em entrevista
 
@@ -226,6 +261,32 @@ Esta nota encerrou a dimensão crítica da trilha — o contrapeso necessário p
 - [[21 - Comparativo crítico (LongMemEval)|21 - Comparativo crítico]] — números rigorosos com hedge
 - [[03-Dominios/Tecnologia/IA/Memória de Agentes/index]] — MOC com avisos sobre links descartados e segurança
 
+## Perguntas para usar em entrevista ou revisão técnica
+
+Uma auditoria honesta termina com perguntas, não com respostas fechadas. Se precisar revisar um framework de memória que não conhece bem, estas questões expõem as lacunas mais comuns:
+
+Estas perguntas funcionam tanto para revisar um framework novo quanto para revisitar decisões já tomadas. Tecnicamente, um sistema de memória maduro deve ter respostas prontas para todas elas — a ausência de resposta é o dado.
+
+1. "O score de benchmark que você está citando foi medido por um terceiro independente, ou é self-reported pelo próprio vendor?"
+2. "Qual é o custo de tokens de uma operação de `memory.add` ou equivalente? Isso foi contabilizado no TCO?"
+3. "Como um usuário exerce o direito ao esquecimento neste sistema? Qual operação remove um fato específico e como verificar que foi removido?"
+4. "O benchmark usado (LongMemEval, LOCOMO, outro) foi testado com os mesmos dados de treinamento usados para calibrar o sistema — ou há evidência de separação adequada de treino/teste?"
+5. "Se a latência de memory search aumentar 3x ao escalar, o sistema ainda funciona dentro do SLA?"
+6. "Qual é o plano de manutenção da base de memória quando ela começar a acumular fatos contraditórios ou desatualizados?"
+7. "Qual é a estratégia de fallback se o vector store ou o grafo ficar indisponível — o sistema falha completamente ou degrada graciosamente?"
+8. "Existe um teste de regressão automatizado que valida a qualidade do retrieval ao longo do tempo?"
+
+Nenhuma dessas perguntas é hostil — são perguntas de engenharia de produção. Quem tem respostas preparadas entende o sistema; quem não tem, entende só o marketing.
+
+## O que o campo precisa para amadurecer
+
+A análise crítica não termina em condenação — termina em diagnóstico de lacunas. O que falta para memória de agentes amadurecer como campo?
+
+- **Benchmarks independentes e diversificados.** LongMemEval é referência, mas pode ser overfit. O campo precisa de pelo menos 2-3 benchmarks com diferentes tipos de memória testados (episódica, semântica, procedural), diferentes idiomas e diferentes estruturas de corpus. LoCoMo é um passo nessa direção, mas sem adoção ampla ainda.
+- **Reprodutibilidade sistemática.** Código aberto, versão de modelo fixada, dataset público, seed fixada para runs determinísticas — a maioria dos papers revisados não atende a todos esses critérios. Isso impede acumulação de conhecimento verificável.
+- **Privacidade por design.** O campo cresceu focado em performance e eficiência. Forget policy precisa ser cidadã de primeira classe na arquitetura, não add-on de compliance.
+- **TCO como métrica de primeira classe.** Nenhum comparativo principal reporta custo por interação incluindo operações de memória. Um sistema que economiza 2.000 tokens de janela mas gasta 3.000 em operações de memória não é mais eficiente — é mais caro.
+
 ## Referências
 
 - **Paper crítico MemPalace (2026):** *Spatial Metaphors for LLM Memory: A Critical Analysis of MemPalace*. arXiv: `https://arxiv.org/abs/2604.21284`. Argumenta que o ganho de performance em hybrid mode vem de armazenamento verbatim + ChromaDB, não da hierarquia espacial.
@@ -233,3 +294,7 @@ Esta nota encerrou a dimensão crítica da trilha — o contrapeso necessário p
 - **DEV.to (awrshift):** *I Over-Engineered Karpathy's Agent Memory. Here's What Actually Works*. Análise prática que descreve o caminho até "100% em hybrid" como overfitting de benchmark na prática.
 - **Du et al. 2026 — survey:** `https://arxiv.org/abs/2603.07670`. Limitações reconhecidas pelos próprios autores no campo: ausência de benchmarks padronizados além de LongMemEval/LoCoMo, divergência entre sistemas acadêmicos e SDKs de produção, custo computacional pouco endereçado na literatura.
 - **LongMemEval (Wu et al., ICLR 2025):** `https://github.com/xiaowu0162/LongMemEval`. Benchmark de referência discutido em [[21 - Comparativo crítico (LongMemEval)|21 - Comparativo crítico]] — relevante aqui pelo tópico de overfitting.
+- **Regulações de referência:** GDPR Artigos 17 (direito ao esquecimento), 20 (portabilidade de dados) e 22 (decisões automatizadas) — `https://gdpr-info.eu/art-17-gdpr/`. LGPD Artigo 18 (direito dos titulares de dados pessoais) — Lei 13.709/2018. Ambos estabelecem obrigações operacionais concretas que frameworks de memória precisam satisfazer, não apenas declarar.
+- **LoCoMo benchmark (Facebook Research, 2024):** `https://arxiv.org/abs/2309.11235`. Benchmark alternativo ao LongMemEval, foco em conversas longas (até 35 sessões, até 300 turnos). Usado em contextos onde LongMemEval é considerado estreito demais. Metodologia diferente implica números não diretamente comparáveis — ver [[21 - Comparativo crítico (LongMemEval)|21]] para detalhes.
+- **Survey Du et al. 2026:** `https://arxiv.org/abs/2603.07670`. *Towards Persistent Autonomous Agents: A Survey on Long-Term Memory in AI Systems*. Um dos autores, ao reconhecer limitações do campo, cita explicitamente a ausência de benchmarks padronizados além de LongMemEval/LoCoMo como gap aberto — o survey não amplifica hype, é uma das referências mais equilibradas disponíveis.
+- **GDPR enforcement tracker:** `https://www.enforcementtracker.com/` — registra multas aplicadas, útil para calibrar o risco real de não-conformidade com direito ao esquecimento e outras obrigações que afetam sistemas de memória persistente.
