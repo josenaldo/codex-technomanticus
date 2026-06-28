@@ -163,6 +163,73 @@ Os itens abaixo refletem o estado público do projeto em abril de 2026, verifica
 > [!warning] Armadilha 7: Transferir restrições da AGPL para a Apache-2.0
 > Para quem está acostumado com [[13 - basic-memory — MCP nativo Obsidian|basic-memory]] (AGPL-3.0), assumir as mesmas restrições com Letta é erro: a licença permissiva permite embutir em produto comercial fechado sem obrigação de abrir código derivado. O trade-off inverso também existe — o ecossistema Letta pode ser embarcado por concorrentes sem reciprocidade.
 
+## Sleep-time agents: computação fora do loop
+
+A feature mais distinta do Letta em relação a outros frameworks é o conceito de **sleep-time agents** — agents que executam **entre sessões**, sem um usuário aguardando resposta.
+
+A metáfora do OS vai até aqui: assim como um sistema operacional realiza manutenção em background (defragmentação, caches, indexação), um sleep-time agent do Letta pode consolidar memórias, resolver contradições, atualizar fatos obsoletos, e reorganizar archival memory durante períodos de baixa demanda.
+
+Em termos práticos:
+
+- O agent principal atende o usuário em tempo real, acumulando fatos em archival memory.
+- Um sleep-time agent separado roda de forma assíncrona — por cron, por evento, ou manualmente — e realiza operações como `archival_memory_search` + `archival_memory_delete` + `archival_memory_insert` para deduplicar, consolidar, ou re-sumarizar.
+- A core memory do agent principal é atualizada como resultado, refletindo o trabalho do sleep agent sem que o usuário tenha esperado por isso.
+
+Esse pattern é relevante em casos onde a frequência de interação é alta o suficiente para a archival memory acumular ruído ao longo do tempo — sem algum mecanismo de consolidação, retrieval degrada.
+
+> [!info] Rollback e versionamento de core memory
+> A documentação do Letta menciona que o estado do agent é persistido em banco e cada operação de memória é registrada. Na prática, isso habilita rollback para um snapshot anterior se uma edição de core memory introduzir um valor incorreto — o ADE expõe o histórico de modificações. Vale verificar no docs da versão corrente quais operações são auditáveis e quais são apenas atualizações destrutivas antes de depender desse mecanismo em produção.
+
+## O ADE em prática
+
+O ADE (Agent Development Environment) é a interface que separa Letta de frameworks similares em termos de observabilidade. Em vez de depurar um agent via logs de texto ou prompts em raw, o ADE mostra:
+
+- **Core memory em tempo real**: os blocos `human` e `persona` (ou os blocos customizados) exibidos e editáveis enquanto o agent roda.
+- **Archival memory browser**: visualização e busca de entradas arquivadas, com possibilidade de inserção e remoção manual.
+- **Agent loop trace**: cada passo do reasoning — tool calls, respostas de LLM, updates de memória — exibido sequencialmente.
+- **Comparison mode**: execução de dois agents com configs diferentes no mesmo input, útil para A/B de prompts ou estratégias de memória.
+
+Para quem vem de LangChain ou plain API calls, o ADE é a diferença entre "eu sei o que o agent pensou" e "eu tenho logs de stdout". Em projetos de médio prazo, a facilidade de inspecionar core memory sem SQL queries vale o overhead de rodar um servidor a mais.
+
+## Exemplo de sessão: core memory em ação
+
+Para tornar concreto o que significa "self-editing memory", considere um assistente de escrita que precisa lembrar o estilo preferido do usuário ao longo de semanas:
+
+```python
+from letta_client import Letta
+
+client = Letta(token="<API_KEY>")
+
+# Criação do agent com core memory inicial
+agent = client.agents.create(
+    name="writing-assistant",
+    memory_blocks=[
+        {"label": "human", "value": "O usuário prefere textos diretos, sem jargão técnico."},
+        {"label": "persona", "value": "Sou um assistente de escrita especializado em clareza."},
+    ],
+    model="openai/gpt-4o",
+)
+
+# Após várias sessões, o agent pode ter invocado core_memory_replace automaticamente
+# para atualizar: "O usuário prefere textos diretos, sem jargão técnico. Exceção: conteúdo
+# técnico para devs, onde termos específicos são esperados."
+```
+
+O ponto central: quem fez essa atualização foi o próprio LLM, não o desenvolvedor. O developer pode inspecionar o estado atual via ADE ou `client.agents.get_memory(agent_id)` — mas não precisou codificar a regra de atualização.
+
+Esse contrast com [[13 - basic-memory — MCP nativo Obsidian|basic-memory]] é revelador: no basic-memory, o developer escreve a nota e a ferramenta apenas lê. No Letta, o agent escreve a memória — e o developer inspeciona o resultado.
+
+## Checklist de adoção
+
+Antes de comprometer Letta em produção, vale responder:
+
+- [ ] O agent precisa de memória **self-editing** — ou memória read-only (injetada no prompt) bastaria?
+- [ ] A equipe tem capacidade de operar PostgreSQL com pgvector em produção?
+- [ ] O caso de uso tolera a ausência de score LongMemEval público — ou isso é bloqueante para compliance/auditoria?
+- [ ] O volume de sessões simultâneas está dimensionado contra o modelo de pricing (API Plan vs self-host)?
+- [ ] Algum requisito de **audit trail temporal** exige timestamps de validade nos fatos — se sim, considere [[16 - Zep e Graphiti — knowledge graph temporal|Zep/Graphiti]].
+- [ ] O team explorou o ADE em ambiente de dev antes de assumir que a curva de aprendizado é trivial?
+
 ## Como explicar em inglês
 
 > [!tip] Interview quote
@@ -195,6 +262,25 @@ Letta representa o extremo do controle explícito: o developer vê cada bloco de
 - [[21 - Comparativo crítico (LongMemEval)|21 - Comparativo crítico]] — onde a ausência de score de Letta aparece
 - [[02 - O problema das janelas de contexto]] — a dor que MemGPT propôs resolver
 
+## Posicionamento no ecossistema (abril 2026)
+
+O mapa mental de onde Letta se encaixa em 2026:
+
+```
+Memória de agentes
+├── Frameworks "transparentes" (a memória é invisível para o agent)
+│   ├── Mem0 — extração automática via LLM, vector store
+│   ├── Zep/Graphiti — KG bi-temporal, audit trail rico
+│   └── basic-memory — markdown/SQLite, substrato legível
+│
+└── Frameworks "explícitos" (o agent opera a própria memória)
+    └── Letta — hierarquia RAM/disco, self-editing, sleep agents
+```
+
+Letta é o único framework maduro da segunda categoria em produção em abril de 2026. O trade-off é claro: máximo controle, máxima curva de aprendizado. Isso o torna referência insubstituível para qualquer discussão sobre o "extremo explícito" da memória de agentes — não porque seja superior, mas porque é o único representante bem documentado desse quadrante.
+
+Para quem debate arquitetura de memória em entrevistas, conhecer Letta é saber o que existe no polo oposto ao Mem0: onde um abstrai tudo, o outro expõe tudo.
+
 ## Referências
 
 - Repositório oficial: `https://github.com/letta-ai/letta` — verificado via API do GitHub (descrição "Letta is the platform for building stateful agents", licença Apache-2.0, default branch `main`, linguagem Python, mais de 22 mil stars em abril/2026, último push em abril/2026, organização `letta-ai`).
@@ -207,3 +293,8 @@ Letta representa o extremo do controle explícito: o developer vê cada bloco de
     - TechCrunch — *Letta, one of UC Berkeley's most anticipated AI startups, has just come out of stealth*: `https://techcrunch.com/2024/09/23/letta-one-of-uc-berkeleys-most-anticipated-ai-startups-has-just-come-out-of-stealth/`
     - PRNewswire — *Berkeley AI Research Lab Spinout Letta Raises $10M Seed Financing Led by Felicis*.
 - SDKs: `pip install letta-client` (Python), `npm install @letta-ai/letta-client` (TypeScript/Node.js).
+- ADE (Agent Development Environment): acessível via Letta Cloud em `app.letta.com` ou localmente ao rodar o servidor self-hosted.
+- Repositório de exemplos e tutoriais: `https://docs.letta.com/guides/` — casos de uso documentados incluem assistentes pessoais, chatbots de suporte com memória por usuário, e agents de pesquisa de longo prazo.
+- Leaderboard de modelos (compatibilidade e desempenho com Letta): referenciado na documentação oficial como fonte atualizada para escolha de LLM base.
+- Discord oficial da comunidade Letta: canal primário de suporte e discussão técnica para self-hosters; link disponível via `letta.com` (verificar na página principal).
+- Paper MemGPT original com code release: `https://arxiv.org/abs/2310.08560` — inclui link para repositório original antes da bifurcação Letta; útil para rastrear o estado da implementação no momento da publicação.
