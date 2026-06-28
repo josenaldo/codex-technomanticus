@@ -1,9 +1,10 @@
 ---
 title: "03 - Modelos de imagem 2026 — DALL-E, Imagen, Midjourney, FLUX, SD"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - image-prompting
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Em 2026, seis modelos cobrem 90% dos casos práticos: **DALL-E 3** (OpenAI, integrado com ChatGPT, segue instrução bem), **Imagen 3** (Google, photorealismo + texto), **Midjourney v6.1** (assinatura mensal, qualidade artística, estilo consistente), **FLUX.1** (Black Forest Labs, pro fechado + dev/schnell open-source com qualidade próxima da MJ), **Stable Diffusion 3.5** (Stability AI, open-source, ecossistema de LoRAs e ControlNet) e **Ideogram 2** (especialista em texto-na-imagem). Cada um tem ponto forte e fraco; decisão por entregável segue regra simples (poster com texto → Ideogram/Imagen, photorealístico → DALL-E/Imagen, artístico → Midjourney, OSS self-host → FLUX/SD). Releases novos saem rápido — fonte de verdade pra deploy é doc oficial.
+
+> [!question]- Como saber qual modelo escolher sem testar os seis? Existe regra 80/20?
+> Sim. Sem contexto, o default para 2026 é **DALL-E 3 para prototipagem rápida** (disponível via API OpenAI, sem assinatura, segue instrução bem), **Midjourney v6.1 para qualidade artística final** (quando estilo importa e assinatura está disponível), e **Imagen 3 via Vertex AI para produção em volume** (SLA, photorealismo, texto renderizado). FLUX.1 [dev] entra quando o requisito é OSS ou self-host. A regra 80/20: se você não tem requisito de auto-hospedagem, orçamento apertado por imagem, ou texto crítico na imagem, DALL-E 3 ou Midjourney cobrem a maioria dos casos. Adicione os outros quando esses falharem.
 
 > [!warning] Estado 2025-2026, sujeito a mudança
 > Esta nota reflete o landscape de fim de 2025 / início de 2026 — Midjourney v6.1 atual com v7 rumored, Imagen 3 atual, FLUX.1 família estável. Provider lança versão nova a cada poucos meses. Antes de deploy, valide capabilities atuais no doc oficial.
@@ -63,6 +67,8 @@ aliases:
 **Forte:** texto na imagem é o caso de uso. Posters, signs, lettering, infográficos com tipografia legível. Em 2026, ainda lidera essa subcategoria com Imagen 4 (quando disponível) e FLUX dev encostando.
 **Fraco:** fora do caso "texto na imagem", é mediano. Não é escolha pra hero artístico ou mockup fotorealista.
 
+**Quando usar Ideogram vs Imagen 3 pra texto:** Ideogram tem melhor controle tipográfico (fontes específicas, kerning, caixa-alta/baixa) e gera texto mais legível em corpo pequeno. Imagen 3 tem melhor photorealismo ao redor do texto (produto com label, embalagem com nome de marca) mas o texto em si é menos preciso em estilos especiais. Para texto simples e legível em layout limpo → Ideogram. Para texto como elemento de produto fotorealístico → Imagen 3.
+
 ## Decision tree por entregável
 
 Atalho mental pra decidir, mesmo sem benchmark próprio:
@@ -103,6 +109,173 @@ Geração from-scratch é só uma feature; produção real usa muito edição:
 
 Modos de edição merecem nota própria; nota [[06 - Iteração visual — controlled changes]] cobre o essencial pra controle de iteração.
 
+Ponto prático: a maioria dos projetos usa geração (text-to-image) para rascunho e edição (inpaint/outpaint/i2i) para refinamento. Planejar o pipeline de edição junto com a escolha do modelo evita retrabalho — nem todo modelo que gera bem também edita bem (DALL-E 3 edita via web app, menos via API; FLUX.1 Tools tem boa cobertura de edição via API).
+
+## Código — chamando os modelos via API
+
+Três providers com API direta e padrão de chamada diferente:
+
+### OpenAI — DALL-E 3
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.images.generate(
+    model="dall-e-3",
+    prompt=(
+        "Hero image para post de blog sobre DevOps. "
+        "Fundo escuro, paleta azul e ciano, estilo minimalista. "
+        "Servidor e engrenagens integrados em visual clean. "
+        "Sem texto. Formato 16:9."
+    ),
+    n=1,
+    size="1792x1024",   # 16:9 equivalente
+    quality="hd",       # ou "standard"
+    response_format="url",  # ou "b64_json"
+)
+
+print(response.data[0].url)
+print(response.data[0].revised_prompt)  # prompt interno que o DALL-E realmente usou
+```
+
+DALL-E 3 revisa o prompt antes de gerar — `revised_prompt` mostra o que foi realmente enviado pro gerador.
+
+### Google — Imagen 3 via Gemini API
+
+```python
+from google import genai
+from google.genai import types
+from pathlib import Path
+
+client = genai.Client()
+
+response = client.models.generate_images(
+    model="imagen-3.0-generate-002",
+    prompt=(
+        "Fotografia de produto: embalagem de skincare premium, "
+        "fundo branco, iluminação de estúdio suave, reflexo sutil no balcão. "
+        "Sem texto na imagem."
+    ),
+    config=types.GenerateImagesConfig(
+        number_of_images=2,
+        aspect_ratio="1:1",      # "1:1", "3:4", "4:3", "9:16", "16:9"
+        safety_filter_level="BLOCK_MEDIUM_AND_ABOVE",
+    ),
+)
+
+for i, img in enumerate(response.generated_images):
+    Path(f"produto_{i}.png").write_bytes(img.image.image_bytes)
+```
+
+### Black Forest Labs — FLUX.1 Pro via API
+
+```python
+import anthropic  # só um placeholder; FLUX usa REST direto ou via fal.ai
+import requests, time, base64
+
+# FLUX.1 [pro] — BFL API
+headers = {"x-key": "SUA_CHAVE_BFL", "Content-Type": "application/json"}
+
+# 1. submit task
+resp = requests.post(
+    "https://api.bfl.ml/v1/flux-pro-1.1",
+    json={
+        "prompt": "Ilustração vetorial minimalista para capa de podcast de tecnologia. "
+                  "Fundo preto, linhas neon azul e roxo, formas geométricas. Sem texto.",
+        "width": 1440, "height": 1440,
+        "steps": 25, "guidance": 3.5,
+    },
+    headers=headers,
+)
+task_id = resp.json()["id"]
+
+# 2. poll result
+while True:
+    result = requests.get(
+        "https://api.bfl.ml/v1/get_result",
+        params={"id": task_id},
+        headers=headers,
+    ).json()
+    if result["status"] == "Ready":
+        print(result["result"]["sample"])  # URL da imagem
+        break
+    time.sleep(2)
+```
+
+## Custo e escalabilidade
+
+| Modelo | Custo por imagem | Latência típica | Self-host? |
+|---|---|---|---|
+| DALL-E 3 standard | ~$0.040 | 5-10s | Não |
+| DALL-E 3 HD | ~$0.080 | 8-15s | Não |
+| Imagen 3 (Vertex AI) | ~$0.02-0.04 | 3-7s | Não |
+| Midjourney | ~$0.03-0.10 (assinatura) | 10-30s | Não |
+| FLUX.1 [pro] | ~$0.05 | 5-10s | Não |
+| FLUX.1 [schnell] hosted | ~$0.003 | 2-4s | Sim (Apache 2.0) |
+| SD 3.5 Large (A100) | ~$0.003-0.01 | 2-5s | Sim |
+
+Para pipeline em volume (10k+ imagens/mês), FLUX.1 [schnell] ou SD 3.5 em self-host são as opções de menor custo. Para one-off ou volume menor, o custo por-imagem é secundário à qualidade e à conveniência.
+
+### Hosted intermediário — fal.ai e Replicate
+
+Para usar FLUX ou SD sem gerenciar infraestrutura própria, fal.ai e Replicate oferecem hosted inference com API REST simples. fal.ai tem latência baixa (cold-start rápido em FLUX [schnell]: ~1-2s) e suporte a webhook. Replicate tem mais modelos disponíveis e boa documentação. Ambos cobram por segundo de GPU — menos que self-host em baixo volume, mais que self-host em alto volume. Ponto de crossover típico: acima de 5k-10k imagens/mês, self-host em GPU spot (A100 ou L40S) se torna mais barato do que fal.ai.
+
+## Armadilhas comuns
+
+> [!warning] Testar apenas um modelo e tratar como ground truth — cada modelo tem pontos cegos diferentes
+> DALL-E 3 segue instrução textual bem mas falha em fotorealismo extremo. Midjourney é artístico mas fraco em texto. Ideogram é especialista em texto mas mediano em todo o resto. Decidir o modelo de produção sem testar 5-10 prompts representativos do caso de uso real leva a usar o modelo errado com resultado decepcionante. O processo correto: monte um mini-benchmark (5 prompts típicos do entregável, 1-2 gerações por modelo), avalie nos critérios que importam, então decide. Custo total de 10 testes: menos de $2 em APIs, mas elimina meses de retrabalho.
+
+> [!warning] Usar Midjourney em pipeline automatizado via Discord bot não-oficial — não é produção
+> Midjourney historicamente não tinha API REST oficial; comunidade construiu wrappers usando Discord bot ou APIs de terceiros. Esses wrappers não têm SLA, podem quebrar a qualquer update da MJ, e violam os termos de uso. Para pipeline automatizado, use DALL-E 3 (OpenAI API), Imagen 3 (Vertex AI), FLUX.1 (BFL API ou fal.ai), ou SD 3.5 (self-host). Midjourney é excelente para uso interativo via web app — não para batch automatizado.
+
+> [!warning] Ignorar o `revised_prompt` do DALL-E 3 e achar que o prompt que você mandou é o que foi usado
+> DALL-E 3 expande e reinterpreta o prompt antes de gerar — o campo `revised_prompt` na resposta mostra o que o gerador realmente recebeu. Muitas vezes, o modelo adiciona descrições de personagem, estilo, iluminação que você não pediu — e que explicam por que o resultado divergiu do esperado. Sempre leia o `revised_prompt`. Se a expansão automática está causando desvio, especifique: "Não expanda este prompt. Siga exatamente: [prompt]." Isso reduz a liberdade criativa mas aumenta fidelidade.
+
+## Como explicar em inglês
+
+**Interview quote:** *"In 2026, the image model landscape has clear niches: DALL-E 3 for instruction-following and prototyping, Midjourney for artistic quality, Imagen 3 for photorealism and text rendering, FLUX for OSS pipelines, and Ideogram for text-in-image. Picking the wrong model for the deliverable type is the most common mistake — a poster with typography should go to Ideogram, not Midjourney."*
+
+| Português | Inglês |
+|---|---|
+| Geração de imagem text-to-image | Text-to-image generation |
+| Photorealismo | Photorealism |
+| Texto embutido na imagem | Text-in-image / embedded text |
+| Auto-hospedagem / self-host | Self-hosting |
+| Edição inpainting | Inpainting (masked region edit) |
+| LoRA / fine-tune de estilo | LoRA / style fine-tune |
+| Consistência de estilo entre gerações | Style consistency across generations |
+| Parâmetro de aspect ratio | Aspect ratio parameter |
+| Revisão automática de prompt | Automatic prompt revision |
+
+## O que vem a seguir
+
+Com o mapa de modelos em mãos, a nota 04 entra no que determina a qualidade dentro de qualquer modelo: **a anatomia de um prompt visual** — como canvas, composição e estilo se traduzem em tokens que o modelo entende. A mesma ênfase sobre "deliverable-first" da nota 02 se aplica aqui: não é "escreva um prompt bonito", é "especifique o entregável com precisão suficiente para que o modelo saiba o que fazer".
+
+Entender o landscape de modelos (esta nota) antes de aprender a anatomia do prompt (nota 04) importa porque o vocabulário de composição é parcialmente modelo-específico: parâmetros `--ar`, `--stylize`, `--chaos` são Midjourney; `guidance_scale` e `num_inference_steps` são SD/FLUX; `quality` e `size` são DALL-E. O framework é o mesmo — o dialeto muda. Nota 04 ensina o framework; você aplica ao modelo que escolheu aqui.
+
+Um erro comum é estudar o prompt antes de decidir o modelo — e depois descobrir que o modelo certo usa parâmetros completamente diferentes. Ordem recomendada: entregável (nota 02) → modelo (esta nota) → prompt (nota 04).
+
+## Critérios por contexto de uso
+
+Contexto de uso muda a decisão, mesmo para o mesmo tipo de entregável:
+
+| Contexto | Critério dominante | Modelo preferido |
+|---|---|---|
+| Startup sem design system | Iteração rápida, custo baixo | DALL-E 3 (via ChatGPT) |
+| Agência criativa | Qualidade artística, estilo consistente | Midjourney v6.1 |
+| Produto SaaS B2B | Disponibilidade de API, SLA, compliance | Imagen 3 (Vertex AI) |
+| Pipeline de conteúdo | Custo por volume, velocidade | FLUX.1 [schnell] hosted |
+| Empresa com requisito OSS | Self-host, licença comercial | FLUX.1 [schnell] (Apache 2.0) |
+| Pesquisa / experimento | Controle total, fine-tune | SD 3.5 + ControlNet |
+| Asset com tipografia | Texto legível na imagem | Ideogram 2 |
+| Produto físico (e-commerce) | Photorealismo de produto | Imagen 3 ou DALL-E 3 HD |
+
+Nenhum modelo domina todos os contextos — a tabela acima é o atalho pra chegar ao certo sem testar os seis.
+
+Um critério frequentemente esquecido é **compliance e data residency**: Vertex AI (Imagen 3) oferece data residency configurável por região, essencial pra projetos regulados por LGPD ou GDPR que não podem enviar dados de usuários pra servidores fora de regiões específicas. DALL-E 3 e Midjourney não têm equivalente. Para projetos enterprise com requisito de compliance, Vertex AI é muitas vezes a única opção viável, independente de preferência artística.
+
 ## Fontes
 
 - **OpenAI** — *Image generation guide* ([docs](https://platform.openai.com/docs/guides/images)). DALL-E 3 capabilities e edit mode.
@@ -111,10 +284,17 @@ Modos de edição merecem nota própria; nota [[06 - Iteração visual — contr
 - **Black Forest Labs** — *FLUX.1 docs* ([docs](https://docs.bfl.ai/)). FLUX família pro/dev/schnell e FLUX.1 Tools.
 - **Stability AI** — *Stable Diffusion 3.5* ([docs](https://stability.ai/stable-image)). SD 3.5 Large/Medium.
 - **Ideogram** — *Docs* ([docs](https://docs.ideogram.ai/)). Texto-na-imagem.
+- **fal.ai** — [fal.ai](https://fal.ai/). Hosted inference pra FLUX e SD com API REST simples.
 
 ## Veja também
 
+- [[01 - Image prompting como engenharia]] — mentalidade e brief antes de escolher modelo
 - [[02 - Deliverable-first, não scene-first]] — decisão de modelo segue decisão de entregável
 - [[04 - Anatomia de um prompt visual — canvas, composição, estilo]] — vocabulário comum aos modelos
 - [[05 - Templates por entregável — poster, infográfico, mockup, thumbnail]] — modelo recomendado por entregável
 - [[06 - Iteração visual — controlled changes]] — inpainting, image-to-image, ControlNet
+- [[07 - Geração de diagramas e ilustrações técnicas]] — quando geração não é a solução certa
+- [[Dicionário de IA#Inpainting|Dicionário: Inpainting]]
+- [[Dicionário de IA#LoRA|Dicionário: LoRA]]
+- [[Dicionário de IA#ControlNet|Dicionário: ControlNet]]
+- [[Dicionário de IA#FLUX|Dicionário: FLUX]]
