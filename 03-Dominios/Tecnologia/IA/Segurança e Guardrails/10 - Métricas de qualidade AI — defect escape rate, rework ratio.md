@@ -3,6 +3,7 @@ title: "Métricas de qualidade AI — defect escape rate, rework ratio"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > "Estamos produzindo mais com IA" não é métrica — é vibe. As métricas que importam medem **qualidade líquida**: quantos bugs escaparam para prod (defect escape rate), quanto código foi reescrito sobre código gerado (rework ratio), quanto tempo passou entre código aceito e bug em prod (mean time to defect), e quantas vulns de cada classe foram introduzidas. Sem essas métricas, time não sabe se está acumulando ou pagando débito. Esta nota dá o set mínimo para acompanhar honestamente.
+
+> [!question]- Por que métricas de qualidade tradicionais falham em código AI?
+> Métricas tradicionais como "velocity" (story points), "LOC adicionadas/dia" e "% de testes passando" foram projetadas para medir produção humana, onde qualidade e quantidade tendem a correlacionar. Código AI quebra essa correlação: um LLM pode gerar 10x mais LOC por dia, com tests verdes, enquanto acumula rework ratio de 60% e defect escape rate triplicando. "Velocity subiu 40% com IA" pode ser verdadeiro e enganoso ao mesmo tempo se o rework ratio dobrou e o MTTD caiu para dias. Métricas adaptadas medem o que importa: qual fração do código gerado sobrevive ao escrutínio, e quanto dele cria problemas em produção.
 
 ## A pergunta que essas métricas respondem
 
@@ -219,6 +223,48 @@ Sem métricas, time **não sabe** se intervenção funcionou.
 >
 > Líderes técnicos têm responsabilidade ética de **mostrar o quadro completo**. Reportar só ganho mascara dívida.
 
+## Armadilhas comuns
+
+> [!warning] Reportar só ganho de velocity mascara débito técnico
+> "Velocity subiu 40% com IA" sem mencionar que rework ratio dobrou e defect escape rate triplicou é tecnicamente verdadeiro e eticamente problemático. Líderes técnicos que reportam apenas o número positivo estão construindo pressão para manter uma adoção que está criando débito silenciosamente. O quadro completo — ganhos e custos — é obrigatório para decisões informadas sobre adoção de IA.
+
+> [!warning] Sem baseline pré-IA, não dá para medir impacto
+> "AIAD = 55%" significa que IA é boa, média, ou ruim? Sem dados históricos de qualidade antes da adoção de IA, não há como comparar. Times que adotam IA sem registrar as métricas atuais primeiro perdem a referência para avaliar o impacto real. Baseline pré-IA é um pré-requisito para qualquer avaliação honesta.
+
+> [!warning] Métricas sem ação são relatório decorativo
+> Dashboard bonito com DER subindo e MTTD encurtando que não gera nenhuma mudança de processo é teatro de qualidade. Cada sinal de alerta precisa de dono, prazo, e ação específica — adicionar regra de SAST, fortalecer revisão de code review, rever a especificação usada nos prompts. Sem essa conexão métrica → ação, o dashboard existe para apresentar em reunião, não para melhorar o produto.
+
+## Como explicar em inglês
+
+Quality metrics for AI-generated code exist to answer one question: is the speed gain from AI assistance real, or is it velocity debt that will be paid as rework and production incidents? The traditional metrics — story points, LOC per day, test pass rate — don't capture this because they measure output, not quality of output.
+
+The five core metrics fill that gap. Defect escape rate measures what fraction of bugs slip past all validation layers and reach production. Rework ratio measures how much AI-generated code needs to be rewritten within two sprints — research from Augment Code shows teams with unguarded AI adoption have rework ratios of 40-60%, meaning more than half the generated code is eventually rewritten. Mean time to defect tracks the lag between merge and production bug discovery. Vulnerability introduction rate tracks security-class defects by CWE. And AI-attributable defects isolates bugs that came specifically from AI-generated PRs, enabling an honest comparison with human-authored code.
+
+Together, these metrics create accountability: the team can see whether their investment in validation tooling is actually reducing AI-specific bugs, whether prompting improvements are moving the defect rate, and whether the net velocity gain is real after accounting for the rework cost.
+
+**In a technical interview**, you might say:
+
+> "We track five AI-specific quality metrics: defect escape rate targeting under 5%, rework ratio targeting under 20%, mean time to defect as a lagging indicator of code stability, vulnerability introduction rate by CWE with zero tolerance for critical classes, and AI-attributable defects compared to the proportion of AI PRs. We review these monthly with a weekly alert on VIR for critical CWEs. The key insight is that without AIAD tracking, you can't know whether AI is producing better or worse quality than your team baseline — and that's the number that justifies or questions the adoption."
+
+| PT | EN |
+|----|-----|
+| taxa de escape de defeitos | defect escape rate |
+| taxa de retrabalho | rework ratio |
+| tempo médio até defeito | mean time to defect |
+| taxa de introdução de vulnerabilidade | vulnerability introduction rate |
+| defeitos atribuíveis à IA | AI-attributable defects |
+| métrica de vaidade | vanity metric |
+| qualidade líquida | net quality |
+| débito técnico | technical debt |
+| linha de base | baseline |
+| cadência de revisão | review cadence |
+
+## O que vem a seguir
+
+Métricas de qualidade monitoram o que está acontecendo. Mas quando as métricas revelam problemas de compliance ou regulação — código que processa dados pessoais, sistemas de alto risco, licenças open-source mal gerenciadas — a resposta não é técnica, é arquitetural. A próxima nota explora como EU AI Act, GDPR e licenças mudam fundamentalmente as decisões de design de sistemas que usam geração de código por IA.
+
+- [[11 - Governance as architecture — EU AI Act, GDPR, licenças]] — quando regulação não é documentação, é restrição de arquitetura
+
 ## Veja também
 
 - [[04 - A pirâmide de validação AI]]
@@ -233,3 +279,27 @@ Sem métricas, time **não sabe** se intervenção funcionou.
 - **GitClear** — *AI-impacted code quality research* (2026).
 - **METR** — *Measuring impact of AI on real-world software development* (2025).
 - **Veracode** — *2025 GenAI Code Security Report* (CWE rates) (2025).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
