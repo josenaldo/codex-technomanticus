@@ -1,9 +1,10 @@
 ---
 title: "04 - Anatomia de um prompt visual — canvas, composição, estilo"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - image-prompting
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Todo prompt visual eficaz tem quatro camadas: **canvas** (formato, aspect ratio, resolução), **composição** (hierarquia, focal point, espaço negativo), **estilo** (linguagem visual, paleta, mood) e **texto** (palavras embutidas, posição, hierarquia). Cada camada tem vocabulário próprio que os modelos reconhecem. Quando você escreve sem cobrir as quatro, o modelo escolhe default genérico; quando cobre todas, converge rápido. Esta nota dá o vocabulário preciso por camada, com exemplo de prompt completo dissecado em cada uma.
+
+> [!question]- Qual é a ordem certa de escrever as quatro camadas? E se eu não souber o estilo que quero?
+> A ordem mais produtiva é Canvas → Composição → Estilo → Texto: cada camada depende da anterior (você não define composição sem saber o canvas; o texto é a camada mais dependente do estilo). Se não souber o estilo: comece com um estilo "âncora" genérico (`flat illustration`) e itere só a camada de estilo enquanto congela as outras três. Mudar tudo ao mesmo tempo faz com que você não saiba o que causou o resultado. Quando travar, volte ao deliverable (nota 02): o estilo deve servir ao entregável, não ao gosto pessoal. Um hero tech-blog pede `flat-isometric corporate-modern`; um post de redes sociais pode pedir `bold graphic`, `pop art`; uma capa de ebook pode pedir `editorial photography`. O deliverable resolve o estilo 80% das vezes.
 
 ## As quatro camadas
 
@@ -87,6 +91,21 @@ Define onde cada elemento mora dentro do canvas. Vocabulário compositivo é est
 
 Diga ao modelo qual elemento é o primário, secundário, terciário. "Hero ocupa 60% central; subtítulo abaixo, 20% da largura; tag pequena no rodapé" funciona melhor que "tudo na imagem".
 
+### Ângulo e ponto de vista (câmera)
+
+O ângulo altera radicalmente a hierarquia e o peso emocional da imagem, independente do conteúdo:
+
+- **`eye level`** — neutro, jornalístico, mais próximo ao observador
+- **`low angle`** / `worm's eye view` — sujeito imponente, heroico, em posição de poder
+- **`high angle`** / `bird's eye view` / `overhead` — sujeito vulnerável, panorâmico, documentário
+- **`dutch angle`** — câmera inclinada, tensão, desorientação
+- **`straight-on, flat`** — frontal absoluto, editorial, UI mockup
+- **`three-quarter view`** — perspectiva isométrica leve, popular em ilustração de produto
+- **`top-down`** — vista de cima, flat lay, overhead, dashboard
+- **`45° angle`** — equilíbrio entre frontal e lateral
+
+Para entregáveis tech (hero, infográfico, diagrama), `top-down` e `isometric` dominam porque permitem mostrar múltiplas camadas sem profundidade ambígua. Para entregáveis de pessoas ou narrativa, `eye level` é o default neutro.
+
 ### Framing
 
 - **`framed by foliage`** / `framed by architecture` — moldura natural dentro da imagem
@@ -139,6 +158,23 @@ Vaga (e não funciona bem): `colorful`, `nice colors`, `vibrant`.
 
 `80s sci-fi`, `Y2K aesthetic`, `Bauhaus`, `Art Deco`, `Memphis design`, `Swiss design`, `Brutalist web`. Modelos têm prior forte pra essas eras.
 
+## Combinando camadas — defaults por deliverable
+
+Quando você não sabe o que colocar em cada camada, estes defaults cobrem 80% dos casos comuns:
+
+| Deliverable | Canvas | Composição | Estilo |
+|-------------|--------|------------|--------|
+| Hero de blog (tech) | 16:9, 1792×1024 | Subject esquerda, negative space direita | flat-isometric, dark mode, corporate-modern |
+| Thumbnail YouTube | 16:9, 1280×720 | Centered, bold, high contrast | bold graphic, 2-3 cores, sem texto sutil |
+| Story/Reels | 9:16 | Top 60% visual, bottom 40% texto/CTA | modern, brand palette |
+| Social card (LinkedIn) | 4:5 ou 1:1 | Centered ou left-aligned | corporate-clean, brand colors |
+| Poster evento | A3 / 11:17 | Top-heavy, hierarquia 3 níveis | depende da marca; editorial ou bold |
+| Capa e-book | 2:3 | Subject ocupa 70%, título ocupa 30% inferior | editorial, contraste alto |
+| Banner LinkedIn/GitHub | 8:2.7 | Wide, landscape, negspace central ou lateral | minimalista, azul/tech, sem elemento central |
+| Carousel slide | 1:1 ou 4:5 | Grid ou half/half | consistente com slide 1 (usar --sref ou IP-Adapter) |
+
+Esses defaults não substituem a nota do template (nota 05) — use pra rascunho rápido, depois refine com o template completo.
+
 ## Camada 4: Texto
 
 A camada mais difícil em 2026 — modelos ainda erram. Ideogram, Imagen 3 (e Imagen 4 quando disponível) e FLUX dev lideram; DALL-E 3 razoável; Midjourney fraco; SD 3.5 inconsistente.
@@ -181,6 +217,24 @@ Dissecação:
 
 Cada camada é decisão explícita. O modelo entra calibrado em vez de chutar.
 
+## Exercício: construindo o prompt camada a camada
+
+Ponto de partida: "preciso de um hero pra post sobre segurança de APIs".
+
+**Passo 1 — Canvas:** qual canal? Post de blog. Ratio: `16:9`. Resolução: `1792×1024`. Vai ter overlay de título → negative space direita `~35%`.
+
+**Passo 2 — Composição:** subject à esquerda, guarda direita pra overlay. Subject = escudo digital abstrato ou cadeado luminoso, não pessoa. `left-aligned subject, negative space at right`. Sem texto na imagem.
+
+**Passo 3 — Estilo:** tech, B2B, dark mode. `flat-isometric illustration, dark mode palette — midnight blue #0F1B2D base, neon green #00FF88 accent`. Mood: `corporate-modern-tech`. Sem stock photo vibe, sem clipart.
+
+**Passo 4 — Texto:** `no text in image`. Decisão: overlay externo no Figma.
+
+**Prompt final (montado das 4 camadas):**
+
+> "Hero image for a tech blog post, 16:9 canvas, negative space at right ~35% for title overlay. Left-aligned subject: abstract glowing shield with circuit-board texture — flat-isometric illustration style. Dark mode palette: midnight blue #0F1B2D base, neon green #00FF88 accent. Mood: corporate-modern-tech. No text in image. No people. No generic SaaS icons."
+
+O resultado já chega muito mais próximo do brief do que "hero sobre segurança de APIs, estilo moderno".
+
 ## O hábito a internalizar
 
 Antes de mandar o prompt, releia mentalmente:
@@ -192,15 +246,55 @@ Antes de mandar o prompt, releia mentalmente:
 
 Faltou alguma? O modelo vai escolher por você. Se faltou de propósito, ok. Se faltou por preguiça, vai ter que iterar mais.
 
+## Armadilhas comuns
+
+> [!warning] Definir estilo com um adjetivo vago — "futurista", "moderno", "bonito"
+> "Futurista" pode ser cyberpunk neon, space opera, retrofuturismo dos anos 70, minimalismo sci-fi ou tech corporativo azul. O modelo chuta. "Bonito" não é instrução — é esperança. Cada adjetivo de estilo ambíguo que você usa transfere a decisão criativa para o modelo. A correção é específica: `flat-isometric, dark mode, midnight blue + ciano, corporate-modern-tech` em vez de "futurista". Se você não souber o estilo, comece com um âncora genérico e itere só a camada de estilo. Um adjetivo específico por dimensão (tipo de ilustração, paleta, mood, era) é suficiente pra calibrar o output.
+
+> [!warning] Omitir o espaço negativo quando o deliverable vai receber overlay
+> Hero com overlay de título, thumbnail com texto, social card com CTA — todos precisam de espaço onde o texto vai ficar. Se o prompt não descreve `negative space at right ~35%` ou equivalente, o modelo enche o canvas. Você então tenta inpaint pra criar espaço, ou vai pro Figma cortar o que o modelo gerou. O lugar correto pra essa instrução é no prompt, não na iteração. Antes de enviar qualquer prompt de entregável com overlay, pergunte: "onde vai sentar o texto?" Se não sabe, define primeiro.
+
+> [!warning] Pedir texto longo ou múltiplos blocos sem Figma como etapa de produção
+> Modelos de imagem em 2026 ainda erram texto: palavras trocadas, letras fundidas, frases cortadas no meio. Ideogram e Imagen 3 são os melhores, mas mesmo eles falham em blocos com mais de ~30-40 caracteres ou múltiplos textos simultâneos. O padrão produtivo: texto curto (título único, sigla, uma frase) → modelo pode entregar; texto médio a longo (subtítulo + body + caption) → gerar background sem texto + tipografar no Figma/Canva. Aceitar isso como fluxo de produção normal, não como limitação a contornar, economiza horas de iteração.
+
+## Como explicar em inglês
+
+**Interview quote:** *"Every visual prompt has four layers: canvas, composition, style, and text. Canvas sets the bounding rectangle and aspect ratio; composition defines where elements live and how negative space works; style specifies the visual language — illustration type, palette, mood, aesthetic era; and text handles embedded words, position, and typographic intent. Leaving any layer unspecified means the model picks a generic default. Covering all four — with specific vocabulary each model recognizes — is what makes prompts converge in fewer iterations."*
+
+| Português | Inglês |
+|---|---|
+| Canvas (formato, proporção) | Canvas (format, aspect ratio) |
+| Composição (hierarquia visual) | Composition (visual hierarchy) |
+| Estilo (linguagem visual) | Style (visual language) |
+| Paleta de cor específica | Specific color palette |
+| Espaço negativo pra overlay | Negative space for text overlay |
+| Tipo de ilustração (flat, isometric, 3D) | Illustration type (flat, isometric, 3D) |
+| Mood / atmosfera | Mood / atmosphere |
+| Era estética (âncora de estilo) | Aesthetic era (style anchor) |
+| Texto embutido na imagem | Embedded text in image |
+| Intenção tipográfica (sem fonte específica) | Typographic intent (no specific font) |
+
+## O que vem a seguir
+
+Com a anatomia das quatro camadas mapeada, a nota 05 aplica esse vocabulário em templates por entregável: cada tipo de deliverable (poster, infográfico, mockup, thumbnail, hero, e-book, banner) tem defaults recomendados para cada uma das quatro camadas — para que você não parta do zero toda vez que abrir um projeto novo.
+
 ## Fontes
 
 - **@hooeem** — *Become an AI Engineer*, cap #16 (Image Prompting).
 - **Midjourney** — *Documentation* ([docs](https://docs.midjourney.com/)). Parâmetros `--ar`, vocabulário aceito.
 - **OpenAI** — *Image generation guide* ([docs](https://platform.openai.com/docs/guides/images)). DALL-E 3 e descrição textual de canvas.
+- **Ideogram** — *Prompt guide* ([docs](https://ideogram.ai/docs)). Texto embutido e paleta.
+- **Canva Design School** — *Composition fundamentals*. Vocabulário compositivo.
 
 ## Veja também
 
 - [[02 - Deliverable-first, não scene-first]] — as camadas se conectam ao template canônico
+- [[03 - Modelos de imagem 2026 — DALL-E, Imagen, Midjourney, FLUX, SD]] — qual modelo suporta melhor a camada de texto
 - [[05 - Templates por entregável — poster, infográfico, mockup, thumbnail]] — templates aplicam as quatro camadas por tipo de entregável
 - [[06 - Iteração visual — controlled changes]] — qual camada mudar quando o output não bate
 - [[07 - Geração de diagramas e ilustrações técnicas]] — limites da camada texto em diagramas
+- [[Dicionário de IA#Aspect ratio|Dicionário: Aspect ratio]]
+- [[Dicionário de IA#Composição visual|Dicionário: Composição visual]]
+- [[Dicionário de IA#Espaço negativo|Dicionário: Espaço negativo]]
+- [[Dicionário de IA#Flat illustration|Dicionário: Flat illustration]]
+- [[Dicionário de IA#Isometric|Dicionário: Isometric]]
