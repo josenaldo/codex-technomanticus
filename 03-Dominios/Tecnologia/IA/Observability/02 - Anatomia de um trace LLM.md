@@ -274,6 +274,17 @@ Em entrevistas sobre arquitetura de sistemas LLM em produção, descrever a hier
 | exportador de trace | trace exporter |
 | hierarquia de spans | span hierarchy |
 
+## Checklist de instrumentação de trace
+
+> [!tip] O que verificar antes de ir pra produção
+> - [ ] Cada LLM call tem `trace_id`, `span_id`, `parent_span_id`
+> - [ ] Tokens registrados por categoria: `input_tokens`, `output_tokens`, `reasoning_tokens`, `cache_*`
+> - [ ] `finish_reason` em todos os spans
+> - [ ] `model` exato (com subversão), não só o alias
+> - [ ] `prompt_version` como atributo custom
+> - [ ] Prompt e resposta em span events (não em atributos indexados)
+> - [ ] `session_id` e `user_id` nos traces
+
 ## O que vem a seguir
 
 Com a anatomia de trace em mãos, a nota 03 entra no Langfuse — o padrão OSS que materializa essa hierarquia em UI, datasets, e integração com eval.
