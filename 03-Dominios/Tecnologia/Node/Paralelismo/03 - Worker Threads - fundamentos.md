@@ -1,10 +1,10 @@
 ---
 title: "Worker Threads: fundamentos"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -58,6 +58,29 @@ Worker Threads são a resposta para CPU-bound dentro de um processo. Cluster e c
 ---
 
 ## Como funciona
+
+```mermaid
+sequenceDiagram
+    participant M as Main Thread
+    participant W as Worker Thread
+
+    M->>W: new Worker(file, {workerData})
+    Note over W: V8 isolate inicializa
+    W-->>M: evento 'online'
+
+    M->>W: worker.postMessage(data)
+    Note over W: Processa CPU-bound work
+    W-->>M: parentPort.postMessage(result)
+    M->>M: evento 'message' → resolve Promise
+
+    alt Encerramento natural
+        Note over W: event loop drena
+        W-->>M: evento 'exit' (code 0)
+    else Encerramento forçado
+        M->>W: worker.terminate()
+        W-->>M: evento 'exit' (code != 0)
+    end
+```
 
 ### Propriedades estáticas do módulo
 
@@ -299,9 +322,182 @@ Em produção, a estratégia padrão é manter um pool de workers reutilizáveis
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Não tratar o evento `'error'`
+### 1. Processamento de imagem por request
+
+Em APIs de upload de imagem, redimensionamento e conversão de formato são operações CPU-bound que bloqueiam o event loop. A solução é empacotar o processamento em um Worker Thread e expor uma interface baseada em Promise para o handler Express. O buffer da imagem é transferido via `transferList` — zero cópia em ambos os sentidos.
+
+```javascript
+// image-worker.js
+import { parentPort, workerData } from 'node:worker_threads';
+import sharp from 'sharp';
+
+const { imageBuffer, width, height, format } = workerData;
+
+try {
+  const processed = await sharp(Buffer.from(imageBuffer))
+    .resize(width, height, { fit: 'cover' })
+    .toFormat(format)
+    .toBuffer();
+
+  // Devolve o ArrayBuffer para zero-copy no caminho de volta
+  const ab = processed.buffer.slice(
+    processed.byteOffset,
+    processed.byteOffset + processed.byteLength
+  );
+  parentPort.postMessage(ab, [ab]);
+} catch (err) {
+  parentPort.postMessage({ error: err.message });
+}
+```
+
+```javascript
+// process-image.js — wrapper Promise com padrão de produção
+import { Worker } from 'node:worker_threads';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export function processImage(imageBuffer, options = {}) {
+  return new Promise((resolve, reject) => {
+    const { width = 800, height = 600, format = 'webp' } = options;
+
+    const worker = new Worker(path.join(__dirname, 'image-worker.js'), {
+      workerData: { imageBuffer, width, height, format },
+      transferList: [imageBuffer],   // transferência zero-copy para o worker
+    });
+
+    worker.once('message', (result) => {
+      if (result?.error) reject(new Error(result.error));
+      else resolve(Buffer.from(result));
+    });
+    worker.once('error', reject);
+    worker.once('exit', (code) => {
+      if (code !== 0) reject(new Error(`Image worker encerrou com código ${code}`));
+    });
+  });
+}
+```
+
+```javascript
+// app.js — handler Express
+import express from 'express';
+import multer from 'multer';
+import { processImage } from './process-image.js';
+
+const app = express();
+const upload = multer({ storage: multer.memoryStorage() });
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    const ab = req.file.buffer.buffer.slice(
+      req.file.buffer.byteOffset,
+      req.file.buffer.byteOffset + req.file.buffer.byteLength
+    );
+    const processado = await processImage(ab, { width: 1200, height: 800, format: 'webp' });
+    res.set('Content-Type', 'image/webp').send(processado);
+  } catch (err) {
+    res.status(500).json({ error: 'Falha no processamento', detail: err.message });
+  }
+});
+```
+
+O event loop permanece disponível para outros requests enquanto o Worker Thread redimensiona a imagem. Com 10 uploads simultâneos, 10 workers processam em paralelo — o handler Express não bloqueia nenhum deles.
+
+### 2. Parser de JSON grande
+
+Validar e transformar um arquivo JSONL de 50 mil registros dentro do handler bloquearia o event loop por segundos. Aqui o `workerData` carrega o path do arquivo em vez de um buffer — o worker lê e processa de forma autônoma, devolvendo apenas o resumo.
+
+```javascript
+// json-parser-worker.js
+import { parentPort, workerData } from 'node:worker_threads';
+import fs from 'node:fs/promises';
+
+const { filePath, schema } = workerData;
+
+try {
+  const raw = await fs.readFile(filePath, 'utf-8');
+  const lines = raw.split('\n').filter(Boolean);
+
+  const valid = [];
+  const invalid = [];
+
+  for (const line of lines) {
+    try {
+      const record = JSON.parse(line);
+      if (schema.required.every((k) => k in record)) {
+        valid.push(record);
+      } else {
+        invalid.push({ line, reason: 'missing required fields' });
+      }
+    } catch {
+      invalid.push({ line, reason: 'invalid JSON' });
+    }
+  }
+
+  parentPort.postMessage({ valid, invalid, total: lines.length });
+} catch (err) {
+  parentPort.postMessage({ error: err.message });
+}
+```
+
+```javascript
+// parse-json-file.js — wrapper Promise
+import { Worker } from 'node:worker_threads';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export function parseJsonFile(filePath, schema) {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(
+      path.join(__dirname, 'json-parser-worker.js'),
+      { workerData: { filePath, schema } }
+    );
+
+    worker.once('message', (result) => {
+      if (result.error) reject(new Error(result.error));
+      else resolve(result);
+    });
+    worker.once('error', reject);
+    worker.once('exit', (code) => {
+      if (code !== 0) reject(new Error(`JSON worker encerrou com código ${code}`));
+    });
+  });
+}
+```
+
+```javascript
+// handler de importação
+app.post('/import', async (req, res) => {
+  const { filePath } = req.body;
+  const schema = { required: ['id', 'name', 'email'] };
+
+  try {
+    const { valid, invalid, total } = await parseJsonFile(filePath, schema);
+    res.json({
+      total,
+      imported: valid.length,
+      rejected: invalid.length,
+      errors: invalid.slice(0, 10), // amostra para diagnóstico
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+```
+
+Com 50 mil registros, o parse leva ~300-500ms — tempo todo isolado no Worker Thread. Health checks, métricas e outros endpoints continuam respondendo normalmente durante esse processamento.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Armadilha 1 — Não tratar o evento `'error'`
+> Sem o handler `'error'`, exceções não tratadas no worker caem no `process.on('uncaughtException')` do main thread. Em Node 22+, `uncaughtException` sem handler é **fatal por padrão** — o processo encerra. Em versões anteriores, pode silenciar o erro completamente. Sempre registre `w.on('error', ...)` imediatamente após criar o worker.
 
 ```javascript
 // ❌ Sem handler de error
@@ -317,11 +513,8 @@ w.on('error', (err) => {
 });
 ```
 
-Sem o handler `'error'`, exceções não tratadas no worker caem no `process.on('uncaughtException')` do main thread. Em Node 22+, `uncaughtException` sem handler é fatal por padrão. Em versões anteriores, pode silenciar o erro completamente. Sempre registrar `w.on('error', ...)`.
-
-### 2. Usar `terminate()` sem cooperação
-
-`terminate()` é equivalente a `SIGKILL` — interrompe a thread imediatamente sem executar `finally`, `cleanup`, ou fechar recursos abertos (arquivos, conexões, streams parciais). Pode deixar dados em estado inconsistente.
+> [!warning] Armadilha 2 — Usar `terminate()` sem cooperação
+> `terminate()` é equivalente a `SIGKILL` — interrompe a thread imediatamente sem executar `finally`, `cleanup`, ou fechar recursos abertos (arquivos, conexões, streams parciais). Em workers com I/O em progresso, pode deixar dados em estado inconsistente. Use encerramento cooperativo via mensagem; `terminate()` é último recurso.
 
 ```javascript
 // ❌ terminate() em worker com I/O em progresso
@@ -333,23 +526,20 @@ w.postMessage({ command: 'shutdown' });
 await new Promise((resolve) => w.once('exit', resolve));
 ```
 
-### 3. Passar dados que falham no structured clone
-
-`workerData` e `postMessage` usam o algoritmo **structured clone** para copiar dados entre threads. Tipos não-clonáveis causam `DataCloneError` em runtime:
+> [!warning] Armadilha 3 — Passar dados que falham no structured clone
+> `workerData` e `postMessage` usam **structured clone** — funções e símbolos causam `DataCloneError` em runtime (não em compilação). Instâncias de classe são ainda mais traiçoeiras: são clonadas sem erro, mas o prototype some. O receptor recebe um plain object e falha ao chamar métodos. Serialize para POJO explicitamente antes de enviar.
 
 ```javascript
 // ❌ Funções não são clonáveis
-const w = new Worker('./worker.js', {
-  workerData: { fn: () => {} }  // DataCloneError: fn could not be cloned
-});
+new Worker('./worker.js', { workerData: { fn: () => {} } });
+// DataCloneError: fn could not be cloned
 
-// ❌ Instâncias de classes com métodos também falham
-const w = new Worker('./worker.js', {
-  workerData: new MyClass()  // Apenas os dados próprios são clonados, métodos são perdidos
-});
+// ❌ Instâncias de classes — prototype é perdido silenciosamente
+new Worker('./worker.js', { workerData: new MyClass() });
+// Worker recebe { ...props } sem nenhum método
 
 // ✓ Passar apenas dados primitivos e estruturas clonáveis
-const w = new Worker('./worker.js', {
+new Worker('./worker.js', {
   workerData: { n: 42, config: { timeout: 5000 }, items: [1, 2, 3] }
 });
 ```
@@ -358,9 +548,8 @@ Tipos clonáveis: primitivos, `Array`, `Object` (dados puros), `ArrayBuffer`, `T
 
 O mecanismo completo de comunicação (structured clone, transferList, SharedArrayBuffer) é coberto em [[04 - Comunicação entre workers - postMessage e MessageChannel]].
 
-### 4. Confundir Worker Thread com Web Worker do browser
-
-As APIs são intencionalmente similares mas não idênticas:
+> [!warning] Armadilha 4 — Confundir Worker Thread com Web Worker do browser
+> As APIs são intencionalmente similares mas não são portáveis entre si. Código escrito para Web Workers não roda diretamente em Node Worker Threads sem adaptação, e vice-versa.
 
 | Aspecto | Node Worker Thread | Browser Web Worker |
 |---|---|---|
@@ -371,7 +560,15 @@ As APIs são intencionalmente similares mas não idênticas:
 | `require` / `import` | Sim (Node modules) | Não (sem bundler) |
 | Acesso a Node APIs | Sim (`fs`, `crypto`, etc.) | Não |
 
-Código escrito para Web Workers não roda diretamente em Node Worker Threads sem adaptação, e vice-versa.
+---
+
+## O que vem a seguir
+
+Com o ciclo de vida de um Worker Thread claro — como criá-lo, controlar os eventos e encerrar corretamente —, os próximos passos entram no *como* os dados transitam entre threads e como sustentar esse padrão sob carga real. Criar workers por request funciona para carga baixa, mas escalar exige entender o custo de cada cópia de dados e quando reutilizar threads em vez de criar novas.
+
+- [[04 - Comunicação entre workers - postMessage e MessageChannel]] — structured clone em detalhe, quando usar `transferList` para zero-copy e como `MessageChannel` desacopla workers entre si sem passar pelo main thread
+- [[05 - Memória compartilhada - SharedArrayBuffer e Atomics]] — memória verdadeiramente compartilhada entre threads: sem cópia, com coordenação via operações atômicas
+- [[06 - Pool de workers - pattern de produção]] — manter workers reutilizáveis para alta carga, eliminando o custo de criação a cada request
 
 ---
 
@@ -421,3 +618,9 @@ O processo Node não encerra enquanto houver workers ativos (a menos que `unref(
 - [[05 - Memória compartilhada - SharedArrayBuffer e Atomics]] — zero-copy entre threads com coordenação via Atomics
 - [[06 - Pool de workers - pattern de produção]] — manter workers reutilizáveis para alta carga
 - [[Node.js]] — tronco da trilha Node Senior
+
+---
+
+## Fontes
+
+- [Worker Threads — Node.js oficial](https://nodejs.org/api/worker_threads.html)

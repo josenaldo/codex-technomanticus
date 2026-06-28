@@ -1,10 +1,10 @@
 ---
 title: "child_process com fork: Node child com IPC"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -24,6 +24,23 @@ aliases:
 > `fork('./worker.js')` cria um processo Node.js filho com canal IPC built-in — comunicação bidirecional via `child.send()` (pai) e `process.send()` (filho). Diferente de Worker Thread: isolamento total de memória, event loop separado, V8 isolate separado, custo de criação maior (~100ms). Em 2026, Worker Threads cobrem a maioria dos casos. `fork` ainda ganha em quatro cenários específicos: isolamento total de memória, native modules incompatíveis com Worker, supervisor tree, e processos descartáveis que podem crashar sem afetar o pai.
 
 ---
+
+## Diagrama
+
+```mermaid
+sequenceDiagram
+    participant P as parent process
+    participant C as child process (fork)
+
+    P->>C: fork('./worker.js')
+    note over C: nova instância Node.js (processo OS separado)
+    P->>C: child.send({ type: 'work', payload: 42 })
+    note over C: process.on('message', fn) recebe
+    C->>P: process.send({ type: 'result', result: 84 })
+    note over P: child.on('message', fn) recebe
+    P->>C: child.kill('SIGTERM')
+    note over C: encerra (process.on('SIGTERM'))
+```
 
 ## O que é
 
@@ -356,96 +373,234 @@ function parseUntrustedFile(filePath) {
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Zombie processes quando o pai crasha sem cleanup
+### Caso 1 — Sandbox para código de tenant (multi-tenancy)
 
-Se o pai encerra abruptamente — por exceção não capturada, por `SIGKILL` externo, por OOM — filhos `fork`-ados continuam rodando como processos órfãos. Em serviços que reiniciam frequentemente (durante desenvolvimento, em deployments), isso acumula processos consumindo memória e file descriptors.
+Uma plataforma de automação deixa usuários escreverem scripts JavaScript que rodam no backend. Rodar esses scripts no processo principal ou em Worker Threads é arriscado: um script que entra em loop infinito ou lança exceção não capturada pode derrubar o servidor. `fork` com timeout e limite de memória isola o risco.
 
 ```javascript
-// ❌ — sem cleanup, filhos viram zumbis
-const child = fork('./worker.js');
+// sandbox-runner.js — executado como filho isolado
+const { code, timeout } = JSON.parse(process.env.SANDBOX_CONFIG);
 
-// ✓ — registrar cleanup em todos os sinais relevantes
-const children = new Set();
-
-function spawnChild(module) {
-  const child = fork(module);
-  children.add(child);
-  child.on('exit', () => children.delete(child));
-  return child;
-}
-
-function killAll() {
-  for (const child of children) {
-    if (!child.killed) child.kill('SIGTERM');
-  }
-}
-
-process.on('exit', killAll);
-process.on('SIGTERM', () => { killAll(); process.exit(0); });
-process.on('SIGINT',  () => { killAll(); process.exit(0); });
-process.on('uncaughtException', (err) => {
-  console.error(err);
-  killAll();
+// Limitar tempo de execução
+const timer = setTimeout(() => {
+  process.send({ type: 'error', error: 'timeout' });
   process.exit(1);
+}, timeout);
+
+try {
+  // Usar Function() em vez de eval para escopo limpo (sem closure do módulo)
+  const fn = new Function(code);
+  const result = fn();
+  clearTimeout(timer);
+  process.send({ type: 'result', result: String(result) });
+} catch (err) {
+  clearTimeout(timer);
+  process.send({ type: 'error', error: err.message });
+} finally {
+  process.exit(0);
+}
+```
+
+```javascript
+// orchestrator.js — processo pai que spawn-a o sandbox
+import { fork } from 'node:child_process';
+
+function runTenantCode(tenantId, code, timeoutMs = 5000) {
+  return new Promise((resolve, reject) => {
+    const child = fork('./sandbox-runner.js', [], {
+      env: {
+        ...process.env,
+        SANDBOX_CONFIG: JSON.stringify({ code, timeout: timeoutMs }),
+      },
+      execArgv: ['--max-old-space-size=64'], // limita heap do filho a 64 MB
+    });
+
+    const timer = setTimeout(() => {
+      child.kill('SIGKILL');
+      reject(new Error(`Tenant ${tenantId}: timeout`));
+    }, timeoutMs + 500); // 500ms de margem sobre o timeout interno
+
+    child.on('message', (msg) => {
+      clearTimeout(timer);
+      if (msg.type === 'result') resolve(msg.result);
+      else reject(new Error(msg.error));
+    });
+
+    child.on('exit', (code) => {
+      clearTimeout(timer);
+      if (code !== 0) reject(new Error(`Sandbox exited with code ${code}`));
+    });
+  });
+}
+```
+
+**Por que não Worker Thread aqui:** Um Worker que trava em loop síncrono bloqueia sua thread e pode degradar o pool. Um processo filho que trava é isolado ao nível do OS — `SIGKILL` o elimina sem afetar o pai.
+
+---
+
+### Caso 2 — Supervisor tree com backoff exponencial
+
+Um serviço de processamento de filas precisa de um worker sempre rodando. O worker pode crashar por erro não-antecipado, OOM ou bug em dependency. O processo supervisor monitora e reinicia com backoff exponencial para evitar restart-storm.
+
+```javascript
+// supervisor.js
+import { fork } from 'node:child_process';
+
+const MODULE = './queue-worker.js';
+const MAX_RESTARTS = 10;
+const WINDOW_MS = 60_000;
+
+let restarts = 0;
+let windowStart = Date.now();
+let currentWorker = null;
+
+function spawnWorker() {
+  currentWorker = fork(MODULE);
+
+  currentWorker.on('exit', (code, signal) => {
+    if (signal === 'SIGTERM' || code === 0) {
+      console.log('Worker encerrou normalmente');
+      return;
+    }
+
+    const now = Date.now();
+    if (now - windowStart > WINDOW_MS) {
+      restarts = 0;
+      windowStart = now;
+    }
+
+    restarts++;
+    console.warn(`Worker crashou (code=${code}). Restart ${restarts}/${MAX_RESTARTS}`);
+
+    if (restarts > MAX_RESTARTS) {
+      console.error('Limite de restarts atingido — supervisor encerrando');
+      process.exit(1);
+    }
+
+    const delay = Math.min(200 * 2 ** restarts, 30_000); // backoff: 400ms → 30s
+    setTimeout(spawnWorker, delay);
+  });
+
+  currentWorker.on('error', (err) => {
+    console.error('Erro no worker:', err.message);
+  });
+}
+
+spawnWorker();
+
+// Graceful shutdown do supervisor
+process.on('SIGTERM', () => {
+  if (currentWorker && !currentWorker.killed) {
+    currentWorker.kill('SIGTERM');
+  }
+  process.exit(0);
 });
 ```
 
-### 2. `child.send()` com dados não-serializáveis — fail silencioso
+**O que o backoff resolve:** sem ele, um worker que crasha imediatamente em startup (ex: variável de ambiente faltando) cria um loop de restart que consome CPU continuamente. O backoff exponencial dá tempo para o problema ser corrigido ou o alerta ser acionado.
 
-Se você tenta enviar uma função, um `Symbol`, um objeto com referência circular, ou um `Proxy` via `child.send()` com `serialization: 'json'`, o Node lança `TypeError` — mas apenas se você escutar o evento `'error'` no ChildProcess ou passar callback. Sem listener, o erro é silencioso.
+---
 
-```javascript
-// ❌ — TypeError silencioso
-const child = fork('./worker.js');
-child.send({ fn: () => {} }); // função não é serializável via JSON
+## Armadilhas comuns
 
-// ✓ — com callback para capturar erro de send
-child.send({ fn: () => {} }, (err) => {
-  if (err) console.error('send falhou:', err.message);
-});
+> [!warning] Zombie processes quando o pai crasha sem cleanup
+> **O que acontece:** filhos `fork`-ados continuam rodando como processos órfãos quando o pai encerra abruptamente — consumindo memória e file descriptors. Em serviços que reiniciam frequentemente (durante desenvolvimento, em deployments), isso acumula ao longo do tempo.
+>
+> **Por quê:** `fork` cria processos OS independentes. Quando o pai morre por exceção não capturada, `SIGKILL` externo ou OOM, os filhos não recebem nenhum sinal automático — continuam rodando sem supervisão.
+>
+> **Como evitar:** registrar cleanup em todos os sinais relevantes do processo pai, mantendo um Set dos filhos ativos.
+> ```javascript
+> // ❌ — sem cleanup, filhos viram zumbis
+> const child = fork('./worker.js');
+>
+> // ✓ — registrar cleanup em todos os sinais relevantes
+> const children = new Set();
+>
+> function spawnChild(module) {
+>   const child = fork(module);
+>   children.add(child);
+>   child.on('exit', () => children.delete(child));
+>   return child;
+> }
+>
+> function killAll() {
+>   for (const child of children) {
+>     if (!child.killed) child.kill('SIGTERM');
+>   }
+> }
+>
+> process.on('exit', killAll);
+> process.on('SIGTERM', () => { killAll(); process.exit(0); });
+> process.on('SIGINT',  () => { killAll(); process.exit(0); });
+> process.on('uncaughtException', (err) => {
+>   console.error(err);
+>   killAll();
+>   process.exit(1);
+> });
+> ```
 
-// ✓ — alternativa: serializar dados explicitamente antes de enviar
-child.send({ data: JSON.stringify(serializableData) });
-```
+> [!warning] `child.send()` com dados não-serializáveis — fail silencioso
+> **O que acontece:** a mensagem não é entregue ao filho e nenhum erro visível é lançado. O comportamento dificulta o debugging porque o código continua rodando normalmente — apenas sem a comunicação esperada.
+>
+> **Por quê:** se você tenta enviar uma função, um `Symbol`, um objeto com referência circular, ou um `Proxy` via `child.send()` com `serialization: 'json'`, o Node lança `TypeError` — mas apenas se você escutar o evento `'error'` no ChildProcess ou passar callback. Sem listener, o erro é silencioso.
+>
+> **Como evitar:** sempre passar callback para `child.send()` ou usar `serialization: 'advanced'` para tipos que vão além de JSON.
+> ```javascript
+> // ❌ — TypeError silencioso
+> const child = fork('./worker.js');
+> child.send({ fn: () => {} }); // função não é serializável via JSON
+>
+> // ✓ — com callback para capturar erro de send
+> child.send({ fn: () => {} }, (err) => {
+>   if (err) console.error('send falhou:', err.message);
+> });
+>
+> // ✓ — alternativa: serializar dados explicitamente antes de enviar
+> child.send({ data: JSON.stringify(serializableData) });
+> ```
 
-### 3. Confundir `child_process.fork` com `cluster.fork`
+> [!warning] Confundir `child_process.fork` com `cluster.fork`
+> **O que acontece:** o código parece funcionar mas não faz o que o desenvolvedor espera. Usar `child_process.fork` esperando distribuição de connections HTTP não funciona. Usar `cluster.fork` esperando IPC customizável também não — o cluster tem protocolo interno fixo.
+>
+> **Por quê:** os dois têm o mesmo nome (`fork`) mas semântica completamente diferente. `child_process.fork` é propósito geral, IPC bidirecional customizável. `cluster.fork` é especializado para compartilhamento de porta TCP entre workers HTTP, com protocolo de distribuição de conexões gerenciado pelo master.
+>
+> **Como evitar:** memorizar a distinção pelo import — o namespace diferente (`node:child_process` vs `node:cluster`) é o sinal.
+> ```javascript
+> import { fork } from 'node:child_process'; // IPC genérico, propósito geral
+> import cluster from 'node:cluster';
+> cluster.fork(); // worker HTTP, compartilha porta
+>
+> // Sintomas de confusão:
+> // — usar child_process.fork esperando distribuição de connections HTTP (não acontece)
+> // — usar cluster.fork esperando protocolo IPC customizável (cluster tem protocolo interno fixo)
+> ```
 
-Já mencionado na tabela, mas merece repetir como armadilha prática: os dois aparecem em código real e têm semântica completamente diferente.
-
-```javascript
-import { fork } from 'node:child_process'; // IPC genérico, propósito geral
-import cluster from 'node:cluster';
-cluster.fork(); // worker HTTP, compartilha porta
-
-// Sintomas de confusão:
-// — usar child_process.fork esperando distribuição de connections HTTP (não acontece)
-// — usar cluster.fork esperando protocolo IPC customizável (cluster tem protocolo interno fixo)
-```
-
-### 4. Custo de criação alto sem reuso — spawn-on-demand sem pool
-
-`fork` cria um novo processo OS a cada chamada (~100ms de overhead). Para workloads que processam muitas tarefas pequenas, criar um processo por tarefa é proibitivo.
-
-```javascript
-// ❌ — processo novo para cada item → overhead acumulado
-for (const item of bigList) {
-  const child = fork('./worker.js');
-  child.send({ item });
-  // esperar resposta e descartar → O(n) processos criados
-}
-
-// ✓ — reuso: enviar múltiplas mensagens para o mesmo filho
-const child = fork('./worker.js');
-
-for (const item of bigList) {
-  child.send({ item });
-}
-
-// ✓ — ou pool de processos para controle de concorrência
-// (ver [[06 - Pool de workers - pattern de produção]] para o padrão de pool)
-```
+> [!warning] Custo de criação alto sem reuso — spawn-on-demand sem pool
+> **O que acontece:** o throughput cai drasticamente em workloads com muitas tarefas pequenas. Com 1000 itens, isso significa 1000 processos criados sequencialmente — o overhead domina o tempo total de execução.
+>
+> **Por quê:** `fork` cria um novo processo OS a cada chamada (~100ms de overhead). Para workloads que processam muitas tarefas pequenas, criar um processo por tarefa é proibitivo. Diferente de Worker Threads (~1–5ms), o overhead de criação de processo não é amortizável sem reuso explícito.
+>
+> **Como evitar:** reusar processos filhos enviando múltiplas mensagens para o mesmo filho, ou usar um pool de processos pré-criados.
+> ```javascript
+> // ❌ — processo novo para cada item → overhead acumulado
+> for (const item of bigList) {
+>   const child = fork('./worker.js');
+>   child.send({ item });
+>   // esperar resposta e descartar → O(n) processos criados
+> }
+>
+> // ✓ — reuso: enviar múltiplas mensagens para o mesmo filho
+> const child = fork('./worker.js');
+>
+> for (const item of bigList) {
+>   child.send({ item });
+> }
+>
+> // ✓ — ou pool de processos para controle de concorrência
+> // (ver [[06 - Pool de workers - pattern de produção]] para o padrão de pool)
+> ```
 
 ---
 
@@ -478,6 +633,19 @@ for (const item of bigList) {
 **"Qual a diferença entre `child_process.fork` e `cluster.fork`?"** — `child_process.fork` é propósito geral com IPC customizável. `cluster.fork` usa `child_process.fork` internamente mas adiciona compartilhamento de porta TCP para distribuição de connections HTTP. Mesmo nome, semântica completamente diferente.
 
 **"O que acontece com processos filhos quando o pai crasha?"** — Sem cleanup, viram processos órfãos. Solução: registrar handlers em `process.on('exit')`, `SIGTERM`, e `uncaughtException` para encerrar todos os filhos antes de sair.
+
+---
+
+## O que vem a seguir
+
+Conhecendo Worker Threads, Cluster e as três APIs de `child_process`, você tem o conjunto completo de ferramentas de paralelismo do Node. A próxima decisão é saber **quando usar qual** — e como essas ferramentas se encaixam em arquiteturas de produção com orquestradores. A nota `[[10 - Cluster vs PM2 vs Kubernetes - quem orquestra]]` fecha esse ciclo: a evolução histórica de Cluster → PM2 → K8s, o erro clássico de rodar cluster dentro de um pod, e o raciocínio para 2026. Se você quer um artefato de consulta rápida antes de uma entrevista, vá direto para `[[11 - Decision tree - qual ferramenta para qual problema]]` — a árvore completa com tabela problema→ferramenta→razão.
+
+---
+
+## Fontes
+
+- [Node.js Docs — `child_process.fork()`](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options) — opções completas, serialização, stdio e ciclo de vida
+- [Node.js Docs — `serialization: 'advanced'`](https://nodejs.org/api/child_process.html#advanced-serialization) — V8 structured clone vs JSON no canal IPC
 
 ---
 

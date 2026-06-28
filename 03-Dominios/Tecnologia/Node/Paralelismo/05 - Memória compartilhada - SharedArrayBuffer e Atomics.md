@@ -1,10 +1,10 @@
 ---
 title: "Memória compartilhada: SharedArrayBuffer e Atomics"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -119,6 +119,38 @@ A proposta padrão de comunicação entre workers é `postMessage` com o algorit
 ---
 
 ## Como funciona
+
+```mermaid
+graph TD
+    subgraph "postMessage sem transferList"
+        MA1[Main: ArrayBuffer\n100 MB] -->|"serialize + copy\nO(n)"| WA1[Worker: ArrayBuffer\n100 MB copy]
+        MA1 -.->|"original intacto"| MA1
+    end
+
+    subgraph "postMessage com transferList"
+        MA2[Main: ArrayBuffer\n100 MB] -->|"transfer\nO(1) zero-copy"| WA2[Worker: ArrayBuffer\n100 MB]
+        MA2 -.->|"byteLength = 0\ndetached"| DETACH[❌ detached]
+    end
+
+    subgraph "SharedArrayBuffer"
+        SAB[SharedArrayBuffer\n100 MB] --- VMT[Main: TypedArray\nview]
+        SAB --- VW1[Worker 1: TypedArray\nview]
+        SAB --- VW2[Worker 2: TypedArray\nview]
+        VMT -.->|"Atomics.add\nAtomics.load"| SAB
+    end
+
+    style MA1 fill:#4A90D9,color:#fff
+    style MA2 fill:#4A90D9,color:#fff
+    style SAB fill:#4A90D9,color:#fff
+    style WA1 fill:#E8A838,color:#fff
+    style WA2 fill:#E8A838,color:#fff
+    style VMT fill:#E8A838,color:#fff
+    style VW1 fill:#E8A838,color:#fff
+    style VW2 fill:#E8A838,color:#fff
+    style DETACH fill:#D94A4A,color:#fff
+```
+
+> Pense assim: um `ArrayBuffer` comum é como um documento impresso — você pode fotocopiar para cada pessoa ou entregar o original para uma só. O `SharedArrayBuffer` é como um documento numa nuvem compartilhada — todos editam o mesmo arquivo ao mesmo tempo, e quem não coordenar vai sobrescrever o trabalho do outro.
 
 ### A race condition canônica
 
@@ -610,7 +642,214 @@ Para qualquer caso em que os dados fluem linearmente de um worker para outro, `t
 
 ---
 
-## Armadilhas
+## Casos práticos
+
+Dois cenários de produção que vão além do contra-exemplo didático: o primeiro mostra coordenação entre workers (controle de acesso a recurso limitado); o segundo mostra coleta de telemetria sem tráfego de mensagens.
+
+### Cenário 1 — Semáforo de rate limiting entre workers
+
+Imagine 8 workers de processamento de imagens, mas a API externa que gera as thumbnails aceita no máximo 3 requisições simultâneas. Em vez de centralizar o controle no main thread via mensagens (latência de round-trip), os próprios workers coordenam usando `Atomics.compareExchange` como semáforo.
+
+O mecanismo é simples: um slot inteiro no SAB armazena o número de "vagas ocupadas". Cada worker tenta incrementar o contador atomicamente só se ele estiver abaixo do limite. Se a operação CAS falhar (alguém chegou antes), o worker aguarda e tenta de novo.
+
+```javascript
+// semaphore.js — semáforo contável via SAB + Atomics
+export class SharedSemaphore {
+  /**
+   * @param {SharedArrayBuffer} sab - buffer com pelo menos 4 bytes
+   * @param {number} maxConcurrent - vagas disponíveis
+   * @param {number} index - índice Int32 no buffer (default 0)
+   */
+  constructor(sab, maxConcurrent, index = 0) {
+    this.view = new Int32Array(sab);
+    this.max = maxConcurrent;
+    this.index = index;
+  }
+
+  /** Aguarda uma vaga e adquire o semáforo (busy-wait + yield via waitAsync) */
+  async acquire() {
+    while (true) {
+      const current = Atomics.load(this.view, this.index);
+      if (current < this.max) {
+        // Tenta reservar uma vaga: só grava se o valor ainda for `current`
+        const prev = Atomics.compareExchange(this.view, this.index, current, current + 1);
+        if (prev === current) return; // sucesso — vaga adquirida
+      }
+      // Slot cheio: aguarda notificação sem bloquear a thread do SO de forma síncrona
+      await Atomics.waitAsync(this.view, this.index, current).value;
+    }
+  }
+
+  /** Libera a vaga e acorda workers esperando */
+  release() {
+    Atomics.sub(this.view, this.index, 1);
+    Atomics.notify(this.view, this.index, 1); // acorda um waiter
+  }
+}
+```
+
+```javascript
+// worker-thumbnail.js
+import { parentPort, workerData } from 'node:worker_threads';
+import { SharedSemaphore } from './semaphore.js';
+
+parentPort.on('message', async ({ sab, tasks }) => {
+  const sem = new SharedSemaphore(sab, 3); // máximo 3 simultâneos
+
+  const results = [];
+  for (const task of tasks) {
+    await sem.acquire();
+    try {
+      // Chamada à API externa — agora com no máximo 3 simultâneas globais
+      const thumb = await fetchThumbnail(task.url);
+      results.push({ id: task.id, thumb });
+    } finally {
+      sem.release();
+    }
+  }
+
+  parentPort.postMessage({ results });
+});
+
+async function fetchThumbnail(url) {
+  // Simula latência de API externa
+  await new Promise(r => setTimeout(r, 50 + Math.random() * 100));
+  return `thumbnail:${url}`;
+}
+```
+
+```javascript
+// main.js — 8 workers, semáforo global de 3 vagas
+import { Worker } from 'node:worker_threads';
+import { SharedSemaphore } from './semaphore.js';
+
+const sab = new SharedArrayBuffer(4); // 1 slot Int32 para o semáforo
+// Inicializa o contador em 0 (nenhuma vaga ocupada)
+new Int32Array(sab)[0] = 0;
+
+const WORKER_COUNT = 8;
+const tasks = Array.from({ length: 40 }, (_, i) => ({ id: i, url: `img-${i}.jpg` }));
+const chunk = Math.ceil(tasks.length / WORKER_COUNT);
+
+const workers = Array.from({ length: WORKER_COUNT }, (_, i) => {
+  const w = new Worker(new URL('./worker-thumbnail.js', import.meta.url));
+  w.postMessage({ sab, tasks: tasks.slice(i * chunk, (i + 1) * chunk) });
+  return w;
+});
+
+const allResults = [];
+let done = 0;
+for (const w of workers) {
+  w.on('message', ({ results }) => {
+    allResults.push(...results);
+    if (++done === WORKER_COUNT) {
+      console.log(`Processadas ${allResults.length} imagens`);
+      // Em nenhum momento mais de 3 requests simultâneos para a API externa
+    }
+  });
+}
+```
+
+O ponto central aqui é que o semáforo não passa por mensagens — não há ping-pong entre worker e main thread para liberar slots. A coordenação acontece diretamente na memória compartilhada, com latência de nanossegundos.
+
+---
+
+### Cenário 2 — Buffer circular de métricas em tempo real
+
+Quatro workers de processamento de eventos precisam reportar métricas de throughput para um dashboard. A solução ingênua seria cada worker enviar mensagens ao main thread a cada evento processado — 4 workers × 10.000 eventos/s = 40.000 mensagens/s, sobrecarregando o canal de `postMessage`.
+
+Com SAB, os workers incrementam contadores diretamente na memória compartilhada. O main thread faz polling dos agregados a cada 500ms, sem nenhuma mensagem adicional.
+
+```javascript
+// metrics-layout.js — constantes compartilhadas entre main e workers
+// Layout do SAB (cada slot = 1 Int32 = 4 bytes):
+// [0] worker-0 events_processed
+// [1] worker-1 events_processed
+// [2] worker-2 events_processed
+// [3] worker-3 events_processed
+// [4] worker-0 errors
+// [5] worker-1 errors
+// [6] worker-2 errors
+// [7] worker-3 errors
+export const METRICS_SAB_SIZE = 8 * 4; // 8 slots × 4 bytes
+export const WORKER_COUNT = 4;
+```
+
+```javascript
+// event-worker.js
+import { parentPort, workerData } from 'node:worker_threads';
+
+parentPort.once('message', ({ sab, workerId }) => {
+  const metrics = new Int32Array(sab);
+  const eventsIdx = workerId;        // slot para eventos processados
+  const errorsIdx = WORKER_COUNT + workerId; // slot para erros
+
+  // Processa eventos continuamente
+  async function processLoop() {
+    while (true) {
+      try {
+        await processNextEvent();
+        Atomics.add(metrics, eventsIdx, 1); // thread-safe, sem mensagem
+      } catch {
+        Atomics.add(metrics, errorsIdx, 1);
+      }
+    }
+  }
+
+  processLoop();
+});
+
+async function processNextEvent() {
+  // Simula processamento assíncrono de evento
+  await new Promise(r => setTimeout(r, Math.random() * 2));
+}
+```
+
+```javascript
+// main.js — dashboard de métricas sem mensagens dos workers
+import { Worker } from 'node:worker_threads';
+import { METRICS_SAB_SIZE, WORKER_COUNT } from './metrics-layout.js';
+
+const sab = new SharedArrayBuffer(METRICS_SAB_SIZE);
+const metrics = new Int32Array(sab);
+
+// Spawna workers
+const workers = Array.from({ length: WORKER_COUNT }, (_, id) => {
+  const w = new Worker(new URL('./event-worker.js', import.meta.url));
+  w.postMessage({ sab, workerId: id });
+  return w;
+});
+
+// Snapshot anterior para calcular delta (throughput por intervalo)
+let prevEvents = Array(WORKER_COUNT).fill(0);
+
+// Polling de métricas — sem nenhuma mensagem adicional dos workers
+setInterval(() => {
+  const now = Array.from({ length: WORKER_COUNT }, (_, i) =>
+    Atomics.load(metrics, i)
+  );
+  const errors = Array.from({ length: WORKER_COUNT }, (_, i) =>
+    Atomics.load(metrics, WORKER_COUNT + i)
+  );
+
+  const deltas = now.map((v, i) => v - prevEvents[i]);
+  const totalThroughput = deltas.reduce((a, b) => a + b, 0);
+  const totalErrors = errors.reduce((a, b) => a + b, 0);
+  prevEvents = now;
+
+  console.log({
+    throughput_per_500ms: totalThroughput,
+    errors_total: totalErrors,
+    per_worker: deltas,
+  });
+}, 500);
+```
+
+Perceba que o main thread nunca recebe mensagens dos workers durante a operação — apenas lê os contadores atomicamente. Em 4 workers processando 10k eventos/s, isso elimina ~40k mensagens/s do event loop. O canal de `postMessage` fica reservado para sinais de ciclo de vida (start, stop, config change).
+
+---
+
+## Armadilhas comuns
 
 > [!warning] Armadilha 1 — Acessar SAB sem `Atomics` produz race conditions silenciosas
 > `view[0]++` em dois workers simultâneos é comportamento indefinido do ponto de vista de concorrência. O código **compila e roda sem erro** — a race condition aparece como resultado incorreto intermitente, difícil de reproduzir em ambiente de desenvolvimento. Regra: qualquer leitura ou escrita em posição de SAB que possa ser acessada por mais de uma thread ao mesmo tempo deve usar `Atomics`.
@@ -672,6 +911,12 @@ Para qualquer caso em que os dados fluem linearmente de um worker para outro, `t
 
 ---
 
+## O que vem a seguir
+
+`SharedArrayBuffer` e `Atomics` são a camada mais baixa da hierarquia de concorrência em Node.js — você raramente os usa diretamente em código de aplicação. Na prática, eles são abstraídos por padrões de mais alto nível. O próximo passo natural é entender como organizar vários workers em produção sem gerenciar cada detalhe de comunicação manualmente: [[06 - Pool de workers - pattern de produção]] mostra como `piscina` encapsula exatamente isso — scheduling, backpressure e graceful shutdown num package coeso.
+
+Se quiser entender melhor por que transferência de dados via `postMessage` é a alternativa preferida na maioria dos casos (e quando ela não é suficiente), [[04 - Comunicação entre workers - postMessage e MessageChannel]] fecha o ciclo: é o contraste direto entre cópia, transferência e compartilhamento de memória que fundamenta a escolha entre `ArrayBuffer`, `transferList` e `SharedArrayBuffer`.
+
 ## Em entrevista
 
 > [!quote] Frase pronta (inglês)
@@ -706,9 +951,14 @@ Para qualquer caso em que os dados fluem linearmente de um worker para outro, `t
 
 ---
 
+## Fontes
+
+- [Node.js Docs — SharedArrayBuffer and Atomics](https://nodejs.org/api/worker_threads.html#sharedarraybuffer-and-atomics) — referência oficial da API no contexto de `worker_threads`
+- [TC39 ECMAScript Spec — Atomics Object](https://tc39.es/ecma262/#sec-atomics-object) — especificação formal de todas as operações atômicas (semântica, tipos aceitos, garantias de linearidade)
+
 ## Veja também
 
-- `[[03 - Worker Threads - fundamentos]]`
-- `[[04 - Comunicação entre workers - postMessage e MessageChannel]]`
-- `[[06 - Pool de workers - pattern de produção]]`
-- `[[Node.js]]`
+- [[03 - Worker Threads - fundamentos]]
+- [[04 - Comunicação entre workers - postMessage e MessageChannel]]
+- [[06 - Pool de workers - pattern de produção]]
+- [[Node.js]]

@@ -1,10 +1,10 @@
 ---
 title: "Por que paralelismo em Node"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -58,6 +58,25 @@ Saber reconhecer CPU-bound vs I/O-bound, e conhecer as 3 ferramentas de paraleli
 ---
 
 ## Como funciona
+
+Pense no event loop como um atendente único em um balcão: incrivelmente eficiente enquanto a tarefa é "encaminhar o pedido para a cozinha e avisar quando estiver pronto" (I/O-bound), mas completamente travado quando precisa preparar a refeição por conta própria (CPU-bound). O diagrama abaixo mostra o caminho de decisão — de um request que chega até a ferramenta de paralelismo certa, passando pelas alternativas mais simples.
+
+```mermaid
+flowchart TD
+    A([Request chega]) --> B{Trabalho\né CPU-bound?}
+    B -->|Não - I/O-bound| C[async/await\nEvent loop resolve]
+    B -->|Sim| D{API async\ndisponível?}
+    D -->|Sim| E[bcrypt.hash\ncrypto.pbkdf2\nfs.promises]
+    D -->|Não| F{Pool de libuv\njá satura?}
+    E --> G[UV_THREADPOOL_SIZE\npode ajudar]
+    F -->|Não| G
+    F -->|Sim| H[Worker Thread\né a solução estrutural]
+
+    style C fill:#4A90D9,color:#fff
+    style E fill:#4A90D9,color:#fff
+    style G fill:#E8A838,color:#fff
+    style H fill:#D94A4A,color:#fff
+```
 
 ### CPU-bound vs I/O-bound: a distinção central
 
@@ -195,27 +214,113 @@ A decision tree completa está em [[11 - Decision tree - qual ferramenta para qu
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Paralelizar sem medir
+### Cenário 1 — Servidor de autenticação com bcrypt
 
-O erro mais comum: adotar Worker Threads como primeira resposta a "a API está lenta". Worker Threads adicionam complexidade mensurável — thread management, serialização de mensagens via `postMessage`, tratamento de erros em contextos separados, debugging mais difícil. Se o bottleneck for I/O (query lenta, dependência externa, paginação ausente), Worker Thread não ajuda em nada e pode piorar a latência por overhead de coordenação.
+Uma API de registro de usuários começa a apresentar p99 de latência de 3+ segundos em *todos* os endpoints — não apenas no `/register`. O diagnóstico via `perf_hooks.monitorEventLoopDelay` confirma event loop lag de 300-400ms. A causa raiz: `bcrypt.hashSync` rodando na thread JS com cost factor 12.
 
-A sequência correta é sempre: medir → identificar o tipo de bottleneck → selecionar a solução mínima que resolve.
+A progressão de solução, do menor ao maior custo de implementação:
 
-### 2. Confundir CPU-bound com I/O-bound
+```javascript
+// Passo 1 — trocar pela API async do bcrypt (usa thread pool de libuv)
+// Remove o trabalho da thread JS; resolve para cargas moderadas
+app.post('/register', async (req, res) => {
+  const hash = await bcrypt.hash(req.body.password, 12);
+  await db.users.create({ password: hash });
+  res.json({ ok: true });
+});
 
-Um handler que faz `await db.query()` e depois processa os resultados em memória pode ter ambos os componentes: I/O-bound na query (resolvido por `async/await`) e CPU-bound no processamento dos resultados (não resolvido por `async/await`).
+// Passo 2 — se bcrypt.hash ainda saturar sob carga, ampliar o pool
+// UV_THREADPOOL_SIZE=16 node server.js
 
-O erro é assumir que porque o handler usa `await` e o banco está "lento", a solução é otimizar a query. Se o event loop lag dispara *depois* que a query retorna, o problema é o processamento em memória — CPU-bound — e a query está bem.
+// Passo 3 — Worker Thread dedicado (quando pool saturado E CPU alto por thread)
+// worker-bcrypt.js
+import { workerData, parentPort } from 'node:worker_threads';
+import bcrypt from 'bcrypt';
+const hash = await bcrypt.hash(workerData.password, workerData.rounds);
+parentPort.postMessage({ hash });
 
-Paralelizar I/O via Worker Threads é tipicamente pior que `async/await` puro: há overhead de serialização dos dados entre threads, e a operação de I/O em si vai para o kernel/thread pool de qualquer forma.
+// No handler principal:
+import { Worker } from 'node:worker_threads';
 
-### 3. Achar que `UV_THREADPOOL_SIZE` resolve qualquer CPU-bound
+function hashWithWorker(password, rounds) {
+  return new Promise((resolve, reject) => {
+    const w = new Worker('./worker-bcrypt.js', { workerData: { password, rounds } });
+    w.once('message', ({ hash }) => resolve(hash));
+    w.once('error', reject);
+  });
+}
 
-`UV_THREADPOOL_SIZE` aumenta o número de threads nativas no pool de libuv. Isso ajuda apenas para operações que **usam esse pool** — `crypto.pbkdf2`, `bcrypt.hash` (via API async), `fs.promises.*`, `dns.lookup`, compressão com `zlib` async.
+app.post('/register', async (req, res) => {
+  const hash = await hashWithWorker(req.body.password, 12);
+  await db.users.create({ password: hash });
+  res.json({ ok: true }); // Thread principal livre durante todo o hashing
+});
+```
 
-Trabalho síncrono próprio em JavaScript — um loop de processamento, um parser customizado, um algoritmo de cálculo — não usa o pool de libuv. Ele roda na thread JS. `UV_THREADPOOL_SIZE=100` não faz nenhuma diferença para esse tipo de trabalho. A solução para código JS síncrono pesado é Worker Thread — que cria uma thread JS separada onde esse código pode rodar sem bloquear o event loop principal.
+Cada passo exige nova medição de event loop lag para confirmar melhora — sem medir, não há evidência de quando parar. Para alta carga, criar um `new Worker()` por request tem overhead de criação de thread; o próximo passo seria um **pool de workers reutilizáveis**, coberto em [[06 - Pool de workers - pattern de produção]].
+
+### Cenário 2 — Parser de CSV bloqueando o event loop
+
+Um endpoint de importação recebe um arquivo CSV com 500 mil linhas e parseia tudo em memória com `csv-parse/sync`. O handler trava o event loop por 8-12 segundos — todos os outros endpoints param de responder nesse intervalo.
+
+```javascript
+// ❌ Antes — parser síncrono na thread principal
+app.post('/import', async (req, res) => {
+  const file = await fs.promises.readFile(req.file.path);
+  const rows = parseCsvSync(file); // 8-12 segundos bloqueando a thread JS
+  await db.records.bulkCreate(rows);
+  res.json({ imported: rows.length });
+});
+
+// ✓ Depois — parsing em Worker Thread; event loop principal fica livre
+// csv-worker.js
+import { workerData, parentPort } from 'node:worker_threads';
+import { parseCsvSync } from './csv-utils.js';
+import fs from 'node:fs';
+
+const file = fs.readFileSync(workerData.filePath);
+const rows = parseCsvSync(file);
+parentPort.postMessage({ rows });
+
+// No handler principal:
+import { Worker } from 'node:worker_threads';
+
+app.post('/import', async (req, res) => {
+  const { rows } = await new Promise((resolve, reject) => {
+    const w = new Worker('./csv-worker.js', {
+      workerData: { filePath: req.file.path },
+    });
+    w.once('message', resolve);
+    w.once('error', reject);
+  });
+
+  await db.records.bulkCreate(rows);
+  res.json({ imported: rows.length });
+});
+```
+
+Os 8-12 segundos de parsing continuam existindo — mas agora ocorrem em outra thread JS, sem impactar o event loop principal. O endpoint `GET /health` e todos os demais continuam respondendo normalmente durante o processo.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Paralelizar sem medir
+> **O que acontece:** Worker Threads são adicionadas como primeira resposta a "a API está lenta", sem antes identificar a causa do bottleneck.
+> **Por quê:** Worker Threads adicionam complexidade real — thread management, serialização via `postMessage`, tratamento de erros em contextos separados. Se o bottleneck for I/O (query lenta, paginação ausente, dependência externa), Worker Thread não ajuda e pode piorar a latência por overhead de coordenação.
+> **Como evitar:** A sequência correta é sempre: medir event loop lag → identificar o tipo de bottleneck → selecionar a solução mínima. Ferramentas de diagnóstico em [[10 - Bloqueio do event loop - sintomas e causas]].
+
+> [!warning] Confundir CPU-bound com I/O-bound
+> **O que acontece:** Um handler faz `await db.query()` e depois processa resultados em memória. O dev assume que o banco está lento e tenta otimizar a query.
+> **Por quê:** O event loop lag pode disparar *depois* que a query retorna — apontando para CPU-bound no processamento em memória, não para I/O lento. Paralelizar I/O via Worker Threads é tipicamente pior que `async/await` puro: há overhead de serialização entre threads, e o I/O vai para o kernel de qualquer forma.
+> **Como evitar:** Medir separadamente a latência da query e o tempo de processamento pós-query. Se o lag começa após o `await db.query()`, o bottleneck é CPU — e Worker Thread é a candidata, não otimização de query.
+
+> [!warning] UV_THREADPOOL_SIZE não resolve todo CPU-bound
+> **O que acontece:** `UV_THREADPOOL_SIZE` é aumentado esperando-se que código JavaScript pesado seja acelerado — mas a latência não muda.
+> **Por quê:** `UV_THREADPOOL_SIZE` controla apenas o pool de threads *nativas* de libuv, usado por `crypto.pbkdf2`, `fs.promises.*`, `dns.lookup`, `zlib` async. Código JavaScript síncrono próprio — loops, parsers customizados, algoritmos de cálculo — roda na thread JS, não no pool de libuv. `UV_THREADPOOL_SIZE=100` não tem efeito sobre esse código.
+> **Como evitar:** Distinguir se o trabalho pesado é uma API Node que usa o pool de libuv (→ `UV_THREADPOOL_SIZE` pode ajudar) ou JavaScript puro síncrono (→ precisa de Worker Thread para sair da thread JS principal).
 
 ---
 
@@ -263,3 +368,18 @@ Não. `async/await` é açúcar sintático sobre Promises — gerencia quando a 
 - [[09 - async-await - o que é, o que não é]] — galho 1: por que `async` não resolve CPU-bound
 - [[10 - Bloqueio do event loop - sintomas e causas]] — galho 1: como diagnosticar e confirmar bloqueio
 - [[Node.js]] — tronco da trilha Node Senior
+
+---
+
+## O que vem a seguir
+
+Agora que o *porquê* do paralelismo está estabelecido — e o caminho de diagnóstico antes de paralelizar está claro — a próxima etapa é conhecer as 3 ferramentas disponíveis e entender quando cada uma faz sentido.
+
+- [[02 - As 3 ferramentas - Worker Threads, Cluster, child_process]] — panorama comparativo dos 3 modelos: shared-memory, shared-port e separate-process; tabela de decisão canônica
+- [[11 - Decision tree - qual ferramenta para qual problema]] — fluxograma de decisão com critérios objetivos para escolher entre Worker Threads, Cluster e child_process
+
+---
+
+## Fontes
+
+- [Don't Block the Event Loop (or the Worker Pool) — Node.js Guides](https://nodejs.org/en/docs/guides/dont-block-the-event-loop)

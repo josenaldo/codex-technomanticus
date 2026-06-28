@@ -1,10 +1,10 @@
 ---
 title: "Pool de workers: pattern de produção"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -69,6 +69,34 @@ Pool de workers é a resposta para **CPU-bound work**: mova o trabalho pesado pa
 ---
 
 ## Como funciona
+
+```mermaid
+sequenceDiagram
+    participant C as Client (Main)
+    participant Q as Task Queue
+    participant P as Pool Manager
+    participant W1 as Worker 1
+    participant W2 as Worker 2
+
+    C->>P: pool.run(taskA)
+    P->>W1: dispatch taskA
+    C->>P: pool.run(taskB)
+    P->>W2: dispatch taskB
+    C->>P: pool.run(taskC)
+    P->>Q: enqueue taskC (workers busy)
+
+    W1-->>P: result A
+    P-->>C: resolve promise A
+    P->>W1: dispatch taskC (from queue)
+
+    W2-->>P: result B
+    P-->>C: resolve promise B
+
+    W1-->>P: result C
+    P-->>C: resolve promise C
+```
+
+> A analogia é a fila de caixa de um banco: há N caixas abertas (workers). Clientes que chegam quando todos estão ocupados esperam na fila — mas ninguém abre um caixa novo para cada cliente. Quando um caixa termina de atender, ele chama o próximo da fila.
 
 ### 1. Implementação manual mínima
 
@@ -362,7 +390,226 @@ Regra de produção: **tasks de worker devem ser idempotentes**. Se a task for e
 
 ---
 
-## Armadilhas
+## Casos práticos
+
+Os exemplos da seção "Na prática" mostraram o _sizing_ e a idempotência. Aqui vai além: dois cenários de produção com código completo e tratamento de borda.
+
+### Cenário 1 — Servidor de geração de PDFs sob demanda
+
+Uma API HTTP recebe requisições de geração de relatórios em PDF. O processo é CPU-bound (template → HTML → PDF via biblioteca nativa). Criar um Worker por requisição é inviável sob carga — o pool amortiza o custo de spawn e protege o servidor de OOM via `maxQueue`.
+
+```javascript
+// pdf-worker.js — exporta função para piscina
+export default async function generatePdf({ templateId, data }) {
+  // Simula renderização CPU-bound (em prod: puppeteer, wkhtmltopdf, PDFKit etc.)
+  const html = renderTemplate(templateId, data);
+  const pdfBytes = await htmlToPdf(html);
+  return pdfBytes;
+}
+
+function renderTemplate(templateId, data) {
+  // Expansão de template — CPU-bound
+  return `<html><body>${JSON.stringify(data)}</body></html>`;
+}
+
+async function htmlToPdf(html) {
+  // Simulação de trabalho pesado
+  await new Promise(r => setTimeout(r, 50));
+  return Buffer.from(`PDF:${html.length}`);
+}
+```
+
+```javascript
+// server.js — pool com proteção contra sobrecarga
+import http from 'node:http';
+import Piscina from 'piscina';
+import { availableParallelism } from 'node:os';
+
+const pool = new Piscina({
+  filename: new URL('./pdf-worker.js', import.meta.url).href,
+
+  minThreads: 2,                          // sempre prontos para resposta rápida
+  maxThreads: availableParallelism(),     // limite por CPU real disponível
+  maxQueue: availableParallelism() * 4,  // fila de no máximo 4× o pool
+  idleTimeout: 30_000,                   // libera workers ociosos após 30s
+});
+
+const server = http.createServer(async (req, res) => {
+  if (req.method !== 'POST' || req.url !== '/pdf') {
+    res.writeHead(404).end();
+    return;
+  }
+
+  // Coleta body JSON
+  const body = await new Promise((resolve, reject) => {
+    let data = '';
+    req.on('data', chunk => (data += chunk));
+    req.on('end', () => {
+      try { resolve(JSON.parse(data)); }
+      catch (e) { reject(e); }
+    });
+  });
+
+  // Verifica backpressure ANTES de enfileirar
+  if (pool.needsDrain) {
+    res.writeHead(503, { 'Content-Type': 'application/json' })
+       .end(JSON.stringify({
+         error: 'Service overloaded — retry after a moment',
+         queueSize: pool.queueSize,
+         utilization: pool.utilization.toFixed(2),
+       }));
+    return;
+  }
+
+  try {
+    const pdfBytes = await pool.run({
+      templateId: body.templateId,
+      data: body.data,
+    });
+
+    res.writeHead(200, {
+      'Content-Type': 'application/pdf',
+      'Content-Length': pdfBytes.byteLength,
+    }).end(Buffer.from(pdfBytes));
+
+  } catch (err) {
+    // ERR_QUEUE_FULL pode acontecer em race entre needsDrain check e pool.run
+    const isQueueFull = err.message?.includes('queue');
+    res.writeHead(isQueueFull ? 503 : 500, { 'Content-Type': 'application/json' })
+       .end(JSON.stringify({ error: err.message }));
+  }
+});
+
+// Graceful shutdown obrigatório
+async function shutdown(signal) {
+  console.log(`${signal}: fechando pool e servidor`);
+  server.close();
+  await pool.close();   // aguarda PDFs em andamento
+  process.exit(0);
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));
+
+server.listen(3000, () => console.log('PDF server on :3000'));
+```
+
+O padrão `needsDrain` antes do `pool.run` é preferível a capturar `ERR_QUEUE_FULL` como fluxo normal — é mais rápido e evita o custo de criar objetos de erro. O HTTP 503 com os campos `queueSize` e `utilization` na resposta facilita o diagnóstico pelo cliente.
+
+---
+
+### Cenário 2 — Pool com tarefas heterogêneas (OCR + compressão)
+
+Em vez de criar dois pools separados (um para OCR, outro para compressão), um único pool com workers que exportam múltiplas funções serve ambos os casos. Isso amortiza o custo de memória e simplifica o gerenciamento de shutdown.
+
+```javascript
+// media-worker.js — múltiplas funções no mesmo worker
+import sharp from 'sharp'; // exemplo: biblioteca de imagens nativa
+
+/**
+ * OCR simulado (em prod: tesseract.js, google-cloud/vision etc.)
+ */
+export async function ocr({ imageBuffer, language }) {
+  // Pré-processamento com sharp (CPU-bound: resize, grayscale, threshold)
+  const processed = await sharp(Buffer.from(imageBuffer))
+    .grayscale()
+    .resize({ width: 1200, withoutEnlargement: true })
+    .toBuffer();
+
+  // Simula extração de texto (em prod: Tesseract WASM ou binding nativo)
+  await new Promise(r => setTimeout(r, 80));
+  return { text: `[OCR result lang=${language} bytes=${processed.byteLength}]` };
+}
+
+/**
+ * Compressão de imagem para múltiplos formatos
+ */
+export async function compress({ imageBuffer, quality, format }) {
+  const validFormats = ['webp', 'jpeg', 'avif', 'png'];
+  if (!validFormats.includes(format)) {
+    throw new Error(`Formato inválido: ${format}. Use: ${validFormats.join(', ')}`);
+  }
+
+  const compressed = await sharp(Buffer.from(imageBuffer))
+    [format]({ quality: quality ?? 80 })
+    .toBuffer();
+
+  return {
+    buffer: compressed,
+    format,
+    originalSize: imageBuffer.byteLength,
+    compressedSize: compressed.byteLength,
+    ratio: (compressed.byteLength / imageBuffer.byteLength).toFixed(2),
+  };
+}
+```
+
+```javascript
+// main.js — pool único para OCR e compressão + endpoint /health
+import Piscina from 'piscina';
+import { availableParallelism } from 'node:os';
+
+const pool = new Piscina({
+  filename: new URL('./media-worker.js', import.meta.url).href,
+  minThreads: 2,
+  maxThreads: availableParallelism(),
+  maxQueue: 'auto',
+  idleTimeout: 60_000,
+});
+
+// Uso: pool.run(data, { name: 'ocr' }) ou pool.run(data, { name: 'compress' })
+async function processDocument(imageBuffer) {
+  // Dispara OCR e compressão em paralelo — pool decide quais workers servem cada uma
+  const [ocrResult, webpResult, avifResult] = await Promise.all([
+    pool.run({ imageBuffer, language: 'por' }, { name: 'ocr' }),
+    pool.run({ imageBuffer, quality: 85, format: 'webp' }, { name: 'compress' }),
+    pool.run({ imageBuffer, quality: 70, format: 'avif' }, { name: 'compress' }),
+  ]);
+
+  return { ocrResult, webpResult, avifResult };
+}
+
+// Endpoint /health com métricas do pool
+function getPoolHealth() {
+  return {
+    status: pool.needsDrain ? 'degraded' : 'ok',
+    workers: {
+      active: pool.threads.length,
+      max: pool.options.maxThreads,
+    },
+    queue: {
+      size: pool.queueSize,
+      limit: pool.options.maxQueue,
+      needsDrain: pool.needsDrain,
+    },
+    throughput: {
+      completed: pool.completed,
+      utilization: pool.utilization.toFixed(3),
+    },
+    latency: {
+      runTime_p99_ms: pool.runTime.percentile(99).toFixed(1),
+      waitTime_p99_ms: pool.waitTime.percentile(99).toFixed(1),
+    },
+  };
+}
+
+// Simula processamento de documentos
+import fs from 'node:fs';
+const img = fs.readFileSync('./sample.jpg'); // em prod: stream, S3, etc.
+
+const result = await processDocument(img);
+console.log('OCR:', result.ocrResult.text);
+console.log('WebP ratio:', result.webpResult.ratio);
+console.log('Pool health:', getPoolHealth());
+
+await pool.close();
+```
+
+A vantagem de funções nomeadas num worker único é que o pool balanceia automaticamente entre OCR e compressão — se 3 das 4 CPUs estão ocupadas com OCR e chega uma compressão, o quarto worker pega imediatamente. Com dois pools separados, você teria que projetar o split de CPUs antecipadamente (ou aceitar que um pool pode estar idle enquanto o outro está congestionado).
+
+---
+
+## Armadilhas comuns
 
 > [!danger] Pool sem `maxQueue`
 > Sem limite de fila, cada task que chega quando todos os workers estão ocupados é enfileirada. Sob carga extrema, a fila cresce sem limite até esgotar a memória do processo. Use `maxQueue: 'auto'` ou um número explícito, e trate o erro `ERR_QUEUE_FULL` no caller.
@@ -391,6 +638,12 @@ Regra de produção: **tasks de worker devem ser idempotentes**. Se a task for e
 > Se o `idleTimeout` for curto e os módulos carregados pelo worker forem grandes (ex: TensorFlow.js, Sharp), o pool vai destruir e recriar workers frequentemente, pagando o custo de carregamento toda vez. Ajuste o `idleTimeout` para ser maior que o intervalo típico entre bursts de tasks.
 
 ---
+
+## O que vem a seguir
+
+O pool de workers resolve o problema de **uma máquina, múltiplas CPUs**. Quando o sistema precisa crescer além de um único processo — seja por múltiplas instâncias num mesmo servidor ou por orquestração em containers — a próxima camada é o [[07 - Cluster - escalando HTTP por CPU]], que usa o módulo nativo `cluster` para forking de processos com compartilhamento de porta.
+
+Para aplicações que crescem para múltiplos hosts, o panorama muda: [[10 - Cluster vs PM2 vs Kubernetes - quem orquestra]] mapeia quem faz o quê em cada nível da hierarquia de orquestração — processo, máquina, cluster. E se a dúvida for qual ferramenta usar para um problema específico, [[11 - Decision tree - qual ferramenta para qual problema]] oferece o mapa de decisão direto.
 
 ## Em entrevista
 
@@ -426,11 +679,16 @@ Usar `idleTimeout` para matar workers ociosos, `maxQueue` para não acumular tas
 
 ---
 
+## Fontes
+
+- [piscina — repositório oficial (GitHub)](https://github.com/piscinajs/piscina) — código, changelog e exemplos da biblioteca de referência para worker pools em Node.js; mantida por Matteo Collina (TSC do Node.js)
+- [Node.js Docs — worker_threads](https://nodejs.org/api/worker_threads.html) — API oficial de Worker Threads: `Worker`, `parentPort`, `workerData`, `MessageChannel`, `SharedArrayBuffer`
+
 ## Veja também
 
-- `[[03 - Worker Threads - fundamentos]]` — base para entender o que o pool gerencia
-- `[[04 - Comunicação entre workers - postMessage e MessageChannel]]` — como dados fluem entre main e workers
-- `[[05 - Memória compartilhada - SharedArrayBuffer e Atomics]]` — alternativa ao postMessage para dados grandes
-- `[[10 - Cluster vs PM2 vs Kubernetes - quem orquestra]]` — orquestração no nível de processo (acima do pool)
-- `[[12 - Armadilhas, regras práticas, cheatsheet]]` — consolidado de gotchas
-- `[[Node.js]]` — tronco do domínio
+- [[03 - Worker Threads - fundamentos]] — base para entender o que o pool gerencia
+- [[04 - Comunicação entre workers - postMessage e MessageChannel]] — como dados fluem entre main e workers
+- [[05 - Memória compartilhada - SharedArrayBuffer e Atomics]] — alternativa ao postMessage para dados grandes
+- [[10 - Cluster vs PM2 vs Kubernetes - quem orquestra]] — orquestração no nível de processo (acima do pool)
+- [[12 - Armadilhas, regras práticas, cheatsheet]] — consolidado de gotchas
+- [[Node.js]] — tronco do domínio

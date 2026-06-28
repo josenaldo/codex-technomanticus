@@ -1,10 +1,10 @@
 ---
 title: "Decision tree: qual ferramenta para qual problema"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Magus
 publish: true
 tags:
   - node
@@ -22,6 +22,49 @@ aliases:
 > A pergunta-chave é: qual o problema? CPU-bound em handler → Worker Thread (com pool em prod). Escalar HTTP além de single-thread → orquestrador (K8s/ECS); Cluster apenas se single-VM. Rodar comando externo → `spawn` / `execFile` (nunca `exec` com input do usuário). Spawn de processo Node isolado → `fork`. A maioria dos erros não é técnica — é escolher a ferramenta errada para o problema.
 
 ---
+
+## Diagrama
+
+```mermaid
+flowchart TD
+    START(["`**Qual é o problema?**`"]):::question
+
+    CPU{"`CPU-bound
+    em handler/job?`"}:::decision
+    HTTP{"`Escalar HTTP
+    além de 1 thread?`"}:::decision
+    EXT{"`Rodar processo
+    externo?`"}:::decision
+    ISO{"`Node filho
+    isolado?`"}:::decision
+
+    WT(["`**Worker Thread**
+    + pool em prod`"]):::solution
+    ORCH(["`**Orquestrador**
+    1 pod por container`"]):::solution
+    CLU(["`**Cluster / PM2**
+    single-VM`"]):::solution
+    SPAWN(["`**spawn / execFile**
+    sem exec com input`"]):::solution
+    FORK(["`**fork**
+    isolamento OS`"]):::solution
+
+    START --> CPU
+    START --> HTTP
+    START --> EXT
+    START --> ISO
+
+    CPU -->|sim| WT
+    HTTP -->|orquestrador| ORCH
+    HTTP -->|single-VM| CLU
+    EXT -->|output grande ou input externo| SPAWN
+    ISO -->|isolamento total| FORK
+    ISO -->|CPU-bound puro| WT
+
+    classDef question fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef decision fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef solution fill:#e8f4e8,color:#000,stroke:#4A90D9
+```
 
 ## O que é
 
@@ -217,56 +260,168 @@ exec(`aws s3 ls s3://${req.body.bucket}`, callback);
 
 ---
 
-## Armadilhas
+## Casos práticos adicionais
 
-### 1. Confundir DB lento com CPU-bound
+### Caso 5 — Geração de PDF em endpoint de relatório
 
-O sintoma parece igual (latência alta), mas a causa é diferente. Handler com `await db.query()` que demora 2 segundos: o event loop não está bloqueado — ele está aguardando I/O. Worker Thread não ajudaria; a query continuaria demorando 2 segundos na thread do worker. A solução está no banco (índice, query plan, connection pool), não no paralelismo.
+Um endpoint `/reports/pdf` gera PDFs com Puppeteer ou wkhtmltopdf. A geração leva entre 2 e 15 segundos por documento e é CPU + I/O-bound (renderização de HTML + escrita de arquivo).
 
-O teste diagnóstico: medir event loop lag com `perf_hooks.monitorEventLoopDelay()`. Se o lag é baixo mas a latência do endpoint é alta, o problema é I/O, não CPU.
+**Diagnóstico:**
+- CPU-bound? Parcialmente — renderização de HTML consome CPU, mas a maior parte do tempo é I/O (Chromium carregando assets, escrevendo arquivo)
+- Handler bloqueia o event loop? Sim — se você usa uma lib síncrona ou chama o CLI diretamente via `execFile`
 
-### 2. Cluster + K8s — overhead duplicado sem perceber
-
-O erro clássico na migração de VPS para K8s: mover o `ecosystem.config.js` para dentro do Dockerfile e rodar PM2 com `instances: 4` dentro do container. Resultado: 4 réplicas K8s × 4 workers PM2 = 16 processos Node, 16 heaps separadas, overhead de IPC dentro de cada pod, e o K8s não consegue fazer health check por worker individualmente.
-
-O padrão correto: `CMD ["node", "src/server.js"]` no Dockerfile. Um processo por container. O K8s gerencia réplicas.
-
-### 3. Worker Thread como solução universal para "API lenta"
-
-Worker Threads resolvem CPU-bound. Não resolvem query lenta, não resolvem falta de índice no banco, não resolvem N+1 queries, não resolvem I/O-bound. Adicionar Worker Threads a um sistema com gargalo de I/O adiciona complexidade de threading sem benefício — a latência não muda porque o bottleneck não está na thread JS.
-
-O diagnóstico vem primeiro. Se o event loop lag é baixo, Worker Thread não é a resposta.
-
-### 4. `exec` com input do usuário — sempre vulnerabilidade
-
-Não existe sanitização confiável para input passado para `exec`. Metacaracteres de shell (`;`, `|`, `&&`, `||`, `$(...)`, `` `...` ``, `>`, `<`) têm semântica em `/bin/sh` que nenhuma regex consegue filtrar de forma completa e correta. A lista de metacaracteres muda entre shells, entre versões, e entre contextos dentro do mesmo shell.
-
-A solução estrutural é não usar `exec` com variáveis externas, ponto final. `execFile` e `spawn` com array de argumentos passam o input como string literal ao processo — sem shell, sem injeção possível.
+**Decision tree:**
+1. Rodar processo externo (`wkhtmltopdf`)? → `execFile` ou `spawn`
+2. Output é o próprio arquivo gerado (não stdout grande)? → `execFile` suficiente
+3. Argumento vem de input externo (nome do relatório, datas)?  → `execFile` com array, nunca `exec`
 
 ```javascript
-// ❌ — vulnerável independente de "sanitização"
-const filename = req.query.file.replace(/[^a-z0-9.]/gi, '');
-exec(`cat ${filename}`, callback); // qualquer bypass da regex = RCE
+import { execFile } from 'node:child_process/promises';
+import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 
-// ✓ — estruturalmente seguro
-execFile('cat', [req.query.file], callback);
-// Shell nunca entra no caminho. Metacaracteres são texto inerte.
+async function generatePdf(templateUrl, outputDir) {
+  // templateUrl é construída internamente (não vem de input bruto)
+  // mas por defensividade, usar execFile com array de qualquer forma
+  const outputPath = path.join(outputDir, `${randomUUID()}.pdf`);
+
+  await execFile('wkhtmltopdf', [
+    '--quiet',
+    '--page-size', 'A4',
+    templateUrl,   // URL interna
+    outputPath,
+  ], { timeout: 30_000 }); // 30s de timeout
+
+  return outputPath;
+}
 ```
 
-### 5. `fork` onde Worker Thread basta — overhead desnecessário
+Se você usa **Puppeteer** (Node nativo), a geração roda no processo filho Chromium — não bloqueia o event loop Node. Para concorrência alta, um pool de instâncias Puppeteer é mais eficiente do que spawnar um processo por request.
 
-`fork` cria um processo OS completo: novo isolate V8, nova heap, nova stack, novo event loop. O custo é ~100ms por criação. Worker Thread cria uma thread no mesmo processo: ~1-5ms.
+---
 
-Para CPU-bound puro sem necessidade de isolamento total, Worker Thread é a escolha correta. `fork` é para os quatro casos específicos: isolamento de segurança, native modules não thread-safe, supervisor tree, processo descartável. Fora desses casos, é overhead sem justificativa.
+### Caso 6 — Hash de senha em endpoint de autenticação
+
+Endpoint `POST /auth/register` recebe senha em texto plano. `bcrypt` com custo 12 leva ~300–400ms de CPU puro — bloqueando o event loop para todos os outros requests durante esse tempo.
+
+**Diagnóstico:**
+- CPU-bound? Sim — bcrypt é computação pura de hash
+- Handler bloqueia? Sim — `bcrypt.hashSync()` trava a thread JS
+
+**Decision tree:** CPU-bound em handler → Worker Thread → tarefa frequente (auth é crítica) → pool
 
 ```javascript
-// ❌ — fork para CPU-bound simples: ~100ms por criação, processo OS inteiro
-const child = fork('./hash-worker.js');
-child.send({ password });
+// hash-worker.js — roda em Worker Thread
+import { workerData, parentPort } from 'node:worker_threads';
+import bcrypt from 'bcrypt';
 
-// ✓ — Worker Thread: ~1-5ms, thread no mesmo processo
-const worker = new Worker('./hash-worker.js', { workerData: { password } });
+const { password, cost } = workerData;
+const hash = await bcrypt.hash(password, cost);
+parentPort.postMessage({ hash });
 ```
+
+```javascript
+// auth-service.js — usa piscina de workers
+import Piscina from 'piscina';
+import { availableParallelism } from 'node:os';
+
+const hashPool = new Piscina({
+  filename: new URL('./hash-worker.js', import.meta.url).href,
+  maxThreads: Math.max(2, availableParallelism() - 1), // deixar 1 thread para o event loop
+});
+
+export async function hashPassword(password, cost = 12) {
+  return hashPool.run({ password, cost });
+}
+
+// Cleanup no shutdown
+process.on('SIGTERM', async () => {
+  await hashPool.destroy();
+  process.exit(0);
+});
+```
+
+**Por que não `fork`:** `fork` teria ~100ms de overhead de criação de processo por hash — proibitivo em auth de alta carga. Worker Thread (~1-5ms de criação + pool reutilizável) é a escolha correta. `bcrypt` é thread-safe no N-API.
+
+**Por que não Cluster para esse problema:** Cluster cria 4 réplicas com o mesmo problema — cada uma trava seu event loop por 300ms durante hash. O problema está dentro de um único handler, não na capacidade de aceitar conexões.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] 1. Confundir DB lento com CPU-bound
+> **O que acontece:** O endpoint tem latência alta, parece CPU-bound — mas medir o event loop lag mostra valores baixos. Worker Thread adicionado não reduz a latência nem 1ms.
+>
+> **Por quê:** Handler com `await db.query()` que demora 2 segundos: o event loop não está bloqueado — ele está aguardando I/O. Worker Thread não ajudaria; a query continuaria demorando 2 segundos na thread do worker.
+>
+> **Como evitar:** Medir primeiro. `perf_hooks.monitorEventLoopDelay()` revela se o lag é alto (CPU-bound) ou baixo (I/O-bound). Se o lag é baixo mas a latência é alta, a solução está no banco (índice, query plan, connection pool), não no paralelismo.
+> ```javascript
+> const { monitorEventLoopDelay } = require('node:perf_hooks');
+> const h = monitorEventLoopDelay({ resolution: 10 });
+> h.enable();
+> // Após intervalo de observação:
+> console.log('p99 lag (ms):', h.percentile(99) / 1e6);
+> // lag baixo + latência alta = problema de I/O, não CPU
+> ```
+
+> [!warning] 2. Cluster + K8s — overhead duplicado sem perceber
+> **O que acontece:** 4 réplicas K8s × 4 workers PM2 = 16 processos Node, 16 heaps separadas, overhead de IPC dentro de cada pod. O K8s não consegue fazer health check por worker individualmente — se um dos 4 workers internos crashar, o pod ainda aparece como healthy.
+>
+> **Por quê:** O erro clássico na migração de VPS para K8s: mover o `ecosystem.config.js` para dentro do Dockerfile e rodar PM2 com `instances: 4` dentro do container. O orquestrador já gerencia réplicas — adicionar Cluster ou PM2 em modo cluster dentro do pod duplica o overhead sem benefício equivalente.
+>
+> **Como evitar:** `CMD ["node", "src/server.js"]` no Dockerfile — um processo por container. O K8s gerencia réplicas, health checks e rolling updates.
+> ```dockerfile
+> # ❌ Dockerfile com PM2 cluster dentro do pod
+> CMD ["pm2-runtime", "ecosystem.config.js"]
+>
+> # ✓ Um processo por container — K8s gerencia réplicas
+> CMD ["node", "src/server.js"]
+> ```
+
+> [!warning] 3. Worker Thread como solução universal para "API lenta"
+> **O que acontece:** Worker Threads são adicionados a um endpoint lento. A latência não muda. A complexidade de threading aumentou sem benefício mensurável.
+>
+> **Por quê:** Worker Threads resolvem CPU-bound. Não resolvem query lenta, falta de índice no banco, N+1 queries, ou I/O-bound. O bottleneck não estava na thread JS — estava na rede ou no banco.
+>
+> **Como evitar:** O diagnóstico vem primeiro. Se o event loop lag é baixo, Worker Thread não é a resposta. Tentar alternativas na ordem: índice no banco, paginação, streaming, API async em vez de sync, `UV_THREADPOOL_SIZE` para operações nativas, fila de background.
+> ```javascript
+> // Diagnóstico rápido antes de qualquer Worker Thread
+> const h = monitorEventLoopDelay({ resolution: 20 });
+> h.enable();
+> // p99 < 5ms? Problema é I/O — não adicionar Worker Thread
+> // p99 > 50ms? Problema pode ser CPU-bound — investigar o que trava
+> ```
+
+> [!warning] 4. `exec` com input do usuário — sempre vulnerabilidade
+> **O que acontece:** Input do usuário contendo `;`, `|`, `&&`, `$()` é interpretado pelo shell e executa comandos arbitrários no servidor (Remote Code Execution).
+>
+> **Por quê:** Não existe sanitização confiável para input passado para `exec`. A lista de metacaracteres de shell muda entre shells, entre versões, e entre contextos. Qualquer regex de filtragem tem bypass documentado.
+>
+> **Como evitar:** Nunca usar `exec` com variáveis externas. `execFile` e `spawn` com array de argumentos passam o input como string literal ao processo — sem shell, sem injeção possível.
+> ```javascript
+> // ❌ — vulnerável independente de "sanitização"
+> const filename = req.query.file.replace(/[^a-z0-9.]/gi, '');
+> exec(`cat ${filename}`, callback); // qualquer bypass da regex = RCE
+>
+> // ✓ — estruturalmente seguro
+> execFile('cat', [req.query.file], callback);
+> // Shell nunca entra no caminho. Metacaracteres são texto inerte.
+> ```
+
+> [!warning] 5. `fork` onde Worker Thread basta — overhead desnecessário
+> **O que acontece:** Cada tarefa CPU-bound cria um processo OS completo com ~100ms de overhead. Sob carga alta, o tempo de criação domina o tempo de execução. Memória cresce com cada fork porque cada processo tem heap própria.
+>
+> **Por quê:** `fork` cria um processo OS completo: novo isolate V8, nova heap, nova stack, novo event loop. Worker Thread cria uma thread no mesmo processo: ~1-5ms. Para CPU-bound puro sem necessidade de isolamento total, Worker Thread é sempre mais eficiente.
+>
+> **Como evitar:** `fork` é para quatro casos específicos: isolamento de segurança (código de tenant), native modules não thread-safe, supervisor tree, processo descartável. Fora desses casos, Worker Thread com pool.
+> ```javascript
+> // ❌ — fork para CPU-bound simples: ~100ms por criação, processo OS inteiro
+> const child = fork('./hash-worker.js');
+> child.send({ password });
+>
+> // ✓ — Worker Thread: ~1-5ms, thread no mesmo processo
+> const worker = new Worker('./hash-worker.js', { workerData: { password } });
+> ```
 
 ---
 
@@ -333,6 +488,19 @@ Quando o comando completo é hardcoded no código — sem nenhuma variável exte
 
 **"O que acontece se eu usar Cluster dentro de um pod K8s?"**
 Nada quebra, mas você tem overhead sem benefício equivalente. 4 réplicas K8s × 4 workers cluster = 16 processos Node com 16 heaps separadas. O K8s não consegue fazer health check por worker individualmente — o readiness probe é por pod. Se um dos 4 workers interiores crashar, o pod ainda aparece como healthy. O padrão correto é 1 processo por container; o orquestrador gerencia replicas, health check e rolling update.
+
+---
+
+## O que vem a seguir
+
+A decision tree é o artefato de síntese do galho — mas ter o raciocínio disponível é diferente de ter praticado os erros reais. A nota `[[12 - Armadilhas, regras práticas, cheatsheet]]` fecha o galho com o top 10 de armadilhas extraídas das notas 01–11, a tabela ferramenta×atributo em formato de cheatsheet, e o vocabulário PT→EN consolidado. É o artefato de revisão final antes de uma entrevista. Depois do galho Paralelismo, o próximo domínio relacionado é Streams — onde os dados grandes que você aprende a processar em Worker Threads e `spawn` precisam fluir pelo sistema sem acumular na memória.
+
+---
+
+## Fontes
+
+- [Node.js Docs — `perf_hooks.monitorEventLoopDelay()`](https://nodejs.org/api/perf_hooks.html#perf_hooksmonitoreventloopdelayoptions) — medir event loop lag antes de decidir pelo paralelismo
+- [Node.js Docs — `os.availableParallelism()`](https://nodejs.org/api/os.html#osavailableparallelism) — sizing correto de pools em containers com CPU limits
 
 ---
 

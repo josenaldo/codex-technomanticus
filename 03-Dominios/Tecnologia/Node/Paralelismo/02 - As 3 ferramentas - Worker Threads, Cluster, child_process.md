@@ -1,10 +1,10 @@
 ---
 title: "As 3 ferramentas: Worker Threads, Cluster, child_process"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -86,6 +86,37 @@ Cada ferramenta resolve uma classe diferente de problema. A decisão acontece **
 ---
 
 ## Como funciona
+
+Os três modelos de paralelismo do Node são como três formas distintas de expandir a capacidade de um restaurante: Worker Threads é como treinar cozinheiros adicionais dentro da mesma cozinha (mesma memória, mesma infraestrutura); Cluster é como abrir filiais do mesmo restaurante em endereços diferentes mas com o mesmo cardápio (processos independentes compartilhando a mesma porta TCP); `child_process` é como terceirizar uma etapa para outro estabelecimento especializado (processo externo completamente isolado). O diagrama abaixo compara os três modelos lado a lado.
+
+```mermaid
+graph LR
+    subgraph "Worker Threads"
+        direction TB
+        MT["Main Thread\nEvent Loop"] <-->|postMessage\nSharedArrayBuffer| WT1["Worker 1\nV8 Isolate"]
+        MT <-->|postMessage| WT2["Worker 2\nV8 Isolate"]
+    end
+
+    subgraph "Cluster"
+        direction TB
+        PRI["Primary\nProcess"] -->|fork + round-robin| W1["Worker PID A\nHTTP :3000"]
+        PRI -->|fork| W2["Worker PID B\nHTTP :3000"]
+    end
+
+    subgraph "child_process"
+        direction TB
+        NODE["Node Process"] -->|spawn/exec/fork| EXT["External Process\n(ffmpeg, python...)"]
+    end
+
+    style MT fill:#4A90D9,color:#fff
+    style PRI fill:#4A90D9,color:#fff
+    style NODE fill:#4A90D9,color:#fff
+    style WT1 fill:#E8A838,color:#fff
+    style WT2 fill:#E8A838,color:#fff
+    style W1 fill:#E8A838,color:#fff
+    style W2 fill:#E8A838,color:#fff
+    style EXT fill:#D94A4A,color:#fff
+```
 
 ### Tabela canônica
 
@@ -219,52 +250,171 @@ Criar um `new Worker()` por request funciona mas tem overhead de ~ms por criaç�
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Usar Cluster para CPU-bound em handler
+### Cenário 1 — API de geração de relatórios em PDF com Worker Thread pool
 
-Cluster cria N réplicas do processo. Se o problema é CPU-bound dentro de um único request — por exemplo, um handler que faz parsing pesado de JSON — Cluster não resolve: cada worker vai bloquear **seu próprio** event loop com o mesmo trabalho. Você multiplica o problema, não o resolve.
+Um servidor Express usa `pdfkit` para gerar relatórios em PDF sob demanda. Cada geração leva 1-3 segundos de CPU puro — sem I/O significativo, só serialização de dados para formato PDF. Com tráfego moderado, o event loop lag sobe para centenas de milissegundos e todos os endpoints ficam lentos.
 
-Cluster é para **escalonamento horizontal de I/O** (mais conexões HTTP distribuídas entre workers), não para paralelizar cálculo dentro de um request.
-
-### 2. Tentar rodar comando externo em Worker Thread
-
-Worker Threads executam apenas JavaScript. Não há API para rodar binários do sistema dentro de um Worker Thread. Se o objetivo é executar `ffmpeg`, `python`, ou qualquer outro processo externo, a ferramenta correta é `child_process.spawn` (ou `exec`/`execFile`).
-
-### 3. Confundir `cluster.fork` com `child_process.fork`
-
-São superficialmente similares — ambos criam processos Node filhos com IPC — mas são ferramentas distintas:
-
-- `cluster.fork()` é especialização de `child_process.fork` com compartilhamento de porta TCP. O processo filho herda o socket do servidor do primário. Projetado para servidores HTTP.
-- `child_process.fork()` cria um processo Node filho genérico com IPC. Sem compartilhamento de porta. Para trabalho isolado que se comunica com o pai via mensagens.
-
-Usar `cluster.fork` para spawnar um processo de trabalho genérico funciona, mas carrega overhead desnecessário e semântica incorreta.
-
-### 4. Decidir sem entender o tipo de problema
-
-A sequência que gera dívida técnica:
-
-1. "A API está lenta."
-2. "Vou usar Worker Threads."
-3. Implementar Workers.
-4. Latência não muda — o bottleneck era uma query lenta, não CPU.
-5. Agora o código tem complexidade de threading sem benefício.
-
-A sequência correta é diagnosticar primeiro: medir event loop lag, identificar se o bottleneck é CPU ou I/O, tentar alternativas simples (streaming, paginação, API async, `UV_THREADPOOL_SIZE`), só então chegar em paralelismo. Veja [[01 - Por que paralelismo em Node]] para a sequência completa de diagnóstico.
-
-### 5. Passar input não sanitizado para `exec`
-
-`child_process.exec` spawna um shell e passa o comando como string. Input de usuário não sanitizado pode injetar comandos arbitrários:
+A solução é um **pool de Worker Threads** — Workers ficam em espera e recebem tarefas por fila, evitando o overhead de criar um novo Worker por request.
 
 ```javascript
-// ❌ Nunca fazer isso com input externo
-exec(`convert ${req.body.filename} output.png`);
+// pdf-worker.js — roda em Worker Thread separado
+import { workerData, parentPort } from 'node:worker_threads';
+import PDFDocument from 'pdfkit';
 
-// ✓ Preferir spawn ou execFile com args separados
-spawn('convert', [req.body.filename, 'output.png']);
+function gerarPDF(dados) {
+  return new Promise((resolve) => {
+    const doc = new PDFDocument();
+    const chunks = [];
+
+    doc.on('data', (chunk) => chunks.push(chunk));
+    doc.on('end', () => resolve(Buffer.concat(chunks)));
+
+    doc.fontSize(18).text(dados.titulo, { align: 'center' });
+    dados.secoes.forEach(({ heading, body }) => {
+      doc.moveDown().fontSize(14).text(heading);
+      doc.fontSize(11).text(body);
+    });
+    doc.end();
+  });
+}
+
+const pdf = await gerarPDF(workerData);
+parentPort.postMessage(pdf, [pdf.buffer]); // transferência zero-copy via transferList
 ```
 
-`spawn` e `execFile` com `shell: false` (padrão) passam o array de argumentos diretamente ao processo — sem shell, sem injeção.
+```javascript
+// pdf-pool.js — pool simples de workers reutilizáveis
+import { Worker } from 'node:worker_threads';
+import { cpus } from 'node:os';
+
+const POOL_SIZE = cpus().length;
+const workers = [];
+const queue = [];
+
+for (let i = 0; i < POOL_SIZE; i++) {
+  const w = new Worker('./pdf-worker.js', { workerData: {} });
+  w.idle = true;
+  workers.push(w);
+}
+
+export function gerarPDFAsync(dados) {
+  return new Promise((resolve, reject) => {
+    const idleWorker = workers.find((w) => w.idle);
+    if (idleWorker) {
+      idleWorker.idle = false;
+      idleWorker.postMessage(dados);
+      idleWorker.once('message', (pdf) => {
+        idleWorker.idle = true;
+        processQueue(); // próximo da fila
+        resolve(pdf);
+      });
+      idleWorker.once('error', reject);
+    } else {
+      queue.push({ dados, resolve, reject });
+    }
+  });
+}
+
+function processQueue() {
+  if (queue.length === 0) return;
+  const { dados, resolve, reject } = queue.shift();
+  gerarPDFAsync(dados).then(resolve).catch(reject);
+}
+
+// No handler Express:
+app.post('/relatorio', async (req, res) => {
+  const pdf = await gerarPDFAsync(req.body);
+  res.set('Content-Type', 'application/pdf');
+  res.send(pdf); // event loop principal nunca bloqueou
+});
+```
+
+Com o pool, Workers são reutilizados entre requests — o overhead de criação de thread ocorre apenas uma vez, durante a inicialização do servidor.
+
+### Cenário 2 — Pipeline de transcodificação de vídeo com child_process.spawn
+
+Um endpoint recebe upload de vídeo e precisa transcodificá-lo para WebM usando `ffmpeg`. Como `ffmpeg` é um binário externo — Node não pode rodá-lo em Worker Thread — a ferramenta correta é `child_process.spawn`. O progresso é lido via stderr e enviado ao cliente em streaming.
+
+```javascript
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import fs from 'node:fs';
+
+app.post('/transcode', async (req, res) => {
+  const inputPath = req.file.path;
+  const outputPath = path.join('uploads', `${Date.now()}.webm`);
+
+  // Resposta em streaming — cliente recebe progresso em tempo real
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.flushHeaders();
+
+  const ffmpeg = spawn('ffmpeg', [
+    '-i', inputPath,
+    '-c:v', 'libvpx-vp9',
+    '-b:v', '0',
+    '-crf', '30',
+    outputPath,
+  ]);
+
+  // ffmpeg envia progresso via stderr (ex: "frame=120 fps=24 time=00:00:05.00")
+  ffmpeg.stderr.on('data', (chunk) => {
+    const line = chunk.toString();
+    const match = line.match(/time=(\d+:\d+:\d+\.\d+)/);
+    if (match) {
+      res.write(`data: ${JSON.stringify({ time: match[1] })}\n\n`);
+    }
+  });
+
+  ffmpeg.on('close', (code) => {
+    if (code === 0) {
+      res.write(`data: ${JSON.stringify({ done: true, output: outputPath })}\n\n`);
+    } else {
+      res.write(`data: ${JSON.stringify({ error: `ffmpeg saiu com código ${code}` })}\n\n`);
+    }
+    res.end();
+    fs.unlink(inputPath, () => {}); // limpa o arquivo temporário
+  });
+
+  ffmpeg.on('error', (err) => {
+    res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+    res.end();
+  });
+});
+```
+
+`spawn` sem `shell: true` passa os argumentos diretamente ao processo — sem risco de injeção de comandos via `outputPath` ou `inputPath`. O processo de transcodificação roda completamente fora do runtime Node; o event loop principal permanece livre.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Usar Cluster para CPU-bound em handler
+> **O que acontece:** Cluster é adicionado esperando que CPU-bound dentro de handlers seja resolvido — mas a latência não melhora por request.
+> **Por quê:** Cluster cria N réplicas do processo. Se o problema é CPU-bound dentro de um único request (ex: parsing pesado de JSON), cada worker bloqueia **seu próprio** event loop com o mesmo trabalho. O problema foi multiplicado, não resolvido. Cluster é para escalonamento horizontal de I/O — mais conexões HTTP distribuídas entre workers — não para paralelizar cálculo dentro de um request.
+> **Como evitar:** Usar Worker Thread para CPU-bound dentro de um handler. Reservar Cluster para escalar conexões HTTP por CPU na mesma máquina.
+
+> [!warning] Tentar rodar comando externo em Worker Thread
+> **O que acontece:** Um binário externo (`ffmpeg`, `python`, `imagemagick`) é chamado de dentro de um Worker Thread — e falha.
+> **Por quê:** Worker Threads executam apenas JavaScript dentro do runtime V8. Não há API para rodar binários do sistema operacional de dentro de um Worker Thread.
+> **Como evitar:** Para qualquer processo externo, usar `child_process.spawn` (streams, dados grandes) ou `child_process.exec` (output pequeno, shell necessário). Worker Thread é para código JavaScript pesado que precisa rodar fora da thread principal.
+
+> [!warning] Confundir cluster.fork com child_process.fork
+> **O que acontece:** `cluster.fork()` é usado para spawnar um processo Node genérico de trabalho, ou `child_process.fork()` é usado tentando compartilhar uma porta HTTP.
+> **Por quê:** São superficialmente similares — ambos criam processos Node filhos com IPC — mas com propósitos distintos. `cluster.fork()` é especialização de `child_process.fork` com compartilhamento de porta TCP: o processo filho herda o socket do servidor do primário. `child_process.fork()` cria um processo Node filho genérico com IPC, sem compartilhamento de porta.
+> **Como evitar:** Usar `cluster.fork` apenas para servidores HTTP que precisam escalar por CPU. Usar `child_process.fork` para qualquer processo Node filho isolado com comunicação via mensagens.
+
+> [!warning] Decidir sem entender o tipo de problema
+> **O que acontece:** Worker Threads são implementadas sem diagnóstico — a latência não muda porque o bottleneck era I/O, não CPU. O código agora tem complexidade de threading sem benefício.
+> **Por quê:** A sequência que gera dívida técnica: "a API está lenta" → "vou usar Workers" → implementar → latência igual → código complexificado sem ganho.
+> **Como evitar:** Diagnosticar primeiro: medir event loop lag, identificar se o bottleneck é CPU ou I/O, tentar alternativas simples (streaming, paginação, API async, `UV_THREADPOOL_SIZE`). A sequência completa está em [[01 - Por que paralelismo em Node]].
+
+> [!warning] Passar input não sanitizado para exec
+> **O que acontece:** Input de usuário é interpolado diretamente na string de comando passada ao `exec` — abrindo vetor de command injection.
+> **Por quê:** `child_process.exec` spawna um shell e passa a string como comando. Se `req.body.filename` contiver `; rm -rf /`, o shell vai executar os dois comandos.
+> **Como evitar:** Preferir `spawn` ou `execFile` com argumentos como array separado — sem shell, sem injeção. Quando `exec` for inevitável (pipes de shell), sanitizar e validar rigorosamente qualquer input externo antes de interpolar.
 
 ---
 
@@ -316,3 +466,21 @@ Não. Para I/O-bound, o event loop assíncrono nativo é mais eficiente do que c
 - [[09 - child_process com fork - Node child com IPC]] — IPC bidirecional com processo Node filho
 - [[11 - Decision tree - qual ferramenta para qual problema]] — fluxograma de decisão com critérios objetivos
 - [[Node.js]] — tronco da trilha Node Senior
+
+---
+
+## O que vem a seguir
+
+Com o mapa dos três modelos em mãos — shared-memory, shared-port e separate-process — é hora de ir fundo em cada ferramenta individualmente. O próximo passo natural é Worker Threads, que resolve o caso mais frequente em produção: CPU-bound dentro de um handler.
+
+- [[03 - Worker Threads - fundamentos]] — como criar, comunicar (postMessage vs SharedArrayBuffer vs transferList) e encerrar Worker Threads com segurança
+- [[07 - Cluster - escalando HTTP por CPU]] — Cluster em profundidade: fork, eventos, graceful restart e quando Cluster perde para um orquestrador externo
+- [[08 - child_process com exec e spawn]] — diferenças práticas entre spawn, exec e execFile, streaming de output e segurança contra command injection
+
+---
+
+## Fontes
+
+- [Worker Threads — Node.js API](https://nodejs.org/api/worker_threads.html)
+- [Cluster — Node.js API](https://nodejs.org/api/cluster.html)
+- [Child Process — Node.js API](https://nodejs.org/api/child_process.html)

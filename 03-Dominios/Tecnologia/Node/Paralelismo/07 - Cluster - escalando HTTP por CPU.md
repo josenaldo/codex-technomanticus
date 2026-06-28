@@ -1,10 +1,10 @@
 ---
 title: "Cluster: escalando HTTP por CPU"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -22,6 +22,39 @@ aliases:
 
 > [!abstract] TL;DR
 > `node:cluster` fork-a múltiplos processos Node compartilhando a mesma porta HTTP. O processo **primary** gerencia o ciclo de vida; os **workers** atendem requisições. No Linux, o próprio Node distribui conexões em round-robin; no Windows, o kernel balanceia via IOCP. Útil em deploys single-VM onde não existe orquestrador — mas em prod com K8s, ECS ou similar, o orquestrador já faz isso por você, e cluster vira camada redundante.
+
+---
+
+## Diagrama
+
+```mermaid
+flowchart TD
+    A(["`**primary**
+    process.pid`"]):::primary
+    B(["`**Worker 1**
+    port :3000`"]):::worker
+    C(["`**Worker 2**
+    port :3000`"]):::worker
+    D(["`**Worker 3**
+    port :3000`"]):::worker
+    E(["`**Worker 4**
+    port :3000`"]):::worker
+    F(["`**cliente HTTP**`"]):::client
+
+    A -- cluster.fork --> B
+    A -- cluster.fork --> C
+    A -- cluster.fork --> D
+    A -- cluster.fork --> E
+    F -- "TCP connection" --> A
+    A -- "round-robin (SCHED_RR)" --> B
+    A -- "round-robin (SCHED_RR)" --> C
+    A -- "round-robin (SCHED_RR)" --> D
+    A -- "round-robin (SCHED_RR)" --> E
+
+    classDef primary fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef worker fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef client fill:#eee,color:#333,stroke:#999
+```
 
 ---
 
@@ -336,86 +369,195 @@ Veja `[[10 - Cluster vs PM2 vs Kubernetes - quem orquestra]]` para a análise co
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Estado em memória local ao worker
+### Caso 1 — API REST em VPS com 4 cores
 
-```javascript
-// PROBLEMA: cada worker tem sua própria cópia desse mapa
-const sessions = new Map();
-
-http.createServer((req, res) => {
-  const sessionId = getCookie(req, 'sid');
-  const session = sessions.get(sessionId); // pode não existir neste worker!
-  // ...
-}).listen(3000);
-```
-
-**Solução:** session store externo (Redis, banco) ou sticky sessions garantidas via reverse proxy.
-
----
-
-### 2. Esquecer o handler `'exit'`
+Você tem um droplet de $10/mês na DigitalOcean com 4 vCPUs. Sem cluster, só 1 core fica saturado em pico. Com cluster, os 4 ficam disponíveis.
 
 ```javascript
-// PROBLEMA: worker morre, capacidade cai silenciosamente
+// server.js — cluster com 4 workers e watchdog
+import cluster from 'node:cluster';
+import { availableParallelism } from 'node:os';
+import http from 'node:http';
+
 if (cluster.isPrimary) {
-  for (let i = 0; i < numCPUs; i++) cluster.fork();
-  // sem cluster.on('exit', ...) → worker crashado nunca é substituído
+  const cpus = availableParallelism(); // 4 em nosso droplet
+
+  for (let i = 0; i < cpus; i++) cluster.fork();
+
+  cluster.on('exit', (worker, code, signal) => {
+    if (!worker.exitedAfterDisconnect) {
+      console.warn(`Worker ${worker.id} morreu (code=${code}). Reiniciando...`);
+      cluster.fork();
+    }
+  });
+
+  // Graceful shutdown: ao receber SIGTERM, desliga workers ordenadamente
+  process.on('SIGTERM', () => {
+    cluster.disconnect(() => process.exit(0));
+    setTimeout(() => process.exit(1), 10_000);
+  });
+
+} else {
+  http.createServer((req, res) => {
+    res.end(`pid=${process.pid}\n`);
+  }).listen(3000);
 }
 ```
 
-Sem restart automático, um worker que crasha com exceção não capturada simplesmente some. O sistema continua operando com N-1 (ou menos) workers até reiniciar o processo inteiro.
+**Resultado**: 4 workers escutam na mesma porta `:3000`. O primary distribui conexões TCP em round-robin. Um worker crashando é substituído automaticamente sem downtime.
 
 ---
 
-### 3. Sticky sessions sem reverse proxy ciente
+### Caso 2 — Aggregando métricas de workers via IPC
+
+Você quer um endpoint `/metrics` que some os request counts de todos os workers — sem banco externo, via IPC.
 
 ```javascript
-// PROBLEMA: WebSocket vai para Worker 1 no handshake,
-// próxima mensagem pode ir para Worker 2 (sem a conexão aberta)
-http.createServer((req, res) => {
-  // round-robin do cluster não respeita afinidade de conexão WebSocket
-}).listen(3000);
+// primary — agrega contadores de todos os workers
+import cluster from 'node:cluster';
+import { availableParallelism } from 'node:os';
+import http from 'node:http';
+
+const workerCounts = {};
+
+if (cluster.isPrimary) {
+  for (let i = 0; i < availableParallelism(); i++) cluster.fork();
+
+  cluster.on('message', (worker, msg) => {
+    if (msg.type === 'count') workerCounts[worker.id] = msg.value;
+  });
+
+  // Endpoint de métricas no primary (porta diferente)
+  http.createServer((req, res) => {
+    if (req.url === '/metrics') {
+      const total = Object.values(workerCounts).reduce((a, b) => a + b, 0);
+      res.end(JSON.stringify({ total, perWorker: workerCounts }));
+    }
+  }).listen(9090);
+
+} else {
+  let count = 0;
+
+  const server = http.createServer((req, res) => {
+    count++;
+    process.send({ type: 'count', value: count });
+    res.end('ok');
+  });
+
+  server.listen(3000);
+}
 ```
 
-Round-robin distribui por _conexão TCP_, não por _cliente_. WebSocket e SSE exigem que todas as mensagens de um cliente vão para o mesmo processo.
+**Cuidado:** IPC tem overhead de serialização JSON. Para métricas de alto volume, prefira Prometheus com `/metrics` em cada worker (cada um expondo na sua própria porta) e um scraper que agrega.
 
 ---
 
-### 4. Cluster + orquestrador = multiplicação desnecessária
+## Armadilhas comuns
 
-```
-# Configuração problemática:
-K8s: 4 réplicas de pod
-  Cada pod: cluster com 4 workers
-  Total: 16 processos Node
-
-# O que você provavelmente queria:
-K8s: 4 réplicas de pod
-  Cada pod: 1 processo Node
-  Total: 4 processos Node (mais simples, mesma capacidade de throughput HTTP)
-```
-
-K8s (e similares) já gerencia restart, health check e escalonamento. Cluster dentro de container adiciona complexidade sem benefício proporcional na maioria dos casos.
+> [!warning] Estado em memória local ao worker
+> **O que acontece:** Cada worker tem sua própria heap — `new Map()` no início do módulo cria N maps independentes. Uma requisição que escreve no map do Worker 1 não é visível no Worker 2.
+>
+> **Por quê:** Cluster usa `child_process.fork()` internamente — processos OS separados sem memória compartilhada. Não existe sincronização automática de estado in-process entre workers.
+>
+> **Como evitar:** Session stores externos (Redis via `connect-redis`), bancos de dados, ou qualquer serviço stateful fora do processo Node. Nenhuma escrita crítica em Map/objeto global de worker.
+>
+> ```javascript
+> // ❌ cada worker tem seu próprio Map
+> const sessions = new Map();
+>
+> // ✓ store externo
+> import RedisStore from 'connect-redis';
+> app.use(session({ store: new RedisStore({ client: redis }) }));
+> ```
 
 ---
 
-### 5. Não diferenciar crash de graceful exit no handler `'exit'`
+> [!warning] Esquecer o handler 'exit'
+> **O que acontece:** Um worker que crasha com exceção não capturada simplesmente some. O sistema continua operando com N-1 (ou menos) workers até reiniciar o processo inteiro — silenciosamente, sem alerta.
+>
+> **Por quê:** O primary apenas observa o ciclo de vida dos workers; sem o handler `'exit'`, nenhuma ação é tomada quando um worker morre.
+>
+> **Como evitar:** Sempre registrar `cluster.on('exit', ...)` e chamar `cluster.fork()` para substituir workers crashados.
+>
+> ```javascript
+> // ❌ sem handler: worker crashado nunca é substituído
+> if (cluster.isPrimary) {
+>   for (let i = 0; i < numCPUs; i++) cluster.fork();
+> }
+>
+> // ✓ com watchdog
+> cluster.on('exit', (worker, code, signal) => {
+>   if (!worker.exitedAfterDisconnect) {
+>     console.warn(`Worker ${worker.id} crashou. Reiniciando.`);
+>     cluster.fork();
+>   }
+> });
+> ```
 
-```javascript
-// PROBLEMA: reinicia worker que saiu intencionalmente (ex: durante deploy)
-cluster.on('exit', (worker) => {
-  cluster.fork(); // fork incondicional: problema durante shutdown
-});
+---
 
-// CORRETO: verificar exitedAfterDisconnect
-cluster.on('exit', (worker, code, signal) => {
-  if (!worker.exitedAfterDisconnect) {
-    cluster.fork();
-  }
-});
-```
+> [!warning] Sticky sessions sem reverse proxy ciente
+> **O que acontece:** WebSocket vai para o Worker 1 no handshake, mas a próxima mensagem pode ir para o Worker 2 — que não tem a conexão aberta. A conexão cai imediatamente.
+>
+> **Por quê:** Round-robin distribui por _conexão TCP_, não por _cliente_. WebSocket e SSE exigem que todas as mensagens de um cliente vão para o mesmo processo durante toda a sessão.
+>
+> **Como evitar:** Usar `@socket.io/sticky` para roteamento sticky no primary, ou nginx com `ip_hash` na frente do cluster — cada worker escutando em porta diferente.
+>
+> ```javascript
+> // ❌ round-robin quebra WebSocket
+> http.createServer((req, res) => {
+>   // round-robin do cluster não respeita afinidade de conexão WebSocket
+> }).listen(3000);
+>
+> // ✓ nginx com ip_hash garante que o mesmo IP vai sempre para o mesmo upstream
+> // upstream nodejs_cluster { ip_hash; server 127.0.0.1:3001; ... }
+> ```
+
+---
+
+> [!warning] Cluster + orquestrador = multiplicação desnecessária
+> **O que acontece:** 4 réplicas de pod × 4 workers por pod = 16 processos Node, com overhead de memória e complexidade operacional sem ganho proporcional de throughput HTTP.
+>
+> **Por quê:** K8s (e similares) já gerencia restart, health check e escalonamento horizontal. Cluster dentro de container duplica essa responsabilidade sem adicionar valor.
+>
+> **Como evitar:** 1 processo Node por container — deixe o orquestrador escalar réplicas.
+>
+> ```
+> # ❌ Configuração problemática:
+> K8s: 4 réplicas de pod
+>   Cada pod: cluster com 4 workers
+>   Total: 16 processos Node
+>
+> # ✓ O que funciona melhor:
+> K8s: 4 réplicas de pod
+>   Cada pod: 1 processo Node
+>   Total: 4 processos Node (mais simples, mesma capacidade de throughput HTTP)
+> ```
+
+---
+
+> [!warning] Não diferenciar crash de graceful exit no handler 'exit'
+> **O que acontece:** Um fork incondicional reinicia workers que saíram intencionalmente durante um graceful shutdown, impedindo que o processo encerre corretamente — ou criando workers extras depois de um deploy.
+>
+> **Por quê:** O evento `'exit'` dispara tanto para crashes quanto para saídas intencionais. Sem distinção, o handler não sabe se deve reiniciar ou não.
+>
+> **Como evitar:** Verificar `worker.exitedAfterDisconnect` antes de fazer `cluster.fork()`. Esse flag é `true` quando o worker saiu via `disconnect()` — ou seja, saída intencional.
+>
+> ```javascript
+> // ❌ fork incondicional: problema durante shutdown
+> cluster.on('exit', (worker) => {
+>   cluster.fork();
+> });
+>
+> // ✓ verificar exitedAfterDisconnect
+> cluster.on('exit', (worker, code, signal) => {
+>   if (!worker.exitedAfterDisconnect) {
+>     cluster.fork();
+>   }
+> });
+> ```
 
 ---
 
@@ -467,6 +609,19 @@ cluster.on('exit', (worker, code, signal) => {
 | Sem fabricação de dados do usuário | ok |
 | Wikilinks para notas existentes e futuras | ok |
 | Sem Co-Authored-By no commit | pendente |
+
+---
+
+## O que vem a seguir
+
+Cluster resolve o problema de aproveitar múltiplos cores numa single-VM — mas quando sua aplicação crescer além de uma máquina, você vai precisar decidir entre PM2, Kubernetes e outros orquestradores. A nota `[[10 - Cluster vs PM2 vs Kubernetes - quem orquestra]]` explora essa decisão com profundidade: quando cada camada faz sentido, o erro clássico de rodar cluster dentro de um pod K8s, e como a evolução histórica das ferramentas explica as escolhas de 2026. Se você ainda não leu sobre sticky sessions com WebSocket em detalhe, a nota `[[11 - Decision tree - qual ferramenta para qual problema]]` tem o raciocínio completo de quando usar cada ferramenta, com cenários reais.
+
+---
+
+## Fontes
+
+- [Node.js Docs — `node:cluster`](https://nodejs.org/api/cluster.html) — API oficial, eventos, scheduling policy e exemplos de port sharing
+- [Node.js Docs — `availableParallelism()`](https://nodejs.org/api/os.html#osavailableparallelism) — por que preferir sobre `os.cpus().length` em containers
 
 ---
 

