@@ -295,3 +295,6 @@ Com feedback do usuário capturado e integrado ao loop, a nota 07 fecha o galho 
 - [[Dicionário de IA#Re-prompt rate|Dicionário: Re-prompt rate]]
 - [[Dicionário de IA#Sycophancy|Dicionário: Sycophancy]]
 - [[Dicionário de IA#Implicit feedback|Dicionário: Implicit feedback]]
+- [[Dicionário de IA#Confirmation bias|Dicionário: Confirmation bias]]
+- [[Dicionário de IA#Cohort analysis|Dicionário: Cohort analysis]]
+- [[04 - Champion-challenger em produção]] — taxa de feedback alimenta a decisão de rollback automático
