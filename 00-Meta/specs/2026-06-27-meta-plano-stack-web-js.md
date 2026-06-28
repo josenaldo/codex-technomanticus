@@ -31,6 +31,7 @@ tags:
 | React — Next.js (App Router) | 16 | 2026-06-27 |
 | React — Ecossistema | 13 | 2026-06-27 |
 | HTML | 12 (4/4/4) | 2026-06-27 |
+| CSS | 13 (4/5/4) | 2026-06-27 |
 
 ---
 
@@ -51,20 +52,16 @@ tags:
 
 ---
 
-### A4 — CSS
+### A4 — CSS ✅ CONCLUÍDO 2026-06-27
 
-- **Estado:** monólito `CSS.md` (1263 ln) + `Bootstrap.md` stub + `index.md` stub
-- **Plano detalhado:** a criar (`2026-XX-XX-trilha-css-plan.md`)
-- **Escopo:** box model & display, layout (Flexbox + Grid), cascade/specificity/herança, responsivo (media queries, container queries), custom properties/design tokens, animações e transições, padrões práticos (BEM, CSS Modules, Tailwind como utility-first), tipografia e cor
-- **Estimativa:** ~18–22 notas (3 fases)
-- **Dependências:** HTML (semântica) deve existir como trilha antes
-- **Anti-duplicação:** HTML trata atributos; Tooling e Build trata PostCSS/bundling; React trata CSS-in-JS/Tailwind aplicado a componentes
+- **Estado:** 13 notas (4 Iniciado / 5 Adepto / 4 Magus), monólitos removidos
+- **Plano detalhado:** `2026-06-27-trilha-css-plan.md`
 - **Status:**
-  - [ ] Plano detalhado escrito e aprovado
-  - [ ] Fase Iniciado executada e commitada
-  - [ ] Fase Adepto executada e commitada
-  - [ ] Fase Magus executada e commitada
-  - [ ] Teardown: `CSS.md` aposentado, `Bootstrap.md` → stub/ponteiro, index.md MOC, Roadmap atualizado
+  - [x] Plano detalhado escrito e aprovado
+  - [x] Fase Iniciado executada e commitada (01–04: cascade/box model, unidades/cores, Flexbox, Grid)
+  - [x] Fase Adepto executada e commitada (05–09: especificidade/@layer, responsivo, custom props, seletores modernos, animações)
+  - [x] Fase Magus executada e commitada (10–13: Tailwind v4, arquitetura de estilos, performance, entrevista)
+  - [x] Teardown: `CSS.md` e `Bootstrap.md` removidos, index.md MOC, Roadmap atualizado
 
 ---
 
