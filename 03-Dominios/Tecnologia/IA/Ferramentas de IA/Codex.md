@@ -1,8 +1,9 @@
 ---
 title: "Codex"
 created: 2026-04-01
-updated: 2026-04-11
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: evergreen
 tags:
@@ -17,6 +18,9 @@ publish: true
 # Codex
 
 > Codex é a aposta da OpenAI em **[[Dicionário de IA#Coding agent|coding agent]] cloud-based**: diferente de [[Dicionário de IA#Claude Code|Claude Code]] ou Copilot (que rodam no seu IDE local), Codex opera em um sandbox na nuvem, recebe tarefas em linguagem natural, executa num ambiente isolado com seu repo clonado, e retorna um PR. Para um senior dev, o valor de Codex é diferente do uso diário: **tasks paralelas, trabalho assíncrono, e separação de concerns** — você descreve o que precisa, fecha o laptop, e volta horas depois com PRs prontos para review. Esta nota cobre o que Codex é em 2026 (muito diferente do "Codex 2021" original que era só o modelo), como usar, trade-offs, e quando faz sentido adotar. Para comparação com outras ferramentas, ver [[Comparativo de LLMs]]; para o padrão de agents em geral, [[Anatomia de Agents|Agents]].
+
+> [!question]- Codex substitui Claude Code ou são ferramentas complementares?
+> São complementares com papéis distintos. Codex é cloud-based, assíncrono e ideal para tasks longas que podem rodar sem supervisão — implementar um feature bem especificado, dependency update, batch de refactors. Claude Code é local, interativo e ideal para fluxo contínuo onde você itera com o agente em tempo real — exploração de codebase, debugging, pair programming. Um senior típico usa Claude Code para trabalho diário e Codex para tasks paralelas de background enquanto trabalha em outra coisa.
 
 ## O que é
 
@@ -290,6 +294,15 @@ Cada task roda em container isolado:
 - **Acesso a docs internos:** requer configuração (MCP, tools customizadas).
 
 ## Armadilhas comuns
+
+> [!warning] Task vaga sem acceptance criteria
+> "Melhore a autenticação" é a pior task que você pode dar ao Codex. Sem critério de aceitação, o agente faz mudanças válidas mas não as que você precisava, e o PR review vira retrabalho. Task boa tem: o quê, onde, como validar. Exemplo: "Adicione rate limiting de 5 req/min por IP no endpoint `/api/auth/login`. Deve retornar 429 com Retry-After header. Testes: `test_rate_limit_login.py`."
+
+> [!warning] Merge sem review humano por confiar nos testes
+> CI verde não significa output correto. Codex gera código que passa nos testes existentes mas pode ter bugs sutis de lógica de negócio, edge cases não cobertos, ou escolhas de design que parecem OK mas contradizem padrões do projeto. Todo PR de Codex precisa de review humano — CI é o chão, não o teto.
+
+> [!warning] Paralelizar tasks com dependências entre si
+> Codex task A e task B editam os mesmos arquivos em paralelo → conflito de merge garantido. O agente não vê o que a outra instância está fazendo. Para tasks com dependências, serializar: A termina → review → merge → B começa. Paralelo só funciona com tasks genuinamente independentes (arquivos e lógica disjuntos).
 
 ### 1. Task vaga
 
@@ -577,6 +590,27 @@ Padrões frequentes em times usando Codex em produção. Não são casos vividos
 2. Automated review de PRs labeled "review-me".
 3. Semana de observação.
 4. Ajuste skills para qualidade.
+
+## Como explicar em inglês
+
+*"Codex is OpenAI's cloud-based coding agent — it receives a task in natural language, clones your repo in an isolated sandbox, executes the work autonomously, and returns a pull request. It's best for long, well-specified tasks you can run in the background while you do other work."*
+
+| Português | Inglês |
+|---|---|
+| agente de código | coding agent |
+| tarefa assíncrona | async task |
+| sandbox isolado | isolated sandbox |
+| critério de aceitação | acceptance criteria |
+| tarefa auto-contida | self-contained task |
+| revisão humana | human review |
+| tarefas paralelas | parallel tasks |
+| atualização de dependência | dependency update |
+| orçamento por tarefa | per-task budget |
+| permissões de rede | network allowlist / network permissions |
+
+## O que vem a seguir
+
+Depois de entender Codex como agente cloud assíncrono, o próximo contraste útil é o [[GitHub Copilot]] — a abordagem da Microsoft/OpenAI para assistência in-editor, muito mais restrita em contexto mas com adoção massiva em times que vivem no VS Code. Para fechar o mapa de ferramentas, o [[Comparativo de LLMs]] coloca Claude, GPT, Gemini e os modelos open-source lado a lado em critérios práticos de escolha.
 
 ## Veja também
 
