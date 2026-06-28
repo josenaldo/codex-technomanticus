@@ -1,8 +1,9 @@
 ---
 title: "Claude"
 created: 2026-04-01
-updated: 2026-04-11
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: evergreen
 tags:
@@ -16,6 +17,9 @@ publish: true
 # Claude
 
 > Claude é uma das três famílias de LLM dominantes em 2026 (junto com GPT e Gemini), com diferenciais técnicos concretos: qualidade de raciocínio em tarefas longas, [[Dicionário de IA#tool use|tool use]] consistente, contexto de 1M tokens com retenção razoável (não só "no benchmark"), Claude Agent SDK limpo, e ecossistema maduro de [[Dicionário de IA#MCP (Model Context Protocol)|MCP]], skills e [[Dicionário de IA#subagent|subagents]]. Para muitos workloads de coding e agents, é a escolha default em times sérios. Esta nota é a trilha completa: modelos, API, ferramentas (Claude Code, Desktop, web), como operar em produção, e como adotar progressivamente. Para fundamentos de LLMs em geral ver [[Anatomia dos LLMs|LLMs]]; para comparação com outros modelos ver [[Comparativo de LLMs]].
+
+> [!question]- Preciso usar a API diretamente ou ferramentas como Claude Code bastam?
+> Depende do contexto. Claude Code resolve 80% dos casos de uso de assistência de desenvolvimento — CLAUDE.md, skills, subagents e hooks cobrem workflows complexos sem linha de API. Use a API diretamente quando precisar de integração customizada em produto, controle fino de system prompt por request, streaming de response para UI própria, tool use com ferramentas internas, ou workloads de batch em escala. O Agent SDK entra quando a lógica de orquestração de agents precisa de controle programático que não cabe no CLI.
 
 ## O que é
 
@@ -553,6 +557,15 @@ Na interface web e Desktop, Claude pode gerar "artifacts" — documentos, códig
 
 ## Armadilhas comuns
 
+> [!warning] Não pinar a versão do modelo em produção
+> `claude-sonnet-4-6` (alias) muda silenciosamente quando Anthropic lança atualização. Comportamento muda, avaliações passadas não valem mais, e você não sabe quando aconteceu. Sempre use a versão completa com data: `claude-sonnet-4-6-20260315` em produção.
+
+> [!warning] Ignorar prompt caching em system prompts grandes
+> Todo system prompt grande repetido sem `cache_control` significa custo de input completo em cada chamada. Em Sonnet, o cache de 1M tokens custa ~10x menos por token do que input fresco. Workloads de alto volume ficam 5-10x mais caros sem caching. Marque com `"cache_control": {"type": "ephemeral"}` nos blocos que se repetem.
+
+> [!warning] CLAUDE.md desatualizada com estado do projeto
+> Claude Code lê a CLAUDE.md como verdade absoluta sobre o projeto. Se a arquitetura mudou, dependências foram trocadas, ou convenções evoluíram, o agente vai trabalhar com premissas erradas sem aviso. Revisar CLAUDE.md mensalmente ou após refactors grandes é parte do workflow, não opcional.
+
 ### 1. Usar alias em produção
 
 `claude-sonnet-4-6` vs `claude-sonnet-4-6-20260315`. Alias muda quando Anthropic atualiza. **Fix:** pin version em produção.
@@ -859,6 +872,27 @@ Padrões frequentes em times usando Claude em produção. Não são casos vivido
 2. Tools próprias + MCP server conectado.
 3. Observabilidade via Langfuse.
 4. Deploy simples (Railway, Fly).
+
+## Como explicar em inglês
+
+*"Claude is Anthropic's LLM family with strong reasoning on long tasks, consistent tool use, and a mature ecosystem including the Agent SDK and MCP protocol. For coding and agentic workloads, Claude Code brings the model into the IDE via CLAUDE.md configuration, skills, and subagents."*
+
+| Português | Inglês |
+|---|---|
+| model pinning / versão fixada | model pinning / pinned version |
+| cacheamento de prompt | prompt caching |
+| uso de ferramentas | tool use |
+| raciocínio estendido | extended thinking |
+| janela de contexto | context window |
+| subagente | subagent |
+| Protocolo de Contexto de Modelo | Model Context Protocol (MCP) |
+| SDK de agentes | Agent SDK |
+| limite de taxa | rate limit |
+| processamento em lote | batch processing |
+
+## O que vem a seguir
+
+Claude é o modelo que mais aparece ao longo deste galho e das ferramentas de IA. O próximo passo natural é entender [[Codex]] — a ferramenta de coding agent da OpenAI que compete diretamente com Claude Code — e depois [[GitHub Copilot]], que ocupa outro ponto no espectro: integrado ao editor, mais limitado no contexto, mas onipresente em times que usam o ecossistema GitHub. Terminando o tour pelo [[Comparativo de LLMs]], você terá o mapa completo para escolher a ferramenta certa por workload.
 
 ## Veja também
 
