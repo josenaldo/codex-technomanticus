@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - structured-outputs
   - ia
@@ -19,6 +20,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Gemini oferece structured output via dois parâmetros: `response_mime_type: "application/json"` + `response_schema`. O schema usa um **subset de OpenAPI 3.0** (não JSON Schema puro como OpenAI e Anthropic) — diferenças importantes em `enum`, `format`, e união de tipos. Compatível com Gemini 1.5+ (Pro e Flash) e Gemini 2.x (todos). Aderência é alta mas o subset é menor que o de OpenAI strict — schemas com nested deep ou union complexa podem falhar silenciosamente. SDK Python (`google-genai`) tem helper que aceita Pydantic model diretamente. Tool use também funciona como mecanismo alternativo (ver [nota 03](03%20-%20Function%20calling%20como%20mecanismo%20de%20output.md)) com mais flexibilidade.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Esta nota assume que você sabe o que é JSON Schema (nota 02) e conhece o conceito de structured output enforcement (notas 03-05). O ponto diferenciador do Gemini: ele usa um subset de OpenAPI 3.0 em vez de JSON Schema puro, com tipos em caixa alta e sem `additionalProperties`. Se você viu as notas da OpenAI e Anthropic, o que muda aqui são os detalhes de formato — o padrão conceitual é o mesmo.
 
 ## O mecanismo
 
@@ -263,6 +267,42 @@ Aderência varia entre Flash e Pro, e entre versões. Teste sempre no modelo que
 ### Combine com validação semântica
 
 Como em todo provider, shape garantido (com ressalvas) ≠ semântica certa. Pydantic validators capturam isso (ver [nota 07](07%20-%20Validação%20e%20retry%20—%20Pydantic,%20Zod.md)).
+
+## Armadilhas comuns
+
+> [!warning] Usar tipos em caixa baixa no schema (copiando JSON Schema)
+> A armadilha mais comum ao migrar código de OpenAI ou Anthropic para Gemini é copiar o schema com tipos em caixa baixa (`"object"`, `"string"`, `"array"`). O SDK do Gemini pode aceitar o schema silenciosamente mas o enforcement falha ou o output vem com shape incorreto. Sempre use `"OBJECT"`, `"STRING"`, `"ARRAY"` etc. em schemas Gemini. Se você usa Pydantic com `response_schema=MyModel`, o SDK converte automaticamente — isso evita o problema inteiro.
+
+> [!warning] Assumir que `response_schema` exclui campos extras
+> Diferente do OpenAI strict mode, Gemini não tem equivalente a `additionalProperties: false`. O modelo pode adicionar campos não declarados e o schema não bloqueia. Validação pós-schema é obrigatória no Gemini, não opcional. Usando Pydantic com `response.parsed`, o Pydantic rejeita campos extras por default (se `model_config = ConfigDict(extra="forbid")`). Adicione essa configuração nos models que precisam de shape rigoroso.
+
+> [!warning] Ignorar `response.parsed == None` como sinal de erro
+> Quando o Gemini não consegue satisfazer o schema (falha de validação interna ou schema com feature não suportada), `response.parsed` retorna `None` sem levantar exceção. É uma falha silenciosa — seu código acessa `response.parsed.answer` e recebe `AttributeError: 'NoneType' object has no attribute 'answer'`. Sempre cheque `if response.parsed is None: # tratar erro` antes de usar. Em caso de None, `response.text` pode ter o JSON cru para diagnóstico.
+
+## Como explicar em inglês
+
+Perguntas sobre Gemini structured output aparecem em contextos de multi-provider ou migração de OpenAI para Google Cloud:
+
+> "Gemini structured output uses `response_mime_type` plus `response_schema` — the schema follows an OpenAPI 3.0 subset, not pure JSON Schema. The key differences: types are uppercase (`STRING`, `OBJECT`), there's no `additionalProperties` enforcement, and complex unions are limited. The Python SDK integrates with Pydantic directly via `response_schema=MyModel`, making it ergonomic for well-typed outputs. The failure mode to watch for is `response.parsed` returning None silently when schema constraints can't be satisfied — always guard before accessing fields."
+
+| Português | Inglês |
+|-----------|--------|
+| tipo MIME de resposta | response MIME type |
+| schema de resposta | response schema |
+| subset OpenAPI 3.0 | OpenAPI 3.0 subset |
+| tipos em caixa alta | uppercase types |
+| ordenação de propriedades | property ordering |
+| modo de enumeração | enum mode |
+| nullable (Gemini) | nullable field |
+| declaração de função | function declaration |
+| config de chamada de função | function calling config |
+| modelo Flash vs Pro | Flash model vs Pro model |
+
+## O que vem a seguir
+
+Com os três providers cobertos (OpenAI strict mode, Anthropic tool use, Gemini response_schema), a próxima nota volta ao meta-nível: o que fazer quando o shape está garantido mas os valores estão errados. Validação semântica com Pydantic (Python) e Zod (TypeScript) — como escrever validators que vão além do tipo e checam regras de negócio.
+
+Ver [[07 - Validação e retry — Pydantic, Zod]].
 
 ## Fontes
 
