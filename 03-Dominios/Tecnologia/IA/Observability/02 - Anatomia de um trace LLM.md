@@ -48,6 +48,8 @@ Session (user_id ou conversation_id)
 
 A regra simples: **trace é o que você mostra pro stakeholder pra explicar uma resposta**; **span é o que você abre pra debugar uma etapa específica**.
 
+Tradução prática: se alguém pergunta "por que essa resposta foi assim?", você abre um trace — a história completa de uma tarefa. Se alguém pergunta "por que o tool call demorou 4 segundos?", você abre um span específico — a fatia da história que tem aquele detalhe.
+
 ## OpenTelemetry GenAI — convenções semânticas
 
 OpenTelemetry (OTel) padronizou (ainda em status `experimental` em 2026, mas amplamente adotado) os atributos pra spans de IA generativa. Adotar essas convenções dá portabilidade — instrumenta uma vez, exporta pra qualquer backend OTel-compatible.
