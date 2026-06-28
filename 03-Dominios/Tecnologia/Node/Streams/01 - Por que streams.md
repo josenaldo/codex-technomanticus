@@ -1,10 +1,10 @@
 ---
 title: "Por que streams"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -112,18 +112,25 @@ await pipeline(
 
 O crescimento de memória com buffer everything é linear no tamanho dos dados. Com stream, o buffer interno tem tamanho fixo (controlado por `highWaterMark`). A função `pipeline` da `node:stream/promises` também cuida de propagação de erros e cleanup automático — mais sobre isso na nota 07.
 
-### Diagrama mental do fluxo
+### Diagrama: buffer everything vs. streaming
 
-```
-Buffer everything:
-  Fonte ──────────────────────────────────► Memória (N bytes) ──► Consumidor
-         espera carregar tudo antes de prosseguir
-
-Stream:
-  Fonte ──► [chunk 1] ──► Transform ──► [chunk 1'] ──► Consumidor
-         ──► [chunk 2] ──► Transform ──► [chunk 2'] ──► Consumidor
-         ──► [chunk 3] ──► Transform ──► [chunk 3'] ──► Consumidor
-         Pipeline fluindo continuamente — memória = O(buffer interno)
+```mermaid
+flowchart LR
+    subgraph BE["❌ Buffer everything — O(N) memória"]
+        direction LR
+        s1["Fonte"] -->|"readFile()\ntudo de uma vez"| m1["RAM: N bytes"]
+        m1 -->|"processa"| d1["Destino"]
+    end
+    subgraph ST["✅ Streaming — O(chunk) memória"]
+        direction LR
+        s2["Fonte"] -->|"chunk"| t["Transform\n~16 KB"]
+        t -->|"chunk'"| d2["Destino"]
+        d2 -..->|"write()=false\nbackpressure"| s2
+    end
+    style m1 fill:#D0021B,color:#fff
+    style t fill:#4A90D9,color:#fff
+    style s2 fill:#4A90D9,color:#fff
+    style d2 fill:#4A90D9,color:#fff
 ```
 
 ### Backpressure — o mecanismo que controla o fluxo
@@ -227,23 +234,125 @@ Neste padrão, um upload de 5 GB usa apenas ~16 KB de heap por chunk — indepen
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-**1. Usar stream em payload pequeno — overhead sem benefício.**
+Os dois cenários a seguir mostram onde a troca de complexidade por eficiência de memória se paga em produção.
 
-Stream adiciona indireção: criação de objetos, eventos, tratamento de backpressure, propagação de erros. Para arquivos de 50 KB ou payloads de API típicos, esse overhead é mensurável e não compensa. A heurística: abaixo de 10 MB e sem requisito de latência de primeiro chunk, buffer é mais simples e igualmente eficiente.
+### Cenário 1 — ETL: transformação de CSV de grande volume
 
-**2. Confundir "streaming HTTP" com "Node Streams".**
+Uma equipe de dados precisa transformar um dump de 300 MB (1 milhão de linhas de vendas) em NDJSON filtrado para ingestão em um data warehouse. Com buffer everything, o processo exigiria ~1,2 GB de heap (CSV raw + objetos parseados + array resultado). Com streaming, o pico de memória fica em ~2 MB — independente do tamanho do arquivo.
 
-Quando uma resposta HTTP chega em chunks via Transfer-Encoding chunked ou SSE, isso é streaming no protocolo. Node Streams são a abstração do runtime para processar esses (e outros) dados. Os dois se relacionam — `req` e `res` são Node Streams — mas não são a mesma coisa. É possível consumir uma resposta HTTP em streaming sem usar a API `stream` explicitamente (usando `fetch` com `response.body`), e é possível usar Node Streams sem envolver HTTP (arquivos, stdin/stdout).
+```javascript
+import { createReadStream, createWriteStream } from 'node:fs';
+import { pipeline } from 'node:stream/promises';
+import { parse } from 'csv-parse';
+import { Transform } from 'node:stream';
+import { stringify } from 'ndjson';
 
-**3. Achar que stream resolve memória, mas ignorar backpressure.**
+// Filtra e normaliza registros de vendas — memória O(chunk) durante todo o ETL
+const filtrarAtivos = new Transform({
+  objectMode: true,
+  transform(row, _enc, cb) {
+    // Descarta inativos sem emitir nada downstream
+    if (row.status !== 'ativo') return cb();
+    cb(null, {
+      id: row.id,
+      nome: row.nome.trim(),
+      totalVendas: Number(row.total_vendas),
+      processadoEm: new Date().toISOString(),
+    });
+  },
+});
 
-O argumento de "memória constante" assume que o produtor e o consumidor operam em velocidades compatíveis ou que backpressure está sendo respeitado. Se um Readable drena disco em NVMe mas o Writable é uma conexão de rede lenta, e backpressure é ignorado, o buffer interno do Writable cresce indefinidamente — a memória explode mesmo com stream. A conclusão errada seria "streams não ajudam com memória". A conclusão correta: streams ajudam, mas apenas quando backpressure está implementado. `pipeline` implementa backpressure automaticamente; `pipe` faz o mesmo mas tem semântica de erro fraca; conectar manualmente com eventos `data` exige cuidado explícito.
+await pipeline(
+  createReadStream('./vendas-2025.csv'),         // Readable: lê chunk a chunk
+  parse({ columns: true, trim: true }),           // Transform: CSV → objeto JS
+  filtrarAtivos,                                  // Transform: filtra e normaliza
+  stringify(),                                    // Transform: objeto → NDJSON
+  createWriteStream('./vendas-ativas.ndjson'),    // Writable: persiste no disco
+);
 
-**4. Usar `stream.pipe()` em código novo.**
+// Pico de memória: ~2 MB — mesmo resultado com 1 mil ou 10 milhões de linhas
+console.log('ETL concluído');
+```
 
-`pipe` não propaga erros corretamente entre estágios e não destrói streams upstream quando um downstream falha — o que leva a leaks de file descriptors. `pipeline` (da `node:stream/promises`) substitui `pipe` em todos os casos de produção. Mais detalhes na nota 07.
+O detalhe crítico: `pipeline()` garante que o `createReadStream` pause automaticamente quando o estágio de escrita está ocupado (backpressure). Sem isso, a leitura de disco em NVMe encheria os buffers intermediários enquanto a escrita tenta acompanhar — e a memória explodiria mesmo com stream.
+
+### Cenário 2 — Proxy de resposta de LLM com SSE
+
+Um backend que encaminha respostas de uma API de LLM ao browser. Com buffer everything, o usuário veria uma tela em branco por vários segundos até a resposta completa chegar. Com streaming, cada token aparece no browser assim que a API upstream o produz.
+
+```javascript
+import { createServer } from 'node:http';
+import { Readable } from 'node:stream';
+
+// Proxy de streaming SSE: encaminha tokens de LLM para o cliente em tempo real
+createServer(async (req, res) => {
+  if (req.method !== 'POST' || req.url !== '/chat') {
+    return res.writeHead(405).end();
+  }
+
+  // Body é pequeno (mensagem do usuário) — buffer é aceitável aqui
+  const chunks = [];
+  for await (const c of req) chunks.push(c);
+  const { message } = JSON.parse(Buffer.concat(chunks).toString());
+
+  // Chama a API upstream com stream habilitado
+  const upstream = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: message }],
+      stream: true,
+    }),
+  });
+
+  // Configura headers SSE — deve acontecer antes de qualquer write()
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+  });
+
+  // Readable.fromWeb() converte a Web Streams API (fetch) para Node Streams
+  const nodeStream = Readable.fromWeb(upstream.body);
+  for await (const chunk of nodeStream) {
+    // Cada chunk é um fragmento SSE — encaminha imediatamente para o cliente
+    res.write(chunk);
+  }
+  res.end();
+}).listen(3000);
+```
+
+A distinção importante aqui: o body da requisição (a mensagem do usuário, geralmente < 1 KB) foi carregado em buffer com segurança. A resposta da LLM (potencialmente longa e produzida em tempo real) é encaminhada via stream. A decisão correta não é "sempre stream" — é "stream quando o tamanho ou a latência de primeiro chunk importam".
+
+---
+
+## Armadilhas comuns
+
+> [!warning] 1. Usar stream em payload pequeno — overhead sem benefício
+> **O que acontece:** A criação de objetos de stream, o controle de eventos e o gerenciamento de backpressure adicionam indireção mensurável que não se paga em payloads pequenos.
+> **Por quê:** Para arquivos de 50 KB ou payloads de API típicos, o overhead de criação e coordenação dos estágios da pipeline supera o benefício de memória constante. O código fica mais complexo sem ganho real.
+> **Como evitar:** Abaixo de 10 MB e sem requisito de latência de primeiro chunk, prefira `readFile` + processamento síncrono. Streams se pagam quando o dado é grande (>100 MB), contínuo, ou vem de I/O de longa duração.
+
+> [!warning] 2. Confundir "streaming HTTP" com "Node Streams"
+> **O que acontece:** Código que trata Transfer-Encoding chunked e a API `node:stream` como se fossem camadas que exigem mapeamento explícito — levando a wrapping desnecessário de objetos que já são streams.
+> **Por quê:** Streaming HTTP é um protocolo de transporte; Node Streams são uma abstração de runtime. Os dois se tocam — `req` e `res` já são Node Streams — mas são conceitos distintos. É possível consumir HTTP em streaming via `response.body` da Fetch API sem usar `node:stream` explicitamente.
+> **Como evitar:** Entenda o nível de abstração com que está trabalhando. `req` e `res` já são streams nativos; não os envolva em mais camadas além do que a tarefa exige.
+
+> [!warning] 3. Achar que streams resolvem memória sem implementar backpressure
+> **O que acontece:** Um Readable rápido (leitura de NVMe) conectado a um Writable lento (rede com latência) enche o buffer interno do Writable indefinidamente — a memória explode mesmo com stream.
+> **Por quê:** O argumento de "memória constante" assume que produtor e consumidor operam em velocidades compatíveis OU que backpressure está ativo. Sem backpressure, o buffer cresce como se não houvesse stream algum.
+> **Como evitar:** Use `pipeline()` de `node:stream/promises` — ele implementa backpressure automaticamente entre todos os estágios. Ao conectar streams manualmente via eventos `data`, implemente `readable.pause()` / `readable.resume()` explicitamente.
+
+> [!warning] 4. Usar `stream.pipe()` em código novo
+> **O que acontece:** Quando um stream downstream falha, `pipe()` não propaga o erro para upstream nem destrói os streams restantes — o que leva a vazamento de file descriptors e memória.
+> **Por quê:** `pipe()` é a API original de streams em Node; sua semântica de erro é fraca por design histórico. A falha de um estágio intermediário não limpa os demais estágios da cadeia.
+> **Como evitar:** Use `pipeline()` de `node:stream/promises` em todo código novo. `pipeline` propaga erros e faz cleanup de todos os estágios automaticamente. `.pipe()` ainda aparece em código legado — reconheça mas não reproduza em código novo.
 
 ---
 
@@ -279,6 +388,16 @@ Backpressure é o mecanismo pelo qual um consumidor lento sinaliza ao produtor p
 
 ---
 
+## O que vem a seguir
+
+A motivação para usar streams está estabelecida — o próximo passo é entender as ferramentas disponíveis. Node expõe quatro tipos de stream com papéis distintos: Readable (fonte), Writable (destino), Duplex (canais independentes) e Transform (transformação acoplada). Conhecer as diferenças entre eles é o que permite montar pipelines corretas sem tentativa e erro.
+
+- [[02 - Os 4 tipos - Readable, Writable, Duplex, Transform]] — o mapa dos quatro tipos e quando cada um se aplica
+- [[06 - Backpressure]] — o mecanismo de controle de fluxo que foi introduzido aqui, em detalhe
+- [[07 - pipeline vs pipe - error handling]] — por que `pipeline` substitui `pipe` em todo código de produção
+
+---
+
 ## Veja também
 
 - [[02 - Os 4 tipos - Readable, Writable, Duplex, Transform]]
@@ -289,3 +408,10 @@ Backpressure é o mecanismo pelo qual um consumidor lento sinaliza ao produtor p
 - [[03-Dominios/Tecnologia/Node/Paralelismo/index]] — galho 2
 - [[04 - Comunicação entre workers - postMessage e MessageChannel]] — galho 2: transferList como alternativa a streams para Worker Threads
 - [[Node.js]] — tronco
+
+---
+
+## Fontes
+
+- [Node.js Docs — Stream](https://nodejs.org/api/stream.html)
+- [Node.js — Backpressuring in Streams](https://nodejs.org/en/learn/modules/backpressuring-in-streams)

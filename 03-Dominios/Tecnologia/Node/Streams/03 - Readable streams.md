@@ -1,10 +1,10 @@
 ---
 title: "Readable streams"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -40,6 +40,31 @@ A propriedade `readable.readableFlowing` expõe o estado interno como três valo
 | `null` | Nenhum mecanismo de consumo ainda; stream não gera dados |
 | `false` | Pausado explicitamente (backpressure ou `.pause()`) |
 | `true` | Em flowing; emitindo dados ativamente |
+
+### Diagrama: estados e transições de um Readable
+
+```mermaid
+stateDiagram-v2
+    [*] --> Null : stream criado
+    Null --> Flowing : on('data') / resume() / pipe()
+    Null --> Paused : pause() / unpipe()
+    Flowing --> Paused : pause()
+    Paused --> Flowing : resume() / on('data')
+    Flowing --> Ended : push(null) + buffer drenado
+    Paused --> Ended : push(null) + buffer drenado
+    Ended --> [*]
+
+    state Flowing {
+        direction LR
+        chunks : chunks empurrados via evento 'data'
+    }
+    state Paused {
+        direction LR
+        pull : consumidor chama .read() explicitamente
+    }
+```
+
+O estado `null` é o ponto de partida: o stream existe mas não produz dados até que um mecanismo de consumo seja ativado. A transição para `Flowing` acontece implicitamente ao registrar `on('data')` — o runtime começa a empurrar chunks automaticamente. Em `Paused`, o controle é do consumidor: ele puxa chunks via `.read()` quando está pronto.
 
 ---
 
@@ -246,7 +271,143 @@ Padrão observado em codebases Node modernas (2024–2026):
 
 ---
 
-## Armadilhas
+## Casos práticos
+
+Os cenários abaixo mostram `Readable` em contextos de produção onde a escolha de modo e de estratégia de criação impacta diretamente na corretude do código.
+
+### Cenário 1 — Paginação de API como Readable com async generator
+
+Um serviço de relatórios precisa processar todos os pedidos de um cliente, que podem ser milhares. A API upstream é paginada. `Readable.from()` com um `async function*` cria um stream que pagina automaticamente sob demanda:
+
+```javascript
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { Transform } from 'node:stream';
+import { createWriteStream } from 'node:fs';
+
+// async generator: pagina a API e faz yield de cada registro individualmente
+async function* fetchAllOrders(clientId) {
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const res = await fetch(
+      `https://api.exemplo.com/orders?client=${clientId}&page=${page}&limit=100`,
+      { headers: { Authorization: `Bearer ${process.env.API_TOKEN}` } }
+    );
+    const { orders, pagination } = await res.json();
+
+    for (const order of orders) {
+      yield order; // cada registro vira um chunk no stream
+    }
+
+    hasMore = pagination.hasNextPage;
+    page++;
+  }
+}
+
+// Transform: enriquece cada pedido com campo calculado
+const enrich = new Transform({
+  objectMode: true,
+  transform(order, _enc, cb) {
+    cb(null, {
+      ...order,
+      totalComDesconto: order.total * (1 - (order.discountPct / 100)),
+      exportadoEm: new Date().toISOString(),
+    });
+  },
+});
+
+// Transform: serializa objetos para NDJSON
+const toNDJSON = new Transform({
+  objectMode: true,
+  transform(obj, _enc, cb) {
+    cb(null, JSON.stringify(obj) + '\n');
+  },
+});
+
+// pipeline completo — backpressure gerenciado automaticamente
+// A API só é chamada quando o consumidor está pronto para mais dados
+await pipeline(
+  Readable.from(fetchAllOrders('cliente-42')), // fonte paginada
+  enrich,                                       // enriquecimento
+  toNDJSON,                                     // serialização
+  createWriteStream('./pedidos-cliente-42.ndjson'),
+);
+
+console.log('Exportação concluída — memória constante durante todo o processo');
+```
+
+O detalhe essencial: o `async function*` só avança para a próxima página quando o pipeline drena o buffer interno — backpressure automático que evita fazer 100 chamadas de API antes de processar qualquer resultado.
+
+### Cenário 2 — Readable custom para leitura de banco de dados com cursor
+
+Um job de migração precisa processar todos os registros de uma tabela de 5 milhões de linhas. O driver do banco expõe um cursor — uma API assíncrona de pull. Implementar `_read()` mapeia esse cursor para o ecossistema de streams:
+
+```javascript
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { createWriteStream } from 'node:fs';
+
+class DatabaseCursorReadable extends Readable {
+  constructor(cursor, options = {}) {
+    super({ ...options, objectMode: true });
+    this.cursor = cursor;
+    this._reading = false;
+  }
+
+  _read() {
+    // _read é chamado pelo runtime quando o buffer precisa de mais dados
+    // Evita chamadas concorrentes ao cursor
+    if (this._reading) return;
+    this._reading = true;
+
+    this.cursor.next()
+      .then((row) => {
+        this._reading = false;
+        if (row === null) {
+          // Sinaliza fim do stream — OBRIGATÓRIO para que 'end' dispare
+          this.push(null);
+        } else {
+          // push() retorna false se o buffer está cheio (backpressure)
+          // O runtime não chamará _read() novamente até o buffer drenar
+          this.push(row);
+        }
+      })
+      .catch((err) => {
+        this._reading = false;
+        // Destrói o stream com o erro — propaga via evento 'error'
+        this.destroy(err);
+      });
+  }
+}
+
+// Uso: cursor do banco → Readable → arquivo de migração
+async function exportTable(db, tableName, outputPath) {
+  const cursor = await db.query(`SELECT * FROM ${tableName}`).cursor();
+
+  await pipeline(
+    new DatabaseCursorReadable(cursor),
+    new Transform({
+      objectMode: true,
+      transform(row, _enc, cb) {
+        cb(null, JSON.stringify(row) + '\n');
+      },
+    }),
+    createWriteStream(outputPath),
+  );
+
+  await cursor.close();
+}
+
+await exportTable(db, 'users', './users-export.ndjson');
+```
+
+O contrato de `_read()` garante que o banco de dados só é consultado quando o pipeline está pronto para consumir — se a escrita em disco está lenta, o cursor pausa automaticamente. Isso evita carregar milhões de registros em memória de uma vez.
+
+---
+
+## Armadilhas comuns
 
 > [!danger] 1. Adicionar listener `'data'` tarde demais
 > Se o stream já entrou em flowing (por exemplo, via `.resume()` ou `.pipe()`), adicionar `on('data')` depois que dados começaram a fluir **perde os chunks anteriores**. Sempre registre listeners antes de qualquer operação que ative o stream.
@@ -322,6 +483,16 @@ Padrão observado em codebases Node modernas (2024–2026):
 - *"Qual a diferença entre `'readable'` e `'data'`?"* → `'data'` = flowing (push); `'readable'` = paused (pull). Não misture os dois.
 - *"Quando usar subclasse vs `Readable.from()`?"* → `Readable.from()` para qualquer coisa baseada em iterable/generator. Subclasse apenas quando você precisa controlar `highWaterMark` manualmente ou integrar com uma fonte de I/O de baixo nível.
 - *"`readableFlowing === null` vs `false`?"* → `null` = nenhum mecanismo de consumo ainda (stream não gera dados); `false` = pausado explicitamente após ter tido consumo.
+
+---
+
+## O que vem a seguir
+
+Com os modos de Readable claros, a próxima peça é entender o outro lado do fluxo: Writable streams. Enquanto Readable produz chunks, Writable os consome — e tem seu próprio conjunto de contratos críticos, incluindo o mecanismo de backpressure via retorno de `.write()` e o evento `'drain'`.
+
+- [[04 - Writable streams]] — sumidouro de dados: `.write()`, `drain`, `cork`/`uncork`, implementação custom
+- [[06 - Backpressure]] — o mecanismo que conecta Readable e Writable no controle de fluxo
+- [[08 - Async iteration de streams]] — `for await...of` como idioma canônico de consumo em Node moderno
 
 ---
 

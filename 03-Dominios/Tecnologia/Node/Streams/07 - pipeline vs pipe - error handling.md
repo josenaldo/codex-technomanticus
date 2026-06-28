@@ -1,10 +1,10 @@
 ---
 title: "pipeline vs pipe: error handling"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -89,6 +89,36 @@ Isso significa que em qualquer cadeia com `.pipe()`, um único erro em qualquer 
 O erro não aparece em desenvolvimento com cenários simples. Aparece em produção, em condições de falha parcial — exatamente quando você mais precisa que o cleanup funcione.
 
 `pipeline()` resolve todos esses problemas automaticamente.
+
+---
+
+## Diagrama
+
+```mermaid
+flowchart TD
+    subgraph PIPE [".pipe() — sem propagação de erro"]
+        direction LR
+        PA["source\n(Readable)"] -->|".pipe()"| PB["transform\n(Transform)"] -->|".pipe()"| PC["destination\n(Writable)"]
+        PB -- "erro em transform" --> PE["❌ error event\n(não propagado)"]
+        PA -. "continua aberto" .- PA
+        PC -. "continua aberto" .- PC
+    end
+
+    subgraph PIPELINE ["pipeline() — cleanup automático"]
+        direction LR
+        QA["source\n(Readable)"] --> QB["transform\n(Transform)"] --> QC["destination\n(Writable)"]
+        QB -- "erro em transform" --> QD["destroy(err)\nem todos"]
+        QD --> QE["Promise rejeita\ncom o erro"]
+    end
+
+    style PIPE fill:#2a1a1a,stroke:#D0021B,color:#ccc
+    style PIPELINE fill:#1a2a1a,stroke:#4A90D9,color:#ccc
+    style PE fill:#3a1a1a,stroke:#D0021B,color:#ccc
+    style QD fill:#3a2800,stroke:#F5A623,color:#ccc
+    style QE fill:#1e3a1a,stroke:#4A90D9,color:#ccc
+```
+
+Com `.pipe()`, um erro no `transform` dispara um evento `'error'` que fica sem handler — o `source` e o `destination` continuam abertos, acumulando file descriptors. Com `pipeline()`, o mesmo erro propaga `.destroy(err)` em todos os streams da cadeia antes de rejeitar a Promise.
 
 ---
 
@@ -304,9 +334,143 @@ Se por algum motivo você precisar usar `.pipe()`, o mínimo necessário é regi
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. `.pipe()` sem error handler em cada stream → leak silencioso
+### Cenário 1 — Processamento ETL com múltiplos Transform e cancelamento por timeout
+
+Um job de ETL lê um CSV de entrada, transforma, filtra e grava o resultado. Se o job demorar mais que 30 segundos, cancela e limpa tudo:
+
+```javascript
+import { pipeline } from 'node:stream/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { Transform } from 'node:stream';
+
+// Transform 1: bytes → linhas CSV
+class CsvSplitter extends Transform {
+  #buf = '';
+  _transform(chunk, _, cb) {
+    this.#buf += chunk.toString();
+    const lines = this.#buf.split('\n');
+    this.#buf = lines.pop() ?? '';
+    for (const l of lines) if (l.trim()) this.push(l + '\n');
+    cb();
+  }
+  _flush(cb) { if (this.#buf.trim()) this.push(this.#buf); cb(); }
+}
+
+// Transform 2: linhas → objetos JSON filtrados
+class CsvFilter extends Transform {
+  #headers = null;
+  constructor(predicate) {
+    super({ readableObjectMode: true });
+    this.predicate = predicate;
+  }
+  _transform(line, _, cb) {
+    const values = line.toString().trim().split(',');
+    if (!this.#headers) { this.#headers = values; return cb(); }
+    const obj = Object.fromEntries(this.#headers.map((k, i) => [k, values[i] ?? '']));
+    if (this.predicate(obj)) this.push(obj);
+    cb();
+  }
+}
+
+// Transform 3: objetos → JSON Lines
+class ToJsonLines extends Transform {
+  constructor() { super({ writableObjectMode: true }); }
+  _transform(obj, _, cb) { this.push(JSON.stringify(obj) + '\n'); cb(); }
+}
+
+async function etlComTimeout(entrada, saida, filtro, timeoutMs = 30_000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    await pipeline(
+      createReadStream(entrada),
+      new CsvSplitter(),
+      new CsvFilter(filtro),
+      new ToJsonLines(),
+      createWriteStream(saida),
+      { signal: controller.signal },
+    );
+    clearTimeout(timer);
+    console.log('ETL concluído.');
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === 'AbortError') {
+      console.error(`ETL cancelado: excedeu ${timeoutMs}ms.`);
+      // todas as streams já foram destruídas — arquivo parcial fechado
+    } else {
+      throw err; // erro real de I/O ou transform: propaga ao chamador
+    }
+  }
+}
+
+await etlComTimeout(
+  './vendas-2026.csv',
+  './vendas-ativos.jsonl',
+  (row) => row.status === 'ativo' && Number(row.valor) > 0,
+);
+```
+
+Se `CsvFilter` lançar erro num registro malformado, todas as streams são destruídas e a promise rejeita — sem file descriptors abertos, sem arquivo parcialmente gravado preso no sistema.
+
+### Cenário 2 — Aguardar stream em andamento com `finished()`
+
+Às vezes você recebe uma stream que já está em andamento (ex.: body de uma requisição HTTP) e precisa aguardá-la sem criar uma nova `pipeline()`. `finished()` é a ferramenta certa:
+
+```javascript
+import { finished } from 'node:stream/promises';
+import { createWriteStream } from 'node:fs';
+import { pipeline } from 'node:stream/promises';
+
+/**
+ * Salva o body de uma Request em arquivo e aguarda a conclusão.
+ * Usa finished() porque o stream de upload já está em andamento
+ * antes de chegarmos aqui.
+ */
+async function salvarUpload(req, caminhoDestino) {
+  const destino = createWriteStream(caminhoDestino);
+
+  // pipe manual: req já está em flowing mode (headers recebidos)
+  req.pipe(destino);
+
+  // finished() aguarda o writable terminar — rejeita se qualquer
+  // um dos dois emitir 'error' antes de 'finish'
+  try {
+    await finished(destino, { cleanup: true });
+    return { tamanho: destino.bytesWritten };
+  } catch (err) {
+    // destrói o arquivo parcial
+    destino.destroy();
+    throw new Error(`Falha no upload: ${err.message}`);
+  }
+}
+
+// em um servidor HTTP:
+import http from 'node:http';
+http.createServer(async (req, res) => {
+  if (req.method === 'POST' && req.url === '/upload') {
+    try {
+      const { tamanho } = await salvarUpload(req, './upload-recebido.bin');
+      res.writeHead(200).end(JSON.stringify({ tamanho }));
+    } catch (err) {
+      res.writeHead(500).end(err.message);
+    }
+  }
+}).listen(3000);
+```
+
+`finished()` com `cleanup: true` remove os listeners após resolver, essencial quando o writable pode ser reutilizado ou quando o código processa muitos uploads em sequência (evita acumulação de listeners).
+
+---
+
+## Armadilhas comuns
+
+> [!warning] 1. `.pipe()` sem error handler em cada stream — file descriptor leak
+> **O que acontece:** um erro em qualquer stream da cadeia deixa todas as demais abertas — file descriptors acumulam até atingir o limite do OS (`EMFILE: too many open files`).
+> **Por quê:** `.pipe()` registra `'end'` para fechar o destination quando o source termina, mas **não registra `'error'`** — por design histórico (Node 0.x).
+> **Como evitar:** usar `pipeline()` em todo código novo; se `.pipe()` for inevitável, registrar `'error'` + `.destroy(err)` em cada stream manualmente.
 
 ```javascript
 // ERRADO — bug clássico que parece correto
@@ -319,13 +483,15 @@ rs.pipe(transform).pipe(ws);
 // Se createCsvParser emitir 'error':
 //   → rs fica aberto (file descriptor não fechado)
 //   → ws fica aberto (arquivo parcialmente escrito, fd aberto)
-//   → o erro vai para o handler de 'uncaughtException' ou trava o processo
-//   → em produção: file descriptor leak até atingir limite do OS (EMFILE)
+//   → em produção: EMFILE após horas de acumulação silenciosa
 ```
 
-O comportamento EMFILE ("too many open files") é a manifestação clássica desse bug em produção. O processo funciona normalmente por horas, depois começa a falhar ao abrir qualquer arquivo.
+O comportamento EMFILE é a manifestação clássica desse bug em produção. O processo funciona normalmente por horas, depois começa a falhar ao abrir qualquer arquivo.
 
-### 2. `pipeline()` async sem `await` → unhandledRejection
+> [!warning] 2. `pipeline()` async sem `await` — UnhandledPromiseRejection
+> **O que acontece:** a pipeline falha silenciosamente; em Node 15+, o processo termina com código de saída 1.
+> **Por quê:** `pipeline()` de `stream/promises` retorna uma Promise — sem `await` ou `.catch()`, a rejeição fica sem handler.
+> **Como evitar:** sempre `await pipeline(...)` ou `.catch(handleError)`.
 
 ```javascript
 // ERRADO — promise rejeitada ignorada
@@ -335,53 +501,47 @@ pipeline(
   createWriteStream('output.txt'),
 ); // sem await, sem .catch()
 
-// Se a pipeline falhar:
-//   → UnhandledPromiseRejection
-//   → Em Node 15+: processo termina com código de saída 1
-//   → Em Node 14 e anteriores: warning, mas processo continua — o pior cenário
-```
-
-```javascript
 // CORRETO
 await pipeline(...);
 // ou
 pipeline(...).catch(handleError);
 ```
 
-### 3. `AbortSignal` sem objeto de opções → erro silencioso
+> [!warning] 3. `AbortSignal` sem objeto de opções — erro silencioso
+> **O que acontece:** `ctrl.signal` é interpretado como uma stream adicional na cadeia — TypeError obscuro ou comportamento indefinido.
+> **Por quê:** a assinatura de `pipeline()` é `pipeline(source, ...transforms, destination, options?)` — o signal vai no objeto `options`, não como argumento posicional.
+> **Como evitar:** sempre `{ signal: ctrl.signal }` como último argumento, nunca `ctrl.signal` diretamente.
 
 ```javascript
 const ctrl = new AbortController();
 
 // ERRADO — signal passado diretamente, não em { signal }
 await pipeline(source, transform, destination, ctrl.signal);
-// ctrl.signal é tratado como stream adicional na pipeline
-// → TypeError obscuro ou comportamento indefinido
 
 // CORRETO
 await pipeline(source, transform, destination, { signal: ctrl.signal });
 ```
 
-### 4. Misturar `.pipe()` e `pipeline()` na mesma cadeia
+> [!warning] 4. Misturar `.pipe()` e `pipeline()` na mesma cadeia — cleanup parcial
+> **O que acontece:** se o source (conectado via `.pipe()`) errar, `pipeline()` não tem visibilidade sobre ele e não o destrói — leak.
+> **Por quê:** `pipeline()` só gerencia as streams que recebe como argumentos; o source conectado por `.pipe()` fica fora do seu controle.
+> **Como evitar:** escolha uma API para toda a cadeia — nunca misture `.pipe()` e `pipeline()`.
 
 ```javascript
 // ERRADO — ambíguo e perigoso
 const partial = source.pipe(transform); // .pipe() retorna transform
-await pipeline(partial, destination);   // pipeline tenta gerenciar partial
-
-// O pipeline() não tem visibilidade sobre source.
-// Se source errar, pipeline() não o destroi.
-// LEAK.
+await pipeline(partial, destination);   // pipeline não controla source → LEAK se source errar
 ```
 
-Escolha uma API para toda a cadeia. Nunca misture.
-
-### 5. `finished()` sem `cleanup: true` em streams reutilizáveis
+> [!warning] 5. `finished()` sem `cleanup: true` em loops — listeners acumulados
+> **O que acontece:** cada `await finished(stream)` adiciona listeners `'error'`/`'end'`/`'finish'`/`'close'` que não são removidos — em loops, acumulam indefinidamente.
+> **Por quê:** o padrão de `finished()` é `cleanup: false` para proteger contra implementações incorretas que emitem eventos tardios; em loops, esse padrão vira problema.
+> **Como evitar:** usar `cleanup: true` em loops ou quando a stream pode ser usada múltiplas vezes.
 
 ```javascript
 // Atenção: listeners acumulam se cleanup: false (padrão)
 for (const stream of muitasStreams) {
-  await finished(stream); // acumula listeners 'error'/'end'/'finish'/'close'
+  await finished(stream); // acumula listeners a cada iteração
 }
 
 // CORRETO para uso em loop
@@ -389,8 +549,6 @@ for (const stream of muitasStreams) {
   await finished(stream, { cleanup: true });
 }
 ```
-
-Para uma stream usada uma única vez, o padrão `cleanup: false` é inofensivo. Em loops ou reutilização, use `cleanup: true`.
 
 ---
 
@@ -456,13 +614,15 @@ Quando você tem uma stream única já em andamento e precisa aguardar o términ
 
 ---
 
-## Veja também
+## O que vem a seguir
 
-- `[[06 - Backpressure]]` — backpressure: o problema que `pipeline()` resolve automaticamente
-- `[[08 - Async iteration de streams]]` — `for await...of` como alternativa a `pipeline()` quando há lógica entre chunks
-- `[[10 - Padrões práticos]]` — padrões completos de uso de streams em produção
-- `[[12 - Armadilhas, regras práticas, cheatsheet]]` — referência rápida de antipatterns e decisões
-- `[[Node.js]]` — tronco: panorama do runtime
+Dominado `pipeline()` para composição declarativa, o próximo passo é o modelo alternativo — consumir streams de forma imperativa com `for await...of`, onde cada chunk é processado com a mesma semântica de `async/await` que você já conhece.
+
+- [[08 - Async iteration de streams]] — `for await...of` como alternativa a `pipeline()` quando há lógica condicional por chunk
+- [[10 - Padrões práticos]] — padrões compostos de produção combinando `pipeline()` e async generators
+- [[12 - Armadilhas, regras práticas, cheatsheet]] — referência rápida de antipatterns e decisões de API
+- [[06 - Backpressure]] — o mecanismo de controle de fluxo que `pipeline()` encapsula
+- [[Node.js]] — tronco: panorama do runtime
 
 ---
 

@@ -1,10 +1,10 @@
 ---
 title: "Backpressure"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -44,6 +44,34 @@ Backpressure **não é**:
 - Um mecanismo de rate limiting externo (ex: throttle de API com token bucket).
 - Um conceito restrito a TCP/HTTP (existe em qualquer sistema com produtor/consumidor).
 - Algo que o Node.js resolve automaticamente sem que você escreva código correto.
+
+---
+
+## Diagrama
+
+```mermaid
+flowchart TD
+    A["producer chama .write(chunk)"] --> B{"write() retorna?"}
+    B -->|"true\nbuffer OK"| A
+    B -->|"false\nbuffer cheio"| C["PARAR de escrever"]
+    C --> D["registrar ws.once('drain', cb)"]
+    D --> E["consumer drena buffer interno"]
+    E --> F["buffer < highWaterMark"]
+    F --> G["Writable emite evento 'drain'"]
+    G --> H["retomar: chamar .write() novamente"]
+    H --> A
+
+    style A fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+    style B fill:#3a2800,stroke:#F5A623,color:#ccc
+    style C fill:#3a1a1a,stroke:#D0021B,color:#ccc
+    style D fill:#3a1a1a,stroke:#D0021B,color:#ccc
+    style E fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+    style F fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+    style G fill:#1e3a1a,stroke:#4A90D9,color:#ccc
+    style H fill:#1e3a1a,stroke:#4A90D9,color:#ccc
+```
+
+O ciclo completo de backpressure: produzir → sinalizar → pausar → aguardar → retomar. `pipeline()` executa esse ciclo internamente; código manual precisa implementá-lo explicitamente.
 
 ---
 
@@ -341,9 +369,144 @@ Regra prática: meça antes de tunar. Um `highWaterMark` maior reduz overhead de
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Ignorar o boolean de `.write()` em loop → memory growth silencioso
+### Cenário 1 — Exportação de cursor de banco de dados para arquivo
+
+Exportar milhões de registros de um banco de dados para um arquivo CSV sem carregar tudo em memória. O cursor é o producer; o arquivo é o consumer:
+
+```javascript
+import { createWriteStream } from 'node:fs';
+
+/**
+ * Exporta um cursor de banco para CSV com backpressure correto.
+ * O cursor já é um AsyncIterable (ex: pg Cursor, MongoDB cursor, Drizzle).
+ */
+export async function exportarCursor(cursor, caminhoDestino) {
+  const ws = createWriteStream(caminhoDestino, { highWaterMark: 64 * 1024 }); // 64 KB
+  let linhas = 0;
+
+  ws.write('id,nome,email,criado_em\n'); // cabeçalho
+
+  for await (const registro of cursor) {
+    const linha = `${registro.id},${registro.nome},${registro.email},${registro.criado_em}\n`;
+
+    if (!ws.write(linha)) {
+      // buffer cheio: aguarda drenagem antes de continuar a leitura do cursor
+      await new Promise((resolve) => ws.once('drain', resolve));
+    }
+
+    linhas++;
+    if (linhas % 10_000 === 0) {
+      console.log(`Exportados: ${linhas} registros`);
+    }
+  }
+
+  // finaliza o arquivo
+  await new Promise((resolve, reject) => {
+    ws.end((err) => (err ? reject(err) : resolve()));
+  });
+
+  return linhas;
+}
+
+// uso:
+const db = await conectarBanco();
+const cursor = db.query('SELECT id, nome, email, criado_em FROM usuarios ORDER BY id');
+const total = await exportarCursor(cursor, './usuarios.csv');
+console.log(`Exportação concluída: ${total} registros`);
+```
+
+Com backpressure correto, exportar 10 milhões de registros usa memória constante (~64 KB de buffer). Sem ele, o cursor alimenta a fila mais rápido que o disco consegue gravar e o processo cresce até OOM.
+
+### Cenário 2 — Upload multiparte para storage com Writable customizado
+
+Um serviço de ingestão recebe bytes de uma fonte de rede e os envia para um storage (S3, GCS) via upload multiparte. A Writable customizada precisa sinalizar backpressure ao producer enquanto aguarda confirmação de cada parte:
+
+```javascript
+import { Writable } from 'node:stream';
+
+class MultipartUploader extends Writable {
+  #uploadId;
+  #partNumber = 1;
+  #parts = [];
+  #storageClient;
+
+  constructor(storageClient, bucket, key) {
+    super({ highWaterMark: 5 * 1024 * 1024 }); // 5 MB por parte (mínimo S3)
+    this.#storageClient = storageClient;
+    this.bucket = bucket;
+    this.key = key;
+  }
+
+  async _construct(callback) {
+    try {
+      const { UploadId } = await this.#storageClient.createMultipartUpload({
+        Bucket: this.bucket,
+        Key: this.key,
+      });
+      this.#uploadId = UploadId;
+      callback();
+    } catch (err) {
+      callback(err);
+    }
+  }
+
+  _write(chunk, encoding, callback) {
+    // callback() SÓ é chamado após a parte ser confirmada pelo storage.
+    // Isso cria backpressure natural: o producer para enquanto aguarda confirmação.
+    this.#storageClient
+      .uploadPart({
+        Bucket: this.bucket,
+        Key: this.key,
+        UploadId: this.#uploadId,
+        PartNumber: this.#partNumber,
+        Body: chunk,
+      })
+      .then(({ ETag }) => {
+        this.#parts.push({ PartNumber: this.#partNumber++, ETag });
+        callback(); // sinaliza: pronto para o próximo chunk
+      })
+      .catch(callback); // propaga erro → pipeline() rejeita
+  }
+
+  async _final(callback) {
+    try {
+      await this.#storageClient.completeMultipartUpload({
+        Bucket: this.bucket,
+        Key: this.key,
+        UploadId: this.#uploadId,
+        MultipartUpload: { Parts: this.#parts },
+      });
+      callback();
+    } catch (err) {
+      callback(err);
+    }
+  }
+}
+
+// uso em pipeline:
+import { pipeline } from 'node:stream/promises';
+import { createReadStream } from 'node:fs';
+import { createGzip } from 'node:zlib';
+
+await pipeline(
+  createReadStream('./backup-2026-06.tar'),
+  createGzip(),
+  new MultipartUploader(s3Client, 'meu-bucket', 'backups/2026-06.tar.gz'),
+);
+```
+
+O callback de `_write` só é chamado após a confirmação do storage — o que faz a Writable sinalizar backpressure naturalmente enquanto aguarda a rede. O `createReadStream` e `createGzip` pausam automaticamente. Sem implementar `'drain'` manualmente.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] 1. Ignorar o boolean de `.write()` em loop — memory growth silencioso
+> **O que acontece:** o buffer interno cresce sem limite; o processo consome memória progressivamente até OOM. Não há erro — apenas lentidão crescente e eventual crash.
+> **Por quê:** `ws.write()` aceita dados mesmo com o buffer acima do `highWaterMark`; o único sinal é o `boolean` retornado — se ignorado, o buffer nunca para de crescer.
+> **Como evitar:** verificar o retorno de cada `.write()` e aguardar `'drain'` antes de continuar.
 
 ```javascript
 // ERRADO — vaza memória de forma silenciosa em produção
@@ -354,13 +517,12 @@ for (const linha of linhas) {
 ws.end();
 ```
 
-Esse código funciona perfeitamente em testes com datasets pequenos. Em produção, quando o relatório tem 500 MB, o processo consome 1,5 GB+ antes de terminar. Não há erro — apenas lentidão e eventual OOM.
+Esse código funciona perfeitamente em testes com datasets pequenos. Em produção, quando o relatório tem 500 MB, o processo consome 1,5 GB+ antes de terminar.
 
-### 2. `for...of` com array grande → leak silencioso
-
-O padrão específico `for (const x of arr) ws.write(x)` é especialmente perigoso porque parece idiomático e correto. O JavaScript não tem como "pausar" um `for...of` — uma vez iniciado, vai até o fim, independente de quantos `false` `.write()` retorna.
-
-A solução é substituir pelo padrão `while + once('drain')` ou pela versão `async/await`:
+> [!warning] 2. `for...of` com array grande — pausa impossível
+> **O que acontece:** o loop percorre o array inteiro sem jamais pausar, ignorando todos os `false` retornados por `.write()`.
+> **Por quê:** JavaScript não tem como "suspender" um `for...of` em andamento — uma vez iniciado, vai até o fim independente dos sinais de backpressure.
+> **Como evitar:** substituir o `for...of` por um padrão que pode pausar: `async/await` com verificação do retorno ou `while + once('drain')`.
 
 ```javascript
 // Substitua o for...of por um padrão que pode pausar
@@ -371,13 +533,15 @@ for (const chunk of chunks) {
 }
 ```
 
-### 3. Achar que `pipeline()` não tem backpressure — tem
+> [!warning] 3. Achar que `pipeline()` elimina backpressure — não elimina, gerencia
+> **O que acontece:** código "otimiza" `pipeline()` aumentando `highWaterMark` sem medir, mascarando gargalos reais.
+> **Por quê:** `pipeline()` gerencia backpressure automaticamente, mas não elimina a limitação de throughput do consumer. O gargalo real (consumer lento) permanece oculto pelo buffer maior.
+> **Como evitar:** medir throughput antes de tunar `highWaterMark`; um buffer maior não significa consumer mais rápido.
 
-`pipeline()` **não elimina** backpressure — ela **gerencia automaticamente**. A limitação de throughput ainda existe; você apenas não precisa codificar o mecanismo.
-
-Isso importa quando você tenta "otimizar" `pipeline()` aumentando `highWaterMark` sem medir: você pode estar mascarando gargalos em vez de resolvê-los.
-
-### 4. Tunar `highWaterMark` sem medir → mascara o bug
+> [!warning] 4. Tunar `highWaterMark` sem medir — troca memória por falsa velocidade
+> **O que acontece:** o processo usa muito mais memória em pico e o GC sofre quando o buffer gigante finalmente drena.
+> **Por quê:** `highWaterMark` alto faz o producer escrever mais antes de pausar — parece mais rápido, mas é só buffer maior. O throughput real não muda.
+> **Como evitar:** benchmarque com dados reais; aumente `highWaterMark` apenas se o profiling mostrar que o overhead de ciclos de backpressure é o gargalo.
 
 ```javascript
 // Tentação: o pipeline está "lento", então aumento o highWaterMark
@@ -386,9 +550,12 @@ const ws = createWriteStream('./out.bin', {
 });
 ```
 
-Com `highWaterMark` muito alto, backpressure dispara com menos frequência — o código parece mais rápido porque o producer pode escrever mais antes de pausar. Mas o problema de fundo (consumer lento) permanece. Você aumentou o buffer, não o throughput. O processo agora usa 16x mais memória e o GC vai sofrer mais quando o buffer finalmente drenar.
+Com `highWaterMark` muito alto, backpressure dispara com menos frequência. Você aumentou o buffer, não o throughput. O processo agora usa 16x mais memória e o GC vai sofrer mais quando o buffer finalmente drenar.
 
-### 5. `readable.on('data')` sem pause → produtor irrestrito
+> [!warning] 5. `readable.on('data')` sem pausar — produtor irrestrito
+> **O que acontece:** o Readable produz na velocidade máxima enquanto a Writable acumula sem limite — equivalente a ignorar o boolean de `.write()`.
+> **Por quê:** adicionar listener `'data'` coloca o Readable em modo flowing; sem verificar o retorno de `.write()`, você conecta um produtor irrestrito a um consumer com buffer limitado.
+> **Como evitar:** verificar o retorno de `.write()` e chamar `readable.pause()` quando `false`; ou usar `pipeline()`.
 
 ```javascript
 // ERRADO: 'data' handler sem backpressure
@@ -408,9 +575,10 @@ readable.on('data', chunk => {
 await pipeline(readable, writable);
 ```
 
-Adicionar um listener `'data'` coloca o Readable em modo flowing — ele produz na velocidade máxima. Sem verificar o retorno de `.write()` na Writable, você está conectando um produtor irrestrito a um consumer com limite de buffer.
-
-### 6. `once` vs `on` no listener `'drain'`
+> [!warning] 6. `on` em vez de `once` no listener `'drain'` — listeners acumulados
+> **O que acontece:** `resumeWriting` é chamado N vezes no (N+1)-ésimo drain — múltiplas retomadas por evento, comportamento imprevisível.
+> **Por quê:** `on` registra listener permanente; com múltiplos ciclos de backpressure, você acumula listeners que disparam todos juntos no próximo `'drain'`.
+> **Como evitar:** sempre `ws.once('drain', cb)` — listener que se autorremove após a primeira dispara.
 
 ```javascript
 // ERRADO: listener permanente — acumula a cada ciclo de backpressure
@@ -419,8 +587,6 @@ ws.on('drain', resumeWriting);
 // CERTO: listener de uso único por ciclo de backpressure
 ws.once('drain', resumeWriting);
 ```
-
-Usar `on` em vez de `once` faz com que `resumeWriting` seja chamado em **todos** os drains futuros, não apenas no próximo. Com múltiplos ciclos de backpressure, você acumula listeners, chamando `resumeWriting` N vezes no (N+1)-ésimo drain.
 
 ---
 
@@ -491,13 +657,16 @@ O stream trava permanentemente. O runtime não entrega nenhum chunk adicional en
 
 ---
 
-## Veja também
+## O que vem a seguir
 
-- `[[04 - Writable streams]]` — API completa de `.write()`, `.end()`, `cork()`/`uncork()`, implementação custom
-- `[[07 - pipeline vs pipe - error handling]]` — por que `pipeline()` substitui `.pipe()` e como gerencia erros
-- `[[11 - Performance e tuning]]` — tuning de `highWaterMark`, profiling de memória, benchmarks
-- `[[Runtime e Event Loop]]` — galho 1: event loop e por que backpressure importa para não bloquear o loop
-- `[[Node.js]]` — tronco: panorama do runtime
+Entendido o mecanismo de backpressure, o próximo passo é ver como `pipeline()` encapsula todo esse controle de fluxo — e por que `.pipe()` é um antipattern que vazou file descriptors em produção por décadas.
+
+- [[07 - pipeline vs pipe - error handling]] — por que `pipeline()` substitui `.pipe()` e como gerencia erros e cleanup automático
+- [[08 - Async iteration de streams]] — `for await...of` como alternativa imperativa ao pipeline, com backpressure nativo via protocolo de iterador
+- [[11 - Performance e tuning]] — tuning de `highWaterMark`, profiling de memória e benchmarks de throughput
+- [[04 - Writable streams]] — API completa de `.write()`, `.end()`, `cork()`/`uncork()` e implementação customizada
+- [[Runtime e Event Loop]] — por que backpressure importa para não bloquear o event loop
+- [[Node.js]] — tronco: panorama do runtime
 
 ---
 

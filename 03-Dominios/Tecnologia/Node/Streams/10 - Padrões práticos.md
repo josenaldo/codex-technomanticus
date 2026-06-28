@@ -1,10 +1,10 @@
 ---
 title: "Padrões práticos"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Magus
+status: growing
 publish: true
 tags:
   - node
@@ -23,6 +23,33 @@ aliases:
 
 > [!abstract] TL;DR
 > Recipes do dia a dia: line parser, CSV → JSONL, multipart upload, fetch streaming e stream tee. Cada um em sua sub-seção; foco em "este é o pattern, copie e adapte". Quando a lógica for simples, implemente na mão. Quando o formato for complexo (multipart, CSV com quoting, logs estruturados), use uma lib madura como `csv-parser` ou `busboy`.
+
+---
+
+## Fundamento teórico
+
+Streams em Node.js são implementações do padrão **produtor-consumidor**: uma fonte gera dados em um ritmo arbitrário; um destino os consome em outro ritmo. Quando a fonte é mais rápida que o destino, o mecanismo de backpressure freia a produção — protegendo a memória. Quando o destino está livre, a produção retoma.
+
+Cada padrão desta nota resolve uma variação do mesmo problema: **processar dados em fluxo contínuo sem acumular tudo na memória**. A arquitetura é sempre a mesma:
+
+```mermaid
+flowchart LR
+    A["Fonte\n(createReadStream, fetch, DB cursor)"]
+    B["Transform 1\n(parse, filter, enrich)"]
+    C["Transform 2\n(serialize, compress)"]
+    D["Destino\n(createWriteStream, S3, HTTP response)"]
+
+    A -->|"chunks\nbinários"| B
+    B -->|"objetos JS\nou linhas"| C
+    C -->|"bytes\nserializados"| D
+
+    style A fill:#4A90D9,color:#fff
+    style B fill:#4A90D9,color:#fff
+    style C fill:#4A90D9,color:#fff
+    style D fill:#4A90D9,color:#fff
+```
+
+Cada Transform faz **uma única coisa** — o princípio de separação de responsabilidades aplicado a pipelines de dados. `pipeline()` conecta os estágios e garante limpeza automática de recursos em caso de erro.
 
 ---
 
@@ -356,22 +383,150 @@ A regra prática: se o formato tem uma spec (RFC, MIME type, W3C), existe uma li
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-> [!bug] Armadilha 1: Line parser sem `_flush` → última linha perdida
-> O `_buffer` interno guarda o fragmento incompleto entre chunks. Se `_flush` não for implementado, esse fragmento nunca é emitido. Arquivos sem `\n` final — comum em logs — perdem a última entrada silenciosamente.
+> [!warning] Line parser sem `_flush` — última linha perdida
+> **O que acontece:** a última linha de um arquivo sem `\n` final nunca é emitida — o dado desaparece silenciosamente.
+> **Por quê:** o `_buffer` interno guarda o fragmento incompleto entre chunks. Sem `_flush`, esse fragmento nunca é liberado quando o stream encerra.
+> **Como evitar:** implementar sempre `_flush(cb)` em qualquer Transform que mantém buffer interno. Chamar `callback()` ao final.
 
-> [!bug] Armadilha 2: Multipart sem stream → buffer everything no body
-> Usar `express.json()` ou `body-parser` em rotas de upload bufferiza o corpo inteiro antes de passar para o handler. Um upload de 2 GB usa 2 GB de RAM por requisição. Use `busboy` (ou `multer`, que usa busboy internamente) para processar chunk a chunk.
+> [!warning] Multipart sem stream — buffer everything no body
+> **O que acontece:** uploads de 2 GB usam 2 GB de RAM por requisição; sob carga, o processo fica sem memória.
+> **Por quê:** `express.json()` e `body-parser` bufferizam o corpo HTTP inteiro antes de passar para o handler. Não foram projetados para uploads de arquivo.
+> **Como evitar:** usar `busboy` (ou `multer`, que usa busboy internamente) diretamente no `req` — parseia o corpo chunk a chunk sem materializar na memória.
 
-> [!bug] Armadilha 3: Tee com consumidores de velocidades muito diferentes
-> O `PassThrough` aplica backpressure de ambos os consumers. O consumer lento segura o rápido. Se um dos destinos for uma rede lenta (S3 via conexão ruim) e o outro for disco local rápido, o disco vai esperar a rede. Avalie se processamento sequencial (primeiro disco, depois S3) seria mais simples e aceitável.
+> [!warning] Tee com consumers de velocidades muito diferentes
+> **O que acontece:** o consumer rápido fica bloqueado esperando o lento; a fonte fica parada; latência total sobe para o pior caso.
+> **Por quê:** `PassThrough` aplica backpressure de ambos os consumers. O consumer lento (ex: upload para S3 via conexão lenta) segura o rápido (ex: gravação em disco local).
+> **Como evitar:** avaliar se processamento sequencial é aceitável; ou bufferizar explicitamente no consumer lento com queue interna; ou aceitar que o rápido espera o lento.
 
-> [!bug] Armadilha 4: `fileStream` não consumido no busboy
-> Se o handler do evento `file` não consumir o `fileStream` (nem pipe, nem `.resume()`), o busboy para de parsear o body e o evento `close` nunca dispara. A requisição trava.
+> [!warning] `fileStream` não consumido no busboy — requisição trava
+> **O que acontece:** o evento `close` do busboy nunca dispara; a requisição HTTP fica pendurada até o cliente desistir.
+> **Por quê:** se o handler do evento `file` não consumir o `fileStream` (nem `pipeline`, nem `.resume()`), o busboy para de parsear o body — o parser fica bloqueado esperando o consumer drenar.
+> **Como evitar:**
+> ```javascript
+> bb.on('file', async (fieldname, fileStream, info) => {
+>   try {
+>     await pipeline(fileStream, createWriteStream(`/tmp/${info.filename}`));
+>   } catch (err) {
+>     fileStream.resume(); // drena mesmo em erro — impede o travamento
+>   }
+> });
+> ```
 
-> [!bug] Armadilha 5: `TextDecoder` sem `{ stream: true }` em fetch streaming
-> Sem a opção `stream: true`, o decoder trata cada chunk como um texto completo. Caracteres multibyte (UTF-8 de 2–4 bytes) que chegam partidos entre dois chunks são decodificados errado. Sempre passe `{ stream: true }` no loop e `{ stream: false }` (ou nenhum flag) na chamada final.
+> [!warning] `TextDecoder` sem `{ stream: true }` — caracteres multibyte corrompidos
+> **O que acontece:** caracteres UTF-8 de 2–4 bytes que chegam partidos entre dois chunks são decodificados errado — exibem `?` ou `â€` no lugar do caractere original.
+> **Por quê:** sem `stream: true`, cada chamada a `decode()` trata o chunk como texto completo e descarta o estado de decodificação entre chunks.
+> **Como evitar:** sempre passar `{ stream: true }` no loop e omitir o flag (ou passar `{ stream: false }`) na chamada final após o loop.
+
+---
+
+## Casos práticos
+
+### Cenário 1 — Pipeline de ingestão de logs multiservidor em NDJSON
+
+Em sistemas distribuídos, é comum agregar logs de múltiplos serviços em um único arquivo de análise. Cada arquivo de log tem milhares de linhas; processar tudo em memória não é viável.
+
+```javascript
+// ingest-logs.js
+import { createReadStream, createWriteStream } from 'node:fs';
+import { Transform } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { LineParser } from './line-parser.js';
+
+// Enriquece cada linha de log com metadados do serviço
+class LogEnricher extends Transform {
+  constructor(serviceName) {
+    super({ objectMode: true, readableObjectMode: true, writableObjectMode: true });
+    this._service = serviceName;
+  }
+
+  _transform(line, _enc, callback) {
+    try {
+      const entry = JSON.parse(line);
+      this.push({
+        ...entry,
+        service: this._service,
+        ingestedAt: new Date().toISOString(),
+      });
+    } catch {
+      // Linha malformada: descarta silenciosamente em logs de produção
+      // Em debug, emitir evento 'warning' aqui
+    }
+    callback();
+  }
+}
+
+// Serializa objetos JS de volta para NDJSON
+const toNdjson = new Transform({
+  writableObjectMode: true,
+  transform(obj, _enc, callback) {
+    callback(null, JSON.stringify(obj) + '\n');
+  },
+});
+
+// Processa logs de 3 serviços, cada um como pipeline separado
+const services = ['auth', 'api', 'worker'];
+
+for (const service of services) {
+  await pipeline(
+    createReadStream(`./logs/${service}.log`),
+    new LineParser(),
+    new LogEnricher(service),
+    toNdjson,
+    createWriteStream('./logs/aggregated.ndjson', { flags: 'a' }), // append
+  );
+  console.log(`Ingestão concluída: ${service}`);
+}
+```
+
+O pipeline garante que cada serviço seja processado sequencialmente e que erros em um serviço não corrompam o output — `pipeline()` fecha todos os streams envolvidos em caso de falha.
+
+### Cenário 2 — Streaming de resposta de LLM para cliente HTTP
+
+APIs de LLM (Anthropic, OpenAI) retornam tokens via SSE. O servidor deve repassar cada token para o cliente assim que chega — sem bufferizar a resposta completa.
+
+```javascript
+// llm-proxy.js (Express)
+import { Readable } from 'node:stream';
+import Anthropic from '@anthropic-ai/sdk';
+
+const client = new Anthropic();
+
+app.post('/chat', async (req, res) => {
+  const { message } = req.body;
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
+  try {
+    // stream() retorna AsyncIterable de eventos SSE
+    const stream = await client.messages.stream({
+      model: 'claude-opus-4-5',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: message }],
+    });
+
+    // Itera token a token e escreve para o cliente
+    for await (const event of stream) {
+      if (event.type === 'content_block_delta') {
+        const text = event.delta?.text ?? '';
+        // Formato SSE: "data: <payload>\n\n"
+        res.write(`data: ${JSON.stringify({ text })}\n\n`);
+      }
+    }
+
+    res.write('data: [DONE]\n\n');
+    res.end();
+  } catch (err) {
+    console.error('Erro no streaming LLM:', err);
+    res.status(500).end();
+  }
+});
+```
+
+O padrão `for await...of` processa cada evento à medida que chega — sem esperar a resposta completa. Se o cliente desconectar, o loop termina naturalmente na próxima iteração quando `res.write()` falhar.
 
 ---
 
@@ -404,6 +559,23 @@ A regra prática: se o formato tem uma spec (RFC, MIME type, W3C), existe uma li
 
 - *"Como você consumiria streaming de um LLM?"*
   → `fetch()` → `for await (const chunk of response.body)` → decodificar com `TextDecoder({ stream: true })` → exibir token a token.
+
+---
+
+## O que vem a seguir
+
+Com os padrões práticos dominados, o próximo passo é entender quando streams realmente valem o overhead — e como diagnosticar gargalos quando a pipeline é lenta:
+
+- `[[11 - Performance e tuning]]` — quando streams perdem para buffer everything, como ajustar `highWaterMark`, sync vs async transforms
+- `[[12 - Armadilhas, regras práticas, cheatsheet]]` — consolidação final: top 10+ armadilhas, decision tree e vocabulário completo
+
+---
+
+## Fontes
+
+- [Node.js — stream module](https://nodejs.org/api/stream.html) — documentação oficial de `Transform`, `pipeline`, `PassThrough` e todas as APIs usadas nos padrões desta nota
+- [busboy — streaming multipart parser](https://github.com/mscdex/busboy) — parser de `multipart/form-data` sem bufferização; base para `multer`
+- [csv-parser](https://github.com/mafintosh/csv-parser) — Transform stream para CSV com suporte a quoting, BOM e escape; passa no csv-spectrum test suite
 
 ---
 

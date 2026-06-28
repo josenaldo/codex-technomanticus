@@ -1,10 +1,10 @@
 ---
 title: "Performance e tuning"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Magus
+status: growing
 publish: true
 tags:
   - node
@@ -22,6 +22,46 @@ aliases:
 
 > [!abstract] TL;DR
 > Streams têm overhead constante por chunk. Para payloads pequenos (<10 MB), "buffer everything" é mais rápido — menos overhead, menos alocações. Em transforms síncronos triviais, o custo de criar um Transform supera o de um `.map()` em array. `highWaterMark` raramente precisa de tuning — o default de 16 KB (binary) e 16 objects está certo na maioria dos casos. A regra: **medir antes de tunar**. Princípios envelhecem melhor do que números absolutos.
+
+---
+
+## Fundamento teórico
+
+A pergunta correta não é "streams são mais rápidos?" — é "em que dimensão streams ganham?". Streams são uma solução de **trade-off**:
+
+- Trocam **memória** por **overhead por chunk**: em vez de uma alocação grande, fazem N alocações pequenas com overhead de event dispatch, buffer management e callbacks.
+- Ganham em **memória** e **latência de primeiro output** — mas não necessariamente em throughput de CPU.
+- Perdem em **simplicidade** e **throughput bruto** quando os dados cabem confortavelmente em RAM.
+
+O fluxo de decisão abaixo captura quando streams são a escolha certa:
+
+```mermaid
+flowchart TD
+    A{"Payload > 10 MB\nou tamanho indeterminado?"}
+    B["Buffer everything\n(readFile + processamento em array)"]
+    C{"Memória disponível\né limitada?"}
+    D["Stream\n(pipeline + Transform)"]
+    E{"Primeiro output precisa\nchegar antes do fim?"}
+    F{"Throughput sustentado\npor longo período?"}
+
+    A -->|Não| B
+    A -->|Sim| C
+    C -->|Sim| D
+    C -->|Não| E
+    E -->|Sim| D
+    E -->|Não| F
+    F -->|Sim| D
+    F -->|Não| B
+
+    style A fill:#F5A623,color:#fff
+    style C fill:#F5A623,color:#fff
+    style E fill:#F5A623,color:#fff
+    style F fill:#F5A623,color:#fff
+    style B fill:#4A90D9,color:#fff
+    style D fill:#4A90D9,color:#fff
+```
+
+Se nenhuma das condições que levam a "Stream" for verdadeira, `readFile` + processamento em array é mais simples, mais rápido, e mais fácil de testar.
 
 ---
 
@@ -363,22 +403,151 @@ import { Worker } from 'node:worker_threads';
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-> [!bug] Armadilha 1: Tunar `highWaterMark` sem medir — pode mascarar bug
-> Aumentar `highWaterMark` reduz a frequência de backpressure. Se a lentidão do pipeline é causada por um consumer lento (I/O com problema, query sem índice, chamada HTTP timeout), aumentar o buffer não resolve — apenas adia o problema e aumenta o uso de memória. Meça com `writableNeedDrain` e `writableLength` antes de ajustar.
+> [!warning] Tunar `highWaterMark` sem medir — pode mascarar bug
+> **O que acontece:** a lentidão do pipeline persiste ou a memória aumenta; o ajuste não resolve nada.
+> **Por quê:** aumentar `highWaterMark` reduz a frequência de backpressure. Se a lentidão é causada por um consumer lento (I/O degradado, query sem índice, chamada HTTP com timeout), aumentar o buffer apenas adia o problema e aumenta o uso de memória.
+> **Como evitar:** medir com `writableNeedDrain` e `writableLength` antes de qualquer ajuste. Confirmar que o buffer está sistematicamente vazio (producer rápido) antes de aumentar o `highWaterMark`.
 
-> [!bug] Armadilha 2: Achar que stream é sempre mais rápido — overhead em casos pequenos
-> Para payloads que cabem confortavelmente em memória (<10 MB), `readFile` + processamento em array é tipicamente mais rápido e mais simples de ler. Streams introduzem overhead de evento, buffer e callback que só se paga em escala.
+> [!warning] Assumir que stream é sempre mais rápido — overhead em casos pequenos
+> **O que acontece:** código com streams para processar 100 registros ou arquivos de 2 MB é mais lento e mais difícil de entender do que o equivalente com `readFile` + `.map()`.
+> **Por quê:** para payloads que cabem em memória (<10 MB), o overhead de evento, buffer e callback por chunk supera o benefício. Não há ganho de memória se os dados cabem — só há overhead extra.
+> **Como evitar:** usar o fluxo de decisão: payload pequeno + operação pontual → buffer everything. Streams são para escala e throughput sustentado.
 
-> [!bug] Armadilha 3: Transform síncrono que demora > 1ms → bloqueio invisível do loop
-> Um `_transform` que realiza 5ms de CPU puro por chunk bloqueia o event loop durante essa janela. Não há sinal de erro, não há warning — apenas latência adicional em todas as outras requisições do processo. Use `async _transform` com await quando houver I/O, ou mova para Worker Thread quando houver CPU pesada.
+> [!warning] Transform síncrono com > 1ms de CPU — bloqueio invisível do event loop
+> **O que acontece:** todas as outras requisições do processo ficam com latência elevada; não há exceção nem log de erro — apenas degradação silenciosa.
+> **Por quê:** `_transform` síncrono bloqueia a thread JS durante sua execução. Um parse de 5ms por chunk × 10.000 chunks = 50 segundos de bloqueio acumulado no event loop.
+> **Como evitar:** usar `async _transform` com `await setImmediate()` para yields periódicos quando há CPU pesada, ou mover o processamento para Worker Thread quando o transform exceder consistentemente 1ms.
 
-> [!bug] Armadilha 4: Misturar sync e async transforms sem entender o custo
-> Uma pipeline com um Transform sync (rápido) seguido de um Transform async que aguarda um banco de dados por chunk cria um gargalo invisível: o Transform sync produz na velocidade máxima, mas o async processa um chunk de cada vez. O backpressure vai se propagar de volta, mas se o buffer for grande o suficiente para absorver, você vai estourar memória antes de perceber.
+> [!warning] Misturar sync e async transforms — gargalo invisível na pipeline
+> **O que acontece:** o Transform sync produz na velocidade máxima, mas a pipeline fica tão lenta quanto o Transform async mais lento; memória cresce se o buffer absorver a diferença.
+> **Por quê:** um Transform sync seguido de um Transform async que aguarda banco de dados por chunk cria backpressure assimétrico. O sync acumula chunks no buffer do async enquanto o async drena um por vez.
+> **Como evitar:** dimensionar o `highWaterMark` do Transform async para refletir a capacidade real de processamento, ou usar batching — acumular N chunks no sync e processar N em paralelo no async com `Promise.all`.
 
-> [!bug] Armadilha 5: Não ajustar `highWaterMark` em object mode para batch processing
-> Object mode tem default de 16 objetos. Se cada objeto tem 10 KB, o buffer efetivo é 160 KB. Se cada objeto tem 1 byte, são 16 bytes. O `highWaterMark` em object mode conta objetos, não bytes — em casos extremos, isso pode criar buffers muito grandes ou muito pequenos dependendo do tamanho médio dos objetos.
+> [!warning] `highWaterMark` em object mode não representa bytes
+> **O que acontece:** buffers efetivos variam de 16 bytes a dezenas de MB dependendo do tamanho médio dos objetos — sem nenhum aviso.
+> **Por quê:** object mode conta objetos, não bytes. Com default de 16 objetos: se cada objeto tem 10 KB, o buffer efetivo é 160 KB; se cada objeto tem 1 MB, o buffer efetivo é 16 MB.
+> **Como evitar:** em pipelines de object mode com objetos grandes, calcular o buffer efetivo esperado e ajustar `highWaterMark` para um número menor de objetos que represente a capacidade de memória desejada.
+
+---
+
+## Casos práticos
+
+### Cenário 1 — Diagnóstico de pipeline lenta com métricas de buffer
+
+Um serviço de processamento de eventos estava lento sem erro visível. O primeiro passo é instrumentar o pipeline para entender onde está o gargalo.
+
+```javascript
+// diagnose-pipeline.js
+import { createReadStream, createWriteStream } from 'node:fs';
+import { Transform, pipeline as pipelineCb } from 'node:stream';
+import { promisify } from 'node:util';
+
+const pipeline = promisify(pipelineCb);
+
+// Transform instrumentado — emite métricas de buffer em cada chunk
+class InstrumentedTransform extends Transform {
+  constructor(name, inner, options = {}) {
+    super(options);
+    this._name = name;
+    this._inner = inner;
+    this._chunkCount = 0;
+  }
+
+  _transform(chunk, enc, callback) {
+    const start = performance.now();
+    this._chunkCount++;
+
+    // Delega para o transform interno
+    this._inner._transform.call(this, chunk, enc, (err, result) => {
+      const elapsed = performance.now() - start;
+
+      // Métricas de buffer e throughput
+      if (this._chunkCount % 1000 === 0) {
+        console.log({
+          transform: this._name,
+          chunk: this._chunkCount,
+          elapsedMs: elapsed.toFixed(2),
+          writableLength: this.writableLength,
+          writableHighWaterMark: this.writableHighWaterMark,
+          bufferUtilization: `${((this.writableLength / this.writableHighWaterMark) * 100).toFixed(1)}%`,
+        });
+      }
+
+      callback(err, result);
+    });
+  }
+}
+
+// Writable que rastreia se precisa de drain frequentemente
+const destination = createWriteStream('output.bin');
+let drainCount = 0;
+destination.on('drain', () => {
+  drainCount++;
+  console.log(`drain #${drainCount} — buffer estava cheio, consumer mais lento que producer`);
+});
+
+await pipeline(
+  createReadStream('large-input.bin', { highWaterMark: 64 * 1024 }),
+  destination,
+);
+
+console.log(`Total de drains: ${drainCount}`);
+// drainCount alto → producer rápido, consumer lento → candidato a aumentar highWaterMark
+// drainCount zero → sem backpressure → highWaterMark pode ser reduzido sem custo
+```
+
+O diagnóstico revela: se `drainCount` é alto, o consumer é mais lento que o producer — aumentar `highWaterMark` pode ajudar. Se `bufferUtilization` fica sempre próxima de 0%, o buffer está superdimensionado.
+
+### Cenário 2 — Pipeline de compressão com highWaterMark ajustado para throughput
+
+Um serviço de backup faz download de arquivos de log da rede e os comprime para S3. A latência de rede alta faz o producer ficar mais rápido que o consumer — cenário clássico para ajuste de `highWaterMark`.
+
+```javascript
+// backup-compress.js
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { createGzip } from 'node:zlib';
+import { createWriteStream } from 'node:fs';
+
+async function backupWithTuning(downloadUrl, destPath) {
+  const response = await fetch(downloadUrl);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+  // highWaterMark maior para compensar latência de rede alta
+  // → menos drains, menos paradas do producer, throughput mais uniforme
+  const nodeStream = Readable.fromWeb(response.body);
+
+  const gzip = createGzip({
+    level: 6,           // compressão balanceada (default)
+    chunkSize: 32768,   // chunks de 32 KB na saída comprimida
+  });
+
+  // highWaterMark elevado no destino final também
+  const writer = createWriteStream(destPath, {
+    highWaterMark: 256 * 1024, // 256 KB — permite burst de escrita sem drain frequente
+  });
+
+  const startTime = performance.now();
+  let bytesIn = 0;
+
+  nodeStream.on('data', (chunk) => { bytesIn += chunk.length; });
+
+  await pipeline(nodeStream, gzip, writer);
+
+  const elapsed = (performance.now() - startTime) / 1000;
+  console.log({
+    bytesIn,
+    elapsed: `${elapsed.toFixed(2)}s`,
+    throughput: `${(bytesIn / elapsed / 1024 / 1024).toFixed(1)} MB/s`,
+  });
+}
+
+await backupWithTuning('https://logs.example.com/service-2026-06-28.log', './backup.log.gz');
+```
+
+O ajuste de `highWaterMark` para 256 KB no destino reduz a frequência de drains, mantendo o producer ativo por mais tempo entre pausas de backpressure — especialmente útil quando o destino é disco local e o producer é rede.
 
 ---
 
@@ -416,6 +585,22 @@ import { Worker } from 'node:worker_threads';
 
 *"Como você debugaria uso de memória crescente em um pipeline de streams?"*
 → Verifico se backpressure está sendo respeitado (`writableNeedDrain`), se o `highWaterMark` foi aumentado sem necessidade (buffer grande acumulando), e se algum Transform está materializando tudo em memória em vez de emitir chunk a chunk.
+
+---
+
+## O que vem a seguir
+
+Com o entendimento de performance e tuning, o galho de Streams se encerra com a nota de consolidação — armadilhas top 10+, cheatsheet de decisão e vocabulário completo:
+
+- `[[12 - Armadilhas, regras práticas, cheatsheet]]` — referência rápida de produção: decision tree, top 10+ armadilhas e vocabulário PT↔EN consolidado
+
+---
+
+## Fontes
+
+- [Node.js — stream.Writable writableLength](https://nodejs.org/api/stream.html#writablewritablelength) — documentação de `writableLength`, `writableNeedDrain` e `writableHighWaterMark` para diagnóstico de buffer
+- [Node.js — zlib performance](https://nodejs.org/api/zlib.html#compressing-http-requests-and-responses) — orientações de performance para compressão com streams, incluindo `highWaterMark` e `chunkSize`
+- [Node.js — Worker Threads](https://nodejs.org/api/worker_threads.html) — alternativa para transforms CPU-bound que bloqueariam o event loop
 
 ---
 

@@ -1,10 +1,10 @@
 ---
 title: "Armadilhas, regras práticas, cheatsheet"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Magus
+status: growing
 publish: true
 tags:
   - node
@@ -24,7 +24,47 @@ aliases:
 
 ---
 
-## Top 10+ armadilhas
+## Panorama visual
+
+Um mapa dos 4 tipos de stream, suas APIs de criação e consumo — antes de entrar nas armadilhas:
+
+```mermaid
+flowchart LR
+    subgraph Tipos["Os 4 tipos"]
+        R["Readable\nfonte de dados"]
+        W["Writable\ndestino de dados"]
+        D["Duplex\nfonte + destino\nindependentes"]
+        T["Transform\nin → processar → out"]
+    end
+
+    subgraph Criacao["Como criar"]
+        RC["Readable.from(iter)\nsubclasse + _read()"]
+        WC["subclasse + _write()\n_writev() para batch"]
+        DC["Duplex.fromWeb()\nnet.Socket (nativo)"]
+        TC["new Transform(opts)\n_transform() + _flush()"]
+    end
+
+    subgraph Consumo["Como consumir"]
+        RP["for await...of\npipeline(rs, ...)"]
+        WP["pipeline(..., ws)\n.write() + .end()"]
+        DP["pipeline() duplo\n.pipe() em socket"]
+        TP["pipeline(rs, ts, ws)"]
+    end
+
+    R --> RC --> RP
+    W --> WC --> WP
+    D --> DC --> DP
+    T --> TC --> TP
+
+    style R fill:#4A90D9,color:#fff
+    style W fill:#4A90D9,color:#fff
+    style D fill:#4A90D9,color:#fff
+    style T fill:#4A90D9,color:#fff
+```
+
+---
+
+## Armadilhas comuns
 
 ### 1. Ignorar o boolean de `.write()` → memory leak
 
@@ -399,6 +439,188 @@ Vou diagnosticar problema de memória ou lentidão?
 - **Tuning de `highWaterMark`:** medir com `writableLength` e `writableNeedDrain` primeiro.
 - **Transform lento:** > 1ms de CPU → Worker Thread.
 - **Web Streams:** `fetch().body` já é Web Stream — use `Readable.fromWeb()` para conectar ao ecossistema Node.
+
+---
+
+## Casos práticos
+
+### Cenário 1 — Refactoring de `.pipe()` legado para `pipeline()` moderno
+
+Um serviço de exportação de relatórios usava `.pipe()` encadeado sem handlers de erro. Em produção, erros de rede causavam file descriptor leaks (EMFILE depois de horas). A refatoração aplica as armadilhas 1 e 2 desta nota.
+
+```javascript
+// ANTES — código legado com .pipe() e vazamento de fd em erro
+import fs from 'node:fs';
+import zlib from 'node:zlib';
+
+function exportLegacy(src, dest) {
+  // Nenhum handler de erro em nenhum stream
+  // Se createGzip falhar: src e dest ficam abertos forever
+  fs.createReadStream(src)
+    .pipe(zlib.createGzip())
+    .pipe(fs.createWriteStream(dest));
+  // Sem retorno de Promise — caller não sabe quando termina ou se falhou
+}
+
+// DEPOIS — pipeline() com tratamento correto
+import { createReadStream, createWriteStream } from 'node:fs';
+import { createGzip } from 'node:zlib';
+import { pipeline } from 'node:stream/promises';
+
+async function exportModern(src, dest, signal) {
+  await pipeline(
+    createReadStream(src),
+    createGzip(),
+    createWriteStream(dest),
+    { signal }, // suporte a AbortController para cancelamento
+  );
+  // pipeline() fecha todos os streams em caso de erro OU de abort
+  // Promise rejeita com o erro propagado — caller pode fazer try/catch
+}
+
+// Uso com cancelamento por timeout
+const controller = new AbortController();
+const timeout = setTimeout(() => controller.abort(), 30_000); // 30s max
+
+try {
+  await exportModern('./data/report.csv', './exports/report.csv.gz', controller.signal);
+} finally {
+  clearTimeout(timeout);
+}
+```
+
+A diferença crítica: `pipeline()` garante que **todos** os streams são destruídos quando qualquer um falha — eliminando o file descriptor leak da armadilha 2.
+
+### Cenário 2 — Detectar e corrigir armadilha de `push(null)` prematuro em Readable custom
+
+Um Readable personalizado para paginar uma API REST estava encerrando prematuramente após o primeiro lote de resultados. A causa era o `push(null)` sendo chamado ao final de cada página, em vez de só ao final de todas as páginas.
+
+```javascript
+// ERRADO — push(null) encerra o stream após a primeira página
+class ApiPaginatedStream extends Readable {
+  constructor(baseUrl) {
+    super({ objectMode: true });
+    this._url = baseUrl;
+    this._page = 1;
+    this._done = false;
+  }
+
+  async _read() {
+    if (this._done) return;
+
+    const response = await fetch(`${this._url}?page=${this._page}`);
+    const { data, hasMore } = await response.json();
+
+    for (const item of data) {
+      this.push(item);
+    }
+
+    this._page++;
+
+    // ERRO: push(null) aqui encerra o stream prematuramente se chamado cedo
+    if (!hasMore) {
+      this.push(null); // correto apenas quando hasMore === false
+    }
+    // Mas se o stream for chamado novamente antes de hasMore ser false,
+    // pode acontecer push(null) antes de todas as páginas
+  }
+}
+
+// CORRETO — a lógica está certa acima, mas a armadilha é chamar push(null)
+// no meio de _read quando ainda há dados esperando. A versão segura:
+class ApiPaginatedStreamSafe extends Readable {
+  constructor(baseUrl) {
+    super({ objectMode: true });
+    this._url = baseUrl;
+    this._cursor = null;
+    this._exhausted = false;
+  }
+
+  async _read() {
+    if (this._exhausted) return; // _read chamado depois de push(null) — ignorar
+
+    try {
+      const url = this._cursor
+        ? `${this._url}?cursor=${this._cursor}`
+        : this._url;
+
+      const res = await fetch(url);
+      const { data, nextCursor } = await res.json();
+
+      for (const item of data) {
+        this.push(item);
+      }
+
+      if (nextCursor) {
+        this._cursor = nextCursor; // continua na próxima chamada a _read
+      } else {
+        this._exhausted = true;
+        this.push(null); // EOF definitivo — única chamada
+      }
+    } catch (err) {
+      this.destroy(err); // propaga erro corretamente
+    }
+  }
+}
+
+// Uso
+const stream = new ApiPaginatedStreamSafe('https://api.example.com/events');
+await pipeline(
+  stream,
+  new Transform({
+    objectMode: true,
+    transform(item, _enc, cb) { cb(null, JSON.stringify(item) + '\n'); }
+  }),
+  createWriteStream('./events.ndjson'),
+);
+```
+
+O princípio da armadilha 10 resolvido: `push(null)` exatamente uma vez, no final definitivo, via `this.destroy(err)` para erros.
+
+---
+
+## Como explicar em inglês
+
+### Frases prontas
+
+> "Node Streams have four types: Readable for sources, Writable for sinks, Duplex for bidirectional channels like TCP sockets, and Transform for in-place processing. The modern API is `pipeline()` from `stream/promises` — it propagates errors automatically and destroys all streams on failure, preventing file descriptor leaks. The two most common production pitfalls are ignoring the boolean return of `.write()`, which causes memory leaks under backpressure, and using `.pipe()` without error handlers on each stream in the chain."
+
+> "Backpressure in Node Streams works through the `highWaterMark`: when the internal buffer exceeds it, `.write()` returns `false`. The producer must pause and wait for the `drain` event before writing again. `pipeline()` handles this automatically — that's the main reason to prefer it over manual `.pipe()` chains. In practice, the default `highWaterMark` of 16KB for binary streams and 16 objects for object mode is correct for most cases."
+
+> "The key rule for custom Transform streams is always implementing `_flush()` when you maintain state between chunks — like a line parser that accumulates partial lines in a buffer. Without `_flush`, the last incomplete chunk is silently dropped when the upstream source ends. `push(null)` signals end-of-stream and must be called exactly once, at the definitive end — calling it mid-stream terminates the Readable prematurely."
+
+### Vocabulário PT↔EN para entrevista
+
+| PT-BR | EN | Nota de uso |
+|---|---|---|
+| vazamento de descritor de arquivo | file descriptor leak | resultado de `.pipe()` sem error handler |
+| rejeição não tratada | unhandled rejection | `pipeline()` sem `await` no Node 15+ encerra o processo |
+| modo objeto | object mode | Transform que emite objetos JS em vez de Buffer/string |
+| modo fluindo | flowing mode | Readable empurra chunks automaticamente via `'data'` |
+| modo pausado | paused mode | Readable aguarda pull explícito via `.read()` |
+| drenagem | drain | evento que sinaliza que o buffer do Writable esvaziou |
+| sentinela de fim de stream | EOF sentinel / end-of-stream signal | `push(null)` — único uso correto é encerrar o Readable |
+| lock de stream | locked stream | `ReadableStream.locked === true` após `getReader()` em Web Streams |
+| chunk de bytes | byte chunk | dados binários — `Uint8Array` em Web Streams, `Buffer` em Node |
+
+---
+
+## O que vem a seguir
+
+Este é o nó de fechamento do galho de Streams. Os próximos galhos aplicam esses padrões em contextos mais amplos:
+
+- `[[03-Dominios/Tecnologia/Node/Streams/index]]` — MOC do galho 3: índice completo com todas as notas
+- **Observability (galho 5)** — métricas de throughput, latência por chunk e alertas em pipelines lentos em produção
+- **Frameworks (galho 4)** — como Express, Fastify e Hono expõem streams e onde aplicar os padrões deste galho
+- **Segurança (galho 6)** — rate limiting de upload, validação de payload e sanitização no nível de stream
+
+---
+
+## Fontes
+
+- [Node.js — stream module](https://nodejs.org/api/stream.html) — referência completa de todas as APIs: `Readable`, `Writable`, `Duplex`, `Transform`, `pipeline`, `finished`
+- [Node.js — stream/promises](https://nodejs.org/api/stream.html#streampipelinestreams-callback) — `pipeline()` e `finished()` com suporte a `AbortSignal`
+- [WHATWG Streams Standard](https://streams.spec.whatwg.org/) — spec completa de Web Streams; base para a interop via `Readable.fromWeb`/`Readable.toWeb`
 
 ---
 

@@ -1,10 +1,10 @@
 ---
 title: "Duplex e Transform"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -56,6 +56,35 @@ escrita (write) → _transform() → leitura (read)
 ```
 
 Exemplos da biblioteca padrão: `zlib.createGzip()` comprime o que você escreve e disponibiliza os bytes comprimidos para leitura; `zlib.createGunzip()` faz o caminho inverso; `crypto.createCipheriv()` criptografa; parsers de protocolo convertem bytes em objetos.
+
+---
+
+## Diagrama
+
+```mermaid
+flowchart LR
+    subgraph DUPLEX ["stream.Duplex — dois buffers independentes"]
+        direction TB
+        WA["write(chunk)\n[buffer de escrita]"]
+        RA["read()\n[buffer de leitura]"]
+        WA -. "sem conexão automática" .- RA
+    end
+
+    subgraph TRANSFORM ["stream.Transform — fluxo conectado"]
+        direction LR
+        WB["write(chunk)"] -->|"_transform(chunk, enc, cb)"| TR["this.push(resultado)"] --> RB["read()"]
+    end
+
+    style DUPLEX fill:#1a2035,stroke:#4A90D9,color:#ccc
+    style TRANSFORM fill:#1a2035,stroke:#4A90D9,color:#ccc
+    style WA fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+    style RA fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+    style WB fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+    style TR fill:#1e3a1a,stroke:#4A90D9,color:#ccc
+    style RB fill:#1e2d4a,stroke:#4A90D9,color:#ccc
+```
+
+A linha pontilhada no `Duplex` sinaliza ausência de conexão — os dois buffers coexistem na mesma instância mas não se falam. No `Transform`, `_transform` é a ponte obrigatória: o que entra pelo lado `write` sai pelo lado `read` apenas depois de passar pela função de transformação.
 
 ---
 
@@ -356,9 +385,97 @@ O par `Transform` em object mode + `pipeline()` é o idioma Node.js para process
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Esquecer `_flush` em parsers — último chunk perdido
+### Cenário 1 — Pipeline de compressão e cifragem em exportação de dados
+
+Serviços de exportação precisam frequentemente comprimir e criptografar arquivos grandes antes de armazená-los ou transmiti-los. Cada etapa é um `Transform` encadeado via `pipeline()`:
+
+```javascript
+import { pipeline } from 'node:stream/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { createGzip } from 'node:zlib';
+import { createCipheriv, randomBytes, scryptSync } from 'node:crypto';
+
+const KEY = scryptSync('senha-da-aplicacao', 'salt-fixo', 32); // 256 bits
+
+export async function exportarProtegido(origem, destino) {
+  const iv = randomBytes(16); // IV único por operação
+
+  await pipeline(
+    createReadStream(origem),               // Readable: lê o arquivo de origem
+    createGzip(),                           // Transform: comprime com gzip
+    createCipheriv('aes-256-cbc', KEY, iv), // Transform: cifra com AES-256
+    createWriteStream(destino),             // Writable: grava o resultado
+  );
+
+  return iv; // caller precisa do IV para decifrar depois
+}
+
+// uso:
+const iv = await exportarProtegido('./relatorio-clientes.csv', './relatorio.gz.enc');
+console.log('IV para decifração:', iv.toString('hex'));
+```
+
+O arquivo pode ter gigabytes — o uso de memória fica constante porque `pipeline()` propaga backpressure automaticamente entre cada `Transform`. Se `createCipheriv` travar (disco cheio, por exemplo), o `createReadStream` pausa. Nenhuma linha de código extra é necessária.
+
+### Cenário 2 — Proxy TCP com Duplex bidirecional
+
+Um gateway de protocolo retransmite bytes brutos entre dois sockets sem interpretar o conteúdo. Cada `net.Socket` é um `Duplex` com canais de leitura e escrita totalmente independentes:
+
+```javascript
+import net from 'node:net';
+
+/**
+ * Cria um proxy TCP simples: retransmite tráfego entre cliente e destino,
+ * gerenciando backpressure manualmente nos dois sentidos.
+ */
+function criarProxy(portaLocal, hostDestino, portaDestino) {
+  return net.createServer((cliente) => {
+    // socket cliente: Duplex — lemos do cliente, escrevemos ao cliente
+    const destino = net.createConnection({ host: hostDestino, port: portaDestino });
+
+    // sentido cliente → destino
+    cliente.on('data', (chunk) => {
+      const ok = destino.write(chunk);
+      if (!ok) {
+        // destino está cheio: pausa o cliente até o destino drenar
+        cliente.pause();
+        destino.once('drain', () => cliente.resume());
+      }
+    });
+
+    // sentido destino → cliente
+    destino.on('data', (chunk) => {
+      const ok = cliente.write(chunk);
+      if (!ok) {
+        destino.pause();
+        cliente.once('drain', () => destino.resume());
+      }
+    });
+
+    // encerramento coordenado
+    cliente.on('end', () => destino.end());
+    destino.on('end', () => cliente.end());
+    cliente.on('error', (err) => destino.destroy(err));
+    destino.on('error', (err) => cliente.destroy(err));
+  }).listen(portaLocal);
+}
+
+// proxy local 8080 → API remota :443
+const proxy = criarProxy(8080, 'api.interno.com', 443);
+```
+
+Aqui o backpressure é gerenciado manualmente porque não há cadeia linear — são dois `Duplex` coordenados. O tráfego em cada sentido é independente: o cliente pode enviar dados lentos enquanto o destino responde rápido, e cada sentido gerencia seu próprio ciclo de `write` / `pause` / `drain`.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] 1. Esquecer `_flush` em parsers — último chunk perdido
+> **O que acontece:** um `Transform` com buffer interno descarta o conteúdo residual ao encerrar — arquivo com 1000 linhas, parser emite 999.
+> **Por quê:** sem `_flush`, o que restou em `this.#buffer` é simplesmente descartado quando o stream fecha.
+> **Como evitar:** todo `Transform` que acumula estado entre chunks precisa de `_flush`.
 
 ```javascript
 // ERRADO: sem _flush, a última linha pode nunca ser emitida
@@ -376,9 +493,12 @@ class LineParser extends Transform {
 }
 ```
 
-Resultado: o arquivo tem 1000 linhas, o parser emite 999. O bug só aparece se a última linha não terminar com `\n` — comum em arquivos gerados por ferramentas que não adicionam newline final.
+O bug só aparece se a última linha não terminar com `\n` — comum em arquivos gerados por ferramentas que não adicionam newline final.
 
-### 2. `callback(error)` esquecido — erros silenciosos
+> [!warning] 2. `callback(error)` esquecido — erros silenciosos
+> **O que acontece:** exceção é capturada mas `cb()` é chamado normalmente — o stream continua processando como se nada tivesse acontecido.
+> **Por quê:** `cb()` sem argumento sinaliza sucesso ao runtime; o erro é engolido silenciosamente.
+> **Como evitar:** sempre `cb(err)` no catch, nunca `cb()` após capturar um erro.
 
 ```javascript
 // ERRADO: erro capturado mas não propagado
@@ -394,7 +514,10 @@ _transform(chunk, enc, cb) {
 }
 ```
 
-### 3. Chamar `cb()` antes de `this.push()` — comportamento inesperado
+> [!warning] 3. Chamar `cb()` antes de `this.push()` — race condition em alta velocidade
+> **O que acontece:** em streams de alta velocidade, o runtime pode solicitar o próximo chunk antes do atual ter sido completamente enviado, gerando resultados fora de ordem.
+> **Por quê:** `cb()` sinaliza "pronto para o próximo chunk"; se chamado antes de `push()`, o próximo chunk pode chegar enquanto o `push()` do atual ainda não ocorreu.
+> **Como evitar:** sempre chame `this.push()` antes de `cb()`.
 
 ```javascript
 // PROBLEMÁTICO: cb() sinaliza que o próximo chunk pode vir
@@ -411,9 +534,10 @@ _transform(chunk, enc, cb) {
 }
 ```
 
-Em alguns cenários com streams de alta velocidade, chamar `cb()` antes de `this.push()` pode fazer o runtime solicitar o próximo chunk antes do atual ter sido completamente processado, gerando resultados fora de ordem.
-
-### 4. Confundir Duplex com Transform na implementação
+> [!warning] 4. Usar `Duplex` quando a saída deriva da entrada — reimplementar Transform à mão
+> **O que acontece:** lógica de transformação implementada em `Duplex._write` — frágil, sem backpressure correto e difícil de testar.
+> **Por quê:** `Duplex` não conecta os dois lados automaticamente; você reinventa o que `Transform` já faz internamente, e geralmente de forma errada.
+> **Como evitar:** se a saída é derivada da entrada por transformação, use `Transform` — não `Duplex`.
 
 ```javascript
 // ERRADO: implementando lógica de Transform em um Duplex puro
@@ -439,7 +563,10 @@ class MeuProcessador extends Transform {
 
 `Transform` já implementa `_write` internamente de forma que chama `_transform` no momento certo. Reimplementar essa lógica em `Duplex` é reinventar a roda — e geralmente errado.
 
-### 5. `highWaterMark` em object mode — a unidade muda
+> [!warning] 5. `highWaterMark` em object mode — a unidade muda
+> **O que acontece:** `highWaterMark: 1` em object mode processa um objeto por vez — throughput mínimo em operações rápidas.
+> **Por quê:** em object mode, `highWaterMark` é em número de objetos (padrão: 16), não em bytes. Valor muito baixo cria overhead excessivo de ciclos de backpressure.
+> **Como evitar:** ajuste `highWaterMark` para o volume de objetos adequado à operação; meça antes de tunar.
 
 Em byte mode, `highWaterMark` é em bytes (padrão: 16 KB). Em object mode, é em número de objetos (padrão: 16). Um `Transform` em object mode com `highWaterMark: 1` processa um objeto por vez — útil para operações lentas (ex.: I/O assíncrono por registro), mas pode ser gargalo em operações rápidas.
 
@@ -483,14 +610,18 @@ Em byte mode, chunks são `Buffer`. Em object mode, chunks podem ser qualquer va
 
 ---
 
-## Veja também
+## O que vem a seguir
 
-- `[[02 - Os 4 tipos - Readable, Writable, Duplex, Transform]]` — visão geral comparativa dos quatro tipos
-- `[[03 - Readable streams]]` — como funciona o lado leitor
-- `[[04 - Writable streams]]` — como funciona o lado escritor
-- `[[06 - Backpressure]]` — o mecanismo de controle de fluxo que Transform propaga automaticamente
-- `[[10 - Padrões práticos]]` — pipelines compostos com múltiplos Transforms
-- `[[Node.js]]` — tronco do domínio Node.js
+Com `Duplex` e `Transform` dominados, o próximo conceito crítico é o mecanismo que evita que um producer rápido sobrecarregue um consumer lento — o backpressure. Sem ele, qualquer pipeline com `Transform` vaza memória silenciosamente sob carga.
+
+- [[06 - Backpressure]] — como `highWaterMark`, o boolean de `.write()` e `'drain'` formam o ciclo de controle de fluxo
+- [[07 - pipeline vs pipe - error handling]] — por que `pipeline()` substitui `.pipe()` e gerencia cleanup automaticamente
+- [[08 - Async iteration de streams]] — consumir streams com `for await...of` e criar sources com async generators
+- [[10 - Padrões práticos]] — pipelines compostos com múltiplos Transforms em cenários de produção
+- [[02 - Os 4 tipos - Readable, Writable, Duplex, Transform]] — visão geral comparativa dos quatro tipos
+- [[03 - Readable streams]] — como funciona o lado leitor
+- [[04 - Writable streams]] — como funciona o lado escritor
+- [[Node.js]] — tronco do domínio Node.js
 
 ---
 

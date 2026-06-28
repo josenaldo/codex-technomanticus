@@ -1,10 +1,10 @@
 ---
 title: "Os 4 tipos: Readable, Writable, Duplex, Transform"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -78,6 +78,32 @@ Essa hierarquia tem consequências práticas:
 - `Transform instanceof Writable === true`
 - Todo stream é um `EventEmitter` — você pode usar `once`, `removeListener`, etc.
 - Propriedades como `writableHighWaterMark` e `readableHighWaterMark` existem em Duplex e Transform porque ambos têm os dois lados.
+
+### Diagrama: hierarquia e direção dos dados
+
+```mermaid
+flowchart TD
+    EE["EventEmitter"]
+    S["Stream"]
+    R["Readable\n— fonte de dados\nex: fs.createReadStream"]
+    W["Writable\n— destino de dados\nex: fs.createWriteStream"]
+    D["Duplex\n— dois canais independentes\nex: net.Socket"]
+    T["Transform\n— lê, transforma, escreve\nex: zlib.createGzip()"]
+
+    EE --> S
+    S --> R
+    S --> W
+    R --> D
+    W --> D
+    D --> T
+
+    style R fill:#4A90D9,color:#fff
+    style W fill:#4A90D9,color:#fff
+    style D fill:#F5A623,color:#000
+    style T fill:#4A90D9,color:#fff
+```
+
+A distinção visual mais importante: Duplex tem duas setas de herança (Readable e Writable) porque mantém dois buffers independentes. Transform herda de Duplex mas conecta os dois lados via `_transform()` — o que entra pelo lado Writable sai transformado pelo lado Readable.
 
 ---
 
@@ -253,22 +279,142 @@ Na prática de APIs Node, você raramente instancia Duplex diretamente: `net.Soc
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-**1. Duplex ≠ Transform — confusão de canal.**
-Implementar um Duplex e esperar que `write()` alimente `read()` é o erro mais comum. Duplex tem dois buffers internos separados; nenhum dado cruza de um lado para o outro automaticamente. Se você precisa que a escrita produza leitura, implemente `_transform()` — use Transform.
+Os dois cenários abaixo mostram como identificar e combinar os tipos corretos em situações reais de produção.
 
-**2. `Readable.from(array)` não é gratuito.**
-`Readable.from(['a', 'b', 'c'])` cria um stream real com toda a maquinaria de eventos e backpressure. Para arrays pequenos já em memória, isso é overhead puro. Use-o quando precisar conectar um iterável assíncrono (`async function*`) a uma pipeline de streams, não para converter arrays triviais.
+### Cenário 1 — Compressão de arquivo com Transform encadeado
 
-**3. Transform não resolve operações que precisam de visibilidade global.**
-`sort`, `median`, `distinct` precisam de todos os dados antes de produzir output. Transform processa chunk a chunk — você pode acumular em `_transform()` e emitir em `_flush()`, mas o dataset inteiro fica em memória. Se isso é um problema, a solução não é um Transform diferente, é outra abordagem (ordenação externa, banco de dados, MapReduce).
+Um serviço de backup precisa comprimir e cifrar arquivos de log antes de enviá-los para armazenamento. O pipeline combina Readable (fonte), dois Transforms (compressão + criptografia) e Writable (destino). Cada tipo tem papel preciso:
 
-**4. Não ouvir `'error'` derruba o processo.**
-Streams emitem `'error'` em falhas de I/O. Se não houver listener, Node lança o erro como uncaught exception. Sempre registre `.on('error', handler)` ou use `stream.pipeline()` / `stream.pipeline` de `node:stream/promises`, que propagam erros automaticamente e fazem cleanup.
+```javascript
+import { pipeline } from 'node:stream/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { createGzip } from 'node:zlib';
+import { createCipheriv, randomBytes, scryptSync } from 'node:crypto';
 
-**5. Misturar `.pipe()` com `async/await` sem cuidado.**
-`pipe()` não propaga erros de volta nem faz cleanup de streams intermediários quando um deles falha. Em código moderno, prefira `stream.pipeline()` (callback) ou `pipeline()` de `node:stream/promises` (`async/await`). `.pipe()` ainda aparece em código legado e em exemplos simples — reconheça a diferença.
+const password = process.env.BACKUP_PASSWORD;
+const salt = randomBytes(16);
+const key = scryptSync(password, salt, 32);  // deriva chave de 256 bits
+const iv = randomBytes(16);
+
+await pipeline(
+  // Readable: fonte — lê o arquivo de log em chunks
+  createReadStream('./app.log'),
+
+  // Transform #1: comprime com gzip on-the-fly
+  // O que entra: bytes brutos do log
+  // O que sai: bytes comprimidos
+  createGzip(),
+
+  // Transform #2: cifra o conteúdo comprimido
+  // O que entra: bytes comprimidos
+  // O que sai: bytes cifrados
+  createCipheriv('aes-256-gcm', key, iv),
+
+  // Writable: destino — persiste o resultado cifrado
+  createWriteStream('./app.log.gz.enc'),
+);
+
+// Memória usada: O(chunk) — independente do tamanho do arquivo de log
+// Cada Transform processa um chunk de cada vez e entrega ao próximo
+console.log('Backup concluído — comprimido e cifrado');
+```
+
+Aqui cada Transform encapsula uma transformação pura: entrada e saída são bytes, mas com semânticas diferentes. O `pipeline` conecta os estágios e garante backpressure entre eles.
+
+### Cenário 2 — Parser de protocolo customizado com Transform em object mode
+
+Um serviço consome mensagens de uma fila (broker TCP customizado) que entrega linhas de texto no formato `CMD:payload`. O objetivo é parsear cada linha em objetos JavaScript e roteá-los por tipo de comando:
+
+```javascript
+import { Transform } from 'node:stream';
+import { createConnection } from 'node:net';
+import { pipeline } from 'node:stream/promises';
+import { createWriteStream } from 'node:fs';
+
+// Transform: bytes → objetos de comando
+// Demonstra a transição de modo binário para object mode no mesmo pipeline
+class CommandParser extends Transform {
+  constructor() {
+    // readableObjectMode: true — o lado de leitura emite objetos, não bytes
+    super({ readableObjectMode: true });
+    this._buffer = '';
+  }
+
+  _transform(chunk, _enc, cb) {
+    this._buffer += chunk.toString();
+    const lines = this._buffer.split('\n');
+    this._buffer = lines.pop(); // guarda linha incompleta para o próximo chunk
+
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const [cmd, ...rest] = line.split(':');
+      // this.push() emite um objeto — não bytes
+      this.push({ cmd: cmd.trim(), payload: rest.join(':').trim() });
+    }
+    cb();
+  }
+
+  _flush(cb) {
+    // Processa qualquer fragmento restante quando o stream fecha
+    if (this._buffer.trim()) {
+      const [cmd, ...rest] = this._buffer.split(':');
+      this.push({ cmd: cmd.trim(), payload: rest.join(':').trim() });
+    }
+    cb();
+  }
+}
+
+// Transform: objetos de comando → linhas de log (object mode → bytes)
+const toLogLine = new Transform({
+  objectMode: true, // lê objetos
+  transform({ cmd, payload }, _enc, cb) {
+    cb(null, `[${new Date().toISOString()}] ${cmd}: ${payload}\n`);
+  },
+});
+
+// net.Socket é Duplex — lemos do servidor e escrevemos para ele
+const socket = createConnection({ host: 'broker.internal', port: 9000 });
+
+await pipeline(
+  socket,           // Duplex (usamos apenas o lado Readable aqui)
+  new CommandParser(), // Transform: bytes → objetos
+  toLogLine,           // Transform: objetos → bytes de log
+  createWriteStream('./commands.log'), // Writable: persiste
+);
+```
+
+O cenário ilustra dois padrões simultâneos: a transição entre binary mode e object mode dentro do pipeline, e o uso de apenas um lado de um Duplex (o `socket` como fonte de dados sem usar seu lado Writable).
+
+---
+
+## Armadilhas comuns
+
+> [!warning] 1. Duplex não é Transform — confusão de canal
+> **O que acontece:** Código implementa um Duplex esperando que `write()` alimente `read()` automaticamente — e fica confuso quando os dados não aparecem no lado de leitura.
+> **Por quê:** Duplex tem dois buffers internos completamente separados; nenhum dado cruza de um lado para o outro por design. Os dois canais são independentes.
+> **Como evitar:** Se você precisa que o que foi escrito apareça transformado na leitura, use Transform — ele conecta os dois lados via `_transform()`. Use Duplex apenas para comunicação bidirecional genuinamente independente (como sockets TCP).
+
+> [!warning] 2. `Readable.from(array)` não é gratuito para arrays pequenos
+> **O que acontece:** `Readable.from(['a', 'b', 'c'])` cria um stream real com toda a maquinaria de eventos, buffering e backpressure — overhead puro para dados já em memória.
+> **Por quê:** A intenção de `Readable.from()` é converter iteráveis assíncronos (`async function*`) em streams. Para arrays in-memory, é como usar uma fábrica para fazer um parafuso girar.
+> **Como evitar:** Use `Readable.from()` quando precisar conectar um `async function*` (paginação de API, cursor de banco) a um pipeline de streams. Para arrays em memória, use métodos de array diretamente.
+
+> [!warning] 3. Transform não resolve operações com visibilidade global
+> **O que acontece:** Tentativa de implementar `sort`, `median` ou `distinct` em um Transform — o que força acumular todos os chunks em `_transform()` antes de emitir em `_flush()`, derrotando o propósito do stream.
+> **Por quê:** Transform processa chunk a chunk. Operações que precisam ver todos os dados antes de produzir qualquer output precisam de todo o dataset em memória de qualquer forma.
+> **Como evitar:** Para operações com visibilidade global sobre datasets que não cabem em memória, use ordenação externa, banco de dados com índice, ou MapReduce. Se o dataset cabe em memória, buffer + array methods são mais simples e igualmente eficientes.
+
+> [!warning] 4. Não ouvir `'error'` derruba o processo
+> **O que acontece:** Stream emite `'error'` em falha de I/O; sem listener, Node lança como `uncaughtException` e derruba o processo inteiro.
+> **Por quê:** Streams herdam de `EventEmitter`. O comportamento padrão de `EventEmitter` para eventos `'error'` sem listener é lançar a exceção — não silenciar.
+> **Como evitar:** Sempre registre `.on('error', handler)` em todo stream que você instanciar diretamente. Ou use `pipeline()` de `node:stream/promises`, que propaga erros automaticamente e faz cleanup de todos os estágios.
+
+> [!warning] 5. Misturar `.pipe()` com `async/await` sem cuidado
+> **O que acontece:** Um stream intermediário falha; `pipe()` não propaga o erro para upstream nem destrói os outros streams — causando vazamento de file descriptors e handles abertos.
+> **Por quê:** `pipe()` foi projetado antes do `async/await` e tem semântica de erro fraca. Ele conecta streams mas não gerencia o ciclo de vida da cadeia em caso de falha.
+> **Como evitar:** Em código novo, use sempre `pipeline()` de `node:stream/promises`. `.pipe()` ainda aparece em exemplos históricos e libs legadas — saiba reconhecê-lo mas não reproduza em código de produção.
 
 ---
 
@@ -301,6 +447,17 @@ Streams emitem `'error'` em falhas de I/O. Se não houver listener, Node lança 
 
 ---
 
+## O que vem a seguir
+
+Com o mapa dos quatro tipos em mente, o próximo passo é mergulhar na implementação de cada um. Readable e Writable têm contratos internos específicos — modos de consumo, backpressure, e eventos de ciclo de vida — que determinam como se comportam em produção.
+
+- [[03 - Readable streams]] — modos flowing e paused, `Readable.from()`, implementação com `_read`
+- [[04 - Writable streams]] — `.write()`, backpressure via `drain`, `cork()`/`uncork()`, implementação com `_write`
+- [[05 - Duplex e Transform]] — implementação avançada de cada tipo, casos de uso reais
+- [[06 - Backpressure]] — o mecanismo de controle de fluxo que conecta todos os tipos
+
+---
+
 ## Veja também
 
 - `[[01 - Por que streams]]` — motivação e trade-offs de usar streams
@@ -308,6 +465,13 @@ Streams emitem `'error'` em falhas de I/O. Se não houver listener, Node lança 
 - `[[04 - Writable streams]]` — write/end, drain, cork/uncork, implementação custom
 - `[[05 - Duplex e Transform]]` — implementação avançada, casos de uso reais
 - `[[Node.js]]` — tronco do domínio Node no Codex
+
+---
+
+## Fontes
+
+- [Node.js Docs — Stream](https://nodejs.org/api/stream.html)
+- [Node.js Docs — stream.pipeline()](https://nodejs.org/api/stream.html#streampipelinesource-transforms-destination-callback)
 
 ---
 

@@ -1,10 +1,10 @@
 ---
 title: "Writable streams"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -43,6 +43,31 @@ A classe vive em `node:stream` e pode ser:
 - **Usada diretamente** — você obtém uma instância já pronta (`fs.createWriteStream`).
 - **Subclassificada** — para implementar um destino customizado via `_write`.
 - **Recebida via `pipeline()`** — o idioma canônico de composição (veja `[[07 - pipeline vs pipe - error handling]]`).
+
+### Diagrama: ciclo de vida de uma escrita com backpressure
+
+```mermaid
+sequenceDiagram
+    participant P as Produtor
+    participant W as Writable
+    participant S as Sistema (disco/rede)
+
+    P->>W: write(chunk) → true
+    W->>S: entrega chunk ao SO
+    Note over W: buffer < highWaterMark
+
+    P->>W: write(chunk) → false
+    Note over W: buffer ≥ highWaterMark<br/>⚠️ backpressure ativado
+    P-->>P: pausa (aguarda 'drain')
+
+    S-->>W: confirmação de escrita
+    W->>P: evento 'drain'
+    Note over W: buffer drenado
+    P->>W: write(chunk) → true
+    W->>P: evento 'finish' após end()
+```
+
+O diagrama mostra o contrato crítico: quando `write()` retorna `false`, o produtor **deve** parar e esperar `'drain'`. O runtime não força essa pausa — é responsabilidade do chamador verificar o retorno e honrar o sinal.
 
 ---
 
@@ -315,81 +340,236 @@ function respondWithHeaders(res, statusCode, headers, body) {
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Ignorar o boolean de `.write()` → vazamento de memória
+Os dois cenários a seguir mostram Writable em contextos onde o contrato de backpressure e o ciclo de vida importam diretamente para corretude e eficiência.
+
+### Cenário 1 — Logger customizado com _writev para escrita em batch
+
+Um serviço de alta carga precisa persistir logs de auditoria em banco de dados. Cada requisição HTTP produz múltiplos eventos de log (autenticação, autorização, processamento, resposta). Com `_write`, cada evento geraria um `INSERT` individual. Com `_writev`, múltiplos eventos acumulados no mesmo tick são persistidos em um único `INSERT ... VALUES (...)`:
 
 ```javascript
-// ERRADO: ignora backpressure
-for (const chunk of hugeDataset) {
-  ws.write(chunk); // .write() pode estar retornando false; buffer cresce
-}
+import { Writable } from 'node:stream';
 
-// CERTO: respeita o sinal de pausa
-for (const chunk of hugeDataset) {
-  const ok = ws.write(chunk);
-  if (!ok) {
-    await new Promise(resolve => ws.once('drain', resolve));
+class AuditLogWriter extends Writable {
+  constructor(db, options = {}) {
+    super({ ...options, objectMode: true, highWaterMark: 50 });
+    this.db = db;
+  }
+
+  // Fallback para inserção individual quando não há chunks acumulados
+  async _write(record, _enc, callback) {
+    try {
+      await this.db.execute(
+        'INSERT INTO audit_logs (event, user_id, timestamp, metadata) VALUES (?, ?, ?, ?)',
+        [record.event, record.userId, record.timestamp, JSON.stringify(record.metadata)]
+      );
+      callback();
+    } catch (err) {
+      callback(err); // Propaga o erro — emite evento 'error' no stream
+    }
+  }
+
+  // Caminho otimizado: N chunks → 1 INSERT bulk
+  async _writev(chunks, callback) {
+    const records = chunks.map(({ chunk }) => chunk);
+    const placeholders = records.map(() => '(?, ?, ?, ?)').join(', ');
+    const values = records.flatMap((r) => [
+      r.event, r.userId, r.timestamp, JSON.stringify(r.metadata)
+    ]);
+
+    try {
+      await this.db.execute(
+        `INSERT INTO audit_logs (event, user_id, timestamp, metadata) VALUES ${placeholders}`,
+        values
+      );
+      callback();
+    } catch (err) {
+      callback(err);
+    }
+  }
+
+  // Chamado após end(), antes de 'finish' — garante flush de qualquer estado interno
+  async _final(callback) {
+    try {
+      await this.db.flush(); // Força commit de transação pendente, se houver
+      callback();
+    } catch (err) {
+      callback(err);
+    }
   }
 }
+
+// Uso no servidor HTTP
+const auditWriter = new AuditLogWriter(db);
+auditWriter.on('error', (err) => console.error('Falha no audit log:', err));
+
+// Cada requisição cork() o writer para acumular eventos do mesmo ciclo
+function logAuditEvent(event, userId, metadata) {
+  auditWriter.cork();
+  auditWriter.write({ event, userId, timestamp: new Date().toISOString(), metadata });
+  process.nextTick(() => auditWriter.uncork());
+  // cork() + nextTick garante que todos os writes síncronos do tick
+  // sejam batched em um único _writev
+}
 ```
 
-### 2. Esquecer `.end()` → `'finish'` nunca dispara
+Em produção com 500 req/s, cada uma gerando 4 eventos, `_write` individual geraria 2000 INSERTs/s. `_writev` reduz para ~500 INSERTs/s em batch, diminuindo latência e carga no banco.
+
+### Cenário 2 — Escrita em múltiplos destinos simultaneamente com stream customizado
+
+Um pipeline de replicação precisa escrever o mesmo dado em disco (backup local) e em um socket TCP (replicação remota) ao mesmo tempo. Um `Writable` customizado que fan-out para múltiplos destinos:
 
 ```javascript
-// ERRADO: nenhum consumidor vai receber 'finish'
-function writeData(ws, data) {
-  ws.write(data);
-  // Faltou: ws.end()
+import { Writable } from 'node:stream';
+import { createWriteStream } from 'node:fs';
+import { createConnection } from 'node:net';
+import { pipeline } from 'node:stream/promises';
+
+class MultiDestinationWritable extends Writable {
+  constructor(destinations, options = {}) {
+    super(options);
+    this.destinations = destinations;
+  }
+
+  // Escreve o mesmo chunk em todos os destinos em paralelo
+  _write(chunk, encoding, callback) {
+    const writes = this.destinations.map(
+      (dest) =>
+        new Promise((resolve, reject) => {
+          const ok = dest.write(chunk, encoding);
+          if (ok) return resolve();
+          // Respeita backpressure de cada destino individualmente
+          dest.once('drain', resolve);
+          dest.once('error', reject);
+        })
+    );
+
+    Promise.all(writes)
+      .then(() => callback())
+      .catch(callback);
+  }
+
+  // Encerra todos os destinos quando o stream principal terminar
+  _final(callback) {
+    const ends = this.destinations.map(
+      (dest) =>
+        new Promise((resolve, reject) => {
+          dest.end();
+          dest.once('finish', resolve);
+          dest.once('error', reject);
+        })
+    );
+
+    Promise.all(ends)
+      .then(() => callback())
+      .catch(callback);
+  }
 }
 
-// CERTO
-function writeData(ws, data) {
-  ws.write(data);
-  ws.end(); // Ou retorne ws para que o chamador chame end()
-}
+// Configura os dois destinos
+const localBackup = createWriteStream('./backup.dat');
+const remoteSocket = createConnection({ host: 'replica.internal', port: 9001 });
+
+const replicator = new MultiDestinationWritable([localBackup, remoteSocket]);
+replicator.on('error', (err) => console.error('Falha na replicação:', err));
+
+// Usa o replicator como destino final de qualquer Readable
+import { createReadStream } from 'node:fs';
+await pipeline(
+  createReadStream('./dados-producao.dat'),
+  replicator,
+);
+
+console.log('Replicação concluída — disco local e réplica remota sincronizados');
 ```
 
-### 3. `cork()` sem `uncork()` → buffer cresce sem flush
+O padrão `Promise.all(writes)` garante que o callback de `_write` só é chamado quando **todos** os destinos confirmaram a escrita do chunk — o que propaga backpressure corretamente do destino mais lento para o produtor upstream.
 
-```javascript
-// ERRADO: cork sem uncork correspondente
-function writeHeader(ws) {
-  ws.cork();
-  ws.write('Content-Type: application/json\r\n');
-  ws.write('\r\n');
-  // Faltou: ws.uncork() ou process.nextTick(() => ws.uncork())
-}
+---
 
-// CERTO: sempre parear cork com uncork
-function writeHeader(ws) {
-  ws.cork();
-  ws.write('Content-Type: application/json\r\n');
-  ws.write('\r\n');
-  process.nextTick(() => ws.uncork());
-}
-```
+## Armadilhas comuns
 
-### 4. `_write` síncrono pesado → bloqueia o event loop
+> [!warning] 1. Ignorar o boolean de `.write()` — vazamento de memória silencioso
+> **O que acontece:** O buffer interno da Writable cresce sem limite. Em desenvolvimento com volumes pequenos, parece funcionar. Em produção com alto throughput, o processo degrada e potencialmente trava.
+> **Por quê:** `.write()` retorna `false` quando o buffer atinge `highWaterMark`, mas não lança erro nem para o chamador. A Writable continua aceitando dados — é responsabilidade do chamador verificar e pausar.
+> **Como evitar:** Sempre verifique o retorno de `.write()`. Se `false`, aguarde `'drain'` antes de continuar. Em loops, use o padrão `while + once('drain', next)` ou, para código moderno, `pipeline()` que cuida disso automaticamente.
+>
+> ```javascript
+> // ERRADO: ignora backpressure — buffer cresce indefinidamente
+> for (const chunk of hugeDataset) {
+>   ws.write(chunk);
+> }
+>
+> // CERTO: respeita o sinal de pausa
+> for (const chunk of hugeDataset) {
+>   const ok = ws.write(chunk);
+>   if (!ok) {
+>     await new Promise(resolve => ws.once('drain', resolve));
+>   }
+> }
+> ```
 
-```javascript
-// ERRADO: operação síncrona custosa dentro de _write
-_write(chunk, enc, callback) {
-  const processed = heavySync(chunk); // Bloqueia o event loop inteiro
-  fs.writeFileSync('./out.txt', processed, { flag: 'a' });
-  callback();
-}
+> [!warning] 2. Esquecer `.end()` — `'finish'` nunca dispara
+> **O que acontece:** Qualquer consumidor esperando o evento `'finish'` (para confirmar persistência ou fechar recursos dependentes) fica bloqueado indefinidamente.
+> **Por quê:** `'finish'` só é emitido após `.end()` ser chamado e todos os dados serem entregues ao sistema subjacente. Sem `.end()`, a Writable fica em estado aberto.
+> **Como evitar:** Sempre feche o stream com `.end()` quando terminar de escrever. Em pipelines, `pipeline()` chama `.end()` automaticamente no stream destino.
+>
+> ```javascript
+> // ERRADO — 'finish' nunca é emitido
+> function writeData(ws, data) {
+>   ws.write(data);
+>   // Faltou: ws.end()
+> }
+>
+> // CERTO
+> function writeData(ws, data) {
+>   ws.write(data);
+>   ws.end();
+> }
+> ```
 
-// CERTO: use APIs assíncronas dentro de _write
-_write(chunk, enc, callback) {
-  const processed = heavySync(chunk); // Se não puder evitar, isole em worker
-  fs.appendFile('./out.txt', processed, callback);
-}
-```
+> [!warning] 3. `cork()` sem `uncork()` correspondente — buffer cresce sem flush
+> **O que acontece:** Dados acumulam no buffer interno indefinidamente, nunca chegando ao destino. O comportamento parece um travamento silencioso.
+> **Por quê:** `cork()` é contado — cada chamada incrementa `writableCorked`. O flush só acontece quando o contador volta a zero. Um `cork()` sem `uncork()` deixa o contador em 1 permanentemente.
+> **Como evitar:** Sempre parear cada `cork()` com um `uncork()`. Use `process.nextTick(() => ws.uncork())` para garantir que todos os `.write()` síncronos do tick atual sejam incluídos no batch antes do flush.
+>
+> ```javascript
+> // ERRADO — cork sem uncork, buffer nunca descarrega
+> ws.cork();
+> ws.write('Content-Type: application/json\r\n');
+> // Faltou: uncork()
+>
+> // CERTO — sempre parear
+> ws.cork();
+> ws.write('Content-Type: application/json\r\n');
+> ws.write('\r\n');
+> process.nextTick(() => ws.uncork()); // flush no próximo tick
+> ```
 
-### 5. Não tratar `'error'` → processo derruba
+> [!warning] 4. `_write` com operação síncrona pesada — bloqueia o event loop
+> **O que acontece:** A thread JavaScript fica ocupada durante a operação síncrona, impedindo que qualquer outra requisição seja processada. O servidor congela.
+> **Por quê:** `_write` é chamado dentro do event loop. Qualquer operação síncrona custosa dentro dele bloqueia todas as demais operações enquanto não termina.
+> **Como evitar:** Use APIs assíncronas dentro de `_write`. Se a operação for CPU-intensiva e não puder ser tornada assíncrona, isole-a em um Worker Thread via `worker_threads`.
+>
+> ```javascript
+> // ERRADO — bloqueia o event loop para cada chunk
+> _write(chunk, enc, callback) {
+>   const processed = heavySync(chunk);
+>   fs.writeFileSync('./out.txt', processed, { flag: 'a' });
+>   callback();
+> }
+>
+> // CERTO — usa API assíncrona dentro de _write
+> _write(chunk, enc, callback) {
+>   fs.appendFile('./out.txt', chunk, callback);
+> }
+> ```
 
-Emitir `'error'` sem listener é uma exceção não capturada — fatal em Node. Sempre registre `ws.on('error', handler)` em qualquer Writable que você instanciar.
+> [!warning] 5. Não tratar `'error'` — derruba o processo
+> **O que acontece:** Qualquer erro de I/O na Writable (disco cheio, permissão negada, socket fechado) derruba o processo inteiro via `uncaughtException`.
+> **Por quê:** Streams herdam de `EventEmitter`. O comportamento padrão de `EventEmitter` para `'error'` sem listener é lançar a exceção — Node não tem como saber que você pretendia ignorá-la.
+> **Como evitar:** Sempre registre `ws.on('error', handler)` em qualquer Writable que você instanciar diretamente. Ou use `pipeline()` de `node:stream/promises`, que captura e propaga erros de todos os estágios automaticamente.
 
 ---
 
@@ -425,6 +605,16 @@ Quando o destino suporta operações em lote — bulk inserts em banco, HTTP com
 | alta marca d'água | high watermark (`highWaterMark`) |
 | buffer interno | internal buffer |
 | modo objeto | object mode |
+
+---
+
+## O que vem a seguir
+
+Com Readable e Writable dominados, os dois extremos do fluxo estão cobertos. O próximo nível são os tipos compostos: Duplex (canais independentes) e Transform (transformação acoplada) — e depois, o mecanismo que mantém tudo coeso quando os estágios operam em velocidades diferentes.
+
+- [[05 - Duplex e Transform]] — implementação avançada dos tipos compostos
+- [[06 - Backpressure]] — como Readable e Writable negociam velocidade em detalhe
+- [[07 - pipeline vs pipe - error handling]] — composição idiomática e gestão de erros em produção
 
 ---
 

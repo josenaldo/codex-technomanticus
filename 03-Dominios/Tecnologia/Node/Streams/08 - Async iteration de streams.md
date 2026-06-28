@@ -1,10 +1,10 @@
 ---
 title: "Async iteration de streams"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -39,6 +39,30 @@ for await (const chunk of readable) {
 Internamente, `Readable` expõe `[Symbol.asyncIterator]()`, que é o contrato que `for await...of` exige. Ao usar o loop, o stream entra em modo de consumo controlado: o loop puxa o próximo chunk apenas quando o corpo da iteração atual termina, gerenciando backpressure de forma automática.
 
 `Readable.from()` é o lado complementar: converte qualquer iterable ou async iterable em um `Readable` stream. Isso inclui arrays, generators síncronos e async generators — tornando a criação de sources customizados trivial.
+
+---
+
+## Diagrama
+
+```mermaid
+sequenceDiagram
+    participant Loop as for await...of (consumer)
+    participant Iter as AsyncIterator [Symbol.asyncIterator]
+    participant Stream as Readable stream
+
+    Loop->>Iter: iterator.next()
+    Iter->>Stream: solicita próximo chunk (pull)
+    Stream-->>Iter: { value: chunk, done: false }
+    Iter-->>Loop: chunk disponível
+    Note over Loop: executa body da iteração<br/>(pode ser await)
+    Loop->>Iter: iterator.next() (só após body terminar)
+    Iter->>Stream: solicita próximo chunk
+    Stream-->>Iter: { value: undefined, done: true }
+    Iter-->>Loop: fim do stream
+    Note over Loop: loop encerra
+```
+
+O ponto crítico está na última seta de cada ciclo: o loop só chama `iterator.next()` **após** o body terminar. Isso contrasta com o modo flowing (`'data'`), onde o stream empurra chunks independente da taxa de consumo. O protocolo de iterador transforma um stream push em consumo pull.
 
 ---
 
@@ -307,16 +331,144 @@ await pipeline(
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. Esquecer `try/catch` — erro vira `UnhandledPromiseRejection`
+### Cenário 1 — Parsing progressivo de NDJSON com early exit
+
+Processar um arquivo de logs NDJSON (Newline-Delimited JSON) em busca do primeiro erro crítico, sem carregar o arquivo inteiro na memória:
+
+```javascript
+import { createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
+
+/**
+ * Encontra o primeiro log com level='error' num arquivo NDJSON.
+ * Usa async iteration com early exit — o stream é destruído automaticamente
+ * quando o loop sai antes de consumir o arquivo inteiro.
+ */
+async function encontrarPrimeiroErro(caminhoLog) {
+  // readline.createInterface cria um AsyncIterator de linhas — mais robusto
+  // que split manual porque trata corretamente quebras de linha cross-platform
+  const rl = createInterface({
+    input: createReadStream(caminhoLog, { encoding: 'utf8' }),
+    crlfDelay: Infinity,
+  });
+
+  let linhaNum = 0;
+
+  try {
+    for await (const linha of rl) {
+      linhaNum++;
+      if (!linha.trim()) continue;
+
+      let entry;
+      try {
+        entry = JSON.parse(linha);
+      } catch {
+        console.warn(`Linha ${linhaNum} inválida, ignorando`);
+        continue;
+      }
+
+      if (entry.level === 'error') {
+        // early exit: o readline/stream é destruído automaticamente
+        // pelo .return() do iterator — sem file descriptor leak
+        return { linha: linhaNum, entry };
+      }
+    }
+  } catch (err) {
+    throw new Error(`Falha ao ler log: ${err.message}`);
+  }
+
+  return null; // nenhum erro encontrado
+}
+
+// uso:
+const resultado = await encontrarPrimeiroErro('./app-2026-06-28.ndjson');
+if (resultado) {
+  console.log(`Primeiro erro na linha ${resultado.linha}:`, resultado.entry);
+} else {
+  console.log('Nenhum erro encontrado.');
+}
+```
+
+`for await...of` sobre `readline.Interface` é o idioma canônico para processar arquivos linha a linha em Node moderno. O early exit (`return` dentro do loop) destrói o stream automaticamente — sem chamar `rl.close()` manualmente.
+
+### Cenário 2 — Paginação de API com async generator e pipeline
+
+Consumir uma API paginada, transformar os resultados e gravar num arquivo, tudo em streaming — sem acumular todas as páginas em memória:
+
+```javascript
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { createWriteStream } from 'node:fs';
+import { Transform } from 'node:stream';
+
+/**
+ * Async generator: busca todas as páginas de /usuarios sequencialmente.
+ * Yield de cada registro individual — consumer controla o ritmo via backpressure.
+ */
+async function* buscarTodosUsuarios(baseUrl, token) {
+  let cursor = null;
+
+  do {
+    const url = cursor ? `${baseUrl}/usuarios?cursor=${cursor}` : `${baseUrl}/usuarios`;
+    const resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+
+    if (!resp.ok) throw new Error(`API retornou ${resp.status}: ${url}`);
+
+    const { data, next_cursor } = await resp.json();
+
+    for (const usuario of data) {
+      yield usuario; // um objeto por vez — Readable.from gerencia o buffer
+    }
+
+    cursor = next_cursor;
+  } while (cursor);
+}
+
+// Transform: objeto → linha CSV
+class UsuarioToCsv extends Transform {
+  #cabecalho = false;
+  constructor() { super({ writableObjectMode: true }); }
+
+  _transform(usuario, _, cb) {
+    if (!this.#cabecalho) {
+      this.push('id,nome,email,plano,criado_em\n');
+      this.#cabecalho = true;
+    }
+    this.push(
+      `${usuario.id},${usuario.nome},${usuario.email},${usuario.plano},${usuario.criado_em}\n`
+    );
+    cb();
+  }
+}
+
+// pipeline: API paginada → objeto → CSV → arquivo
+await pipeline(
+  Readable.from(buscarTodosUsuarios('https://api.exemplo.com', process.env.API_TOKEN)),
+  new UsuarioToCsv(),
+  createWriteStream('./usuarios-exportados.csv'),
+);
+
+console.log('Exportação concluída.');
+```
+
+O async generator só faz a próxima requisição HTTP quando o consumer (via `pipeline()`) pede mais dados — backpressure natural sem código extra. Se a API retornar 500 mil usuários em 5 mil páginas, o uso de memória permanece constante.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] 1. Esquecer `try/catch` — erro do stream vira `UnhandledPromiseRejection`
+> **O que acontece:** quando o stream emite `'error'`, o iterator converte em rejeição de Promise — sem `try/catch`, vira `UnhandledPromiseRejectionWarning`; em Node 15+ termina o processo.
+> **Por quê:** `for await...of` opera sobre Promises implícitas; um erro não capturado não gera stack trace legível imediatamente — dificulta o diagnóstico.
+> **Como evitar:** sempre envolver o `for await...of` em `try/catch`.
 
 ```javascript
 // ERRADO — sem try/catch
 async function bad(stream) {
   for await (const chunk of stream) {
-    // se stream emitir 'error', vira UnhandledPromiseRejection
-    process(chunk);
+    process(chunk); // se stream emitir 'error' → UnhandledPromiseRejection
   }
 }
 
@@ -332,7 +484,10 @@ async function good(stream) {
 }
 ```
 
-### 2. Misturar listener `'data'` com `for await...of` — comportamento indefinido
+> [!warning] 2. Misturar listener `'data'` com `for await...of` — comportamento indefinido
+> **O que acontece:** chunks podem ser perdidos, duplicados ou o stream pode nunca emitir `'end'`.
+> **Por quê:** adicionar `'data'` coloca o stream em modo flowing; `for await...of` opera em modo pull; os dois modos são incompatíveis na mesma instância.
+> **Como evitar:** escolha **uma** API de consumo por stream e não misture.
 
 ```javascript
 // NUNCA faça isso
@@ -343,34 +498,35 @@ for await (const chunk of stream) { // comportamento indefinido
 }
 ```
 
-A documentação oficial do Node.js é explícita: escolha **uma** API de consumo e não misture. Misturar `'data'`, `'readable'`, `.pipe()` e async iterators no mesmo stream produz comportamento imprevisível — chunks podem ser perdidos, duplicados ou o stream pode nunca emitir `'end'`.
+A documentação oficial do Node.js é explícita: misturar `'data'`, `'readable'`, `.pipe()` e async iterators no mesmo stream produz resultados imprevisíveis.
 
-### 3. Exception no body deixa o stream em estado inconsistente
+> [!warning] 3. Exceção no body e stream em estado inconsistente
+> **O que acontece:** o cleanup é automático (`.return()` destrói o stream), mas se você passar o stream para outro consumidor após o erro, ele pode já estar destruído.
+> **Por quê:** `for await...of` chama `.return()` ao sair por exceção, que destrói o stream — correto internamente, mas surpreendente se o stream for compartilhado.
+> **Como evitar:** verificar `stream.destroyed` antes de reutilizar um stream que passou por um `for await...of` com erro.
 
 ```javascript
-// PROBLEMÁTICO
 async function risky(stream) {
   try {
     for await (const chunk of stream) {
       await riskyOperation(chunk); // lança exceção
     }
   } catch (err) {
-    // stream foi destruído? Depende de como a exceção foi lançada.
-    // Se riskyOperation lançou, o iterator chama .return() → stream é destruído. OK.
-    // Se o stream emitiu 'error', o iterator rejeita → catch captura. OK.
-    // Em ambos os casos, o cleanup é automático — mas confirme com stream.destroyed.
+    // cleanup é automático — mas confirme antes de reutilizar
     console.log('stream destroyed:', stream.destroyed); // deve ser true
   }
 }
 ```
 
-O `for await...of` chama `.return()` no iterator ao sair por exceção, o que destrói o stream. Na prática, o cleanup é automático — mas se você passar o stream para outro consumidor após o erro, verifique `stream.destroyed` antes.
+> [!warning] 4. Otimização prematura — async iter não é mais lento que event listeners
+> **O que acontece:** desenvolvedor reescreve `for await...of` de volta para callbacks `'data'` em busca de performance — perde legibilidade sem ganho real.
+> **Por quê:** o overhead do protocolo async iterator é de microssegundos por chunk. O gargalo real é sempre I/O ou processamento CPU — nunca o protocolo de iteração.
+> **Como evitar:** medir antes de otimizar; não sacrificar legibilidade por suposição de lentidão.
 
-### 4. Acreditar que async iter é mais lento que event listeners
-
-O overhead do async iterator em relação ao modo `'data'` é mínimo em cargas reais — estamos falando de microssegundos de overhead por chunk para a resolução de Promises. O gargalo real em streaming é sempre I/O (disco, rede) ou processamento CPU — não o protocolo de iteração. Não sacrifique legibilidade tentando otimizar async iter de volta para callbacks.
-
-### 5. `Readable.from()` com objeto não-iterable
+> [!warning] 5. `Readable.from()` com objeto não-iterable — TypeError em runtime
+> **O que acontece:** `Readable.from({ data: 'hello' })` lança `TypeError` em runtime — objetos comuns não são iterables.
+> **Por quê:** `Readable.from()` exige `[Symbol.iterator]` ou `[Symbol.asyncIterator]`; um objeto literal não implementa nenhum dos dois.
+> **Como evitar:** passar array, generator ou async generator; verificar com TypeScript se os tipos estiverem corretos (o erro não aparece em compile time sem tipos adequados).
 
 ```javascript
 // ERRADO — objeto comum não é iterable
@@ -379,11 +535,9 @@ const stream = Readable.from({ data: 'hello' }); // TypeError em runtime
 // CORRETO — array é iterable
 const stream = Readable.from(['hello', ' ', 'world']);
 
-// CORRETO — generator
-const stream = Readable.from((function*() { yield 'hello'; })());
+// CORRETO — async generator
+const stream = Readable.from((async function*() { yield 'hello'; })());
 ```
-
-`Readable.from()` lança `TypeError` em runtime se o argumento não implementa `[Symbol.iterator]` ou `[Symbol.asyncIterator]`. O erro não aparece em compile time (TypeScript vai reclamar apenas se os tipos estiverem corretos).
 
 ---
 
@@ -422,10 +576,20 @@ Se você fizer `break` ou `return` antes de consumir o stream inteiro, o iterato
 
 ---
 
-## Veja também
+## O que vem a seguir
 
-- `[[03 - Readable streams]]` — modos flowing e paused; async iter é a evolução do modo paused
-- `[[07 - pipeline vs pipe - error handling]]` — quando `pipeline()` é a escolha certa
-- `[[09 - Web Streams - interop com padrão universal]]` — async iter funciona com Web Streams também
-- `[[10 - Padrões práticos]]` — exemplos compostos usando async iter + pipeline
-- `[[Node.js]]` — tronco (visão panorâmica do Node.js)
+Com `for await...of` e `Readable.from()` dominados, você tem os dois idiomas modernos de consumo de streams. O próximo passo é ver como Web Streams (o padrão universal de browser e edge runtimes) se encaixa nessa história — e como converter entre os dois mundos.
+
+- [[09 - Web Streams - interop com padrão universal]] — `ReadableStream`, `WritableStream`, `TransformStream` do padrão WHATWG e interop com Node Streams
+- [[10 - Padrões práticos]] — exemplos compostos combinando `pipeline()`, async generators e `for await...of` em produção
+- [[07 - pipeline vs pipe - error handling]] — quando `pipeline()` é a escolha certa em vez de `for await...of`
+- [[03 - Readable streams]] — modos flowing e paused; async iter é a evolução do modo paused
+- [[Node.js]] — tronco: visão panorâmica do runtime
+
+---
+
+## Fontes
+
+- [Node.js Docs — Readable.from()](https://nodejs.org/api/stream.html#streamreadablefromiterable-options)
+- [Node.js Docs — Streams Compatibility with async generators and async iterators](https://nodejs.org/api/stream.html#streams-compatibility-with-async-generators-and-async-iterators)
+- [Node.js Docs — readable.iterator()](https://nodejs.org/api/stream.html#readableiteratoroptions)
