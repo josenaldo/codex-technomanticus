@@ -21,6 +21,28 @@ aliases:
 > [!abstract] TL;DR
 > Esta nota atravessa as 11 camadas com um exemplo concreto: um **gerador de newsletter semanal de IA**. Para cada camada, preenchemos o template e mostramos a decisão. No fim, você tem o blueprint completo de um sistema — não apenas o que cada camada faz, mas como elas conversam entre si. Use esta recipe como ponto de partida pra adaptar a sistemas seus, trocando o exemplo pelos seus inputs.
 
+> [!question]- Por que a ordem de construção não segue a numeração canônica das 11 camadas?
+> Porque a numeração canônica é ordem de *dependência lógica* (quem herda de quem) — não ordem de *construção*. Por exemplo, Workflow vs Agent é a camada 7 canonicamente, mas é a segunda decisão a tomar na prática porque ela define toda a arquitetura. Output Layer é a camada 4, mas você define o contrato de saída antes de escrever o Prompt (camada 2). Esta recipe segue a ordem de construção que evita retrabalho — não a ordem do índice.
+
+```mermaid
+flowchart TD
+    P1["① Purpose\n(escopo + sucesso)"]
+    P7["② Workflow vs Agent\n(arquitetura)"]
+    P4["③ Output\n(contrato de saída)"]
+    P2["④ Prompt + Context\n(comportamento + situação)"]
+    P5["⑤ Retrieval + Tool\n(fontes + ações)"]
+    P8["⑥ Evaluation + Guardrail\n(qualidade + segurança)"]
+    P10["⑦ Logging\n(rastreabilidade)"]
+    P11["⑧ Improvement\n(aprendizado contínuo)"]
+
+    P1 --> P7 --> P4 --> P2 --> P5 --> P8 --> P10 --> P11
+
+    style P1 fill:#4A90D9,stroke:#2171B5,color:#fff
+    style P7 fill:#2CA05A,stroke:#1A7A3F,color:#fff
+    style P8 fill:#F5A623,stroke:#C47D0A,color:#000
+    style P11 fill:#9B59B6,stroke:#7D3C98,color:#fff
+```
+
 ## O sistema de exemplo
 
 **AI Weekly Newsletter Generator** — um sistema que, toda sexta-feira, monta uma newsletter sobre o que aconteceu em IA na semana, com 5-7 itens curados, cada um com link, resumo e takeaway de uma frase.
@@ -310,6 +332,10 @@ Antes de publicar pra primeiro grupo de assinantes:
 
 This note walks through all 11 layers of the AI engineering stack applied to a concrete example: an automated AI newsletter generator. The key insight it demonstrates: the layers aren't independent building blocks you can assemble in any order — they reference each other. The Purpose Layer's success criteria become the Evaluation rubric. The Prompt Layer's forbidden actions become the Guardrail's enforcement rules. The Context Layer's known failure modes become new guardrails after incidents. Building the stack means deciding in the right order: purpose, then architecture, then output contract, then prompt, then control layers.
 
+**In a technical interview**, you might say:
+
+> "When I build an AI system end-to-end, I follow a specific construction order that isn't the same as the logical dependency order. I start with Purpose — what does the system do, what's out of scope, what's the measurable success criteria. Then I make the architecture decision: workflow or agent. Only then do I define the output contract, because that's what tells me what the prompt needs to require. The control layers — Evaluation, Guardrail, Logging — come after the happy path is defined. This order avoids rework: every time I've seen teams start with the prompt, they rewrite it three times because they didn't know what it was supposed to produce."
+
 | PT | EN |
 |----|----|
 | Recipe completo | End-to-end recipe |
@@ -361,3 +387,18 @@ A ordem de aprofundamento sugerida para quem quer ir a produção:
 - **Anthropic** — [*Building effective agents*](https://www.anthropic.com/engineering/building-effective-agents). Padrão prompt chaining como workflow.
 - **OpenAI** — [*Structured Outputs guide*](https://platform.openai.com/docs/guides/structured-outputs). Schema enforcement.
 - **OpenTelemetry** — [*Semantic Conventions for Generative AI*](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Padrão de logging adotado.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
