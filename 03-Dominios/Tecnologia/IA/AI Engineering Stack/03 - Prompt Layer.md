@@ -28,6 +28,27 @@ O que acontece sem Prompt Layer bem estruturada: o modelo decide sozinho qual é
 
 A Prompt Layer transforma intenção em especificação. O campo `uncertainty_behavior` — o que fazer quando o modelo não sabe — é um dos mais importantes e raramente preenchido. Sem ele, o modelo decide por conta própria o que fazer nas bordas. Nas bordas é onde os incidentes acontecem.
 
+```mermaid
+flowchart LR
+    subgraph "Prompt Layer vaga"
+        A1["'Seja útil e amigável'"]
+        A2["Modelo preenche\nlacunas com defaults\ndo treinamento"]
+        A3["Comportamento\noscila por input"]
+    end
+
+    subgraph "Prompt Layer estruturada"
+        B1["role + primary_job\nallowed/forbidden\nuncertainty_behavior"]
+        B2["Modelo sabe o que\nfazer em toda borda"]
+        B3["Comportamento\nreproducível em\n1000 chamadas"]
+    end
+
+    A1 --> A2 --> A3
+    B1 --> B2 --> B3
+
+    style A3 fill:#fff5f5,stroke:#ff6b6b
+    style B3 fill:#f0fff4,stroke:#51cf66
+```
+
 ## O que é esta camada
 
 A Prompt Layer materializa **comportamento desejado** em texto. É o lugar onde "queremos um assistente cuidadoso e direto" vira instruções que o modelo segue de forma reprodutível.
@@ -62,6 +83,37 @@ reasoning_style: "<conciso | exploratório | step-by-step | ...>"
 **4. Few-shot vs zero-shot.** Adicionar 2-3 exemplos de input→output no system prompt geralmente eleva qualidade mais do que reescrever as instruções. Custa tokens, mas é a alavanca de melhor ROI quando o modelo "quase acerta mas com formato errado". Coloque os exemplos como últimas seções antes do `</instructions>` — proximidade com a chamada importa.
 
 **5. Versionamento como código.** O system prompt é um artefato de produto. Trate como código: arquivo separado no repositório, diff em PR, número de versão no nome do arquivo (`system_prompt_v1.2.txt`). A Logging Layer precisa registrar qual versão rodou em cada chamada — sem isso, você não sabe se uma melhoria de qualidade veio do novo prompt ou do novo contexto.
+
+## Anatomia de um system prompt eficaz
+
+Um system prompt bem estruturado tem seções na ordem que o modelo lê — do mais geral para o mais específico:
+
+```
+[IDENTIDADE]
+Role e primary_job — quem o modelo é e o que faz
+
+[PADRÕES]
+primary_standard — o critério de autoavaliação
+Qualidade esperada, nível de detalhe, tom
+
+[PERMISSÕES E LIMITES]
+allowed_actions — o que pode fazer
+forbidden_actions — o que não pode, em nenhuma circunstância
+
+[BORDAS E INCERTEZA]
+uncertainty_behavior — o que fazer quando não sabe
+Comportamento sob ambiguidade de input
+
+[SAÍDA]
+Ponteiro para Output Layer (formato esperado)
+Few-shot examples se necessário
+
+[METADADOS]
+Número de versão (para correlação nos logs)
+Data de vigência
+```
+
+Cada seção tem uma função clara. O modelo lê o prompt inteiro antes de gerar — então a ordem importa para dar contexto antes das restrições. Identidade primeiro estabelece o frame; restrições depois fazem sentido dentro do frame.
 
 ## Casos práticos
 
@@ -104,6 +156,12 @@ Com esse template, o model sabe o que fazer nas bordas — e as bordas são a ma
 
 The Prompt Layer is where you translate desired behavior into text that the model follows consistently. It defines the model's role, the primary job inherited from the Purpose Layer, quality standards, allowed and forbidden actions, and what to do under uncertainty. The key insight: the Prompt Layer *asks* for behavior — it does not *guarantee* it. For guaranteed enforcement, use the Guardrail Layer. Think of the Prompt as shaping 95% of cases correctly; the Guardrail catches the remaining 5%.
 
+The `uncertainty_behavior` field is the most underrated — it defines what the model does at the edges, which is where incidents happen. A model told "if you don't know, say so clearly and escalate" behaves very differently from one told "do your best with available information."
+
+**In a technical interview**, you might say:
+
+> "I treat the system prompt as a versioned artifact, not a block of text. It has a clear structure: identity, quality standard, allowed actions, forbidden actions, uncertainty behavior. The `uncertainty_behavior` field is the one most teams skip — and it's the one that determines what happens when a user asks something the system wasn't designed to handle. I version the prompt in Git, the logging layer records which version ran per call, and the Improvement Loop compares performance across versions. Without versioning, you can't tell if a quality improvement came from the new prompt or from something else."
+
 | PT | EN |
 |----|----|
 | Camada de prompt | Prompt Layer |
@@ -144,3 +202,103 @@ A distinção é importante: mudar o que o modelo sabe não exige mudar o prompt
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 2 (Prompt layer template). X/Twitter, 2025.
 - **Anthropic** — [*Prompt engineering overview*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview). Estrutura recomendada de system prompt.
 - **Anthropic** — [*Prompt caching*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching). Custo de system prompts longos e como mitigar.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
