@@ -1,8 +1,9 @@
 ---
 title: "Construindo um MCP server local"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Construir [[Dicionário de IA#MCP server|MCP server]] é simples: [[Dicionário de IA#SDK|SDK]] Python ou TypeScript + decorators + ~50 linhas de código. Use stdio (subprocess local) para começar. Defina tools com schema Pydantic/Zod, retorne tipos estruturados, escreva descrições claras (60% do trabalho — ver [[Anatomia de Agents|03 - Tool design — princípios e categorias]]). Teste com **MCP Inspector** antes de plugar em client real. Para algo public, considere semver, docs, examples. Para algo interno, basta o essencial.
+
+> [!question]- Por que MCP server local e não só um wrapper de API com requests diretos?
+> Um wrapper de API resolve um problema de um sistema específico; um MCP server local resolve o problema de qualquer client. Com requests diretos, cada tool call precisa ser reimplementada em cada app que usa o LLM. Com MCP, você implementa uma vez e Claude Desktop, Cursor e qualquer client futuro consomem automaticamente via discovery. Além disso, o servidor local roda com stdio — zero rede, auth implícita pelo SO, latência de 1-5ms, sem nada para fazer deploy. É menos trabalho que um wrapper de API, não mais.
 
 ## Setup mínimo (Python)
 
@@ -349,6 +353,17 @@ Documente changes em CHANGELOG.
 - **Server gigante (50+ tools)** — divida em servers especializados
 - **Side effects sem confirmação** — ações destrutivas precisam ser explícitas
 
+## Armadilhas comuns
+
+> [!warning] Descriptions genéricas em tools
+> A descrição da tool é o que o LLM usa para decidir quando chamá-la. "Search." ou "Query data." são inúteis — o modelo não sabe o que esperar, em qual contexto usar, quais parâmetros passar, e quando *não* usar. Uma boa descrição responde a quatro perguntas: o que a tool faz, quando usá-la, o que ela retorna, e quando *não* usá-la. Esse investimento de 5 minutos por tool é o que separa um server que funciona de um que frustra o usuário com escolhas erradas.
+
+> [!warning] Retornar output bruto (HTML, JSON gigante, log completo)
+> Tool que retorna 100MB de log ou uma página HTML inteira causa context rot — o LLM gasta tokens lendo ruído em vez de informação. Sempre filtre, pagine e estruture o output: `tail=100` para logs, `limit=50` para queries, snippets para HTML. O modelo consegue pedir mais dados se precisar — não consiga "devolver menos" se já inundou o contexto.
+
+> [!warning] Side-effects sem validação de entrada
+> Tool que aceita `sql: str` e passa direto para o banco de dados sem validar é um acidente esperando acontecer. O LLM pode passar `DROP TABLE users` não por intenção maliciosa, mas porque foi enganado via prompt injection ou simplesmente gerou código errado. Valide: prefixo SELECT-only para queries, path allowlist para filesystem, regex de formato para inputs críticos. Erros devem ser informativos — o modelo usa a mensagem de erro para auto-corrigir.
+
 ## Métricas
 
 | Métrica | Alvo |
@@ -358,6 +373,35 @@ Documente changes em CHANGELOG.
 | **Tokens em tool description** | 50-300 |
 | **Tokens em output médio** | <2K |
 | **% testes passando antes de release** | 100% |
+
+## Como explicar em inglês
+
+Building a local MCP server is fundamentally a two-step process: define your tools with typed schemas and clear descriptions, then wire up the transport. The FastMCP Python SDK reduces this to decorators — `@mcp.tool()`, `@mcp.resource()`, `@mcp.prompt()` — and Pydantic models handle schema generation automatically. A working server that exposes two or three tools can be written in under 50 lines.
+
+The investment that actually matters is tool design: the name, the description, the input schema, and the error messages. These are what the LLM uses to decide when to call the tool and how to interpret results. A tool named `search` with description `Search.` will be called incorrectly far more often than `search_internal_docs` with a four-sentence description of purpose, parameters, return format, and when *not* to use it.
+
+**In a technical interview**, you might say:
+
+> "Building an MCP server locally is straightforward — FastMCP, a few Pydantic models, and stdio transport. The code is almost trivial. The real work is tool design: descriptions that tell the LLM when to call, when not to, what it gets back, and how to handle failures. I always test with MCP Inspector before plugging into a real client — it lets me invoke tools manually and see the raw JSON-RPC, which makes debugging orders of magnitude faster. For distribution, uvx for Python packages and npx for TypeScript are the 2026 conventions — no global installs needed."
+
+| PT | EN |
+|----|-----|
+| Decorador | Decorator |
+| Tipo de entrada | Input type |
+| Tipo de saída | Output type |
+| Esquema tipado | Typed schema |
+| Mensagem de erro informativa | Informative error message |
+| Empacotamento | Packaging |
+| Versionamento semântico | Semantic versioning |
+| Saída compacta | Compact output |
+| Efeito colateral | Side-effect |
+| Modo de transporte | Transport mode |
+
+## O que vem a seguir
+
+Um MCP server local via stdio resolve o caso de um único usuário. Quando o servidor precisa ser compartilhado entre um time — com auth centralizada, rate limiting, audit log e deploy independente — stdio não é mais suficiente. O próximo passo é entender HTTP+SSE: como transformar o server local em microserviço e o que muda na arquitetura quando múltiplos users acessam o mesmo servidor.
+
+- [[06 - MCP remoto — HTTP + SSE para times]] — como escalar o server para uso compartilhado em equipe
 
 ## Veja também
 
