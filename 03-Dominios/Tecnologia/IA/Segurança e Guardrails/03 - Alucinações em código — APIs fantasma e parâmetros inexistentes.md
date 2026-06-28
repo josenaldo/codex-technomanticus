@@ -3,6 +3,7 @@ title: "Alucinações em código — APIs fantasma e parâmetros inexistentes"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Além de [[02 - Slopsquatting — o ataque via alucinação|alucinar pacotes]], [[Dicionário de IA#LLM (Large Language Model)|LLMs]] [[Dicionário de IA#Hallucination|alucinam]] **dentro do código**: chamam métodos que não existem, passam parâmetros inventados, importam funções de módulos que não as exportam, criam tipos que ninguém declarou. Diferente de slopsquatting (vetor de ataque externo), essas alucinações são **bugs internos** que parecem código bom até alguém rodar. Detecção: type checker, linter, test, e — em projetos sérios — schema validation. O problema não é "o modelo é burro" — é que **plausibilidade visual ≠ correção semântica**.
+
+> [!question]- Por que LLMs alucinam APIs e parâmetros que nunca existiram?
+> O LLM não tem acesso à especificação formal de uma API — ele tem acesso às **ocorrências estatísticas** dessa API nos dados de treino. Quando uma lib é pouco representada, quando mudou entre versões, ou quando um nome de método é semanticamente parecido com outra lib, o modelo preenche a lacuna com o que é **mais provável dado o contexto** — não o que é tecnicamente correto. É o mesmo mecanismo que permite ao modelo gerar código fluente: pattern completion a partir de exemplos. A diferença é que em código, plausibilidade ≠ validade. O compilador e o type checker são as únicas fontes de verdade, não a confiança visual.
 
 ## Os 5 tipos de alucinação em código
 
@@ -222,6 +226,48 @@ Latência maior, mas pega alucinação semântica que linter não pega.
 - **Skipar test em CI "porque é só ajuste"** — janela perfeita para alucinação semântica
 - **Sem audit log de prompts** — não sabe qual prompt levou ao bug
 
+## Armadilhas comuns
+
+> [!warning] "Compila e roda" não significa "está correto"
+> Linguagens dinâmicas como Python e JavaScript aceitam silenciosamente parâmetros inventados via `**kwargs` ou prototype lookup. Um LLM que passa `auto_validate=True` para uma função que não o aceita pode não causar erro — o kwarg é simplesmente ignorado, e o comportamento esperado (validação automática) nunca acontece. Smoke tests que não cobrem esse branch passam na CI e o bug vai para produção.
+
+> [!warning] Type check configurado como "warning" vira ruído
+> Muitos projetos têm mypy ou tsc configurados mas sem fail no CI quando há erros de tipo. O desenvolvedor habitua a ignorar os warnings do type checker na pipeline — e as alucinações passam. Type check precisa ser um gate de bloqueio, não uma lista de avisos decorativos.
+
+> [!warning] Schemas permissivos são convites para alucinação silenciosa
+> Pydantic com `extra="allow"` (padrão antes da v2) aceita qualquer campo inventado sem reclamar. O parâmetro `send_welcome_email=True` que o LLM adicionou entra no schema, é serializado, e some sem efeito — mas o desenvolvedor assume que funcionou. `extra="forbid"` é a única configuração que torna alucinações de parâmetros detectáveis no runtime.
+
+## Como explicar em inglês
+
+LLMs hallucinate not just package names, but entire APIs within code. They call methods that don't exist, pass parameters that were never declared, and import functions from modules that don't export them — all with the same visual fluency as correct code. This happens because the model generates based on statistical patterns, not formal specifications. A method name like `response.json_safe()` is plausible because it follows the naming conventions of the library; whether it actually exists is a separate question the model doesn't verify.
+
+The dangerous hallucinations are the silent ones: in dynamically typed languages, a non-existent keyword argument may simply be absorbed by `**kwargs` and ignored. The code runs, tests pass, and the expected behavior never occurs. This is why type checkers, strict schema validation, and test coverage targeting the specific behaviors are non-negotiable gates — they are the only mechanisms that distinguish "looks right" from "is right."
+
+**In a technical interview**, you might say:
+
+> "We treat AI-generated code as potentially containing hallucinated APIs and parameters — not just bugs in logic, but references to things that don't exist. Our defense is a strict validation stack: mypy in strict mode blocks the build on type errors, Pydantic schemas use `extra='forbid'` so invented parameters cause failures at runtime, and we require test coverage for every new boundary the AI introduces. We also have a critic agent that checks generated API calls against live documentation via MCP before they reach code review."
+
+| PT | EN |
+|----|-----|
+| alucinação | hallucination |
+| método fantasma | phantom method / ghost method |
+| parâmetro inventado | invented parameter / hallucinated argument |
+| verificação de tipo | type checking |
+| schema estrito | strict schema |
+| validação em tempo de execução | runtime validation |
+| argumento ignorado silenciosamente | silently ignored argument |
+| completação de padrão | pattern completion |
+| check de tipo como gate de CI | type check as CI gate |
+| agente crítico | critic agent |
+
+## O que vem a seguir
+
+Agora que mapeamos como alucinações se manifestam — pacotes externos e APIs internas — a questão natural é: como organizar a validação de forma sistemática? Não como checklist, mas como uma estratégia em camadas onde cada gate faz a triagem que o anterior não consegue fazer.
+
+A próxima nota introduz a pirâmide de validação AI: uma hierarquia de controles que vai desde análise estática até execução em sandbox, cada camada compensando os pontos cegos da anterior.
+
+- [[04 - A pirâmide de validação AI]] — a hierarquia de controles que transforma validação ad-hoc em defesa sistemática
+
 ## Veja também
 
 - [[01 - Código gerado por IA é untrusted]]
@@ -236,3 +282,24 @@ Latência maior, mas pega alucinação semântica que linter não pega.
 - **Trend Micro** — *Slopsquatting and AI Hallucinations* (2026).
 - **OWASP Top 10 for LLM Applications 2025-2026* — categoria *Hallucination*.
 - **Pydantic Documentation** — *extra forbid for strict input validation* (2026).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
