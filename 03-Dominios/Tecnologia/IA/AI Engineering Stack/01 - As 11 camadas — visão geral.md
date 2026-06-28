@@ -22,6 +22,9 @@ aliases:
 
 ## Por que a maioria dos demos de IA não vai a produção
 
+> [!question]- O que faz um demo funcionar mas não ir pra produção?
+> Demos usam casos de sucesso selecionados, sem borda, sem ambiguidade, sem usuário adversarial. Produção é exatamente o contrário: casos de borda são a maioria, usuários testam limites, e "parece bom" não é critério mensurável. O que falta não é modelo melhor — é o **sistema** ao redor do modelo.
+
 Você viu a demo: o chatbot responde perguntas com fluência, o executivo fica impressionado, o time fica animado. Três meses depois, o projeto está no freezer. O que deu errado?
 
 Quase sempre é a mesma coisa: o time construiu *modelo chamando coisas* — mas não construiu o *sistema*. O modelo responde, mas não há critério de sucesso definido (então não há como saber se está funcionando). Não há guardrail (então o modelo pode prometer coisas que o negócio não pode entregar). Não há logging (então quando algo der errado em produção, não existe trace para debugar). Não há melhoria estruturada (então cada ajuste é tentativa-e-erro cega).
@@ -118,6 +121,21 @@ A numeração canônica é a ordem de *dependência lógica* — não a ordem de
 
 **8. Improvement após a primeira semana de dados reais.** Qualquer melhoria antes disso é chute. Melhoria baseada em dados reais é sistema vivo.
 
+## O stack por nível de maturidade do time
+
+Nem todo time precisa das 11 camadas no dia 1. A pergunta é: o que é inegociável para o seu nível atual de maturidade?
+
+| Nível | O que montar | O que pode esperar |
+|-------|--------------|--------------------|
+| **Protótipo / PoC** | Purpose + Prompt + Output | Retrieval, Tool, Workflow, Evaluation completa, Guardrail, Logging, Improvement |
+| **Piloto (10–50 usuários internos)** | + Evaluation básica (rubrica + 20 exemplos) + Guardrail mínimo + Logging de erros | Improvement Loop, Retrieval avançado |
+| **Beta aberto** | + Logging completo (trace por run) + Guardrail com kill switch de custo + Evaluation automatizada | Improvement Loop baseado em dados (ainda poucos) |
+| **Produção** | Stack completo. Improvement Loop rodando com dados reais | Nada é opcional em produção |
+
+A coluna "O que pode esperar" não significa "não precisa" — significa "ainda não tem dados para calibrar". Você vai adicionar Retrieval Layer quando souber quais lacunas de contexto causam respostas ruins; vai adicionar Improvement Loop quando tiver 2+ semanas de logs reais.
+
+O erro clássico é inverter: construir Improvement Loop antes de ter Logging, ou construir Retrieval antes de ter Purpose. Cada camada herda artefatos das anteriores — construir na ordem errada é retrabalho garantido.
+
 ## Casos práticos
 
 ### Cenário 1 — O sistema sem blueprint
@@ -131,6 +149,18 @@ Resultado: rollback após três semanas, reputação de suporte degradada, time 
 Mesmo time, segunda tentativa. Semana 1: Purpose Layer define `primary_job` ("responder dúvidas de rastreamento e trocas"), `not_in_scope` (descontos acima de 10% escalam para humano), `success_criteria` (resolve sem escalar em ≥80% dos casos). Semana 2: Output schema + Prompt + Context template definidos como artefatos versionados em Git. Semana 3: Evaluation com rubrica de 5 dimensões + 50 tickets históricos como dataset de regressão. Guardrail com kill switch de custo e palavras proibidas. Logging configurado antes do primeiro beta user.
 
 Mês 2: Improvement Loop com os primeiros dados reais → identificou que 30% das escalações vinham de uma categoria específica → adicionou `known_failure_modes` no Context → escalações dessa categoria caíram 60%.
+
+## O que o stack não é
+
+Vale demarcar o que as 11 camadas **não** são, para não aplicar onde não cabe:
+
+**Não é um processo de desenvolvimento.** As 11 camadas são decisões arquiteturais, não fases de sprint. Você pode iterar dentro de cada camada enquanto o sistema está rodando. A Prompt Layer pode mudar na semana 3 sem tocar na Tool Layer.
+
+**Não é obrigatório ser sequencial na execução.** A ordem de *dependência* é rígida (Purpose antes de Prompt, Logging antes de Improvement). A ordem de *implementação* pode ter paralelismo: dois engenheiros construindo Retrieval e Tool Layer em paralelo é perfeitamente normal.
+
+**Não substitui arquitetura de software.** O stack define o que o sistema de IA precisa ser; a arquitetura de software define como o sistema vai ser construído (serviços, APIs, banco de dados, deploy). São camadas ortogonais. Um sistema de IA pode rodar num monolito Django, num conjunto de funções serverless, ou num cluster Kubernetes — o AI Engineering Stack é agnóstico a isso.
+
+**Não escala linearmente para cada feature.** Se você tem um sistema de IA com 5 features diferentes (busca, geração de relatório, extração de dados, atendimento, alertas), cada feature pode ter Purpose e Evaluation distintos — mas elas podem compartilhar a mesma Tool Layer, o mesmo backend de Logging, e o mesmo Improvement Loop. O stack se aplica ao sistema, não a cada feature individualmente.
 
 ## Armadilhas comuns
 
@@ -148,7 +178,13 @@ Mês 2: Improvement Loop com os primeiros dados reais → identificou que 30% da
 
 ## Como explicar em inglês
 
-The AI Engineering Stack is an 11-layer framework for building reliable LLM-powered systems. Each layer answers one architectural question, from "what does this system do?" (Purpose) to "how does it improve over time?" (Improvement). The three control layers — Evaluation, Guardrail, and Logging — are what turn a working prototype into a production-grade product. Without them, you have a demo. Each layer produces a concrete artifact: a versioned document, a schema, a rubric, a configuration file. The stack is the blueprint before you write a single line of code.
+The **AI Engineering Stack** is an 11-layer framework for building LLM-powered systems that actually hold up in production. Each layer answers a specific architectural question and produces a concrete artifact — a versioned document, a schema, a rubric, or a configuration file. The three control layers (Evaluation, Guardrail, Logging) are the difference between a demo and a product: without a quality rubric, you can't measure success; without guardrails, you can't limit damage; without logging, you can't debug incidents after they happen.
+
+The 11-layer taxonomy comes from the *Become an AI Engineer* series. Other frameworks exist — Anthropic speaks of building blocks, workflows, and agents; Lilian Weng speaks of planning, memory, and tool use — but the 11-layer approach is **operational**: each layer is a template you fill out, not a concept you admire.
+
+**In a technical interview**, you might say:
+
+> "When designing an LLM-powered system, I use an 11-layer stack framework: Purpose defines what the system does and what it explicitly doesn't do; Prompt and Context carry behavioral instructions and per-call knowledge; Output, Retrieval, Tool, and Workflow/Agent handle execution. The three control layers — Evaluation, Guardrail, Logging — are non-negotiable before any real user touches the system. Improvement closes the loop. The order matters: you write the Prompt after the Purpose, not before, because the Prompt inherits its constraints from the Purpose's scope definition."
 
 | PT | EN |
 |----|----|
@@ -189,3 +225,83 @@ A primeira camada a montar é a Purpose Layer — não por ordem numérica, mas 
 - **@hooeem** — *Become an AI Engineer (thread)*, chapter #18 "Building your AI engineering stack". X/Twitter, 2025.
 - **Anthropic** — [*Building effective agents*](https://www.anthropic.com/engineering/building-effective-agents) (2024). Taxonomia building blocks → workflows → agents.
 - **Lilian Weng** — [*LLM-powered Autonomous Agents*](https://lilianweng.github.io/posts/2023-06-23-agent/) (2023). Planning + memory + tool use como componentes de agent.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
