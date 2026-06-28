@@ -1,10 +1,10 @@
 ---
 title: "Os 4 frameworks: Express, NestJS, Fastify, Hono"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -47,6 +47,30 @@ Confundir os modelos leva a escolhas caras. Usar NestJS em um microserviço simp
 | Fastify | Schema-first, performance-focused | APIs com contrato claro e throughput alto | Maduro, v5.x | Plugin encapsulation exige mental model; ecossistema menor que Express |
 | Hono | Ultralight, edge-first, Fetch API | Edge workers, serverless, multi-runtime | Mais recente, v4+ | Ecossistema menor; edge limita APIs Node-specific |
 
+```mermaid
+graph LR
+    subgraph EX["Express — middleware chain"]
+        E1[req] --> E2[mw1] --> E3[mw2] --> E4[handler] --> E5[res]
+    end
+    subgraph FS["Fastify — schema + hooks"]
+        F1[req] --> F2[schema validation] --> F3[handler] --> F4[serialization] --> F5[res]
+    end
+    subgraph NS["NestJS — lifecycle hooks"]
+        N1[req] --> N2[Guard] --> N3[Pipe] --> N4[handler] --> N5[res]
+    end
+    subgraph HO["Hono — Fetch API"]
+        H1[Request] --> H2[middleware onion] --> H3[handler] --> H4[Response]
+    end
+
+    style E2 fill:#4A90D9,color:#fff
+    style E3 fill:#4A90D9,color:#fff
+    style F2 fill:#F5A623,color:#fff
+    style F4 fill:#F5A623,color:#fff
+    style N2 fill:#D0021B,color:#fff
+    style N3 fill:#F5A623,color:#fff
+    style H2 fill:#4A90D9,color:#fff
+```
+
 ```typescript
 // Express 5
 import express from "express";
@@ -85,7 +109,7 @@ app.get("/hello", (c) => c.json({ greeting: "hello" }));
 export default app;
 ```
 
-## Na prática
+## Casos práticos
 
 - Microsserviço I/O-bound simples, time pequeno: Express ou Fastify.
 - App enterprise, time grande, DI complexa: NestJS.
@@ -93,7 +117,7 @@ export default app;
 - Edge worker, serverless ou multi-runtime: Hono.
 - Comparação detalhada: [[12 - Decision tree + cheatsheet]].
 
-### Cenário 1: webhook receiver
+### Cenário 1 — Webhook receiver
 
 Imagine uma API que recebe webhooks de Stripe/GitHub, valida assinatura, grava evento bruto e responde rápido. O domínio é pequeno, o throughput é moderado e o risco principal é latência/timeout do provedor. Express resolve bem se o time já conhece o ecossistema; Fastify ganha se schema e serialização forem parte central do contrato.
 
@@ -106,7 +130,7 @@ app.post("/webhooks/github", verifyGithubSignature, async (req, res) => {
 ```
 
 ```typescript
-// Fastify: contrato explícito na rota.
+// Fastify: contrato explícito na rota — schema valida e serializa.
 app.post("/webhooks/github", {
   schema: {
     body: GithubWebhookSchema,
@@ -118,7 +142,7 @@ app.post("/webhooks/github", {
 });
 ```
 
-### Cenário 2: produto enterprise com módulos
+### Cenário 2 — Produto enterprise com módulos
 
 Imagine um backend com billing, usuários, permissões, auditoria, integrações e jobs internos. O problema já não é só "servir HTTP"; é manter boundaries por feature, lifecycle, DI, testes e composição de concerns. NestJS fica mais atraente porque força uma gramática comum.
 
@@ -133,14 +157,15 @@ export class InvoicesModule {}
 
 O custo é real: decorators, módulos, providers e scopes precisam ser aprendidos. Mas, em time maior, convenção compartilhada frequentemente vale mais do que liberdade local.
 
-### Cenário 3: edge API
+### Cenário 3 — Edge API com KV store
 
 Se o requisito é responder perto do usuário em Cloudflare Workers, Deno Deploy ou runtime similar, a pergunta muda. Express e NestJS assumem Node HTTP; Hono assume Web Standards.
 
 ```typescript
-const app = new Hono();
+const app = new Hono<{ Bindings: { KV: KVNamespace } }>();
 
 app.get("/flags/:userId", async (c) => {
+  // c.env.KV é binding do runtime — não existe em Node tradicional.
   const flags = await c.env.KV.get(`flags:${c.req.param("userId")}`, "json");
   return c.json(flags ?? {});
 });
@@ -247,16 +272,58 @@ OpenAPI derivado deles e testes de payload inválido.
 
 Se não há consequência verificável no repositório, a decisão ainda é retórica.
 
-## Armadilhas
+## O que vem a seguir
 
-1. Escolher por hype, não por fit: "todo mundo usa NestJS" não justifica projeto pequeno.
-2. Migrar framework no meio do projeto sem motivo forte: custo alto e risco de regressão.
-3. Comparar performance por benchmark sintético e ignorar DB, rede, payload e observability.
-4. Achar que NestJS é só "Express com decorators": o modelo de módulos e DI muda a arquitetura.
-5. Confundir framework com arquitetura: Express pode ter Clean Architecture; NestJS pode virar massa acoplada.
-6. Ignorar deploy target: edge, container e Lambda têm constraints diferentes.
-7. Escolher Fastify por performance e depois validar tudo manualmente em controller.
-8. Escolher Hono por hype sem verificar bibliotecas de auth, observability e storage do runtime alvo.
+Com o panorama dos quatro modelos mapeado, o próximo passo é mergulhar em cada framework individualmente. As notas seguintes detalham padrões idiomáticos, armadilhas específicas e code review checklists para cada escolha:
+
+- [[02 - Express idiomático]] — middleware pipeline, async handlers em Express 5, error middleware de 4 argumentos e estrutura de projeto por feature.
+- [[03 - NestJS - fundamentos]] — módulos como boundary, providers, tokens de DI e scopes.
+- [[04 - NestJS - guards, interceptors, pipes, filters]] — o lifecycle completo do NestJS e quando usar cada hook.
+- [[05 - Fastify - schema-first, plugins, performance]] — schemas, encapsulamento de plugins e lifecycle de hooks.
+- [[06 - Hono e edge runtimes]] — Web Standards, bindings e os limites reais de edge.
+- [[12 - Decision tree + cheatsheet]] — árvore de decisão completa e cheatsheet comparativo lado a lado.
+
+## Armadilhas comuns
+
+> [!warning] Escolher por hype, não por fit
+> **O que acontece:** Time adota NestJS em projeto pequeno porque "todo mundo usa".
+> **Por quê:** Sem domínio complexo, DI e módulos viram cerimônia sem retorno.
+> **Como evitar:** Pergunte qual complexidade enterprise existe *agora*, não no futuro hipotético.
+
+> [!warning] Migrar framework no meio do projeto
+> **O que acontece:** Reescrita de adapter HTTP durante desenvolvimento ativo gera regressões.
+> **Por quê:** Mudança de framework exige adaptar testes, middleware, error handling e estrutura de pastas simultaneamente.
+> **Como evitar:** Decida antes de escrever a primeira rota. Se precisar migrar, faça por feature e com strangler fig pattern.
+
+> [!warning] Comparar performance por benchmark sintético
+> **O que acontece:** Decision é tomada por "Fastify é X% mais rápido que Express em hello-world".
+> **Por quê:** Benchmark sintético não inclui DB, rede, payload real, auth, cache e observability.
+> **Como evitar:** Peça benchmark do caso real antes de usar performance como argumento principal.
+
+> [!warning] Achar que NestJS é só "Express com decorators"
+> **O que acontece:** Dev usa NestJS mas contorna módulos e DI, criando acoplamento pior que Express puro.
+> **Por quê:** O modelo de módulos e lifecycle é diferente de Express; ignorar isso cria dois frameworks em um.
+> **Como evitar:** Ou use NestJS pelo modelo completo, ou use Express/Fastify sem DI container.
+
+> [!warning] Confundir framework com arquitetura
+> **O que acontece:** Express vira massa acoplada; NestJS não garante Clean Architecture.
+> **Por quê:** Framework entrega estrutura HTTP, não fronteiras de domínio.
+> **Como evitar:** Defina explicitamente onde fica regra de negócio, independente do framework escolhido.
+
+> [!warning] Ignorar deploy target
+> **O que acontece:** Código Express/NestJS é implantado em Cloudflare Workers e falha por falta de APIs Node.
+> **Por quê:** Edge, container e Lambda têm constraints diferentes de filesystem, memória e CPU.
+> **Como evitar:** Defina o runtime antes do framework. Hono e Web Standards para edge; Express/NestJS/Fastify para Node container.
+
+> [!warning] Escolher Fastify por performance e validar manualmente no controller
+> **O que acontece:** Rota Fastify sem schema — o principal diferencial do framework fica inutilizado.
+> **Por quê:** Fastify só otimiza serialização quando há response schema declarado; sem ele vira Express com API diferente.
+> **Como evitar:** Schema obrigatório em todas as rotas que recebem ou retornam dados estruturados.
+
+> [!warning] Escolher Hono por hype sem verificar bibliotecas do runtime alvo
+> **O que acontece:** App usa Hono mas depende de libs de auth, storage ou crypto que não existem no edge target.
+> **Por quê:** Multi-runtime não é automático — cada biblioteca precisa ser auditada por compatibilidade.
+> **Como evitar:** Antes de adotar Hono, liste as dependências críticas e verifique se rodam no runtime alvo.
 
 ## Perguntas de entrevista
 

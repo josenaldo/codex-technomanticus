@@ -1,10 +1,10 @@
 ---
 title: "Middleware pipeline"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -20,15 +20,19 @@ aliases:
 # Middleware pipeline
 
 > [!abstract] TL;DR
-> Middleware é a pipeline de funções que processa request/response ao redor do handler. Express usa `(req, res, next)`, Fastify usa hooks nomeados, NestJS usa middleware + interceptors/guards/pipes/filters, Hono usa onion model com `await next()`.
+> Middleware é a pipeline de funções que processa request/response ao redor do handler. Express usa `(req, res, next)`, Fastify usa hooks nomeados, NestJS usa middleware + interceptors/guards/pipes/filters, Hono usa onion model com `await next()`. Saber mapear cada concern para o hook certo — e não apenas para o primeiro `app.use()` disponível — separa quem usa middleware de quem entende o ciclo de vida real da request.
 
 ## O que é
 
 Pipeline é onde entram concerns transversais: logging, auth, CORS, rate limit, parsing, tracing e error handling. O conceito é comum; o modelo de cada framework muda.
 
+Pense na pipeline como um cano duplo: a request entra de um lado, passa por cada middleware em sequência, chega no handler, e a response volta pelo mesmo cano — cada middleware pode atuar nos dois sentidos. O que varia por framework é quantas seções esse cano tem e se elas têm nomes explícitos ou apenas posição de registro.
+
 ## Por que importa
 
 Quem entende só Express tende a procurar `next()` em todo lugar. Em Fastify, o ponto certo pode ser `preHandler`; em NestJS, auth pode ser Guard; em Hono, after logic vem depois de `await next()`. Saber mapear o concern para o hook certo é skill de senior.
+
+O custo de ignorar isso é real: auth colocado em `onRequest` no Fastify roda antes de parsing, então o body ainda não está disponível. Logging só no caminho feliz deixa erros e conexões abortadas invisíveis. Guard no controller ao invés de pipeline repete código e perde ortogonalidade com o resto do sistema.
 
 ## Como funciona
 
@@ -78,12 +82,139 @@ app.use("*", async (_c, next) => {
 | NestJS | Interceptors + hooks | Sim | Sim | Lifecycle explícito |
 | Hono | Onion com `await next()` | Sim | Sim | Mesmo middleware antes/depois |
 
-## Na prática
+### Anatomia do lifecycle Fastify
 
-- Logging: Express middleware, Fastify `onResponse`, NestJS interceptor, Hono onion.
-- Auth: Express middleware, Fastify `preHandler`, NestJS Guard, Hono middleware com `c.set()`.
-- CORS: `cors`, `@fastify/cors`, `app.enableCors()`, middleware Hono.
-- Rate limit: lib específica por framework.
+Fastify tem um lifecycle com fases nomeadas. A ordem importa para entender onde cada hook atua:
+
+```mermaid
+flowchart TD
+    req([Incoming Request]):::blue --> onReq[onRequest]:::blue
+    onReq --> preP[preParsing]:::blue
+    preP --> preV[preValidation]:::blue
+    preV --> preH[preHandler]:::amber
+    preH --> handler[Handler]:::blue
+    handler --> preSer[preSerialization]:::blue
+    preSer --> onSend[onSend]:::blue
+    onSend --> res([Response]):::blue
+    onReq -->|error| onErr[onError]:::red
+    preH -->|error| onErr
+    handler -->|error| onErr
+
+    classDef blue fill:#4A90D9,color:#fff,stroke:#4A90D9
+    classDef amber fill:#F5A623,color:#fff,stroke:#F5A623
+    classDef red fill:#D0021B,color:#fff,stroke:#D0021B
+```
+
+`preHandler` é o hook certo para auth em Fastify: body já foi parseado e validado, mas handler ainda não rodou. `onRequest` roda cedo demais para acessar body; `onResponse` roda tarde demais para bloquear o request.
+
+## Casos práticos
+
+### Cenário 1: logging completo de request em Express com conexão abortada
+
+Uma API de e-commerce precisa logar latência, status e request ID em todas as rotas, inclusive nas que lançam erro e nas que têm conexão abortada pelo cliente antes da resposta.
+
+```typescript
+import express, { Request, Response, NextFunction } from "express";
+import { randomUUID } from "crypto";
+
+// Extensão de tipo para Request.
+declare global {
+  namespace Express {
+    interface Request { id: string; startTime: number }
+  }
+}
+
+const app = express();
+
+// 1. Request ID: deve ser o primeiro middleware.
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  req.id = (req.headers["x-request-id"] as string) ?? randomUUID();
+  req.startTime = Date.now();
+  next();
+});
+
+// 2. Timing + logging: usa eventos da response para capturar após finalizar.
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.on("finish", () => {
+    console.log(JSON.stringify({
+      requestId: req.id,
+      method: req.method,
+      path: req.path,
+      status: res.statusCode,
+      ms: Date.now() - req.startTime,
+    }));
+  });
+
+  // "close" captura conexão encerrada antes do fim.
+  res.on("close", () => {
+    if (!res.writableEnded) {
+      console.warn(JSON.stringify({
+        requestId: req.id,
+        event: "aborted",
+        ms: Date.now() - req.startTime,
+      }));
+    }
+  });
+
+  next();
+});
+
+app.get("/orders", (_req, res) => res.json({ orders: [] }));
+```
+
+`finish` indica resposta enviada com sucesso; `close` captura conexão encerrada antes do fim. Sem `close`, requests abortadas por timeout de cliente ficam invisíveis nas métricas e parecem latência zero.
+
+### Cenário 2: auth com propagação de contexto tipado em Fastify
+
+Uma API de relatórios precisa injetar o usuário autenticado no contexto de cada request, disponível para todos os handlers sem repetição. Fastify exige declaração de tipo explícita para o campo adicionado.
+
+```typescript
+import Fastify from "fastify";
+import { verifyToken } from "./auth";
+
+// Extensão de tipo do Request Fastify.
+declare module "fastify" {
+  interface FastifyRequest {
+    user: { id: string; roles: string[] };
+  }
+}
+
+const app = Fastify({ logger: true });
+
+// preHandler: body e query já estão disponíveis após parsing/validation.
+app.addHook("preHandler", async (req, reply) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) {
+    return reply.code(401).send({
+      type: "about:blank",
+      title: "Unauthorized",
+      status: 401,
+      instance: req.url,
+    });
+  }
+
+  try {
+    req.user = await verifyToken(token);
+  } catch {
+    return reply.code(401).send({
+      type: "about:blank",
+      title: "Invalid token",
+      status: 401,
+      instance: req.url,
+    });
+  }
+});
+
+app.get("/reports/:id", async (req) => {
+  // req.user está disponível e tipado em todos os handlers.
+  if (!req.user.roles.includes("analyst")) {
+    throw { statusCode: 403, message: "Insufficient role" };
+  }
+  return { reportId: (req.params as { id: string }).id, owner: req.user.id };
+});
+```
+
+O hook `preHandler` garante que auth roda depois de parsing/validation, mas antes do handler. Declarar `user` no módulo Fastify evita cast manual em cada handler e ativa verificação de tipo.
 
 ### Logging comparado
 
@@ -254,17 +385,52 @@ app.use(applyBlackFridayDiscount);
 const price = discountPolicy.apply(order, campaign);
 ```
 
-## Armadilhas
+## Armadilhas comuns
 
-1. Express: ordem de `app.use()` decide comportamento.
-2. Fastify: `onRequest` roda antes de parsing/validation; nem todo dado está disponível.
-3. NestJS: middleware tradicional é mais cru; interceptor/guard tem melhor integração com DI.
-4. Hono: sem `await next()`, o handler posterior não executa.
-5. Middleware que faz CPU-heavy work bloqueia [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]].
-6. Logging só no caminho feliz: erros e aborts ficam invisíveis.
-7. Auth global bloqueando `/health` e `/metrics`.
-8. Rate limit depois de operação cara: ataque ainda consome CPU/DB.
-9. Contexto mutável sem tipagem: bug aparece longe da origem.
+> [!warning] Express: ordem de `app.use()` é contrato silencioso
+> **O que acontece:** comportamento muda conforme middlewares são registrados fora de ordem — auth depois do router deixa rotas desprotegidas, body parser depois do handler resulta em body `undefined`.
+> **Por quê:** Express processa middlewares na ordem de registro, sem garantias explícitas de fase nomeada.
+> **Como evitar:** documente a ordem canônica; revise `app.use()` em code review como se fosse config de segurança.
+
+> [!warning] Fastify: `onRequest` sem body disponível
+> **O que acontece:** tentar acessar `req.body` no hook `onRequest` retorna `undefined` porque parsing ainda não rodou.
+> **Por quê:** o lifecycle Fastify separa `onRequest` (antes de parsing) de `preHandler` (após parsing e validação).
+> **Como evitar:** use `preHandler` para lógica que precisa do body; `onRequest` só para tracing, IP check e headers iniciais.
+
+> [!warning] NestJS: middleware clássico sem acesso a DI
+> **O que acontece:** tentar injetar serviço no middleware registrado com `app.use()` falha; a instância não está disponível.
+> **Por quê:** middleware clássico em NestJS é próximo do Express puro e não participa do ciclo de DI do container.
+> **Como evitar:** use Guards para auth e Interceptors para logging/transform; reserve middleware clássico para concerns que não precisam de DI.
+
+> [!warning] Hono: `await next()` esquecido paralisa a pipeline
+> **O que acontece:** handler ou middleware seguinte nunca executa; a response fica pendente ou retorna vazia.
+> **Por quê:** Hono usa onion model explícito — o controle passa para o próximo handler apenas com `await next()`.
+> **Como evitar:** todo middleware Hono que não termina a request deve ter `await next()` em ponto deliberado do fluxo.
+
+> [!warning] Middleware CPU-heavy bloqueia o event loop
+> **O que acontece:** requests ficam enfileiradas enquanto middleware síncrono pesado processa uma de cada vez.
+> **Por quê:** Node.js tem um único thread JS; operação CPU-bound bloqueia o [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]] para todas as requests.
+> **Como evitar:** mova processamento pesado para worker threads ou serviços externos; mantenha middleware I/O-bound e rápido.
+
+> [!warning] Logging só no caminho feliz
+> **O que acontece:** erros e conexões abortadas pelo cliente não aparecem nos logs, criando pontos cegos em observability.
+> **Por quê:** sem escutar `close` e `error` na response, o middleware de logging só dispara em finalizações bem-sucedidas.
+> **Como evitar:** em Express, combine `res.on("finish")` com `res.on("close")`; em Fastify, use `onError` + `onResponse`.
+
+> [!warning] Auth global bloqueando `/health` e `/metrics`
+> **O que acontece:** liveness probe do Kubernetes retorna 401 e o pod é reiniciado em loop.
+> **Por quê:** middleware de auth global sem exceção de rota cobre todos os paths, incluindo os de infraestrutura.
+> **Como evitar:** use routers separados ou condicionais explícitas para rotas públicas antes do middleware de auth.
+
+> [!warning] Rate limit depois de operação cara
+> **O que acontece:** ataque de DDoS ainda consome CPU, banco e chamadas externas antes de ser bloqueado.
+> **Por quê:** rate limit colocado ao final da pipeline só age depois de todos os outros middlewares processarem a request.
+> **Como evitar:** coloque rate limit antes de authn/authz e qualquer operação de custo variável.
+
+> [!warning] Contexto mutável sem tipagem
+> **O que acontece:** bug aparece longe da origem — um middleware seta propriedade com typo e outro falha silenciosamente ao ler `undefined`.
+> **Por quê:** em Express, `req` é mutável e não tipado por padrão; qualquer middleware pode adicionar qualquer campo.
+> **Como evitar:** declare extensões de `Request` com TypeScript declaration merging; use `req.user: AuthUser` em vez de `req.user: any`.
 
 ## Perguntas de entrevista
 
@@ -291,6 +457,17 @@ Vocabulário-chave:
 - interceptor -> interceptor
 - onion model -> modelo cebola
 - request lifecycle -> ciclo de vida da request
+
+## O que vem a seguir
+
+Com a pipeline dominada, o próximo passo é estruturar o que acontece quando algo falha nela. [[08 - Error handling estruturado]] mostra como transformar exceções em contratos previsíveis usando Problem Details (RFC 7807). Depois, [[09 - Validation com schema]] fecha o ciclo: toda entrada que chega via pipeline precisa ser validada com schema antes de atingir o handler.
+
+## Fontes
+
+- [Express: using middleware](https://expressjs.com/en/guide/using-middleware.html)
+- [Fastify: lifecycle](https://fastify.dev/docs/latest/Reference/Lifecycle/)
+- [NestJS: middleware](https://docs.nestjs.com/middleware)
+- [NestJS: interceptors](https://docs.nestjs.com/interceptors)
 
 ## Veja também
 

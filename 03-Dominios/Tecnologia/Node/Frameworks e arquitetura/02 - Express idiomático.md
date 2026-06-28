@@ -1,10 +1,10 @@
 ---
 title: "Express idiomático"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -31,6 +31,27 @@ Express é o framework HTTP minimalista mais conhecido do ecossistema Node. Ele 
 Express continua aparecendo em entrevistas e projetos reais porque é simples, estável e bem conhecido. Código Express idiomático em 2026 é diferente de código Express 4 escrito sem TypeScript, sem schema e sem erro global consistente.
 
 ## Como funciona
+
+```mermaid
+flowchart TD
+    R[Request] --> RI[requestId middleware]
+    RI --> LG[logger]
+    LG --> HM[helmet + cors]
+    HM --> JP[express.json parser]
+    JP --> RT[Router por feature]
+    RT --> VM[validateBody middleware]
+    VM --> H[handler async]
+    H --> NF[notFound handler]
+    NF --> EH[error middleware 4 args]
+    EH --> RS[Response]
+
+    H -->|throw / rejeição| EH
+
+    style R fill:#4A90D9,color:#fff
+    style RT fill:#F5A623,color:#fff
+    style EH fill:#D0021B,color:#fff
+    style RS fill:#4A90D9,color:#fff
+```
 
 ```typescript
 import express from "express";
@@ -97,9 +118,92 @@ userRouter.post("/", createUser);
 app.use("/api/v1/users", userRouter);
 ```
 
-## Na prática
+## Casos práticos
 
 Padrão típico em projetos TypeScript novos: Express 5 + `zod` + error middleware global + middlewares explícitos (`helmet`, `cors`, logger, rate limit) + routers por feature. `express.json({ limit })` deve ter limite explícito; body sem limite é porta para abuso de memória.
+
+### Cenário 1 — API de criação de usuário com validation
+
+Imagine um endpoint `POST /users` que recebe nome, e-mail e senha. O corpo pode chegar malformado, o e-mail pode duplicar e a senha precisa de hash antes de persistir. Em Express, cada concern vira um middleware separado, composto no router.
+
+```typescript
+// schema: zod valida na boundary, antes do controller.
+const CreateUserSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+// middleware genérico de validation — reutilizável.
+const validateBody =
+  <T extends z.ZodTypeAny>(schema: T): express.RequestHandler =>
+  (req, _res, next) => {
+    const result = schema.safeParse(req.body);
+    if (!result.success) return next(new ValidationError(result.error));
+    req.body = result.data; // substitui body pelo dado validado
+    next();
+  };
+
+// controller: fino, só chama use case e formata saída.
+userRouter.post(
+  "/",
+  validateBody(CreateUserSchema),
+  asyncHandler(async (req, res) => {
+    const user = await createUser.execute(req.body);
+    res.status(201).json(UserPresenter.toHttp(user));
+  }),
+);
+
+// Error middleware global captura qualquer throw/rejeição.
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (res.headersSent) return next(err);
+  const status = err instanceof HttpError ? err.status : 500;
+  res.status(status).type("application/problem+json").json({
+    type: "about:blank",
+    title: err.name,
+    status,
+    detail: status >= 500 ? "Unexpected error" : err.message,
+    instance: req.originalUrl,
+  });
+});
+```
+
+O ponto central: `createUser.execute` não conhece Express. Se amanhã migrar para Fastify, o use case não muda.
+
+### Cenário 2 — Export CSV via stream com tratamento de erro
+
+Um endpoint `GET /reports/users.csv` gera CSV de todos os usuários. Com milhares de registros, a resposta não pode esperar tudo em memória; a solução idiomática é pipeline de stream.
+
+```typescript
+import { pipeline } from "node:stream/promises";
+import { createReadStream } from "node:fs";
+
+// Rota com streaming — error handling explícito.
+reportRouter.get(
+  "/users.csv",
+  authenticate,
+  requireRole("admin"),
+  asyncHandler(async (req, res, next) => {
+    try {
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", 'attachment; filename="users.csv"');
+
+      // pipeline lança se stream falhar.
+      await pipeline(exportUsersCsvStream(db), res);
+    } catch (err) {
+      // Se headers já foram enviados, só podemos fechar.
+      // O error middleware não consegue trocar o Content-Type.
+      if (!res.headersSent) next(err);
+      else {
+        req.log?.error({ err }, "streaming failed mid-response");
+        res.end();
+      }
+    }
+  }),
+);
+```
+
+A fronteira com [[03-Dominios/Tecnologia/Node/Streams/index]] aparece aqui: se a stream falhar depois de bytes enviados, não é possível responder Problem Details. O máximo seguro é logar com correlation ID e fechar a conexão.
 
 ### Pipeline de uma request real
 
@@ -148,45 +252,6 @@ function requireUser(req: Request, _res: Response, next: NextFunction) {
 ```
 
 O ponto de code review: se uma rota assume `req.user`, o router precisa montar `authenticate` e `requireUser` antes da rota.
-
-### Validation idiomática com zod
-
-Express não tem validation nativa. Em 2026, um padrão simples é transformar schema em middleware.
-
-```typescript
-const validateBody =
-  <T extends z.ZodTypeAny>(schema: T): express.RequestHandler =>
-  (req, _res, next) => {
-    const result = schema.safeParse(req.body);
-    if (!result.success) return next(new ValidationError(result.error));
-    req.body = result.data;
-    next();
-  };
-
-userRouter.post("/", validateBody(CreateUserSchema), async (req, res) => {
-  const user = await users.create(req.body);
-  res.status(201).json(user);
-});
-```
-
-Isso mantém controller fino e aproxima Express do modelo schema-first sem trocar de framework.
-
-### Streaming e headers sent
-
-Error handling em Express fica mais sutil quando a resposta já começou. A documentação oficial recomenda delegar ao handler default quando `res.headersSent`.
-
-```typescript
-app.get("/export", async (req, res, next) => {
-  try {
-    res.type("text/csv");
-    await pipeline(exportUsersCsv(), res);
-  } catch (err) {
-    next(err);
-  }
-});
-```
-
-Se `pipeline` falhar depois de bytes enviados, não dá para trocar para JSON Problem Details. O máximo seguro é fechar conexão e logar com correlation ID. Essa fronteira conecta Express a [[03-Dominios/Tecnologia/Node/Streams/index]].
 
 ### Organização por feature
 
@@ -254,17 +319,61 @@ O que mudou:
 
 Esse é o tipo de evolução que transforma Express de "arquivo de rotas" em aplicação sustentável.
 
-## Armadilhas
+## O que vem a seguir
 
-1. Express 4 com handler async sem wrapper: rejeição não chega ao error middleware.
-2. Error middleware com 3 argumentos: Express não o reconhece como handler de erro.
-3. Mutar `req` em middleware sem tipo/documentação: a ordem vira contrato invisível.
-4. Chamar `res.send()` e depois `next(err)`: risco de `Cannot set headers after they are sent`.
-5. Registrar error middleware antes das rotas: ele não captura o que vem depois.
-6. Usar `app.use(auth)` global e quebrar `/health`, `/metrics` ou callback público.
-7. Validar em controller depois de chamar service: dado inválido já atravessou boundary.
-8. Capturar erro e responder direto em cada rota: perde consistência de [[08 - Error handling estruturado]].
-9. Ignorar `trust proxy` atrás de load balancer: IP, HTTPS e secure cookies ficam errados.
+Express idiomático já traz muito, mas não resolve tudo sozinho. Os próximos temas expandem o que acontece antes e depois do handler:
+
+- [[07 - Middleware pipeline]] — pipeline detalhada com order, encapsulation e testes de middleware isolado.
+- [[08 - Error handling estruturado]] — taxonomy de erros, Problem Details RFC 9457 e consistência de resposta.
+- [[09 - Validation com schema]] — Zod, AJV e como compor validation com transformação de tipos.
+- [[03 - NestJS - fundamentos]] — quando a estrutura manual do Express se torna custo alto e DI container compensa.
+
+## Armadilhas comuns
+
+> [!warning] Express 4 com handler async sem wrapper
+> **O que acontece:** Rejeição de Promise não chega ao error middleware — o processo engole o erro silenciosamente.
+> **Por quê:** Express 4 não wrapa automaticamente Promises; só Express 5 faz isso nativo.
+> **Como evitar:** Use Express 5 ou adicione `asyncHandler` wrapper em todos os handlers async de codebases 4.x.
+
+> [!warning] Error middleware com 3 argumentos
+> **O que acontece:** Express não o reconhece como handler de erro — ele vira middleware comum.
+> **Por quê:** Express identifica error handler pela assinatura `(err, req, res, next)` — quatro argumentos são obrigatórios.
+> **Como evitar:** Sempre declare `(err: Error, req: Request, res: Response, next: NextFunction)` com todos os quatro parâmetros, mesmo que `next` não seja chamado.
+
+> [!warning] Mutar `req` em middleware sem tipo/documentação
+> **O que acontece:** Handler assume `req.user` mas o middleware que o popula não está montado na rota.
+> **Por quê:** A ordem de montagem é o contrato implícito; sem tipo declarado, TypeScript não ajuda.
+> **Como evitar:** Declare o campo via declaration merging e revise que o middleware está montado antes de qualquer rota que o consuma.
+
+> [!warning] Chamar `res.send()` e depois `next(err)`
+> **O que acontece:** `Cannot set headers after they are sent to the client`.
+> **Por quê:** A resposta já foi enviada; o error middleware não pode sobrescrevê-la.
+> **Como evitar:** Verifique `res.headersSent` antes de chamar `next(err)` e nunca chame `res.send` junto com `next`.
+
+> [!warning] Registrar error middleware antes das rotas
+> **O que acontece:** O error middleware não captura erros das rotas registradas depois dele.
+> **Por quê:** Express processa middlewares na ordem de registro.
+> **Como evitar:** Sempre registre o error middleware como o último `app.use()`, depois de todos os routers.
+
+> [!warning] `app.use(auth)` global quebrando rotas públicas
+> **O que acontece:** `/health`, `/metrics` ou callbacks públicos passam por auth pesada e retornam 401.
+> **Por quê:** `app.use()` sem path aplica a todas as rotas.
+> **Como evitar:** Monte auth em routers específicos, não globalmente. Use `unless` pattern ou exclusão explícita.
+
+> [!warning] Validar em controller depois de chamar service
+> **O que acontece:** Dado inválido atravessa a boundary HTTP e chega ao domínio.
+> **Por quê:** Validation deve acontecer na entrada, antes de qualquer lógica de negócio.
+> **Como evitar:** Validation como middleware antes do handler — nunca dentro do handler ou do service.
+
+> [!warning] Capturar erro e responder direto em cada rota
+> **O que acontece:** Formato de erro inconsistente por toda a aplicação.
+> **Por quê:** Cada handler formata o erro à sua maneira, perdendo consistência de [[08 - Error handling estruturado]].
+> **Como evitar:** Sempre relance com `next(err)` e deixe o error middleware global formatar a resposta.
+
+> [!warning] Ignorar `trust proxy` atrás de load balancer
+> **O que acontece:** `req.ip` retorna IP do balanceador, não do cliente real; cookies `secure` podem não ser definidos.
+> **Por quê:** Express confia no IP de origem da conexão, não no `X-Forwarded-For`, sem configuração explícita.
+> **Como evitar:** `app.set("trust proxy", 1)` em ambientes com load balancer ou proxy reverso.
 
 ## Perguntas de entrevista
 

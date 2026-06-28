@@ -1,10 +1,10 @@
 ---
 title: "Fastify: schema-first, plugins, performance"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -32,6 +32,31 @@ Fastify é um framework HTTP de baixo overhead para Node. Seus pilares são perf
 Quando API tem contrato claro, schema-first reduz validação ad-hoc e aproxima runtime, tipos e OpenAPI. Performance não deve ser a única métrica, mas em endpoints I/O-bound com alto volume a diferença de overhead pode importar.
 
 ## Como funciona
+
+```mermaid
+flowchart TD
+    RQ[Request] --> OR[onRequest]
+    OR --> PP[preParsing]
+    PP --> PV[preValidation]
+    PV --> SC{Schema\nValidation}
+    SC -->|válido| PH[preHandler]
+    SC -->|inválido| E4[400 Bad Request\nAjv error]
+    PH --> HD[Handler]
+    HD --> PS[preSerialization]
+    PS --> OS[onSend\nfast-json-stringify]
+    OS --> OR2[onResponse]
+    OR2 --> RS[Response]
+
+    HD -->|throw| EH[setErrorHandler]
+    EH --> ER[Error Response]
+
+    style SC fill:#F5A623,color:#fff
+    style HD fill:#4A90D9,color:#fff
+    style E4 fill:#D0021B,color:#fff
+    style EH fill:#D0021B,color:#fff
+    style RS fill:#4A90D9,color:#fff
+    style OS fill:#F5A623,color:#fff
+```
 
 ```typescript
 import Fastify from "fastify";
@@ -109,24 +134,165 @@ typed.post("/users", { schema: { body: UserSchema } }, async (req) => {
 });
 ```
 
-## Na prática
+## Casos práticos
 
 Padrão forte: schema em toda rota, plugins por feature, encapsulation como isolamento e `@fastify/swagger` para derivar OpenAPI. Use `fastify-plugin` quando um plugin precisa expor decorators ao escopo pai.
+
+### Cenário 1 — API de produtos com OpenAPI derivado do schema
+
+Imagine uma API de catálogo com GET/POST/PATCH para produtos. O schema é a fonte de verdade — validation, serialization e documentação OpenAPI derivam do mesmo objeto. Isso evita o ciclo doloroso de "atualizar schema, atualizar docs, atualizar teste".
+
+```typescript
+import Fastify from "fastify";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import { Type } from "@sinclair/typebox";
+
+const app = Fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>();
+
+await app.register(swagger, {
+  openapi: {
+    info: { title: "Catalog API", version: "1.0.0" },
+  },
+});
+await app.register(swaggerUi, { routePrefix: "/docs" });
+
+// Schemas compartilhados.
+const ProductId = Type.Object({ id: Type.String({ format: "uuid" }) });
+const CreateProductBody = Type.Object({
+  name: Type.String({ minLength: 1, maxLength: 200 }),
+  price: Type.Number({ minimum: 0 }),
+  sku: Type.String({ pattern: "^[A-Z0-9-]+$" }),
+});
+const ProductResponse = Type.Object({
+  id: Type.String(),
+  name: Type.String(),
+  price: Type.Number(),
+  sku: Type.String(),
+  createdAt: Type.String({ format: "date-time" }),
+});
+
+// GET /products/:id — TypeBox infere tipos de req.params automaticamente.
+app.get(
+  "/products/:id",
+  { schema: { params: ProductId, response: { 200: ProductResponse } } },
+  async (req) => {
+    const product = await db.products.findById(req.params.id);
+    if (!product) throw app.httpErrors.notFound("Product not found");
+    return product;
+  },
+);
+
+// POST /products — schema valida body e serializa resposta.
+app.post(
+  "/products",
+  {
+    schema: {
+      body: CreateProductBody,
+      response: {
+        201: ProductResponse,
+        409: Type.Object({ message: Type.String() }),
+      },
+    },
+  },
+  async (req, reply) => {
+    const existing = await db.products.findBySku(req.body.sku);
+    if (existing) return reply.code(409).send({ message: "SKU already exists" });
+
+    const product = await db.products.create(req.body);
+    return reply.code(201).send(product);
+  },
+);
+
+// OpenAPI disponível em /docs sem configuração extra — deriva dos schemas.
+```
+
+O ponto chave: qualquer campo extra no body é rejeitado (`additionalProperties` é false por default no TypeBox). A doc em `/docs` é gerada automaticamente sem nenhum comentário JSDoc.
+
+### Cenário 2 — Plugin de feature com encapsulamento e banco isolado
+
+Imagine uma aplicação com dois domínios: `catalog` e `orders`. Cada domínio deve ser isolado — o catalog não deve acessar o repositório de orders diretamente. Plugins Fastify são o mecanismo de boundary.
+
+```typescript
+// Plugin do catalog — scope isolado.
+async function catalogPlugin(catalog: FastifyInstance) {
+  // Repositório visível apenas dentro deste plugin.
+  const productsRepo = new ProductsRepository(catalog.db);
+
+  // Schema de resposta compartilhado dentro do plugin.
+  const CatalogProductSchema = {
+    type: "object",
+    required: ["id", "name", "price"],
+    additionalProperties: false,
+    properties: {
+      id: { type: "string" },
+      name: { type: "string" },
+      price: { type: "number" },
+    },
+  } as const;
+
+  catalog.get(
+    "/catalog/products",
+    {
+      schema: {
+        querystring: {
+          type: "object",
+          properties: {
+            page: { type: "integer", minimum: 1, default: 1 },
+            limit: { type: "integer", minimum: 1, maximum: 100, default: 20 },
+          },
+        },
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              data: { type: "array", items: CatalogProductSchema },
+              total: { type: "integer" },
+            },
+          },
+        },
+      },
+    },
+    async (req) => {
+      const { page, limit } = req.query;
+      return productsRepo.list({ page, limit });
+    },
+  );
+
+  catalog.post(
+    "/catalog/products",
+    { schema: { body: CreateProductBody, response: { 201: CatalogProductSchema } } },
+    async (req, reply) => {
+      const product = await productsRepo.create(req.body);
+      return reply.code(201).send(product);
+    },
+  );
+}
+
+// Plugin de orders — escopo separado; não acessa productsRepo.
+async function ordersPlugin(orders: FastifyInstance) {
+  const ordersRepo = new OrdersRepository(orders.db);
+
+  orders.post("/orders", { schema: { body: CreateOrderBody } }, async (req, reply) => {
+    // Para pegar preço de produto, chama a API interna ou serviço — não o repo do catalog.
+    const product = await catalogClient.getProduct(req.body.productId);
+    const order = await ordersRepo.create({ ...req.body, price: product.price });
+    return reply.code(201).send(order);
+  });
+}
+
+// App principal: registra plugins sem vazamento de escopo.
+await app.register(fp(dbPlugin)); // fp() expõe db para todos os plugins filhos
+await app.register(catalogPlugin, { prefix: "/api/v1" });
+await app.register(ordersPlugin, { prefix: "/api/v1" });
+```
+
+O `productsRepo` dentro de `catalogPlugin` é invisível para `ordersPlugin`. Isso é encapsulamento como boundary arquitetural, não só isolamento de variável.
 
 ### Lifecycle de hooks
 
 Fastify não usa uma pipeline genérica estilo Express. Ele tem fases nomeadas. Isso melhora precisão, mas exige escolher o hook certo.
-
-```text
-onRequest
-  -> preParsing
-  -> preValidation
-  -> preHandler
-  -> handler
-  -> preSerialization
-  -> onSend
-  -> onResponse
-```
 
 ```typescript
 app.addHook("preValidation", async (req) => {
@@ -141,59 +307,6 @@ app.addHook("preHandler", async (req) => {
 ```
 
 `onRequest` é cedo demais para depender de body. `preHandler` é tarde demais para alterar parsing. Essa precisão é força e armadilha.
-
-### Encapsulation como boundary
-
-Encapsulation significa que plugins criam escopos. Rotas e decorators registrados dentro de um plugin ficam disponíveis para filhos, não necessariamente para irmãos ou pai.
-
-```typescript
-app.register(async function usersPlugin(users) {
-  users.decorate("usersRepo", new UsersRepository());
-
-  users.get("/users/:id", async function (req) {
-    return this.usersRepo.findById(req.params.id);
-  });
-});
-```
-
-```typescript
-app.register(async function ordersPlugin(orders) {
-  // orders.usersRepo NÃO existe aqui.
-  orders.get("/orders/:id", async () => ({ id: "ord_1" }));
-});
-```
-
-Isso evita vazamento acidental. Quando o objetivo é plugin global, use `fastify-plugin`.
-
-### Schema como contrato e performance
-
-Schema em Fastify tem duas funções: valida entrada e permite serialização otimizada de saída.
-
-```typescript
-const UserResponse = {
-  type: "object",
-  required: ["id", "name", "email"],
-  additionalProperties: false,
-  properties: {
-    id: { type: "string" },
-    name: { type: "string" },
-    email: { type: "string" },
-  },
-} as const;
-
-app.get("/users/:id", {
-  schema: {
-    params: {
-      type: "object",
-      required: ["id"],
-      properties: { id: { type: "string" } },
-    },
-    response: { 200: UserResponse },
-  },
-}, async (req) => users.findById(req.params.id));
-```
-
-Sem `response` schema, você perde parte do valor do framework: contrato de saída e serialização previsível.
 
 ### Testes com inject
 
@@ -270,16 +383,55 @@ Fastify reduz overhead, mas não compensa:
 
 O framework ajuda quando o gargalo é camada HTTP/serialization. Meça antes de vender performance como argumento principal.
 
-## Armadilhas
+## O que vem a seguir
 
-1. Schema sem `additionalProperties: false`: payloads extras passam.
-2. Decorator registrado em plugin encapsulado e esperado no app pai: não vaza por design.
-3. Validation async batendo em banco: pode virar DoS; use hook depois da validation.
-4. Teste sem `await app.ready()` ou `await app.close()`: lifecycle incompleto.
-5. Usar `onRequest` esperando `req.body`: body ainda não foi parseado.
-6. Não declarar response schema e perder serialização/contrato.
-7. Misturar plugin global e feature plugin sem regra: escopo fica imprevisível.
-8. Tratar Fastify como Express com `reply` diferente: o modelo é schema/hooks/plugins.
+Com Fastify dominado, o próximo passo natural é entender validation em profundidade e como construir o contrato OpenAPI de forma sustentável:
+
+- [[09 - Validation com schema]] — Ajv, JSON Schema avançado, TypeBox e como integrar com OpenAPI generation.
+- [[07 - Middleware pipeline]] — comparação entre hooks Fastify e middleware Express: ciclo de vida, ordem e composição.
+- [[12 - Decision tree + cheatsheet]] — quando Fastify ganha de Express e NestJS, e quando perde.
+
+## Armadilhas comuns
+
+> [!warning] Schema sem `additionalProperties: false`
+> **O que acontece:** Payloads com campos extras passam pela validation e chegam ao handler.
+> **Por quê:** O default do Ajv é permitir propriedades adicionais — sem a flag, campos desconhecidos entram silenciosamente.
+> **Como evitar:** Sempre adicione `additionalProperties: false` em schemas de body e response onde o contrato é estrito. TypeBox faz isso por default com `Type.Object`.
+
+> [!warning] Decorator registrado em plugin encapsulado, esperado fora
+> **O que acontece:** `fastify.decorate("db", ...)` dentro de plugin encapsulado não está disponível no escopo pai.
+> **Por quê:** Encapsulation é o comportamento default — decorator fica restrito ao plugin e seus filhos.
+> **Como evitar:** Use `fastify-plugin` (`fp(plugin)`) para "quebrar" o encapsulamento e expor decorators ao escopo pai.
+
+> [!warning] Validation async batendo em banco no `preValidation`
+> **O que acontece:** Cada request faz query de banco para validar unicidade, criando vetor de DoS e aumentando latência.
+> **Por quê:** `preValidation` roda antes do handler em toda request — banco aqui é custo fixo por request.
+> **Como evitar:** Validações de unicidade pertencem ao handler ou use case, não ao hook de preValidation.
+
+> [!warning] Teste sem `await app.ready()` ou `await app.close()`
+> **O que acontece:** Plugins assíncronos podem não ter terminado de inicializar; testes ficam instáveis ou vazam handles.
+> **Por quê:** Fastify inicializa plugins de forma assíncrona — `ready()` garante que tudo está pronto.
+> **Como evitar:** Sempre `await app.ready()` antes dos asserts e `await app.close()` no teardown.
+
+> [!warning] Usar `onRequest` esperando `req.body` disponível
+> **O que acontece:** `req.body` é `undefined` em `onRequest` — o parsing ainda não aconteceu.
+> **Por quê:** `onRequest` é a primeira fase, antes de `preParsing` e `preValidation`.
+> **Como evitar:** Para lógica que depende de body, use `preHandler`. Para header/auth, `onRequest` é suficiente.
+
+> [!warning] Não declarar response schema
+> **O que acontece:** Serialização é feita via `JSON.stringify` padrão — sem otimização e sem contrato de saída.
+> **Por quê:** `fast-json-stringify` só atua quando há response schema declarado.
+> **Como evitar:** Defina `response` schema para todos os status codes relevantes, especialmente 200/201. Isso também gera a doc OpenAPI automaticamente.
+
+> [!warning] Misturar plugin global e feature plugin sem regra
+> **O que acontece:** Decorators aparecem ou somem dependendo da ordem de registro; comportamento fica imprevisível.
+> **Por quê:** Sem regra clara de quais plugins usam `fp()`, a árvore de escopo fica difícil de rastrear.
+> **Como evitar:** Estabeleça convenção: plugins de infraestrutura (db, logger, config) usam `fp()`; plugins de feature ficam encapsulados.
+
+> [!warning] Tratar Fastify como Express com `reply` diferente
+> **O que acontece:** Hooks, schemas e encapsulation ficam subutilizados; o projeto vira Express com API menos familiar.
+> **Por quê:** Os diferenciais do Fastify são schema-first, lifecycle de hooks e plugin encapsulation — não só a API.
+> **Como evitar:** Adote o modelo schema-first desde o primeiro endpoint. Code review deve exigir schema em toda rota nova.
 
 ## Perguntas de entrevista
 
@@ -311,6 +463,7 @@ Vocabulário-chave:
 
 - [Fastify](https://fastify.dev/)
 - [Fastify validation and serialization](https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/)
+- [Fastify plugins](https://fastify.dev/docs/latest/Reference/Plugins/)
 
 ## Veja também
 

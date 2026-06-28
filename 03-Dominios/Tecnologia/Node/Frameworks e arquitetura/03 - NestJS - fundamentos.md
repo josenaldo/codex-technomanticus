@@ -1,10 +1,10 @@
 ---
 title: "NestJS: fundamentos"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -32,6 +32,31 @@ NestJS é um framework para aplicações server-side Node que organiza código e
 Em apps grandes, wiring manual, lifecycle e padrões transversais viram custo. NestJS compra estrutura: módulos por feature, providers testáveis, guards/pipes/interceptors/filters e DI consistente. Em apps pequenos, a mesma estrutura pode ser mais cerimônia que benefício.
 
 ## Como funciona
+
+```mermaid
+graph TD
+    AM[AppModule] --> UM[UsersModule]
+    AM --> OM[OrdersModule]
+    AM --> DM[DatabaseModule]
+
+    UM --> UC[UsersController]
+    UM --> US[UsersService]
+    UM --> CU[CreateUserUseCase]
+    UM --> DM
+
+    OM --> OC[OrdersController]
+    OM --> OS[OrdersService]
+    OM --> UM
+
+    DM --> DB[(DatabaseClient)]
+
+    style AM fill:#4A90D9,color:#fff
+    style DM fill:#F5A623,color:#fff
+    style UC fill:#4A90D9,color:#fff
+    style OC fill:#4A90D9,color:#fff
+    style DB fill:#4A90D9,color:#fff
+    style CU fill:#F5A623,color:#fff
+```
 
 ```typescript
 import { Module } from "@nestjs/common";
@@ -95,9 +120,165 @@ export class NewPerInjectionService {}
 export class OrdersModule {}
 ```
 
-## Na prática
+## Casos práticos
 
 Padrão observado no ecossistema: um módulo por feature (`UsersModule`, `OrdersModule`), shared modules para concerns transversais (`DatabaseModule`, `LoggerModule`), singleton como default, request scope apenas quando precisa de contexto da request. `exports` é o contrato entre módulos.
+
+### Cenário 1 — Módulo de usuários com token de repositório
+
+Imagine um domínio de usuários onde a regra de negócio não pode depender de Prisma diretamente. O use case precisa ser testável sem banco real. A solução é token de repositório + abstração.
+
+```typescript
+// Token explícito — interface TypeScript some em runtime.
+export const USER_REPOSITORY = Symbol("USER_REPOSITORY");
+
+export interface UserRepository {
+  findById(id: string): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
+  save(user: User): Promise<void>;
+}
+
+// Implementação concreta com Prisma.
+@Injectable()
+export class PrismaUserRepository implements UserRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findById(id: string) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async findByEmail(email: string) {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
+
+  async save(user: User) {
+    await this.prisma.user.upsert({
+      where: { id: user.id },
+      create: user,
+      update: user,
+    });
+  }
+}
+
+// Use case injeta abstração — não sabe do Prisma.
+@Injectable()
+export class CreateUserUseCase {
+  constructor(
+    @Inject(USER_REPOSITORY)
+    private readonly users: UserRepository,
+  ) {}
+
+  async execute(dto: CreateUserDto): Promise<User> {
+    const existing = await this.users.findByEmail(dto.email);
+    if (existing) throw new ConflictError("Email already in use");
+
+    const user = User.create(dto);
+    await this.users.save(user);
+    return user;
+  }
+}
+
+// Módulo: wiring explícito, exports controlados.
+@Module({
+  imports: [DatabaseModule],
+  controllers: [UsersController],
+  providers: [
+    { provide: USER_REPOSITORY, useClass: PrismaUserRepository },
+    CreateUserUseCase,
+    UsersService,
+  ],
+  exports: [UsersService],
+})
+export class UsersModule {}
+```
+
+Em teste, basta substituir o token:
+
+```typescript
+const moduleRef = await Test.createTestingModule({
+  providers: [CreateUserUseCase],
+})
+  .overrideProvider(USER_REPOSITORY)
+  .useValue({
+    findByEmail: jest.fn().mockResolvedValue(null),
+    save: jest.fn(),
+  })
+  .compile();
+
+const useCase = moduleRef.get(CreateUserUseCase);
+await expect(useCase.execute({ email: "a@b.com", name: "A" })).resolves.toBeDefined();
+```
+
+### Cenário 2 — Dynamic module para banco multi-tenant
+
+Imagine uma aplicação multi-tenant onde cada instância de teste ou ambiente precisa de conexão diferente. Dynamic module resolve isso sem hardcode.
+
+```typescript
+// Interface de configuração.
+export interface DatabaseOptions {
+  url: string;
+  maxConnections?: number;
+  schema?: string;
+}
+
+// Module com forRoot para configuração única.
+@Module({})
+export class DatabaseModule {
+  static forRoot(options: DatabaseOptions): DynamicModule {
+    return {
+      module: DatabaseModule,
+      global: true,
+      providers: [
+        { provide: DATABASE_OPTIONS, useValue: options },
+        {
+          provide: DatabaseClient,
+          useFactory: (opts: DatabaseOptions) =>
+            new PrismaClient({ datasourceUrl: opts.url }),
+          inject: [DATABASE_OPTIONS],
+        },
+      ],
+      exports: [DatabaseClient],
+    };
+  }
+
+  // forRootAsync: carrega configuração de ConfigService.
+  static forRootAsync(options: {
+    useFactory: (...args: any[]) => DatabaseOptions | Promise<DatabaseOptions>;
+    inject?: any[];
+  }): DynamicModule {
+    return {
+      module: DatabaseModule,
+      global: true,
+      providers: [
+        {
+          provide: DatabaseClient,
+          useFactory: async (...args: any[]) => {
+            const opts = await options.useFactory(...args);
+            return new PrismaClient({ datasourceUrl: opts.url });
+          },
+          inject: options.inject ?? [],
+        },
+      ],
+      exports: [DatabaseClient],
+    };
+  }
+}
+
+// Uso no AppModule.
+@Module({
+  imports: [
+    DatabaseModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        url: config.getOrThrow("DATABASE_URL"),
+      }),
+      inject: [ConfigService],
+    }),
+    UsersModule,
+    OrdersModule,
+  ],
+})
+export class AppModule {}
+```
 
 ### O módulo como boundary de feature
 
@@ -119,29 +300,6 @@ export class UsersModule {}
 
 Se outro módulo precisa criar usuário, ele importa `UsersModule` e injeta o contrato exportado. Ele não deve importar arquivos internos da pasta `users` por caminho relativo atravessando boundary.
 
-### Tokens e interfaces
-
-Interfaces TypeScript somem em runtime. Para injetar uma abstração, use token explícito.
-
-```typescript
-export const USER_REPOSITORY = Symbol("USER_REPOSITORY");
-
-export interface UserRepository {
-  findById(id: string): Promise<User | null>;
-  save(user: User): Promise<void>;
-}
-
-@Injectable()
-export class CreateUserUseCase {
-  constructor(
-    @Inject(USER_REPOSITORY)
-    private readonly repo: UserRepository,
-  ) {}
-}
-```
-
-Esse detalhe é comum em entrevista porque mostra que o candidato entende TypeScript runtime, não só syntax de NestJS.
-
 ### Provider scope sem surpresa
 
 Singleton é o default e geralmente é certo. Request scope deve ser exceção. Ele cria uma instância por request e pode propagar o custo para dependências que pareciam singleton.
@@ -159,28 +317,6 @@ export class RequestContext {
 ```
 
 Se o objetivo é só carregar `userId` ou `correlationId`, muitas vezes um interceptor/guard que popula contexto explícito resolve melhor do que transformar vários providers em request-scoped.
-
-### Dynamic modules
-
-Dynamic modules aparecem quando um módulo precisa de configuração.
-
-```typescript
-@Module({})
-export class DatabaseModule {
-  static forRoot(options: DatabaseOptions): DynamicModule {
-    return {
-      module: DatabaseModule,
-      providers: [
-        { provide: DATABASE_OPTIONS, useValue: options },
-        DatabaseClient,
-      ],
-      exports: [DatabaseClient],
-    };
-  }
-}
-```
-
-Use quando há variação real de configuração. Não crie dynamic module para esconder wiring simples.
 
 ### Testabilidade
 
@@ -253,16 +389,55 @@ Você consegue testar `CreateUserUseCase` sem `TestingModule`, sem HTTP e sem ba
 
 Use NestJS para padronizar a aplicação, não para esconder design. Se módulos, providers e decorators tornam boundaries mais claros, o framework está ajudando. Se todo problema vira decorator novo, módulo global ou `forwardRef()`, o framework virou maquiagem sobre acoplamento.
 
-## Armadilhas
+## O que vem a seguir
 
-1. `Scope.REQUEST` usado sem necessidade: escopo request propaga para dependências e pode custar performance.
-2. Circular imports entre módulos: `forwardRef()` existe, mas frequentemente sinaliza design ruim.
-3. Esquecer `exports`: outro módulo importa mas não consegue injetar o provider.
-4. Colocar lógica pesada no constructor: prefira lifecycle hooks como `OnModuleInit`.
-5. Injetar interface sem token: TypeScript não existe em runtime.
-6. Transformar `SharedModule` em gaveta global: tudo depende de tudo.
-7. Controller importando adapter de infraestrutura diretamente.
-8. Usar decorators de ORM na entity de domínio e achar que isso ainda é Clean Architecture.
+Com módulos e DI mapeados, o próximo passo é entender como o NestJS trata concerns transversais no ciclo de vida de cada request:
+
+- [[04 - NestJS - guards, interceptors, pipes, filters]] — o lifecycle completo: quando cada hook roda, como compor e por que o controller deve ficar fino.
+- [[09 - Validation com schema]] — class-validator, class-transformer e como `ValidationPipe` se integra ao ciclo.
+- [[11 - DI - manual vs container]] — comparação entre wiring manual e container, quando cada abordagem escala melhor.
+
+## Armadilhas comuns
+
+> [!warning] `Scope.REQUEST` usado sem necessidade
+> **O que acontece:** Provider request-scoped propaga escopo para dependências upstream, que deixam de ser singleton.
+> **Por quê:** O container cria nova instância a cada request e força o mesmo comportamento em quem depende desse provider.
+> **Como evitar:** Use singleton como default; request scope só quando a instância precisa ser genuinamente diferente por request. Para passar `userId` ou `correlationId`, prefira interceptor ou contexto explícito.
+
+> [!warning] Circular imports entre módulos
+> **O que acontece:** NestJS não consegue resolver o grafo de dependências e lança erro em startup.
+> **Por quê:** Módulo A importa B que importa A — ciclo que o container não sabe como quebrar.
+> **Como evitar:** `forwardRef()` existe mas frequentemente sinaliza design ruim. Prefira extrair a dependência compartilhada para um terceiro módulo compartilhado.
+
+> [!warning] Esquecer `exports` no módulo
+> **O que acontece:** Outro módulo importa `UsersModule` mas não consegue injetar `UsersService`.
+> **Por quê:** Sem `exports`, o provider só está disponível dentro do próprio módulo.
+> **Como evitar:** Revise o array `exports` de cada módulo no code review; ele é o contrato público da feature.
+
+> [!warning] Lógica pesada no constructor
+> **O que acontece:** Startup lento, erros difíceis de rastrear e testes complicados.
+> **Por quê:** Constructor deve apenas armazenar dependências injetadas; side-effects em constructor são antipadrão.
+> **Como evitar:** Use lifecycle hooks como `OnModuleInit` para inicialização assíncrona: `async onModuleInit() { await this.db.connect(); }`.
+
+> [!warning] Injetar interface sem token
+> **O que acontece:** `Error: Nest can't resolve dependencies of the MyService` em runtime.
+> **Por quê:** Interfaces TypeScript são apagadas em compilação; o container precisa de um token concreto.
+> **Como evitar:** Sempre defina um `Symbol` como token e use `@Inject(TOKEN)` ao injetar abstrações.
+
+> [!warning] `SharedModule` virar gaveta global
+> **O que acontece:** Tudo importa `SharedModule` e as features ficam acopladas entre si.
+> **Por quê:** Módulo shared sem critério vira acoplamento disfarçado de reuso.
+> **Como evitar:** Shared module só para utilitários genuinamente transversais (logger, config, health). Features com domínio próprio devem ter seu módulo.
+
+> [!warning] Controller importando adapter de infraestrutura diretamente
+> **O que acontece:** Regra de negócio fica presa ao framework e ao ORM, impossibilitando testes sem banco.
+> **Por quê:** Controller só deve conhecer use cases/services, não repositórios ou Prisma.
+> **Como evitar:** A dependência de `PrismaService` pertence ao repositório, não ao controller.
+
+> [!warning] Decorator de ORM na entity de domínio
+> **O que acontece:** Entity de domínio tem `@Column`, `@Entity` e vira acoplada ao Prisma/TypeORM.
+> **Por quê:** Decorator de persistência na entity viola a dependency rule — o domínio passa a depender de infraestrutura.
+> **Como evitar:** Separe entity de domínio de entity de persistência. Use mappers para converter entre as duas.
 
 ## Perguntas de entrevista
 
@@ -293,6 +468,7 @@ Vocabulário-chave:
 ## Fontes
 
 - [NestJS docs](https://docs.nestjs.com/)
+- [NestJS custom providers](https://docs.nestjs.com/fundamentals/custom-providers)
 
 ## Veja também
 
