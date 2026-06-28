@@ -156,6 +156,41 @@ def log_llm_call(span_id, prompt_id, prompt_version, model,
 
 Esse log estruturado já permite: atribuição de custo por feature, detecção de finish_reason inesperado, correlação de latência com model version. É um stepping stone antes de migrar pra Langfuse ou Braintrust.
 
+## Sampling — você não precisa gravar tudo
+
+Em produção com volume alto, gravar 100% dos traces vira custo proibitivo. Padrão recomendado:
+
+| Estratégia | Quando | Volume alvo |
+|---|---|---|
+| **100% de erros** | Sempre | Todos os 4xx/5xx + finish_reason inesperado |
+| **100% de casos com feedback negativo** | Sempre | Thumbs down, re-run pelo usuário |
+| **Sampling de custo alto** | > threshold (e.g. > $0.10/request) | 100% desses casos |
+| **Sampling aleatório** | Resto | 5-20% do volume total |
+| **100% em stage/canary** | Deploy de nova versão | Todo o tráfego do canary |
+
+Langfuse, Braintrust e Helicone têm sampling configurável nativamente. A regra de ouro: **erros e anomalias sempre; sucesso típico pode ser sampled**.
+
+O argumento pra não sampled demais: trace que você não tem é investigação que você não pode fazer. Se você sampleou 5% e o bug acontece em 0.3% dos casos, a chance de ter um trace relevante cai pra ~1.5%. Em prática, isso se traduz em "encontramos o bug quando o CEO encontrou pessoalmente" — que é o pior timing possível.
+
+## OpenTelemetry — o padrão emergente
+
+O OpenTelemetry Semantic Conventions for GenAI (especificação 1.27+, 2025) define atributos padronizados pra spans LLM. Adoção cresce em 2026: Phoenix (Arize) é OTel-first; Langfuse exporta no formato; providers grandes planejam instrumentação nativa.
+
+Atributos OTel GenAI relevantes:
+
+```yaml
+gen_ai.system: "anthropic"                # provider
+gen_ai.model.id: "claude-sonnet-4-6"      # modelo exato
+gen_ai.input.tokens: 1243                 # tokens de input
+gen_ai.output.tokens: 387                 # tokens de output
+gen_ai.finish_reasons: ["end_turn"]       # lista
+gen_ai.usage.cost: 0.0043                 # em USD (extensão comum)
+gen_ai.request.temperature: 0.7
+gen_ai.request.max_tokens: 1024
+```
+
+Por que importa: padronização significa que o mesmo trace pode ser consumido por ferramentas diferentes. Você coleta em OTel, envia pra Langfuse e pra Datadog ao mesmo tempo, sem duplicar instrumentação.
+
 ## Armadilhas comuns
 
 > [!warning] Tratar status 200 do provider como sinal de sucesso
