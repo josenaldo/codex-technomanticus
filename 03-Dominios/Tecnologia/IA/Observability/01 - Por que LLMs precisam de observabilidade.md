@@ -80,6 +80,15 @@ Sem observability dedicada, o que sobra:
 
 Hamel Husain coloca o argumento de forma direta: *"if you can't see what your model did, you can't improve it, debug it, or trust it"*. Observability é o pré-requisito invisível dos outros dois pilares (eval e improvement).
 
+## O que LLM observability não é
+
+Vale clarificar os limites pra não inflar o escopo:
+
+- **Não é guardrails em runtime** — detectar e bloquear inputs/outputs problemáticos é função de [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/01 - Código gerado por IA é untrusted|Segurança e Guardrails]], não de observability. Observability *registra* o que aconteceu; guardrail *intervém* antes de acontecer.
+- **Não é eval** — observability captura dados; eval julga qualidade com rubrica. São complementares: observability fornece o dataset que eval consome.
+- **Não é monitoring de infra LLM** — se você está rodando modelos on-prem (vLLM, Ollama), precisa de observability de GPU/memória também, mas isso é infra-monitoring, não LLM observability de aplicação.
+- **Não é analytics de produto** — DAU, retenção, funnel de conversão são product metrics. LLM observability responde "o que o modelo fez?", não "como o usuário se comportou?"
+
 ## Diferença pra observability tradicional — em uma linha
 
 APM é caixa-preta com métricas; LLM observability é **árvore de decisão com tokens, prompts, tools e custos em cada nó**. Mesma palavra, problema diferente, ferramenta diferente. Misturar os dois leva a stack de logging que nem time de IA nem time de plataforma usa direito.
