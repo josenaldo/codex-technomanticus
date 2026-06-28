@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > [[Dicionário de IA#vector database|Vector DB]] armazena `(chunk_text, embedding, metadata)` e responde queries de similaridade rapidamente. Em 2026, ele é **commodity** — onde a qualidade do [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vive é em [[Dicionário de IA#chunking|chunking]], [[Dicionário de IA#retrieval|retrieval]], [[Dicionário de IA#reranking|reranking]]. **Default sensato:** pgvector se já usa Postgres (o que abrange a maioria); Pinecone para serverless; Qdrant para self-hosted moderno; Weaviate para [[Dicionário de IA#hybrid search|hybrid]] built-in. Custo: $0-200/mês para a maioria das aplicações. Performance é raramente o gargalo — com índice HNSW, query <100ms é trivial até 10M vetores.
+
+> [!question]- Por que pgvector para começar e não Pinecone?
+> Pinecone elimina operação, mas exige uma conta SaaS, uma API key extra e lock-in de vendor. pgvector é uma extensão do Postgres — se você já tem Postgres (o que vale para a maioria dos projetos), zero infraestrutura nova, zero custo adicional, join com tabelas existentes e backup familiar. O Pinecone faz sentido quando você precisa de escala serverless acima de 10M vetores ou não tem time para operar banco. Abaixo disso, pgvector é literalmente mais simples.
 
 ## O que vector DB faz
 
@@ -217,6 +221,17 @@ Default: **HNSW** com parâmetros padrão. Tune apenas se houver problema concre
 | **Weaviate Cloud** | SaaS | $50-300 |
 | **Self-hosted Qdrant** | EC2/GCE | $30-100 + ops |
 
+## Armadilhas comuns
+
+> [!warning] Trocar de vector DB sem re-indexar os vetores
+> Cada modelo de embedding gera um espaço vetorial diferente. Se você mudar de `text-embedding-ada-002` para `text-embedding-3-large`, os vetores antigos são incompatíveis — as distâncias deixam de fazer sentido. Toda vez que trocar de modelo de embedding, você precisa re-gerar e re-inserir todos os vetores. Documente o modelo usado como metadado no banco para evitar mistura acidental.
+
+> [!warning] Não indexar a metadata com B-tree antes de filtrar
+> pgvector e Qdrant suportam filtros por metadata (`WHERE doc_date > X`), mas sem índice B-tree na coluna filtrada a query faz full scan antes do k-NN — e isso mata a performance muito antes de chegar a 1M vetores. Crie índices nas colunas filtradas frequentemente (`doc_date`, `tenant_id`, `lang`) como primeiro passo, não como otimização tardia.
+
+> [!warning] Usar pgvector sem HNSW assume brute force
+> Por padrão, pgvector usa busca exata (brute force). Sem o `CREATE INDEX ... USING hnsw`, cada query varre toda a tabela. O índice HNSW reduz a latência de 10s para <100ms em 1M vetores com recall >95%. Adicione o índice imediatamente após a criação da tabela — retrofitar em produção com 5M linhas exige uma janela de manutenção.
+
 ## Anti-patterns
 
 - **Vector DB sem metadata indexada** — não consegue filtrar com performance
@@ -235,6 +250,37 @@ Default: **HNSW** com parâmetros padrão. Tune apenas se houver problema concre
 | **Recall@10** | >95% (vs brute force) |
 | **Storage por vetor (1536 dims)** | ~6KB |
 
+## Como explicar em inglês
+
+Vector databases solve a specific problem: finding the most semantically similar chunks to a query — fast. Unlike a relational database that searches for exact matches, a vector DB uses approximate nearest-neighbor algorithms (like HNSW) to find chunks whose embedding vectors are closest in high-dimensional space. The result is semantic search: you can ask "how do I deploy this?" and retrieve chunks that talk about "deployment", "production setup", and "release process" — even without those exact words.
+
+The key insight is that **vector DBs are commodity in 2026**. The choice of database rarely determines RAG quality. What matters is chunking strategy, retrieval quality, and reranking. pgvector wins in most cases simply because teams already have Postgres — adding vector search is one SQL command, not a new infrastructure component.
+
+For production, three things matter beyond the basic query: metadata filtering (narrowing the search space before k-NN), HNSW indexing (making k-NN sub-100ms), and backup strategy (re-indexing 1M vectors takes hours and costs money).
+
+**In a technical interview**, you might say:
+
+> "For most projects, I default to pgvector — it's a Postgres extension, so if you already have a relational database, you get vector search with zero extra infrastructure. You create an HNSW index, and queries on 1M vectors come back under 100ms. I only reach for Pinecone when I need serverless scale beyond 10M vectors and the team can't afford to operate another database. Qdrant is my pick for self-hosted when pgvector's metadata filtering starts struggling — it has purpose-built payload indexes that outperform Postgres at complex pre-filter workloads."
+
+| PT | EN |
+|----|-----|
+| banco de dados vetorial | vector database |
+| busca por similaridade | similarity search |
+| vizinho mais próximo aproximado | approximate nearest neighbor (ANN) |
+| índice HNSW | HNSW index |
+| produto escalar | dot product |
+| distância cosseno | cosine distance |
+| metadados | metadata |
+| filtro por metadados | metadata filtering |
+| quantização | quantization |
+| armazenamento self-hosted | self-hosted storage |
+
+## O que vem a seguir
+
+Saber onde armazenar os vetores é metade do problema. A outra metade é como fazer a busca retornar os chunks certos. Vector search puro é o ponto de partida óbvio — mas em produção ele falha em uma classe inteira de casos: nomes próprios, IDs, termos técnicos raros, qualquer coisa onde correspondência exata importa mais que semântica. A próxima nota explora como hybrid search (BM25 + vector) fecha essa lacuna e por que Reciprocal Rank Fusion é a forma mais robusta de combinar os dois rankings.
+
+- [[06 - Retrieval — hybrid search, BM25, query rewriting]] — como recuperar chunks com qualidade real
+
 ## Veja também
 
 - [[02 - Anatomia do pipeline RAG]]
@@ -251,3 +297,13 @@ Default: **HNSW** com parâmetros padrão. Tune apenas se houver problema concre
 - **Weaviate** — *weaviate.io/developers* (2026)
 - **MTEB Benchmark** — vetor DB comparison
 - **ann-benchmarks.com** — performance comparativo
+
+
+
+
+
+
+
+
+
+
