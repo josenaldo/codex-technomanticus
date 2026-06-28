@@ -1,12 +1,12 @@
 ---
 title: "Estrutura .claude/ lazy-load — carga inicial enxuta, resto sob demanda"
 type: concept
-progress: backlog
+progress: in_progress
 publish: true
 created: 2026-05-22
-updated: 2026-05-22
-status: seedling
-fase: iniciado
+updated: 2026-06-27
+status: growing
+fase: Iniciado
 tags:
   - claude-code
   - workflows
@@ -22,7 +22,39 @@ aliases:
 # Estrutura `.claude/` lazy-load — carga inicial enxuta, resto sob demanda
 
 > [!abstract] TL;DR
-> A cada `claude` aberto, o [[Dicionário de IA#Claude Code|Claude Code]] lê CLAUDE.md, `.claude/` e tudo que o `.claudeignore` *não* exclui. Em projetos com docs históricas e CLAUDE.md inflado, isso queima 8k–15k [[Dicionário de IA#Token|tokens]] *antes* da primeira pergunta. A solução estrutural é separar o que precisa estar visível no startup (instruções de comportamento, comandos diários, armadilhas críticas) do que pode estar disponível mas não carregado (sessões antigas, decisões, ADRs). Tudo continua acessível por menção explícita — só não custa nada até ser pedido.
+> A cada `claude` aberto, o [[Dicionário de IA#Claude Code|Claude Code]] lê CLAUDE.md, `.claude/` e tudo que o `.claudeignore` *não* exclui. Em projetos com docs históricas e CLAUDE.md inflado, isso queima 8k–15k [[Dicionário de IA#Token|tokens]] *antes* da primeira pergunta. A solução estrutural é separar o que precisa estar visível no startup (instruções de comportamento, comandos diários, armadilhas críticas) do que pode estar disponível mas não carregado (sessões antigas, decisões, ADRs). Tudo continua acessível por menção explícita — só não custa nada até ser pedido. Lazy-load não é burocracia: é a aplicação do princípio de economia de atenção à estrutura de projeto.
+
+## Por que funciona — o mecanismo
+
+> [!question]- Por que o tamanho do CLAUDE.md importa se o agente "consegue processar tudo"?
+
+Porque cada token carregado no startup é pago em *toda* sessão, mesmo quando irrelevante. Um CLAUDE.md de 10k tokens que contém decisões de arquitetura de 6 meses atrás, sessões antigas resumidas, e 50 ADRs completos vai pagar 10k tokens toda vez que você abre o Claude Code — mesmo numa sessão de 5 minutos para corrigir um typo.
+
+Além do custo direto, há o custo de qualidade: o agente pondera todo o contexto disponível. Contexto irrelevante diluído no startup dilui o sinal das instruções que realmente importam. Um CLAUDE.md de 300 tokens com 5 regras críticas tem impacto mais direto do que um CLAUDE.md de 10k tokens onde as 5 regras estão enterradas.
+
+```mermaid
+flowchart LR
+    subgraph "CLAUDE.md inflado"
+        A1[10k tokens no startup]
+        A2[ADRs antigos]
+        A3[Sessões antigas]
+        A4[Regras críticas\nenterradas]
+        A5["Custo: $$$\nem toda sessão"]
+    end
+
+    subgraph "Lazy-load estruturado"
+        B1[300 tokens — regras críticas]
+        B2[Docs antigas em .claudeignore]
+        B3[ADRs lidos sob demanda]
+        B4[Regras críticas\nem destaque]
+        B5["Custo: $\nem toda sessão"]
+    end
+
+    style A5 fill:#fff5f5,stroke:#ff6b6b
+    style B5 fill:#f0fff4,stroke:#51cf66
+```
+
+> [!summary] A regra é simples: arquivo carregado por default custa tokens em toda sessão. Arquivo ignorado custa zero até ser pedido. Tudo que não muda o comportamento do agente em *toda* sessão deve sair do default.
 
 ## O que é
 
@@ -30,7 +62,7 @@ Lazy-load aplicado ao contexto inicial do Claude Code: organizar `.claude/` e os
 
 Três ingredientes:
 
-1. **CLAUDE.md curto e estável** — instruções de comportamento que não mudam de sessão pra sessão (convenções, restrições, comandos canônicos).
+1. **CLAUDE.md curto e estável** — instruções de comportamento que não mudam de sessão pra sessão (convenções, restrições, comandos canônicos). Alvo: 150–300 linhas, ~1.5k–3k tokens.
 2. **`.claude/` com 3–4 arquivos focados** — "quick start", "armadilhas comuns", "mapa da arquitetura". Coisas que o agente realmente precisa ver toda sessão.
 3. **`.claudeignore` agressivo** — exclui `docs/archive/`, `.claude/sessions/`, `completions/`, tudo que é histórico ou efêmero.
 
@@ -90,9 +122,59 @@ A regra mental: **arquivo carregado por default custa tokens em toda sessão**; 
 
 Decisões de arquitetura de 6 meses atrás? `docs/adr/` — não vai por default, vai quando você falar "leia o ADR-0007".
 
-Resumo da sessão de ontem? `.claude/sessions/2026-05-21.md` — fica no repo pra você consultar, mas não pra o agente carregar.
+Resumo da sessão de ontem? `.claude/sessions/2026-05-21.md` — fica no repo pra você consultar, mas não pra o agente carregar automaticamente.
 
 Lista de tarefas concluídas? `.claude/completions/` — fica pra história, custa zero contexto.
+
+## Casos práticos
+
+### Caso 1: CLAUDE.md inflado em projeto maduro
+
+```
+Diagnóstico: /context mostra 12k tokens no startup
+  CLAUDE.md: 8k tokens
+  .claude/: 4k tokens
+
+Análise do conteúdo do CLAUDE.md:
+- Convenções de código: 800 tokens (FICA)
+- Comandos canônicos: 600 tokens (FICA)
+- ADRs completos (7): 3k tokens (MOVE pra docs/adr/, lazy)
+- Sessões antigas resumidas (5): 2k tokens (MOVE pra .claudeignore)
+- Histórico de bugs resolvidos (lista de 20): 1.6k tokens
+  (MANTÉM só os top 5 com >1h de debug, resto MOVE pra .claude/archive/)
+
+Resultado: 8k → 1.4k tokens no CLAUDE.md
+```
+
+---
+
+### Caso 2: pipeline automatizado com sub-agents
+
+Em CI/CD onde Claude Code roda em modo headless, o custo de startup multiplica por número de sessões:
+
+```
+100 sessões/dia × 10k tokens de startup = 1M tokens/dia em "ruído de boot"
+100 sessões/dia × 1.5k tokens de startup = 150k tokens/dia
+
+Economia: 850k tokens/dia — em escala, compensa qualquer esforço de configuração
+```
+
+Para pipelines, o retorno de lazy-load é desproporcionalmente alto porque o startup é o custo dominante por sessão.
+
+---
+
+### Caso 3: distinguir "instrução viva" de "histórico"
+
+A distinção crítica na hora de organizar:
+
+| Tipo | Exemplo | Vai para |
+|------|---------|----------|
+| Instrução viva | "Use AppError, nunca Error genérico" | CLAUDE.md |
+| Instrução viva | "npm test antes de commitar" | CLAUDE.md ou QUICK_START.md |
+| Armadilha crítica | "Bug #47: nunca usar == com null aqui" | COMMON_MISTAKES.md |
+| Decisão histórica | "ADR-003: escolhemos Postgres sobre MongoDB" | docs/adr/ (lazy) |
+| Contexto de sessão | "Sessão 2026-05-21: implementamos PaymentService" | .claude/sessions/ (.claudeignore) |
+| Tarefa concluída | "Feature de pagamento entregue em sprint 3" | .claude/completions/ (.claudeignore) |
 
 ## Quando usar
 
@@ -129,34 +211,91 @@ Total context: 14,832 tokens
 
 Se CLAUDE.md + `.claude/` somam >5k tokens em um projeto de tamanho médio, há ganho a capturar. Refatore, rode `/context` de novo, compare.
 
-## Armadilhas
+## Armadilhas comuns
 
-**Mover tudo pra lazy "porque parece bom"**. Se você esvazia o CLAUDE.md, perde as instruções de comportamento que mantêm o agente alinhado. O ponto é separar **instruções vivas** (ficam) de **histórico** (sai). Convenções de código, restrições do projeto, comandos canônicos — ficam.
+> [!warning] Mover tudo pra lazy "porque parece bom"
+> Se você esvazia o CLAUDE.md, perde as instruções de comportamento que mantêm o agente alinhado. O ponto é separar **instruções vivas** (ficam) de **histórico** (sai). Convenções de código, restrições do projeto, comandos canônicos — ficam. Decisões de 6 meses atrás, sessões antigas, ADRs completos — saem.
 
-**`.claudeignore` mal configurado bloqueando arquivos legítimos**. Se você ignora `docs/` inteiro, mas o agente precisa ler um ADR específico que você mencionou, ele vai falhar. `.claudeignore` afeta também leitura sob demanda — teste depois de configurar.
+> [!warning] `.claudeignore` mal configurado bloqueando arquivos legítimos
+> Se você ignora `docs/` inteiro, mas o agente precisa ler um ADR específico que você mencionou, ele vai falhar na leitura. `.claudeignore` afeta leitura sob demanda — teste depois de configurar pedindo para o agente ler um arquivo que deveria estar acessível mas ignorado por default.
 
-**Cache miss em [[Dicionário de IA#Prompt caching|prompt cache]]**. CLAUDE.md grande mas estável é melhor do que CLAUDE.md pequeno mas mutável: o prompt cache da Anthropic só ativa quando o início do contexto é idêntico entre chamadas. Se você fica trocando CLAUDE.md de sessão pra sessão, anula o desconto de cache (~$0.30/MTok vs $3/MTok). Estabilidade > tamanho.
+> [!warning] Cache miss por instabilidade do CLAUDE.md
+> CLAUDE.md grande mas estável é melhor do que CLAUDE.md pequeno mas mutável: o prompt cache da Anthropic só ativa quando o início do contexto é idêntico entre chamadas. Se você troca o CLAUDE.md de sessão pra sessão, anula o desconto de cache (~$0.30/MTok vs $3/MTok). Estabilidade > tamanho para o cache.
 
-**Atualizar `.claude/COMMON_MISTAKES.md` toda hora**. Se vira diário de bugs, perde o efeito (e quebra cache). Limite a bugs que custaram >1h pra debugar. Se passou de 10–15 itens, é hora de arquivar os mais antigos.
+> [!warning] COMMON_MISTAKES.md vira diário de bugs
+> Se você adiciona cada bug novo, o arquivo cresce e perde o efeito (e quebra o cache). Limite a bugs que custaram >1h pra debugar e que têm chance realista de acontecer de novo. Se passou de 10–15 itens, arquive os mais antigos.
 
-**Esquecer que `.claudeignore` é honrado por leitura mas não por geração**. O agente ainda pode *criar* arquivos em paths ignorados se você mandar — o ignore só afeta leitura.
+## Como explicar em inglês
 
-## Relação com outras abordagens deste galho
+**Lazy-load for `.claude/` structure** is the application of the "pay only for what you use" principle to Claude Code's startup context. Every file auto-loaded at session start costs tokens on every session, regardless of relevance. The goal is to keep the startup context to "live instructions" (conventions, daily commands, critical pitfalls) and leave everything else accessible-but-not-loaded: reachable when explicitly mentioned, but costing zero until then.
 
-Esta é a abordagem **Iniciada** — zero infra externa, aplicável em qualquer projeto hoje. Se ela não basta (codebase grande, agente sempre relê o repo inteiro mesmo com CLAUDE.md enxuto), os próximos passos são [[02 - Sandboxing de tool output]] para output verboso, [[03 - Indexação semântica externa]] para busca em codebase grande, [[04 - Knowledge graph local com AST]] para impact analysis.
+The `.claudeignore` file is the mechanism: it follows `.gitignore` syntax and controls what the agent can auto-discover vs. what requires an explicit Read call.
+
+**In a technical interview**, you might say:
+
+> "For projects with accumulated documentation, I apply lazy-load structuring to the `.claude/` folder: CLAUDE.md contains only live instructions (conventions, constraints, critical patterns), and historical content — ADRs, session logs, old decisions — goes either in `.claudeignore` or in doc folders the agent accesses on-demand. The `/context` command shows the startup token composition; I aim for CLAUDE.md under 3k tokens for a medium project. It's not just cost — a focused CLAUDE.md is also more effective because the agent's attention isn't diluted by irrelevant context."
+
+### Tabela PT ↔ EN
+
+| Português | English | Contexto |
+|-----------|---------|----------|
+| Carga inicial | Startup context | tokens carregados ao abrir o Claude Code |
+| Sob demanda | On-demand | carregado apenas quando solicitado |
+| Instrução viva | Live instruction | regra que se aplica a toda sessão |
+| Histórico | History / archive | contexto de sessões passadas |
+| Contexto de boot | Boot context | o que o agente vê antes da primeira pergunta |
+| Custo de startup | Startup cost | tokens gastos antes de qualquer tarefa |
+
+## Migração incremental de um projeto existente
+
+Não é necessário reestruturar tudo de uma vez. A migração funciona em etapas:
+
+**Passo 1 — Meça o estado atual.** Abra uma sessão limpa e rode `/context`. Anote quantos tokens o CLAUDE.md e o `.claude/` estão consumindo. Esse é o baseline.
+
+**Passo 2 — Identifique o que é "histórico".** Releia o CLAUDE.md e classifique cada seção: instrução viva (fica) ou registro histórico (sai). Sessões antigas, ADRs completos, e listas de tarefas concluídas são os candidatos mais comuns a mover.
+
+**Passo 3 — Crie o `.claudeignore` mínimo.** Comece só com `.claude/sessions/` e `docs/archive/` se existirem. Teste rodando `/context` de novo — o número deve cair.
+
+**Passo 4 — Extraia um arquivo de referência.** Se o CLAUDE.md tem mais de 200 linhas, extraia os ADRs ou histórico para `docs/adr/` e substitua no CLAUDE.md por uma linha: `"Para decisões de arquitetura, ver docs/adr/"`.
+
+**Passo 5 — Valide.** Faça uma sessão normal de trabalho com a estrutura nova. Se o agente pedir informação que você sabe que está nos docs mas não passou explicitamente, está certo — é o lazy-load funcionando. Passe o arquivo quando precisar.
+
+## O que vem a seguir
+
+Lazy-load resolve o contexto de *boot*. Se a sessão gera muito ruído durante a execução (tool outputs grandes), a próxima camada é sandboxing.
+
+- **[[02 - Sandboxing de tool output]]** — interceptar resultados verbosos de tool calls antes que entrem no contexto
+- **[[03 - Indexação semântica externa]]** — para projetos grandes onde mesmo o acesso sob-demanda é caro
 
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|CLAUDE.md anatomia]] — estrutura do arquivo principal
-- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/03 - CLAUDE.md receitas|CLAUDE.md receitas]] — templates por stack
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/07 - Pasta .claude|Pasta .claude]] — convenções de organização
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|Tokens e custo]] — fundamentos econômicos
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|Tronco do sub-galho]]
 
-## Aprofundamento
+## Referências
 
-> [!convite] Referências externas
-> - [nadimtuhin/claude-token-optimizer](https://github.com/nadimtuhin/claude-token-optimizer) — scaffolding via `npx` que cria a estrutura `.claude/` e `.claudeignore` para 13 frameworks (Express, Next.js, Vue, Django, Rails, Laravel, etc). MIT, idiomas claros. Útil como ponto de partida.
-> - [drona23/claude-token-efficient](https://github.com/drona23/claude-token-efficient) — um único CLAUDE.md focado em reduzir verbosidade do *output* do Claude (corta "Sure!", "Great question!", restate de pergunta, etc). MIT. README honesto sobre o tradeoff (o arquivo carrega input tokens toda sessão; só compensa em alto volume de output). Métricas de stars do repo são suspeitas — leia pela técnica, não pela popularidade.
->
-> Consumiu? Faça uma glosa em `02-Glosas/` se quiser destilar mais.
+- [Claude Code — memory and context](https://docs.anthropic.com/en/docs/claude-code/memory) — documentação oficial sobre CLAUDE.md e controle de contexto
+- [Anthropic — prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) — como o cache de prefixo funciona e por que estabilidade importa
+- [nadimtuhin/claude-token-optimizer](https://github.com/nadimtuhin/claude-token-optimizer) — scaffolding via `npx` que cria a estrutura `.claude/` e `.claudeignore` para 13 frameworks (Express, Next.js, Vue, Django, Rails, Laravel, etc). MIT, útil como ponto de partida.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
