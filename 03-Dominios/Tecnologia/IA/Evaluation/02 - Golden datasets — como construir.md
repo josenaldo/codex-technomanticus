@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - evaluation
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Golden dataset é o conjunto canônico de pares **input → output esperado** (ou critério) que serve de régua pra qualquer mudança no sistema. Construir um golden set bom é mais arte que ciência: precisa ser **representativo** da distribuição real, cobrir **edge cases**, incluir **anti-tests** (inputs onde o modelo deve recusar), versionar junto com o prompt, e crescer com casos reais que falharam. Tamanho mínimo prático: 30-50 exemplos pra começar; 100-300 pra um produto sério; mais que isso vira diminishing returns. O pitfall canônico é dataset que vira *leaderboard* pra um modelo específico — golden set tem que medir a tarefa, não o modelo.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você entende o conceito de EDD — que mudanças de prompt devem ser medidas contra um baseline, não julgadas por feeling (nota 01). Esta nota entra nos detalhes do asset central de EDD: o golden dataset. Não é necessário experiência prévia com datasets de ML — a analogia mais útil é com suítes de teste em software: o golden set é a suíte de testes do seu sistema LLM. O que muda é que "passar" não é booleano — é um score — e "esperado" não é um resultado determinístico, é um julgamento humano.
 
 ## O que é um golden set
 
@@ -222,6 +226,42 @@ Suporte ao cliente, dataset evoluindo em 6 meses:
 | v2.0 (mês 6) | 180 | rubrica revisada, expected atualizados | 76% (novos critérios mais duros) |
 
 A queda inicial em v0.5 e v1.0 **não é regressão** — é a descoberta de que o sistema era pior do que o golden set inicial sugeria. Esse é o sinal mais valioso do dataset: revelar a verdade.
+
+## Armadilhas comuns
+
+> [!warning] Expected gerado pelo mesmo modelo que você avalia
+> É tentador usar o próprio LLM pra gerar os "outputs esperados" do golden set — é mais rápido do que escrever à mão. O problema: o modelo vai concordar com ele mesmo. Scores ficam artificialmente altos. Quando você troca o modelo ou o prompt significativamente, os gaps aparecem, mas o golden set não detecta porque foi calibrado pro comportamento do modelo original. Se precisar usar LLM pra ajudar a construir o dataset, use um modelo **diferente** do que vai ser avaliado, e faça validação humana em pelo menos 20% dos casos.
+
+> [!warning] Dataset sem metadata de origem e razão de inclusão
+> Em seis meses, você vai olhar pra um exemplo no golden set e não vai saber: por que esse exemplo está aqui? É um bug real, um edge case teórico, ou ficou de uma sessão de brainstorming que nunca virou produção? Sem metadata (`source`, `added_by`, `added_at`, `category_real`, `note`), o golden set vira uma caixa preta. Você não sabe quais exemplos são mais importantes, quais podem ser removidos, e por que casos específicos falharam. Trate metadata como parte do contrato do exemplo — não opcional.
+
+> [!warning] Golden set que para de crescer
+> Um golden set congelado reflete o estado do produto há N meses, não o estado atual. Novos tipos de input que os usuários descobriram não estão nele. Bugs recentes que foram corrigidos não viraram regressão permanente. Em 6 meses, um golden set sem crescimento está medindo a versão beta do produto, não a versão atual. A disciplina é clara: todo bug em prod que foi resolvido vira um caso novo no dataset. Sem isso, o golden set vira fóssil.
+
+## Como explicar em inglês
+
+Em entrevistas sobre AI Engineering ou em revisões de sistemas LLM, demonstrar que você sabe construir golden sets é um dos diferenciadores mais claros entre quem fez prototipagem e quem fez produção:
+
+> "A golden dataset is the canonical set of input-output pairs that measures what 'good' means for your specific task. Building one well requires: sampling real production inputs (not just happy paths), including edge cases and anti-tests where the model should refuse, having domain experts write expected outputs, versioning it in git with changelogs, and making every production bug a permanent regression case. The common failure mode is building a dataset from cases you already know work — that dataset measures the easy path, not the actual distribution."
+
+| Português | Inglês |
+|-----------|--------|
+| dataset dourado | golden dataset / golden set |
+| output esperado | expected output |
+| caso de borda | edge case |
+| anti-teste | anti-test |
+| amostragem de produção | production sampling |
+| curadoria | curation / manual curation |
+| anotação humana | human annotation |
+| inter-rater agreement | inter-rater agreement |
+| expert de domínio | subject matter expert (SME) |
+| raciocínio circular | circular reasoning |
+
+## O que vem a seguir
+
+Com o dataset construído, o próximo passo é definir o que "bom" significa em números: a rubrica de scoring. A nota 03 cobre como criar dimensões de avaliação, o que define score 1, 3 e 5 em cada dimensão, e como calibrar anotadores humanos pra que diferentes pessoas cheguem em scores consistentes.
+
+Ver [[03 - Scoring rubrics e critérios]].
 
 ## Veja também
 
