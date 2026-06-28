@@ -3,7 +3,7 @@ title: "Plano — Trilha Plataforma Web (A5)"
 type: spec
 created: 2026-06-28
 updated: 2026-06-28
-status: active
+status: done
 tags:
   - spec
   - plataforma-web

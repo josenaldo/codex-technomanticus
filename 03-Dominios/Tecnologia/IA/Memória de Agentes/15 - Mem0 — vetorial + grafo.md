@@ -1,8 +1,9 @@
 ---
 title: "Mem0 — vetorial + grafo"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,10 @@ aliases:
 
 > [!abstract] TL;DR
 > **Mem0** (`github.com/mem0ai/mem0`) é um framework de produção que se posiciona como **"universal memory layer for AI agents"**: uma camada drop-in que extrai fatos salientes de conversas via LLM e os persiste em **vector store** (variante base) ou em uma combinação de vetor com **grafo** (variante **Mem0g** descrita no paper original). O paper de fundação (arxiv 2504.19413, ECAI 2025) reporta **91% de redução em p95 latency** e **mais de 90% de economia de tokens** versus baselines full-context na avaliação LOCOMO. O blog oficial *State of AI Agent Memory 2026* (1º de abril de 2026) e a página de pesquisa (`mem0.ai/research`, 25 de abril de 2026) reportam **93,4% no LongMemEval** com o algoritmo atualizado — número **auto-reportado**, a ser validado por benchmark independente. Cobertura ampla de integrações: ~24 frameworks listados em `docs.mem0.ai/integrations` (LangChain, LangGraph, CrewAI, LlamaIndex, AutoGen, Vercel AI SDK, OpenAI Agents SDK, Google ADK, Mastra, Agno, Pipecat, ElevenLabs, Livekit e outros — verificar lista atual). Apache-2.0, Python + TypeScript SDK, self-host gratuito, cloud paga em modelo freemium.
+
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: Se o pipeline de extração de "fatos salientes" é opaco e controlado por um LLM interno, como auditar o que foi descartado como "não saliente"? Existe algum modo de debug ou log de extração acessível no SDK open-source?
+> - Lacuna potencial: A nota não detalha como o **entity linking embutido** (que substituiu o graph store externo no SDK open-source) funciona internamente — entender esse mecanismo é crucial para avaliar se Mem0g do paper e Mem0 atual são realmente equivalentes em raciocínio multi-hop.
 
 ## O que é
 
@@ -63,6 +68,59 @@ O fluxo central é deliberadamente simples e tem duas operações principais:
 
 A propriedade-chave do design é que **o agent não precisa decidir o que armazenar**. Diferente de [[14 - Letta (ex-MemGPT)|Letta]], que expõe `core_memory_append` e `archival_memory_insert` como tools que o agent invoca por conta própria, no Mem0 a decisão é delegada a um pipeline de extração rodando no `add` — invisível ao agent. Isso é simultaneamente uma vantagem (menos cognitive load no LLM principal, menos tokens gastos em decisões de memória) e uma desvantagem (a heurística de extração é parcialmente opaca, e cada `add` custa pelo menos uma chamada de LLM extra).
 
+### Exemplo concreto: chatbot de saúde pessoal
+
+Imagine um chatbot de acompanhamento de saúde que conversa com o usuário semanalmente. Sem Mem0, o agent não lembraria de uma consulta anterior. Com Mem0:
+
+```python
+from mem0 import Memory
+
+m = Memory()
+
+# Sessão 1 — usuário relata metas
+messages = [
+    {"role": "user", "content": "Comecei uma dieta sem glúten há duas semanas."},
+    {"role": "assistant", "content": "Ótimo! Como está sendo a adaptação?"},
+    {"role": "user", "content": "Bem, mas sinto falta de pão. Minha meta é perder 5kg em 3 meses."}
+]
+m.add(messages, user_id="usuario_joao")
+
+# Sessão 2 — semana seguinte, o agent busca contexto antes de responder
+memories = m.search("dieta e metas de saúde", user_id="usuario_joao")
+# Retorna: ["dieta sem glúten há 2 semanas", "meta: perder 5kg em 3 meses"]
+```
+
+O agente recebe os fatos recuperados no prompt, responde com continuidade e não precisa perguntar "pode me lembrar de onde paramos?". O usuário sente que o sistema realmente o conhece.
+
+### Fluxo de extração de fatos
+
+O passo interno mais crítico é o de extração: o LLM de extração (que pode ser diferente do LLM de resposta) recebe o texto cru da conversa e produz afirmações atômicas, como:
+
+- "João segue dieta sem glúten"
+- "Meta de João: perder 5 kg em 3 meses"
+- "João sente falta de pão"
+
+Essas afirmações são embedadas e gravadas no vector store. Na busca, a query do agent é comparada semanticamente com essas afirmações por similaridade de coseno, e as mais próximas são retornadas — RAG clássico, mas sobre fatos extraídos, não sobre chunks crus de texto.
+
+```mermaid
+sequenceDiagram
+    participant A as Agent
+    participant M as Mem0 Layer
+    participant LLM_E as LLM de Extração
+    participant VS as Vector Store
+
+    A->>M: memory.add(messages, user_id)
+    M->>LLM_E: "Extraia fatos salientes dessas mensagens"
+    LLM_E-->>M: ["fato 1", "fato 2", "fato 3"]
+    M->>VS: embed + store fatos
+    VS-->>M: confirmação
+
+    A->>M: memory.search("dieta e metas", user_id)
+    M->>VS: query embedding → similaridade
+    VS-->>M: fatos relevantes ranqueados
+    M-->>A: lista de fatos para injetar no prompt
+```
+
 ## Anatomia técnica
 
 Os itens abaixo foram verificados em `github.com/mem0ai/mem0`, `docs.mem0.ai` e `mem0.ai` em abril de 2026. Algumas configurações suportadas em Python ainda não estão disponíveis no SDK TypeScript — quando relevante, indica-se a divergência.
@@ -78,6 +136,18 @@ Os itens abaixo foram verificados em `github.com/mem0ai/mem0`, `docs.mem0.ai` e 
 - **Pricing (em `mem0.ai/pricing`, abril/2026):** *Hobby* gratuito (10k add / 1k search por mês); *Starter* US$ 19/mês (50k add / 5k search); *Pro* US$ 249/mês (500k add / 50k search, analytics); *Enterprise* sob consulta (on-prem, SSO, audit logs). Self-host open-source é gratuito sempre — paga-se apenas pelo cloud gerenciado.
 - **Scores reportados (auto-reportados por Mem0, em `mem0.ai/research`, 25 de abril de 2026):** LongMemEval **93,4** (categoria geral 92,0, em 500 questões / 6 categorias); LOCOMO **91,6** (overall 85,0); BEAM **64,1** em 1M tokens e **48,6** em 10M tokens; "averaging under 7,000 tokens per retrieval call" vs 25 mil+ em métodos full-context.
 - **Claims de eficiência do paper (arxiv 2504.19413):** **91% lower p95 latency** vs full-context, **+90% economia de tokens** vs full-context, e **26% de melhora relativa** sobre OpenAI Memory na métrica LLM-as-judge.
+
+### Comparativo de posicionamento: Mem0 vs Letta
+
+| Dimensão | Mem0 | Letta |
+|----------|------|-------|
+| Papel | Memory layer (drop-in) | Agent framework completo |
+| Quem decide o que armazenar | Pipeline de extração (LLM interno) | O próprio agent (via tools) |
+| Curva de integração | Baixa (2 métodos de API) | Alta (requer migrar para o agent loop do Letta) |
+| Transparência do mecanismo | Parcialmente opaca | Totalmente explícita (ADE) |
+| Benchmark público | LongMemEval 93,4% (auto-reportado) | Não publicado |
+| Licença | Apache-2.0 | Apache-2.0 |
+| Substrato de persistência | Vector store (+ entity linking) | PostgreSQL + pgvector |
 
 ## Quando usar / quando não usar
 
@@ -100,13 +170,48 @@ Os itens abaixo foram verificados em `github.com/mem0ai/mem0`, `docs.mem0.ai` e 
 
 ## Armadilhas comuns
 
-- **Confiar em score LongMemEval auto-reportado.** Os 93,4% são reportados pela própria Mem0, não por benchmark independente. Antes de citar em decisão técnica, validar com benchmark próprio sobre o caso de uso real (ver auditoria em [[22 - Críticas, limitações e armadilhas]]).
-- **Esquecer o custo da extração.** Cada `memory.add` invoca pelo menos uma chamada extra de LLM para extrair fatos salientes. Em conversas longas e de alto volume, esse custo acumula — e não aparece no benchmark de retrieval.
-- **Tomar Mem0g do paper como sinônimo de Mem0 + Neo4j hoje.** O paper descreve graph store externo; a documentação atual indica remoção desse suporte no open-source em favor de entity linking embutido. Quem replica o setup do paper em 2026 pode encontrar surpresa na config.
-- **Cobertura de "integrations" é variável.** Algumas integrações são exemplos / cookbooks, outras são suportadas oficialmente como first-class. Antes de prometer "Mem0 funciona com X" para um cliente, abrir a página de integração de X e verificar se é cookbook, exemplo ou suporte mantido.
-- **Memória opaca para revisão humana.** Os fatos extraídos vivem em vector store. Não há `.md` legível para auditoria, comparado com [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]] ou [[13 - basic-memory — MCP nativo Obsidian|basic-memory]]. Em cenários regulados (saúde, finanças, jurídico) isso é considerável.
-- **Score em LOCOMO no paper (66,9% / 68,4%) e score em LongMemEval no blog (93,4%) são benchmarks diferentes.** Não são comparáveis lado a lado — confundir os dois inflaciona a impressão de progresso.
-- **Versão TypeScript ≠ versão Python.** SDK TS suporta menos LLMs e menos vector stores hoje. Projetos full-stack que dependem de paridade devem checar antes de se comprometer.
+> [!warning] Armadilha 1: Confiar em score LongMemEval auto-reportado como dado objetivo
+> Os 93,4% são reportados pela própria Mem0 AI, não por benchmark independente. Antes de citar em decisão técnica, validar com benchmark próprio sobre o caso de uso real — a metodologia exata, o modelo de LLM usado na avaliação e o conjunto de dados importam muito (ver auditoria em [[22 - Críticas, limitações e armadilhas]]).
+
+> [!warning] Armadilha 2: Ignorar o custo da chamada de extração
+> Cada `memory.add` invoca pelo menos uma chamada extra de LLM para extrair fatos salientes. Em conversas longas e de alto volume, esse custo acumula — e não aparece no benchmark de retrieval que o vendor publica. Modelar o custo real de tokens de extração é pré-requisito para qualquer cálculo de TCO.
+
+> [!warning] Armadilha 3: Tomar Mem0g do paper como sinônimo de Mem0 + Neo4j em 2026
+> O paper descreve graph store externo (Neo4j, Memgraph, etc.); a documentação atual indica remoção desse suporte no SDK open-source em favor de entity linking embutido. Quem replica o setup do paper pode encontrar surpresa na configuração. Antes de afirmar "Mem0 com grafo" em uma proposta técnica, verificar a versão e o changelog do SDK.
+
+> [!warning] Armadilha 4: Presumir que "integrations" significam suporte de primeira linha
+> Algumas integrações são exemplos / cookbooks, outras são suportadas oficialmente como first-class. Antes de prometer "Mem0 funciona com X" para um cliente, abrir a página de integração de X e verificar se é cookbook, exemplo ou suporte mantido — a diferença é substancial em termos de manutenção ao longo do tempo.
+
+> [!warning] Armadilha 5: Assumir revisão humana possível sobre a memória armazenada
+> Os fatos extraídos vivem em vector store, não em arquivos legíveis. Não há `.md` editável para auditoria manual, ao contrário de [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]] ou [[13 - basic-memory — MCP nativo Obsidian|basic-memory]]. Em cenários regulados (saúde, finanças, jurídico), a opacidade do substrato é um risco a endereçar explicitamente no design do sistema.
+
+> [!warning] Armadilha 6: Confundir benchmarks LOCOMO e LongMemEval
+> O score de 66,9% / 68,4% no paper (LOCOMO, LLM-as-judge) e o score de 93,4% no blog (LongMemEval, algoritmo atualizado) são benchmarks diferentes com metodologias diferentes. Não são comparáveis lado a lado — confundir os dois inflaciona artificialmente a impressão de progresso do framework.
+
+> [!warning] Armadilha 7: Assumir paridade entre SDK Python e SDK TypeScript
+> O SDK TypeScript suporta menos LLMs (OpenAI, Anthropic, Groq) e menos vector stores do que o SDK Python (~16 LLMs, ~20 vector stores). Projetos full-stack que dependem de paridade devem checar a documentação antes de comprometer com uma configuração que funciona em Python mas não em TypeScript.
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "Mem0 is a drop-in memory layer: you call `memory.add` after each conversation turn and `memory.search` before generating a response. An internal LLM extracts salient facts and stores them in a vector store — the agent never needs to decide what to remember."
+
+| Português | Inglês |
+|-----------|--------|
+| camada de memória universal | universal memory layer |
+| extração de fatos salientes | salient fact extraction |
+| vector store | vector store |
+| grafo de entidades | entity graph / knowledge graph |
+| memory layer drop-in | drop-in memory layer |
+| benchmark auto-reportado | self-reported benchmark |
+| entity linking embutido | built-in entity linking |
+| custo de extração | extraction cost (tokens) |
+| memory opaca para revisão humana | opaque memory (not human-auditable) |
+| integração de primeira linha | first-class integration |
+
+## O que vem a seguir
+
+Mem0 resolve o problema de persistência de fatos factual-episódicos com uma API de duas chamadas — simples, mas sem dimensão temporal. Saber que "João prefere respostas curtas" é útil; saber que "João preferia respostas curtas até março e desde então quer detalhes técnicos" é um nível diferente de raciocínio. É exatamente essa lacuna — memória com **consciência de tempo** — que a próxima nota endereça. O [[16 - Zep e Graphiti — knowledge graph temporal|Zep e Graphiti]] implementam um knowledge graph bi-temporal onde cada fato carrega timestamps de validade e o sistema suporta queries como "qual era o estado de X em determinada data". Para casos enterprise onde a evolução da memória ao longo do tempo é material (conformidade, auditoria, análise longitudinal de usuário), Zep representa um salto qualitativo sobre a abordagem vetorial do Mem0.
 
 ## Veja também
 

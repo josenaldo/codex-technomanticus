@@ -50,7 +50,7 @@ aliases:
 | [[03-Dominios/Tecnologia/React/index\|React]] | ✅ | domínio multi-galho **COMPLETO** (2026-06-27): **React core ✅** (26) + **Design Patterns ✅** (12) + **Next.js ✅** (16, baseline Next 15) + **Ecossistema ✅** (13, server state/client state/forms/UI/tables/charts) + TypeScript com React (15) + Charts (sub-área) |
 | [[03-Dominios/Tecnologia/HTML/index\|HTML]] | ✅ | 12 notas, 3 fases (Iniciado/Adepto/Magus), concluída 2026-06-27 (monólito aposentado) |
 | [[03-Dominios/Tecnologia/CSS/index\|CSS]] | ✅ | 13 notas, 3 fases (Iniciado/Adepto/Magus), concluída 2026-06-27 (monólitos aposentados) |
-| [[03-Dominios/Tecnologia/Plataforma Web/index\|Plataforma Web]] | 🟡 | só galho Networking; falta DOM, eventos, rendering, Web APIs, storage, Workers |
+| [[03-Dominios/Tecnologia/Plataforma Web/index\|Plataforma Web]] | ✅ | **COMPLETA 2026-06-28**: 7 galhos (DOM/Eventos/Rendering/Web APIs/Storage/Workers/Networking), ~54 notas, 3 fases |
 
 ### Backend / Runtime
 
@@ -113,7 +113,7 @@ aliases:
 2. ✅ **React** — domínio multi-galho **COMPLETO 2026-06-27**: React core (26) + Design Patterns (12) + Next.js (16, baseline Next 15) + Ecossistema (13, server state/client state/forms/UI/tables/charts). TypeScript com React (15) e Charts já existiam.
 3. 🧱→✅ **HTML** — semântica, forms, acessibilidade (ARIA/a11y), SEO, metadados.
 4. 🧱→✅ **CSS** — box model, flex/grid, cascade & specificity, responsivo, design tokens.
-5. 🟡→✅ **Plataforma Web** — DOM, event loop no browser, rendering pipeline, Web APIs, storage, Service Workers.
+5. ✅ **Plataforma Web** — **CONCLUÍDA 2026-06-28**: 7 galhos (DOM/Eventos/Rendering/Web APIs/Storage/Workers/Networking), ~54 notas, 3 fases.
 
 ### Onda B — Reformas e consolidações
 6. 🟡 **Reforma do Node** — atomizar/reordenar os 8 galhos no padrão capítulo.
