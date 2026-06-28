@@ -1,9 +1,10 @@
 ---
 title: "02 - Imagens como input — screenshots, charts, mockups"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - multimodal
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Imagem é a modalidade não-textual mais usada em 2026. Cinco tipos de tarefa cobrem 90% dos casos: descrição, extração, comparação, debug e classificação. O custo varia muito por provider — Anthropic cobra por área (até ~1600 tokens em max-res), OpenAI separa "low detail" (~85 tokens) de "high detail" (~85 + 170 por tile 512x512), Gemini cobra constante (~258 tokens por imagem em tiers normais). Resolução alta nem sempre é necessária; mande low detail quando a tarefa é classificação grossa, high detail só pra leitura de texto pequeno ou gráfico denso. Templates por tarefa no fim da nota.
+
+> [!question]- Como saber se devo usar `detail: low` ou `detail: high` no OpenAI — e existe equivalente no Claude e Gemini?
+> A decisão gira em torno de **o que a tarefa precisa ler**. Use `low` (85 tokens fixos) quando você só precisa classificar o tipo de imagem, gerar alt text genérico, ou filtrar se a imagem contém determinado elemento — a resolução de 512×512 que o `low` usa é suficiente pra essas tarefas. Use `high` quando precisa ler texto pequeno (campo de formulário, número em gráfico, código em screenshot), comparar detalhes finos, ou fazer diagnóstico de UI. No Claude, não existe parâmetro de detalhe explícito — o modelo recebe a imagem em resolução original e decide internamente; reduzir o tamanho antes de enviar tem efeito equivalente ao `low`. No Gemini, imagens abaixo de ~768×768 são upscaled internamente; acima de 3072×3072 são redimensionadas — a tokenização constante (~258) se mantém na maioria dos casos.
 
 ## Cinco tipos de tarefa visual
 
@@ -258,6 +262,37 @@ A nota [[06 - Como dizer ao modelo o tipo de leitura]] aprofunda esse padrão.
 - **Use `detail: low` no OpenAI quando puder.** Pra classificação binária ou descrição grossa, low detail entrega 85 tokens fixos.
 - **Suba pra max-res no Anthropic só quando necessário.** Tokens crescem com a área — 2x dimensão = 4x tokens.
 - **Não envie 50 imagens em uma chamada se puder pré-filtrar.** Use modelo barato pra triagem, modelo bom pra análise final.
+
+## Armadilhas comuns
+
+> [!warning] Mandar screenshot da página inteira quando só a área relevante importa — custo desnecessário e distração
+> Screenshot de página web com header, navbar, footer, e coluna lateral manda ao modelo 60-70% de informação irrelevante — e o modelo pode "distrair" com esses elementos ao analisar o conteúdo que interessa. Além do custo maior (mais pixels = mais tokens no Anthropic), o output tende a mencionar elementos irrelevantes. Sempre corte antes de mandar. No Python: PIL + `image.crop((x1, y1, x2, y2))`. Em CLI: `convert input.png -crop 800x600+100+50 output.png`. O model que recebe a região exata de interesse produz output mais focado.
+
+> [!warning] Usar PNG sempre quando JPG seria suficiente — ou o contrário
+> PNG é sem perda — ideal quando a imagem tem texto, código, interface de produto, ícone, gráfico com valores exatos. Para screenshots de UI, PNG é certo. JPG com compressão alta introduz artifact que confunde leitura de texto pequeno: "1va" em vez de "1/a", "O" em vez de "0". Por outro lado, mandar imagem fotográfica (rosto, cena, produto físico) como PNG sem necessidade infla o tamanho sem ganho de leitura — JPG quality 85 é suficiente pra fotos onde texto não precisa ser lido com precisão.
+
+> [!warning] Não especificar `detail: low` na OpenAI quando a tarefa permite — custo 9x sem ganho
+> Default do OpenAI quando você não passa `detail` é `auto`, que geralmente resolve pra `high` em imagens de tamanho padrão. Uma imagem 1024×1024 em `high` custa ~765 tokens; a mesma em `low` custa 85 tokens. Para pipelines de classificação, triagem, ou alt text onde low detail é suficiente, não especificar `detail` significa pagar ~9x por chamada. Em produção com 10k imagens/dia, a diferença é centenas de dólares por mês. Sempre declare explicitamente: `"detail": "low"` ou `"detail": "high"` — não deixe o `auto` decidir.
+
+## Como explicar em inglês
+
+**Interview quote:** *"For image inputs in 2026, we match resolution to task: classification uses OpenAI's detail-low at 85 tokens flat, reading small text uses high detail or Anthropic max-res. We always crop to the region of interest before sending — it reduces token cost and improves output focus. Our templates always include a null option for unreadable fields to prevent hallucination."*
+
+| Português | Inglês |
+|---|---|
+| Imagem como input | Image as input |
+| Modo de detalhe baixo / alto | Low / high detail mode |
+| Corte de imagem antes de enviar | Image crop before sending |
+| Tokens por área de imagem | Tokens per image area |
+| PNG sem perda vs JPG com compressão | Lossless PNG vs compressed JPEG |
+| Extração estruturada de imagem | Structured image extraction |
+| Comparação visual (before/after) | Visual comparison (before/after) |
+| Debug de UI via screenshot | UI debugging via screenshot |
+| Classificação grossa (pré-filtro) | Coarse classification (pre-filter) |
+
+## O que vem a seguir
+
+Com imagens dominadas, a nota 03 entra em **PDFs e documentos** — que são sequências de páginas-imagem mas têm caminhos nativos em Claude, Gemini e OpenAI que simplificam o pipeline. A decisão de mandar o PDF nativo vs renderizar página por página como imagem é a principal bifurcação que a próxima nota resolve.
 
 ## Fontes
 
