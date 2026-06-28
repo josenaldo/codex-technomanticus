@@ -191,6 +191,70 @@ Os itens abaixo foram verificados em `github.com/mem0ai/mem0`, `docs.mem0.ai` e 
 > [!warning] Armadilha 7: Assumir paridade entre SDK Python e SDK TypeScript
 > O SDK TypeScript suporta menos LLMs (OpenAI, Anthropic, Groq) e menos vector stores do que o SDK Python (~16 LLMs, ~20 vector stores). Projetos full-stack que dependem de paridade devem checar a documentação antes de comprometer com uma configuração que funciona em Python mas não em TypeScript.
 
+## Pipeline de extração em detalhe
+
+A pergunta natural sobre qualquer extração automática é: como eu sei o que foi descartado? O Mem0 expõe o conceito de **memory operations** — cada chamada a `memory.add` devolve uma lista estruturada das operações realizadas: `ADD`, `UPDATE`, `DELETE`, ou `NONE`. Isso é a única janela de observabilidade sobre o que o LLM interno decidiu preservar.
+
+```python
+result = memory.add(messages, user_id="joao")
+print(result["results"])
+# Exemplo de output:
+# [
+#   {"id": "...", "memory": "João prefere Python a JavaScript", "event": "ADD"},
+#   {"id": "...", "memory": "João usa macOS", "event": "UPDATE"},
+# ]
+```
+
+O fato que não aparece no output foi silenciosamente descartado como "não saliente". Não há log de rejeições — a única forma de auditar o que foi perdido é comparar manualmente o conteúdo da conversa com o estado de `memory.get_all()` antes e depois da chamada. Em ambientes regulados isso é uma lacuna de design: a ausência de trilha de auditoria de descarte é um risco operacional.
+
+> [!info] Entity linking embutido (pós-2025)
+> Versões recentes do Mem0 incorporaram entity linking diretamente ao pipeline de extração — sem depender de Neo4j externo. Na prática, isso significa que "João usa FastAPI" e "ele prefere async" são associados à mesma entidade `João` automaticamente, sem configuração explícita de grafo. O mecanismo é opaco (roda dentro do pipeline LLM), mas resolve o gap de coerência entre fatos sobre o mesmo usuário sem exigir infraestrutura extra.
+
+## Integrações além do chatbot de saúde
+
+O caso do chatbot de saúde pessoal é o exemplo canônico, mas o Mem0 foi desenhado para cenários mais amplos:
+
+**Assistente de código com memória de preferências:**
+
+```python
+# Ao iniciar sessão de pair programming
+memories = memory.search("code style preferences", user_id="dev_joao")
+system_context = "\n".join([m["memory"] for m in memories])
+# Injeta: "João usa type hints, prefere f-strings, evita one-liners"
+```
+
+**Suporte ao cliente com histórico de produto:**
+
+```python
+# Ao abrir ticket
+customer_history = memory.search(query, user_id=customer_id)
+# Recupera: "Relatou problema X em 2024-11, resolvido com Y. Tem plano Pro."
+```
+
+**Agente de pesquisa com acumulação de contexto:**
+
+```python
+# Cada sessão adiciona descobertas relevantes
+memory.add([{"role": "assistant", "content": paper_summary}], user_id="researcher_01")
+# Próxima sessão parte do estado acumulado, não do zero
+```
+
+A API de duas chamadas (`memory.add` / `memory.search`) funciona em qualquer um desses contextos sem mudança de interface — a diferença está nos dados e nos user_ids, não no código.
+
+## Posicionamento competitivo
+
+A decisão entre Mem0, Letta, e Zep raramente é técnica — é contextual:
+
+| Pergunta-chave | Mem0 | Letta | Zep |
+|----------------|------|-------|-----|
+| O agent precisa gerenciar a própria memória? | Não (pipeline transparente) | Sim (self-editing) | Não (pipeline KG) |
+| Memória precisa de dimensão temporal? | Não | Não | Sim (bi-temporal) |
+| Precisa auditar cada fato armazenado? | Parcial (memory ops) | Sim (ADE) | Sim (timestamps) |
+| Substrato legível por humanos? | Não (vector store) | Não (banco) | Sim (KG navegável) |
+| Benchmark independente disponível? | Auto-reportado | Ausente | Publicado |
+
+O Mem0 ganha em **simplicidade de onboarding** e na **ausência de servidor para gerenciar** — `pip install mem0ai` e duas chamadas de API. O custo é transparência e auditabilidade. Para projetos iniciais ou equipes sem recursos para operar infraestrutura adicional, esse trade-off faz sentido. Para produção regulada, o balanço pesa diferente.
+
 ## Como explicar em inglês
 
 > [!tip] Interview quote
@@ -232,3 +296,5 @@ Mem0 resolve o problema de persistência de fatos factual-episódicos com uma AP
 - Blog oficial — *State of AI Agent Memory 2026* (1 de abril de 2026): `https://mem0.ai/blog/state-of-ai-agent-memory-2026`
 - Documentação: `https://docs.mem0.ai/` — em particular `docs.mem0.ai/integrations`, `docs.mem0.ai/components/llms/overview` e `docs.mem0.ai/components/vectordbs/overview`.
 - Pricing: `https://mem0.ai/pricing`.
+- Repositório de exemplos: `https://github.com/mem0ai/mem0/tree/main/examples` — inclui cookbooks com LangGraph, CrewAI, AutoGen e outros frameworks.
+- Changelog do SDK: `https://github.com/mem0ai/mem0/releases` — fonte primária para verificar remoção de suporte a Neo4j e outras mudanças de interface que afetam replicação do paper.
