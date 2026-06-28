@@ -1,8 +1,9 @@
 ---
 title: "Gemini"
 created: 2026-04-01
-updated: 2026-04-11
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: evergreen
 tags:
@@ -17,6 +18,9 @@ publish: true
 # Gemini
 
 > Gemini é a aposta do Google em [[Dicionário de IA#LLM (Large Language Model)|LLMs]], e em 2026 é o modelo mais multimodal e o único com [[Dicionário de IA#Context window|context window]] de 2M tokens. Para um fullstack senior, Gemini é relevante principalmente em três casos: (1) quando o problema envolve imagem, áudio ou vídeo nativamente; (2) quando você precisa processar documentos gigantes em uma única chamada; (3) quando sua stack já vive no Google Cloud. Fora desses casos, Claude e GPT costumam oferecer experiência melhor em coding interativo. Esta nota cobre os modelos, ferramentas (Gemini CLI, Code Assist, Vertex AI), diferenciais, limitações, e como encaixar Gemini na sua stack. Para comparação detalhada ver [[Comparativo de LLMs]].
+
+> [!question]- Quando escolher Gemini em vez de Claude ou GPT?
+> Três critérios concretos. (1) Multimodalidade nativa: se o problema envolve imagem, áudio ou vídeo em uma só chamada, Gemini é a escolha mais coesa. (2) Contexto gigante: documentos com mais de 200K tokens que precisam de uma única análise holística — Gemini 2.5 Pro com 2M tokens resolve sem chunking. (3) Stack Google Cloud: se a infraestrutura já é GCP e compliance exige data residency, Vertex AI elimina fricção. Para coding interativo do dia a dia, Claude Code ainda lidera; para high-volume de texto, Flash-Lite compete no custo.
 
 ## O que é
 
@@ -268,6 +272,15 @@ Ter em mente:
 
 ## Armadilhas comuns
 
+> [!warning] Assumir que 2M tokens funcionam perfeitamente
+> Context rot (lost-in-the-middle) ainda existe em contextos massivos. Colocar 500K tokens e esperar que o modelo ache o trecho relevante no meio é ilusão. Acima de 200-300K tokens, RAG filtrado entrega qualidade superior ao full-context dump. Use a janela grande para casos onde a cobertura holística importa (análise de contrato inteiro, revisão de codebase pequena), não como substituto de retrieval.
+
+> [!warning] Usar Flash sem testar qualidade no caso de uso real
+> "Flash é mais barato" é verdade. "Flash é bom o suficiente" exige teste no seu golden set. Para tarefas de raciocínio complexo, Flash pode regredir 10-30% em qualidade versus Pro. O anti-padrão é escolher Flash por custo sem medir qualidade, lançar em produção, e só perceber a diferença depois que usuário reclama. Teste primeiro, otimize custo depois.
+
+> [!warning] Comparar benchmarks do Gemini sem replicar no seu caso
+> Claims de "Gemini supera Claude em reasoning" quase sempre não replicam quando você testa no seu workload específico. Modelos são especializados; benchmarks não representam seu caso de uso. Crie um golden set próprio de 50-100 itens representativos do problema real antes de escolher modelo para produção.
+
 ### 1. Assumir "2M tokens funcionam perfeitamente"
 
 Context rot é real. **Fix:** teste empiricamente; use RAG para > 500K.
@@ -373,17 +386,20 @@ Where Gemini actually deploys best in 2026: multimodal features where text-only 
 - "2M tokens is nice but lost-in-the-middle is still lost-in-the-middle."
 - "Grounding with Google Search reduces hallucination on current events, but validate for critical decisions."
 
-### Key vocabulary
+### Tabela PT↔EN
 
-- multimodal → multimodal
-- ancoragem → grounding
-- raio-x / imagem → image / x-ray
-- residência de dados → data residency
-- governança → governance
-- tempo real → real-time
-- latência sub-segundo → sub-second latency
-- janela de contexto → context window
-- orçamento de tokens → token budget
+| Português | Inglês |
+|---|---|
+| multimodal nativo | native multimodal |
+| ancoragem com busca | grounding with search |
+| residência de dados | data residency |
+| janela de contexto | context window |
+| orçamento de tokens | token budget |
+| degradação de contexto | context rot / lost-in-the-middle |
+| latência sub-segundo | sub-second latency |
+| tempo real | real-time |
+| governança de dados | data governance |
+| nível de serviço | service tier |
 
 ## Recursos
 
@@ -599,6 +615,10 @@ Migração para RAG com chunking semântico tipicamente: latência → ~3s, cust
 4. Configure IAM granular.
 5. Audit log setup.
 6. Deploy simples usando o endpoint.
+
+## O que vem a seguir
+
+Gemini completa o trio dos grandes modelos (Claude, GPT/Codex, Gemini). O próximo passo é o [[GitHub Copilot]] — abordagem diferente: integrado ao editor, menor em contexto, mas com adoção massiva em times que vivem no VS Code e GitHub. Para fechar a visão completa do ecossistema, o [[Comparativo de LLMs]] coloca todos lado a lado em critérios de escolha práticos por tipo de workload.
 
 ## Veja também
 
