@@ -1,10 +1,10 @@
 ---
 title: "Macrotasks e timers: setTimeout, setInterval, setImmediate"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -22,6 +22,10 @@ aliases:
 
 > [!abstract] TL;DR
 > `setTimeout` e `setInterval` rodam na fase **timers**. `setImmediate` roda na fase **check**. Em contexto de I/O, `setImmediate` é determinístico — sempre executa antes de `setTimeout(fn, 0)`, porque a fase `check` vem antes da próxima fase `timers`. Fora de I/O, a ordem entre os dois é imprevisível e depende do tempo de inicialização do processo. Para sleep idiomático em código async, use `node:timers/promises`.
+
+## Por que `setImmediate` às vezes dispara antes de `setTimeout(fn, 0)` — e às vezes não?
+
+Você tem código com `setImmediate` e `setTimeout(fn, 0)` lado a lado. Em produção, a ordem varia entre execuções sem motivo aparente. Em entrevistas, perguntam exatamente isso. A resposta está em quais **fases do event loop** hospedam cada API — e se você está ou não dentro de um callback de I/O quando as agenda.
 
 ## O que é
 
@@ -118,6 +122,29 @@ Todas as funções do módulo aceitam um objeto `options` com:
 | `timers/promises setTimeout` | timers | Não | `Promise<T>` | `AbortSignal` |
 | `timers/promises setImmediate` | check | Não | `Promise<T>` | `AbortSignal` |
 | `timers/promises setInterval` | timers (repetido) | Sim (async iterator) | `AsyncIterator` | `AbortSignal` / `break` |
+
+### Diagrama — posição das macrotask APIs no event loop
+
+```mermaid
+flowchart LR
+    subgraph LOOP["Event Loop — uma iteração"]
+        T["1. TIMERS\nsetTimeout · setInterval"]
+        PC["2. PENDING\nCALLBACKS"]
+        IP["3. IDLE /\nPREPARE"]
+        POLL["4. POLL\nI/O callbacks"]
+        CH["5. CHECK\nsetImmediate"]
+        CL["6. CLOSE\nCALLBACKS"]
+        T --> PC --> IP --> POLL --> CH --> CL --> T
+    end
+
+    note1["📌 Dentro de I/O:\ncheck vem ANTES de timers\n→ setImmediate ganha"]
+    note2["📌 Fora de I/O:\nordem depende do startup\n→ não determinístico"]
+
+    POLL -.-> note1
+    T -.-> note2
+```
+
+**Regra de ouro:** `setImmediate` é sempre determinístico dentro de callbacks de I/O (fase poll → check → timers na próxima iteração). Fora desse contexto, não assuma ordem.
 
 ## Por que importa
 
@@ -379,92 +406,92 @@ async function tarefa() {
 ac.abort();
 ```
 
-## Armadilhas
+## Casos práticos
 
-### 1. `setInterval` reentrante — handler mais lento que o intervalo
+### Cenário 1 — `setInterval` com handler assíncrono lento: rajadas em produção
+
+Um poller de métricas usava `setInterval(buscar, 200)`. Em horas de pico, `buscar` levava 500ms. Em vez de um poll a cada 200ms, o sistema entrava em rajadas: 3-4 execuções disparavam em sucessão rápida, depois silêncio de ~1 segundo.
 
 ```javascript
-// Armadilha: handler de 500ms com intervalo de 200ms
+// ❌ setInterval não espera o handler: 500ms > 200ms → acúmulo de callbacks
 setInterval(async () => {
-  await buscarDadosExternos(); // operação que leva ~500ms
+  await buscarMetricas(); // ~500ms em pico
 }, 200);
+// t=0: execução 1 começa; t=200: execução 2 agendada; t=400: execução 3 agendada
+// t=500: execução 1 termina → execuções 2 e 3 disparam imediatamente em sequência
 
-// Comportamento REAL em Node.js:
-// - t=0ms: 1ª execução começa
-// - t=500ms: 1ª execução termina
-// - t=500ms: fase timers já acumulou callbacks — a 2ª e possivelmente a 3ª disparam
-//            em sequência rápida, sem o intervalo esperado entre elas
-// - Resultado: rajadas de execuções seguidas de longos silêncios
-```
-
-Solução: usar `setTimeout` recursivo com cálculo de drift, ou `timers/promises setInterval` com `await` para garantir que cada iteração espera a anterior completar (o `for await` implicitamente faz isso).
-
-### 2. Assumir que `setTimeout(fn, 0)` é instantâneo
-
-```javascript
-// Mito: "setTimeout(fn, 0) roda imediatamente após o síncrono"
-// Realidade: o delay mínimo é 1ms E outras fases podem intervir
-
-let flag = false;
-
-setTimeout(() => { flag = true; }, 0);
-
-// Este código NUNCA vê flag === true
-// Código síncrono não "espera" o timer
-console.log(flag); // sempre false aqui
-
-// Se precisar de execução assíncrona mas imediata, use queueMicrotask ou Promise
-```
-
-### 3. Usar `setTimeout` para sleep em código async
-
-```javascript
-// RUIM: wrapper manual desnecessário, não cancelável, não composable
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+// ✅ setTimeout recursivo: intervalo medido a partir do FIM do handler
+async function pollComIntervalo() {
+  while (true) {
+    const inicio = Date.now();
+    await buscarMetricas();
+    const elapsed = Date.now() - inicio;
+    await setTimeout(Math.max(0, 200 - elapsed), undefined, { signal });
+  }
 }
-
-// BOM: use a API nativa — é exatamente o mesmo, mas oficial e cancelável
-import { setTimeout as sleep } from 'node:timers/promises';
-
-await sleep(1000);
 ```
 
-### 4. Timer com closure pesada nunca limpo — vazamento de memória
+### Cenário 2 — Memory leak por timer com closure nunca limpa
+
+Uma API de websocket criava um `setInterval` para heartbeat por conexão e nunca chamava `clearInterval` no fechamento. Com 10.000 conexões simultâneas, o heap crescia indefinidamente.
 
 ```javascript
-function criarTimer(dados) {
-  // dados pode ser um objeto grande — o timer mantém a referência
+// ❌ closure captura 'ws' e 'dados' — GC nunca libera enquanto o timer existir
+function iniciarHeartbeat(ws, dados) {
   const timer = setInterval(() => {
-    processarDados(dados); // closure captura 'dados'
-  }, 1000);
-
-  // Se clearInterval nunca for chamado, 'dados' nunca é coletado pelo GC
-  // mesmo que o caller não tenha mais referência ao objeto original
-
-  return timer; // caller DEVE chamar clearInterval quando terminar
+    ws.send(JSON.stringify(dados)); // closure segura referências
+  }, 30_000);
+  // Se ws.close() não chama clearInterval, timer (e closure) vivem para sempre
 }
 
-// Padrão correto: sempre limpar em cleanup/teardown
-const timer = criarTimer(dadosGrandes);
-
-// Em cleanup (ex: encerramento de servidor, componente React unmount, etc):
-clearInterval(timer);
-```
-
-### 5. Ordem de `setImmediate` vs `setTimeout` fora de I/O — não assuma nada
-
-```javascript
-// Código frágil que assume setImmediate sempre primeiro
-function diferir(fn) {
-  setImmediate(fn); // funciona dentro de I/O, mas não em top-level
+// ✅ limpar o timer no evento de fechamento da conexão
+function iniciarHeartbeat(ws, dados) {
+  const timer = setInterval(() => ws.send(JSON.stringify(dados)), 30_000);
+  ws.on('close', () => clearInterval(timer)); // libera closure → GC pode coletar
 }
-
-// Código robusto: usar dentro de callbacks de I/O quando precisar de garantia
-fs.readFile(path, (err, data) => {
-  setImmediate(() => processarDados(data)); // aqui é sempre correto
-});
 ```
+
+## Armadilhas comuns
+
+> [!warning] `setInterval` reentrante acumula execuções quando o handler é mais lento que o intervalo
+> `setInterval` não verifica se a execução anterior terminou — ele enfileira o próximo callback no timer independentemente. Se o handler leva mais do que `ms`, os callbacks se acumulam na fase `timers` e disparam em rajadas assim que o handler atual libera a thread.
+>
+> Use `setTimeout` recursivo ou `timers/promises setInterval` com `for await` — ambos aguardam o handler completar antes de agendar a próxima execução.
+
+> [!warning] `setTimeout(fn, 0)` não é síncrono — o delay mínimo efetivo é 1ms, não zero
+> O Node.js normaliza delays menores que 1ms para 1ms internamente (comportamento do libuv). O callback nunca roda na mesma iteração que o código síncrono que o agendou.
+>
+> ```javascript
+> let flag = false;
+> setTimeout(() => { flag = true; }, 0);
+> console.log(flag); // sempre false — timer ainda não disparou
+> // Para execução assíncrona imediata, use queueMicrotask ou Promise.resolve().then()
+> ```
+
+> [!warning] Timer com closure pesada nunca limpa → memory leak detectável pelo heap
+> Timers mantêm referências a tudo que a closure captura. Um `setInterval` sem `clearInterval` no teardown impede o GC de coletar qualquer objeto referenciado pela closure — incluindo objetos grandes como conexões, buffers ou dados de sessão.
+>
+> ```javascript
+> // ❌ Leak: 'dados' nunca coletado enquanto o timer viver
+> const timer = setInterval(() => processa(dados), 1000);
+> // ✅ Sempre limpar em teardown/close
+> ws.on('close', () => clearInterval(timer));
+> ```
+
+> [!warning] `setImmediate` vs `setTimeout(fn, 0)` fora de callbacks de I/O — ordem não garantida
+> Dentro de callbacks de I/O, `setImmediate` sempre ganha (fase check vem antes de timers na iteração atual). Fora desse contexto, a ordem depende de quanto tempo o processo levou para inicializar — pode variar entre execuções do mesmo código.
+>
+> ```javascript
+> // ❌ Frágil em top-level: pode sair em qualquer ordem
+> setImmediate(() => console.log('immediate'));
+> setTimeout(() => console.log('timeout'), 0);
+>
+> // ✅ Determinístico: agende dentro de callback de I/O
+> fs.readFile(path, () => {
+>   setImmediate(() => console.log('sempre primeiro'));
+>   setTimeout(() => console.log('sempre segundo'), 0);
+> });
+> ```
 
 ## Em entrevista
 
@@ -504,6 +531,12 @@ Apenas quando agendado de dentro de um callback de I/O (fase poll). Nesse contex
 **"Por que `setInterval` raramente é correto em produção?"**
 Porque ele não aguarda o handler completar antes de agendar o próximo disparo. Com operações assíncronas, o intervalo entre o fim de uma execução e o início da próxima pode ser zero — ou negativo em termos de intent. O padrão com `setTimeout` recursivo ou `for await` com `timers/promises` é mais seguro.
 
+## O que vem a seguir
+
+Com timers e macrotasks cobertas, o próximo passo é entender o que acontece **dentro da fase poll** — como o Node.js coleta eventos de I/O do sistema operacional e quais operações usam o thread pool de libuv versus I/O assíncrono nativo do kernel. Esse é o mecanismo que torna o Node.js eficiente para I/O concorrente.
+
+A nota [[07 - I-O assíncrono - kernel vs thread pool]] explica quando uma operação como `fs.readFile` usa `epoll` (sem thread) versus `getaddrinfo` (com thread do pool) — e por que essa distinção importa para diagnóstico de performance.
+
 ## Veja também
 
 - [[04 - As fases do event loop]] — diagrama completo das seis fases; onde timers e check se encaixam no ciclo
@@ -511,3 +544,9 @@ Porque ele não aguarda o handler completar antes de agendar o próximo disparo.
 - [[07 - I-O assíncrono - kernel vs thread pool]] — o que acontece na fase poll que antecede a fase check onde setImmediate vive
 - [[09 - async-await - o que é, o que não é]] — como `await setTimeout` de `timers/promises` se encaixa no modelo async/await
 - [[Node.js]] — tronco: panorama completo do runtime com links para toda a trilha
+
+## Fontes
+
+- [Node.js — Timers](https://nodejs.org/api/timers.html) — documentação oficial de `setTimeout`, `setInterval`, `setImmediate` e o módulo `node:timers/promises`
+- [Node.js — Timers in Node.js (guia)](https://nodejs.org/en/learn/asynchronous-work/timers-in-node) — explica delay mínimo de 1ms, normalização, e a distinção de fases entre timers e setImmediate
+- [libuv — Timers](https://docs.libuv.org/en/v1.x/timer.html) — implementação interna dos timers no libuv, incluindo o cálculo do timeout da fase poll

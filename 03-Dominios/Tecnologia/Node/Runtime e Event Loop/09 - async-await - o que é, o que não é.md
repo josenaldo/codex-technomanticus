@@ -1,10 +1,10 @@
 ---
 title: "async/await: o que é, o que não é"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -24,6 +24,10 @@ aliases:
 > `async/await` é açúcar sintático sobre Promises — **não cria threads, não paraleliza, não evita bloqueio**. Uma função `async` sempre retorna uma Promise. `await` pausa a execução da função até a promise liquidar, mas a thread JS fica livre para processar outros eventos durante essa pausa. Para executar operações assíncronas em paralelo, use `Promise.all`. Para descarregar trabalho CPU-bound, use Worker Threads.
 
 ---
+
+## Por que um handler `async` com código síncrono pesado bloqueia o servidor inteiro?
+
+A resposta surpreende quem aprende `async/await` pelos tutoriais: `async` não cria thread, não paraleliza, não evita bloqueio. É açúcar sintático sobre Promises — e Promises também rodam na mesma thread JS. Entender o que `await` realmente faz (e o que ele *não* faz) é o que separa diagnóstico correto de chute.
 
 ## O que é
 
@@ -133,6 +137,24 @@ A `async` aqui serve apenas para permitir o uso de `await` dentro do handler. El
 | `await` em série paraleliza as operações | **Não** |
 
 O modelo mental correto: `async/await` é uma forma de escrever código que *espera por I/O* de forma legível. Para I/O (rede, disco, banco de dados), funciona perfeitamente — a thread fica livre enquanto o sistema operacional ou libuv faz o trabalho pesado. Para CPU, não ajuda em nada.
+
+### Diagrama — o que `await` faz na thread JS
+
+```mermaid
+sequenceDiagram
+    participant JS as Thread JS
+    participant MT as Microtask Queue
+    participant IO as libuv / OS
+
+    JS->>IO: fs.promises.readFile() — inicia operação async
+    Note over JS: await suspende a função\nthread JS fica livre
+    JS->>JS: processa outros eventos\n(outras requests, timers...)
+    IO-->>MT: operação concluída → enfileira callback
+    MT-->>JS: microtask drena → retoma a função após await
+    Note over JS: execução continua\ncom o valor resolvido
+```
+
+**Chave:** durante o `await`, a thread JS processa outros eventos — é o que permite concorrência. Se o código *dentro* da função async for síncrono pesado, não há `await` para liberar a thread.
 
 ---
 
@@ -308,146 +330,88 @@ const resposta = await fetch('/api/dados', {
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-### 1. `await` em loop sequencial
+### Cenário 1 — `await` em série quando as operações são independentes: latência 3× mais alta
+
+Um endpoint de dashboard fazia três chamadas a serviços externos em sequência. P50 de 900ms, P95 de 2.5s — muito além do SLO.
 
 ```javascript
-// ARMADILHA — O(n) serial. Lento para listas grandes.
-async function processarTodos(itens) {
-  const resultados = [];
-  for (const item of itens) {
-    resultados.push(await processarItem(item)); // aguarda cada um
-  }
-  return resultados;
+// ❌ Antes: sequencial — tempo total = soma dos três (300ms + 400ms + 200ms = 900ms)
+async function buscarDashboard(userId) {
+  const perfil   = await buscarPerfil(userId);   // 300ms
+  const pedidos  = await buscarPedidos(userId);  // 400ms (espera perfil)
+  const config   = await buscarConfig(userId);   // 200ms (espera pedidos)
+  return { perfil, pedidos, config };
 }
 
-// CORRETO — paralelo
-async function processarTodos(itens) {
-  return Promise.all(itens.map(processarItem));
-}
-```
-
-O loop com `await` não é sempre errado — é correto quando cada item depende do resultado do anterior, ou quando você precisa limitar concorrência. Mas é um problema grave quando as operações são independentes.
-
-### 2. `Promise.all` sem controle de concorrência
-
-```javascript
-// ARMADILHA — 10.000 conexões simultâneas
-const resultados = await Promise.all(
-  listaComDezMilItens.map(item => fetch(`/api/${item}`))
-);
-// Pode derrubar o servidor de destino ou esgotar o pool de conexões
-```
-
-Para listas grandes, use batches ou uma biblioteca como `p-limit`:
-
-```javascript
-import pLimit from 'p-limit';
-
-const limit = pLimit(10); // máximo 10 concorrentes
-
-const resultados = await Promise.all(
-  listaComDezMilItens.map(item =>
-    limit(() => fetch(`/api/${item}`))
-  )
-);
-```
-
-Ou processe em batches manuais com `for await...of`:
-
-```javascript
-async function* emBatches(itens, tamanho) {
-  for (let i = 0; i < itens.length; i += tamanho) {
-    yield itens.slice(i, i + tamanho);
-  }
-}
-
-for await (const batch of emBatches(itens, 50)) {
-  await Promise.all(batch.map(processarItem));
+// ✅ Depois: paralelo — tempo total = max dos três (~400ms)
+async function buscarDashboard(userId) {
+  const [perfil, pedidos, config] = await Promise.all([
+    buscarPerfil(userId),
+    buscarPedidos(userId),
+    buscarConfig(userId),
+  ]);
+  return { perfil, pedidos, config };
 }
 ```
 
-### 3. `async` em handler Express não captura erros automaticamente
+**Impacto:** P50 caiu de 900ms para ~420ms, P95 caiu de 2.5s para ~700ms.
+
+### Cenário 2 — Handler Express `async` sem captura de erros: requests travadas
+
+Em uma API Express 4, erros em handlers `async` não chegavam ao middleware de erro — as requests simplesmente não respondiam e expiravam no timeout do cliente.
 
 ```javascript
-// ARMADILHA — erro não chega ao middleware de erro do Express
-app.get('/rota', async (req, res) => {
-  const dados = await operacaoQuePodeFalhar(); // se rejeitar...
-  res.json(dados);
-  // ...o Express não sabe. O processo pode ficar em estado inconsistente.
+// ❌ Rejeição em handler async não é roteada para o Express automaticamente
+app.get('/usuario/:id', async (req, res) => {
+  const user = await buscarUsuario(req.params.id); // pode rejeitar
+  res.json(user);
+  // Se buscarUsuario rejeitar, o Express 4 não captura — request fica pendurada
 });
 
-// CORRETO — wrapper que captura e passa pro next()
+// ✅ Wrapper que captura a rejeição e passa para next()
 const asyncHandler = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
-app.get('/rota', asyncHandler(async (req, res) => {
-  const dados = await operacaoQuePodeFalhar();
-  res.json(dados);
+app.get('/usuario/:id', asyncHandler(async (req, res) => {
+  const user = await buscarUsuario(req.params.id);
+  res.json(user);
 }));
+// Alternativa: usar Express 5 (GA 2024) ou `express-async-errors`
 ```
 
-**Fastify** e **NestJS** lidam com isso nativamente — handlers `async` que rejeitam são automaticamente roteados para o handler de erro. No Express 5 (lançado em 2024), handlers async também são capturados automaticamente. No Express 4 (ainda amplamente usado), o wrapper manual ou uma biblioteca como `express-async-errors` é necessária.
+## Armadilhas comuns
 
-### 4. `async` não cria thread — o exemplo do gatilho, revisitado
+> [!warning] `await` em série em loop é O(n) sequencial — use `Promise.all` para operações independentes
+> Cada `await` dentro de um `for...of` pausa até o anterior terminar. Para 100 itens independentes, o tempo é a soma de todos — não o máximo. `Promise.all` dispara todos em paralelo.
+>
+> ```javascript
+> // ❌ Sequencial: 100 itens × 200ms = 20 segundos
+> for (const item of itens) await processar(item);
+> // ✅ Paralelo: max(200ms, 200ms...) ≈ 200ms + overhead
+> await Promise.all(itens.map(processar));
+> // ⚠️ Para listas grandes: limitar concorrência com p-limit
+> ```
+>
+> O loop `await` em série só é correto quando cada item depende do resultado do anterior.
 
-```javascript
-// ARMADILHA — parece async, bloqueia o event loop
-app.post('/relatorio', async (req, res) => {
-  // parse de CSV com 500k linhas, todo em memória, síncrono
-  const linhas = req.body.csv
-    .split('\n')
-    .map(linha => linha.split(','));
+> [!warning] `async` não protege contra bloqueio de CPU — `await` sem I/O não libera a thread
+> `async` declara que a função retorna Promise — não que o código dentro é assíncrono. Código síncrono pesado dentro de uma função `async` bloqueia a thread JS exatamente como faria fora dela.
+>
+> ```javascript
+> // ❌ async não ajuda aqui: calcularAgregados bloqueia a thread inteira
+> app.post('/relatorio', async (req, res) => {
+>   const resultado = calcularAgregados(req.body); // 800ms síncronos
+>   res.json(resultado); // todas as outras requests esperam 800ms
+> });
+> // ✅ Para CPU-bound: Worker Threads (galho 2 — Paralelismo)
+> ```
 
-  const agregado = calcularAgregados(linhas); // CPU pesado, síncrono
-
-  res.json(agregado);
-});
-```
-
-Enquanto `calcularAgregados` roda (digamos, 800ms), zero outras requests são processadas. A `async` não muda isso. Solução: mover o trabalho CPU-bound para um Worker Thread (coberto no galho 2 da trilha — Paralelismo em Node.js).
-
-```javascript
-// Esboço da solução correta para CPU-bound
-import { Worker } from 'worker_threads';
-
-app.post('/relatorio', async (req, res) => {
-  const resultado = await rodarEmWorker('./workers/relatorio.js', {
-    csv: req.body.csv,
-  });
-  res.json(resultado);
-  // A thread principal ficou livre durante o processamento
-});
-```
-
-### 5. Ausência de try/catch em código `async`
-
-Rejeições de promises dentro de funções `async` viram erros não capturados se não houver `try/catch` ou `.catch()` no ponto de chamada:
-
-```javascript
-// ARMADILHA — rejeição silenciosa
-async function inicializar() {
-  const config = await carregarConfig(); // pode rejeitar
-  await conectarBanco(config);           // pode rejeitar
-}
-
-inicializar(); // Promise não capturada — no Node 15+, termina o processo
-
-// CORRETO
-inicializar().catch((err) => {
-  console.error('Falha na inicialização:', err);
-  process.exit(1);
-});
-
-// Ou com top-level await em ESM:
-try {
-  await inicializar();
-} catch (err) {
-  console.error('Falha na inicialização:', err);
-  process.exit(1);
-}
-```
+> [!warning] `async` em handler Express 4 não captura erros automaticamente — requests ficam penduradas
+> No Express 4, handlers `async` que rejeitam não propagam o erro para o middleware de erro. O Express espera `next(err)` — que nunca é chamado em caso de rejeição de promise.
+>
+> Use um wrapper `asyncHandler`, a biblioteca `express-async-errors`, ou migre para Express 5 / Fastify / NestJS (todos capturam handlers async nativamente).
 
 ---
 
@@ -490,10 +454,18 @@ Sim, em ES Modules (top-level await). Não em CommonJS. Em CommonJS é necessár
 
 ---
 
+## O que vem a seguir
+
+`async/await` é a interface mais confortável para código assíncrono no Node.js — mas ela não elimina o risco real: **código síncrono dentro de uma função async ainda bloqueia a thread**. A próxima nota, [[10 - Bloqueio do event loop - sintomas e causas]], sai do "como escrever código async correto" e entra no "como diagnosticar quando a thread já foi bloqueada": quais sintomas aparecem em produção, como medir o lag do event loop, e quando a solução é mover trabalho para Worker Threads ou processos separados.
+
+## Fontes
+
+- [MDN — async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+- [MDN — await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)
+- [Node.js Docs — Don't Block the Event Loop (and the Worker Pool)](https://nodejs.org/en/docs/guides/dont-block-the-event-loop)
+
 ## Veja também
 
 - [[08 - Promises por dentro]] — estados, microtask queue, encadeamento: o substrato que `async/await` abstrai
 - [[10 - Bloqueio do event loop - sintomas e causas]] — o que acontece quando código síncrono pesado domina a thread
 - [[Node.js]] — tronco da trilha Node Senior
-
-Para descarregar trabalho CPU-bound da thread principal, o caminho é **Worker Threads** — coberto no galho 2 da trilha (Paralelismo em Node.js), que ainda não existe neste vault. Quando disponível, será acessível a partir do MOC central do Node.js. A nota [[10 - Bloqueio do event loop - sintomas e causas]] já toca no diagnóstico de quando isso é necessário.

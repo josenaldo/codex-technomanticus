@@ -1,10 +1,10 @@
 ---
 title: "Single-thread e non-blocking I/O"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -24,11 +24,13 @@ aliases:
 
 ## O que é
 
-**Single-threaded** significa que existe exatamente uma thread responsável por executar código JavaScript no processo Node.js. Não há execução paralela de código JS — se duas requisições chegam ao mesmo tempo, uma delas espera a outra terminar de executar o trecho JS atual.
+Imagine que você precisa atender 10.000 clientes simultâneos com um único atendente. Parece impossível — até você perceber que 99% do tempo cada cliente está *esperando*: esperando o banco processar o pagamento, esperando o arquivo ser lido, esperando a API externa responder. O atendente só precisa estar ocupado de verdade quando há algo a fazer. Essa é a aposta do Node.
 
-**Non-blocking I/O** significa que chamadas de I/O (leitura de arquivo, consulta de banco, requisição HTTP) retornam imediatamente, sem bloquear essa thread. O resultado não está disponível na hora — o Node registra um callback que será chamado quando a operação completar. Enquanto isso, a thread JS fica livre para processar outras coisas.
+**Single-threaded** significa que existe exatamente uma thread responsável por executar código JavaScript no processo Node.js. Não há execução paralela de código JS — se duas requisições chegam ao mesmo tempo, uma aguarda a outra completar o trecho JS atual. Mas, na prática, esse trecho é minúsculo: registrar um I/O e passar adiante.
 
-Esses dois conceitos se complementam: o modelo só funciona porque o I/O não retém a thread. Se o I/O bloqueasse, a única thread ficaria parada esperando e o servidor não processaria mais nada durante esse intervalo.
+**Non-blocking I/O** é o complemento que torna isso viável. Chamadas de I/O (leitura de arquivo, consulta de banco, requisição HTTP) retornam imediatamente sem bloquear a thread. O Node registra um callback, delega a operação ao sistema operacional via libuv, e a thread JS fica imediatamente livre para a próxima requisição. O resultado chega como evento — quando o OS terminar, o callback entra na fila do event loop.
+
+Esses dois conceitos se complementam: o modelo só funciona porque o I/O não retém a thread. Se `readFile` bloqueasse, a única thread ficaria parada esperando e nenhuma outra requisição seria processada nesse intervalo.
 
 A definição oficial da documentação do Node.js resume bem:
 
@@ -111,33 +113,20 @@ Agora tudo é sequencial. `readFileSync` trava a thread até o I/O terminar. Em 
 
 ### Diagrama — o que acontece por baixo
 
-```
-Thread JS (única)
-│
-├─► console.log('1')                  ← executa na thread JS
-│
-├─► fs.readFile(...)                  ← registra operação e retorna imediatamente
-│       │
-│       └─► Node Bindings (C++)
-│               │
-│               └─► libuv
-│                       │
-│                       └─► OS (kernel — multi-threaded)
-│                               │
-│                               │  [leitura do disco acontece aqui,
-│                               │   em paralelo, fora da thread JS]
-│                               │
-│                               └─► notifica libuv quando pronto
-│                                       │
-│                                       └─► callback entra na fila do event loop
-│
-├─► console.log('2')                  ← executa na thread JS (enquanto OS trabalha)
-│
-│   [event loop pega o callback da fila]
-│
-└─► callback(err, conteudo)           ← executa na thread JS
-        │
-        └─► console.log('3')
+```mermaid
+sequenceDiagram
+    participant JS as Thread JS (única)
+    participant LB as libuv
+    participant OS as OS Kernel
+
+    Note over JS: console.log('1') — executa na thread JS
+    JS->>LB: fs.readFile() — retorna imediatamente
+    Note over JS: console.log('2') — thread livre enquanto OS trabalha
+    LB->>OS: solicita leitura de disco (assíncrona)
+    Note over OS: leitura acontece em paralelo,<br/>fora da thread JS
+    OS-->>LB: dados prontos
+    LB-->>JS: enfileira callback no event loop
+    Note over JS: callback(err, conteudo) — console.log('3')
 ```
 
 A thread JS nunca para. Ela registra, processa outras coisas, e retoma o callback quando o OS sinaliza que terminou.
@@ -191,44 +180,79 @@ Uma conexão inativa em Node não retém uma thread — ela consome apenas algun
 
 > Imagine um servidor que processa uploads de imagem com redimensionamento em tempo real. Para cada upload, ele executa um algoritmo pesado de compressão. Nesse cenário, a única thread JS ficaria ocupada com o CPU durante cada requisição, e as demais ficariam na fila esperando. Aqui, Go ou Java com Virtual Threads seriam escolhas mais adequadas.
 
-## Armadilhas
+## Casos práticos
 
-### 1. Achar que `async`/`await` cria uma nova thread
+### Cenário 1 — API de gateway com alta concorrência
 
-`async`/`await` é açúcar sintático sobre Promises — não cria thread alguma. O código ainda roda na mesma thread JS única. A ilusão de paralelismo vem do fato de que operações I/O são delegadas ao OS, não de que `async` distribui trabalho entre threads.
-
-```javascript
-// Isso NÃO cria uma thread nova.
-// O await apenas suspende a função e devolve o controle ao event loop
-// até o I/O completar.
-async function buscaDados() {
-  const resultado = await fetch('https://api.exemplo.com/dados'); // I/O delegado ao OS
-  return resultado.json(); // executa de volta na thread JS quando pronto
-}
-```
-
-A nota [[09 - async-await - o que é, o que não é]] aprofunda essa distinção com exemplos de execução passo a passo.
-
-### 2. Assumir que todo I/O em Node é non-blocking
-
-Node oferece versões síncronas (bloqueantes) de muitas APIs — e elas existem intencionalmente (úteis em scripts de inicialização, por exemplo). O sufixo `Sync` é o sinal de alerta:
+Um gateway que agrega 5 microserviços diferentes: cada requisição faz 5 chamadas HTTP paralelas (para serviços de usuário, produto, estoque, preço e recomendações) e aguarda todas antes de responder.
 
 ```javascript
-// Bloqueia a thread JS — NUNCA use em código de servidor em produção
-const dados = fs.readFileSync('./config.json', 'utf8');
-const conteudo = require('node:fs').readFileSync('./outro.txt');
+import { createServer } from 'node:http';
 
-// DNS síncrono — raramente usado, mas existe
-const enderecos = require('node:dns').lookupSync('exemplo.com');
+createServer(async (req, res) => {
+  if (req.url !== '/produto') return res.end();
+
+  // 5 chamadas paralelas — a thread JS não bloqueia em nenhuma delas
+  const [usuario, produto, estoque, preco, recos] = await Promise.all([
+    fetch('http://users-svc/me').then(r => r.json()),
+    fetch('http://catalog-svc/item/42').then(r => r.json()),
+    fetch('http://inventory-svc/42').then(r => r.json()),
+    fetch('http://pricing-svc/42').then(r => r.json()),
+    fetch('http://reco-svc/42').then(r => r.json()),
+  ]);
+
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ usuario, produto, estoque, preco, recos }));
+}).listen(3000);
 ```
 
-Usar `readFileSync`, `writeFileSync`, ou qualquer `*Sync` dentro de um handler de requisição HTTP trava o event loop para todas as conexões ativas durante a duração dessa leitura. Em produção, isso manifesta como latência súbita e inexplicável sob carga.
+Enquanto as 5 requisições aguardam resposta dos microserviços (latência típica: 20–200 ms cada), a thread JS está livre. Outras requisições ao gateway são processadas normalmente. Com `Promise.all`, as 5 chamadas correm em paralelo do ponto de vista do OS — o Node registra todos os I/Os de uma vez e aguarda o retorno via event loop.
 
-A nota [[10 - Bloqueio do event loop - sintomas e causas]] cobre como diagnosticar esse problema.
+### Cenário 2 — `readFileSync` bloqueante em handler de produção
 
-### 3. Confundir "single-threaded" com "single-process"
+Um antipadrão clássico descoberto em revisão de código: `readFileSync` dentro de um handler HTTP.
 
-Node é single-threaded para código JS, mas o processo Node não é de thread única internamente. libuv mantém um thread pool (4 threads por padrão, configurável via `UV_THREADPOOL_SIZE`) para operações que o kernel não suporta de forma assíncrona nativa — como algumas operações de filesystem e DNS. O código JS nunca interage diretamente com esse pool; ele é um detalhe de implementação de libuv. A nota [[02 - V8, libuv e thread pool]] explora isso em detalhe.
+```javascript
+// ❌ Bug de produção: readFileSync em handler HTTP
+app.get('/config', (req, res) => {
+  // Lê o arquivo de forma bloqueante a cada requisição
+  const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+  res.json(config);
+});
+```
+
+Com 100 requisições simultâneas chegando, cada uma bloqueia a thread JS para ler o arquivo. O resultado observável: latência de `GET /config` dispara para centenas de milissegundos, mas — o detalhe que confunde — a latência de *todos os outros endpoints* também sobe, mesmo que não usem arquivo algum. Esse sintoma de **latência cruzada** (todos os endpoints sofrendo juntos) é a assinatura do bloqueio do event loop, não de lentidão de banco ou rede.
+
+A correção: carregar a config uma vez no startup (ou usar `fs.promises.readFile` com cache) e servir do cache em memória.
+
+## Armadilhas comuns
+
+> [!warning] `async`/`await` não cria nova thread
+> `async`/`await` é açúcar sintático sobre Promises — não cria thread alguma. O código ainda roda na mesma thread JS única. A ilusão de paralelismo vem do fato de que operações I/O são delegadas ao OS, não de que `async` distribui trabalho entre threads.
+>
+> ```javascript
+> // Isso NÃO cria uma thread nova — o await apenas suspende e devolve o controle ao event loop
+> async function buscaDados() {
+>   const resultado = await fetch('https://api.exemplo.com/dados'); // I/O delegado ao OS
+>   return resultado.json(); // executa de volta na thread JS quando pronto
+> }
+> ```
+>
+> Ver [[09 - async-await - o que é, o que não é]] para a distinção completa com exemplos de execução passo a passo.
+
+> [!warning] Nem todo I/O em Node é non-blocking — o sufixo `Sync` é armadilha
+> Node oferece versões síncronas de muitas APIs — e elas existem intencionalmente (úteis em scripts de inicialização). O sufixo `Sync` é o sinal de alerta:
+>
+> ```javascript
+> // Bloqueia a thread JS — NUNCA use em handler de produção
+> const dados = fs.readFileSync('./config.json', 'utf8');
+> const enderecos = require('node:dns').lookupSync('exemplo.com');
+> ```
+>
+> Usar `readFileSync` ou qualquer `*Sync` dentro de um handler HTTP trava o event loop para todas as conexões ativas. Em produção, o sintoma é latência súbita em *todos* os endpoints simultaneamente — não apenas no endpoint com o `Sync`. Ver [[10 - Bloqueio do event loop - sintomas e causas]].
+
+> [!warning] Single-threaded ≠ single-process internamente
+> Node é single-threaded para código JS, mas o processo usa mais threads internamente. libuv mantém um thread pool (4 threads por padrão, configurável via `UV_THREADPOOL_SIZE`) para operações que o kernel não suporta assincronamente — certas operações de filesystem e DNS. O código JS nunca interage diretamente com esse pool; é um detalhe de implementação. Ver [[02 - V8, libuv e thread pool]].
 
 ## Em entrevista
 
@@ -255,6 +279,17 @@ Use essa frase como abertura quando perguntarem "How does Node.js handle concurr
 - *"What happens when you have a CPU-intensive operation in Node?"* → A thread JS fica ocupada, novas requisições não são processadas. Solução: Worker Threads, child_process, ou offload para serviço separado.
 - *"Is Node.js truly single-threaded?"* → Para código JS, sim. Internamente, libuv usa um thread pool para operações específicas — mas o JS nunca interage com essas threads diretamente.
 - *"When would you NOT use Node.js?"* → CPU-bound workloads — image processing, video transcoding, ML inference — onde Go, Rust ou Java com Virtual Threads são mais adequados.
+
+## O que vem a seguir
+
+Esta nota estabelece o modelo mental de base: uma thread JS, I/O não-bloqueante, sistema operacional paralelo. Mas o modelo levanta uma pergunta imediata — *o que exatamente executa o JavaScript e o que gerencia esse I/O?*
+
+A próxima nota, [[02 - V8, libuv e thread pool]], responde isso: V8 é o motor que compila e executa JS; libuv é a biblioteca C que implementa o event loop e abstrai I/O assíncrono; e existe um thread pool interno que lida com operações que o kernel não suporta de forma verdadeiramente assíncrona. Entender esses três componentes é o que separa "sei que Node é single-thread" de "entendo por que e quando esse modelo falha".
+
+## Fontes
+
+- [The Node.js Event Loop — Node.js Docs](https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick)
+- [Don't Block the Event Loop — Node.js Docs](https://nodejs.org/en/docs/guides/dont-block-the-event-loop)
 
 ## Veja também
 

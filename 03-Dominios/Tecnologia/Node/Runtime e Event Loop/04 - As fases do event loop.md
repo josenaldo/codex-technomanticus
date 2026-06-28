@@ -1,10 +1,10 @@
 ---
 title: "As fases do event loop"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -20,6 +20,10 @@ aliases:
 
 > [!abstract] TL;DR
 > O event loop do Node.js roda em seis fases por iteração: **timers**, **pending callbacks**, **idle/prepare**, **poll**, **check** e **close callbacks** — nessa ordem, de forma circular. Entre cada fase, todas as microtasks pendentes são drenadas (primeiro `process.nextTick`, depois Promises e `queueMicrotask`). A fase `poll` é o coração: ela coleta novos eventos de I/O do sistema operacional e pode **bloquear** a thread esperando I/O quando não há trabalho agendado — é o que mantém servidores HTTP vivos.
+
+## Por que `setImmediate` às vezes ganha de `setTimeout(fn, 0)`?
+
+Você registra dois callbacks quase simultaneamente e não consegue prever qual vai disparar primeiro. Não é bug nem condição de corrida — é consequência direta de onde cada um cai no ciclo de seis fases que o libuv executa em loop. Sem entender essa sequência, você está adivinhando.
 
 ## O que é
 
@@ -91,51 +95,45 @@ Conhecer as fases transforma comportamento aparentemente mágico em consequênci
 
 ## Como funciona
 
-### Diagrama ASCII — as seis fases em ciclo
+### Diagrama — as seis fases em ciclo
 
-```
-   ┌──────────────────────────────────┐
-   │   Início de cada iteração        │
-   └────────────────┬─────────────────┘
-                    │
-                    ▼
-   ┌──────────────────────────────────┐
-┌─►│          1. TIMERS               │  setTimeout(), setInterval()
-│  │   (callbacks com delay expirado) │
-│  └────────────────┬─────────────────┘
-│          ◄── drain microtasks ──►
-│  ┌────────────────▼─────────────────┐
-│  │      2. PENDING CALLBACKS        │  I/O errors diferidos (ex: ECONNREFUSED)
-│  └────────────────┬─────────────────┘
-│          ◄── drain microtasks ──►
-│  ┌────────────────▼─────────────────┐
-│  │       3. IDLE, PREPARE           │  uso interno do libuv
-│  └────────────────┬─────────────────┘
-│          ◄── drain microtasks ──►
-│  ┌────────────────▼─────────────────┐    ┌──────────────────────┐
-│  │            4. POLL               │◄───│  I/O events do OS    │
-│  │  (coleta eventos; pode bloquear) │    │  (epoll/kqueue/IOCP) │
-│  └────────────────┬─────────────────┘    └──────────────────────┘
-│          ◄── drain microtasks ──►
-│  ┌────────────────▼─────────────────┐
-│  │           5. CHECK               │  setImmediate()
-│  └────────────────┬─────────────────┘
-│          ◄── drain microtasks ──►
-│  ┌────────────────▼─────────────────┐
-│  │       6. CLOSE CALLBACKS         │  socket.on('close', ...)
-│  └────────────────┬─────────────────┘
-│          ◄── drain microtasks ──►
-│                   │
-│     ┌─────────────▼───────────────┐
-│     │  Verificar se loop continua │
-│     │  (handles/requests ativos?) │
-└─────┤  SIM → próxima iteração     │
-      │  NÃO → process.exit()       │
-      └─────────────────────────────┘
+```mermaid
+flowchart TB
+    START([Início de cada iteração]) --> T
+
+    T["1. TIMERS\nsetTimeout / setInterval"]
+    T --> MT1(["⟳ drain microtasks\n(nextTick → Promises)"])
+    MT1 --> PC
+
+    PC["2. PENDING CALLBACKS\nI/O errors diferidos (ECONNREFUSED)"]
+    PC --> MT2(["⟳ drain microtasks"])
+    MT2 --> IP
+
+    IP["3. IDLE / PREPARE\nuso interno do libuv"]
+    IP --> MT3(["⟳ drain microtasks"])
+    MT3 --> POLL
+
+    OS[("OS I/O events\nepoll / kqueue / IOCP")]
+    OS --> POLL
+    POLL["4. POLL\ncoleta eventos; pode bloquear"]
+    POLL --> MT4(["⟳ drain microtasks"])
+    MT4 --> CH
+
+    CH["5. CHECK\nsetImmediate()"]
+    CH --> MT5(["⟳ drain microtasks"])
+    MT5 --> CL
+
+    CL["6. CLOSE CALLBACKS\nsocket.on('close', ...)"]
+    CL --> MT6(["⟳ drain microtasks"])
+    MT6 --> ALIVE
+
+    ALIVE{handles\nativos?}
+    ALIVE -->|Sim| T
+    ALIVE -->|Não| EXIT([process.exit])
 ```
 
 **Legenda:**
-- `◄── drain microtasks ──►` = drena `process.nextTick` queue completamente, depois drena Promise/`queueMicrotask` queue completamente
+- `⟳ drain microtasks` = drena `process.nextTick` completamente, depois drena Promise/`queueMicrotask` completamente
 - A drenagem acontece entre **cada fase**, não entre callbacks da mesma fase
 - Se uma microtask agendar outra microtask, ela também é drenada antes do loop avançar
 
@@ -350,81 +348,102 @@ setInterval(() => {
 
 Lag consistente acima de alguns milissegundos indica código bloqueante em alguma das fases. A nota [[10 - Bloqueio do event loop - sintomas e causas]] aprofunda o diagnóstico.
 
-## Armadilhas
+## Casos práticos
 
-### 1. Microtasks drenam entre fases, não entre callbacks da mesma fase
+### Cenário 1 — Timer de 50ms disparando com 200ms de delay em produção
 
-O erro conceitual mais comum: imaginar que cada callback de `setTimeout` ou callback de I/O tem suas próprias microtasks drenadas imediatamente após. Não é assim.
+Um endpoint de relatório usava `fs.readFileSync` para carregar um template grande. Outro serviço dependia de um `setInterval(flush, 50)` para fazer flush de métricas. Os flushes passaram a atrasar 150ms+ em carga.
 
-A drenagem de microtasks ocorre uma vez quando **a fase inteira termina**, não entre cada callback da fila. Se dez timers expiram na mesma iteração e cada um agenda um `process.nextTick`, todos os dez `nextTick` callbacks executam juntos após todos os dez timers completarem — não intercalados entre os timers.
-
-```javascript
-// Armadilha: assumir que nextTick roda após CADA setTimeout
-for (let i = 0; i < 3; i++) {
-  setTimeout(() => {
-    console.log(`timer ${i}`);
-    process.nextTick(() => console.log(`  → nextTick após timer ${i}`));
-  }, 0);
-}
-
-// Saída REAL:
-// timer 0
-// timer 1
-// timer 2
-//   → nextTick após timer 0
-//   → nextTick após timer 1
-//   → nextTick após timer 2
-
-// Saída ERRADA (que alguns esperam):
-// timer 0
-//   → nextTick após timer 0   ← NÃO ACONTECE
-// timer 1
-//   → nextTick após timer 1
-// timer 2
-//   → nextTick após timer 2
-```
-
-### 2. Confundir "poll queue" com "macrotask queue genérica"
-
-A poll queue é a fila **interna da fase poll** — ela contém callbacks de I/O que o kernel reportou como prontos. A expressão "macrotask queue" (usada em documentações de browser e algumas libs) não mapeia diretamente para nenhuma fila única do Node.js.
-
-No Node, há filas distintas por fase: fila de timers (fase timers), fila de pending callbacks, fila de poll, fila de check (setImmediate). Quando se fala em "macrotask queue" no contexto do Node, na prática se está falando sobre a fase poll na maioria dos casos, mas o conceito simplificado de "uma fila só" é uma abstração que o libuv não usa internamente.
-
-A distinção importa para debugging: um callback enfileirado via `setImmediate` não está na mesma fila que um callback de `fs.readFile`. Eles serão executados em fases diferentes, com potencial de microtasks sendo drenadas entre eles.
-
-### 3. `setImmediate` vs `setTimeout(fn, 0)` fora de I/O: não assuma ordem
-
-É tentador usar `setImmediate` como substituto de `setTimeout(fn, 0)` para "executar assincronamente mas logo". Dentro de callbacks de I/O, sim — `setImmediate` sempre ganha. Mas em código de top-level ou em timers aninhados, a ordem não é garantida.
+A causa: `readFileSync` bloqueava a thread JS durante a leitura. Durante esse bloqueio, a fase **timers** não executava — ela só corre quando a call stack esvazia. O intervalo de 50ms se tornava 200ms+ sempre que um relatório era gerado.
 
 ```javascript
-// FRÁGIL: assume que setImmediate sempre vem antes
-function adiarParaProximaTick(fn) {
-  setImmediate(fn); // "vai rodar antes do próximo setTimeout"
-}
+// ❌ Bloqueio síncrono na fase poll → atrasa todos os timers
+app.get('/report', (req, res) => {
+  const template = fs.readFileSync('./template.html', 'utf8'); // bloqueia a thread!
+  res.send(render(template, data));
+});
 
-// ROBUSTO: se a intenção é executar após I/O atual, use explicitamente
-// dentro de callbacks de I/O onde o comportamento é determinístico
+// ✅ Versão async: libera a thread durante I/O, timers disparam normalmente
+app.get('/report', async (req, res) => {
+  const template = await fs.promises.readFile('./template.html', 'utf8');
+  res.send(render(template, data));
+});
 ```
 
-Se o objetivo é garantir que algo execute depois de todas as microtasks mas antes de qualquer timer, a ferramenta correta é `setImmediate` **dentro de um callback de I/O**. Em top-level, a única garantia absoluta é `process.nextTick` (microtask, roda antes de qualquer fase).
+**O que mudou:** com `readFile` assíncrono, a thread JS fica livre durante a leitura — a fase poll bloqueia eficientemente no kernel, timers continuam disparando na frequência certa.
 
-### 4. `process.nextTick` recursivo paralisa o event loop
+### Cenário 2 — Servidor que não encerrava em testes automatizados
 
-`process.nextTick` não é uma fase — é uma microtask com prioridade máxima. Se um callback de `nextTick` agendar outro `nextTick` recursivamente, a microtask queue nunca esvazia. O event loop **nunca avança para a próxima fase**.
+A suite de testes criava um servidor HTTP para testes de integração, mas o processo de teste nunca encerrava — forçando `process.exit()` no `afterAll`.
+
+A causa: `server.listen()` registra um TCP handle ativo. O event loop mantinha o processo vivo esperando conexões que nunca chegariam. A suite esquecia de chamar `server.close()` no teardown.
 
 ```javascript
-// PARALISAÇÃO TOTAL: nenhuma fase do event loop é alcançada
-function bloquear() {
-  process.nextTick(bloquear);
-}
-bloquear();
+// ❌ Handle ativo impede o processo de encerrar
+beforeAll(() => {
+  server = app.listen(3000);
+});
 
-// Qualquer setTimeout, setImmediate, ou callback de I/O registrado depois
-// NUNCA executa. O processo parece vivo, mas está completamente travado
-// drenando nextTick em loop infinito na thread principal.
+// afterAll sem server.close() → processo trava, Jest timeout
+
+// ✅ Fechar o servidor no teardown libera o handle
+afterAll((done) => {
+  server.close(done); // fecha o handle TCP → loop pode finalizar
+});
+
+// Alternativa: server.unref() se o servidor deve existir mas não impedir encerramento
+server.unref(); // desregistra da contagem de handles "alive"
 ```
 
-Esse comportamento é idêntico para `queueMicrotask` ou Promises encadeadas recursivamente — qualquer microtask que produz microtasks indefinidamente paralisa o loop. `process.nextTick` é apenas o mais comum nesse antipadrão.
+## Armadilhas comuns
+
+> [!warning] Microtasks drenam entre fases, não entre callbacks da mesma fase
+> O erro conceitual mais comum: imaginar que cada callback de `setTimeout` drena suas microtasks imediatamente após. Não é assim — a drenagem ocorre quando **a fase inteira termina**.
+>
+> ```javascript
+> for (let i = 0; i < 3; i++) {
+>   setTimeout(() => {
+>     console.log(`timer ${i}`);
+>     process.nextTick(() => console.log(`  → nextTick após timer ${i}`));
+>   }, 0);
+> }
+> // Saída REAL:   timer 0, timer 1, timer 2, → nextTick 0, → nextTick 1, → nextTick 2
+> // Saída ERRADA: timer 0, → nextTick 0, timer 1, → nextTick 1 ← NÃO ACONTECE
+> ```
+>
+> Se a ordem importa para sua lógica, não dependa de intercalação; use `Promise.all` ou estruture o código para não depender dessa sequência.
+
+> [!warning] "macrotask queue" do browser não mapeia para nenhuma fila única do Node
+> A poll queue é **interna à fase poll** — contém callbacks de I/O que o kernel reportou como prontos. No Node há filas distintas por fase: fila de timers, fila de pending callbacks, fila de poll, fila de check (setImmediate). "Macrotask queue" é uma abstração de browser que o libuv não usa.
+>
+> A distinção importa em debugging: um callback via `setImmediate` não está na mesma fila que um `fs.readFile`. Eles executam em fases diferentes, com microtasks potencialmente drenadas entre eles.
+
+> [!warning] `setImmediate` vs `setTimeout(fn, 0)` fora de I/O — ordem não garantida
+> Dentro de callbacks de I/O, `setImmediate` sempre vence — ele pertence à fase **check**, que vem logo após **poll**. Mas em código de top-level ou em timers aninhados, a ordem depende do tempo de startup do processo.
+>
+> ```javascript
+> // FRÁGIL em top-level: pode sair em qualquer ordem
+> setTimeout(() => console.log('timeout'), 0);
+> setImmediate(() => console.log('immediate'));
+>
+> // DETERMINÍSTICO dentro de I/O: setImmediate sempre primeiro
+> fs.readFile(path, () => {
+>   setTimeout(() => console.log('timeout'), 0);   // próxima iteração (timers)
+>   setImmediate(() => console.log('immediate'));   // esta iteração (check) ← sempre primeiro
+> });
+> ```
+
+> [!warning] `process.nextTick` recursivo paralisa o event loop inteiro
+> `nextTick` não é uma fase — é microtask com prioridade máxima. Se um `nextTick` agenda outro `nextTick`, a fila nunca esvazia e **nenhuma fase executa**.
+>
+> ```javascript
+> // ❌ PARALISAÇÃO: o processo parece vivo mas nada mais executa
+> function bloquear() { process.nextTick(bloquear); }
+> bloquear();
+> setTimeout(() => console.log('nunca imprime'), 0); // nunca alcançado
+> ```
+>
+> O mesmo vale para Promises encadeadas recursivamente. Use `setImmediate` quando precisar de trabalho fatiado que libera o loop entre fatias.
 
 ## Em entrevista
 
@@ -465,6 +484,12 @@ Use essa frase ao responder:
 
 - *"Can you block the event loop from JavaScript code?"* → Sim, de duas formas: código síncrono longo (um loop de computação ocupando a call stack) ou microtasks recursivas (um `process.nextTick` que agenda outro `nextTick`). Em ambos os casos, nenhuma outra fase executa durante o bloqueio.
 
+## O que vem a seguir
+
+Agora que você conhece as seis fases e o ciclo completo, a próxima camada é entender a **fila de microtasks com precisão cirúrgica**: por que `process.nextTick` tem prioridade maior que `Promise.then`? O que `queueMicrotask` traz de diferente? E quando microtasks agendadas dentro de microtasks disparam?
+
+A nota [[05 - Microtasks - nextTick, queueMicrotask, Promise.then]] responde essas perguntas com exemplos de casos de borda — incluindo o padrão de recursão que paralisa servidores em produção e como `async/await` se encaixa nessa fila.
+
 ## Veja também
 
 - [[03 - Call stack, heap e queues]] — as estruturas de memória que o event loop manipula: call stack, heap, microtask queue e macrotask queue
@@ -473,3 +498,9 @@ Use essa frase ao responder:
 - [[07 - I-O assíncrono - kernel vs thread pool]] — o que acontece dentro da fase poll: como epoll/kqueue/IOCP notificam o libuv e quais operações usam o thread pool vs I/O assíncrono nativo do kernel
 - [[10 - Bloqueio do event loop - sintomas e causas]] — como identificar e corrigir quando uma das fases está bloqueando o loop em produção
 - [[Node.js]] — tronco: panorama completo do runtime com diagrama de arquitetura e links para toda a trilha
+
+## Fontes
+
+- [Node.js — The Node.js Event Loop](https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick) — documentação oficial das fases do event loop, timers e `process.nextTick`
+- [libuv — Design overview](https://docs.libuv.org/en/v1.x/design.html) — especificação do loop de I/O do libuv, com detalhes sobre epoll/kqueue/IOCP e a estrutura de handles e requests
+- [Don't Block the Event Loop (or the Worker Pool)](https://nodejs.org/en/learn/best-practices/dont-block-the-event-loop) — guia oficial Node.js sobre o custo de bloquear cada fase e como evitar starvation

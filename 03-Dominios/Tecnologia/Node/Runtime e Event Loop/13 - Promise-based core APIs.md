@@ -1,11 +1,11 @@
 ---
 title: "Promise-based core APIs"
 created: 2026-05-12
-updated: 2026-06-24
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
-publish: false
+fase: Adepto
+status: growing
+publish: true
 tags:
   - node
   - promises
@@ -25,6 +25,14 @@ aliases:
 > `stream/promises.pipeline()` é a forma correta de encadear streams sem vazar listeners em caso de erro; `.pipe()` manual não faz cleanup automático.
 > O prefixo `node:` nos imports é recomendado desde Node 14.18.0 para distinguir módulos core de pacotes npm com o mesmo nome.
 
+---
+
+## Por que você não deveria usar `fs.readFile(cb)` em código moderno?
+
+Você escreve `async function lerConfig()` e dentro dela chama `fs.readFile('./config.json', 'utf8', callback)`. O callback vai receber `err` e `data` — mas você está em uma função `async`. Como propaga o erro? Como retorna o dado? A resposta envolve wrapping manual com `util.promisify` ou uma `new Promise()` — código boilerplate que deveria ser desnecessário.
+
+O Node.js resolveu isso adicionando submódulos promise-based aos módulos core. Em vez de `fs.readFile(cb)`, você usa `import { readFile } from 'node:fs/promises'` e faz `await readFile(...)` — integração direta com `try/catch` e `async/await`, sem adapters.
+
 ## O que é
 
 O Node.js nasceu com um modelo de I/O baseado em callbacks (padrão `(err, data) => {}`). Com a popularização de `async/await` no ES2017+, usar callbacks diretamente em código moderno cria incompatibilidades de fluxo de controle, exige wrappers (`util.promisify`) e torna o tratamento de erros mais verboso.
@@ -36,6 +44,23 @@ Para resolver isso sem quebrar compatibilidade retroativa, o Node.js adicionou *
 - Permite usar `try/catch` para tratamento de erros em I/O, em vez de verificar `err` em callbacks.
 - Integra naturalmente com `async/await` e `for await...of`.
 - `util.promisify` ainda funciona, mas é mais verboso e não suporta recursos avançados como `FileHandle`.
+
+```mermaid
+flowchart LR
+    subgraph LEGADO["Módulos callback-based (compatibilidade)"]
+        FS["node:fs\nfs.readFile(cb)"]
+        STREAM["node:stream\nstream.pipeline(cb)"]
+        TIMERS["node:timers\nsetTimeout(cb, ms)"]
+        DNS["node:dns\ndns.lookup(cb)"]
+    end
+    subgraph MODERNO["Submódulos promise-based (código novo)"]
+        FSP["node:fs/promises\nawait readFile()"]
+        STREAMP["node:stream/promises\nawait pipeline()"]
+        TIMERSP["node:timers/promises\nawait setTimeout(ms)"]
+        DNSP["node:dns/promises\nawait lookup()"]
+    end
+    LEGADO -->|"mesmo módulo\ninterface diferente"| MODERNO
+```
 
 ## Como funciona
 
@@ -231,90 +256,84 @@ console.log(hostnames);  // ['dns.google']
 **Quando `util.promisify` ainda faz sentido:**
 - Funções de terceiros que seguem o padrão `(err, result) => {}` e não têm equivalente promise nativo.
 - Migração incremental de código callback legado.
+- A função retorna múltiplos valores via callback — `promisify` retorna apenas o primeiro; nesse caso, você precisa de uma `new Promise()` manual.
+
+**Sobre o prefixo `node:`:** o prefixo é obrigatório quando há pacotes npm com o mesmo nome (ex: existe um pacote `events` no npm que sombrearia `require('events')`). A partir de Node 14.18.0, `node:fs`, `node:stream`, etc. são a forma canônica. Em ambientes com bare specifiers sem o prefixo, o Node resolve módulos core primeiro — mas o prefixo elimina a ambiguidade.
+
+**Sobre AbortController com timers/promises:** `setTimeout` e `setInterval` de `node:timers/promises` aceitam um terceiro argumento `{ signal }`. Isso permite cancelar um timer a partir de qualquer ponto da aplicação — útil em operações de polling que precisam encerrar quando um sinal de shutdown chega, sem precisar manter uma referência ao timer ID.
+
+```js
+const ac = new AbortController();
+process.on('SIGTERM', () => ac.abort());
+await timersPromises.setTimeout(5000, undefined, { signal: ac.signal }); // cancela no SIGTERM
+```
+
+## Casos práticos
+
+### Cenário 1 — Migração de callback hell para promise-based em script de importação
+
+Um script de ETL leia arquivos CSV e salvava no banco usando callbacks aninhados — três níveis de `fs.readFile(cb)` dentro de `db.query(cb)` dentro de um `for` loop. A lógica era correta mas ilegível e o tratamento de erro era inconsistente.
+
+A migração foi linear:
+
+```js
+// Antes: callbacks aninhados
+fs.readFile(path, 'utf8', (err, data) => {
+  if (err) return callback(err);
+  const rows = parse(data);
+  db.query('INSERT ...', rows, (err2) => {
+    if (err2) return callback(err2);
+    callback(null, rows.length);
+  });
+});
+
+// Depois: promise-based — flat, um try/catch, legível
+import { readFile } from 'node:fs/promises';
+const data = await readFile(path, 'utf8');
+const rows = parse(data);
+await db.promise().query('INSERT ...', rows);
+return rows.length;
+```
+
+Dois erros de tratamento foram encontrados durante a migração: um path de callback que não chamava `callback(err)` em um edge case, e outro que chamava `callback` duas vezes. Com `async/await`, o `try/catch` cobre todos os caminhos.
+
+### Cenário 2 — `pipeline()` evita vazamento de file descriptors em serviço de compressão
+
+Um serviço de exportação comprimia logs sob demanda usando `.pipe()`. Em produção com > 200 exports simultâneos, o processo atingia o limite de file descriptors do OS (`EMFILE: too many open files`).
+
+A causa: quando a compressão falhava (arquivo corrompido, disco cheio), `.pipe()` não destruía os streams upstream — eles ficavam abertos até o GC rodar. A troca para `pipeline()` resolveu:
+
+```js
+// ❌ Antes: file descriptor leak em falha
+read.pipe(gzip).pipe(write);
+gzip.on('error', (e) => { /* read e write ainda abertos */ });
+
+// ✅ Depois: todos os streams destruídos ao falhar
+await pipeline(read, gzip, write);
+// Na falha: a promise rejeita E todos os streams são destruídos
+```
 
 ## Armadilhas comuns
 
-### Armadilha 1: Misturar `fs` callback com `async/await`
+> [!warning] `await fs.readFile(cb)` silencia o callback — importar do módulo raiz retorna `undefined`
+> `fs.readFile` da importação padrão (`import fs from 'node:fs'`) é callback-based e retorna `void`. Fazer `await` de `void` resolve imediatamente com `undefined`, sem erro. O callback ainda executa mais tarde — criando uma race condition silenciosa.
+>
+> ```js
+> // ❌ Silencioso: content = undefined, callback executa depois
+> import fs from 'node:fs';
+> const content = await fs.readFile('./config.json', 'utf8');
+> // ✅ Correto: importar do submódulo /promises
+> import { readFile } from 'node:fs/promises';
+> const content = await readFile('./config.json', 'utf8');
+> ```
 
-```js
-// ❌ Problema: importar o módulo raiz em vez do submódulo promises
-import fs from 'node:fs';
+> [!warning] `.pipe()` não destrói streams em erro — use `pipeline()` para evitar file descriptor leak
+> Quando um stream no meio de uma cadeia `.pipe()` emite `'error'`, os streams upstream e downstream não são automaticamente destruídos. Em serviços de longa duração, cada falha acumula file descriptors abertos até o processo atingir `EMFILE`.
+>
+> `stream/promises.pipeline()` registra handlers de erro em todos os streams e os destrói em caso de falha antes de rejeitar a promise.
 
-async function lerConfig() {
-  // fs.readFile é callback-based — não retorna Promise
-  // Isso não funciona como esperado
-  const content = await fs.readFile('./config.json', 'utf8');
-  return JSON.parse(content);
-}
-// TypeError implícito: await de undefined (readFile retorna void)
-```
-
-```js
-// ✅ Fix: importar do submódulo /promises
-import { readFile } from 'node:fs/promises';
-
-async function lerConfig() {
-  const content = await readFile('./config.json', 'utf8');
-  return JSON.parse(content);
-}
-```
-
-### Armadilha 2: Usar `.pipe()` em vez de `stream/promises.pipeline()`
-
-```js
-// ❌ Problema: .pipe() não faz cleanup em erro
-import { createReadStream, createWriteStream } from 'node:fs';
-import { createGzip } from 'node:zlib';
-
-const read = createReadStream('./input.log');
-const gzip = createGzip();
-const write = createWriteStream('./input.log.gz');
-
-read.pipe(gzip).pipe(write);
-// Se gzip emitir 'error', read e write continuam abertos
-// → vazamento de file descriptor + arquivo de destino corrompido
-```
-
-```js
-// ✅ Fix: stream/promises.pipeline destrói todos os streams em erro
-import { pipeline } from 'node:stream/promises';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { createGzip } from 'node:zlib';
-
-await pipeline(
-  createReadStream('./input.log'),
-  createGzip(),
-  createWriteStream('./input.log.gz')
-);
-// Erro em qualquer etapa → todos os streams destruídos → sem vazamento
-```
-
-### Armadilha 3: Não fechar readline após uso
-
-```js
-// ❌ Problema: processo não termina porque readline mantém stdin aberto
-import { createInterface } from 'node:readline/promises';
-import { stdin, stdout } from 'node:process';
-
-const rl = createInterface({ input: stdin, output: stdout });
-const resposta = await rl.question('Nome: ');
-console.log(`Olá, ${resposta}`);
-// Processo fica suspenso — rl.close() não foi chamado
-```
-
-```js
-// ✅ Fix: sempre fechar o interface após o último uso
-import { createInterface } from 'node:readline/promises';
-import { stdin, stdout } from 'node:process';
-
-const rl = createInterface({ input: stdin, output: stdout });
-try {
-  const resposta = await rl.question('Nome: ');
-  console.log(`Olá, ${resposta}`);
-} finally {
-  rl.close();  // libera stdin, permite que o processo termine
-}
-```
+> [!warning] Não fechar `readline.Interface` → processo nunca termina
+> `readline.createInterface` com `input: stdin` mantém o processo vivo enquanto o interface existir. Sem `rl.close()` após o último `question()`, o processo fica suspenso. Use `try/finally` para garantir o fechamento mesmo em caso de erro.
 
 ## Em entrevista
 
@@ -330,9 +349,9 @@ The core difference is error handling and resource cleanup. When you manually ch
 
 The callback-based `setInterval` fires a function repeatedly on a timer, but coordinating it with async operations requires external flags or promisification wrappers. `node:timers/promises.setInterval` returns an async generator that yields a value on each interval tick, which means you can use it directly in a `for await...of` loop and `await` async operations inside the loop body without worrying about overlapping ticks. You would use this for polling scenarios — checking an external service status, flushing a buffer periodically — where you want the simplicity of async/await without introducing a separate state machine or calling `clearInterval` explicitly (you just `break` from the loop).
 
-## Vocabulário
+## Vocabulário PT↔EN
 
-| Português | Inglês |
+| PT-BR | EN |
 |---|---|
 | Módulo central | Core module |
 | Submódulo de promessas | Promises submodule |
@@ -344,6 +363,13 @@ The callback-based `setInterval` fires a function repeatedly on a timer, but coo
 | Limpeza automática | Automatic cleanup / teardown |
 | Interface de linha de comando | CLI interface |
 | Promisificação | Promisification (via `util.promisify`) |
+| Padrão callback error-first | Error-first callback convention |
+| Retrocompatibilidade | Backwards compatibility |
+| Prefixo de módulo nativo | Built-in module specifier (`node:` prefix) |
+| Manipulador de arquivo | File handle (`FileHandle`) |
+| Gerador assíncrono | Async generator |
+| Pressão de backpressure | Backpressure |
+| Descritores de arquivo esgotados | EMFILE (too many open files) |
 
 ## Fontes
 
@@ -353,11 +379,22 @@ The callback-based `setInterval` fires a function repeatedly on a timer, but coo
 - [Node.js — readline/promises](https://nodejs.org/api/readline.html#promises-api)
 - [Node.js — dns/promises](https://nodejs.org/api/dns.html#dnspromiseslookuphostname-options)
 
+## O que vem a seguir
+
+Esta nota fecha o galho 1 de Runtime e Event Loop. Os submódulos promise-based são a ponte entre o modelo assíncrono do Node.js e a interface que código moderno espera.
+
+O próximo passo natural é entender o que acontece quando esses dados assíncronos crescem além do que cabe em memória — o tema central do Galho 3 — Streams, que trata `pipeline()` em profundidade e cobre `Readable`, `Writable`, `Transform`, e backpressure. Se o interesse for execução paralela (CPU-bound que não tem alternativa async), o Galho 2 — Paralelismo cobre Worker Threads.
+
+**Quando revisitar esta nota:**
+- Escolher entre `fs.readFile` e `fs.promises.readFile` em código existente.
+- Debugging de file descriptor leak em serviços que processam muitos arquivos.
+- Implementar polling async com `timers/promises.setInterval`.
+- Preparar para perguntas de entrevista sobre por que `.pipe()` vaza e como `pipeline()` resolve.
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index|Runtime e Event Loop]] — galho 1, o arco async (promises por dentro, async/await)
-- [[03-Dominios/Tecnologia/Node/Streams/index|Streams (galho 3)]] — `stream/promises.pipeline()` em detalhe
-- [[03-Dominios/Tecnologia/Tooling e Build/22 - Single Executable Apps (SEA) e empacotamento|Single Executable Apps (SEA)]] — domínio Tooling e Build
-- [[03-Dominios/Tecnologia/Tooling e Build/20 - Bun como runtime e toolkit all-in-one|Bun como runtime e toolkit]] — domínio Tooling e Build
-- [[Node.js]]
-- [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]]
+- [[08 - Promises por dentro]] — como promises funcionam internamente; o substrato que os submódulos usam
+- [[09 - async-await - o que é, o que não é]] — `async/await` que consome os submódulos promise-based
+- [[Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/Node/Streams/index|Streams]] — galho 2, onde `stream/promises.pipeline` é a peça central

@@ -1,10 +1,10 @@
 ---
 title: "Armadilhas, regras práticas, cheatsheet"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Magus
+status: growing
 publish: true
 tags:
   - node
@@ -20,9 +20,17 @@ aliases:
 # Armadilhas, regras práticas, cheatsheet
 
 > [!abstract] TL;DR
-> Nota de fechamento da sub-trilha [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]]. Agrega as 10 armadilhas mais críticas (com exemplo e fix), tabela de timer/fase, decision tree de "minha request está lenta", vocabulário PT→EN com 22 termos, e ponteiros para os próximos galhos. Use como referência rápida após percorrer as 11 notas anteriores.
+> Nota de fechamento da sub-trilha [[03-Dominios/Tecnologia/Node/Runtime e Event Loop/index]]. Agrega as 10 armadilhas mais críticas (com exemplo e fix), tabela de timer/fase, decision tree de "minha request está lenta", vocabulário PT→EN com 22 termos, e ponteiros para os próximos galhos. Use como referência rápida após percorrer as 11 notas anteriores. Regras de ouro: nunca use `*Sync` em handlers, nunca recorra em `nextTick`, meça event loop lag antes de otimizar, e trate latência conjunta diferente de latência isolada.
 
 ---
+
+## O Node.js pune o que parece inocente
+
+Você escreve `fs.readFileSync('./config.json')` no topo de um handler porque é simples e "funciona em dev". Funciona mesmo — até o primeiro deploy com 50 usuários simultâneos. Nesse momento, cada request bloqueia a thread JS lendo o arquivo, e as outras 49 esperam na fila.
+
+Ou você usa `process.nextTick` num loop de processamento porque "é eficiente". Funciona — até entrar em recursão e o event loop parar de avançar para sempre.
+
+Esta nota agrega os padrões que aparecem repetidamente em incidents de produção Node.js: os que parecem inofensivos em isolamento mas escalam de forma desastrosa. Use como checklist de code review, onboarding de time, ou referência rápida durante um incident.
 
 ## Top 10 armadilhas
 
@@ -261,38 +269,22 @@ timers → pending callbacks → idle/prepare → poll → check → close callb
 
 ## Decision tree — "minha request está lenta"
 
-```
-Latência elevada detectada
-│
-├─ A lentidão é conjunta (todos os endpoints ao mesmo tempo)?
-│   │
-│   └─ Sim → event loop bloqueado (ver nota 11)
-│             │
-│             ├─ CPU-bound síncrono?
-│             │   └─ regex? JSON.parse de payload enorme? loop custoso?
-│             │       └─ Fix: Worker Thread / streaming / paginação
-│             │
-│             ├─ Sync API em handler?
-│             │   └─ readFileSync? pbkdf2Sync? *Sync em geral?
-│             │       └─ Fix: versão async equivalente
-│             │
-│             ├─ Thread pool saturado?
-│             │   └─ muitos fs/crypto/dns.lookup concorrentes?
-│             │       └─ Fix: UV_THREADPOOL_SIZE ou Worker Thread
-│             │
-│             └─ GC pause longa?
-│                 └─ heap crescendo? muitos objetos de curta duração?
-│                     └─ Fix: profiling com --inspect + flame chart
-│
-└─ A lentidão é isolada (um endpoint específico)?
-    │
-    ├─ P50 alto → lógica lenta no handler
-    │   └─ DB query lenta? chamada externa? await serial?
-    │       └─ Fix: Promise.all / índice no banco / cache
-    │
-    └─ P99 alto mas P50 ok → condição de corrida ou contenção
-        └─ pool de conexões cheio? lock contention?
-            └─ Fix: ajustar pool size / investigar dependência
+```mermaid
+flowchart TD
+    START["Latência elevada detectada"] --> Q1{"Lentidão é conjunta?\n(todos os endpoints)"}
+
+    Q1 -->|"SIM"| EL["Event loop bloqueado\n(ver nota 10 e 11)"]
+    Q1 -->|"NÃO"| ISO["Lentidão isolada\n(endpoint específico)"]
+
+    EL --> Q2{"Qual categoria?"}
+    Q2 -->|"CPU síncrono\n(regex, JSON.parse, loop)"| FIX1["Worker Thread /\nstreaming / paginação"]
+    Q2 -->|"Sync API no handler\n(*Sync, execSync)"| FIX2["Versão async\nequivalente"]
+    Q2 -->|"fs/crypto/dns concorrente\n(> 4 simultâneos)"| FIX3["UV_THREADPOOL_SIZE ↑\nou Worker Thread"]
+    Q2 -->|"GC pause\n(heap crescendo)"| FIX4["--inspect + flame chart\nprofiling de heap"]
+
+    ISO --> Q3{"P50 alto ou P99?"}
+    Q3 -->|"P50 alto"| ISO1["Lógica lenta\nDB query / await serial\nFix: Promise.all / índice"]
+    Q3 -->|"P99 alto, P50 ok"| ISO2["Race condition /\npool cheio\nFix: pool size / lock"]
 ```
 
 ---
@@ -328,6 +320,128 @@ Compilado de toda a sub-trilha. Mínimo necessário para entrevistas internacion
 
 ---
 
+## Casos práticos
+
+### Cenário 1 — Code review bloqueou deploy: 3 armadilhas no mesmo handler
+
+Durante code review de um feature de geração de relatórios, 3 problemas foram identificados no mesmo handler antes do merge:
+
+```javascript
+// ❌ Handler original — 3 armadilhas em 15 linhas
+app.post('/relatorio', async (req, res) => {
+  const config = fs.readFileSync('./config.json'); // armadilha 7: sync API
+  const dados = await buscarDados(req.body.filtros);
+
+  // armadilha 4: await serial em operações independentes
+  const usuarios = await buscarUsuarios(dados.ids);
+  const produtos = await buscarProdutos(dados.skus);
+
+  // armadilha 3: Promise.all sem limite em lista potencialmente grande
+  const detalhes = await Promise.all(
+    dados.ids.map(id => buscarDetalheCompleto(id)) // pode ser 500 ids
+  );
+  res.json({ config, usuarios, produtos, detalhes });
+});
+
+// ✅ Handler corrigido
+import pLimit from 'p-limit';
+const limit = pLimit(10);
+
+// Carregar config uma vez no startup, não por request
+const config = JSON.parse(await fs.promises.readFile('./config.json', 'utf8'));
+
+app.post('/relatorio', async (req, res) => {
+  const dados = await buscarDados(req.body.filtros);
+
+  // Paralelo onde seguro
+  const [usuarios, produtos] = await Promise.all([
+    buscarUsuarios(dados.ids),
+    buscarProdutos(dados.skus),
+  ]);
+
+  // Concorrência limitada para lista grande
+  const detalhes = await Promise.all(
+    dados.ids.map(id => limit(() => buscarDetalheCompleto(id)))
+  );
+  res.json({ config, usuarios, produtos, detalhes });
+});
+```
+
+### Cenário 2 — Cheatsheet de timer usado em onboarding de dev júnior
+
+Em um onboarding, um dev júnior perguntou: "quando devo usar `setImmediate` em vez de `setTimeout(fn, 0)`?". A resposta veio pela tabela de timer/fase desta nota:
+
+- Dentro de callback de I/O: `setImmediate` é determinístico — dispara na fase `check` da iteração atual.
+- `setTimeout(fn, 0)` depende da fase `timers` — pode ou não ser antes do `setImmediate` dependendo do contexto.
+- Para yield do event loop (ceder entre chunks de processamento): `setImmediate` é o padrão seguro.
+- Para delay mínimo garantido (N ms): `setTimeout`.
+
+Três semanas depois, o mesmo dev identificou um `setInterval` reentrante num serviço de relatórios e aplicou o fix do item 5 da lista de armadilhas.
+
+## Armadilhas comuns
+
+> [!warning] O mais silencioso: closures em timers não limpos → memory leak progressivo
+> Timers que capturam closures com objetos grandes (arrays, buffers, conexões) e nunca são limpos mantêm esses objetos vivos no heap indefinidamente. O GC não consegue coletar porque a referência existe no closure. Sintoma: RSS do processo crescendo lentamente sem `OutOfMemory` imediato.
+>
+> ```javascript
+> // ❌ closure captura `dados` (pode ser MB); intervalo nunca é limpo
+> setInterval(() => processar(dados), 1000);
+> // ✅ retornar cleanup — obrigatório em módulos com lifecycle
+> const id = setInterval(() => processar(dados), 1000);
+> return () => clearInterval(id);
+> ```
+
+> [!warning] `process.nextTick` recursivo → starvation completo do event loop
+> `nextTickQueue` drena **inteira** antes de qualquer fase do loop avançar. Recursão nela é um loop infinito dentro do próprio mecanismo de drenagem — o loop para de processar I/O, timers, e qualquer outro evento.
+>
+> ```javascript
+> // ❌ Event loop congela
+> function loop() { process.nextTick(loop); }
+> loop();
+> // ✅ setImmediate cede uma iteração do loop por chamada
+> function loop() { setImmediate(loop); }
+> ```
+
+> [!warning] `await` serial é O(n) — use `Promise.all` para operações independentes
+> Cada `await` pausa a função até a promise resolver antes de iniciar a próxima. Para N operações independentes com duração D, o tempo total é N×D. `Promise.all` inicia todas ao mesmo tempo; o tempo total é max(D₁, D₂, ..., Dₙ).
+>
+> O anti-pattern é especialmente perigoso quando mascarado por um `for...of` — parece explícito mas na prática é sequencial: `for (const id of ids) await buscar(id)`.
+
+## Como explicar em inglês
+
+> [!tip] Frase pronta (EN)
+> "Node.js has one JavaScript thread, so any synchronous code — CPU-bound work, sync I/O APIs, catastrophic regex — blocks every other request while it runs. The key distinction to make in an incident is: correlated latency across all endpoints points to an event loop block; isolated latency on one endpoint points to a problem in that handler specifically. The rule of thumb: never use `*Sync` APIs in request handlers, never recurse in `process.nextTick`, and always measure event loop lag before assuming a performance problem is in the database."
+
+### Vocabulário PT↔EN
+
+| PT-BR | EN |
+|---|---|
+| loop de eventos | event loop |
+| microtarefa | microtask |
+| macrotarefa | macrotask |
+| fila de nextTick | nextTick queue |
+| pool de threads | thread pool |
+| bloqueio do loop | event loop blocking |
+| starvation de fila | queue starvation |
+| desvio de timer | timer drift |
+| latência conjunta | correlated latency |
+| ponteiro de limpeza | cleanup reference |
+
+## O que vem a seguir
+
+Esta nota fecha o galho de Runtime e Event Loop. Os próximos galhos constroem sobre o que você aprendeu aqui:
+
+- **Galho 2 — Paralelismo**: quando o código síncronamente pesado não tem alternativa async — [[Worker Threads]], cluster, child_process. A solução estrutural para CPU-bound.
+- **Galho 3 — Streams**: quando o dado é grande demais para caber em memória. A solução estrutural para `JSON.parse` de payloads grandes e I/O de alto volume.
+- **Galho 5 — Observability**: instrumentação permanente em produção — profiling contínuo, alertas de event loop lag, distributed tracing com OpenTelemetry.
+
+## Fontes
+
+- [Node.js Docs — Don't Block the Event Loop](https://nodejs.org/en/docs/guides/dont-block-the-event-loop)
+- [p-limit — npm](https://www.npmjs.com/package/p-limit)
+- [Clinic.js — documentação](https://clinicjs.org/documentation/)
+- [OWASP — ReDoS](https://owasp.org/www-community/attacks/ReDoS)
+
 ## Próximos galhos
 
 ### Galho 2 — Paralelismo (quando o bloqueio é estrutural)
@@ -355,14 +469,17 @@ Profiling, logging estruturado, métricas e tracing distribuído. `perf_hooks`, 
 
 ## Regras práticas de bolso
 
-- **Nunca use `*Sync` em handlers de servidor** — `readFileSync`, `writeFileSync`, `pbkdf2Sync` etc.
-- **Nunca recorra em `process.nextTick`** — use `setImmediate` se precisar de yield.
+- **Nunca use `*Sync` em handlers de servidor** — `readFileSync`, `writeFileSync`, `pbkdf2Sync` etc. Aceitável apenas no startup, antes de `app.listen`.
+- **Nunca recorra em `process.nextTick`** — use `setImmediate` se precisar de yield; o `nextTickQueue` drena inteiro antes do loop avançar.
 - **`Promise.all` é padrão; `await` serial é exceção** — use serial só quando uma operação depende do resultado da anterior.
-- **Limite concorrência em `Promise.all` com listas grandes** — use `p-limit` ou batches.
-- **`setImmediate` > `setTimeout(fn, 0)` dentro de callbacks de I/O** — mais determinístico.
-- **`UV_THREADPOOL_SIZE` padrão é 4** — eleve antes de escalar fs/crypto concorrentes.
+- **Limite concorrência em `Promise.all` com listas grandes** — use `p-limit` ou batches; conexões ilimitadas ao banco derrubam o pool.
+- **`setImmediate` > `setTimeout(fn, 0)` dentro de callbacks de I/O** — mais determinístico quanto à fase do loop.
+- **`UV_THREADPOOL_SIZE` padrão é 4** — eleve antes de escalar fs/crypto concorrentes; `UV_THREADPOOL_SIZE=16` no ambiente.
 - **Meça antes de otimizar** — `monitorEventLoopDelay` + percentis (P50, P99) são o ponto de partida.
-- **Latência conjunta = event loop; latência isolada = handler** — essa distinção economiza horas de debugging.
+- **Latência conjunta = event loop; latência isolada = handler** — essa distinção economiza horas de debugging de banco de dados que não é o problema.
+- **Guarde referências de timers para limpeza** — sem `clearInterval`/`clearTimeout`, closures vazam memória indefinidamente.
+- **Nunca ignore `unhandledRejection`** — Node 15+ encerra o processo; registre um handler global que loga e chama `process.exit(1)`.
+- **`async` em handler Express 4 não captura erros automaticamente** — use um wrapper `asyncHandler` ou migre para Express 5 / Fastify.
 
 ---
 

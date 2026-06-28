@@ -1,10 +1,10 @@
 ---
 title: "Promises por dentro"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -21,15 +21,27 @@ aliases:
 > [!abstract] TL;DR
 > Uma Promise tem 3 estados: **pending**, **fulfilled** e **rejected**. Uma vez liquidada (settled), é imutável — não pode voltar a pending nem mudar de estado. `.then(cb)` não executa `cb` imediatamente: enfileira `cb` na microtask queue, mesmo que a promise já esteja resolvida. Encadeamento de `.then` devolve uma **nova** promise a cada chamada; erros propagam automaticamente até o primeiro `.catch`. `Promise.resolve(x)` é açúcar sintático para criar uma promise já fulfillada — equivalente a `new Promise((res) => res(x))`, mas mais legível. Em Node.js, promises rejeitadas sem handler disparam o evento `unhandledRejection`; no Node 15+ o padrão passou a terminar o processo.
 
+## Por que `.then()` chama o callback mesmo quando a Promise já está resolvida — de forma assíncrona?
+
+Se uma Promise já tem valor, por que não chamar o callback imediatamente? E por que esquecer um `return` dentro de `.then()` silencia erros sem aviso? As respostas estão na máquina de estados e na semântica da microtask queue que governa o comportamento interno de Promises.
+
 ## O que é
 
 Uma **Promise** é um objeto que representa o resultado eventual de uma operação assíncrona. Ela age como um proxy: você não tem o valor ainda, mas tem um objeto ao qual pode encadear handlers que serão executados quando o valor chegar (ou quando a operação falhar).
 
 ### Os três estados
 
-```
-pending ──── resolve(v) ───▶ fulfilled (imutável, valor = v)
-pending ──── reject(e)  ───▶ rejected  (imutável, reason = e)
+```mermaid
+stateDiagram-v2
+    [*] --> pending: new Promise(executor)
+    pending --> fulfilled: resolve(value)
+    pending --> rejected: reject(reason)
+    fulfilled --> [*]: imutável
+    rejected --> [*]: imutável
+
+    note right of pending: executor roda síncronamente\nno construtor
+    note right of fulfilled: .then(cb) → cb enfileirado\nna microtask queue
+    note right of rejected: .catch(cb) → cb enfileirado\nna microtask queue
 ```
 
 Uma promise **liquidada** (settled) é toda promise que não está mais em pending — seja ela fulfilled ou rejected. A especificação garante que, após atingir qualquer um dos estados finais, a promise **nunca** muda. Isso torna promises seguras para múltiplos consumidores: você pode chamar `.then()` dezenas de vezes na mesma promise e cada handler recebe o mesmo valor.
@@ -329,80 +341,98 @@ Promise.allSettled([
 // ]
 ```
 
-## Armadilhas
+## Casos práticos
 
-### 1. Esquecer `return` dentro de `.then()`
+### Cenário 1 — Promise solta em cadeia de `.then()`: dados incorretos silenciosos
+
+Um endpoint de usuário buscava permissões mas a lista sempre chegava vazia. Sem erro, sem log — simplesmente `undefined`.
 
 ```javascript
-// RUIM — retorna undefined; a promise interna não é encadeada
+// ❌ Promise solta: fetchPermissions executa, mas resultado é descartado
 fetchUser(id)
   .then((user) => {
-    fetchPermissions(user.id); // promise solta — sem return!
+    fetchPermissions(user.id); // sem return! — a promise não é encadeada
   })
   .then((permissions) => {
-    console.log(permissions); // undefined, não as permissões
+    console.log(permissions); // undefined sempre — não as permissões
+    res.json({ permissions }); // resposta incorreta, sem erro
   });
 
-// BOM
+// ✅ Com return: a cadeia espera fetchPermissions resolver
 fetchUser(id)
   .then((user) => {
     return fetchPermissions(user.id); // encadeia corretamente
   })
   .then((permissions) => {
-    console.log(permissions); // os dados corretos
+    res.json({ permissions }); // dados corretos
   });
 ```
 
-Sem `return`, a promise retornada por `fetchPermissions` flutua solta — ela executa, mas o resultado é descartado e erros viram `unhandledRejection`.
+Qualquer erro dentro de `fetchPermissions` no código incorreto vira um `unhandledRejection` silencioso — especialmente perigoso em Node.js 14 e anteriores (que não encerravam o processo por padrão).
 
-### 2. `await Promise.resolve(syncFn())` — a função síncrona já rodou
+### Cenário 2 — `Promise.all` vs `Promise.allSettled` em chamadas a múltiplos serviços
 
-```javascript
-// syncFn() executa AGORA, de forma síncrona
-// O await só suspende na resolução da promise — que já está resolvida
-const result = await Promise.resolve(computeHeavySync());
-
-// Equivalente a:
-const syncResult = computeHeavySync(); // bloqueia aqui
-const result = await Promise.resolve(syncResult); // suspende aqui (mas a promise já resolveu)
-```
-
-Envolver uma função síncrona pesada em `Promise.resolve()` não a move para fora da thread principal. Se você precisa de verdadeira assincronicidade, use `worker_threads` ou `setImmediate`.
-
-### 3. `Promise.all([])` resolve com array vazio, não rejeita
+Um dashboard agregava dados de 5 serviços externos. Um dos serviços ficava instável, derrubando toda a resposta do dashboard.
 
 ```javascript
-// Comportamento correto, mas surpreende quem não conhece
-const results = await Promise.all([]);
-// results === [] — não é erro, não é undefined
+// ❌ Promise.all: falha rápida — um serviço instável derruba o dashboard inteiro
+const [usuarios, pedidos, estoque, financeiro, analytics] = await Promise.all([
+  buscarUsuarios(),
+  buscarPedidos(),
+  buscarEstoque(),
+  buscarFinanceiro(), // se este rejeitar, todos os outros são ignorados
+  buscarAnalytics(),
+]);
+
+// ✅ Promise.allSettled: cada serviço contribui independentemente
+const resultados = await Promise.allSettled([
+  buscarUsuarios(),
+  buscarPedidos(),
+  buscarEstoque(),
+  buscarFinanceiro(), // rejeição aqui não cancela os outros
+  buscarAnalytics(),
+]);
+
+const dados = resultados.reduce((acc, r, i) => {
+  if (r.status === 'fulfilled') acc[SERVICOS[i]] = r.value;
+  else console.warn(`${SERVICOS[i]} falhou:`, r.reason);
+  return acc;
+}, {});
 ```
 
-Isso é útil quando você constrói a lista de promises dinamicamente e ela pode estar vazia.
+## Armadilhas comuns
 
-### 4. Tratar `unhandledRejection` sem logar
+> [!warning] Esquecer `return` dentro de `.then()` cria promise solta — erros desaparecem silenciosamente
+> Cada `.then()` retorna uma nova promise cujo estado depende do que o handler retorna. Sem `return`, a promise interna executa mas o resultado é descartado — a cadeia continua com `undefined`, e erros viram `unhandledRejection` invisíveis.
+>
+> ```javascript
+> // ❌ Sem return: resultado descartado, erros silenciosos
+> p.then((user) => { fetchPermissions(user.id); }) // promise solta
+> // ✅ Com return: cadeia correta
+> p.then((user) => { return fetchPermissions(user.id); })
+> ```
 
-```javascript
-// PÉSSIMO — engole o erro completamente
-process.on('unhandledRejection', () => {
-  // "tratei" o evento mas não fiz nada
-});
+> [!warning] `await Promise.resolve(syncFn())` não move trabalho para outra thread
+> `syncFn()` executa **síncronamente** antes mesmo do `await`. Envolver em `Promise.resolve()` não torna a função assíncrona — o `await` só suspende *depois* que o trabalho síncrono já bloqueou a thread.
+>
+> ```javascript
+> // ❌ Bloqueia a thread antes do await
+> const result = await Promise.resolve(computeHeavySync()); // computeHeavySync roda agora
+> // ✅ Para trabalho CPU-bound real: Worker Threads
+> ```
 
-// Resultado: bugs fantasma — erros que ocorrem silenciosamente
-// em produção sem deixar rastro nos logs
-```
-
-"Tratar" o evento sem logar é pior do que não tratar: o processo não vai mais terminar (comportamento pre-Node 15), mas os erros também não vão aparecer em nenhum lugar. Você tem o pior dos dois mundos.
-
-### 5. Promise no `if` sem await
-
-```javascript
-// Esse código nunca rejeita visível — mas também nunca espera
-if (await validateUser(id)) { // await correto
-  await saveToDatabase(record); // sem await — fire and forget acidental
-}
-```
-
-Qualquer chamada a uma função `async` sem `await` (e sem captura da promise retornada) é potencialmente um `unhandledRejection` esperando acontecer.
+> [!warning] Silenciar `unhandledRejection` sem logar cria bugs fantasma em produção
+> "Tratar" o evento sem logar é pior que não tratar: o processo não termina (pre-Node 15), mas os erros também não aparecem em nenhum lugar. Bugs se acumulam silenciosamente.
+>
+> ```javascript
+> // ❌ Engole erros — versão mais perigosa
+> process.on('unhandledRejection', () => { /* nada */ });
+> // ✅ Sempre logar; em produção, considere terminar o processo
+> process.on('unhandledRejection', (reason, promise) => {
+>   logger.error({ reason, promise }, 'Unhandled rejection');
+>   process.exit(1); // Node 15+ faz isso por padrão
+> });
+> ```
 
 ## Em entrevista
 
@@ -434,9 +464,21 @@ Se `p` é uma Promise nativa, `Promise.resolve(p)` retorna `p` sem criar uma nov
 | açúcar sintático                   | syntactic sugar            |
 | promessa solta                     | floating promise           |
 
+## O que vem a seguir
+
+Com a máquina de estados de Promises entendida, o próximo passo é ver como `async/await` simplifica o trabalho com Promises — e quais armadilhas surgem da confusão entre a sintaxe mais simples e o modelo de execução subjacente que não mudou.
+
+A nota [[09 - async-await - o que é, o que não é]] desfaz o mito de que `async` paraleliza ou cria threads, e mostra padrões como `Promise.all` para paralelismo real e Worker Threads para CPU-bound.
+
 ## Veja também
 
-- `[[03 - Call stack, heap e queues]]` — a microtask queue no contexto do event loop
-- `[[05 - Microtasks - nextTick, queueMicrotask, Promise.then]]` — ordem de execução de microtasks e comparação com `process.nextTick`
-- `[[09 - async-await - o que é, o que não é]]` — como `async/await` é sugar sobre Promises
-- `[[Node.js]]` — nota-tronco do domínio Node.js
+- [[03 - Call stack, heap e queues]] — a microtask queue no contexto do event loop
+- [[05 - Microtasks - nextTick, queueMicrotask, Promise.then]] — ordem de execução de microtasks e comparação com `process.nextTick`
+- [[09 - async-await - o que é, o que não é]] — como `async/await` é sugar sobre Promises
+- [[Node.js]] — nota-tronco do domínio Node.js
+
+## Fontes
+
+- [MDN — Using promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises) — guia completo com encadeamento, tratamento de erros e combinadores
+- [Promises/A+ specification](https://promisesaplus.com/) — spec formal que define o comportamento de `.then()`, incluindo a garantia de assincronicidade
+- [Node.js — Unhandled rejections](https://nodejs.org/api/process.html#event-unhandledrejection) — comportamento do evento `unhandledRejection` e mudanças de default entre versões do Node

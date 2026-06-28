@@ -1,10 +1,10 @@
 ---
 title: "Call stack, heap e queues"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -26,7 +26,7 @@ aliases:
 
 ## O que é
 
-Quando o V8 executa código JavaScript em Node.js, ele mantém quatro estruturas distintas na memória. Entender o papel de cada uma é o pré-requisito para compreender o event loop em profundidade.
+Por que `process.nextTick` recursivo trava um servidor Node inteiro — incluindo timers e I/O — enquanto código assíncrono normal não? Por que um memory leak às vezes manifesta como GC pauses em vez de aumento de memória? A resposta está em quatro estruturas que o V8 mantém em runtime para cada thread JS.
 
 ### Call stack — a pilha de execução
 
@@ -159,42 +159,26 @@ O fluxo exato:
 > [!warning] `setTimeout(fn, 0)` não significa "imediatamente"
 > O delay `0` é tratado internamente como `1ms` no Node.js (comportamento do libuv). Mais importante: mesmo com `0ms`, o callback de `setTimeout` é uma macrotask e sempre executa **depois** de todas as microtasks pendentes.
 
-### Diagrama ASCII — as quatro estruturas
+### Diagrama — as quatro estruturas e o event loop
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                        Thread JavaScript                          │
-│                                                                    │
-│  ┌─────────────────┐          ┌──────────────────────────────┐   │
-│  │   CALL STACK    │          │            HEAP               │   │
-│  │   (LIFO)        │          │   (objetos JS — GC do V8)    │   │
-│  │                 │          │                               │   │
-│  │ ┌─────────────┐ │          │  ┌─────────────────────────┐ │   │
-│  │ │  frame: f() │ │ ──────── │  │  Young Generation       │ │   │
-│  │ └─────────────┘ │ ref→obj  │  │  (Scavenger / GC menor) │ │   │
-│  │ ┌─────────────┐ │          │  └─────────────────────────┘ │   │
-│  │ │ frame: g()  │ │          │  ┌─────────────────────────┐ │   │
-│  │ └─────────────┘ │          │  │  Old Generation          │ │   │
-│  │ ┌─────────────┐ │          │  │  (Mark-Compact / GC)    │ │   │
-│  │ │ frame: main │ │          │  └─────────────────────────┘ │   │
-│  │ └─────────────┘ │          └──────────────────────────────┘   │
-│  └─────────────────┘                                              │
-│                                                                    │
-│  ┌─────────────────────────────────────────────────────────────┐ │
-│  │                    MICROTASK QUEUE                           │ │
-│  │  [ nextTick cb ] → [ Promise.then cb ] → [ queueMicro cb ] │ │
-│  │  (drena completamente antes do event loop avançar)          │ │
-│  └─────────────────────────────────────────────────────────────┘ │
-│                                                                    │
-│  ┌─────────────────────────────────────────────────────────────┐ │
-│  │                    MACROTASK QUEUE                           │ │
-│  │       (também: "callback queue" / "task queue")              │ │
-│  │  [ setTimeout cb ] → [ fs.readFile cb ] → [ I/O cb ] …     │ │
-│  │  (event loop retira UMA task por vez)                       │ │
-│  └─────────────────────────────────────────────────────────────┘ │
-│                                                                    │
-│  Regra: event loop só avança quando stack vazia + microtasks OK  │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph V8["V8 — thread JS"]
+        direction LR
+        CS["Call Stack\nLIFO · frames de execução\nRangeError ao estourar"]
+        H["Heap\nobjetos JS\nYoung Gen → Old Gen\nScavenger · Mark-Compact"]
+        CS -->|"ref → objeto"| H
+    end
+    subgraph Filas["Filas do Event Loop"]
+        direction LR
+        MQ["Microtask Queue\nnextTick · Promise.then · queueMicrotask\ndrena completamente antes de avançar"]
+        MAQ["Macrotask Queue\nsetTimeout · I/O callbacks · setImmediate\nevent loop retira UMA por vez"]
+    end
+    EL{{"Event Loop\nstack vazia?"}}
+    MQ -->|"executa"| CS
+    MAQ -->|"executa"| CS
+    EL -->|"1 — drena tudo"| MQ
+    EL -->|"2 — retira UMA"| MAQ
 ```
 
 ### O ciclo do event loop em termos dessas estruturas
@@ -279,56 +263,125 @@ node --stack-size=32768 meu-parser.js
 
 Em cenários hipotéticos como processamento de ASTs com profundidade acima de 10.000 nós, esse ajuste é necessário. Mas a primeira alternativa a considerar é sempre converter a recursão em iteração explícita com uma pilha manual — mais previsível e sem dependência de flags de runtime.
 
-## Armadilhas
+## Casos práticos
 
-### 1. Recursão sem caso-base → RangeError inevitável
-
-Qualquer função que chama a si mesma sem uma condição de sarada vai estourar a stack. O erro não é imediato — ele depende do tamanho do frame e do limite da stack — mas é determinístico.
+### Cenário 1 — `process.nextTick` recursivo travando o servidor em produção
 
 ```javascript
-// ERRADO: sem caso-base
-function somar(n) {
-  return n + somar(n - 1); // nunca para
+// ❌ Anti-padrão: nextTick recursivo bloqueia o event loop inteiro
+function processarFila(items) {
+  if (items.length === 0) return;
+  
+  const item = items.shift();
+  processar(item);
+  
+  // Bug: usa nextTick para "não bloquear" — mas gera microtask recursiva
+  process.nextTick(() => processarFila(items));
 }
 
-// CORRETO: com caso-base
-function somar(n) {
-  if (n <= 0) return 0;      // condição de parada
-  return n + somar(n - 1);
+processarFila(arrayDe10000Items);
+// setTimeout abaixo NUNCA dispara durante o processamento:
+setTimeout(() => console.log('health check'), 100);
+```
+
+O raciocínio errado: "estou usando `nextTick` então não estou bloqueando". O raciocínio correto: cada chamada de `nextTick` adiciona uma microtask, que drena antes do event loop avançar. Com 10.000 items, o event loop fica preso 10.000 ciclos de microtask sem nunca processar timers, I/O ou health checks.
+
+```javascript
+// ✅ Correto: usar setImmediate para liberar o event loop entre items
+function processarFila(items) {
+  if (items.length === 0) return;
+  
+  const item = items.shift();
+  processar(item);
+  
+  // setImmediate é macrotask — o event loop pode processar I/O entre cada item
+  setImmediate(() => processarFila(items));
 }
 ```
 
-### 2. Microtasks "rodam em background" — mito perigoso
-
-Microtasks não são assíncronas no sentido de "rodam em paralelo". Elas rodam na **mesma thread JavaScript**, no mesmo fluxo de execução — só em um momento diferente (após o código síncrono atual, antes da próxima macrotask). Isso significa que um loop de microtasks pode travar o programa tão efetivamente quanto código síncrono.
+### Cenário 2 — Memory leak via closure retendo objetos no heap
 
 ```javascript
-// PERIGO: nextTick recursivo — o event loop nunca avança
-function loop() {
-  process.nextTick(loop); // agenda si mesmo como microtask
+const EventEmitter = require('node:events');
+const emitter = new EventEmitter();
+
+// ❌ Leak: cada chamada de setupHandler adiciona listener mas nunca remove
+function setupHandler(req) {
+  const dadosPesados = req.body; // objeto grande em memória
+  
+  emitter.on('atualizar', () => {
+    // closure retém referência a dadosPesados — nunca coletado pelo GC
+    console.log(dadosPesados.id);
+  });
 }
 
-loop();
-// setTimeout abaixo NUNCA dispara — macrotask queue nunca é alcançada
-setTimeout(() => console.log('isso nunca imprime'), 0);
+// Com 1000 requisições, o heap acumula 1000 closures com 1000 objetos grandes
+// GC Mark-Compact tenta coletar, mas os objetos são alcançáveis via emitter
 ```
 
-Microtasks são síncronas na perspectiva do event loop: enquanto houver microtasks na fila, o event loop não avança. A ilusão de "background" vem do fato de serem agendadas para *depois* do código atual, não de rodarem em paralelo.
+O heap cresce porque o GC usa a call stack (e roots como o emitter) como ponto de partida para marcar objetos alcançáveis. Closures que referenciam objetos grandes impedem a coleta mesmo que o objeto "pareça" não estar mais em uso.
 
-### 3. Confundir heap (objetos) com stack (frames)
+```javascript
+// ✅ Correto: remover o listener quando não precisar mais dele
+function setupHandler(req) {
+  const dadosPesados = req.body;
+  
+  function handler() {
+    console.log(dadosPesados.id);
+  }
+  
+  emitter.on('atualizar', handler);
+  
+  // Cleanup explícito quando a requisição terminar
+  req.on('close', () => emitter.off('atualizar', handler));
+}
+```
 
-São estruturas com propósitos, tamanhos e gerenciamento completamente diferentes:
+## Armadilhas comuns
 
-| | Call Stack | Heap |
-|---|---|---|
-| **O que armazena** | Frames de chamada de função | Objetos JavaScript |
-| **Estrutura** | LIFO (pilha) | Pool não-ordenado |
-| **Gerenciamento** | Automático pelo V8 ao chamar/retornar | Garbage Collector (Scavenger + Mark-Compact) |
-| **Limite** | Fixo (configurável via `--stack-size`) | Limitado pela RAM disponível |
-| **Quando cresce** | Em cada chamada de função | Em cada `new Object()`, array, closure |
-| **Erro ao estourar** | `RangeError: Maximum call stack size exceeded` | `FATAL ERROR: Heap limit Allocation failed` |
+> [!warning] Recursão sem caso-base → `RangeError` inevitável
+> Qualquer função que chama a si mesma sem condição de parada vai estourar a stack. O erro não é imediato — depende do tamanho do frame e do limite da stack — mas é determinístico.
+>
+> ```javascript
+> // ❌ Sem caso-base: empurra frames indefinidamente
+> function somar(n) {
+>   return n + somar(n - 1); // nunca para → RangeError
+> }
+>
+> // ✅ Com caso-base
+> function somar(n) {
+>   if (n <= 0) return 0;
+>   return n + somar(n - 1);
+> }
+> ```
+>
+> Para recursão profunda legítima (parsers, ASTs), use `node --stack-size=32768` ou converta para iteração com pilha manual.
 
-Uma variável local `const obj = {}` na stack contém uma **referência** — o ponteiro ocupa espaço na stack, mas o objeto em si existe no heap.
+> [!warning] Microtasks "rodam em background" — mito que paralisa servidores
+> Microtasks não são assíncronas no sentido de "rodam em paralelo". Elas rodam na **mesma thread JS**, após o código síncrono atual, mas antes da próxima macrotask. Um loop de microtasks trava o programa tão efetivamente quanto código síncrono.
+>
+> ```javascript
+> // ❌ nextTick recursivo — event loop nunca avança para timers nem I/O
+> function loop() {
+>   process.nextTick(loop);
+> }
+> loop();
+> setTimeout(() => console.log('isso nunca imprime'), 0);
+> ```
+>
+> Prefira `setImmediate` para trabalho fatiado que precisa liberar o event loop entre fatias.
+
+> [!warning] Confundir heap (objetos) com stack (frames) leva a diagnóstico errado
+> São estruturas com propósitos, limites e erros completamente diferentes:
+>
+> | | Call Stack | Heap |
+> |---|---|---|
+> | Armazena | Frames de chamada | Objetos JS |
+> | Estrutura | LIFO | Pool não-ordenado (GC) |
+> | Limite | Fixo (`--stack-size`) | RAM disponível |
+> | Erro ao estourar | `RangeError: Maximum call stack size exceeded` | `FATAL ERROR: Heap limit Allocation failed` |
+>
+> `const obj = {}` na stack contém só a **referência** — o objeto em si existe no heap. Memory leaks são falhas de heap, não de stack.
 
 ## Em entrevista
 
@@ -357,6 +410,12 @@ Use essa frase ao responder "Explain the JavaScript event loop", "What is the ca
 - *"Can microtasks block the event loop?"* → Sim. Microtasks rodam na mesma thread JS. Um loop de microtasks (como `process.nextTick` recursivo) impede o event loop de processar qualquer macrotask — incluindo timers e callbacks de I/O.
 - *"What's the difference between the heap and the stack?"* → Stack armazena frames de execução (estrutura LIFO, tamanho fixo). Heap armazena objetos JS (pool dinâmico, gerenciado pelo GC). Uma variável local na stack pode conter uma referência para um objeto no heap.
 
+## O que vem a seguir
+
+Agora que você conhece as quatro estruturas de runtime (stack, heap, microtask queue, macrotask queue), a pergunta natural é: **em que ordem exata o event loop drena essas filas?**
+
+A nota [[04 - As fases do event loop]] responde isso com precisão: o event loop não tem uma única "fase" — ele percorre seis fases distintas (timers → pending callbacks → idle → poll → check → close), cada uma com uma fila própria. Entender essas fases explica por que um `setImmediate` pode disparar antes ou depois de um `setTimeout(fn, 0)` dependendo de onde o código está sendo executado.
+
 ## Veja também
 
 - [[02 - V8, libuv e thread pool]] — os componentes do runtime que gerenciam essas estruturas; V8 executa JS e gerencia heap, libuv roda o event loop
@@ -364,3 +423,9 @@ Use essa frase ao responder "Explain the JavaScript event loop", "What is the ca
 - [[05 - Microtasks - nextTick, queueMicrotask, Promise.then]] — deep dive na ordem de execução de microtasks e casos de borda
 - [[Node.js]] — tronco: panorama completo do runtime com diagrama de arquitetura e links para toda a trilha
 - [[JavaScript Fundamentals]] — fundamentos JS: call stack e event loop básico no contexto do browser
+
+## Fontes
+
+- [Node.js — V8 JavaScript Engine](https://nodejs.org/en/learn/getting-started/the-v8-javascript-engine) — visão oficial do motor V8 no Node.js, incluindo gerenciamento de memória
+- [MDN — Memory Management](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_management) — ciclo de vida de memória, GC geracional e a diferença entre stack e heap em JavaScript
+- [V8 Blog — Trash talk: the Orinoco garbage collector](https://v8.dev/blog/trash-talk) — deep dive nos coletores Scavenger e Mark-Compact que gerenciam o heap

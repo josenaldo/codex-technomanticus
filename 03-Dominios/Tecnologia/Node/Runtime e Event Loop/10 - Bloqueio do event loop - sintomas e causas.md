@@ -1,10 +1,10 @@
 ---
 title: "Bloqueio do event loop: sintomas e causas"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Magus
+status: growing
 publish: true
 tags:
   - node
@@ -21,9 +21,17 @@ aliases:
 # Bloqueio do event loop: sintomas e causas
 
 > [!abstract] TL;DR
-> Sintomas de event loop bloqueado: latência geral subindo em todos os endpoints ao mesmo tempo, requests travadas em conjunto, healthcheck timeoutando. Causas canônicas: CPU-bound síncrono em handler, sync APIs (`fs.readFileSync`, `crypto.pbkdf2Sync`), regex catastróficas (ReDoS), `JSON.parse` de payload gigante, thread pool saturado. O diagnóstico começa pelo padrão: se a lentidão é **isolada por endpoint**, o problema é lógica local; se é **conjunta e correlacionada**, o event loop está bloqueado.
+> Sintomas de event loop bloqueado: latência geral subindo em todos os endpoints ao mesmo tempo, requests travadas em conjunto, healthcheck timeoutando. Causas canônicas: CPU-bound síncrono em handler, sync APIs (`fs.readFileSync`, `crypto.pbkdf2Sync`), regex catastróficas (ReDoS), `JSON.parse` de payload gigante, thread pool saturado. O diagnóstico começa pelo padrão: se a lentidão é **isolada por endpoint**, o problema é lógica local; se é **conjunta e correlacionada**, o event loop está bloqueado. A métrica-chave é o **event loop lag** — o atraso entre um callback ser agendado e realmente executar; em condições normais, <5ms; com bloqueio, centenas de milissegundos.
 
 ---
+
+## Por que isso acontece em produção?
+
+O time de backend vê: p99 de `/api/users` subindo de 20ms para 800ms. Primeiro suspeito: query no banco. DBA verifica — todas as queries dentro do normal. SRE checa DNS, rede, CPU — tudo tranquilo. Enquanto isso, `/api/products` também está lento, e o healthcheck começa a falhar intermitentemente.
+
+Três endpoints diferentes, nenhuma dependência óbvia entre eles. O que está errado?
+
+Resposta: um único endpoint de importação de CSV em `/api/import` estava rodando `JSON.parse` em payloads de 10MB — bloqueando a thread JavaScript por ~800ms por request. Como Node.js tem **uma única thread JS**, esse bloqueio atrasa todos os outros callbacks: outros handlers, timers, healthchecks. A lentidão correlacionada é a assinatura do bloqueio de event loop.
 
 ## O que é
 
@@ -46,6 +54,24 @@ Quando um callback demora — seja por um loop custoso, uma regex exponencial, o
 ```
 
 O ponto crucial: **nenhuma** das requests em espera tem relação com a causa do bloqueio. Um handler em `/slow` atrasa `/health`, `/users/42`, e qualquer outro endpoint. Isso cria o padrão de latência correlacionada — a assinatura mais clara de um loop bloqueado.
+
+```mermaid
+sequenceDiagram
+    participant CL as Clientes
+    participant EL as Thread JS (Event Loop)
+    participant SLOW as Handler /slow (CPU-bound)
+    participant HEALTH as Handler /health
+
+    CL->>EL: GET /slow
+    EL->>SLOW: executa callback (loop CPU pesado)
+    Note over EL,SLOW: Thread JS ocupada — 800ms de bloqueio
+    CL->>EL: GET /health (chega durante o bloqueio)
+    Note over EL: Request entra na fila do TCP<br/>Event loop não avança
+    SLOW-->>EL: retorna após 800ms
+    EL->>HEALTH: agora processa /health
+    HEALTH-->>CL: 200 OK (com 800ms de atraso)
+    Note over CL: /health levou 800ms<br/>mesmo sendo trivial
+```
 
 ---
 
@@ -157,6 +183,21 @@ As sync APIs que mais aparecem em incidents:
 | `child_process.execSync` | `child_process.exec` |
 
 A regra: no startup (`server.js`, carregamento de config), sync é aceitável. Em qualquer handler ou middleware, nunca.
+
+**Particionamento com `setImmediate`:** quando o trabalho CPU-bound é inevitavelmente síncrono e não pode ir para Worker Thread (ex: migração legada), é possível ceder o loop entre chunks usando `setImmediate`. Cada chunk executa em uma iteração do loop, permitindo que outros eventos sejam processados entre eles:
+
+```javascript
+// Processar 10.000 itens sem bloquear por mais de ~5ms por vez
+async function processarEmChunks(itens, tamanhoBatch = 500) {
+  for (let i = 0; i < itens.length; i += tamanhoBatch) {
+    const batch = itens.slice(i, i + tamanhoBatch);
+    batch.forEach(processarItem);
+    await new Promise(resolve => setImmediate(resolve)); // cede o loop
+  }
+}
+```
+
+O custo: o tempo total aumenta (cada `setImmediate` introduz ~1ms de overhead). O benefício: outros callbacks executam entre os batches, mantendo o healthcheck e outros handlers responsivos.
 
 ### 3. Regex catastrófica (ReDoS)
 
@@ -312,128 +353,105 @@ npx autocannon -c 5 -d 30 http://localhost:3000/health
 
 O resultado: `/health` — que deveria responder em <5ms — começa a reportar p99 de 400-600ms. Toda a latência vem do `/heavy` bloqueando a thread compartilhada.
 
+Para comparação, adicionar monitoramento de event loop lag ao mesmo servidor revela o problema em números:
+
+```javascript
+const { monitorEventLoopDelay } = require('perf_hooks');
+const h = monitorEventLoopDelay({ resolution: 20 });
+h.enable();
+
+setInterval(() => {
+  console.log(`Event loop lag p99: ${(h.percentile(99) / 1e6).toFixed(1)}ms`);
+  h.reset();
+}, 2000);
+// Com /heavy sob carga: lag p99 > 450ms
+// Sem /heavy: lag p99 < 1ms
+```
+
+Essa métrica confirma o diagnóstico: se o lag sobe enquanto a CPU do processo também sobe (visible em `top` ou dashboards), o trabalho está na thread JS. Se o lag sobe mas a CPU está normal, o pool está saturado ou há I/O pendente de kernel.
+
 ---
 
-## Na prática
+## Casos práticos
 
-Caso genérico ilustrativo: uma API de importação recebe um payload JSON com registros de produtos. O handler deserializa o JSON completo com `JSON.parse`, processa cada item em memória, e salva no banco. Com payloads de 5MB (2000 produtos), o `JSON.parse` bloqueia a thread por ~300ms por request.
+### Cenário 1 — Importação de CSV derruba latência de todos os endpoints
 
-Com 10 requisições concorrentes de importação, o event loop fica efetivamente bloqueado de forma contínua. Todos os outros endpoints do sistema — incluindo healthchecks — passam a responder com latência de segundos.
+Uma API de e-commerce recebia uploads de catálogo de produtos. O handler deserializava o JSON completo com `JSON.parse`, processava cada item em memória e salvava no banco. Com payloads de 5MB (~2000 produtos), `JSON.parse` bloqueava a thread por ~300ms por request.
 
-O diagnóstico correto exige correlacionar: "quando as métricas de importação disparam, a latência de todos os outros endpoints também sobe". Sem essa correlação, o debugging se concentra nos outros endpoints — que não têm nenhum bug.
+Com 10 importações concorrentes, o event loop ficava efetivamente bloqueado de forma contínua. Todos os outros endpoints — incluindo healthchecks — respondiam com latência de segundos. O Kubernetes interpretou os healthchecks como falha e reiniciou os pods, o que não resolveu nada.
 
-Soluções estruturais para esse padrão:
-1. **Streaming** (galho 3): usar `JSONStream` para processar o payload como stream, sem carregar tudo em memória
-2. **Worker Thread** (galho 2): delegar o parsing e processamento para um worker, liberando a thread principal
-3. **Paginação no client**: em vez de um payload de 2000 itens, aceitar batches de 50 com múltiplas requisições
+O diagnóstico correto veio ao correlacionar: "quando as métricas de `/api/import` disparam, a latência de `/api/products` e `/api/health` também sobe". A equipe estava investigando os endpoints "lentos" — que não tinham nenhum bug.
 
----
+**Solução:** limite de `1mb` no `express.json()` + reprocessamento via `JSONStream` para grandes imports + fila de jobs assíncronos.
 
-## Armadilhas
+### Cenário 2 — `crypto.pbkdf2Sync` em endpoint de login causa travamento sob pico
 
-### 1. Regex em entrada de usuário sem validação
+Em um sistema de autenticação, o endpoint `/api/login` usava `crypto.pbkdf2Sync` com 100.000 iterações para verificar senhas. Com tempo de ~120ms por verificação, operação correta de segurança.
 
-Qualquer campo de formulário que é usado como argumento para `.match()`, `.test()`, ou construtor `RegExp` com padrões vulneráveis é uma superfície de ReDoS. O risco cresce quando o padrão vem de config externa ou é gerado dinamicamente.
+Com uma campanha de marketing que trouxe 50 logins simultâneos em 5 segundos, `pbkdf2Sync` bloqueou a thread JavaScript em cadeia: 50 chamadas × 120ms = 6 segundos de bloqueio contínuo. O site inteiro parou.
 
 ```javascript
-// ❌ Padrão vulnerável aplicado a entrada de usuário
-app.post('/validate', (req, res) => {
-  const email = req.body.email;
-  // Este padrão é vulnerável com inputs especialmente construídos
-  if (/^([a-zA-Z0-9])(([a-zA-Z0-9])*([\._-])?)*([a-zA-Z0-9])+@(...)/.test(email)) {
-    // ...
-  }
-});
+// ❌ pbkdf2Sync bloqueia a thread — 120ms × concorrência
+const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512');
+
+// ✅ pbkdf2 usa o thread pool — não bloqueia a thread JS
+const hash = await new Promise((resolve, reject) =>
+  crypto.pbkdf2(password, salt, 100000, 64, 'sha512',
+    (err, key) => err ? reject(err) : resolve(key))
+);
+// Atenção: com muitos logins simultâneos, o pool (4 threads default)
+// ainda pode saturar — aumentar UV_THREADPOOL_SIZE=16 ou usar bcrypt
 ```
 
-Solução: usar bibliotecas de validação testadas (como `validator.js`) que usam padrões seguros, e limitar o tamanho da string antes de aplicar regex.
+## Armadilhas comuns
 
-### 2. Middleware que serializa o body inteiro
+> [!warning] Regex em entrada de usuário sem validação é vetor de ReDoS
+> Qualquer campo de formulário usado com `.test()`, `.match()`, ou construtor `RegExp` com padrões vulneráveis pode bloquear a thread por minutos com input especialmente construído. Quantificadores aninhados (`(a+)+`, `(a|aa)+`) são o padrão mais perigoso.
+>
+> ```javascript
+> // ❌ Padrão vulnerável — 25 'a' + 'b' pode levar segundos
+> /^(a+)+$/.test('aaaaaaaaaaaaaaaaaaaaaaaab');
+> // ✅ Usar validator.js (padrões seguros) ou limitar tamanho antes de testar
+> ```
+>
+> Use `safe-regex` no CI para detectar padrões vulneráveis, ou substitua por `node-re2` (Google RE2 — tempo linear garantido).
 
-É comum em middlewares de logging capturar o body completo da request para fins de auditoria ou debug. Com `JSON.stringify` de um payload de 50MB, o middleware bloqueia a thread antes de o handler principal sequer executar.
+> [!warning] `fs.readFileSync` no startup é OK; em handler, é fatal — não copiar o padrão
+> `fs.readFileSync` antes de `app.listen` bloqueia uma vez, sem requests para atrasar. Em um handler HTTP, bloqueia a thread para cada request de todos os clientes simultâneos.
+>
+> ```javascript
+> // ✅ Startup — aceitável
+> const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+> // ❌ Handler — bloqueia todos os clientes por cada leitura
+> app.get('/settings', (req, res) => {
+>   const s = fs.readFileSync('./settings.json'); // nunca em handler
+> });
+> ```
 
-```javascript
-// ❌ Logging que serializa o body inteiro
-app.use((req, res, next) => {
-  logger.info({
-    body: JSON.stringify(req.body)  // bloqueia se body for grande
-  });
-  next();
-});
-```
+> [!warning] Middleware de logging que serializa o body inteiro bloqueia antes do handler executar
+> Logar `JSON.stringify(req.body)` em um middleware global serializa o payload completo de cada request na thread JS. Com payloads de 50MB, o bloqueio ocorre antes que o handler principal sequer comece.
+>
+> Solução: logar apenas metadados (`content-length`, campos específicos, truncar strings acima de N bytes). Nunca serializar o corpo completo em middleware síncrono.
 
-Solução: logar apenas metadados (`content-length`, campos específicos, truncar strings acima de N bytes), nunca serializar o corpo completo em middleware síncrono.
-
-### 3. `fs.readFileSync` no startup vs. em handler
-
-`fs.readFileSync` no startup — antes de `app.listen` — é aceitável e, em alguns casos, preferível (carregar certificados, configurações). O mesmo código em um handler é fatal.
-
-```javascript
-// ✅ OK no startup — bloqueia uma vez, antes de aceitar requests
-const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-const app = express();
-// ...
-
-// ❌ Fatal em handler — bloqueia a thread para cada request
-app.get('/settings', (req, res) => {
-  const settings = fs.readFileSync('./settings.json', 'utf8'); // sempre bloqueante
-  res.json(JSON.parse(settings));
-});
-```
-
-A armadilha é copiar o padrão do startup para handlers "porque funcionou lá". A diferença: no startup, não há requests para bloquear. Em handlers, o bloqueio afeta todos os outros clientes.
-
-### 4. Crypto sync "porque é mais simples"
-
-`crypto.pbkdf2Sync` e `crypto.randomBytesSync` existem na API do Node e muitos exemplos de tutorial os usam por simplicidade. Em produção com carga, são desastrosos.
-
-```javascript
-// ❌ pbkdf2Sync pode levar 100-200ms dependendo das iterações
-app.post('/login', (req, res) => {
-  const hash = crypto.pbkdf2Sync(
-    req.body.password,
-    storedSalt,
-    100000,        // iterações necessárias para segurança
-    64,
-    'sha512'
-  );
-  // Com 10 requisições concorrentes, o loop bloqueia por 1-2 segundos cada
-});
-
-// ✅ Versão assíncrona — usa o thread pool, não bloqueia o loop
-app.post('/login', async (req, res) => {
-  const hash = await new Promise((resolve, reject) => {
-    crypto.pbkdf2(
-      req.body.password, storedSalt, 100000, 64, 'sha512',
-      (err, key) => err ? reject(err) : resolve(key)
-    );
-  });
-});
-```
-
-A versão async usa o thread pool — e portanto está sujeita à saturação de pool se houver muitas requisições concorrentes de login, mas pelo menos não bloqueia a thread JS.
-
-### 5. `child_process.execSync` em handlers
-
-Menos comum, mas aparece em integrações com ferramentas de linha de comando (ImageMagick, ffmpeg, scripts shell). `execSync` bloqueia a thread até o processo filho terminar.
-
-```javascript
-// ❌ execSync bloqueia a thread pelo tempo de execução do processo
-app.post('/thumbnail', (req, res) => {
-  child_process.execSync(`convert ${inputPath} -resize 200x200 ${outputPath}`);
-  res.json({ path: outputPath });
-});
-
-// ✅ Versão assíncrona
-const { exec } = require('child_process');
-const { promisify } = require('util');
-const execAsync = promisify(exec);
-
-app.post('/thumbnail', async (req, res) => {
-  await execAsync(`convert ${inputPath} -resize 200x200 ${outputPath}`);
-  res.json({ path: outputPath });
-});
-```
+> [!warning] `child_process.execSync` em handlers bloqueia a thread pelo tempo de execução do processo filho
+> Integrações com ferramentas externas (ImageMagick, ffmpeg, scripts shell) são tentadoras de implementar com `execSync` pela simplicidade. O problema: a thread JS espera o processo filho terminar — qualquer outra request espera junto.
+>
+> ```javascript
+> // ❌ Bloqueia a thread pelo tempo do convert (pode ser vários segundos)
+> app.post('/thumbnail', (req, res) => {
+>   child_process.execSync(`convert ${inputPath} -resize 200x200 ${outputPath}`);
+>   res.json({ path: outputPath });
+> });
+>
+> // ✅ Versão assíncrona — thread JS fica livre durante o processo
+> const execAsync = require('util').promisify(require('child_process').exec);
+> app.post('/thumbnail', async (req, res) => {
+>   await execAsync(`convert ${inputPath} -resize 200x200 ${outputPath}`);
+>   res.json({ path: outputPath });
+> });
+> ```
+>
+> Atenção ao command injection: nunca interpolar `req.body` ou `req.params` diretamente em strings de comando. Use `execFile` com array de argumentos em vez de `exec` com string.
 
 ---
 
@@ -466,6 +484,16 @@ Primeiro, verificar se a latência é isolada ou conjunta. Se conjunta, medir o 
 No loop bloqueado, a thread JS em si está ocupada — nenhum callback JavaScript pode executar. No pool saturado, a thread JS está livre (callbacks JS executam normalmente), mas operações que dependem do thread pool ficam em fila aguardando threads de I/O disponíveis. O sintoma externo parece similar (requests lentas), mas o diagnóstico e a solução são diferentes.
 
 ---
+
+## O que vem a seguir
+
+Saber identificar o bloqueio pelo padrão de latência correlacionada é o primeiro passo. O segundo é **confirmar o diagnóstico com instrumentação real**: medir o event loop lag, gerar flame graphs, e identificar qual função específica está consumindo a thread. A próxima nota, [[11 - Diagnóstico do event loop]], cobre exatamente isso — `perf_hooks`, Clinic.js, `node --prof`, e como interpretar os resultados para apontar o culpado.
+
+## Fontes
+
+- [Node.js Docs — Don't Block the Event Loop (and the Worker Pool)](https://nodejs.org/en/docs/guides/dont-block-the-event-loop)
+- [Node.js — perf_hooks monitorEventLoopDelay](https://nodejs.org/api/perf_hooks.html#perf_hooksmonitoreventloopdelayoptions)
+- [OWASP — ReDoS (Regular Expression Denial of Service)](https://owasp.org/www-community/attacks/ReDoS)
 
 ## Veja também
 

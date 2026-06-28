@@ -1,10 +1,10 @@
 ---
 title: "Microtasks: nextTick, queueMicrotask, Promise.then"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+status: growing
+fase: Adepto
 publish: true
 tags:
   - node
@@ -21,7 +21,12 @@ aliases:
 # Microtasks: nextTick, queueMicrotask, Promise.then
 
 > [!abstract] TL;DR
-> Microtasks rodam **entre fases** do event loop, antes que a próxima fase comece. A hierarquia de prioridade é estrita: `process.nextTick` drena sua fila inteira primeiro, depois `queueMicrotask` e `Promise.then` são processados na fila padrão de microtasks. Recursão em `nextTick` **bloqueia o loop indefinidamente** — o fenômeno chamado de queue starvation. `nextTick` é uma API Node-specific; `queueMicrotask` é a API padrão da web, portável entre runtimes.
+> Microtasks rodam **entre fases** do event loop, antes que a próxima fase comece — código síncrono → `nextTick` → microtasks → event loop phase. A hierarquia de prioridade é estrita: `process.nextTick` drena sua fila inteira primeiro (incluindo novos `nextTick` adicionados durante a drenagem), depois `queueMicrotask` e `Promise.then` são processados na fila padrão de microtasks em ordem FIFO.
+> Recursão em `nextTick` **bloqueia o loop indefinidamente** — o fenômeno chamado de queue starvation; use `setImmediate` para trabalho fatiado. `nextTick` é Node-specific; `queueMicrotask` é portável para browsers, Deno e Bun. A diferença entre as três APIs não é só de prioridade: erros em `nextTick`/`queueMicrotask` viram `uncaughtException`, enquanto erros em `Promise.then` viram `unhandledRejection` — categorias de falha distintas com handlers distintos.
+
+## Por que `process.nextTick` às vezes dispara antes das suas Promises?
+
+Você tem código async com `Promise.then` e `process.nextTick` e a ordem de execução não é o que você esperava. Ou pior — um servidor em produção trava misteriosamente sem consumir CPU, e nenhum log aparece. As duas situações têm a mesma raiz: existem **três filas diferentes** que parecem iguais mas têm prioridades estritamente ordenadas.
 
 ## O que é
 
@@ -74,6 +79,27 @@ Em cada ponto de drenagem (ao final de cada fase do event loop, e ao final de ca
 1. **`nextTickQueue`** — drenada completamente (todos os `nextTick` pendentes, incluindo os novos que forem adicionados durante a drenagem)
 2. **Microtask queue** — drenada completamente (`queueMicrotask` + `Promise.then`, intercalados na ordem em que foram enfileirados)
 3. **Próxima fase do event loop** começa
+
+### Diagrama — prioridade das filas
+
+```mermaid
+flowchart LR
+    CS["Código síncrono\n(Call Stack)"]
+    CS -->|"stack vazia"| NT
+
+    subgraph MICRO["Espaço entre fases do event loop"]
+        direction TB
+        NT["nextTickQueue\n(process.nextTick)\n🔴 maior prioridade"]
+        MT["Microtask Queue\n(queueMicrotask + Promise.then)\n🟡 prioridade padrão"]
+        NT -->|"esgota completamente"| MT
+    end
+
+    MT -->|"esgota completamente"| EL
+
+    EL["Próxima fase do\nEvent Loop\n(timers / poll / check…)"]
+```
+
+**Regra crítica:** `nextTick` registrado *dentro* de outra microtask drena antes das demais microtasks já enfileiradas — a `nextTickQueue` é verificada após cada microtask individual.
 
 ## Por que importa
 
@@ -223,84 +249,101 @@ Use `process.nextTick` quando:
 - O código é Node.js-only e precisa do padrão de callback assíncrono consistente
 - Está construindo uma API de baixo nível que emite eventos
 
-## Armadilhas
+## Casos práticos
 
-### 1. nextTick recursivo trava o event loop
+### Cenário 1 — EventEmitter no constructor: o clássico uso de `nextTick`
+
+Uma biblioteca criava um `EventEmitter` e emitia `'ready'` no construtor. Usuários reportavam que o listener nunca disparava.
 
 ```javascript
-// NUNCA faça isso em produção
+const { EventEmitter } = require('node:events');
+
+// ❌ Sem nextTick: emit roda DURANTE o construtor, antes do caller registrar .on()
+class BadEmitter extends EventEmitter {
+  constructor() {
+    super();
+    this.emit('ready'); // caller ainda não registrou o listener — silêncio
+  }
+}
+const bad = new BadEmitter();
+bad.on('ready', () => console.log('nunca chega aqui')); // tarde demais
+
+// ✅ Com nextTick: emit é diferido para depois que o caller termina de configurar
+class GoodEmitter extends EventEmitter {
+  constructor() {
+    super();
+    process.nextTick(() => this.emit('ready')); // drena após o código síncrono atual
+  }
+}
+const good = new GoodEmitter();
+good.on('ready', () => console.log('disparou!')); // registrado antes do nextTick rodar
+```
+
+**Por que funciona:** `nextTick` drena após a call stack esvaziar — o caller tem a oportunidade de registrar listeners antes do `emit`.
+
+### Cenário 2 — Processamento de fila longa: `nextTick` vs `setImmediate`
+
+Um worker processava filas de mensagens usando `process.nextTick` para encadear itens. Em produção, requests HTTP ao mesmo servidor passaram a expirar com timeout.
+
+```javascript
+// ❌ nextTick recursivo: starvation — nenhum I/O executa enquanto a fila não terminar
 function processarFila(items) {
-  if (items.length === 0) return;
-  const item = items.shift();
-  console.log(item);
-  process.nextTick(() => processarFila(items)); // starvation!
+  if (!items.length) return;
+  processar(items.shift());
+  process.nextTick(() => processarFila(items)); // enfileira mais um nextTick
 }
-```
+// 10.000 itens = 10.000 nextTicks antes que qualquer request HTTP seja atendida
 
-Esse padrão impede que qualquer timer ou I/O execute enquanto a fila não estiver vazia. Em um servidor HTTP, isso causa timeouts em todas as requests concorrentes. Use `setImmediate` em vez de `nextTick` para processar filas longas — `setImmediate` roda na fase check, **após** I/O, sem bloquear o loop.
-
-### 2. queueMicrotask recursivo também trava
-
-```javascript
-function processar() {
-  queueMicrotask(processar); // mesma armadilha, diferente API
+// ✅ setImmediate: fatia o trabalho, libera o loop entre cada item
+function processarFilaSegura(items) {
+  if (!items.length) return;
+  processar(items.shift());
+  setImmediate(() => processarFilaSegura(items)); // fase check — libera poll entre fatias
 }
-processar();
+// O loop pode atender I/O entre cada item da fila
 ```
 
-A microtask queue é drenada completamente antes de avançar de fase, assim como a `nextTickQueue`. Qualquer recursão sem condição de parada nas duas filas produz starvation.
+**Diferença de impacto:** `nextTick` tem prioridade absoluta sobre fases do loop; `setImmediate` roda na fase `check`, *depois* de I/O, cedendo espaço para requests.
 
-### 3. Erros não capturados têm comportamento diferente por API
+## Armadilhas comuns
 
-```javascript
-// Erro em nextTick → uncaughtException (pode derrubrar o processo)
-process.nextTick(() => {
-  throw new Error('falha em nextTick');
-});
+> [!warning] `nextTick` recursivo causa starvation — o processo parece vivo mas está travado
+> A `nextTickQueue` é drenada completamente antes de qualquer fase avançar. Um `nextTick` que agenda outro `nextTick` cria um loop infinito na fila — nenhum timer, I/O ou setImmediate executa.
+>
+> ```javascript
+> // ❌ Starvation em produção
+> function loop() { process.nextTick(loop); }
+> loop();
+> // O mesmo vale para queueMicrotask recursivo — mesma armadilha, fila diferente
+> ```
+>
+> Use `setImmediate` para trabalho fatiado — ele cede o loop entre fatias.
 
-// Erro em queueMicrotask → uncaughtException (similar ao nextTick)
-queueMicrotask(() => {
-  throw new Error('falha em queueMicrotask');
-});
+> [!warning] Erros em `nextTick` e `queueMicrotask` não têm `.catch()` — vão para `uncaughtException`
+> Diferente de `Promise.then`, onde um erro vira `unhandledRejection` (capturável com `.catch()`), erros em `nextTick` e `queueMicrotask` disparam `uncaughtException` diretamente — sem mecanismo de captura por chamada.
+>
+> ```javascript
+> // ❌ Sem escape: derruba o processo em Node.js 15+
+> process.nextTick(() => { throw new Error('falha'); });
+>
+> // ✅ Promise.then permite captura local
+> Promise.resolve().then(() => { throw new Error('falha'); })
+>   .catch(err => console.error('capturado:', err.message));
+> ```
+>
+> Em Node.js 15+, `unhandledRejection` também derruba o processo por padrão. Sempre trate erros.
 
-// Erro em Promise.then → unhandledRejection (pode ser capturado com .catch)
-Promise.resolve()
-  .then(() => { throw new Error('falha em then'); })
-  .catch(err => console.error('capturado:', err.message)); // funciona
-```
-
-Rejeições de Promise sem `.catch()` geram `unhandledRejection` — evento diferente de `uncaughtException`. Em Node.js 15+, `unhandledRejection` derruba o processo por padrão. Mas erros em `nextTick` e `queueMicrotask` vão direto para `uncaughtException` — não existe mecanismo de "catch" para eles além do handler global.
-
-### 4. setImmediate não é "imediato" no sentido de microtask
-
-```javascript
-setImmediate(() => console.log('A: setImmediate'));
-Promise.resolve().then(() => console.log('B: Promise'));
-process.nextTick(() => console.log('C: nextTick'));
-
-// Saída:
-// C: nextTick
-// B: Promise
-// A: setImmediate  ← roda por último, na fase check do próximo tick
-```
-
-`setImmediate` é uma **macrotask** que roda na fase `check` do event loop — depois de toda a drenagem de microtasks. Desenvolvedores que esperam `setImmediate` ser "mais imediato" que `Promise.then` se surpreendem com essa ordem.
-
-### 5. nextTick dentro de callback de Promise herda o contexto correto
-
-```javascript
-Promise.resolve().then(() => {
-  process.nextTick(() => console.log('nextTick dentro de then'));
-  console.log('dentro do then');
-});
-
-// Saída:
-// dentro do then
-// nextTick dentro de then  ← nextTick registrado dentro de then roda ANTES
-//                             das próximas microtasks na fila
-```
-
-Um `nextTick` registrado dentro de uma microtask em execução é processado **antes** das demais microtasks já enfileiradas. A `nextTickQueue` é verificada após cada microtask individual, não apenas ao final de toda a fila.
+> [!warning] `setImmediate` não é "imediato" no sentido de microtask — roda por último
+> `setImmediate` é uma macrotask da fase `check` — executa *depois* de toda drenagem de microtasks. Quem espera que seja "mais imediato" que `Promise.then` se surpreende.
+>
+> ```javascript
+> setImmediate(() => console.log('A: setImmediate'));
+> Promise.resolve().then(() => console.log('B: Promise'));
+> process.nextTick(() => console.log('C: nextTick'));
+> // Saída: C → B → A  (nextTick > Promise > setImmediate)
+> ```
+>
+> Para executar antes de qualquer fase do loop, use `nextTick`. Para executar logo após I/O, use `setImmediate` dentro de um callback de I/O.
 
 ## Em entrevista
 
@@ -312,12 +355,15 @@ Um `nextTick` registrado dentro de uma microtask em execução é processado **a
 | Português | Inglês |
 |-----------|--------|
 | Fila de microtarefas | Microtask queue |
+| Fila de nextTick | nextTick queue / nextTickQueue |
 | Prioridade | Priority |
 | Inanição da fila | Queue starvation |
 | API específica de Node | Node-specific API |
 | Drenagem da fila | Queue draining |
 | Iteração do event loop | Event loop tick / iteration |
 | Avanço de fase | Phase transition |
+| Exceção não capturada | Uncaught exception / uncaughtException |
+| Rejeição não tratada | Unhandled rejection / unhandledRejection |
 
 ### Perguntas frequentes em entrevista
 
@@ -325,14 +371,31 @@ Um `nextTick` registrado dentro de uma microtask em execução é processado **a
 `nextTick` roda antes de qualquer fase do event loop avançar — é uma microtask com prioridade máxima. `setImmediate` roda na fase `check`, que é uma macrotask executada depois de I/O. Em termos de ordem: nextTick → microtasks → I/O → setImmediate → timers (próxima iteração).
 
 **"Quando devo usar `queueMicrotask` em vez de `Promise.resolve().then()`?"**
-Quando não há uma Promise natural no contexto e você quer agendar uma microtask sem criar um wrapper de Promise desnecessário. `queueMicrotask` é mais explícito na intenção e tem overhead ligeiramente menor. Semanticamente são equivalentes em termos de prioridade e ordem.
+Quando não há uma Promise natural no contexto e você quer agendar uma microtask sem criar um wrapper de Promise desnecessário. `queueMicrotask` é mais explícito na intenção e tem overhead ligeiramente menor. Semanticamente são equivalentes em termos de prioridade e ordem. Prefira `queueMicrotask` em código que precisa ser portável entre Node.js e browser.
 
 **"O que acontece se eu lançar um erro dentro de `process.nextTick`?"**
 O erro propaga como `uncaughtException` — não existe `.catch()` para nextTick. O processo pode ser derrubado se não houver um handler `process.on('uncaughtException', ...)`. Diferente de Promise, onde o erro vira `unhandledRejection` e pode ser capturado com `.catch()`.
 
+**"Um `nextTick` registrado dentro de uma Promise roda antes ou depois das outras Promises na fila?"**
+Antes. A `nextTickQueue` é verificada após cada microtask individual — não apenas ao final de toda a fila. Um `nextTick` registrado dentro de `.then()` drena antes das demais Promises já enfileiradas.
+
+---
+
+## O que vem a seguir
+
+Você agora conhece a fila de maior prioridade do event loop. O próximo nível é entender a **camada de macrotasks** — os timers e `setImmediate` que executam *depois* das microtasks, e os detalhes que determinam sua ordem e precisão: jitter de `setTimeout`, coalescing de `setInterval`, e a distinção entre a fase `check` e a fase `timers`.
+
+A nota [[06 - Macrotasks e timers - setTimeout, setInterval, setImmediate]] cobre isso com exemplos de produção: por que `setInterval` pode acumular drift em carga e como `setImmediate` se posiciona estrategicamente para trabalho pós-I/O.
+
 ## Veja também
 
-- `[[04 - As fases do event loop]]` — onde as microtasks se encaixam no ciclo completo
-- `[[06 - Macrotasks e timers - setTimeout, setInterval, setImmediate]]` — a camada de macrotasks que vem depois das microtasks
-- `[[08 - Promises por dentro]]` — como o mecanismo de Promise alimenta a microtask queue
-- `[[Node.js]]` — tronco da trilha de runtime Node.js
+- [[04 - As fases do event loop]] — onde as microtasks se encaixam no ciclo completo das seis fases
+- [[06 - Macrotasks e timers - setTimeout, setInterval, setImmediate]] — a camada de macrotasks que vem depois das microtasks
+- [[08 - Promises por dentro]] — como o mecanismo de Promise alimenta a microtask queue
+- [[Node.js]] — tronco da trilha de runtime Node.js
+
+## Fontes
+
+- [Node.js — process.nextTick(callback[, ...args])](https://nodejs.org/api/process.html#processnexttickcallback-args) — documentação oficial da API, semântica de prioridade e recomendação de quando usar `setImmediate` em vez de `nextTick`
+- [Node.js — queueMicrotask(callback)](https://nodejs.org/api/globals.html#queuemicrotaskcallback) — API global portável; diferenças de tratamento de erro em relação a Promise e nextTick
+- [WHATWG — Microtask queue](https://html.spec.whatwg.org/multipage/webappapis.html#microtask-queue) — especificação web do conceito de microtask; base para `queueMicrotask` portável entre runtimes

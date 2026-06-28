@@ -1,10 +1,10 @@
 ---
 title: "V8, libuv e thread pool"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -24,7 +24,7 @@ aliases:
 
 ## O que é
 
-Node.js não é uma linguagem nem uma VM genérica — é um runtime construído pela composição de três componentes distintos:
+Por que `fs.readFile` de 100 arquivos simultâneos satura um servidor Node enquanto 100 requisições HTTP externas não causam problema algum? A resposta está na arquitetura interna: Node não é monolítico — é a composição de três componentes com modelos de concorrência radicalmente diferentes.
 
 ### V8 — motor JavaScript
 
@@ -87,41 +87,23 @@ Entender os dois lugares de paralelismo também desfaz o mito de que "aumentar o
 
 ### Diagrama das camadas
 
-```
-┌─────────────────────────────────────────────────┐
-│                 Código JavaScript                │
-│           (seu app, Express, Fastify…)           │
-└────────────────────┬────────────────────────────┘
-                     │ chamada de API Node
-                     ▼
-┌─────────────────────────────────────────────────┐
-│              Node.js Bindings (C++)              │
-│    fs, net, crypto, zlib, dns, http, …           │
-└──────────┬──────────────────────┬───────────────┘
-           │                      │
-           ▼                      ▼
-┌──────────────────┐   ┌──────────────────────────┐
-│       V8         │   │          libuv             │
-│  (JS engine)     │   │  (event loop + I/O)        │
-│                  │   │                            │
-│  - JIT compiler  │   │  ┌────────────────────┐   │
-│  - GC / heap     │   │  │    Event Loop       │   │
-│  - bytecode      │   │  │  (epoll/kqueue/     │   │
-│                  │   │  │   IOCP)             │   │
-└──────────────────┘   │  └────────┬───────────┘   │
-                       │           │                │
-                       │  ┌────────▼───────────┐   │
-                       │  │    Thread Pool      │   │
-                       │  │  [T1][T2][T3][T4]  │   │
-                       │  │   (padrão: 4)       │   │
-                       │  └────────────────────┘   │
-                       └──────────────────────────-─┘
-                                   │
-                                   ▼
-                     ┌─────────────────────────┐
-                     │      Sistema Operacional  │
-                     │  (kernel, disco, rede)    │
-                     └─────────────────────────┘
+```mermaid
+flowchart TB
+    JS["Código JavaScript\n(app, Express, Fastify…)"]
+    B["Node.js Bindings C++\n(fs, net, crypto, zlib, dns…)"]
+    V8["V8\nJIT compiler · GC · heap\nexecuta código JS"]
+    LB["libuv\nevent loop + I/O assíncrono"]
+    EL["Event Loop\nepoll / kqueue / IOCP"]
+    TP["Thread Pool\n[T1][T2][T3][T4] — padrão: 4"]
+    OS["Sistema Operacional\nkernel · disco · rede"]
+
+    JS --> B
+    B --> V8
+    B --> LB
+    LB --> EL
+    LB --> TP
+    EL -->|"rede: TCP/UDP\n(sem pool)"| OS
+    TP -->|"fs · DNS lookup\ncrypto · zlib"| OS
 ```
 
 ### Quais APIs usam o thread pool
@@ -194,33 +176,82 @@ Aumentar `UV_THREADPOOL_SIZE` para 16 resolve o gargalo nesse cenário hipotéti
 
 Para operações de hashing de senha em alta escala, outra abordagem é delegar o trabalho para Worker Threads com seu próprio pool controlado, ou usar um serviço dedicado, isolando o gargalo da aplicação principal.
 
-## Armadilhas
+## Casos práticos
 
-### 1. `UV_THREADPOOL_SIZE` ignorada se setada tarde demais
+### Cenário 1 — Saturação do thread pool com upload + crypto
 
-A variável precisa estar definida no ambiente **antes** de qualquer módulo que use o pool ser carregado. Na prática: ela deve existir no ambiente do processo antes do `node` ser invocado.
+Um servidor de upload que recebe arquivos, calcula checksum SHA-256 com `crypto.createHash` e move o arquivo para S3. Parece simples — mas `crypto.createHash` usa o thread pool.
 
 ```javascript
-// ERRADO — tarde demais: crypto já foi inicializado,
-// o pool já foi criado com o tamanho padrão (ou do env anterior)
-process.env.UV_THREADPOOL_SIZE = '16'; // ignorado para operações já enfileiradas
-const crypto = require('node:crypto'); // pool já estava criado
+import { createReadStream } from 'node:fs';
+import { createHash } from 'node:crypto';
 
-// CORRETO — definir antes de invocar o processo
-// $ UV_THREADPOOL_SIZE=16 node server.js
+// ✅ Forma correta: streaming com createHash (síncrono por chunk, não usa o pool)
+async function hashStream(filePath) {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha256');
+    const stream = createReadStream(filePath);
+    stream.on('data', chunk => hash.update(chunk));
+    stream.on('end', () => resolve(hash.digest('hex')));
+    stream.on('error', reject);
+  });
+}
+
+// ❌ Problema: usar crypto.pbkdf2 ou crypto.scrypt para derivação de chave
+// em cada upload satura o pool rapidamente sob carga
+import { scrypt } from 'node:crypto';
+import { promisify } from 'node:util';
+const scryptAsync = promisify(scrypt);
+
+// 4 uploads paralelos esgotam o pool; o 5º fica em fila esperando
+const key = await scryptAsync(password, salt, 64); // ocupa 1 thread do pool
 ```
 
-Setá-la via `process.env` dentro do código JS **pode** funcionar se for feita antes de qualquer `require` que acione o pool — mas depende de timing de inicialização do módulo, o que é frágil. A forma segura é sempre via variável de ambiente na invocação do processo.
+O comportamento observável: com pool default de 4 e 10 uploads paralelos, 6 ficam em fila aguardando threads livres. O event loop está ocioso, a rede está ociosa — o gargalo é invisível sem medir o pool.
 
-### 2. Mais threads no pool nem sempre significa mais performance
+### Cenário 2 — `dns.lookup` vs `dns.resolve` e a armadilha silenciosa
 
-Aumentar `UV_THREADPOOL_SIZE` tem retorno decrescente e pode ser contra-produtivo:
+```javascript
+import dns from 'node:dns/promises';
 
-- Para operações **CPU-bound** (crypto, zlib): ter mais threads do que logical cores causa context switching excessivo. O kernel alterna entre threads mais vezes do que executa trabalho útil.
-- Para operações **I/O-bound** (file system): o gargalo frequentemente é o disco, não o número de threads. Adicionar threads não acelera leitura de um SSD saturado.
-- Threads adicionais têm custo de memória de stack (tipicamente 1 MB por thread no Linux por padrão).
+// ❌ Usa thread pool — um lookup por thread; 4 lookups simultâneos esgotam o pool
+const addr1 = await dns.lookup('api.exemplo.com');
 
-A recomendação da documentação do Node.js é focar em **minimizar variação no tempo das tarefas** (task partitioning) — dividir operações longas em partes menores — antes de aumentar o pool cegamente.
+// ✅ Usa sockets UDP via event loop — escalável sem limitar no pool
+const addr2 = await dns.resolve4('api.exemplo.com');
+```
+
+Em serviços que fazem muitos lookups DNS (service discovery, validação de IP, resolução dinâmica de hosts), trocar `dns.lookup` por `dns.resolve4`/`dns.resolve6` elimina um gargalo invisível. A diferença: `lookup` chama `getaddrinfo` da libc (bloqueante, pool), enquanto `resolve` usa sockets UDP (non-blocking, event loop).
+
+## Armadilhas comuns
+
+> [!warning] `UV_THREADPOOL_SIZE` ignorada se setada tarde demais
+> A variável precisa estar no ambiente **antes** de qualquer módulo que use o pool ser carregado — ou seja, antes de invocar o processo Node.
+>
+> ```javascript
+> // ❌ Tarde demais: o pool já foi criado antes desse código executar
+> process.env.UV_THREADPOOL_SIZE = '16';
+> const crypto = require('node:crypto'); // pool criado com tamanho anterior
+>
+> // ✅ Correto: definir na invocação do processo
+> // $ UV_THREADPOOL_SIZE=16 node server.js
+> ```
+>
+> Setá-la via `process.env` dentro do JS pode funcionar se feita antes de qualquer `require` que acione o pool — mas isso depende de timing de inicialização, o que é frágil em projetos reais com `require` de módulos na raiz.
+
+> [!warning] Mais threads no pool nem sempre significa mais performance
+> Aumentar `UV_THREADPOOL_SIZE` tem retorno decrescente:
+>
+> - Para **CPU-bound** (crypto, zlib): mais threads do que logical cores causa context switching excessivo — o kernel alterna mais do que executa trabalho útil.
+> - Para **I/O-bound** (filesystem): o gargalo frequentemente é o disco, não o número de threads. Adicionar threads não acelera leitura de um SSD saturado.
+> - Cada thread adicional custa ~1 MB de stack no Linux por padrão.
+>
+> A recomendação da documentação do Node.js é focar em **task partitioning** — dividir operações longas em partes menores — antes de aumentar o pool.
+
+> [!warning] Rede não usa o thread pool — confundir os dois leva a diagnóstico errado
+> Um erro comum em debugging: assumir que `http.request`, `fetch` ou conexões TCP/UDP usam o thread pool. Não usam — usam epoll/kqueue/IOCP diretamente no kernel.
+>
+> Isso significa que aumentar `UV_THREADPOOL_SIZE` não ajuda em nada se o gargalo for rede. O sinal para distinguir: saturação de pool manifesta como *latência crescente com concorrência* em rotas específicas que usam fs/crypto; saturação de rede manifesta de forma diferente (erros de conexão, timeout, RTT alto). Ver [[07 - I-O assíncrono - kernel vs thread pool]] para o deep dive.
 
 ## Em entrevista
 
@@ -248,6 +279,18 @@ Use essa frase quando perguntarem "Walk me through Node.js architecture" ou "Wha
 - *"Why doesn't network I/O use the thread pool?"* → O kernel oferece mecanismos nativos de notificação assíncrona para sockets (epoll/kqueue/IOCP). File I/O não tem equivalente portável, então libuv usa threads.
 - *"What's the maximum UV_THREADPOOL_SIZE?"* → 1024, mas na prática o limite útil é o número de logical cores para CPU-bound e um múltiplo disso para I/O-bound.
 - *"How do Worker Threads relate to the thread pool?"* → São diferentes. O thread pool do libuv é interno, gerenciado por libuv para APIs específicas. Worker Threads são threads JS completas criadas explicitamente pelo código da aplicação, com seu próprio event loop e contexto V8.
+
+## O que vem a seguir
+
+Esta nota explicou *o que compõe* o Node: V8 executa JS, libuv gerencia I/O e o thread pool, bindings fazem a ponte. A próxima pergunta natural é: *como o V8 organiza o que está sendo executado?*
+
+A nota [[03 - Call stack, heap e queues]] entra no V8: a call stack (execução frame a frame), o heap (memória alocada, gerações do GC), e as filas que o event loop drena — microtasks antes de macrotasks. Compreender essas estruturas é o que permite prever a ordem de execução de código assíncrono complexo.
+
+## Fontes
+
+- [libuv Design Overview — libuv docs](https://docs.libuv.org/en/v1.x/design.html)
+- [V8 — The Chrome V8 JavaScript Engine](https://v8.dev/)
+- [Node.js — About Node.js](https://nodejs.org/en/about)
 
 ## Veja também
 

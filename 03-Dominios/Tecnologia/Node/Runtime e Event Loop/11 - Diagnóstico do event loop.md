@@ -1,10 +1,10 @@
 ---
 title: "Diagnóstico do event loop"
 created: 2026-05-07
-updated: 2026-05-07
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Magus
+status: growing
 publish: true
 tags:
   - node
@@ -22,9 +22,17 @@ aliases:
 # Diagnóstico do event loop
 
 > [!abstract] TL;DR
-> Para diagnosticar o event loop em camadas: `perf_hooks.monitorEventLoopDelay` para métrica contínua exportável ao Prometheus; `process.hrtime.bigint()` para medir handlers individuais; `--inspect` + Chrome DevTools para CPU profile pontual via flame chart; `clinic.js doctor` para análise estruturada em prosa (CPU, event loop, GC, I/O). `autocannon` para reproduzir carga real. A ordem prática: métrica contínua detecta o problema → `clinic doctor` identifica a categoria → `--inspect` aponta a função exata.
+> Para diagnosticar o event loop em camadas: `perf_hooks.monitorEventLoopDelay` para métrica contínua exportável ao Prometheus; `process.hrtime.bigint()` para medir handlers individuais; `--inspect` + Chrome DevTools para CPU profile pontual via flame chart; `clinic.js doctor` para análise estruturada em prosa (CPU, event loop, GC, I/O). `autocannon` para reproduzir carga real. A ordem prática: métrica contínua detecta o problema → `clinic doctor` identifica a categoria → `--inspect` ou `clinic flame` aponta a função exata. Event loop lag p99 > 100ms é o limiar de alerta padrão.
 
 ---
+
+## Como você descobre que o event loop está bloqueado?
+
+Você recebe um alerta: p99 de latência subiu para 800ms em toda a aplicação. Você verifica banco de dados, rede, memória — tudo normal. O que falta é a métrica que diz diretamente o que a thread JavaScript está fazendo.
+
+`perf_hooks.monitorEventLoopDelay` mede o atraso entre o momento em que um tick do loop deveria executar e o momento em que realmente executa. Se esse atraso (o **lag**) está alto, a thread está ocupada com código síncrono. Se o lag está normal mas a latência HTTP está alta, o gargalo é I/O externo — banco, rede, DNS.
+
+Essa distinção — lag alto vs. lag normal — determina onde você olha. Sem a métrica, você pode gastar horas otimizando o banco de dados quando o problema é uma regex catastrófica num middleware.
 
 ## O que é
 
@@ -42,6 +50,16 @@ Tick esperado   Tick esperado   Tick esperado
 ────┼─────────────────────────────────────┼──  (real)
     │                                     │
    t=0                                  t=150ms  ← lag = 150ms
+```
+
+```mermaid
+flowchart LR
+    ALERT["🔴 Alerta\np99 latência alta"] --> Q1{"Event loop\nlag alto?"}
+    Q1 -->|"sim\nlag > 100ms"| CPU["Thread JS ocupada\nCódigo síncrono"]
+    Q1 -->|"não\nlag < 5ms"| IO["Gargalo externo\nBanco / Rede / DNS"]
+    CPU --> DIAG1["clinic doctor\nidentifica categoria"]
+    DIAG1 --> DIAG2["clinic flame /\n--inspect+DevTools\naponta função"]
+    IO --> DIAG3["Clinic bubbleprof\ntracing async ops"]
 ```
 
 A resolução típica de monitoramento é de 10–50 ms. Valores de p99 abaixo de 50 ms são considerados saudáveis para a maioria das APIs. Acima de 100 ms o impacto em latência de usuário é perceptível. Acima de 500 ms o serviço provavelmente já está respondendo com timeouts para parte das requisições.
@@ -281,7 +299,7 @@ Os percentis de latência (p50, p99) são os números que devem ser correlaciona
 
 ---
 
-## Na prática
+## Casos práticos
 
 ### Estratégia em produção
 
@@ -354,71 +372,54 @@ Ambos geram flame charts, mas têm características diferentes:
 
 Para a maioria dos fluxos de diagnóstico, `clinic flame` é mais prático: coleta dados durante o run com `autocannon`, gera o relatório ao encerrar o processo, e pode ser compartilhado como arquivo HTML sem precisar replicar o ambiente.
 
+### Cenário 2 — Diagnóstico completo de regressão de performance após deploy
+
+Um deploy na sexta-feira trouxe um pico sustentado de latência. O alerta Prometheus disparou: `nodejs_event_loop_lag_p99_seconds` > 0.3 por 10 minutos.
+
+**Passo 1 — confirmar que é evento loop, não I/O:**
+```bash
+# No dashboard: lag subiu junto com a latência? Ou lag está baixo?
+# Lag > 100ms → thread JS ocupada. Lag < 5ms → banco/rede.
+```
+
+**Passo 2 — reproduzir em pré-prod com clinic:**
+```bash
+# Replica o perfil de tráfego da sexta — ~150 conexões
+clinic doctor -- node server.js &
+npx autocannon -c 150 -d 60 http://localhost:3000/api/relatorio
+# Encerrar o servidor → clinic gera report.html
+```
+
+**Passo 3 — ler o diagnóstico:**
+O relatório mostrou: `"I/O operations in your thread pool are taking too long"`. Não era CPU — era pool saturado.
+
+**Causa identificada:** o novo endpoint `/api/relatorio` fazia 12 leituras de arquivo por request (config + templates + dados). Com 150 conexões concorrentes, o pool de 4 threads ficava permanentemente saturado.
+
+**Solução:** cache das leituras em memória para arquivos estáticos + `UV_THREADPOOL_SIZE=16` para produção. P99 de lag voltou a <5ms.
+
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-### 1. Esquecer `enable()` no histograma
+> [!warning] Esquecer `enable()` — histograma coletará zero amostras, silenciosamente
+> `monitorEventLoopDelay()` cria o histograma mas não começa a coletar até `h.enable()` ser chamado. Sem chamada, todos os percentis retornam `0` — sem erro, sem aviso.
+>
+> ```typescript
+> const h = monitorEventLoopDelay({ resolution: 20 });
+> h.enable(); // ← obrigatório; sem isso, h.percentile(99) sempre retorna 0
+> ```
 
-```typescript
-// ERRADO — não coleta nada
-const h = monitorEventLoopDelay({ resolution: 20 });
-// h.enable() esquecido
-setInterval(() => console.log(h.percentile(99)), 5000); // sempre retorna 0
+> [!warning] Omitir `reset()` — p99 vira média histórica, não reflete a janela atual
+> Sem `h.reset()` periódico, o histograma acumula todas as amostras desde o boot. O p99 reportado após 24h de uptime é o p99 de toda a vida da aplicação — um pico às 03h00 contamina os percentis do dia inteiro. Reset deve ocorrer a cada janela de coleta (ex: a cada scrape Prometheus ou a cada `setInterval`).
 
-// CORRETO
-const h = monitorEventLoopDelay({ resolution: 20 });
-h.enable(); // ← obrigatório
-```
+> [!warning] `--inspect` com `0.0.0.0` expõe execução de código arbitrário ao processo
+> Por padrão, `node --inspect app.js` escuta em `0.0.0.0:9229` — acessível de qualquer interface de rede. O protocolo Chrome DevTools permite ler heap, variáveis, e executar código arbitrário no processo. Em produção, sempre `--inspect=127.0.0.1:9229` e acesso via SSH tunnel.
 
-O histograma retorna 0 para todos os percentis se `enable()` não for chamado. Não há erro — só silêncio, que é pior.
+> [!warning] `clinic doctor` sem carga real produz relatório "sem bottleneck" inútil
+> O `doctor` analisa o comportamento do processo *sob estresse*. Sem `autocannon` ou load equivalente rodando em paralelo, o processo está ocioso e o diagnóstico não encontra nada — silenciosamente correto sobre um estado que não é o relevante.
 
-### 2. Omitir `reset()` — percentis viram média histórica
-
-Sem `reset()`, o histograma acumula amostras desde o boot do processo. O p99 reportado após 24h de uptime é o p99 de toda a vida da aplicação — não da janela atual.
-
-```typescript
-setInterval(() => {
-  const p99 = h.percentile(99) / 1e6;
-  console.log(`p99=${p99}ms`);
-  h.reset(); // ← sem isso, p99 não reflete a janela atual
-}, 10_000);
-```
-
-Em particular, um pico de lag às 03h00 vai "contaminar" os percentis do dia inteiro se não houver reset.
-
-### 3. `clinic doctor` sem carga — relatório inútil
-
-Rodar `clinic doctor -- node app.js` e não aplicar load resulta em relatório que diz "sem bottleneck". O `doctor` analisa o comportamento *sob estresse*, não o processo ocioso. Sempre emparelhar com `autocannon` ou a suite de load do projeto.
-
-### 4. `autocannon` sem rate limit pode derrubar o serviço
-
-```bash
-# PERIGOSO em serviço sem proteção:
-npx autocannon -c 500 -d 60 http://localhost:3000
-
-# MAIS SEGURO — limitar taxa:
-npx autocannon -c 50 -d 30 -R 200 http://localhost:3000
-```
-
-Em pré-prod ou dev sem circuit breaker, `autocannon` com 500 conexões pode esgotar file descriptors, memória, ou conexões de banco. Aumentar gradualmente e monitorar o processo alvo.
-
-### 5. `--inspect` exposto na interface errada
-
-```bash
-# INSEGURO — aceita conexões de qualquer origem
-node --inspect app.js         # escuta em 0.0.0.0:9229 por padrão
-node --inspect=0.0.0.0:9229 app.js
-
-# SEGURO — apenas loopback
-node --inspect=127.0.0.1:9229 app.js
-```
-
-O protocolo Chrome DevTools permite acesso ao heap, variáveis, e execução de código arbitrário no processo. Em produção, um inspector exposto em `0.0.0.0` é uma vulnerabilidade crítica.
-
-### 6. Confundir lag com latência de I/O
-
-Event loop lag mede o atraso da *thread JS*. Uma aplicação pode ter p99 de latência HTTP de 800 ms com event loop lag de 5 ms — o tempo extra é I/O (banco, rede). Nesse caso, otimizar o event loop não resolve nada. Correlacionar sempre os dois sinais antes de concluir onde está o gargalo.
+> [!warning] Lag baixo com latência HTTP alta indica I/O externo — não otimize o event loop
+> Event loop lag mede a thread JS. Uma aplicação pode ter p99 de latência HTTP de 800ms com lag de 5ms — o tempo extra é banco de dados, rede, ou DNS. Otimizar o event loop nesse caso não resolve nada. Correlacionar lag + latência HTTP antes de decidir onde agir.
 
 ---
 
@@ -439,6 +440,10 @@ Ao ser perguntado "como você diagnosticaria um event loop lento?", estruturar e
 
 Uma boa resposta também menciona o que *não* fazer: não assumir que latência HTTP alta é sinônimo de event loop bloqueado (pode ser I/O externo), não rodar `--inspect` sem tunnel SSH em produção, e não confiar em `clinic doctor` sem load aplicado.
 
+**Pergunta frequente em entrevista: "Qual a diferença entre `Date.now()` e `process.hrtime.bigint()` para medir performance?"**
+
+`Date.now()` retorna milissegundos wall-clock — pode sofrer saltos por ajuste de NTP, resolução de ~1ms no OS. `process.hrtime.bigint()` retorna nanossegundos de relógio monotônico — nunca salta para trás, resolução de ~100ns no Linux. Para medir durações curtas (< 10ms) com precisão, `hrtime.bigint()` é obrigatório. Para timestamps de eventos (logs, auditoria), `Date.now()` é correto. A confusão mais comum: usar `Date.now()` para medir o tempo de um handler e concluir que "todos os handlers demoram 1ms" quando na verdade a resolução do relógio está mascarando variações de 0.1-0.9ms.
+
 ### Vocabulário técnico (PT-BR ↔ EN)
 
 | PT-BR | EN |
@@ -451,14 +456,45 @@ Uma boa resposta também menciona o que *não* fazer: não assumir que latência
 | janela de amostragem | sampling window |
 | monitor de intervalo | interval histogram |
 | resolução de amostragem | sampling resolution |
+| relógio monotônico | monotonic clock |
+| saturação do pool de threads | thread pool saturation |
+| inspetor / protocolo de depuração | inspector / debug protocol |
+| análise pós-execução | post-mortem analysis |
+| comparar percentis antes/depois | compare p99 before/after |
+| overhead de instrumentação | instrumentation overhead |
+| profiling contínuo em produção | continuous profiling in production |
+
+**Perguntas comuns:**
+
+**"O que é um flame chart e como você lê um?"**
+Flame chart é a visualização de CPU profile com tempo no eixo horizontal e pilha de chamadas no eixo vertical. Cada barra representa uma função; largura = tempo de CPU consumido. Funções largas no topo da pilha são os gargalos reais. Funções estreitas em camadas inferiores são overhead de infraestrutura (V8 runtime, Node internals). O objetivo é encontrar a função de *código da aplicação* mais larga no topo — essa é onde o tempo está sendo gasto.
 
 ---
 
+## O que vem a seguir
+
+Identificar e localizar o bloqueio fecha o ciclo de diagnóstico — mas o galho de Runtime tem mais uma parada: um consolidado de regras práticas e cheatsheet de referência rápida. A próxima nota, [[12 - Armadilhas, regras práticas, cheatsheet]], sintetiza todos os anti-patterns do galho em forma de lista de verificação, com as regras de ouro que emergem das notas anteriores numa forma consultável rapidamente.
+
+## Fontes
+
+- [Node.js — perf_hooks monitorEventLoopDelay](https://nodejs.org/api/perf_hooks.html#perf_hooksmonitoreventloopdelayoptions)
+- [Clinic.js — documentação oficial](https://clinicjs.org/documentation/)
+- [Node.js — process.hrtime.bigint()](https://nodejs.org/api/process.html#processhrtimebigint)
+- [autocannon — repositório oficial](https://github.com/mcollina/autocannon)
+- [Node.js — Guia de diagnóstico oficial](https://nodejs.org/en/docs/guides/diagnostics)
+
 ## Veja também
 
-- `[[10 - Bloqueio do event loop - sintomas e causas]]` — causas do bloqueio que o diagnóstico vai encontrar.
-- `[[12 - Armadilhas, regras práticas, cheatsheet]]` — consolidação de todos os padrões e anti-patterns do galho.
-- `[[Node.js]]` — tronco: visão panorâmica de todos os galhos.
+- [[10 - Bloqueio do event loop - sintomas e causas]] — causas do bloqueio que o diagnóstico vai encontrar; contexto para interpretar o que `clinic doctor` relata.
+- [[12 - Armadilhas, regras práticas, cheatsheet]] — consolidação de todos os padrões e anti-patterns do galho em forma de checklist consultável.
+- [[07 - I-O assíncrono - kernel vs thread pool]] — para entender por que thread pool saturation aparece como "event loop lento" no diagnóstico mesmo sendo um problema diferente.
+- [[Node.js]] — tronco: visão panorâmica de todos os galhos.
 
 > [!note] Observability avançado
 > Profiling contínuo em produção (flame graphs via `0x`, continuous profiling com Pyroscope, distributed tracing com OpenTelemetry) será coberto no Galho 5 — Observability. As ferramentas desta nota são suficientes para diagnóstico pontual e monitoramento básico.
+>
+> **Fronteira desta nota vs. Galho 5:**
+> - Esta nota: diagnóstico pontual, métricas de event loop lag, ferramentas de profiling para desenvolvimento e pré-prod.
+> - Galho 5 (Observability): profiling contínuo em produção com amostragem de baixo overhead (async-profiler, Pyroscope), distributed tracing com OpenTelemetry para correlacionar lag com traces de request, alertas avançados e SLOs baseados em event loop lag em vez de latência HTTP.
+>
+> A distinção prática: quando você precisa diagnosticar um incidente (agora, sob pressão), use as ferramentas desta nota. Quando você quer instrumentação permanente que detecta regressões antes do incidente, Galho 5 é o destino.
