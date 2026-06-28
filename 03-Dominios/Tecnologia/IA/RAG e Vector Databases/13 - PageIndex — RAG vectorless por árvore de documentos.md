@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -25,6 +26,9 @@ aliases:
 
 > [!abstract] TL;DR
 > **PageIndex** (`github.com/VectifyAI/PageIndex`) é uma abordagem de **[[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] vectorless** para documentos longos: em vez de quebrar o documento em [[Dicionário de IA#chunking|chunks]], gerar [[Dicionário de IA#embedding|embeddings]] e buscar por similaridade, ele constrói uma **árvore hierárquica tipo table of contents** e usa o [[Dicionário de IA#LLM (Large Language Model)|LLM]] para navegar essa árvore por raciocínio. A tese é simples e forte: similaridade semântica não é o mesmo que relevância; em documentos profissionais longos, a seção certa muitas vezes é encontrada por estrutura, contexto e inferência multi-step. PageIndex encaixa como padrão avançado de [[Dicionário de IA#retrieval|retrieval]], especialmente para PDFs financeiros, jurídicos, regulatórios, manuais técnicos e livros. Não substitui [[Dicionário de IA#vector database|vector DB]] em todos os casos, nem é memória de agentes por si só; é uma técnica de indexação/retrieval que pode alimentar sistemas como [[Memória de Agentes|11 - OpenKB — wiki compilada com PageIndex]].
+
+> [!question]- Por que PageIndex não usa vector DB se RAG resolve o mesmo problema?
+> Porque em documentos longos e estruturados, o problema não é "qual chunk é semanticamente similar à query" — é "em qual seção do documento está a resposta, dado o que a pergunta quer saber". Embeddings capturam similaridade de vocabulário; a árvore hierárquica do PageIndex captura relevância estrutural. Um contrato de 300 páginas pode ter a cláusula de rescisão no capítulo 8, seção 3 — um embedding dessa cláusula dificilmente vai casar com a query "quais são as condições para sair do contrato" se o texto usa linguagem formal diferente. A árvore permite que o LLM raciocine sobre onde procurar, não apenas sobre o que parece similar.
 
 ## O que é
 
@@ -112,11 +116,43 @@ Ele não é Graph RAG no sentido clássico, porque não extrai entidades/relaç�
 
 ## Armadilhas comuns
 
-- **Chamar de "sem RAG".** PageIndex ainda é RAG: recupera contexto externo e injeta no LLM. O que muda é o mecanismo de retrieval.
-- **Achar que elimina chunking sem custo.** Ele evita chunking artificial, mas paga com construção de árvore e chamadas LLM.
-- **Confiar na árvore como se fosse ground truth.** Se o parser/OCR ou o LLM constroem uma hierarquia ruim, o retrieval navega o mapa errado.
-- **Comparar benchmark de finanças com qualquer domínio.** O README cita resultado de 98,7% no FinanceBench via sistema Mafin 2.5; isso é sinal forte para documentos financeiros, não garantia universal.
-- **Usar para memória conversacional.** Histórico de chat não tem estrutura de documento. Forçar PageIndex ali é transformar conversa em pseudo-documento, geralmente pior que extração de fatos.
+> [!warning] Confiar na árvore como se fosse ground truth
+> A qualidade do retrieval depende inteiramente da qualidade da árvore construída. Se o parser/OCR falhou, se o LLM usou uma hierarquia incorreta ou se o documento tem estrutura inconsistente (seções sem títulos, numeração quebrada), a árvore vai guiar o retrieval para o lugar errado. PageIndex exige validação da árvore antes de confiar no retrieval — pelo menos por amostragem manual em 10-20 nós críticos.
+
+> [!warning] Usar PageIndex para memória conversacional
+> Histórico de conversa não é documento estruturado — é uma sequência temporal de mensagens sem hierarquia de conteúdo. Forçar PageIndex sobre histórico de chat cria uma pseudo-árvore artificial que geralmente deteriora a qualidade comparado a extração simples de fatos ou RAG vetorial sobre transcrições. Para memória de agentes, use as abordagens específicas de [[Memória de Agentes]].
+
+> [!warning] Generalizar o benchmark do FinanceBench
+> O resultado de 98,7% do sistema Mafin 2.5 no FinanceBench é sinal forte para documentos financeiros estruturados — relatórios SEC, earnings reports, filings — que são exatamente o tipo de documento que PageIndex foi otimizado para navegar. Esse número não é transferível para texto livre, documentos sem hierarquia ou domínios onde a estrutura é fraca. Avalie sempre no seu próprio corpus antes de decidir.
+
+## O que vem a seguir
+
+PageIndex encerra a trilha de RAG e Vector Databases com uma pergunta aberta: e quando o problema não é retrieval de documentos, mas memória persistente de agentes ao longo do tempo? Consolidar fatos, resolver contradições, aprender preferências — esses são problemas de memória, não de retrieval documental, e exigem abordagens completamente diferentes.
+
+- [[Memória de Agentes]] — a trilha complementar que cobre como agentes mantêm estado, aprendem com interações passadas e usam knowledge graphs para memória estruturada
+
+## Como explicar em inglês
+
+PageIndex is a retrieval approach specifically designed for long, structured documents where the fundamental problem is not "which chunks are semantically similar to the query?" but rather "which section of this document contains the relevant information, given what the question is trying to find out?" The distinction matters because semantic similarity and structural relevance can diverge significantly: a contract clause about termination conditions may use formal legal language that shares no vocabulary with the query "how can I exit this contract?", but it lives in a predictable location in the document's hierarchy.
+
+The mechanism works in two phases: first, build a tree representation of the document — essentially a semantic table of contents where each node has a title, page range, summary, and children. Second, use the LLM to navigate that tree by reasoning about which branches are likely to contain the answer, then retrieve the relevant sections and generate a grounded response. This replaces chunking and vector search with structure and reasoning, which trades embedding costs for LLM call costs during tree construction and navigation.
+
+**In a technical interview**, you might say:
+
+> "PageIndex is a good fit when I have structured professional documents — SEC filings, contracts, technical manuals — where chunking destroys the document's natural hierarchy and semantic search retrieves the wrong sections because the query vocabulary doesn't match the document's formal language. Instead of chunking, I build a hierarchical tree of the document and let the LLM navigate it by reasoning about which section is most likely to contain the answer. The tradeoff is that tree construction requires multiple LLM calls per document, so it's cost-effective for a controlled corpus of long documents but doesn't scale to millions of short snippets. For those, standard hybrid search with reranking remains the better default."
+
+| PT | EN |
+|----|-----|
+| Árvore de documentos | Document tree |
+| Sumário semântico | Semantic table of contents |
+| Recuperação por raciocínio | Reasoning-based retrieval |
+| RAG sem vetores | Vectorless RAG |
+| Navegação hierárquica | Hierarchical navigation |
+| Nó da árvore | Tree node |
+| Intervalo de páginas | Page range |
+| Busca por estrutura | Structure-based search |
+| Construção do índice | Index construction |
+| Relevância estrutural | Structural relevance |
 
 ## Veja também
 
@@ -135,3 +171,135 @@ Ele não é Graph RAG no sentido clássico, porque não extrai entidades/relaç�
 - Developer / MCP / API — `https://pageindex.ai` — integração via MCP e API.
 - Blog introdutório — *PageIndex: Next-Generation Vectorless, Reasoning-based RAG* (Zhang, Tang e PageIndex Team, setembro de 2025), citado no README.
 - FinanceBench — `https://arxiv.org/abs/2311.11944` — benchmark mencionado no README como caso onde Mafin 2.5, sistema baseado em PageIndex, reporta 98,7% de accuracy.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
