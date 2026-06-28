@@ -1,8 +1,9 @@
 ---
 title: "Arquitetura de um sistema de memória"
 created: 2026-04-25
-updated: 2026-04-25
+updated: 2026-06-28
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -21,6 +22,10 @@ aliases:
 
 > [!abstract] TL;DR
 > Sistemas de memória de agentes têm uma arquitetura comum, independente de implementação: **ingestão** (write), **indexação** (organização), **retrieval** (read), **manutenção** (compactação, forget, lint) e **schema/governance** (regras). O survey de 2026 (Du et al.) formaliza esse fluxo como **write-manage-read loop** e identifica 5 mecanismos arquiteturais distintos: context-resident compression, retrieval-augmented stores, reflective self-improvement, hierarchical virtual context e policy-learned management. Um framework complementar — Storage / Reflection / Experience — descreve a maturidade evolutiva de cada implementação. Este vocabulário é a base para comparar ferramentas concretas (Letta, Mem0, Zep, MemPalace, basic-memory, A-MEM) sem cair em anedota.
+
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: A nota descreve "policy-learned management" como majoritariamente research — quais são os obstáculos concretos que impedem adoção em produção? Latência de decisão, custo de treino, instabilidade do RL reward signal?
+> - Lacuna potencial: A nota classifica maturidade com o framework Storage/Reflection/Experience, mas não discute como medir onde uma implementação específica está nesses estágios — existe benchmark ou heurística prática para isso?
 
 ## O que é
 
@@ -85,6 +90,21 @@ Como organizar o que foi ingerido. Os eixos comuns são: **vetorial** ([[Dicion�
 
 A decisão central é o trade-off entre **custo de write** e **custo de read**. Indexação rica (embeddings + grafo + hierarquia) gasta no momento da escrita para tornar a leitura barata e precisa; indexação minimalista (só append em arquivo) é trivial no write mas joga toda a complexidade para o read. Não há resposta universal — depende da assimetria entre frequência de ingestão e frequência de query no caso de uso.
 
+```mermaid
+quadrantChart
+    title Trade-off custo write vs custo read
+    x-axis "Custo de write baixo" --> "Custo de write alto"
+    y-axis "Custo de read alto" --> "Custo de read baixo"
+    quadrant-1 Ideal (raro)
+    quadrant-2 Indexação rica
+    quadrant-3 Append-only simples
+    quadrant-4 Indexação cara sem retrieval
+    Markdown append-only: [0.15, 0.2]
+    Vetor + grafo (Mem0/Zep): [0.7, 0.75]
+    Hierárquico (Letta): [0.6, 0.65]
+    Memory palace (MemPalace): [0.55, 0.85]
+```
+
 ### 3. Retrieval (read)
 
 Como buscar quando o agente precisa. Os padrões consolidados são: **similarity search** (cosine ou dot product sobre embeddings), **graph traversal** (seguir arestas a partir de entidades mencionadas), **[[Dicionário de IA#hybrid search|hybrid search]]** ([[Dicionário de IA#BM25|BM25]] lexical combinado com vetor semântico) e **[[Dicionário de IA#reranking|reranking]]** (segundo passo que reordena top-N por relevância semântica fina). Decisões importantes: tamanho do top-k, query rewriting (transformar a pergunta antes de buscar), e se há ou não cache de resultados.
@@ -145,11 +165,39 @@ Não há virtude em sobre-engenharia. Há cenários onde implementar todos os ci
 
 ## Armadilhas comuns
 
-- **Focar só no retrieval ignorando a manutenção.** Sistema bonito por seis meses, lixão depois. Retrieval é mensurável e excitante; manutenção é invisível e tediosa. Adivinha onde a maior parte do esforço vai? E adivinha onde está o gargalo real em sistemas que rodam mais de um ano?
-- **Schema implícito vira inconsistência.** Sem regras escritas explicitamente, o LLM espalha conteúdo sem coerência. A primeira nota usa um padrão; a centésima usa outro; ninguém percebe até alguém tentar buscar por algo que existe em três formatos diferentes. Schema escrito é barato; consequência de schema implícito é cara.
-- **Confundir storage substrate com arquitetura.** Markdown vs vector DB é detalhe de substrato. O loop write-manage-read é o ponto. Discussões que ficam só no nível "qual storage" perdem a substância — duas implementações com o mesmo storage podem ser arquiteturalmente opostas, e duas com storage diferente podem ser arquiteturalmente equivalentes.
-- **Não medir qualidade da manutenção.** Lint sem evaluation é teatro. Compactação sem teste de preservação de fatos é wishful thinking. Forget policy sem audit é remoção arbitrária. Manage exige métricas tanto quanto retrieval — talvez mais, porque o efeito é assimétrico (manage degenerado contamina o sistema todo).
-- **Ingestão sem filtro.** Gravar tudo é gravar nada. Memória virou diário em vez de knowledge base — impossível buscar com sinal/ruído alto. Filtrar agressivamente na ingestão é menos custoso do que limpar depois, e manda sinal claro para o agente sobre o que merece persistência.
+> [!warning] Armadilha 1: Focar só no retrieval ignorando a manutenção
+> Retrieval é mensurável, tem benchmark, tem número que sobe em demo. Manutenção é invisível, tediosa e os erros aparecem meses depois. O resultado previsível: esforço desproporcional em retrieval, esqueleto de manutenção que ninguém alimenta, sistema bonito por seis meses e lixão depois. A regra assimétrica: retrieval ruim dá respostas erradas imediatamente — é detectável. Manutenção ruim dá respostas erradas lentamente, acumulando silenciosamente, até o sistema virar fonte de confusão em vez de conhecimento.
+
+> [!warning] Armadilha 2: Schema implícito vira inconsistência crônica
+> Sem regras escritas explicitamente, o LLM espalha conteúdo sem coerência. A primeira nota usa um padrão; a centésima usa outro; ninguém percebe até alguém tentar buscar por algo que existe em três formatos diferentes. O efeito é especialmente ruim em markdown, onde o schema é opcional por design. Escrever o schema antes de começar é barato; corrigir inconsistência em vault grande é trabalho de semanas. Um CLAUDE.md ou AGENTS.md com as regras básicas — naming, frontmatter, taxonomia — resolve o problema antes de ele surgir.
+
+> [!warning] Armadilha 3: Confundir substrato com arquitetura
+> Markdown vs vector DB é detalhe de substrato — o nível físico abaixo da arquitetura. O write-manage-read loop é o ponto arquitetural real. Debates que ficam no nível "qual storage" perdem substância: duas implementações com o mesmo substrato markdown podem ser arquiteturalmente opostas (uma com manage sofisticado, outra append-only), e duas com substrato diferente (uma markdown, uma vetorial) podem ser arquiteturalmente equivalentes no loop. Escolher substrato antes de mapear o loop é começar pela decisão menos importante.
+
+> [!warning] Armadilha 4: Ingestão sem filtro degrada a relação sinal/ruído
+> Gravar tudo parece mais seguro do que filtrar — afinal, melhor ter e não precisar do que precisar e não ter. Na prática, gravar tudo significa que a memória vira diário em vez de knowledge base. O retrieval devolve contexto irrelevante misturado com o que importa, e o agente perde capacidade de discriminar. Filtrar agressivamente na ingestão é menos custoso do que limpar depois — e manda sinal claro para o agente sobre o que merece persistência.
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "Every agent memory system, regardless of implementation, shares the same five components: ingestion, indexing, retrieval, maintenance, and governance. The write-manage-read loop is the architectural pattern that connects them. Understanding this vocabulary lets you evaluate any new framework in under 20 minutes."
+
+| Português | Inglês |
+|-----------|--------|
+| ingestão | ingestion |
+| indexação | indexing |
+| manutenção | maintenance |
+| governança / esquema | governance / schema |
+| compactação | compaction |
+| deduplicação | deduplication |
+| política de esquecimento | forget policy |
+| loop escrever-gerenciar-ler | write-manage-read loop |
+| memória hierárquica | hierarchical memory |
+| busca híbrida | hybrid search |
+
+## O que vem a seguir
+
+Com o vocabulário arquitetural em mãos — os cinco componentes, os cinco mecanismos do survey e o framework de maturidade Storage/Reflection/Experience — a [[09 - Panorama de implementações (abril 2026)|nota 09]] aplica esse vocabulário ao mercado real. Ela mapeia uma dúzia de implementações em três famílias (inspiradas no LLM Wiki, frameworks de produção e acadêmicas), apresenta uma tabela síntese com hedges nos números e um fluxograma de escolha. O critério de comparação vem desta nota; o mapa do que existe vem da próxima.
 
 ## Veja também
 
