@@ -3,6 +3,7 @@ title: "graphify — knowledge graph de raw"
 created: 2026-04-26
 updated: 2026-04-26
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,10 @@ aliases:
 > [!abstract] TL;DR
 > `graphify` (`github.com/safishamsi/graphify`) transforma uma pasta `/raw` — código, docs, papers, imagens, áudio e vídeo — em um **knowledge graph queryable**. Descrito pelo autor como "the answer to Karpathy's `/raw` folder", leva o pattern para substrato gráfico em vez de markdown. Integra com Claude Code, Codex, Cursor, Gemini CLI e outros via slash command `/graphify .`. Promete cerca de **71,5x menos tokens por query** vs ler arquivos brutos — número auto-reportado, não auditado. Saída: `graph.html` (vis.js), `graph.json` (queryable) e `GRAPH_REPORT.md` (sumário de god nodes e comunidades).
 
+> [!question]- Dúvidas e lacunas desta nota
+> - Dúvida gerada pelo conteúdo: O Leiden community detection é aplicado sobre o grafo completo após o semantic pass, ou de forma incremental a cada arquivo processado? Isso afeta diretamente o custo de rebuild no watch mode.
+> - Lacuna potencial: A nota menciona que `graphify merge-graphs` combina grafos cross-repo, mas não explica como conflitos de nós com mesmo nome em repos diferentes são resolvidos — por merge de arestas, por prefixo de origem ou por escolha do usuário.
+
 ## O que é
 
 `graphify` é uma versão **graph-based** do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]]. Em vez de compilar uma wiki em markdown a partir do `/raw`, como [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]] faz, o repositório constrói um grafo `NetworkX`, clusteriza com **Leiden community detection** e exporta artefatos consumíveis pelo assistente de código. O posicionamento como sucessor explícito do `/raw` aparece literalmente no README — "Andrej Karpathy keeps a `/raw` folder where he drops papers, tweets, screenshots, and notes. graphify is the answer to that problem".
@@ -34,6 +39,50 @@ O foco é **mixed-media**, não só markdown: código (extração AST via tree-s
 - **Eficiência de token é argumento concreto para escala.** O autor reporta cerca de 71,5x menos tokens por query vs ler arquivos brutos. Sinal, não número auditado, mas em codebases grandes muda a economia de uso do assistente.
 - **Integração nativa com IDEs traz o pattern para o workflow diário.** `graphify` se instala como skill com hook que dispara antes de cada `Glob`/`Grep` no Claude Code, antes de cada Bash no Codex, antes de cada leitura no Gemini CLI. Quando existe `graphify-out/`, o assistente é instruído a consultar o grafo em vez de varrer arquivos.
 - **Confidence tagging explícito.** Cada relação é rotulada `EXTRACTED`, `INFERRED` ou `AMBIGUOUS` — responde à crítica recorrente de KGs gerados por LLM ("o que foi visto vs inventado") sem esconder o problema.
+
+### Por que knowledge graph em vez de markdown?
+
+A mudança de substrato de markdown para grafo não é estética — ela muda o que é possível perguntar ao sistema:
+
+| Tipo de consulta | Markdown (wiki) | Knowledge graph |
+|-----------------|-----------------|-----------------|
+| "O que é X?" | Ótimo (artigo dedicado) | Bom (nó com atributos) |
+| "Como X e Y estão relacionados?" | Razoável (links manuais) | Ótimo (path no grafo) |
+| "Quais conceitos são mais centrais?" | Ruim (exige leitura humana) | Ótimo (grau dos nós = god nodes) |
+| "Quais arquivos implementam X?" | Ruim (sem AST) | Ótimo (AST pass → call graph) |
+| "O que conecta áudio e código no corpus?" | Inexistente | Possível (cross-modal edges) |
+| "Leitura humana do resultado" | Ótimo | Ruim (JSON/HTML, não texto) |
+| "Edição manual de conteúdo" | Fácil | Frágil (editar JSON de grafo é perigoso) |
+
+O graphify aposta que, para casos de uso orientados a assistente de código — onde a consulta é feita pela máquina, não pelo humano lendo — a troca de legibilidade humana por eficiência de máquina vale a pena. Para casos onde a wiki é também um produto legível por humanos (documentação, Obsidian pessoal, blog), o custo da ilegibilidade do grafo é alto demais.
+
+### Anatomia do confidence tagging
+
+Cada aresta do grafo `graph.json` carrega três campos-chave:
+
+```json
+{
+  "source": "AuthService",
+  "target": "UserRepository",
+  "relation": "depends_on",
+  "confidence": "EXTRACTED",
+  "confidence_score": 1.0,
+  "evidence": "AuthService.__init__ importa UserRepository em auth.py linha 12"
+}
+```
+
+```json
+{
+  "source": "AuthService",
+  "target": "SecurityPolicy",
+  "relation": "semantically_similar_to",
+  "confidence": "INFERRED",
+  "confidence_score": 0.72,
+  "evidence": "Ambos tratam de controle de acesso segundo contexto semântico"
+}
+```
+
+A distinção importa em pipelines automáticos: filtrar para `confidence == "EXTRACTED"` antes de usar arestas em decisão técnica é prudência básica. A tag `AMBIGUOUS` sinaliza que o LLM detectou relação mas não conseguiu categorizar com confiança — vale revisão manual antes de promover a inferência.
 
 ## Como funciona — 3-pass processing
 
@@ -55,6 +104,89 @@ O README descreve o pipeline em três passes:
 3. **Semantic pass — LLM em paralelo.** Subagentes (Claude por padrão, ou outro modelo conforme a plataforma) processam docs, papers, imagens e transcrições para extrair conceitos, relacionamentos e design rationale. Os resultados são fundidos em um grafo `NetworkX`, clusterizado com **Leiden community detection** e exportado.
 
 O clustering é **topológico, não baseado em [[Dicionário de IA#embedding|embeddings]]** — o README é explícito: "Clustering is graph-topology-based — no embeddings". Edges semânticas (`semantically_similar_to`) extraídas pelo LLM e marcadas `INFERRED` já estão no grafo e influenciam a detecção de comunidade diretamente, eliminando dependência de [[Dicionário de IA#vector database|vector DB]].
+
+### O que é um god node e por que importa
+
+Um **god node** é um nó com grau de conectividade muito acima da média — a entidade que aparece referenciada por dezenas ou centenas de outras no corpus. Em uma codebase Python, `BaseModel` ou `session` podem ser god nodes. Em um corpus de papers sobre IA, `attention mechanism` ou `transformer` provavelmente são.
+
+O `GRAPH_REPORT.md` gerado pelo graphify lista os god nodes explicitamente porque eles têm duplo papel: são os conceitos mais influentes do corpus (útil para entender o domínio) e são os pontos de falha mais perigosos para o raciocínio do agente (um god node mal extraído propaga erro para todos os nós conectados). Ver os god nodes na primeira execução do graphify é o equivalente a ler os módulos mais importados de uma codebase — diz muito sobre a arquitetura antes de mergulhar nos detalhes.
+
+### Integração IDE — como o hook PreToolUse funciona na prática
+
+A integração mais diferenciada do graphify é o hook `PreToolUse` no Claude Code. Quando instalado (`graphify hook install`), ele injeta uma instrução em `CLAUDE.md` que diz ao assistente: "antes de usar `Glob` ou `Grep` para procurar código, consulte o `GRAPH_REPORT.md` e `graph.json` se estiverem disponíveis."
+
+O resultado prático é:
+
+```
+Sem graphify:
+  Pergunta: "Qual classe implementa autenticação?"
+  Assistente: Glob("**/*.py") → lê dezenas de arquivos → responde
+
+Com graphify atualizado:
+  Pergunta: "Qual classe implementa autenticação?"
+  Assistente: lê GRAPH_REPORT.md → encontra nó "AuthService" com
+  tipo EXTRACTED → confirma com get_node("AuthService") → responde
+  sem varrer o filesystem
+```
+
+O ganho reportado de ~71,5x menos tokens vem exatamente desse atalho: em vez de ler N arquivos para encontrar uma informação, o assistente lê o nó relevante do grafo. O risco, como discutido nas armadilhas, é que o ganho inverte quando o grafo está desatualizado.
+
+### Fluxo completo de uso — primeiro setup e uso cotidiano
+
+**Primeira execução:**
+
+```bash
+# Instalar (duplo "y" é obrigatório)
+uv tool install graphifyy
+
+# Rodar no projeto (processa tudo)
+graphify ./meu-projeto
+
+# Instalar hook no Claude Code
+graphify hook install
+
+# Verificar outputs gerados
+ls graphify-out/
+# graph.html  graph.json  GRAPH_REPORT.md  cache/  transcripts/
+```
+
+**Uso cotidiano:**
+
+```bash
+# Watch mode para rebuild incremental
+graphify watch ./src
+
+# Consultar via MCP server (em outro terminal)
+python -m graphify.serve graph.json
+
+# Cross-repo (combinar grafos)
+graphify merge-graphs projeto-a/graph.json projeto-b/graph.json \
+  --output merged.json
+
+# Clonar e indexar repo público
+graphify clone https://github.com/algum-repo/projeto
+```
+
+**Em entrevista técnica, o diferencial para apresentar:**
+
+O graphify resolve o problema de "o assistente de código não sabe o que está no monorepo sem ler tudo" de forma estrutural — não prompt engineering, mas indexação prévia que amortiza o custo de entendimento do corpus. O confidence tagging (`EXTRACTED`/`INFERRED`/`AMBIGUOUS`) é a resposta defensável à pergunta "como você garante que o grafo não alucinaria relacionamentos?".
+
+**Exemplo de query via MCP server:**
+
+```python
+# MCP server expõe 4 ferramentas principais
+# query_graph — busca semântica no grafo
+# get_node — detalhes de um nó específico
+# get_neighbors — vizinhos diretos de um nó
+# shortest_path — caminho mais curto entre dois nós
+
+# Exemplo de uso via agente com MCP
+resultado = mcp.query_graph("autenticação e autorização")
+caminho = mcp.shortest_path("AuthService", "AuditLog")
+vizinhos = mcp.get_neighbors("UserRepository", depth=2)
+```
+
+Isso permite que um agente faça multi-hop reasoning sem carregar arquivos: "qual é o caminho de dependência entre AuthService e AuditLog?" vira uma chamada `shortest_path`, não uma varredura de imports.
 
 ## Anatomia técnica
 
@@ -95,6 +227,12 @@ Os itens abaixo refletem o estado público do README de `safishamsi/graphify` em
 > [!warning] "71,5x menos tokens" é claim do autor, não auditoria
 > O número está no README e é repetido em divulgação do projeto. Não há, na data desta nota, benchmark público auditado externamente que reproduza a métrica. Em escolha técnica séria, validar com pipeline próprio antes de citar como fato. Tratar como ordem de grandeza, não como medida fechada.
 
+> [!warning] Hook PreToolUse com grafo desatualizado inverte o benefício
+> O ganho de eficiência do graphify depende de `GRAPH_REPORT.md` e `graph.json` estarem sincronizados com o estado atual do corpus. Se o PreToolUse hook estiver ativo e o grafo estiver desatualizado — porque novos arquivos foram adicionados sem rodar `graphify` de novo — o assistente vai ler o grafo antigo com confiança, perdendo contexto novo e potencialmente respondendo com informação obsoleta. `graphify watch` e `graphify hook install` ajudam, mas não eliminam a janela de desatualização entre um commit e o próximo rebuild.
+
+> [!warning] `graph.json` no repositório pode crescer e dificultar diffs
+> O README recomenda commitar `graphify-out/` para que teammates recebam o grafo via `git pull`. Em corpus grandes ou com muitos arquivos de mídia transcritos, `graph.json` pode passar de MBs rapidamente. Diffs de JSON estruturado em Git são praticamente ilegíveis e aumentam o tamanho do repositório. Vale avaliar `.gitignore` específico para `graph.json` com geração automatizada no CI, ou usar `graphify-out/GRAPH_REPORT.md` (texto legível) como o único artefato commitado.
+
 - **Knowledge graph parece mais "smart" do que é.** Leiden é heurística topológica — encontra comunidades por densidade de aresta. Não há "compreensão" embutida; clusterização é tão boa quanto a qualidade das arestas extraídas pelo semantic pass. Lixo entrando, comunidade gerada vira lixo etiquetado bonito.
 - **`graph.json` no repositório pode crescer rápido.** Watch mode + commits frequentes + corpus grande inflam o arquivo, e diff em git de JSON estruturado é ruim. Avaliar `.gitignore` específico ou regeneração no CI antes de aceitar o padrão recomendado pelo README.
 - **`INFERRED` em produção é pegadinha.** A tag indica "inferência razoável" — o que parece ok em exploração pode estar errado em decisão técnica. Em pipelines automáticos, considerar filtrar para só `EXTRACTED`.
@@ -102,6 +240,54 @@ Os itens abaixo refletem o estado público do README de `safishamsi/graphify` em
 - **Pacote PyPI tem nome confundível.** Oficial é `graphifyy` (dois "y"). `graphify` no PyPI é de outro projeto. Erro de digitação instala software errado.
 - **AST pass não cobre tudo.** Cerca de 25 linguagens é amplo, mas não universal. Erlang/OCaml/Haskell/Clojure/Nim ou DSLs internas ficam fora — viram texto bruto no semantic pass, perdendo a precisão do AST.
 - **Custo de LLM no semantic pass cresce com o corpus.** Cache SHA256 ajuda em re-runs, mas a primeira indexação de corpus grande é cara. `--update` re-extrai só arquivos alterados; vale planejar antes de rodar em monorepo.
+
+## Como explicar em inglês
+
+> [!tip] Interview quote
+> "graphify converts a raw folder — code, docs, papers, audio, and video — into a queryable knowledge graph using three passes: deterministic AST extraction via tree-sitter, local audio transcription via faster-whisper, and parallel LLM semantic extraction. The result is a NetworkX graph with Leiden community detection, where every edge is tagged as EXTRACTED, INFERRED, or AMBIGUOUS — so you always know what was found versus what was guessed."
+
+| Português | Inglês |
+|-----------|--------|
+| grafo de conhecimento | knowledge graph |
+| detecção de comunidade | community detection |
+| aresta do grafo | graph edge |
+| nó do grafo | graph node |
+| god node | god node (nó de alta centralidade) |
+| confiança da inferência | inference confidence |
+| tag de confiança | confidence tag |
+| passe semântico | semantic pass |
+| extração de AST | AST extraction |
+| call graph entre arquivos | cross-file call graph |
+| substrato gráfico | graph substrate |
+| integração com IDE | IDE integration |
+| hook de pré-ferramenta | pre-tool use hook |
+| modo de observação | watch mode |
+| servidor MCP | MCP server |
+| detecção topológica de comunidades | topology-based community detection |
+| corpus heterogêneo | heterogeneous corpus / mixed-media corpus |
+| rebuild incremental | incremental rebuild |
+| cache de transcrição | transcription cache |
+| aresta semântica | semantic edge |
+| path no grafo | graph path |
+| centralidade do nó | node centrality |
+| grafo cross-repo | cross-repo graph |
+| pipeline de três passes | three-pass pipeline |
+
+**Frases úteis para contextualizar em entrevista:**
+
+- *"graphify is positioned as 'the answer to Karpathy's `/raw` folder' — instead of compiling a markdown wiki, it builds a knowledge graph, which shifts the query paradigm from 'which wiki article covers this?' to 'what path in the graph connects these two concepts?'"*
+- *"The three-pass pipeline separates deterministic from stochastic work: AST is local and free, audio transcription is local but slow, and semantic extraction costs LLM tokens but is cached via SHA256."*
+- *"The confidence tagging system — EXTRACTED, INFERRED, AMBIGUOUS — is a direct response to the criticism that LLM-generated knowledge graphs hallucinate relationships. It doesn't eliminate the problem, but it makes the uncertainty visible."*
+- *"Leiden community detection is topology-based — it finds dense clusters of nodes without embeddings. The semantic similarity edges extracted by the LLM in the semantic pass are what feed the topological structure, so the quality of clustering depends on the quality of the LLM extraction, not on any vector representation."*
+- *"The integration story is the most polished part: graphify installs as a PreToolUse hook in Claude Code, a BeforeTool hook in Gemini CLI, and an AGENTS.md rule everywhere else — meaning the assistant consults the graph before scanning files, which is where the token efficiency claim comes from."*
+
+## O que vem a seguir
+
+A nota 12 fecha o trio das implementações Karpathy-inspired que apostam em substrato diferente: do markdown fiel ao gist (nota 10), passando por markdown com PageIndex para documentos longos (nota 11), até o knowledge graph mixed-media (nota 12). As três notas juntas respondem a pergunta "como o LLM Wiki Pattern vira código?" com três respostas diferentes — e a escolha entre elas depende do corpus, do workflow e de quanto se valoriza legibilidade humana versus eficiência de máquina.
+
+A próxima nota do galho introduce o **basic-memory**, que abandona a proposta de compilação periódica e adota uma abordagem reativa: em vez de construir uma wiki a partir de documentos brutos, basic-memory persiste fatos extraídos de conversas diretamente em markdown, servidos como contexto de agente via protocolo MCP nativo no Obsidian. É a inversão da direção: onde graphify vai do corpus para o grafo, basic-memory vai da conversa para a nota — e a memória cresce incrementalmente a cada turno, não em batch.
+
+O contraste entre os dois modelos — batch compilation vs. incremental conversation — é o eixo conceitual mais importante para decisões de arquitetura de memória de agentes. Entender os dois antes de escolher é o que separa uma decisão técnica informada de uma preferência de ferramenta.
 
 ## Veja também
 
