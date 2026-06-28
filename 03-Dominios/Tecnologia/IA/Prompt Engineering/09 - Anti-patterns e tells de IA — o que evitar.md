@@ -1,10 +1,11 @@
 ---
 title: "09 - Anti-patterns e tells de IA — o que evitar"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - prompt-engineering
   - ia
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Um output gerado por LLM costuma carregar marcas reconhecíveis — frases-bandeira, estruturas previsíveis, ritmos típicos — que denunciam a origem mesmo quando o conteúdo está correto. Essas marcas vêm do prior estatístico: o modelo aprendeu, em milhões de exemplos, que certas frases são "tom esperado de assistente útil". Esta nota cataloga as bandeiras vermelhas mais comuns, explica por que aparecem, mostra como bloquear via constraints (no padrão de [[06 - Constraints declarativas — boundaries como engenharia|nota 06]]), e nomeia os contextos onde essas estruturas são — surpreendentemente — apropriadas. A regra de ouro: não basta escrever bem; é preciso bloquear o que o modelo escreve por default.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Esta é a nota de fechamento da trilha de Prompt Engineering. Não há pré-requisito técnico específico — mas o contexto é importante: você chegou aqui depois de aprender especificidade, role, constraints, few-shot, iteration e reasoning models. Esta nota é cultural: ela documenta o que o modelo produz por default quando os prompts anteriores não estavam ativos, e o que fazer quando o output "cheira a IA" mesmo sendo tecnicamente correto. Se você usa LLMs para produzir texto que vai assinar com o seu nome, esta nota é a mais diretamente prática das nove.
 
 ## Frases bandeira-vermelha
 
@@ -169,25 +173,95 @@ Honestidade: nem toda estrutura "típica de IA" é ruim. Em contextos certos, es
 
 A diferença entre clichê e estrutura útil: **se a estrutura serve a uma audiência específica naquele contexto, é útil; se aparece independente do contexto, é clichê.**
 
+## Como detectar tells no seu próprio workflow
+
+Um processo simples de auditoria de output em três passos:
+
+**Passo 1 — Escaneio de abertura e fechamento.** As frases-bandeira aparecem com frequência desproporcional no início e no fim do texto. Leia a primeira frase e a última frase. Se ambas passam pela lista de clichês, o texto provavelmente tem mais dentro.
+
+**Passo 2 — Verificação de simetria.** Listas com exatamente o mesmo número de itens, parágrafos de comprimento idêntico, seções de peso equivalente. Se o output parece graficamente equilibrado demais, é sinal de simetria artificial.
+
+**Passo 3 — Teste de certeza.** Leia um parágrafo técnico sobre algo que você sabe. Há afirmações que deveriam ser hedgeadas mas estão apresentadas com a mesma confiança que os fatos certos? Isso é tell de certeza homogênea.
+
+Se o output passa esses três filtros, está na faixa aceitável. Se falha em dois ou três, há trabalho de revisão com constraints no próximo prompt.
+
+### Fluxo de higiene: prompts que acumulam Do-nots
+
+Com o tempo, cada projeto acumula seu próprio `Do-not` list: as frases que essa base de usuário detesta, os padrões que esse estilo editorial não tolera. Trate isso como dado de feedback de produto — não como lista fixa de tutoriais.
+
+Exemplo de evolução de um Do-not list de newsletter técnica:
+- Versão 1: bloqueia "in today's fast-paced world", "it's important to note"
+- Versão 2: adiciona "game-changer", "groundbreaking"
+- Versão 3: adiciona "whether you're a developer or a manager"
+- Versão 6 (6 meses depois): lista de 20 itens específicos ao público daquela newsletter
+
+Esse acúmulo é o que diferencia um produto de texto com voz consistente de um produto que parece diferente a cada output.
+
 ## A meta-regra
 
 Os defaults do modelo vêm do prior treinado em milhões de exemplos e são fortes. Cada iteração de "está bom, mas tem cara de IA" vira cláusula nova no Do-not list do próximo prompt.
 
-## Pitfall: bloquear demais e ficar sem voz
+## Armadilhas comuns
 
-Excesso de Do-not pode produzir texto desnaturado: o modelo evita tantas estruturas que perde fluência. Equilíbrio: bloqueie clichês que aparecem **independente do conteúdo**; deixe estruturas que servem ao contexto específico.
+> [!warning] Bloquear demais deixa o texto sem voz
+> Excesso de Do-not pode produzir texto desnaturado: o modelo evita tantas estruturas que perde fluência natural. Bloqueie clichês que aparecem independente do conteúdo; deixe estruturas que servem ao contexto. Sinal de bloqueio excessivo: output muito curto, fragmentado, ou com transições estranhas porque o modelo evitou todas as transições naturais. Recue uma ou duas cláusulas do Do-not se isso acontecer.
 
-Sinal de bloqueio excessivo: o output fica curto demais, fragmentado, ou com transições estranhas porque o modelo evitou todas as transições naturais. Recue uma ou duas cláusulas do Do-not.
+> [!warning] Tell de IA pode ser jargão legítimo de um campo
+> Algumas frases parecem clichê de IA mas são linguagem genuína de um domínio. "Pivotal moment" em texto de história é hipérbole; em análise de ponto crítico de função matemática, é terminologia precisa. "It's crucial to note" no corpo de um texto técnico médico é hedge de compliance, não tell de ChatGPT. Antes de bloquear, cheque: o uso é técnico/convencional do campo, ou é retórico/decorativo? Bloqueie só o segundo.
 
-## Pitfall: confundir tell de IA com tell de tópico
+> [!warning] A lista de tells é viva — modelos aprendem a evitá-los
+> O catálogo de frases-bandeira fica desatualizado. Quando um tell fica famoso demais, ele entra nos dados de feedback dos modelos e os modelos subsequentes aprendem a evitá-lo. Outros surgem em seu lugar. "In today's fast-paced world" ficou tão notório que modelos recentes raramente o produzem. Mas "groundbreaking" e "transformative" ainda persistem em 2025. Trate a lista como viva: revisite a cada release importante de modelo e ajuste conforme observa novos padrões.
 
-Algumas frases parecem clichê de IA mas são jargão genuíno de um campo. *"Pivotal moment"* em texto de história é hipérbole; em análise de ponto crítico de função, é termo técnico. Antes de bloquear, cheque se o uso é técnico ou retórico.
+## Anti-patterns estruturais — além das frases
+
+Além das frases-bandeira, há anti-patterns de **estrutura** que denunciam IA:
+
+**Simetria falsa:** o modelo tende a equilibrar tópicos artificialmente. Se você pede "vantagens e desvantagens", ele vai produzir listas de mesmo tamanho, com itens de mesmo peso — mesmo que a realidade tenha 7 vantagens fortes e 2 desvantagens menores. Simetria de layout ≠ simetria de evidência.
+
+**Completude artificial:** o modelo tem viés pra "cobrir tudo". Um post de blog sobre um conceito simples vira tutorial completo de 2000 palavras com 10 seções. Constraint de escopo ajuda, mas o instinto de completude é forte.
+
+**Certeza homogênea:** em texto sem instrução de uncertainty, todo parágrafo tem o mesmo grau de assertividade — o modelo apresenta especulação com a mesma confiança que fatos. Isso é tell de IA mais sutil que as frases, mas igualmente identificável por um leitor atento.
+
+**Parágrafos de mesmo comprimento:** outputs longos tendem a ter parágrafos de 3-4 linhas uniformes, sem variação de ritmo. Texto humano tem parágrafos curtos, longos, às vezes de uma linha só. A homogeneidade é um sinal.
+
+Esses anti-patterns estruturais não são bloqueados pela lista de frases — precisam de constraints separadas: "varie o comprimento dos parágrafos", "não equilibre listas se a evidência não é equilibrada", "use [incerto] onde você não tem certeza".
+
+## Como explicar em inglês
+
+Em entrevistas ou conversas sobre criação de conteúdo com IA, esta nota cobre o "como manter a voz humana":
+
+> "The default outputs of LLMs carry statistical tells — phrases that appeared frequently in their training data and get amplified by RLHF feedback that rewarded 'helpful tone.' Blocking them requires explicit Do-not lists in the prompt. But beyond phrases, there are structural tells: symmetric lists regardless of evidence weight, artificial completeness, homogeneous confidence levels across claims. Those need structural constraints, not just lexical ones."
+
+| Português | Inglês |
+|-----------|--------|
+| tell de IA | AI tell / AI giveaway |
+| frases bandeira-vermelha | red-flag phrases / tell-tale phrases |
+| prior estatístico | statistical prior / training prior |
+| clichê | cliché / verbal filler |
+| hedge reflexo | reflexive hedge / safety hedge |
+| disclaimer reflexo | boilerplate disclaimer |
+| simetria artificial | artificial symmetry |
+| completude artificial | artificial completeness |
+| voz própria | own voice / authorial voice |
+| bloco Do-not | Do-not list / avoidance list |
+
+## O que vem a seguir
+
+Esta é a nota de fechamento da trilha de Prompt Engineering. O próximo domínio complementar são **Structured Outputs** — como forçar o modelo a produzir JSON/YAML/XML verificável em vez de prosa livre. A disciplina de anti-patterns entra no design de structured outputs: o modelo tende a adicionar explicações e disclaimers ao redor do JSON; bloquear isso via constraint é o primeiro passo do Structured Output design.
+
+Ver o galho [[03-Dominios/Tecnologia/IA/Structured Outputs/01 - Por que structured outputs|Structured Outputs]].
 
 ## Cultura — por que essa nota existe na trilha
 
 Esta nota é deliberadamente cultural, não técnica. A razão: assinar um texto produzido com ajuda de LLM e mantê-lo lendo como **seu** texto é uma habilidade que separa o ofício atual. Sem essa higiene, o output denuncia origem mesmo quando o conteúdo é seu. Com ela, o LLM vira ferramenta invisível.
 
 Não é sobre esconder o uso de IA — é sobre ter voz própria que sobrevive ao uso.
+
+### O ofício muda, o problema persiste
+
+Em 2020, o problema era "escrever com IA parece robótico". Em 2025, o problema é "escrever com IA parece genérico". Os tells evoluem com os modelos — mas o problema de fundo é estável: o modelo escreve para uma audiência genérica, com o tom que foi recompensado em média. Isso é o oposto do que um escritor com voz faz.
+
+A disciplina desta nota — identificar o que o modelo produz por default e substituir por escolha deliberada — é o que mantém autoria no texto mesmo quando a ferramenta é o modelo. É uma disciplina de edição, não de geração. Você usa o modelo para rascunho; você usa as constraints desta nota para trazer o rascunho de volta ao que você quis dizer.
 
 ## Fontes
 
