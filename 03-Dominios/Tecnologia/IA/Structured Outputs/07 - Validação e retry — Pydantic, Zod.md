@@ -5,6 +5,7 @@ updated: 2026-05-28
 type: concept
 status: seedling
 progress: in_progress
+fase: Iniciado
 tags:
   - structured-outputs
   - ia
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Provider garante **shape** (campos certos, tipos certos). Não garante **semântica** — um campo `email` pode vir com texto que não é email, um `cnpj` pode vir com 14 caracteres mas dígitos verificadores errados. Pydantic (Python) e Zod (TypeScript) cobrem essa camada com validators/refinements customizados. Quando algo escapa, o padrão é **retry-with-feedback**: passa o erro de validação de volta pro modelo na próxima iteração, com backoff exponencial e teto de retries. Depois disso, fallback (modelo maior, regra de negócio, intervenção humana). Esta é a parte que separa pipeline robusto de POC.
+
+> [!question]- O que eu preciso saber antes de ler isso?
+> Você passou pelas notas de enforcement de schema (03-06) e entende que providers como OpenAI, Anthropic e Gemini garantem que o output tem a forma certa — campos presentes, tipos corretos, enum respeitado. Esta nota trata da camada seguinte: quando o shape está correto mas o conteúdo pode estar errado. Se você usa Pydantic ou Zod no seu código Python/TypeScript atual, você já tem as ferramentas — o que muda é aplicar validators pra saída de LLM especificamente, e conectar isso com um loop de retry.
 
 ## Shape vs semântica — a distinção crítica
 
@@ -296,6 +300,42 @@ Quando você muda o schema, métricas históricas viram inválidas. Trate como c
 ### Não use validação como "fix"
 
 Tentadora: usar `field_validator` pra "consertar" um output ruim (string com prefixo virar limpa). Faça isso só pra normalização (lowercase, trim). Pra correção de conteúdo, retry é melhor — você vê o problema.
+
+## Armadilhas comuns
+
+> [!warning] Passar o output com erro direto pra retry sem incluir o contexto original
+> O retry-with-feedback funciona quando o modelo vê dois coisas: o que ele emitiu e o erro específico que gerou. Sem incluir o output anterior na conversa, o modelo não tem como saber o que precisa corrigir — vai gerar algo novo, não necessariamente melhor. A mensagem de retry deve sempre incluir o output anterior como turno de `assistant` e o erro de validação como novo `user` message. Omitir o output anterior torna o retry aleatório em vez de direcionado.
+
+> [!warning] Usar validator para "silently fix" em vez de rejeitar
+> É tentador usar `field_validator` para "consertar" outputs inválidos: remover o prefixo `"R$"` de um valor numérico, converter `"Sim"` para `True`, normalizar formato de data. Para normalização simples (lowercase, trim, format canônico), isso é OK. Para correção de conteúdo errado (email sem domínio, CNPJ inválido), fazer a correção no validator esconde o problema — o modelo nunca aprende o que errou, e você nunca vê o drift. Nesses casos, rejeite e faça retry.
+
+> [!warning] Não ter teto de retries nem fallback
+> Retry-with-feedback funciona bem para 2-3 tentativas. Depois disso, se o modelo continua falhando, o problema é estrutural: prompt ambíguo, schema que o modelo não consegue satisfazer, input impossível. Retry infinito fica circulando, consome tokens e latência sem convergir. Todo loop de retry precisa de: teto explícito, backoff exponencial, e um caminho claro de saída (escalar modelo, regra de negócio, fila humana). Sem isso, failure loops viram incidentes de custo.
+
+## Como explicar em inglês
+
+Em design reviews de sistemas LLM, a pergunta sobre validação semântica e retry é onde se separa "POC que funciona em teste" de "sistema que roda em produção":
+
+> "Schema enforcement — strict mode, forced tool use — guarantees shape. It doesn't guarantee semantics. A Pydantic or Zod validator is the layer that checks business rules: email format, numeric ranges, cross-field constraints. When validation fails, the pattern is retry-with-feedback: pass the failed output and the error message back to the model in the next call. Models are very good at self-correction when they have specific feedback. After 3-5 retries with exponential backoff, you fall back — scale to a larger model, apply a business rule, or route to a human queue."
+
+| Português | Inglês |
+|-----------|--------|
+| validação semântica | semantic validation |
+| validator de campo | field validator |
+| restrição entre campos | cross-field constraint |
+| retry com feedback | retry with feedback |
+| backoff exponencial | exponential backoff |
+| teto de retries | retry cap |
+| fallback | fallback |
+| humano no loop | human in the loop |
+| erro de validação | validation error |
+| drift silencioso | silent drift |
+
+## O que vem a seguir
+
+Com validação e retry cobertos, a nota 08 fecha a trilha de Structured Outputs: como lidar com streaming. Quando o output é gerado token por token, você não pode esperar o documento completo para validar — precisa de estratégias de validação parcial e de como apresentar ao usuário output que ainda está sendo gerado.
+
+Ver [[08 - Streaming de structured outputs]].
 
 ### Combine validação semântica com guardrails de sistema
 
