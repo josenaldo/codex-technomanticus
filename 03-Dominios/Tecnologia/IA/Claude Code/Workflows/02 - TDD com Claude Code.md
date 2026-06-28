@@ -121,6 +121,9 @@ você: "Rode npm test tests/services/taxCalculator.test.ts"
 
 O critério "implementação mínima" é intencional: evita que o agente adicione comportamentos que nenhum teste cobre (e que portanto podem ser silenciosamente errados).
 
+> [!example] O que "mínimo" significa na prática
+> Para `calculateTax` com 3 categorias testadas, implementação mínima é um mapa `{ electronics: 0.15, food: 0, other: 0.10 }` com lookup direto. Não é um sistema de plugins de alíquotas extensível para N categorias — isso seria antecipação. Se no futuro surgirem 10 categorias, os testes novos guiarão a extensão. YAGNI aplicado com rigor.
+
 ### Refactor — melhore sem quebrar
 
 ```
@@ -225,6 +228,8 @@ você: "Refatore OrderService para extrair toda a lógica de precificação
 ```
 
 A suite existente é a rede de segurança. O agente sabe que qualquer quebra de comportamento aparecerá imediatamente.
+
+Os testes escritos via TDD funcionam também como documentação viva: um desenvolvedor novo (ou o agente em uma sessão futura) pode ler a suite e entender o que o módulo faz — sem precisar decifrar a implementação. O que a implementação *não deve fazer* fica igualmente documentado nos testes de edge case e erro.
 
 ## TDD com Plan Mode — combinando os dois workflows
 
@@ -366,7 +371,7 @@ Após algumas sessões de TDD com Claude Code, você reconhece esses sinais de q
 
 ## O que vem a seguir
 
-TDD com Claude Code é o workflow de *construção controlada*. Uma vez que você tem uma suite de testes confiável, dois workflows naturalmente se seguem:
+TDD com Claude Code é o workflow de *construção controlada*. Depois que você tem uma suite confiável, o agente pode fazer mudanças maiores com segurança — porque qualquer comportamento quebrado aparece imediatamente, não em produção. Uma vez que você tem uma suite de testes confiável, dois workflows naturalmente se seguem:
 
 - **[[03-Dominios/Tecnologia/IA/Claude Code/Workflows/03 - Refactoring pesado|03 - Refactoring pesado]]** — a suite TDD que você acabou de criar é a rede de segurança para refactors. O agente pode fazer mudanças estruturais grandes com confiança de que qualquer quebra de comportamento aparece imediatamente nos testes.
 - **[[03-Dominios/Tecnologia/IA/Claude Code/Workflows/04 - Debugging complexo|04 - Debugging complexo]]** — quando um bug aparece numa codebase com boa cobertura TDD, o debug começa por escrever um teste que reproduz o bug — e então o agente corrige até o teste passar. A suite existente garante que a correção não introduz regressões.
@@ -387,4 +392,9 @@ A progressão: TDD define o contrato → Refactoring respeita o contrato → Deb
 - [Kent Beck — Test-Driven Development by Example](https://www.oreilly.com/library/view/test-driven-development/0321146530/) — referência canônica do TDD
 - [Claude Code — testing best practices](https://docs.anthropic.com/en/docs/claude-code/tutorials) — guia oficial de testes com Claude Code
 - [Martin Fowler — TestDouble](https://martinfowler.com/bliki/TestDouble.html) — quando usar mocks vs. stubs nos testes escritos pelo agente
+- [Fowler — Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html) — distinção clássica que afeta como o agente escreve testes com dependências externas
+- [Kent Beck — TDD by Example — capítulo 1](https://www.oreilly.com/library/view/test-driven-development/0321146530/ch01.html) — o ciclo Red/Green/Refactor em sua forma original
+- [Robert C. Martin — The Three Laws of TDD](http://www.butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd) — as três regras que definem o rigor do ciclo
+- [Claude Code — superpowers:test-driven-development skill](https://docs.anthropic.com/en/docs/claude-code/skills) — skill oficial que codifica o workflow TDD para Claude Code
+
 
