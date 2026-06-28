@@ -3,6 +3,7 @@ title: "Código gerado por IA é untrusted"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > A premissa que muda tudo: **código gerado por LLM é untrusted por padrão**. Não é "untrusted como código de junior" — é "untrusted como input externo". Veracode 2025 testou +100 modelos em 4 linguagens: **45% de risco em testes de geração**. Java pior linguagem (72% failure rate). XSS (CWE-80) não defendido em **86%** dos casos. Mais grave: *segurança não melhorou* com modelos maiores ou mais sofisticados — performance ficou flat. Esta é a base de toda Trilha 6: tratar AI code como adversário até prova em contrário.
+
+> [!question]- Por que código gerado por IA é untrusted mesmo que "pareça correto"?
+> Porque "parecer correto" é exatamente o que LLMs otimizam — plausibilidade visual, não segurança funcional. O modelo foi treinado em código real que inclui vulnerabilidades, aprende os padrões mais comuns (incluindo os inseguros), e gera com base em probabilidade. Vulnerabilidades clássicas como SQL injection e XSS raramente são visíveis à inspeção humana rápida — elas exigem análise adversarial que o LLM simplesmente não faz por padrão. "Parece correto" e "é seguro" são propriedades ortogonais em código gerado por IA.
 
 ## A descoberta que define o problema
 
@@ -136,6 +140,50 @@ Cada step entre **B e D sem gate** é janela de exposição. SDD ([[Spec-Driven 
 >
 > A maioria está **gerando rápido sem validar proporcionalmente**. É a definição de débito acumulando juros.
 
+## Armadilhas comuns
+
+> [!warning] "Modelos maiores são mais seguros"
+> O relatório Veracode 2025 explode este mito: performance de segurança ficou flat independentemente do tamanho do modelo. Times que trocam de GPT-3.5 para GPT-4o e relaxam as validações estão tomando uma decisão perigosa baseada em intuição, não em evidência.
+
+> [!warning] Revisar código gerado "rapidamente" cria falsa segurança
+> Vulnerabilidades como SSRF, insecure deserialization e path traversal não têm "cara de vulnerabilidade" — o código parece idiomático e limpo. Uma revisão visual de 2 minutos não detecta CWE-502 escondido em 3 camadas de abstração. Revisão humana sem ferramentas é necessária mas não suficiente.
+
+> [!warning] "Pedir ao modelo para gerar código seguro" não funciona
+> O modelo confirma ("claro, vou gerar código seguro!") e continua gerando inseguro. Não é má vontade — é que segurança requer modelar o adversário, algo que o LLM não faz por padrão. Prompts de intenção não substituem validação técnica na saída.
+
+## Como explicar em inglês
+
+AI-generated code is not just "code that might have bugs" — it is untrusted input in the same way that data from an external API or a user form is untrusted. The distinction matters enormously for how you design your review and validation pipeline.
+
+When a junior developer writes insecure code, the mistake is isolated and tied to a specific gap in their knowledge. When an LLM writes insecure code, the pattern repeats systematically across every generation, in every codebase where that model is used, at a velocity humans cannot match. The Veracode 2025 study found that 45% of generated code introduced risky security flaws — and that this rate did not improve as models scaled up. Security performance was simply flat.
+
+The practical implication: any architecture that allows AI-generated code to reach production without an automated validation gate — SAST, SCA, sandbox execution, immutable tests — is accumulating security debt faster than any human team can manually audit it.
+
+**In a technical interview**, you might say:
+
+> "We treat AI-generated code with the same level of trust as external user input — that is, zero trust by default. The Veracode 2025 data shows 45% failure rates in security across 100+ models, with XSS not defended in 86% of cases. Model size doesn't correlate with security improvement, so the answer isn't a better model — it's a validation pipeline: SAST in CI, SCA for dependencies, sandbox for execution, and immutable security tests the agent cannot rewrite."
+
+| PT | EN |
+|----|-----|
+| código não confiável | untrusted code |
+| dado de treino contaminado | contaminated training data |
+| taxa de falha | failure rate |
+| defesa em profundidade | defense in depth |
+| pipeline de validação | validation pipeline |
+| revisão focada em segurança | security-focused review |
+| alucinação | hallucination |
+| vetor de ataque | attack vector |
+| modelo adversarial | adversarial model / threat model |
+| débito de segurança | security debt |
+
+## O que vem a seguir
+
+Estabelecida a premissa — código AI é untrusted por definição — a próxima questão natural é: quais são os vetores de ataque específicos que exploram essa janela de risco? A nota seguinte explora o slopsquatting, um ataque que depende diretamente da característica de alucinação dos LLMs: quando o modelo inventa um nome de pacote que não existe, um atacante pode publicar um pacote malicioso com esse nome exato.
+
+Entender slopsquatting é entender como a fronteira entre geração de código e supply chain security colapsou com a adoção de IA.
+
+- [[02 - Slopsquatting — o ataque via alucinação]] — ataque que transforma alucinação de nomes de pacotes em vetor de supply chain
+
 ## Veja também
 
 - [[02 - Slopsquatting — o ataque via alucinação]]
@@ -150,3 +198,108 @@ Cada step entre **B e D sem gate** é janela de exposição. SDD ([[Spec-Driven 
 - **BusinessWire** — *AI-Generated Code Poses Major Security Risks in Nearly Half of All Development Tasks* (jul 2025).
 - **Help Net Security** — *AI can write your code, but nearly half of it may be insecure* (ago 2025).
 - **SoftwareSeni** — *Why 45 Percent of AI Generated Code Contains Security Vulnerabilities* (2025).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
