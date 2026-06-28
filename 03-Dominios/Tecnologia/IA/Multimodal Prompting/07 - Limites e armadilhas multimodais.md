@@ -1,9 +1,10 @@
 ---
 title: "07 - Limites e armadilhas multimodais"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-06-28
 type: concept
 status: seedling
+fase: Iniciado
 progress: in_progress
 tags:
   - multimodal
@@ -21,6 +22,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Modelos multimodais de 2026 são bons mas têm falhas previsíveis: alucinação visual (inventam detalhes, especialmente sob pergunta tendenciosa), OCR fraco em handwriting e baixa contraste, leitura de cor pouco confiável ("é azul ou roxo?"), raciocínio espacial fraco ("o que está à esquerda?", "qual é mais alto?"), custo crescente (imagem custa muito mais que texto equivalente) e latência maior. O anti-padrão "screenshot all the things" leva a sistemas caros e frágeis. Pra cada falha, há mitigação concreta — e em alguns casos a resposta é voltar pra pipeline tradicional (OCR + extração estruturada + LLM texto). Esta nota cataloga as falhas e diz quando recuar.
+
+> [!question]- A model de multimodal que performa bem em exemplos manuais vai ter o mesmo desempenho em produção?
+> Quase sempre não — e entender por que é fundamental antes de ir pra produção. Exemplos manuais tendem a usar imagens limpas, bem iluminadas, resolução adequada, prompt cuidadosamente formulado. Produção traz variação: imagens de celular com baixa luminosidade, PDFs escaneados com skew, usuários que mandam prints de outros prints, crops que cortam parte da informação relevante. O teste real de um pipeline multimodal é a distribuição completa dos inputs de produção, não o subconjunto bonito que o dev usou no PoC. A recomendação é montar um dataset de "imagens difíceis" — baixo contraste, handwriting, layouts densos — e usar como eval pra medir onde o modelo falha antes de deployar.
 
 ## 1. Alucinação visual
 
@@ -153,6 +157,31 @@ Imagem é estática. Modelo não vê:
 - Capture o estado relevante antes do print (force o tooltip, simule hover, scroll até a região).
 - Pra fluxo dinâmico, considere vídeo ou múltiplos screenshots em sequência rotulada ("antes do clique", "após o clique").
 
+## Testando limites em produção — abordagem sistemática
+
+Descobrir os limites num PoC é inevitável. Descobrir na produção com usuário real é custoso. A abordagem sistemática:
+
+**1. Dataset de "casos difíceis" pra cada categoria de input:**
+- Para NF/extrato: inclua scans inclinados, fundo colorido, papel envelhecido, caneta sobre texto
+- Para screenshots: inclua telas escuras, alto contraste invertido, zoom extremo, notificações sobrepostas
+- Para PDFs: inclua PDFs escaneados (não nativos), multi-coluna, tabelas sem linhas visíveis
+
+**2. Eval com rubrica específica por falha:**
+
+| Falha | Pergunta de eval | Método |
+|---|---|---|
+| Alucinação | O modelo inventou algo não presente na imagem? | LLM-as-judge com imagem + resposta |
+| OCR | Houve erro em campos críticos (nome, valor, data)? | Comparação com ground truth |
+| Espacial | O modelo identificou corretamente a posição relativa? | Ground truth anotado |
+| Inconsistência | A mesma imagem + prompt deu resposta diferente em 3 chamadas? | Amostragem repetida com temperature=0 |
+
+**3. Limiar de aceitação antes de ir pra produção:**
+- Definir a falha mais cara (ex: valor de NF errado = retrabalho de 30min)
+- Calcular quantas falhas são aceitáveis por 1000 documentos
+- Só promover quando o eval confirmar esse limiar
+
+Esse processo parece overhead, mas é o mesmo framework de qualquer sistema crítico — só adaptado pro domínio visual.
+
 ## Quando voltar pra pipeline tradicional
 
 Cenários onde, em 2026, multimodal **não** é a resposta:
@@ -175,6 +204,65 @@ Antes de enviar imagem/PDF/áudio pro modelo, pergunte:
 6. O modelo tem opção de admitir ignorância? (Se não, alucinação esperada.)
 7. O custo agregado fecha? (Se não, considere pipeline tradicional.)
 
+## Como medir alucinação visual programaticamente
+
+Saber que o modelo pode alucinar não é suficiente — é preciso medir. Estratégias práticas:
+
+**Ground truth comparison (para extração de dado estruturado):**
+
+```python
+# Extração com multimodal
+result = model.extract_invoice(image)
+
+# Comparar com ground truth anotado
+def check_fields(extracted, ground_truth, critical_fields):
+    errors = {}
+    for field in critical_fields:
+        if extracted.get(field) != ground_truth.get(field):
+            errors[field] = {
+                "expected": ground_truth[field],
+                "got": extracted[field],
+            }
+    return errors
+```
+
+**LLM-as-judge para alucinação de descrição:**
+
+```python
+judge_prompt = """
+Você é um auditor de qualidade de IA.
+
+Imagem: {image}
+Resposta do modelo: {response}
+
+A resposta afirma algo que NÃO está claramente visível na imagem?
+Responda: {{"hallucination": true/false, "detail": "..."}}
+"""
+```
+
+**Checklist de cobertura mínima de eval:**
+
+| Caso de teste | Por que incluir |
+|---|---|
+| Imagem limpa + pergunta neutra | Linha de base; modelo deve acertar |
+| Imagem limpa + pergunta tendenciosa | Verifica se o modelo resiste à sugestão |
+| Imagem borrada + campo crítico | Verifica se responde `null` ou alucina |
+| Imagem de campo vazio | Verifica se responde "ausente" ou inventa |
+| Imagem rotacionada 90° | Verifica robustez a orientação |
+
+Pra cada categoria de input do seu caso de uso, você quer pelo menos um caso de teste de "imagem difícil" que cubra a falha mais cara.
+
+## Armadilhas comuns
+
+> [!warning] Tratar "funcionou no PoC" como garantia de funcionamento em produção
+> O PoC usa imagens escolhidas a dedo — limpas, resolução boa, sem casos edge. Produção usa o que o usuário mandar: screenshot de screenshot, câmera de celular com pouca luz, PDF escaneado com página torta. O modelo que acerta 95% no PoC pode errar 30% em produção simplesmente porque a distribuição de imagens é diferente. Antes de deployar, construa um dataset de "imagens difíceis" e rode eval. Funcionar no PoC é condição necessária, não suficiente.
+
+> [!warning] Usar multimodal pra tudo porque "agora o modelo vê" — custo explode sem perceber
+> Times que descobrem multimodal tarde tendem a converter todo pipeline pra imagem: "agora mandamos o print do form em vez de extrair os campos via API". O custo de imagem high-detail pode ser 10-50x o custo de extrair o mesmo dado via API ou texto estruturado. Um formulário que tinha 50 campos extraídos via JSON da API, mandado como screenshot high-detail no Claude, custa ~1600 tokens pra input que antes custava ~300. Em produção com milhares de requisições por dia, o impacto é significativo. Revisite o pipeline antes de converter: onde a evidência realmente é visual?
+
+> [!warning] Não dar ao modelo a opção de admitir ignorância — alucinação é o resultado garantido
+> Quando o prompt não abre espaço pra "não sei" ou "ilegível", o modelo completa o padrão com o que é estatisticamente plausível. "Qual o número do pedido?" sobre imagem borrada = o modelo chuta um número. "Quantas pessoas aparecem?" sobre imagem ambígua = modelo conta o que achar mais provável. A correção é sempre abrir a saída explicitamente: "Se não conseguir ler com clareza, responda `null`. Não invente." Pra extração, estruture o output com `null` como valor válido em cada campo. Isso converte alucinação silenciosa em falha detectável.
+
 ## Fontes
 
 - **@hooeem** — *Become an AI Engineer*, cap #17.
@@ -182,6 +270,27 @@ Antes de enviar imagem/PDF/áudio pro modelo, pergunte:
 - **OpenAI** — *Vision guide* ([docs](https://platform.openai.com/docs/guides/vision)). Discussão de OCR, low/high detail.
 - **Google** — *Gemini API — Vision* ([docs](https://ai.google.dev/gemini-api/docs/vision)). Limites e melhores práticas.
 - **WCAG 2.2** — referência pra checagem de contraste; multimodal não substitui.
+
+## Como explicar em inglês
+
+**Interview quote:** *"Multimodal models have well-known failure modes: visual hallucination under suggestive prompts, weak OCR on handwriting and low contrast, unreliable color reasoning, poor spatial reasoning for relative positioning, and high token cost for images. The mitigation is explicit: neutral prompts, a null option for unreadable content, temperature zero for extraction, and a 'hard cases' eval dataset before going to production."*
+
+| Português | Inglês |
+|---|---|
+| Alucinação visual | Visual hallucination |
+| Pergunta tendenciosa (que pressupõe presença) | Suggestive / leading prompt |
+| Raciocínio espacial fraco | Weak spatial reasoning |
+| Handwriting / letra manuscrita | Handwriting |
+| Inconsistência entre chamadas | Cross-call inconsistency |
+| Anti-padrão "screenshot all the things" | Screenshot-everything anti-pattern |
+| Dataset de casos difíceis | Hard-cases eval dataset |
+| Nível de detalhe de imagem (low / high) | Image detail level (low / high) |
+| Caching de arquivo (Files API) | File caching (Files API) |
+| Falha detectável vs alucinação silenciosa | Detectable failure vs silent hallucination |
+
+## O que vem a seguir
+
+Esta nota fecha o galho Multimodal Prompting — do salto multimodal (01) às modalidades (02-05), instrução de leitura (06) e agora os limites (07). O próximo galho, Image Prompting, aprofunda especificamente a modalidade visual: como estruturar prompts para geração e manipulação de imagens, direção criativa, consistência de personagem e os modelos especializados em imagem (DALL·E, Midjourney, Stable Diffusion, Flux, Imagen).
 
 ## Veja também
 
