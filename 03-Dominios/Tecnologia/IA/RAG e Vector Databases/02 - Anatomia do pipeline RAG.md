@@ -6,6 +6,7 @@ type: concept
 progress: backlog
 status: seedling
 publish: true
+fase: Iniciado
 tags:
   - rag
   - ia
@@ -20,6 +21,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Pipeline [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] tem **duas fases**: indexing (offline, uma vez por documento) e query (online, cada pergunta). Indexing: parse → chunk → embed → store. Query: rewrite → embed → retrieve → rerank → generate. Cada passo é uma oportunidade de melhorar OU destruir qualidade. Saber onde cada peça encaixa é pré-requisito para debugar quando a resposta vier ruim.
+
+> [!question]- Por que a qualidade do retrieval importa mais que o modelo?
+> O LLM só pode usar o que chega no contexto. Se o retrieval trouxer os chunks errados — ou nenhum chunk relevante — o modelo mais poderoso do mundo vai alucinar ou dizer "não sei". Por outro lado, com retrieval excelente e contexto correto, até um modelo mais simples gera respostas precisas. O gargalo quase sempre é o retrieval, não a geração. Em benchmarks internos, melhorar retrieval precision de 60% para 90% eleva a qualidade final das respostas mais do que dobrar o tamanho do modelo de linguagem.
 
 ## As duas fases
 
@@ -183,6 +187,48 @@ Eval **separa [[Dicionário de IA#retrieval|retrieval]] de generation** ([[09 - 
 - **Sem metadata em chunks** — não consegue filtrar (data, tipo, etc.)
 - **Eval só de generation** — não detecta retrieval ruim
 
+## Armadilhas comuns
+
+> [!warning] Avaliar só a geração, ignorar retrieval
+> O erro mais frequente em sistemas RAG: medir se a resposta final "parece boa" sem medir se os chunks certos chegaram no contexto. Um LLM competente pode soar convincente mesmo com chunks errados — e isso é perigoso. Sempre meça retrieval precision e recall separadamente da geração. Sem essa separação, você não sabe onde o pipeline está quebrando.
+
+> [!warning] Usar o mesmo modelo de embedding para query e indexing diferentes
+> Query embedding e chunk embedding **precisam vir do mesmo modelo** — vetores de modelos diferentes vivem em espaços incompatíveis. Trocar o modelo de embedding depois do indexing sem re-indexar tudo é uma das formas mais silenciosas de quebrar o retrieval: os números continuam funcionando, mas os resultados se tornam lixo sem nenhuma exception.
+
+> [!warning] Skipping rerank por "custo" em top-k pequeno
+> Com retrieval de top-50 sem rerank, o contexto que chega ao LLM tem muito ruído. O custo de um reranker (Cohere, Voyage, BGE) é marginal — ~$0.001/query — e o ganho de qualidade é significativo. Economizar no rerank frequentemente sai mais caro em qualidade de resposta e confiança do usuário.
+
+## Como explicar em inglês
+
+The RAG pipeline has two distinct phases that you must keep mentally separate. The **indexing phase** runs offline — once per document, or when it changes: you parse the raw content, split it into semantically coherent chunks, run each chunk through an embedding model to get a dense vector, and store both the vector and the original text in a vector database with metadata. This phase is a sunk cost that you pay upfront.
+
+The **query phase** runs online, on every user request. The user's question gets optionally rewritten into a better search query (using HyDE, query expansion, or subquestion decomposition), embedded with the same model used during indexing, and used to retrieve the top candidates from the vector store. A reranker then scores each candidate against the original question and selects the final top-k. The LLM then generates an answer grounded in those top-k chunks.
+
+The most important debugging habit in RAG is keeping these phases separate in your metrics. Latency and cost profiles are completely different: indexing is a batch job measured in hours and dollars; the query path is measured in milliseconds and fractions of a cent per request.
+
+**In a technical interview**, you might say:
+
+> "I think of the RAG pipeline as two separate concerns: an offline indexing pipeline and an online query pipeline. For indexing, you parse, chunk, embed, and store — that's a one-time or triggered job. For queries, the critical path is: optionally rewrite the query, embed it, do hybrid retrieval — BM25 plus vector — rerank the top-50 down to top-5, then pass those to the LLM with a prompt that instructs it to cite sources. If a RAG system is behaving badly, I always instrument retrieval first: I check what chunks actually made it to context before I blame the LLM."
+
+| PT | EN |
+|----|-----|
+| Fase de indexação | Indexing phase |
+| Fase de consulta | Query phase |
+| Reescrita de consulta | Query rewriting |
+| Recuperação híbrida | Hybrid retrieval |
+| Reclassificação | Reranking |
+| Trecho / fragmento | Chunk |
+| Metadados | Metadata |
+| Pipeline online | Online pipeline |
+| Latência de ponta a ponta | End-to-end latency |
+| Precisão de recuperação | Retrieval precision |
+
+## O que vem a seguir
+
+Com o mapa do pipeline na cabeça, o próximo passo natural é mergulhar nos componentes individuais — começando pelos dois que mais determinam a qualidade do RAG antes mesmo de uma query acontecer: embeddings e chunking. Embeddings são o mecanismo por trás de "textos semanticamente similares ficam próximos", e entender como eles funcionam ajuda a escolher o modelo certo, entender trade-offs de dimensionalidade e evitar armadilhas de lock-in.
+
+- [[03 - Embeddings — representação semântica]] — como texto vira vetor, modelos disponíveis em 2026, matryoshka, decisões arquiteturais e custo
+
 ## Veja também
 
 - [[01 - O que é RAG e quando usar]]
@@ -198,3 +244,62 @@ Eval **separa [[Dicionário de IA#retrieval|retrieval]] de generation** ([[09 - 
 - **Anthropic** — *Contextual Retrieval* (2024)
 - **Pinecone** — *Learn RAG* (2025)
 - **LlamaIndex** — *RAG architecture documentation* (2026)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
