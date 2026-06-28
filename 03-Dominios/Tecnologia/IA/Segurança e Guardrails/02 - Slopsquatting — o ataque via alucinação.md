@@ -3,6 +3,7 @@ title: "Slopsquatting — o ataque via alucinação"
 created: 2026-05-02
 updated: 2026-05-02
 type: concept
+fase: Iniciado
 progress: backlog
 status: seedling
 publish: true
@@ -22,6 +23,9 @@ aliases:
 
 > [!abstract] TL;DR
 > Slopsquatting (termo cunhado por Seth Larson) é um ataque de supply chain que **não existia antes dos LLMs**: atacante observa que um modelo alucina certos nomes de pacote inexistentes, **registra esses nomes** em npm/PyPI/etc, e espera que devs (ou agentes) instalem. Pesquisa USENIX Security mostrou que [[Dicionário de IA#LLM (Large Language Model)|LLMs]] são **determinísticos nas [[Dicionário de IA#Hallucination|alucinações]]** — GPT-4 sugere o mesmo nome falso para >20% dos prompts similares. Em janeiro de 2026, `react-codeshift` (pacote inexistente) se espalhou por **237 repos GitHub** via skills de agentes que ninguém revisava. Mitigação: sandboxing, lockfile verification, package allowlisting.
+
+> [!question]- Por que slopsquatting é diferente de typosquatting tradicional?
+> Typosquatting depende de erro humano de digitação — alguém escreve `reqeusts` em vez de `requests`. Slopsquatting não depende de nenhum erro humano: o nome inventado é gerado com confiança pelo LLM, parece legítimo, e o desenvolvedor não tem razão óbvia para duvidar. Pior: a alucinação é **determinística** — o mesmo nome falso aparece para múltiplos desenvolvedores em situações similares, então o atacante pode registrar sistematicamente os nomes mais alucinados e esperar o tráfego chegar. Escala industrialmente de um modo que typosquatting jamais alcançou.
 
 ## A mecânica do ataque
 
@@ -184,6 +188,50 @@ Tools: Snyk, Socket.dev, npq (Node), pip-audit (Python).
 - **Lockfiles sem CI verification** — atacante pode adicionar via PR camuflado
 - **Permitir agente em rede aberta** — install + post-install scripts comprometem host
 
+## Armadilhas comuns
+
+> [!warning] Verificar o nome do pacote no Google "não é suficiente"
+> Um pacote malicioso de slopsquatting pode ter uma página npm legítima, README copiado de outro projeto e algumas estrelas compradas. A presença no registry não prova legitimidade — o que importa é a combinação de idade, histórico de downloads, maintainers e se o pacote aparece em fontes confiáveis auditadas.
+
+> [!warning] Agentes em modo autônomo instalam deps sem confirmação humana
+> No workflow agentico padrão, o agente gera código com `import pacote-inventado` e logo após executa `npm install pacote-inventado` como ação de tool use. Se o humano só revisa o código final e não o log de ações, a instalação já aconteceu. Configurar o agente para exigir aprovação explícita em qualquer operação de install é requisito, não opcional.
+
+> [!warning] Lockfiles sem CI enforcement são decoração
+> Commitar `package-lock.json` é bom, mas se o CI usa `npm install` em vez de `npm ci`, o lockfile é ignorado na prática. Qualquer dep nova adicionada por agente ou por PR automatizado entra sem gate. A distinção `npm install` vs `npm ci` é pequena na digitação e enorme no vetor de ataque.
+
+## Como explicar em inglês
+
+Slopsquatting is a supply chain attack that emerged directly from the deterministic nature of LLM hallucinations. Traditional typosquatting relied on human typing errors — an attacker registers `reqeusts` hoping someone miskeys `requests`. Slopsquatting is different: the LLM confidently suggests a package name that doesn't exist, the same hallucinated name appears for many developers asking similar questions, and an attacker only needs to monitor which names are frequently hallucinated and register them in advance.
+
+The attack surface exploded with agentic workflows. When an AI agent writes code that imports a hallucinated package and then automatically runs the install command without human review, the malicious package executes post-install scripts on the developer's machine before anyone notices. The `react-codeshift` incident in January 2026 — where a hallucinated package spread across 237 GitHub repositories — is the clearest demonstration of how agentic speed amplifies this risk.
+
+Defense requires treating every new dependency as untrusted until verified: lockfile enforcement with `npm ci`, package allowlists via internal registries, sandboxed install environments, and automated scanning with tools like Socket.dev or Snyk.
+
+**In a technical interview**, you might say:
+
+> "Slopsquatting targets the determinism of LLM hallucinations — the same fake package name appears across many developers' prompts, so attackers can pre-register those names at scale. In agentic pipelines, this is critical because the agent may install without human review. Our defense is layered: `npm ci` instead of `npm install` in CI, an internal registry allowlist so unknown packages are blocked by default, and sandboxed execution of install scripts. We also use Socket.dev to flag newly registered or suspicious packages before they enter our lockfile."
+
+| PT | EN |
+|----|-----|
+| ataque de cadeia de fornecimento | supply chain attack |
+| alucinação determinística | deterministic hallucination |
+| nome de pacote inventado | hallucinated package name |
+| lista de permissões | allowlist |
+| registro interno | internal registry |
+| arquivo de bloqueio | lockfile |
+| script pós-instalação | post-install script |
+| agente autônomo | autonomous agent |
+| auditoria de dependências | dependency audit |
+| superfície de ataque | attack surface |
+
+## O que vem a seguir
+
+Slopsquatting explora um tipo específico de alucinação: o modelo inventa nomes de pacotes. Mas as alucinações vão além dos nomes de bibliotecas — LLMs também inventam APIs inteiras, parâmetros que não existem, e assinaturas de funções que nunca foram implementadas. A próxima nota explora esse fenômeno mais amplo: quando o modelo não apenas sugere um pacote errado, mas descreve como usá-lo com detalhes convincentes que são completamente fabricados.
+
+Entender as duas formas de alucinação juntas revela o padrão: o LLM é otimizado para gerar output plausível, não output verificado.
+
+- [[03 - Alucinações em código — APIs fantasma e parâmetros inexistentes]] — quando o modelo inventa não só pacotes, mas métodos, classes e parâmetros inteiros
+
 ## Veja também
 
 - [[01 - Código gerado por IA é untrusted]]
@@ -200,3 +248,58 @@ Tools: Snyk, Socket.dev, npq (Node), pip-audit (Python).
 - **Mend.io** — *The Hallucinated Package Attack: Slopsquatting Explained* (2026).
 - **USENIX Security Symposium** — Pesquisa sobre determinismo de alucinações em LLMs (2024-2025).
 - **Cloudsmith** — *Typosquatting & Slopsquatting: Protecting Your Software Supply Chain* (2026).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
