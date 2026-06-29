@@ -1,9 +1,9 @@
 ---
 title: "Validação de entrada com Zod e Joi"
 created: 2026-05-12
-updated: 2026-05-13
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Iniciado
 status: growing
 publish: true
 tags:
@@ -22,6 +22,40 @@ aliases:
 
 > [!abstract] TL;DR
 > Nunca confiar em input externo é o axioma central de segurança de APIs: qualquer dado que cruza a fronteira da sua aplicação — body de requisição, query string, parâmetros de rota, cabeçalhos HTTP, mensagens de fila — deve ser validado e sanitizado antes de ser processado. Input não validado é o vetor que alimenta injection attacks (SQL, NoSQL, command), prototype pollution via `__proto__` em JSON, XSS em campos de texto e ReDoS via strings longas em expressões regulares. Zod v3 é a escolha padrão em projetos TypeScript modernos porque infere tipos estaticamente a partir do schema, eliminando a duplicação entre runtime e compile-time; Joi v17 domina codebases Node.js legados com API encadeada e madura. A validação deve acontecer na borda do sistema — no middleware de rota, antes de qualquer lógica de negócio ou acesso ao banco — e erros de validação devem retornar HTTP 422 Unprocessable Entity com mensagens estruturadas, não 500 genérico.
+
+## Pipeline de validação
+
+```mermaid
+flowchart LR
+    subgraph ENTRADA ["Input externo"]
+        HTTP["HTTP Request\nbody / query / params"]
+        QUEUE["Mensagem de fila\nSQS / RabbitMQ"]
+        CLI["Argumento de CLI"]
+    end
+
+    subgraph MIDDLEWARE ["Middleware de validação"]
+        SAFE["schema.safeParse(input)"]
+        OK{"Válido?"}
+    end
+
+    subgraph SAIDA ["Resultado"]
+        LOGIC["Lógica de negócio\ndados tipados e seguros"]
+        ERR422["HTTP 422\nerros estruturados por campo"]
+    end
+
+    HTTP --> SAFE
+    QUEUE --> SAFE
+    CLI --> SAFE
+
+    SAFE --> OK
+    OK -->|"success: true"| LOGIC
+    OK -->|"success: false"| ERR422
+
+    style SAFE fill:#4A90D9,color:#fff
+    style OK fill:#F5A623,color:#000
+    style ERR422 fill:#D0021B,color:#fff
+    style LOGIC fill:#4A90D9,color:#fff
+```
 
 ## O que é
 
@@ -822,17 +856,27 @@ import { env } from './config/env';
 // env.REDIS_URL é string | undefined
 ```
 
-## Armadilhas
+## Casos práticos
 
-> [!danger] Validar tipo sem limitar tamanho — vetor de ReDoS e DoS
+**Cenário 1 — API de e-commerce bloqueando NoSQL injection**
+
+Uma API Express aceita login via POST com `username` e `password`. Sem validação, um atacante envia `{ "username": "admin", "password": { "$ne": null } }` — o operador MongoDB `$ne` faz a query retornar o usuário sem verificar a senha real. Com `validateBody(LoginSchema)` usando `z.object({ username: z.string(), password: z.string() })`, o campo `password` falha na validação porque não é string: a request é rejeitada com 422 antes de tocar o banco de dados.
+
+**Cenário 2 — Validação de query params paginados em listagem**
+
+Um endpoint `GET /products?page=abc&limit=999999` chega ao handler sem validação. `page=abc` vira `NaN` ao entrar na query SQL e `limit=999999` causa um full table scan de 10 milhões de registros. Com `validateQuery(ListProductsQuerySchema)` usando `z.preprocess` para coerção de string→number, `.min(1).max(100)` para limitar e `.default(1)/default(20)` para valores ausentes, o endpoint sempre recebe `page: number` e `limit: number` dentro dos limites aceitáveis — sem condicionais defensivas espalhadas pelo handler.
+
+## Armadilhas comuns
+
+> [!warning] Validar tipo sem limitar tamanho — vetor de ReDoS e DoS
 > **Problema:** `z.string()` sem `.max()` aceita strings de qualquer tamanho. Um campo de email com regex de validação complexa e entrada de 10 MB pode travar o event loop Node.js por segundos — Denial of Service efetivo em produção. Além disso, strings ilimitadas chegam ao banco sem controle de tamanho de coluna.
 > **Solução:** Sempre adicionar `.max()` em todo campo string. Use os limites do domínio: email → `.max(254)` (RFC 5321), nome → `.max(100)`, texto livre → `.max(5000)`, password → `.max(72)` (limite do bcrypt). Para arrays, `.max(N)` também é obrigatório para prevenir payloads absurdamente grandes.
 
-> [!danger] Confiar em validação do cliente — frontend validation is not security
+> [!warning] Confiar em validação do cliente — frontend validation is not security
 > **Problema:** Validação no frontend (React, Angular, formulários HTML) é UX, não segurança. Qualquer pessoa com `curl` ou Postman pode bypassar toda validação do browser e enviar payloads arbitrários diretamente para a API. APIs que validam apenas no cliente aceitam SQL injection, NoSQL injection e prototype pollution via ferramentas como Burp Suite ou scripts simples.
 > **Solução:** Toda validação de segurança acontece obrigatoriamente no servidor, na borda da API (middleware). Validação do cliente é duplicada deliberada para melhorar UX — não substitui a validação server-side em hipótese alguma.
 
-> [!danger] Usar parse sem try/catch em rotas Express
+> [!warning] Usar parse sem try/catch em rotas Express
 > **Problema:** `Schema.parse(req.body)` lança `ZodError` se inválido. Sem `try/catch`, o erro borbulha até o error handler padrão do Express — que retorna HTTP 500 com stack trace vazio. O cliente recebe um erro genérico sem informação sobre o que estava errado, e o log do servidor registra um erro 500 que na verdade é um problema de input do cliente (4xx).
 > **Solução:** Em rotas e middlewares de API, sempre use `safeParse` — que nunca lança e retorna um resultado discriminado `{ success: true, data } | { success: false, error }`. Use `parse` apenas em contextos onde a exceção é intencionalmente fatal (startup, testes).
 
@@ -850,6 +894,12 @@ A: The decisive advantage is static type inference. With Zod, you define the sch
 **Q: How do you handle validation errors consistently across an Express API?**
 A: The pattern I use is a `validateBody(schema)` factory function that returns a middleware. The middleware calls `schema.safeParse(req.body)` — which never throws — and if validation fails, immediately returns HTTP 422 Unprocessable Entity with a structured error body listing each field and its error message. HTTP 422 is semantically correct: the request was well-formed (200 is JSON), but the server cannot process the instructions — distinct from 400 (malformed syntax) and 500 (server fault). I also register a global error handler as a safety net that catches any `ZodError` that escaped a route and maps it to 422 — preventing a validation error from appearing as a 500 in metrics and alerting dashboards.
 
+## O que vem a seguir
+
+- [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação com jsonwebtoken]] — usa Zod para validar payloads de claims JWT antes de processar o token; validação de entrada aplicada ao contexto de autenticação
+- [[03-Dominios/Tecnologia/Node/Segurança/06 - RBAC e ABAC com casl e casbin|RBAC e ABAC com casl e casbin]] — combina validação de schema (quem enviou o request) com autorização (o que esse usuário pode fazer)
+- [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node|OWASP Top 10 para Node]] — contextualiza injection (A03) e outros vetores que validação de entrada mitiga diretamente
+
 ## Vocabulário
 
 - **schema validation** — técnica de validar dados contra um contrato estrutural declarativo (schema) que define tipos, formatos e restrições; a conformidade é verificada em runtime
@@ -862,6 +912,14 @@ A: The pattern I use is a `validateBody(schema)` factory function that returns a
 - **fail-fast** — princípio de interromper imediatamente a execução ao detectar condição inválida, em vez de continuar com estado inconsistente; aplicado na validação de env vars com `parse()` na startup: a aplicação recusa subir se a configuração estiver incompleta
 - **HTTP 422 Unprocessable Entity** — código de status HTTP correto para erros de validação de negócio: a sintaxe da requisição está correta (não é 400), mas o servidor não pode processar as instruções contidas no payload
 - **discriminated union** — tipo TypeScript (e padrão de retorno do `safeParse`) onde um campo discriminador (`success: true/false`) determina o shape do objeto; permite narrowing de tipo seguro sem type assertions
+
+## Fontes
+
+- [Zod — documentação oficial](https://zod.dev) — referência completa da API Zod v3, incluindo transformações, refinamentos e integração com TypeScript
+- [Joi — documentação oficial](https://joi.dev) — referência da API Joi v17 com todos os tipos e opções de validação
+- [OWASP Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) — guia canônico sobre estratégias de validação de entrada e defesa contra injection
+- [DOMPurify](https://github.com/cure53/DOMPurify) — biblioteca de sanitização de HTML para prevenir XSS em campos de rich text
+- [@fastify/type-provider-zod](https://github.com/turkerdev/fastify-type-provider-zod) — integração oficial entre Zod e Fastify para validação e serialização tipadas
 
 ## Veja também
 

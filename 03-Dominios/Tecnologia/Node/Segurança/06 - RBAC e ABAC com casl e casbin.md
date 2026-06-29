@@ -1,9 +1,9 @@
 ---
 title: "RBAC e ABAC com casl e casbin"
 created: 2026-05-13
-updated: 2026-05-13
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -19,8 +19,44 @@ aliases:
   - casbin
 ---
 
+# RBAC e ABAC com casl e casbin
+
 > [!abstract] TL;DR
 > RBAC (Role-Based Access Control) mapeia papéis a conjuntos fixos de permissões — simples de modelar e auditar, ideal quando o conjunto de permissões é pequeno e estável. ABAC (Attribute-Based Access Control) avalia atributos do sujeito (usuário), do objeto (recurso) e do ambiente (horário, IP, tenant) para decisões de autorização de granularidade fina — mais expressivo, mas mais complexo de implementar e depurar. Na prática, use **casl** quando precisar de ABAC TypeScript-first com autorização baseada em propriedades do recurso, e use **casbin** quando precisar de políticas declarativas em arquivo (CSV, banco) com suporte a múltiplos modelos (ACL, RBAC, ABAC, REST).
+
+## Decisão de autorização
+
+```mermaid
+flowchart TD
+    REQ["Request\n(user + resource + action)"]
+
+    subgraph RBAC ["RBAC — verificação de papel"]
+        R1{"user.roles\ncontém papel?"}
+        R_OK["Permite"]
+        R_DENY["Nega"]
+        R1 -->|Sim| R_OK
+        R1 -->|Não| R_DENY
+    end
+
+    subgraph ABAC ["ABAC — avaliação de atributos (casl)"]
+        A1{"can(action, subject(Type, obj))?"}
+        A_COND["Avalia condição\nex: post.authorId === user.id"]
+        A_OK["Permite"]
+        A_DENY["Nega 403"]
+        A1 -->|Sem condição| A_OK
+        A1 -->|Com condição| A_COND
+        A_COND -->|true| A_OK
+        A_COND -->|false| A_DENY
+    end
+
+    REQ --> R1
+    R_OK --> A1
+
+    style A_DENY fill:#D0021B,color:#fff
+    style R_DENY fill:#F5A623,color:#000
+    style A_OK fill:#4A90D9,color:#fff
+    style R_OK fill:#4A90D9,color:#fff
+```
 
 ## O que é
 
@@ -485,15 +521,25 @@ O **princípio do menor privilégio** (Principle of Least Privilege — PoLP) de
 
 5. **Expiração de acessos**: papéis temporários (ex: acesso de suporte) devem ter validade. Implemente `expiresAt` por papel no banco.
 
-## Armadilhas
+## Casos práticos
 
-> [!danger] Autorização apenas no frontend
+**Cenário 1 — Blog multi-autor com casl: editor edita apenas seus rascunhos**
+
+Um blog permite que editores criem e editem posts, mas com restrição: só podem editar posts cujo `authorId` bate com seu `userId`, e nenhum usuário pode deletar posts com `status: 'published'`. Com `can('update', 'Post', { authorId: user.id })` e `cannot('delete', 'Post', { status: 'published' })` no `defineAbilityFor`, a verificação na camada de serviço busca o post do banco e chama `ability.cannot('update', subject('Post', post))` — o `subject()` garante que casl avalia a condição real, não apenas o tipo. Sem `subject()`, a condição seria ignorada e qualquer editor poderia editar qualquer post.
+
+**Cenário 2 — API REST com casbin e políticas em banco de dados**
+
+Uma plataforma SaaS precisa de permissões gerenciáveis sem redeploy: o time de produto muda papéis via painel admin. Usando casbin com `TypeORMAdapter`, as políticas vivem no PostgreSQL e são carregadas em runtime. `enforcer.addPolicy('alice', '/reports', 'write')` via API do painel persiste a nova regra no banco. O enforcer lida com a request verificando `enforcer.enforce(userId, '/reports', 'POST')` no middleware — negando ou permitindo com base nas políticas vigentes. Mudanças de permissão entram em vigor na próxima requisição, sem reiniciar o processo.
+
+## Armadilhas comuns
+
+> [!warning] Autorização apenas no frontend
 > Verificar permissões somente no cliente (esconder botão, desabilitar rota no React Router) não é segurança — é UX. Um usuário pode chamar a API diretamente com curl ou Postman. Toda decisão de autorização deve ser reforçada no backend, na camada de serviço ou em middleware dedicado, nunca apenas no frontend.
 
-> [!danger] Papéis hardcoded no código (`if (user.role === 'admin')`)
+> [!warning] Papéis hardcoded no código (`if (user.role === 'admin')`)
 > Hardcodar papéis espalha lógica de autorização pelo codebase, torna o sistema frágil a refatorações e impossibilita gerenciar papéis dinamicamente. Os papéis devem vir do banco de dados ou do JWT — centralize toda lógica de autorização em `defineAbility` ou em políticas casbin. Buscar `user.role === ` no código é um code smell direto.
 
-> [!danger] Ausência de log de decisões de autorização
+> [!warning] Ausência de log de decisões de autorização
 > Sem auditoria de eventos de `Forbidden` e `Allowed`, é impossível detectar abusos, investigar incidentes de segurança ou demonstrar conformidade (LGPD, SOC 2). Toda decisão de autorização negada deve ser logada com userId, recurso, ação e timestamp. Decisões positivas em recursos sensíveis (dados financeiros, PII) também devem ser logadas.
 
 ## Em entrevista
@@ -510,6 +556,12 @@ A: The key is combining a conditional rule with the `subject()` helper at the po
 
 A: The principle of least privilege means every entity — user, service account, or process — should have access to exactly what it needs and nothing more. In a Node.js API, I implement this at several layers. First, I use a deny-by-default posture: in casl, an `AbilityBuilder` that never calls `can()` produces an ability that denies everything; I never start with `can('manage', 'all')` for non-admin roles. Second, I assign narrow, role-specific grants: editors can create and update their own posts but cannot delete published posts or manage users. Third, I centralize authorization logic in a single `defineAbility` function so the rules are auditable and testable in isolation. Fourth, I add structured logging for every authorization decision, especially denials, so we can detect anomalous access patterns. Fifth, I apply the principle to service accounts and environment variables too — a microservice that only reads posts should use database credentials scoped to `SELECT` on the `posts` table, not a full `DATABASE_ADMIN` role. Regular access reviews (quarterly) ensure that roles do not accumulate permissions over time.
 
+## O que vem a seguir
+
+- [[03-Dominios/Tecnologia/Node/Segurança/07 - Rate limiting com express-rate-limit|Rate limiting com express-rate-limit]] — complementa autorização com proteção contra abuso de taxa; importante para endpoints de login e renovação de token
+- [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node|OWASP Top 10 para Node]] — Broken Access Control (A01:2021) é o topo da lista OWASP; contextualiza os ataques que RBAC/ABAC mitiga
+- [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação com jsonwebtoken]] — fonte dos claims (`role`, `userId`) que alimentam as regras de autorização
+
 ## Vocabulário
 
 | Termo | Definição |
@@ -524,6 +576,13 @@ A: The principle of least privilege means every entity — user, service account
 | **Action** | Operação solicitada sobre o recurso: `read`, `create`, `update`, `delete`, `manage` |
 | **Enforce** | Ato de verificar se uma requisição de acesso é permitida pela política vigente; termo central do casbin |
 | **Deny-by-default** | Postura de segurança onde todo acesso é negado até que uma regra explícita o permita |
+
+## Fontes
+
+- [casl.js.org — documentação oficial](https://casl.js.org) — referência completa da API: `AbilityBuilder`, condições, `subject()`, integração com Mongoose e PrismaClient
+- [casbin.org — documentação oficial](https://casbin.org) — modelos de autorização (ACL/RBAC/ABAC), adapters de armazenamento e linguagem PETA (Policy Effect Transformation Algorithm)
+- [OWASP — Broken Access Control (A01:2021)](https://owasp.org/Top10/A01_2021-Broken_Access_Control/) — guia de vetores de ataque e controles recomendados para autorização
+- [NIST — ABAC Guide (NIST SP 800-162)](https://csrc.nist.gov/publications/detail/sp/800-162/final) — referência técnica do NIST sobre implementação de ABAC em sistemas federais
 
 ## Veja também
 

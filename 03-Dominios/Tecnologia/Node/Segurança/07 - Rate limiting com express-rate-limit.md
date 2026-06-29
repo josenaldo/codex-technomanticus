@@ -1,9 +1,9 @@
 ---
 title: "Rate limiting com express-rate-limit"
 created: 2026-05-13
-updated: 2026-05-13
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -16,8 +16,45 @@ aliases:
   - express-rate-limit
 ---
 
+# Rate limiting com express-rate-limit
+
 > [!abstract] TL;DR
 > Rate limiting é uma camada de defesa essencial que protege APIs contra DoS, brute force, credential stuffing e abuso de recursos — limitando quantas requisições um cliente pode fazer em uma janela de tempo. `express-rate-limit` v7 é o padrão para Express, com opções de `windowMs`, `max`/`limit`, headers RFC 6585 via `standardHeaders: 'draft-7'` e `keyGenerator` customizável para limitar por usuário em vez de IP. Em ambientes distribuídos (múltiplas instâncias, cluster), o store em memória não funciona: use `rate-limit-redis` com `ioredis` como store compartilhado. Fastify tem `@fastify/rate-limit` com interface equivalente. A combinação certa é: limites diferentes por rota (auth mais restrito, API pública mais generoso), store Redis em produção e `trust proxy` configurado corretamente atrás de load balancer.
+
+## Arquitetura de rate limiting
+
+```mermaid
+flowchart LR
+    subgraph CLIENTES ["Clientes"]
+        C1["Cliente A\n(req 1 de 100)"]
+        C2["Cliente B\n(req 101 de 100 — blocked)"]
+        C3["Atacante\n(brute force)"]
+    end
+
+    subgraph LIMITER ["Rate Limiter (express-rate-limit)"]
+        KG["keyGenerator\n(req.ip ou user.id)"]
+        STORE["Redis Store\ncontadores compartilhados"]
+        CHECK{"Limite\natingido?"}
+    end
+
+    subgraph APP ["Aplicação"]
+        HANDLER["Route Handler\nlógica de negócio"]
+        R429["429 Too Many Requests\n+ Retry-After header"]
+    end
+
+    C1 --> KG
+    C2 --> KG
+    C3 --> KG
+
+    KG --> STORE
+    STORE --> CHECK
+    CHECK -->|"Não (ainda ok)"| HANDLER
+    CHECK -->|"Sim (excedeu)"| R429
+
+    style R429 fill:#D0021B,color:#fff
+    style STORE fill:#4A90D9,color:#fff
+    style CHECK fill:#F5A623,color:#000
+```
 
 ## O que é
 
@@ -285,14 +322,24 @@ await fastify.listen({ port: 3000 })
 > [!tip] Redis em @fastify/rate-limit
 > `@fastify/rate-limit` aceita o cliente `ioredis` diretamente via opção `redis` — sem necessidade de um wrapper como `RedisStore`. A API é mais simples que a do `express-rate-limit`.
 
-## Armadilhas
+## Casos práticos
 
-> [!danger] Store em memória não funciona em múltiplas instâncias
+**Cenário 1 — Proteção de endpoint de login contra brute force**
+
+Uma API de autenticação sem rate limiting recebe 10.000 tentativas de senha por minuto via credential stuffing — as credenciais foram obtidas num vazamento de outro serviço. Com `authLimiter` configurado com `limit: 5, windowMs: 60 * 1000` aplicado somente em `POST /auth/login`, o quinto request de um mesmo IP recebe 429 com `Retry-After: 60`. Um atacante levaria 2 minutos para testar 10 combinações em vez de milissegundos — o custo do ataque sobe ao ponto de inviabilidade. Para atacantes que rodam o ataque de múltiplos IPs, o `keyGenerator` por `userId` (quando conhecido) mitiga: mesmo mudando de IP, o mesmo usuário-alvo está protegido.
+
+**Cenário 2 — Rate limit distribuído em deploy Kubernetes com 5 réplicas**
+
+Uma API Express roda com 5 pods Kubernetes. O rate limit em memória (padrão) permite que um cliente faça `limit * 5` requisições, dividindo entre os pods — o load balancer distribui as requests. Após migrar para `rate-limit-redis` com o Redis do cluster, todos os pods compartilham os contadores: a primeira vez que qualquer pod vê a chave `rl:user:123`, incrementa o contador no Redis e retorna o total acumulado. O quinto pod a processar a request do usuário vê o contador no Redis e aplica a mesma lógica. O overhead adicionado é ~0.5ms por requisição (round-trip Redis em rede interna), imperceptível comparado com queries de banco de dados.
+
+## Armadilhas comuns
+
+> [!warning] Store em memória não funciona em múltiplas instâncias
 > O store padrão do `express-rate-limit` é em memória: cada processo Node.js mantém contadores independentes. Em um deploy com 4 instâncias e limite de 100 req/min, um cliente pode fazer até 400 requisições distribuindo entre as instâncias — sem ser bloqueado. Isso invalida completamente o rate limiting em produção com mais de uma instância, PM2 cluster mode, containers orquestrados por Kubernetes ou qualquer setup com load balancer.
 >
 > **Solução**: sempre use `rate-limit-redis` com um cliente `ioredis` apontando para o mesmo servidor Redis em produção. O store em memória só é aceitável em desenvolvimento local com uma única instância.
 
-> [!danger] X-Forwarded-For pode ser manipulado atrás de proxy reverso
+> [!warning] X-Forwarded-For pode ser manipulado atrás de proxy reverso
 > Por padrão, Express usa `req.ip` como chave, que vem de `req.socket.remoteAddress`. Atrás de um proxy reverso (nginx, AWS ALB, Cloudflare), o IP real do cliente chega no header `X-Forwarded-For`. Sem `app.set('trust proxy', 1)`, `req.ip` é o IP do proxy — e **todos os clientes compartilham o mesmo limite**.
 >
 > Com `trust proxy` habilitado, `req.ip` usa o primeiro valor de `X-Forwarded-For`. Mas um atacante pode forjar esse header adicionando um IP arbitrário: `X-Forwarded-For: 1.2.3.4` — fazendo o rate limiter acreditar que a requisição vem de um IP diferente a cada vez.
@@ -302,7 +349,7 @@ await fastify.listen({ port: 3000 })
 > 2. Use `app.set('trust proxy', 'loopback, linklocal, uniquelocal')` para especificar IPs confiáveis
 > 3. Para segurança máxima, use um `keyGenerator` que leia um header injetado pelo seu proxy reverso (e que não pode ser sobreescrito pelo cliente), como `CF-Connecting-IP` no Cloudflare ou um header customizado do nginx
 
-> [!danger] Rate limit global em vez de granular por rota penaliza usuários legítimos
+> [!warning] Rate limit global em vez de granular por rota penaliza usuários legítimos
 > Aplicar um único limite global (ex: 100 req/15min) ignora que padrões de uso são muito diferentes por endpoint. Um usuário que carrega um dashboard com 50 chamadas simultâneas pode ser bloqueado mesmo sendo um usuário legítimo. Endpoints de autenticação precisam de limites muito mais restritivos (5–10 req/min) do que endpoints de leitura (100–500 req/min).
 >
 > **Solução**: defina limiters separados por grupo de endpoints. No mínimo: um limiter para auth endpoints (restritivo), um para API pública (moderado) e um para operações admin (mais generoso, com `keyGenerator` por usuário).
@@ -321,6 +368,12 @@ A: Fixed window divides time into discrete buckets — for example, 0–60 secon
 
 A: The default in-memory store doesn't work in multi-instance deployments because each process has independent counters — a client can bypass the limit by distributing requests across instances. The solution is a shared Redis store. With `express-rate-limit` v7, you use `rate-limit-redis` and pass a `sendCommand` function wrapping your `ioredis` client. Redis uses atomic operations — typically `INCRBY` and `EXPIRE` — so there are no race conditions between instances. The keys expire automatically at the end of the window, so there's no cleanup needed. The overhead is roughly one Redis round-trip per request, usually under 1ms on a local network, which is negligible compared to database queries. In Fastify, `@fastify/rate-limit` accepts the `ioredis` client directly without the wrapper layer.
 
+## O que vem a seguir
+
+- [[03-Dominios/Tecnologia/Node/Segurança/08 - Helmet.js e hardening HTTP|Helmet.js e hardening HTTP]] — hardening de headers HTTP via Helmet; complementa rate limiting com proteções de Content Security Policy, HSTS e outras
+- [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node|OWASP Top 10 para Node]] — Unrestricted Resource Consumption (A05:2021) contextualiza rate limiting no panorama geral de ameaças
+- [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação com jsonwebtoken]] — os endpoints de renovação de refresh token são candidatos prioritários para rate limiting restritivo
+
 ## Vocabulário
 
 | Termo | Definição |
@@ -336,11 +389,15 @@ A: The default in-memory store doesn't work in multi-instance deployments becaus
 | **credential stuffing** | Ataque onde combinações de usuário/senha obtidas em vazamentos de outros serviços são testadas em massa contra um sistema, aproveitando que usuários reutilizam senhas |
 | **X-Forwarded-For** | Header HTTP adicionado por proxies reversos com o IP original do cliente; pode ser manipulado por atacantes se `trust proxy` não for configurado corretamente no Express |
 
+## Fontes
+
+- [express-rate-limit — npm](https://www.npmjs.com/package/express-rate-limit) — documentação oficial com todas as opções da v7, incluindo `standardHeaders` e `keyGenerator`
+- [rate-limit-redis — GitHub](https://github.com/express-rate-limit/rate-limit-redis) — store Redis oficial para express-rate-limit; usa `sendCommand` com qualquer cliente Redis
+- [RFC 6585 — Additional HTTP Status Codes](https://www.rfc-editor.org/rfc/rfc6585) — define o status `429 Too Many Requests` e o header `Retry-After`
+- [@fastify/rate-limit — GitHub](https://github.com/fastify/fastify-rate-limit) — plugin oficial de rate limiting para Fastify com aceite nativo de cliente `ioredis`
+- [OWASP — Rate Limiting Best Practices](https://owasp.org/www-community/controls/Blocking_Brute_Force_Attacks) — guia de proteção contra brute force e credential stuffing
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — MOC do galho 8, visão geral de todos os tópicos de segurança Node
 - [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha Node Senior
-- [express-rate-limit — npm](https://www.npmjs.com/package/express-rate-limit) — documentação oficial com todas as opções da v7
-- [rate-limit-redis — GitHub](https://github.com/express-rate-limit/rate-limit-redis) — store Redis oficial para express-rate-limit
-- [RFC 6585 — Additional HTTP Status Codes](https://www.rfc-editor.org/rfc/rfc6585) — define o status `429 Too Many Requests` e o header `Retry-After`
-- [@fastify/rate-limit — GitHub](https://github.com/fastify/fastify-rate-limit) — plugin oficial de rate limiting para Fastify

@@ -1,9 +1,9 @@
 ---
 title: "Supply chain attacks e npm audit"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-progress: backlog
+fase: Iniciado
 status: growing
 publish: true
 tags:
@@ -20,6 +20,34 @@ aliases:
 
 > [!abstract] TL;DR
 > Supply chain attacks exploram a cadeia de dependências de um projeto — um pacote npm malicioso instalado transitivamente pode executar código arbitrário na máquina do desenvolvedor ou no servidor de CI antes mesmo do código chegar à produção. O npm registra mais de dois milhões de pacotes, tornando vetores como typosquatting, dependency confusion e tomada de conta de maintainer ameaças concretas e frequentes. A mitigação começa com `npm ci` (lockfile exato), `npm audit` integrado ao CI, ferramentas de análise comportamental como socket.dev e snyk, e políticas de registry privado que impedem que pacotes desconhecidos sejam instalados.
+
+## Mapa dos vetores de ataque
+
+```mermaid
+flowchart TD
+    DEV["fa:fa-user Desenvolvedor\nnpm install"] --> RESOLVE{"Resolução\nde nome"}
+
+    RESOLVE --> PUB["Registry público\nnpmjs.com"]
+    RESOLVE --> PRIV["Registry privado\n@acme/..."]
+
+    PUB --> TYPO["Typosquatting\n1odash vs lodash"]
+    PUB --> CONF["Dependency Confusion\nacme-auth@99.0.0"]
+    PUB --> TAKE["Maintainer Takeover\nconta comprometida"]
+
+    TYPO --> EVIL["fa:fa-skull postinstall malicioso\nexfiltra process.env"]
+    CONF --> EVIL
+    TAKE --> EVIL
+
+    PRIV --> SAFE["fa:fa-check Instalação segura\nhash verificado"]
+
+    EVIL --> IMPACT["Impacto\nCredenciais · CI tokens\nRansomware"]
+
+    style EVIL fill:#D0021B,color:#fff
+    style SAFE fill:#4A90D9,color:#fff
+    style IMPACT fill:#D0021B,color:#fff
+    style DEV fill:#F5A623,color:#000
+    style RESOLVE fill:#F5A623,color:#000
+```
 
 ## O que é
 
@@ -327,15 +355,115 @@ curl -s https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz | \
 # Comparar com o campo "integrity" no package-lock.json
 ```
 
-## Armadilhas
+## Armadilhas comuns
 
-> [!danger] `npm audit fix --force` introduz breaking changes silenciosamente
+> [!warning] `npm audit fix --force` introduz breaking changes silenciosamente
+> **O que acontece:** O comando faz upgrade de major versions de dependências transitivas sem pedir confirmação — uma dependência que saiu de v2 para v3 pode mudar APIs que seu código usa indiretamente, e você só descobre na primeira execução em produção.
+> **Por quê:** `--force` ignora completamente as restrições semver do `package.json` (`^`, `~`) e aplica a versão mais recente disponível de cada árvore de dependências, tratando risco de API quebrada como aceitável para fechar o CVE.
+> **Como evitar:** Nunca use `--force` em automação nem em pipelines de CI. Em vez disso, rode `npm audit fix` (sem `--force`), revise o diff de `package.json` e `package-lock.json`, execute a suite de testes e trate upgrades de major version como feature branches separados com testes dedicados. Use `overrides` no `package.json` (npm ≥ 8.3) para forçar uma versão específica de dependência transitiva sem upgrade em cascata.
 > **Problema:** `npm audit fix --force` pode fazer upgrade de major versions de dependências transitivas, quebrando APIs que seu código usa indiretamente. O comando não exige confirmação e aplica todas as mudanças de uma vez, tornando difícil identificar qual upgrade causou a regressão.
 > **Solução:** Nunca use `--force` em automação. Em vez disso, use `npm audit fix` sem `--force`, revise o diff completo de `package.json` e `package-lock.json`, execute a suite de testes antes de commitar, e trate upgrades de major version como feature branches separados com testes dedicados.
 
-> [!danger] Scripts `postinstall` maliciosos executam antes da revisão de código
-> **Problema:** O hook `postinstall` de um pacote npm é executado imediatamente após `npm install`, com as mesmas permissões do processo que iniciou a instalação. Um pacote comprometido pode exfiltrar `AWS_ACCESS_KEY_ID`, `DATABASE_URL` e outros segredos presentes no ambiente antes que qualquer revisão aconteça.
-> **Solução:** Use `npm ci --ignore-scripts` em ambientes de CI. Não execute `npm install` em máquinas de CI com credenciais de produção no ambiente. Avalie cada pacote novo com socket.dev antes de adicionar ao projeto. Considere usar um registry privado com allowlist aprovada.
+> [!warning] Scripts `postinstall` maliciosos executam antes da revisão de código
+> **O que acontece:** O hook `postinstall` de um pacote npm é executado imediatamente após `npm install`, com as mesmas permissões do processo que iniciou a instalação — credenciais como `AWS_ACCESS_KEY_ID`, `DATABASE_URL` e tokens de CI são exfiltrados antes que qualquer revisor veja o código.
+> **Por quê:** O npm executa `postinstall` como parte do lifecycle de instalação por design, para permitir compilação de módulos nativos. Não há sandboxing — o script tem acesso total ao filesystem e variáveis de ambiente do processo que chamou `npm install`.
+> **Como evitar:** Use `npm ci --ignore-scripts` em ambientes de CI. Nunca rode `npm install` em máquinas com credenciais de produção no ambiente. Avalie cada pacote novo com `npx socket npm install <pkg>` antes de adicionar ao projeto. Para pacotes que precisam de scripts de build legítimos (ex: `bcrypt`, `sharp`), execute-os explicitamente e auditados: `npm rebuild bcrypt`.
+
+## Casos práticos
+
+### Cenário 1 — Gate de segurança no CI com limiar por severidade
+
+Um time configura o pipeline de CI para falhar apenas em vulnerabilidades `high` ou `critical`, permitindo que `low` e `moderate` sejam tratadas assincronamente via Dependabot. O script abaixo também grava um relatório em JSON para o dashboard de segurança:
+
+```javascript
+// scripts/audit-check.mjs
+import { execSync } from 'node:child_process'
+import { writeFileSync } from 'node:fs'
+
+const FAIL_ON = ['critical', 'high']
+
+let auditJson
+try {
+  const output = execSync('npm audit --json', { encoding: 'utf8' })
+  auditJson = JSON.parse(output)
+} catch (err) {
+  // npm audit retorna exit code 1 quando há vulnerabilidades — capturamos o stdout mesmo assim
+  auditJson = JSON.parse(err.stdout ?? '{}')
+}
+
+const vulns = auditJson?.metadata?.vulnerabilities ?? {}
+writeFileSync('audit-report.json', JSON.stringify(auditJson, null, 2))
+
+const failures = FAIL_ON.filter((level) => (vulns[level] ?? 0) > 0)
+
+if (failures.length > 0) {
+  console.error(`[audit] FALHOU — severidades bloqueantes encontradas: ${failures.join(', ')}`)
+  console.error(`[audit] critical=${vulns.critical} high=${vulns.high} moderate=${vulns.moderate} low=${vulns.low}`)
+  process.exit(1)
+}
+
+console.log(`[audit] OK — nenhuma vulnerabilidade bloqueante (moderate=${vulns.moderate} low=${vulns.low})`)
+```
+
+```yaml
+# .github/workflows/security.yml
+- name: Audit de dependências
+  run: node scripts/audit-check.mjs
+
+- name: Upload relatório de auditoria
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: audit-report
+    path: audit-report.json
+```
+
+### Cenário 2 — Detectar typosquatting antes de instalar com socket.dev CLI
+
+Antes de adicionar uma dependência nova, o time usa um hook de pre-commit que intercepta qualquer `npm install` e roda a análise comportamental do socket.dev, bloqueando pacotes com sinais de supply chain suspeitos:
+
+```javascript
+// scripts/safe-install.mjs — wrapper sobre npm install com análise socket.dev
+// Uso: node scripts/safe-install.mjs express validator
+import { execSync, spawnSync } from 'node:child_process'
+
+const packages = process.argv.slice(2)
+if (packages.length === 0) {
+  console.error('Uso: node scripts/safe-install.mjs <pacote1> [pacote2...]')
+  process.exit(1)
+}
+
+console.log(`[safe-install] Analisando ${packages.length} pacote(s) com socket.dev…`)
+
+for (const pkg of packages) {
+  const result = spawnSync('npx', ['socket', 'npm', 'install', pkg, '--dry-run', '--json'], {
+    encoding: 'utf8',
+    stdio: ['inherit', 'pipe', 'pipe'],
+  })
+
+  let report
+  try {
+    report = JSON.parse(result.stdout)
+  } catch {
+    // socket.dev não instalado ou resposta inesperada — prosseguir com aviso
+    console.warn(`[safe-install] AVISO: não foi possível analisar ${pkg} — socket.dev indisponível`)
+    continue
+  }
+
+  const issues = report?.issues?.filter((i) => i.severity === 'high' || i.severity === 'critical') ?? []
+
+  if (issues.length > 0) {
+    console.error(`[safe-install] BLOQUEADO: ${pkg} tem ${issues.length} problema(s) crítico(s):`)
+    issues.forEach((i) => console.error(`  - [${i.severity}] ${i.type}: ${i.description}`))
+    process.exit(1)
+  }
+
+  console.log(`[safe-install] ✓ ${pkg} passou na análise comportamental`)
+}
+
+// Todos os pacotes aprovados — instalar de verdade
+execSync(`npm install ${packages.join(' ')}`, { stdio: 'inherit' })
+```
 
 ## Em entrevista
 
@@ -372,12 +500,20 @@ A: Dependency confusion is an attack where an adversary registers a package on t
 - **postinstall hook** — script npm executado automaticamente após a instalação de um pacote; vetor de execução de código malicioso em supply chain attacks; mitigado com `--ignore-scripts`
 - **integrity hash** — checksum `sha512` em base64 registrado no lockfile para cada pacote; usado por `npm ci` para verificar que o conteúdo do tarball baixado corresponde exatamente ao que foi lockado
 
+## O que vem a seguir
+
+Supply chain é o primeiro anel de defesa — você protege o que entra no projeto. O próximo passo natural é proteger o que o projeto carrega em memória em produção: a nota [[03-Dominios/Tecnologia/Node/Segurança/02 - Segredos e variáveis de ambiente|Segredos e variáveis de ambiente]] trata de como nunca deixar credenciais no código, gestão de `.env` com validação em startup e integração com cofres como Vault e AWS Secrets Manager. Depois, [[03-Dominios/Tecnologia/Node/Segurança/03 - Validação de entrada com Zod e Joi|Validação de entrada com Zod e Joi]] cobre o ponto onde código seu encontra dado do mundo externo — onde injeção e payloads maliciosos entram.
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — MOC do galho 8; visão completa da trilha de segurança Node.js
 - [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha; fundamentos de Node.js
 - [[03-Dominios/Tecnologia/Tooling e Build/24 - Supply chain e segurança de dependências|Supply chain e segurança de dependências]] — domínio Tooling e Build; integridade de deps, npm audit, provenance, dependency confusion
+
+## Fontes
+
 - [npm audit — documentação oficial](https://docs.npmjs.com/auditing-package-dependencies-for-security-vulnerabilities)
 - [socket.dev](https://socket.dev) — análise comportamental de pacotes npm
 - [OSV — Open Source Vulnerabilities](https://osv.dev) — banco de dados de vulnerabilidades open source do Google
 - [GitHub Advisory Database](https://github.com/advisories) — base de dados que alimenta o `npm audit`
+- [Dependency Confusion: How I Hacked Into Apple, Microsoft and Dozens of Other Companies — Alex Birsan (2021)](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610) — artigo original que documentou o vetor de dependency confusion

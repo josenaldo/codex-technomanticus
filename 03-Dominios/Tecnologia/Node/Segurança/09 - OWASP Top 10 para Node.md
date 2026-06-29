@@ -1,9 +1,9 @@
 ---
 title: "OWASP Top 10 para Node"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Magus
 status: growing
 publish: true
 tags:
@@ -14,6 +14,8 @@ aliases:
   - OWASP Node.js
   - OWASP Top 10 Node
 ---
+
+# OWASP Top 10 para Node
 
 > [!abstract] TL;DR
 > O OWASP Top 10 é a lista das 10 classes de vulnerabilidade mais críticas em aplicações web, publicada pela Open Web Application Security Project com base em dados reais de exploração.
@@ -31,11 +33,47 @@ Para equipes Node.js, o OWASP Top 10 é um roteiro mínimo: cada categoria tem p
 
 ## Como funciona
 
+```mermaid
+flowchart LR
+    subgraph Acesso["Controle de Acesso"]
+        A01["A01 · Broken Access Control\n(BOLA / IDOR)"]
+        A07["A07 · Auth Failures\n(token forjado, brute force)"]
+    end
+    subgraph Dados["Proteção de Dados"]
+        A02["A02 · Crypto Failures\n(MD5, secrets hardcoded)"]
+        A09["A09 · Logging Failures\n(PII em plaintext)"]
+    end
+    subgraph Injecao["Injeção e Integridade"]
+        A03["A03 · Injection\n(NoSQL, SQL, SSTI)"]
+        A08["A08 · Integrity Failures\n(npm install sem lockfile)"]
+    end
+    subgraph Infra["Infraestrutura"]
+        A04["A04 · Insecure Design\n(sem rate limiting)"]
+        A05["A05 · Misconfiguration\n(stack trace em prod)"]
+        A06["A06 · Outdated Components\n(CVEs em dependências)"]
+        A10["A10 · SSRF\n(fetch URL de usuário)"]
+    end
+
+    style A01 fill:#D0021B,color:#fff
+    style A02 fill:#D0021B,color:#fff
+    style A03 fill:#D0021B,color:#fff
+    style A04 fill:#F5A623,color:#000
+    style A05 fill:#F5A623,color:#000
+    style A06 fill:#F5A623,color:#000
+    style A07 fill:#D0021B,color:#fff
+    style A08 fill:#F5A623,color:#000
+    style A09 fill:#4A90D9,color:#fff
+    style A10 fill:#D0021B,color:#fff
+```
+
+O mapa acima agrupa as 10 categorias por natureza de risco: **Acesso** (quem pode ver o quê), **Dados** (proteção de informação em repouso e em trânsito), **Injeção e Integridade** (dados de usuário alterando lógica interna), e **Infraestrutura** (configuração, dependências e serviços de retaguarda). As categorias em vermelho têm maior impacto direto; as em âmbar são riscos de design e configuração; as em azul são falhas de visibilidade.
+Note que as categorias não são independentes: um A05 Misconfiguration (NODE_ENV=development em produção expondo stack traces) pode revelar detalhes internos que facilitam um A03 Injection. Mitigar A02 Crypto Failures (bcrypt em vez de MD5) reduz o impacto de um eventual A09 Logging Failure. Pense no Top 10 como camadas sobrepostas, não como itens de uma checklist sequencial.
+
 ### A01 — Broken Access Control
 
 **O problema**: a aplicação não verifica se o usuário autenticado tem permissão de acessar o recurso específico que solicita. Em REST APIs, o padrão mais comum é BOLA (Broken Object Level Authorization), também chamado de IDOR (Insecure Direct Object Reference): o endpoint `/api/orders/:id` retorna o pedido sem verificar se pertence ao usuário logado — qualquer usuário autenticado pode trocar o ID na URL e ler pedidos alheios.
 
-> [!danger] BOLA em REST API Node.js
+> [!warning] BOLA em REST API Node.js
 > Sem ownership check, qualquer usuário autenticado pode enumerar IDs e ler dados de outros usuários.
 > Fix: sempre busque o objeto e verifique `object.userId === req.user.id` antes de retornar. Middleware de autenticação não é suficiente — ele não tem o objeto em mãos.
 
@@ -96,7 +134,7 @@ Mitigações: `bcrypt` ou `argon2` para senhas; variáveis de ambiente via `dote
 - **SQL injection**: concatenação de strings em queries SQL brutas (`"SELECT * FROM users WHERE id = " + req.params.id`)
 - **SSTI (Server-Side Template Injection)**: input de usuário renderizado diretamente em engines como Handlebars ou EJS sem escape
 
-> [!danger] NoSQL Injection no MongoDB
+> [!warning] NoSQL Injection no MongoDB
 > `$where` executa JavaScript no servidor MongoDB. Input não sanitizado pode retornar todos os documentos ou causar DoS.
 > Fix: nunca use `$where`. Use operadores seguros do MongoDB e valide todo input com Zod antes da query.
 
@@ -295,7 +333,7 @@ Mitigações: `pino` ou `winston` com redação de campos sensíveis; logar todo
 
 **O problema**: o servidor faz uma requisição HTTP para uma URL fornecida pelo usuário, sem validar o destino. O atacante pode fornecer `http://169.254.169.254/latest/meta-data/` (endpoint de metadados da AWS, acessível apenas de dentro da instância) e obter as credenciais IAM da aplicação. Ou pode usar a aplicação para fazer port scan na rede interna.
 
-> [!danger] SSRF via fetch com URL de usuário
+> [!warning] SSRF via fetch com URL de usuário
 > Qualquer `fetch(req.body.url)` sem validação é um vetor de SSRF. Em AWS, a URL `http://169.254.169.254/latest/meta-data/iam/security-credentials/` retorna as credenciais IAM da instância EC2.
 > Fix: allowlist de hosts aprovados + enforcement de HTTPS + bloqueio de ranges IP privados antes do fetch.
 
@@ -379,6 +417,76 @@ A: Algorithm confusion (also called algorithm substitution) exploits the fact th
 - **Rainbow table**: tabela pré-computada de pares `(hash → plaintext)` usada para reverter hashes rápidos sem salt (MD5, SHA1); bcrypt e argon2 são imunes porque incluem salt aleatório em cada hash.
 
 - **Lockfile (package-lock.json)**: arquivo gerado automaticamente pelo npm que registra a árvore exata de dependências instaladas, incluindo versões transitivas; `npm ci` usa o lockfile como fonte de verdade e falha se divergir de `package.json`.
+
+## Casos práticos
+
+### Pen test de BOLA em API de e-commerce
+
+Uma plataforma de e-commerce tem endpoint `GET /api/invoices/:id` que retorna notas fiscais. Durante o pen test, o auditor de segurança autentica como `user_A`, obtém a nota fiscal `#1001`, e simplesmente incrementa o ID para `#1002`, `#1003`, `#1004` — recebendo notas de outros clientes com dados pessoais e valores pagos. É um BOLA clássico: autenticação está correta, mas não há ownership check.
+
+A correção é cirúrgica: no handler da rota, após o `findUnique`, adicionar a verificação `if (invoice.customerId !== req.user.id) return res.status(403).json({ error: 'Forbidden' })`. Para cobrir sistematicamente toda a API, a equipe cria um teste de integração que autentica dois usuários distintos e verifica que cada um recebe 403 ao tentar acessar recursos do outro — esse teste vai no CI/CD como gate obrigatório.
+
+```typescript
+// Middleware de ownership reutilizável para qualquer recurso
+function requireOwnership<T extends { userId: string }>(
+  fetchFn: (id: string) => Promise<T | null>
+) {
+  return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const resource = await fetchFn(req.params.id)
+    if (!resource) return res.status(404).json({ error: 'Not found' })
+    if (resource.userId !== req.user.id) return res.status(403).json({ error: 'Forbidden' })
+    res.locals.resource = resource
+    next()
+  }
+}
+
+// Uso: cada rota declara explicitamente o fetch de ownership
+router.get('/invoices/:id', requireOwnership((id) => db.invoice.findUnique({ where: { id } })), (req, res) => {
+  return res.json(res.locals.resource)
+})
+```
+
+### Detecção e bloqueio de supply chain attack
+
+A equipe recebe um alerta do Dependabot: o pacote `event-stream@3.3.6` (dependência transitória de `nodemon`) foi atualizado com um `postinstall` script que executa código de mineração de criptomoedas. Esse foi um ataque real de supply chain em 2018.
+
+A defesa em camadas: o CI/CD usa `npm ci --ignore-scripts` — então o `postinstall` malicioso nunca executa no ambiente de build. O `npm audit --audit-level=high` no pipeline detecta o CVE antes do deploy. O Dependabot cria um PR automático com o patch; a política da equipe é mergear patches de segurança críticos em até 24 horas.
+
+```bash
+# Pipeline CI/CD com defesas de integridade de supply chain
+npm ci --ignore-scripts          # instala exatamente o lockfile, sem scripts de ciclo de vida
+npm audit --audit-level=high     # falha o build se high/critical CVE encontrado
+
+# Verificar integridade do lockfile antes de instalar
+# (falha se package.json e package-lock.json divergem — detecta lockfile adulterado)
+npm ci --dry-run
+
+# Inspecionar manualmente scripts de pacotes novos antes de instalar
+npm show <pacote> scripts        # lista postinstall, prepare, prepack, etc.
+```
+
+A lição: `npm install` em CI é um antipadrão de segurança. `npm ci` é obrigatório. `--ignore-scripts` é a segunda camada. `npm audit` é o gate que fecha o ciclo.
+
+## O que vem a seguir
+
+Esta nota cobre o mapa completo do OWASP Top 10 em Node.js. Para aprofundar cada camada de defesa:
+
+- [[03-Dominios/Tecnologia/Node/Segurança/10 - Cheatsheet e decision tree de segurança|Cheatsheet e decision tree de segurança]] — árvore de decisão para escolher a defesa certa para cada categoria OWASP; complementa esta nota como referência rápida
+- [[03-Dominios/Tecnologia/Node/Segurança/03 - Validação de entrada com Zod e Joi|Validação de entrada com Zod e Joi]] — implementação completa da defesa contra A03 Injection, com schemas, refinements e mensagens de erro
+- [[03-Dominios/Tecnologia/Node/Segurança/06 - RBAC e ABAC com casl e casbin|RBAC e ABAC com casl e casbin]] — controle de acesso orientado a roles e atributos para fechar A01 de forma sistemática
+- [[03-Dominios/Tecnologia/Node/Segurança/08 - Helmet.js e hardening HTTP|Helmet.js e hardening HTTP]] — headers de segurança que mitigam A05 Misconfiguration a nível de protocolo HTTP
+- [[03-Dominios/Tecnologia/Node/Segurança/01 - Supply chain attacks e npm audit|Supply chain attacks e npm audit]] — exploração completa de A06 e A08, com políticas de lockfile e revisão de scripts
+
+## Fontes
+
+- [OWASP Top 10:2021](https://owasp.org/Top10/) — documento oficial com definições, exemplos e guias de prevenção para cada categoria
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/) — versão focada em APIs REST/GraphQL, com ênfase em BOLA e exposição de dados excessiva
+- [OWASP NodeGoat](https://github.com/OWASP/NodeGoat) — aplicação Node.js intencionalmente vulnerável para praticar exploração e correção das categorias do Top 10
+- [OWASP Cheat Sheet Series — Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Injection_Prevention_Cheat_Sheet.html) — guia técnico detalhado para prevenir todos os tipos de injeção
+- [OWASP Cheat Sheet Series — SSRF Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html) — estratégias de allowlist, bloqueio de IP e DNS rebinding para SSRF
+- [OWASP Cheat Sheet Series — Authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) — diretrizes para tokens seguros, MFA e gestão de sessão (cobre A07)
+- [npm Security Best Practices](https://docs.npmjs.com/packages-and-modules/securing-your-code) — documentação oficial npm sobre lockfile, `npm audit`, 2FA em publicação e provenance
+- [bcrypt.js README](https://github.com/dcodeIO/bcrypt.js) — implementação pura de bcrypt para Node.js com exemplos de `saltRounds` e `compare`
 
 ## Veja também
 

@@ -1,9 +1,9 @@
 ---
 title: "Segredos e variáveis de ambiente"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Iniciado
 status: growing
 publish: true
 tags:
@@ -20,6 +20,43 @@ aliases:
 
 > [!abstract] TL;DR
 > Segredos — chaves de API, senhas de banco, tokens OAuth — jamais devem estar hardcoded no código-fonte ou commitados no repositório; o vetor de vazamento mais comum em projetos Node.js é exatamente um `.env` esquecido no histórico do git. Em desenvolvimento, `process.env` carregado via `node --env-file=.env` (Node 20.6+) ou `dotenv` fornece segredos sem hardcode; em produção, o padrão de mercado é injetar segredos dinamicamente em runtime a partir de um secrets manager (AWS Secrets Manager, HashiCorp Vault, Doppler ou GCP Secret Manager), eliminando segredos em arquivos de configuração. A validação de variáveis de ambiente com Zod na inicialização da aplicação — `fail-fast` — é a linha de defesa que converte erros de configuração silenciosos em falhas imediatas e mensagens de erro acionáveis.
+
+## Ciclo de vida de um segredo
+
+```mermaid
+flowchart LR
+    subgraph DEV ["Desenvolvimento local"]
+        ENV[".env\n(gitignored)"]
+        NODEENV["node --env-file=.env"]
+    end
+
+    subgraph CI ["CI/CD Pipeline"]
+        CIENV["Env vars da plataforma\nGitHub Actions / GitLab CI"]
+        AUDIT["git-secrets / trufflehog\nscan do histórico"]
+    end
+
+    subgraph PROD ["Produção"]
+        SM["Secrets Manager\nAWS / Vault / Doppler"]
+        IAM["IAM Role /\nWorkload Identity\n(sem credencial em disco)"]
+        APP["Aplicação Node.js\nprocess.env (runtime)"]
+        ZOD["Validação Zod\nfail-fast no startup"]
+    end
+
+    ENV --> NODEENV
+    NODEENV --> APP
+
+    CIENV --> APP
+    AUDIT --> CI
+
+    IAM --> SM
+    SM --> APP
+    APP --> ZOD
+
+    style ENV fill:#F5A623,color:#000
+    style SM fill:#4A90D9,color:#fff
+    style ZOD fill:#4A90D9,color:#fff
+    style AUDIT fill:#D0021B,color:#fff
+```
 
 ## O que é
 
@@ -498,9 +535,19 @@ function verifyToken(token) {
 }
 ```
 
-## Armadilhas
+## Casos práticos
 
-> [!danger] Vazar segredos em stack traces e error handlers
+**Cenário 1 — Startup que falha limpo em staging**
+
+Uma aplicação Node.js é implantada em staging com uma variável `STRIPE_SECRET_KEY` esquecida no script de deploy. Sem validação de env vars, o erro aparece apenas quando o primeiro pagamento é processado — horas depois do deploy. Com o padrão Zod fail-fast descrito nesta nota, o processo encerra imediatamente no startup com a mensagem `STRIPE_SECRET_KEY deve começar com sk_`, e o deploy falha antes de um único request ser atendido. O problema é capturado no pipeline de CI/CD, não em produção sob carga.
+
+**Cenário 2 — Rotação de segredo de banco em produção sem janela de manutenção**
+
+O time de segurança exige rotação trimestral da senha do banco de dados RDS em produção. Usando AWS Secrets Manager com rotação automática e o padrão SIGHUP descrito nesta nota: (1) o Secrets Manager cria nova senha e a publica como `AWSPENDING`; (2) o Lambda rotator valida que a nova senha funciona; (3) a nova senha torna-se `AWSCURRENT`; (4) um evento SNS dispara um Lambda que envia `SIGHUP` para todos os pods ECS; (5) cada pod recarrega os segredos sem reiniciar, sem rejeitar requests em voo. A janela de sobreposição de 5 minutos garante que requests iniciados com a credencial antiga concluam normalmente.
+
+## Armadilhas comuns
+
+> [!warning] Vazar segredos em stack traces e error handlers
 > **Problema:** O error handler padrão do Express serializa o objeto `err` inteiro — que frequentemente inclui propriedades da conexão com banco (host, user, password), headers HTTP com tokens de autenticação, ou o objeto `process.env` completo quando o erro acontece durante inicialização. Qualquer cliente que acione um erro 500 recebe essas informações.
 >
 > ```javascript
@@ -521,7 +568,7 @@ function verifyToken(token) {
 >
 > **Solução:** Nunca serialize `err` diretamente na resposta HTTP. Logue internamente com correlação por `requestId` e retorne mensagens genéricas ao cliente. Em Express, use `err.expose = true` explicitamente apenas para erros operacionais que devem ser retornados ao cliente.
 
-> [!danger] `process.env` em logs estruturados (Pino/Winston serializers)
+> [!warning] `process.env` em logs estruturados (Pino/Winston serializers)
 > **Problema:** Pino e Winston serializam objetos automaticamente. Um `logger.info({ env: process.env })` ou um serializer que inclui `process.env` por engano expõe todos os segredos do processo nos logs de produção — que são coletados pelo Datadog, CloudWatch, ou ELK Stack e podem ser acessados por múltiplas equipes.
 >
 > ```javascript
@@ -551,7 +598,7 @@ function verifyToken(token) {
 >
 > **Solução:** Use `pino-redact` ou a opção `redact` do Pino para mascarar campos sensíveis automaticamente. Defina um serializer explícito com allowlist de campos — nunca serialize objetos inteiros de request, error ou config.
 
-> [!danger] `.env.production` no repositório
+> [!warning] `.env.production` no repositório
 > **Problema:** Desenvolvedores frequentemente criam `.env.production` com valores reais de produção para "facilitar o deploy" e o commitam no repositório privado. Credenciais de produção em repositório — mesmo privado — violam o princípio de least privilege: qualquer dev do time com acesso ao repositório tem acesso às credenciais de produção, mesmo que não devesse.
 >
 > **Solução:** Qualquer arquivo `.env.*` que contenha valores reais de produção (não placeholders) deve estar no `.gitignore`. Segredos de produção vivem exclusivamente no secrets manager. O `.env.example` é o único arquivo de ambiente que vai para o repositório.
@@ -580,6 +627,12 @@ A: Secret rotation without downtime requires three things working together. Firs
 
 A: Because the alternative is discovering misconfiguration in production under load, at 2am, with a cryptic error message like `Cannot read properties of undefined (reading 'split')` — which could mean DATABASE_URL was never set. Zod validation at startup gives you three things. First, fail-fast: the process exits immediately with a clear error list before serving any requests, which means the deployment fails visibly rather than deploying a broken instance. Second, type coercion: `PORT` comes in as a string from `process.env`, but `z.coerce.number()` converts it and validates it's a valid port — you never accidentally pass the string `"3000"` to a function expecting a number. Third, the rest of the codebase can import the validated `env` object and trust it's fully typed and conformant — no more defensive `process.env.X ?? 'default'` scattered across the code. In a team context, the Zod schema also serves as living documentation of every required and optional env var, which `.env.example` alone can't provide.
 
+## O que vem a seguir
+
+- [[03-Dominios/Tecnologia/Node/Segurança/03 - Validação de entrada com Zod e Joi|Validação de entrada com Zod e Joi]] — aplica Zod para validar não apenas env vars mas qualquer dado externo: body, query params, headers
+- [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação com jsonwebtoken]] — usa os segredos gerenciados aqui (`JWT_SECRET`) para assinar e verificar tokens de autenticação
+- [[03-Dominios/Tecnologia/Node/Segurança/05 - OAuth 2.0 e OIDC com openid-client|OAuth 2.0 e OIDC com openid-client]] — integra com provedores externos de identidade, cujas credenciais (client_id, client_secret) devem seguir o mesmo padrão de gestão de segredos
+
 ## Vocabulário
 
 - **secret** — valor que concede acesso privilegiado a um sistema externo (senha de banco, chave de API, token OAuth, certificado privado); exige controles mais rígidos que variáveis de configuração comuns — criptografia em repouso, controle de acesso granular, auditoria de leitura e rotação periódica
@@ -590,6 +643,14 @@ A: Because the alternative is discovering misconfiguration in production under l
 - **secret sprawl** — proliferação descontrolada de segredos espalhados por múltiplos locais sem inventário central: hardcoded em código, em arquivos `.env` em máquinas de desenvolvedores, em variáveis de CI/CD de múltiplas plataformas, em wikis internos; torna rotação e auditoria inviáveis
 - **fail-fast** — padrão de design em que um sistema detecta condições inválidas o mais cedo possível e falha imediatamente com mensagem de erro clara, em vez de continuar em estado degradado e falhar de forma críptica mais tarde; em segredos, manifesta-se como validação Zod de `process.env` no startup da aplicação
 - **Application Default Credentials (ADC)** — mecanismo do Google Cloud (e análogos da AWS como Instance Metadata Service) pelo qual o SDK autentica automaticamente usando a identidade da instância de compute — IAM Role ou Workload Identity — sem necessidade de service account keys em disco
+
+## Fontes
+
+- [AWS Secrets Manager — User Guide](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) — documentação oficial; cobre rotação automática, políticas IAM e Lambda rotators
+- [HashiCorp Vault — KV Secrets Engine v2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2) — referência do engine KV v2, incluindo versionamento e expiração de secrets
+- [Doppler — Node.js Integration](https://docs.doppler.com/docs/node-js) — guia de integração programática e uso do CLI para injeção de segredos
+- [12-Factor App — Config (Factor III)](https://12factor.net/config) — princípio canônico de separação entre configuração e código-fonte
+- [Node.js v20 — `--env-file` flag](https://nodejs.org/en/blog/release/v20.6.0) — release notes do Node 20.6.0 introduzindo suporte nativo a arquivos `.env`
 
 ## Veja também
 

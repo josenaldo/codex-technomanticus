@@ -1,9 +1,9 @@
 ---
 title: "JWT e autenticação com jsonwebtoken"
 created: 2026-05-13
-updated: 2026-05-13
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -21,6 +21,34 @@ aliases:
 
 > [!abstract] TL;DR
 > JWT (JSON Web Token) é um formato compacto de token autocontido e assinado digitalmente que permite transmitir claims entre partes sem consultar um banco de dados a cada requisição — a autenticidade é verificada localmente pela assinatura criptográfica, tornando o sistema stateless por natureza. A biblioteca `jsonwebtoken` v9 é a implementação de referência no ecossistema Node.js, expondo `jwt.sign()` para emitir tokens e `jwt.verify()` para validar assinatura, expiração e claims adicionais em uma única chamada. O padrão de access token (vida curta, 15min) combinado com refresh token (vida longa, 7d) resolve o dilema entre segurança e usabilidade: o access token expira rápido limitando a janela de abuso, enquanto o refresh token — armazenado de forma segura e rotacionado a cada uso — permite renovar a sessão sem nova autenticação do usuário.
+
+## Fluxo JWT
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant API as API Server
+    participant DB as Database / Redis
+
+    C->>API: POST /login (credentials)
+    API->>DB: Verifica credenciais
+    DB-->>API: Usuário válido
+    API-->>C: accessToken (15m) + refreshToken cookie (7d)
+
+    Note over C,API: Requisições autenticadas
+
+    C->>API: GET /api/data (Bearer accessToken)
+    API->>API: jwt.verify(token, secret, {algorithms:['HS256']})
+    API-->>C: 200 + dados
+
+    Note over C,API: Renovação de token
+
+    C->>API: POST /auth/refresh (refreshToken cookie)
+    API->>DB: Verifica blacklist jti
+    DB-->>API: Não revogado
+    API->>DB: Adiciona jti atual à blacklist (rotação)
+    API-->>C: Novo accessToken + Novo refreshToken cookie
+```
 
 ## O que é
 
@@ -408,9 +436,19 @@ async function invalidateAllTokens(userId) {
 | Token version     | ~5-10ms (DB query)  | Banco existente   | Todos os tokens do usuário |
 | Expiração curta   | Zero                | Nenhuma           | Nenhuma (espera expirar) |
 
-## Armadilhas
+## Casos práticos
 
-> [!danger] Algorithm none attack
+**Cenário 1 — Logout seguro com blacklist Redis**
+
+Uma SPA React autentica o usuário e recebe um `accessToken` (15min) em memória e um `refreshToken` em cookie `httpOnly`. O usuário clica em "sair". O cliente invoca `POST /auth/logout` enviando o cookie de refresh automaticamente. O servidor verifica o token, extrai o `jti`, e o armazena no Redis com TTL igual ao tempo restante de vida do token — garantindo que o token não seja aceito caso alguém o tenha interceptado. O `accessToken` expira naturalmente em até 15 minutos; para cenários de alto risco (troca de senha), o servidor pode incrementar o `tokenVersion` do usuário para invalidar imediatamente todos os access tokens em circulação.
+
+**Cenário 2 — Microserviço verificando tokens sem acesso ao secret**
+
+Uma API Gateway emite tokens RS256 com chave privada. Três microserviços downstream precisam verificar a autenticidade dos tokens sem receber a chave de assinatura (que ficaria espalhada por múltiplos serviços). A Gateway publica um endpoint `GET /.well-known/jwks.json` com as chaves públicas. Cada microserviço usa `jwks-rsa` para baixar e cachear a chave pública, e chama `jwt.verify(token, publicKey, { algorithms: ['RS256'] })`. Se a Gateway rotacionar o par de chaves, os microserviços atualizam a chave pública automaticamente via JWKS — sem coordenação manual de secrets entre serviços.
+
+## Armadilhas comuns
+
+> [!warning] Algorithm none attack
 > A especificação JWT original permitia `"alg": "none"`, indicando que o token não possui assinatura. Algumas implementações antigas aceitavam essa opção — um atacante poderia criar um token com qualquer payload e definir `alg: none` para que o servidor aceitasse sem verificar assinatura. **Solução**: sempre passe a opção `algorithms` explicitamente em `jwt.verify()`:
 > ```javascript
 > // ❌ Vulnerável — aceita qualquer algoritmo incluindo none
@@ -421,7 +459,7 @@ async function invalidateAllTokens(userId) {
 > ```
 > A biblioteca `jsonwebtoken` v9 já rejeita `alg: none` por padrão — é necessário passar explicitamente `algorithms: ['none']` para aceitar tokens não assinados. A opção explícita continua sendo defesa em profundidade e documenta a intenção.
 
-> [!danger] Secrets fracos e previsíveis
+> [!warning] Secrets fracos e previsíveis
 > Um secret HS256 de baixa entropia pode ser quebrado por força bruta offline — o atacante captura um token válido e tenta secrets até a assinatura bater. A RFC 7518 recomenda mínimo de 256 bits (32 bytes) de entropia para HS256. Nunca use strings curtas, palavras do dicionário ou valores hardcoded no código. Use `node:crypto` para gerar secrets seguros:
 > ```javascript
 > import { randomBytes } from 'node:crypto'
@@ -433,7 +471,7 @@ async function invalidateAllTokens(userId) {
 > console.log(secret)
 > ```
 
-> [!danger] Dados sensíveis no payload
+> [!warning] Dados sensíveis no payload
 > O payload JWT é **apenas codificado em base64url**, não criptografado. Qualquer pessoa que interceptar ou receber o token pode decodificá-lo em milissegundos com `atob()` no browser ou `Buffer.from(token.split('.')[1], 'base64').toString()` no Node. Nunca coloque no payload: senhas (mesmo hash), números de cartão de crédito, tokens de API de terceiros, informações médicas, ou qualquer dado que não possa ser exposto publicamente. Se precisar de payload criptografado, use **JWE (JSON Web Encryption)** — RFC 7516.
 
 ## Em entrevista
@@ -460,6 +498,12 @@ A: The algorithm none vulnerability exploits an optional feature in the original
 
 A: The pattern solves a fundamental tension in stateless authentication: short token lifetimes improve security but hurt usability, while long lifetimes improve usability but increase the window of exposure if a token is stolen. The solution is two tokens with different lifetimes and purposes. The access token is short-lived — typically 5 to 15 minutes — and is sent with every API request in the Authorization header. When it expires, the client uses the refresh token to get a new access token without prompting the user to log in again. The refresh token is long-lived — 7 to 30 days — but it is only sent to one specific endpoint (the token refresh endpoint), reducing its exposure surface. Critically, refresh tokens should be rotated: every time a refresh token is used, it is invalidated and a new one is issued. This enables refresh token theft detection — if an attacker uses a stolen refresh token, the legitimate user's next refresh attempt will fail because the token was already used, signaling a compromise. Refresh tokens should be stored in httpOnly cookies to prevent JavaScript access, while access tokens can be kept in memory. This pattern is the foundation of how OAuth 2.0 and most modern authentication systems work.
 
+## O que vem a seguir
+
+- [[03-Dominios/Tecnologia/Node/Segurança/05 - OAuth 2.0 e OIDC com openid-client|OAuth 2.0 e OIDC com openid-client]] — delega autenticação a provedores externos (Google, GitHub); o access token OAuth é frequentemente um JWT verificado com RS256 via JWKS
+- [[03-Dominios/Tecnologia/Node/Segurança/06 - RBAC e ABAC com casl e casbin|RBAC e ABAC com casl e casbin]] — usa os claims do JWT (`role`, `orgId`) para tomar decisões de autorização fina
+- [[03-Dominios/Tecnologia/Node/Segurança/02 - Segredos e variáveis de ambiente|Segredos e variáveis de ambiente]] — gestão de `JWT_SECRET` e `REFRESH_TOKEN_SECRET` com rotação e fail-fast Zod
+
 ## Vocabulário
 
 | Termo                       | Definição                                                                                                                                                                    |
@@ -472,6 +516,14 @@ A: The pattern solves a fundamental tension in stateless authentication: short t
 | **Revogação**               | Processo de invalidar um token antes do seu vencimento natural; requer estado externo (Redis, banco de dados) já que o JWT em si é stateless                                 |
 | **jti (JWT ID)**            | Claim opcional mas recomendado que contém um identificador único para o token (UUID); essencial para implementar blacklists de revogação precisas no nível do token individual |
 | **Algorithm confusion attack** | Ataque que explora implementações que aceitam múltiplos algoritmos sem restrição explícita; exemplo clássico é o ataque `alg: none` que bypassa verificação de assinatura   |
+
+## Fontes
+
+- [RFC 7519 — JSON Web Token](https://datatracker.ietf.org/doc/html/rfc7519) — especificação oficial do JWT, claims registrados e formato de serialização
+- [RFC 7518 — JSON Web Algorithms](https://datatracker.ietf.org/doc/html/rfc7518) — define os algoritmos suportados (HS256, RS256, ES256) e requisitos de tamanho de chave
+- [jsonwebtoken — npm](https://www.npmjs.com/package/jsonwebtoken) — documentação da API `sign()`, `verify()` e opções de configuração
+- [jwt.io](https://jwt.io) — ferramenta de debug interativa para inspecionar e decodificar tokens JWT
+- [OWASP JWT Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html) — guia de vulnerabilidades e boas práticas (agnóstico de linguagem)
 
 ## Veja também
 

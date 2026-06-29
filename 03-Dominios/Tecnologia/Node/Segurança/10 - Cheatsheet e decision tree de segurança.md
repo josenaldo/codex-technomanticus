@@ -1,9 +1,9 @@
 ---
 title: "Cheatsheet e decision tree de segurança"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Magus
 status: growing
 publish: true
 tags:
@@ -326,15 +326,18 @@ function verifyAccessToken(token: string, secret: string): JwtPayload {
 export { verifyAccessToken, JwtPayload }
 ```
 
-## Armadilhas
+## Armadilhas comuns
 
-> [!danger] Erros de auth com mensagem específica vazam informação
+> [!warning] CORS com `*` e `credentials: true` é inválido e perigoso
+> Configurar `Access-Control-Allow-Origin: *` junto com `Access-Control-Allow-Credentials: true` viola a spec CORS e browsers modernos bloqueiam a requisição. Mais grave: alguns proxies e configurações incorretas de gateway aceitam e repassam ambos os headers, expondo APIs autenticadas a qualquer origem. A configuração correta é sempre uma allowlist explícita de origens: `res.setHeader('Access-Control-Allow-Origin', allowedOrigin)` onde `allowedOrigin` é validado contra uma lista de origens aprovadas.
+
+> [!warning] Erros de auth com mensagem específica vazam informação
 > Retornar `"User not found"` vs `"Wrong password"` permite a um atacante confirmar quais emails estão cadastrados (user enumeration attack). A mitigação é sempre retornar a mesma mensagem genérica: `"Invalid credentials"` — e tomar o mesmo tempo para processar ambos os casos (comparação de hash mesmo quando o usuário não existe, usando `bcrypt.compare` com um hash fake para evitar timing attack).
 
-> [!danger] jwt.verify sem algorithms abre brecha de algorithm confusion
+> [!warning] jwt.verify sem algorithms abre brecha de algorithm confusion
 > `jwt.verify(token, secret)` sem `{ algorithms: ['HS256'] }` aceita qualquer algoritmo declarado no header do token, incluindo `"none"`. Um atacante pode criar um token sem assinatura com `alg: "none"` e bypassar a verificação. Sempre passe o array de algoritmos aceitos explicitamente.
 
-> [!danger] Rate limiting em memória não funciona em múltiplas instâncias
+> [!warning] Rate limiting em memória não funciona em múltiplas instâncias
 > O store padrão do `express-rate-limit` é em memória (por processo). Em um cluster com 4 workers ou 3 pods Kubernetes, cada instância tem seu próprio contador — o limite efetivo é multiplicado pelo número de instâncias. Use `rate-limit-redis` com um store Redis compartilhado para garantir que o limite seja global.
 
 ## Em entrevista
@@ -370,6 +373,114 @@ A: The principles are: secrets never in source code, never in environment variab
 - **CVE (Common Vulnerabilities and Exposures)**: identificador único para vulnerabilidades de segurança conhecidas; reportado por `npm audit`
 - **Timing attack**: ataque que mede diferenças de tempo de resposta para inferir informação — e.g., comparar strings com `===` em vez de `crypto.timingSafeEqual` vaza se o hash começou a divergir
 
+## Casos práticos
+
+### Auditoria de segurança antes de go-live
+
+A equipe tem 48 horas antes do lançamento de uma API em produção e precisa de uma auditoria rápida de segurança. O cheatsheet serve como roteiro: a engenheira de segurança percorre o checklist de PR review item a item, abrindo issues para cada ponto falho encontrado.
+
+Resultado da auditoria em um caso típico: 3 endpoints de autenticação sem rate limiting (critica — OWASP A04), `jwt.verify` sem `{ algorithms }` em dois middlewares (crítica — A07), CSP com `unsafe-inline` para scripts (alta — A05), dois segredos hardcoded em arquivo de configuração de staging (alta — A02), e `npm install` em vez de `npm ci` no Dockerfile (média — A08).
+
+A priorização é direta pelo critério de impacto: os dois itens críticos bloqueiam o go-live. Os três itens de alta prioridade entram no sprint seguinte. O time não precisa conhecer de cabeça todo o OWASP Top 10 — o cheatsheet opera como externalização de memória especializada, reduzindo o risco de omissão em revisões de tempo curto.
+
+```bash
+# Sequência de auditoria rápida com CLI
+npm audit --audit-level=high             # dependências com CVE high/critical
+grep -r "Math.random()" src/             # tokens inseguros
+grep -rn "jwt.verify" src/ | grep -v "algorithms"  # jwt sem algorithm fixo
+grep -rn "process.env\." src/ | grep -v "env\."    # env vars sem validação centralizada
+grep -rn "console.log.*password\|console.log.*token" src/  # logs com dados sensíveis
+```
+
+### Onboarding de desenvolvedor junior em segurança Node.js
+
+Um engenheiro júnior entra no time e precisa aprender as práticas de segurança do projeto em uma semana. Em vez de ler as 9 notas do galho sequencialmente (sobrecarga), o tech lead usa esta nota como ponto de entrada:
+
+1. **Dia 1**: decision tree — qual ferramenta para cada área de segurança e por quê
+2. **Dia 2**: checklist de PR — ler o checklist, depois revisar um PR real de auth e identificar o que está correto e o que está faltando
+3. **Dia 3**: padrões de resposta de erro e bootstrap seguro — entender por que mensagens genéricas e por que `zod.parse` na inicialização
+4. **Dia 4**: aprofundar nas notas das áreas mais fracas (ex: se nunca trabalhou com JWT, ir para nota 04)
+5. **Dia 5**: simular um code review completo usando o checklist como guia
+
+Ao final, o júnior tem o mapa mental correto: "quando vejo um endpoint que aceita ID de recurso, lembro do checklist de BOLA. Quando vejo `jwt.verify`, verifico se tem `algorithms`." O cheatsheet não substitui o entendimento — ele ancora os padrões para o contexto de decisão real.
+
+### Escolha entre casl e casbin em um sistema multi-tenant
+
+Um SaaS com múltiplos tenants precisa decidir entre `casl` e `casbin` para autorização. A decision tree da nota aponta para a bifurcação correta: casl se as regras são expressas em TypeScript com condicionais de atributos; casbin se as políticas precisam ser gerenciadas externamente (por operadores, sem re-deploy).
+
+O SaaS tem dois perfis de usuário: **admins de tenant** (gerenciam usuários e dados do próprio tenant) e **usuários finais** (acessam apenas seus próprios recursos). Há também um **super admin** da plataforma (acessa qualquer tenant para suporte). Este cenário mistura RBAC (roles fixas: admin, user, super_admin) com ABAC (condições: `tenantId`, `ownerId`).
+
+A escolha final é `casl`: as regras são estáticas o suficiente para viver no código, TypeScript fornece type safety nas habilidades, e a integração com NestJS via `@casl/ability` é madura. `casbin` seria preferível se admins de tenant precisassem configurar regras personalizadas via UI — mas nesse caso o design é fixo.
+
+```typescript
+import { AbilityBuilder, createMongoAbility } from '@casl/ability'
+
+type Actions = 'read' | 'create' | 'update' | 'delete' | 'manage'
+type Subjects = 'User' | 'Document' | 'Invoice' | 'Tenant' | 'all'
+
+function defineAbilityFor(user: { role: string; tenantId: string; id: string }) {
+  const { can, cannot, build } = new AbilityBuilder(createMongoAbility)
+
+  if (user.role === 'super_admin') {
+    // Super admin pode tudo em qualquer tenant
+    can('manage', 'all')
+  } else if (user.role === 'tenant_admin') {
+    // Tenant admin gerencia apenas recursos do próprio tenant
+    can('manage', ['User', 'Document', 'Invoice'], { tenantId: user.tenantId })
+    // Mas não pode deletar o próprio tenant (proteção extra)
+    cannot('delete', 'Tenant')
+  } else {
+    // Usuário comum vê e edita apenas seus próprios documentos dentro do tenant
+    can('read', 'Document', { tenantId: user.tenantId })
+    can(['create', 'update'], 'Document', { tenantId: user.tenantId, ownerId: user.id })
+    can('read', 'Invoice', { tenantId: user.tenantId, userId: user.id })
+  }
+
+  return build()
+}
+
+// Verificação server-side: sempre com o documento já carregado do banco
+async function getDocument(req: express.Request, res: express.Response) {
+  const doc = await db.document.findUnique({ where: { id: req.params.id } })
+  if (!doc) return res.status(404).json({ error: 'Not found' })
+
+  const ability = defineAbilityFor(req.user)
+  if (ability.cannot('read', subject('Document', doc))) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+  return res.json(doc)
+}
+```
+
+A decisão `casl` vs `casbin` não é técnica apenas — é organizacional. Se o time de produto vai querer no futuro uma interface de configuração de permissões para clientes configurarem suas próprias regras, `casbin` com adapter de banco é a escolha correta desde o início.
+
+## O que vem a seguir
+
+Esta nota encerra o galho 8 de segurança da trilha Node Senior. Para aprofundar cada área:
+
+- [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node|OWASP Top 10 para Node]] — referência completa com exemplos de código para cada categoria A01–A10
+- [[03-Dominios/Tecnologia/Node/Segurança/01 - Supply chain attacks e npm audit|Supply chain attacks e npm audit]] — npm audit, socket.dev, e políticas de lockfile para A06 e A08
+- [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e jsonwebtoken]] — implementação completa de access + refresh token com blacklist Redis
+- [[03-Dominios/Tecnologia/Node/Segurança/08 - Helmet.js e hardening HTTP|Helmet.js e hardening HTTP]] — configuração detalhada de CSP com nonces, HSTS e CORS em produção
+
+Fora do galho, as próximas fronteiras naturais são [[03-Dominios/Tecnologia/Node/Microservices|Microservices]] (segurança inter-serviço: mTLS, service mesh, propagação de contexto) e [[03-Dominios/Tecnologia/Node/Observabilidade|Observabilidade]] (correlação de logs de segurança com traces e métricas de anomalia).
+
+O cheatsheet deve ser revisitado a cada nova versão de dependência crítica (`helmet`, `express-rate-limit`, `jsonwebtoken`), pois APIs mudam e novos vetores surgem com o tempo.
+
+Para entrevistas sênior de segurança, o exercício mais valioso é percorrer mentalmente a decision tree e o checklist de PR para um cenário hipotético dado pelo entrevistador — demonstrando não apenas o que fazer, mas o raciocínio sobre por quê cada camada existe e como as categorias OWASP se encadeiam. A profundidade de resposta que separa sênior de pleno nesse tópico é a capacidade de articular os trade-offs (ex: `casl` vs `casbin`, `npm ci --ignore-scripts` e o custo de não ter alguns build scripts) sem depender de memorização de APIs específicas.
+
+## Fontes
+
+- [OWASP Top 10:2021](https://owasp.org/Top10/) — lista oficial com definições, exemplos e guias de prevenção para cada categoria
+- [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/) — índice de guias técnicos para todas as categorias, incluindo Authentication, JWT, SSRF e Injection
+- [Node.js Security Best Practices](https://nodejs.org/en/docs/guides/security) — guia oficial Node.js cobrindo DoS, injection, HTTP headers e supply chain
+- [Helmet.js Documentation](https://helmetjs.github.io/) — referência oficial de todos os middlewares Helmet v7 e opções de CSP
+- [express-rate-limit — README](https://github.com/express-rate-limit/express-rate-limit) — documentação completa incluindo Redis store, keyGenerator e options v7
+- [casl — Getting Started](https://casl.js.org/v6/en/guide/intro) — guia oficial casl v6 com AbilityBuilder, subject helper e integração com NestJS e React
+- [OWASP Testing Guide v4.2](https://owasp.org/www-project-web-security-testing-guide/) — metodologia completa de teste de segurança, incluindo testes de BOLA, authentication bypass e SSRF
+- [Snyk Learn — Node.js Security](https://learn.snyk.io/catalog/?type=learning-path&ecosystems=node-js) — trilha de aprendizado com exemplos práticos de cada categoria OWASP em Node.js, com exercícios interativos
+- [Socket.dev](https://socket.dev/) — análise de ameaças em tempo real para pacotes npm, detectando comportamento suspeito em scripts de instalação antes do `npm install`
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Node/Segurança/index|Segurança]] — MOC do galho 8
@@ -384,3 +495,6 @@ A: The principles are: secrets never in source code, never in environment variab
 - [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node]] — A01–A10 com exemplos Node e mitigações
 - [[03-Dominios/Tecnologia/Node/index|Node.js (MOC central)]] — visão geral de todos os galhos da trilha
 - [[03-Dominios/Tecnologia/Node/Node.js|Node.js]] — tronco da trilha Node Senior
+- [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/10 - Segurança em frameworks - helmet, cors e csrf|Segurança em frameworks]] — como os middlewares do galho Frameworks e arquitetura se integram ao stack de segurança
+- [[03-Dominios/Ciência/Fundamentos/Segurança Conceitual/index|Segurança Conceitual (Fundamentos)]] — base teórica: threat modeling, criptografia assimétrica, protocolos TLS
+- [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/10 - Cheatsheet e decision tree de ORMs|Cheatsheet ORMs]] — cheatsheet do galho de banco de dados, complementar a este para queries parametrizadas e prevenção de injection

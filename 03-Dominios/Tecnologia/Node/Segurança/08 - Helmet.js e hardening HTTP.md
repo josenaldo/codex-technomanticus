@@ -1,9 +1,9 @@
 ---
 title: "Helmet.js e hardening HTTP"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Magus
 status: growing
 publish: true
 tags:
@@ -21,6 +21,39 @@ aliases:
 
 > [!abstract] TL;DR
 > Helmet.js v7 é um middleware para Express/Node.js que aplica em uma única chamada o conjunto canônico de security headers HTTP — `Content-Security-Policy`, `Strict-Transport-Security`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` e outros — seguindo a filosofia *secure by default*: tudo ativo por padrão, com opt-out seletivo para casos específicos. CSP com nonces é o controle central contra XSS: gere um valor aleatório por requisição (`crypto.randomBytes(16).toString('base64')`), adicione ao header como `'nonce-<valor>'` e ao atributo `nonce` dos scripts legítimos — scripts injetados não conhecem o nonce e são bloqueados pelo browser. HSTS instrui o browser a usar apenas HTTPS pelo período de `maxAge`; habilitá-lo antes de HTTPS estar totalmente operacional trava o acesso ao site pelo tempo todo de `maxAge`. CORS não é responsabilidade do Helmet, mas `cors` (o pacote) deve ser configurado junto: usar `Access-Control-Allow-Origin: *` com `credentials: true` é inválido — sempre use uma allowlist de origens exatas. Middleware order matters: `app.use(helmet())` deve vir antes de qualquer rota.
+
+## Camadas de hardening HTTP
+
+```mermaid
+flowchart TD
+    subgraph CLIENT ["Browser"]
+        REQ["HTTP Request"]
+        POLICY["Aplica políticas\nCSP / HSTS / CORS"]
+    end
+
+    subgraph EXPRESS ["Express + Helmet.js"]
+        HELMET["helmet()\nmiddleware stack"]
+        CSP["Content-Security-Policy\nnonces por requisição"]
+        HSTS["Strict-Transport-Security\nmaxAge=31536000"]
+        XFO["X-Frame-Options\nSAMEORIGIN"]
+        XCT["X-Content-Type-Options\nnosniff"]
+        CORS_MW["cors()\nallowlist dinâmica"]
+    end
+
+    subgraph RESPONSE ["HTTP Response"]
+        HEADERS["Security Headers\nem cada resposta"]
+    end
+
+    REQ --> HELMET
+    HELMET --> CSP & HSTS & XFO & XCT
+    HELMET --> CORS_MW
+    CSP & HSTS & XFO & XCT & CORS_MW --> HEADERS
+    HEADERS --> POLICY
+
+    style HELMET fill:#4A90D9,color:#fff
+    style CSP fill:#4A90D9,color:#fff
+    style HSTS fill:#F5A623,color:#000
+```
 
 ## O que é
 
@@ -87,7 +120,7 @@ HSTS instrui o browser a usar apenas HTTPS para o domínio pelo período de `max
 - `includeSubDomains`: estende a política a todos os subdomínios do domínio. Requer que todos os subdomínios também estejam em HTTPS.
 - `preload`: opt-in para submissão à [lista HSTS preload](https://hstspreload.org/) dos browsers. Browsers que consultam a lista nunca tentam HTTP — mesmo na primeira visita, antes de receber o header. Requisitos: `maxAge ≥ 31536000`, `includeSubDomains` e `preload` todos presentes.
 
-> [!danger] Nunca habilite HSTS antes de HTTPS estar totalmente operacional
+> [!warning] Nunca habilite HSTS antes de HTTPS estar totalmente operacional
 > HSTS é cacheado pelo browser pelo tempo todo de `maxAge`. Se você habilitar HSTS com `maxAge=31536000` enquanto o site ainda serve tráfego HTTP — ou antes de o certificado TLS estar correto — os usuários que já visitaram o site ficarão bloqueados por até 1 ano. O browser recusará conexões HTTP e não há reset fácil do lado do cliente (exceto limpar manualmente o cache HSTS do browser).
 >
 > **Solução correta**: valide HTTPS completamente primeiro (certificado válido, redirect HTTP→HTTPS funcionando, sem mixed content). Então habilite HSTS com `maxAge` pequeno (86400 = 1 dia). Monitore por erros. Aumente gradualmente até `31536000`. Só então adicione `preload` se necessário.
@@ -103,6 +136,26 @@ CORS (Cross-Origin Resource Sharing) não é configurado pelo Helmet — é resp
 - **`*` + `credentials: true` é inválido** — a spec CORS proíbe explicitamente essa combinação. Browsers rejeitam a resposta. Sempre use uma allowlist de origens exatas quando `credentials: true` for necessário.
 
 A forma correta de implementar allowlist dinâmica: receba o header `Origin` da requisição, verifique se está em um `Set` de origens aprovadas, e reflita o valor exato no `Access-Control-Allow-Origin` da resposta — ou rejeite com erro se não estiver na lista.
+
+### Auditando headers em produção
+
+A forma mais rápida de verificar se os headers estão corretos é com `curl -I`:
+
+```bash
+# Verifica headers de resposta em produção
+curl -I https://api.example.com/health
+
+# Saída esperada (subset relevante):
+# content-security-policy: default-src 'self';script-src 'self' 'nonce-abc123'
+# strict-transport-security: max-age=15552000; includeSubDomains
+# x-content-type-options: nosniff
+# x-frame-options: SAMEORIGIN
+# referrer-policy: no-referrer
+```
+
+Ferramentas online como [securityheaders.com](https://securityheaders.com) e [observatory.mozilla.org](https://observatory.mozilla.org) fornecem uma pontuação e diagnóstico detalhado por header — útil para auditorias de segurança e conformidade. Automatize essa verificação em CI/CD para prevenir regressão de headers.
+
+O `curl` com `-v` revela também os headers enviados pelo cliente, útil para depurar preflight CORS.
 
 ### Configuração avançada
 
@@ -124,19 +177,33 @@ app.use(helmet({
 
 **Ordem dos middlewares:** Helmet deve ser registrado antes das rotas. Como middlewares Express são executados na ordem de registro, registrar Helmet depois de uma rota faz com que as respostas dessa rota não recebam os headers de segurança.
 
-## Armadilhas
+## Casos práticos
 
-> [!danger] CSP com `'unsafe-inline'` anula a proteção contra XSS
+**Cenário 1 — Ativação gradual de CSP em aplicação legada com inline scripts**
+
+Uma aplicação Node.js com Express e templates EJS tem dezenas de `<script>` inline espalhados pelos templates. Ativar CSP com `default-src 'self'` de imediato quebraria toda a app. A estratégia de migração em fases: (1) habilitar Helmet com `Content-Security-Policy-Report-Only` via `reportOnly: true` — o browser coleta violações sem bloquear, relatadas ao endpoint `POST /csp-report`; (2) analisar os relatórios por 1-2 semanas para mapear todos os inline scripts e recursos externos; (3) substituir inline scripts por arquivos externos ou adicionar nonces gerados por `crypto.randomBytes(16).toString('base64')` passados para os templates via `res.locals.cspNonce`; (4) mudar para modo de bloqueio (`reportOnly: false`) com a política refinada. O `[!warning]` do HSTS abaixo se aplica aqui também: validar completamente antes de ativar.
+
+**Cenário 2 — CORS com allowlist dinâmica em API multi-tenant**
+
+Uma plataforma SaaS tem clientes com domínios personalizados (`cliente1.example.com`, `empresa2.io`). A lista de origens permitidas vive no banco de dados e muda quando um cliente configura seu domínio. A implementação usa o callback `origin` do pacote `cors`: recebe o header `Origin` da requisição, busca no cache Redis (renovado a cada 5 minutos) se a origem está na lista de tenants ativos, e chama `callback(null, true)` ou `callback(new Error('Not allowed'))`. Isso evita `Access-Control-Allow-Origin: *` (inaceitável com `credentials: true`) e permite adicionar/remover origens em runtime sem redeploy. Um header de segurança extra: `Vary: Origin` deve ser adicionado nas respostas para garantir que CDNs não cacheiem a resposta de um tenant para outro.
+
+**Cenário 3 — Auditoria de headers em pipeline de CI/CD**
+
+Um projeto usa `supertest` para validar headers de segurança em cada pull request — garantindo que nenhuma mudança de configuração remova acidentalmente o Helmet ou sobrescreva a CSP com uma política mais permissiva. Os testes verificam: (a) presença de `content-security-policy` em toda resposta; (b) ausência de `x-xss-protection` (removido no Helmet v7, mas pode reaparecer se alguém adicionar o header manualmente); (c) `strict-transport-security` com `max-age` mínimo de 15552000; (d) ausência de `server` ou `x-powered-by` que expõem a versão do framework ao atacante. Qualquer falha de header bloqueia o merge — security headers como critério de qualidade, não como checklist pós-deploy.
+
+## Armadilhas comuns
+
+> [!warning] CSP com `'unsafe-inline'` anula a proteção contra XSS
 > `'unsafe-inline'` na diretiva `script-src` permite que qualquer script inline seja executado — incluindo scripts injetados por um atacante via XSS. Se você precisar de inline scripts, a solução não é `'unsafe-inline'`; é **nonces**: gere um valor aleatório por requisição com `crypto.randomBytes(16).toString('base64')`, adicione `'nonce-<valor>'` à diretiva `script-src` e o atributo `nonce="<valor>"` em cada `<script>` legítimo. Scripts injetados não conhecem o nonce e são bloqueados pelo browser.
 >
 > **Solução**: remova `'unsafe-inline'` e implemente nonces como mostrado no Snippet 2. Se você usa um template engine (Pug, EJS, Handlebars), passe `res.locals.cspNonce` para o template e adicione `nonce="{{ cspNonce }}"` a cada `<script>` no HTML.
 
-> [!danger] HSTS sem HTTPS ativo trava os usuários
+> [!warning] HSTS sem HTTPS ativo trava os usuários
 > Se o site ainda serve tráfego HTTP — ou se o certificado TLS não está correto — e você define `Strict-Transport-Security: max-age=31536000`, o browser cacheia essa instrução e recusará conexões HTTP pelo período inteiro. Não há como reverter isso do lado do servidor: o browser ignora um `max-age=0` enviado via HTTP porque já sabe que deve usar apenas HTTPS. O usuário fica bloqueado até expirar o cache manualmente ou o `maxAge` vencer.
 >
 > **Solução**: habilite HSTS apenas depois de HTTPS estar totalmente operacional. Comece com `maxAge` pequeno, monitore, aumente gradualmente.
 
-> [!danger] CORS `*` + `credentials: true` é rejeitado pelos browsers
+> [!warning] CORS `*` + `credentials: true` é rejeitado pelos browsers
 > A spec CORS proíbe `Access-Control-Allow-Origin: *` combinado com `Access-Control-Allow-Credentials: true`. Qualquer origem significa que qualquer site pode fazer requisições autenticadas — o que é uma falha de segurança grave. Browsers implementam essa proteção e rejeitam a resposta com erro de CORS.
 >
 > **Solução**: use uma allowlist de origens exatas. No pacote `cors`, implemente o callback `origin`:
@@ -393,6 +460,12 @@ A: HSTS tells browsers to always use HTTPS for the domain for `maxAge` seconds �
 
 A: The CORS spec explicitly forbids combining `Access-Control-Allow-Origin: *` with `Access-Control-Allow-Credentials: true`. The wildcard means "any origin may read this response," but sharing cookies or authorization tokens with any arbitrary origin is a fundamental security hole — any malicious site could make authenticated requests to your API on behalf of logged-in users. Browsers enforce this rule at the spec level and reject the response with a CORS error regardless of what the server sends. The fix is to echo back the specific allowed origin from an approved allowlist, making the `Access-Control-Allow-Origin` header an exact origin string — for example, `https://app.example.com` — instead of `*`. In the `cors` package, this is done via the `origin` callback: check `Set.has(origin)`, then `callback(null, true)` or `callback(new Error(...))`.
 
+## O que vem a seguir
+
+- [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node|OWASP Top 10 para Node]] — contextualiza quais dos Top 10 (XSS A03, Security Misconfiguration A05) são mitigados pelos headers que Helmet configura
+- [[03-Dominios/Tecnologia/Node/Segurança/10 - Cheatsheet e decision tree de segurança|Cheatsheet e decision tree de segurança]] — referência rápida para decisões de segurança em produção, incluindo Helmet e HSTS
+- [[03-Dominios/Tecnologia/Node/Segurança/07 - Rate limiting com express-rate-limit|Rate limiting com express-rate-limit]] — par natural do Helmet; enquanto Helmet protege o protocolo HTTP, rate limiting protege contra abuso de taxa
+
 ## Vocabulário
 
 | Termo | Definição |
@@ -407,6 +480,14 @@ A: The CORS spec explicitly forbids combining `Access-Control-Allow-Origin: *` w
 | **Security header** | Header HTTP que instrui o browser a aplicar políticas de segurança; Helmet.js automatiza a configuração correta de múltiplos security headers em uma única chamada de middleware |
 | **HSTS preload** | Lista mantida pelos browsers (Chrome, Firefox, Safari) com domínios que devem usar apenas HTTPS mesmo antes da primeira visita; opt-in via diretiva `preload` no header HSTS mais submissão em hstspreload.org |
 | **CSP report-only** | Modo de operação do CSP via header `Content-Security-Policy-Report-Only` que coleta violações sem bloquear recursos; útil para auditar antes de ativar CSP em modo de bloqueio |
+
+## Fontes
+
+- [Helmet.js docs](https://helmetjs.github.io/) — documentação oficial com lista completa de headers e opções de configuração por middleware
+- [MDN: Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy) — referência completa de diretivas CSP com exemplos, compatibilidade e casos de uso
+- [hstspreload.org](https://hstspreload.org/) — submissão e verificação de status na lista HSTS preload dos browsers
+- [MDN: Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) — explicação completa da spec CORS, preflight requests e comportamento de browsers
+- [securityheaders.com](https://securityheaders.com) — ferramenta online para auditar headers de segurança de um domínio em produção
 
 ## Veja também
 

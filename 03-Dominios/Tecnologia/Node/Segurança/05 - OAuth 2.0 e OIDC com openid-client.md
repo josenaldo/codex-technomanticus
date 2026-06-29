@@ -1,9 +1,9 @@
 ---
 title: "OAuth 2.0 e OIDC com openid-client"
 created: 2026-05-13
-updated: 2026-05-13
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -22,6 +22,31 @@ aliases:
 
 > [!abstract] TL;DR
 > OAuth 2.0 é um framework de **autorização delegada** — ele permite que um usuário conceda a uma aplicação acesso limitado a seus recursos em outro serviço, mas por si só **não autentica** ninguém: o access token não diz quem o usuário é, apenas o que ele pode fazer. OpenID Connect (OIDC) resolve isso adicionando uma camada de identidade sobre OAuth 2.0: introduz o **ID Token** (um JWT assinado que contém claims sobre o usuário) e o endpoint **UserInfo**, transformando OAuth 2.0 em um protocolo de autenticação completo. No ecossistema Node.js, `openid-client` v5 é a biblioteca de referência para implementar fluxos OIDC no lado servidor — suporta discovery automático de metadados, Authorization Code com PKCE, validação de ID Token e integração com Express ou Fastify com poucas linhas de código.
+
+## Fluxo Authorization Code + PKCE
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário (Browser)
+    participant C as Client App
+    participant AS as Authorization Server
+    participant RS as Resource Server
+
+    C->>C: Gera code_verifier + code_challenge (SHA256)
+    C->>C: Gera state + nonce → salva na sessão
+    C-->>U: Redireciona para /authorize?code_challenge=...&state=...&nonce=...
+    U->>AS: Autentica + consente escopos
+    AS-->>U: Redireciona para /callback?code=...&state=...
+    U->>C: GET /auth/callback?code=...&state=...
+    C->>C: Valida state (anti-CSRF)
+    C->>AS: POST /token (code + code_verifier + redirect_uri)
+    AS->>AS: SHA256(code_verifier) == code_challenge? ✓
+    AS-->>C: id_token (JWT) + access_token
+    C->>C: Valida id_token (sig, iss, aud, exp, nonce)
+    C->>RS: GET /userinfo (Bearer access_token)
+    RS-->>C: Claims do usuário (sub, email, name)
+    C-->>U: Sessão autenticada
+```
 
 ## O que é
 
@@ -462,21 +487,31 @@ app.get('/auth/callback',
 
 **Regra prática:** use `openid-client` quando estiver implementando OIDC em produção com requisitos de segurança (PKCE obrigatório, validação de nonce, múltiplos providers empresariais como Okta, Azure AD, Keycloak). Use `passport-oauth2` para prototipagem ou quando precisar de plugins prontos para providers populares (GitHub, Google, Facebook) com configuração mínima.
 
-## Armadilhas
+## Casos práticos
 
-> [!danger] Não validar `state` abre CSRF no fluxo OAuth
+**Cenário 1 — "Login com Google" em aplicação Express**
+
+Uma plataforma SaaS precisa de autenticação social sem gerenciar senhas. Usando `openid-client` com o issuer `https://accounts.google.com`: o Discovery automático configura todos os endpoints; a rota `/auth/login` gera `state`, `nonce` e `code_verifier`, persiste na sessão e redireciona para a URL de autorização do Google. No retorno do callback, `client.callback()` valida o `state` (anti-CSRF), o `code_verifier` (PKCE) e o `nonce` (anti-replay), e decodifica o ID Token verificando `iss`, `aud` e `exp`. O `sub` do ID Token vira o identificador persistente do usuário — estável mesmo que o email mude.
+
+**Cenário 2 — Comunicação entre microserviços com Client Credentials**
+
+Um serviço de relatórios precisa chamar o serviço de dados financeiros sem usuário humano envolvido. Usando o fluxo Client Credentials com `openid-client`: o serviço de relatórios autentica com `client_id` e `client_secret` no endpoint `/token` do Authorization Server interno (Keycloak) e recebe um access token com scope `financials:read`. O serviço financeiro valida o token via JWKS — sem consultar banco, stateless — e verifica que `scope` inclui `financials:read` antes de responder. Rotação automática de `client_secret` via Vault elimina credenciais de longa duração.
+
+## Armadilhas comuns
+
+> [!warning] Não validar `state` abre CSRF no fluxo OAuth
 > **Ataque:** o atacante cria uma URL de callback com seu próprio authorization code e engana a vítima a clicar nela. O servidor processa o code do atacante, autentica o atacante na conta da vítima — o atacante assume a sessão.
 > **Por que funciona:** sem validar `state`, o servidor aceita qualquer callback sem verificar se o fluxo foi iniciado pelo usuário legítimo.
 > **Fix:** gere `state` criptograficamente aleatório, armazene na sessão antes do redirect, e verifique `params.state === session.state` no callback. `openid-client` faz isso automaticamente quando você passa `state` para `client.callback()`.
 >
 > A mesma lógica vale para `aud` e `iss` no ID Token: não validar `aud` permite que um token emitido para outra aplicação seja aceito na sua; não validar `iss` permite tokens de issuers maliciosos. `openid-client` valida ambos automaticamente — mas se você decodificar o JWT manualmente com `jwt.decode()`, **você perde toda a validação**.
 
-> [!danger] Open redirect no callback — valide `redirect_uri` estritamente
+> [!warning] Open redirect no callback — valide `redirect_uri` estritamente
 > **Ataque:** o atacante manipula o parâmetro `redirect_uri` para apontar para um domínio que controla. O Authorization Server emite o code para o domínio do atacante, que então o usa para obter tokens válidos.
 > **Por que funciona:** Authorization Servers que fazem matching parcial da redirect_uri (ex: permite qualquer URL que comece com `https://app.example.com`) são vulneráveis a payloads como `https://app.example.com.evil.com/callback`.
 > **Fix no AS:** registre URIs exatas (não prefixos) — o RFC 6749 exige matching exato. **Fix no client:** nunca aceite `redirect_uri` dinamicamente de parâmetros do request; use sempre a URI registrada hard-coded ou via variável de ambiente validada no startup. No Express, nunca faça `redirect_uri: req.query.redirect` — isso é um open redirect instantâneo.
 
-> [!danger] Usar access token como ID Token — confusão de audiência
+> [!warning] Usar access token como ID Token — confusão de audiência
 > **Problema:** o access token não tem `aud` garantido como o `client_id` da sua aplicação. Um access token pode ser obtido por outra aplicação e apresentado à sua — você não pode distinguir se foi emitido para você.
 > **Regra:** nunca use `access_token` para determinar a identidade do usuário na sua aplicação. Use **sempre** o `id_token` (validado via `tokenSet.claims()`) ou o resultado do endpoint `/userinfo`, verificando que `sub` bate com o `sub` do ID Token.
 
@@ -538,6 +573,12 @@ A: PKCE (Proof Key for Code Exchange, RFC 7636) is a mechanism that cryptographi
 
 A: The minimum required validations for an ID Token are: (1) **signature** — verify against the issuer's JWKS public keys to ensure the token was not tampered with; (2) **`iss`** — must match the exact issuer URL you discovered or configured, preventing tokens from a different Authorization Server being accepted; (3) **`aud`** — must contain your `client_id`, preventing tokens issued for another application from being used against yours (audience confusion attack); (4) **`exp`** — must be in the future, enforcing the token's time-limited validity; (5) **`nonce`** — must match the value you sent in the authorization request, preventing replay attacks where a captured ID Token is reused. Additionally, validate `iat` with a small clock skew tolerance (typically ±5 minutes). The `openid-client` library performs all these validations automatically in `client.callback()` — but if you decode the JWT manually with something like `jwt.decode()` without verifying, you lose all security guarantees entirely.
 
+## O que vem a seguir
+
+- [[03-Dominios/Tecnologia/Node/Segurança/06 - RBAC e ABAC com casl e casbin|RBAC e ABAC com casl e casbin]] — após autenticar o usuário via OIDC, autorização granular decide o que ele pode fazer; claims do ID Token alimentam as regras CASL/Casbin
+- [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|JWT e autenticação com jsonwebtoken]] — aprofunda a validação de tokens JWT emitidos pelo Authorization Server
+- [[03-Dominios/Tecnologia/Node/Segurança/09 - OWASP Top 10 para Node|OWASP Top 10 para Node]] — contextualiza SSRF (A10) e Broken Authentication (A07) que afetam fluxos OAuth
+
 ## Vocabulário
 
 | Termo | Definição |
@@ -554,6 +595,14 @@ A: The minimum required validations for an ID Token are: (1) **signature** — v
 | **UserInfo endpoint** | Endpoint padronizado pelo OIDC que retorna claims adicionais do usuário autenticado; acessado com o access token |
 | **Discovery** | Mecanismo OIDC para descoberta automática de metadados do issuer via `/.well-known/openid-configuration`; implementado via `Issuer.discover()` |
 | **Client Credentials** | Grant type OAuth 2.0 para comunicação machine-to-machine; não envolve usuário humano |
+
+## Fontes
+
+- [RFC 6749 — OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) — especificação original do framework de autorização
+- [RFC 7636 — PKCE](https://datatracker.ietf.org/doc/html/rfc7636) — Proof Key for Code Exchange; leitura obrigatória para entender a proteção contra interceptação de code
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) — especificação OIDC completa: ID Token, UserInfo, Discovery, validações obrigatórias
+- [openid-client — npm](https://www.npmjs.com/package/openid-client) — documentação da biblioteca v5 com exemplos de Discovery, Authorization Code + PKCE e Client Credentials
+- [OAuth 2.1 draft](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1) — consolidação das RFCs OAuth 2.0 com PKCE obrigatório e remoção de flows legados
 
 ## Veja também
 
