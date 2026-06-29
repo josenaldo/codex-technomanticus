@@ -1,9 +1,9 @@
 ---
 title: "PostgreSQL com node-postgres"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-progress: backlog
+fase: Iniciado
 status: growing
 publish: true
 tags:
@@ -32,6 +32,33 @@ aliases:
 `postgres.js` é uma biblioteca independente (não relacionada ao pacote `pg`) que reimagina o driver com tagged template literals, sem a necessidade de objetos parametrizados separados — a interpolação na string `sql` já é tratada como parâmetro seguro automaticamente.
 
 ## Como funciona
+
+```mermaid
+flowchart LR
+    App["Aplicação Node.js"]:::app
+
+    subgraph Pool["pg.Pool (max: N conexões)"]
+        direction TB
+        C1["Client 1"]:::client
+        C2["Client 2"]:::client
+        CN["Client N"]:::client
+    end
+
+    PG[("PostgreSQL\nServidor")]:::db
+
+    App -- "pool.query()\n[borrow automático]" --> Pool
+    Pool -- "TCP / TLS" --> PG
+    PG -- "ResultSet" --> Pool
+    Pool -- "release automático" --> App
+
+    App -. "pool.connect()\n[borrow explícito\npara transações]" .-> C1
+    C1 -. "BEGIN / COMMIT\n/ ROLLBACK" .-> PG
+    C1 -. "client.release()" .-> Pool
+
+    classDef app fill:#4A90D9,color:#fff,stroke:#2d6fa8
+    classDef client fill:#F5A623,color:#000,stroke:#c4841b
+    classDef db fill:#D0021B,color:#fff,stroke:#9e0114
+```
 
 ### `pg.Pool` vs `pg.Client`
 
@@ -358,25 +385,291 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!danger] Pool exausto — a armadilha silenciosa de produção
-> Com `connectionTimeoutMillis: 0` (padrão), uma aplicação com pool exausto simplesmente aguarda indefinidamente por uma conexão livre. Requisições HTTP ficam presas, latência dispara e nenhum erro é logado — parece um "travamento" sem causa aparente. Sempre configure `connectionTimeoutMillis` (5000–10000ms) para que o erro seja explícito e rápido. Monitore `pool.totalCount`, `pool.idleCount` e `pool.waitingCount` via métricas.
+> **O que acontece:** Com `connectionTimeoutMillis: 0` (padrão), uma aplicação com pool exausto simplesmente aguarda indefinidamente por uma conexão livre. Requisições HTTP ficam presas, latência dispara e nenhum erro é logado — parece um "travamento" sem causa aparente.
+>
+> **Por quê:** O padrão zero de `connectionTimeoutMillis` foi pensado para cenários de uso simples onde esperar é preferível a falhar, mas em produção com alta concorrência, cria silêncio total quando o pool está saturado.
+>
+> **Como evitar:** Sempre configure `connectionTimeoutMillis: 5000` a `10000`. Monitore `pool.totalCount`, `pool.idleCount` e `pool.waitingCount` como métricas de alerta — quando `waitingCount > 0` com frequência, o pool está subdimensionado.
 
 > [!danger] Connection leak por `client.release()` esquecido
-> Cada `pool.connect()` que não tem `client.release()` correspondente vaza uma conexão. Com `max: 10`, apenas 10 vazamentos são suficientes para travar toda a aplicação. Sempre coloque `client.release()` no `finally`. Para detectar leaks em desenvolvimento, configure `allowExitOnIdle: true` — se o processo não encerrar quando deveria, há um client não liberado.
+> **O que acontece:** Com `max: 10`, apenas 10 chamadas a `pool.connect()` sem `client.release()` correspondente são suficientes para travar toda a aplicação. Queries seguintes penduram aguardando conexões que nunca voltam.
+>
+> **Por quê:** Cada `pool.connect()` retira uma conexão do pool. Se o código lança exceção antes do `client.release()`, a conexão nunca retorna — mesmo que o `try` termine.
+>
+> **Como evitar:** Sempre coloque `client.release()` no bloco `finally`, nunca só no `try`. Em desenvolvimento, configure `allowExitOnIdle: true` — se o processo não encerrar quando deveria, há um client não liberado em algum lugar.
 
 > [!warning] Múltiplas queries em sequência não garantem a mesma conexão no Pool
-> `pool.query()` pega uma conexão do pool, executa a query e devolve. A próxima `pool.query()` pode pegar uma conexão diferente. Isso significa que variáveis de sessão (`SET`, `SET LOCAL`), advisory locks e estados de transação não persistem entre chamadas ao `pool.query()`. Para qualquer coisa que precise de estado de sessão, use `pool.connect()` e um `client` explícito.
+> **O que acontece:** Variáveis de sessão (`SET`, `SET LOCAL`), advisory locks e estados de transação não persistem entre chamadas consecutivas a `pool.query()`.
+>
+> **Por quê:** Cada `pool.query()` faz borrow de uma conexão, executa e devolve. A próxima chamada pode pegar uma conexão fisicamente diferente do pool — sem nenhum aviso.
+>
+> **Como evitar:** Para qualquer coisa que precise de estado de sessão contínuo, use `pool.connect()` e um `client` explícito, que garante a mesma conexão durante toda a sequência.
 
 > [!warning] `ssl: false` em produção
-> O padrão do `pg` é sem SSL. Em produção, conexões sem SSL transmitem dados em texto plano — incluindo queries com dados sensíveis. Sempre configure `ssl: { rejectUnauthorized: true }` para produção. Em ambientes de desenvolvimento local com PostgreSQL rodando em Docker, `ssl: false` é aceitável.
+> **O que acontece:** Dados sensíveis — queries, parâmetros, resultados — trafegam em texto plano entre a aplicação e o banco.
+>
+> **Por quê:** O padrão do `pg` é sem SSL para facilitar setup de desenvolvimento. Sem configuração explícita, produção herda esse padrão.
+>
+> **Como evitar:** Sempre configure `ssl: { rejectUnauthorized: true }` para produção. Em desenvolvimento local com PostgreSQL em Docker, `ssl: false` é aceitável e esperado.
 
 > [!warning] Não configurar `min` resulta em cold start nas primeiras requisições
-> Com `min: 0` (padrão), o pool começa vazio. As primeiras requisições após um deploy ou scale-up terão latência extra (30–100ms) para estabelecer a conexão com o PostgreSQL. Configure `min: 2` ou superior para manter um número base de conexões aquecidas.
+> **O que acontece:** As primeiras requisições após um deploy ou scale-up têm latência extra de 30–100ms por conexão, o que pode violar SLOs de latência e causar timeouts em cascata durante picos de tráfego.
+>
+> **Por quê:** Com `min: 0` (padrão), o pool começa vazio. Cada nova requisição precisa estabelecer handshake TCP + autenticação PostgreSQL antes de executar a query.
+>
+> **Como evitar:** Configure `min: 2` ou superior para manter conexões aquecidas. O valor ideal é o número de conexões que o serviço normalmente usa em carga baixa.
 
 > [!danger] Interpolação de string direta — SQL injection garantida
-> Construir queries com template literals ou concatenação de strings (`"SELECT * FROM users WHERE id = " + userId`) é vulnerabilidade garantida. Use sempre os placeholders `$1`, `$2`, ... do `pg` ou a interpolação segura do `postgres.js`. Isso se aplica inclusive a nomes de tabelas e colunas — se precisar de nomes dinâmicos, use uma allowlist explícita no código.
+> **O que acontece:** Qualquer valor controlado pelo usuário injetado diretamente na string SQL pode executar SQL arbitrário — incluindo `DROP TABLE`, exfiltração de dados ou escalada de privilégios.
+>
+> **Por quê:** Construir queries com template literals ou concatenação (`"SELECT * FROM users WHERE id = " + userId`) mistura dados e código SQL antes de o banco ver a query. Não há separação entre estrutura e valor.
+>
+> **Como evitar:** Use sempre os placeholders `$1`, `$2`, ... do `pg` ou a interpolação segura do `postgres.js`. Isso se aplica inclusive a nomes de tabelas e colunas — se precisar de nomes dinâmicos, use uma allowlist explícita no código.
+
+---
+
+## Casos práticos
+
+### Cenário 1 — API REST com pool compartilhado
+
+Uma API Express de usuários que expõe endpoints de leitura e escrita. O pool é inicializado uma vez no módulo `db.ts` e importado por todos os handlers — não há necessidade de abrir novas conexões por requisição.
+
+```typescript
+// src/db.ts — módulo singleton do pool
+import { Pool } from 'pg';
+
+export const pool = new Pool({
+  host: process.env.PGHOST ?? 'localhost',
+  port: Number(process.env.PGPORT ?? 5432),
+  database: process.env.PGDATABASE,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  ssl: process.env.NODE_ENV === 'production'
+    ? { rejectUnauthorized: true }
+    : false,
+  max: 10,
+  min: 2,
+  idleTimeoutMillis: 30_000,
+  connectionTimeoutMillis: 5_000,
+});
+
+// src/routes/users.ts — endpoint Express usando pool compartilhado
+import { Router, Request, Response } from 'express';
+import { pool } from '../db';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  created_at: Date;
+}
+
+const router = Router();
+
+// GET /users?status=active&page=1&limit=20
+router.get('/', async (req: Request, res: Response) => {
+  const { status = 'active', page = '1', limit = '20' } = req.query;
+  const offset = (Number(page) - 1) * Number(limit);
+
+  try {
+    const result = await pool.query<User>(
+      `SELECT id, name, email, created_at
+       FROM users
+       WHERE status = $1
+       ORDER BY created_at DESC
+       LIMIT $2 OFFSET $3`,
+      [status, Number(limit), offset],
+    );
+
+    res.json({
+      data: result.rows,
+      meta: {
+        page: Number(page),
+        limit: Number(limit),
+        total: result.rowCount,
+      },
+    });
+  } catch (err) {
+    console.error('[GET /users] Database error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /users — inserção com RETURNING para evitar segundo round-trip
+router.post('/', async (req: Request, res: Response) => {
+  const { name, email } = req.body as { name: string; email: string };
+
+  if (!name || !email) {
+    return res.status(400).json({ error: 'name and email are required' });
+  }
+
+  try {
+    const result = await pool.query<User>(
+      `INSERT INTO users (name, email, created_at)
+       VALUES ($1, $2, NOW())
+       RETURNING id, name, email, created_at`,
+      [name, email],
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err: any) {
+    // unique_violation = código 23505 no PostgreSQL
+    if (err.code === '23505') {
+      return res.status(409).json({ error: 'Email already in use' });
+    }
+    console.error('[POST /users] Database error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+export default router;
+```
+
+> [!tip] RETURNING elimina um round-trip desnecessário
+> Em vez de fazer `INSERT` e depois `SELECT` para obter o registro criado, o PostgreSQL suporta `RETURNING` na própria instrução `INSERT`. Isso reduz latência e garante que os dados retornados reflitam exatamente o que foi persistido, incluindo defaults e triggers.
+
+---
+
+### Cenário 2 — Worker de background com transação
+
+Um worker que processa jobs de uma fila no banco de dados. Cada job é marcado como `processing`, executado, e então marcado como `done` — tudo dentro de uma transação, garantindo que um job nunca fique em estado inconsistente se o processo cair no meio.
+
+```typescript
+// src/workers/job-processor.ts
+import { pool } from '../db';
+
+interface Job {
+  id: number;
+  type: string;
+  payload: Record<string, unknown>;
+  attempts: number;
+}
+
+const MAX_ATTEMPTS = 3;
+const POLLING_INTERVAL_MS = 2_000;
+
+async function processNextJob(): Promise<boolean> {
+  // Pega um client explícito do pool — transações exigem a mesma conexão física
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // FOR UPDATE SKIP LOCKED: pega o próximo job disponível sem bloquear outros workers
+    // Essencial em deploys com múltiplas instâncias para evitar job duplicado
+    const { rows } = await client.query<Job>(
+      `SELECT id, type, payload, attempts
+       FROM jobs
+       WHERE status = 'pending'
+         AND attempts < $1
+         AND scheduled_at <= NOW()
+       ORDER BY scheduled_at ASC
+       LIMIT 1
+       FOR UPDATE SKIP LOCKED`,
+      [MAX_ATTEMPTS],
+    );
+
+    if (rows.length === 0) {
+      await client.query('ROLLBACK');
+      return false; // fila vazia
+    }
+
+    const job = rows[0];
+
+    // Marca o job como em processamento antes de executar
+    await client.query(
+      `UPDATE jobs
+       SET status = 'processing', started_at = NOW(), attempts = attempts + 1
+       WHERE id = $1`,
+      [job.id],
+    );
+
+    await client.query('COMMIT');
+
+    // Executa o job FORA da transação para não manter lock durante I/O longo
+    await executeJob(job);
+
+    // Marca como concluído em uma transação separada
+    await pool.query(
+      `UPDATE jobs
+       SET status = 'done', finished_at = NOW()
+       WHERE id = $1`,
+      [job.id],
+    );
+
+    return true;
+  } catch (err) {
+    // Rollback na transação de claim (se ainda aberta)
+    try { await client.query('ROLLBACK'); } catch { /* já fechada */ }
+
+    // Marca job como falho para retry posterior
+    try {
+      await pool.query(
+        `UPDATE jobs
+         SET status = 'failed', error = $1, finished_at = NOW()
+         WHERE id = $2`,
+        [(err as Error).message, /* id perdido se commit não ocorreu */],
+      );
+    } catch { /* falha ao marcar falha — log e segue */ }
+
+    console.error('[job-processor] Error processing job:', err);
+    return false;
+  } finally {
+    // CRÍTICO: sempre libera o client, mesmo em erro
+    client.release();
+  }
+}
+
+async function executeJob(job: Job): Promise<void> {
+  // Dispatcher por tipo de job
+  switch (job.type) {
+    case 'send_email':
+      // await emailService.send(job.payload);
+      break;
+    case 'generate_report':
+      // await reportService.generate(job.payload);
+      break;
+    default:
+      throw new Error(`Unknown job type: ${job.type}`);
+  }
+}
+
+// Loop de polling principal
+async function startWorker(): Promise<void> {
+  console.log('[job-processor] Worker started');
+
+  while (true) {
+    const hadWork = await processNextJob();
+
+    if (!hadWork) {
+      // Fila vazia — aguarda antes do próximo poll
+      await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL_MS));
+    }
+    // Se havia trabalho, processa imediatamente o próximo sem esperar
+  }
+}
+
+startWorker().catch((err) => {
+  console.error('[job-processor] Fatal error, exiting:', err);
+  process.exit(1);
+});
+```
+
+> [!tip] `FOR UPDATE SKIP LOCKED` — o padrão correto para workers concorrentes
+> `SELECT ... FOR UPDATE` sem `SKIP LOCKED` bloqueia todos os outros workers enquanto um job está sendo processado. Com `SKIP LOCKED`, cada worker pula jobs já bloqueados e vai direto ao próximo disponível, permitindo N workers processarem N jobs em paralelo sem contenção.
+
+---
+
+## O que vem a seguir
+
+Dominar o `pg` com pool e transações é a fundação da camada de dados em Node.js. O próximo passo natural é adicionar cache com Redis para reduzir carga no banco, entender padrões de resiliência para lidar com falhas de rede e banco, e explorar ORMs que abstraem essas operações de baixo nível:
+
+- [[03-Dominios/Tecnologia/Node/Integrações/02 - Redis e ioredis|Redis e ioredis]] — cache, sessões e pub/sub com ioredis
+- [[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead|Padrões de resiliência]] — retry, circuit breaker e bulkhead para integrações externas
+- [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index|ORMs e banco de dados]] — Sequelize, Prisma, TypeORM e Drizzle sobre o `pg`
 
 ---
 

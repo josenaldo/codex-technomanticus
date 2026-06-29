@@ -1,9 +1,9 @@
 ---
 title: "Clientes HTTP - fetch, axios, got e undici"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Magus
 status: growing
 publish: true
 tags:
@@ -80,6 +80,25 @@ As configurações críticas do `Pool` são:
 - `keepAliveTimeout`: quanto tempo manter conexão idle antes de fechar
 
 O `undici` também é o motor por trás do `fetch` global do Node 18+ — quando você chama `fetch()`, internamente é um `undici.fetch()` com um `Agent` global padrão. Acessar o `Pool` diretamente permite tunar parâmetros que não são expostos pela Fetch API.
+
+```mermaid
+flowchart LR
+    APP["Código da aplicação"] --> DEC{Critério}
+
+    DEC -->|"zero deps\nEdge runtime"| FE["fetch nativo\n(AbortSignal.timeout)"]
+    DEC -->|"interceptors\nlegado/equipe"| AX["axios\n(interceptors)"]
+    DEC -->|"retry embutido\nstreaming"| GO["got\n(hooks + retry)"]
+    DEC -->|"alto throughput\npool tuning"| UN["undici.Pool\n(connections + timeouts)"]
+
+    FE -->|"HTTP/1.1 via undici"| SV[("Servidor HTTP")]
+    AX -->|"HTTP/1.1"| SV
+    GO -->|"HTTP/1.1 ou /2"| SV
+    UN -->|"HTTP/1.1 pooled"| SV
+
+    style APP fill:#4A90D9,color:#fff
+    style DEC fill:#F5A623,color:#fff
+    style SV fill:#4A90D9,color:#fff
+```
 
 ## Snippets
 
@@ -403,7 +422,17 @@ describe('fetchUserById', () => {
 > [!tip] MSW como alternativa
 > Para testes de integração mais realistas, o [MSW (Mock Service Worker)](https://mswjs.io/) intercepta requests na camada de rede usando Service Workers (browser) ou `@mswjs/interceptors` (Node), permitindo mock declarativo por handler sem alterar o código de produção.
 
-## Armadilhas
+## Casos práticos
+
+### Cenário 1 — Gateway API com axios e interceptors de autenticação
+
+Um BFF (Backend For Frontend) centraliza chamadas para três microserviços internos. Cada serviço exige um JWT diferente — o serviço de catálogo usa um token de service account, o de pagamentos exige um token com claim `scope:payment`, e o de usuários exige o JWT do usuário final passado pelo cliente. A solução cria três instâncias axios distintas (`catalogClient`, `paymentClient`, `userClient`), cada uma com um interceptor de request que injeta o token correto via `config.headers.set('Authorization', ...)`. Um interceptor de response compartilhado trata 401 (refresh de token via `axios.create` com retry manual) e 5xx (log estruturado com correlationId do header). Quando o serviço de catálogo cai com 503, o interceptor de response detecta, incrementa um contador em Prometheus e lança `ServiceUnavailableError` padronizado — sem código de erro duplicado em cada rota do BFF.
+
+### Cenário 2 — Pipeline de dados com undici.Pool e alto throughput
+
+Um job noturno precisa enriquecer 50.000 registros de produtos consultando a API de um fornecedor externo com limite de 100 req/s. A solução usa `undici.Pool` com `connections: 10` e um semáforo de concorrência (`p-limit(10)`) para respeitar o rate limit: processa 10 requests paralelos por vez, cada um com `headersTimeout: 3_000` e `bodyTimeout: 10_000`. O pool reutiliza as mesmas 10 conexões TCP durante as 8 horas do job — sem overhead de handshake em cada request. Os erros `429 Too Many Requests` são capturados, o header `Retry-After` é lido, e o job dorme pelo tempo indicado antes de retomar. Com `got` em vez de `undici` direto, o retry automático trataria os 429s nativamente, mas sem controle de pool size. A escolha de `undici` direto dá o tuning fino de conexões que o volume do job exige.
+
+## Armadilhas comuns
 
 > [!danger] Não configurar timeout — request pendente indefinidamente
 > O `fetch` nativo **não tem timeout padrão**. Uma requisição para um servidor que aceita a conexão mas nunca responde ficará pendente para sempre, consumindo um file descriptor e potencialmente travando toda a aplicação em ambientes sem retry. Sempre configure `AbortSignal.timeout(ms)` ou um `AbortController` com `setTimeout`. O mesmo vale para `undici` sem `headersTimeout`/`bodyTimeout`.
@@ -473,3 +502,18 @@ Prefer **`got`** when you need battle-tested retry logic with exponential backof
 | timeout por fase | Estratégia de timeout que define prazos separados para cada fase da requisição: tempo para estabelecer conexão TCP (`connect`), tempo para enviar o request (`send`), e tempo para receber o primeiro byte do response (`response`). Mais preciso que um timeout único para toda a operação. |
 | `response.body` | Propriedade do objeto `Response` do `fetch` que expõe o body como `ReadableStream`. Permite consumo incremental de payloads grandes sem carregar tudo na memória, via `getReader()` ou `pipeThrough()`. |
 | thundering herd | Problema em retry sem jitter: múltiplos clientes que falham simultaneamente tentam novamente ao mesmo tempo, amplificando a carga no servidor. Resolvido adicionando aleatoriedade ao delay de retry (`jitter`). |
+
+## O que vem a seguir
+
+- **[[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead|Padrões de resiliência]]** — os clientes HTTP são o ponto de entrada para falhas externas; retry, circuit breaker e bulkhead são os padrões que transformam chamadas HTTP frágeis em chamadas resilientes.
+- **[[03-Dominios/Tecnologia/Node/Integrações/10 - Cheatsheet e decision tree de integrações|Cheatsheet e decision tree]]** — com todos os clientes na cabeça, o decision tree final consolida quando usar cada um em função de throughput, ambiente e features necessárias.
+- **OpenTelemetry + fetch instrumentation** — explorar como instrumentar automaticamente chamadas `fetch` e `axios` com spans de trace via `@opentelemetry/instrumentation-fetch` e `@opentelemetry/instrumentation-http` para rastrear latência de chamadas externas em APM.
+
+## Veja também
+
+- [[03-Dominios/Tecnologia/Node/Integrações/index|Integrações]]
+- [[Node.js]]
+- [WHATWG Fetch API Spec](https://fetch.spec.whatwg.org/)
+- [undici — documentação oficial](https://undici.nodejs.org/)
+- [got — documentação oficial](https://github.com/sindresorhus/got)
+- [axios — documentação oficial](https://axios-http.com/)

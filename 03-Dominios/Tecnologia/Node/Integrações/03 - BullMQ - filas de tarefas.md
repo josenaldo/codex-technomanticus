@@ -1,9 +1,9 @@
 ---
 title: "BullMQ - filas de tarefas"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Iniciado
 status: growing
 publish: true
 tags:
@@ -31,6 +31,23 @@ BullMQ separa responsabilidades em três entidades principais:
 - **`Queue`** — o produtor. Recebe jobs, serializa como JSON e os empilha no Redis via lista ou sorted set (dependendo do delay/priority). Não processa nada sozinho.
 - **`Worker`** — o consumidor. Faz polling bloqueante no Redis (`BRPOPLPUSH` internamente), pega um job, executa o processador e registra o resultado. Pode rodar em processos ou máquinas separadas.
 - **`QueueEvents`** — o observador. Subscreve em streams Redis para emitir eventos de ciclo de vida (`completed`, `failed`, `progress`, `stalled`). Útil para logging centralizado e métricas sem poluir o código do worker.
+
+```mermaid
+flowchart LR
+    P["Producer\n(Queue.add)"] -->|"LMOVE (Lua)"| W["waiting\nlist Redis"]
+    W -->|"BLMOVE worker"| A["active\nsorted set"]
+    A -->|"sucesso"| C["completed\nsorted set"]
+    A -->|"exceção"| F{"tentativas\nrestantes?"}
+    F -->|"sim"| W
+    F -->|"não"| DL["failed\nsorted set"]
+
+    style P fill:#4A90D9,color:#fff
+    style W fill:#4A90D9,color:#fff
+    style A fill:#F5A623,color:#fff
+    style C fill:#4A90D9,color:#fff
+    style F fill:#F5A623,color:#fff
+    style DL fill:#D0021B,color:#fff
+```
 
 A camada de persistência é 100% Redis. Não há banco de dados SQL envolvido. Todos os estados de job são armazenados em chaves Redis com prefixo `bull:<queue-name>:`.
 
@@ -301,7 +318,17 @@ process.on('SIGTERM', async () => {
 })
 ```
 
-## Armadilhas
+## Casos práticos
+
+### Cenário 1 — Envio assíncrono de e-mails de boas-vindas
+
+Um SaaS B2B precisa enviar e-mail de boas-vindas após o cadastro do usuário, mas o tempo de resposta da rota POST `/register` não pode depender da latência do provedor de e-mail (SendGrid, SES). A solução é separar o fluxo: a rota cadastra o usuário no banco, adiciona um job na `emailQueue` com `{ userId, template: 'welcome' }` e retorna `201` imediatamente. Um Worker separado processa o job — tenta enviar o e-mail, aplica `attempts: 3` com `backoff: exponential` para lidar com falhas transitórias do provedor, e usa `removeOnComplete: { count: 200 }` para não acumular histórico no Redis. O resultado é visível via Bull Board: cada job tem id, payload, tempo de processamento e status. Se o SendGrid ficar fora por 10 minutos, os jobs ficam em retry automático e disparam assim que o serviço volta, sem perda de e-mails e sem código extra no controller da rota.
+
+### Cenário 2 — Pipeline de processamento de vídeo com FlowProducer
+
+Uma plataforma de cursos online precisa processar vídeos enviados pelos instrutores em três etapas sequenciais com dependência: (1) transcodificar para múltiplas resoluções, (2) gerar thumbnail, (3) atualizar o registro do vídeo no banco e notificar o instrutor. As etapas 1 e 2 podem rodar em paralelo; a etapa 3 só pode rodar quando ambas terminarem. O `FlowProducer` modela isso naturalmente: um job pai `update-video-record` tem dois filhos `transcode-video` e `generate-thumbnail`, cada um em sua própria fila com workers dedicados. O sistema de produção usa três máquinas: uma para transcodificação (CPU intensiva), uma para thumbnails (ffmpeg) e uma genérica para atualizações de banco. O BullMQ garante que o job pai só entrará em `active` após ambos os filhos completarem, e o `job.getChildrenValues()` no processador pai recebe os paths dos artefatos gerados por cada filho.
+
+## Armadilhas comuns
 
 > [!danger] Esquecer `removeOnComplete` e `removeOnFail`
 > Por padrão, BullMQ mantém **todos** os jobs completados e falhos no Redis indefinidamente. Em filas de alto volume, isso consome memória Redis progressivamente até causar OOM ou degradação severa de performance. Sempre defina `removeOnComplete` e `removeOnFail` na criação do job ou como default na Queue.
@@ -376,6 +403,12 @@ The decision comes down to job semantics versus event semantics. I choose BullMQ
 | **concurrency** | Número máximo de jobs que um Worker pode processar simultaneamente. Padrão é 1 (serial). Aumentar melhora throughput mas aumenta consumo de recursos (conexões de banco, memória, CPU). |
 | **BRPOPLPUSH** | Comando Redis bloqueante que remove um elemento do final de uma lista e insere no início de outra, atomicamente. Base do mecanismo de dequeue do BullMQ (versões anteriores; BullMQ v3+ usa `LMOVE`). |
 | **removeOnComplete** | Opção de job que controla quantos jobs completados são mantidos no Redis. Aceita `boolean`, `number` (count) ou `{ count, age }`. Essencial para controlar uso de memória em filas de alto volume. |
+
+## O que vem a seguir
+
+- **[[03-Dominios/Tecnologia/Node/Integrações/04 - Kafka com kafkajs|Kafka com kafkajs]]** — quando os jobs de fila crescem para streaming de eventos com múltiplos consumidores independentes e necessidade de replay, Kafka é o próximo passo natural após dominar BullMQ.
+- **[[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead|Padrões de resiliência]]** — o retry do BullMQ cobre a camada de fila; os workers ainda precisam de circuit breaker e bulkhead para proteger chamadas a serviços externos dentro do processador.
+- **Bull Board / BullMQ Pro** — explorar a UI de monitoramento open-source (`@bull-board/api`) e as extensões do BullMQ Pro (grupos de filas, rate limiters por chave, job batching nativo) para cenários de produção de médio a grande porte.
 
 ## Veja também
 

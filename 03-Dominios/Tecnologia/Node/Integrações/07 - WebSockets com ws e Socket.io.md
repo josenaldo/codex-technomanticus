@@ -1,9 +1,9 @@
 ---
 title: "WebSockets com ws e Socket.io"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -88,6 +88,22 @@ cliente recebe responseData no callback
 ```
 
 A diferença crítica: Socket.io **não é** WebSocket puro. Um cliente WebSocket nativo não consegue conectar a um servidor Socket.io sem a biblioteca cliente correspondente, porque o protocolo de handshake customizado (`EIO=4`) não é HTTP WebSocket padrão.
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant S as Servidor Node.js
+
+    B->>S: GET /ws (Upgrade: websocket)
+    S-->>B: 101 Switching Protocols
+    Note over B,S: Canal TCP full-duplex estabelecido
+    B->>S: frame TEXT {"type":"message","text":"olá"}
+    S->>B: frame TEXT {"type":"message","text":"olá","from":"ws://..."}
+    S->>B: frame PING
+    B-->>S: frame PONG (automático)
+    B->>S: frame CLOSE (1000 Normal Closure)
+    S-->>B: frame CLOSE (echo)
+```
 
 ## Snippets
 
@@ -385,7 +401,17 @@ async function bootstrap(): Promise<void> {
 bootstrap().catch(console.error);
 ```
 
-## Armadilhas
+## Casos práticos
+
+### Cenário 1 — Colaboração em tempo real num editor de documentos
+
+Uma ferramenta de edição colaborativa (tipo Notion ou Google Docs simplificado) precisa propagar mudanças de texto entre usuários que editam o mesmo documento simultaneamente. Cada documento tem uma room no Socket.io (`doc:${docId}`). Quando o usuário A aplica uma operação (ex.: inserir texto na posição 42), o cliente emite `socket.emit('operation', { docId, op, version })` com um acknowledgement; o servidor valida a operação, aplica operational transformation se necessário, e confirma via callback antes de fazer `io.to('doc:${docId}').emit('operation', {...})` para os demais editores. O Redis Adapter garante que usuários no Pod A e Pod B do Kubernetes recebam o evento. O heartbeat detecta usuários que fecharam o navegador abruptamente, removendo o cursor deles da interface dos outros. Sem WebSocket full-duplex e rooms, essa latência de propagação de < 100ms seria impossível com polling HTTP.
+
+### Cenário 2 — Feed de preços em tempo real com `ws` puro
+
+Uma corretora de valores precisa transmitir cotações de 500 ações para clientes conectados com latência abaixo de 50ms e throughput máximo. O Socket.io seria overhead desnecessário — o cliente é o app mobile proprietário que implementa WebSocket nativo. A solução usa `ws` diretamente: o `WebSocketServer` recebe conexões com autenticação via JWT no header de upgrade, armazena os sockets num `Map<accountId, WebSocket>` para envios diretos por conta, e um producer interno faz `wss.clients.forEach(client => client.send(JSON.stringify(tick)))` a cada batch de cotações (a cada 100ms). O heartbeat com `ping`/`pong` a cada 30s detecta conexões zumbi em mobile que perderam sinal sem fechar a conexão. O payload protobuf binário (via `ws.send(buffer)`) reduz o tamanho dos frames em 60% comparado a JSON.
+
+## Armadilhas comuns
 
 > [!danger] Não implementar heartbeat em `ws` — clientes zumbis acumulam
 > A biblioteca `ws` não tem heartbeat automático. Quando um cliente perde conectividade de rede abruptamente (queda de Wi-Fi, reinicialização de roteador), o servidor **não recebe** o evento `close`. O socket fica no `Set` `wss.clients` com `readyState = OPEN` indefinidamente. Em produção com centenas de conexões concorrentes, isso é um leak de memória garantido. **Solução**: implemente o ciclo de `ping`/`pong` como mostrado no Snippet 2. O Socket.io tem heartbeat automático configurável via `pingInterval` e `pingTimeout`.
@@ -445,6 +471,12 @@ You should prefer `ws` over Socket.io when you need to interoperate with clients
 | **fallback** | Mecanismo do Socket.io para degradar graciosamente de WebSocket para HTTP Long Polling quando o ambiente não suporta o Upgrade (proxies, load balancers legados) |
 | **long polling** | Técnica HTTP onde o cliente faz uma requisição e o servidor a mantém aberta até ter dados para enviar; simula push server-to-client sobre HTTP puro |
 | **SSE** | Server-Sent Events — API HTTP nativa para streaming unidirecional servidor → cliente (`Content-Type: text/event-stream`); simples, stateless, não requer biblioteca extra |
+
+## O que vem a seguir
+
+- **[[03-Dominios/Tecnologia/Node/Integrações/08 - Clientes HTTP - fetch, axios, got e undici|Clientes HTTP]]** — Server-Sent Events (SSE) é uma alternativa mais simples para push unidirecional; entender os clientes HTTP e o fetch nativo prepara o terreno para comparar WebSocket vs SSE vs polling com clareza.
+- **[[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead|Padrões de resiliência]]** — clientes WebSocket precisam de reconexão automática com backoff exponencial; entender retry e circuit breaker no contexto de integração completa a visão de resiliência para conexões persistentes.
+- **Socket.io cluster mode + sticky sessions** — explorar a combinação de `cluster` (Node.js multi-processo) com `@socket.io/redis-adapter` e configuração de sticky sessions no load balancer para deployments sem Kubernetes.
 
 ## Veja também
 

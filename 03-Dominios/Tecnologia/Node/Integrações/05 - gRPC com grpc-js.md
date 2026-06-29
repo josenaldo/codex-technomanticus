@@ -1,9 +1,9 @@
 ---
 title: "gRPC com grpc-js"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -64,6 +64,22 @@ No **server streaming**, o handler recebe `call` como `ServerWritableStream`: us
 No **client streaming**, o handler recebe `call` como `ServerReadableStream`: escuta `call.on('data', ...)`, `call.on('end', ...)` e ao final chama `callback(null, responseObj)`.
 
 No **bidi streaming**, o handler recebe `call` como `ServerDuplexStream`: combina `call.write()` + `call.on('data')` simultaneamente.
+
+```mermaid
+sequenceDiagram
+    participant C as Cliente (Stub)
+    participant CH as Canal HTTP/2
+    participant S as Servidor gRPC
+    participant H as Handler
+
+    C->>CH: Serialize protobuf + Metadata
+    CH->>S: HTTP/2 stream (binary frame)
+    S->>H: Deserialize → call.request
+    H-->>S: callback(null, response)
+    S-->>CH: Serialize response protobuf
+    CH-->>C: HTTP/2 response frame
+    C-->>C: Deserialize → objeto TypeScript
+```
 
 ## Snippets de código
 
@@ -352,7 +368,17 @@ function getUser(call: grpc.ServerUnaryCall<any, any>, callback: grpc.sendUnaryD
 }
 ```
 
-## Armadilhas
+## Casos práticos
+
+### Cenário 1 — Comunicação interna entre microserviços com baixa latência
+
+Um sistema de e-commerce tem três serviços: `order-service`, `inventory-service` e `payment-service`. Cada chamada do checkout precisa verificar estoque e processar pagamento em sequência. Com REST, cada chamada carrega overhead de serialização JSON + headers HTTP/1.1; com 10 campos no payload e 5ms de RTT, isso é aceitável. Porém sob carga de 5.000 checkouts/segundo, a serialização JSON e as múltiplas conexões TCP começam a ser gargalo. A migração para gRPC resolve dois problemas: o payload protobuf de `CheckInventoryRequest` é 60% menor que o equivalente JSON, e o canal HTTP/2 multiplexa as chamadas a `inventory-service` e `payment-service` concorrentemente sobre a mesma conexão TCP. O arquivo `.proto` compartilhado via repositório de contratos (monorepo ou npm privado) garante que se o `inventory-service` adiciona um campo `warehouseId: string = 4`, nenhum cliente quebra — eles simplesmente ignoram o campo desconhecido até serem atualizados.
+
+### Cenário 2 — Server streaming para exportação de relatório grande
+
+Um painel de analytics precisa exportar 500.000 transações em CSV para um usuário administrador. Com REST, a abordagem ingênua carregaria tudo na memória do servidor, serializaria como JSON gigante e enviaria de uma vez — propenso a OOM e timeout. Com gRPC server streaming, o handler do `ReportService.ExportTransactions` faz `SELECT` com cursor no PostgreSQL, lê 1.000 linhas por vez, serializa cada lote como `TransactionBatch` protobuf e chama `call.write(batch)`, liberando memória entre iterações. O cliente Node.js no BFF escuta o evento `data`, converte cada batch para linhas CSV e escreve em um `fs.WriteStream`. O deadline do cliente é configurado para 5 minutos (volumes grandes requerem deadlines generosos). O resultado é exportação com uso de memória constante de ~5 MB independente do volume de dados, sem timeout e com progresso rastreável.
+
+## Armadilhas comuns
 
 > [!danger] Não usar TLS em produção
 > Por padrão, `grpc.credentials.createInsecure()` trafega todos os dados **em texto plano** — incluindo payloads sensíveis e tokens de autenticação. Em produção, use `grpc.ServerCredentials.createSsl(rootCerts, [{ private_key: keyBuffer, cert_chain: certBuffer }], true)` no servidor e `grpc.credentials.createSsl(rootCerts, clientKey, clientCert)` no cliente. Considere **mTLS** (TLS mútuo) para autenticação bidirecional entre microserviços. Nunca use `createInsecure()` fora de rede local controlada ou localhost.
@@ -410,6 +436,12 @@ The idiomatic gRPC authentication mechanism uses **Metadata** — key-value pair
 | **Metadata** | Pares chave-valor enviados fora do payload da mensagem (similar a headers HTTP); usados para autenticação, tracing, e informações de contexto |
 | **Interceptor** | Middleware que envolve chamadas gRPC no cliente ou servidor; permite injetar lógica transversal como autenticação, logging, métricas e retry sem modificar os handlers |
 | **proto-loader** | Pacote `@grpc/proto-loader` que carrega arquivos `.proto` dinamicamente em runtime, sem necessidade de compilação prévia com `protoc`; retorna um `PackageDefinition` usado com `grpc.loadPackageDefinition()` |
+
+## O que vem a seguir
+
+- **[[03-Dominios/Tecnologia/Node/Integrações/06 - GraphQL com Apollo Server e Mercurius|GraphQL com Apollo Server e Mercurius]]** — quando a comunicação interna (gRPC) já está resolvida, GraphQL entra como camada BFF para clientes externos que precisam de flexibilidade de query ao invés de contratos rígidos.
+- **[[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead|Padrões de resiliência]]** — o deadline do gRPC é a primeira linha de defesa; circuit breaker e bulkhead completam a proteção em cascata de falhas entre microserviços.
+- **grpc-web + Envoy** — explorar como expor serviços gRPC para browsers via proxy Envoy (ou grpc-web-proxy), habilitando bidi streaming entre navegadores e serviços internos.
 
 ## Veja também
 

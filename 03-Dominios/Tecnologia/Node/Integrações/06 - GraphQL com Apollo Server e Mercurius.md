@@ -1,9 +1,9 @@
 ---
 title: "GraphQL com Apollo Server e Mercurius"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -64,6 +64,26 @@ O problema N+1 ocorre quando um resolver de campo dispara 1 query para cada item
 2. **Deduplication**: se a mesma chave aparecer múltiplas vezes no batch, a `batchFn` recebe cada chave apenas uma vez e o resultado é reutilizado para todos os callers.
 
 O escopo do DataLoader deve ser **por request** (instanciado no context). Um DataLoader global acumularia cache entre requests de usuários distintos, causando vazamento de dados. A `batchFn` deve retornar um array de resultados na **mesma ordem e tamanho** do array de chaves recebido — o DataLoader faz o mapeamento posicional, então `keys[0]` → `results[0]`.
+
+```mermaid
+flowchart TD
+    CL["Cliente\n(browser / mobile)"] -->|"POST /graphql\n{ query, variables }"| AS
+
+    subgraph AS["Servidor GraphQL (Apollo / Mercurius)"]
+        P["Parse (SDL → AST)"] --> V["Validate (depth, complexity)"]
+        V --> E["Execute resolvers"]
+        E --> DL["DataLoader\n(batch + dedup)"]
+    end
+
+    DL -->|"SELECT WHERE id = ANY(...)"| DB[("Banco de dados")]
+    DB -->|"N registros"| DL
+    DL -->|"array ordenado"| E
+    E -->|"JSON response"| CL
+
+    style AS fill:#4A90D9,color:#fff
+    style DL fill:#F5A623,color:#fff
+    style DB fill:#4A90D9,color:#fff
+```
 
 ## Snippets de código
 
@@ -510,7 +530,17 @@ const productionServer = new ApolloServer({
 });
 ```
 
-## Armadilhas
+## Casos práticos
+
+### Cenário 1 — BFF para aplicativo mobile com múltiplas telas
+
+Um aplicativo de e-commerce tem três telas distintas: lista de produtos, detalhe do produto e carrinho. Com REST, a tela de detalhe do produto faz 3 chamadas separadas (`GET /products/:id`, `GET /products/:id/reviews`, `GET /users/:id/wishlist`), criando waterfalls de rede no mobile. Com um BFF (Backend For Frontend) Apollo Server, o cliente envia uma única query GraphQL que busca produto + reviews + status de wishlist em paralelo via resolvers independentes — tudo em uma round-trip HTTP. O time de frontend pode iterar na query sem aguardar mudanças de API, e o time de backend define os resolvers com DataLoader para garantir que buscar 20 produtos na lista de resultados não gere 20 queries ao banco para carregar categorias. Quando o time de iOS precisa de campos extras (ex.: `product.relatedProducts`), o schema é estendido e a query mobile é atualizada — sem versionamento de endpoint, sem coordenação com outros times.
+
+### Cenário 2 — Dashboard de monitoramento com Subscriptions em tempo real
+
+Uma plataforma de operações precisa de um dashboard que exiba o status de múltiplos serviços em tempo real. A solução usa Apollo Subscriptions com `PubSub`: cada serviço publica eventos de health check em um tópico `SERVICE_STATUS_CHANGED`; o subscription resolver `serviceStatusChanged` expõe esses eventos como stream GraphQL. O dashboard React usa `useSubscription` do Apollo Client para receber atualizações automáticas via WebSocket sem polling. O plugin de logging registra quanto tempo cada resolver de subscription demora e quantos subscribers ativos existem por channel. Persisted queries são usadas para o subscription inicial — o cliente envia apenas o hash SHA-256, e o servidor valida contra a allowlist de operações aprovadas, bloqueando queries arbitrárias de potenciais atacantes enquanto mantém zero overhead de parse para os clientes legítimos.
+
+## Armadilhas comuns
 
 > [!danger] N+1 em resolvers de campo sem DataLoader
 > O problema N+1 é a causa mais frequente de degradação de performance em APIs GraphQL. Cada resolver de campo opera de forma independente: quando uma lista de 100 posts é resolvida e cada `Post.author` dispara uma query individual, o banco recebe 101 queries (1 para a lista + 100 para os autores). Sem DataLoader no context, isso passa silenciosamente em desenvolvimento (datasets pequenos) e explode em produção. A regra prática é: **qualquer resolver de campo que acessa o banco deve usar um DataLoader**. Monitore via APM (DataDog, NewRelic) o número de queries por operação GraphQL.
@@ -574,6 +604,12 @@ GraphQL's main advantage is its declarative data fetching model: clients specify
 | **complexity limit** | Custo calculado por query baseado em número de campos e fatores de lista; bloqueia queries excessivamente custosas |
 | **APQ** | Automatic Persisted Queries — protocolo Apollo que negocia hash da query automaticamente no primeiro request |
 | **JIT compilation** | Técnica do Mercurius que compila resolvers para código otimizado em runtime para maior throughput |
+
+## O que vem a seguir
+
+- **[[03-Dominios/Tecnologia/Node/Integrações/07 - WebSockets com ws e Socket.io|WebSockets com ws e Socket.io]]** — as Subscriptions GraphQL usam WebSocket por baixo; entender `ws` e Socket.io diretamente dá controle total sobre o protocolo para casos que não cabem no modelo de subscription GraphQL.
+- **[[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead|Padrões de resiliência]]** — resolvers que chamam serviços externos precisam de circuit breaker para não propagar falhas em cascata; um resolver lento pode bloquear outras queries se não houver bulkhead.
+- **Apollo Federation v2** — explorar como compor múltiplos subgraphs em um supergraph unificado para arquiteturas com múltiplos microserviços GraphQL, usando `@key`, `@external`, `@requires` e `@provides`.
 
 ## Veja também
 

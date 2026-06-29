@@ -1,9 +1,9 @@
 ---
 title: "Redis e ioredis"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-progress: backlog
+fase: Iniciado
 status: growing
 publish: true
 tags:
@@ -23,6 +23,27 @@ aliases:
 > `ioredis` é o cliente Redis de referência em [[Node.js]]: suporta Cluster, Sentinel, pipeline, Lua scripting e reconexão automática out of the box. Redis oferece seis estruturas de dados nativas — string, hash, list, set, sorted set e stream — cada uma com semânticas e comandos próprios. Os padrões mais usados em produção são: **cache** (strings com TTL), **session store** (hashes), **pub/sub** (dois clients separados), **rate limiting** (INCR + EXPIRE) e **distributed lock** (SET NX PX + Lua para release atômico). A separação entre cliente pub/sub e cliente de operações normais não é opcional: um client em modo `subscribe` fica bloqueado e rejeita qualquer outro comando. Veja [[03-Dominios/Tecnologia/Node/Integrações/index|Integrações]] para o contexto completo do galho.
 
 ## Como funciona
+
+```mermaid
+flowchart TD
+    A["Node.js App"] --> B["ioredis Client"]
+    B --> C["Redis Server"]
+
+    B --> D["Cache (strings + TTL)"]
+    B --> E["Pub/Sub\n(2 clients)"]
+    B --> F["Streams\n(xadd / xread)"]
+
+    D --> C
+    E --> C
+    F --> C
+
+    style A fill:#4A90D9,color:#fff,stroke:#3a7bc8
+    style B fill:#4A90D9,color:#fff,stroke:#3a7bc8
+    style C fill:#F5A623,color:#fff,stroke:#d4921e
+    style D fill:#4A90D9,color:#fff,stroke:#3a7bc8
+    style E fill:#4A90D9,color:#fff,stroke:#3a7bc8
+    style F fill:#4A90D9,color:#fff,stroke:#3a7bc8
+```
 
 ### Conexão básica
 
@@ -325,16 +346,28 @@ async function rateLimitMiddleware(req: any, res: any, next: any): Promise<void>
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!danger] Usar o mesmo client para pub/sub e operações normais
-> O client em modo `subscribe` fica bloqueado e rejeita qualquer outro comando com `ERR only (P)SUBSCRIBE / (P)UNSUBSCRIBE / PING / QUIT allowed in this context`. Sempre crie dois clients: um exclusivo para subscribe, outro para todas as demais operações. Esse erro silencioso quebra a aplicação inteira se o código for compartilhado entre módulos.
+> **O que acontece:** a aplicação lança `ERR only (P)SUBSCRIBE / (P)UNSUBSCRIBE / PING / QUIT allowed in this context` ao tentar executar `get`, `set` ou qualquer outro comando após chamar `subscribe()`. O erro pode aparecer em módulos distantes do ponto de origem.
+>
+> **Por quê:** ao chamar `subscribe()`, o client ioredis entra em modo subscriber e passa a aceitar exclusivamente comandos de assinatura. O protocolo Redis impõe esse bloqueio em nível de conexão.
+>
+> **Como evitar:** sempre crie dois clients — um exclusivo para `subscribe`/`psubscribe`, outro para todas as demais operações. Nunca compartilhe a mesma instância entre os dois papéis.
 
 > [!danger] Esquecer TTL em cache — memory overflow
-> Redis por padrão não expira chaves sem TTL. Em produção, chaves sem expiração acumulam memória indefinidamente. Quando o Redis atinge `maxmemory`, a política de eviction entra em ação (ou o Redis para de aceitar writes se a política for `noeviction`). Sempre passe `EX` ou `PX` em `SET`, ou use `EXPIRE` explicitamente. Audite chaves com `redis-cli --scan --pattern 'cache:*' | xargs redis-cli object encoding` para identificar chaves sem TTL.
+> **O que acontece:** o Redis consome memória crescente até atingir `maxmemory`. Dependendo da política configurada, ele para de aceitar escritas (`noeviction`) ou começa a despejar dados arbitrariamente, corrompendo dados que não deveriam ser cache.
+>
+> **Por quê:** chaves sem TTL nunca expiram automaticamente. Em produção, acúmulo de chaves de cache sem expiração é a principal causa de OOM em instâncias Redis.
+>
+> **Como evitar:** sempre passe `EX` (segundos) ou `PX` (milissegundos) em cada `SET`. Audite regularmente: `redis-cli --scan --pattern 'cache:*' | xargs -L 1 redis-cli ttl` para encontrar chaves sem expiração.
 
-> [!warning] Não tratar reconexão automática em produção
-> `ioredis` reconecta automaticamente por padrão, mas comandos emitidos durante a desconexão podem ser silenciosamente descartados ou enfileirados indefinidamente dependendo de `enableOfflineQueue` (padrão: `true`). Em produção, configure `maxRetriesPerRequest`, `connectTimeout` e `retryStrategy` explicitamente. Monitore eventos `error` e `reconnecting` para alertas.
+> [!warning] Não configurar reconexão explícita em produção
+> **O que acontece:** comandos emitidos durante uma desconexão podem ser silenciosamente enfileirados (`enableOfflineQueue: true` por padrão) e executados em rajada quando a conexão volta — ou simplesmente descartados com timeout, dependendo da versão e config. Sem alertas configurados, a falha é invisível.
+>
+> **Por quê:** `ioredis` reconecta automaticamente, mas os padrões são otimistas demais para produção: sem limite de retries, sem timeout de conexão razoável e sem observabilidade.
+>
+> **Como evitar:** configure `maxRetriesPerRequest`, `connectTimeout` e `retryStrategy` explicitamente. Assine os eventos `error` e `reconnecting` para logs e alertas.
 
 ```ts
 const redis = new Redis({
@@ -374,6 +407,107 @@ redis.on('reconnecting', () => logger.warn('Redis reconnecting...'))
 | **Lua scripting** | `defineCommand` registra scripts como métodos tipados | `client.sendCommand(['EVAL', ...])` — mais verboso |
 | **Streaming** | `scanStream`, `hscanStream` built-in | Sem streaming nativo equivalente |
 | **Recomendação** | Preferir em novos projetos e equipes com prod Redis | Considerar se já usa ou se precisar de suporte oficial |
+
+---
+
+## Casos práticos
+
+### Cenário 1 — Cache-aside para API
+
+Uma rota GET `/users/:id` pode custar 50–200ms no banco toda vez que é chamada. Com cache-aside, a primeira leitura vai ao banco e armazena no Redis; as seguintes retornam em menos de 1ms. O TTL garante que o cache expire e a informação seja revalidada periodicamente.
+
+```ts
+import Redis from 'ioredis'
+import { db } from './db' // pool pg ou ORM
+
+const redis = new Redis(process.env.REDIS_URL)
+
+interface User {
+  id: number
+  name: string
+  email: string
+}
+
+async function getUserById(id: number): Promise<User | null> {
+  const cacheKey = `user:${id}:profile`
+
+  // 1. Verifica cache primeiro
+  const cached = await redis.get(cacheKey)
+  if (cached) {
+    return JSON.parse(cached) as User
+  }
+
+  // 2. Cache miss — busca no banco
+  const user = await db.query<User>('SELECT id, name, email FROM users WHERE id = $1', [id])
+  if (!user) return null
+
+  // 3. Armazena no Redis com TTL de 5 minutos
+  await redis.set(cacheKey, JSON.stringify(user), 'EX', 300)
+
+  return user
+}
+
+// Invalida o cache quando o usuário é atualizado
+async function updateUser(id: number, data: Partial<User>): Promise<User> {
+  const updated = await db.update('users', id, data)
+  // Remove a entrada do cache para forçar revalidação na próxima leitura
+  await redis.del(`user:${id}:profile`)
+  return updated
+}
+```
+
+### Cenário 2 — Pub/Sub para notificações em tempo real
+
+Um serviço de pedidos publica eventos quando o status muda; o serviço de notificações assina e despacha push notifications ou e-mails sem acoplamento direto entre os dois. O ponto crítico é manter dois clientes ioredis separados: o subscriber fica bloqueado em modo de escuta e não aceita outros comandos.
+
+```ts
+import Redis from 'ioredis'
+
+const publisher  = new Redis(process.env.REDIS_URL)
+const subscriber = new Redis(process.env.REDIS_URL)
+
+// --- Serviço de notificações: assina canais de pedidos ---
+async function startNotificationListener(): Promise<void> {
+  await subscriber.subscribe('orders:status')
+
+  subscriber.on('message', async (channel: string, message: string) => {
+    const event = JSON.parse(message) as { orderId: string; status: string; userId: number }
+
+    console.log(`[${channel}] Order ${event.orderId} → ${event.status}`)
+
+    // Dispara a notificação adequada por status
+    if (event.status === 'shipped') {
+      await sendPushNotification(event.userId, `Seu pedido #${event.orderId} foi enviado!`)
+    } else if (event.status === 'delivered') {
+      await sendEmail(event.userId, `Pedido #${event.orderId} entregue — avalie sua compra.`)
+    }
+  })
+
+  subscriber.on('error', (err) => console.error('Subscriber error:', err))
+}
+
+// --- Serviço de pedidos: publica evento ao mudar status ---
+async function updateOrderStatus(orderId: string, userId: number, status: string): Promise<void> {
+  // Atualiza banco de dados...
+  await db.update('orders', orderId, { status })
+
+  // Publica evento — zero acoplamento com o serviço de notificações
+  await publisher.publish('orders:status', JSON.stringify({ orderId, status, userId }))
+}
+
+// Stubs
+async function sendPushNotification(userId: number, msg: string) { /* ... */ }
+async function sendEmail(userId: number, msg: string) { /* ... */ }
+declare const db: any
+
+startNotificationListener()
+```
+
+---
+
+## O que vem a seguir
+
+Redis é o hub de velocidade do stack Node: guarda o que é caro de computar, distribui o que precisa chegar rápido. O próximo passo natural é usar Redis como motor de filas com [[03-Dominios/Tecnologia/Node/Integrações/03 - BullMQ - filas de tarefas|BullMQ — filas de tarefas]], que adiciona retry, prioridade e jobs agendados sobre o Redis. Para entender a camada de persistência que o Redis complementa, veja [[03-Dominios/Tecnologia/Node/Integrações/01 - PostgreSQL com node-postgres|PostgreSQL com node-postgres]]. Se o cenário de pub/sub precisar de canal bidirecional persistente com o browser, [[03-Dominios/Tecnologia/Node/Integrações/07 - WebSockets com ws e Socket.io|WebSockets com ws e Socket.io]] é o complemento correto.
 
 ---
 

@@ -1,9 +1,9 @@
 ---
 title: "Cheatsheet e decision tree de integrações"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Magus
 status: growing
 publish: true
 tags:
@@ -62,6 +62,38 @@ request → bulkhead → circuit breaker → retry → timeout → client
 O bulkhead limita a concorrência máxima para aquela integração específica, isolando falhas de um backend dos demais. O circuit breaker interrompe tentativas quando o backend está claramente indisponível. O retry tenta novamente erros transientes. O timeout garante que nenhuma tentativa trava o worker indefinidamente. O client executa a chamada real.
 
 Essa composição é o que separa uma integração de produção de um `fetch()` nu sem tratamento de erro. A nota [[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead]] detalha cada camada com código de produção.
+
+```mermaid
+flowchart TD
+    START([Nova integração]) --> Q1{Quem é o cliente?}
+
+    Q1 -->|Serviço interno\nda mesma equipe| Q2{Streaming\nbidirecional?}
+    Q1 -->|Browser / Mobile\nexterno| Q3{Múltiplos clientes\ncom necessidades distintas?}
+    Q1 -->|Background / async| Q4{Replay histórico\nou fan-out multi-consumer?}
+
+    Q2 -->|Sim| GRPC["gRPC\n(grpc-js)"]
+    Q2 -->|Não| GRPC
+
+    Q3 -->|Sim| GQL["GraphQL\n(Apollo / Mercurius)"]
+    Q3 -->|Não| REST["REST\n(HTTP + JSON)"]
+
+    Q4 -->|Sim| KAFKA["Kafka\n(kafkajs)"]
+    Q4 -->|Não| BULLMQ["BullMQ\n(Redis)"]
+
+    GRPC --> RES["+ Resiliência\n(cockatiel/opossum)"]
+    REST --> RES
+    GQL --> RES
+    KAFKA --> RES
+    BULLMQ --> RES
+
+    style START fill:#4A90D9,color:#fff
+    style GRPC fill:#F5A623,color:#fff
+    style GQL fill:#F5A623,color:#fff
+    style REST fill:#F5A623,color:#fff
+    style KAFKA fill:#F5A623,color:#fff
+    style BULLMQ fill:#F5A623,color:#fff
+    style RES fill:#D0021B,color:#fff
+```
 
 ## Decision Trees
 
@@ -182,6 +214,16 @@ Essa composição é o que separa uma integração de produção de um `fetch()`
     - Interceptors de request e response para auth, logging e tratamento de erro centralizado
     - `axios.create()` para instâncias por base URL com configuração isolada
     - Use para manter consistência em codebases que já adotaram axios; evite introduzir em projetos novos
+
+## Casos práticos
+
+### Cenário 1 — Plataforma de e-commerce: escolhendo uma tecnologia por domínio
+
+Uma plataforma de e-commerce com crescimento acelerado precisa revisitar suas integrações. Cada domínio usa o decision tree de forma diferente: o **checkout** usa gRPC para chamar `inventory-service` e `payment-service` internos — contratos `.proto`, latência < 10ms, streaming desnecessário. O **catálogo** expõe uma API GraphQL para o BFF mobile — os apps iOS e Android pedem campos diferentes, e o Apollo Server com DataLoader resolve N+1 em categoria + preço + avaliações numa chamada só. Os **eventos de pedido** (`OrderPlaced`, `OrderShipped`) vão para Kafka: o serviço de logística, de notificações e de analytics consomem o mesmo tópico de forma independente, e o serviço de BI pode fazer replay dos últimos 7 dias. O **envio de e-mail pós-compra** usa BullMQ — não precisa de replay, precisa de retry com backoff e dead-letter queue. Toda chamada a serviço externo (gateway de pagamento, API de frete) é envolvida por `createResilientPolicy` do Snippet 3. O resultado é uma plataforma onde a queda do serviço de analytics não afeta o checkout, e a lentidão do gateway de pagamento não derruba a navegação de catálogo.
+
+### Cenário 2 — Startup SaaS: decidindo a arquitetura de integração sem over-engineering
+
+Uma startup SaaS com 3 desenvolvedores está construindo o MVP. Usar Kafka, gRPC, GraphQL, BullMQ e undici seria over-engineering para o estágio atual. O decision tree os guia para uma stack mínima: REST com Express para as APIs (um único serviço, sem microserviços ainda), `postgres.js` para o banco (DX moderna, sem ORM), `ioredis` para cache de sessão, BullMQ para e-mails e relatórios assíncronos, `fetch` nativo com cockatiel para chamadas a Stripe e SendGrid. Quando o produto cresce e um segundo serviço é necessário (ex.: serviço de notificações separado), o decision tree é revisitado: agora o gRPC faz sentido para a comunicação interna, e um tópico Kafka para eventos de usuário permite que o serviço de notificações consuma de forma independente. O decision tree não é uma receita para usar tudo de uma vez — é uma ferramenta para adicionar complexidade apenas quando o problema a justifica.
 
 ## Snippets
 
@@ -539,6 +581,15 @@ Cascading failure is the scenario where one slow or unavailable downstream bring
 | Consumer group | Abstração do Kafka que permite a um conjunto de consumers dividir as partições de um tópico entre si; múltiplos grupos independentes podem consumir o mesmo tópico sem interferência |
 | Schema registry | Serviço centralizado (ex.: Confluent Schema Registry) que armazena e versiona schemas Avro/Protobuf/JSON para tópicos Kafka, garantindo compatibilidade na evolução do contrato |
 | Dead-letter queue | Fila ou tópico especial onde mensagens que falharam após todos os retries são enviadas para análise manual, evitando que mensagens com problema bloqueiem o processamento normal |
+
+## O que vem a seguir
+
+Esta é a nota capstone do galho Integrações. O aprendizado a seguir é **aplicado** — levar os padrões para projetos reais e para entrevistas técnicas:
+
+- **Praticar o decision tree em voz alta** — para cada integração de um projeto atual, verbalizar o raciocínio: "Por que gRPC e não REST aqui? Por que BullMQ e não Kafka?" Esse é o exercício que prepara para entrevistas de sistema design.
+- **[[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index|ORMs e banco de dados (galho 6)]]** — a camada de banco é tão crítica quanto a de integração; Prisma, TypeORM e Drizzle complementam `pg` e `postgres.js` com migrations e model layer.
+- **[[03-Dominios/Tecnologia/Node/Observability e produção/index|Observability e produção (galho 5)]]** — métricas, traces e health checks são o sistema imunológico que torna as integrações operáveis em produção; sem observabilidade, o decision tree é cego durante incidentes.
+- **Revisar periodicamente** — o ecossistema de integrações Node.js evolui rapidamente (kafkajs 3.x, Socket.io 5.x, Apollo Server 5.x); retornar a este cheatsheet a cada 6 meses para validar se as decisões ainda fazem sentido.
 
 ## Veja também
 

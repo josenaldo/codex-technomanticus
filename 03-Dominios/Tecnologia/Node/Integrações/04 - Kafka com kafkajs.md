@@ -1,9 +1,9 @@
 ---
 title: "Kafka com kafkajs"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-29
 type: concept
-progress: backlog
+fase: Adepto
 status: growing
 publish: true
 tags:
@@ -33,6 +33,38 @@ Topic: pedidos
 ├── Partition 0: [offset 0] [offset 1] [offset 2] ...
 ├── Partition 1: [offset 0] [offset 1] ...
 └── Partition 2: [offset 0] ...
+```
+
+```mermaid
+flowchart LR
+    subgraph Producers
+        P1["Producer A\n(api-pedidos)"]
+        P2["Producer B\n(api-pagamentos)"]
+    end
+
+    subgraph Kafka Broker
+        T["Topic: pedidos\nPartição 0 | Partição 1 | Partição 2"]
+    end
+
+    subgraph "Consumer Group: analytics"
+        C1["Consumer 1\n(partições 0,1)"]
+        C2["Consumer 2\n(partição 2)"]
+    end
+
+    subgraph "Consumer Group: notificações"
+        C3["Consumer 3\n(todas as partições)"]
+    end
+
+    P1 -->|"key=orderId\nGZIP"| T
+    P2 -->|"key=paymentId"| T
+    T -->|"eachMessage"| C1
+    T -->|"eachMessage"| C2
+    T -->|"eachBatch"| C3
+
+    style T fill:#4A90D9,color:#fff
+    style C1 fill:#F5A623,color:#fff
+    style C2 fill:#F5A623,color:#fff
+    style C3 fill:#4A90D9,color:#fff
 ```
 
 O kafkajs expõe três entidades principais:
@@ -383,7 +415,17 @@ iniciar().catch((err) => {
 
 ---
 
-## Armadilhas
+## Casos práticos
+
+### Cenário 1 — Fanout de evento de pedido para múltiplos times
+
+Um e-commerce publica um evento `OrderPlaced` no tópico `pedidos` a cada compra. Três times consomem o mesmo tópico de forma independente: o time de logística (`groupId: 'logistics-service'`) despacha a entrega, o time de notificações (`groupId: 'notification-service'`) envia e-mail de confirmação, e o time de analytics (`groupId: 'analytics-service'`) atualiza dashboards de BI. Cada consumer group mantém seu próprio offset: se o serviço de analytics cai por 2 horas, ele retoma do ponto onde parou sem afetar os outros grupos. Um novo time de fraude pode ser adicionado como `groupId: 'fraud-service'` sem nenhuma mudança no producer — é só criar o consumer e subscrever o mesmo tópico. Esse padrão é impossível com BullMQ (jobs são consumidos uma única vez).
+
+### Cenário 2 — Bulk insert em data warehouse com `eachBatch`
+
+Um pipeline de dados precisa inserir eventos de clickstream (300k eventos/min) em um warehouse (ClickHouse). Inserir um por um seria inviável — cada `INSERT` tem overhead de rede e transação. A solução usa `eachBatch` com `maxBytesPerPartition: 1 MB`: o consumer acumula mensagens do batch em um array, chama `heartbeat()` a cada 100 mensagens para evitar timeout, e ao final faz um único `INSERT INTO clickhouse ... VALUES (...)` com todos os registros do lote. O commit de offset acontece só após o insert ser confirmado pelo ClickHouse. Com 6 partições e 6 instâncias do consumer (uma por partição), o pipeline sustenta 300k eventos/min com latência de ingestão abaixo de 5 segundos e sem risco de perda de dados — se o ClickHouse rejeitar o insert, os offsets não são comitados e o batch é reprocessado.
+
+## Armadilhas comuns
 
 > [!danger] Não chamar `heartbeat()` em processamentos longos
 > Sem chamadas periódicas a `heartbeat()` durante o processamento de um batch (`eachBatch`), o broker interpreta o consumer como morto após `sessionTimeout` (padrão: 30 s) e dispara um **rebalance**. Resultado: o batch em andamento é abandonado, as mensagens são redistribuídas para outro consumer, e você processa as mesmas mensagens duas vezes. Regra: chame `heartbeat()` a cada 50–100 mensagens ou sempre que o processamento individual puder levar mais de `heartbeatInterval` (padrão: 3 s).
@@ -469,3 +511,16 @@ Redis Streams fills the middle ground: it has consumer groups and persistence (b
 | **acks** | Configuração do producer que define quantas réplicas devem confirmar o recebimento antes do broker responder com sucesso. `acks: 0` (fire-and-forget), `acks: 1` (líder apenas), `acks: -1`/`all` (todas as réplicas in-sync — máxima durabilidade). |
 | **heartbeat** | Sinal periódico enviado pelo consumer ao broker para indicar que ainda está vivo. Se o broker não recebe heartbeat dentro de `sessionTimeout`, considera o consumer morto e dispara rebalance. Em `eachBatch`, deve ser chamado manualmente para processamentos longos. |
 | **schema registry** | Serviço centralizado (ex.: Confluent Schema Registry) que armazena e versiona schemas (Avro, JSON Schema, Protobuf) para tópicos Kafka. Garante compatibilidade de contratos entre producers e consumers e permite evolução segura de schemas em times distribuídos. |
+
+## O que vem a seguir
+
+- **[[03-Dominios/Tecnologia/Node/Integrações/05 - gRPC com grpc-js|gRPC com grpc-js]]** — quando o streaming de eventos Kafka precisa ser complementado com chamadas RPC tipadas e de alto throughput entre microserviços, gRPC é a peça natural: contratos Protobuf, streaming bidirecional e geração de código eliminam a ambiguidade de APIs REST.
+- **[[03-Dominios/Tecnologia/Node/Integrações/09 - Padrões de resiliência - retry, circuit breaker e bulkhead|Padrões de resiliência]]** — consumers Kafka precisam de circuit breaker para proteger chamadas a serviços externos (banco de dados, APIs) dentro do handler; um consumer que falha sem circuit breaker pode travar o processamento de uma partição inteira.
+- **Schema Registry + Avro** — explorar o `@kafkajs/confluent-schema-registry` para tipar e versionar contratos de mensagem com compatibilidade backward/forward, especialmente em ambientes com múltiplos times produzindo e consumindo o mesmo tópico.
+
+## Veja também
+
+- [[03-Dominios/Tecnologia/Node/Integrações/03 - BullMQ - filas de tarefas]] — comparativo direto na tabela acima; BullMQ para jobs com lifecycle, Kafka para event streaming
+- [[03-Dominios/Tecnologia/Node/Integrações/02 - Redis e ioredis]] — Redis Streams como alternativa leve ao Kafka para pub/sub dentro do mesmo stack
+- [[03-Dominios/Tecnologia/Node/Integrações/index|Integrações]] — índice do galho 9
+- [[Node.js]] — tronco da trilha Node Senior
