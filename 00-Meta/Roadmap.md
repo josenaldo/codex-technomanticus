@@ -3,7 +3,7 @@ title: "Roadmap de Trilhas"
 type: moc
 publish: true
 created: 2026-06-25
-updated: 2026-06-27
+updated: 2026-06-29
 status: growing
 tags:
   - moc
@@ -57,7 +57,7 @@ aliases:
 | Trilha | Estado | Nota |
 | ------ | ------ | ---- |
 | [[03-Dominios/Tecnologia/Java/index\|Java (Senior)]] | ✅ | 18 galhos incl. Certificação OCP |
-| [[03-Dominios/Tecnologia/Node/index\|Node]] | 🟡 | 8 galhos construídos — **alvo de "Reforma do Node"**: reordenar/renumerar/atomizar no padrão da reformulação do Anatomia dos LLMs |
+| [[03-Dominios/Tecnologia/Node/index\|Node]] | ✅ | 8 galhos reformados — **Reforma do Node CONCLUÍDA 2026-06-29**: 95 notas (78 enriquecidas + 3 escritas do zero), todas em 3 fases, padrão capítulo com Mermaid/Casos práticos/Armadilhas |
 | [[03-Dominios/Tecnologia/Go/index\|Go]] | ⬜ | stub (3 notas) |
 | [[03-Dominios/Tecnologia/Python/index\|Python]] | ⬜ | stub (4 notas) |
 
@@ -116,8 +116,8 @@ aliases:
 5. ✅ **Plataforma Web** — **CONCLUÍDA 2026-06-28**: 7 galhos (DOM/Eventos/Rendering/Web APIs/Storage/Workers/Networking), ~54 notas, 3 fases.
 
 ### Onda B — Reformas e consolidações
-6. 🟡 **Reforma do Node** — atomizar/reordenar os 8 galhos no padrão capítulo.
-7. 🟡 **Testes no ecossistema JS** — galho/trilha específica (Vitest, Jest, Testing Library, Playwright, MSW), ligando a `Engenharia/Testes` (conceitual) e à nota 19 de Tooling (`node:test`).
+6. ✅ **Reforma do Node** — **CONCLUÍDA 2026-06-29**: 8 galhos, 95 notas reformadas no padrão capítulo (fase/Mermaid/Casos práticos/Armadilhas comuns/O que vem a seguir).
+7. 🟡 **Testes no ecossistema JS** — galho/trilha específica (Vitest, Jest, Testing Library, Playwright, MSW), ligando a `Engenharia/Testes` (conceitual) e à nota 19 de Tooling (`node:test`). **← PRÓXIMO**
 
 ### Onda C — Profundidade de Senior (system design & operação)
 8. 🟡 **Arquitetura / System Design** — escalar de 7 notas para trilha de entrevista (CAP, sharding, caching, filas, consistência, design exercises).
