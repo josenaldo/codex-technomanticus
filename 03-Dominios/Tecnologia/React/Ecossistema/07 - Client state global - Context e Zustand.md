@@ -101,19 +101,11 @@ function UserProvider({ children }: { children: ReactNode }) {
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
-// 3. React.memo nos consumidores para pular renders quando as props não mudam
-const Header = React.memo(function Header() {
-  const user = useContext(UserContext);
-  return <nav>{user?.name}</nav>;
-});
 ```
 
 Essas técnicas funcionam para casos simples, mas exigem disciplina constante e adicionam
 boilerplate. Para estado que muda com frequência, Zustand entrega o mesmo resultado com menos
 esforço.
-
-**Zustand em uma frase**: uma store que vive fora da árvore React, com subscription granular por
-selector, sem Provider, sem boilerplate.
 
 ## Context vs Zustand — o modelo de re-render
 
@@ -153,70 +145,9 @@ indiscriminadamente. No Zustand, cada componente tem seu próprio subscriber que
 valor retornado pelo selector — `<Header>` assina `state => state.user`, então só re-renderiza se
 `user` mudar.
 
-## Casos práticos
-
-### Cenário 1: Carrinho de e-commerce com persistência entre reloads
-
-Em um e-commerce, o carrinho precisa de persistência (sobreviver ao reload), atualização
-frequente (add/remove) e leitura em múltiplos lugares (header, página de produto, checkout).
-Context + localStorage manual seria complexo. Zustand com `persist`:
-
-```tsx
-// store/cart.ts
-export const useCartStore = create<CartStore>()(
-  devtools(
-    persist(
-      immer((set) => ({
-        items: [],
-        addItem: (product) => set((s) => {
-          const existing = s.items.find((i) => i.id === product.id);
-          if (existing) existing.qty += 1;
-          else s.items.push({ ...product, qty: 1 });
-        }),
-        removeItem: (id) => set((s) => {
-          s.items = s.items.filter((i) => i.id !== id);
-        }),
-      })),
-      { name: 'cart', partialize: (s) => ({ items: s.items }) }
-    ),
-    { name: 'CartStore' }
-  )
-);
-
-// Em qualquer componente, sem Provider:
-const itemCount = useCartStore((s) => s.items.length);  // Header
-const addItem = useCartStore((s) => s.addItem);          // Página de produto
-```
-
-### Cenário 2: Notificações em tempo real via WebSocket
-
-Notificações chegam via WebSocket fora da árvore React. Zustand é atualizado diretamente pelo
-handler — sem precisar de `useEffect`, `useRef` ou prop drilling até o componente de badge:
-
-```tsx
-// store/notifications.ts
-export const useNotifStore = create<NotifStore>()((set) => ({
-  unread: 0,
-  list: [],
-  addNotif: (n) => set((s) => ({ unread: s.unread + 1, list: [n, ...s.list] })),
-  markAllRead: () => set({ unread: 0 }),
-}));
-
-// websocket.ts — fora da árvore React
-socket.on('notification', (n) => {
-  useNotifStore.getState().addNotif(n);  // dispara re-render só no badge
-});
-
-// NotificationBadge.tsx
-const unread = useNotifStore((s) => s.unread);  // só re-renderiza se unread mudar
-return unread > 0 ? <Badge>{unread}</Badge> : null;
-```
-
 ## Zustand — o default moderno
 
-Zustand é uma biblioteca de estado global minimalista do grupo Poimandres. O modelo mental é
-simples: uma **store** (objeto JavaScript puro) que vive fora do ciclo de vida do React.
-Componentes se conectam via hooks com **selectors** que extraem exatamente o que precisam.
+Zustand é uma biblioteca de estado global minimalista do grupo Poimandres. O modelo mental é simples: uma **store** (objeto JavaScript puro) que vive fora do ciclo de vida do React. Componentes se conectam via hooks com **selectors** que extraem exatamente o que precisam.
 
 ### Criando uma store com TypeScript
 
@@ -346,15 +277,12 @@ const unsubscribe = useCartStore.subscribe(
     if (total > prevTotal) analytics.track('cart_value_increased', { total });
   }
 );
-
-// Limpar quando não precisar mais
-unsubscribe();
+unsubscribe(); // chamar quando não precisar mais
 ```
 
 ## Middleware — persistência, imutabilidade e debug
 
-O Zustand usa um padrão de **middleware composável** — você envolve o initializer com funções que
-adicionam comportamento à store sem alterar a API de uso.
+O Zustand usa **middleware composável** — funções que envolvem o initializer e adicionam comportamento à store sem alterar a API de uso.
 
 ### `persist` — estado que sobrevive ao reload
 
@@ -373,8 +301,7 @@ export const useCartStore = create<CartStore>()(
     {
       name: 'cart-storage',
       storage: createJSONStorage(() => localStorage),
-      // Persiste apenas items — total é calculado, não precisa ser persistido
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({ items: state.items }), // total é calculado, não persiste
     }
   )
 );
@@ -494,6 +421,48 @@ export const useCurrentUser = () => useStore((state) => state.user);
 Cada slice encapsula sua lógica e pode ser desenvolvido e testado isoladamente. A store final é
 a composição — os componentes nunca precisam saber que a store existe como monólito.
 
+## Casos práticos
+
+### Cenário 1: Carrinho de e-commerce com persistência entre reloads
+
+Em um e-commerce, o carrinho requer persistência, alta frequência de escrita e leitura em
+múltiplos pontos. A `useCartStore` composta com `devtools(persist(immer(...)))` — construída na
+seção Middleware — atende todos esses requisitos sem nenhum Provider:
+
+```tsx
+// Uso em qualquer componente — sem Provider, sem prop drilling
+const itemCount  = useCartStore((s) => s.items.length);  // Header
+const addItem    = useCartStore((s) => s.addItem);        // Página de produto
+const removeItem = useCartStore((s) => s.removeItem);     // Checkout
+```
+
+O reload hidrata automaticamente os itens do `localStorage`; o DevTools exibe cada `addItem` na
+timeline; e o Immer elimina o spread manual nas mutations — tudo com a mesma API de selector.
+
+### Cenário 2: Notificações em tempo real via WebSocket
+
+Notificações chegam via WebSocket fora da árvore React. Zustand é atualizado diretamente pelo
+handler — sem precisar de `useEffect`, `useRef` ou prop drilling até o componente de badge:
+
+```tsx
+// store/notifications.ts
+export const useNotifStore = create<NotifStore>()((set) => ({
+  unread: 0,
+  list: [],
+  addNotif: (n) => set((s) => ({ unread: s.unread + 1, list: [n, ...s.list] })),
+  markAllRead: () => set({ unread: 0 }),
+}));
+
+// websocket.ts — fora da árvore React
+socket.on('notification', (n) => {
+  useNotifStore.getState().addNotif(n);  // dispara re-render só no badge
+});
+
+// NotificationBadge.tsx
+const unread = useNotifStore((s) => s.unread);  // só re-renderiza se unread mudar
+return unread > 0 ? <Badge>{unread}</Badge> : null;
+```
+
 ## Armadilhas comuns
 
 > [!warning] Assinar o store inteiro por conveniência
@@ -557,7 +526,7 @@ When asked about state management in React, you can frame it this way:
 ## O que vem a seguir
 
 Com o client state global dominado — seja com Context para dados estáticos ou Zustand para estado
-reativo — a próxima fronteira é o **roteamento**: como o React React Router gerencia URLs,
+reativo — a próxima fronteira é o **roteamento**: como o React Router gerencia URLs,
 parâmetros de rota e estado derivado da URL. A navegação é, em essência, mais um tipo de estado
 global que precisa de uma ferramenta especializada.
 
