@@ -7,11 +7,10 @@ tags:
   - debugging
   - performance
 type: note
+fase: Adepto
 status: growing
-progress: in_progress
 created: 2026-05-09
-updated: 2026-05-09
-publish: true
+updated: 2026-06-28
 ---
 
 # Detecção e diagnóstico de memory leaks
@@ -41,6 +40,33 @@ Um **memory leak** em Node.js é qualquer situação em que objetos permanecem r
 - **Estado global acumulado**: arrays, maps ou sets mantidos em escopo de módulo que crescem a cada requisição sem remoção de entradas antigas.
 
 ## Como funciona
+
+O ciclo de diagnóstico de memory leaks segue uma sequência bem definida — da confirmação com métricas até a validação da correção:
+
+```mermaid
+flowchart TD
+    M["heapUsed crescendo\nmonotonicamente"] --> S1["Captura snapshot baseline\nSIGUSR2 → v8.writeHeapSnapshot"]
+    S1 --> L["Aplica carga ou aguarda\n(autocannon / operação suspeita)"]
+    L --> GC["Force GC\nglobal.gc() com --expose-gc"]
+    GC --> S2["Captura segundo snapshot"]
+    S2 --> C["Compara no Chrome DevTools\nComparison view → ordena por # Delta"]
+    C -->|"# Delta alto em\nobjeto específico"| R["Segue retainer path\naté o GC root"]
+    R --> FIX["Corrige causa raiz\n(off(), LRU cache, clearInterval)"]
+    FIX --> V["Valida: repete ciclo\nheapUsed estabiliza?"]
+    C -->|"Muitos objetos genéricos\nsem contexto claro"| HP["clinic heapprofiler\nVer onde a memória é alocada"]
+    HP --> FIX
+
+    style M fill:#D0021B,color:#fff
+    style S1 fill:#4A90D9,color:#fff
+    style L fill:#4A90D9,color:#fff
+    style GC fill:#4A90D9,color:#fff
+    style S2 fill:#4A90D9,color:#fff
+    style C fill:#F5A623,color:#fff
+    style R fill:#F5A623,color:#fff
+    style HP fill:#F5A623,color:#fff
+    style FIX fill:#27AE60,color:#fff
+    style V fill:#27AE60,color:#fff
+```
 
 ### Sinais de vazamento
 
@@ -194,7 +220,7 @@ O processo de diagnóstico segue uma sequência definida para evitar trabalho de
 7. **Corrija no código**: remova o listener, adicione limite ao cache, limpe o timer, etc.
 8. **Valide a correção**: repita o ciclo e confirme que o crescimento para.
 
-## Na prática
+## Casos práticos
 
 ### Polling de memória com alerta por tendência
 
@@ -330,6 +356,10 @@ async function getUser(id: string): Promise<unknown> {
 }
 ```
 
+## O que vem a seguir
+
+Com memory leaks sob controle, o próximo desafio de produção é garantir que cada deploy não cause erros 5xx para o cliente. [[09 - Graceful shutdown profundo|Graceful shutdown profundo]] cobre a sequência correta de encerramento, o preStop hook do Kubernetes e os métodos `closeIdleConnections` / `closeAllConnections` do Node 18+. Para ir mais fundo em onde a memória está sendo alocada *antes* de virar leak, [[07 - Profiling avançado com clinic.js|profiling com clinic.js]] e `heapprofiler` são o complemento natural. O [[03-Dominios/Tecnologia/Node/Observability e produção/index|índice do galho]] tem o mapa completo da trilha.
+
 ## Em entrevista
 
 **What is a memory leak in Node.js and why is it dangerous?**
@@ -357,7 +387,7 @@ The most common cause is event listeners that are added but never removed. Every
 - **Allocation timeline**: Visualização de alocações de memória ao longo do tempo, gerada por ferramentas como `clinic heapprofiler`. Mostra não apenas o que está vivo, mas onde no código as alocações ocorreram.
 - **OOM (Out of Memory)**: Erro fatal gerado pelo V8 quando a heap atingiu o limite máximo (`--max-old-space-size`) e não conseguiu alocar mais memória. Encerra o processo imediatamente.
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] Um único snapshot não diagnostica leak
 > Um heap snapshot capturado em um único momento mostra o estado atual da heap, mas não diz o que cresceu. Para diagnosticar um leak, você precisa **sempre comparar dois snapshots** — um baseline (antes) e um após carga ou tempo. A comparação no Chrome DevTools (Comparison view) é que revela o delta de alocações.

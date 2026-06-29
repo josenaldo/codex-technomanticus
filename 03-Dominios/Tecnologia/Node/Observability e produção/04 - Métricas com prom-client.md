@@ -1,10 +1,10 @@
 ---
 title: "Métricas com prom-client"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -28,6 +28,33 @@ aliases:
 > Alta cardinalidade em labels é o erro mais comum e mais destrutivo: usar `userId` ou `traceId` como label pode causar OOM no Prometheus em minutos.
 
 Esta nota faz parte do [[03-Dominios/Tecnologia/Node/Observability e produção/index]] e detalha instrumentação de métricas. Leia [[01 - Os três pilares - logs, métricas e traces]] antes para entender o contexto dos três pilares. A nota seguinte, [[05 - Node-specific metrics - event loop lag, GC, heap]], expande as métricas de runtime incluídas por `collectDefaultMetrics`.
+
+## Pipeline prom-client → Prometheus → Grafana
+
+A aplicação nunca empurra dados: ela apenas mantém estado em memória e responde quando o Prometheus pergunta. Counter e Gauge são os primitivos mais seguros de usar; Histogram exige cuidado com a escolha de buckets; Summary (vermelho no diagrama) nunca deve ser usado em ambientes multi-pod — quantis calculados por instância não podem ser agregados de forma matematicamente correta.
+
+```mermaid
+flowchart TB
+    subgraph app["Aplicação Node.js"]
+        C["Counter\n(só aumenta)"]
+        G["Gauge\n(sobe e desce)"]
+        H["Histogram\n(distribuição)"]
+        S["Summary\n(quantis local ⚠️)"]
+        C & G & H & S --> R["Registry\n(prom-client)"]
+    end
+    R -->|"GET /metrics\ntext/plain 0.0.4"| P["Prometheus\n(scrape a cada 15s)"]
+    P -->|"PromQL"| GF["Grafana\n(Dashboard)"]
+    P --> AL["Alertmanager"]
+
+    style R fill:#4A90D9,color:#fff
+    style C fill:#4A90D9,color:#fff
+    style G fill:#4A90D9,color:#fff
+    style H fill:#F5A623,color:#fff
+    style S fill:#D0021B,color:#fff
+    style P fill:#F5A623,color:#fff
+    style GF fill:#4A90D9,color:#fff
+    style AL fill:#D0021B,color:#fff
+```
 
 ## O que é
 
@@ -319,9 +346,11 @@ const requestsByUserTier = new Counter({
 > [!warning] Normalizar rotas é obrigatório
 > Nunca use `req.url` diretamente como label de rota. `/users/123`, `/users/456` e `/users/789` são três rotas diferentes para o Prometheus, cada uma criando sua própria série. Use o padrão de rota do framework: `req.route.path` no Express, `req.routerPath` no Fastify.
 
-## Na prática
+## Casos práticos
 
-O middleware abaixo é um exemplo completo e production-ready para Express. Ele registra `http_requests_total` (Counter) e `http_request_duration_seconds` (Histogram) com labels corretos, e expõe o endpoint `/metrics`.
+### Cenário 1: API REST no Express — middleware de métricas HTTP
+
+O middleware abaixo é um exemplo production-ready para Express. Ele registra `http_requests_total` (Counter) e `http_request_duration_seconds` (Histogram) com labels corretos e expõe o endpoint `/metrics`. O ponto-chave está no `res.on('finish')`: o evento dispara após o handler enviar a resposta, garantindo que o `status_code` final (que pode mudar durante o processamento) seja capturado corretamente.
 
 ```typescript
 // src/middleware/metrics.middleware.ts
@@ -450,68 +479,131 @@ nodejs_heap_size_used_bytes / nodejs_heap_size_total_bytes
 > [!tip] Versão Fastify
 > O Fastify tem o plugin oficial `@fastify/metrics` que integra prom-client com zero boilerplate. Para Express sem framework, o middleware acima é o padrão recomendado. NestJS tem `@willsoto/nestjs-prometheus` ou `nestjs-prometheus` — ambos criam decorators para registrar métricas com injeção de dependência.
 
-## Armadilhas
+### Cenário 2: Worker de jobs — throughput, profundidade de fila e latência de processamento
 
-### Alta cardinalidade em labels
-
-Usar identificadores únicos por entidade como label — `userId`, `traceId`, `requestId`, `orderId` — cria uma série temporal por valor único. Com 1 milhão de usuários ativos, você tem 1 milhão de séries para um único Counter. O Prometheus carrega todas as séries ativas em memória: isso causa OOM no servidor de métricas em minutos.
-
-**Regra prática:** um label com mais de ~100 valores distintos é suspeito. Mais de ~1.000 valores distintos é provavelmente um bug. Use logs estruturados para rastrear por entidade individual — métricas são para agregações.
-
-### Buckets inadequados para o domínio
-
-Os buckets padrão do prom-client (`[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]`) funcionam para APIs HTTP gerais, mas são inadequados para domínios específicos:
-
-- **APIs de ML/LLM** com p99 de 30s: adicione buckets `[10, 20, 30, 60, 120]`
-- **APIs ultra-rápidas internas** com p99 de 5ms: use `[0.001, 0.002, 0.005, 0.01, 0.025, 0.05]`
-- **Jobs batch de longa duração**: buckets em minutos `[30, 60, 120, 300, 600]`
-
-Se mais de 90% das observações caírem no último bucket, seus percentis serão imprecisos — o `histogram_quantile` só pode interpolar dentro dos buckets que você definiu.
-
-### Não registrar métricas de default
-
-`collectDefaultMetrics()` é uma chamada única que habilita ~20 métricas de runtime Node.js gratuitamente. Sem ela, você está voando às cegas: event loop lag acima de 100ms indica bloqueio do thread principal, GC duration crescente indica pressão de memória, heap near limit indica memory leak iminente.
+Em workers que processam jobs de uma fila (BullMQ, RabbitMQ, SQS), o trio recomendado é Counter (jobs concluídos e falhos), Gauge (profundidade atual da fila) e Histogram (duração do processamento). Essas três métricas respondem em tempo real às perguntas mais importantes de operação: "quantos jobs por segundo estamos processando?", "a fila está acumulando mais rápido do que processamos?" e "o processamento está mais lento que o esperado?".
 
 ```typescript
-// Chame UMA VEZ no entry point da aplicação
-import { collectDefaultMetrics, register } from 'prom-client';
+// src/workers/job-worker.ts
+import { Counter, Gauge, Histogram, register, collectDefaultMetrics } from 'prom-client';
+
 collectDefaultMetrics({ register });
-// Não esqueça de passar o register explicitamente para consistência
+
+// Counter: total de jobs por tipo e status de conclusão
+const jobsTotal = new Counter({
+  name: 'worker_jobs_total',
+  help: 'Total de jobs processados',
+  labelNames: ['job_type', 'status'] as const, // status: 'success' | 'failed'
+  registers: [register],
+});
+
+// Gauge: profundidade atual da fila — sobe quando jobs chegam, desce quando processados
+// Usar .set() em vez de .inc()/.dec() quando possível — evita drift em caso de restart
+const queueDepth = new Gauge({
+  name: 'worker_queue_depth',
+  help: 'Número de jobs aguardando processamento',
+  labelNames: ['queue_name'] as const,
+  registers: [register],
+});
+
+// Histogram: duração do processamento por tipo de job
+// Buckets amplos: sub-segundo até 5 minutos (jobs batch podem ser lentos)
+const jobDurationSeconds = new Histogram({
+  name: 'worker_job_duration_seconds',
+  help: 'Duração de processamento de jobs em segundos',
+  labelNames: ['job_type'] as const,
+  buckets: [0.1, 0.5, 1, 2.5, 5, 10, 30, 60, 120, 300],
+  registers: [register],
+});
+
+// Handler de job: inicia timer antes do processamento, registra status no finally
+async function processJob(jobType: string, payload: unknown): Promise<void> {
+  const endTimer = jobDurationSeconds.startTimer({ job_type: jobType });
+
+  try {
+    queueDepth.dec({ queue_name: jobType }); // job saiu da fila
+
+    await runJobLogic(jobType, payload);
+
+    jobsTotal.inc({ job_type: jobType, status: 'success' });
+    endTimer(); // registra duração no Histogram via process.hrtime()
+  } catch (err) {
+    jobsTotal.inc({ job_type: jobType, status: 'failed' });
+    endTimer(); // também registra duração em caso de falha
+    throw err;
+  }
+}
+
+// Sync periódico da profundidade real da fila via consulta ao broker
+// Mais confiável que incrementar/decrementar manualmente (evita drift)
+async function syncQueueDepths(getQueueSize: (name: string) => Promise<number>): Promise<void> {
+  const queues = ['email', 'pdf-generation', 'image-resize'];
+  for (const queue of queues) {
+    const size = await getQueueSize(queue);
+    queueDepth.set({ queue_name: queue }, size);
+  }
+}
+
+// Atualiza profundidade a cada 15s (alinhado ao intervalo de scrape do Prometheus)
+setInterval(() => syncQueueDepths(getQueueSizeFromBroker), 15_000).unref();
 ```
 
-Não chamar `collectDefaultMetrics` é o erro mais comum de quem configura prom-client pela primeira vez. O dashboard padrão do Grafana (`id: 1860`) depende dessas métricas para funcionar.
+**Queries PromQL para monitorar workers:**
 
-### Duplicar o registry entre imports
+```promql
+# Taxa de jobs processados com sucesso por tipo (jobs/s)
+sum(rate(worker_jobs_total{status="success"}[5m])) by (job_type)
 
-Se dois módulos importam prom-client e um deles cria `new Registry()` sem compartilhar a referência, cada módulo tem seu próprio registro isolado. O endpoint `/metrics` vai expor apenas as métricas de um dos registros. Pior: registrar a mesma métrica em dois registros diferentes gera erro `"A metric with the name X has already been registered"`.
+# Taxa de falha por tipo de job (ratio 0–1)
+sum(rate(worker_jobs_total{status="failed"}[5m])) by (job_type)
+/ sum(rate(worker_jobs_total[5m])) by (job_type)
 
-```typescript
-// ERRADO — cada módulo cria seu próprio registry
-// moduleA.ts
-import { Registry, Counter } from 'prom-client';
-const registry = new Registry(); // registry privado
-const counterA = new Counter({ name: 'counter_a', ..., registers: [registry] });
+# p95 de duração de processamento por tipo
+histogram_quantile(
+  0.95,
+  sum(rate(worker_job_duration_seconds_bucket[5m])) by (le, job_type)
+)
 
-// moduleB.ts
-import { Registry, Counter } from 'prom-client';
-const registry = new Registry(); // registry diferente!
-const counterB = new Counter({ name: 'counter_b', ..., registers: [registry] });
+# Profundidade das filas por nome — útil para detectar acúmulo
+max(worker_queue_depth) by (queue_name)
+
+# Alerta: fila acumulando (profundidade crescendo há mais de 10 min)
+increase(worker_queue_depth[10m]) > 50
 ```
 
-```typescript
-// CORRETO — compartilhe o registry via módulo singleton
-// src/metrics/registry.ts
-import { register } from 'prom-client'; // singleton global
-export { register };
+## O que vem a seguir
 
-// moduleA.ts
-import { register } from '../metrics/registry';
-const counterA = new Counter({ name: 'counter_a', ..., registers: [register] });
+Com as métricas de aplicação no lugar, o passo natural é olhar para os sinais que Node.js expõe sobre sua própria saúde interna: [[05 - Node-specific metrics - event loop lag, GC, heap]] detalha o que `collectDefaultMetrics()` realmente coleta e por que um event loop com lag de 100 ms silencia toda a aplicação — algo que nenhuma métrica de negócio revela por si só. Para conectar esses números a requisições específicas que falharam ou ficaram lentas, [[06 - Tracing distribuído com OpenTelemetry]] introduz o terceiro pilar da observabilidade. E quando os gráficos indicam lentidão mas a origem ainda é misteriosa, [[07 - Profiling avançado com clinic.js]] fornece as ferramentas para olhar dentro do processo em tempo real, sem precisar de métricas instrumentadas.
 
-// moduleB.ts
-import { register } from '../metrics/registry';
-const counterB = new Counter({ name: 'counter_b', ..., registers: [register] });
-```
+## Armadilhas comuns
+
+> [!warning] Alta cardinalidade em labels
+> **O que acontece:** O Prometheus carrega todas as séries ativas em memória. Usar `user_id` como label com 1 milhão de usuários ativos cria 1 milhão de séries para um único Counter — o servidor de métricas vai a OOM em minutos, sem aviso prévio. O processo morre e você perde dados históricos.
+>
+> **Por quê:** Cada combinação única de valores de labels gera uma série temporal distinta no TSDB do Prometheus. O custo de memória é linear no número de séries × janela de retenção. Um label com 10⁶ valores únicos multiplica o uso de memória de toda a instância por esse fator.
+>
+> **Como evitar:** Mantenha labels com no máximo ~100 valores distintos (absoluto: ~1.000). Use logs estruturados para rastrear dados por entidade individual. Para contagens por usuário, agrupe por `tier` (`free`, `pro`, `enterprise`) em vez de `user_id`. A regra prática: se um label pode conter um ID, UUID ou hash, ele não deve ser label.
+
+> [!warning] Buckets inadequados para o domínio
+> **O que acontece:** Se mais de 90% das observações caírem no último bucket, `histogram_quantile` produz percentis imprecisos — o PromQL só consegue interpolar dentro dos intervalos definidos. O p99 calculado pode ser artificialmente limitado ao valor do último bucket, mascarando a degradação real.
+>
+> **Por quê:** Os buckets padrão do prom-client (`[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]`) funcionam para APIs HTTP gerais, mas são inadequados para domínios específicos: APIs de ML/LLM com p99 de 30s, APIs ultra-rápidas internas com p99 de 5ms, ou jobs batch de duração em minutos.
+>
+> **Como evitar:** Analise a distribuição real de latência em staging antes de ir para produção. Para APIs de ML, adicione `[10, 20, 30, 60, 120]`; para APIs ultra-rápidas, use `[0.001, 0.002, 0.005, 0.01, 0.025, 0.05]`. Se os buckets estiverem errados após o deploy, a correção exige rollout — dados históricos com buckets incorretos não podem ser retroativamente recalculados.
+
+> [!warning] Omitir `collectDefaultMetrics()`
+> **O que acontece:** Você perde ~20 métricas de runtime Node.js: event loop lag, duração e frequência de GC, uso de heap, handles ativos. O endpoint `/metrics` funciona normalmente, mas expõe apenas as métricas instrumentadas manualmente — você está voando às cegas sobre a saúde interna do runtime.
+>
+> **Por quê:** `collectDefaultMetrics()` é opcional e silenciosa: sem ela, o prom-client simplesmente não coleta nada sobre o runtime. Event loop bloqueado a 300ms, heap em 95% de uso, GC major rodando 10x por minuto — nada disso aparece em nenhum gráfico.
+>
+> **Como evitar:** Chame `collectDefaultMetrics({ register })` uma única vez no entry point da aplicação, antes de registrar qualquer outra métrica. O dashboard padrão do Grafana (`id: 1860`) depende dessas métricas — sem `collectDefaultMetrics`, o dashboard fica vazio na maioria dos painéis.
+
+> [!warning] Registry duplicado entre módulos
+> **O que acontece:** O endpoint `/metrics` expõe apenas as métricas do registry que o handler usa. Métricas registradas em outros registries simplesmente não aparecem na resposta. Pior: registrar o mesmo nome em dois registries diferentes em alguns contextos gera `"A metric with the name X has already been registered"`, quebrando o boot da aplicação.
+>
+> **Por quê:** Se dois módulos criam `new Registry()` independentemente, cada um tem seu próprio registro isolado. Sem compartilhar a referência, os dois registries nunca se comunicam — o scrape do Prometheus enxerga apenas metade das métricas, silenciosamente.
+>
+> **Como evitar:** Compartilhe o singleton global `import { register } from 'prom-client'` via um módulo centralizado (`src/metrics/registry.ts`). Se precisar de registries isolados para testes, crie `new Registry()` explicitamente e passe-o em `registers: [myRegistry]` para cada métrica — nunca em paralelo com o singleton global.
 
 ## Em entrevista
 

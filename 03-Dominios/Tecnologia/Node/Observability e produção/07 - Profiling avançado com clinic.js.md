@@ -7,11 +7,10 @@ tags:
   - performance
   - clinic-js
 type: note
+fase: Adepto
 status: growing
-progress: in_progress
 created: 2026-05-09
-updated: 2026-05-09
-publish: true
+updated: 2026-06-28
 ---
 
 # Profiling avançado com clinic.js
@@ -37,6 +36,26 @@ Toda aplicação Node.js em produção eventualmente enfrenta o mesmo conjunto d
 | `clinic heapprofiler` | Heap allocation | Quando a memória cresce e você precisa saber *onde* ela é alocada |
 
 A filosofia do clinic.js é **não invasiva por padrão**: você passa seu comando de inicialização e a ferramenta injeta instrumentação transparentemente, sem alterar seu código-fonte. Os resultados são salvos em diretórios locais e abertos no browser como relatórios HTML interativos.
+
+```mermaid
+flowchart TD
+    P["Problema detectado\n(latência alta, CPU, memória)"] --> D["clinic doctor\nDiagnóstico geral — sempre primeiro"]
+    D -->|"CPU spike\nsem I/O correspondente"| F["clinic flame\nFlamegraph de wall time"]
+    D -->|"I/O alto\nCPU ociosa"| B["clinic bubbleprof\nAsync / await profiling"]
+    D -->|"Heap crescendo\nmonotonicamente"| H["clinic heapprofiler\nAlocações ao longo do tempo"]
+    F --> R1["Hot path identificado\nOtimizar ou mover para Worker Thread"]
+    B --> R2["Await chain desnecessária\nParalelizar com Promise.all"]
+    H --> R3["Fonte de alocação identificada\nCorrigir listener leak ou limitar cache"]
+
+    style P fill:#4A90D9,color:#fff
+    style D fill:#4A90D9,color:#fff
+    style F fill:#F5A623,color:#fff
+    style B fill:#F5A623,color:#fff
+    style H fill:#F5A623,color:#fff
+    style R1 fill:#27AE60,color:#fff
+    style R2 fill:#27AE60,color:#fff
+    style R3 fill:#27AE60,color:#fff
+```
 
 ### Instalação
 
@@ -206,7 +225,9 @@ Cada ferramenta gera seu próprio diretório de output (ex: `.12345.clinic-docto
 - No heapprofiler: alocações concentradas em poucas funções que crescem sem limite
 - Causa típica: event listeners não removidos, closures retendo referências, caches sem limite de tamanho
 
-## Na prática
+## Casos práticos
+
+### Cenário 1: diagnóstico via CLI com autocannon e relatório automático
 
 ### Uso básico com servidor HTTP
 
@@ -274,6 +295,61 @@ npx 0x --output-dir /tmp/flamegraphs --node-arg=--max-old-space-size=4096 server
 
 O `0x` usa sampling do V8 (não `perf` do Linux por padrão) e é mais portável entre ambientes.
 
+### Cenário 2: carga programática com autocannon como módulo Node.js
+
+Quando o projeto precisa de load tests reproduzíveis em CI, usar o autocannon como módulo TypeScript é mais robusto do que depender de dois terminais. Aqui, o script inicia o servidor, aplica carga, coleta resultados estruturados e encerra — tudo em um único processo.
+
+```typescript
+import autocannon from 'autocannon';
+import { promisify } from 'node:util';
+import { createServer } from './server'; // sua aplicação
+
+const runAutocannon = promisify(autocannon);
+
+async function runLoadTest(): Promise<void> {
+  // Inicia o servidor
+  const server = await createServer();
+  const address = server.address() as { port: number };
+
+  console.log(`[load-test] Server ready on port ${address.port}`);
+
+  try {
+    const result = await runAutocannon({
+      url: `http://localhost:${address.port}`,
+      connections: 100,        // conexões simultâneas
+      duration: 30,            // segundos
+      pipelining: 1,           // 1 request por conexão por vez
+      requests: [
+        { method: 'GET', path: '/api/users' },
+        { method: 'GET', path: '/api/products' },
+      ],
+    });
+
+    console.log('[load-test] Results:');
+    console.log(`  Req/sec (avg): ${result.requests.average.toFixed(1)}`);
+    console.log(`  Latency p99:   ${result.latency.p99} ms`);
+    console.log(`  Errors:        ${result.errors}`);
+    console.log(`  Timeouts:      ${result.timeouts}`);
+
+    // Falha o script se erros > 1%
+    const errorRate = result.errors / result.requests.total;
+    if (errorRate > 0.01) {
+      console.error(`[load-test] Error rate ${(errorRate * 100).toFixed(2)}% exceeds 1% threshold`);
+      process.exit(1);
+    }
+  } finally {
+    await new Promise<void>((res) => server.close(() => res()));
+  }
+}
+
+runLoadTest().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
+```
+
+Combinado com `clinic doctor` via CLI no CI, esse script garante que cada PR passe por um ciclo de carga real antes de ser mergeado — e o relatório do clinic detecta automaticamente se o PR introduziu event loop lag ou crescimento de heap anormal.
+
 ### Lendo um flamegraph na prática
 
 Dado este flamegraph hipotético:
@@ -292,6 +368,10 @@ Interpretação:
 - `net.Socket` em 60% indica tempo de rede (I/O bound, não CPU bound)
 
 **Conclusão**: o problema é na query ao banco, não em CPU. O bubbleprof seria a próxima ferramenta para entender o tempo de espera do `net.Socket`.
+
+## O que vem a seguir
+
+Profiling de CPU e async revela onde o tempo vai — mas não explica *por que* a memória cresce sem parar. O próximo passo natural é [[08 - Detecção e diagnóstico de memory leaks|diagnosticar memory leaks]]: snapshots comparativos no Chrome DevTools, retainer paths e os padrões de vazamento mais comuns (listeners, caches sem limite, closures). Para quem já sabe o que está falhando e precisa derrubar o serviço com segurança, [[09 - Graceful shutdown profundo|graceful shutdown profundo]] fecha o ciclo de resiliência. O [[03-Dominios/Tecnologia/Node/Observability e produção/index|índice do galho]] tem o mapa completo da trilha.
 
 ## Em entrevista
 
@@ -339,7 +419,7 @@ A flamegraph is a visualization where the horizontal axis represents the proport
 **deoptimização**
 : Processo pelo qual o JIT compiler do V8 abandona código otimizado e volta ao modo de interpretação mais lento, geralmente porque a premissa de tipo estático do código foi violada em runtime. Aparece como frames vermelhos/laranjas em flamegraphs do clinic flame.
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] Profiling em produção: overhead significativo
 > Todas as ferramentas do clinic.js adicionam overhead à aplicação — desde coleta de métricas (doctor) até sampling de V8 (flame) e hooking de async (bubbleprof). Nunca rode clinic diretamente em produção com tráfego real. Use um ambiente de staging com carga representativa gerada por ferramentas como `autocannon` ou `k6`. O overhead pode dobrar o tempo de resposta durante a coleta, o que distorceria a experiência do usuário e os resultados de negócio.

@@ -7,10 +7,10 @@ tags:
   - tracing
   - distributed-systems
 type: note
+fase: Adepto
 status: growing
-progress: in_progress
 created: 2026-05-09
-updated: 2026-05-09
+updated: 2026-06-28
 publish: true
 ---
 
@@ -24,6 +24,41 @@ publish: true
 > - **Sampling** é obrigatório em produção: `ALWAYS_ON` com tráfego real cria volume absurdo; use `TraceIdRatioBased(0.1)` (10%) ou `ParentBasedSampler` para respeitar a decisão do serviço upstream.
 
 O tracing distribuído é o terceiro pilar da observabilidade — o que permite responder "onde o tempo foi gasto?" em vez de apenas "quantos erros aconteceram?". Enquanto logs registram eventos pontuais e métricas agregam comportamento ao longo do tempo, traces reconstroem o fluxo completo de uma requisição, cruzando processos e serviços. OpenTelemetry é hoje o padrão da indústria para capturar e exportar esses dados de forma vendor-neutral.
+
+## Pipeline de tracing: do SDK ao backend
+
+O span não existe sozinho: ele percorre um pipeline de processamento antes de chegar ao Jaeger ou Grafana Tempo. Entender cada etapa é crucial para debugar por que spans não aparecem ou chegam incompletos.
+
+```mermaid
+flowchart LR
+    CL["Cliente HTTP\n(sem traceparent)"] -->|"dispara req"| SA
+
+    subgraph SA["Serviço A — NodeSDK"]
+        direction TB
+        IA["gera trace ID\ncria span raiz"] --> PA["BatchSpanProcessor\n(buffer → lote)"]
+    end
+
+    SA -->|"req + traceparent:\n00-traceId-spanId-01"| SB
+
+    subgraph SB["Serviço B — NodeSDK"]
+        direction TB
+        IB["extrai traceparent\ncria span filho"] --> PB["BatchSpanProcessor"]
+    end
+
+    PA -->|"OTLP HTTP :4318"| COL["OTel Collector\n(filtros / sampling)"]
+    PB -->|"OTLP HTTP :4318"| COL
+    COL -->|"exporta"| BE["Jaeger / Grafana Tempo"]
+
+    style IA fill:#4A90D9,color:#fff
+    style IB fill:#4A90D9,color:#fff
+    style PA fill:#4A90D9,color:#fff
+    style PB fill:#4A90D9,color:#fff
+    style COL fill:#F5A623,color:#fff
+    style BE fill:#4A90D9,color:#fff
+    style CL fill:#D0021B,color:#fff
+```
+
+O header `traceparent` é o fio condutor: Serviço A gera o trace ID, propaga via header para Serviço B, que cria um span filho usando o mesmo trace ID. No backend, os dois spans aparecem como uma única árvore. Se o `traceparent` for perdido ou malformado em qualquer hop, o trace se parte em fragmentos órfãos.
 
 ## O que é
 
@@ -110,7 +145,7 @@ const sdk = new NodeSDK({
 sdk.start();
 
 process.on('SIGTERM', () => {
-  sdk.shutdown().finally(() => process.exit(0)); // simplificado — veja exemplo completo em Na prática
+  sdk.shutdown().finally(() => process.exit(0)); // simplificado — veja exemplo completo em Casos práticos
 });
 ```
 
@@ -139,7 +174,7 @@ const sdk = new NodeSDK({
 sdk.start();
 
 process.on('SIGTERM', () => {
-  sdk.shutdown().finally(() => process.exit(0)); // simplificado — veja exemplo completo em Na prática
+  sdk.shutdown().finally(() => process.exit(0)); // simplificado — veja exemplo completo em Casos práticos
 });
 ```
 
@@ -324,11 +359,112 @@ OTEL_TRACES_SAMPLER_ARG=0.1
 # parentbased_always_off, parentbased_traceidratio
 ```
 
-## Na prática
+## Casos práticos
 
-### `tracing.ts` completo para produção
+### Cenário 1: Serviço de pagamentos com spans de negócio e propagação de contexto
 
-Este é o arquivo de inicialização recomendado para um serviço Node.js em produção, com suporte a diferentes ambientes via variáveis de ambiente:
+Auto-instrumentação cobre HTTP e banco de dados, mas lógica de negócio — verificação de fraude, cobrança no gateway, registro de auditoria — precisa de spans manuais. O padrão abaixo cria uma hierarquia de spans que aparece no Jaeger como uma árvore: `payment.process` como raiz, com `payment.fraud_check` e `payment.charge_gateway` como filhos.
+
+O ponto crítico é o bloco `try/catch/finally` com `span.recordException()` + `span.setStatus(ERROR)` + `span.end()` no `finally`. Qualquer desvio desse padrão resulta em spans vazando memória ou chegando ao backend sem status de erro — tornando silenciosos os problemas que você mais precisa detectar.
+
+```typescript
+// src/services/payment-service.ts
+import { trace, context, propagation, SpanStatusCode, SpanKind } from '@opentelemetry/api';
+import { ATTR_DB_SYSTEM, ATTR_DB_OPERATION } from '@opentelemetry/semantic-conventions';
+
+const tracer = trace.getTracer('payment-service', '1.0.0');
+
+interface PaymentRequest {
+  orderId: string;
+  customerId: string;
+  amountCents: number;
+  currency: string;
+}
+
+interface PaymentResult {
+  transactionId: string;
+  status: 'approved' | 'declined';
+}
+
+export async function processPayment(req: PaymentRequest): Promise<PaymentResult> {
+  return tracer.startActiveSpan(
+    'payment.process',
+    {
+      kind: SpanKind.INTERNAL,
+      attributes: {
+        'payment.order_id': req.orderId,
+        'payment.customer_id': req.customerId,
+        'payment.amount_cents': req.amountCents,
+        'payment.currency': req.currency,
+      },
+    },
+    async (span) => {
+      try {
+        // Verificar fraude — cria span filho automaticamente por ser startActiveSpan
+        const fraudScore = await checkFraud(req);
+        span.setAttribute('payment.fraud_score', fraudScore);
+
+        if (fraudScore > 0.8) {
+          span.setAttribute('payment.blocked_reason', 'high_fraud_score');
+          span.setStatus({ code: SpanStatusCode.ERROR, message: 'Transação bloqueada por risco de fraude' });
+          return { transactionId: '', status: 'declined' };
+        }
+
+        // Cobrar no gateway
+        const result = await chargeGateway(req);
+        span.setAttribute('payment.transaction_id', result.transactionId);
+        span.setAttribute('payment.gateway_response', result.status);
+
+        if (result.status !== 'approved') {
+          span.setStatus({ code: SpanStatusCode.ERROR, message: `Gateway recusou: ${result.status}` });
+        }
+
+        return result;
+      } catch (err) {
+        span.recordException(err as Error);
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: (err as Error).message,
+        });
+        throw err;
+      } finally {
+        span.end(); // Sempre, sempre, sempre
+      }
+    }
+  );
+}
+
+async function checkFraud(req: PaymentRequest): Promise<number> {
+  return tracer.startActiveSpan('payment.fraud_check', async (span) => {
+    try {
+      span.setAttribute('fraud.model_version', 'v2.3');
+      // Evento no span: snapshot de decisão sem criar span filho
+      span.addEvent('fraud_model_invoked', {
+        'fraud.order_id': req.orderId,
+        'fraud.amount_cents': req.amountCents,
+      });
+      const score = Math.random(); // placeholder — lógica real aqui
+      span.setAttribute('fraud.score', score);
+      return score;
+    } catch (err) {
+      span.recordException(err as Error);
+      span.setStatus({ code: SpanStatusCode.ERROR, message: (err as Error).message });
+      throw err;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+**O que aparece no Jaeger:**
+- Span raiz: `payment.process` com atributos `payment.order_id`, `payment.amount_cents`, `payment.fraud_score`
+- Span filho: `payment.fraud_check` com `fraud.model_version`, `fraud.score`
+- Em caso de erro: ícone vermelho em cada span afetado, com stack trace clicável
+
+### Cenário 2: Stack local com Jaeger + tracing.ts de produção
+
+Este é o setup recomendado para desenvolvimento local e para um serviço Node.js em produção. O `tracing.ts` de produção usa `BatchSpanProcessor` (buffer de spans com flush periódico, zero overhead por span) e `ParentBasedSampler` (respeita a decisão upstream). O Docker Compose sobe Jaeger all-in-one com endpoint OTLP na porta 4318.
 
 ```typescript
 // src/tracing.ts
@@ -422,93 +558,7 @@ process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 ```
 
-### Uso em serviço real com tratamento de erros
-
-Exemplo de um serviço de pagamentos com spans manuais, atributos semânticos e propagação de contexto:
-
-```typescript
-// src/services/payment-service.ts
-import { trace, context, propagation, SpanStatusCode, SpanKind } from '@opentelemetry/api';
-import { ATTR_DB_SYSTEM, ATTR_DB_OPERATION } from '@opentelemetry/semantic-conventions';
-
-const tracer = trace.getTracer('payment-service', '1.0.0');
-
-interface PaymentRequest {
-  orderId: string;
-  customerId: string;
-  amountCents: number;
-  currency: string;
-}
-
-interface PaymentResult {
-  transactionId: string;
-  status: 'approved' | 'declined';
-}
-
-export async function processPayment(req: PaymentRequest): Promise<PaymentResult> {
-  return tracer.startActiveSpan(
-    'payment.process',
-    {
-      kind: SpanKind.INTERNAL,
-      attributes: {
-        'payment.order_id': req.orderId,
-        'payment.customer_id': req.customerId,
-        'payment.amount_cents': req.amountCents,
-        'payment.currency': req.currency,
-      },
-    },
-    async (span) => {
-      try {
-        // Verificar fraude — span filho gerado automaticamente via startActiveSpan
-        const fraudScore = await checkFraud(req);
-        span.setAttribute('payment.fraud_score', fraudScore);
-
-        if (fraudScore > 0.8) {
-          span.setAttribute('payment.blocked_reason', 'high_fraud_score');
-          span.setStatus({ code: SpanStatusCode.ERROR, message: 'Transação bloqueada por risco de fraude' });
-          return { transactionId: '', status: 'declined' };
-        }
-
-        // Cobrar no gateway
-        const result = await chargeGateway(req);
-        span.setAttribute('payment.transaction_id', result.transactionId);
-        span.setAttribute('payment.gateway_response', result.status);
-
-        if (result.status !== 'approved') {
-          span.setStatus({ code: SpanStatusCode.ERROR, message: `Gateway recusou: ${result.status}` });
-        }
-
-        return result;
-      } catch (err) {
-        span.recordException(err as Error);
-        span.setStatus({
-          code: SpanStatusCode.ERROR,
-          message: (err as Error).message,
-        });
-        throw err;
-      } finally {
-        span.end(); // Sempre, sempre, sempre
-      }
-    }
-  );
-}
-
-async function checkFraud(req: PaymentRequest): Promise<number> {
-  return tracer.startActiveSpan('payment.fraud_check', async (span) => {
-    try {
-      span.setAttribute('fraud.model_version', 'v2.3');
-      // ... lógica de verificação
-      const score = Math.random(); // placeholder
-      span.setAttribute('fraud.score', score);
-      return score;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-### Docker Compose para Jaeger all-in-one (desenvolvimento local)
+**Docker Compose para stack local:**
 
 ```yaml
 # docker-compose.yml
@@ -557,7 +607,11 @@ networks:
     driver: bridge
 ```
 
-Acesse a UI do Jaeger em `http://localhost:16686` para visualizar os traces.
+Acesse a UI do Jaeger em `http://localhost:16686` para visualizar os traces após subir o stack.
+
+## O que vem a seguir
+
+Com os três pilares — logs, métricas e traces — operacionais, o próximo passo é extrair diagnósticos mais profundos quando os gráficos indicam lentidão mas os spans não revelam onde o tempo vai. [[07 - Profiling avançado com clinic.js]] mostra como olhar para dentro do processo: onde o CPU passa o tempo, quais funções geram mais alocação e onde o event loop fica bloqueado. Para o cenário em que a latência é alta mas os spans mostram tempo esperando — não processando —, [[08 - Detecção e diagnóstico de memory leaks]] investiga por que GC pressure pode estar consumindo ciclos de CPU. E quando o serviço precisa desligar de forma controlada sem perder spans em buffer no `BatchSpanProcessor`, [[09 - Graceful shutdown profundo]] cobre o ciclo de vida completo do processo incluindo flush de telemetria.
 
 ## Em entrevista
 
@@ -595,24 +649,44 @@ Sampling is the practice of recording only a fraction of traces to control stora
 
 **SpanProcessor**: componente que processa spans antes de exportá-los. `SimpleSpanProcessor` exporta um span de cada vez ao ser finalizado (adequado para dev). `BatchSpanProcessor` acumula spans em buffer e exporta em lotes (adequado para produção, menor overhead).
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] `tracing.ts` deve ser o PRIMEIRO import — sem exceção
-> Os patches de auto-instrumentação são aplicados em tempo de load do módulo. Se você importar `express`, `pg` ou `redis` antes de inicializar o SDK, esses módulos já terão sido carregados sem instrumentação, e nenhum span será gerado para eles. A solução é usar `--require ./tracing.js` na linha de comando do Node (ou `NODE_OPTIONS='--require ./tracing.js'`) ou garantir que `import './tracing'` seja a primeira linha do `index.ts`, antes de qualquer outra importação.
+> **O que acontece:** Os patches de auto-instrumentação nunca são aplicados a módulos já carregados. Se `express` ou `pg` foi importado antes do SDK inicializar, nenhum span de requisição HTTP ou query SQL será gerado — o endpoint `/metrics` e os traces de negócio funcionam, mas metade do trace está ausente. Você descobre isso quando o Jaeger mostra spans de negócio mas nenhum span de banco de dados.
+>
+> **Por quê:** `getNodeAutoInstrumentations()` registra patches que são aplicados quando o módulo alvo é importado pela primeira vez. Módulos já em memória não são retroativamente patchados. Imports circulares e re-exports transitivoss podem causar esse problema silenciosamente.
+>
+> **Como evitar:** Use `--require ./dist/tracing.js` como flag do Node ou `NODE_OPTIONS='--require ./tracing.js'` — isso garante que o SDK rode antes de qualquer código da aplicação, independente da ordem de imports. Nunca confie em `import './tracing'` no topo de `index.ts` — a resolução de módulos do Node pode reordenar os imports.
 
 > [!warning] `startActiveSpan` vs `startSpan` — não são intercambiáveis
-> `startActiveSpan` define o span criado como o "span ativo" atual no `AsyncLocalStorage`, fazendo com que todos os spans criados dentro do callback se tornem automaticamente filhos dele — é isso que cria a hierarquia do trace. `startSpan` cria um span mas não o ativa no contexto: spans criados depois não serão automaticamente filhos. Em quase todos os casos você quer `startActiveSpan`. Use `startSpan` apenas quando precisar de controle explícito sobre o contexto pai.
+> **O que acontece:** Spans criados dentro do callback de `startSpan` (em vez de `startActiveSpan`) não são automaticamente filhos do span atual — eles aparecem como spans órfãos no trace, desconectados da hierarquia. O trace fica fragmentado: você vê os spans, mas eles não formam uma árvore coerente.
+>
+> **Por quê:** `startActiveSpan` define o span criado como o "span ativo" atual no `AsyncLocalStorage`, fazendo com que todos os spans criados dentro do callback se tornem automaticamente filhos. `startSpan` cria um span mas não o ativa no contexto — spans posteriores não têm referência ao pai.
+>
+> **Como evitar:** Use `startActiveSpan` em quase todos os casos. A única exceção válida para `startSpan` é quando você precisa de controle explícito sobre o contexto pai — por exemplo, para criar spans filhos de um contexto propagado manualmente via `context.with()`.
 
 > [!warning] Nunca esqueça de chamar `span.end()`
-> Todo span iniciado que não for finalizado vaza memória — o SDK mantém referências a spans abertos. Em código assíncrono com `await`, erros podem impedir que `span.end()` seja chamado. O padrão correto é sempre usar try/catch/finally com `span.end()` no bloco `finally`. A alternativa é usar o callback de `startActiveSpan`, onde o span é o argumento da função — mas ainda assim você precisa chamar `span.end()` manualmente (o SDK não fecha automaticamente).
+> **O que acontece:** O SDK mantém referências a spans abertos em memória. Em código assíncrono com alto volume, spans não finalizados causam vazamento de memória progressivo — o heap cresce continuamente e o processo vai a OOM horas ou dias depois, sem relação aparente com o tracing.
+>
+> **Por quê:** Ao contrário de conexões de banco de dados com timeout automático, spans abertos nunca são coletados pelo GC — o SDK segura a referência deliberadamente, esperando que o código chame `.end()`. Em fluxos com `throw`, um `span.end()` fora do bloco `finally` é simplesmente ignorado.
+>
+> **Como evitar:** Sempre coloque `span.end()` no bloco `finally` — não no `try` nem no `catch`. O `finally` executa independente de exceção ou retorno normal. Use o callback de `startActiveSpan` (que também exige `span.end()` manual) apenas quando o bloco try/catch/finally for explícito.
 
 > [!warning] `ALWAYS_ON` em produção cria volume insustentável
-> Um serviço com 500 req/s com `AlwaysOnSampler` gera 500 traces/s × 365 dias = ~15 bilhões de traces/ano. Backends como Jaeger sem retenção configurada vão simplesmente encher o disco. Use `TraceIdRatioBased(0.1)` ou menor em produção. O valor adequado depende do volume de tráfego e do orçamento de armazenamento. Como regra geral: comece com 1–10%, meça o custo, ajuste.
+> **O que acontece:** Um serviço com 500 req/s com `AlwaysOnSampler` gera 500 traces/s — 43 milhões de traces/dia. Backends como Jaeger sem retenção configurada enchem o disco em horas. Mesmo com retenção, o custo de armazenamento e a latência de queries no backend se tornam proibitivos rapidamente.
+>
+> **Por quê:** `AlwaysOnSampler` é o default do SDK e faz sentido em desenvolvimento, onde você quer ver 100% dos traces. Em produção com tráfego real, a decisão de sampling precisa ser explícita e proporcional ao volume e ao orçamento de armazenamento.
+>
+> **Como evitar:** Em produção, use `TraceIdRatioBased(0.1)` (10%) ou menor como ponto de partida, sempre envolvido em `ParentBasedSampler` para respeitar a decisão upstream. Configure `OTEL_TRACES_SAMPLER=parentbased_traceidratio` e `OTEL_TRACES_SAMPLER_ARG=0.1` via variáveis de ambiente — sem tocar no código.
 
 > [!warning] Auto-instrumentação patcheia módulos no import — não depois
-> O `getNodeAutoInstrumentations()` registra patches que são aplicados quando o módulo alvo é importado pela primeira vez. Se você chama `sdk.start()` depois de já ter importado `express` ou `pg` em outro lugar no mesmo processo, os patches não terão efeito. Isso acontece frequentemente com imports circulares ou com arquivos que importam dependências instrumentadas no nível de módulo (fora de funções/classes). A solução definitiva é `--require ./tracing.js` como flag do Node, garantindo que o SDK rode antes de qualquer código da aplicação.
+> **O que acontece:** Parecido com a armadilha do primeiro import, mas com uma causa diferente: imports circulares ou arquivos que importam dependências instrumentadas fora de funções (no nível de módulo) podem fazer com que o módulo alvo seja carregado antes do SDK, mesmo que `tracing.ts` seja o primeiro arquivo na linha de comando.
+>
+> **Por quê:** O sistema de módulos do Node.js executa o código de cada módulo apenas uma vez, na primeira importação. Se um módulo A importa `express` e módulo A é importado por B, que é importado transitivamente antes de `tracing.ts` — mesmo que `tracing.ts` venha primeiro no `index.ts` — o patch não acontece.
+>
+> **Como evitar:** A solução definitiva é `--require ./tracing.js` como flag do Node (ou `NODE_OPTIONS`), não um `import` no topo de um arquivo. Isso garante execução antes do início do grafo de módulos da aplicação. Em monorepos, verifique se o entry point correto está sendo carregado com `--require`.
 
-> [!tip] BatchSpanProcessor em produção, SimpleSpanProcessor em dev
+> [!tip] `BatchSpanProcessor` em produção, `SimpleSpanProcessor` em dev
 > `SimpleSpanProcessor` exporta cada span imediatamente ao ser finalizado — bom para ver traces em tempo real durante desenvolvimento, mas gera overhead de I/O em produção. `BatchSpanProcessor` acumula spans e exporta em lotes a cada N segundos ou quando o buffer enche, com muito menor impacto na latência da aplicação. Configure `scheduledDelayMillis` e `maxExportBatchSize` conforme o volume de tráfego esperado.
 
 ## Veja também

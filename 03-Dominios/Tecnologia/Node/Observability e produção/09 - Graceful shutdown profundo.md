@@ -7,11 +7,10 @@ tags:
   - graceful-shutdown
   - production
 type: note
+fase: Adepto
 status: growing
-progress: in_progress
 created: 2026-05-09
-updated: 2026-05-09
-publish: true
+updated: 2026-06-28
 ---
 
 # Graceful shutdown profundo
@@ -40,6 +39,27 @@ O oposto é o **crash shutdown** (ou "cold shutdown"): o processo termina abrupt
 Em um ambiente Kubernetes, pods são efêmeros e reiniciados frequentemente: deploys, autoscaling, node draining, OOM killer, liveness probe failures. Sem graceful shutdown, cada reinício é uma mini-catástrofe: requisições dropadas, erros no cliente, e entradas no log de erro que dificultam distinguir bugs reais de ruído de deploy.
 
 O Kubernetes tem mecanismos para dar tempo ao pod encerrar de forma limpa, mas o contêiner precisa cooperar ativamente. O modelo de ciclo de vida do pod define uma sequência clara de eventos entre a decisão de encerrar o pod e o processo finalmente sair.
+
+```mermaid
+sequenceDiagram
+    participant K8s as Kubernetes API
+    participant KP as kube-proxy
+    participant App as Node.js App
+    participant DB as PostgreSQL
+
+    K8s->>KP: Remove pod dos Endpoints
+    K8s->>App: preStop hook (sleep 5s)
+    Note over KP: Propaga remoção (~1-5s)
+    K8s->>App: SIGTERM
+    App->>App: isShuttingDown = true
+    App->>App: server.close()
+    App->>App: closeIdleConnections()
+    App->>App: Aguarda in-flight (máx 20s)
+    App->>App: closeAllConnections()
+    App->>DB: pool.end()
+    App->>App: process.exit(0)
+    Note over K8s,App: terminationGracePeriodSeconds = 35s<br/>(5s preStop + 29s shutdown + 1s margem)
+```
 
 ### Ciclo de vida do pod no encerramento
 
@@ -209,7 +229,7 @@ const forceExitTimer = setTimeout(() => {
 
 O `.unref()` é crítico: sem ele, o `setTimeout` mantém o event loop ativo mesmo após o processo ter concluído tudo e chamado `process.exit()`. Com `.unref()`, se o processo sai normalmente (via `process.exit(0)`), o timer é descartado sem disparar.
 
-## Na prática
+## Casos práticos
 
 ### Handler completo de graceful shutdown
 
@@ -453,6 +473,10 @@ fastify.addHook('onError', async (request, reply, error) => {
 });
 ```
 
+## O que vem a seguir
+
+Graceful shutdown cuida da janela de encerramento — mas o que protege o serviço *enquanto ele está rodando*? [[10 - Circuit breaker e fallback com opossum|Circuit breaker com opossum]] adiciona a camada de resiliência que evita falhas em cascata quando o downstream degrada. Para dimensionar corretamente o pool de conexões que o graceful shutdown precisa fechar de forma segura, [[11 - Connection pool tuning|connection pool tuning]] explica a fórmula por pod e o diagnóstico de transaction leaks. O [[03-Dominios/Tecnologia/Node/Observability e produção/index|índice do galho]] tem o mapa completo da trilha.
+
 ## Em entrevista
 
 **What is graceful shutdown and why does it matter?**
@@ -481,7 +505,7 @@ The preStop hook solves a subtle race condition called endpoint propagation dela
 | **server.closeAllConnections()** | Método do `http.Server` (Node 18.2+) que fecha imediatamente todas as conexões abertas, incluindo keep-alive; complementa `server.close()` para garantir encerramento rápido. |
 | **server.closeIdleConnections()** | Método do `http.Server` (Node 18.2+) que fecha apenas conexões sem requisição ativa; mais seguro que `closeAllConnections()` para uso imediato após `server.close()`. |
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] `server.close()` não fecha conexões keep-alive
 > `server.close()` para de chamar `accept()` em novas conexões TCP, mas conexões keep-alive existentes ficam abertas indefinidamente aguardando a próxima requisição. O callback passado para `server.close(cb)` só é chamado quando **todas** as conexões fecham — o que pode nunca acontecer com clientes que mantêm keep-alive. Use `server.closeIdleConnections()` logo após `server.close()` e `server.closeAllConnections()` após drenar as requisições in-flight. Em Node < 18.2, a alternativa é rastrear todas as conexões manualmente via `server.on('connection', ...)` e fechá-las no shutdown.

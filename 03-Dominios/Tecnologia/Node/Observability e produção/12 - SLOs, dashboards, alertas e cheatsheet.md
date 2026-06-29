@@ -1,11 +1,10 @@
 ---
 title: "SLOs, dashboards, alertas e cheatsheet"
 created: 2026-05-09
-updated: 2026-05-09
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
-publish: true
+fase: Magus
+status: growing
 tags:
   - node
   - observability
@@ -58,6 +57,28 @@ A consequência prática é que engenheiros dormem melhor (menos alertas noturno
 Por fim, SLOs expõem dependências ocultas. Quando seu serviço tem 99,95% de disponibilidade mas chama dois serviços com 99,9% cada, sua disponibilidade real é 99,95% × 99,9% × 99,9% ≈ 99,75% — abaixo do SLO. O error budget torna essa matemática visível.
 
 ## Como funciona
+
+A cadeia SLI → SLO → Error Budget → Burn Rate é o coração do modelo. Cada elemento depende do anterior:
+
+```mermaid
+flowchart LR
+    M["Métricas brutas\nhttp_requests_total\nhttp_request_duration_seconds"] --> SLI["SLI\nfração 2xx\nou p99 < 300ms"]
+    SLI --> SLO["SLO target\n99,9%"]
+    SLO --> EB["Error Budget\n1 - 99,9% = 0,1%\n≈ 43 min/mês"]
+    EB --> BR["Burn Rate\nerror_rate ÷ (1 - SLO)\n14,4× = budget acaba em ~2 dias"]
+    BR -->|"14,4× em 1h\nOU 6× em 6h"| AL["Alerta crítico\n→ PagerDuty"]
+    BR -->|"3× em 3 dias"| AW["Alerta warning\n→ Slack"]
+    BR -->|"< 1× sustentado"| OK["Budget sobrando\nPode aceitar mais risco"]
+
+    style M fill:#4A90D9,color:#fff
+    style SLI fill:#4A90D9,color:#fff
+    style SLO fill:#F5A623,color:#fff
+    style EB fill:#F5A623,color:#fff
+    style BR fill:#F5A623,color:#fff
+    style AL fill:#D0021B,color:#fff
+    style AW fill:#F5A623,color:#fff
+    style OK fill:#27AE60,color:#fff
+```
 
 ### SLIs como queries PromQL
 
@@ -249,7 +270,9 @@ inhibit_rules:
 
 A regra `inhibit_rules` suprime alertas `warning` quando um `critical` do mesmo serviço já está ativo — evita inundar Slack enquanto PagerDuty está acionado.
 
-## Na prática
+## Casos práticos
+
+### Cenário 1: expor SLIs com prom-client e histograma alinhado ao SLO
 
 Exemplo completo: serviço Node.js com SLIs expostos, recording rules em ConfigMap Kubernetes e histograma com buckets alinhados ao target de latência (300ms).
 
@@ -364,6 +387,69 @@ spec:
             summary: "Error budget burn too high"
 ```
 
+### Cenário 2: endpoint /slo/status — expor burn rate em tempo real via Node.js
+
+Um endpoint dedicado permite que health checks externos e dashboards leiam o status do SLO diretamente da aplicação, sem precisar consultar o Prometheus. A ideia é manter um estimador local de taxa de erro usando os contadores do `prom-client` já existentes.
+
+```typescript
+// src/slo-status.ts
+import { register } from 'prom-client';
+
+const SLO_TARGET = 0.999; // 99,9%
+const ERROR_BUDGET = 1 - SLO_TARGET; // 0,001
+
+interface SloStatus {
+  slo_target: number;
+  error_rate_5m: number | null;
+  burn_rate: number | null;
+  budget_consumed_pct: number | null;
+  status: 'ok' | 'warning' | 'critical';
+}
+
+// Lê contadores do prom-client registry para calcular taxa de erro local
+async function computeErrorRate(): Promise<number | null> {
+  const metrics = await register.getMetricsAsJSON();
+
+  const totalMetric = metrics.find((m) => m.name === 'http_requests_total');
+  if (!totalMetric || !Array.isArray(totalMetric.values)) return null;
+
+  const total = totalMetric.values.reduce((sum, v) => sum + (v.value as number), 0);
+  const errors = totalMetric.values
+    .filter((v) => String((v.labels as Record<string, string>).status).startsWith('5'))
+    .reduce((sum, v) => sum + (v.value as number), 0);
+
+  return total > 0 ? errors / total : 0;
+}
+
+export async function getSloStatus(): Promise<SloStatus> {
+  const errorRate = await computeErrorRate();
+
+  if (errorRate === null) {
+    return { slo_target: SLO_TARGET, error_rate_5m: null, burn_rate: null, budget_consumed_pct: null, status: 'ok' };
+  }
+
+  const burnRate = errorRate / ERROR_BUDGET;
+  const budgetConsumedPct = Math.min(errorRate / ERROR_BUDGET * 100, 100);
+
+  const status: SloStatus['status'] =
+    burnRate >= 14.4 ? 'critical' :
+    burnRate >= 6    ? 'warning'  : 'ok';
+
+  return { slo_target: SLO_TARGET, error_rate_5m: errorRate, burn_rate: burnRate, budget_consumed_pct: budgetConsumedPct, status };
+}
+
+// Registrar em Express / Fastify
+// app.get('/slo/status', async (_req, res) => {
+//   res.json(await getSloStatus());
+// });
+```
+
+O campo `status` segue os limites do Google SRE: `critical` quando burn rate ≥ 14,4× (budget acaba em ~2 dias), `warning` quando ≥ 6× (acaba em ~5 dias), `ok` caso contrário. Esse endpoint complementa o `/metrics` do Prometheus: é lido por ferramentas de CD que decidem se um rollout pode avançar com base no health do SLO atual.
+
+## O que vem a seguir
+
+Esta nota fecha a trilha **Observability e produção**. Para revisitar qualquer pilar da cadeia, consulte o [[03-Dominios/Tecnologia/Node/Observability e produção/index|índice do galho]]: os três pilares estão em [[01 - Os três pilares - logs, métricas e traces|nota 01]], as métricas Node-specific (event loop lag, GC, heap) em [[05 - Node-specific metrics - event loop lag, GC, heap|nota 05]], e o tracing distribuído com OpenTelemetry em [[06 - Tracing distribuído com OpenTelemetry|nota 06]]. Para colocar os SLOs em prática num sistema real, os livros de referência são o [Google SRE Book](https://sre.google/sre-book/) e o [SRE Workbook](https://sre.google/workbook/).
+
 ## Em entrevista
 
 **How do you approach setting and monitoring SLOs for a Node.js service?**
@@ -395,7 +481,7 @@ Finally, I make sure the error budget feeds into planning. If a team ships frequ
 | inibição de alerta | alert inhibition |
 | percentil de latência | latency percentile |
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] SLO apertado demais sem dados históricos
 > Começar com 99,99% sem validar se o serviço já atinge isso gera alert fatigue imediato. O SLO inicial deve refletir a confiabilidade real atual — comece conservador e aperte com dados.

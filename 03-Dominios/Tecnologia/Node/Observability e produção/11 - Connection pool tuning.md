@@ -1,11 +1,10 @@
 ---
 title: "Connection pool tuning"
 created: 2026-05-09
-updated: 2026-05-09
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
-publish: true
+fase: Magus
+status: growing
 tags:
   - node
   - resiliencia
@@ -54,6 +53,30 @@ Pool exausto é **silencioso do ponto de vista do banco**. O banco não registra
 Métricas de latência do banco ficam normais (porque queries normais que chegam a executar saem rápido). A métrica que aponta o problema é o número de **pending acquires** — quantas queries estão esperando uma conexão.
 
 ## Como funciona
+
+O ciclo de vida de uma requisição atravessa o pool em dois caminhos — o caminho feliz (conexão disponível) e o caminho de exaustão:
+
+```mermaid
+flowchart TD
+    R["Request chega\n(query SQL)"] --> A{"Pool tem\nconexão livre?"}
+    A -->|"Sim"| Q["Query executada\nConexão retorna ao pool"]
+    A -->|"Não — pool cheio"| W["Request entra na fila\n(acquireTimeoutMillis)"]
+    W -->|"Conexão liberada\na tempo"| Q
+    W -->|"Timeout expirou"| E["Erro: Timeout acquiring\n→ HTTP 500 pro cliente"]
+    Q --> M["pool.numPendingAcquires()\n= 0 → saudável"]
+    E --> AL["pool.numPendingAcquires() > 5\npor 2+ min → alerta"]
+    AL --> D{"Causa?"}
+    D -->|"Pool muito pequeno"| FIX1["Aumentar max\n(recalcular por pod)"]
+    D -->|"Transaction leak"| FIX2["Adicionar try/finally\ncom rollback"]
+
+    style R fill:#4A90D9,color:#fff
+    style Q fill:#27AE60,color:#fff
+    style W fill:#F5A623,color:#fff
+    style E fill:#D0021B,color:#fff
+    style AL fill:#D0021B,color:#fff
+    style FIX1 fill:#27AE60,color:#fff
+    style FIX2 fill:#27AE60,color:#fff
+```
 
 ### Dimensionamento do pool
 
@@ -244,6 +267,44 @@ export const httpClient = axios.create({
 > [!tip] undici como alternativa
 > O pacote `undici` (usado internamente pelo `fetch` global do Node 18+) tem keepalive por padrão e um pool de conexões embutido com configuração via `undici.setGlobalDispatcher(new Pool(baseUrl, { connections: N }))`. Para cenários de alta concorrência, `undici` tende a ter menor overhead que axios com http.Agent.
 
+### Redis — pool implícito e estratégia de reconexão
+
+O cliente Redis (`redis` v4+, `ioredis`) usa **uma única conexão TCP persistente por padrão** — não há pool no sentido clássico. O que existe é uma fila de comandos interna: múltiplos `await redis.get(key)` são enviados em sequência pela mesma conexão, com pipeline automático. O problema de "pool" no Redis se manifesta de outra forma: reconexão, timeout e comandos bloqueantes.
+
+```typescript
+import { createClient } from 'redis';
+
+export const redis = createClient({
+  url: process.env.REDIS_URL,
+  socket: {
+    keepAlive: 5_000,               // keepalive TCP a cada 5s (detecta NAT timeout)
+    connectTimeout: 5_000,          // timeout máximo para conexão inicial
+    reconnectStrategy: (retries) => {
+      if (retries > 10) {
+        // Para de reconectar após 10 tentativas — falha rápida, alerta manual
+        console.error('[redis] Max reconnect attempts exceeded');
+        return new Error('Max reconnect attempts exceeded');
+      }
+      // Backoff exponencial com teto de 2s — não martela o servidor ao voltar
+      return Math.min(retries * 100, 2_000);
+    },
+  },
+});
+
+redis.on('connect',      () => console.log('[redis] connected'));
+redis.on('reconnecting', () => console.warn('[redis] reconnecting...'));
+redis.on('error', (err)  => console.error('[redis] error:', err.message));
+
+// Conectar explicitamente no startup — detecta problemas antes do tráfego
+await redis.connect();
+```
+
+> [!tip] Conexão dedicada para Pub/Sub e BLPOP
+> Um cliente Redis em modo `SUBSCRIBE` não pode executar outros comandos enquanto inscrito. Crie uma instância separada para subscribers ou listeners bloqueantes: `const redisSub = redis.duplicate(); await redisSub.subscribe('channel', handler)`. Isso evita que um `SUBSCRIBE` de longa duração bloqueie queries normais do cache.
+
+> [!warning] Não compartilhe um cliente Redis em modo `SUBSCRIBE` com queries normais
+> A connection é "ocupada" pelo protocolo de Pub/Sub assim que você chama `subscribe()`. Qualquer `get()`/`set()` na mesma instância vai enfileirar e ficar preso até o `unsubscribe()`. Esse bug é silencioso — o comando não falha imediatamente, fica suspenso — e difícil de reproduzir em testes.
+
 ### Diagnóstico de pool exausto em produção
 
 Quando suspeitar de pool exhaustion, os comandos SQL abaixo mostram o estado atual das conexões no Postgres:
@@ -271,7 +332,9 @@ WHERE state = 'idle in transaction'
 ORDER BY duration DESC;
 ```
 
-## Na prática
+## Casos práticos
+
+### Cenário 1: configuração completa para API multi-pod com Prisma, Redis e HTTP externo
 
 Configuração completa recomendada para uma API Node.js com Prisma, Redis e HTTP externo:
 
@@ -328,11 +391,89 @@ process.on('SIGTERM', async () => {
 });
 ```
 
+### Cenário 2: detectar e cortar um transaction leak em produção
+
+O sintoma clássico de transaction leak é o pool esgotando progressivamente durante o dia, se recuperando com o reinício noturno do pod, e voltando a esgotar no dia seguinte. O banco não mostra queries lentas porque nenhuma query está chegando — as conexões estão presas em `idle in transaction`.
+
+**Passo 1: confirmar o leak via SQL no Postgres**
+
+```sql
+-- Conexões em idle in transaction por mais de 5 minutos
+SELECT pid,
+       now() - query_start AS duration,
+       application_name,
+       left(query, 80) AS last_query
+FROM pg_stat_activity
+WHERE state = 'idle in transaction'
+  AND query_start < now() - interval '5 minutes'
+ORDER BY duration DESC;
+```
+
+Se esse resultado retornar linhas, há transactions abertas sem commit/rollback. O campo `last_query` mostra o último comando executado — geralmente um `BEGIN` ou uma query de `INSERT`/`UPDATE` — que ajuda a identificar qual parte do código esqueceu o rollback.
+
+**Passo 2: configurar alerta no prom-client**
+
+```typescript
+import { Gauge } from 'prom-client';
+import { knex } from './db';
+
+const txLeak = new Gauge({
+  name: 'db_idle_in_transaction_connections',
+  help: 'Connections stuck in idle in transaction state — possible transaction leak',
+});
+
+// Query periódica ao pg_stat_activity
+setInterval(async () => {
+  try {
+    const result = await knex.raw(`
+      SELECT count(*) AS cnt
+      FROM pg_stat_activity
+      WHERE state = 'idle in transaction'
+        AND query_start < now() - interval '2 minutes'
+    `);
+    txLeak.set(Number(result.rows[0].cnt));
+  } catch {
+    // Não derrubar o processo por falha no monitoramento
+  }
+}, 30_000);
+```
+
+Alerte quando `db_idle_in_transaction_connections > 2` por mais de 5 minutos. Dois é threshold conservador — uma única conexão vazando já merece investigação.
+
+**Passo 3: corrigir o código com rollback garantido**
+
+```typescript
+// Padrão seguro: rollback garantido via try/finally
+export async function createOrderSafe(data: OrderData) {
+  const trx = await knex.transaction();
+  try {
+    const user = await fetchUser(data.userId); // pode lançar
+    await trx('orders').insert({ ...data, userId: user.id });
+    await trx.commit();
+  } catch (err) {
+    await trx.rollback(); // garante que a conexão volta ao pool
+    throw err;            // repropaga para o handler HTTP
+  }
+}
+```
+
+## O que vem a seguir
+
+Com o pool dimensionado e monitorado, o próximo passo é construir a visão de alto nível da saúde do serviço. [[12 - SLOs, dashboards, alertas e cheatsheet|SLOs, dashboards e alertas]] fecha a trilha com error budget, burn rate e o dashboard de referência de 5 painéis — incluindo a métrica `db_pool_pending_acquires` no painel de saturação. Para proteger as chamadas que o pool alimenta, [[10 - Circuit breaker e fallback com opossum|circuit breaker com opossum]] evita que um downstream lento drene o pool enquanto espera o timeout. O [[03-Dominios/Tecnologia/Node/Observability e produção/index|índice do galho]] tem o mapa completo da trilha.
+
 ## Em entrevista
 
 **What is connection pool exhaustion and how do you diagnose it?**
 
 Connection pool exhaustion is one of the most common silent failures in Node.js APIs — it looks like slow requests or timeouts to the client, but the database shows no unusual activity because no queries are actually reaching it. The root cause is usually pool misconfiguration: either the pool is too small for the load, transactions that aren't rolled back on error cause connections to leak, or multiple pods each holding a large pool collectively exceed the database's `max_connections`. I diagnose it by monitoring a Prometheus gauge on pending pool acquires — if that gauge grows under normal load, it's a pool sizing problem; if it grows episodically and resets, it's likely a transaction leak. I then confirm with `SELECT state, wait_event FROM pg_stat_activity WHERE datname = 'mydb'` — a large number of `idle in transaction` connections is the smoking gun for transaction leaks. For Prisma, I set `connection_limit` in the database URL; for knex, I configure `acquireTimeoutMillis` so pool exhaustion produces an explicit error rather than a hanging request.
+
+**How do you prevent connection leaks from transactions in a Node.js application?**
+
+The most common source of connection leaks in Node.js is a database transaction that starts but never commits or rolls back — usually because an exception is thrown between the `BEGIN` and the `COMMIT` and the `catch` block doesn't call `rollback()`. The connection then sits in `idle in transaction` state indefinitely from the pool's perspective, even though the pool counts it as "in use." Over time, with a few leaked connections per hour, even a properly sized pool drains completely.
+
+The fix is straightforward: always wrap transactions in a `try/finally` block that calls `rollback()` in the error path. With knex, the preferred approach is the callback-based API — `knex.transaction(async (trx) => { ... })` — which automatically rolls back if the callback throws, so you don't need to write the `try/catch` manually. With Prisma, `prisma.$transaction([...])` handles this automatically for interactive transactions when you use the callback form.
+
+To detect existing leaks before they drain the pool, I query `pg_stat_activity` for connections in `idle in transaction` state with a duration over two minutes and expose the count as a Prometheus gauge. An alert threshold of two or more such connections sustained for five minutes catches leaks early without false positives from legitimate long-running transactions.
 
 ## Vocabulário
 
@@ -347,7 +488,7 @@ Connection pool exhaustion is one of the most common silent failures in Node.js 
 | vazamento de conexão | connection leak |
 | transação aberta sem rollback | unclosed transaction / transaction leak |
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] Múltiplos pods com pool grande excedem `max_connections`
 > O erro mais comum ao ir para produção com Kubernetes é não calcular o total de conexões: `pool_size × num_pods`. Com 20 pods e pool de 20, você tem 400 conexões tentando se abrir num Postgres com `max_connections = 100`. O Postgres começa a recusar conexões com `FATAL: sorry, too many clients already`. Sempre calcule: `pool_por_pod = (max_connections × 0.8) / num_pods`. Reserve os 20% restantes para conexões de ferramentas de DBA, migrações e monitoramento.

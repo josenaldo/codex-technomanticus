@@ -7,11 +7,10 @@ tags:
   - circuit-breaker
   - opossum
 type: note
+fase: Magus
 status: growing
-progress: in_progress
 created: 2026-05-09
-updated: 2026-05-09
-publish: true
+updated: 2026-06-28
 ---
 
 # Circuit breaker e fallback com opossum
@@ -50,6 +49,35 @@ Sem circuit breaker, a sequência típica de falha em cascata é:
 O circuit breaker interrompe o ciclo no passo 2: quando B está com alta taxa de erro, A falha rápido, libera recursos, e o impacto não se propaga.
 
 ## Como funciona
+
+O circuit breaker é uma máquina de estados com três estados e transições bem definidas. A lógica de transição é o coração do pattern:
+
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED : inicializa
+    CLOSED --> CLOSED : sucesso / falha abaixo do threshold
+    CLOSED --> OPEN : errorThresholdPercentage excedido\n(e volumeThreshold atingido)
+    OPEN --> OPEN : chama fallback sem invocar fn
+    OPEN --> HALF_OPEN : resetTimeout expirou
+    HALF_OPEN --> CLOSED : sonda bem-sucedida
+    HALF_OPEN --> OPEN : sonda falhou — timer reinicia
+
+    note right of CLOSED
+        Requisições passam normalmente.
+        Erros são contabilizados na janela deslizante.
+        breaker.stats.failures sobe aqui.
+    end note
+    note right of OPEN
+        Fail fast — downstream poupado.
+        fallback() retorna resposta degradada.
+        Nenhuma chamada de rede é feita.
+    end note
+    note right of HALF_OPEN
+        1 requisição-sonda passa.
+        Resultado determina transição.
+        Auto-healing sem enxurrada de chamadas.
+    end note
+```
 
 ### Estados do circuito
 
@@ -313,7 +341,7 @@ breaker.on('fallback', () => {
 });
 ```
 
-## Na prática
+## Casos práticos
 
 ### Setup básico envolving uma chamada HTTP
 
@@ -520,6 +548,10 @@ describe('userBreaker', () => {
 > [!important] breaker.shutdown()
 > Sempre chame `breaker.shutdown()` no `afterEach`/`afterAll` de testes. opossum mantém timers internos para `resetTimeout` e para a janela deslizante — sem `shutdown()`, os timers vazam entre testes e podem causar comportamentos não-determinísticos.
 
+## O que vem a seguir
+
+O circuit breaker protege chamadas externas — mas as conexões internas ao banco também precisam de atenção. [[11 - Connection pool tuning|Connection pool tuning]] cobre o dimensionamento por pod, o diagnóstico de pool exausto e transaction leaks que drenam o pool silenciosamente. Para fechar o ciclo de resiliência, [[09 - Graceful shutdown profundo|graceful shutdown profundo]] garante que os breakers e pools são encerrados limpos em cada deploy. O [[03-Dominios/Tecnologia/Node/Observability e produção/index|índice do galho]] tem o mapa completo da trilha.
+
 ## Em entrevista
 
 **What is a circuit breaker pattern?**
@@ -551,7 +583,7 @@ opossum wraps any async function with `new CircuitBreaker(fn, options)`. You con
 | **probe request** | Requisição-sonda enviada em HALF_OPEN para testar se o downstream se recuperou |
 | **volumeThreshold** | Número mínimo de chamadas necessárias na janela antes de o opossum avaliar o `errorThresholdPercentage` |
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] `timeout` vs `resetTimeout` — nomes enganosos
 > A opção `timeout` em opossum é o **tempo máximo de execução da função protegida** (em ms). Se a função não resolver/rejeitar em `timeout` ms, o opossum a considera falha e emite o evento `timeout`. Isso é completamente diferente de `resetTimeout`, que é o tempo que o circuito permanece em OPEN antes de tentar HALF_OPEN. Confundir os dois leva a configurações onde o circuito fica OPEN por 3 segundos (em vez de 30) ou a função tem 30 segundos para responder (em vez de 3).

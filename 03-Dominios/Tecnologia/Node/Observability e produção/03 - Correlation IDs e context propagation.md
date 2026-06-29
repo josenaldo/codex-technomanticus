@@ -1,10 +1,10 @@
 ---
 title: "Correlation IDs e context propagation"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -101,6 +101,30 @@ Correlation IDs aparecem em perguntas sobre:
 ---
 
 ## Como funciona
+
+O fluxo completo de propagação: o middleware gera um `requestId`, armazena no `AsyncLocalStorage`, e toda a cadeia assíncrona downstream — handlers, funções de serviço, chamadas a banco — lê esse ID sem recebê-lo como parâmetro. Nas chamadas para outros serviços, o ID viaja no header HTTP para que o serviço B continue o mesmo "fio".
+
+```mermaid
+sequenceDiagram
+    participant C as Cliente
+    participant MW as Middleware
+    participant ALS as AsyncLocalStorage
+    participant H as Handler
+    participant DB as consultarBanco()
+    participant B as Serviço B
+
+    C->>MW: POST /orders
+    MW->>ALS: run({ requestId: "uuid-abc" })
+    Note over ALS: contexto herdado<br/>por toda a async chain
+    ALS->>H: next()
+    H->>H: logger.info() → requestId via mixin
+    H->>DB: await (sem parâmetro)
+    DB->>ALS: getStore().requestId ✓
+    H->>B: fetch() + x-request-id: uuid-abc
+    Note over B: mesmo requestId<br/>nos logs do serviço B
+    B-->>H: resposta
+    MW-->>C: x-request-id: uuid-abc
+```
 
 ### AsyncLocalStorage — o mecanismo nativo
 
@@ -322,7 +346,11 @@ Com isso, uma entrada de log contém `requestId` (gerado pelo app), e o sistema 
 
 ---
 
-## Na prática
+## Casos práticos
+
+### Cenário 1: Middleware Express com AsyncLocalStorage
+
+O middleware deve ser o primeiro da cadeia — antes de qualquer lógica de negócio — para garantir que o contexto esteja disponível desde o instante zero da requisição. Ele resolve o `requestId` na ordem de prioridade: `traceparent` W3C > `x-request-id` > novo UUID gerado localmente.
 
 Middleware completo para Express que integra todas as peças:
 
@@ -412,6 +440,87 @@ app.get('/orders/:id', async (req, res) => {
 app.listen(3000, () => logger.info('Server running on :3000'));
 ```
 
+### Cenário 2: Hook Fastify com onRequest — variação sem Express
+
+Fastify usa o hook `onRequest` no lugar de middleware. A lógica é idêntica, mas o Fastify já injeta `req.id` automaticamente — o que significa que você pode usar `req.id` como `requestId` sem precisar extrair ou gerar manualmente, a menos que queira reutilizar o `traceId` de um header W3C `traceparent` de entrada.
+
+```typescript
+// plugin/request-context.plugin.ts
+import fp from 'fastify-plugin';
+import { FastifyPluginAsync } from 'fastify';
+import { randomUUID } from 'node:crypto';
+import { asyncLocalStorage, RequestContext } from '../context-store';
+import { logger } from '../logger';
+
+const HEX_32 = /^[0-9a-f]{32}$/;
+
+function extractTraceId(traceparent: string | undefined): string | null {
+  if (!traceparent) return null;
+  const parts = traceparent.split('-');
+  if (parts.length !== 4 || !HEX_32.test(parts[1])) return null;
+  return parts[1];
+}
+
+const requestContextPlugin: FastifyPluginAsync = async (app) => {
+  app.addHook('onRequest', (req, reply, done) => {
+    // 1. Resolver o requestId: traceparent W3C > x-request-id > Fastify req.id
+    const traceparent = req.headers['traceparent'] as string | undefined;
+    const incoming = req.headers['x-request-id'] as string | undefined;
+    const requestId = extractTraceId(traceparent) ?? incoming ?? req.id;
+
+    // 2. Montar contexto e iniciar o store
+    const context: RequestContext = { requestId, startTime: Date.now() };
+
+    asyncLocalStorage.run(context, () => {
+      // 3. Expor no header de resposta
+      reply.header('x-request-id', requestId);
+      done();
+    });
+  });
+
+  app.addHook('onResponse', (req, reply, done) => {
+    // getStore() ainda disponível pois o mesmo run() ainda está ativo
+    const store = asyncLocalStorage.getStore();
+    if (store) {
+      logger.info(
+        {
+          method: req.method,
+          url: req.url,
+          statusCode: reply.statusCode,
+          durationMs: Date.now() - store.startTime,
+        },
+        'Request completed',
+      );
+    }
+    done();
+  });
+};
+
+export default fp(requestContextPlugin);
+```
+
+Registro no app Fastify:
+
+```typescript
+// app.ts
+import Fastify from 'fastify';
+import requestContextPlugin from './plugin/request-context.plugin';
+
+const app = Fastify({ logger: false }); // pino gerenciado pelo nosso módulo
+
+// Registrar antes de qualquer outra rota ou plugin
+await app.register(requestContextPlugin);
+
+app.get('/orders/:id', async (req) => {
+  // logger.info já injeta requestId automaticamente via mixin
+  logger.info({ orderId: req.params.id }, 'Fetching order');
+  // ...
+  return { orderId: req.params.id };
+});
+```
+
+A diferença-chave em relação ao Express: `asyncLocalStorage.run()` chama `done()` de dentro do callback — garantindo que todo o processamento posterior do Fastify aconteça dentro do contexto ativo.
+
 ---
 
 ## Propagação para serviços downstream
@@ -454,43 +563,58 @@ Com esse padrão, o log do `estoque-service` terá o mesmo `requestId` que o log
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
 > [!warning] Gerar o ID após código assíncrono
-> O `asyncLocalStorage.run()` deve envolver **toda** a lógica da requisição. Se você gerar o ID dentro de um `setTimeout`, um `setImmediate`, ou qualquer outro callback assíncrono iniciado antes do `run()`, o contexto não estará disponível nas chamadas que vieram antes desse ponto.
->
-> ```typescript
-> // ERRADO — o run() começa depois do primeiro await
-> app.use(async (req, res, next) => {
->   await autenticarToken(req); // contexto ainda não existe aqui!
->   const requestId = randomUUID();
->   asyncLocalStorage.run({ requestId, startTime: Date.now() }, () => next());
-> });
->
-> // CORRETO — o run() é o primeiro passo
-> app.use((req, res, next) => {
->   const requestId = randomUUID();
->   asyncLocalStorage.run({ requestId, startTime: Date.now() }, () => next());
-> });
-> ```
+> **O que acontece:** Qualquer código executado antes do `asyncLocalStorage.run()` chama `getStore()` e recebe `undefined` — o contexto não existe ainda. Logs emitidos nesses pontos ficam sem `requestId`.
+> **Por quê:** `AsyncLocalStorage` propaga o contexto apenas para chains que nascem *dentro* do `run()`. Código que já estava em execução antes do `run()` não é afetado retroativamente.
+> **Como evitar:** O `asyncLocalStorage.run()` deve ser o primeiro passo do middleware — antes de qualquer `await`, autenticação ou leitura de body.
+
+```typescript
+// ERRADO — o run() começa depois do primeiro await
+app.use(async (req, res, next) => {
+  await autenticarToken(req); // contexto ainda não existe aqui!
+  const requestId = randomUUID();
+  asyncLocalStorage.run({ requestId, startTime: Date.now() }, () => next());
+});
+
+// CORRETO — o run() é o primeiro passo
+app.use((req, res, next) => {
+  const requestId = randomUUID();
+  asyncLocalStorage.run({ requestId, startTime: Date.now() }, () => next());
+});
+```
 
 > [!warning] Não propagar o ID nos headers de saída
-> O correlation ID só é útil em microsserviços se viajar junto com as requisições HTTP de saída. Um erro comum é armazenar o ID no `AsyncLocalStorage` mas esquecer de incluí-lo nos headers do `fetch` / `axios` / `got` que chamam serviços externos. O resultado: o serviço downstream gera um novo ID e o "fio" de observabilidade é cortado.
+> **O que acontece:** O serviço downstream gera um novo `requestId`, quebrando o "fio" de observabilidade. Uma query `requestId:abc123` no Datadog retorna logs apenas do serviço A — os do serviço B não aparecem porque têm outro ID.
+> **Por quê:** `AsyncLocalStorage` é local ao processo. Para cruzar a fronteira do processo, o ID precisa viajar explicitamente no header HTTP de cada chamada de saída.
+> **Como evitar:** Crie um wrapper sobre `fetch`/`axios`/`got` que lê `getRequestId()` do store e injeta automaticamente o header `x-request-id` em todas as chamadas de saída.
 
 > [!warning] Usar `cls-hooked` ou `domain` em vez de `AsyncLocalStorage`
-> `domain` está marcado como depreciado desde Node 4 e pode causar comportamentos imprevisíveis com Promises modernas. `cls-hooked` é uma biblioteca de terceiros construída sobre `domain`. Ambos são soluções legadas que **não devem ser usadas em projetos novos**. `AsyncLocalStorage` é a API oficial, mantida pela equipe do Node, e está estável desde Node 16.
+> **O que acontece:** Comportamentos imprevisíveis com Promises modernas — contexto vazando entre requisições, IDs trocados, ou context `undefined` em pontos onde deveria existir.
+> **Por quê:** `domain` está marcado como depreciado desde Node 4 e não funciona corretamente com a maquinaria de async hooks moderna. `cls-hooked` é construído sobre `domain` e herda todos esses problemas.
+> **Como evitar:** Use `AsyncLocalStorage` de `node:async_hooks` — é a API oficial, mantida pela equipe do Node, estável desde Node 16, e sem dependências externas.
 
 > [!warning] Confundir `requestId` com `traceId` (W3C traceparent)
-> São conceitos relacionados mas distintos:
-> - `requestId` (ou `x-request-id`): identificador gerado pelo seu aplicativo, formato livre, não padronizado entre vendors.
-> - `traceId`: parte do header W3C `traceparent` (`00-{traceId}-{spanId}-{flags}`), 128 bits / 32 hex chars, compartilhado entre todos os serviços que fazem parte do mesmo trace distribuído e entendido por ferramentas como Jaeger, Zipkin, Datadog.
->
-> Idealmente, use o `traceId` do OpenTelemetry como `requestId` do seu aplicativo — assim você tem um único ID que funciona tanto nos seus logs quanto nas ferramentas de tracing.
+> **O que acontece:** Você mantém dois IDs separados — um no seu app (`x-request-id`) e um no sistema de tracing (`traceId` do span OTel) — e não consegue navegar de um log para o span correspondente ou vice-versa.
+> **Por quê:** `requestId` (header `x-request-id`) é um identificador interno do app, formato livre. `traceId` é parte do header W3C `traceparent` (128 bits / 32 hex chars), padronizado entre Jaeger, Zipkin, Datadog. São conceitos relacionados mas por default têm valores distintos.
+> **Como evitar:** Use o `traceId` do OpenTelemetry como `requestId` do app — extraia-o do header `traceparent` de entrada ou do span ativo criado pelo OTel. Assim um único ID funciona tanto nos logs quanto nas ferramentas de tracing.
 
-> [!warning] Modificar o store diretamente pode causar vazamento
-> `asyncLocalStorage.getStore()` retorna uma referência ao objeto de contexto. Se você modificar o objeto em um branch assíncrono, a modificação é visível em todos os outros branches que compartilham o mesmo contexto (pois é o mesmo objeto). Para criar sub-contextos isolados, use um novo `asyncLocalStorage.run()` com um objeto clonado: `asyncLocalStorage.run({ ...currentStore, userId: '42' }, callback)`.
+> [!warning] Modificar o store diretamente pode causar vazamento entre branches
+> **O que acontece:** A modificação de um campo do store em um branch assíncrono é visível em todos os outros branches que compartilham o mesmo objeto — pois `getStore()` retorna uma referência, não uma cópia.
+> **Por quê:** `AsyncLocalStorage` copia a *referência* ao objeto de contexto para cada branch, não o objeto em si. Mutações são compartilhadas por todos que apontam para o mesmo objeto.
+> **Como evitar:** Para criar sub-contextos isolados, use `asyncLocalStorage.run({ ...getStore(), userId: '42' }, callback)` — cria um novo objeto com os campos do pai mais os novos, sem afetar o contexto original.
 
 ---
+
+## O que vem a seguir
+
+Com os correlation IDs propagando automaticamente por `AsyncLocalStorage`, o próximo passo é conectar esse contexto ao sistema de tracing distribuído — fazendo com que logs e spans compartilhem o mesmo `traceId` e sejam correlacionáveis por uma única query em qualquer ferramenta de observabilidade.
+
+- [[06 - Tracing distribuído com OpenTelemetry]] — integração completa do `traceId` OTel com o `requestId` da aplicação; como o `otel-bridge` sincroniza os dois IDs
+- [[02 - Logging estruturado com pino]] — mixin do pino que lê `requestId` do `AsyncLocalStorage` automaticamente; `redact` e serializers que garantem campos obrigatórios em cada log
+- [[04 - Métricas com prom-client]] — como evitar usar o `requestId` como label de métrica (alta cardinalidade) e o que usar no lugar
+- [[01 - Os três pilares - logs, métricas e traces]] — o triângulo de diagnóstico que o correlation ID une: alerta (métrica) → trace → log
 
 ## Em entrevista
 

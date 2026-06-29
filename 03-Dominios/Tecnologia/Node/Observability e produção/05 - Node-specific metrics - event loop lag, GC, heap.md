@@ -1,10 +1,10 @@
 ---
 title: "Node-specific metrics: event loop lag, GC e heap"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Adepto
+status: growing
 publish: true
 tags:
   - node
@@ -29,6 +29,41 @@ aliases:
 > O trio `nodejs_eventloop_lag_p99_seconds`, `nodejs_heap_size_used_bytes / nodejs_heap_size_total_bytes` e `nodejs_gc_duration_seconds` deve constar em todo dashboard Node.js de produção.
 
 Esta nota faz parte de [[03-Dominios/Tecnologia/Node/Observability e produção/index]] e expande as métricas de runtime expostas por `collectDefaultMetrics()` do [[04 - Métricas com prom-client]]. A nota [[08 - Detecção e diagnóstico de memory leaks]] retoma o tema de heap e GC com ferramentas de diagnóstico mais profundas (heap snapshots, clinic.js).
+
+## Sinais vitais do runtime Node.js
+
+Pense no event loop como o coração do processo: quando bate rápido e regular, tudo funciona. Quando fica bloqueado, nenhuma outra requisição é processada — não importa quantos CPUs o servidor tenha. GC major é um desfibrilador involuntário: interrompe tudo por até 500ms para recuperar memória. Monitorar esses três sinais é o equivalente de colocar um monitor cardíaco no servidor.
+
+```mermaid
+flowchart TB
+    subgraph proc["Processo Node.js — thread única"]
+        EL["Event Loop\n(libuv)"]
+        V8["V8 Engine"]
+        subgraph heap["Heap V8"]
+            NS["new_space\n(geração jovem)"]
+            OS["old_space\n(geração antiga)"]
+            CS["code_space / large_object"]
+        end
+        EL -->|"executa JS"| V8
+        V8 -->|"aloca objetos"| NS
+    end
+
+    NS -->|"GC minor · Scavenge\n< 5ms · frequente"| NS
+    NS -->|"sobreviveu 2+ Scavenges"| OS
+    OS -->|"GC major · MarkSweepCompact\n50–500ms · stop-the-world ⚠️"| OS
+
+    EL -->|"lag p99 > 100ms =\np99 HTTP degradado"| AL["🚨 Alertar"]
+    OS -->|"heapUsed/heapTotal > 0.85 =\nOOM iminente"| AL
+
+    style EL fill:#4A90D9,color:#fff
+    style V8 fill:#4A90D9,color:#fff
+    style NS fill:#4A90D9,color:#fff
+    style OS fill:#F5A623,color:#fff
+    style CS fill:#4A90D9,color:#fff
+    style AL fill:#D0021B,color:#fff
+```
+
+A geração jovem (`new_space`) é coletada rapidamente e com frequência — normal. A geração antiga (`old_space`) exige pausa completa do processo. Alertar em lag > 100ms e heap > 85% dá tempo de agir antes do colapso.
 
 ## O que é
 
@@ -89,7 +124,7 @@ O **event loop lag** (atraso do loop de eventos) é o tempo que uma microtarefa 
 const start = Date.now();
 setImmediate(() => {
   const lag = Date.now() - start;
-  console.log(`lag: ${lag}ms`); // resolução de 1ms, overhead de Date.now() acumula
+  console.log(`lag: ${lag}ms`); // resolução de 1ms, drift acumula
 });
 ```
 
@@ -328,9 +363,11 @@ logHeapSpaces();
 > [!warning] Limite de file descriptors
 > Em sistemas Linux, o limite padrão de file descriptors por processo é 1024 (`ulimit -n`). Cada handle de socket, arquivo ou pipe consome um file descriptor. Quando o limite é atingido, `EMFILE: too many open files` começa a aparecer nos logs — geralmente a causa é handles não fechados acumulados ao longo de horas ou dias.
 
-## Na prática
+## Casos práticos
 
-### Setup completo: event loop lag, GC e heap
+### Cenário 1: Setup completo de métricas de runtime em serviço Express
+
+Este setup centraliza event loop lag, GC e heap spaces em um único módulo exportável. O `.unref()` nos `setInterval` garante que os timers não impeçam o processo de encerrar durante graceful shutdown — detalhe crítico em ambientes Kubernetes onde `SIGTERM` precisa ser processado dentro de um deadline.
 
 ```js
 // observability/node-metrics.js
@@ -400,7 +437,7 @@ export function setupNodeMetrics(registry = new Registry()) {
 }
 ```
 
-### PromQL: alertas essenciais para Node.js
+**Regras de alerta no Prometheus:**
 
 ```yaml
 # alertas/node-runtime.yml
@@ -452,7 +489,7 @@ groups:
 > [!info] Convertendo lag para milissegundos no PromQL
 > `nodejs_eventloop_lag_p99_seconds` está em segundos. Multiplique por 1000 para obter milissegundos antes de comparar com thresholds em ms: `nodejs_eventloop_lag_p99_seconds * 1000 > 100`.
 
-### Consultas PromQL para dashboard
+**Consultas PromQL para dashboard:**
 
 ```promql
 # Heap ratio (usar em gauge do dashboard)
@@ -475,48 +512,131 @@ nodejs_eventloop_lag_p99_seconds * 1000
 nodejs_active_handles{job="my-api"}
 ```
 
-## Armadilhas
+### Cenário 2: Detecção de operações síncronas bloqueantes com `measureSyncOp`
 
-### 1. Medir event loop lag com `Date.now()` ou `setImmediate` manual
+Quando o event loop lag está alto mas a causa não é óbvia, o próximo passo é isolar quais operações síncronas estão contribuindo para o bloqueio. Este helper instrumenta operações específicas com `process.hrtime.bigint()` — resolução de nanosegundos, sem dependência externa — e expõe um Gauge por operação para o Prometheus.
 
-```js
-// ERRADO — padrão que parece razoável mas é problemático
-setImmediate(() => {
-  const lag = Date.now() - expectedTime; // resolução de 1ms, drift acumula
+```typescript
+// src/diagnostics/sync-op-monitor.ts
+// Uso: envolva operações síncronas suspeitas para medir sua contribuição ao event loop lag
+import { Gauge, Counter } from 'prom-client';
+
+// Gauge: duração da última execução de cada operação síncrona (em ms)
+const syncOpDurationMs = new Gauge({
+  name: 'app_sync_op_last_duration_ms',
+  help: 'Duração da última execução de operação síncrona em milissegundos',
+  labelNames: ['operation'] as const,
 });
+
+// Counter: quantas vezes cada operação ultrapassou o threshold de bloqueio
+const syncOpBlockedTotal = new Counter({
+  name: 'app_sync_op_blocked_total',
+  help: 'Total de execuções de operação síncrona que bloquearam o event loop acima do threshold',
+  labelNames: ['operation'] as const,
+});
+
+const BLOCK_THRESHOLD_MS = 10; // considera bloqueante acima de 10ms
+
+export function measureSyncOp<T>(operationName: string, fn: () => T): T {
+  const startNs = process.hrtime.bigint();
+  const result = fn();
+  const durationMs = Number(process.hrtime.bigint() - startNs) / 1_000_000;
+
+  syncOpDurationMs.set({ operation: operationName }, durationMs);
+
+  if (durationMs > BLOCK_THRESHOLD_MS) {
+    syncOpBlockedTotal.inc({ operation: operationName });
+    console.warn({
+      msg: 'sync operation blocked event loop',
+      operation: operationName,
+      durationMs: durationMs.toFixed(3),
+      threshold_ms: BLOCK_THRESHOLD_MS,
+    });
+  }
+
+  return result;
+}
+
+// Exemplos de uso em código real:
+
+// Parsing de JSON grande (candidato frequente a bloqueio)
+export function parseHeavyJson(rawJson: string): unknown {
+  return measureSyncOp('json_parse', () => JSON.parse(rawJson));
+}
+
+// Serialização de resposta grande
+export function stringifyLargePayload(data: unknown): string {
+  return measureSyncOp('json_stringify', () => JSON.stringify(data));
+}
+
+// Criptografia síncrona (deve ser delegada ao thread pool, mas nem sempre é)
+import { createHash } from 'node:crypto';
+export function hashContent(content: string): string {
+  return measureSyncOp('sha256_hash', () =>
+    createHash('sha256').update(content).digest('hex')
+  );
+}
 ```
 
-O problema é duplo: `Date.now()` tem resolução de 1 ms (o lag real pode ser de frações de milissegundo), e o próprio `setImmediate` adiciona overhead ao loop que está sendo medido. O resultado é uma medição que subestima o lag real e distorce as estatísticas. Use sempre `monitorEventLoopDelay()` de `node:perf_hooks`.
+**Queries PromQL para diagnosticar operações bloqueantes:**
 
-### 2. Alertar apenas em OOM — tarde demais
+```promql
+# Operações síncronas mais lentas (última medição, em ms)
+topk(5, app_sync_op_last_duration_ms)
 
-Um processo que atingiu 100% do heap já está morto ou em processo de morte. O V8 vai executar GCs desesperados, cada vez mais longos, antes de desistir e lançar o erro fatal. O correto é alertar em **85% de uso** (`heapUsed / heapTotal > 0.85`), quando ainda há tempo para:
+# Taxa de bloqueios por operação (bloqueios/min)
+rate(app_sync_op_blocked_total[5m]) * 60
 
-- Investigar o que está consumindo memória (`--inspect` + heap snapshot)
-- Drenar conexões e reiniciar o processo de forma controlada
-- Escalar horizontalmente enquanto o problema é investigado
+# Correlação: event loop lag alto + operações bloqueantes
+# (abrir em painel lado a lado no Grafana)
+nodejs_eventloop_lag_p99_seconds * 1000
+# vs
+max(app_sync_op_last_duration_ms) by (operation)
+```
 
-Alertar em 95% ou "quando cair" significa que você vai ser acordado às 3h para um post-mortem, não para uma mitigação.
+> [!tip] Quando usar `measureSyncOp`
+> Use como ferramenta de diagnóstico temporário, não como instrumentação permanente. Em produção, o overhead de `hrtime.bigint()` por si só é negligenciável, mas logar cada chamada pode ser verboso. Ative o logging com uma variável de ambiente (`DIAGNOSE_SYNC_OPS=true`) e desative após identificar a causa.
 
-### 3. Ignorar `nodejs_active_handles` alto
+## O que vem a seguir
 
-Handles ativos acumulando é um dos leaks mais silenciosos em Node.js. O processo parece saudável (CPU baixo, latência normal), mas lentamente consome todos os file descriptors disponíveis. Quando `nodejs_active_handles` cresce continuamente ao longo do tempo (não apenas com carga — de forma permanente), isso indica handles não sendo fechados. Os candidatos mais comuns são:
+Event loop lag e GC pressure são os sinais de que algo está errado — mas identificar *o quê* exige ferramentas de profiling. [[07 - Profiling avançado com clinic.js]] mostra como usar `clinic flame` e `clinic bubbleprof` para visualizar onde o event loop passa o tempo e quais funções geram mais alocação de objetos. Quando o heap ratio está alto mas a causa não é óbvia, [[08 - Detecção e diagnóstico de memory leaks]] descreve o fluxo completo de investigação com heap snapshots e `--inspect`. Para ver como essas métricas se encaixam no quadro maior de SLOs e alertas de produção, [[12 - SLOs, dashboards, alertas e cheatsheet]] consolida as queries PromQL e as regras de alerta recomendadas para todo o galho de observabilidade.
 
-- Sockets de banco de dados que abriram mas não voltaram para o pool
-- `fs.createReadStream()` em handlers de erro sem `.destroy()`
-- `setInterval` criados dentro de handlers de requisição sem `clearInterval`
+## Armadilhas comuns
 
-Coloque um alerta se `nodejs_active_handles` crescer mais de 20% em 30 minutos sem crescimento equivalente de carga.
+> [!warning] Medir event loop lag com `Date.now()` ou `setImmediate` manual
+> **O que acontece:** A medição subestima o lag real e acumula drift ao longo do tempo. O valor reportado pode ser 2–5x menor do que o lag real, mascarando problemas de bloqueio que afetam o p99 de latência dos usuários.
+>
+> **Por quê:** `Date.now()` tem resolução de 1 ms (o lag real pode ser de frações de milissegundo). O próprio `setImmediate` adiciona overhead ao loop que está sendo medido, criando uma medição que contamina o sinal. Além disso, você só tem um valor instantâneo — sem distribuição ou percentis para alertar.
+>
+> **Como evitar:** Use sempre `monitorEventLoopDelay()` de `node:perf_hooks`. Ele usa timers de alta precisão (nanosegundos) internos ao Node.js, retorna um `IntervalHistogram` com `.percentile(99)`, e não interfere no próprio loop que está medindo.
 
-### 4. GC major frequente "não é feature, é bug"
+> [!warning] Alertar apenas em OOM — tarde demais
+> **O que acontece:** Um processo que atingiu 100% do heap já está em processo de morte. O V8 executa GCs desesperados, cada vez mais longos, antes de desistir e lançar o erro fatal `FATAL ERROR: Allocation failed`. Não há exception para capturar — o processo morre sem graceful shutdown.
+>
+> **Por quê:** Sem alertas preventivos, o primeiro sinal de problema é o crash em produção. Métricas de uso de heap ficam disponíveis no Prometheus; só falta configurar o threshold correto.
+>
+> **Como evitar:** Alerte em **85% de uso** (`heapUsed / heapTotal > 0.85`) — quando ainda há tempo para investigar com `--inspect`, tirar um heap snapshot, drenar conexões e reiniciar de forma controlada. Alertar em 95% significa que você vai ser acordado às 3h para um post-mortem, não para uma mitigação.
 
-É tentador normalizar GC major frequente em aplicações com alto throughput. Mas GC major frequente significa que a geração antiga está constantemente cheia, o que significa que objetos com vida longa estão se acumulando mais rápido do que o GC consegue coletar. Isso é quase sempre um memory leak ou um padrão de alocação patológico (ex.: acumular requisições em memória antes de processar em batch, sem limite de tamanho).
+> [!warning] Ignorar `nodejs_active_handles` crescendo continuamente
+> **O que acontece:** O processo parece saudável (CPU baixo, latência normal), mas lentamente consome todos os file descriptors disponíveis. Quando `ulimit -n` é atingido (padrão: 1024 no Linux), o processo não consegue mais abrir conexões, aceitar requisições ou escrever logs — e passa a falhar em todas as operações de I/O com `EMFILE: too many open files`.
+>
+> **Por quê:** Handles ativos acumulando é um dos leaks mais silenciosos em Node.js. `fs.createReadStream()` sem `.destroy()` em handlers de erro, `setInterval` criados dentro de handlers de requisição sem `clearInterval`, ou sockets de banco que abriram mas não voltaram para o pool — todos acumulam handles sem causar erros imediatos.
+>
+> **Como evitar:** Monitore `nodejs_active_handles` e alerte se crescer mais de 20% em 30 minutos sem crescimento equivalente de carga. Ao investigar, use `process._getActiveHandles()` para listar os handles ativos e identificar o tipo e a stack trace de criação.
 
-A resposta correta para GC major frequente é investigar com heap snapshot (ver [[08 - Detecção e diagnóstico de memory leaks]]), não aumentar `--max-old-space-size` indefinidamente.
+> [!warning] Normalizar GC major frequente como comportamento esperado
+> **O que acontece:** GC major frequente significa que a geração antiga está constantemente cheia, o que causa picos de latência periódicos de 50–500ms — aparentemente aleatórios nos logs, porque não há código lento envolvido. Com o tempo, o p99 de latência piora progressivamente enquanto o heap cresce.
+>
+> **Por quê:** É tentador aceitar GC major frequente em aplicações de alto throughput como "comportamento normal de uma aplicação com muita carga". Mas GC major frequente quase sempre é sintoma de memory leak ou de padrão de alocação patológico — objetos acumulando em old space mais rápido do que o GC consegue coletar.
+>
+> **Como evitar:** Trate GC major frequente como bug, não como custo operacional. A resposta correta é investigar com heap snapshot (ver [[08 - Detecção e diagnóstico de memory leaks]]), não aumentar `--max-old-space-size` indefinidamente. Aumentar o limite apenas adia o colapso e aumenta a duração de cada GC major.
 
-### 5. Bônus: confiar em `heapTotal` como limite real
-
-`heapTotal` é o tamanho **atual** do heap alocado pelo V8 — não o limite máximo. O V8 pode crescer o heap até `--max-old-space-size` sob demanda. A razão `heapUsed / heapTotal` pode parecer saudável (ex.: 60%) enquanto `heapTotal` ainda está crescendo e se aproximando do limite. Para alertas mais precisos, considere também monitorar `heapTotal` absoluto e comparar com o limite configurado.
+> [!warning] Confundir `heapTotal` com o limite real do processo
+> **O que acontece:** A razão `heapUsed / heapTotal` pode parecer saudável (ex.: 60%) enquanto `heapTotal` está crescendo e se aproximando do limite configurado via `--max-old-space-size`. Você recebe uma falsa sensação de segurança até o processo atingir o teto e morrer.
+>
+> **Por quê:** `heapTotal` é o tamanho **atual** do heap alocado pelo V8 — não o limite máximo. O V8 cresce o heap sob demanda até `--max-old-space-size`. Se o limite é 2 GB e `heapTotal` já está em 1.8 GB com `heapUsed/heapTotal = 0.6`, você tem apenas 200 MB de margem, não 40%.
+>
+> **Como evitar:** Monitore `heapTotal` absoluto além do ratio e compare com o limite configurado. Para descobrir o limite em tempo de execução: `v8.getHeapStatistics().heap_size_limit`. Configure um alerta quando `heapTotal` ultrapassar 80% desse valor.
 
 ## Em entrevista
 

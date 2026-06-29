@@ -1,10 +1,10 @@
 ---
 title: "Os três pilares: logs, métricas e traces"
 created: 2026-05-08
-updated: 2026-05-08
+updated: 2026-06-28
 type: concept
-progress: backlog
-status: seedling
+fase: Iniciado
+status: growing
 publish: true
 tags:
   - node
@@ -272,14 +272,14 @@ O **error budget** deriva do SLO: se o SLO é 99,9%, o time tem um orçamento de
 
 Logs, métricas e traces formam um triângulo de diagnóstico que é a base do processo de debugging em produção. Cada vértice é um ponto de entrada diferente para um incidente:
 
-```
-Alerta (métrica) → identifica QUE há um problema e sua magnitude
-        |
-        v
-Trace  → identifica ONDE na cadeia de chamadas o problema está
-        |
-        v
-Log    → explica O QUÊ exatamente aconteceu e qual foi o contexto
+```mermaid
+flowchart TD
+    A["Alerta\n(métrica fora do SLO)"] -->|"QUE há um problema"| T["Trace\nOnde na cadeia de chamadas?"]
+    T -->|"ONDE está o gargalo"| L["Log\nO quê aconteceu exatamente?"]
+
+    style A fill:#F5A623,color:#000
+    style T fill:#D0021B,color:#fff
+    style L fill:#4A90D9,color:#fff
 ```
 
 Exemplo de workflow num incidente real:
@@ -293,9 +293,11 @@ O diagnóstico completo — da detecção até a causa raiz — foi possível po
 
 A chave para o triângulo funcionar é a **correlação**: o mesmo `traceId` que aparece no span deve aparecer no log da mesma requisição. Isso é feito via context propagation, que é o tema da nota [[03 - Correlation IDs e context propagation]].
 
-## Na prática
+## Casos práticos
 
-Cenário: uma rota `POST /users` que cria um usuário. Veja como cada pilar captura esse evento.
+### Cenário 1: POST /users — três pilares em ação independente
+
+Uma mesma rota `POST /users` instrumentada com cada pilar separadamente. Logs narram o evento com contexto completo, métricas agregam contagem e latência para dashboards e alertas, traces cronometram onde o tempo foi gasto span a span.
 
 **Log (pino):**
 
@@ -360,7 +362,11 @@ return tracer.startActiveSpan('user.create', async (span) => {
 });
 ```
 
-**Tudo junto — endpoint completo (Fastify):**
+### Cenário 2: Endpoint Fastify completo — os três pilares integrados em um único handler
+
+Em produção os três pilares não vivem em módulos isolados — eles instrumentam o mesmo handler. A chave está na ordem: log de início antes de qualquer I/O (para diagnosticar travamentos), métricas e trace atualizados tanto no caminho feliz quanto no de erro, e o span sempre fechado no `finally` para nunca vazar recursos.
+
+**Endpoint completo (Fastify):**
 
 ```javascript
 import Fastify from 'fastify';
@@ -482,11 +488,12 @@ O que este exemplo demonstra na prática:
 - **Histogram de duração com label `status`**: permite comparar latência de sucessos vs erros (erros são mais rápidos? Mais lentos? Isso indica a causa).
 - **Span com atributos**: o `requestId` no span permite correlacionar traces com logs no backend de observability (Jaeger, Tempo, etc).
 
-## Armadilhas
+## Armadilhas comuns
 
-### Armadilha 1: Logar apenas em caso de erro
-
-A armadilha mais comum é instrumentar logs só no `catch`. Sem o log de início e de sucesso, é impossível saber se uma operação sequer começou, ou estimar a proporção de erros.
+> [!warning] Logar apenas em caso de erro
+> **O que acontece:** Sem log de início e de sucesso, é impossível saber se uma operação sequer começou, quanto tempo levou no caminho feliz, ou calcular a proporção real de erros frente ao total de tentativas.
+> **Por quê:** Instrumentar apenas o `catch` cria um ponto cego total para o caminho feliz — não há como distinguir "operação lenta" de "operação nunca executada".
+> **Como evitar:** Logue sempre três momentos: início (com contexto de entrada), sucesso (com contexto de saída e duração) e erro (com causa e contexto).
 
 ```javascript
 // Ruim: só loga erros
@@ -513,9 +520,10 @@ async function criarUsuario(dados) {
 }
 ```
 
-### Armadilha 2: Usar alta cardinalidade como label de métrica
-
-Labels de alta cardinalidade — como `userId`, `email` ou `requestId` — explodem o número de séries temporais no Prometheus e podem derrubar o servidor de métricas.
+> [!warning] Alta cardinalidade como label de métrica
+> **O que acontece:** O Prometheus fica sem memória ou começa a recusar scrapers, pois cada combinação única de labels cria uma série temporal separada — um label `userId` com 1 M de usuários gera 1 M de séries por contador.
+> **Por quê:** Prometheus armazena cada combinação de labels como uma série independente. Labels de cardinalidade ilimitada multiplicam esse número de forma descontrolada.
+> **Como evitar:** Use apenas labels com cardinalidade baixa e previsível — `status` (success/error), `route` (/users), `method` (GET/POST). Dados de alta cardinalidade vão nos **logs**, não nas métricas.
 
 ```javascript
 // Perigoso: userId como label cria milhões de séries
@@ -533,15 +541,15 @@ const contador = new Counter({
 contador.inc({ status: 'success', route: '/users' });
 ```
 
-### Armadilha 3: Confundir SLO com SLA em discussões de time
+> [!warning] Confundir SLO com SLA em discussões de time
+> **O que acontece:** O time alerta no nível do SLA e, quando o alerta dispara, o contrato com o cliente já foi violado — não há tempo de reação antes das consequências contratuais.
+> **Por quê:** SLO é a meta interna com buffer de segurança. SLA é o compromisso externo. Usar o SLA como threshold de alerta elimina completamente esse buffer.
+> **Como evitar:** Alerte no SLO (ex: 99,9% de disponibilidade). O SLA (ex: 99,5%) é a linha de emergência que nunca deveria ser atingida. O error budget deriva do SLO, não do SLA.
 
-SLO é interno e serve para guiar decisões de engenharia (when to stop deploys, prioritize reliability). SLA é externo e tem consequência contratual. Usar SLA como target de alerta interno significa que, quando o alerta dispara, você já violou o contrato com o cliente.
-
-A prática correta é: alertar no SLO (antes de violar o SLA), tratar o SLA como linha de emergência que nunca deveria ser atingida.
-
-### Armadilha 4: Traces sem sampling em produção de alto volume
-
-Capturar 100% dos traces em alta volumetria é economicamente inviável e pode introduzir latência adicional pelo overhead de serialização e envio. Sem sampling, o custo de armazenamento cresce linearmente com o tráfego.
+> [!warning] Traces sem sampling em produção de alto volume
+> **O que acontece:** O custo de armazenamento cresce linearmente com o tráfego, tornando o tracing economicamente inviável. O overhead de serialização e envio pode adicionar latência mensurável ao path crítico em alta volumetria.
+> **Por quê:** Capturar 100% dos traces é desnecessário — a maioria das requisições bem-sucedidas tem comportamento semelhante e não agrega informação nova. O valor está nos traces de erro e nos outliers lentos.
+> **Como evitar:** Configure tail-based sampling no OpenTelemetry Collector: sempre capture traces com erro ou latência acima do p99; amostre 5–10% do restante. Assim você mantém visibilidade nos casos relevantes sem custo linear.
 
 ```javascript
 // Sem sampling: coleta tudo (perigoso em alta volumetria)
@@ -550,7 +558,6 @@ const provider = new NodeTracerProvider({
 });
 
 // Com tail-based sampling: decide se salva o trace DEPOIS de vê-lo completo
-// Útil para garantir que erros e traces lentos sejam sempre salvos
 const provider = new NodeTracerProvider({
   sampler: new ParentBasedSampler({
     root: new TraceIdRatioBasedSampler(0.1), // 10% de sampling
@@ -558,11 +565,10 @@ const provider = new NodeTracerProvider({
 });
 ```
 
-Para garantir que erros e traces lentos sejam sempre capturados mesmo com sampling baixo, use tail-based sampling no collector (OpenTelemetry Collector suporta isso nativamente).
-
-### Armadilha 5: Não correlacionar logs com traces
-
-Logs e traces produzidos pelo mesmo request mas sem um identificador comum são inúteis para diagnóstico conjunto. O `traceId` deve aparecer em ambos.
+> [!warning] Não correlacionar logs com traces
+> **O que acontece:** Logs e spans do mesmo request existem em sistemas diferentes sem forma de conectá-los. Ao investigar um trace lento no Jaeger, você não encontra os logs correspondentes no Loki — e vice-versa.
+> **Por quê:** Sem um identificador compartilhado, as duas ferramentas de observabilidade são ilhas. O diagnóstico exige alternar manualmente entre sistemas e deduzir quais registros pertencem ao mesmo evento.
+> **Como evitar:** Inclua o `traceId` do span ativo em cada log via mixin do pino. O campo `traceId` no log deve ser idêntico ao `traceId` do span correspondente para o mesmo request.
 
 ```javascript
 // Sem correlação: logs e traces não se encontram
@@ -582,6 +588,16 @@ function logComTrace(logger, level, dados, msg) {
 logComTrace(logger, 'info', { userId: 42 }, 'Usuário criado');
 // Saída: { userId: 42, traceId: "abc123...", spanId: "def456...", msg: "Usuário criado" }
 ```
+
+## O que vem a seguir
+
+Os três pilares estabelecem o vocabulário, mas cada um tem sua própria profundidade técnica. O galho avança do conceitual para o operacional: primeiro você aprende *como* emitir cada tipo de sinal corretamente, depois *como* correlacioná-los via um único ID que atravessa logs, métricas e traces, e por fim *como* fechar o ciclo de confiabilidade com SLOs e alertas.
+
+- [[02 - Logging estruturado com pino]] — implementação de alto desempenho do pilar de logs, com serializers, redação de dados sensíveis e integração com Fastify/Express
+- [[03 - Correlation IDs e context propagation]] — como conectar os três pilares via `AsyncLocalStorage` e headers W3C TraceContext sem poluir cada assinatura de função
+- [[04 - Métricas com prom-client]] — instrumentação completa de Counters, Histograms e Gauges para os golden signals
+- [[06 - Tracing distribuído com OpenTelemetry]] — traces distribuídos com spans, atributos e propagação entre serviços
+- [[12 - SLOs, dashboards, alertas e cheatsheet]] — fechando o ciclo: definir SLIs/SLOs, criar dashboards e configurar alertas de error budget
 
 ## Em entrevista
 
