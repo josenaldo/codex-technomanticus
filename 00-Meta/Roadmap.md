@@ -65,25 +65,57 @@ aliases:
 
 | Trilha | Estado | Nota |
 | ------ | ------ | ---- |
-| [[03-Dominios/Tecnologia/IA/index\|IA]] | 🟡 | 21 galhos, 322 notas; em enriquecimento (Anatomia dos LLMs reformulação, Agents) |
+| [[03-Dominios/Tecnologia/IA/index\|IA]] | 🟡 | 21 galhos, 322 notas; **13 enriquecidos (padrão completo) · 6 parciais · 2 fora de escopo** — ver [[#Enriquecimento do domínio IA]] |
 | [[03-Dominios/Tecnologia/Terminal/index\|Terminal]] | ✅ | 7 galhos, 78 notas |
 | [[03-Dominios/Tecnologia/Infraestrutura/index\|Infraestrutura]] | 🟡 | só galho Linux; falta Docker, Kubernetes, Nginx, Cloud |
 | [[03-Dominios/Tecnologia/RPA/index\|RPA]] | ⬜ | stub (6 notas) |
+
+#### Enriquecimento do domínio IA
+
+> **Padrão completo de enriquecimento** (cristalizado no lote de 28/06): `fase:` no frontmatter · `[!question]-` após o TL;DR · seção "Armadilhas comuns" com 3 `[!warning]` · seção "Como explicar em inglês" (quote + tabela PT↔EN ≥5 linhas) · bridge "O que vem a seguir" · piso de linhas (Iniciado ≥300 / Adepto ≥400 / Magus ≥500).
+>
+> Galhos enriquecidos **antes** de 28/06 passaram por um padrão mais leve (estrutura + `fase:`, sem todos os elementos) — por isso os 6 parciais. Auditoria de conteúdo (grep dos marcadores + contagem de linhas) em 2026-06-29.
+
+| Galho | Notas | Enriquecido | Status | O que falta |
+| ----- | ----- | ----------- | ------ | ----------- |
+| AI Engineering Stack | 13 | 27/06 | ✅ completo | — |
+| RAG e Vector Databases | 13 | 27/06 | ✅ completo | — |
+| MCP | 10 | 28/06 | ✅ completo | — |
+| Segurança e Guardrails | 12 | 28/06 | ✅ completo | — |
+| Memória de Agentes | 24 | 28/06 | ✅ completo | — |
+| Prompt Engineering | 9 | 28/06 | ✅ completo | — |
+| Structured Outputs | 8 | 28/06 | ✅ completo | — |
+| Evaluation | 8 | 28/06 | ✅ completo | — |
+| Observability | 8 | 28/06 | ✅ completo | — |
+| Multimodal Prompting | 7 | 28/06 | ✅ completo | — |
+| Image Prompting | 7 | 28/06 | ✅ completo | — |
+| Improvement Loop | 7 | 28/06 | ✅ completo | — |
+| Ferramentas de IA | 6 | 28/06 | ✅ completo | "inglês" ausente em 3 notas-referência grandes (700+ l) — provável isenção intencional |
+| Agentes de Codificação | 18 | 27/06 | 🟡 parcial | `[!question]`/Armadilhas em ~6 notas (04, 16, 17, 18…) |
+| Context Engineering | 16 | 27/06 | 🟡 parcial | `[!question]` em 15/16 notas |
+| Economia de Tokens | 22 | 27/06 | 🟡 parcial | `[!question]` em quase todas; notas 01–04 cruas (<130 l) |
+| Spec-Driven Development | 12 | 27/06 | 🟡 parcial | Armadilhas + "inglês" + bridge em todas |
+| Anatomia de Agents | 11 | 25/06 | 🟡 parcial | `[!question]`/Armadilhas/bridge em todas; várias <300 l |
+| Anatomia dos LLMs | 21 | 24/06 | 🟡 parcial | reformulação estrutural feita (spec `00-Meta/specs/2026-06-20-galho-anatomia-llms-reformulacao-plan.md`); falta Armadilhas/bridge; maioria <300 l |
+| O Lado Sombrio da IA | 1 | — | ⬜ fora de escopo | cluster crítico fora das trilhas (só "Débito cognitivo") |
+| Claude Code | 0 | — | ⬜ fora de escopo | pasta vazia |
+
+> **Ordem sugerida pra fechar os parciais** (do mais cru ao mais polido): Anatomia dos LLMs (seguir o spec) → Anatomia de Agents → Spec-Driven Development → Economia de Tokens → Context Engineering + Agentes de Codificação (passada rápida só de `[!question]`).
 
 ---
 
 ## 2. Engenharia — o diferencial de Senior
 
-| Trilha | Estado | Nota |
-| ------ | ------ | ---- |
-| [[03-Dominios/Engenharia/Design de Software/index\|Design de Software]] | 🟡 | 25 notas, 2 galhos (SOLID, OO, Patterns) |
-| [[03-Dominios/Engenharia/Segurança/index\|Segurança]] | 🟡 | 23 notas; consolidar |
-| [[03-Dominios/Engenharia/Testes/index\|Testes]] | 🟡 | 17 notas (geral/conceitual) — **falta a vertente "Testes no ecossistema JS"** (Vitest, Jest, Testing Library, Playwright, MSW) |
-| [[03-Dominios/Engenharia/Complexidade de Software/index\|Complexidade de Software]] | 🟡 | 17 notas |
-| [[03-Dominios/Engenharia/Arquitetura/index\|Arquitetura / System Design]] | 🟡 | 7 notas — **crítico para entrevista senior; aprofundar** |
-| [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação entre Sistemas]] | 🟡 | 8 notas (API design, REST/GraphQL/gRPC, mensageria) |
-| [[03-Dominios/Engenharia/Operação/index\|Operação (DevOps/SRE)]] | ⬜ | 1 nota — **CI/CD, deploy, observabilidade, on-call: buraco grande para fullstack** |
-| [[03-Dominios/Engenharia/Dados/index\|Dados (Data Engineering)]] | ⬜ | 1 nota — modelagem, pipelines, analytics |
+| Trilha                                                                                  | Estado | Nota                                                                                                                           |
+| --------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| [[03-Dominios/Engenharia/Design de Software/index\|Design de Software]]                 | 🟡     | 25 notas, 2 galhos (SOLID, OO, Patterns)                                                                                       |
+| [[03-Dominios/Engenharia/Segurança/index\|Segurança]]                                   | 🟡     | 23 notas; consolidar                                                                                                           |
+| [[03-Dominios/Engenharia/Testes/index\|Testes]]                                         | 🟡     | 17 notas (geral/conceitual) — **falta a vertente "Testes no ecossistema JS"** (Vitest, Jest, Testing Library, Playwright, MSW) |
+| [[03-Dominios/Engenharia/Complexidade de Software/index\|Complexidade de Software]]     | 🟡     | 17 notas                                                                                                                       |
+| [[03-Dominios/Engenharia/Arquitetura/index\|Arquitetura / System Design]]               | 🟡     | 7 notas — **crítico para entrevista senior; aprofundar**                                                                       |
+| [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação entre Sistemas]] | 🟡     | 8 notas (API design, REST/GraphQL/gRPC, mensageria)                                                                            |
+| [[03-Dominios/Engenharia/Operação/index\|Operação (DevOps/SRE)]]                        | ⬜      | 1 nota — **CI/CD, deploy, observabilidade, on-call: buraco grande para fullstack**                                             |
+| [[03-Dominios/Engenharia/Dados/index\|Dados (Data Engineering)]]                        | ⬜      | 1 nota — modelagem, pipelines, analytics                                                                                       |
 
 ---
 
