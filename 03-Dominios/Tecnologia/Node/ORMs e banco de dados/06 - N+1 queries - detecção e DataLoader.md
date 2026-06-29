@@ -1,10 +1,10 @@
 ---
 title: "N+1 queries - detecção e DataLoader"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+fase: Adepto
 tags:
   - node
   - orm
@@ -12,7 +12,6 @@ tags:
   - n+1
   - dataloader
   - banco-de-dados
-publish: false
 aliases:
   - N+1
   - DataLoader
@@ -22,6 +21,36 @@ aliases:
 
 > [!abstract] TL;DR
 > O problema **N+1** ocorre quando o código emite 1 query para buscar uma lista de N registros e depois dispara mais N queries individuais para carregar uma associação de cada registro — totalizando N+1 queries no banco. É silencioso: nenhum erro é lançado, apenas latência crescente proporcional ao tamanho do resultado, inviabilizando performance em produção. A forma mais rápida de detectar é habilitar o log de queries em cada ORM e verificar se o número de queries emitidas cresce com o tamanho do resultado. A solução primária para APIs REST é **eager loading** (JOINs), disponível em todos os ORMs via `include` (Sequelize/Prisma), `relations` (TypeORM) ou `with` (Drizzle). Para contextos GraphQL — onde resolvers são chamados individualmente por campo — o **DataLoader** resolve o problema via batching automático no mesmo tick de evento e cache por requisição. Veja também [[01 - Panorama de ORMs]] para o comparativo geral entre ORMs e o contexto de quando cada solução se aplica.
+
+## N+1: causa e solução
+
+```mermaid
+flowchart TD
+    REQ["Requisição\n/posts?limit=50"]
+    Q1["Query 1\nSELECT * FROM posts LIMIT 50"]
+    N_Q["Queries N (×50)\nSELECT * FROM users WHERE id = ?"]
+    PROB["Problema N+1\n51 round-trips ao banco"]
+
+    EL["Eager Loading\ninclude / with / leftJoin"]
+    DL["DataLoader\nbatching + cache por tick"]
+    SOL["1-2 queries totais\n(REST/GraphQL)"]
+
+    REQ --> Q1
+    Q1 --> N_Q
+    N_Q --> PROB
+
+    PROB -->|"REST API"| EL
+    PROB -->|"GraphQL resolvers"| DL
+    EL --> SOL
+    DL --> SOL
+
+    style PROB fill:#D0021B,color:#fff
+    style EL fill:#4A90D9,color:#fff
+    style DL fill:#F5A623,color:#000
+    style SOL fill:#4A90D9,color:#fff
+    style Q1 fill:#F5A623,color:#000
+    style N_Q fill:#D0021B,color:#fff
+```
 
 ## O que é
 
@@ -379,6 +408,125 @@ return users; // a ordem do banco pode não corresponder à ordem de ids
 > [!tip] Regra de ouro
 > Se você sabe **no momento da query** quais associações vai precisar, use eager loading. Se a necessidade surge durante a resolução de campos individuais (GraphQL, templates dinâmicos), use DataLoader.
 
+## Casos práticos
+
+### Cenário A — Detectar e corrigir N+1 em API REST Prisma
+
+Endpoint `/api/posts` retorna posts com o nome do autor. Durante code review, um dev nota que o número de queries no log é 51 para uma lista de 50 posts.
+
+```typescript
+// ❌ ANTES: N+1 descoberto em code review
+// src/posts/posts.controller.ts
+export async function getPosts(req: Request, res: Response) {
+  const posts = await prisma.post.findMany({
+    where: { published: true },
+    take: 50,
+  });
+
+  // Problema oculto: map com await dentro → 50 queries individuais
+  const enriched = await Promise.all(
+    posts.map(async (post) => {
+      const author = await prisma.user.findUnique({
+        where: { id: post.authorId },
+        select: { name: true },
+      });
+      return { ...post, authorName: author?.name };
+    })
+  );
+
+  res.json(enriched);
+}
+```
+
+```typescript
+// ✅ DEPOIS: eager loading resolve o problema com 1 query
+export async function getPosts(req: Request, res: Response) {
+  const posts = await prisma.post.findMany({
+    where: { published: true },
+    take: 50,
+    select: {
+      id: true,
+      title: true,
+      createdAt: true,
+      author: {
+        select: { name: true }, // carregado junto na mesma query
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  // posts[0].author.name já disponível — zero queries adicionais
+  const enriched = posts.map((post) => ({
+    ...post,
+    authorName: post.author.name,
+  }));
+
+  res.json(enriched);
+}
+```
+
+**Ganho medido:** 51 queries → 1 query. Latência p50 caiu de 340ms para 18ms em banco PostgreSQL local. Em produção com latência de rede, a diferença é ainda maior.
+
+---
+
+### Cenário B — DataLoader em servidor GraphQL com Apollo e TypeORM
+
+API GraphQL com Apollo Server e TypeORM. O resolver `Post.author` é chamado uma vez por post retornado. DataLoader batcheia todos os IDs de autor em uma única query.
+
+```typescript
+// src/graphql/loaders/author.loader.ts
+import DataLoader from 'dataloader';
+import { DataSource, In } from 'typeorm';
+import { User } from '../../users/user.entity';
+
+export function createAuthorLoader(dataSource: DataSource) {
+  const userRepo = dataSource.getRepository(User);
+
+  return new DataLoader<string, User | null>(
+    async (authorIds: readonly string[]) => {
+      // 1 query com WHERE id IN (...) para todos os autores
+      const users = await userRepo.find({
+        where: { id: In([...authorIds]) },
+        select: { id: true, name: true, email: true },
+      });
+
+      // Map para lookup O(1)
+      const userMap = new Map(users.map((u) => [u.id, u]));
+
+      // ⚠️ CRÍTICO: retornar na mesma ordem que authorIds
+      return authorIds.map((id) => userMap.get(id) ?? null);
+    },
+    {
+      maxBatchSize: 200,
+      cache: true, // por instância (deve ser nova por requisição)
+    }
+  );
+}
+```
+
+```typescript
+// src/graphql/context.ts
+import { createAuthorLoader } from './loaders/author.loader';
+
+export function createContext({ dataSource }: { dataSource: DataSource }) {
+  return {
+    dataSource,
+    // SEMPRE nova instância por requisição — nunca singleton global
+    authorLoader: createAuthorLoader(dataSource),
+  };
+}
+
+// src/graphql/resolvers/post.resolver.ts
+export const PostResolver = {
+  author: (post: Post, _args: unknown, ctx: ReturnType<typeof createContext>) => {
+    // Chamado N vezes, mas DataLoader batcheia tudo no mesmo tick
+    return ctx.authorLoader.load(post.authorId);
+  },
+};
+```
+
+**Resultado com 50 posts retornados:** sem DataLoader → 51 queries; com DataLoader → 2 queries (1 para posts + 1 `IN` para autores).
+
 ## Armadilhas comuns
 
 > [!danger] Armadilha 1 — DataLoader singleton global
@@ -432,6 +580,10 @@ In GraphQL, each field on a type has its own resolver function, so a list of 50 
 | Deduplicação | Deduplication |
 | Contrato de ordenação | Ordering contract |
 | Round-trip de rede | Network round-trip |
+
+## O que vem a seguir
+
+O N+1 é o problema de performance mais comum em ORMs, mas não é o único. Paginação eficiente — especialmente em tabelas com milhões de registros — é o próximo gargalo típico, e [[09 - Paginação - offset, cursor e keyset]] explora as três estratégias com exemplos em todos os ORMs. Para entender como o Prisma gera o SQL de `include` internamente (2 queries vs JOIN) e como o Drizzle evita N+1 por design, volte ao comparativo em [[01 - Panorama de ORMs]]. O padrão DataLoader também pode ser aplicado para batchear chamadas HTTP externas entre serviços — um uso que vai além de banco de dados e é relevante em arquiteturas de microsserviços.
 
 ## Fontes
 

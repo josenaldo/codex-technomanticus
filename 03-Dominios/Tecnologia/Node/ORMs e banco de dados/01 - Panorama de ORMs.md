@@ -1,14 +1,13 @@
 ---
 title: "Panorama de ORMs"
 created: 2026-05-10
-updated: 2026-05-11
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+fase: Iniciado
 aliases:
   - Panorama ORMs Node
   - ORMs Node comparativo
-publish: false
 tags:
   - node
   - orm
@@ -25,6 +24,27 @@ tags:
 > A escolha não é sobre "melhor ORM", é sobre fit: Prisma para DX e projetos novos, Drizzle para edge ou equipes com domínio de SQL, TypeORM para NestJS enterprise, Sequelize para manutenção de código legado.
 > O risco maior é escolher por popularidade e não por requisito: cada ORM tem trade-offs reais de performance, transparência de queries e compatibilidade com runtime.
 > Armadilha clássica de entrevista: `synchronize: true` no TypeORM em produção pode dropar colunas com dados; raw queries no Prisma não têm type safety automático — sempre valide o retorno.
+
+## Mapa do ecossistema
+
+```mermaid
+flowchart TD
+    subgraph Abstrações["Nível de abstração"]
+        SQL["SQL puro\n(pg, mysql2)"]
+        QB["Query Builder\n(knex, kysely)"]
+        ORML["ORM leve SQL-first\n(Drizzle)"]
+        ORMF["ORM completo\n(Prisma · TypeORM · Sequelize)"]
+    end
+
+    SQL -->|"+ tipagem"| QB
+    QB -->|"+ schema TS"| ORML
+    ORML -->|"+ abstração objeto"| ORMF
+
+    style SQL fill:#4A90D9,color:#fff
+    style QB fill:#4A90D9,color:#fff,opacity:0.8
+    style ORML fill:#F5A623,color:#fff
+    style ORMF fill:#F5A623,color:#000
+```
 
 ## O que é
 
@@ -523,17 +543,111 @@ Você quer a melhor DX e type safety out-of-the-box?
 
 ---
 
+## Casos práticos
+
+### Cenário A — Novo microsserviço TypeScript com PostgreSQL
+
+Uma equipe começa um microsserviço de catálogo de produtos do zero. Stack: Node.js 22, TypeScript, PostgreSQL 16, deploy em Vercel Functions (serverless).
+
+**Escolha: Drizzle ORM**
+
+```typescript
+// schema.ts — schema TypeScript nativo, sem arquivo .prisma
+import { pgTable, uuid, varchar, numeric, timestamp } from 'drizzle-orm/pg-core';
+
+export const products = pgTable('products', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 200 }).notNull(),
+  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// api/products.ts — handler serverless
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq } from 'drizzle-orm';
+import { products } from '../schema';
+
+export async function GET(req: Request) {
+  const sql = neon(process.env.DATABASE_URL!);
+  const db = drizzle({ client: sql });
+
+  const items = await db
+    .select({ id: products.id, name: products.name, price: products.price })
+    .from(products)
+    .orderBy(products.name)
+    .limit(20);
+
+  return Response.json(items);
+}
+```
+
+**Por que Drizzle aqui:** edge runtime nativo (sem TCP), bundle < 1 MB, sem etapa `generate`, type safety automática do TypeScript.
+
+---
+
+### Cenário B — API NestJS enterprise migrando de Sequelize v6 para v7
+
+Time de 8 devs mantém API de gestão financeira com Sequelize v6. Banco: PostgreSQL. Necessidade: melhorar suporte TypeScript sem reescrever modelos existentes.
+
+**Escolha: Sequelize v7 (upgrade incremental)**
+
+```typescript
+// Antes (Sequelize v6) — tipos manuais e inconsistentes
+import { Model, DataTypes } from 'sequelize';
+class Invoice extends Model {
+  public id!: number;
+  public amount!: number; // tipo não verificado em build
+}
+
+// Depois (Sequelize v7) — InferAttributes e tipos nativos
+import {
+  Model,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from '@sequelize/core';
+
+class Invoice extends Model<
+  InferAttributes<Invoice>,
+  InferCreationAttributes<Invoice>
+> {
+  declare id: CreationOptional<number>;
+  declare amount: number;     // ← TypeScript verifica em build
+  declare dueDate: Date;
+  declare status: 'pending' | 'paid' | 'overdue';
+}
+
+Invoice.init(
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    amount: { type: DataTypes.DECIMAL(12, 2), allowNull: false },
+    dueDate: { type: DataTypes.DATE, allowNull: false },
+    status: {
+      type: DataTypes.ENUM('pending', 'paid', 'overdue'),
+      defaultValue: 'pending',
+    },
+  },
+  { sequelize, tableName: 'invoices' }
+);
+```
+
+**Por que upgrade em vez de migrar:** 8 devs * custo de onboarding + reescrita de modelos + migrations históricas = risco alto sem ganho imediato. O v7 resolve os problemas de TypeScript sem reescrita.
+
+---
+
 ## Armadilhas comuns
 
-### 1. Escolher ORM por popularidade, não por fit
+> [!warning] Armadilha 1 — Escolher ORM por popularidade, não por fit
+> O erro mais comum é olhar para o número de estrelas no GitHub ou o número de tutoriais e escolher o ORM "mais popular". Em 2026, Prisma lidera em novos projetos — mas Prisma é uma péssima escolha para um Cloudflare Worker que precisa ser serverless e ter bundle abaixo de 1MB. TypeORM com NestJS é uma combinação consolidada, mas adotar TypeORM em um projeto standalone sem NestJS é carregar overhead sem benefício.
+>
+> **Como evitar:** mapeie os requisitos primeiro. Precisa de edge runtime? Serverless com cold start crítico? ORM existente no projeto? Equipe familiarizada com algum estilo (code-first, schema-first, SQL-first)? A tabela de eixos de comparação acima deve ser o guia.
 
-O erro mais comum é olhar para o número de estrelas no GitHub ou o número de tutoriais e escolher o ORM "mais popular". Em 2026, Prisma lidera em novos projetos — mas Prisma é uma péssima escolha para um Cloudflare Worker que precisa ser serverless e ter bundle abaixo de 1MB. TypeORM com NestJS é uma combinação consolidada, mas adotar TypeORM em um projeto standalone sem NestJS é carregar overhead sem benefício.
-
-**Como evitar:** mapeie os requisitos primeiro. Precisa de edge runtime? Serverless com cold start crítico? ORM existente no projeto? Equipe familiarizada com algum estilo (code-first, schema-first, SQL-first)? A tabela de eixos de comparação acima deve ser o guia.
-
-### 2. Assumir que Prisma é sempre type-safe
-
-Prisma gera tipos excepcionais para o Prisma Client gerado — mas há escape hatches que quebram essa garantia. Queries com `$queryRaw` retornam `unknown` por padrão, e `$executeRaw` não tem nenhuma validação de tipo no resultado. Devs que confiam cegamente nos tipos do Prisma e fazem uma query raw podem ter um bug de runtime que o TypeScript não pegou.
+> [!warning] Armadilha 2 — Assumir que Prisma é sempre type-safe
+> Prisma gera tipos excepcionais para o Prisma Client gerado — mas há escape hatches que quebram essa garantia. Queries com `$queryRaw` retornam `unknown` por padrão, e `$executeRaw` não tem nenhuma validação de tipo no resultado. Devs que confiam cegamente nos tipos do Prisma e fazem uma query raw podem ter um bug de runtime que o TypeScript não pegou.
+>
+> **Como evitar:** prefira o Prisma Client gerado sempre que possível. Use `$queryRaw` apenas quando o Prisma Client não consegue expressar a query. Se usar raw, sempre defina o tipo retornado ou valide com Zod/Valibot.
 
 ```typescript
 // ⚠️ $queryRaw sem TypedSQL — resultado é 'unknown'
@@ -549,13 +663,12 @@ const users = await prisma.$queryRaw<Array<{ id: number; name: string }>>`
 `;
 ```
 
-**Como evitar:** prefira o Prisma Client gerado sempre que possível. Use `$queryRaw` apenas quando o Prisma Client não consegue expressar a query. Se usar raw, sempre defina o tipo retornado ou valide com Zod/Valibot.
-
-### 3. TypeORM `synchronize: true` em produção
-
-O TypeORM tem uma flag conveniente: `synchronize: true` na `DataSource` faz o ORM comparar as entidades com o schema do banco a cada inicialização e aplicar as diferenças automaticamente. Em desenvolvimento, é prático. Em produção, é uma bomba relógio.
-
-O TypeORM pode interpretar que uma coluna renomeada é uma coluna dropada + coluna nova criada — e dropar a coluna com dados sem aviso. Não há rollback automático, não há histórico de migrations gerado, não há como auditoria depois.
+> [!warning] Armadilha 3 — TypeORM `synchronize: true` em produção
+> O TypeORM tem uma flag conveniente: `synchronize: true` na `DataSource` faz o ORM comparar as entidades com o schema do banco a cada inicialização e aplicar as diferenças automaticamente. Em desenvolvimento, é prático. Em produção, é uma bomba relógio.
+>
+> O TypeORM pode interpretar que uma coluna renomeada é uma coluna dropada + coluna nova criada — e dropar a coluna com dados sem aviso. Não há rollback automático, não há histórico de migrations gerado, não há como auditoria depois.
+>
+> **Como evitar:** use `synchronize: false` sempre. Gere migrations com `typeorm migration:generate` para cada mudança de schema e revise o SQL gerado antes de aplicar. Ver [[07 - Migrations e versionamento de schema]] para o processo completo.
 
 ```typescript
 // ❌ NUNCA em produção
@@ -573,11 +686,10 @@ const AppDataSource = new DataSource({
 });
 ```
 
-**Como evitar:** use `synchronize: false` sempre. Gere migrations com `typeorm migration:generate` para cada mudança de schema e revise o SQL gerado antes de aplicar. Ver [[07 - Migrations e versionamento de schema]] para o processo completo.
-
-### 4. Ignorar o N+1 implícito de eager loading
-
-Todos os ORMs desta lista podem gerar N+1 queries quando você carrega relacionamentos de forma ingênua. O Sequelize com `include` não otimizado, o TypeORM com relações carregadas por lazy loading implícito, e até o Prisma com `include` aninhado em listas podem disparar uma query por registro da lista.
+> [!warning] Armadilha 4 — Ignorar o N+1 implícito de eager loading
+> Todos os ORMs desta lista podem gerar N+1 queries quando você carrega relacionamentos de forma ingênua. O Sequelize com `include` não otimizado, o TypeORM com relações carregadas por lazy loading implícito, e até o Prisma com `include` aninhado em listas podem disparar uma query por registro da lista.
+>
+> Veja [[06 - N+1 queries - detecção e DataLoader]] para diagnóstico e soluções detalhadas.
 
 ```typescript
 // ⚠️ Potencial N+1 — Sequelize sem eager loading correto
@@ -591,8 +703,6 @@ const users = await User.findAll({
   include: [{ model: Post, as: 'posts' }], // 2 queries: users + posts
 });
 ```
-
-Veja [[06 - N+1 queries - detecção e DataLoader]] para diagnóstico e soluções detalhadas.
 
 ---
 
@@ -619,6 +729,12 @@ When choosing an ORM for a Node.js project, the decision should be driven by run
 | Pool de conexões | Connection pool | "Always configure a connection pool to limit database connections" |
 | Transação | Transaction | "Wrap multi-step operations in a transaction to ensure atomicity" |
 | Rollback | Rollback | "If any step fails, the transaction rollback reverts all changes" |
+
+---
+
+## O que vem a seguir
+
+Cada ORM tem profundidade própria que vai além do panorama comparativo. A próxima nota — [[02 - Sequelize - queries e associações]] — mergulha nas queries, associações e hooks do Sequelize v7 com TypeScript nativo. Se você já trabalha com Prisma, [[03 - Prisma - schema-first e type safety]] explora o fluxo completo de schema declarativo e migrations gerenciadas. Para entender por que o N+1 destrói performance em qualquer ORM escolhido, [[06 - N+1 queries - detecção e DataLoader]] é leitura obrigatória antes de qualquer deploy em produção.
 
 ---
 

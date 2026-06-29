@@ -1,17 +1,16 @@
 ---
 title: "Migrations e versionamento de schema"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+fase: Adepto
 tags:
   - node
   - orm
   - migrations
   - schema
   - banco-de-dados
-publish: false
 aliases:
   - Migrations
   - Versionamento de schema
@@ -21,6 +20,33 @@ aliases:
 
 > [!abstract] TL;DR
 > Uma **migration** é um script SQL versionado e ordenado que transforma o schema do banco de um estado A para um estado B — o equivalente de um commit de git, mas para a estrutura do banco de dados. Sem migrations, o schema deriva silenciosamente entre ambientes (dev, staging, prod), tornando o deploy imprevisível e o rollback impossível. A dicotomia central do ecossistema Node é **generate + migrate** (produção) vs **push** (desenvolvimento local): nunca misture os dois fora do laptop. Todos os ORMs principais — Prisma, Drizzle, TypeORM, Sequelize — implementam o padrão de duas formas ligeiramente diferentes, mas compartilham as mesmas primitivas: arquivo de migration em disco, tabela de controle no banco, e comandos `up`/`down`. Veja o panorama completo do ecossistema em [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index]].
+
+## Fluxo de migrations: dev vs produção
+
+```mermaid
+flowchart TD
+    DEV["Desenvolvedor\nedita schema/entidade/model"]
+    GEN["generate\n(prisma migrate dev · drizzle-kit generate\n· typeorm migration:generate · sequelize-cli migration:generate)"]
+    FILE["Arquivo SQL versionado\n(commitado no git)"]
+    CI["CI/CD\nmigrationsTableName verifica pendentes"]
+    APPLY["deploy\n(prisma migrate deploy · drizzle-kit migrate\n· typeorm migration:run · sequelize-cli db:migrate)"]
+    PROD["Banco de produção\natualizado"]
+
+    DEV --> GEN
+    GEN --> FILE
+    FILE -->|"git commit + PR"| CI
+    CI --> APPLY
+    APPLY --> PROD
+
+    PUSH["drizzle-kit push / prisma db push\nAPENAS DEV LOCAL\nsem arquivo, sem histórico"]
+    DEV -->|"prototipagem"| PUSH
+
+    style FILE fill:#4A90D9,color:#fff
+    style APPLY fill:#4A90D9,color:#fff
+    style PUSH fill:#D0021B,color:#fff
+    style CI fill:#F5A623,color:#000
+    style PROD fill:#4A90D9,color:#fff
+```
 
 ## O que é
 
@@ -261,19 +287,160 @@ A regra de ouro: **`push` é para desenvolvimento local apenas**. Em qualquer am
 > [!warning] Nunca use `prisma db push` ou `drizzle-kit push` em CI/staging/produção
 > Esses comandos sincronizam o schema sem criar arquivos de migration, destruindo o histórico de versionamento. Se usados em produção, o banco fica em um estado que não pode ser reproduzido ou revertido de forma controlada. Use-os apenas para prototipagem local.
 
+## Casos práticos
+
+### Cenário A — Pipeline CI/CD com Prisma Migrate no GitHub Actions
+
+Time usa Prisma + PostgreSQL + GitHub Actions. Migration deve rodar no container de app antes de iniciar o servidor, garantindo que o schema está atualizado antes de qualquer request.
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Em staging: apply migrations no banco de staging primeiro
+      - name: Apply migrations (staging)
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: npx prisma migrate deploy
+
+      - name: Run integration tests
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: npm run test:integration
+
+      # Só aplica em produção após staging validado
+      - name: Apply migrations (production)
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: npx prisma migrate deploy
+
+      - name: Deploy application
+        run: ./scripts/deploy.sh
+```
+
+```typescript
+// Também: migration rodando no boot do app (alternativa ao pipeline separado)
+// src/server.ts
+import { execSync } from 'child_process';
+import { createServer } from './app';
+
+async function bootstrap() {
+  // Garante migrations aplicadas antes de receber requests
+  console.log('Running pending migrations...');
+  execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+
+  const app = createServer();
+  app.listen(3000, () => console.log('Server ready on :3000'));
+}
+
+bootstrap().catch((err) => {
+  console.error('Startup failed:', err);
+  process.exit(1);
+});
+```
+
+---
+
+### Cenário B — Expand-and-contract: renomear coluna sem downtime no TypeORM
+
+Coluna `first_name` + `last_name` em `users` precisa ser consolidada em `full_name`. Deploy em produção com múltiplas réplicas — não pode ter downtime. Solução: 3 migrations em 3 deploys separados.
+
+```typescript
+// Migration 1 (Deploy A): adiciona full_name nullable
+// src/migrations/1715500001000-AddFullNameToUsers.ts
+import { MigrationInterface, QueryRunner } from 'typeorm';
+
+export class AddFullNameToUsers1715500001000 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      ALTER TABLE "users" ADD COLUMN "full_name" VARCHAR(255)
+    `);
+    // Versão nova começa a escrever full_name, versão antiga ignora
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      ALTER TABLE "users" DROP COLUMN "full_name"
+    `);
+  }
+}
+```
+
+```typescript
+// Migration 2 (Deploy B): backfill dos dados existentes
+// Executado após 100% das instâncias estarem na versão nova
+// src/migrations/1715500002000-BackfillFullName.ts
+export class BackfillFullName1715500002000 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    // Backfill em batches para não bloquear a tabela
+    await queryRunner.query(`
+      UPDATE "users"
+      SET "full_name" = TRIM(first_name || ' ' || COALESCE(last_name, ''))
+      WHERE "full_name" IS NULL
+    `);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      UPDATE "users" SET "full_name" = NULL
+    `);
+  }
+}
+```
+
+```typescript
+// Migration 3 (Deploy C): adiciona NOT NULL e remove colunas antigas
+// Executado em deploy posterior, após validação completa
+// src/migrations/1715500003000-DropOldNameColumns.ts
+export class DropOldNameColumns1715500003000 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      ALTER TABLE "users" ALTER COLUMN "full_name" SET NOT NULL;
+      ALTER TABLE "users" DROP COLUMN "first_name";
+      ALTER TABLE "users" DROP COLUMN "last_name";
+    `);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    throw new Error(
+      'Migration irreversível: first_name e last_name foram removidos com dados. ' +
+      'Restaure a partir de backup e abra uma nova migration de reversão.'
+    );
+  }
+}
+```
+
+**Resultado:** 3 deploys separados sem downtime. As instâncias antigas continuam funcionando durante Deploy A e B porque `full_name` é nullable e as colunas antigas ainda existem.
+
 ## Armadilhas comuns
 
-### 1. Editar uma migration já aplicada
+> [!warning] Editar uma migration já aplicada
+> Ao editar um arquivo de migration que já foi aplicado em qualquer ambiente, o hash registrado na tabela de controle diverge do hash do arquivo atual. No próximo `migrate`, a ferramenta pode recusar a execução, reaplicar a migration (causando erro de "coluna já existe") ou ignorar silenciosamente a mudança — dependendo do ORM. A solução correta é sempre criar uma **nova migration** para corrigir o estado.
 
-Ao editar um arquivo de migration que já foi aplicado em qualquer ambiente, o hash registrado na tabela de controle diverge do hash do arquivo atual. No próximo `migrate`, a ferramenta pode recusar a execução, reaplicar a migration (causando erro de "coluna já existe") ou ignorar silenciosamente a mudança — dependendo do ORM. A solução correta é sempre criar uma **nova migration** para corrigir o estado.
+> [!danger] Usar `push` no pipeline de CI/CD
+> `prisma db push`, `typeorm synchronize: true` ou qualquer mecanismo de sincronização automática de schema em CI/CD destroem o histórico de migrations. O banco no CI fica em um estado que não corresponde a nenhuma migration em disco, quebrando `migrate:deploy` na próxima execução. Em TypeORM, `synchronize: true` é especialmente perigoso porque pode executar `DROP COLUMN` automaticamente se uma propriedade for removida da entidade.
 
-### 2. Usar `push` no pipeline de CI/CD
-
-`prisma db push`, `typeorm synchronize: true` ou qualquer mecanismo de sincronização automática de schema em CI/CD destroem o histórico de migrations. O banco no CI fica em um estado que não corresponde a nenhuma migration em disco, quebrando `migrate:deploy` na próxima execução. Em TypeORM, `synchronize: true` é especialmente perigoso porque pode executar `DROP COLUMN` automaticamente se uma propriedade for removida da entidade.
-
-### 3. Migrations não backward-compatible causando downtime
-
-Em deploys rolling (Kubernetes, ECS), a versão antiga e nova do app rodam simultaneamente por alguns minutos. Se a migration remover ou renomear uma coluna que a versão antiga ainda lê, as instâncias antigas passam a retornar erro. A solução é o padrão de três migrations separadas — veja o exemplo abaixo na seção de código:
+> [!warning] Migrations não backward-compatible causando downtime
+> Em deploys rolling (Kubernetes, ECS), a versão antiga e nova do app rodam simultaneamente por alguns minutos. Se a migration remover ou renomear uma coluna que a versão antiga ainda lê, as instâncias antigas passam a retornar erro. A solução é o padrão de três migrations separadas:
 
 ```sql
 -- Migration 1: adiciona a nova coluna como nullable (versão antiga ignora, versão nova começa a preencher)
@@ -300,6 +467,10 @@ ALTER TABLE "users" DROP COLUMN "last_name";
 ### "What makes a migration backward-compatible and why does it matter for zero-downtime deployments?"
 
 > A backward-compatible migration is one where the schema after the migration still supports the previous version of the application without errors. This matters because in a rolling deployment, old and new application instances run simultaneously against the same database — sometimes for several minutes. If you drop a column that the old version still reads, those instances will throw errors until they are replaced. The pattern to achieve backward compatibility is to split a breaking change into three separate migrations deployed across multiple releases: first, add the new column as nullable (old version ignores it, new version writes to it); second, backfill existing rows with the correct data; third, only after confirming no old instances remain, add the NOT NULL constraint and drop the old column. This expand-and-contract pattern is the industry-standard approach to schema evolution in systems that require high availability.
+
+## O que vem a seguir
+
+Migrations garantem que o schema está correto antes do código rodar, mas o código em si também precisa de padrões robustos. [[08 - Transações - gerenciamento manual vs automático]] explora como garantir atomicidade em operações de dados críticos — especialmente relevante quando uma migration de backfill precisa ser executada transacionalmente. Para o panorama de qual ORM usar em qual projeto, incluindo como cada um trata o ciclo de migrations, [[10 - Cheatsheet e decision tree de ORMs]] consolida os comandos side-by-side. O padrão expand-and-contract desta nota conecta diretamente com o problema de paginação em [[09 - Paginação - offset, cursor e keyset]] — migrações que adicionam índices em tabelas grandes precisam do mesmo cuidado com backfill incremental.
 
 ## Vocabulário PT→EN
 

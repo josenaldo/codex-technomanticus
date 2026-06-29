@@ -1,10 +1,10 @@
 ---
 title: "Drizzle - ORM lightweight e type-safe"
 created: 2026-05-10
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+fase: Adepto
 tags:
   - node
   - orm
@@ -12,7 +12,6 @@ tags:
   - type-safety
   - edge
   - banco-de-dados
-publish: false
 aliases:
   - Drizzle ORM
   - Drizzle
@@ -25,6 +24,32 @@ aliases:
 > A filosofia SQL-first separa o Drizzle de ORMs como Prisma e TypeORM: a API espelha SQL real (`.select().from().where()`) em vez de abstrair com `.find({ where: ... })`; isso significa que um dev que conhece SQL consegue ler queries Drizzle sem aprender um DSL proprietário, e o SQL gerado é sempre previsível.
 > A killer feature para arquiteturas modernas é compatibilidade nativa com edge runtimes (Cloudflare Workers, Vercel Edge, Deno Deploy): Drizzle usa drivers HTTP (`@neondatabase/serverless`, `@libsql/client`) que não dependem do módulo `net` do Node.js, impossível em contextos edge.
 > O `drizzle-kit` gerencia migrations com dois fluxos: `generate` + `migrate` para produção (rastreável, reversível) e `push` para prototipagem rápida em desenvolvimento — nunca em produção. Veja também [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index]] e [[01 - Panorama de ORMs]] para contexto comparativo.
+
+## Arquitetura Drizzle ORM
+
+```mermaid
+flowchart TD
+    SCHEMA["schema.ts\n(pgTable · columns · relations)"]
+    TYPES["TypeScript\ntype inference\n($inferSelect · $inferInsert)"]
+    QB["Query Builder\n.select().from().where()"]
+    RQAPI["Relational API\ndb.query.table.findMany({ with })"]
+    DK["drizzle-kit\ngenerate · migrate · push · studio"]
+    DRIVERS["Drivers\nneon-http · libsql · postgres-js · mysql2"]
+
+    SCHEMA --> TYPES
+    SCHEMA --> QB
+    SCHEMA --> RQAPI
+    SCHEMA --> DK
+    QB --> DRIVERS
+    RQAPI --> DRIVERS
+
+    style SCHEMA fill:#4A90D9,color:#fff
+    style TYPES fill:#4A90D9,color:#fff
+    style QB fill:#F5A623,color:#000
+    style RQAPI fill:#F5A623,color:#000
+    style DK fill:#D0021B,color:#fff
+    style DRIVERS fill:#4A90D9,color:#fff
+```
 
 ## O que é
 
@@ -400,13 +425,192 @@ export const db = drizzle(client);
 
 ---
 
+## Casos práticos
+
+### Cenário A — Cloudflare Worker com Neon PostgreSQL via HTTP
+
+API de encurtador de URLs rodando em Cloudflare Workers. Banco PostgreSQL na Neon (serverless). O Drizzle com driver HTTP é a única opção — Workers não suportam TCP.
+
+```typescript
+// src/schema.ts
+import { pgTable, text, timestamp, integer, uuid } from 'drizzle-orm/pg-core';
+
+export const links = pgTable('links', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').notNull().unique(),
+  destination: text('destination').notNull(),
+  clicks: integer('clicks').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  expiresAt: timestamp('expires_at'),
+});
+
+type Link = typeof links.$inferSelect;
+type NewLink = typeof links.$inferInsert;
+```
+
+```typescript
+// src/worker.ts — Cloudflare Worker
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq, sql, and, gt, or, isNull } from 'drizzle-orm';
+import { links } from './schema';
+
+interface Env { DATABASE_URL: string }
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+    const db = drizzle({ client: neon(env.DATABASE_URL) });
+
+    // GET /:slug — redireciona e incrementa contador
+    if (request.method === 'GET') {
+      const slug = url.pathname.slice(1);
+      if (!slug) return new Response('Not found', { status: 404 });
+
+      const now = new Date();
+      const [link] = await db
+        .select()
+        .from(links)
+        .where(
+          and(
+            eq(links.slug, slug),
+            or(isNull(links.expiresAt), gt(links.expiresAt, now))
+          )
+        )
+        .limit(1);
+
+      if (!link) return new Response('Not found', { status: 404 });
+
+      // Incrementa clicks sem buscar o registro de novo
+      await db
+        .update(links)
+        .set({ clicks: sql`${links.clicks} + 1` })
+        .where(eq(links.id, link.id));
+
+      return Response.redirect(link.destination, 302);
+    }
+
+    // POST /links — cria novo link
+    if (request.method === 'POST') {
+      const body = await request.json<{ slug: string; destination: string; expiresAt?: string }>();
+
+      const [created] = await db
+        .insert(links)
+        .values({
+          slug: body.slug,
+          destination: body.destination,
+          expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
+        })
+        .returning({ id: links.id, slug: links.slug });
+
+      return Response.json(created, { status: 201 });
+    }
+
+    return new Response('Method not allowed', { status: 405 });
+  },
+};
+```
+
+---
+
+### Cenário B — Relations API com filtros aninhados e paginação keyset
+
+API de blog com Drizzle e PostgreSQL em servidor Node.js tradicional. Necessidade: listar posts publicados com seus autores e contagem de comentários, paginados por keyset para performance em tabelas grandes.
+
+```typescript
+// src/schema.ts (completo)
+import {
+  pgTable, uuid, text, boolean, timestamp, integer, relations,
+} from 'drizzle-orm/pg-core';
+
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+});
+
+export const posts = pgTable('posts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  body: text('body'),
+  published: boolean('published').notNull().default(false),
+  authorId: uuid('author_id').notNull().references(() => users.id),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const comments = pgTable('comments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  body: text('body').notNull(),
+  postId: uuid('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const postsRelations = relations(posts, ({ one, many }) => ({
+  author: one(users, { fields: [posts.authorId], references: [users.id] }),
+  comments: many(comments),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({ posts: many(posts) }));
+export const commentsRelations = relations(comments, ({ one }) => ({
+  post: one(posts, { fields: [comments.postId], references: [posts.id] }),
+}));
+```
+
+```typescript
+// src/posts.service.ts
+import { db } from './db';
+import { posts, users, comments } from './schema';
+import { eq, lt, count, and, desc } from 'drizzle-orm';
+
+interface PostFeed {
+  id: string;
+  title: string;
+  authorName: string;
+  commentCount: number;
+  createdAt: Date;
+}
+
+export async function getPublishedFeed(
+  lastCreatedAt?: Date,
+  limit = 20,
+): Promise<{ items: PostFeed[]; nextCursor: string | null }> {
+  // Keyset pagination: (created_at, id) para desempate
+  const items = await db
+    .select({
+      id: posts.id,
+      title: posts.title,
+      authorName: users.name,
+      commentCount: count(comments.id),
+      createdAt: posts.createdAt,
+    })
+    .from(posts)
+    .innerJoin(users, eq(posts.authorId, users.id))
+    .leftJoin(comments, eq(comments.postId, posts.id))
+    .where(
+      lastCreatedAt
+        ? and(eq(posts.published, true), lt(posts.createdAt, lastCreatedAt))
+        : eq(posts.published, true)
+    )
+    .groupBy(posts.id, users.name, posts.title, posts.createdAt)
+    .orderBy(desc(posts.createdAt))
+    .limit(limit + 1);
+
+  const hasNext = items.length > limit;
+  if (hasNext) items.pop();
+
+  return {
+    items,
+    nextCursor: hasNext ? items.at(-1)!.createdAt.toISOString() : null,
+  };
+}
+```
+
+---
+
 ## Armadilhas comuns
 
-### 1. Confundir SQL joins com a Relations API
-
-A armadilha mais comum ao aprender Drizzle é misturar os dois sistemas de query.
-
-**Problema:** usar `leftJoin` no query builder e esperar objetos aninhados como na Relations API:
+> [!warning] 1. Confundir SQL joins com a Relations API
+> A armadilha mais comum ao aprender Drizzle é misturar os dois sistemas de query. **Problema:** usar `leftJoin` no query builder e esperar objetos aninhados como na Relations API:
 
 ```typescript
 // ❌ leftJoin sem projeção retorna objetos agrupados por tabela — não relações aninhadas
@@ -440,11 +644,8 @@ const result = await db
 // result: { post: Post; authorName: string | null }[]
 ```
 
-### 2. `drizzle-kit push` em ambiente de produção
-
-O `push` é conveniente para desenvolvimento, mas catastrófico em produção.
-
-**Problema:** usar `push` em produção (ou em um banco com dados reais) sem perceber que não há rollback:
+> [!danger] 2. `drizzle-kit push` em ambiente de produção
+> O `push` é conveniente para desenvolvimento, mas catastrófico em produção. **Problema:** usar `push` em produção (ou em um banco com dados reais) sem perceber que não há rollback:
 
 ```bash
 # ❌ Nunca em produção — aplica schema sem migration file
@@ -466,11 +667,8 @@ npx drizzle-kit migrate     # Aplica ao banco (rastreado em __drizzle_migrations
 npx drizzle-kit push        # OK para banco local descartável
 ```
 
-### 3. Missing connection pooling em serverless com driver TCP
-
-Em Lambda/Vercel Functions com driver `postgres` (node-postgres), cada invocação abre uma nova conexão TCP. Com tráfego moderado, você esgota o pool do PostgreSQL rapidamente.
-
-**Problema:**
+> [!warning] 3. Missing connection pooling em serverless com driver TCP
+> Em Lambda/Vercel Functions com driver `postgres` (node-postgres), cada invocação abre uma nova conexão TCP. Com tráfego moderado, você esgota o pool do PostgreSQL rapidamente. **Problema:**
 
 ```typescript
 // ❌ Nova conexão por invocação em serverless — sem pooling
@@ -502,11 +700,8 @@ const client = postgres(process.env.DATABASE_URL!, {
 export const db = drizzle(client);
 ```
 
-### 4. Esquecer que `.returning()` retorna array
-
-O `.returning()` sempre retorna um array — mesmo que apenas um registro seja inserido/atualizado.
-
-**Problema:**
+> [!warning] 4. Esquecer que `.returning()` retorna array
+> O `.returning()` sempre retorna um array — mesmo que apenas um registro seja inserido/atualizado. **Problema:**
 
 ```typescript
 // ❌ Tentativa de acessar diretamente como objeto único
@@ -568,6 +763,12 @@ Unlike Prisma, which requires a `prisma generate` step to produce a typed client
 | Pool de conexões                  | Connection pool / connection pooling     |
 | Rollback de migração              | Migration rollback                       |
 | Relações (entre tabelas)          | Relations / associations                 |
+
+---
+
+## O que vem a seguir
+
+O Drizzle cobre bem o espectro de queries diretas, mas projetos reais têm desafios transversais. O problema de N+1 — que o Drizzle evita por design ao não ter lazy loading, mas que pode aparecer com a Relations API mal usada — está detalhado em [[06 - N+1 queries - detecção e DataLoader]]. Para o fluxo correto de migrations em produção com `drizzle-kit generate` + `migrate` e o perigo do `push` em ambientes compartilhados, veja [[07 - Migrations e versionamento de schema]]. Transações com `db.transaction()`, savepoints aninhados e o padrão outbox para eventos são explorados em [[08 - Transações - gerenciamento manual vs automático]]. Para decidir entre Drizzle, Prisma, TypeORM e Sequelize para um projeto específico, [[10 - Cheatsheet e decision tree de ORMs]] consolida todos os critérios em um decision tree prático.
 
 ---
 

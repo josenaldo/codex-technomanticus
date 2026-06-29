@@ -1,14 +1,13 @@
 ---
 title: "TypeORM - decorators ao estilo JPA"
 created: 2026-05-10
-updated: 2026-05-10
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+fase: Adepto
 aliases:
   - TypeORM Node
   - TypeORM decorators
-publish: false
 tags:
   - node
   - orm
@@ -24,6 +23,34 @@ tags:
 > A integração com [[03-Dominios/Tecnologia/Node/Frameworks e arquitetura/index|NestJS]] é nativa via `@nestjs/typeorm`: o módulo `TypeOrmModule` conecta ao banco, registra entidades por feature e fornece injeção de `Repository<Entity>` nos serviços com `@InjectRepository`.
 > O Repository pattern é built-in — cada entidade tem um `Repository<T>` tipado que encapsula as operações de banco, e custom repositories em v0.3 são criados com o método `.extend()` ao invés do decorator `@EntityRepository` que foi depreciado.
 > Em 2026, TypeORM v0.3 é uma escolha válida para projetos NestJS enterprise, especialmente em times que vêm de Java/C# — mas o Prisma v6 compete no mesmo espaço com melhor DX e type safety mais rigoroso; a escolha entre eles depende principalmente do contexto do time e das necessidades do projeto.
+
+## Arquitetura TypeORM + NestJS
+
+```mermaid
+flowchart TD
+    DS["DataSource\n(configuração + pool)"]
+    EM["EntityManager\n(operações por manager)"]
+    REPO["Repository<T>\n(getRepository · extend())"]
+    QB["QueryBuilder\n(JOINs complexos · GROUP BY)"]
+    QR["QueryRunner\n(controle manual de transação)"]
+    ENT["@Entity\n(classe decorada)"]
+    MIG["Migrations\nmigration:generate · run"]
+
+    DS --> EM
+    DS --> REPO
+    DS --> QB
+    DS --> QR
+    ENT --> DS
+    MIG --> DS
+
+    style DS fill:#4A90D9,color:#fff
+    style ENT fill:#4A90D9,color:#fff
+    style REPO fill:#F5A623,color:#000
+    style QB fill:#F5A623,color:#000
+    style QR fill:#D0021B,color:#fff
+    style MIG fill:#D0021B,color:#fff
+    style EM fill:#F5A623,color:#000
+```
 
 ## O que é
 
@@ -409,11 +436,175 @@ TypeORM é a escolha natural nos seguintes cenários:
 
 Para novos projetos sem restrições de time ou legado, o Prisma v6 em 2026 oferece melhor DX, type safety mais rigoroso e suporte nativo a edge runtimes. A decisão entre TypeORM e Prisma é principalmente sobre contexto — não existe uma resposta universal.
 
+## Casos práticos
+
+### Cenário A — NestJS + TypeORM: serviço de usuários com custom repository
+
+API NestJS enterprise com módulo de usuários. O custom repository encapsula lógica de negócio específica (busca por email verificado, listagem de admins ativos) que não faz sentido ficar nos serviços.
+
+```typescript
+// users/user.entity.ts
+import {
+  Entity, PrimaryGeneratedColumn, Column,
+  CreateDateColumn, UpdateDateColumn, OneToMany,
+} from 'typeorm';
+import { Post } from '../posts/post.entity';
+
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true, length: 255 })
+  email: string;
+
+  @Column({ length: 100 })
+  name: string;
+
+  @Column({ default: false })
+  emailVerified: boolean;
+
+  @Column({ default: 'user', type: 'enum', enum: ['user', 'admin', 'moderator'] })
+  role: 'user' | 'admin' | 'moderator';
+
+  @Column({ default: true })
+  active: boolean;
+
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}
+```
+
+```typescript
+// users/user.repository.ts — custom repository via .extend()
+import { DataSource } from 'typeorm';
+import { User } from './user.entity';
+
+export const createUserRepository = (dataSource: DataSource) =>
+  dataSource.getRepository(User).extend({
+    async findVerifiedByEmail(email: string): Promise<User | null> {
+      return this.findOne({
+        where: { email, emailVerified: true, active: true },
+      });
+    },
+
+    async findActiveAdmins(): Promise<User[]> {
+      return this.createQueryBuilder('user')
+        .where('user.role = :role', { role: 'admin' })
+        .andWhere('user.active = :active', { active: true })
+        .andWhere('user.emailVerified = :verified', { verified: true })
+        .orderBy('user.name', 'ASC')
+        .getMany();
+    },
+
+    async countByRole(): Promise<Record<string, number>> {
+      const result = await this.createQueryBuilder('user')
+        .select('user.role', 'role')
+        .addSelect('COUNT(user.id)', 'count')
+        .groupBy('user.role')
+        .getRawMany<{ role: string; count: string }>();
+
+      return Object.fromEntries(result.map((r) => [r.role, Number(r.count)]));
+    },
+  });
+
+export type UserRepository = ReturnType<typeof createUserRepository>;
+```
+
+```typescript
+// users/users.service.ts
+import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { createUserRepository, UserRepository } from './user.repository';
+
+@Injectable()
+export class UsersService {
+  private readonly users: UserRepository;
+
+  constructor(private readonly dataSource: DataSource) {
+    this.users = createUserRepository(dataSource);
+  }
+
+  async getAdminDashboard() {
+    const [admins, roleCount] = await Promise.all([
+      this.users.findActiveAdmins(),
+      this.users.countByRole(),
+    ]);
+    return { admins, roleCount };
+  }
+}
+```
+
+---
+
+### Cenário B — QueryBuilder com GROUP BY e subquery para relatório analítico
+
+Dashboard de posts precisa mostrar ranking de autores com total de posts, total de comentários e data do post mais recente — tudo em uma única query eficiente.
+
+```typescript
+// analytics/author-stats.service.ts
+import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { Post } from '../posts/post.entity';
+
+interface AuthorStats {
+  authorId: string;
+  authorName: string;
+  postCount: number;
+  commentCount: number;
+  lastPostAt: Date | null;
+}
+
+@Injectable()
+export class AuthorStatsService {
+  constructor(private readonly dataSource: DataSource) {}
+
+  async getAuthorRanking(limit = 20): Promise<AuthorStats[]> {
+    const rows = await this.dataSource
+      .createQueryBuilder(Post, 'post')
+      .select('author.id', 'authorId')
+      .addSelect('author.name', 'authorName')
+      .addSelect('COUNT(DISTINCT post.id)', 'postCount')
+      .addSelect('COUNT(DISTINCT comment.id)', 'commentCount')
+      .addSelect('MAX(post.createdAt)', 'lastPostAt')
+      .leftJoin('post.author', 'author')
+      .leftJoin('post.comments', 'comment')
+      .where('post.published = :published', { published: true })
+      .groupBy('author.id')
+      .addGroupBy('author.name')
+      .orderBy('postCount', 'DESC')
+      .limit(limit)
+      .getRawMany<{
+        authorId: string;
+        authorName: string;
+        postCount: string;
+        commentCount: string;
+        lastPostAt: Date | null;
+      }>();
+
+    return rows.map((r) => ({
+      authorId: r.authorId,
+      authorName: r.authorName,
+      postCount: Number(r.postCount),
+      commentCount: Number(r.commentCount),
+      lastPostAt: r.lastPostAt,
+    }));
+  }
+}
+```
+
+---
+
 ## Armadilhas comuns
 
-### `synchronize: true` em produção
-
-O `synchronize: true` instrui o TypeORM a ajustar automaticamente o schema do banco para corresponder às entidades no boot. Em desenvolvimento, isso economiza tempo. Em produção, é um vetor de destruição: se você renomear uma entidade ou remover um campo, o TypeORM pode dropar a coluna (e os dados) silenciosamente, sem aviso e sem possibilidade de rollback.
+> [!warning] `synchronize: true` em produção
+> O `synchronize: true` instrui o TypeORM a ajustar automaticamente o schema do banco para corresponder às entidades no boot. Em desenvolvimento, isso economiza tempo. Em produção, é um vetor de destruição: se você renomear uma entidade ou remover um campo, o TypeORM pode dropar a coluna (e os dados) silenciosamente, sem aviso e sem possibilidade de rollback.
 
 ```typescript
 // PROBLEMA — synchronize: true em produção remove colunas e dados sem aviso
@@ -435,9 +626,8 @@ TypeOrmModule.forRoot({
 })
 ```
 
-### N+1 silencioso com lazy loading
-
-O TypeORM suporta lazy loading quando as relações são tipadas como `Promise<T>` — o tipo `Promise` é suficiente para ativar o comportamento lazy, sem necessidade de `lazy: true` no decorator. O problema: cada acesso a uma relação lazy dispara uma query separada. Se você busca 50 posts e acessa `post.author` em cada iteração, dispara 51 queries (1 para posts + 50 para autores).
+> [!warning] N+1 silencioso com lazy loading
+> O TypeORM suporta lazy loading quando as relações são tipadas como `Promise<T>` — o tipo `Promise` é suficiente para ativar o comportamento lazy, sem necessidade de `lazy: true` no decorator. O problema: cada acesso a uma relação lazy dispara uma query separada. Se você busca 50 posts e acessa `post.author` em cada iteração, dispara 51 queries (1 para posts + 50 para autores).
 
 ```typescript
 // Entidade com lazy loading — Promise<User> no tipo é o que ativa o comportamento
@@ -471,9 +661,8 @@ for (const post of posts) {
 }
 ```
 
-### `save()` em bulk operations faz SELECT antes de INSERT
-
-O método `save()` do TypeORM é inteligente: verifica se a entidade já existe (via `id`) para decidir entre INSERT e UPDATE. Essa checagem envolve um SELECT adicional por entidade. Para bulk inserts de centenas ou milhares de registros, isso se torna uma enxurrada de SELECTs desnecessários antes dos INSERTs.
+> [!warning] `save()` em bulk operations faz SELECT antes de INSERT
+> O método `save()` do TypeORM é inteligente: verifica se a entidade já existe (via `id`) para decidir entre INSERT e UPDATE. Essa checagem envolve um SELECT adicional por entidade. Para bulk inserts de centenas ou milhares de registros, isso se torna uma enxurrada de SELECTs desnecessários antes dos INSERTs.
 
 ```typescript
 // PROBLEMA — save() em loop faz SELECT + INSERT por entidade
@@ -497,9 +686,8 @@ await dataSource
   .execute();
 ```
 
-### `{ eager: true }` global causa over-fetching
-
-O decorator `{ eager: true }` em uma relação faz o TypeORM carregar aquela relação em **todas** as queries que envolvam aquela entidade — não importa se você precisa ou não da relação naquele contexto. Em entidades com múltiplas relações eager, uma simples listagem de IDs pode resultar em dezenas de JOINs desnecessários.
+> [!warning] `{ eager: true }` global causa over-fetching
+> O decorator `{ eager: true }` em uma relação faz o TypeORM carregar aquela relação em **todas** as queries que envolvam aquela entidade — não importa se você precisa ou não da relação naquele contexto. Em entidades com múltiplas relações eager, uma simples listagem de IDs pode resultar em dezenas de JOINs desnecessários.
 
 ```typescript
 // PROBLEMA — eager global carrega a relação em TODA query
@@ -565,6 +753,10 @@ For transactions in NestJS + TypeORM, the recommended approach is injecting the 
 | tabela de junção | join table |
 | sincronização de schema | schema synchronization |
 | gestor de entidades | entity manager |
+
+## O que vem a seguir
+
+TypeORM e Prisma representam os dois polos do espectro ORM enterprise em Node.js. A nota seguinte — [[05 - Drizzle - ORM lightweight e type-safe]] — explora a terceira via: SQL-first com type safety nativa e zero overhead, o queridinho de 2024-2026 para edge runtimes. Para entender como transações funcionam no TypeORM com `QueryRunner` e como evitar o vazamento de conexões no pool, [[08 - Transações - gerenciamento manual vs automático]] aprofunda o tema com exemplos de `SELECT FOR UPDATE` e isolamento configurável. O problema de `eager: true` global e lazy loading silencioso que aparecem nas armadilhas desta nota são explicados em detalhes em [[06 - N+1 queries - detecção e DataLoader]].
 
 ## Veja também
 

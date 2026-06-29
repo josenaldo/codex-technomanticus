@@ -1,14 +1,13 @@
 ---
 title: "Prisma - schema-first e type safety"
 created: 2026-05-10
-updated: 2026-05-10
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+fase: Iniciado
 aliases:
   - Prisma Node
   - Prisma schema-first
-publish: false
 tags:
   - node
   - orm
@@ -25,6 +24,34 @@ tags:
 > A grande virada do v6 foi a migração do query engine para **WASM rodando in-process** — ao contrário das versões anteriores que dependiam de um binário sidecar separado, o WASM engine embutido permite que o Prisma Client funcione nativamente em edge runtimes (Cloudflare Workers, Vercel Edge, Deno Deploy) sem configuração extra.
 > Prisma Accelerate GA adiciona connection pooling global e cache de queries em CDN, tornando o Prisma a escolha natural para arquiteturas serverless e edge onde conexões de banco são caras e latência é crítica.
 > Para devs TypeScript migrando de outros ecossistemas, a curva de aprendizado é menor do que TypeORM (sem decorators) e o type safety é mais completo do que Sequelize v7 sem configuração adicional.
+
+## Arquitetura do ecossistema Prisma
+
+```mermaid
+flowchart TD
+    SCHEMA["schema.prisma\n(fonte de verdade)"]
+    GEN["prisma generate\n→ Prisma Client tipado"]
+    DEV["prisma migrate dev\n→ migration SQL + apply"]
+    PROD["prisma migrate deploy\n→ aplica pendentes"]
+    CLIENT["Prisma Client\n(queries tipadas)"]
+    STUDIO["Prisma Studio\n(GUI web)"]
+    ACCEL["Prisma Accelerate\n(pool + cache CDN)"]
+
+    SCHEMA --> GEN
+    SCHEMA --> DEV
+    DEV -->|"commit migration"| PROD
+    GEN --> CLIENT
+    CLIENT --> ACCEL
+    SCHEMA --> STUDIO
+
+    style SCHEMA fill:#4A90D9,color:#fff
+    style GEN fill:#4A90D9,color:#fff
+    style CLIENT fill:#F5A623,color:#000
+    style ACCEL fill:#F5A623,color:#000
+    style DEV fill:#D0021B,color:#fff
+    style PROD fill:#D0021B,color:#fff
+    style STUDIO fill:#4A90D9,color:#fff
+```
 
 ## O que é
 
@@ -634,11 +661,147 @@ O Prisma é a escolha mais defensável para projetos que:
 
 ---
 
+## Casos práticos
+
+### Cenário A — API Next.js com Prisma v6 e edge runtime
+
+Aplicação Next.js 15 App Router com rotas de API no Edge Runtime da Vercel. Schema tem Users, Posts e Comments. Necessidade: queries rápidas, type safety total, zero latência de cold start.
+
+```typescript
+// prisma/schema.prisma
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean   @default(false)
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+
+  @@index([authorId])
+  @@index([published, createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  createdAt DateTime @default(now())
+}
+```
+
+```typescript
+// app/api/posts/route.ts — Edge Runtime
+import { PrismaClient } from '@prisma/client';
+import { withAccelerate } from '@prisma/extension-accelerate';
+
+// Singleton no edge — Prisma Accelerate gerencia o pool externo
+const prisma = new PrismaClient().$extends(withAccelerate());
+
+export const runtime = 'edge';
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const cursor = searchParams.get('cursor') ?? undefined;
+  const limit = Math.min(Number(searchParams.get('limit') ?? '10'), 50);
+
+  const posts = await prisma.post.findMany({
+    where: { published: true },
+    select: {
+      id: true,
+      title: true,
+      createdAt: true,
+      author: { select: { name: true } },
+      _count: { select: { comments: true } },
+    },
+    take: limit + 1,
+    ...(cursor && { cursor: { id: cursor }, skip: 1 }),
+    orderBy: { createdAt: 'desc' },
+    cacheStrategy: { ttl: 30, swr: 120 }, // cache no Accelerate
+  });
+
+  const hasNextPage = posts.length > limit;
+  if (hasNextPage) posts.pop();
+
+  return Response.json({
+    posts,
+    nextCursor: hasNextPage ? posts.at(-1)?.id : null,
+  });
+}
+```
+
+---
+
+### Cenário B — Validação de raw queries com Zod em queries SQL complexas
+
+Relatório de analytics precisa de window function (`ROW_NUMBER`) que o Prisma Client não suporta nativamente. A solução usa `$queryRaw` com validação Zod para manter type safety end-to-end.
+
+```typescript
+// src/analytics/top-authors.ts
+import { prisma } from '../lib/prisma';
+import { Prisma } from '@prisma/client';
+import { z } from 'zod';
+
+const TopAuthorSchema = z.object({
+  authorId: z.string(),
+  authorName: z.string(),
+  postCount: z.number(),
+  rank: z.number(),
+});
+
+type TopAuthor = z.infer<typeof TopAuthorSchema>;
+
+export async function getTopAuthorsRanked(
+  limit = 10,
+): Promise<TopAuthor[]> {
+  // $queryRaw com Prisma.sql — parametrização segura
+  const raw = await prisma.$queryRaw<unknown[]>(
+    Prisma.sql`
+      SELECT
+        u.id            AS "authorId",
+        u.name          AS "authorName",
+        COUNT(p.id)::int AS "postCount",
+        ROW_NUMBER() OVER (ORDER BY COUNT(p.id) DESC)::int AS rank
+      FROM "User" u
+      INNER JOIN "Post" p ON p."authorId" = u.id
+      WHERE p.published = true
+      GROUP BY u.id, u.name
+      ORDER BY "postCount" DESC
+      LIMIT ${limit}
+    `
+  );
+
+  // Validação Zod — garante type safety em runtime
+  return z.array(TopAuthorSchema).parse(raw);
+}
+```
+
+---
+
 ## Armadilhas comuns
 
-### 1. `findMany` sem paginação em tabelas grandes
-
-**Problema:** buscar todos os registros de uma tabela grande sem limitar retorna todos os dados para memória da aplicação — OOM em produção com tabelas de milhões de registros.
+> [!warning] `findMany` sem paginação em tabelas grandes
+> **Problema:** buscar todos os registros de uma tabela grande sem limitar retorna todos os dados para memória da aplicação — OOM em produção com tabelas de milhões de registros.
 
 ```typescript
 // PROBLEMA — sem limite, retorna TODOS os usuários
@@ -663,9 +826,8 @@ const users = await prisma.user.findMany({
 })
 ```
 
-### 2. N+1 queries — chamar Prisma dentro de um loop
-
-**Problema:** o N+1 clássico em Prisma com PostgreSQL não vem do `include` (que usa JOINs ou no máximo 2 queries com `relation.mode='join'`, o padrão para PostgreSQL). O N+1 real acontece quando relações são buscadas individualmente dentro de um loop — 1 query para a lista pai + N queries para cada item filho.
+> [!warning] N+1 queries — chamar Prisma dentro de um loop
+> **Problema:** o N+1 clássico em Prisma com PostgreSQL não vem do `include` (que usa JOINs ou no máximo 2 queries com `relation.mode='join'`, o padrão para PostgreSQL). O N+1 real acontece quando relações são buscadas individualmente dentro de um loop — 1 query para a lista pai + N queries para cada item filho.
 
 ```typescript
 // PROBLEMA: N+1 — 1 query para posts + N queries para o author de cada post
@@ -684,9 +846,8 @@ const posts = await prisma.post.findMany({
 
 Ativar `log: ['query']` no `PrismaClient` durante desenvolvimento para inspecionar o SQL gerado e identificar N+1 real.
 
-### 3. `$queryRaw` com interpolação de string — SQL injection
-
-**Problema:** usar template literal comum (sem `Prisma.sql`) ou concatenação de string diretamente no `$queryRaw` expõe a aplicação a SQL injection.
+> [!warning] `$queryRaw` com interpolação de string — SQL injection
+> **Problema:** usar template literal comum (sem `Prisma.sql`) ou concatenação de string diretamente no `$queryRaw` expõe a aplicação a SQL injection.
 
 ```typescript
 // PROBLEMA — interpolação de string direta é SQL injection
@@ -709,9 +870,8 @@ const results = await prisma.$queryRaw<{ id: number; name: string }[]>(
 
 `Prisma.sql` converte cada expressão interpolada em um parâmetro (`$1`, `$2`, etc.) que é enviado separadamente ao banco — o valor nunca compõe a string SQL.
 
-### 4. `prisma migrate deploy` sem testar em ambiente de staging
-
-**Problema:** aplicar migrations diretamente em produção sem testar em um ambiente com dados reais pode resultar em breaking changes silenciosas — especialmente operações como renomear coluna (que geram DROP + ADD Column, não RENAME), adicionar constraint NOT NULL em coluna com dados nulos existentes, ou operações de reescrita de tabela que bloqueiam por minutos.
+> [!warning] `prisma migrate deploy` sem testar em ambiente de staging
+> **Problema:** aplicar migrations diretamente em produção sem testar em um ambiente com dados reais pode resultar em breaking changes silenciosas — especialmente operações como renomear coluna (que geram DROP + ADD Column, não RENAME), adicionar constraint NOT NULL em coluna com dados nulos existentes, ou operações de reescrita de tabela que bloqueiam por minutos.
 
 ```bash
 # PROBLEMA — pipeline que vai direto para produção sem staging
@@ -767,6 +927,10 @@ On the migrations side, the critical point for interviews is the dev vs prod wor
 | parâmetro de consulta | query parameter |
 
 ---
+
+## O que vem a seguir
+
+Com o Prisma dominado, o próximo passo é entender as alternativas em profundidade. [[04 - TypeORM - decorators ao estilo JPA]] é a escolha para projetos NestJS enterprise com times vindos de Java — o modelo mental de decorators e repositórios é radicalmente diferente do schema-first do Prisma. Para projetos que precisam de edge runtime ou controle total de SQL, [[05 - Drizzle - ORM lightweight e type-safe]] explora o SQL-first sem overhead. O problema de N+1 — que o `include` do Prisma pode esconder — está detalhado em [[06 - N+1 queries - detecção e DataLoader]]. Para o fluxo completo de migrations em produção, incluindo o padrão expand-and-contract para zero-downtime, veja [[07 - Migrations e versionamento de schema]].
 
 ## Veja também
 

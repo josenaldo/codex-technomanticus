@@ -1,10 +1,10 @@
 ---
 title: "Cheatsheet e decision tree de ORMs"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-progress: backlog
 status: growing
+fase: Magus
 publish: true
 tags:
   - node
@@ -20,6 +20,35 @@ aliases:
 
 > [!abstract] TL;DR
 > Escolha de ORM em Node.js em 2026: Prisma para projetos TypeScript greenfield com necessidade de type safety máxima; TypeORM para equipes vindas de Java/Spring que preferem decorators; Sequelize para manutenção de codebases legados; Drizzle para contextos serverless/edge ou quando tamanho de bundle é crítico. Os padrões transversais que mais impactam produção são N+1 queries (use eager loading ou DataLoader), migrations (nunca edite arquivos já aplicados), transações (prefira gerenciadas; libere QueryRunner no `finally` no TypeORM) e paginação (evite OFFSET em tabelas grandes; use cursor ou keyset).
+
+## Visão geral do ecossistema
+
+```mermaid
+flowchart LR
+    APP["Aplicação Node.js\n(TypeScript)"]
+
+    APP --> SEQ["Sequelize v7\nActive Record\n~3 MB"]
+    APP --> PRI["Prisma v6\nSchema-first\n~2 MB + engine"]
+    APP --> TOR["TypeORM v0.3\nData Mapper\n~2 MB"]
+    APP --> DRI["Drizzle ≥0.30\nQuery Builder\n< 1 MB"]
+
+    SEQ -->|"Caso de uso"| SEQ_USE["Legado / brownfield\nequipes Sequelize existentes"]
+    PRI -->|"Caso de uso"| PRI_USE["Greenfield TypeScript\ntype safety máxima"]
+    TOR -->|"Caso de uso"| TOR_USE["Times Java/Spring\ndecorators JPA-style"]
+    DRI -->|"Caso de uso"| DRI_USE["Serverless / Edge\nCloudflare Workers / Vercel Edge"]
+
+    SEQ_USE --> DB[("PostgreSQL\nMySQL\nSQLite")]
+    PRI_USE --> DB
+    TOR_USE --> DB
+    DRI_USE --> DB
+
+    style APP fill:#4A90D9,color:#fff
+    style SEQ fill:#F5A623,color:#fff
+    style PRI fill:#4A90D9,color:#fff
+    style TOR fill:#4A90D9,color:#fff
+    style DRI fill:#4A90D9,color:#fff
+    style DB fill:#4A90D9,color:#fff
+```
 
 ## Decision tree
 
@@ -199,6 +228,167 @@ const rows = await db.select().from(events)
   .limit(limite + 1);
 ```
 
+### Connection pooling
+
+O pool de conexões é o recurso mais frequentemente mal configurado em aplicações Node.js com ORM. Cada conexão abre um socket TCP, aloca memória no banco e conta contra o limite `max_connections` do PostgreSQL (padrão: 100). Sem pool adequado, a aplicação exaure conexões sob carga.
+
+**Prisma — `connection_limit` na connection string**
+
+```typescript
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // ?connection_limit=10&pool_timeout=20
+}
+
+// .env
+DATABASE_URL="postgresql://user:pass@localhost:5432/mydb?connection_limit=10&pool_timeout=20"
+```
+
+Prisma usa seu próprio connection pool embutido no Query Engine (processo Rust separado). `connection_limit` define o máximo de conexões simultâneas; `pool_timeout` em segundos define quanto tempo esperar por uma conexão livre antes de lançar erro. Em serverless (Vercel, AWS Lambda), use [Prisma Accelerate](https://www.prisma.io/accelerate) que mantém o pool fora da função.
+
+**TypeORM — `poolSize` no DataSource**
+
+```typescript
+const AppDataSource = new DataSource({
+  type: 'postgres',
+  url: process.env.DATABASE_URL,
+  poolSize: 10,              // máximo de conexões no pool
+  connectTimeoutMS: 5000,    // timeout para abrir conexão
+  extra: {
+    // opções diretas do driver pg (node-postgres)
+    idleTimeoutMillis: 30000,  // conexão ociosa por 30s é fechada
+    connectionTimeoutMillis: 5000,
+    max: 10,                   // redundante com poolSize, mas explícito
+    min: 2,                    // mantém 2 conexões abertas sempre
+  },
+});
+```
+
+TypeORM delega o pool para o driver subjacente (`pg` no caso do PostgreSQL). O `extra` passa opções diretamente para `pg.Pool`. Importante: `poolSize` no TypeORM define o `max` do pool; para controlar `min` e `idleTimeout`, use `extra`.
+
+**Sequelize — `pool` no construtor**
+
+```typescript
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  pool: {
+    max: 10,          // conexões simultâneas máximas
+    min: 2,           // conexões mínimas mantidas abertas
+    acquire: 30000,   // ms para aguardar conexão antes de lançar erro
+    idle: 10000,      // ms ociosa antes de fechar
+    evict: 1000,      // intervalo de verificação de conexões ociosas
+  },
+  logging: false,     // desabilita log de queries (ver seção abaixo)
+});
+```
+
+**Drizzle — pool externo com `pg.Pool`**
+
+Drizzle não tem pool embutido — você configura o pool via driver e passa para o Drizzle:
+
+```typescript
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 10,                      // conexões simultâneas máximas
+  min: 2,                       // conexões mínimas sempre abertas
+  idleTimeoutMillis: 30000,     // fechar conexão ociosa após 30s
+  connectionTimeoutMillis: 5000, // timeout para abrir conexão
+});
+
+export const db = drizzle(pool, { schema });
+```
+
+> [!tip] Regra prática de pool size
+> O número ótimo de conexões não é "mais = melhor". Cada conexão consome ~5-10 MB no PostgreSQL. A fórmula empírica do pgBouncer: `max_pool = (núcleos_cpu * 2) + disco_efetivo`. Para uma instância de 4 núcleos sem SSD dedicado, o ideal é `max: 10`. Em serverless, use PgBouncer ou Prisma Accelerate — funções stateless não sustentam pool eficientemente.
+
+### Tracing de queries
+
+Logar queries lentas em produção é essencial para identificar N+1, missing indexes e queries problemáticas antes que impactem usuários.
+
+**Prisma — `log` no client**
+
+```typescript
+import { PrismaClient } from '@prisma/client';
+
+export const prisma = new PrismaClient({
+  log: [
+    { emit: 'event', level: 'query' },
+    { emit: 'stdout', level: 'error' },
+    { emit: 'stdout', level: 'warn' },
+  ],
+});
+
+// Log de queries lentas (> 100ms)
+prisma.$on('query', (e) => {
+  if (e.duration > 100) {
+    console.warn(`[SLOW QUERY] ${e.duration}ms | ${e.query} | params: ${e.params}`);
+  }
+});
+```
+
+O `emit: 'event'` expõe o evento `query` programaticamente em vez de logar tudo no stdout — permite filtrar por duração e integrar com APM (Datadog, New Relic).
+
+**TypeORM — `logging` no DataSource**
+
+```typescript
+const AppDataSource = new DataSource({
+  type: 'postgres',
+  url: process.env.DATABASE_URL,
+  logging: ['query', 'error', 'warn', 'slow'],  // ou 'all'
+  maxQueryExecutionTime: 100, // loga automaticamente queries > 100ms
+  logger: 'advanced-console', // 'advanced-console' | 'simple-console' | 'file'
+});
+```
+
+`maxQueryExecutionTime` é o mecanismo de slow query log nativo do TypeORM: qualquer query que exceder o valor em ms é logada como `[SLOW QUERY]` automaticamente, sem código adicional.
+
+**Sequelize — `logging` no construtor**
+
+```typescript
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  logging: (sql, timing) => {
+    if (timing && timing > 100) {
+      console.warn(`[SLOW QUERY] ${timing}ms | ${sql}`);
+    }
+  },
+  benchmark: true, // habilita o parâmetro timing no callback de logging
+});
+```
+
+O `benchmark: true` injeta o tempo de execução como segundo argumento no callback de `logging` — sem ele, `timing` é `undefined`.
+
+**Drizzle — `logger` na inicialização**
+
+```typescript
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+export const db = drizzle(pool, {
+  schema,
+  logger: {
+    logQuery(query: string, params: unknown[]) {
+      // Drizzle não expõe timing nativamente; use pg hooks para medir
+      console.log(`[QUERY] ${query}`, params);
+    },
+  },
+});
+
+// Para timing real, intercepte no nível do pool pg:
+pool.on('query', (e) => console.log('[PG QUERY]', e.text));
+```
+
+Drizzle não tem slow query log nativo — para medir duração, instrumentalize o pool `pg` diretamente ou use middleware de OTel (OpenTelemetry) com `@opentelemetry/instrumentation-pg`.
+
+> [!warning] Nunca logue queries com dados sensíveis em produção
+> Parâmetros de query como senhas, tokens e dados PII aparecem nos logs de Prisma (`e.params`) e Sequelize. Use redaction ou filtre os parâmetros antes de logar. TypeORM e Drizzle não expõem parâmetros por padrão nos seus loggers nativos, mas o nível `pg` os expõe — cuidado ao habilitar logging de pool em produção.
+
 ## Em entrevista
 
 **Q: "How do you choose an ORM for a new Node.js project?"**
@@ -216,6 +406,132 @@ Offset pagination is straightforward but has a fundamental performance problem: 
 **Q: "What's the difference between managed and manual transactions in TypeORM?"**
 
 TypeORM offers two transaction approaches. The managed approach uses the `dataSource.transaction()` callback — TypeORM automatically commits when the callback returns and rolls back on any thrown error, so error handling is clean and there's no risk of forgetting to commit or release. The manual approach uses a `QueryRunner`: you call `connect`, `startTransaction`, `commitTransaction` or `rollbackTransaction`, and critically `release` in a `finally` block. The release call is mandatory — skipping it leaks the connection back to the pool and eventually causes `ConnectionTimeoutError` as the pool exhausts available connections. I use managed transactions by default and reach for `QueryRunner` only when I need to set a specific isolation level or implement conditional rollback logic that the callback model doesn't express cleanly.
+
+## Casos práticos
+
+### Cenário A — Escolhendo o ORM certo para um SaaS multi-tenant em TypeScript
+
+Uma startup está construindo um SaaS B2B com PostgreSQL, row-level security (RLS) e necessidade de multi-schema por tenant. O time cogita Prisma, mas descobre que Prisma não suporta RLS nativo e tem suporte limitado a múltiplos schemas. A decisão final:
+
+```typescript
+// Contexto: TypeORM com QueryRunner para SET app.tenant_id antes de cada query
+
+import { DataSource, QueryRunner } from 'typeorm';
+
+const AppDataSource = new DataSource({
+  type: 'postgres',
+  url: process.env.DATABASE_URL,
+  entities: [__dirname + '/entities/**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+  synchronize: false, // NUNCA true em produção
+});
+
+// Middleware NestJS que seta o tenant_id via SET LOCAL (RLS trigger)
+async function withTenantContext<T>(
+  dataSource: DataSource,
+  tenantId: string,
+  callback: (qr: QueryRunner) => Promise<T>,
+): Promise<T> {
+  const qr = dataSource.createQueryRunner();
+  await qr.connect();
+  await qr.startTransaction();
+  try {
+    // Seta variável de sessão que o RLS policy do Postgres lê
+    await qr.query(`SET LOCAL app.tenant_id = '${tenantId}'`);
+    const result = await callback(qr);
+    await qr.commitTransaction();
+    return result;
+  } catch (err) {
+    await qr.rollbackTransaction();
+    throw err;
+  } finally {
+    await qr.release(); // SEMPRE liberar no finally
+  }
+}
+
+// Uso no service
+async createOrder(tenantId: string, data: CreateOrderDto) {
+  return withTenantContext(AppDataSource, tenantId, async (qr) => {
+    const order = qr.manager.create(Order, data);
+    return qr.manager.save(order);
+  });
+}
+```
+
+O TypeORM foi escolhido aqui porque o `QueryRunner` permite executar `SET LOCAL` dentro da transação — algo que APIs de alto nível como `prisma.$transaction` não expõem diretamente. O `SET LOCAL` garante que a variável de sessão é revertida junto com a transação se algo der errado.
+
+### Cenário B — Migração zero-downtime com expand-and-contract em qualquer ORM
+
+Uma coluna `name` precisa ser dividida em `first_name` e `last_name` sem downtime. O padrão expand-and-contract funciona com qualquer ORM e requer 3 migrations coordenadas com deploys:
+
+```typescript
+// Migration 1 — EXPAND: adiciona as novas colunas (nullable, sem remover name)
+// TypeORM
+export class AddFirstLastName1701000001 implements MigrationInterface {
+  async up(qr: QueryRunner): Promise<void> {
+    await qr.query(`
+      ALTER TABLE users
+        ADD COLUMN first_name VARCHAR(100),
+        ADD COLUMN last_name  VARCHAR(100)
+    `);
+    // Backfill inicial dos dados existentes
+    await qr.query(`
+      UPDATE users
+        SET first_name = split_part(name, ' ', 1),
+            last_name  = nullif(substring(name FROM position(' ' IN name) + 1), '')
+        WHERE first_name IS NULL
+    `);
+  }
+  async down(qr: QueryRunner): Promise<void> {
+    await qr.query(`ALTER TABLE users DROP COLUMN first_name, DROP COLUMN last_name`);
+  }
+}
+
+// Deploy v2 — código escreve em AMBAS as colunas (name + first_name + last_name)
+// Isso garante retrocompatibilidade durante o rollout gradual
+
+// Migration 2 — BACKFILL: garante consistência total (roda após todos os pods estarem em v2)
+export class BackfillNames1701000002 implements MigrationInterface {
+  async up(qr: QueryRunner): Promise<void> {
+    await qr.query(`
+      UPDATE users
+        SET first_name = split_part(name, ' ', 1),
+            last_name  = nullif(substring(name FROM position(' ' IN name) + 1), '')
+        WHERE first_name IS NULL OR last_name IS NULL
+    `);
+    // Adiciona NOT NULL agora que todos os dados estão preenchidos
+    await qr.query(`ALTER TABLE users ALTER COLUMN first_name SET NOT NULL`);
+    await qr.query(`ALTER TABLE users ALTER COLUMN last_name  SET NOT NULL`);
+  }
+  async down(qr: QueryRunner): Promise<void> {
+    await qr.query(`ALTER TABLE users ALTER COLUMN first_name DROP NOT NULL`);
+    await qr.query(`ALTER TABLE users ALTER COLUMN last_name  DROP NOT NULL`);
+  }
+}
+
+// Deploy v3 — código lê apenas first_name/last_name, não escreve mais em name
+
+// Migration 3 — CONTRACT: remove coluna antiga
+export class DropNameColumn1701000003 implements MigrationInterface {
+  async up(qr: QueryRunner): Promise<void> {
+    await qr.query(`ALTER TABLE users DROP COLUMN name`);
+  }
+  async down(qr: QueryRunner): Promise<void> {
+    await qr.query(`ALTER TABLE users ADD COLUMN name VARCHAR(200)`);
+    await qr.query(`UPDATE users SET name = concat(first_name, ' ', last_name)`);
+  }
+}
+```
+
+O mesmo padrão funciona com Prisma (`prisma.$queryRaw`), Sequelize (`queryInterface.addColumn`) ou Drizzle (`db.execute(sql\`...\``)`). A disciplina é sempre a mesma: expand → deploy → backfill → deploy → contract.
+
+## O que vem a seguir
+
+Este cheatsheet encerra o galho **ORMs e banco de dados**. Você tem agora um mapa completo do ecossistema de acesso a dados em Node.js: da escolha de ORM ao ciclo de migrations, do diagnóstico de N+1 ao gerenciamento de transações e paginação.
+
+Para aprofundar cada tópico individualmente: **[[03-Dominios/Tecnologia/Node/ORMs e banco de dados/06 - N+1 queries - detecção e DataLoader|06 - N+1]]**, **[[03-Dominios/Tecnologia/Node/ORMs e banco de dados/07 - Migrations e versionamento de schema|07 - Migrations]]**, **[[03-Dominios/Tecnologia/Node/ORMs e banco de dados/08 - Transações - gerenciamento manual vs automático|08 - Transações]]** e **[[03-Dominios/Tecnologia/Node/ORMs e banco de dados/09 - Paginação - offset, cursor e keyset|09 - Paginação]]**.
+
+O próximo domínio natural é **performance e observabilidade** — como medir o que você acabou de construir. As notas sobre profiling, tracing e logging estão em `[[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index|índice do galho]]`.
 
 ## Vocabulário consolidado
 
@@ -240,6 +556,16 @@ TypeORM offers two transaction approaches. The managed approach uses the `dataSo
 | **Keyset pagination** | Filtragem direta em coluna indexada (`WHERE col > last_val`); também chamado de seek method |
 | **Opaque cursor** | Token enviado ao cliente que codifica posição no dataset sem expor detalhes internos (ID, timestamp) |
 | **Connection pool** | Conjunto de conexões de banco reutilizáveis; `QueryRunner.release()` devolve a conexão ao pool |
+
+## Fontes
+
+- [Prisma docs — Getting Started](https://www.prisma.io/docs/getting-started) — guia oficial schema-first
+- [TypeORM docs — Data Source](https://typeorm.io/data-source) — DataSource, QueryRunner, migrations
+- [Sequelize v7 docs](https://sequelize.org/docs/v7/) — API atualizada com melhor suporte a TypeScript
+- [Drizzle ORM docs](https://orm.drizzle.team/docs/overview) — schema, queries, drizzle-kit
+- [Prisma vs TypeORM vs Sequelize vs Drizzle — comparação 2024](https://www.prisma.io/dataguide/postgresql/reading-and-querying-data/comparing-orms) — benchmarks e trade-offs
+- [Martin Fowler — DataMapper](https://martinfowler.com/eaaCatalog/dataMapper.html) — padrão original
+- [Expand-and-Contract pattern](https://www.infoq.com/videos/expand-contract-pattern/) — zero-downtime migrations
 
 ## Veja também
 

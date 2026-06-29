@@ -1,10 +1,10 @@
 ---
 title: "Transações - gerenciamento manual vs automático"
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-06-28
 type: concept
-progress: backlog
 status: growing
+fase: Magus
 publish: true
 tags:
   - node
@@ -20,6 +20,35 @@ aliases:
 
 > [!abstract] TL;DR
 > Uma transação agrupa operações de banco em uma unidade **ACID** — tudo persiste ou nada persiste. Em Node, cada ORM expõe dois modos: **gerenciado** (callback com commit/rollback automático) e **manual** (controle explícito). **Prisma** usa `prisma.$transaction([...])` para batches sem dependência ou `prisma.$transaction(async (tx) => {...})` para lógica interativa. **TypeORM** usa `dataSource.transaction(async (manager) => {...})` ou `QueryRunner` manual, que exige `release()` no `finally`. **Sequelize** usa `sequelize.transaction(async (t) => {...})` e requer `{ transaction: t }` em cada operação. **Drizzle** usa `db.transaction(async (tx) => {...})` — todas as queries dentro devem usar `tx`, nunca `db`. Confira [[03-Dominios/Tecnologia/Node/ORMs e banco de dados/index]] para o panorama completo do Galho 6.
+
+## Modos de transação por ORM
+
+```mermaid
+flowchart TD
+    BEGIN["BEGIN\n(transação iniciada)"]
+    OPS["Operações\n(INSERT · UPDATE · SELECT FOR UPDATE)"]
+    ERR{"Erro?"}
+    COMMIT["COMMIT\n(persistido)"]
+    ROLLBACK["ROLLBACK\n(revertido)"]
+
+    BEGIN --> OPS
+    OPS --> ERR
+    ERR -->|"Não"| COMMIT
+    ERR -->|"Sim"| ROLLBACK
+
+    subgraph Gerenciado["Modo gerenciado (automático)"]
+        MG["prisma.$transaction(async tx)\ntypeorm dataSource.transaction(manager)\nsequelize.transaction(async t)\ndrizzle db.transaction(async tx)"]
+    end
+
+    subgraph Manual["Modo manual (QueryRunner/unmanaged)"]
+        MM["typeorm QueryRunner\nsequelize startUnmanagedTransaction()"]
+    end
+
+    style BEGIN fill:#4A90D9,color:#fff
+    style COMMIT fill:#4A90D9,color:#fff
+    style ROLLBACK fill:#D0021B,color:#fff
+    style OPS fill:#F5A623,color:#000
+```
 
 ## Como funciona
 
@@ -420,11 +449,144 @@ export async function criarPedidoComNotificacao(
 > [!tip] Regra de ouro
 > Se duas ou mais operações precisam ser atômicas — ou todas ocorrem ou nenhuma — use uma transação. Transações longas bloqueiam outras operações: mantenha-as curtas e sem I/O externo (HTTP calls, filas) enquanto os locks estão abertos.
 
+## Casos práticos
+
+### Cenário A — Transferência financeira com Prisma e lock pessimista
+
+Sistema de carteiras digitais. Transferência de créditos entre dois usuários exige atomicidade total e lock pessimista para evitar double-spend em requisições concorrentes.
+
+```typescript
+// src/wallets/transfer.service.ts
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
+
+@Injectable()
+export class TransferService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async transferCredits(
+    fromUserId: string,
+    toUserId: string,
+    amount: number,
+    idempotencyKey: string,
+  ): Promise<{ transferId: string }> {
+    return this.prisma.$transaction(
+      async (tx) => {
+        // Verifica idempotência primeiro (fora dos locks)
+        const existing = await tx.transfer.findUnique({
+          where: { idempotencyKey },
+          select: { id: true },
+        });
+        if (existing) return { transferId: existing.id };
+
+        // Lock pessimista: raw SQL para SELECT FOR UPDATE no Prisma
+        const [fromWallet] = await tx.$queryRaw<[{ id: string; balance: number }]>(
+          Prisma.sql`
+            SELECT id, balance FROM "Wallet"
+            WHERE "userId" = ${fromUserId}
+            FOR UPDATE
+          `
+        );
+
+        if (!fromWallet) throw new BadRequestException('Carteira de origem não encontrada');
+        if (fromWallet.balance < amount) {
+          throw new BadRequestException('Saldo insuficiente');
+        }
+
+        // Debita origem, credita destino
+        await tx.wallet.update({
+          where: { userId: fromUserId },
+          data: { balance: { decrement: amount } },
+        });
+
+        await tx.wallet.upsert({
+          where: { userId: toUserId },
+          create: { userId: toUserId, balance: amount },
+          update: { balance: { increment: amount } },
+        });
+
+        // Registra a transferência com idempotencyKey
+        const transfer = await tx.transfer.create({
+          data: {
+            fromUserId,
+            toUserId,
+            amount,
+            idempotencyKey,
+          },
+        });
+
+        return { transferId: transfer.id };
+      },
+      {
+        maxWait: 5_000,
+        timeout: 15_000,
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      }
+    );
+  }
+}
+```
+
+---
+
+### Cenário B — Outbox pattern com Drizzle para publicação de eventos
+
+Sistema de pedidos. Ao criar um pedido, um evento `order.created` precisa ser publicado no RabbitMQ. Para garantir consistência, o evento é persistido na mesma transação do pedido (Outbox pattern) — a publicação acontece de forma assíncrona.
+
+```typescript
+// src/orders/create-order.ts
+import { db } from '../db';
+import { orders, orderItems, outboxEvents } from '../schema';
+import { eq } from 'drizzle-orm';
+
+interface CreateOrderInput {
+  userId: string;
+  items: Array<{ productId: string; quantity: number; price: number }>;
+}
+
+export async function createOrder(input: CreateOrderInput) {
+  return db.transaction(async (tx) => {
+    // 1. Cria o pedido
+    const [order] = await tx
+      .insert(orders)
+      .values({ userId: input.userId, status: 'pending' })
+      .returning({ id: orders.id });
+
+    // 2. Cria os itens
+    await tx.insert(orderItems).values(
+      input.items.map((item) => ({
+        orderId: order.id,
+        ...item,
+      }))
+    );
+
+    // 3. Persiste o evento no Outbox NA MESMA TRANSAÇÃO
+    // Se a transação falhar, o evento NÃO é inserido
+    await tx.insert(outboxEvents).values({
+      aggregateId: order.id,
+      aggregateType: 'Order',
+      eventType: 'order.created',
+      payload: JSON.stringify({
+        orderId: order.id,
+        userId: input.userId,
+        itemCount: input.items.length,
+      }),
+    });
+
+    return order;
+  });
+  // Worker separado lê a tabela outboxEvents e publica no RabbitMQ
+  // Se a publicação falhar, o evento fica na tabela para retry
+}
+```
+
+**Por que Outbox:** chamada direta ao RabbitMQ dentro da transação manteria o lock aberto durante a chamada HTTP ao broker. Com Outbox, a transação é curta (apenas banco) e a publicação é assíncrona.
+
 ## Armadilhas comuns
 
-### 1. Esquecer `{ transaction: t }` em operações Sequelize
-
-Em Sequelize, a transação não é propagada implicitamente — cada operação precisa receber `{ transaction: t }` explicitamente. Uma operação sem esse parâmetro usa a conexão padrão do pool e executa **fora da transação**, mesmo dentro do callback gerenciado. O bug é silencioso: a operação sem transação persiste mesmo que o restante seja revertido por erro.
+> [!warning] Esquecer `{ transaction: t }` em operações Sequelize
+> Em Sequelize, a transação não é propagada implicitamente — cada operação precisa receber `{ transaction: t }` explicitamente. Uma operação sem esse parâmetro usa a conexão padrão do pool e executa **fora da transação**, mesmo dentro do callback gerenciado. O bug é silencioso: a operação sem transação persiste mesmo que o restante seja revertido por erro.
 
 ```typescript
 // PROBLEMA — Account.update sem { transaction: t } persiste fora da transação
@@ -442,9 +604,8 @@ await sequelize.transaction(async (t) => {
 });
 ```
 
-### 2. Prisma `$transaction` interativa com timeout insuficiente
-
-O timeout padrão é **5 segundos**. Em ambientes com latência ao banco (serverless, cold start), isso causa `Transaction already closed: A commit cannot be executed on a closed transaction`. Ajuste `maxWait` (aguardar conexão do pool) e `timeout` (duração máxima total) para o ambiente real.
+> [!warning] Prisma `$transaction` interativa com timeout insuficiente
+> O timeout padrão é **5 segundos**. Em ambientes com latência ao banco (serverless, cold start), isso causa `Transaction already closed: A commit cannot be executed on a closed transaction`. Ajuste `maxWait` (aguardar conexão do pool) e `timeout` (duração máxima total) para o ambiente real.
 
 ```typescript
 // PROBLEMA — timeout padrão de 5s insuficiente em serverless
@@ -463,17 +624,14 @@ await prisma.$transaction(
 );
 ```
 
-### 3. QueryRunner TypeORM sem `release()` no `finally`
+> [!danger] QueryRunner TypeORM sem `release()` no `finally`
+> `release()` no `try` faz a conexão vazar ao pool toda vez que há erro — com volume de requisições, o pool se esgota e requisições ficam bloqueadas com `ConnectionTimeoutError`. O `finally` garante a liberação independente do resultado.
 
-`release()` no `try` faz a conexão vazar ao pool toda vez que há erro — com volume de requisições, o pool se esgota e requisições ficam bloqueadas com `ConnectionTimeoutError`. O `finally` garante a liberação independente do resultado.
+> [!warning] Usar `db` em vez de `tx` dentro de `db.transaction()` no Drizzle
+> Queries via `db` dentro do callback usam conexão diferente e executam fora da transação. A transação commitará ou fará rollback apenas das operações feitas via `tx`.
 
-### 4. Usar `db` em vez de `tx` dentro de `db.transaction()` no Drizzle
-
-Queries via `db` dentro do callback usam conexão diferente e executam fora da transação. A transação commitará ou fará rollback apenas das operações feitas via `tx`.
-
-### 5. I/O externo dentro de transações
-
-Chamadas HTTP (APIs de pagamento, webhooks, notificações) dentro de uma transação mantêm os locks durante todo o tempo do I/O externo — potencialmente centenas de milissegundos. Isso bloqueia outras transações concorrentes nas mesmas linhas. Use o **Outbox pattern**: persista o evento em uma tabela `outbox` na mesma transação e processe a publicação assincronamente.
+> [!warning] I/O externo dentro de transações
+> Chamadas HTTP (APIs de pagamento, webhooks, notificações) dentro de uma transação mantêm os locks durante todo o tempo do I/O externo — potencialmente centenas de milissegundos. Isso bloqueia outras transações concorrentes nas mesmas linhas. Use o **Outbox pattern**: persista o evento em uma tabela `outbox` na mesma transação e processe a publicação assincronamente.
 
 ## Em entrevista
 
@@ -504,6 +662,10 @@ Chamadas HTTP (APIs de pagamento, webhooks, notificações) dentro de uma transa
 | Impasse | Deadlock |
 | Padrão de caixa de saída | Outbox pattern |
 | Vazamento de conexão | Connection pool leak |
+
+## O que vem a seguir
+
+Transações garantem atomicidade nas operações de escrita, mas performance de leitura também é crítica. [[09 - Paginação - offset, cursor e keyset]] explora como paginar eficientemente sem full table scans — um problema que se intensifica quando transações de longo prazo mantêm snapshots que bloqueiam vacuum no PostgreSQL. Para um comparativo consolidado de todos os padrões (N+1, migrations, transações, paginação) com snippets side-by-side dos 4 ORMs, [[10 - Cheatsheet e decision tree de ORMs]] é a referência rápida de revisão. O padrão Outbox desta nota conecta com a detecção de N+1 em [[06 - N+1 queries - detecção e DataLoader]] — o worker do Outbox também precisa de eager loading para processar eventos eficientemente.
 
 ## Veja também
 

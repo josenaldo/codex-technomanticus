@@ -1,17 +1,16 @@
 ---
 title: "Sequelize - queries e associações"
 created: 2026-05-10
-updated: 2026-05-11
+updated: 2026-06-28
 type: concept
-status: seedling
-progress: in_progress
+status: growing
+fase: Iniciado
 tags:
   - node
   - orm
   - sequelize
   - postgres
   - banco-de-dados
-publish: false
 ---
 
 # Sequelize - queries e associações
@@ -21,6 +20,28 @@ publish: false
 > O modelo de definição usa classes que estendem `Model` (API nativa) ou decorators embutidos via `@sequelize/core/decorators-legacy`; associações são declaradas com `HasMany`, `BelongsTo`, `HasOne` e `BelongsToMany`.
 > Eager loading com `include` é a solução para evitar N+1 queries — passar `required: false` controla se o join é LEFT ou INNER, e aninhar `include` em mais de 3 níveis é sinal de problema de modelagem.
 > Em 2026, o Sequelize ainda é relevante para projetos legacy e equipes que já dominam sua API, mas Prisma e Drizzle são preferidos para projetos novos pela DX superior e melhor type safety.
+
+## Ciclo de vida de um Model Sequelize
+
+```mermaid
+flowchart LR
+    DEF["Model.init()\ndefinição de colunas"]
+    ASSOC["setupAssociations()\nhasMany · belongsTo · etc"]
+    CRUD["Queries\nfindAll · create · update · destroy"]
+    HOOK["Hooks\nbeforeCreate · afterUpdate · etc"]
+    TX["Transaction\nsequelize.transaction()"]
+
+    DEF --> ASSOC
+    ASSOC --> CRUD
+    CRUD --> HOOK
+    CRUD --> TX
+
+    style DEF fill:#4A90D9,color:#fff
+    style ASSOC fill:#4A90D9,color:#fff
+    style CRUD fill:#F5A623,color:#000
+    style HOOK fill:#F5A623,color:#000
+    style TX fill:#D0021B,color:#fff
+```
 
 ## O que é
 
@@ -557,11 +578,147 @@ O Sequelize ainda faz sentido em cenários específicos:
 
 ---
 
+## Casos práticos
+
+### Cenário A — Migração de modelo v6 para v7 com TypeScript estrito
+
+API legada com Sequelize v6 precisa de melhor type safety. O time quer pegar erros de schema em build time sem reescrever todas as queries.
+
+```typescript
+// src/models/order.ts — Sequelize v7 com tipos nativos
+import {
+  DataTypes,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  NonAttribute,
+  Op,
+} from '@sequelize/core';
+import { sequelize } from '../database';
+import type { OrderItem } from './order-item';
+
+class Order extends Model<
+  InferAttributes<Order, { omit: 'items' }>,
+  InferCreationAttributes<Order, { omit: 'items' }>
+> {
+  declare id: CreationOptional<number>;
+  declare userId: number;
+  declare status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  declare totalAmount: number;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+
+  declare items?: NonAttribute<OrderItem[]>;
+}
+
+Order.init(
+  {
+    id: { type: DataTypes.INTEGER.UNSIGNED, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
+    status: {
+      type: DataTypes.ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled'),
+      defaultValue: 'pending',
+    },
+    totalAmount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      validate: { min: 0 },
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
+  },
+  { sequelize, tableName: 'orders', modelName: 'Order' }
+);
+
+// Uso — tipo inferido automaticamente; TypeScript rejeita campos inválidos
+const pedidosPendentes = await Order.findAll({
+  where: {
+    status: 'pending',
+    createdAt: { [Op.lt]: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+  },
+  order: [['createdAt', 'ASC']],
+  limit: 50,
+});
+// pedidosPendentes[0].status → 'pending' | 'processing' | ... (tipado!)
+```
+
+---
+
+### Cenário B — Relatório com associações em 3 níveis e controle de N+1
+
+API de e-commerce precisa gerar relatório de pedidos com itens e produto de cada item. O desafio é evitar N+1 sem explodir a memória com dados desnecessários.
+
+```typescript
+// src/reports/order-report.ts
+import { Order } from '../models/order';
+import { OrderItem } from '../models/order-item';
+import { Product } from '../models/product';
+import { User } from '../models/user';
+
+interface OrderReportRow {
+  orderId: number;
+  customerName: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+}
+
+async function getOrderReport(startDate: Date, endDate: Date): Promise<OrderReportRow[]> {
+  // include em 3 níveis — 3 queries otimizadas, sem N+1
+  const orders = await Order.findAll({
+    where: {
+      status: 'delivered',
+      createdAt: { [Op.between]: [startDate, endDate] },
+    },
+    attributes: ['id'],                    // evita colunas desnecessárias de Order
+    include: [
+      {
+        model: User,
+        as: 'customer',
+        attributes: ['id', 'name'],        // só o que o relatório precisa
+        required: true,                    // INNER JOIN — exclui pedidos sem usuário
+      },
+      {
+        model: OrderItem,
+        as: 'items',
+        attributes: ['id', 'quantity', 'unitPrice'],
+        required: true,
+        include: [
+          {
+            model: Product,
+            as: 'product',
+            attributes: ['id', 'name'],
+          },
+        ],
+      },
+    ],
+    order: [['createdAt', 'DESC']],
+    limit: 500,
+    subQuery: false, // evita subquery desnecessária com include + limit
+  });
+
+  // Flatten para linhas do relatório
+  return orders.flatMap((order) =>
+    order.items!.map((item) => ({
+      orderId: order.id,
+      customerName: order.customer!.name,
+      productName: item.product!.name,
+      quantity: item.quantity,
+      unitPrice: Number(item.unitPrice),
+      lineTotal: item.quantity * Number(item.unitPrice),
+    }))
+  );
+}
+```
+
+---
+
 ## Armadilhas comuns
 
-### 1. Lazy loading acidental (N+1)
-
-O Sequelize **não faz lazy loading automático** como alguns ORMs — mas o padrão de buscar instâncias e depois acessar associações em loop gera N+1 manualmente:
+> [!warning] Armadilha 1 — Lazy loading acidental (N+1)
+> O Sequelize **não faz lazy loading automático** como alguns ORMs — mas o padrão de buscar instâncias e depois acessar associações em loop gera N+1 manualmente: cada chamada a `getAuthor()` dentro de um `for` dispara uma nova query SELECT individual contra o banco.
 
 ```typescript
 // ❌ ERRADO — N+1: 1 query para posts + N queries para cada autor
@@ -587,7 +744,8 @@ for (const post of posts) {
 }
 ```
 
-### 2. `include` + `where` sem `required: false` gerando INNER JOIN silencioso
+> [!warning] Armadilha 2 — `include` + `where` sem `required: false` gerando INNER JOIN silencioso
+> Quando você adiciona um `where` dentro de um `include` sem declarar `required: false` explicitamente, o Sequelize gera um INNER JOIN implícito — filtrando registros pai que não tenham filhos correspondentes. O comportamento muda silenciosamente dependendo da presença do `where`, o que causa bugs difíceis de rastrear em produção.
 
 ```typescript
 // ❌ ERRADO — retorna só posts que TÊM comentários aprovados
@@ -617,7 +775,8 @@ const posts = await Post.findAll({
 });
 ```
 
-### 3. `destroy()` sem `where` deletando toda a tabela
+> [!warning] Armadilha 3 — `destroy()` sem `where` deletando toda a tabela
+> Chamar `User.destroy({})` ou `User.destroy({ where: {} })` apaga **todos** os registros da tabela sem confirmação ou aviso. O Sequelize executa o DELETE sem cláusula WHERE. Em APIs com endpoints de deleção em massa, qualquer bug no payload que resulte em `where: {}` limpa a tabela inteira em produção.
 
 ```typescript
 // ❌ PERIGO — deleta TODOS os registros da tabela users
@@ -638,7 +797,8 @@ await User.truncate(); // deixa claro que é para limpar tudo
 > Configure `sequelize.define` com `{ paranoid: true }` para soft delete automático
 > (adiciona `deletedAt` em vez de deletar fisicamente). Veja a armadilha 5.
 
-### 4. `Op.like` com padrão `%text%` em produção causando full scan
+> [!warning] Armadilha 4 — `Op.like` com padrão `%text%` em produção causando full scan
+> Usar `Op.like` com o padrão iniciando por `%` (como `%searchTerm%`) impede o uso de índice B-tree porque o banco não sabe por qual caractere a string começa. Em tabelas com milhões de registros, isso força um full table scan a cada busca — uma das causas mais comuns de lentidão silenciosa em APIs com busca textual no Sequelize.
 
 ```typescript
 // ❌ PROBLEMA — full table scan em tabelas grandes com padrão prefixado por %
@@ -666,7 +826,8 @@ const users = await User.findAll({
 });
 ```
 
-### 5. `timestamps: false` + `paranoid: true` gerando conflito
+> [!warning] Armadilha 5 — `timestamps: false` + `paranoid: true` gerando conflito
+> O `paranoid: true` requer que o Sequelize tenha acesso às colunas `updatedAt` e `deletedAt` para funcionar. Se você combina `timestamps: false` com `paranoid: true`, o ORM tenta usar `deletedAt` mas a coluna não existe no schema — o resultado é um erro em runtime que só aparece na primeira operação de deleção real, não em testes simples.
 
 ```typescript
 // ❌ CONFLITO — paranoid requer updatedAt e deletedAt; timestamps: false remove ambos
@@ -724,6 +885,12 @@ In production, I never use `sequelize.sync({ force: true })` or even `{ alter: t
 | produto cartesiano | cartesian product |
 | índice de banco de dados | database index |
 | operador de comparação | comparison operator |
+
+---
+
+## O que vem a seguir
+
+O Sequelize cobre a maior parte dos projetos legados em Node.js, mas para projetos novos o ecossistema evoluiu. [[03 - Prisma - schema-first e type safety]] apresenta o modelo schema-first que elimina a necessidade de sincronizar tipos manualmente entre o modelo e o banco. Para entender o problema de N+1 — que afeta diretamente o `include` aninhado do Sequelize — [[06 - N+1 queries - detecção e DataLoader]] mostra como detectar e resolver o problema em qualquer ORM. Transações complexas, com locks pessimistas e isolamento configurável, são aprofundadas em [[08 - Transações - gerenciamento manual vs automático]].
 
 ---
 
