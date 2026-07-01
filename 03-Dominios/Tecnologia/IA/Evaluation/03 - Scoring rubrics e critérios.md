@@ -1,7 +1,7 @@
 ---
 title: "03 - Scoring rubrics e critérios"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-01
 type: concept
 status: seedling
 progress: in_progress
@@ -21,7 +21,11 @@ aliases:
 # 03 - Scoring rubrics e critérios
 
 > [!abstract] TL;DR
-> Rubrica é o **dicionário operacional** que transforma "esse output é bom?" numa pergunta com resposta reproduzível. Boa rubrica separa critérios **objetivos** (formato, presença de campos, latência — binário ou contagem) de **subjetivos** (acurácia, helpfulness, tom — escala). Escala mais usada é 1-5 Likert com **anchored examples** — cada nível tem 1-2 outputs de referência. Sem anchors, *"score 4"* significa coisas diferentes pra cada anotador. Inter-rater agreement (Cohen's kappa ou simples % agreement) é o teste de qualidade da rubrica: se dois anotadores treinados discordam em >20% dos casos, a rubrica está vaga.
+> **Rubrica é o dicionário operacional** que transforma "esse output é bom?" numa pergunta com resposta reproduzível — ela define o que "bom" significa em termos operacionais, antes de qualquer ferramenta ou anotador entrar em cena. Sem rubrica, cada avaliador (humano ou LLM-judge) inventa sua própria régua; com rubrica, a régua é compartilhada e testável.
+>
+> Uma boa rubrica separa **critérios objetivos** (formato válido, campos obrigatórios presentes, latência — binário ou contagem automática) de **critérios subjetivos** (acurácia, helpfulness, tom — escala 1-5 Likert com **anchored examples**). Anchors são o detalhe que faz funcionar: cada nível da escala tem 1-2 outputs de referência. Sem anchors, *"score 4"* significa coisas diferentes pra cada anotador e o sinal vira ruído.
+>
+> O trade-off central é custo vs. fidelidade: critérios objetivos são baratos e automatizáveis, mas captam só o que é binário; critérios subjetivos captam nuances, mas exigem calibração. **Inter-rater agreement** (Cohen's kappa ou % de concordância) é o teste de sanidade da rubrica — se dois anotadores treinados discordam em >20% dos casos, o problema é a rubrica, não os anotadores. Kappa > 0.6 é o piso para confiar nos scores.
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Você entende que EDD requer medição sistemática (nota 01) e que o golden set é o conjunto de casos que serve de régua (nota 02). Esta nota cobre a régua em si: como você define numericamente o que "bom" significa. Não é necessário background em psicometria ou pesquisa quantitativa — mas se você conhece NPS, A/B test ou CSAT, vai reconhecer os padrões. A rubrica é o que transforma julgamento humano em número reproduzível.

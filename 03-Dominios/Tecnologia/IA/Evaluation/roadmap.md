@@ -68,13 +68,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 03 - Scoring rubrics e critérios   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-01)
 - **Estado:** 324 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E1
 - **Score:** 9/12
 - **Plano de execução:**
   - Expandir callout `[!abstract]` TL;DR para ≥3 linhas markdown de corpo (atualmente 1 parágrafo em linha única) → resolve E1 e eleva score para 10/12
-- **Resultado:** —
+- **Resultado:** TL;DR expandido de 1 linha p/ 3 parágrafos (o que é / mecanismo / trade-off), registro Feynman. Edição cirúrgica (6+/2-), `updated:` bumpado. Score esperado 10/12. (piloto enriquecer-galho, 01/07)
 
 #### 04 - LLM-as-judge — quando e como   [mecânico]
 - **Enriquecimento:** ⬜ pendente
