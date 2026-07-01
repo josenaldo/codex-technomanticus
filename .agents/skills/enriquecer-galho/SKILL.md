@@ -213,13 +213,31 @@ Sob `.blocks[0]`:
 
 `usoPct` (uso atual) = `.totalTokens / .tokenLimitStatus.limit × 100`.
 
-### Critérios de pausa (QUALQUER um é suficiente)
+### Filosofia: USAR a janela, não desperdiçá-la
+
+O objetivo é **consumir o bloco de 5h**, não economizá-lo — a janela **não acumula**, então terminar
+o bloco em 50% = metade desperdiçada. Projeção de 80–95% é **bom** (boa utilização). O único limite
+real: **não estourar 100% ANTES do bloco resetar**. Como o ccusage mede a sessão inteira, se o
+trabalho principal esquentar a projeção sobe e o enriquecimento cede sozinho — sem teto artificial baixo.
+
+### Critérios de pausa (QUALQUER um)
 
 | Critério | Condição | Razão |
 |----------|----------|-------|
-| Tempo baixo | `.projection.remainingMinutes < 30` | Não iniciar nota que pode ser cortada no meio |
-| Uso alto | `usoPct > 50` | Perfil conservador — cede ao trabalho principal |
-| Projeção alta | `.tokenLimitStatus.percentUsed > 50` | Burn rate alto, risco de estourar |
+| Projeção estoura | `.tokenLimitStatus.percentUsed >= 95` | No ritmo atual o bloco esgota ANTES do reset — aí sim para |
+| Tempo baixo | `.projection.remainingMinutes < 15` | Perto do fim do bloco; não iniciar onda que seria cortada |
+
+**NÃO** pause por uso atual alto nem por projeção entre 50–90% — isso é uso saudável da janela, é o
+que queremos. O `95` é knob ajustável (deixa margem pro "peak hours: 3–5× faster").
+
+> **Não use `.totalTokens` cru como gate.** Ele soma `cacheReadInputTokens`, que numa sessão longa
+> infla muito (o modelo relê o contexto a cada turno) mas é barato/descontado no faturamento real —
+> foi o que causou um falso-alarme a 92% projetado quando o uso real era ~42%. Use
+> `.tokenLimitStatus.percentUsed` (projeção já ponderada) e/ou `.costUSD`. O `usoPct` cru é só informação.
+>
+> **Limite de 7 dias:** o `ccusage blocks` só enxerga o bloco de 5h. Se o painel/usuário indicar que
+> o **limite semanal** está apertado (>~85%), pause independente do bloco — o semanal é o gargalo
+> binário até o reset.
 
 ### Ação de pausa
 

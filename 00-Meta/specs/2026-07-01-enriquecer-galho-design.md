@@ -146,18 +146,24 @@ zero `🔄`**. Isso elimina os problemas 1 e 2 por construção.
 ## Governança de tokens (ccusage)
 
 Mecanismo: `ccusage` (CLI, lê os JSONL locais do Claude Code — legível via Bash, diferente do
-`/usage` que é só UI). Comando: `ccusage blocks --active --offline --json` (o `--offline` evita
-chamada de rede a cada check).
+`/usage` que é só UI). Comando: `ccusage blocks --active --offline --json -t max` (o `-t max` é
+obrigatório — expõe `.blocks[0].tokenLimitStatus` com `limit`/`projectedUsage`/`percentUsed`; o
+`--offline` evita chamada de rede).
 
-Sinais lidos: tokens usados no bloco de 5h, teto estimado do bloco, tempo restante, e **projeção**
-de total se o ritmo continuar. A medição cobre a **sessão inteira** (main loop + subagentes), então
-reflete automaticamente o trabalho principal — é isso que garante "não roubar do main".
+**Filosofia (corrigida 01/07): USAR a janela, não desperdiçá-la.** O bloco de 5h não acumula —
+terminar em 50% = metade desperdiçada. Projeção de 80–95% é BOM. O único limite: não estourar 100%
+ANTES do reset. Como o ccusage mede a **sessão inteira** (main + subagentes), se o main esquentar a
+projeção sobe e o enriquecimento cede sozinho — sem teto artificial baixo.
 
-**Checagem ao fim de cada nota.** Pausa (avisa o fluxo e para) se qualquer:
+**Checagem ao fim de cada nota.** Pausa se qualquer:
 
-1. Tempo restante do bloco **< ~30 min** (não começar nota que pode ser cortada no meio);
-2. Uso atual do bloco **> ~50%** do teto (perfil conservador — cede ao main);
-3. Projeção do bloco **> ~50%** do teto (burn alto).
+1. `.tokenLimitStatus.percentUsed >= ~95` (no ritmo atual o bloco esgota ANTES do reset);
+2. `.projection.remainingMinutes < ~15` (perto do fim; não iniciar onda que seria cortada).
+
+**NÃO** pausar por uso atual alto nem por projeção 50–90% (é uso saudável). **NÃO** usar `.totalTokens`
+cru como gate — ele soma `cacheReadInputTokens`, que infla em sessão longa mas é barato/descontado
+(causou falso-alarme a 92% projetado com uso real ~42%); use `percentUsed`/`costUSD`. **Limite de 7
+dias:** o `blocks` só vê o bloco de 5h; se o semanal estiver apertado (>~85%), pausar independente.
 
 Na pausa, o roadmap já tem tudo gravado — retomar no próximo bloco/sessão é trivial.
 
