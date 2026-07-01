@@ -25,6 +25,35 @@ com estrutura fraca — reconstrói o esqueleto antes de enriquecer o conteúdo.
 - **Instrução complementar:** texto livre como contexto (foco temático, URLs a incorporar). Pode
   pré-selecionar lentes (ex: "só profundidade e conexões").
 
+## Modo `--auto` (não-interativo)
+
+Ativado por `--auto` no comando:
+
+```
+/enriquecer-nota [path] --auto ["instrução"]
+```
+
+### Com instrução/plano explícito (uso pelo `enriquecer-galho`)
+
+Quando acompanhado de uma instrução concreta (ex: vinda do `roadmap.md` do galho):
+
+- **Pula Fase 2** (menu de lentes) — lentes e ações derivadas diretamente da instrução.
+- **Pula Fase 4** (subagente crítico) — o plano do roadmap já é a lista vetada pelo diagnóstico; não há novo gate.
+- **Pula Fase 5** (confirmação) — plano pré-aprovado; aplica e grava direto.
+- Aplica exatamente as mudanças descritas na instrução, seguindo o Registro Feynman e os formatos de seção da Fase 3.
+- Fase 7 (relatório) executa normalmente e indica `(modo --auto)` no cabeçalho do resumo.
+
+### Sem instrução (uso avulso pelo usuário)
+
+Quando `--auto` é usado sem instrução complementar:
+
+- Roda a higiene baseline + as lentes inferidas do diagnóstico da Fase 0 (score + gaps do `/verificar-nota`).
+- Aplica os candidatos sobreviventes sem gate de confirmação.
+- **Não dispara o subagente crítico** — evita fan-out aninhado, pois este caminho é tipicamente invocado de dentro de outro subagente.
+- Fase 7 indica `(modo --auto, sem instrução)`.
+
+---
+
 ## Referências (ler antes de executar)
 
 - `references/lentes.md` — as lentes, seus motores, higiene baseline, schema do candidato,
@@ -146,6 +175,8 @@ entram no pool do crítico.
 
 ## Fase 4 — Crítica (subagente)
 
+> **Modo `--auto`:** esta fase é PULADA. No fluxo do `enriquecer-galho`, o plano do roadmap já é a lista vetada pelo diagnóstico — não há segundo gate. No uso avulso `--auto` sem instrução, o subagente crítico também é omitido para evitar fan-out aninhado.
+
 Despacha UMA vez o subagente de `references/critico.md` via Agent tool (`subagent_type: general-purpose`),
 passando: `fase`, `nota` (título + corpo) e os candidatos de conteúdo (`tipo: adicao|reescrita` das
 lentes profundidade/lacunas/novidade). Candidatos de Conexões, Mídia e a higiene **não** vão ao crítico.
@@ -222,7 +253,7 @@ Itens pulados pelo usuário aparecem com `–`.
 
 ## Convenções rígidas
 
-- **Confirmação antes de executar** — nenhuma edição sem plano aprovado.
+- **Confirmação antes de executar** — nenhuma edição sem plano aprovado. **Exceção: modo `--auto`**, em que o plano vem pré-aprovado (via instrução explícita do galho ou via diagnóstico da Fase 0) e é aplicado sem gate interativo.
 - **Registro Feynman** — todo candidato de adição/reescrita segue o registro didático de
   `references/lentes.md`: analogias concretas, perguntas retóricas do leitor, camadas explícitas
   (sintoma/causa, o quê/por quê), resumo em 1 linha. Anti-padrão: prosa enciclopédica neutra.
