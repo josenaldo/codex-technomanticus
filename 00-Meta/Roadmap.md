@@ -65,7 +65,7 @@ aliases:
 
 | Trilha | Estado | Nota |
 | ------ | ------ | ---- |
-| [[03-Dominios/Tecnologia/IA/index\|IA]] | 🟡 | 21 galhos, 322 notas; **13 enriquecidos (padrão completo) · 6 parciais · 2 fora de escopo** — ver [[#Enriquecimento do domínio IA]] |
+| [[03-Dominios/Tecnologia/IA/index\|IA]] | 🟡 | 21 galhos; **diagnóstico nota-a-nota COMPLETO (30/06): 237 notas, ~84% no gate ≥9/12, 47 já fechadas** — plano detalhado em `guia/roadmap - ia`; ver [[#Enriquecimento do domínio IA]] |
 | [[03-Dominios/Tecnologia/Terminal/index\|Terminal]] | ✅ | 7 galhos, 78 notas |
 | [[03-Dominios/Tecnologia/Infraestrutura/index\|Infraestrutura]] | 🟡 | só galho Linux; falta Docker, Kubernetes, Nginx, Cloud |
 | [[03-Dominios/Tecnologia/RPA/index\|RPA]] | ⬜ | stub (6 notas) |
@@ -75,32 +75,36 @@ aliases:
 > **Padrão completo de enriquecimento** (cristalizado no lote de 28/06): `fase:` no frontmatter · `[!question]-` após o TL;DR · seção "Armadilhas comuns" com 3 `[!warning]` · seção "Como explicar em inglês" (quote + tabela PT↔EN ≥5 linhas) · bridge "O que vem a seguir" · piso de linhas (Iniciado ≥300 / Adepto ≥400 / Magus ≥500).
 >
 > Galhos enriquecidos **antes** de 28/06 passaram por um padrão mais leve (estrutura + `fase:`, sem todos os elementos) — por isso os 6 parciais. Auditoria de conteúdo (grep dos marcadores + contagem de linhas) em 2026-06-29.
+>
+> **Régua revisada (2026-06-29):** as skills `escrever-nota`/`verificar-nota`/`enriquecer-nota` agora separam **núcleo mínimo** (TL;DR · abertura-problema · corpo-mecanismo · **O que vem a seguir** · Fontes · frontmatter) de **opcionais caso-a-caso** (Armadilhas, inglês, casos, `[!question]`, mídia — medidas por gate de score ≥9/12). `fase:` e piso de linhas valem onde o galho adota fases. **Plantar/colher dúvidas é passada pós-nota.** O diagnóstico **nota a nota** de cada galho de IA vive em `00-Meta/guia/roadmap - ia.md`.
 
 | Galho | Notas | Enriquecido | Status | O que falta |
 | ----- | ----- | ----------- | ------ | ----------- |
-| AI Engineering Stack | 13 | 27/06 | ✅ completo | — |
-| RAG e Vector Databases | 13 | 27/06 | ✅ completo | — |
-| MCP | 10 | 28/06 | ✅ completo | — |
-| Segurança e Guardrails | 12 | 28/06 | ✅ completo | — |
-| Memória de Agentes | 24 | 28/06 | ✅ completo | — |
-| Prompt Engineering | 9 | 28/06 | ✅ completo | — |
-| Structured Outputs | 8 | 28/06 | ✅ completo | — |
-| Evaluation | 8 | 28/06 | ✅ completo | — |
-| Observability | 8 | 28/06 | ✅ completo | — |
-| Multimodal Prompting | 7 | 28/06 | ✅ completo | — |
-| Image Prompting | 7 | 28/06 | ✅ completo | — |
-| Improvement Loop | 7 | 28/06 | ✅ completo | — |
-| Ferramentas de IA | 6 | 28/06 | ✅ completo | "inglês" ausente em 3 notas-referência grandes (700+ l) — provável isenção intencional |
-| Agentes de Codificação | 18 | 27/06 | 🟡 parcial | `[!question]`/Armadilhas em ~6 notas (04, 16, 17, 18…) |
-| Context Engineering | 16 | 27/06 | 🟡 parcial | `[!question]` em 15/16 notas |
-| Economia de Tokens | 22 | 27/06 | 🟡 parcial | `[!question]` em quase todas; notas 01–04 cruas (<130 l) |
-| Spec-Driven Development | 12 | 27/06 | 🟡 parcial | Armadilhas + "inglês" + bridge em todas |
-| Anatomia de Agents | 11 | 25/06 | 🟡 parcial | `[!question]`/Armadilhas/bridge em todas; várias <300 l |
-| Anatomia dos LLMs | 21 | 24/06 | 🟡 parcial | reformulação estrutural feita (spec `00-Meta/specs/2026-06-20-galho-anatomia-llms-reformulacao-plan.md`); falta Armadilhas/bridge; maioria <300 l |
+| AI Engineering Stack | 13 | 27/06 | ✅ qualidade alta — diagnóstico nota-a-nota FEITO (30/06), ver `guia/roadmap - ia` | TODAS 11/12 (núcleo íntegro; só P1 inaplicável). **Porém**: conteúdo real <piso na maioria (≥300 Iniciado) — ~100 linhas em branco no rodapé inflam o `wc -l` e mascararam isso. Higiene: `status:seedling` na 13, seção "inglês" duplicada na 02. |
+| RAG e Vector Databases | 13 | 27/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | Mais cru que o esperado: 2×8 (<gate: 04, 08), 3×9, 6×10, 2×11; só RAG-11 fechada. Gaps frequentes: **E2 (abre sem cenário)** · **L2 (refs sem URL)** · conteúdo real <piso ≥300 em 8/13 (rodapé em branco infla wc -l). `fase: Iniciado` em todas. |
+| MCP | 10 | 28/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | Mais fraco que o "completo" sugeria: 3×8 (<gate: 01/04/05), 5×9, 1×10, 1×11; nenhuma fechada. Gaps: **L2 universal** (refs em itálico, não links clicáveis) · E2 (abertura sem cenário) · E1 (TL;DR de 1 linha em 01/05/08) · E3 (ASCII, não Mermaid). `fase: Iniciado`. |
+| Segurança e Guardrails | 12 | 28/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | 2×8 (<gate: 05, 07), 1×9, 9×10; nenhuma fechada. **L2 universal** (TODAS as 12 com refs sem URL) · conteúdo real <piso em várias · E2/E1 secundários · caducidade regulatória na 11 (prazo 02/08/2026). `fase: Iniciado`. |
+| Memória de Agentes | 24 | 28/06 | ✅ qualidade alta — diagnóstico nota-a-nota FEITO (30/06), ver `guia/roadmap - ia` | Mais sólido do lote 28/06: 1×8 (24), 3×9, 15×10, 5×11; **7 não precisam mudança**. Notas escritas quase no piso exato (~300–301 l). Gap dominante **E2** (abre "X é..." em quase todas) · caducidade nas notas de implementação (09–17/20/24) · MA-14 com 73 linhas em branco (<piso). `fase: Iniciado`. |
+| Prompt Engineering | 9 | 28/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | 1×7 (<gate: 09), 2×9, 4×10, 2×11; 2 não precisam mudança (01, 02). Gap dominante: **conteúdo real <piso** (04/08/09 com 171–201 l, rodapé em branco) · E1 (TL;DR raso) · E2 · L2. `fase: Iniciado`. |
+| Structured Outputs | 8 | 28/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | 1×8 (<gate: 06), 1×9, 5×10, 1×11; 1 não precisa mudança (01). Gaps: **conteúdo real <piso** (5/8) · **E3 (Mermaid ausente)** quase universal · caducidade de API em 04/05/06 (SO-05: checar se Anthropic já tem structured output nativo). `fase: Iniciado`. |
+| Evaluation | 8 | 28/06 | ✅ qualidade boa — diagnóstico nota-a-nota FEITO (30/06), ver `guia/roadmap - ia` | 1×8 (<gate: 02), 2×9, 4×10, 1×11; 3 não precisam mudança (05/07/08). Gaps leves: **E3 (Mermaid ausente)** comum · E2/E1 (TL;DR raso na 02/03) · conteúdo real <piso em 01/02. `fase: Iniciado`. |
+| Observability | 8 | 28/06 | ✅ qualidade boa — diagnóstico nota-a-nota FEITO (30/06), ver `guia/roadmap - ia` | Sólido: nenhuma <gate (1×9, 6×10, 1×11); 4 não precisam mudança. Gap dominante: **E3 (Mermaid ausente** — diagramas em ASCII art) · conteúdo real <piso em 02/04 · "Veja também" duplicado na 01. `fase: Iniciado`. |
+| Multimodal Prompting | 7 | 28/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | 2×8 (<gate: 02, 04), 2×9, 3×10; 2 não precisam mudança (03/06). Gaps: **E2 (abertura)** comum · E1 (TL;DR raso 01/02) · E3 (Mermaid ausente) · conteúdo <piso na 07 · caducidade na 04. `fase: Iniciado`. |
+| Image Prompting | 7 | 28/06 | ✅ qualidade boa — diagnóstico nota-a-nota FEITO (30/06), ver `guia/roadmap - ia` | Nenhuma <gate (4×9, 3×10); 3 não precisam mudança (01/06/07). Gaps leves: **E2 (abertura)** em 03/04/05 · E1 (TL;DR raso 02/04) · conteúdo real <piso em 03/04/05 · caducidade na 03 (modelos). `fase: Iniciado`. |
+| Improvement Loop | 7 | 28/06 | ✅ qualidade boa — diagnóstico nota-a-nota FEITO (30/06), ver `guia/roadmap - ia` | Nenhuma <gate (2×9, 5×10); 4 não precisam mudança (01/03/05/07). Gaps leves: **E3 (Mermaid — diagramas em ASCII)** universal · E2 (02/04) · conteúdo real <piso em 04/06. `fase: Iniciado`. |
+| Ferramentas de IA | 5 | 28/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | 5 notas-referência grandes (626–910 l), não trilha. 1×8 (<gate: Claude), 4×9. Achado universal: **TL;DR `[!abstract]` ausente/informal nas 5** (núcleo) + **caducidade pesada** (preços/modelos/datas em TODAS — envelhecem mais rápido do domínio) + E3 (ASCII) + armadilhas duplicadas (Codex/Copilot). `fase: Iniciado`. (Roadmap antes dizia 6 notas; são 5.) |
+| Agentes de Codificação | 18 | 27/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | Sólido: TODAS ≥9 (2×9, 11×10, 5×11); 3 não precisam mudança. Gap **sistêmico E5**: "O que vem a seguir" existe mas aponta pro futuro-do-produto/notas relacionadas, não pra PRÓXIMA nota da sequência (~13 notas). Mais: `fase:` ausente na 01 · caducidade nas notas de ferramenta (Cursor/Copilot/Windsurf/Devin/benchmarks) · L1 em algumas. P1 inaplicável. |
+| Context Engineering | 16 | 27/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | **Galho mais consistente**: TODAS ≥9 (1×9, 7×10, 7×11, 1×12); **9 não precisam mudança**. `fase: Adepto` em todas. Gaps residuais só polimento: L1 (cross-galho) · L2 (URLs nas refs) · piso ≥400 por poucas linhas em ~5 · P1 majoritariamente inaplicável. |
+| Economia de Tokens | 22 | 27/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | **Bimodal**: intro 01–04 crua (SEM `fase:`, ~110–310 l, 5–7/12, falta E2/E5/inglês) vs corpo 05–22 forte (`fase: Adepto`, todas ≥9; ET-05 = **12/12**). Gaps do corpo: L1 (cross-galho) · L2 (URLs nas refs) · piso ≥400 por 1–28 l em várias · caducidade em 04/08/19/20/21. Distr.: 3×5,1×7,3×9,7×10,7×11,1×12. |
+| Spec-Driven Development | 12 | 27/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | **Galho mais cru: TODAS as 12 <gate** (1×4, 4×5, 5×6, 2×7). Notas longas (~400 l) e ricas, mas faltam sistematicamente: bridge **E5** (todas) · URLs nas refs/L2 (todas) · seção de **inglês** E6/E7 (quase todas) · Anti-patterns→`[!warning]` · cross-galho L1. `fase:` ausente (galho por sequência). |
+| Anatomia de Agents | 11 | 25/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | Mais cru que LLMs: 4 notas <gate (8/12: 01/04/05/08), 5 em 9, 2 em 10; nenhuma fechada. Falta: bridge **"O que vem a seguir"** em TODAS as 11 · Anti-patterns→`[!warning]` em ~9 · URLs nas refs (L2) em 5. `fase:` ausente (galho por sequência). |
+| Anatomia dos LLMs | 24 | 24/06 | 🟡 diagnóstico nota-a-nota FEITO (29/06) — ver `guia/roadmap - ia` | Núcleo OK: todas ≥9/12 (04 = 11/12, única sem pendência). Falta: bridge **"O que vem a seguir"** em ~22 notas (têm "Veja também", falta a ponte narrativa) · converter Armadilhas→`[!warning]` em ~17 · `[!info]` de caducidade em 07/08/12/17. `fase:` ausente por decisão do spec (galho por Blocos). |
 | O Lado Sombrio da IA | 1 | — | ⬜ fora de escopo | cluster crítico fora das trilhas (só "Débito cognitivo") |
 | Claude Code | 0 | — | ⬜ fora de escopo | pasta vazia |
 
-> **Ordem sugerida pra fechar os parciais** (do mais cru ao mais polido): Anatomia dos LLMs (seguir o spec) → Anatomia de Agents → Spec-Driven Development → Economia de Tokens → Context Engineering + Agentes de Codificação (passada rápida só de `[!question]`).
+> **Diagnóstico nota-a-nota CONCLUÍDO (30/06):** todas as 237 notas (19 galhos + 3 soltas) auditadas, uma por vez, contra a régua das skills. Plano detalhado por nota + síntese de padrões transversais em `00-Meta/guia/roadmap - ia.md`. Status acima reflete o estado real (não o selo "completo" antigo, que se baseava em contagem bruta de linhas). Próximo passo é **executar** as mudanças propostas, galho a galho — priorizando o que é barato e de alto ganho (E2 abertura-problema, E1 TL;DR, L2 URLs) e a caducidade urgente (Ferramentas de IA, Segurança 11/EU AI Act).
+>
+> **Padrões transversais (top gaps):** E2 abertura sem cenário · E1 TL;DR raso · E3 diagramas em ASCII (não Mermaid) · L2 refs sem URL · E5 bridge nos galhos antigos · conteúdo real <piso mascarado por linhas em branco · caducidade nas notas de ferramenta/modelo.
 
 ---
 
