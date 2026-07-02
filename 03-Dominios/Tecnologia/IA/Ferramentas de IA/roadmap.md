@@ -14,7 +14,7 @@ Diagnóstico migrado de guia/roadmap - ia.md (30/06). Cada entrada tem estado de
 
 **Galho:** `03-Dominios/Tecnologia/IA/Ferramentas de IA`
 **Diagnóstico:** 2026-06-28 (migrado 2026-07-01)
-**Última execução:** 2026-07-01 (onda 1: Claude · Codex · Comparativo de LLMs — E1 TL;DR + E3 ASCII→Mermaid + dedup armadilhas)
+**Última execução:** 2026-07-01 — **galho concluído (5/5)**. Onda 1: Claude · Codex · Comparativo. Onda 2: Gemini · GitHub Copilot. Todas: E1 TL;DR + E3 ASCII→Mermaid + dedup armadilhas. Preços/modelos/URLs intocados (caducidade fora do escopo mecânico — revisar à parte).
 
 ## Régua de análise
 
@@ -35,11 +35,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 5 |
-| ⬜ pendente | 2 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 3 |
+| ✅ feita | 5 |
 | 🔄 em andamento | 0 |
-| % concluído | 60% |
+| % concluído | 100% ✅ |
 
 ---
 
@@ -81,7 +81,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### Gemini (nota-referência)   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-01)
 - **Estado:** 636 linhas · fase: Iniciado · status: evergreen
 - **Núcleo/gaps:** E1, E3, P1
 - **Score:** 9/12
@@ -92,7 +92,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### GitHub Copilot (nota-referência)   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-01)
 - **Estado:** 706 linhas · fase: Iniciado · status: evergreen
 - **Núcleo/gaps:** E1, E3, P1
 - **Score:** 9/12

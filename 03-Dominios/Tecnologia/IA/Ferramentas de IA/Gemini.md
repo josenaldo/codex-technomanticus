@@ -17,7 +17,10 @@ publish: true
 
 # Gemini
 
-> Gemini é a aposta do Google em [[Dicionário de IA#LLM (Large Language Model)|LLMs]], e em 2026 é o modelo mais multimodal e o único com [[Dicionário de IA#Context window|context window]] de 2M tokens. Para um fullstack senior, Gemini é relevante principalmente em três casos: (1) quando o problema envolve imagem, áudio ou vídeo nativamente; (2) quando você precisa processar documentos gigantes em uma única chamada; (3) quando sua stack já vive no Google Cloud. Fora desses casos, Claude e GPT costumam oferecer experiência melhor em coding interativo. Esta nota cobre os modelos, ferramentas (Gemini CLI, Code Assist, Vertex AI), diferenciais, limitações, e como encaixar Gemini na sua stack. Para comparação detalhada ver [[Comparativo de LLMs]].
+> [!abstract] TL;DR
+> **Para que serve:** Gemini é a família de [[Dicionário de IA#LLM (Large Language Model)|LLMs]] do Google DeepMind — a escolha certa quando o problema é multimodal (imagem, áudio, vídeo em um único prompt), quando você precisa processar documentos gigantes em uma única chamada (contexto de até 2M tokens), ou quando a stack já vive no Google Cloud e compliance é requisito.
+> **Diferenciais:** multimodalidade treinada desde o pretraining (não "bolted on"), [[Dicionário de IA#Context window|janela de contexto]] de 2M tokens única no mercado em 2026, grounding com Google Search para respostas com fontes atuais sem montar RAG, e integração profunda com GCP via Vertex AI para data residency e IAM.
+> **Quando usar:** (1) Multimodal nativo — imagem, vídeo ou áudio combinados no mesmo prompt; (2) Long context — documentos que ultrapassam 200K tokens e exigem visão holística sem chunking; (3) Stack GCP — Vertex AI elimina fricção de compliance. Para coding interativo do dia a dia, Claude Code ainda lidera; para classificação em alta escala, Flash-Lite é extremamente competitivo em custo. Para comparação detalhada ver [[Comparativo de LLMs]].
 
 > [!question]- Quando escolher Gemini em vez de Claude ou GPT?
 > Três critérios concretos. (1) Multimodalidade nativa: se o problema envolve imagem, áudio ou vídeo em uma só chamada, Gemini é a escolha mais coesa. (2) Contexto gigante: documentos com mais de 200K tokens que precisam de uma única análise holística — Gemini 2.5 Pro com 2M tokens resolve sem chunking. (3) Stack Google Cloud: se a infraestrutura já é GCP e compliance exige data residency, Vertex AI elimina fricção. Para coding interativo do dia a dia, Claude Code ainda lidera; para high-volume de texto, Flash-Lite compete no custo.
@@ -248,6 +251,18 @@ Ter em mente:
 
 ## Quando escolher Gemini
 
+```mermaid
+flowchart TD
+    A[Precisa acessar Gemini\nQual interface usar?] --> B{Contexto enterprise?\nCompliance / data residency / IAM?}
+    B -- Sim --> C[Vertex AI\nGovernança, data residency,\nIAM GCP, SLA, Model Garden]
+    B -- Não --> D{Tarefa de coding\nno terminal ou editor?}
+    D -- Terminal / CLI --> E[Gemini CLI\nCoding agent conversacional\nanáloga ao Claude Code]
+    D -- Editor / IDE --> F[Gemini Code Assist\nExtensão VS Code / JetBrains\ncompletion + chat + smart actions]
+    D -- Não --> G{Prototipagem\nou integração por API?}
+    G -- Prototipagem rápida --> H[AI Studio\nFree tier, playground visual\nideal para exploração]
+    G -- Integração programática --> I[Gemini API direta\nSDK Python/JS, billing,\ncontrole total]
+```
+
 ### Cenários onde brilha
 
 - **Multimodal:** imagem, vídeo, áudio + texto em prompts.
@@ -280,46 +295,6 @@ Ter em mente:
 
 > [!warning] Comparar benchmarks do Gemini sem replicar no seu caso
 > Claims de "Gemini supera Claude em reasoning" quase sempre não replicam quando você testa no seu workload específico. Modelos são especializados; benchmarks não representam seu caso de uso. Crie um golden set próprio de 50-100 itens representativos do problema real antes de escolher modelo para produção.
-
-### 1. Assumir "2M tokens funcionam perfeitamente"
-
-Context rot é real. **Fix:** teste empiricamente; use RAG para > 500K.
-
-### 2. Usar Pro onde Flash resolveria
-
-Flash é bom o suficiente para 90% dos casos. **Fix:** default Flash, escala para Pro.
-
-### 3. Grounding sem validação
-
-Google Search pode retornar info errada ou desatualizada. **Fix:** sempre validar citações para decisões críticas.
-
-### 4. Ignorar diferença de pricing API vs Vertex
-
-Mesma model, pricing pode variar. **Fix:** ler docs específicas antes de comparar com Claude/GPT.
-
-### 5. Multimodal "só porque tem"
-
-Nem todo problema precisa de imagem/áudio. **Fix:** usar multimodal onde agrega, não como diferencial artificial.
-
-### 6. GEMINI.md vs CLAUDE.md vs AGENTS.md
-
-Projeto polyglot de agents precisa decidir qual manter. **Fix:** em 2026, AGENTS.md está virando comum; replique em GEMINI.md se Gemini CLI for primary.
-
-### 7. Sem data residency em enterprise
-
-Dados de saúde/finanças em API direta sem garantias. **Fix:** Vertex AI com configuração apropriada.
-
-### 8. Esquecer rate limits
-
-AI Studio free tier tem limits agressivos. **Fix:** migrar para paid quando usage sobe.
-
-### 9. Live API sem planning de custo
-
-Streaming contínuo soma tokens rápido. **Fix:** budget e telemetria por sessão.
-
-### 10. Comparar benchmarks sem replicar
-
-Claims de "Gemini > Claude em X" frequentemente não replicam no seu caso. **Fix:** golden set próprio.
 
 ## Como ganhar experiência prática
 

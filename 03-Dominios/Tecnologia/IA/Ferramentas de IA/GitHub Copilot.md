@@ -1,7 +1,7 @@
 ---
 title: "GitHub Copilot"
 created: 2026-04-01
-updated: 2026-06-28
+updated: 2026-07-01
 type: concept
 fase: Iniciado
 progress: backlog
@@ -15,6 +15,9 @@ publish: true
 ---
 
 # GitHub Copilot
+
+> [!abstract] TL;DR
+> GitHub Copilot evoluiu de autocompletar inteligente para um ecossistema de oito modos de operação — de ghost text inline até Workspace para features no nível de repositório. O maior ROI não está em usar o chat, mas em configurar `.github/copilot-instructions.md` com arquitetura, convenções e antipatterns do projeto: sem esse arquivo, o modelo chuta o contexto e as sugestões ficam genéricas. O padrão sênior em 2026 é usar Copilot e Claude Code juntos — Copilot para completions always-on e automação de PRs, Claude Code para refactors pesados e workflows customizados via skills.
 
 > Copilot foi o primeiro [[Dicionário de IA#Coding agent|coding assistant]] de IA que um dev normal podia usar em produção. Lançado em 2021, em 2026 virou um ecossistema completo: completions no editor, chat contextual, agent mode, workspace para features multi-arquivo, integração nativa com Pull Requests, GitHub Actions, e Issues. Se você vive no GitHub, Copilot é onde a IA aparece sem você precisar trocar de janela. Esta nota cobre as capabilities, como configurar bem (skills, instructions, chat modes), workflows reais, e quando usar Copilot em vez de (ou junto com) Claude Code. Para fundamentos de LLMs ver [[Anatomia dos LLMs|LLMs]]; para comparação geral ver [[Comparativo de LLMs]].
 
@@ -52,6 +55,16 @@ Para um senior dev em um ambiente centrado em GitHub, **Copilot é a ferramenta 
 10. **Mede impacto** — tempo economizado, acceptance rate, mudanças nos hábitos.
 
 ## Modos de operação em detalhe
+
+Os oito modos formam um espectro: de sugestões passivas (Completion) até execução autônoma no nível de repositório (Workspace). Quanto mais à direita, mais contexto o modelo precisa — e mais o arquivo `.github/copilot-instructions.md` importa.
+
+```mermaid
+flowchart LR
+    A["Code Completion\nghost text inline"] --> B["Chat\n#file #folder #problem"]
+    B --> C["Edit Mode\ndiff multi-arquivo"]
+    C --> D["Agent Mode\niteração autônoma"]
+    D --> E["Copilot Workspace\nissue → PR completo"]
+```
 
 ### 1. Code Completion (ghost text)
 
@@ -366,43 +379,31 @@ jobs:
 > [!warning] `.copilotignore` ausente em projetos com secrets
 > Sem `.copilotignore`, arquivos `.env`, arquivos de credencial, dados sensíveis de tests e migration files com PII podem entrar no contexto do modelo. Copilot usa arquivos abertos e recentes como contexto. Adicionar `.copilotignore` com os mesmos padrões do `.gitignore` para dados sensíveis é segurança mínima em projetos comerciais.
 
-### 1. Sem `copilot-instructions.md`
-
-Copilot adivinha arquitetura → sugestões genéricas. **Fix:** escrever uma instruções decente.
-
-### 2. Aceitar sugestões sem ler
-
-Ghost text bonito com bug sutil. **Fix:** leia antes de `Tab`.
-
-### 3. Chat sem contexto
+### 1. Chat sem contexto
 
 Chat sem `#file` ou `#folder` = respostas genéricas. **Fix:** sempre ancorar em arquivos.
 
-### 4. Public code filter desligado
+### 2. Public code filter desligado
 
 Risco de licensing em código público. **Fix:** manter ligado em projetos comerciais.
 
-### 5. Sem `.copilotignore`
-
-Secrets vazando em prompts. **Fix:** ignorar env, keys, dados.
-
-### 6. Agent mode em projetos desconhecidos
+### 3. Agent mode em projetos desconhecidos
 
 Agent faz changes em larga escala sem entender convenções. **Fix:** usar em projeto com instructions bem feita.
 
-### 7. Modelo errado para a tarefa
+### 4. Modelo errado para a tarefa
 
 GPT rápido onde Claude longo seria melhor. **Fix:** escolher modelo conscientemente quando o plano permite.
 
-### 8. Ignorar hooks do Git / pre-commit
+### 5. Ignorar hooks do Git / pre-commit
 
 Copilot comita código que falha no linter. **Fix:** rodar lint/test local antes de commit; hooks não-bypass.
 
-### 9. Workspace para tasks pequenas
+### 6. Workspace para tasks pequenas
 
 Overhead desnecessário. **Fix:** chat/edit para tasks pequenas; workspace para features médias a grandes.
 
-### 10. Sem revisar `.github/chatmodes/` do time
+### 7. Sem revisar `.github/chatmodes/` do time
 
 Skills viram legacy desatualizado. **Fix:** review trimestral.
 
