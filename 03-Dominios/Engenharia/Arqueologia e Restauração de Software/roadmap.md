@@ -37,20 +37,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas (roster) | 28 |
-| ✅ escritas | 7 |
-| ⬜ não escritas | 21 |
+| ✅ escritas | 8 |
+| ⬜ não escritas | 20 |
 | 🔄 rascunho | 0 |
-| % escrito | 25% |
+| % escrito | 29% |
 
-**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 0/9 ⬜ · Magus 0/12 ⬜.
+**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 1/9 🔄 · Magus 0/12 ⬜.
 
 ## Tabela-resumo (enriquecimento das escritas)
 
 | Métrica | Valor |
 |---------|-------|
-| Escritas | 7 |
+| Escritas | 8 |
 | ✅ enriquecidas | 0 |
-| ⬜ pendentes (só M1/mídia) | 7 |
+| ⬜ pendentes (só M1/mídia) | 8 |
 | Score médio verificar-nota | 11/12 (gap único = M1) |
 
 ---
@@ -125,14 +125,16 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Plano de execução:** buscar vídeo sobre git archaeology / git blame forense / git log pickaxe
 - **Resultado:** código=o "como" / git=o "porquê"; blame -w/-M, pickaxe log -S; hotspots só introduzidos (defere à 09)
 
-### Adepto (8-16) — não iniciada ⬜
+### Adepto (8-16) — em andamento 🔄 (1/9)
 
 #### 08 - Engenharia reversa e recuperação de arquitetura   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** de trechos lidos a mapa formal: dependency graphs, análise estática, recuperação de arquitetura. ABRE a fase Adepto.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit 13b36e5)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 320 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 isento (320 < 400, padrão capítulo)
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre reflexion models / architecture reconstruction / ArchUnit / dependency graphs
+- **Resultado:** fragmentos → mapa formal; 2 braços (extração/grafo + validação/reflexion model Murphy-Notkin); erosão & desvio (Perry-Wolf); top-down↔bottom-up (OORP); DSM; ferramentas por stack (jdeps/ArchUnit/madge/import-linter); 2 cenários (due diligence núcleo cíclico / resgate divergência)
 
 #### 09 - Forense de software   [substantivo]
 - **Escrita:** ⬜ não escrita
@@ -280,7 +282,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 ## Próximos passos
 
-1. **Escrever a nota 08** (Engenharia reversa e recuperação de arquitetura) — abre a fase Adepto. Piso T2 ≥400 em tese, mas isento pelo padrão capítulo; ainda assim, notas Adepto pedem mais fôlego técnico que as de Iniciado.
-2. Seguir o roster 09→28, uma por vez, commitando por nota (ou par), atualizando **este roadmap** (escrita ✅ + commit) a cada nota fechada.
+1. **Escrever a nota 09** (Forense de software) — método de Adam Tornhill (*Your Code as a Crime Scene* 2ª ed 2024): hotspots (complexidade × mudança), acoplamento temporal, *bus factor* quantificados. Aprofunda o faro introduzido na 07 e a intensidade que falta ao mapa estático da 08.
+2. Seguir o roster 10→28, uma por vez, commitando por nota (ou par), atualizando **este roadmap** (escrita ✅ + commit) a cada nota fechada.
 3. **Rodada de mídia (M1)** das 7 notas de Iniciado quando o galho amadurecer — buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), fechando o único gap recorrente.
 4. Ao concluir cada fase, atualizar a linha "Por fase" e as duas tabelas-resumo.
