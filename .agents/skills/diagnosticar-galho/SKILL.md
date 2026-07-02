@@ -1,12 +1,12 @@
 ---
 name: diagnosticar-galho
 description: >
-  Audita um galho de notas nota a nota e gera `<galho>/roadmap.md` com uma entrada executável
-  por nota (estado, score, plano de execução, classificação de custo). É a cristalização do
-  processo de diagnóstico feito manualmente no domínio IA e funciona como pré-condição da
-  `enriquecer-galho`. Use quando o usuário pedir "diagnosticar galho", "criar roadmap de
-  enriquecimento do galho", ou quando a skill `enriquecer-galho` detectar que `roadmap.md`
-  ainda não existe na pasta do galho.
+  Audita um galho e gera `<galho>/roadmap.md`. Galho-folha: uma entrada executável por nota
+  (estado, score, plano, custo). Galho-pai: navega a árvore, descobre sub-galhos e folhas, e
+  gera roadmap recursivamente (mapa de estado dos sub-galhos + roadmap de cada folha). É
+  pré-condição da `enriquecer-galho`. Use quando o usuário pedir "diagnosticar galho", "criar
+  roadmap do galho", "diagnosticar o galho-pai X", "gerar roadmaps da árvore", ou quando a
+  `enriquecer-galho` detectar que falta `roadmap.md` num galho ou sub-galho.
 ---
 
 # Skill: diagnosticar-galho
@@ -23,12 +23,77 @@ Audita um galho inteiro — uma nota por vez, com ≤3 subagentes concorrentes �
 
 - **`<path-do-galho>`:** caminho absoluto (ou relativo à raiz do vault) para a pasta do galho.
   Ex: `03-Dominios/Tecnologia/IA/Anatomia dos LLMs`.
-- Se `<galho>/roadmap.md` já existir, aborta com aviso: "roadmap.md já existe — use
-  `enriquecer-galho` para executar ou delete-o para rediagnosticar."
 
 ---
 
-## Fase 0 — Inventário
+## Fase -1 — Classificação do galho (folha vs pai)
+
+**Antes de qualquer coisa, classifique o galho.** Um galho é **pai** se contém sub-galhos;
+**folha** se só contém notas. O tratamento é diferente.
+
+**Sub-galho** = subpasta que contém ≥1 nota real (`.md` que não seja `index.md`/`roadmap.md`),
+direta ou em qualquer profundidade abaixo dela.
+
+**Classifique** (shell-agnóstico — NÃO use glob `*/`, que erra em zsh sem match):
+
+```bash
+# Há nota em profundidade ≥2? Então há sub-galho → PAI; senão → FOLHA.
+find "<path>" -mindepth 2 -name '*.md' ! -name index.md ! -name roadmap.md -print -quit
+```
+
+- **saída vazia** → galho-**FOLHA** → siga **Fase 0–3** (diagnóstico nota a nota, Modo A).
+- **saída não-vazia** → galho-**PAI** → siga o **Modo Pai** abaixo (NÃO rode Fase 0–3 diretamente).
+
+**Listar os sub-galhos** (para recursar no Modo Pai):
+
+```bash
+find "<path>" -mindepth 1 -maxdepth 1 -type d | while read -r d; do
+  find "$d" -name '*.md' ! -name index.md ! -name roadmap.md -print -quit | grep -q . && echo "$d"
+done
+```
+
+**Abort de roadmap existente (só folha):** se for FOLHA e `<galho>/roadmap.md` já existir,
+aborta: "roadmap.md já existe — use `enriquecer-galho` para executar ou delete-o para
+rediagnosticar." Para galho-PAI, roadmap existente NÃO aborta (ele é atualizado, e
+sub-galhos sem roadmap continuam sendo diagnosticados).
+
+---
+
+## Modo Pai — diagnóstico recursivo de galho-pai
+
+Um galho-pai NÃO tem notas auditadas nota a nota (exceto notas diretas — ver passo 2).
+Ele mapeia o **estado dos sub-galhos**. O diagnóstico desce a árvore.
+
+1. **Crie/atualize o roadmap-pai (Modo B)** em `<path>/roadmap.md` a partir do
+   `Template - Roadmap` (`00-Meta/templates/Template - Roadmap.md`, Modo B): frontmatter,
+   `**Nível:** galho-pai`, seção `## Notas diretas`, seção `## Sub-galhos` (uma linha por
+   sub-galho) e `## Tabela-resumo (agregado)`.
+
+2. **Notas diretas** (`.md` diretos, exceto `index.md`/`roadmap.md`): se houver, diagnostique
+   cada uma como no Modo A (uma entrada `#### NN` por nota, via subagente ≤3 concorrentes) e
+   coloque-as numa seção `## Notas diretas`. `index.md` (MOC) entra na tabela como `➖`.
+
+3. **Recursão nos sub-galhos, UM DE CADA VEZ** (serial — preserva o teto global de 3
+   subagentes de nota; um sub-galho folha já usa até 3 internamente):
+   - Para cada sub-galho **sem** `roadmap.md` (ou marcado para re-diagnóstico): invoque
+     `diagnosticar-galho <path-do-sub-galho>` (que se auto-classifica — folha roda Fase 0–3,
+     pai recursa de novo).
+   - Governança de tokens e parada valem GLOBALMENTE (herdadas da sessão) — se o bloco
+     apertar, pare entre sub-galhos e reporte de onde retomar.
+
+4. **Preencha a linha de cada sub-galho** na tabela `## Sub-galhos` do roadmap-pai, derivando
+   o estado do `roadmap.md` recém-criado do filho (contagens ⬜/➖/✅, % e estado: ✅ completo /
+   📋 diagnosticado / 🔶 parcial / ⬜ não diagnosticado). Atualize também o roadmap do **avô**,
+   se existir (o rollup sobe a árvore).
+
+5. **PARE** ao terminar (igual à Fase 3): diagnóstico é revisado pelo humano antes de executar.
+
+> **Legenda de estado (rollup):** ✅ completo (0 ⬜) · 📋 diagnosticado, enriquecimento
+> pendente · 🔶 parcial · ⬜ não diagnosticado · ⚪ especial. `%` = (✅ + ➖) / total.
+
+---
+
+## Fase 0 — Inventário (galho-FOLHA)
 
 **Objetivo:** conhecer o galho antes de criar qualquer arquivo.
 

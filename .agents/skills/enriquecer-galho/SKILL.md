@@ -1,11 +1,12 @@
 ---
 name: enriquecer-galho
 description: >
-  Coordena o enriquecimento de um galho inteiro, nota a nota, com governança de tokens via
-  ccusage e memória permanente em disco (roadmap.md). Roda em Opus/opusplan (é coordenação
+  Coordena o enriquecimento de um galho, nota a nota, com governança de tokens via ccusage e
+  memória em disco (roadmap.md). Navega a árvore: em galho-pai, desce pelos sub-galhos até a
+  próxima folha com nota pendente; em folha, roda o loop. Roda em Opus/opusplan (coordenação
   pura — nunca enriquece notas diretamente). Use quando o usuário pedir "enriquecer galho",
-  "enriquecer o galho X", "rodar enriquecimento do galho", "continuar enriquecimento de
-  <pasta>", ou "retomar enriquecer-galho".
+  "enriquecer o galho X", "enriquecer o galho-pai X", "rodar enriquecimento do galho",
+  "continuar enriquecimento de <pasta>", ou "retomar enriquecer-galho".
 ---
 
 # Skill: enriquecer-galho
@@ -29,7 +30,46 @@ sessão, governa tokens, despacha subagentes. Nunca enriquece notas por conta pr
 
 ---
 
-## Roteamento de entrada
+## Roteamento de árvore (folha vs pai)
+
+**Antes do roteamento de folha, classifique o galho.** Pode ser um galho-**pai** (contém
+sub-galhos) ou **folha** (só notas). O coordenador desce a árvore até achar a próxima nota
+a enriquecer.
+
+**Sub-galho** = subpasta com ≥1 nota real (`.md` que não seja `index.md`/`roadmap.md`), em
+qualquer profundidade. Classifique (shell-agnóstico — NÃO use glob `*/`, que erra em zsh):
+
+```bash
+# Há nota em profundidade ≥2? Então há sub-galho → PAI; senão → FOLHA.
+find "<path>" -mindepth 2 -name '*.md' ! -name index.md ! -name roadmap.md -print -quit
+```
+
+- **saída vazia** → galho-**FOLHA** → siga direto o **Roteamento de entrada** abaixo.
+- **saída não-vazia** → galho-**PAI** → resolva a **próxima folha acionável** (abaixo), e então
+  aplique o Roteamento de entrada a ESSA folha. O coordenador nunca enriquece notas de um
+  galho-pai diretamente; ele navega até a folha.
+
+### Achar a próxima folha acionável (galho-PAI)
+
+1. Se `<path>/roadmap.md` (Modo B) não existe, ou algum sub-galho está `⬜ não diagnosticado`
+   → invoque `diagnosticar-galho <path>` (que recursa) e **PARE** para revisão humana. Não
+   entre em loop de enriquecimento sem diagnóstico.
+2. Leia o roadmap-pai. Percorra os sub-galhos **na ordem do roadmap** e pegue o **primeiro
+   não-completo** (estado ≠ ✅, isto é, com ⬜ restante).
+3. Desça nesse sub-galho:
+   - se ele for **pai** → repita este roteamento de árvore nele (recursão);
+   - se for **folha** com ⬜ → é a folha acionável: aplique o **Roteamento de entrada** nela.
+4. Se todos os sub-galhos estão ✅ → o galho-pai está completo; reporte e encerre (nada a fazer).
+
+### Propagação do rollup (ao fechar/pausar uma folha)
+
+Sempre que o loop de uma folha terminar uma onda (gravou `✅`), **atualize o rollup para cima**:
+a linha dessa folha na tabela `## Sub-galhos` do pai (contagens ⬜/➖/✅, %, estado), e assim
+sucessivamente até a raiz. O rastreio sobe e desce a árvore sem sobreposição.
+
+---
+
+## Roteamento de entrada (galho-FOLHA)
 
 Antes de qualquer ação, cheque se `<path>/roadmap.md` existe:
 
