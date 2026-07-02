@@ -1,9 +1,9 @@
 ---
 title: "01 - Eval-driven development — a disciplina"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-01
 type: concept
-status: seedling
+status: growing
 progress: in_progress
 fase: Iniciado
 tags:
@@ -21,7 +21,10 @@ aliases:
 # 01 - Eval-driven development — a disciplina
 
 > [!abstract] TL;DR
-> Eval-driven development (EDD) é o shift de *"rodei 3 vezes e olhei, parece bom"* pra **medição sistemática contínua**. A analogia com TDD é direta: TDD escreve teste antes do código; EDD escreve eval antes do prompt. O princípio operacional é *"evals first, prompts second"* — sem dataset e rubrica, qualquer mudança de prompt vira aposta. EDD se aplica a qualquer sistema repetível com LLM em produção; é overkill em one-shots, brainstorming e exploração inicial. Parafraseando a tese de Hamel Husain em *Your AI Product Needs Evals*: sem evals você não tem produto, tem demo.
+> **EDD** (Eval-driven development) é o shift de *"rodei 3 vezes e olhei, parece bom"* para **medição sistemática contínua**: você define o que é "bom" antes de escrever o prompt — não depois de descobrir o bug em produção.
+> A analogia com TDD é operacional, não só metafórica: TDD escreve o teste antes do código; EDD escreve a eval antes do prompt. O ciclo é *definir rubrica → coletar golden set → estabelecer baseline → mudar → re-medir*, sempre nessa ordem. A diferença prática é que EDD converte intuição dispersa em **memória coletiva**: o conhecimento sobre o que é qualidade fica no dataset, não nas cabeças do time.
+> O princípio central é *"evals first, prompts second"*: sem golden dataset e rubrica, qualquer mudança de prompt é aposta, não engenharia. EDD se aplica a qualquer sistema repetível com LLM em produção; é overkill em one-shots, brainstorming e exploração inicial.
+> Parafraseando Hamel Husain em *Your AI Product Needs Evals*: sem evals você não tem produto — tem demo.
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Esta nota não exige conhecimento de código — é conceitual. A premissa é que você já tem algum sistema com LLM: um chatbot, um extrator de dados, um classificador, qualquer coisa que roda mais de uma vez. E que você provavelmente está tomando decisões sobre esse sistema baseado em "rodar algumas vezes e ver se parece bom". EDD é a alternativa sistemática a isso. Se você vem de desenvolvimento de software tradicional, a analogia com TDD é direta e intuitiva. Se você nunca fez TDD, não preocupa — a nota explica do zero.
@@ -53,6 +56,37 @@ Depois (EDD):
 ```
 
 A diferença não é só rigor. É **memória**. Com EDD, o conhecimento acumulado fica no dataset; sem EDD, fica espalhado em decisões de quem estava no time naquele dia.
+
+O ciclo completo, do ponto de vista operacional:
+
+```mermaid
+flowchart TD
+    R["📋 Definir rubrica\n+ critérios de qualidade"]
+    G["🗂️ Coletar golden set\n(20–100 casos reais)"]
+    B["📊 Baseline\nPrompt v1 → Score X"]
+    M["🔧 Mudar prompt v2\nou trocar modelo"]
+    E["🔁 Rodar eval\n→ Score Y"]
+    D{Y > X?}
+    P["🚀 Deploy v2\nnovo baseline = Y"]
+    BUG["🐛 Bug em produção"]
+    ADD["➕ Novo caso\nno golden set"]
+
+    R --> G --> B --> M --> E --> D
+    D -->|Sim| P
+    D -->|Não| M
+    P --> BUG
+    BUG --> ADD
+    ADD --> M
+
+    style R fill:#1e3a5f,color:#fff
+    style G fill:#1e3a5f,color:#fff
+    style B fill:#2d4a1e,color:#fff
+    style P fill:#2d4a1e,color:#fff
+    style BUG fill:#5f1e1e,color:#fff
+    style ADD fill:#5f1e1e,color:#fff
+```
+
+O ponto chave do diagrama: **bugs de produção não terminam o ciclo — eles entram nele**. Todo incidente vira caso no golden set, que vira regression test permanente. É assim que o dataset cresce organicamente e o sistema melhora com o tempo, em vez de acumular dívida silenciosa.
 
 ## Analogia com TDD
 
@@ -119,6 +153,18 @@ O estado "pronto pra lançar sem nenhum eval" é um estado de dívida técnica. 
 
 Meta para 2026, segundo Hamel: nível 2 como mínimo absoluto pra qualquer produto com LLM em prod.
 
+**O que cada nível parece na prática:**
+
+**Nível 0 → 1 (o desbloqueio):** A transição mais impactante. O time para de basear decisões em *"achei que ficou melhor"* e começa a ter números — mesmo que imperfeitos. Um golden set de 10 exemplos numa planilha do Google, rodado manualmente uma vez por sprint, já é nível 1. O bloqueio costuma ser cultural, não técnico: *"isso vai levar tempo que não temos"*. Leva 4 horas. Cada incidente de regressão que isso previne leva 16.
+
+**Nível 1 → 2 (a automação):** O runner de eval entra no pipeline de CI. Qualquer PR que toca em prompt, system message, ou modelo roda o eval automaticamente. O merge só acontece se o score mantém ou melhora — o threshold funciona como um test suite que bloqueia. Este é o nível que Hamel Husain chama de *"mínimo absoluto para produto em produção"*: abaixo disso, você não tem engenharia de qualidade, tem intuição automatizada.
+
+**Nível 2 → 3 (a visibilidade real):** CI testa com o golden set, não com tráfego real. Nível 3 fecha esse gap: observabilidade em produção significa que você está vendo o comportamento com inputs reais, não só com os 50 casos que você curou. A diferença entre nível 2 e 3 é a diferença entre *"nosso sistema passou nos testes"* e *"nosso sistema está funcionando agora"*.
+
+**Nível 3 → 4 (a decisão de negócio):** O eval técnico está rodando. Mas accuracy de 92% no golden set não é o mesmo que resolução de tickets, CSAT, ou receita. Nível 4 conecta os dois: A/B test em produção com métricas de negócio + LLM-as-judge calibrado com julgamento humano. A pergunta que nível 4 responde é *"essa mudança melhorou o produto?"*, não só *"essa mudança melhorou o score técnico?"*.
+
+**Nível 4 → 5 (o sistema vivo):** O golden set não é mais estático — cresce com casos reais. Todo incidente em produção vira caso no dataset. O dashboard de saúde mostra histórico de scores ao longo do tempo. Regressões são detectadas automaticamente antes de chegar ao usuário. O custo marginal de cada nova feature com LLM cai, porque a infraestrutura de qualidade já está estabelecida — adicionar um prompt novo significa adicionar casos no dataset, não reinventar o processo.
+
 ## O que entra no golden set
 
 Hamel Husain detalha os tipos de casos que devem entrar num golden set bem calibrado:
@@ -140,6 +186,16 @@ Em times, EDD tem uma dimensão organizacional que vai além da técnica. O gold
 Isso tem um efeito colateral valioso: onboarding de novos engenheiros fica mais rápido porque eles podem rodar os evals e ver por si mesmos o que o sistema está fazendo bem e mal, sem precisar pedir para alguém "ensinar" o que é qualidade.
 
 Em projetos solos, EDD ainda aplica — mas o benefício é mais pessoal. Você usa evals pra não confiar só na sua memória do que funcionava antes, e pra não ter que re-testar manualmente toda vez que mudar alguma coisa.
+
+**Mini-caso — time de 3 engenheiros, pipeline de extração financeira:**
+
+Uma fintech com pipeline de extração de dados de PDFs (balanços, extratos). O sistema tinha 3 prompts em sequência: extração → normalização → validação. Toda semana alguém mudava um prompt baseado em reclamação de usuário; duas semanas depois, outra pessoa revertia porque *"estava quebrando outros casos"*. Ninguém sabia o estado real do sistema. O conhecimento coletivo sobre o que "funcionar" significava vivia em conversas de Slack.
+
+Semana 1 de EDD: levantaram 40 PDFs reais dos logs, anotaram manualmente o output esperado (4h de trabalho), definiram 2 dimensões de qualidade — precisão do valor numérico e integridade do campo. Golden set de 40 casos, runner em Python, integrado no CI como job opcional.
+
+Resultado 4 semanas depois: descobriram que o prompt v7 de normalização estava quebrando PDFs de um banco específico — que nunca aparecia nos 5 testes manuais porque ninguém pensava em testar aquele banco. O bug estava em produção há 3 semanas sem detecção. O golden set de 40 casos — 4 horas de trabalho — teria detectado na hora do merge.
+
+O efeito colateral: o onboarding do quarto engenheiro levou metade do tempo, porque ele pôde rodar os evals e ver por si mesmo o que o sistema fazia bem e mal, sem precisar pedir para alguém "explicar o contexto".
 
 ## O pipeline de EDD em uma tarde
 

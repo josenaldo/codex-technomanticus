@@ -1,7 +1,7 @@
 ---
 title: "04 - LLM-as-judge — quando e como"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-01
 type: concept
 status: seedling
 progress: in_progress
@@ -26,6 +26,8 @@ aliases:
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Você entende que EDD requer medição sistemática (nota 01), que o golden set é o conjunto de casos de teste (nota 02), e que a rubrica define o que "bom" significa em termos numéricos (nota 03). Esta nota cobre o mecanismo que permite escalar a anotação: substituir (parcialmente) o humano por outro LLM. O conceito central é simples — um modelo forte julga o output de outro — mas a armadilha é confiar no judge sem calibração. Você não precisa de background em ML formal; familiaridade com chamadas de API LLM e o problema de eval subjetivo é suficiente.
+
+Cada iteração de prompt ou modelo gera dezenas — ou centenas — de outputs que precisam ser avaliados. Humano treinado é o padrão-ouro, mas não escala: revisar 1000 respostas por rodada de experimento não é operacionalmente viável em nenhum pipeline real. LLM-as-judge resolve esse gargalo delegando a anotação a um modelo forte com rubrica explícita — o ciclo de feedback que levaria dias passa a rodar em minutos.
 
 ## Quando faz sentido
 

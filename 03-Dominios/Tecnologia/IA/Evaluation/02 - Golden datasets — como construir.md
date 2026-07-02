@@ -1,9 +1,9 @@
 ---
 title: "02 - Golden datasets — como construir"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-01
 type: concept
-status: seedling
+status: growing
 progress: in_progress
 fase: Iniciado
 tags:
@@ -21,10 +21,24 @@ aliases:
 # 02 - Golden datasets — como construir
 
 > [!abstract] TL;DR
-> Golden dataset é o conjunto canônico de pares **input → output esperado** (ou critério) que serve de régua pra qualquer mudança no sistema. Construir um golden set bom é mais arte que ciência: precisa ser **representativo** da distribuição real, cobrir **edge cases**, incluir **anti-tests** (inputs onde o modelo deve recusar), versionar junto com o prompt, e crescer com casos reais que falharam. Tamanho mínimo prático: 30-50 exemplos pra começar; 100-300 pra um produto sério; mais que isso vira diminishing returns. O pitfall canônico é dataset que vira *leaderboard* pra um modelo específico — golden set tem que medir a tarefa, não o modelo.
+> **Golden dataset** é o conjunto canônico de pares *input → output esperado* que serve de régua fixa para qualquer mudança no sistema — prompt, modelo, temperatura, instrução de sistema. Sem ele, cada iteração é um palpite: você olha pra uma resposta e pensa "ficou melhor", mas não tem como saber se os 40 casos anteriores ainda passam.
+>
+> Construir um bom golden set é mais arte que ciência: precisa ser **representativo** da distribuição real, cobrir **edge cases**, incluir **anti-tests** (inputs onde o modelo deve recusar), versionar junto com o prompt, e crescer com cada bug real que aparecer em produção. Tamanho mínimo prático: 30-50 exemplos pra começar; 100-300 pra um produto sério; mais que isso vira diminishing returns.
+>
+> O pitfall mais comum é o dataset que vira *leaderboard* pra um modelo específico — você otimiza prompts contra ele, scores sobem, mas quando troca de modelo tudo quebra. Golden set tem que medir a **tarefa**, não o modelo.
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Você entende o conceito de EDD — que mudanças de prompt devem ser medidas contra um baseline, não julgadas por feeling (nota 01). Esta nota entra nos detalhes do asset central de EDD: o golden dataset. Não é necessário experiência prévia com datasets de ML — a analogia mais útil é com suítes de teste em software: o golden set é a suíte de testes do seu sistema LLM. O que muda é que "passar" não é booleano — é um score — e "esperado" não é um resultado determinístico, é um julgamento humano.
+
+## A dor que o golden set resolve
+
+Você ajustou o prompt. A resposta ficou mais precisa — pelo menos no caso que estava falhando. Mas e os outros 30 casos que funcionavam antes? Ainda funcionam? Você não sabe. Não porque é descuidado; é porque sem uma régua fixa, cada iteração de prompt é uma caixa preta: você melhora uma coisa e pode estar quebrando outra sem perceber.
+
+Essa é a dor fundamental do desenvolvimento LLM: **ausência de observabilidade sobre regressões**. Em software tradicional você tem testes — se mudar uma função e 5 testes quebrarem, sabe antes de fazer merge. Em sistemas LLM sem golden set, você faz merge torcendo pra não ter quebrado nada, e descobre quando o usuário reclama.
+
+> "O prompt melhorou ou piorou?" deveria ter uma resposta objetiva. Sem golden set, a resposta é sempre "acho que melhorou, mas não tenho certeza."
+
+O golden dataset é a peça que fecha esse gap: dá uma resposta definitiva à pergunta "isso melhorou ou piorou?" — não por feeling, não por amostra casual, mas por comparação estruturada contra exemplos onde você já sabe o que "certo" significa.
 
 ## O que é um golden set
 
