@@ -1,7 +1,7 @@
 ---
 title: "Comparativo de LLMs"
 created: 2026-04-01
-updated: 2026-06-28
+updated: 2026-07-01
 type: concept
 fase: Iniciado
 progress: backlog
@@ -15,6 +15,9 @@ publish: true
 ---
 
 # Comparativo de LLMs
+
+> [!abstract] TL;DR
+> Não existe "o melhor LLM" — existe o melhor para cada combinação de task, custo, latência, stack e compliance. O padrão maduro em 2026 é **multi-provider com tiering agressivo**: modelo leve (Haiku/Flash) para triagem, modelo médio (Sonnet/GPT-4.1) para o grosso das tasks, modelo pesado (Opus/o3) apenas para casos difíceis. Claude lidera em raciocínio e tool use, Gemini em multimodal nativo, GPT em ecossistema e voice. A decisão correta exige golden set próprio — benchmarks públicos não substituem validação no seu workload real.
 
 > "Qual [[Dicionário de IA#LLM (Large Language Model)|LLM]] devo usar?" é a pergunta que todo senior fullstack responde dezenas de vezes por ano. Esta nota é um framework de decisão prático, destilado de literatura técnica, post-mortems públicos, e benchmarks independentes. **Não existe "o melhor LLM"** — existe o melhor para cada combinação de (task, restrições de custo, restrições de latência, stack, compliance). Esta nota dá: uma matriz de decisão prática, trade-offs reais (não marketing), e critérios para escolher entre Claude, GPT, Gemini e ferramentas derivadas em 2026. Para notas individuais, ver [[Claude]], [[GitHub Copilot]], [[Codex]], [[Gemini]]. Para fundamentos de LLMs em geral, [[Anatomia dos LLMs|LLMs]].
 
@@ -241,32 +244,21 @@ Para tasks sensíveis: sempre prompt injection defense + output filtering + huma
 
 Quando você tem que escolher **agora**, use este fluxograma mental:
 
-```text
-1. É tarefa multimodal (imagem, vídeo, áudio)?
-   ├── Sim → Gemini 2.5 Pro (ou GPT-4o para voice)
-   └── Não → continua
-
-2. É coding interativo pair programming?
-   ├── Sim → Claude Code (Claude Sonnet/Opus)
-   └── Não → continua
-
-3. É classificação/extração em volume (> 100K/dia)?
-   ├── Sim → Gemini Flash-Lite, Claude Haiku, GPT-4o-mini (benchmark)
-   └── Não → continua
-
-4. Precisa de raciocínio matemático/lógico pesado?
-   ├── Sim → OpenAI o3 ou Claude Opus com extended thinking
-   └── Não → continua
-
-5. É chatbot/assistant de produção?
-   ├── Sim → Claude Sonnet 4.6 como default, Haiku para simples
-   └── Não → continua
-
-6. Compliance: saúde, finance, gov?
-   ├── Sim → Azure OpenAI / Vertex AI / Bedrock com contratos
-   └── Não → continua
-
-7. Default: Claude Sonnet 4.6 via Anthropic API.
+```mermaid
+flowchart TD
+    A[Task recebida] --> B{Multimodal?\nimagem, vídeo, áudio}
+    B -- Sim --> B1[Gemini 2.5 Pro\nou GPT-4o para voice]
+    B -- Não --> C{Coding interativo\npair programming?}
+    C -- Sim --> C1[Claude Code\nClaude Sonnet / Opus]
+    C -- Não --> D{Classificação / extração\nem volume › 100K/dia?}
+    D -- Sim --> D1[Gemini Flash-Lite\nClaude Haiku\nGPT-4o-mini]
+    D -- Não --> E{Raciocínio matemático\nou lógico pesado?}
+    E -- Sim --> E1[OpenAI o3\nou Claude Opus + extended thinking]
+    E -- Não --> F{Chatbot / assistant\nde produção?}
+    F -- Sim --> F1[Claude Sonnet 4.6 default\nHaiku para simples]
+    F -- Não --> G{Compliance:\nsaúde, finance, gov?}
+    G -- Sim --> G1[Azure OpenAI\nVertex AI\nBedrock com contratos]
+    G -- Não --> H[Default: Claude Sonnet 4.6\nvia Anthropic API]
 ```
 
 Se seu projeto tem múltiplas necessidades, tier agressivamente — não escolha um modelo para tudo.
@@ -275,52 +267,47 @@ Se seu projeto tem múltiplas necessidades, tier agressivamente — não escolha
 
 ### Padrão 1: tiering agressivo
 
-```text
-User request
-  │
-  ▼
-Haiku/Flash-Lite triagem
-  │
-  ├── "Simples" → responde direto
-  │
-  ├── "Média" → Sonnet/GPT-4.1/Gemini Flash
-  │
-  └── "Complexa" → Opus/o3/Gemini Pro
+```mermaid
+flowchart TD
+    A[User request] --> B[Haiku / Flash-Lite\ntriagem]
+    B -- Simples --> C[Responde direto]
+    B -- Média --> D[Sonnet / GPT-4.1 / Gemini Flash]
+    B -- Complexa --> E[Opus / o3 / Gemini Pro]
 ```
 
 Redução típica de custo: 5-10x vs usar modelo grande sempre.
 
 ### Padrão 2: multi-provider fallback
 
-```text
-Primary: Claude Sonnet (quality)
-  │
-  ├── on error/timeout → GPT-4.1 (availability)
-  │
-  └── on sustained outage → Gemini Flash (cost)
+```mermaid
+flowchart TD
+    A[Request] --> B[Primary: Claude Sonnet\nqualidade]
+    B -- erro / timeout --> C[GPT-4.1\ndisponibilidade]
+    C -- outage sustentado --> D[Gemini Flash\ncusto]
 ```
 
 Resiliência contra outage de provider único.
 
 ### Padrão 3: especialização por capability
 
-```text
-Task router
-  ├── Code → Claude
-  ├── Image → Gemini
-  ├── Voice → GPT-4o
-  ├── Math → o3
-  └── Default → Claude Sonnet
+```mermaid
+flowchart TD
+    A[Task router] --> B{Tipo de task?}
+    B -- Code --> C[Claude]
+    B -- Image --> D[Gemini]
+    B -- Voice --> E[GPT-4o]
+    B -- Math --> F[o3]
+    B -- Default --> G[Claude Sonnet]
 ```
 
 Cada task para o modelo onde ele brilha.
 
 ### Padrão 4: self-host + cloud híbrido
 
-```text
-Baseline: Llama 3 self-host (custo zero após hardware)
-  │
-  └── Casos difíceis → Claude/GPT API
+```mermaid
+flowchart TD
+    A[Request] --> B[Baseline: Llama 3 self-host\ncusto zero após hardware]
+    B -- Casos difíceis --> C[Claude / GPT API]
 ```
 
 Custo previsível + qualidade em edge cases.
@@ -335,46 +322,6 @@ Custo previsível + qualidade em edge cases.
 
 > [!warning] Ignorar custo de migração ao trocar de modelo
 > "Vamos trocar de Claude para GPT" parece simples. Na prática: system prompts precisam de re-tuning (prompts otimizados para um modelo não portam direto), eval do golden set precisa ser reexecutado, a equipe precisa adaptar workflow. Switching cost é real e frequentemente subestimado. Inclua sempre no cálculo; modelos com compatibilidade de API similar (OpenAI-compatible endpoints) reduzem mas não eliminam o custo.
-
-### 1. "Claude é sempre melhor" / "GPT é sempre melhor"
-
-Dogma. Nenhum modelo domina em tudo. **Fix:** benchmark próprio.
-
-### 2. Benchmark público como verdade
-
-MMLU, HumanEval, GSM8K são úteis mas não refletem seu caso. **Fix:** golden set seu.
-
-### 3. Escolher por preço sem medir qualidade
-
-Flash-Lite é barato, mas se ele quebra 20% das tasks que Sonnet resolve, custo real é maior. **Fix:** cost per correct output, não per token.
-
-### 4. Ignorar custo de migração
-
-"Vamos trocar para modelo X" sem considerar: re-tuning de prompts, re-eval, retreinamento de equipe, risco. **Fix:** incluir switching cost.
-
-### 5. Lock-in por prompt engineering
-
-Prompts muito específicos para um modelo dificultam migração. **Fix:** prompts portáveis + testes em múltiplos modelos.
-
-### 6. Confundir modelo com ferramenta
-
-"Cursor é melhor que Claude Code" — mas Cursor pode rodar Claude. Comparar apples-to-apples. **Fix:** separar dimensões.
-
-### 7. Seguir hype semanal
-
-"Novo modelo X bate tudo!" — probavelmente não no seu caso. **Fix:** revisar decisões a cada 3-6 meses, não a cada lançamento.
-
-### 8. Ignorar regional pricing e latência
-
-API em região errada = latência e compliance issues. **Fix:** considerar região desde início.
-
-### 9. Budget único "IA"
-
-Sem breakdown por feature, não consegue otimizar. **Fix:** metadata por chamada + dashboards.
-
-### 10. Falha em validar após update
-
-Provider atualiza modelo silenciosamente, prompt quebra. **Fix:** pin version + golden set em CI.
 
 ## Como ganhar experiência prática
 

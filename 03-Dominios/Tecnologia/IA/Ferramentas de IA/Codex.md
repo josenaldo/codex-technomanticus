@@ -1,7 +1,7 @@
 ---
 title: "Codex"
 created: 2026-04-01
-updated: 2026-06-28
+updated: 2026-07-01
 type: concept
 fase: Iniciado
 progress: backlog
@@ -17,7 +17,10 @@ publish: true
 
 # Codex
 
-> Codex é a aposta da OpenAI em **[[Dicionário de IA#Coding agent|coding agent]] cloud-based**: diferente de [[Dicionário de IA#Claude Code|Claude Code]] ou Copilot (que rodam no seu IDE local), Codex opera em um sandbox na nuvem, recebe tarefas em linguagem natural, executa num ambiente isolado com seu repo clonado, e retorna um PR. Para um senior dev, o valor de Codex é diferente do uso diário: **tasks paralelas, trabalho assíncrono, e separação de concerns** — você descreve o que precisa, fecha o laptop, e volta horas depois com PRs prontos para review. Esta nota cobre o que Codex é em 2026 (muito diferente do "Codex 2021" original que era só o modelo), como usar, trade-offs, e quando faz sentido adotar. Para comparação com outras ferramentas, ver [[Comparativo de LLMs]]; para o padrão de agents em geral, [[Anatomia de Agents|Agents]].
+> [!abstract] TL;DR
+> **[[Dicionário de IA#Coding agent|Coding agent]] cloud-native da OpenAI**: diferente de [[Dicionário de IA#Claude Code|Claude Code]] ou Copilot (que rodam no seu IDE local), Codex opera em um sandbox na nuvem, clona o repo, executa autonomamente, e retorna um PR pronto para review.
+> O diferencial para um senior dev não é velocidade de digitação — é **paralelismo assíncrono**: você despacha 5 tasks independentes, fecha o laptop, e volta horas depois com 5 PRs. Nenhuma ferramenta local faz isso.
+> Esta nota cobre o que Codex é em 2026 (diferente do "Codex 2021", que era apenas um modelo de linguagem), como usar na prática, trade-offs reais, e quando faz sentido adotar. Para comparação de ferramentas, ver [[Comparativo de LLMs]]; para o padrão de agents em geral, [[Anatomia de Agents|Agents]].
 
 > [!question]- Codex substitui Claude Code ou são ferramentas complementares?
 > São complementares com papéis distintos. Codex é cloud-based, assíncrono e ideal para tasks longas que podem rodar sem supervisão — implementar um feature bem especificado, dependency update, batch de refactors. Claude Code é local, interativo e ideal para fluxo contínuo onde você itera com o agente em tempo real — exploração de codebase, debugging, pair programming. Um senior típico usa Claude Code para trabalho diário e Codex para tasks paralelas de background enquanto trabalha em outra coisa.
@@ -63,33 +66,14 @@ Codex usa modelos OpenAI internos especializados em coding, derivados das famíl
 
 ## Arquitetura e fluxo
 
-```text
-┌──────────────┐
-│  Developer   │  1. Descreve task em natural language
-│              │     "Add rate limiting to /api/v1/search"
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│  Codex UI /  │  2. Dispatcher cria sandbox container
-│    API       │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│  Sandbox     │  3. Clona repo, instala deps
-│  Container   │  4. Agent lê AGENTS.md e código
-│              │  5. Planeja abordagem
-│              │  6. Edita arquivos
-│              │  7. Roda testes
-│              │  8. Itera se falhar
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│  GitHub PR   │  9. Abre PR com descrição + commits
-│              │     + checks automáticos
-└──────────────┘
+```mermaid
+flowchart TD
+    Dev["👤 Developer\n1. Descreve task em linguagem natural\n'Add rate limiting to /api/v1/search'"]
+    API["🌐 Codex UI / API\n2. Dispatcher cria sandbox container"]
+    Sandbox["📦 Sandbox Container\n3. Clona repo · instala deps\n4. Lê AGENTS.md e código\n5. Planeja abordagem\n6. Edita arquivos\n7. Roda testes\n8. Itera se falhar"]
+    PR["🔀 GitHub PR\n9. Abre PR com descrição + commits\n   + checks automáticos"]
+
+    Dev --> API --> Sandbox --> PR
 ```
 
 Sandbox é efêmero — destruído após task completa. Cada task começa do zero, sem estado persistente (a menos que configurado via artifacts).
@@ -303,46 +287,6 @@ Cada task roda em container isolado:
 
 > [!warning] Paralelizar tasks com dependências entre si
 > Codex task A e task B editam os mesmos arquivos em paralelo → conflito de merge garantido. O agente não vê o que a outra instância está fazendo. Para tasks com dependências, serializar: A termina → review → merge → B começa. Paralelo só funciona com tasks genuinamente independentes (arquivos e lógica disjuntos).
-
-### 1. Task vaga
-
-"Melhore a API" → Codex devolve mudanças aleatórias. **Fix:** descrição específica, acceptance criteria claros.
-
-### 2. Sem AGENTS.md
-
-Agent trabalha com conhecimento genérico, não do projeto. **Fix:** AGENTS.md detalhado na raiz.
-
-### 3. Merge sem review
-
-Todos os checks passam → você mergea → bug sutil. **Fix:** human review sempre.
-
-### 4. Paralelização de tasks dependentes
-
-Task A e B tocam nos mesmos arquivos em paralelo → conflitos no merge. **Fix:** serializar dependencies.
-
-### 5. Expectativa de contexto persistente
-
-"Use o trabalho da task anterior" → Codex não tem. **Fix:** escrever task self-contained ou usar artifacts.
-
-### 6. Ignorar custo
-
-Task de 30 min com o1 → dezenas de dólares. **Fix:** budget por task, escolha de modelo justificada.
-
-### 7. Usar Codex para exploração
-
-"Entenda por que isso está lento" → Codex não vê ambiente, não consegue profile. **Fix:** usar Claude Code local.
-
-### 8. Sem testes em projetos Codex-first
-
-Codex gera código, testes ficam para trás. **Fix:** CI com coverage gate; Codex instruído a escrever teste primeiro.
-
-### 9. Network restricto causa falha silenciosa
-
-Task precisa acessar API interna não permitida. **Fix:** configurar proxy/allowlist ou rodar local.
-
-### 10. Depender de um único agent
-
-Codex como única ferramenta é engessamento. **Fix:** usar junto com Claude Code e Copilot em papéis diferentes.
 
 ## Como ganhar experiência prática
 

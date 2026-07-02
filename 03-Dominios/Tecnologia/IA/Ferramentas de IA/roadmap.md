@@ -14,7 +14,7 @@ Diagnóstico migrado de guia/roadmap - ia.md (30/06). Cada entrada tem estado de
 
 **Galho:** `03-Dominios/Tecnologia/IA/Ferramentas de IA`
 **Diagnóstico:** 2026-06-28 (migrado 2026-07-01)
-**Última execução:** —
+**Última execução:** 2026-07-01 (onda 1: Claude · Codex · Comparativo de LLMs — E1 TL;DR + E3 ASCII→Mermaid + dedup armadilhas)
 
 ## Régua de análise
 
@@ -35,18 +35,18 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 5 |
-| ⬜ pendente | 5 |
+| ⬜ pendente | 2 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
+| ✅ feita | 3 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 60% |
 
 ---
 
 ## Notas
 
 #### Claude (nota-referência)   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-01)
 - **Estado:** 910 linhas · fase: Iniciado · status: evergreen
 - **Núcleo/gaps:** E1, E2, E3, P1
 - **Score:** 8/12
@@ -58,7 +58,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### Codex (nota-referência)   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-01)
 - **Estado:** 627 linhas · fase: Iniciado · status: evergreen
 - **Núcleo/gaps:** E1, E3, P1
 - **Score:** 9/12
@@ -70,7 +70,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### Comparativo de LLMs (nota-referência)   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-01)
 - **Estado:** 729 linhas · fase: Iniciado · status: evergreen
 - **Núcleo/gaps:** E1, E3, P1
 - **Score:** 9/12

@@ -1,7 +1,7 @@
 ---
 title: "Claude"
 created: 2026-04-01
-updated: 2026-06-28
+updated: 2026-07-01
 type: concept
 fase: Iniciado
 progress: backlog
@@ -16,7 +16,10 @@ publish: true
 
 # Claude
 
-> Claude é uma das três famílias de LLM dominantes em 2026 (junto com GPT e Gemini), com diferenciais técnicos concretos: qualidade de raciocínio em tarefas longas, [[Dicionário de IA#tool use|tool use]] consistente, contexto de 1M tokens com retenção razoável (não só "no benchmark"), Claude Agent SDK limpo, e ecossistema maduro de [[Dicionário de IA#MCP (Model Context Protocol)|MCP]], skills e [[Dicionário de IA#subagent|subagents]]. Para muitos workloads de coding e agents, é a escolha default em times sérios. Esta nota é a trilha completa: modelos, API, ferramentas (Claude Code, Desktop, web), como operar em produção, e como adotar progressivamente. Para fundamentos de LLMs em geral ver [[Anatomia dos LLMs|LLMs]]; para comparação com outros modelos ver [[Comparativo de LLMs]].
+> [!abstract] TL;DR
+> Claude é a família de LLMs da Anthropic com três tiers de uso distinto: **Haiku** para triagem rápida e barata, **Sonnet** como default para 90% das tasks de produção, **Opus** para raciocínio denso e decisões onde errar custa caro. Os diferenciais que importam na prática: contexto de 1M tokens com retenção verificável (não só "no benchmark"), [[Dicionário de IA#tool use|tool use]] consistente com schemas rigorosos, [[Dicionário de IA#extended thinking|raciocínio estendido]] transparente — os tokens de thinking são expostos ao desenvolvedor, ao contrário do o1 — e o ecossistema mais maduro de [[Dicionário de IA#MCP (Model Context Protocol)|MCP]], protocolo que a Anthropic criou. Use Claude quando o workload é coding, agents, tool use, ou contexto longo; prefira Gemini para multimodal com áudio/vídeo nativo e GPT-4 para integrações Azure.
+
+> Quando o time decide adotar um LLM de produção, a primeira pergunta é qual modelo e tier usar — e a resposta muda por task e por custo. Claude é a família da Anthropic que mais aparece nessa decisão em workloads de coding e agents: três tiers (Haiku, Sonnet, Opus) com trade-offs claros, contexto de 1M tokens com retenção verificável, [[Dicionário de IA#tool use|tool use]] consistente com schemas rigorosos, e ecossistema maduro de [[Dicionário de IA#MCP (Model Context Protocol)|MCP]], skills e [[Dicionário de IA#subagent|subagents]]. Esta nota é a trilha completa: modelos, API, ferramentas (Claude Code, Desktop, web), como operar em produção, e como adotar progressivamente. Para fundamentos de LLMs em geral ver [[Anatomia dos LLMs|LLMs]]; para comparação com outros modelos ver [[Comparativo de LLMs]].
 
 > [!question]- Preciso usar a API diretamente ou ferramentas como Claude Code bastam?
 > Depende do contexto. Claude Code resolve 80% dos casos de uso de assistência de desenvolvimento — CLAUDE.md, skills, subagents e hooks cobrem workflows complexos sem linha de API. Use a API diretamente quando precisar de integração customizada em produto, controle fino de system prompt por request, streaming de response para UI própria, tool use com ferramentas internas, ou workloads de batch em escala. O Agent SDK entra quando a lógica de orquestração de agents precisa de controle programático que não cabe no CLI.
@@ -93,6 +96,21 @@ Em 2026 (abril), a família ativa é **Claude 4.x**, com atualizações incremen
 - Respostas curtas em apps de alto tráfego.
 
 **Padrão real de produção:** tiering. Haiku faz triagem/classificação → se confiança < 0.85 escala para Sonnet → se Sonnet ainda indeciso escala para Opus. Reduz custo em 5-10x sem perda de qualidade em produção.
+
+```mermaid
+flowchart LR
+    T[Task] --> H[Haiku\nrápido · barato]
+    H -->|confiança ≥ 0.85| OK[✓ resposta]
+    H -->|confiança < 0.85| S[Sonnet\nequilíbrio]
+    S -->|OK| OK
+    S -->|indeciso| O[Opus\nraciocínio profundo]
+    O --> OK
+
+    style H fill:#d4edda,stroke:#28a745,color:#155724
+    style S fill:#fff3cd,stroke:#ffc107,color:#856404
+    style O fill:#f8d7da,stroke:#dc3545,color:#721c24
+    style OK fill:#e2e3e5,stroke:#6c757d,color:#383d41
+```
 
 ### Extended Thinking
 
@@ -566,43 +584,31 @@ Na interface web e Desktop, Claude pode gerar "artifacts" — documentos, códig
 > [!warning] CLAUDE.md desatualizada com estado do projeto
 > Claude Code lê a CLAUDE.md como verdade absoluta sobre o projeto. Se a arquitetura mudou, dependências foram trocadas, ou convenções evoluíram, o agente vai trabalhar com premissas erradas sem aviso. Revisar CLAUDE.md mensalmente ou após refactors grandes é parte do workflow, não opcional.
 
-### 1. Usar alias em produção
-
-`claude-sonnet-4-6` vs `claude-sonnet-4-6-20260315`. Alias muda quando Anthropic atualiza. **Fix:** pin version em produção.
-
-### 2. Não usar prompt caching
-
-System prompts grandes em toda chamada = dinheiro na mesa. **Fix:** marcar com `cache_control`.
-
-### 3. Tool descriptions vagas
+### 1. Tool descriptions vagas
 
 "search — searches" → modelo não sabe quando usar. **Fix:** descrição clara + when-to-use.
 
-### 4. Ignorar refuse patterns
+### 2. Ignorar refuse patterns
 
 Prompt sem contexto → Claude recusa tasks legítimas. **Fix:** system prompt explicando contexto profissional.
 
-### 5. CLAUDE.md desatualizada
-
-Projeto mudou, CLAUDE.md não. Claude trabalha com info errada. **Fix:** revisar CLAUDE.md mensalmente ou após refactor grande.
-
-### 6. Extended thinking em tudo
+### 3. Extended thinking em tudo
 
 Thinking em tasks simples = custo desnecessário. **Fix:** só onde claramente ajuda.
 
-### 7. Context dump sem RAG
+### 4. Context dump sem RAG
 
 "Vou jogar 500K tokens e deixar Claude virar." Context rot real, custo alto. **Fix:** RAG filtrado.
 
-### 8. Sem observabilidade
+### 5. Sem observabilidade
 
 Anthropic console mostra uso geral mas não por feature. **Fix:** Langfuse ou metadata `user_id` + análise.
 
-### 9. Claude Code sem max_steps
+### 6. Claude Code sem max_steps
 
 Agent entra em loop. **Fix:** sempre configure limites; revise diff antes de commitar.
 
-### 10. MCP servers community sem review
+### 7. MCP servers community sem review
 
 Malicioso ou buggy. **Fix:** review antes de instalar; least privilege.
 
