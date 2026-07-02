@@ -33,6 +33,7 @@ particularidades** (ex.: os princípios de RBAC ficam em [[03-Dominios/Engenhari
 ## Domínios
 
 - [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]] — forma macro do sistema: system design, distribuídos, modelagem
+- [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia e Restauração de Software]] — assumir e restaurar sistemas legados: forense, seams, Strangler Fig, a lente do consultor
 - [[03-Dominios/Engenharia/Complexidade de Software/index|Complexidade de Software]] — essencial vs. acidental, abstração, dívida técnica
 - [[03-Dominios/Engenharia/Segurança/index|Segurança]] — princípios, autenticação, autorização, RBAC, OWASP
 - [[03-Dominios/Engenharia/Testes/index|Testes]] — pirâmide de testes, TDD, mocking, cobertura
