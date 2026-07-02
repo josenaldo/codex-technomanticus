@@ -1,9 +1,9 @@
 ---
 title: "05 - Anthropic tool use para forçar formato"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-02
 type: concept
-status: seedling
+status: growing
 progress: in_progress
 fase: Iniciado
 tags:
@@ -24,6 +24,9 @@ aliases:
 > [!question]- O que eu preciso saber antes de ler isso?
 > Você entende o padrão geral de tool use como mecanismo de output (nota 03) e sabe o que é JSON Schema (nota 02). Esta nota é específica do Claude (Anthropic). Se você viu a nota 04 (OpenAI strict mode), o que muda aqui é: Anthropic não tem constrained decoding equivalente. A aderência ao schema é muito alta mas não é garantia arquitetural — o mecanismo depende do treino do modelo em tool use. Isso tem implicações diretas para quando e como validar o output.
 
+> [!info] Atualização — Anthropic lançou Structured Outputs nativo (beta, nov/2025)
+> Desde 14/11/2025 a Anthropic oferece um caminho paralelo ao descrito nesta nota: **Structured Outputs**, via parâmetro `output_format` (JSON mode) e `strict: true` em tools (Strict Tool Use). Diferente do tool use forçado, esse mecanismo usa **decodificação restrita por gramática** — o schema é compilado e só tokens que respeitam o contrato podem ser gerados, dando uma garantia arquitetural equivalente ao strict mode da OpenAI (nota 04), e não apenas "aderência alta por treino". No lançamento cobria Claude Sonnet 4.5 e Opus 4.1; a lista de modelos suportados cresce com o tempo. **Esta nota permanece focada no mecanismo de tool use forçado** — ele continua sendo o caminho certo quando seu pipeline já usa tools reais (a "tool de finalização" compõe naturalmente com as demais) ou quando você precisa de compatibilidade ampla entre modelos/SDKs mais antigos. Para o caminho com garantia arquitetural, ver a doc oficial: [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs).
+
 ## A diferença de filosofia
 
 OpenAI e Google escolheram criar APIs dedicadas pra structured output. Anthropic escolheu unificar tool use e structured output sob a mesma primitiva:
@@ -37,6 +40,26 @@ Vantagens dessa abordagem:
 - **Schema é JSON Schema completo** — sem subset arbitrário como strict mode.
 
 Desvantagem: aderência depende do treino do modelo, não de constrained decoding. Em Claude 4.x isso é muito alto em benchmarks comunitários e observação prática, mas não é 100% garantido por arquitetura. Sua aplicação ainda deve validar (ver [nota 07](07%20-%20Validação%20e%20retry%20—%20Pydantic,%20Zod.md)) e fazer retry quando algo escapar.
+
+## Fluxo do mecanismo
+
+Antes do código, vale visualizar o caminho que a requisição percorre — da chamada até o objeto validado, incluindo os dois pontos onde o processo pode escapar do caminho feliz:
+
+```mermaid
+flowchart TD
+    A["Requisição com tools=[...] e<br/>tool_choice={type: 'tool', name: '...'}"] --> B{"Modelo obedece<br/>ao tool_choice forçado?"}
+    B -->|"sim (caso comum)"| C["stop_reason = 'tool_use'"]
+    C --> D["content contém bloco<br/>{type: 'tool_use', name, input}"]
+    D --> E["Extrai block.input<br/>(dict / object)"]
+    E --> F["Valida com Pydantic/Zod<br/>(nota 07)"]
+    F -->|válido| G["Output estruturado pronto"]
+    F -->|inválido| H["Retry com feedback"]
+    B -->|"não (raro, prompt conflitante<br/>ou max_tokens curto)"| I["stop_reason = 'end_turn'<br/>ou 'max_tokens'"]
+    I --> J["Bloco tool_use ausente<br/>ou incompleto"]
+    J --> H
+```
+
+> [!summary] O `tool_choice` força a *tentativa*; a validação pós-extração é o que garante o contrato — porque, sem constrained decoding, o caminho de falha (`stop_reason` diferente de `tool_use`) sempre existe.
 
 ## O padrão — Python SDK
 
@@ -179,6 +202,50 @@ Modos de falha típicos quando ocorrem:
 
 Heurística: trate tool use como **altamente confiável mas não garantido**. Tenha validação + retry-with-feedback em produção.
 
+### Exemplo de falha real e como detectá-la
+
+Os dois modos de falha mais comuns da lista acima não são hipotéticos — vêm no mesmo formato de resposta de sempre, só que sem o bloco `tool_use` utilizável. Reconhecer o padrão evita tratar `block.input` como garantido:
+
+```python
+# Falha 1 — tool_choice omitido (ou "auto"): o modelo responde em texto livre
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    tools=[analysis_tool],
+    # tool_choice ausente → default é {"type": "auto"}
+    messages=[{"role": "user", "content": "Devo migrar de Postgres pra Mongo?"}],
+)
+print(response.stop_reason)
+# "end_turn" — não "tool_use"
+print(response.content)
+# [TextBlock(type='text', text="Depende do seu caso de uso. Bancos relacionais...")]
+# Nenhum bloco tool_use no content — a extração do padrão em "O padrão —
+# Python SDK" simplesmente não encontra nada e cai no RuntimeError.
+
+# Falha 2 — max_tokens curto demais: o bloco tool_use fica truncado
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=40,  # baixo demais pro schema de 5 campos
+    tools=[analysis_tool],
+    tool_choice={"type": "tool", "name": "record_analysis"},
+    messages=[{"role": "user", "content": "Devo migrar de Postgres pra Mongo?"}],
+)
+print(response.stop_reason)
+# "max_tokens" — Claude foi cortado no meio do bloco tool_use
+# response.content[-1].input pode vir parcial, ou o parsing do JSON
+# interno do SDK pode falhar antes mesmo de você ver o dict.
+
+# Tratamento correto — sempre checar stop_reason antes de extrair
+if response.stop_reason != "tool_use":
+    raise RuntimeError(
+        f"Structured output falhou: stop_reason={response.stop_reason!r}, "
+        "sem bloco tool_use utilizável — acionar retry"
+    )
+```
+
+> [!warning] O valor correto é `max_tokens`, não `max_length`
+> A API da Anthropic usa `stop_reason: "max_tokens"` (não `"max_length"`) pro caso de o modelo esgotar o orçamento de tokens antes de fechar o bloco. É esse valor que sua checagem de `stop_reason` precisa reconhecer — ver [Stop reasons and fallback](https://docs.anthropic.com/en/api/handling-stop-reasons).
+
 ## Extraindo texto de raciocínio junto com o output estruturado
 
 Um recurso específico do mecanismo Anthropic: o modelo pode emitir um bloco de `text` antes do `tool_use` block. Isso permite raciocínio explícito antes de preencher os campos:
@@ -267,7 +334,7 @@ Quando OpenAI ou Gemini podem ser melhores:
 > Diferente do strict mode da OpenAI, Anthropic não usa constrained decoding — não tem como garantir por arquitetura que o output respeita 100% do schema. Na prática, Claude 4.x tem aderência altíssima, mas em schemas complexos (muitos campos, enums simultâneos, aninhamento profundo), podem escapar inconsistências. O erro mais comum é tratar o `block.input` como se fosse completamente válido sem checar tipos e valores. Use Pydantic ou Zod pra deserializar — se quebrar, a validação captura cedo.
 
 > [!warning] Não tratar o caso em que `stop_reason != "tool_use"`
-> Com `tool_choice` forçado, o esperado é que `stop_reason` seja `"tool_use"`. Mas em cenários onde o modelo atingiu `max_tokens` no meio do output, o `stop_reason` pode ser `"max_length"` e o `tool_use` block pode estar incompleto ou ausente. Em produção, sempre cheque `stop_reason` antes de extrair o bloco, e trate o caso de `tool_use` block ausente com retry — não com crash.
+> Com `tool_choice` forçado, o esperado é que `stop_reason` seja `"tool_use"`. Mas em cenários onde o modelo atingiu `max_tokens` no meio do output, o `stop_reason` vem `"max_tokens"` e o `tool_use` block pode estar incompleto ou ausente. Em produção, sempre cheque `stop_reason` antes de extrair o bloco, e trate o caso de `tool_use` block ausente com retry — não com crash. Exemplo concreto de ambos os modos de falha (`tool_choice` ausente e `max_tokens` curto) em "Exemplo de falha real e como detectá-la", mais abaixo.
 
 ## Como explicar em inglês
 
@@ -300,6 +367,8 @@ Ver [[06 - Gemini structured output]].
 - **Anthropic** — *Forcing tool use* ([docs.anthropic.com/en/docs/build-with-claude/tool-use#forcing-tool-use](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)).
 - **Anthropic SDK** — Python e TypeScript exemplos no GitHub.
 - **Anthropic** — *JSON mode is tool use* (posicionamento oficial em blog posts e cookbook).
+- **Anthropic** — *Structured outputs* ([platform.claude.com/docs/en/build-with-claude/structured-outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)) — lançado em beta em 14/11/2025 para Claude Sonnet 4.5 e Opus 4.1.
+- **Anthropic** — *Stop reasons and fallback* ([docs.anthropic.com/en/api/handling-stop-reasons](https://docs.anthropic.com/en/api/handling-stop-reasons)).
 
 ## Veja também
 

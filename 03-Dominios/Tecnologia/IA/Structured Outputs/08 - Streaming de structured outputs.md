@@ -1,9 +1,9 @@
 ---
 title: "08 - Streaming de structured outputs"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-02
 type: concept
-status: seedling
+status: growing
 progress: in_progress
 fase: Iniciado
 tags:
@@ -176,6 +176,35 @@ Funciona pra schemas planos. Pra schemas nested (arrays de objetos), precisa de 
 
 Caminho 3 só vale a pena pra schemas planos; pra nested, combine Caminho 1 + Caminho 2.
 
+## Qual caminho escolher
+
+Os três caminhos não são mutuamente exclusivos — dá pra combinar. Mas pra decidir por onde começar,
+a pergunta certa não é "qual é melhor", é "o que eu preciso mostrar, e quão cedo". Se a resposta é
+"só quero que a UI pare de parecer travada", Caminho 1 sozinho já resolve. Se a resposta é "quero
+campos aparecendo na tela conforme chegam", você precisa de Caminho 2 ou 3 em cima do 1.
+
+```mermaid
+flowchart TD
+    A["Preciso de streaming de\nstructured output?"] -->|"Não — backend pipeline"| Z["Sem streaming.\nChame sem stream, valide o objeto completo"]
+    A -->|"Sim — UX user-facing"| B{"Já uso Anthropic\ntool_use?"}
+    B -->|Sim| C["Caminho 1\nnative streaming (input_json_delta)"]
+    B -->|Não| SKIP["Pule direto pro parser\n(Caminho 2 ou 3)"]
+    C --> G{"Preciso de UI parcial\ndurante o stream,\nnão só latência percebida?"}
+    G -->|Não| H["Fim: valida objeto completo\nno evento message_stop"]
+    G -->|Sim| D
+    SKIP --> D{"Schema é plano\n(poucos campos, sem nesting)?"}
+    D -->|Sim| E["Caminho 3\nemissão por campo (regex)"]
+    D -->|Não — nested/complexo| F["Caminho 2\npartial JSON parser\n(json-repair / partial-json)"]
+    E --> H
+    F --> H
+```
+
+Na prática, a maioria dos times de produto acaba em Caminho 1 + Caminho 2: streaming nativo do
+provider pra latência percebida, e um partial parser por cima pra desenhar a UI conforme o JSON
+fecha. Caminho 3 (emissão por campo via regex) é a opção mais barata em CPU, mas só compensa quando
+o schema é raso o bastante pra regex não precisar lidar com nesting — na dúvida, comece pelo
+Caminho 2, que generaliza melhor.
+
 Pattern visual em UI:
 
 ```
@@ -217,6 +246,24 @@ Validação semântica completa (Pydantic/Zod com refinements) só roda no final
 
 Em prática: deixe validação completa pro final. No parcial, faça só sanity checks (ex: confidence emitida cedo? bloqueia se for "low" e a task era de alta confiança).
 
+Por que essa linha divisória — "sim" pra tipo/enum/`max_length`, "não" pra `min_length`/regex/cross-field? A diferença é se a checagem pode ser **refutada por dado que ainda não chegou**. `max_length` só pode falhar (nunca "quase falhar"): se a string parcial já excedeu o limite, o resultado final também vai exceder — o veredito não muda com mais chunks, então dá pra abortar cedo e economizar tokens. `min_length`, ao contrário, está quase sempre "falhando" durante o streaming (a string ainda está crescendo), e só se resolve quando o campo fecha — testar isso no meio produz falso negativo sistemático. Regex tem o mesmo problema: um padrão como `^\d{3}-\d{4}$` rejeita `"555"` no meio do streaming mesmo que o valor final seja `"555-1234"`. E `model_validator` cross-field (ex: "se `confidence` é `high`, `assumptions` não pode ser vazio") depende de campos que talvez nem tenham chegado ainda — validar isso no parcial é validar contra dados incompletos por definição, não uma questão de sorte.
+
+Um sanity check parcial seguro, então, é qualquer checagem **monotônica**: uma vez que passa a falhar, continua falhando até o fim (nunca "se conserta sozinha" com mais chunks). Em código:
+
+```python
+def sanity_check_partial(partial: dict) -> str | None:
+    """Roda a cada N chunks. Retorna motivo de abort ou None."""
+    confidence = partial.get("confidence")
+    if confidence == "low" and partial.get("task_priority") == "high":
+        return "confidence baixa em task de alta prioridade — aborta cedo"
+    answer = partial.get("answer", "")
+    if len(answer) > MAX_ANSWER_CHARS:
+        return "answer excedeu max_length — aborta cedo"
+    return None  # segue streamando; validação completa só no message_stop
+```
+
+Note o que essa função **não** faz: não chama `Pydantic.model_validate(partial)`. Ela testa condições pontuais, monotônicas, sobre o dict parcial — e só existe pra permitir abortar cedo em casos óbvios (evita gastar tokens streamando um output que você já sabe que vai rejeitar). A validação de verdade — schema completo, cross-field, tipos — roda uma única vez, no objeto final, depois do `message_stop`.
+
 ## Mid-stream falha — o que fazer
 
 Quando algo dá errado no meio do stream:
@@ -249,6 +296,45 @@ Se streaming complica demais, considere chamar sem stream e mostrar loading boni
 Em React/Next.js, Vercel AI SDK tem `useObject` que abstrai streaming structured. Vale conhecer se está nessa stack.
 
 ## Armadilhas comuns
+
+> [!warning] Chamar `JSON.parse(chunk)` direto no chunk, sem buffer
+> A armadilha mais básica — e a primeira que todo mundo comete antes de entender por que streaming
+> de JSON é diferente de streaming de texto (ver a primeira seção desta nota). O código parece
+> razoável até você rodar:
+>
+> ```typescript
+> // ❌ Ingênuo: trata cada chunk como se fosse JSON completo
+> for await (const chunk of stream) {
+>   const partial = JSON.parse(chunk);
+>   render(partial);
+> }
+> ```
+>
+> ```text
+> Uncaught SyntaxError: Unexpected end of JSON input
+>     at JSON.parse (<anonymous>)
+>     at processChunk (stream-handler.ts:12)
+> ```
+>
+> O erro engana: parece que o chunk chegou corrompido, mas o problema é estrutural. Cada `chunk` é
+> um *fragmento* do JSON final (`{"answer": "Sim`), não um documento completo — só o objeto inteiro,
+> no fim do stream, é JSON válido. `JSON.parse` falha em praticamente todo chunk intermediário,
+> menos o último. O conserto não é "tentar de novo": é acumular tudo num buffer e só então parsear
+> (com o parser certo — nativo no fim, ou partial parser no meio):
+>
+> ```typescript
+> // ✅ Acumula no buffer; usa partial parser pro estado intermediário
+> let buffer = "";
+> for await (const chunk of stream) {
+>   buffer += chunk;
+>   try {
+>     const partial = parse(buffer, Allow.ALL); // partial-json, não JSON.parse
+>     render(partial);
+>   } catch {
+>     continue; // buffer ainda não fechou um estado válido — espera o próximo chunk
+>   }
+> }
+> ```
 
 > [!warning] Tentar validar semanticamente no parcial
 > A armadilha clássica é invocar Pydantic ou Zod no objeto parcial durante o streaming — seja por conveniência ("já que tenho o objeto, valido logo") ou por medo de chegar ao final sem validar. Validators com model_validator (cross-field) vão falhar porque campos ainda não chegaram. O objeto parcial do json-repair não respeita tipos ou enums. Resultado: exceções espúrias, resets de stream desnecessários, UX quebrada. Regra: validação semântica só no evento `message_stop` ou equivalente. No parcial, no máximo sanity checks simples (campo emitido cedo com valor obviamente errado).

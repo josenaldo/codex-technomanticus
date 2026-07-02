@@ -1,7 +1,7 @@
 ---
 title: "04 - OpenAI Structured Outputs — strict mode"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-02
 type: concept
 status: seedling
 progress: in_progress
@@ -29,6 +29,23 @@ aliases:
 Strict mode da OpenAI usa **constrained decoding**: o provider monta uma grammar a partir do JSON Schema e força o decoder a emitir só tokens que mantenham o output válido. Resultado: 100% de aderência ao shape (não a semântica), garantido por arquitetura, não por probabilidade.
 
 A penalidade é pequena (~50-150ms na primeira chamada com schema novo, cacheado depois) e a categoria de erro "JSON inválido" desaparece.
+
+O fluxo, do schema até o token emitido, é sempre o mesmo — o schema nunca "sugere" o formato, ele **restringe fisicamente** quais tokens o decoder pode escolher em cada passo:
+
+```mermaid
+flowchart LR
+    A["JSON Schema<br/>(strict: true)"] --> B["Provider compila<br/>grammar (FSM/CFG)"]
+    B --> C["Decoder restrito<br/>à grammar"]
+    C --> D{"Próximo token<br/>é válido no estado atual?"}
+    D -->|sim| E["Emite token"]
+    D -->|não| F["Probabilidade zerada<br/>(token bloqueado)"]
+    F --> C
+    E --> G{"Output completo?"}
+    G -->|não| C
+    G -->|sim| H["JSON válido<br/>100% aderente ao schema"]
+```
+
+A grammar funciona como uma máscara sobre a distribuição de probabilidade do modelo: em cada passo, tokens que quebrariam o schema (ex: fechar um objeto sem todos os campos `required`, ou abrir uma string onde o schema espera um número) simplesmente saem da lista de candidatos — o modelo nunca chega a "escolher errado" porque a opção errada não existe no espaço de decisão daquele passo.
 
 ### Forma 1 — `response_format` direto
 
@@ -170,7 +187,49 @@ O modelo retorna `null` quando não tem valor. Sua aplicação interpreta `null`
 
 ### `additionalProperties: false` obrigatório em todo objeto
 
-Não dá pra deixar default. Tem que declarar explícito em cada `object` (incluindo aninhados).
+Não dá pra deixar default. Tem que declarar explícito em cada `object` (incluindo aninhados). O erro clássico: declarar no objeto raiz e esquecer nos aninhados — a API rejeita a requisição inteira antes de gerar qualquer token.
+
+```python
+# ❌ additionalProperties: false só no objeto raiz — falta no objeto aninhado "endereco"
+response = client.chat.completions.create(
+    model="gpt-4o-2024-08-06",
+    messages=[{"role": "user", "content": "Extraia o endereço do texto"}],
+    response_format={
+        "type": "json_schema",
+        "json_schema": {
+            "name": "pessoa",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "nome": { "type": "string" },
+                    "endereco": {
+                        "type": "object",
+                        "properties": {
+                            "rua": { "type": "string" },
+                            "cidade": { "type": "string" }
+                        },
+                        "required": ["rua", "cidade"]
+                        # falta "additionalProperties": False aqui
+                    }
+                },
+                "required": ["nome", "endereco"],
+                "additionalProperties": False
+            }
+        }
+    }
+)
+```
+
+```text
+openai.BadRequestError: Error code: 400 - {'error': {'message':
+  "Invalid schema for response_format 'pessoa': In context=('properties',
+  'endereco'), 'additionalProperties' is required to be supplied and to
+  be false", 'type': 'invalid_request_error', 'param': 'response_format',
+  'code': None}}
+```
+
+Repare que o erro cita o caminho exato (`'endereco'`) — mas só aparece se você ler a mensagem completa; muitos clientes truncam o `message` no log e mostram só "Invalid schema", escondendo qual objeto aninhado está faltando. `additionalProperties: false` não herda do pai pro filho: cada `"type": "object"` no schema é validado isoladamente, então schemas com vários níveis de aninhamento (endereços dentro de pessoas dentro de listas, por exemplo) precisam da declaração repetida em cada nível.
 
 ### Subset de tipos suportados
 

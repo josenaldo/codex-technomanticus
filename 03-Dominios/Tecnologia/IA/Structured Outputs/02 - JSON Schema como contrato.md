@@ -1,7 +1,7 @@
 ---
 title: "02 - JSON Schema como contrato"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-02
 type: concept
 status: seedling
 progress: in_progress
@@ -26,7 +26,7 @@ aliases:
 
 ## JSON Schema 101
 
-JSON Schema é uma especificação ([json-schema.org](https://json-schema.org/)) pra descrever a estrutura de dados JSON. Você escreve um JSON que descreve outro JSON. Os campos que importam no contexto de LLM:
+Imagine que você pede pro modelo classificar um bug report e ele devolve `{"severidade": "bastante grave", "prioridade_sugerida": "P1-ish", "comentario_extra": "acho que é urgente"}`. Três problemas de uma vez: um valor que nenhum enum do seu sistema reconhece (`"bastante grave"`), um campo com dado ambíguo (`"P1-ish"` não é `P0`/`P1`/`P2`), e uma chave que você nunca pediu (`comentario_extra`). Nenhum desses três é bug do modelo — é ausência de contrato. O prompt disse "classifique a severidade", mas nunca disse *qual é a forma exata do JSON de saída*. É isso que JSON Schema resolve: uma especificação ([json-schema.org](https://json-schema.org/)) pra descrever a estrutura de dados JSON — você escreve um JSON que descreve outro JSON. Os campos que importam no contexto de LLM:
 
 ### `type`
 
@@ -235,6 +235,75 @@ Pra schemas grandes, defina sub-schemas em `$defs` e referencie:
 ```
 
 OpenAI e Gemini suportam `$ref` interno. Anthropic aceita JSON Schema completo via tool, então também suporta.
+
+## Caso prático — do schema quebrado ao contrato confiável
+
+Volta ao exemplo da abertura: você está construindo um triador automático de bug reports. O pipeline lê o texto do report e pede ao modelo pra classificar severidade, decidir se precisa de escalonamento e listar componentes afetados. Downstream, um serviço em produção consome esse JSON pra rotear o ticket — se o shape vier errado, o roteamento quebra silenciosamente.
+
+**Tentativa 1 — o schema que parece certo mas falha:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "severidade": { "type": "string" },
+    "precisa_escalonamento": { "type": "boolean" },
+    "componentes_afetados": { "type": "array", "items": { "type": "string" } },
+    "justificativa": { "type": "string" }
+  },
+  "required": ["severidade"]
+}
+```
+
+Rode esse schema contra alguns reports reais e os problemas aparecem:
+
+1. **`severidade` sem `enum`.** O modelo respondeu `"grave"`, `"alta"`, `"P1"`, `"critical"` em execuções diferentes pro mesmo nível de gravidade. O serviço downstream espera exatamente `"low"`, `"medium"`, `"high"`, `"critical"` — nenhuma dessas variantes bate.
+2. **Só `severidade` é `required`.** Em ~30% das respostas o modelo omitiu `componentes_afetados` inteiramente, porque nada obrigava o campo a existir. O código que consome o JSON quebrou com `KeyError` porque assumia que o campo sempre vinha.
+3. **Sem `additionalProperties: false`.** Uma das respostas trouxe `"componentes_afetados": [...], "componentes_afetados_extra": [...]` — o modelo duplicou o campo com um nome parecido, achando que estava sendo prestativo. Esse campo extra nunca é lido, mas também nunca é *rejeitado* — ele só fica ali, ruído silencioso que ninguém percebe até auditar os logs.
+4. **`justificativa` opcional, mas usada como texto livre longo.** Em alguns casos o modelo escreveu um parágrafo inteiro ali, inflando tokens de saída sem que ninguém tivesse pedido verbosidade.
+
+O erro de raiz não é o modelo "alucinando" — é o schema não fechar as três coisas que ele deveria fechar: vocabulário (`enum`), obrigatoriedade (`required` completo) e superfície (`additionalProperties: false`).
+
+**Tentativa 2 — o schema corrigido:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "severidade": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Nível de gravidade do bug, avaliado pelo impacto em produção."
+    },
+    "precisa_escalonamento": {
+      "type": "boolean",
+      "description": "true se o bug afeta usuários em produção agora."
+    },
+    "componentes_afetados": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Nomes dos componentes/serviços afetados. Array vazio se não identificado."
+    },
+    "justificativa": {
+      "type": "string",
+      "description": "Uma frase curta explicando a severidade escolhida."
+    }
+  },
+  "required": ["severidade", "precisa_escalonamento", "componentes_afetados", "justificativa"],
+  "additionalProperties": false
+}
+```
+
+O que mudou, e por quê cada mudança fecha exatamente um dos furos observados:
+
+- `enum` em `severidade` elimina a variação de vocabulário — o provider rejeita ou regenera qualquer valor fora da lista.
+- Todos os campos em `required` eliminam a omissão silenciosa — `componentes_afetados` agora sempre existe, mesmo que como `[]`.
+- `additionalProperties: false` elimina os campos-fantasma como `componentes_afetados_extra`.
+- `description` em `justificativa` ("uma frase curta") não é enforcement técnico, mas orienta o modelo a não inflar o campo — o provider não garante o comprimento, mas descrições reduzem a variância.
+
+Rodando o schema corrigido contra os mesmos reports, as respostas convergem: `severidade` sempre em um dos quatro valores esperados, `componentes_afetados` sempre presente (mesmo vazio), zero campos extras. O código downstream que fazia `if response["severidade"] == "critical"` para de falhar silenciosamente porque agora a string é sempre uma das quatro que o `if` conhece.
+
+A lição generaliza: quando um schema "parece certo" mas o comportamento em produção é inconsistente, o diagnóstico quase sempre está em um destes três furos — falta `enum` numa dimensão fechada, falta algum campo em `required`, ou falta `additionalProperties: false`. Antes de suspeitar do modelo, releia o schema procurando por esses três.
 
 ## Quando schema é overkill
 

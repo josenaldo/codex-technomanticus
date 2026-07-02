@@ -1,7 +1,7 @@
 ---
 title: "06 - Gemini structured output"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-02
 type: concept
 status: seedling
 progress: in_progress
@@ -24,6 +24,8 @@ aliases:
 > [!question]- O que eu preciso saber antes de ler isso?
 > Esta nota assume que você sabe o que é JSON Schema (nota 02) e conhece o conceito de structured output enforcement (notas 03-05). O ponto diferenciador do Gemini: ele usa um subset de OpenAPI 3.0 em vez de JSON Schema puro, com tipos em caixa alta e sem `additionalProperties`. Se você viu as notas da OpenAI e Anthropic, o que muda aqui são os detalhes de formato — o padrão conceitual é o mesmo.
 
+Você vem da OpenAI e quer trocar de provider. O schema que funcionava lá — `"type": "object"`, `"type": "string"`, tudo em caixa baixa como o JSON Schema manda — você copia e cola no Gemini. O SDK não reclama, a chamada retorna 200, mas `response.parsed` vem `None` e o output real (em `response.text`) tem um shape torto, sem os campos que você esperava. Nenhuma exceção, nenhum erro claro — só um resultado errado que passa despercebido se você não checar explicitamente. Por quê? Porque o Gemini não fala JSON Schema. Ele fala um subset de OpenAPI 3.0, e nesse dialeto os tipos são `"OBJECT"`, `"STRING"`, `"ARRAY"` — caixa alta. É a primeira armadilha de quem migra de provider, e a explicação de por que existe vem da origem do schema: enquanto OpenAI e Anthropic adotaram JSON Schema (o padrão usado por ferramentas de validação web), o Gemini herdou o formato de definição de parâmetros que o Google já usava internamente para APIs REST — o mesmo vocabulário do Swagger/OpenAPI.
+
 ## O mecanismo
 
 Gemini separa dois parâmetros:
@@ -32,6 +34,19 @@ Gemini separa dois parâmetros:
 2. **`response_schema`** — o schema OpenAPI que define a forma.
 
 Sem `response_schema`, com só `response_mime_type: "application/json"`, o modelo tenta retornar JSON livre — sem garantia de shape. Sempre combine os dois.
+
+O fluxo completo, do lado do cliente até o dado tipado na mão:
+
+```mermaid
+flowchart LR
+    A["GenerateContentConfig<br/>response_mime_type +<br/>response_schema"] --> B["SDK google-genai<br/>chama a API Gemini"]
+    B --> C{"Schema<br/>satisfeito?"}
+    C -->|"sim"| D["response.parsed<br/>(instância tipada,<br/>Pydantic ou dict)"]
+    C -->|"não<br/>(falha silenciosa)"| E["response.parsed = None<br/>response.text = JSON cru"]
+    E --> F["fallback manual:<br/>json.loads(response.text)<br/>+ validação"]
+```
+
+O ramo da direita é o que costuma passar despercebido: não há exceção, só um `None` — por isso checar `response.parsed is None` antes de usar o resultado é obrigatório, não defensivo demais.
 
 ## Exemplo Python — `google-genai` SDK
 
@@ -118,6 +133,59 @@ analysis: Analysis = response.parsed
 ```
 
 `response.parsed` retorna instância do Pydantic model já validada. Em caso de schema inválido (raro), `response.parsed` é `None` e `response.text` tem o JSON cru pra debug.
+
+### Anatomia de uma falha — schema com tipos em caixa baixa
+
+Este é o schema literal com que muita migração de OpenAI tropeça — copiado direto do padrão JSON Schema, com tipos em minúsculo:
+
+```python
+# ❌ FALHA — tipos em caixa baixa, copiados de um schema OpenAI/JSON Schema
+response_schema_quebrado = {
+    "type": "object",          # deveria ser "OBJECT"
+    "properties": {
+        "answer": { "type": "string" },      # deveria ser "STRING"
+        "confidence": { "type": "string" }
+    },
+    "required": ["answer", "confidence"]
+}
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Devo migrar de Postgres pra Mongo?",
+    config=types.GenerateContentConfig(
+        response_mime_type="application/json",
+        response_schema=response_schema_quebrado,
+    )
+)
+
+print(response.parsed)  # None — falha silenciosa, sem exceção
+print(response.text)    # JSON cru, shape possivelmente incorreto ou incompleto
+```
+
+A correção é trocar cada `type` para caixa alta — ou, melhor ainda, delegar a conversão pro SDK usando um Pydantic model, que nunca erra a caixa:
+
+```python
+# ✅ CORRIGIDO — tipos em caixa alta (estilo OpenAPI, exigido pelo Gemini)
+response_schema_correto = {
+    "type": "OBJECT",
+    "properties": {
+        "answer": { "type": "STRING" },
+        "confidence": { "type": "STRING" }
+    },
+    "required": ["answer", "confidence"]
+}
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Devo migrar de Postgres pra Mongo?",
+    config=types.GenerateContentConfig(
+        response_mime_type="application/json",
+        response_schema=response_schema_correto,
+    )
+)
+
+print(response.parsed)  # dict/objeto com o shape esperado
+```
 
 ## Exemplo Python — enum mode (classificação)
 
@@ -268,6 +336,39 @@ Aderência varia entre Flash e Pro, e entre versões. Teste sempre no modelo que
 
 Como em todo provider, shape garantido (com ressalvas) ≠ semântica certa. Pydantic validators capturam isso (ver [nota 07](07%20-%20Validação%20e%20retry%20—%20Pydantic,%20Zod.md)).
 
+### Trave campos extras com `model_config = ConfigDict(extra="forbid")`
+
+O Gemini não tem equivalente a `additionalProperties: false` do JSON Schema — o subset OpenAPI que ele usa simplesmente não enforce isso no nível do schema. Na prática, o modelo pode devolver chaves que você não pediu, e sem barreira nenhuma elas passam batido pro seu código. A barreira, nesse caso, não vem do lado do Gemini — vem do lado do seu parser, com Pydantic:
+
+```python
+from pydantic import BaseModel, ConfigDict
+from typing import Literal
+
+class Analysis(BaseModel):
+    model_config = ConfigDict(extra="forbid")  # rejeita campos não declarados
+
+    answer: str
+    confidence: Literal["low", "medium", "high"]
+    assumptions: list[str]
+    risks: list[str]
+    next_steps: list[str]
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Devo migrar de Postgres pra Mongo?",
+    config=types.GenerateContentConfig(
+        response_mime_type="application/json",
+        response_schema=Analysis,
+    )
+)
+
+# Se o Gemini alucinar um campo extra (ex: "extra_notes"), o parsing
+# levanta ValidationError em vez de aceitar silenciosamente.
+analysis: Analysis = response.parsed
+```
+
+Por padrão, o Pydantic v2 usa `extra="ignore"` — campos desconhecidos são descartados sem aviso, o que mascara o problema em vez de resolvê-lo. `extra="forbid"` transforma o silêncio em erro explícito, o comportamento certo quando o shape precisa ser rigoroso (por exemplo, quando o output alimenta um sistema downstream que espera exatamente aqueles campos). Para APIs internas onde algum ruído extra é tolerável, `extra="ignore"` (o default) já basta — mas em contratos estritos, declare `forbid` explicitamente em vez de confiar no default.
+
 ## Armadilhas comuns
 
 > [!warning] Usar tipos em caixa baixa no schema (copiando JSON Schema)
@@ -317,3 +418,4 @@ Ver [[07 - Validação e retry — Pydantic, Zod]].
 - [[04 - OpenAI Structured Outputs — strict mode]] — comparação direta
 - [[05 - Anthropic tool use para forçar formato]] — terceira abordagem
 - [[07 - Validação e retry — Pydantic, Zod]] — necessária pelo subset limitado de Gemini
+- [[Anatomia dos LLMs/11 - APIs de LLM — anatomia de uma chamada|APIs de LLM — anatomia de uma chamada]] — onde `response_mime_type` e `response_schema` se encaixam na chamada completa

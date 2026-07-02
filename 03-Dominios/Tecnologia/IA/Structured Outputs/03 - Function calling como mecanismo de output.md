@@ -1,9 +1,9 @@
 ---
 title: "03 - Function calling como mecanismo de output"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-02
 type: concept
-status: seedling
+status: growing
 progress: in_progress
 fase: Iniciado
 tags:
@@ -140,7 +140,21 @@ Heurística:
 
 ## A anatomia de uma chamada tool use bem sucedida
 
-Entender o que acontece internamente ajuda a debugar e a escolher parâmetros certos:
+Entender o que acontece internamente ajuda a debugar e a escolher parâmetros certos. O diagrama
+abaixo mostra o fluxo completo — do prompt que você escreve até o dict pronto pra usar no seu código:
+
+```mermaid
+flowchart LR
+    A["Prompt do usuário"] --> B["Tool definition<br/>(JSON Schema + tool_choice forçado)"]
+    B --> C["Provider recebe request<br/>tools + messages tokenizados"]
+    C --> D{"Validação<br/>do provider"}
+    D -->|"schema OK"| E["tool_use block<br/>(name + input)"]
+    D -->|"schema inválido<br/>(modo strict)"| C
+    E --> F["Seu código extrai<br/>block.input"]
+    F --> G["Structured output<br/>(dict/objeto pronto)"]
+```
+
+Cada seta do diagrama corresponde a um dos cinco passos abaixo:
 
 1. **Definição de tool no request:** O provider recebe `tools: [...]` junto com o `messages`. A lista é tokenizada e vai para o contexto do modelo — você paga por isso como input tokens. Para um schema típico de 5 campos, adicione ~100-200 tokens de input.
 
@@ -153,6 +167,100 @@ Entender o que acontece internamente ajuda a debugar e a escolher parâmetros ce
 5. **Entrega ao chamador:** Você recebe `response.content` com um ou mais blocks, incluindo o `tool_use` block. Você extrai `block.input` — é o seu structured output, um dict Python (ou objeto JS) pronto pra usar.
 
 O ponto crítico: a validação acontece no provider, não no seu código. Você não precisa escrever o parser. Esse é o ganho.
+
+### Caso completo: extração de invoice
+
+Pra fixar os cinco passos, siga um exemplo end-to-end: você recebe o texto solto de uma nota fiscal
+(via OCR ou copiado de um e-mail) e precisa de um JSON confiável com fornecedor, itens e total —
+pronto pra gravar no banco. Nada de "geralmente funciona": ou o schema bate, ou você quer saber na hora.
+
+Passo 1 — a tool descreve exatamente o que uma invoice estruturada precisa ter:
+
+```python
+extract_invoice_tool = {
+    "name": "extract_invoice",
+    "description": (
+        "Extrai os dados estruturados de uma nota fiscal a partir do texto bruto. "
+        "Chame esta ferramenta sempre, mesmo se algum campo não estiver presente no texto "
+        "(nesse caso, use null)."
+    ),
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "vendor_name": {"type": "string", "description": "Nome do fornecedor/emissor."},
+            "invoice_number": {"type": ["string", "null"]},
+            "issue_date": {"type": "string", "description": "Data de emissão, formato ISO 8601."},
+            "line_items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "description": {"type": "string"},
+                        "quantity": {"type": "number"},
+                        "unit_price": {"type": "number"}
+                    },
+                    "required": ["description", "quantity", "unit_price"],
+                    "additionalProperties": False
+                }
+            },
+            "total_amount": {"type": "number"},
+            "currency": {"type": "string", "description": "Código ISO 4217, ex: BRL, USD."}
+        },
+        "required": ["vendor_name", "issue_date", "line_items", "total_amount", "currency"],
+        "additionalProperties": False
+    }
+}
+```
+
+Passo 2/3/4 — o request força `tool_choice`, o provider valida, e o `tool_use` block chega intacto:
+
+```python
+raw_text = """
+ACME Suprimentos Ltda
+NF-e 000123 — Emitida em 12/03/2026
+2x Cabo HDMI 2m .......... R$ 39,90
+1x Adaptador USB-C ....... R$ 59,90
+TOTAL: R$ 139,70
+"""
+
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    tools=[extract_invoice_tool],
+    tool_choice={"type": "tool", "name": "extract_invoice"},
+    messages=[{
+        "role": "user",
+        "content": f"Extraia os dados estruturados desta nota fiscal:\n\n{raw_text}"
+    }],
+    max_tokens=1024
+)
+```
+
+Passo 5 — extração no seu código, sem parser de texto livre:
+
+```python
+for block in response.content:
+    if block.type == "tool_use" and block.name == "extract_invoice":
+        invoice = block.input
+        break
+
+# invoice já é um dict pronto pra validação de negócio e persistência:
+# {
+#   "vendor_name": "ACME Suprimentos Ltda",
+#   "invoice_number": "000123",
+#   "issue_date": "2026-03-12",
+#   "line_items": [
+#     {"description": "Cabo HDMI 2m", "quantity": 2, "unit_price": 39.90},
+#     {"description": "Adaptador USB-C", "quantity": 1, "unit_price": 59.90}
+#   ],
+#   "total_amount": 139.70,
+#   "currency": "BRL"
+# }
+```
+
+Note o que você **não** fez: não escreveu regex pra achar "TOTAL:", não tratou markdown fences, não
+validou tipo campo a campo antes de confiar no JSON. O provider garantiu a forma; sobrou pra você só
+a validação semântica (será que `total_amount` bate com a soma dos `line_items`? — isso o schema não
+sabe, é regra de negócio, ver [[07 - Validação e retry — Pydantic, Zod]]).
 
 ## Pattern: tool single-purpose vs tool real
 
@@ -228,6 +336,50 @@ Modelos pequenos (Haiku, Flash, Mini) são piores em tool use do que em texto. P
 
 > [!warning] Não forçar `tool_choice` — o modelo escolhe quando chamar
 > O erro mais comum ao usar tool use pra structured output é esquecer de forçar `tool_choice`. Sem ele, o modelo decide por conta própria se chama a tool ou responde em texto livre. Em prompts ambíguos ou inputs que "não parecem precisar de tool", o modelo vai direto pro texto — e você volta ao problema original. Sempre use `tool_choice: {"type": "tool", "name": "nome_da_tool"}` em chamadas de structured output.
+
+Veja o erro na prática. O código abaixo declara a tool mas **não** força `tool_choice` — deixa o
+default (`auto`), que dá ao modelo a opção de responder em texto livre:
+
+```python
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    tools=[extract_invoice_tool],
+    # tool_choice ausente → default é "auto": o modelo decide se chama a tool
+    messages=[{
+        "role": "user",
+        "content": "Me explica rapidinho o que é uma nota fiscal eletrônica."
+    }],
+    max_tokens=1024
+)
+
+for block in response.content:
+    if block.type == "tool_use" and block.name == "extract_invoice":
+        invoice = block.input
+        break
+# invoice nunca é atribuído — o loop termina sem break
+print(invoice)
+# NameError: name 'invoice' is not defined
+```
+
+O prompt "não parece" pedir extração de invoice — é uma pergunta conceitual, não um texto de nota
+fiscal pra extrair. Com `tool_choice: "auto"`, o modelo interpreta isso corretamente e responde em
+texto livre (`block.type == "text"`), exatamente como um humano razoável faria. O bug não está no
+modelo — está no seu código, que assumiu que `tool_use` sempre aconteceria e não tratou o caso em
+que `response.stop_reason` é `"end_turn"` em vez de `"tool_use"`. Consertar é forçar `tool_choice`
+**e** tratar o caso de falha explicitamente:
+
+```python
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    tools=[extract_invoice_tool],
+    tool_choice={"type": "tool", "name": "extract_invoice"},  # compulsório
+    messages=[{"role": "user", "content": raw_text}],
+    max_tokens=1024
+)
+
+if response.stop_reason != "tool_use":
+    raise ValueError(f"Esperava tool_use, veio {response.stop_reason}")
+```
 
 > [!warning] Usar modelo pequeno sem testar aderência a tool use
 > Modelos menores (Haiku, Flash, Mini) têm aderência a tool use mais fraca do que modelos maiores. Em testes com prompts simples, funcionam bem; com inputs complexos ou schemas grandes, a taxa de falha sobe. Se você usar Pattern B (modelo barato estrutura o output do modelo caro), teste a aderência do modelo barato especificamente com o schema mais complexo que vai aparecer em produção — não com o caso feliz.

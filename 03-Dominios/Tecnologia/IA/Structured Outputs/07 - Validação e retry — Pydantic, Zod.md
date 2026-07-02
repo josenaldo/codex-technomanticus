@@ -1,7 +1,7 @@
 ---
 title: "07 - Validação e retry — Pydantic, Zod"
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-07-02
 type: concept
 status: seedling
 progress: in_progress
@@ -300,6 +300,29 @@ Quando você muda o schema, métricas históricas viram inválidas. Trate como c
 ### Não use validação como "fix"
 
 Tentadora: usar `field_validator` pra "consertar" um output ruim (string com prefixo virar limpa). Faça isso só pra normalização (lowercase, trim). Pra correção de conteúdo, retry é melhor — você vê o problema.
+
+### Rejeite campos extras — `extra="forbid"`
+
+Por padrão, Pydantic ignora chaves que não estão no schema. Isso parece inofensivo até o LLM começar a "inventar" campos: um `internal_notes` que vazou de um exemplo do prompt, um `confidence_score` que o modelo achou que devia existir, um `debug` que sobrou de uma versão anterior do schema. Se o parser ignora silenciosamente, esses campos somem sem ninguém perceber — e você perde o sinal de que o modelo está desviando do contrato.
+
+A correção é declarativa: trave o schema pra rejeitar qualquer campo fora da lista.
+
+```python
+from pydantic import BaseModel, ConfigDict
+
+class TicketAnalysis(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    priority: Literal["low", "medium", "high", "urgent"]
+    summary: str = Field(min_length=10, max_length=500)
+    # ...demais campos
+```
+
+Com `extra="forbid"`, um campo extra vira `ValidationError` — e cai direto no loop de retry-with-feedback já descrito, com a mensagem indicando exatamente qual chave sobrou. Em Zod, o equivalente é `.strict()` no objeto (por padrão o Zod também descarta chaves desconhecidas, como o Pydantic). O ganho é o mesmo em ambos: campo extra deixa de ser ruído silencioso e vira erro visível, que você pode logar e investigar — muitas vezes é o primeiro sintoma de que o prompt ficou ambíguo ou o few-shot exemplifica um formato antigo.
+
+### Valide o schema em ambiente de desenvolvimento
+
+Um erro comum é só descobrir problema de schema em produção, quando o LLM já está gerando tráfego real. Vale rodar o schema contra um conjunto de exemplos conhecidos — inputs de teste com output esperado — antes de subir qualquer mudança de prompt ou de schema. Isso pega dois tipos de regressão: mudanças no schema que quebram parsing de outputs antigos (campo renomeado, tipo trocado), e mudanças no prompt que fazem o modelo desviar do formato esperado (um exemplo novo no prompt que "ensina" o modelo a incluir um campo que não devia existir). Trate o par prompt+schema como uma unidade testável: toda alteração em um dos dois roda a suíte de exemplos antes do deploy, do mesmo jeito que você rodaria testes unitários antes de mergear código.
 
 ## Armadilhas comuns
 
