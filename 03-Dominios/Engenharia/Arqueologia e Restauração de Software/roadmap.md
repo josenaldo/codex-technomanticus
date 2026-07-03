@@ -37,20 +37,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas (roster) | 28 |
-| ✅ escritas | 17 |
-| ⬜ não escritas | 11 |
+| ✅ escritas | 18 |
+| ⬜ não escritas | 10 |
 | 🔄 rascunho | 0 |
-| % escrito | 61% |
+| % escrito | 64% |
 
-**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 9/9 ✅ (COMPLETA) · Magus 1/12 🔄 (ABERTA).
+**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 9/9 ✅ (COMPLETA) · Magus 2/12 🔄 (ABERTA).
 
 ## Tabela-resumo (enriquecimento das escritas)
 
 | Métrica | Valor |
 |---------|-------|
-| Escritas | 17 |
+| Escritas | 18 |
 | ✅ enriquecidas | 0 |
-| ⬜ pendentes (só M1/mídia) | 17 |
+| ⬜ pendentes (só M1/mídia) | 18 |
 | Score médio verificar-nota | 11/12 (gap único = M1) |
 
 ---
@@ -208,7 +208,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Plano de execução:** buscar vídeo sobre AI coding agents legacy / automation bias / characterization before AI
 - **Resultado:** onde a IA acelera (compreensão/08+06, docs/07, caracterização/10-11, refatoração/12-14); REGRA DE OURO = rede de caracterização ANTES de deixar a IA mudar (velocidade sem rede = quebrar mais rápido); riscos com mecanismo (alucinação de comportamento/API, perda da teoria/Chesterton-02/07, contexto-limitado vs acoplamento-temporal-09, automation bias, vazamento de código do cliente); fluxo seguro (entender→caracterizar→IA-propõe→rede-valida→revisão→micro-commit); fronteira IA `Agentes de Codificação` (link confirmado resolve); fontes NIST/OWASP LLM Top 10 (sem dados fabricados); absorveu candidato C5 da nota 01
 
-### Magus (17-28) — ABERTA 🔄 (1/12)
+### Magus (17-28) — ABERTA 🔄 (2/12)
 
 #### 17 - Frameworks de decisão   [substantivo]
 - **Escrita:** ✅ 2026-07-03 (commit 3732632)
@@ -220,11 +220,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Resultado:** ABRE a Magus (virada mudar-com-segurança → decidir-o-destino). 7 R's (Gartner 2010 5R → AWS/Orban 2016 6R → 7º Relocate) como cardápio de invasividade, mapeados nos 4 verbos do consultor (manter/restaurar/substituir/aposentar); TIME (valor×qualidade, 4 quadrantes) como lente de portfólio — Migrate é o território do restaurador; fluxo 2 etapas (TIME classifica → R dentro do Migrate); rewrite vs incremento (Spolsky/Netscape "pior erro estratégico"; código feio = bug consertado = teoria de Naur; quando rewrite se justifica: teoria perdida/plataforma morta/domínio mudou — sempre via Strangler, nunca big-bang); P3 = teoria de portfólio + falácia custo-afundado/tela-em-branco + leis de Lehman (mudança contínua/complexidade crescente) + valor de opção da reversibilidade; 2 casos trabalhados (faturamento Migrate→Refactor; relatório "morto" que era Retain por compliance). Sem dados fabricados. Fronteiras linkadas: Strangler(18)/dados(20)/política(23)/compliance(27).
 
 #### 18 - Strangler Fig   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** fazer o novo crescer em volta do velho, sempre entregável (Fowler).
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit 852e068)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 327 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento (327); P3 COBRADO e atendido (seção Fundamento teórico)
+- **Score:** 11/12 (gap único = M1)
+- **Plano de execução:** buscar vídeo sobre Strangler Fig pattern / legacy displacement / monolith to microservices (Fowler, Thoughtworks, GOTO/NDC talks)
+- **Resultado:** a execução do quadrante Migrate (nota 17). Metáfora da figueira de Queensland (Fowler 2004, StranglerApplication→StranglerFigApplication); anatomia em 5 passos (interceptar via facade de roteamento → construir ao lado → migrar função a função → repetir → remover); facade/proxy/API gateway como coração do padrão (o interruptor de desvio por rota). As 2 estratégias de Fowler: **event interception** (desviar só os eventos das funções migradas, não todos) e **asset capture** (mover a posse de um subconjunto de ativos por vez); as duas se amarram (capturar ativo exige interceptar seus eventos). Strangler vs big-bang cutover (a aposta de tudo-ou-nada; separar fluxo×dado evita o bug de dois donos do mesmo dado). **P3:** valor de opção da reversibilidade (opções reais, liga à 17§4) + redução de risco por tamanho de lote (small batches) + entrega incremental de valor/feedback curto + Lehman (não congela evolução). Parentesco explícito com Mikado (15). 2 casos (monólito→serviços canônico; faturamento na borda com parallel run→21). Fronteiras linkadas: 17(decisão)/19(Branch by Abstraction nível-código)/20(asset capture=dados)/21(parallel run). Sem dados fabricados.
 
 #### 19 - Branch by Abstraction e Anti-Corruption Layer   [substantivo]
 - **Escrita:** ⬜ não escrita
