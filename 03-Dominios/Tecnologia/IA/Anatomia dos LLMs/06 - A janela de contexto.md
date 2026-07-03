@@ -1,7 +1,7 @@
 ---
 title: A janela de contexto
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 status: evergreen
 progress: done
@@ -369,11 +369,24 @@ A leitura prática: se você tem informação crítica para a tarefa (a instruç
 
 ## Armadilhas
 
-- **"Mais contexto = melhor resposta"** — falso. Contexto irrelevante dilui a atenção do modelo e aumenta custo sem melhorar qualidade. Curadoria > quantidade.
-- **Ignorar o custo acumulado** — uma sessão de agente que roda 100 turns pode custar $10+ só em input tokens se o contexto não for gerenciado.
-- **Confiar no truncamento silencioso** — quando o contexto excede o limite, o que é cortado depende da implementação. Pode ser justamente a informação mais importante.
-- **"O modelo lembra tudo"** — não lembra. Cada chamada de API é stateless. O "histórico" é reenviado a cada turn, consumindo tokens de input.
-- **Não distinguir input de output tokens** — output é 3-5x mais caro. Um modelo verboso que gera respostas longas custa muito mais que um conciso.
+> [!warning] "Mais contexto = melhor resposta"
+> Falso. Contexto irrelevante dilui a atenção do modelo e aumenta custo sem melhorar qualidade. Curadoria > quantidade.
+
+> [!warning] Ignorar o custo acumulado
+> Uma sessão de agente que roda 100 turns pode custar $10+ só em input tokens se o contexto não for gerenciado.
+
+> [!warning] Confiar no truncamento silencioso
+> Quando o contexto excede o limite, o que é cortado depende da implementação. Pode ser justamente a informação mais importante.
+
+> [!warning] "O modelo lembra tudo"
+> Não lembra. Cada chamada de API é stateless. O "histórico" é reenviado a cada turn, consumindo tokens de input.
+
+> [!warning] Não distinguir input de output tokens
+> Output é 3-5x mais caro. Um modelo verboso que gera respostas longas custa muito mais que um conciso.
+
+## O que vem a seguir
+
+Entender a janela de contexto explica o *comportamento* de um LLM diante de contextos grandes — mas cada modelo frontier lida com esse trade-off de um jeito diferente, com janela nominal, arquitetura de atenção (MQA/GQA/MLA) e pricing próprios. A [[07 - Panorama de modelos 2026]] mapeia esse território modelo a modelo, para escolher com critério em vez de decorar o maior número na ficha técnica.
 
 ## Como explicar em inglês
 

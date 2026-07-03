@@ -185,11 +185,20 @@ O loop não roda para sempre. Ele termina quando:
 
 ## Armadilhas
 
-- **Achar que o modelo "pensa" e depois "escreve".** Não há rascunho interno: cada token é uma passada e uma amostragem. O que existe de "pensar" é o próprio texto gerado (chain-of-thought).
-- **Confundir confiança com verdade.** O modelo *sempre* tem uma distribuição e *sempre* amostra. Probabilidade alta não é fato — é só o que combina estatisticamente com o contexto. Daí a alucinação.
-- **Mexer em `temperature` e `top_p` ao mesmo tempo, no escuro.** São dois cortes na mesma distribuição; combinados sem critério, dão resultado imprevisível.
-- **Esperar determinismo com `temperature > 0`.** Qualquer temperatura positiva sorteia. Para reprodutibilidade, `temperature=0` (greedy) — e ainda assim pode haver pequena variação por causa de não-determinismo numérico em GPU/batch.
-- **Ignorar o motivo de parada.** Tratar toda saída como completa, sem checar se foi EOS ou truncamento por `max_tokens`.
+> [!warning] Achar que o modelo "pensa" e depois "escreve"
+> Não há rascunho interno: cada token é uma passada e uma amostragem. O que existe de "pensar" é o próprio texto gerado (chain-of-thought).
+
+> [!warning] Confundir confiança com verdade
+> O modelo *sempre* tem uma distribuição e *sempre* amostra. Probabilidade alta não é fato — é só o que combina estatisticamente com o contexto. Daí a alucinação.
+
+> [!warning] Mexer em `temperature` e `top_p` ao mesmo tempo, no escuro
+> São dois cortes na mesma distribuição; combinados sem critério, dão resultado imprevisível.
+
+> [!warning] Esperar determinismo com `temperature > 0`
+> Qualquer temperatura positiva sorteia. Para reprodutibilidade, `temperature=0` (greedy) — e ainda assim pode haver pequena variação por causa de não-determinismo numérico em GPU/batch.
+
+> [!warning] Ignorar o motivo de parada
+> Tratar toda saída como completa, sem checar se foi EOS ou truncamento por `max_tokens`.
 
 ## Como explicar em inglês
 

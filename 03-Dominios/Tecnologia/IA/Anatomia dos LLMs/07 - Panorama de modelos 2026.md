@@ -68,6 +68,9 @@ graph TD
 
 ## Os grandes players (maio 2026)
 
+> [!info] Caducidade — preços e benchmarks mudam mensalmente
+> Os preços por token e os scores de benchmark abaixo são um retrato de maio de 2026. Providers ajustam preços e lançam novas versões com frequência mensal ou maior. Trate os números como ordem de grandeza para comparação relativa entre tiers, não como cotação vigente — confira o pricing atual na documentação do provider antes de decidir.
+
 ### OpenAI
 
 | Modelo | Tipo | Context | Input $/MTok | Output $/MTok | Melhor para |
@@ -194,11 +197,24 @@ O Gemini Flash custa 7× menos que Claude Sonnet para a mesma sessão. No benchm
 
 ## Armadilhas comuns
 
-- **"O benchmark mais alto = o melhor"** — benchmarks medem cenários controlados. Performance real depende do seu tipo de código, linguagem, e workflow.
-- **Vendor lock-in** — construir toda a stack ao redor de um provider. Se o preço sobe ou o modelo degrada, a migração é dolorosa. Use abstrações.
-- **Ignorar o mid-tier** — a maioria das tarefas de codificação não precisa de [[Dicionário de IA#flagship model|flagship]]. Claude Sonnet ou GPT-4.1 resolvem 90% dos casos a metade do custo.
-- **"Open-weight é pior"** — DeepSeek V4 compete com flagships em coding e reasoning. Qwen 3.6 lidera em agentic. O gap fechou significativamente.
-- **Comparar preço por token sem comparar output por tarefa** — se o Haiku produz um output que exige 3 tentativas e o Sonnet acerta na primeira, o Haiku não é mais barato.
+> [!warning] "O benchmark mais alto = o melhor"
+> Benchmarks medem cenários controlados. Performance real depende do seu tipo de código, linguagem, e workflow.
+
+> [!warning] Vendor lock-in
+> Construir toda a stack ao redor de um provider. Se o preço sobe ou o modelo degrada, a migração é dolorosa. Use abstrações.
+
+> [!warning] Ignorar o mid-tier
+> A maioria das tarefas de codificação não precisa de [[Dicionário de IA#flagship model|flagship]]. Claude Sonnet ou GPT-4.1 resolvem 90% dos casos a metade do custo.
+
+> [!warning] "Open-weight é pior"
+> DeepSeek V4 compete com flagships em coding e reasoning. Qwen 3.6 lidera em agentic. O gap fechou significativamente.
+
+> [!warning] Comparar preço por token sem comparar output por tarefa
+> Se o Haiku produz um output que exige 3 tentativas e o Sonnet acerta na primeira, o Haiku não é mais barato.
+
+## O que vem a seguir
+
+O panorama que você acabou de ler trata os players chineses — DeepSeek, Qwen, Kimi, GLM — como uma linha na tabela de "Open-Weight". Isso esconde a história mais interessante: como um laboratório sem acesso às GPUs de ponta da Nvidia (por causa das sanções de exportação dos EUA) conseguiu treinar um modelo que compete com flagships ocidentais, e por que isso forçou o mercado inteiro a repensar preço e arquitetura. [[08 - Modelos chineses — DeepSeek, Qwen, Kimi, GLM]] entra nesse mergulho: as inovações técnicas específicas (MoE agressivo, MLA, treinamento em FP8), as implicações geopolíticas de MIT/Apache 2.0 vindo de labs chineses, e o que isso significa para quem decide entre "pagar API" e "hospedar o próprio modelo".
 
 ## Como explicar em inglês
 

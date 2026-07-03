@@ -1,7 +1,7 @@
 ---
 title: "Prompt caching e otimizações de API"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -228,11 +228,20 @@ A diferença entre "sem caching" e "Anthropic com caching" é **$2.430/mês** �
 
 ## Armadilhas
 
-- **"Caching resolve tudo"** — só funciona para partes estáticas do prompt. Se cada chamada tem contexto completamente diferente, [[Dicionário de IA#Cache hit rate|cache hit rate]] é zero.
-- **TTL de 5 minutos** — no Anthropic, o cache expira em 5 minutos sem uso. Em workflows com pausas longas (esperar CI, review), o cache frio é recomputado.
-- **Custo de escrita do cache** — na Anthropic, a primeira chamada custa 25% a mais. Se o padrão de uso é chamada única sem reuso, caching é mais caro.
-- **Comprimir demais as tools** — tool descriptions muito curtas podem confundir o modelo sobre quando e como usar a ferramenta. Encontre o equilíbrio.
-- **Não medir o impacto** — implementar otimização sem comparar `cache_read_input_tokens` antes e depois é otimizar às cegas.
+> [!warning] "Caching resolve tudo"
+> Só funciona para partes estáticas do prompt. Se cada chamada tem contexto completamente diferente, [[Dicionário de IA#Cache hit rate|cache hit rate]] é zero.
+
+> [!warning] TTL de 5 minutos
+> No Anthropic, o cache expira em 5 minutos sem uso. Em workflows com pausas longas (esperar CI, review), o cache frio é recomputado.
+
+> [!warning] Custo de escrita do cache
+> Na Anthropic, a primeira chamada custa 25% a mais. Se o padrão de uso é chamada única sem reuso, caching é mais caro.
+
+> [!warning] Comprimir demais as tools
+> Tool descriptions muito curtas podem confundir o modelo sobre quando e como usar a ferramenta. Encontre o equilíbrio.
+
+> [!warning] Não medir o impacto
+> Implementar otimização sem comparar `cache_read_input_tokens` antes e depois é otimizar às cegas.
 
 ## Como explicar em inglês
 
@@ -258,6 +267,10 @@ Prompt caching is a provider-side optimization where the KV cache of repeated pr
 - **[Anthropic — Prompt Caching (2026)](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)** — documentação oficial com exemplos de `cache_control`, tabela de mínimos por modelo (1.024 tokens para Sonnet/Opus, 2.048 para Haiku), e análise de quando caching cobra 25% a mais na primeira chamada. O ponto de partida para qualquer implementação com Claude.
 - **[Anthropic — Message Batches API (2026)](https://docs.anthropic.com/en/docs/build-with-claude/message-batches)** — guia da Batch API com formato de request, limite de 10.000 requests por batch, e padrões para workflows assíncronos — geração de documentação, testes em massa, refactoring de datasets — onde latência de até 24h é aceitável em troca de 50% de desconto.
 - **[OpenAI — Prompt Caching (2026)](https://platform.openai.com/docs/guides/prompt-caching)** — documentação do caching automático da OpenAI: sem `cache_control` explícito, 50% de desconto em prefixos elegíveis, e como verificar cache hits via `cached_tokens` no campo `usage` do response. Útil para entender as diferenças entre abordagens automáticas vs. explícitas.
+
+## O que vem a seguir
+
+Caching resolve o lado do **custo**: menos tokens de input reprocessados, menos dinheiro por chamada. Mas custo e latência são problemas distintos — uma chamada pode estar barata (cache quente, 90% de desconto) e ainda assim lenta, se a resposta for gerada token a token sem streaming, ou se o batch de 10.000 requests estiver represado esperando o SLA de 24h. [[14 - Streaming, batching e latência]] cobre esse outro eixo: como entregar a primeira palavra da resposta mais rápido (streaming), como agrupar chamadas sem sacrificar a experiência do usuário (batching), e onde a latência de rede e de inferência realmente se escondem.
 
 ## Veja também
 

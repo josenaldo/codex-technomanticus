@@ -101,6 +101,9 @@ graph LR
 
 Um modelo pode ter TTFT alto (prefill lento) e throughput alto (decode rápido), ou o inverso. Ajustar um sem cuidado pode degradar o outro.
 
+> [!warning] Armadilha: TTFT e throughput não são correlacionados
+> É tentador tratar "latência do LLM" como uma métrica única. Não é. TTFT mede o prefill (compute-bound); tokens/s mede o decode (memory-bound). Otimizar um não move o outro na mesma direção — reduzir o batch size pode melhorar o TTFT de uma request individual e ao mesmo tempo piorar o throughput agregado do servidor. Confundir as duas métricas leva a otimizar a coisa errada para o problema que o usuário realmente sente.
+
 **Batching melhora o throughput, mas não o TTFT:**
 
 Quando 8 usuários fazem decode simultaneamente, a GPU carrega o KV cache dos 8 em batch — a leitura de memória é amortizada entre 8 requests, dividindo o custo por 8. O throughput melhora linearmente com o batch size (até o limite de VRAM). O TTFT de *cada request individual*, porém, não melhora — o prefill é inerentemente sequencial dentro de uma request.
@@ -152,6 +155,9 @@ xychart-beta
 
 Uma H100 tem 80 GB. Com os pesos do modelo ocupando ~35 GB (Llama 3 70B em BF16), sobram ~45 GB para o KV cache — o que corresponde a ~145k tokens de contexto em GQA. Um único usuário com contexto de 200k tokens já esgota a GPU. É por isso que toda a engenharia de inferência gira em torno de encolher esse cache.
 
+> [!warning] Armadilha: dobrar o contexto não dobra o custo de compute
+> A tentação é pensar "2× mais tokens no prompt = 2× mais caro para rodar". Falso em dois sentidos opostos. No **prefill**, o custo é O(n²) — dobrar o contexto **quadruplica** o compute, não duplica. No **decode**, o "custo" que explode não é compute, é **memória**: o KV cache cresce linearmente, mas é a VRAM disponível (fixa, ~80 GB numa H100) que quebra primeiro, muito antes de o compute virar o gargalo. Confundir "mais tokens" com "mais compute proporcional" é o erro clássico de quem estima capacidade de servir sem separar as duas físicas.
+
 > [!warning] O cache é por-request e por-token
 > Diferente dos pesos do modelo (fixos e compartilhados entre todos os usuários), o KV cache é **privado de cada conversa** e **cresce com cada token gerado**. É por isso que servir muitos usuários com contextos longos esgota a VRAM muito antes de esgotar o compute — e por que [[13 - Prompt caching e otimizações de API|prompt caching]] (reaproveitar o prefill de prefixos repetidos) virou uma alavanca econômica central.
 
@@ -178,6 +184,10 @@ LLM inference has two physically distinct phases. The **prefill** phase processe
 - **[Andrej Karpathy — Intro to Large Language Models (2023)](https://www.youtube.com/watch?v=zjkBMFhNj_g)** — seção de inferência (~minuto 45) cobre KV cache e por que o decode é diferente do prefill. Uma das melhores introduções de alto nível para quem já sabe programar.
 - **[Towards Data Science — Prefill Is Compute-Bound. Decode Is Memory-Bound.](https://towardsdatascience.com/prefill-is-compute-bound-decode-is-memory-bound-why-your-gpu-shouldnt-do-both/)** — artigo curto com os números reais de utilização de GPU em cada fase.
 - **[vLLM — Paged Attention paper](https://arxiv.org/abs/2309.06180)** — como a paged attention resolve a fragmentação de memória do KV cache em serving de alta concorrência.
+
+## O que vem a seguir
+
+Você já sabe *por que* o KV cache existe e *por que* ele cresce até quebrar o orçamento de VRAM. A pergunta natural agora é: dá para encolher esse cache sem perder qualidade? É exatamente aí que mora o broto irmão [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA]] — a família de variantes (Multi-Head, Multi-Query, Grouped-Query, Multi-Head Latent Attention) que ataca o tamanho do cache compartilhando ou comprimindo Keys e Values entre heads, trocando um pouco de expressividade por memória de sobra.
 
 ## Veja também
 

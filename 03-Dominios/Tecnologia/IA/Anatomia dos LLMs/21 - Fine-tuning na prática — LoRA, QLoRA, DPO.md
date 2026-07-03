@@ -1,7 +1,7 @@
 ---
 title: "Fine-tuning na prática — LoRA, QLoRA, DPO"
 created: 2026-06-15
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -192,13 +192,26 @@ O formato do dado é metade do jogo: SFT pede pares `instrução → resposta`; 
 
 ## Armadilhas
 
-- **"Fine-tuning é sempre melhor"** — é o mais caro e o menos flexível. Esgote prompting + RAG antes ([[16 - Fine-tuning vs prompting vs RAG]]).
-- **Poucos dados, ou dados sujos** — 1.000 exemplos limpos batem 100.000 ruidosos. Abaixo de ~1k, costuma memorizar em vez de generalizar.
-- **`r` mal calibrado** — posto alto demais overfita e desperdiça; baixo demais não aprende. Comece pequeno (8-16) e suba se o eval pedir.
-- **Esquecer de avaliar no *seu* golden set** — benchmark genérico mente. Meça o modelo fine-tuned na sua tarefa ([[19 - Evaluation de LLMs em produção]]).
-- **DPO sobre-otimizado** — preferência empurrada longe demais degrada qualidade geral; o termo de KL contra o modelo de referência existe para isso — não o zere.
-- **Merge de LoRA em base quantizado** — fundir o adapter de volta num base 4-bit perde precisão; sirva o adapter separado ou faça o merge em fp16.
-- **Destilar de API fechada** — treinar com saídas de um modelo comercial de terceiros costuma violar os ToS do provider (mesma armadilha da [[20 - Compressão de modelos — quantização e destilação|destilação]]).
+> [!warning] "Fine-tuning é sempre melhor"
+> É o mais caro e o menos flexível. Esgote prompting + RAG antes ([[16 - Fine-tuning vs prompting vs RAG]]).
+
+> [!warning] Poucos dados, ou dados sujos
+> 1.000 exemplos limpos batem 100.000 ruidosos. Abaixo de ~1k, costuma memorizar em vez de generalizar.
+
+> [!warning] `r` mal calibrado
+> Posto alto demais overfita e desperdiça; baixo demais não aprende. Comece pequeno (8-16) e suba se o eval pedir.
+
+> [!warning] Esquecer de avaliar no *seu* golden set
+> Benchmark genérico mente. Meça o modelo fine-tuned na sua tarefa ([[19 - Evaluation de LLMs em produção]]).
+
+> [!warning] DPO sobre-otimizado
+> Preferência empurrada longe demais degrada qualidade geral; o termo de KL contra o modelo de referência existe para isso — não o zere.
+
+> [!warning] Merge de LoRA em base quantizado
+> Fundir o adapter de volta num base 4-bit perde precisão; sirva o adapter separado ou faça o merge em fp16.
+
+> [!warning] Destilar de API fechada
+> Treinar com saídas de um modelo comercial de terceiros costuma violar os ToS do provider (mesma armadilha da [[20 - Compressão de modelos — quantização e destilação|destilação]]).
 
 ## Como explicar em inglês
 
@@ -224,6 +237,16 @@ Fine-tuning updates model weights (unlike prompting/RAG, which only modify input
 - **[Umar Jamil — LoRA from Scratch (2024)](https://www.youtube.com/watch?v=PXWYUTMt-AU)** — implementação matemática de LoRA passo a passo em PyTorch, derivando a decomposição de posto baixo e os gradientes. Canal técnico com implementações de paper.
 - **[Sebastian Raschka — Fine-tuning LLMs (2024)](https://www.youtube.com/@SebastianRaschka)** — Raschka é o autor de "Build a Large Language Model from Scratch"; seus vídeos de fine-tuning incluem comparativos detalhados entre técnicas PEFT.
 - **[HuggingFace Blog — RLHF e DPO](https://huggingface.co/blog/dpo-trl)** — implementação de referência com TRL, incluindo `DPOTrainer` e exemplos de dataset de preferência.
+
+## O que vem a seguir
+
+Esta é a última nota do galho **Anatomia dos LLMs**. Se você chegou até aqui, já tem o modelo: como ele é montado (tokenização, atenção, janela de contexto), como é treinado (pretraining, SFT, RLHF) e como é adaptado depois de pronto (LoRA, QLoRA, DPO). Mas um LLM fine-tuned sozinho não é um produto — é uma peça. Três trilhas fecham o resto do quebra-cabeça:
+
+- **[[Anatomia de Agents]]** — um modelo (fine-tuned ou não) vira *agent* quando ganha um loop de decisão: observar, escolher uma ferramenta, agir, repetir. As técnicas desta nota moldam o comportamento; agents moldam o **fluxo de controle** em volta desse comportamento.
+- **[[RAG e Vector Databases]]** — o callout de "Por que importa" já avisou: fine-tuning ensina forma, não fatos. Quando o conhecimento muda com frequência (documentação, base de clientes, notícias), a resposta não é re-treinar — é buscar e injetar contexto em tempo de execução. RAG é o "irmão" que resolve o que fine-tuning propositalmente não resolve.
+- **[[Context Engineering]]** — junto de RAG, a outra face da mesma moeda: em vez de mudar os pesos (fine-tuning) ou buscar fatos (RAG), você desenha **o que entra no prompt** — prompt, contexto, intenção, especificação. Muita adaptação de comportamento que hoje vira LoRA começou como um problema mal-resolvido de context engineering.
+
+A pergunta que guia qual trilha seguir: você quer mudar **como o modelo se comporta** (fine-tuning, já feito), **como ele decide e age** (Agents), **o que ele sabe no momento da chamada** (RAG) ou **o que você coloca na frente dele** (Context Engineering)? Frequentemente a resposta certa em produção é "os quatro, em camadas" — mas agora você tem o vocabulário pra escolher a dose certa de cada um.
 
 ## Veja também
 

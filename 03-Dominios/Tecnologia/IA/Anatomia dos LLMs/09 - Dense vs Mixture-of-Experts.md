@@ -1,7 +1,7 @@
 ---
 title: "Dense vs Mixture-of-Experts"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -248,6 +248,12 @@ Maarten Grootendorst (pesquisador Google DeepMind, criador do BERTopic) tem um g
 
 > [!warning] Ignorar a qualidade do router
 > Um router mal treinado (expert collapse parcial) pode direcionar tokens para experts subótimos, degradando a qualidade abaixo de um dense menor. A qualidade do MoE depende criticamente da qualidade do treinamento do router — não só da escala total.
+
+## O que vem a seguir
+
+Você já sabe que MoE não economiza VRAM — economiza FLOPs. Mas isso ainda deixa uma pergunta prática em aberto: **quanta VRAM, exatamente, você precisa para rodar um modelo específico na sua própria máquina?** A tabela de "Implicações para self-hosting" acima dá a intuição (dense 70B ≈ 40GB, MoE 600B ≈ 120GB), mas o cálculo real depende de quantização, contexto e overhead do KV cache — e o "paradoxo da memória" do MoE muda a conta de um jeito que surpreende quem vem do mundo dense: você pode ter GPU de sobra para computar mas não ter memória suficiente para sequer carregar o modelo. [[10 - Modelos locais e self-hosting]] fecha essa conta com números concretos por modelo e por configuração de hardware.
+
+Há também uma segunda pergunta, adjacente: se dense e MoE têm perfis de custo tão diferentes, faz sentido usar sempre o mesmo modelo para tudo? Não — e é exatamente esse o argumento de [[09 - Model routing — modelo certo para a tarefa]], no galho [[Economia de Tokens]]: tarefas simples não precisam de um MoE flagship de 600B, e rotear a tarefa certa para o modelo certo é onde a arquitetura discutida aqui vira economia real de custo em produção.
 
 ## Como explicar em inglês
 

@@ -144,10 +144,17 @@ Sem embeddings, não há nada para a atenção operar — eles são o substrato 
 
 ## Armadilhas
 
-- **Confundir embedding com tokenização.** Tokenização é uma tabela fixa texto↔ID; embedding é uma representação aprendida ID→vetor. Uma é determinística, a outra emerge do treino.
-- **Achar que o vetor de entrada é "o significado final".** O embedding da tabela é estático e descontextualizado. O significado sensível ao contexto só aparece *depois* das camadas de atenção.
-- **Tratar dimensão como qualidade absoluta.** Mais dimensões (`d_model` maior) dá mais capacidade de representação, mas também mais parâmetros e custo. Não existe "quanto mais, melhor" — é um trade-off.
-- **Misturar embeddings de modelos diferentes.** O espaço vetorial de cada modelo é próprio: um vetor do modelo A não tem sentido no espaço do modelo B. Isso importa muito em busca/[[16 - Fine-tuning vs prompting vs RAG|RAG]].
+> [!warning] Confundir embedding com tokenização
+> Tokenização é uma tabela fixa texto↔ID; embedding é uma representação aprendida ID→vetor. Uma é determinística, a outra emerge do treino.
+
+> [!warning] Achar que o vetor de entrada é "o significado final"
+> O embedding da tabela é estático e descontextualizado. O significado sensível ao contexto só aparece *depois* das camadas de atenção.
+
+> [!warning] Tratar dimensão como qualidade absoluta
+> Mais dimensões (`d_model` maior) dá mais capacidade de representação, mas também mais parâmetros e custo. Não existe "quanto mais, melhor" — é um trade-off.
+
+> [!warning] Misturar embeddings de modelos diferentes
+> O espaço vetorial de cada modelo é próprio: um vetor do modelo A não tem sentido no espaço do modelo B. Isso importa muito em busca/[[16 - Fine-tuning vs prompting vs RAG|RAG]].
 
 ## Embeddings além do input: busca e RAG
 

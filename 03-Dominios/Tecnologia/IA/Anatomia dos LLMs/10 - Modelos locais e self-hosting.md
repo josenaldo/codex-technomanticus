@@ -178,11 +178,20 @@ Para 100.000 chamadas/dia com ~2k tokens cada:
 
 ## Armadilhas
 
-- **"Self-hosting é sempre mais barato"** — para volume baixo (<1000 calls/dia com modelos budget), API é quase sempre mais econômico quando se conta tempo de manutenção.
-- **"Qualquer GPU serve"** — modelos úteis para coding (14B+) exigem no mínimo 10GB de VRAM. GPUs com 6-8GB rodam apenas modelos de 3B-7B.
-- **Quantização degrada qualidade** — INT4 é significativamente pior que FP16 para raciocínio complexo. Para coding, use pelo menos INT8 ou Q5_K_M.
-- **"Modelo local = 100% privado"** — se o modelo foi treinado em dados similares aos seus, pode "vazar" informações do treinamento. Privacidade de inferência ≠ privacidade de treinamento.
-- **Ignorar atualizações** — modelos open-weight atualizam a cada 2-3 meses. Ficar preso em uma versão antiga é perder performance significativa.
+> [!warning] "Self-hosting é sempre mais barato"
+> Para volume baixo (<1000 calls/dia com modelos budget), API é quase sempre mais econômico quando se conta tempo de manutenção.
+
+> [!warning] "Qualquer GPU serve"
+> Modelos úteis para coding (14B+) exigem no mínimo 10GB de VRAM. GPUs com 6-8GB rodam apenas modelos de 3B-7B.
+
+> [!warning] Quantização degrada qualidade
+> INT4 é significativamente pior que FP16 para raciocínio complexo. Para coding, use pelo menos INT8 ou Q5_K_M.
+
+> [!warning] "Modelo local = 100% privado"
+> Se o modelo foi treinado em dados similares aos seus, pode "vazar" informações do treinamento. Privacidade de inferência ≠ privacidade de treinamento.
+
+> [!warning] Ignorar atualizações
+> Modelos open-weight atualizam a cada 2-3 meses. Ficar preso em uma versão antiga é perder performance significativa.
 
 ## Como explicar em inglês
 
@@ -199,6 +208,10 @@ Self-hosting LLMs means running the model on your own infrastructure instead of 
 | Atenção paginada | Paged attention |
 | Modelo de peso aberto | Open-weight model |
 | Largura de banda de memória | Memory bandwidth |
+
+## O que vem a seguir
+
+Self-hosting resolve o problema de *onde* o modelo roda — mas a maioria dos engenheiros, na prática, não hospeda nada: consome LLMs via API. O caminho oposto, e hoje mais comum, é abrir o capô dessa chamada: o que acontece entre você enviar um prompt e receber tokens de volta, quais parâmetros controlam esse comportamento, e onde entram custo e latência de rede. É o assunto de [[11 - APIs de LLM — anatomia de uma chamada]].
 
 ## Ver mais
 

@@ -1,7 +1,7 @@
 ---
 title: "Fine-tuning vs prompting vs RAG"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -202,11 +202,20 @@ xychart-beta
 
 ## Armadilhas
 
-- **"Fine-tuning é sempre melhor"** — é o mais caro e menos flexível. Use apenas quando prompting + RAG comprovadamente falham.
-- **RAG sem avaliação do retriever** — se o retriever puxa documentos irrelevantes, o modelo [[Dicionário de IA#Hallucination|alucina]] com confiança, citando fontes erradas.
-- **"Prompting não escala"** — com context engineering disciplinado (caching, state files, context pruning), prompting escala para a maioria dos casos.
-- **Fine-tuning com poucos dados** — menos de 1000 exemplos de alta qualidade geralmente não produz melhoria significativa. O modelo pode memorizar em vez de generalizar.
-- **Combinar errado** — RAG + fine-tuning pode degradar se o modelo fine-tuned ignora o contexto retrieved em favor do "conhecimento" aprendido.
+> [!warning] "Fine-tuning é sempre melhor"
+> É o mais caro e menos flexível das três técnicas. Use apenas quando prompting + RAG comprovadamente falham.
+
+> [!warning] RAG sem avaliação do retriever
+> Se o retriever puxa documentos irrelevantes, o modelo [[Dicionário de IA#Hallucination|alucina]] com confiança, citando fontes erradas.
+
+> [!warning] "Prompting não escala"
+> Com context engineering disciplinado (caching, state files, context pruning), prompting escala para a maioria dos casos.
+
+> [!warning] Fine-tuning com poucos dados
+> Menos de 1000 exemplos de alta qualidade geralmente não produz melhoria significativa. O modelo pode memorizar em vez de generalizar.
+
+> [!warning] Combinar errado
+> RAG + fine-tuning pode degradar se o modelo fine-tuned ignora o contexto retrieved em favor do "conhecimento" aprendido.
 
 ## Como explicar em inglês
 
@@ -223,6 +232,10 @@ Three techniques to adapt an LLM to your use case, operating at different layers
 | Aprendizado de poucos exemplos | Few-shot learning |
 | Aprendizado de nenhum exemplo | Zero-shot learning |
 | Memorização catastrófica | Catastrophic forgetting |
+
+## O que vem a seguir
+
+As três técnicas desta nota respondem "como adaptar o modelo *hoje*". Mas a fronteira entre elas está se movendo: janelas de contexto maiores tornam RAG desnecessário para bases menores, fine-tuning fica mais barato com técnicas como LoRA e QLoRA, e a linha entre "prompting" e "fine-tuning leve" já começa a se confundir em produtos que ajustam pesos on-the-fly. [[17 - O futuro dos LLMs — tendências 2026-2027]] projeta para onde essa árvore de decisão está indo nos próximos dois anos.
 
 ## Ver mais
 

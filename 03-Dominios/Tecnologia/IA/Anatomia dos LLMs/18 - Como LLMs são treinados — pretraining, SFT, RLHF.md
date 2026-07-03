@@ -1,7 +1,7 @@
 ---
 title: "Como LLMs são treinados — pretraining, SFT, RLHF"
 created: 2026-04-11
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -140,6 +140,9 @@ Específico da Anthropic, mas a ideia se espalhou em variantes.
 
 Substitui RLHF tradicional. Em vez de treinar reward model + RL, otimiza diretamente do dataset de preferências. **Mais simples, mais barato, comparável em qualidade.** Adoção crescente.
 
+> [!warning] DPO herda os defeitos do dataset de preferências
+> DPO elimina o reward model, mas isso remove uma camada de filtro: sem reward model intermediário, o modelo otimiza direto sobre os pares de preferência anotados. Se o dataset tem anotadores inconsistentes, vieses sistemáticos (ex: preferir respostas mais longas só porque "parecem mais completas") ou poucas comparações difíceis, o modelo aprende exatamente esse viés — sem nada no meio para suavizar. **A qualidade do DPO é a qualidade do dataset de preferências, ponto.**
+
 ### RLAIF (RL from AI Feedback)
 
 Usa outro LLM como labeler em vez de humano. Reduz custo. Cuidado: viés do labeler-LLM se propaga.
@@ -216,6 +219,9 @@ Escolha de modelo é também escolha de **persona** moldada pelo pós-training.
 
 Ver [[16 - Fine-tuning vs prompting vs RAG]] para árvore de decisão.
 
+> [!warning] Fine-tuning não adiciona conhecimento — ajusta comportamento
+> É a armadilha mais comum de quem chega no fine-tuning esperando "ensinar fatos novos" ao modelo. SFT, RLHF, DPO e LoRA/QLoRA operam **depois** do pretraining, que já fixou o conhecimento factual do modelo. Esses estágios reajustam pesos para mudar *como* o modelo responde (tom, formato, o que recusa) — não *o que* ele sabe. Se o objetivo é conhecimento novo ou atualizado, a ferramenta certa é [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] ou tool use, não fine-tune.
+
 ## Como explicar em inglês
 
 LLM training has four sequential stages that explain almost all model behavior. **Pretraining** trains on trillions of internet tokens to predict the next token — the model learns language, facts, and code but doesn't know how to be an assistant. **SFT** (Supervised Fine-Tuning) trains on thousands of instruction-response pairs written by humans, teaching the model to answer in assistant format. **RLHF** (Reinforcement Learning from Human Feedback) trains a reward model from human preference comparisons, then uses RL (usually PPO or DPO) to optimize the LLM to maximize that reward — producing helpful, harmless, honest behavior, but also side effects like sycophancy and excessive refusals. **Constitutional AI** (Anthropic-specific) uses a written set of principles and the model itself as an evaluator to reduce dependence on human labelers. The key engineering insight: most of a model's capability comes from pretraining; the other stages shape *how* it applies that capability, not how much it has.
@@ -238,6 +244,10 @@ LLM training has four sequential stages that explain almost all model behavior. 
 - **[Andrej Karpathy — State of GPT (2023)](https://www.youtube.com/watch?v=bZQun8Y4L2A)** — a apresentação canônica do pipeline de treinamento. Karpathy explica cada estágio com diagramas, incluindo os side effects do RLHF e por que DPO está substituindo PPO. Ainda é a melhor introdução ao tema.
 - **[Ouyang et al. — InstructGPT (2022)](https://arxiv.org/abs/2203.02155)** — o paper da OpenAI que introduziu RLHF para LLMs (base do ChatGPT). Mostra a diferença de comportamento entre modelo só com pretraining vs modelo com SFT vs modelo com RLHF.
 - **[Anthropic — Constitutional AI (2022)](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)** — o paper descrevendo como a Anthropic usa princípios escritos e o próprio modelo como avaliador, reduzindo dependência de labelers humanos para safety.
+
+## O que vem a seguir
+
+Saber como o pipeline de treinamento molda o comportamento do modelo é só metade do trabalho — a outra metade é medir se esse comportamento é bom o suficiente para produção. As mesmas camadas discutidas aqui (bajulação do RLHF, alucinação do pretraining, recusas excessivas) são exatamente os fenômenos que os benchmarks e avaliações de [[19 - Evaluation de LLMs em produção]] tentam capturar antes que cheguem ao usuário final.
 
 ## Veja também
 

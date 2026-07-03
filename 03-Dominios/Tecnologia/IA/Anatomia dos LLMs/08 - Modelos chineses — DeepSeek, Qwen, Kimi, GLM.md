@@ -1,7 +1,7 @@
 ---
 title: "Modelos chineses — DeepSeek, Qwen, Kimi, GLM"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -135,6 +135,9 @@ GLM é menos conhecido no Ocidente mas tem adoção significativa em empresas ch
 
 ## Comparativo
 
+> [!info] Caducidade
+> Esta tabela captura um instantâneo (DeepSeek V4, Qwen 3.6, Kimi K2.6, GLM-5.1 e os preços listados). Modelos chineses versionam rápido — em poucos meses os números de preço/benchmark ficam defasados. Antes de decidir, confira a documentação oficial do provedor para a versão e o preço vigentes.
+
 | Critério | DeepSeek V4 | Qwen 3.6 | Kimi K2.6 | GLM-5.1 |
 | ------------------ | ------------ | ----------------- | ------------ | -------- |
 | **Reasoning puro** | ★★★★★ | ★★★★ | ★★★ | ★★★★ |
@@ -191,11 +194,20 @@ curl https://api.siliconflow.cn/v1/chat/completions \
 
 ## Armadilhas
 
-- **"Modelo chinês = cópia inferior"** — falso em 2026. DeepSeek V4 supera GPT-4.1 em benchmarks de matemática. Qwen 3.6 lidera em agentic.
-- **Censura e alinhamento** — modelos chineses têm alinhamento diferente dos ocidentais. Para coding, isso raramente importa. Para geração de conteúdo, pode afetar.
-- **Latência de API** — APIs hospedadas na China podem ter latência alta para usuários nas Américas/Europa. Use provedores intermediários (Together, Fireworks, Groq).
-- **Versioning confuso** — a nomenclatura muda rapidamente. "DeepSeek V3" pode se referir a versões diferentes dependendo da data. Sempre verifique o modelo exato na documentação.
-- **Suporte e documentação** — documentação primária frequentemente em mandarim. Comunidades em inglês são menores.
+> [!warning] "Modelo chinês = cópia inferior"
+> Falso em 2026. DeepSeek V4 supera GPT-4.1 em benchmarks de matemática. Qwen 3.6 lidera em agentic.
+
+> [!warning] Censura e alinhamento
+> Modelos chineses têm alinhamento diferente dos ocidentais. Para coding, isso raramente importa. Para geração de conteúdo, pode afetar.
+
+> [!warning] Latência de API
+> APIs hospedadas na China podem ter latência alta para usuários nas Américas/Europa. Use provedores intermediários (Together, Fireworks, Groq).
+
+> [!warning] Versioning confuso
+> A nomenclatura muda rapidamente. "DeepSeek V3" pode se referir a versões diferentes dependendo da data. Sempre verifique o modelo exato na documentação.
+
+> [!warning] Suporte e documentação
+> Documentação primária frequentemente em mandarim. Comunidades em inglês são menores.
 
 ## Como explicar em inglês
 
@@ -217,6 +229,10 @@ Chinese open-weight models became frontier competitors in 2025-2026. **DeepSeek 
 - **[DeepSeek AI — DeepSeek-V3 Technical Report (2024)](https://arxiv.org/abs/2412.19437)** — o paper que sacudiu a indústria. Detalha MLA (Multi-Head Latent Attention), DeepSeekMoE e as técnicas de treinamento que permitiram performance de fronteira com ~$6M de compute.
 - **[Sebastian Raschka — Understanding DeepSeek's Architecture (2025)](https://magazine.sebastianraschka.com)** — análise linha a linha das inovações técnicas do DeepSeek, comparando com GPT e Llama. Raschka é um dos melhores explicadores de arquiteturas de LLM.
 - **[SiliconFlow — Open Model API Hosting](https://siliconflow.cn)** — plataforma de hospedagem para modelos chineses com API OpenAI-compatible, baixíssima latência para regiões asiáticas e suporte a DeepSeek/Qwen/GLM.
+
+## O que vem a seguir
+
+Boa parte do que torna esses modelos baratos e rápidos não é sorte de engenharia isolada — é uma escolha arquitetural comum aos quatro: usar Mixture-of-Experts em vez de uma rede densa. É essa escolha que explica por que o DeepSeek V4 custa centavos por milhão de tokens enquanto ativa só uma fração dos seus parâmetros a cada passagem, e por que "self-hosting viável" aparece tanto nesta nota. Para entender o mecanismo por trás desse número — o que exatamente é um "expert", como o roteador decide qual ativar, e o trade-off que isso implica em VRAM vs. compute — veja [[09 - Dense vs Mixture-of-Experts]], a espinha dorsal da eficiência chinesa.
 
 ## Veja também
 

@@ -1,7 +1,7 @@
 ---
 title: "Streaming, batching e latência"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -201,11 +201,20 @@ Benefício: cada cluster é otimizado para seu bottleneck específico. Custo: a 
 
 ## Armadilhas
 
-- **"Streaming é mais rápido"** — não. O tempo total é o mesmo. Streaming melhora a **percepção** de velocidade, não a velocidade real.
-- **Otimizar só TTFT** — em agentes, TPOT importa mais porque a resposta precisa estar completa antes de prosseguir para o próximo step.
-- **Ignorar P99 latency** — média de TTFT pode ser 300ms, mas P99 pode ser 5s. O tail latency é o que o usuário percebe como "travou".
-- **"GPU mais cara = mais rápida"** — nem sempre. Para decode, bandwidth de memória importa mais que compute. Uma A100 pode perder para hardware com HBM3.
-- **Não configurar timeouts** — sem timeout, uma chamada que trava pode bloquear um pipeline inteiro. Configure 30-60s para interativo, 5-10min para batch.
+> [!warning] "Streaming é mais rápido"
+> Não. O tempo total é o mesmo. Streaming melhora a **percepção** de velocidade, não a velocidade real.
+
+> [!warning] Otimizar só TTFT
+> Em agentes, TPOT importa mais porque a resposta precisa estar completa antes de prosseguir para o próximo step.
+
+> [!warning] Ignorar P99 latency
+> Média de TTFT pode ser 300ms, mas P99 pode ser 5s. O tail latency é o que o usuário percebe como "travou".
+
+> [!warning] "GPU mais cara = mais rápida"
+> Nem sempre. Para decode, bandwidth de memória importa mais que compute. Uma A100 pode perder para hardware com HBM3.
+
+> [!warning] Não configurar timeouts
+> Sem timeout, uma chamada que trava pode bloquear um pipeline inteiro. Configure 30-60s para interativo, 5-10min para batch.
 
 ## Como explicar em inglês
 
@@ -230,6 +239,10 @@ LLM performance involves two independent metrics: **TTFT** (time-to-first-token)
 - **[Andrej Karpathy — LLM Serving (parte do AI Talk 2024)](https://www.youtube.com/watch?v=zjkBMFhNj_g)** — Karpathy explica as fases de inferência e por que batching é a alavanca principal de throughput. Recomendado especialmente a partir do minuto 45.
 - **[Databricks — Continuous Batching Explained (2023)](https://www.databricks.com/blog/llm-inference-performance-engineering-best-practices)** — artigo técnico com medições reais de latência com e sem continuous batching. Inclui gráficos de GPU utilization.
 - **[vLLM Blog — PagedAttention and Speculative Decoding](https://vllm.ai)** — o paper do PagedAttention (a base do vLLM) e adições sobre speculative decoding, escritos pela equipe que construiu o serving framework dominante em 2024-2026.
+
+## O que vem a seguir
+
+Tudo até aqui assumiu que o modelo gera tokens de forma direta: prefill, decode, um token de cada vez (ou especulado em lote, no caso do speculative decoding), sem pausa para "pensar" antes de responder. Mas há uma classe de modelos que quebra essa premissa — os **reasoning models**, que geram uma cadeia de raciocínio (chain-of-thought) antes da resposta final. Isso muda drasticamente o perfil de latência: o TTFT deixa de ser "tempo até o primeiro token útil" e passa a incluir um bloco inteiro de tokens de raciocínio que o usuário nem sempre vê. Ver [[15 - Reasoning models e chain-of-thought]] para como isso reconfigura os trade-offs de streaming, batching e percepção de velocidade discutidos nesta nota.
 
 ## Veja também
 

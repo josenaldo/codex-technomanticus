@@ -182,6 +182,10 @@ Primeiro reduz a *arquitetura* (menos parâmetros via destilação), depois redu
 > [!warning] Destilar de API fechada pode violar ToS
 > Treinar um aluno a partir das saídas de um modelo comercial de terceiros frequentemente esbarra nos termos de uso do provider. OpenAI e Anthropic proíbem explicitamente usar saídas para treinar modelos concorrentes. Verifique antes de começar.
 
+## O que vem a seguir
+
+Até aqui, quantização e destilação apareceram como técnicas de *pós-treino* — formas de encolher um modelo já pronto para caber em menos VRAM ou rodar mais rápido. Mas e se a compressão entrasse *antes* do treino terminar, não depois? É exatamente o que acontece quando você faz fine-tuning: em vez de ajustar os pesos completos de um modelo em FP16, dá pra carregar o modelo já em INT4 (via NF4/bitsandbytes, visto na tabela de formatos acima) e treinar só um punhado de adaptadores por cima dele. Esse é o truque do QLoRA — quantização e fine-tuning deixam de ser etapas separadas do pipeline e passam a acontecer no mesmo lugar, o que é a razão de dar para ajustar um modelo de 65B numa única GPU de consumo. [[21 - Fine-tuning na prática — LoRA, QLoRA, DPO]] detalha o mecanismo.
+
 ## Como explicar em inglês
 
 Quantization reduces the numerical precision of a model's weights — from FP16 (65,536 possible values per weight) to INT4 (just 16 values) — cutting memory by roughly 4× with modest quality loss. The common formats are GGUF (for CPU and Apple Silicon via llama.cpp), GPTQ (GPU-focused), and AWQ (activation-aware, better quality at the same bit rate, used by vLLM). Knowledge distillation trains a smaller "student" model to mimic the full output distribution of a larger "teacher," not just the correct label — the distribution itself carries structural knowledge about relationships between concepts ("cats resemble dogs more than cars"). The two techniques compose: distill first (smaller architecture), then quantize (fewer bits per weight).

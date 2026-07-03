@@ -1,7 +1,7 @@
 ---
 title: "APIs de LLM — anatomia de uma chamada"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -215,11 +215,48 @@ Cada seta para a API é uma chamada HTTP completa, com o histórico inteiro reen
 
 ## Armadilhas
 
-- **"A API lembra o que falei antes"** — não. Cada chamada é stateless. O histórico é reenviado integralmente.
-- **Ignorar tool definitions nos tokens** — schemas JSON de ferramentas consomem 500-2000 tokens facilmente. 10 ferramentas com descriptions verbosas podem consumir 5k+ tokens de input em cada chamada.
-- **max_tokens muito alto** — não custa nada configurar, mas se o modelo gerar até o limite, você paga. Defina o mínimo razoável para a tarefa.
-- **Temperature 0 para tudo** — temperature 0 é boa para código, mas pode causar repetição em texto longo. Para documentação, use 0.2-0.4.
-- **Não monitorar `usage`** — se você não loga os tokens consumidos por chamada, não tem como identificar onde está o desperdício.
+> [!warning] "A API lembra o que falei antes"
+> Não. Cada chamada é stateless. O histórico é reenviado integralmente — a "memória" é uma ilusão mantida pelo cliente, não pelo servidor.
+
+> [!warning] Ignorar tool definitions nos tokens
+> Schemas JSON de ferramentas consomem 500-2000 tokens facilmente. 10 ferramentas com descriptions verbosas podem consumir 5k+ tokens de input em cada chamada — antes mesmo do modelo ler sua mensagem.
+
+> [!warning] max_tokens muito alto
+> Não custa nada configurar um valor alto "por segurança", mas se o modelo gerar até o limite, você paga por isso. Defina o mínimo razoável para a tarefa.
+
+> [!warning] Temperature 0 para tudo
+> Temperature 0 é boa para código, mas pode causar repetição em texto longo. Para documentação e prosa, prefira 0.2-0.4.
+
+> [!warning] Não monitorar `usage`
+> Se você não loga os tokens consumidos por chamada, não tem como identificar onde está o desperdício — é o único termômetro confiável de custo real.
+
+### Exemplo: erro 400 por omitir `max_tokens`
+
+Diferente da OpenAI (que tem um default), a Anthropic **exige** `max_tokens` em toda chamada. Uma request sem esse campo falha antes mesmo de chegar ao modelo:
+
+```json
+// Request — falha
+POST https://api.anthropic.com/v1/messages
+{
+  "model": "claude-sonnet-4.6",
+  "messages": [
+    { "role": "user", "content": "Explique o que é prompt caching" }
+  ]
+}
+```
+
+```json
+// Response — 400 Bad Request
+{
+  "type": "error",
+  "error": {
+    "type": "invalid_request_error",
+    "message": "max_tokens: Field required"
+  }
+}
+```
+
+O erro é rejeitado no estágio de validação da request (antes da tokenização e da inferência) — por isso é barato de errar, mas também fácil de não perceber em testes rápidos onde a resposta "parece" ter funcionado até então. Outro erro comum da mesma família: enviar `messages` com roles fora de ordem (dois `user` seguidos sem `assistant` entre eles) — a API rejeita com `invalid_request_error` porque a conversa precisa alternar `user`/`assistant`.
 
 ## Como explicar em inglês
 
@@ -244,6 +281,10 @@ An LLM API call is a stateless HTTP POST containing a `messages` array (system, 
 - **[Anthropic — Messages API Reference (2026)](https://docs.anthropic.com/en/api/messages)** — a referência completa do formato Anthropic: campos, roles, tool use, streaming. O ponto de partida para qualquer integração com Claude.
 - **[OpenAI — Chat Completions API Reference (2026)](https://platform.openai.com/docs/api-reference/chat)** — o formato que se tornou o padrão da indústria (OpenAI-compatible API). Quase todos os providers (Ollama, vLLM, SiliconFlow) implementam essa interface.
 - **[Simon Willison — Understanding LLM APIs (2024)](https://simonwillison.net)** — Willison (criador do Datasette, co-criador do Django) escreve análises acessíveis e precisas sobre APIs de LLM, com foco em casos de uso práticos e armadilhas comuns.
+
+## O que vem a seguir
+
+Entender a anatomia do request e do response responde "o que é enviado e o que volta". Mas o campo `usage` só mostra a *contagem* de tokens — não diz quanto isso custa em dinheiro, nem por que o mesmo request pode custar 10x mais dependendo do modelo escolhido. É esse o assunto de [[12 - Pricing de APIs — como calcular custos]]: como traduzir `input_tokens` e `output_tokens` em reais/dólares, e por que `cache_read_input_tokens` é a alavanca de custo mais subestimada em agentes de produção.
 
 ## Veja também
 

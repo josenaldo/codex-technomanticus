@@ -1,7 +1,7 @@
 ---
 title: "O futuro dos LLMs — tendências 2026-2027"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -64,6 +64,9 @@ O ciclo **sugestão → assistência → autonomia** está se completando:
 | **Agente** | **2025-2027** | **Modelo planeja e executa tarefas multi-step com supervisão mínima** |
 | Co-piloto autônomo | 2027+ | Modelo recebe spec, entrega feature testada |
 
+> [!info] Data de caducidade
+> A linha "2027+" é projeção, escrita em 2026. Se você está lendo isso depois de 2027, cheque se o "co-piloto autônomo" já virou realidade, ficou estagnado no estágio "Agente", ou tomou um caminho diferente do previsto.
+
 **Sinais concretos (2026):**
 
 - Devin opera em sandbox isolada sem intervenção humana
@@ -117,6 +120,9 @@ Modelos que processam texto, imagem, áudio e vídeo com a mesma facilidade:
 | Vídeo → texto | ❌ Experimental | ⚠️ Gemini, Qwen | ✅ Standard |
 | Texto → código → execução | ❌ | ⚠️ Agentes de coding | ✅ End-to-end |
 
+> [!info] Data de caducidade
+> A coluna "2027 (projetado)" era projeção no momento da escrita (2026). Confira se as capacidades marcadas como "✅ Standard/Universal/Nativo" já se confirmaram ou se algum modal (áudio, vídeo) ainda está atrás do previsto.
+
 **Implicação para engenheiros:** Debugging visual (screenshot → diagnóstico → fix), geração de UI a partir de wireframes, e análise de logs de vídeo se tornam workflows padrão.
 
 ## Tendência 4 — Commoditização via open-weight
@@ -138,6 +144,9 @@ xychart-beta
 | 2025 | $5.00 | DeepSeek V3 |
 | 2026 | $2.00–5.00 | DeepSeek V4, Qwen 3.6 |
 | 2027 | $0.50–2.00 (projetado) | ? |
+
+> [!info] Data de caducidade
+> Preços/ano e "melhor open-weight" mudam rápido — DeepSeek V4 e Qwen 3.6 eram lançamentos esperados/recentes no momento da escrita (2026). Se você está lendo isso mais tarde, verifique se já saíram versões posteriores (DeepSeek V5, Qwen 4.x) e se a faixa de preço de 2027 (projetada) bateu com a realidade.
 
 **Drivers da commoditização:**
 
@@ -179,10 +188,21 @@ graph LR
 
 ## Armadilhas
 
-- **"O modelo de 2027 resolve tudo"** — modelos melhores não eliminam a necessidade de engenharia. Apenas deslocam o trabalho de "escrever código" para "especificar e validar".
-- **Apostar tudo em um provider** — o mercado está volátil. Abstração de providers é essencial.
-- **Ignorar skills fundamentais** — se você não entende arquitetura de software, um agente melhor não resolve.
-- **"Open-weight = commodity sem diferenciação"** — o modelo é commodity, mas o sistema (contexto, tools, guardrails) ao redor dele é o diferencial competitivo.
+> [!warning] "O modelo de 2027 resolve tudo"
+> Modelos melhores não eliminam a necessidade de engenharia. Apenas deslocam o trabalho de "escrever código" para "especificar e validar".
+
+> [!warning] Apostar tudo em um provider
+> O mercado está volátil. Abstração de providers é essencial.
+
+> [!warning] Ignorar skills fundamentais
+> Se você não entende arquitetura de software, um agente melhor não resolve.
+
+> [!warning] "Open-weight = commodity sem diferenciação"
+> O modelo é commodity, mas o sistema (contexto, tools, guardrails) ao redor dele é o diferencial competitivo.
+
+## O que vem a seguir
+
+Projetar o futuro dos LLMs é útil, mas levanta a pergunta inevitável: como esses modelos chegam a ser o que são hoje? As cinco tendências deste texto — agentes autônomos, contexto expandido, multimodalidade, commoditização, context engineering — são todas consequências de decisões tomadas na fase de treinamento: que dados usar, como alinhar o modelo ao comportamento desejado, e como equilibrar capacidade bruta com segurança e utilidade prática. A próxima nota, [[18 - Como LLMs são treinados — pretraining, SFT, RLHF]], entra exatamente nesse mecanismo: pretraining (a fase que dá o conhecimento bruto), SFT (que ensina o modelo a seguir instruções) e RLHF (que alinha o modelo às preferências humanas). Entender esse pipeline explica por que certas tendências — como a commoditização via DeepSeek e Qwen — são possíveis: quando as técnicas de treinamento eficiente vazam para toda a indústria, o custo de replicar capacidades de frontier despenca.
 
 ## Como explicar em inglês
 

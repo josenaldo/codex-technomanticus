@@ -1,7 +1,7 @@
 ---
 title: "Encolhendo o KV cache — MHA, MQA, GQA, MLA"
 created: 2026-06-20
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 status: growing
 fase: Magus
@@ -103,6 +103,9 @@ O cache encolhe de n_heads × (K+V) para apenas 1 × (K+V). Para 32 heads: **32�
 
 O custo: com um único par K/V, todos os heads "veem" o mesmo contexto comprimido. O modelo perde nuance — em modelos grandes, a qualidade degrada de forma perceptível em tarefas que exigem raciocínio de múltiplos ângulos sobre o contexto.
 
+> [!warning] Armadilha: MQA some com nuance justamente onde ela mais importa
+> Em modelos pequenos, o corte de n_kv=1 quase não se nota — não há muita especialização entre heads para perder. Mas em modelos grandes, onde os heads de fato se especializavam em ângulos diferentes do contexto (um head rastreando sintaxe, outro relação de longa distância, outro entidades), forçar todos a compartilhar um único K/V apaga essa divisão de trabalho. O sintoma aparece em benchmarks de raciocínio multi-hop ou de recuperação de múltiplos fatos no contexto — não em perplexity média, que costuma parecer aceitável. É por isso que MQA praticamente não sobreviveu em modelos de fronteira: o dial foi puxado longe demais.
+
 ### GQA — Grouped-Query Attention (Google, 2023)
 
 O meio-termo que venceu. Em vez de 1 K/V para todos ou n_heads K/Vs distintos, GQA divide os heads em **G grupos** (e.g., G=8), cada grupo com seu próprio K/V:
@@ -132,6 +135,9 @@ GQA é o padrão de Llama 2/3, Mistral e Qwen: o dial sintonizado no ponto certo
 > [!question]- Dá para ligar GQA num modelo já treinado em MHA?
 > Não é troca imediata — mas dá para converter com *uptraining*: agrupam-se os K/V heads (média dos pesos) e re-treina-se com uma fração pequena do compute original (~5%). O modelo se reacomoda ao novo regime de compartilhamento. Foi assim que o Llama 2 adicionou as versões GQA. Trocar a arquitetura de atenção tem custo — mas é ordens de grandeza mais barato que treinar do zero.
 
+> [!warning] Armadilha: GQA não é uma flag que se liga — é um re-treino
+> É tentador achar que dá pra pegar um checkpoint MHA pronto e "religar" pra GQA mudando um parâmetro de config no momento da inferência. Não dá: os pesos de projeção K/V foram treinados para produzir um par por head; agrupá-los sem ajuste degrada a qualidade imediatamente, porque o modelo nunca aprendeu a operar com K/V compartilhado entre heads do mesmo grupo. O caminho real é o uptraining descrito acima — agrupar os pesos e re-treinar com uma fatia do compute original. Ignorar essa etapa (ou orçar a migração como "custo zero") é o erro mais comum de quem decide adotar GQA em um modelo legado.
+
 ### MLA — Multi-head Latent Attention (DeepSeek, 2024)
 
 MLA muda a estratégia completamente. Em vez de reduzir o número de K/V (dial MQA/GQA), MLA **comprime** Key e Value num vetor latente de baixa dimensão antes de armazenar no cache:
@@ -153,6 +159,9 @@ O cache armazena apenas o vetor comprimido (~512 dimensões) em vez dos K/V comp
 > [!tip] A intuição do MLA em uma frase
 > MQA/GQA economizam **jogando informação fora** (menos K/V distintos). MLA economiza **comprimindo** (guarda uma versão enxuta e reconstrói quando precisa) — por isso consegue cache pequeno *sem* o sacrifício de qualidade. É a diferença entre apagar fotos e zipar a pasta de fotos.
 
+> [!warning] Armadilha: MLA troca memória por compute no decode
+> A tabela de "cache menor" esconde um custo que não aparece nela: a up-projection (W_UK, W_UV) que reconstrói K e V a partir do vetor latente precisa rodar a cada passo de decode, para cada token novo. Isso é FLOPs extras no caminho crítico da geração — exatamente onde o decode já é bound por latência, não por throughput. MLA vence a conta de memória, mas quem projeta o serving precisa orçar esse compute adicional; tratar MLA como "ganho grátis" de cache é ignorar metade da troca.
+
 ## Comparativo final: o que cada variante escolhe sacrificar
 
 ```mermaid
@@ -169,6 +178,10 @@ xychart-beta
 | **MQA** | Qualidade cai em escala | Cache 32× menor | PaLM, alguns modelos de edge |
 | **GQA** | Leve perda de nuance | Cache 4–8× menor | Llama 2/3, Mistral, Qwen |
 | **MLA** | Custo de up-projection em cada step | Cache 37× menor que MHA, qualidade acima | DeepSeek V2/V3 |
+
+## O que vem a seguir
+
+MHA → MQA → GQA → MLA ataca o problema pelo lado do **tamanho** do KV cache: menos bytes armazenados por token. Mas há um segundo eixo de custo que essas variantes não tocam — o cálculo da atenção em si é O(n²) no comprimento do contexto, e mover esse cache (mesmo pequeno) entre memória HBM e SRAM da GPU também consome tempo. Esse é o ataque de [[04c - Atenção eficiente — FlashAttention, sparse e híbrida|FlashAttention e as atenções esparsas/híbridas]]: em vez de encolher o que fica no cache, reduzir o custo de computar e mover a atenção inteira. As duas frentes são complementares — um modelo de produção moderno (DeepSeek V3, por exemplo) tipicamente combina MLA/GQA *com* um kernel de atenção eficiente.
 
 ## Como explicar em inglês
 

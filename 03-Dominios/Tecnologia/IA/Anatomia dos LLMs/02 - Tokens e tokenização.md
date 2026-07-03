@@ -1,7 +1,7 @@
 ---
 title: Tokens e tokenização
 created: 2026-05-02
-updated: 2026-06-21
+updated: 2026-07-03
 type: concept
 status: evergreen
 progress: done
@@ -26,6 +26,8 @@ aliases:
 ![](https://www.youtube.com/watch?v=JfJJIrOhWwQ)
 
 ## O que é
+
+Você manda um prompt de 500 palavras para a API e planeja o orçamento em cima disso. A resposta chega, e a fatura cobra 640 tokens só de entrada — quase 30% a mais do que a contagem de palavras sugeria. Não foi erro de cobrança: palavras e tokens são unidades diferentes, e a conversão entre elas varia por idioma, pontuação e até por como as palavras são espaçadas. Antes de confiar em qualquer estimativa de custo ou de janela de contexto, é preciso entender o que o modelo está de fato contando.
 
 No ciclo que fecha a nota anterior, o primeiro passo era *tokenização* — e ali ele passou rápido. Aqui abrimos essa caixa: o que é, afinal, um token, e como um texto vira a sequência de pedaços que o modelo de fato processa.
 
@@ -189,11 +191,20 @@ Alguns tokens entram no vocabulário porque apareceram no corpus que treinou o *
 
 ## Armadilhas
 
-- **"1 token = 1 palavra"** — falso. Uma palavra longa ou incomum pode ser 3-5 tokens. Palavras curtas e comuns geralmente são 1 token.
-- **Ignorar a contagem antes de enviar** — sem contar tokens, é impossível prever custo e saber se cabe na janela de contexto. Use tiktoken ou equivalente.
-- **Tokenização cross-language** — modelos treinados predominantemente em inglês gastam 1.5x–3x mais tokens em outros idiomas. Isso impacta custo e eficiência de contexto.
-- **"Tokens de código são iguais a tokens de texto"** — código tende a ser mais eficiente por ter padrões repetitivos (keywords, indentação). Mas strings e comentários longos consomem tanto quanto texto natural.
-- **Não considerar tokens especiais** — tokens como `<|start|>`, `<|end|>`, separadores de role consomem espaço no contexto sem serem visíveis ao usuário.
+> [!warning] "1 token = 1 palavra"
+> Falso. Uma palavra longa ou incomum pode ser 3-5 tokens. Palavras curtas e comuns geralmente são 1 token.
+
+> [!warning] Ignorar a contagem antes de enviar
+> Sem contar tokens, é impossível prever custo e saber se cabe na janela de contexto. Use tiktoken ou equivalente.
+
+> [!warning] Tokenização cross-language
+> Modelos treinados predominantemente em inglês gastam 1.5x–3x mais tokens em outros idiomas. Isso impacta custo e eficiência de contexto.
+
+> [!warning] "Tokens de código são iguais a tokens de texto"
+> Código tende a ser mais eficiente por ter padrões repetitivos (keywords, indentação). Mas strings e comentários longos consomem tanto quanto texto natural.
+
+> [!warning] Não considerar tokens especiais
+> Tokens como `<|start|>`, `<|end|>`, separadores de role consomem espaço no contexto sem serem visíveis ao usuário.
 
 ## O futuro: modelos sem tokenizador
 

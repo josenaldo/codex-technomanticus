@@ -1,7 +1,7 @@
 ---
 title: "Atenção eficiente — FlashAttention, sparse e híbrida"
 created: 2026-06-20
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 status: growing
 fase: Magus
@@ -117,6 +117,9 @@ O softmax exige o valor máximo e a soma exponencial da linha inteira para norma
 > [!question]- Por que a versão 4 do FlashAttention é tanto mais rápida se a ideia é a mesma?
 > A ideia central — nunca materializar N×N, calcular em blocos na SRAM — é idêntica desde FA1 (2022). O que evolui são os detalhes de hardware-software co-design: FA2 (2023) reorganizou loops para maximizar uso de tensor cores. FA3 (2024) adicionou warp specialization e FP8 para Hopper. FA4 (2026) reprojeta o pipeline para Blackwell, reduzindo rescaling no softmax em ~90% — chegando a 22% mais rápido que o kernel cuDNN para o mesmo resultado exato.
 
+> [!warning] FlashAttention não acelera o decode token a token
+> Todo o ganho do FlashAttention vem de amortizar o tráfego de memória sobre um **bloco** de queries processado de uma vez — é isso que torna o tiling e o online softmax valiosos. No decode autoregressivo, cada step gera **um único token novo**, ou seja, a query é uma linha só: não há bloco de queries para amortizar. O gargalo do decode passa a ser outro — ler o KV cache inteiro da HBM a cada token (é o problema atacado por [[04a - KV cache, prefill e decode — a física da inferência|KV cache]] e [[04b - Encolhendo o KV cache — MHA, MQA, GQA, MLA|MHA→MLA]]). Por isso o FlashAttention é a peça que faz o **prefill** escalar, não a que faz o decode ser rápido.
+
 ## Vídeo: FlashAttention derivado do zero
 
 Umar Jamil deriva o FlashAttention matematicamente desde os primeiros princípios — mostrando o problema de memória, o tiling, o online softmax — e depois implementa em Python com Triton. É a explicação técnica mais acessível do mecanismo real:
@@ -153,6 +156,9 @@ graph LR
 | **DSA (DeepSeek)**     | Lightning indexer: heads leves selecionam atenção plena | O(n·k)          |
 
 A fronteira 2025-2026 é a **sparse attention treinável** — não um truque aplicado na inferência, mas esparsidade aprendida durante o treino. O **NSA** (*Native Sparse Attention*, fev/2025) treina o modelo já esparso; o **DSA** (DeepSeek-V3.2-Exp, set/2025) usa um *lightning indexer* — heads leves que pontuam quais tokens merecem atenção plena — atingindo 640 TFlops no prefill.
+
+> [!warning] NSA e DSA não se aplicam a um modelo já treinado
+> Diferente do FlashAttention (kernel exato, plugável em qualquer modelo já treinado) e até do StreamingLLM (remendo de inferência sem retreino), o padrão de esparsidade do NSA e do DSA é **parte da arquitetura** — aprendido durante o pré-treino junto com todos os outros pesos. Não dá para pegar um modelo com atenção densa já pronto e "ligar" NSA/DSA nele: a esparsidade precisa estar presente desde o início do treino para o modelo aprender a rotear informação certa para os tokens certos. Adotar essas técnicas é uma decisão que se toma **antes** de treinar, não depois.
 
 ### Atenção híbrida: local + global intercalados
 
@@ -196,6 +202,10 @@ FlashAttention doesn't approximate attention — it computes exactly the same re
 | Atenção local | Local attention |
 | Atenção global | Global attention |
 | Esparsidade treinável | Trainable sparsity / native sparse attention |
+
+## O que vem a seguir
+
+Este broto fechou o quadro de otimizações que atacam o **como** a atenção é calculada — kernel exato, esparsidade e arquitetura híbrida. A próxima nota, [[05 - Completação — o loop autoregressivo]], sai do mecanismo de atenção isolado e volta para o **loop** que o usa a cada passo: como o modelo escolhe o próximo token, por que esse loop é sequencial por natureza, e como prefill e decode (vistos em [[04a - KV cache, prefill e decode — a física da inferência]]) se encaixam nesse ciclo token a token.
 
 ## Ver mais
 

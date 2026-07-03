@@ -31,6 +31,8 @@ aliases:
 
 ![](https://www.youtube.com/watch?v=dqTZCknuctk)
 
+Um engenheiro recebe uma API key da OpenAI ou da Anthropic, cola num `.env`, faz a primeira chamada e recebe de volta um texto coerente, bem formatado, às vezes até com código funcionando. Funciona — e é fácil parar por aí, tratando o modelo como uma caixa mágica que "entende" a pergunta. Mas essa mesma caixa que acerta uma refatoração complexa também pode inventar um método que não existe com a mesma confiança tranquila, ou custar 50x mais que o necessário porque ninguém parou para entender o que está por baixo do capô. Entender o que é um LLM — e não só como chamar sua API — é o que separa usar a ferramenta de ser surpreendido por ela.
+
 ## O que é
 
 Um **Large Language Model** (LLM) é um modelo de machine learning baseado na arquitetura **[[Dicionário de IA#transformer|Transformer]]** que aprende padrões estatísticos de linguagem a partir de quantidades massivas de texto. O treinamento consiste essencialmente em uma tarefa: dado um contexto de [[Dicionário de IA#Token|tokens]] anteriores, prever o próximo token. Essa tarefa simples, repetida trilhões de vezes sobre corpora enormes, produz modelos capazes de:
@@ -157,10 +159,17 @@ A ideia de que certas habilidades *surgem* de repente acima de uma escala críti
 
 ## Armadilhas
 
-- **"A IA entende"** — LLMs calculam correlações estatísticas. Não entendem no sentido humano. Produzem texto plausível, não verdadeiro. [[Dicionário de IA#Hallucination|Alucinações]] são consequência direta disso.
-- **"Maior é melhor"** — um modelo de 7B bem ajustado pode superar um flagship genérico em tarefas específicas, e modelos menores e mais novos batem os maiores e mais antigos: o Llama-3 8B (2024) superou o Falcon 180B (2023) em um ano; via destilação, um T5 de 770M chegou a igualar o PaLM 540B (redução de >700×). Tamanho importa, mas dados, treino e fine-tuning importam mais.
-- **"Open-source = grátis"** — rodar um modelo de 70B localmente exige ~40GB de VRAM. O hardware tem custo significativo.
-- **Ignorar a família do modelo** — cada família (GPT, Claude, Gemini, Llama) tem personalidade e pontos fortes diferentes. Testar em uma e assumir que serve para outra é receita para surpresa.
+> [!warning] "A IA entende"
+> LLMs calculam correlações estatísticas. Não entendem no sentido humano. Produzem texto plausível, não verdadeiro. [[Dicionário de IA#Hallucination|Alucinações]] são consequência direta disso.
+
+> [!warning] "Maior é melhor"
+> Um modelo de 7B bem ajustado pode superar um flagship genérico em tarefas específicas, e modelos menores e mais novos batem os maiores e mais antigos: o Llama-3 8B (2024) superou o Falcon 180B (2023) em um ano; via destilação, um T5 de 770M chegou a igualar o PaLM 540B (redução de >700×). Tamanho importa, mas dados, treino e fine-tuning importam mais.
+
+> [!warning] "Open-source = grátis"
+> Rodar um modelo de 70B localmente exige ~40GB de VRAM. O hardware tem custo significativo.
+
+> [!warning] Ignorar a família do modelo
+> Cada família (GPT, Claude, Gemini, Llama) tem personalidade e pontos fortes diferentes. Testar em uma e assumir que serve para outra é receita para surpresa.
 
 ## O LLM em uma frase
 

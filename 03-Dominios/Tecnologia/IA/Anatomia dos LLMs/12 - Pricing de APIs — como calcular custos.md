@@ -1,7 +1,7 @@
 ---
 title: "Pricing de APIs — como calcular custos"
 created: 2026-05-02
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -58,6 +58,9 @@ graph LR
 ```
 
 ## Tabela de preços (maio 2026)
+
+> [!warning] Preços mudam rápido — confira antes de decidir
+> Esta tabela reflete maio de 2026. Providers ajustam preços com frequência (novos modelos, descontos, descontinuações). Antes de comprometer com um modelo em produção, confira o valor atual nas tabelas oficiais (ver [[#Referências]]).
 
 | Provider      | Modelo                | Tier      | Input $/MTok | Output $/MTok | Cache Read |
 | ------------- | --------------------- | --------- | ------------ | ------------- | ---------- |
@@ -205,6 +208,10 @@ LLM APIs charge per million tokens, with input and output priced separately — 
 | Custo oculto | Hidden cost |
 | Contexto desnecessário | Unnecessary context |
 
+## O que vem a seguir
+
+Calcular o custo de uma chamada isolada é só metade do trabalho — a outra metade é reduzi-lo sem perder qualidade. [[13 - Prompt caching e otimizações de API]] detalha os dois mecanismos que mais movem a agulha na prática: como estruturar o prompt para maximizar cache hits e quando vale a pena trocar latência por desconto via Batch API.
+
 ## Veja também
 
 - [[02 - Tokens e tokenização]] — como contar tokens antes de calcular o custo
@@ -213,7 +220,7 @@ LLM APIs charge per million tokens, with input and output priced separately — 
 
 ## Referências
 
-- **Anthropic** — *API Pricing* (2026). Tabela oficial de preços.
-- **OpenAI** — *API Pricing* (2026). Tabela oficial de preços.
-- **Artificial Analysis** — *LLM Cost Comparison* (2026). Comparativo independente.
-- **CostGoat** — *LLM API Pricing Tracker* (2026). Agregador de preços atualizado.
+- **Anthropic** — [*API Pricing*](https://www.anthropic.com/pricing) (2026). Tabela oficial de preços.
+- **OpenAI** — [*API Pricing*](https://openai.com/api/pricing/) (2026). Tabela oficial de preços.
+- **Artificial Analysis** — [*LLM Cost Comparison*](https://artificialanalysis.ai/) (2026). Comparativo independente.
+- **CostGoat** — [*LLM API Pricing Tracker*](https://costgoat.com/) (2026). Agregador de preços atualizado.

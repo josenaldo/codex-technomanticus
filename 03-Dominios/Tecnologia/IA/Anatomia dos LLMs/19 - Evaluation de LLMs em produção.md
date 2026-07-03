@@ -1,7 +1,7 @@
 ---
 title: "Evaluation de LLMs em produção"
 created: 2026-04-11
-updated: 2026-06-24
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -263,12 +263,23 @@ Um golden set de 100 exemplos rodando em CI custa ~$1/rodada (Sonnet × $0.01/ex
 
 ## Anti-patterns
 
-- **Eval só "no final"** — após shippar, nunca mais
-- **Golden set de 5 exemplos** — não é representativo
-- **Equality em tarefas abertas** — sempre vai falhar; use embedding ou judge
-- **Judge igual ao avaliado** — viés de auto-aprovação
-- **Métricas de modelo, não de negócio** — "accuracy 92%" não é resolution rate
-- **Mudar prompt sem rodar eval** — cego total
+> [!warning] Eval só "no final"
+> Rodar eval uma vez, no lançamento, e nunca mais — depois disso, mudanças de prompt seguem sem rede de segurança.
+
+> [!warning] Golden set de 5 exemplos
+> Um punhado de casos não representa a distribuição real de input; regressões em casos fora dessa amostra passam batido.
+
+> [!warning] Equality em tarefas abertas
+> Usar `actual == expected` em geração de texto livre sempre vai falhar — a resposta certa raramente é a string idêntica. Use embedding similarity ou LLM-as-judge.
+
+> [!warning] Judge igual ao avaliado
+> Usar o mesmo modelo (ou família) como judge do modelo avaliado introduz viés de auto-aprovação — o judge tende a preferir respostas no seu próprio estilo.
+
+> [!warning] Métricas de modelo, não de negócio
+> "Accuracy 92%" não diz nada sobre resolution rate, churn ou satisfação — métricas de modelo e métricas de negócio medem coisas diferentes.
+
+> [!warning] Mudar prompt sem rodar eval
+> Shippar uma mudança de prompt sem rodar o golden set é operar às cegas — não há como saber se piorou até o usuário reportar.
 
 ## Métricas-alvo em 2026
 
@@ -280,6 +291,10 @@ Um golden set de 100 exemplos rodando em CI custa ~$1/rodada (Sonnet × $0.01/ex
 | **Custo de eval / custo total** | <5% |
 | **Time to detect prompt regression** | <1 dia |
 | **A/B test em features novas** | Sempre |
+
+## O que vem a seguir
+
+Eval te diz *se* o modelo está bom o suficiente para produção — mas não resolve o outro lado da equação: rodar esse modelo custa caro em latência, memória e $/chamada. O próximo passo natural depois de fechar o pilar de qualidade é atacar o pilar de custo/performance: [[20 - Compressão de modelos — quantização e destilação]] mostra como reduzir o tamanho do modelo (quantização) ou transferir conhecimento pra um modelo menor (destilação) sem destruir a qualidade que você acabou de aprender a medir aqui.
 
 ## Como explicar em inglês
 
