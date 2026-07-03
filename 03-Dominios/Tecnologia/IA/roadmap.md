@@ -46,7 +46,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 13 | [[Structured Outputs]] | 8 | 0 | 1 | 7 | 100% | ✅ completo (2026-07-02) | ✅ |
 | 14 | [[Evaluation]] | 8 | 0 | 4 | 4 | 100% | ✅ completo (2026-07-01) | ✅ |
 | 15 | [[Observability]] | 8 | 0 | 5 | 3 | 100% | ✅ completo (2026-07-03) | ✅ |
-| 16 | [[Multimodal Prompting]] | 7 | 2 | 2 | 3 | 71% | 📋 em enriquecimento (03/07 — 2 notas reprovadas na verificação por fabricação, revertidas → ⬜) | ✅ |
+| 16 | [[Multimodal Prompting]] | 7 | 0 | 2 | 5 | 100% | ✅ completo (2026-07-03 — notas 04/05 refeitas com pesquisa real após reprovação) | ✅ |
 | 17 | [[Image Prompting]] | 7 | 0 | 3 | 4 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 18 | [[Improvement Loop]] | 7 | 0 | 4 | 3 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 19 | [[Ferramentas de IA]] | 5 | 0 | 0 | 5 | 100% | ✅ completo (2026-07-01) | ✅ |

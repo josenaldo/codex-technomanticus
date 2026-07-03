@@ -35,11 +35,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 7 |
-| ⬜ pendente | 2 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 2 |
-| ✅ feita | 3 |
+| ✅ feita | 5 |
 | 🔄 em andamento | 0 |
-| % concluído | 71% |
+| % concluído | 100% |
 
 ---
 
@@ -74,8 +74,8 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 04 - Áudio e vídeo — Whisper, Gemini Live e geração   [substantivo]
-- **Enriquecimento:** ⬜ pendente
-- **Estado:** 303 linhas reais · fase: Iniciado · status: seedling
+- **Enriquecimento:** ✅ feita (2026-07-03, refação pós-reprovação)
+- **Estado:** 318 linhas · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, L1, P1
 - **Score:** 8/12
 - **Plano de execução:**
@@ -83,17 +83,17 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - (L1) Adicionar wikilink cross-galho (não só notas internas do Multimodal Prompting)
   - (Caducidade) Verificar se "Claude voice sem API pública estável até maio/2026" ainda é verdade e atualizar
   - (Opcional/E3) Mermaid do pipeline Whisper→LLM vs áudio-direto, para visualizar a decisão
-- **Resultado:** —
+- **Resultado:** ✅ refeita com PESQUISA REAL (não o burst reprovado). E2: abertura com cenário de reunião de negociação. E3: Mermaid da decisão transcrever-vs-escutar. L1: cross-galho → [[Economia de Tokens/01 - O problema — por que tokens custam dinheiro]]. **Caducidade corrigida (web-verificado 03/07):** Claude Voice Mode existe (app + Claude Code desde mar/2026) mas é **input-only/ditado** — não é áudio-como-mídia nem API de voz bidirecional; removido o erro de listá-lo junto a Gemini Live/OpenAI Realtime. Zero fabricação.
 
 #### 05 - Tabelas e spreadsheets como input estruturado   [substantivo]
-- **Enriquecimento:** ⬜ pendente
-- **Estado:** 354 linhas reais · fase: Iniciado · status: seedling
+- **Enriquecimento:** ✅ feita (2026-07-03, refação pós-reprovação)
+- **Estado:** 402 linhas · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, P1
 - **Score:** 9/12
 - **Plano de execução:**
   - (E2/Núcleo) Adicionar abertura com cenário concreto antes do TL;DR — ex: planilha de 500 linhas, cola tudo no prompt ou manda print ou usa Code Interpreter, e a escolha errada custa tokens/precisão
   - (P1/Opcional) Adicionar exemplo de código-com-falha (colar CSV grande, ignorar separador BR) para reforçar as armadilhas com evidência de código quebrado
-- **Resultado:** —
+- **Resultado:** ✅ E2: abertura com cenário da planilha de 500 linhas + eixo de decisão. E3: Mermaid dos três modos. **P1 com EVIDÊNCIA REAL (pandas 3.0 rodado localmente):** o CSV BR (sep `;`, decimal `,`) lido com defaults **NÃO lança `ParserError`** — vira 1 coluna só (silencioso); com `sep=';'` mas sem `decimal=','`, `.sum()` concatena string (`'12,504,90'`) sem erro. Corrige a suposição do burst reprovado (que afirmava ParserError). Outputs conferidos, zero fabricação.
 
 #### 06 - Como dizer ao modelo o tipo de leitura   [mecânico]
 - **Enriquecimento:** ➖ não precisa

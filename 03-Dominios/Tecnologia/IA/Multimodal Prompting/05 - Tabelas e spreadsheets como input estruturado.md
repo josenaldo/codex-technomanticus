@@ -1,7 +1,7 @@
 ---
 title: "05 - Tabelas e spreadsheets como input estruturado"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 fase: Iniciado
@@ -25,6 +25,24 @@ aliases:
 
 > [!question]- Para uma planilha financeira com 500 linhas e 20 colunas, qual é o melhor modo de input?
 > Depende da pergunta. Se a pergunta é qualitativa ("qual tendência essa planilha mostra?", "há anomalias?"), um resumo textual eficiente — `pandas describe()` + amostra de 10 linhas + lista de colunas — é suficiente, cabe em ~2k tokens e o modelo raciocina bem. Se a pergunta exige operação numérica ("qual a soma de revenda no Q3?", "calcule o CAGR das 5 maiores categorias"), texto pode induzir alucinação de cálculo — use Code Interpreter ou ferramenta com pandas. Se a planilha tem gráfico embutido ou formatação condicional que é parte da informação, mande como imagem em complemento ao texto. O padrão que não funciona é colar as 500 linhas raw no prompt — o modelo perde precisão de valor em contexto longo e o custo sobe desnecessariamente.
+
+Você recebe uma planilha de vendas com 500 linhas e 20 colunas e a pergunta "essa base mostra alguma anomalia?". Três reflexos disputam o teclado: colar as 500 linhas direto no prompt, tirar um print e mandar a imagem, ou subir o arquivo pro Code Interpreter. Os três "funcionam" — e três levam a resultados diferentes, com custos e riscos diferentes. Colar tudo gasta contexto e faz o modelo alucinar somas plausíveis. O print perde precisão numérica no OCR. O Code Interpreter é preciso mas adiciona latência e setup. A escolha errada não dá erro — dá uma resposta confiante e sutilmente errada, que é pior. Esta nota existe pra você fazer essa escolha de propósito, não por reflexo.
+
+O eixo que decide quase tudo: **a pergunta é sobre o shape/tendência do dado, sobre um número exato, ou sobre o layout visual?** Cada resposta puxa um modo diferente — e datasets grandes quase nunca vão inteiros pro prompt.
+
+```mermaid
+flowchart TD
+    A[Tabela / planilha] --> B{Dataset grande?<br/>1k+ linhas ou<br/>exige computação}
+    B -->|Sim| T[Modo 3 — Tool /<br/>Code Interpreter<br/>pandas no sandbox]
+    B -->|Não| C{O que a pergunta<br/>precisa?}
+    C -->|Shape, tendência,<br/>anomalia qualitativa| D[Modo 1 — Texto<br/>describe + sample,<br/>não a tabela crua]
+    C -->|Valor numérico<br/>exato / cálculo| T
+    C -->|Layout, merged cells,<br/>cor de status, gráfico| I[Modo 2 — Imagem<br/>screenshot em alta res]
+    D --> M{Documento misto?<br/>PDF + tabela + gráfico}
+    I --> M
+    T --> M
+    M -->|Sim| X[Combine modos —<br/>PDF nativo + texto<br/>redundante + imagem]
+```
 
 ## Os três modos
 
@@ -305,6 +323,37 @@ Vale o custo de token extra quando a resposta precisa ser auditável.
 - **Combine quando o documento é misto.** Relatório financeiro merece PDF + texto + imagem.
 - **Numere as tabelas no prompt.** "Tabela 1", "Tabela 2" facilita referência cruzada.
 - **Cuidado com CSV de português.** Vírgula como separador decimal quebra parsing — converta antes pra `.` ou explicite no prompt.
+
+## Código-com-falha — o CSV brasileiro que quebra em silêncio
+
+A armadilha mais cara desta nota não é o modelo alucinando: é o **pandas** entregando um DataFrame errado sem reclamar, e você mandar esse lixo pro prompt. Planilha exportada de Excel em português vem, por padrão, com **`;` como separador de campo e `,` como separador decimal** (`Café;12,50`). O `read_csv` default espera `,` como separador de campo e `.` como decimal. Repare no que acontece — a saída abaixo é real (pandas 3.0):
+
+```python
+import pandas as pd
+# vendas.csv (export Excel BR):
+#   produto;preco
+#   Café;12,50
+#   Açúcar;4,90
+
+# ❌ Tentativa 1 — defaults
+df = pd.read_csv("vendas.csv")
+print(df.columns.tolist())   # ['produto;preco']  ← UMA coluna só; o ';' não foi separado
+print(df.shape)              # (2, 1)
+# Nenhum erro. df["preco"] → KeyError lá na frente, longe da causa.
+
+# ❌ Tentativa 2 — acertou o separador, esqueceu o decimal
+df = pd.read_csv("vendas.csv", sep=";")
+print(df["preco"].dtype)     # str  ← "12,50" virou texto, não número
+print(df["preco"].sum())     # '12,504,90'  ← concatenação de string, SEM erro
+# df["preco"].mean() aí sim levanta TypeError — mas .sum() passa batido e vira relatório errado.
+
+# ✅ Correto
+df = pd.read_csv("vendas.csv", sep=";", decimal=",")
+print(df["preco"].dtype)     # float64
+print(df["preco"].sum())     # 17.4
+```
+
+A lição: o erro **não** aparece como `ParserError` no `read_csv` — ele aparece (quando aparece) muito depois, como `KeyError` de coluna inexistente ou como um total sem sentido. Uma soma que concatena strings não solta exceção nenhuma. Por isso: sempre `print(df.dtypes)` e `df.head()` **antes** de mandar qualquer coisa pro modelo — se uma coluna numérica está como `object`/`str`, o dado já está corrompido na origem, e nenhum prompt bem escrito conserta isso.
 
 ## Armadilhas comuns
 

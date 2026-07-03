@@ -1,7 +1,7 @@
 ---
 title: "04 - Áudio e vídeo — Whisper, Gemini Live e geração"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 fase: Iniciado
@@ -23,10 +23,25 @@ aliases:
 # 04 - Áudio e vídeo — Whisper, Gemini Live e geração
 
 > [!abstract] TL;DR
-> Áudio tem dois caminhos: transcrever com Whisper (barato, robusto, é o baseline padrão pra podcast/reunião) ou enviar direto pro modelo multimodal (Gemini Pro, GPT-4o, Claude voice — mais caro, preserva entonação e contexto sonoro). Vídeo é dominado pelo Gemini (até ~2h em alguns tiers, frames + áudio integrados). Geração de vídeo (Sora, Veo, Runway) aparece só pra fechar o panorama — o foco da nota é input. Tempo real (voz/vídeo bidirecional) usa APIs separadas: Gemini Live, GPT-4o Realtime, Claude voice mode. Use cases: resumo de reunião, Q&A em podcast, análise de code walkthrough, tutorial review.
+> Áudio tem dois caminhos: transcrever com Whisper (barato, robusto, é o baseline padrão pra podcast/reunião) ou enviar direto pro modelo multimodal com input de áudio nativo (Gemini Pro, GPT-4o — mais caro, preserva entonação e contexto sonoro). Vídeo é dominado pelo Gemini (até ~2h em alguns tiers, frames + áudio integrados). Geração de vídeo (Sora, Veo, Runway) aparece só pra fechar o panorama — o foco da nota é input. Tempo real (voz/vídeo bidirecional) usa APIs separadas: Gemini Live e GPT-4o Realtime. A voz da Anthropic (app Claude, Voice Mode do Claude Code) é **input-only/ditado**, não uma API de áudio programática — não entra no pipeline batch nem no realtime bidirecional. Use cases: resumo de reunião, Q&A em podcast, análise de code walkthrough, tutorial review.
 
 > [!question]- Para uma reunião gravada de 1 hora, vale a pena mandar o áudio direto ao Gemini ou usar Whisper + Claude texto?
 > Depende da tarefa. Para extração de action items, resumo por tópico, ou Q&A textual — Whisper + Claude texto funciona igualmente bem e é mais barato: Whisper custa ~$0.36/hora de áudio; a chamada texto ao Claude com transcrição soma mais ~$0.20 dependendo do tamanho — total ~$0.56. Gemini 2.x Pro com áudio direto de 1h gasta ~115k tokens de input, que pode custar $1.15-$3.45 dependendo do plano. A diferença é que Gemini captura tom, hesitação, quem interrompeu quem — sinais que a transcrição textual não preserva. Use Gemini áudio direto quando a tarefa exige análise de comunicação (reunião de negociação, entrevista de UX, análise de pitch) e Whisper + texto para tudo que precisa apenas do conteúdo semântico.
+
+Chega na sua mesa uma reunião de negociação gravada: 58 minutos, três participantes, um cliente irritado. O PM quer duas coisas — a lista de action items e uma leitura de "quem estava desconfortável quando o preço foi mencionado". A primeira pergunta é sobre **conteúdo**; a segunda é sobre **tom**. E aqui está a armadilha: se você resolver as duas do mesmo jeito, ou paga caro à toa ou perde o sinal que interessa. Mandar a hora inteira de áudio pro modelo multimodal mais caro cobre tom mas queima orçamento no que era só transcrição; transcrever com Whisper e mandar o texto resolve os action items por centavos mas apaga a hesitação na voz. Áudio e vídeo obrigam essa decisão a cada tarefa — e ela quase nunca é "use sempre o modelo mais poderoso".
+
+A regra que organiza a nota inteira: **transcreva quando você só precisa do que foi dito; escute (áudio direto no modelo) quando importa como foi dito.** Vídeo tem sua própria pegada de custo — imagem e som juntos, contados por frame — e por isso ganha seção à parte.
+
+```mermaid
+flowchart TD
+    A[Áudio de entrada] --> B{A tarefa depende de<br/>tom, hesitação, quem<br/>interrompeu quem?}
+    B -->|Não — só o conteúdo<br/>semântico importa| C[Whisper transcreve]
+    C --> D[LLM texto<br/>resume / action items / Q&A]
+    B -->|Sim — sinais<br/>paralinguísticos| E[Áudio direto no<br/>modelo multimodal<br/>Gemini / GPT-4o]
+    B -->|Volume grande ou<br/>offline / self-hosted| C
+    D --> F[Barato, rápido,<br/>preciso p/ semântica]
+    E --> G[Mais caro, preserva<br/>entonação e contexto sonoro]
+```
 
 ## Áudio — dois caminhos
 
@@ -69,7 +84,7 @@ Modelos multimodais aceitam áudio como input nativo. Diferença pra Whisper + t
 
 - **Gemini 2.x Pro / Flash** — áudio até ~8h em alguns tiers; cobra ~32 tokens por segundo (Pro) ou menos em Flash.
 - **GPT-4o** — áudio nativo via Realtime API ou chat completions com input de áudio.
-- **Claude voice (Anthropic)** — disponível em produtos Anthropic (claude.ai web/mobile/desktop), sem API pública estável até maio/2026; pra pipeline programático, siga com Whisper + Claude texto ou Gemini/GPT-4o nativos.
+- **Claude voice (Anthropic)** — voz existe nos produtos Anthropic (app Claude web/mobile e, desde março/2026, o [Voice Mode do Claude Code](https://www.anthropic.com/news)), mas é **input-only**: fala vira transcrição e o Claude responde em texto — é ditado, não escuta paralinguística nem áudio-como-mídia. A API do Claude **não** tem input de áudio nativo comparável ao do Gemini/GPT-4o até a data desta nota. Pra pipeline programático com áudio, siga com Whisper + Claude texto, ou use Gemini/GPT-4o (que aceitam áudio nativo).
 
 Quando faz sentido pular Whisper:
 
@@ -119,7 +134,7 @@ Pra casos onde latência <300ms é requisito (assistente de voz, tutor que conve
 
 - **Gemini Live API** — WebSocket bidirecional, áudio e vídeo combinados, vozes nativas.
 - **OpenAI Realtime API** — sucessor do "assistant voice", WebSocket, integração com tools em tempo real.
-- **Anthropic voice mode** — disponível em produtos Claude.
+- **Anthropic voice mode** — existe nos produtos Claude (app e Claude Code), mas é **input-only** (fala→texto): não é bidirecional em tempo real como Gemini Live / OpenAI Realtime, e não expõe API de voz programática. Não é uma opção pra UX conversacional voz-a-voz via API.
 
 Esses não substituem Whisper + LLM em pipeline batch — são pra UX conversacional. Custo por minuto é significativamente maior que Whisper + chamada de texto.
 
@@ -300,3 +315,4 @@ Para reuniões onde atribuição importa, a stack que funciona melhor: pyannote 
 - [[03 - PDFs e documentos — extração e análise]] — PDF é outro doc longo com lógica análoga
 - [[06 - Como dizer ao modelo o tipo de leitura]] — "transcreva" vs "resuma" vs "extraia action items" muda muito
 - [[07 - Limites e armadilhas multimodais]] — onde transcrição e leitura de vídeo falham
+- [[Economia de Tokens/01 - O problema — por que tokens custam dinheiro]] — áudio (~32 tok/s) e vídeo (~258 tok/frame) estouram orçamento rápido; a decisão transcrever-vs-escutar é, no fundo, uma decisão de custo
