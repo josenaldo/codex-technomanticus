@@ -14,7 +14,7 @@ Diagnóstico migrado de guia/roadmap - ia.md (30/06). Cada entrada tem estado de
 
 **Galho:** `03-Dominios/Tecnologia/IA/Anatomia dos LLMs`
 
-> [!warning] Diagnóstico de 30/06 DEFASADO — PRÉ-REFORMULAÇÃO. Este galho passou por reordenação/renumeração depois deste diagnóstico (transformer→completação→janela, notas novas 04a/04b/04c/05, renumeração). As entradas abaixo podem NÃO mapear 1:1 para os arquivos atuais. Ao tratar este galho, RE-DIAGNOSTICAR do zero (/diagnosticar-galho) em vez de confiar nestas entradas.
+> [!note] Reconciliado em 2026-07-03. As entradas abaixo **já refletem a reformulação** (reordenação transformer→completação→janela, brotos 04a/04b/04c, nota 05 Completação, renumeração): os 24 headings mapeiam 1:1 para os arquivos atuais e nenhuma nota foi alterada após o diagnóstico. O antigo aviso "PRÉ-REFORMULAÇÃO, re-diagnosticar do zero" era um banner defasado — a auditoria de 03/07 (contagem + mapeamento entrada↔arquivo + git) confirmou que este roadmap está atual. Não precisa re-diagnosticar; seguir direto para enriquecimento.
 
 ## Régua de análise
 

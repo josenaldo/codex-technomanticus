@@ -15,7 +15,7 @@ Roadmap **de galho-pai**: mapeia o estado dos **sub-galhos** (não as notas dos 
 **Galho:** `03-Dominios/Tecnologia/IA/Claude Code`
 **Nível:** galho-pai (contém sub-galhos)
 
-> [!warning] Galho NÃO diagnosticado no mestre (30/06). O diagnóstico nota-a-nota do domínio IA (`00-Meta/guia/roadmap - ia.md`) marcou Claude Code como "vazio/fora de escopo" — os sub-galhos abaixo **nunca foram auditados**. Cada um precisa de `/diagnosticar-galho` antes de virar alvo de enriquecimento.
+> [!success] Galho 100% diagnosticado em 2026-07-02. Os 6 sub-galhos foram auditados nota a nota (55 notas dos netos) e cada um tem seu `roadmap.md`. Superado o gap do mestre (30/06), que marcava Claude Code como "vazio/fora de escopo". Pronto para `/enriquecer-galho`.
 
 ## Notas diretas (logo abaixo de Claude Code)
 
@@ -29,12 +29,12 @@ Estado agregado de cada sub-galho. `roadmap` = existe roadmap por-pasta? Contage
 
 | Sub-galho | Notas | Estado | roadmap |
 |-----------|-------|--------|---------|
-| Configuração | 8 | ⬜ não diagnosticado | a criar |
-| Hooks e Guardrails | 8 | ⬜ não diagnosticado | a criar |
-| Mental Model | 9 | ⬜ não diagnosticado | a criar |
-| Skills e MCP | 8 | ⬜ não diagnosticado | a criar |
-| Time e Automação | 8 | ⬜ não diagnosticado | a criar |
-| Workflows | 10 (+ sub-galho "11 - Estratégias estruturais de contexto", 4 notas ✅) | 🔶 parcial — só o sub-galho "11" foi enriquecido (2026-06-27, Modo B); resto não diagnosticado | a criar |
+| Configuração | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Configuração/roadmap\|roadmap]] |
+| Hooks e Guardrails | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Hooks e Guardrails/roadmap\|roadmap]] |
+| Mental Model | 9 | 📋 diagnosticado (9 ⬜ · 0% enriquecido) | ✓ [[Mental Model/roadmap\|roadmap]] |
+| Skills e MCP | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Skills e MCP/roadmap\|roadmap]] |
+| Time e Automação | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Time e Automação/roadmap\|roadmap]] |
+| Workflows (pai) | 10 diretas (9 ⬜ · 1 ➖) + sub-galho "11" (4 ⬜) | 📋 diagnosticado (0% enriquecido) | ✓ [[Workflows/roadmap\|roadmap]] |
 
 ## Tabela-resumo (agregado dos sub-galhos)
 
@@ -42,15 +42,21 @@ Estado agregado de cada sub-galho. `roadmap` = existe roadmap por-pasta? Contage
 |---------|-------|
 | Sub-galhos | 6 |
 | ✅ completos | 0 |
-| 🔶 parciais | 1 (Workflows) |
-| ⬜ não diagnosticados | 5 |
+| 📋 diagnosticados (enriquec. pendente) | 6 (todos) |
+| 🔶 parciais | 0 |
+| ⬜ não diagnosticados | 0 |
 | Notas diretas | 1 (index.md, MOC) |
-| Notas totais estimadas (netos) | ~51 |
+| Notas totais (netos) | 55 (8+8+9+8+8 nas 5 folhas + 10 diretas Workflows + 4 no sub-galho 11) |
+| Notas ⬜ pendentes | 54 |
+| Notas ➖ não precisa | 1 (Workflows/07) |
+
+> **Galho-pai 100% diagnosticado em 2026-07-02.** Todos os 6 sub-galhos têm `roadmap.md`.
+> Próximo passo é `/enriquecer-galho` (54 notas ⬜, quase todas `[substantivo]`).
 
 ---
 
 ## Próximos passos
 
-1. `/diagnosticar-galho` em cada sub-galho (um a um) — gera o `roadmap.md` de cada um mapeando suas notas.
-2. Ao fechar cada sub-galho, atualizar a linha dele na tabela **Sub-galhos** acima (estado + link) e o rollup deste galho no `IA/roadmap.md` (pai).
-3. Workflows é ele próprio um galho-pai (tem o sub-galho "11") — seu roadmap deve seguir este mesmo formato de galho-pai.
+1. ~~`/diagnosticar-galho` em cada sub-galho~~ ✅ **feito (2026-07-02)** — os 6 sub-galhos têm `roadmap.md`.
+2. `/enriquecer-galho "03-Dominios/Tecnologia/IA/Claude Code"` — o coordenador desce a árvore até a próxima folha com nota ⬜. São 54 notas pendentes, quase todas `[substantivo]` (padrão de gap do galho: E4 casos práticos, E5 "O que vem a seguir" narrativo, E8 armadilhas em callout, M1 mídia).
+3. Atualizar o rollup deste galho no `IA/roadmap.md` (pai) conforme o enriquecimento avança.

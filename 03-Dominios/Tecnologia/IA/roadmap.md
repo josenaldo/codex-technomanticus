@@ -16,7 +16,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 **Nível:** raiz (contém galhos)
 **Rastreio multi-nível:** raiz → galho → (sub-galho) → nota. Cada nível mapeia só o nível imediatamente abaixo.
 
-> [!warning] Estados derivados do diagnóstico mestre de 30/06 (`00-Meta/guia/roadmap - ia.md`), possivelmente DEFASADOS. Vários galhos marcados com ⬜ pendentes já foram enriquecidos por commits posteriores — o diagnóstico apenas encontrou gaps residuais (E2/E1/E3/piso). Reconciliar o estado real **ao tratar cada galho**, atualizando o roadmap do galho e este rollup.
+> [!note] Auditoria de reconciliação — 2026-07-03. Cruzamento de contagem de notas, mapeamento entrada-do-roadmap↔arquivo e git (último commit de nota por galho) confirmou que **os 21 roadmaps de galho estão estruturalmente atuais**. O medo anterior ("vários ⬜ já foram enriquecidos por commits posteriores") **não se materializou**: nenhuma nota de galho pendente foi alterada após o diagnóstico de 30/06 — só os 3 galhos já ✅ (Ferramentas 01/07, Evaluation e Structured Outputs 02/07) tiveram commits posteriores. Os estados ⬜/✅ abaixo são fiéis. Banner falso de Anatomia dos LLMs corrigido nesta data. Nenhum galho exige re-diagnóstico.
 
 ## Como o rastreio funciona
 
@@ -31,7 +31,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 
 | # | Galho | Notas | ⬜ | ➖ | ✅ | % | Estado | roadmap |
 |---|-------|------:|---:|---:|---:|--:|--------|---------|
-| 1 | [[Anatomia dos LLMs]] | 24 | 23 | 1 | 0 | 4% | 📋 ⚠️ diagnóstico PRÉ-reformulação — re-diagnosticar | ✅ |
+| 1 | [[Anatomia dos LLMs]] | 24 | 23 | 1 | 0 | 4% | 📋 diagnosticado, atual (reconciliado 03/07 — roadmap pós-reformulação, mapeia 1:1) | ✅ |
 | 2 | [[Anatomia de Agents]] | 11 | 11 | 0 | 0 | 0% | 📋 diagnosticado | ✅ |
 | 3 | [[Spec-Driven Development]] | 12 | 12 | 0 | 0 | 0% | 📋 diagnosticado (galho mais cru) | ✅ |
 | 4 | [[Economia de Tokens]] | 22 | 20 | 2 | 0 | 9% | 📋 diagnosticado | ✅ |
@@ -50,8 +50,8 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 17 | [[Image Prompting]] | 7 | 4 | 3 | 0 | 43% | 📋 diagnosticado | ✅ |
 | 18 | [[Improvement Loop]] | 7 | 3 | 4 | 0 | 57% | 📋 diagnosticado | ✅ |
 | 19 | [[Ferramentas de IA]] | 5 | 0 | 0 | 5 | 100% | ✅ completo (2026-07-01) | ✅ |
-| 20 | [[Claude Code]] | ~51 (6 sub-galhos) | — | — | — | — | ⬜ não diagnosticado (só Workflows/11 ✅) | ✅ (galho-pai) |
-| 21 | [[O Lado Sombrio da IA]] | 1 + glosas | — | — | — | — | ⚪ especial — cluster crítico, fora das trilhas | a criar |
+| 20 | [[Claude Code]] | 55 (6 sub-galhos) | 54 | 1 | 0 | 2% | 📋 diagnosticado (2026-07-02, galho-pai completo) | ✅ (galho-pai) |
+| 21 | [[O Lado Sombrio da IA]] | 1 + glosas | 1 | 0 | 0 | 0% | ⚪ especial — cluster crítico; nota Débito cognitivo diagnosticada (2026-07-02) | ✅ |
 
 ## Notas soltas (logo abaixo de IA/)
 
@@ -68,17 +68,19 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 |---------|-------|
 | Galhos totais | 21 |
 | ✅ completos | 3 (Structured Outputs, Evaluation, Ferramentas de IA) |
-| 📋 diagnosticados, enriquecimento pendente | 16 |
-| ⬜ não diagnosticados | 1 (Claude Code — galho-pai, 6 sub-galhos) |
-| ⚪ especiais | 1 (O Lado Sombrio da IA) |
+| 📋 diagnosticados, enriquecimento pendente | 17 (inclui Claude Code) |
+| ⬜ não diagnosticados | 0 |
+| ⚪ especiais | 1 (O Lado Sombrio da IA — agora com roadmap) |
 | Notas soltas diretas | 4 |
-| Notas totais (galhos-folha diagnosticados) | ~232 |
+| Notas totais (galhos-folha diagnosticados) | ~287 (232 + 55 de Claude Code) |
+
+> **IA 100% diagnosticado em 2026-07-02** — todos os 21 galhos têm `roadmap.md`. Último buraco (Claude Code, galho-pai de 6 sub-galhos = 55 notas) fechado via workflow de fan-out (48 notas em ~2,4 min).
 
 ---
 
 ## Próximos passos
 
-1. **Diagnosticar Claude Code** — rodar `/diagnosticar-galho` nos 6 sub-galhos (Configuração, Hooks e Guardrails, Mental Model, Skills e MCP, Time e Automação, Workflows). Ver `Claude Code/roadmap.md`.
-2. **Re-diagnosticar Anatomia dos LLMs** — o roadmap atual é pré-reformulação; renumeração invalidou o mapeamento nota-a-nota.
-3. **Reconciliar os 16 📋** — ao tratar cada galho via `/enriquecer-galho`, conferir quais ⬜ já foram de fato enriquecidos por commits posteriores ao diagnóstico de 30/06 e atualizar o roadmap do galho + este rollup.
-4. **O Lado Sombrio da IA** — decidir se ganha roadmap próprio ou permanece fora do fluxo (cluster crítico, glosas na raiz).
+1. ~~**Diagnosticar Claude Code**~~ ✅ **feito (2026-07-02)** — 6 sub-galhos, 55 notas, todos com `roadmap.md`. Ver `Claude Code/roadmap.md`.
+2. ~~**Re-diagnosticar Anatomia dos LLMs**~~ ✅ **desnecessário (auditoria 03/07)** — o roadmap já está pós-reformulação e mapeia 1:1 para os arquivos; banner defasado corrigido.
+3. ~~**Reconciliar os 📋**~~ ✅ **feito (auditoria 03/07)** — git confirmou que nenhuma nota de galho pendente mudou após o diagnóstico de 30/06; estados ⬜/✅ fiéis. Próximo movimento em cada galho é **enriquecimento** (`/enriquecer-galho`), não re-diagnóstico.
+4. ~~**O Lado Sombrio da IA**~~ ✅ nota Débito cognitivo diagnosticada; cluster mantém glosas na raiz (não promover), mas agora tem `roadmap.md`.
