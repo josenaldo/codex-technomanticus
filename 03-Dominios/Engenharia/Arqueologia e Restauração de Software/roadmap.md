@@ -37,20 +37,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas (roster) | 28 |
-| ✅ escritas | 11 |
-| ⬜ não escritas | 17 |
+| ✅ escritas | 14 |
+| ⬜ não escritas | 14 |
 | 🔄 rascunho | 0 |
-| % escrito | 39% |
+| % escrito | 50% |
 
-**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 4/9 🔄 · Magus 0/12 ⬜.
+**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 7/9 🔄 · Magus 0/12 ⬜.
 
 ## Tabela-resumo (enriquecimento das escritas)
 
 | Métrica | Valor |
 |---------|-------|
-| Escritas | 11 |
+| Escritas | 14 |
 | ✅ enriquecidas | 0 |
-| ⬜ pendentes (só M1/mídia) | 11 |
+| ⬜ pendentes (só M1/mídia) | 14 |
 | Score médio verificar-nota | 11/12 (gap único = M1) |
 
 ---
@@ -125,7 +125,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Plano de execução:** buscar vídeo sobre git archaeology / git blame forense / git log pickaxe
 - **Resultado:** código=o "como" / git=o "porquê"; blame -w/-M, pickaxe log -S; hotspots só introduzidos (defere à 09)
 
-### Adepto (8-16) — em andamento 🔄 (4/9)
+### Adepto (8-16) — em andamento 🔄 (7/9)
 
 #### 08 - Engenharia reversa e recuperação de arquitetura   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 13b36e5)
@@ -164,25 +164,31 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Resultado:** continuação direta da 10 (saída grande/opaca onde a caracterização manual não escala); golden master (congela saída p/ N inputs, muitas vezes gerados/aleatórios); approval testing (received vs approved, aprova snapshot em vez de asserção); ferramentas ApprovalTests (Falco), TextTest (Geoff Bache — correção de atribuição, Emily = divulgadora), Verify/.NET, jest snapshots; armadilhas aprovar-cegamente + não-determinismo/scrubbing; código Java
 
 #### 12 - Seams e quebra de dependência   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** os pontos de intervenção; o legacy change algorithm (Feathers); tipos de seam.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit 7df5c72)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 468 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 OK (468 > 400 — a mais longa do galho, na faixa de profundidade preferida 440-540)
+- **Score:** 11/12 (T2 ✓)
+- **Plano de execução:** buscar vídeo sobre seams / breaking dependencies / Feathers legacy code
+- **Resultado:** conceito de seam (alterar comportamento sem editar no lugar) + enabling point; 3 tipos (object/preprocessing/link); legacy change algorithm 5 passos (esta nota = passo 3, a 10 = passo 4); técnicas de quebra com código (Parameterize Constructor, Extract Interface, Extract and Override Call/Factory); paradoxo da testabilidade + "lean on the compiler"; delimita 12=abrir-seam-p/-testar-existente vs 13=costurar-novo-ao-lado
 
 #### 13 - Técnicas cirúrgicas   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** Sprout/Wrap method & class, micro-committing, exploratory refactoring.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit 68c4209)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 388 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 OK (388 < 400 — isento pelo padrão capítulo)
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre Sprout Method / Wrap Method / adding features to legacy code
+- **Resultado:** ADICIONAR sem abrir o velho (complemento da 12); Sprout Method/Class (brotar novo testado + 1 linha de chamada); Wrap Method/Class (renomear velho + interceptar); árvore de decisão sprout-vs-wrap; micro-commits reversíveis; scratch/exploratory refactoring só acenado (defere à 06); delimita 13=adiciona vs 14=reorganiza-existente
 
 #### 14 - Refactoring em terreno hostil   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** o catálogo de Fowler aplicado a código que resiste (sem rede, com acoplamento).
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit d58c85a)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 405 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 OK (405 > 400)
+- **Score:** 11/12 (T2 ✓)
+- **Plano de execução:** buscar vídeo sobre Fowler refactoring / refactoring legacy code / Extract Method
+- **Resultado:** definição estrita (estrutura sem comportamento — vital sem rede); micro-passo ainda menor no hostil; 4 receitas do catálogo com o perigo de cada (Extract Method/estado compartilhado, Rename/Naur, Extract Variable/número mágico, Extract Class/god class hotspot da 09); automated refactoring da IDE como aliado; tensão "alterna, não resolve"; quando NÃO refatorar (código estável); 4 armadilhas (misturar refactor+comportamento, sem rede, fora de escopo, Extract Class sem checkpoints)
 
 #### 15 - O Método Mikado   [substantivo]
 - **Escrita:** ⬜ não escrita
@@ -288,7 +294,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 ## Próximos passos
 
-1. **Escrever a nota 12** (Seams e quebra de dependência) — os pontos de intervenção; o *legacy change algorithm* de Feathers; tipos de seam (object/preprocessing/link). É a AÇÃO que as notas 10-11 habilitaram (agora que há rede, dá pra quebrar dependência e refatorar) e o alvo que a forense da 09 priorizou. Notas 09-11 já apontam a 12 no handoff.
-2. Seguir o roster 13→28, uma por vez, commitando por nota (ou par), atualizando **este roadmap** (escrita ✅ + commit) a cada nota fechada.
+1. Faltam **2 notas para fechar a fase Adepto (8-16)**: a **15** e a **16**.
+   - **Nota 15 — O Método Mikado**: grafo de pré-requisitos + revert agressivo para mudanças GRANDES/emaranhadas (onde puxar um fio quebra outros). A estratégia para o que as técnicas locais das notas 13-14 não dão conta sozinhas; 13 e 14 já apontam a 15 no handoff. Autores: Ola Ellnestam & Daniel Brolund (*The Mikado Method*, Manning 2014).
+   - **Nota 16 — IA como acelerador e seus riscos** (FECHA a Adepto): LLM p/ engenharia reversa/docs; regra = characterization ANTES de deixar a IA mudar; absorve o candidato C5 cortado da nota 01. Fronteira com IA `Agentes de Codificação`.
+2. Depois da 16, ABRE a fase **Magus (17-28)** pela nota 17 (Frameworks de decisão: manter/restaurar/substituir/aposentar; 6-7 R's, TIME Gartner). Magus pede piso T3 500 em tese (isento na prática) e P3 (teoria subjacente) passa a ser cobrado.
+3. Seguir o roster 17→28, uma por vez, commitando por nota (ou par), atualizando **este roadmap** a cada nota fechada.
 3. **Rodada de mídia (M1)** das 7 notas de Iniciado quando o galho amadurecer — buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), fechando o único gap recorrente.
 4. Ao concluir cada fase, atualizar a linha "Por fase" e as duas tabelas-resumo.
