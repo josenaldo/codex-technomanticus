@@ -18,9 +18,6 @@
 > List of Computer Science courses with video lectures.  
 > [https://github.com/Developer-Y/cs-video-courses?tab=readme-ov-file#web-programming-and-internet-technologies](https://github.com/Developer-Y/cs-video-courses?tab=readme-ov-file#web-programming-and-internet-technologies)  
 
-  
-
-  
 
 # Tópicos a ver
 
