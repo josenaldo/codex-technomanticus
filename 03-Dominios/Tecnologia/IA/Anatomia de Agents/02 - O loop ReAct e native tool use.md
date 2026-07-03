@@ -1,7 +1,7 @@
 ---
 title: "O loop ReAct e native tool use"
 created: 2026-04-11
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -21,7 +21,27 @@ aliases:
 
 # O loop ReAct e native tool use
 
-O agent estava em produção há dois dias quando o monitoramento começou a acusar timeout em 100% das requisições acima de um certo threshold de complexidade. Nenhuma exception, nenhum erro de tool — o processo simplesmente nunca terminava. Reproduzindo localmente, o problema ficou visível: o handler do while-loop verificava `stop_reason == "tool_use"` para saber se devia continuar, mas não tinha nenhum branch para `stop_reason == "end_turn"`. Toda vez que o LLM terminava normalmente, o loop não saía — ficava esperando uma próxima tool call que nunca viria.
+O agent estava em produção há dois dias quando o monitoramento começou a acusar timeout em 100% das requisições acima de um certo threshold de complexidade. Nenhuma exception, nenhum erro de tool — o processo simplesmente nunca terminava. Reproduzindo localmente, o problema ficou visível no handler do while-loop:
+
+```python
+# BUG: sem branch para stop_reason == "end_turn"
+while True:
+    response = client.messages.create(...)
+    if response.stop_reason == "tool_use":
+        # executa tools, alimenta resultado, continua o loop
+        ...
+    # nenhum else/elif aqui — quando o LLM termina normalmente
+    # (end_turn), o loop simplesmente itera de novo e espera
+    # uma tool call que nunca vai chegar
+```
+
+O handler verificava `stop_reason == "tool_use"` para saber se devia continuar, mas não tinha nenhum branch para `stop_reason == "end_turn"`. Toda vez que o LLM terminava normalmente, o loop não saía — ficava esperando uma próxima tool call que nunca viria. O fix é trivial uma vez visto — tratar `end_turn` como condição de saída explícita, exatamente como no `run_agent` da próxima seção:
+
+```python
+# FIX: end_turn sai do loop
+if response.stop_reason == "end_turn":
+    return final_answer
+```
 
 O bug foi escrito por alguém que entendia ReAct como conceito mas não tinha mapeado como ele se traduz para a API moderna. No paper original de 2022, o loop era textual — você lia "Final Answer:" no output e saía. Em 2026, com native tool use, o contrato é diferente: é o `stop_reason` que governa a saída, não o conteúdo do texto. Confundir os dois modelos custa um incidente de produção.
 
@@ -160,21 +180,17 @@ graph LR
 
 ## Pitfalls do loop
 
-### 1. `max_steps` ausente
+> [!warning] 1. `max_steps` ausente
+> Agent decide errado, fica em loop, queima budget. **Sempre** defina `max_steps`. Padrão: 15-30.
 
-Agent decide errado, fica em loop, queima budget. **Sempre** defina `max_steps`. Padrão: 15-30.
+> [!warning] 2. Tool result silencioso
+> Tool retorna `None`, agent não sabe que falhou, repete. **Fix:** sempre retorne mensagem informativa.
 
-### 2. Tool result silencioso
+> [!warning] 3. Output gigante de tool
+> Tool retorna 50K tokens. Atenção dilui ([[Context Engineering|03 - Context rot e atenção diluída]]). **Fix:** truncate, paginar, ou retornar só relevante.
 
-Tool retorna `None`, agent não sabe que falhou, repete. **Fix:** sempre retorne mensagem informativa.
-
-### 3. Output gigante de tool
-
-Tool retorna 50K tokens. Atenção dilui ([[Context Engineering|03 - Context rot e atenção diluída]]). **Fix:** truncate, paginar, ou retornar só relevante.
-
-### 4. Loop sem progresso
-
-Agent chama mesma tool com mesmos args repetidamente. **Fix:** detectar duplicação, abortar, injetar prompt "tente algo diferente".
+> [!warning] 4. Loop sem progresso
+> Agent chama mesma tool com mesmos args repetidamente. **Fix:** detectar duplicação, abortar, injetar prompt "tente algo diferente".
 
 ## Variantes além de ReAct
 
@@ -257,6 +273,10 @@ The ReAct pattern — Reasoning + Acting — is the foundational mental model fo
 - **Yao et al. — *ReAct: Synergizing Reasoning and Acting in Language Models*** (arxiv:2210.03629, 2022): O paper original que nomeou o padrão. Fundamental para entender o fundamento teórico antes de usar implementações modernas — especialmente a justificativa de por que intercalar raciocínio com ação melhora a qualidade versus chain-of-thought puro.
 - **Anthropic — *Tool use documentation*** (docs.anthropic.com, 2026): Referência técnica canônica para implementar o loop com a API Claude — schemas de tools, parallel tool calls, handling de erros, streaming com tool use. Leitura obrigatória antes de qualquer implementação em produção.
 - **Harness Engineering for Language Agents** (preprints.org:10.20944/preprints202603.1756, 2026): Formaliza o loop engineering como disciplina com a decomposição CAR (Control/Agency/Runtime). O eixo Runtime cobre exatamente o que o diagrama ReAct básico não mostra: como estado é carregado entre passos e como falhas são tratadas ao longo do tempo. *Preprint não revisado por pares — vocabulário emergente.*
+
+## O que vem a seguir
+
+Tudo nesta nota assume que o loop roda — o `while`, o `stop_reason`, os pitfalls. Mas o ritmo do loop (quantos passos, quanta observação por passo, quando ele trava) depende de algo que ainda não foi examinado: o **design de cada tool** que o agent chama. Um `read_url` que devolve 50K tokens crus força truncamento e paginação manual a cada passo; um `web_search` com schema mal descrito gera tool calls errados que o loop então precisa detectar e corrigir via self-correction. O loop reage ao design da tool — não o contrário. [[03 - Tool design — princípios e categorias]] cobre como projetar tools que fazem o loop ReAct rodar limpo em vez de compensar, passo a passo, decisões ruins tomadas na camada de baixo.
 
 ## Veja também
 

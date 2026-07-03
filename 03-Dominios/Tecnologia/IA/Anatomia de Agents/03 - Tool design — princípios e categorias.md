@@ -168,11 +168,20 @@ Padrão essencial para [[Economia de Tokens|07 - Compressão de tool definitions
 
 ## Anti-patterns
 
-- **Descrição genérica** — agent não sabe quando usar
-- **Output bruto** (HTML, JSON gigante) — context rot
-- **Erros como `"Error"`** — agent não sabe corrigir
-- **Tools redundantes** — agent fica confuso
-- **Tools destrutivas sem proteção** — incidente esperando
+> [!warning] Descrição genérica
+> Agent não sabe quando usar.
+
+> [!warning] Output bruto (HTML, JSON gigante)
+> Context rot.
+
+> [!warning] Erros como `"Error"`
+> Agent não sabe corrigir.
+
+> [!warning] Tools redundantes
+> Agent fica confuso.
+
+> [!warning] Tools destrutivas sem proteção
+> Incidente esperando.
 
 ## Métricas
 
@@ -247,6 +256,10 @@ Tool design is the layer of agent engineering most directly responsible for task
 - **Anthropic — *Tool use best practices*** (docs.anthropic.com, 2026): Documentação canônica sobre como estruturar tools para a API Claude — input schemas, parallel tool use, streaming, e boas práticas de descrição. Referência técnica antes de qualquer implementação.
 - **Anthropic — *Building Effective Agents*** (2024): A seção sobre tool design cobre os padrões de description engineering com exemplos concretos e o princípio "a tool without a clear description is worse than no tool". Fonte das métricas de 5-15 tools por agent.
 - **OpenAI — *Function calling guide*** (platform.openai.com, 2026): Perspectiva provider-agnóstica sobre function calling — schemas, parallel calls, error handling. Útil para entender o design de tool em contexto multi-provider.
+
+## O que vem a seguir
+
+Com as tools bem desenhadas — nomes claros, descrições completas, categorias de risco mapeadas — o agent já sabe *o que* pode fazer e *quando* fazer. Mas ele ainda não sabe o que **já fez**. Sem memória, cada novo turno começa do zero: o agent pode escolher a tool certa de novo, mas vai chamá-la de novo, mesmo que o resultado já esteja disponível de uma chamada anterior. [[04 - Memory em agents]] é a peça que fecha essa lacuna — sem ela, tool calls já executadas se repetem, e o custo de tokens que a boa description engineering acabou de reduzir volta a subir por outro caminho.
 
 ## Veja também
 

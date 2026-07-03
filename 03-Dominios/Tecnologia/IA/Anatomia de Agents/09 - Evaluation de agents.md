@@ -217,12 +217,23 @@ flowchart TD
 
 ## Anti-patterns
 
-- **Eval só pre-launch** — não detecta degradação em prod
-- **Métricas só de processo** ("agent rodou em 5 steps!") sem completion
-- **Sem regression tests** — mesmos bugs voltam mês a mês
-- **Trace review nunca** — bugs não-óbvios passam batido
-- **Judge igual ao avaliado** — viés de auto-aprovação
-- **Sem error type catalog** — cada bug é "novo" mesmo sendo recorrente
+> [!warning] Eval só pre-launch
+> Não detecta degradação em prod.
+
+> [!warning] Métricas só de processo
+> ("agent rodou em 5 steps!") sem completion.
+
+> [!warning] Sem regression tests
+> Mesmos bugs voltam mês a mês.
+
+> [!warning] Trace review nunca
+> Bugs não-óbvios passam batido.
+
+> [!warning] Judge igual ao avaliado
+> Viés de auto-aprovação.
+
+> [!warning] Sem error type catalog
+> Cada bug é "novo" mesmo sendo recorrente.
 
 ## Métricas-alvo em 2026
 
@@ -258,6 +269,10 @@ Evaluating agents is fundamentally harder than evaluating single-turn LLM calls 
 - **Eugene Yan — *Patterns for Building LLM-based Systems*** (eugeneyan.com, 2024): A seção de evaluation é a referência mais citada sobre como estruturar golden sets, LLM-as-judge e cadência de eval para sistemas em produção. Densamente sourced.
 - **Langfuse — *Agent evaluation docs*** (langfuse.com, 2026): Documentação técnica de como configurar golden sets, scores automáticos, e trace review na plataforma. Inclui exemplos de schema de task e rubrics de judge.
 - **Braintrust — *AI evaluation best practices*** (braintrustdata.com, 2026): Guia end-to-end de como criar datasets de eval, versionar experimentos, e comparar prompts em múltiplas métricas simultaneamente. Bom para times montando pipeline de eval do zero.
+
+## O que vem a seguir
+
+Com métricas, golden set e trace review em mãos, a pergunta muda de forma. Não é mais só "meu agent está bom o suficiente?" — é "esse problema *precisa* de um agent?" Muita degradação de TCR e muito custo por task vêm de usar um agent onde um workflow determinístico bastava. A próxima nota, [[10 - Workflow vs Agent — quando usar cada um]], separa os dois: quando a autonomia do agent compensa a imprevisibilidade que a eval acabou de expor, e quando um pipeline fixo entrega o mesmo resultado sem o overhead de avaliar decisões não-determinísticas.
 
 ## Veja também
 

@@ -1,7 +1,7 @@
 ---
 title: "Multi-agent — orchestrator e sub-agents"
 created: 2026-04-11
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -169,12 +169,23 @@ Custo total **menor** que single Opus. Latência total similar (paralelismo comp
 
 ## Anti-patterns
 
-- **Multi-agent prematuro** — "vamos fazer 5 agents especializados" para task simples
-- **Coordinator sem paralelismo** — vira chain inútil
-- **Implementors recebendo plan completo** — perde isolamento de contexto
-- **Validator com prompt = "is this good?"** — viés de aceitar
-- **Sem fallback quando task falha 3+ vezes** — coordinator entra em loop
-- **Custos não monitorados** — N agents × tokens vira custo escondido
+> [!warning] Multi-agent prematuro
+> "Vamos fazer 5 agents especializados" para task simples.
+
+> [!warning] Coordinator sem paralelismo
+> Vira chain inútil — coordena sequencialmente o que já era sequencial.
+
+> [!warning] Implementors recebendo plan completo
+> Perde isolamento de contexto — cada sub-agent volta a ver demais.
+
+> [!warning] Validator com prompt = "is this good?"
+> Viés de aceitar — sem critério objetivo, o validator tende a aprovar.
+
+> [!warning] Sem fallback quando task falha 3+ vezes
+> Coordinator entra em loop, retentando a mesma abordagem que já falhou.
+
+> [!warning] Custos não monitorados
+> N agents × tokens vira custo escondido — sem visibilidade, a fatura só aparece no fim do mês.
 
 ## Single agent bem desenhado > multi-agent confuso
 
@@ -242,11 +253,15 @@ A multi-agent system is an architecture where a primary agent (the orchestrator)
 | trilha de auditoria | audit trail |
 | fallback de coordenação | coordination fallback |
 
+## O que vem a seguir
+
+Saber *quando* orquestrar (esta nota) e *como* fazer o handoff sem perder contexto (regra de ouro acima) ainda deixa uma pergunta em aberto: com o quê construir isso na prática? Os padrões descritos aqui — CIV, hierárquico, conversacional — não são teoria abstrata; em 2026 cada um tem um framework que o implementa nativamente, com um trade-off diferente embutido. [[07 - Frameworks 2026]] mapeia essas opções — LangGraph, CrewAI, OpenAI Swarm/Agents SDK, Claude Agent SDK e outros — e, mais importante, **o que cada um sacrifica** em troca da conveniência: controle explícito de estado vs. produtividade, portabilidade vs. features nativas do provider, maturidade vs. simplicidade do modelo mental.
+
 ## Ver mais
 
-- **Anthropic — *Building Effective Agents*** (2024): A seção sobre multi-agent tem os critérios canônicos de quando escalar de single para multi — incluindo a regra "single agent bem desenhado > multi-agent confuso". Fonte das boas práticas de handoff e especialização por modelo.
-- **Anthropic — *Claude Agent SDK: Subagents and Tasks*** (2025): Documentação técnica do mecanismo de sub-agents na API Claude — como despachar, como receber resultados, como isolar contexto. Referência de implementação.
-- **Augment Code — *Coordinator-Implementor-Verifier Pattern*** (2026): Descreve o padrão CIV peer-reviewed, com DAG de tasks, implementors paralelos e validação antes de aceitar. Modelo arquitetural concreto para sistemas multi-agent em coding.
+- **Anthropic — *Building Effective Agents*** (2024): A seção sobre multi-agent tem os critérios canônicos de quando escalar de single para multi — incluindo a regra "single agent bem desenhado > multi-agent confuso". Fonte das boas práticas de handoff e especialização por modelo. [anthropic.com/research/building-effective-agents](https://www.anthropic.com/research/building-effective-agents)
+- **Anthropic — *Subagents in the SDK*** (Claude Agent SDK docs): Documentação técnica do mecanismo de sub-agents — como despachar, como receber resultados, como isolar contexto. Referência de implementação. [docs.claude.com/en/docs/agent-sdk/subagents](https://docs.claude.com/en/docs/agent-sdk/subagents)
+- **Augment Code — *Coordinator-Implementor-Verifier Pattern*** (2026): Descreve o padrão CIV, com DAG de tasks, implementors paralelos e validação antes de aceitar. Modelo arquitetural concreto para sistemas multi-agent em coding. [augmentcode.com/guides/coordinator-implementor-verifier](https://www.augmentcode.com/guides/coordinator-implementor-verifier)
 
 ## Veja também
 
@@ -256,11 +271,12 @@ A multi-agent system is an architecture where a primary agent (the orchestrator)
 - [[Economia de Tokens|10 - Sub-agentes especializados]]
 - [[Spec-Driven Development|09 - SDD com agentes — coordinator, implementor, validator]]
 - [[Context Engineering|09 - Shared memory em multi-agent]]
+- [[07 - Frameworks 2026]]
 
 ## Referências
 
-- **Anthropic** — *Building Effective Agents* (2024)
-- **Anthropic** — *Claude Agent SDK: Subagents and Tasks* (2025)
-- **Augment Code** — *Coordinator-Implementor-Verifier Pattern* (2026)
-- **VeriMAP** — *EACL 2026 paper, verification-aware multi-agent planning*
-- **OpenAI Swarm** — *github.com/openai/swarm* (2024+)
+- **Anthropic** — *Building Effective Agents* (2024) — https://www.anthropic.com/research/building-effective-agents
+- **Anthropic** — *Subagents in the SDK* (Claude Agent SDK docs) — https://docs.claude.com/en/docs/agent-sdk/subagents
+- **Augment Code** — *Coordinator-Implementor-Verifier Pattern* (2026) — https://www.augmentcode.com/guides/coordinator-implementor-verifier
+- **VeriMAP** — Xu, Zhang, Mitra, Hruschka — *Verification-Aware Planning for Multi-Agent Systems*, EACL 2026 — https://aclanthology.org/2026.eacl-long.353.pdf
+- **OpenAI Swarm** — https://github.com/openai/swarm (2024+)

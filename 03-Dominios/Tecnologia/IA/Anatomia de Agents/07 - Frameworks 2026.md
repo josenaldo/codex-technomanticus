@@ -1,7 +1,7 @@
 ---
 title: "Frameworks 2026 — Claude Agent SDK, LangGraph, AutoGen, CrewAI"
 created: 2026-04-11
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -32,6 +32,9 @@ Escolher framework é uma decisão de arquitetura com efeitos duradouros. A ques
 > O ecossistema de frameworks para agents em 2026 estabilizou em 5 grandes opções: **Claude Agent SDK** (oficial Anthropic), **LangGraph** (mais popular para workflows complexos), **CrewAI** (multi-agent role-based), **AutoGen** (Microsoft, conversational), **Pydantic AI** (TypeScript/Python type-safe). Mas o movimento crescente é **"sem framework"**: SDK raw + 500 linhas de código próprio. Frameworks engessam, mudam frequentemente, são difíceis de debugar. **Use framework quando o pain de não ter excede o pain de ter.**
 
 ## O panorama em uma tabela
+
+> [!info] Validade dos dados desta tabela
+> Landscape verificado via registries oficiais (PyPI/npm) em 2026-07-03. Confirmado: `claude-agent-sdk` (Python) em **0.2.110** e `@anthropic-ai/claude-agent-sdk` (TypeScript) em **0.3.200**; `pydantic-ai` em **v2.4.0**. LangGraph segue como a opção mais citada para workflows stateful complexos em múltiplas comparações independentes de 2026 — mas rankings de popularidade (posição exata, market share) variam por fonte e mudam rápido. Estes números se movem em dias (o TS SDK subiu de .197 para .200 no mesmo dia desta verificação): não os trate como fixos — confira o changelog oficial antes de fixar uma dependência (links na seção Referências).
 
 | Framework | Linguagem | Forte em | Quando usar |
 |---|---|---|---|
@@ -239,6 +242,9 @@ xychart-beta
 
 > SDK raw é mais rápido para uso cases simples e estáveis. Frameworks ganham quando o time precisa de integrações ou de acelerar prototipagem. A curva inverte depois de 2 semanas: frameworks poupam integração mas cobram dívida de abstração em debugging e upgrades.
 
+> [!warning] Estimativas, não medição
+> As semanas-até-produção do gráfico acima são uma estimativa qualitativa desta nota (task equivalente, não benchmark publicado) — não foi possível confirmar um estudo controlado que meça esses números com precisão. Trate como ordem de grandeza relativa entre stacks, não como dado cravado.
+
 ```mermaid
 quadrantChart
     title Controle vs Velocidade de prototipagem — por framework
@@ -259,11 +265,20 @@ quadrantChart
 
 ## Anti-patterns
 
-- **Framework como religião** — escolheu LangChain, força em tudo
-- **Framework para protótipo** — overhead em algo que ia mudar
-- **Sem framework + sem disciplina** — código vira spaghetti
-- **Trocar framework no meio** — custo enorme, raramente vale
-- **Framework cutting-edge em produção** — versões mudam, breakages
+> [!warning] Framework como religião
+> Escolheu LangChain, força em tudo — inclusive nos casos em que uma chamada direta de API resolveria em 20 linhas.
+
+> [!warning] Framework para protótipo
+> Overhead de configuração e abstração em algo que ia mudar de qualquer forma na semana seguinte.
+
+> [!warning] Sem framework + sem disciplina
+> Sem os trilhos de um framework, o código vira spaghetti — ninguém documentou o "framework implícito" que o time inventou.
+
+> [!warning] Trocar framework no meio do projeto
+> Custo enorme de reescrita e retreinamento do time; raramente vale a pena, mesmo quando o framework original decepciona.
+
+> [!warning] Framework cutting-edge em produção
+> Versões mudam rápido demais, breaking changes chegam sem aviso — como a versão do LangChain que quebrou duas vezes na história de abertura desta nota.
 
 ## Métricas para avaliar adoção
 
@@ -293,6 +308,10 @@ The agent framework landscape in 2026 has consolidated around a handful of optio
 | multi-agente baseado em papéis | role-based multi-agent |
 | engessamento de framework | framework rigidity |
 
+## O que vem a seguir
+
+Escolher (ou recusar) um framework resolve só a camada de infraestrutura. Continua faltando responder: como o agent decide quando parar de chamar tools? Como ele lida com um passo que falha no meio de uma cadeia longa? Como se evita que o contexto exploda depois de 20 turnos? Essas perguntas não têm resposta no LangGraph nem no "sem framework" — são **patterns** que qualquer stack precisa implementar, framework por baixo ou não. [[08 - Patterns comuns de agents]] cataloga esses padrões recorrentes — retry, reflection, human-in-the-loop, guardrails — que sobrevivem à troca de framework porque não são sintaxe, são forma.
+
 ## Ver mais
 
 - **LangGraph — *documentation*** (langchain-ai.github.io/langgraph, 2026): Documentação oficial do LangGraph — StateGraph, nodes, edges, parallelism, checkpointing. Referência técnica indispensável antes de adotar LangGraph em produção.
@@ -310,6 +329,8 @@ The agent framework landscape in 2026 has consolidated around a handful of optio
 ## Referências
 
 - **Anthropic** — *Claude Agent SDK docs* (2026)
+- **Anthropic** — *claude-agent-sdk-python CHANGELOG* (github.com/anthropics/claude-agent-sdk-python, verificado 2026-07-03)
+- **Pydantic** — *pydantic-ai releases* (github.com/pydantic/pydantic-ai/releases, verificado 2026-07-03)
 - **LangChain** — *python.langchain.com* (2026)
 - **CrewAI** — *docs.crewai.com* (2026)
 - **AutoGen** — *microsoft.github.io/autogen* (2026)

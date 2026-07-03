@@ -1,7 +1,7 @@
 ---
 title: "Harness engineering — a terceira camada"
 created: 2026-06-19
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 status: growing
 progress: done
@@ -145,6 +145,9 @@ Pense no que isso quer dizer pra forma como lemos um leaderboard. Quando o "Mode
 > [!example] Onde isto morde no vault
 > Essa é a versão acadêmica da tese que a nota [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/09 - O harness como terceira camada|O harness como terceira camada]] já defendia em escala prática: *"the ecosystem built around the model — the harness — determines how Claude Code performs more than the model alone"*. Para a disciplina de [[Evaluation]], a implicação é concreta: um eval que não fixa o harness está medindo uma variável confundida.
 
+> [!warning] Armadilha: benchmark sem HarnessCard mede a variável errada
+> Um número de leaderboard sozinho — "Modelo X: 55% no SWE-bench" — não diz se o ganho veio do modelo ou do scaffold que rodou em volta dele. Sem reportar o harness (ou fixá-lo como controle), dois times podem rodar o "mesmo" benchmark com harnesses diferentes e tirar conclusões opostas sobre qual modelo é melhor — quando na verdade compararam qual *harness* era melhor. É o mesmo erro metodológico de comparar resultado de experimento sem controlar a variável que mais pesa. A implicação prática, de novo: antes de decidir "trocar de modelo" a partir de um benchmark, pergunte que harness gerou aquele número — e se o seu está no mesmo patamar.
+
 > [!caution] Honestidade sobre a fonte
 > O HarnessCard e a decomposição CAR vêm de um **preprint não peer-reviewed**; é uma *posição argumentada*, não um achado validado pela comunidade. Cite como proposta, não como consenso.
 
@@ -157,6 +160,9 @@ Os dados disponíveis pedem ceticismo com o hype multi-agente: estudos comparati
 ## "Build to delete": o harness envelhece
 
 Um harness não é set-and-forget. O conselho que atravessa as fontes é *"build to delete"*: mantenha-o **modular**, não superengenheire o control flow, confie no raciocínio do modelo e deixe a camada pronta pra adaptar quando a próxima geração de modelos chegar. Instruções escritas pro modelo de hoje podem **trabalhar contra** o de amanhã — um hook que compensava uma limitação vira ruído quando a limitação some. O tratamento prático dessa manutenção (ciclo de 3-6 meses, sinais de drift, ownership) está em [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/09 - O harness como terceira camada|O harness como terceira camada]].
+
+> [!warning] Armadilha: hook compensatório que sobrevive à limitação que o motivou
+> É exatamente o episódio que abre esta nota: um prompt que inibia tool-use paralelo porque v1 "ficava confuso" continuou vivo depois que v2 chegou lidando bem com paralelismo — e passou a *brigar* com a capacidade nova em vez de proteger uma fraqueza que já não existia. O padrão generaliza: toda peça do harness escrita para compensar uma limitação específica do modelo carrega uma data de validade implícita, amarrada ao ciclo de vida daquele modelo. Sem documentar *por que* o hook existe (não só o que ele faz), ninguém sabe quando ele parou de proteger e começou a atrapalhar — e a auditoria vira arqueologia de duas semanas, como no caso real.
 
 ## Onde cada peça mora — o mapa do vault
 
@@ -192,6 +198,18 @@ Harness engineering is the discipline of designing the runtime layer that wraps 
 | construir para deletar | build to delete |
 | mediadores (harness) | harness mediators |
 | loop de aprovação | approval loop |
+
+## O que vem a seguir
+
+Esta é a última nota do galho Anatomia de Agents — e não por acaso ela fecha em harness. O galho começou perguntando "o que é um agent" ([[01 - O que é um agent]]), passou pelo loop que decide a próxima ação ([[02 - O loop ReAct e native tool use]]), pelo estado que sobrevive entre passos ([[04 - Memory em agents]]), pela orquestração de múltiplos agentes ([[06 - Multi-agent — orchestrator e sub-agents]]) e pelo critério de quando vale a pena montar tudo isso ([[10 - Workflow vs Agent — quando usar cada um]]). O harness é onde essas peças soltas se juntam num runtime só — por isso ele fecha o galho em vez de abrir mais um tópico.
+
+Mas fechar o galho não fecha o assunto. Cada dimensão funcional mapeada aqui — Memory, budget de contexto, avaliação — tem seu próprio galho no vault, com profundidade que esta nota deliberadamente não tenta replicar:
+
+- **[[Context Engineering]]** aprofunda a dimensão 6 do checklist (context budget): como decidir o que entra na janela, quando comprimir, e por que "mais contexto" nem sempre é "melhor contexto". Se o harness é o SO, Context Engineering é o gerenciador de memória virtual — decide o que fica residente e o que vai pra disco.
+- **[[Memória de Agentes]]** aprofunda a função Memory que esta nota só nomeia (estado externalizado): os ciclos de vida distintos de contexto de trabalho, conhecimento semântico e experiência episódica que [[04 - Memory em agents]] introduziu e que o survey de externalização usa como uma das três dimensões hospedadas pelo harness.
+- **[[09 - Evaluation de agents]]**, a nota anterior neste mesmo galho, fecha o ciclo com a pergunta que esta nota deixa em aberto: se benchmarks sem HarnessCard medem variável confundida, como desenhar um eval que separa ganho de modelo de ganho de harness? É o loop de melhoria que valida — ou desmente — toda decisão de design discutida aqui.
+
+O fio que amarra os três: harness é a camada que hospeda e governa; Context Engineering e Memória de Agentes são duas das coisas que ele governa; Evaluation é como você descobre se governou bem.
 
 ## Ver mais
 

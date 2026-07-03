@@ -1,7 +1,7 @@
 ---
 title: "Workflow vs Agent — quando usar cada um"
 created: 2026-05-28
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 status: growing
 progress: done
@@ -126,11 +126,20 @@ xychart-beta
 
 Agent não é "workflow com mais inteligência" — é uma máquina mais cara e mais frágil. Os custos não são só financeiros:
 
-- **Tokens** — cada chamada de tool replica o contexto inteiro do agent. Um agent com 20 iterações pode custar 50x mais que um workflow equivalente. Ver [[Economia de Tokens|03 - Por que agentes gastam tanto]].
-- **Avaliação** — workflow se avalia output a output. Agent exige avaliação de **trajetória** (a sequência de decisões), não só do resultado final. Ferramentas como golden set perdem força porque o caminho varia.
-- **Loops infinitos** — agent sem `max_steps` ou sem condição de parada robusta pode iterar até estourar budget. Caso clássico: tentar a mesma tool repetidamente com input ligeiramente diferente.
-- **Debug difícil** — quando algo dá errado, você precisa reconstruir o estado interno (plano + observations) pra entender por que o agent escolheu aquela ação. Sem [[Dicionário de IA#tracing|tracing]] estruturado, é forense.
-- **Falhas criativas** — workflow falha de jeito previsível. Agent inventa formas novas de falhar — chama tool errada, alucina parâmetro, prefere a solução errada por "raciocínio" mal-construído.
+> [!warning] Tokens — contexto replicado a cada iteração
+> Cada chamada de tool replica o contexto inteiro do agent. Um agent com 20 iterações pode custar 50x mais que um workflow equivalente. Ver [[Economia de Tokens|03 - Por que agentes gastam tanto]].
+
+> [!warning] Avaliação — trajetória, não só resultado final
+> Workflow se avalia output a output. Agent exige avaliação de **trajetória** (a sequência de decisões), não só do resultado final. Ferramentas como golden set perdem força porque o caminho varia.
+
+> [!warning] Loops infinitos — sem condição de parada robusta
+> Agent sem `max_steps` ou sem condição de parada robusta pode iterar até estourar budget. Caso clássico: tentar a mesma tool repetidamente com input ligeiramente diferente.
+
+> [!warning] Debug difícil — estado interno precisa ser reconstruído
+> Quando algo dá errado, você precisa reconstruir o estado interno (plano + observations) pra entender por que o agent escolheu aquela ação. Sem [[Dicionário de IA#tracing|tracing]] estruturado, é forense.
+
+> [!warning] Falhas criativas — formas novas de errar
+> Workflow falha de jeito previsível. Agent inventa formas novas de falhar — chama tool errada, alucina parâmetro, prefere a solução errada por "raciocínio" mal-construído.
 
 ## Padrão híbrido
 
@@ -169,6 +178,12 @@ The workflow vs agent decision is the most consequential architectural choice in
 | padrão híbrido | hybrid pattern |
 | falha previsível | predictable failure |
 | custo espiral | cost spiral |
+
+## O que vem a seguir
+
+Escolher entre workflow e agent responde "qual forma o código toma". Mas o código — seja `steps:` declarados ou `while not complete:` — precisa rodar em algum lugar, e esse lugar não é um detalhe de infraestrutura: é a diferença entre um agent que falha silenciosamente em produção e um que é interceptado, medido e contido antes de causar dano. Os riscos listados acima (loop infinito, debug forense, falha criativa) não se resolvem escolhendo melhor entre workflow e agent — eles se resolvem no que envolve o loop por fora: retry com backoff, tracing de cada decisão, cost guard que corta antes do budget estourar, e human-in-the-loop nos pontos de ação destrutiva.
+
+Esse envelope é o harness — a terceira camada, depois de building blocks e da escolha workflow-vs-agent. Ver [[11 - Harness engineering — a terceira camada]].
 
 ## Ver mais
 

@@ -116,6 +116,9 @@ quadrantChart
 | Multi-step com ordem previsível | Workflow |
 | Multi-step **com decisões dinâmicas** | Agent |
 
+> [!warning] Chamar de "agent" não elimina a fragilidade
+> O incidente do início desta nota — o pipeline de triagem que travou às 3h — não era um agent, mas o rótulo do produto dizia que era. Batizar um workflow hardcoded de "agent inteligente" não muda seu comportamento em runtime: a estrutura continua sendo `if/elif` fixo, sem capacidade de lidar com o inesperado. O problema não é o nome — é achar que o nome resolveu o design. Só existe autonomia real se o LLM efetivamente decide o próximo passo; se não decide, é workflow com marketing de agent.
+
 ## Quando usar agent
 
 Sinais:
@@ -140,6 +143,9 @@ Exemplos: research assistant, coding agent (Claude Code, Cursor), debugging agen
 > 8. Mede resultado, não processo
 > 9. Pratica [[Dicionário de IA#prompt injection|prompt injection]] defense
 > 10. Tem evaluation de agent, não só de LLM
+
+> [!warning] `max_steps` sem limite é fatura em aberto, não guardrail
+> Um agent sem teto de iterações não é "mais autônomo" — é um loop que paga a cada volta. Se o LLM entra num ciclo de tentativa-erro (tool falha, agent tenta de novo, falha de novo, tenta outra abordagem), cada volta é uma chamada LLM completa, com o histórico inteiro da conversa recomputado no contexto. Sem `max_steps`, um bug de lógica trivial — uma tool que devolve erro genérico, um objetivo mal especificado — vira uma fatura de milhares de chamadas antes que alguém perceba. Definir `max_steps` não é detalhe de implementação: é o guardrail mínimo entre "agent autônomo" e "agent que queima orçamento sozinho".
 
 ## A pergunta de teste
 
@@ -167,6 +173,12 @@ An AI agent is a system where an LLM makes decisions autonomously at runtime —
 | agente prematuro (anti-pattern) | premature agent |
 | passo de execução | execution step |
 
+## O que vem a seguir
+
+Até aqui, a definição foi de fora para dentro: o que separa agent de chat, de RAG, de workflow — autonomia de decisão no loop. Mas "o LLM decide o próximo passo" ainda é uma caixa-preta. Como, exatamente, o LLM decide? Que forma tem esse loop no código? Onde entra o *raciocínio* — o LLM parando pra "pensar" antes de agir — e onde entra a *execução* — a chamada de fato da tool?
+
+[[02 - O loop ReAct e native tool use]] abre essa caixa: o padrão ReAct (Reason + Act) que formalizou o ciclo pensar → agir → observar, e como as APIs modernas (tool calling nativo) implementam esse mesmo ciclo sem exigir que o LLM narre seu raciocínio em texto livre a cada passo. Sem esse mecanismo concreto, "autonomia de decisão" continua sendo um conceito — com ele, vira algo que se implementa, debuga e instrumenta.
+
 ## Ver mais
 
 - **Anthropic — *Building Effective Agents*** (2024): O guia oficial que estabelece a distinção entre workflows e agents com exemplos de produção reais. Cobre os cinco padrões de workflow canônicos, os critérios para escalar para agent, e as armadilhas de implementação mais custosas. Ponto de partida obrigatório antes de qualquer arquitetura.
@@ -183,7 +195,8 @@ An AI agent is a system where an LLM makes decisions autonomously at runtime —
 
 ## Referências
 
-- **Anthropic** — *Building Effective Agents* (2024)
+- **Anthropic** — [*Building Effective Agents*](https://www.anthropic.com/research/building-effective-agents) (2024)
 - **Anthropic** — *Effective Context Engineering for AI Agents* (2025)
-- **OpenAI** — *A Practical Guide to Building Agents* (2025)
-- **Yao et al.** — *ReAct: Reasoning and Acting* (arxiv 2022)
+- **OpenAI** — [*A Practical Guide to Building Agents*](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/) (2025)
+- **Yao et al.** — [*ReAct: Reasoning and Acting*](https://arxiv.org/abs/2210.03629) (arxiv 2022)
+- **Lilian Weng** — [*LLM Powered Autonomous Agents*](https://lilianweng.github.io/posts/2023-06-23-agent/) (2023)

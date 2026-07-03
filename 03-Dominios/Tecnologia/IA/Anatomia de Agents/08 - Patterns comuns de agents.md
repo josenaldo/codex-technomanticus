@@ -1,7 +1,7 @@
 ---
 title: "Patterns comuns de agents"
 created: 2026-04-11
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -172,12 +172,17 @@ Pattern usado em **muito** do que se chama "agent em produção" hoje.
 
 ## Sinais de over-engineering
 
-> [!warning]
-> - Pattern 5 quando Pattern 6 resolveria
-> - Pattern 3 quando Pattern 2 bastava
-> - Pattern 4 quando RAG fixo bastava
-> - Multi-agent com 5 agents para task que cabia em 1
-> - Custom framework quando SDK raw bastava
+> [!warning] Multi-agent onde workflow bastaria
+> Pattern 5 quando Pattern 6 resolveria — orchestrator + sub-agents coordenando o que é, no fundo, um pipeline previsível com alguns steps de LLM. É o anti-pattern do início desta nota: 5 processos para uma chamada de classificação.
+
+> [!warning] Cloud async onde local bastaria
+> Pattern 3 quando Pattern 2 bastava — task cabe numa sessão interativa local, mas foi empacotada como job assíncrono em sandbox cloud. Perde-se a capacidade de "steer" em tempo real sem ganhar nada em troca.
+
+> [!warning] RAG iterativo onde busca fixa bastava
+> Pattern 4 quando RAG fixo bastava — uma única busca + síntese já resolveria, mas o agent foi montado para decidir iterativamente quando/o quê buscar. Overhead de decisão sem multi-hop real para justificar.
+
+> [!warning] Framework e escala além da necessidade
+> Multi-agent com 5 agents para task que cabia em 1, ou custom framework quando um SDK raw bastava — complexidade de infraestrutura dimensionada para uma escala que o problema atual não tem.
 >
 > A regra: **comece simples, adicione complexidade só quando dói**.
 
@@ -228,11 +233,15 @@ Agent patterns are recurring architectural templates that map task types to impl
 | over-engineering | over-engineering |
 | complexidade desnecessária | accidental complexity |
 
+## O que vem a seguir
+
+Escolher o pattern certo resolve a arquitetura — mas não diz se o agent *funciona*. Um Pattern 6 bem escolhido ainda pode falhar silenciosamente em produção, e um Pattern 5 corretamente dimensionado ainda precisa de evidência de que a coordenação entre sub-agents não está degradando a qualidade da resposta. A próxima nota, [[09 - Evaluation de agents]], trata exatamente disso: como medir se um agent — qualquer que seja o pattern — está fazendo o que deveria, com que métricas, e com que cadência de revisão.
+
 ## Ver mais
 
-- **Anthropic — *Building Effective Agents*** (2024): A categorização canônica dos cinco padrões de workflow — prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer. Esta nota os mapeia para os 6 patterns mais amplos usados em 2026.
-- **OpenAI — *A Practical Guide to Building Agents*** (2025): Cada pattern descrito com exemplos de vertical (suporte ao cliente, pesquisa, coding). Útil para calibrar quando cada pattern é economicamente justificado.
-- **LangChain Blog — *Agent supervisor patterns*** (2025): Análise técnica de como os patterns multi-agent se comportam com LangGraph StateGraph — incluindo ciclos, fallbacks e checkpointing. Referência prática para quem implementa Pattern 5.
+- **Anthropic — *Building Effective Agents*** (2024): A categorização canônica dos cinco padrões de workflow — prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer. Esta nota os mapeia para os 6 patterns mais amplos usados em 2026. [https://www.anthropic.com/research/building-effective-agents](https://www.anthropic.com/research/building-effective-agents)
+- **OpenAI — *A Practical Guide to Building Agents*** (2025): Cada pattern descrito com exemplos de vertical (suporte ao cliente, pesquisa, coding). Útil para calibrar quando cada pattern é economicamente justificado. [https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/)
+- **LangChain Blog — *Agent supervisor patterns*** (2025) (URL a confirmar): Análise técnica de como os patterns multi-agent se comportam com LangGraph StateGraph — incluindo ciclos, fallbacks e checkpointing. Referência prática para quem implementa Pattern 5.
 
 ## Veja também
 
@@ -245,6 +254,6 @@ Agent patterns are recurring architectural templates that map task types to impl
 
 ## Referências
 
-- **Anthropic** — *Building Effective Agents* (2024) — categorização canônica
-- **OpenAI** — *A Practical Guide to Building Agents* (2025)
-- **LangChain Blog** — *Agent supervisor patterns* (2025)
+- **Anthropic** — *Building Effective Agents* (2024) — categorização canônica — [https://www.anthropic.com/research/building-effective-agents](https://www.anthropic.com/research/building-effective-agents)
+- **OpenAI** — *A Practical Guide to Building Agents* (2025) — [https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/)
+- **LangChain Blog** — *Agent supervisor patterns* (2025) (URL a confirmar)

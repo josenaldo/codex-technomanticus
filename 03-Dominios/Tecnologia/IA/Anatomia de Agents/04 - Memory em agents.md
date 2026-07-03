@@ -1,7 +1,7 @@
 ---
 title: "Memory em agents"
 created: 2026-04-11
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -136,11 +136,20 @@ graph TB
 
 ## Anti-patterns
 
-- **Achatar tudo em short-term** — context rot inevitável
-- **Long-term sem TTL** — fato de 2024 ainda servido em 2026
-- **Sem compactação** — sessão de 8h envia 800K tokens em cada turno
-- **Vector store para tudo** — muito barulho; markdown basta para a maioria
-- **Self-editing memory sem governance** — memory poisoning, PII leak
+> [!warning] Achatar tudo em short-term
+> Context rot inevitável.
+
+> [!warning] Long-term sem TTL
+> Fato de 2024 ainda servido em 2026.
+
+> [!warning] Sem compactação
+> Sessão de 8h envia 800K tokens em cada turno.
+
+> [!warning] Vector store para tudo
+> Muito barulho; markdown basta para a maioria.
+
+> [!warning] Self-editing memory sem governance
+> Memory poisoning, PII leak.
 
 ## Para deep dive
 
@@ -197,9 +206,13 @@ Memory in agents refers to the mechanisms by which a system retains and retrieve
 
 ## Ver mais
 
-- **Packer et al. — *MemGPT: Towards LLMs as Operating Systems*** (arxiv:2310.08560, 2023): O paper que introduziu a ideia de memory management auto-editável — o LLM decide o que mover entre working memory e long-term storage. Base teórica para entender sistemas como Letta.
-- **Anthropic — *Effective Context Engineering for AI Agents*** (2025): Cobre compaction strategies, structured state tracking, e como projetar sistemas de memória que escalam com sessões longas. Referência prática diretamente aplicável.
-- **Lilian Weng — *LLM Powered Autonomous Agents*** (lilianweng.github.io, 2023): A seção de Memory ainda é a melhor introdução concisa à taxonomia completa: sensory, short-term, long-term — com exemplos de implementação de cada tipo.
+- **Packer et al. — *MemGPT: Towards LLMs as Operating Systems*** ([arxiv:2310.08560](https://arxiv.org/abs/2310.08560), 2023): O paper que introduziu a ideia de memory management auto-editável — o LLM decide o que mover entre working memory e long-term storage. Base teórica para entender sistemas como Letta.
+- **Anthropic — *Effective Context Engineering for AI Agents*** (2025, URL a confirmar): Cobre compaction strategies, structured state tracking, e como projetar sistemas de memória que escalam com sessões longas. Referência prática diretamente aplicável.
+- **Lilian Weng — *LLM Powered Autonomous Agents*** ([lilianweng.github.io](https://lilianweng.github.io/posts/2023-06-23-agent/), 2023): A seção de Memory ainda é a melhor introdução concisa à taxonomia completa: sensory, short-term, long-term — com exemplos de implementação de cada tipo.
+
+## O que vem a seguir
+
+Memory resolve a pergunta "o que o agent lembra?" — qual fato sobrevive ao turno atual, em qual formato, por quanto tempo. Mas lembrar não é agir: um agent pode ter o histórico perfeitamente compactado e a memória de longo prazo bem estruturada e ainda assim travar decidindo o que fazer com esse conhecimento no próximo passo. É a pergunta que [[05 - Planning — plan-then-execute, dynamic, hierarchical]] resolve — como o agent transforma o que sabe (memory) em uma sequência de ações (planning), seja num plano fixo antes de agir, seja replanejando dinamicamente a cada observação nova.
 
 ## Veja também
 

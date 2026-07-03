@@ -1,7 +1,7 @@
 ---
 title: "Planning — plan-then-execute, dynamic, hierarchical"
 created: 2026-04-11
-updated: 2026-06-25
+updated: 2026-07-03
 type: concept
 progress: done
 status: growing
@@ -150,12 +150,23 @@ Quando algo muda durante execução, **agent deve pausar e re-planejar**. Detect
 
 ## Anti-patterns
 
-- **Plano sempre, em todo passo** — overhead ridículo em tarefas simples
-- **Plano nunca** — agent vibe-coding, vai pelo caminho errado
-- **Plano sem revisão** — humano não viu, perde benefício
-- **Re-plan silencioso** — agent muda de plano sem registrar; vira drift
-- **Hierarchical raso** — só 2 níveis quando precisava 3-4
-- **Plano em prosa** — não-executável; use markdown estruturado
+> [!warning] Plano sempre, em todo passo
+> Overhead ridículo em tarefas simples.
+
+> [!warning] Plano nunca
+> Agent vibe-coding, vai pelo caminho errado.
+
+> [!warning] Plano sem revisão
+> Humano não viu, perde benefício.
+
+> [!warning] Re-plan silencioso
+> Agent muda de plano sem registrar; vira drift.
+
+> [!warning] Hierarchical raso
+> Só 2 níveis quando precisava 3-4.
+
+> [!warning] Plano em prosa
+> Não-executável; use markdown estruturado.
 
 ## Métricas
 
@@ -229,8 +240,13 @@ Planning in agent systems refers to the deliberate generation of a structured ta
 ## Ver mais
 
 - **Anthropic — *Best practices for Claude Code: Planning*** (2026): A recomendação oficial de pedir plano em markdown antes de qualquer feature não-trivial, com exemplos de como estruturar o prompt para obter um plano útil e auditável.
-- **Wei et al. — *Plan-and-Solve Prompting*** (arxiv:2305.04091, 2023): Paper que demonstra que fazer o modelo planejar explicitamente antes de resolver melhora a qualidade em raciocínio matemático e lógico. Base teórica para o padrão plan-then-execute.
-- **Yao et al. — *Tree of Thoughts*** (arxiv:2305.10601, 2023): Exploração de múltiplos planos em paralelo com backtracking — o extremo sofisticado de planning. Mais útil para entender os limites do dynamic planning do que para implementar diretamente.
+- **Wei et al. — *Plan-and-Solve Prompting*** (arxiv:2305.04091, 2023): https://arxiv.org/abs/2305.04091 — Paper que demonstra que fazer o modelo planejar explicitamente antes de resolver melhora a qualidade em raciocínio matemático e lógico. Base teórica para o padrão plan-then-execute.
+- **Yao et al. — *Tree of Thoughts*** (arxiv:2305.10601, 2023): https://arxiv.org/abs/2305.10601 — Exploração de múltiplos planos em paralelo com backtracking — o extremo sofisticado de planning. Mais útil para entender os limites do dynamic planning do que para implementar diretamente.
+- **Anthropic — *Building Effective Agents*** (2024): https://www.anthropic.com/research/building-effective-agents — Discute quando um plano estruturado (workflow) é preferível a um agent com autonomia total, e onde fica a fronteira entre os dois.
+
+## O que vem a seguir
+
+Um plano em markdown — mesmo hierárquico — ainda ancora um único agent. Ele resolve o problema de "o agent foi fazer outra coisa" dentro de uma sessão, mas não resolve o problema de escala: quando a tarefa é grande demais para um agent (mesmo bem planejado) executar sozinho, sub-tarefas paralelizáveis do plano hierárquico precisam virar sub-agents de fato — com seu próprio contexto, ferramentas e retorno controlado. [[06 - Multi-agent — orchestrator e sub-agents]] cobre essa transição: como um orchestrator distribui os sub-planos da estratégia hierárquica entre sub-agents reais.
 
 ## Veja também
 
@@ -243,6 +259,6 @@ Planning in agent systems refers to the deliberate generation of a structured ta
 ## Referências
 
 - **Anthropic** — *Best practices for Claude Code: Planning* (2026)
-- **Anthropic** — *Building Effective Agents* (2024)
-- **Wei et al.** — *Plan-and-Solve Prompting* (arxiv 2023)
-- **Yao et al.** — *Tree of Thoughts* (arxiv 2023)
+- **Anthropic** — *Building Effective Agents* (2024) — https://www.anthropic.com/research/building-effective-agents
+- **Wei et al.** — *Plan-and-Solve Prompting* (arxiv 2023) — https://arxiv.org/abs/2305.04091
+- **Yao et al.** — *Tree of Thoughts* (arxiv 2023) — https://arxiv.org/abs/2305.10601

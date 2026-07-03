@@ -32,7 +32,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | # | Galho | Notas | ⬜ | ➖ | ✅ | % | Estado | roadmap |
 |---|-------|------:|---:|---:|---:|--:|--------|---------|
 | 1 | [[Anatomia dos LLMs]] | 24 | 0 | 1 | 23 | 100% | ✅ completo (2026-07-03) | ✅ |
-| 2 | [[Anatomia de Agents]] | 11 | 11 | 0 | 0 | 0% | 📋 diagnosticado | ✅ |
+| 2 | [[Anatomia de Agents]] | 11 | 0 | 0 | 11 | 100% | ✅ completo (2026-07-03, fan-out ≤3 verificado) | ✅ |
 | 3 | [[Spec-Driven Development]] | 12 | 12 | 0 | 0 | 0% | 📋 diagnosticado (galho mais cru) | ✅ |
 | 4 | [[Economia de Tokens]] | 22 | 20 | 2 | 0 | 9% | 📋 diagnosticado | ✅ |
 | 5 | [[Context Engineering]] | 16 | 0 | 9 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
