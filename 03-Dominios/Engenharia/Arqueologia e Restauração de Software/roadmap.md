@@ -37,20 +37,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas (roster) | 28 |
-| ✅ escritas | 14 |
-| ⬜ não escritas | 14 |
+| ✅ escritas | 16 |
+| ⬜ não escritas | 12 |
 | 🔄 rascunho | 0 |
-| % escrito | 50% |
+| % escrito | 57% |
 
-**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 7/9 🔄 · Magus 0/12 ⬜.
+**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 9/9 ✅ (COMPLETA) · Magus 0/12 ⬜.
 
 ## Tabela-resumo (enriquecimento das escritas)
 
 | Métrica | Valor |
 |---------|-------|
-| Escritas | 14 |
+| Escritas | 16 |
 | ✅ enriquecidas | 0 |
-| ⬜ pendentes (só M1/mídia) | 14 |
+| ⬜ pendentes (só M1/mídia) | 16 |
 | Score médio verificar-nota | 11/12 (gap único = M1) |
 
 ---
@@ -125,7 +125,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Plano de execução:** buscar vídeo sobre git archaeology / git blame forense / git log pickaxe
 - **Resultado:** código=o "como" / git=o "porquê"; blame -w/-M, pickaxe log -S; hotspots só introduzidos (defere à 09)
 
-### Adepto (8-16) — em andamento 🔄 (7/9)
+### Adepto (8-16) — COMPLETA ✅
 
 #### 08 - Engenharia reversa e recuperação de arquitetura   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 13b36e5)
@@ -191,20 +191,24 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Resultado:** definição estrita (estrutura sem comportamento — vital sem rede); micro-passo ainda menor no hostil; 4 receitas do catálogo com o perigo de cada (Extract Method/estado compartilhado, Rename/Naur, Extract Variable/número mágico, Extract Class/god class hotspot da 09); automated refactoring da IDE como aliado; tensão "alterna, não resolve"; quando NÃO refatorar (código estável); 4 armadilhas (misturar refactor+comportamento, sem rede, fora de escopo, Extract Class sem checkpoints)
 
 #### 15 - O Método Mikado   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** grafo de pré-requisitos e revert agressivo para mudanças grandes.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit 28d4d55)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 321 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 isento (321 < 400)
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre The Mikado Method / prerequisite graph refactoring
+- **Resultado:** Ellnestam & Brolund (*The Mikado Method*, Manning 2014); a hidra (conserta-um-quebram-três, branch que incha); analogia pega-varetas; ciclo tentar→observar-o-que-quebra→anotar-pré-requisito→REVERTER (git reset --hard)→atacar folha; grafo Mikado (folhas seguras→raiz/objetivo, sempre partindo do verde); por que reverter é genial (sempre-entregável, liga a Strangler 18); 4 armadilhas (não-reverter, raiz-antes-das-folhas, grafo-só-na-cabeça, compilou≠seguro)
 
 #### 16 - IA como acelerador e seus riscos   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** LLM para engenharia reversa e docs; regra: characterization ANTES de deixar a IA mudar. Absorve o candidato C5 (retrospecto Feathers 2024 sobre FP/config/IA) cortado da nota 01. Fronteira com IA `Agentes de Codificação`.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit dc148da) — **FECHA a fase Adepto**
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 349 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 isento (349 < 400)
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre AI coding agents legacy / automation bias / characterization before AI
+- **Resultado:** onde a IA acelera (compreensão/08+06, docs/07, caracterização/10-11, refatoração/12-14); REGRA DE OURO = rede de caracterização ANTES de deixar a IA mudar (velocidade sem rede = quebrar mais rápido); riscos com mecanismo (alucinação de comportamento/API, perda da teoria/Chesterton-02/07, contexto-limitado vs acoplamento-temporal-09, automation bias, vazamento de código do cliente); fluxo seguro (entender→caracterizar→IA-propõe→rede-valida→revisão→micro-commit); fronteira IA `Agentes de Codificação` (link confirmado resolve); fontes NIST/OWASP LLM Top 10 (sem dados fabricados); absorveu candidato C5 da nota 01
 
-### Magus (17-28) — não iniciada ⬜
+### Magus (17-28) — não iniciada ⬜ (PRÓXIMA FASE)
 
 #### 17 - Frameworks de decisão   [substantivo]
 - **Escrita:** ⬜ não escrita
@@ -294,10 +298,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 ## Próximos passos
 
-1. Faltam **2 notas para fechar a fase Adepto (8-16)**: a **15** e a **16**.
-   - **Nota 15 — O Método Mikado**: grafo de pré-requisitos + revert agressivo para mudanças GRANDES/emaranhadas (onde puxar um fio quebra outros). A estratégia para o que as técnicas locais das notas 13-14 não dão conta sozinhas; 13 e 14 já apontam a 15 no handoff. Autores: Ola Ellnestam & Daniel Brolund (*The Mikado Method*, Manning 2014).
-   - **Nota 16 — IA como acelerador e seus riscos** (FECHA a Adepto): LLM p/ engenharia reversa/docs; regra = characterization ANTES de deixar a IA mudar; absorve o candidato C5 cortado da nota 01. Fronteira com IA `Agentes de Codificação`.
-2. Depois da 16, ABRE a fase **Magus (17-28)** pela nota 17 (Frameworks de decisão: manter/restaurar/substituir/aposentar; 6-7 R's, TIME Gartner). Magus pede piso T3 500 em tese (isento na prática) e P3 (teoria subjacente) passa a ser cobrado.
-3. Seguir o roster 17→28, uma por vez, commitando por nota (ou par), atualizando **este roadmap** a cada nota fechada.
-3. **Rodada de mídia (M1)** das 7 notas de Iniciado quando o galho amadurecer — buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), fechando o único gap recorrente.
-4. Ao concluir cada fase, atualizar a linha "Por fase" e as duas tabelas-resumo.
+**Iniciado (1-7) e Adepto (8-16) COMPLETAS. Falta a fase Magus (17-28), 12 notas.**
+1. ABRIR a fase **Magus** pela **nota 17 — Frameworks de decisão** (manter/restaurar/substituir/aposentar; os 6-7 R's; TIME Gartner; rewrite vs. incremento). É a virada do galho: de *mudar com segurança* (Adepto) para *decidir o destino do sistema e ser dono* (Magus).
+2. **Atenção Magus:** piso T3 500 linhas em tese (isento na prática pelo padrão capítulo) e **P3 (teoria/fundamento subjacente) passa a ser COBRADO** no verificar-nota — as notas Magus devem amarrar a teoria formal, não só a prática.
+3. Roster Magus (17-28): 17 Frameworks de decisão · 18 Strangler Fig · 19 Branch by Abstraction & ACL · 20 Migração de dados e schema · 21 Validação em produção · 22 Dependências/upgrades/segurança · 23 A dimensão política · 24 Conhecimento e documentação · 25 Sustentabilidade humana · 26 Firefighting em produção · 27 Compliance e arqueologia legal · 28 Capstone. Seguir uma por vez (ou em trios paralelos com fronteiras explícitas), commitando por nota, atualizando **este roadmap** a cada nota fechada.
+4. **Capstone (28):** atenção à lição do galho Compiladores — capstones tendem a alucinar o próprio mapa do galho; verificar cada referência interna.
+5. **Rodada de mídia (M1)** das 16 notas já escritas quando o galho amadurecer — buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), fechando o único gap recorrente.
+6. Ao concluir cada fase, atualizar a linha "Por fase" e as duas tabelas-resumo.
