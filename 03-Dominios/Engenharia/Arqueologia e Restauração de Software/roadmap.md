@@ -37,20 +37,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas (roster) | 28 |
-| ✅ escritas | 8 |
-| ⬜ não escritas | 20 |
+| ✅ escritas | 11 |
+| ⬜ não escritas | 17 |
 | 🔄 rascunho | 0 |
-| % escrito | 29% |
+| % escrito | 39% |
 
-**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 1/9 🔄 · Magus 0/12 ⬜.
+**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 4/9 🔄 · Magus 0/12 ⬜.
 
 ## Tabela-resumo (enriquecimento das escritas)
 
 | Métrica | Valor |
 |---------|-------|
-| Escritas | 8 |
+| Escritas | 11 |
 | ✅ enriquecidas | 0 |
-| ⬜ pendentes (só M1/mídia) | 8 |
+| ⬜ pendentes (só M1/mídia) | 11 |
 | Score médio verificar-nota | 11/12 (gap único = M1) |
 
 ---
@@ -125,7 +125,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Plano de execução:** buscar vídeo sobre git archaeology / git blame forense / git log pickaxe
 - **Resultado:** código=o "como" / git=o "porquê"; blame -w/-M, pickaxe log -S; hotspots só introduzidos (defere à 09)
 
-### Adepto (8-16) — em andamento 🔄 (1/9)
+### Adepto (8-16) — em andamento 🔄 (4/9)
 
 #### 08 - Engenharia reversa e recuperação de arquitetura   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 13b36e5)
@@ -137,25 +137,31 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Resultado:** fragmentos → mapa formal; 2 braços (extração/grafo + validação/reflexion model Murphy-Notkin); erosão & desvio (Perry-Wolf); top-down↔bottom-up (OORP); DSM; ferramentas por stack (jdeps/ArchUnit/madge/import-linter); 2 cenários (due diligence núcleo cíclico / resgate divergência)
 
 #### 09 - Forense de software   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** método de Tornhill (*Your Code as a Crime Scene* 2ª ed 2024): hotspots (complexidade × mudança), acoplamento temporal, bus factor quantificados. Aprofunda o faro introduzido na 07.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit d7cebd4)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 319 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 isento
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo de Adam Tornhill / CodeScene / behavioral code analysis
+- **Resultado:** método de Tornhill (*Your Code as a Crime Scene* 2ª ed 2024): hotspots (complexidade × frequência de mudança — nenhuma dimensão sozinha basta), acoplamento temporal (o que o mapa estático da 08 NÃO vê), bus factor/knowledge map; ferramenta-âncora CodeScene + open-source (code-maat, git-of-theseus); 3 diagramas (quadrante hotspot + estático×temporal)
 
 #### 10 - A rede de segurança primeiro   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** characterization tests — testes que revelam o comportamento atual (não o "correto"). Fronteira com galho `Testes`.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit cfdef1e)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 334 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 isento
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre characterization testing / Feathers / approval testing intro
+- **Resultado:** PIVÔ entender→mudar-com-segurança; paradoxo galinha-e-ovo (Feathers); virada mental = caracterizar (comportamento ATUAL) ≠ especificar (correto); técnica "deixe o código confessar" (asserção que falha → valor real → pina); bug vira contrato documentado; código Java; delimita 10=manual/saída-pequena vs 11=ferramenta/saída-grande; fronteira galho Testes
 
 #### 11 - Approval e Golden Master testing   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Adepto
-- **Plano de execução:** pôr código intocável sob teste rápido (Bache & Falco); approval testing, golden master.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-02 (commit c95f730)
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 317 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T2 isento
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo de Emily Bache (approval testing / gilded rose) ou Llewellyn Falco
+- **Resultado:** continuação direta da 10 (saída grande/opaca onde a caracterização manual não escala); golden master (congela saída p/ N inputs, muitas vezes gerados/aleatórios); approval testing (received vs approved, aprova snapshot em vez de asserção); ferramentas ApprovalTests (Falco), TextTest (Geoff Bache — correção de atribuição, Emily = divulgadora), Verify/.NET, jest snapshots; armadilhas aprovar-cegamente + não-determinismo/scrubbing; código Java
 
 #### 12 - Seams e quebra de dependência   [substantivo]
 - **Escrita:** ⬜ não escrita
@@ -282,7 +288,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 ## Próximos passos
 
-1. **Escrever a nota 09** (Forense de software) — método de Adam Tornhill (*Your Code as a Crime Scene* 2ª ed 2024): hotspots (complexidade × mudança), acoplamento temporal, *bus factor* quantificados. Aprofunda o faro introduzido na 07 e a intensidade que falta ao mapa estático da 08.
-2. Seguir o roster 10→28, uma por vez, commitando por nota (ou par), atualizando **este roadmap** (escrita ✅ + commit) a cada nota fechada.
+1. **Escrever a nota 12** (Seams e quebra de dependência) — os pontos de intervenção; o *legacy change algorithm* de Feathers; tipos de seam (object/preprocessing/link). É a AÇÃO que as notas 10-11 habilitaram (agora que há rede, dá pra quebrar dependência e refatorar) e o alvo que a forense da 09 priorizou. Notas 09-11 já apontam a 12 no handoff.
+2. Seguir o roster 13→28, uma por vez, commitando por nota (ou par), atualizando **este roadmap** (escrita ✅ + commit) a cada nota fechada.
 3. **Rodada de mídia (M1)** das 7 notas de Iniciado quando o galho amadurecer — buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), fechando o único gap recorrente.
 4. Ao concluir cada fase, atualizar a linha "Por fase" e as duas tabelas-resumo.
