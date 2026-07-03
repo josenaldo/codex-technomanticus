@@ -37,20 +37,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas (roster) | 28 |
-| ✅ escritas | 18 |
-| ⬜ não escritas | 10 |
+| ✅ escritas | 28 |
+| ⬜ não escritas | 0 |
 | 🔄 rascunho | 0 |
-| % escrito | 64% |
+| % escrito | 100% |
 
-**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 9/9 ✅ (COMPLETA) · Magus 2/12 🔄 (ABERTA).
+**Por fase:** Iniciado 7/7 ✅ (COMPLETA) · Adepto 9/9 ✅ (COMPLETA) · Magus 12/12 ✅ (COMPLETA). **GALHO COMPLETO NA ESCRITA.** Notas 19-28 escritas em fan-out (workflow, 10 subagentes Sonnet, 2026-07-03); pendente rodada de enriquecimento nota a nota.
 
 ## Tabela-resumo (enriquecimento das escritas)
 
 | Métrica | Valor |
 |---------|-------|
-| Escritas | 18 |
+| Escritas | 28 |
 | ✅ enriquecidas | 0 |
-| ⬜ pendentes (só M1/mídia) | 18 |
+| ⬜ pendentes (só M1/mídia) | 28 |
 | Score médio verificar-nota | 11/12 (gap único = M1) |
 
 ---
@@ -208,7 +208,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Plano de execução:** buscar vídeo sobre AI coding agents legacy / automation bias / characterization before AI
 - **Resultado:** onde a IA acelera (compreensão/08+06, docs/07, caracterização/10-11, refatoração/12-14); REGRA DE OURO = rede de caracterização ANTES de deixar a IA mudar (velocidade sem rede = quebrar mais rápido); riscos com mecanismo (alucinação de comportamento/API, perda da teoria/Chesterton-02/07, contexto-limitado vs acoplamento-temporal-09, automation bias, vazamento de código do cliente); fluxo seguro (entender→caracterizar→IA-propõe→rede-valida→revisão→micro-commit); fronteira IA `Agentes de Codificação` (link confirmado resolve); fontes NIST/OWASP LLM Top 10 (sem dados fabricados); absorveu candidato C5 da nota 01
 
-### Magus (17-28) — ABERTA 🔄 (2/12)
+### Magus (17-28) — COMPLETA ✅ (12/12)
 
 #### 17 - Frameworks de decisão   [substantivo]
 - **Escrita:** ✅ 2026-07-03 (commit 3732632)
@@ -229,83 +229,104 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 - **Resultado:** a execução do quadrante Migrate (nota 17). Metáfora da figueira de Queensland (Fowler 2004, StranglerApplication→StranglerFigApplication); anatomia em 5 passos (interceptar via facade de roteamento → construir ao lado → migrar função a função → repetir → remover); facade/proxy/API gateway como coração do padrão (o interruptor de desvio por rota). As 2 estratégias de Fowler: **event interception** (desviar só os eventos das funções migradas, não todos) e **asset capture** (mover a posse de um subconjunto de ativos por vez); as duas se amarram (capturar ativo exige interceptar seus eventos). Strangler vs big-bang cutover (a aposta de tudo-ou-nada; separar fluxo×dado evita o bug de dois donos do mesmo dado). **P3:** valor de opção da reversibilidade (opções reais, liga à 17§4) + redução de risco por tamanho de lote (small batches) + entrega incremental de valor/feedback curto + Lehman (não congela evolução). Parentesco explícito com Mikado (15). 2 casos (monólito→serviços canônico; faturamento na borda com parallel run→21). Fronteiras linkadas: 17(decisão)/19(Branch by Abstraction nível-código)/20(asset capture=dados)/21(parallel run). Sem dados fabricados.
 
 #### 19 - Branch by Abstraction e Anti-Corruption Layer   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** coexistência segura; proteger o novo do velho (DDD/Evans).
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit 098c29d) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 366 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre Branch by Abstraction / trunk-based development / Anti-Corruption Layer (Hammant, Fowler, DDD)
+- **Resultado:** duas técnicas de coexistência complementares ao Strangler. BRANCH BY ABSTRACTION (Hammant/Fowler/Humble&Farley): trocar implementação no nível do CÓDIGO quando não há borda de rede pra facade — 5 passos (introduzir abstração → migrar chamadores → construir nova impl → alternar via flag → remover velha), trunk sempre verde (contraste irônico com "branch"). ANTI-CORRUPTION LAYER (Evans, DDD): camada de tradução que protege o modelo novo da contaminação conceitual do legado. **P3:** information hiding (Parnas 1972) + DIP/SOLID + bounded contexts (Evans) + reversibilidade/opções reais. Fronteira EXPLÍCITA: Strangler=nível requisição/sistema vs BbA=nível código. 2 casos (motor de frete in-process / serviço de precificação vs CRM legado).
 
 #### 20 - Migração de dados e schema   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** expand-contract, dual writes, shadow tables, zero-downtime; data archaeology.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit 29b61b5) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 352 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre expand-contract / online schema migration / gh-ost / zero-downtime data migration
+- **Resultado:** o asset capture (18) aprofundado no nível dos DADOS. EXPAND-CONTRACT (Fowler/Sato ParallelChange) em 3 fases (expand schema aditivo → migrate dual writes+backfill+migrar leituras → contract remove velho); shadow tables (gh-ost) p/ tabelas grandes sem lock; DATA ARCHAEOLOGY (escavar significado real de colunas legadas sujas — status codes reaproveitados — antes de migrar). **P3:** dado tem estado/código não (revert de dado não é trivial) + Kleppmann (dual writes não-atômicas, CDC/single-writer) + Ambler&Sadalage transition period + Naur aplicado ao dado. Fronteira: parallel run que compara dados → empurrado à 21. 2 casos (faturamento expand-contract / cadastro de cargas arqueologia).
 
 #### 21 - Validação em produção   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** feature flags, dark launch, parallel run; instrumentar o legado com observabilidade. Fronteira com galho `Operação`.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit d233a88) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 366 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre feature flags / GitHub Scientist / dark launch / canary release
+- **Resultado:** escada de exposição crescente pra validar mudanças no legado em produção: feature flags/release toggles (Hodgson), dark launch, PARALLEL RUN (GitHub Scientist — fecha o laço aberto na 18: rodar velho+novo, retornar o velho como fonte da verdade, comparar silenciosamente), canary/gradual rollout, e INSTRUMENTAR o legado (dar olhos a um sistema inobservável). **P3:** observabilidade formal (Kálmán 1960, teoria de controle — legado sem instrumentação é literalmente inobservável) + falsificação de Popper (parallel run busca refutação, não confirmação) + gap teoria-reconstruída-vs-realidade. Fronteira: linka `Operação` (disciplina de SRE/observabilidade mora lá). 2 casos (faturamento parallel run+canary / reconciliação sem instrumentação).
 
 #### 22 - Dependências, upgrades e segurança   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** EOL/CVE, migração de versão de framework/runtime, due diligence de vulnerabilidades.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit 193c509) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 338 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido. **Link corrigido pós-fan-out:** apontava pra `Fundamentos/Segurança Conceitual/index` (inexistente) → corrigido pra `03-Dominios/Engenharia/Segurança/index` (galho real).
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre dependency management / CVE / SBOM / framework major upgrade
+- **Resultado:** o legado que apodrece por baixo mesmo sem tocar no código: EOL, CVEs acumulando, versões sem suporte. Due diligence de vulnerabilidades (SCA, SBOM, Dependabot/Renovate); migração de versão de framework/runtime (major incremental, transitive dependency hell); por que "Retain" (17) tem prazo de validade (dependência estável vira CVE crítica sozinha — o gatilho de reavaliação que a 17 prometeu). **P3:** dívida de dependência como juros compostos / leis de Lehman (risco cresce sozinho). Fontes OWASP A06:2025/Dependency-Check, NIST NVD, SBOM/CISA.
 
 #### 23 - A dimensão política   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** Bellotti "o sistema em volta do sistema"; vender modernização, stakeholders, business case. Já referenciada pela nota 04 (early win = capital de confiança).
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit c98590b) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 350 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre Bellotti Kill It with Fire / selling technical debt / modernization business case
+- **Resultado:** nenhum framework técnico vale nada sem VENDER a decisão. Bellotti "o sistema em volta do sistema" (a organização/pessoas/incentivos são tão legado quanto o código). Business case (traduzir dívida técnica em risco/custo/receita), stakeholders, buy-in; early win (04) como capital político; vender incremento (Strangler) é politicamente mais fácil que big-bang. **P3:** fundamento organizacional/mudança (Kotter urgência+coalizão) + quadrantes de dívida técnica de Fowler. Complementa a 17 (frameworks técnicos ↔ venda da decisão). Fecha o laço da 04.
 
 #### 24 - Conhecimento e documentação   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** ADRs (o *porquê*), living docs/C4, offboarding = onboarding, matar o bus factor. Já referenciada pela nota 07 (registrar o porquê agora).
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit d0c7051) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 347 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre ADR / C4 model (Simon Brown) / living documentation
+- **Resultado:** o antídoto de longo prazo: externalizar a TEORIA (Naur) pra não se perder de novo — fecha o ciclo do galho. ADRs (Nygard: capturar o porquê, não o quê); living docs/C4 (Simon Brown); offboarding=onboarding; matar o bus factor (09) espalhando conhecimento tribal. **P3:** teoria de Naur como o ativo a preservar; conhecimento tácito→explícito. Referenciada pela 07 (registrar o porquê agora); liga ao bus factor da 09 (ação de espalhar, não medir).
 
 #### 25 - Sustentabilidade humana   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** burnout em legado, estimativa sob incerteza (spikes, time-boxing).
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit 8cfa1e3) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 350 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre developer burnout / software estimation / cone of uncertainty (McConnell)
+- **Resultado:** o custo HUMANO do legado. Burnout específico (frustração crônica, medo de quebrar, trabalho invisível/ingrato); estimativa sob incerteza (spikes time-boxed — fecha o laço da 17; cone da incerteza de McConnell; faixas, não números; sub-prometer); ritmo sustentável (Beck/XP); pequenas vitórias (sempre-entregável do Strangler/Mikado combate o desânimo). **P3:** cone da incerteza (McConnell) + sustainable pace (XP) + pesquisa de burnout (Maslach). Fecha o laço da 17 (spike time-boxed).
 
 #### 26 - Firefighting em produção   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** investigar e mitigar incidente num sistema que você não entende (o modo resgate da nota 03 aprofundado); e como evitar chegar lá. Fronteira com galho `Operação`.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit ecda2b6) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 378 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre incident response / blameless post-mortem / git bisect debugging
+- **Resultado:** o modo RESGATE (03) aprofundado: incidente num sistema que você não entende. Triagem sob pressão (estancar o sangramento/mitigar ANTES de causa raiz); ferramentas do galho sob fogo (git bisect/blame 07, forense 09, observabilidade 21); playbook detectar→mitigar→diagnosticar→resolver→post-mortem blameless; como evitar chegar lá (caracterização 10-11, deploys pequenos/reversíveis 18/15). **P3:** MTTR vs MTBF / restaurar serviço ≠ corrigir bug; teoria de incident response. Fronteira: linka `Operação` (disciplina completa). Modo resgate da 03 aprofundado.
 
 #### 27 - Compliance e arqueologia legal   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** por que certo código *não pode* ser deletado; desenterrar restrições legais antes de mexer.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit a501271) — fan-out
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 342 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido
+- **Score:** 11/12
+- **Plano de execução:** buscar vídeo sobre data retention / GDPR right to erasure / compliance legacy
+- **Resultado:** por que certo código NÃO PODE ser deletado (fecha o laço das 16/17 — o "if"/relatório que parece morto). Escavar restrições legais/regulatórias antes de mexer: retenção de dados, auditabilidade, a TENSÃO LGPD/GDPR (esquecimento vs. retenção), SOX/HIPAA/PCI-DSS; "ninguém usa" ≠ "pode deletar" (valor de conformidade não aparece nos logs); Retire (17) é o único R irreversível. **P3:** restrição exógena vs trade-off de engenharia (sobrepõe a decisão técnica da 17); a arqueologia (tese do galho) aplicada ao domínio legal. Fecha o quadrante Eliminate/Retire da 17.
 
 #### 28 - Capstone - Assumindo um sistema legado do zero   [substantivo]
-- **Escrita:** ⬜ não escrita
-- **Enriquecimento:** ➖ n/a
-- **Estado:** — · fase: Magus
-- **Plano de execução:** o playbook do consultor de ponta a ponta, num estudo de caso. Capstone — costura os três modos e as três fases. Atenção: capstones tendem a alucinar o próprio mapa do galho (lição do Compiladores) — verificar cada referência interna.
-- **Resultado:** —
+- **Escrita:** ✅ 2026-07-03 (commit 962553f) — fan-out (fase 2, após 19-27) — **FECHA a Magus e o galho**
+- **Enriquecimento:** ⬜ pendente (M1)
+- **Estado:** 330 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido. **Refs internas VERIFICADAS contra filenames reais** (lição Compiladores) — todos os [[nota N]] batem; `[[index]]` ambíguo → path completo.
+- **Score:** 11/12
+- **Plano de execução:** rodada de mídia (vídeo panorâmico de "taking over a legacy system")
+- **Resultado:** capstone integrativo (NÃO introduz conceito novo). Estudo de caso na plataforma de logística das 17/18: jornada completa due diligence→herança→resgate→volta (o diagrama de modos não-estanques da 03), costurando as 3 fases (Iniciado entender / Adepto mudar com segurança / Magus decidir e ser dono). **P3 sofisticado:** Naur (missão única = recuperar a teoria) + modelo de Dreyfus (5 estágios de perícia justificam a ordem Iniciado→Adepto→Magus; pular = novato decidindo como especialista) + Cynefin de Snowden (legado real é COMPLEXO → probe-sense-respond, não sense-analyze-respond; "entender antes de tocar" é exigência estrutural) + jornada como sequência de opções reais. Definição operacional de "dono confiante" = conhecimento não depender de uma cabeça só. Fontes-âncora reais (Naur, Feathers, Bellotti, Fowler, Tornhill, Dreyfus, Snowden). "O que vem a seguir" aponta pro index/01 (não há nota 29).
 
 ---
 
 ## Próximos passos
 
-**Iniciado (1-7) e Adepto (8-16) COMPLETAS. Falta a fase Magus (17-28), 12 notas.**
-1. ABRIR a fase **Magus** pela **nota 17 — Frameworks de decisão** (manter/restaurar/substituir/aposentar; os 6-7 R's; TIME Gartner; rewrite vs. incremento). É a virada do galho: de *mudar com segurança* (Adepto) para *decidir o destino do sistema e ser dono* (Magus).
-2. **Atenção Magus:** piso T3 500 linhas em tese (isento na prática pelo padrão capítulo) e **P3 (teoria/fundamento subjacente) passa a ser COBRADO** no verificar-nota — as notas Magus devem amarrar a teoria formal, não só a prática.
-3. Roster Magus (17-28): 17 Frameworks de decisão · 18 Strangler Fig · 19 Branch by Abstraction & ACL · 20 Migração de dados e schema · 21 Validação em produção · 22 Dependências/upgrades/segurança · 23 A dimensão política · 24 Conhecimento e documentação · 25 Sustentabilidade humana · 26 Firefighting em produção · 27 Compliance e arqueologia legal · 28 Capstone. Seguir uma por vez (ou em trios paralelos com fronteiras explícitas), commitando por nota, atualizando **este roadmap** a cada nota fechada.
-4. **Capstone (28):** atenção à lição do galho Compiladores — capstones tendem a alucinar o próprio mapa do galho; verificar cada referência interna.
-5. **Rodada de mídia (M1)** das 16 notas já escritas quando o galho amadurecer — buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), fechando o único gap recorrente.
-6. Ao concluir cada fase, atualizar a linha "Por fase" e as duas tabelas-resumo.
+**ESCRITA COMPLETA — 28/28 notas (Iniciado 7/7 · Adepto 9/9 · Magus 12/12).** O eixo primário (escrita) fechou em 2026-07-03; as notas 19-28 foram escritas em fan-out (workflow, 10 subagentes Sonnet, fase 1 = 19-27 em paralelo + fase 2 = capstone). O eixo restante é **enriquecimento**.
+
+1. **Rodada de mídia (M1)** — o único gap recorrente das 28 notas. Buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), começando pelas âncoras (01 já tem Feathers; priorizar 17/18 e o capstone 28).
+2. **Enriquecimento nota a nota** (skill `/enriquecer-galho` + `/enriquecer-nota`) — as 10 notas do fan-out (19-28) são drafts de qualidade validada estruturalmente (11/12, gap único M1) mas ainda não passaram por enriquecimento manual; revisar profundidade/exemplos/diagramas onde couber. Diagramas Mermaid do fan-out usam `graph`/`sequenceDiagram` (seguros no Quartz).
+3. **Verificação de publish:** confirmar que os diagramas Mermaid e wikilinks das 10 notas novas renderizam no Quartz (wikilinks quebrados por newline já corrigidos no pós-fan-out; link Segurança Conceitual já apontado pro path real `Engenharia/Segurança/index`).
+4. **Manutenção do roster:** se surgir broto/sub-tópico Magus, seguir a convenção broto→galho.
+
+> **Nota de processo (fan-out 2026-07-03):** 10 notas escritas por workflow com governança — 9 escritores paralelos (Sonnet/effort high) + capstone sequencial lendo os arquivos reais (evita alucinação de mapa). Pós-processamento manual do orquestrador: correção de wikilinks partidos por line-break, correção de path cross-galho, verificação de refs internas do capstone, commit nota a nota (stage explícito, sem assinatura). ~809k tokens de subagente.
