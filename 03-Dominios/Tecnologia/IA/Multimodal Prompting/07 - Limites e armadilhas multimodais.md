@@ -1,7 +1,7 @@
 ---
 title: "07 - Limites e armadilhas multimodais"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 fase: Iniciado
@@ -25,6 +25,32 @@ aliases:
 
 > [!question]- A model de multimodal que performa bem em exemplos manuais vai ter o mesmo desempenho em produção?
 > Quase sempre não — e entender por que é fundamental antes de ir pra produção. Exemplos manuais tendem a usar imagens limpas, bem iluminadas, resolução adequada, prompt cuidadosamente formulado. Produção traz variação: imagens de celular com baixa luminosidade, PDFs escaneados com skew, usuários que mandam prints de outros prints, crops que cortam parte da informação relevante. O teste real de um pipeline multimodal é a distribuição completa dos inputs de produção, não o subconjunto bonito que o dev usou no PoC. A recomendação é montar um dataset de "imagens difíceis" — baixo contraste, handwriting, layouts densos — e usar como eval pra medir onde o modelo falha antes de deployar.
+
+Uma equipe descobre multimodal em produção e o resultado do primeiro protótipo impressiona: o modelo lê o formulário, extrai o valor da nota fiscal, resume a reunião gravada. Em poucas semanas o time reescreve metade do pipeline pra "só mandar o print" — por que extrair campos via API se o modelo já vê a tela inteira? Um mês depois, dois sinais explodem ao mesmo tempo: a fatura da API multiplica, porque cada screenshot high-detail custa o que antes custava uma chamada de texto inteira, e o suporte recebe tickets de dado errado — número de pedido trocado, campo vazio preenchido com um valor plausível, cor que muda de resposta a cada chamada. Nenhuma dessas falhas é surpresa pra quem já mapeou os modos de falha do multimodal — são categorias conhecidas, com causa e mitigação testadas. O problema não foi usar multimodal; foi usar multimodal pra tudo, sem saber onde cada falha aparece nem quanto ela custa. As nove categorias abaixo são esse mapa.
+
+O diagrama organiza as nove falhas em dois eixos: **tipo** (o que o modelo vê, o que ele infere, ou o que custa rodar) e **mitigabilidade** (quanto dá pra reduzir com técnica conhecida):
+
+```mermaid
+graph TD
+  subgraph Percepcao["Percepção — o que o modelo vê"]
+    F1["1. Alucinação visual"]:::parcial
+    F2["2. OCR fraco"]:::parcial
+    F3["3. Cor capenga"]:::baixa
+    F9["9. Estado dinâmico"]:::alta
+  end
+  subgraph Raciocinio["Raciocínio — o que o modelo infere"]
+    F4["4. Espacial fraco"]:::parcial
+    F8["8. Inconsistência"]:::parcial
+  end
+  subgraph CustoInfra["Custo/infra — o que custa rodar"]
+    F5["5. Custo cresce"]:::alta
+    F6["6. Latência maior"]:::alta
+    F7["7. Screenshot-all"]:::alta
+  end
+  classDef alta fill:#2e7d32,color:#fff
+  classDef parcial fill:#f9a825,color:#000
+  classDef baixa fill:#c62828,color:#fff
+```
 
 ## 1. Alucinação visual
 

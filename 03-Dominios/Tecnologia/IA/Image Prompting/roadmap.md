@@ -35,11 +35,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 7 |
-| ⬜ pendente | 4 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 3 |
-| ✅ feita | 0 |
+| ✅ feita | 4 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 100% ✅ |
 
 ---
 
@@ -55,16 +55,16 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 02 - Deliverable-first, não scene-first   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 301 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E1
 - **Score:** 9/12
 - **Plano de execução:**
   - Expandir o `[!abstract]` TL;DR de 2 linhas markdown para ≥3 (quebrar o parágrafo único em pelo menos 3 linhas de citação `> `); como está, o callout tem só header + 1 linha de texto, abaixo do mínimo formal
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 03 - Modelos de imagem 2026 — DALL-E, Imagen, Midjourney, FLUX, SD   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 236 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, P1
 - **Score:** 9/12
@@ -73,10 +73,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter o decision tree ASCII (linhas 76-98) para um diagrama Mermaid `flowchart TD` equivalente — cobre E3 e adiciona ~20 linhas de estrutura
   - Completar com ~1 caso prático trabalhado (entregável real → modelo escolhido → prompt enviado → resultado) para atingir o piso — cobre P1
   - Atualizar `[!warning]` de caducidade: Imagen 4 (já lançado em 2026, hoje referenciado como "quando disponível"), FLUX.1.1 Pro Ultra, e web API oficial do Midjourney (2025), que altera a armadilha "pipeline via Discord bot"
-- **Resultado:** —
+- **Resultado:** ✅ verificado WARN (2026-07-03): plano aplicado + auditoria cética passou. — WARN: ressalvas menores (ver relatório da sessão)
 
 #### 04 - Anatomia de um prompt visual — canvas, composição, estilo   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 282 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, P1
 - **Score:** 9/12
@@ -84,10 +84,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Expandir TL;DR para ≥3 linhas de corpo (atualmente 1 linha densa; quebrar em 3 linhas curtas com as 4 camadas + a regra do default)
   - Substituir abertura de tabela por parágrafo-problema de 3-4 linhas (ex: cenário de abrir o Midjourney sem saber o que digitar além do tema) antes da tabela "As quatro camadas"
   - Essas duas mudanças já devem elevar o conteúdo para ≥300 linhas e zerar as lacunas de núcleo
-- **Resultado:** —
+- **Resultado:** ✅ verificado WARN (2026-07-03): plano aplicado + auditoria cética passou. — WARN: ressalvas menores (ver relatório da sessão)
 
 #### 05 - Templates por entregável — poster, infográfico, mockup, thumbnail   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 216 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3
 - **Score:** 9/12
@@ -95,7 +95,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar abertura com problema/cenário antes de "Como usar os templates" (2-3 §§ que enquadrem a dor: sem template você reescreve o mesmo brief do zero para cada entregável, erra o canvas, erra a hierarquia)
   - Expandir via diagrama Mermaid de decisão (qual template escolher por canal/canvas) para +15-20 linhas reais e ganhar E3
   - As duas ações juntas devem levar a nota acima de 300 linhas reais e zerar as lacunas de núcleo
-- **Resultado:** —
+- **Resultado:** ✅ verificado WARN (2026-07-03): plano aplicado + auditoria cética passou. — WARN: ressalvas menores (ver relatório da sessão)
 
 #### 06 - Iteração visual — controlled changes   [mecânico]
 - **Enriquecimento:** ➖ não precisa

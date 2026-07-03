@@ -35,20 +35,20 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 2 | [[Anatomia de Agents]] | 11 | 11 | 0 | 0 | 0% | 📋 diagnosticado | ✅ |
 | 3 | [[Spec-Driven Development]] | 12 | 12 | 0 | 0 | 0% | 📋 diagnosticado (galho mais cru) | ✅ |
 | 4 | [[Economia de Tokens]] | 22 | 20 | 2 | 0 | 9% | 📋 diagnosticado | ✅ |
-| 5 | [[Context Engineering]] | 16 | 7 | 9 | 0 | 56% | 📋 diagnosticado | ✅ |
+| 5 | [[Context Engineering]] | 16 | 0 | 9 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 6 | [[Agentes de Codificação]] | 18 | 15 | 3 | 0 | 17% | 📋 diagnosticado | ✅ |
 | 7 | [[AI Engineering Stack]] | 13 | 12 | 1 | 0 | 8% | 📋 diagnosticado | ✅ |
 | 8 | [[RAG e Vector Databases]] | 13 | 12 | 1 | 0 | 8% | 📋 diagnosticado | ✅ |
 | 9 | [[MCP]] | 10 | 10 | 0 | 0 | 0% | 📋 diagnosticado | ✅ |
 | 10 | [[Segurança e Guardrails]] | 12 | 12 | 0 | 0 | 0% | 📋 diagnosticado (⚠️ EU AI Act, prazo 02/08/2026) | ✅ |
 | 11 | [[Memória de Agentes]] | 24 | 17 | 7 | 0 | 29% | 📋 diagnosticado | ✅ |
-| 12 | [[Prompt Engineering]] | 9 | 7 | 2 | 0 | 22% | 📋 diagnosticado | ✅ |
+| 12 | [[Prompt Engineering]] | 9 | 0 | 2 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 13 | [[Structured Outputs]] | 8 | 0 | 1 | 7 | 100% | ✅ completo (2026-07-02) | ✅ |
 | 14 | [[Evaluation]] | 8 | 0 | 4 | 4 | 100% | ✅ completo (2026-07-01) | ✅ |
-| 15 | [[Observability]] | 8 | 3 | 5 | 0 | 63% | 📋 diagnosticado | ✅ |
-| 16 | [[Multimodal Prompting]] | 7 | 5 | 2 | 0 | 29% | 📋 diagnosticado | ✅ |
-| 17 | [[Image Prompting]] | 7 | 4 | 3 | 0 | 43% | 📋 diagnosticado | ✅ |
-| 18 | [[Improvement Loop]] | 7 | 3 | 4 | 0 | 57% | 📋 diagnosticado | ✅ |
+| 15 | [[Observability]] | 8 | 0 | 5 | 3 | 100% | ✅ completo (2026-07-03) | ✅ |
+| 16 | [[Multimodal Prompting]] | 7 | 2 | 2 | 3 | 71% | 📋 em enriquecimento (03/07 — 2 notas reprovadas na verificação por fabricação, revertidas → ⬜) | ✅ |
+| 17 | [[Image Prompting]] | 7 | 0 | 3 | 4 | 100% | ✅ completo (2026-07-03) | ✅ |
+| 18 | [[Improvement Loop]] | 7 | 0 | 4 | 3 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 19 | [[Ferramentas de IA]] | 5 | 0 | 0 | 5 | 100% | ✅ completo (2026-07-01) | ✅ |
 | 20 | [[Claude Code]] | 55 (6 sub-galhos) | 54 | 1 | 0 | 2% | 📋 diagnosticado (2026-07-02, galho-pai completo) | ✅ (galho-pai) |
 | 21 | [[O Lado Sombrio da IA]] | 1 + glosas | 1 | 0 | 0 | 0% | ⚪ especial — cluster crítico; nota Débito cognitivo diagnosticada (2026-07-02) | ✅ |
@@ -67,8 +67,8 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | Métrica | Valor |
 |---------|-------|
 | Galhos totais | 21 |
-| ✅ completos | 4 (Anatomia dos LLMs, Structured Outputs, Evaluation, Ferramentas de IA) |
-| 📋 diagnosticados, enriquecimento pendente | 16 (inclui Claude Code) |
+| ✅ completos | 9 (Anatomia dos LLMs, Structured Outputs, Evaluation, Ferramentas de IA, Context Engineering, Prompt Engineering, Observability, Image Prompting, Improvement Loop) |
+| 📋 diagnosticados, enriquecimento pendente | 11 (inclui Claude Code; Multimodal Prompting parcial 71%, 2 ⬜) |
 | ⬜ não diagnosticados | 0 |
 | ⚪ especiais | 1 (O Lado Sombrio da IA — agora com roadmap) |
 | Notas soltas diretas | 4 |

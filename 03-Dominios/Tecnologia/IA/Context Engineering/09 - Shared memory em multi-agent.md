@@ -1,7 +1,7 @@
 ---
 title: "Shared memory em multi-agent"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -215,6 +215,21 @@ Sinais de que **não** vale:
 - A tarefa é fluida — decompor artificialmente adiciona pontos de falha sem benefício
 - O time não tem expertise para debugar pipelines distribuídos
 
+### Um teste rápido antes de orquestrar
+
+Antes de dividir uma tarefa em múltiplos agentes, vale rodar um teste mental simples: dá pra descrever a divisão de trabalho numa frase, sem "e também"?
+
+- "O researcher busca fontes, o writer escreve, o editor revisa" → fases nítidas, cada verbo é um papel diferente. Multi-agent provavelmente compensa.
+- "O agente processa a query e também organiza o resultado e também formata a resposta" → isso é um único fluxo sequencial disfarçado de arquitetura. Um agente com um prompt bem estruturado resolve sem o overhead de coordenação.
+
+O sintoma mais comum de multi-agent desnecessário: a equipe desenha o diagrama de agentes **antes** de tentar resolver o problema com um agente só. A ordem mais barata é a inversa:
+
+1. Comece com single-agent e um prompt bem estruturado.
+2. Meça onde ele realmente falha — contexto estourando, tarefas conflitantes competindo por atenção, necessidade concreta de paralelismo.
+3. Só então decomponha, exatamente nesses pontos de fratura — não em qualquer fronteira que "pareça" natural no papel.
+
+Decompor sem esse diagnóstico prévio tende a criar fronteiras artificiais. E cada fronteira artificial é mais uma chance de handoff com payload inchado, shared state mal desenhado, ou estado sobrescrito por escrita concorrente sem locking — os mesmos problemas catalogados logo abaixo, na seção Armadilhas comuns.
+
 ---
 
 ## Armadilhas comuns
@@ -223,7 +238,7 @@ Sinais de que **não** vale:
 > Passar o histórico completo de uma sessão para o próximo agente é o erro mais comum — e o mais custoso. O agente B recebe 50K tokens de contexto onde a informação relevante está diluída, faz interpretação própria, e pode chegar a conclusões diferentes de A. A regra: nunca passe mais de 2K tokens no handoff; a informação que não cabe num resumo de 2K não é necessária para o próximo agente.
 
 > [!warning] Estado mutável sem controle de concorrência
-> Em frameworks como LangGraph, múltiplos agentes rodando em paralelo podem escrever no estado compartilhado simultaneamente. Sem locking ou operações imutáveis (cada nó retorna delta, não substitui o estado inteiro), o resultado é não-determinístico — agente B sobrescreve o trabalho de A. Use redutores imutáveis no LangGraph (`operator.add` para listas, merge explícito para dicts) em vez de substituição direta.
+> Em frameworks como LangGraph, múltiplos agentes rodando em paralelo podem escrever no estado compartilhado simultaneamente. Sem locking ou operações imutáveis (cada nó retorna delta, não substitui o estado inteiro), o resultado é não-determinístico — agente B sobrescreve o trabalho de A. Use redutores imutáveis no LangGraph (`operator.add` para listas, merge explícito para dicts) em vez de substituição direta. O problema de fundo é o mesmo de duas threads escrevendo a mesma variável sem sincronização — ver [[03 - Estado compartilhado e race conditions]], no galho de Concorrência e Paralelismo.
 
 > [!warning] Sem audit trail — debug de handoffs é tragédia
 > Em sistemas multi-agent, um erro no resultado final pode ter vindo de qualquer agente na cadeia. Sem rastreabilidade de qual agente produziu cada peça do estado, debug é investigação às cegas. Cada handoff deve logar: qual agente enviou, o que enviou, quando, e qual agente recebeu. Com frameworks como LangGraph, os checkpoints fazem isso automaticamente — aproveite.

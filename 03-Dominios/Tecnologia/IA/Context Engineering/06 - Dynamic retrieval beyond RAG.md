@@ -250,6 +250,22 @@ Uma pipeline de retrieval sem métricas é uma caixa-preta. Quatro métricas que
 
 A métrica mais difícil de medir mas mais valiosa é a "utilização do retrieval" — que fração do que foi recuperado realmente influenciou a resposta? Ferramentas como LangSmith oferecem attribution tracking (qual parte do contexto afetou os tokens de output). Sem isso, você está voando cego.
 
+**Lendo as métricas em conjunto, não isoladas.** As quatro métricas raramente se movem de forma independente — melhorar uma costuma empurrar outra na direção errada, e é justamente essa troca que separa quem só monitora de quem age sobre o monitoramento. A pergunta certa nunca é "qual métrica está ruim?" isolada; é "qual trade-off essa tarefa específica tolera?".
+
+Um exemplo direto: reduzir "tool calls por turno" geralmente significa consolidar chamadas — tools mais grossas, que devolvem mais informação de uma vez (a mesma ideia da armadilha "tools muito granulares" descrita acima, só que vista pelo lado da métrica). Isso melhora a contagem de chamadas por turno, mas pressiona a "latência de retrieval" para cima — payloads maiores levam mais tempo para trafegar e ser processados — e pode derrubar a "utilização do retrieval", porque mais conteúdo chega junto, mas nem tudo é relevante à resposta final. Um agente de suporte com exigência dura de latência tolera menos consolidação; um agente de análise profunda tolera mais latência em troca de contexto mais completo.
+
+O mesmo vale para "cache hit rate". Um número alto parece bom à primeira vista, mas esconde um risco: um cache que nunca invalida entrega dados desatualizados com a mesma confiança de um cache saudável — a métrica, sozinha, não distingue "cache eficiente" de "cache que ninguém lembrou de invalidar". Por isso vale cruzá-la com uma pergunta qualitativa: quando foi a última vez que este cache foi invalidado, e por qual evento?
+
+Na prática, o hábito saudável é revisar as quatro métricas juntas a cada mudança de arquitetura de retrieval — trocar pre-indexed por JIT, redesenhar uma tool, introduzir uma camada de cache — nunca em isolamento. Uma melhora isolada numa métrica que piora as outras três costuma ser sinal de que o ajuste resolveu o sintoma errado, não a causa.
+
+Quando as quatro apontam em direções conflitantes, a ordem de prioridade prática costuma ser: primeiro proteger a utilização do retrieval (contexto sujo derruba a qualidade da resposta, o problema mais caro de todos); depois a latência (o que o usuário sente); só então a contagem de tool calls e o cache hit rate, que são proxies operacionais — úteis para diagnosticar *onde* está o problema, mas não são o problema em si. Tratar o proxy como se fosse o alvo final é o erro mais comum de quem começa a instrumentar retrieval agora.
+
+Antes de perseguir qualquer alvo da tabela acima, vale medir a linha de base do sistema como ele está hoje — sem cache, sem consolidar tools, sem trocar arquitetura. Otimizar uma métrica que nunca foi medida no estado atual é comparar contra uma expectativa, não contra um número real; a pergunta "melhorou quanto?" só faz sentido depois que existe um "quanto era antes" registrado.
+
+Vale notar que os alvos da tabela ("1-3" tool calls, ">60%" de utilização) são pontos de partida razoáveis, não leis universais — um agente que faz multi-hop retrieval legítimo (como no Caso 4 acima) pode passar de 3 tool calls por turno com boa razão, desde que cada chamada seja informada pela anterior. O sinal de alerta não é o número absoluto; é o número sem uma explicação de por que aquele é o custo certo para aquela tarefa.
+
+No fim, medir retrieval é medir uma decisão que o próprio modelo está tomando em runtime — as quatro métricas são a forma de auditar essa decisão sem precisar confiar cegamente nela.
+
 > [!tip] Assista: RAG Is More Than Vector Search — Agentic Retrieval Explained
 > **Canal:** Weaviate | **Duração:** ~28min | **Idioma:** EN
 >

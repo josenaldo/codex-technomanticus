@@ -19,7 +19,10 @@ aliases:
 # 01 - O salto multimodal — por que isso importa
 
 > [!abstract] TL;DR
-> Em 2026, modelo de fronteira é multimodal nativo — Claude 4 (Opus, Sonnet, Haiku), GPT-5 e GPT-4.1, Gemini 2.x. O gargalo deixou de ser capacidade do modelo e virou hábito do engenheiro, que ainda monta pipeline OCR + extração + LLM-só-texto quando podia mandar a imagem direto. Multimodal nativo bate text-only em três frentes: não perde sinal na conversão (layout, hierarquia visual, gráficos, cor de status), encurta o pipeline (menos código, menos modos de falha) e desbloqueia casos onde a evidência **é** visual (acessibilidade, design review, debugging de UI, planilha com gráfico). Esta nota cobre o quê, por quê, e o anti-padrão "me dá só o texto" que ainda domina.
+> Em 2026, modelo de fronteira é multimodal nativo — Claude 4 (Opus, Sonnet, Haiku), GPT-5 e GPT-4.1, Gemini 2.x.
+> O gargalo deixou de ser capacidade do modelo e virou hábito do engenheiro, que ainda monta pipeline OCR + extração + LLM-só-texto quando podia mandar a imagem direto.
+> Multimodal nativo bate text-only em três frentes: não perde sinal na conversão (layout, hierarquia visual, gráficos, cor de status), encurta o pipeline (menos código, menos modos de falha) e desbloqueia casos onde a evidência **é** visual (acessibilidade, design review, debugging de UI, planilha com gráfico).
+> Esta nota cobre o quê, por quê, e o anti-padrão "me dá só o texto" que ainda domina.
 
 > [!question]- Vale o custo extra em tokens de imagem — quando multimodal nativo é melhor do que OCR?
 > Depende do que a tarefa precisa ver. Se o documento tem layout relevante (coluna, tabela, hierarquia visual, gráfico, cor de status), multimodal nativo é melhor porque OCR lineariza o layout e perde esses sinais. O token por imagem é mais caro por chamada, mas o custo total por tarefa resolvida corretamente tende a cair — porque erro silencioso de OCR (CPF lido como "0PF", coluna desalinhada) gera retrabalho e correção manual que nunca aparece na conta de tokens. O threshold pragmático: use OCR + retrieval quando o documento é puramente textual ou quando o volume torna o token por imagem proibitivo (> 100 mil páginas). Use multimodal nativo quando layout, gráfico ou elemento visual importa pra tarefa.

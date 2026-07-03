@@ -35,33 +35,33 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 16 |
-| ⬜ pendente | 7 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 9 |
-| ✅ feita | 0 |
+| ✅ feita | 7 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 100% ✅ |
 
 ---
 
 ## Notas
 
 #### 01 - De prompt engineering a context engineering   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 401 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L2
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar URLs reais às referências (tweet Karpathy, memo Lutke/Shopify, doc Anthropic "Building effective agents", Bytebytego guide, paper "Lost in the Middle")
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 02 - Os quatro pilares — prompt, context, intent, specification   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 401 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L2
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar URLs reais às referências (Karpathy "Software Is Changing (Again)", Anthropic "Building effective agents", Braintrust "Evals-driven development", NIST AI RMF, EU AI Act, Hamel Husain "Your AI Product Needs Evals")
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 03 - Context rot e atenção diluída   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -91,13 +91,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 06 - Dynamic retrieval beyond RAG   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 385 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** —
 - **Score:** 12/12
 - **Plano de execução:**
   - Nota 15 linhas abaixo do piso Adepto (≥400) — expandir "Estado da arte" ou "Métricas" com ~15 linhas de substância para cruzar o limite formal
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 07 - Compressão e pruning de informação   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -118,14 +118,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 09 - Shared memory em multi-agent   [mecânico]
-- **Enriquecimento:** ⬜ pendente
-- **Estado:** 389 linhas · fase: Adepto · status: growing
+- **Enriquecimento:** ✅ feita
+- **Estado:** 403 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L1
 - **Score:** 10/12
 - **Plano de execução:**
   - Piso: nota 11 linhas abaixo do piso Adepto (≥400) — acrescentar ~15 linhas de conteúdo substantivo (ex.: expandir "Estado da arte" ou adicionar sub-item em "Quando NÃO usar")
   - Adicionar ao menos 1 wikilink cross-galho no corpo ou em "Veja também" — candidatos: [[Concorrência]] (race conditions), [[Anatomia dos LLMs]] (janela de contexto), ou outra nota fora de Context Engineering
-- **Resultado:** —
+- **Resultado:** Acrescentado sub-item "Um teste rápido antes de orquestrar" em "Quando NÃO usar" (+15 linhas, 389→403); wikilink cross-galho [[03 - Estado compartilhado e race conditions]] (Concorrência e Paralelismo) inserido na armadilha "Estado mutável sem controle de concorrência".
 
 #### 10 - Structured state tracking   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -137,17 +137,17 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 11 - Skills e instructions como contexto   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 361 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E3, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Nota abaixo do piso Adepto (≥400): expandir com 1-2 casos práticos adicionais ou converter os diagramas ASCII (separação de camadas, cross-tool 80/20, hierarquia global→projeto→diretório) para diagramas Mermaid reais
   - Adicionar 1 exemplo de código-com-falha concreto (ex: AGENTS.md com regras contraditórias entre `AGENTS.md` e `CLAUDE.md` e o comportamento não-determinístico resultante)
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 12 - Guardrails determinísticos   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 347 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L1, L2
 - **Score:** 9/12
@@ -155,7 +155,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Nota abaixo do piso Adepto (≥400): expandir "Estado da arte" ou "Métricas de eficácia" ou converter o único Mermaid em 2-3 diagramas (ex: sequenceDiagram de ataque por prompt injection bloqueado pelo pre-LLM + flowchart do three-tier)
   - Adicionar URLs às referências: CIO Magazine, Arthur AI, arxiv como links reais
   - Adicionar wikilink cross-galho para o galho Segurança e Guardrails em "Veja também"
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 13 - Entropia e qualidade de contexto   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -176,14 +176,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 435 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L1
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar wikilink para o galho Prompt Engineering (galho 12) em "Veja também" ou na abertura do TL;DR
   - Adicionar exemplo de código-com-falha na seção Few-shot — ex: 3 exemplos da mesma classe seguidos da query, mostrando classificação errada; depois versão corrigida com exemplos diversificados
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 16 - Agent skills marketplace e SKILL.md   [mecânico]
 - **Enriquecimento:** ➖ não precisa

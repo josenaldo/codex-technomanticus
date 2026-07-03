@@ -35,34 +35,34 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 7 |
-| ⬜ pendente | 5 |
+| ⬜ pendente | 2 |
 | ➖ não precisa | 2 |
-| ✅ feita | 0 |
+| ✅ feita | 3 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 71% |
 
 ---
 
 ## Notas
 
 #### 01 - O salto multimodal — por que isso importa   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 301 linhas totais / 146 linhas não-em-branco · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E1, E3
 - **Score:** 10/12
 - **Plano de execução:**
   - Expandir TL;DR de 1 linha longa para ≥3 linhas separadas no callout [!abstract] (split: estado do mercado / o gargalo / vantagens multimodal)
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 02 - Imagens como input — screenshots, charts, mockups   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 311 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E1, E2, E3, P1
 - **Score:** 8/12
 - **Plano de execução:**
   - Expandir TL;DR de 1 bloco para ≥3 linhas separadas no [!abstract] (ex: estado do mercado / os 5 tipos de tarefa / regra de resolução/custo)
   - Adicionar abertura-problema antes de "## Cinco tipos de tarefa visual" — cenário concreto (screenshot de bug, mockup de revisão) que justifique a escolha de provider/detalhe antes da taxonomia
-- **Resultado:** —
+- **Resultado:** ✅ verificado WARN (2026-07-03): plano aplicado + auditoria cética passou. — WARN: ressalvas menores (ver relatório da sessão)
 
 #### 03 - PDFs e documentos — extração e análise   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -105,11 +105,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 07 - Limites e armadilhas multimodais   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 221 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, P1
 - **Score:** 9/12
 - **Plano de execução:**
   - Adicionar abertura narrativa (5-8 linhas) entre o `[!question]-` e a `## 1. Alucinação visual` — cenário de equipe em produção que descobriu multimodal, mandou print de tudo, e viu custo e falhas explodirem
   - Adicionar diagrama Mermaid (≈15 linhas) mapeando as 9 categorias de falha em dois eixos: tipo (percepção/raciocínio/custo-infra) e mitigabilidade (alta/parcial/baixa) — cobre E3 e ajuda a cruzar o piso de 300
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.

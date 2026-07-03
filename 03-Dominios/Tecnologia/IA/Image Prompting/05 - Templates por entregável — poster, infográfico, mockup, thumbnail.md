@@ -1,7 +1,7 @@
 ---
 title: "05 - Templates por entregável — poster, infográfico, mockup, thumbnail"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 fase: Iniciado
@@ -24,6 +24,12 @@ aliases:
 
 > [!question]- Preciso de um template que não está aqui — como criar um novo do zero?
 > Siga o mesmo processo dos templates desta nota: (1) identifique o **Canal** (onde vai aparecer) → deriva o canvas; (2) determine a **Hierarquia** (o que é mais importante visualmente — lema, CTA, imagem?) → deriva composição; (3) levante as **Constraints implícitas** do canal (thumbnail precisa ser legível a 120px, story precisa de safe zone de 15% nas bordas, etc.); (4) escolha o modelo com base em se texto é crítico (Ideogram/Imagen) ou estilo importa mais (Midjourney/FLUX). Esses 4 campos viram o esqueleto do template. Depois teste com 3-5 variações, identifique o que sempre varia (conteúdo) vs o que sempre fica (canvas, estrutura), e isso é o seu template.
+
+Antes de existir um template, cada entregável nasce do zero: você abre o gerador de imagem, encara o campo de prompt vazio e começa a improvisar a partir do brief mais recente que lembra ter escrito — talvez pra um poster, talvez pra um mockup, não importa. O resultado raramente serve: você usa canvas quadrado pra um thumbnail que precisa ser 16:9, ou empilha a hierarquia de infográfico num hero image que devia reservar 40% de espaço negativo pra overlay de título. A dor não é falta de habilidade — é falta de memória estruturada: você já resolveu esse mesmo problema semana passada, só que pra outro canal, e não guardou a solução em lugar nenhum reaproveitável.
+
+Sem template, cada entregável reabre as mesmas quatro perguntas (canvas? hierarquia? texto crítico? modelo?) do zero — e errar qualquer uma delas custa um reroll inteiro: alguns segundos de geração mais alguns minutos analisando por que ficou errado. Com oito canais recorrentes (poster, infográfico, carousel, thumbnail, mockup, hero, capa de e-book, banner de perfil), isso significa reaprender a mesma lição oito vezes — ou pior, aplicar a lição errada, porque canais parecidos na superfície ("imagem com texto grande") exigem hierarquias opostas (poster é top-heavy; thumbnail é hero-lateral).
+
+Esta nota resolve isso amarrando cada entregável a um template fixo — canvas, hierarquia e modelo já decididos de antemão. O que resta fazer é preencher o conteúdo variável.
 
 ## Como usar os templates
 
@@ -182,6 +188,31 @@ Você substitui o conteúdo variável (`<...>`) e ajusta estilo conforme marca/c
 | Hero | 16:9 / 21:9 | Midjourney / FLUX dev | Espaço negativo pra overlay |
 | Capa e-book | 6:9 | Imagen 3 / Midjourney | Compatível com texto sobre ela |
 | Banner perfil | 8:2.7 | Midjourney / FLUX dev | Espaço negativo esquerdo; safe zone |
+
+### Árvore de decisão — qual template escolher
+
+A tabela acima já resolve o caso em que você sabe o canal. Quando a dúvida é "por onde começar", a árvore abaixo percorre a mesma decisão canal → canvas → template, na ordem em que ela normalmente surge no briefing:
+
+```mermaid
+flowchart TD
+    A[Qual é o canal do entregável?] --> B{Impressão ou evento<br/>ao vivo?}
+    B -->|Sim| T1[Template 1: Poster<br/>11:17 / 2:3 / 9:16]
+    B -->|Não| C{Educacional,<br/>multi-seção?}
+    C -->|Sim| T2[Template 2: Infográfico<br/>1:1 / 4:5 / 9:16]
+    C -->|Não| D{LinkedIn/Instagram,<br/>série de slides?}
+    D -->|Sim| T3[Template 3: Carousel slide<br/>1:1 / 4:5]
+    D -->|Não| E{YouTube, precisa legibilidade<br/>a 120×68px?}
+    E -->|Sim| T4[Template 4: Thumbnail<br/>16:9]
+    E -->|Não| F{App/produto, precisa<br/>device frame?}
+    F -->|Sim| T5[Template 5: Mockup<br/>9:16 / 16:9]
+    F -->|Não| G{README/blog, precisa espaço<br/>negativo p/ overlay?}
+    G -->|Sim| T6[Template 6: Hero image<br/>16:9 / 21:9]
+    G -->|Não| H{E-book/curso,<br/>capa vertical?}
+    H -->|Sim| T7[Template 7: Capa e-book<br/>6:9]
+    H -->|Não| T8[Template 8: Banner de perfil<br/>8:2.7]
+```
+
+Cada folha da árvore aponta pro template correspondente nesta nota — o canvas já vem junto porque é a primeira decisão implícita de cada um.
 
 ## Constraints universais — copie em qualquer template
 

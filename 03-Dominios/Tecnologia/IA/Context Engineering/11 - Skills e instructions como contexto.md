@@ -1,7 +1,7 @@
 ---
 title: "Skills e instructions como contexto"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -38,14 +38,16 @@ O insight central: instruction files não são documentação do projeto — sã
 
 ## A separação que importa
 
-```
-┌──────────────────────────────────────┐
-│  AGENTS.md  ← regras compartilhadas  │
-│  (build, test, conventions)          │
-└──────────────────────────────────────┘
-       ↑                ↑                ↑
-   CLAUDE.md       .cursorrules    .copilot-instructions
-   (deltas)         (deltas)         (deltas)
+```mermaid
+flowchart TB
+    AGENTS["AGENTS.md<br/>regras compartilhadas<br/>(build, test, conventions)"]
+    CLAUDE["CLAUDE.md<br/>(deltas)"]
+    CURSOR[".cursorrules<br/>(deltas)"]
+    COPILOT[".copilot-instructions<br/>(deltas)"]
+
+    CLAUDE --> AGENTS
+    CURSOR --> AGENTS
+    COPILOT --> AGENTS
 ```
 
 Cada ferramenta lê o seu arquivo específico + (se configurado) o `AGENTS.md`. Single source of truth → menos drift entre ferramentas, menos retrabalho quando as regras mudam.
@@ -130,25 +132,30 @@ A distinção é de **granularidade e ativação**: instructions definem o ambie
 
 ## Cross-tool config — a estratégia 80/20
 
-```
-AGENTS.md (80% — regras gerais, toda ferramenta)
-├── Build, test, lint commands
-├── Conventions de código
-├── Estrutura de pastas
-├── Security policies
-└── Padrões de PR e commit
+```mermaid
+flowchart TB
+    subgraph AGENTS["AGENTS.md (80% — regras gerais, toda ferramenta)"]
+        A1[Build, test, lint commands]
+        A2[Conventions de código]
+        A3[Estrutura de pastas]
+        A4[Security policies]
+        A5[Padrões de PR e commit]
+    end
 
-CLAUDE.md (20% — específicas Claude Code)
-├── Hooks recomendados para este projeto
-└── MCP servers configurados e como usá-los
+    subgraph CLAUDE["CLAUDE.md (20% — específicas Claude Code)"]
+        C1[Hooks recomendados para este projeto]
+        C2[MCP servers configurados e como usá-los]
+    end
 
-.cursorrules (20% — específicas Cursor)
-├── Composer model preference
-└── Auto-include patterns para contexto
+    subgraph CURSOR[".cursorrules (20% — específicas Cursor)"]
+        R1[Composer model preference]
+        R2[Auto-include patterns para contexto]
+    end
 
-.copilot-instructions (20% — específicas Copilot)
-├── Suggestion style preference
-└── Inline completion preferences
+    subgraph COPILOT[".copilot-instructions (20% — específicas Copilot)"]
+        P1[Suggestion style preference]
+        P2[Inline completion preferences]
+    end
 ```
 
 O anti-pattern: duplicar todo o conteúdo de AGENTS.md no CLAUDE.md. Isso parece "garantir que funciona" mas garante drift — quando AGENTS.md muda, CLAUDE.md fica desatualizado, e o agente recebe regras conflitantes.
@@ -157,14 +164,16 @@ O anti-pattern: duplicar todo o conteúdo de AGENTS.md no CLAUDE.md. Isso parece
 
 ## Hierarquia e resolução de precedência
 
-```
-~/.config/agents/AGENTS.md       ← global do usuário (~5% das regras)
-   ↓ override por
-projeto/AGENTS.md                 ← do projeto (90% das regras)
-   ↓ override por
-projeto/src/feature-x/AGENTS.md   ← específico do diretório (5%)
-   ↓ override por
-prompt explícito do usuário       ← supera tudo, sempre
+```mermaid
+flowchart TD
+    G["~/.config/agents/AGENTS.md<br/>global do usuário (~5% das regras)"]
+    P["projeto/AGENTS.md<br/>do projeto (90% das regras)"]
+    D["projeto/src/feature-x/AGENTS.md<br/>específico do diretório (5%)"]
+    U["prompt explícito do usuário<br/>supera tudo, sempre"]
+
+    G -->|override por| P
+    P -->|override por| D
+    D -->|override por| U
 ```
 
 A resolução hierárquica — mais próximo do arquivo editado ganha — é universal em 2026. É análoga ao `package.json` mais próximo vencendo no Node.js, ou ao `.gitignore` mais específico prevalecendo.
@@ -191,6 +200,22 @@ Isso permite um padrão poderoso: regras gerais do projeto em `/AGENTS.md`, regr
 
 > [!warning] Regras duplicadas entre AGENTS.md e arquivos de ferramenta
 > Manter as mesmas regras em AGENTS.md, CLAUDE.md e .cursorrules é drift garantido. Em 3 meses, as três cópias estão desincronizadas — e quando o agente recebe instruções conflitantes (AGENTS.md diz "named exports", CLAUDE.md ainda tem a regra antiga "default exports"), o comportamento é não-determinístico. Um symlink garante single source of truth com zero custo.
+
+**Exemplo concreto do drift — o mesmo dev, dois resultados diferentes:**
+
+```markdown
+# AGENTS.md (atualizado na migração para named exports)
+## Conventions
+- Named exports em todos os módulos — nunca default export
+```
+
+```markdown
+# CLAUDE.md (arquivo antigo, esquecido depois da migração)
+## Conventions
+- Use default export nos componentes React
+```
+
+Um dev abre o projeto no Cursor: recebe a regra de `named exports` (Cursor lê `AGENTS.md`). O mesmo dev, na mesma tarde, abre o projeto no Claude Code: recebe a regra de `default export` (Claude Code lê só `CLAUDE.md`, que ninguém atualizou). O resultado não é "o agente erra sempre da mesma forma" — é pior: **o comportamento correto depende de qual ferramenta abriu a sessão**. Dois PRs do mesmo dev, no mesmo dia, chegam com convenções opostas — e nenhum dos dois está "errado" do ponto de vista do agente que o gerou, porque cada um seguiu à risca o arquivo que leu.
 
 > [!warning] AGENTS.md gigante — context rot por instrução
 > Um AGENTS.md de 10K tokens consome 10% de uma janela de 100K antes da sessão começar — e o conteúdo no meio do arquivo fica na zona de baixa atenção (→ [[03 - Context rot e atenção diluída]]). Regras enterradas no meio de um arquivo grande são ignoradas na prática. Mantenha em 1-3K tokens. O que não cabe em 3K tokens provavelmente é documentação disfarçada de instrução.

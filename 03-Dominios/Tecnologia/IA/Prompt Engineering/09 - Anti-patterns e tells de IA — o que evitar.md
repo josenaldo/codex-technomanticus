@@ -1,7 +1,7 @@
 ---
 title: "09 - Anti-patterns e tells de IA — o que evitar"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 progress: in_progress
@@ -21,10 +21,15 @@ aliases:
 # 09 - Anti-patterns e tells de IA — o que evitar
 
 > [!abstract] TL;DR
-> Um output gerado por LLM costuma carregar marcas reconhecíveis — frases-bandeira, estruturas previsíveis, ritmos típicos — que denunciam a origem mesmo quando o conteúdo está correto. Essas marcas vêm do prior estatístico: o modelo aprendeu, em milhões de exemplos, que certas frases são "tom esperado de assistente útil". Esta nota cataloga as bandeiras vermelhas mais comuns, explica por que aparecem, mostra como bloquear via constraints (no padrão de [[06 - Constraints declarativas — boundaries como engenharia|nota 06]]), e nomeia os contextos onde essas estruturas são — surpreendentemente — apropriadas. A regra de ouro: não basta escrever bem; é preciso bloquear o que o modelo escreve por default.
+> - Um output gerado por LLM costuma carregar marcas reconhecíveis — frases-bandeira, estruturas previsíveis, ritmos típicos — que denunciam a origem mesmo quando o conteúdo está correto.
+> - Essas marcas vêm do prior estatístico: o modelo aprendeu, em milhões de exemplos, que certas frases são "tom esperado de assistente útil".
+> - Esta nota cataloga as bandeiras vermelhas mais comuns, explica por que aparecem, mostra como bloquear via constraints (no padrão de [[06 - Constraints declarativas — boundaries como engenharia|nota 06]]), e nomeia os contextos onde essas estruturas são — surpreendentemente — apropriadas.
+> - A regra de ouro: não basta escrever bem; é preciso bloquear o que o modelo escreve por default.
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Esta é a nota de fechamento da trilha de Prompt Engineering. Não há pré-requisito técnico específico — mas o contexto é importante: você chegou aqui depois de aprender especificidade, role, constraints, few-shot, iteration e reasoning models. Esta nota é cultural: ela documenta o que o modelo produz por default quando os prompts anteriores não estavam ativos, e o que fazer quando o output "cheira a IA" mesmo sendo tecnicamente correto. Se você usa LLMs para produzir texto que vai assinar com o seu nome, esta nota é a mais diretamente prática das nove.
+
+Você recebe um draft — seu, ou de alguém do time — e antes de terminar o primeiro parágrafo já sente aquele desconforto: "isso parece ChatGPT". Não é nenhum erro factual. É a cadência: a frase de abertura que poderia estar em qualquer texto sobre qualquer assunto, o hedge desnecessário na segunda linha, a lista de exatamente três itens do mesmo tamanho, o fechamento motivacional que soa a palestra TED. Nada ali está tecnicamente errado — mas nada ali soa como você. Esta nota existe para nomear esse desconforto e dar ferramenta pra resolvê-lo.
 
 ## Frases bandeira-vermelha
 
@@ -156,6 +161,38 @@ Esse bloco isolado, no fim de qualquer prompt de geração de texto, sobe a qual
 
 Essa lista vai ficar desatualizada. O conjunto de frases-bandeira evolui — algumas ficam famosas demais e modelos novos aprendem a evitá-las, outras novas surgem. Trate a lista como viva; revisite a cada release importante de modelo.
 
+## Casos práticos: antes e depois
+
+Duas reescritas completas, aplicando o catálogo acima a texto corrido — não só a frase isolada.
+
+### Caso 1 — abertura de post técnico
+
+**Original (cheio de tells):**
+
+> "In today's fast-paced world, understanding API rate limiting is more important than ever. It's important to note that rate limiting isn't just about preventing abuse — it's about ensuring fair access for all users. Whether you're a solo developer or part of a large team, mastering this concept is crucial."
+
+**Diagnóstico:** quatro tells na mesma abertura — cliché temporal genérico ("in today's fast-paced world"), hedge reflexo ("it's important to note"), a estrutura "não é X, é Y", fechamento de audiência ampla ("whether you're..."), e o adjetivo de intensidade ("crucial"). Zero informação técnica nas primeiras 40 palavras.
+
+**Reescrita (sem tells):**
+
+> "Rate limiting exists because your API has a ceiling — CPU, database connections, downstream quotas — and someone will hit it, on purpose or by accident. This post covers the three algorithms that enforce that ceiling: token bucket, sliding window, and fixed window, and when each one breaks."
+
+**O que mudou:** a abertura começa pelo *porquê técnico* (existe um teto), não por um cliché temporal. Zero hedge, zero frase de audiência ampla. A segunda frase já entrega o índice do post — sem precisar de "crucial" ou "important" pra justificar a leitura.
+
+### Caso 2 — fechamento de e-mail interno
+
+**Original (cheio de tells):**
+
+> "In conclusion, by embracing these new deployment practices, the team will be well-equipped to handle future challenges. The journey towards better DevOps is just beginning, and with the right approach, continuous improvement is within reach."
+
+**Diagnóstico:** "in conclusion" como rótulo de redação escolar, fechamento motivacional duplo ("well-equipped", "the journey is just beginning"), e uma frase de esperança genérica ("within reach") sem nenhum próximo passo concreto.
+
+**Reescrita (sem tells):**
+
+> "Next sprint we move the deploy pipeline to staged rollouts — 10% of traffic, then 50%, then 100%, with automatic rollback on error-rate spike. I'll open the RFC Thursday."
+
+**O que mudou:** o fechamento motivacional vira compromisso concreto, com número e prazo. Não há "jornada" nem "abraçar" — há uma ação datada que qualquer leitor consegue cobrar depois.
+
 ## Quando esses padrões são OK
 
 Honestidade: nem toda estrutura "típica de IA" é ruim. Em contextos certos, estruturas previsíveis funcionam — por isso o modelo as aprendeu como default.
@@ -266,7 +303,7 @@ A disciplina desta nota — identificar o que o modelo produz por default e subs
 ## Fontes
 
 - **@hooeem** — *Become an AI Engineer*, cap #8. Catálogo original das frases-bandeira, em inglês.
-- **Anthropic** — *Style guidelines for Claude responses* (docs.anthropic.com).
+- **Anthropic** — *Style guidelines for Claude responses* ([docs.anthropic.com](https://docs.anthropic.com) — path específico a confirmar).
 - **OpenAI** — *Writing with clarity* (community discussions e docs).
 - Observação cultural pública sobre tells de ChatGPT em 2024-2025 (Twitter/X, Reddit r/ChatGPT, fóruns de redação).
 

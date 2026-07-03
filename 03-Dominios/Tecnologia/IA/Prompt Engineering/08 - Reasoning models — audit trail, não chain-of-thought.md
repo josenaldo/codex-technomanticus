@@ -1,9 +1,9 @@
 ---
 title: "08 - Reasoning models — audit trail, não chain-of-thought"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
-status: seedling
+status: growing
 progress: in_progress
 fase: Iniciado
 tags:
@@ -20,7 +20,10 @@ aliases:
 # 08 - Reasoning models — audit trail, não chain-of-thought
 
 > [!abstract] TL;DR
-> Em modelos clássicos, *"think step-by-step"* era uma das alavancas mais eficazes — induzia chain-of-thought, que melhorava raciocínio. Em **reasoning models** (o3, R1, Gemini Thinking), esse pedido virou noise: a cadeia interna já acontece. Pedir CoT de novo polui o output sem ganho. O que muda: você deixa de pedir *raciocínio*, e passa a pedir **audit trail** — pontos de checagem do raciocínio interno (assumptions, checkpoints-chave, uncertainties, como verificar). Esta nota separa o que pedir e o que evitar em reasoning models, com tabela modelo × pedido recomendado × pedido a evitar.
+> Em modelos clássicos, *"think step-by-step"* era uma das alavancas mais eficazes — induzia chain-of-thought, que melhorava raciocínio.
+> Em **reasoning models** (o3, R1, Gemini Thinking), esse pedido virou noise: a cadeia interna já acontece. Pedir CoT de novo polui o output sem ganho.
+> O que muda: você deixa de pedir *raciocínio*, e passa a pedir **audit trail** — pontos de checagem do raciocínio interno (assumptions, checkpoints-chave, uncertainties, como verificar).
+> Esta nota separa o que pedir e o que evitar em reasoning models, com tabela modelo × pedido recomendado × pedido a evitar.
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Esta nota pressupõe que você sabe o que é chain-of-thought (CoT) e por que ele melhora qualidade em modelos clássicos. Se não sabe, leia [[03-Dominios/Tecnologia/IA/Context Engineering/15 - Técnicas de prompting — zero-shot, few-shot, CoT, ToT|Técnicas de prompting]] antes. O ponto aqui é que reasoning models (o3, R1, Gemini Thinking, Claude com extended thinking) mudaram o jogo: o CoT acontece internamente, antes do output, e o prompt ideal para eles é diferente. Se você usa modelos clássicos, a nota anterior (few-shot, constraints) já é o suficiente; se usa reasoning models em produção, esta nota é leitura obrigatória.
@@ -89,6 +92,51 @@ A diferença é cirúrgica: você está pedindo **metadata da inferência**, nã
 | **Gemini Thinking** (reasoning model) | Audit trail; pode pedir resumo do "thinking" como parte do output | CoT explícito (sobrepõe ao modo de pensamento) |
 | **Claude 4 (Opus/Sonnet) com extended thinking** | Definir tempo de thinking; pedir resumo de checkpoints no output final | Pedir *"think step-by-step"* explicitamente — Claude já roda |
 | **Modelos locais pequenos (7B-13B)** sem reasoning | CoT explícito + few-shot; modelos pequenos precisam da indução | Esperar audit trail rico — eles não geram |
+
+## Caso prático: prompt incorreto vs. correto
+
+Para tornar a diferença concreta, veja o mesmo problema resolvido com os dois estilos de prompt — o hábito herdado de modelos clássicos e o audit trail recomendado para reasoning models.
+
+**Cenário:** você quer saber se, ao implementar busca numa lista ordenada com até 10 milhões de elementos, vale mais usar busca binária recursiva ou a versão iterativa.
+
+**Prompt incorreto** (CoT por hábito, aplicado a um reasoning model):
+
+```
+Think step-by-step. Devo usar busca binária recursiva ou iterativa
+para buscar em uma lista ordenada de até 10 milhões de elementos?
+Explique seu raciocínio detalhadamente, passo a passo, antes de
+responder.
+
+Pergunta: qual abordagem escolher e por quê?
+```
+
+Por que isso é um erro: em um reasoning model, "think step-by-step" não destrava nada que já não estivesse acontecendo — a cadeia interna já roda antes de qualquer token do output. O modelo reage de uma de duas formas, e as duas são ruins: ou repete o próprio pensamento interno como prosa longa (tokens gastos sem ganho de qualidade), ou trata o pedido como instrução de formatação e produz uma lista de "passos" artificiais — uma cadeia decorativa, escrita depois, que não é a auditoria do raciocínio real.
+
+**Prompt correto** (audit trail):
+
+```
+Devo usar busca binária recursiva ou iterativa para buscar em uma
+lista ordenada de até 10 milhões de elementos?
+
+Devolva:
+1. Final answer
+2. Assumptions: as premissas que você adotou
+3. Key reasoning checkpoints: 2-4 pontos de inflexão (não a cadeia
+   inteira — só os pivôs)
+4. Uncertainties: onde sua resposta é mais frágil; use confidence
+   levels (high/moderate/low/unknown)
+5. How to verify: como eu poderia checar essa resposta sem você
+```
+
+O formato de resposta esperado (a estrutura é estável; o conteúdo exato varia por modelo):
+
+1. **Final answer:** iterativa — evita risco de estourar a pilha de chamadas em profundidades de recursão que, embora logarítmicas, ainda somam overhead de função por chamada em linguagens sem otimização de tail-call.
+2. **Assumptions:** a linguagem-alvo não faz tail-call optimization (verdade para a maioria: Python, Java, JavaScript); a lista já está ordenada; não há limite de stack customizado no ambiente.
+3. **Key checkpoints:** (i) a profundidade de recursão é logarítmica — log₂(10 milhões) ≈ 24 chamadas, o que normalmente não estouraria uma pilha padrão sozinho; (ii) mas o overhead por chamada de função pesa mais que o de uma iteração de loop, e isso importa quando a busca roda em um hot path chamado repetidamente.
+4. **Uncertainties (moderate):** se a linguagem-alvo faz TCO (alguns compiladores Scheme, Erlang), a diferença de performance entre as duas versões desaparece — a resposta assume que não faz.
+5. **How to verify:** rode um benchmark comparando as duas versões na linguagem real de destino, com profiling de tempo de CPU.
+
+A diferença entre os dois prompts não está em quanto o modelo "sabe" — a cadeia interna é a mesma nos dois casos. A diferença está no que sobra para você auditar depois: o prompt incorreto devolve uma narrativa de raciocínio que pode ou não refletir o pensamento real; o prompt correto devolve pontos específicos e contestáveis — a assumption sobre TCO, o checkpoint sobre profundidade logarítmica — que você pode confirmar ou refutar um a um, em vez de aceitar ou rejeitar a resposta inteira em bloco.
 
 ## Armadilhas comuns
 

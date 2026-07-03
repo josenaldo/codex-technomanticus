@@ -1,7 +1,7 @@
 ---
 title: "07 - Iteration patterns — keep, change, do-not"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 progress: in_progress
@@ -20,7 +20,11 @@ aliases:
 # 07 - Iteration patterns — keep, change, do-not
 
 > [!abstract] TL;DR
-> O modo errado de iterar um output é dizer *"try again, make it better"* — o modelo regenera às cegas, frequentemente piorando o que estava bom. O modo certo é nomear três conjuntos: **Keep** (o que estava certo e não pode mudar), **Change** (o que precisa virar X), **Do not** (o que apareceu no output anterior e não pode reaparecer). Esta nota cobre o template, quando iterar vs quando recomeçar do zero, e o sinal mais importante de que sua iteração está doente: loop infinito porque o primeiro prompt não era específico.
+> O modo errado de iterar um output é dizer *"try again, make it better"* — o modelo regenera às cegas, frequentemente piorando o que estava bom.
+>
+> O modo certo é nomear três conjuntos: **Keep** (o que estava certo e não pode mudar), **Change** (o que precisa virar X), **Do not** (o que apareceu no output anterior e não pode reaparecer).
+>
+> Esta nota cobre o template, quando iterar vs quando recomeçar do zero, e o sinal mais importante de que sua iteração está doente: loop infinito porque o primeiro prompt não era específico.
 
 > [!question]- O que eu preciso saber antes de ler isso?
 > Esta nota assume que você já tem prompts razoáveis (especificidade, role, constraints) e quer refinar o output sem jogar fora o que já está funcionando. O padrão Keep/Change/Do-not é um protocolo de diff: você explicita ao modelo o que manter, o que alterar, e o que bloquear. Se você ainda está no estágio de montar um prompt do zero, comece pelas notas anteriores — especialmente [[02 - Especificidade — a primeira disciplina]] e [[06 - Constraints declarativas — boundaries como engenharia]]. Iteração sem um prompt de partida razoável é só tentativa e erro mais organizada.
@@ -283,9 +287,9 @@ Ver [[08 - Reasoning models — audit trail, não chain-of-thought]].
 ## Fontes e conexões
 
 - **@hooeem** — *Become an AI Engineer*, cap #7. Origem do template Keep/Change/Do-not e o framing de "iteração estruturada como diff".
-- **Anthropic** — *Iterating on prompts* (docs.anthropic.com). Guia oficial de boas práticas de refinamento com exemplos.
-- **OpenAI** — *Prompt engineering guide*, seção sobre iteration. Reforça a ideia de ciclos curtos com critério claro de melhoria.
-- **Karpathy, A.** — posts em karpathy.ai e X/@karpathy sobre LLM prompting. Exemplo de Como Change com referência externa ("escreva no estilo do Karpathy nos posts dele") ancora a mudança de tom de forma verificável.
+- **Anthropic** — [Iterating on prompts](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview). Guia oficial de boas práticas de refinamento com exemplos.
+- **OpenAI** — [Prompt engineering guide](https://platform.openai.com/docs/guides/prompt-engineering), seção sobre iteration. Reforça a ideia de ciclos curtos com critério claro de melhoria.
+- **Karpathy, A.** — posts em [karpathy.ai](https://karpathy.ai/) e [X/@karpathy](https://x.com/karpathy) sobre LLM prompting. Exemplo de Como Change com referência externa ("escreva no estilo do Karpathy nos posts dele") ancora a mudança de tom de forma verificável.
 
 A confluência dessas fontes é consistente: iteração eficaz é a que explicita o diff, não a que espera o modelo adivinhar o que você queria. A variação é de terminologia (Keep/Change vs "anchor and modify"), não de princípio.
 

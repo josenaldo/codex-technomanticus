@@ -1,7 +1,7 @@
 ---
 title: "De prompt engineering a context engineering"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -386,14 +386,14 @@ Para quem está saindo de prompt engineering e quer começar a praticar CE:
 
 ## Referências
 
-- **Karpathy, A.** — *Tweet on context engineering* (jun 2025). Popularizou a analogia do sistema operacional.
-- **Lutke, T.** — *Shopify CEO memo on context engineering* (jun 2025). Primeira articulação corporativa do termo.
-- **Anthropic** — *Building effective agents: context engineering* (2025). Documentação oficial.
-- **Bytebytego** — *A Guide to Context Engineering for LLMs* (2026). Overview técnico acessível.
+- **Karpathy, A.** — *Tweet on context engineering* (jun 2025). Popularizou a analogia do sistema operacional — https://x.com/karpathy/status/1937902205765607626
+- **Lutke, T.** — *Shopify CEO memo on context engineering* (jun 2025). Primeira articulação corporativa do termo — https://x.com/tobi/status/1935533422589399127
+- **Anthropic** — *Building effective agents: context engineering* (2025). Documentação oficial — https://www.anthropic.com/research/building-effective-agents
+- **Bytebytego** — *A Guide to Context Engineering for LLMs* (2026). Overview técnico acessível — https://blog.bytebytego.com/p/a-guide-to-context-engineering-for
 - **Google** — *Gemini 2.5 Pro: 1M context window documentation* (2026). Referência para janelas longas.
 - **Anthropic** — *Model Context Protocol specification* (2024). Protocolo de comunicação entre modelos e fontes de contexto externas.
 - **Zep / Mem0** — Documentações de memória persistente como serviço (2025-2026). Implementações de referência para CE em produção.
-- **Lin, Z. et al.** — *Lost in the Middle: How Language Models Use Long Contexts* (2023). Paper fundacional sobre atenção diluída — embasamento científico do context rot.
+- **Lin, Z. et al.** — *Lost in the Middle: How Language Models Use Long Contexts* (2023). Paper fundacional sobre atenção diluída — embasamento científico do context rot — https://arxiv.org/abs/2307.03172
 - **Coze / LangGraph / CrewAI** — Frameworks de orquestração de agentes com primitivas nativas de gestão de contexto (2024-2026). Referências de implementação.
 - **Anthropic** — *The Claude context engineering guide for enterprise* (2026). Melhores práticas para times usando Claude em produção.
 - **White, J. et al.** — *A Prompt Pattern Catalog to Enhance Prompt Engineering with ChatGPT* (2023). Taxonomia de padrões de prompt — fundamento de CE estruturado.

@@ -1,7 +1,7 @@
 ---
 title: "05 - Few-shot examples — exemplos como contrato"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 progress: in_progress
@@ -172,6 +172,17 @@ O formato explícito tem a vantagem de forçar parsing estruturado — quando o 
 Em entrevistas de engenharia de IA, a pergunta sobre few-shot costuma aparecer de duas formas:
 
 **Forma 1 — conceitual:** "Como você decidiria entre zero-shot, few-shot e fine-tuning?" Resposta esperada: three-way trade-off. Few-shot ganha quando a tarefa exige padrão específico não alcançado com zero-shot e o volume de dados não justifica fine-tuning. A faixa típica: 3-5 exemplos, 100-300 tokens cada.
+
+O fluxo de decisão por trás dessa resposta, condensando os critérios já discutidos nesta nota (teste zero-shot primeiro, faixa de 3-5 exemplos, limiar de 10+ exemplos, e o limite de few-shot quando falta conhecimento factual):
+
+```mermaid
+flowchart TD
+    A[Nova tarefa de prompt] --> B{Zero-shot funciona?}
+    B -- Sim --> C[Fique em zero-shot]
+    B -- "Não: falta padrão<br/>de formato/estilo/critério" --> D{3-5 exemplos<br/>resolvem?}
+    D -- Sim --> E[Use few-shot: 3-5 exemplos]
+    D -- "Não: precisa 10+ exemplos<br/>ou falta conhecimento factual" --> F[Considere fine-tuning ou RAG]
+```
 
 **Forma 2 — prática:** "Como você debugaria um prompt few-shot que está dando outputs inconsistentes?" Checklist esperado:
 1. Verificar consistência interna entre exemplos.

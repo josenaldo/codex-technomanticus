@@ -1,9 +1,9 @@
 ---
 title: "03 - Modelos de imagem 2026 — DALL-E, Imagen, Midjourney, FLUX, SD"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
-status: seedling
+status: growing
 fase: Iniciado
 progress: in_progress
 tags:
@@ -25,8 +25,19 @@ aliases:
 > [!question]- Como saber qual modelo escolher sem testar os seis? Existe regra 80/20?
 > Sim. Sem contexto, o default para 2026 é **DALL-E 3 para prototipagem rápida** (disponível via API OpenAI, sem assinatura, segue instrução bem), **Midjourney v6.1 para qualidade artística final** (quando estilo importa e assinatura está disponível), e **Imagen 3 via Vertex AI para produção em volume** (SLA, photorealismo, texto renderizado). FLUX.1 [dev] entra quando o requisito é OSS ou self-host. A regra 80/20: se você não tem requisito de auto-hospedagem, orçamento apertado por imagem, ou texto crítico na imagem, DALL-E 3 ou Midjourney cobrem a maioria dos casos. Adicione os outros quando esses falharem.
 
-> [!warning] Estado 2025-2026, sujeito a mudança
-> Esta nota reflete o landscape de fim de 2025 / início de 2026 — Midjourney v6.1 atual com v7 rumored, Imagen 3 atual, FLUX.1 família estável. Provider lança versão nova a cada poucos meses. Antes de deploy, valide capabilities atuais no doc oficial.
+> [!warning] Estado 2025-2026, sujeito a mudança — atualizações pontuais já cravadas
+> Esta nota reflete o landscape de fim de 2025 / início de 2026 como base — Midjourney v6.1 atual com v7 rumored, Imagen 3 atual, FLUX.1 família estável — com três atualizações pontuais registradas: **Imagen 4** já foi lançado em 2025 (Google I/O de maio/2025, GA na Gemini API em junho/2025; esta nota ainda referenciava "quando disponível" na seção sobre Ideogram, corrigido abaixo); Black Forest Labs lançou **FLUX.1.1 Pro Ultra**, variante mais recente da linha FLUX.1 [pro]; e a Midjourney lançou **API web oficial em 2025**, o que muda a armadilha "pipeline via Discord bot" descrita mais adiante. Fora esses três pontos, o restante da nota segue como landscape de referência — provider lança versão nova a cada poucos meses, e antes de deploy vale sempre validar capabilities atuais no doc oficial.
+
+## Por que tantos modelos existem — e o custo de escolher errado
+
+Se gerar imagem fosse um problema já resolvido, existiria um modelo só. Em vez disso, seis providers competem com arquiteturas e prioridades diferentes — porque otimizar um eixo degrada outro: fidelidade fotográfica custa em estilo artístico, controle fino custa em velocidade, texto legível na imagem custa em generalidade fotográfica. Cada modelo é uma aposta de produto, não uma versão melhor do concorrente.
+
+> [!question]- Por que não existe "o melhor modelo de imagem", ponto final?
+> Porque treinar pra seguir instrução textual ao pé da letra (DALL-E 3) tende a produzir resultado mais "ilustrativo" que fotorealista puro. Treinar pra estética reconhecível e marcante (Midjourney) sacrifica previsibilidade — o mesmo prompt gera variações estilísticas maiores entre gerações. Treinar pra renderizar texto legível (Ideogram) reduz a prioridade dada a fotorealismo. Não é falha de engenharia — é escolha de trade-off.
+
+O custo real de escolher o modelo errado não aparece no preço por imagem — aparece no retrabalho. Um time que escolhe Midjourney pra gerar posters com tipografia legível descobre, depois de dezenas de tentativas, que texto na imagem nunca foi o forte desse modelo. Um time que escolhe DALL-E 3 pra hero fotorealístico de produto descobre que o resultado sai "ilustrado demais" pra um catálogo de e-commerce. Em ambos os casos, o erro não foi técnico — foi pular a pergunta "qual é o entregável, e qual modelo foi desenhado pra esse tipo de entregável" antes de gerar a primeira imagem.
+
+Esta nota existe pra encurtar esse ciclo: mapear o que cada modelo faz bem, o que faz mal, e uma regra de decisão por tipo de entregável — a tabela abaixo e o decision tree logo depois dela.
 
 ## Tabela comparativa
 
@@ -64,7 +75,7 @@ aliases:
 **Fraco:** qualidade base sem fine-tunes está atrás de FLUX dev. Curva de aprendizado alta (modelos, samplers, schedulers, CFG, LoRAs). Para hosted hands-off, não é o default — vai pra FLUX ou Imagen.
 
 ### Ideogram 2
-**Forte:** texto na imagem é o caso de uso. Posters, signs, lettering, infográficos com tipografia legível. Em 2026, ainda lidera essa subcategoria com Imagen 4 (quando disponível) e FLUX dev encostando.
+**Forte:** texto na imagem é o caso de uso. Posters, signs, lettering, infográficos com tipografia legível. Em 2026, ainda lidera essa subcategoria, com Imagen 4 (já lançado em 2025) e FLUX dev encostando.
 **Fraco:** fora do caso "texto na imagem", é mediano. Não é escolha pra hero artístico ou mockup fotorealista.
 
 **Quando usar Ideogram vs Imagen 3 pra texto:** Ideogram tem melhor controle tipográfico (fontes específicas, kerning, caixa-alta/baixa) e gera texto mais legível em corpo pequeno. Imagen 3 tem melhor photorealismo ao redor do texto (produto com label, embalagem com nome de marca) mas o texto em si é menos preciso em estilos especiais. Para texto simples e legível em layout limpo → Ideogram. Para texto como elemento de produto fotorealístico → Imagen 3.
@@ -73,29 +84,43 @@ aliases:
 
 Atalho mental pra decidir, mesmo sem benchmark próprio:
 
+```mermaid
+flowchart TD
+    A["Tem texto crítico na imagem?<br/>(poster, infográfico, signage)"]
+    A -->|Sim| B{Volume alto,<br/>automação?}
+    A -->|Não| C{Tipo de entregável}
+
+    B -->|Sim| B1["Imagen 3 (Vertex)<br/>ou FLUX dev"]
+    B -->|Não — one-off,<br/>qualidade máxima| B2["Ideogram 2"]
+
+    C -->|Photorealismo<br/>mockup, capa fotográfica, produto| D{Closed ou<br/>self-host?}
+    C -->|Artístico distintivo<br/>hero blog, capa de podcast, marca| E{Assinatura ok?}
+    C -->|Pipeline automatizado<br/>em volume| F{Custo ou<br/>qualidade importa?}
+    C -->|Mockup conceitual rápido<br/>design review, brainstorm| G["DALL-E 3<br/>via ChatGPT, iteração conversacional"]
+
+    D -->|Closed ok| D1["Imagen 3 ou DALL-E 3"]
+    D -->|Self-host| D2["FLUX dev (LoRA realístico)<br/>ou SD 3.5"]
+
+    E -->|Sim| E1["Midjourney v6.1"]
+    E -->|Não — OSS/pipeline| E2["FLUX dev<br/>(qualidade próxima)"]
+
+    F -->|Custo importa| F1["FLUX schnell ou SD 3.5"]
+    F -->|Qualidade importa| F2["FLUX pro"]
 ```
-Tem texto crítico na imagem (poster, infográfico, signage)?
-├── Sim
-│   ├── Volume alto, automação?    → Imagen 3 (Vertex) ou FLUX dev
-│   └── One-off, qualidade máxima? → Ideogram 2
-│
-└── Não
-    │
-    ├── Photorealismo (mockup, capa fotográfica, produto)?
-    │   ├── Closed ok                → Imagen 3 ou DALL-E 3
-    │   └── Self-host                → FLUX dev (com LoRA realístico) ou SD 3.5
-    │
-    ├── Artístico distintivo (hero blog, capa de podcast, ilustração de marca)?
-    │   ├── Assinatura ok            → Midjourney v6.1
-    │   └── OSS / pipeline           → FLUX dev (qualidade próxima)
-    │
-    ├── Pipeline automatizado em volume (geração programática)?
-    │   ├── Custo importa            → FLUX schnell ou SD 3.5
-    │   └── Qualidade importa        → FLUX pro
-    │
-    └── Mockup conceitual rápido (design review, brainstorm)?
-        └── DALL-E 3 (via ChatGPT, iteração conversacional)
-```
+
+## Caso prático: escolhendo modelo por um entregável real
+
+Entregável: poster de divulgação pra um workshop interno de Docker, com título e data legíveis — "Docker na Prática — 15 de Julho" — e uma ilustração técnica de containers em camadas, formato vertical pra impressão A4.
+
+**Passo 1 — decision tree:** tem texto crítico na imagem? Sim — o título e a data precisam sair legíveis, sem erro de ortografia nem letras deformadas. É um one-off (um único poster, não uma série automatizada), e qualidade tipográfica importa mais que custo por imagem. Isso aponta direto pra **Ideogram 2** — a tabela comparativa marca "texto-na-imagem" como o forte específico desse modelo, e nenhum dos outros cinco compete nesse eixo.
+
+**Passo 2 — prompt enviado** (vocabulário adaptado ao forte de Ideogram, tipografia):
+
+> "Poster vertical A4 para workshop técnico. Título grande no topo: 'DOCKER NA PRÁTICA'. Subtítulo abaixo: '15 de Julho'. Ilustração central: containers empilhados em camadas, estilo flat design, paleta azul e branco. Espaço em branco nas margens pra respiro visual. Tipografia sans-serif bold, alto contraste, legível a distância."
+
+**Passo 3 — resultado esperado:** título e subtítulo renderizados sem erro de caractere — o ponto forte de Ideogram sobre os outros cinco modelos — com a ilustração de containers em estilo consistente com o brief. Se o mesmo prompt fosse enviado a Midjourney em vez de Ideogram, a chance de o título sair com letras deformadas ou trocadas seria maior: é exatamente a lacuna que a tabela comparativa e a seção "Forças e fraquezas" descrevem pra esse modelo.
+
+Esse é o padrão do caso prático: o entregável define o critério dominante (aqui, texto legível), o critério aponta pro decision tree, e o decision tree aponta pro modelo — nunca o contrário.
 
 ## Modos de edição: além do "text-to-image"
 
@@ -227,8 +252,8 @@ Para usar FLUX ou SD sem gerenciar infraestrutura própria, fal.ai e Replicate o
 > [!warning] Testar apenas um modelo e tratar como ground truth — cada modelo tem pontos cegos diferentes
 > DALL-E 3 segue instrução textual bem mas falha em fotorealismo extremo. Midjourney é artístico mas fraco em texto. Ideogram é especialista em texto mas mediano em todo o resto. Decidir o modelo de produção sem testar 5-10 prompts representativos do caso de uso real leva a usar o modelo errado com resultado decepcionante. O processo correto: monte um mini-benchmark (5 prompts típicos do entregável, 1-2 gerações por modelo), avalie nos critérios que importam, então decide. Custo total de 10 testes: menos de $2 em APIs, mas elimina meses de retrabalho.
 
-> [!warning] Usar Midjourney em pipeline automatizado via Discord bot não-oficial — não é produção
-> Midjourney historicamente não tinha API REST oficial; comunidade construiu wrappers usando Discord bot ou APIs de terceiros. Esses wrappers não têm SLA, podem quebrar a qualquer update da MJ, e violam os termos de uso. Para pipeline automatizado, use DALL-E 3 (OpenAI API), Imagen 3 (Vertex AI), FLUX.1 (BFL API ou fal.ai), ou SD 3.5 (self-host). Midjourney é excelente para uso interativo via web app — não para batch automatizado.
+> [!warning] Usar wrapper de Discord bot não-oficial pra Midjourney quando já existe API web oficial
+> Até a Midjourney lançar API própria, a comunidade construía wrappers usando Discord bot ou APIs de terceiros — sem SLA, quebrando a qualquer update da MJ, e violando termos de uso. Em 2025, a Midjourney lançou **API web oficial**, reduzindo a necessidade desses wrappers pra pipeline automatizado. Ainda assim, tutoriais e integrações antigas que ensinam o caminho via Discord bot seguem circulando — antes de montar um pipeline novo, confirme no doc oficial da Midjourney se o caso de uso é coberto pela API web atual (limites e pricing específicos: a confirmar no doc oficial) e prefira esse caminho a wrappers de terceiros. Para as demais opções de pipeline automatizado, DALL-E 3 (OpenAI API), Imagen 3 (Vertex AI), FLUX.1 (BFL API ou fal.ai) e SD 3.5 (self-host) seguem como alternativas diretas.
 
 > [!warning] Ignorar o `revised_prompt` do DALL-E 3 e achar que o prompt que você mandou é o que foi usado
 > DALL-E 3 expande e reinterpreta o prompt antes de gerar — o campo `revised_prompt` na resposta mostra o que o gerador realmente recebeu. Muitas vezes, o modelo adiciona descrições de personagem, estilo, iluminação que você não pediu — e que explicam por que o resultado divergiu do esperado. Sempre leia o `revised_prompt`. Se a expansão automática está causando desvio, especifique: "Não expanda este prompt. Siga exatamente: [prompt]." Isso reduz a liberdade criativa mas aumenta fidelidade.

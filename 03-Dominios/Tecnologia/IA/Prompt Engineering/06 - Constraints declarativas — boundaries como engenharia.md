@@ -1,7 +1,7 @@
 ---
 title: "06 - Constraints declarativas — boundaries como engenharia"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 progress: in_progress
@@ -26,6 +26,8 @@ aliases:
 > Você já conhece especificidade ([[02 - Especificidade — a primeira disciplina]]) e roles ([[03 - Roles e personas — escolhendo o juízo do modelo]]). Constraints declarativas são a terceira alavanca do prompt design: enquanto especificidade diz *o que fazer* e role diz *com que juízo fazer*, constraints dizem *o que não fazer e o que fazer quando não conseguir*. Se já sabe o que é um system prompt e já tentou dizer ao modelo "seja conciso" sem resultado consistente, você está exatamente no problema que esta nota resolve.
 
 ## O que é uma constraint declarativa
+
+Você diz "seja conciso" e o modelo escreve cinco parágrafos. Você diz "não fuja do escopo" e ele sugere três coisas fora dele mesmo assim. O problema não é o modelo ter ignorado a instrução — é a instrução nunca ter sido, de fato, uma constraint: era um pedido de estilo, sem critério verificável e sem cláusula do que fazer quando não dá pra cumprir.
 
 Uma constraint declarativa é uma cláusula no prompt que diz: *"você não pode X; se chegar perto de X, faça Y"*. Diferente de uma sugestão estilística, ela tem três marcas:
 
@@ -281,9 +283,11 @@ Ver [[07 - Iteration patterns — keep, change, do-not]].
 ## Fontes
 
 - **@hooeem** — *Become an AI Engineer*, cap #8. Origem do framing "8 dimensões" e template Constraints/Do-not/If-cannot.
-- **Anthropic** — *Provide system prompts with detailed instructions* (docs.anthropic.com).
-- **OpenAI** — *Prompt engineering guide*, seção "Specify the steps".
-- **Anthropic** — *Building safer LLM systems* (docs.anthropic.com/safety). Distinção constraint vs guardrail.
+- **Anthropic** — [Provide system prompts with detailed instructions](https://docs.anthropic.com/)
+  (caminho exato da página a confirmar; domínio oficial).
+- **OpenAI** — [Prompt engineering guide](https://platform.openai.com/docs/guides/prompt-engineering), seção "Specify the steps".
+- **Anthropic** — [Building safer LLM systems](https://docs.anthropic.com/)
+  (caminho exato da página a confirmar; domínio oficial). Distinção constraint vs guardrail.
 
 ## Veja também
 

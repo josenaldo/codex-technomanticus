@@ -24,20 +24,31 @@ aliases:
 > [!abstract] TL;DR
 > A unidade fundamental é uma hierarquia: **sessão → trace → spans**. Sessão agrupa interações de um mesmo usuário/conversa; trace representa uma "tarefa" completa (uma mensagem do usuário sendo respondida); spans são as etapas dentro da trace (LLM call, tool call, retrieval, sub-agent). O padrão emergente é **OpenTelemetry GenAI Semantic Conventions**, que define atributos como `gen_ai.system`, `gen_ai.request.model`, `gen_ai.usage.input_tokens` — adotá-los garante portabilidade entre Langfuse, Phoenix, Datadog, Grafana. Em agents multi-step, a árvore vira larga e profunda: trace raiz, span por LLM call, span por tool execution, sub-spans pra retrieval e pra sub-agents. Sem hierarquia explícita, debug em agent vira impossível.
 
+Imagine o cenário: um agent de suporte respondeu errado pra um cliente — deu um valor de reembolso que não bate com a política da empresa. O log da aplicação mostra só a resposta final; ele não te diz *onde*, na cadeia de decisão, o erro entrou. Foi o modelo que interpretou mal a política? Foi o tool call que buscou o valor errado no banco? Foi um passo intermediário que se perdeu no meio do caminho? Sem uma hierarquia explícita de spans, você tem oito ou dez chamadas de LLM espalhadas nos logs, sem relação visível entre si — é como investigar um incidente com testemunhas que não sabem em que ordem os eventos aconteceram. A pergunta "onde exatamente isso quebrou?" só tem resposta se cada chamada carrega o mesmo `trace_id` e aponta pro seu `parent_span_id`, reconstruindo a árvore completa da tarefa. É isso que este texto explica: como modelar sessão, trace e span de um jeito que debug vire reconstrução de árvore — não arqueologia de logs soltos.
+
 > [!question]- O que eu preciso saber antes de ler isso?
 > Você entende por que LLMs precisam de observabilidade dedicada (nota 01) e o conceito básico de trace distribuído — uma sequência de eventos que representa uma operação completa em sistema distribuído. Se você já trabalhou com Jaeger, Zipkin, ou OpenTelemetry em serviços convencionais, vai reconhecer o modelo hierárquico desta nota. A diferença é que spans LLM carregam atributos extras específicos de IA: tokens, prompts, finish reasons.
 
 ## Os três níveis da hierarquia
 
-```
-Session (user_id ou conversation_id)
-└── Trace #1 (mensagem 1 do usuário)
-    ├── Span: LLM call (planejamento)
-    ├── Span: tool_use (busca interna)
-    │   └── Span: LLM call (formatação do resultado)
-    └── Span: LLM call (resposta final)
-└── Trace #2 (mensagem 2 do usuário)
-    └── ...
+```mermaid
+graph TD
+    S["Session<br/>(user_id ou conversation_id)"]
+    T1["Trace #1<br/>(mensagem 1 do usuário)"]
+    T2["Trace #2<br/>(mensagem 2 do usuário)"]
+    L1["Span: LLM call<br/>(planejamento)"]
+    TU["Span: tool_use<br/>(busca interna)"]
+    L2["Span: LLM call<br/>(formatação do resultado)"]
+    L3["Span: LLM call<br/>(resposta final)"]
+    ETC["..."]
+
+    S --> T1
+    S --> T2
+    T1 --> L1
+    T1 --> TU
+    TU --> L2
+    T1 --> L3
+    T2 --> ETC
 ```
 
 | Nível | Granularidade | Identificador | Vida útil |
@@ -248,6 +259,55 @@ Em produção real, Langfuse e OpenLLMetry instrumentam isso automaticamente —
 
 > [!warning] Não propagar trace_id entre chamadas de agent
 > Em agents que fazem múltiplas chamadas LLM em sequência, cada chamada precisa ter o mesmo `trace_id` com `parent_span_id` apontando pra span pai correta. O erro comum é criar um trace novo pra cada LLM call — isso resulta em traces fragmentados, um por chamada, sem hierarquia. No debug, você vê 8 traces separados pra uma tarefa que deveria aparecer como uma árvore coesa. Frameworks de agent como LangChain e Anthropic SDK com Langfuse SDK resolvem isso automaticamente; quando você instrumenta manualmente, precisa propagar o span context via `Context` do OpenTelemetry.
+
+O código abaixo mostra o anti-padrão na prática — cada etapa do agent abre seu próprio span "solto", sem se conectar a um trace pai:
+
+```python
+# ANTI-PADRÃO: cada chamada cria um span novo, sem hierarquia com as demais
+def agent_step(prompt: str) -> str:
+    with tracer.start_as_current_span("llm.chat") as span:  # sempre "raiz" — sem parent
+        span.set_attribute("gen_ai.system", "anthropic")
+        span.set_attribute("gen_ai.request.model", "claude-sonnet-4-6")
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        span.set_attribute("gen_ai.usage.input_tokens", response.usage.input_tokens)
+        return response.content[0].text
+
+# Resultado: 3 chamadas do agent viram 3 traces isolados no backend,
+# sem parent_span_id em comum — a UI mostra 3 histórias soltas,
+# não uma árvore de uma única tarefa.
+plan = agent_step(plan_prompt)
+search_result = agent_step(search_prompt)
+final = agent_step(synthesize_prompt)
+```
+
+A correção é abrir **um** span pai por tarefa e deixar que os spans filhos herdem o contexto ativo — é isso que faz `parent_span_id` apontar pro lugar certo automaticamente:
+
+```python
+# CORRETO: um span pai por tarefa; os filhos herdam o trace_id do contexto ativo
+with tracer.start_as_current_span("agent.task") as root_span:
+    root_span.set_attribute("session.id", session_id)
+
+    for step_name, prompt in [
+        ("plan", plan_prompt),
+        ("search", search_prompt),
+        ("synthesize", synthesize_prompt),
+    ]:
+        with tracer.start_as_current_span(f"llm.{step_name}") as span:  # child do root_span
+            span.set_attribute("gen_ai.system", "anthropic")
+            span.set_attribute("gen_ai.request.model", "claude-sonnet-4-6")
+            response = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=1024,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            span.set_attribute("gen_ai.usage.input_tokens", response.usage.input_tokens)
+```
+
+A diferença não está em nenhum atributo novo — está em `start_as_current_span` ser chamado dentro do contexto do `root_span`. O SDK do OpenTelemetry propaga o `trace_id` automaticamente via `Context`; o erro do anti-padrão é abrir cada span "solto", fora desse contexto.
 
 > [!warning] Colocar PII como atributo de span em vez de span event
 > Atributos de span são indexados e podem ser exportados para múltiplos backends — incluindo logs de infra com menor controle de acesso. Se você coloca o conteúdo do prompt (que pode conter nome, CPF, email do usuário) como `gen_ai.prompt.content` no atributo, esse dado vai parar em todos os sistemas que consumem o trace. A prática correta é usar **span events** para o conteúdo do prompt e da resposta — eventos podem ser redactados ou droppados no exporter sem perder os atributos numéricos e de metadata. Langfuse permite configurar `mask_all_logs: true` e redaction de span events por regex.

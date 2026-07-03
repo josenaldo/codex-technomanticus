@@ -20,7 +20,10 @@ aliases:
 # 03 - Roles e personas — escolhendo o juízo do modelo
 
 > [!abstract] TL;DR
-> Atribuir um **role** ao modelo (*"você é um editor sênior cético"*) funciona porque ativa um sub-espaço do prior de treino: o modelo passa a amostrar respostas que se parecem com as que aquele tipo de pessoa daria nos dados em que foi treinado. Não é mágica — é **steering**. Roles bons especificam expertise, padrão de avaliação, ações permitidas e proibidas. Roles ruins são cargo cult: *"você é um expert mundial em tudo"* sem critério de sucesso é decoração.
+> Atribuir um **role** ao modelo (*"você é um editor sênior cético"*) funciona porque ativa um sub-espaço do prior de treino: o modelo passa a amostrar respostas que se parecem com as que aquele tipo de pessoa daria nos dados em que foi treinado.
+> Não é mágica — é **steering**.
+> Roles bons especificam expertise, padrão de avaliação, ações permitidas e proibidas.
+> Roles ruins são cargo cult: *"você é um expert mundial em tudo"* sem critério de sucesso é decoração.
 
 > [!question]- Perguntas de revisão
 > 1. Por que "você é um expert mundial em tudo" não muda o comportamento do modelo, mas "você é um editor sênior de revista científica que prioriza ceticismo" muda?

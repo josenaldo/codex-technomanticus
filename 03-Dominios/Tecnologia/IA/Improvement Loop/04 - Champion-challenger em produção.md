@@ -1,7 +1,7 @@
 ---
 title: "04 - Champion-challenger em produção"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 fase: Iniciado
@@ -21,49 +21,37 @@ aliases:
 # 04 - Champion-challenger em produção
 
 > [!abstract] TL;DR
-> Champion-challenger é a operação de ship em produção: a versão atual (champion) serve a maior parte do tráfego (90-95%), a versão candidata (challenger) serve canary (5-10%), métricas-gate decidem promoção automática (challenger vira champion) ou rollback (challenger sai). Setup pragmático: feature flag (LaunchDarkly, GrowthBook, OpenFeature) ou routing logic em código. Critérios de promoção objetivos e pré-declarados: **(1)** eval score do challenger ≥ champion com significância; **(2)** zero regressão na golden subset crítica; **(3)** custo médio não sobe > X%; **(4)** latência p95 não sobe > Y%. Rollback automático em três sinais: error rate spike, latência spike, eval score drop. Anti-padrão: **challenger eterno** — nunca promove, nunca rola back, fica 50/50 pra sempre porque ninguém decide.
+> Champion-challenger é a operação de ship em produção: a versão atual (champion) serve a maior parte do tráfego (90-95%), a versão candidata (challenger) serve canary (5-10%), métricas-gate decidem promoção automática (challenger vira champion) ou rollback (challenger sai).
+>
+> **Setup:** feature flag (LaunchDarkly, GrowthBook, OpenFeature) ou routing logic em código.
+>
+> **Critérios de promoção** objetivos e pré-declarados: **(1)** eval score do challenger ≥ champion com significância; **(2)** zero regressão na golden subset crítica; **(3)** custo médio não sobe > X%; **(4)** latência p95 não sobe > Y%.
+>
+> **Rollback** automático em três sinais: error rate spike, latência spike, eval score drop.
+>
+> **Anti-padrão:** challenger eterno — nunca promove, nunca rola back, fica 50/50 pra sempre porque ninguém decide.
 
 > [!question]- O que fazer quando o challenger está melhor em quality mas pior em custo ou latência — como decidir?
 > Essa é a decisão de trade-off mais comum em champion-challenger e não tem resposta automática — exige judgment humano. O processo: (a) calcule o valor esperado do ganho de qualidade (redução de re-prompts, aumento de conversão, menos tickets de suporte) e compare com o custo adicional em termos de dinheiro/tempo; (b) se custo extra é < 10% e ganho de qualidade é > 5%, geralmente vale promover (regra de bolso, não lei); (c) se latência p95 sobe além do SLA declarado, não promove — independente de quality — porque SLA é compromisso com usuário. A boa prática é declarar antes de rodar a tolerância por dimensão: "custo +15% é OK, latência +20% é OK" — isso elimina a negociação post-hoc que é onde o viés de confirmação entra. Se não declarou antes, use os valores da última versão promovida como referência, e anote no postmortem que a próxima vez precisa de critérios explícitos.
 
+Você acabou de fechar o diff do prompt. O eval score subiu, o golden set passou, o A/B testing confirmou que a versão nova é estatisticamente melhor. A pergunta que sobra é a mais perigosa: como shipar essa versão pra 100% dos usuários sem quebrar produção, se algo que o eval não capturou aparecer só sob tráfego real?
+
+A resposta ingênua é "sobe direto, se quebrar eu vejo" — e é assim que latência estourada, custo dobrado ou um edge case raro em produção viram incidente de madrugada. A resposta um pouco melhor é repetir o A/B em produção: manda uma fatia do tráfego real pro prompt novo, olha as métricas, decide. Mas A/B simples **mede** — ele não decide sozinho quando parar, quando promover, quando voltar atrás. Alguém precisa olhar o dashboard e decidir manualmente, e enquanto ninguém decide, o experimento fica pendurado.
+
+Champion-challenger resolve exatamente essa lacuna: pega o A/B que já foi validado offline, roda em produção como canary, e amarra a leitura das métricas a uma decisão automática de promoção ou rollback. A versão atual (champion) continua servindo a maior parte do tráfego enquanto a candidata (challenger) prova o valor num pedaço pequeno e controlado — e critérios pré-declarados, não um humano de plantão, decidem o próximo passo.
+
 ## A mecânica básica
 
-```
-                          tráfego de produção
-                                  │
-                                  ▼
-                        ┌──────────────────┐
-                        │  router          │
-                        │  (feature flag,  │
-                        │   prompt label,  │
-                        │   ou hash)       │
-                        └────┬─────────┬───┘
-                             │         │
-                  90-95%     │         │      5-10%
-                             │         │
-                             ▼         ▼
-                    ┌────────────┐  ┌────────────┐
-                    │  CHAMPION  │  │ CHALLENGER │
-                    │  v3.0      │  │ v3.1       │
-                    └─────┬──────┘  └─────┬──────┘
-                          │               │
-                          ▼               ▼
-                    ┌──────────────────────────┐
-                    │  observability + eval    │
-                    │  (métricas por arm)      │
-                    └────────────┬─────────────┘
-                                 │
-                                 ▼
-                       ┌─────────────────┐
-                       │  decisão        │
-                       │  (gate + rules) │
-                       └──┬───────────┬──┘
-                          │           │
-                  PROMOVE │           │ ROLLBACK
-                          ▼           ▼
-                  challenger     challenger
-                  vira champion  sai, champion
-                                 segue
+```mermaid
+flowchart TD
+    T[tráfego de produção] --> R{router<br/>feature flag, prompt label ou hash}
+    R -->|90-95%| C[CHAMPION v3.0]
+    R -->|5-10%| H[CHALLENGER v3.1]
+    C --> O[observability + eval<br/>métricas por arm]
+    H --> O
+    O --> D{decisão<br/>gate + rules}
+    D -->|PROMOVE| P[challenger vira champion]
+    D -->|ROLLBACK| B[challenger sai,<br/>champion segue]
 ```
 
 A diferença crítica entre champion-challenger e A/B "cru": **o ciclo está atrelado a decisão automatizada de promoção/rollback**, com regras pré-declaradas. A/B mede; champion-challenger mede **e age**.

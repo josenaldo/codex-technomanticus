@@ -1,9 +1,9 @@
 ---
 title: "06 - Capturando feedback do usuário como sinal"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
-status: seedling
+status: growing
 fase: Iniciado
 progress: in_progress
 tags:
@@ -233,6 +233,24 @@ O feedback vira parte do loop quando segue um fluxo:
 
 Sem o passo 4 (backlog), feedback nunca vira ação. Sem o passo 8 (métrica de fechamento), o time não sabe se resolveu mesmo.
 
+O mesmo fluxo, visualizado:
+
+```mermaid
+flowchart TD
+    A["1. Coleta<br/>API + tracing vinculam feedback ao trace + prompt_version"] --> B["2. Agregação<br/>dashboard por categoria, cohort, segmento"]
+    B --> C["3. Triagem<br/>revisar amostras (humano), categorizar tipos de falha"]
+    C --> D["4. Backlog<br/>tipos de falha viram itens com prioridade (volume × peso)"]
+    D --> E["5. Eval gap<br/>tipos que eval não pega vão pra extensão do golden set"]
+    E --> F["6. Hipótese de mudança<br/>diff no prompt, novo few-shot, novo guardrail"]
+    F --> G["7. A/B + canary<br/>valida que a mudança resolve a categoria"]
+    G --> H["8. Métrica de fechamento<br/>feedback negativo daquela categoria cai depois do ship"]
+    B -.-> B2["2.5 Priorização por impacto de cliente (B2B)<br/>cliente Enterprise pesa mais que volume bruto"]
+    B2 -.-> C
+```
+
+> [!question]- Por que o passo 2.5 aparece pontilhado?
+> Porque não é universal — é a variante descrita acima para produtos B2B, encaixada entre Agregação e Triagem só quando existe uma base de clientes com peso comercial desigual. Times B2C costumam pular direto de Agregação pra Triagem.
+
 Uma variante para times com produto B2B: adicione passo 2.5 entre Agregação e Triagem — **priorização por impacto de cliente**. Se um cliente Enterprise está 80% do thumbs-down volume, isso tem prioridade de investigação diferente de 80 usuários free-tier. Feedback de cliente de contrato pesa mais do que o número bruto sugere — tanto pelo impacto comercial quanto pela qualidade do sinal (usuários Enterprise geralmente articulam melhor o que está errado).
 
 ## Armadilhas comuns
@@ -245,6 +263,37 @@ Uma variante para times com produto B2B: adicione passo 2.5 entre Agregação e 
 
 > [!warning] Feedback sem trace_id — não saber qual versão de prompt gerou aquela resposta
 > Thumbs down chegou. Ótimo. Mas: de qual resposta? Com qual versão do prompt? Com qual modelo? Em qual contexto? Sem o `trace_id` vinculado ao feedback, você não consegue responder nenhuma dessas perguntas — o feedback é sinal de que há um problema, mas não onde. O sistema de coleta deve linkar cada feedback ao `trace_id` no momento da coleta, não depois. É responsabilidade do frontend passar o trace_id como parâmetro quando renderiza o botão de feedback. Na dúvida de como estruturar, siga o padrão da Score API do Langfuse: feedback é um score com `trace_id` como FK.
+
+O anti-padrão fica óbvio ao lado do endpoint correto:
+
+```python
+# ANTI-PADRÃO — endpoint aceita feedback sem exigir trace_id
+@app.post("/feedback")
+def submit_feedback(payload: FeedbackPayload):
+    db.insert("feedbacks", {
+        "user_id": hash_user(payload.user_id),
+        "feedback_type": payload.type,
+        "value": payload.value,
+        # trace_id ausente: o thumbs down fica sem link com o trace,
+        # o prompt_version e o modelo que geraram a resposta avaliada
+    })
+```
+
+```python
+# CORRIGIDO — trace_id obrigatório desde a validação do payload
+@app.post("/feedback")
+def submit_feedback(payload: FeedbackPayload):
+    if not payload.trace_id:
+        raise HTTPException(400, "trace_id é obrigatório")
+    db.insert("feedbacks", {
+        "trace_id": payload.trace_id,   # FK pro trace: liga o feedback à versão do prompt/modelo
+        "user_id": hash_user(payload.user_id),
+        "feedback_type": payload.type,
+        "value": payload.value,
+    })
+```
+
+A diferença de uma linha (`trace_id` presente ou ausente) é a diferença entre um feedback acionável e um feedback que só confirma "tem gente insatisfeita", sem dizer com o quê.
 
 ## Como explicar em inglês
 

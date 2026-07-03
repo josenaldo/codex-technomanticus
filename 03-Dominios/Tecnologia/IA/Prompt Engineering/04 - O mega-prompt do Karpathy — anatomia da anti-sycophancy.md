@@ -1,7 +1,7 @@
 ---
 title: "04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 progress: in_progress
@@ -21,7 +21,10 @@ aliases:
 # 04 - O mega-prompt do Karpathy — anatomia da anti-sycophancy
 
 > [!abstract] TL;DR
-> Em 2025, [[Andrej Karpathy|Karpathy]] circulou um system prompt cirúrgico que ataca sycophancy — o vício do modelo de bajular, hedge-ar e validar prematuramente o usuário. O prompt funciona porque empilha **role expansivo** (expert mundial em tudo), **standards verificáveis** (acurácia como métrica de sucesso), **proibições específicas** que bloqueiam cada caminho de fuga típico do modelo (não elogiar perguntas, não capitular sem evidência, gerar números independentes), e **explicitação de incerteza** (confidence levels). Esta nota traz o prompt na íntegra, anatomiza cláusula por cláusula com tabela de "quando matar", e dá variantes. É o artefato canônico do ofício porque condensa em ~250 palavras tudo que [[03 - Roles e personas — escolhendo o juízo do modelo|role prompting]] e [[06 - Constraints declarativas — boundaries como engenharia|constraints]] tentam ensinar separadamente.
+> Em 2025, [[Andrej Karpathy|Karpathy]] circulou um system prompt cirúrgico que ataca sycophancy — o vício do modelo de bajular, hedge-ar e validar prematuramente o usuário.
+> O prompt funciona porque empilha **role expansivo** (expert mundial em tudo), **standards verificáveis** (acurácia como métrica de sucesso), **proibições específicas** que bloqueiam cada caminho de fuga típico do modelo (não elogiar perguntas, não capitular sem evidência, gerar números independentes), e **explicitação de incerteza** (confidence levels).
+> Esta nota traz o prompt na íntegra, anatomiza cláusula por cláusula com tabela de "quando matar", e dá variantes.
+> É o artefato canônico do ofício porque condensa em ~250 palavras tudo que [[03 - Roles e personas — escolhendo o juízo do modelo|role prompting]] e [[06 - Constraints declarativas — boundaries como engenharia|constraints]] tentam ensinar separadamente.
 
 > [!question]- Perguntas de revisão
 > 1. Por que cada cláusula do prompt do Karpathy precisa das outras? O que acontece se você usa só a central ("never praise my questions")?
@@ -124,6 +127,19 @@ Cada cláusula isolada é fraca — o modelo dribla qualquer instrução individ
 - Bloqueia capitulação → mas o modelo pode tentar concordar com números fornecidos.
 - Bloqueia ancoragem → mas o modelo pode tentar omitir incerteza.
 - Bloqueia omissão de incerteza com confidence levels explícitos.
+
+O diagrama abaixo mapeia essa cadeia: cada nó é um caminho de fuga que o modelo tentaria, e cada aresta é a cláusula do prompt que fecha esse caminho especificamente.
+
+```mermaid
+flowchart TD
+    A["Sycophancy: validar premissa,<br/>elogiar pergunta, capitular"]
+    A -->|"'Never praise my questions<br/>or validate my premises'"| B["Modelo tenta hedge<br/>('bem... pode ser que...')"]
+    B -->|"'Precise, but not strident<br/>or pedantic'"| C["Modelo tenta disclaimer<br/>('não sou especialista, mas...')"]
+    C -->|"'Do not provide disclaimers'"| D["Modelo tenta capitular<br/>sob pushback"]
+    D -->|"'Do not capitulate unless...<br/>new evidence or superior argument'"| E["Modelo tenta ancorar<br/>nos números do usuário"]
+    E -->|"'Do not anchor on numbers...<br/>generate your own independently'"| F["Modelo tenta omitir<br/>o nível de incerteza"]
+    F -->|"'Use explicit confidence levels<br/>(high/moderate/low/unknown)'"| G["Sem caminho de fuga:<br/>accuracy is the success metric"]
+```
 
 É **defense in depth** aplicado a sycophancy. Tirar uma cláusula só não derruba o prompt; tirar o conjunto sim.
 

@@ -20,12 +20,20 @@ aliases:
 # 02 - Imagens como input — screenshots, charts, mockups
 
 > [!abstract] TL;DR
-> Imagem é a modalidade não-textual mais usada em 2026. Cinco tipos de tarefa cobrem 90% dos casos: descrição, extração, comparação, debug e classificação. O custo varia muito por provider — Anthropic cobra por área (até ~1600 tokens em max-res), OpenAI separa "low detail" (~85 tokens) de "high detail" (~85 + 170 por tile 512x512), Gemini cobra constante (~258 tokens por imagem em tiers normais). Resolução alta nem sempre é necessária; mande low detail quando a tarefa é classificação grossa, high detail só pra leitura de texto pequeno ou gráfico denso. Templates por tarefa no fim da nota.
+> Imagem é a modalidade não-textual mais usada em 2026.
+>
+> Cinco tipos de tarefa cobrem 90% dos casos: descrição, extração, comparação, debug e classificação.
+>
+> O custo varia muito por provider — Anthropic cobra por área (até ~1600 tokens em max-res), OpenAI separa "low detail" (~85 tokens) de "high detail" (~85 + 170 por tile 512x512), Gemini cobra constante (~258 tokens por imagem em tiers normais). Resolução alta nem sempre é necessária; mande low detail quando a tarefa é classificação grossa, high detail só pra leitura de texto pequeno ou gráfico denso.
+>
+> Templates por tarefa no fim da nota.
 
 > [!question]- Como saber se devo usar `detail: low` ou `detail: high` no OpenAI — e existe equivalente no Claude e Gemini?
 > A decisão gira em torno de **o que a tarefa precisa ler**. Use `low` (85 tokens fixos) quando você só precisa classificar o tipo de imagem, gerar alt text genérico, ou filtrar se a imagem contém determinado elemento — a resolução de 512×512 que o `low` usa é suficiente pra essas tarefas. Use `high` quando precisa ler texto pequeno (campo de formulário, número em gráfico, código em screenshot), comparar detalhes finos, ou fazer diagnóstico de UI. No Claude, não existe parâmetro de detalhe explícito — o modelo recebe a imagem em resolução original e decide internamente; reduzir o tamanho antes de enviar tem efeito equivalente ao `low`. No Gemini, imagens abaixo de ~768×768 são upscaled internamente; acima de 3072×3072 são redimensionadas — a tokenização constante (~258) se mantém na maioria dos casos.
 
 ## Cinco tipos de tarefa visual
+
+Um engenheiro recebe um screenshot de bug reportado por um usuário e precisa decidir, em segundos, que modelo chamar e com que nível de detalhe. Mandar a imagem inteira em `high detail` pro GPT-4.1 quando bastaria uma classificação grosseira custa 9x mais tokens à toa; mandar em `low detail` quando o bug está escondido num texto minúsculo de formulário faz o modelo "ver" um borrão e arriscar a causa errada. O mesmo dilema aparece num mockup em revisão: comparar duas versões de design pede um modelo grande e consistente, mas descrever "o que está nesta tela" pra indexação tolera um modelo pequeno e barato. A escolha certa de provider, modelo e detalhe começa por identificar qual das cinco tarefas visuais está em jogo — é o que a taxonomia abaixo resolve.
 
 Toda chamada multimodal com imagem cai em um destes — útil pra decidir a resolução, o prompt e o modelo:
 

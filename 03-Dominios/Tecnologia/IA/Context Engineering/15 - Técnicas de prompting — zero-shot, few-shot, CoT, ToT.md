@@ -1,7 +1,7 @@
 ---
 title: "Técnicas de prompting — zero-shot, few-shot, CoT, ToT"
 created: 2026-04-11
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -74,6 +74,38 @@ Few-shot injeta exemplos que demonstram o padrão sem explicar o mecanismo. O mo
 - **Diversidade > quantidade** — 3 exemplos de classes diferentes valem mais que 5 exemplos da mesma classe
 - **Ordem importa** — o exemplo mais próximo da query tem mais peso na distribuição; cuide do último exemplo
 - **Custo**: tokens extras em todo prompt → caro em volume; em produção, balancear gain de accuracy vs custo de tokens
+
+**O erro mais comum na prática: few-shot homogêneo.**
+
+```
+Classifique tickets:
+
+"App crashou ao abrir." → bug
+"Login trava na tela de carregamento." → bug
+"Erro 500 ao salvar o perfil." → bug
+
+Classifique:
+"Pode adicionar modo escuro?" →
+```
+
+→ Saída do modelo: `bug` (**errado** — devia ser `feature`)
+
+Os 3 exemplos são da mesma classe. O modelo não aprendeu "o que distingue bug de feature de question" — aprendeu "o padrão observado nesta demonstração é bug", e generaliza a query nova para a única classe que viu. Corrigindo com exemplos diversificados:
+
+```
+Classifique tickets:
+
+"App crashou ao abrir." → bug
+"Pode adicionar dark mode?" → feature
+"Como faço backup?" → question
+
+Classifique:
+"Pode adicionar modo escuro?" →
+```
+
+→ Saída do modelo: `feature` (correto)
+
+A diferença não é a quantidade de exemplos — é a cobertura das classes que a query pode assumir. Três exemplos homogêneos carregam menos sinal útil que três exemplos diversos, porque cada exemplo adicional da mesma classe é quase-redundante com o anterior (ver → [[13 - Entropia e qualidade de contexto]]).
 
 A situação em que few-shot é claramente superior: formatos de output não-padrão. Se o modelo precisa retornar um JSON com estrutura específica que não é padrão de mercado, 3 exemplos do formato são mais eficientes que 500 tokens de descrição verbal.
 
@@ -422,6 +454,7 @@ O fluxo completo: você aprende as técnicas desta nota → as empacota em skill
 - [[11 - Skills e instructions como contexto]]
 - [[13 - Entropia e qualidade de contexto]]
 - [[16 - Agent skills marketplace e SKILL.md]]
+- [[Prompt Engineering]] — trilha dedicada às técnicas desta nota em profundidade (especificidade, roles, iteration patterns, anti-patterns)
 
 ---
 

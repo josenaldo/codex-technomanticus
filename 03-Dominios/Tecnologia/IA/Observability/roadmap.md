@@ -35,27 +35,27 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 8 |
-| ⬜ pendente | 3 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 5 |
-| ✅ feita | 0 |
+| ✅ feita | 3 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 100% ✅ |
 
 ---
 
 ## Notas
 
 #### 01 - Por que LLMs precisam de observabilidade   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 302 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E3, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Remover a segunda seção `## Veja também` duplicada (a primeira já é mais completa e inclui todos os links; manter apenas ela)
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 02 - Anatomia de um trace LLM   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 242 linhas reais ⚠️ (piso Iniciado ≥300: não passa) · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, P1
 - **Score:** 9/12
@@ -63,7 +63,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar parágrafo de abertura-problema logo após o TL;DR: cenário concreto (ex: "um agent respondeu errado; como investigar sem hierarquia de spans?") — cobre E2 e soma ~15 linhas
   - Adicionar diagrama Mermaid da árvore sessão→trace→spans, substituindo o bloco ASCII — cobre E3 e soma ~10 linhas
   - Completar com bloco P1 "código-com-falha" mostrando o anti-padrão de criar `trace_id` novo a cada LLM call (já descrito em [!warning] mas sem código) — fecha o piso e marca P1
-- **Resultado:** —
+- **Resultado:** ✅ verificado PASS (2026-07-03): plano aplicado + auditoria cética passou.
 
 #### 03 - Langfuse — open-source standard   [substantivo]
 - **Enriquecimento:** ➖ não precisa
@@ -77,14 +77,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 04 - Helicone, Phoenix, OpenLLMetry — alternativas   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 204 linhas reais ⚠️ (piso Iniciado ≥300: não passa) · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E3, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar ~100 linhas de conteúdo real: diagrama Mermaid de decisão "qual ferramenta escolher" (fecha E3), bloco P1 "código-com-falha" (ex: instrumentação sem reusar tracer_provider, ou mistura de schemas OpenInference+OTel GenAI), e expandir "Combinações comuns" com exemplo de stack completa
   - Caducidade (catálogo de ferramentas): pricing (Helicone 10k/mês, Langfuse 50k obs/mês, Arize Phoenix Cloud) e trajetória dos projetos podem caducar em 3-6 meses — revisar antes de enriquecer
-- **Resultado:** —
+- **Resultado:** ✅ verificado WARN (2026-07-03): plano aplicado + auditoria cética passou. — WARN: ressalvas menores (ver relatório da sessão)
 
 #### 05 - Versionamento de prompts   [mecânico]
 - **Enriquecimento:** ➖ não precisa

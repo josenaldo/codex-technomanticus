@@ -26,6 +26,10 @@ aliases:
 > [!question]- Quando o resultado offline (golden set) e o resultado online (canary) divergem — qual acreditar?
 > Acredite no online — mas investigue o porquê da divergência antes de decidir. Divergências comuns: (a) golden set não representa a cauda longa do tráfego real (offline passa, online falha no percentil 90 de inputs incomuns); (b) métricas de negócio (conversão, NPS) não têm proxy no offline; (c) o sinal de feedback do usuário reage a fatores além da qualidade do prompt (UX, velocidade, contexto de sessão). O que fazer: adicione os casos onde online falhou ao golden set (para capturar essa cauda nas próximas iterações) e use o resultado online como métrica primária para a decisão de ship. O offline serve como gate de regressão (filtrar os candidatos ruins), não como substituto do online.
 
+Você merge uma nova versão do prompt — v3.1 substituindo v3.0 — depois de revisar manualmente uns 20 exemplos e achar que "ficou mais claro". Duas semanas depois de promover pra 100% do tráfego, o NPS cai 3 pontos. Foi o prompt? Foi uma mudança de produto? Foi ruído sazonal? Ninguém sabe, porque não havia um baseline controlado rodando ao lado — só a impressão de quem leu as amostras escolhidas.
+
+É esse buraco que o A/B testing de prompt fecha: em vez de decidir "parece melhor" por leitura manual, você roda control (champion) e treatment (challenger) lado a lado, sob as mesmas condições, e deixa uma métrica pré-declarada decidir — não o julgamento subjetivo de quem revisou os exemplos "bons".
+
 ## A unidade de teste — o que é "control" e "treatment"
 
 A/B de prompt mantém **tudo igual menos o prompt**:

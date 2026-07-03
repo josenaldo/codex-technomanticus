@@ -1,9 +1,9 @@
 ---
 title: "04 - Anatomia de um prompt visual — canvas, composição, estilo"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
-status: seedling
+status: growing
 fase: Iniciado
 progress: in_progress
 tags:
@@ -20,12 +20,17 @@ aliases:
 # 04 - Anatomia de um prompt visual — canvas, composição, estilo
 
 > [!abstract] TL;DR
-> Todo prompt visual eficaz tem quatro camadas: **canvas** (formato, aspect ratio, resolução), **composição** (hierarquia, focal point, espaço negativo), **estilo** (linguagem visual, paleta, mood) e **texto** (palavras embutidas, posição, hierarquia). Cada camada tem vocabulário próprio que os modelos reconhecem. Quando você escreve sem cobrir as quatro, o modelo escolhe default genérico; quando cobre todas, converge rápido. Esta nota dá o vocabulário preciso por camada, com exemplo de prompt completo dissecado em cada uma.
+> Todo prompt visual eficaz tem quatro camadas: **canvas** (formato, aspect ratio, resolução), **composição** (hierarquia, focal point, espaço negativo), **estilo** (linguagem visual, paleta, mood) e **texto** (palavras embutidas, posição, hierarquia).
+> Cada camada tem vocabulário próprio que os modelos reconhecem.
+> A regra do default: quando você escreve sem cobrir as quatro, o modelo escolhe default genérico; quando cobre todas, converge rápido.
+> Esta nota dá o vocabulário preciso por camada, com exemplo de prompt completo dissecado em cada uma.
 
 > [!question]- Qual é a ordem certa de escrever as quatro camadas? E se eu não souber o estilo que quero?
 > A ordem mais produtiva é Canvas → Composição → Estilo → Texto: cada camada depende da anterior (você não define composição sem saber o canvas; o texto é a camada mais dependente do estilo). Se não souber o estilo: comece com um estilo "âncora" genérico (`flat illustration`) e itere só a camada de estilo enquanto congela as outras três. Mudar tudo ao mesmo tempo faz com que você não saiba o que causou o resultado. Quando travar, volte ao deliverable (nota 02): o estilo deve servir ao entregável, não ao gosto pessoal. Um hero tech-blog pede `flat-isometric corporate-modern`; um post de redes sociais pode pedir `bold graphic`, `pop art`; uma capa de ebook pode pedir `editorial photography`. O deliverable resolve o estilo 80% das vezes.
 
 ## As quatro camadas
+
+Você abre o Midjourney com o tema já decidido — "preciso de um hero pra post de blog sobre IA" — e nada além disso, e trava na caixa de prompt: digita o tema, aperta enter, e a imagem sai com composição arbitrária, paleta que não bate com a marca, texto ilegível quando você pediu. O problema não é o modelo; é que "tema" cobre só uma fração do que uma imagem precisa pra existir — faltam decisões sobre o retângulo onde ela vive, a disposição dos elementos dentro dele, a linguagem visual e o texto embutido. Se você não decide essas quatro coisas, o modelo decide por você, e o resultado é o default genérico da camada que ficou muda. A tabela abaixo nomeia as quatro camadas e a pergunta que cada uma responde.
 
 | Camada | Pergunta | Decisões |
 |--------|----------|----------|

@@ -1,7 +1,7 @@
 ---
 title: "Os quatro pilares — prompt, context, intent, specification"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -383,18 +383,18 @@ Avalie onde seu projeto está:
 
 ## Referências
 
-- **Karpathy, A.** — *Software Is Changing (Again)* (2025). Framing dos quatro pilares e analogia do sistema operacional.
+- **Karpathy, A.** — *Software Is Changing (Again)* (2025). Framing dos quatro pilares e analogia do sistema operacional — https://www.ycombinator.com/library/MW-andrej-karpathy-software-is-changing-again
 - **IntuitionLabs** — *What Is Context Engineering? A Guide for AI & LLMs* (2026). Taxonomia dos pilares.
 - **Atlan** — *Context Engineering Framework for Enterprise AI* (2026). Aplicação enterprise da hierarquia.
-- **Anthropic** — *Building effective agents: evals and specification* (2025). Base para specification engineering.
-- **Braintrust** — *Evals-driven development for LLM applications* (2026). Ferramental para camada 4.
-- **Hamel Husain** — *Your AI Product Needs Evals* (2024). Artigo canônico sobre por que specification engineering é necessária.
+- **Anthropic** — *Building effective agents: evals and specification* (2025). Base para specification engineering — https://www.anthropic.com/research/building-effective-agents
+- **Braintrust** — *Evals-driven development for LLM applications* (2026). Ferramental para camada 4 — https://www.braintrust.dev/articles/eval-driven-development
+- **Hamel Husain** — *Your AI Product Needs Evals* (2024). Artigo canônico sobre por que specification engineering é necessária — https://hamel.dev/blog/posts/evals/
 - **LangSmith** — *LLM Evaluation and Observability Platform* (2025-2026). Stack de referência para evals automatizados.
 - **Anthropic** — *Developing AI policy and governance frameworks* (2026). Guia para intent engineering em organizações.
-- **NIST** — *AI Risk Management Framework (AI RMF 1.0)* (2023). Embasamento formal para specification engineering regulado.
+- **NIST** — *AI Risk Management Framework (AI RMF 1.0)* (2023). Embasamento formal para specification engineering regulado — https://www.nist.gov/itl/ai-risk-management-framework
 - **Palermo, J.** — *LLM Evals: The Complete Guide* (2025). Metodologia prática para construção de suites de avaliação de comportamento.
 - **Anthropic** — *Model specification* (2024). Exemplo de specification engineering em escala — os valores e comportamentos esperados codificados formalmente para Claude.
-- **EU AI Act** — *Regulation (EU) 2024/1689* (2024). Requisitos legais que tornam specification engineering obrigatória para sistemas de IA de alto risco na Europa.
+- **EU AI Act** — *Regulation (EU) 2024/1689* (2024). Requisitos legais que tornam specification engineering obrigatória para sistemas de IA de alto risco na Europa — https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng
 - **Hamel Husain et al.** — *What We Learned from a Year of Building with LLMs* (2024). Lições práticas de times que já passaram pelas quatro camadas em produção.
 - **Google** — *Responsible AI practices: Testing and evaluation* (2025). Framework para specification engineering em produtos de IA de escala corporativa.
 - **OpenAI** — *GPT best practices: Systematic testing* (2025). Guia prático para avaliação de comportamento de modelos em produção.

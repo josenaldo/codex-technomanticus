@@ -1,7 +1,7 @@
 ---
 title: "04 - Helicone, Phoenix, OpenLLMetry — alternativas"
 created: 2026-05-28
-updated: 2026-06-28
+updated: 2026-07-03
 type: concept
 status: seedling
 fase: Iniciado
@@ -175,6 +175,58 @@ Dois padrões coexistem no espaço OTel para LLM:
 
 Na prática: se você misturar instrumentadores de Arize com instrumentadores da Traceloop, seus spans vão ter nomes de atributos diferentes pra mesma coisa. O dashboard vai filtrar errado. Escolha um schema e use instrumentadores daquela família.
 
+## Código-com-falha — dois jeitos de quebrar a instrumentação OTel
+
+A parte enganosa do OpenTelemetry é que o código "errado" quase sempre roda sem exceção — ele só produz traces incompletos ou ilegíveis, silenciosamente. Dois erros recorrentes:
+
+**1. Criar um `tracer_provider` novo por módulo, em vez de reusar um único:**
+
+```python
+# ❌ ERRADO — cada módulo chama register() de novo
+# arquivo: retrieval.py
+from phoenix.otel import register
+tracer_provider = register(project_name="research-agent")  # cria provider #1
+
+# arquivo: synthesis.py
+from phoenix.otel import register
+tracer_provider = register(project_name="research-agent")  # cria provider #2 !!
+```
+
+Cada chamada a `register()` (ou a `TracerProvider()` puro) instancia um novo provider com seu próprio exportador e seu próprio buffer de spans. Resultado: os spans de `retrieval.py` e `synthesis.py` — que deveriam ser filhos do mesmo trace — acabam em dois exportadores diferentes, às vezes com dois trace IDs raiz distintos. No dashboard, o que devia ser **um trace com duas etapas** aparece como **dois traces desconectados**. Pior: se o segundo `register()` reconfigurar o SDK global do OTel, o primeiro exportador pode parar de flushar.
+
+```python
+# ✅ CERTO — um único provider, criado uma vez, injetado onde precisar
+# arquivo: observability.py
+from phoenix.otel import register
+tracer_provider = register(project_name="research-agent")
+
+# arquivo: retrieval.py e synthesis.py importam o MESMO provider
+from observability import tracer_provider
+AnthropicInstrumentor().instrument(tracer_provider=tracer_provider)
+```
+
+**2. Misturar instrumentadores OpenInference e OTel GenAI no mesmo processo:**
+
+```python
+# ❌ ERRADO — dois instrumentadores, dois schemas, no mesmo client
+from openinference.instrumentation.anthropic import AnthropicInstrumentor  # OpenInference
+from traceloop.sdk import Traceloop  # OTel GenAI (Traceloop)
+
+AnthropicInstrumentor().instrument(tracer_provider=tracer_provider)
+Traceloop.init(app_name="research-agent")  # instrumenta o MESMO SDK Anthropic de novo
+```
+
+Isso não quebra com erro — os dois instrumentadores decoram o mesmo método `messages.create` do SDK da Anthropic, então a chamada gera **spans duplicados**, um com atributos `input.value`/`llm.model_name` (OpenInference) e outro com `gen_ai.prompt`/`gen_ai.request.model` (OTel GenAI). Um dashboard configurado para filtrar por `gen_ai.request.model` simplesmente não encontra os spans do OpenInference, e vice-versa — parece que metade das chamadas "sumiu", quando na verdade estão lá com outro nome de atributo.
+
+```python
+# ✅ CERTO — escolha um schema, instrumente uma vez só
+from openinference.instrumentation.anthropic import AnthropicInstrumentor
+AnthropicInstrumentor().instrument(tracer_provider=tracer_provider)
+# não inicializa Traceloop no mesmo processo
+```
+
+A regra prática: um processo, um `tracer_provider`, uma família de instrumentadores (OpenInference **ou** OTel GenAI — nunca as duas). Se dois times/serviços usam famílias diferentes, o problema só aparece quando os traces precisam ser correlacionados no mesmo backend.
+
 ## Tabela comparativa
 
 | Ferramenta | Hosting | Modelo de integração | Custo | Forte em | Melhor para |
@@ -200,6 +252,19 @@ OpenLLMetry é única alternativa onde o custo de observability de LLM não exis
 Dica prática: configure sampling agressivo (ex: 10% das requests) no OTel exporter antes de ligar tudo no Datadog — evita surpresa na fatura.
 
 ## Como decidir — em uma pergunta
+
+O fluxo abaixo condensa os critérios já discutidos em cada seção — não é um fato novo, é o mesmo raciocínio em forma de diagrama, pra decidir em 30 segundos em vez de reler o artigo inteiro:
+
+```mermaid
+flowchart TD
+    A[Preciso de observability de LLM] --> B{Já tenho um backend de<br/>observability maduro em produção?}
+    B -->|Sim: Datadog, Honeycomb, Grafana| C[OpenLLMetry<br/>+ backend existente]
+    B -->|Não| D{Setup precisa ser<br/>zero-código, sem tocar SDK?}
+    D -->|Sim, só trocar base_url| E[Helicone]
+    D -->|Não| F{Time já roda ML clássico<br/>em produção — drift, embeddings?}
+    F -->|Sim, quero eval + observability unificada| G[Arize Phoenix]
+    F -->|Não| H[Langfuse]
+```
 
 | Sua situação | Escolha |
 |---|---|
@@ -229,6 +294,20 @@ Stack não precisa ser monolítica. Padrões que aparecem em times médios:
 - **OpenLLMetry → Datadog/Honeycomb** — quando observability geral é compartilhada com SRE; LLM vira mais uma dimensão
 - **LiteLLM (gateway) + Langfuse (obs)** — abstração de provider com observability especializada; popular em plataformas internas multi-tenant
 - **Helicone → migração pra Langfuse** — começa no proxy pra capturar valor rápido, migra quando precisa de prompt versioning e eval integrados
+
+**Exemplo de stack completa (fan-out via OTel Collector):** um padrão que aparece quando SRE e o time de IA têm necessidades diferentes é instrumentar a aplicação **uma única vez**, com OpenLLMetry, e deixar o roteamento pra múltiplos backends a cargo de um OTel Collector — assim nenhum time precisa reinstrumentar o código pra "adicionar mais um destino":
+
+```
+Aplicação (Anthropic SDK)
+   │  instrumentado 1x com OpenLLMetry (Traceloop.init)
+   ▼
+OTel Collector (self-hosted)
+   │  fan-out por config, sem tocar a aplicação
+   ├──▶ Langfuse       (prompt management + eval, time de IA)
+   └──▶ Datadog/Honeycomb (visão unificada de infra, time de SRE)
+```
+
+Na prática, isso é um `exporters:` com duas entradas no `config.yaml` do Collector — a aplicação continua enviando pra um único endpoint OTLP e nunca sabe que os spans estão sendo duplicados para dois backends. É a combinação que mais reduz lock-in: trocar ou adicionar um backend vira mudança de configuração de infra, não deploy de aplicação.
 
 ## Sinais de que é hora de mudar de ferramenta
 
