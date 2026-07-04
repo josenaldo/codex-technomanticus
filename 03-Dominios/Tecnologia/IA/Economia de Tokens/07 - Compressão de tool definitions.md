@@ -1,7 +1,7 @@
 ---
 title: "Compressão de tool definitions"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -135,6 +135,8 @@ response = client.messages.create(model=MODEL, tools=tools, messages=messages)
 
 > [!warning] Lazy loading requer orquestração explícita
 > Para lazy loading funcionar, você precisa de um sistema que determine a fase atual e selecione as tools correspondentes. Em agentes simples (prompt → resposta), isso é fácil. Em agentes com loops de raciocínio complexo, você pode precisar de um step adicional de classificação de intenção antes de montar o payload.
+
+Essa determinação de fase não é um detalhe de implementação isolado — é exatamente o problema que os padrões de planning de agents resolvem. Um orquestrador plan-then-execute já sabe, por construção, em que fase da execução está; um sistema hierárquico com sub-agents especializados naturalmente restringe as tools de cada sub-agent ao seu papel. Ver [[Anatomia de Agents]] para os padrões de planning e orquestração multi-agent que tornam esse roteamento de tools barato de implementar em vez de um classificador extra bolado por cima.
 
 ### 3. Agrupamento de tools similares (tool merging)
 

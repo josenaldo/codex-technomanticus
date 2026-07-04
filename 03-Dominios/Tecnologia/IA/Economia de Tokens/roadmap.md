@@ -35,18 +35,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| ⬜ pendente | 20 |
+| ⬜ pendente | 11 |
 | ➖ não precisa | 2 |
-| ✅ feita | 0 |
+| ✅ feita | 9 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 50% |
+
+> [!note] Sessão 2026-07-03. Enriquecidas 9 notas (01·02·03·04·06·07·08·10·11) em 3 ondas de ≤3 subagentes + verify inline do coordenador. Pausa por governança de tokens (projeção do bloco >95%). Restam ⬜: 12·13·14·15·16·17·18·19·20·21·22. Fonte primária usada: posts de blog do dono (dieta de tokens no Claude Code). Verify pegou: ccusage 18.0.11→20.0.14, Helicone→Mintlify, LangMem ref sem URL, redirect blog.langchain.dev→langchain.com; confirmou arxiv 2308.08155 (AutoGen).
 
 ---
 
 ## Notas
 
 #### 01 - O problema — por que tokens custam dinheiro   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 122 linhas · fase: AUSENTE (gap) · status: evergreen
 - **Núcleo/gaps:** E2, E5, E6, E7, E8, P1, L2
 - **Score:** 5/12
@@ -56,10 +58,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar "O que vem a seguir" com ponte narrativa para `[[02 - Anatomia do gasto — input, output e reasoning]]`
   - Converter "## Armadilhas" (lista bullet) para callouts `[!warning]` individuais
   - Adicionar URLs reais às referências (anthropic.com/pricing, artificialanalysis.ai)
-- **Resultado:** —
+- **Resultado:** fase:Iniciado + abertura-cenário (fatura $25) + "O que vem a seguir"→02 + 4 callouts [!warning] + URLs verificadas (claude.com/pricing 200, artificialanalysis.ai/providers/anthropic 200). Preços confirmados contra fonte oficial (platform.claude.com/docs pricing) — batem com o post. Score ~8/12 (136 linhas; T1/E4/E6/E7 fora do escopo do plano). **Débito herdado:** tabelas citam Opus/Sonnet "4.6" (ID atual 4.8) — atualizar versões em ciclo futuro.
 
 #### 02 - Anatomia do gasto — input, output e reasoning   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 111 linhas · fase: AUSENTE (gap — provavelmente Iniciado) · status: evergreen
 - **Núcleo/gaps:** E1, E5, E6, E7, E8, P1, L2
 - **Score:** 5/12
@@ -70,10 +72,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter "## Armadilhas Técnicas" (lista numerada) para callouts `[!warning]` individuais
   - Adicionar fonte externa com URL (anthropic.com/pricing, artificialanalysis.ai ou openai.com/pricing)
   - Expandir corpo de 111 para ≥300 linhas (piso Iniciado): seção inglês + PT↔EN, mais exemplos numéricos, ≥1 exemplo de código-com-falha (JSON sem `thinking_budget`)
-- **Resultado:** —
+- **Resultado:** 111→300 linhas. fase:Iniciado + TL;DR 3-linhas (três faturas) + 4 callouts [!warning] + "O que vem a seguir"→03 + seção inglês + tabela PT↔EN (13 pares) + código-com-falha (`thinking` sem `budget_tokens`) + breakdown "$245" (fonte primária: post do dono) + correção do mito Opus 1,67×. Preços verificados em platform.claude.com/docs/pricing (Opus 4.8 $5/$25/$0,50 · Sonnet 4.6 $3/$15/$0,30 · Haiku 4.5 $1/$5/$0,10 · cache write 1,25×). URLs 200: platform.claude.com/docs/pricing, developers.openai.com/api/docs/guides/reasoning. Sem fabricação.
 
 #### 03 - Por que agentes gastam tanto   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 120 linhas · fase: AUSENTE (gap — provavelmente Iniciado) · status: evergreen
 - **Núcleo/gaps:** E3, E5, E6, E7, E8, P1
 - **Score:** 7/12
@@ -83,10 +85,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter armadilhas dos 5 vetores (retries silenciosos, rabbit holes, tool verbosity) para ≥3 callouts `[!warning]` individuais
   - Adicionar diagrama Mermaid (xychart ou sequenceDiagram da acumulação turno-a-turno)
   - Expandir para ≥300 linhas: seção "Como explicar em inglês" + tabela PT↔EN (agentic loop, context window, tool definition, rabbit hole, retry)
-- **Resultado:** —
+- **Resultado:** 120→300 linhas. fase:Iniciado + "O que vem a seguir"→04 + 3 callouts [!warning] (tool verboso/retries/rabbit holes) + 2 Mermaid (sequenceDiagram turno-a-turno + xychart curva quadrática) + seção inglês + tabela PT↔EN (7 termos) + tabela antes/depois com números da auditoria real do dono (68→1.900 req/bloco, 124k tok/min). CLAUDE_CODE_SUBAGENT_MODEL confirmado via WebSearch. 3 URLs pré-existentes revalidadas 200 (stanford/github.blog/openreview). Sem URL nova, sem fabricação.
 
 #### 04 - Monitoramento — ccusage, Langfuse, dashboards   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 312 linhas · fase: AUSENTE (gap) · status: growing / progress: in_progress
 - **Núcleo/gaps:** E2, E3, E5, E6, E7, E8, P1
 - **Score:** 5/12
@@ -98,7 +100,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ≥1 diagrama Mermaid (custo por camada ou ciclo ccusage→dashboard→alerta)
   - Adicionar seção "Como explicar em inglês" + tabela PT↔EN (observability, trace, span, generation, cache hit rate, anomaly detection, cost creep, billing window)
   - Adicionar `[!info]` de caducidade nas versões específicas (ccusage 18.0.11, Helicone maintenance mode, convenções OTel GenAI experimental)
-- **Resultado:** —
+- **Resultado:** 377 linhas, score ~10/12. fase:Iniciado + abertura-cenário ($245: cache read 55%/creation 30%/output 15%, fonte primária post do dono) + 7 callouts [!warning] + Mermaid (ciclo ccusage→dashboard→alerta com loop de baseline) + seção inglês + tabela PT↔EN + "O que vem a seguir"→05 + 3 [!info] caducidade. **Atualização de versão pega no verify: ccusage 18.0.11→20.0.14** (confirmado registry.npmjs.org). Helicone maintenance/aquisição Mintlify (3/mar/2026) confirmada; OTel GenAI spans de cliente estáveis / agente em Development — confirmado. URLs 200: registry.npmjs.org/ccusage, helicone.ai/blog/joining-mintlify, mintlify.com/blog, opentelemetry.io/docs/specs/semconv/gen-ai. Sem fabricação.
 
 #### 05 - Prompt caching na prática   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -110,31 +112,31 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 06 - Context pruning — o que remover do prompt   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 403 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** L1
 - **Score:** 11/12
 - **Plano de execução:**
   - Adicionar 1 wikilink cross-galho no corpo (ex: `[[06 - A janela de contexto]]` ao mencionar "lost in the middle", ou galho RAG e Vector Databases ao tratar semantic chunking/retrieval)
-- **Resultado:** —
+- **Resultado:** wikilink cross-galho `[[06 - A janela de contexto]]` (Anatomia dos LLMs) adicionado na seção "lost in the middle" (linha 33); alvo único confirmado. 403 linhas. L1 quitado.
 
 #### 07 - Compressão de tool definitions   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 399 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** L1
 - **Score:** 11/12
 - **Plano de execução:**
   - Adicionar ≥1 wikilink cross-galho (ex: galho MCP ao citar "Estado da arte", `[[Anatomia de Agents]]` ao tratar lazy loading, ou `[[Structured Outputs]]` como alternativa a tools) — qualquer adição também cruza o piso de 400 linhas
-- **Resultado:** —
+- **Resultado:** wikilink cross-galho `[[Anatomia de Agents]]` (folder-link) na seção "Lazy loading" (linha 139); regra Quartz OK (index.md existe no alvo). 398→400 linhas (cruzou o piso). L1 quitado.
 
 #### 08 - Compactação de histórico em agentes   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 384 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1
 - **Score:** 11/12
 - **Plano de execução:**
   - Expandir "## Estado da arte" ou "## Casos práticos" com ~20 linhas substantivas (ex: padrão LangMem, ou métricas do Caso 4) para cruzar o piso Adepto (384 < 400)
-- **Resultado:** —
+- **Resultado:** 384→401 linhas (cruzou piso). Callout [!info] LangMem SDK (memória semântica/episódica/procedural, extração hot-path vs background) em "Estado da arte" + referência. **Verify:** LangMem v0.0.30 confirmado no PyPI; referência corrigida pelo coordenador p/ URLs clicáveis reais (langchain-ai.github.io/langmem 200, pypi.org/project/langmem 200) — subagente havia deixado citação sem URL limpa.
 
 #### 09 - Model routing — modelo certo para a tarefa   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -146,7 +148,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 10 - Sub-agentes especializados   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 276 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E2, L2
 - **Score:** 9/12
@@ -154,16 +156,16 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Expandir a nota de 276 → ≥400 linhas (piso Adepto): aprofundar "Estado da arte" e enriquecer casos práticos com números concretos
   - Adicionar parágrafo de abertura com cenário concreto antes da tabela "Sub-agente vs model routing" (ex: agente de análise de codebase que explodiu o contexto a $18/run)
   - Adicionar URLs clicáveis nas Fontes (docs.anthropic.com/tool-use, arxiv Wu et al., blog.langchain.dev)
-- **Resultado:** —
+- **Resultado:** 276→400 linhas (cruzou piso). Abertura-cenário (agente codebase ~180k ctx, $15-20/run) + Estado da arte aprofundado (CLAUDE_CODE_SUBAGENT_MODEL confirmado, regra de teto de fan-out, fórmula custo×req×preço) + Caso 5 (68→1900 req/bloco, fonte primária post do dono) + exemplos LangGraph/CrewAI. **Verify:** 4 URLs 200 (code.claude.com/docs/sub-agents, platform.claude.com/docs/tool-use, arxiv 2308.08155, langchain.com/blog/what-is-an-agent — pegou redirect blog.langchain.dev→langchain.com). **arxiv 2308.08155 confirmado = "AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation" (Wu et al.)** — citação real. 3 marcas "(a confirmar)" honestas (CrewAI/LangGraph/Hamel — fora do escopo de verify), sem fabricação.
 
 #### 11 - Semantic caching   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-03)
 - **Estado:** 401 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1
 - **Score:** 11/12
 - **Plano de execução:**
   - Adicionar exemplo de código-com-falha (ex: lookup Redis com índice não criado, ou threshold 0.85 servindo "cancelar assinatura" como hit para "suspender assinatura")
-- **Resultado:** —
+- **Resultado:** 401→479 linhas. Código-com-falha (P1) adicionado: `SIMILARITY_THRESHOLD=0.85` servindo "cancelar" como hit p/ "suspender" (cosine ~0.87-0.89) + correção (threshold 0.96 + guarda de intent). APIs reais (GPTCache/Qdrant/Redis, sintaxe correta). **Débito herdado:** placeholder `https://youtube.com` num [!tip] pré-existente (fora do escopo) — trocar por fonte real em ciclo futuro.
 
 #### 12 - Batch API — economia em volume   [mecânico]
 - **Enriquecimento:** ⬜ pendente

@@ -1,10 +1,11 @@
 ---
 title: O problema — por que tokens custam dinheiro
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-03
 type: concept
 status: evergreen
 publish: true
+fase: Iniciado
 tags:
   - economia-tokens
   - ia
@@ -19,6 +20,8 @@ progress: done
 
 > [!abstract] TL;DR
 > Cada token que um LLM processa custa dinheiro porque consome GPU: compute na fase prefill (input) e bandwidth de memória na fase decode (output). Output é 3-6x mais caro que input porque é sequencial e compute-intensivo. Em 2026, um engenheiro usando agentes AI full-time pode gastar $50-200/mês em tokens — equivalente a uma assinatura de SaaS premium. Sem entender essa economia, é impossível otimizar, e sem otimizar, o custo escala sem controle.
+
+Um engenheiro abre o painel de billing na sexta-feira e encontra uma fatura de $25 só daquele dia — e não faz ideia de onde veio. Ele rodou um agente de coding a tarde inteira, fez algumas perguntas, pediu uns refactors. Não sentiu nada de anormal. Mas os números não mentem: dezenas de chamadas, cada uma relendo o histórico inteiro da conversa, cada uma gerando um pedaço de resposta. A fatura é a soma de decisões invisíveis — quantos tokens entraram, quantos saíram, quantas vezes o mesmo contexto foi reprocessado. Sem entender *como* esse custo se acumula, a reação natural é ou pânico ("vou parar de usar agentes") ou resignação ("é o preço de fazer negócio"). Nenhuma das duas resolve o problema, porque nenhuma explica a mecânica por trás do número.
 
 ## O que é
 
@@ -104,10 +107,21 @@ A diferença de 2-3x vem de: [[Dicionário de IA#Prompt caching|prompt caching]]
 
 ## Armadilhas
 
-- **"Tokens são baratos"** — individualmente sim. Em volume de agente, somam rápido.
-- **"Otimizar tokens degrada qualidade"** — falso. Remover contexto irrelevante MELHORA qualidade e reduz custo.
-- **"Não preciso monitorar"** — sem métricas, otimização é adivinhação.
-- **Focar só em input** — output é 5x mais caro. Um modelo verboso que gera 10k tokens quando 2k bastam está desperdiçando 5x mais no output.
+> [!warning] "Tokens são baratos"
+> Individualmente sim — frações de centavo por chamada. Mas em volume de agente (dezenas de chamadas por hora, cada uma relendo o contexto acumulado) essas frações somam rápido. É o mesmo erro de julgamento que subestima juros compostos: o problema não é o valor unitário, é a repetição.
+
+> [!warning] "Otimizar tokens degrada qualidade"
+> Falso — e geralmente o oposto. Remover contexto irrelevante MELHORA a qualidade da resposta (menos ruído pro modelo filtrar) e reduz custo ao mesmo tempo. Não existe trade-off aqui; existe preguiça de podar o prompt.
+
+> [!warning] "Não preciso monitorar"
+> Sem métricas, otimizar tokens é adivinhação. Você não sabe se o vilão é contexto acumulado, retries ou respostas verbosas até medir — e cada vilão pede uma correção diferente.
+
+> [!warning] Focar só em input
+> Output é de 3 a 6x mais caro que input (ver tabela de assimetria acima). Um modelo verboso que gera 10k tokens quando 2k bastariam está desperdiçando muito mais no output do que qualquer economia feita cortando o prompt de entrada.
+
+## O que vem a seguir
+
+Saber que existe um custo — e que ele nasce da assimetria input/output e dos cinco vilões do consumo — ainda não diz **quanto** cada parte da conversa pesa na fatura. Um agente moderno não gasta tokens só em "o que você digitou" e "o que ele respondeu": existe também o *reasoning* interno (tokens de raciocínio, cobrados como output, mas invisíveis na resposta final) e o *cache* (que muda drasticamente o preço efetivo do mesmo token). A próxima nota, [[02 - Anatomia do gasto — input, output e reasoning]], abre essa caixa-preta e decompõe exatamente onde cada dólar da fatura foi parar.
 
 ## Veja também
 
@@ -117,5 +131,5 @@ A diferença de 2-3x vem de: [[Dicionário de IA#Prompt caching|prompt caching]]
 
 ## Referências
 
-- **Anthropic** — *API Pricing* (2026). Tabela de preços.
-- **Artificial Analysis** — *Cost Comparison* (2026). Comparativo independente.
+- **Anthropic** — *Pricing* (2026). Tabela oficial de preços por modelo, incluindo prompt caching (cache write/read) e batch processing. [claude.com/pricing](https://claude.com/pricing)
+- **Artificial Analysis** — *Anthropic: Intelligence, Performance & Price Analysis* (2026). Comparativo independente de custo por tarefa entre modelos Claude e concorrentes. [artificialanalysis.ai/providers/anthropic](https://artificialanalysis.ai/providers/anthropic)

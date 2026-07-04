@@ -30,7 +30,7 @@ O consultor vai perder tempo folheando essa pilha antes de chegar ao que importa
 
 Com LLMs é exatamente isso. Cada token no contexto é processado pelo modelo — pago pelo provedor, carregado na janela de atenção, analisado durante a geração. **Contexto irrelevante não é neutro: ele compete com o contexto relevante pela atenção limitada do modelo.**
 
-O fenômeno tem nome: **lost in the middle** — modelos tendem a ignorar informação no meio do contexto. Quanto maior e mais poluído o prompt, mais crítico esse efeito. Context pruning é a resposta sistemática a esse problema.
+O fenômeno tem nome: **lost in the middle** — modelos tendem a ignorar informação no meio do contexto (veja [[06 - A janela de contexto]] para a mecânica de atenção por trás disso). Quanto maior e mais poluído o prompt, mais crítico esse efeito. Context pruning é a resposta sistemática a esse problema.
 
 ```mermaid
 flowchart TD

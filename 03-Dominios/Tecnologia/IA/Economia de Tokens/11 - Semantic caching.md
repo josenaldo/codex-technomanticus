@@ -1,7 +1,7 @@
 ---
 title: "Semantic caching"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -254,6 +254,85 @@ def cache_store_qdrant(query: str, response: str) -> None:
         )]
     )
 ```
+
+### O bug clássico — threshold alto demais servindo a resposta errada
+
+O código da Opção 1 funciona, mas esconde um bug que só aparece em produção: se o `SIMILARITY_THRESHOLD` é calibrado sem dados reais, o cache serve respostas erradas com confiança total — porque, do ponto de vista do sistema, foi um hit.
+
+```python
+# BUG: threshold calibrado "no olho", sem validar com queries reais
+SIMILARITY_THRESHOLD = 0.85  # parece razoável, mas não é
+
+# Cache já populado com esta entrada:
+cache_store(
+    "como cancelar minha assinatura?",
+    "Para cancelar sua assinatura, acesse Configurações > Assinatura > Cancelar. "
+    "O cancelamento é imediato e não há reembolso proporcional."
+)
+
+# Query nova do usuário:
+resultado, foi_hit = llm_with_semantic_cache(
+    "como suspender minha assinatura?",
+    system_prompt="Você é o assistente de suporte ao cliente."
+)
+# foi_hit == True
+# resultado == "Para cancelar sua assinatura, acesse Configurações > ..."
+```
+
+O problema: `"cancelar assinatura"` e `"suspender assinatura"` têm cosine similarity em torno de **0.87-0.89** — próximas o bastante para passar de um threshold de 0.85, mas semanticamente distintas. Cancelar é uma ação definitiva e sem reembolso; suspender costuma pausar a cobrança mantendo a conta ativa. O usuário que queria pausar recebe instruções de cancelamento definitivo — um false positive caro, porque a resposta parece correta (é fluente, é sobre o tema certo) e ninguém a questiona até o usuário reclamar ou cancelar por engano.
+
+O bug não está na lógica do `cache_lookup` — está em tratar o threshold como um número fixo e universal, em vez de um parâmetro que precisa ser validado contra pares de queries que *parecem* similares mas exigem respostas diferentes (intents conflitantes, não só paráfrases).
+
+**Correção — subir o threshold e adicionar uma guarda de intent para pares conhecidos como confundíveis:**
+
+```python
+SIMILARITY_THRESHOLD = 0.96  # recalibrado após medir false positives reais
+
+# Pares de intents que soam parecidos mas exigem respostas diferentes —
+# levantados via amostragem manual de cache hits (ver seção Métricas obrigatórias)
+INTENTS_CONFLITANTES = [
+    {"cancelar", "cancelamento"},
+    {"suspender", "suspensão", "pausar", "pausa"},
+]
+
+def _mesma_intencao(query_nova: str, query_cacheada: str) -> bool:
+    """Bloqueia hit se as queries caem em grupos de intent diferentes."""
+    palavras_novas = set(query_nova.lower().split())
+    palavras_cache = set(query_cacheada.lower().split())
+
+    grupo_novo = next((g for g in INTENTS_CONFLITANTES if g & palavras_novas), None)
+    grupo_cache = next((g for g in INTENTS_CONFLITANTES if g & palavras_cache), None)
+
+    # Se ambas caem em grupos de intent conhecidos e são grupos diferentes, bloqueia
+    if grupo_novo and grupo_cache and grupo_novo != grupo_cache:
+        return False
+    return True
+
+def cache_lookup_seguro(query: str) -> str | None:
+    """Versão corrigida: threshold mais alto + guarda de intent."""
+    query_embedding = embed(query)
+
+    results = redis_client.ft("idx:semantic_cache").search(
+        query=f"*=>[KNN 3 @embedding $vec AS score]",
+        query_params={"vec": np.array(query_embedding, dtype=np.float32).tobytes()},
+    )
+
+    if not results.docs:
+        return None
+
+    best = results.docs[0]
+    similarity = 1 - float(best.score)
+
+    if similarity < SIMILARITY_THRESHOLD:
+        return None  # miss — abaixo do threshold recalibrado
+
+    if not _mesma_intencao(query, best.query):
+        return None  # miss forçado — similaridade alta, mas intent conflitante
+
+    return best.response
+```
+
+A guarda de intent não substitui a calibração do threshold — é um cinto de segurança adicional para os pares de queries que a amostragem manual (ver Métricas obrigatórias) já revelou como confundíveis. Threshold alto reduz false positives em geral; a guarda de intent trata os casos específicos que continuam colando mesmo com threshold alto, porque a proximidade semântica bruta (cosine) não captura a diferença entre "parar de vez" e "pausar temporariamente".
 
 ## Casos de uso de alto ROI
 

@@ -1,7 +1,7 @@
 ---
 title: "Compactação de histórico em agentes"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: backlog
 status: growing
@@ -309,6 +309,23 @@ A pergunta central para escolher: **"O que precisa sobreviver de uma sessão par
 
 **Memory-augmented agents (MemGPT / Letta):** O framework MemGPT (hoje Letta) popularizou a arquitetura de memória em camadas: memória de trabalho (janela atual), memória de núcleo (estado do agente), memória arquivada (histórico compactado persistente). Em 2026, essa arquitetura é implementada nativamente por alguns provedores e como middleware por frameworks como LangMem.
 
+> [!info] LangMem — o padrão de "duas velocidades" para extrair memória
+> LangMem (SDK open-source da LangChain para agentes LangGraph) resolve um problema adjacente à compactação: não apaga o turn antigo, **extrai** dele o que vale persistir. A pergunta que o motor responde é: "desse turn que está prestes a sair da janela, o que sobra depois de descartar o resto?"
+>
+> O SDK distingue três tipos de memória — **semântica** (fatos e preferências: "o usuário prefere respostas em PT-BR"), **episódica** (exemplos concretos de interações passadas, úteis como few-shot) e **procedural** (regras de comportamento aprendidas, tipo um system prompt que se refina sozinho). Cada tipo tem um formato de armazenamento e um gatilho de recuperação diferentes — não é um único "resumo", é um esquema de memória tipado.
+>
+> A parte que interessa para compactação é a extração em **duas velocidades**:
+> - **Hot path** — ferramentas que o próprio agente chama durante a conversa para gravar algo relevante agora (equivalente a um `save_memory()` explícito).
+> - **Background** — um processo separado que varre o histórico *depois* da sessão terminar e extrai memórias que o agente não capturou em tempo real, sem competir por tokens da janela ativa.
+>
+> Isso separa duas responsabilidades que a compactação tradicional (rolling summarization) mistura: comprimir o histórico *para a sessão atual* continuar barata, e extrair conhecimento *para sessões futuras* reaproveitarem. Um agente pode compactar agressivamente (via `/compact` ou janela deslizante) e ainda reter, via LangMem, as poucas memórias que sobrevivem entre sessões — sem precisar reenviar histórico bruto.
+>
+> Status: SDK ativo em junho de 2026 (commits recentes, não arquivado), citado na documentação 1.0 da LangChain como opção de memória de longo prazo ao lado dos checkpointers do LangGraph — mas ainda pré-1.0 (release mais recente 0.0.30, de outubro de 2025), sinal de API ainda em maturação.
+>
+> Para quem já usa anchored state document (estratégia 2 desta nota): LangMem generaliza a ideia — em vez de um único documento de estado ad-hoc, formaliza o esquema (semântica/episódica/procedural) e delega a extração pra um processo em background, reduzindo o trabalho manual de decidir "o que vai pro estado" a cada turn.
+>
+> O trade-off: mais estrutura custa mais setup (storage compatível com `BaseStore` do LangGraph, definição dos schemas de cada tipo de memória) — vale a pena para agentes que já rodam sobre LangGraph; para um agente custom simples, um anchored state document manual ainda é mais barato de implementar.
+
 **Checkpoint automático antes de `/clear`:** Ferramentas como Aider implementam checkpoint automático: antes de qualquer operação destrutiva no histórico, serializam o estado atual em disco. Isso permite "reabrir" uma sessão anterior com o contexto compactado em um formato recuperável.
 
 **Compactação guiada por grafo de dependência:** Pesquisas de 2026 mostram que compactadores que analisam dependências entre turns (turn A mencionado em turn C → preservar A se C é recente) produzem resumos mais precisos que os puramente sequenciais.
@@ -381,3 +398,4 @@ Até aqui, as otimizações foram sobre **o que colocar** (ou não) no contexto.
 - **Aider** — *Managing large codebases with aider* (aider.chat/docs, 2025). Como o Aider implementa sliding window e checkpoint automático antes de compactação.
 - **Zhu et al.** — *LongAgent: Scaling Language Models to 128k Context through Multi-Agent Collaboration* (2024). Abordagem de multi-agente para contornar limites de contexto — base teórica para estratégias de compactação distribuída.
 - **Simon Willison** — *Managing long conversations with LLMs* (simonwillison.net, 2025). Análise prática de estratégias de compactação com exemplos em Python — inclui benchmarks de custo comparando rolling summarization vs full context.
+- **LangChain** — *LangMem SDK* (docs oficiais, 2026). Arquitetura de memória semântica/episódica/procedural e extração hot-path vs background; SDK ativo em jul/2026, pré-1.0 (v0.0.30, confirmado no PyPI). [langchain-ai.github.io/langmem](https://langchain-ai.github.io/langmem/) · [pypi.org/project/langmem](https://pypi.org/project/langmem/)

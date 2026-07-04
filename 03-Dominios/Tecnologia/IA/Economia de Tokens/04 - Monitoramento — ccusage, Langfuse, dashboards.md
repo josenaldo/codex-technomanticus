@@ -1,10 +1,11 @@
 ---
 title: "Monitoramento — ccusage, Langfuse, dashboards"
 created: 2026-05-02
-updated: 2026-05-09
+updated: 2026-07-03
 type: concept
 status: growing
 progress: in_progress
+fase: Iniciado
 publish: true
 tags:
   - economia-tokens
@@ -21,6 +22,8 @@ aliases:
 
 > [!abstract] TL;DR
 > Monitorar tokens é o passo zero da economia — sem dados, otimização é adivinhação. Em 2026, o ecossistema de [[Dicionário de IA#Observability|observability]] de LLMs cobre desde o terminal do dev até produção enterprise: **ccusage** (CLI local para Claude Code, 4800+ stars), **Helicone** (proxy fácil, em maintenance mode após aquisição pela Mintlify), **[[Dicionário de IA#Langfuse|Langfuse]]** (observability open-source com tracing profundo, evals e prompt management), **[[Dicionário de IA#Arize Phoenix|Arize Phoenix]]** (alternativa OSS construída sobre OpenTelemetry), e **[[Dicionário de IA#OpenTelemetry GenAI|OpenTelemetry GenAI]]** (padrão emergente para portabilidade cross-vendor). O mínimo viável é logar `usage.input_tokens` + `usage.output_tokens` de cada chamada e somar por dia/projeto.
+
+Um dia de trabalho fechou em $245. A reação instintiva é reclamar do preço do modelo — mas reclamar não conserta nada, porque "caro" não diz *onde* o dinheiro foi. A resposta certa é abrir o `ccusage` e ir atrás dos números: naquele dia específico, a decomposição foi 55% cache read, 30% cache creation e só 15% output. Ou seja, o gasto não era de geração de texto — era de reconstrução de contexto, chamada após chamada. Sem esse detalhe por camada, a única ação possível seria "usar menos a IA". Com ele, a ação vira cirúrgica: revisar por que o cache estava sendo recriado com tanta frequência. Esse é o valor central do monitoramento — ele transforma "está caro" (sentimento) em "está caro *aqui*, por *este* motivo" (diagnóstico acionável).
 
 ## O que é
 
@@ -40,7 +43,12 @@ Monitoramento de tokens é o processo de coletar, agregar e visualizar dados de 
 
 ### Camada 2: ccusage (para Claude Code)
 
-ccusage é uma CLI com 4800+ stars no GitHub que analisa os logs JSONL locais do Claude Code — funciona offline, sem proxy. A versão mais recente (18.0.11, abril 2026) adicionou MCP server embutido, suporte a billing windows de 5 horas e breakdown por modelo.
+ccusage é uma CLI com 4800+ stars no GitHub que analisa os logs JSONL locais do Claude Code — funciona offline, sem proxy. A versão mais recente publicada no npm registry é **20.0.14** (verificado em `registry.npmjs.org/ccusage/latest`), que já traz MCP server embutido, suporte a billing windows de 5 horas e breakdown por modelo.
+
+> [!info] Caducidade — versão do ccusage
+> A versão exata muda rápido (é uma CLI ativa, com releases frequentes). O número acima (20.0.14) foi confirmado via npm registry na data desta edição — trate como "última verificada", não como constante. Antes de citar em outro contexto, rode `npm view ccusage version` ou confira `registry.npmjs.org/ccusage/latest`.
+
+É a ferramenta que o dono deste vault usa no dia a dia — inclusive `ccusage blocks` (janelas de 5h) foi o comando usado para decompor o dia de $245 do exemplo acima em cache read/creation/output.
 
 ```bash
 # Instalar globalmente ou usar sem instalar
@@ -77,7 +85,10 @@ ccusage --model claude-opus-4-7
 ### Camada 3: Helicone (proxy — setup rápido)
 
 > [!warning] Status 2026
-> Helicone foi adquirida pela Mintlify em 2026 e entrou em **maintenance mode**. Suporte a modelos existentes continua, mas novos recursos não serão adicionados. Para novos projetos, avalie Langfuse ou Arize Phoenix.
+> Helicone foi adquirida pela Mintlify em 3 de março de 2026 e entrou em **maintenance mode**. Suporte a modelos existentes continua, mas novos recursos não serão adicionados. Para novos projetos, avalie Langfuse ou Arize Phoenix.
+
+> [!info] Caducidade — Helicone maintenance mode
+> Confirmado via busca em julho/2026: a Mintlify mantém o Helicone rodando (atualizações de segurança, novos modelos, correções de bugs) mas sem features novas, e está ajudando clientes a migrar quando fizer sentido. "Maintenance mode" aqui não é sinônimo de "desligado" — é sinônimo de "sem roadmap". Reconfirme antes de recomendar Helicone para um projeto novo.
 
 ```python
 import anthropic
@@ -192,7 +203,10 @@ span.set_attribute("gen_ai.usage.cache_read_input_tokens", 900)
 span.set_attribute("gen_ai.response.finish_reasons", ["end_turn"])
 ```
 
-**Status em 2026:** maioria das convenções em status `experimental`, com adoção crescente. Datadog e Grafana suportam nativamente desde 2025. Langfuse e Phoenix exportam no formato OTel. O SDK da Anthropic está sendo instrumentado via community libraries (OpenLLMetry).
+**Status em 2026:** misto, e é importante não simplificar demais. Os spans de cliente (`gen_ai.client` — uma chamada round-trip ao LLM) já saíram de `experimental` e estão **estáveis**. Já os spans de agente e de framework seguem em status `Development` (o termo que substituiu "experimental" nas convenções mais recentes), sem cronograma público de estabilização. Datadog (nativo desde OTel v1.37) e Grafana já suportam. Langfuse e Phoenix exportam no formato OTel. O SDK da Anthropic é instrumentado via bibliotecas da comunidade (OpenLLMetry).
+
+> [!info] Caducidade — status das convenções OTel GenAI
+> Confirmado em julho/2026: spans de cliente LLM = estável; spans de agente/framework = `Development`, evoluindo com breaking changes ocasionais. Times que adotam cedo devem fixar a versão da instrumentação e usar `OTEL_SEMCONV_STABILITY_OPT_IN` para emitir os dois formatos (antigo + novo) durante a transição. Reconfirme em `opentelemetry.io/docs/specs/semconv/gen-ai/` antes de tratar qualquer atributo como definitivo.
 
 > [!tip] Boas práticas de segurança
 > Prefira armazenar prompts como **span events**, não como atributos de span — prompts podem conter PII e dados sensíveis que não devem ir para backends de observabilidade sem sanitização prévia.
@@ -229,6 +243,26 @@ def check_daily_cost(log_path="llm_usage.jsonl", threshold_usd=50):
             "text": f"⚠️ LLM cost: ${total:.2f} today (limit ${threshold_usd})"
         })
 ```
+
+### O ciclo de monitoramento, do terminal ao alerta
+
+O fluxo abaixo é o que separa "eu olhei uma vez" de "meu sistema me avisa": dado bruto vira relatório, relatório vira decisão, decisão vira ação — e o loop realimenta o baseline.
+
+```mermaid
+flowchart LR
+    A[Logs JSONL locais<br/>Claude Code] -->|ccusage / ccusage blocks| B[Relatório por dia,<br/>sessão ou billing window]
+    B --> C{Breakdown por camada:<br/>input / output /<br/>cache read / cache write}
+    C -->|cache read dominante| D[Investigar reconstrução<br/>de contexto]
+    C -->|output dominante| E[Investigar geração<br/>excessiva]
+    C -->|dentro do esperado| F[Dashboard / baseline]
+    F --> G{Anomalia?<br/>custo/hora > 2x baseline}
+    G -->|sim| H[Alerta — Slack/webhook]
+    G -->|não| F
+    H --> I[Ação: revisar prompt,<br/>ajustar thinking_budget,<br/>checar retry storm]
+    I --> F
+```
+
+Note que o loop não termina no alerta — ele volta pro baseline (`F`), porque a "normalidade" de ontem pode não ser a de hoje. É esse retorno que captura o *cost creep* (aumento lento e contínuo) que um threshold fixo nunca pegaria.
 
 ### Comparativo de ferramentas
 
@@ -287,13 +321,45 @@ def log_usage(response, task_name):
 
 ## Armadilhas
 
-- **Não monitorar** — o erro mais caro. Sem dados, otimização é impossível.
-- **Monitorar só o total** — saber que gastou $50/dia é inútil sem saber ONDE gastou.
-- **Ignorar [[Dicionário de IA#Cache hit rate|cache hit rate]]** — se configurou [[Dicionário de IA#Prompt caching|prompt caching]] mas o hit rate é 10%, algo está errado na estrutura do prompt.
-- **Setup over-engineered** — para dev solo, ccusage ou uma planilha basta. Langfuse é para times.
-- **Sem alertas em produção** — dashboard que ninguém olha não evita surpresas na fatura do mês.
-- **Helicone em novos projetos** — em maintenance mode desde 2026; prefira Langfuse ou Phoenix para novos projetos.
-- **Prompts com PII em spans OTel** — ao usar OpenTelemetry, evite colocar o conteúdo completo do prompt como atributo de span; prefira span events com sanitização.
+> [!warning] Monitorar só o total
+> Saber que gastou $50/dia é quase inútil sozinho — é o mesmo erro do exemplo de abertura, só que sem abrir o `ccusage` pra decompor. O total te diz *que* há um problema; só o breakdown por camada (input/output/cache read/cache write) te diz *qual* problema. Sem isso, toda decisão vira "usar menos", que não é otimização — é desistência.
+
+> [!warning] Não monitorar
+> O erro mais caro de todos, porque nem sequer gera o sintoma "gastei $50" — o custo só aparece na fatura no fim do mês, tarde demais para agir. Sem dados, otimização é adivinhação.
+
+> [!warning] Ignorar o cache hit rate
+> Se configurou [[Dicionário de IA#Prompt caching|prompt caching]] mas o [[Dicionário de IA#Cache hit rate|cache hit rate]] está em 10%, o cache está ligado mas não está funcionando — e ninguém percebe porque olhou só pro total, não pra essa métrica específica.
+
+> [!warning] Setup over-engineered
+> Para dev solo, `ccusage` ou uma planilha bastam. Langfuse com trace/span/eval é ferramenta de time — implantar isso sozinho é otimizar a ferramenta de observabilidade, não o custo real.
+
+> [!warning] Sem alertas em produção
+> Dashboard que ninguém olha não evita surpresa na fatura. Alerta transforma "alguém teria visto se tivesse olhado" em "o sistema avisou sozinho".
+
+> [!warning] Helicone em projetos novos
+> Em maintenance mode desde março/2026 (adquirida pela Mintlify) — recebe correções e segurança, mas não recursos novos. Para um projeto que só está começando, prefira Langfuse ou Arize Phoenix, que têm roadmap ativo.
+
+> [!warning] PII em spans OTel
+> Ao instrumentar com OpenTelemetry, é tentador jogar o prompt inteiro como atributo de span — mas atributos ficam indexados e pesquisáveis no backend de observabilidade. Prompts carregam PII e dados sensíveis. Prefira span *events* (não atributos) e sanitize antes de exportar.
+
+## Como explicar em inglês
+
+Em entrevista técnica ou em reunião com um time internacional, o vocabulário de monitoramento de LLM é quase todo emprestado de observability tradicional (de infra/backend), com alguns termos específicos de IA generativa por cima. A frase que costuma render bem: *"We instrument every LLM call as a trace, with generations as the leaf spans — that's what lets us break cost down by layer instead of just staring at a total."*
+
+| PT-BR                        | EN                        | Nota de uso                                                          |
+| ----------------------------- | -------------------------- | --------------------------------------------------------------------- |
+| Observabilidade                | observability               | Termo guarda-chuva: logs + métricas + traces                        |
+| Rastro / trace completo        | trace                      | A "tarefa" inteira, do início ao fim, em Langfuse/Phoenix/OTel        |
+| Etapa intermediária            | span                       | Qualquer operação dentro de um trace (busca, formatação etc.)        |
+| Chamada ao LLM (dentro do span)| generation                 | Subclasse de span específica pra chamadas de modelo — carrega tokens/custo |
+| Taxa de acerto do cache         | cache hit rate             | % de tokens servidos do cache em vez de reprocessados                |
+| Detecção de anomalias           | anomaly detection          | Baseline dinâmico vs. threshold fixo                                  |
+| Aumento lento e contínuo de custo | cost creep               | O que anomaly detection pega e threshold fixo não pega                |
+| Janela de faturamento           | billing window             | Ex.: janela de 5h do Claude Pro/Max (`ccusage blocks`)                |
+
+## O que vem a seguir
+
+Monitorar mostra *onde* o dinheiro vai — mas ver que 55% do gasto é cache read não é o fim da história, é o início de uma pergunta: esse cache está sendo bem aproveitado, ou está sendo recriado toda hora à toa? Essa é exatamente a pergunta que [[05 - Prompt caching na prática]] responde: como estruturar prompts para que o cache realmente "pegue", em vez de expirar ou ser invalidado a cada chamada.
 
 ## Veja também
 
