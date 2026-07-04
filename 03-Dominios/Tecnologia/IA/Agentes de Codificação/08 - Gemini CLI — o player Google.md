@@ -190,6 +190,9 @@ Essa abordagem — carregar exatamente o que é relevante — extrai o melhor do
 
 O Gemini CLI tem uma estrutura de custo mais flexível que seus concorrentes:
 
+> [!info] Preços mudam rápido — confira antes de decidir
+> A tabela abaixo é uma fotografia do momento em que esta nota foi escrita. Preços de modelos de IA são revisados com frequência (novas gerações, promoções, mudanças de tier). Antes de basear uma decisão de custo nesses números, confirme os valores atuais em ai.google.dev/pricing.
+
 | Modelo | Preço input (por MTok) | Preço output (por MTok) | Melhor para |
 | ------ | ---------------------- | ------------------------ | ----------- |
 | Gemini 2.5 Pro | $1.25 (até 200k) / $2.50 (>200k) | $10.00 | Tasks complexas, análise de codebase |
@@ -385,6 +388,8 @@ Para contexto completo sobre o landscape de ferramentas onde o Gemini CLI se enc
 - [[11 - Comparativo — qual ferramenta para qual tarefa]] — guia de decisão
 - [[05 - Claude Code — terminal-first agent]] — o principal concorrente em reasoning
 - [[15 - MCP — o protocolo universal]] — protocolo que pode nivelar o campo de integrações
+
+Toda essa evolução, porém, é uma aposta de plataforma: contexto gigante, multimodalidade nativa e integração GCP são vantagens que dependem de você estar dentro do ecossistema Google — e do modelo Gemini específico por trás do CLI. Existe uma aposta oposta no mesmo espaço de "agente de terminal com Git no centro": em vez de escalar contexto e amarrar a um provedor, trocar de modelo livremente e apostar tudo em controle e auditabilidade do histórico Git. É o caminho que o [[09 - Aider — o pair programmer de terminal|Aider]] percorre — open-source como o Gemini CLI, mas *model-agnostic* por design, funcionando com Claude, GPT, DeepSeek ou modelos locais sem trocar de workflow.
 
 ## Veja também
 

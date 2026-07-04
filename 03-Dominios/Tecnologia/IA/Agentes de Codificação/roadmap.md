@@ -35,13 +35,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| ⬜ pendente | 12 |
+| ⬜ pendente | 9 |
 | ➖ não precisa | 3 |
-| ✅ feita | 3 |
+| ✅ feita | 6 |
 | 🔄 em andamento | 0 |
-| % concluído | 20% |
+| % concluído | 40% |
 
-> [!note] Sessão 2026-07-04. +3 notas (01·03·05) em 1 onda de ≤3 + verify inline. Restam ⬜: 06·07·08·09·10·11·12·13·14·15·17·18 (12). Pausa pela **parada das 15** (14 notas enriquecidas na sessão contando o galho Economia de Tokens) — /clear e retomar. Bloco de 5h resetou (projeção 8%, folga total de tokens); o limite aqui é higiene de contexto, não governança de tokens.
+> [!note] Sessão 2026-07-04. +6 notas (01·03·05·06·07·08) em 2 ondas de ≤3 + verify inline (usuário sobrepôs a parada das 15 — tokens com folga total, bloco resetado). Restam ⬜: 09·10·11·12·13·14·15·17·18 (9). Padrão do galho confirmado: quase toda nota = reescrita da ponte E5 nomeando a próxima nota + `[!info]` de caducidade nos dados voláteis. Verify: todos os wikilinks (irmãos + cross-galho `[[Dicionário de IA#tool use]]`, âncora conferida) apontam para alvos existentes. Nenhum preço/modelo inventado ou alterado.
 
 ---
 
@@ -95,17 +95,17 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** 409→417 linhas. Abertura de "O que vem a seguir" contrastando Claude Code (terminal-first) com `[[06 - GitHub Copilot e Copilot Agents]]` (maior ecossistema, embutido no editor) — irmão confirmado. 3 `[!info]` de caducidade (seção "Por que importa", histórico opusplan, tabela custo/modelos) envolvendo dados já existentes — nenhum preço/modelo/data inventado ou alterado. E5 + caducidade quitados.
 
 #### 06 - GitHub Copilot e Copilot Agents   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 409 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar ponte narrativa em "O que vem a seguir" para [[07 - Windsurf e Cascade]] — a seção hoje avança o leitor fora de sequência (04/05/12/14/15); inserir parágrafo motivando a transição para um IDE AI-native com agentes de longa duração via Cascade
   - ⚠️ Data de validade: tabela de tiers/preços, "30 milhões de devs em 2026" e histórico de modelos (Claude 3.5 Sonnet, Gemini 1.5 Pro) — sinalizar caducidade
-- **Resultado:** —
+- **Resultado:** 408→419 linhas. Ponte em "O que vem a seguir" para `[[07 - Windsurf e Cascade]]` (irmão confirmado) — contraste extensão-em-editor vs IDE AI-native com Cascade. 3 `[!info]` de caducidade (30M devs 2026, histórico de modelos, tiers/preços) envolvendo dados existentes — nada alterado. E5 quitado.
 
 #### 07 - Windsurf e Cascade   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 403 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, L1, P1
 - **Score:** 9/12
@@ -113,17 +113,17 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - E5 — substituir/complementar "O que vem a seguir" (hoje discute futuro sob a OpenAI) por parágrafo de ponte para [[08 - Gemini CLI — o player Google]]: do IDE-first com agentes integrados para o CLI Google, terminal-first
   - L1 — adicionar ao menos 1 wikilink cross-galho (Dicionário de IA ou galho Economia de Tokens)
   - ⚠️ Data de validade: tabela "Modelo de preços" sem aviso explícito pós-aquisição — adicionar `[!info]` recomendando verificar em windsurf.com
-- **Resultado:** —
+- **Resultado:** 396→407 linhas. E5: ponte final em "O que vem a seguir" para `[[08 - Gemini CLI — o player Google]]` (irmão confirmado) — IDE-first vs terminal-first Google. L1: wikilink cross-galho `[[Dicionário de IA#tool use|tool calls]]` em "Por que importa" (heading `### tool use` confirmado na linha 73 do Dicionário — âncora resolve). `[!info]` de caducidade após tabela "Modelo de preços" (verificar em windsurf.com). E5+L1+caducidade quitados. Nenhum preço alterado.
 
 #### 08 - Gemini CLI — o player Google   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 409 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - E5 — converter o final de "O que vem a seguir" (hoje focado em evolução de produto) para bridge narrativa a [[09 - Aider — o pair programmer de terminal]]: da aposta Google (GCP, contexto gigante, multimodal) ao caminho open-source, agnóstico de modelo
   - ⚠️ Data de validade: tabela "Modelo de preços" (Gemini 2.5 Pro/Flash, 2.0 Flash) sem aviso — adicionar `[!info]` recomendando ai.google.dev/pricing
-- **Resultado:** —
+- **Resultado:** 409→413 linhas. E5: final de "O que vem a seguir" convertido em bridge para `[[09 - Aider — o pair programmer de terminal]]` (irmão confirmado) — da aposta Google (contexto 1M, multimodal, GCP) ao polo open-source agnóstico de modelo. `[!info]` de caducidade antes da tabela "Modelo de preços" (ai.google.dev/pricing citado em texto, não link clicável). E5+caducidade quitados. Nenhum modelo/preço alterado.
 
 #### 09 - Aider — o pair programmer de terminal   [substantivo]
 - **Enriquecimento:** ⬜ pendente

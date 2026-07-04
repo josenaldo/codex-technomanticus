@@ -47,6 +47,9 @@ A diferença fundamental entre Copilot e ferramentas como Claude Code ou Cursor 
 
 A posição dominante do Copilot no mercado cria um efeito de rede: a maioria dos tutoriais, integrações e extensões de terceiros foi construída com ele em mente. Adotar Copilot significa ter acesso ao maior ecossistema de tooling ao redor de um assistente de código.
 
+> [!info] Data de validade deste número
+> "30 milhões de desenvolvedores em 2026" é um número de adoção — desses envelhecem rápido num mercado que ainda está em corrida de crescimento. Ao ler esta nota depois de 2026, trate como ordem de grandeza histórica, não como métrica atual; confira o número corrente na documentação oficial do GitHub.
+
 > [!question]- Copilot e Claude Code podem ser usados juntos no mesmo projeto?
 > Sim, e é uma combinação comum. Copilot fica ativo no editor para autocomplete em tempo real enquanto você escreve. Claude Code é acionado no terminal para tarefas que exigem planejamento profundo — debugging, refactoring, análise de arquitetura. Os dois usam contextos independentes (um via extensão VS Code, outro via terminal), então não há conflito. O risco é duplicação de custo: se você já paga Copilot Business ($19/seat) e usa Claude Code intensamente (usage-based), avalie se o ROI justifica ambos.
 
@@ -69,6 +72,9 @@ Um detalhe metodológico importante: o estudo usou uma tarefa isolada (implement
 | Fev 2025 | Agent Mode GA no VS Code — loop plan-edit-run autônomo dentro do editor |
 | Abr 2025 | Copilot Agents GA para Enterprise — resolve issues remotamente e abre PRs automaticamente |
 | 2026 | Copilot Enterprise ($39/seat) com fine-tuning em código privado do repositório |
+
+> [!info] Data de validade deste histórico
+> Datas, versões de modelo (Claude 3.5 Sonnet, Gemini 1.5 Pro) e nomes de planos deste histórico são um retrato de um momento específico do produto — a Microsoft itera Copilot com frequência alta. Ao ler depois de 2026, trate a tabela como linha do tempo até o ponto do registro, não como estado atual; confira a changelog oficial do GitHub para o presente.
 
 ## Como funciona
 
@@ -231,6 +237,9 @@ A diferença em relação ao Copilot Chat simples é o **loop autônomo com exec
 | Audit logs              | ❌             | ❌            | ✅        | ✅          |
 | IP indemnity            | ❌             | ❌            | ✅        | ✅          |
 
+> [!info] Data de validade desta tabela
+> Preços, nomes de tier e limites de quota (2k completions/mês, 50 mensagens de chat) mudam com frequência nesse mercado. Trate esta tabela como referência estrutural de *como* o Copilot segmenta funcionalidades, não como tabela de preços vigente; confira o pricing atual em github.com/features/copilot.
+
 ## Quando usar Copilot
 
 A decisão não é "Copilot vs Cursor vs Claude Code" — é "qual ferramenta para qual momento do dia".
@@ -385,6 +394,8 @@ Copilot é o ponto de entrada mais comum para IA no desenvolvimento — muitos t
 - **Se você quer coordenar múltiplos agentes** → [[12 - Multi-agent — workflows com múltiplos agentes]]
 - **Se você quer configurar o projeto para receber agentes** → [[14 - agents.md e configuração de projeto]]
 - **Se você quer integrar ferramentas além do ecossistema GitHub** → [[15 - MCP — o protocolo universal]]
+
+Há ainda uma lacuna que o Copilot não cobre bem: ele vive dentro do VS Code como extensão, herdando as limitações de um editor que não foi desenhado em torno de agentes. Existe um caminho diferente — construir o IDE em torno do agente desde o início, não o contrário. É esse o território do [[07 - Windsurf e Cascade]]: um IDE AI-native onde o agente **Cascade** mantém sessões de longa duração, com memória persistente entre passos e visibilidade de todo o fluxo plan-edit-run em um só lugar — não uma extensão acoplada a um editor tradicional.
 
 ## Veja também
 

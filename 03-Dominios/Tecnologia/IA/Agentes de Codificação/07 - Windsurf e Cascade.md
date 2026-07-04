@@ -1,7 +1,7 @@
 ---
 title: "Windsurf e Cascade"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 fase: Adepto
 progress: done
@@ -36,7 +36,7 @@ O conceito central do Windsurf é o de **Flows** — interações onde o context
 
 - **Pricing agressivo** — Windsurf Pro ($15/mês) é 25% mais barato que Cursor Pro ($20/mês); plano Free inclui autocomplete ilimitado
 - **Flows como conceito diferencial** — o modelo de co-edição fluida reduz fricção para devs que preferem trabalhar "junto" com a IA em vez de delegar tarefas
-- **Cascade com tool calls explícitos** — o motor agentic mostra exatamente quais ferramentas está usando (ler arquivo, rodar comando, escrever código), aumentando transparência
+- **Cascade com [[Dicionário de IA#tool use|tool calls]] explícitos** — o motor agentic mostra exatamente quais ferramentas está usando (ler arquivo, rodar comando, escrever código), aumentando transparência
 - **Pós-aquisição OpenAI** — potencial de integração nativa com GPT-5, ChatGPT e futuras ferramentas da OpenAI
 - **Base Codeium** — Codeium tinha autocomplete competitivo antes do Windsurf; a engine de completions é madura
 - **Cascade com log de ações** — transparência explícita do que o agent está fazendo em cada passo, com possibilidade de interrupção granular
@@ -58,6 +58,9 @@ O modelo de preços do Windsurf foi uma arma competitiva deliberada: a Codeium c
 | **Pro** | $15/mês | ✅ ilimitado | ✅ ilimitado | ✅ 500 créditos premium |
 | **Ultimate** | $35/mês | ✅ ilimitado | ✅ ilimitado | ✅ créditos ilimitados |
 | **Teams** | $30/seat | ✅ ilimitado | ✅ ilimitado | ✅ + admin/analytics |
+
+> [!info] Preços sujeitos a mudança pós-aquisição
+> Esta tabela reflete o pricing vigente até a redação desta nota. Como o Windsurf está em transição sob a OpenAI (ver [[#O Windsurf no contexto pós-aquisição OpenAI]]), planos e valores podem ter mudado — confira sempre os valores atuais em [windsurf.com](https://windsurf.com) antes de decidir.
 
 **O que diferencia o Free do Pro?** O plano Free inclui autocomplete ilimitado (que usa modelos menores, rápidos) mas limita o uso do Cascade com modelos avançados (GPT-4.1, Claude). Na prática: para tarefas do dia a dia com Flows e completions simples, o Free funciona. Para usar o Cascade em tasks complexas com frequência, o Pro é necessário.
 
@@ -380,6 +383,8 @@ Para acompanhar a evolução:
 4. Política de privacidade unificada OpenAI + Windsurf — necessária para adoção enterprise
 
 Se você está considerando adotar Windsurf para um projeto de longo prazo, vale esperar até pelo menos 2 desses sinais ficarem claros antes de comprometer automações e configurações complexas no ecossistema do Windsurf.
+
+**Do IDE para o terminal:** Windsurf e Cascade representam a aposta IDE-first — o agente vive dentro do editor, com Flows e tool calls visíveis num painel gráfico. Mas essa não é a única forma de levar um agente pro dia a dia de um dev. O Google aposta no caminho oposto: terminal-first, sem IDE próprio, competindo com Claude Code em vez de com o Cursor. Veja como essa filosofia se traduz em produto em [[08 - Gemini CLI — o player Google]].
 
 ## Veja também
 
