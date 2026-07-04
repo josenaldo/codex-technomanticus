@@ -1,7 +1,7 @@
 ---
 title: "Auditoria de consumo"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -76,7 +76,7 @@ Fix: [[08 - Compactação de histórico em agentes]] — rolling summarization, 
 
 Tool calls com sintaxe errada disparando retry automático. O modelo chama uma ferramenta com parâmetro errado, recebe erro, tenta de novo com variação mínima, repete 3-5 vezes antes de desistir. Sintoma: 2-3 turnos consecutivos com payloads quase idênticos.
 
-Fix: validar parâmetros de tool calls antes de executar; registrar erros de tool como eventos separados no trace.
+Fix: validar parâmetros de tool calls antes de executar; registrar erros de tool como eventos separados no trace. Esse padrão de retry surge do próprio loop de decisão do agente — ver [[Anatomia de Agents]] para entender por que um agente insiste na mesma tool call em vez de desistir ou pedir ajuda.
 
 ### 4. Reasoning excessivo em tarefa simples
 

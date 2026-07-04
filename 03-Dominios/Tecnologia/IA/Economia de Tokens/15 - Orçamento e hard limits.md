@@ -1,7 +1,7 @@
 ---
 title: "Orçamento e hard limits"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -148,7 +148,7 @@ Soft limit dispara alerta. Hard limit **bloqueia** novas chamadas até o ciclo s
 
 ### Kill switches em agentes
 
-Agentes em loop são o cenário mais perigoso — o gasto não é por chamada, é por sessão. Uma sessão sem controle pode acumular tokens mais rápido do que qualquer monitoramento humano consegue detectar.
+Agentes em loop são o cenário mais perigoso — o gasto não é por chamada, é por sessão. Uma sessão sem controle pode acumular tokens mais rápido do que qualquer monitoramento humano consegue detectar. O mecanismo do loop em si (ReAct, plan-then-execute, multi-agent) é o assunto de [[Anatomia de Agents]] — aqui o interesse é só o corte de emergência quando esse loop foge do esperado.
 
 ```python
 import time

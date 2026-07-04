@@ -1,7 +1,7 @@
 ---
 title: "ROI de IA — quando o agente vale o custo"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -390,7 +390,7 @@ Com ROI calculado e decisão de continuar, o próximo passo prático é comparar
 
 ## Fontes
 
-- **GitHub Research** — *Quantifying GitHub Copilot's impact on developer productivity* (2024). Estudo controlado com 95 devs — 55% mais rápidos em tasks de geração, mas sem impacto significativo em debugging e refactoring.
-- **METR** — *Measuring impact of AI on real-world software development* (2025). Estudo independente de longo prazo em tarefas reais — identificou 13-23% de ganho médio, com alta variância por tipo de task.
-- **Stack Overflow Developer Survey 2026** — *AI tools usage and productivity*. Dados de 65.000 devs sobre adoção, satisfação e percepção de produtividade — inclui segmentação por perfil e tipo de empresa.
-- **Kalliamvakou, Eirini** — *The economic impact of AI coding tools* (MIT Sloan Management Review, 2025). Análise econômica do ROI de IA em software — inclui modelos de cálculo e estudo de casos reais de 40 empresas.
+- **GitHub Research** — [*Quantifying GitHub Copilot's impact on developer productivity and happiness*](https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-on-developer-productivity-and-happiness/). Estudo controlado com 95 devs — 55% mais rápidos em tasks de geração, mas sem impacto significativo em debugging e refactoring. **Divergência:** o estudo real é de **2022** (GitHub Next), não 2024 como citado originalmente nesta nota.
+- **METR** — [*Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity*](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) (2025). **Divergência relevante:** o estudo real (RCT com 16 devs experientes, 246 tasks) encontrou o **oposto** do citado aqui — permitir uso de IA **aumentou** o tempo de conclusão em 19% (desenvolvedores ficaram mais lentos), não um ganho de 13-23%. Os próprios devs previam ganho de velocidade e continuaram achando (incorretamente) que tinham ganhado tempo mesmo depois do estudo mostrar o contrário.
+- **Stack Overflow Developer Survey** — [*AI section*](https://survey.stackoverflow.co/2025/ai). **Nota de nome:** publicada em dez/2025 com dados coletados mai-ago/2025; o Stack Overflow chama oficialmente de "2025 Developer Survey" (não "2026" como citado aqui), embora tenha circulado informalmente como referência para 2026 por ter saído no fim do ano.
+- **Kalliamvakou, Eirini** (com Sida Peng, Peter Cihon e Mert Demirer) — [*The Impact of AI on Developer Productivity: Evidence from GitHub Copilot*](https://arxiv.org/abs/2302.06590). **Divergência:** o paper real é de **2023**, publicado como preprint no **arXiv** (não na MIT Sloan Management Review como citado aqui) — experimento controlado onde devs com Copilot completaram uma tarefa de implementação de servidor HTTP 55,8% mais rápido que o grupo controle.

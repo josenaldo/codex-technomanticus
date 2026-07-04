@@ -1,7 +1,7 @@
 ---
 title: "Playbook de economia — checklist completo"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -302,12 +302,59 @@ Dev solo com $150/mês de uso: adotou só Fase 1 (prompts caching + .claudeignor
 **Caso 3 — Produto B2C com otimização em produção:**
 Startup com LLM em produto: aplicou Fases 0-3 ao longo de 2 meses. De $8.000/mês para $2.100/mês (-74%). O maior impacto foi na Fase 3 (semantic caching para perguntas frequentes de usuários), que sozinha reduziu 35% — diferente do padrão de ferramentas de dev onde caching de prompt tem maior impacto.
 
+*Por que a exceção faz sentido:* prompt caching (Fase 1) economiza quando o **mesmo prefixo estático** se repete entre chamadas — o system prompt de um agente de codificação, por exemplo. Semantic caching (Fase 3) economiza quando a **mesma pergunta em palavras diferentes** se repete entre usuários distintos — "como cancelo minha assinatura?" e "quero parar de pagar, como faço?" são semanticamente idênticas mas não compartilham prefixo algum. Um produto B2C com milhares de usuários fazendo variações da mesma dúvida tem muito mais desse segundo padrão do que do primeiro; um agente de codificação rodado por um único dev tem o oposto. A pergunta que decide qual técnica prioritizar não é "qual é mais avançada", mas "meu tráfego repete o *prefixo* ou repete a *intenção*?".
+
+Esse é o motivo pelo qual a tabela de "Quick reference" desta nota separa prompt caching (sintoma: cache hit rate baixo) de semantic caching (sintoma: mesma query cara repetida) — são a mesma ideia (evitar recomputar o que já foi computado), aplicada em duas camadas diferentes da pilha.
+
 **Caso 4 — ROI de implementação das fases:**
 Time calculou o custo de implementação de cada fase antes de executar:
 - Fase 0 (monitoramento): 4h de setup, $0 incremental — executar imediatamente
 - Fase 1 (quick wins): 8h total, payback em 2 semanas — executar agora
 - Fase 2 (estrutural): 20h total, payback em 1 mês — executar no próximo sprint
 - Fase 3 (ajuste fino): 40h total, payback em 3 meses — avaliar depois da Fase 2
+
+### Por que a ordem das fases não é arbitrária
+
+Pense no playbook como consertar um cano furado numa casa que também tem torneiras pingando. Trocar as torneiras (Fase 3 — ajuste fino) antes de vedar o cano furado (Fase 1 — quick wins) não é errado tecnicamente, mas é onde o esforço deveria ter ido primeiro: o cano furado é responsável pela maior parte da água perdida. É por isso que o playbook começa em "onde está o vazamento maior", não em "o que é mais fácil de mexer".
+
+O mecanismo por trás da regra dos 70% (Fase 0 → Fase 1) é simples: sem baseline, qualquer "melhora" observada depois de uma mudança pode ser ruído — variação natural de uso, não efeito da técnica. Um time que implementa prompt caching e vê o custo cair 30% numa semana de baixo uso vai atribuir esse ganho à técnica errada, e vai repetir o erro na próxima rodada de otimização. A Fase 0 existe para que a atribuição de causa seja possível.
+
+Pergunta que todo dev deveria se fazer antes de pular uma fase: *"Se essa técnica não funcionar, terei como saber?"* Se a resposta for não — porque não há baseline, não há métrica isolada, não há forma de separar o efeito da técnica do ruído — a fase anterior ainda não terminou.
+
+| Antipadrão | O que acontece | Correção |
+|---|---|---|
+| Pular Fase 0 e ir direto para caching | Impossível medir se caching ajudou ou se o mês só teve menos uso | Rodar 1 semana de baseline antes de qualquer mudança |
+| Aplicar Fases 1 e 2 na mesma semana | Ganho agregado sem saber qual técnica pesou mais | Uma fase por vez, com métrica isolada entre elas |
+| Tratar o playbook como checklist de uma vez só | Técnicas de Fase 3 implementadas sem o alicerce das Fases 1-2 sustentando o ganho | Reforçar o ciclo: Fase 4 (manutenção) reabre a Fase 0 a cada trimestre |
+
+Essa é a razão de o diagrama de fluxo no topo da nota ser um ciclo (Fase 4 → Fase 0), não uma linha reta: o playbook não termina, porque o padrão de uso do time muda e o baseline de ontem vira o ruído de amanhã.
+
+### Adaptando o playbook por perfil de time
+
+O playbook é o mesmo, mas o ritmo de execução varia bastante conforme o tamanho do time e a maturidade do produto. Três perfis comuns:
+
+**Dev solo / side project:**
+- Pula direto para Fase 1 se o volume de uso for baixo — o payback de monitoramento formal (Fase 0) demora mais que o próprio problema que ele resolveria.
+- `ccusage` sozinho já cobre o essencial de observabilidade; dashboards como Helicone/Langfuse costumam ser overkill.
+- Fases 2 e 3 raramente compensam — como no Caso 2, o esforço de engenharia excede o ganho absoluto em dólares.
+
+**Time pequeno (3-8 devs) com produto interno:**
+- Fase 0 vale o esforço porque o custo já é alto o suficiente para o ruído confundir decisões.
+- Fases 1-2 são o alvo principal — o Caso 1 é representativo desse perfil.
+- Fase 3 (semantic caching, batch API) só entra se houver um padrão de uso repetitivo identificável — não é ponto de partida.
+
+**Produto B2C em produção com milhares de usuários:**
+- Todas as fases valem a pena, incluindo Fase 3 — como no Caso 3, a escala de tráfego muda qual técnica tem maior ROI.
+- Governança (3.3) deixa de ser opcional: sem hard limits, um bug de loop em produção pode gerar uma fatura de 5 dígitos da noite para o dia.
+- A cadência de revisão da Fase 4 precisa ser mais curta (semanal, não mensal) porque o volume de dados torna mudanças de padrão visíveis mais rápido.
+
+O denominador comum entre os três perfis: a sequência de fases não muda, só a decisão de **até onde vale a pena ir**. Isso é o oposto de "aplicar o playbook inteiro sempre" — a Fase 0 existe justamente para informar essa decisão de parada.
+
+Pergunta prática para decidir onde parar: *"o esforço da próxima fase, em horas de engenharia, custa mais do que 3 meses do ganho que ela promete?"* Se sim, ainda não é hora de implementá-la — revisitar depois que o volume de uso crescer.
+
+Essa heurística de payback em 3 meses não é arbitrária: é o mesmo horizonte usado no Caso 4 para decidir a ordem de execução das fases, e serve como critério de corte tanto para "que fase implementar agora" quanto para "que fase ainda não vale a pena".
+
+Em resumo: o playbook não é uma receita única — é um funil de decisão que se adapta ao volume de tráfego e ao tamanho do time, mantendo a mesma ordem de prioridade (medir → quick wins → estrutural → ajuste fino) em qualquer escala.
 
 ## O que vem a seguir
 
@@ -343,10 +390,11 @@ Com o playbook implementado, os próximos passos são comparar os planos dispon�
 - [[04 - Monitoramento — ccusage, Langfuse, dashboards]] — Fase 0 em detalhe
 - [[19 - Planos e tiers — Max, Pro, API, Enterprise]] — decisão de plano após otimizar
 - [[20 - O futuro — tokens cada vez mais baratos]] — como o landscape vai mudar
+- [[Anatomia de Agents]] — as técnicas de compactação, sub-agentes e thinking budget deste playbook (2.1, 2.3, 2.4) atacam diretamente os padrões arquiteturais descritos nesse galho
 
 ## Fontes
 
-- **Anthropic** — *Best Practices for Token Efficiency* (docs.anthropic.com, 2026). Guia oficial de otimização de tokens — prompt caching, max_tokens, e padrões recomendados.
-- **Helicone** — *LLM Cost Optimization Guide* (helicone.ai/docs, 2026). Guia prático com dados reais de usuários — quais técnicas têm maior impacto em diferentes cenários de uso.
-- **Simon Willison** — *Token optimization strategies that actually work* (simonwillison.net, 2025). Análise prática com experimentos mensuráveis — expectativas realistas de impacto de cada técnica.
-- **Wilson, Alex** — *The LLM Cost Optimization Handbook* (leanpub.com, 2026). Livro técnico cobrindo as principais estratégias de otimização com exemplos de código e estudos de caso reais.
+- **Anthropic** — *Prompt caching* ([docs.anthropic.com/en/docs/build-with-claude/prompt-caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching), 2026). Guia oficial de otimização de tokens — prompt caching, max_tokens, e padrões recomendados.
+- **Helicone** — *Cost Tracking & Optimization* ([docs.helicone.ai/guides/cookbooks/cost-tracking](https://docs.helicone.ai/guides/cookbooks/cost-tracking), 2026). Guia prático com dados reais de usuários — quais técnicas têm maior impacto em diferentes cenários de uso.
+- **Simon Willison** — *Token optimization strategies that actually work* (simonwillison.net, 2025). URL não confirmada — a busca não localizou um artigo com esse título exato; o mais próximo verificado é a [tag "tokenization"](https://simonwillison.net/tags/tokenization/) do blog, que cobre o tema de forma dispersa em vários posts, não num único artigo.
+- **Wilson, Alex** — *The LLM Cost Optimization Handbook* (leanpub.com, 2026). URL não confirmada — busca no catálogo da Leanpub e na web não encontrou esse título nem esse autor; pode ser uma referência genérica/composta, não um livro específico localizável.

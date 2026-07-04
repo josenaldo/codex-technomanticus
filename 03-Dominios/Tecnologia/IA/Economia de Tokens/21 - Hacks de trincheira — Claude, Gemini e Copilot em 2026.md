@@ -309,6 +309,9 @@ Por que as três coisas juntas? O RTK comprime a saída das ferramentas (reduz i
 
 ## Tabela de decisão — motor por tipo de task (junho 2026)
 
+> [!warning] Caduca rápido
+> Nomes de modelo, preços e a divisão de tarefas por motor mudam a cada poucos meses neste mercado. A tabela abaixo reflete o estado de junho de 2026 — antes de aplicar, confira se o modelo citado ainda existe e se o motor recomendado ainda é o mais barato para a tarefa.
+
 | Task | Motor recomendado | Estratégia de economia |
 |---|---|---|
 | Refactor complexo, arquitetura | Claude Opus 4 | `/effort high` + `/compact` a cada 10 turns |
@@ -333,6 +336,9 @@ Por que as três coisas juntas? O RTK comprime a saída das ferramentas (reduz i
 > O benefício do cache de 24h aparece quando você usa o mesmo cache múltiplas vezes ao longo do dia. Um TTL de 1h (o mínimo) pode não valer o custo de escrita inicial se você só fizer 2-3 queries antes do TTL expirar. Calcular o breakeven: custo de escrita / (economia por query × número de queries esperadas) = duração mínima de TTL.
 
 ## Estado da arte — junho 2026
+
+> [!info] Caducidade — foto de um momento
+> Esta seção descreve o estado do mercado em junho de 2026 (modelos disponíveis, preços do Copilot em AI Credits desde 1º de junho de 2026, features de cada ferramenta). Modelos são descontinuados, preços mudam e features novas aparecem em questão de meses — trate como referência histórica, não como verdade permanente. Confira a documentação oficial de cada ferramenta (ver Fontes) para o estado atual.
 
 **Agent mode com controle granular:** Em 2026, todas as ferramentas de coding AI adicionaram controles granulares de autonomia — Copilot tem "max autonomy score" configurável, Claude Code tem o sistema de permissions por tool, Cursor tem "agent approval mode". O padrão emergente: agente pede aprovação antes de qualquer ação irreversível (deletar arquivo, modificar schema).
 
@@ -399,10 +405,11 @@ Esta nota cobre os hacks táticos de ferramentas específicas. A nota seguinte d
 - [[05 - Prompt caching na prática]] — mecânica de cache que o Claude Code e Gemini usam
 - [[08 - Compactação de histórico em agentes]] — `/compact` e `/clear` explicados em detalhe
 - [[22 - Caso real — Auditoria de 47M tokens em maio 2026]] — caso real onde esses hacks foram aplicados
+- [[Agentes de Codificação]] — Claude Code, Copilot e Gemini como agentes autônomos: arquitetura e mecânicas por trás dos hacks desta nota
 
 ## Fontes
 
-- **Anthropic** — *Claude Code Best Practices* (docs.anthropic.com/claude-code, 2026). Documentação oficial de otimização de uso do Claude Code — effort control, hooks, settings.
-- **Google** — *Gemini API Context Caching* (ai.google.dev/docs/caching, 2026). Documentação do sistema de cache persistente do Gemini — TTL, pricing, e exemplos de código.
-- **GitHub** — *Copilot AI Credits and Content Exclusion* (docs.github.com/copilot, 2026). Guia do modelo de billing por crédito e configuração de content exclusion no Copilot.
-- **oraios/serena** — *Serena: Aggressive Token Compression* (github.com/oraios/serena, 2026). Documentação e código da ferramenta Serena de compressão de fluxos de tokens.
+- **Anthropic** — [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices) (2026). Documentação oficial de otimização de uso do Claude Code — effort control, hooks, settings.
+- **Google** — [Context caching | Gemini API](https://ai.google.dev/gemini-api/docs/caching) (2026). Documentação do sistema de cache do Gemini — implicit vs. explicit caching, TTL, pricing, e exemplos de código.
+- **GitHub** — [Usage-based billing for individuals](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals) e [Excluding content from GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-content-exclusion/exclude-content-from-copilot) (2026). Guias oficiais do modelo de billing por AI Credits e da configuração de content exclusion no Copilot.
+- **oraios/serena** — [Serena: A powerful MCP toolkit for coding](https://github.com/oraios/serena) (2026). Repositório e documentação da ferramenta Serena de recuperação/edição semântica de código, com ganhos de eficiência de tokens.

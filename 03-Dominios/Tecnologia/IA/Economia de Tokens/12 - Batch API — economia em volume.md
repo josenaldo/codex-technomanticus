@@ -1,7 +1,7 @@
 ---
 title: "Batch API — economia em volume"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -385,6 +385,36 @@ Responda em JSON: {{"category": "...", "urgency": "...", "sentiment": "...", "ac
 > [!warning] Custom IDs não únicos no batch
 > Se duas requests no mesmo batch têm o mesmo `custom_id`, você não consegue distinguir os resultados. Use IDs únicos (UUID, hash do conteúdo, ou caminho do arquivo) — nunca índices sequenciais sem contexto.
 
+**Código com falha — `custom_id` duplicado colide resultados silenciosamente:**
+
+```python
+# ❌ BUG: custom_id derivado só do nome do arquivo, sem o caminho completo.
+# Dois arquivos chamados "utils.js" em pastas diferentes colidem.
+files = list(source_dir.glob("**/*.js"))
+
+requests = [
+    {
+        "custom_id": f.name,  # "utils.js" para TODOS os arquivos utils.js do repo
+        "messages": [{
+            "role": "user",
+            "content": f"Migre este código para TypeScript.\n\n```js\n{f.read_text()}\n```"
+        }],
+        "max_tokens": 4096
+    }
+    for f in files
+]
+
+results = run_batch(requests, "migration_results.jsonl")
+# Se src/api/utils.js e src/web/utils.js coexistem, o dict `results` só guarda
+# o ÚLTIMO resultado recebido sob a chave "utils.js" — o outro é sobrescrito
+# em silêncio, sem erro, sem warning. Você aplica o código migrado errado
+# (ou o mesmo código duas vezes) em dois arquivos distintos.
+```
+
+O corretivo é o `custom_id=str(f.relative_to(source_dir))` já usado em
+`migrate_codebase_batch` (Pattern 2 acima) — o caminho relativo é único mesmo quando
+o nome do arquivo se repete em pastas diferentes.
+
 > [!warning] Limite de tamanho do batch
 > Anthropic permite até 10.000 requests por batch; OpenAI, até 50.000. Mas batches muito grandes têm latência proporcional. Para workloads de 100k+ itens, particione em múltiplos batches de 5-10k e submeta em paralelo. Monitore cada batch individualmente e consolide os resultados.
 
@@ -459,8 +489,7 @@ Com batch você economiza 50% no preço da API para workloads assíncronos. Mas 
 
 ## Fontes
 
-- **Anthropic** — *Message Batches API* (docs.anthropic.com, 2026). Documentação oficial da Batch API da Anthropic, incluindo limites, pricing, e exemplos de código.
-- **OpenAI** — *Batch API Reference* (platform.openai.com, 2026). Referência da Batch API da OpenAI com exemplos de JSONL e gestão de erros.
-- **Google** — *Batch prediction for Gemini* (cloud.google.com/vertex-ai/docs, 2026). Documentação do processamento em batch no Vertex AI para modelos Gemini.
-- **LangChain** — *Batch processing with LangChain* (docs.langchain.com, 2025). Padrões de batch em pipelines LangChain — inclui paralelismo e tratamento de erros em escala.
-- **Hamel Husain** — *When to use Batch APIs for LLMs* (hamel.ai, 2025). Análise de custo-benefício de batch vs síncrono por tipo de workload — com dados reais e fórmulas para calcular o ponto de break-even.
+- **Anthropic** — [Message Batches API](https://docs.anthropic.com/en/api/creating-message-batches) (docs.anthropic.com, 2026). Documentação oficial da Batch API da Anthropic, incluindo limites, pricing, e exemplos de código.
+- **OpenAI** — [Batch API Guide](https://platform.openai.com/docs/guides/batch) (platform.openai.com, 2026). Guia oficial da Batch API da OpenAI com exemplos de JSONL e gestão de erros.
+- **Google** — [Batch predictions — Vertex AI](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/maas/capabilities/batch-prediction) (docs.cloud.google.com, 2026). Documentação do processamento em batch no Vertex AI para modelos Gemini.
+- **LangChain** — [Runnable.batch — API Reference](https://reference.langchain.com/python/langchain-core/runnables/base/Runnable/batch) (reference.langchain.com, 2025). Referência do método `batch()` em pipelines LangChain — controle de `max_concurrency` e reordenação de resultados.

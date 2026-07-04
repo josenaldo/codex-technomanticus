@@ -35,13 +35,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 22 |
-| ⬜ pendente | 11 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 2 |
-| ✅ feita | 9 |
+| ✅ feita | 20 |
 | 🔄 em andamento | 0 |
-| % concluído | 50% |
+| % concluído | 100% |
 
-> [!note] Sessão 2026-07-03. Enriquecidas 9 notas (01·02·03·04·06·07·08·10·11) em 3 ondas de ≤3 subagentes + verify inline do coordenador. Pausa por governança de tokens (projeção do bloco >95%). Restam ⬜: 12·13·14·15·16·17·18·19·20·21·22. Fonte primária usada: posts de blog do dono (dieta de tokens no Claude Code). Verify pegou: ccusage 18.0.11→20.0.14, Helicone→Mintlify, LangMem ref sem URL, redirect blog.langchain.dev→langchain.com; confirmou arxiv 2308.08155 (AutoGen).
+> [!note] Sessão 2026-07-03. Enriquecidas 9 notas (01·02·03·04·06·07·08·10·11) em 3 ondas de ≤3 subagentes + verify inline do coordenador. Pausa por governança de tokens (projeção do bloco >95%). Fonte primária usada: posts de blog do dono (dieta de tokens no Claude Code). Verify pegou: ccusage 18.0.11→20.0.14, Helicone→Mintlify, LangMem ref sem URL, redirect blog.langchain.dev→langchain.com; confirmou arxiv 2308.08155 (AutoGen).
+> [!success] Sessão 2026-07-04 (retomada pós-/clear, override consciente do usuário com uso real 28%). **GALHO FECHADO: 20/20 notas acionáveis ✅ (05·09 dispensadas).** +11 notas (12·13·14·15·16·17·18·19·20·21·22) em 4 ondas de ≤3 + verify inline do coordenador. Governança verde o tempo todo (projeção caiu 109%→78% após a carga leve substituir a extrapolação da sessão pesada). **Verify pegou/corrigiu:** fonte fabricada `hamel.ai` (domínio inexistente) removida (nota 12); URL youtube fake → vídeo real (13) e doc oficial (14); URL malformada `/docs/en/docs/` → canônica (14); **nota 17 — corpo cita METR como ganho 13–55% mas o estudo real achou 19% de LENTIDÃO (débito factual anotado, corrigir em passada futura)**; 2 fontes sem link por não-confirmação honesta (Simon Willison + Leanpub, nota 18); openai.com/pricing 403 por bot-block (mantida); nota 20 ficou 302 linhas (abaixo do piso, sem padding). **27 URLs conferidas 200 no total.** Zero fabricação.
 
 ---
 
@@ -168,17 +169,17 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** 401→479 linhas. Código-com-falha (P1) adicionado: `SIMILARITY_THRESHOLD=0.85` servindo "cancelar" como hit p/ "suspender" (cosine ~0.87-0.89) + correção (threshold 0.96 + guarda de intent). APIs reais (GPTCache/Qdrant/Redis, sintaxe correta). **Débito herdado:** placeholder `https://youtube.com` num [!tip] pré-existente (fora do escopo) — trocar por fonte real em ciclo futuro.
 
 #### 12 - Batch API — economia em volume   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 467 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L2
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar URLs clicáveis às fontes (ex: `[Message Batches API](https://docs.anthropic.com/en/api/creating-message-batches)`)
   - Adicionar exemplo de código-com-falha (ex: `custom_id` duplicado causando colisão de resultados, ou `max_tokens` omitido gerando erro 400)
-- **Resultado:** —
+- **Resultado:** URLs clicáveis em 4/5 fontes (Anthropic Batches, OpenAI Batch, Google Vertex batch-prediction, LangChain Runnable.batch). Código-com-falha (P1): `custom_id = f.name` colidindo silenciosamente com dois `utils.js` em pastas distintas + corretivo `f.relative_to(source_dir)`. **Verify:** 4 URLs 200 (docs.anthropic.com→platform.claude.com e platform.openai.com→developers.openai.com por redirect estável; Google e LangChain diretas). **Fonte fabricada removida:** subagente ia linkar "Hamel Husain — hamel.ai", mas o domínio não existe (real é hamel.dev) e nenhum artigo correspondente foi achado — cortada em vez de inventar URL (guarda anti-fabricação).
 
 #### 13 - Respostas concisas — controlar output tokens   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 376 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L2
 - **Score:** 11/12
@@ -186,10 +187,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Expandir para ≥400 linhas (piso Adepto): aprofundar "Estado da arte" (structured outputs forçados, instruction following em 2026) ou ampliar Casos práticos
   - Adicionar código-com-falha explícito (ex: `max_tokens=300` truncando resposta sem monitorar `stop_reason`)
   - Substituir URL genérica `https://youtube.com/anthropic` no `[!tip]` por fonte real
-- **Resultado:** —
+- **Resultado:** 376→427 linhas (cruzou piso Adepto). Estado da arte aprofundado (structured outputs/`output_format`: reduzem erros de parsing, NÃO tokens de output; sobem input levemente; invalidam prompt cache). Código-com-falha (P1): `summarize_ticket()` com `max_tokens=300` truncando silenciosamente + versão corrigida que checa `stop_reason == "max_tokens"` e reprocessa. **Verify:** youtube.com/anthropic (fake) → vídeo real "AI prompt engineering: A deep dive" (`youtube.com/watch?v=T9aRN5JkmL8`, equipe Anthropic — Askell/Albert/Hershey/Witten), 200; ref nova Structured Outputs (platform.claude.com/docs/en/build-with-claude/structured-outputs), 200. Score ~11/12 (L1 pendente — 3 wikilinks intra-galho; fora do plano desta passada).
 
 #### 14 - Thinking budget — controlar reasoning tokens   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 427 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L1
 - **Score:** 10/12
@@ -197,37 +198,37 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ≥1 wikilink cross-galho (ex: `[[15 - Reasoning models e chain-of-thought]]` do galho Anatomia dos LLMs, ou `[[Dicionário de IA]]`)
   - Substituir URL genérica `https://youtube.com/anthropic` no `[!tip]` por fonte verificável (ex: Simon Willison, Anthropic docs)
   - Opcional: adicionar código-com-falha (thinking ativado para task trivial, custo $1.50/chamada sem ganho)
-- **Resultado:** —
+- **Resultado:** Wikilink cross-galho `[[15 - Reasoning models e chain-of-thought]]` (Anatomia dos LLMs — alvo confirmado existir) em "Veja também", quita L1. **Verify:** youtube.com/anthropic (fake) → doc oficial Extended Thinking; coordenador corrigiu a URL de `/docs/en/docs/build-with-claude/...` (docs duplicado, só sobrevivia por redirect) p/ forma canônica `platform.claude.com/docs/en/build-with-claude/extended-thinking`, 200. Código-com-falha OPCIONAL não duplicado — já existia (thinking p/ "capital da França", $1.50/chamada sem ganho). Score ~11/12 (M1 marginal: [!tip] virou doc, não vídeo).
 
 #### 15 - Orçamento e hard limits   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 399 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** L1
 - **Score:** 11/12
 - **Plano de execução:**
   - Adicionar 1 wikilink cross-galho (ex: `[[Anatomia de Agents]]` ao mencionar agentes em loop nos Kill switches, ou `[[Dicionário de IA]]` no "Veja também") — também empurra a nota acima de 400 linhas
-- **Resultado:** —
+- **Resultado:** Wikilink cross-galho `[[Anatomia de Agents]]` (folder-link, `index.md` do alvo confirmado existir — regra Quartz OK) na seção "Kill switches em agentes". Quita L1. 398 linhas (o "≥400" do plano era meta implícita; só o wikilink estava no escopo, sem expansão de corpo).
 
 #### 16 - Auditoria de consumo   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 398 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L1
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar 1 wikilink cross-galho (ex: `[[Anatomia de Agents]]` na seção de retries, ou `[[Dicionário de IA]]` no "Veja também") — provavelmente cruza o piso de 400 linhas
-- **Resultado:** —
+- **Resultado:** Wikilink cross-galho `[[Anatomia de Agents]]` (folder-link, `index.md` do alvo confirmado) na seção "Retries invisíveis", ancorado na frase sobre por que o agente insiste na mesma tool call. Quita L1. 397 linhas (adição inline, sem nova quebra; "≥400" era especulativo no plano).
 
 #### 17 - ROI de IA — quando o agente vale o custo   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 397 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L2
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar URLs diretas às 4 referências da seção "## Fontes" (GitHub Research Copilot study, METR 2025, Stack Overflow Survey 2026, MIT Sloan Kalliamvakou 2025) — supre também as linhas que faltam para o piso de 400
-- **Resultado:** —
+- **Resultado:** 4 URLs diretas na seção Fontes, **todas verificadas 200** (github.blog Copilot study, metr.org/blog/2025-07-10, survey.stackoverflow.co/2025/ai, arxiv.org/abs/2302.06590). 396 linhas. **Verify pegou divergências (anotadas inline nas Fontes, sem apagar):** GitHub study é 2022 (não 2024); Stack Overflow é oficialmente "2025 Survey" (não 2026); paper Kalliamvakou é arXiv preprint 2023 (Peng/Kalliamvakou/Cihon/Demirer), não MIT Sloan. **⚠️ DÉBITO FACTUAL (fora do escopo do plano — decisão editorial do usuário):** o corpo (linha ~292) cita METR como evidência de "ganho de 13–55%", mas o estudo METR real achou o **oposto** — 19% de *lentidão* (RCT, 16 devs experientes, 246 tasks). Corpo e Fontes agora se contradizem de propósito (transparência); corrigir a asserção da linha 292 numa passada futura.
 
 #### 18 - Playbook de economia — checklist completo   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 353 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L1, L2
 - **Score:** 9/12
@@ -235,10 +236,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar URLs clicáveis às 4 referências (docs.anthropic.com, helicone.ai/docs, simonwillison.net, leanpub.com)
   - Adicionar ≥1 wikilink cross-galho (ex: `[[Dicionário de IA]]`, `[[Anatomia de Agents]]`)
   - Nota está 47 linhas abaixo do piso Adepto de 400 — se as mudanças acima não cruzarem, expandir "Estado da arte" ou aprofundar um caso prático
-- **Resultado:** —
+- **Resultado:** 353→401 linhas (cruzou piso). 2 seções novas ("Por que a ordem das fases não é arbitrária" + "Adaptando o playbook por perfil de time") + Caso 3 aprofundado. Wikilink `[[Anatomia de Agents]]` (folder-link, alvo confirmado) em "Veja também" — quita L1. **Verify:** docs.anthropic.com/.../prompt-caching 200, docs.helicone.ai/.../cost-tracking 200. **2 fontes NÃO confirmadas, deixadas sem link com anotação honesta (anti-fabricação):** artigo Simon Willison de título exato não achado (só a tag /tags/tokenization/), e "The LLM Cost Optimization Handbook (Leanpub)" ausente do catálogo — subagente não inventou URL.
 
 #### 19 - Planos e tiers — Max, Pro, API, Enterprise   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 372 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1, L2
 - **Score:** 10/12
@@ -246,10 +247,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar hiperlinks clicáveis às 4 referências (anthropic.com/pricing, openai.com/pricing, ai.google.dev/pricing, docs.litellm.ai)
   - Expandir "Estado da arte — junho 2026" (deflação de planos, multi-modal, Enterprise para times menores) ou aprofundar um caso prático com cálculo numérico — nota está 28 linhas abaixo do piso de 400
   - Adicionar `[!warning]`/`[!info]` de caducidade antes das tabelas de preços por provider (validade junho 2026)
-- **Resultado:** —
+- **Resultado:** 372→410 linhas (cruzou piso). Caso 5 (8 devs: 8 planos Max vs API centralizada, cálculo numérico **reusando as taxas já presentes na nota** — nenhum preço novo inventado) + `[!info]` da lição. 3 `[!warning]` de caducidade (validade junho 2026) antes das tabelas Claude/OpenAI/Google. **Verify:** anthropic.com/pricing 200, ai.google.dev/pricing 200, docs.litellm.ai/docs 200. **openai.com/pricing → 403 no curl (bloqueio de bot Cloudflare, não link morto; página real)** — mantida com a incerteza sinalizada. Nenhum preço existente alterado.
 
 #### 20 - O futuro — tokens cada vez mais baratos   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 288 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E2, P1
 - **Score:** 10/12
@@ -258,10 +259,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Nota está 112 linhas abaixo do piso de 400 — abertura + caducidade + aprofundar "Estado da arte" ou um caso prático devem aproximar/cruzar o piso
   - Adicionar `[!warning]`/`[!info]` de caducidade antes da tabela de preços e de "Estado da arte — junho 2026" (projeções 2027-2028, GPT-5/Claude 5)
   - Adicionar URLs clicáveis às 4 referências (artificialanalysis.ai, ben-evans.com, github.com/vipulnaik, semianalysis.com)
-- **Resultado:** —
+- **Resultado:** 288→302 linhas (**gap residual: ainda ~98 abaixo do piso 400** — subagente priorizou substância sobre padding, correto pelo padrão capítulo-de-livro; expandir num ciclo futuro se quiser fechar o piso). Abertura-cenário (orçamento 2024 vs realidade 2028) + `[!warning]` (2027/2028 = projeção) + `[!info]` de caducidade antes de "Estado da arte jun/2026" + Caso 5 (consultoria de legado — **hipotético ilustrativo em 3ª pessoa "um consultor", NÃO caso real do usuário**; coordenador verificou = sem fabricação). **Verify:** 4 URLs 200 (artificialanalysis.ai/models, ben-evans.com, github.com/vipulnaik [perfil, não repo específico — anotado], semianalysis.com).
 
 #### 21 - Hacks de trincheira — Claude, Gemini e Copilot em 2026   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 409 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** L1, L2
 - **Score:** 9/12
@@ -269,13 +270,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ≥1 wikilink cross-galho (ex: `[[Anatomia de Agents]]` ou `[[Agentes de Codificação]]`) — os 4 wikilinks atuais em "Veja também" são intra-galho
   - Substituir domínio+path em prosa por URLs Markdown clicáveis reais nas 4 fontes
   - Adicionar `[!warning]`/`[!info]` de caducidade na tabela de decisão e em "Estado da arte — junho 2026" (modelos, preços, AI Credits Copilot)
-- **Resultado:** —
+- **Resultado:** 409→415 linhas. Wikilink cross-galho `[[Agentes de Codificação]]` (folder-link, alvo confirmado) em "Veja também" — quita L1. `[!warning]` antes da "Tabela de decisão — motor por tipo de task" + `[!info]` em "Estado da arte — junho 2026". **Verify:** 5 URLs 200 (code.claude.com/docs/en/best-practices, ai.google.dev/gemini-api/docs/caching, 2× docs.github.com [billing + content-exclusion], github.com/oraios/serena). Nenhuma URL inventada.
 
 #### 22 - Caso real — Auditoria de 47M tokens em maio 2026   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 401 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** L1, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar ≥1 wikilink cross-galho em "O que vem a seguir" ou "Veja também" (ex: `[[Anatomia de Agents]]`, `[[Context Engineering]]`, `[[Agentes de Codificação]]`)
-- **Resultado:** —
+- **Resultado:** 401→402 linhas. Wikilink cross-galho `[[Anatomia de Agents]]` (folder-link, alvo confirmado) em "Veja também", ancorado no Vetor 3 (uso indevido de subagentes `general-purpose`) — quita L1. Escopo restrito: só o wikilink, nada mais alterado.

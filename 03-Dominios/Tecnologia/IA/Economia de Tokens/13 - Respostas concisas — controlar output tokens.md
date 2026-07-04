@@ -1,7 +1,7 @@
 ---
 title: "Respostas concisas — controlar output tokens"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -179,6 +179,54 @@ def call_with_calibrated_tokens(task_type: str, messages: list) -> str:
 > [!warning] max_tokens muito baixo trunca a resposta sem aviso claro ao usuário
 > Se `max_tokens=200` e o modelo precisa de 350 para completar o raciocínio, ele para abruptamente no meio. O campo `stop_reason == "max_tokens"` indica isso, mas a resposta incompleta pode ser usada silenciosamente. Sempre monitore `stop_reason` em produção e alertar quando ≠ "end_turn".
 
+O código abaixo é o antipadrão mais comum em produção — parece inofensivo porque "funciona" na maioria das chamadas, e só quebra silenciosamente quando o modelo precisa de mais espaço do que o previsto:
+
+```python
+# ❌ Código-com-falha: não monitora stop_reason
+def summarize_ticket(ticket_text: str) -> str:
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=300,  # calibrado para "resumo curto" — mas sem margem de segurança
+        messages=[{"role": "user", "content": f"Resuma este ticket: {ticket_text}"}]
+    )
+    # Bug: extrai o texto e retorna direto, sem checar se a geração foi truncada
+    return response.content[0].text
+
+# Ticket longo e complexo chega no pipeline:
+resumo = summarize_ticket(ticket_muito_detalhado)
+# response.stop_reason == "max_tokens" (o modelo precisava de ~420 tokens)
+# resumo termina no meio de uma frase: "O cliente relatou que o erro ocorre
+#  quando o sistema tenta processar pagamentos acima de R$ 500 e a inte"
+#
+# Esse resumo truncado é salvo no banco, exibido ao atendente, e vira
+# a base de uma decisão — sem que ninguém saiba que está incompleto.
+```
+
+A correção não é aumentar `max_tokens` cegamente — é fechar o loop de observabilidade:
+
+```python
+# ✅ Corrigido: monitora stop_reason e trata o truncamento explicitamente
+def summarize_ticket(ticket_text: str) -> str:
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=300,
+        messages=[{"role": "user", "content": f"Resuma este ticket: {ticket_text}"}]
+    )
+
+    if response.stop_reason == "max_tokens":
+        logger.warning(
+            "summarize_ticket: resposta truncada em 300 tokens; "
+            "considerar aumentar o limite ou dividir o ticket."
+        )
+        # Decisão explícita: reprocessar com mais espaço, ou marcar
+        # o resumo como parcial para quem for consumir o dado.
+        return summarize_ticket_retry(ticket_text, max_tokens=600)
+
+    return response.content[0].text
+```
+
+A diferença entre os dois blocos não é o valor de `max_tokens` — é que o segundo trata `stop_reason` como um sinal de controle, não como um campo que existe na resposta mas nunca é lido.
+
 ### 4. Pedidos diferenciados por tipo de use case
 
 A instrução de concisão deve ser calibrada ao uso:
@@ -301,7 +349,10 @@ def stream_with_limit(prompt: str, char_limit: int = 500) -> str:
 
 **Instruction following melhorou drasticamente:** Modelos de 2026 seguem instruções de formato com muito mais fidelidade que os de 2024. "Retorne apenas JSON" hoje produz JSON limpo sem preâmbulo em 98%+ dos casos em Claude Sonnet — em 2024, a taxa era de 70-80%. Isso torna as técnicas de format constraint mais confiáveis.
 
-**Structured outputs como feature nativa:** Anthropic, OpenAI e Google suportam schemas JSON como parâmetro de API — o modelo é forçado a produzir JSON válido conforme o schema, sem precisar de instrução no prompt. Isso elimina edge cases de prosa no lugar de JSON e reduz output ao mínimo do schema.
+**Structured outputs como feature nativa:** a API da Anthropic (`output_format`, disponível para Claude Sonnet 4.5+ e Opus 4.5+) usa *constrained decoding* — o schema JSON é compilado numa grammar que restringe os tokens candidatos durante a geração, não uma instrução de prompt que o modelo pode ignorar. OpenAI e Google têm mecanismos equivalentes.
+
+> [!question]- Structured outputs reduz o output ou só garante o formato?
+> As duas coisas parecem a mesma, mas não são. A documentação oficial da Anthropic é explícita: o ganho principal é **confiabilidade** (zero erros de parsing, zero retries por schema inválido), não economia de tokens. Na prática, `output_format` costuma até **aumentar levemente o input** — a API injeta um system prompt automático explicando o schema esperado — e **invalida o prompt cache** da conversa quando o formato muda entre turnos. A economia de output vem de você já não precisar escrever instruções de formato manuais no prompt (que syntax constraints fariam de qualquer forma); a ferramenta certa para "gerar menos tokens" continua sendo `max_tokens` calibrado + instrução de concisão, não `output_format` sozinho.
 
 **Output tokens como foco de otimização:** Em 2025-2026, a comunidade descobriu que input optimization foi sobreenfatizada em relação a output. Com modelos cada vez mais capazes de responder com qualidade a prompts concisos, a fronteira de otimização se moveu para output — que é 4-5x mais caro por token e mais controlável via instrução.
 
@@ -353,12 +404,12 @@ Output tokens são uma dimensão do custo. Outra é o **reasoning** — a cadeia
 | Reformulação | Rephrasing / Question rephrasing | Repetir a pergunta do usuário antes de responder |
 | Few-shot de formato | Format few-shot | Exemplos de output conciso para guiar o modelo |
 
-> [!tip] Veja: Prompt Engineering for Cost Efficiency
-> **Canal:** Anthropic YouTube | **Duração:** ~25min | **Idioma:** EN
+> [!tip] Veja: AI prompt engineering: A deep dive
+> **Canal:** Anthropic | **Idioma:** EN | **Participantes:** Amanda Askell, Alex Albert, David Hershey, Zack Witten
 >
-> Talk técnica da equipe de prompt engineering da Anthropic sobre como instruir o modelo a ser conciso sem perder qualidade. Demonstra ao vivo o impacto de diferentes instruções de formato em output real, incluindo format constraints, few-shot de concisão, e o uso de structured outputs via API.
+> Conversa da equipe de prompt engineering da Anthropic sobre como refinam prompts na prática — inclui a lógica de instruir o modelo com o que NÃO fazer, o uso de personas e metáforas, e como calibram formato de resposta para diferentes casos de uso. Não é focada só em concisão, mas dá o contexto de como a própria Anthropic pensa esse tipo de instrução.
 >
-> 🎬 [Assistir no YouTube](https://youtube.com/anthropic)
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=T9aRN5JkmL8)
 
 ## Veja também
 
@@ -369,6 +420,7 @@ Output tokens são uma dimensão do custo. Outra é o **reasoning** — a cadeia
 ## Fontes
 
 - **Anthropic** — *Prompt Engineering Guide* (docs.anthropic.com, 2026). Seção sobre concisão e structured outputs — inclui exemplos de format constraints e impacto em qualidade.
+- **Anthropic** — *Structured Outputs* (platform.claude.com/docs, 2026). Documentação oficial do parâmetro `output_format` e do `strict: true` em tool use — detalha o mecanismo de constrained decoding, modelos suportados, e o efeito (leve aumento de input, invalidação de cache) que a feature tem sobre tokens.
 - **OpenAI** — *Structured Outputs* (platform.openai.com, 2026). Documentação da feature de JSON schema forçado via parâmetro de API — substitui instruções de formato no prompt.
 - **Lilian Weng** — *Prompt Engineering* (lilianweng.github.io, 2023). Survey abrangente de técnicas de prompting — inclui seção sobre controle de formato de output com análise de efetividade comparada.
 - **Simon Willison** — *Everything I've learned about prompting LLMs* (simonwillison.net, 2025). Análise empírica de técnicas de instrução de formato em diferentes modelos — com exemplos de before/after e medições de token count.

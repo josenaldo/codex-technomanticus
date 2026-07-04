@@ -392,6 +392,7 @@ O próximo ciclo de aprendizado neste domínio não virá de uma nota nova — v
 - [[16 - Auditoria de consumo]] — workflow genérico de auditoria; esta nota é uma aplicação
 - [[18 - Playbook de economia — checklist completo]] — checklist mestre que organiza estes fixes
 - [[21 - Hacks de trincheira — Claude, Gemini e Copilot em 2026]] — hacks táticos que previnem estes vetores
+- [[Anatomia de Agents]] — entender a anatomia de subagentes ajuda a diagnosticar o Vetor 3 (uso indevido de `general-purpose`)
 
 ## Fontes
 

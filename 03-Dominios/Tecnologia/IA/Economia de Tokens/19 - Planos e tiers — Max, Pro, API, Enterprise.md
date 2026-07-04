@@ -1,7 +1,7 @@
 ---
 title: "Planos e tiers — Max, Pro, API, Enterprise"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -60,6 +60,9 @@ flowchart TD
 
 ## Claude (Anthropic) — junho 2026
 
+> [!warning] Validade: junho 2026
+> Preços e tiers mudam com frequência — a Anthropic já revisou os limites do Max mais de uma vez desde o lançamento. Confira a [página oficial de pricing](https://www.anthropic.com/pricing) antes de decidir; os valores abaixo são um retrato do momento, não uma garantia.
+
 | Plano | Preço | Capacidade | Modelos disponíveis | Notas |
 |---|---|---|---|---|
 | **Free** | $0 | Muito limitado | Haiku, Sonnet (limitado) | Bom para experimentar |
@@ -77,6 +80,9 @@ flowchart TD
 
 ## OpenAI — junho 2026
 
+> [!warning] Validade: junho 2026
+> A OpenAI reorganiza tiers com regularidade (Plus, Pro, Go, Business já mudaram de composição mais de uma vez). Confira a [página oficial de pricing](https://openai.com/pricing) antes de decidir.
+
 | Plano | Preço | Modelos | Diferencial |
 |---|---|---|---|
 | **Free** | $0 | GPT-4o-mini | Muito limitado |
@@ -86,6 +92,9 @@ flowchart TD
 | **Enterprise** | Contrato | Todos | Compliance, data retention controls |
 
 ## Google (Gemini) — junho 2026
+
+> [!warning] Validade: junho 2026
+> O Gemini API tem free tier generoso que muda de limites conforme a capacidade de inferência do Google evolui. Confira a [página oficial de pricing](https://ai.google.dev/pricing) antes de decidir.
 
 | Plano | Preço | Modelos | Diferencial |
 |---|---|---|---|
@@ -315,6 +324,36 @@ Startup com 1.000 usuários não poderia usar plano flat-rate — o custo por us
 **Caso 4 — Enterprise para compliance:**
 Empresa de healthtech com requisitos HIPAA precisava de: data residency (dados não saem da região), audit logs completos, SLA de 99.9%, e controle de quais modelos são usados. Nenhum plano de consumidor atendia — Enterprise foi o único caminho, com custo 3x maior que API mas com compliance e suporte garantidos.
 
+**Caso 5 — Time de 8 devs decidindo entre 8 planos Max e API centralizada:**
+
+Por que esse caso é diferente dos anteriores? Porque em times pequenos-médios (6-10 devs) a decisão não é óbvia como em times de 3 (planos individuais) ou 15+ (Enterprise) — é a faixa cinzenta onde o cálculo por pessoa importa.
+
+Um time de 8 devs mediu o uso real (via ccusage) ao longo de um mês e encontrou o seguinte mix, aplicando as mesmas taxas de referência já usadas nos cálculos acima (Sonnet $3/$15 por MTok input/output; Opus $15/$75 por MTok):
+
+```
+Perfil do time (8 devs, uso medido):
+  3 devs "heavy" (uso tipo Max 5x): ~10M tokens Sonnet + 3M tokens Opus/mês cada
+  3 devs "regular" (uso tipo Pro):   ~2M tokens Sonnet + 0.3M tokens Opus/mês cada
+  2 devs "leve" (uso ocasional):     ~0.5M tokens Sonnet/mês cada, sem Opus
+
+Opção A — 8 planos individuais:
+  3 × Max 5x ($100)  = $300
+  3 × Pro ($20)      = $60
+  2 × Pro ($20)      = $40   (mesmo com uso leve, não há tier menor com Opus ocasional)
+  Total: $400/mês
+
+Opção B — API centralizada com spending limit por dev:
+  3 heavy:   (10M × 0.8×3 + 10M × 0.2×15) + (3M × 0.8×15 + 3M × 0.2×75) ≈ $54 + $81 = $135/dev × 3 = $405
+  3 regular: (2M × 0.8×3 + 2M × 0.2×15) + (0.3M × 0.8×15 + 0.3M × 0.2×75) ≈ $10.8 + $8.1 = $18.9/dev × 3 ≈ $57
+  2 leve:    (0.5M × 0.8×3 + 0.5M × 0.2×15) ≈ $2.7/dev × 2 ≈ $5.4
+  Total API: ~$467/mês
+```
+
+O resultado surpreende quem assume que "API sempre sai mais barato para times": aqui os planos individuais ($400) saem mais baratos que API centralizada (~$467), porque os 3 devs heavy usam Opus pesado o bastante para o Max 5x compensar — e os 2 devs leves não geram economia suficiente na API pra compensar o overhead dos heavy.
+
+> [!info] O que isso ensina
+> Não existe resposta universal por tamanho de time — o mix de modelos (quanto de Opus vs. Sonnet) pesa mais que o número de pessoas. Um time de 8 devs majoritariamente Sonnet inverteria essa conta facilmente a favor da API. **Sempre recalcule com dados reais do seu time**, não com a heurística de "times grandes = API".
+
 ## Checklist de decisão
 
 - [ ] Calcular uso médio mensal atual (tokens por tipo: input, output, thinking) com dados reais
@@ -365,7 +404,7 @@ Com o plano escolhido e otimizações implementadas, a última perspectiva é a 
 
 ## Fontes
 
-- **Anthropic** — *Pricing Page* (anthropic.com/pricing, 2026). Tabela oficial de preços de planos e API da Anthropic — inclui comparativo de features por tier.
-- **OpenAI** — *Pricing Page* (openai.com/pricing, 2026). Tabela oficial de planos e API da OpenAI.
-- **Google** — *Gemini API Pricing* (ai.google.dev/pricing, 2026). Pricing do Gemini API e comparativo de planos Workspace/Advanced.
-- **LiteLLM** — *Provider Comparison* (docs.litellm.ai, 2026). Interface unificada para múltiplos providers — facilita comparação de custo e migração entre providers.
+- **Anthropic** — *Pricing Page* ([anthropic.com/pricing](https://www.anthropic.com/pricing), 2026). Tabela oficial de preços de planos e API da Anthropic — inclui comparativo de features por tier.
+- **OpenAI** — *Pricing Page* ([openai.com/pricing](https://openai.com/pricing), 2026). Tabela oficial de planos e API da OpenAI.
+- **Google** — *Gemini API Pricing* ([ai.google.dev/pricing](https://ai.google.dev/pricing), 2026). Pricing do Gemini API e comparativo de planos Workspace/Advanced.
+- **LiteLLM** — *Provider Comparison* ([docs.litellm.ai](https://docs.litellm.ai/docs/), 2026). Interface unificada para múltiplos providers — facilita comparação de custo e migração entre providers.

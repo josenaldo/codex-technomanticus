@@ -1,7 +1,7 @@
 ---
 title: "Thinking budget — controlar reasoning tokens"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 progress: backlog
 status: growing
@@ -404,18 +404,19 @@ Com output tokens e thinking tokens sob controle, o próximo passo é gerenciar 
 | Modelo de raciocínio | Reasoning model | Modelo com capacidade de extended thinking |
 | Raciocínio adaptativo | Adaptive reasoning | Sistema que ajusta o budget por complexidade |
 
-> [!tip] Veja: Extended Thinking — When to Use It and When Not To
-> **Canal:** Anthropic | **Duração:** ~18min | **Idioma:** EN
+> [!tip] Leia: Extended Thinking — documentação oficial
+> **Fonte:** Anthropic (platform.claude.com) | **Idioma:** EN
 >
-> Apresentação técnica da equipe da Anthropic sobre o mecanismo de extended thinking — como funciona internamente, em que tipos de problema melhora a qualidade, e os tradeoffs de custo vs benefício. Inclui benchmarks em diferentes categorias de task mostrando quando o ganho de qualidade não justifica o custo adicional.
+> Documentação oficial do extended thinking — parâmetro `budget_tokens`, controle de exibição (`summarized`/`omitted`), streaming via `thinking_delta`, integração com tool use, e a nota de pricing que confirma o ponto central desta nota: você é cobrado pelos tokens de pensamento *gerados*, não pelo resumo exibido.
 >
-> 🎬 [Assistir no YouTube](https://youtube.com/anthropic)
+> 📖 [Ler a documentação](https://platform.claude.com/docs/en/build-with-claude/extended-thinking)
 
 ## Veja também
 
 - [[02 - Anatomia do gasto — input, output e reasoning]] — onde reasoning aparece na fatura
 - [[09 - Model routing — modelo certo para a tarefa]] — routing para decidir quando usar modelos com thinking
 - [[13 - Respostas concisas — controlar output tokens]] — o outro vetor de custo de output
+- [[15 - Reasoning models e chain-of-thought]] — como o raciocínio estendido funciona por dentro (galho Anatomia dos LLMs), complementando a lente de custo desta nota
 
 ## Fontes
 
