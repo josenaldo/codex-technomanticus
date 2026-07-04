@@ -33,7 +33,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 |---|-------|------:|---:|---:|---:|--:|--------|---------|
 | 1 | [[Anatomia dos LLMs]] | 24 | 0 | 1 | 23 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 2 | [[Anatomia de Agents]] | 11 | 0 | 0 | 11 | 100% | ✅ completo (2026-07-03, fan-out ≤3 verificado) | ✅ |
-| 3 | [[Spec-Driven Development]] | 12 | 12 | 0 | 0 | 0% | 📋 diagnosticado (galho mais cru) | ✅ |
+| 3 | [[Spec-Driven Development]] | 12 | 0 | 0 | 12 | 100% | ✅ completo (2026-07-03, fan-out ≤3 verificado) | ✅ |
 | 4 | [[Economia de Tokens]] | 22 | 20 | 2 | 0 | 9% | 📋 diagnosticado | ✅ |
 | 5 | [[Context Engineering]] | 16 | 0 | 9 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 6 | [[Agentes de Codificação]] | 18 | 15 | 3 | 0 | 17% | 📋 diagnosticado | ✅ |
@@ -67,8 +67,8 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | Métrica | Valor |
 |---------|-------|
 | Galhos totais | 21 |
-| ✅ completos | 9 (Anatomia dos LLMs, Structured Outputs, Evaluation, Ferramentas de IA, Context Engineering, Prompt Engineering, Observability, Image Prompting, Improvement Loop) |
-| 📋 diagnosticados, enriquecimento pendente | 11 (inclui Claude Code; Multimodal Prompting parcial 71%, 2 ⬜) |
+| ✅ completos | 12 (Anatomia dos LLMs, Anatomia de Agents, Spec-Driven Development, Context Engineering, Prompt Engineering, Structured Outputs, Evaluation, Observability, Multimodal Prompting, Image Prompting, Improvement Loop, Ferramentas de IA) |
+| 📋 diagnosticados, enriquecimento pendente | 8 (Economia de Tokens, Agentes de Codificação, AI Engineering Stack, RAG e Vector Databases, MCP, Segurança e Guardrails, Memória de Agentes, Claude Code) |
 | ⬜ não diagnosticados | 0 |
 | ⚪ especiais | 1 (O Lado Sombrio da IA — agora com roadmap) |
 | Notas soltas diretas | 4 |

@@ -147,6 +147,9 @@ resultado dos gates (coverage report, drift report)
 > [!warning] Anti-pattern crítico
 > Validator com prompt genérico ("is this code good?") é inútil. Validator efetivo tem prompt específico: "Verify that each acceptance criterion in task.yml is satisfied by the evidence in implementor output. Report pass/fail per AC with line-level evidence."
 
+> [!warning] Coordinator não deve receber a transcrição completa dos implementors
+> Um erro comum ao implementar CIV é o coordinator "espiar" o raciocínio completo de cada implementor — todo o histórico de tool calls, tentativas e erros intermediários — em vez de só o resultado final estruturado (`{ status, evidence, files_changed }`). Isso reintroduz o problema que o isolamento de contexto existe para resolver: o coordinator infla com conteúdo que não precisa para decidir "próxima task" ou "replanejar", e o overhead de coordenação (que deveria ficar <20% do tempo total, ver métricas abaixo) dispara. O Claude Agent SDK é explícito nisso: um subagente roda em conversa própria e só a **mensagem final** retorna ao pai — resultados intermediários ficam isolados dentro do subagente (ver [[Economia de Tokens|10 - Sub-agentes especializados]], sobre por que esse isolamento também é o que barateia o padrão).
+
 ## DAG: a estrutura que habilita paralelismo
 
 O coordinator não inventa o DAG do nada — ele deriva do plan produzido na [[05 - Fase Design e Plan — arquitetura e decomposição|Fase Plan]]. A diferença: o plan descreve decisões; o DAG é uma estrutura de execução.
@@ -207,6 +210,9 @@ tasks:
 ```
 
 O coordinator dispara T2 e T5 em paralelo assim que seus `depends_on` são aprovados. Tasks `parallel_safe: false` esperam na fila.
+
+> [!warning] `parallel_safe: true` não é garantia automática — arquivos compartilhados quebram o paralelismo
+> `depends_on` resolvido não basta para marcar uma task como paralelizável. Se T2 e T5 declaram `parallel_safe: true` mas ambas escrevem no mesmo arquivo (ex: as duas tocam `src/api/router.py` para registrar rotas diferentes), rodá-las em paralelo produz condição de corrida: o segundo implementor a terminar sobrescreve o trabalho do primeiro, ou o merge gera conflito silencioso que nenhum validator pega sozinho (cada um valida sua task isoladamente, não a interseção). O coordinator precisa cruzar o `outputs`/escopo de arquivos de cada task antes de liberar paralelismo — duas tasks só são de fato `parallel_safe` se seus conjuntos de arquivos tocados forem disjuntos.
 
 ## Exemplo end-to-end: feature de reembolso
 
@@ -399,6 +405,10 @@ Regra de bolso: CIV compensa com ≥4 tasks paralelizáveis e spec estável.
 | **Custos não monitorados** | N agentes × tokens = surpresa no billing |
 | **Validator = mesmo modelo + prompt do implementor** | Viés de confirmação, gate ilusório |
 
+## O que vem a seguir
+
+CIV resolve *quem faz o quê* e *como isolar contexto entre papéis* — mas o coordinator, os implementors e os validators ainda precisam de contexto bem curado para funcionar (o `spec.md`, o `plan.md`, o `tasks.yml` da seção anterior não aparecem magicamente na janela certa). A próxima nota, [[10 - Integração com context engineering — specs como contexto persistente]], fecha esse ciclo: trata a spec e o plan como camadas de contexto persistente que alimentam cada agente do CIV, e mostra como isso se conecta às técnicas gerais de context engineering.
+
 ## Veja também
 
 - [[05 - Fase Design e Plan — arquitetura e decomposição]]
@@ -406,13 +416,31 @@ Regra de bolso: CIV compensa com ≥4 tasks paralelizáveis e spec estável.
 - [[07 - Fase Validate — spec como contrato executável]]
 - [[08 - Ferramentas SDD — Kiro, Spec Kit, OpenSpec, Tessl]]
 - [[10 - Integração com context engineering — specs como contexto persistente]]
+- [[Economia de Tokens|10 - Sub-agentes especializados]] — o isolamento de contexto do CIV é o mesmo mecanismo que barateia sub-agentes especializados
 
 ## Referências
 
 - **VeriMAP** — *EACL 2026 paper, verification-aware multi-agent planning*. Formaliza CIV com prova de contratos por task.
 - **Augment Code** — *Coordinator-Implementor-Verifier Pattern for Dev Teams* (2026).
-- **Anthropic** — *Claude Agent SDK: Subagents and Orchestration* (2026).
-- **arxiv:2512.08769** — *A Practical Guide for Designing, Developing, and Deploying Production-Grade Agentic AI Workflows* (2025).
-- **Kiro** — *Custom subagents documentation* (2026). Specialist subagents como especialização do padrão CIV.
+- **Anthropic** — *Subagents in the SDK* (2026). Documenta context isolation, paralelização e restrição de tools em subagentes do Claude Agent SDK. [code.claude.com/docs/en/agent-sdk/subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
+- **arxiv:2512.08769** — *A Practical Guide for Designing, Developing, and Deploying Production-Grade Agentic AI Workflows* (2025). [arxiv.org/abs/2512.08769](https://arxiv.org/abs/2512.08769)
+- **Kiro** — *Custom subagents* (2026). Specialist subagents como especialização do padrão CIV. [kiro.dev/docs/chat/subagents](https://kiro.dev/docs/chat/subagents/)
 - **LangGraph** — *Multi-agent coordination patterns* (2026). StateGraph para CIV.
 - **GitHub Spec Kit** — *Multi-agent workflow documentation* (2026). Implement loop com validation nativa.
+
+## Como explicar em inglês
+
+Em entrevistas e discussões técnicas em inglês, o padrão CIV tem vocabulário próprio que vai além de "multi-agent system" genérico. A ideia central para comunicar: *"I don't run one agent through the whole feature — a coordinator breaks the plan into a dependency graph, isolated implementors work each task with minimal context, and an independent validator checks the output against the spec before anything merges."*
+
+| PT-BR | EN | Nota de uso |
+|---|---|---|
+| coordenador | coordinator | Único agente que vê spec e plan completos; não escreve código |
+| implementador | implementor | Executa uma task com contexto mínimo; "context-isolated by design" |
+| validador | validator | Verifica ACs de forma independente; "independent" é a palavra-chave — não deve reusar contexto do implementor |
+| grafo acíclico dirigido | directed acyclic graph (DAG) | Estrutura de tasks com dependências explícitas; "the DAG is what enables safe parallelism" |
+| isolamento de contexto | context isolation | Cada papel só recebe o que precisa; evita context rot e viés de confirmação |
+| tarefa | task | Unidade que o implementor recebe: input, arquivos de escopo, ACs |
+| critério de aceitação | acceptance criteria (AC) | Verificado pelo validator como assertion, não como "parece bom" |
+| paralelismo | parallelism | Tasks com `depends_on` resolvido e sem arquivos compartilhados podem rodar ao mesmo tempo |
+| replanejamento | replanning | Coordinator ajusta o DAG quando uma task falha, antes de escalar para humano |
+| escalonamento | escalation | Quando uma task falha N vezes (tipicamente 3), o coordinator para e chama um humano |

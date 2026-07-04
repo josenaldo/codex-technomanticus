@@ -1,7 +1,7 @@
 ---
 title: "Fase Design e Plan — arquitetura e decomposição"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -313,15 +313,33 @@ Silêncio na mudança de plan é o vibe coding do Plan: decisão tomada implicit
 
 ## Anti-patterns
 
-| Anti-pattern | Por que é problema | Solução |
-|---|---|---|
-| Plan que vira pseudocódigo | Invade Implement; engenheiro está escrevendo código antes do código | Parar em componente + interface, não em algoritmo |
-| Plan sem ADRs (só diagrama) | Razões perdidas; reverte na próxima sessão | Registrar cada escolha com razão e alternativas rejeitadas |
-| Tasks de "8h: fazer feature inteira" | Ambiguidade = agente improvisa | Quebrar em 4-6 tasks de 2-4h |
-| Tasks sem acceptance criteria | Agente decide quando "done" subjetivamente | AC binário para toda task |
-| Dependências implícitas | Task quebra porque outra não terminou | Mapear DAG explicitamente |
-| NFRs sem mapeamento técnico | Performance/segurança vira surpresa em prod | Tabela NFR → constraint técnica no plan |
-| Plan muda durante implement sem registro | Drift entre plan e código | Qualquer mudança de plan = PR de plan |
+> [!warning] Plan que vira pseudocódigo
+> Invade Implement; engenheiro está escrevendo código antes do código.
+> **Solução:** Parar em componente + interface, não em algoritmo.
+
+> [!warning] Plan sem ADRs (só diagrama)
+> Razões perdidas; a decisão reverte na próxima sessão porque ninguém sabe por que foi tomada.
+> **Solução:** Registrar cada escolha com razão e alternativas rejeitadas.
+
+> [!warning] Tasks de "8h: fazer feature inteira"
+> Ambiguidade escondida = o agente improvisa o que não foi decidido.
+> **Solução:** Quebrar em 4-6 tasks de 2-4h.
+
+> [!warning] Tasks sem acceptance criteria
+> O agente decide quando está "done" de forma subjetiva.
+> **Solução:** AC binário para toda task.
+
+> [!warning] Dependências implícitas
+> Uma task quebra porque outra da qual dependia não terminou — e ninguém sabia da dependência.
+> **Solução:** Mapear o DAG explicitamente.
+
+> [!warning] NFRs sem mapeamento técnico
+> Performance ou segurança viram surpresa em produção porque o NFR nunca virou restrição concreta.
+> **Solução:** Tabela NFR → constraint técnica no plan.
+
+> [!warning] Plan muda durante implement sem registro
+> Drift silencioso entre plan e código — a próxima sessão não sabe que algo mudou.
+> **Solução:** Qualquer mudança de plan vira PR de plan.
 
 ## O plan document completo: template canônico
 
@@ -399,20 +417,45 @@ Este template é o ponto de partida — times adaptam às suas convenções. O i
 | ADRs para cada decisão significativa | 100% | Decisões implícitas voltam como conflito |
 | Tasks sem AC | Zero | AC é pré-requisito para task entrar no backlog |
 
+## Como explicar em inglês
+
+Em entrevista ou em time distribuído, os termos de Plan aparecem quase sempre em inglês — inclusive na boca de brasileiros. Vale destravar o vocabulário antes de precisar dele sob pressão.
+
+| PT-BR | EN | Nota de uso |
+|---|---|---|
+| Especificação | Spec | "The **spec** defines outcomes, not implementation." |
+| Plano | Plan | "The **plan** answers *how*, the spec answers *what*." |
+| Registro de decisão arquitetural | ADR (Architecture Decision Record) | "We wrote an **ADR** for the Postgres vs. DynamoDB call." |
+| Tarefa | Task | "Break the plan into small, testable **tasks**." |
+| Critério de aceitação | Acceptance criteria | "Every task needs binary **acceptance criteria**." |
+| Decomposição | Decomposition | "**Decomposition** quality determines execution quality." |
+| Dependência | Dependency | "T4 has a hard **dependency** on T3." |
+| Interface | Interface | "The contract defines the public **interface**." |
+| Componente | Component | "Each **component** has a single responsibility." |
+| Restrição | Constraint | "Latency is a technical **constraint**, not a suggestion." |
+
+> [!tip] Frase-ponte útil
+> *"We let the human decide the architecture and the LLM detail the tasks"* resume bem o padrão produtivo descrito acima — funciona tanto em code review quanto em entrevista técnica.
+
+## O que vem a seguir
+
+Um plan aprovado — com ADRs registrados, stack fixada, contratos definidos e tasks decompostas com acceptance criteria — é o que autoriza a próxima fase a começar. Ver [[06 - Fase Implement — execução disciplinada]] para como esse plano vira execução disciplinada: tasks marcadas conforme completadas, sem desvio silencioso do que foi decidido aqui.
+
 ## Veja também
 
 - [[04 - Fase Specify — definindo outcomes e constraints]]
 - [[06 - Fase Implement — execução disciplinada]]
 - [[09 - SDD com agentes — coordinator, implementor, validator]]
 - [[10 - Integração com context engineering — specs como contexto persistente]]
+- [[Context Engineering]] — plan.md e tasks.md como contexto persistente do agente são um caso concreto dos pilares de context engineering.
 
 ## Referências
 
 - **GitHub Spec Kit** — *Plan phase docs* (2026). Decomposição de tasks e DAG.
 - **Augment Code** — *Coordinator-Implementor-Verifier Pattern* (2026). Como plan vira contexto do agente.
 - **Anthropic** — *Best Practices for Claude Code: Planning* (2026). Uso de plan como contexto persistente.
-- **Microsoft for Developers** — *Diving Into Spec-Driven Development With GitHub Spec Kit* (2026).
-- **Nygard, M.** — *Architecture Decision Records* (ThoughtWorks Technology Radar, 2017). ADRs como mecanismo de registro de decisão que SDD incorpora.
+- **Microsoft for Developers** — *[Diving Into Spec-Driven Development With GitHub Spec Kit](https://developer.microsoft.com/blog/spec-driven-development-spec-kit)* (2025).
+- **Nygard, M.** — *[Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)* (Cognitect blog, 2011). ADRs como mecanismo de registro de decisão que SDD incorpora.
 - **Rozanski, N.; Woods, E.** — *Software Systems Architecture* (2011). Views e viewpoints como antecedentes dos componentes de Plan.
 - **Newman, S.** — *Building Microservices* (2021). Decomposição por responsabilidade como princípio de design que Plan aplica.
 - **Kim, G. et al.** — *The DevOps Handbook* (2016). Flow de entrega que SDD estrutura com spec→plan→tasks→implement.

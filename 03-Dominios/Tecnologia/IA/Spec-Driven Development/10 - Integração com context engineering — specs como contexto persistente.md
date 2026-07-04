@@ -1,7 +1,7 @@
 ---
 title: "Integração com context engineering — specs como contexto persistente"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -346,16 +346,29 @@ Isso tem impacto em comunicação de time: em vez de reunião para "alinhar cont
 
 ## Anti-patterns na integração
 
-| Anti-pattern | Consequência |
-|---|---|
-| **Spec sem versão no repo** | Não pode ser memória persistente confiável; fica stale sem rastreabilidade |
-| **Spec gigantesca (>3K tokens)** | Vira context rot por si mesma; context window fica dominada pela spec |
-| **AGENTS.md duplicando spec** | Uma vai stale; agente recebe sinal conflitante |
-| **Compactação que toca spec** | Perde constraint crítica; agente trabalha com mapa errado |
-| **Implementor com plan completo** | Anula isolamento de contexto; context rot voltou |
-| **Skills citando specs específicas** | Quebra reusabilidade; skill não pode ser usada em outras features |
-| **JIT retrieval sem spec como filtro** | Retrieval amplo demais; contexto inflado; atenção diluída |
-| **Spec depois do código (retroativa falsa)** | Spec descreve implementação, não outcome; perde valor prescritivo |
+> [!warning] Spec sem versão no repo
+> Não pode ser memória persistente confiável; fica stale sem rastreabilidade.
+
+> [!warning] Spec gigantesca (>3K tokens)
+> Vira [[Context Engineering|03 - Context rot e atenção diluída|context rot]] por si mesma — a spec deveria ser o filtro de relevância, mas se ela própria estoura o orçamento, o context window fica dominado pela spec e não sobra espaço para o resto (histórico, código JIT). O sintoma: agente "esquece" partes da spec no meio da tarefa, exatamente o problema que ela deveria resolver.
+
+> [!warning] AGENTS.md duplicando spec
+> Uma das duas fontes vai ficar desatualizada primeiro; agente recebe sinal conflitante entre "convenção do projeto" e "regra da feature" sem saber qual pesa mais.
+
+> [!warning] Compactação que toca spec
+> Perde constraint crítica silenciosamente — ver o exemplo de retry acima (`Max 3 tentativas, backoff 100ms, jitter ±20%` virando `retry com backoff`). Agente trabalha com mapa errado sem alerta.
+
+> [!warning] Implementor com plan completo
+> Anula o isolamento de contexto do padrão CIV — o implementor volta a carregar informação de outras tasks e outros implementors, e o context rot que a arquitetura distribuída existia para evitar volta pela porta dos fundos.
+
+> [!warning] Skills citando specs específicas
+> Quebra a reusabilidade: uma skill que hardcoda `refunds/spec.md` não pode ser reaproveitada em outra feature. Skills devem ser genéricas; quem traz o específico é a spec carregada ao lado.
+
+> [!warning] JIT retrieval sem spec como filtro
+> Sem a spec como seletor de relevância, o retrieval volta a ser amplo demais — o agente lê arquivos que não importam, o contexto infla e a atenção dilui, anulando o ganho de 60-80% que o JIT guiado por spec entrega.
+
+> [!warning] Spec retroativa falsa (spec depois do código)
+> Quando a spec é escrita descrevendo o que o código já faz — em vez de o outcome pretendido antes de codificar — ela perde o valor prescritivo. Vira documentação disfarçada de spec: não filtra decisões futuras, só narra o passado.
 
 ## Exemplo: redução de contexto medida em projeto real
 
@@ -379,22 +392,46 @@ Resultado: -64% tokens, -89% esquecimentos, +100% drift coverage
 
 O ganho de tempo (33%) veio principalmente da eliminação de "retrabalho por esquecimento" — agente reimplementando algo que já existia, ou contradizendo uma decisão arquitetural anterior.
 
+## Como explicar em inglês
+
+Em entrevista ou discussão técnica com time internacional, a integração SDD + context engineering aparece o tempo todo — geralmente na pergunta "how do you keep the agent from losing track of decisions across sessions?". A resposta em inglês precisa do vocabulário certo: "specs" e "context" viram sinônimos na boca de quem já entendeu a integração, e o entrevistador vai notar se você usa os termos com precisão.
+
+Frase-ponte útil: *"The spec is persistent context — it lives in the immutable-per-feature layer, so it survives context window resets and different agents picking up the same feature weeks apart."*
+
+| Português | Inglês |
+|---|---|
+| Especificação | Specification / spec |
+| Contexto persistente | Persistent context |
+| Recuperação cirúrgica | Surgical retrieval |
+| Compactação | Compaction / summarization |
+| Âncora de contexto | Context anchor |
+| Região protegida | Protected region |
+| Drift de especificação | Spec drift |
+| Arquivo de agentes | Agents file (AGENTS.md) |
+| Tarefa | Task |
+| Memória externa | External memory |
+
+## O que vem a seguir
+
+Esta nota fechou a integração teórica entre SDD e context engineering — a spec como camada imutável, memória persistente e filtro de JIT retrieval. O próximo passo natural é sair da teoria e montar o esqueleto real de um projeto: [[11 - Guia de implementação SDD — do zero ao projeto]] percorre a implantação passo a passo, desde a primeira spec até o drift gate em CI.
+
 ## Veja também
 
 - [[02 - O que é Spec-Driven Development]]
 - [[04 - Fase Specify — definindo outcomes e constraints]]
 - [[09 - SDD com agentes — coordinator, implementor, validator]]
 - [[11 - Guia de implementação SDD — do zero ao projeto]]
+- [[Context Engineering]] — MOC do galho irmão; aprofunda camadas, pipelines, compressão e memória agentica que esta nota conecta ao SDD
 
 ## Referências
 
-- **Anthropic** — *Effective context engineering for AI agents* (2025). Hierarquia de camadas.
-- **Augment Code** — *AI Spec-Driven Development Workflows* (2026). Spec como contexto persistente.
-- **Atlan** — *Context Engineering Framework for Enterprise AI* (2026). JIT retrieval e spec como filtro.
-- **GitHub Spec Kit** — *Integration with AI agents documentation* (2026). Compactação que preserva spec.
-- **Kiro** — *Steering files and context management* (kiro.dev, 2026). Região protegida para spec.
-- **VeriMAP** — *EACL 2026 paper*. Contexto distribuído por papel em multi-agent SDD.
-- **Andrej Karpathy** — *Context engineering manifesto* (2025). Base teórica de camadas de contexto.
-- **Simon Willison** — *Notes on spec-driven context* (2026). Análise da integração SDD + context eng.
-- **Augment Code** — *Case study: reducing context cost 64% with SDD* (2026). Dados concretos de adoção.
-- **GitHub** — *Spec Kit: Context management in multi-agent workflows* (2026). Spec como região protegida.
+- **Anthropic** — [*Effective context engineering for AI agents*](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) (2025). Hierarquia de camadas.
+- **Augment Code** — [*How AI Enhances Spec-Driven Development Workflows*](https://www.augmentcode.com/guides/ai-spec-driven-development-workflows) (2026). Spec como contexto persistente.
+- **Atlan** — *Context Engineering Framework for Enterprise AI* (2026, URL a confirmar). JIT retrieval e spec como filtro.
+- **GitHub Spec Kit** — *Integration with AI agents documentation* (2026, URL a confirmar). Compactação que preserva spec.
+- **Kiro** — [*Steering — context management*](https://kiro.dev/docs/steering/) (kiro.dev, 2026). Região protegida para spec.
+- **VeriMAP** — *EACL 2026 paper* (URL a confirmar). Contexto distribuído por papel em multi-agent SDD.
+- **Andrej Karpathy** — *Context engineering manifesto* (2025, URL a confirmar). Base teórica de camadas de contexto.
+- **Simon Willison** — *Notes on spec-driven context* (2026, URL a confirmar). Análise da integração SDD + context eng.
+- **Augment Code** — *Case study: reducing context cost with SDD* (2026, URL a confirmar — não localizado o case study específico; achados próximos apontam reduções de 53-68% em custo por task). Dados concretos de adoção.
+- **GitHub** — *Spec Kit: Context management in multi-agent workflows* (2026, URL a confirmar). Spec como região protegida.

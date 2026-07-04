@@ -1,7 +1,7 @@
 ---
 title: "O que é Spec-Driven Development"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -263,6 +263,9 @@ Ver [[03 - Níveis de rigor — spec-first, spec-anchored, spec-as-source]].
 
 Não é qualquer documento que funciona como spec. Uma spec efetiva para SDD tem propriedades específicas:
 
+> [!warning] Armadilha — spec sem acceptance criteria mensuráveis
+> "O sistema deve validar o CPF do usuário" não é uma spec verificável — é uma intenção vaga que qualquer implementação pode alegar satisfazer. Sem critério testável ("CPF inválido retorna HTTP 422 com mensagem `cpf_invalido`; CPFs de teste conhecidos como `111.111.111-11` são rejeitados"), a spec vira decoração: o agente implementa alguma coisa, o humano aprova no olhômetro, e a metodologia degenera de volta a vibe coding com passo extra. O sintoma de alerta: se ninguém consegue escrever um teste automatizado só lendo a frase da spec, ela ainda não é spec.
+
 **1. Verificabilidade** — cada afirmação na spec deve ser testável. "O sistema deve ser rápido" não é spec; "o endpoint `/checkout` deve responder em < 200ms (p95, prod)" é spec.
 
 **2. Máquina-legibilidade** — a spec deve ser processável por um agente sem interpretação ambígua. Markdown estruturado, checklists, listas, tabelas — são formatos que LLMs processam bem. Prosa livre é menos efetiva.
@@ -271,7 +274,13 @@ Não é qualquer documento que funciona como spec. Uma spec efetiva para SDD tem
 
 **4. Versionabilidade** — spec vive no repositório, versionada com o código. Não em Confluence, Notion, ou Google Docs. A razão: mudanças de spec devem ser rastreáveis junto com as mudanças de código que as implementaram.
 
+> [!warning] Armadilha — spec fora do repositório
+> Uma spec brilhante escrita num Confluence, Notion ou Google Doc separado do código sofre o mesmo destino da documentação tradicional: fica desatualizada silenciosamente. Ninguém recebe um alerta quando o código diverge de um documento externo; o PR passa, o CI passa, e a spec vira uma peça de museu que descreve um sistema que já não existe. Pior: um agente de código não tem acesso automático a esses sistemas externos — ele só vê o que está no repositório. Se a spec não está versionada junto com o código, ela não é contexto do agente, é folclore da equipe.
+
 **5. Hierarquia clara** — outcomes no nível de spec, decisões técnicas no nível de plan, passos no nível de task. Misturar esses níveis cria confusão sobre o que é requisito e o que é decisão.
+
+> [!warning] Armadilha — outcomes misturados com decisões técnicas
+> "O sistema deve processar pagamento usando Stripe com webhook idempotente e fila Redis" mistura dois níveis que deveriam estar separados: o outcome ("processar pagamento com confiabilidade e sem duplicidade") e a decisão de implementação (Stripe, webhook, Redis). Quando esses níveis colam na mesma frase, a spec perde flexibilidade — trocar Stripe por outro provedor de pagamento passa a exigir reescrever a spec, não só o plan — e o agente perde a distinção entre "isto é inegociável" e "isto é uma escolha técnica que pode mudar". A régua simples: se a frase cita uma biblioteca, um framework ou uma tecnologia específica, ela pertence à fase Plan, não à Specify.
 
 ```mermaid
 graph TD
@@ -372,6 +381,30 @@ Para times que querem começar sem uma revolução metodológica completa:
 
 Cada passo é independente. Você não precisa fazer tudo de uma vez. O ponto de partida é qualquer um deles — o que importa é começar a construir o hábito.
 
+## Como explicar em inglês
+
+Discutir SDD em inglês (entrevista, code review com time distribuído, ou documentação em inglês) exige vocabulário preciso. Os termos em português têm equivalentes diretos, mas alguns carregam nuance que se perde na tradução literal:
+
+| Português | English | Nota de uso |
+|---|---|---|
+| especificação | specification / spec | "Spec" é o termo coloquial universal na indústria; "specification" soa mais formal, usado em título de documento |
+| contrato | contract | Em SDD, "contract" enfatiza que a spec constrange o output do agente — não é só descrição, é obrigação verificável |
+| critério de aceitação | acceptance criteria | Sempre plural em inglês, mesmo referindo-se a um item da lista ("an acceptance criterion", singular, é raro) |
+| source of truth | source of truth | Não traduzir — é o termo técnico padrão; "fonte da verdade" soa estranho e raramente aparece em texto técnico em inglês |
+| fora do escopo | out of scope | Locução fixa; "outside the scope" também é aceito mas "out of scope" é mais idiomático em specs |
+| versionamento | versioning | "Version control" refere-se à ferramenta (git); "versioning" refere-se à prática de manter histórico rastreável |
+| artefato | artifact | Cuidado com falso cognato: em inglês de engenharia, "artifact" é qualquer output rastreável (spec, build, doc) — não tem a conotação arqueológica que às vezes soa em português |
+| validação | validation | Em SDD, distinguir de "verification": validation pergunta "construímos a coisa certa?"; verification pergunta "construímos certo a coisa?" |
+| entregável | deliverable | Termo de gestão de projeto, não específico de SDD, mas aparece em conversas sobre outcomes |
+| rastreabilidade | traceability | Central em contextos regulados; "traceability from spec to code" é frase comum em auditoria |
+
+> [!tip] Frase-chave em inglês
+> *"In spec-driven development, the specification is the source of truth, and code is a generated artifact validated against it."* — captura a inversão central da metodologia numa frase que funciona tanto em entrevista técnica quanto em documentação.
+
+## O que vem a seguir
+
+Esta nota definiu **o quê** é SDD — a inversão spec-como-source-of-truth, o pipeline de 4 fases, e por que isso importa especialmente para agentes. Mas SDD não é tudo-ou-nada: times operam num espectro de rigor, do spec-opcional ao spec-como-única-fonte executável. A próxima nota mapeia esse espectro em detalhe — [[03 - Níveis de rigor — spec-first, spec-anchored, spec-as-source]] — mostrando como avaliar em qual nível seu time está e o que significa evoluir de um nível para o próximo.
+
 ## Veja também
 
 - [[01 - O problema do vibe coding em produção]]
@@ -383,16 +416,16 @@ Cada passo é independente. Você não precisa fazer tudo de uma vez. O ponto de
 
 ## Referências
 
-- **GitHub Blog** — *Spec-driven development with AI: Get started with a new open source toolkit* (2025). Introdução do Spec Kit.
-- **Augment Code** — *What Is Spec-Driven Development? A Complete Guide* (2026). Definição canônica moderna.
-- **Microsoft for Developers** — *Diving Into Spec-Driven Development With GitHub Spec Kit* (2026).
-- **Martin Fowler** — *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl* (2026). Análise comparativa das ferramentas.
-- **DeepLearning.AI / JetBrains** — *Spec-Driven Development with Coding Agents* (Andrew Ng + Paul Everitt, abr 2026). Curso prático.
-- **Amazon** — *Introducing Kiro: the spec-first IDE for AI coding* (jun 2026). Manifesto da abordagem spec-first.
-- **Paul Everitt** — *Spec-driven development: a guide to steering AI coding agents* (JetBrains Blog, 2026).
+- **GitHub Blog** — [*Spec-driven development with AI: Get started with a new open source toolkit*](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/) (set 2025). Introdução do Spec Kit.
+- **Augment Code** — [*What Is Spec-Driven Development? A Complete Guide*](https://www.augmentcode.com/guides/what-is-spec-driven-development) (2026). Definição canônica moderna.
+- **Microsoft for Developers** — [*Diving Into Spec-Driven Development With GitHub Spec Kit*](https://developer.microsoft.com/blog/spec-driven-development-spec-kit) (2026).
+- **Martin Fowler** — [*Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl*](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) (out 2025). Análise comparativa das ferramentas.
+- **DeepLearning.AI / JetBrains** — [*Spec-Driven Development with Coding Agents*](https://www.deeplearning.ai/courses/spec-driven-development-with-coding-agents) (Andrew Ng + Paul Everitt, abr 2026). Curso prático.
+- **Kiro (AWS)** — [*Introducing Kiro: the spec-first IDE for AI coding*](https://kiro.dev/blog/introducing-kiro/) (jul 2025, preview). Manifesto da abordagem spec-first.
+- **Paul Everitt** — *Spec-driven development: a guide to steering AI coding agents* (JetBrains Blog, 2026). (URL a confirmar)
 - **Beck, K.** — *Test-Driven Development: By Example* (2002). Base conceitual do qual SDD herda o princípio de constraint-first.
 - **Humble, J.; Farley, D.** — *Continuous Delivery* (2010). Pipeline de validação contínua que SDD integra ao ciclo de spec.
-- **OpenSpec Initiative** — *Spec Format Standard v0.3* (2025). Esforço de padronização cross-vendor de formato de spec para agentes.
+- **OpenSpec Initiative** — [*OpenSpec — Spec-driven development (SDD) for AI coding assistants*](https://github.com/Fission-AI/OpenSpec/) (repositório oficial). Esforço de padronização cross-vendor de formato de spec para agentes. (referência a confirmar: a nota original citava "Spec Format Standard v0.3 (2025)", número de versão não localizado na fonte)
 - **Karpathy, A.** — *"I just see stuff, say stuff, run stuff..."* (X/Twitter, fev 2025). Definição original de vibe coding que catalisou a discussão sobre método.
 - **Anthropic** — *Building Effective Agents* (2024). Framework de agent workflows que SDD complementa com camada de especificação.
 - **Winters, T. et al.** — *Software Engineering at Google* (2020). Princípios de engenharia em escala que informam o design de specs rastreáveis e versionadas.

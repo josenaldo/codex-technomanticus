@@ -1,7 +1,7 @@
 ---
 title: "Fase Specify — definindo outcomes e constraints"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -203,6 +203,12 @@ em tempo real no app.
 
 O out-of-scope merece atenção especial: quando um agente recebe uma spec sem limites explícitos, ele preenche o que falta com inferências plausíveis. Às vezes certo; frequentemente além do escopo. "Out of scope" é o fence que impede expansão não-planejada.
 
+> [!warning] Spec sem "out of scope" declarado é convite ao scope creep silencioso
+> Se a seção "Out of scope" está vazia ou ausente, o agente não tem sinal de onde parar. Ele não pergunta "isso está dentro do escopo?" — ele infere, e a inferência tende a ser generosa demais. O sintoma aparece só depois: a feature "cresceu" para incluir coisas que ninguém pediu, e ninguém consegue apontar onde a decisão foi tomada. Declarar explicitamente o que fica de fora é tão importante quanto declarar o que entra.
+
+> [!warning] Open question sem resposta vira decisão tomada por default
+> Uma pergunta listada em "Open questions" mas nunca respondida não trava a implementação — ela apenas desaparece. O agente (ou o engenheiro apressado) escolhe a interpretação mais conveniente e segue. Se a pergunta era sobre um caso de borda regulatório ou financeiro, essa "decisão por omissão" pode ser exatamente o tipo de erro que a Métrica de qualidade acima (open questions sem resposta ao entrar em Plan) existe para capturar. Zero open questions pendentes é o alvo — não "resolvemos a maioria".
+
 ## O que "outcome" realmente significa
 
 "Outcome" não é sinônimo de "feature" ou "funcionalidade". A distinção:
@@ -384,6 +390,10 @@ Vantagem: AC pode ser input direto para gerador de testes. Custo: requer linguag
 | Frequência de "volta para Specify" durante Implement | Baixa | Alta = spec incompleta saiu sem revisão |
 | Open questions sem resposta ao entrar em Plan | Zero | Bloqueio durante implementação |
 
+## O que vem a seguir
+
+Uma spec completa — com outcome, journeys, ACs verificáveis, NFRs e out-of-scope declarado — é o insumo da próxima fase. Mas Specify só responde "o quê" e "por quê"; é hora de decidir "como". Isso é o assunto de [[05 - Fase Design e Plan — arquitetura e decomposição]]: como a spec vira arquitetura, decisões de stack e decomposição em unidades implementáveis, sem violar os limites que acabamos de declarar aqui.
+
 ## Veja também
 
 - [[02 - O que é Spec-Driven Development]]
@@ -394,8 +404,8 @@ Vantagem: AC pode ser input direto para gerador de testes. Custo: requer linguag
 
 ## Referências
 
-- **GitHub Spec Kit** — *spec-driven.md* (2026). Template canônico de spec para AI coding.
-- **Augment Code** — *What Is Spec-Driven Development?* (2026). Definição da fase Specify.
+- **GitHub Spec Kit** — [*spec-driven.md*](https://github.com/github/spec-kit/blob/main/spec-driven.md) (2026). Template canônico de spec para AI coding.
+- **Augment Code** — [*What Is Spec-Driven Development?*](https://www.augmentcode.com/guides/what-is-spec-driven-development) (2026). Definição da fase Specify.
 - **Microsoft for Developers** — *Diving Into Spec-Driven Development With GitHub Spec Kit* (2026).
 - **Zencoder Docs** — *A Practical Guide to Spec-Driven Development* (2026). Exemplos práticos de specs.
 - **DeepLearning.AI** — *Spec-Driven Development with Coding Agents* (abr 2026). Curso com exemplos de spec por fase.

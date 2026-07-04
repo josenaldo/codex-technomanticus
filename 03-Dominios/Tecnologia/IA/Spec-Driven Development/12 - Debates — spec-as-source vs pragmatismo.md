@@ -1,7 +1,7 @@
 ---
 title: "Debates — spec-as-source vs pragmatismo"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -253,13 +253,25 @@ O desacordo real é: **quão pesado deve ser o processo de spec** para projetos 
 
 Casos documentados onde SDD piorou a situação:
 
-| Caso | Causa | Lição |
-|---|---|---|
-| Specs gigantescas que ninguém lê | Features grandes demais | Quebrar features menores antes de especificar |
-| Specs sempre stale | Nível spec-first onde precisava anchored | Subir o nível com drift gate |
-| PRs bloqueados eternamente | Gates muito rígidos em fase de adoção | Calibrar gates gradualmente |
-| Time produziu menos por 3 meses | Ferramentas pesadas em projeto pequeno | Spec Kit leve antes de Kiro/Tessl |
-| Devs frustrados e saindo | Adoção forçada sem buy-in | Adoção precisa de convencimento, não imposição |
+> [!warning] Specs gigantescas que ninguém lê
+> **Causa:** features grandes demais viraram specs de dezenas de páginas.
+> **Lição:** quebrar a feature em pedaços menores *antes* de especificar — spec grande é sintoma de escopo grande, não de rigor excessivo.
+
+> [!warning] Specs sempre stale (desatualizadas)
+> **Causa:** o time operava em spec-first quando o contexto pedia spec-anchored — nada garantia que a spec acompanhasse o código.
+> **Lição:** subir o nível de rigor e ligar um drift gate que force a sincronia.
+
+> [!warning] PRs bloqueados eternamente
+> **Causa:** gates de validação calibrados como se o time já estivesse maduro em SDD, na fase inicial de adoção.
+> **Lição:** calibrar os gates gradualmente — começar permissivo, apertar conforme o time internaliza o processo.
+
+> [!warning] Time produziu menos por 3 meses
+> **Causa:** ferramentas pesadas (Kiro, Tessl) aplicadas a um projeto pequeno que não justificava o nível de rigor.
+> **Lição:** começar com Spec Kit leve; só subir para ferramentas de spec-as-source quando o contexto realmente exigir.
+
+> [!warning] Devs frustrados e saindo do time
+> **Causa:** adoção de SDD imposta de cima para baixo, sem buy-in da equipe.
+> **Lição:** adoção de metodologia precisa de convencimento pela evidência (métricas, casos), não de imposição por decreto.
 
 ## O debate vibe coding vs SDD em números reais
 
@@ -360,7 +372,7 @@ SDD não é "a metodologia certa para todos". É uma resposta calibrada ao tech 
 - Disposição a 2-4 semanas de adoção
 - Domínio modelável com critérios objetivos
 
-Em outros contextos (protótipos, exploração, hackathons), use o que funciona. Karpathy chamou vibe coding de "libertador" — ele estava certo para o contexto de protótipos de IA. **A virtude está na escolha, não no dogma.**
+Em outros contextos (protótipos, exploração, hackathons), use o que funciona. Karpathy chamou vibe coding de "libertador" — ele estava certo para o contexto de protótipos de IA. **A virtude está na escolha, não no dogma.** E a escolha não é binária: os mesmos três princípios que sustentam SDD (intent explícito, validação mecânica, contexto persistente) reaparecem, com outro vocabulário, em [[Agentes de Codificação]] — a trilha que trata do harness que executa a spec — e em [[Context Engineering]] — a trilha que trata do ambiente informacional que a spec tenta domar.
 
 Quem internaliza os três princípios — intent explícito, validação mecânica, contexto persistente — vai estar bem em qualquer ferramenta futura, seja ela chamada SDD, BDD, TDD, ou algo que ainda não tem nome.
 
@@ -375,6 +387,16 @@ Honestidade intelectual: há questões em aberto que o campo ainda não tem dado
 
 Essas perguntas abertas são convite para experimentação, não razão para não adotar.
 
+## O que vem a seguir
+
+Esta nota fecha a trilha de Spec-Driven Development, mas os três princípios que sobrevivem ao debate — intent explícito, validação mecânica, contexto persistente — não vivem isolados. Eles são a ponte para três outras trilhas de IA neste Codex:
+
+- **[[Agentes de Codificação]]** — SDD descreve *o quê* especificar; esta trilha descreve o harness que efetivamente executa a spec (agentes autônomos, MCP, comprehension gates, human-in-the-loop). Quem debate "SDD vs pragmatismo" está, no fundo, debatendo o quanto confiar no agente sem supervisão — a mesma pergunta central de Agentes de Codificação.
+- **[[Context Engineering]]** — se a spec é o *intent* explícito, context engineering é o ambiente informacional que decide se o agente consegue honrar esse intent. Uma spec impecável ainda falha se o agente não tiver o contexto certo na janela certa; as duas disciplinas resolvem faces complementares do mesmo problema (drift entre o que se quer e o que o agente produz).
+- **[[Prompt Engineering]]** — na prática, boa parte do "custo upfront" que os céticos apontam (Crítica 2) é o custo de escrever prompts precisos o bastante para virar spec. Prompt Engineering é a camada de primitivas (especificidade, constraints, few-shot) que torna uma spec.md executável por um agente; SDD é o que acontece quando essas primitivas viram artefato versionado em vez de mensagem efêmera de chat.
+
+Quem sai desta trilha de debates com os três princípios internalizados está pronto para ver como eles se manifestam em cada uma dessas frentes — a metodologia muda de nome, o problema que ela resolve não.
+
 ## Veja também
 
 - [[01 - O problema do vibe coding em produção]] — o problema que SDD endereça
@@ -384,17 +406,17 @@ Essas perguntas abertas são convite para experimentação, não razão para nã
 
 ## Referências
 
-- **Andrej Karpathy** — *Vibe coding* (2025, posição original; defensável para protótipos).
-- **Salesforce Ben** — *2026 Predictions: It's the Year of Technical Debt* (2026, documentação da crise de IA-debt).
-- **Augment Code** — *Cursor 3 vs Intent: Prompt-Driven vs Spec-Driven Agents* (2026, debate de posições).
-- **Techzine Global** — *Vibe coding vs Spec-Driven Development* (2026, análise comparativa).
-- **Pixelmojo** — *The AI Coding Technical Debt Crisis: 2026-2027* (2026, ROI por contexto).
-- **arxiv:2512.11922** — *Vibe Coding in Practice: Flow, Technical Debt, and Workarounds* (2025).
-- **Martin Fowler** — *Understanding Spec-Driven-Development* (2026, análise crítica equilibrada).
-- **Simon Willison** — *When SDD helps and when it hurts* (2026, limites honestos do método).
-- **Hashrocket** — *30-day SDD retrospective: what worked and what didn't* (2026, dados reais de time).
-- **Kent Beck** — *Responding to "Is SDD just waterfall?"* (2026, distinções práticas).
-- **Augment Code** — *6 months of SDD: before and after metrics* (2026, dados longitudinais de ROI).
-- **arxiv:2506.14981** — *Toward Specification-Driven AI Software Engineering* (2026, survey acadêmico do campo).
-- **Stack Overflow** — *Developer survey 2026: AI tools and spec practices* (2026, dados de adoção).
-- **ThoughtWorks Radar** — *SDD entra no "Adopt" quadrant* (abr 2026, validação de maturidade).
+- **Andrej Karpathy** — [*"There's a new kind of coding I call 'vibe coding'..."*](https://x.com/karpathy/status/1886192184808149383) (X/Twitter, fev 2025, posição original; defensável para protótipos).
+- **Salesforce Ben** — [*2026 Predictions: It's the Year of Technical Debt (Thanks to Vibe-Coding)*](https://www.salesforceben.com/2026-predictions-its-the-year-of-technical-debt-thanks-to-vibe-coding/) (2026, documentação da crise de IA-debt).
+- **Augment Code** — [*Cursor 3 vs Intent: Prompt-Driven vs Spec-Driven Agents*](https://www.augmentcode.com/tools/cursor-3-vs-intent) (2026, debate de posições).
+- **Techzine Global** — *Vibe coding vs Spec-Driven Development* (2026, análise comparativa — peça específica não localizada nesta rodada; referência a confirmar).
+- **Pixelmojo** — [*Vibe Coding Hit 84% Adoption. 45% Has Vulnerabilities* (The AI Coding Technical Debt Crisis 2026-2027)](https://www.pixelmojo.io/blogs/vibe-coding-technical-debt-crisis-2026-2027) (2026, ROI por contexto).
+- **arxiv:2512.11922** — [*Vibe Coding in Practice: Flow, Technical Debt, and Guidelines for Sustainable Use*](https://arxiv.org/abs/2512.11922) (Waseem et al., 2025).
+- **Martin Fowler** — [*Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl*](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) (2026, análise crítica equilibrada).
+- **Simon Willison** — *Posição sobre limites de spec-driven development* (2026; peça específica com este recorte não localizada nesta rodada — referência a confirmar. Willison escreve regularmente sobre engenharia agentic em [simonwillison.net](https://simonwillison.net/)).
+- **Hashrocket** — *30-day SDD retrospective: what worked and what didn't* (2026, dados reais de time — peça não localizada nesta rodada; referência a confirmar).
+- **Kent Beck** — [*Challenging Spec-Driven Development Assumptions*](https://www.linkedin.com/posts/kentbeck_the-descriptions-of-spec-driven-development-activity-7413956151144542208-EGMz) (LinkedIn, 2026): specs tratadas como plano congelado reproduzem waterfall; SDD com iteração real não.
+- **Augment Code** — *6 months of SDD: before and after metrics* (2026, dados longitudinais de ROI — peça específica não localizada nesta rodada; referência a confirmar).
+- **arxiv:2506.14981** — este ID **não corresponde** ao tema (é um paper sobre somas cumulativas em Zarr/dados geoespaciais, sem relação com SDD); citação removida por não bater — referência a confirmar/substituir. O survey acadêmico equivalente mais próximo confirmado é [*Spec-Driven Development: From Code to Contract in the Age of AI Coding Assistants*](https://arxiv.org/abs/2602.00180) (2026).
+- **Stack Overflow** — [*2025 Developer Survey*](https://survey.stackoverflow.co/2025) (dados de adoção de IA e desconfiança do código gerado; edição 2026 aberta em jun/2026, resultados ainda não publicados).
+- **ThoughtWorks Radar** — [*Spec-driven development*](https://www.thoughtworks.com/en-us/radar/techniques/spec-driven-development) (Technology Radar vol. 34, abr 2026) — nota: o Radar classifica a técnica no anel **"Assess"** (vale explorar), não "Adopt"; corrigido nesta revisão.

@@ -1,7 +1,7 @@
 ---
 title: "Níveis de rigor — spec-first, spec-anchored, spec-as-source"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -90,6 +90,9 @@ A spec da primeira implementação está correta. As specs das implementações 
 spec → agente implementa → testes manuais → merge
 (mudança de requisito) → código muda → spec fica stale
 ```
+
+> [!warning] Armadilha — mudança frequente escolhendo spec-first
+> Spec-first funciona bem para escopo fixo e curta duração. Mas se o projeto tem mudança frequente de requisito — típico de produto em fase de descoberta, com pivôs constantes — spec-first garante que a spec fica obsoleta em semanas, não meses. Nesse cenário, ou o time aceita que a spec é só um artefato de kickoff (e trata como tal, sem fingir que é fonte de verdade), ou sobe direto para spec-anchored. Manter spec-first como documentação viva em contexto de mudança rápida é o pior dos dois mundos: dá trabalho de escrever e mente sobre o estado real do sistema.
 
 **Onde spec-first brilha:**
 - Projetos com escopo fixo e curta duração (< 1 sprint)
@@ -201,6 +204,9 @@ spec atualizada → pipeline CI → gera stubs/contracts → agente implementa d
 
 **Ferramentas que suportam:** Tessl, Kiro com steering + hook files estruturados, OpenAPI Generator, Protobuf + gRPC, sistemas de codegen tradicionais acoplados a SDD.
 
+> [!warning] Armadilha — spec-as-source sem cultura de spec-anchored
+> Pular direto de spec-first (ou de vibe) para spec-as-source, sem o time ter passado por spec-anchored, tende a falhar. A razão não é técnica — é humana: a disciplina de manter spec e código sincronizados, de tratar drift como bug, de revisar spec como parte do PR, é um hábito que se constrói em spec-anchored. Sem esse hábito, a automação de spec-as-source fica órfã: ninguém sabe editar a spec corretamente, ninguém audita se o gerador está coerente com a intenção, e o time acaba editando o código gerado diretamente (quebrando a garantia central do nível 3). Ver a seção "O espectro como jornada, não como destino" abaixo.
+
 ## Quando subir um nível
 
 A regra de ouro é reagir a sinais do sistema, não antecipar por precaução excessiva:
@@ -230,6 +236,9 @@ projeto/
 A lógica: o nível certo é proporcional ao custo de erro naquela área. `core/` que falha pode derrubar a empresa; `experiments/` que falha é deletado.
 
 A decisão de qual nível aplica a qual área é uma **decisão arquitetural** — deve ser explícita, registrada, e revisada periodicamente.
+
+> [!warning] Armadilha — mistura de níveis sem registro arquitetural
+> Ter níveis diferentes por área é saudável. O que não é saudável é a mistura acontecer por acidente — cada equipe escolhendo seu próprio nível sem ninguém decidir isso conscientemente, e sem nenhum documento dizendo por quê. Sem esse registro, dois problemas aparecem: (1) alguém aplica spec-as-source num módulo que não precisava (custo desperdiçado) ou vibe coding num módulo crítico (risco não percebido); (2) quando o sistema cresce e as fronteiras entre `core/`, `public-api/` e `admin-ui/` mudam, ninguém sabe se o nível de rigor deveria mudar junto — porque a decisão nunca foi um ADR, foi um hábito tácito de cada squad.
 
 ## Sinais de que escolheu o nível errado
 
@@ -364,6 +373,30 @@ Há um padrão recorrente nos times que falham na adoção de SDD: tentam fazer 
 > [!tip] Regra prática
 > Se você está escolhendo o nível certo agora: comece um nível abaixo do que você acha que precisa. Você pode sempre subir quando sentir a necessidade. Descer de nível depois de implementar automação é mais custoso.
 
+## Como explicar em inglês
+
+Em entrevista ou em contexto internacional, os quatro níveis e seus conceitos-satélite têm nomes específicos em inglês — nem sempre a tradução literal do português é a que aparece na literatura.
+
+| PT-BR | EN |
+|---|---|
+| Spec estática | Static spec |
+| Spec viva | Living spec |
+| Spec como fonte | Spec-as-source |
+| Fonte autoritativa | Source of truth / authoritative source |
+| Critério de aceitação | Acceptance criteria |
+| Drift de spec | Spec drift |
+| Rastreabilidade | Traceability |
+| Código derivado | Derived code / generated code |
+| Checklist de aceitação | Definition of Done (DoD) |
+| Versionamento | Versioning |
+
+> [!tip] Frase de referência
+> *"We run spec-anchored for the public API — the spec lives in the repo and CI fails on drift. For the admin UI we're still spec-first; it just doesn't have the traffic to justify the overhead yet."* — frase que comunica em uma sentença que o nível de rigor é uma escolha deliberada, não um acidente.
+
+## O que vem a seguir
+
+Depois de escolher o nível de rigor certo para o contexto, o próximo passo prático é começar a primeira fase do ciclo SDD: escrever a spec em si. Isso significa decidir o que entra nela — outcomes desejados, constraints técnicas e de negócio, o que fica de fora explicitamente — antes de qualquer linha de código. Ver [[04 - Fase Specify — definindo outcomes e constraints]] para como estruturar essa primeira fase na prática.
+
 ## Veja também
 
 - [[02 - O que é Spec-Driven Development]]
@@ -374,25 +407,25 @@ Há um padrão recorrente nos times que falham na adoção de SDD: tentam fazer 
 
 ## Referências
 
-- **Augment Code** — *6 Best Spec-Driven Development Tools for AI Coding in 2026* (2026). Distinção living-spec vs static-spec com análise de ferramentas.
-- **Martin Fowler** — *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl* (2026). Taxonomia dos níveis e ferramentas.
-- **GitHub Blog** — *Spec-driven development with AI* (2025). Introdução do Spec Kit e nível anchored.
-- **Hashrocket** — *OpenSpec vs Spec Kit: Choosing the Right AI-Driven Development Workflow* (2026). Comparativo práticos de abordagens.
-- **Amazon** — *Kiro: Spec-First Development* (jun 2026). Spec-as-source como paradigma nativo.
-- **Tessl** — *From specs to running software* (2026). Abordagem spec-as-source pura com geração de código.
-- **OpenAPI Initiative** — *OpenAPI Specification 3.1* (2021). Referência de spec machine-readable que precede SDD mas alinha com nível 3.
-- **Google Cloud** — *Protocol Buffers (protobuf)* — exemplo de spec-as-source em nível de API contract.
-- **Kleppmann, M.** — *Designing Data-Intensive Applications* (2017). Schemas como contratos de dados — precursor do pensamento spec-as-source para dados.
-- **Evans, E.** — *Domain-Driven Design* (2003). Linguagem ubíqua como spec informal — DDD e SDD compartilham o princípio de que o modelo deve governar a implementação.
-- **Hohpe, G.; Woolf, B.** — *Enterprise Integration Patterns* (2003). Contracts em integração — antecedente histórico do spec-as-source em sistemas distribuídos.
-- **NIST** — *Software Supply Chain Security Guidelines* (2024). Rastreabilidade spec→código como requisito emergente de compliance em sistemas críticos.
-- **PCI DSS v4.0** — Requisito 6.2 de bespoke software security requirements como exemplo de compliance que se alinha a spec-anchored/spec-as-source.
-- **HIPAA Security Rule** — Documentação técnica de controles como análogo regulatório a spec-as-source para sistemas de saúde nos EUA.
-- **Avram, A.; Marín, F.** — *Microservices: A Definition of This New Architectural Term* (Fowler, 2014). Contratos de serviço como precursor da separação spec/implementação em arquiteturas distribuídas.
-- **Richardson, C.** — *Microservices Patterns* (2018). Consumer-driven contract testing como mecanismo de spec-as-source em nível de integração.
-- **Shapira, G.** — *Kafka: The Definitive Guide* (2021). Schema registry como mecanismo de spec-as-source para dados em streaming — mesmo princípio em domínio diferente.
-- **Sridharan, C.** — *Distributed Systems Observability* (2018). Runbooks como specs de operação — extensão do conceito de spec para procedimentos, não só código.
-- **Agile Alliance** — *Definition of Done* (2001+). DoD como precursor de acceptance criteria estruturado — SDD formaliza e versiona o que Scrum deixava informal.
-- **ISO/IEC 25010** — *Software Quality Model* (2011). Framework de qualidade que mapeia para dimensões de spec: funcionalidade, confiabilidade, eficiência de desempenho, segurança.
-- **SOC 2 Type II** — Auditoria de controles que exige evidência de processo, não só resultado. Spec-anchored com audit trail no git atende a maioria dos critérios de evidência documental.
-- **SBOM (Software Bill of Materials) — CISA Guidelines** (2023). Rastreabilidade de componentes como extensão do conceito de spec para supply chain — tendência que converge com spec-as-source em 2026.
+- **Augment Code** — [*6 Best Spec-Driven Development Tools for AI Coding in 2026*](https://www.augmentcode.com/tools/best-spec-driven-development-tools) (2026). Distinção living-spec vs static-spec com análise de ferramentas.
+- **Martin Fowler** — [*Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl*](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) (2026). Taxonomia dos níveis e ferramentas.
+- **GitHub Blog** — [*Spec-driven development with AI*](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/) (2025). Introdução do Spec Kit e nível anchored.
+- **Hashrocket** — [*OpenSpec vs Spec Kit: Choosing the Right AI-Driven Development Workflow*](https://hashrocket.com/blog/posts/openspec-vs-spec-kit-choosing-the-right-ai-driven-development-workflow-for-your-team) (2026). Comparativo práticos de abordagens.
+- **Amazon (Kiro)** — [*Specs — documentação oficial*](https://kiro.dev/docs/specs/) (referência a confirmar quanto ao título/data exatos citados — "Kiro: Spec-First Development", jun 2026). Spec-as-source como paradigma nativo.
+- **Tessl** — [*Tessl — Agent Enablement Platform*](https://tessl.io/) (referência a confirmar quanto ao título exato "From specs to running software"). Abordagem spec-as-source pura com geração de código.
+- **OpenAPI Initiative** — [*OpenAPI Specification 3.1*](https://spec.openapis.org/oas/v3.1.0.html) (2021). Referência de spec machine-readable que precede SDD mas alinha com nível 3.
+- **Google Cloud** — [*Protocol Buffers (protobuf) — Overview*](https://developers.google.com/protocol-buffers/docs/overview) — exemplo de spec-as-source em nível de API contract.
+- **Kleppmann, M.** — [*Designing Data-Intensive Applications*](https://dataintensive.net/) (2017). Schemas como contratos de dados — precursor do pensamento spec-as-source para dados.
+- **Evans, E.** — [*Domain-Driven Design*](https://www.dddcommunity.org/book/evans_2003/) (2003). Linguagem ubíqua como spec informal — DDD e SDD compartilham o princípio de que o modelo deve governar a implementação.
+- **Hohpe, G.; Woolf, B.** — [*Enterprise Integration Patterns*](https://www.enterpriseintegrationpatterns.com/) (2003). Contracts em integração — antecedente histórico do spec-as-source em sistemas distribuídos.
+- **NIST** — [*Software Supply Chain Security Guidance*](https://www.nist.gov/itl/executive-order-14028-improving-nations-cybersecurity/software-supply-chain-security-guidance) (2024, inclui SP 800-204D). Rastreabilidade spec→código como requisito emergente de compliance em sistemas críticos.
+- **PCI DSS v4.0** — [*Document Library*](https://www.pcisecuritystandards.org/document_library/) — Requisito 6.2 de bespoke software security requirements como exemplo de compliance que se alinha a spec-anchored/spec-as-source.
+- **HIPAA Security Rule** — [*The Security Rule*](https://www.hhs.gov/hipaa/for-professionals/security/index.html) (HHS.gov). Documentação técnica de controles como análogo regulatório a spec-as-source para sistemas de saúde nos EUA.
+- **Fowler, M.; Lewis, J.** — [*Microservices: A Definition of This New Architectural Term*](https://martinfowler.com/articles/microservices.html) (2014). Contratos de serviço como precursor da separação spec/implementação em arquiteturas distribuídas.
+- **Richardson, C.** — [*Microservices Patterns*](https://www.manning.com/books/microservices-patterns) (2018). Consumer-driven contract testing como mecanismo de spec-as-source em nível de integração.
+- **Shapira, G.; Palino, T.; Sivaram, R.; Petty, K.** — [*Kafka: The Definitive Guide*](https://www.oreilly.com/library/view/kafka-the-definitive/9781491936153/) (2017/2021). Schema registry como mecanismo de spec-as-source para dados em streaming — mesmo princípio em domínio diferente.
+- **Sridharan, C.** — [*Distributed Systems Observability*](https://www.oreilly.com/library/view/distributed-systems-observability/9781492033431/) (2018). Runbooks como specs de operação — extensão do conceito de spec para procedimentos, não só código.
+- **Agile Alliance** — [*Definition of Done*](https://agilealliance.org/glossary/definition-of-done/) (2001+). DoD como precursor de acceptance criteria estruturado — SDD formaliza e versiona o que Scrum deixava informal.
+- **ISO/IEC 25010** — [*Software Quality Model*](https://www.iso.org/standard/35733.html) (2011). Framework de qualidade que mapeia para dimensões de spec: funcionalidade, confiabilidade, eficiência de desempenho, segurança.
+- **SOC 2 Type II** — [*System and Organization Controls (SOC) Suite of Services*](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services) (AICPA). Auditoria de controles que exige evidência de processo, não só resultado. Spec-anchored com audit trail no git atende a maioria dos critérios de evidência documental.
+- **SBOM (Software Bill of Materials) — CISA Guidelines** — [*Software Bill of Materials (SBOM)*](https://www.cisa.gov/sbom) (2023-2024). Rastreabilidade de componentes como extensão do conceito de spec para supply chain — tendência que converge com spec-as-source em 2026.

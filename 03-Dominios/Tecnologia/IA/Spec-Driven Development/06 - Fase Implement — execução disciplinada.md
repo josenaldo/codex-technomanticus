@@ -1,7 +1,7 @@
 ---
 title: "Fase Implement — execução disciplinada"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -70,7 +70,7 @@ O "contexto persistente" do SDD é o que diferencia sessões de agente com SDD d
 | **Task atual** | O que fazer neste turno especificamente | 100-300 tokens |
 | **Código relevante** | Código existente que a task modifica | Carregado JIT |
 
-A combinação cabe confortavelmente em 8-10K tokens, deixando ampla janela para reasoning e geração de código. Sem esse contexto, o agente começa do zero e toma decisões que conflitam com o plan.
+A combinação cabe confortavelmente em 8-10K tokens, deixando ampla janela para reasoning e geração de código. Sem esse contexto, o agente começa do zero e toma decisões que conflitam com o plan. Essa curadoria de "o que entra na janela a cada turno" é exatamente o problema que a trilha [[Context Engineering|05 - Camadas de contexto — persistente, temporal, transiente]] formaliza: spec e plan funcionam como contexto persistente (não muda a cada turno), enquanto a task atual é contexto transiente.
 
 > [!note] Context como pré-requisito
 > Implementar sem carregar spec + plan é equivalente a um dev júnior começar a codar sem ler os requisitos. A diferença é que o agente não tem como pedir esclarecimento implicitamente — ele vai inferir e a inferência vai ser plausível, não necessariamente correta.
@@ -335,16 +335,29 @@ O que nunca deve acontecer: **inferir e seguir adiante sem registro**. Inferênc
 
 ## Anti-patterns da fase Implement
 
-| Anti-pattern | Por que é problema |
-|---|---|
-| Pular tasks — fazer várias juntas | Perde rastreabilidade; regressões difíceis de localizar |
-| Não escrever teste antes de implementar | Code review descobre tarde; "done" vira subjetivo |
-| Mudar plan no commit message em vez de PR no plan | Drift silencioso; próxima sessão lê plan desatualizado |
-| Marcar task done com teste falhando | Destrói o sinal de qualidade; build fica vermelho "aceitável" |
-| Adicionar funcionalidade fora da spec | Viola o contrato; scope creep silencioso |
-| Sessões longas sem checkpoint de task | Perda em caso de erro; contexto polui próxima task |
-| Patchear teste para fazê-lo passar | O teste estava testando algo errado — corrija o teste com razão, não esconda o problema |
-| Decidir silenciosamente casos não cobertos pela spec | Spec e código divergem; bug aguarda em produção |
+> [!warning] Pular tasks — fazer várias juntas
+> Perde rastreabilidade; regressões difíceis de localizar.
+
+> [!warning] Não escrever teste antes de implementar
+> Code review descobre tarde; "done" vira subjetivo.
+
+> [!warning] Mudar plan no commit message em vez de PR no plan
+> Drift silencioso; próxima sessão lê plan desatualizado.
+
+> [!warning] Marcar task done com teste falhando
+> Destrói o sinal de qualidade; build fica vermelho "aceitável".
+
+> [!warning] Adicionar funcionalidade fora da spec
+> Viola o contrato; scope creep silencioso.
+
+> [!warning] Sessões longas sem checkpoint de task
+> Perda em caso de erro; contexto polui próxima task.
+
+> [!warning] Patchear teste para fazê-lo passar
+> O teste estava testando algo errado — corrija o teste com razão, não esconda o problema.
+
+> [!warning] Decidir silenciosamente casos não cobertos pela spec
+> Spec e código divergem; bug aguarda em produção.
 
 ## Implement em sistemas brownfield
 
@@ -368,6 +381,10 @@ A maioria dos projetos reais começa com a estratégia 2 ou 3, não com uma rees
 | Mudanças de plan durante Implement | < 2/feature | Plan incompleto = rework |
 | Tasks com decisão silenciosa (sem registro) | Zero | Toda decisão fora de spec deve ser registrada |
 
+## O que vem a seguir
+
+Implement produz código que passa nos testes que o próprio time escreveu — mas isso não garante que a spec, como um todo, continua sendo um contrato válido. A próxima fase, [[07 - Fase Validate — spec como contrato executável]], fecha esse ciclo: valida a feature completa contra a spec (não task por task) e decide se ela está pronta para produção.
+
 ## Veja também
 
 - [[05 - Fase Design e Plan — arquitetura e decomposição]]
@@ -388,5 +405,22 @@ A maioria dos projetos reais começa com a estratégia 2 ou 3, não com uma rees
 - **Amazon** — *Kiro Hooks: automating spec compliance in agent coding* (2026). Como hooks enforçam disciplina de implement automaticamente.
 - **Meszaros, G.** — *xUnit Test Patterns* (2007). Padrões de organização de testes que estruturam os testes de AC no SDD.
 - **Fowler, M.** — *Refactoring: Improving the Design of Existing Code* (2018). Refactoring separado de feature — princípio de tarefa atômica que SDD formaliza.
-- **Forsgren, N.; Humble, J.; Kim, G.** — *Accelerate: The Science of DevOps* (2018). Métricas DORA que SDD otimiza: lead time, deployment frequency, failure rate, recovery time.
-- **Noda, T.; Forsgren, N.** — *DORA 2025 State of DevOps Report* — evidências de que disciplina de commit pequeno e teste contínuo correlacionam com performance de elite.
+- **Forsgren, N.; Humble, J.; Kim, G.** — *Accelerate: The Science of DevOps* (2018). Métricas DORA que SDD otimiza: lead time, deployment frequency, failure rate, recovery time. [itrevolution.com/product/accelerate](https://itrevolution.com/product/accelerate/)
+- **DORA** — *State of AI-Assisted Software Development 2025* — evidências de que disciplina de commit pequeno e teste contínuo correlacionam com performance de elite. [dora.dev/dora-report-2025](https://dora.dev/dora-report-2025/)
+
+## Como explicar em inglês
+
+Em entrevistas e PRs em inglês, a fase Implement do SDD tem vocabulário próprio que não é intuitivo para quem só conhece "AI coding" genérico. A ideia central para comunicar: *"I don't let the agent freewheel — it works off a spec and a plan, one task at a time, test-first, and pauses instead of guessing when the spec doesn't cover a case."*
+
+| PT-BR | EN | Nota de uso |
+|---|---|---|
+| spec | spec / specification | Documento imutável durante Implement; "the spec is the source of truth" |
+| plan | plan | Roteiro técnico (ADRs, componentes); "quase imutável", exceção só com discovery crítico |
+| task | task | Unidade atômica de progresso; "one task per session" |
+| critério de aceitação | acceptance criteria (AC) | Binário — passa ou não passa; "the AC is the definition of done" |
+| test-first | test-first | Teste escrito a partir do AC antes do código; não confundir com TDD puro (aqui o teste vem da spec, não da intuição do dev) |
+| spec drift | spec drift | Divergência silenciosa entre spec e código; "silent drift is the #1 failure mode" |
+| task atômica | atomic task | Task pequena o bastante para não misturar duas mudanças; unidade de rastreabilidade |
+| scope creep | scope creep | Adicionar algo que a task não pede; "silent scope creep" |
+| rastreabilidade de commit | commit traceability | Commit referencia task + spec; "traceable from bug report back to the spec that should've prevented it" |
+| spec-anchored | spec-anchored | Código cuja origem e comportamento remetem a uma spec versionada, não a memória do time |

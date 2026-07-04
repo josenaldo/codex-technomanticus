@@ -1,7 +1,7 @@
 ---
 title: "Guia de implementação SDD — do zero ao projeto"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -23,6 +23,29 @@ aliases:
 > [!abstract] TL;DR
 > Esta nota é o roteiro prático para adotar SDD num projeto real, do zero. Não é teoria — é checklist semana-a-semana. Stack assumida: Spec Kit + Claude Code (mais documentado), mas o roteiro funciona com Kiro/Cursor/qualquer agente. Padrão recomendado: começar em **spec-first**, evoluir para **spec-anchored** após 2-4 semanas, considerar **spec-as-source** só se compliance ou domínio justificarem. Roadmap de 12 semanas para chegar em maturidade.
 
+Você já leu sobre o que é SDD, os níveis de rigor, as ferramentas disponíveis. Mas na segunda-feira de manhã, com o time esperando, a pergunta muda de "o que é SDD" para "por onde eu começo, hoje, neste projeto"? Instalar uma ferramenta não basta — spec-first exige decidir o que vira spec primeiro, quem revisa, e como o time absorve o hábito sem travar a entrega. Este guia é a resposta em forma de checklist: semana a semana, do "isso faz sentido pro meu projeto?" até a maturidade de métricas em CI, passando pelos tropeços mais comuns (adoção parcial, spec retroativa mal revisada, task grande demais) antes que eles aconteçam com você.
+
+```mermaid
+sequenceDiagram
+    participant Dev as Dev/Time
+    participant Agente as Agente (Claude Code etc.)
+    participant Spec as spec.md
+    participant CI as CI (gates)
+
+    Dev->>Spec: escreve spec (Overview, AC, NFR)
+    Agente-->>Dev: draft da spec (revisão humana)
+    Dev->>Agente: specify plan
+    Agente-->>Spec: gera plan.md (arquitetura, ADRs)
+    Dev->>Agente: specify tasks
+    Agente-->>Spec: gera tasks.md (regra das 3h)
+    loop task por task
+        Agente->>Agente: implementa 1 task no escopo
+        Agente->>CI: AC da task com teste passando
+    end
+    CI->>CI: AC coverage 100% + drift gate
+    CI-->>Dev: PR verde ou bloqueado
+```
+
 ## Pré-requisitos
 
 > [!info] O que precisa estar no lugar
@@ -32,6 +55,9 @@ aliases:
 > 4. **Pelo menos um agente configurado** (Claude Code, Cursor, Kiro)
 > 5. **Time de acordo** — SDD não funciona com adoção parcial; se um dev ignora, contamina o restante
 > 6. **Prompt caching ativo** se possível — specs são prefix cacheável ideal, geram saving real
+
+> [!warning] Adoção parcial contamina o restante
+> SDD é uma prática de projeto, não de módulo. Se um dev decide "meu módulo não precisa de spec", o drift dele volta a vazar pros módulos vizinhos (contratos quebrados, specs desatualizadas que ninguém mais confia). O time inteiro precisa topar antes de começar — não dá pra rodar SDD "pela metade" e esperar os benefícios inteiros.
 
 ## Semana 0 — Decisão de adoção
 
@@ -182,6 +208,9 @@ Sintomas de task grande demais:
 - Tem mais de 3 ACs próprios
 - Mistura camadas diferentes (model + service + endpoint na mesma task)
 
+> [!warning] Task grande demais quebra a regra das 3h — e quebra o CIV
+> Uma task que estoura 3h não é só "mais devagar": ela mistura camadas, dificulta revisão e — se você mais tarde adotar [[09 - SDD com agentes — coordinator, implementor, validator|multi-agent SDD]] — impede paralelização no DAG, porque o validator não consegue isolar o que deu certo do que deu errado dentro da mesma task. Quebrar cedo é mais barato que quebrar depois de descobrir que a task travou o pipeline inteiro.
+
 ### Implement
 
 Use o agente já configurado (Claude Code, Cursor) com instrução explícita:
@@ -282,7 +311,8 @@ bmad audit src/payments/
 # → Sugere ordem de priorização
 ```
 
-**Cuidado**: spec retroativa descreve comportamento atual, não o comportamento desejado. Se o código tem bugs, a spec retroativa os captura. Revise com cuidado.
+> [!warning] Spec retroativa descreve bugs como se fossem desejados
+> `reverse-engineer`/`audit` lê o código como ele é, não como deveria ser. Se o `refund.ts` tem um bug de arredondamento, a spec gerada documenta esse arredondamento como comportamento esperado — e a partir daí o drift gate passa a *proteger* o bug, porque qualquer correção futura vira "desvio da spec". Revise a spec retroativa linha a linha antes de aprovar; trate-a como rascunho, nunca como fonte de verdade automática.
 
 ## Semanas 5-8 — Subir para spec-anchored
 
@@ -411,6 +441,30 @@ Em Kiro: custom subagents resolvem o CIV nativamente sem setup adicional.
 | Volume de specs explodiu | Tasks grandes demais | Refine granularidade (regra das 3h) |
 | Agente ignora spec e improvisa | AGENTS.md não tem instrução SDD | Adicione seção obrigatória no AGENTS.md |
 
+## Como explicar em inglês
+
+Se você vai defender esse roteiro num time internacional ou numa entrevista técnica, vale ter o vocabulário pronto — os termos em português deste guia (spec, critério de aceitação, task) têm equivalentes específicos em inglês que não são tradução literal palavra-por-palavra.
+
+| PT-BR | EN |
+|---|---|
+| especificação | specification / spec |
+| critério de aceitação | acceptance criterion |
+| desvio (da spec) | drift |
+| âncora (spec como referência viva) | anchor |
+| validação (gate de CI) | validation / gate |
+| tarefa | task |
+| granularidade (da task) | task granularity |
+| adoção incremental | incremental adoption |
+| retroativa (spec de código existente) | retroactive (spec) |
+| manutenção de spec | spec maintenance |
+
+> [!example] Frase pronta
+> "We adopted spec-driven development incrementally: spec-first for new features, then retroactive specs for the riskiest legacy contracts, with a drift gate enforcing 100% acceptance-criterion coverage in CI."
+
+## O que vem a seguir
+
+Este guia assume que SDD vale o investimento — mas essa é uma posição, não um consenso. Depois de rodar as primeiras semanas (ou antes, se quiser entender o outro lado antes de convencer o time), veja [[12 - Debates — spec-as-source vs pragmatismo]] para a crítica mais afiada ao rigor total: overhead de manutenção de spec, o risco de burocracia sem ganho real, e quando pragmatismo vence spec-as-source.
+
 ## Veja também
 
 - [[02 - O que é Spec-Driven Development]]
@@ -421,10 +475,10 @@ Em Kiro: custom subagents resolvem o CIV nativamente sem setup adicional.
 
 ## Referências
 
-- **GitHub Blog** — *Spec-driven development with AI: Get started* (2025). Tutorial oficial Spec Kit.
-- **Microsoft for Developers** — *Diving Into Spec-Driven Development With GitHub Spec Kit* (2026). Walkthrough hands-on.
-- **Augment Code** — *What Is Spec-Driven Development? A Complete Guide* (2026). Guia abrangente.
-- **Zencoder Docs** — *A Practical Guide to Spec-Driven Development* (2026). Práticas de brownfield.
-- **DeepLearning.AI / JetBrains** — *Spec-Driven Development with Coding Agents* course (abr 2026). Curso com casos práticos.
-- **BMAD** — *Brownfield multi-agent development documentation* (2026). Adoção incremental.
-- **Hashrocket** — *30-day SDD adoption retrospective* (2026). Dados reais de time adotando SDD.
+- **GitHub Blog** — [*Spec-driven development with AI: Get started with a new open source toolkit*](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/) (2025). Tutorial oficial Spec Kit.
+- **Microsoft for Developers** — [*Diving Into Spec-Driven Development With GitHub Spec Kit*](https://developer.microsoft.com/blog/spec-driven-development-spec-kit) (2025). Walkthrough hands-on.
+- **Augment Code** — [*What Is Spec-Driven Development? A Complete Guide*](https://www.augmentcode.com/guides/what-is-spec-driven-development) (2026). Guia abrangente.
+- **Zencoder Docs** — [*A Practical Guide to Spec-Driven Development*](https://docs.zencoder.ai/user-guides/tutorials/spec-driven-development-guide) (2026). Práticas de brownfield.
+- **DeepLearning.AI / JetBrains** — [*Spec-Driven Development with Coding Agents*](https://www.deeplearning.ai/courses/spec-driven-development-with-coding-agents) course (abr 2026). Curso com casos práticos.
+- **BMAD** — [*Working in the Brownfield*](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/working-in-the-brownfield.md) (2026). Adoção incremental em projetos legados.
+- **Hashrocket** — *30-day SDD adoption retrospective* (URL a confirmar — não localizei via busca um artigo específico da Hashrocket sobre retrospectiva de 30 dias; a Hashrocket publica sobre SDD em [hashrocket.com/blog](https://hashrocket.com/blog/posts/from-spec-to-shipping-how-developers-implement-features-with-ai-driven-workflows), mas não confirmei este título exato).

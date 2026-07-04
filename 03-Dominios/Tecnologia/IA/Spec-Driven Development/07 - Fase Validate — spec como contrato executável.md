@@ -1,7 +1,7 @@
 ---
 title: "Fase Validate — spec como contrato executável"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -334,15 +334,26 @@ Esse mecanismo torna a sincronia **obrigatória por construção**, não por dis
 
 ## Anti-patterns na fase Validate
 
-| Anti-pattern | Consequência |
-|---|---|
-| Validation só pré-merge, não durante PR | Descoberta tardia; maior custo de correção |
-| AC sem ID único | Impossível vincular automaticamente a teste |
-| NFRs como comentário na spec, sem gate | NFR nunca verificado; viola em prod sem alerta |
-| Drift gate em modo "warning" | Ninguém olha warnings; drift cresce silenciosamente |
-| Out-of-scope gate muito rígido (regex) | Falsos positivos → time desabilita o gate |
-| LLM critic como gate bloqueante | Falsos positivos de LLM param merges legítimos |
-| Validation pipeline > 15 min | Time começa a bypassar porque "demora muito" |
+> [!warning] Validation só pré-merge, não durante PR
+> Descoberta tardia; maior custo de correção.
+
+> [!warning] AC sem ID único
+> Impossível vincular automaticamente a teste.
+
+> [!warning] NFRs como comentário na spec, sem gate
+> NFR nunca verificado; viola em prod sem alerta.
+
+> [!warning] Drift gate em modo "warning"
+> Ninguém olha warnings; drift cresce silenciosamente.
+
+> [!warning] Out-of-scope gate muito rígido (regex)
+> Falsos positivos → time desabilita o gate.
+
+> [!warning] LLM critic como gate bloqueante
+> Falsos positivos de LLM param merges legítimos.
+
+> [!warning] Validation pipeline > 15 min
+> Time começa a bypassar porque "demora muito".
 
 ## Quando Validate falha com frequência excessiva
 
@@ -368,12 +379,34 @@ Validate é proporcional ao nível de rigor. Forçar gates de spec-as-source num
 | Falsos positivos do drift gate | < 2% | Acima → gate vira ruído, desabilitado |
 | Pipeline falha por razões incorretas | 0 | Gate com bug é pior que sem gate |
 
+## Como explicar em inglês
+
+Em entrevista ou reunião com time internacional, "Validate" não é só "validação" — é o gate que torna a spec **enforceable**. Vale ensaiar a frase-chave: *"Validate turns the spec into an executable contract — CI fails if the code drifts from what the spec promises."*
+
+| PT-BR | EN |
+|---|---|
+| validação | validation |
+| contrato executável | executable contract |
+| critério de aceitação | acceptance criterion |
+| desvio / drift | drift |
+| cobertura | coverage |
+| pipeline de CI | CI pipeline |
+| gate de qualidade | quality gate |
+| NFR (requisito não funcional) | NFR (non-functional requirement) |
+| detecção de drift | drift detection |
+| especificação viva | living spec |
+
+## O que vem a seguir
+
+Validate fecha o ciclo canônico (Specify → Plan → Implement → Validate), mas quem concretiza os gates descritos aqui é a ferramenta escolhida — Kiro, Spec Kit, OpenSpec ou Tessl implementam coverage/drift/NFR gates de formas bem diferentes. [[08 - Ferramentas SDD — Kiro, Spec Kit, OpenSpec, Tessl]] compara essas implementações lado a lado.
+
 ## Veja também
 
 - [[06 - Fase Implement — execução disciplinada]]
 - [[09 - SDD com agentes — coordinator, implementor, validator]]
 - [[10 - Integração com context engineering — specs como contexto persistente]]
 - [[03 - Níveis de rigor — spec-first, spec-anchored, spec-as-source]]
+- [[12 - Guardrails determinísticos]] (Context Engineering) — os gates de Validate são a mesma ideia de "guardrail determinístico" aplicada ao ciclo SDD: regra dura que bloqueia, não sugestão que o agente pode ignorar.
 
 ## Referências
 
@@ -382,10 +415,10 @@ Validate é proporcional ao nível de rigor. Forçar gates de spec-as-source num
 - **Augment Code** — *AI Agent Workflows: Validation and Drift Detection* (2026).
 - **OpenSpec Initiative** — *Archive state and validation requirements* (2025).
 - **Tessl** — *Continuous spec validation during development* (2026). Modelo de validation em tempo real.
-- **arxiv:2512.08769** — *A Practical Guide for Designing, Developing, and Deploying Production-Grade Agentic AI Workflows* (2025).
+- **arxiv:2512.08769** — *A Practical Guide for Designing, Developing, and Deploying Production-Grade Agentic AI Workflows* (2025). https://arxiv.org/abs/2512.08769
 - **Anadea** — *CI/CD Pipelines for AI Agent Development* (2026). Integração de SDD validation em pipelines existentes.
-- **k6** — *Load testing tool* — referência para NFR gates de latência automatizados.
-- **OWASP** — *OWASP Zap* — referência para NFR gates de segurança automatizados.
+- **k6** — *Load testing tool* — referência para NFR gates de latência automatizados. https://grafana.com/docs/k6/
+- **OWASP** — *OWASP Zap* — referência para NFR gates de segurança automatizados. https://www.zaproxy.org/
 - **pytest-cov** — Coverage report para NFR de cobertura de testes.
 - **Forsgren, N. et al.** — *Accelerate* (2018). DORA metrics que Validate mede: change failure rate, lead time.
 - **Rossman, S.** — *Behavior-Driven Development with Cucumber* (2019). BDD como precursor do acceptance test gate: specification examples como testes executáveis.

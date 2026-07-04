@@ -1,7 +1,7 @@
 ---
 title: "Ferramentas SDD — Kiro, Spec Kit, OpenSpec, Tessl"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-03
 type: concept
 progress: complete
 status: evergreen
@@ -47,6 +47,9 @@ Dois critérios organizam essa taxonomia:
 ## GitHub Spec Kit — o padrão open source
 
 Lançado em 2025 pelo GitHub, licença MIT. Em abril de 2026: 88k stars, 129 releases, suporte a 28+ AI coding agents (GitHub Copilot, Claude Code, Gemini CLI, Cursor, Windsurf, Aider, e outros).
+
+> [!warning] Número datado — cheque antes de citar
+> A contagem de stars muda rápido: em jun/2026 o repositório já passava de 100k stars (relatos apontam ~111k), contra os 88k registrados aqui em abril/2026. Antes de citar um número exato numa conversa ou proposta, confira ao vivo em [github.com/github/spec-kit](https://github.com/github/spec-kit) — não reutilize o valor desta nota como se fosse atual.
 
 O Spec Kit implementa exatamente o pipeline SDD canônico em 4 fases via CLI:
 
@@ -172,7 +175,10 @@ openspec audit src/
 
 ## Kiro — a aposta da Amazon
 
-Kiro foi lançado em junho de 2025 como "the spec-first IDE for AI coding". Em 2027, substituirá Amazon Q Developer (end-of-support confirmado para 30/abr/2027). Tecnicamente, Kiro usa Claude como engine de agente por baixo.
+Kiro foi lançado em junho de 2025 como "the spec-first IDE for AI coding". Em 2027, substituirá Amazon Q Developer (end-of-support confirmado para 30/abr/2027, com novos cadastros já bloqueados desde mai/2026). Tecnicamente, Kiro usa Claude como engine de agente por baixo.
+
+> [!warning] Kiro sem steering files é Kiro sem memória
+> Adotar Kiro e ignorar `.kiro/steering/` é o erro mais comum de quem migra de um CLI simples (tipo Spec Kit) achando que basta trocar de ferramenta. Sem steering files, o agente não tem onde guardar convenções de stack, padrões de código e formato de AC entre sessões — cada spec nova reaprende do zero, e o time perde exatamente a vantagem "living-spec" que justificava escolher Kiro em vez de um static-spec tool.
 
 Kiro representa uma abordagem diferente: em vez de CLI + editor separados, é uma IDE completa construída em torno do paradigma spec-first.
 
@@ -262,6 +268,9 @@ Enquanto Spec Kit e Kiro usam spec como contexto para um agente que escreve cód
 Vantagem: drift é impossível por construção (código gerado não pode divergir da spec).
 Custo: domínio precisa ser modelável formalmente; team tem curva de aprendizado maior.
 
+> [!warning] Tessl exige domínio formalmente modelável — nem todo domínio é
+> A promessa de "drift impossível por construção" só se paga se o domínio se deixa descrever em linguagem formal sem perda. CRUD e APIs RESTful modelam bem; regras de negócio ambíguas, fluxos exploratórios ou domínios com muita exceção informal (o tipo de coisa que um humano resolveria "no bom senso") resistem à formalização — e o time acaba gastando a curva de aprendizado íngreme de Tessl para modelar algo que nunca converge limpo. Avalie a modelabilidade do domínio antes de comprar a ferramenta, não depois.
+
 ### Quando usar Tessl
 
 | Situação | Tessl? |
@@ -319,6 +328,9 @@ graph TD
 | OpenSpec + Spec Kit | ⚠️ | Filosofias similares; redundante |
 | Qualquer ferramenta + CI/CD | ✅ | `specify verify`, `openspec verify`, CI hooks do Kiro |
 
+> [!warning] Kiro e Spec Kit em paralelo — sobreposição, não soma
+> Os dois modelam o mesmo pipeline (spec → plan → tasks → implement) com formatos de arquivo diferentes (`.kiro/specs/` vs `specs/<feature>/spec.md`). Rodar ambos no mesmo projeto não dá "dupla cobertura" — dá duas fontes de verdade divergentes, cada uma achando que é a autoritativa, e o agente de cada ferramenta lendo só a sua. Escolha um antes de começar; migrar de um para o outro no meio do projeto é retrabalho, não é composição.
+
 ## Custo de adoção
 
 | Ferramenta | Curva de aprendizado | Setup inicial | Time até productivo |
@@ -340,6 +352,13 @@ Para times que estão escolhendo agora (jun 2026):
 
 A armadilha: escolher Kiro ou Tessl antes de ter maturidade em SDD é superengenharia. A ferramenta não substitui a prática — e a prática você aprende mais rápido com Spec Kit.
 
+> [!warning] Esta recomendação está datada (jun/2026)
+> O ecossistema de ferramentas SDD mudou de forma rápida ao longo de 2025-2026 — Spec Kit passou de dezenas de milhares para mais de 100k stars em poucos meses, e o cronograma de fim de suporte do Q Developer (30/abr/2027) empurra adoção de Kiro no meio desse período. Trate "comece com Spec Kit" como o ponto de partida razoável em jun/2026, não como verdade atemporal — revalide o panorama antes de recomendar a um time daqui a 6-12 meses.
+
+## O que vem a seguir
+
+Escolher a ferramenta certa resolve só metade do problema: ela estrutura o *artefato* (spec, plan, tasks), mas não decide *quem* — humano ou agente — executa cada fase do pipeline, nem como múltiplos agentes se coordenam sem pisar um no outro. É esse o assunto de [[09 - SDD com agentes — coordinator, implementor, validator]], que detalha os papéis de coordinator, implementor e validator dentro do fluxo que Spec Kit, Kiro, OpenSpec e Tessl automatizam de formas diferentes.
+
 ## Veja também
 
 - [[09 - SDD com agentes — coordinator, implementor, validator]]
@@ -349,12 +368,12 @@ A armadilha: escolher Kiro ou Tessl antes de ter maturidade em SDD é superengen
 
 ## Referências
 
-- **GitHub** — *spec-kit GitHub repository* (2026). 88k+ stars, 129 releases.
+- **GitHub** — *spec-kit GitHub repository* (2026). 88k+ stars (abr/2026; ver callout de caducidade acima), 129 releases. [github.com/github/spec-kit](https://github.com/github/spec-kit)
 - **Fission-AI** — *OpenSpec GitHub repository* (2026). Open source, npm-first.
-- **Amazon** — *Kiro official site e documentation* (kiro.dev, 2026).
-- **Martin Fowler** — *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl* (2026). Análise comparativa independente.
+- **Amazon** — *Kiro official site e documentation* (2026). [kiro.dev](https://kiro.dev/)
+- **Martin Fowler** — *Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl* (2025-2026). Análise comparativa independente. [martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)
 - **AWS Industries Blog** — *From spec to production: drug discovery agent using Kiro* (2026). Caso real de uso enterprise.
 - **Augment Code** — *6 Best Spec-Driven Development Tools for AI Coding in 2026* (2026). Análise living-spec vs static-spec.
 - **Hashrocket** — *OpenSpec vs Spec Kit: Choosing the Right AI-Driven Development Workflow* (2026). Comparativo hands-on.
 - **DeepLearning.AI** — *Spec-Driven Development with Coding Agents* (abr 2026). Curso usando Spec Kit + agentes.
-- **Amazon** — *Amazon Q Developer end-of-support announcement* (2026). Contexto da transição Q→Kiro.
+- **AWS DevOps & Developer Productivity Blog** — *Amazon Q Developer end-of-support announcement* (30/abr/2026). Confirma fim de suporte de IDE plugins e assinaturas pagas em 30/abr/2027, com bloqueio de novos cadastros já em mai/2026. [aws.amazon.com/blogs/devops/amazon-q-developer-end-of-support-announcement](https://aws.amazon.com/blogs/devops/amazon-q-developer-end-of-support-announcement/)

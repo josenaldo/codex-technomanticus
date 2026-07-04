@@ -353,6 +353,30 @@ Para times que estão no meio do ciclo e precisam fazer a transição, os dados 
 
 O custo de saída é real — mas é menor do que o custo de permanecer.
 
+## Como explicar em inglês
+
+Se você precisa discutir esse problema em inglês — numa entrevista, num post-mortem com stakeholders internacionais, ou revisando um PR de um time distribuído — vale ter os termos centrais na ponta da língua. Alguns deles não têm tradução literal boa; "traduzir ao pé da letra" costuma soar estranho ou impreciso.
+
+| Português | Inglês | Nota de uso |
+|---|---|---|
+| Vibe coding | Vibe coding | Não traduz — é o termo cunhado por Karpathy; usar em inglês mesmo em texto PT |
+| Dívida técnica | Tech debt | "Technical debt" é a forma completa; "tech debt" é o uso corrente no dia a dia |
+| Especificação | Spec | "Specification" é formal; "spec" é o termo do dia a dia em times de engenharia |
+| Deriva de contexto | Context drift | O agente perde ou nunca teve acesso ao contexto de decisões anteriores |
+| Critério de aceitação | Acceptance criteria | Sempre no plural em inglês, mesmo referindo-se a um critério só do conjunto |
+| Regressão | Regression | Bug que reaparece ou surge por quebra de algo que já funcionava |
+| Raio de explosão | Blast radius | Extensão do impacto de uma falha; termo emprestado de segurança/infra |
+| Descompasso de velocidade | Velocity mismatch | Desbalanço entre taxa de geração de código (agente) e taxa de revisão (humano) |
+| Revisão de código | Code review | Praticamente idêntico ao PT; cuidado para não dizer "code revision" (erro comum) |
+| Alucinação | Hallucination | Modelo gera algo plausível mas falso (ex: import de lib que não existe) |
+
+> [!tip] Frase de transição útil
+> Em vez de "the AI made a mistake", prefira algo mais preciso em contexto técnico: *"the model hallucinated a dependency because the prompt didn't constrain the available libraries"* — nomeia o mecanismo, não só o sintoma. Isso comunica que você entende a causa, não só o efeito.
+
+## O que vem a seguir
+
+Entender o problema é necessário, mas não constrói nada. A próxima nota da trilha, [[02 - O que é Spec-Driven Development]], define o que exatamente é uma "spec" nesse contexto — não é voltar a escrever documentos de requisitos de 40 páginas que ninguém lê. É definir o menor artefato possível que consiga carregar intent, constraints e critério de sucesso de um jeito que tanto humano quanto agente conseguem seguir. Se este capítulo respondeu "por que isso é um problema", o próximo responde "o que fazer a respeito, na prática".
+
 ## Veja também
 
 - [[02 - O que é Spec-Driven Development]]
@@ -381,14 +405,14 @@ O vibe coding, paradoxalmente, pode piorar a experiência de desenvolvimento mes
 ## Referências
 
 - **Andrej Karpathy** — *"Vibe coding"* (X/Twitter, fev 2025). Cunhou o termo.
-- **Veracode** — *2025 GenAI Code Security Report* (2025). 45% falhas de segurança.
-- **Salesforce Ben** — *2026 Predictions: It's the Year of Technical Debt* (jan 2026).
-- **Pixelmojo** — *The AI Coding Technical Debt Crisis* (2026).
-- **Tech Startups** — *The Vibe Coding Delusion* (dez 2025).
-- **arxiv:2512.11922** — *Vibe Coding in Practice: Flow, Technical Debt* (2025).
-- **GitClear** — *Coding on Copilot 2025 Annual Report* — métricas de produtividade real com AI coding tools.
-- **Gartner** — *AI Engineering Survey Q1 2026* — 67% de times com aumento de incidentes.
-- **Augment Code** — *The Rise of Spec-Driven Development* (2026).
+- **Veracode** — *2025 GenAI Code Security Report* (2025). 45% falhas de segurança. https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/
+- **Salesforce Ben** — *2026 Predictions: It's the Year of Technical Debt* (jan 2026). (URL a confirmar)
+- **Pixelmojo** — *The AI Coding Technical Debt Crisis* (2026). (URL a confirmar)
+- **Tech Startups** — *The Vibe Coding Delusion* (dez 2025). (URL a confirmar)
+- **arxiv:2512.11922** — Waseem, Ahmad, Kemell, Rasku, Lahti, Mäkelä, Abrahamsson — *Vibe Coding in Practice: Flow, Technical Debt, and Guidelines for Sustainable Use* (2025). https://arxiv.org/abs/2512.11922
+- **GitClear** — *AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones* — métricas de produtividade real com AI coding tools. https://www.gitclear.com/ai_assistant_code_quality_2025_research
+- **Gartner** — *AI Engineering Survey Q1 2026* — 67% de times com aumento de incidentes. (URL a confirmar)
+- **Augment Code** — spec-driven development como resposta à crise de qualidade (referência a confirmar — não foi possível localizar artigo específico com o título "The Rise of Spec-Driven Development"; ver conteúdo relacionado em https://www.augmentcode.com/guides/what-is-spec-driven-development)
 - **Amazon** — *Kiro IDE: Spec-First Development* (jun 2026).
 - **IBM** — *Cost of a Data Breach Report 2025* — custo médio de US$ 4,88M por breach.
 - **Stack Overflow** — *Developer Survey 2026* — satisfação de devs em ambientes AI-heavy.
