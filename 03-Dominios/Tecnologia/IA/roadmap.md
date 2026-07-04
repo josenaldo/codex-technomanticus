@@ -36,7 +36,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 3 | [[Spec-Driven Development]] | 12 | 0 | 0 | 12 | 100% | ✅ completo (2026-07-03, fan-out ≤3 verificado) | ✅ |
 | 4 | [[Economia de Tokens]] | 22 | 0 | 2 | 20 | 100% | ✅ completo (2026-07-04, 20/20 via fan-out ≤3 verificado; 05·09 dispensadas) | ✅ |
 | 5 | [[Context Engineering]] | 16 | 0 | 9 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
-| 6 | [[Agentes de Codificação]] | 18 | 15 | 3 | 0 | 17% | 📋 diagnosticado | ✅ |
+| 6 | [[Agentes de Codificação]] | 18 | 12 | 3 | 3 | 33% | 🔶 parcial (2026-07-04, notas 01·03·05 via fan-out ≤3 verificado) | ✅ |
 | 7 | [[AI Engineering Stack]] | 13 | 12 | 1 | 0 | 8% | 📋 diagnosticado | ✅ |
 | 8 | [[RAG e Vector Databases]] | 13 | 12 | 1 | 0 | 8% | 📋 diagnosticado | ✅ |
 | 9 | [[MCP]] | 10 | 10 | 0 | 0 | 0% | 📋 diagnosticado | ✅ |

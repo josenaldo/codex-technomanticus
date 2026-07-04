@@ -1,7 +1,7 @@
 ---
 title: O comprehension gate
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-04
 type: concept
 status: growing
 publish: true
@@ -381,7 +381,9 @@ O vocabulário do comprehension gate é majoritariamente inglês — os artigos 
 
 ## O que vem a seguir
 
-O comprehension gate é o mecanismo central da disciplina — mas ele precisa de infraestrutura ao redor para funcionar bem em projetos reais. Duas peças complementares:
+O gate é um princípio de julgamento humano — mas julgamento não acontece no vácuo, acontece dentro de uma ferramenta. E é aí que a próxima nota entra: [[04 - Cursor — AI-native IDE]] mostra o primeiro ambiente onde o gate precisa operar na prática — um IDE que gera diffs multi-file inteiros, Composer e Agent Mode incluídos. Entender a arquitetura do Cursor antes de seguir adiante ajuda a enxergar onde exatamente o desenvolvedor pode inserir o momento de "explicar por que" no meio de um fluxo desenhado para velocidade.
+
+Além dessa próxima parada, o comprehension gate também se apoia em outras peças de infraestrutura que aparecem mais adiante na trilha. Duas delas merecem menção como contexto adicional:
 
 A primeira é o **context file** (`agents.md`, `CLAUDE.md`): se o agente souber de antemão quais são os padrões do projeto, os domínios de risco máximo e as restrições explícitas, ele vai gerar código mais reviewável — menos surpresas fora do escopo, menos escolhas arbitrárias que o gate precisa questionar. A nota [[14 - agents.md e configuração de projeto]] explica como configurar esse contexto.
 

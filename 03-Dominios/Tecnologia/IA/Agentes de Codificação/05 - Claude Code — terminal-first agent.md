@@ -32,6 +32,9 @@ A distinção fundamental é de modelo mental: o Cursor é um *editor* que ganho
 
 ## Por que importa
 
+> [!info] Dados com prazo de validade
+> "Melhor reasoning do mercado" e liderança em SWE-bench são afirmações de um ponto no tempo (2026) — a corrida entre Anthropic, OpenAI e Google se move rápido o suficiente para que benchmarks de hoje fiquem defasados em poucos meses. Ao ler esta seção depois, verifique se o modelo e os números ainda batem com o estado da arte atual.
+
 Existem centenas de AI coding tools, mas Claude Code tem diferenciais estruturais que importam na prática:
 
 - **Melhor reasoning** do mercado para código em 2026: Claude Opus 4 lidera em SWE-bench (resolução de issues reais do GitHub) e em benchmarks de debugging complexo — o mesmo modelo usado pelo Claude Code Pro.
@@ -55,6 +58,9 @@ Claude Code foi lançado como preview em dezembro de 2024 e passou para GA em 20
 | Nov/2025 | Workflow orchestration: spawn de múltiplos subagentes em paralelo via scripts JavaScript |
 | Fev/2026 | Web search nativo integrado sem necessidade de MCP externo |
 | 2026 | Padrão `opusplan` estabelecido: Opus planeja decisões, Sonnet executa a implementação |
+
+> [!info] Dados com prazo de validade
+> Esta linha do tempo termina em 2026 e `opusplan` é o padrão vigente *hoje* — mas a cadência de releases do Claude Code tem sido rápida (múltiplos marcos por ano). Espere que a Anthropic estabeleça um novo padrão de split modelo-planejador/modelo-executor conforme novos modelos forem lançados; confirme a versão atual antes de citar `opusplan` como estado da arte.
 
 A curva de adoção acelerou porque CI/CD, automação, e servidores remotos são cenários que IDEs gráficos não cobrem — e Claude Code é o único agente de codificação com raciocínio de primeira linha nesse espaço.
 
@@ -268,6 +274,9 @@ Claude Code suporta MCP servers nativamente:
 
 Claude Code é cobrado por tokens — cada edição de arquivo, cada comando executado, cada análise de output consome tokens. Em sessões longas com Opus, o custo pode chegar a US$20-50/dia.
 
+> [!info] Dados com prazo de validade
+> Preços por token e nomes de modelo (Haiku 4.5, Sonnet 4.6, Opus 4) mudam com frequência — a Anthropic já revisou preços e lançou novas versões de modelo várias vezes desde o preview do Claude Code. Confira a [documentação oficial de preços](https://docs.anthropic.com/claude-code) antes de usar estes números para orçamento real.
+
 | Modelo | Custo (input/output por 1M tokens) | Ideal para |
 | ------ | ---------------------------------- | ---------- |
 | Claude Haiku 4.5 | US$0,80/US$4 | Lookups pontuais, leitura, tasks triviais |
@@ -370,7 +379,7 @@ Claude Code tem vocabulário técnico específico — especialmente relevante em
 
 ## O que vem a seguir
 
-Claude Code é a âncora terminal do galho — a referência para quando a tarefa exige raciocínio profundo, automação sem GUI, ou integração em pipelines. Os passos naturais:
+Claude Code é a âncora terminal do galho — a referência para quando a tarefa exige raciocínio profundo, automação sem GUI, ou integração em pipelines. Mas o terminal é só um dos caminhos possíveis: o passo natural agora é olhar para o extremo oposto do espectro de adoção. Enquanto Claude Code exige conforto com CLI e é a escolha de quem já vive em SSH e pipelines, o [[06 - GitHub Copilot e Copilot Agents|GitHub Copilot]] chegou primeiro, está embutido no editor que a maioria dos devs já usa, e hoje é o maior ecossistema de codificação por IA do mercado — a diferença não é só de interface, é de filosofia: de um agente que você invoca deliberadamente para um assistente que já está lá, integrado ao fluxo do dia a dia. Os passos naturais:
 
 **OpenCode** (nota [[10 - OpenCode — o harness open source]]) é a alternativa open-source — mesmo paradigma de agente CLI, sem dependência de Anthropic. Útil para times que precisam de controle total da infraestrutura ou querem rodar modelos locais sem round-trip pela nuvem.
 

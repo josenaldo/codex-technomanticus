@@ -35,24 +35,26 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| ⬜ pendente | 15 |
+| ⬜ pendente | 12 |
 | ➖ não precisa | 3 |
-| ✅ feita | 0 |
+| ✅ feita | 3 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 20% |
+
+> [!note] Sessão 2026-07-04. +3 notas (01·03·05) em 1 onda de ≤3 + verify inline. Restam ⬜: 06·07·08·09·10·11·12·13·14·15·17·18 (12). Pausa pela **parada das 15** (14 notas enriquecidas na sessão contando o galho Economia de Tokens) — /clear e retomar. Bloco de 5h resetou (projeção 8%, folga total de tokens); o limite aqui é higiene de contexto, não governança de tokens.
 
 ---
 
 ## Notas
 
 #### 01 - De autocomplete a agentes autônomos   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 405 linhas · fase: AUSENTE (gap — galho usa `fase:`, nota 01 deveria ser Iniciado) · status: growing
 - **Núcleo/gaps:** P1
 - **Score:** 11/12
 - **Plano de execução:**
   - Adicionar `fase: Iniciado` ao frontmatter — único gap; conteúdo já sólido, sem mudança estrutural necessária
-- **Resultado:** —
+- **Resultado:** `fase: Iniciado` adicionada ao frontmatter (405 linhas, acima do piso Iniciado ≥300). Único gap fechado, sem mudança de conteúdo.
 
 #### 02 - Vibe coding vs engenharia disciplinada   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -64,13 +66,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 03 - O comprehension gate   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 409 linhas · fase: Adepto · status: growing / progress: done
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Reescrever a abertura de "## O que vem a seguir" para nomear explicitamente [[04 - Cursor — AI-native IDE]] como próxima nota, com motivação narrativa; manter as pontes atuais para 14/16/18 como contexto adicional
-- **Resultado:** —
+- **Resultado:** 409→410 linhas. Abertura de "O que vem a seguir" reescrita nomeando `[[04 - Cursor — AI-native IDE]]` (irmão confirmado existir) com motivação narrativa (o gate opera dentro da ferramenta, Cursor é onde isso aparece na prática); pontes 14/16/18 mantidas como contexto. E5 quitado. Sem alteração factual do corpo.
 
 #### 04 - Cursor — AI-native IDE   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -83,14 +85,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 05 - Claude Code — terminal-first agent   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-04)
 - **Estado:** 408 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar parágrafo narrativo de abertura em "O que vem a seguir" apontando para [[06 - GitHub Copilot e Copilot Agents]] como próximo passo — do agente terminal da Anthropic para o maior ecossistema de codificação IA do mercado
   - ⚠️ Data de validade: tabela de custo/modelos, seção "Por que importa" e histórico (opusplan) têm dados caducáveis — adicionar `[!info]` de caducidade
-- **Resultado:** —
+- **Resultado:** 409→417 linhas. Abertura de "O que vem a seguir" contrastando Claude Code (terminal-first) com `[[06 - GitHub Copilot e Copilot Agents]]` (maior ecossistema, embutido no editor) — irmão confirmado. 3 `[!info]` de caducidade (seção "Por que importa", histórico opusplan, tabela custo/modelos) envolvendo dados já existentes — nenhum preço/modelo/data inventado ou alterado. E5 + caducidade quitados.
 
 #### 06 - GitHub Copilot e Copilot Agents   [substantivo]
 - **Enriquecimento:** ⬜ pendente

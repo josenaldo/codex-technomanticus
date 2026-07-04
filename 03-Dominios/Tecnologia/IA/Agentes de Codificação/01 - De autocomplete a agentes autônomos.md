@@ -14,6 +14,7 @@ aliases:
   - Autocomplete vs agentes
   - Coding agents evolution
 progress: done
+fase: Iniciado
 ---
 # De autocomplete a agentes autônomos
 
