@@ -1,7 +1,7 @@
 ---
 title: "Multi-agent — workflows com múltiplos agentes"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-05
 type: concept
 fase: Adepto
 progress: done
@@ -381,6 +381,8 @@ As notas [[16 - O loop agentic — plan, act, observe]] e [[17 - Human-in-the-lo
 **Quando parar de usar multi-agent (o sinal de maturidade):** se você se percebe passando mais tempo debugando conflitos e inconsistências entre agentes do que ganhando velocidade, o overhead de coordenação superou o benefício. Multi-agent é uma ferramenta, não uma meta. Single-agent bem configurado com CLAUDE.md e contexto estruturado muitas vezes supera multi-agent mal coordenado.
 
 O benchmark para você usar: se a task cabe em um contexto de 200k tokens e não tem partes genuinamente paralelizáveis, single-agent é a escolha certa. Multi-agent adiciona overhead que só vale quando a task excede esses limites ou quando perspectivas independentes geram valor real (revisão adversarial, especialização por domínio).
+
+Até aqui, o fio condutor foi orquestrar múltiplos agentes que você ainda supervisiona — é você quem decide o padrão (pipeline, paralelo, hierárquico), quem lê os outputs e quem intervém quando um agente trava. A próxima nota, [[13 - Devin e agentes autônomos cloud]], dá um passo além: agentes que rodam em cloud, de forma autônoma, sem um humano acompanhando cada etapa. A pergunta muda de "como orquestro vários agentes sob meu controle" para "o que acontece quando tiro o controle contínuo de cima".
 
 ## Veja também
 

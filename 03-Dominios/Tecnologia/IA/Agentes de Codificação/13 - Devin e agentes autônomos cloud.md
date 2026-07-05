@@ -1,7 +1,7 @@
 ---
 title: "Devin e agentes autônomos cloud"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-05
 type: concept
 fase: Adepto
 progress: done
@@ -116,6 +116,9 @@ Success criterion: the existing test suite passes + new test covering '+' in ema
 A diferença não é só verbosidade — é dar ao agente os três elementos que ele precisa: (1) hipótese sobre onde está o problema, (2) como reproduzir, (3) critério claro de completude. Com esses três elementos, a taxa de resolução autônoma mais que dobra.
 
 ## O ecossistema em 2026
+
+> [!info] Data de validade
+> As taxas de SWE-bench e o posicionamento de cada player abaixo mudam mensalmente — novos releases e re-treinamentos deslocam os números com frequência. Trate os valores como uma fotografia de 2026, não como referência estável; confira a fonte original antes de citar em contexto que exija precisão atual.
 
 | Ferramenta | Empresa | Diferencial | SWE-bench |
 | ---------- | ------- | ----------- | --------- |
@@ -372,6 +375,8 @@ Essa última métrica — falsos positivos — é a mais perigosa. Uma ferrament
 - Regulação de rastreabilidade: quem é responsável por um bug introduzido por um agente autônomo? (questão jurídica ainda sem resposta em 2026)
 
 ****A questão de responsabilidade que ninguém responde ainda:** quando um agente autônomo introduz uma vulnerabilidade de segurança em produção — quem é responsável? O desenvolvedor que aprovou o PR? A empresa que fez o produto? Essa pergunta não tem resposta legal estabelecida em 2026, mas vai moldar como times de risco e compliance permitem (ou bloqueiam) o uso de agentes autônomos em contextos críticos.
+
+Tudo isso pressupõe que você já decidiu *o quê* delegar ao agente cloud. Mas há uma camada anterior, igualmente decisiva: *como* o ambiente em que ele opera está configurado. Um agente autônomo com acesso a um repositório sem `AGENTS.md`, sem convenções documentadas e sem exemplos de padrões aceitáveis enfrenta exatamente o mesmo problema de contexto ausente descrito ao longo desta nota — só que amplificado, porque não há humano por perto pra preencher a lacuna em tempo real. A nota seguinte, [[14 - agents.md e configuração de projeto]], trata exatamente dessa configuração: como comunicar ao agente — autônomo ou interativo — as convenções, restrições e contexto de projeto que normalmente vivem só na cabeça do time.
 
 ## Veja também
 

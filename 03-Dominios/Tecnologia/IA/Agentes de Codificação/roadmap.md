@@ -35,13 +35,17 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| ⬜ pendente | 9 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 3 |
-| ✅ feita | 6 |
+| ✅ feita | 15 |
 | 🔄 em andamento | 0 |
-| % concluído | 40% |
+| % concluído | 100% |
 
-> [!note] Sessão 2026-07-04. +6 notas (01·03·05·06·07·08) em 2 ondas de ≤3 + verify inline (usuário sobrepôs a parada das 15 — tokens com folga total, bloco resetado). Restam ⬜: 09·10·11·12·13·14·15·17·18 (9). Padrão do galho confirmado: quase toda nota = reescrita da ponte E5 nomeando a próxima nota + `[!info]` de caducidade nos dados voláteis. Verify: todos os wikilinks (irmãos + cross-galho `[[Dicionário de IA#tool use]]`, âncora conferida) apontam para alvos existentes. Nenhum preço/modelo inventado ou alterado.
+> [!success] Galho FECHADO em 2026-07-05 — 15/15 notas acionáveis enriquecidas + verify inline (02·04·16 dispensadas). 0 ⬜ restantes.
+>
+> [!note] Sessão 2026-07-05 (retomada via checkpoint). +9 notas (09·10·11·12·13·14·15·17·18) em 3 ondas de 3 Sonnet + verify inline. Padrão do galho: bridge E5 nomeando a próxima nota + `[!info]`/`[!warning]` de caducidade nos dados voláteis (+ L1 cross-galho onde couber: `[[Economia de Tokens]]`, `[[MCP]]`, `[[Context Engineering]]`); nota 17 ganhou código-com-falha (P1) verificado. Verify: todos os wikilinks (irmãos + cross-galho) apontam para alvos existentes; nenhum preço/score/versão/URL inventado ou alterado. Padrão do galho confirmado: bridge E5 nomeando a próxima nota + `[!info]` de caducidade nos dados voláteis (+ L1 cross-galho onde couber). Verify: wikilinks (irmãos 10/11/12 + cross-galho `[[Economia de Tokens]]` com index.md) apontam para alvos existentes; nenhum preço/versão/URL inventado ou alterado.
+>
+> [!note] Sessão 2026-07-04. +6 notas (01·03·05·06·07·08) em 2 ondas de ≤3 + verify inline (usuário sobrepôs a parada das 15 — tokens com folga total, bloco resetado). Padrão do galho confirmado: quase toda nota = reescrita da ponte E5 nomeando a próxima nota + `[!info]` de caducidade nos dados voláteis. Verify: todos os wikilinks (irmãos + cross-galho `[[Dicionário de IA#tool use]]`, âncora conferida) apontam para alvos existentes. Nenhum preço/modelo inventado ou alterado.
 
 ---
 
@@ -126,73 +130,73 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** 409→413 linhas. E5: final de "O que vem a seguir" convertido em bridge para `[[09 - Aider — o pair programmer de terminal]]` (irmão confirmado) — da aposta Google (contexto 1M, multimodal, GCP) ao polo open-source agnóstico de modelo. `[!info]` de caducidade antes da tabela "Modelo de preços" (ai.google.dev/pricing citado em texto, não link clicável). E5+caducidade quitados. Nenhum modelo/preço alterado.
 
 #### 09 - Aider — o pair programmer de terminal   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-05)
 - **Estado:** 409 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - E5 (núcleo) — "O que vem a seguir" cobre tendências do produto Aider mas não bridgeia; adicionar parágrafo final para [[10 - OpenCode — o harness open source]]: do polo "controle total" (um dev, um terminal, diffs aprovados) a um CLI open-source que empurra mais longe a autonomia
   - ⚠️ Data de validade: armadilha "sem MCP nativo (ainda)" datada em 2026 — verificar a cada revisão se mudou
-- **Resultado:** —
+- **Resultado:** E5: parágrafo final de "O que vem a seguir" faz bridge do polo "controle total" do Aider para `[[10 - OpenCode — o harness open source]]` (irmão confirmado) — CLI open-source que desloca o equilíbrio na direção do agente. Caducidade: armadilha "sem MCP nativo (ainda)" envolvida em `[!info] Caducidade` datado 2026 (conferir se Aider já implementou MCP). Verify inline: alvo existe, nenhum fato/versão/URL inventado. E5+caducidade quitados.
 
 #### 10 - OpenCode — o harness open source   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-05)
 - **Estado:** 409 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - E5 (núcleo) — "O que vem a seguir" cobre tendências gerais (MCP, orchestration, memória persistente) mas encerra sem bridge; adicionar parágrafo de fechamento para [[11 - Comparativo — qual ferramenta para qual tarefa]]: do mapa de harnesses open-source ao guia de decisão
   - ⚠️ Data de validade: stars do Cline, versões no histórico (OpenCode/Roo Code) mudam mensalmente — adicionar `[!info]` na seção "## Histórico"
-- **Resultado:** —
+- **Resultado:** E5: parágrafo de fechamento de "O que vem a seguir" faz bridge do mapa de harnesses open-source (OpenCode/Cline/Roo Code/Continue/Claude Code/Cursor) para `[[11 - Comparativo — qual ferramenta para qual tarefa]]` (irmão confirmado) como guia de decisão. Caducidade: `[!info]` na seção "## Histórico" sinalizando stars do Cline e versões OpenCode/Roo Code como fotografia 2025-2026. Verify inline: alvo existe, nenhum número/versão alterado ou inventado. E5+caducidade quitados.
 
 #### 11 - Comparativo — qual ferramenta para qual tarefa   [substantivo]
-- **Enriquecimento:** ⬜ pendente
-- **Estado:** 408 linhas · fase: Adepto · status: growing
+- **Enriquecimento:** ✅ feita (2026-07-05)
+- **Estado:** 408→417 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, L1, P1
 - **Score:** 9/12
 - **Plano de execução:**
   - E5 (núcleo) — "## O que vem a seguir" cobre tendências futuras mas bridgeia para nota 18, não para a 12; adicionar fechamento explícito para [[12 - Multi-agent — workflows com múltiplos agentes]]
   - L1 (opcional) — adicionar wikilink cross-galho (custo de tokens → Economia de Tokens; codebases longas → RAG e Vector Databases)
   - ⚠️ Data de validade: altíssima densidade de dados perecíveis (preços, mega-comparativo, projeções "em 2027/2028") — considerar `[!info]` antes das tabelas de custo e do mega-comparativo
-- **Resultado:** —
+- **Resultado:** 408→417 linhas. E5: fechamento explícito de "O que vem a seguir" faz bridge do agente único para `[[12 - Multi-agent — workflows com múltiplos agentes]]` (irmão confirmado). L1: wikilink cross-galho `[[Economia de Tokens]]` (pasta c/ index.md confirmada) na seção "Como estimar seu custo real", ao lado das táticas de controle de custo. Caducidade: 2× `[!info]` — antes do mega-comparativo (rankings mudam) e antes da tabela "Por custo mensal" (preços caem 2-5×/ano). Verify inline: 2 alvos existem, nenhum preço/valor alterado. E5+L1+caducidade quitados.
 
 #### 12 - Multi-agent — workflows com múltiplos agentes   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-05)
 - **Estado:** 408 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - E5 (núcleo) — "O que vem a seguir" bridgeia para 16/17 mas não para a nota seguinte; adicionar parágrafo de fechamento para [[13 - Devin e agentes autônomos cloud]]: de entender um agente individual a agentes que operam em cloud sem supervisão contínua
-- **Resultado:** —
+- **Resultado:** E5: parágrafo de fechamento de "O que vem a seguir" faz bridge de orquestrar agentes sob supervisão para `[[13 - Devin e agentes autônomos cloud]]` (irmão confirmado) — agentes autônomos em cloud sem controle contínuo. Pontes para 16/17 preservadas. Verify inline: alvo existe, nenhum fato inventado. E5 quitado.
 
 #### 13 - Devin e agentes autônomos cloud   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-05)
 - **Estado:** 405 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - E5 (núcleo) — "## O que vem a seguir" cobre roadmap 2026-2028 mas não bridgeia; adicionar parágrafo de fechamento para [[14 - agents.md e configuração de projeto]]: de delegar a task ao agente cloud a configurar o ambiente em que ele opera
   - ⚠️ Data de validade: taxa SWE-bench e scores por player "em 2026" — adicionar `[!info]` de caducidade no início de "## O ecossistema em 2026"
-- **Resultado:** —
+- **Resultado:** E5: parágrafo de fechamento faz bridge de delegar task ao agente cloud para `[[14 - agents.md e configuração de projeto]]` (irmão confirmado) — configurar o ambiente/contexto em que o agente opera. Caducidade: `[!info]` no início de "## O ecossistema em 2026" sinalizando SWE-bench e scores por player como fotografia 2026. Verify inline: alvo existe, nenhum score/percentual alterado. E5+caducidade quitados.
 
 #### 14 - agents.md e configuração de projeto   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-05)
 - **Estado:** 401 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - E5 (núcleo) — "## O que vem a seguir" cobre evolução futura dos arquivos de config sem bridgeia; adicionar parágrafo de fechamento para [[15 - MCP — o protocolo universal]]: do CLAUDE.md estático ao acesso dinâmico a ferramentas e contexto sob demanda via MCP
-- **Resultado:** —
+- **Resultado:** E5: parágrafo de fechamento faz bridge do CLAUDE.md/agents.md (contexto estático injetado por inteiro) para `[[15 - MCP — o protocolo universal|MCP (Model Context Protocol)]]` (irmão confirmado, com alias) — acesso dinâmico e sob demanda a ferramentas/dados externos. Verify inline: alvo existe, parágrafo puramente conceitual, nenhum fato inventado. E5 quitado.
 
 #### 15 - MCP — o protocolo universal   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-05)
 - **Estado:** 401 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, L1
 - **Score:** 10/12
 - **Plano de execução:**
   - Adicionar parágrafo de bridge em "O que vem a seguir" apontando para [[16 - O loop agentic — plan, act, observe]]: como o agente decide quando e como usar as ferramentas conectadas via MCP
   - Adicionar wikilink cross-galho para o galho MCP dedicado (galho 9) em "## Veja também"
-- **Resultado:** —
+- **Resultado:** E5: parágrafo de bridge em "O que vem a seguir" para `[[16 - O loop agentic — plan, act, observe]]` (irmão confirmado) — MCP dá o "como conectar", o loop resolve "quando e por quê" invocar a tool. L1: wikilink cross-galho `[[MCP]]` (galho dedicado, pasta c/ index.md confirmada) em "## Veja também". Verify inline: 2 alvos existem, nada inventado. E5+L1 quitados.
 
 #### 16 - O loop agentic — plan, act, observe   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -204,21 +208,21 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 17 - Human-in-the-loop — quando (não) confiar   [substantivo]
-- **Enriquecimento:** ⬜ pendente
-- **Estado:** 401 linhas · fase: Adepto · status: growing
+- **Enriquecimento:** ✅ feita (2026-07-05)
+- **Estado:** 401→416 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** E5, P1
 - **Score:** 10/12
 - **Plano de execução:**
   - Reescrever/complementar o final de "## O que vem a seguir" para conectar narrativamente com a nota 18 (Benchmarks e avaliação — SWE-bench): de decidir quanta autonomia dar ao agente à necessidade de medir capacidade real
   - Opcional: adicionar código-com-falha (P1) — ex: hook com regex incorreto que deveria bloquear `rm -rf` mas não bloqueia
-- **Resultado:** —
+- **Resultado:** E5: final de "O que vem a seguir" reescrito conectando "quanta autonomia dar" (HITL) a "se o agente é bom o suficiente" (medição) via `[[18 - Benchmarks e avaliação — SWE-bench e além]]` (irmão confirmado). P1 aplicado: hook Python `re.search(r"^rm -rf", cmd)` que falha em comando composto (`cd ... && rm -rf cache`) porque a âncora `^` só casa o início da string — mecanismo verificado tecnicamente correto pelo coordenador. Verify inline: alvo existe, exemplo autocontido, nada inventado. E5+P1 quitados.
 
 #### 18 - Benchmarks e avaliação — SWE-bench e além   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-05)
 - **Estado:** 402 linhas · fase: Adepto · status: growing
 - **Núcleo/gaps:** P1
 - **Score:** 11/12
 - **Plano de execução:**
   - Adicionar `[!warning]` de caducidade no início de "## Leaderboard atual (maio 2026)" — modelos e scores mudam mensalmente; conferir em swebench.com ou Artificial Analysis
   - Opcional: ampliar o fechamento de "## O que vem a seguir" com gancho cross-galho (ex: Evaluation ou Observability), já que é a última nota do galho
-- **Resultado:** —
+- **Resultado:** Caducidade: `[!warning]` antes da tabela do Leaderboard (maio 2026) — snapshot, não ranking permanente; links swebench.com + artificialanalysis.ai (URLs reais). Gancho cross-galho: fechamento de "O que vem a seguir" ampliado com `[[Context Engineering]]` (indexação/busca/prompt = engenharia de contexto) e `[[MCP]]` (padronização de acesso a ferramentas) — ambos pastas c/ index.md confirmadas; `[[Dicionário de IA]]` pulado por não agregar. Verify inline: alvos existem, nenhum score alterado. Como última nota do galho, encerra o arco. Quitado.

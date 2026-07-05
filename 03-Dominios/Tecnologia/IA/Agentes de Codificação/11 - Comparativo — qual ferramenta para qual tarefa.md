@@ -1,7 +1,7 @@
 ---
 title: "Comparativo — qual ferramenta para qual tarefa"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-05
 type: concept
 fase: Adepto
 progress: done
@@ -80,6 +80,9 @@ Para entender o comparativo atual, é necessário entender que as ferramentas n�
 
 ## O mega-comparativo por capacidade
 
+> [!info] Data de validade deste comparativo
+> A tabela abaixo é uma fotografia de 2026 — quem lidera cada capacidade muda a cada poucos meses (novas versões, features, aquisições). Trate os rankings como ponto de partida para investigar, não como veredito permanente.
+
 | Capacidade | 🥇 Melhor | 🥈 Segundo | 🥉 Terceiro |
 | ---------- | --------- | ---------- | ----------- |
 | **Autocomplete inline** | [[06 - GitHub Copilot e Copilot Agents\|Copilot]] | Cursor Tab | [[10 - OpenCode — o harness open source\|Continue]] |
@@ -138,6 +141,9 @@ Dois perfis merecem mais contexto:
 
 ## Por custo mensal (dev full-time)
 
+> [!info] Data de validade — preços mudam rápido
+> Os valores abaixo são estimativas de 2026. Preços de assinatura e de API caem historicamente 2-5× por ano (ver seção seguinte) — confirme os valores atuais no site de cada ferramenta antes de decidir com base neles.
+
 | Ferramenta | Custo ferramenta | Custo tokens (estimativa) | Total |
 | ---------- | ---------------- | ------------------------- | ----- |
 | Copilot Individual | $10/mês | Incluído | **$10/mês** |
@@ -166,6 +172,8 @@ Estratégias para controlar custo:
 - Prefira Sonnet a Opus para tasks de rotina ($3/MTok vs $15/MTok de entrada)
 - Para CI/CD e scripts automatizados, use Haiku ($0.80/MTok — qualidade suficiente para tasks simples)
 - Configure `CLAUDE_CODE_MAX_OUTPUT_TOKENS` para limitar respostas longas desnecessárias
+
+Essas táticas são a ponta do iceberg — o galho [[Economia de Tokens]] cobre cada uma em profundidade (caching, model routing, context pruning, sub-agentes especializados) para quem quer ir além do básico.
 
 **Para times:** multiplique o custo individual por 0.6-0.8 (não 1.0) — devs em reunião, code review, planejamento não usam a ferramenta o tempo todo. Um time de 5 devs não gasta 5× o custo de 1 dev em ferramentas de IA.
 
@@ -375,6 +383,8 @@ Alguns vetores a monitorar:
 A nota [[18 - Benchmarks e avaliação — SWE-bench e além]] expande como interpretar os benchmarks que cada ferramenta usa para se autopromover.
 
 **Uma previsão calibrada:** em 2028, o mercado de ferramentas de IA para código provavelmente terá 2-3 vencedores claros (como IDEs: VS Code, JetBrains, um terceiro) e uma longa cauda de ferramentas nicho. O que vai determinar os vencedores não é quem tem o melhor modelo hoje (isso muda mensalmente), mas quem tem o melhor *acoplamento com o workflow do desenvolvedor* — o arquivo de configuração mais poderoso, o melhor entendimento do projeto, a integração mais profunda com Git/CI/CD. As ferramentas que vencerem serão as que entenderem que o modelo é commodity e o *contexto do projeto* é o diferencial.
+
+Um desses vetores já está deixando de ser tendência futura para virar prática corrente: times que hoje escolhem "uma ferramenta por dev" começam a escolher "uma orquestração de vários agentes por task". Se o próximo passo natural depois de dominar sua stack individual é somar mais de um agente na mesma tarefa, a nota [[12 - Multi-agent — workflows com múltiplos agentes]] é a continuação direta deste comparativo — cobre quando vale a pena sair do agente único (deste guia) e orquestrar múltiplos agentes em paralelo.
 
 ## Veja também
 

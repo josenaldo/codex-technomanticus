@@ -1,7 +1,7 @@
 ---
 title: "MCP — o protocolo universal"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-05
 type: concept
 progress: done
 status: growing
@@ -382,6 +382,8 @@ A evolução que vale acompanhar é o movimento de MCP de "protocolo para desenv
 
 **Testando um MCP server antes de colocar em produção:** o cliente oficial de linha de comando `@modelcontextprotocol/inspector` permite testar um server interativamente sem precisar de um agente. Você chama tools, lista resources e verifica a saída — essencial para validar que o server se comporta como esperado antes de depender dele em sessões de desenvolvimento.
 
+Falta ainda responder uma pergunta que este capítulo deixou em aberto: MCP dá ao agente um menu de ferramentas — mas quem decide, dentro de uma tarefa real, quando puxar qual ferramenta desse menu, e o que fazer com o resultado depois? Essa decisão não acontece no protocolo; acontece no loop que envolve o modelo. [[16 - O loop agentic — plan, act, observe]] é onde essa costura fica explícita: o agente planeja um passo, age (e "agir" muitas vezes significa invocar uma tool MCP), observa o resultado que voltou pelo client, e decide se já tem o suficiente ou se precisa de outra rodada. MCP resolve o "como conectar"; o loop agentic resolve o "quando e por quê".
+
 ## Veja também
 
 - [[05 - Claude Code — terminal-first agent]] — como configurar MCP especificamente no Claude Code, incluindo permissões granulares por server
@@ -389,6 +391,7 @@ A evolução que vale acompanhar é o movimento de MCP de "protocolo para desenv
 - [[11 - Comparativo — qual ferramenta para qual tarefa]] — quais ferramentas suportam MCP em 2026
 - [[14 - agents.md e configuração de projeto]] — configuração de projeto (CLAUDE.md) trabalha junto com a configuração de MCP servers
 - [[12 - Multi-agent — workflows com múltiplos agentes]] — em multi-agent, diferentes agentes podem compartilhar acesso a MCP servers
+- [[MCP]] — galho dedicado com os detalhes internos do protocolo: primitivas, arquitetura cliente-servidor, segurança e setup completo
 
 ## Referências
 

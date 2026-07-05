@@ -1,7 +1,7 @@
 ---
 title: "agents.md e configuração de projeto"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-05
 type: concept
 fase: Adepto
 progress: done
@@ -377,6 +377,8 @@ A configuração de projeto em 2026 é como um `Makefile` em 2010 — parece peq
 4. Têm um dono explícito do `CLAUDE.md` no time — responsável por mantê-lo atualizado
 
 Esse nível de maturidade parece excessivo para times pequenos, mas em times de 10+ engenheiros usando IA intensamente, o `CLAUDE.md` desatualizado é um source de inconsistência silenciosa que se acumula como technical debt.
+
+Mas há um limite estrutural que nenhuma disciplina de manutenção resolve: `CLAUDE.md` é **contexto estático**, escrito por humanos e injetado por inteiro a cada sessão — não importa quão bem versionado, ele não sabe consultar a documentação viva de uma API externa, não sabe listar os arquivos de um Google Drive, não sabe rodar uma query real num banco de produção. Ele descreve o projeto; não dá ao agente acesso a ferramentas e dados fora do repositório. É aqui que entra o [[15 - MCP — o protocolo universal|MCP (Model Context Protocol)]]: em vez de estático, o acesso a ferramentas e contexto passa a ser dinâmico e sob demanda — o agente descobre e invoca capacidades externas (bancos de dados, APIs, sistemas de arquivo, outros serviços) no momento em que precisa, sem que isso precise estar pré-escrito num arquivo de configuração.
 
 **A questão de privacidade que vale considerar:** em alguns contextos, o `CLAUDE.md` pode conter informações sensíveis — nomes de sistemas internos, padrões de segurança específicos, URLs de ambientes internos. Se o repositório é público ou se há risco de exposição, crie um `.claude/local_config.md` para as partes sensíveis e mantenha o `CLAUDE.md` público com apenas as regras gerais. Ferramentas como Claude Code suportam configs locais que não são commitadas.
 

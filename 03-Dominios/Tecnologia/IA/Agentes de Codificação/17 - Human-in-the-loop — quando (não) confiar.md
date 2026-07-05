@@ -290,6 +290,20 @@ Hooks em: `.claude/hooks.json` (commitado no repo)
 
 > [!warning] "BLOQUEAR via hook" precisa ser testado antes de confiar
 > Um hook que deveria bloquear `rm -rf` mas está configurado incorrectamente (regex errado, path errado) não bloqueia nada — e você não sabe disso até o incidente acontecer. Teste seus hooks ativamente: crie uma sessão de teste, tente as ações que deveriam ser bloqueadas, confirme que o bloqueio funciona. Trate hooks de segurança como testes — eles só valem se passam.
+>
+> **Um exemplo concreto do tipo de falha que passa despercebida:**
+>
+> ```python
+> # PreToolUse hook — bloqueia rm -rf
+> import re
+>
+> def block_dangerous(command: str) -> bool:
+>     return bool(re.search(r"^rm -rf", command))
+> ```
+>
+> Este regex parece correto — e bloqueia `rm -rf build/` quando testado isoladamente. Mas o agente raramente emite o comando sozinho; ele compõe: `cd /tmp/workspace && rm -rf cache`. A string inteira que o hook recebe é `"cd /tmp/workspace && rm -rf cache"` — e `^rm -rf` (ancorado no início da string com `^`) não casa, porque o comando não *começa* com `rm -rf`, começa com `cd`. O hook roda, não encontra o padrão, libera a execução. O `rm -rf` acontece exatamente como se o hook não existisse.
+>
+> A causa é a âncora `^`, que checa só o início da string — não "esse comando contém `rm -rf` em algum ponto". Um regex que de fato bloqueia precisaria buscar o padrão em qualquer posição (sem `^`) e ainda lidar com separadores de comando (`&&`, `;`, `|`), variações de espaçamento e argumentos antes das flags (`rm --force -r`, `rm -r -f`). Isso é o motivo pelo qual "teste ativamente" na prática significa testar com os comandos *compostos* que o agente realmente produz — não com o comando isolado que você imagina que ele vai produzir.
 
 > [!warning] Não tem configuração universal — depende do contexto
 > "Configure assim para todos os projetos" é o conselho errado. O nível certo de HITL depende: do domínio (pagamentos vs prototipagem de UI), da fase (desenvolvimento vs hotfix de produção), do agente (Claude Code com hooks vs Devin sem hooks), e da sua capacidade de atenção no momento. Um CLAUDE.md com instruções de HITL que se aplicam a todos os contextos vai ser permissivo demais para os contextos mais críticos.
@@ -349,6 +363,8 @@ A questão fundamental que guia toda essa evolução: como preservar o valor da 
 **A dimensão regulatória:** em domínios como saúde, finanças e infraestrutura crítica, HITL deixa de ser uma escolha arquitetural e passa a ser um requisito legal. O FDA (EUA), o AI Act (EU) e frameworks similares estão convergindo para exigir supervisão humana documentada em decisões de alto impacto feitas por sistemas de IA. Para times que trabalham nesses domínios, o design de HITL também é compliance — e precisa de auditoria formal, não apenas de audit.log.
 
 **O problema de escala:** à medida que agentes ficam mais capazes e o volume de ações aumenta, o HITL como temos hoje vai encontrar seu limite. Um agente que processa 10.000 ações por dia não pode ser supervisionado ação por ação — mesmo com approval fatigue controlado. A solução não é eliminar a supervisão, mas mudar o nível onde ela acontece: em vez de revisar ações, revisar políticas. Em vez de aprovar commits, aprovar a estratégia que gera commits. Isso é o "human-on-the-loop" — o humano define as regras do jogo, o agente joga dentro delas, e o humano revisa os resultados, não cada jogada.
+
+Mas note que tudo isso — os cinco níveis, a matriz de risco, os hooks de bloqueio — resolve apenas metade do problema. HITL decide **quanta autonomia dar** ao agente; não diz nada sobre **se o agente é bom o suficiente** para merecer essa autonomia. Um agente com nível 4 de autonomia mas taxa de erro alta em tarefas de refatoração é perigoso independentemente de quão bem calibrados estão os hooks — a matriz de risco assume implicitamente uma probabilidade de erro conhecida, e essa probabilidade não vem de intuição, vem de medição. É exatamente a pergunta que [[18 - Benchmarks e avaliação — SWE-bench e além|a próxima nota]] investiga: como medir capacidade real de um agente de código antes de decidir o quanto confiar nele.
 
 ## Checklist de configuração de HITL
 

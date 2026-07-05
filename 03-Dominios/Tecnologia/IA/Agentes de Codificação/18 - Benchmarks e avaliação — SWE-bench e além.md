@@ -81,6 +81,9 @@ A versão **Verified** é a mais usada para comparações públicas. Humanos rev
 
 ## Leaderboard atual (maio 2026)
 
+> [!warning] Este leaderboard caduca rápido
+> Modelos e scores mudam mensalmente — o que está abaixo é um snapshot de maio de 2026, não um ranking permanente. Antes de decidir com base nele, confira o estado atual em [swebench.com](https://swebench.com) ou no [Artificial Analysis](https://artificialanalysis.ai).
+
 | Agente / Modelo | SWE-bench Verified | Notas |
 |---|---|---|
 | Claude Opus 4.6 + scaffold best-of-N | ~72% | Líder com scaffolding otimizado |
@@ -367,6 +370,8 @@ Três forças estão redesenhando o cenário de avaliação:
 - **Suites proprietárias obrigatórias** — regulações de IA (EU AI Act) podem exigir que empresas comprovem performance em benchmarks auditáveis antes de implantar agentes autônomos em produção
 
 O engenheiro que entende como benchmarks funcionam — e suas limitações — está melhor equipado para navegar esse cenário do que aquele que apenas lê o leaderboard.
+
+Esta é a última nota do galho Agentes de Codificação. Boa parte do que separou os agentes no leaderboard — indexação do repo, busca semântica, prompt de contexto completo — é, no fundo, [[Context Engineering|engenharia de contexto]]: o que você decide colocar (ou não) na janela do agente. E o acesso a ferramentas externas que hoje pesa tanto no scaffold tende a padronizar-se via [[MCP]], o que deve tornar comparações entre agentes mais justas — e, paradoxalmente, mais fáceis de gamear de novas formas.
 
 ---
 

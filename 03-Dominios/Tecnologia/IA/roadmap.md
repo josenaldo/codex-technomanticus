@@ -36,7 +36,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 3 | [[Spec-Driven Development]] | 12 | 0 | 0 | 12 | 100% | ✅ completo (2026-07-03, fan-out ≤3 verificado) | ✅ |
 | 4 | [[Economia de Tokens]] | 22 | 0 | 2 | 20 | 100% | ✅ completo (2026-07-04, 20/20 via fan-out ≤3 verificado; 05·09 dispensadas) | ✅ |
 | 5 | [[Context Engineering]] | 16 | 0 | 9 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
-| 6 | [[Agentes de Codificação]] | 18 | 9 | 3 | 6 | 50% | 🔶 parcial (2026-07-04, notas 01·03·05·06·07·08 via fan-out ≤3 verificado) | ✅ |
+| 6 | [[Agentes de Codificação]] | 18 | 0 | 3 | 15 | 100% | ✅ completo (2026-07-05, 15/15 acionáveis via fan-out ≤3 verificado; 02·04·16 dispensadas) | ✅ |
 | 7 | [[AI Engineering Stack]] | 13 | 12 | 1 | 0 | 8% | 📋 diagnosticado | ✅ |
 | 8 | [[RAG e Vector Databases]] | 13 | 12 | 1 | 0 | 8% | 📋 diagnosticado | ✅ |
 | 9 | [[MCP]] | 10 | 10 | 0 | 0 | 0% | 📋 diagnosticado | ✅ |
@@ -67,8 +67,8 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | Métrica | Valor |
 |---------|-------|
 | Galhos totais | 21 |
-| ✅ completos | 13 (Anatomia dos LLMs, Anatomia de Agents, Spec-Driven Development, Economia de Tokens, Context Engineering, Prompt Engineering, Structured Outputs, Evaluation, Observability, Multimodal Prompting, Image Prompting, Improvement Loop, Ferramentas de IA) |
-| 📋 diagnosticados, enriquecimento pendente | 7 (Agentes de Codificação, AI Engineering Stack, RAG e Vector Databases, MCP, Segurança e Guardrails, Memória de Agentes, Claude Code) |
+| ✅ completos | 14 (Anatomia dos LLMs, Anatomia de Agents, Spec-Driven Development, Economia de Tokens, Context Engineering, Prompt Engineering, Structured Outputs, Evaluation, Observability, Multimodal Prompting, Image Prompting, Improvement Loop, Ferramentas de IA, Agentes de Codificação) |
+| 📋 diagnosticados, enriquecimento pendente | 6 (AI Engineering Stack, RAG e Vector Databases, MCP, Segurança e Guardrails, Memória de Agentes, Claude Code) |
 | ⬜ não diagnosticados | 0 |
 | ⚪ especiais | 1 (O Lado Sombrio da IA — agora com roadmap) |
 | Notas soltas diretas | 4 |

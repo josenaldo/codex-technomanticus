@@ -1,7 +1,7 @@
 ---
 title: "Aider — o pair programmer de terminal"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-05
 type: concept
 fase: Adepto
 progress: done
@@ -357,6 +357,9 @@ O custo de uma correção de lint com DeepSeek V3 é de frações de centavo. Pa
 
 > [!warning] Sem suporte nativo a MCP (ainda)
 > Em 2026, o Aider não implementa o protocolo MCP. Isso significa que ferramentas como Supabase, Stripe ou qualquer servidor MCP não podem ser integradas nativamente — você precisa de scripts intermediários. Para workflows que dependem fortemente de MCP, Claude Code tem vantagem.
+>
+> > [!info] Caducidade
+> > Este fato está datado em 2026. Confira a cada revisão desta nota se o Aider já implementou suporte a MCP — se sim, atualize o parágrafo acima e remova este aviso.
 
 ## Como explicar em inglês
 
@@ -386,6 +389,8 @@ O Aider ocupa um nicho bem definido e provavelmente vai se aprofundar nele em ve
 - **Integração com CI/CD** — Aider já tem modo não-interativo; scripts de CI que rodam Aider em PRs para auto-fix de lint e testes são um padrão emergente em 2026
 
 **Tendência de mercado:** enquanto o mercado de agentes autônomos (Claude Code, Devin) cresce, o Aider prova que existe um segmento que prefere par programador + controle humano. Os dois modelos coexistem — cada um para um caso de uso diferente. A pergunta para 2027 é se os agentes autônomos vão evoluir para ter melhor rastreabilidade Git (ganhando o nicho do Aider) ou se o controle humano-in-the-loop vai permanecer uma preferência distinta.
+
+Se o Aider é o polo "controle total" — um dev, um terminal, cada diff aprovado à mão —, o próximo passo natural no espectro é perguntar como fica esse mesmo terminal quando ele empurra mais a autonomia sem virar um produto fechado. É aí que entra o [[10 - OpenCode — o harness open source]]: outro CLI open-source, mas que desloca o equilíbrio na direção do agente, mantendo a filosofia de código aberto que o Aider também defende.
 
 ## Veja também
 

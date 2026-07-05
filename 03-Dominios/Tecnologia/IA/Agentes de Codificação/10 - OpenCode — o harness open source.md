@@ -1,7 +1,7 @@
 ---
 title: "OpenCode — o harness open source"
 created: 2026-05-02
-updated: 2026-06-27
+updated: 2026-07-05
 type: concept
 fase: Adepto
 progress: done
@@ -49,6 +49,9 @@ O modelo é plugável — você escolhe qual LLM usar por baixo, traz sua própr
 - **Sem markup de plataforma** — Cursor e GitHub Copilot pagam tokens pelo usuário e repassam com markup embutido na assinatura. Com harnesses OSS, o custo por token é o preço direto da API — sem intermediário
 
 ## Histórico
+
+> [!info] Dados sujeitos a caducidade
+> Contagem de stars do Cline e as versões/marcos de OpenCode e Roo Code mudam mensalmente — trate os números abaixo como uma fotografia de 2025-2026, não como valor atual. Confira o GitHub de cada projeto antes de citar um número em conversa ou entrevista.
 
 | Período | Evento |
 | ------- | ------ |
@@ -381,6 +384,8 @@ Com esses servidores configurados, o dev pode instruir o Cline: *"Veja o compone
 - Stars e issues do Cline vs OpenCode vs Roo Code no GitHub (crescimento relativo)
 - Se o Claude Code ou Cursor adotam model-agnostic (que eliminaria a proposta de valor do harness OSS)
 - Anúncio de funding ou aquisição do Cline pela Anthropic (já há especulação)
+
+Esse mapa do ecossistema open-source responde "o que existe e como funciona" — mas na prática você só precisa escolher uma ferramenta para a sua próxima task. É essa escolha, entre OpenCode, Cline, Roo Code, Continue, Claude Code e Cursor, que [[11 - Comparativo — qual ferramenta para qual tarefa]] transforma em guia de decisão.
 
 ## Veja também
 
