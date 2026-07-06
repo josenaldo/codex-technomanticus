@@ -3,7 +3,7 @@ title: "Web Performance & Core Web Vitals"
 type: moc
 publish: true
 created: 2026-07-05
-updated: 2026-07-05
+updated: 2026-07-06
 tags:
   - moc
   - web-performance
@@ -30,11 +30,11 @@ O domínio segue a **linha do tempo da experiência do usuário** — *medir →
 | # | Galho | O quê | Core Web Vital âncora |
 |---|-------|-------|-----------------------|
 | 1 | [[03-Dominios/Tecnologia/Web Performance/Medição e Core Web Vitals/index\|G1 — Medição & Core Web Vitals]] | LCP/INP/CLS, thresholds, lab vs field (RUM), Lighthouse, PageSpeed, CrUX, lib `web-vitals`, budgets como conceito | os 3 |
-| 2 | **G2 — Performance de Carregamento** *(a construir)* | critical rendering path, resource hints, lazy loading, imagens, fontes, compressão, cache/CDN, HTTP/2-3 | LCP |
-| 3 | **G3 — Performance de Runtime & Rendering** *(a construir)* | main thread, long tasks, INP a fundo, reflow/repaint, layout thrashing, compositing, Workers | INP, CLS |
-| 4 | **G4 — Performance em Produção** *(a construir)* | budgets no CI, RUM/monitoramento, detecção de regressão, DevTools Performance panel, cultura de perf | — |
+| 2 | [[03-Dominios/Tecnologia/Web Performance/Performance de Carregamento/index\|G2 — Performance de Carregamento]] | critical rendering path, resource hints, lazy loading, imagens, fontes, compressão, cache/CDN, HTTP/2-3 | LCP |
+| 3 | [[03-Dominios/Tecnologia/Web Performance/Performance de Runtime e Rendering/index\|G3 — Performance de Runtime & Rendering]] | main thread, long tasks, INP a fundo, reflow/repaint, layout thrashing, compositing, Workers | INP, CLS |
+| 4 | [[03-Dominios/Tecnologia/Web Performance/Performance em Produção/index\|G4 — Performance em Produção]] | budgets no CI, RUM/monitoramento, detecção de regressão, DevTools Performance panel, cultura de perf | — |
 
-> **Ritmo de construção:** galho a galho, ponta a ponta. O Galho 1 é fechado (semeado + enriquecido) antes de começar o Galho 2. O roster detalhado dos Galhos 2–4 é desenhado quando chegar a vez de cada um. Ver [[00-Meta/specs/2026-07-05-dominio-web-performance-design|design do domínio]].
+> **Estado (2026-07-06):** os 4 galhos estão **escritos — 32/32 notas** (falta a rodada de enriquecimento de mídia, M1). Construído galho a galho, ponta a ponta. Ver [[00-Meta/specs/2026-07-05-dominio-web-performance-design|design do domínio]] e o [[03-Dominios/Tecnologia/Web Performance/roadmap|roadmap]].
 
 ---
 
