@@ -24,9 +24,9 @@ Roadmap do galho `03-Dominios/Tecnologia/Testes JS`. Galho **em construção**: 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| ⬜ não escritas | 14 |
-| ✅ escritas | 4 |
-| % escrito | 22,2% |
+| ⬜ não escritas | 7 |
+| ✅ escritas | 11 |
+| % escrito | 61,1% |
 
 ---
 
@@ -49,31 +49,31 @@ Roadmap do galho `03-Dominios/Tecnologia/Testes JS`. Galho **em construção**: 
 - **Escopo:** `describe`, hooks (`beforeEach`/`afterEach`/`beforeAll`), `test.each`, `.skip`/`.only`/`.todo`, isolamento.
 
 #### 05 - Testando código assíncrono   [substantivo]
-- **Fase:** Iniciado · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Iniciado · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** `async`/`await`, `resolves`/`rejects`, `expect.assertions`, fake timers (`vi.useFakeTimers`/`advanceTimersByTime`).
 
 #### 06 - Mocking com Vitest   [substantivo]
-- **Fase:** Adepto · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Adepto · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** `vi.fn`, `vi.spyOn`, `vi.mock` (module/partial), `mockReturnValue`/`mockResolvedValue`, `vi.hoisted`, reset. Liga [[03-Dominios/Engenharia/Testes/05 - Test doubles - dummy, stub, spy, mock, fake|Engenharia/Testes 05]].
 
 #### 07 - Testing Library - filosofia e queries   [substantivo]
-- **Fase:** Adepto · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Adepto · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** "teste como o usuário usa", `getBy`/`queryBy`/`findBy`, `*AllBy`, prioridade de queries (role > label > text), `screen`.
 
 #### 08 - Testando componentes React   [substantivo]
-- **Fase:** Adepto · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Adepto · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** `render`, `screen`, `@testing-library/user-event`, `findBy` async, `cleanup`, o que testar num componente. Liga [[03-Dominios/Tecnologia/React/React core/index|React core]].
 
 #### 09 - MSW - mockando a rede   [substantivo]
-- **Fase:** Adepto · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Adepto · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** MSW v2 (`http`/`HttpResponse`/`graphql`), `setupServer` (node) vs `setupWorker` (browser), reuso entre Vitest/Playwright/Storybook. Liga Engenharia/Testes 05/07.
 
 #### 10 - Testando hooks e estado   [substantivo]
-- **Fase:** Adepto · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Adepto · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** `renderHook`, `act`, `wrapper` de context/provider, testar custom hooks e estado assíncrono.
 
 #### 11 - Snapshot testing   [substantivo]
-- **Fase:** Adepto · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Adepto · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** `toMatchSnapshot`/`toMatchInlineSnapshot`, atualização, quando usa e quando evita (snapshots frágeis). Liga [[03-Dominios/Engenharia/Testes/13 - Além do básico - property-based, snapshot, contract, smoke|Engenharia/Testes 13]].
 
 #### 12 - Cobertura no ecossistema JS   [substantivo]
