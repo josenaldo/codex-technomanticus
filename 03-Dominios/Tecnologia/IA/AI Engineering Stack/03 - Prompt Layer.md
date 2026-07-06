@@ -1,7 +1,7 @@
 ---
 title: "Prompt Layer"
 created: 2026-05-28
-updated: 2026-06-24
+updated: 2026-07-05
 type: concept
 status: seedling
 fase: Iniciado
@@ -115,6 +115,46 @@ Data de vigência
 
 Cada seção tem uma função clara. O modelo lê o prompt inteiro antes de gerar — então a ordem importa para dar contexto antes das restrições. Identidade primeiro estabelece o frame; restrições depois fazem sentido dentro do frame.
 
+### Exemplo trabalhado — do template vazio ao system prompt completo
+
+Para ver a anatomia funcionando de ponta a ponta, vale preencher o template inteiro para um caso concreto — um assistente de triagem de suporte técnico — e comparar com a versão minimalista do Cenário 3 mais adiante.
+
+Preenchendo cada seção da anatomia, na ordem em que o modelo lê:
+
+```yaml
+# [IDENTIDADE]
+role: "Assistente de triagem de suporte técnico da plataforma X"
+primary_job: "identificar a categoria do problema relatado e o próximo passo correto —
+              resolver diretamente, pedir mais informação, ou encaminhar para humano"
+
+# [PADRÕES]
+primary_standard: "precisão sobre velocidade — melhor admitir incerteza do que
+                   responder rápido e errado sobre dinheiro ou dados de conta"
+
+# [PERMISSÕES E LIMITES]
+allowed_actions:
+  - "responder dúvidas cobertas pela documentação de produto fornecida"
+  - "pedir informação adicional quando o relato do usuário for ambíguo"
+forbidden_actions:
+  - "afirmar políticas de reembolso, cobrança ou dados de conta não confirmados
+     explicitamente nos documentos fornecidos"
+  - "prometer prazos que não estão documentados"
+
+# [BORDAS E INCERTEZA]
+uncertainty_behavior: "stop and escalate: quando a pergunta envolver política financeira,
+                       reembolso ou dado de conta não confirmado nos documentos, responder
+                       'não tenho essa informação confirmada — vou encaminhar para um
+                       atendente humano' e parar"
+
+# [SAÍDA]
+# formato: ver Output Layer — resposta curta + categoria + próximo passo estruturado
+
+# [METADADOS]
+# versão: triagem_suporte_v1.0 — vigente desde 2026-07-01
+```
+
+A diferença entre este template preenchido e a frase solta "seja útil e preciso" não é extensão — é que cada seção responde a uma pergunta que o modelo, de outra forma, teria que adivinhar: quem sou (identidade), pelo que sou julgado (padrão), o que posso e não posso fazer (permissões), o que faço quando não sei (bordas). Um role bem escrito sem `uncertainty_behavior` ainda deixa a borda mais perigosa do sistema em aberto — é exatamente essa lacuna que o Cenário 3 explora abaixo.
+
 ## Casos práticos
 
 ### Cenário 1 — O prompt que cresce sem parar
@@ -140,6 +180,23 @@ forbidden_actions:
 ```
 
 Com esse template, o model sabe o que fazer nas bordas — e as bordas são a maioria dos casos jurídicos difíceis.
+
+### Cenário 3 — O prompt minimalista que inventa resposta em vez de escalar
+
+Um time sobe rápido um assistente interno de suporte técnico. O system prompt em produção é este:
+
+```yaml
+role: "Assistente de suporte técnico da plataforma X"
+primary_job: "responder dúvidas de usuários sobre a plataforma"
+reasoning_style: "conciso"
+```
+
+Sem `uncertainty_behavior`, sem `forbidden_actions`. Funciona bem em testes manuais — as perguntas do time interno são as óbvias, o modelo responde certo. Em produção, um usuário pergunta se pode cancelar um pagamento já processado e ser reembolsado automaticamente. Isso não está em nenhum documento que o modelo tenha visto. Sem instrução sobre o que fazer diante do desconhecido, o modelo **completa o padrão mais provável**: gera uma resposta plausível e afirmativa — "sim, o reembolso é processado em até 5 dias úteis" — porque é o tipo de frase que estatisticamente segue perguntas desse formato. Não existe política de reembolso automático. O usuário aciona o suporte humano cobrando o prazo, e ninguém sabe de onde veio a promessa.
+
+O bug não está no modelo "alucinando por conta própria" — está no campo que faltou. Um `uncertainty_behavior: "stop and escalate: quando a pergunta envolver política financeira, reembolso ou dados de conta não confirmados nos documentos fornecidos, responda 'não tenho essa informação confirmada — vou encaminhar para um atendente humano' e pare"` fecha exatamente essa lacuna: troca "completar o padrão" por "declarar o limite". A correção não foi reescrever o role nem adicionar mais regras soltas — foi preencher o único campo do template que já existia para isso.
+
+> [!danger] P1 em produção — prompt sem `uncertainty_behavior`
+> Esse é o padrão de incidente mais comum de Prompt Layer malfeita: não é o modelo "mentindo" — é a ausência de uma instrução explícita para a borda que faz o modelo tratar "eu não sei" como "eu preciso preencher algo plausível". Toda Prompt Layer que vai para produção precisa responder, antes do primeiro deploy: *o que o modelo faz quando a pergunta sai do que os documentos cobrem?* Se a resposta não está escrita no prompt, ela vai ser inventada pelo modelo — e nem sempre da forma que você esperaria.
 
 ## Armadilhas comuns
 
@@ -202,103 +259,3 @@ A distinção é importante: mudar o que o modelo sabe não exige mudar o prompt
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 2 (Prompt layer template). X/Twitter, 2025.
 - **Anthropic** — [*Prompt engineering overview*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview). Estrutura recomendada de system prompt.
 - **Anthropic** — [*Prompt caching*](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching). Custo de system prompts longos e como mitigar.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

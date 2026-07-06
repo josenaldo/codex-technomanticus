@@ -1,9 +1,9 @@
 ---
 title: "Setup completo — do zero ao sistema de produção"
 created: 2026-05-28
-updated: 2026-06-24
+updated: 2026-07-06
 type: concept
-status: seedling
+status: growing
 fase: Adepto
 tags:
   - ai-engineering-stack
@@ -316,6 +316,10 @@ Antes de publicar pra primeiro grupo de assinantes:
 - [ ] Logging Layer escrevendo em backend persistente
 - [ ] Improvement Layer com cadência agendada no calendário
 - [ ] Plano de rollback (versionado) caso a edição 1 falhe feio
+  - [ ] Versão anterior do system prompt versionada em git e recuperável com um único comando (`git revert`, não edição manual sob pressão)
+  - [ ] Critério objetivo de quando disparar o rollback (ex.: 2+ dimensões da rubrica <3 na primeira edição real, ou reclamação de assinante sobre claim errada)
+  - [ ] Feature flag que pausa o envio sem quebrar o cron semanal — a newsletter falha em "não enviar", nunca em "enviar errado"
+  - [ ] Owner humano notificado automaticamente (mesmo canal do `escalation_rule` da Guardrail Layer) no instante em que o rollback é acionado, não só depois
 
 ## Armadilhas comuns ao montar o stack completo
 
@@ -327,6 +331,9 @@ Antes de publicar pra primeiro grupo de assinantes:
 
 > [!warning] Colocar em produção sem Logging Layer
 > Sem o trace por execução, o primeiro incidente real (newsletter sai com link quebrado, item com hype passa, edição atrasada) vai ser investigado no escuro. Você tem o output final, mas não tem: qual versão do prompt estava ativa, quais candidatos foram descartados, qual guardrail disparou ou não disparou, qual foi o custo. Logging precisa estar ativo antes do primeiro assinante real, não depois do primeiro incidente.
+
+> [!warning] Construir todas as camadas ao mesmo tempo antes de validar a Purpose Layer
+> É tentador abrir os 11 arquivos de config de uma vez e preencher tudo numa tarde — parece mais produtivo do que "perder tempo" só decidindo escopo. O problema é que cada camada downstream herda decisão da anterior: se o `success_criteria` do Purpose mudar depois (porque só ficou claro na prática que "100% dos links abrem" era exigente demais, por exemplo), a rubrica da Evaluation que você já escreveu, o `forbidden_actions` do Prompt e o schema do Output todos precisam ser revisitados — não porque estavam errados, mas porque foram construídos sobre uma premissa que mudou. O custo não é escrever a Purpose Layer de novo; é rastrear todo o resto que dependia dela. Valide a Purpose Layer com um stakeholder real — nem que seja uma conversa de 15 minutos — antes de escrever a segunda linha de qualquer outra camada.
 
 ## Como explicar em inglês
 

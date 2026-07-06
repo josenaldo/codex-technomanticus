@@ -1,9 +1,9 @@
 ---
 title: "Logging Layer"
 created: 2026-05-28
-updated: 2026-06-24
+updated: 2026-07-06
 type: concept
-status: seedling
+status: growing
 fase: Iniciado
 tags:
   - ai-engineering-stack
@@ -107,6 +107,43 @@ O padrão emergente para a implementação é **OpenTelemetry GenAI** — semant
 
 **5. Política de retenção.** Logs com PII têm prazo legal de retenção — no Brasil, LGPD define obrigações; na Europa, GDPR. Logs sem PII podem ser retidos por mais tempo para análise de tendências e treinamento futuro. A política precisa estar definida antes de acumular volume: limpar retroativamente é muito mais difícil.
 
+## Ferramentas de logging
+
+Implementar a Logging Layer do zero — schema custom, storage custom, dashboard custom — é possível, mas a maioria dos times integra uma ferramenta pronta que já fala o "idioma" de sistemas de IA: trace estruturado, versionamento de prompt, eval score anexado ao trace.
+
+**OpenTelemetry GenAI** não é uma ferramenta, é o **padrão**. É um conjunto de *semantic conventions* — nomes de atributos e estrutura de span — específico para chamadas a LLMs, tool calls e retrieval. Instrumentar o código com OTel GenAI significa que o trace gerado é interoperável com qualquer backend compatível: trocar de ferramenta de visualização não exige reinstrumentar o código, só trocar o exporter. É a camada de instrumentação; a ferramenta abaixo é a camada de visualização e análise.
+
+**Langfuse** — open source, self-hostable ou cloud gerenciado. Foco em observability específica para LLM: tracing por sessão, versionamento e comparação A/B de prompts, datasets de eval anexados ao trace, custo por chamada. Ponto forte: integração nativa com frameworks (LangChain, LlamaIndex, Vercel AI SDK) via um decorator ou wrapper mínimo — poucas linhas de setup.
+
+**Phoenix (Arize AI)** — open source, nasceu do mundo de ML observability tradicional (drift de modelo, análise de embeddings). Diferencial: visualização de embeddings e de retrieval — útil quando o problema está especificamente no RAG ("por que o retrieval trouxe o documento errado?"). Roda local em notebook ou como serviço próprio.
+
+**Datadog LLM Observability** — extensão do APM enterprise que boa parte das empresas já usa para infraestrutura. Vantagem: unifica logging de IA com o resto do stack de observability (métricas de infra, APM de backend, alertas) num único painel. Custo e vendor lock-in maiores que as opções open source.
+
+Self-host vs. gerenciado é a escolha operacional dentro de Langfuse e Phoenix: self-host elimina custo recorrente de SaaS e mantém os dados (incluindo PII eventualmente não-redacted) dentro do perímetro da empresa, mas transfere para o time a responsabilidade de operar o backend — upgrade de versão, backup, escalonamento de storage conforme o volume de traces cresce. Cloud gerenciado inverte a troca: menos operação, mais dependência do provedor e do modelo de billing por volume de eventos.
+
+> [!question]- Self-host resolve o problema de compliance de PII?
+> Só parcialmente. Self-host tira o dado de um provedor terceiro, o que ajuda em jurisdições com exigência de residência de dados. Mas não substitui a política de redação da Decisão 1 — mesmo em infraestrutura própria, PII sem redação continua sendo PII sem redação, com as mesmas obrigações de LGPD/GDPR.
+
+| Ferramenta | Tipo | Foco | Quando usar |
+|---|---|---|---|
+| OpenTelemetry GenAI | Padrão (não é ferramenta) | Semantic conventions para instrumentação | Sempre, como camada de instrumentação |
+| Langfuse | Open source / cloud | Tracing, versionamento de prompt, eval | De MVP a produção; quer portabilidade de backend |
+| Phoenix | Open source | Debug de RAG e embeddings | Problema concentrado no retrieval |
+| Datadog LLM Observability | SaaS enterprise | Unificar com APM já existente | Time já opera com Datadog para infra |
+
+A escolha entre as três ferramentas concretas não é mutuamente exclusiva com o padrão: instrumentar via OpenTelemetry GenAI e depois exportar para Langfuse, Phoenix ou Datadog é a combinação recomendada — o padrão garante portabilidade, a ferramenta entrega a visualização e a análise do dia a dia.
+
+> [!question]- Qual ferramenta escolher?
+> Depende do estágio. Protótipo ou MVP: Langfuse ou Phoenix — grátis, self-host rápido, sem contrato. Empresa que já usa Datadog para todo o resto: LLM Observability do Datadog evita mais um painel isolado. Time que quer portabilidade entre ferramentas no futuro: instrumentar com OpenTelemetry GenAI desde o início e escolher o backend de visualização depois — a troca fica barata.
+
+Custo de migração entre ferramentas é o argumento decisivo a favor de instrumentar com OpenTelemetry GenAI desde o início, mesmo em MVP. Sem essa camada de abstração, cada tool call e chamada ao modelo fica acoplada diretamente ao SDK específico de Langfuse ou Phoenix — trocar de ferramenta depois significa reescrever a instrumentação inteira, não só o exporter. O custo extra de instrumentar via OTel GenAI é pequeno (mais uma camada de configuração); o custo de não fazer isso só aparece meses depois, quando o time de fato precisa trocar.
+
+> [!example] Sinal de que chegou a hora de trocar de ferramenta
+> Dashboards que não respondem mais às perguntas certas (ex.: falta comparação de embeddings quando o problema é de RAG), custo do plano SaaS crescendo mais rápido que o volume de tráfego real, ou necessidade de unificar com um APM corporativo já existente. Instrumentação portável (OTel GenAI) torna essa troca uma decisão de configuração, não de reescrita.
+
+> [!summary] Resumo em uma linha
+> OpenTelemetry GenAI define *o quê* logar; Langfuse, Phoenix e Datadog decidem *onde* visualizar e analisar — escolher a ferramenta de visualização é reversível se a instrumentação já for portável.
+
 ## Casos práticos
 
 ### Cenário 1 — Incidente sem trace
@@ -129,16 +166,64 @@ Sistema de suporte técnico com 8.000 chamadas/dia. Logging Layer implementada c
 
 Quando a latência p95 sobe 40% em uma hora, o time investiga e descobre: retrieval está fazendo queries redundantes (bug introduzido no último deploy). Identificação: 15 minutos. Rollback: imediato. Sem o dashboard, o problema teria sido descoberto pelo usuário reclamando.
 
+### Cenário 3 — Estratégia de sampling em alto volume
+
+Sistema de atendimento com 500.000 execuções por dia. Logar 100% em detalhe completo — todo o payload de input/output, todas as tool calls, todas as retrieval queries — custaria armazenamento e processamento fora de qualquer orçamento razoável. Mas amostrar tudo de forma uniforme (ex.: 1 a cada 100 execuções, ao acaso) esconde justamente os casos raros que mais importam.
+
+A estratégia aplicada segue a Decisão 4 em escala real, com camadas:
+
+- **100% das execuções com erro ou exceção** — sempre log completo. É o caso que a equipe vai precisar investigar.
+- **100% das execuções com guardrail disparado** — sempre log completo; é sinal de segurança ou de qualidade, nunca descartável.
+- **100% dos casos com eval_score abaixo do threshold** (quando há scoring em tempo real, ou reprocessado em amostra pós-hoc) — queda de qualidade não pode ficar de fora por azar do sorteio.
+- **5-10% de amostra aleatória do restante** ("caminho feliz", sem erro, sem guardrail, score normal) — suficiente para monitorar tendência de latência, custo e distribuição de queries sem gravar tudo.
+- **Métrica agregada sempre, mesmo fora da amostra** — toda execução gera pelo menos um evento de contagem/latência/custo para os dashboards, mesmo quando o payload completo não é persistido. Nada se perde para as métricas agregadas; só o detalhe granular por execução é que é amostrado.
+
+Resultado típico: redução de ~90% no volume de dados persistidos em detalhe, mantendo 100% de cobertura nos casos que importam (erro, guardrail, baixa qualidade) e visibilidade estatística confiável no restante.
+
+A decisão de amostrar (ou não) é tomada por execução, no momento em que o trace fecha — nunca antes, porque o "erro" ou o "guardrail disparado" só se sabe no final da execução. Uma política mínima, como pseudo-configuração:
+
+```yaml
+sampling_policy:
+  always_log_full:
+    - condition: "status == error"
+    - condition: "guardrail_triggered == true"
+    - condition: "eval_score < threshold_minimo"
+  sample_rate_success: 0.07   # 7% do caminho feliz vira log completo
+  always_emit_metric: true    # toda execução gera métrica agregada, amostrada ou não
+```
+
+Esse padrão evita dois erros comuns de implementação: decidir o sampling *antes* de saber se a execução deu erro (perderia justamente os casos que mais importam), e tratar "não amostrado" como "sem dado nenhum" (perderia visibilidade agregada de latência e custo). A amostra corta o *detalhe granular*; a métrica agregada continua vindo de 100% das execuções.
+
+> [!warning] Sampling mal calibrado esconde problemas raros
+> Amostra aleatória uniforme de 5% pode nunca capturar um bug que ocorre em 1 a cada 1.000 execuções — mas que causa dano severo, como vazamento de PII ou resposta perigosa. Por isso erros e guardrails ficam sempre em 100%: sampling só se aplica ao caminho feliz, nunca ao caminho de risco.
+
+Sampling e retenção (Decisão 5) interagem: logs completos de erro/guardrail tendem a ter prazo de retenção mais longo (são os casos que a equipe volta a consultar em auditorias e post-mortems), enquanto a amostra do caminho feliz pode ter retenção mais curta — o valor dela é estatístico, não forense, e perde relevância mais rápido.
+
+> [!summary] Resumo em uma linha
+> Sampling não é "logar menos" — é logar tudo o que importa (erro, guardrail, baixa qualidade) e amostrar só o que não importa individualmente, mantendo métrica agregada de 100% das execuções.
+
 ## Armadilhas comuns
 
 > [!warning] Configurar logging depois do primeiro incidente
 > "Vamos adicionar logging quando algo der errado" garante que o primeiro incidente vai ser investigado no escuro — sem trace, sem versão do prompt, sem contexto. Logging precisa estar ativo antes do primeiro usuário real. O incidente é tarde demais para instrumentar.
+>
+> **Resolução concreta:** instrumente logging estruturado no dia 1 do projeto, antes do primeiro deploy — mesmo em MVP. Use uma biblioteca pronta (OpenTelemetry GenAI + SDK do Langfuse ou Phoenix) em vez de esperar "quando sobrar tempo": o setup mínimo é poucas linhas. Checklist de dia 1: trace_id gerado em toda chamada, log de erro sempre ativo (nunca em modo silencioso), e sampling de sucesso mesmo que baixo — nunca zero, porque zero significa não ter baseline para comparar quando o incidente chegar.
+>
+> Exemplo concreto do custo de não fazer isso: um time que adia logging até o primeiro incidente sério frequentemente descobre, na hora que mais precisa, que nem o `trace_id` foi gerado — a investigação vira arqueologia em logs de infraestrutura genéricos, sem qualquer contexto de IA.
 
 > [!warning] Log não-queryável
 > Log em texto livre, JSON sem schema fixo, ou mistura de formatos por data é praticamente inútil para análise em volume. Você tem os dados, mas não consegue responder "qual é o eval score médio das chamadas da semana passada que tiveram guardrail disparado?" sem parsear linha a linha. Schema estruturado desde o início é investimento com retorno imediato.
+>
+> **Resolução concreta:** defina o schema (o template mínimo desta nota serve de ponto de partida) antes de escrever a primeira linha de log, e escolha um backend que suporte query estruturada — Clickhouse, Postgres com colunas tipadas, ou o storage já resolvido de uma ferramenta como Langfuse/Phoenix. Migrar de log livre para estruturado depois de acumular volume é trabalho de re-parsing retroativo, caro e sujeito a erro; vale muito mais acertar o schema antes do primeiro registro do que corrigir depois.
+>
+> Teste rápido pra saber se o schema atual é suficiente: tente responder "qual o eval score médio das chamadas com guardrail disparado na última semana" com uma única query. Se a resposta exige abrir arquivos e ler linha a linha, o schema ainda não está estruturado o bastante.
 
 > [!warning] Logar PII sem política de redação
 > Logs de sistemas de IA frequentemente contêm PII sensível nos inputs e outputs dos usuários. Sem redação automática, o log se torna um arquivo de dados pessoais — com todas as obrigações legais que isso implica. Implemente redação como parte do pipeline de logging, não como step opcional.
+>
+> **Resolução concreta:** liste os campos sensíveis antes do primeiro log (nome, CPF, e-mail, endereço, dado de saúde) e implemente redação automática no pipeline — regex para padrões conhecidos (CPF, e-mail) combinado com NER para nomes e entidades livres — sempre antes de persistir, nunca como limpeza manual posterior. Se o dado original for necessário para debugging, mantenha-o num store separado com controle de acesso mais restrito do que o log agregado, nunca junto com o resto do payload.
+>
+> Regra prática: se a política de redação ainda não foi decidida, trate todo campo de input/output como PII por padrão — redação automática *default-on*. É muito mais barato afrouxar depois campo a campo do que descobrir, num audit de LGPD, que meses de logs sem redação já foram persistidos.
 
 ## Métricas operacionais essenciais de uma Logging Layer madura
 
@@ -195,6 +280,8 @@ O Improvement Loop é o que transforma o sistema de uma implementação estátic
 
 - **[[Observability]]** — trilha completa de observabilidade para sistemas de IA (8 notas).
 - **OpenTelemetry** — [*Semantic Conventions for Generative AI*](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Padrão emergente.
+- **Phoenix (Arize AI)** — [*documentação oficial*](https://docs.arize.com/phoenix). Foco em debug de RAG e embeddings.
+- **Datadog** — [*LLM Observability*](https://docs.datadoghq.com/llm_observability/). Integração com o resto do stack de APM.
 
 ## Veja também
 
@@ -208,95 +295,6 @@ O Improvement Loop é o que transforma o sistema de uma implementação estátic
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 10 (Logging layer template). X/Twitter, 2025.
 - **OpenTelemetry** — [*Semantic Conventions for Generative AI*](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Padrão emergente de instrumentação.
 - **Langfuse** — [*Tracing concept*](https://langfuse.com/docs/tracing). Implementação concreta de trace para sistemas LLM.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Arize AI** — [*Phoenix documentation*](https://docs.arize.com/phoenix). Observability open source com foco em embeddings e RAG.
+- **Datadog** — [*LLM Observability*](https://docs.datadoghq.com/llm_observability/). Extensão do APM enterprise para sistemas de IA.
+- **OpenTelemetry** — [*GenAI semantic conventions overview*](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Referência da camada de instrumentação.

@@ -135,16 +135,6 @@ Gatilhos que **não** justificam revisão (só prompt):
 
 A Purpose Layer estável e bem-definida é o que permite que as outras camadas evoluam sem retrabalho. Cada revisão de Purpose deve ser tratada como uma decisão de produto: aprovada com o mesmo rigor de um PRD, não silenciosa.
 
-## Como explicar em inglês
-
-The Purpose Layer is the founding document of an AI system — the only layer that doesn't inherit from any other. It defines what the system does (`primary_job`), who it's for (`target_user`), what it explicitly does not do (`not_in_scope`), and the measurable definition of success (`success_criteria`). Every downstream layer — Prompt, Evaluation, Guardrail — inherits constraints from what Purpose defines. Without a closed Purpose Layer, you're not writing a system prompt; you're writing a wish list.
-
-The most underrated field is `not_in_scope`: it's what gives the system the right to say "no" confidently and escalate to a human with context instead of improvising. Teams that skip it end up with models that over-promise and under-deliver — not because the model is bad, but because the model was never told it could refuse.
-
-**In a technical interview**, you might say:
-
-> "Before writing any prompt, I close the Purpose Layer: `primary_job`, `target_user`, `not_in_scope`, and `success_criteria`. The `not_in_scope` field is the most important — it's what gives the system the right to say 'not with this system' and escalate with context instead of improvising. Without it, every out-of-scope request becomes model improvisation, which creates expectations the system can't fulfill. With it, the whole team has the same mental model of what the system is — and what it isn't."
-
 ## Armadilhas comuns
 
 > [!warning] Descrever a tecnologia em vez do propósito

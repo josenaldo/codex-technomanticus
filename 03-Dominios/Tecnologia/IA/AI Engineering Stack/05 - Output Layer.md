@@ -87,6 +87,33 @@ Para output não-trivial consumido por código, vale formalizar via JSON Schema,
 
 **5. Actionability: output como ação vs como sugestão.** Output que **é** a ação (uma chamada de função pronta para executar) tem latência mais baixa e menos risco de interpretação incorreta. Output que **sugere** uma ação preserva humano-no-loop. A escolha depende de quão irreversível é a ação e de quanto você confia na qualidade atual do modelo para esse tipo de tarefa.
 
+### Schema rígido vs leve — o mesmo caso, dois contratos
+
+A Decisão-chave #2 fica mais concreta lado a lado. Um sistema de extração de dados de currículos precisa emitir o cargo mais recente do candidato. Duas formas de modelar o mesmo campo:
+
+```python
+# Schema rígido — pipeline automatizado, sem revisão humana
+class CargoRigido(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    titulo: str
+    empresa: str
+    data_inicio: str       # ISO 8601, obrigatório
+    data_fim: str | None   # None só se for o cargo atual
+
+# Schema leve — assistente de triagem, com revisão humana
+class CargoLeve(BaseModel):
+    titulo: str
+    empresa: str | None = None
+    periodo: str | None = None   # texto livre: "2021-atual", "3 anos", etc.
+    observacao: str | None = None
+```
+
+Com `CargoRigido`, um currículo que descreve o período como "há cerca de 3 anos" (sem data exata) **falha a validação** — o pipeline precisa de outra etapa (normalização de data, ou rejeição com fila de correção manual) antes de aceitar o registro. Com `CargoLeve`, o mesmo currículo passa direto, mas o campo `periodo` chega como texto livre para o sistema downstream — que agora precisa ele mesmo lidar com a variação que o schema rígido teria barrado. Não existe opção "sem custo": schema rígido move o custo de tratar variação para *antes* da validação (o modelo, ou uma etapa de normalização); schema leve move esse custo para *depois* (o consumidor do JSON).
+
+Na prática, a escolha entre os dois raramente é binária ao longo do tempo: sistemas costumam começar com schema leve (menos atrito para lançar), acumular casos de erro no consumidor, e migrar campos específicos para rígido conforme o volume de dados ruins naquele campo justifica o custo de validação antecipada. `titulo` e `empresa` tendem a enrijecer cedo (baixa ambiguidade); `periodo`/datas tendem a ficar leves por mais tempo (alta variação de formato na fonte).
+
+Vale notar que "rígido" e "leve" não são as únicas opções no meio do caminho: Pydantic também permite `extra="allow"`, que aceita campos extras sem defini-los no schema — meio-termo útil quando você quer capturar o inesperado sem travar a validação, mas ainda quer os campos conhecidos tipados.
+
 ## Casos práticos
 
 ### Cenário 1 — O pipeline que quebra silenciosamente
@@ -129,6 +156,25 @@ output:
 
 Com `confidence: high` → o ticket é roteado automaticamente. Com `confidence: medium` → roteado automaticamente mas com flag para revisão aleatória (10% de sampling). Com `confidence: low` → vai sempre para fila de revisão humana. O mesmo modelo, o mesmo prompt — mas o output estruturado permite políticas de roteamento por confiança.
 
+### Cenário 3 — Output como ação direta: geração de código
+
+Sistema de refatoração automática: o modelo lê um arquivo com um code smell (função duplicada, import morto) e produz a correção. Aqui a Decisão-chave #5 (actionability) pesa diferente dos dois cenários anteriores — o output não é uma sugestão que um humano lê, é uma **ação executável**: um diff que vai direto para o disco.
+
+```yaml
+output:
+  primary_format: json
+  required_sections:
+    - file_path
+    - diff        # formato unified diff, aplicável via patch
+    - risk_level  # baixo: renomear variável; alto: mudar assinatura pública
+    - reversible  # true se o diff pode ser revertido sem efeito colateral
+  actionability: "ação direta condicionada: aplica sozinho se risk_level=baixo E reversible=true; abre PR para revisão nos demais casos"
+```
+
+A diferença central em relação ao Cenário 2 (confidence como roteador): ali o roteamento decidia **quem** revisa o quê; aqui `risk_level` e `reversible` decidem se existe revisão **nenhuma**. Isso muda o cálculo de risco da Output Layer inteira — um campo mal calibrado (`reversible: true` quando na verdade não é) não gera um ticket mal-roteado, gera uma mudança de código aplicada sem revisão. Por isso, sistemas de output-como-ação-direta tipicamente compensam com um schema mais conservador do que sistemas de output-como-sugestão: preferem `reversible: false` por padrão (fail-safe) e exigem que o modelo *comprove* reversibilidade — por exemplo, anexando o diff inverso — antes de assumir `true`.
+
+Esse é o mesmo eixo da Decisão-chave #5 levado ao extremo: quanto mais irreversível a ação e menos madura a confiança no modelo para aquela classe de tarefa, mais o contrato de saída precisa carregar campos que forcem o modelo a justificar por que é seguro agir sozinho — não apenas o que fazer.
+
 ## Instruction-only vs structured outputs — quando cada um
 
 A distinção prática entre pedir JSON no prompt versus usar structured outputs da API:
@@ -142,6 +188,60 @@ A distinção prática entre pedir JSON no prompt versus usar structured outputs
 | Quando usar | Protótipos, saída para humanos | Pipelines em produção, dados críticos |
 
 A regra de ouro: se um humano vai ler o output e corrigir se necessário, instruction-only é suficiente. Se o output vai direto para código ou banco de dados sem revisão humana, use structured outputs.
+
+## Validação pós-output
+
+> [!question]- Se structured outputs "garantem" o schema, por que ainda preciso validar depois?
+> Porque a garantia da API é **sintática**, não **semântica**. Structured outputs garantem que o JSON tem a forma certa — os campos existem, os tipos batem. Eles não garantem que o `risk_level: "critical"` faz sentido dado o texto do contrato, nem que o modelo não vai, um dia, rodar sem o schema forçado (fallback de instruction-only, versão antiga da API, provider diferente). Validação pós-output é a rede de segurança que trata o schema como contrato, não como promessa.
+
+Mesmo com structured outputs habilitados, dois tipos de falha continuam possíveis na prática — e cada um pede um tratamento diferente.
+
+**Falha 1 — prosa antes do JSON.** Acontece quando você depende de instruction-only (sem schema forçado pela API) e o modelo, sob pressão de contexto longo ou instrução ambígua, decide "ajudar" o consumidor com uma frase de abertura:
+
+```python
+import json
+
+resposta_do_modelo = '''Claro! Aqui está a análise em JSON:
+{
+  "risk_level": "high",
+  "clause": "Cláusula 4.2 - rescisão unilateral",
+  "recommendation": "Revisar com jurídico antes de assinar"
+}'''
+
+dados = json.loads(resposta_do_modelo)
+# json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+```
+
+O parser falha na primeira linha porque `json.loads` espera que a string inteira seja JSON válido — "Claro! Aqui está..." não é. A correção ingênua (`resposta_do_modelo.strip()`) não resolve nada, porque o problema não é espaço em branco, é texto de verdade antes da estrutura. Duas saídas práticas: (1) extrair o primeiro `{` até o `}` correspondente com uma busca de substring antes do parse, tratando qualquer coisa fora dele como ruído descartável; ou (2) eliminar a classe inteira do problema migrando para structured outputs, onde a API restringe o sampling para nunca emitir texto fora do schema.
+
+**Falha 2 — campo extra inesperado rejeitado pelo schema.** Acontece do lado oposto: o schema é rígido demais e o modelo (corretamente, do ponto de vista dele) tenta comunicar algo que o contrato não previu:
+
+```python
+from pydantic import BaseModel, ConfigDict, ValidationError
+
+class RiscoContrato(BaseModel):
+    model_config = ConfigDict(extra="forbid")  # rígido: nenhum campo fora do schema
+
+    clause: str
+    risk_level: str
+    recommendation: str
+
+payload_do_modelo = {
+    "clause": "Cláusula 4.2 - rescisão unilateral",
+    "risk_level": "high",
+    "recommendation": "Revisar com jurídico antes de assinar",
+    "confidence_note": "Baixa confiança: cláusula redigida de forma ambígua",
+}
+
+RiscoContrato(**payload_do_modelo)
+# pydantic_core._pydantic_core.ValidationError: 1 validation error for RiscoContrato
+# confidence_note
+#   Extra inputs are not permitted [type=extra_forbidden, ...]
+```
+
+O modelo tentou sinalizar incerteza (`confidence_note`) porque a Decisão-chave #4 desta camada (uncertainty flags) não previu esse campo no schema — e `extra="forbid"` descarta a mensagem inteira em vez de só o campo excedente. Aqui a correção não é relaxar para `extra="ignore"` cegamente (isso descarta silenciosamente sinais que podem importar, como incerteza) — é decidir explicitamente: schema rígido pipeline-a-pipeline deve **antecipar** os campos de incerteza que quer capturar (voltando à Decisão-chave #4), e usar `extra="forbid"` só depois de o schema já cobrir os campos que o modelo plausivelmente vai querer emitir. `extra="ignore"` é aceitável como rede de segurança temporária durante prototipagem, nunca como decisão permanente para pipelines críticos.
+
+A lição comum às duas falhas: validação pós-output não é feature opcional de "hardening" — é onde a Output Layer encontra a realidade de que o modelo é probabilístico e o contrato é uma expectativa, não uma lei física.
 
 ## Armadilhas comuns
 
@@ -198,108 +298,3 @@ Com o contrato de saída definido, você sabe o que o sistema precisa produzir. 
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 4 (Output layer template). X/Twitter, 2025.
 - **OpenAI** — [*Structured Outputs guide*](https://platform.openai.com/docs/guides/structured-outputs). Schema enforcement na API.
 - **Anthropic** — [*Tool use with Claude*](https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview). JSON schema em tool calls.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

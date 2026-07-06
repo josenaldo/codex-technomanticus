@@ -1,9 +1,9 @@
 ---
 title: "Tool Layer"
 created: 2026-05-28
-updated: 2026-06-24
+updated: 2026-07-05
 type: concept
-status: seedling
+status: growing
 fase: Iniciado
 tags:
   - ai-engineering-stack
@@ -98,6 +98,52 @@ O protocolo MCP padroniza o **transporte** de tools entre modelo e cliente. A tr
 
 **5. Tool design é trabalho de engenharia.** Tool com schema mal feito gera alucinação de parâmetro — o modelo tenta preencher campos que não existem ou interpreta errado o que o campo significa. Descrições claras, exemplos no schema, erros informativos, e nomes consistentes com o domínio do problema são tão importantes quanto o código da função em si. Uma tool mal descrita é uma tool que o modelo vai usar errado.
 
+> [!question]- Por que "schema mal descrito" é uma causa raiz e não um detalhe cosmético?
+> Porque o schema é a *única* informação que o modelo tem sobre a tool no momento de decidir chamá-la. Não há acesso ao código-fonte, não há teste manual — só o nome do campo, o tipo, e a descrição. Se a descrição é vaga, o modelo preenche a lacuna com a interpretação mais plausível estatisticamente, que nem sempre é a correta. É o mesmo motivo pelo qual um docstring vago produz uso incorreto de uma função por um humano — só que aqui não há tempo de compilação para pegar o erro; ele aparece como uma chamada malformada em produção.
+
+> [!example]- Schema mal descrito vs bem descrito, lado a lado
+> **Mal descrito** — campos sem contexto, sem exemplo, sem limites:
+> ```json
+> {
+>   "name": "update_order",
+>   "description": "Updates an order.",
+>   "parameters": {
+>     "id": { "type": "string" },
+>     "status": { "type": "string" },
+>     "notify": { "type": "boolean" }
+>   }
+> }
+> ```
+> Problemas: `id` pode ser order_id, customer_id ou SKU — o schema não diz qual. `status` aceita qualquer string — o modelo não sabe os valores válidos (`"pending"`, `"shipped"`, `"cancelled"`?) nem se pode fazer transições inválidas (reabrir um pedido já entregue). `notify` não diz para quem, nem o que a notificação contém.
+>
+> **Bem descrito** — mesmo campo, com contexto suficiente para decisão correta:
+> ```json
+> {
+>   "name": "update_order_status",
+>   "description": "Atualiza o status de um pedido existente. Use quando o pedido já foi criado e precisa mudar de estado (ex: de 'pending' para 'shipped'). NÃO use para criar um pedido novo — use create_order.",
+>   "parameters": {
+>     "order_id": {
+>       "type": "string",
+>       "description": "ID do pedido no formato ORD-XXXXX, obtido via get_order ou list_orders."
+>     },
+>     "status": {
+>       "type": "string",
+>       "enum": ["pending", "confirmed", "shipped", "delivered", "cancelled"],
+>       "description": "Novo status. Transições válidas: pending→confirmed→shipped→delivered. cancelled só é permitido a partir de pending ou confirmed."
+>     },
+>     "notify_customer": {
+>       "type": "boolean",
+>       "description": "Se true, envia email automático ao cliente informando a mudança de status. Default: true para shipped/delivered, false para os demais."
+>     }
+>   },
+>   "examples": [
+>     { "input": { "order_id": "ORD-00931", "status": "shipped", "notify_customer": true },
+>       "output": { "success": true, "previous_status": "confirmed" } }
+>   ]
+> }
+> ```
+> A diferença não é estética: o `enum` elimina alucinação de valor de status; a descrição de transições válidas evita que o modelo tente cancelar um pedido já entregue; o exemplo de input/output ancora o formato esperado. Nada disso mudou o código da função — só o schema que o modelo lê antes de decidir chamar.
+
 ## Casos práticos
 
 ### Cenário 1 — O agent que manda email em produção sem querer
@@ -129,6 +175,55 @@ forbidden:
 
 O mesmo `schedule_email` tem política diferente dependendo do blast radius. O model pode agendar emails para até 100 destinatários com uma confirmação simples. Acima disso, o plano completo — lista de destinatários, assunto, horário — vai para revisão antes de qualquer execução.
 
+### Cenário 3 — Failure handling na prática: retry, fallback e o risco de duplicação
+
+Volte à Decisão 4 (failure handling): "retry com backoff" soa simples até você perceber que retry de uma tool de escrita pode duplicar o efeito colateral que ela já causou.
+
+Agent de suporte com a tool `create_ticket(customer_id, subject, body)`. Fluxo real:
+
+```mermaid
+sequenceDiagram
+    participant M as Modelo
+    participant T as create_ticket
+    participant S as Sistema de tickets
+
+    M->>T: create_ticket(cust_42, "Login falha", "...")
+    T->>S: POST /tickets
+    S-->>T: timeout (sem resposta em 5s)
+    Note over T: Ticket pode ter sido criado<br/>no servidor mesmo sem resposta
+    T-->>M: erro: timeout
+    M->>T: retry: create_ticket(cust_42, "Login falha", "...")
+    T->>S: POST /tickets
+    S-->>T: 201 Created
+    Note over S: Dois tickets idênticos<br/>criados pro mesmo problema
+```
+
+O timeout não diz se a escrita aconteceu ou não — só que a resposta não chegou. Um retry ingênuo assume "não aconteceu" e repete a chamada. Quando a operação *não* é idempotente, o resultado é duplicação silenciosa: dois tickets, dois emails, duas cobranças.
+
+Política que evita isso, aplicada à mesma tool:
+
+```yaml
+tools:
+  available:
+    - name: "create_ticket"
+      idempotency_key: "gerada pelo chamador (cust_id + hash(subject+body) + timestamp truncado no minuto)"
+  tool_failure_behavior:
+    create_ticket:
+      retry:
+        max_attempts: 2
+        backoff: "2s, depois 4s"
+        condition: "só reenvia com o MESMO idempotency_key — o servidor deduplica no backend"
+      on_ambiguous_result:  # timeout, 5xx sem corpo, conexão caída
+        action: "chamar get_ticket_by_idempotency_key antes de qualquer novo retry"
+      fallback:
+        after_max_attempts: "escalar para humano com contexto (payload + idempotency_key + histórico de tentativas)"
+```
+
+Duas mudanças fazem a diferença: **(1)** a chave de idempotência é gerada pelo chamador e enviada em toda tentativa — o servidor (não o modelo) decide se já processou aquela chave e devolve o resultado existente em vez de criar de novo; **(2)** antes de qualquer retry, uma tool de leitura (`get_ticket_by_idempotency_key`) verifica se a escrita anterior de fato não aconteceu, em vez de assumir. Sem essas duas peças, "retry com backoff" é uma receita de duplicação — não uma proteção contra falha.
+
+> [!info] Nem toda tool pode ser feita idempotente
+> Idempotência funciona bem para `create_*` (a chave evita duplicata) e para `update_*` (reenviar o mesmo valor final não piora nada). Fica mais difícil para tools que têm efeito cumulativo por natureza — `increment_counter`, `charge_additional_fee`. Nesses casos, o fallback correto costuma ser mais conservador: nunca reenviar automaticamente, sempre escalar para humano após a primeira falha ambígua.
+
 ## Armadilhas comuns
 
 > [!warning] Expor todas as tools disponíveis a cada contexto
@@ -146,13 +241,63 @@ Nem toda tool tem o mesmo perfil de risco. Classificar antes de categorizar na p
 
 **Read-only tools (leitura):** `search`, `get`, `list`, `fetch`, `preview`. Sem efeito colateral permanente — o pior caso é latência desnecessária ou dado desatualizado. Geralmente seguros para `auto-approve`. Cuidado: `fetch` de uma URL pode registrar um acesso em sistemas de analytics — não é puramente "sem efeito".
 
+```python
+def get_order_status(order_id: str) -> dict:
+    """Leitura pura: consulta o status de um pedido. Sem efeito colateral."""
+    return db.orders.find_one({"order_id": order_id}, {"status": 1, "updated_at": 1})
+```
+
 **Write tools (escrita única):** `create`, `update`, `send`, `schedule`. Efeito colateral permanente, mas escopo limitado. Geralmente: `confirm` para ações que afetam 1 registro ou 1 destinatário; `plan-then-execute` para lotes.
+
+```python
+def create_support_ticket(customer_id: str, subject: str, body: str,
+                           idempotency_key: str) -> dict:
+    """Escrita única, com chave de idempotência obrigatória (ver Cenário 3)."""
+    existing = db.tickets.find_one({"idempotency_key": idempotency_key})
+    if existing:
+        return existing  # não duplica; devolve o resultado já processado
+    return db.tickets.insert_one({
+        "customer_id": customer_id, "subject": subject, "body": body,
+        "idempotency_key": idempotency_key, "status": "open",
+    })
+```
 
 **Destructive tools (destruição):** `delete`, `revoke`, `cancel`, `purge`. Alta irreversibilidade. Padrão seguro: `forbidden` no agente autônomo, disponível apenas via workflow humano-no-loop explícito.
 
+```python
+def delete_user_account(user_id: str, approved_by: str) -> dict:
+    """`approved_by` é obrigatório e verificado — não existe caminho onde
+    o modelo chama esta função sem uma aprovação humana registrada antes."""
+    if not is_valid_human_approval(approved_by, action="delete_user_account", target=user_id):
+        raise PermissionError("Ação destrutiva exige aprovação humana registrada.")
+    return db.users.delete_one({"user_id": user_id})
+```
+
 **Compute tools (computação):** `calculate`, `transform`, `generate`. Sem efeito colateral externo, mas podem ter custo computacional ou ser vetores de prompt injection se o input vier de fontes externas (web scraping, documentos de usuário).
 
+```python
+def calculate_shipping_cost(weight_kg: float, destination_zip: str) -> float:
+    """Puro: mesma entrada sempre produz a mesma saída. Sem I/O externo,
+    sem estado mutável — o candidato ideal para auto-approve mesmo sem
+    ser read-only no sentido estrito."""
+    return pricing_table.lookup(weight_kg, destination_zip)
+```
+
 **Integration tools (integração):** tools que chamam APIs externas — pagamentos, messaging, auth. Risco depende do que a API faz; tratar como write tools no mínimo, com blast radius avaliado caso a caso.
+
+```python
+def charge_payment(customer_id: str, amount_cents: int, idempotency_key: str) -> dict:
+    """Integração com gateway de pagamento externo. Note que a chave de
+    idempotência aqui é passada adiante para a própria API do gateway —
+    a maioria (Stripe, Adyen) já suporta isso nativamente."""
+    return payment_gateway.charge(
+        customer=customer_id, amount=amount_cents,
+        idempotency_key=idempotency_key,
+    )
+```
+
+> [!info] O padrão que atravessa as cinco categorias
+> Note que só a tool de leitura e a de computação pura dispensam alguma forma de proteção contra reexecução (idempotency key, aprovação, ou ambos). Isso não é coincidência — é o mesmo critério de "efeito colateral irreversível" que organiza a Decisão 3 (política de aprovação) reaparecendo no nível do código da tool, não só da política em YAML.
 
 > [!info] Blast radius como critério de gradação
 > Blast radius = número de entidades afetadas × reversibilidade. Enviar email para 1 usuário: baixo. Enviar para 50k: altíssimo — mesmo que tecnicamente seja "a mesma tool". A política deve graduar por blast radius, não só por tipo de ação.
@@ -216,87 +361,3 @@ Com tools definidas, você tem os blocos de construção de execução do sistem
 - **@hooeem** — *Become an AI Engineer*, chapter #18, Step 6 (Tool layer template). X/Twitter, 2025.
 - **Anthropic** — [*Tool use with Claude*](https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview). Schemas, function calling, efeitos colaterais.
 - **OpenAI** — [*Function calling*](https://platform.openai.com/docs/guides/function-calling). Parallel function calls e structured outputs em tools.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
