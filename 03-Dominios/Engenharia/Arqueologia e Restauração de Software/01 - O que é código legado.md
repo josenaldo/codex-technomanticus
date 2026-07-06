@@ -21,11 +21,7 @@ publish: true
 > consultor quase sempre recebe: um sistema sem rede *e* sem ninguém que o explique. Este
 > galho ensina a assumir exatamente esse sistema.
 
-Você foi chamado para assumir um sistema. Pode ser um cliente que comprou uma empresa e herdou
-o software junto; pode ser uma equipe que perdeu o único dev que entendia o faturamento; pode
-ser um resgate — nada funciona e ninguém sabe por quê. Você abre o repositório pela primeira
-vez. E a primeira pergunta que todo mundo faz, cedo ou tarde, é: *"isso aqui é legado?"* — como
-se "legado" fosse um veredito, um carimbo de condenação.
+Você foi chamado para assumir um sistema. Pode ser um cliente que comprou uma empresa e herdou o software junto; pode ser uma equipe que perdeu o único dev que entendia o faturamento; pode ser um resgate — nada funciona e ninguém sabe por quê. Você abre o repositório pela primeira vez. E a primeira pergunta que todo mundo faz, cedo ou tarde, é: *"isso aqui é legado?"* — como se "legado" fosse um veredito, um carimbo de condenação.
 
 O problema é que quase todo mundo responde essa pergunta pela razão errada.
 

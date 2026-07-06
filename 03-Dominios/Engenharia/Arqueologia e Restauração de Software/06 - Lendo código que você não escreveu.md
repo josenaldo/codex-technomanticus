@@ -24,17 +24,9 @@ publish: true
 > importante — **externalizar o modelo** para fora da cabeça (anotações, rascunho de refatoração,
 > renomeações), porque a única forma de vencer uma memória de trabalho pequena é não depender dela.
 
-Você abre uma função de 400 linhas herdada. Lê o começo, entende. Continua, e no meio percebe que
-esqueceu o que a primeira variável significava. Volta. Reencontra o fio, avança mais um pouco — e
-agora perdeu a condição do `if` de três blocos atrás. Volta de novo. Depois de vinte minutos relendo
-os mesmos trechos em círculos, você conclui que "esse código é confuso". Talvez seja. Mas parte do
-problema não está no código — está no fato de que você está tentando segurar na cabeça mais coisas do
-que a cabeça humana consegue segurar. E isso tem solução.
+Você abre uma função de 400 linhas herdada. Lê o começo, entende. Continua, e no meio percebe que esqueceu o que a primeira variável significava. Volta. Reencontra o fio, avança mais um pouco — e agora perdeu a condição do `if` de três blocos atrás. Volta de novo. Depois de vinte minutos relendo os mesmos trechos em círculos, você conclui que "esse código é confuso". Talvez seja. Mas parte do problema não está no código — está no fato de que você está tentando segurar na cabeça mais coisas do que a cabeça humana consegue segurar. E isso tem solução.
 
-O [[05 - First Contact|First Contact]] colocou o sistema pra rodar na sua frente. Agora vem a leitura
-de verdade — não o *skim* de uma hora, mas a construção do **modelo mental** que te fará o dono da
-teoria ([[03 - A lente do consultor|nota 03]]). E, sem o autor por perto, ler é a principal forma de
-recuperar a teoria que se perdeu.
+O [[05 - First Contact|First Contact]] colocou o sistema pra rodar na sua frente. Agora vem a leitura de verdade — não o *skim* de uma hora, mas a construção do **modelo mental** que te fará o dono da teoria ([[03 - A lente do consultor|nota 03]]). E, sem o autor por perto, ler é a principal forma de recuperar a teoria que se perdeu.
 
 ## Por que código alheio sobrecarrega: as três memórias
 
