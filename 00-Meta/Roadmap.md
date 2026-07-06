@@ -153,7 +153,7 @@ aliases:
 
 ### Onda B — Reformas e consolidações
 6. ✅ **Reforma do Node** — **CONCLUÍDA 2026-06-29**: 8 galhos, 95 notas reformadas no padrão capítulo (fase/Mermaid/Casos práticos/Armadilhas comuns/O que vem a seguir).
-7. 🟡 **Testes no ecossistema JS** — galho/trilha específica (Vitest, Jest, Testing Library, Playwright, MSW), ligando a `Engenharia/Testes` (conceitual) e à nota 19 de Tooling (`node:test`). **← PRÓXIMO**
+7. ✅ **Testes no ecossistema JS** — **CONCLUÍDA 2026-07-06** (escrita 18/18): galho [[03-Dominios/Tecnologia/Testes JS/index|Testes JS]] (Vitest, Testing Library, MSW, Playwright, coverage, flaky, CI), 3 fases, instrumentando `Engenharia/Testes` (conceitual). Falta só enriquecimento de mídia (M1).
 
 ### Onda C — Profundidade de Senior (system design & operação)
 8. 🟡 **Arquitetura / System Design** — escalar de 7 notas para trilha de entrevista (CAP, sharding, caching, filas, consistência, design exercises).

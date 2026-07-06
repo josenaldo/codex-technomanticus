@@ -24,9 +24,9 @@ Roadmap do galho `03-Dominios/Tecnologia/Testes JS`. Galho **em construção**: 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 18 |
-| ⬜ não escritas | 7 |
-| ✅ escritas | 11 |
-| % escrito | 61,1% |
+| ⬜ não escritas | 0 |
+| ✅ escritas | 18 |
+| % escrito | 100% |
 
 ---
 
@@ -77,31 +77,31 @@ Roadmap do galho `03-Dominios/Tecnologia/Testes JS`. Galho **em construção**: 
 - **Escopo:** `toMatchSnapshot`/`toMatchInlineSnapshot`, atualização, quando usa e quando evita (snapshots frágeis). Liga [[03-Dominios/Engenharia/Testes/13 - Além do básico - property-based, snapshot, contract, smoke|Engenharia/Testes 13]].
 
 #### 12 - Cobertura no ecossistema JS   [substantivo]
-- **Fase:** Adepto · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Adepto · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** `--coverage`, provider v8 vs istanbul, thresholds, o que coverage NÃO diz. Liga [[03-Dominios/Engenharia/Testes/12 - Coverage e mutation testing|Engenharia/Testes 12]].
 
 #### 13 - Playwright - E2E   [substantivo]
-- **Fase:** Magus · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Magus · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** locators, auto-wait, `expect` web-first, fixtures, `projects` (browsers), trace viewer, codegen.
 
 #### 14 - Playwright além do básico   [substantivo]
-- **Fase:** Magus · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Magus · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** component testing em browser real (experimental), interceptar rede, `storageState`/auth, visual/screenshot testing.
 
 #### 15 - Playwright vs Cypress   [substantivo]
-- **Fase:** Magus · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Magus · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** o cenário E2E, arquitetura (multi-browser/processo vs in-browser), trade-offs, por que Playwright dominou; quando Cypress ainda cabe.
 
 #### 16 - Testes flaky em JS   [substantivo]
-- **Fase:** Magus · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Magus · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** causas em JS (waits arbitrários, ordem, timers, rede), auto-wait, retries, isolamento, `test.step`, quarentena. Liga [[03-Dominios/Engenharia/Testes/11 - Testes flaky|Engenharia/Testes 11]].
 
 #### 17 - Testes na CI   [substantivo]
-- **Fase:** Magus · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Magus · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** matriz de browsers/node, sharding, cache de deps/browsers, reporters, Playwright na CI, artefatos (trace/screenshots). Liga [[03-Dominios/Engenharia/Testes/15 - Testes em CI-CD|Engenharia/Testes 15]].
 
 #### 18 - Capstone - estratégia de testes de um app JS-TS production-grade   [substantivo]
-- **Fase:** Magus · **Escrita:** ⬜ · **Enriquecimento:** ➖
+- **Fase:** Magus · **Escrita:** ✅ (2026-07-06) · **Enriquecimento:** ⬜ (M1)
 - **Escopo:** juntar unit (Vitest) + componente (Testing Library) + integração (MSW) + E2E (Playwright) numa estratégia coerente; troféu de testes; espelha [[03-Dominios/Engenharia/Testes/16 - Estratégia de testes em entrevista|Engenharia/Testes 16]] e Java/Testes 21. Capstone.
 
 ---
