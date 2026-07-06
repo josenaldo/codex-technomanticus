@@ -167,7 +167,7 @@ aliases:
 ### Coberturas ausentes a considerar (🚫 hoje sem trilha)
 - **Cloud** (AWS/GCP) — há `Senda Cloud`, mas sem domínio próprio construído.
 - **Auth & Identidade** (OAuth2/OIDC/JWT/sessões) — espalhado em Segurança; merece foco.
-- ~~**Web Performance & Core Web Vitals**~~ → **domínio próprio iniciado em 2026-07-05** (🟡): `Tecnologia/Web Performance/`, 4 galhos (*medir → carregar → responder → sustentar*). **Galhos 1 (Medição & Core Web Vitals) e 2 (Performance de Carregamento) escritos 8/8 cada** (falta enriquecimento de mídia); Galhos 3–4 esboçados no [[00-Meta/specs/2026-07-05-dominio-web-performance-design|design]]. Ver [[03-Dominios/Tecnologia/Web Performance/index|índice do domínio]].
+- ~~**Web Performance & Core Web Vitals**~~ → **domínio próprio iniciado em 2026-07-05** (🟡): `Tecnologia/Web Performance/`, 4 galhos (*medir → carregar → responder → sustentar*). **Galhos 1 (Medição & Core Web Vitals), 2 (Performance de Carregamento) e 3 (Performance de Runtime & Rendering) escritos 8/8 cada** (falta enriquecimento de mídia); Galho 4 (Performance em Produção) esboçado no [[00-Meta/specs/2026-07-05-dominio-web-performance-design|design]]. Ver [[03-Dominios/Tecnologia/Web Performance/index|índice do domínio]].
 - **Acessibilidade (a11y)** — entra como fase do HTML, mas é tema de entrevista por si só.
 
 ---

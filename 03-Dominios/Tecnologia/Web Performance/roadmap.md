@@ -28,7 +28,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Web Performance` (raiz de domínio /
 |---|-------|------:|---------:|--:|--------|---------|
 | 1 | Medição & Core Web Vitals | 8 | 8 | 100% | 🔶 escrito, enriquecimento (M1 mídia) pendente | `Medição e Core Web Vitals/roadmap.md` |
 | 2 | Performance de Carregamento | 8 | 8 | 100% | 🔶 escrito, enriquecimento (M1 mídia) pendente | `Performance de Carregamento/roadmap.md` |
-| 3 | Performance de Runtime & Rendering | ~8 | — | — | ⬜ só esboçado no design | a criar |
+| 3 | Performance de Runtime & Rendering | 8 | 8 | 100% | 🔶 escrito, enriquecimento (M1 mídia) pendente | `Performance de Runtime e Rendering/roadmap.md` |
 | 4 | Performance em Produção | ~7 | — | — | ⬜ só esboçado no design | a criar |
 
 ## Tabela-resumo (agregado)
@@ -37,8 +37,8 @@ Roadmap do domínio `03-Dominios/Tecnologia/Web Performance` (raiz de domínio /
 |---------|-------|
 | Galhos | 4 |
 | ✅ completos | 0 |
-| 🔶 escritos (falta enriquecer) | 2 (Galhos 1 e 2, 16 notas) |
-| ⬜ não iniciados | 2 |
+| 🔶 escritos (falta enriquecer) | 3 (Galhos 1–3, 24 notas) |
+| ⬜ não iniciados | 1 |
 | Notas diretas | 1 (`index.md`) |
 
 ---
@@ -47,6 +47,6 @@ Roadmap do domínio `03-Dominios/Tecnologia/Web Performance` (raiz de domínio /
 
 1. ✅ **Galho 1 — Medição & Core Web Vitals:** 8/8 escritas (2026-07-05). Falta enriquecimento (M1 mídia).
 2. ✅ **Galho 2 — Performance de Carregamento:** 8/8 escritas (2026-07-06). Falta enriquecimento (M1 mídia).
-3. **Próximo — Galho 3 (Performance de Runtime & Rendering):** desenhar roster + criar `roadmap.md` + semear.
-4. Depois: Galho 4 (Performance em Produção). Ao fim, rodada de enriquecimento (M1) em todo o domínio.
+3. ✅ **Galho 3 — Performance de Runtime & Rendering:** 8/8 escritas (2026-07-06). Falta enriquecimento (M1 mídia).
+4. **Próximo — Galho 4 (Performance em Produção):** desenhar roster + criar `roadmap.md` + semear. FECHA o domínio. Ao fim, rodada de enriquecimento (M1).
 5. Manter o `updated:` do `index.md` do domínio e a linha de Web Performance no [[00-Meta/Roadmap]] em dia.
