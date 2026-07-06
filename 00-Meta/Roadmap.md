@@ -3,7 +3,7 @@ title: "Roadmap de Trilhas"
 type: moc
 publish: true
 created: 2026-06-25
-updated: 2026-06-29
+updated: 2026-07-05
 status: growing
 tags:
   - moc
@@ -167,7 +167,7 @@ aliases:
 ### Coberturas ausentes a considerar (🚫 hoje sem trilha)
 - **Cloud** (AWS/GCP) — há `Senda Cloud`, mas sem domínio próprio construído.
 - **Auth & Identidade** (OAuth2/OIDC/JWT/sessões) — espalhado em Segurança; merece foco.
-- **Web Performance & Core Web Vitals** — tangenciado em Tooling nota 17; falta a ótica de produto.
+- ~~**Web Performance & Core Web Vitals**~~ → **domínio próprio iniciado em 2026-07-05** (🟡): `Tecnologia/Web Performance/`, 4 galhos (*medir → carregar → responder → sustentar*). **Galho 1 (Medição & Core Web Vitals) escrito 8/8** (falta enriquecimento de mídia); Galhos 2–4 esboçados no [[00-Meta/specs/2026-07-05-dominio-web-performance-design|design]]. Ver [[03-Dominios/Tecnologia/Web Performance/index|índice do domínio]].
 - **Acessibilidade (a11y)** — entra como fase do HTML, mas é tema de entrevista por si só.
 
 ---
