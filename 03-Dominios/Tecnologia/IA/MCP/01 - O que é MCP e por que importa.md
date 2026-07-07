@@ -1,7 +1,7 @@
 ---
 title: "O que é MCP e por que importa"
 created: 2026-04-11
-updated: 2026-06-28
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -20,7 +20,9 @@ aliases:
 # O que é MCP e por que importa
 
 > [!abstract] TL;DR
-> **[[Dicionário de IA#MCP (Model Context Protocol)|MCP (Model Context Protocol)]]** é o "USB-C para agents de IA". Antes dele, cada integração entre [[Dicionário de IA#LLM (Large Language Model)|LLM]] e sistema externo (banco de dados, filesystem, Jira, Slack) era reinventar a roda — cada cliente (Claude, Cursor, Copilot) tinha seu próprio formato de plugin. MCP, lançado pela Anthropic em **novembro de 2024** e adotado em 2025-2026 por OpenAI, Google, Microsoft, é a padronização dessa conexão. Em 2026, **se você está construindo aplicação com agents, MCP é infraestrutura básica, como HTTP**.
+> **[[Dicionário de IA#MCP (Model Context Protocol)|MCP (Model Context Protocol)]]** é o "USB-C para agents de IA". Antes dele, cada integração entre [[Dicionário de IA#LLM (Large Language Model)|LLM]] e sistema externo (banco de dados, filesystem, Jira, Slack) era reinventar a roda — cada cliente (Claude, Cursor, Copilot) tinha seu próprio formato de plugin. MCP, lançado pela Anthropic em **novembro de 2024** e adotado em 2025-2026 por OpenAI, Google, Microsoft, é a padronização dessa conexão.
+> Tecnicamente, MCP é uma camada JSON-RPC 2.0 sobre um transporte (stdio local ou HTTP+SSE remoto) que define três primitivos — Tools, Resources, Prompts — e um handshake de descoberta (`list_tools`, `list_resources`, `list_prompts`) que qualquer client pode chamar sem conhecer o server de antemão. Isso é o que transforma N×M integrações custom em N+M conexões padronizadas: o server é escrito uma vez e funciona em qualquer client compatível.
+> Em 2026, **se você está construindo aplicação com agents, MCP é infraestrutura básica, como HTTP** — a decisão não é "usar ou não", é "como estruturar os servers".
 
 > [!question]- Por que MCP e não só function calling diretamente?
 > Function calling resolve o problema local: "este model, neste app, chama esta função". MCP resolve o problema de escala: "qualquer model, em qualquer client, chama esta capability sem que o server precise saber quem está chamando". A diferença é de O(N×M) para O(N+M) — um server implementado uma vez funciona em Claude, Cursor, Copilot e qualquer client futuro, sem mudança. Function calling é adequado para tools acopladas a um produto; MCP é para capabilities que precisam ser compartilhadas ou reutilizadas entre contextos.
@@ -66,7 +68,7 @@ Linha & cair de N×M para N+M é **diferença gigante** quando N e M crescem.
 
 > [!info] Quem mantém MCP
 > - **Lançado:** Anthropic (novembro 2024)
-> - **Spec aberta:** github.com/modelcontextprotocol
+> - **Spec aberta:** [github.com/modelcontextprotocol](https://github.com/modelcontextprotocol)
 > - **Adotado por:** Anthropic (Claude Desktop, Claude Code), OpenAI (ChatGPT, Codex), Google (Gemini), Microsoft (Copilot Studio), Cursor, Windsurf, Cline, Aider, Zed
 > - **Governance:** especificação aberta com RFC process
 
@@ -82,6 +84,64 @@ MCP define 3 tipos de coisas que servers podem expor:
 
 Detalhamento em [[02 - Os três primitivos — Tools, Resources, Prompts]].
 
+## Um MCP server mínimo, primitivo a primitivo
+
+A melhor forma de entender os 3 primitivos é ver o esqueleto de um server real — não um trecho isolado, mas o fluxo completo de conexão até o resultado. Imagine um server MCP para uma base de notas (o "Postgres" do exemplo anterior poderia ser este vault). Em pseudo-código (a forma real usa o SDK oficial em Python ou TypeScript, mas a estrutura é idêntica em ambos):
+
+```python
+from mcp.server import Server
+
+server = Server("notas-mcp")
+
+# 1. TOOL — ação que muda estado ou executa algo
+@server.tool()
+def buscar_nota(termo: str) -> str:
+    """Busca notas do vault que contenham o termo."""
+    return grep_vault(termo)
+
+# 2. RESOURCE — dado que o client pode ler sem "gastar" uma chamada de LLM
+@server.resource("nota://{caminho}")
+def ler_nota(caminho: str) -> str:
+    """Expõe o conteúdo bruto de uma nota como recurso enderecável."""
+    return read_file(caminho)
+
+# 3. PROMPT — template parametrizável que o usuário invoca explicitamente
+@server.prompt()
+def resumir_galho(galho: str) -> str:
+    """Gera o prompt pronto para resumir um galho inteiro."""
+    return f"Resuma todas as notas em {galho} em um parágrafo cada."
+```
+
+Quando um client (Claude Desktop, por exemplo) se conecta a esse server, o fluxo é sempre o mesmo, independente do que o server faz por dentro:
+
+1. **Handshake** — client e server trocam capabilities suportadas (versão do protocolo, quais primitivos o server implementa).
+2. **Discovery** — client chama `list_tools`, `list_resources`, `list_prompts`. O server responde com o *schema* de cada primitivo (nome, descrição, parâmetros) — é esse schema que o LLM lê para decidir *quando* e *como* chamar cada um.
+3. **Invocação** — quando o LLM decide usar `buscar_nota("MCP")`, o client envia `tools/call` com o nome e os argumentos; o server executa e devolve o resultado como parte do contexto da conversa.
+
+O ponto que costuma escapar: **o server nunca sabe que é o Claude do outro lado.** Ele só implementa o protocolo. Trocar o client por Cursor ou Copilot não exige nenhuma mudança no código do server acima — é exatamente o "escrito uma vez, plugado em qualquer client" que resolve o problema N×M.
+
+```mermaid
+sequenceDiagram
+    participant C as Client (Claude/Cursor/Copilot)
+    participant S as MCP Server (notas-mcp)
+
+    C->>S: initialize (handshake: versão do protocolo, capabilities)
+    S-->>C: capabilities suportadas (tools, resources, prompts)
+
+    C->>S: list_tools()
+    S-->>C: [{name: "buscar_nota", schema: {...}}]
+
+    C->>S: list_resources()
+    S-->>C: [{uri: "nota://...", schema: {...}}]
+
+    Note over C,S: LLM decide chamar buscar_nota("MCP")
+
+    C->>S: tools/call(buscar_nota, {termo: "MCP"})
+    S-->>C: resultado (trechos de notas encontradas)
+
+    Note over C: Resultado entra no contexto do LLM
+```
+
 ## Quando MCP brilha
 
 ✅ **Compartilhar integração entre múltiplos clients**
@@ -91,7 +151,7 @@ Detalhamento em [[02 - Os três primitivos — Tools, Resources, Prompts]].
 *"Vou expor nossa API interna como MCP server, qualquer dev usa em qualquer ferramenta"*
 
 ✅ **Aproveitar ecossistema**
-*"Awesome MCP Servers tem 500+ integrações já feitas — quero plugar Stripe, Linear, GitHub direto"*
+*"[Awesome MCP Servers](https://github.com/punkpeye/awesome-mcp-servers) tem 500+ integrações já feitas — quero plugar Stripe, Linear, GitHub direto"*
 
 ## Quando MCP NÃO é a resposta
 
@@ -140,7 +200,7 @@ Você não "usa HTTP" como decisão — você usa porque é o padrão. Mesmo com
 > MCP faz sentido quando há reutilização entre clients ou servidores compartilhados. Para uma app single-user com tools internas — um chatbot interno com 5 funções fixas — o overhead de setup (servidor separado, configuração no client, JSON-RPC) não traz retorno. A pergunta certa é: "mais de um client vai consumir isso?" Se não, implemente direto com o SDK.
 
 > [!warning] Confundir "MCP" com "plugin proprietary"
-> MCP é especificação aberta (RFC process em github.com/modelcontextprotocol). Um server MCP escrito hoje funciona com Claude, OpenAI Codex, Cursor e qualquer client que implemente o protocolo. O risco de adotar MCP como "plugin da Anthropic" e depois descobrir que é padrão aberto é inversamente proporcional ao risco de tratar standard aberto como solução vendor-lock. Quem já viveu a era pré-REST de APIs proprietárias vai reconhecer o padrão.
+> MCP é especificação aberta (RFC process em [github.com/modelcontextprotocol](https://github.com/modelcontextprotocol)). Um server MCP escrito hoje funciona com Claude, OpenAI Codex, Cursor e qualquer client que implemente o protocolo. O risco de adotar MCP como "plugin da Anthropic" e depois descobrir que é padrão aberto é inversamente proporcional ao risco de tratar standard aberto como solução vendor-lock. Quem já viveu a era pré-REST de APIs proprietárias vai reconhecer o padrão.
 
 > [!warning] Ignorar a hierarquia de primitivos desde o início
 > Muitos times adotam MCP implementando "tudo como tool". Mas Tools, Resources e Prompts têm semânticas distintas com implicações de performance e design. Tratar dados read-only como tool faz o LLM gastar tool-call budget em operações que o client poderia carregar proativamente. Definir a hierarquia certo desde o início evita refatoração dolorosa quando o servidor já tem usuários.
@@ -185,121 +245,7 @@ A próxima nota mapeia os três primitivos e deixa claro quando usar cada um, co
 
 ## Referências
 
-- **Anthropic** — *Model Context Protocol announcement* (nov 2024)
-- **MCP Specification** — *modelcontextprotocol.io* (2026)
-- **GitHub** — *github.com/modelcontextprotocol* (oficial)
-- **Awesome MCP Servers** — *github.com/punkpeye/awesome-mcp-servers*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Anthropic** — [*Model Context Protocol announcement*](https://www.anthropic.com/news/model-context-protocol) (nov 2024)
+- **MCP Specification** — [modelcontextprotocol.io](https://modelcontextprotocol.io) (2026)
+- **GitHub** — [github.com/modelcontextprotocol](https://github.com/modelcontextprotocol) (oficial)
+- **Awesome MCP Servers** — [github.com/punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)

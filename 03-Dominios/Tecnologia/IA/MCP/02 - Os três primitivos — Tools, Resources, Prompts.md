@@ -25,6 +25,8 @@ aliases:
 > [!question]- Por que três primitivos e não um único conceito de "ferramenta"?
 > Porque "ferramenta" é uma abstração vaga que mistura três comportamentos com custos e semânticas diferentes. Tools têm side-effects e precisam ser invocadas ativamente pelo LLM — cada chamada consome orçamento e tempo. Resources são read-only e podem ser carregados pelo client proativamente, antes de o LLM precisar — o schema do banco de dados não precisa ser uma tool call custosa se o client pode pré-carregar como Resource. Prompts não executam nada: são templates que alavancam expertise já escrita. Usar só tools para tudo é como usar HTTP POST para tudo — funciona, mas ignora a semântica de GET e HEAD que existe por razões válidas.
 
+Imagine um server MCP que expõe **tudo** como Tool: o schema do banco vira `get_schema()`, o arquivo de configuração vira `read_config()`, até o template de code review vira `run_code_review()`. Funciona — mas a cada turno o LLM precisa "gastar" uma decisão e uma chamada só para enxergar dados que já estavam ali, paradinhos, esperando. O client poderia ter pré-carregado o schema no contexto antes mesmo da primeira pergunta do usuário; em vez disso, ele fica refém do LLM "lembrar" de chamar a tool certa. O resultado é previsível: mais latência, mais tokens de tool-call queimados, e um LLM que erra a escolha entre `get_schema`, `fetch_schema` e `schema_info` porque os três parecem a mesma coisa. Esse é o erro de design mais comum em MCP — e a raiz dele é não separar os três primitivos que o protocolo já oferece prontos.
+
 ## A tríade
 
 ```
@@ -36,6 +38,14 @@ com side-effects     estáticos/dinâmicos    parametrizáveis
 query_db(sql)        file://path/doc.md     "Explain this code"
 send_email(to, ..)   schema://table/users   "Summarize {input}"
 write_file(...)      git://commits/HEAD     "Refactor for {style}"
+```
+
+```mermaid
+graph LR
+    LLM["LLM"] -->|"decide chamar"| Tool["Tool<br/>(execute para mim)"]
+    Client["Client"] -->|"carrega proativamente"| Resource["Resource<br/>(me mostre)"]
+    LLM -->|"pode invocar"| Prompt["Prompt<br/>(use este template)"]
+    User["User"] -->|"pode invocar"| Prompt
 ```
 
 A regra simples:
@@ -297,9 +307,9 @@ A nota seguinte mapeia o modelo cliente-servidor completo, incluindo os três tr
 
 ## Referências
 
-- **MCP Spec** — *Tools, Resources, Prompts sections* (modelcontextprotocol.io)
-- **Anthropic** — *Building MCP servers tutorial* (2025)
-- **Awesome MCP Servers** — examples canônicos
+- **MCP Spec** — *Tools, Resources, Prompts sections* — [modelcontextprotocol.io/docs/concepts/tools](https://modelcontextprotocol.io/docs/concepts/tools)
+- **Anthropic** — *Building MCP servers tutorial* (2025) — [docs.anthropic.com](https://docs.anthropic.com)
+- **Awesome MCP Servers** — examples canônicos — [github.com/punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)
 
 
 

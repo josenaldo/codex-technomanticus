@@ -1,7 +1,7 @@
 ---
 title: "Arquitetura cliente-servidor"
 created: 2026-04-11
-updated: 2026-06-28
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -195,6 +195,8 @@ Você raramente toca isso direto — SDKs (Python, TypeScript) abstraem.
 
 Cada cliente segue padrão similar com pequenas variações de filename.
 
+Não por acaso, os clients mais populares de configurar MCP servers são também os [[Agentes de Codificação]] do dia a dia — Claude Code, Cursor, Codex CLI. Faz sentido: é ali que o LLM precisa de acesso a bancos de dados, APIs internas e sistemas de arquivos reais, e o MCP é o encanamento padronizado que evita reinventar essa integração a cada ferramenta.
+
 ## Capabilities negotiation
 
 Na initialização, client e server negociam capabilities:
@@ -250,7 +252,9 @@ Não-padrão mas implementado em alguns clients (Cursor 3+).
 
 Server notifica client de mudanças (`listChanged`). Útil em filesystem MCP onde arquivos mudam.
 
-## MCP Inspector — debugar
+Qualquer que seja o padrão, o resultado do discovery — schemas de tools, URIs de resources, prompts — é o que acaba entrando na janela de contexto do LLM. Decidir *quando* descobrir e *o que* cachear é, na prática, uma escolha de [[Context Engineering]]: menos listing redundante significa menos tokens gastos recarregando a mesma descrição a cada turno.
+
+## [MCP Inspector](https://github.com/modelcontextprotocol/inspector) — debugar
 
 ```bash
 npx @modelcontextprotocol/inspector
@@ -347,7 +351,7 @@ A próxima nota mapeia os servers oficiais e os mais populares por categoria, e 
 
 ## Referências
 
-- **MCP Spec** — *Architecture and Transports* (modelcontextprotocol.io/spec)
-- **JSON-RPC 2.0** — *jsonrpc.org/specification*
-- **MCP Inspector** — *github.com/modelcontextprotocol/inspector*
+- **MCP Spec** — [*Architecture and Transports*](https://modelcontextprotocol.io/specification)
+- **JSON-RPC 2.0** — [*Specification*](https://www.jsonrpc.org/specification)
+- **MCP Inspector** — [*github.com/modelcontextprotocol/inspector*](https://github.com/modelcontextprotocol/inspector)
 - **Anthropic** — *Configuring MCP servers in Claude Desktop* (2025)

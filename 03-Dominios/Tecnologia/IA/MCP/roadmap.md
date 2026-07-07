@@ -35,18 +35,18 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 10 |
-| ⬜ pendente | 10 |
+| ⬜ pendente | 7 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
+| ✅ feita | 3 |
 | 🔄 em andamento | 0 |
-| % concluído | 0% |
+| % concluído | 30% |
 
 ---
 
 ## Notas
 
 #### 01 - O que é MCP e por que importa   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — ⚠️ **desvio de piso:** plano aplicado (TL;DR expandido p/ 3 linhas; seção "Um MCP server mínimo, primitivo a primitivo" com walkthrough; Mermaid sequenceDiagram handshake+discovery+invocação; 4 hyperlinks clicáveis), MAS ficou em 251 linhas totais (182 não-branco), abaixo do piso T1 de 300. Passada extra futura opcional.
 - **Estado:** 191 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E1, E3, L2
 - **Score:** 8/12
@@ -58,7 +58,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 02 - Os três primitivos — Tools, Resources, Prompts   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — Abertura narrativa (server que expõe tudo como Tool e desperdiça budget/latência do LLM); Mermaid graph LR (LLM→Tool, Client→Resource, LLM/User→Prompt); 3 hyperlinks (modelcontextprotocol.io/docs/concepts/tools, docs.anthropic.com, punkpeye/awesome-mcp-servers); 315 linhas. Verificado: URLs conferem.
 - **Estado:** 303 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, L2
 - **Score:** 9/12
@@ -69,7 +69,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 03 - Arquitetura cliente-servidor   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — Referências viram hyperlinks (MCP Spec, JSON-RPC 2.0, MCP Inspector); 2 wikilinks cross-galho ([[Context Engineering]] em discovery patterns, [[Agentes de Codificação]] em config de clients); 357 linhas. Verificado: URLs e wikilinks conferem.
 - **Estado:** 354 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** P1, L1, L2
 - **Score:** 9/12
