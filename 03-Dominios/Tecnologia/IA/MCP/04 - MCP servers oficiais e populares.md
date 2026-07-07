@@ -1,7 +1,7 @@
 ---
 title: "MCP servers oficiais e populares"
 created: 2026-04-11
-updated: 2026-06-28
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -19,6 +19,8 @@ aliases:
 
 # MCP servers oficiais e populares
 
+Você precisa que seu agente leia issues do GitHub, consulte uma tabela no Postgres e responda no canal certo do Slack. A tentação é escrever três servers MCP do zero — mas antes de abrir o editor, vale checar se alguém já resolveu exatamente isso. Na prática, quase sempre alguém já resolveu: o ecossistema MCP em 2026 tem milhares de servers catalogados, com opções oficiais e de comunidade para os sistemas mais comuns. Este capítulo mapeia onde procurar, o que existe por categoria, e como decidir entre instalar um server pronto ou construir o seu.
+
 > [!abstract] TL;DR
 > Em 2026, o ecossistema [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] tem **milhares de servers** disponíveis. Antes de criar próprio, **busque no Awesome MCP Servers** — chance alta de já existir. Categorias principais: filesystem/git, databases, dev tools (GitHub, Linear, Jira), comunicação (Slack, email), browsers (Playwright), busca (web, docs), observabilidade (Sentry, Datadog), AI (Anthropic, OpenAI, Hugging Face). Reuso vence build em 90% dos casos.
 
@@ -29,13 +31,16 @@ aliases:
 
 | Recurso | Conteúdo |
 |---|---|
-| **github.com/punkpeye/awesome-mcp-servers** | Catálogo curated mais conhecido |
-| **github.com/modelcontextprotocol/servers** | Servers oficiais Anthropic |
-| **mcp.so** | Marketplace web (search + reviews) |
-| **smithery.ai** | Discovery + install via CLI |
+| **[awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)** | Catálogo curated mais conhecido |
+| **[modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)** | Servers oficiais Anthropic |
+| **[mcp.so](https://mcp.so)** | Marketplace web (search + reviews) |
+| **[smithery.ai](https://smithery.ai)** | Discovery + install via CLI |
 | **glama.ai/mcp/servers** | Browse + monitoring |
 
 ## Categorias principais (2026)
+
+> [!warning] Esta lista caduca rápido
+> Packages, URLs e status de manutenção de servers MCP mudam com frequência — um server "oficial" hoje pode ser descontinuado amanhã, e novos entrantes surgem toda semana. Trate os nomes abaixo como um mapa de categorias, não como um catálogo definitivo: antes de instalar qualquer um, confira o repositório atual em [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) ou [mcp.so](https://mcp.so) para status de manutenção real.
 
 ### Filesystem e Git
 
@@ -174,6 +179,19 @@ Detalhes em [[07 - Segurança em MCP]].
 
 ## Quando instalar vs construir
 
+```mermaid
+flowchart TD
+    A[Preciso de um MCP server] --> B{Existe server<br/>pronto pro sistema?}
+    B -- Não --> F[Construir do zero]
+    B -- Sim --> C{Manutenção ativa?<br/>commits recentes, issues respondidas}
+    C -- Não --> F
+    C -- Sim --> D{Domínio interno<br/>não pode ser exposto?}
+    D -- Sim --> F
+    D -- Não --> E{Compliance exige<br/>zero third-party?}
+    E -- Sim --> F
+    E -- Não --> G[Instalar e auditar<br/>o server existente]
+```
+
 ### Instalar quando
 
 ✅ Server existe com manutenção ativa
@@ -277,10 +295,10 @@ A próxima nota cobre o ciclo completo de desenvolvimento de um MCP server local
 
 ## Referências
 
-- **Awesome MCP Servers** — *github.com/punkpeye/awesome-mcp-servers*
-- **MCP oficial** — *github.com/modelcontextprotocol/servers*
-- **mcp.so** — marketplace
-- **smithery.ai** — discovery + install
+- **Awesome MCP Servers** — [github.com/punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)
+- **MCP oficial** — [github.com/modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
+- **mcp.so** — [mcp.so](https://mcp.so) — marketplace
+- **smithery.ai** — [smithery.ai](https://smithery.ai) — discovery + install
 - **Anthropic** — *MCP server directory* (2026)
 
 

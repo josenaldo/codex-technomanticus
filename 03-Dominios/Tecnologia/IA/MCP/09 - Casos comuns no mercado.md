@@ -25,6 +25,15 @@ aliases:
 > [!question]- Como MCP muda o que o produto pode fazer vs o que o LLM consegue fazer sozinho?
 > O LLM sozinho tem conhecimento até o cutoff de treinamento, não acessa sistemas em tempo real, e não pode executar ações com efeitos no mundo. MCP é o que expande esses limites: com os servers certos, o mesmo modelo passa a consultar seu banco de dados ao vivo, criar issues no Jira, enviar mensagens no Slack e ler arquivos do filesystem — tudo em uma conversa. O produto muda de "assistente de texto" para "agente que age nos seus sistemas". Esse é o salto qualitativo: sem MCP, o produto é limitado pela memória do modelo; com MCP, o produto é limitado pela extensão dos servers disponíveis.
 
+```mermaid
+graph TD
+    MCP[MCP] --> C1["Caso 1<br/>Dev tools internos"]
+    MCP --> C2["Caso 2<br/>Integrações cross-tool"]
+    MCP --> C3["Caso 3<br/>Agents corporativos"]
+    MCP --> C4["Caso 4<br/>Assistentes pessoais"]
+    MCP --> C5["Caso 5<br/>Distribuição de capabilities"]
+```
+
 ## Caso 1 — Dev tools internos
 
 > *"Meu time tem API/codebase complexa. Quero que devs falem com ela em natural language em qualquer client."*
@@ -314,6 +323,6 @@ Os casos de uso mostram o que é possível. A nota final da trilha fecha o ciclo
 
 ## Referências
 
-- **Anthropic** — *MCP case studies* (blog series 2025-2026)
-- **Awesome MCP Servers** — examples por categoria
-- **Cloudflare** — *MCP in production* (blog)
+- **Anthropic** — [*Introducing the Model Context Protocol*](https://www.anthropic.com/news/model-context-protocol) (2024). Anúncio original do protocolo.
+- **Awesome MCP Servers** — [github.com/punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers). Catálogo curado de servers por categoria.
+- **Cloudflare** — [*Build and deploy Remote Model Context Protocol (MCP) servers to Cloudflare*](https://blog.cloudflare.com/remote-model-context-protocol-servers-mcp/) (2025). MCP remoto em produção.

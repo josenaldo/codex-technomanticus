@@ -1,7 +1,7 @@
 ---
 title: "Segurança em MCP"
 created: 2026-04-11
-updated: 2026-06-28
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -320,7 +320,7 @@ Com segurança compreendida, o próximo foco é o ecossistema: quais clients e f
 
 ## Referências
 
-- **OWASP Top 10 for LLMs** — *owasp.org*
-- **MCP Spec — Security** — modelcontextprotocol.io/spec/security
-- **Anthropic** — *MCP security best practices* (2026)
-- **Simon Willison** — *Prompt injection series*
+- **OWASP Top 10 for LLMs** — [owasp.org/www-project-top-10-for-large-language-model-applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+- **MCP Spec — Security** — [modelcontextprotocol.io/docs/tutorials/security/security_best_practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices)
+- **Anthropic** — [*Introducing the Model Context Protocol*](https://www.anthropic.com/news/model-context-protocol) (2024)
+- **Simon Willison** — [*Prompt injection series*](https://simonwillison.net/series/prompt-injection/)

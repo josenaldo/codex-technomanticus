@@ -1,7 +1,7 @@
 ---
 title: "Ecossistema 2026 — clients e integrações"
 created: 2026-04-11
-updated: 2026-06-28
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -20,12 +20,18 @@ aliases:
 # Ecossistema 2026 — clients e integrações
 
 > [!abstract] TL;DR
-> [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] virou padrão **inter-vendor** em 2025-2026. Suporte nativo: Claude Desktop, [[Dicionário de IA#Claude Code|Claude Code]], Cursor, Windsurf, Cline, Aider, Zed, Copilot Studio (Microsoft), ChatGPT Desktop (OpenAI), Codex, Gemini Code Assist (Google). Ecossistema de servers passa de 3000+ entradas no Awesome MCP Servers. Hosting managed disponível (Smithery, Anthropic-hosted beta). Em 2026, MCP é **infrastructure-grade** — não experimento.
+> [[Dicionário de IA#MCP (Model Context Protocol)|MCP]] virou padrão **inter-vendor** em 2025-2026: suporte nativo em Claude Desktop, [[Dicionário de IA#Claude Code|Claude Code]], Cursor, Windsurf, Cline, Aider, Zed, Copilot Studio (Microsoft), ChatGPT Desktop (OpenAI), Codex e Gemini Code Assist (Google) — o mesmo protocolo falado por concorrentes diretos.
+>
+> O ecossistema de servers passa de **3000+ entradas** no Awesome MCP Servers, e hosting managed já é opção real (Smithery, Anthropic-hosted beta) — você não precisa mais rodar todo server on-prem para adotar MCP.
+>
+> O que mudou em 2026: **MCP Tasks** (SEP-1686) trouxe operação assíncrona "call-now, fetch-later" para jobs longos, o padrão **code-execution** cortou o custo de contexto de dezenas de tools, e **managed hosting** amadureceu como alternativa real a self-host. Em conjunto, isso marca a virada de MCP de experimento para **infrastructure-grade**.
 
 > [!question]- Por que o ecossistema MCP cresceu tão rápido em 2025-2026?
 > Dois fatores se reforçaram mutuamente. Primeiro, o timing: MCP chegou quando o mercado de coding agents explodiu — Cursor, Windsurf, Cline, e uma dúzia de outros tools precisavam de um padrão de integração e adotaram MCP porque era a melhor opção disponível. Segundo, o efeito de rede: uma vez que Anthropic, OpenAI e Microsoft adotaram o mesmo protocolo, qualquer server escrito passou a funcionar em todos os clients. Isso reduziu o custo de escrever um server (escreva uma vez, funciona em todos) e de descobrir servers (marketplace unificado), criando o flywheel clássico de plataforma: mais servers atraem mais clients, mais clients atraem mais servers.
 
 ## Os clients que falam MCP
+
+Imagine que você está avaliando qual client adotar para o seu workflow — Cursor, Claude Code, Windsurf, Copilot Studio? Há um ano essa decisão vinha com uma pergunta escondida: "esse protocolo vai sobreviver, ou estou apostando em um experimento isolado?" Em 2026 essa pergunta praticamente some. O consenso inter-vendor — Anthropic, OpenAI, Microsoft e Google falando o mesmo protocolo — transformou a pergunta em algo bem mais simples: "esse client já fala MCP?". As tabelas abaixo respondem isso, organizadas por vendor.
 
 ### Anthropic (criadora)
 
@@ -292,6 +298,9 @@ Server v1 incompatível com client v3? Specs ajudam mas problemas existem.
 Como saber se server "mcp-totally-safe-postgres" não é malicioso? Audit é responsabilidade do user.
 
 ## Métricas de adoção (2026)
+
+> [!warning] Números datados — confira a fonte viva antes de citar
+> Esta tabela é uma fotografia de um momento; o ecossistema MCP cresce rápido o suficiente para que esses valores envelheçam em semanas, não meses. Antes de citar qualquer número em produção ou entrevista, confira a contagem atual no [Awesome MCP Servers](https://github.com/punkpeye/awesome-mcp-servers) (total de servers, categorias) e em [smithery.ai](https://smithery.ai) (adoção via managed hosting, installs).
 
 | Métrica | Valor |
 |---|---|

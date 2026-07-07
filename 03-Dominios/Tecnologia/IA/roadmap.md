@@ -39,7 +39,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 6 | [[Agentes de Codificação]] | 18 | 0 | 3 | 15 | 100% | ✅ completo (2026-07-05, 15/15 acionáveis via fan-out ≤3 verificado; 02·04·16 dispensadas) | ✅ |
 | 7 | [[AI Engineering Stack]] | 13 | 0 | 1 | 12 | 100% | ✅ completo (2026-07-06, 12/12 acionáveis via fan-out ≤3 verificado) | ✅ |
 | 8 | [[RAG e Vector Databases]] | 13 | 0 | 1 | 12 | 100% | ✅ completo (2026-07-06, 12/12 acionáveis via fan-out ≤3 verificado; nota 13 com desvio de piso registrado) | ✅ |
-| 9 | [[MCP]] | 10 | 10 | 0 | 0 | 0% | 📋 diagnosticado | ✅ |
+| 9 | [[MCP]] | 10 | 0 | 0 | 10 | 100% | ✅ completo (2026-07-06, 10/10 via fan-out ≤3 verificado) | ✅ |
 | 10 | [[Segurança e Guardrails]] | 12 | 12 | 0 | 0 | 0% | 📋 diagnosticado (⚠️ EU AI Act, prazo 02/08/2026) | ✅ |
 | 11 | [[Memória de Agentes]] | 24 | 17 | 7 | 0 | 29% | 📋 diagnosticado | ✅ |
 | 12 | [[Prompt Engineering]] | 9 | 0 | 2 | 7 | 100% | ✅ completo (2026-07-03) | ✅ |
@@ -67,8 +67,8 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | Métrica | Valor |
 |---------|-------|
 | Galhos totais | 21 |
-| ✅ completos | 16 (Anatomia dos LLMs, Anatomia de Agents, Spec-Driven Development, Economia de Tokens, Context Engineering, Prompt Engineering, Structured Outputs, Evaluation, Observability, Multimodal Prompting, Image Prompting, Improvement Loop, Ferramentas de IA, Agentes de Codificação, AI Engineering Stack, RAG e Vector Databases) |
-| 📋 diagnosticados, enriquecimento pendente | 4 (MCP, Segurança e Guardrails, Memória de Agentes, Claude Code) |
+| ✅ completos | 17 (Anatomia dos LLMs, Anatomia de Agents, Spec-Driven Development, Economia de Tokens, Context Engineering, Prompt Engineering, Structured Outputs, Evaluation, Observability, Multimodal Prompting, Image Prompting, Improvement Loop, Ferramentas de IA, Agentes de Codificação, AI Engineering Stack, RAG e Vector Databases, MCP) |
+| 📋 diagnosticados, enriquecimento pendente | 3 (Segurança e Guardrails, Memória de Agentes, Claude Code) |
 | ⬜ não diagnosticados | 0 |
 | ⚪ especiais | 1 (O Lado Sombrio da IA — agora com roadmap) |
 | Notas soltas diretas | 4 |

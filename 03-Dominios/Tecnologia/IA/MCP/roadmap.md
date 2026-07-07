@@ -14,7 +14,7 @@ Diagnóstico migrado de guia/roadmap - ia.md (02/07). Cada entrada tem estado de
 
 **Galho:** `03-Dominios/Tecnologia/IA/MCP`
 
-> [!warning] Diagnóstico de 02/07 — pode estar defasado. Vários itens marcados ⬜ podem já ter sido enriquecidos depois; reconciliar com o estado real ao tratar o galho.
+> [!success] Galho MCP **completo** em 2026-07-06 — 10/10 notas enriquecidas via fan-out ≤3 verificado (onda 1: 04·05·06 · onda 2: 07·08·09 · onda 3: 10). Nota 01 fechada em passada anterior com desvio de piso registrado (251 linhas).
 
 ## Régua de análise
 
@@ -35,11 +35,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 10 |
-| ⬜ pendente | 7 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 3 |
+| ✅ feita | 10 |
 | 🔄 em andamento | 0 |
-| % concluído | 30% |
+| % concluído | 100% |
 
 ---
 
@@ -79,7 +79,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 04 - MCP servers oficiais e populares   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — Abertura com cenário (agente lendo GitHub+Postgres+Slack) antes do TL;DR; awesome-mcp-servers/modelcontextprotocol/servers/mcp.so/smithery.ai viram links clicáveis; Mermaid flowchart de decisão instalar-vs-construir; [!warning] de caducidade no topo de "## Categorias principais (2026)"; ~285→323 linhas (cobre piso ≥300). Score ~11/12.
 - **Estado:** 284 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E3, P1, L2
 - **Score:** 8/12
@@ -92,7 +92,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 05 - Construindo um MCP server local   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — TL;DR expandido p/ ≥3 linhas (SDK+decorators / stdio+JSON-RPC / tool design = 60% do trabalho); abertura com cenário (banco interno consultado por 3 clients) entre TL;DR e "## Setup mínimo"; Referências viram links clicáveis https:// (SDK Python/TS, Inspector, tutorial Anthropic); Mermaid sequenceDiagram do fluxo stdio (client→subprocess→JSON-RPC→tool). ~445 linhas, score ~12/13.
 - **Estado:** 421 linhas totais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E1, E2, L2, E3
 - **Score:** 8/12
@@ -104,7 +104,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 06 - MCP remoto — HTTP + SSE para times   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — Abertura narrativa (time de 5 devs compartilhando servidor de banco, stdio vs HTTP+SSE) antes de "## Quando partir para HTTP+SSE"; 3 referências viram links clicáveis (MCP Spec—Transports, Cloudflare Workers for MCP, Smithery); callout [!example] de código-com-falha (curl sem Authorization → 401). Desvio: "Anthropic — Hosted MCP servers (beta)" ficou sem link (sem URL pública estável).
 - **Estado:** 376 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, L2, P1
 - **Score:** 9/12
@@ -115,7 +115,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 07 - Segurança em MCP   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — 4 referências finais viram links clicáveis (URLs verificadas via WebSearch): OWASP Top 10 for LLMs, MCP Spec—Security (security_best_practices), Anthropic (anúncio oficial MCP), Simon Willison prompt-injection series. Desvio: "Anthropic — MCP security best practices" não tem post dedicado; linkado ao anúncio oficial como substituto mais fiel.
 - **Estado:** 327 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** L2
 - **Score:** 11/12
@@ -124,7 +124,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 08 - Ecossistema 2026 — clients e integrações   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — [!abstract] expandido de 1 parágrafo p/ 3 linhas (protocolo inter-vendor / ecossistema 3000+ servers+managed hosting / mudanças 2026: Tasks+code-execution+managed hosting); abertura com cenário (avaliar qual client adotar → consenso inter-vendor) antes de "## Os clients que falam MCP"; [!warning] de validade em "## Métricas de adoção (2026)" apontando Awesome MCP Servers + smithery.ai. Plano integral.
 - **Estado:** ~327 linhas reais (371 total, ~44 em branco) · fase: Iniciado · status: growing
 - **Núcleo/gaps:** E1, E2, P1
 - **Score:** 9/12
@@ -135,7 +135,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 09 - Casos comuns no mercado   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — 3 referências placeholder substituídas por URLs reais verificadas via WebSearch (Anthropic "Introducing the MCP", github.com/punkpeye/awesome-mcp-servers, Cloudflare "Build and deploy Remote MCP servers"); Mermaid graph TD dos 5 casos (MCP→Caso1..5) antes de "Caso 1". Plano integral.
 - **Estado:** 320 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E3, L2
 - **Score:** 10/12
@@ -145,7 +145,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 10 - Setup completo + best practices   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-06) — Seção "## O que vem a seguir" após "## Referências" fechando o ciclo do galho, com wikilinks [[Agentes de Codificação]] e [[Economia de Tokens]] (ambos têm index.md); referências viram links reais verificados via WebFetch (spec, Python SDK, Inspector); abertura opcional com cenário "funciona no Inspector → produção" antes de "## Stack recomendada". Desvio: docs.anthropic.com/mcp/best-practices não existe → trocado por anthropic.com/news/model-context-protocol. Score 11/12.
 - **Estado:** ~393 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E2, E5, L2
 - **Score:** 9/12

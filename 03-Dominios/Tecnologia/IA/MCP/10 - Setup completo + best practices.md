@@ -26,6 +26,8 @@ aliases:
 > [!question]- Qual o erro mais comum ao integrar MCP em produção?
 > O erro mais comum é pular a Fase 2 (quality) e ir direto de "funciona no Inspector" para "está em produção". Isso deixa tools com descrições genéricas que o LLM usa incorretamente, schemas primitivos sem validação que aceitam inputs inválidos, e erros que não dão feedback útil ao modelo para auto-correção. O resultado é uma experiência de produção onde "funciona às vezes" — o agente chama a tool errada, passa argumentos malformados, e falha silenciosamente. A semana de qualidade não é opcional; ela é o que separa um server que funciona de um server que é confiável.
 
+Todo mundo que constrói um MCP server passa pela mesma tentação: o Inspector mostra a tool funcionando, o time comemora, e o próximo passo "óbvio" é apontar o client de produção pra esse mesmo server ainda sem schema tipado, sem audit log, sem versionamento. É o salto de "funciona no Inspector" para "está em produção para o time" — e é exatamente esse salto que separa um protótipo de fim de semana de um server do qual colegas dependem todo dia. O checklist abaixo é o mapa desse caminho: quatro fases, cada uma com um gate de qualidade que a fase seguinte pressupõe como já resolvido.
+
 ## Stack recomendada (2026)
 
 ```
@@ -405,8 +407,15 @@ The best practices that matter most distill to: typed schemas so the LLM always 
 
 ## Referências
 
-- **MCP Spec** — *modelcontextprotocol.io/spec*
-- **Python SDK** — *github.com/modelcontextprotocol/python-sdk*
-- **Best practices Anthropic** — *docs.anthropic.com/mcp/best-practices*
-- **MCP Inspector** — *github.com/modelcontextprotocol/inspector*
+- **MCP Spec** — [modelcontextprotocol.io/specification](https://modelcontextprotocol.io/specification)
+- **Python SDK** — [github.com/modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk)
+- **Anúncio oficial da Anthropic** — [anthropic.com/news/model-context-protocol](https://www.anthropic.com/news/model-context-protocol)
+- **MCP Inspector** — [github.com/modelcontextprotocol/inspector](https://github.com/modelcontextprotocol/inspector)
 - **Awesome MCP Servers** — examples canônicos
+
+## O que vem a seguir
+
+Esta nota fecha o galho MCP: você tem o roadmap de 4 fases, os checklists de qualidade e os anti-patterns pra não repetir os erros mais comuns. Mas um MCP server não vive sozinho — ele é consumido por um agente, e esse agente tem as mesmas preocupações de design e custo que apareceram aqui em outra escala. Duas direções naturais a partir daqui:
+
+- **[[Agentes de Codificação]]** — o MCP server que você acabou de projetar normalmente vira uma tool a mais na caixa de ferramentas de um agente de codificação (Claude Code, Cursor). Entender como esses agentes decidem quando chamar uma tool — e onde eles ainda erram — fecha o loop entre "server bem desenhado" e "agente que usa esse server bem".
+- **[[Economia de Tokens]]** — cada tool call do seu MCP server consome tokens de contexto do agente que o chama: a descrição da tool, o schema, o output. As mesmas métricas-alvo desta nota (tokens em descrição, tokens em output médio) são, na prática, decisões de economia de tokens — vale a pena entender o orçamento do outro lado da chamada.

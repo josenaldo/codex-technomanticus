@@ -20,10 +20,12 @@ aliases:
 # Construindo um MCP server local
 
 > [!abstract] TL;DR
-> Construir [[Dicionário de IA#MCP server|MCP server]] é simples: [[Dicionário de IA#SDK|SDK]] Python ou TypeScript + decorators + ~50 linhas de código. Use stdio (subprocess local) para começar. Defina tools com schema Pydantic/Zod, retorne tipos estruturados, escreva descrições claras (60% do trabalho — ver [[Anatomia de Agents|03 - Tool design — princípios e categorias]]). Teste com **MCP Inspector** antes de plugar em client real. Para algo public, considere semver, docs, examples. Para algo interno, basta o essencial.
+> Construir [[Dicionário de IA#MCP server|MCP server]] é simples: [[Dicionário de IA#SDK|SDK]] Python ou TypeScript + decorators + ~50 linhas de código. Use stdio (subprocess local) para começar — o client sobe o server como processo filho e troca mensagens JSON-RPC pela entrada/saída padrão, sem rede, sem porta, sem deploy. Defina tools com schema Pydantic/Zod, retorne tipos estruturados, escreva descrições claras (60% do trabalho — ver [[Anatomia de Agents|03 - Tool design — princípios e categorias]]): é a descrição que o LLM lê para decidir quando chamar a tool, com quais parâmetros, e quando não chamar. Teste com **MCP Inspector** antes de plugar em client real — ele mostra o JSON-RPC bruto e permite invocar tools manualmente, o que corta o ciclo de debug de minutos para segundos. Para algo public, considere semver, docs, examples. Para algo interno, basta o essencial.
 
 > [!question]- Por que MCP server local e não só um wrapper de API com requests diretos?
 > Um wrapper de API resolve um problema de um sistema específico; um MCP server local resolve o problema de qualquer client. Com requests diretos, cada tool call precisa ser reimplementada em cada app que usa o LLM. Com MCP, você implementa uma vez e Claude Desktop, Cursor e qualquer client futuro consomem automaticamente via discovery. Além disso, o servidor local roda com stdio — zero rede, auth implícita pelo SO, latência de 1-5ms, sem nada para fazer deploy. É menos trabalho que um wrapper de API, não mais.
+
+Imagine que você tem um banco de dados interno ou uma API corporativa que três ferramentas diferentes precisam consultar: Claude Desktop, Cursor e um script de automação. Sem MCP, você reimplementa a integração três vezes — uma por client, cada uma com sua própria forma de autenticar, formatar erros e limitar o volume de dados retornado. Com um MCP server local, você escreve a integração uma única vez: um processo Python ou Node que expõe `query_db`, `list_tables` e `get_schema` como tools, valida cada chamada e retorna output compacto. Qualquer client que fale o protocolo MCP passa a enxergar essas capacidades automaticamente, via stdio, sem tocar em rede nem gerenciar deploy. É esse ganho — escrever a integração uma vez e reusar em qualquer client — que justifica as poucas linhas de setup abaixo.
 
 ## Setup mínimo (Python)
 
@@ -72,6 +74,27 @@ Pronto. Tem MCP server funcional.
 ```
 
 Restart client → tools `add` e `greet` aparecem disponíveis.
+
+```mermaid
+sequenceDiagram
+    participant C as Client (Claude Desktop / Cursor)
+    participant P as Subprocess local
+    participant S as MCP Server (server.py)
+    participant T as Tool (ex: query_db)
+
+    C->>P: spawn(command, args, env)
+    activate P
+    P->>S: inicia processo Python/Node
+    C->>S: JSON-RPC via stdin (list_tools)
+    S-->>C: JSON-RPC via stdout (schemas das tools)
+    C->>S: JSON-RPC via stdin (call_tool: query_db)
+    S->>T: invoca função decorada
+    T-->>S: retorno estruturado (dict/objeto)
+    S-->>C: JSON-RPC via stdout (resultado)
+    deactivate P
+```
+
+Todo o tráfego passa por stdin/stdout do subprocess — sem rede, sem porta, sem TLS. É por isso que a latência fica na casa de 1-5ms e não há nada para fazer deploy: o "servidor" é só um processo filho que o client já sabe iniciar e encerrar.
 
 ## Adicionando resources
 
@@ -414,7 +437,7 @@ Um MCP server local via stdio resolve o caso de um único usuário. Quando o ser
 
 ## Referências
 
-- **MCP Python SDK** — *github.com/modelcontextprotocol/python-sdk*
-- **MCP TypeScript SDK** — *github.com/modelcontextprotocol/typescript-sdk*
-- **MCP Inspector** — *github.com/modelcontextprotocol/inspector*
-- **Anthropic tutorial** — *Building MCP servers* (2025)
+- **MCP Python SDK** — [github.com/modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk)
+- **MCP TypeScript SDK** — [github.com/modelcontextprotocol/typescript-sdk](https://github.com/modelcontextprotocol/typescript-sdk)
+- **MCP Inspector** — [github.com/modelcontextprotocol/inspector](https://github.com/modelcontextprotocol/inspector)
+- **Anthropic tutorial** — [Building MCP servers](https://modelcontextprotocol.io/quickstart/server) (2025)

@@ -1,7 +1,7 @@
 ---
 title: "MCP remoto — HTTP + SSE para times"
 created: 2026-04-11
-updated: 2026-06-28
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -25,6 +25,8 @@ aliases:
 
 > [!question]- Quais os riscos de expor MCP remotamente que não existem no local?
 > Stdio herda a identidade do usuário que executou o client — o sistema operacional faz a "auth". HTTP+SSE abre uma porta de rede, e com ela vêm todos os vetores de ataque de rede: tokens mal gerenciados, interceptação sem TLS, brute force em endpoints, SSRF se o server fizer requisições baseadas em input do usuário, e a superfície de supply chain fica mais visível (servidor acessível por URL pode ser alvo de bots). Além disso, um server HTTP+SSE que loga mal se torna um ponto cego de auditoria — em stdio, cada user tem seu processo; em HTTP, uma action mal logada é uma action que parece não ter acontecido.
+
+Imagine um time de cinco pessoas usando o mesmo [[Dicionário de IA#MCP server|MCP server]] de acesso ao banco de produção. Com stdio, cada dev spawna seu próprio subprocesso local — cinco processos, cada um com sua própria conexão ao banco, seu próprio cache, sua própria versão do código do server. Um deploy de correção precisa ser repetido cinco vezes (um `git pull` por máquina). Um bug de permissão vira cinco tickets separados, porque não há um único lugar que loga "quem fez o quê". É exatamente esse cenário — o mesmo servidor de banco compartilhado por um time inteiro — que empurra a decisão de stdio para HTTP+SSE: em vez de cinco processos soltos, um único server rodando como serviço, com auth, rate limit e audit log centralizados.
 
 ## Quando partir para HTTP+SSE
 
@@ -101,6 +103,14 @@ app = Starlette(routes=[
 ```
 
 Client conecta via URL em vez de spawn de processo.
+
+> [!example]- O que acontece sem o header `Authorization`
+> ```
+> $ curl -N https://mcp.empresa.com/sse
+> HTTP/1.1 401 Unauthorized
+> {"error": "missing_authorization_header"}
+> ```
+> Sem o `Bearer ${MCP_TOKEN}` no header, o server rejeita a conexão SSE antes mesmo de abrir o stream — não há "modo degradado" ou fallback silencioso. Isso é intencional: um MCP server remoto que aceitasse conexões sem token estaria expondo tools (e o banco por trás delas) pra qualquer cliente na rede.
 
 ## Auth — onde realmente importa
 
@@ -369,7 +379,7 @@ Expor um MCP server remotamente levanta uma questão imediata: quais são os ris
 
 ## Referências
 
-- **MCP Spec** — *Transports section (HTTP+SSE)* (modelcontextprotocol.io)
-- **Cloudflare** — *MCP on Cloudflare Workers* (2025)
-- **Smithery.ai** — managed MCP hosting
+- **MCP Spec** — [Transports section (HTTP+SSE)](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports) (modelcontextprotocol.io)
+- **Cloudflare** — [MCP on Cloudflare Workers](https://developers.cloudflare.com/agents/guides/remote-mcp-server/) (2025)
+- **Smithery.ai** — [managed MCP hosting](https://smithery.ai/)
 - **Anthropic** — *Hosted MCP servers (beta)* (2026)
