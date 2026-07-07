@@ -116,7 +116,7 @@ aliases:
 | [[03-Dominios/Engenharia/Segurança/index\|Segurança]]                                   | 🟡     | 23 notas; consolidar                                                                                                           |
 | [[03-Dominios/Engenharia/Testes/index\|Testes]]                                         | 🟡     | 17 notas (geral/conceitual) — **falta a vertente "Testes no ecossistema JS"** (Vitest, Jest, Testing Library, Playwright, MSW) |
 | [[03-Dominios/Engenharia/Complexidade de Software/index\|Complexidade de Software]]     | 🟡     | 17 notas                                                                                                                       |
-| [[03-Dominios/Engenharia/Arquitetura/index\|Arquitetura / System Design]]               | 🟡     | 7 notas — **crítico para entrevista senior; aprofundar**                                                                       |
+| [[03-Dominios/Engenharia/Arquitetura/index\|Arquitetura / System Design]]               | 🟢     | Trilha System Design completa: 4 sub-galhos (Framework/Building blocks/Padrões/Walkthroughs) + capstone, 27 notas (2026-07-07) |
 | [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação entre Sistemas]] | 🟡     | 8 notas (API design, REST/GraphQL/gRPC, mensageria)                                                                            |
 | [[03-Dominios/Engenharia/Operação/index\|Operação (DevOps/SRE)]]                        | ⬜      | 1 nota — **CI/CD, deploy, observabilidade, on-call: buraco grande para fullstack**                                             |
 | [[03-Dominios/Engenharia/Dados/index\|Dados (Data Engineering)]]                        | ⬜      | 1 nota — modelagem, pipelines, analytics                                                                                       |
@@ -156,7 +156,7 @@ aliases:
 7. ✅ **Testes no ecossistema JS** — **CONCLUÍDA 2026-07-06** (escrita 18/18): galho [[03-Dominios/Tecnologia/Testes JS/index|Testes JS]] (Vitest, Testing Library, MSW, Playwright, coverage, flaky, CI), 3 fases, instrumentando `Engenharia/Testes` (conceitual). Falta só enriquecimento de mídia (M1).
 
 ### Onda C — Profundidade de Senior (system design & operação)
-8. 🟡 **Arquitetura / System Design** — escalar de 7 notas para trilha de entrevista (CAP, sharding, caching, filas, consistência, design exercises).
+8. 🟢 **Arquitetura / System Design** — ✅ trilha de entrevista sênior completa (2026-07-07): 4 sub-galhos + capstone, 27 notas. Framework (5) · Building blocks (7: escala/caching/SQL-NoSQL/sharding+consistent-hashing/filas/CAP/CDN) · Padrões recorrentes (6: pub-sub/CQRS/ES/rate-limiting/circuit-breaker/gateway) · Walkthroughs (8 Magus: URL shortener/feed/chat/rate-limiter/notification/file-storage/crawler/KV-store) · Capstone (conduzir a entrevista). Monólito `System Design.md` podado → index.md vira o MOC.
 9. ⬜ **Operação (DevOps/SRE)** — CI/CD, containers em produção, observabilidade, deploy strategies, incident response.
 10. 🟡 **Comunicação entre Sistemas** — API design (REST/GraphQL/gRPC), versionamento, mensageria, idempotência.
 
