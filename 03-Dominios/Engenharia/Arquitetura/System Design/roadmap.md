@@ -18,7 +18,7 @@ Roadmap do galho `03-Dominios/Engenharia/Arquitetura/System Design`. Galho-**pai
 | # | Sub-galho | Fase | Notas planejadas | Estado |
 |---|-----------|------|------------------|--------|
 | 1 | Framework de entrevista | Iniciado | 5 | ✅ 5/5 (2026-07-06) |
-| 2 | Building blocks | Adepto | 7 | ⬜ pendente |
+| 2 | Building blocks | Adepto | 7 | ✅ 7/7 (2026-07-07) |
 | 3 | Padrões recorrentes | Adepto | 6 | ⬜ pendente |
 | 4 | Walkthroughs | Magus | 8 | ⬜ pendente |
 
@@ -34,5 +34,5 @@ Ao fechar a trilha: atualizar [[00-Meta/Roadmap]] item 8 (Onda C) de 🟡 → �
 
 ## Pendências transversais
 
-- CDN (SG2-07): nota dedicada vs dobrar em Caching — decidir no SG2.
+- ~~CDN (SG2-07): nota dedicada vs dobrar em Caching~~ — **resolvido:** nota dedicada 07 (2026-07-07).
 - Capstone do galho-pai ("Conduzindo a entrevista completa"): decidir ao fechar o SG4.
