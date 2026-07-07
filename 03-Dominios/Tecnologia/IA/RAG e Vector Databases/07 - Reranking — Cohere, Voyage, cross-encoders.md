@@ -1,10 +1,10 @@
 ---
 title: "Reranking — Cohere, Voyage, cross-encoders"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
-progress: backlog
-status: seedling
+progress: in_progress
+status: growing
 publish: true
 fase: Iniciado
 tags:
@@ -141,18 +141,62 @@ APIs (Cohere, Voyage) batcham automaticamente. Self-hosted: configure batch size
 
 ## Filtragem antes de rerank
 
-Para reduzir custo e latência, filtre **antes** do rerank:
+Para reduzir custo e latência, filtre **antes** do rerank. O pipeline completo tem 4 etapas — cada uma existe para eliminar um tipo específico de ruído antes que ele chegue ao passo mais caro (o cross-encoder):
 
 ```python
-# 1. Hybrid retrieval — top-50
-candidates = hybrid_retrieve(query, k=50)
+def retrieve_and_rerank(query: str, top_k_final: int = 5):
+    # 1. Hybrid retrieval — maximiza RECALL, não precisão.
+    #    BM25 (léxico) + vector search (semântico) rodando em paralelo,
+    #    resultados combinados via reciprocal rank fusion (RRF).
+    #    Objetivo aqui: garantir que os documentos certos estejam ENTRE
+    #    os 50 — não que já estejam ordenados corretamente.
+    candidates = hybrid_retrieve(query, k=50)
 
-# 2. Filter por relevance_score baixo (sinais óbvios de irrelevância)
-filtered = [c for c in candidates if c.score > MIN_THRESHOLD]
+    # 2. Filtro de metadados — elimina candidatos estruturalmente errados
+    #    ANTES de gastar forward passes de cross-encoder com eles.
+    #    Ex: documentos de uma versão descontinuada, tenant errado
+    #    (multi-tenant RAG), ou fora da janela de validade temporal.
+    candidates = [c for c in candidates if c.metadata.get("status") == "active"]
 
-# 3. Rerank apenas o que passou
-top5 = rerank(query, filtered, top_n=5)
+    # 3. Deduplicação — chunks quase-idênticos (overlap de sliding window,
+    #    ou o mesmo parágrafo indexado 2x por re-ingestão) desperdiçam
+    #    slots do rerank sem agregar informação nova.
+    candidates = dedupe_by_similarity(candidates, threshold=0.95)
+
+    # 4. Filtro por score bruto do retrieval — sinal FRACO mas barato.
+    #    Não substitui o rerank; só descarta os casos óbvios de baixa
+    #    afinidade, para não gastar o orçamento de latência do
+    #    cross-encoder em candidatos que ele quase certamente rejeitaria.
+    filtered = [c for c in candidates if c.retrieval_score > MIN_THRESHOLD]
+
+    # 5. Rerank — só agora entra o cross-encoder, sobre um conjunto já
+    #    limpo. Esta é a etapa que de fato ordena por relevância; as
+    #    anteriores só reduzem o volume que chega até aqui.
+    top_n = rerank(query, filtered, top_n=top_k_final)
+    return top_n
 ```
+
+Cada etapa de filtro é mais barata que a seguinte — metadados e deduplicação custam microssegundos; o cross-encoder custa uma forward pass por par. A ordem importa: filtrar caro antes de barato desperdiça o que o filtro barato deveria evitar.
+
+### O que acontece quando você pula a etapa 1 (hybrid retrieval)
+
+O erro mais comum não está na filtragem — está em pular o retrieval de alto recall e confiar só em vector search puro antes do rerank:
+
+```python
+# ❌ ANTI-PADRÃO: vector search puro, sem hybrid, direto pro rerank
+def retrieve_and_rerank_quebrado(query: str):
+    # Vector search sozinho tem recall menor em queries com termos exatos
+    # (siglas, nomes próprios, códigos de erro, IDs) — embeddings borram
+    # esses tokens em similaridade semântica, perdendo o match léxico.
+    candidates = vector_search_only(query, k=50)  # sem BM25
+
+    # O rerank processa fielmente os 50 candidatos que recebeu...
+    top5 = rerank(query, candidates, top_n=5)
+    return top5  # mas se o documento certo nunca entrou nos 50,
+                 # o "melhor dos 50 ruins" ainda é ruim.
+```
+
+Suponha a query "erro HTTP 429 na API de checkout". Vector search puro pode devolver 50 documentos sobre "limites de taxa", "políticas de retry" e "arquitetura de APIs" — semanticamente próximos, mas nenhum menciona o código `429` explicitamente porque a busca vetorial tratou o número como ruído. O reranker recebe esses 50, os ordena com perfeição técnica — e entrega no topo um documento genérico sobre rate limiting que nunca cita o código do erro real. **O reranker fez seu trabalho corretamente; o problema está uma etapa antes.** Essa é a essência de "garbage in, garbage out": nenhuma capacidade de reordenação do cross-encoder compensa a ausência do documento certo no conjunto de entrada.
 
 ## Validação de threshold
 
@@ -181,6 +225,77 @@ Modelos multimodais (Cohere Embed v4, Jina Reranker multimodal) ranqueiam pares 
 | **Latência rerank** | <500ms |
 | **Cost rerank / total RAG** | <20% |
 | **Threshold de "não sei"** | top-1 score <0.6 |
+
+> [!question]- Por que "NDCG@10 > 0.7" é abstrato até você calcular um exemplo?
+> Porque a métrica só ganha sentido quando você vê o que ela penaliza. NDCG (Normalized Discounted Cumulative Gain) mede se os documentos **mais relevantes vieram primeiro** — não só se estão presentes no top-10.
+
+**Exemplo numérico — NDCG@10.** Suponha uma query com 3 documentos relevantes (relevância graduada 3, 2, 1 — "muito relevante", "relevante", "pouco relevante") escondidos entre 10 candidatos retornados pelo reranker.
+
+Ranking A (reranker bom): posições 1, 2, 4 recebem os documentos com relevância 3, 2, 1.
+
+```
+DCG_A = 3/log2(1+1) + 2/log2(2+1) + 1/log2(4+1)
+      = 3/1.0 + 2/1.585 + 1/2.322
+      = 3.0 + 1.262 + 0.431
+      = 4.693
+```
+
+Ranking B (reranker fraco, mesmos documentos mas em posições 3, 7, 9):
+
+```
+DCG_B = 3/log2(3+1) + 2/log2(7+1) + 1/log2(9+1)
+      = 3/2.0 + 2/3.0 + 1/3.322
+      = 1.5 + 0.667 + 0.301
+      = 2.468
+```
+
+IDCG (ranking ideal, os 3 relevantes nas posições 1, 2, 3): `3/1.0 + 2/1.585 + 1/2.0 = 4.762`.
+
+```
+NDCG_A = 4.693 / 4.762 = 0.985   ✅ acima do alvo (>0.7)
+NDCG_B = 2.468 / 4.762 = 0.518   ❌ abaixo do alvo — mesmo documentos, ranking pior
+```
+
+O documento certo estar "em algum lugar do top-10" não basta — a posição é o que a métrica pune. Um reranker que enterra o documento certo na posição 9 conta quase como não tê-lo recuperado, porque a maioria dos LLMs (e usuários) dão peso decrescente aos chunks mais distantes do início do contexto.
+
+**Exemplo numérico — Precision@5.** De 5 documentos retornados após o rerank, quantos são de fato relevantes (julgamento binário, não graduado)? Se 4 de 5 são relevantes: `Precision@5 = 4/5 = 80%` — acima do alvo de 70%. Se apenas 2 de 5 são relevantes (`40%`), o sinal é que o filtro de relevância anterior ao rerank (ou o próprio retrieval) está deixando passar ruído — o reranker não cria relevância do nada, só reordena o que chega.
+
+**Exemplo numérico — threshold de "não sei".** Um reranker Cohere retorna `relevance_score` normalizado entre 0 e 1. Em 1.000 queries de produção, suponha a distribuição: 850 queries com top-1 score ≥0.6 (resposta com confiança), 150 queries com top-1 score <0.6 (candidatas a "não encontrei"). Sem o threshold, essas 150 queries geram respostas fabricadas a partir de chunks marginalmente relevantes — o preço de "sempre responder" é ~15% de respostas potencialmente alucinadas. Com o threshold, essas 150 viram um fallback honesto — trade-off deliberado entre cobertura e confiabilidade.
+
+## Fine-tuning domain-specific de rerankers
+
+> [!question]- Quando um reranker genérico (Cohere, BGE stock) não é suficiente?
+> Quando o vocabulário e a noção de "relevância" do seu domínio divergem do que o modelo viu no treino. Um reranker treinado majoritariamente em MS MARCO (queries e passagens de busca web genérica) aprende que "relevante" significa "sobre o mesmo tópico". Em domínios especializados — jurídico, médico, código-fonte — relevância frequentemente significa outra coisa: "a cláusula que se aplica a este caso específico", não "qualquer cláusula sobre contratos".
+
+Sintomas de domain mismatch: o reranker ordena bem documentos genéricos, mas erra sistematicamente em jargão técnico, siglas do domínio, ou quando dois documentos são lexicalmente parecidos mas semanticamente distintos (ex: "Artigo 5º da Lei X" vs "Artigo 5º da Lei Y" — mesma estrutura sintática, relevância completamente diferente dependendo do contexto do caso).
+
+**Mecanismo do fine-tuning.** Cross-encoders (BGE, MS MARCO, Cohere self-hosted quando disponível) são fine-tunáveis com contrastive loss sobre triplas `(query, doc_positivo, doc_negativo)`:
+
+```python
+from sentence_transformers import CrossEncoder, InputExample
+from torch.utils.data import DataLoader
+
+# Cada exemplo: par (query, doc) com label de relevância (0.0 a 1.0)
+train_examples = [
+    InputExample(texts=["cláusula de rescisão por justa causa",
+                         "Art. 482 CLT — hipóteses de rescisão..."], label=1.0),
+    InputExample(texts=["cláusula de rescisão por justa causa",
+                         "Art. 7º CLT — direitos do trabalhador urbano..."], label=0.0),
+    # ... centenas a milhares de pares rotulados do domínio
+]
+
+model = CrossEncoder("BAAI/bge-reranker-v2-m3")  # parte de um checkpoint já forte
+train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=16)
+model.fit(train_dataloader=train_dataloader, epochs=2, warmup_steps=100)
+model.save("reranker-juridico-v1")
+```
+
+O passo crítico — e o que mais separa fine-tuning bem-sucedido de perda de tempo — é **hard negative mining**: em vez de usar documentos aleatórios como negativos (fáceis demais, o modelo já os rejeitaria), usar documentos que o *retrieval atual* já confunde (alto score de embedding, mas irrelevantes de fato). Isso ensina o reranker exatamente onde ele erra hoje, não onde já acerta.
+
+> [!warning] Fine-tuning sem golden set de validação é fine-tuning cego
+> Sem um conjunto de queries+respostas corretas do seu domínio (mesmo que só 50-100 exemplos, revisados por humano), não há como saber se o fine-tuning melhorou ou piorou o reranker fora do conjunto de treino — overfitting em domínio estreito é comum e silencioso. Valide NDCG@10 no golden set antes/depois do fine-tuning; se não melhorar, o modelo base já estava bom o suficiente e o custo de manter um checkpoint customizado não se paga.
+
+**Quando vale o esforço:** volume alto de queries no mesmo domínio + vocabulário/jargão consistentemente mal ordenado pelo reranker genérico + orçamento para manter um golden set atualizado. Quando não vale: poucos milhares de queries/mês, domínio genérico, ou ausência de capacidade de avaliação contínua — nesses casos, Cohere Rerank ou BGE stock captura a maior parte do ganho por uma fração do esforço.
 
 ## Armadilhas comuns
 
@@ -242,63 +357,8 @@ Depois de retrieval + rerank, você tem os 5 chunks mais relevantes para a pergu
 
 ## Referências
 
-- **Anthropic** — *Contextual Retrieval* (2024)
-- **Cohere** — *Rerank documentation* (2026)
-- **Voyage AI** — *Reranker docs* (2026)
-- **BGE** — *github.com/FlagOpen/FlagEmbedding* (2026)
-- **Nogueira & Cho** — *Passage Re-ranking with BERT* (paper original cross-encoder, 2019)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Anthropic** — *Contextual Retrieval* (2024) — [anthropic.com/news/contextual-retrieval](https://www.anthropic.com/news/contextual-retrieval)
+- **Cohere** — *Rerank documentation* (2026) — [docs.cohere.com/docs/rerank-2](https://docs.cohere.com/docs/rerank-2)
+- **Voyage AI** — *Reranker docs* (2026) — [docs.voyageai.com/docs/reranker](https://docs.voyageai.com/docs/reranker)
+- **BGE** — *FlagEmbedding (BAAI)* (2026) — [github.com/FlagOpen/FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding)
+- **Nogueira & Cho** — *Passage Re-ranking with BERT* (paper original cross-encoder, 2019) — [arxiv.org/abs/1901.04085](https://arxiv.org/abs/1901.04085)

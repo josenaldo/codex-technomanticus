@@ -1,10 +1,10 @@
 ---
 title: "PageIndex — RAG vectorless por árvore de documentos"
 created: 2026-05-06
-updated: 2026-05-06
+updated: 2026-07-06
 type: concept
-progress: backlog
-status: seedling
+progress: in_progress
+status: growing
 publish: true
 fase: Iniciado
 tags:
@@ -68,6 +68,32 @@ Um nó típico da árvore contém:
 - `summary` — resumo semântico do nó;
 - `nodes` — filhos, quando a seção é subdividida.
 
+Na prática, isso é um JSON recursivo — não uma abstração, mas um artefato que dá pra abrir e ler. Um trecho de árvore gerado a partir de um relatório financeiro (10-K) se parece com isto:
+
+```json
+{
+  "title": "Item 7. Management's Discussion and Analysis",
+  "node_id": "0006",
+  "start_index": 42,
+  "end_index": 78,
+  "summary": "Discussão da administração sobre resultados operacionais, liquidez e posição de capital do exercício fiscal, incluindo variações ano a ano em receita e margem.",
+  "nodes": [
+    {
+      "title": "Liquidity and Capital Resources",
+      "node_id": "0006-02",
+      "start_index": 61,
+      "end_index": 70,
+      "summary": "Análise de caixa disponível, linhas de crédito não utilizadas e capacidade de financiar operações nos próximos 12 meses.",
+      "nodes": []
+    }
+  ]
+}
+```
+
+O ponto central: `node_id` é a chave que o LLM devolve depois do tree search — não texto solto, mas um identificador que o pipeline usa para buscar o intervalo `start_index`/`end_index` correspondente no documento original e montar o contexto de geração. Isso é o que torna o retrieval auditável: dá pra provar exatamente qual nó (e qual página) originou uma resposta, em vez de reconstruir a proveniência a partir de um score de similaridade.
+
+O tree search em si funciona como uma busca recursiva guiada por raciocínio, não por embedding: o LLM recebe a pergunta e os `summary` dos nós de um nível (por exemplo, os filhos diretos da raiz), decide quais ramos parecem promissores, desce para o próximo nível só nesses ramos, e repete até chegar em folhas com `start_index`/`end_index` específicos. Isso evita jogar a árvore inteira no contexto — cada chamada só vê os nós do nível corrente — e é o motivo do custo dominante ser **chamadas de LLM por navegação**, não embeddings.
+
 Essa representação transforma um documento longo em uma estrutura navegável. Em vez de perguntar "quais chunks são similares à query?", o sistema pergunta "qual ramo da estrutura tem maior chance de conter a resposta, dado o objetivo da pergunta?".
 
 ## Comparação com RAG vetorial
@@ -106,11 +132,11 @@ PageIndex não invalida [[06 - Retrieval — hybrid search, BM25, query rewritin
 
 ## Relação com padrões avançados
 
-PageIndex fica entre três famílias:
+PageIndex fica entre três famílias, mas não se confunde com nenhuma delas — cada uma empresta um pedaço da ideia, com um diferencial concreto que vale nomear:
 
-- **Agentic RAG.** O LLM decide onde procurar, mas o espaço de ação é restrito à árvore do documento.
-- **Hierarchical retrieval.** A busca acontece em níveis: documento → seção → subseção → página.
-- **Long-context RAG.** O objetivo é evitar jogar tudo no contexto; a árvore decide o recorte que entra.
+- **Agentic RAG.** Em [[11 - Padrões avançados — Graph RAG, Agentic RAG, multi-hop|Agentic RAG]] genérico, o agente decide livremente entre múltiplas ferramentas — buscar na web, consultar um vector DB, chamar uma API — e o espaço de ação é aberto. No PageIndex, o "agente" (o LLM fazendo tree search) só tem uma ferramenta: navegar os nós da árvore de um único documento. É Agentic RAG com escopo de ação deliberadamente restrito — a vantagem é previsibilidade de custo e menos superfície para o LLM alucinar uma ferramenta errada; a desvantagem é que não resolve perguntas que exigem múltiplas fontes fora do documento.
+- **Hierarchical retrieval.** A ideia de buscar em níveis (documento → seção → subseção → página) já existe em índices hierárquicos clássicos (ex: HNSW multi-nível, ou RAPTOR com clusters recursivos de embeddings). A diferença do PageIndex é que os níveis não vêm de clustering estatístico sobre embeddings — vêm da **estrutura editorial real do documento** (o sumário que um autor humano escreveria). Isso troca robustez estatística por fidelidade à intenção do autor: funciona muito bem quando o documento tem uma hierarquia editorial forte (10-K, manual, contrato) e piora quando essa hierarquia é fraca ou inconsistente.
+- **Long-context RAG.** A alternativa a fazer retrieval é simplesmente jogar o documento inteiro (ou grandes blocos dele) na janela de contexto do modelo — ver [[10 - RAG vs long context vs fine-tuning]]. PageIndex ocupa o meio-termo: não descarta contexto bruto (como faria um retrieval por chunk pequeno), mas também não joga o documento inteiro na janela — a árvore decide um recorte de seções relevantes, do tamanho do resumo dos nós escolhidos mais o texto das folhas, e só isso entra no prompt de geração. O ganho é reduzir tokens de contexto sem perder a seção certa; o custo é que a navegação em si consome chamadas de LLM que long-context puro não precisaria pagar.
 
 Ele não é Graph RAG no sentido clássico, porque não extrai entidades/relações para um knowledge graph. Também não é multi-hop RAG genérico, embora possa fazer perguntas multi-step navegando ramos diferentes do mesmo documento.
 
@@ -171,135 +197,3 @@ The mechanism works in two phases: first, build a tree representation of the doc
 - Developer / MCP / API — `https://pageindex.ai` — integração via MCP e API.
 - Blog introdutório — *PageIndex: Next-Generation Vectorless, Reasoning-based RAG* (Zhang, Tang e PageIndex Team, setembro de 2025), citado no README.
 - FinanceBench — `https://arxiv.org/abs/2311.11944` — benchmark mencionado no README como caso onde Mafin 2.5, sistema baseado em PageIndex, reporta 98,7% de accuracy.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

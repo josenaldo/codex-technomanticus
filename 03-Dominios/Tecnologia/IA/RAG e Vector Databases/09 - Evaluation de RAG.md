@@ -1,7 +1,7 @@
 ---
 title: "Evaluation de RAG"
 created: 2026-04-11
-updated: 2026-05-29
+updated: 2026-07-06
 type: concept
 progress: backlog
 status: seedling
@@ -28,6 +28,8 @@ aliases:
 
 > [!info] Trilha mestre
 > Esta nota é o deep-dive de evaluation **no contexto de RAG**. Pra disciplina geral de evaluation (golden datasets, rubrics, LLM-as-judge, frameworks 2026, eval em CI), veja a trilha [[Evaluation]].
+
+Imagine o cenário: você fez o deploy de um RAG, testou manualmente umas vinte perguntas, as respostas pareceram boas — fluentes, no tom certo, aparentemente corretas. Duas semanas depois, em produção, começam a chegar reclamações de erros sutis: uma citação que aponta para o chunk errado, uma resposta que soa convincente mas contradiz o documento fonte. O problema é que "parecer bom" no teste manual não diz **onde** está a falha — pode ser que o chunk certo nunca tenha sido recuperado, que o rerank tenha descartado o certo, ou que o LLM tenha completado a lacuna com conhecimento próprio. Sem métricas que isolem cada etapa do pipeline, você não sabe se o culpado é o retrieval, o reranking ou a generation — só sabe que "algo está errado".
 
 ## A regra fundamental
 
@@ -318,8 +320,8 @@ The canonical framework is the Ragas quadrant: context precision and context rec
 
 ## Referências
 
-- **Ragas** — *docs.ragas.io* (2026)
-- **TruLens** — *trulens.org* (2026)
-- **DeepEval** — *deepeval.com* (2026)
-- **Es et al.** — *RAGAS: Automated Evaluation of Retrieval Augmented Generation* (paper, 2023)
-- **Eugene Yan** — *Evaluation patterns* (2024)
+- **Ragas** — [docs.ragas.io](https://docs.ragas.io) (2026)
+- **TruLens** — [trulens.org](https://www.trulens.org) (2026)
+- **DeepEval** — [deepeval.com](https://deepeval.com) (2026)
+- **Es et al.** — *RAGAS: Automated Evaluation of Retrieval Augmented Generation* — [arXiv:2309.15217](https://arxiv.org/abs/2309.15217) (paper, 2023)
+- **Eugene Yan** — *Evaluation patterns* — [eugeneyan.com/writing/evals](https://eugeneyan.com/writing/evals/) (2024)

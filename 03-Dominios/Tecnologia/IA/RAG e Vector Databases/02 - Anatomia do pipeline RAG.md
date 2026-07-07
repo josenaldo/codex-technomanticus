@@ -1,7 +1,7 @@
 ---
 title: "Anatomia do pipeline RAG"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 progress: backlog
 status: seedling
@@ -24,6 +24,8 @@ aliases:
 
 > [!question]- Por que a qualidade do retrieval importa mais que o modelo?
 > O LLM só pode usar o que chega no contexto. Se o retrieval trouxer os chunks errados — ou nenhum chunk relevante — o modelo mais poderoso do mundo vai alucinar ou dizer "não sei". Por outro lado, com retrieval excelente e contexto correto, até um modelo mais simples gera respostas precisas. O gargalo quase sempre é o retrieval, não a geração. Em benchmarks internos, melhorar retrieval precision de 60% para 90% eleva a qualidade final das respostas mais do que dobrar o tamanho do modelo de linguagem.
+
+Imagine um engenheiro que acabou de colocar um sistema RAG em produção. Um usuário faz uma pergunta simples sobre a documentação interna, e o sistema responde com confiança — só que errado. A resposta é bem escrita, cita trechos com aparência plausível, mas não é o que o documento diz. O reflexo natural é culpar o modelo: "preciso de um LLM mais forte". Só que ao instrumentar o pipeline e inspecionar exatamente quais chunks chegaram ao contexto antes da geração, o engenheiro descobre outra coisa: o retrieval trouxe três trechos genéricos e irrelevantes, e nenhum continha a resposta certa. O LLM não alucinou do nada — ele fez o melhor trabalho possível com o material errado que recebeu. Esse é o padrão de falha mais comum em sistemas RAG, e a única forma de diagnosticá-lo com precisão é entender exatamente onde cada peça do pipeline encaixa — para poder isolar, uma a uma, qual delas quebrou.
 
 ## As duas fases
 
@@ -179,6 +181,100 @@ Eval **separa [[Dicionário de IA#retrieval|retrieval]] de generation** ([[09 - 
 | Latência total p95 | <3s |
 | Cost por query | <$0.01 |
 
+## Debugging end-to-end — o caso do engenheiro
+
+Voltando ao cenário da abertura: como o engenheiro realmente descobriu que o problema estava no retrieval, e não na geração? A resposta é instrumentar cada etapa do pipeline isoladamente, em vez de olhar só a resposta final. Segue um caso prático, indexing e query, com o mesmo código que ele usou para isolar a falha.
+
+### Indexing — montando o índice
+
+```python
+# indexing.py — roda uma vez por documento
+from openai import OpenAI
+import psycopg2
+
+client = OpenAI()
+conn = psycopg2.connect("dbname=rag_db")
+
+def parse(path: str) -> str:
+    # unstructured/Docling fazem o trabalho pesado de PDF -> texto
+    from unstructured.partition.auto import partition
+    elements = partition(filename=path)
+    return "\n\n".join(str(el) for el in elements)
+
+def chunk(text: str, size=500, overlap=50) -> list[str]:
+    words = text.split()
+    chunks = []
+    step = size - overlap
+    for i in range(0, len(words), step):
+        chunks.append(" ".join(words[i:i + size]))
+    return chunks
+
+def embed(texts: list[str]) -> list[list[float]]:
+    resp = client.embeddings.create(model="text-embedding-3-small", input=texts)
+    return [d.embedding for d in resp.data]
+
+def store(chunks: list[str], embeddings: list[list[float]], doc_id: str):
+    with conn.cursor() as cur:
+        for text, vec in zip(chunks, embeddings):
+            cur.execute(
+                "INSERT INTO chunks (doc_id, chunk_text, embedding) VALUES (%s, %s, %s)",
+                (doc_id, text, vec),
+            )
+    conn.commit()
+
+def index_document(path: str, doc_id: str):
+    text = parse(path)
+    pieces = chunk(text)
+    vectors = embed(pieces)
+    store(pieces, vectors, doc_id)
+    print(f"Indexed {doc_id}: {len(pieces)} chunks")
+```
+
+Rodar `index_document("politica-reembolso.pdf", "pol-001")` já é o primeiro ponto de instrumentação: `print(len(pieces))` diz se o parse quebrou o documento em pedaços plausíveis (dezenas, não milhares — e não 1 chunk gigante).
+
+### Query — isolando cada etapa
+
+```python
+# query.py — roda a cada pergunta
+def retrieve(query_embedding: list[float], k=50) -> list[dict]:
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT chunk_text, embedding <=> %s AS distance "
+            "FROM chunks ORDER BY distance LIMIT %s",
+            (query_embedding, k),
+        )
+        return [{"text": row[0], "distance": row[1]} for row in cur.fetchall()]
+
+def answer(question: str, debug=False) -> str:
+    q_embedding = embed([question])[0]
+    candidates = retrieve(q_embedding, k=50)
+
+    if debug:
+        print(f"--- Top 5 chunks recuperados para: {question!r} ---")
+        for c in candidates[:5]:
+            print(f"  dist={c['distance']:.3f}  {c['text'][:80]}...")
+
+    top5 = candidates[:5]  # sem rerank neste exemplo mínimo
+    context = "\n\n".join(c["text"] for c in top5)
+
+    prompt = f"Responda com base nos trechos:\n\n{context}\n\nPergunta: {question}"
+    return prompt  # em produção, chamada ao LLM aqui
+```
+
+O parâmetro `debug=True` é o que resolveu o mistério do engenheiro. Ao rodar `answer("qual o prazo de reembolso?", debug=True)`, ele viu os cinco chunks que realmente chegaram ao prompt — e nenhum mencionava prazo, reembolso ou política. Eram parágrafos genéricos da introdução do documento, que por acaso tinham similaridade vetorial alta com a pergunta (termos comuns, tom formal parecido) sem conter a informação factual buscada.
+
+### O diagnóstico, passo a passo
+
+1. **Checou o parse** — o PDF tinha uma tabela com prazos por tipo de produto. `unstructured` linearizou a tabela em texto corrido, misturando linhas e colunas. A informação de prazo virou ruído textual.
+2. **Checou o chunk** — o chunk que continha (de forma corrompida) a tabela ficou no meio de um bloco de 500 tokens dominado por texto de introdução. O embedding do chunk representava majoritariamente a introdução, não a tabela.
+3. **Checou o retrieve** — como consequência direta de 1 e 2, a query embedding nunca ficou próxima o suficiente do chunk certo. Ele existia no índice, mas não aparecia nem no top-50.
+4. **Conclusão** — o problema nunca esteve na geração. Estava no parse (perdeu a estrutura da tabela) e propagou por chunk e embed.
+
+A correção não envolveu trocar de LLM: envolveu trocar `unstructured` por `Docling` (que preserva tabelas como Markdown estruturado) e reprocessar o indexing daquele documento. Depois da re-indexação, o mesmo chunk apareceu em 1º lugar no retrieve, e a resposta ficou correta — sem nenhuma mudança no modelo de geração.
+
+> [!tip] A lição generalizável
+> Sempre que uma resposta de RAG estiver errada, resista ao impulso de "trocar o LLM" como primeiro passo. Rode a query com `debug=True` (ou equivalente), inspecione os chunks que realmente chegaram ao prompt, e só então decida se o problema é de contexto (parse/chunk/retrieve) ou de geração (prompt/modelo). Na prática, é quase sempre contexto.
+
 ## Anti-patterns
 
 - **Pular passo de rerank** — top-k vira ruidoso
@@ -241,65 +337,6 @@ Com o mapa do pipeline na cabeça, o próximo passo natural é mergulhar nos com
 
 ## Referências
 
-- **Anthropic** — *Contextual Retrieval* (2024)
-- **Pinecone** — *Learn RAG* (2025)
-- **LlamaIndex** — *RAG architecture documentation* (2026)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Anthropic** — *Introducing Contextual Retrieval* (2024) — <https://www.anthropic.com/news/contextual-retrieval>
+- **Pinecone** — *Retrieval Augmented Generation (Learn)* (2025) — <https://www.pinecone.io/learn/retrieval-augmented-generation/>
+- **LlamaIndex** — *Building a RAG pipeline (docs)* (2026) — <https://docs.llamaindex.ai/en/stable/understanding/rag/>

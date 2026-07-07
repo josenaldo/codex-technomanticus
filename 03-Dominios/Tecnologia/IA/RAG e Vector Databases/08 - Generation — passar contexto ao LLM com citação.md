@@ -1,7 +1,7 @@
 ---
 title: "Generation — passar contexto ao LLM com citação"
 created: 2026-04-11
-updated: 2026-05-31
+updated: 2026-07-06
 type: concept
 progress: backlog
 status: growing
@@ -26,6 +26,8 @@ aliases:
 > Quando você não instrui o LLM a citar, ele vai responder com confiança absoluta — mesclando o contexto recuperado com seu conhecimento de treinamento sem avisar qual é qual. O usuário não tem como distinguir "o documento diz X" de "o modelo acha que X é verdade". Citação explícita cria um contrato verificável: cada afirmação aponta para um trecho numerado, e qualquer pessoa pode checar. Em domínios regulados (legal, médico, financeiro), isso não é opcional — é o que transforma RAG em evidência auditável. "Deixar o LLM inferir" também aumenta hallucination porque o modelo preenche lacunas com conhecimento próprio quando o prompt não proíbe explicitamente.
 
 ## A estrutura do prompt
+
+Imagine o cenário mais traiçoeiro de todos: o retrieval fez o trabalho certo. Os três chunks recuperados cobrem exatamente a pergunta do usuário, o reranker os colocou na ordem certa, e ainda assim a resposta final está errada — porque o LLM, ao gerar, misturou um detalhe do contexto recuperado com um detalhe do seu conhecimento de treinamento, sem sinalizar qual é qual. O usuário lê uma frase fluente e confiante, sem forma de saber que metade veio do documento e a outra metade veio de um palpite do modelo. Esse é o motivo pelo qual a estrutura do prompt de generation não é um detalhe cosmético: é o único ponto do pipeline onde você pode instruir explicitamente o LLM a não fazer essa mistura — e a citação por número de trecho é o mecanismo que torna essa instrução verificável depois do fato.
 
 ```text
 SYSTEM:
@@ -76,6 +78,24 @@ Quando a resposta exige juntar fatos espalhados em vários chunks, a geração v
 
 ```text
 retrieve → rerank → extrair evidência → resolver conflitos → gerar → verificar contra evidência
+```
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant R as Retrieval
+    participant K as Reranker
+    participant E as Extração
+    participant G as Generation (LLM)
+    participant V as Verificação
+
+    U->>R: pergunta
+    R->>K: top-K chunks
+    K->>E: chunks reordenados
+    E->>G: spans de suporte (evidência extraída)
+    G->>V: resposta com citações [N]
+    V->>V: cada afirmação é suportada pelo chunk citado?
+    V-->>U: resposta validada (ou fallback "não sei")
 ```
 
 - **Resolver conflitos** — quando chunks discordam (ex.: versões diferentes da mesma doc), reconcilie antes de gerar (a regra 4 do system prompt restritivo, abaixo, é a semente disso).
@@ -343,9 +363,9 @@ Você agora tem o pipeline completo: chunking → embedding → retrieval → re
 
 ## Referências
 
-- **Anthropic** — *Citations API* (2024)
+- **Anthropic** — *Citations API* (2024) — https://www.anthropic.com/news/citations
 - **Eugene Yan** — *Patterns for Building LLM-based Systems* (2024)
 - **OpenAI** — *Structured outputs guide* (2026)
-- **Liu et al.** — *Lost in the Middle: How Language Models Use Long Contexts* (arXiv 2307.03172, TACL 2024)
-- **Asai et al.** — *Self-RAG: Learning to Retrieve, Generate and Critique through Self-Reflection* (arXiv 2310.11511, 2023)
-- **Yan et al.** — *Corrective Retrieval Augmented Generation (CRAG)* (arXiv 2401.15884, 2024)
+- **Liu et al.** — *Lost in the Middle: How Language Models Use Long Contexts* (arXiv 2307.03172, TACL 2024) — https://arxiv.org/abs/2307.03172
+- **Asai et al.** — *Self-RAG: Learning to Retrieve, Generate and Critique through Self-Reflection* (arXiv 2310.11511, 2023) — https://arxiv.org/abs/2310.11511
+- **Yan et al.** — *Corrective Retrieval Augmented Generation (CRAG)* (arXiv 2401.15884, 2024) — https://arxiv.org/abs/2401.15884

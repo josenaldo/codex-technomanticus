@@ -1,10 +1,10 @@
 ---
 title: "RAG vs long context vs fine-tuning"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
-progress: backlog
-status: seedling
+progress: in_progress
+status: growing
 publish: true
 fase: Iniciado
 tags:
@@ -120,6 +120,53 @@ Long context + Fine-tune
 
 Modelo fine-tuned com long context window estendida pré-treinado em domain corpus. Custo: alto. Use case: domínios fechados (medicine, legal).
 
+> [!question]- "Por que não começar direto com o híbrido, se ele é o padrão maduro?"
+> Porque "padrão maduro" descreve onde sistemas em produção **terminam**, não onde eles **começam**. Adotar fine-tune + RAG no dia 1 é comprar dois custos fixos (pipeline de treino recorrente + infra de indexação) antes de saber se algum dos dois resolve o problema sozinho. É dívida técnica disfarçada de sofisticação: cada componente extra é superfície a manter — versionamento de modelo fine-tuned, re-treino quando o tom "desvia", *e* re-indexação, avaliação de retrieval, tuning de reranking. Se o RAG puro já cobre 90% do golden set, o fine-tuning vira custo permanente pago por um ganho marginal que ninguém mediu. A pergunta certa não é "qual é o padrão maduro", é "qual componente eu tenho evidência de que preciso agora".
+
+O caminho até o híbrido segue um fluxo de decisão, não uma escolha de arquitetura de uma vez só:
+
+**1. Escolha inicial — o componente mais simples que pode funcionar.** Comece com o approach de menor custo operacional que cobre a *maior* fatia do requisito: long context se o corpus cabe e é estável; RAG se o corpus é grande ou dinâmico. Fine-tuning **nunca** é o ponto de partida — ele resolve comportamento, e comportamento ruim geralmente é sintoma de prompt mal desenhado, não de modelo errado. Rode esse componente único em produção (ou staging avançado) antes de cogitar somar outro.
+
+**2. Golden set — meça antes de adicionar peça.** Construa um golden set de 20-50 perguntas representativas do uso real, com respostas de referência revisadas por humano. Rode o componente único contra ele e registre accuracy, faithfulness, latência p95 e custo por query (mesmas métricas da tabela "Métricas para comparar" acima). Esse número é a linha de base — sem ele, qualquer decisão de adicionar um segundo componente é opinião, não dado. Repita a medição a cada mudança de arquitetura; o golden set é o critério de aceite, não um teste que se roda uma vez e se esquece.
+
+**3. Critério de adição de componente — só some o que o golden set provou que falta.** Adicione RAG a um sistema de long context quando o corpus golden set expõe perguntas que exigem informação fora do que cabe/foi cacheado, ou quando a citação se torna requisito (compliance). Adicione fine-tuning a um sistema de RAG quando o golden set mostra respostas **factualmente corretas mas no tom/formato errado** de forma consistente — e você já tentou resolver via prompt engineering e few-shot sem sucesso. Se o golden set não distingue as falhas por causa (não sabe o fato vs. sabe o fato mas erra o tom), o diagnóstico está incompleto; volte para a etapa 2 antes de somar arquitetura.
+
+> [!summary] Fluxo em uma frase
+> Escolha o componente único mais barato → meça contra um golden set → só some o próximo componente quando o golden set apontar exatamente qual lacuna (conhecimento vs. comportamento) ele resolve.
+
+```mermaid
+graph TD
+    A["Escolha inicial:<br/>componente único mais barato<br/>(long context ou RAG)"] --> B["Rodar em produção/staging"]
+    B --> C["Golden set: 20-50 perguntas<br/>+ métricas (accuracy, latência,<br/>custo, faithfulness)"]
+    C --> D{"Golden set aponta<br/>lacuna clara?"}
+    D -->|"não — cobre bem"| E["Manter componente único"]
+    D -->|"sim, falta conhecimento<br/>(corpus não cabe/cache invalida)"| F["Somar RAG"]
+    D -->|"sim, falta comportamento<br/>(tom/formato errado,<br/>prompt já tentado)"| G["Somar fine-tuning"]
+    F --> H["Remedir golden set<br/>com o componente novo"]
+    G --> H
+    H --> D
+```
+
+O ciclo é **iterativo**: cada componente novo volta pro golden set antes de considerar somar o próximo. Isso evita a armadilha de empilhar arquitetura em resposta a uma sensação de "ainda não está bom" sem isolar qual parte do sistema está falhando.
+
+| Sinal no golden set | Causa provável | Componente a somar |
+|---|---|---|
+| Resposta erra o fato, mas o tom está certo | Conhecimento ausente ou desatualizado | RAG |
+| Resposta acerta o fato, mas o tom/formato está errado (mesmo com few-shot) | Comportamento do modelo base | Fine-tuning |
+| Resposta erra o fato **e** o tom | Diagnóstico incompleto — dois problemas misturados | Isolar: medir tom e fato separadamente antes de somar qualquer componente |
+| Accuracy cai quando o corpus cresce além do que cabe no prompt | Limite de long context (context rot) | RAG |
+| Latência p95 sobe com o crescimento do corpus em long context | Reprocessamento de contexto sem cache eficaz | RAG ou cache mais agressivo antes de RAG |
+
+Esse fluxo evita duas armadilhas simétricas: parar cedo demais no componente único (aceitando uma lacuna que o golden set já provou existir) e somar componente cedo demais (pagando custo permanente por um ganho não medido). Ambas custam caro — a primeira em qualidade percebida pelo usuário, a segunda em manutenção de infraestrutura que ninguém revisita.
+
+> [!example] Aplicando o fluxo — assistente legal
+> Retomando o caso do parecer jurídico: a equipe **não** começou com fine-tune + RAG. Primeiro passo foi RAG puro sobre a jurisprudência (conhecimento grande e dinâmico venceu de cara — regra da seção "RAG — quando vence"). Golden set de 30 perguntas revisadas por um advogado sênior mostrou accuracy factual de 88%, mas 60% das respostas saíam em tom "conversacional", fora do padrão formal exigido pelos pareceres. Prompt engineering (few-shot com 5 exemplos de estilo) reduziu o problema, mas não eliminou — o padrão de citação processual continuava inconsistente. Só nesse ponto, com o golden set isolando "fato certo, forma errada" como causa dominante, a equipe fez fine-tune do modelo em cima do RAG existente. Resultado: accuracy factual manteve-se em 88% (o RAG já resolvia isso), conformidade de formato subiu de 40% para 92%. O fine-tuning não teria sido justificável sem esse número.
+
+> [!warning] Time sem capacidade de manter golden set
+> Se ninguém no time vai revisar e atualizar o golden set periodicamente, o fluxo acima colapsa de volta em opinião — a mesma armadilha do anti-pattern "comparar approaches sem golden set". Nesse cenário, prefira manter o componente único mais simples pelo maior tempo possível: um sistema RAG-only mal medido ainda é mais previsível de operar do que um híbrido fine-tune + RAG sem instrumentação para justificar por que os dois existem.
+
+Esse é o mesmo raciocínio por trás do anti-pattern "híbrido prematuro" listado abaixo: a etiqueta "padrão maduro" não é permissão para pular a etapa de evidência — é a descrição do estado final de quem já passou por ela.
+
 ## Custo comparativo (1000 queries/dia, corpus 50MB)
 
 | Approach | Setup | Custo/mês |
@@ -127,6 +174,14 @@ Modelo fine-tuned com long context window estendida pré-treinado em domain corp
 | **Long context (com cache)** | $0 | ~$50-200 |
 | **RAG (pgvector + Cohere Rerank + Sonnet)** | ~$200 | ~$80-300 |
 | **Fine-tune (LoRA Llama-70B + RAG)** | $500-2000 | ~$200-500 |
+
+O salto de custo entre a linha "RAG" e a linha "Fine-tune + RAG" nesta tabela é o preço concreto do híbrido — e é exatamente o número que o fluxo de golden set da seção anterior serve para justificar antes de pagar.
+
+O setup de $500-2000 do fine-tune não é só o treino em si: inclui coleta e limpeza do dataset de treino, infraestrutura de re-treino recorrente e validação de regressão a cada nova versão do modelo base. Esse custo fixo é o que o golden set precisa justificar — não o custo/mês recorrente, que tende a cair com volume.
+
+Na prática, times subestimam a validação de regressão: cada re-treino do modelo fine-tuned exige rodar o golden set de novo antes do deploy, porque uma nova versão pode corrigir o tom e, sem querer, degradar accuracy factual que dependia do RAG continuar bem integrado ao pipeline.
+
+Esse é o custo invisível que raramente aparece na estimativa inicial de orçamento — e mais um motivo pra não somar o componente sem prova prévia de necessidade.
 
 Long context é **mais barato** em volume baixo. RAG escala melhor. Fine-tune tem ganhos qualitativos não-financeiros.
 
@@ -173,6 +228,12 @@ Compare experimentalmente em **golden set**:
 | Cost/query | medir | medir | medir |
 | Faithfulness | medir | medir | medir |
 | Citation accuracy | n/a | medir | n/a |
+
+Isolar a causa de cada falha (conhecimento vs. comportamento) é o que transforma esse golden set em critério de adição de componente, e não só em placar geral:
+
+- **Separe as perguntas por tipo de falha esperada.** Um subconjunto testa só recall factual (o modelo sabe o dado?); outro testa só forma (o modelo responde no tom/formato certo, dado que o fato já está no contexto?). Misturar os dois numa métrica única esconde qual componente precisa de reforço.
+- **Rode o golden set a cada mudança de arquitetura**, não só uma vez no início — adicionar RAG ou fine-tuning pode melhorar uma métrica e degradar outra (ex: RAG reduz custo mas pode piorar latência se o reranking for caro).
+- **Guarde o histórico de execuções do golden set** (não só o resultado mais recente) — é o que permite justificar, depois, por que o híbrido foi adotado e não outra combinação.
 
 ## Anti-patterns
 
@@ -233,73 +294,7 @@ Long context wins when the corpus is small, stable, and can be loaded into the p
 
 ## Referências
 
-- **OpenAI** — *RAG vs Fine-tuning guide* (2024)
-- **Anthropic** — *Long context best practices* (2026)
-- **Chip Huyen** — *AI Engineering* (2025), capítulos sobre customization
-- **Eugene Yan** — *Patterns for Building LLM-based Systems* (2024)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **OpenAI** — [*Fine-tuning guide*](https://platform.openai.com/docs/guides/fine-tuning) (2024). Quando fine-tuning vale o custo vs. RAG/prompt engineering.
+- **Anthropic** — [*Context windows*](https://docs.anthropic.com/en/docs/build-with-claude/context-windows) (2026). Mecânica de janela de contexto, prompt caching e limites práticos de long context.
+- **Eugene Yan** — [*Patterns for Building LLM-based Systems & Products*](https://eugeneyan.com/writing/llm-patterns/) (2024). Padrões de retrieval-augmentation, fine-tuning e avaliação com golden set.
+- **Chip Huyen** — [*AI Engineering*](https://ai-engineering.ai/) (2025), capítulos sobre customization (RAG, fine-tuning e agentes).

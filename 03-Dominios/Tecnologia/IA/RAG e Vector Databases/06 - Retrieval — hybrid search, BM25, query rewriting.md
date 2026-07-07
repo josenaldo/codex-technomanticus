@@ -1,7 +1,7 @@
 ---
 title: "Retrieval — hybrid search, BM25, query rewriting"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 progress: backlog
 status: seedling
@@ -200,6 +200,18 @@ Default: retrieve 50, rerank para 5-10.
 
 ## Pipeline ideal — exemplo
 
+```mermaid
+flowchart LR
+    A["Pergunta do usuário"] --> B["Rewrite (LLM)"]
+    B --> C["HyDE (resposta hipotética)"]
+    C --> D["Vector search top-50"]
+    B --> E["BM25 search top-50"]
+    D --> F["RRF (fusão de rankings)"]
+    E --> F
+    F --> G["Rerank"]
+    G --> H["Top-k final ao prompt"]
+```
+
 ```python
 def retrieve_with_quality(user_question, k=5):
     # 1. Rewrite
@@ -298,8 +310,8 @@ Hybrid search com RRF entrega um top-50 de candidatos bem combinados — mas can
 
 ## Referências
 
-- **Anthropic** — *Contextual Retrieval* (2024)
-- **Gao et al.** — *HyDE: Precise Zero-Shot Dense Retrieval without Relevance Labels* (2022)
-- **Cormack et al.** — *Reciprocal Rank Fusion* (2009)
-- **Pinecone** — *Hybrid search guide* (2026)
-- **Robertson & Walker** — *BM25 paper* (1994)
+- **Anthropic** — [*Contextual Retrieval*](https://www.anthropic.com/news/contextual-retrieval) (2024)
+- **Gao et al.** — [*HyDE: Precise Zero-Shot Dense Retrieval without Relevance Labels*](https://arxiv.org/abs/2212.10496) (arXiv:2212.10496, 2022)
+- **Cormack et al.** — [*Reciprocal Rank Fusion outperforms Condorcet and Individual Rank Learning Methods*](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) (2009)
+- **Pinecone** — [*Hybrid search guide*](https://www.pinecone.io/learn/hybrid-search-intro/) (2026)
+- **Robertson & Walker** — [*Some Simple Effective Approximations to the 2-Poisson Model for Probabilistic Weighted Retrieval*](https://dl.acm.org/doi/10.1145/188490.188561) (BM25 paper, 1994)

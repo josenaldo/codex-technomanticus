@@ -26,6 +26,8 @@ aliases:
 > [!question]- Por que a ordem do checklist importa?
 > Porque cada fase depende do resultado da anterior: você não pode medir regressão em CI (Fase 3) se não tem golden set — e não sabe o que incluir no golden set se não viu o sistema falhar em produção real. Pior, adicionar observabilidade (Fase 4) antes de resolver qualidade (Fase 2) é monitorar um sistema ruim com mais detalhes. A ordem não é burocracia — é dependência técnica: retrieval funcional → qualidade medida → regressão detectada → produção com confiança.
 
+É comum o RAG "funcionar" em dev e quebrar em produção sem que o código mude uma linha. O protótipo roda bem porque as queries de teste são fáceis, o provider de rerank nunca cai numa demo de 10 minutos, e ninguém mede faithfulness porque "dá pra ver que a resposta está certa" olhando a tela. Em produção, esses três privilégios desaparecem ao mesmo tempo: queries reais são mais variadas e ambíguas do que qualquer conjunto de teste manual, um provider externo eventualmente falha (SLA <100% é regra, não exceção), e ninguém está olhando cada resposta — só o dashboard, se existir. Sem fallback e sem evaluation automatizada, a primeira regressão de qualidade — um chunker que mudou, um prompt que "melhorou" um caso e piorou outros dez — só aparece quando o usuário reclama. O checklist abaixo existe para que essas duas lacunas (fallback, evaluation) sejam resolvidas antes de virarem incidente, não depois.
+
 ## Stack recomendada (2026)
 
 ```
@@ -332,7 +334,7 @@ The recommended stack — pgvector for hybrid search, Cohere Rerank-3 for releva
 
 ## Referências
 
-- **Anthropic** — *Contextual Retrieval* (2024) — best practices end-to-end
-- **Eugene Yan** — *RAG patterns* (2024)
-- **Pinecone** — *Production RAG guide* (2026)
-- **Chip Huyen** — *AI Engineering* (2025)
+- **Anthropic** — [*Contextual Retrieval*](https://www.anthropic.com/engineering/contextual-retrieval) (2024) — best practices end-to-end
+- **Eugene Yan** — [*Patterns for Building LLM-based Systems & Products*](https://eugeneyan.com/writing/llm-patterns/) (2024)
+- **Pinecone** — [*Retrieval-Augmented Generation*](https://www.pinecone.io/learn/retrieval-augmented-generation/) (2026)
+- **Chip Huyen** — [*AI Engineering*](https://huyenchip.com/books/) (2025)

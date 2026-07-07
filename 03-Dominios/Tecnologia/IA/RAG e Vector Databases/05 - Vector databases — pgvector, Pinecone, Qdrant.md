@@ -1,7 +1,7 @@
 ---
 title: "Vector databases — pgvector, Pinecone, Qdrant"
 created: 2026-04-11
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 progress: backlog
 status: seedling
@@ -26,6 +26,8 @@ aliases:
 
 > [!question]- Por que pgvector para começar e não Pinecone?
 > Pinecone elimina operação, mas exige uma conta SaaS, uma API key extra e lock-in de vendor. pgvector é uma extensão do Postgres — se você já tem Postgres (o que vale para a maioria dos projetos), zero infraestrutura nova, zero custo adicional, join com tabelas existentes e backup familiar. O Pinecone faz sentido quando você precisa de escala serverless acima de 10M vetores ou não tem time para operar banco. Abaixo disso, pgvector é literalmente mais simples.
+
+Um time típico chega aqui de duas formas. A primeira: já rodou meses em Pinecone, a fatura de serverless cresceu junto com o volume de queries, e alguém percebe que o Postgres que já hospeda o resto da aplicação poderia hospedar os vetores também — migrar para pgvector vira questão de custo e simplicidade operacional, não de performance. A segunda, mais cara de aprender: o time troca de vector DB (ou tunning o índice) esperando que o RAG melhore, e nada muda — porque a qualidade das respostas nunca dependia de qual banco guarda os vetores. Ela depende de como o texto foi cortado em [[Dicionário de IA#chunking|chunks]], de que estratégia de [[Dicionário de IA#retrieval|retrieval]] traz os candidatos certos, e se há [[Dicionário de IA#reranking|reranking]] filtrando o ruído antes do LLM ver o contexto. Entender o que um vector DB realmente faz — e o que ele não pode consertar — evita as duas armadilhas.
 
 ## O que vector DB faz
 
@@ -210,6 +212,9 @@ Default: **HNSW** com parâmetros padrão. Tune apenas se houver problema concre
 | 10M vetores | <200ms | Qdrant, Pinecone |
 | 100M+ vetores | <500ms | Pinecone serverless, Milvus |
 
+> [!warning] Preços mudam rápido — não trate estes números como cravados
+> A tabela abaixo reflete faixas de preço observadas em 2026. Pricing de SaaS (Pinecone, Qdrant Cloud, Weaviate Cloud) muda com frequência — planos serverless, novos tiers e descontos por volume aparecem sem aviso. Antes de decidir com base em custo, confira a página de pricing oficial de cada provedor em vez de confiar nestes valores.
+
 ## Custo típico (1M chunks, 1M queries/mês)
 
 | DB | Hosting | Custo/mês |
@@ -291,19 +296,9 @@ Saber onde armazenar os vetores é metade do problema. A outra metade é como fa
 
 ## Referências
 
-- **pgvector** — *github.com/pgvector/pgvector*
-- **Pinecone** — *pinecone.io/docs* (2026)
-- **Qdrant** — *qdrant.tech/documentation* (2026)
-- **Weaviate** — *weaviate.io/developers* (2026)
+- **pgvector** — [github.com/pgvector/pgvector](https://github.com/pgvector/pgvector)
+- **Pinecone** — [docs.pinecone.io](https://docs.pinecone.io) (2026)
+- **Qdrant** — [qdrant.tech/documentation](https://qdrant.tech/documentation) (2026)
+- **Weaviate** — [weaviate.io/developers](https://weaviate.io/developers) (2026)
 - **MTEB Benchmark** — vetor DB comparison
-- **ann-benchmarks.com** — performance comparativo
-
-
-
-
-
-
-
-
-
-
+- **ann-benchmarks.com** — [ann-benchmarks.com](https://ann-benchmarks.com) (performance comparativo)
