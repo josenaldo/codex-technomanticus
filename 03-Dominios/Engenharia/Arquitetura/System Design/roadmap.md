@@ -20,7 +20,7 @@ Roadmap do galho `03-Dominios/Engenharia/Arquitetura/System Design`. Galho-**pai
 | 1 | Framework de entrevista | Iniciado | 5 | ✅ 5/5 (2026-07-06) |
 | 2 | Building blocks | Adepto | 7 | ✅ 7/7 (2026-07-07) |
 | 3 | Padrões recorrentes | Adepto | 6 | ✅ 6/6 (2026-07-07) |
-| 4 | Walkthroughs | Magus | 8 | ⬜ pendente |
+| 4 | Walkthroughs | Magus | 8 | ✅ 8/8 (2026-07-07) |
 
 **Total planejado:** 26 notas de conteúdo + scaffolding (index/roadmap por sub-galho).
 
