@@ -1,11 +1,11 @@
 ---
 title: "SAST e SCA para código AI"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - seguranca-ia
@@ -21,6 +21,8 @@ aliases:
 ---
 
 # SAST e SCA para código AI
+
+Um agente de codificação abre um PR às 2h da manhã, gerado a partir de um prompt "adicione um endpoint de upload de arquivo". O código funciona, os testes passam, o reviewer humano dá uma olhada rápida e aprova — está sob pressão de prazo e o diff parece razoável. Três semanas depois, um pentest externo encontra path traversal no endpoint: `open(f"./uploads/{filename}")` sem sanitização, porque o modelo "esqueceu" de validar o input do jeito que times experientes fariam por reflexo. O time nem estranha o CWE-22 — é exatamente a classe de erro que LLMs cometem com mais frequência, e que passou batido porque não havia SAST bloqueando o merge. Esse é o cenário que motiva esta nota: código gerado por IA precisa de detecção automatizada, em CI, porque o volume e a velocidade de geração tornam review humano insuficiente como única camada de defesa.
 
 > [!abstract] TL;DR
 > Static Application Security Testing (SAST) analisa código em busca de vulnerabilidades; Software Composition Analysis (SCA) analisa dependências em busca de vulns conhecidas e pacotes maliciosos. Para código IA, **rode os dois, em CI, em todo commit**. Semgrep + Snyk Code (ou CodeQL) é a combinação dominante em 2026. **Use 2+ ferramentas SAST simultaneamente** — pesquisa mostra que 78% dos issues confirmados são pegos por **só uma ferramenta**. Foque rules em CWE-918 (SSRF), CWE-78 (command injection), CWE-89 (SQLi), CWE-798 (hardcoded creds) — os mais comuns em código LLM.
@@ -150,6 +152,31 @@ Combo recomendado para 2026:
 - **Semgrep** (velocidade, customização, OSS)
 - **+ Snyk Code** OU **CodeQL** (semantic analysis, dataflow)
 - **+ Snyk Open Source** ou **Socket.dev** (SCA)
+
+## Fluxo de decisão — onde cada ferramenta entra
+
+O diagrama abaixo resume a decisão que este documento defende: nunca uma ferramenta só, sempre pelo menos uma de cada categoria (SAST semântico + SAST rápido + SCA de CVE + SCA comportamental), com gate bloqueante no merge.
+
+```mermaid
+flowchart TD
+    A[PR aberto com código gerado por IA] --> B{Passa por CI}
+    B --> C[SAST rápido: Semgrep<br/>config auto + owasp-top-ten + secrets]
+    B --> D[SAST semântico: CodeQL ou Snyk Code<br/>data flow, indirect calls]
+    B --> E[SCA de CVE: Snyk Open Source<br/>ou GitHub Dependabot]
+    B --> F[SCA comportamental: Socket.dev<br/>ou Aikido - detecta slopsquat pré-CVE]
+
+    C --> G{Algum finding crítico?}
+    D --> G
+    E --> G
+    F --> G
+
+    G -->|Sim| H[CI falha - flag --error<br/>PR bloqueado até remediar]
+    G -->|Não| I[Merge liberado]
+
+    H --> J[Fix aplicado - manual ou AI-assisted]
+    J --> K[Re-scan obrigatório<br/>fix de IA carrega o mesmo risco do código original]
+    K --> B
+```
 
 ## SCA — focando em slopsquat
 
@@ -283,8 +310,11 @@ Com SAST e SCA cobrindo análise estática e dependências, a próxima camada de
 
 ## Referências
 
-- **DryRun Security** — *Top 10 AI SAST Tools for 2026 and How to Enforce Code Policy* (2026).
-- **Veracode** — *2025 GenAI Code Security Report* (2025).
+- **DryRun Security** — [*Top 10 AI SAST Tools for 2026 and How to Enforce Code Policy in Agentic Coding Workflows*](https://www.dryrun.security/blog/top-ai-sast-tools-2026) (2026).
+- **Veracode** — [*2025 GenAI Code Security Report*](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) (2025).
+- **Semgrep** — [*OWASP Top Ten ruleset (`p/owasp-top-ten`)*](https://semgrep.dev/p/owasp-top-ten) — documentação oficial.
+- **Socket.dev** — [*Supply Chain Risk*](https://docs.socket.dev/docs/supply-chain-risk) — documentação sobre detecção comportamental de pacotes maliciosos.
+- **OWASP GenAI Security Project** — [*Top 10 for LLM Applications*](https://genai.owasp.org/llm-top-10/) (2025).
 - **Vibe-eval** — *Best SAST Tools for AI-Generated Code: Snyk vs Semgrep vs Checkmarx* (2026).
 - **Rafter** — *Static Code Analysis Tools Comparison 2026* (2026).
 - **Konvu** — *SCA vs SAST 2026: What Each Tool Finds, Misses, and Costs* (2026).

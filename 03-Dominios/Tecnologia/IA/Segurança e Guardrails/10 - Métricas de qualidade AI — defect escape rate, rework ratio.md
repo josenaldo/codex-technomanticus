@@ -1,7 +1,7 @@
 ---
 title: "Métricas de qualidade AI — defect escape rate, rework ratio"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -202,6 +202,21 @@ Semana 12: VIR (SQL) = 0/mês         ← controlada
 Semana 16: Defect escape = 8% → 3%   ← maturidade
 ```
 
+A mesma história, em linha do tempo — cada marco é o mesmo dado do bloco acima, só que visível de relance:
+
+```mermaid
+timeline
+    title Evolução das métricas após intervenção — 16 semanas
+    Semana 1 : AIAD = 70% (AI PRs = 40%) — IA está ruim
+    Semana 4 : VIR (SQL) = 3/mês — reincidência
+    Semana 6 : SAST adicionada, prompt-policy reforçada
+    Semana 8 : AIAD = 35% (AI PRs = 50%) — melhorou
+    Semana 12 : VIR (SQL) = 0/mês — controlada
+    Semana 16 : Defect escape rate 8% → 3% — maturidade
+```
+
+Repare o padrão: nenhum marco é "consertar tudo de uma vez". É intervenção pontual (SAST na semana 6) seguida de observação (VIR cai só na semana 12) — a métrica confirma o efeito, não o substitui.
+
 Sem métricas, time **não sabe** se intervenção funcionou.
 
 ## Anti-patterns
@@ -274,32 +289,8 @@ Métricas de qualidade monitoram o que está acontecendo. Mas quando as métrica
 
 ## Referências
 
-- **DORA Metrics** — adaptação para AI code (2026).
-- **Augment Code** — *AI Adoption Quality Metrics* (2026).
-- **GitClear** — *AI-impacted code quality research* (2026).
-- **METR** — *Measuring impact of AI on real-world software development* (2025).
-- **Veracode** — *2025 GenAI Code Security Report* (CWE rates) (2025).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **DORA** — [*DORA's software delivery performance metrics*](https://dora.dev/guides/dora-metrics/) — as cinco métricas de entrega (lead time, deployment frequency, failed deployment recovery time, change fail rate, deployment rework rate) que inspiram a adaptação para qualidade de código AI (2026).
+- **Augment Code** — *AI Adoption Quality Metrics* — origem do dado de rework ratio de 40-60% em adoção desprotegida de IA (2026).
+- **GitClear** — [*AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones*](https://www.gitclear.com/ai_assistant_code_quality_2025_research) — 211M linhas analisadas (2020-2024): código copy/pasted subiu de 8,3% para 12,3%, refatoração caiu de 25% para <10% dos changes, revisão em até 2 semanas subiu de 3,1% para 5,7% (2025).
+- **METR** — [*Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity*](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) — RCT com 16 devs experientes e 246 issues reais: uso de IA aumentou o tempo de conclusão em 19% (contra a expectativa dos próprios devs) (2025).
+- **Veracode** — [*2025 GenAI Code Security Report*](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) — mais de 100 LLMs testados; 45% do código gerado falhou em checagens de segurança (introduziu falhas OWASP Top 10); Java foi a linguagem mais arriscada (72% de falha) (2025).

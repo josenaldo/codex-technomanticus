@@ -1,11 +1,11 @@
 ---
 title: "Governance as architecture — EU AI Act, GDPR, licenças"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
-progress: backlog
-status: seedling
+progress: in_progress
+status: growing
 publish: true
 tags:
   - seguranca-ia
@@ -24,20 +24,38 @@ aliases:
 # Governance as architecture — EU AI Act, GDPR, licenças
 
 > [!abstract] TL;DR
-> EU AI Act fica **totalmente aplicável em 2 de agosto de 2026**. Para times que usam ou desenvolvem IA, isso muda nível de obrigação. Para code generation: documentar qual modelo GPAI foi usado, qual spec governou geração, qual revisão humana ocorreu, quais modificações foram feitas. **Logs por mínimo 6 meses (Art. 19)**. GDPR continua valendo paralelamente: dados pessoais usados em treino, validação ou operação caem sob ambos. Para sair com isso de pé, tratar **governance as architecture**: gates de compliance no pipeline, não em PDF.
+> **Deadline e impacto imediato:** em 2 de agosto de 2026, a Comissão Europeia ganha poder de multa sobre providers de GPAI e as obrigações de transparência do Art. 50 entram em vigor para a maioria dos sistemas de IA — mas o "Digital Omnibus" (acordo de maio/junho de 2026) **adiou** a aplicabilidade plena dos sistemas high-risk baseados em uso (Anexo III) para **2 de dezembro de 2027**, e dos high-risk baseados em produto (Anexo I) para **2 de agosto de 2028**.
+> **Obrigações práticas para code generation:** documentar qual modelo GPAI foi usado, qual spec governou a geração, qual revisão humana ocorreu, quais modificações foram feitas — **logs por mínimo 6 meses (Art. 19)**. GDPR continua valendo em paralelo: dados pessoais usados em treino, validação ou operação caem sob os dois regimes ao mesmo tempo.
+> **Consequência de não fazer:** multa de até **€35M ou 7% do faturamento global anual** — o teto mais alto entre os dois valores, aplicável mesmo a empresas fora da UE que atendem clientes europeus. Para sair com isso de pé, tratar **governance as architecture**: gates de compliance no pipeline, não em PDF.
 
 > [!question]- Por que EU AI Act muda a arquitetura do sistema, não só a documentação?
 > Compliance tratado como documentação retroativa — "vamos documentar o que fizemos" — falha quando o sistema não foi projetado para gerar os registros que o compliance exige. EU AI Act Art. 19 exige logs automáticos de decisões, retenção mínima de 6 meses, rastreabilidade de qual modelo foi usado em qual saída. Isso não pode ser adicionado depois sem refatoração significativa. Sistemas que não têm audit trail imutável, que não registram qual versão do modelo gerou qual código, que não rastreiam revisão humana por PR — esses sistemas precisam ser redesenhados, não documentados. Daí "governance as architecture": os controles de compliance são gates no pipeline de CI/CD, não PDFs no Google Drive.
 
 ## O que muda em agosto de 2026
 
-> [!warning] EU AI Act — datas-chave
+> [!warning] EU AI Act — datas-chave (atualizado após o Digital Omnibus, jun/2026)
 > - **2 fev 2025:** práticas proibidas começam a aplicar
 > - **2 ago 2025:** governance + obrigações de GPAI models
-> - **2 ago 2026:** lei totalmente aplicável (incluindo high-risk)
-> - **2 ago 2027:** algumas exceções para sistemas pré-existentes
+> - **2 ago 2026:** Comissão ganha poder de multa sobre GPAI providers; transparência do Art. 50 entra em vigor; autoridades nacionais podem investigar e sancionar
+> - **2 dez 2027:** high-risk **baseado em uso** (Anexo III — RH, crédito, educação etc.) fica totalmente aplicável (adiado de ago/2026)
+> - **2 ago 2028:** high-risk **baseado em produto** (Anexo I — dispositivos médicos, elevadores, equipamento de rádio) fica totalmente aplicável (adiado de ago/2027)
 
-A partir de agosto de 2026, **descumprir não é "boas práticas"** — é multa de até **€35M ou 7% do faturamento global**.
+A partir de agosto de 2026, **descumprir não é "boas práticas"** — é multa de até **€35M ou 7% do faturamento global**. O valor de multa não mudou com o Omnibus; o que mudou foi **quando** as obrigações high-risk passam a valer.
+
+```mermaid
+timeline
+    title EU AI Act — antes vs. depois do Digital Omnibus (jun/2026)
+    2025-02 : Práticas proibidas (sem mudança)
+    2025-08 : GPAI + governance (sem mudança)
+    2026-08 : GPAI enforcement + Art. 50 transparência (sem mudança)
+            : High-risk Anexo III — ANTES previsto aqui, ADIADO
+    2027-08 : High-risk Anexo I — ANTES previsto aqui, ADIADO
+    2027-12 : High-risk Anexo III — NOVA data (uso: RH, crédito, educação)
+    2028-08 : High-risk Anexo I — NOVA data (produto: dispositivos médicos, elevadores)
+```
+
+> [!warning] Caducidade regulatória desta nota
+> Esta nota foi escrita antes do "Digital Omnibus on AI" (acordo político de 7 mai 2026, aprovação final do Conselho/Parlamento em jun/2026) reagendar as obrigações high-risk. A versão atual já reflete o adiamento (Anexo III → dez/2027, Anexo I → ago/2028), mas **a partir de 2 de agosto de 2026** a lei entra em modo de enforcement real para GPAI e transparência — vale revisar esta nota nessa data para incorporar: primeiras multas ou investigações abertas pela Comissão, comunicados oficiais de enforcement, e o texto final publicado do Omnibus (a formalização plena era esperada para jul/2026). Fonte: [Digital AI Omnibus — DLA Piper](https://knowledge.dlapiper.com/dlapiperknowledge/globalemploymentlatestdevelopments/2026/The-Digital-AI-Omnibus-Proposed-deferral-of-high-risk-AI-obligations-under-the-AI-Act), [AI Act Timeline — artificialintelligenceact.eu](https://artificialintelligenceact.eu/implementation-timeline/).
 
 ## Quem é afetado
 
@@ -63,6 +81,25 @@ Empresa usando [[Dicionário de IA#LLM (Large Language Model)|LLM]] para gerar c
 | **Data/hora** | Audit log |
 
 Tudo retido por **mínimo 6 meses** (Art. 19). Bens regulados (financeiro, médico): **anos**.
+
+> [!question]- Por que "documentar o modelo usado" não é só anotar o nome numa planilha?
+> Porque a rastreabilidade exigida é **por output**, não por projeto. Se um time troca de Claude Sonnet 4 para Sonnet 5 no meio do trimestre, cada PR gerado antes e depois da troca precisa apontar pra versão exata do modelo que gerou aquele código — não "usamos modelos da Anthropic em 2026". Isso importa na prática porque, se um bug ou vulnerabilidade for atribuído a um comportamento específico de uma versão de modelo (ex: um modelo mais antigo alucinando uma dependência - ver [[05 - SAST e SCA para código AI]]), o auditor pergunta "quais PRs vieram desse modelo?" — e se a resposta exige investigação arqueológica no histórico do Slack, o gate falhou. A granularidade certa é **modelo + versão + data**, capturada automaticamente no momento do commit, não reconstruída depois.
+
+Na prática, isso se traduz em metadados mínimos por PR gerado por IA:
+
+| Campo | Exemplo de valor | Onde captar |
+|---|---|---|
+| `model_id` | `claude-sonnet-5-20260701` | Header de resposta da API, se disponível; senão, config do agente |
+| `spec_ref` | `specs/checkout-refactor/spec.md@a1b2c3d` | Commit hash do spec no momento da geração |
+| `human_reviewer` | `@josenaldo` | GitHub PR approver |
+| `review_scope` | `full` \| `diff-only` \| `spot-check` | Nível de revisão humana real (nem toda "revisão" é igual) |
+| `modification_delta` | link pro diff | Diff entre output bruto do LLM e o que foi mergido |
+| `timestamp` | ISO 8601 | Momento do merge, não da geração |
+
+> [!tip] `review_scope` é o campo que mais times esquecem
+> Um PR "revisado" onde o humano só clicou "approve" sem ler linha a linha não oferece a mesma garantia que um `full` review. Auditores da AI Act perguntam sobre a **qualidade** do human oversight (Art. 14), não só sua existência formal — registrar o nível de revisão evita que "tivemos revisão humana" vire uma afirmação vazia.
+
+Para times que usam ferramentas de agentic coding (Claude Code, Cursor, Copilot Workspace), o gate de compliance precisa capturar isso **no momento do PR**, via CI, e não depender de disciplina manual — o mesmo princípio de "governance as architecture" descrito mais abaixo.
 
 ## A interseção AI Act + GDPR
 
@@ -105,8 +142,14 @@ Categorias high-risk relevantes para devs:
 - AI em justiça / law enforcement
 - AI em infraestrutura crítica
 
+> [!info] Duas famílias de high-risk, dois relógios diferentes
+> A lei distingue **Anexo III** (high-risk *baseado em uso* — recrutamento, crédito, educação, justiça: a lista acima) do **Anexo I** (high-risk *baseado em produto regulado* — dispositivos médicos, elevadores, equipamento de rádio, onde a IA é um componente de segurança de um produto já regulado por outra diretiva). Com o Digital Omnibus, os dois relógios ficaram diferentes: Anexo III passa a valer em **2 dez 2027**, Anexo I em **2 ago 2028**. Antes do Omnibus, ambos apontavam pra agosto de 2026/2027. Um sistema de scoring de crédito e um software embarcado num equipamento médico agora têm prazos de compliance distintos, mesmo os dois sendo "high-risk".
+
 > [!tip] Code generation **típica** não é high-risk
 > Usar Claude/Cursor para gerar código de feature comum **não cai em high-risk** por si só. Mas **o produto que você está construindo** pode cair, e aí o code generation fica sob escrutínio também.
+
+> [!question]- O adiamento do Anexo III significa que dá pra "deixar pra depois" a compliance de sistemas high-risk?
+> Não recomendado, por três razões práticas. Primeiro, o adiamento é do **enforcement pleno**, não da existência da obrigação — o texto legal continua lá, e a Comissão pode revisar o calendário de novo. Segundo, sistemas complexos (scoring de crédito, triagem de currículos) levam meses para instrumentar logging, DPIA e risk assessment retroativamente; começar em nov/2027 pra valer em dez/2027 não dá tempo. Terceiro, e mais concreto: as obrigações de **GPAI e transparência (Art. 50)** — que afetam qualquer time usando LLM de terceiros, inclusive pra code generation — **não foram adiadas** e valem normalmente a partir de 2 ago 2026. O adiamento é específico do bloco high-risk, não da lei inteira.
 
 ## Open source — exceção parcial
 
@@ -245,6 +288,26 @@ LGPD é o equivalente brasileiro do GDPR. Em estrutura, similar. **Não há aind
 - Lei do AI brasileira (PL 2338/2023) em discussão — vai espelhar partes do EU AI Act
 - Empresas exportando para UE: cumprir EU AI Act direto
 
+> [!info] Status do PL 2338/2023 (julho de 2026)
+> O projeto foi aprovado por unanimidade no Senado em 10 dez 2024 e remetido à Câmara dos Deputados em mar 2025, onde tramita numa Comissão Especial (presidência de Luísa Canziani, relatoria de Aguinaldo Ribeiro). Doze audiências públicas ocorreram entre mai-set 2025. A votação final, originalmente esperada em 2025, foi **empurrada para 2026** em meio a impasses políticos, disputas setoriais e um vício de inconstitucionalidade apontado pelo próprio Executivo — com o calendário eleitoral de 2026 como pressão adicional para acelerar (ou paralisar) a pauta. O texto adota o modelo europeu: classificação por risco (excessivo/alto/baixo), direitos dos afetados (transparência, explicação, contestação), um Sistema Nacional de Regulação e Governança de IA (SIA), e multas de até **R$ 50 milhões** por infração — ordem de grandeza bem menor que o teto do EU AI Act (€35M / 7% do faturamento).
+
+> [!question]- Se o PL 2338 ainda não é lei, por que um time brasileiro deveria se importar agora?
+> Três motivos práticos. Primeiro, **extraterritorialidade do EU AI Act**: uma fintech brasileira com um cliente alemão já está sujeita à lei europeia hoje, PL 2338 ou não (ver seção "Quem é afetado" acima). Segundo, o PL 2338 **espelha o desenho do EU AI Act** — classificação por risco, obrigações de transparência, direito à explicação — então a arquitetura de compliance construída para a UE (audit logs, DPIA, gates de CI) já cobre boa parte do que o PL brasileiro vai exigir quando virar lei. Terceiro, LGPD **já está em vigor** e já cobre a fatia de dados pessoais que atravessa qualquer sistema de IA — não dá pra esperar o PL 2338 pra tratar essa parte.
+
+Comparativo rápido entre os três regimes:
+
+| Dimensão | LGPD (Brasil) | GDPR (UE) | EU AI Act |
+|---|---|---|---|
+| Objeto regulado | Dados pessoais | Dados pessoais | Sistemas de IA |
+| Em vigor desde | 2020 | 2018 | 2024 (aplicação escalonada até 2028) |
+| Multa máxima | R$ 50 milhões por infração | €20M ou 4% do faturamento global | €35M ou 7% do faturamento global |
+| Extraterritorial? | Sim (dados de titular no Brasil) | Sim (dados de titular na UE) | Sim (produto/serviço oferecido na UE) |
+| Autoridade | ANPD | DPAs nacionais + EDPB | Comissão + autoridades nacionais de mercado |
+| Equivalente brasileiro de IA | — | — | PL 2338/2023 (em tramitação, não é lei ainda) |
+
+> [!warning] Não confundir "estamos LGPD-compliant" com "estamos EU AI Act-compliant"
+> São regimes de objetos diferentes: LGPD/GDPR regulam **dados pessoais**; EU AI Act regula **o sistema de IA** (mesmo quando não processa PII nenhum). Um sistema de scoring de crédito treinado só com dados sintéticos, sem PII, ainda pode ser high-risk sob o AI Act — LGPD não teria nada a dizer sobre ele. Compliance com um regime não substitui o outro; eles se sobrepõem parcialmente (ver seção "A interseção AI Act + GDPR"), mas não são o mesmo checklist.
+
 ## Anti-patterns
 
 - **"Vamos fazer compliance no Q4"** — Q4 nunca chega
@@ -303,10 +366,17 @@ Governance estabelece o framework regulatório. A nota final deste galho sinteti
 
 ## Referências
 
-- **EU Commission** — *AI Act regulatory framework* (digital-strategy.ec.europa.eu).
+- **EU Commission** — [*AI Act | Shaping Europe's digital future*](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) (digital-strategy.ec.europa.eu).
+- **artificialintelligenceact.eu** — [*Implementation Timeline*](https://artificialintelligenceact.eu/implementation-timeline/) (2026).
+- **EU AI Act Service Desk** — [*Timeline for the Implementation of the EU AI Act*](https://ai-act-service-desk.ec.europa.eu/en/ai-act/timeline/timeline-implementation-eu-ai-act) (2026).
+- **DLA Piper GENIE** — [*The Digital AI Omnibus: Proposed deferral of high risk AI obligations under the AI Act*](https://knowledge.dlapiper.com/dlapiperknowledge/globalemploymentlatestdevelopments/2026/The-Digital-AI-Omnibus-Proposed-deferral-of-high-risk-AI-obligations-under-the-AI-Act) (2026). Fonte da confirmação do adiamento Anexo III → dez/2027 e Anexo I → ago/2028.
+- **Travers Smith** — [*EU agrees to delay key AI Act compliance deadlines*](https://www.traverssmith.com/knowledge/knowledge-container/eu-agrees-to-delay-key-ai-act-compliance-deadlines/) (2026).
+- **Gibson Dunn** — [*EU AI Act Omnibus Agreement — Postponed High-Risk Deadlines and Other Key Changes*](https://www.gibsondunn.com/eu-ai-act-omnibus-agreement-postponed-high-risk-deadlines-and-other-key-changes/) (2026).
 - **Secure Privacy** — *EU AI Act 2026: Key Compliance Requirements* (2026).
 - **Augment Code** — *The 2026 EU AI Act and AI-Generated Code* (2026).
 - **Legalnodes** — *EU AI Act 2026 Updates: Compliance Requirements and Business Risks* (2026).
 - **GDPR Register** — *EU AI Act Compliance 2026* (2026).
 - **Tredence** — *EU AI Act 2026 Compliance Guide for US Companies* (2026).
-- **artificialintelligenceact.eu** — *Up-to-date developments and analyses of the EU AI Act* (2026).
+- **iaLocus** — [*PL 2338/2023: Marco Legal da IA no Brasil — O Que Muda em 2026*](https://ialocus.com.br/blog/post-pl-2338-marco-legal-ia-brasil-2026.html) (2026).
+- **CBRdoc Blog** — [*Marco Legal da IA terá votação final em 2026*](https://blog.cbrdoc.com.br/marco-legal-da-ia-tera-votacao-final-em-2026/) (2026).
+- **Câmara dos Deputados** — [*Ficha de tramitação — PL 2338/2023*](https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=2487262) (2026).

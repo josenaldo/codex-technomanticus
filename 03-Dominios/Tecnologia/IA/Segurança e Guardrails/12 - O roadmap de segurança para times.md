@@ -1,7 +1,7 @@
 ---
 title: "O roadmap de segurança para times"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -363,8 +363,8 @@ O próximo passo natural não é mais uma ferramenta ou controle — é execuç�
 
 ## Referências
 
-- **Veracode** — *2025 GenAI Code Security Report* (2025).
-- **DryRun Security** — *Top 10 AI SAST Tools for 2026* (2026).
-- **Anthropic** — *Best practices for Claude Code* (2026).
-- **NVIDIA** — *Practical Security Guidance for Sandboxing Agentic Workflows* (2026).
-- **EU AI Act** — entrada em aplicação total agosto 2026.
+- **Veracode** — *2025 GenAI Code Security Report* (2025). <https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/>
+- **DryRun Security** — *Top 10 AI SAST Tools for 2026* (2026). <https://www.dryrun.security/blog/top-ai-sast-tools-2026>
+- **Anthropic** — *Best practices for Claude Code* (2026). <https://code.claude.com/docs/en/best-practices>
+- **NVIDIA** — *Practical Security Guidance for Sandboxing Agentic Workflows and Managing Execution Risk* (2026). <https://developer.nvidia.com/blog/practical-security-guidance-for-sandboxing-agentic-workflows-and-managing-execution-risk/>
+- **EU AI Act** — Regulation (EU) 2024/1689, entrada em aplicação total agosto 2026. <https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng>

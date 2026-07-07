@@ -1,11 +1,11 @@
 ---
 title: "Slopsquatting — o ataque via alucinação"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - seguranca-ia
@@ -58,7 +58,38 @@ Antes: alucinações pareciam **aleatórias**. Pensava-se que cada dev veria nom
 >
 > Downloads diários de **agentes automatizados** que instalavam sem humano olhar.
 >
-> Source: Trend Micro, Socket.dev (2026)
+> Quem descobriu foi Charlie Eriksen, pesquisador da Aikido Security: ele rastreou o pacote até um único commit contendo 47 arquivos de "agent skills" gerados por IA, nenhum revisado por humano antes do merge — e reivindicou o nome fantasma antes que um atacante o fizesse.
+>
+> Source: Trend Micro, Socket.dev, Aikido (2026)
+
+## Impacto real — o que os estudos medem
+
+> [!question] "Isso é raro ou é sistemático?"
+> A intuição diz que alucinação de nome de pacote deve ser um evento ocasional — um azar do modelo, num prompt específico. Os números do maior estudo já feito sobre o assunto dizem o contrário: é sistemático, mensurável e **replicável em escala industrial**.
+
+O paper *"We Have a Package for You!"* (Spracklen et al., USENIX Security 2025) testou 16 LLMs de geração de código — incluindo GPT-4, GPT-3.5, CodeLlama, DeepSeek e Mistral — gerando **576.000 amostras de código** com dois datasets de prompts distintos. Os resultados:
+
+| Métrica | Valor |
+|---|---|
+| Taxa média de alucinação — modelos comerciais | ≥5,2% dos pacotes sugeridos |
+| Taxa média de alucinação — modelos open-source | ≥21,7% dos pacotes sugeridos |
+| Nomes de pacote alucinados únicos catalogados | 205.474 |
+| Alucinações que se repetem em **todas** as 10 re-execuções do mesmo prompt | 43% |
+| Alucinações que se repetem em **mais de uma** execução | 58% |
+
+O número que importa pra este ataque não é a taxa de alucinação em si — é a **taxa de repetição**. Se cada execução gerasse um nome diferente, o atacante não teria alvo fixo pra registrar. Mas quase metade das alucinações aparece de forma **determinística**: o mesmo prompt, rodado dez vezes, produz o mesmo nome fantasma quase sempre. É esse padrão que transforma "o modelo erra às vezes" em "o modelo erra do mesmo jeito, previsivelmente, pra qualquer um que perguntar algo parecido".
+
+> [!example] O caso `huggingface-cli` — antes do react-codeshift
+> Em 2024, o pesquisador Bar Lanyado (Lasso Security) testou a teoria na prática: identificou `huggingface-cli` como um nome frequentemente alucinado por LLMs (o pacote real se chama `huggingface_hub`) e registrou uma versão vazia, inofensiva, no PyPI — só pra medir o tráfego. Resultado: **mais de 30.000 downloads em três meses**, todos de gente (ou agentes) que confiou na sugestão do modelo sem checar o registry. Nenhum código malicioso foi distribuído — era uma prova de conceito —, mas demonstrou que o vetor funciona antes mesmo do incidente `react-codeshift` virar notícia.
+
+> [!question]- Quantas alucinações viram, de fato, pacote malicioso registrado?
+> Nem toda alucinação é "capturada" por um atacante — a maioria dos nomes fantasma simplesmente falha silenciosamente (`module not found`) sem que ninguém os tenha registrado antes. Mas quando um pesquisador ou atacante monitora os nomes mais recorrentes, a taxa de conversão é significativa: pesquisas indicam que **entre 20% e 35% dos nomes de pacote alucinados em Python e npm** já foram convertidos em upload malicioso real no registry correspondente (Cloudsmith, 2026). Isso é o que separa slopsquatting de curiosidade acadêmica: uma fração relevante das alucinações catalogadas já virou vetor de ataque ativo, não hipotético.
+
+> [!question]- Os modelos de 2026 ainda alucinam tanto quanto os de 2024?
+> Um re-teste do mesmo protocolo sobre a geração de modelos "frontier" de 2026 (arXiv:2605.17062, *"The Range Shrinks, the Threat Remains"*) encontrou exatamente o que o título sugere: a taxa média de alucinação caiu em relação ao estudo original — os modelos ficaram melhores em não inventar nomes —, mas a ameaça **não desapareceu**. O intervalo entre o melhor e o pior modelo diminuiu, e mesmo os modelos mais avançados continuam produzindo um volume de nomes fantasma suficiente pra sustentar o ataque. Progresso no modelo reduz a superfície; não a elimina.
+
+> [!summary] O que os dados dizem, em uma linha
+> Alucinação de pacote não é ruído aleatório: é um padrão estatístico mensurável, replicável entre modelos, e explorável em escala — os três ingredientes que fazem um bug de modelo virar vetor de ataque de supply chain.
 
 ## Tipos de slopsquat
 
@@ -72,10 +103,25 @@ Antes: alucinações pareciam **aleatórias**. Pensava-se que cada dev veria nom
 
 ## Por que LLMs alucinam tanto pacote
 
+> [!question] Se o modelo "sabe" o ecossistema de pacotes, por que inventa nomes?
+> Porque o modelo nunca consultou o registry — ele completou um padrão de texto que parece um import válido. Nada no processo de geração verifica se o nome existe de fato; a verificação teria que vir de fora do modelo.
+
 - **Treinamento misto**: dados de treino incluem repos que mencionam libs antigas, deprecated, ou de domínio adjacente
 - **Pattern completion**: modelo prefere completar com "nome plausível" do que admitir ignorância
 - **Bundling de libs**: quando pedido para "usar X + Y + Z juntos", modelo inventa nome composto
 - **Benchmarks que premiam confiança**: training optimization pode reforçar "responder algo" sobre "dizer não sei"
+- **Confusão de ecossistema**: o modelo sugere pacote de uma linguagem em projeto de outra — recomendar `lodash` num código Python ou `pandas` num projeto Node.js — porque o embedding de "isso resolve X" não está ancorado ao registry correto (Snyk, 2026)
+- **Recomendação fora de propósito**: o modelo sugere um pacote real, mas para um uso que ele não cobre — `matplotlib` para processamento de áudio, `requests` para operação de banco de dados — sintoma do mesmo mecanismo de pattern completion aplicado à *função* do pacote, não só ao nome
+
+Duas linhas de mitigação **na origem do modelo** (antes de qualquer camada de defesa do lado do desenvolvedor) têm mostrado redução mensurável sem raspar a qualidade do código gerado:
+
+- **RAG (Retrieval-Augmented Generation)** — injeta informação real do registry no prompt antes da geração, ancorando a resposta a pacotes que de fato existem.
+- **Self-Refinement (SR)** — o próprio modelo re-verifica sua saída contra uma segunda passada antes de entregar o resultado final.
+
+Nenhuma das duas elimina a alucinação — apenas reduz a taxa —, o que reforça por que as camadas de defesa das seções seguintes continuam necessárias mesmo com um modelo "melhor".
+
+> [!example] O quanto a mitigação reduz, em números
+> No próprio estudo da USENIX (Spracklen et al., 2025), combinar várias estratégias de mitigação — incluindo RAG — reduziu a taxa de alucinação do DeepSeek em **83%**, de um baseline alto para apenas 2,66%. É uma redução substancial, mas 2,66% de um volume de milhares de imports gerados por dia ainda significa dezenas de nomes fantasma plausíveis circulando — suficiente pra um atacante paciente continuar rentável. Reduzir a taxa do modelo ajuda; não substitui a verificação de registry do lado do desenvolvedor.
 
 ## Por que ataque escala em 2026
 
@@ -88,6 +134,9 @@ Antes: alucinações pareciam **aleatórias**. Pensava-se que cada dev veria nom
 | **Confiança no agente** | Devs aprovam install sem checar registry |
 
 Slopsquat **multiplica** ataques tradicionais de supply chain (typosquatting). Antes: atacante precisava errar com letrinha. Agora: atacante apenas registra alucinações conhecidas.
+
+> [!summary] Por que isso não é só "mais um CVE"
+> Cada fator da tabela acima remove uma barreira que antes protegia por acidente — volume, velocidade e confiança cega no agente convertem uma falha de modelo (previsível e mensurável, como visto na seção de impacto) num vetor de ataque barato de escalar e caro de detectar depois do fato.
 
 ## Mitigação — Defense in depth
 
@@ -187,6 +236,7 @@ Tools: Snyk, Socket.dev, npq (Node), pip-audit (Python).
 - **Sem CI scan de novas deps** — slopsquat passa despercebido por dias
 - **Lockfiles sem CI verification** — atacante pode adicionar via PR camuflado
 - **Permitir agente em rede aberta** — install + post-install scripts comprometem host
+- **Achar que "modelo melhor" resolve o problema** — mesmo com RAG e self-refinement aplicados, a taxa de alucinação cai mas não zera (USENIX: 83% de redução ainda deixa 2,66% de resíduo); a defesa do lado do desenvolvedor continua obrigatória
 
 ## Armadilhas comuns
 
@@ -241,65 +291,11 @@ Entender as duas formas de alucinação juntas revela o padrão: o LLM é otimiz
 
 ## Referências
 
-- **Trend Micro** — *Slopsquatting: When AI Agents Hallucinate Malicious Packages* (2026).
-- **Socket.dev** — *The Rise of Slopsquatting: How AI Hallucinations Are Fueling a New Class of Supply Chain Attacks* (2026).
-- **Snyk** — *Package Hallucination: Impacts and Mitigation* (2026).
-- **Aikido** — *Slopsquatting: The AI Package Hallucination Attack Already Happening* (2026).
-- **Mend.io** — *The Hallucinated Package Attack: Slopsquatting Explained* (2026).
-- **USENIX Security Symposium** — Pesquisa sobre determinismo de alucinações em LLMs (2024-2025).
-- **Cloudsmith** — *Typosquatting & Slopsquatting: Protecting Your Software Supply Chain* (2026).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Trend Micro** — [*Slopsquatting: When AI Agents Hallucinate Malicious Packages*](https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/slopsquatting-when-ai-agents-hallucinate-malicious-packages) (2026).
+- **Socket.dev** — [*The Rise of Slopsquatting: How AI Hallucinations Are Fueling a New Class of Supply Chain Attacks*](https://socket.dev/blog/slopsquatting-how-ai-hallucinations-are-fueling-a-new-class-of-supply-chain-attacks) (2025).
+- **Snyk** — [*Package Hallucination: Impacts, and Mitigation*](https://snyk.io/articles/package-hallucinations/) (2026).
+- **Aikido** — [*Slopsquatting: The AI Package Hallucination Attack Already Happening*](https://www.aikido.dev/blog/slopsquatting-ai-package-hallucination-attacks) (2026).
+- **Mend.io** — [*The Hallucinated Package Attack: Slopsquatting Explained*](https://www.mend.io/blog/the-hallucinated-package-attack-slopsquatting/) (2025).
+- **USENIX Security Symposium** — Spracklen et al., [*We Have a Package for You! A Comprehensive Analysis of Package Hallucinations by Code Generating LLMs*](https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen) (2025). Paper completo: [PDF](https://www.usenix.org/system/files/usenixsecurity25-spracklen.pdf); preprint: [arXiv:2406.10279](https://arxiv.org/abs/2406.10279).
+- **Cloudsmith** — [*Typosquatting & Slopsquatting: Protecting Your Software Supply Chain*](https://cloudsmith.com/blog/slopsquatting-and-typosquatting-how-to-detect-ai-hallucinated-malicious-packages) (2026).
+- **arXiv:2605.17062** — [*The Range Shrinks, the Threat Remains: Re-evaluating LLM Package Hallucinations on the 2026 Frontier-Model Cohort*](https://arxiv.org/abs/2605.17062) (2026).

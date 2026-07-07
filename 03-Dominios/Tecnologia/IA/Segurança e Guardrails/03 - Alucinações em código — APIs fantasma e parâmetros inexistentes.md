@@ -1,7 +1,7 @@
 ---
 title: "Alucinações em código — APIs fantasma e parâmetros inexistentes"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -27,6 +27,8 @@ aliases:
 > O LLM não tem acesso à especificação formal de uma API — ele tem acesso às **ocorrências estatísticas** dessa API nos dados de treino. Quando uma lib é pouco representada, quando mudou entre versões, ou quando um nome de método é semanticamente parecido com outra lib, o modelo preenche a lacuna com o que é **mais provável dado o contexto** — não o que é tecnicamente correto. É o mesmo mecanismo que permite ao modelo gerar código fluente: pattern completion a partir de exemplos. A diferença é que em código, plausibilidade ≠ validade. O compilador e o type checker são as únicas fontes de verdade, não a confiança visual.
 
 ## Os 5 tipos de alucinação em código
+
+Imagine o cenário: você pede para o assistente de IA "adicionar validação de e-mail no cadastro de usuário". Ele gera um bloco de código limpo, com nomes de função que fazem sentido, indentação correta, até um comentário explicando a lógica. Você lê por cima, parece competente, e aceita o diff. Dois dias depois, em produção, o campo `auto_validate=True` que o modelo inventou nunca fez nada — foi silenciosamente absorvido por um `**kwargs` que ninguém notou, e usuários continuam cadastrando e-mails inválidos. Não houve erro, não houve exceção, não houve sinal algum de que algo estava errado. É exatamente esse tipo de falha — sintaticamente perfeita, semanticamente fantasma — que os cinco padrões abaixo catalogam.
 
 ### 1. Métodos fantasma
 
@@ -278,10 +280,10 @@ A próxima nota introduz a pirâmide de validação AI: uma hierarquia de contro
 
 ## Referências
 
-- **Veracode** — *2025 GenAI Code Security Report* (2025).
-- **Trend Micro** — *Slopsquatting and AI Hallucinations* (2026).
-- **OWASP Top 10 for LLM Applications 2025-2026* — categoria *Hallucination*.
-- **Pydantic Documentation** — *extra forbid for strict input validation* (2026).
+- **Veracode** — [*2025 GenAI Code Security Report*](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) (2025).
+- **Trend Micro** — [*Slopsquatting: When AI Agents Hallucinate Malicious Packages*](https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/slopsquatting-when-ai-agents-hallucinate-malicious-packages).
+- **OWASP** — [*Top 10 for LLM Applications*](https://owasp.org/www-project-top-10-for-large-language-model-applications/) — categoria *Hallucination*.
+- **Pydantic Documentation** — [*Models — extra fields (`extra="forbid"`)*](https://docs.pydantic.dev/latest/concepts/models/#extra-fields).
 
 
 

@@ -1,7 +1,7 @@
 ---
 title: "Testes imutáveis — a barreira que o agente não pode reescrever"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -315,7 +315,7 @@ Testes imutáveis protegem o contrato de comportamento. Mas como saber se a qual
 
 ## Referências
 
-- **Anthropic** — *Best practices for Claude Code: Test discipline* (2026).
-- **Augment Code** — *AI Spec-Driven Development Workflows* (2026).
-- **Martin Fowler** — *Specification by Example* (princípios subjacentes, 2014).
-- **GitHub Spec Kit** — *Spec tests as contracts* (2026).
+- **Anthropic** — [*Best practices for Claude Code*](https://code.claude.com/docs/en/best-practices) (2026). Recomenda commitar testes antes da implementação e instruir explicitamente "do not modify the tests" — o diff expõe qualquer tentativa do agente de alterar o contrato em vez do código.
+- **Augment Code** — [*How AI Enhances Spec-Driven Development Workflows*](https://www.augmentcode.com/guides/ai-spec-driven-development-workflows) (2026). Especificações como infraestrutura de coordenação executável entre agentes, revisores e CI — não documentação passiva.
+- **Martin Fowler** — [*Specification by Example*](https://martinfowler.com/bliki/SpecificationByExample.html) (2014). Princípio subjacente aos spec tests: exemplos concretos derivados de critérios de aceitação como especificação executável.
+- **GitHub Spec Kit** — [*spec-kit*](https://github.com/github/spec-kit) (repositório). Toolkit open-source de Spec-Driven Development; testes derivados de tasks/acceptance criteria, ordenados antes das tarefas de implementação.

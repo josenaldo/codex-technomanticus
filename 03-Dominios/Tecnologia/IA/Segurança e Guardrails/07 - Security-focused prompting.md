@@ -1,7 +1,7 @@
 ---
 title: "Security-focused prompting"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -25,6 +25,8 @@ aliases:
 
 > [!question]- Por que security prompting não substitui guardrails de código?
 > Prompting influencia probabilidades — aumenta a chance de o modelo gerar código com certas características, mas não garante. O modelo pode "concordar" com a instrução de segurança e ainda gerar código vulnerável porque seus pesos foram treinados em dados que contêm padrões inseguros. Guardrails de código (SAST, schema validation, sandboxing) são determinísticos — eles verificam o resultado independentemente da intenção declarada do modelo. A analogia: avisar um funcionário novo sobre as regras (prompting) não substitui os controles de acesso no sistema (guardrails). Os dois existem porque o primeiro falha com frequência mensurável.
+
+Imagine o prompt: "Implemente o endpoint de transferência entre contas, com validações de segurança apropriadas." É razoável, é o que a maioria dos devs escreveria no dia a dia — e é exatamente o tipo de instrução que não funciona. O modelo concorda educadamente ("vou garantir validação de segurança...") e entrega uma função que checa se `amount` é positivo, nada além disso. Nenhuma checagem de ownership da conta, nenhuma proteção contra double-spend, nenhum tratamento de overflow decimal. O dev revisa, vê "tem validação", aprova o PR. Semanas depois, um pentest encontra exatamente a classe de vulnerabilidade que o prompt genérico devia ter evitado. Essa é a lacuna que os patterns desta nota fecham: o modelo não "recusou" ser seguro — "seguro" sem especificação concreta é um alvo que não aponta pra lugar nenhum.
 
 ## O que NÃO funciona
 
@@ -298,8 +300,8 @@ Prompting tenta constranger a geração antes do código existir. Depois que o c
 
 ## Referências
 
-- **Veracode** — *2025 GenAI Code Security Report* (2025) — limites do "prompting seguro genérico".
-- **Anthropic** — *Best practices for Claude Code: Security* (2026).
-- **OWASP Top 10 for LLM Applications* (2026).
-- **Augment Code** — *AI Spec-Driven Development Workflows* (2026, security policies as context).
-- **Microsoft Security** — *Prompt Injection Defense Patterns* (2026).
+- **Veracode** — [*2025 GenAI Code Security Report*](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) (2025) — os 45% de falha em segurança que prompting genérico não move.
+- **Anthropic** — [*Security — Claude Code Docs*](https://code.claude.com/docs/en/security) (2026) — modelo de permissões e controles de execução como guardrail complementar ao prompting.
+- **OWASP Gen AI Security Project** — [*OWASP Top 10 for LLM Applications 2025*](https://genai.owasp.org/llm-top-10/) (2025) — taxonomia de risco (prompt injection, excessive agency) que o threat model do Pattern 1 precisa cobrir.
+- **Augment Code** — [*What Is Spec-Driven Development?*](https://www.augmentcode.com/guides/what-is-spec-driven-development) (2026) — AGENTS.md e specs como contrato executável, base do padrão "Embeber security em AGENTS.md".
+- **Microsoft Security Response Center** — [*How Microsoft defends against indirect prompt injection attacks*](https://www.microsoft.com/en-us/msrc/blog/2025/07/how-microsoft-defends-against-indirect-prompt-injection-attacks) (2025) — defesa em profundidade contra prompt injection, paralelo ao argumento "os dois juntos" desta nota.

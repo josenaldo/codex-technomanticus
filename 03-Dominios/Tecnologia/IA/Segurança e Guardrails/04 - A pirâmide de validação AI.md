@@ -1,7 +1,7 @@
 ---
 title: "A pirâmide de validação AI"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -188,6 +188,8 @@ Não tente tudo de uma vez. Roadmap típico (ver também [[12 - O roadmap de seg
 - **Pular camada 1 "para mover rápido"** — produção paga depois
 - **Métricas só em camada 3** — perde sinal das anteriores
 - **Single-vendor SAST** — Veracode mostra: 78% dos issues só pegos por uma das ferramentas; **rode 2+**
+- **Coverage % como proxy de qualidade** — teste que roda sem `assert` de verdade infla o número sem pegar regressão nenhuma; a métrica vira meta, não sinal (efeito Goodhart clássico)
+- **Guardrails da camada 2 vivendo soltos em scripts sem review** — regra de negócio codificada num shell script isolado, sem changelog nem dono, sofre drift silencioso: ninguém percebe quando ela para de cobrir o caso que deveria bloquear
 
 ## Armadilhas comuns
 
@@ -243,11 +245,11 @@ A próxima nota detalha como calibrar SAST e SCA especificamente para código AI
 
 ## Referências
 
-- **Veracode** — *2025 GenAI Code Security Report* (2025).
-- **DryRun Security** — *Top 10 AI SAST Tools for 2026* (2026).
-- **NVIDIA** — *Practical Security Guidance for Sandboxing Agentic Workflows* (2026).
-- **Anthropic** — *Engineering Claude Code Sandboxing* (2026).
-- **OWASP Top 10 for LLM Applications* (2025-2026).
+- **Veracode** — [*2025 GenAI Code Security Report*](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) (2025).
+- **DryRun Security** — [*Top 10 AI SAST Tools for 2026*](https://www.dryrun.security/blog/top-ai-sast-tools-2026) (2026).
+- **NVIDIA** — [*Practical Security Guidance for Sandboxing Agentic Workflows and Managing Execution Risk*](https://developer.nvidia.com/blog/practical-security-guidance-for-sandboxing-agentic-workflows-and-managing-execution-risk/) (2026).
+- **Anthropic** — [*Making Claude Code more secure and autonomous with sandboxing*](https://www.anthropic.com/engineering/claude-code-sandboxing) (2025).
+- **OWASP** — [*Top 10 for LLM Applications 2025*](https://genai.owasp.org/llm-top-10/) (2025).
 
 
 

@@ -1,7 +1,7 @@
 ---
 title: "Permissões e sandboxing"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -96,6 +96,19 @@ bwrap \
   --die-with-parent \
   -- claude-code
 ```
+
+Com esse profile, uma deny rule burlada na camada de app não vira incidente — o kernel barra a chamada
+antes de ela tocar o filesystem real:
+
+```
+$ bwrap --ro-bind / / --bind ./src ./src --tmpfs /tmp --unshare-net --die-with-parent -- \
+    bash -c "echo pwned > /etc/passwd"
+bash: /etc/passwd: Permission denied
+```
+
+`/etc/` só está montado `--ro-bind` — mesmo que o agente (ou um bypass tipo CVE-2026-25723) consiga
+escapar do allowlist de comandos, a escrita fora de `./src` esbarra no mount read-only imposto pelo
+kernel, não numa regra que pode ser contornada.
 
 ### Layer 3 — Infrastructure-level
 
@@ -313,11 +326,11 @@ A próxima nota explora por que prompting de segurança complementa (mas não su
 
 ## Referências
 
-- **Anthropic** — *Engineering Claude Code Sandboxing* (2026).
-- **Anthropic Claude Code Docs** — *Sandboxing reference* (2026).
-- **Truefoundry** — *Claude Code Sandboxing: Network Isolation, File System Controls* (2026).
-- **Adversa AI** — *Critical Claude Code vulnerability: Deny rules silently bypassed* (2026).
-- **NVIDIA** — *Practical Security Guidance for Sandboxing Agentic Workflows* (2026).
-- **Docker** — *Claude Code in Docker sandboxes* (2026).
-- **Startup Fortune** — *Cursor's Claude agent wipes production database and backups in 9 seconds* (2025).
+- **Anthropic** — [*Making Claude Code more secure and autonomous with sandboxing*](https://www.anthropic.com/engineering/claude-code-sandboxing) (2026).
+- **Anthropic Claude Code Docs** — [*Configure the sandboxed Bash tool*](https://code.claude.com/docs/en/sandboxing) (2026).
+- **Truefoundry** — [*Claude Code Sandboxing: Network Isolation, File System Controls, and Container Security*](https://www.truefoundry.com/blog/claude-code-sandboxing) (2026).
+- **Adversa AI** — [*Critical Claude Code vulnerability: Deny rules silently bypassed because security checks cost too many tokens*](https://adversa.ai/blog/claude-code-security-bypass-deny-rules-disabled/) (2026).
+- **NVIDIA** — [*Practical Security Guidance for Sandboxing Agentic Workflows and Managing Execution Risk*](https://developer.nvidia.com/blog/practical-security-guidance-for-sandboxing-agentic-workflows-and-managing-execution-risk/) (2026).
+- **Docker** — [*Claude Code | Docker Docs*](https://docs.docker.com/ai/sandboxes/agents/claude-code/) (2026).
+- **Startup Fortune** — [*Cursor's Claude agent wipes production database and backups in 9 seconds*](https://startupfortune.com/cursors-claude-agent-wipes-production-database-and-backups-in-9-seconds/) (2026).
 - **The Menon Lab** — *Agent Safehouse: Kernel-Level Sandboxing for AI Coding Agents* (2026).

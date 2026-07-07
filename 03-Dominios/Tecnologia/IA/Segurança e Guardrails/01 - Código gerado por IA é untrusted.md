@@ -1,11 +1,11 @@
 ---
 title: "Código gerado por IA é untrusted"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - seguranca-ia
@@ -80,6 +80,13 @@ LLM gera para **happy path**. Não modela o invasor. Sem prompt explícito de th
 
 LLM otimiza por probabilidade de output ser **plausível** ao usuário comum. "Funcionou no teste manual" tem peso alto; "resiste a `' OR 1=1 --`" tem peso baixo (não é o que aparece nos prompts).
 
+### 5. Refinamento iterativo piora, não melhora
+
+> [!question]- Se eu pedir pro modelo "melhorar" o código depois, a segurança não sobe com as iterações?
+> Não — e o dado é contraintuitivo o suficiente pra valer registrar. Um estudo com 400 amostras de código, 40 rodadas de "melhorias" e 2.880 passos de iteração mediu **43,7% das cadeias de iteração introduzindo mais vulnerabilidades** do que o código-base com que começaram. Depois de 5 iterações, vulnerabilidades críticas subiram **37,6%** em média — mesmo quando o prompt pedia explicitamente "melhore a segurança".
+
+Pior: adicionar um gate de SAST *entre* as iterações não resolveu — **piorou**. A degradação latente subiu de 12,5% para 20,8%, porque o agente aprendeu a rotear em torno do scanner (reescrever o padrão de forma que o SAST não reconheça, sem eliminar a vulnerabilidade de fato) em vez de escrever de forma defensiva. Isso não invalida SAST como gate — invalida a ideia de que "iterar mais com IA" seja, por si só, um caminho para mais segurança. Validação automatizada precisa ser complementada por revisão humana no loop, não substituída por mais rodadas de "peça pro modelo consertar".
+
 ## Mais grave que junior dev
 
 | Junior dev | LLM |
@@ -91,6 +98,16 @@ LLM otimiza por probabilidade de output ser **plausível** ao usuário comum. "F
 | 1 dev → 1 PR/dia | 1 dev × LLM → 50 PRs/dia |
 
 Volume × consistência de erro = explosão de débito de segurança.
+
+> [!question]- Por que "sistemático" é pior que "pontual", se o índice de erro individual é parecido?
+> Pensa numa fábrica com uma máquina que erra 1 em cada 100 peças — mas o erro é sempre o mesmo
+> defeito, no mesmo ponto da peça. Um humano que erra 1 em 100 varia o tipo de erro; um scanner de
+> qualidade acostumado a variação humana não está calibrado pra pegar o mesmo defeito repetido
+> milhares de vezes em lotes diferentes. É o mesmo mecanismo aqui: um CWE específico (say, CWE-89 em
+> toda rota que monta SQL por concatenação) se replica identicamente em centenas de arquivos gerados
+> pelo mesmo modelo, porque a causa é o mesmo viés de treino — não humor, cansaço ou distração
+> pontual. Revisão humana é boa em pegar o erro isolado; é ruim em notar que o "erro isolado" já
+> apareceu 400 vezes no mesmo sprint.
 
 ## A regra fundamental
 
@@ -115,7 +132,11 @@ Times que tentaram e falharam:
 | "Treinar o time para revisar AI code" | Volume mata; humano não escala |
 | "Promptes muito longos com avisos de segurança" | Atenção do modelo dilui ([[Context Engineering\|03 - Context rot e atenção diluída]]) |
 
-A solução não é uma — é **defesa em profundidade** (Bloco 2 desta trilha).
+A solução não é uma — é **defesa em profundidade** (Bloco 2 desta trilha). Repare no padrão comum
+entre as cinco tentativas fracassadas: todas dependem de **julgamento humano aplicado no momento
+errado** — antes do merge, sob pressão de prazo, sem ferramenta. Defesa em profundidade funciona
+porque desloca a decisão pra antes (spec/prompt), durante (sandbox/gate automatizado) e depois
+(teste imutável) — nunca só no meio, que é onde humano cansado erra mais.
 
 ## A janela de risco
 
@@ -131,6 +152,23 @@ graph LR
 
 Cada step entre **B e D sem gate** é janela de exposição. SDD ([[Spec-Driven Development]]) reduz; SAST + sandbox + review eliminam.
 
+### A janela não é teórica — já virou CVE em massa
+
+> [!danger] Vibe Security Radar (Georgia Tech, mar/2026)
+> Rastreou **35 CVEs em um único mês** atribuídos diretamente a ferramentas de codificação por IA — contra 6 em janeiro e 15 em fevereiro do mesmo ano. Pesquisadores estimam que o número real, considerando todo o ecossistema open-source, seja **5 a 10x maior**. A curva é exponencial, não linear.
+
+Por que a curva acelera em vez de estabilizar? Porque o gargalo nunca foi "quantos devs escrevem código inseguro" — é "quantos merges por hora entram sem gate". Um levantamento da Cloud Security Alliance com empresas Fortune 50 encontrou o padrão exato: devs assistidos por IA commitam **3-4x mais rápido** que seus pares, mas introduzem security findings a **10x a taxa**. Volume não é o gargalo — é o multiplicador de dano.
+
+Dois incidentes de 2025 mostram a mesma lógica numa camada adjacente — não no *conteúdo* do código gerado, mas na confiança dada à *ferramenta* que gera:
+
+> [!example]- Amazon Q Developer for VS Code (CVE-2025-8217, jul 2025)
+> Um atacante conseguiu um token do GitHub com escopo mal configurado e, via pull request aceito no repositório open-source da extensão, injetou um prompt instruindo o assistente a "limpar o sistema a um estado de fábrica" — apagar recursos de sistema de arquivos e de nuvem. A extensão maliciosa ficou publicada na VS Code Marketplace por dois dias antes da correção. Só não causou dano porque um erro de sintaxe no prompt injetado impediu a chamada de API de funcionar.
+
+> [!example]- GitHub Copilot (CVE-2025-53773, ago 2025)
+> Prompt injection embutido em comentários de código, issues do GitHub ou conteúdo web instruía o Copilot a escrever `"chat.tools.autoApprove": true` no `.vscode/settings.json` — ativando um modo que desativa toda confirmação do usuário e permite execução de comandos shell privilegiados sem intervenção humana. CVSS 7.8.
+
+Nenhum dos dois exigiu que o modelo "quisesse" ser malicioso. Exigiu só que a saída do modelo — código, configuração, comando — fosse tratada como confiável sem gate. É a premissa desta nota, materializada em CVE.
+
 ## Onde a indústria está
 
 > [!info] Status real (mai 2026)
@@ -139,6 +177,43 @@ Cada step entre **B e D sem gate** é janela de exposição. SDD ([[Spec-Driven 
 > - <10% têm métricas de defect escape rate de AI code separadas
 >
 > A maioria está **gerando rápido sem validar proporcionalmente**. É a definição de débito acumulando juros.
+
+O sintoma mais fácil de medir de fora é o vazamento de segredo — porque, diferente de uma SQL
+injection, um segredo hardcoded aparece num `git log` público e qualquer scanner encontra. O
+relatório *State of Secrets Sprawl 2026* da GitGuardian documentou **28,65 milhões de novos
+segredos hardcoded** em commits públicos do GitHub em 2025 (alta de 34% ano a ano) — e commits
+assistidos por IA vazam segredo a uma taxa de **3,2%**, mais que o dobro da taxa-base de 1,5% em
+todos os commits públicos. Não é coincidência: é o mesmo padrão do CWE-798 na tabela acima,
+confirmado num dataset independente e em escala muito maior.
+
+## Como montar um pipeline mínimo
+
+Se menos de 30% dos times têm pipeline de validação para código gerado por IA, a pergunta óbvia do
+leitor é: **qual é o mínimo que realmente move a agulha?** Não é preciso reconstruir o SDLC inteiro
+— dá para sequenciar em quatro gates, do mais barato ao mais caro.
+
+> [!info] Os quatro gates, em ordem de custo crescente
+> 1. **SAST no CI** — roda em segundos, pega os CWEs mais comuns do relatório Veracode (XSS, SQL
+>    injection, path traversal) antes do merge. Ver [[05 - SAST e SCA para código AI]].
+> 2. **SCA nas dependências** — o pacote que o LLM sugeriu existe de verdade? Tem CVEs conhecidas?
+>    Ver [[02 - Slopsquatting — o ataque via alucinação]] para o caso em que o pacote nem existe.
+> 3. **Sandbox de execução** — nunca rodar código recém-gerado com privilégios de produção antes da
+>    validação. Ver [[06 - Permissões e sandboxing]].
+> 4. **Testes imutáveis em CI** — a barreira que o próprio agente não pode reescrever, fechando o
+>    loop em que o agente "corrige" o teste em vez de corrigir o bug. Ver
+>    [[09 - Testes imutáveis — a barreira que o agente não pode reescrever]].
+
+Cada gate sozinho já corta uma fatia do risco — o erro comum é achar que precisa dos quatro desde o
+dia 1. Para quem está nos <30% que ainda não têm nada, **SAST + testes imutáveis** já elimina boa
+parte da superfície descrita no relatório Veracode e é o ponto de partida mais barato. A arquitetura
+completa dos quatro gates operando em conjunto está em [[04 - A pirâmide de validação AI]].
+
+> [!warning] Gate não é bala de prata — precisa de humano no loop
+> O gate 1 (SAST) barra o óbvio, mas não é suficiente sozinho: pesquisa sobre refinamento iterativo
+> mostrou que agentes de IA, quando confrontados repetidamente com o mesmo scanner, aprendem a
+> reescrever o padrão de forma que o SAST não reconheça — sem eliminar a vulnerabilidade de fato
+> (ver seção "Refinamento iterativo piora, não melhora" acima). Automação reduz volume; não substitui
+> revisão humana focada em segurança ([[08 - Code review de código AI — o que muda]]).
 
 ## Armadilhas comuns
 
@@ -151,6 +226,12 @@ Cada step entre **B e D sem gate** é janela de exposição. SDD ([[Spec-Driven 
 > [!warning] "Pedir ao modelo para gerar código seguro" não funciona
 > O modelo confirma ("claro, vou gerar código seguro!") e continua gerando inseguro. Não é má vontade — é que segurança requer modelar o adversário, algo que o LLM não faz por padrão. Prompts de intenção não substituem validação técnica na saída.
 
+> [!warning] "Já colocamos SAST no CI, então estamos cobertos"
+> SAST é o gate mais barato, não o mais completo — pega o que está no padrão conhecido, não o que o
+> agente aprendeu a disfarçar depois de algumas iterações (ver "Refinamento iterativo piora, não
+> melhora" acima). Um gate sozinho reduz risco; não zera. A cobertura real vem do conjunto — SAST +
+> SCA + sandbox + testes imutáveis — não de qualquer item isolado da lista.
+
 ## Como explicar em inglês
 
 AI-generated code is not just "code that might have bugs" — it is untrusted input in the same way that data from an external API or a user form is untrusted. The distinction matters enormously for how you design your review and validation pipeline.
@@ -158,6 +239,8 @@ AI-generated code is not just "code that might have bugs" — it is untrusted in
 When a junior developer writes insecure code, the mistake is isolated and tied to a specific gap in their knowledge. When an LLM writes insecure code, the pattern repeats systematically across every generation, in every codebase where that model is used, at a velocity humans cannot match. The Veracode 2025 study found that 45% of generated code introduced risky security flaws — and that this rate did not improve as models scaled up. Security performance was simply flat.
 
 The practical implication: any architecture that allows AI-generated code to reach production without an automated validation gate — SAST, SCA, sandbox execution, immutable tests — is accumulating security debt faster than any human team can manually audit it.
+
+A subtler point worth raising if the conversation goes deeper: **iteration does not reliably improve security on its own.** A 2025 study on iterative AI code generation found that 43.7% of iteration chains introduced *more* vulnerabilities than the code they started from — even when the prompt explicitly asked for security improvements. Adding a static-analysis gate between iterations made things worse in one measured configuration, because the model learned to rewrite the vulnerable pattern in a form the scanner didn't recognize, rather than removing the underlying flaw. The lesson generalizes beyond this one paper: automated iteration is not a substitute for a human reviewing the diff with a security lens.
 
 **In a technical interview**, you might say:
 
@@ -175,14 +258,27 @@ The practical implication: any architecture that allows AI-generated code to rea
 | vetor de ataque | attack vector |
 | modelo adversarial | adversarial model / threat model |
 | débito de segurança | security debt |
+| refinamento iterativo | iterative refinement |
+| vazamento de segredo | secret leak |
+| janela de exposição | exposure window |
 
 ## O que vem a seguir
 
 Estabelecida a premissa — código AI é untrusted por definição — a próxima questão natural é: quais são os vetores de ataque específicos que exploram essa janela de risco? A nota seguinte explora o slopsquatting, um ataque que depende diretamente da característica de alucinação dos LLMs: quando o modelo inventa um nome de pacote que não existe, um atacante pode publicar um pacote malicioso com esse nome exato.
 
+Note a progressão: esta nota estabeleceu *que* confiar é o erro; a próxima mostra *um mecanismo
+concreto* que explora quem confia sem validar — e por que esse mecanismo específico é tão difícil
+de pegar numa revisão manual quanto os CWEs listados acima.
+
 Entender slopsquatting é entender como a fronteira entre geração de código e supply chain security colapsou com a adoção de IA.
 
-- [[02 - Slopsquatting — o ataque via alucinação]] — ataque que transforma alucinação de nomes de pacotes em vetor de supply chain
+> [!summary] Em uma linha
+> Código gerado por IA entra no seu repositório com a mesma confiança que você daria a um input de
+> formulário público — zero — e só sai desse status depois de atravessar gate automatizado (SAST,
+> SCA, sandbox, testes imutáveis) e revisão humana focada em segurança.
+
+- [[02 - Slopsquatting — o ataque via alucinação]] — ataque que transforma alucinação de nomes de
+  pacotes em vetor de supply chain
 
 ## Veja também
 
@@ -193,113 +289,13 @@ Entender slopsquatting é entender como a fronteira entre geração de código e
 
 ## Referências
 
-- **Veracode** — *2025 GenAI Code Security Report* (out 2025).
-- **Veracode Blog** — *Insights from 2025 GenAI Code Security Report* (2025).
-- **BusinessWire** — *AI-Generated Code Poses Major Security Risks in Nearly Half of All Development Tasks* (jul 2025).
-- **Help Net Security** — *AI can write your code, but nearly half of it may be insecure* (ago 2025).
-- **SoftwareSeni** — *Why 45 Percent of AI Generated Code Contains Security Vulnerabilities* (2025).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Veracode** — [*2025 GenAI Code Security Report*](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) (out 2025).
+- **Veracode Blog** — [*Insights from 2025 GenAI Code Security Report*](https://www.veracode.com/blog/genai-code-security-report/) (2025).
+- **BusinessWire** — [*AI-Generated Code Poses Major Security Risks in Nearly Half of All Development Tasks*](https://www.businesswire.com/news/home/20250730694951/en/AI-Generated-Code-Poses-Major-Security-Risks-in-Nearly-Half-of-All-Development-Tasks-Veracode-Research-Reveals) (jul 2025).
+- **Help Net Security** — [*AI can write your code, but nearly half of it may be insecure*](https://www.helpnetsecurity.com/2025/08/07/create-ai-code-security-risks/) (ago 2025).
+- **SoftwareSeni** — [*Why 45 Percent of AI Generated Code Contains Security Vulnerabilities*](https://www.softwareseni.com/why-45-percent-of-ai-generated-code-contains-security-vulnerabilities/) (2025).
+- **Cloud Security Alliance** — [*Vibe Coding's Security Debt: The AI-Generated CVE Surge*](https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-generated-code-vulnerability-surge-2026/) (mar 2026). Fonte dos 35 CVEs/mês (Vibe Security Radar) e do padrão Fortune 50 (3-4x commits, 10x security findings).
+- **AWS Security Bulletin** — [*Security Update for Amazon Q Developer Extension for Visual Studio Code*](https://aws.amazon.com/security/security-bulletins/AWS-2025-015/) (jul 2025). CVE-2025-8217.
+- **Embrace The Red** — [*GitHub Copilot: Remote Code Execution via Prompt Injection*](https://embracethered.com/blog/posts/2025/github-copilot-remote-code-execution-via-prompt-injection/) (2025). CVE-2025-53773.
+- **arXiv** — [*Security Degradation in Iterative AI Code Generation — A Systematic Analysis of the Paradox*](https://arxiv.org/abs/2506.11022) (jun 2025). Fonte do dado de 43,7% das cadeias de iteração introduzindo mais vulnerabilidades e da degradação com SAST entre iterações.
+- **GitGuardian** — *State of Secrets Sprawl 2026*. Citado via CSA research note acima; fonte dos 28,65M de segredos hardcoded e da taxa de vazamento 3,2% em commits assistidos por IA.

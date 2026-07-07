@@ -1,7 +1,7 @@
 ---
 title: "Code review de código AI — o que muda"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -19,6 +19,8 @@ aliases:
 ---
 
 # Code review de código AI — o que muda
+
+Um tech lead abre a fila de PRs na segunda-feira e encontra 47 pull requests esperando review — contra as 8-10 de um mês atrás, antes do time adotar agentes de codificação em produção. Cada PR "parece" bem escrito: nomes de variável claros, comentários explicando cada passo, testes que passam. Ele aprova os primeiros dez em vinte minutos, sente o alívio de estar "em dia", e só descobre três semanas depois — quando um endpoint de cobrança processa valores duplicados em produção — que um desses PRs continha uma race condition que nenhum humano jamais olhou de verdade. O reviewer não falhou por preguiça; falhou porque aplicou o processo de review desenhado para volume humano a um volume que só automação suporta.
 
 > [!abstract] TL;DR
 > Code review de código gerado por IA **não é o mesmo** de código humano. Volume é maior (5-10x), velocidade é maior, viés do reviewer é diferente (aceita demais por inércia), e classes de defeito são diferentes ([[Dicionário de IA#Hallucination|alucinações]] + vulnerabilidades sistemáticas). A regra: **delegue o que máquina faz para [[04 - A pirâmide de validação AI|automação]]**, e **foque humano** em arquitetura, intent, e mudanças cross-cutting. Esta nota apresenta o checklist específico, os red flags, e o anti-pattern do "approve fadigado" que está mascarando débito em todo lugar em 2026.
@@ -277,11 +279,11 @@ Code review é o gate humano sobre o código gerado. Mas há um gate igualmente 
 
 ## Referências
 
-- **Anthropic** — *Best practices for Claude Code: Code review* (2026).
-- **GitHub** — *Code review for AI-generated code: best practices* (2026).
-- **Augment Code** — *AI Spec-Driven Development Workflows* (2026).
-- **Atlassian** — *Code review in the era of AI assistants* (2026).
-- **Plus8Soft** — *The Comprehension Gate* (2025).
+- **Anthropic** — *Best practices for Claude Code* — https://code.claude.com/docs/en/best-practices (2026).
+- **GitHub** — *Review AI-generated code* — https://docs.github.com/en/copilot/tutorials/review-ai-generated-code (2026).
+- **Augment Code** — *How AI Enhances Spec-Driven Development Workflows* — https://www.augmentcode.com/guides/ai-spec-driven-development-workflows (2026).
+- **Atlassian** — *How Atlassian cut PR cycle time by 45% with AI code reviews* — https://www.atlassian.com/blog/announcements/how-we-cut-pr-cycle-time-with-ai-code-reviews (2026).
+- **Plus8Soft** — *AI Coding Agents in 2026: How They Work, What They Break, and How to Use Them Right* (seção "Comprehension Gate") — https://plus8soft.com/blog/ai-coding-agents/ (2026).
 
 
 
