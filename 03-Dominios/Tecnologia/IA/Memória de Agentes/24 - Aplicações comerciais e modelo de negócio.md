@@ -1,7 +1,7 @@
 ---
 title: "Aplicações comerciais e modelo de negócio"
 created: 2026-04-26
-updated: 2026-06-28
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -31,9 +31,12 @@ aliases:
 > [!info] Nota de leitura
 > Esta nota é **análise de mercado**, não relato de experiência pessoal. Preços, ROI e padrões descritos vêm de dados públicos (LinkedIn, Substack, Gumroad, conferências, observação de mercado e pricing de cursos similares), não de prática própria do autor. Onde aparecem números, devem ser lidos como **faixas observadas em ofertas públicas comparáveis** — qualquer aplicação a um caso real exige validação contra segmento, geografia e escopo específicos.
 
+> [!warning] Caducidade — revisar periodicamente
+> Preços, faixas de mercado e a leitura de "maturidade do mercado" nesta nota são um retrato de 2026. O ecossistema PKM + IA muda rápido: novas ferramentas gratuitas baixam a barreira de entrada, concorrentes entram, e o que hoje é diferenciador vira commodity em 18-24 meses (ver [[#Sinais de que o mercado está amadurecendo]]). **Revisar esta nota a cada 12 meses, ou antes se houver mudança relevante no ecossistema** (nova ferramenta dominante, movimento de preço perceptível nas ofertas citadas, ou consolidação de players como Mem0/Letta/Zep). Números não revisados após esse prazo devem ser tratados como desatualizados, não como referência confiável.
+
 ## O que é
 
-As notas anteriores da trilha cobriram a dimensão técnica e científica; esta cobre a dimensão econômica: **quem pagaria por isso, quanto se cobra em ofertas públicas comparáveis, e em que formato de entrega**. A análise se concentra em três modelos que aparecem com regularidade no mercado de PKM (personal knowledge management) e knowledge management corporativo. Cada modelo tem persona, ticket médio e risco de execução próprios. A descrição vem de **observação pública**, não de operação própria — mapa, não rota prescrita.
+**Conhecimento técnico sem caminho de monetização vira hobby.** Quem domina o [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]] e quer transformar esse domínio em renda precisa de resposta concreta pra três perguntas: quem paga, quanto paga, em que formato. As notas anteriores da trilha cobriram a dimensão técnica e científica; esta cobre a dimensão econômica — **quem pagaria por isso, quanto se cobra em ofertas públicas comparáveis, e em que formato de entrega**. A análise se concentra em três modelos que aparecem com regularidade no mercado de PKM (personal knowledge management) e knowledge management corporativo. Cada modelo tem persona, ticket médio e risco de execução próprios. A descrição vem de **observação pública**, não de operação própria — mapa, não rota prescrita.
 
 ## Por que importa
 
@@ -289,8 +292,8 @@ O diagnóstico inicial é o que decide se o cliente vai para Modelo 1, 2 ou 3 �
 - **Pricing de workshops in-company técnicos** publicados em sites de consultores independentes (Engenharia de Plataforma, DevRel, KM corporativo) — base para a faixa $5.000-$15.000 do Modelo 3.
 - **Canais públicos de monetização de conhecimento técnico** (Substack, Gumroad, GitHub Sponsors, Patreon) — observação direta de perfis e pricing tornados públicos. Útil para mapear quem cobra o quê e em que formato, sem extrapolar para promessas de resultado.
 - **Notas da trilha como referência consolidada:** [[06 - O LLM Wiki Pattern (gist do Karpathy)]], [[09 - Panorama de implementações (abril 2026)]], [[20 - Surveys e estado da arte 2026]], [[21 - Comparativo crítico (LongMemEval)]], [[22 - Críticas, limitações e armadilhas]], [[23 - Guia de implementação do zero]] — base conceitual e técnica que sustenta qualquer oferta comercial sobre o tema.
-- **Tiago Forte — *Building a Second Brain* (2022).** Livro que popularizou o conceito de second brain e criou mercado de consultorias PKM. Referência histórica relevante porque mapeia o público que já conhece o conceito e está buscando a versão "com IA". O mercado de Forte pré-IA é o mercado que reaparece como compradores de Modelo 1 e 2 nesta nota.
-- **Nick Milo — Linking Your Thinking (LYT).** Framework Obsidian popular que criou comunidade de milhares de usuários — e mercado de plugins, cursos e consultoria ao redor do Obsidian. Exemplo concreto de Modelo 2 (produto digital) funcionando em escala dentro do ecossistema PKM. Pricing e estrutura de oferta observáveis publicamente.
+- **Tiago Forte — [*Building a Second Brain*](https://www.buildingasecondbrain.com/book) (2022).** Livro que popularizou o conceito de second brain e criou mercado de consultorias PKM. Referência histórica relevante porque mapeia o público que já conhece o conceito e está buscando a versão "com IA". O mercado de Forte pré-IA é o mercado que reaparece como compradores de Modelo 1 e 2 nesta nota.
+- **Nick Milo — [Linking Your Thinking (LYT) / LYT Kit](https://www.linkingyourthinking.com/)** Framework Obsidian popular que criou comunidade de milhares de usuários — e mercado de plugins, cursos e consultoria ao redor do Obsidian. Exemplo concreto de Modelo 2 (produto digital) funcionando em escala dentro do ecossistema PKM. Pricing e estrutura de oferta observáveis publicamente na página oficial.
 - **Comunidade PKM no Discord e Reddit** (#pkm, r/ObsidianMD, r/Zettelkasten). Onde estão os early adopters — e onde circula feedback não filtrado sobre o que funciona e o que não funciona em implementações reais. Observação direta nessas comunidades é o jeito mais barato de pesquisa de mercado antes de lançar Modelo 2.
 - **Mem0, Letta, Zep — documentação de pricing público.** Referência para entender o espaço adjacente (B2B SaaS para devs). Observar como essas empresas descrevem o ROI e o ICP ajuda a calibrar o discurso de positioning da oferta de consultoria como complementar, não concorrente.
 - **[[04 - RAG vs memória de longo prazo]]** e **[[05 - Beyond RAG - quando RAG não basta]]** — as notas que fundamentam a resposta à objeção "Já uso ChatGPT" e ao critério "quando NÃO oferecer". Sem entender quando RAG basta, não é possível fazer diagnóstico honesto de fit para o cliente.

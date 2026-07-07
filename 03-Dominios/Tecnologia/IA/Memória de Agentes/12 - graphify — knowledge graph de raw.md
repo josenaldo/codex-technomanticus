@@ -1,7 +1,7 @@
 ---
 title: "graphify — knowledge graph de raw"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -21,7 +21,9 @@ aliases:
 # graphify
 
 > [!abstract] TL;DR
-> `graphify` (`github.com/safishamsi/graphify`) transforma uma pasta `/raw` — código, docs, papers, imagens, áudio e vídeo — em um **knowledge graph queryable**. Descrito pelo autor como "the answer to Karpathy's `/raw` folder", leva o pattern para substrato gráfico em vez de markdown. Integra com Claude Code, Codex, Cursor, Gemini CLI e outros via slash command `/graphify .`. Promete cerca de **71,5x menos tokens por query** vs ler arquivos brutos — número auto-reportado, não auditado. Saída: `graph.html` (vis.js), `graph.json` (queryable) e `GRAPH_REPORT.md` (sumário de god nodes e comunidades).
+> `graphify` (`github.com/graphify-labs/graphify`) transforma uma pasta `/raw` — código, docs, papers, imagens, áudio e vídeo — em um **knowledge graph queryable**. Descrito pelo autor como "the answer to Karpathy's `/raw` folder", leva o pattern para substrato gráfico em vez de markdown: em vez de compilar uma wiki legível, constrói um grafo `NetworkX` clusterizado com Leiden community detection.
+> O diferencial é o **substrato**, não a extração em si — a pergunta deixa de ser "qual artigo cobre isso?" e vira "qual caminho no grafo conecta A a B?", o que abre multi-hop reasoning (`shortest_path`, `get_neighbors`) impossível em markdown puro. Integra como skill/hook em Claude Code, Codex, Cursor, Gemini CLI e mais de 15 outras plataformas via slash command `/graphify .`.
+> Saídas: `graph.html` (vis.js), `graph.json` (queryable) e `GRAPH_REPORT.md` (sumário de god nodes e comunidades). Promete cerca de **71,5x menos tokens por query** vs ler arquivos brutos — número auto-reportado, não auditado; e o hook que injeta o grafo antes de cada busca é conveniente mas também o ponto onde um grafo desatualizado engana o assistente com confiança.
 
 > [!question]- Dúvidas e lacunas desta nota
 > - Dúvida gerada pelo conteúdo: O Leiden community detection é aplicado sobre o grafo completo após o semantic pass, ou de forma incremental a cada arquivo processado? Isso afeta diretamente o custo de rebuild no watch mode.
@@ -29,7 +31,9 @@ aliases:
 
 ## O que é
 
-`graphify` é uma versão **graph-based** do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]]. Em vez de compilar uma wiki em markdown a partir do `/raw`, como [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]] faz, o repositório constrói um grafo `NetworkX`, clusteriza com **Leiden community detection** e exporta artefatos consumíveis pelo assistente de código. O posicionamento como sucessor explícito do `/raw` aparece literalmente no README — "Andrej Karpathy keeps a `/raw` folder where he drops papers, tweets, screenshots, and notes. graphify is the answer to that problem".
+Imagina uma pasta `/raw` depois de seis meses de uso real: 40 papers em PDF, uma dúzia de screenshots de tweets, transcrições de podcast, e um monorepo com centenas de arquivos Python e TypeScript — tudo largado ali sem estrutura, do jeito que Karpathy descreve a própria pasta no gist original. Uma pergunta simples como "o que esse projeto usa pra autenticação, e isso conecta com o que o paper 3 dizia sobre rate limiting?" exige que o assistente abra dezenas de arquivos, um a um, pra montar a resposta na cabeça — cada leitura consome tokens e o contexto se esvai antes de chegar à segunda metade da pergunta.
+
+É esse o problema que o `graphify` ataca. Em vez de compilar uma wiki em markdown a partir do `/raw`, como [[10 - LLM-knowledge-base (Wendel) — direto do gist|LLM-knowledge-base]] faz, o repositório constrói um grafo `NetworkX`, clusteriza com **Leiden community detection** e exporta artefatos consumíveis pelo assistente de código. A pergunta acima vira uma chamada `shortest_path("AuthService", "rate_limiting")` — o assistente não relê o corpus, consulta o caminho já extraído. O posicionamento como sucessor explícito do `/raw` aparece literalmente no README — "Andrej Karpathy keeps a `/raw` folder where he drops papers, tweets, screenshots, and notes. graphify is the answer to that problem". É uma versão **graph-based** do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]].
 
 O foco é **mixed-media**, não só markdown: código (extração AST via tree-sitter em cerca de 25 linguagens), documentos, papers, imagens (Claude vision), áudio e vídeo (transcritos localmente com `faster-whisper`). É instalado como **skill** do assistente de código — `/graphify` no [[Dicionário de IA#Claude Code|Claude Code]]/Cursor/Gemini CLI/Aider/Antigravity, `$graphify` no Codex — e roda em cima de qualquer pasta. Licença MIT, pacote PyPI `graphifyy` (com duplo y; o pacote `graphify` no PyPI é de outro projeto).
 
@@ -190,13 +194,13 @@ Isso permite que um agente faça multi-hop reasoning sem carregar arquivos: "qua
 
 ## Anatomia técnica
 
-Os itens abaixo refletem o estado público do README de `safishamsi/graphify` em abril de 2026. O repositório está ativo (default branch `v5`, atualizado dias antes), portanto vale revisitar a fonte primária antes de decisões críticas.
+Os itens abaixo refletem o estado público do README de `graphify-labs/graphify` (antes `safishamsi/graphify` — o repositório foi transferido para a organização Graphify-Labs) em julho de 2026. Nesta revisão (default branch `v8`, ~79 mil estrelas), a contagem de linguagens e a integração com plataformas já haviam crescido em relação à nota original de abril; ver ressalvas em cada item abaixo. O repositório segue ativo (push no dia da checagem), portanto vale revisitar a fonte primária antes de decisões críticas.
 
 - **Construção do grafo.** `NetworkX` para representação; **Leiden community detection** para clustering por densidade de aresta, sem embeddings nem vector DB externo. A similaridade semântica entra como aresta `INFERRED` extraída no semantic pass, não como busca em espaço vetorial.
 - **Visualização.** `graph.html` é gerado com `vis.js`, abrível em qualquer browser, com clique em nó, busca e filtro por comunidade.
-- **Linguagens suportadas.** Cerca de 25 via `tree-sitter` — Python, JS, TS, JSX, TSX, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog/SystemVerilog, Vue, Svelte, Dart. Java tem extração extra de `extends`/`implements`. Call graph é cross-file em todas.
+- **Linguagens suportadas.** ⚠ Cresceu desde a checagem original: já são **36 gramáticas tree-sitter** (README fala em cross-file links resolvidos em "~40 linguagens", contando variantes que reaproveitam gramática — `.mts`/`.cts` reusam TypeScript, `.cc`/`.cxx`/CUDA/`Metal` reusam C++), ante as ~25 registradas em abril de 2026. Além do conjunto original (Python, JS/TS, Go, Rust, Java, C/C++, Ruby, C#, Kotlin, Scala, PHP, Swift, Lua, Zig, PowerShell, Elixir, Objective-C, Julia, Verilog/SystemVerilog, Vue, Svelte, Dart), README atual lista SQL, Fortran, Delphi/Pascal, Groovy/Gradle, shell, JSON e formatos de projeto .NET (`.csproj`, `.xaml`, `.razor`). Java mantém extração extra de `extends`/`implements`. Call graph é cross-file em todas.
 - **Outputs canônicos.** `graphify-out/graph.html` (visualização interativa), `graph.json` (grafo persistido, queryable em sessões futuras), `GRAPH_REPORT.md` (sumário de god nodes, comunidades, conexões surpreendentes e perguntas sugeridas) e `cache/` (cache SHA256 — re-runs só processam arquivos alterados).
-- **Integração com IDEs — slash command + always-on.** `/graphify .` (ou `$graphify .` no Codex) roda em qualquer assistente compatível. Para deixar a integração *always-on*, comandos de plataforma injetam regras: Claude Code escreve seção em `CLAUDE.md` e instala **PreToolUse hook** que dispara antes de `Glob`/`Grep`; Codex usa `AGENTS.md` + PreToolUse hook em `.codex/hooks.json`; OpenCode usa plugin `tool.execute.before`; Cursor escreve `.cursor/rules/graphify.mdc` com `alwaysApply: true`; Gemini CLI usa `BeforeTool` hook. Plataformas sem hooks (Aider, OpenClaw, Factory Droid, Trae, Hermes) ficam com `AGENTS.md` como mecanismo always-on.
+- **Integração com IDEs — slash command + always-on.** ⚠ Confirmado ainda válido, com a lista de plataformas ampliada: `/graphify .` (ou `$graphify .` no Codex) roda em qualquer assistente compatível — o README atual soma "Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, e 15+ mais". Para deixar a integração *always-on*, comandos de plataforma injetam regras: Claude Code escreve seção em `CLAUDE.md` e instala **PreToolUse hook** que dispara antes de `Glob`/`Grep`/leitura de arquivo; Codex usa `AGENTS.md` + PreToolUse hook em `.codex/hooks.json` (disparando antes de todo `Bash`); OpenCode usa plugin `tool.execute.before`; Cursor escreve `.cursor/rules/graphify.mdc` com `alwaysApply: true` (sem hook); Gemini CLI usa `GEMINI.md` + `BeforeTool` hook. CodeBuddy replica o mecanismo do Claude Code (`CODEBUDDY.md` + PreToolUse hook); Factory Droid e Trae usam o próprio `Task`/Agent tool para dispatch paralelo — Trae não suporta `PreToolUse`, ficando só com `AGENTS.md`. OpenClaw e Aider ainda fazem extração sequencial (suporte a agente paralelo é recente nessas plataformas) e dependem de `AGENTS.md` como mecanismo always-on.
 - **Confidence tagging.** Cada aresta é rotulada como `EXTRACTED` (encontrada literalmente), `INFERRED` (inferência razoável, com confidence score) ou `AMBIGUOUS` (sinalizada para revisão). O README enfatiza: "You always know what was found vs guessed".
 - **Watch mode.** `graphify watch ./src` faz auto-rebuild conforme arquivos mudam. Para código, AST é instantâneo; para docs/papers, o sistema notifica que há re-pass semântico pendente — o disparo do LLM fica explícito. `graphify hook install` adiciona git hook que rebuilda no commit e no branch switch.
 - **Token efficiency claim.** "**71.5x fewer tokens per query vs reading raw files**" — citação direta do README, **auto-reportada** pelo autor. Útil como ordem de grandeza, não como número auditado.
@@ -300,7 +304,7 @@ O contraste entre os dois modelos — batch compilation vs. incremental conversa
 
 ## Referências
 
-- **Repositório oficial** — `https://github.com/safishamsi/graphify` — licença MIT, default branch `v5`. Metadados verificados via `gh api repos/safishamsi/graphify` em abril de 2026; README oficial inspecionado para todos os claims técnicos desta nota.
+- **Repositório oficial** — `https://github.com/graphify-labs/graphify` (transferido de `safishamsi/graphify` para a organização Graphify-Labs) — licença MIT, default branch `v8` em julho de 2026 (era `v5` em abril). Metadados reverificados via `gh api repos/Graphify-Labs/graphify` e README oficial reinspecionado em julho de 2026 para atualizar os claims técnicos desta nota (contagem de linguagens, lista de plataformas).
 - **Site oficial** — `https://graphifylabs.ai/` (linkado no README).
 - **Pacote PyPI** — `https://pypi.org/project/graphifyy/` (duplo "y"). O CLI e o slash command continuam sendo `graphify`.
 - **Karpathy gist do LLM Wiki Pattern** — pattern que graphify cita explicitamente como motivação. Detalhado em [[06 - O LLM Wiki Pattern (gist do Karpathy)]].

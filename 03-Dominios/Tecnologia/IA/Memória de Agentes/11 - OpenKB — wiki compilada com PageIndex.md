@@ -1,7 +1,7 @@
 ---
 title: "OpenKB — wiki compilada com PageIndex"
 created: 2026-05-06
-updated: 2026-05-06
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -31,7 +31,9 @@ aliases:
 
 ## O que é
 
-OpenKB se apresenta como "Open LLM Knowledge Base": um sistema de CLI que transforma documentos em uma wiki estruturada, interlinkada e mantida por [[Dicionário de IA#LLM (Large Language Model)|LLM]]. A ideia é a mesma família conceitual do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]]: em vez de fazer [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] tradicional sobre [[Dicionário de IA#chunking|chunks]] a cada pergunta, o sistema **compila conhecimento uma vez** em páginas persistentes — resumos, conceitos, cross-links e índice — e usa essa wiki como substrato de consulta e evolução.
+Imagine que você acabou de receber 40 PDFs de um projeto de pesquisa — papers, relatórios, notas de reunião — e precisa que um agente responda perguntas sobre esse corpus daqui a três meses, não só hoje. RAG tradicional resolveria a pergunta de hoje: fatiar tudo em chunks, indexar em um vector DB, buscar por similaridade a cada query. Mas cada nova pergunta refaz o mesmo trabalho de recuperação do zero, e ninguém fica com uma wiki legível para revisar depois. É esse o problema que o OpenKB ataca: em vez de recuperar informação sob demanda a cada pergunta, ele **compila o corpus uma vez** em uma wiki markdown persistente — resumos, conceitos, cross-links e índice — que tanto o LLM quanto o humano podem consultar e evoluir depois.
+
+Tecnicamente, OpenKB é um sistema de CLI que transforma documentos em uma wiki estruturada, interlinkada e mantida por [[Dicionário de IA#LLM (Large Language Model)|LLM]]. A ideia é a mesma família conceitual do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]]: em vez de fazer [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] tradicional sobre [[Dicionário de IA#chunking|chunks]] a cada pergunta, o sistema compila conhecimento de forma persistente e usa essa wiki como substrato de consulta e evolução.
 
 A arquitetura padrão criada por `openkb init` é deliberadamente legível:
 
@@ -137,10 +139,10 @@ O ciclo operacional é:
 
 ## Anatomia técnica
 
-Os itens abaixo refletem o estado público do repositório em 06/05/2026.
+Os itens abaixo refletem o estado público do repositório em 06/05/2026, com versões atualizadas em 07/07/2026 (o pacote avançou de `0.1.3` para `0.4.3` nesse intervalo — ver nota de caducidade abaixo).
 
-- **Pacote.** `openkb`, versão `0.1.3`, Python `>=3.10`, licença Apache-2.0.
-- **Stack.** PageIndex `0.3.0.dev1`, `markitdown[all]`, Click, watchdog, LiteLLM, OpenAI Agents SDK, PyYAML, python-dotenv, json-repair, prompt_toolkit e Rich.
+- **Pacote.** `openkb`, versão `0.4.3` (lançada em 02/07/2026; era `0.1.3` na primeira verificação), Python `>=3.10`, licença Apache-2.0. O classifier PyPI ainda marca **"Development Status :: 3 - Alpha"** apesar do salto de versão.
+- **Stack.** PageIndex `0.3.0.dev1` (versão verificada em 06/05/2026; não reconfirmada na atualização de 07/07/2026), `markitdown[all]`, Click, watchdog, LiteLLM, OpenAI Agents SDK, PyYAML, python-dotenv, json-repair, prompt_toolkit e Rich.
 - **Multi-LLM.** Configuração via LiteLLM em `.openkb/config.yaml`; exemplos do README usam OpenAI, Anthropic e Gemini. A variável genérica é `LLM_API_KEY`, propagada para env vars específicas quando necessário.
 - **Schema editável.** `wiki/AGENTS.md` define estrutura e convenções da wiki. O runtime lê o arquivo do disco, então alterações no schema passam a valer sem recompilar o pacote.
 - **Sessões.** Cada chat fica em `<kb>/.openkb/chats/<id>.json`. O arquivo guarda `id`, timestamps, modelo, idioma, título, contagem de turnos, `history`, `user_turns` e `assistant_texts`.
@@ -193,10 +195,10 @@ O eixo decisivo é: **OpenKB é uma knowledge base documental compilada**, não 
 > A qualidade dos conceitos gerados é proporcional à qualidade do schema em `wiki/AGENTS.md`. Um schema vago que não especifica o que é um "conceito", como deve ser linkado a outros, qual é o formato esperado ou quando um conceito deve ser dividido em dois produz uma wiki inconsistente — e `openkb lint` vai reportar superficialmente porque o LLM de lint segue o mesmo schema vago. Escrever o `AGENTS.md` bem é a decisão de design mais importante do sistema.
 
 > [!warning] Estado alpha em produção é aposta de risco calculado
-> O pacote `openkb 0.1.3` está marcado como "Development Status :: 3 - Alpha". A API CLI pode mudar entre versões menores, o formato de `.openkb/chats/*.json` pode quebrar em atualizações e funcionalidades do roadmap (web UI, storage database-backed, multi-user) ainda não existem. Para protótipos e pesquisa pessoal o risco é aceitável; para infraestrutura de produto, pin na versão exata e teste de regressão antes de atualizar são obrigatórios.
+> O pacote `openkb` segue marcado como "Development Status :: 3 - Alpha" no PyPI mesmo após saltar de `0.1.3` (06/05/2026) para `0.4.3` (02/07/2026) — onze releases em dois meses. O classifier alpha persistente é o sinal, não o número da versão: a API CLI pode mudar entre versões menores, o formato de `.openkb/chats/*.json` pode quebrar em atualizações e funcionalidades do roadmap (web UI, storage database-backed, multi-user) ainda não existem. Para protótipos e pesquisa pessoal o risco é aceitável; para infraestrutura de produto, pin na versão exata e teste de regressão antes de atualizar são obrigatórios.
 
 - **Misturar memória de pesquisa com memória de produto.** Uma knowledge base pessoal pode tolerar correções manuais e inconsistências transitórias; memória de usuário em produção não pode.
-- **Ignorar estado alpha.** O pacote está em `0.1.3` e o classifier do projeto marca "Development Status :: 3 - Alpha". Bom para estudar e prototipar; prudência antes de vender como infraestrutura estável.
+- **Ignorar estado alpha.** O pacote chegou a `0.4.3` (02/07/2026) e o classifier do projeto ainda marca "Development Status :: 3 - Alpha". Bom para estudar e prototipar; prudência antes de vender como infraestrutura estável.
 - **Não versionar a wiki.** Como o agente escreve markdown, Git é o mecanismo natural de auditoria. Sem histórico, um rewrite ruim de conceito pode passar despercebido.
 
 ## Integração prática com memória de agentes
@@ -231,7 +233,7 @@ Quem veio da nota anterior pode estar se perguntando: qual dos dois usar? A dife
 | Sessão de chat | Não nativo | Sim (`openkb chat --resume`) |
 | Busca | Hybrid (BM25 + RRF) | Via LLM sobre a wiki |
 | Licença | AGPL-3.0 | Apache-2.0 |
-| Estado | Projeto ativo, 1 autor | Alpha 0.1.3, VectifyAI |
+| Estado | Projeto ativo, 1 autor | Alpha 0.4.3 (02/07/2026), VectifyAI |
 | Multi-LLM | OpenAI SDK + local | LiteLLM (qualquer provider) |
 
 Se o caso de uso principal é **pesquisa bibliográfica com PDFs longos e chat multi-turn**, OpenKB ganha. Se o caso de uso é **implementação de referência para estudar o pattern** ou **claims tracking para rastreabilidade de conhecimento**, `LLM-knowledge-base` ganha.
@@ -293,8 +295,9 @@ Graphify também leva a proposta além do texto: código, áudio, vídeo e image
 
 - Repositório oficial — `https://github.com/VectifyAI/OpenKB` (verificado em 06/05/2026; Apache-2.0; Python; README com arquitetura, comandos e roadmap).
 - README oficial — seções *What is OpenKB*, *How OpenKB Works*, *Interactive Chat*, *AGENTS.md* e *The Stack*.
-- `pyproject.toml` — pacote `openkb` versão `0.1.3`, dependências principais (`pageindex==0.3.0.dev1`, `markitdown[all]`, `litellm`, `openai-agents`) e classifier alpha.
+- `pyproject.toml` — pacote `openkb` versão `0.1.3` na verificação original (06/05/2026); PyPI confirma `0.4.3` (02/07/2026) como última release, classifier ainda "3 - Alpha". Dependências principais na verificação original: `pageindex==0.3.0.dev1`, `markitdown[all]`, `litellm`, `openai-agents`.
 - `openkb/agent/chat_session.py` — persistência de sessões em `.openkb/chats/*.json` e sanitização de payloads de imagem.
 - `openkb/agent/chat.py` — REPL multi-turn, `/save`, `/clear`, `/add`, `/lint`, `--resume`, streaming e gravação do histórico via `session.record_turn(...)`.
 - `openkb/agent/tools.py` — tools de leitura/escrita da wiki com proteção de path traversal.
 - PageIndex — `https://github.com/VectifyAI/PageIndex` — sistema de document index vectorless usado por OpenKB para documentos longos; ver nota dedicada em [[RAG e Vector Databases|13 - PageIndex — RAG vectorless por árvore de documentos]].
+- PyPI — `https://pypi.org/project/openkb/` (verificado em 07/07/2026; última release `0.4.3` de 02/07/2026, onze releases desde `0.1.3`; classifier "Development Status :: 3 - Alpha" mantido).

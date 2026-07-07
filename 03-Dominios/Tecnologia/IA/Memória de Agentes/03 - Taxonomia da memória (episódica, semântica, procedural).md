@@ -1,7 +1,7 @@
 ---
 title: "Taxonomia da memória (episódica, semântica, procedural)"
 created: 2026-04-25
-updated: 2026-04-25
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
@@ -28,6 +28,8 @@ aliases:
 > [!question]- Dúvidas e lacunas desta nota
 > - Dúvida gerada pelo conteúdo: memória procedural em humanos é frequentemente implícita (não consciente) — agentes de IA têm analogamente memória procedural "implícita" nos pesos do modelo (instintos de raciocínio adquiridos no treino) além da procedural explícita em skills/runbooks? Como distinguir as duas?
 > - Lacuna potencial: a nota descreve cada tipo de memória mas não dá um exemplo de sistema real que implementa os três simultaneamente, com o diagrama mostrando como episódica, semântica e procedural coexistem e interagem num único agente de produção.
+
+Imagine um agente de coding que você usa há três semanas no mesmo projeto. Ele lembra que ontem você pediu pra trocar JWT por sessions — mas insiste em sugerir PostgreSQL quando o projeto na verdade usa MySQL desde o início, e a cada sessão nova propõe um endpoint que ignora o padrão Controller→Service→Repository que vocês fecharam há dias. Três falhas de memória bem diferentes: a primeira seria lembrar **o que aconteceu** (a decisão de ontem — essa até acertou); a segunda é saber **o que é verdade** sobre o projeto (qual banco de dados está em uso); a terceira é saber **como agir** (o padrão de código combinado). Dizer só "o agente esqueceu" é diagnóstico grosseiro demais — cada falha pede um tipo diferente de memória, e cada tipo pede um substrato diferente para funcionar bem. É exatamente essa distinção que a taxonomia abaixo formaliza.
 
 ## O que é
 

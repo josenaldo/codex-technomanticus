@@ -1,11 +1,11 @@
 ---
 title: "O que é memória em IA"
 created: 2026-04-25
-updated: 2026-04-25
+updated: 2026-07-06
 type: concept
 fase: Iniciado
 progress: backlog
-status: seedling
+status: growing
 publish: true
 tags:
   - memoria-agentes
@@ -20,7 +20,9 @@ aliases:
 # O que é memória em IA
 
 > [!abstract] TL;DR
-> Memória em IA é a capacidade de um sistema com LLM lembrar de informação além da janela de contexto atual — entre sessões, entre tarefas, ao longo do tempo. Por padrão, LLMs não têm memória: cada conversa começa do zero. "Memória de agentes" é o conjunto de técnicas que resolvem isso, formalizado em surveys acadêmicos e implementado em frameworks de produção em 2026.
+> Todo LLM nasce amnésico: cada chamada de API começa do zero, sem qualquer lembrança do que aconteceu na sessão anterior — nem mesmo da mensagem que você mandou há dois minutos, se ela não estiver de novo no prompt.
+> Memória persistente é a engenharia que resolve isso por fora do modelo: um substrato externo (markdown, banco vetorial, grafo de conhecimento) onde o agente guarda o que importa e de onde recupera o que for relevante antes de cada resposta.
+> O mecanismo universal por trás disso é o loop write-manage-read — escrever o que vale persistir, gerenciar (compactar, indexar, esquecer) pra não virar lixo informacional, e ler de volta só o que é relevante pro turno atual — formalizado em surveys acadêmicos e já rodando em frameworks de produção em 2026.
 
 > [!question]- Dúvidas e lacunas desta nota
 > - Dúvida gerada pelo conteúdo: qual é o custo real, em latência e em tokens, de executar o loop write-manage-read a cada turno de conversação — e como frameworks de produção amortizam esse custo sem sacrificar a qualidade da memória?

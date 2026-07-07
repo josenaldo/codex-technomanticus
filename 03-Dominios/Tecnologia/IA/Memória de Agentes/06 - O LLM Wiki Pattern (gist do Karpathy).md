@@ -1,7 +1,7 @@
 ---
 title: "O LLM Wiki Pattern (gist do Karpathy)"
 created: 2026-04-25
-updated: 2026-06-28
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -28,6 +28,8 @@ aliases:
 > - Dúvida gerada pelo conteúdo: o `index.md` como ponto único de catálogo funciona bem até ~100-200 páginas — mas qual estratégia de sharding do índice funciona melhor após esse threshold? A nota menciona BM25/vetorial/grafo, mas não compara as opções em termos de custo de manutenção vs. cobertura.
 > - Lacuna potencial: a nota descreve a arquitetura mas não discute versionamento da wiki. Se o schema mudar radicalmente (ex: mudança na estrutura de entity pages), como migrar as páginas existentes? A imutabilidade do raw é a resposta parcial, mas o processo de regeneração não é descrito.
 > - Conexão sugerida: a operação de lint desta nota tem paralelo direto com o manage-step descrito em [[04 - RAG vs memória de longo prazo]] — mas a nota não torna essa correspondência explícita. Lint = manage-step aplicado à wiki como substrato.
+
+Imagine um pesquisador que passa meses investigando um domínio difícil, conversando com um LLM quase todo dia. Cada sessão nova começa do zero: ele reabre o chat, resume o que já discutiu, reexplica as definições que cunhou, relembra as contradições que já resolveu — só então chega à pergunta de hoje. Multiplique isso por semanas e o custo fica visível: pesquisadores, analistas e consultores que usavam LLMs intensivamente relatavam gastar **20–30% de cada sessão apenas re-explicando o que já havia sido discutido**. Não é fricção pequena — é um imposto recorrente sobre todo o tempo de trabalho de conhecimento. Foi essa dor concreta, sentida por gente que vivia de pensar sobre documentos, que o LLM Wiki Pattern de Karpathy veio resolver — e é por isso que o gist, quando saiu, viralizou tão rápido (mais adiante, em "O contexto histórico", o porquê exato).
 
 ## O que é
 
@@ -118,7 +120,7 @@ A wiki pessoal de Karpathy num único tópico de pesquisa cresceu para cerca de 
 
 O tweet de Karpathy em 3 de abril de 2026 acumulou mais de 16 milhões de visualizações em poucos dias. O gist passou de 5 mil estrelas. Esse alcance não é trivial para um post técnico — e tem uma explicação: o pattern tocou numa dor muito específica que profissionais de conhecimento estavam sentindo há meses.
 
-Em 2024–2025, o fluxo de trabalho padrão com LLM era: abrir uma conversa, descrever o contexto, fazer as perguntas, obter respostas, fechar. Na próxima sessão, repetir o contexto do zero. Quanto mais sofisticado o domínio, maior o custo de recontextualização. Pesquisadores, analistas e consultores que usavam LLMs intensivamente relatavam gastar 20–30% de cada sessão apenas re-explicando o que já havia sido discutido.
+Em 2024–2025, o fluxo de trabalho padrão com LLM era: abrir uma conversa, descrever o contexto, fazer as perguntas, obter respostas, fechar. Na próxima sessão, repetir o contexto do zero. Quanto mais sofisticado o domínio, maior o custo de recontextualização — é exatamente a dor descrita na abertura desta nota (aqueles 20–30% de cada sessão perdidos em re-explicação), só que agora generalizada: não era o incômodo de um pesquisador isolado, era o padrão da indústria inteira.
 
 Diversas tentativas de solução foram construídas — custom instructions, system prompts longos, armazenamento de contexto em arquivos — mas todas sofriam do mesmo problema: o contexto não compunha, não se organizava e não se atualizava sozinho. Era um dump de texto, não um knowledge base.
 

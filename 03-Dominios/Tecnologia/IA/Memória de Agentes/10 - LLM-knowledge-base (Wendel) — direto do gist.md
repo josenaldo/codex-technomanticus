@@ -22,7 +22,9 @@ aliases:
 # LLM-knowledge-base (Wendel)
 
 > [!abstract] TL;DR
-> Implementação Python de referência do **LLM Wiki Pattern** do Karpathy mantida por Wendel em `https://github.com/wendeus0/LLM-knowledge-base`. Pacote `kb/` com ciclo de quatro etapas — *ingest → compile → Q&A/search → heal/lint* —, busca híbrida (keyword + BM25 + RRF), claims lifecycle (confiança, supersessão, decaimento), importadores EPUB/PDF com OCR opcional, integração com Obsidian via `obsidian-terminal` e 311 testes com 90%+ de cobertura. Vale como **referência canônica em código real** para estudar o pattern, não como SaaS pronto.
+> `LLM-knowledge-base` é a implementação Python de referência do **LLM Wiki Pattern** do Karpathy, mantida por Wendel em `https://github.com/wendeus0/LLM-knowledge-base`. O mecanismo é um ciclo de quatro etapas — *ingest → compile → Q&A/search → heal/lint* — em que documentos brutos (EPUB, PDF com OCR opcional, web) viram uma wiki markdown compilada por LLM, consultável via busca híbrida (keyword + BM25 + RRF) e mantida por healing/lint automáticos, com um subsistema de claims lifecycle rastreando confiança, supersessão e decaimento de cada afirmação.
+> Tecnicamente é notável por manter a separação engine/dados via `KB_DATA_DIR`, integrar com Obsidian através do plugin `obsidian-terminal` e sustentar 311 testes com 90%+ de cobertura e 16 ADRs documentando as decisões de design.
+> Vale como **referência canônica em código real** para estudar como o pattern do Karpathy vira software — não como SaaS pronto: é CLI de autor único sob AGPL-3.0, sem SLA, sem suporte e sem UX polida.
 
 > [!question]- Dúvidas e lacunas desta nota
 > - Dúvida gerada pelo conteúdo: Como o sistema de claims lifecycle lida com conflitos quando dois documentos ingeridos afirmam coisas contraditórias sobre o mesmo fato — a supersessão é automática ou requer intervenção humana?
@@ -30,7 +32,9 @@ aliases:
 
 ## O que é
 
-`LLM-knowledge-base` é uma engine Python autônoma que transcreve o gist do [[Andrej Karpathy|Karpathy]] ([[06 - O LLM Wiki Pattern (gist do Karpathy)]]) em código executável. O README descreve o sistema como "engine de knowledge base mantida por [[Dicionário de IA#LLM (Large Language Model)|LLM]]" — coleta documentos brutos, compila-os em uma wiki markdown, responde perguntas contra essa wiki e executa health checks com healing automático. Cada uma das três camadas e três operações do gist tem ponto de entrada explícito na CLI, e o pacote `kb/` é legível para quem quer entender o pattern em código real, não só em prosa.
+Imagine ter lido o gist do Karpathy sobre o LLM Wiki Pattern ([[06 - O LLM Wiki Pattern (gist do Karpathy)]]), concordar com a ideia, e então abrir o terminal com uma pergunta prática: "ok, mas como isso vira código de verdade?" Um PDF técnico de 200 páginas está na sua pasta `raw/`. Você roda `kb import-book paper.pdf`, depois `kb compile`, e alguns minutos depois existe uma wiki markdown navegável, com artigos linkados entre si, prontos para consulta via `kb qa "o que esse paper diz sobre X?"`. É exatamente esse percurso — do gist conceitual ao comando de terminal — que o `LLM-knowledge-base` de Wendel documenta em código Python executável, publicado em `https://github.com/wendeus0/LLM-knowledge-base`.
+
+O README descreve o sistema como "engine de knowledge base mantida por [[Dicionário de IA#LLM (Large Language Model)|LLM]]" — coleta documentos brutos, compila-os em uma wiki markdown, responde perguntas contra essa wiki e executa health checks com healing automático. Cada uma das três camadas e três operações do gist tem ponto de entrada explícito na CLI, e o pacote `kb/` é legível para quem quer entender o pattern em código real, não só em prosa.
 
 A separação entre engine e dados é uma escolha arquitetural bem sinalizada. O repositório guarda **apenas** o pacote Python, testes, documentação e exemplos neutros. O *corpus* do usuário — `raw/`, `wiki/`, `outputs/`, `kb_state/` — vive em um diretório externo apontado pela variável de ambiente `KB_DATA_DIR`. Isso evita o erro clássico de misturar código e conteúdo no mesmo repositório e permite reconstruir a wiki do zero a partir do raw imutável quando o schema muda. O frontend recomendado é Obsidian sobre o vault em `KB_DATA_DIR`, com o plugin `obsidian-terminal` rodando comandos `kb` no terminal integrado.
 
@@ -157,7 +161,8 @@ Cada claim fica em JSON-Lines em `kb_state/claims.jsonl`, com timestamps UTC, fo
 
 ## Anatomia técnica
 
-Detalhes refletem o estado público do `main` em abril de 2026 — repositório está ativo, vale revisitar.
+> [!warning] Detalhes datados — abril de 2026
+> Os detalhes desta seção refletem o estado público do `main` em abril de 2026. O repositório está ativo (commits frequentes), então nomes de módulo, contagem de testes e cobertura podem ter mudado — vale revisitar o README e o changelog antes de citar números exatos em entrevista ou documentação própria.
 
 - **Estrutura do pacote.** `kb/` contém os módulos do ciclo (`compile.py`, `qa.py`, `search.py`, `heal.py`, `lint.py`), CLI Typer (`cli.py`), helpers de estado (`state.py`, `audit.py`, `claims.py`), importadores (`book_import.py`, `book_import_core.py`, `book_import_pdf.py`, `web_ingest.py`), routing/grafo (`router.py`, `graph.py`), guardrails, git helper, handoff, conformidade documental e subpacotes `cmds/`, `core/`, `discover/`, `analytics/`. Os dados do usuário vivem em `KB_DATA_DIR`, fora do repositório, com subpastas `raw/`, `wiki/`, `outputs/` e `kb_state/`.
 - **Hybrid search sem vetor DB externo.** `search.py` combina keyword, BM25 e *reciprocal rank fusion* — cobertura semântica razoável sem operar Pinecone, Qdrant ou Weaviate. Custo computacional pago em CPU local.

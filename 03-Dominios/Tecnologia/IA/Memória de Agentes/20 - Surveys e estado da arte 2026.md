@@ -1,7 +1,7 @@
 ---
 title: "Surveys e estado da arte 2026"
 created: 2026-04-25
-updated: 2026-06-28
+updated: 2026-07-07
 type: review
 fase: Iniciado
 status: seedling
@@ -20,7 +20,10 @@ aliases:
 # Surveys e estado da arte 2026
 
 > [!abstract] TL;DR
-> O campo de memória de agentes está suficientemente maduro em 2026 para ter **surveys formais, workshop dedicado no ICLR 2026 ("MemAgents") e taxonomias consolidadas**. Esta nota organiza os principais surveys publicados entre 2024 e o início de 2026, extrai os frameworks teóricos que eles compartilham — em especial os **cinco mecanismos arquiteturais** que aparecem como consenso emergente — e separa o que é "agent memory" do que é "LLM memorization", confusão recorrente em discussões fora da academia. Material essencial para discurso público fundamentado e para localizar criticamente qualquer implementação concreta dentro do campo.
+> O campo de memória de agentes atingiu **maturidade institucional** em 2026: surveys formais, taxonomias consolidadas e o primeiro workshop dedicado em venue top-tier — o ICLR 2026 ("MemAgents"), realizado em 27 de abril em Rio de Janeiro com mais de 110 submissões — comprovam que o tema deixou de ser lateral em workshops de agents-em-geral e virou linha de pesquisa própria.
+> Esta nota organiza os principais surveys publicados entre 2024 e o início de 2026 e extrai o framework teórico que eles compartilham, com vocabulários diferentes: um consenso em torno de **cinco mecanismos arquiteturais** — compressão residente no contexto, retrieval-augmented stores, reflective self-improvement, hierarchical virtual context e policy-learned management — que cobrem praticamente toda implementação concreta do campo.
+> Um segundo eixo, igualmente reforçado pelos cinco surveys, é a distinção entre **agent memory** (camada de runtime, auditável, atualizável em milissegundos) e **LLM memorization** (retenção paramétrica opaca do pretraining) — confusão recorrente em discussões fora da academia.
+> Material essencial para discurso público fundamentado e para localizar criticamente qualquer implementação concreta dentro do campo.
 
 > [!question]- Dúvidas e lacunas desta nota
 > - Dúvida gerada pelo conteúdo: os cinco mecanismos de Du (2026) são mutuamente excludentes na prática ou todo sistema real de produção sempre combina ao menos dois? Existe evidência de que algum mecanismo sozinho já seja suficiente para uso real?
@@ -121,15 +124,15 @@ Sistemas reais combinam famílias. [[17 - MemPalace (Milla Jovovich)|MemPalace]]
 
 ## ICLR 2026 Workshop "MemAgents"
 
-O sinal mais claro de maturidade institucional do campo é o primeiro workshop dedicado em venue top-tier: **Workshop on Memory for LLM-Based Agentic Systems** (URL: `sites.google.com/view/memagent-iclr26/`).
+O sinal mais claro de maturidade institucional do campo foi o primeiro workshop dedicado em venue top-tier: **Workshop on Memory for LLM-Based Agentic Systems** (URL: `sites.google.com/view/memagent-iclr26/`), realizado em **27 de abril de 2026**, em **Rio de Janeiro**, em formato híbrido.
 
-**Por que importa.** Workshops em conferências como ICLR são o ritual pelo qual subáreas emergentes ganham reconhecimento como linha de pesquisa autônoma. A existência do MemAgents marca o momento em que "memória de agentes" deixa de ser um tema lateral em workshops de agents-em-geral e passa a ter espaço próprio. Para a comunidade, é o sinal de que funding agencies, labs e companies passam a enxergar o tópico como digno de investimento específico — o que, por sua vez, acelera a produção de papers, benchmarks e toolkits.
+**Por que importou.** Workshops em conferências como ICLR são o ritual pelo qual subáreas emergentes ganham reconhecimento como linha de pesquisa autônoma. A realização do MemAgents marcou o momento em que "memória de agentes" deixou de ser um tema lateral em workshops de agents-em-geral e passou a ter espaço próprio. Para a comunidade, é o sinal de que funding agencies, labs e companies passam a enxergar o tópico como digno de investimento específico — o que, por sua vez, acelera a produção de papers, benchmarks e toolkits.
 
 **Topics oficiais.** Memory architectures (episódica, semântica, working, parametric); systems & evaluation (estruturas de dados, retrieval pipelines, benchmarks); abordagens neuroscience-inspired (complementary learning systems, consolidação hipocampo-cortical); lifelong learning e consolidação; abordagens human-centric; explicit vs. parametric memory.
 
-**Data e local.** Acontece em **27 de abril de 2026**, em **Rio de Janeiro**, em formato híbrido (sede da ICLR 2026 brasileira). Tracks de submissão incluem full papers (9 páginas), short papers (4 páginas) e tiny papers (2 páginas), com revisão duplo-cego via OpenReview e *acceptance notifications* anunciadas em março de 2026.
+**O que aconteceu no evento.** O workshop recebeu mais de **110 submissões**, número que por si só sinaliza o apetite da comunidade pelo tema. O line-up de keynotes incluiu Volker Tresp, Chelsea Finn, Jeff Clune, Mengye Ren, Aditi Raghunathan, Weiwen Liu, Fred Sala e Jeff Pan, cobrindo desde memória de longo prazo até agentes auto-evolutivos e abordagens data-centric. Um destaque citado por participantes foi a keynote de Aditi Raghunathan, "Architecting Controllable Parametric Memory in Language Models", que introduziu os conceitos de *Memorization Sinks* (MemSinks) e *Natively Unlearnable LLMs* (NULLs) — uma ponte direta com a distinção agent memory × LLM memorization discutida nesta nota. Entre os papers aceitos publicamente disponíveis estão *Adaptive Memory Admission Control for LLM Agents* (`arxiv.org/abs/2603.04549`) e *Evaluating Memory Structure in LLM Agents* (OpenReview `id=a9vY2sJkf4`).
 
-O fato de a ICLR 2026 ocorrer no Brasil — primeira vez no hemisfério sul — e o workshop MemAgents ser um de seus eventos satélite tem relevância para comunidades de pesquisa fora dos EUA/Europa: torna o campo fisicamente acessível a pesquisadores de América Latina, que de outra forma teriam que cruzar o Atlântico ou o Pacífico para participar de conferências tier-1.
+O fato de a ICLR 2026 ter ocorrido no Brasil — primeira vez no hemisfério sul — e o workshop MemAgents ter sido um de seus eventos satélite teve relevância para comunidades de pesquisa fora dos EUA/Europa: tornou o campo fisicamente acessível a pesquisadores de América Latina, que de outra forma teriam que cruzar o Atlântico ou o Pacífico para participar de conferências tier-1.
 
 ## Distinção crítica do campo (consensual)
 
@@ -294,6 +297,8 @@ Essa tensão entre mapa teórico e números reais é o ponto de inflexão da tri
 - Hu, Y. et al. (2025). *Memory in the Age of AI Agents: A Survey*. arXiv `2512.13564` — `https://arxiv.org/abs/2512.13564`
 - *Agent-Memory-Paper-List* — companion paper-list mantido por Shichun Liu em `https://github.com/Shichun-Liu/Agent-Memory-Paper-List`
 - ICLR 2026 Workshop on Memory for LLM-Based Agentic Systems ("MemAgents") — `https://sites.google.com/view/memagent-iclr26/`
+- *Adaptive Memory Admission Control for LLM Agents*. ICLR 2026 Workshop MemAgents — `https://arxiv.org/abs/2603.04549`
+- *Evaluating Memory Structure in LLM Agents*. ICLR 2026 Workshop MemAgents, OpenReview — `https://openreview.net/pdf?id=a9vY2sJkf4`
 - *Awesome-GraphMemory* — `https://github.com/DEEP-PolyU/Awesome-GraphMemory` (catálogo curado de sistemas grafo-baseados)
 - *Awesome-Agent-Memory* (TeleAI-UAGI) — `https://github.com/TeleAI-UAGI/Awesome-Agent-Memory` (catálogo curado complementar)
 - Park, J.S. et al. (2023). *Generative Agents: Interactive Simulacra of Human Behavior*. arXiv `2304.03442` — fundação do mecanismo Reflective Self-Improvement

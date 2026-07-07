@@ -1,11 +1,11 @@
 ---
 title: "Mem0 — vetorial + grafo"
 created: 2026-04-26
-updated: 2026-06-28
+updated: 2026-07-07
 type: concept
 fase: Iniciado
-progress: backlog
-status: seedling
+progress: in_progress
+status: growing
 publish: true
 tags:
   - memoria-agentes
@@ -22,7 +22,7 @@ aliases:
 # Mem0
 
 > [!abstract] TL;DR
-> **Mem0** (`github.com/mem0ai/mem0`) é um framework de produção que se posiciona como **"universal memory layer for AI agents"**: uma camada drop-in que extrai fatos salientes de conversas via LLM e os persiste em **vector store** (variante base) ou em uma combinação de vetor com **grafo** (variante **Mem0g** descrita no paper original). O paper de fundação (arxiv 2504.19413, ECAI 2025) reporta **91% de redução em p95 latency** e **mais de 90% de economia de tokens** versus baselines full-context na avaliação LOCOMO. O blog oficial *State of AI Agent Memory 2026* (1º de abril de 2026) e a página de pesquisa (`mem0.ai/research`, 25 de abril de 2026) reportam **93,4% no LongMemEval** com o algoritmo atualizado — número **auto-reportado**, a ser validado por benchmark independente. Cobertura ampla de integrações: ~24 frameworks listados em `docs.mem0.ai/integrations` (LangChain, LangGraph, CrewAI, LlamaIndex, AutoGen, Vercel AI SDK, OpenAI Agents SDK, Google ADK, Mastra, Agno, Pipecat, ElevenLabs, Livekit e outros — verificar lista atual). Apache-2.0, Python + TypeScript SDK, self-host gratuito, cloud paga em modelo freemium.
+> **Mem0** (`github.com/mem0ai/mem0`) é um framework de produção que se posiciona como **"universal memory layer for AI agents"**: uma camada drop-in que extrai fatos salientes de conversas via LLM e os persiste em **vector store** (variante base) ou em uma combinação de vetor com **grafo** (variante **Mem0g** descrita no paper original). O paper de fundação (arxiv 2504.19413, ECAI 2025) reporta **91% de redução em p95 latency** e **mais de 90% de economia de tokens** versus baselines full-context na avaliação LOCOMO. O blog oficial *State of AI Agent Memory 2026* (1º de abril de 2026) e a página de pesquisa (`mem0.ai/research`) reportavam **93,4% no LongMemEval** em abril de 2026 — número **auto-reportado**, a ser validado por benchmark independente. **Atualização de julho/2026:** o repositório (verificado em `github.com/mem0ai/mem0`, julho/2026) já reporta **94,8% no LongMemEval** e **91,6 no LoCoMo**, atribuídos a uma nova versão do algoritmo (*"single-pass ADD-only extraction"* — uma única chamada de LLM por `add`, sem operações separadas de UPDATE/DELETE) — os números seguem auto-reportados. Cobertura ampla de integrações: ~24 frameworks listados em `docs.mem0.ai/integrations` (LangChain, LangGraph, CrewAI, LlamaIndex, AutoGen, Vercel AI SDK, OpenAI Agents SDK, Google ADK, Mastra, Agno, Pipecat, ElevenLabs, Livekit e outros — contagem estável entre abril e julho de 2026). Apache-2.0, Python + TypeScript SDK, self-host gratuito, cloud paga em modelo freemium.
 
 > [!question]- Dúvidas e lacunas desta nota
 > - Dúvida gerada pelo conteúdo: Se o pipeline de extração de "fatos salientes" é opaco e controlado por um LLM interno, como auditar o que foi descartado como "não saliente"? Existe algum modo de debug ou log de extração acessível no SDK open-source?
@@ -30,7 +30,9 @@ aliases:
 
 ## O que é
 
-`mem0` é um framework para **memória persistente de agentes** mantido pela Mem0 AI. O paper de fundação — *Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory* (Chhikara, Khant, Aryan, Singh, Yadav; arxiv 2504.19413, ECAI 2025) — apresenta o sistema como resposta ao problema das [[Dicionário de IA#Context window|janelas de contexto]] fixas (ver [[02 - O problema das janelas de contexto]]) e às limitações de [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] simples para conversas longas (ver [[04 - RAG vs memória de longo prazo]] e [[05 - Beyond RAG - quando RAG não basta]]).
+Imagine um agent de suporte que conversa com o mesmo usuário há dez sessões. Na 11ª, o histórico completo não cabe mais na [[Dicionário de IA#Context window|janela de contexto]] — e a estratégia mais comum, truncar as mensagens mais antigas, apaga justamente a instrução que o usuário deu na sessão 2 ("nunca me sugira o plano X, já cancelei duas vezes"). O agent repete o erro, o usuário se irrita, e o time de produto só descobre o problema quando o ticket de reclamação chega. Esse é o sintoma que o `mem0` ataca: não é falta de memória de curto prazo dentro de uma conversa, é a ausência de um lugar *fora* da janela onde fatos estáveis sobrevivam ao truncamento.
+
+`mem0` é um framework para **memória persistente de agentes** mantido pela Mem0 AI. O paper de fundação — *Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory* (Chhikara, Khant, Aryan, Singh, Yadav; arxiv 2504.19413, ECAI 2025) — apresenta o sistema como resposta ao problema das janelas de contexto fixas (ver [[02 - O problema das janelas de contexto]]) e às limitações de [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] simples para conversas longas (ver [[04 - RAG vs memória de longo prazo]] e [[05 - Beyond RAG - quando RAG não basta]]).
 
 O posicionamento canônico é o de **memory layer universal**: em vez de propor um framework de agent novo, Mem0 funciona como camada de memória que se acopla a qualquer [[Dicionário de IA#LLM (Large Language Model)|LLM]] e a qualquer framework existente. A API central é minimalista — `memory.add(messages, user_id)` e `memory.search(query, user_id)` — e abstrai extração, armazenamento e recuperação por trás dessas duas operações. O paper apresenta duas variantes:
 
@@ -42,10 +44,10 @@ O posicionamento canônico é o de **memory layer universal**: em vez de propor 
 
 ## Por que importa
 
-- **Talvez o framework de memória open-source mais comercialmente maduro em abril de 2026.** Repositório com mais de 54 mil estrelas, paper peer-review-quality (ECAI 2025), empresa por trás do projeto (Mem0 AI), pricing público estabelecido, SDKs Python e TypeScript estáveis. É a opção de referência para times que querem memória de produção sem construir do zero.
+- **Talvez o framework de memória open-source mais comercialmente maduro em 2026.** Repositório com mais de 54 mil estrelas em abril de 2026, **60,3 mil em julho de 2026** (verificado em `github.com/mem0ai/mem0`), paper peer-review-quality (ECAI 2025), empresa por trás do projeto (Mem0 AI), pricing público estabelecido, SDKs Python e TypeScript estáveis. É a opção de referência para times que querem memória de produção sem construir do zero.
 - **Memory layer simplifica integração.** Não força reescrever o agent: acopla-se a um LangGraph existente, a um CrewAI, a um Vercel AI SDK chatbot, e ganha persistência sem reorganizar o código de orquestração. Diferente de [[14 - Letta (ex-MemGPT)|Letta]], que é um framework de agent stateful por inteiro, Mem0 é estritamente *layer*.
 - **A variante grafo destrava raciocínio multi-hop.** No paper, Mem0g supera a variante base em queries que exigem composição de múltiplos fatos (entidades + relações), no espírito do que [[16 - Zep e Graphiti — knowledge graph temporal|Zep/Graphiti]] também propõem. O ganho não é gigantesco no LOCOMO (~2 pontos), mas é consistente.
-- **Score de 93,4% no LongMemEval (auto-reportado, abril/2026) é dos mais altos do mercado.** Aparece no blog oficial *State of AI Agent Memory 2026* e na página de pesquisa, com o caveat usual de score auto-reportado por vendor (ver [[21 - Comparativo crítico (LongMemEval)|21 - Comparativo crítico]] e [[22 - Críticas, limitações e armadilhas]]).
+- **Score no LongMemEval (auto-reportado) é dos mais altos do mercado — e subiu ao longo de 2026.** 93,4% em abril, **94,8% em julho** (após a atualização do algoritmo de extração), aparece no blog oficial *State of AI Agent Memory 2026*, na página de pesquisa e no próprio repositório, sempre com o caveat de score auto-reportado por vendor (ver [[21 - Comparativo crítico (LongMemEval)|21 - Comparativo crítico]] e [[22 - Críticas, limitações e armadilhas]]).
 - **Cobertura de integrações é o ponto comercial mais forte.** A página `docs.mem0.ai/integrations` lista ~24 frameworks de agentes — abrangência rara entre frameworks de memória.
 
 ## Como funciona
@@ -92,6 +94,23 @@ memories = m.search("dieta e metas de saúde", user_id="usuario_joao")
 
 O agente recebe os fatos recuperados no prompt, responde com continuidade e não precisa perguntar "pode me lembrar de onde paramos?". O usuário sente que o sistema realmente o conhece.
 
+### Uso incorreto: `memory.search` sem isolar por `user_id`
+
+E se o time, sob pressão de prazo, esquecer de passar `user_id` na busca? O SDK não obriga o parâmetro em toda chamada — e o erro compila, roda, e só aparece em produção:
+
+```python
+# ERRADO — busca sem filtrar por usuário
+memories = m.search("dieta e metas de saúde")
+# Sem user_id, a busca pode varrer (ou, dependendo da config do
+# vector store, misturar) memórias de OUTROS usuários que também
+# mencionaram "dieta" — vazamento de dado pessoal de saúde entre contas.
+
+# CERTO — sempre escopar a busca (e o add) pelo usuário/sessão
+memories = m.search("dieta e metas de saúde", user_id="usuario_joao")
+```
+
+A consequência não é um crash — é silenciosa: o agent responde com um fato de saúde de outro usuário, e ninguém percebe até uma auditoria ou uma reclamação de privacidade. O mesmo descuido em `memory.add` tem um custo diferente: cada chamada dispara ao menos uma invocação extra de LLM para extrair fatos (ver Armadilha 2, abaixo); rodar `add` em alto volume sem medir esse custo de extração — por exemplo, chamando `add` a cada mensagem de um chat com milhares de usuários simultâneos — infla a fatura de tokens sem que o benchmark de latência de retrieval do vendor jamais capture esse gasto.
+
 ### Fluxo de extração de fatos
 
 O passo interno mais crítico é o de extração: o LLM de extração (que pode ser diferente do LLM de resposta) recebe o texto cru da conversa e produz afirmações atômicas, como:
@@ -133,8 +152,8 @@ Os itens abaixo foram verificados em `github.com/mem0ai/mem0`, `docs.mem0.ai` e 
 - **Variantes (paper):** **Base Mem0** (vetorial puro, 66,9% LLM-as-judge no LOCOMO) e **Mem0g** (vetorial + grafo, 68,4% LLM-as-judge no LOCOMO).
 - **Integrações de framework (~24 listadas em `docs.mem0.ai/integrations`):** LangChain, LangGraph, LangChain Tools, LlamaIndex, CrewAI, AutoGen, Vercel AI SDK, OpenAI Agents SDK, Google ADK, Mastra, Agno, Pipecat, Camel AI, ChatDev, ElevenLabs, Livekit, Dify, Flowise, Raycast, AgentOps, Keywords AI, AWS Bedrock, Mem0 MCP e outras. **Não afirmar "21 integrações"** sem reverificar — a lista cresceu desde o paper original.
 - **API:** REST (cloud), Python SDK, TypeScript SDK, self-hosted server.
-- **Pricing (em `mem0.ai/pricing`, abril/2026):** *Hobby* gratuito (10k add / 1k search por mês); *Starter* US$ 19/mês (50k add / 5k search); *Pro* US$ 249/mês (500k add / 50k search, analytics); *Enterprise* sob consulta (on-prem, SSO, audit logs). Self-host open-source é gratuito sempre — paga-se apenas pelo cloud gerenciado.
-- **Scores reportados (auto-reportados por Mem0, em `mem0.ai/research`, 25 de abril de 2026):** LongMemEval **93,4** (categoria geral 92,0, em 500 questões / 6 categorias); LOCOMO **91,6** (overall 85,0); BEAM **64,1** em 1M tokens e **48,6** em 10M tokens; "averaging under 7,000 tokens per retrieval call" vs 25 mil+ em métodos full-context.
+- **Pricing (em `mem0.ai/pricing`, verificado em julho/2026):** *Free* gratuito (10k add / 1k search por mês); *Starter* US$ 19/mês (50k add / 5k search); **novo tier *Growth* US$ 79/mês (200k add / 20k search, 3 projetos, suporte por e-mail)** — não existia na checagem de abril/2026; *Pro* US$ 249/mês (500k add / 50k search, analytics avançado, projetos ilimitados); *Enterprise* sob consulta (on-prem, SSO, audit logs, usage-based pricing). Self-host open-source é gratuito sempre — paga-se apenas pelo cloud gerenciado.
+- **Scores reportados (auto-reportados por Mem0, em `mem0.ai/research`, 25 de abril de 2026):** LongMemEval **93,4** (categoria geral 92,0, em 500 questões / 6 categorias); LOCOMO **91,6** (overall 85,0); BEAM **64,1** em 1M tokens e **48,6** em 10M tokens; "averaging under 7,000 tokens per retrieval call" vs 25 mil+ em métodos full-context. **Atualização (verificada em `github.com/mem0ai/mem0`, julho/2026):** com o novo algoritmo de extração *single-pass ADD-only* (uma chamada de LLM por `add`, sem UPDATE/DELETE separados), o repositório já reporta **LongMemEval 94,8** e **LoCoMo 91,6** — a mudança de algoritmo é relevante porque a seção "Pipeline de extração em detalhe" desta nota descreve o modelo de eventos `ADD`/`UPDATE`/`DELETE`/`NONE`; times que atualizarem o SDK devem checar o changelog para confirmar se esse modelo de eventos ainda se aplica à versão instalada.
 - **Claims de eficiência do paper (arxiv 2504.19413):** **91% lower p95 latency** vs full-context, **+90% economia de tokens** vs full-context, e **26% de melhora relativa** sobre OpenAI Memory na métrica LLM-as-judge.
 
 ### Comparativo de posicionamento: Mem0 vs Letta
@@ -290,7 +309,7 @@ Mem0 resolve o problema de persistência de fatos factual-episódicos com uma AP
 ## Referências
 
 - Chhikara, P.; Khant, D.; Aryan, S.; Singh, T.; Yadav, D. *Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory*. arXiv:2504.19413, aceito em ECAI 2025. `https://arxiv.org/abs/2504.19413`
-- Repositório oficial: `https://github.com/mem0ai/mem0` (Apache-2.0, ~54k stars em abril de 2026).
+- Repositório oficial: `https://github.com/mem0ai/mem0` (Apache-2.0; ~54k stars em abril de 2026, ~60,3k em julho de 2026). Ver também `/releases` para changelog (confirma ausência de menções a Neo4j/graph store externo nas releases recentes e a introdução do algoritmo *single-pass ADD-only*).
 - Site oficial: `https://mem0.ai/`
 - Página de pesquisa com benchmarks atualizados: `https://mem0.ai/research` (25 de abril de 2026).
 - Blog oficial — *State of AI Agent Memory 2026* (1 de abril de 2026): `https://mem0.ai/blog/state-of-ai-agent-memory-2026`

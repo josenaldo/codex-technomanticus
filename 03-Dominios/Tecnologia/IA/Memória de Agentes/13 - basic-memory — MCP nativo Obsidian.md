@@ -1,7 +1,7 @@
 ---
 title: "basic-memory — MCP nativo Obsidian"
 created: 2026-04-26
-updated: 2026-04-26
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -31,7 +31,7 @@ aliases:
 
 ## O que é
 
-`basic-memory` é um **servidor [[Dicionário de IA#MCP (Model Context Protocol)|MCP]]** que dá memória persistente a [[Dicionário de IA#LLM (Large Language Model)|LLMs]] compatíveis (Claude Desktop, Claude Code, Cursor, VS Code com MCP, etc.) gravando o conteúdo das conversas em arquivos markdown locais. O servidor expõe um conjunto de ferramentas — `write_note`, `read_note`, `search_notes`, `edit_note`, `build_context`, entre outras — que o LLM invoca via MCP para criar, ler, editar, mover ou deletar notas. Cada nota é um arquivo `.md` na pasta configurada (por padrão `~/basic-memory`), com frontmatter padronizado e corpo seguindo convenções semânticas explícitas.
+Toda sessão nova com um agente de IA começa do zero. Você passa a tarde de sexta decidindo, junto com o Claude Code, a arquitetura de um módulo — e na segunda-feira o agente não lembra de nada: nem a decisão, nem o porquê dela. Colar o histórico inteiro a cada sessão não escala, e um resumo manual perde nuance. O problema de fundo é onde guardar essa memória entre sessões de um jeito que sobreviva à troca de ferramenta, seja auditável por um humano e não prenda o usuário a um formato proprietário. `basic-memory` responde com a opção mais simples possível: em vez de um banco vetorial opaco que só o agente consegue ler, a memória vira **arquivos `.md` numa pasta comum** — legíveis em qualquer editor, versionáveis em git, portáveis para qualquer outro sistema sem migração. É um **servidor [[Dicionário de IA#MCP (Model Context Protocol)|MCP]]** que dá essa memória persistente a [[Dicionário de IA#LLM (Large Language Model)|LLMs]] compatíveis (Claude Desktop, Claude Code, Cursor, VS Code com MCP, etc.), gravando o conteúdo das conversas em arquivos markdown locais. O servidor expõe um conjunto de ferramentas — `write_note`, `read_note`, `search_notes`, `edit_note`, `build_context`, entre outras — que o LLM invoca via MCP para criar, ler, editar, mover ou deletar notas. Cada nota é um arquivo `.md` na pasta configurada (por padrão `~/basic-memory`), com frontmatter padronizado e corpo seguindo convenções semânticas explícitas.
 
 A persistência acontece em duas camadas: o markdown é a **fonte da verdade** legível por humano e por qualquer editor, e o **SQLite local** (em `~/.basic-memory/`) indexa o conteúdo para busca rápida — full-text e, a partir de v0.19.0, [[Dicionário de IA#hybrid search|busca vetorial híbrida]] com [[Dicionário de IA#embedding|embeddings]] via FastEmbed. O índice é derivado dos arquivos: apagar o SQLite reconstrói; perder os arquivos perde tudo. O substrato canônico é o markdown ([[07 - Por que Obsidian e markdown como substrato]]), o SQLite é cache. A relação com Obsidian é estritamente de **compartilhamento de pasta**: o usuário aponta o Obsidian para a pasta `basic-memory` (ou vice-versa) e ambos leem e escrevem nos mesmos arquivos.
 
@@ -45,7 +45,7 @@ A escolha arquitetural mais importante do basic-memory é que **nenhum dado fica
 
 ## Por que importa
 
-- **Maior consenso prático em "memória de agente em markdown" no início de 2026.** Repositório com mais de 2.900 estrelas, ativo, com governance em empresa (basicmachines-co) — sinal de que o esforço não evapora amanhã. É a referência adulta da família "Karpathy-inspired" em [[09 - Panorama de implementações (abril 2026)|09 - Panorama]].
+- **Maior consenso prático em "memória de agente em markdown" no início de 2026.** Repositório com mais de 3.300 estrelas (3.385 em julho/2026, era 2.929 em abril), ativo, com governance em empresa (basicmachines-co) — sinal de que o esforço não evapora amanhã. É a referência adulta da família "Karpathy-inspired" em [[09 - Panorama de implementações (abril 2026)|09 - Panorama]].
 - **Resolve "agent escreve markdown sem schema".** O problema clássico do [[06 - O LLM Wiki Pattern (gist do Karpathy)|LLM Wiki Pattern]] aplicado a agents é que markdown livre vira lixo. `basic-memory` impõe **convenções mínimas** — frontmatter com `permalink`, observações `- [categoria]`, relações `- relacao [[link]]` — que tornam cada nota uma `Entity` com `Observations` e `Relations`, formando grafo navegável.
 - **Compatibilidade com Obsidian é o killer feature.** Vault Obsidian existente vira memória de agente sem migração: aponte o `basic-memory` para a pasta do vault e os arquivos já são markdown padrão — sem lock-in, sem export.
 - **Local-first como default, cloud opcional.** A versão open-source roda 100% local; a Cloud paga (v0.19.x) é opt-in para sync entre dispositivos. Para casos que exigem privacidade hard, local-first elimina a discussão.
@@ -99,7 +99,7 @@ No Claude Desktop ou Claude Code, o cliente precisa ser configurado para falar c
 
 ## Anatomia técnica
 
-Os itens abaixo refletem o estado público do repositório em abril de 2026 (verificados via README oficial e conteúdo do diretório `src/basic_memory/mcp/tools`). O projeto está ativo — pushes recentes, releases regulares — portanto vale revisitar a fonte primária antes de qualquer decisão crítica.
+Os itens abaixo refletem o estado público do repositório em abril de 2026, **revalidados em julho de 2026** (verificados via API do GitHub, README oficial e conteúdo do diretório `src/basic_memory/mcp/tools`). Entre as duas datas o projeto saltou de v0.19.x para **v0.22.1** (publicada em 13/06/2026), com dezenas de releases no intervalo — o ritmo de shipping é alto. Portanto vale revisitar a fonte primária antes de qualquer decisão crítica.
 
 - **Tipo.** MCP server — Model Context Protocol. O servidor é processo separado que o [[Dicionário de IA#MCP client|cliente LLM]] (Claude Desktop, VS Code, Cursor, [[Dicionário de IA#Claude Code|Claude Code]]) invoca via stdio ou HTTP/SSE.
 - **Substrato.** Arquivos `.md` em pasta local (default `~/basic-memory`) + índice SQLite local (default em `~/.basic-memory/`). Markdown é fonte da verdade; SQLite é cache reconstruível. A partir de v0.19.0, busca vetorial híbrida via FastEmbed embeddings (full-text + similaridade semântica).
@@ -109,6 +109,8 @@ Os itens abaixo refletem o estado público do repositório em abril de 2026 (ver
     - **Search & discovery:** `search_notes` (com filtros por tag, tipo, data, metadata) e `search`
     - **Project management:** `list_memory_projects`, `create_memory_project`, `get_current_project`, `sync_status`
     - **Visualização:** `canvas` (gera visualizações de knowledge graph)
+    - **Schema (adicionado após abril/2026):** `schema_infer`, `schema_validate`, `schema_diff` — inferência e validação de schema sobre as notas, endereçando parte da Armadilha 4 abaixo (categorias `[tipo]` sem validação)
+    - **Cloud (adicionado após abril/2026):** `cloud_info`, `release_notes` — consulta de estado da Cloud e changelog diretamente via MCP, sem sair do cliente
 - **Convenções de markdown.** Cada arquivo segue:
     - **Frontmatter** com `title`, `type`, `permalink` (slug URI usado em `memory://`), e metadata opcional como `tags`
     - **Observações estruturadas:** `- [categoria] conteúdo #tag (contexto opcional)` — cada bullet vira uma `Observation` indexada
@@ -136,7 +138,7 @@ Isso tem implicações práticas para quem está adotando:
 - Versões anteriores à v0.19.0: busca rápida e leve, mas léxica. Ideal para quem tem recursos computacionais limitados ou quer minimize em dependências.
 - v0.19.0+: busca semântica local sem custo de API externa. Requer modelo de embedding carregado em memória — custo de RAM (~400MB para modelos BGE-small), mas sem latência de rede e sem custo por query.
 
-A Cloud (v0.19.x+) adiciona sync entre dispositivos sobre o mesmo substrato, mantendo markdown como fonte da verdade. O modelo é opt-in: sem configurar Cloud, tudo fica local.
+A Cloud adiciona sync entre dispositivos sobre o mesmo substrato, mantendo markdown como fonte da verdade. O modelo é opt-in: sem configurar Cloud, tudo fica local. Entre abril e julho de 2026 a Cloud ganhou o produto **Basic Memory Teams** — um workspace compartilhado onde qualquer nota escrita por um membro do time fica imediatamente visível para os outros — além de snapshots, backup e restore point-in-time. Isso não muda o substrato (ainda é markdown + SQLite/Postgres local por workspace), mas amplia o caso de uso de "indivíduo" para "time pequeno", o que reduz parcialmente a ressalva de "volume alto ou multi-user concorrente" na seção "Quando NÃO vale" — vale reavaliar aquela seção à luz desta mudança antes de descartar basic-memory por esse motivo.
 
 ## Exemplo de nota gerada pelo basic-memory
 
@@ -287,7 +289,7 @@ Se as respostas a 1, 2 forem "sim" e 3, 4, 5, 6 não forem problemas, basic-memo
 
 ## Referências
 
-- Repositório oficial — `https://github.com/basicmachines-co/basic-memory` (verificado via API do GitHub: 2.929 estrelas, default branch `main`, último push em 23/04/2026, licença AGPL-3.0, linguagem Python, topics incluem `mcp`, `obsidian`, `markdown`, `local-first`)
+- Repositório oficial — `https://github.com/basicmachines-co/basic-memory` (verificado via API do GitHub em abril/2026: 2.929 estrelas, último push em 23/04/2026; **revalidado em julho/2026: 3.385 estrelas, último push em 07/07/2026, versão atual v0.22.1 (publicada 13/06/2026)**, default branch `main`, licença AGPL-3.0, linguagem Python, topics incluem `mcp`, `obsidian`, `markdown`, `local-first`)
 - README oficial (verificado): `https://github.com/basicmachines-co/basic-memory#readme`
 - Documentação oficial: `https://docs.basicmemory.com/` — inclui guia de instalação, configuração MCP e referência de todas as tools expostas
 - Site: `https://basicmemory.com`

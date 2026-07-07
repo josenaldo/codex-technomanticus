@@ -1,7 +1,7 @@
 ---
 title: "Comparativo crítico (LongMemEval)"
 created: 2026-04-26
-updated: 2026-06-28
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -28,6 +28,8 @@ aliases:
 > - Lacuna potencial: a nota compara sistemas em LongMemEval mas não mostra como rodar o benchmark você mesmo num sistema customizado — um passo a passo de reprodução tornaria esta nota um guia prático além de um comparativo de resultados.
 
 ## O que é o LongMemEval
+
+Imagine comparar três candidatos a fornecer memória de longo prazo para o seu assistente: um deles anuncia "96,6% de acurácia", outro "93,4%", um terceiro "71,2%". Qual é o melhor? A pergunta parece trivial, mas esconde uma armadilha — cada número pode ter sido medido num benchmark diferente, com um modelo base diferente, num modo de avaliação diferente (raw ou hybrid). Comparar os três lado a lado sem saber isso é como comparar tempos de corrida sem saber se foram 100m ou maratona. É exatamente esse problema — medir sistemas de memória de agentes numa régua comum, comparável — que o **LongMemEval** existe para resolver.
 
 [LongMemEval](https://github.com/xiaowu0162/LongMemEval) é um benchmark publicado em ICLR 2025 (Wu et al.) projetado para avaliar memória de longo prazo em **chat assistants** ao longo de múltiplas sessões. Cobre cinco-plus categorias: *single-hop reasoning*, *multi-hop reasoning*, *temporal reasoning*, *abstention* (saber quando dizer "não sei") e *knowledge-intensive QA*. As métricas mais reportadas são *Recall@5* (R@5) — proporção em que o trecho relevante aparece nos top-5 retrieved — e acurácia de resposta condicionada à recuperação.
 

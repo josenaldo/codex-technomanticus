@@ -1,7 +1,7 @@
 ---
 title: "MemPalace (Milla Jovovich)"
 created: 2026-04-26
-updated: 2026-06-28
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -35,9 +35,16 @@ aliases:
 > - Fontes oficiais únicas: `github.com/milla-jovovich/mempalace` e `github.com/MemPalace/mempalace`.
 > - O score 98,4% em modo híbrido tem ressalvas críticas — análise rigorosa em [[22 - Críticas, limitações e armadilhas]].
 
+> [!warning] Atualização de caducidade (verificado julho de 2026)
+> Esta nota descreve o estado do projeto em **abril de 2026** (lançamento). Como previsto — "projeto novo, breaking changes esperáveis" — a arquitetura e a contagem de MCP tools **já mudaram**:
+> - **Arquitetura.** A versão 3.3.0 introduziu uma quarta camada, **closets**, entre rooms e drawers: um índice compacto de ponteiros AAAK que a busca consulta primeiro (rápido) antes de hidratar o conteúdo verbatim nos drawers. Algumas versões também adicionam **halls** (tipos de memória, acima de rooms) e **tunnels** (links cross-wing entre drawers relacionados). A hierarquia descrita nesta nota (wings → rooms → drawers) é a versão de lançamento, não a atual.
+> - **Contagem de MCP tools.** A discrepância de lançamento (29 relatadas no README / 20 auditadas por `lhl/agentic-memory`) não convergiu num número estável — análises subsequentes reportaram 19, 24 e, mais recentemente, a documentação oficial (`mempalaceofficial.com`) lista **34 tools**. Tratar qualquer número de tools citado (incluindo os desta nota) como um retrato datado, não uma constante do projeto.
+> - **AAAK.** O time reconheceu publicamente parte da crítica (README atualizado admitindo que AAAK não economiza tokens em pequena escala e que o exemplo original era enganoso), o que corrobora — em vez de contradizer — o hedge já registrado nesta nota sobre o drop de 12,4pp.
+> - Antes de citar qualquer número técnico (tools, score, camadas) em produção ou entrevista, confira o estado atual em `github.com/MemPalace/mempalace/releases` e `mempalaceofficial.com`.
+
 ## O que é
 
-**MemPalace** é um sistema de memória persistente para agentes [[Dicionário de IA#LLM (Large Language Model)|LLM]] lançado publicamente em abril de 2026. A mantenedora é **Milla Jovovich** — nome literal, não pseudônimo de marketing — autora do repositório `github.com/milla-jovovich/mempalace` e da organização paralela `github.com/MemPalace/mempalace`. A coincidência onomástica com a atriz alimenta confusão em threads e posts, mas esses dois são os únicos repositórios oficiais. Repetindo o aviso anterior: **o domínio `mempalace.tech` é impostor com payload de malware** e não tem relação com o projeto.
+Imagine um time que precisa dar a um agent memória que sobrevive entre sessões, mas não pode mandar nada para a nuvem — contrato de compliance proíbe. A opção mais simples seria um banco relacional com busca por palavra-chave, mas aí se perde a recuperação por similaridade semântica que faz um agent "lembrar" de algo relacionado, não apenas idêntico. É esse o problema que **MemPalace** ataca: memória persistente, **local-first**, para agentes [[Dicionário de IA#LLM (Large Language Model)|LLM]], lançada publicamente em abril de 2026. A mantenedora é **Milla Jovovich** — nome literal, não pseudônimo de marketing — autora do repositório `github.com/milla-jovovich/mempalace` e da organização paralela `github.com/MemPalace/mempalace`. A coincidência onomástica com a atriz alimenta confusão em threads e posts, mas esses dois são os únicos repositórios oficiais. Repetindo o aviso anterior: **o domínio `mempalace.tech` é impostor com payload de malware** e não tem relação com o projeto.
 
 A arquitetura aplica a metáfora do **memory palace** — também conhecida como **método dos loci**, técnica mnemônica clássica da retórica grega — para organizar a memória em hierarquia espacial: **wings** (dimensões macro como pessoas e projetos), **rooms** (subtópicos dentro de cada wing) e **drawers** (a unidade atômica que guarda conteúdo verbatim). O foco é **local-first**: após a primeira ingestão, a operação é offline, sem chamadas a APIs externas. O substrato técnico combina **SQLite local** (knowledge graph temporal e metadados) com **ChromaDB** como [[Dicionário de IA#vector store|vector store]] padrão, e a interface é **MCP-native** — 29 ferramentas expostas via [[Dicionário de IA#MCP (Model Context Protocol)|Model Context Protocol]], com integração explícita ao Claude Code.
 
@@ -239,6 +246,9 @@ O **AAAK (Adaptive Attention-Aware Knowledge)** compression é o mecanismo propr
 
 A forma prática de pensar sobre AAAK: é um tradeoff entre custo de armazenamento e qualidade de retrieval, não uma solução de zero custo. Para drawers de alta importância (decisões, contextos críticos), desativar AAAK e manter verbatim é a opção mais segura. Para drawers de baixa importância ou alta recência de atualização (notas de reunião velhas, rascunhos), AAAK pode ser custo-benefício aceitável.
 
+> [!example] Cenário de falha concreto
+> Um time habilita AAAK globalmente no primeiro dia — "zero information loss, por que não comprimir tudo?" — sem ler a auditoria externa. Três meses depois, o agent falha em recuperar a justificativa exata de uma decisão de arquitetura antiga ("por que escolhemos Postgres em vez de DynamoDB para esse serviço?") porque o drawer correspondente foi comprimido pelo AAAK e a resposta cai no bucket dos ~12,4pp de qualidade perdida (96,6% → 84,2% medido por `lhl/agentic-memory`). O time só descobre o problema ao debugar um retrieval ruim em produção — tarde demais para a decisão que precisava da nuance original. O erro não foi usar AAAK; foi habilitá-lo por padrão para drawers críticos sem ler o número medido, confiando no claim de "zero perda" do README.
+
 ## Como explicar em inglês
 
 > [!tip] Interview quote
@@ -298,4 +308,6 @@ A próxima nota, [[18 - Generative Agents]], sobe o nível de abstração: em ve
 - Paper crítico — *Spatial Metaphors for LLM Memory: A Critical Analysis of MemPalace*, arxiv 2604.21284 — `https://arxiv.org/abs/2604.21284`
 - Análise externa independente — `https://github.com/lhl/agentic-memory/blob/main/ANALYSIS-mempalace.md`
 - Substack alexeyondata — *An Unexpected Entry Into AI Memory: Milla Jovovich's Open-Source MemPalace* (cobertura jornalística, abril de 2026)
+- Releases oficiais (verificação de caducidade, julho de 2026) — `https://github.com/MemPalace/mempalace/releases`
+- Documentação oficial de arquitetura e MCP tools (verificação de caducidade, julho de 2026) — `https://mempalaceofficial.com`
 - **Aviso de segurança:** o domínio `mempalace.tech` **não é fonte oficial** e foi reportado como vetor de malware — não acessar.

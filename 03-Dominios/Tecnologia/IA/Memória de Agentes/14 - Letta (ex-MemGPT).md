@@ -1,11 +1,11 @@
 ---
 title: "Letta (ex-MemGPT)"
 created: 2026-04-26
-updated: 2026-06-28
+updated: 2026-07-07
 type: concept
 fase: Iniciado
-progress: backlog
-status: seedling
+progress: in_progress
+status: growing
 publish: true
 tags:
   - memoria-agentes
@@ -31,7 +31,9 @@ aliases:
 
 ## O que é
 
-Letta é um framework para construir **agents stateful** com memória persistente entre sessões. Em vez de tratar o [[Dicionário de IA#LLM (Large Language Model)|LLM]] como função sem estado e tratar a memória como camada externa (caso típico de [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] simples), Letta posiciona o LLM como **kernel de um sistema operacional** que gerencia sua própria memória — herança direta da metáfora apresentada no paper original do MemGPT. O agent não é um wrapper sobre prompts; é um processo persistente, com identidade, com estado salvo em banco de dados, que continua existindo entre invocações.
+Imagine que você precisa construir um agent de suporte que atende o mesmo cliente por semanas. Cada sessão nova é uma janela de contexto fresca — o agent não lembra o que resolveu ontem, a menos que **alguém decida, com código, o que vale a pena persistir e o que descartar**. É esse "alguém" que costuma virar dor de cabeça: escrever heurísticas manuais de retenção (o que vai pro banco? quando resumir? quando esquecer?) é trabalho de engenharia que cresce junto com o produto, e erra silenciosamente — decisões importantes do usuário somem porque a heurística de corte não previu aquele caso.
+
+Letta ataca esse problema virando a pergunta de cabeça para baixo: em vez do desenvolvedor decidir o que persistir, **o próprio agent decide**. Letta é um framework para construir **agents stateful** com memória persistente entre sessões. Em vez de tratar o [[Dicionário de IA#LLM (Large Language Model)|LLM]] como função sem estado e tratar a memória como camada externa (caso típico de [[Dicionário de IA#RAG (Retrieval-Augmented Generation)|RAG]] simples), Letta posiciona o LLM como **kernel de um sistema operacional** que gerencia sua própria memória — herança direta da metáfora apresentada no paper original do MemGPT. O agent não é um wrapper sobre prompts; é um processo persistente, com identidade, com estado salvo em banco de dados, que continua existindo entre invocações.
 
 A linhagem do projeto é importante: o **MemGPT** (Packer, Wooders, Lin, Fang, Patil, Stoica, Gonzalez — UC Berkeley AI Research, outubro/2023) propôs **virtual context management** como solução para a limitação fundamental de [[Dicionário de IA#Context window|janelas de contexto]] fixas (ver [[02 - O problema das janelas de contexto]]). Em **setembro de 2024**, o projeto foi spun out como startup chamada **Letta**, fundada por Charles Packer e Sarah Wooders, e o framework open-source foi rebranded de `memgpt` para `letta` em consequência. O pattern conceitual permanece o mesmo do paper; o framework de produção amadureceu em torno dele com SDKs em Python e TypeScript, persistência formal, ADE (Agent Development Environment) e Letta Cloud.
 
@@ -39,7 +41,7 @@ A linhagem do projeto é importante: o **MemGPT** (Packer, Wooders, Lin, Fang, P
 
 - **Pioneirou virtual context management como vocabulário.** A analogia OS — RAM/disco com paginação — não era óbvia em 2023 e virou referência comum para discutir hierarquia de memória em LLM agents. Mesmo trabalhos posteriores que **não** adotam Letta usam o vocabulário herdado do MemGPT.
 - **Self-editing memory é diferencial real.** Em vez de o desenvolvedor escrever heurísticas para decidir o que armazenar, **o próprio agent invoca** as tools de memória durante o loop. Isso transfere uma decisão arquitetural ("o que vai para archival?") para a inteligência do modelo, com prós (autonomia) e contras (custo extra de tokens, comportamento menos previsível).
-- **Em 2026 é uma das poucas opções open-source production-grade para agents stateful.** O repositório passa dos 22 mil stars, é Python puro, Apache-2.0, com SDKs em Python e TypeScript. Lock-in de plataforma é baixo via self-host — quem não quer usar Letta Cloud sobe um servidor com PostgreSQL e desliga o restante.
+- **Em 2026 é uma das poucas opções open-source production-grade para agents stateful.** O repositório passa dos 23,7 mil stars (julho/2026, subindo de ~22 mil em abril), é Python puro, Apache-2.0, com SDKs em Python e TypeScript. Lock-in de plataforma é baixo via self-host — quem não quer usar Letta Cloud sobe um servidor com PostgreSQL e desliga o restante.
 - **Linhagem acadêmica clara.** Diferente de frameworks que aparecem como produtos sem paper de fundação, Letta tem trabalho peer-review-quality como ponto de partida (arxiv 2310.08560), com autores ainda envolvidos.
 
 ## Como funciona — hierarchical memory
@@ -95,7 +97,7 @@ sequenceDiagram
 
 ## Anatomia técnica
 
-Os itens abaixo refletem o estado público do projeto em abril de 2026, verificados via API do GitHub e documentação oficial em `docs.letta.com`. O ecossistema está ativo — pushes recentes, releases regulares — então vale revisitar a fonte primária antes de qualquer decisão crítica.
+Os itens abaixo refletem o estado público do projeto em julho de 2026, verificados via GitHub e documentação oficial em `docs.letta.com`. O ecossistema está ativo — release `v0.16.8` publicada em maio/2026, pushes recentes — então vale revisitar a fonte primária antes de qualquer decisão crítica.
 
 - **Tipo.** Framework open-source para agents stateful, distribuído como servidor + SDKs (Python e TypeScript). Roda como processo persistente que mantém estado em banco de dados.
 - **Linguagem.** Python (cerca de 99,5% do código, segundo a API do GitHub). SDKs cliente também em TypeScript.
@@ -105,18 +107,17 @@ Os itens abaixo refletem o estado público do projeto em abril de 2026, verifica
     - **Letta SDKs** — `pip install letta-client` (Python) e `npm install @letta-ai/letta-client` (TypeScript/Node).
     - **ADE (Agent Development Environment)** — interface visual para inspecionar e editar prompts, blocos de core memory e archival memory, observar o loop do agent, debugar tools.
     - **Letta Cloud** — versão hospedada, acessada via `app.letta.com`, com plano gratuito e tiers pagos.
-- **Modelos suportados.** Posicionado como **model-agnostic**. A documentação cita `Opus 4.5` e `GPT-5.2` como recomendações de melhor desempenho em abril de 2026 e referencia leaderboard próprio. Endpoints OpenAI, Anthropic e provedores compatíveis com OpenAI funcionam; suporte a modelos locais (via Ollama, vLLM, etc.) é parte do desenho. Lista exata e estado de cada provider vale conferir no docs antes de comprometer.
+- **Modelos suportados.** Posicionado como **model-agnostic**. Em julho de 2026, a documentação **não nomeia mais modelos específicos** como recomendação fixa — orienta a consultar `leaderboard.letta.com` para comparar desempenho e escolher o modelo base, e recomenda apenas "usar um frontier model grande" na primeira experiência, já que modelos mais fracos produzem comportamento imprevisível no agent loop. Endpoints OpenAI, Anthropic e provedores compatíveis com OpenAI funcionam; suporte a modelos locais (via Ollama, vLLM, etc.) é parte do desenho. Lista exata e estado de cada provider vale conferir no docs antes de comprometer.
 - **Persistência.** Estado completo do agent — memórias, mensagens, reasoning steps, tool calls — é serializado em banco. A documentação oficial é explícita: *"all state, includes memories, user messages, reasoning, tool calls, are all persisted in a database"*. PostgreSQL com pgvector é o backend canônico para deploy de produção (necessário para vector search em archival memory); SQLite é usado em setups de desenvolvimento. **Vale conferir o repositório atual** antes de assumir versões e extensões obrigatórias.
 - **API.** REST (servidor Letta), Python SDK (`letta-client`), TypeScript SDK (`@letta-ai/letta-client`).
 - **Raízes MemGPT.** O pattern hierárquico de memória implementado em Letta é **o mesmo descrito no paper original** (Packer et al., 2023). A documentação reconhece a herança e mantém a categoria *MemGPT Agents (Legacy)* — o agente memgpt original ainda está acessível, e o framework moderno generalizou o conceito (memory blocks, sleep-time agents etc.) sem abandonar a base.
-- **Pricing tiers em abril de 2026** (verificado em `letta.com/pricing` — pode mudar):
+- **Pricing tiers em julho de 2026** (verificado em `docs.letta.com/guides/api/plans` — pode mudar de novo):
     - **Self-host:** gratuito (open-source Apache-2.0).
-    - **Free** (Letta Cloud): plano de entrada sem custo mensal, com quota.
-    - **Pro:** US$ 20/mês — uso pessoal, quota para modelos open-weights e Letta Auto, pay-as-you-go acima do limite, até 20 stateful agents.
-    - **Max Lite:** US$ 100/mês — quota expandida cobrindo frontier models, 5x maior em Letta Auto, até 50 agents.
-    - **Max:** US$ 200/mês — power users, quota maior em frontier models, 20x em Letta Auto, early access.
-    - **API Plan:** US$ 20/mês de plataforma — para times/organizações, agents ilimitados em modelo usage-based: US$ 0,10 por agent ativo/mês, US$ 0,00015/segundo de execução de tool, mais consumo LLM passado adiante.
-    - Tier Enterprise/customizado padrão de 2024–2025 não aparece mais nominalmente na página em abril/2026; o caminho atual para uso enterprise parece ser API Plan + contato comercial. Verificar com vendas se o caso exige SLAs específicos.
+    - **Free** (Letta Cloud/Constellation): US$ 0/mês — até 3 agents com estado gerenciado, quota limitada de Letta Auto.
+    - **Pro:** US$ 20/mês — uso pessoal, quota semanal/mensal de Letta Auto com pay-as-you-go acima do limite, até 20 stateful agents.
+    - **API Plan:** US$ 20/mês de plataforma — para times/organizações construindo sobre a API com workloads automatizados, cobrança usage-based: US$ 0,10 por agent ativo/mês, US$ 0,00015/segundo de execução de tool, mais consumo LLM repassado ao custo do provider.
+    - **Enterprise:** pricing customizado — rates por volume, quotas maiores, RBAC, SSO (SAML/OIDC), suporte dedicado.
+    - Os tiers **Max Lite** (US$ 100/mês) e **Max** (US$ 200/mês), documentados em abril/2026, **saíram da página de pricing** em julho/2026 — mais um exemplo de instabilidade dos tiers (ver Armadilha 6). O caminho para uso de maior escala hoje é API Plan ou Enterprise via contato comercial.
 - **Funding.** Letta saiu do stealth em **setembro de 2024** com **seed round de US$ 10 milhões** liderado por Felicis, com participação de Sunflower Capital e Essence VC, em valuation post-money de US$ 70 milhões. Cobertura primária em HPCwire/BigDATAwire, TechCrunch e PRNewswire. Como spin-out do **UC Berkeley AI Research Lab**, ancora a posição acadêmica do projeto na arquitetura institucional.
 
 > [!info] Sobre LongMemEval
@@ -283,10 +284,11 @@ Para quem debate arquitetura de memória em entrevistas, conhecer Letta é saber
 
 ## Referências
 
-- Repositório oficial: `https://github.com/letta-ai/letta` — verificado via API do GitHub (descrição "Letta is the platform for building stateful agents", licença Apache-2.0, default branch `main`, linguagem Python, mais de 22 mil stars em abril/2026, último push em abril/2026, organização `letta-ai`).
+- Repositório oficial: `https://github.com/letta-ai/letta` — verificado (descrição "Letta is the platform for building stateful agents", licença Apache-2.0, default branch `main`, linguagem Python ~99,5%, 23,7 mil stars e release `v0.16.8` em julho/2026, organização `letta-ai`).
 - Paper original — Packer, Wooders, Lin, Fang, Patil, Stoica, Gonzalez. **MemGPT: Towards LLMs as Operating Systems** (UC Berkeley AI Research, outubro de 2023; revisão fevereiro de 2024). `https://arxiv.org/abs/2310.08560`.
 - Site oficial: `https://letta.com/` — institucional.
-- Página de pricing: `https://letta.com/pricing` — tiers atuais Free / Pro ($20) / Max Lite ($100) / Max ($200) / API Plan ($20 + usage). Verificada em abril/2026.
+- Página de pricing: `https://docs.letta.com/guides/api/plans` — tiers atuais Free / Pro ($20) / API Plan ($20 + usage) / Enterprise (custom). Verificada em julho/2026 — os tiers Max Lite ($100) e Max ($200) de abril/2026 não aparecem mais.
+- Leaderboard de modelos: `https://leaderboard.letta.com/` — última atualização pública em março/2026; usado pela documentação como referência para escolha de modelo base em vez de nomear modelos fixos.
 - Documentação: `https://docs.letta.com/` — referência de tools, conceitos e SDK. Páginas usadas para verificação: `docs.letta.com/advanced/memory-management/`, `docs.letta.com/guides/ade/core-memory/`, `docs.letta.com/guides/ade/archival-memory/`, `docs.letta.com/guides/agents/memory/`, `docs.letta.com/guides/agents/base-tools/`.
 - Cobertura de funding (US$ 10M seed liderado por Felicis, valuation post-money US$ 70M, set/2024):
     - HPCwire / BigDATAwire — *Letta Emerges from Stealth with $10M to Build AI Agents with Advanced Memory*: `https://www.hpcwire.com/bigdatawire/this-just-in/letta-emerges-from-stealth-with-10m-to-build-ai-agents-with-advanced-memory/`
@@ -295,6 +297,5 @@ Para quem debate arquitetura de memória em entrevistas, conhecer Letta é saber
 - SDKs: `pip install letta-client` (Python), `npm install @letta-ai/letta-client` (TypeScript/Node.js).
 - ADE (Agent Development Environment): acessível via Letta Cloud em `app.letta.com` ou localmente ao rodar o servidor self-hosted.
 - Repositório de exemplos e tutoriais: `https://docs.letta.com/guides/` — casos de uso documentados incluem assistentes pessoais, chatbots de suporte com memória por usuário, e agents de pesquisa de longo prazo.
-- Leaderboard de modelos (compatibilidade e desempenho com Letta): referenciado na documentação oficial como fonte atualizada para escolha de LLM base.
 - Discord oficial da comunidade Letta: canal primário de suporte e discussão técnica para self-hosters; link disponível via `letta.com` (verificar na página principal).
 - Paper MemGPT original com code release: `https://arxiv.org/abs/2310.08560` — inclui link para repositório original antes da bifurcação Letta; útil para rastrear o estado da implementação no momento da publicação.

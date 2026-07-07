@@ -1,7 +1,7 @@
 ---
 title: "Por que Obsidian e markdown como substrato"
 created: 2026-04-25
-updated: 2026-06-28
+updated: 2026-07-07
 type: concept
 fase: Iniciado
 progress: backlog
@@ -26,6 +26,8 @@ aliases:
 > [!question]- Dúvidas e lacunas desta nota
 > - Dúvida gerada pelo conteúdo: Em sistemas onde múltiplos agentes (não só humanos) escrevem concorrentemente no vault, como se resolve o risco de conflito de merge no git — e existem convenções consolidadas para isso em markdown?
 > - Lacuna potencial: A nota trata Obsidian como a ferramenta de referência, mas não discute comparativamente outras IDEs de markdown (VSCode com extensões, Logseq, Notion exportado) — em quais cenários elas competem com Obsidian como substrate IDE?
+
+Um engenheiro conecta um LLM a um vector DB para dar memória de longo prazo a um agente. Funciona — o agente recupera contexto relevante, responde melhor, lembra de conversas passadas. Duas semanas depois, o agente começa a repetir uma afirmação errada com total confiança. De onde veio aquilo? Não há como saber: abrir o vector DB mostra vetores de ponto flutuante, não texto. Não há diff entre a versão de ontem e a de hoje, não há histórico de quem (ou o quê) escreveu aquele fragmento, não há como revisar linha a linha o que o agente gravou. A única opção é apagar a entrada suspeita e torcer para não ter apagado nada útil junto. O problema não é o LLM ter alucinado — isso acontece e vai continuar acontecendo. O problema é que o substrato escolhido tornou a alucinação **irrecuperável e invisível** até virar dogma. Essa dor concreta é o motivo pelo qual a escolha de substrato importa tanto quanto a escolha de arquitetura de retrieval.
 
 ## O que é
 

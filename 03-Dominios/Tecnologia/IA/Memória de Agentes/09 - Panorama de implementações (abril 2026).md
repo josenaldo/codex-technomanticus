@@ -27,7 +27,12 @@ aliases:
 > - Dúvida gerada pelo conteúdo: O fluxograma de escolha pressupõe cenários razoavelmente claros (local-first? enterprise? já usa LangChain?), mas não trata o caso de sistemas híbridos — quando faz sentido combinar duas implementações (ex: basic-memory para vault pessoal + Mem0 para agente em produção), e como isso se arquiteta sem duplicar estado?
 > - Lacuna potencial: A tabela cobre o corte de abril de 2026, mas não há critério explícito de quando uma implementação deve ser removida da lista por obsolescência — falta uma seção sobre como manter este panorama atualizado ao longo do tempo.
 
+> [!warning] Esta nota tem data de validade
+> Tudo abaixo — tabela, scores, coluna de maturidade — é um instantâneo de **abril de 2026**. Se você está lendo isso meses depois, trate os números com ceticismo antes de decidir qualquer coisa: cheque o repositório primário de cada implementação antes de citar uma linha desta tabela em uma decisão real. Detalhes de como reavaliar em [[#Como manter este panorama atualizado]].
+
 ## O que é
+
+Imagine que você acabou de receber a tarefa de escolher — esta semana — qual framework de memória o time vai adotar para um agente que vai para produção em um mês. Você abre uma busca, encontra uma dúzia de nomes (Letta, Mem0, Zep, MemPalace, basic-memory...), cada um com um blog post dizendo que é a melhor opção, e nenhum critério óbvio para desempatar. É exatamente esse momento de afogamento que esta nota existe para evitar.
 
 Esta nota é um **mapa de mercado**, não um catálogo exaustivo. O recorte temporal é deliberado: abril de 2026, momento em que o campo já tem benchmarks consolidados, surveys formais (ver [[20 - Surveys e estado da arte 2026|20 - Surveys]]) e o primeiro workshop dedicado em venue top-tier (MemAgents no ICLR 2026). Ferramentas surgem e somem rápido — três meses atrás MemPalace ainda não existia publicamente; daqui a três meses pode haver outras três que valem a pena. O objetivo aqui não é congelar uma lista definitiva, mas oferecer um esqueleto de orientação que o leitor possa reabrir periodicamente para reatualizar.
 
