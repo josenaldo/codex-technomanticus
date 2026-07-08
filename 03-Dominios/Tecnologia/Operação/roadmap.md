@@ -20,7 +20,7 @@ Roadmap do galho `03-Dominios/Tecnologia/Operação`. Galho-**pai**: mapeia o es
 | 1 | O ofício de operar | Iniciado→Adepto | 4 | ✅ 4/4 (2026-07-08) |
 | 2 | Entrega e release | Adepto | 6 | ✅ 6/6 (2026-07-08) |
 | 3 | Rodar em produção | Adepto→Magus | 6 | ✅ 6/6 (2026-07-08) |
-| 4 | Observar e responder | Magus | 6 | ⬜ pendente |
+| 4 | Observar e responder | Magus | 6 | ✅ 6/6 (2026-07-08) |
 | ★ | Capstone — Anatomia de um incidente | Magus | 1 | ⬜ pendente |
 
 **Total planejado:** ~22 notas de conteúdo + 1 capstone (~23) + scaffolding por sub-galho.
