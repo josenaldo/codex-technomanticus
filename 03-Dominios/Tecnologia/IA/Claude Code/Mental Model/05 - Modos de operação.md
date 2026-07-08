@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -259,11 +259,13 @@ Aqui o headless roda em paralelo — cada instância trata um módulo. O `--allo
 
 ---
 
-## Composição de modos em workflows reais
+## Casos práticos
 
-Os modos não são mutuamente exclusivos — você os compõe conforme a fase do trabalho:
+Os modos não são mutuamente exclusivos — você os compõe conforme a fase do trabalho. Dois cenários de produção mostram como essa composição acontece na prática.
 
-**Workflow típico de feature:**
+**Cenário 1 — Feature crítica em produção: 2FA (autenticação de dois fatores)**
+
+Uma equipe precisa implementar autenticação 2FA em um serviço que já está em produção. O risco de quebrar login de usuários reais descarta qualquer atalho — mas a equipe também não quer perder a velocidade do agente.
 
 ```
 1. Plan Mode: "Planeje como implementar autenticação 2FA"
@@ -279,7 +281,11 @@ Os modos não são mutuamente exclusivos — você os compõe conforme a fase do
    → Volta para loop interativo para debugging
 ```
 
-**Workflow de revisão de PR:**
+Note a lógica: plan mode reduz o risco de mal-entendido antes de qualquer edição; auto mode acelera a execução do que já foi validado; headless padroniza a validação final em formato que outra ferramenta (ou pessoa) consegue auditar. Nenhum modo sozinho cobriria as três necessidades — controle inicial, velocidade de execução, validação reprodutível.
+
+**Cenário 2 — Revisão de PR (pull request) em pipeline de CI/CD**
+
+Um time quer uma checagem automática de qualidade em cada PR aberto, sem que isso vire mais um humano revisando manualmente toda mudança pequena. A tarefa é bem definida (revisar, não editar) e roda sem supervisão — o caso clássico para headless.
 
 ```bash
 # Analisa o PR sem executar ações
@@ -288,6 +294,8 @@ claude -p "Review this PR for code quality issues: $(git diff HEAD~1)" \
   --allowedTools "Read,Grep" \
   --output-format json
 ```
+
+Aqui `--allowedTools "Read,Grep"` garante que o agente só analisa, nunca edita — o resultado é um relatório, não uma mudança de código. `--output-format json` permite que o pipeline de CI faça parsing do resultado e decida se bloqueia o merge. Esse é o modo headless em sua forma mais pura: entrada definida, saída estruturada, zero interação humana no meio.
 
 ---
 
@@ -305,22 +313,22 @@ claude -p "Review this PR for code quality issues: $(git diff HEAD~1)" \
 
 ---
 
-## Armadilhas por modo
+## Armadilhas comuns
 
-**Interativo — interromper demais**
-Aprovar cada ação individualmente em uma tarefa longa fragmenta o loop do agente. Deixe o agente trabalhar em sequências; intervenha quando vir algo errado, não preventivamente.
+> [!warning] Interativo — interromper demais
+> Aprovar cada ação individualmente em uma tarefa longa fragmenta o loop do agente. Deixe o agente trabalhar em sequências; intervenha quando vir algo errado, não preventivamente.
 
-**Plan Mode — plano como contrato**
-O plano é uma proposta, não um contrato. Se o agente encontrar algo inesperado durante a execução, ele pode adaptar. Não espere que o plano seja seguido palavra por palavra.
+> [!warning] Plan Mode — plano como contrato
+> O plano é uma proposta, não um contrato. Se o agente encontrar algo inesperado durante a execução, ele pode adaptar. Não espere que o plano seja seguido palavra por palavra.
 
-**Auto Mode — sem deny list**
-Configurar only `allow` sem `deny` pode dar ao agente mais poder do que você percebe. Sempre adicione `deny` explícito para ações destrutivas: `rm`, `git push`, `git reset --hard`, `npm publish`.
+> [!warning] Auto Mode — sem deny list
+> Configurar only `allow` sem `deny` pode dar ao agente mais poder do que você percebe. Sempre adicione `deny` explícito para ações destrutivas: `rm`, `git push`, `git reset --hard`, `npm publish`.
 
-**Headless — sem `--max-turns`**
-Em CI/CD sem limite de turns, um loop que trava pode rodar indefinidamente. Configure sempre um `--max-turns` razoável para a tarefa.
+> [!warning] Headless — sem `--max-turns`
+> Em CI/CD sem limite de turns, um loop que trava pode rodar indefinidamente. Configure sempre um `--max-turns` razoável para a tarefa.
 
-**Headless — permissões amplas**
-`--allowedTools "Bash"` sem restrição de comando permite que o agente execute qualquer coisa. Use `--allowedTools "Bash(npm test),Bash(npm run lint)"` para restringir.
+> [!warning] Headless — permissões amplas
+> `--allowedTools "Bash"` sem restrição de comando permite que o agente execute qualquer coisa. Use `--allowedTools "Bash(npm test),Bash(npm run lint)"` para restringir.
 
 ---
 
@@ -381,6 +389,12 @@ Você precisa executar uma tarefa agora?
 
 ---
 
+## O que vem a seguir
+
+Escolher o modo certo resolve o equilíbrio entre autonomia e controle numa única tarefa. Mas o que acontece quando a tarefa é longa demais para caber na janela de contexto do agente — mesmo rodando no modo mais adequado? É aí que entra a compactação: o mecanismo que permite ao Claude Code continuar trabalhando em sessões longas sem perder o fio da meada. A próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]], explica como isso funciona.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/01 - Plan Mode|01 - Plan Mode]] — uso detalhado do plan mode
@@ -392,7 +406,10 @@ Você precisa executar uma tarefa agora?
 
 ---
 
-## Referências
+> [!tip] Vídeo — Headless mode na prática
+> ["How To Use Headless Mode In Claude Code! Tutorial"](https://www.youtube.com/watch?v=m7d3r2TYa_g) mostra o fluxo completo da flag `-p`/`--print` — como Claude Code processa o prompt, executa as tool calls necessárias (leitura de arquivos, comandos, histórico do git) e devolve o resultado sem abrir o REPL. Útil para ver, na tela, a diferença entre rodar `claude` interativo e `claude -p "..."` headless descrita neste galho.
+
+## Fontes
 
 - **Anthropic** — *Claude Code CLI reference* (2026). Flags completos para cada modo — https://docs.anthropic.com/pt/docs/claude-code/cli-reference
 - **Anthropic** — *Claude Code settings* (2026). Configuração de permissões e allow/deny lists — https://docs.anthropic.com/pt/docs/claude-code/settings

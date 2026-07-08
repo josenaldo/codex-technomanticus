@@ -50,7 +50,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 17 | [[Image Prompting]] | 7 | 0 | 3 | 4 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 18 | [[Improvement Loop]] | 7 | 0 | 4 | 3 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 19 | [[Ferramentas de IA]] | 5 | 0 | 0 | 5 | 100% | ✅ completo (2026-07-01) | ✅ |
-| 20 | [[Claude Code]] | 55 (6 sub-galhos) | 54 | 1 | 0 | 2% | 📋 diagnosticado (2026-07-02, galho-pai completo) | ✅ (galho-pai) |
+| 20 | [[Claude Code]] | 55 (6 sub-galhos) | 23 | 1 | 31 | 58% | 🔶 parcial (Configuração + Hooks e Guardrails 07/07 + Mental Model 9/9 ✅ 08/07 + Skills e MCP 6/8; 2 sub-galhos restantes + Skills 07·08) | ✅ (galho-pai) |
 | 21 | [[O Lado Sombrio da IA]] | 1 + glosas | 1 | 0 | 0 | 0% | ⚪ especial — cluster crítico; nota Débito cognitivo diagnosticada (2026-07-02) | ✅ |
 
 ## Notas soltas (logo abaixo de IA/)

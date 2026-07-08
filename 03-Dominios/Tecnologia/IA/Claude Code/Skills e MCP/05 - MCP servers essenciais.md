@@ -297,6 +297,49 @@ Você pode ter múltiplos servers ativos simultaneamente. O agente escolhe qual 
 5. `puppeteer_screenshot("feature-done")` — documenta o resultado
 6. `create_pull_request(...)` — abre o PR sem sair do Claude Code
 
+## Casos práticos
+
+Os exemplos de workflow acima mostram uma tool isolada. Na prática, um incidente ou uma feature
+real raramente se resolve com um único server — o valor aparece quando os servers se encadeiam
+numa sessão contínua, sem você trocar de ferramenta no meio do caminho.
+
+**Cenário 1 — Triagem de bug em produção (github + postgres)**
+
+Um alerta chega: `/checkout` está retornando 500 intermitente. Em vez de abrir o GitHub numa aba,
+copiar a issue, abrir o DBeaver numa outra e cruzar tudo manualmente, a sessão inteira roda dentro
+do Claude Code:
+
+1. `get_issue("minha-org/api", 412)` — lê a issue com todos os comentários, incluindo o stack
+   trace que um usuário colou.
+2. O agente identifica que o erro aponta para uma constraint de `orders.payment_id` e chama
+   `describe_table("orders")` no server-postgres para confirmar o tipo e as constraints da coluna.
+3. `query("SELECT COUNT(*) FROM orders WHERE payment_id IS NULL AND created_at > now() - interval '1 day'")`
+   confirma quantos registros o bug afetou nas últimas 24h — dado que vai direto pro relatório de
+   impacto, sem export manual de planilha.
+4. Com o diagnóstico completo (código + dado real de produção), o agente propõe o fix, e depois de
+   você revisar, chama `create_pull_request(...)` já com a query de verificação no corpo da
+   descrição.
+
+O ganho não é nenhuma tool isolada — é não sair do Claude Code entre "ler o bug", "confirmar no
+banco" e "abrir o PR". Cada contexto trocado manualmente é uma chance de perder informação.
+
+**Cenário 2 — Regressão visual antes do deploy (puppeteer + filesystem)**
+
+Antes de mergear uma mudança de CSS no checkout, você quer confirmar visualmente que nada quebrou
+em três breakpoints, sem abrir o browser manualmente três vezes:
+
+1. `puppeteer_navigate("http://localhost:3000/checkout")`.
+2. Para cada breakpoint (`375px`, `768px`, `1440px`): `puppeteer_evaluate` ajusta o viewport e
+   `puppeteer_screenshot("checkout-<breakpoint>")` captura o resultado.
+3. O server-filesystem está configurado com um diretório restrito
+   (`/tmp/outputs` do exemplo de configuração acima) — as screenshots caem lá, isoladas do resto do
+   disco, prontas para anexar na PR sem o agente ter acesso de escrita ao projeto inteiro.
+4. O agente compara os três screenshots com a descrição esperada da mudança e reporta se algum
+   breakpoint quebrou o layout — antes de você abrir o browser uma única vez.
+
+Aqui a combinação importa: puppeteer gera a evidência visual, filesystem garante que o agente só
+escreve no diretório de output combinado — não em qualquer lugar do projeto.
+
 ## Outros servers notáveis
 
 Além dos quatro essenciais, alguns servers merecem destaque por casos de uso específicos:
@@ -362,34 +405,52 @@ Lê e envia mensagens no Slack. Útil para criar bots de notificação ou para o
 
 Lista os MCP servers configurados e as tools disponíveis. Use para confirmar que o server iniciou corretamente e quais capabilities estão ativas.
 
-## Armadilhas
+## Armadilhas comuns
 
-**Server que não inicia**
-Verifique se `npx` consegue baixar o package (requer internet na primeira vez). Em ambientes sem internet, pré-instale com `npm install -g @modelcontextprotocol/server-postgres`.
+> [!warning] Server que não inicia
+> Verifique se `npx` consegue baixar o package (requer internet na primeira vez). Em ambientes sem internet, pré-instale com `npm install -g @modelcontextprotocol/server-postgres`.
 
-**Variáveis de ambiente não resolvidas**
-`${GITHUB_PERSONAL_ACCESS_TOKEN}` só é resolvido se a variável estiver **exportada** no shell onde o Claude Code inicia. Adicione ao `.bashrc` ou `.zshrc`, não só ao `.env` do projeto (que o Claude Code não lê automaticamente).
+> [!warning] Variáveis de ambiente não resolvidas
+> `${GITHUB_PERSONAL_ACCESS_TOKEN}` só é resolvido se a variável estiver **exportada** no shell onde o Claude Code inicia. Adicione ao `.bashrc` ou `.zshrc`, não só ao `.env` do projeto (que o Claude Code não lê automaticamente).
 
-**Dois servers com tools de mesmo nome**
-Se dois MCP servers expõem uma tool chamada `query`, o agente pode chamar a errada. Use nomes de server descritivos: `postgres-dev`, `postgres-staging` em vez de `postgres1`, `postgres2`.
+> [!warning] Dois servers com tools de mesmo nome
+> Se dois MCP servers expõem uma tool chamada `query`, o agente pode chamar a errada. Use nomes de server descritivos: `postgres-dev`, `postgres-staging` em vez de `postgres1`, `postgres2`.
 
-**Agente invocando tools sem confirmação**
-Por padrão, algumas tools pedem aprovação do usuário antes de executar. Se você está em modo de automação e o agente trava esperando confirmação, verifique as permissões no settings.json e os hooks de guardrail configurados.
+> [!warning] Agente invocando tools sem confirmação
+> Por padrão, algumas tools pedem aprovação do usuário antes de executar. Se você está em modo de automação e o agente trava esperando confirmação, verifique as permissões no settings.json e os hooks de guardrail configurados.
 
 ## Como explicar em inglês
 
-**"MCP server"** — an external process that exposes tools (functions with side effects), resources (read-only data), and prompts (workflow templates) via the Model Context Protocol.
+> [!tip] Vídeo — MCP explicado + demo real com GitHub MCP Server
+> [Model Context Protocol (MCP) Explained + GitHub MCP Server Demo](https://www.youtube.com/watch?v=_8OAV00BYlg) — explica o que é o MCP, por que ele importa, e mostra uma demo real do server-github conectado a um agente de coding, o mesmo server desta nota. Bom complemento visual antes de configurar o seu próprio.
 
-**Key servers to know:**
-- `server-postgres`: lets the agent run SQL queries directly — useful for schema exploration, debugging, and data verification
-- `server-github`: gives the agent read/write access to GitHub — issues, PRs, code search, without leaving Claude Code
-- `server-filesystem`: filesystem access with explicit directory restrictions — useful for security policies
-- `server-puppeteer`: the agent controls a browser — navigate, click, screenshot, evaluate JS
+Termos-chave para levar pra entrevista ou conversa técnica em inglês:
+
+| Termo (PT) | Term (EN) |
+|---|---|
+| Servidor MCP | MCP server |
+| Ferramentas (funções com efeito colateral) | Tools (functions with side effects) |
+| Recursos (dados somente leitura) | Resources (read-only data) |
+| Prompts (templates de fluxo de trabalho) | Prompts (workflow templates) |
+| Exploração de schema | Schema exploration |
+| Automação de browser | Browser automation |
+| Controle de acesso por diretório | Directory-scoped access control |
+| Ambiente de staging | Staging environment |
+| Acesso somente leitura/escrita | Read/write access |
+| Chave de API | API key |
 
 **Key phrases for interviews:**
 - "With the Postgres MCP server, I don't copy-paste query results into the chat anymore — the agent runs the queries directly and reasons over the structured data."
 - "Puppeteer gives the agent eyes on the UI. Instead of me describing what I see, the agent navigates and screenshots it."
 - "We configure MCP servers per-environment: `postgres-dev` for local, `postgres-staging` for staging. The agent always knows which one it's talking to."
+
+## O que vem a seguir
+
+Os servers desta nota resolvem o caso comum: alguém já mantém um server pronto pro seu problema.
+Mas às vezes a ferramenta interna que você precisa expor ao agente — uma API proprietária, um
+sistema de billing, um pipeline de deploy — não tem server nenhum no catálogo oficial. Nesse ponto
+a pergunta muda de "qual server eu configuro" para "como eu construo um do zero", que é exatamente
+o assunto de [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/06 - Criar MCP server|06 - Criar MCP server]].
 
 ## Referências
 

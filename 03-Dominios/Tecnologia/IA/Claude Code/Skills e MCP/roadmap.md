@@ -16,7 +16,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 **Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP`
 **Nível:** galho-folha
 **Diagnóstico:** 2026-07-02
-**Última execução:** —
+**Última execução:** 2026-07-08 (ondas 4-5: notas 01-06 ✅; 07·08 pendentes)
 
 ## Régua de análise
 
@@ -37,10 +37,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 8 |
-| ⬜ pendente | 8 |
+| ⬜ pendente | 2 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 6 |
+| % concluído | 75% |
 
 > Diagnóstico concluído em 2026-07-02. Custo: 8 `[substantivo]` · 0 `[mecânico]`.
 
@@ -49,7 +49,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 ## Notas
 
 #### 01 - Anatomia de uma skill   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 400 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E4, E5, E7, E8, L2, M1
 - **Score:** 6/12
@@ -60,10 +60,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter os 5 itens de `## Armadilhas comuns` em callouts `[!warning]` → ativa E8
   - Renomear `## Referências` para `## Fontes` (ou adicionar `## Fontes` equivalente) mantendo as URLs já clicáveis → ativa L2
   - Pesquisar e embutir ≥1 `[!tip]` com vídeo/podcast sobre skills/Claude Code → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (skill quebrando por falta de baseline + ambiguidade no CLAUDE.md), E5 (→ [[02]]), E7 (tabela PT↔EN), E8 (5 → [!warning]), L2 (Referências→Fontes), M1 (vídeo skill builder) aplicados. 433 linhas. Sem desvios.
 
 #### 02 - Skills de processo vs domínio   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 397 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E4, E5, E7, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — sem código com caso-problema real)
@@ -74,10 +74,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Renomear/reformular `## Armadilhas` para `## Armadilhas comuns` convertendo os 4 itens em callouts `[!warning]` (mínimo 3) → ativa E8
   - Adicionar `## Fontes` com ≥1 URL externa verificável (ex. doc oficial de Agent Skills da Anthropic) → ativa L2
   - Pesquisar e embutir vídeo/podcast relevante sobre skills de agente como `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (skill de pagamentos obsoleta + skill de deploy rígida bloqueando hotfix), E5 (→ [[03]]), E7 (tabela PT↔EN 5 termos), E8 (4 → [!warning]), L2 (Fontes doc oficial), M1 (vídeo "Good Agent Skills") aplicados. 435 linhas. Sem desvios.
 
 #### 03 - Criar sua primeira skill   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 404 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E4, E5, E7, E8, L2, M1
 - **Score:** 6/12
@@ -88,10 +88,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Renomear/reforçar `## Armadilhas` para `## Armadilhas comuns` e converter os 4 itens em ≥3 callouts `[!warning]` → ativa E8
   - Adicionar `## Fontes` com ≥1 URL externa verificável (docs oficiais de Claude Code Skills) → ativa L2
   - Adicionar `[!tip]` com link de vídeo/podcast sobre criação de skills → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (triagem de incidentes + onboarding em legado), E5 (→ [[04 - MCP overview]]), E7 (tabela PT↔EN), E8 (4 → [!warning]), L2 (Fontes doc oficial), M1 (vídeo criação de skills) aplicados. 446 linhas; score 14/14. Sem desvios.
 
 #### 04 - MCP overview   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 394 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E5, E7, E8, M1
 - **Score:** 7/11 (P1 N/A — nota conceitual, exemplos são config/JSON, não caso-problema)
@@ -100,10 +100,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter os 4 itens de `## Armadilhas` em callouts `[!warning]` (já há ≥3 conteúdos prontos, só falta o formato) — → ativa E8
   - Adicionar tabela PT↔EN com os termos já usados na seção "Como explicar em inglês" (MCP server, tools/resources/prompts, transport) — → ativa E7
   - Pesquisar e embutir um `[!tip]` com vídeo/podcast real sobre MCP — → ativa M1
-- **Resultado:** —
+- **Resultado:** E5 (→ [[05]]), E8 (4 → [!warning]), E7 (tabela PT↔EN 3 termos), M1 (workshop Anthropic MCP, Mahesh Murag) aplicados. Sem desvios.
 
 #### 05 - MCP servers essenciais   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 401 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E4, E5, E7, E8, M1
 - **Score:** 7/12
@@ -113,10 +113,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter a seção de inglês numa tabela PT↔EN de termos-chave → ativa E7
   - Reescrever `## Armadilhas` como `## Armadilhas comuns` com ≥3 callouts `[!warning]` (hoje é prosa em bold) → ativa E8
   - Pesquisar e embutir vídeo/podcast real sobre MCP servers (ex. demo de postgres/github/puppeteer MCP) como `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (triagem github+postgres + regressão visual puppeteer+filesystem), E5 (→ [[06]]), E7 (tabela PT↔EN 10 termos), E8 (4 → [!warning]), M1 (vídeo MCP+GitHub server demo) aplicados. Sem desvios. (updated não bumpado — omissão menor.)
 
 #### 06 - Criar MCP server   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 396 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E4, E5, E7, E8, L2, M1
 - **Score:** 7/12
@@ -127,7 +127,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Renomear `## Armadilhas` para `## Armadilhas comuns` e converter os 4 blocos em callouts `[!warning]` → ativa E8
   - Renomear `## Referências` para `## Fontes` (mantendo as URLs já existentes) → ativa L2
   - Pesquisar e embutir vídeo/podcast real sobre criar MCP server via `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (painel de suporte + onboarding), E5 (→ [[07]]), E7 (tabela PT↔EN 9 termos), E8 (4 → [!warning]), L2 (Referências→Fontes), M1 (vídeo "Real-world MCP Server em 1 arquivo TS") aplicados. 425 linhas; score 12/12. Sem desvios.
 
 #### 07 - Compondo skills e MCP   [substantivo]
 - **Enriquecimento:** ⬜ pendente

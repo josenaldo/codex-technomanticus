@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -99,20 +99,20 @@ Com essa informação, o agente vai direto para `src/routes/users.ts` sem precis
 > [!tip] CLAUDE.md não é documentação — é onboarding
 > Escreva o CLAUDE.md como se fosse a conversa que você teria com um dev novo no primeiro dia. O que ele precisa saber para não cometer os erros óbvios? Quais são as armadilhas que não estão no código em si?
 
+> [!tip] Vídeo — como o agente navega codebases grandes
+> [Anthropic Just Dropped a Masterclass on Building Agent Harnesses (for Large Codebases)](https://www.youtube.com/watch?v=efRIrLXoOVA) detalha o playbook da própria Anthropic para usar Claude Code em codebases grandes — incluindo por que a navegação agentic (Glob/Grep/Read sob demanda) supera indexação tradicional em projetos que mudam rápido, e como estruturar CLAUDE.md e subagentes para reduzir a exploração inicial.
+
 ---
 
 ## Hierarquia de leitura do CLAUDE.md
 
 O agente lê os arquivos CLAUDE.md em ordem, do mais geral para o mais específico:
 
-```
-~/.claude/CLAUDE.md          (configuração global do usuário)
-          ↓
-CLAUDE.md (raiz do projeto)  (contexto do projeto)
-          ↓
-src/CLAUDE.md                (contexto do módulo, se existir)
-          ↓
-src/auth/CLAUDE.md           (contexto específico de área, se existir)
+```mermaid
+flowchart TD
+    A["~/.claude/CLAUDE.md<br/>(configuração global do usuário)"] --> B["CLAUDE.md na raiz do projeto<br/>(contexto do projeto)"]
+    B --> C["src/CLAUDE.md<br/>(contexto do módulo, se existir)"]
+    C --> D["src/auth/CLAUDE.md<br/>(contexto específico de área, se existir)"]
 ```
 
 Os mais específicos podem sobrescrever ou complementar os mais gerais. Para projetos grandes com áreas de código muito diferentes (ex: microserviços num monorepo), CLAUDE.md por pasta permite dar contexto específico para cada área sem sobrecarregar o global.
@@ -296,20 +296,20 @@ Se há um arquivo crítico que o agente precisa conhecer (ex: um schema de banco
 
 ## Armadilhas comuns
 
-**Projeto grande sem CLAUDE.md**
-O agente gasta os primeiros 8-12 tool calls só descobrindo a estrutura básica. Em projetos com mais de 100 arquivos, essa exploração inicial pode consumir tokens suficientes para distorcer o custo da sessão.
+> [!warning] Projeto grande sem CLAUDE.md
+> O agente gasta os primeiros 8-12 tool calls só descobrindo a estrutura básica. Em projetos com mais de 100 arquivos, essa exploração inicial pode consumir tokens suficientes para distorcer o custo da sessão.
 
-**Estrutura não convencional**
-Frameworks caseiros, monorepos com layout incomum, pastas com nomes que contradizem seu conteúdo — tudo isso confunde a exploração. Um CLAUDE.md que explica "apesar do nome, a pasta utils/ contém a lógica de negócio central" previne loops de confusão.
+> [!warning] Estrutura não convencional
+> Frameworks caseiros, monorepos com layout incomum, pastas com nomes que contradizem seu conteúdo — tudo isso confunde a exploração. Um CLAUDE.md que explica "apesar do nome, a pasta utils/ contém a lógica de negócio central" previne loops de confusão.
 
-**CLAUDE.md desatualizado**
-Pior que não ter. Um CLAUDE.md que descreve a estrutura de 6 meses atrás induz o agente a procurar arquivos em lugares errados e a assumir convenções que não existem mais. Trate-o como código: revise quando a arquitetura muda.
+> [!warning] CLAUDE.md desatualizado
+> Pior que não ter. Um CLAUDE.md que descreve a estrutura de 6 meses atrás induz o agente a procurar arquivos em lugares errados e a assumir convenções que não existem mais. Trate-o como código: revise quando a arquitetura muda.
 
-**Assumir que o agente "lembrou" de outra sessão**
-Cada sessão começa do zero. O agente não sabe que você discutiu a arquitetura de auth ontem. Se há contexto que importa, ele precisa estar no CLAUDE.md ou no prompt.
+> [!warning] Assumir que o agente "lembrou" de outra sessão
+> Cada sessão começa do zero. O agente não sabe que você discutiu a arquitetura de auth ontem. Se há contexto que importa, ele precisa estar no CLAUDE.md ou no prompt.
 
-**Arquivo crítico não mencionado**
-"O schema do banco está em db/schema.ts" parece óbvio para você, mas o agente pode não encontrá-lo sem exploração. Se um arquivo é central para as tarefas que você faz com frequência, documente-o no CLAUDE.md.
+> [!warning] Arquivo crítico não mencionado
+> "O schema do banco está em db/schema.ts" parece óbvio para você, mas o agente pode não encontrá-lo sem exploração. Se um arquivo é central para as tarefas que você faz com frequência, documente-o no CLAUDE.md.
 
 ---
 
@@ -378,6 +378,28 @@ A questão não é "índice vs sem índice" — é "quem mantém o índice?". Em
 
 ---
 
+## Casos práticos
+
+**Cenário 1 — Monorepo grande com múltiplos pacotes**
+
+Imagine um monorepo com 6 pacotes (`packages/core`, `packages/api`, `packages/web`, `packages/cli`, `packages/shared-ui`, `packages/worker`), cada um com sua própria stack e convenções. Sem um CLAUDE.md por pacote, toda tarefa começa com o agente perguntando "isso é Next.js ou é o worker em Node puro?" — e descobre isso via Glob e Read do `package.json` de cada pacote candidato, gastando tool calls só para se orientar.
+
+Na prática, o padrão que funciona é um CLAUDE.md na raiz com o mapa geral dos pacotes e os comandos do monorepo (`turbo run build`, `npm run test --workspace=X`), mais um CLAUDE.md dentro de cada pacote com as convenções locais (ex: `packages/web/CLAUDE.md` avisando que componentes client-side precisam de `"use client"`). Quando você pede "adicione um botão de exportar CSV na tela de relatórios", o agente lê o CLAUDE.md da raiz, identifica que a tarefa é em `packages/web`, e só então lê o CLAUDE.md local — chegando ao arquivo certo em 2-3 tool calls em vez de 10+.
+
+**Cenário 2 — Projeto legado sem CLAUDE.md**
+
+Um sistema legado de 5 anos, sem CLAUDE.md, com uma pasta `utils/` que na verdade concentra boa parte da lógica de negócio (resultado de refactors sucessivos que nunca renomearam a pasta) e um `services/` que mistura chamadas HTTP com regras de validação. Não há convenção visível — dois módulos usam Promises encadeadas, três usam async/await, um usa callbacks.
+
+Sem CLAUDE.md, o agente trata `utils/` como utilitário genérico e pode ignorá-lo numa busca por "lógica de pagamento", porque o nome da pasta engana tanto quanto engana um dev novo no primeiro dia. O ganho aqui não é reduzir tool calls (a exploração de um legado é inevitável na primeira tarefa) — é registrar, depois da primeira exploração, o que foi descoberto: "apesar do nome, `utils/payment.ts` contém as regras de cobrança" e "prefira async/await em código novo; o callback em `services/legacy-mailer.ts` é o único que resta e não deve ser copiado como padrão". Cada sessão subsequente parte desse conhecimento em vez de redescobrir a mesma armadilha.
+
+---
+
+## O que vem a seguir
+
+Até aqui, o foco foi em **como o agente encontra e lê** o código — Glob, Grep, Read e o papel do CLAUDE.md como mapa. Mas ler não é a única coisa que o agente faz com o codebase: ele também precisa *agir* sobre ele — editar arquivos, rodar testes, executar comandos de build. Essas ações passam por um conjunto diferente de tools, com suas próprias regras de uso e armadilhas.
+
+A próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/03 - Tool use|03 - Tool use]], detalha esse repertório de ferramentas — o que cada tool faz, quando o agente escolhe uma em vez de outra, e como o modelo decide encadear chamadas para completar uma tarefa.
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
@@ -388,7 +410,7 @@ A questão não é "índice vs sem índice" — é "quem mantém o índice?". Em
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Memory and CLAUDE.md* (2026). Como o agente lê e usa os arquivos de contexto — https://docs.anthropic.com/pt/docs/claude-code/memory
 - **Anthropic** — *Claude Code overview* (2026). Ferramentas de navegação e leitura — https://docs.anthropic.com/pt/docs/claude-code/overview

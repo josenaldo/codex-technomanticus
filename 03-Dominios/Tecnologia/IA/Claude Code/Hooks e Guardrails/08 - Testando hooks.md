@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -24,6 +24,9 @@ tags:
 ## A analogia: o disjuntor que nunca foi testado
 
 Você sabe que tem um disjuntor na caixa elétrica. Está escrito que protege o circuito de 20A. Mas nunca foi testado desde que a casa foi construída. Você confia nele? Não deveria — disjuntores enferrujam, travam, perdem calibração.
+
+> [!tip] Vídeo — testando scripts bash na prática
+> [Test-Driven Development (TDD) Tutorial: Unit Testing Bash Scripts with Bats](https://www.youtube.com/watch?v=EHUE3i8izew) mostra TDD aplicado a scripts bash com o framework Bats — a mesma lógica de `assert_blocked`/`assert_allowed` desta nota, só que com uma biblioteca de asserções pronta em vez de funções caseiras. Útil se a suíte de testes de hooks crescer a ponto de justificar uma dependência dedicada.
 
 Eletricistas sérios testam os disjuntores periodicamente: simulam uma sobrecarga controlada e verificam que o disjuntor corta o circuito como esperado. Só então consideram a proteção confiável.
 
@@ -517,84 +520,91 @@ test_chain "$INPUT_NORMAL"     "false" "git status passa pela cadeia inteira"
 
 ---
 
+## Casos práticos — quando a suíte de testes teria salvado o dia
+
+Teoria de teste convence pouco. Dois casos reais (compostos a partir de padrões recorrentes em times que rodam Claude Code) mostram o custo de pular a suíte.
+
+**Caso 1 — o guardrail que passou 3 semanas sem bloquear nada**
+
+Um time configurou `guardrails.sh` para barrar `git push --force` e `DROP TABLE`. Testaram manualmente uma vez, no dia da configuração, viram o bloqueio funcionar, e seguiram em frente. Três semanas depois, alguém rodou `git push --force-with-lease` — variação que o regex original não cobria porque só testava `--force` isolado — e sobrescreveu um branch compartilhado. Investigando, descobriram um segundo problema: o pipeline de CI que rodava `bash -n` nos hooks (a técnica da seção [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/02 - CI-CD com GitHub Actions|CI/CD com GitHub Actions]]) verificava só sintaxe, não comportamento — um `assert_blocked` cobrindo `--force-with-lease` teria pego a lacuna antes de chegar em produção. A lição: teste manual único na configuração é uma foto do dia 1; sem suíte automatizada rodando em CI a cada mudança, o guardrail degrada em silêncio.
+
+**Caso 2 — o Stop hook que travava o cleanup em toda sessão interrompida**
+
+Um hook de `Stop` fazia limpeza de arquivos temporários (`cleanup-temp.sh`) sempre que a sessão terminava — mas não diferenciava `stop_reason: end_turn` de `stop_reason: interrupt`. Quando o usuário apertava Ctrl+C no meio de uma tarefa longa, o hook tentava limpar arquivos que ainda estavam sendo escritos por um processo em background, e o script ficava pendurado esperando um lock de arquivo que nunca seria liberado — a sessão inteira travava até o usuário matar o processo manualmente. O teste que faltava é exatamente o do checklist mais abaixo: "Stop hook testado com `stop_reason: interrupt`". Rodar `echo '{"stop_reason":"interrupt"}' | ~/.claude/hooks/cleanup-temp.sh` isoladamente, como mostrado na seção anterior, revela o travamento em segundos — sem precisar reproduzir uma sessão real interrompida.
+
+---
+
 ## Armadilhas comuns — falhas silenciosas
 
-**1. jq não instalado**
+> [!warning] 1. jq não instalado
+> Se `jq` não está disponível, `$(echo "$INPUT" | jq -r '...')` retorna string vazia e todos os checks falham silenciosamente — o hook aprova tudo. Adicione no início:
+>
+> ```bash
+> command -v jq > /dev/null || { echo "ERRO: jq não encontrado. Instale com: apt install jq" >&2; exit 2; }
+> ```
 
-Se `jq` não está disponível, `$(echo "$INPUT" | jq -r '...')` retorna string vazia e todos os checks falham silenciosamente — o hook aprova tudo. Adicione no início:
+> [!warning] 2. Regex que não cobre variações
+> ```bash
+> # NÃO pega "push  --force" (dois espaços) ou "push	--force" (tab)
+> echo "$COMMAND" | grep -q "push --force"
+>
+> # Pega variações de whitespace
+> echo "$COMMAND" | grep -qE "push\s+--force"
+>
+> # Pega variações de maiúscula em DROP TABLE
+> echo "$COMMAND" | grep -qiE "DROP\s+TABLE"  # -i = case-insensitive
+> ```
 
-```bash
-command -v jq > /dev/null || { echo "ERRO: jq não encontrado. Instale com: apt install jq" >&2; exit 2; }
-```
+> [!warning] 3. Exit code esquecido
+> ```bash
+> # Hook que PARECE bloquear mas não bloqueia
+> if echo "$COMMAND" | grep -q "DROP TABLE"; then
+>   echo "Bloqueado" >&2
+>   # FALTOU: exit 1
+> fi
+> exit 0  # sempre sai com 0 = sempre aprovado
+> ```
 
-**2. Regex que não cobre variações**
+> [!warning] 4. Aspas no JSON quebrando o parse
+> ```bash
+> # Problemático se o comando tiver aspas: psql -c "DROP TABLE users"
+> COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command')
+>
+> # Mais seguro — use // empty para evitar null
+> COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+> FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+> ```
 
-```bash
-# NÃO pega "push  --force" (dois espaços) ou "push	--force" (tab)
-echo "$COMMAND" | grep -q "push --force"
+> [!warning] 5. Shebang errado
+> ```bash
+> # Pode falhar se bash não está em /bin/bash
+> #!/bin/bash
+>
+> # Verificar onde bash está
+> which bash  # /usr/bin/bash em alguns sistemas
+>
+> # Alternativa portável
+> #!/usr/bin/env bash
+> ```
 
-# Pega variações de whitespace
-echo "$COMMAND" | grep -qE "push\s+--force"
+> [!warning] 6. Hook não-executável no settings.json
+> ```bash
+> # O arquivo existe mas não tem +x
+> ls -la ~/.claude/hooks/guardrails.sh
+> # -rw-r--r-- 1 user user 2048 Jun 27 guardrails.sh   ← faltou x
+>
+> chmod +x ~/.claude/hooks/guardrails.sh
+> # -rwxr-xr-x 1 user user 2048 Jun 27 guardrails.sh   ← ok
+> ```
 
-# Pega variações de maiúscula em DROP TABLE
-echo "$COMMAND" | grep -qiE "DROP\s+TABLE"  # -i = case-insensitive
-```
-
-**3. Exit code esquecido**
-
-```bash
-# Hook que PARECE bloquear mas não bloqueia
-if echo "$COMMAND" | grep -q "DROP TABLE"; then
-  echo "Bloqueado" >&2
-  # FALTOU: exit 1
-fi
-exit 0  # sempre sai com 0 = sempre aprovado
-```
-
-**4. Aspas no JSON quebrando o parse**
-
-```bash
-# Problemático se o comando tiver aspas: psql -c "DROP TABLE users"
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command')
-
-# Mais seguro — use // empty para evitar null
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
-FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
-```
-
-**5. Shebang errado**
-
-```bash
-# Pode falhar se bash não está em /bin/bash
-#!/bin/bash
-
-# Verificar onde bash está
-which bash  # /usr/bin/bash em alguns sistemas
-
-# Alternativa portável
-#!/usr/bin/env bash
-```
-
-**6. Hook não-executável no settings.json**
-
-```bash
-# O arquivo existe mas não tem +x
-ls -la ~/.claude/hooks/guardrails.sh
-# -rw-r--r-- 1 user user 2048 Jun 27 guardrails.sh   ← faltou x
-
-chmod +x ~/.claude/hooks/guardrails.sh
-# -rwxr-xr-x 1 user user 2048 Jun 27 guardrails.sh   ← ok
-```
-
-**7. Path relativo no settings.json**
-
-```json
-// Problemático: depende do diretório de trabalho
-{ "command": "hooks/guardrails.sh" }
-
-// Correto: path absoluto
-{ "command": "~/.claude/hooks/guardrails.sh" }
-```
+> [!warning] 7. Path relativo no settings.json
+> ```json
+> // Problemático: depende do diretório de trabalho
+> { "command": "hooks/guardrails.sh" }
+>
+> // Correto: path absoluto
+> { "command": "~/.claude/hooks/guardrails.sh" }
+> ```
 
 ---
 
@@ -681,6 +691,14 @@ O `bash -n` verifica apenas a sintaxe, sem executar — útil para pegar erros d
 
 ---
 
+## O que vem a seguir
+
+Com uma suíte de testes confiável, o galho Hooks e Guardrails está fechado: você sabe configurar hooks, escrever guardrails, delegar permissão com um meta-agente, blindar a segurança do sistema, e agora testar tudo isso antes de confiar. Mas um hook bem testado ainda é um script solto — ele bloqueia comandos perigosos, não *estende* o que o Claude Code sabe fazer.
+
+O próximo galho, [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/index|Skills e MCP]], resolve esse próximo problema: em vez de interceptar e bloquear, você ensina o agente a fazer coisas novas — skills modulares carregadas sob demanda e MCP servers que conectam o agente a sistemas externos. Comece por [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/01 - Anatomia de uma skill|Anatomia de uma skill]], que aplica ao empacotamento de capacidades a mesma disciplina de estrutura e frontmatter que esta nota aplicou a testes.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/01 - Sistema de hooks|01 - Sistema de hooks]] — lifecycle e configuração de hooks
@@ -691,7 +709,7 @@ O `bash -n` verifica apenas a sintaxe, sem executar — útil para pegar erros d
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code hooks* (2026). Documentação oficial de hooks, incluindo estrutura de input por tipo de tool — https://docs.anthropic.com/pt/docs/claude-code/hooks
 - **Anthropic** — *Claude Code best practices* (2026). Recomendações de teste e validação de hooks em produção — https://www.anthropic.com/engineering/claude-code-best-practices

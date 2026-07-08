@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -18,6 +18,9 @@ tags:
 
 > [!abstract] TL;DR
 > Crie um [[Dicionário de IA#MCP server|MCP server]] quando o projeto tem ferramentas internas, APIs privadas, ou dados estruturados que nenhum server existente acessa. O custo mínimo é baixo: 50-100 linhas de TypeScript que expõem uma ou duas tools. O SDK oficial cuida do protocolo; você cuida só da lógica de negócio.
+
+> [!tip] Vídeo complementar
+> [Build a Real-world MCP Server with One TypeScript File | Full Tutorial](https://www.youtube.com/watch?v=kXuRJXEzrE0) — walkthrough prático de construir um MCP server real (não um brinquedo de tutorial) num único arquivo TypeScript, cobrindo tools, integração com API real e o transporte stdio. Útil para ver a estrutura mínima da nota em ação, do zero ao server funcional.
 
 ## A pergunta certa antes de começar
 
@@ -354,19 +357,19 @@ Uma tool que retorna 10.000 rows vai consumir todo o contexto da sessão. Adicio
 **Erros explícitos e acionáveis**
 "Serviço não encontrado: payments-v3" é melhor que "404 Not Found". O agente pode agir com uma mensagem que explica o que falhou.
 
-## Armadilhas
+## Armadilhas comuns
 
-**Server que trava o Claude Code**
-Se o processo do server travar ou não fechar stdin, o Claude Code pode ficar esperando indefinidamente. Sempre trate `SIGTERM` e feche conexões ao sair.
+> [!warning] Server que trava o Claude Code
+> Se o processo do server travar ou não fechar stdin, o Claude Code pode ficar esperando indefinidamente. Sempre trate `SIGTERM` e feche conexões ao sair.
 
-**Tool sem description suficiente**
-O agente vai ignorar a tool se a description não deixar claro quando usá-la. Invista tempo escrevendo descriptions precisas — elas são a interface pública do seu server para o agente.
+> [!warning] Tool sem description suficiente
+> O agente vai ignorar a tool se a description não deixar claro quando usá-la. Invista tempo escrevendo descriptions precisas — elas são a interface pública do seu server para o agente.
 
-**Segredos nos args**
-`"args": ["--token", "abc123"]` fica visível no processo e no `ps aux`. Sempre use env vars.
+> [!warning] Segredos nos args
+> `"args": ["--token", "abc123"]` fica visível no processo e no `ps aux`. Sempre use env vars.
 
-**Falta de validação de input**
-O SDK valida o schema de input antes de chamar o handler, mas a validação de negócio é sua responsabilidade. Valide inputs antes de mandar para o sistema externo.
+> [!warning] Falta de validação de input
+> O SDK valida o schema de input antes de chamar o handler, mas a validação de negócio é sua responsabilidade. Valide inputs antes de mandar para o sistema externo.
 
 ## Como explicar em inglês
 
@@ -385,7 +388,33 @@ O SDK valida o schema de input antes de chamar o handler, mas a validação de n
 
 **Key phrase:** "The SDK handles the protocol. You write business logic — what the tool does and what it returns. It's about 100 lines for a simple server."
 
-## Referências
+### Tabela PT↔EN
+
+| PT | EN |
+|---|---|
+| server MCP customizado | custom MCP server |
+| tool | tool |
+| resource | resource |
+| handler | handler |
+| transporte | transport |
+| protocolo | protocol |
+| lógica de negócio | business logic |
+| schema de input | input schema |
+| conectar via stdio | connect via `StdioServerTransport` |
+
+## Casos práticos
+
+**1. Painel de suporte consultando pedidos em produção**
+Um time de suporte usa o Claude Code para investigar tickets. Em vez de pedir pro agente rodar `psql` cru (arriscado, sem paginação, sem controle de acesso), o server `db-interno` da seção [[#Server com estado (conexão de banco persistente)|"Server com estado"]] expõe a tool `query_pedidos` — schema tipado, limite de 50 rows, filtro obrigatório por status. O agente investiga o pedido pedindo dados estruturados, nunca escrevendo SQL solto contra o banco de produção. A conexão do `Pool` fica viva entre chamadas (evita reabrir conexão a cada tool call) e o `SIGTERM` garante que ela fecha limpa quando a sessão encerra.
+
+**2. Onboarding de novos devs com contexto do projeto**
+Um projeto com múltiplos microsserviços tem regras de negócio e mapa de serviços espalhados em READMEs desatualizados. O server `contexto-projeto` da seção [[#Expondo resources (dados somente leitura)|"Expondo resources"]] publica `projeto://servicos` e `projeto://regras-negocio` como resources somente-leitura — sem efeito colateral, sem risco de o agente "executar" algo ao consultar. Um dev novo (ou o próprio agente investigando uma tarefa) lê o mapa de serviços como referência viva antes de tocar código, em vez de confiar em documentação que ninguém atualiza.
+
+## O que vem a seguir
+
+Um server sozinho já ajuda — mas o ganho composto aparece quando ele vira peça de um fluxo maior. Uma skill pode chamar as tools do seu server como parte de um procedimento documentado (por exemplo, uma skill de "investigar pedido" que primeiro consulta `query_pedidos` e depois aplica um checklist de triagem). Essa combinação — server expondo capacidade bruta, skill orquestrando o procedimento — é o assunto de [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/07 - Compondo skills e MCP|07 - Compondo skills e MCP]].
+
+## Fontes
 
 - [MCP SDK — TypeScript](https://github.com/modelcontextprotocol/typescript-sdk) — SDK oficial com exemplos e documentação
 - [MCP servers — repositório oficial](https://github.com/modelcontextprotocol/servers) — verifique se já existe um server antes de criar

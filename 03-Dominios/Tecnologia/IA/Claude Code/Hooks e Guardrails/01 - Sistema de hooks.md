@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -309,7 +309,9 @@ exit 0
 
 ---
 
-## Exemplo real — setup de hooks para projeto de produção
+## Casos práticos — setup de hooks para projeto de produção
+
+### Cenário 1 — time de código financeiro (guardrails de segurança)
 
 Um time com código financeiro crítico configurou este set de hooks:
 
@@ -365,6 +367,47 @@ Um time com código financeiro crítico configurou este set de hooks:
 
 O hook `check-pci-patterns.sh` verifica se o arquivo editado contém padrões de PAN (Primary Account Number) ou CVV antes de salvar — prevenção automática de dados sensíveis no código.
 
+### Cenário 2 — time de plataforma interna (qualidade + observabilidade assíncrona)
+
+Nem todo hook existe para bloquear alguma coisa. Um time de plataforma que roda sessões longas e não-supervisionadas (o agente trabalha à noite, revisão só de manhã) configurou um set focado em qualidade contínua e visibilidade, não em veto:
+
+```json
+// .claude/settings.json (projeto de plataforma interna)
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{
+          "type": "command",
+          "command": "/scripts/lint-and-typecheck.sh"
+        }]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [{
+          "type": "command",
+          "command": "/scripts/notify-slack.sh"
+        }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{
+          "type": "command",
+          "command": "/scripts/session-digest-to-slack.sh"
+        }]
+      }
+    ]
+  }
+}
+```
+
+Aqui o hook `PostToolUse` roda lint e type-check depois de cada `Edit`/`Write` — não bloqueia nada, mas registra falhas para o agente corrigir no próximo turno. O `Notification` avisa o time no Slack sempre que o agente precisa de decisão humana (ex: escolher entre duas migrações de schema conflitantes), e o `Stop` posta um resumo da sessão — o que foi mudado, quais testes rodaram — para quem revisa de manhã não precisar reconstruir o histórico lendo o log inteiro.
+
+A diferença de postura em relação ao Cenário 1 é o ponto: hooks de segurança existem para impedir; hooks de observabilidade existem para informar. Os dois usam a mesma mecânica (PreToolUse/PostToolUse/Notification/Stop), mas a intenção — bloquear vs. avisar — muda completamente o desenho do script.
+
 ---
 
 ## Hooks vs. allow/deny — quando usar cada um
@@ -379,6 +422,21 @@ O hook `check-pci-patterns.sh` verifica se o arquivo editado contém padrões de
 | Notificar quando tarefa longa concluir | Hook Notification |
 
 `deny` é mais simples e direto para bloqueios incondicionais. Hooks são necessários quando a lógica é condicional, ou quando você quer fazer mais do que apenas bloquear.
+
+---
+
+## Armadilhas comuns
+
+Hooks parecem simples até o dia em que um deles trava a sessão inteira, ou passa duas semanas sem rodar sem que ninguém percebesse. Três armadilhas concentram a maior parte dos problemas em produção:
+
+> [!warning] Hook sem timeout
+> Um script de hook que trava (loop infinito, chamada de rede que nunca responde, `read` esperando input que nunca vem) bloqueia o agente indefinidamente — não há um "pular depois de N segundos" automático em todo runtime. Se o script faz I/O externo (rede, banco, API), sempre defina timeout explícito dentro do próprio script (`timeout 5 curl ...`) em vez de confiar que o hook "vai ser rápido".
+
+> [!warning] Matcher errado (matching de prefixo, não de substring)
+> O matcher casa por **prefixo**, não por substring nem regex completo. `"Bash(git push"` cobre `git push origin main`, mas **não** cobre `cd /repo && git push` — porque o comando não *começa* com `git push`. É comum escrever um matcher achando que ele cobre "qualquer comando que contenha X" e descobrir só em produção que um comando composto (com `&&`, `;`, subshell) passou batido pelo guardrail.
+
+> [!warning] Hook silencioso (falha sem deixar rastro)
+> Um hook que falha (script não é executável, path errado, dependência ausente) pode falhar silenciosamente dependendo de como o runtime trata erros do próprio hook — o agente segue em frente sem saber que o guardrail nunca rodou. Teste todo hook novo isoladamente (rode o script à mão com um input de exemplo) antes de confiar nele em produção, e prefira que o script logue sua própria execução (mesmo que só "hook rodou, tudo ok") para que a ausência de log vire o sinal de alarme.
 
 ---
 
@@ -410,6 +468,14 @@ O hook `check-pci-patterns.sh` verifica se o arquivo editado contém padrões de
 
 ---
 
+## O que vem a seguir
+
+Esta nota mapeou o lifecycle inteiro — os 4 tipos de hook, onde configurar, como o hook se comunica com o runtime. Mas "onde o hook entra" é só metade da história: falta o "o que exatamente ele recebe e o que pode fazer com isso" para cada tipo específico.
+
+O ponto de maior alavancagem prática é o **PreToolUse** — é o único hook que intercepta *antes* da ação acontecer, e por isso é a peça que carrega o peso real dos guardrails de segurança (bloquear `rm -rf`, vetar `sudo`, exigir aprovação para deploy). Entender o payload que ele recebe e as opções de resposta (bloquear, modificar, aprovar) é o próximo passo natural: [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/02 - PreToolUse|02 - PreToolUse]].
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/02 - PreToolUse|02 - PreToolUse]] — interceptar antes de executar
@@ -420,7 +486,10 @@ O hook `check-pci-patterns.sh` verifica se o arquivo editado contém padrões de
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code hooks* (2026). Documentação oficial do sistema de hooks — https://docs.anthropic.com/pt/docs/claude-code/hooks
 - **Anthropic** — *Claude Code security* (2026). Uso de hooks para segurança e auditoria — https://docs.anthropic.com/pt/docs/claude-code/security
+
+> [!tip] Vídeo — Claude Code Hooks na prática
+> [I'm HOOKED on Claude Code Hooks: Advanced Agentic Coding](https://www.youtube.com/watch?v=J5B9UGTuNoM) (IndyDevDan) — percorre os hooks PreToolUse/PostToolUse/Notification/Stop com exemplos reais, incluindo um caso onde um hook impede um `rm -rf` de destruir a base de código durante execução paralela de agentes. Bom complemento visual pro fluxo descrito nesta nota.

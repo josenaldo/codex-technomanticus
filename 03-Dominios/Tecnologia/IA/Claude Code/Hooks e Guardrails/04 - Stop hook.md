@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -88,6 +88,9 @@ $CLAUDE_SESSION_LOG   # Caminho para o arquivo de log completo da sessão
 
 O `$CLAUDE_SESSION_LOG` é o mais valioso: é um arquivo JSON com o histórico completo de todas as tool calls da sessão. Você pode processar esse log para criar sumários, detectar padrões, ou auditoria forense.
 
+> [!tip] Vídeo — observabilidade de sessões via hooks
+> [I Can SEE EVERYTHING: Claude Code Hooks for Multi Agent Observability](https://www.youtube.com/watch?v=9ijnN985O_c) (IndyDevDan) mostra na prática o problema que motiva boa parte deste galho: quando você tem mais de um agente Claude Code rodando, monitorar cada sessão manualmente não escala. O vídeo constrói um painel de observabilidade que captura eventos de hooks (incluindo Stop) em tempo real — a mesma ideia dos Casos de uso 3 e 4 acima, levada a múltiplos agentes simultâneos.
+
 ```bash
 #!/bin/bash
 # Ler o log da sessão
@@ -100,7 +103,11 @@ fi
 
 ---
 
-## Caso de uso 1 — Notificação de desktop
+## Casos práticos
+
+Seis scripts prontos pra copiar, do mais simples (notificação) ao mais elaborado (artefato de CI). Cada um resolve um problema concreto do "e agora, o que eu faço quando a sessão acaba?".
+
+### Caso de uso 1 — Notificação de desktop
 
 O mais simples e imediatamente útil: avisar quando o Claude terminou enquanto você está em outra janela.
 
@@ -134,7 +141,7 @@ exit 0
 
 ---
 
-## Caso de uso 2 — Sumário de sessão
+### Caso de uso 2 — Sumário de sessão
 
 Criar um log legível com o que a sessão produziu:
 
@@ -180,7 +187,7 @@ exit 0
 
 ---
 
-## Caso de uso 3 — Análise do session log
+### Caso de uso 3 — Análise do session log
 
 O `$CLAUDE_SESSION_LOG` contém o histórico completo — você pode extrair estatísticas:
 
@@ -221,7 +228,7 @@ exit 0
 
 ---
 
-## Caso de uso 4 — Métricas de uso por projeto
+### Caso de uso 4 — Métricas de uso por projeto
 
 Para times que querem rastrear consumo de tokens por desenvolvedor/projeto:
 
@@ -255,7 +262,7 @@ O CSV pode ser analisado com qualquer ferramenta: `pandas`, Google Sheets, ou um
 
 ---
 
-## Caso de uso 5 — Cleanup de arquivos temporários
+### Caso de uso 5 — Cleanup de arquivos temporários
 
 Se o agente cria arquivos de debugging durante a sessão, limpá-los ao encerrar:
 
@@ -284,7 +291,7 @@ exit 0
 
 ---
 
-## Caso de uso 6 — Relatório para CI/CD
+### Caso de uso 6 — Relatório para CI/CD
 
 Em pipelines headless, o Stop hook pode criar artefatos de saída para o sistema de CI:
 
@@ -373,11 +380,26 @@ exit 0
 ## Checklist — Stop hook
 
 - [ ] Script é executável: `chmod +x hooks/notify-stop.sh`
-- [ ] Verificação de `stop_reason` antes de cleanup destrutivo
+- [ ] Verificação de `stop_reason` antes de ações destrutivas (ver Armadilhas comuns)
 - [ ] Logs redirecionados para arquivo (não stdout)
-- [ ] Uso de `$CLAUDE_SESSION_LOG` verificado (`[[ -f "$CLAUDE_SESSION_LOG" ]]`)
+- [ ] Uso de `$CLAUDE_SESSION_LOG` verificado antes de processar (ver Armadilhas comuns)
 - [ ] Testado com JSON de exemplo: `echo '{"session_id":"test","stop_reason":"end_turn","total_turns":5,"total_tokens":1000}' | ./notify-stop.sh`
-- [ ] Auto-commit (se configurado) só em `end_turn`, nunca em `interrupt`
+- [ ] Auto-commit (se configurado) só em `end_turn` (ver Armadilhas comuns)
+
+---
+
+## Armadilhas comuns
+
+O checklist acima aponta os pontos de atenção; aqui está o porquê de cada um — os três jeitos mais comuns de um Stop hook causar dano em vez de só informar.
+
+> [!warning] Cleanup destrutivo disparado em `interrupt`
+> Se o script de limpeza (Caso de uso 5) não checa `stop_reason` antes de rodar `rm -f`, ele apaga arquivos temporários mesmo quando a sessão foi interrompida por Ctrl+C — exatamente o momento em que o usuário pode querer investigar o que ficou pela metade. A regra é sempre: cleanup destrutivo só em `end_turn`; em `interrupt` ou `max_turns`, no máximo logar, nunca apagar.
+
+> [!warning] Processar `$CLAUDE_SESSION_LOG` sem checar se ele existe
+> Nem toda invocação do Stop hook garante que o arquivo de log já foi flushado no disco — rodar `jq` direto contra um caminho ausente derruba o script com erro e pode interromper o resto do hook (notificação, métricas) que viria depois. Por isso os scripts de exemplo (Casos de uso 3, 4) sempre abrem com `if [[ -f "$CLAUDE_SESSION_LOG" ]]; then ... fi` — sem essa guarda, um `set -e` no topo do script derruba o hook inteiro por um log ausente.
+
+> [!warning] Auto-commit rodando fora de `end_turn`
+> Um Stop hook que faz `git add -A && git commit` sem checar `stop_reason` comita o estado da sessão mesmo quando ela foi interrompida no meio de uma edição — arriscando gravar um commit com código quebrado ou incompleto. Trate auto-commit como uma ação de "sessão bem-sucedida": só dispare quando `stop_reason == "end_turn"`, do contrário prefira deixar o `git status` sujo para o usuário decidir.
 
 ---
 
@@ -399,6 +421,14 @@ exit 0
 
 ---
 
+## O que vem a seguir
+
+Você já sabe quando o Stop hook dispara, o que ele recebe e os seis scripts de referência pra notificar, sumarizar, limpar e reportar. Falta uma pergunta prática: como ter certeza de que o script vai se comportar como esperado antes de confiar nele numa sessão de verdade — especialmente nos três casos de `interrupt` descritos nas Armadilhas comuns acima, que são justamente os mais difíceis de reproduzir manualmente?
+
+É aí que entra [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/08 - Testando hooks|08 - Testando hooks]]: como simular os três `stop_reason` (`end_turn`, `max_turns`, `interrupt`) com JSON de exemplo, isolar o hook do resto da sessão, e pegar bugs de guarda ausente (tipo os das Armadilhas comuns) antes que eles rodem em produção.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/01 - Sistema de hooks|01 - Sistema de hooks]] — lifecycle completo e tipos de hook
@@ -409,7 +439,7 @@ exit 0
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code hooks* (2026). Documentação oficial do Stop hook, stop_reason e $CLAUDE_SESSION_LOG — https://docs.anthropic.com/pt/docs/claude-code/hooks
 - **Anthropic** — *Claude Code best practices* (2026). Padrões de observabilidade e notificação em sessões longas — https://www.anthropic.com/engineering/claude-code-best-practices

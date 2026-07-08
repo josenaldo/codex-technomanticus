@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -271,6 +271,32 @@ Para tarefas paralelizáveis (ex: "refatore todos os 8 controllers com o mesmo p
 > [!tip] Isolamento de escopo em subagentes
 > Dê a cada subagente um escopo claro e não-sobreponente: "refatore src/controllers/users.ts" e "refatore src/controllers/products.ts" em paralelo. Dois subagentes editando o mesmo arquivo criam conflito de escrita.
 
+> [!tip] Assista: Tool use with the Claude 3 model family
+> **Canal:** Anthropic | **Duração:** ~2min | **Idioma:** EN
+>
+> Demo oficial e curta da Anthropic que mostra o protocolo de tool call na prática: um schema JSON descreve a tool, o modelo decide chamá-la, e o resultado volta como `ToolResult`. A segunda metade do vídeo é a mais relevante para esta seção — mostra Opus usando uma tool de "dispatch sub agents" para orquestrar 100 modelos Haiku em paralelo, testando implementações de quicksort e devolvendo só o resultado vencedor. É a mesma composição pai→subagentes descrita acima, num exemplo real e mensurável.
+> Trecho de destaque [1:31]: *"We've given Opus a dispatch sub agents tool to parallelize this work, where it can write a prompt template and provide a list of arguments."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=6wkFb2_cUik)
+
+---
+
+## Casos práticos
+
+Duas cenas comuns em produção mostram por que entender o protocolo de tool call — não só a lista de tools — importa na prática.
+
+**Cena 1: o agente lê `.env` por acidente**
+
+Você pede: "investigue por que a autenticação está falhando em staging." O agente decide inspecionar a configuração e roda `Glob("*.env*")` para localizar os arquivos de ambiente do projeto. O glob captura `.env.example` (inofensivo) e também `.env` — que tem a chave da API de pagamento e o segredo do JWT. O agente lê os dois com `Read`, porque nada no protocolo o impede: `Read` é uma tool automática, sem pedido de confirmação, e o conteúdo lido vira `ToolResult` no contexto — visível ao modelo dali em diante, e potencialmente reproduzido se o agente citar o arquivo na resposta ou logar o raciocínio.
+
+O problema não é o agente ser malicioso — é que o protocolo de tool call não distingue "arquivo de config qualquer" de "arquivo com segredo". Quem distingue é o allow/deny list em `.claude/settings.json` (ver [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/05 - Permissions|05 - Permissions]]) ou um hook `PreToolUse` que intercepta a chamada antes da execução e bloqueia leitura de padrões sensíveis (`.env`, `secrets.*`, `*.pem`). Sem essa camada, o segredo já está no contexto — e possivelmente no histórico da sessão — antes que alguém perceba.
+
+**Cena 2: `Bash` verboso estoura o contexto num CI**
+
+Um pipeline de CI usa Claude Code em modo headless (`claude -p`) para investigar uma falha de build. O agente roda `Bash("npm install")` para reproduzir o ambiente. Em um monorepo com dependências pesadas, esse comando produz milhares de linhas de output — cada uma delas entra inteira no `ToolResult` e é somada ao contexto (ver [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]]). O agente ainda precisa rodar `npm test` e analisar o log de erro, mas já consumiu uma fatia grande da janela de contexto só com o ruído da instalação — e cada tool call subsequente carrega esse histórico junto.
+
+O resultado típico: o agente perde precisão nas últimas interações do pipeline (a compactação ou o truncamento do começo da conversa custam informação), ou a run inteira falha por exceder o limite de tokens antes de chegar à causa real do bug. A correção é a mesma regra prática da seção de custo: filtrar output verboso na própria chamada — `Bash("npm install 2>&1 | tail -20")` — ou, melhor ainda, configurar o CI para não invocar instalação completa quando um cache de dependências já existe.
+
 ---
 
 ## Tool use e segurança
@@ -326,17 +352,17 @@ Isso permite: logging de auditoria, validação pré-execução, lint automátic
 
 ## Armadilhas comuns
 
-**Write em arquivo existente**
-O agente usa `Write` para modificar um arquivo e regenera apenas parte do conteúdo. O restante é perdido. A prevenção: o agente deve usar `Read` antes de `Write`, e preferir `Edit` para modificações.
+> [!warning] Write em arquivo existente
+> O agente usa `Write` para modificar um arquivo e regenera apenas parte do conteúdo. O restante é perdido. A prevenção: o agente deve usar `Read` antes de `Write`, e preferir `Edit` para modificações.
 
-**Bash com output verboso**
-`npm install`, `docker build`, `pytest -v` podem gerar megabytes de output. Esse output entra inteiro no contexto. Para operações verbosas, filtre o output: `Bash("npm install 2>&1 | tail -5")`.
+> [!warning] Bash com output verboso
+> `npm install`, `docker build`, `pytest -v` podem gerar megabytes de output. Esse output entra inteiro no contexto. Para operações verbosas, filtre o output: `Bash("npm install 2>&1 | tail -5")`.
 
-**Encadeamento não supervisionado em modo headless**
-Em CI/CD sem `--max-turns` e com permissões amplas, o agente pode executar sequências longas destrutivas sem ponto de intervenção. Configure guardrails antes de usar em automação.
+> [!warning] Encadeamento não supervisionado em modo headless
+> Em CI/CD sem `--max-turns` e com permissões amplas, o agente pode executar sequências longas destrutivas sem ponto de intervenção. Configure guardrails antes de usar em automação.
 
-**Bash como substituto para Read/Grep**
-O agente às vezes usa `Bash("cat arquivo.ts")` ou `Bash("grep -r pattern src/")` em vez de `Read` e `Grep`. Isso é mais caro em tokens e menos controlável. Um bom CLAUDE.md ou instruction no prompt corrige esse hábito.
+> [!warning] Bash como substituto para Read/Grep
+> O agente às vezes usa `Bash("cat arquivo.ts")` ou `Bash("grep -r pattern src/")` em vez de `Read` e `Grep`. Isso é mais caro em tokens e menos controlável. Um bom CLAUDE.md ou instruction no prompt corrige esse hábito.
 
 ---
 
@@ -383,8 +409,11 @@ O agente às vezes usa `Bash("cat arquivo.ts")` ou `Bash("grep -r pattern src/")
 
 ---
 
-## Veja também
+## O que vem a seguir
 
+Cada `ToolResult` que entra no contexto — o conteúdo de um `Read`, o output de um `Bash`, o resumo de um `Agent` — ocupa espaço numa janela que não é infinita. A cena do `npm install` verboso na seção de casos práticos é só um sintoma de um problema maior: como o Claude Code decide o que cabe no contexto, o que descarta, e o que compacta quando a janela começa a estourar. É esse mecanismo que a próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]], desmonta em detalhe.
+
+Outras notas relacionadas:
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/01 - O loop agentic|01 - O loop agentic]]
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase|02 - Como Claude Code lê um codebase]]
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — controlar tool use via hooks
@@ -393,7 +422,7 @@ O agente às vezes usa `Bash("cat arquivo.ts")` ou `Bash("grep -r pattern src/")
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code CLI reference* (2026). Todas as tools disponíveis e parâmetros — https://docs.anthropic.com/pt/docs/claude-code/cli-reference
 - **Anthropic** — *Claude Code settings* (2026). Configuração de permissões e allow/deny lists — https://docs.anthropic.com/pt/docs/claude-code/settings

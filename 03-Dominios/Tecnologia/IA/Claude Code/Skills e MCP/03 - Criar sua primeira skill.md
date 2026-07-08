@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -18,6 +18,9 @@ tags:
 
 > [!abstract] TL;DR
 > A melhor primeira skill é aquela que você já executa de cabeça. Escolha um processo repetitivo — code review, deploy checklist, debugging — e transforme-o em texto estruturado. Este guia cria uma skill de code review TypeScript do zero, passo a passo, explicando cada decisão ao longo do caminho.
+
+> [!tip] Vídeo complementar
+> [Claude Code Tutorial: How to Create & Use Custom Skills](https://www.youtube.com/watch?v=A4LQnB39LzM) — walkthrough em vídeo cobrindo a mesma sequência deste guia (articular o processo, escrever frontmatter e corpo, testar com uma tarefa real).
 
 ## Antes de abrir o editor: o princípio da skill emergente
 
@@ -351,6 +354,20 @@ import { UserRepository } from '@/domain/user.repository'
 
 Note a diferença: a skill de domínio não tem passos sequenciais — tem referências e convenções. O agente consulta enquanto escreve código.
 
+## Casos práticos
+
+As duas variações acima (deploy checklist e convenções de domínio) já são exemplos, mas vale ver como cada estrutura se comporta quando a skill sai do walkthrough e entra na rotina de um time de verdade.
+
+**Cenário 1 — triagem de incidentes num squad de plataforma**
+
+Um squad que atende chamados de produção tem um processo mental de triagem: checar dashboards, isolar o serviço afetado, decidir entre rollback e hotfix, e documentar a decisão. Isso é uma skill de *processo*, igual à `code-review-ts` deste walkthrough: passos em ordem, critério de saída (a decisão está documentada?) e formato de output (um resumo do incidente com severidade e ação tomada). A diferença para o exemplo de code review é que aqui a skill é invocada sob pressão de tempo — por isso o formato de output precisa ser ainda mais enxuto, com os passos mais críticos (isolar o serviço, decidir rollback/hotfix) no topo do checklist.
+
+**Cenário 2 — onboarding de consultor em base de código legada**
+
+Um consultor que assume um sistema legado repete sempre a mesma sequência de reconhecimento: mapear os pontos de entrada, identificar testes existentes (ou a ausência deles), localizar onde a dívida técnica está concentrada. Essa é uma skill de *domínio* — como `convencoes-ts` — porque não tem "fim": o agente consulta a skill continuamente enquanto explora o código, não a executa uma vez do início ao fim. O valor aqui não é o checklist, é registrar o vocabulário e os pontos de atenção que só quem já entrou nesse tipo de sistema antes saberia procurar.
+
+Nos dois casos, o processo de criação é o mesmo dos Passos 1-6: articular em prosa antes de estruturar, testar com uma tarefa real (um incidente de fato, um trecho real do legado) e iterar com base no que o agente errou.
+
 ## Checklist de design antes de commitar
 
 Antes de versionar a skill, passe por estas perguntas:
@@ -364,19 +381,19 @@ Antes de versionar a skill, passe por estas perguntas:
 | A skill tem menos de ~300 linhas? | Se maior, provavelmente é duas skills |
 | Testei com um arquivo real? | Não só com exemplos inventados |
 
-## Armadilhas
+## Armadilhas comuns
 
-**Skill com tudo que você sabe sobre code review**
-Resulta em um documento enorme que o agente lê mas não consegue priorizar. Coloque os 20% que cobrem 80% dos problemas que você encontra de verdade. O resto pode vir numa skill separada.
+> [!warning] Skill com tudo que você sabe sobre code review
+> Resulta em um documento enorme que o agente lê mas não consegue priorizar. Coloque os 20% que cobrem 80% dos problemas que você encontra de verdade. O resto pode vir numa skill separada.
 
-**Instruções sem exemplos de output**
-O agente interpreta o formato de saída de forma criativa sem um exemplo. Sempre inclua pelo menos um exemplo completo do output esperado — incluindo o caso de erro mais comum.
+> [!warning] Instruções sem exemplos de output
+> O agente interpreta o formato de saída de forma criativa sem um exemplo. Sempre inclua pelo menos um exemplo completo do output esperado — incluindo o caso de erro mais comum.
 
-**Não versionar a skill**
-Skills que vivem só localmente ficam inconsistentes entre membros do time. Commite `.claude/skills/` junto com o código. A skill é um artefato do time, não um arquivo pessoal.
+> [!warning] Não versionar a skill
+> Skills que vivem só localmente ficam inconsistentes entre membros do time. Commite `.claude/skills/` junto com o código. A skill é um artefato do time, não um arquivo pessoal.
 
-**Não testar antes de commitar**
-A skill pode ser sintática e semanticamente correta mas instruir o agente de forma ambígua. Teste com um arquivo real antes de fazer o PR com a skill.
+> [!warning] Não testar antes de commitar
+> A skill pode ser sintática e semanticamente correta mas instruir o agente de forma ambígua. Teste com um arquivo real antes de fazer o PR com a skill.
 
 ## Como explicar em inglês
 
@@ -394,6 +411,31 @@ A skill pode ser sintática e semanticamente correta mas instruir o agente de fo
 4. Write the body: what to check + how to report (with a concrete output example)
 5. Test with a real task and observe where the agent deviates
 6. Iterate: add what's missing, remove what adds no value, sharpen what's ambiguous
+
+### Termos-chave: PT ↔ EN
+
+| PT-BR | EN | Onde aparece |
+|---|---|---|
+| nome (da skill) | `name` | Frontmatter |
+| descrição | `description` | Frontmatter — sinal de relevância pro agente |
+| metadados | `metadata` | Frontmatter (`metadata.type`, `metadata.tags`) |
+| skill de processo | process skill | `metadata.type: process` |
+| skill de domínio | domain skill | `metadata.type: domain` |
+| corpo (da skill) | body | Instrução que o agente segue |
+| critério de saída | exit criteria | "O agente sabe quando terminou?" |
+| checklist de verificação | verification checklist | Passo 4 |
+| exemplo de saída | output example | Formato concreto de resultado |
+| iterar | iterate | Passo 6 |
+
+## O que vem a seguir
+
+Uma skill isolada já resolve um processo repetitivo, mas o ganho maior aparece quando o agente também sabe *buscar informação externa de forma confiável* — não só seguir um checklist, mas consultar uma fonte viva (um banco de dados, uma API, um sistema interno) durante a execução. É aí que entra o MCP (Model Context Protocol): o próximo passo natural depois de dominar skills é entender como conectar o Claude Code a essas fontes externas.
+
+Continue em [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/04 - MCP overview|04 - MCP overview]].
+
+## Fontes
+
+- **Anthropic** — [*Agent Skills — Claude Docs*](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) (2026). Documentação oficial sobre estrutura de SKILL.md, campo `description` como sinal de relevância e boas práticas de criação.
 
 ## Referências
 

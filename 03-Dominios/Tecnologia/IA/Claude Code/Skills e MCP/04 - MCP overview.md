@@ -239,17 +239,17 @@ sequenceDiagram
 
 ## Armadilhas
 
-**MCP server conectado a produção sem guardrails**
-Um MCP postgres apontando para o banco de produção significa que o agente pode rodar `DROP TABLE` em produção se instruído (ou enganado) a fazer isso. Configure hooks de guardrail antes de conectar MCP servers em ambientes críticos. Ver [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]].
+> [!warning] MCP server conectado a produção sem guardrails
+> Um MCP postgres apontando para o banco de produção significa que o agente pode rodar `DROP TABLE` em produção se instruído (ou enganado) a fazer isso. Configure hooks de guardrail antes de conectar MCP servers em ambientes críticos. Ver [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]].
 
-**Latência impacta a sessão**
-Cada invocação de tool MCP é uma chamada ao server e ao sistema externo. Um server lento torna a sessão lenta. Para dados que não mudam frequentemente (schema do banco, lista de projetos), considere cachear no server ou usar resources em vez de tools repetidas.
+> [!warning] Latência impacta a sessão
+> Cada invocação de tool MCP é uma chamada ao server e ao sistema externo. Um server lento torna a sessão lenta. Para dados que não mudam frequentemente (schema do banco, lista de projetos), considere cachear no server ou usar resources em vez de tools repetidas.
 
-**Versionar o settings.json com cuidado**
-O `settings.json` com configuração de MCP pode ir no git — mas sem valores de segredos inline. Use interpolação de variáveis de ambiente (`${VAR}`) e documente quais variáveis o projeto precisa no README ou no onboarding.
+> [!warning] Versionar o settings.json com cuidado
+> O `settings.json` com configuração de MCP pode ir no git — mas sem valores de segredos inline. Use interpolação de variáveis de ambiente (`${VAR}`) e documente quais variáveis o projeto precisa no README ou no onboarding.
 
-**Confundir MCP server com skill**
-Skills são instruções para o agente (como fazer). MCP servers são capabilities do agente (o que ele pode fazer). São complementares, não substitutos. A skill `/deploy` diz o processo; o MCP server `github` dá a capability de criar o PR.
+> [!warning] Confundir MCP server com skill
+> Skills são instruções para o agente (como fazer). MCP servers são capabilities do agente (o que ele pode fazer). São complementares, não substitutos. A skill `/deploy` diz o processo; o MCP server `github` dá a capability de criar o PR.
 
 ## Tipos de transporte: stdio vs HTTP/SSE
 
@@ -381,6 +381,21 @@ Isso é intencional no design do MCP: o protocolo é invisível para o modelo. O
 - *"Is MCP Anthropic-specific?"* — No. MCP is an open protocol designed for any AI agent. Other providers are adopting it.
 - *"How is an MCP tool different from a function call?"* — They're the same concept at the protocol level. MCP tools are function-call schemas exposed by an external server, not hardcoded in the model.
 - *"Who should create MCP servers?"* — For standard tools (Postgres, GitHub), use community servers. For internal tools (your company's API, internal database), create a custom server.
+
+**Termos PT ↔ EN**
+
+| Português | English |
+|---|---|
+| Servidor MCP | MCP server |
+| Ferramentas / recursos / prompts | Tools / resources / prompts |
+| Transporte | Transport |
+
+> [!tip] Vídeo sobre MCP
+> [Building Agents with Model Context Protocol — Full Workshop com Mahesh Murag (Anthropic)](https://www.youtube.com/watch?v=kQmXtrmQ5Zg) explica os três primitivos do protocolo (tools, resources, prompts) e mostra a construção de um agente com MCP do zero — direto de quem projetou o protocolo.
+
+## O que vem a seguir
+
+Este overview cobriu o *o quê* e o *por quê* do MCP: o protocolo, os três tipos de capability, o modelo de segurança, stdio vs HTTP/SSE. Falta o *com quê* — quais servers existem de fato, o que cada um resolve, e como configurá-los sem reinventar a roda. É esse o assunto de [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/05 - MCP servers essenciais|05 - MCP servers essenciais]], que cataloga os servers mais usados (Postgres, GitHub, filesystem, browser) e as decisões práticas de configuração.
 
 ## Referências
 

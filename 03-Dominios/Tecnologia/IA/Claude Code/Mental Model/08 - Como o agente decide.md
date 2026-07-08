@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -310,13 +310,42 @@ Três elementos do feedback eficiente:
 
 ## Armadilhas
 
-**Prompt de telefone quebrado.** "melhore o código" → agente faz mudanças de estilo → você diz "não era isso" → agente faz outra coisa. Cada iteração vaga desperdiça tokens e frustração. Invista 2 minutos num prompt preciso.
+> [!warning] Prompt de telefone quebrado
+> "melhore o código" → agente faz mudanças de estilo → você diz "não era isso" → agente faz outra coisa. Cada iteração vaga desperdiça tokens e frustração. Invista 2 minutos num prompt preciso.
 
-**Confiança implícita.** O agente não perguntará sobre tudo que não sabe. Se você não especificou o logger, ele escolheu um. Revise outputs, especialmente em sessões longas onde o contexto é resumido.
+> [!warning] Confiança implícita
+> O agente não perguntará sobre tudo que não sabe. Se você não especificou o logger, ele escolheu um. Revise outputs, especialmente em sessões longas onde o contexto é resumido.
 
-**Correções sem contexto.** "não era isso, tenta de novo" sem explicar o que estava errado é feedback ineficiente. O agente vai tentar outro caminho sem saber qual critério usar.
+> [!warning] Correções sem contexto
+> "não era isso, tenta de novo" sem explicar o que estava errado é feedback ineficiente. O agente vai tentar outro caminho sem saber qual critério usar.
 
-**Não usar plan mode em tarefas críticas.** Para mudanças que afetam múltiplos arquivos ou módulos críticos, o custo de verificar o plano antes da execução é irrisório comparado ao custo de reverter mudanças incorretas.
+> [!warning] Não usar plan mode em tarefas críticas
+> Para mudanças que afetam múltiplos arquivos ou módulos críticos, o custo de verificar o plano antes da execução é irrisório comparado ao custo de reverter mudanças incorretas.
+
+---
+
+## Casos práticos
+
+Duas situações reais em que a qualidade da decisão do agente depende diretamente do contexto disponível — não de "sorte" ou de o modelo ser mais ou menos capaz naquele dia.
+
+**Cenário 1 — migração de biblioteca em modo headless (CI).**
+
+Um pipeline de CI dispara Claude Code em modo `--print` (headless) para atualizar chamadas de uma biblioteca de HTTP client depreciada (`request` → `axios`) em ~40 arquivos. Não há humano para perguntar "e se o timeout customizado quebrar?". Pela regra da tabela acima ("modo headless → interpretação mais conservadora"), o agente:
+
+- preserva o comportamento observável de cada chamada (timeout, retry, headers) em vez de adotar os defaults do `axios`;
+- quando encontra um uso não-trivial (ex: streaming de resposta, que `axios` trata diferente), deixa um `// TODO: verify this — response streaming may behave differently under axios` em vez de reescrever silenciosamente;
+- reporta ao final com status `DONE_WITH_CONCERNS`, listando os arquivos com TODOs.
+
+Sem CLAUDE.md documentando a política de streaming, o agente não *sabe* a resposta certa — mas sabe que não sabe, e sinaliza isso em vez de adivinhar. É a mesma lógica de "confiança implícita" da seção de armadilhas, só que em escala: 40 arquivos, zero chance de intervenção humana no meio do processo.
+
+**Cenário 2 — mesmo prompt, dois repositórios, duas decisões diferentes.**
+
+Um dev pede exatamente a mesma coisa em dois projetos: "adicione um endpoint para exportar relatório em CSV".
+
+- No repo A, o CLAUDE.md documenta: *"Todos os endpoints de exportação usam streaming (nunca carregam o dataset inteiro em memória) — ver `src/export/stream-csv.ts` como referência."* O agente lê essa referência, replica o padrão de streaming, e a decisão de "como gerar o CSV" nunca vira um espaço de busca — já está resolvida pelo contexto.
+- No repo B, sem essa instrução, o agente pesquisa o codebase, não encontra padrão de exportação, e toma a decisão mais comum na ausência de sinal: monta o CSV inteiro em memória com uma lib como `csv-stringify`. Funciona para datasets pequenos, mas é uma bomba-relógio de OOM em produção se o relatório crescer.
+
+O prompt foi idêntico. A decisão foi diferente porque o *espaço de decisão* era diferente — no repo A, o CLAUDE.md eliminou a ambiguidade antes mesmo do agente precisar escolher; no repo B, o agente preencheu o vazio com a opção estatisticamente mais comum, não a certa para aquele sistema.
 
 ---
 
@@ -352,6 +381,15 @@ Três elementos do feedback eficiente:
 
 ---
 
+## O que vem a seguir
+
+Entender como o agente decide é a metade "de fora" do modelo mental — o que molda a decisão (system prompt, CLAUDE.md, histórico, prompt atual). A outra metade é entender *onde* essas camadas realmente vivem: o harness que envolve o modelo — o processo que monta o contexto, despacha tool calls, aplica permissões e decide quando parar. A próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/09 - O harness como terceira camada|09 - O harness como terceira camada]], mostra essa camada de engenharia que fica entre você e o modelo — e por que ela é tão determinante para o resultado quanto o próprio raciocínio do Claude.
+
+> [!tip] Vídeo/podcast relevante
+> **How to Build an Agent** (Thorsten Ball, palestra sobre construir um coding agent do zero) — desmonta exatamente o loop de raciocínio→decisão→tool call que esta nota descreve, mostrando na prática como escolhas de contexto (system prompt, histórico, ferramentas disponíveis) mudam o comportamento do agente. Complementa bem a seção "Raciocínio invisível" com uma implementação concreta e minimalista do mesmo mecanismo. — https://ampcode.com/how-to-build-an-agent
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/09 - Prompting para Claude Code|09 - Prompting para Claude Code]] — técnicas de prompting em profundidade
@@ -362,7 +400,7 @@ Três elementos do feedback eficiente:
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Be clear and direct* (2026). Técnicas de prompting para reduzir ambiguidade — https://docs.anthropic.com/pt/docs/build-with-claude/prompt-engineering/be-clear-and-direct
 - **Anthropic** — *Let Claude think* (2026). Como raciocínio interno melhora a qualidade de decisões — https://docs.anthropic.com/pt/docs/build-with-claude/prompt-engineering/extended-thinking

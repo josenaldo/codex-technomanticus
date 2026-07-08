@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -266,20 +266,35 @@ A skill vive no contexto da sessão. Quando o contexto é limpo (com `/clear` ou
 
 ## Armadilhas comuns
 
-**Skills muito longas**
-O agente lê a skill inteira, consumindo [[Dicionário de IA#Token|tokens]] de contexto. Skills acima de 400-500 linhas começam a competir com o contexto do codebase. Se sua skill está crescendo, pergunte: são dois processos diferentes que deveriam ser duas skills?
+> [!warning] Skills muito longas
+> O agente lê a skill inteira, consumindo [[Dicionário de IA#Token|tokens]] de contexto. Skills acima de 400-500 linhas começam a competir com o contexto do codebase. Se sua skill está crescendo, pergunte: são dois processos diferentes que deveriam ser duas skills?
 
-**Instruções ambíguas**
-"Escreva código limpo" não instrui — o agente não sabe o que você considera limpo neste projeto. "Prefira composição de funções puras a classes com estado; nomeie variáveis pelo que representam, não pelo tipo" instrui.
+> [!warning] Instruções ambíguas
+> "Escreva código limpo" não instrui — o agente não sabe o que você considera limpo neste projeto. "Prefira composição de funções puras a classes com estado; nomeie variáveis pelo que representam, não pelo tipo" instrui.
 
-**Misturar processo e domínio**
-Uma skill que ensina TDD *e* documenta a arquitetura do projeto é difícil de manter e invocar. Separe por tipo: a skill de processo ensina o como; a skill de domínio ensina o quê.
+> [!warning] Misturar processo e domínio
+> Uma skill que ensina TDD *e* documenta a arquitetura do projeto é difícil de manter e invocar. Separe por tipo: a skill de processo ensina o como; a skill de domínio ensina o quê.
 
-**`name` diferente do nome do arquivo**
-Convenção é manter `name:` idêntico ao nome do arquivo (sem espaços, kebab-case). Divergência cria confusão: `/meu-processo` não acha o arquivo `meu_processo.md`.
+> [!warning] `name` diferente do nome do arquivo
+> Convenção é manter `name:` idêntico ao nome do arquivo (sem espaços, kebab-case). Divergência cria confusão: `/meu-processo` não acha o arquivo `meu_processo.md`.
 
-**Não versionar junto ao código**
-A skill evolui com o projeto. Se ela vive só localmente e não vai no git, o time fica com versões diferentes do processo — o pior dos mundos.
+> [!warning] Não versionar junto ao código
+> A skill evolui com o projeto. Se ela vive só localmente e não vai no git, o time fica com versões diferentes do processo — o pior dos mundos.
+
+## Casos práticos
+
+Regra e exemplo abstrato só convencem até certo ponto. Dois casos documentados por quem construiu skills em produção mostram os dois lados: o que acontece quando a skill quebra silenciosamente, e o que acontece quando ela pega o próprio erro antes de virar incidente.
+
+**Quando a skill quebra em silêncio**
+
+Um relato de builder que mantém skills em produção lista o padrão mais comum de quebra: ninguém testa a *baseline* — ou seja, ninguém roda a tarefa sem a skill carregada para saber o que ela realmente muda. Sem esse controle, é impossível saber se a skill está resolvendo um problema real ou apenas adicionando instruções para casos hipotéticos que nunca acontecem. O sintoma mais caro nesse relato: skills editadas ("mudei três linhas, deixei a instrução mais clara, salvei") e nunca re-testadas — regras novas colidem com regras antigas sem que ninguém perceba, até o agente começar a se comportar de forma inconsistente em produção.
+
+**Quando a skill salva o incidente antes dele acontecer**
+
+Em outro relato, de um time rodando um workflow autônomo de múltiplos agentes em produção, um agente de planejamento (`strategic-PM`) encontrou uma ambiguidade nas próprias instruções durante um sprint autônomo: o `CLAUDE.md` do projeto dizia "uma fase = uma sessão", e o agente vinha interpretando isso como "exigir aprovação humana entre fases" — o oposto da operação autônoma pretendida. Como o time tinha disciplina de revisão embutida no workflow, a inconsistência foi capturada e corrigida (documentada no changelog) antes de virar um incidente real de produção. O mesmo relato registra um segundo bug pego da mesma forma: uma skill de planejamento (`/sprint-plan`) disparando o modo de planejamento em sessões não-interativas, causando falhas silenciosas com exit code 0 e nenhuma saída — também detectado antes de afetar produção.
+
+> [!summary] O padrão comum
+> Skill que quebra em silêncio e skill que salva o incidente têm a mesma causa raiz invertida: disciplina de teste. Testar a baseline (sem a skill) revela o que ela de fato muda; revisar o comportamento do agente depois de cada edição revela contradições antes que cheguem à produção.
 
 ## Skill como documentação viva
 
@@ -369,6 +384,13 @@ git diff HEAD~3 .claude/skills/code-review.md
 
 ## Como explicar em inglês
 
+| PT-BR | EN | Nota |
+|---|---|---|
+| Skill | Skill | Arquivo de instrução versionado, injetado no contexto sob demanda |
+| Skill de processo | Process skill | Ensina o *como* — um workflow com passos e ordem |
+| Skill de domínio | Domain skill | Ensina o *o quê* — conhecimento e convenções do projeto |
+| Frontmatter | Frontmatter | Bloco YAML no topo do arquivo, entre `---`; carrega `name` e `description` |
+
 **Skill** — a Markdown file that teaches the agent to follow a specific process or understand domain context. Invoked with `/skill-name`, its content is injected into the session context as an instruction.
 
 **Process skill** — teaches the *how*: a workflow the agent should follow step by step (TDD, code review, debugging).
@@ -387,10 +409,21 @@ git diff HEAD~3 .claude/skills/code-review.md
 - *"Can a skill call another skill?"* — Skills can reference other skills by name and suggest the user invoke them, but there's no automatic chaining at the file level. The agent can mention "you might also want /other-skill" as part of its response.
 - *"How do you test that a skill works?"* — Manual testing: invoke it, give a representative task, check if the agent's behavior matches the intended process. Then refine the instructions based on where the agent deviated.
 
-## Referências
+## O que vem a seguir
+
+Até aqui, "skill" foi tratada como uma categoria única — frontmatter, corpo, onde guardar. Mas o texto já deixou escapar uma fissura: process skills e domain skills têm estruturas, tamanhos ideais e ciclos de vida diferentes (a tabela da seção "Tipos de skill" é a pista).
+
+Essa fissura merece a própria lupa. [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/02 - Skills de processo vs domínio|A próxima nota]] usa a analogia do chef que entra numa cozinha nova: de um lado, as técnicas transferíveis que ele já sabe (processo); do outro, o contexto específico daquela casa — a ervilha que vira feijão se ninguém corrigir (domínio). Erro de técnica é visível, o prato volta da mesa. Erro de contexto é silencioso — e é exatamente esse silêncio que a próxima nota ensina a evitar.
+
+> [!tip] Vídeo — Agent Skills na prática
+> [Anthropic's New Skill Builds Your AI Agents In SECONDS (Claude Code)](https://www.youtube.com/watch?v=-rkdt--Q4KM) — cobre o método ARC (Architect, Run, Critique) para desenhar Agent Skills e ilustra o ciclo frontmatter → corpo → invocação descrito nesta nota.
+
+## Fontes
 
 - [Claude Code: Skills documentation](https://docs.anthropic.com/en/docs/claude-code/skills) — documentação oficial sobre criação e uso de skills
 - [Superpowers skills repository](https://github.com/anthropics/claude-code-superpowers) — exemplos de skills de processo avançadas
+- [5 reasons your Claude skills keep breaking](https://alexmcfarland.substack.com/p/5-reasons-your-claude-skills-keep) — builder relata falta de teste de baseline e edição sem re-teste como causas mais comuns de skill quebrada em produção
+- [I stopped prompting Claude Code. I gave it a team instead.](https://dev.to/rbah31/i-stopped-prompting-claude-code-i-gave-it-a-team-instead-p1g) — caso onde um agente pegou ambiguidade nas próprias instruções (CLAUDE.md) e um bug de skill antes de virar incidente de produção
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/02 - Skills de processo vs domínio|02 - Skills de processo vs domínio]] — quando usar cada tipo em profundidade
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/03 - Criar sua primeira skill|03 - Criar sua primeira skill]] — walkthrough prático do zero
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/08 - Skills em time|08 - Skills em time]] — versionar e compartilhar skills no time

@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -225,6 +225,14 @@ Uma sessão = uma tarefa coesa. Não misture "adicionar feature X" com "refatora
 claude --model claude-haiku-4-5-20251001 "rename variable x to connectionTimeout in src/cache.ts"
 ```
 
+> [!tip] Assista: How To Save 90% of Claude Code Token Usage
+> **Canal:** John Kim | **Duração:** ~18min | **Idioma:** EN
+>
+> Vai além das estratégias já cobertas aqui: mostra indexação prévia do codebase (code graph) pra evitar leituras exploratórias repetidas, uma ferramenta de compressão de output de CLI (RTK) e uma técnica de reduzir a verbosidade das respostas do próprio agente — cada uma com seu trade-off explícito (dessincronização do índice, perda de informação na compressão, risco de contexto raso demais).
+> Trecho de destaque [6:30]: *"There's this open source library called RTK that actually takes a lot of these noisy logs and then compresses them."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=UslVzxAkiZ0)
+
 ---
 
 ## Custo vs benefício — a conta que importa
@@ -333,15 +341,45 @@ Essa estimativa é grosseira, mas dá uma ordem de grandeza. Se o resultado for 
 
 ---
 
+## Casos práticos
+
+A teoria de "leituras cirúrgicas economizam tokens" só convence quando você vê o número final de uma sessão real. Dois cenários de produção mostram como as mesmas alavancas se comportam sob pressão diferente.
+
+### Cenário 1 — Pipeline de CI com revisão automática de PR
+
+Um squad de plataforma conecta Claude Code a cada PR aberto: o agente lê o diff, roda os testes afetados e comenta achados de review. Rodando em CI, cada execução é uma sessão nova — sem histórico acumulado de turnos anteriores, mas com `npm ci` e `npm test` completos no meio do caminho.
+
+Sem filtrar output, cada execução gastava ~15k tokens só em logs de instalação e teste (a maior parte irrelevante — sucesso silencioso não precisa de 500 linhas de log). Trocando `npm ci` e `npm test` por versões com `| tail` e `grep -E 'FAIL|error'`, o squad cortou esse custo para ~1k tokens por execução. Como o pipeline roda em toda PR — dezenas por dia — a economia mensal ficou na casa de centenas de dólares, não centavos.
+
+> [!example] Por que CI é diferente de sessão interativa
+> Em CI não existe "sessão longa que acumula contexto" — cada execução começa do zero. O ganho aqui não vem de compaction ou sessões focadas (que não se aplicam), vem inteiramente da filtragem de output: é a alavanca que mais importa quando o volume de execuções é alto e cada uma é curta.
+
+### Cenário 2 — Migração em lote de um monólito
+
+Uma squad de backend usa Claude Code para migrar 40 módulos de uma convenção antiga de logging para uma nova, um módulo por vez. A primeira tentativa rodou tudo em uma única sessão contínua — abrir módulo, editar, próximo módulo, repetir.
+
+Pelo turno 25, a sessão já carregava ~180k tokens de histórico (a maior parte irrelevante para o módulo 25: contexto dos módulos 1-24, já editados e fechados). O custo por chamada estava alto e a qualidade das edições começava a cair — o agente ocasionalmente "esquecia" convenções combinadas no início da sessão, engolidas pelo meio do contexto.
+
+Dividindo o trabalho em sessões de ~5 módulos cada, com `/clear` entre elas, o custo total caiu porque nenhuma sessão individual voltava a crescer além de ~40k tokens de histórico — e a qualidade se manteve estável em todos os módulos, sem o efeito "esqueceu o combinado" do meio do contexto.
+
+> [!example] O mesmo princípio, dois disfarces
+> Sessões focadas (estratégia 4) não é só sobre "não misturar tarefas diferentes" — é também sobre não deixar uma tarefa homogênea e repetitiva (migrar 40 módulos) virar uma única sessão gigante. Cada módulo é, na prática, uma tarefa independente.
+
+---
+
 ## Armadilhas
 
-**Ignorar o custo até a fatura chegar.** Configure alertas de uso no Console da Anthropic. É fácil acumular $50-100 em uma semana de refactoring sem perceber.
+> [!warning] Ignorar o custo até a fatura chegar
+> Configure alertas de uso no Console da Anthropic. É fácil acumular $50-100 em uma semana de refactoring sem perceber.
 
-**Subagents multiplicam custo.** Cada subagent (`Agent` tool) é uma sessão separada com seu próprio contexto. Em pipelines multi-agente com 10 subagents em paralelo, o custo é multiplicado por 10.
+> [!warning] Subagents multiplicam custo
+> Cada subagent (`Agent` tool) é uma sessão separada com seu próprio contexto. Em pipelines multi-agente com 10 subagents em paralelo, o custo é multiplicado por 10.
 
-**Cache hit rate baixo.** O prompt cache é ativado quando o início do contexto (system prompt + CLAUDE.md) é idêntico entre chamadas. Editar o CLAUDE.md frequentemente, ou rodar muitas sessões com intervalos > 5 minutos, reduz o benefício do cache.
+> [!warning] Cache hit rate baixo
+> O prompt cache é ativado quando o início do contexto (system prompt + CLAUDE.md) é idêntico entre chamadas. Editar o CLAUDE.md frequentemente, ou rodar muitas sessões com intervalos > 5 minutos, reduz o benefício do cache.
 
-**Reads por precaução.** O agente às vezes lê arquivos que não vai editar "para entender o contexto". Com CLAUDE.md bem escrito, você reduz esses reads desnecessários.
+> [!warning] Reads por precaução
+> O agente às vezes lê arquivos que não vai editar "para entender o contexto". Com CLAUDE.md bem escrito, você reduz esses reads desnecessários.
 
 ---
 
@@ -379,16 +417,23 @@ Essa estimativa é grosseira, mas dá uma ordem de grandeza. Se o resultado for 
 
 ---
 
+## O que vem a seguir
+
+Saber quanto uma sessão custa não explica por que ela tomou aquele caminho — por que o agente leu esses três arquivos e não outros, por que parou pra perguntar em vez de seguir direto, por que uma instrução vaga produziu um resultado diferente do esperado. Cada um desses "porquês" também é, indiretamente, uma decisão de custo: mais raciocínio, mais reads exploratórios, mais turnos de ida-e-volta. A próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide|08 - Como o agente decide]], entra exatamente nesse ponto cego — o raciocínio invisível que precede cada tool call e como a qualidade do seu prompt molda tanto a qualidade da decisão quanto, por consequência, o tamanho da conta no fim da sessão.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]] — o que entra no contexto e como otimizar
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]] — compaction como ferramenta de controle de custo
+- [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/08 - Como o agente decide|08 - Como o agente decide]] — o raciocínio que precede cada tool call
 - [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/05 - Controle de custo|05 - Controle de custo]] — monitoramento em nível de time
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/index|Mental Model]] — índice do galho
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude API pricing* (2026). Preços atualizados por modelo e tipo de token — https://www.anthropic.com/pricing
 - **ccusage** — *npm package* (2026). CLI para tracking de custo de sessões Claude Code — https://www.npmjs.com/package/ccusage

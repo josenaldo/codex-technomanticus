@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -338,6 +338,41 @@ Note que `git push * main` está no deny mas `git push` (sem filtro de branch) n
 
 ---
 
+## Casos práticos
+
+A teoria de allow/deny só cola quando você vê o efeito colateral de uma configuração ruim. Dois cenários que aparecem o tempo todo em times reais:
+
+**Cenário 1 — CI pipeline preso porque o allow list "esqueceu" o básico.**
+Um time configura `.claude/settings.json` só com os comandos "importantes" (`npm test`, `npm run build`) e assume que o resto — `git status`, `ls`, `cat` — vai funcionar por padrão. Não funciona: sem allow, cada leitura trivial vira um prompt de confirmação. Numa pipeline não-interativa (Claude Code rodando headless num agente de CI), isso não é só irritante — é uma trava. O processo fica esperando confirmação que nunca chega.
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test)",
+      "Bash(npm run build)"
+    ]
+  }
+}
+```
+
+A correção é sempre a mesma: liberar explicitamente o básico de leitura e diagnóstico (`Read(*)`, `Bash(git status)`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(ls *)`) além dos comandos "importantes". Veja o [[#Exemplo completo anotado — projeto fullstack|exemplo fullstack]] acima — a seção de utilitários de leitura existe exatamente para evitar essa trava.
+
+**Cenário 2 — onboarding de repo legado com deny amplo demais.**
+Ao herdar um projeto legado, é tentador "travar tudo que pode dar problema" com um deny genérico:
+
+```json
+{
+  "permissions": {
+    "deny": ["Bash(*)"]
+  }
+}
+```
+
+Isso bloqueia literalmente qualquer comando Bash — inclusive `git status` e `npm test`. O agente fica sem conseguir rodar nada, e como `deny` sempre vence `allow` (ver [[#Campo permissions — allow e deny|seção acima]]), nenhum allow list vai destravar isso. Num repo legado, o padrão mais seguro é o inverso: `deny` cirúrgico (comandos destrutivos específicos: `rm -rf`, `push --force`, `reset --hard`) e `allow` generoso para leitura/diagnóstico — deixando as ações realmente perigosas fora do automático, mas sem paralisar o resto.
+
+---
+
 ## Diagrama de resolução de permissões
 
 ```mermaid
@@ -372,17 +407,30 @@ Lembre: settings.json usa **sobrescrita** (não concatenação). A camada mais e
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-**Sem nenhum allow configurado.** Sem `allow`, cada Bash que o agente tenta rodar — inclusive `git status`, `ls`, `wc -l` — pede confirmação. Sessão fica extremamente lenta. Configure pelo menos os comandos de leitura básicos.
+> [!warning] Sem nenhum allow configurado
+> Sem `allow`, cada Bash que o agente tenta rodar — inclusive `git status`, `ls`, `wc -l` — pede confirmação. Sessão fica extremamente lenta, e numa execução não-interativa (CI, agente headless) isso trava o processo à espera de uma confirmação que nunca chega. Configure pelo menos os comandos de leitura básicos (ver [[#Casos práticos|Cenário 1]] acima).
 
-**Deny muito amplo.** `"deny": ["Bash(*)"]` bloqueia tudo. O agente fica preso. Deny deve ser cirúrgico — bloqueie o que é perigoso, não tudo.
+> [!warning] Deny muito amplo
+> `"deny": ["Bash(*)"]` bloqueia tudo, inclusive `git status` e `npm test`. O agente fica preso — e como `deny` sempre vence `allow`, nenhuma liberação adicional destrava isso. Deny deve ser cirúrgico — bloqueie o que é perigoso (comandos destrutivos específicos), não tudo (ver [[#Casos práticos|Cenário 2]] acima).
 
-**Secrets no `settings.json`.** O arquivo vai pro git. Se commitar, o secret está exposto no histórico para sempre. Use `.claude/settings.local.json` para qualquer coisa sensível.
+> [!warning] Secrets no settings.json
+> O arquivo vai pro git. Se commitar, o secret está exposto no histórico para sempre. Use `.claude/settings.local.json` para qualquer coisa sensível.
 
-**Esquecer o `.gitignore`.** Se criar `settings.local.json`, adicione ao `.gitignore` imediatamente. Do contrário o arquivo sensível entra no repositório sem aviso.
+> [!warning] Esquecer o .gitignore
+> Se criar `settings.local.json`, adicione ao `.gitignore` imediatamente. Do contrário o arquivo sensível entra no repositório sem aviso.
 
-**Sobrescrita inesperada.** O projeto define um allow list pequeno, sobrescrevendo o global mais amplo — o agente perde permissões que funcionavam antes. Inclua explicitamente o que quer manter de camadas anteriores.
+> [!warning] Sobrescrita inesperada
+> O projeto define um allow list pequeno, sobrescrevendo o global mais amplo — o agente perde permissões que funcionavam antes. Inclua explicitamente o que quer manter de camadas anteriores (settings.json usa sobrescrita, não concatenação).
+
+> [!tip] Assista: Permissions, settings.json, and plan mode: making one Claude Code session safe
+> **Canal:** Tyler Renelle | **Duração:** ~26min | **Idioma:** EN
+>
+> Cobre o mesmo terreno desta nota com um ângulo prático de quem já foi mordido pela armadilha do allow list amplo demais — inclusive o mesmo conselho desta nota (deny cirúrgico + allow nomeado, nunca `Bash(*)` pra silenciar prompts).
+> Trecho de destaque [23:21]: *"The overly broad allow rule. It is so tempting around your second week to just write an allow rule of bash open paren star or bare bash and make all the prompts go away. Don't. [...] Allow the specific commands you run all day, your linter, your tests, your build, by name. Deny the sharp things explicitly, and let everything else prompt."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=CT9xynq7WZM)
 
 ---
 
@@ -414,9 +462,13 @@ Lembre: settings.json usa **sobrescrita** (não concatenação). A camada mais e
 
 ---
 
-## Veja também
+## O que vem a seguir
 
-- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/05 - Permissions|05 - Permissions]] — sintaxe completa de allow/deny
+Este `settings.json` só cobre o essencial de `permissions`, `env`, `hooks` e `model` — mas o campo `permissions` sozinho tem uma sintaxe rica o suficiente para merecer sua própria nota: padrões de glob mais finos, ordem de avaliação, casos de borda que não cabem aqui. Vale seguir para [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/05 - Permissions|05 - Permissions]] para fechar esse detalhe.
+
+Já se a dúvida é "onde esse arquivo mora, e o que mais existe na pasta `.claude/`", [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/07 - Pasta .claude|07 - Pasta .claude]] mapeia a estrutura inteira — settings.json é só um dos arquivos que vivem lá dentro, ao lado de comandos customizados, agentes e hooks.
+
+Outras notas relacionadas:
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/01 - Hierarquia de configuração|01 - Hierarquia de configuração]] — como settings.json se combina entre camadas
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/index|Hooks e Guardrails]] — hooks em profundidade
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — índice do galho

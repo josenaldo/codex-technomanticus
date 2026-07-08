@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -353,6 +353,42 @@ Pensar em compaction como um colaborador que mantém notas de projeto: ele sabe 
 
 Esta é também a razão pela qual ferramentas como `git log` e `git diff` são mais confiáveis que a memória do agente para rastrear o que foi mudado: o repositório tem o estado real do código; o resumo de compaction tem a intenção e as decisões.
 
+> [!tip] Vídeo — Effective context engineering for AI agents (Anthropic, 2025)
+> A própria Anthropic publicou um vídeo oficial explicando a filosofia por trás de compaction e das outras técnicas de gerenciamento de contexto (write/select/compress/isolate) que sustentam sessões longas em agentes. Bom complemento para quem quer o racional por trás do mecanismo, não só o comando.
+> [Effective context engineering for AI agents](https://www.youtube.com/watch?v=139Cfcrt2Mk) — Anthropic, publicado em 30/10/2025.
+
+---
+
+## Casos práticos
+
+**Cenário 1 — Migração multi-dia com compaction repetida**
+
+Uma migração de um monólito para microsserviços leva 4 dias de trabalho contínuo com Claude Code. No dia 1, a sessão sofre 3 compactions automáticas enquanto o agente mapeia dependências entre módulos. No dia 2, o agente retoma via `--resume` — mas o resumo da última compaction do dia 1 não menciona um detalhe crítico: a ordem específica de migração acordada (`payments` antes de `notifications`, por causa de uma dependência de schema). O agente, sem essa nuance, começa pela ordem "óbvia" (alfabética) e quebra a build.
+
+**O que deveria ter sido feito:** antes de encerrar o dia 1, rodar `/compact Focus on: the migration order (payments before notifications, schema dependency) and the modules already migrated`. Melhor ainda: documentar a ordem no CLAUDE.md como checkpoint de estado (Estratégia 1 acima), porque ela sobrevive a *qualquer* número de compactions e sessões — não só à próxima.
+
+**Cenário 2 — Debugging longo perdendo contexto do erro original**
+
+Uma sessão de debugging de um bug intermitente em produção passa 2 horas testando hipóteses: cache stale, race condition, timezone, serialização. Na 2ª hora, o contexto atinge 80% e sofre compaction automática. O resumo preserva "testamos 4 hipóteses, nenhuma confirmada" — mas perde os *detalhes* de cada tentativa: os valores exatos de log que descartaram a hipótese de timezone, o stack trace específico da race condition suspeita.
+
+Quando o agente retoma o debugging, ele sabe que a hipótese de timezone foi descartada, mas não sabe *por quê* — e corre o risco de reconsiderá-la, desperdiçando tempo. Isso ilustra a linha do checklist "para nuances importantes, explicite-as antes de compactar": debugging é exatamente o tipo de trabalho onde a cadeia de raciocínio (não só a conclusão) importa, e onde `/compact Focus on: hypotheses ruled out and why (exact log lines/errors)` evita perder o "porquê" junto com o "o quê".
+
+---
+
+## Armadilhas comuns
+
+> [!warning] Confiar no resumo para conteúdo exato de código
+> Depois de uma compaction, o agente sabe que editou `session.ts`, mas não guarda o texto exato que escreveu. Se você perguntar "o que ficou na linha 47?", ele vai *inferir* em vez de saber — e pode alucinar. Sempre releia o arquivo quando o detalhe exato importa; nunca confie no resumo para isso.
+
+> [!warning] Deixar estado de tarefas longas só na memória da sessão
+> Em tarefas multi-dia, se o único lugar onde a ordem de execução, as decisões de design e o progresso vivem é o histórico da sessão, cada compaction é uma chance de perder uma nuance crítica — e depois de várias compactions em sequência, o efeito é cumulativo. CLAUDE.md como checkpoint de estado (ver Estratégia 1) é a mitigação, não uma opção "se sobrar tempo".
+
+> [!warning] Usar `/compact` quando o certo era `/clear`
+> Compaction preserva um resumo do histórico — que é exatamente o que você **não** quer ao começar uma tarefa nova e independente. Rodar `/compact` nesse caso carrega ruído de uma tarefa anterior para dentro do resumo da próxima, poluindo o contexto em vez de limpá-lo. Ver a tabela "Compaction vs `/clear`" acima antes de decidir qual comando rodar.
+
+> [!warning] Não guardar o SESSION_ID em tarefas longas
+> Sem o SESSION_ID anotado, retomar uma sessão específica por `--resume SESSION_ID` fica impossível — sobra só `--continue`, que pega a mais recente. Em fluxos com múltiplas sessões paralelas (ex: uma por módulo, ver Estratégia 3), perder o ID de uma sessão específica significa perder o acesso ao histórico condensado daquele módulo.
+
 ---
 
 ## Como explicar em inglês
@@ -377,6 +413,12 @@ Esta é também a razão pela qual ferramentas como `git log` e `git diff` são 
 
 ---
 
+## O que vem a seguir
+
+Compaction resolve "como não perder o essencial quando o histórico fica grande demais" — mas o histórico grande demais tem um custo que ainda não apareceu nesta nota: cada token relido, cada resumo gerado, cada compaction disparada tem um preço. A próxima nota fecha esse ciclo: [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|07 - Tokens e custo]] mostra como o consumo de tokens se acumula ao longo de uma sessão longa (compactions inclusas) e o que isso significa em custo real — a métrica que, junto com contexto, você precisa gerenciar em qualquer sessão que passe de algumas dezenas de minutos.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/04 - Context window|04 - Context window]] — o que entra no contexto e como otimizar
@@ -397,4 +439,5 @@ Esta é também a razão pela qual ferramentas como `git log` e `git diff` são 
 - **Anthropic** — *Model context window* (2026). Limites de contexto por modelo e como compaction se relaciona com o limite de 200k tokens — https://docs.anthropic.com/pt/docs/about-claude/models
 - **Anthropic** — *Claude Code prompt caching* (2026). Interação entre compaction, caching e custo de tokens — https://docs.anthropic.com/pt/docs/build-with-claude/prompt-caching
 - **Anthropic** — *Claude Code sessions* (2026). Gerenciamento de sessões, SESSION_ID, e comportamento de `--continue` vs `--resume` — https://docs.anthropic.com/pt/docs/claude-code/cli-reference#session-management
+- **Anthropic** — *Effective context engineering for AI agents* (vídeo, 30/10/2025). Racional por trás de compaction e das estratégias write/select/compress/isolate para agentes de sessão longa — https://www.youtube.com/watch?v=139Cfcrt2Mk
 

@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -314,17 +314,55 @@ Commands em `commands/` são prompts Markdown simples. Skills (em `.claude/skill
 
 Para a maioria dos casos de uso, `commands/` é suficiente e infinitamente mais simples. Skills fazem sentido quando você precisa integrar com sistemas externos (banco de dados externo, APIs, ferramentas CI/CD) dentro do fluxo do agente.
 
+> [!tip] Assista: Anatomy of the .claude/ Folder — The Secret to 10x Claude Code
+> **Canal:** Daniel Novoreta | **Duração:** ~18min | **Idioma:** EN
+>
+> Percorre a mesma anatomia desta nota (CLAUDE.md, settings.json, settings.local.json, commands/) e acrescenta dois ângulos que vale complementar aqui: a distinção entre a `.claude/` do projeto e a `.claude/` global no `$HOME` lado a lado, e a hierarquia de precedência de permissões — políticas de organização vencem o `settings.json` do projeto, que vence o `settings.local.json` pessoal.
+> Trecho de destaque [15:19]: *"The allow list — those are commands that run without Claude asking for confirmation [...] the deny list, that's the hard block for Claude [...] anything that's not in either list, Claude will ask you before proceeding."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rX6DLHlaOhU)
+
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-**Secrets em `settings.json`.** Vai pro git, fica no histórico para sempre. Coloque em `settings.local.json`.
+> [!warning] Secrets em `settings.json`
+> Vai pro git, fica no histórico para sempre. Coloque em `settings.local.json`.
 
-**Esquecer o .gitignore antes de criar `settings.local.json`.** Se você cria o arquivo e só então adiciona ao .gitignore, o arquivo já pode ter sido staged. Use `git rm --cached .claude/settings.local.json` se isso acontecer.
+> [!warning] Esquecer o `.gitignore` antes de criar `settings.local.json`
+> Se você cria o arquivo e só então adiciona ao `.gitignore`, o arquivo já pode ter sido staged. Use `git rm --cached .claude/settings.local.json` se isso acontecer.
 
-**`CLAUDE.md` na raiz do projeto em vez de `.claude/CLAUDE.md`.** Funciona — Claude Code lê ambos. Mas ter os dois cria redundância. Padronize em `.claude/CLAUDE.md` para manter tudo junto.
+> [!warning] `CLAUDE.md` na raiz do projeto em vez de `.claude/CLAUDE.md`
+> Funciona — Claude Code lê ambos. Mas ter os dois cria redundância. Padronize em `.claude/CLAUDE.md` para manter tudo junto.
 
-**Commands com espaços no nome.** `deploy check.md` não funciona como `/deploy-check`. Use kebab-case: `deploy-check.md`.
+> [!warning] Commands com espaços no nome
+> `deploy check.md` não funciona como `/deploy-check`. Use kebab-case: `deploy-check.md`.
+
+---
+
+## Casos práticos
+
+Três cenários reais de como essas armadilhas se manifestam em produção — não como regra abstrata, mas como incidente que já aconteceu em algum time.
+
+### Caso 1 — o secret que vazou por estar no lugar errado
+
+Um dev precisava que o agente rodasse contra uma API interna de staging durante uma sessão de debugging. Em vez de usar `settings.local.json`, ele colocou a chave direto em `env` no `settings.json` do projeto — "é só pra essa sessão, tiro depois". Esqueceu. O commit foi feito, revisado (ninguém reparou num JSON de config) e mergeado.
+
+A chave ficou no histórico do git a partir daquele commit. Mesmo revertida em um commit seguinte, ela continua recuperável por qualquer pessoa com acesso ao repositório — `git log -p` ou um clone antigo bastam. O fix real não foi reverter a linha: foi rotacionar a credencial na origem e, só depois, reescrever o histórico (`git filter-repo` ou equivalente) para remover o segredo de fato.
+
+Uma camada extra de defesa contra esse tipo de vazamento é combinar essa disciplina de "secrets nunca em `settings.json`" com [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/07 - Segurança com hooks|hooks de segurança]] que interceptam o commit antes dele sair da máquina do dev, em vez de depender só da revisão humana.
+
+### Caso 2 — o time que divergiu por falta de `commands/` compartilhado
+
+Um time de 5 devs usava Claude Code havia meses, mas nunca formalizou um `commands/`. Cada um tinha seu próprio jeito de pedir revisão de PR — um prompt salvo nas notas pessoais, outro copiava e colava de uma conversa antiga, um terceiro simplesmente descrevia o checklist de memória toda vez. O resultado: três padrões diferentes de "o que checar antes de abrir um PR", nenhum deles completo, e revisões inconsistentes dependendo de quem preparou o PR.
+
+Quando finalmente criaram `commands/pr-check.md` versionado, a inconsistência não desapareceu da noite pro dia — mas a partir daquele ponto havia uma única fonte de verdade. Atualizar o command uma vez (por exemplo, adicionar verificação de migração de banco) propagou a mudança pra todo mundo no próximo `/pr-check`, em vez de exigir aviso manual em cinco lugares.
+
+### Caso 3 — `settings.local.json` staged antes do `.gitignore` existir
+
+Um dev novo no projeto criou `settings.local.json` pra apontar o `DATABASE_URL` pro Postgres local e colou um token de API de um serviço de terceiros pra testar uma integração. Rodou `git add .` por hábito antes de configurar o `.gitignore` — o arquivo entrou no stage junto com o resto. O commit foi abortado a tempo porque o hook de pre-commit do time bloqueou (por sorte, não por processo), mas o cenário inverso — sem esse hook — teria vazado o token do mesmo jeito que no Caso 1.
+
+Do lado oposto, times que reagem a esse tipo de incidente endurecendo demais o `settings.json` caem noutra armadilha: um `deny` amplo demais (`"Bash(git *)"`, por exemplo, tentando bloquear `push --force`) acaba bloqueando `git status` e `git diff` também, e o agente passa a pedir confirmação manual para comandos totalmente inofensivos. A resposta certa pros dois problemas é a mesma: regras de `allow`/`deny` específicas (comando + argumento, não o binário inteiro) e `settings.local.json` protegido no `.gitignore` desde o primeiro commit do arquivo, não depois.
 
 ---
 
@@ -354,7 +392,11 @@ Para a maioria dos casos de uso, `commands/` é suficiente e infinitamente mais 
 
 ---
 
-## Veja também
+## O que vem a seguir
+
+Conhecer a estrutura da `.claude/` resolve a pergunta "onde configuro isso". A próxima pergunta é "o que dá errado quando eu configuro errado" — e é exatamente aí que os Casos práticos acima só arranham a superfície. [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/08 - Armadilhas de configuração|08 - Armadilhas de configuração]] cataloga o padrão sintoma → causa → fix em três categorias (permissão, CLAUDE.md ineficaz, segurança) — o mapa completo de troubleshooting que esta nota só introduziu pelos exemplos.
+
+Outras notas relacionadas:
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/01 - Hierarquia de configuração|01 - Hierarquia de configuração]] — contexto das camadas global + projeto
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — o que colocar no CLAUDE.md
@@ -364,7 +406,7 @@ Para a maioria dos casos de uso, `commands/` é suficiente e infinitamente mais 
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code configuration* (2026). Estrutura da pasta .claude e papel de cada arquivo — https://docs.anthropic.com/pt/docs/claude-code/settings
 - **Anthropic** — *Claude Code memory* (2026). CLAUDE.md no contexto de configuração hierárquica — https://docs.anthropic.com/pt/docs/claude-code/memory

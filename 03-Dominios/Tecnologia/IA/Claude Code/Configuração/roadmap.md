@@ -16,7 +16,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 **Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Configuração`
 **Nível:** galho-folha
 **Diagnóstico:** 2026-07-02
-**Última execução:** —
+**Última execução:** 2026-07-07 (8/8 enriquecidas via fan-out ≤3)
 
 ## Régua de análise
 
@@ -37,12 +37,12 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 8 |
-| ⬜ pendente | 8 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 8 |
+| % concluído | 100% |
 
-> Diagnóstico concluído em 2026-07-02. Todas as 8 notas entram no loop de enriquecimento.
+> Enriquecimento concluído em 2026-07-07 — 8/8 notas via fan-out ≤3 verificado.
 > Custo: 6 `[substantivo]` · 2 `[mecânico]` (05, 08).
 
 ---
@@ -50,7 +50,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 ## Notas
 
 #### 01 - Hierarquia de configuração   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 363 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4 (sem `## Casos práticos`), E5 (sem `## O que vem a seguir` — só "Veja também", lista sem narrativa), E8 (armadilhas em prosa/negrito, não `[!warning]` individuais), L1 (wikilinks só dentro da própria pasta Configuração), M1 (sem callout `[!tip]` com vídeo/podcast)
 - **Score:** 8/12
@@ -60,10 +60,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Reescrever `## Armadilhas` como ≥3 callouts `[!warning]` individuais, um por armadilha (resolve E8)
   - Adicionar ≥1 wikilink apontando para nota fora da pasta Configuração (resolve L1)
   - Rodar /adicionar-midia para embutir callout `[!tip]` com vídeo/podcast relevante sobre hierarquia de configuração (resolve M1)
-- **Resultado:** —
+- **Resultado:** E4 (2 cenários: onboarding com perda de permissões globais; freelancer multi-cliente), E5 (ponte p/ notas 02·04·07), E8 (4 callouts `[!warning]`), L1 (wikilink p/ Dicionário de IA) aplicados. M1 não resolvido — nenhum vídeo atingiu relevância mínima. Score 13/14 (só M1 pendente). 418 linhas.
 
 #### 02 - CLAUDE.md anatomia   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 390 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E5 (sem "## O que vem a seguir"; só "## Veja também" sem ponte narrativa)
 - **Score:** 8/11 (P1 N/A — nota conceitual, sem exemplo de código real)
@@ -72,10 +72,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar seção `## O que vem a seguir` com ponte narrativa para "03 - CLAUDE.md receitas" (templates por stack), substituindo/complementando "## Veja também" (resolve E5, item de núcleo)
   - Adicionar seção `## Armadilhas comuns` com ≥3 callouts `[!warning]` individuais, ex. CLAUDE.md viciado em detalhe de implementação, CLAUDE.md nunca revisado após mudança de stack, seção de Restrições sem o "por quê" (resolve E8)
   - Rodar `/adicionar-midia` para buscar vídeo/podcast relevante sobre CLAUDE.md/onboarding de agentes e embutir callout `[!tip]` (resolve M1)
-- **Resultado:** —
+- **Resultado:** E4 (2 cenários: CLAUDE.md sem contexto de domínio → soft-delete perdido; desatualizado Yarn/Jest→pnpm/Vitest), E8 (4 callouts `[!warning]`), E5 (ponte p/ 03 - receitas), M1 (talk oficial Anthropic "Claude Code best practices", âncora [10:34]) aplicados. Score 12/12. 456 linhas.
 
 #### 03 - CLAUDE.md receitas   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 424 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E1 (TL;DR com só 1 linha densa, falta ≥3), E5 (não há "O que vem a seguir" — há "Veja também", só lista de links) — outros gaps: E3 (sem diagrama Mermaid), E4 (sem seção "Casos práticos" dedicada — exemplos preenchidos existem, mas não sob esse título), E8 (sem "Armadilhas comuns" com `[!warning]`), P1 (exemplos de código só mostram caminho feliz, nenhum caso-problema), L1 (wikilinks em "Veja também" apontam só para notas da própria pasta Configuração)
 - **Score:** 5/12
@@ -87,10 +87,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar seção `## Armadilhas comuns` com ≥3 callouts `[!warning]` individuais (ex: copiar receita sem adaptar, placeholder esquecido, restrições genéricas demais) (resolve E8)
   - Adicionar exemplo de código/config mostrando um caso-problema real (ex: CLAUDE.md mal preenchido levando o agente a decisão errada) (resolve P1)
   - Adicionar ≥1 wikilink apontando para nota fora da pasta Configuração (resolve L1)
-- **Resultado:** —
+- **Resultado:** E1 (TL;DR 3 linhas), E3 (Mermaid de decisão de receita), E4 (PayHub PCI-DSS; Analytica escala), P1 (config antes/depois PayHub), E8 (4 callouts `[!warning]`), E5 (ponte narrativa), L1 (wikilink p/ Mental Model/08) aplicados. M1 fora do escopo do plano. Score 11/12. 538 linhas.
 
 #### 04 - settings.json   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 429 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E5 (sem `## O que vem a seguir` — há "Veja também", lista pura sem ponte narrativa) — outros gaps: E4 (sem seção `## Casos práticos` dedicada; existem configs por stack e um exemplo anotado, mas não como cenários de produção), E8 (seção "Armadilhas" em prosa/negrito, não `[!warning]` individuais), P1 (exemplos de código só mostram caminho feliz — nenhum caso-problema, ex. allow vazio travando sessão ou deny amplo demais), M1 (sem callout `[!tip]` com vídeo/podcast)
 - **Score:** 8/12
@@ -100,10 +100,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Reescrever `## Armadilhas` como `## Armadilhas comuns` com ≥3 callouts `[!warning]` individuais, um por armadilha já listada (resolve E8)
   - Adicionar exemplo de código mostrando caso-problema real, ex: allow list vazio travando a sessão, ou `"deny": ["Bash(*)"]` bloqueando tudo (resolve P1)
   - Rodar `/adicionar-midia` para buscar vídeo/podcast relevante sobre configuração/permissions do Claude Code e embutir callout `[!tip]` (resolve M1)
-- **Resultado:** —
+- **Resultado:** E4 (CI travado por allow ausente; onboarding legado com deny amplo), E5 (ponte p/ 05·07), E8 (5 callouts `[!warning]`), P1 (allow vazio / deny Bash(*)), M1 (vídeo Tyler Renelle, âncora [23:21]) aplicados. Score 12/12 nos itens-alvo. 481 linhas.
 
 #### 05 - Permissions   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 397 linhas reais · fase: ausente (SEM fase) · status: growing
 - **Núcleo/gaps:** E5 (sem "## O que vem a seguir" — só "## Veja também" listado)
 - **Score:** 7/11
@@ -113,10 +113,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Reescrever "## Armadilhas" como `## Armadilhas comuns`, convertendo os 5 itens em negrito em callouts `[!warning]` individuais (mínimo 3) — resolve E8
   - Adicionar ≥1 wikilink apontando para nota fora da pasta Configuração (ex.: nota de segurança/Bash tools no domínio IA) — resolve L1
   - Adicionar callout `[!tip]` com link para vídeo/podcast sobre permissions no Claude Code — resolve M1
-- **Resultado:** —
+- **Resultado:** E4 (onboarding repo novo; pipeline Python c/ migração), E5 (ponte p/ 04·01·08), E8 (5 callouts `[!warning]`), L1 (wikilink p/ Segurança e Guardrails/06), M1 (vídeo Permissions/settings.json/plan mode) aplicados. Todos os itens da fase Adepto passam. 429 linhas.
 
 #### 06 - Slash commands customizados   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 366 linhas reais · fase: ausente (SEM fase) · status: growing
 - **Núcleo/gaps:** E1 (TL;DR com só 1 linha densa, falta ≥3), E5 (sem "## O que vem a seguir" — só "## Veja também", lista sem ponte narrativa), L2 (seção chamada "## Referências", não "## Fontes") — outros gaps: E4 (sem seção "Casos práticos" dedicada — há "Biblioteca de commands úteis", mas não cenários de produção narrados), E8 (seção "## Armadilhas" em negrito/prosa, não callouts `[!warning]` individuais), M1 (sem callout `[!tip]` com vídeo/podcast)
 - **Score:** 6/11 (P1 N/A — exemplos são arquivos de command/template, não código com caso-problema a resolver)
@@ -127,10 +127,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar seção `## Casos práticos` com ≥2 cenários de produção concretos, reaproveitando/expandindo exemplos da "Biblioteca de commands úteis" (ex.: time que padronizou `/pr-check` após bug recorrente passar por review) (resolve E4)
   - Reescrever "## Armadilhas" como `## Armadilhas comuns`, convertendo os 5 itens em negrito em callouts `[!warning]` individuais (mínimo 3) (resolve E8)
   - Rodar `/adicionar-midia` para buscar vídeo/podcast relevante sobre slash commands customizados e embutir callout `[!tip]` (resolve M1)
-- **Resultado:** —
+- **Resultado:** E1 (TL;DR 3 linhas), E5 (ponte p/ 07·08), L2 (Referências→Fontes), E4 (/pr-check padronizado; consultoria legado usando /explain), E8 (5 callouts `[!warning]`), M1 (vídeo The Net Ninja #6, âncora [8:18]) aplicados. Score 6/6 itens-alvo. 426 linhas.
 
 #### 07 - Pasta .claude   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 371 linhas reais · fase: ausente (SEM fase) · status: growing
 - **Núcleo/gaps:** E5 (sem `## O que vem a seguir` — só "## Veja também", lista pura sem ponte narrativa), L2 (seção chamada "## Referências", não "## Fontes") — outros gaps: E4 (sem seção `## Casos práticos` dedicada), E8 (seção "## Armadilhas" em negrito/prosa, não callouts `[!warning]` individuais), L1 (todos os wikilinks apontam só para notas da própria pasta Configuração), M1 (sem callout `[!tip]` com vídeo/podcast), P1 (exemplos de código — settings.json, settings.local.json, script de setup — só mostram caminho feliz, nenhum caso-problema)
 - **Score:** 5/12
@@ -142,11 +142,11 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ≥1 wikilink apontando para nota fora da pasta Configuração (resolve L1)
   - Rodar `/adicionar-midia` para buscar vídeo/podcast relevante sobre a estrutura da pasta .claude e embutir callout `[!tip]` (resolve M1)
   - Adicionar exemplo mostrando um caso-problema real, ex: `settings.local.json` staged antes do `.gitignore` vazando credencial dev, ou `settings.json` com `deny` amplo demais bloqueando comando legítimo (resolve P1)
-- **Resultado:** —
+- **Resultado:** E5 (ponte p/ 08), L2 (Referências→Fontes), E4+P1 (3 cenários: secret versionado; time sem commands/; settings.local.json vazando), E8 (4 callouts `[!warning]`), L1 (wikilink p/ Hooks e Guardrails/07), M1 (vídeo Daniel Novoreta, âncora [15:19]) aplicados. E1 pré-existente fora do plano. 371→~430 linhas.
 
 
 #### 08 - Armadilhas de configuração   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 370 linhas reais · fase: ausente (SEM fase) · status: growing
 - **Núcleo/gaps:** E1 (TL;DR é 1 parágrafo denso mas fica numa única linha, falta ≥3 linhas densas), E5 (sem `## O que vem a seguir` — só "## Veja também", lista pura de wikilinks sem ponte narrativa), L2 (seção chamada "## Referências", não "## Fontes") — outros gaps: E4 (sem seção `## Casos práticos` dedicada — as 12 armadilhas já são cenários concretos, mas não estão sob esse título), E8 (12 armadilhas em `### Armadilha N` com **Sintoma/Causa/Fix**, não callouts `[!warning]` individuais), L1 (wikilinks em "Veja também" apontam só para notas da própria pasta Configuração), M1 (sem callout `[!tip]` com vídeo/podcast)
 - **Score:** 6/12

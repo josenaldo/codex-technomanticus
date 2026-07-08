@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -28,6 +28,14 @@ Esse briefing é o CLAUDE.md.
 A diferença é que o dev sênior lembra da conversa. O agente não tem memória entre sessões — cada sessão começa do zero. O CLAUDE.md é esse briefing escrito, lido no início de cada sessão, para que o agente comece já contextualizado.
 
 Quanto melhor o briefing, menos tempo o agente gasta descobrindo o que você poderia ter contado.
+
+> [!tip] Assista: Claude Code best practices (Code w/ Claude)
+> **Canal:** Anthropic | **Duração:** ~26min | **Idioma:** EN
+>
+> Talk oficial da Anthropic (Cal Rueb) onde o CLAUDE.md aparece como a primeira best practice, explicado com a mesma ideia-chave desta nota: o agente não tem memória entre sessões, e o CLAUDE.md é o mecanismo de compartilhar estado — com o time e com você mesmo — ao longo do tempo.
+> Trecho de destaque [10:34]: *"[Claude Code] doesn't really have memory. And so the main way we share state across sessions [...] is this CLAUDE.md file. [...] It's just plopped into context [...] these are important instructions the developer left for you."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=gv0WHhKelSE)
 
 ---
 
@@ -355,6 +363,46 @@ O CLAUDE.md deve evoluir com o projeto. Bons momentos para atualizar:
 
 ---
 
+## Casos práticos
+
+> [!question]- Isso acontece de verdade, ou é teoria?
+> Acontece — e o padrão se repete: o CLAUDE.md fala genérico ou desatualizado, e o agente toma a decisão mais "razoável" dentro do que sabe. Que quase sempre é a decisão errada pro seu contexto específico.
+
+**Caso 1 — CLAUDE.md genérico, decisão errada por falta de contexto de domínio**
+
+Um time mantém uma API de agendamento médico. O CLAUDE.md diz só "API REST em Node/Express, PostgreSQL" — nada sobre o domínio.
+
+Pedido: "adicionar endpoint para cancelar consulta". O agente implementa um `DELETE` simples que apaga a linha da tabela `appointments`. Passa nos testes. Mas o domínio exige soft-delete com auditoria — cancelamento de consulta médica precisa ficar rastreável por anos, por exigência regulatória de retenção de prontuário. O agente não tinha como adivinhar: nada no CLAUDE.md dizia "consulta cancelada nunca é apagada, sempre soft-delete com `cancelled_at` + motivo".
+
+O bug só aparece na auditoria trimestral, quando não há rastro de nenhuma consulta cancelada nos últimos três meses.
+
+**Caso 2 — CLAUDE.md desatualizado, comando/lib obsoleta**
+
+Um projeto migrou de Yarn para pnpm seis meses atrás, e de Jest para Vitest há dois. O CLAUDE.md nunca foi atualizado: ainda cita `yarn test` na seção de Comandos e `jest.mock()` como padrão de mock nas Convenções.
+
+O agente segue o documento ao pé da letra — roda `yarn test` (que falha silenciosamente, porque o lockfile de Yarn não existe mais) e escreve um teste novo usando `jest.mock()`, que não existe no Vitest. Tempo perdido depurando um erro causado diretamente pelo CLAUDE.md: o real seria `pnpm test` e `vi.mock()`.
+
+> [!summary]
+> Os dois casos têm a mesma raiz: o CLAUDE.md parou de refletir a realidade do projeto — seja porque nunca teve o contexto de domínio, seja porque o projeto mudou e o documento não acompanhou.
+
+---
+
+## Armadilhas comuns
+
+> [!warning] CLAUDE.md viciado em detalhe de implementação
+> Descrever linha a linha como uma função funciona é documentação que expira no primeiro refactor. O agente já lê o código — o que ele não descobre sozinho é o "por quê" por trás da decisão. Prefira "usamos fila em vez de webhook porque o provedor de pagamento não garante entrega única" a explicar como a fila está implementada.
+
+> [!warning] CLAUDE.md nunca revisado após mudança de stack
+> Trocou de ORM, de test runner, de gerenciador de pacotes? Se o CLAUDE.md não mudou junto, ele vira fonte de instruções erradas — pior que não ter CLAUDE.md nenhum, porque o agente confia nele por padrão. Trate mudança de stack como gatilho automático de revisão (ver "documento vivo" acima).
+
+> [!warning] Seção de Restrições sem o "por quê"
+> "Nunca faça X" sem explicação é uma regra frágil: será quebrada assim que parecer conveniente, porque ninguém entende o custo de quebrar. "Nunca faça rollback de transação Stripe sem consultar `docs/rollback-policy.md`" fica mais forte com o motivo anexado — "rollback parcial deixa o saldo do lojista inconsistente com o extrato do gateway".
+
+> [!warning] CLAUDE.md tratado como changelog
+> Anotar "estamos migrando de Mongo pra Postgres essa semana" no CLAUDE.md permanente é o mesmo erro do Caso 2, só que ao contrário: em vez de ficar pra trás, o documento aponta pra um estado transitório que já não existe na sessão seguinte. Estado de tarefa em andamento é contexto de sessão, não de projeto.
+
+---
+
 ## Como explicar em inglês
 
 | Português | Inglês |
@@ -370,6 +418,14 @@ O CLAUDE.md deve evoluir com o projeto. Bons momentos para atualizar:
 - "CLAUDE.md is the agent's onboarding briefing — what you'd tell a senior dev on their first day."
 - "The restrictions section is where you put guardrails in natural language: 'never push to main directly', 'always use AppError, not raw Error'."
 - "CLAUDE.md should be stable and dense — if it changes weekly, it'll be outdated half the time the agent reads it."
+
+---
+
+## O que vem a seguir
+
+Até aqui você viu a anatomia: que seções existem, o que cada uma carrega, e como reconhecer quando o documento parou de ajudar. A pergunta natural agora é prática — "certo, mas o que eu efetivamente escrevo pro MEU projeto, que é uma API Rails, ou um monorepo com três frontends, ou um script de dados em Python?"
+
+É exatamente aí que entra [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/03 - CLAUDE.md receitas|03 - CLAUDE.md receitas]]: templates prontos por stack, já com as decisões de "o que incluir" tomadas para os casos mais comuns — API backend, frontend SPA, monorepo, CLI, projeto de dados. Em vez de montar a estrutura do zero seção por seção, você parte de um esqueleto testado e ajusta o que for específico do seu domínio.
 
 ---
 

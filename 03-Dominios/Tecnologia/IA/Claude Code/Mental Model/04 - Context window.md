@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -247,6 +247,9 @@ O cache tem TTL de 5 minutos por padrão. Sessões ativas onde você faz turnos 
 > [!tip] Cache e `/clear`
 > Usar `/clear` frequentemente destrói o cache do sistema prompt e CLAUDE.md. Para sessões interativas de trabalho contínuo, o cache vivo compensa manter a sessão. Para tarefas independentes, `/clear` vale o custo do cache miss.
 
+> [!tip] Vídeo — Context Management in Claude Code
+> Para ver a gestão de contexto na prática (`/compact` vs `/clear`, monitoramento em tempo real), vale assistir [Context Management in Claude Code](https://www.youtube.com/watch?v=eW3oTyfeWZ0) — cobre a context window como memória de trabalho do agente e quando usar cada comando.
+
 ---
 
 ## Como pensar sobre o contexto como recurso
@@ -324,17 +327,29 @@ Em modo API (headless), o uso de tokens está disponível no output JSON:
 
 ## Armadilhas comuns
 
-**Ler o arquivo inteiro "só para ter contexto"**
-O agente não se beneficia de ter lido mais do que o necessário — ele presta atenção ao que é relevante para o próximo passo. Arquivos grandes lidos por precaução são tokens desperdiçados.
+> [!warning] Ler o arquivo inteiro "só para ter contexto"
+> O agente não se beneficia de ter lido mais do que o necessário — ele presta atenção ao que é relevante para o próximo passo. Arquivos grandes lidos por precaução são tokens desperdiçados.
 
-**Confundir context window com persistência**
-O agente não "lembra" de sessões anteriores sem `--resume`. Cada nova invocação de `claude` começa com o contexto do system prompt e CLAUDE.md — o histórico anterior não existe.
+> [!warning] Confundir context window com persistência
+> O agente não "lembra" de sessões anteriores sem `--resume`. Cada nova invocação de `claude` começa com o contexto do system prompt e CLAUDE.md — o histórico anterior não existe.
 
-**Output de CI sem filtro**
-Integrar Claude Code em pipelines que geram muito output (build, testes, lint) sem filtrar o stdout pode lotar a janela em segundos. Configure saídas filtradas antes de integrar.
+> [!warning] Output de CI sem filtro
+> Integrar Claude Code em pipelines que geram muito output (build, testes, lint) sem filtrar o stdout pode lotar a janela em segundos. Configure saídas filtradas antes de integrar.
 
-**Restrições críticas só no histórico**
-"Não use `lodash`" dito no turno 5 pode não sobreviver à compaction. Restrições críticas pertencem ao CLAUDE.md — não ao histórico da sessão.
+> [!warning] Restrições críticas só no histórico
+> "Não use `lodash`" dito no turno 5 pode não sobreviver à compaction. Restrições críticas pertencem ao CLAUDE.md — não ao histórico da sessão.
+
+---
+
+## Casos práticos
+
+**Debugging longo que estoura a janela**
+
+Uma sessão de correção de bug complexo acumula 35 tool calls: leituras de arquivo, execuções de teste, tentativas de fix, mais leituras. Por volta do turno 30, o contexto passa de 160k tokens — 80% da janela. O agente começa a repetir uma abordagem já descartada no turno 8, porque essa informação está "diluída" no meio do histórico (ver a seção sobre atenção acima). A saída prática: a cada ciclo de tentativa-e-erro malsucedido, rodar `/compact Focus on the bug in <módulo> and what's already been ruled out` em vez de deixar o histórico crescer até o limite. Isso preserva o essencial (o que já foi tentado e falhou) e descarta o ruído (outputs de teste repetidos, leituras de arquivos que já não são relevantes).
+
+**Pipeline de CI/CD com Claude Code**
+
+Um pipeline que roda `claude` para revisar PRs ou aplicar migrações automatizadas tende a encadear múltiplos passos no mesmo processo: rodar lint, rodar testes, aplicar correções, rodar testes de novo. Sem filtro de output, um único `npm test` com 500 casos pode adicionar 30k tokens ao contexto — e isso se repete a cada passo do pipeline. Como pipelines são não-interativos (sem alguém para rodar `/compact` no meio), a estratégia precisa ser preventiva: filtrar todo output de build/teste na origem (`| grep -E "(FAIL|ERROR)"`, `| tail -20`) e, quando possível, dividir o pipeline em invocações separadas de `claude` por etapa — cada uma com contexto limpo — em vez de uma única sessão headless acumulando tudo.
 
 ---
 
@@ -370,6 +385,12 @@ Integrar Claude Code em pipelines que geram muito output (build, testes, lint) s
 **Em code review e arquitetura:**
 - "The agent hit the context limit mid-refactor because the test output wasn't filtered — added `| grep FAIL` and the session stayed lean."
 - "Using subagents for each microservice kept the orchestrator context small — the parent session never exceeded 20k tokens."
+
+---
+
+## O que vem a seguir
+
+Entender a janela de contexto como recurso finito explica *por que* gerenciar contexto importa — mas não explica o mecanismo que o Claude Code usa quando a janela está prestes a estourar e você não interveio a tempo com `/compact` manual. Esse mecanismo automático, com suas próprias regras e armadilhas, é o assunto da próxima nota: [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]].
 
 ---
 

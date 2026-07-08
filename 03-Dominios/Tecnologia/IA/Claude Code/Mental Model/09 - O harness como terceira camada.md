@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-25
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -310,17 +310,36 @@ Para quem opera Claude Code: ao comparar dois setups, fixe o harness antes de at
 
 ---
 
-## Armadilhas
+## Casos práticos
 
-**Achar que modelo basta.** Trocar para modelo mais novo sem mexer no harness deixa ganho na mesa — e às vezes regride performance se regras antigas conflitam com o modelo novo.
+Duas situações reais mostram o mesmo princípio — harness proporcional ao contexto — puxado em direções opostas.
 
-**Inflar CLAUDE.md.** Expertise reusável pertence a skills, não ao CLAUDE.md. Regra: CLAUDE.md = o que se aplica a *toda* tarefa neste path. O resto vai para skill.
+**Cenário 1 — Harness em codebase grande (monorepo com 40+ módulos).**
+Um monorepo de e-commerce cresceu de 3 para 40 módulos em dois anos. O CLAUDE.md raiz tinha 800 linhas — todo o histórico de decisões arquiteturais acumulado, nunca podado. Resultado: cada sessão carregava contexto irrelevante para a tarefa em mãos (um dev mexendo em `payments/` recebia instruções sobre `notifications/` que nunca usaria). A correção seguiu o Padrão 1 desta nota: CLAUDE.md raiz reduzido a gotchas críticos + ponteiros, com um `CLAUDE.md` por módulo carregando só as convenções daquele subdiretório. Tempo de "aquecimento" da sessão (perguntas de convenção antes da primeira edição útil) caiu de ~6 perguntas para ~1. A lição não é "harness grande é ruim" — é que harness em escala precisa de **escopo hierárquico**, não de um arquivo único inflando sem limite.
 
-**Pular para MCP server custom antes do básico.** Sem CLAUDE.md e skills funcionando, MCP só amplifica o caos.
+**Cenário 2 — Harness em time distribuído (8 devs, 3 fusos horários).**
+Um time distribuído sem ownership claro do harness (Padrão 3) viu cada dev configurar hooks e skills próprios em `.claude/` local, nunca comitados. Um dev na Ásia criava skills de revisão de segurança; um dev na Europa criava hooks de guardrail para migrations — nenhum dos dois sabia que o outro tinha resolvido um problema adjacente. Depois de três meses, havia 4 versões incompatíveis de "como revisar um PR" espalhadas em máquinas individuais. A correção: nomear um DRI que centralizasse os artefatos do harness em `.claude/` versionado no repo, com PR review para mudanças de hook/skill — o mesmo rigor aplicado a código de produção. O ganho não foi só consistência técnica; foi *aprendizado compartilhado* — um hook que um dev descobriu que precisava passou a beneficiar os outros sete no mesmo commit.
 
-**Harness eterno.** Configuração não é set-and-forget. Sem ciclo de revisão, em 12 meses metade das regras é peso morto.
+Os dois casos convergem no mesmo diagnóstico: harness mal-dimensionado (grande demais e centralizado, ou disperso demais e não-compartilhado) desperdiça o ganho que o harness deveria entregar.
 
-**Adoção sem ownership.** Em time, deixar cada dev evoluir o próprio harness produz N versões fragmentadas e nenhuma compartilha aprendizado.
+---
+
+## Armadilhas comuns
+
+> [!warning] Achar que modelo basta
+> Trocar para modelo mais novo sem mexer no harness deixa ganho na mesa — e às vezes regride performance se regras antigas conflitam com o modelo novo.
+
+> [!warning] Inflar CLAUDE.md
+> Expertise reusável pertence a skills, não ao CLAUDE.md. Regra: CLAUDE.md = o que se aplica a *toda* tarefa neste path. O resto vai para skill.
+
+> [!warning] Pular para MCP server custom antes do básico
+> Sem CLAUDE.md e skills funcionando, MCP só amplifica o caos.
+
+> [!warning] Harness eterno
+> Configuração não é set-and-forget. Sem ciclo de revisão, em 12 meses metade das regras é peso morto.
+
+> [!warning] Adoção sem ownership
+> Em time, deixar cada dev evoluir o próprio harness produz N versões fragmentadas e nenhuma compartilha aprendizado.
 
 ---
 
@@ -354,6 +373,22 @@ Para quem opera Claude Code: ao comparar dois setups, fixe o harness antes de at
 - "We review our CLAUDE.md and hooks every quarter to remove rules that the model now handles natively."
 - "Rule drift is subtle: instructions written for an older model can actively work against a newer one."
 - "Before attributing a performance difference to the model, fix the harness variable — run both setups with identical config."
+
+> [!tip] Assista: Anthropic Just Dropped a Masterclass on Building Agent Harnesses (for Large Codebases)
+> **Canal:** (criador independente, cobertura do post da Anthropic) | **Duração:** ~30min | **Idioma:** EN
+>
+> Pega o mesmo post da Anthropic que ancora esta nota — "How Claude Code works in large codebases" — e constrói uma codebase de demonstração aplicando cada estratégia na prática: hooks de guardrail, CLAUDE.md hierárquico, subagents de exploração. É a versão "mão na massa" do que aqui fica em prosa e tabela.
+> Trecho de destaque [11:00]: *"most teams think of hooks as scripts that prevent Claude from doing something wrong... a tool use hook to stop Claude from editing in certain directories."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=efRIrLXoOVA)
+
+---
+
+## O que vem a seguir
+
+Esta nota fecha o Galho 1 — Mental Model. As oito notas anteriores construíram o "como o agente pensa" (loop agentic, leitura de codebase, tool use, context window, modos de operação, compaction, custo, tomada de decisão); esta nona amarrou o fio que atravessa todas elas: nada disso rende sem um harness bem configurado ao redor.
+
+O próximo passo natural é sair da teoria e entrar na prática de configuração: o galho **[[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]]** detalha como escrever o componente mais visível do harness — o CLAUDE.md — com a anatomia de arquivo, hierarquia de carregamento e receitas testadas. É onde os "7 componentes" desta nota deixam de ser conceito e viram artefato editável no seu projeto.
 
 ---
 

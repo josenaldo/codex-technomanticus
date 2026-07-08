@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -274,6 +274,16 @@ flowchart TD
 
 ---
 
+> [!tip] Assista: Setting up Claude Code security guardrails
+> **Canal:** NextWork | **Duração:** ~1h09min | **Idioma:** EN
+>
+> Walkthrough completo de ponta a ponta: permission deny rules + hooks + `CLAUDE.md`, incluindo um validator hook que bloqueia categorias de comando perigoso (SQL injection, pipe-to-shell, escrita em `.env`, exclusões destrutivas) via exit code — o mesmo mecanismo que sustenta os scripts desta nota.
+> Trecho de destaque [40:40]: *"patterns like drop table or delete from that can delete or destroy database history"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-Awaa2oUWYY)
+
+---
+
 ## Configuração recomendada por camada
 
 **Global** (`~/.claude/settings.json`) — proteções universais, aplica em todos os projetos:
@@ -334,15 +344,19 @@ O que fazer:
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-**Guardrails muito amplos.** Bloquear todos os `rm` impede que o agente faça limpeza de arquivos temporários. Bloquear todo `git push` impede que o agente publique código. Seja específico — bloqueie padrões perigosos, não categorias inteiras.
+> [!warning] Guardrails muito amplos
+> Bloquear todos os `rm` impede que o agente faça limpeza de arquivos temporários. Bloquear todo `git push` impede que o agente publique código. Seja específico — bloqueie padrões perigosos, não categorias inteiras.
 
-**Só confiar nos guardrails.** Guardrails cobrem padrões conhecidos. Um agente pode fazer algo destrutivo que não está nos seus padrões. Use guardrails como rede de segurança, não como substituto para revisar o que o agente propõe.
+> [!warning] Só confiar nos guardrails
+> Guardrails cobrem padrões conhecidos. Um agente pode fazer algo destrutivo que não está nos seus padrões. Use guardrails como rede de segurança, não como substituto para revisar o que o agente propõe.
 
-**Guardrails do projeto commitados sem discussão.** Se você commita guardrails que bloqueiam ações que seus colegas precisam, vai criar atrito. Guardrails do projeto devem refletir a política do time.
+> [!warning] Guardrails do projeto commitados sem discussão
+> Se você commita guardrails que bloqueiam ações que seus colegas precisam, vai criar atrito. Guardrails do projeto devem refletir a política do time.
 
-**Mensagens de erro vagas.** "GUARDRAIL: bloqueado" não ajuda o agente a recalcular. Mensagens boas explicam o porquê e sugerem a alternativa: "force push bloqueado — use --force-with-lease ou abra um PR".
+> [!warning] Mensagens de erro vagas
+> "GUARDRAIL: bloqueado" não ajuda o agente a recalcular. Mensagens boas explicam o porquê e sugerem a alternativa: "force push bloqueado — use --force-with-lease ou abra um PR".
 
 ---
 
@@ -358,6 +372,20 @@ O que fazer:
 - [ ] Guardrails de projeto discutidos com o time antes de commitar
 - [ ] Mensagens de bloqueio incluem `>&2` (vão para o agente, não são perdidas)
 - [ ] Cada bloqueio testado manualmente antes de ativar
+
+---
+
+## Casos práticos
+
+Guardrail em teoria bloqueia padrão perigoso. Guardrail em produção precisa sobreviver ao dia em que o padrão perigoso chega disfarçado de rotina.
+
+> [!example] Force-push que quase reescreveu o histórico do time
+> Um agente em auto mode estava resolvendo um conflito de merge num branch de feature. A sequência óbvia — pelo menos para quem só olha o comando isolado — era `git push --force` pra "sincronizar" o branch remoto com o local depois do rebase. Sem o guardrail de git (`git-guard.sh` bloqueando `push.*(--force|-f)`), esse push teria sobrescrito commits de outro desenvolvedor que empurrou trabalho pro mesmo branch minutos antes — silenciosamente, sem aviso, sem possibilidade de recuperar via reflog alheio. O guardrail bloqueou, devolveu a mensagem sugerindo `--force-with-lease`, e o agente recalculou: usou a variante segura, que falha explicitamente se o remote mudou desde o último fetch. A diferença entre os dois comandos é uma palavra — a diferença de consequência é um branch inteiro de trabalho perdido.
+
+> [!example] Tentativa de DROP TABLE dentro de um script de CI
+> Um pipeline de CI gerado para "resetar o schema de teste antes de rodar a suíte" incluía um passo que rodava migrations e, num caminho de erro mal tratado, caía em um `DROP TABLE IF EXISTS` sem qualificar schema — apontando pra `DATABASE_URL` do ambiente em que o job rodava. Em um ambiente de CI mal configurado, essa variável pode apontar pra um banco compartilhado (staging usado por outro time, por exemplo) em vez de um banco efêmero. O guardrail de banco (`db-guard.sh`) intercepta qualquer `DROP TABLE|DROP DATABASE|TRUNCATE` antes da execução, independente de o comando vir de um humano digitando no terminal ou de um agente executando um script gerado — porque o padrão de risco é o mesmo nos dois casos. O bloqueio forçou revisão manual do script de CI, que expôs o bug real: a variável de ambiente errada estava sendo herdada de um job anterior.
+
+> [!summary] O padrão dos dois casos: o comando isolado parece rotina; o contexto (branch compartilhado, variável de ambiente errada) é o que o torna destrutivo. Guardrails não julgam intenção — bloqueiam a classe de comando, e é exatamente essa cegueira ao contexto que os torna confiáveis mesmo quando o raciocínio do agente falha.
 
 ---
 
@@ -378,6 +406,14 @@ O que fazer:
 
 ---
 
+## O que vem a seguir
+
+Guardrails como os desta nota resolvem bem o caso em que "perigoso" pode ser reduzido a um padrão de texto — `push --force`, `DROP TABLE`, um path que bate num arquivo `.env`. Mas nem todo julgamento de segurança cabe em uma regex. `rm -rf dist/` (diretório de build, gerado automaticamente) e `rm -rf src/` (código-fonte) são estruturalmente idênticos para um guardrail baseado em padrão — e completamente diferentes em consequência.
+
+Quando a decisão de bloquear depende do *contexto* (que diretório é esse, o que esse comando realmente vai afetar), regex para de escalar. A próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/06 - Delegar permissão|06 - Delegar permissão]], cobre o pattern que substitui a regra fixa por julgamento: delegar a decisão de permissão a um segundo LLM, que avalia o comando com o contexto completo antes de aprovar ou bloquear.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/02 - PreToolUse|02 - PreToolUse]] — como PreToolUse funciona e semântica de exit codes
@@ -388,7 +424,7 @@ O que fazer:
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code hooks* (2026). Documentação oficial de PreToolUse e configuração de guardrails — https://docs.anthropic.com/pt/docs/claude-code/hooks
 - **Anthropic** — *Claude Code security* (2026). Recomendações de segurança para operações de agente — https://docs.anthropic.com/pt/docs/claude-code/security

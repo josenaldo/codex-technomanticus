@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -22,7 +22,7 @@ tags:
 
 ## A metáfora: jaquetas sobre camisetas
 
-Imagine que Claude Code veste roupa em camadas. A camada mais interna é a camiseta — o system prompt padrão, que define o comportamento base. Sobre ela, uma camiseta de base pessoal — suas preferências globais em `~/.claude/`. Em seguida, uma jaqueta do projeto — o contexto específico em `.claude/`. Por último, um acessório pessoal temporário — suas sobrescritas locais em `.claude/settings.local.json`.
+Imagine que o [[Dicionário de IA#Claude Code|Claude Code]] veste roupa em camadas. A camada mais interna é a camiseta — o system prompt padrão, que define o comportamento base. Sobre ela, uma camiseta de base pessoal — suas preferências globais em `~/.claude/`. Em seguida, uma jaqueta do projeto — o contexto específico em `.claude/`. Por último, um acessório pessoal temporário — suas sobrescritas locais em `.claude/settings.local.json`.
 
 O resultado é o que você vê: o comportamento do agente na sessão atual. Cada camada adiciona ou substitui partes do visual. A regra geral: a camada mais externa (mais específica) vence — exceto para CLAUDE.md, onde todas as camadas são lidas e combinadas.
 
@@ -306,13 +306,17 @@ flowchart LR
 
 ## Armadilhas
 
-**Misturar global com projeto.** Se convenções do projeto vão no global (`~/.claude/CLAUDE.md`), elas se aplicam a *todos* os seus outros projetos — e vão confundir o agente em projetos com stack diferente.
+> [!warning] Misturar global com projeto
+> Se convenções do projeto vão no global (`~/.claude/CLAUDE.md`), elas se aplicam a *todos* os seus outros projetos — e vão confundir o agente em projetos com stack diferente. Regra prática: se a instrução só faz sentido citando o nome do projeto ou da stack, ela pertence ao `.claude/CLAUDE.md`, nunca ao global.
 
-**`settings.local.json` no git.** Adicione ao `.gitignore`. É sobrescrita pessoal — compartilhar pode causar comportamentos inesperados em outros membros do time com máquinas diferentes.
+> [!warning] `settings.local.json` no git
+> Adicione ao `.gitignore`. É sobrescrita pessoal — compartilhar pode causar comportamentos inesperados em outros membros do time com máquinas diferentes (paths locais, tools que só você tem instaladas).
 
-**Esperar que settings.json concatene.** Não concatena. A camada mais específica substitui. Se o projeto define `allow: ["npm test"]` sem incluir os allows globais, o agente perde as permissões globais.
+> [!warning] Esperar que settings.json concatene
+> Não concatena. A camada mais específica **substitui** a menos específica, campo por campo. Se o projeto define `allow: ["npm test"]` sem incluir os allows globais, o agente perde as permissões globais — mesmo que elas continuem existindo em `~/.claude/settings.json`. É o oposto do comportamento do CLAUDE.md, e essa assimetria é a fonte mais comum de confusão na hierarquia.
 
-**CLAUDE.md desatualizado.** Um CLAUDE.md que diz "usamos Mongoose" quando o projeto migrou para Prisma confunde mais do que ajuda. Revise junto com a stack.
+> [!warning] CLAUDE.md desatualizado
+> Um CLAUDE.md que diz "usamos Mongoose" quando o projeto migrou para Prisma confunde mais do que ajuda. Como todas as camadas de CLAUDE.md são concatenadas, uma instrução desatualizada na raiz não é sobrescrita por uma atualizada em subpasta — ela só soma ruído. Revise junto com a stack, na mesma PR que muda a dependência.
 
 ---
 
@@ -324,6 +328,14 @@ flowchart LR
 - [ ] `.claude/settings.json` tem deny list das ações destrutivas
 - [ ] `.claude/settings.local.json` está no `.gitignore`
 - [ ] settings.json do projeto inclui as permissões globais relevantes (não sobrescreve implicitamente)
+
+---
+
+## Casos práticos
+
+**Cenário 1 — onboarding de um novo dev no time.** Uma engenheira entra num projeto com `.claude/settings.json` já versionado (`allow: ["npm test", "npm run lint", "npm run build"]`). Ela também tem, na própria máquina, `~/.claude/settings.json` com `allow: ["git status", "git log*", "git diff*"]` das outras empresas onde trabalhou. Na primeira sessão, ela nota que Claude Code volta a pedir confirmação pra `git status` — algo que "sempre funcionou sem confirmar" nos outros projetos. Não é bug: o `settings.json` do projeto *sobrescreve* o global, não concatena. Ele só listou os comandos que o time daquele projeto usa; os allows globais dela ficaram de fora dessa camada específica. A correção é olhar o guia rápido acima (`settings.json do projeto inclui as permissões globais relevantes`) e, se fizer sentido pro time todo, adicionar os allows de git ao `.claude/settings.json` do próprio projeto.
+
+**Cenário 2 — freelancer com múltiplos clientes.** Um consultor atende três clientes com stacks diferentes (um em Node, um em Python/Django, um em Rails). Ele define no `~/.claude/CLAUDE.md` apenas o que é dele como profissional: idioma de resposta, nunca assinar commits como coautor, preferir explicar trade-offs antes de decidir. Cada repo de cliente tem seu próprio `.claude/CLAUDE.md` com arquitetura e convenções daquele projeto. Como CLAUDE.md concatena (ao contrário do settings.json), as preferências pessoais dele aparecem em toda sessão, em qualquer um dos três repos, sem precisar duplicar nada — e sem misturar a arquitetura de um cliente com a de outro, porque isso fica isolado na camada de projeto.
 
 ---
 
@@ -343,6 +355,12 @@ flowchart LR
 - "CLAUDE.md layers are concatenated, not overridden — your personal preferences stack on top of project context."
 - "settings.json uses override semantics: the most specific layer wins. Always re-include global permissions in project settings if you need both."
 - "The local settings file lets you override project settings on your machine without affecting the team."
+
+---
+
+## O que vem a seguir
+
+Esta nota estabeleceu o mapa: quatro camadas, duas regras de resolução (concatenação para CLAUDE.md, sobrescrita para settings.json). As próximas notas do galho detalham cada peça desse mapa. A [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] entra na camada de projeto e de global ao mesmo tempo: qual é a estrutura interna de um CLAUDE.md bem escrito, a que concatena sem virar ruído. A [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/04 - settings.json|04 - settings.json]] aprofunda o outro lado da hierarquia — a camada que sobrescreve — com o schema completo de permissões, variáveis de ambiente e hooks. E a [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/07 - Pasta .claude|07 - A pasta .claude]] fecha o ciclo mostrando como todos esses arquivos convivem fisicamente num único diretório do projeto.
 
 ---
 

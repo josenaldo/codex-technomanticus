@@ -29,10 +29,10 @@ Estado agregado de cada sub-galho. `roadmap` = existe roadmap por-pasta? Contage
 
 | Sub-galho | Notas | Estado | roadmap |
 |-----------|-------|--------|---------|
-| Configuração | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Configuração/roadmap\|roadmap]] |
-| Hooks e Guardrails | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Hooks e Guardrails/roadmap\|roadmap]] |
-| Mental Model | 9 | 📋 diagnosticado (9 ⬜ · 0% enriquecido) | ✓ [[Mental Model/roadmap\|roadmap]] |
-| Skills e MCP | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Skills e MCP/roadmap\|roadmap]] |
+| Configuração | 8 | ✅ completo (8 ✅ · 100% enriquecido, 2026-07-07) | ✓ [[Configuração/roadmap\|roadmap]] |
+| Hooks e Guardrails | 8 | ✅ completo (8 ✅ · 100% enriquecido, 2026-07-07) | ✓ [[Hooks e Guardrails/roadmap\|roadmap]] |
+| Mental Model | 9 | ✅ completo (9 ✅ · 100% enriquecido, 2026-07-08) | ✓ [[Mental Model/roadmap\|roadmap]] |
+| Skills e MCP | 8 | 🔶 parcial (6 ✅ · 2 ⬜ · 75% enriquecido, 2026-07-08) | ✓ [[Skills e MCP/roadmap\|roadmap]] |
 | Time e Automação | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Time e Automação/roadmap\|roadmap]] |
 | Workflows (pai) | 10 diretas (9 ⬜ · 1 ➖) + sub-galho "11" (4 ⬜) | 📋 diagnosticado (0% enriquecido) | ✓ [[Workflows/roadmap\|roadmap]] |
 
@@ -41,13 +41,15 @@ Estado agregado de cada sub-galho. `roadmap` = existe roadmap por-pasta? Contage
 | Métrica | Valor |
 |---------|-------|
 | Sub-galhos | 6 |
-| ✅ completos | 0 |
-| 📋 diagnosticados (enriquec. pendente) | 6 (todos) |
+| ✅ completos | 3 (Configuração, Hooks e Guardrails — 2026-07-07; Mental Model — 2026-07-08) |
 | 🔶 parciais | 0 |
+| 📋 diagnosticados (enriquec. pendente) | 2 |
+| 🔶 parciais | 1 (Skills e MCP — 6/8) |
 | ⬜ não diagnosticados | 0 |
 | Notas diretas | 1 (index.md, MOC) |
 | Notas totais (netos) | 55 (8+8+9+8+8 nas 5 folhas + 10 diretas Workflows + 4 no sub-galho 11) |
-| Notas ⬜ pendentes | 54 |
+| Notas ⬜ pendentes | 23 |
+| Notas ✅ feitas | 31 (Configuração 8 + Hooks e Guardrails 8 + Mental Model 9 + Skills e MCP 6, 2026-07-07/08) |
 | Notas ➖ não precisa | 1 (Workflows/07) |
 
 > **Galho-pai 100% diagnosticado em 2026-07-02.** Todos os 6 sub-galhos têm `roadmap.md`.

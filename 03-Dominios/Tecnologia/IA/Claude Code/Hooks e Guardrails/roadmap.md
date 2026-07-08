@@ -16,7 +16,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 **Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails`
 **Nível:** galho-folha
 **Diagnóstico:** 2026-07-02
-**Última execução:** —
+**Última execução:** 2026-07-07 (8/8 enriquecidas via fan-out ≤3)
 
 ## Régua de análise
 
@@ -37,19 +37,19 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 8 |
-| ⬜ pendente | 8 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 8 |
+| % concluído | 100% |
 
-> Diagnóstico concluído em 2026-07-02. Custo: 8 `[substantivo]` · 0 `[mecânico]`.
+> Enriquecimento concluído em 2026-07-07 — 8/8 notas via fan-out ≤3 verificado. Custo: 8 `[substantivo]` · 0 `[mecânico]`.
 
 ---
 
 ## Notas
 
 #### 01 - Sistema de hooks   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 426 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 7/12
@@ -59,10 +59,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Extrair 3+ armadilhas (ex: hook sem timeout, matcher errado, hook silencioso) em "## Armadilhas comuns" com `[!warning]` → ativa E8
   - Renomear "## Referências" para "## Fontes" (mantendo URLs) → ativa L2
   - Pesquisar e embutir vídeo/podcast sobre Claude Code hooks em `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (Casos práticos, cenário 2 observabilidade), E5 (ponte p/ 02), E8 (3 callouts `[!warning]`: sem timeout/matcher errado/silencioso), L2 (Referências→Fontes), M1 (vídeo IndyDevDan) aplicados. Score 12/12. 495 linhas.
 
 #### 02 - PreToolUse   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 577 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 6/12
@@ -73,10 +73,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ≥1 wikilink pra nota fora da pasta "Hooks e Guardrails" (ex: nota de Segurança Conceitual ou Anatomia dos LLMs relacionada) → ativa L1
   - Renomear `## Referências` para `## Fontes` (ou adicionar seção `## Fontes` equivalente) mantendo as URLs existentes → ativa L2
   - Pesquisar e embutir vídeo/podcast relevante sobre PreToolUse/hooks de segurança em agentes como `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (PCI-DSS + kubectl delete em prod), E5 (ponte p/ 03), E8 (3 callouts `[!warning]`: headless/sem timeout/exit code), L1 (wikilink p/ Agentes de Codificação/17), L2 (Referências→Fontes), M1 (vídeo Hooks Deep Dive) aplicados. Score 12/12. 673 linhas.
 
 #### 03 - PostToolUse   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 506 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 6/12
@@ -87,10 +87,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar ≥1 wikilink pra nota fora da pasta "Hooks e Guardrails" (ex. algum conceito geral de Claude Code ou automação) → ativa L1
   - Renomear `## Referências` para `## Fontes` (mantendo as URLs já presentes) → ativa L2
   - Pesquisar e embutir vídeo/podcast relevante sobre PostToolUse hooks em `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (7 casos sob Casos práticos), E5 (ponte p/ 04 - Stop hook), E8 (5 callouts `[!warning]`), L1 (wikilink p/ Time e Automação/02 CI-CD), L2 (Referências→Fontes), M1 (vídeo oficial Anthropic "Hooks in Claude Code", âncora [1:24]) aplicados. Desvio menor: vídeo de 3min (fonte oficial, sem alternativa dedicada). 506→~560 linhas.
 
 #### 04 - Stop hook   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 416 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4 (seções "Caso de uso N" em vez de `## Casos práticos`), E5 (falta "O que vem a seguir"; só tem "Veja também"), E8 (checklist em vez de `## Armadilhas comuns` com `[!warning]`), L2 (seção chama-se "Referências", não "## Fontes"), M1 (nenhum `[!tip]` com vídeo/podcast)
 - **Score:** 7/12
@@ -100,10 +100,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter itens de risco do checklist em `## Armadilhas comuns` com ≥3 callouts `[!warning]` (ex: cleanup destrutivo em interrupt, session log ausente, auto-commit fora de end_turn) → ativa E8
   - Renomear `## Referências` para `## Fontes` (URLs já existem e são clicáveis) → ativa L2
   - Pesquisar e embutir `[!tip]` com vídeo/podcast sobre Stop hook ou observabilidade de sessões Claude Code → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (6 casos sob Casos práticos), E5 (ponte p/ 08), E8 (3 callouts `[!warning]`: cleanup destrutivo/session log ausente/auto-commit), L2 (Referências→Fontes), M1 (vídeo IndyDevDan observabilidade) aplicados. Score 12/12. 445 linhas.
 
 #### 05 - Guardrails   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 396 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 8/13 (rubrica lista 13 itens, não 12; nenhuma isenção aplicável — type concept, sem fase)
@@ -113,10 +113,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Criar "## Casos práticos" com ≥2 cenários de produção nomeados (ex: incidente real de force-push, tentativa de DROP TABLE em CI) reaproveitando/expandindo os exemplos já existentes → ativa E4
   - Renomear "## Referências" para "## Fontes" (URLs já existem, só ajustar heading) → ativa L2
   - Pesquisar e embutir vídeo/podcast sobre guardrails/hooks de segurança em agentes de IA como `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E8 (4 callouts `[!warning]`), E5 (ponte p/ 06), E4 (force-push; DROP TABLE em CI), L2 (Referências→Fontes), M1 (vídeo NextWork guardrails, âncora [40:40], transcrição verificada) aplicados. Score ~11-12/12. Cenários com [!summary] de fecho.
 
 #### 06 - Delegar permissão   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 405 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L1, M1
 - **Score:** 7/12
@@ -126,10 +126,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter os 4 parágrafos de `## Armadilhas` em callouts `[!warning]` → ativa E8
   - Trocar/adicionar ≥1 wikilink pra nota fora da pasta Hooks e Guardrails (ex: outro galho de Claude Code) → ativa L1
   - Pesquisar e embutir ≥1 `[!tip]` com vídeo/podcast sobre meta-agentes/LLM-as-judge → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (deploy staging/prod via kubectl; DELETE SQL em prod), E5 (ponte p/ 07), E8 (4 callouts `[!warning]`), L1 (wikilink p/ Mental Model/08), M1 (vídeo LLM-as-judge security) aplicados. Todos os 5 itens do plano.
 
 #### 07 - Segurança com hooks   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 409 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4 (sem `## Casos práticos` dedicada), E5 (sem "O que vem a seguir" — só "Veja também"), E8 (Armadilhas em prosa, não callouts `[!warning]`, título sem "comuns"), L1 (wikilinks só dentro da própria pasta), L2 (seção é `## Referências`, não `## Fontes`), M1 (sem `[!tip]` de vídeo/podcast)
 - **Score:** 7/13 (todos os itens aplicáveis; sem isenções)
@@ -140,10 +140,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Renomear `## Referências` → `## Fontes` (URLs já presentes) → ativa L2
   - Adicionar ≥1 wikilink pra nota fora da pasta (ex: nota de Git ou de segurança geral em Tecnologia) → ativa L1
   - Pesquisar e embutir `[!tip]` com vídeo/podcast real sobre segurança de agentes de IA/hooks → ativa M1
-- **Resultado:** —
+- **Resultado:** E8 (4 callouts `[!warning]`), E5 (ponte p/ 08), E4 (credencial AWS vazada; force-push acidental), L2 (Referências→Fontes), L1 (wikilink p/ Segurança e Guardrails/12), M1 (vídeo NextWork defesa em camadas) aplicados. 436 linhas. Todos os itens do plano.
 
 #### 08 - Testando hooks   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-07)
 - **Estado:** 699 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L1, L2, M1
 - **Score:** 6/12

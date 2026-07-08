@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -239,17 +239,17 @@ Isso significa que:
 
 ## Armadilhas comuns
 
-**Loop aparentemente infinito**
-O agente continua iterando sem progredir. Causa quase sempre: tarefa ambígua, ou o agente entrou em um estado onde cada tentativa produz um erro diferente. Diagnóstico: `--verbose`. Solução: `Esc` para interromper e reformule a tarefa com mais contexto.
+> [!warning] Loop aparentemente infinito
+> O agente continua iterando sem progredir. Causa quase sempre: tarefa ambígua, ou o agente entrou em um estado onde cada tentativa produz um erro diferente. Diagnóstico: `--verbose`. Solução: `Esc` para interromper e reformule a tarefa com mais contexto.
 
-**Suposições silenciosas na fase Plan**
-O agente assume algo errado no primeiro turn e nunca revê — porque os ToolResults subsequentes confirmam parcialmente a hipótese errada. Causa: contexto insuficiente. Solução: CLAUDE.md com convenções explícitas, ou mencione o contexto relevante no prompt.
+> [!warning] Suposições silenciosas na fase Plan
+> O agente assume algo errado no primeiro turn e nunca revê — porque os ToolResults subsequentes confirmam parcialmente a hipótese errada. Causa: contexto insuficiente. Solução: CLAUDE.md com convenções explícitas, ou mencione o contexto relevante no prompt.
 
-**Corrida de edições em multi-agent**
-Dois subagentes editam o mesmo arquivo com base em leituras feitas em momentos diferentes. O segundo sobrescreve o trabalho do primeiro. Causa: acesso não coordenado ao mesmo arquivo. Solução: arquitetura com worktrees isolados ou divisão clara de escopo entre subagentes.
+> [!warning] Corrida de edições em multi-agent
+> Dois subagentes editam o mesmo arquivo com base em leituras feitas em momentos diferentes. O segundo sobrescreve o trabalho do primeiro. Causa: acesso não coordenado ao mesmo arquivo. Solução: arquitetura com worktrees isolados ou divisão clara de escopo entre subagentes.
 
-**Efeito cascata de erro**
-O agente comete um erro no turn 3, e todos os turns subsequentes constroem em cima do erro. Nos piores casos, o agente gera código que parece funcionar mas está errado em um nível que os testes não pegam. Solução: revisão humana periódica em tarefas longas — use `/checkpoint` antes de iterações arriscadas.
+> [!warning] Efeito cascata de erro
+> O agente comete um erro no turn 3, e todos os turns subsequentes constroem em cima do erro. Nos piores casos, o agente gera código que parece funcionar mas está errado em um nível que os testes não pegam. Solução: revisão humana periódica em tarefas longas — use `/checkpoint` antes de iterações arriscadas.
 
 ---
 
@@ -361,6 +361,24 @@ Para tarefas que precisam de alta fidelidade de contexto durante toda a sessão,
 
 ---
 
+## Casos práticos
+
+A teoria do Plan/Act/Observe/Iterate é fácil de aceitar em abstrato. Fica mais concreta quando você vê o loop sob pressão real — em produção, sem supervisão constante.
+
+**Cenário 1 — debugging de CI headless**
+
+Um pipeline noturno roda `claude -p "investigate why the nightly build failed" --max-turns 25 --allowedTools "Read,Grep,Bash(npm test),Bash(npm run build)" --output-format json`. O agente entra no loop sozinho: lê o log do build, faz `grep` pelo stack trace, lê o arquivo apontado, roda o teste isolado para confirmar a hipótese, e conclui com um relatório — sem nunca editar nada, porque `--allowedTools` não inclui `Edit`.
+
+Na prática, a primeira hipótese do agente estava errada: o log mostrava falha em `payment.test.ts`, mas a causa raiz era uma variável de ambiente ausente no runner de CI, não no código. O agente só chegou lá porque a fase **Observe** do turn 4 (output de `npm run build` com um `ENV var not set` enterrado no meio do log) contradisse a hipótese do turn 2. Sem `--verbose` — que não faz sentido em headless — a forma de auditar isso depois foi ler o `--output-format json`, que registra cada tool call da sessão. Esse é o motivo de nunca rodar headless sem `--max-turns`: se o agente tivesse entrado num loop de tentativa-e-erro sobre a hipótese errada, o pipeline ficaria preso até o timeout do CI, não do agente.
+
+**Cenário 2 — refactor multi-agent em paralelo**
+
+Uma tarefa como "renomeie `UserService.validate()` para `UserService.authenticate()` nos 14 controllers que o chamam" é candidata natural a fan-out: o agente pai despacha 14 subagentes via `Agent` tool, cada um com escopo isolado (um controller por subagente) e seu próprio loop interno.
+
+O risco descrito na seção de armadilhas — corrida de edições — aparece exatamente aqui se dois controllers importarem um helper compartilhado. Um subagente que precisa editar `shared/authHelpers.ts` além do seu controller entra em conflito com outro subagente fazendo a mesma coisa a partir de uma leitura desatualizada. A mitigação prática não é impedir o fan-out, mas desenhar o escopo antes de despachar: o pai identifica arquivos compartilhados na fase de planejamento e ou (a) edita esses arquivos ele mesmo antes de despachar os subagentes, ou (b) usa worktrees isolados por subagente e resolve o merge no fim. O ganho de tempo é real — 14 loops paralelos em vez de 14 sequenciais — mas só se paga sem retrabalho quando o escopo de cada loop filho é genuinamente independente.
+
+---
+
 ## Checklist: trabalhando bem com o loop agentic
 
 Antes de iniciar uma sessão:
@@ -376,6 +394,17 @@ Durante a sessão:
 Para paralelo e automação:
 - [ ] Subagentes com escopo isolado para evitar conflito de edição no mesmo arquivo
 - [ ] Hooks PostToolUse e Stop configurados para logging e guardrails em headless
+
+---
+
+## O que vem a seguir
+
+Entender o loop responde "como o agente age?" — mas cada `Plan` do ciclo depende de uma pergunta anterior: *o que o agente já sabe sobre este repositório antes do primeiro turn?* A primeira fase do loop não parte do zero. Ela lê CLAUDE.md, explora a árvore de arquivos, e monta um modelo do codebase que molda toda decisão subsequente.
+
+É esse processo de leitura — como Claude Code decide o que explorar, o que ignorar, e em que ordem — que a próxima nota cobre: [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/02 - Como Claude Code lê um codebase|02 - Como Claude Code lê um codebase]].
+
+> [!tip] Vídeo: agent loops explicados
+> "Finally. Agent Loops Clearly Explained" (YouTube) percorre visualmente o ciclo reason→act→observe que fundamenta o loop agentic e conecta com o paper original do ReAct (Yao et al., 2023) — bom complemento em vídeo para quem prefere ver o diagrama animado antes do texto. https://www.youtube.com/watch?v=EuzYhzB0vbI
 
 ---
 
@@ -399,3 +428,4 @@ Para paralelo e automação:
 - **Yao et al.** — *ReAct: Synergizing Reasoning and Acting in Language Models*. ICLR 2023. Artigo seminal que formalizou o padrão Plan/Act/Observe em LLMs — https://arxiv.org/abs/2210.03629
 - **Shinn et al.** — *Reflexion: Language Agents with Verbal Reinforcement Learning*. NeurIPS 2023. Extensão do ReAct com auto-reflexão — https://arxiv.org/abs/2303.11366
 - **Wang et al.** — *A Survey on Large Language Model based Autonomous Agents*. 2023. Panorama de arquiteturas agênticas incluindo loops Plan-Act-Observe — https://arxiv.org/abs/2308.11432
+- **YouTube** — *Finally. Agent Loops Clearly Explained*. Vídeo explicando visualmente o ciclo reason/act/observe dos agent loops — https://www.youtube.com/watch?v=EuzYhzB0vbI

@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -16,7 +16,9 @@ tags:
 # Slash commands customizados — .claude/commands/
 
 > [!abstract] TL;DR
-> Slash commands customizados são arquivos Markdown em `.claude/commands/` que o Claude Code expõe como `/nome-do-arquivo`. O conteúdo do arquivo vira o prompt executado quando você digita o comando. Útil para encapsular fluxos recorrentes do projeto. O argumento `$ARGUMENTS` captura o que você escreve depois do comando.
+> Slash commands customizados são arquivos Markdown em `.claude/commands/` (projeto) ou `~/.claude/commands/` (global) que o Claude Code expõe como `/nome-do-arquivo` — o conteúdo do arquivo vira, literalmente, o prompt executado quando você digita o comando.
+> A vantagem sobre colar um prompt ad hoc é que o command fica versionado no git: quando um bug escapa do `/pr-check`, o postmortem vira uma linha nova no checklist, e todo o time herda o aprendizado na próxima invocação — não só quem escreveu o prompt original.
+> O argumento `$ARGUMENTS` captura tudo que você digita depois do nome do comando, permitindo parametrizar o mesmo command para alvos diferentes (`/test-module services/payment`, `/debug erro-de-timeout`).
 
 ---
 
@@ -246,6 +248,14 @@ Interprete o primeiro token como branch-origem e o segundo como branch-destino.
 3. Identifique potenciais conflitos com o estado atual do working tree
 ```
 
+> [!tip] Assista: Claude Code Tutorial #6 - Slash Commands
+> **Canal:** The Net Ninja | **Duração:** ~12min | **Idioma:** EN
+>
+> Complementa exatamente esse ponto: além de instruir Claude a interpretar tokens manualmente, o vídeo mostra a convenção de usar colchetes dentro de `$ARGUMENTS` (`[nome]`) para nomear cada valor recebido, e o campo `argument-hint` no frontmatter do command file, que exibe uma dica dos argumentos esperados direto na interface do chat — algo que esta nota ainda não cobria.
+> Trecho de destaque [8:18]: *"I use square brackets to essentially create variables with values where the name of the variable is the thing in the square brackets and the text on the right is telling Claude code what to store for this."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=52KBhQqqHuc)
+
 ---
 
 ## Commands como padrão de qualidade do time
@@ -261,6 +271,14 @@ Esse é o loop de melhoria:
 2. Adiciona checagem no `pr-check.md`
 3. Commit, push → todos os devs têm o check na próxima sessão
 4. Repete
+
+---
+
+## Casos práticos
+
+**Time que padronizou `/pr-check` depois de um bug recorrente passar por review.** Um time de backend vinha aprovando PRs com credenciais de teste hardcoded em arquivos de configuração — três vezes em dois meses, três devs diferentes, três reviews diferentes que não pegaram o problema porque cada um tinha seu próprio checklist mental. Depois do terceiro incidente, o tech lead formalizou o `/pr-check` do exemplo acima com o item explícito "Sem credenciais ou secrets hardcoded" e commitou o arquivo em `.claude/commands/`. Na semana seguinte, um novo PR com o mesmo padrão foi barrado — não porque o revisor lembrou, mas porque o command lembrou por ele. O ganho não foi a economia de digitação; foi transformar uma falha pontual de um indivíduo num item permanente do processo do time inteiro.
+
+**Onboarding acelerado com `/explain` em um monólito legado.** Uma consultoria que assume manutenção de sistemas legados recebe devs novos toda semana, cada um perdido nos mesmos módulos obscuros que ninguém documentou. Em vez de repetir a mesma explicação oral a cada contratação, a equipe manteve um `/explain $ARGUMENTS` calibrado para o contexto do projeto (referenciando convenções específicas do CLAUDE.md e armadilhas conhecidas de módulos antigos). Um dev novo roda `/explain services/billing/legacy_processor.rb` no primeiro dia e recebe a mesma profundidade de explicação que levaria uma hora de pair programming com o dev mais sênior do time — sem tomar o tempo desse sênior.
 
 ---
 
@@ -309,17 +327,22 @@ flowchart LR
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-**Nome com espaços.** `deploy check.md` não funciona como command. Use kebab-case: `deploy-check.md`.
+> [!warning] Nome com espaços
+> `deploy check.md` não funciona como command. Use kebab-case: `deploy-check.md`.
 
-**Prompt vago no command file.** "Faça um review do código" sem critérios específicos produz output genérico. Um command deve ser mais preciso que um prompt ad hoc — é onde você codifica o padrão de qualidade do time.
+> [!warning] Prompt vago no command file
+> "Faça um review do código" sem critérios específicos produz output genérico. Um command deve ser mais preciso que um prompt ad hoc — é onde você codifica o padrão de qualidade do time.
 
-**`$ARGUMENTS` sem fallback.** Se o command pode ser invocado com ou sem argumento, documente o comportamento esperado para cada caso dentro do arquivo.
+> [!warning] `$ARGUMENTS` sem fallback
+> Se o command pode ser invocado com ou sem argumento, documente o comportamento esperado para cada caso dentro do arquivo.
 
-**Commands desatualizados.** Se um command referencia `src/utils/logger.ts` e esse arquivo foi movido para `src/infra/logger.ts`, o agente vai se perder. Revise commands quando a estrutura do projeto mudar.
+> [!warning] Commands desatualizados
+> Se um command referencia `src/utils/logger.ts` e esse arquivo foi movido para `src/infra/logger.ts`, o agente vai se perder. Revise commands quando a estrutura do projeto mudar.
 
-**Tamanho excessivo.** Commands muito longos aumentam o contexto de cada sessão que os usa. Se um command está passando de 50 linhas, considere dividir em dois commands mais focados.
+> [!warning] Tamanho excessivo
+> Commands muito longos aumentam o contexto de cada sessão que os usa. Se um command está passando de 50 linhas, considere dividir em dois commands mais focados.
 
 ---
 
@@ -351,16 +374,19 @@ flowchart LR
 
 ---
 
-## Veja também
+## O que vem a seguir
 
-- [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/07 - Pasta .claude|07 - Pasta .claude]] — estrutura completa da pasta .claude
+Um slash command é só um arquivo dentro de uma estrutura maior. Antes de criar o próximo, vale entender onde ele se encaixa: [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/07 - Pasta .claude|07 - Pasta .claude]] mapeia todo o resto de `.claude/` — hooks, agents, settings — e mostra como commands convivem com essas outras peças no mesmo diretório versionado.
+
+E depois de escrever alguns commands, a próxima pergunta natural é "o que pode dar errado aqui?" — é exatamente o assunto de [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/08 - Armadilhas de configuração|08 - Armadilhas de configuração]], que cataloga os erros de configuração mais comuns do Claude Code, incluindo os que nascem de commands mal escritos.
+
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/01 - Hierarquia de configuração|01 - Hierarquia de configuração]] — commands globais vs. de projeto
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/index|Skills e MCP]] — skills são commands mais poderosos com plugins externos
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/index|Configuração]] — índice do galho
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code slash commands* (2026). Documentação oficial de commands customizados — https://docs.anthropic.com/pt/docs/claude-code/slash-commands
 - **Anthropic** — *Claude Code best practices* (2026). Exemplos de commands para workflows comuns — https://www.anthropic.com/engineering/claude-code-best-practices

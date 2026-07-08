@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -256,19 +256,31 @@ sequenceDiagram
     CC-->>U: Segue TDD respeitando as invariantes do domínio
 ```
 
-## Armadilhas
+## Armadilhas comuns
 
-**Misturar os dois tipos numa skill**
-Uma skill que explica a arquitetura E define o processo de desenvolvimento é difícil de manter. O agente tende a priorizar as últimas instruções lidas — e as regras do início se perdem. Separe sempre.
+> [!warning] Misturar os dois tipos numa skill
+> Uma skill que explica a arquitetura E define o processo de desenvolvimento é difícil de manter. O agente tende a priorizar as últimas instruções lidas — e as regras do início se perdem. Separe sempre.
 
-**Skill de domínio desatualizada**
-É pior do que não ter skill. Se a convenção de soft delete mudou (a coluna agora se chama `archived_at`) e a skill ainda diz `deleted_at`, o agente vai gerar código com bug. Skills de domínio precisam de owner e revisão periódica — trate como código vivo.
+> [!warning] Skill de domínio desatualizada
+> É pior do que não ter skill. Se a convenção de soft delete mudou (a coluna agora se chama `archived_at`) e a skill ainda diz `deleted_at`, o agente vai gerar código com bug. Skills de domínio precisam de owner e revisão periódica — trate como código vivo.
 
-**Skill de processo muito rígida**
-Se o processo tem muitas exceções, o agente vai travar tentando segui-lo literalmente. Inclua explicitamente "quando adaptar" ou "quando pular esta etapa". Um processo com 3 exceções conhecidas documentadas é mais útil do que um processo sem exceção que o agente quebra toda vez que encontra uma.
+> [!warning] Skill de processo muito rígida
+> Se o processo tem muitas exceções, o agente vai travar tentando segui-lo literalmente. Inclua explicitamente "quando adaptar" ou "quando pular esta etapa". Um processo com 3 exceções conhecidas documentadas é mais útil do que um processo sem exceção que o agente quebra toda vez que encontra uma.
 
-**Invocação na ordem errada**
-Para o par domínio+processo, carregue o domínio primeiro. Se você invocar o processo antes do domínio, o agente pode tomar decisões de design antes de entender as restrições do contexto.
+> [!warning] Invocação na ordem errada
+> Para o par domínio+processo, carregue o domínio primeiro. Se você invocar o processo antes do domínio, o agente pode tomar decisões de design antes de entender as restrições do contexto.
+
+## Casos práticos
+
+As armadilhas acima não são hipotéticas — elas aparecem sob duas formas recorrentes em produção.
+
+**Cenário 1 — skill de domínio ficando obsoleta em silêncio**
+Um time de e-commerce mantém `arquitetura-pagamentos.md` desde que o módulo foi criado. Seis meses depois, o time migra o provedor de pagamento e passa a validar CPF/CNPJ antes de criar a cobrança — mas ninguém lembrou de atualizar a skill. Toda sessão nova de Claude Code carrega o contexto antigo, gera código que pula a validação, e os testes locais passam porque o mock não reproduz a regra nova. O bug só aparece em produção, quando um pedido com CPF inválido cria uma cobrança órfã. O time perde meio dia rastreando um problema que a skill deveria ter prevenido — e só percebe a causa raiz ao notar que `arquitetura-pagamentos.md` não tinha `updated:` há 6 meses.
+
+**Cenário 2 — skill de processo rígida demais travando o agente**
+Um time adota `deploy.md` com uma sequência fixa: testes → lint → CHANGELOG → tag → push. Funciona bem até aparecer um hotfix crítico em produção, sem tempo para atualizar o CHANGELOG com o rigor normal. O agente, seguindo a skill ao pé da letra, insiste em bloquear o deploy até o CHANGELOG estar completo — mesmo com o incidente ativo. O engenheiro de plantão precisa desativar a skill manualmente para conseguir fazer o hotfix, perdendo minutos preciosos numa janela onde cada minuto importa. A correção depois de outra sessão: adicionar uma seção explícita "quando pular esta etapa" para o caso de hotfix — o mesmo remédio da armadilha "skill de processo muito rígida".
+
+Os dois cenários apontam para o mesmo princípio: skill de domínio exige manutenção ativa (owner + revisão periódica); skill de processo exige flexibilidade documentada (exceções previstas), não rigidez cega.
 
 ## Diagnosing: "isso é processo ou domínio?"
 
@@ -297,6 +309,14 @@ flowchart TD
 ```
 
 Se a resposta for "ambos" na primeira pergunta — parabéns, você encontrou uma skill monolítica esperando para ser dividida.
+
+> [!tip] Assista: How to Create Good Agent Skills | Claude Code Guide
+> **Canal:** Code with Beto | **Duração:** ~10min | **Idioma:** EN
+>
+> Complementa a distinção teórica desta nota com um framework prático de criação: quando vale a pena criar uma skill (tarefa repetitiva, não tarefa única) e um exemplo passo a passo de skill de deploy — um caso concreto de skill de processo, com o mesmo cuidado de escopo que separa processo de domínio.
+> Trecho de destaque [3:38]: *"Skills are not for one-time tasks or for simple things like explaining just a piece of code. [...] Skills are for patterns that you repeat, daily or weekly or even monthly."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Ik-Xbz2hvM0)
 
 ### Exemplos de classificação
 
@@ -374,6 +394,16 @@ A skill híbrida termina redirecionando para as skills específicas — ela é u
 - **Stale skill**: an outdated domain skill that actively misleads the agent
 - **Skill owner**: the team member responsible for keeping a domain skill accurate
 
+**Termos-chave PT↔EN:**
+
+| Português | English | Definição curta |
+|---|---|---|
+| Skill de processo | Process skill | Ensina o *como fazer* — workflow repetível, estável, transferível |
+| Skill de domínio | Domain skill | Ensina o *o que é aqui* — contexto do projeto, volátil, específico |
+| Skill híbrida | Hybrid skill | Documento de orientação amplo (onboarding); não serve para execução |
+| Skill desatualizada | Stale skill | Skill de domínio que ficou para trás da convenção real do projeto |
+| Owner da skill | Skill owner | Pessoa responsável por manter uma skill de domínio precisa e atual |
+
 ## Resumo rápido para consulta
 
 | Dimensão | Process skill | Domain skill |
@@ -386,6 +416,14 @@ A skill híbrida termina redirecionando para as skills específicas — ela é u
 | Exemplo | `/tdd`, `/code-review` | `/arquitetura`, `/convencoes` |
 | Tamanho típico | 50-200 linhas | 20-100 linhas |
 | Invocação ideal | Explícita, antes da tarefa | Explícita, antes do processo |
+
+## O que vem a seguir
+
+Saber classificar processo vs domínio é o passo teórico. O passo seguinte é colocar a mão na massa: escrever o frontmatter certo, escolher a descrição que faz o agente invocar a skill no momento certo, e testar se ela realmente muda o comportamento do agente. É exatamente isso que [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/03 - Criar sua primeira skill|03 - Criar sua primeira skill]] cobre, com exemplos reais de cada tipo.
+
+## Fontes
+
+- [Anthropic — Extend Claude with skills](https://code.claude.com/docs/en/skills) — documentação oficial sobre estrutura, frontmatter e invocação de skills no Claude Code
 
 ## Referências
 

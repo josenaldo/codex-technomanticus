@@ -16,7 +16,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 **Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Mental Model`
 **Nível:** galho-folha
 **Diagnóstico:** 2026-07-02
-**Última execução:** —
+**Última execução:** 2026-07-08 (ondas 1-3: notas 01-09 ✅ — galho completo)
 
 ## Régua de análise
 
@@ -37,10 +37,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 9 |
-| ⬜ pendente | 9 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 9 |
+| % concluído | 100% |
 
 > Diagnóstico concluído em 2026-07-02. Custo: 9 `[substantivo]` · 0 `[mecânico]`.
 
@@ -49,7 +49,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 ## Notas
 
 #### 01 - O loop agentic   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 401 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, M1
 - **Score:** 8/12
@@ -58,10 +58,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Substituir `## Veja também` (ou adicionar antes dela) uma `## O que vem a seguir` com ponte narrativa pro próximo tema, citando `[[02 - Como Claude Code lê um codebase]]` — ativa E5
   - Converter os 4 itens de `## Armadilhas comuns` em callouts `[!warning]` (hoje são apenas negrito) — ativa E8
   - Pesquisar e embutir vídeo/podcast relevante sobre agentic loop/ReAct como `[!tip]` — ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (Casos práticos: CI headless + refactor multi-agent), E5 (O que vem a seguir → [[02]]), E8 (4 armadilhas → [!warning]), M1 (vídeo "Agent Loops Clearly Explained") aplicados. 431 linhas. Sem desvios.
 
 #### 02 - Como Claude Code lê um codebase   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 399 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E3, E4, E5, E8, L2, M1
 - **Score:** 7/13 (rubrica lista 13 itens, não 12; P1 não é N/A — há código)
@@ -72,10 +72,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Reformular `## Armadilhas comuns` como ≥3 callouts `[!warning]` (hoje são blocos em negrito sem callout) → ativa E8
   - Renomear/restruturar `## Referências` para `## Fontes` (URLs já existem, só formalizar seção) → ativa L2
   - Pesquisar e embutir `[!tip]` com vídeo/podcast sobre navegação de codebase por agente/Claude Code → ativa M1
-- **Resultado:** —
+- **Resultado:** E3 (hierarquia CLAUDE.md → mermaid), E4 (monorepo grande + legado sem CLAUDE.md), E5 (→ [[03 - Tool use]]), E8 (5 blocos → [!warning]), L2 (Referências→Fontes), M1 (vídeo Anthropic harness) aplicados. 422 linhas. Sem desvios.
 
 #### 03 - Tool use   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 402 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 7/12
@@ -85,10 +85,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter os itens de `## Armadilhas comuns` em ≥3 callouts `[!warning]` (hoje são blocos em negrito sem callout) → ativa E8
   - Renomear `## Referências` para `## Fontes` (conteúdo de URLs já existe, só falta o cabeçalho canônico) → ativa L2
   - Pesquisar e embutir um `[!tip]` com vídeo/podcast real sobre tool use / function calling em agentes → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (agente lendo .env + Bash verboso em CI), E5 (→ [[04 - Context window]]), E8 (4 armadilhas → [!warning]), L2 (Referências→Fontes), M1 (vídeo Anthropic "Tool use with Claude 3") aplicados. 403→431 linhas. Sem desvios.
 
 #### 04 - Context window   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 398 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, M1
 - **Score:** 8/12
@@ -97,10 +97,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar `## O que vem a seguir` com ponte narrativa e wikilink pra próxima nota (06 - Compaction) — ativa E5
   - Converter os 4 itens de "Armadilhas comuns" em callouts `[!warning]` — ativa E8
   - Pesquisar e embutir vídeo/podcast sobre gestão de context window em callout `[!tip]` — ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (debugging longo + pipeline CI/CD), E5 (→ [[06 - Compaction]]), E8 (4 armadilhas → [!warning]), M1 (vídeo "Context Management in Claude Code") aplicados. 421 linhas. Sem desvios.
 
 #### 05 - Modos de operação   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 400 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4 (sem `## Casos práticos`), E5 (sem `## O que vem a seguir`, só `## Veja também`), E8 (seção "Armadilhas por modo" não usa callouts `[!warning]`), L2 (seção é `## Referências`, não `## Fontes`), M1 (nenhum `[!tip]` com vídeo/podcast)
 - **Score:** 7/12
@@ -110,10 +110,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter os 5 blocos de "Armadilhas por modo" em callouts `> [!warning]` (renomear título para "Armadilhas comuns") → ativa E8
   - Renomear `## Referências` para `## Fontes` (conteúdo de URLs já está pronto) → ativa L2
   - Pesquisar e embutir vídeo/podcast real sobre plan mode/headless/auto mode do Claude Code como `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (2FA em produção + revisão de PR em CI/CD), E5 (→ [[06 - Compaction]]), E8 (5 blocos → [!warning]), L2 (Referências→Fontes), M1 (vídeo headless mode) aplicados. 417 linhas. Sem desvios.
 
 #### 06 - Compaction   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 400 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, M1
 - **Score:** 8/12
@@ -122,10 +122,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar `## O que vem a seguir` com ponte narrativa + wikilink pra próxima nota (ex: "05 - Modos de operação" ou índice do galho) → ativa E5
   - Criar `## Armadilhas comuns` convertendo o checklist/gotchas existentes em ≥3 callouts `[!warning]` → ativa E8
   - Pesquisar e embutir `[!tip]` com vídeo/podcast sobre compaction ou gerenciamento de contexto longo em agentes → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (migração multi-dia + debugging longo), E5 (→ [[07 - Tokens e custo]]), E8 (4 armadilhas → [!warning]), M1 (vídeo Anthropic "Effective context engineering") aplicados. 443 linhas; score 11/12 (T3 tamanho Magus fora do plano). Sem desvios.
 
 #### 07 - Tokens e custo   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 397 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 7/12
@@ -135,10 +135,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter parágrafos de "## Armadilhas" em ≥3 callouts `[!warning]` → ativa E8
   - Renomear/fundir `## Referências` em `## Fontes` (ou adicionar `## Fontes` com as URLs) → ativa L2
   - Pesquisar e embutir `[!tip]` com vídeo/podcast real sobre custo/tokens do Claude Code → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (CI PR review + migração em lote), E5 (→ [[08 - Como o agente decide]]), E8 (4 armadilhas → [!warning]), L2 (Referências→Fontes), M1 (vídeo "Save 90% Token Usage") aplicados. 445 linhas; score 14/14 aplicáveis. Sem desvios.
 
 #### 08 - Como o agente decide   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 371 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, L2, M1
 - **Score:** 6/11 (P1 N/A — nota conceitual pura)
@@ -148,10 +148,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter `## Armadilhas` em ≥3 callouts `[!warning]` → ativa E8
   - Renomear/reestruturar `## Referências` para `## Fontes` (URLs já existem e são clicáveis) → ativa L2
   - Adicionar `[!tip]` com vídeo/podcast relevante sobre raciocínio do agente/prompting → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (migração de lib em CI + repos com/sem CLAUDE.md), E5 (→ [[09 - O harness como terceira camada]]), E8 (4 armadilhas → [!warning]), L2 (Referências→Fontes), M1 (vídeo Thorsten Ball "How to Build an Agent") aplicados. Sem desvios.
 
 #### 09 - O harness como terceira camada   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 377 linhas reais · fase: ausente · status: growing
 - **Núcleo/gaps:** E4, E5, E8, M1
 - **Score:** 8/12
@@ -160,4 +160,4 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar `## O que vem a seguir` com ponte narrativa (não só lista de links) apontando pro próximo galho/nota da trilha → ativa E5
   - Converter `## Armadilhas` de bullets em bold para `## Armadilhas comuns` com ≥3 callouts `[!warning]` → ativa E8
   - Pesquisar e embutir ≥1 `[!tip]` com vídeo/podcast sobre harness engineering / Claude Code em escala → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (monorepo 40+ módulos + time distribuído), E5 (→ galho Configuração), E8 (5 armadilhas → [!warning]), M1 (vídeo "Building Agent Harnesses") aplicados. 435 linhas; score OK (T3 tamanho Magus fora do plano). Sem desvios.

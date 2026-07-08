@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -245,6 +245,11 @@ Existe uma diferença sutil entre ter `"allow": []` (array vazio) e não ter o c
 
 Use `allow: []` explicitamente apenas quando quiser que o projeto force confirmação em tudo — por exemplo, em projetos de infra crítica onde qualquer execução deve ser revisada.
 
+> [!tip] Vídeo — permissions e settings.json na prática
+> [Permissions, settings.json, and plan mode: making one Claude Code session safe](https://www.youtube.com/watch?v=CT9xynq7WZM) — percorre onde as configurações vivem, qual arquivo vence quando há conflito, e como escrever regras allow/ask/deny do zero.
+
+Permissions cirúrgicas resolvem metade do problema de segurança; a outra metade é lembrar que o próprio código gerado por um agente é `untrusted` até passar por revisão — ver [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/06 - Permissões e sandboxing|Permissões e sandboxing]], que trata o mesmo tema pelo ângulo da defesa em profundidade (sandboxing além do settings.json).
+
 ---
 
 ## Configuração recomendada por tier
@@ -341,17 +346,30 @@ Use `allow: []` explicitamente apenas quando quiser que o projeto force confirma
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-**Sem nenhum allow:** cada tool call pede confirmação, inclusive `git status` e leitura de arquivos. Sessão fica inutilizavelmente lenta. Configure pelo menos `Read(*)`, `Edit(*)` e os comandos git de consulta.
+> [!warning] Sem nenhum allow
+> Cada tool call pede confirmação, inclusive `git status` e leitura de arquivos. Sessão fica inutilizavelmente lenta. Configure pelo menos `Read(*)`, `Edit(*)` e os comandos git de consulta.
 
-**`"deny": ["Bash(*)"]`:** bloqueia absolutamente tudo. O agente fica paralisado. Deny deve ser cirúrgico — alveje o perigoso, não tudo.
+> [!warning] `"deny": ["Bash(*)"]`
+> Bloqueia absolutamente tudo. O agente fica paralisado. Deny deve ser cirúrgico — alveje o perigoso, não tudo.
 
-**`"Bash(*)"` no allow:** libera todo e qualquer comando shell, incluindo `rm -rf /`, `git push --force`, `sudo`. Se você quiser liberar "quase tudo", use `deny` para as exceções, não allow amplo.
+> [!warning] `"Bash(*)"` no allow
+> Libera todo e qualquer comando shell, incluindo `rm -rf /`, `git push --force`, `sudo`. Se você quiser liberar "quase tudo", use `deny` para as exceções, não allow amplo.
 
-**Esquecer variações de argumento:** `"Bash(npm test)"` não cobre `npm test -- --watch`. Adicione `"Bash(npm test *)"` para cobrir argumentos extras.
+> [!warning] Esquecer variações de argumento
+> `"Bash(npm test)"` não cobre `npm test -- --watch`. Adicione `"Bash(npm test *)"` para cobrir argumentos extras.
 
-**Não testar:** configure, faça uma sessão de teste com comandos variados, verifique o que fica travado. Permissions mal calibradas são descobertas na hora errada.
+> [!warning] Não testar
+> Configure, faça uma sessão de teste com comandos variados, verifique o que fica travado. Permissions mal calibradas são descobertas na hora errada.
+
+---
+
+## Casos práticos
+
+**Cenário 1 — onboarding de um repo Node novo.** Um dev entra num projeto TypeScript que nunca teve `.claude/settings.json`. Na primeira sessão, cada `npm test`, cada `git status`, cada leitura de arquivo pára pra pedir confirmação — a sessão vira uma sequência de cliques em "yes". Ele copia o tier "Node.js/TypeScript" da seção anterior (`Bash(npm test)`, `Bash(npm run lint)`, `Bash(npm run build)` no allow; `Bash(npm publish *)` no deny) pro `.claude/settings.json` do projeto. Na sessão seguinte, lint/test/build rodam direto; publicar pro registry continua exigindo aprovação humana — que é exatamente o ponto de risco que merece um humano no loop.
+
+**Cenário 2 — pipeline Python com migração de banco.** Um time usa Claude Code pra rodar `pytest` e `ruff` livremente, mas migrations (`alembic upgrade`/`alembic revision`) tocam num banco compartilhado de staging. O tier "Python" já modela essa distinção: `alembic upgrade *` e `alembic revision *` no allow (aplicar migração pra frente é rotina, revisável), `alembic downgrade *` no deny (reverter em produção é decisão que exige revisão humana, porque desfazer uma migração pode perder dados). O mesmo padrão se replica pro tier Java/Maven: `./mvnw test` e `./mvnw compile` liberados, mas nenhum comando de deploy entra no allow — fica de fora da lista inteira, forçando confirmação.
 
 ---
 
@@ -383,6 +401,16 @@ Use `allow: []` explicitamente apenas quando quiser que o projeto force confirma
 
 ---
 
+## O que vem a seguir
+
+Este capítulo tratou permissions isoladamente — a sintaxe `allow`/`deny`, os globs, a precedência. Mas permissions não vivem sozinhas: elas são só um dos blocos de `settings.json`, que também define modelo, hooks e outras chaves — vale voltar pra [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/04 - settings.json|04 - settings.json]] pra ver o arquivo inteiro, não só a fatia de permissions.
+
+Também vale a pena revisitar [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/01 - Hierarquia de configuração|01 - Hierarquia de configuração]]: o exemplo de "camadas se combinam" desta nota (global + projeto + local) só faz sentido plenamente depois de entender a ordem de precedência entre os quatro níveis de arquivo.
+
+Por fim, se a dúvida for "o que mais dá errado além do que já vi aqui", a [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/08 - Armadilhas de configuração|08 - Armadilhas de configuração]] cataloga erros de configuração além de permissions — MCP mal configurado, hooks quebrados, CLAUDE.md gigante — o mesmo espírito de "isso trava a sessão na hora errada", mas para o resto do arquivo.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/04 - settings.json|04 - settings.json]] — arquivo que contém permissions
@@ -395,6 +423,7 @@ Use `allow: []` explicitamente apenas quando quiser que o projeto force confirma
 
 - **Anthropic** — *Claude Code settings — permissions* (2026). Sintaxe de allow/deny e precedência — https://docs.anthropic.com/pt/docs/claude-code/settings#permissions
 - **Anthropic** — *Claude Code security* (2026). Práticas de segurança recomendadas para permissões — https://docs.anthropic.com/pt/docs/claude-code/security
+- **YouTube** — *Permissions, settings.json, and plan mode: making one Claude Code session safe* (2026) — https://www.youtube.com/watch?v=CT9xynq7WZM
 
 
 

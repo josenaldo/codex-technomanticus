@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -144,7 +144,17 @@ exit 0
 
 ---
 
-## Caso de uso 1 — Auto-lint depois de edições
+## Casos práticos
+
+> [!tip] Assista: Hooks in Claude Code
+> **Canal:** Claude (Anthropic) | **Duração:** ~3min | **Idioma:** EN
+>
+> Vídeo oficial curto que resume por que hooks são determinísticos (rodam sempre, ao contrário de instruções em CLAUDE.md) e usa o auto-format via PostToolUse como o exemplo central — exatamente o Caso de uso 1 abaixo.
+> Trecho de destaque [1:24]: *"The most common hook. Auto formatting after edits. You set a post-tool-use hook with a matcher of edit or multi-edit... it fires whenever Claude modifies a file."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=IkaPHiMDazM)
+
+### Caso de uso 1 — Auto-lint depois de edições
 
 O mais comum: garantir que o código editado pelo agente sempre passe no linter.
 
@@ -189,9 +199,11 @@ Configuração para ativar em Edit e Write:
 
 Por que isso importa: o agente pode editar arquivos em rápida sucessão sem rodar lint entre elas. Ao final, você recebe código que já passou no linter — não precisa rodar `npm run lint` no final da sessão.
 
+Esse mesmo princípio — reagir automaticamente ao resultado de uma ação, sem intervenção manual — é o que sustenta pipelines de CI/CD: veja [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/02 - CI-CD com GitHub Actions|02 - CI-CD com GitHub Actions]] para o mesmo padrão aplicado no nível de pipeline, em vez de tool call individual.
+
 ---
 
-## Caso de uso 2 — Auto-format (Prettier)
+### Caso de uso 2 — Auto-format (Prettier)
 
 Similar ao lint, mas sem semântica de erro — só formatação consistente:
 
@@ -226,7 +238,7 @@ exit 0
 
 ---
 
-## Caso de uso 3 — Logging de auditoria pós-ação
+### Caso de uso 3 — Logging de auditoria pós-ação
 
 Enquanto o PreToolUse loga intenções, o PostToolUse loga o que de fato aconteceu (incluindo se falhou):
 
@@ -257,7 +269,7 @@ A diferença crucial: o PostToolUse tem o campo `success` e `output` — você s
 
 ---
 
-## Caso de uso 4 — Notificações de tarefas longas
+### Caso de uso 4 — Notificações de tarefas longas
 
 Quando o agente roda `npm test` ou `cargo build`, você pode estar em outra janela. O PostToolUse notifica quando concluir:
 
@@ -306,7 +318,7 @@ exit 0
 
 ---
 
-## Caso de uso 5 — Disparar testes automaticamente
+### Caso de uso 5 — Disparar testes automaticamente
 
 Quando o agente edita código de implementação, rodar os testes relacionados imediatamente:
 
@@ -340,7 +352,7 @@ exit 0
 
 ---
 
-## Caso de uso 6 — Logging de comandos que falharam
+### Caso de uso 6 — Logging de comandos que falharam
 
 Para debugging de sessões longas — saber quais comandos o agente tentou e que falharam:
 
@@ -371,7 +383,7 @@ exit 0
 
 ---
 
-## Caso de uso 7 — Verificação de cobertura de testes
+### Caso de uso 7 — Verificação de cobertura de testes
 
 Após o agente criar um arquivo novo, verificar se existe teste correspondente:
 
@@ -449,15 +461,20 @@ Os dois hooks se complementam: PreToolUse é a política, PostToolUse é a autom
 
 ## Armadilhas
 
-**Hook pesado em PostToolUse.** O hook executa a cada tool call. Um hook que demora 3 segundos em cada Edit vai tornar a sessão muito mais lenta — se o agente fizer 20 edições, você perde 1 minuto só em hooks. Mantenha PostToolUse leve: lint rápido (`--quiet`), log simples, verificações de existência de arquivo.
+> [!warning] Hook pesado em PostToolUse
+> O hook executa a cada tool call. Um hook que demora 3 segundos em cada Edit vai tornar a sessão muito mais lenta — se o agente fizer 20 edições, você perde 1 minuto só em hooks. Mantenha PostToolUse leve: lint rápido (`--quiet`), log simples, verificações de existência de arquivo.
 
-**Tentar desfazer a ação.** PostToolUse não pode reverter o que a tool fez. O arquivo já foi editado, o comando já executou. Se você precisa prevenir, use PreToolUse. PostToolUse é para o que acontece depois de.
+> [!warning] Tentar desfazer a ação
+> PostToolUse não pode reverter o que a tool fez. O arquivo já foi editado, o comando já executou. Se você precisa prevenir, use PreToolUse. PostToolUse é para o que acontece depois de.
 
-**Depender do exit code para controle.** O exit code do PostToolUse não bloqueia a sessão — é ignorado pelo runtime para controle de fluxo. Se você colocar `exit 1` em um PostToolUse e esperar que o agente pare, não vai acontecer.
+> [!warning] Depender do exit code para controle
+> O exit code do PostToolUse não bloqueia a sessão — é ignorado pelo runtime para controle de fluxo. Se você colocar `exit 1` em um PostToolUse e esperar que o agente pare, não vai acontecer.
 
-**Loops de edição.** Se o PostToolUse edita o arquivo (ex: Prettier reescrevendo), isso pode disparar novamente o PostToolUse recursivamente. Não é um problema na prática (o hook vê o mesmo arquivo e não produz mais mudanças), mas vale ter ciência.
+> [!warning] Loops de edição
+> Se o PostToolUse edita o arquivo (ex: Prettier reescrevendo), isso pode disparar novamente o PostToolUse recursivamente. Não é um problema na prática (o hook vê o mesmo arquivo e não produz mais mudanças), mas vale ter ciência.
 
-**Assumir que `success` reflete o resultado real.** O campo `success` em `tool_output` pode não ser granular o suficiente para todos os casos. Para Bash, cheque `exit_code` também: um processo pode terminar com `success: false` mas ter um output parcialmente útil.
+> [!warning] Assumir que `success` reflete o resultado real
+> O campo `success` em `tool_output` pode não ser granular o suficiente para todos os casos. Para Bash, cheque `exit_code` também: um processo pode terminar com `success: false` mas ter um output parcialmente útil.
 
 ---
 
@@ -490,6 +507,12 @@ Os dois hooks se complementam: PreToolUse é a política, PostToolUse é a autom
 
 ---
 
+## O que vem a seguir
+
+PostToolUse fecha o ciclo de reação por tool call: o agente age, o hook reage — lint, log, notificação, teste. Mas e quando a sessão inteira termina? Nenhum dos hooks vistos até aqui olha para o quadro completo: quantos arquivos foram tocados, quantos tokens foram gastos, o que vale registrar como sumário. Esse é o papel do último hook do ciclo de vida: o [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/04 - Stop hook|04 - Stop hook]], que executa uma única vez, no encerramento da sessão, para notificar, sumarizar e limpar.
+
+---
+
 ## Veja também
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/01 - Sistema de hooks|01 - Sistema de hooks]] — lifecycle completo e configuração
@@ -500,7 +523,7 @@ Os dois hooks se complementam: PreToolUse é a política, PostToolUse é a autom
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code hooks* (2026). Documentação oficial do PostToolUse, input/output e variáveis de ambiente — https://docs.anthropic.com/pt/docs/claude-code/hooks
 - **Anthropic** — *Claude Code best practices* (2026). Padrões de hooks para automação de qualidade — https://www.anthropic.com/engineering/claude-code-best-practices

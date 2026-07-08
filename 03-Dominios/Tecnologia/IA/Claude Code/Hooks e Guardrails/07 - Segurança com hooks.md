@@ -4,7 +4,7 @@ type: concept
 progress: done
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-07
 status: growing
 tags:
   - claude-code
@@ -18,6 +18,11 @@ tags:
 
 > [!abstract] TL;DR
 > Segurança com hooks vai além de guardrails individuais: é uma estratégia em camadas que cobre o fluxo de trabalho inteiro — desde bloquear comandos destrutivos até proteger arquivos sensíveis, controlar o que pode ser commitado, e detectar credenciais antes de ir ao git. Guardrail bloqueia uma ação. Segurança sistêmica cobre o ciclo completo: o que pode executar, o que pode editar, o que pode commitar, o que pode publicar.
+
+---
+
+> [!tip] Vídeo — Setting up Claude Code security guardrails
+> [NextWork, 2026](https://www.youtube.com/watch?v=-Awaa2oUWYY) demonstra na prática as três camadas de defesa — permission deny-rules, hooks PreToolUse que inspecionam o `tool_input` e bloqueiam via exit code 2, e políticas em CLAUDE.md como camada comportamental mais leve — incluindo um exercício de red-team simulando `.env` falso, `cat .env` e `echo $(cat .env)` pra verificar qual camada pega qual ataque. Complementa bem as cinco camadas desta nota.
 
 ---
 
@@ -330,15 +335,19 @@ A auditoria fica global (todos os projetos). Os hooks específicos de workflow g
 
 ---
 
-## Armadilhas
+## Armadilhas comuns
 
-**Falsa sensação de segurança.** Hooks protegem contra ações do agente via Claude Code. Não protegem contra você mesmo executando `git push --force` no terminal. São política para o agente, não para o shell.
+> [!warning] Falsa sensação de segurança
+> Hooks protegem contra ações do agente via Claude Code. Não protegem contra você mesmo executando `git push --force` no terminal. São política para o agente, não para o shell.
 
-**Hooks sem logging.** Bloquear sem logar significa que você não sabe o que o agente tentou fazer. Inclua auditoria como primeiro hook da cadeia (exit 0, só loga) antes dos bloqueios.
+> [!warning] Hooks sem logging
+> Bloquear sem logar significa que você não sabe o que o agente tentou fazer. Inclua auditoria como primeiro hook da cadeia (exit 0, só loga) antes dos bloqueios.
 
-**Detect-credentials como PostToolUse.** Se você configurar detecção de credenciais em PostToolUse do Bash, o commit já aconteceu quando o hook roda. Use PreToolUse para interceptar antes.
+> [!warning] Detect-credentials como PostToolUse
+> Se você configurar detecção de credenciais em PostToolUse do Bash, o commit já aconteceu quando o hook roda. Use PreToolUse para interceptar antes.
 
-**Hooks muito específicos de um projeto commitados globalmente.** Um hook que bloqueia `git commit` em `main` pode causar problemas em projetos que usam `main` como branch de trabalho legítima.
+> [!warning] Hooks muito específicos de um projeto commitados globalmente
+> Um hook que bloqueia `git commit` em `main` pode causar problemas em projetos que usam `main` como branch de trabalho legítima.
 
 ---
 
@@ -374,6 +383,24 @@ O bloqueio mais específico deve vir **antes do mais genérico**. Se `protect-fi
 
 ---
 
+## Casos práticos
+
+As camadas acima não são exercício teórico — são resposta direta a incidentes reais de produção. Dois cenários mostram por que a defesa em profundidade importa mais do que um guardrail isolado (veja também [[03-Dominios/Tecnologia/IA/Segurança e Guardrails/12 - O roadmap de segurança para times|o roadmap de segurança para times]], que trata desse mesmo problema em escala de organização).
+
+**Cenário 1 — a credencial que quase foi ao GitHub público.** Um dev pede ao agente para "subir essa branch com a config de integração". O arquivo `.env.local` tinha ficado staged por engano numa sessão anterior, com uma chave `AKIA...` de produção dentro. Sem a Camada 2 (detecção de credenciais), o `git commit` passa, o `git push` passa, e a chave fica exposta no histórico de um repositório público — mesmo que alguém a remova depois, ela já vazou (rotação de credencial vira obrigatória, não opcional). Com o hook `detect-credentials-on-commit.sh` rodando como PreToolUse em `git commit`, o padrão `AKIA[0-9A-Z]{16}` é pego *antes* do commit existir — o incidente nunca acontece, e não há necessidade de reescrever histórico ou rotacionar segredo às pressas.
+
+**Cenário 2 — o force-push que apagou o trabalho de um colega.** O agente está numa tarefa de "limpar o histórico de commits" e interpreta isso como "reescrever e forçar". Sem a Camada 3 (proteção de histórico), um `git push --force` sobrescreve a branch remota — e os três commits que um colega tinha empurrado nas últimas duas horas somem. Recuperar exige `git reflog` na máquina do colega (se ainda não tiver feito `git pull`) ou, na pior hipótese, refazer o trabalho manualmente. Com `protect-git-history.sh` interceptando `push.*(--force|-f)` como PreToolUse, o comando é bloqueado e a mensagem de erro sugere a alternativa segura (`--force-with-lease`), que falha graciosamente se houver commits remotos que o agente não viu.
+
+Nos dois casos, o padrão é o mesmo: o dano é irreversível ou caro de reverter *depois* que a ação acontece — por isso o hook precisa ser PreToolUse, não PostToolUse (ver Camada 2). Auditoria (Camada 5) não teria evitado nenhum dos dois incidentes — só teria registrado que aconteceram.
+
+---
+
+## O que vem a seguir
+
+Configurar as cinco camadas é necessário, mas não é suficiente — um hook com um bug no regex, um `exit` no lugar errado, ou uma condição que nunca dispara é pior do que não ter hook nenhum, porque cria falsa sensação de segurança (a primeira armadilha desta nota). A pergunta natural depois de escrever `protect-files.sh` ou `detect-credentials-on-commit.sh` é: como eu sei que esse hook realmente bloqueia o que eu acho que ele bloqueia? [[03-Dominios/Tecnologia/IA/Claude Code/Hooks e Guardrails/08 - Testando hooks|08 - Testando hooks]] cobre exatamente isso — como simular o JSON de entrada, rodar o script isolado do Claude Code, e validar cada camada de defesa em profundidade antes de confiar nela em produção.
+
+---
+
 ## Como explicar em inglês
 
 | Português | Inglês |
@@ -402,7 +429,7 @@ O bloqueio mais específico deve vir **antes do mais genérico**. Se `protect-fi
 
 ---
 
-## Referências
+## Fontes
 
 - **Anthropic** — *Claude Code hooks* (2026). Documentação oficial de hooks e estratégias de segurança — https://docs.anthropic.com/pt/docs/claude-code/hooks
 - **Anthropic** — *Claude Code security* (2026). Melhores práticas de segurança para agentes de código — https://docs.anthropic.com/pt/docs/claude-code/security
