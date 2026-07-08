@@ -639,6 +639,9 @@ cosign verify --key cosign.pub myapp:1.0
 
 ## Deployment strategies
 
+> [!info] Casa canônica: trilha Operação
+> A discussão conceitual das estratégias e seus trade-offs vive em [[02 - Deployment strategies]] e [[03 - Progressive delivery e rollback]] (trilha Operação). Aqui, o foco é como orquestrá-las no pipeline.
+
 ### 1. Recreate
 
 Para tudo, sobe tudo novo. **Downtime.**
@@ -735,6 +738,9 @@ return <OldDashboard />;
 ---
 
 ## GitOps
+
+> [!info] Casa canônica: trilha Operação
+> A discussão conceitual de GitOps e IaC (declarativo vs imperativo, reconciliation loop, drift) está em [[05 - GitOps e Infrastructure as Code]] (trilha Operação).
 
 **Git como fonte de verdade.** Infraestrutura e config declarativa versionada, operator observa e aplica.
 

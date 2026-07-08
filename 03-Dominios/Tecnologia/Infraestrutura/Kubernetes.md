@@ -1195,6 +1195,9 @@ Trace distribuído de requests através de múltiplos serviços.
 
 ## Deployment strategies
 
+> [!info] Casa canônica: trilha Operação
+> Esta seção cobre o *como* no Kubernetes. A discussão conceitual dos trade-offs (rolling vs blue-green vs canary vs shadow, quando usar cada) vive na trilha Operação: [[02 - Deployment strategies]] e [[03 - Progressive delivery e rollback]].
+
 ### Rolling update (default)
 
 ```yaml

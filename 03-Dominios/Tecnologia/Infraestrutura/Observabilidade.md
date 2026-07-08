@@ -701,6 +701,9 @@ Similar ao RED + saturation:
 
 ## SLI, SLO, SLA, Error Budget
 
+> [!info] Casa canônica: trilha Operação
+> A engenharia de SLO (escolher SLI, calcular error budget, error budget policy, burn-rate alerting) é aprofundada em [[02 - SLI, SLO e error budgets]] e [[03 - Alerting que não gera fadiga]] (trilha Operação).
+
 ### Definições
 
 - **SLI (Service Level Indicator)** — métrica que você mede. "% de requests que retornam 2xx em menos de 500ms"

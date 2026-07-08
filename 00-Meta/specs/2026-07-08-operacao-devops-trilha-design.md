@@ -42,10 +42,10 @@ O que genuinamente falta escrever (a cola SRE, hoje inexistente ou tangencial): 
 
 ## Estrutura de pastas
 
-Trilha nova em `03-Dominios/Tecnologia/Operação/` (galho-pai, folder-galho no padrão Quartz), **fora** da estante Infraestrutura (que permanece como referência de ferramenta). Padrão idêntico ao System Design:
+Trilha nova em `03-Dominios/Engenharia/Operação/` (galho-pai, folder-galho no padrão Quartz), **fora** da estante Infraestrutura (que permanece como referência de ferramenta). Padrão idêntico ao System Design:
 
 ```
-Tecnologia/Operação/
+Engenharia/Operação/
 ├── index.md            (MOC do galho-pai + porta de entrada)
 ├── roadmap.md          (roadmap recursivo, galho-pai)
 ├── 1 - O ofício de operar/     (Iniciado→Adepto)

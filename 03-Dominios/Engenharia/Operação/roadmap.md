@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — Operação (galho-pai)
 
-Roadmap do galho `03-Dominios/Tecnologia/Operação`. Galho-**pai**: mapeia o estado dos sub-galhos. Cada sub-galho tem seu próprio `roadmap.md` (folha). Spec de origem: [[00-Meta/specs/2026-07-08-operacao-devops-trilha-design]].
+Roadmap do galho `03-Dominios/Engenharia/Operação`. Galho-**pai**: mapeia o estado dos sub-galhos. Cada sub-galho tem seu próprio `roadmap.md` (folha). Spec de origem: [[00-Meta/specs/2026-07-08-operacao-devops-trilha-design]].
 
 ## Estado dos sub-galhos
 
