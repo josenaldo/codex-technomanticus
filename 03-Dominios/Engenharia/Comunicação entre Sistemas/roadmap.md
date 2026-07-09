@@ -19,7 +19,7 @@ Roadmap do galho `03-Dominios/Engenharia/Comunicação entre Sistemas`. Galho-**
 |---|-----------|------|------------------|--------|
 | 1 | Panorama e decisão | Iniciado | 5 | ✅ 5/5 (2026-07-09) |
 | 2 | Comunicação síncrona | Adepto | 6 | ✅ 6/6 (2026-07-09) |
-| 3 | Confiabilidade do contrato | Adepto→Magus | 5 | ⬜ pendente |
+| 3 | Confiabilidade do contrato | Adepto→Magus | 5 | ✅ 5/5 (2026-07-09) |
 | 4 | Comunicação assíncrona | Adepto→Magus | 6 | ⬜ pendente |
 | ★ | Capstone — Desenhando a comunicação de um sistema do zero | Magus | 1 | ⬜ pendente |
 
