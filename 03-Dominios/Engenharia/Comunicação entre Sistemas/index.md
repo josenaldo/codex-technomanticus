@@ -28,6 +28,9 @@ implementa e linka pra cá.
 
 ## Conteúdo
 
+> [!info] Trilha em construção
+> Semeando sub-galhos de aprofundamento (ver [[roadmap]]). `API Design.md` vira tronco podado conforme o conteúdo migra.
+
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/API Design|API Design]] — desenho de APIs: REST/RESTful, recursos, versionamento, contratos
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/index|Mensageria]] — comunicação assíncrona, filas, eventos, padrões de integração
 
