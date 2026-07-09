@@ -21,22 +21,21 @@ Roadmap do galho `03-Dominios/Engenharia/Comunicação entre Sistemas`. Galho-**
 | 2 | Comunicação síncrona | Adepto | 6 | ✅ 6/6 (2026-07-09) |
 | 3 | Confiabilidade do contrato | Adepto→Magus | 5 | ✅ 5/5 (2026-07-09) |
 | 4 | Comunicação assíncrona | Adepto→Magus | 6 | ✅ 6/6 (2026-07-09) |
-| ★ | Capstone — Desenhando a comunicação de um sistema do zero | Magus | 1 | ⬜ pendente |
+| ★ | Capstone — Desenhando a comunicação de um sistema do zero | Magus | 1 | ✅ feito (2026-07-09) |
 
-**Total planejado:** ~22 notas de conteúdo + 1 capstone (~23) + scaffolding por sub-galho.
+**Total entregue:** 22 notas de conteúdo + 1 capstone = **23 notas**. Trilha 🟢 COMPLETA (2026-07-09).
 
 ## Ordem de execução (ritmo B)
 
 Sub-galho a sub-galho, 1 → 2 → 3 → 4 → capstone. Subagente-por-nota (≤3/onda), Sonnet, barra de densidade explícita no prompt. Comparação entre linguagens = tabela/menção curta, nunca tutorial completo (regra desta trilha). Commit por sub-galho (paths explícitos, sem Co-Authored-By, push manual). Ao fechar cada sub-galho, atualizar o roadmap-folha dele e esta tabela.
 
-## Rollup para o domínio (ao fechar a trilha)
+## Rollup para o domínio (feito ao fechar a trilha, 2026-07-09)
 
-- Podar `API Design.md` pro que não migrou, preservando "Na prática (da minha experiência)" verbatim.
-- Adicionar callouts em `Mensageria/*.md` apontando pra casa canônica nesta trilha.
-- Marcar [[00-Meta/Roadmap]] item 10 (Onda C) ⬜ → 🟢.
-- Atualizar memória do projeto.
+- ✅ `API Design.md` podado — vira tronco com tabela de redirecionamento por tema, preserva "File upload" (único tema que não migrou) e "Na prática (da minha experiência)" verbatim.
+- ✅ Callouts adicionados em `Mensageria.md`, `Kafka.md`, `RabbitMQ.md`, `BullMQ.md`, `Event Streaming.md` apontando pra casa canônica.
+- ✅ [[00-Meta/Roadmap]] item 10 (Onda C) ⬜ → 🟢.
+- ✅ Memória do projeto atualizada.
 
 ## Pendências transversais
 
-- EXEMPLAR: usar a nota 01 do System Design até a 1ª nota desta trilha virar exemplar próprio.
-- Destino final de `API Design.md` (tronco podado vs redirect fino): decidir no fechamento.
+- Nenhuma. Trilha fechada.

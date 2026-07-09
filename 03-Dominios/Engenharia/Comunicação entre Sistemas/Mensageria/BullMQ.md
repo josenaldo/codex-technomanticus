@@ -15,6 +15,11 @@ publish: false
 
 # BullMQ
 
+> [!info] Decisão fila vs stream
+> Este arquivo é referência de ferramenta. Para a decisão conceitual "BullMQ ou outro broker" e garantias de entrega/ordenação, ver [[4 - Comunicação assíncrona/02 - Message queue vs event streaming|Message queue vs event streaming]] e [[4 - Comunicação assíncrona/03 - Garantias de entrega e ordenação|Garantias de entrega e ordenação]] na trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]].
+
+# BullMQ
+
 Biblioteca de **job queue** para Node.js baseada em Redis — background jobs, scheduling, rate limiting, retries, flows e workers distribuídos. É a escolha padrão para processamento assíncrono em aplicações Node.js que já usam (ou podem usar) Redis. Enquanto [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] é uma plataforma de event streaming e [[RabbitMQ]] é um message broker com routing flexível, BullMQ é uma **job queue especializada** para o ecossistema Node.js.
 
 ## O que é

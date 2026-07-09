@@ -14,6 +14,9 @@ publish: false
 
 # Event Streaming
 
+> [!info] Panorama conceitual migrado
+> Este arquivo é referência de ferramenta. Event Sourcing/CQRS sob a ótica de escala já mora em [[3 - Padrões recorrentes/index|System Design SG3]]; a decisão fila vs stream e garantias de entrega estão em [[4 - Comunicação assíncrona/02 - Message queue vs event streaming|Message queue vs event streaming]] e [[4 - Comunicação assíncrona/03 - Garantias de entrega e ordenação|Garantias de entrega e ordenação]] na trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]].
+
 Modelo arquitetural onde **eventos** (fatos imutáveis) são publicados em um log persistente e consumidos de forma contínua. É a base das arquiteturas event-driven modernas — mais que apenas mensageria, é uma forma diferente de pensar o estado do sistema. Enquanto [[Mensageria]] cobre o domínio geral e [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] é o deep dive na plataforma, esta nota foca nos **conceitos arquiteturais** de streams, event-driven, event sourcing e CQRS.
 
 ## O que é

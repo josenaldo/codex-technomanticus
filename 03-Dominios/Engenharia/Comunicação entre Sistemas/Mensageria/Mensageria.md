@@ -14,6 +14,9 @@ publish: false
 
 # Mensageria
 
+> [!info] Panorama e decisão migrados para a trilha
+> Este arquivo continua sendo a referência de **ferramenta** (Kafka/RabbitMQ/SQS/etc.). A decisão conceitual (fila vs stream, garantias de entrega, Outbox/Saga, legado enterprise) foi aprofundada no sub-galho [[4 - Comunicação assíncrona/index|Comunicação assíncrona]] da trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]].
+
 Comunicação assíncrona entre sistemas através de um broker intermediário que recebe, armazena e entrega mensagens. É a base de arquiteturas desacopladas, resilientes e escaláveis — e uma das skills mais pedidas em entrevistas senior.
 
 ## O que é

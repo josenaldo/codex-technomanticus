@@ -14,6 +14,9 @@ publish: false
 
 # Kafka
 
+> [!info] Decisão fila vs stream
+> Este arquivo é referência de ferramenta. Para a decisão conceitual "Kafka ou outro broker" e garantias de entrega/ordenação, ver [[4 - Comunicação assíncrona/02 - Message queue vs event streaming|Message queue vs event streaming]] e [[4 - Comunicação assíncrona/03 - Garantias de entrega e ordenação|Garantias de entrega e ordenação]] na trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]].
+
 Plataforma distribuída de **event streaming** — alto throughput, persistência durável, replay, ordenação por partição, e o ecossistema mais maduro para arquiteturas event-driven. Enquanto [[Mensageria]] cobre o domínio geral (queue vs streaming, delivery semantics, comparação de brokers), esta nota é um deep dive em **Apache Kafka** especificamente.
 
 ## O que é

@@ -14,6 +14,9 @@ publish: false
 
 # RabbitMQ
 
+> [!info] Decisão fila vs stream
+> Este arquivo é referência de ferramenta. Para a decisão conceitual "RabbitMQ ou outro broker" e garantias de entrega/ordenação, ver [[4 - Comunicação assíncrona/02 - Message queue vs event streaming|Message queue vs event streaming]] e [[4 - Comunicação assíncrona/03 - Garantias de entrega e ordenação|Garantias de entrega e ordenação]] na trilha [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]].
+
 Message broker tradicional baseado no protocolo **AMQP** — routing flexível via exchanges, múltiplos protocolos suportados, maturidade operacional, e o broker de facto para **task queues** e **workflows complexos**. Enquanto [[03-Dominios/Engenharia/Comunicação entre Sistemas/Mensageria/Kafka]] é uma plataforma de event streaming e [[BullMQ]] é uma job queue Node.js, RabbitMQ é o **message broker de propósito geral** mais usado no mercado enterprise.
 
 ## O que é
