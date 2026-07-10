@@ -3,8 +3,8 @@ title: "Python"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-05-21
-status: seedling
+updated: 2026-07-09
+status: growing
 tags:
   - moc
   - python
@@ -14,16 +14,54 @@ aliases:
 # Python
 
 > [!abstract] TL;DR
-> Estante de Python — fundamentos da linguagem, setup de ambiente com Anaconda e uso no stack de backend. Cobre tanto o uso geral quanto o desenvolvimento web.
+> Trilha Python organizada em **19 galhos** progressivos, do zero até produção — passando por data model, tipagem, concorrência, persistência, web/APIs, arquitetura, mensageria, microservices e certificação. Cada galho é um conjunto de notas atômicas em 3 fases de aprendizado (Iniciado/Adepto/Magus), no mesmo padrão da trilha [[03-Dominios/Tecnologia/Java/index|Java]]. POV fullstack backend — IA com Python fica pra uma trilha futura cross-language. A trilha cresce um galho por vez; só os galhos publicados têm link ativo abaixo.
 
-Python aparece aqui como linguagem de propósito geral com forte presença em scripting, ciência de dados e backends web. As notas desta estante reúnem desde a instalação do ambiente até o uso da linguagem em serviços. O material de trilha estruturada vive em [[Senda Python]].
+Python aparece aqui como linguagem de propósito geral com foco em desenvolvimento backend fullstack. Semeando a partir do spec [[00-Meta/specs/2026-07-09-python-trilha-design]] — ver [[roadmap]] pro estado de cada galho.
 
-## Conteúdo
+## Galhos da trilha
 
-- [[Python]] — visão geral da linguagem
-- [[Python Backend]] — uso de Python no desenvolvimento de backends
-- [[Instalando Anaconda no Ubuntu]] — setup do ambiente Anaconda em Linux
+### Núcleo da linguagem
+
+1. **Core** — sintaxe, tipos, controle de fluxo, funções, erros/exceções, módulos/imports *(planejado)*
+2. **Collections e Comprehensions** — list/dict/set/tuple, comprehensions, itertools, desempacotamento *(planejado)*
+3. **OO e Data Model** — classes, dunder methods, properties, dataclasses, ABC/Protocol *(planejado)*
+4. **Funcional e idiomas avançados** — generators, iterators, decorators, closures, context managers, functools *(planejado)*
+5. **Tipagem moderna** — type hints, mypy/pyright, Pydantic, structural typing *(planejado)*
+6. **CPython internals** — GIL, memory management, GC, profiling *(planejado)*
+
+### Concorrência e execução
+
+7. **Concorrência e paralelismo** — threading, multiprocessing, asyncio fundamentals *(planejado)*
+8. **Programação Reativa e Assíncrona** — asyncio deep-dive, aiohttp, async frameworks *(planejado)*
+
+### Backend e arquitetura
+
+9. **Persistência de dados** — SQLAlchemy, Django ORM, migrations, N+1, transações *(planejado)*
+10. **Web e APIs REST** — Django vs FastAPI vs Flask, routing, serialização, validação *(planejado)*
+11. **Segurança** — auth (JWT/OAuth), OWASP, validação de input, secrets *(planejado)*
+12. **Testes** — pytest, fixtures, mocking, coverage, TDD *(planejado)*
+13. **Arquitetura e Design Patterns** — Repository/Unit of Work, DI, hexagonal/clean architecture *(planejado)*
+
+### Plataforma distribuída e produção
+
+14. **Mensageria** — Celery, RQ, aio-pika, kafka-python/aiokafka *(planejado)*
+15. **Microservices e sistemas distribuídos** — comunicação entre serviços em Python *(planejado)*
+16. **Build e tooling** — packaging moderno (uv, poetry), virtual envs, pyproject.toml, ruff/black *(planejado)*
+17. **Observabilidade e produção** — logging, OpenTelemetry, WSGI/ASGI, deploy *(planejado)*
+18. **Cloud-native e produção** — containers Python, serverless/Lambda Python *(planejado)*
+
+### Certificação
+
+19. **Certificação (PCEP/PCAP)** — guia de estudo mapeado aos galhos 1-6 *(planejado)*
+
+## Referência
+
+- [[03-Dominios/Tecnologia/Python/Python Backend|Python Backend]] — tronco original (em transição; sendo podado conforme galhos absorvem o conteúdo)
+- [[03-Dominios/Tecnologia/Python/Instalando Anaconda no Ubuntu|Instalando Anaconda no Ubuntu]] — setup de ambiente
+- [[Senda Python]] — lista de cursos/vídeos/livros externos usada como pesquisa prévia da trilha
 
 ## Veja também
 
-- [[Senda Python]]
+- [[03-Dominios/Tecnologia/Java/index|Java]] — trilha irmã, mesmo padrão estrutural
+- [[03-Dominios/Tecnologia/Node/index|Node]] — trilha irmã no ecossistema JS
+- [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] — conceitos de API/mensageria que os galhos 10/14/15 implementam em Python
