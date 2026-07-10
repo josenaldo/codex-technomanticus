@@ -167,6 +167,8 @@ aliases:
 ### Coberturas ausentes a considerar (🚫 hoje sem trilha)
 - **Cloud** (AWS/GCP) — há `Senda Cloud`, mas sem domínio próprio construído.
 - **Auth & Identidade** (OAuth2/OIDC/JWT/sessões) — espalhado em Segurança; merece foco.
+- **Python** — hoje só stubs rasos em `Tecnologia/Python/` (`Python.md` 24 ln, `Python Backend.md` 297 ln, sem padrão trilha/fase). Sem galho profundo como o Java (18 galhos) ou o Node (8 galhos reformados).
+- **Go** — mesma situação em `Tecnologia/Go/` (`Go.md` 28 ln, `Go Backend.md` 358 ln, sem padrão trilha/fase). Relevante inclusive como fronteira citada na trilha Comunicação entre Sistemas (gRPC é cidadão nativo do ecossistema Go).
 - ~~**Web Performance & Core Web Vitals**~~ → **domínio próprio iniciado em 2026-07-05** (🟡): `Tecnologia/Web Performance/`, 4 galhos (*medir → carregar → responder → sustentar*). **escrita COMPLETA — 4 galhos, 32/32 notas** (Medição & CWV · Carregamento · Runtime & Rendering · Produção), 3 fases, padrão capítulo (falta só a rodada de enriquecimento de mídia, M1). Ver [[03-Dominios/Tecnologia/Web Performance/index|índice do domínio]] e o [[03-Dominios/Tecnologia/Web Performance/roadmap|roadmap]].
 - **Acessibilidade (a11y)** — entra como fase do HTML, mas é tema de entrevista por si só.
 
