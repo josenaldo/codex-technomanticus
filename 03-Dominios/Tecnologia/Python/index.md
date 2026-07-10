@@ -22,7 +22,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 
 ### Núcleo da linguagem
 
-1. **Core** — sintaxe, tipos, controle de fluxo, funções, erros/exceções, módulos/imports *(planejado)*
+1. [[03-Dominios/Tecnologia/Python/Core/index|Core]] — sintaxe, tipos, controle de fluxo, funções, erros/exceções, módulos/imports (9 notas, 2026-07-09)
 2. **Collections e Comprehensions** — list/dict/set/tuple, comprehensions, itertools, desempacotamento *(planejado)*
 3. **OO e Data Model** — classes, dunder methods, properties, dataclasses, ABC/Protocol *(planejado)*
 4. **Funcional e idiomas avançados** — generators, iterators, decorators, closures, context managers, functools *(planejado)*

@@ -17,7 +17,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Python`. Escala e método iguais à 
 
 | # | Galho | Fase | Estado |
 |---|-------|------|--------|
-| 1 | Core | Iniciado | ⬜ pendente |
+| 1 | Core | Iniciado | ✅ 9/9 (2026-07-09) |
 | 2 | Collections e Comprehensions | Iniciado→Adepto | ⬜ pendente |
 | 3 | OO e Data Model | Adepto | ⬜ pendente |
 | 4 | Funcional e idiomas avançados | Adepto→Magus | ⬜ pendente |
