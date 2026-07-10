@@ -27,7 +27,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 3. [[03-Dominios/Tecnologia/Python/OO e Data Model/index|OO e Data Model]] — classes, dunder methods, properties, dataclasses, ABC/Protocol, metaclasses, composição vs herança (9 notas, 2026-07-09)
 4. [[03-Dominios/Tecnologia/Python/Funcional e idiomas avançados/index|Funcional e idiomas avançados]] — iterators, generators, yield from, closures, decorators, functools, context managers via generator (9 notas, 2026-07-10)
 5. [[03-Dominios/Tecnologia/Python/Tipagem moderna/index|Tipagem moderna]] — type hints, Union/Optional, generics, mypy/pyright, TypedDict/Literal/NewType, Pydantic, typing avançado (8 notas, 2026-07-10)
-6. **CPython internals** — GIL, memory management, GC, profiling *(planejado)*
+6. [[03-Dominios/Tecnologia/Python/CPython internals/index|CPython internals]] — ceval loop, PyObject/refcounting, GC geracional, GIL, free-threading (PEP 703), memory management, profiling (9 notas, 2026-07-10)
 
 ### Concorrência e execução
 
