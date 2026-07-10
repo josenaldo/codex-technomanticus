@@ -20,7 +20,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Python`. Escala e método iguais à 
 | 1 | Core | Iniciado | ✅ 9/9 (2026-07-09) |
 | 2 | Collections e Comprehensions | Iniciado→Adepto | ✅ 8/8 (2026-07-09) |
 | 3 | OO e Data Model | Adepto | ✅ 9/9 (2026-07-09) |
-| 4 | Funcional e idiomas avançados | Adepto→Magus | ⬜ pendente |
+| 4 | Funcional e idiomas avançados | Adepto→Magus | ✅ 9/9 (2026-07-10) |
 | 5 | Tipagem moderna | Adepto | ⬜ pendente |
 | 6 | CPython internals | Magus | ⬜ pendente |
 | 7 | Concorrência e paralelismo | Adepto→Magus | ⬜ pendente |

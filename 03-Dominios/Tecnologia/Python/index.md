@@ -3,7 +3,7 @@ title: "Python"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-07-09
+updated: 2026-07-10
 status: growing
 tags:
   - moc
@@ -25,7 +25,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 1. [[03-Dominios/Tecnologia/Python/Core/index|Core]] — sintaxe, tipos, controle de fluxo, funções, erros/exceções, módulos/imports (9 notas, 2026-07-09)
 2. [[03-Dominios/Tecnologia/Python/Collections e Comprehensions/index|Collections e Comprehensions]] — list/dict/set/tuple, comprehensions, itertools, módulo collections (8 notas, 2026-07-09)
 3. [[03-Dominios/Tecnologia/Python/OO e Data Model/index|OO e Data Model]] — classes, dunder methods, properties, dataclasses, ABC/Protocol, metaclasses, composição vs herança (9 notas, 2026-07-09)
-4. **Funcional e idiomas avançados** — generators, iterators, decorators, closures, context managers, functools *(planejado)*
+4. [[03-Dominios/Tecnologia/Python/Funcional e idiomas avançados/index|Funcional e idiomas avançados]] — iterators, generators, yield from, closures, decorators, functools, context managers via generator (9 notas, 2026-07-10)
 5. **Tipagem moderna** — type hints, mypy/pyright, Pydantic, structural typing *(planejado)*
 6. **CPython internals** — GIL, memory management, GC, profiling *(planejado)*
 
