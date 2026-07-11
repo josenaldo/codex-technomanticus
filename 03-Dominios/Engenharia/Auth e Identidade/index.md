@@ -40,7 +40,7 @@ O IdP self-hosted de referência: realms, clients e flows; produção (Organizat
 
 ### ★ Capstone *(Magus)*
 Desenhando a identidade de um SaaS B2B do zero: build vs buy, sessão vs token vs BFF, rollout de passkeys, SSO enterprise, RBAC+ReBAC por organização.
-- Capstone (a escrever ao final da trilha)
+- [[Capstone — Desenhando a identidade de um SaaS B2B do zero]]
 
 ## Como usar esta trilha
 

@@ -21,8 +21,8 @@ Roadmap do galho `03-Dominios/Engenharia/Auth e Identidade`. Galho-**pai**: mape
 | 2 | OAuth 2.1 e OpenID Connect | Adepto | 6 | ✅ 6/6 (2026-07-11) |
 | 3 | Autorização e multi-tenancy | Adepto→Magus | 4 | ✅ 4/4 (2026-07-11) |
 | 4 | Auth nos stacks | Magus | 6 | ✅ 6/6 (2026-07-11) |
-| 5 | Keycloak | Magus | 3 | ⬜ pendente |
-| ★ | Capstone — Desenhando a identidade de um SaaS B2B | Magus | 1 | ⬜ pendente |
+| 5 | Keycloak | Magus | 3 | ✅ 3/3 (2026-07-11) |
+| ★ | Capstone — Desenhando a identidade de um SaaS B2B | Magus | 1 | ✅ feito (2026-07-11) |
 
 **Total planejado:** 24 notas de conteúdo + 1 capstone (25) + scaffolding (index/roadmap por sub-galho).
 
