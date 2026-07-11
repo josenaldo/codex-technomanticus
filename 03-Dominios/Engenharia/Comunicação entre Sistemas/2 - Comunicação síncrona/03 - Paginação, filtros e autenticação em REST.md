@@ -235,6 +235,9 @@ O motivo para migrar para um motor de busca dedicado (Elasticsearch, Meilisearch
 
 ## Autenticação em REST: panorama de decisão, não tutorial de implementação
 
+> [!info] O deep-dive de identidade
+> Esta seção é o **panorama de decisão** de auth de API. O mergulho completo em protocolo e identidade — OAuth 2.1, OIDC, JWT vs sessão, tokens em produção (BFF), autorização de API (scopes vs permissions, enforcement no gateway vs serviço, token exchange) — vive na trilha [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]]; ver em especial [[2 - OAuth 2.1 e OpenID Connect/05 - Tokens em produção|Tokens em produção]] e [[3 - Autorização e multi-tenancy/04 - Autorização de API na prática|Autorização de API na prática]].
+
 Chegamos ao ponto onde esta nota resiste, deliberadamente, à tentação mais forte do capítulo: virar um tutorial de "como implementar JWT" ou "como configurar OAuth". Essa implementação **já existe**, em profundidade, nas trilhas de linguagem deste vault — [[03-Dominios/Tecnologia/Node/Segurança/04 - JWT e autenticação com jsonwebtoken|Node/Segurança: JWT e autenticação com jsonwebtoken]], [[03-Dominios/Tecnologia/Node/Segurança/05 - OAuth 2.0 e OIDC com openid-client|Node/Segurança: OAuth 2.0 e OIDC com openid-client]], [[03-Dominios/Tecnologia/Java/Segurança/08 - JWT — estrutura, assinatura e validação|Java/Segurança: JWT — estrutura, assinatura e validação]] e [[03-Dominios/Tecnologia/Java/Segurança/12 - OAuth2 e OIDC Client e os grant types|Java/Segurança: OAuth2 e OIDC Client e os grant types]]. O que falta — e é o que esta seção entrega — é a pergunta anterior a qualquer implementação: **dado quem está do outro lado da chamada, qual método de autenticação é a escolha certa, e por quê?**
 
 ### Os seis métodos e a pergunta que cada um responde

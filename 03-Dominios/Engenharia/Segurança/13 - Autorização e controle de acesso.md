@@ -20,6 +20,9 @@ tags:
 
 ---
 
+> [!info] Deep-dive de protocolo e implementação
+> Esta nota é o **conceito neutro**. Para o mergulho em autorização moderna — RBAC/ABAC/ReBAC, Zanzibar e policy-as-code (OpenFGA/OPA/Cedar), multi-tenancy B2B e autorização de API na prática — veja a trilha [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]], sub-galho [[3 - Autorização e multi-tenancy/index|Autorização e multi-tenancy]].
+
 ## AuthN × AuthZ: a distinção mais importante de entrevista
 
 Todo sistema de acesso tem dois momentos distintos no tempo e na responsabilidade:
