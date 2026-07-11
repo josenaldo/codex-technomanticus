@@ -31,7 +31,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 
 ### Concorrência e execução
 
-7. **Concorrência e paralelismo** — threading, multiprocessing, asyncio fundamentals *(planejado)*
+7. [[03-Dominios/Tecnologia/Python/Concorrência e paralelismo/index|Concorrência e paralelismo]] — threading, multiprocessing, concurrent.futures, asyncio fundamentals (8 notas, 2026-07-10)
 8. **Programação Reativa e Assíncrona** — asyncio deep-dive, aiohttp, async frameworks *(planejado)*
 
 ### Backend e arquitetura
