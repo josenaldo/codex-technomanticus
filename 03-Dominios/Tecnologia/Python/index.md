@@ -3,7 +3,7 @@ title: "Python"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-07-10
+updated: 2026-07-11
 status: growing
 tags:
   - moc
@@ -37,7 +37,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 ### Backend e arquitetura
 
 9. [[03-Dominios/Tecnologia/Python/Persistência de dados/index|Persistência de dados]] — SQLAlchemy, Django ORM, migrations, N+1, transações (8 notas, 2026-07-11)
-10. **Web e APIs REST** — Django vs FastAPI vs Flask, routing, serialização, validação *(planejado)*
+10. [[03-Dominios/Tecnologia/Python/Web e APIs REST/index|Web e APIs REST]] — Django vs FastAPI vs Flask, routing, serialização, validação com Pydantic (9 notas, 2026-07-11)
 11. **Segurança** — auth (JWT/OAuth), OWASP, validação de input, secrets *(planejado)*
 12. **Testes** — pytest, fixtures, mocking, coverage, TDD *(planejado)*
 13. **Arquitetura e Design Patterns** — Repository/Unit of Work, DI, hexagonal/clean architecture *(planejado)*

@@ -26,7 +26,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Python`. Escala e método iguais à 
 | 7 | Concorrência e paralelismo | Adepto→Magus | ✅ 8/8 (2026-07-10) |
 | 8 | Programação Reativa e Assíncrona | Magus | ✅ 8/8 (2026-07-11) |
 | 9 | Persistência de dados | Adepto→Magus | ✅ 8/8 (2026-07-11) |
-| 10 | Web e APIs REST | Adepto | ⬜ pendente |
+| 10 | Web e APIs REST | Adepto | ✅ 9/9 (2026-07-11) |
 | 11 | Segurança | Adepto→Magus | ⬜ pendente |
 | 12 | Testes | Adepto | ⬜ pendente |
 | 13 | Arquitetura e Design Patterns | Magus | ⬜ pendente |
