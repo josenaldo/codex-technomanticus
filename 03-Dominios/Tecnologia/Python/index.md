@@ -36,7 +36,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 
 ### Backend e arquitetura
 
-9. **Persistência de dados** — SQLAlchemy, Django ORM, migrations, N+1, transações *(planejado)*
+9. [[03-Dominios/Tecnologia/Python/Persistência de dados/index|Persistência de dados]] — SQLAlchemy, Django ORM, migrations, N+1, transações (8 notas, 2026-07-11)
 10. **Web e APIs REST** — Django vs FastAPI vs Flask, routing, serialização, validação *(planejado)*
 11. **Segurança** — auth (JWT/OAuth), OWASP, validação de input, secrets *(planejado)*
 12. **Testes** — pytest, fixtures, mocking, coverage, TDD *(planejado)*
