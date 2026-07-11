@@ -38,7 +38,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 
 9. [[03-Dominios/Tecnologia/Python/Persistência de dados/index|Persistência de dados]] — SQLAlchemy, Django ORM, migrations, N+1, transações (8 notas, 2026-07-11)
 10. [[03-Dominios/Tecnologia/Python/Web e APIs REST/index|Web e APIs REST]] — Django vs FastAPI vs Flask, routing, serialização, validação com Pydantic (9 notas, 2026-07-11)
-11. **Segurança** — auth (JWT/OAuth), OWASP, validação de input, secrets *(planejado)*
+11. [[03-Dominios/Tecnologia/Python/Segurança/index|Segurança]] — OWASP Top 10, injeção, XSS/CSRF, validação como segurança, secrets, supply chain, rate limiting (9 notas, 2026-07-11)
 12. **Testes** — pytest, fixtures, mocking, coverage, TDD *(planejado)*
 13. **Arquitetura e Design Patterns** — Repository/Unit of Work, DI, hexagonal/clean architecture *(planejado)*
 
