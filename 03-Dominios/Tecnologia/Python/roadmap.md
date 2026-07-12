@@ -32,7 +32,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Python`. Escala e método iguais à 
 | 13 | Arquitetura e Design Patterns | Magus | ✅ 8/8 (2026-07-12) |
 | 14 | Mensageria | Adepto→Magus | ✅ 8/8 (2026-07-12) |
 | 15 | Microservices e sistemas distribuídos | Magus | ✅ 8/8 (2026-07-12) |
-| 16 | Build e tooling | Iniciado→Adepto | ⬜ pendente |
+| 16 | Build e tooling | Iniciado→Adepto | ✅ 8/8 (2026-07-12) |
 | 17 | Observabilidade e produção | Magus | ⬜ pendente |
 | 18 | Cloud-native e produção | Magus | ⬜ pendente |
 | 19 | Certificação (PCEP/PCAP) | Magus | ⬜ pendente |
