@@ -44,7 +44,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 
 ### Plataforma distribuída e produção
 
-14. **Mensageria** — Celery, RQ, aio-pika, kafka-python/aiokafka *(planejado)*
+14. [[03-Dominios/Tecnologia/Python/Mensageria/index|Mensageria]] — Celery, RQ, aio-pika, kafka-python/aiokafka, DLQ/Outbox na prática (8 notas, 2026-07-12)
 15. **Microservices e sistemas distribuídos** — comunicação entre serviços em Python *(planejado)*
 16. **Build e tooling** — packaging moderno (uv, poetry), virtual envs, pyproject.toml, ruff/black *(planejado)*
 17. **Observabilidade e produção** — logging, OpenTelemetry, WSGI/ASGI, deploy *(planejado)*
