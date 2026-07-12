@@ -28,7 +28,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Python`. Escala e método iguais à 
 | 9 | Persistência de dados | Adepto→Magus | ✅ 8/8 (2026-07-11) |
 | 10 | Web e APIs REST | Adepto | ✅ 9/9 (2026-07-11) |
 | 11 | Segurança | Adepto→Magus | ✅ 9/9 (2026-07-11) |
-| 12 | Testes | Adepto | ⬜ pendente |
+| 12 | Testes | Adepto | ✅ 9/9 (2026-07-11) |
 | 13 | Arquitetura e Design Patterns | Magus | ⬜ pendente |
 | 14 | Mensageria | Adepto→Magus | ⬜ pendente |
 | 15 | Microservices e sistemas distribuídos | Magus | ⬜ pendente |
