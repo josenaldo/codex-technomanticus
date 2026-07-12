@@ -34,7 +34,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Python`. Escala e método iguais à 
 | 15 | Microservices e sistemas distribuídos | Magus | ✅ 8/8 (2026-07-12) |
 | 16 | Build e tooling | Iniciado→Adepto | ✅ 8/8 (2026-07-12) |
 | 17 | Observabilidade e produção | Magus | ✅ 8/8 (2026-07-12) |
-| 18 | Cloud-native e produção | Magus | ⬜ pendente |
+| 18 | Cloud-native e produção | Magus | ✅ 8/8 (2026-07-12) |
 | 19 | Certificação (PCEP/PCAP) | Magus | ⬜ pendente |
 
 **Total planejado:** ~250-300 notas ao todo (escala Java), distribuídas nos 19 galhos + scaffolding por galho.

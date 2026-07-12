@@ -48,7 +48,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 15. [[03-Dominios/Tecnologia/Python/Microservices e sistemas distribuídos/index|Microservices e sistemas distribuídos]] — httpx, resiliência (tenacity/circuit breaker), API Gateway, tracing, Saga (8 notas, 2026-07-12)
 16. [[03-Dominios/Tecnologia/Python/Build e tooling/index|Build e tooling]] — packaging moderno (uv, poetry), virtual envs, pyproject.toml, ruff/black (8 notas, 2026-07-12)
 17. [[03-Dominios/Tecnologia/Python/Observabilidade e produção/index|Observabilidade e produção]] — logging estruturado, métricas, WSGI/ASGI (gunicorn/uvicorn), health checks, deploy básico (8 notas, 2026-07-12)
-18. **Cloud-native e produção** — containers Python, serverless/Lambda Python *(planejado)*
+18. [[03-Dominios/Tecnologia/Python/Cloud-native e produção/index|Cloud-native e produção]] — Kubernetes na prática (Deployment/Service/ConfigMap/Secret, recursos e limites, rolling deploy, HPA), serverless com AWS Lambda (Mangum, cold start), containers vs serverless (8 notas, 2026-07-12)
 
 ### Certificação
 
