@@ -3,7 +3,7 @@ title: "Python"
 type: moc
 publish: true
 created: 2026-05-21
-updated: 2026-07-11
+updated: 2026-07-12
 status: growing
 tags:
   - moc
@@ -14,7 +14,7 @@ aliases:
 # Python
 
 > [!abstract] TL;DR
-> Trilha Python organizada em **19 galhos** progressivos, do zero até produção — passando por data model, tipagem, concorrência, persistência, web/APIs, arquitetura, mensageria, microservices e certificação. Cada galho é um conjunto de notas atômicas em 3 fases de aprendizado (Iniciado/Adepto/Magus), no mesmo padrão da trilha [[03-Dominios/Tecnologia/Java/index|Java]]. POV fullstack backend — IA com Python fica pra uma trilha futura cross-language. A trilha cresce um galho por vez; só os galhos publicados têm link ativo abaixo.
+> Trilha Python organizada em **19 galhos** progressivos, do zero até produção — passando por data model, tipagem, concorrência, persistência, web/APIs, arquitetura, mensageria, microservices e certificação. Cada galho é um conjunto de notas atômicas em 3 fases de aprendizado (Iniciado/Adepto/Magus), no mesmo padrão da trilha [[03-Dominios/Tecnologia/Java/index|Java]]. POV fullstack backend — IA com Python fica pra uma trilha futura cross-language. **TRILHA COMPLETA em 2026-07-12** — 19/19 galhos, do Core à Certificação PCEP/PCAP.
 
 Python aparece aqui como linguagem de propósito geral com foco em desenvolvimento backend fullstack. Semeando a partir do spec [[00-Meta/specs/2026-07-09-python-trilha-design]] — ver [[roadmap]] pro estado de cada galho.
 
@@ -52,7 +52,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 
 ### Certificação
 
-19. **Certificação (PCEP/PCAP)** — guia de estudo mapeado aos galhos 1-6 *(planejado)*
+19. [[03-Dominios/Tecnologia/Python/Certificação (PCEP-PCAP)/index|Certificação (PCEP/PCAP)]] — guia de estudo mapeado aos galhos 1-6, armadilhas comuns, estratégia de prova, simulado comentado (8 notas, 2026-07-12)
 
 ## Referência
 
