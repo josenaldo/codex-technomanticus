@@ -40,7 +40,7 @@ Python aparece aqui como linguagem de propósito geral com foco em desenvolvimen
 10. [[03-Dominios/Tecnologia/Python/Web e APIs REST/index|Web e APIs REST]] — Django vs FastAPI vs Flask, routing, serialização, validação com Pydantic (9 notas, 2026-07-11)
 11. [[03-Dominios/Tecnologia/Python/Segurança/index|Segurança]] — OWASP Top 10, injeção, XSS/CSRF, validação como segurança, secrets, supply chain, rate limiting (9 notas, 2026-07-11)
 12. [[03-Dominios/Tecnologia/Python/Testes/index|Testes]] — pytest, fixtures, mocking, TestClient, testando persistência, coverage, TDD (9 notas, 2026-07-11)
-13. **Arquitetura e Design Patterns** — Repository/Unit of Work, DI, hexagonal/clean architecture *(planejado)*
+13. [[03-Dominios/Tecnologia/Python/Arquitetura e Design Patterns/index|Arquitetura e Design Patterns]] — Repository/Unit of Work, DI, Service Layer, hexagonal/Ports and Adapters (8 notas, 2026-07-12)
 
 ### Plataforma distribuída e produção
 
