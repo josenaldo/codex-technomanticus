@@ -18,7 +18,7 @@ Roadmap do galho `03-Dominios/Engenharia/Dados`. Galho-**pai**: mapeia o estado 
 | # | Sub-galho | Fase | Notas planejadas | Estado |
 |---|-----------|------|------------------|--------|
 | 0 | Scaffold do galho-pai (index + roadmap) | — | — | ✅ (2026-07-12) |
-| 1 | Fundamentos de engenharia de dados | Iniciado | 4 | ⬜ a semear |
+| 1 | Fundamentos de engenharia de dados | Iniciado | 4 | ✅ 4/4 (2026-07-12) |
 | 2 | Modelagem para analytics | Adepto | 5 | ⬜ a semear |
 | 3 | Pipelines: movimentação e transformação | Adepto→Magus | 5 | ⬜ a semear |
 | 4 | Qualidade, governança e organização | Magus | 4 | ⬜ a semear |
