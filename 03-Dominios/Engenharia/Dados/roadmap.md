@@ -22,9 +22,9 @@ Roadmap do galho `03-Dominios/Engenharia/Dados`. Galho-**pai**: mapeia o estado 
 | 2 | Modelagem para analytics | Adepto | 5 | ✅ 5/5 (2026-07-12) |
 | 3 | Pipelines: movimentação e transformação | Adepto→Magus | 5 | ✅ 5/5 (2026-07-12) |
 | 4 | Qualidade, governança e organização | Magus | 4 | ✅ 4/4 (2026-07-13) |
-| ★ | Capstone — Desenhando a plataforma de dados de uma empresa do zero | Magus | 1 | ⬜ a semear |
+| ★ | Capstone — Desenhando a plataforma de dados de uma empresa do zero | Magus | 1 | ✅ 353 linhas (2026-07-13) |
 
-**Total planejado:** 18 notas de conteúdo + 1 capstone (19) + scaffolding (index/roadmap por sub-galho).
+**Total planejado:** 18 notas de conteúdo + 1 capstone (19) + scaffolding (index/roadmap por sub-galho). **TRILHA COMPLETA (19/19) em 2026-07-13.**
 
 ## Ordem de execução (ritmo B)
 

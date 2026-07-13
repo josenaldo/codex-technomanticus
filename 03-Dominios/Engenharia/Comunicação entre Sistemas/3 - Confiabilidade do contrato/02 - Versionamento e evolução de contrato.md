@@ -339,6 +339,7 @@ Versionamento resolve como o contrato muda ao longo de meses e anos sem quebrar 
 - [[2 - Comunicação síncrona/05 - gRPC — Protobuf, HTTP2 e streaming|gRPC — Protobuf, HTTP2 e streaming]] — Protocol Buffers e HTTP/2, base técnica das regras de compatibilidade binária citadas aqui.
 - [[3 - Confiabilidade do contrato/index|Confiabilidade do contrato]] — MOC deste sub-galho.
 - [[Comunicação entre Sistemas/index|Comunicação entre Sistemas]] — o galho-pai desta trilha.
+- [[03-Dominios/Engenharia/Dados/4 - Qualidade, governança e organização/02 - Data contracts e schema evolution|Data contracts e schema evolution]] — as mesmas regras de compatibilidade back/forward aplicadas ao contrato de **dados** (schema de tabela/evento que analytics consome), com shift-left e silent breakage.
 
 ## Fontes
 

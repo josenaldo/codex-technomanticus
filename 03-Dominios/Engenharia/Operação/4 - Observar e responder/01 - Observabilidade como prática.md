@@ -267,6 +267,7 @@ Instrumentar bem — eventos ricos, correlação por trace_id, cardinalidade alt
 - [[4 - Observar e responder/index|Observar e responder]] — este sub-galho
 - [[Observabilidade]] — a ferramenta: Prometheus, Grafana, mecânica dos três pilares, OpenTelemetry na prática
 - [[03 - Alerting que não gera fadiga]] — o próximo passo depois de instrumentar: como alertar sem gerar fadiga
+- [[03-Dominios/Engenharia/Dados/4 - Qualidade, governança e organização/01 - Qualidade e observabilidade de dados|Qualidade e observabilidade de dados]] — o mesmo instinto de observabilidade recortado para **dados**: os cinco pilares (freshness, volume, schema, quality, lineage) e SLA de dados sobre pipelines analíticos
 
 ## Fontes
 

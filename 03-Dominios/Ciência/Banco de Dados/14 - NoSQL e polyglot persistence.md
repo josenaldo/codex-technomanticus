@@ -363,6 +363,7 @@ recuperá-lo com as garantias certas pelo menor custo total.
 - [[10 - Performance e armadilhas]] — onde se mede a "dor" antes de adicionar um banco
 - [[01 - O que é um banco de dados]] — a meta original: guardar e recuperar com garantias
 - [[16 - Banco de dados em entrevista]] — defender escolhas de store em system design
+- [[03-Dominios/Engenharia/Dados/1 - Fundamentos de engenharia de dados/01 - O que é engenharia de dados|O que é engenharia de dados]] — o lado **OLAP/analytics** que consome estes stores: por que o banco transacional não basta e como a engenharia de dados constrói a ponte pro warehouse
 
 > [!info] Lastro
 > Fontes consultadas e verificadas (jun/2026):

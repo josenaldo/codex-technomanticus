@@ -119,7 +119,7 @@ aliases:
 | [[03-Dominios/Engenharia/Arquitetura/index\|Arquitetura / System Design]]               | 🟢     | Trilha System Design completa: 4 sub-galhos (Framework/Building blocks/Padrões/Walkthroughs) + capstone, 27 notas (2026-07-07) |
 | [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação entre Sistemas]] | 🟢     | Trilha completa: 4 sub-galhos (Panorama/Síncrona/Confiabilidade/Assíncrona) + capstone, 22 notas + 1 (2026-07-09)              |
 | [[03-Dominios/Engenharia/Operação/index\|Operação (DevOps/SRE)]]                        | 🟢     | Trilha completa: 4 sub-galhos (Ofício/Entrega-release/Rodar-em-prod/Observar-responder) + capstone, 23 notas (2026-07-08)      |
-| [[03-Dominios/Engenharia/Dados/index\|Dados (Data Engineering)]]                        | ⬜      | 1 nota — modelagem, pipelines, analytics                                                                                       |
+| [[03-Dominios/Engenharia/Dados/index\|Dados (Data Engineering)]]                        | 🟢     | Trilha completa: 4 sub-galhos (Fundamentos/Modelagem/Pipelines/Qualidade-governança) + capstone, 19 notas (2026-07-13)         |
 
 ---
 

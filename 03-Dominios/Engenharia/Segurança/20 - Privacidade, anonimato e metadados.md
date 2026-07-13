@@ -373,6 +373,7 @@ A LGPD tem 10 bases legais para tratamento — consentimento é apenas uma delas
 - Próxima: [[21 - Criptografia pós-quântica]]
 - Fundamento de identidade: [[01 - O que é segurança conceitual]]
 - Criptografia que habilita ZKP e MPC: [[08 - Criptografia assimétrica]]
+- Privacidade aplicada a dados analíticos: [[03-Dominios/Engenharia/Dados/4 - Qualidade, governança e organização/03 - Governança, catálogo e lineage|Governança, catálogo e lineage]] — classificar PII no warehouse, mascaramento/pseudonimização e controle de acesso por coluna sob LGPD
 
 > [!summary] Resumo em uma linha
 > Privacidade é controle sobre suas próprias informações — inclusive por partes autorizadas — e metadados revelam padrões de vida inteiros mesmo quando o conteúdo está cifrado.

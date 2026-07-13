@@ -3,7 +3,7 @@ title: "Dados"
 type: moc
 publish: true
 created: 2026-06-23
-updated: 2026-07-12
+updated: 2026-07-13
 status: seedling
 tags:
   - moc
@@ -28,7 +28,7 @@ Trilha em 4 sub-galhos (3 fases Iniciado/Adepto/Magus) + capstone. Estado em [[0
 3. [[03-Dominios/Engenharia/Dados/3 - Pipelines - movimentação e transformação/index|Pipelines: movimentação e transformação]] *(Adepto→Magus)* — ETL vs ELT, ingestão e CDC, transformação SQL-first, orquestração, dados em movimento.
 4. [[03-Dominios/Engenharia/Dados/4 - Qualidade, governança e organização/index|Qualidade, governança e organização]] *(Magus)* — qualidade e observabilidade, data contracts, governança/catálogo/lineage, arquiteturas organizacionais.
 
-★ **Capstone** *(Magus)* — desenhando a plataforma de dados de uma empresa do zero.
+★ [[03-Dominios/Engenharia/Dados/Capstone - Desenhando a plataforma de dados de uma empresa do zero|Capstone — Desenhando a plataforma de dados de uma empresa do zero]] *(Magus)* — o walkthrough decisório que costura os 4 sub-galhos, do gatilho OLTP/OLAP à escolha entre warehouse centralizado e data mesh.
 
 ## Veja também
 
