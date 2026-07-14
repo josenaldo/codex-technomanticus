@@ -50,15 +50,15 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 17 | [[Image Prompting]] | 7 | 0 | 3 | 4 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 18 | [[Improvement Loop]] | 7 | 0 | 4 | 3 | 100% | ✅ completo (2026-07-03) | ✅ |
 | 19 | [[Ferramentas de IA]] | 5 | 0 | 0 | 5 | 100% | ✅ completo (2026-07-01) | ✅ |
-| 20 | [[Claude Code]] | 55 (6 sub-galhos) | 23 | 1 | 31 | 58% | 🔶 parcial (Configuração + Hooks e Guardrails 07/07 + Mental Model 9/9 ✅ 08/07 + Skills e MCP 6/8; 2 sub-galhos restantes + Skills 07·08) | ✅ (galho-pai) |
-| 21 | [[O Lado Sombrio da IA]] | 1 + glosas | 1 | 0 | 0 | 0% | ⚪ especial — cluster crítico; nota Débito cognitivo diagnosticada (2026-07-02) | ✅ |
+| 20 | [[Claude Code]] | 55 (6 sub-galhos) | 0 | 1 | 54 | 100% | ✅ completo (2026-07-08, 6/6 sub-galhos enriquecidos via fan-out ≤3 verificado) | ✅ (galho-pai) |
+| 21 | [[O Lado Sombrio da IA]] | 1 + glosas | 0 | 0 | 1 | 100% | ✅ completo (2026-07-09) — nota Débito cognitivo enriquecida | ✅ |
 
 ## Notas soltas (logo abaixo de IA/)
 
 | Nota | Tipo | Estado |
 |------|------|--------|
 | `Dicionário de IA.md` | glossary | ➖ saudável (diagnóstico 30/06) |
-| `Modelo de Maturidade AI - Steve Yegge.md` | nota solta | ⬜ sem TL;DR/fase (diagnóstico 30/06) |
+| `Modelo de Maturidade AI - Steve Yegge.md` | nota solta | ✅ revisada (471 linhas, TL;DR presente, updated 2026-07-09) |
 | `Biblioteca de Desenvolvimento com IA.md` | reference | ⬜ stub (diagnóstico 30/06) |
 | `index.md` | MOC do domínio | ➖ não precisa |
 
@@ -67,10 +67,10 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | Métrica | Valor |
 |---------|-------|
 | Galhos totais | 21 |
-| ✅ completos | 19 (Anatomia dos LLMs, Anatomia de Agents, Spec-Driven Development, Economia de Tokens, Context Engineering, Prompt Engineering, Structured Outputs, Evaluation, Observability, Multimodal Prompting, Image Prompting, Improvement Loop, Ferramentas de IA, Agentes de Codificação, AI Engineering Stack, RAG e Vector Databases, MCP, Segurança e Guardrails, Memória de Agentes) |
-| 📋 diagnosticados, enriquecimento pendente | 1 (Claude Code) |
+| ✅ completos | 21 (Anatomia dos LLMs, Anatomia de Agents, Spec-Driven Development, Economia de Tokens, Context Engineering, Prompt Engineering, Structured Outputs, Evaluation, Observability, Multimodal Prompting, Image Prompting, Improvement Loop, Ferramentas de IA, Agentes de Codificação, AI Engineering Stack, RAG e Vector Databases, MCP, Segurança e Guardrails, Memória de Agentes, Claude Code — 2026-07-08, **O Lado Sombrio da IA — 2026-07-09**) |
+| 📋 diagnosticados, enriquecimento pendente | 0 |
 | ⬜ não diagnosticados | 0 |
-| ⚪ especiais | 1 (O Lado Sombrio da IA — agora com roadmap) |
+| ⚪ especiais | 0 |
 | Notas soltas diretas | 4 |
 | Notas totais (galhos-folha diagnosticados) | ~287 (232 + 55 de Claude Code) |
 

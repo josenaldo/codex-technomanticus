@@ -1,7 +1,7 @@
 ---
 title: "First Contact"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Iniciado
@@ -100,6 +100,19 @@ Uma prática que economiza sofrimento futuro: **enquanto você descobre o ritual
 num artefato reprodutível** — um `Dockerfile`, um `devcontainer`, um script. Você está transformando
 conhecimento tribal em conhecimento explícito no exato momento em que ele passa pela sua cabeça — e
 nunca mais vai estar tão fresco.
+
+> [!tip] Assista: Reproducible Builds, the first ten years
+> **Canal:** media.ccc.de (FOSDEM) | **Duração:** ~24min | **Idioma:** EN
+>
+> Holger Levsen (mantenedor do projeto Reproducible Builds) conta a história de por que "buildar de
+> novo e comparar o binário" virou disciplina séria — e dá o vocabulário exato pra essa nota:
+> reprodutibilidade não é sobre o binário ser "bom", é sobre poder **provar** que ele veio do código
+> que você está olhando. É o mesmo ideal citado nas Fontes desta nota (reproducible-builds.org), aqui
+> com o histórico e os bastidores por trás dele.
+> Trecho de destaque [5:45]: *"our mission is to enable anyone to independently verify that a given
+> source produces bit by bit identical results."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JLcNkxB70p8)
 
 ## As fontes de informação sob pressão de tempo
 

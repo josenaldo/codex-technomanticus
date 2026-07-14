@@ -1,7 +1,7 @@
 ---
 title: "Engenharia reversa e recuperação de arquitetura"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Adepto
@@ -190,6 +190,22 @@ uma arquitetura declarada.
 > violação. Isso não só mede a erosão — **estanca** o sangramento. É a ponte da engenharia reversa (esta
 > nota) para a rede de segurança que vem depois: uma vez recuperada, a arquitetura vira um invariante
 > protegido, não mais um PowerPoint que ninguém lê.
+
+> [!tip] Assista: Unit Test Your Java Architecture With ArchUnit
+> **Canal:** JCON (Roland Weisleder) | **Duração:** ~43min | **Idioma:** EN
+>
+> A nota já explica *que* o ArchUnit transforma o reflexion model num teste executável; este talk
+> mostra *como* isso funciona no dia a dia, ao vivo, com regras de nomeação, camadas e ciclos. O
+> ganho maior para quem trabalha com legado é o mecanismo de **freezing**: ao introduzir o ArchUnit
+> num sistema com centenas de violações acumuladas, você "congela" o estado atual num arquivo de
+> exceções conhecidas — os testes ficam verdes de novo, mas qualquer violação *nova* quebra o build.
+> É o equivalente ao *strangler fig* aplicado a dívida arquitetural: você não para tudo para corrigir
+> 500 violações de uma vez, mas também não deixa a erosão continuar sem ser notada.
+> Trecho de destaque [34:01]: *"The third thing is the freezing of ArchUnit... we acknowledge that
+> these violations exist, but we can't fix them right away — and we have a clean state and known
+> state of violations. But if we would try to add a new violation, the test will fail."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=MxP521_i9zM)
 
 ### Design Structure Matrix: o grafo que vira matriz
 

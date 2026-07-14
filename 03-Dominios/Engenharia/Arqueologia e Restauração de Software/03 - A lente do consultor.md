@@ -1,7 +1,7 @@
 ---
 title: "A lente do consultor"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: growing
 fase: Iniciado
@@ -117,6 +117,20 @@ cobrir o resto**. Numa due diligence, largura vence profundidade — um risco cr
 custa muito mais que um módulo mal-compreendido. Seu relatório não diz "o código é feio"; diz "o
 `bus factor` de pagamentos é 1, não há testes, há uma dependência GPL num produto proprietário;
 provisione seis meses de estabilização e uma auditoria de licenças antes de assinar".
+
+> [!tip] Ouça: Tech Due Diligence: From the Outside In
+> **Podcast:** Dry Powder (Bain & Company) | **Duração:** ~17min | **Idioma:** EN (transcrição disponível)
+>
+> Hank Chen (Bain), com mais de 125 diligências técnicas em três anos, descreve na prática o que
+> esta nota chama de Modo 1: avaliar um sistema **sem as chaves do código-fonte**, cruzando
+> entrevistas com o CTO, benchmarking do setor e conversas com ex-funcionários para montar um
+> retrato de risco antes mesmo de entrar no data room. Um caso real do episódio ecoa o cenário 1
+> desta nota: uma due diligence que reprecificou um negócio inteiro (de 5x para 2-3x) por descobrir
+> que a empresa não era o "software provider" que alegava ser.
+> Trecho de destaque [12:04]: *"this is something that you really can do from the outside in with a
+> targeted data request — you don't need access to server rooms or data management."*
+>
+> 🎙️ [Ouvir](https://www.youtube.com/watch?v=n_Btu0UWtvA)
 
 ### Modo 2 — Herança: virar o dono
 

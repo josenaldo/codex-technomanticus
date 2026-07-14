@@ -1,7 +1,7 @@
 ---
 title: "Strangler Fig"
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Magus
@@ -316,6 +316,23 @@ uma cobrindo uma camada que o padrão pressupõe resolvida.
   posse dos dados sem downtime (expand-contract, dual writes, shadow tables).
 - [[21 - Validação em produção|nota 21]] — como ter coragem de virar cada rota: feature flags, dark launch
   e o parallel run que compara velho e novo em produção antes de confiar no novo.
+
+> [!tip] Assista: Patterns of Legacy Displacement
+> **Canal:** GOTO Conferences | **Duração:** ~43min | **Idioma:** EN
+>
+> Ian Cartwright e Rob Horn (Thoughtworks) — os mesmos autores dos artigos de *Legacy
+> Displacement* citados nas Fontes desta nota — apresentam a série de padrões que inclui o
+> Strangler Fig num nível mais amplo: como fatiar o problema (por produto, por *user journey*, por
+> *seam* técnico), e um catálogo de técnicas concretas de **event interception** (mensageria,
+> APIs, micro front-ends, CDC em bancos de dados) que a nota cobre em teoria — aqui aparecem como
+> receita prática, com o conceito extra de **legacy mimic** (o novo sistema fingindo a API do
+> velho para não quebrar consumidores que ainda não migraram).
+> Trecho de destaque [18:17]: *"introducing a facade of some kind and then using that as a level
+> of indirection to then create new implementations of your application gradually moving across
+> features over time until essentially your new application has strangled the life out of your
+> legacy system."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=noOoLULfInc)
 
 ## Fontes
 

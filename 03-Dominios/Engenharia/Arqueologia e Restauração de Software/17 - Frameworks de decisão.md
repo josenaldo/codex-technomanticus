@@ -1,7 +1,7 @@
 ---
 title: "Frameworks de decisão"
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Magus
@@ -194,6 +194,20 @@ o rewrite é a decisão correta — e o restaurador maduro sabe reconhecê-los:
 > **Como decidir com honestidade:** faça um *spike* time-boxed ([[25 - Sustentabilidade humana|nota 25]])
 > tentando o caminho incremental primeiro. Se você não consegue nem estabelecer um seam para começar a
 > restaurar, isso é evidência real a favor do rewrite — não um palpite.
+
+> [!tip] Assista: Joel Spolsky, Things You Should Never Do: Rewriting the Code from Scratch
+> **Canal:** ratherabstract | **Duração:** ~8min | **Idioma:** EN
+>
+> É a leitura em voz alta do próprio ensaio de 2000, mas o formato falado acrescenta algo que o
+> texto corrido não deixa tão nítido: Spolsky separa as três razões pelas quais um programador acha
+> que "o código é um lixo" — problema arquitetural (resolve-se refatorando, sem jogar fora),
+> ineficiência (otimiza-se a parte lenta, não o todo) e feiúra (resolve-se com um macro de 5
+> minutos) — e mostra, com os casos Borland/Quattro Pro e o projeto "Pyramid" da própria Microsoft
+> para reescrever o Word, que o erro da Netscape não foi um acidente isolado.
+> Trecho de destaque [4:11]: *"When you throw away code and start from scratch, you are throwing
+> away all that knowledge, all those collected bug fixes, years of programming work."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=SoHc1Gfykb8)
 
 E mesmo quando o rewrite se justifica, ele quase nunca é *big-bang*. A forma segura de reescrever é o
 **Strangler Fig** ([[18 - Strangler Fig|nota 18]]): o sistema novo cresce em volta do velho, assumindo

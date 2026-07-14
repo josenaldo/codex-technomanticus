@@ -1,7 +1,7 @@
 ---
 title: "Approval e Golden Master testing"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Adepto
@@ -185,6 +185,21 @@ void geraReciboComTimestamp() {
 **O mecanismo em uma frase:** você não escreve o esperado, você **aprova** o atual; o teste vira um
 alarme que dispara sempre que a saída real se afasta do que você último olhou e disse "sim, isso está
 certo".
+
+> [!tip] Assista: "Approval Testing" by Emily Bache (@emilybache)
+> **Canal:** The Legacy of SoCraTes | **Duração:** ~45min | **Idioma:** EN
+>
+> Emily Bache — divulgadora e treinadora da técnica citada nas Fontes desta nota — apresenta approval
+> testing do zero sobre um exemplo de código legado (na linha do Gilded Rose), mostrando o fluxo
+> completo received/approved/diff/aprovação. O ponto mais útil pra quem já leu esta nota é quando ela
+> explica *por que rejeita* o próprio termo "golden master": o nome sugere algo "dourado" e imutável,
+> quando na prática o approved file é esperado mudar e ser reaprovado — a mesma ideia central desta
+> nota, dita com outras palavras por quem cunhou boa parte do vocabulário da técnica.
+> Trecho de destaque [38:34]: *"the other term I really don't like is golden master testing, because
+> it also implies that the thing never changes... this is an agile approach, we expect [the approved
+> file] to change and be updated — that's why I use the term approval testing."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=0ZVKcFsEp-4)
 
 ## Casos práticos
 

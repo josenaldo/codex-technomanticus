@@ -1,7 +1,7 @@
 ---
 title: "Os primeiros 30-60-90 dias"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Iniciado
@@ -65,6 +65,18 @@ o pecado da [[02 - A mentalidade do restaurador|nota 02]].
 **O ponto de equilíbrio em uma frase:** existe um momento em que você deixa de custar e passa a
 entregar — e todo o protocolo é uma corrida honesta para chegar lá antes, sem trapacear pulando o
 entendimento.
+
+> [!tip] Assista: Michael Watkins — How to win in the first 90 days and beyond
+> **Canal:** David Lancefield | **Duração:** ~40min | **Idioma:** EN
+>
+> É o próprio autor de *The First 90 Days*, em entrevista, explicando o que o livro não cabe numa
+> citação: a diferença entre um *early win* qualquer e um que **constrói fundação** para o longo
+> prazo — exatamente a distinção que separa o "bug de arredondamento" do "limpar a tarifação" nos
+> casos práticos desta nota.
+> Trecho de destaque [22:53]: *"I talk about early wins, but I also — there's a difference, right?
+> Because early wins are things that are substantive and help lay a foundation for the longer term."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bxn-UNqhFRE)
 
 ## Os três arcos
 

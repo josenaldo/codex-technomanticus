@@ -1,7 +1,7 @@
 ---
 title: "A rede de segurança primeiro"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Adepto
@@ -132,6 +132,21 @@ medição. O teste falha, e a mensagem de falha ("esperado 0, mas foi 847.32") t
 o código produz *agora*, para *aquela* entrada. Você copia esse valor para a asserção, roda de novo, o
 teste passa — e a partir desse instante, aquele valor está pinado: se algum dia o código passar a
 devolver outra coisa para a mesma entrada, o teste vai gritar.
+
+> [!tip] Assista: Working Effectively with Legacy Code and AI Coding Assistant
+> **Canal:** Michael Feathers | **Duração:** ~56min | **Idioma:** EN
+>
+> É o próprio Michael Feathers, criador do termo, explicando characterization test com as mesmas
+> palavras que esta nota usa: escrever o teste *depois* do código (não antes, como em TDD), fazer
+> uma pergunta ao sistema, e usar a resposta como expectativa — o que ele também chama de *pinning
+> test* ou *golden master testing*. Vale como confirmação direta da fonte, sem intermediários.
+> Trecho de destaque [7:58]: *"One of the things I talk about in the book, something I call
+> characterization tests. [...] you write tests that you use to describe the current behavior of
+> the system. So you're not writing them first, you're writing them after the code has been
+> written. [...] once you get the answer, you basically take that answer and you put it in as the
+> expectation. And sometimes this is called golden mastery testing in a way."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=mwVRHDD0tEk)
 
 ### Exemplo — caracterizando um comportamento contra-intuitivo
 

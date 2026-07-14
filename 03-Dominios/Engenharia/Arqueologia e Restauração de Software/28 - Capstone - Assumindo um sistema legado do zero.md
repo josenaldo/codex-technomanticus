@@ -1,7 +1,7 @@
 ---
 title: "Capstone - Assumindo um sistema legado do zero"
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Magus
@@ -238,6 +238,21 @@ código novo. Foi um time interno que entende, documentado em ADRs e testes de c
 risco, um ano antes, foi neutralizado. O consultor deixa de ser o único dono da teoria. Essa é a
 definição operacional de "virar o dono confiante": não é o consultor sabendo tudo — é o
 conhecimento não depender mais de uma única cabeça.
+
+> [!tip] Assista: Displacing Legacy Systems — Martin Fowler on Patterns and Methods for Dealing with Legacy Code
+> **Canal:** Modern Software Engineering | **Duração:** ~12min | **Idioma:** EN
+>
+> Fowler comenta o projeto de James Lewis, Ian Cartwright e Rob Horn ("Patterns of Legacy
+> Displacement") sobre como deslocar sistemas legados de forma gradual, não com um "big bang" de
+> cinco anos — o mesmo argumento que sustenta o Strangler Fig desta nota. O ângulo que ele
+> acrescenta: o padrão mais citado do projeto é, na verdade, um *anti*-padrão — perseguir
+> "feature parity" cegamente com o sistema antigo, em vez de decidir, caso a caso, o que realmente
+> vale a pena replicar.
+> Trecho de destaque [4:41]: *"if we're going to replace the legacy system, let's build a new
+> system that has feature parity to the old system — don't do this, or at least feature parity
+> can work but only in a very limited set of contexts."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=lwP80OiKtXI)
 
 ## Armadilhas comuns
 

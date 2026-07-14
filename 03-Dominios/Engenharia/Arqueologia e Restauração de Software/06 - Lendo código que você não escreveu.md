@@ -1,7 +1,7 @@
 ---
 title: "Lendo código que você não escreveu"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Iniciado
@@ -125,6 +125,20 @@ atividade de *escrita*.
 Todas as três táticas têm o mesmo princípio: **mover o modelo mental da sua memória de trabalho
 (pequena, volátil) para um meio externo (grande, permanente)**. É a diferença entre reler o mesmo
 bloco cinco vezes e nunca mais precisar relê-lo.
+
+> [!tip] Assista: How to Read Complex Code
+> **Canal:** GOTO Conferences (YOW! 2021) | **Duração:** ~52min | **Idioma:** EN
+>
+> A própria Felienne Hermans desenvolvendo, ao vivo, as ideias por trás de *The Programmer's Brain*.
+> O ângulo que complementa esta nota: ela nomeia uma variante do scratch refactoring que chama de
+> **cognitive refactoring** — reescrever um trecho só para reduzir o número de *chunks* que ele exige
+> (ex.: "inline a mess", colar um método pequeno no lugar da chamada pra não pagar o custo de navegar
+> até ele), deixando claro que o objetivo é *entendibilidade agora*, não manutenibilidade — podendo
+> depois descartar o commit, exatamente como no `git reset --hard` desta nota.
+> Trecho de destaque [31:05]: *"if your working memory is overloaded, you really have to offload some
+> of your processing power out of your brain — you either want to do this on paper or in the IDE."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=58LeSsn_nSQ)
 
 ## Casos práticos
 

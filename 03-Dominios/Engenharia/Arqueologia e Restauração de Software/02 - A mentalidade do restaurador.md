@@ -1,7 +1,7 @@
 ---
 title: "A mentalidade do restaurador"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: growing
 fase: Iniciado
@@ -189,6 +189,19 @@ Humildade sem ação é paralisia. Ação sem humildade é desprezo. As duas jun
 > **Como evitar:** trate "entender" e "reescrever" como fases separadas. Só depois de recuperar a
 > teoria você tem base para comparar honestamente o custo de restaurar por incrementos versus o de
 > reescrever — decisão que a [[17 - Frameworks de decisão|nota 17]] estrutura.
+
+> [!tip] Assista: From Code to Culture: Chesterton's Fence vs. Five Monkeys Experiment
+> **Canal:** Mob Mentality Show | **Duração:** ~17min | **Idioma:** EN
+>
+> Dois praticantes de mob programming discutem a Cerca de Chesterton aplicada ao dia a dia de
+> código — o que esta nota ainda não cobre em cena real: um "driver" tentando apagar um teste
+> flaky sem entender por que ele existia, até descobrirem que ele cobria um bug importante. É a
+> paralisia e o desprezo acontecendo ao vivo, com o antídoto sendo literalmente parar a linha
+> ("stop the line") até entender a cerca.
+> Trecho de destaque [8:26]: *"[The misapplication of this] is people are afraid to change
+> anything [and so they change nothing]."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=a2bdNOsM_r0)
 
 ## Como explicar em inglês
 

@@ -1,7 +1,7 @@
 ---
 title: "Arqueologia do histórico"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Iniciado
@@ -98,6 +98,19 @@ espaços" — ruído histórico que esconde a mudança que importa. Por isso o `
 (segue movimentações) existem: eles removem os estratos de poeira para você chegar ao commit que
 realmente introduziu a lógica. Quando mesmo assim o blame cair num refactor, use o hash daquele commit
 como ponto de partida e escave mais fundo (`git log -L`, ou blame na revisão *anterior* àquela).
+
+> [!tip] Assista: Practical code archaeology
+> **Canal:** PyData | **Duração:** ~32min | **Idioma:** EN
+>
+> Judith van Stegeren generaliza a arqueologia do histórico para além do `git`: ela mostra que a
+> ferramenta mais poderosa continua sendo perguntar a quem trabalhou lá antes (a "cultura" por trás do
+> artefato, no sentido arqueológico), e que `git blame` é só o começo de um loop maior — encontrar o
+> commit, achar a pessoa, e conversar. Também apresenta o `tig` como navegador de commits mais legível
+> que o log cru, e um truque de colorir o `git blame` por idade da linha (estratigrafia visual).
+> Trecho de destaque [12:25]: *"she said well, I do get blame, get blame, get blame, and then I slack
+> someone — and I think that's really the core of what I want to talk about."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5KItp5WJY3o)
 
 ## O histórico também revela onde dói — mas isso é a nota 09
 

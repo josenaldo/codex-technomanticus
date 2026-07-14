@@ -1,7 +1,7 @@
 ---
 title: "Forense de software"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Adepto
@@ -203,6 +203,19 @@ Na prática, mesmo sem nenhuma ferramenta, um script de trinta linhas contando `
 por arquivo já produz o ranking de frequência — o que falta é só cruzar com a métrica de complexidade
 e, se quiser change coupling, contar pares de arquivos que aparecem no mesmo commit. O método é mais
 importante que a ferramenta.
+
+> [!tip] Assista: Guide Refactorings With Behavioral Code Analysis
+> **Canal:** Domain-Driven Design Europe | **Duração:** ~48min | **Idioma:** EN
+>
+> O próprio Tornhill demonstra o método ao vivo sobre o código-fonte do Android (3 milhões de
+> linhas, 2000+ autores) — mostra a visualização de hotspots como *circle packing* e, na segunda
+> metade, caminha por um caso real de change coupling. É o complemento hands-on que esta nota
+> descreve em texto: aqui você vê o mapa de calor sendo construído passo a passo.
+> Trecho de destaque [8:27]: *"complexity is only a problem when we need to deal with it (...) when
+> we combine these two [complexity and change frequency] we're capable of identifying complicated
+> code that we have to work with often — and those are our hotspots."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=okT9xZc6UtY)
 
 ## Casos práticos
 

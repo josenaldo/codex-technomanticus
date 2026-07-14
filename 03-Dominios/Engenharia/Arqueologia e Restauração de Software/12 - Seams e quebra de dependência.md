@@ -1,7 +1,7 @@
 ---
 title: "Seams e quebra de dependência"
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-13
 type: concept
 status: seedling
 fase: Adepto
@@ -86,6 +86,20 @@ código difícil. Precisa achar a costura.
 
 **Em uma frase:** um seam não é onde o código está errado — é onde ele já é (ou pode ser tornado)
 substituível, sem editar ali.
+
+> [!tip] Assista: Seams: How to Test Legacy Code Without Breaking Production (Michael Feathers)
+> **Canal:** Sunsetting AI | **Duração:** ~9min | **Idioma:** EN
+>
+> Um resumo denso e direto do capítulo 4 de Feathers: define seam e enabling point com uma analogia
+> paralela à do encanamento desta nota — a de um interruptor de luz (o seam é a lâmpada onde o
+> comportamento acontece; o enabling point é o interruptor na parede que decide qual comportamento
+> entra). Cobre os três tipos de seam (object, link, preprocessing) na mesma ordem de prioridade
+> desta nota e fecha com o mesmo conselho: seams são andaime temporário, não a arquitetura final.
+> Trecho de destaque [1:17]: *"Feathers nailed the definition. A seam is a place where you can alter
+> behavior without editing in that place. [...] you're not touching the problematic production code.
+> Instead, you change what happens at that spot by making a decision somewhere else entirely."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=j4VkzzYM4k4)
 
 ## O enabling point: onde a decisão realmente acontece
 

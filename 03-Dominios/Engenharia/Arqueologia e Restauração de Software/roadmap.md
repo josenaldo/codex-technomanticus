@@ -64,63 +64,61 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 #### 01 - O que é código legado   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 36e6b5d)
-- **Enriquecimento:** ⬜ pendente (M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
 - **Estado:** 294 linhas · fase: Iniciado · status: growing
 - **Núcleo/gaps:** M1 (vídeo Feathers já embutido — reavaliar); T1 isento
 - **Score:** 11/12
 - **Plano de execução:** — nenhuma (já tem vídeo Feathers Tech Lead Journal #195); revisar na rodada de mídia
-- **Resultado:** duas definições (Feathers sem testes / Bellotti dono foi embora) + teoria de Naur; quadrante Domesticável
+- **Resultado:** vídeo Feathers (Tech Lead Journal #195) confirmado ativo (HTTP 200) e bem posicionado no fluxo; nenhuma edição necessária. Duas definições (Feathers sem testes / Bellotti dono foi embora) + teoria de Naur; quadrante Domesticável
 
 #### 02 - A mentalidade do restaurador   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 36e6b5d)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 241 linhas · fase: Iniciado · status: growing
-- **Núcleo/gaps:** M1 (vídeo); T1 isento
-- **Score:** 11/12
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 254 linhas · fase: Iniciado · status: growing
+- **Núcleo/gaps:** M1 vídeo embutido (Mob Mentality Show, *Chesterton's Fence vs. Five Monkeys Experiment*); T1 isento
 - **Plano de execução:** buscar vídeo sobre Chesterton's Fence / mentalidade de manutenção de legado
 - **Resultado:** Cerca de Chesterton, legado-como-ativo, "humildade ativa", 3 armadilhas (Brooks second-system)
 
 #### 03 - A lente do consultor   [substantivo]  **(espinha)**
 - **Escrita:** ✅ 2026-07-02 (commit 2ceda8c)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 272 linhas · fase: Iniciado · status: growing
-- **Núcleo/gaps:** M1 (vídeo); T1 isento
-- **Score:** 11/12
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 286 linhas · fase: Iniciado · status: growing
+- **Núcleo/gaps:** M1 vídeo embutido (podcast Dry Powder/Bain, *Tech Due Diligence: From the Outside In*); T1 isento
 - **Plano de execução:** buscar vídeo sobre technical due diligence / assumir sistemas alheios
 - **Resultado:** de-dentro-vs-de-fora; 3 modos (due diligence/herança/resgate) com diagrama+tabela; 3 armadilhas por modo
 
 #### 04 - Os primeiros 30-60-90 dias   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 3a67be4)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 270 linhas · fase: Iniciado · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T1 isento
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 282 linhas · fase: Iniciado · status: seedling
+- **Núcleo/gaps:** M1 vídeo embutido (Michael Watkins entrevistado por David Lancefield, *How to win in the first 90 days and beyond*); T1 isento
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo sobre Watkins "The First 90 Days" / onboarding em legado
 - **Resultado:** ponto de equilíbrio + imperativo da ação (Watkins); 3 arcos orientar/contribuir/independência; early win seguro
 
 #### 05 - First Contact   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 2928e8b)
-- **Enriquecimento:** ⬜ pendente (M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
 - **Estado:** 238 linhas · fase: Iniciado · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T1 isento
+- **Núcleo/gaps:** M1 vídeo embutido (Holger Levsen, *Reproducible Builds, the first ten years*, FOSDEM); T1 isento
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo sobre reproducible builds / rodar legado / OORP
 - **Resultado:** inventário técnico (buildar+rodar); cadáver vs vivo; padrões OORP; Interview during Demo
 
 #### 06 - Lendo código que você não escreveu   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit ec5bbaf)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 239 linhas · fase: Iniciado · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T1 isento
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 245 linhas · fase: Iniciado · status: seedling
+- **Núcleo/gaps:** M1 vídeo embutido (Felienne Hermans, *How to Read Complex Code*, YOW! 2021); T1 isento
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo de Felienne Hermans (Programmer's Brain, InfoQ "Reading Code") ou scratch refactoring
 - **Resultado:** memória de trabalho (Hermans, 2-6 chunks); top-down/bottom-up; tracing reverso; scratch refactoring
 
 #### 07 - Arqueologia do histórico   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 227bd3a)
-- **Enriquecimento:** ⬜ pendente (M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
 - **Estado:** 214 linhas · fase: Iniciado · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T1 isento
+- **Núcleo/gaps:** M1 vídeo embutido (Judith van Stegeren, *Practical code archaeology*, PyData); T1 isento
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo sobre git archaeology / git blame forense / git log pickaxe
 - **Resultado:** código=o "como" / git=o "porquê"; blame -w/-M, pickaxe log -S; hotspots só introduzidos (defere à 09)
@@ -129,46 +127,46 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 #### 08 - Engenharia reversa e recuperação de arquitetura   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 13b36e5)
-- **Enriquecimento:** ⬜ pendente (M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
 - **Estado:** 320 linhas · fase: Adepto · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T2 isento (320 < 400, padrão capítulo)
+- **Núcleo/gaps:** M1 vídeo embutido (Roland Weisleder, *Unit Test Your Java Architecture With ArchUnit*, JCON); T2 isento (320 < 400, padrão capítulo)
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo sobre reflexion models / architecture reconstruction / ArchUnit / dependency graphs
 - **Resultado:** fragmentos → mapa formal; 2 braços (extração/grafo + validação/reflexion model Murphy-Notkin); erosão & desvio (Perry-Wolf); top-down↔bottom-up (OORP); DSM; ferramentas por stack (jdeps/ArchUnit/madge/import-linter); 2 cenários (due diligence núcleo cíclico / resgate divergência)
 
 #### 09 - Forense de software   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit d7cebd4)
-- **Enriquecimento:** ⬜ pendente (M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
 - **Estado:** 319 linhas · fase: Adepto · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T2 isento
+- **Núcleo/gaps:** M1 vídeo embutido (Adam Tornhill, *Guide Refactorings With Behavioral Code Analysis*, DDD Europe 2019); T2 isento
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo de Adam Tornhill / CodeScene / behavioral code analysis
 - **Resultado:** método de Tornhill (*Your Code as a Crime Scene* 2ª ed 2024): hotspots (complexidade × frequência de mudança — nenhuma dimensão sozinha basta), acoplamento temporal (o que o mapa estático da 08 NÃO vê), bus factor/knowledge map; ferramenta-âncora CodeScene + open-source (code-maat, git-of-theseus); 3 diagramas (quadrante hotspot + estático×temporal)
 
 #### 10 - A rede de segurança primeiro   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit cfdef1e)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 334 linhas · fase: Adepto · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T2 isento
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 349 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 vídeo embutido (Michael Feathers, *Working Effectively with Legacy Code and AI Coding Assistant*); T2 isento
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo sobre characterization testing / Feathers / approval testing intro
 - **Resultado:** PIVÔ entender→mudar-com-segurança; paradoxo galinha-e-ovo (Feathers); virada mental = caracterizar (comportamento ATUAL) ≠ especificar (correto); técnica "deixe o código confessar" (asserção que falha → valor real → pina); bug vira contrato documentado; código Java; delimita 10=manual/saída-pequena vs 11=ferramenta/saída-grande; fronteira galho Testes
 
 #### 11 - Approval e Golden Master testing   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit c95f730)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 317 linhas · fase: Adepto · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T2 isento
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 332 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 vídeo embutido (Emily Bache, *Approval Testing*, The Legacy of SoCraTes); T2 isento
 - **Score:** 11/12
 - **Plano de execução:** buscar vídeo de Emily Bache (approval testing / gilded rose) ou Llewellyn Falco
 - **Resultado:** continuação direta da 10 (saída grande/opaca onde a caracterização manual não escala); golden master (congela saída p/ N inputs, muitas vezes gerados/aleatórios); approval testing (received vs approved, aprova snapshot em vez de asserção); ferramentas ApprovalTests (Falco), TextTest (Geoff Bache — correção de atribuição, Emily = divulgadora), Verify/.NET, jest snapshots; armadilhas aprovar-cegamente + não-determinismo/scrubbing; código Java
 
 #### 12 - Seams e quebra de dependência   [substantivo]
 - **Escrita:** ✅ 2026-07-02 (commit 7df5c72)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 468 linhas · fase: Adepto · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T2 OK (468 > 400 — a mais longa do galho, na faixa de profundidade preferida 440-540)
-- **Score:** 11/12 (T2 ✓)
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 482 linhas · fase: Adepto · status: seedling
+- **Núcleo/gaps:** M1 vídeo embutido (*Seams: How to Test Legacy Code Without Breaking Production*, Sunsetting AI); T2 OK (482 > 400 — a mais longa do galho, na faixa de profundidade preferida 440-540)
+- **Score:** 12/12 ✓
 - **Plano de execução:** buscar vídeo sobre seams / breaking dependencies / Feathers legacy code
 - **Resultado:** conceito de seam (alterar comportamento sem editar no lugar) + enabling point; 3 tipos (object/preprocessing/link); legacy change algorithm 5 passos (esta nota = passo 3, a 10 = passo 4); técnicas de quebra com código (Parameterize Constructor, Extract Interface, Extract and Override Call/Factory); paradoxo da testabilidade + "lean on the compiler"; delimita 12=abrir-seam-p/-testar-existente vs 13=costurar-novo-ao-lado
 
@@ -212,19 +210,19 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 #### 17 - Frameworks de decisão   [substantivo]
 - **Escrita:** ✅ 2026-07-03 (commit 3732632)
-- **Enriquecimento:** ⬜ pendente (M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
 - **Estado:** 353 linhas · fase: Magus · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T3 500 isento (353); **P3 COBRADO e atendido** (seção Fundamento teórico)
-- **Score:** 11/12 (gap único = M1)
+- **Núcleo/gaps:** M1 vídeo embutido (Spolsky, *Things You Should Never Do*, callout na seção rewrite vs incremento); T3 500 isento (353); **P3 COBRADO e atendido** (seção Fundamento teórico)
+- **Score:** 11/12 (gap único = M1, agora fechado)
 - **Plano de execução:** buscar vídeo sobre application portfolio rationalization / TIME model / rewrite vs refactor (Spolsky)
 - **Resultado:** ABRE a Magus (virada mudar-com-segurança → decidir-o-destino). 7 R's (Gartner 2010 5R → AWS/Orban 2016 6R → 7º Relocate) como cardápio de invasividade, mapeados nos 4 verbos do consultor (manter/restaurar/substituir/aposentar); TIME (valor×qualidade, 4 quadrantes) como lente de portfólio — Migrate é o território do restaurador; fluxo 2 etapas (TIME classifica → R dentro do Migrate); rewrite vs incremento (Spolsky/Netscape "pior erro estratégico"; código feio = bug consertado = teoria de Naur; quando rewrite se justifica: teoria perdida/plataforma morta/domínio mudou — sempre via Strangler, nunca big-bang); P3 = teoria de portfólio + falácia custo-afundado/tela-em-branco + leis de Lehman (mudança contínua/complexidade crescente) + valor de opção da reversibilidade; 2 casos trabalhados (faturamento Migrate→Refactor; relatório "morto" que era Retain por compliance). Sem dados fabricados. Fronteiras linkadas: Strangler(18)/dados(20)/política(23)/compliance(27).
 
 #### 18 - Strangler Fig   [substantivo]
 - **Escrita:** ✅ 2026-07-03 (commit 852e068)
-- **Enriquecimento:** ⬜ pendente (M1)
-- **Estado:** 327 linhas · fase: Magus · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T3 500 isento (327); P3 COBRADO e atendido (seção Fundamento teórico)
-- **Score:** 11/12 (gap único = M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
+- **Estado:** 344 linhas · fase: Magus · status: seedling
+- **Núcleo/gaps:** M1 vídeo embutido (Cartwright & Horn, *Patterns of Legacy Displacement*, GOTO 2022); T3 500 isento (344); P3 COBRADO e atendido (seção Fundamento teórico)
+- **Score:** 13/14 (gap único remanescente = T3, isento na prática)
 - **Plano de execução:** buscar vídeo sobre Strangler Fig pattern / legacy displacement / monolith to microservices (Fowler, Thoughtworks, GOTO/NDC talks)
 - **Resultado:** a execução do quadrante Migrate (nota 17). Metáfora da figueira de Queensland (Fowler 2004, StranglerApplication→StranglerFigApplication); anatomia em 5 passos (interceptar via facade de roteamento → construir ao lado → migrar função a função → repetir → remover); facade/proxy/API gateway como coração do padrão (o interruptor de desvio por rota). As 2 estratégias de Fowler: **event interception** (desviar só os eventos das funções migradas, não todos) e **asset capture** (mover a posse de um subconjunto de ativos por vez); as duas se amarram (capturar ativo exige interceptar seus eventos). Strangler vs big-bang cutover (a aposta de tudo-ou-nada; separar fluxo×dado evita o bug de dois donos do mesmo dado). **P3:** valor de opção da reversibilidade (opções reais, liga à 17§4) + redução de risco por tamanho de lote (small batches) + entrega incremental de valor/feedback curto + Lehman (não congela evolução). Parentesco explícito com Mikado (15). 2 casos (monólito→serviços canônico; faturamento na borda com parallel run→21). Fronteiras linkadas: 17(decisão)/19(Branch by Abstraction nível-código)/20(asset capture=dados)/21(parallel run). Sem dados fabricados.
 
@@ -311,9 +309,9 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 #### 28 - Capstone - Assumindo um sistema legado do zero   [substantivo]
 - **Escrita:** ✅ 2026-07-03 (commit 962553f) — fan-out (fase 2, após 19-27) — **FECHA a Magus e o galho**
-- **Enriquecimento:** ⬜ pendente (M1)
+- **Enriquecimento:** ✅ feita (2026-07-13)
 - **Estado:** 330 linhas · fase: Magus · status: seedling
-- **Núcleo/gaps:** M1 (vídeo); T3 500 isento; P3 atendido. **Refs internas VERIFICADAS contra filenames reais** (lição Compiladores) — todos os [[nota N]] batem; `[[index]]` ambíguo → path completo.
+- **Núcleo/gaps:** M1 vídeo embutido (Martin Fowler, *Displacing Legacy Systems*, Modern Software Engineering); T3 500 isento; P3 atendido. **Refs internas VERIFICADAS contra filenames reais** (lição Compiladores) — todos os [[nota N]] batem; `[[index]]` ambíguo → path completo.
 - **Score:** 11/12
 - **Plano de execução:** rodada de mídia (vídeo panorâmico de "taking over a legacy system")
 - **Resultado:** capstone integrativo (NÃO introduz conceito novo). Estudo de caso na plataforma de logística das 17/18: jornada completa due diligence→herança→resgate→volta (o diagrama de modos não-estanques da 03), costurando as 3 fases (Iniciado entender / Adepto mudar com segurança / Magus decidir e ser dono). **P3 sofisticado:** Naur (missão única = recuperar a teoria) + modelo de Dreyfus (5 estágios de perícia justificam a ordem Iniciado→Adepto→Magus; pular = novato decidindo como especialista) + Cynefin de Snowden (legado real é COMPLEXO → probe-sense-respond, não sense-analyze-respond; "entender antes de tocar" é exigência estrutural) + jornada como sequência de opções reais. Definição operacional de "dono confiante" = conhecimento não depender de uma cabeça só. Fontes-âncora reais (Naur, Feathers, Bellotti, Fowler, Tornhill, Dreyfus, Snowden). "O que vem a seguir" aponta pro index/01 (não há nota 29).
@@ -324,7 +322,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo aplicadas por 
 
 **ESCRITA COMPLETA — 28/28 notas (Iniciado 7/7 · Adepto 9/9 · Magus 12/12).** O eixo primário (escrita) fechou em 2026-07-03; as notas 19-28 foram escritas em fan-out (workflow, 10 subagentes Sonnet, fase 1 = 19-27 em paralelo + fase 2 = capstone). O eixo restante é **enriquecimento**.
 
-1. **Rodada de mídia (M1)** — o único gap recorrente das 28 notas. Buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), começando pelas âncoras (01 já tem Feathers; priorizar 17/18 e o capstone 28).
+1. **Rodada de mídia (M1)** — o único gap recorrente das 28 notas. Buscar 1 vídeo/podcast por nota (skill `/adicionar-midia`), começando pelas âncoras (01 já tem Feathers; priorizar 17/18 e o capstone 28). **Progresso (2026-07-13): 15/28 enriquecidas (01-12, 17, 18, 28) — parada dura das 15 atingida, retomar da nota 13 com `/enriquecer-galho`.**
 2. **Enriquecimento nota a nota** (skill `/enriquecer-galho` + `/enriquecer-nota`) — as 10 notas do fan-out (19-28) são drafts de qualidade validada estruturalmente (11/12, gap único M1) mas ainda não passaram por enriquecimento manual; revisar profundidade/exemplos/diagramas onde couber. Diagramas Mermaid do fan-out usam `graph`/`sequenceDiagram` (seguros no Quartz).
 3. **Verificação de publish:** confirmar que os diagramas Mermaid e wikilinks das 10 notas novas renderizam no Quartz (wikilinks quebrados por newline já corrigidos no pós-fan-out; link Segurança Conceitual já apontado pro path real `Engenharia/Segurança/index`).
 4. **Manutenção do roster:** se surgir broto/sub-tópico Magus, seguir a convenção broto→galho.
