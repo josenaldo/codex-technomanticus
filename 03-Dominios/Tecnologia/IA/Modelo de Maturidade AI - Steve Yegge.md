@@ -1,7 +1,7 @@
 ---
 title: "Modelo de Maturidade AI - Steve Yegge"
 created: 2026-05-05
-updated: 2026-05-06
+updated: 2026-07-09
 type: concept
 status: growing
 progress: in_progress
@@ -14,12 +14,31 @@ publish: true
 ---
 # Modelo de Maturidade AI - Steve Yegge
 
-O modelo de maturidade de Steve Yegge (ex-Google, ex-Amazon, Sourcegraph) descreve a evolução da relação entre engenheiros de software e IA generativa: de rejeição defensiva, passando por autocomplete e chat, até workflows agênticos onde o humano especifica intenção, valida qualidade e coordena execução.
+> [!abstract] TL;DR
+> O modelo de maturidade de Steve Yegge descreve como devs evoluem de resistência à IA até orquestrar frotas de agentes autônomos — mas o eixo real da progressão não é "escrever menos código", é aumentar a unidade de trabalho que dá pra delegar sem perder controle de qualidade. Esta nota adapta o framework de Yegge (que no ensaio original é medido em permissões/IDE-vs-CLI/nº de agentes, não em "papel do humano") pra um eixo mais didático — ver o callout de comparação abaixo. Desde a publicação, Yegge transformou a metáfora "Gas Town" num toolkit open-source real (jan/2026) e depois na SDK "Gas City" (abr/2026), com recepção dividida entre "ficção especulativa provocativa" e "projeto vibecoded que só ele consegue operar".
+
+Duas devs sênior, mesma empresa, mesmo nível de senioridade formal. Uma ainda copia a mensagem de erro pro ChatGPT e cola a resposta de volta no editor — um fluxo que não mudou desde 2023. A outra abre o terminal, dispara quatro agentes em paralelo (um investiga o bug, outro escreve o fix, outro roda os testes, outro atualiza a doc) e revisa só os diffs finais antes do merge. As duas "usam IA". Mas a diferença de produtividade entre elas não é sutil — é de ordem de grandeza.
+
+É essa diferença que Steve Yegge (ex-Google, ex-Amazon, Sourcegraph) tenta capturar com seu modelo de maturidade de IA: uma escala de 8 estágios que descreve a evolução da relação entre engenheiros de software e IA generativa, de rejeição defensiva, passando por autocomplete e chat, até workflows agênticos onde o humano especifica intenção, valida qualidade e coordena execução.
 
 O ponto central não é que "a IA substitui programadores", mas que o locus do trabalho muda. O desenvolvedor deixa de ser principalmente operador de sintaxe e passa a ser designer de problemas, curador de contexto, avaliador de qualidade e orquestrador de sistemas parcialmente autônomos.
 
 > [!important] Correção de leitura
 > A nota inicial tratava o framework como 8 níveis numerados de 0 a 7. Em *Welcome to Gas Town*, Yegge apresenta a escala como **8 estágios numerados de 1 a 8**. A estrutura abaixo preserva o espírito da versão anterior, mas corrige a numeração e explicita melhor as transições.
+
+> [!info] Estágios originais de Yegge vs. adaptação desta nota
+> O ensaio-fonte ("Welcome to Gas Town", 1º/jan/2026) numera os 8 estágios por **modo operacional** — IDE vs. CLI, permissões ligadas/desligadas, número de agentes simultâneos — não por "papel do humano". Verbatim da Figura 2 do ensaio ("The Evolution of the Programmer, 2024–2026"):
+>
+> 1. Zero or Near-Zero AI — completions ocasionais, perguntas soltas pro Chat
+> 2. Coding agent in IDE, permissions on — agente estreito na sidebar, pede permissão pra rodar ferramentas
+> 3. Agent in IDE, YOLO mode — confiança sobe, permissões desligadas, agente ganha alcance
+> 4. In IDE, wide agent — agente cresce até preencher a tela, código vira só diff
+> 5. CLI, single agent, YOLO — diffs passam rápido, revisão é opcional
+> 6. CLI, multi-agent, YOLO — 3 a 5 instâncias paralelas regularmente
+> 7. 10+ agentes, hand-managed — no limite do que dá pra gerenciar à mão
+> 8. Building your own orchestrator — automação na fronteira
+>
+> Os "8 Estágios" descritos abaixo nesta nota são uma **releitura didática** desse eixo, cruzada com os outros três ensaios da genealogia (Death of the Stubborn Developer, Revenge of the Junior Developer, Welcome to Gas City) — trocam "que ferramenta, quantos agentes" por "que papel o humano assume". As duas leituras são compatíveis (a mesma progressão de resistência → delegação → orquestração), mas não são a mesma tabela. Se for citar Yegge literalmente, use a lista acima; se quiser o eixo didático, siga a nota.
 
 ## Tese
 
@@ -40,7 +59,35 @@ Yegge desenvolveu a tese em uma sequência de posts:
 - **Welcome to Gas Town**: apresenta a escala de maturidade em 8 estágios e descreve a passagem de chat/autocomplete para workflows agenticos.
 - **Welcome to Gas City**: expande a visão para um ecossistema maior de desenvolvimento mediado por IA, no qual tools, agents, memória, contexto e infraestrutura moldam a nova prática.
 
+## Do Ensaio ao Produto — Gas Town Virou Ferramenta Real
+
+"Welcome to Gas Town" não ficou só na metáfora. Em 1º/jan/2026 Yegge abriu o código de **Gas Town**, um toolkit open-source pra orquestrar agentes de código, construído sobre um ledger próprio chamado **Beads**. Em 25/abr/2026 lançou **Gas City**: Gas Town reescrito do zero como SDK, pra montar seu próprio orquestrador em qualquer topologia (não só a forma fixa do Gas Town original), com release v1.0.0. A progressão do próprio Yegge — Beads → Gas Town → Wasteland → Gas City, cada um alguns meses depois do anterior — é, na prática, uma demonstração ao vivo dos estágios 7 e 8 do modelo: sair de "10+ agentes hand-managed" pra "construir seu próprio orquestrador".
+
+Ele mesmo recomenda cautela: Gas Town só é indicado pra quem já está em Estágio 7, ou "Estágio 6 e muito corajoso" — não é ferramenta de entrada.
+
 ## Os 8 Estágios
+
+```mermaid
+flowchart LR
+    E1["1. Cético<br/>rejeita IA"] --> E2["2. Autocomplete<br/>aceita sugestões inline"]
+    E2 --> E3["3. Chat/Stack Overflow<br/>consulta interativa"]
+    E3 -. A Grande Fenda .-> E4["4. Delegador de Código<br/>pede unidades completas"]
+    E4 --> E5["5. Diretor por Spec<br/>define comportamento/testes"]
+    E5 --> E6["6. Operador de Agente<br/>conduz loop agêntico"]
+    E6 --> E7["7. Orquestrador Multi-Agent<br/>coordena paralelo"]
+    E7 --> E8["8. Arquiteto AI-Native<br/>desenha o sistema de trabalho"]
+
+    style E1 fill:#5c1a1a,color:#fff
+    style E2 fill:#5c3a1a,color:#fff
+    style E3 fill:#5c3a1a,color:#fff
+    style E4 fill:#5c5c1a,color:#fff
+    style E5 fill:#2f5c1a,color:#fff
+    style E6 fill:#1a5c3a,color:#fff
+    style E7 fill:#1a3a5c,color:#fff
+    style E8 fill:#3a1a5c,color:#fff
+```
+
+O corte tracejado entre os estágios 3 e 4 marca "A Grande Fenda" (ver callout mais abaixo): antes dela você consome respostas prontas; depois, você define a tarefa e delega a execução inteira. Estágios 1-3 são consumo passivo de IA; 4-5 são delegação de unidades de trabalho cada vez maiores; 6-8 são operação de sistemas autônomos.
 
 ### Estágio 1: O Cético
 
@@ -139,6 +186,12 @@ O foco principal passa a ser desenhar o sistema de trabalho: contexto persistent
 | 6 | Agente com ferramentas | Conduzir loop agentico | Issue/refactor/debug |
 | 7 | Múltiplos agentes | Coordenar e integrar | Workstream paralelo |
 | 8 | Substrato operacional | Arquitetar o sistema de trabalho | Organização inteira |
+
+## Casos práticos
+
+**Caso 1 — Squad de billing sobe de 4 para 6 em três meses.** Um time de pagamentos vivia no Estágio 4: pedia "implemente o cálculo de proration do plano X" e revisava linha a linha porque o agente errava convenções internas com frequência. A virada começou quando o tech lead passou a escrever a spec antes de acionar o agente — comportamento esperado, casos de borda, contrato de API — e cobrar testes como critério de aceite (Estágio 5). Depois de um mês, o mesmo lead começou a rodar o agente com acesso a ler o repositório inteiro e executar a suíte de testes sozinho, só revisando o diff final (Estágio 6). A métrica que mudou não foi "linhas de código por dia"; foi número de PRs que voltavam pra retrabalho depois do primeiro review, que caiu à metade.
+
+**Caso 2 — Time trava no Estágio 3 por dois anos.** Uma equipe de plataforma interna usa chat de IA há dois anos só pra tirar dúvida ("como faço X nessa lib interna?", "por que esse erro acontece?"). Tentaram adotar um agente de código duas vezes e desistiram nas duas: o repositório não tem `README` de arquitetura, os testes são fracos e as convenções vivem na cabeça de duas pessoas sênior. O agente produzia código plausível que quebrava integração com sistemas vizinhos, e cada tentativa de delegar uma tarefa maior virava mais trabalho de correção do que economia. O gargalo não é ferramenta — é que o repositório não tem o contexto mínimo (spec, testes, docs) que sustenta o Estágio 4 em diante. Ver [[03-Dominios/Tecnologia/IA/Context Engineering/index|Context Engineering]].
 
 ## O Que Muda na Engenharia
 
@@ -277,6 +330,20 @@ Construa infraestrutura de maturidade:
 - métricas de defeitos, retrabalho e custo de tokens;
 - documentação voltada para humanos e agentes.
 
+## Armadilhas comuns
+
+> [!warning] Usar o estágio pra ranquear pessoas
+> O modelo mede **hábito de trabalho num contexto específico**, não competência. Um sênior em repositório sem testes nem docs pode operar em Estágio 3; o mesmo sênior num repositório bem instrumentado chega a Estágio 6 em semanas. Usar o número do estágio como proxy de "quem é melhor engenheiro" é medir a ferramenta, não a pessoa — ver "Depende muito do ambiente" abaixo.
+
+> [!warning] Achar que subir de estágio é sempre progresso
+> Delegar mais só compensa quando a tarefa tem critério de aceite verificável. Forçar Estágio 6 (agente com acesso amplo) numa tarefa ambígua — decisão de produto, incidente em produção, sistema legado sem testes — troca controle por velocidade aparente, e o retrabalho invisível come o ganho. Subir de estágio sem que o contexto (specs, testes, docs) acompanhe é o mesmo erro do Caso 2 acima.
+
+> [!warning] Confundir "usar Gas Town" com "estar em estágio avançado"
+> Gas Town e Gas City são ferramentas de orquestração — não são pré-requisito nem prova de maturidade. O próprio Yegge recomenda não tocar em Gas Town antes do Estágio 6/7; usar a ferramenta sem o hábito de trabalho correspondente (revisão de diff, testes como contrato, permissões limitadas) reproduz os mesmos riscos do "vibe coding ingênuo" em escala maior — só que com mais agentes rodando em paralelo.
+
+> [!warning] Tratar o modelo como escala universal de indústria
+> A escala foi desenhada a partir da experiência de Yegge com codebases próprias e de clientes de consultoria — bem instrumentadas, com boa cultura de testes. Em domínios regulados, sistemas legados sem suíte de testes ou times sem autonomia pra mudar processo, o teto prático de estágio alcançável é mais baixo, e isso não é falha do time — é característica do ambiente.
+
 ## Relação com Vibe Coding
 
 O termo "[[Dicionário de IA#vibe coding|vibe coding]]", popularizado por [[Andrej Karpathy]], descreve um modo de programar em que o humano guia a IA por intenção, aceita sugestões e deixa o modelo carregar boa parte da implementação. Isso se conecta ao modelo de Yegge, mas há uma diferença importante:
@@ -310,6 +377,26 @@ Um junior com IA pode produzir artefatos com aparência sênior. Isso é útil p
 
 O mesmo desenvolvedor pode parecer estágio 6 em uma codebase com testes e docs, e estágio 3 em uma codebase opaca, sem scripts e sem convenções.
 
+## Recepção da Comunidade (2026)
+
+Quando Gas Town saiu do papel e virou ferramenta de verdade, o debate deixou de ser só sobre o modelo de maturidade e passou a incluir a prova de conceito. A discussão foi longa e dividida no Hacker News, com argumentos técnicos dos dois lados — vale separar o que critica o **produto** do que critica o **modelo de estágios** em si, porque são coisas diferentes.
+
+**Argumentos a favor:**
+- O modelo captura algo real: a diferença de produtividade entre quem delega por spec/teste e quem só copia-e-cola de um chat é observável, não é hype.
+- Mesmo quem acha Gas Town impraticável como produto reconhece valor nele como "ficção especulativa" — um experimento que força a pergunta "como seria orquestrar dezenas de agentes de verdade?" antes que a maioria das equipes precise responder isso.
+- A ideia de medir maturidade por "unidade de trabalho delegável com segurança" é mais operacional do que alternativas vagas tipo "adoção de IA".
+
+**Argumentos contra:**
+- Gas Town foi descrito como "desenhado pro formato do cérebro do Yegge, e de mais ninguém" — decisões de design pouco documentadas, difíceis de generalizar pra outro time.
+- Como projeto público, foi classificado por parte da comunidade como majoritariamente "vibecoded" — soluções feitas às pressas, sem revisão equivalente ao rigor que o próprio modelo prega para estágios altos.
+- Custo operacional alto: rodar múltiplos agentes em paralelo (estágios 6-8) consome milhares de dólares por mês em chamadas de API, o que limita quem consegue de fato validar o topo da escala.
+- Uma crítica mais afiada nota a ironia: um modelo que recomenda testes como "linguagem de delegação" e revisão de diff como não-negociável foi usado, na prática, pra construir uma ferramenta com pouco desse rigor visível publicamente.
+
+Um jeito honesto de ler essa divisão: os argumentos contra miram principalmente a **qualidade de engenharia do Gas Town como projeto**, não o modelo de 8 estágios em si — que continua sendo citado e adaptado por terceiros (inclusive por guias que reescrevem os estágios em linguagem mais didática, como esta nota) independente da opinião sobre o software.
+
+> [!tip] Podcast — Gas Town, Beads e a ascensão do desenvolvimento agêntico
+> [Software Engineering Daily entrevista Steve Yegge](https://softwareengineeringdaily.com/2026/02/12/gas-town-beads-and-the-rise-of-agentic-development-with-steve-yegge/) (12/fev/2026) sobre a origem do Beads, a construção do Gas Town e a visão de desenvolvimento coordenado por múltiplos agentes — boa forma de ouvir o raciocínio direto de Yegge, sem a camada de paráfrase de terceiros.
+
 ## Aplicação Pessoal
 
 Para avaliar sua própria maturidade, observe comportamento real, não opinião:
@@ -327,6 +414,34 @@ Para avaliar sua própria maturidade, observe comportamento real, não opinião:
 > [!tip] Regra prática
 > Subir no modelo não significa "editar menos código" por vaidade. Significa **aumentar a unidade de delegação sem reduzir a qualidade do julgamento**.
 
+## Como explicar em inglês
+
+Se você precisa apresentar esse modelo em inglês — numa entrevista, num post interno, num RFC — três ideias carregam o peso do argumento:
+
+- **"The unit of delegation grows with maturity."** Não é sobre escrever menos código; é sobre o tamanho da unidade de trabalho que você consegue entregar pra IA com segurança — de uma linha (autocomplete) até "arquitete esse sistema" (Estágio 8).
+- **"The crux is The Great Divide: oracle vs. delegated executor."** Antes dela você pede respostas (oracle); depois, você define tarefa, critério de aceite e contexto, e deixa o agente executar (delegated executor). É a linha que separa Estágios 1-3 de 4-8.
+- **"Judgment doesn't get automated away — it gets more expensive."** Quanto mais você delega execução, mais caro fica errar na definição do problema. Isso resolve a objeção mais comum em entrevista ("então a IA vai substituir vocês?") sem soar defensivo nem ingênuo.
+
+## Tabela PT↔EN
+
+| Português | English |
+| --- | --- |
+| Modelo de maturidade | Maturity model |
+| Cético | Skeptic |
+| Delegador de código | Code delegator |
+| Diretor por especificação | Spec-driven director |
+| Operador de agente | Agent operator |
+| Orquestrador multi-agente | Multi-agent orchestrator |
+| Arquiteto de sistemas AI-native | AI-native systems architect |
+| A Grande Fenda | The Great Divide |
+| Loop agêntico | Agentic loop |
+| Unidade de delegação | Unit of delegation |
+| Contexto persistente | Persistent context |
+
+## O que vem a seguir
+
+O modelo de Yegge descreve *o quê* muda (papel do humano, unidade de delegação); ele não ensina *como* operar em cada estágio. Pra sair da teoria e praticar os estágios 4-5 (delegar por spec e critério de aceite verificável), o próximo passo natural é [[03-Dominios/Tecnologia/IA/Spec-Driven Development/index|Spec-Driven Development]]. Se o seu bloqueio é mais no Estágio 6 (operar um agente com acesso amplo sem perder controle), vá direto pra [[03-Dominios/Tecnologia/IA/Agentes de Codificação/02 - Vibe coding vs engenharia disciplinada|Vibe coding vs engenharia disciplinada]] — que é essencialmente o mesmo eixo (disciplina vs. improviso), olhado de outro ângulo.
+
 ## Referências
 
 - Steve Yegge — [Welcome to Gas Town](https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04)
@@ -334,7 +449,13 @@ Para avaliar sua própria maturidade, observe comportamento real, não opinião:
 - Steve Yegge — [The Death of the Junior Developer](https://webflow.sourcegraph.com/blog/the-death-of-the-junior-developer)
 - Steve Yegge — [The Death of the Stubborn Developer](https://sourcegraph.com/blog/the-death-of-the-stubborn-developer)
 - Steve Yegge — [Revenge of the Junior Developer](https://sourcegraph.com/blog/revenge-of-the-junior-developer)
+- Steve Yegge — [The Future of Coding Agents](https://steve-yegge.medium.com/the-future-of-coding-agents-e9451a84207c)
 - Andrej Karpathy — [vibe coding](https://x.com/karpathy/status/1886192184808149383)
+- Software Engineering Daily — [Gas Town, Beads, and the Rise of Agentic Development with Steve Yegge](https://softwareengineeringdaily.com/2026/02/12/gas-town-beads-and-the-rise-of-agentic-development-with-steve-yegge/) (12/fev/2026)
+- Hacker News — [Welcome to Gas Town (discussão)](https://news.ycombinator.com/item?id=46462147)
+- Hacker News — [Gas Town's agent patterns, design bottlenecks, and vibecoding at scale (discussão)](https://news.ycombinator.com/item?id=46734302)
+- Maggie Appleton — [Gas Town's Agent Patterns, Design Bottlenecks, and Vibecoding at Scale](https://maggieappleton.com/gastown)
+- The New Stack — [Steve Yegge's AI agent orchestration project Gas Town comes to the cloud](https://thenewstack.io/steve-yegges-ai-agent-orchestration-project-gas-town-comes-to-the-cloud-and-brings-the-wasteland-with-it/)
 
 ## Veja também
 

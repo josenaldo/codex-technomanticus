@@ -16,7 +16,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 **Galho:** `03-Dominios/Tecnologia/IA/O Lado Sombrio da IA`
 **Nível:** galho-folha
 **Diagnóstico:** 2026-07-02
-**Última execução:** —
+**Última execução:** 2026-07-09
 
 ## Régua de análise
 
@@ -37,10 +37,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 1 |
-| ⬜ pendente | 1 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 1 |
+| % concluído | 100% |
 
 > Diagnóstico concluído em 2026-07-02. Custo: 1 `[substantivo]` · 0 `[mecânico]`.
 
@@ -49,7 +49,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 ## Notas
 
 #### 00 - Débito cognitivo   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-09)
 - **Estado:** 74 linhas reais · fase: ausente · status: seedling
 - **Núcleo/gaps:** E2, E3, E4, E5, E6, E7, E8, L2, M1
 - **Score:** 3/11 (P1 N/A — sem seção de código)
@@ -63,4 +63,4 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Reestruturar "Sinais de alerta" em `## Armadilhas comuns` com ≥3 callouts `[!warning]` separados → ativa E8
   - Adicionar URL externa clicável na `## Fontes` (artigo original de Margaret-Anne Storey na DX) → ativa L2
   - Pesquisar e embutir vídeo/podcast relevante sobre débito cognitivo ou comprehension debt como `[!tip]` → ativa M1
-- **Resultado:** —
+- **Resultado:** Todos os 9 itens aplicados (E2-E8, L2, M1). Score subiu de 3/11 para 11/11. Vídeo embutido é entrevista com a própria Margaret-Anne Storey (Aviator, ~40min) sobre a cunhagem do termo. Desvio: nome real do arquivo é `Débito cognitivo.md` (sem prefixo numérico "00 -"), sem perda de conteúdo.
