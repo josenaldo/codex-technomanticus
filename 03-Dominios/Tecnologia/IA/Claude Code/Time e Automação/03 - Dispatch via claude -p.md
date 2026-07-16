@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -26,6 +26,9 @@ Pense em `jq`, `awk`, ou `sed` — ferramentas que recebem texto, processam, e d
 `claude -p` é uma função não-determinística da mesma família. Você passa texto (código, logs, diff, JSON), recebe texto transformado (análise, resumo, JSON estruturado), e o processo sai. O estado da sessão não persiste entre invocações diferentes.
 
 Essa perspectiva clarifica quando usar: sempre que você precisaria de um `jq` capaz de raciocinar, não apenas parsear.
+
+> [!tip] Vídeo — Building headless automation with Claude Code
+> A série oficial *Code w/ Claude* tem um episódio dedicado a montar automação headless com `claude -p`, cobrindo os mesmos padrões desta nota (invocação via stdin/argumento, captura de stdout, exit code) na prática: [Building headless automation with Claude Code](https://www.youtube.com/watch?v=dRsjO-88nBs).
 
 > [!question] Quando `claude -p` e quando a API?
 > `claude -p` é o atalho sem código: zero setup, zero SDK. A API dá controle total sobre o loop de tool calls, estado entre turnos, e schemas tipados — mas exige código. Para scripts de shell e CI/CD, `claude -p` é suficiente e muito mais simples.
@@ -394,53 +397,53 @@ done
 
 ## Armadilhas
 
-**Newlines perdidas no argumento**
-Strings com quebras de linha em `"..."` podem ser interpretadas de forma inesperada pelo shell. Use heredoc para prompts multilinhas:
+> [!warning] Newlines perdidas no argumento
+> Strings com quebras de linha em `"..."` podem ser interpretadas de forma inesperada pelo shell. Use heredoc para prompts multilinhas:
+>
+> ```bash
+> # Problemático: \n como literal
+> claude -p "linha 1\nlinha 2"
+>
+> # Correto: heredoc preserva quebras de linha
+> claude -p << 'EOF'
+> linha 1
+> linha 2
+> EOF
+> ```
 
-```bash
-# Problemático: \n como literal
-claude -p "linha 1\nlinha 2"
+> [!warning] Stderr misturado no resultado
+> `$(claude -p ...)` captura apenas stdout. Erros e logs internos vão para stderr. Para logar separadamente:
+>
+> ```bash
+> RESULTADO=$(claude -p "..." 2>/tmp/claude-err.txt)
+> if [ $? -ne 0 ]; then
+>   echo "Erro:" >&2
+>   cat /tmp/claude-err.txt >&2
+> fi
+> ```
 
-# Correto: heredoc preserva quebras de linha
-claude -p << 'EOF'
-linha 1
-linha 2
-EOF
-```
+> [!warning] Contexto grande demais em loop
+> Em loops sobre dezenas de arquivos grandes, cada chamada pode exceder o limite de contexto. Adicione verificação de tamanho:
+>
+> ```bash
+> for arquivo in $ARQUIVOS; do
+>   TAMANHO=$(wc -c < "$arquivo")
+>   if [ "$TAMANHO" -gt 50000 ]; then
+>     echo "Arquivo $arquivo muito grande ($TAMANHO bytes) — pulando"
+>     continue
+>   fi
+>   cat "$arquivo" | claude -p "..."
+> done
+> ```
 
-**Stderr misturado no resultado**
-`$(claude -p ...)` captura apenas stdout. Erros e logs internos vão para stderr. Para logar separadamente:
-
-```bash
-RESULTADO=$(claude -p "..." 2>/tmp/claude-err.txt)
-if [ $? -ne 0 ]; then
-  echo "Erro:" >&2
-  cat /tmp/claude-err.txt >&2
-fi
-```
-
-**Contexto grande demais em loop**
-Em loops sobre dezenas de arquivos grandes, cada chamada pode exceder o limite de contexto. Adicione verificação de tamanho:
-
-```bash
-for arquivo in $ARQUIVOS; do
-  TAMANHO=$(wc -c < "$arquivo")
-  if [ "$TAMANHO" -gt 50000 ]; then
-    echo "Arquivo $arquivo muito grande ($TAMANHO bytes) — pulando"
-    continue
-  fi
-  cat "$arquivo" | claude -p "..."
-done
-```
-
-**Paralelismo sem controle de concorrência**
-Disparar dezenas de `claude -p` em background simultâneo pode saturar rate limits da API. Limite a concorrência:
-
-```bash
-# Máximo N processos em paralelo via xargs
-printf '%s\n' "${ARQUIVOS[@]}" | xargs -P 4 -I{} sh -c \
-  'cat {} | claude -p --max-turns 3 "Analise este arquivo"'
-```
+> [!warning] Paralelismo sem controle de concorrência
+> Disparar dezenas de `claude -p` em background simultâneo pode saturar rate limits da API. Limite a concorrência:
+>
+> ```bash
+> # Máximo N processos em paralelo via xargs
+> printf '%s\n' "${ARQUIVOS[@]}" | xargs -P 4 -I{} sh -c \
+>   'cat {} | claude -p --max-turns 3 "Analise este arquivo"'
+> ```
 
 ## Como explicar em inglês
 
@@ -454,6 +457,24 @@ printf '%s\n' "${ARQUIVOS[@]}" | xargs -P 4 -I{} sh -c \
 **Common questions:**
 - *"How do you handle non-determinism in scripts?"* — For binary decisions (PASS/FAIL), we structure the prompt so the agent outputs a known format and we grep for it. For analysis tasks, non-determinism is fine — we want nuanced output.
 - *"What's the difference between dispatching in bash vs using the Agent SDK?"* — Bash dispatch has no persistent state between calls and no structured output typing. For simple linear pipelines, bash is enough. For parallel agents that share context or need typed schemas, use the SDK.
+
+**Vocabulário PT↔EN:**
+
+| PT | EN | Uso na frase |
+| --- | --- | --- |
+| Despacho (invocar o agente de fora) | Dispatch | "We dispatch Claude Code from a cron job." |
+| Ramificação em paralelo | Fan-out | "Fan-out: one agent per file in parallel." |
+| Modo sem interface (não-interativo) | Headless | "Headless mode lets us run Claude Code in CI." |
+| Código de saída do processo | Exit code | "Exit code 0 signals success; non-zero blocks the pipeline." |
+
+## O que vem a seguir
+
+Dominar o padrão de dispatch — entrada por stdin/argumento, saída por stdout, sucesso ou falha pelo exit code — resolve a mecânica de "como chamar o agente". A próxima pergunta é "como o agente sabe se comportar direito quando chamado de fora do terminal interativo", já que não há sessão nem histórico de conversa pra carregar contexto de projeto. É aí que entra o arquivo de instruções que todo dispatch headless lê antes do primeiro turno: veja [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/04 - CLAUDE.md compartilhado|04 - CLAUDE.md compartilhado]].
+
+## Fontes
+
+- [Claude Code CLI reference](https://docs.anthropic.com/en/docs/claude-code/cli-reference) — flags oficiais de `claude -p`/`--print`, incluindo `--output-format`, `--max-turns` e `--allowedTools`.
+- [Claude Code headless mode / SDK overview](https://docs.anthropic.com/en/docs/claude-code/sdk) — documentação oficial da Anthropic sobre uso não-interativo (`-p`) e integração em scripts/CI.
 
 ## Referências
 

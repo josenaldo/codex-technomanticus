@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -60,7 +60,14 @@ flowchart TD
 
 Nem toda sessão precisa dos três. Use o mínimo necessário para a tarefa.
 
-## Exemplo 1: agente de triagem de bugs
+## Casos práticos
+
+Os três exemplos abaixo mostram a composição em ação — cada um com uma combinação diferente de skill de domínio, skill de processo e MCP servers, escalando em complexidade.
+
+> [!tip] Vídeo — construindo e implantando skills + MCP servers
+> [Build and Deploy Claude Skills and MCP Servers — The Complete 2026 Guide](https://www.youtube.com/watch?v=YKIUt9ytxIE) percorre o mesmo par que esta nota descreve: como estruturar uma skill de processo e conectá-la a um MCP server real, do zero até um workflow implantado. Útil como complemento visual aos três casos práticos abaixo.
+
+### Exemplo 1: agente de triagem de bugs
 
 **Objetivo**: investigar bugs reportados, verificar logs no banco, e criar issues estruturadas no GitHub.
 
@@ -141,7 +148,7 @@ sequenceDiagram
     CC-->>U: Issue #892 criada com P2. Root cause provável: timeout no gateway. 147 ocorrências em 24h.
 ```
 
-## Exemplo 2: agente de onboarding de feature
+### Exemplo 2: agente de onboarding de feature
 
 **Objetivo**: implementar uma feature descrita em uma issue, seguindo TDD, com acesso ao schema do banco.
 
@@ -169,7 +176,7 @@ O agente:
 5. Refatora respeitando as convenções da skill de arquitetura
 6. Cria o PR via `create_pull_request` (GitHub MCP) com referência à issue
 
-## Exemplo 3: agente de deploy
+### Exemplo 3: agente de deploy
 
 **Skill de processo** em `.claude/skills/deploy-checklist.md`:
 
@@ -343,23 +350,23 @@ O `CLAUDE.md` do projeto documenta quais skills invocar, em que ordem, e quais M
 
 ## Armadilhas
 
-**Skill sem mencionar os MCP necessários**
-A skill instrui o processo, mas se não menciona quais tools MCP usar, o agente pode tentar acesso via Bash ou simplesmente falhar. Documente os MCP necessários no início da skill.
+> [!warning] Skill sem mencionar os MCP necessários
+> A skill instrui o processo, mas se não menciona quais tools MCP usar, o agente pode tentar acesso via Bash ou simplesmente falhar. Documente os MCP necessários no início da skill.
 
-**MCP de produção com skill que permite mutações**
-Uma skill de "atualizar dados de pedido" + MCP postgres de produção é uma combinação perigosa. Garanta que o MCP server aponta para o ambiente certo. Nomeie os servers com o ambiente: `postgres-dev`, `postgres-staging`, nunca só `postgres`.
+> [!warning] MCP de produção com skill que permite mutações
+> Uma skill de "atualizar dados de pedido" + MCP postgres de produção é uma combinação perigosa. Garanta que o MCP server aponta para o ambiente certo. Nomeie os servers com o ambiente: `postgres-dev`, `postgres-staging`, nunca só `postgres`.
 
-**Muitas skills na mesma sessão**
-O agente tenta reconciliar todas as instruções. Três skills simultâneas com instruções conflitantes geram comportamento imprevisível. Prefira duas skills focadas por sessão. Se o workflow exige muitas instruções, consolide numa skill de onboarding que referencia as outras.
+> [!warning] Muitas skills na mesma sessão
+> O agente tenta reconciliar todas as instruções. Três skills simultâneas com instruções conflitantes geram comportamento imprevisível. Prefira duas skills focadas por sessão. Se o workflow exige muitas instruções, consolide numa skill de onboarding que referencia as outras.
 
-**Ordem de invocação importa**
-Carregue sempre o domínio antes do processo. Se você invoca `/tdd` antes de `/arquitetura-projeto`, o agente pode tomar decisões de design antes de entender as restrições do projeto. Domínio → processo → tarefa.
+> [!warning] Ordem de invocação importa
+> Carregue sempre o domínio antes do processo. Se você invoca `/tdd` antes de `/arquitetura-projeto`, o agente pode tomar decisões de design antes de entender as restrições do projeto. Domínio → processo → tarefa.
 
-**Falta de feedback de erro claro**
-Se o MCP server está offline ou o token expirou, o agente falha com mensagem vaga. Antes de começar um workflow, confirme que os servers estão ativos com `/mcp` — ele lista os servers configurados e suas capabilities.
+> [!warning] Falta de feedback de erro claro
+> Se o MCP server está offline ou o token expirou, o agente falha com mensagem vaga. Antes de começar um workflow, confirme que os servers estão ativos com `/mcp` — ele lista os servers configurados e suas capabilities.
 
-**Skill que assume MCP disponível sem verificação**
-Se a skill instrui o agente a usar uma tool que não está configurada, o agente vai falhar com erro pouco informativo. Documente na skill quais MCP servers são pré-requisito.
+> [!warning] Skill que assume MCP disponível sem verificação
+> Se a skill instrui o agente a usar uma tool que não está configurada, o agente vai falhar com erro pouco informativo. Documente na skill quais MCP servers são pré-requisito.
 
 ## Como explicar em inglês
 
@@ -373,6 +380,27 @@ Se a skill instrui o agente a usar uma tool que não está configurada, o agente
 **Common follow-up questions:**
 - *"Isn't this just prompt engineering?"* — Skills are versioned Markdown files, not chat prompts. They're reusable artifacts that evolve with the project. The composition is session-level, not conversation-level.
 - *"How do you test the composed agent?"* — Run a representative task and observe where it deviates from expected behavior. Each deviation tells you what to add or clarify — in the skill, the MCP server description, or the tool's description.
+
+**Termos-chave — PT ↔ EN**
+
+| Português | English | Nota |
+|---|---|---|
+| composição | composition | combinar skills + MCP na mesma sessão para formar um agente especializado |
+| orquestrador | orchestrator | o agente que executa a sequência de passos entre sistemas (ver "O agente como orquestrador de multi-step") |
+| skill de domínio | domain skill | responde "o que é este projeto" — convenções, regras de negócio |
+| skill de processo | process skill | responde "como fazer esta tarefa" — passo a passo repetível |
+
+## O que vem a seguir
+
+Compor skills e MCP numa única sessão resolve o problema individual — mas e quando o time inteiro depende da mesma composição? Se cada dev reconfigura os MCP servers do zero, ou invoca as skills em ordens diferentes, a composição vira um segredo tribal em vez de um processo confiável.
+
+[[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/08 - Skills em time|08 - Skills em time]] cobre exatamente essa transição: como versionar a composição, garantir que todo mundo usa a mesma skill (não uma cópia desatualizada), e evitar que MCP servers de produção vazem para sessões erradas.
+
+## Fontes
+
+- **Anthropic Engineering** — [*Equipping agents for the real world with Agent Skills*](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) (2025). Post oficial sobre o design de Agent Skills — base do conceito de skill de domínio/processo usado nesta nota.
+- **Claude Code Docs** — [*Connect Claude Code to tools via MCP*](https://code.claude.com/docs/en/mcp) (2026). Documentação oficial de configuração e uso de MCP servers no Claude Code.
+- **Claude Docs** — [*Agent Skills overview*](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) (2026). Referência oficial da estrutura de uma skill (SKILL.md, progressive disclosure).
 
 ## Referências
 

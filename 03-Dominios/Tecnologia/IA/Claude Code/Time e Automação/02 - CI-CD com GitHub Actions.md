@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -118,7 +118,10 @@ A Anthropic mantém uma GitHub Action que simplifica a integração e expõe op�
 
 A action cuida de instalar o Claude Code, configurar o ambiente, e capturar o output. Internamente, é um wrapper sobre `claude --print` com a mesma semântica — ver [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/01 - Headless mode|headless mode]] para entender os parâmetros.
 
-## Casos de uso em CI/CD
+> [!tip] Vídeo — Claude Code com GitHub
+> [Claude Code Tutorial #9 - Claude Code with GitHub](https://www.youtube.com/watch?v=7pKN_pjPW04) mostra a instalação, configuração de um projeto novo e a integração com GitHub na prática — útil como complemento visual ao setup passo a passo desta nota.
+
+## Casos práticos
 
 ### Review automático de PR
 
@@ -375,22 +378,22 @@ run: |
   cat /tmp/filtered.diff | claude --print ...
 ```
 
-## Armadilhas
+## Armadilhas comuns
 
-**API key exposta em logs**
-Nunca use `set -x` em um step que tenha `ANTHROPIC_API_KEY` no ambiente — imprime variáveis de ambiente nos logs públicos do Actions.
+> [!warning] API key exposta em logs
+> Nunca use `set -x` em um step que tenha `ANTHROPIC_API_KEY` no ambiente — imprime variáveis de ambiente nos logs públicos do Actions.
 
-**Shallow clone quebrando git diff**
-`fetch-depth: 1` (padrão) cria um clone raso. `git diff origin/main...HEAD` precisa do histórico completo. Use `fetch-depth: 0`.
+> [!warning] Shallow clone quebrando git diff
+> `fetch-depth: 1` (padrão) cria um clone raso. `git diff origin/main...HEAD` precisa do histórico completo. Use `fetch-depth: 0`.
 
-**Diff muito grande para o contexto**
-PRs com centenas de arquivos ou gerados automaticamente excedem o contexto. Filtre para arquivos relevantes antes de passar para o agente.
+> [!warning] Diff muito grande para o contexto
+> PRs com centenas de arquivos ou gerados automaticamente excedem o contexto. Filtre para arquivos relevantes antes de passar para o agente.
 
-**Custo surpresa com muitos PRs**
-Em repositórios com dezenas de PRs por dia, o custo de cada análise se acumula. Adicione condicionais (tamanho mínimo do PR, branches específicas, opt-in via label) para controlar quando o análise roda.
+> [!warning] Custo surpresa com muitos PRs
+> Em repositórios com dezenas de PRs por dia, o custo de cada análise se acumula. Adicione condicionais (tamanho mínimo do PR, branches específicas, opt-in via label) para controlar quando o análise roda.
 
-**`--allowedTools ""` vs ausência de `--allowedTools`**
-`--allowedTools ""` explicitamente bloqueia todas as tools (o agente só pode usar o que está no contexto inicial). Sem a flag, todas as tools estão disponíveis. Para análise pura de texto, use `""`.
+> [!warning] `--allowedTools ""` vs ausência de `--allowedTools`
+> `--allowedTools ""` explicitamente bloqueia todas as tools (o agente só pode usar o que está no contexto inicial). Sem a flag, todas as tools estão disponíveis. Para análise pura de texto, use `""`.
 
 ## Como explicar em inglês
 
@@ -404,6 +407,28 @@ Em repositórios com dezenas de PRs por dia, o custo de cada análise se acumula
 **Common questions:**
 - *"Isn't this expensive to run on every PR?"* — We add a size threshold: PRs smaller than 50 changed lines skip the analysis. And `--max-turns 8` caps token usage per invocation.
 - *"How do you prevent prompt injection from malicious code in the PR?"* — We restrict to `--allowedTools "Read,Grep"` so the agent can't execute code, and we filter the diff before sending it. Structural defense, not relying on the model to refuse.
+
+**Termos-chave PT ↔ EN**
+
+| Português | Inglês | Nota |
+|---|---|---|
+| Execução sem interface (sem TTY) | headless | roda sem terminal interativo, típico de CI |
+| fluxo de trabalho | workflow | arquivo `.yml` que define os steps do Actions |
+| executor / máquina de execução | runner | a VM (ex: `ubuntu-latest`) que roda o job |
+| segredo do repositório | secret | valor sensível (ex: `ANTHROPIC_API_KEY`) injetado via `${{ secrets.X }}` |
+| gancho / etapa | step | uma ação individual dentro de um job |
+| clone raso | shallow clone | clone só do commit mais recente; `fetch-depth: 1` (padrão) |
+| ferramentas permitidas | allowed tools | lista de tools que o agente pode usar (`--allowedTools`) |
+| injeção de prompt | prompt injection | conteúdo malicioso no código analisado tentando manipular o agente |
+
+## O que vem a seguir
+
+Configurar o workflow é só metade do trabalho — a outra metade é decidir *como* o Claude Code é invocado dentro de cada step: que flags usar, como estruturar o prompt, como lidar com contexto grande. É esse o assunto de [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/03 - Dispatch via claude -p|03 - Dispatch via `claude -p`]], que aprofunda os padrões de invocação programática que só foram tocados de leve aqui.
+
+## Fontes
+
+- **Claude Code GitHub Actions** — [*Claude Code Docs*](https://code.claude.com/docs/en/github-actions). Documentação oficial: inputs, outputs, eventos suportados e referência de permissões da action.
+- **anthropics/claude-code-action** — [*GitHub*](https://github.com/anthropics/claude-code-action). Repositório da action oficial mantida pela Anthropic, incluindo `docs/usage.md` com exemplos avançados.
 
 ## Referências
 

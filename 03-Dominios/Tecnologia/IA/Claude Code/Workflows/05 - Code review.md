@@ -5,7 +5,7 @@ fase: Adepto
 progress: in_progress
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -46,6 +46,9 @@ flowchart LR
 ```
 
 > [!summary] Criteria-first review: especifique o que procurar antes de pedir o review. O agente é um verificador de padrões, não um juiz de qualidade geral.
+
+> [!tip] Vídeo — Claude Code Review Agent (workflow open source)
+> ["Anthropic's NEW Claude Code Review Agent (Full Open Source Workflow)"](https://www.youtube.com/watch?v=nItsfXwujjg) mostra o feature oficial de code review multi-agente do Claude Code em ação: uma frota de agentes especializados analisa o diff de um PR em paralelo — cada um focado numa classe de issue (erros de lógica, edge cases, uso incorreto de API, falhas de autenticação, convenções do projeto) — e um passo de verificação filtra falsos positivos antes de postar os comentários inline. É a versão produtizada do mesmo princípio desta nota: review eficaz é review com critérios específicos, não uma varredura genérica.
 
 ## Review do diff atual
 
@@ -321,6 +324,10 @@ Produz uma lista priorizada, não precisa corrigir — só mapear."
 > [!info] Review não substitui cultura de qualidade
 > O agente encontra patterns conhecidos muito bem. Mas ele não sabe que aquela função de 80 linhas em `payments.ts` é deliberadamente monolítica porque qualquer extração vai quebrar a transaction boundary. Contexto de design não está no código — está na equipe. Use o review do agente para liberar sua atenção para as decisões de design.
 
+O ganho real desse hábito não é o review individual — é o efeito composto. Uma equipe que roda `/pr-check` em todo PR e um audit de convenções por sprint tem uma vantagem sutil: os desvios pequenos (um `console.log` esquecido, uma query sem índice, um padrão antigo reintroduzido por engano) param de se acumular silenciosamente. Sem esse hábito, cada um desses desvios é invisível isoladamente — só vira problema visível quando já são dezenas espalhadas pelo código, e aí a correção exige um refactor caro. Com o hábito, o custo de correção fica sempre no tamanho de "um PR", nunca no tamanho de "uma sprint inteira de limpeza".
+
+Isso também muda o papel do reviewer humano. Quando o agente já filtrou os problemas mecânicos — a checklist de `/pr-check`, os patterns conhecidos de segurança e performance — o que sobra para o humano é justamente o que só o humano sabe avaliar: a decisão de design vale o trade-off? Essa abstração está no nível certo? Vale a pena essa complexidade agora ou depois? É a mesma divisão de trabalho que aparece na tabela de patterns vs. domínio: o agente cobre a varredura sistemática, a pessoa cobre o julgamento contextual.
+
 ## Como explicar em inglês
 
 **Code review with Claude Code** is a criteria-driven workflow. Without explicit criteria, the agent applies generic heuristics (style, cyclomatic complexity, variable naming) that rarely surface real bugs. With specific criteria (security vulnerabilities, performance anti-patterns, project conventions), the agent performs targeted searches that find actionable issues with file and line references.
@@ -365,6 +372,7 @@ Code review é uma prática individual — mas o projeto começa a ganhar escala
 - [Claude Code — /code-review skill](https://docs.anthropic.com/en/docs/claude-code/skills) — skill oficial de code review multi-agente do Claude Code
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/) — referência para critérios de security review
 - [GitHub — about pull request reviews](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews) — integração com o workflow de PRs do GitHub
+- [Anthropic's NEW Claude Code Review Agent (Full Open Source Workflow)](https://www.youtube.com/watch?v=nItsfXwujjg) — demo do feature oficial de code review multi-agente
 
 
 

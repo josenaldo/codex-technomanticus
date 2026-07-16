@@ -4,7 +4,7 @@ type: concept
 progress: in_progress
 publish: true
 created: 2026-05-22
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 fase: Magus
 tags:
@@ -198,6 +198,36 @@ detect_dead_code(entry_points=["main.ts", "routes/*.ts"]) → {
 }
 ```
 
+### Detecção de dependências circulares
+
+Grafos direcionados podem ter ciclos: `A` chama `B`, `B` chama `C`, `C` chama `A` de volta.
+Ciclos entre módulos são um cheiro de arquitetura — não impedem o código de rodar, mas tornam
+impossível entender ou testar `A` isoladamente sem também carregar `B` e `C`.
+
+> [!question]- Por que um ciclo de dependência é um problema, se o código funciona?
+> Porque quebra a composicionalidade: para revisar `A`, o agente (ou o dev) precisa ler `B` e
+> `C` também, e vice-versa — não existe "unidade menor" que se possa entender sozinha. Em
+> refactoring, ciclos também bloqueiam extração de módulos: não dá pra mover `A` para um pacote
+> separado sem levar `B` e `C` junto. E em builds incrementais, um ciclo entre arquivos força
+> recompilar/re-parsear o grupo inteiro a cada mudança em qualquer um deles.
+
+```
+find_cycles() → {
+  cycle_1: [OrderService → PaymentService → NotificationService → OrderService],
+  cycle_2: [auth/session.ts → auth/token.ts → auth/session.ts]
+}
+```
+
+Algoritmo: Tarjan's strongly connected components (SCC) — O(V+E), roda sobre o grafo já
+construído sem custo adicional de parsing. Cada componente fortemente conexo (SCC) com mais de
+um nó é, por definição, um ciclo: todo par de nós dentro do componente consegue alcançar o
+outro seguindo arestas `calls`/`imports`.
+
+> [!summary] Ciclos não aparecem em "quem chama quem" isolado — só emergem ao percorrer o grafo
+> inteiro. É a análise mais barata do conjunto (SCC é linear no tamanho do grafo) e uma das que
+> mais expõe débito arquitetural escondido, porque ninguém enxerga um ciclo de 4 saltos lendo
+> arquivo por arquivo.
+
 ## Casos práticos
 
 ### Caso 1: review de PR com mudança em método compartilhado
@@ -286,6 +316,9 @@ Em vez de ler README e tentar inferir arquitetura, o grafo a revela diretamente.
 | API key necessária | Não (tudo local) |
 
 A vantagem sobre indexação semântica: sem custo de API, sem cloud, tudo local. Mas exige que o Tree-sitter grammar do seu stack esteja maduro.
+
+> [!tip] Podcast — knowledge graph local na prática, com números de token
+> [KiroGraph: How a Local Code Graph Saves 80% of Your AI Tokens](https://www.listennotes.com/podcasts/the-aws-developers/kirograph-how-a-local-code-DfYo3rRtvlO/) (The AWS Developers Podcast, jul/2026) — Davide de Sio conta como o KiroGraph nasceu de um projeto pessoal pra parar o agente de gastar créditos só procurando arquivos, virou MCP open-source, e reduz uso de tokens em até 80% usando Tree-sitter + grafo local. O episódio também toca no módulo de segurança (trace do call graph pra achar segredos expostos) e em como conter o "blast radius" de agentes com permissões explícitas — o mesmo conceito desta nota aplicado a um produto real.
 
 ## Construindo o grafo incrementalmente numa equipe
 

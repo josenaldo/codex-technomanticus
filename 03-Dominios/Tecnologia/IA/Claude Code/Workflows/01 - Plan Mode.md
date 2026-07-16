@@ -98,6 +98,9 @@ claude --plan "adicione autenticação JWT ao middleware"
 claude -p "adicione autenticação JWT" --plan
 ```
 
+> [!tip] Vídeo complementar
+> [Claude Code Plan Mode is here: The Senior Engineer's Workflow](https://www.youtube.com/watch?v=7LWl3EbcFTc) — walkthrough em vídeo mostrando o Plan Mode em uso num fluxo de engenharia real: como o agente expõe o plano antes de agir e como isso muda o padrão de revisão comparado a um prompt direto.
+
 ## Exemplo de uso
 
 ```
@@ -392,7 +395,7 @@ A progressão natural é: prompt claro → Plan Mode para visibilidade → TDD p
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/09 - Prompting para Claude Code|09 - Prompting para Claude Code]] — como escrever prompts precisos
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] — índice do galho
 
-## Referências
+## Fontes
 
 - [Claude Code — Plan Mode](https://docs.anthropic.com/pt/docs/claude-code/how-claude-code-thinks) — documentação oficial do mecanismo de planejamento
 - [Claude Code documentation — interactive mode](https://docs.anthropic.com/en/docs/claude-code/cli-reference) — referência de flags (`--plan`, `-p`) e atalhos de teclado

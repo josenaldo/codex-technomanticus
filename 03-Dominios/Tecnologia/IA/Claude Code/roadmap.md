@@ -32,28 +32,26 @@ Estado agregado de cada sub-galho. `roadmap` = existe roadmap por-pasta? Contage
 | Configuração | 8 | ✅ completo (8 ✅ · 100% enriquecido, 2026-07-07) | ✓ [[Configuração/roadmap\|roadmap]] |
 | Hooks e Guardrails | 8 | ✅ completo (8 ✅ · 100% enriquecido, 2026-07-07) | ✓ [[Hooks e Guardrails/roadmap\|roadmap]] |
 | Mental Model | 9 | ✅ completo (9 ✅ · 100% enriquecido, 2026-07-08) | ✓ [[Mental Model/roadmap\|roadmap]] |
-| Skills e MCP | 8 | 🔶 parcial (6 ✅ · 2 ⬜ · 75% enriquecido, 2026-07-08) | ✓ [[Skills e MCP/roadmap\|roadmap]] |
-| Time e Automação | 8 | 📋 diagnosticado (8 ⬜ · 0% enriquecido) | ✓ [[Time e Automação/roadmap\|roadmap]] |
-| Workflows (pai) | 10 diretas (9 ⬜ · 1 ➖) + sub-galho "11" (4 ⬜) | 📋 diagnosticado (0% enriquecido) | ✓ [[Workflows/roadmap\|roadmap]] |
+| Skills e MCP | 8 | ✅ completo (8 ✅ · 100% enriquecido, 2026-07-08) | ✓ [[Skills e MCP/roadmap\|roadmap]] |
+| Time e Automação | 8 | ✅ completo (8 ✅ · 100% enriquecido, 2026-07-08) | ✓ [[Time e Automação/roadmap\|roadmap]] |
+| Workflows (pai) | 10 diretas (9 ✅ · 1 ➖) + sub-galho "11" (4 ✅) | ✅ completo (9/9 diretas acionáveis + sub-galho 11 4/4, 2026-07-08) | ✓ [[Workflows/roadmap\|roadmap]] |
 
 ## Tabela-resumo (agregado dos sub-galhos)
 
 | Métrica | Valor |
 |---------|-------|
 | Sub-galhos | 6 |
-| ✅ completos | 3 (Configuração, Hooks e Guardrails — 2026-07-07; Mental Model — 2026-07-08) |
+| ✅ completos | 6 (Configuração, Hooks e Guardrails — 2026-07-07; Mental Model, Skills e MCP, Time e Automação, Workflows — 2026-07-08) |
 | 🔶 parciais | 0 |
-| 📋 diagnosticados (enriquec. pendente) | 2 |
-| 🔶 parciais | 1 (Skills e MCP — 6/8) |
+| 📋 diagnosticados (enriquec. pendente) | 0 |
 | ⬜ não diagnosticados | 0 |
 | Notas diretas | 1 (index.md, MOC) |
 | Notas totais (netos) | 55 (8+8+9+8+8 nas 5 folhas + 10 diretas Workflows + 4 no sub-galho 11) |
-| Notas ⬜ pendentes | 23 |
-| Notas ✅ feitas | 31 (Configuração 8 + Hooks e Guardrails 8 + Mental Model 9 + Skills e MCP 6, 2026-07-07/08) |
+| Notas ⬜ pendentes | 0 |
+| Notas ✅ feitas | 54 (Configuração 8 + Hooks e Guardrails 8 + Mental Model 9 + Skills e MCP 8 + Time e Automação 8 + Workflows diretas 9 + sub-galho 11 4, 2026-07-07/08) |
 | Notas ➖ não precisa | 1 (Workflows/07) |
 
-> **Galho-pai 100% diagnosticado em 2026-07-02.** Todos os 6 sub-galhos têm `roadmap.md`.
-> Próximo passo é `/enriquecer-galho` (54 notas ⬜, quase todas `[substantivo]`).
+> **Galho-pai COMPLETO em 2026-07-08.** Todos os 6 sub-galhos ✅ enriquecidos (54/54 notas acionáveis · 1 ➖). Diagnóstico original 2026-07-02.
 
 ---
 

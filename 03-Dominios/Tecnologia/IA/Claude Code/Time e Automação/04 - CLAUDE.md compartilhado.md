@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -295,29 +295,29 @@ Uma forma de garantir: adicione no template de PR um item de checklist — "O CL
 
 ## Armadilhas
 
-**Tudo no CLAUDE.md global**
-Outro dev que clona o repo começa sem contexto. O CLAUDE.md precisa estar versionado com o código — é parte do projeto.
+> [!warning] Tudo no CLAUDE.md global
+> Outro dev que clona o repo começa sem contexto. O CLAUDE.md precisa estar versionado com o código — é parte do projeto.
 
-**CLAUDE.md muito longo**
-Um arquivo de 500 linhas de convenções não vai ser lido completamente — o agente dilui atenção uniformemente sobre todo o conteúdo. Prefira skills para contexto extenso: o agente carrega skills sob demanda, quando pertinente. O CLAUDE.md deve ser o mapa; as skills são os detalhes.
+> [!warning] CLAUDE.md muito longo
+> Um arquivo de 500 linhas de convenções não vai ser lido completamente — o agente dilui atenção uniformemente sobre todo o conteúdo. Prefira skills para contexto extenso: o agente carrega skills sob demanda, quando pertinente. O CLAUDE.md deve ser o mapa; as skills são os detalhes.
 
-**Restrições sem motivo**
-"Nunca use X" sem explicação vira letra morta — o agente segue, mas não entende quando deve adaptar em edge cases. "Nunca use X — porque Y" dá ao agente a capacidade de julgar situações ambíguas.
+> [!warning] Restrições sem motivo
+> "Nunca use X" sem explicação vira letra morta — o agente segue, mas não entende quando deve adaptar em edge cases. "Nunca use X — porque Y" dá ao agente a capacidade de julgar situações ambíguas.
 
-**Documentar aspirações, não realidade**
-Se o time aspira a 100% de cobertura mas na prática faz merge com 60%, o CLAUDE.md não deve dizer "sempre escreva testes para 100%". O agente vai criar conflito com PRs reais. Documente o que realmente acontece.
+> [!warning] Documentar aspirações, não realidade
+> Se o time aspira a 100% de cobertura mas na prática faz merge com 60%, o CLAUDE.md não deve dizer "sempre escreva testes para 100%". O agente vai criar conflito com PRs reais. Documente o que realmente acontece.
 
-**CLAUDE.md desatualizado sem responsável**
-Sem ownership definido, ninguém atualiza o arquivo quando o projeto evolui. Em 6 meses, o CLAUDE.md documenta uma arquitetura que não existe mais. Defina quem é responsável e adicione revisão do CLAUDE.md no processo de retrospectiva.
+> [!warning] CLAUDE.md desatualizado sem responsável
+> Sem ownership definido, ninguém atualiza o arquivo quando o projeto evolui. Em 6 meses, o CLAUDE.md documenta uma arquitetura que não existe mais. Defina quem é responsável e adicione revisão do CLAUDE.md no processo de retrospectiva.
 
-**Misturar conteúdo global e de projeto**
-Preferências pessoais (idioma de resposta, estilo de código) no CLAUDE.md do repo frustram devs com preferências diferentes. O repo deve documentar o projeto, não as preferências do autor.
+> [!warning] Misturar conteúdo global e de projeto
+> Preferências pessoais (idioma de resposta, estilo de código) no CLAUDE.md do repo frustram devs com preferências diferentes. O repo deve documentar o projeto, não as preferências do autor.
 
-**Instruções contraditórias entre CLAUDE.md e skills**
-Se o CLAUDE.md diz "sempre escreva testes antes do código" e uma skill de deadline diz "priorize velocidade sobre cobertura", o agente vai reconciliar de forma imprevisível. Mantenha consistência — a skill pode refinir a regra, não contradizê-la.
+> [!warning] Instruções contraditórias entre CLAUDE.md e skills
+> Se o CLAUDE.md diz "sempre escreva testes antes do código" e uma skill de deadline diz "priorize velocidade sobre cobertura", o agente vai reconciliar de forma imprevisível. Mantenha consistência — a skill pode refinir a regra, não contradizê-la.
 
-**Confiar que o agente vai ler sem que você instrua**
-O agente carrega o CLAUDE.md automaticamente, mas para arquivos muito longos pode não prestar atenção igual a todas as seções. Coloque as restrições mais críticas no topo — não enterradas no meio do documento.
+> [!warning] Confiar que o agente vai ler sem que você instrua
+> O agente carrega o CLAUDE.md automaticamente, mas para arquivos muito longos pode não prestar atenção igual a todas as seções. Coloque as restrições mais críticas no topo — não enterradas no meio do documento.
 
 ## Evolução do CLAUDE.md ao longo do tempo
 
@@ -387,14 +387,53 @@ Antes de fazer push do CLAUDE.md para o repositório:
 - *"Should CLAUDE.md be in the repo root or in `.claude/`?"* — Either works. Root-level `CLAUDE.md` is more visible to humans browsing GitHub. `.claude/CLAUDE.md` keeps Claude Code config co-located. Pick one convention and stick to it — inconsistency confuses both the agent and the team.
 - *"What's the relationship between CLAUDE.md and skills?"* — CLAUDE.md is loaded automatically every session; skills are loaded on demand. CLAUDE.md contains the map and the index of available skills. Skills contain the step-by-step process. Don't repeat skill content in CLAUDE.md — just list the skill name, its type, and when to invoke it.
 
+**Termos-chave PT↔EN** — vocabulário para entrevistas e discussões técnicas em inglês sobre o tema:
+
+| Português | English | Nota de uso |
+|---|---|---|
+| CLAUDE.md compartilhado | shared CLAUDE.md | o arquivo versionado no repo, não o global |
+| responsável (pelo arquivo) | ownership | "who owns CLAUDE.md" é pergunta comum em entrevista sobre governança de IA |
+| desatualização silenciosa | staleness | o risco central: o arquivo não avisa que ficou obsoleto |
+| contrato (do projeto) | contract | metáfora usada para descrever o papel do CLAUDE.md do repo |
+| restrição de proteção | guardrail | as regras de "nunca faça X" que impedem o agente de violar convenções críticas |
+
 > [!tip] Regra dos três
 > Se o agente violou a mesma regra três vezes sem que ela estivesse documentada, é um bug do CLAUDE.md — não do agente. Adicione a restrição com o motivo específico.
+
+> [!tip] Para ver na prática
+> A PM Hannah Stulberg (DoorDash) descreve, em entrevista, como transformou o CLAUDE.md do time num "Team OS" — o arquivo que documenta não só convenções de código, mas o modelo operacional do time inteiro. Vale ouvir para ver a ideia de "contrato versionado" levada além do código: [Build a Team OS with Claude Code](https://www.aakashg.com/hannah-stulberg-podcast/).
+
+## Casos práticos
+
+> [!question] Por que isso importa fora da teoria?
+> A hierarquia global→projeto→subdiretório e as regras de "o que vai onde" só ganham peso quando alguém sente a falta — ou o excesso — delas no mundo real. Dois cenários mostram os dois lados.
+
+**Onboarding de dev novo num monorepo real**
+
+Uma engenheira entra no time e recebe acesso ao monorepo na segunda-feira. Sem CLAUDE.md, ela passaria a primeira semana perguntando no Slack: "por que `core/` não pode importar de `infra/`?", "por que existe um script de migration em vez de editar o SQL direto?", "o que é esse `Result<T, AppError>` que aparece em todo lugar?". Cada resposta é conhecimento que o time já tem internalizado, mas que não está escrito em lugar nenhum acessível.
+
+Com um CLAUDE.md compartilhado bem escrito na raiz do monorepo — e um `backend/CLAUDE.md` complementar, específico do módulo em que ela vai trabalhar — o agente que a ajuda já sabe a regra de dependência entre camadas, os comandos de build e teste, e as restrições que geraram incidentes no passado. O primeiro PR dela ainda passa por review, mas as observações não são mais "isso aqui viola uma convenção que você não tinha como saber" — são refinamentos de implementação. A curva de rampa que levava semanas de absorção tácita vira dias de leitura explícita.
+
+**CLAUDE.md que causou incidente por estar desatualizado**
+
+Um time migrou a estratégia de tratamento de erros de `throw` para `Result<T, AppError>` há três meses — mas ninguém atualizou a seção de Convenções do CLAUDE.md, que ainda descrevia o padrão antigo. Um agente, seguindo a instrução escrita (não o código real), gerou uma função nova usando `throw` em um módulo crítico de pagamento. O código passou no review porque o revisor, cansado no fim do dia, confiou que o agente tinha seguido as convenções documentadas — afinal, era exatamente isso que o CLAUDE.md dizia para fazer.
+
+O bug só apareceu em produção: o `throw` não era capturado pela camada de infraestrutura, que só sabia lidar com `AppError`, e a exceção subiu sem tratamento até derrubar a requisição com erro 500 genérico para o cliente. A causa raiz não foi o agente "alucinando" — foi um CLAUDE.md que documentava uma arquitetura que o time já tinha abandonado. Esse é o custo concreto da armadilha "CLAUDE.md desatualizado sem responsável": não é só um arquivo raso, é uma fonte de verdade errada que o agente segue com confiança total.
+
+## O que vem a seguir
+
+Um CLAUDE.md bem escrito resolve o problema de contexto — mas abre outro: cada sessão que carrega esse arquivo, mais as skills, mais o histórico da conversa, consome tokens antes mesmo da primeira resposta. Num time inteiro rodando Claude Code em paralelo, esse custo se soma rápido e fica invisível até a fatura chegar. A próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/05 - Controle de custo|05 - Controle de custo]], mostra como medir e controlar esse consumo — com `ccusage` e os limites que fazem sentido para automações em CI/CD e para o time no dia a dia.
+
+## Fontes
+
+- **Anthropic** — [*Manage Claude's memory*](https://code.claude.com/docs/en/memory) (2026). Documentação oficial sobre a hierarquia de CLAUDE.md (enterprise, project, user, local) e como o Claude Code carrega e mescla os arquivos de memória.
 
 ## Referências
 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — estrutura detalhada e frontmatter do arquivo
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/08 - Skills em time|08 - Skills em time]] — catálogo de skills no repo
 - [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/07 - Onboarding de time|07 - Onboarding de time]] — usar CLAUDE.md no processo de onboarding
+- [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/05 - Controle de custo|05 - Controle de custo]] — próximo passo: medir e limitar o consumo de tokens do time
 - [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/index|Time e Automação]] — índice do galho
 - [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/06 - Segurança organizacional|06 - Segurança organizacional]] — restrições de segurança no CLAUDE.md
 - [[03-Dominios/Tecnologia/IA/Claude Code/index|Claude Code]] — tronco da trilha

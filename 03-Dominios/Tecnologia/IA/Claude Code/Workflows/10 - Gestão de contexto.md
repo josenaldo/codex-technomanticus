@@ -5,7 +5,7 @@ fase: Adepto
 progress: in_progress
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -91,6 +91,37 @@ Fique atento a estes padrões:
 > [!question]- O que fazer quando vejo os sinais de degradação?
 > Primeiro, corrija o comportamento específico. Depois, avalie se vale compactar: se você já teve 2-3 correções do mesmo tipo na sessão, compacte e restate as regras explicitamente. Se foi um caso isolado, continue — o /compact tem custo (você perde contexto potencialmente útil).
 
+## Métricas — quando o contexto está objetivamente cheio
+
+> [!question]- Os sinais de degradação são comportamentais e subjetivos — dá pra medir "quão cheio" o contexto está, em vez de esperar o agente errar?
+> Dá. O Claude Code expõe o número: rode `/context` na sessão e você vê o breakdown de tokens por categoria — system prompt, tools, memory files, skills, histórico de conversa — junto com o percentual usado da janela total.
+
+Os sinais da seção anterior (regressão de decisões, inconsistência, hesitação) são o **efeito** visível da degradação. Você não precisa esperar o efeito aparecer no comportamento do agente pra agir — `/context` te dá a **causa** medida em número, antes que ela vire erro perceptível.
+
+**Uso:**
+```
+/context
+```
+
+A saída mostra algo como:
+```
+Context Usage: 161.3k / 200.0k tokens (81%)
+  System prompt:       4.2k
+  Tools:               12.1k
+  Memory files:         8.4k
+  Skills:               6.7k
+  Conversation:       129.9k
+```
+
+Pense no `/context` como o medidor de combustível do carro. Os sinais comportamentais — o agente hesitando, esquecendo uma instrução, revertendo uma decisão — são o carro engasgando porque o tanque já esvaziou. O medidor avisa *antes* de engasgar; ele não substitui o motorista prestando atenção, mas dá um número em vez de um palpite.
+
+Regra prática, alinhada ao limiar de `/compact` da seção seguinte: trate **~50%** da janela como o ponto de atenção (comece a planejar um checkpoint natural) e **~80%** como o ponto de ação obrigatória — compacte ou encerre a sessão antes que a degradação apareça no comportamento, não depois de já ter aparecido.
+
+> [!summary] Sinais de degradação são o efeito; `/context` é a causa medida em número. Combine os dois: monitore o percentual proativamente durante a sessão, e trate os sinais comportamentais como confirmação tardia de que já passou da hora de compactar.
+
+> [!tip] Vídeo — o que compõe uma janela de contexto
+> [Most devs don't understand how context windows work](https://www.youtube.com/watch?v=-uW5-TaVXu4) (Matt Pocock, out/2025) — explica o que entra na janela de contexto de um agente de IA (tokens de entrada e saída, histórico, ferramentas) e por que essa é a restrição central de qualquer sessão longa com agentes de codificação. Complementa o mecanismo de "sinal diluído" desta nota com a mecânica de tokens por trás do número que o `/context` mostra.
+
 ## /compact — compactar o contexto
 
 O comando `/compact` sumariza a sessão atual em um resumo comprimido, descartando os detalhes das mensagens individuais mas preservando as decisões e o estado atual.
@@ -158,6 +189,49 @@ Sessão 3: testes e2e
 ```
 
 O CLAUDE.md e o código são o "estado persistido" entre sessões. O histórico de mensagens não precisa persistir.
+
+## Gestão de contexto multi-agent — isolar em vez de compactar
+
+> [!question]- E quando a tarefa não cabe numa sessão só, mesmo com `/compact` e sessões novas por fase?
+> Aí a ferramenta muda de categoria: em vez de gerenciar o contexto de *uma* sessão, você distribui o trabalho entre várias sessões isoladas — sub-agents — que rodam em paralelo e devolvem só o resultado.
+
+Tudo até aqui nesta nota assume um agente, uma sessão, um contexto crescendo linearmente. Mas há um limite estrutural: nenhuma técnica de compactação evita que uma tarefa de pesquisa ampla (10 hipóteses a investigar, cada uma exigindo várias buscas e leituras) explique o contexto principal antes mesmo de você chegar à síntese.
+
+A saída não é comprimir mais — é **não deixar entrar**. Um sub-agent roda numa janela de contexto própria: ele pode fazer 20 chamadas de ferramenta, ler arquivos extensos, seguir becos sem saída — nada disso volta pro agente orquestrador. O orquestrador recebe só o resultado final, já sintetizado.
+
+A diferença central em relação a tudo que foi dito até aqui: `/compact` gerencia o contexto *depois* que ele já cresceu, resumindo o que aconteceu. Sub-agents evitam que o contexto do orquestrador cresça, porque o trabalho exploratório nunca chega a entrar nele — só a conclusão. São mecanismos que atacam o mesmo problema (ruído acumulado) em pontos diferentes do ciclo de vida da sessão.
+
+```mermaid
+flowchart TB
+    O["Orquestrador\n(contexto principal)"]
+    S1["Sub-agent A\n20 tool calls, contexto isolado"]
+    S2["Sub-agent B\n15 tool calls, contexto isolado"]
+    S3["Sub-agent C\n8 tool calls, contexto isolado"]
+
+    O -->|"dispatch: investigue X"| S1
+    O -->|"dispatch: investigue Y"| S2
+    O -->|"dispatch: investigue Z"| S3
+    S1 -->|"só o resultado"| O
+    S2 -->|"só o resultado"| O
+    S3 -->|"só o resultado"| O
+
+    style O fill:#f0fff4,stroke:#51cf66
+```
+
+Isso não é só arquitetura elegante — é mensurável. A Anthropic reportou que um sistema multi-agent (agente líder Opus + subagentes Sonnet paralelos) superou um único agente Opus em **90,2%** numa avaliação interna de pesquisa, principalmente porque o formato permite gastar mais tokens úteis no problema sem que cada um deles compita pelo mesmo contexto compartilhado.
+
+**Quando vale a pena:**
+- Tarefas *breadth-first*: várias direções independentes que não dependem do resultado umas das outras (pesquisar 5 bibliotecas candidatas, auditar 8 módulos separados).
+- O trabalho de cada sub-agent é volumoso o bastante pra sozinho já pressionar a janela de contexto principal.
+
+**Quando não vale:**
+- Tarefas sequenciais onde o passo N depende do resultado detalhado (não só do resumo) do passo N-1 — aí isolar contexto significa perder informação necessária.
+- Tarefas pequenas, onde o overhead de orquestrar sub-agents supera o custo de só fazer inline.
+
+> [!example]- Exemplo: revisão de código vs. pesquisa ampla
+> Revisar um PR de 200 linhas é sequencial — cada arquivo pode depender do anterior pra fazer sentido; melhor manter tudo no mesmo contexto. Já pesquisar "quais das 6 bibliotecas de fila candidatas suportam retry com backoff configurável" é breadth-first — cada biblioteca é independente das outras, então despachar um sub-agent por biblioteca e coletar só as conclusões evita que a leitura de 6 READMEs e changelogs polua o contexto principal com detalhe irrelevante pra decisão final.
+
+> [!summary] `/compact` reduz o que já está no contexto. Sub-agents evitam que o contexto cresça em primeiro lugar, isolando o trabalho exploratório numa janela separada e devolvendo só a síntese. São táticas complementares, não substitutas — veja [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/07 - Sub-agents e dispatch|07 - Sub-agents e dispatch]] para o mecanismo completo de dispatch.
 
 ## Quando NÃO usar /compact
 
@@ -247,7 +321,9 @@ Início da sessão:
 
 Durante a sessão:
 → Commit depois de cada unidade de trabalho completa
+→ Cheque `/context` de vez em quando — não espere o comportamento degradar pra descobrir que passou de 80%
 → /compact + restate quando mudar de assunto ou perceber degradação
+→ Tarefa breadth-first grande demais para uma sessão? Considere despachar sub-agents em vez de tentar caber tudo no mesmo contexto
 → Se o agente fizer algo inconsistente, corrija e reforce a regra
 
 Fim da sessão (se não concluiu):
@@ -293,13 +369,18 @@ The core toolkit is three-part: frequent commits (create safe restore points and
 | Ruído | Noise | contexto irrelevante no histórico |
 | Sinal | Signal | contexto que muda decisão do agente |
 | Regressão de decisões | Decision regression | agente voltando a padrões anteriores rejeitados |
+| Isolamento de contexto | Context isolation | sub-agent com janela própria, resultado sintetizado devolvido ao orquestrador |
+| Pesquisa em amplitude | Breadth-first (query) | várias direções independentes, candidato natural pra dispatch em paralelo |
 
 ## O que vem a seguir
 
 Gestão de contexto é a fundação de sessões produtivas. Com sessões limpas, você pode aplicar com eficácia todo o resto do galho Workflows.
 
+As três técnicas cobertas aqui — `/compact`, sessões novas por fase, e isolamento via sub-agents — não são excludentes. Uma sessão saudável tipicamente usa as três: `/compact` no meio do trabalho contínuo, sessão nova quando a fase muda, sub-agents quando uma sub-tarefa específica ameaça inundar o contexto principal sozinha.
+
 - **[[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]]** — como /compact funciona internamente e os detalhes técnicos da compactação
 - **[[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]]** — CLAUDE.md como contexto persistente que sobrevive entre sessões
+- **[[03-Dominios/Tecnologia/IA/Claude Code/Workflows/08 - Multi-agent|08 - Multi-agent]]** — quando compactar não basta, isolar o trabalho em sub-agents paralelos vira a ferramenta certa
 
 ## Veja também
 
@@ -307,96 +388,14 @@ Gestão de contexto é a fundação de sessões produtivas. Com sessões limpas,
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/03 - Refactoring pesado|03 - Refactoring pesado]] — gestão de contexto em refactors longos
 - [[03-Dominios/Tecnologia/IA/Claude Code/Configuração/02 - CLAUDE.md anatomia|02 - CLAUDE.md anatomia]] — CLAUDE.md como contexto persistente entre sessões
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/07 - Sub-agents e dispatch|07 - Sub-agents e dispatch]] — contexto limpo por design via sub-agents
+- [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/08 - Multi-agent|08 - Multi-agent]] — orquestração de múltiplos sub-agents em paralelo, o cenário completo por trás da seção de isolamento de contexto multi-agent desta nota
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] — índice do galho
 
 ## Referências
 
 - [Anthropic — managing context in Claude Code](https://docs.anthropic.com/en/docs/claude-code/memory) — documentação oficial sobre memória e contexto no Claude Code
 - [Anthropic — /compact command](https://docs.anthropic.com/en/docs/claude-code/cli-reference) — referência do comando /compact na CLI do Claude Code
+- [Anthropic — Explore the context window](https://code.claude.com/docs/en/context-window) — documentação oficial do comando `/context` e do breakdown de tokens por categoria
+- [Matt Pocock — Most devs don't understand how context windows work](https://www.youtube.com/watch?v=-uW5-TaVXu4) (out/2025) — vídeo explicando o que compõe uma janela de contexto e por que é a restrição central de agentes de IA
+- [Anthropic — How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — dado de 90,2% de ganho de um sistema multi-agent (Opus líder + Sonnet subagentes) sobre um único agente Opus, e a explicação de por que isolar contexto em sub-agents funciona
 - [Lilian Weng — LLM context length](https://lilianweng.github.io/posts/2023-01-27-the-transformer-family-v2/) — fundamento técnico: como transformers ponderam contexto longo
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

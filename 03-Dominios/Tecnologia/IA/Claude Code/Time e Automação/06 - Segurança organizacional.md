@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -348,25 +348,46 @@ Para times adotando Claude Code progressivamente, um modelo de maturidade ajuda 
 
 Não é necessário chegar ao nível 4 imediatamente — o nível 1 já elimina os riscos mais sérios. A progressão deve acompanhar o nível de automação e o quanto o agente toca sistemas críticos.
 
+## Casos práticos
+
+Política e hooks no papel convencem. Dois incidentes reais mostram por que cada camada da defesa em profundidade existe — e o que acontece quando uma falha sozinha.
+
+**Caso 1 — MCP de produção exposto por engano**
+
+Um time configurou um MCP server Postgres apontando para o banco de staging durante uma sessão de debug. Duas semanas depois, ao trocar de projeto, um dev reaproveitou o `.mcp.json` sem revisar as variáveis de ambiente — e a `DATABASE_URL` staging tinha sido substituída, num commit anterior, pela URL de produção "só para investigar um bug rápido". O agente, instruído a "verificar os pedidos com status pendente", rodou uma query de leitura contra produção sem que ninguém percebesse — o comportamento pareceu normal porque o resultado era plausível.
+
+> [!warning] O que deu errado
+> Não foi o modelo que "decidiu mal" — foi a ausência de um controle estrutural. Nenhum hook bloqueava `DATABASE_URL` contendo `prod`, e o nome do MCP server (`postgres`, sem sufixo `-ro` ou `-staging`) não sinalizava o ambiente. A regra de nomenclatura da seção anterior (`postgres-staging-ro`) existe exatamente para tornar esse tipo de erro visível antes de virar incidente.
+
+**Caso 2 — prompt injection via CI em repositório público**
+
+Um pipeline de CI usava Claude Code para revisar automaticamente issues abertas por usuários externos, com `--allowedTools "Read,Bash(gh:*)"` e `--no-permission-prompts`. Um autor mal-intencionado abriu uma issue cujo corpo continha um bloco de código formatado como "contexto adicional para o revisor", instruindo o agente a rodar `gh pr create` com um payload que exfiltrava segredos do ambiente de CI para uma branch pública.
+
+> [!warning] O que deu errado
+> `Bash(gh:*)` era permissivo demais — o `allowedTools` restringia o binário, não a ação. O agente tinha acesso de escrita (criar PR) quando a tarefa só exigia leitura (revisar e comentar). O incidente só foi possível porque a defesa em profundidade tinha uma lacuna dupla: `allowedTools` amplo demais e nenhum hook `PreToolUse` verificando comandos `gh` que criam ou modificam recursos.
+
+> [!question] O padrão comum aos dois casos?
+> Em ambos, o modelo fez exatamente o que o ambiente permitia — não houve "decisão errada" da IA. O incidente nasceu de uma configuração (nome de MCP ambíguo, `allowedTools` amplo) que um hook ou uma convenção de nomenclatura teria bloqueado estruturalmente, sem depender do bom senso do modelo.
+
 ## Armadilhas
 
-**"O modelo não faria isso"**
-O modelo faz o que o contexto indica. Se o contexto permite e a tarefa parece exigir, ele vai. Não confie em autocontrole do modelo — configure guardrails estruturais.
+> [!warning] "O modelo não faria isso"
+> O modelo faz o que o contexto indica. Se o contexto permite e a tarefa parece exigir, ele vai. Não confie em autocontrole do modelo — configure guardrails estruturais.
 
-**MCP de produção "só para testar"**
-Uma vez configurado, o MCP está disponível em qualquer sessão. Um novo dev ou um prompt mal formulado pode acessar produção sem querer. Nunca configure MCP de produção em máquinas de desenvolvimento.
+> [!warning] MCP de produção "só para testar"
+> Uma vez configurado, o MCP está disponível em qualquer sessão. Um novo dev ou um prompt mal formulado pode acessar produção sem querer. Nunca configure MCP de produção em máquinas de desenvolvimento.
 
-**Hooks que logam mas não bloqueiam**
-Hooks que só registram sem bloquear dão falsa sensação de segurança. Bloqueie o que deve ser bloqueado com `exit 2`; logar para auditoria é complementar, não substituto.
+> [!warning] Hooks que logam mas não bloqueiam
+> Hooks que só registram sem bloquear dão falsa sensação de segurança. Bloqueie o que deve ser bloqueado com `exit 2`; logar para auditoria é complementar, não substituto.
 
-**`--allowedTools` sem `--no-permission-prompts` em CI**
-Sem `--no-permission-prompts`, o agente pausa pedindo confirmação — e o job trava. Sem `--allowedTools`, o agente pode usar qualquer tool. Sempre use ambas as flags juntas em CI.
+> [!warning] `--allowedTools` sem `--no-permission-prompts` em CI
+> Sem `--no-permission-prompts`, o agente pausa pedindo confirmação — e o job trava. Sem `--allowedTools`, o agente pode usar qualquer tool. Sempre use ambas as flags juntas em CI.
 
-**API key compartilhada em dev compartilhado**
-Se vários devs compartilham uma máquina ou container de desenvolvimento, a API key de um fica exposta para todos. Cada dev deve ter sua própria key configurada em `~/.claude/`.
+> [!warning] API key compartilhada em dev compartilhado
+> Se vários devs compartilham uma máquina ou container de desenvolvimento, a API key de um fica exposta para todos. Cada dev deve ter sua própria key configurada em `~/.claude/`.
 
-**Assumir que o agente sabe onde parar**
-O agente tende a completar o que parece ser a tarefa lógica. Se o prompt pede "resolve o bug no auth", e a resolução aparente requer modificar um arquivo de migration, o agente pode modificar a migration — mesmo que você não esperasse isso. Defina escopo explícito no prompt para tarefas com potencial de escopo creep: "modifique apenas arquivos em `src/auth/`, não toque em migrations".
+> [!warning] Assumir que o agente sabe onde parar
+> O agente tende a completar o que parece ser a tarefa lógica. Se o prompt pede "resolve o bug no auth", e a resolução aparente requer modificar um arquivo de migration, o agente pode modificar a migration — mesmo que você não esperasse isso. Defina escopo explícito no prompt para tarefas com potencial de escopo creep: "modifique apenas arquivos em `src/auth/`, não toque em migrations".
 
 ## Como explicar em inglês
 
@@ -378,6 +399,32 @@ O agente tende a completar o que parece ser a tarefa lógica. Se o prompt pede "
 **Common questions:**
 - *"What's the biggest risk with Claude Code in production?"* — Not the model going rogue — it's excessive access combined with prompt injection. A malicious file in the repository can try to instruct the agent to exfiltrate data or execute arbitrary commands. Defense in depth: restrict tools, add hooks, review unexpected outputs.
 - *"How do you handle when the agent does something unexpected?"* — We treat it as a configuration gap, not a model failure. Unexpected action → add the restriction to CLAUDE.md with the reason → add a hook if it's in the "never" category → document the incident. The goal is a system where unexpected actions are structurally impossible, not just unlikely.
+
+**Termos-chave PT↔EN**
+
+| Português | Inglês | Nota |
+|---|---|---|
+| Grade de proteção / controle estrutural | Guardrail | Barreira que não depende do julgamento do modelo |
+| Injeção de prompt | Prompt injection | Instrução maliciosa embutida em conteúdo que o agente processa |
+| Princípio do menor privilégio | Least privilege | Acesso proporcional à necessidade, não à capacidade |
+| Hook | Hook | Sem tradução no jargão do vault; comando que intercepta o ciclo de vida da tool call |
+| Ferramentas permitidas | `allowedTools` | Flag/config que restringe o conjunto de tools disponíveis ao agente |
+
+> [!tip] Defesa em profundidade
+> Nenhum controle isolado é suficiente. `--allowedTools` pode ser esquecido em alguma invocação. Hooks podem ter um bug. CLAUDE.md pode estar desatualizado. A segurança real vem da combinação: política documentada + controles estruturais + auditoria + revisão humana de ações irreversíveis. Cada camada compensa as falhas das outras.
+>
+> Simon Willison — a quem se atribui o próprio termo "prompt injection" — detalha esse raciocínio na talk [Prompt Injection and the Lethal Trifecta](https://www.youtube.com/watch?v=js6rgedzjGs) (Bay Area AI Security Meetup, 2025): agentes com acesso a dado privado + conteúdo não confiável + canal de saída externa formam a combinação de risco máximo — a defesa é remover um dos três lados, não confiar que o modelo "resista" à injeção.
+
+## O que vem a seguir
+
+Política de três categorias, hooks bloqueadores, MCP com mínimo privilégio — tudo isso é a arquitetura de segurança que um indivíduo ou um time técnico consegue montar sozinho. Mas essa arquitetura só funciona se o time inteiro souber que ela existe, por que existe, e como não contorná-la sem querer no primeiro dia de uso.
+
+É esse o próximo passo: como apresentar essas regras a um dev que nunca usou Claude Code, sem que a segurança pareça burocracia — ver [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/07 - Onboarding de time|07 - Onboarding de time]].
+
+## Fontes
+
+- **Anthropic** — [*Hooks reference*](https://code.claude.com/docs/en/hooks) (docs oficiais). Especificação completa dos eventos de hook (`PreToolUse`, `PostToolUse`), formato de entrada/saída em JSON e códigos de saída usados nos exemplos deste texto.
+- **OWASP** — [*OWASP Top 10 for Large Language Model Applications*](https://owasp.org/www-project-top-10-for-large-language-model-applications/) (2025). Referência-padrão da indústria para os riscos de segurança de aplicações e agentes baseados em LLM, incluindo prompt injection e "excessive agency" — os dois vetores mais relevantes para automação organizacional com Claude Code.
 
 ## Referências
 

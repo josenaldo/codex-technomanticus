@@ -4,7 +4,7 @@ type: concept
 progress: in_progress
 publish: true
 created: 2026-05-22
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 fase: Magus
 tags:
@@ -132,6 +132,9 @@ Implementações maduras comparam a **Merkle tree** do repo (hash do conteúdo d
 
 Sem re-indexação automática, o índice fica stale e o agente recupera "código antigo" — que pode nem compilar mais.
 
+> [!tip] Vídeo — construindo indexação de codebase ao vivo
+> [Code with me — build codebase indexing for RAG and semantic search with live update](https://www.youtube.com/watch?v=G3WstvhHO24) (CocoIndex) mostra, na prática e ao vivo, o mesmo pipeline descrito nesta seção: chunking AST-aware com Tree-sitter, geração de embeddings e atualização incremental do índice conforme o código muda — sem precisar re-processar o repo inteiro a cada save. Útil pra quem quer ver o Merkle-tree-diff e o chunking por AST saindo do diagrama e virando código rodando.
+
 ## Acesso via MCP
 
 A camada que conecta o vector DB ao agente é um **MCP server**. Ele expõe tools que o agente invoca como qualquer outra ferramenta:
@@ -165,6 +168,20 @@ hybrid_search(query="JWT validation", symbol="validateToken")
 ```
 
 O resultado combina relevância conceitual (embedding) com match literal (FTS5/BM25). É o padrão de busca empresarial — o mesmo que o Elasticsearch usa quando você habilita `semantic search + keyword`.
+
+> [!question]- Como exatamente você combina dois rankings diferentes (vetor e BM25) em um só?
+> O jeito ingênuo — normalizar os dois scores para 0-1 e somar — quebra fácil: BM25 e cosine similarity têm distribuições muito diferentes, então a soma acaba dominada por qualquer um dos dois que tiver escala maior naquela query específica.
+>
+> A técnica que resolve isso é **Reciprocal Rank Fusion (RRF)**: em vez de combinar os *scores*, combina as *posições* no ranking.
+>
+> ```
+> RRF_score(doc) = Σ  1 / (k + rank_i(doc))
+>                  i∈{vetor, BM25}
+> ```
+>
+> `k` é uma constante de suavização (tipicamente 60). Um documento que aparece em 2º lugar no ranking vetorial e 5º no BM25 recebe um score maior do que um documento em 1º no vetorial mas ausente do BM25 — porque RRF recompensa consenso entre os dois rankings, não pico isolado em um deles. Não precisa normalizar nada: rank é sempre um inteiro, independente da escala do score original. É o método usado por padrão em Elasticsearch, Weaviate e na maioria das implementações de hybrid search de produção.
+
+O achado empírico central em benchmarks de retrieval (texto e código) é que BM25 e dense retrieval têm **recall complementar**: os documentos que um erra, o outro frequentemente acerta. É esse complemento — não a soma bruta de scores — que faz hybrid search superar qualquer método isolado.
 
 ## Casos práticos
 
@@ -225,6 +242,34 @@ search_code("database query with string concatenation")
 
 Grep por `SELECT` ou `query(` encontraria 150 resultados. A busca semântica encontrou os 3 que têm o padrão de risco.
 
+---
+
+### Caso 4: onboarding de dev júnior num monorepo desconhecido
+
+Tarefa: dev novo pergunta "como funciona o fluxo de checkout deste sistema? Preciso adicionar um cupom de desconto."
+
+```
+# Sem indexação: dev pede ajuda no Slack, ou passa 1h navegando manualmente
+Grep("checkout") → 80 matches espalhados em controllers, services, tests, mocks
+Read(...) → 5-6 arquivos até montar o fluxo mental
+
+# Com indexação:
+search_code("checkout flow order total calculation")
+  → chunk 1: checkout/service.ts:20-68 (orquestra o fluxo: cart → pricing → payment)
+  → chunk 2: checkout/pricing.ts:1-40 (cálculo de total, onde descontos entram)
+  → chunk 3: checkout/coupon.ts:1-25 (stub existente — só valida cupom, não aplica)
+
+"O fluxo está em checkout/service.ts. O cálculo de total é em pricing.ts,
+ e já existe um stub de validação de cupom em coupon.ts que não está
+ conectado ao pricing ainda — é aí que a feature entra."
+```
+
+Esse é o caso onde indexação semântica paga dividendo além de tokens: reduz a dependência
+de conhecimento tribal. Um dev júnior (humano ou agente) chega à mesma resposta que um
+sênior chegaria perguntando no Slack — mas em segundos, sem interromper ninguém. O ganho
+não é só de custo, é de **autonomia de onboarding**: novos membros do time (ou uma nova
+sessão de agente sem memória do repo) reconstroem contexto sozinhos.
+
 ## Quando usar
 
 | Cenário | Vale? | Por quê |
@@ -261,6 +306,31 @@ Nem todo embedding é igual para código. Modelos treinados em linguagem natural
 | nomic-embed-code (local) | 768 | $0 (GPU) | Self-hosted, sem envio de dados |
 
 Para a maioria dos casos, `text-embedding-3-small` é o ponto de partida correto: custo baixo, qualidade adequada, fácil de trocar depois. Se você precisa de maior precisão (repo crítico, auditoria de segurança), `voyage-code-2` — treinado especificamente para código — costuma superar os modelos gerais por 10-15% em benchmarks de code retrieval.
+
+## Benchmarks de retrieval em código
+
+> [!question]- Como medir se o índice de fato "acha" o código certo, além do teste manual de sanidade?
+
+Retrieval de código tem sua própria linhagem de benchmarks, distinta de retrieval de texto genérico — porque código tem estrutura (assinatura de função, hierarquia de classe) que texto em linguagem natural não tem.
+
+**CodeSearchNet** foi o benchmark fundador (2019): pares de query-em-linguagem-natural → função-em-código, em seis linguagens. As baselines originais já comparavam IR clássico (ElasticSearch, BM25, TF-IDF) contra bi-encoders neurais treinados com objetivo contrastivo — o mesmo desenho conceitual usado hoje em embeddings de produção. Modelos mais recentes como CodeBERT e GraphCodeBERT elevaram a régua ao incorporar estrutura de AST diretamente no treinamento, não só o texto do código.
+
+O padrão que a pesquisa mais recente confirma — e que a seção de hybrid search acima antecipou — é o desenho em duas etapas **recall-then-rerank**: um bi-encoder leve (opcionalmente com BM25 fundido) recupera um pool amplo de candidatos com baixo custo computacional; um cross-encoder mais caro reordena só esse pool reduzido para o ranking final. É o mesmo motivo pelo qual `search_code` retorna `top_k=5` em vez de escanear o repo inteiro toda vez — a etapa cara (reranking semântico completo) só roda sobre um conjunto pequeno e pré-filtrado.
+
+```mermaid
+flowchart LR
+    query["Query"] --> recall["Recall: bi-encoder<br/>+ BM25 (barato)"]
+    recall --> pool["Pool de candidatos<br/>(ex: top-50)"]
+    pool --> rerank["Rerank: cross-encoder<br/>(caro, mas só 50 docs)"]
+    rerank --> final["Top-5 final"]
+
+    style recall fill:#e8f4f8,stroke:#339af0
+    style rerank fill:#fff3e0,stroke:#ff9800
+```
+
+Um exemplo concreto dessa estratégia de fusão é o sistema **TOSS**, que combina múltiplos sinais de retrieval (incluindo BM25) e atinge MRR (Mean Reciprocal Rank) de 0.763 com latência bem menor do que reranking puro sobre o corpus inteiro — evidência empírica de que hybrid search não é só "mais robusto", é também mais barato em produção, porque a etapa cara opera sobre um pool pequeno.
+
+> [!summary] O benchmark confirma na prática o que a seção de hybrid search argumenta em teoria: BM25 e embeddings erram em pontos diferentes, e a arquitetura recall-then-rerank é o jeito padrão de capturar esse complemento sem pagar o custo de reranking sobre o corpus inteiro.
 
 ## Integração com o fluxo de desenvolvimento
 
@@ -421,83 +491,10 @@ Indexação semântica responde "onde está o código que faz X?" A próxima cam
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/07 - Tokens e custo|Tokens e custo]] — fundamentos econômicos do problema
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|Tronco do sub-galho]]
 
-## Referências
+## Fontes
 
 - [zilliztech/claude-context](https://github.com/zilliztech/claude-context) — MCP de semantic search mantido pela Zilliz (empresa por trás do Milvus). MIT. Usa Tree-sitter para chunking AST-aware, Merkle tree para re-indexação incremental, suporte a OpenAI/Voyage/Gemini para embeddings. Cross-platform: Claude Code, Cursor, Codex, Gemini CLI, Windsurf.
 - [Anthropic — Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval) — técnica que melhora qualidade dos chunks adicionando contexto antes de embedar; relevante para implementadores.
 - [SQLite FTS5 documentation](https://www.sqlite.org/fts5.html) — fundamento do lado keyword do hybrid search; se você já usa SQLite (como no sandboxing), FTS5 é o caminho natural antes de um vector DB completo.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- [Recall Before Rerank: Benchmarking Deep Learning Models for Large-Scale Code-to-Code Retrieval](https://arxiv.org/html/2606.27401) — benchmark de recall/rerank em recuperação de código; base para a seção de benchmarks de retrieval.
+- [CocoIndex — Code with me: build codebase indexing for RAG and semantic search with live update](https://www.youtube.com/watch?v=G3WstvhHO24) — vídeo demonstrando indexação de codebase com Tree-sitter e atualização incremental em tempo real; a mesma arquitetura descrita nesta nota (chunking AST-aware, re-indexação incremental).

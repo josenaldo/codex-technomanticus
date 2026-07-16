@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -261,32 +261,46 @@ Skills são parte do onboarding. Um dev que clona o repo e configura o Claude Co
 
 O novo dev não precisa aprender as convenções do zero — o agente as segue automaticamente depois que as skills são carregadas.
 
-## Anti-padrões comuns em times
+## Casos práticos
 
-**O museu de skills**
-O time cria skills com entusiasmo no início, mas ninguém as mantém. Meses depois, `.claude/skills/` parece um museu: documentos que descrevem práticas abandonadas, libs trocadas, convenções que ninguém mais segue. O agente segue o museu com confiança.
+**Cenário 1 — time de 8 devs adota skills e evita um incidente repetido**
 
-**Como evitar:** todo frontmatter de skill de domínio tem `last_reviewed`. Skills com mais de 90 dias sem revisão entram em pauta na retrospectiva — revisar ou remover.
+Um time de backend vivia repetindo o mesmo erro: esquecer de invalidar cache ao alterar um campo indexado, causando dados obsoletos em produção. Depois do terceiro incidente, o tech lead escreveu `cache-invalidation.md`: quando um campo indexado muda, quais chaves de cache invalidar, e o comando exato pra rodar. A skill entrou no `.claude/skills/dominio/`, com owner definido e um exemplo real do incidente anterior no corpo do texto.
 
-**A skill aspiracional**
-O time escreve o processo que *gostaria* de seguir, não o que *realmente* segue. A skill de TDD diz "escreva o teste primeiro, sempre" — mas na prática o time escreve testes depois, exceto para código crítico. O agente trava tentando seguir o ideal.
+Resultado em três meses: zero recorrências do mesmo bug. Todo PR que tocava o schema indexado passou a receber, automaticamente, o lembrete do agente para invalidar o cache certo — porque a skill virou parte do contexto de qualquer sessão que tocasse aquele módulo. O ganho não foi só evitar o bug: foi transformar conhecimento tribal (só o tech lead sabia dessa armadilha) em conhecimento acessível a qualquer dev, júnior incluso.
 
-**Como evitar:** documente o processo real com as exceções reais. "Escreva o teste primeiro — exceto para scripts de migração one-off" é mais útil que a versão idealizada.
+**Cenário 2 — time de 12 devs abandona uma skill sem perceber, e o agente segue orientando errado**
 
-**A skill monolítica**
-Um `convenções.md` com 800 linhas cobrindo nomenclatura, estrutura de pastas, segurança, banco, e linting. O agente lê tudo, mas prioriza o que vem primeiro ou o que é mais recente no texto.
+Um time de frontend tinha `state-management.md`, escrita quando o projeto usava Redux. Seis meses depois, o time migrou para uma lib de estado mais simples — mas ninguém lembrou de tocar a skill. Sem owner definido no frontmatter, a atualização não era responsabilidade de ninguém específico.
 
-**Como evitar:** skills focadas, 100-200 linhas cada. `nomenclatura.md`, `banco.md`, `segurança.md`. O agente carrega o que for relevante para a tarefa.
+O problema só apareceu quando um dev novo, trabalhando com o agente numa feature nova, recebeu sugestões consistentes de padrão Redux (actions, reducers, dispatch) — um padrão que o time tinha abandonado havia meses. O dev, confiando no agente, implementou a feature no padrão errado. Levou um PR inteiro de retrabalho e uma reunião de retrospectiva pra descobrir a causa: a skill nunca foi atualizada, e ninguém tinha lido `.claude/skills/` desde a migração. A correção não foi só editar a skill — foi adicionar `last_reviewed` obrigatório e a pergunta de retrospectiva ("alguma skill te levou na direção errada esta semana?") ao processo do time.
 
-**O conflito silencioso**
-`convencoes.md` diz camelCase. `arquitetura.md` tem exemplos com snake_case (legado não atualizado). O agente tenta reconciliar e escolhe arbitrariamente.
+## Armadilhas comuns
 
-**Como evitar:** ao atualizar uma skill, grep por termos que possam conflitar com outras. `grep -r "snake_case" .claude/skills/` antes de commitar uma mudança de convenção.
+> [!warning] O museu de skills
+> O time cria skills com entusiasmo no início, mas ninguém as mantém. Meses depois, `.claude/skills/` parece um museu: documentos que descrevem práticas abandonadas, libs trocadas, convenções que ninguém mais segue. O agente segue o museu com confiança.
+>
+> **Como evitar:** todo frontmatter de skill de domínio tem `last_reviewed`. Skills com mais de 90 dias sem revisão entram em pauta na retrospectiva — revisar ou remover.
 
-**Skill sem owner em time que cresce**
-Uma skill de 3 meses sem dono vira orfã. Quando a convenção muda, ninguém sabe que a skill precisa ser atualizada. O novo dev ou o agente segue a skill — e está errado.
+> [!warning] A skill aspiracional
+> O time escreve o processo que *gostaria* de seguir, não o que *realmente* segue. A skill de TDD diz "escreva o teste primeiro, sempre" — mas na prática o time escreve testes depois, exceto para código crítico. O agente trava tentando seguir o ideal.
+>
+> **Como evitar:** documente o processo real com as exceções reais. "Escreva o teste primeiro — exceto para scripts de migração one-off" é mais útil que a versão idealizada.
 
-**Como evitar:** owner obrigatório no frontmatter. Quando o owner sai do time, o novo owner é atribuído antes da saída.
+> [!warning] A skill monolítica
+> Um `convenções.md` com 800 linhas cobrindo nomenclatura, estrutura de pastas, segurança, banco, e linting. O agente lê tudo, mas prioriza o que vem primeiro ou o que é mais recente no texto.
+>
+> **Como evitar:** skills focadas, 100-200 linhas cada. `nomenclatura.md`, `banco.md`, `segurança.md`. O agente carrega o que for relevante para a tarefa.
+
+> [!warning] O conflito silencioso
+> `convencoes.md` diz camelCase. `arquitetura.md` tem exemplos com snake_case (legado não atualizado). O agente tenta reconciliar e escolhe arbitrariamente.
+>
+> **Como evitar:** ao atualizar uma skill, grep por termos que possam conflitar com outras. `grep -r "snake_case" .claude/skills/` antes de commitar uma mudança de convenção.
+
+> [!warning] Skill sem owner em time que cresce
+> Uma skill de 3 meses sem dono vira orfã. Quando a convenção muda, ninguém sabe que a skill precisa ser atualizada. O novo dev ou o agente segue a skill — e está errado.
+>
+> **Como evitar:** owner obrigatório no frontmatter. Quando o owner sai do time, o novo owner é atribuído antes da saída.
 
 ## Escalando o catálogo conforme o time cresce
 
@@ -373,6 +387,18 @@ Plugins globais são carregados em todos os projetos. Útil para skills de proce
 
 **"Skills as team artifacts"** — treating skill files as first-class artifacts that live in source control, get reviewed, have owners, and evolve with the codebase.
 
+| PT | EN |
+|---|---|
+| skill | skill |
+| dono / responsável | owner |
+| desatualizada / vencida | stale |
+| versionamento (semântico) | versioning |
+| catálogo de skills | skill catalog |
+| revisão periódica | periodic review |
+| documentação viva | living documentation |
+| skill de processo | process skill |
+| skill de domínio | domain skill |
+
 **Key points:**
 - "We commit skills in `.claude/skills/`. When someone clones the repo, they get the team's process knowledge immediately."
 - "Skills have owners. Domain skills especially — they go stale fast. Without an owner, a skill becomes a liability."
@@ -384,8 +410,17 @@ Plugins globais são carregados em todos os projetos. Útil para skills de proce
 - *"What if two devs have conflicting opinions about the skill?"* — Same process as any technical decision: discuss in PR review, reach consensus, document in the commit message.
 - *"Should skills be tested?"* — Test them the same way you'd test documentation: run a representative task and verify the agent behaves as the skill describes. If not, update the skill.
 
-## Referências
+## O que vem a seguir
 
+Este é o fim do galho "Skills e MCP" — as oito notas cobriram o ciclo completo: anatomia de uma skill, skills de processo vs domínio, o primeiro walkthrough, MCP overview, servers essenciais, criar um MCP server próprio, compor skills com MCP, e agora manter tudo isso vivo em time. A pergunta que resta é operacional: como esse sistema de extensão (skills + MCP) se encaixa num fluxo de trabalho real, do primeiro prompt até o merge? É o assunto do próximo galho da trilha, [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] — onde skills e MCP deixam de ser peças isoladas e viram parte de um pipeline de desenvolvimento.
+
+> [!tip] Vídeo — revisando e melhorando skills existentes
+> [Build Better AI Agent Skills With Skill Creator v2 from Anthropic](https://www.youtube.com/watch?v=WplS5lycPHM) mostra o Skill Creator v2 sendo usado para revisar uma skill já existente: criar casos de teste, rodar avaliações, identificar exatamente onde a skill falha e aplicar correções direcionadas — o mesmo ciclo de manutenção descrito nesta nota, só que com tooling de teste em vez de revisão manual.
+
+## Fontes
+
+- [Keeping Documentation Up-to-Date: Strategies for Living Docs](https://amrutadeshpande.substack.com/p/keeping-documentation-up-to-date) (2025) — quando a documentação é responsabilidade de todos, não é responsabilidade de ninguém; ownership explícito evita o "cemitério de docs".
+- [Agent Skills — Claude Docs](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) — documentação oficial sobre estrutura, descoberta e escopo (projeto vs pessoal) de skills.
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/01 - Anatomia de uma skill|01 - Anatomia de uma skill]] — estrutura e frontmatter
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/02 - Skills de processo vs domínio|02 - Skills de processo vs domínio]] — ciclos de vida diferentes (processo vs domínio)
 - [[03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP/03 - Criar sua primeira skill|03 - Criar sua primeira skill]] — criar antes de distribuir

@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -346,30 +346,52 @@ Controle de custo não é minimizar tokens — é maximizar retorno por token. A
 
 O maior custo de não usar Claude Code geralmente não é o tempo das tarefas que ele faria — é o custo de bugs que ele teria detectado, convenções que teriam sido revisadas no PR, e contexto que um dev novo teria que construir do zero ao invés de ter como ponto de partida.
 
+## Casos práticos
+
+Teoria de custo é fácil de concordar em abstrato. Na prática, o estouro de budget quase sempre tem uma destas duas assinaturas.
+
+**Cenário 1 — o time que estourou o budget sem perceber**
+
+Um time de 6 devs adotou Claude Code em janeiro para debug e refatoração. Ninguém definiu `--max-turns` nas automações locais nem revisou `ccusage` — a ferramenta parecia "só mais um custo de infra, provavelmente pequeno". Em março, o financeiro perguntou por que a linha "Anthropic API" tinha triplicado. A investigação (seguindo o ciclo da seção anterior) revelou duas causas: sessões interativas de refatoração ficavam abertas por horas sem `/clear` (custo quadrático acumulando), e dois devs tinham o hábito de colar arquivos inteiros de 2000+ linhas no prompt em vez de deixar o agente ler com `Grep`/`Read` seletivo. Nenhuma automação estava fora de controle — o custo vinha inteiramente de hábitos individuais nunca calibrados. A correção não exigiu ferramenta nova: `/clear` entre tarefas e a heurística "grep antes de cat" cortaram o custo mensal em ~55%.
+
+**Cenário 2 — o pipeline de CI que rodava sem gate**
+
+Um pipeline de CI disparava uma revisão completa via `claude -p` em **todo** push para **toda** branch, incluindo branches de rascunho com dezenas de commits por hora durante pareamento. Sem `--max-turns`, cada invocação podia fazer 20-30 tool calls explorando o repositório inteiro em busca de contexto. Em um dia de sprint intenso (40 devs, ~300 pushes), o custo do dia sozinho superou o orçamento mensal planejado. O diagnóstico usou exatamente a metade "headless" do ciclo de investigação: `ccusage --days 1` mostrou dezenas de invocações de ~$0.80 cada, muito acima da estimativa de $0.32 para "pipeline CI por PR" — sinal de que o `max-turns` não estava setado e o contexto não estava filtrado. A correção teve três camadas: gate por tamanho de PR (só roda acima de 30 linhas), gate por branch (só `main`/PRs abertos, não todo push), e `--max-turns 8` explícito. O custo diário caiu para dentro do orçamento na primeira semana.
+
+O padrão comum aos dois casos: o custo nunca foi "a ferramenta é cara" — foi ausência de controle explícito (`/clear`, `--max-turns`, gates) num fluxo que crescia organicamente sem ninguém revisitar as premissas iniciais.
+
 ## Armadilhas
 
-**Ignorar o custo até o bill chegar**
-O custo de tokens é invisível durante o trabalho. Reserve 5 minutos por semana para rodar `ccusage --daily` e calibrar a intuição sobre o que custa o quê — uma semana de dados já revela os maiores consumidores.
+> [!warning] Ignorar o custo até o bill chegar
+> O custo de tokens é invisível durante o trabalho. Reserve 5 minutos por semana para rodar `ccusage --daily` e calibrar a intuição sobre o que custa o quê — uma semana de dados já revela os maiores consumidores.
 
-**Automações sem `--max-turns`**
-Um agente sem limite pode fazer 30 tool calls numa análise que precisava de 3. Em pipelines que rodam dezenas de vezes por dia, esse multiplicador importa. Sempre defina um limite para automações.
+> [!warning] Automações sem `--max-turns`
+> Um agente sem limite pode fazer 30 tool calls numa análise que precisava de 3. Em pipelines que rodam dezenas de vezes por dia, esse multiplicador importa. Sempre defina um limite para automações.
 
-**Sessão interativa para tarefas repetitivas**
-Se você repete a mesma análise toda manhã, escreva um script com `claude -p` — o custo é mensurável e o resultado é mais previsível do que uma sessão interativa de comprimento variável.
+> [!warning] Sessão interativa para tarefas repetitivas
+> Se você repete a mesma análise toda manhã, escreva um script com `claude -p` — o custo é mensurável e o resultado é mais previsível do que uma sessão interativa de comprimento variável.
 
-**Cache frio em CI**
-Se o job de CI roda o agente com intervalo longo entre chamadas, cada invocação começa sem cache. Agrupar múltiplas análises numa só invocação (em vez de um processo por arquivo) reduz o custo ao reutilizar contexto.
+> [!warning] Cache frio em CI
+> Se o job de CI roda o agente com intervalo longo entre chamadas, cada invocação começa sem cache. Agrupar múltiplas análises numa só invocação (em vez de um processo por arquivo) reduz o custo ao reutilizar contexto.
 
-**API key compartilhada sem visibilidade por projeto**
-Com uma única API key para tudo, é impossível saber qual projeto ou automação está responsável pelo custo. Use keys separadas por projeto ou por equipe para granularidade de monitoramento.
+> [!warning] API key compartilhada sem visibilidade por projeto
+> Com uma única API key para tudo, é impossível saber qual projeto ou automação está responsável pelo custo. Use keys separadas por projeto ou por equipe para granularidade de monitoramento.
 
-**Otimizar custo antes de medir**
-Sem baseline, é impossível saber se uma otimização funcionou. Meça primeiro com `ccusage`, identifique os maiores consumidores, então otimize especificamente esses pontos.
+> [!warning] Otimizar custo antes de medir
+> Sem baseline, é impossível saber se uma otimização funcionou. Meça primeiro com `ccusage`, identifique os maiores consumidores, então otimize especificamente esses pontos.
 
-**Cortar custo cortando utilidade**
-Reduzir `--max-turns` demais pode fazer o agente parar antes de completar a tarefa. O resultado: você economiza $0.05 de tokens mas gasta 20 minutos investigando por que o output está incompleto. Meça o impacto na qualidade do output ao ajustar limites.
+> [!warning] Cortar custo cortando utilidade
+> Reduzir `--max-turns` demais pode fazer o agente parar antes de completar a tarefa. O resultado: você economiza $0.05 de tokens mas gasta 20 minutos investigando por que o output está incompleto. Meça o impacto na qualidade do output ao ajustar limites.
 
 ## Como explicar em inglês
+
+| PT-BR | EN | Nota |
+|---|---|---|
+| token | token | mesma palavra; unidade mínima de texto processada pelo modelo |
+| acerto de cache / cache hit | cache hit | reutilização de contexto já processado, cobrada com desconto |
+| limite de turnos | max-turns | flag `--max-turns`; teto de tool calls numa invocação headless |
+| portão / condição de disparo | gate | condição que decide se uma automação roda (ex.: tamanho de PR) |
+| teto rígido | hard cap | limite de gasto que bloqueia uso além do valor, sem exceção |
 
 **"Token cost management"** — making token consumption visible before it surprises you at the end of the month. The two main levers: `ccusage` for observation (what's already been spent) and `--max-turns` plus context filtering for control (limiting future spending).
 
@@ -384,6 +406,20 @@ Reduzir `--max-turns` demais pode fazer o agente parar antes de completar a tare
 
 > [!tip] Hábito de calibração
 > Use `ccusage --daily` por uma semana sem mudar nenhum comportamento. Isso cria o baseline. Na segunda semana, aplique um ou dois controles (gate de tamanho, filtro de contexto). Compare os números. Controle de custo eficaz é empírico, não teórico.
+
+> [!tip] Vídeo — dicas práticas de uso eficiente
+> [My top 6 tips & ways of using Claude Code efficiently](https://www.youtube.com/watch?v=WwdIYp5fuxY) — cobre hábitos do dia a dia (gestão de contexto, `/clear`, seleção de modelo) que se conectam diretamente aos controles desta nota: menos tokens gastos por sessão sem perder qualidade de output.
+
+## O que vem a seguir
+
+Controlar o custo por sessão ou por PR resolve o problema de "quanto isso está custando". Mas custo e segurança são as duas faces da mesma pergunta organizacional: "o que estamos dispostos a deixar o agente fazer, e a que preço". Um `--max-turns` bem calibrado evita gasto excessivo — mas não impede, por si só, que o agente rode um comando destrutivo dentro desses turnos permitidos. A próxima nota, [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/06 - Segurança organizacional|06 - Segurança organizacional]], trata da outra metade do guardrail: o que o agente nunca deve poder fazer, independente de quanto custe.
+
+## Fontes
+
+- [Manage costs effectively — Claude Code Docs](https://code.claude.com/docs/en/costs) — guia oficial da Anthropic sobre gestão de custo em Claude Code
+- [Pricing — Claude Platform Docs](https://platform.claude.com/docs/en/about-claude/pricing) — tabela oficial de preços por modelo (input/output/cache)
+- [Prompt caching — Claude Platform Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — mecânica oficial de cache write/read usada pelo `ccusage` para calcular `cache hit rate`
+- [ccusage — repositório oficial](https://github.com/ccusage/ccusage) — código-fonte e documentação da ferramenta usada nesta nota
 
 ## Referências
 

@@ -5,7 +5,7 @@ fase: Adepto
 progress: in_progress
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -324,6 +324,14 @@ A instrução "um arquivo de cada vez" parece lenta — mas é mais segura do qu
 > [!info] Quando search-and-replace global é aceitável
 > Renomeação de símbolo em código TypeScript/Java com suporte de LSP, onde o agente usa "rename symbol" em vez de text replace. Nesses casos, o LSP garante que só os usos do símbolo são renomeados, não strings arbitrárias. Verifique se o agente tem acesso ao LSP antes de confiar no rename global.
 
+> [!tip] Assista: Automating Large Scale Refactors with Parallel Agents
+> **Canal:** OpenHands (Robert Brennan) | **Duração:** ~76min | **Idioma:** EN
+>
+> Esta talk trata do próximo degrau do "um arquivo de cada vez": quando o refactor é grande o bastante para valer a pena rodar *vários* agentes em paralelo, não em série. Brennan propõe critérios concretos pra decompor a tarefa — algo que este galho ainda não formaliza — antes de disparar agentes simultâneos: cada sub-tarefa precisa (1) caber num único commit/PR, resolvível num "one-shot" sem iteração; (2) ser verificável rápido (CI verde = confiança); (3) ter dependências explícitas entre si, igual dividir trabalho entre uma equipe de engenheiros.
+> Trecho de destaque [27:51]: *"You're really looking to break down your very big problem into tasks that a single agent can solve, a single agent can one-shot. Something that can fit in a single commit, single pull request."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rcsliSIy_YU)
+
 ## Armadilhas comuns
 
 > [!warning] "Refatore o serviço inteiro de uma vez"
@@ -380,7 +388,7 @@ Depois de dominar refactoring pesado, o próximo desafio natural é **debugging 
 - [[03-Dominios/Tecnologia/IA/Claude Code/Mental Model/06 - Compaction|06 - Compaction]] — como /compact funciona
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] — índice do galho
 
-## Referências
+## Fontes
 
 - [Martin Fowler — Strangler Fig Application](https://martinfowler.com/bliki/StranglerFigApplication.html) — padrão canônico de migração incremental
 - [Martin Fowler — Refactoring: Improving the Design of Existing Code](https://martinfowler.com/books/refactoring.html) — referência clássica de técnicas de refactoring

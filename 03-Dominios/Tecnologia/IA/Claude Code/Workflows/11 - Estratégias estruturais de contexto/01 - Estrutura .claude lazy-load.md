@@ -4,7 +4,7 @@ type: concept
 progress: in_progress
 publish: true
 created: 2026-05-22
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 fase: Iniciado
 tags:
@@ -211,6 +211,13 @@ Total context: 14,832 tokens
 
 Se CLAUDE.md + `.claude/` somam >5k tokens em um projeto de tamanho médio, há ganho a capturar. Refatore, rode `/context` de novo, compare.
 
+> [!tip] Vídeo: contexto como o verdadeiro gargalo
+> [Make Claude Code 100x BETTER (Context Engineering)](https://www.youtube.com/watch?v=ySA9tJ8RfVM) trata o mesmo diagnóstico desta nota sob outro ângulo: a maioria dos problemas de "o agente esqueceu a instrução" ou "não seguiu o padrão" não é falha de prompt — é orçamento de contexto mal gerenciado. O vídeo reforça o raciocínio de custo por sessão que justifica separar instrução viva de histórico antes de tunar prompts.
+
+Vale rodar `/context` em pelo menos dois momentos: **logo após abrir a sessão** (mede o custo de boot puro — CLAUDE.md + `.claude/` + system reminders) e **depois de uma tarefa típica** (mede quanto o trabalho normal empilha em cima do boot). Se o número de boot já é a maior fatia do total antes de qualquer tarefa, o ganho de lazy-load é desproporcional: você está pagando esse valor em *toda* sessão, inclusive nas curtas. Registrar os dois números (boot vs. boot+trabalho) também ajuda a decidir prioridade: se o boot é pequeno mas o trabalho explode o contexto, o problema não é `.claude/` — é sandboxing de tool output ([[02 - Sandboxing de tool output]]), não estrutura de startup.
+
+Uma segunda leitura do output do `/context` que costuma passar despercebida: a proporção entre CLAUDE.md e `.claude/`. Se `.claude/` sozinho supera o CLAUDE.md, geralmente é sinal de que algum arquivo dentro da pasta virou depósito de histórico — sessions ou completions esquecidos fora do `.claudeignore`. Vale abrir a pasta e conferir arquivo por arquivo antes de mexer no CLAUDE.md em si; às vezes o ganho maior está ali, não no arquivo principal.
+
 ## Armadilhas comuns
 
 > [!warning] Mover tudo pra lazy "porque parece bom"
@@ -260,6 +267,16 @@ Não é necessário reestruturar tudo de uma vez. A migração funciona em etapa
 
 **Passo 5 — Valide.** Faça uma sessão normal de trabalho com a estrutura nova. Se o agente pedir informação que você sabe que está nos docs mas não passou explicitamente, está certo — é o lazy-load funcionando. Passe o arquivo quando precisar.
 
+Um erro comum na migração é tentar fazer os 5 passos numa tarde só, num projeto com meses de histórico acumulado. Isso costuma terminar em duas formas de dano: (1) mover coisa demais pro `.claudeignore` de uma vez, sem confirmar que nada crítico foi junto — e só descobrir na sessão seguinte, quando o agente "esquece" uma convenção que sempre funcionou; ou (2) parar no meio, com o CLAUDE.md fragmentado entre "o que ainda está lá" e "o que já foi extraído mas ninguém documentou pra onde foi". A migração funciona melhor como hábito recorrente — rode o Passo 1 (`/context`) uma vez por semana enquanto o projeto ainda está acumulando docs, não como projeto único de limpeza. Cada nova seção que entra no CLAUDE.md já nasce classificada: instrução viva ou histórico. Isso evita que o arquivo volte a inflar entre uma migração e a próxima.
+
+**Passo 6 — Trate a estrutura como código, não como documentação estática.** `.claudeignore` e a pasta `.claude/` mudam junto com o projeto: um módulo novo pode virar `ARCHITECTURE_MAP.md`, uma pasta de build nova precisa entrar no ignore antes que alguém note o `/context` subindo de novo. Revisar essa estrutura em PR — do mesmo jeito que se revisa `.gitignore` — é mais barato do que descobrir o inchaço três meses depois, numa sessão que devia ser rápida e não foi.
+
+Sinal prático de que a migração estabilizou: o número do Passo 1 (`/context` no boot) para de crescer sessão após sessão, mesmo com o projeto avançando. Se ele continua subindo, alguma seção nova está entrando direto como "instrução viva" sem passar pelo filtro do Passo 2 — vale revisitar o hábito antes de acumular mais uma rodada de dívida de contexto.
+
+Times que já passaram por essa migração relatam o mesmo padrão: o primeiro corte é o mais fácil (sessões antigas e ADRs saltam aos olhos), mas o segundo corte — decidir que uma convenção "sempre usada" na verdade só se aplica a um módulo específico e pode sair do CLAUDE.md geral — exige mais julgamento e costuma ser onde a economia real aparece.
+
+Esse segundo corte é também o que mais se beneficia de um `.claude/` bem segmentado por arquivo: em vez de forçar a convenção específica de um módulo pra dentro do CLAUDE.md geral (custando tokens em toda sessão, mesmo nas que nunca tocam aquele módulo), ela vira um arquivo à parte — lido só quando o agente entra naquela área do código.
+
 ## O que vem a seguir
 
 Lazy-load resolve o contexto de *boot*. Se a sessão gera muito ruído durante a execução (tool outputs grandes), a próxima camada é sandboxing.
@@ -279,23 +296,6 @@ Lazy-load resolve o contexto de *boot*. Se a sessão gera muito ruído durante a
 - [Claude Code — memory and context](https://docs.anthropic.com/en/docs/claude-code/memory) — documentação oficial sobre CLAUDE.md e controle de contexto
 - [Anthropic — prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) — como o cache de prefixo funciona e por que estabilidade importa
 - [nadimtuhin/claude-token-optimizer](https://github.com/nadimtuhin/claude-token-optimizer) — scaffolding via `npx` que cria a estrutura `.claude/` e `.claudeignore` para 13 frameworks (Express, Next.js, Vue, Django, Rails, Laravel, etc). MIT, útil como ponto de partida.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- [Make Claude Code 100x BETTER (Context Engineering)](https://www.youtube.com/watch?v=ySA9tJ8RfVM) (2025) — vídeo sobre orçamento de contexto como causa raiz de "o agente esqueceu a instrução", reforçando o diagnóstico de boot cost desta nota.
+- [Explore the context window — Claude Code Docs](https://code.claude.com/docs/en/context-window) — documentação oficial sobre a composição do contexto e o comando `/context`.
+- [Claude Code — Common workflows](https://docs.anthropic.com/en/docs/claude-code/common-workflows) — workflows recomendados que dependem de um startup enxuto para funcionar bem em sessões longas.

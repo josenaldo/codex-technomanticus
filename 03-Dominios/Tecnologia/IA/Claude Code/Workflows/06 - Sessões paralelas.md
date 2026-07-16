@@ -105,6 +105,38 @@ tmux attach -t dev
 
 Navegação básica: `Ctrl+b →` / `Ctrl+b ←` para mover entre painéis. `Ctrl+b z` para zoom no painel atual.
 
+> [!tip] Vídeo: worktrees + agentes em paralelo
+> [Git Worktrees Explained — Run Multiple AI Agents in Parallel (Claude Code Tutorial)](https://www.youtube.com/watch?v=n35KalqEwJc) mostra o setup completo de `git worktree` + múltiplas sessões de agente rodando lado a lado, incluindo a armadilha mais comum (branch já ativa em outro worktree) e como nomear sessões tmux pra não se perder entre painéis.
+
+> [!question]- Preciso decorar os comandos de tmux + worktree toda vez que começar uma tarefa paralela?
+> Não necessariamente. Existem ferramentas que automatizam o par "criar worktree + abrir janela tmux" num único comando — por exemplo o [workmux](https://github.com/raine/workmux), que trata o tmux como a interface principal: cada worktree novo já nasce com sua própria janela, painéis e comando de inicialização (`claude`) configurados via um arquivo de projeto. Isso reduz o setup manual descrito acima a um único comando (`workmux start feat/payments`), mas o mecanismo por baixo é exatamente o `git worktree add` + `tmux send-keys` que você acabou de ver — vale entender o caminho manual antes de adotar o atalho.
+
+### Persistindo o layout entre reinícios
+
+Um painel tmux criado com `send-keys` se perde se a máquina reiniciar ou a sessão for encerrada por engano. Para sessões paralelas que duram dias (uma feature grande dividida em backend/frontend, por exemplo), vale persistir o layout:
+
+```bash
+# Salva o layout atual (painéis, comandos, working directories)
+tmux new-session -d -s dev
+tmux split-window -h
+tmux send-keys -t dev:0.0 "cd ../projeto-feat-a && claude" Enter
+tmux send-keys -t dev:0.1 "cd ../projeto-feat-b && claude" Enter
+
+# Um script de bootstrap reconstrói o mesmo layout depois de reiniciar
+cat > start-parallel-dev.sh <<'EOF'
+#!/bin/bash
+tmux new-session -d -s dev -c ../projeto-feat-a
+tmux send-keys -t dev "claude" Enter
+tmux split-window -h -t dev -c ../projeto-feat-b
+tmux send-keys -t dev.1 "claude" Enter
+tmux attach -t dev
+EOF
+chmod +x start-parallel-dev.sh
+```
+
+> [!info] tmux não salva sessões automaticamente
+> Ao contrário do que muita gente assume, `tmux detach` não persiste a sessão em disco — ela só sobrevive enquanto o servidor tmux (`tmux server`) estiver rodando. Reiniciar a máquina mata o servidor e leva a sessão junto, mesmo com painéis "destacados". Scriptar o bootstrap (como acima) é mais confiável que depender de `tmux attach` sobreviver a um reboot; para persistência real entre reboots, o plugin `tmux-resurrect` grava e restaura sessões em disco.
+
 ## Setup com múltiplos terminais
 
 Mais simples para quem não usa tmux:
@@ -266,6 +298,54 @@ git worktree prune
 > [!info] worktrees não são gravados no .git local
 > O registro de worktrees fica em `.git/worktrees/`. Se você deletar o diretório do worktree manualmente sem `git worktree remove`, o registro fica órfão. `git worktree prune` limpa esses órfãos.
 
+> [!question]- Por que `git worktree remove` e `git branch -d` são comandos separados?
+> Porque são coisas diferentes no modelo do git: o worktree é só uma *cópia de trabalho* (working directory) apontando para uma branch; a branch é a referência de commits em si. Remover o worktree não apaga a branch — ela continua existindo, ainda mergeada ou não, e pode ser recriada em outro worktree depois. Apagar a branch não remove o worktree — se você rodar `git branch -d` numa branch que ainda está *checked out* num worktree, o git recusa com um erro, justamente para não deixar um worktree "órfão" apontando pra uma branch inexistente. A ordem importa: primeiro remove o worktree, depois a branch.
+
+```mermaid
+flowchart LR
+    A[git worktree add] --> B[trabalho na branch]
+    B --> C{branch mergeada?}
+    C -->|sim| D[git worktree remove]
+    D --> E[git branch -d]
+    E --> F[git worktree prune]
+    C -->|não, descartar| G[commit WIP antes de remover]
+    G --> D
+
+    style A fill:#e8f4f8,stroke:#339af0
+    style D fill:#fff3e0,stroke:#ff9800
+    style F fill:#f3e8f8,stroke:#9c27b0
+```
+
+O diagrama acima resume o ciclo de vida completo: criar → trabalhar → (se mergeada) remover worktree → apagar branch → `prune` como rede de segurança final. Pular a etapa de commit antes de remover é a causa mais comum de perda de trabalho em sessões paralelas — veja o [!warning] logo abaixo.
+
+### Script de limpeza completa
+
+Para quem gerencia várias worktrees simultâneas (uma por feature, uma por review), a limpeza manual item a item cansa rápido. Um script que varre worktrees já mergeadas evita esquecimento:
+
+```bash
+#!/bin/bash
+# cleanup-worktrees.sh — remove worktrees cuja branch já foi mergeada em main
+
+git worktree list --porcelain | grep '^worktree' | awk '{print $2}' | while read -r wt; do
+  # pula o worktree principal (o primeiro da lista)
+  [ "$wt" = "$(git rev-parse --show-toplevel)" ] && continue
+
+  branch=$(git -C "$wt" branch --show-current)
+  if git merge-base --is-ancestor "$branch" main 2>/dev/null; then
+    echo "Removendo worktree mergeado: $wt ($branch)"
+    git worktree remove "$wt"
+    git branch -d "$branch"
+  fi
+done
+
+git worktree prune
+```
+
+> [!warning] Rodar isso sem revisar primeiro é arriscado
+> `merge-base --is-ancestor` confirma que os commits da branch chegaram em `main`, mas não confirma que não há mudanças não commitadas no worktree (stash, arquivos untracked importantes). Rode `git status` em cada worktree antes de automatizar a remoção em massa, ou adicione um `git -C "$wt" status --porcelain` como guarda no script.
+
+> [!summary] Limpeza de worktrees é um ciclo de três comandos (`remove` → `branch -d` → `prune`), não um só — e a ordem entre os dois primeiros é obrigatória por design do git.
+
 ## Armadilhas comuns
 
 > [!warning] CLAUDE.md compartilhado entre todos os worktrees
@@ -325,11 +405,13 @@ Sessões paralelas isolam trabalho humano-a-humano. O próximo nível é o agent
 - [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/index|Time e Automação]] — paralelismo em contexto de time
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] — índice do galho
 
-## Referências
+## Fontes
 
 - [git-worktree documentation](https://git-scm.com/docs/git-worktree) — documentação oficial do comando git worktree
 - [tmux cheat sheet](https://tmuxcheatsheet.com/) — referência de atalhos para gerenciar painéis e sessões
 - [Claude Code — parallel workstreams](https://docs.anthropic.com/en/docs/claude-code/tutorials) — tutoriais oficiais sobre workflows com múltiplas sessões
+- [Git Worktrees Explained — Run Multiple AI Agents in Parallel (Claude Code Tutorial)](https://www.youtube.com/watch?v=n35KalqEwJc) — vídeo explicando o setup de worktrees + múltiplos agentes em paralelo
+- [workmux — git worktrees + tmux windows for zero-friction parallel dev](https://github.com/raine/workmux) — ferramenta que automatiza a criação de worktree + janela tmux num único comando
 
 
 

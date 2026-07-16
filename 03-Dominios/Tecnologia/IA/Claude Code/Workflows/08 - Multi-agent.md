@@ -5,7 +5,7 @@ fase: Adepto
 progress: in_progress
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -56,6 +56,63 @@ flowchart LR
 ```
 
 > [!summary] A diferença entre sub-agents e multi-agent é escala e estrutura: sub-agents são o mecanismo; multi-agent é a arquitetura que organiza como sub-agents se relacionam, dependem e revisam o trabalho uns dos outros.
+
+> [!tip] Vídeo complementar
+> [How to Build Multi-Agent Teams in Claude Code (Step by Step)](https://www.youtube.com/watch?v=exe9PM8l54o) — explica a diferença prática entre Default Agents, Sub-Agents e Agent Teams no Claude Code, e quando escalar de um pra outro conforme o padrão orchestrator-worker descrito nesta nota.
+
+### Exemplo concreto: a mesma feature, duas abordagens
+
+> [!question]- Isso é abstrato — dá pra ver o contraste na prática?
+
+Sim. Considere uma feature de "sistema de notificações" que precisa de: (1) modelo de dados, (2) worker que dispara notificações, (3) preferências do usuário, (4) UI de configuração. No total, ~6h de trabalho.
+
+**Abordagem A — sessão longa monolítica**
+
+```
+09h00 — "Implemente o sistema de notificações completo."
+09h00-10h30 — Agente projeta o modelo de dados, decide usar uma tabela
+              `notifications` com status enum.
+10h30-12h00 — Agente implementa o worker. Reaproveita o enum de status
+              da etapa anterior — mas sem revisão intermediária, um erro
+              de nomenclatura (`sent` vs `delivered`) passa despercebido.
+12h00-14h00 — Agente implementa preferências do usuário. Já são 5h de
+              contexto acumulado; o agente começa a "resolver" a UI de
+              preferências reaproveitando padrões do worker (que são de
+              backend, não de formulário), porque é o que está mais
+              recente na janela de contexto.
+14h00 — Só ao rodar os testes e2e o erro de nomenclatura do enum aparece.
+        Debugar exige voltar 5h de decisões pra entender onde o enum
+        divergiu.
+```
+
+O contexto não é neutro: ele empurra decisões na direção do que foi visto por último, não do que é correto para a tarefa atual. É o mesmo viés de recência que torna [[Dicionário de IA#few-shot|few-shot prompting]] eficaz — só que aqui ele distorce a sessão, porque o "exemplo mais recente" é apenas a etapa anterior do próprio trabalho do agente, não um exemplo cuidadosamente escolhido.
+
+**Abordagem B — multi-agent**
+
+```
+Orquestrador: "Decompondo notificações em 4 sub-agents:
+1. Modelo de dados (schema + migração) — sem dependências
+2. Worker de disparo — depende de 1
+3. Preferências do usuário — depende de 1
+4. UI de configuração — depende de 3
+
+Despachando Sub-agent 1 agora."
+
+[Sub-agent 1 completa. Orquestrador revisa: enum de status ficou
+`delivered | failed | pending`. Documenta isso explicitamente no
+contexto do próximo dispatch, em vez de assumir que vai ser lembrado.]
+
+Orquestrador: "Sub-agent 2 (worker), use exatamente estes valores de
+enum: delivered | failed | pending. Não invente variações."
+
+[Sub-agent 2 completa usando os valores corretos — porque o
+orquestrador colocou a decisão no contexto cirúrgico, não deixou o
+sub-agent inferir de memória de uma sessão de 5h atrás.]
+```
+
+O ponto de alavanca não é "múltiplos agentes são mais inteligentes" — é que o orquestrador **externaliza a decisão crítica** (o enum) e a repassa explicitamente, em vez de confiar que ela sobrevive intacta dentro de uma janela de contexto que só cresce.
+
+> [!summary] Sessão longa acumula contexto e deixa decisões relevantes se diluírem. Multi-agent força o orquestrador a decidir explicitamente o que passa adiante — mais trabalho de preparo, e a fonte da confiabilidade extra.
 
 ## Papéis no sistema multi-agent
 
@@ -363,40 +420,3 @@ Multi-agent resolve a escala de implementação. A próxima fronteira é manter 
 - [Anthropic — building effective agents](https://www.anthropic.com/research/building-effective-agents) — artigo da Anthropic sobre orchestrator/worker patterns e quando usar multi-agent
 - [Claude Code — multi-agent frameworks](https://docs.anthropic.com/en/docs/claude-code/tutorials) — documentação oficial sobre multi-agent no Claude Code
 - [Software Engineering at Google — decomposition](https://abseil.io/resources/swe-book) — princípios de decomposição que fundamentam a eficácia do multi-agent
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

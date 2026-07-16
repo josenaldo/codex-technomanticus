@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -17,7 +17,9 @@ tags:
 # Headless mode — Claude Code sem interação humana
 
 > [!abstract] TL;DR
-> Headless mode é o Claude Code rodando sem terminal interativo: recebe um prompt via argumento ou stdin, executa as ações necessárias, escreve o resultado em stdout, e sai. Usando `claude --print` (ou `-p`), você invoca o agente como qualquer outro processo CLI — em scripts, CI/CD, cron jobs, ou como subprocesso de outra ferramenta.
+> **O quê:** Headless mode é o Claude Code rodando sem terminal interativo — recebe um prompt via argumento ou stdin, executa as ações necessárias, escreve o resultado em stdout, e sai.
+> **Como:** Ative com `claude --print` (ou `-p`); a flag diz ao agente para não abrir o REPL, e sim responder e encerrar o processo — como qualquer outro comando CLI.
+> **Quando usar:** scripts, CI/CD, cron jobs, ou como subprocesso de outra ferramenta — sempre que o trabalho precisa rodar sem ninguém acompanhando em tempo real.
 
 ## A analogia do assistente em modo silencioso
 
@@ -244,35 +246,35 @@ steps:
 
 ## Armadilhas
 
-**Sem `--no-permission-prompts` em CI**
-O agente vai pausar pedindo confirmação e o job vai travar até o timeout. Sempre use a flag em ambientes não-interativos.
+> [!warning] Sem `--no-permission-prompts` em CI
+> O agente vai pausar pedindo confirmação e o job vai travar até o timeout. Sempre use a flag em ambientes não-interativos.
 
-**Output misturado com logs internos**
-Mensagens de status do agente vão para stderr; a resposta vai para stdout. Separe corretamente:
+> [!warning] Output misturado com logs internos
+> Mensagens de status do agente vão para stderr; a resposta vai para stdout. Separe corretamente:
+>
+> ```bash
+> RESPOSTA=$(claude -p "..." 2>/dev/null)   # Só a resposta
+> claude -p "..." > resposta.txt 2> logs.txt # Separados
+> ```
 
-```bash
-RESPOSTA=$(claude -p "..." 2>/dev/null)   # Só a resposta
-claude -p "..." > resposta.txt 2> logs.txt # Separados
-```
+> [!warning] Max-turns sem limite em tarefa aberta
+> Uma tarefa com escopo amplo sem `--max-turns` pode rodar por muitas iterações. Defina um limite conservador — se o agente não conseguiu em 10 turns, provavelmente a tarefa está mal especificada.
 
-**Max-turns sem limite em tarefa aberta**
-Uma tarefa com escopo amplo sem `--max-turns` pode rodar por muitas iterações. Defina um limite conservador — se o agente não conseguiu em 10 turns, provavelmente a tarefa está mal especificada.
+> [!warning] API key não disponível no CI
+> A key precisa estar em `ANTHROPIC_API_KEY` no ambiente. Configure como secret no sistema de CI antes de ativar qualquer job com Claude Code.
 
-**API key não disponível no CI**
-A key precisa estar em `ANTHROPIC_API_KEY` no ambiente. Configure como secret no sistema de CI antes de ativar qualquer job com Claude Code.
-
-**Prompt com shell injection**
-Ao construir prompts dinamicamente em bash, sempre use aspas e seja cauteloso com dados externos:
-
-```bash
-# ❌ Vulnerável a injection se ARQUIVO veio de input externo
-claude -p "Analise $ARQUIVO"
-
-# ✅ Use heredoc para isolar o prompt
-claude -p << EOF
-Analise o arquivo: $ARQUIVO
-EOF
-```
+> [!warning] Prompt com shell injection
+> Ao construir prompts dinamicamente em bash, sempre use aspas e seja cauteloso com dados externos:
+>
+> ```bash
+> # ❌ Vulnerável a injection se ARQUIVO veio de input externo
+> claude -p "Analise $ARQUIVO"
+>
+> # ✅ Use heredoc para isolar o prompt
+> claude -p << EOF
+> Analise o arquivo: $ARQUIVO
+> EOF
+> ```
 
 ## Padrão: headless como pipeline de análise
 
@@ -402,9 +404,28 @@ O output JSON do headless tem esta estrutura:
 
 A resposta do agente está em `.result` — que pode ser uma string com JSON embutido. Use `jq -r '.result'` para extrair, depois parse o JSON interno se necessário.
 
+## Casos práticos
+
+**Cenário 1 — Gate de segurança automático em todo PR**
+O `pipeline-de-revisao.sh` (seção acima) roda como step de CI: a cada PR aberto, o job dispara três invocações headless em cadeia — análise de segurança, cobertura de testes, sumário executivo — e falha o build (`exit 1`) se `has_issues` vier `true`. Nenhum humano revisa antes do merge; o headless *é* o gate. Isso substitui um linter de segurança customizado por um agente que lê o diff com contexto real do código-fonte, não só regex.
+
+**Cenário 2 — Circuito de alerta de custo em produção**
+O wrapper `run_claude()` (seção "Monitorando custo e performance") roda em um serviço de automação noturna que dispara dezenas de invocações headless por hora. Cada chamada grava `cost_usd`, `duration_ms` e `num_turns` num CSV; um cron separado lê esse log e dispara alerta no Slack se o custo médio da última hora subir acima do limiar. Sem essa instrumentação, um prompt mal especificado (loop de tool calls) só seria percebido na fatura do mês seguinte.
+
+> [!tip] Vídeo oficial: Building headless automation with Claude Code
+> Sid Bidasaria (Anthropic) apresenta padrões parecidos com os dois cenários acima — pipeline de revisão e monitoramento de custo — na talk "Building headless automation with Claude Code" (Code w/ Claude, Anthropic, 2025). [Assista no YouTube](https://www.youtube.com/watch?v=dRsjO-88nBs).
+
 ## Como explicar em inglês
 
 **"Headless mode"** — running Claude Code as a non-interactive process: input comes from arguments or stdin, output goes to stdout, and the process exits when done. No REPL, no TTY required.
+
+| PT | EN |
+|---|---|
+| Modo silencioso / sem interação | Headless mode |
+| Saída padrão | stdout |
+| Entrada padrão | stdin |
+| Código de saída | Exit code |
+| Chamada de ferramenta | Tool call |
 
 **The key use cases:**
 - "In CI/CD, we use `claude -p --no-permission-prompts` to run code review automatically on every PR."
@@ -414,6 +435,15 @@ A resposta do agente está em `.result` — que pode ser uma string com JSON emb
 **Common interview questions:**
 - *"How is headless different from using the API?"* — Headless uses the CLI directly — no code, no SDK. The API gives more control but requires implementing the tool-call loop. For simple scripts, headless is faster to set up.
 - *"How do you prevent runaway costs in headless automations?"* — `--max-turns` caps the number of tool calls per invocation. Plus monitoring: the JSON output includes `cost_usd` per invocation, so you can alert on anomalies.
+
+## O que vem a seguir
+
+Headless mode isolado já resolve scripts pontuais — mas o padrão que sustenta uma esteira de CI de verdade é outra camada: colocar `claude -p` dentro de um workflow do GitHub Actions, com secrets, matriz de jobs e gatilhos por evento (PR aberto, push, schedule). É aí que os dois cenários da seção "Casos práticos" — gate de segurança e alerta de custo — deixam de ser scripts soltos e viram parte do pipeline oficial do repositório. Veja como em [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/02 - CI-CD com GitHub Actions|02 - CI/CD com GitHub Actions]].
+
+## Fontes
+
+- **Anthropic** — [*Run Claude Code programmatically*](https://docs.claude.com/en/docs/claude-code/headless) (doc oficial, 2026). Referência canônica das flags de headless mode (`-p`, `--output-format`, `--max-turns`, `--allowedTools`).
+- **Anthropic** — [*CLI reference*](https://docs.claude.com/en/docs/claude-code/cli-reference) (doc oficial, 2026). Lista completa de flags e comandos da CLI.
 
 ## Referências
 

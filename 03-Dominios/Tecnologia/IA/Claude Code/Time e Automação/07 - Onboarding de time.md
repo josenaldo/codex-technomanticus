@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -77,6 +77,23 @@ claude -p "/convencoes" --max-turns 3
 ```
 
 Se qualquer um desses verificações falhar, o onboarding deve ser adiado até que a infraestrutura esteja pronta.
+
+> [!example] O que dá errado quando um pré-requisito falta
+> ```
+> $ claude -p "/convencoes" --max-turns 3
+>
+> [Claude Code] Skill "/convencoes" não encontrada em .claude/skills/
+> Nenhum CLAUDE.md detectado na raiz do projeto — respondendo sem
+> contexto do projeto.
+>
+> > Vou seguir convenções genéricas de JavaScript, já que não encontrei
+> > guia de estilo específico deste repositório...
+> ```
+> Esse é o sintoma exato do Time A da seção anterior: o comando roda, não trava — mas devolve
+> genérico porque o CLAUDE.md nunca existiu. Numa sessão de onboarding ao vivo, isso acontece
+> na frente do time inteiro, e a primeira impressão vira "a ferramenta não é tão boa assim".
+> O defeito nunca foi a ferramenta — foi rodar o checklist da seção anterior depois da sessão,
+> não antes.
 
 ## Sessão de onboarding (1 hora)
 
@@ -243,23 +260,23 @@ Este template simples reduz o atrito de partilhar feedback. Sem estrutura, o can
 
 ## Anti-padrões comuns de adoção
 
-**"Manda o Claude fazer"**
-Time delega tarefas sem entender o que está sendo feito. O agente vira caixa preta. Sintoma: PRs que ninguém consegue explicar. Correção: revisar a saída antes de aceitar, sempre — o agente pode errar, e erros não revisados viram dívida técnica.
+> [!warning] "Manda o Claude fazer"
+> Time delega tarefas sem entender o que está sendo feito. O agente vira caixa preta. Sintoma: PRs que ninguém consegue explicar. Correção: revisar a saída antes de aceitar, sempre — o agente pode errar, e erros não revisados viram dívida técnica.
 
-**"O Claude vai pegar"**
-Time relaxa em qualidade de issue ou especificação assumindo que o agente vai inferir o que falta. Sintoma: prompts vagos com resultados inconsistentes. Correção: tratar o agente como dev junior — quanto melhor o briefing, melhor o resultado.
+> [!warning] "O Claude vai pegar"
+> Time relaxa em qualidade de issue ou especificação assumindo que o agente vai inferir o que falta. Sintoma: prompts vagos com resultados inconsistentes. Correção: tratar o agente como dev junior — quanto melhor o briefing, melhor o resultado.
 
-**Skills paralelas em conflito**
-Cada dev cria skills pessoais em `~/.claude/skills/` que duplicam ou contradizem as do projeto. Sintoma: comportamento inconsistente entre máquinas de devs diferentes. Correção: skills do projeto em `.claude/skills/`, revisão obrigatória pelo tech lead antes de adicionar.
+> [!warning] Skills paralelas em conflito
+> Cada dev cria skills pessoais em `~/.claude/skills/` que duplicam ou contradizem as do projeto. Sintoma: comportamento inconsistente entre máquinas de devs diferentes. Correção: skills do projeto em `.claude/skills/`, revisão obrigatória pelo tech lead antes de adicionar.
 
-**Sem revisão de output**
-Time aceita output do agente sem ler. Sintoma: bugs e code smells passando para produção. Correção: code review humano permanece obrigatório — o agente não substitui, ele auxilia.
+> [!warning] Sem revisão de output
+> Time aceita output do agente sem ler. Sintoma: bugs e code smells passando para produção. Correção: code review humano permanece obrigatório — o agente não substitui, ele auxilia.
 
-**Onboarding apenas técnico**
-Ensinar a instalar a CLI sem ensinar as convenções do time gera cada dev inventando o próprio jeito. O setup é 20% do onboarding; os 80% restantes são "como usamos aqui".
+> [!warning] Onboarding apenas técnico
+> Ensinar a instalar a CLI sem ensinar as convenções do time gera cada dev inventando o próprio jeito. O setup é 20% do onboarding; os 80% restantes são "como usamos aqui".
 
-**Adotar tudo de uma vez**
-Headless + CI + MCP + skills + hooks ao mesmo tempo sobrecarrega o time. Comece com uso interativo + 1-2 skills + CLAUDE.md básico. Adicione complexidade conforme o time absorve.
+> [!warning] Adotar tudo de uma vez
+> Headless + CI + MCP + skills + hooks ao mesmo tempo sobrecarrega o time. Comece com uso interativo + 1-2 skills + CLAUDE.md básico. Adicione complexidade conforme o time absorve.
 
 ## O papel do tech lead
 
@@ -325,20 +342,20 @@ Compartilhar essa tabela com o time no onboarding evita dois erros opostos: exce
 
 ## Armadilhas do onboarding
 
-**Fazer o onboarding sem o projeto estar pronto**
-Se CLAUDE.md não existe ou as skills não estão funcionando, o onboarding vai demonstrar uma versão genérica da ferramenta — e o time vai imaginar que o agente é menos poderoso do que realmente é.
+> [!warning] Fazer o onboarding sem o projeto estar pronto
+> Se CLAUDE.md não existe ou as skills não estão funcionando, o onboarding vai demonstrar uma versão genérica da ferramenta — e o time vai imaginar que o agente é menos poderoso do que realmente é.
 
-**Onboarding "evento único"**
-Um workshop de 1 hora não é suficiente. Onboarding real é o acompanhamento nas primeiras semanas, quando o time encontra os primeiros casos difíceis e precisa saber como responder.
+> [!warning] Onboarding "evento único"
+> Um workshop de 1 hora não é suficiente. Onboarding real é o acompanhamento nas primeiras semanas, quando o time encontra os primeiros casos difíceis e precisa saber como responder.
 
-**Introduzir muitos recursos de uma vez**
-Headless, CI/CD, MCP, hooks, skills — cada um exige adaptação cognitiva. Comece com interativo + CLAUDE.md + 2 skills. Adicione complexidade conforme o time absorve.
+> [!warning] Introduzir muitos recursos de uma vez
+> Headless, CI/CD, MCP, hooks, skills — cada um exige adaptação cognitiva. Comece com interativo + CLAUDE.md + 2 skills. Adicione complexidade conforme o time absorve.
 
-**Não documentar o que funciona**
-Bons prompts descobertos por devs individuais se perdem. Sem canal de compartilhamento, o time reinventa a roda — cada dev descobre os mesmos prompts individualmente.
+> [!warning] Não documentar o que funciona
+> Bons prompts descobertos por devs individuais se perdem. Sem canal de compartilhamento, o time reinventa a roda — cada dev descobre os mesmos prompts individualmente.
 
-**Confundir "o agente pode" com "o time usa"**
-Demonstrar que o agente consegue fazer X não significa que o time vai usar de forma produtiva. A distância entre capacidade e adoção real é preenchida por workflows documentados e prática.
+> [!warning] Confundir "o agente pode" com "o time usa"
+> Demonstrar que o agente consegue fazer X não significa que o time vai usar de forma produtiva. A distância entre capacidade e adoção real é preenchida por workflows documentados e prática.
 
 ## Checklist de onboarding completo
 
@@ -371,6 +388,22 @@ Antes de considerar o onboarding concluído, garanta:
 > [!tip] O onboarding não é um evento, é um processo
 > O checklist acima marca o fim da fase de setup — não o fim do onboarding. A fase de adoção real começa na segunda semana, quando o time encontra os primeiros casos ambíguos e precisa decidir como usar o agente. O tech lead precisa estar disponível nesse período.
 
+## Casos práticos
+
+Os workflows compartilhados e a sessão de 1 hora descritos acima ganham corpo quando vistos em situações reais de produção — não como demonstração isolada, mas como o time reagindo a um problema concreto.
+
+**Cenário 1 — Onboarding de um dev novo no meio do sprint**
+
+Um dev novo entra no time na quarta-feira, no meio de uma sprint já em andamento. Não há tempo para a sessão de 1 hora completa — o tech lead manda o dev direto para `docs/claude-code/onboarding.md` (a seção "Documento de onboarding" acima) e pede que ele rode o workflow de "Implementar feature de issue" numa tarefa pequena, sob supervisão. O dev roda `/convencoes` seguido de `/tdd`, e o tech lead revisa o PR com atenção redobrada — não porque o output do agente é diferente, mas porque o dev ainda não sabe calibrar quando confiar (ver a tabela em "Calibrando quando confiar no agente"). Depois de duas tarefas assim, o dev já reconhece os padrões e a supervisão relaxa. O documento escrito substitui a sessão ao vivo quando o timing não permite as duas coisas.
+
+**Cenário 2 — Skill do time começa a divergir do CLAUDE.md**
+
+Três meses depois da adoção, um dev percebe que `/bug-triage` está sugerindo queries de banco que a equipe de dados desaconselhou na última revisão de segurança. A causa não é a skill — é que o CLAUDE.md foi atualizado com a nova política de acesso a dados, mas a skill não foi revisada junto. Isso é exatamente o sintoma da linha "CLAUDE.md: atualizado com frequência / Skills do projeto: nunca tocadas após criação" na tabela de métricas de adoção saudável. O tech lead adiciona ao checklist de revisão mensal: toda mudança relevante no CLAUDE.md dispara uma revisão das skills que dependem daquele contexto — não só do documento em si.
+
+## O que vem a seguir
+
+Onboarding bem feito produz um time que usa o agente de forma consistente — mas consistência não é o mesmo que confiança calibrada. Um time pode seguir todos os workflows documentados aqui e ainda aceitar output ruim sem perceber, ou revisar demais um output que já era confiável. A pergunta natural depois de "o time todo usa do mesmo jeito" é "o time sabe quando confiar no que está sendo produzido?" — e essa calibração, tarefa a tarefa, é o assunto da próxima nota: [[03-Dominios/Tecnologia/IA/Claude Code/Time e Automação/08 - Avaliando qualidade|08 - Avaliando qualidade]].
+
 ## Como explicar em inglês
 
 **"Onboarding Claude Code to a team"** — not just installing the CLI but establishing shared conventions: which skills to use, when to trust the agent's output, what it's never allowed to do. The goal is the same agent behavior on every developer's machine.
@@ -391,6 +424,23 @@ Antes de considerar o onboarding concluído, garanta:
 - **trust calibration** — knowing when to accept agent output vs. when to review carefully
 - **shared workflow** — a documented, repeatable sequence that the whole team follows for a given task
 - **skill ownership** — having a designated person responsible for keeping skills current and correct
+
+| PT | EN |
+|---|---|
+| desvio de adoção / cada dev usa de um jeito | adoption drift |
+| calibração de confiança | trust calibration |
+| workflow compartilhado | shared workflow |
+| dono da skill / responsável pela skill | skill ownership |
+| adoção ativa vs. passiva | active vs. passive adoption |
+| onboarding de time | team onboarding |
+| convenções compartilhadas | shared conventions |
+
+## Fontes
+
+- **Faros AI** — [*Enterprise AI Coding Assistant Adoption: Scaling to Thousands*](https://www.faros.ai/blog/enterprise-ai-coding-assistant-adoption-scaling-guide) (2026). Telemetria de 22.000+ devs em 4.000+ times documenta o mesmo padrão descrito na seção "Métricas de adoção saudável": organizações com programas estruturados de onboarding chegam a 80% de usuários mensais ativos, mas o anti-padrão de "uso desigual" (adoção concentrada em devs juniores e times específicos, sem se espalhar pela organização) é apontado como uma das cinco causas mais comuns de adoção que não escala — reforçando por que o papel do tech lead e o feedback loop das primeiras semanas, descritos acima, importam mais do que a sessão de onboarding em si.
+
+> [!tip] Como dois engenheiros usam Claude Code em ritmo de time
+> O episódio ["Best of the Pod: Claude Code — How Two Engineers Ship Like a Team of 15"](https://podcasts.apple.com/us/podcast/best-of-the-pod-claude-code-how-two-engineers-ship/id1719789201?i=1000737431291) (podcast *AI & I*, nov/2025) entrevista Kieran Klaassen e Nityesh Agarwal sobre como estruturaram workflows coordenados com Claude Code para entregar seis features, cinco correções de bugs e três atualizações de infra numa única semana. É um contraponto útil à sessão de onboarding de 1 hora descrita acima: mostra o que "workflows compartilhados" parecem depois de meses de prática, não apenas no primeiro dia.
 
 ## Referências
 

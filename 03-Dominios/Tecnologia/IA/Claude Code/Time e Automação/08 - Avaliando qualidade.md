@@ -4,7 +4,7 @@ type: concept
 progress: published
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: evergreen
 tags:
   - claude-code
@@ -75,6 +75,9 @@ Quando o agente produz output que merece confiança, alguns sinais aparecem:
 - **Casos de borda cobertos**: input vazio, null, lista única, valor extremo
 - **Sem dependências novas sem motivo**: usa o que já existe no projeto
 - **Coerência com as convenções do projeto**: o código parece escrito pelo time, não por um estranho
+
+> [!tip] Vídeo — como revisar código gerado por IA na prática
+> [How I Review AI-Generated Code](https://www.youtube.com/watch?v=As2xy_cSx00) detalha o processo de revisão que um dev aplica a cada PR gerado por agente — do porquê a maioria dos times ainda não tem um processo formal de revisão para output de IA, até os pontos específicos do diff que merecem mais atenção. Complementa a checklist e a tabela de assimetria de revisão desta nota com um walkthrough real.
 
 ## Sinais de output suspeito
 
@@ -191,6 +194,30 @@ Verificação:
 ```
 
 Para mudanças em produção, nunca aceite o output do agente sem revisão humana adicional. Independente de quão bem ele parece estar funcionando localmente.
+
+## Casos práticos
+
+Calibração abstrata é fácil de concordar e difícil de aplicar sob pressão de prazo. Dois cenários reais mostram a diferença na prática — um em que delegar é seguro, outro em que não é.
+
+### Cenário 1: Refactor de um módulo de billing com suíte de testes robusta
+
+Um time recebe a tarefa de extrair a lógica de cálculo de desconto de um componente de checkout monolítico para um service dedicado, sem mudar comportamento. O módulo tem 40 testes de integração cobrindo os principais cupons, combinações de desconto e casos de borda (cupom expirado, desconto que zera o total).
+
+Delegado ao Claude Code com instrução clara ("extrai sem mudar comportamento; os 40 testes devem continuar passando sem edição"), o agente entrega o refactor em poucos minutos. A verificação leva menos tempo do que a implementação manual levaria: os 40 testes passam sem modificação, o diff é mecânico (mover código, ajustar imports), e um spot check de 2 caminhos críticos confirma que os valores calculados batem.
+
+> [!question] Por que esse é o caso ideal de alta confiança?
+> Porque a rede de segurança — os testes — já existia antes do agente tocar no código. A verificação não depende de o revisor confiar no agente; depende de a suíte detectar qualquer desvio de comportamento. Delegar aqui não é aposta, é engenharia com verificação barata.
+
+### Cenário 2: Cálculo de imposto retido na fonte para contratos internacionais
+
+Um time de fintech pede ao agente para implementar o cálculo de retenção de imposto sobre pagamentos a prestadores internacionais, que varia por país, tipo de serviço e tratado de bitributação. Não existe suíte de testes prévia — é feature nova.
+
+O agente produz um código plausível: bem estruturado, nomes claros, comentários explicando cada bloco. Só que a regra para um dos países está sutilmente errada — usa a alíquota geral em vez da alíquota reduzida prevista no tratado bilateral específico, um detalhe documentado apenas no acordo fiscal entre os dois países, não em nenhum lugar do código-fonte ou do contexto fornecido.
+
+> [!warning] O bug não teria sido pego por revisão superficial
+> O código roda, os testes que o próprio agente escreveu passam (porque testam contra a implementação, não contra a regra fiscal real), e nada no diff parece suspeito visualmente. Só um especialista tributário comparando o resultado com o tratado bilateral pegaria o erro — exatamente o tipo de revisão que esta nota recomenda para lógica de domínio sutil.
+
+A diferença entre os dois cenários não é a qualidade do agente — é a disponibilidade de uma verificação independente e barata. Onde ela existe (testes prévios), delegação é segura. Onde ela não existe (regra de negócio documentada só na cabeça de um especialista), a revisão precisa envolver esse especialista antes do merge.
 
 ## O pipeline de verificação de qualidade
 
@@ -347,25 +374,25 @@ Nem toda parte do diff merece o mesmo tempo de revisão. A regra de ouro:
 
 A assimetria é intencional: gastar 80% do tempo de revisão nos 20% do diff que têm maior risco é calibração eficiente — não preguiça.
 
-## Armadilhas
+## Armadilhas comuns
 
-**Confiar porque os testes passam**
-Testes podem ser superficiais. O agente pode escrever testes que passam mas não exercitam os casos que importam. Verifique se a cobertura é real.
+> [!warning] Confiar porque os testes passam
+> Testes podem ser superficiais. O agente pode escrever testes que passam mas não exercitam os casos que importam. Verifique se a cobertura é real.
 
-**Revisar pouco porque "o agente faz bem"**
-Viés de confirmação. Você lembra das vezes que acertou, esquece das que precisou corrigir. Calibração exige memória ativa, não impressão geral.
+> [!warning] Revisar pouco porque "o agente faz bem"
+> Viés de confirmação. Você lembra das vezes que acertou, esquece das que precisou corrigir. Calibração exige memória ativa, não impressão geral.
 
-**Revisar tudo porque "não confio no agente"**
-O oposto é igualmente custoso. Você perde a alavanca da ferramenta. O objetivo é proporcionalidade, não paranoia.
+> [!warning] Revisar tudo porque "não confio no agente"
+> O oposto é igualmente custoso. Você perde a alavanca da ferramenta. O objetivo é proporcionalidade, não paranoia.
 
-**Tratar revisão como formalidade**
-Passar o olho sem entender o diff não é revisão — é teatro de revisão. Se não entende o código, peça ao agente para explicar antes de aceitar.
+> [!warning] Tratar revisão como formalidade
+> Passar o olho sem entender o diff não é revisão — é teatro de revisão. Se não entende o código, peça ao agente para explicar antes de aceitar.
 
-**Não documentar padrões de erro**
-Se o agente sempre comete o mesmo tipo de erro no seu projeto, isso vai pro CLAUDE.md como restrição. Padrões repetidos que não são capturados como feedback voltam como bugs.
+> [!warning] Não documentar padrões de erro
+> Se o agente sempre comete o mesmo tipo de erro no seu projeto, isso vai pro CLAUDE.md como restrição. Padrões repetidos que não são capturados como feedback voltam como bugs.
 
-**Esperar perfeição**
-Claude Code não substitui pensamento; complementa. Mesmo quando funciona, você precisa entender o resultado — não para micro-gerenciar, mas para manter a responsabilidade do que vai para produção.
+> [!warning] Esperar perfeição
+> Claude Code não substitui pensamento; complementa. Mesmo quando funciona, você precisa entender o resultado — não para micro-gerenciar, mas para manter a responsabilidade do que vai para produção.
 
 ## Integrando avaliação de qualidade à cultura do time
 
@@ -392,6 +419,32 @@ Avaliação de qualidade não funciona como regra individual — precisa ser cul
 - *"When should you just trust the agent and move on?"* — When the task is mechanical, the context is well-specified, tests exist and pass, and the change is easily reversible. Not because the agent is always right, but because the cost of being wrong is low enough that proportional review is a quick diff scan.
 - *"How do you handle it when the agent explains what it did but you're not sure it's correct?"* — Ask the agent to write a test that would fail if its explanation were wrong. If it can't, the explanation is probably post-hoc rationalization. If it can, run the test.
 - *"Should we track bugs introduced by AI-assisted PRs separately?"* — Yes, as a calibration input, not as a blame metric. The goal is to identify systematic patterns (e.g., "the agent consistently mishandles null in service layer calls") and encode them as CLAUDE.md restrictions.
+
+**Termos-chave PT↔EN:**
+
+| Português | Inglês |
+|---|---|
+| Calibração de confiança | Trust calibration |
+| Verificação proporcional ao risco | Risk-proportional verification |
+| Pontos cegos | Blind spots |
+| Revisão linha a linha | Line-by-line review |
+| Cobertura de testes | Test coverage |
+| Caso de borda | Edge case |
+| Viés de confirmação | Confirmation bias |
+| Teatro de revisão | Review theater |
+| Lógica de domínio | Domain logic / business rule |
+| Reversibilidade | Reversibility |
+
+## O que vem a seguir
+
+Calibrar confiança linha a linha resolve o problema de "esse PR específico está bom?". Mas Claude Code não vive só de PRs isolados — ele entra em fluxos de trabalho inteiros: planejar antes de codar, fazer TDD, revisar um refactor grande, debugar um bug esquivo, orquestrar múltiplos agentes em paralelo. A calibração de confiança desta nota é o filtro que você aplica em cada um desses fluxos — mas o fluxo em si (quando usar Plan Mode, como estruturar um sub-agent, como fazer code review assistido) é outro conjunto de decisões.
+
+O galho [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] cobre exatamente isso: os padrões de uso do dia a dia, do planejamento ao multi-agent, que dão a matéria-prima que esta nota ensina a avaliar.
+
+## Fontes
+
+- [Code Review in the Age of AI](https://addyo.substack.com/p/code-review-in-the-age-of-ai) — Addy Osmani (2026). Argumenta que a revisão de código, e não a autoria, é o gargalo que sobra quando o agente escreve rápido; complementa a régua de verificação proporcional ao risco desta nota.
+- [96% of developers don't trust AI code: here's a step toward the fix](https://thenewstack.io/agentic-ai-verification-impact/) — The New Stack (2026). Dado empírico sobre a lacuna entre desconfiança declarada e prática real de revisão, que reforça o argumento contra confiança binária.
 
 ## Referências
 

@@ -295,6 +295,11 @@ Identifique branches não cobertos e adicione testes para eles."
 > [!info] Cobertura não é TDD retroativo
 > Adicionar testes para branches descobertos *depois* da implementação é teste de confirmação, não TDD. O valor está em identificar casos que você não previu nos requisitos — e que o agente pode ter tratado de forma arbitrária. Se a cobertura revela um branch inesperado, vale entender o comportamento antes de escrever o teste.
 
+Na prática, a cobertura guiada funciona melhor como um segundo gate, não como substituto do ciclo Red/Green. Depois que o Green passa com os testes que você especificou, o relatório de cobertura mostra o que ficou de fora — geralmente branches de erro que ninguém pensou em pedir explicitamente (um `category` desconhecido, um `amount` no limite de precisão de ponto flutuante, uma exceção lançada por uma dependência externa). Cada branch descoberto é uma pergunta implícita: "o agente decidiu algo aqui sem que ninguém especificasse o quê" — e vale a pena ler o código antes de escrever o teste que fecha a lacuna, porque às vezes a decisão arbitrária do agente é a errada e o teste de cobertura não deve simplesmente confirmá-la.
+
+> [!tip] Vídeo — TDD como skill reutilizável no Claude Code
+> [Matt Pocock — "My Skill Makes Claude Code GREAT At TDD"](https://www.aihero.dev/skill-test-driven-development-claude-code) mostra como empacotar o ciclo Red/Green/Refactor descrito nesta nota como uma **skill** carregável pelo agente (em vez de repetir o prompt manualmente a cada sessão). A skill força o agente a escrever **um teste por vez** (não a suite inteira de uma vez) e a implementar o mínimo pra passar só aquele teste — a mesma disciplina de "implementação mínima" da seção Green acima, mas automatizada via `/tdd`. Útil pra quem já domina o ciclo manual e quer reduzir o overhead de repetir a instrução.
+
 ## Armadilhas comuns
 
 > [!warning] "Escreva testes e implemente" no mesmo prompt
@@ -385,7 +390,7 @@ A progressão: TDD define o contrato → Refactoring respeita o contrato → Deb
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/09 - Prompting para Claude Code|09 - Prompting para Claude Code]] — precisão no prompt para TDD funcionar
 - [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/index|Workflows]] — índice do galho
 
-## Referências
+## Fontes
 
 - [Claude Code — TDD workflow](https://docs.anthropic.com/en/docs/claude-code/tutorials#test-driven-development) — tutorial oficial de TDD com Claude Code
 - [Martin Fowler — Test Driven Development](https://martinfowler.com/bliki/TestDrivenDevelopment.html) — fundamentos do ciclo Red/Green/Refactor

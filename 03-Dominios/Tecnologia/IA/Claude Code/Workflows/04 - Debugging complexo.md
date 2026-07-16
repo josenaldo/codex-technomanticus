@@ -5,7 +5,7 @@ fase: Adepto
 progress: in_progress
 publish: true
 created: 2026-05-13
-updated: 2026-06-27
+updated: 2026-07-08
 status: growing
 tags:
   - claude-code
@@ -270,6 +270,9 @@ encontrar o passo que sempre precede a falha."
 > [!info] Logging temporário merece commit próprio
 > `git commit -m "debug: add temporary logging for payment race condition"` torna fácil reverter exatamente o logging depois que o bug for resolvido — sem risco de commitar logging de debug junto com o fix real.
 
+> [!tip] Podcast — construindo um harness real de diagnóstico com Claude Agent SDK
+> No episódio ["What a harness is and how to build one with Claude Agent SDK"](https://www.lennysnewsletter.com/p/what-a-harness-is-and-how-to-build) do podcast **How I AI** (Claire Vo, jul/2026), a convidada compartilha a tela ao vivo e constrói, do zero, um harness que automatiza a triagem de bugs do Sentry para sua empresa — cobrindo exatamente o ciclo "coleta de evidência → causa raiz → artefato de correção" descrito nas seções acima, sem nunca precisar digitar "conserte isso" pro agente. Útil pra quem já domina o fluxo manual de hipótese/evidência e quer ver como ele vira automação repetível.
+
 ## Armadilhas comuns
 
 > [!warning] Pedir o fix direto sem diagnóstico
@@ -308,6 +311,28 @@ O agente adapta a estratégia de diagnóstico às restrições do ambiente — n
 
 > [!question]- Quando aceitar um fix em produção sem diagnóstico completo?
 > Quando o impacto do bug supera o risco do fix. Um 500 total bloqueando checkouts é mais grave do que um fix de emergência que pode não ser a causa raiz. Nesse caso, aplique o fix mais conservador (que reduz impacto sem esconder informação — um rollback, um feature flag off), colete dados com o sistema estabilizado, e então diagnostique a causa raiz com calma.
+
+### Amostragem e feature flag de debug — como coletar sem sobrecarregar
+
+> [!question]- Se não posso logar tudo em produção, como coleto evidência suficiente pra confirmar uma hipótese?
+
+A resposta não é "logar menos" de forma genérica — é logar de forma **seletiva e dirigida à hipótese**. Duas técnicas resolvem isso sem violar as restrições de latência e retenção:
+
+1. **Tail-based sampling**: em vez de decidir na entrada da requisição se ela será logada (`sample rate = 10%` fixo), a decisão é tomada só depois que a requisição termina — se ela deu erro ou foi lenta, ela é sempre capturada; se deu certo e foi rápida, só uma fração pequena (ex: 10%) é mantida. É a diferença entre um hospital que triasse pacientes por sorteio na entrada versus um que observa o desfecho e prioriza registro completo dos casos graves — o segundo modelo garante que exatamente os casos que importam pro diagnóstico (os que falharam) nunca são descartados por amostragem.
+2. **Feature flag de debug por tenant/request**: em vez de ligar logging verboso globalmente (o que explode custo e viola a restrição de latência em P99), o agente liga o logging detalhado só para o `customerId` ou `requestId` que está reproduzindo o bug. Isso transforma "logging excessivo" em "logging cirúrgico" — o volume de dados extra é proporcional ao tamanho do problema, não ao tráfego total do sistema.
+
+Instrua o agente explicitamente nessa direção:
+
+```
+"Não ative logging verboso globalmente. Em vez disso:
+1. Proponha uma feature flag 'debug_logging_orderId' que, quando
+   setada pro orderId específico do caso reportado, ativa logs
+   detalhados só naquela requisição.
+2. Para o tráfego geral, use tail-based sampling: captura 100%
+   dos casos com erro ou latência >P95, e 10% dos casos normais."
+```
+
+> [!summary] Amostragem dirigida ao desfecho (erro/lento = sempre capturado) e logging seletivo por tenant resolvem o mesmo problema que motivou a restrição original: você não precisa escolher entre "logar tudo" (caro, viola SLA) e "logar pouco" (evidência insuficiente) — a seletividade é a terceira opção.
 
 ## Como explicar em inglês
 
@@ -360,6 +385,8 @@ Debugging e code review compartilham a mesma habilidade fundamental: ler código
 - [Claude Code — debugging workflows](https://docs.anthropic.com/en/docs/claude-code/how-claude-code-works) — abordagem recomendada para debugging com Claude Code
 - [Debugging: The 9 Indispensable Rules](https://debuggingrules.com/) — David Agans; os princípios de debugging que o workflow com Claude Code implementa
 - [Martin Fowler — Test-Driven Bug Fixing](https://martinfowler.com/articles/workflowsOfRefactoring/) — escrever o teste antes de corrigir como técnica padrão
+- [Debugging in Production: Leveraging Logs, Metrics and Traces](https://devops.com/debugging-in-production-leveraging-logs-metrics-and-traces/) — DevOps.com; tail-based sampling e logging seletivo por tenant/request como técnica de coleta de evidência sem sobrecarregar produção
+- [How I AI — "What a harness is and how to build one with Claude Agent SDK"](https://www.lennysnewsletter.com/p/what-a-harness-is-and-how-to-build) — Claire Vo (jul/2026); construção ao vivo de um harness de diagnóstico (evidência → causa raiz → fix) com Claude Agent SDK
 
 
 

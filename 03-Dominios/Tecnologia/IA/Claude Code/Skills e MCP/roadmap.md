@@ -16,7 +16,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 **Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Skills e MCP`
 **Nível:** galho-folha
 **Diagnóstico:** 2026-07-02
-**Última execução:** 2026-07-08 (ondas 4-5: notas 01-06 ✅; 07·08 pendentes)
+**Última execução:** 2026-07-08 (onda 6: notas 07·08 ✅ — galho completo 8/8)
 
 ## Régua de análise
 
@@ -37,10 +37,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 8 |
-| ⬜ pendente | 2 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 6 |
-| % concluído | 75% |
+| ✅ feita | 8 |
+| % concluído | 100% |
 
 > Diagnóstico concluído em 2026-07-02. Custo: 8 `[substantivo]` · 0 `[mecânico]`.
 
@@ -130,7 +130,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** E4 (painel de suporte + onboarding), E5 (→ [[07]]), E7 (tabela PT↔EN 9 termos), E8 (4 → [!warning]), L2 (Referências→Fontes), M1 (vídeo "Real-world MCP Server em 1 arquivo TS") aplicados. 425 linhas; score 12/12. Sem desvios.
 
 #### 07 - Compondo skills e MCP   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 386 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E4, E5, E7, E8, L2, M1
 - **Score:** 6/12
@@ -141,10 +141,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Converter os itens de "## Armadilhas" em ≥3 callouts `[!warning]` → ativa E8
   - Criar `## Fontes` com ≥1 URL externa verificável (ex.: docs oficiais Anthropic sobre skills/MCP) → ativa L2
   - Pesquisar e embutir `[!tip]` com vídeo/podcast sobre composição de agentes (skills+MCP) → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (## Casos práticos agrupando os 3 exemplos), E5 (→ [[08]]), E7 (tabela PT↔EN 4 termos), E8 (6 → [!warning]), L2 (## Fontes 3 URLs oficiais Anthropic; ## Referências internas preservadas), M1 (vídeo skills+MCP) aplicados. 387 → 415 linhas. Sem desvios.
 
 #### 08 - Skills em time   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-08)
 - **Estado:** 394 linhas reais · fase: ausente · status: evergreen
 - **Núcleo/gaps:** E4, E5, E7, E8, L2, M1
 - **Score:** 6/12
@@ -155,4 +155,4 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Renomear/reestruturar "Anti-padrões comuns em times" como `## Armadilhas comuns` com ≥3 callouts `[!warning]` → ativa E8
   - Criar `## Fontes` com ≥1 URL externa verificável (docs oficiais de skills/Claude Code ou artigo sobre manutenção de documentação viva) → ativa L2
   - Buscar e embutir vídeo/podcast relevante sobre manter skills/documentação de agentes atualizada via /adicionar-midia → ativa M1
-- **Resultado:** —
+- **Resultado:** E4 (2 cenários: time adotando skill evitou incidente recorrente / abandono sem owner gerou retrabalho), E5 (→ [[Workflows/index]], última nota do galho), E7 (tabela PT↔EN 9 termos), E8 (Anti-padrões → ## Armadilhas comuns, 5 [!warning]), L2 (## Fontes 2 URLs), M1 (vídeo Skill Creator v2) aplicados. 429 linhas; score 12/12. Sem desvios.
