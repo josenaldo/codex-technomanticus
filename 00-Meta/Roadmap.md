@@ -3,7 +3,7 @@ title: "Roadmap de Trilhas"
 type: moc
 publish: true
 created: 2026-06-25
-updated: 2026-07-05
+updated: 2026-07-13
 status: growing
 tags:
   - moc
@@ -58,8 +58,8 @@ aliases:
 | ------ | ------ | ---- |
 | [[03-Dominios/Tecnologia/Java/index\|Java (Senior)]] | ✅ | 18 galhos incl. Certificação OCP |
 | [[03-Dominios/Tecnologia/Node/index\|Node]] | ✅ | 8 galhos reformados — **Reforma do Node CONCLUÍDA 2026-06-29**: 95 notas (78 enriquecidas + 3 escritas do zero), todas em 3 fases, padrão capítulo com Mermaid/Casos práticos/Armadilhas |
-| [[03-Dominios/Tecnologia/Go/index\|Go]] | ⬜ | stub (3 notas) |
-| [[03-Dominios/Tecnologia/Python/index\|Python]] | ⬜ | stub (4 notas) |
+| [[03-Dominios/Tecnologia/Python/index\|Python]] | ✅ | **COMPLETA 2026-07-12**: 19 galhos, 202 notas, 3 fases (escala Java — Core/OO/Collections/Funcional/Tipagem/Concorrência/Async/Web-APIs/Persistência/Mensageria/Microservices/Observabilidade/Cloud-native/CPython internals/Segurança/Testes/Arquitetura/Build/Certificação PCEP-PCAP) |
+| [[03-Dominios/Tecnologia/Go/index\|Go]] | ⬜ | stub (3 notas) — **último backend sem trilha**; fronteira nativa de gRPC citada em Comunicação |
 
 ### IA, Terminal, Infra, RPA
 
@@ -100,7 +100,7 @@ aliases:
 | Anatomia de Agents | 11 | 25/06 | 🟡 diagnóstico nota-a-nota FEITO (30/06) — ver `guia/roadmap - ia` | Mais cru que LLMs: 4 notas <gate (8/12: 01/04/05/08), 5 em 9, 2 em 10; nenhuma fechada. Falta: bridge **"O que vem a seguir"** em TODAS as 11 · Anti-patterns→`[!warning]` em ~9 · URLs nas refs (L2) em 5. `fase:` ausente (galho por sequência). |
 | Anatomia dos LLMs | 24 | 24/06 | 🟡 diagnóstico nota-a-nota FEITO (29/06) — ver `guia/roadmap - ia` | Núcleo OK: todas ≥9/12 (04 = 11/12, única sem pendência). Falta: bridge **"O que vem a seguir"** em ~22 notas (têm "Veja também", falta a ponte narrativa) · converter Armadilhas→`[!warning]` em ~17 · `[!info]` de caducidade em 07/08/12/17. `fase:` ausente por decisão do spec (galho por Blocos). |
 | O Lado Sombrio da IA | 1 | — | ⬜ fora de escopo | cluster crítico fora das trilhas (só "Débito cognitivo") |
-| Claude Code | 0 | — | ⬜ fora de escopo | pasta vazia |
+| Claude Code | 71 | em curso | 🟡 construção/enriquecimento ativo | Sub-domínio próprio (Mental Model · Configuração · Hooks e Guardrails · Skills e MCP · Workflows · Time e Automação), com roadmaps por sub-galho. WIP corrente do vault (13/07). |
 
 > **Diagnóstico nota-a-nota CONCLUÍDO (30/06):** todas as 237 notas (19 galhos + 3 soltas) auditadas, uma por vez, contra a régua das skills. Plano detalhado por nota + síntese de padrões transversais em `00-Meta/guia/roadmap - ia.md`. Status acima reflete o estado real (não o selo "completo" antigo, que se baseava em contagem bruta de linhas). Próximo passo é **executar** as mudanças propostas, galho a galho — priorizando o que é barato e de alto ganho (E2 abertura-problema, E1 TL;DR, L2 URLs) e a caducidade urgente (Ferramentas de IA, Segurança 11/EU AI Act).
 >
@@ -120,6 +120,7 @@ aliases:
 | [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação entre Sistemas]] | 🟢     | Trilha completa: 4 sub-galhos (Panorama/Síncrona/Confiabilidade/Assíncrona) + capstone, 22 notas + 1 (2026-07-09)              |
 | [[03-Dominios/Engenharia/Operação/index\|Operação (DevOps/SRE)]]                        | 🟢     | Trilha completa: 4 sub-galhos (Ofício/Entrega-release/Rodar-em-prod/Observar-responder) + capstone, 23 notas (2026-07-08)      |
 | [[03-Dominios/Engenharia/Dados/index\|Dados (Data Engineering)]]                        | 🟢     | Trilha completa: 4 sub-galhos (Fundamentos/Modelagem/Pipelines/Qualidade-governança) + capstone, 19 notas (2026-07-13)         |
+| [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index\|Arqueologia e Restauração de Software]] | 🟢 | **Ofício central (consultor de legado).** Escrita completa: 28 notas + capstone (código legado → mentalidade → forense → rede de segurança → seams/Mikado/Strangler Fig → dimensão política → firefighting/compliance). Falta só enriquecimento de mídia (M1). |
 
 ---
 
@@ -143,6 +144,32 @@ aliases:
 
 > [!todo] Ordem de construção sugerida
 > A lógica: fechar primeiro o **tripé frontend** (a maior lacuna do perfil, já que backend Java está maduro), depois subir para **system design / operação** (profundidade de senior), e em paralelo as **reformas** de consolidação.
+
+### Backlog atual por prioridade (reconciliado 2026-07-13)
+
+> [!important] Fonte de verdade do que falta
+> As Ondas A–D abaixo são registro histórico (majoritariamente concluídas). Este bloco em tiers é a **visão forward-looking** do que resta, priorizada pelos objetivos: entrevistas internacionais + ofício de consultor de legado + completude do grimório.
+
+**Tier 1 — construção nova (buracos reais 🚫)**
+- **Go** — ainda 3 notas stub. Último backend sem trilha (Java 18 galhos · Node 8 · Python 19). Fronteira nativa de gRPC citada em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação]]. Candidato natural a próximo galho grande para paridade de stack.
+- **Cloud (AWS/GCP)** — sem domínio próprio construído (existe só a `Senda Cloud`). Alto valor para entrevista sênior remota; hoje coberto de raspão pela Operação.
+- **Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML. Merece foco próprio.
+
+**Tier 2 — consolidação de 🟡 (conteúdo existe, falta virar trilha atômica em 3 fases)**
+- **Design de Software** (25 notas, só SOLID + OO) — falta galho de Design Patterns + atomização no padrão capítulo.
+- **Segurança** (23 notas) — consolidar em trilha.
+- **Testes conceitual** (17 notas) — vertente JS já feita à parte ([[03-Dominios/Tecnologia/Testes JS/index\|Testes JS]]); falta atomizar o conceitual.
+- **Complexidade de Software** (17 notas) — consolidar.
+- **Infraestrutura** (só galho Linux) — Docker/K8s/Nginx como *tecnologia* (a *prática* já vive na Operação).
+
+**Tier 3 — Carreira (contínuo, fecha a candidatura)**
+- **Entrevistas** (6 notas) — behavioral/STAR, system design practice, negociação. **Maior ROI imediato** para o objetivo de entrevistas internacionais (alimentado pela mentoria GCA).
+- **Inglês** (4 notas + GCA) — articulação técnica em inglês.
+
+**Tier 4 — enriquecimento, não tema novo**
+- **IA** (351 notas) — diagnóstico nota-a-nota pronto; falta *executar* correções (E2 abertura · E1 TL;DR · L2 URLs · ASCII→Mermaid · caducidade). Ver [[#Enriquecimento do domínio IA]].
+- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS.
+- **RPA** (6 notas stub) — nicho, baixa prioridade.
 
 ### Onda A — Tripé Frontend (prioridade máxima)
 1. ✅ **JavaScript (core)** — **CONCLUÍDA 2026-06-25** (26 notas, 3 fases): closures, protótipos & `this`, coerção, async no nível da linguagem, iterators/generators, módulos, metaprogramação, ES2026. Base que o índice do TypeScript referencia.
@@ -168,8 +195,8 @@ aliases:
 ### Coberturas ausentes a considerar (🚫 hoje sem trilha)
 - **Cloud** (AWS/GCP) — há `Senda Cloud`, mas sem domínio próprio construído.
 - ~~**Auth & Identidade** (OAuth2/OIDC/JWT/sessões) — espalhado em Segurança; merece foco.~~ → **trilha própria COMPLETA em 2026-07-11** (🟢): `Engenharia/Auth e Identidade`, 5 sub-galhos + capstone, 25 notas. Ver item 11 da Onda C.
-- **Python** — hoje só stubs rasos em `Tecnologia/Python/` (`Python.md` 24 ln, `Python Backend.md` 297 ln, sem padrão trilha/fase). Sem galho profundo como o Java (18 galhos) ou o Node (8 galhos reformados).
-- **Go** — mesma situação em `Tecnologia/Go/` (`Go.md` 28 ln, `Go Backend.md` 358 ln, sem padrão trilha/fase). Relevante inclusive como fronteira citada na trilha Comunicação entre Sistemas (gRPC é cidadão nativo do ecossistema Go).
+- ~~**Python** — só stubs rasos~~ → **COMPLETA em 2026-07-12** (✅): 19 galhos, 202 notas, 3 fases (escala Java). Ver Backend/Runtime acima.
+- **Go** — segue stub em `Tecnologia/Go/` (`Go.md` 28 ln, `Go Backend.md` 358 ln, sem padrão trilha/fase). Relevante como fronteira citada na trilha Comunicação entre Sistemas (gRPC é cidadão nativo do ecossistema Go). **Único backend sem trilha — ver Tier 1.**
 - ~~**Web Performance & Core Web Vitals**~~ → **domínio próprio iniciado em 2026-07-05** (🟡): `Tecnologia/Web Performance/`, 4 galhos (*medir → carregar → responder → sustentar*). **escrita COMPLETA — 4 galhos, 32/32 notas** (Medição & CWV · Carregamento · Runtime & Rendering · Produção), 3 fases, padrão capítulo (falta só a rodada de enriquecimento de mídia, M1). Ver [[03-Dominios/Tecnologia/Web Performance/index|índice do domínio]] e o [[03-Dominios/Tecnologia/Web Performance/roadmap|roadmap]].
 - **Acessibilidade (a11y)** — entra como fase do HTML, mas é tema de entrevista por si só.
 
