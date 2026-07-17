@@ -20,7 +20,11 @@ aliases:
 
 **Objetivo:** Construir a trilha Go em `03-Dominios/Tecnologia/Go/` — 21 galhos + capstone, notas atômicas em 3 fases, padrão capítulo com lente cross-stack.
 
-**Arquitetura:** Galhos flat numerados (`01 - ...` a `21 - ...`) sob `Tecnologia/Go/`. Cada nota é escrita via `/escrever-nota`, auditada por `/verificar-nota`, commitada. Cada galho tem `roadmap.md`. `index.md` é o MOC da trilha.
+**Arquitetura:** Galhos flat numerados (`01 - ...` a `21 - ...`) sob `Tecnologia/Go/`. Cada nota é escrita seguindo o padrão `/escrever-nota`, auditada por `/verificar-nota`, commitada. Cada galho tem `roadmap.md`. `index.md` é o MOC da trilha.
+
+**Execução — subagentes com fan-out controlado:** o orquestrador (esta sessão) fica leve e coordena; a escrita das notas é delegada a **subagentes, ≤3 por rodada** (disciplina da skill `enriquecer-galho`: governança de tokens via ccusage, parada para revisão a cada rodada). Subagentes herdam Sonnet (adequado a geração de conteúdo — não forçar Opus). Cada subagente recebe: escopo da nota, padrão capítulo, convenções de fase, títulos das notas vizinhas (para os bridges) e as **fronteiras** (o que já foi coberto antes / o que vem depois) para não redefinir conceitos.
+
+**`Go Backend.md` — a excluir:** não é preservado como tronco podado. Fica intocado como fonte de consulta enquanto os galhos 9/11/14/16/18 são escritos; seu conteúdo se dissolve em várias notas desses galhos; **o arquivo é deletado** quando a migração terminar.
 
 **Tech Stack (do vault):** Obsidian Flavored Markdown · skills `/escrever-nota` · `/verificar-nota` · `/enriquecer-nota` · `/diagnosticar-galho` · Mermaid · Dataview.
 
@@ -42,13 +46,12 @@ aliases:
 
 **Files:**
 - Modify: `03-Dominios/Tecnologia/Go/index.md` (vira MOC da trilha)
-- Modify: `03-Dominios/Tecnologia/Go/Go Backend.md` (marca como tronco podado; conteúdo migra ao longo dos galhos)
 - Create: `03-Dominios/Tecnologia/Go/roadmap.md` (roadmap-pai da trilha)
+- Deixar `Go Backend.md` e `Go.md` intocados (fontes de consulta; excluídos ao fim da migração)
 
-- [ ] **Passo 1:** Reescrever `index.md` como MOC da trilha: TL;DR, tabela dos 21 galhos + capstone (com estado ⬜/🟡/✅), seção "Como ler" (ordem dos blocos), Veja também. Não remover o arquivo (regra Quartz).
-- [ ] **Passo 2:** Adicionar callout `[!info]` no topo de `Go Backend.md` marcando-o como material legado cujo conteúdo está sendo migrado para os galhos (com links para 9/11/16/18 conforme forem criados).
-- [ ] **Passo 3:** Criar `roadmap.md` (galho-pai) via template `00-Meta/templates/Template - Roadmap.md`, listando os 21 galhos como sub-galhos ⬜ não diagnosticados.
-- [ ] **Passo 4:** Commit: `git add 03-Dominios/Tecnologia/Go/{index,roadmap}.md "03-Dominios/Tecnologia/Go/Go Backend.md"` → `docs(go): andaime da trilha — MOC + roadmap-pai + poda do Go Backend`.
+- [ ] **Passo 1:** Reescrever `index.md` como MOC da trilha: TL;DR, tabela dos 21 galhos + capstone (com estado ⬜/🟡/✅), seção "Como ler" (ordem dos blocos), Veja também. Não remover o arquivo (regra Quartz). Não listar `Go Backend.md`/`Go.md` como entradas permanentes (serão excluídos).
+- [ ] **Passo 2:** Criar `roadmap.md` (galho-pai) via template `00-Meta/templates/Template - Roadmap.md`, listando os 21 galhos como sub-galhos ⬜ não diagnosticados.
+- [ ] **Passo 3:** Commit: `git add "03-Dominios/Tecnologia/Go/index.md" "03-Dominios/Tecnologia/Go/roadmap.md"` → `docs(go): andaime da trilha — MOC + roadmap-pai`.
 
 ---
 
@@ -123,4 +126,4 @@ Cada galho, quando chegar sua vez, ganha uma seção como a do galho 1 (roster d
 
 - [ ] Mover Go para ✅ no [[00-Meta/Roadmap|Roadmap mestre]] (Backend/Runtime + backlog Tier 1).
 - [ ] Criar memória `project_trilha_go.md` + linha no `MEMORY.md`.
-- [ ] Confirmar `Go Backend.md` totalmente migrado (ou reduzido a tronco podado com callouts).
+- [ ] **Excluir `Go Backend.md` e `Go.md`** — conteúdo integralmente migrado para os galhos; ajustar quaisquer wikilinks que apontavam para eles.
