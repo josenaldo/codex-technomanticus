@@ -27,7 +27,7 @@ Go aparece aqui como linguagem compilada, estaticamente tipada e orientada a con
 ### Bloco 1 — Fundamentos da linguagem
 
 1. ✅ [[03-Dominios/Tecnologia/Go/01 - Fundamentos e sintaxe/index|Fundamentos e sintaxe]] — modelo de compilação, tipos básicos, controle de fluxo, funções, pacotes/módulos, ponteiros, idiomático (8 notas, 2026-07-16)
-2. ⬜ **Tipos, structs e métodos** — value vs pointer semantics, embedding, o que substitui "classe"
+2. ✅ [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/index|Tipos, structs e métodos]] — value vs pointer semantics, embedding, o que substitui "classe" (8 notas, 2026-07-16)
 3. ⬜ **Interfaces e composição** — interfaces implícitas, composição sobre herança, type assertions/switch
 4. ⬜ **Erros como valor** — `error`, wrapping, `errors.Is/As`, sentinel, `panic`/`recover`
 5. ⬜ **Coleções e dados** — slices (e seu modelo de memória), arrays, maps, strings/runes/bytes

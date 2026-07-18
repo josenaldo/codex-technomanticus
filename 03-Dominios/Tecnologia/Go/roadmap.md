@@ -33,7 +33,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Go`. Mapeia o estado dos **21
 | # | Galho | Notas | Estado | roadmap |
 |--:|-------|------:|--------|---------|
 | 1 | Fundamentos e sintaxe | 8 | ✅ escrito (2026-07-16) | ✓ [[01 - Fundamentos e sintaxe/roadmap\|roadmap]] |
-| 2 | Tipos, structs e métodos | ~8 | ⬜ não iniciado | a criar |
+| 2 | Tipos, structs e métodos | 8 | ✅ escrito (2026-07-16) | ✓ [[02 - Tipos, structs e métodos/roadmap\|roadmap]] |
 | 3 | Interfaces e composição | ~8 | ⬜ não iniciado | a criar |
 | 4 | Erros como valor | ~8 | ⬜ não iniciado | a criar |
 | 5 | Coleções e dados | ~8 | ⬜ não iniciado | a criar |
@@ -60,10 +60,10 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Go`. Mapeia o estado dos **21
 | Métrica | Valor |
 |---------|-------|
 | Galhos | 21 + capstone |
-| ✅ escritos | 1 (galho 1) |
+| ✅ escritos | 2 (galhos 1-2) |
 | 🔶 em construção | 0 |
-| ⬜ não iniciados | 20 + capstone |
-| Notas escritas | 8 |
+| ⬜ não iniciados | 19 + capstone |
+| Notas escritas | 16 |
 | Notas estimadas | ~160 |
 
 ---
@@ -71,6 +71,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Go`. Mapeia o estado dos **21
 ## Próximos passos
 
 1. ~~**Galho 1 — Fundamentos e sintaxe:** escrever as 8 notas~~ ✅ **feito (2026-07-16)** — 8/8 no padrão capítulo, `index.md` + `roadmap.md` do galho criados.
-2. **Galho 2 — Tipos, structs e métodos:** próximo. Seguir galho a galho na ordem dos blocos (fundamentos → concorrência → serviços → produção → entrevista).
+2. ~~**Galho 2 — Tipos, structs e métodos:**~~ ✅ **feito (2026-07-16)** — 8/8 no padrão capítulo.
+3. **Galho 3 — Interfaces e composição:** próximo. Seguir galho a galho na ordem dos blocos (fundamentos → concorrência → serviços → produção → entrevista).
 3. Nos galhos 9/11/14/16/18: migrar o conteúdo correspondente do `Go Backend.md`.
 4. Ao fim: excluir `Go.md` e `Go Backend.md`; mover Go para ✅ no [[00-Meta/Roadmap|Roadmap mestre]]; criar memória.
