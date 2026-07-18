@@ -154,7 +154,7 @@ for indice, nome := range nomes {
 }
 ```
 
-Esta é a forma que substitui o `foreach`/`for...of` de Java/JavaScript e o `for item in lista:` de Python. A [[05 - for range sobre slices e maps|nota 05]] aprofunda `for range` sobre slices e maps — inclusive uma armadilha real sobre cópia de valor, mencionada logo abaixo. Aqui, o que importa reter é que ela é a **quarta forma do mesmo `for`**, não um comando à parte.
+Esta é a forma que substitui o `foreach`/`for...of` de Java/JavaScript e o `for item in lista:` de Python. A nota 05 aprofunda `for range` sobre slices e maps — inclusive uma armadilha real sobre cópia de valor, mencionada logo abaixo. Aqui, o que importa reter é que ela é a **quarta forma do mesmo `for`**, não um comando à parte.
 
 ```mermaid
 flowchart TD
@@ -409,7 +409,7 @@ Note os dois usos do idioma `if err := ...; err != nil` — um checando a abertu
 > }
 > // pessoas ainda tem "Ana" e "Bruno" — nada mudou
 > ```
-> A variável `p` de um `for range` é uma cópia do elemento, recriada a cada iteração — não uma referência ao elemento dentro do slice original. Se você precisa alterar o elemento de fato, indexe o slice diretamente (`pessoas[i].Nome = "Alterado"`) ou itere sobre ponteiros. A [[05 - for range sobre slices e maps|nota 05]] aprofunda esse comportamento, inclusive a mudança de semântica da variável de loop introduzida no Go 1.22.
+> A variável `p` de um `for range` é uma cópia do elemento, recriada a cada iteração — não uma referência ao elemento dentro do slice original. Se você precisa alterar o elemento de fato, indexe o slice diretamente (`pessoas[i].Nome = "Alterado"`) ou itere sobre ponteiros. A nota 05 aprofunda esse comportamento, inclusive a mudança de semântica da variável de loop introduzida no Go 1.22.
 
 ## Como explicar em inglês
 
@@ -449,7 +449,7 @@ Com `if`, `for`, `switch` e a introdução a `defer` no repertório, a peça que
 
 - [[02 - Variáveis, tipos básicos e zero values|Variáveis, tipos básicos e zero values]] — nota anterior deste galho, pré-requisito para `:=` no init statement
 - [[04 - Funções|Funções]] — próxima nota, aprofunda `defer` e os múltiplos retornos usados no idioma `if err := ...`
-- [[05 - for range sobre slices e maps|for range sobre slices e maps]] — aprofunda a quarta forma do `for` e a armadilha de cópia de valor
+- for range sobre slices e maps — aprofunda a quarta forma do `for` e a armadilha de cópia de valor
 - [[03-Dominios/Tecnologia/Go/03 - Interfaces e composição/index|Interfaces e composição]] — Galho 3, aprofunda o type switch
 - [[03-Dominios/Tecnologia/Go/04 - Erros como valor/index|Erros como valor]] — Galho 4, aprofunda `defer`/`panic`/`recover`
 - [[03-Dominios/Tecnologia/Go/index|Trilha Go]] (MOC central)

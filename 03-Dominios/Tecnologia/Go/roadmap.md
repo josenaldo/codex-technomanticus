@@ -25,8 +25,8 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Go`. Mapeia o estado dos **21
 |------|------|--------|
 | `index.md` | MOC da trilha | ➖ não precisa |
 | `roadmap.md` | este roadmap | ➖ não precisa |
-| `Go.md` | stub legado | ⚪ a excluir (conteúdo migra para os galhos) |
-| `Go Backend.md` | stub legado (rico) | ⚪ a excluir — fonte de migração p/ galhos 9/11/14/16/18 |
+| `Go.md` | stub legado | 🗑️ excluído (2026-07-18) — conteúdo migrado para os galhos |
+| `Go Backend.md` | stub legado (rico) | 🗑️ excluído (2026-07-18) — troubleshooting dissolvido nos galhos 9/11/14/16/18 |
 
 ## Galhos
 
@@ -34,44 +34,42 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Go`. Mapeia o estado dos **21
 |--:|-------|------:|--------|---------|
 | 1 | Fundamentos e sintaxe | 8 | ✅ escrito (2026-07-16) | ✓ [[01 - Fundamentos e sintaxe/roadmap\|roadmap]] |
 | 2 | Tipos, structs e métodos | 8 | ✅ escrito (2026-07-16) | ✓ [[02 - Tipos, structs e métodos/roadmap\|roadmap]] |
-| 3 | Interfaces e composição | ~8 | ⬜ não iniciado | a criar |
-| 4 | Erros como valor | ~8 | ⬜ não iniciado | a criar |
-| 5 | Coleções e dados | ~8 | ⬜ não iniciado | a criar |
-| 6 | Generics | ~7 | ⬜ não iniciado | a criar |
-| 7 | Goroutines e o scheduler | ~8 | ⬜ não iniciado | a criar |
-| 8 | Channels e select | ~8 | ⬜ não iniciado | a criar |
-| 9 | Sincronização e context | ~8 | ⬜ não iniciado | a criar |
-| 10 | net/http e web frameworks | ~8 | ⬜ não iniciado | a criar |
-| 11 | Persistência | ~8 | ⬜ não iniciado | a criar |
-| 12 | gRPC e protobuf | ~7 | ⬜ não iniciado | a criar |
-| 13 | Mensageria | ~7 | ⬜ não iniciado | a criar |
-| 14 | Microservices e arquitetura | ~8 | ⬜ não iniciado | a criar |
-| 15 | Testes | ~8 | ⬜ não iniciado | a criar |
-| 16 | Observabilidade | ~8 | ⬜ não iniciado | a criar |
-| 17 | Runtime interno | ~8 | ⬜ não iniciado | a criar |
-| 18 | Cloud-native e produção | ~8 | ⬜ não iniciado | a criar |
-| 19 | Segurança | ~8 | ⬜ não iniciado | a criar |
-| 20 | Go idiomático | ~7 | ⬜ não iniciado | a criar |
-| 21 | Preparação para entrevista de Go | ~7 | ⬜ não iniciado | a criar |
-| — | Capstone | 1 | ⬜ não iniciado | — |
+| 3 | Interfaces e composição | 8 | ✅ escrito (2026-07-18) | ✓ [[03 - Interfaces e composição/roadmap\|roadmap]] |
+| 4 | Erros como valor | 8 | ✅ escrito (2026-07-18) | ✓ [[04 - Erros como valor/roadmap\|roadmap]] |
+| 5 | Coleções e dados | 8 | ✅ escrito (2026-07-18) | ✓ [[05 - Coleções e dados/roadmap\|roadmap]] |
+| 6 | Generics | 7 | ✅ escrito (2026-07-18) | ✓ [[06 - Generics/roadmap\|roadmap]] |
+| 7 | Goroutines e o scheduler | 8 | ✅ escrito (2026-07-18) | ✓ [[07 - Goroutines e o scheduler/roadmap\|roadmap]] |
+| 8 | Channels e select | 8 | ✅ escrito (2026-07-18) | ✓ [[08 - Channels e select/roadmap\|roadmap]] |
+| 9 | Sincronização e context | 8 | ✅ escrito (2026-07-18) | ✓ [[09 - Sincronização e context/roadmap\|roadmap]] |
+| 10 | HTTP e frameworks web | 8 | ✅ escrito (2026-07-18) | ✓ [[10 - HTTP e frameworks web/roadmap\|roadmap]] |
+| 11 | Persistência | 8 | ✅ escrito (2026-07-18) | ✓ [[11 - Persistência/roadmap\|roadmap]] |
+| 12 | gRPC e protobuf | 7 | ✅ escrito (2026-07-18) | ✓ [[12 - gRPC e protobuf/roadmap\|roadmap]] |
+| 13 | Mensageria | 7 | ✅ escrito (2026-07-18) | ✓ [[13 - Mensageria/roadmap\|roadmap]] |
+| 14 | Microservices e arquitetura | 8 | ✅ escrito (2026-07-18) | ✓ [[14 - Microservices e arquitetura/roadmap\|roadmap]] |
+| 15 | Testes | 8 | ✅ escrito (2026-07-18) | ✓ [[15 - Testes/roadmap\|roadmap]] |
+| 16 | Observabilidade | 8 | ✅ escrito (2026-07-18) | ✓ [[16 - Observabilidade/roadmap\|roadmap]] |
+| 17 | Runtime interno | 8 | ✅ escrito (2026-07-18) | ✓ [[17 - Runtime interno/roadmap\|roadmap]] |
+| 18 | Cloud-native e produção | 8 | ✅ escrito (2026-07-18) | ✓ [[18 - Cloud-native e produção/roadmap\|roadmap]] |
+| 19 | Segurança | 8 | ✅ escrito (2026-07-18) | ✓ [[19 - Segurança/roadmap\|roadmap]] |
+| 20 | Go idiomático | 7 | ✅ escrito (2026-07-18) | ✓ [[20 - Go idiomático/roadmap\|roadmap]] |
+| 21 | Preparação para entrevista de Go | 7 | ✅ escrito (2026-07-18) | ✓ [[21 - Preparação para entrevista de Go/roadmap\|roadmap]] |
+| — | Capstone | 1 | ✅ escrito (2026-07-18) | — |
 
 ## Tabela-resumo (agregado)
 
 | Métrica | Valor |
 |---------|-------|
 | Galhos | 21 + capstone |
-| ✅ escritos | 2 (galhos 1-2) |
+| ✅ escritos | 21 + capstone |
 | 🔶 em construção | 0 |
-| ⬜ não iniciados | 19 + capstone |
-| Notas escritas | 16 |
-| Notas estimadas | ~160 |
+| ⬜ não iniciados | 0 |
+| Notas escritas | 163 + capstone |
+| M1 (mídia) pendente | todos os galhos |
 
 ---
 
 ## Próximos passos
 
-1. ~~**Galho 1 — Fundamentos e sintaxe:** escrever as 8 notas~~ ✅ **feito (2026-07-16)** — 8/8 no padrão capítulo, `index.md` + `roadmap.md` do galho criados.
-2. ~~**Galho 2 — Tipos, structs e métodos:**~~ ✅ **feito (2026-07-16)** — 8/8 no padrão capítulo.
-3. **Galho 3 — Interfaces e composição:** próximo. Seguir galho a galho na ordem dos blocos (fundamentos → concorrência → serviços → produção → entrevista).
-3. Nos galhos 9/11/14/16/18: migrar o conteúdo correspondente do `Go Backend.md`.
-4. Ao fim: excluir `Go.md` e `Go Backend.md`; mover Go para ✅ no [[00-Meta/Roadmap|Roadmap mestre]]; criar memória.
+1. ~~**Galhos 1-2:** escrever~~ ✅ **feito (2026-07-16)**.
+2. ~~**Galhos 3-21 + capstone:** escrever~~ ✅ **feito (2026-07-18)** — 163 notas + capstone no padrão capítulo, `index.md` + `roadmap.md` por galho. Conteúdo de produção do `Go Backend.md` dissolvido nos galhos 9/11/14/16/18. `Go.md` + `Go Backend.md` excluídos.
+3. **Trilha COMPLETA.** Próxima passada = **enriquecimento de mídia (M1)** galho a galho via `/enriquecer-galho` (não construção nova).

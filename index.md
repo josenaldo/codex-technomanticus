@@ -118,8 +118,7 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
 
 ## Domínio de Go
 
-- [[Go]]
-- **Backend:** [[Go Backend]] · [[gRPC e Go]]
+- [[03-Dominios/Tecnologia/Go/index|Go]] — trilha completa: 21 galhos + capstone (fundamentos → concorrência → serviços → produção → entrevista)
 
 ## Domínio de Inteligência Artificial
 

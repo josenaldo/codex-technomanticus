@@ -64,7 +64,7 @@ if existe {
 Não há wrapper, não há `null` disfarçado, não há exceção — a função literalmente devolve dois valores numa única instrução `return`, e o chamador recebe os dois numa única atribuição múltipla. Essa nota parte desse mecanismo — múltiplos valores de retorno — e percorre o resto do vocabulário de funções em Go: named returns, variádicas, funções como valor, closures, e o `defer` levado até o fim.
 
 > [!info] Fronteiras desta nota
-> Funções com **receiver** (o que em outras linguagens seria "método de uma classe") ficam para o [[03-Dominios/Tecnologia/Go/02 - Structs e métodos/index|Galho 2]]. O tipo `error` como valor e o par `panic`/`recover` são o [[03-Dominios/Tecnologia/Go/04 - Erros como valor/index|Galho 4]] inteiro — aqui você vai ver a *forma* `(T, error)` repetidamente, sem entrar em como tratar o erro de verdade. `go func()` (goroutines) é bloco 2 da trilha. Generics em funções (`func Map[T, U any](...)`) ficam para o [[03-Dominios/Tecnologia/Go/06 - Generics/index|Galho 6]].
+> Funções com **receiver** (o que em outras linguagens seria "método de uma classe") ficam para o [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/index|Galho 2]]. O tipo `error` como valor e o par `panic`/`recover` são o [[03-Dominios/Tecnologia/Go/04 - Erros como valor/index|Galho 4]] inteiro — aqui você vai ver a *forma* `(T, error)` repetidamente, sem entrar em como tratar o erro de verdade. `go func()` (goroutines) é bloco 2 da trilha. Generics em funções (`func Map[T, U any](...)`) ficam para o [[03-Dominios/Tecnologia/Go/06 - Generics/index|Galho 6]].
 
 ## Declaração de função e parâmetros
 
@@ -472,7 +472,7 @@ Com funções — múltiplo retorno, named returns, variádicas, first-class fun
 
 - [[03-Dominios/Tecnologia/Go/01 - Fundamentos e sintaxe/03 - Controle de fluxo|03 — Controle de fluxo]] — nota anterior, introduz `defer` e o idioma `if err := f(); err != nil`
 - [[05 - Pacotes, imports e visibilidade|05 — Pacotes, imports e visibilidade]] — próxima nota
-- [[03-Dominios/Tecnologia/Go/02 - Structs e métodos/index|Structs e métodos]] — Galho 2, funções com receiver
+- [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/index|Structs e métodos]] — Galho 2, funções com receiver
 - [[03-Dominios/Tecnologia/Go/04 - Erros como valor/index|Erros como valor]] — Galho 4, `error`, `panic`, `recover`
 - [[03-Dominios/Tecnologia/Go/06 - Generics/index|Generics]] — Galho 6, funções genéricas
 - [[03-Dominios/Tecnologia/Go/index|Trilha Go]] (MOC central)

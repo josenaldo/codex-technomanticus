@@ -59,7 +59,7 @@ aliases:
 | [[03-Dominios/Tecnologia/Java/index\|Java (Senior)]] | ✅ | 18 galhos incl. Certificação OCP |
 | [[03-Dominios/Tecnologia/Node/index\|Node]] | ✅ | 8 galhos reformados — **Reforma do Node CONCLUÍDA 2026-06-29**: 95 notas (78 enriquecidas + 3 escritas do zero), todas em 3 fases, padrão capítulo com Mermaid/Casos práticos/Armadilhas |
 | [[03-Dominios/Tecnologia/Python/index\|Python]] | ✅ | **COMPLETA 2026-07-12**: 19 galhos, 202 notas, 3 fases (escala Java — Core/OO/Collections/Funcional/Tipagem/Concorrência/Async/Web-APIs/Persistência/Mensageria/Microservices/Observabilidade/Cloud-native/CPython internals/Segurança/Testes/Arquitetura/Build/Certificação PCEP-PCAP) |
-| [[03-Dominios/Tecnologia/Go/index\|Go]] | ⬜ | stub (3 notas) — **último backend sem trilha**; fronteira nativa de gRPC citada em Comunicação |
+| [[03-Dominios/Tecnologia/Go/index\|Go]] | 🟢 | **Trilha completa (2026-07-18):** 21 galhos + capstone, 163 notas em 3 fases, padrão capítulo, lente cross-stack. Fecha o último backend sem trilha (Java 18 · Node 8 · Python 19 · **Go 21**). Falta só enriquecimento de mídia (M1). |
 
 ### IA, Terminal, Infra, RPA
 
@@ -151,7 +151,7 @@ aliases:
 > As Ondas A–D abaixo são registro histórico (majoritariamente concluídas). Este bloco em tiers é a **visão forward-looking** do que resta, priorizada pelos objetivos: entrevistas internacionais + ofício de consultor de legado + completude do grimório.
 
 **Tier 1 — construção nova (buracos reais 🚫)**
-- **Go** — ainda 3 notas stub. Último backend sem trilha (Java 18 galhos · Node 8 · Python 19). Fronteira nativa de gRPC citada em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação]]. Candidato natural a próximo galho grande para paridade de stack.
+- ~~**Go** — 3 notas stub~~ ✅ **Trilha completa (2026-07-18):** 21 galhos + capstone, 163 notas. Paridade de stack backend atingida (Java · Node · Python · Go). Fronteira nativa de gRPC em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação]] (galho 12). Resta só enriquecimento de mídia (M1).
 - **Cloud (AWS/GCP)** — sem domínio próprio construído (existe só a `Senda Cloud`). Alto valor para entrevista sênior remota; hoje coberto de raspão pela Operação.
 - **Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML. Merece foco próprio.
 

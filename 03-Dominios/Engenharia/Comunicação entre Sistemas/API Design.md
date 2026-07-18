@@ -129,4 +129,4 @@ Para uploads enormes com recuperação de falha: cliente envia em pedaços, serv
 - [[Spring Boot]] — implementação prática de APIs REST na stack Java
 - [[Node.js]] — implementação em Node/Express/NestJS
 - [[Python Backend]] — Django REST Framework, FastAPI
-- [[Go Backend]] — net/http, Gin, gRPC
+- [[03-Dominios/Tecnologia/Go/index|Go]] — trilha Go: net/http e frameworks (galho 10), gRPC e protobuf (galho 12)

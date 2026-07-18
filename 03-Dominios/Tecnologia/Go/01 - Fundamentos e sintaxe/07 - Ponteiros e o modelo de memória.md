@@ -68,7 +68,7 @@ Isso surpreende de verdade quem vem de Python (onde tudo é referência a objeto
 A pergunta que esta nota responde é: como você diz para uma função "mude o original, não uma cópia"? A resposta é o assunto inteiro daqui para frente — o ponteiro.
 
 > [!info] O que esta nota assume
-> Você já leu as notas 01 a 06 — sabe declarar variáveis, escrever funções com múltiplo retorno, e organizar código em pacotes e módulos. Ainda não vimos `struct` em profundidade (isso é o [[03-Dominios/Tecnologia/Go/02 - Structs e métodos/index|Galho 2]]) nem métodos com receiver — aqui, `struct` aparece só como "um valor composto que também é copiado por padrão", o suficiente para entender ponteiros. Slices, maps e channels aparecem no fim desta nota só como menção — a mecânica interna deles é o [[03-Dominios/Tecnologia/Go/05 - Slices, arrays e maps/index|Galho 5]].
+> Você já leu as notas 01 a 06 — sabe declarar variáveis, escrever funções com múltiplo retorno, e organizar código em pacotes e módulos. Ainda não vimos `struct` em profundidade (isso é o [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/index|Galho 2]]) nem métodos com receiver — aqui, `struct` aparece só como "um valor composto que também é copiado por padrão", o suficiente para entender ponteiros. Slices, maps e channels aparecem no fim desta nota só como menção — a mecânica interna deles é o [[03-Dominios/Tecnologia/Go/05 - Coleções e dados/index|Galho 5]].
 
 ## O que é um ponteiro: endereço, não valor
 
@@ -279,7 +279,7 @@ func processarPorPonteiro(r *Relatorio) { /* ... */ }
 Repare que o segundo motivo vale **mesmo quando a função não precisa mutar nada** — passar `*Relatorio` só para leitura ainda evita a cópia cara. É por isso que boa parte do código Go real usa ponteiro para struct por padrão, mesmo em funções que só leem: a convenção prática (não regra da linguagem) costuma ser "structs pequenas e imutáveis, passe por valor; structs médias/grandes, ou que precisam ser mutadas, passe por ponteiro" — e, dentro de um mesmo tipo, ser consistente (não misturar `func (c Conta) Ler()` com `func (c *Conta) Escrever()` no mesmo tipo sem motivo).
 
 > [!info] Fronteira: isso não é sobre métodos ainda
-> Tudo até aqui trata de **funções comuns** recebendo `*T` como parâmetro. Quando o mesmo dilema (valor vs. ponteiro) aparece na declaração de um **método** — `func (c Conta) Ler()` vs. `func (c *Conta) Escrever()`, o chamado *receiver* — as regras ganham nuances próprias (consistência de conjunto de métodos, satisfação de interface, etc.) que são o assunto do [[03-Dominios/Tecnologia/Go/02 - Structs e métodos/index|Galho 2]]. Aqui você viu só o mecanismo puro do ponteiro; methods com receiver reaproveitam exatamente esse mecanismo, com regras adicionais por cima.
+> Tudo até aqui trata de **funções comuns** recebendo `*T` como parâmetro. Quando o mesmo dilema (valor vs. ponteiro) aparece na declaração de um **método** — `func (c Conta) Ler()` vs. `func (c *Conta) Escrever()`, o chamado *receiver* — as regras ganham nuances próprias (consistência de conjunto de métodos, satisfação de interface, etc.) que são o assunto do [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/index|Galho 2]]. Aqui você viu só o mecanismo puro do ponteiro; methods com receiver reaproveitam exatamente esse mecanismo, com regras adicionais por cima.
 
 ## Go não tem aritmética de ponteiro (e isso é proposital)
 
@@ -345,7 +345,7 @@ flowchart TD
 O ponto central para reter desta nota: **você nunca escreve código para decidir stack ou heap** — não existe `malloc`/`free` em Go, não existe uma palavra-chave "aloque isso no heap". A decisão é inteiramente do compilador, automática, baseada em análise estática do fluxo do ponteiro. Isso é parte do que torna ponteiros em Go seguros por padrão: o mesmo padrão que seria um bug garantido em C ("retornar ponteiro para local") é simplesmente correto em Go, porque a linguagem foi desenhada para que a "intenção óbvia" do programador (devolver um ponteiro utilizável) sempre funcione.
 
 > [!info] Isso é só o começo — o galho 17 aprofunda
-> Escape analysis de verdade (como inspecionar as decisões do compilador com `go build -gcflags="-m"`, os casos em que uma alocação "escapa" por motivos não óbvios, como interfaces e closures afetam a análise) e o funcionamento do garbage collector (o algoritmo, as fases, como tunar `GOGC`) são o assunto do [[03-Dominios/Tecnologia/Go/17 - Performance e profiling/index|Galho 17]]. O que você precisa reter aqui é só o modelo mental: heap vs. stack é decisão do compilador, não sua, e por isso "vazamento de stack" (o medo cross-stack de quem vem de C) não é uma preocupação real em Go.
+> Escape analysis de verdade (como inspecionar as decisões do compilador com `go build -gcflags="-m"`, os casos em que uma alocação "escapa" por motivos não óbvios, como interfaces e closures afetam a análise) e o funcionamento do garbage collector (o algoritmo, as fases, como tunar `GOGC`) são o assunto do [[03-Dominios/Tecnologia/Go/17 - Runtime interno/index|Galho 17]]. O que você precisa reter aqui é só o modelo mental: heap vs. stack é decisão do compilador, não sua, e por isso "vazamento de stack" (o medo cross-stack de quem vem de C) não é uma preocupação real em Go.
 
 ## Slices, maps e channels: "reference-like", mas não ponteiros
 
@@ -363,7 +363,7 @@ dobrarValores(valores)
 fmt.Println(valores) // [2 4 6] — mudou, mesmo sem ponteiro explícito
 ```
 
-Isso confunde exatamente quem acabou de aprender a regra "Go é sempre pass-by-value" — e a regra continua verdadeira: o que foi copiado é a struct interna do slice (ponteiro + tamanho + capacidade), não os elementos. É por isso que a comunidade Go descreve slices, maps e channels como "reference-like" (comportam-se como referência para o conteúdo) sem serem ponteiros na sintaxe. A mecânica interna completa — por que `append` às vezes muta o original e às vezes não, capacidade vs. comprimento, como maps e channels são implementados por baixo — é o assunto inteiro do [[03-Dominios/Tecnologia/Go/05 - Slices, arrays e maps/index|Galho 5]]; aqui, a menção serve só para você não confundir "não precisei de `&`" com "isso não é pass-by-value".
+Isso confunde exatamente quem acabou de aprender a regra "Go é sempre pass-by-value" — e a regra continua verdadeira: o que foi copiado é a struct interna do slice (ponteiro + tamanho + capacidade), não os elementos. É por isso que a comunidade Go descreve slices, maps e channels como "reference-like" (comportam-se como referência para o conteúdo) sem serem ponteiros na sintaxe. A mecânica interna completa — por que `append` às vezes muta o original e às vezes não, capacidade vs. comprimento, como maps e channels são implementados por baixo — é o assunto inteiro do [[03-Dominios/Tecnologia/Go/05 - Coleções e dados/index|Galho 5]]; aqui, a menção serve só para você não confundir "não precisei de `&`" com "isso não é pass-by-value".
 
 ## Na prática: função que não muta vs. função que muta
 

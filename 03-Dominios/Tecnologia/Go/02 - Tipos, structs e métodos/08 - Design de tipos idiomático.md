@@ -421,7 +421,7 @@ O que falta é dar nome ao **comportamento em si**, desacoplado do tipo concreto
 - [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/06 - O idioma do construtor|06 — O idioma do construtor]] — zero value útil, introduzido ali e aprofundado aqui como princípio de design
 - [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/01 - Structs — definição e inicialização|01 — Structs: definição e inicialização]] — comparabilidade de struct, retomada na seção de chave de map
 - [[03-Dominios/Tecnologia/Go/01 - Fundamentos e sintaxe/08 - Idiomático desde o início|Galho 1, nota 08 — Idiomático desde o início]] — "accept interfaces, return structs" e os Go Proverbs, retomados na ponte final
-- [[03-Dominios/Tecnologia/Go/03 - Interfaces e polimorfismo/index|Galho 3 — Interfaces e polimorfismo]] — próximo galho da trilha
+- [[03-Dominios/Tecnologia/Go/03 - Interfaces e composição/index|Galho 3 — Interfaces e polimorfismo]] — próximo galho da trilha
 - [[03-Dominios/Tecnologia/Go/index|Trilha Go]]
 
 ## Fontes

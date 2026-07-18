@@ -154,7 +154,7 @@ func (p *Point) Dist() float64 {
 O motivo não é estético — é sobre **method set** (a próxima seção define o termo com precisão), e sobre o que acontece quando `Point` é usado através de uma interface. Misturar `func (p Point) Dist()` com `func (p *Point) Move(...)` no mesmo tipo produz um comportamento sutil e surpreendente: um valor `Point` (não `*Point`) satisfaz uma interface que exige só `Dist()`, mas **não** satisfaz uma que exige `Move()` — porque `Move` só está no method set de `*Point`, nunca no de `Point`. Um leitor do código, vendo `Point` implementar `Dist` com receiver de valor, pode assumir (errado) que `Point` também aceita `Move` do mesmo jeito. Consistência elimina essa armadilha antes que ela exista.
 
 > [!info] Teaser — isso reaparece com força total no galho 3
-> A frase "`Move` só está no method set de `*Point`" tem uma implicação grande: **`Point` e `*Point` satisfazem interfaces diferentes**. É possível que um valor `Point` não sirva onde uma interface pede, mesmo que `*Point` sirva perfeitamente. Esse mecanismo — e como ele frequentemente derruba código que "devia compilar" na primeira tentativa de quem está aprendendo Go — é assunto do [[03-Dominios/Tecnologia/Go/03 - Interfaces e polimorfismo/index|Galho 3]]. Aqui, guarde só a intuição: method set de `T` ⊂ method set de `*T`, nunca o contrário.
+> A frase "`Move` só está no method set de `*Point`" tem uma implicação grande: **`Point` e `*Point` satisfazem interfaces diferentes**. É possível que um valor `Point` não sirva onde uma interface pede, mesmo que `*Point` sirva perfeitamente. Esse mecanismo — e como ele frequentemente derruba código que "devia compilar" na primeira tentativa de quem está aprendendo Go — é assunto do [[03-Dominios/Tecnologia/Go/03 - Interfaces e composição/index|Galho 3]]. Aqui, guarde só a intuição: method set de `T` ⊂ method set de `*T`, nunca o contrário.
 
 ## Method sets: quem tem o quê
 
@@ -390,7 +390,7 @@ Com value vs. pointer receiver resolvido — e o motivo pelo qual `Point` e `*Po
 - [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/03 - Métodos|03 — Métodos]] — anatomia do receiver, method value e method expression
 - [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/05 - Composição por embedding|05 — Composição por embedding]] — próxima nota do galho
 - [[03-Dominios/Tecnologia/Go/01 - Fundamentos e sintaxe/07 - Ponteiros e o modelo de memória|Galho 1, nota 07]] — mecânica pura de ponteiro, pré-requisito desta nota
-- [[03-Dominios/Tecnologia/Go/03 - Interfaces e polimorfismo/index|Galho 3]] — satisfação de interface via method set, aprofundado
+- [[03-Dominios/Tecnologia/Go/03 - Interfaces e composição/index|Galho 3]] — satisfação de interface via method set, aprofundado
 - [[03-Dominios/Tecnologia/Go/index|Trilha Go]]
 
 ## Fontes

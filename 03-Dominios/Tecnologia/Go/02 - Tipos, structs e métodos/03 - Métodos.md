@@ -79,7 +79,7 @@ A sintaxe completa é `func (receiver Tipo) NomeDoMétodo(parâmetros) retorno {
 
 - **Receiver** — `p Point`: um nome (`p`, escolhido por você) e um tipo (`Point`). É a cláusula entre parênteses logo após `func`, antes do nome do método.
 - **Tipo receiver** (*receiver type*) — `Point`: o tipo ao qual o método fica associado. Segundo a [especificação da linguagem](https://go.dev/ref/spec#Method_declarations), o tipo receiver precisa ser um **tipo nomeado** definido no mesmo pacote do método — não pode ser um tipo ponteiro, nem um tipo de interface, nem um tipo declarado em outro pacote.
-- **Conjunto de métodos** (*method set*) — o conjunto de todos os métodos associados a um tipo. `Point` tem um method set com `Dist` (e qualquer outro método que você declarar para `Point`); esse conceito volta a importar na [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/05 - Embedding e promoção de métodos|nota 05]], quando embedding entra em cena.
+- **Conjunto de métodos** (*method set*) — o conjunto de todos os métodos associados a um tipo. `Point` tem um method set com `Dist` (e qualquer outro método que você declarar para `Point`); esse conceito volta a importar na [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/05 - Composição por embedding|nota 05]], quando embedding entra em cena.
 
 A declaração do método não precisa morar no mesmo arquivo `.go` que a declaração do tipo — só precisa estar no **mesmo pacote**. É comum, em pacotes grandes, separar `point.go` (com `type Point struct {...}`) de `point_methods.go` ou `point_dist.go` (com os métodos) — o compilador não se importa, resolve tudo pelo pacote, não pelo arquivo. O que importa de verdade — e volta na próxima seção — é o pacote onde o tipo receiver foi *declarado*.
 
@@ -168,7 +168,7 @@ Esse padrão é comum em código Go idiomático: em vez de carregar um `float64`
 Go impõe um limite rígido sobre onde métodos podem ser declarados: segundo a especificação, "the receiver base type [...] must be defined in the same package as the method" — **o tipo receiver precisa estar definido no mesmo pacote do método**. Na prática, isso significa duas coisas que travam quem vem de linguagens mais permissivas:
 
 1. **Você não pode adicionar método a um tipo embutido** como `int`, `string` ou `float64` diretamente — eles não têm "dono" de pacote que seja seu. `func (i int) Dobro() int { return i * 2 }` não compila: `cannot define new methods on non-local type int`.
-2. **Você não pode adicionar método a um tipo de outro pacote** — nem mesmo um struct exportado de uma biblioteca que você importa. Se `time.Time` não tem o método que você queria, a saída não é "abrir a classe" de fora; é declarar um tipo novo no seu pacote (`type MeuHorario time.Time`, ou um struct que embeda `time.Time` — embedding é o assunto da [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/05 - Embedding e promoção de métodos|nota 05]]) e pendurar o método nesse tipo novo, local.
+2. **Você não pode adicionar método a um tipo de outro pacote** — nem mesmo um struct exportado de uma biblioteca que você importa. Se `time.Time` não tem o método que você queria, a saída não é "abrir a classe" de fora; é declarar um tipo novo no seu pacote (`type MeuHorario time.Time`, ou um struct que embeda `time.Time` — embedding é o assunto da [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/05 - Composição por embedding|nota 05]]) e pendurar o método nesse tipo novo, local.
 
 ```go
 // Não compila — int não é um tipo do seu pacote:
@@ -356,9 +356,9 @@ Toda esta nota usou **value receiver** — `func (p Point) Dist()` — sem quest
 
 ## Veja também
 
-- [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/02 - Tipos nomeados e tipos definidos|02 — Tipos nomeados e tipos definidos]] — `type Celsius float64` e o conceito de underlying type retomado aqui
+- [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/02 - Tipos nomeados e definições de tipo|02 — Tipos nomeados e tipos definidos]] — `type Celsius float64` e o conceito de underlying type retomado aqui
 - [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/04 - Value vs pointer receiver|04 — Value vs pointer receiver]] — próxima nota do galho
-- [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/05 - Embedding e promoção de métodos|05 — Embedding e promoção de métodos]] — method set completo de um struct que embeda outro tipo
+- [[03-Dominios/Tecnologia/Go/02 - Tipos, structs e métodos/05 - Composição por embedding|05 — Embedding e promoção de métodos]] — method set completo de um struct que embeda outro tipo
 - [[03-Dominios/Tecnologia/Go/01 - Fundamentos e sintaxe/07 - Ponteiros e o modelo de memória|Galho 1, nota 07]] — `*`/`&`, pré-requisito para entender pointer receiver na próxima nota
 - [[03-Dominios/Tecnologia/Python/OO e Data Model/01 - Classes — definição, atributos e métodos|Python, OO e Data Model, nota 01]] — `self` explícito, para quem quiser comparar o mecanismo de *binding* lado a lado
 - [[03-Dominios/Tecnologia/Go/index|Trilha Go]]
