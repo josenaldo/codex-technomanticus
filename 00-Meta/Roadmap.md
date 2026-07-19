@@ -3,7 +3,7 @@ title: "Roadmap de Trilhas"
 type: moc
 publish: true
 created: 2026-06-25
-updated: 2026-07-13
+updated: 2026-07-18
 status: growing
 tags:
   - moc
@@ -196,7 +196,7 @@ aliases:
 - **Cloud** (AWS/GCP) — há `Senda Cloud`, mas sem domínio próprio construído.
 - ~~**Auth & Identidade** (OAuth2/OIDC/JWT/sessões) — espalhado em Segurança; merece foco.~~ → **trilha própria COMPLETA em 2026-07-11** (🟢): `Engenharia/Auth e Identidade`, 5 sub-galhos + capstone, 25 notas. Ver item 11 da Onda C.
 - ~~**Python** — só stubs rasos~~ → **COMPLETA em 2026-07-12** (✅): 19 galhos, 202 notas, 3 fases (escala Java). Ver Backend/Runtime acima.
-- **Go** — segue stub em `Tecnologia/Go/` (`Go.md` 28 ln, `Go Backend.md` 358 ln, sem padrão trilha/fase). Relevante como fronteira citada na trilha Comunicação entre Sistemas (gRPC é cidadão nativo do ecossistema Go). **Único backend sem trilha — ver Tier 1.**
+- ~~**Go** — segue stub em `Tecnologia/Go/`~~ → **COMPLETA em 2026-07-18** (🟢): 21 galhos + capstone, 163 notas, 3 fases (escala Java/Python). Stubs `Go.md`/`Go Backend.md` excluídos. Fecha o último backend sem trilha. Ver Backend/Runtime (Tier 1) acima.
 - ~~**Web Performance & Core Web Vitals**~~ → **domínio próprio iniciado em 2026-07-05** (🟡): `Tecnologia/Web Performance/`, 4 galhos (*medir → carregar → responder → sustentar*). **escrita COMPLETA — 4 galhos, 32/32 notas** (Medição & CWV · Carregamento · Runtime & Rendering · Produção), 3 fases, padrão capítulo (falta só a rodada de enriquecimento de mídia, M1). Ver [[03-Dominios/Tecnologia/Web Performance/index|índice do domínio]] e o [[03-Dominios/Tecnologia/Web Performance/roadmap|roadmap]].
 - **Acessibilidade (a11y)** — entra como fase do HTML, mas é tema de entrevista por si só.
 
