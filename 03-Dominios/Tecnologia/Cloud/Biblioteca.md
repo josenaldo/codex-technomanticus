@@ -21,7 +21,7 @@ publish: true
 - [[#Azure]]
 - [[#Google Cloud]]
 
-# AWS
+## AWS
 
 > [!info] AWS Architecture Center
 > Learn how to architect more efficiently and effectively on AWS with our expert guidance and best practices.
@@ -43,7 +43,7 @@ publish: true
 > Treinamento e certificação oficial da AWS — base pro galho 24 (Certificação AWS Solutions Architect Associate).
 > https://aws.amazon.com/pt/training/
 
-# DigitalOcean
+## DigitalOcean
 
 > [!info] DigitalOcean Community Tutorials
 > A maior coleção de tutoriais práticos de infraestrutura e cloud da comunidade — referência constante pra lente DigitalOcean da trilha.
@@ -53,13 +53,13 @@ publish: true
 > Documentação oficial de produtos: Droplets, App Platform, Managed Databases, Kubernetes, Spaces, Functions.
 > https://docs.digitalocean.com/
 
-# Azure
+## Azure
 
 > [!info] Azure Architecture Center
 > Guias e padrões de arquitetura de referência da Microsoft — usado como camada de tradução AWS/DO → Azure (galho 23).
 > https://learn.microsoft.com/azure/architecture/
 
-# Google Cloud
+## Google Cloud
 
 > [!info] Google Cloud Architecture Framework
 > Equivalente do GCP ao AWS Well-Architected — usado como camada de tradução AWS/DO → GCP (galho 23).
