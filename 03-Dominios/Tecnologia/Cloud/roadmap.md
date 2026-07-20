@@ -1,0 +1,105 @@
+---
+title: "Roadmap — Cloud"
+created: 2026-07-20
+updated: 2026-07-20
+type: meta
+publish: false
+tags:
+  - meta
+  - roadmap
+  - cloud
+---
+# Roadmap — Cloud
+
+Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos **24 galhos** (agrupados em 5 blocos) + capstone. Cada galho terá o próprio `roadmap.md` (Modo A) mapeando suas notas quando for construído.
+
+**Design:** [[00-Meta/specs/2026-07-20-trilha-cloud-design|Design — Trilha Cloud]] · **Plano:** [[00-Meta/specs/2026-07-20-trilha-cloud-plano|Plano de Execução]]
+
+**Nível:** raiz de domínio (contém galhos)
+
+**Legenda de estado:** ✅ completo (0 ⬜) · 📋 diagnosticado, escrita pendente · 🔶 parcial · ⬜ não iniciado · ⚪ especial/fora do fluxo · `%` = (✅ + ➖) / total.
+
+## Notas diretas (logo abaixo desta pasta)
+
+| Nota | Tipo | Estado |
+|------|------|--------|
+| `index.md` | MOC da trilha | ➖ não precisa |
+| `roadmap.md` | este roadmap | ➖ não precisa |
+| `Dicionário.md` | glossário do domínio | ➖ não precisa (semeado na Task 0) |
+| `Biblioteca.md` | recursos externos | ➖ não precisa (semeado na Task 0) |
+
+## Galhos
+
+### Bloco 1 — Modelo mental e fundamentos
+
+| # | Galho | Notas | Estado | roadmap |
+|--:|-------|------:|--------|---------|
+| 1 | O que é a nuvem, de verdade | — | ⬜ não iniciado | a criar |
+| 2 | Anatomia de um provedor | — | ⬜ não iniciado | a criar |
+| 3 | Well-Architected Framework | — | ⬜ não iniciado | a criar |
+| 4 | Identidade e acesso (IAM) | — | ⬜ não iniciado | a criar |
+
+### Bloco 2 — Os primitivos
+
+| # | Galho | Notas | Estado | roadmap |
+|--:|-------|------:|--------|---------|
+| 5 | Compute I — máquinas virtuais | — | ⬜ não iniciado | a criar |
+| 6 | Compute II — elasticidade e balanceamento | — | ⬜ não iniciado | a criar |
+| 7 | Rede na nuvem (VPC) | — | ⬜ não iniciado | a criar |
+| 8 | Armazenamento — object, block e file | — | ⬜ não iniciado | a criar |
+| 9 | Bancos gerenciados | — | ⬜ não iniciado | a criar |
+| 10 | DNS, CDN e borda | — | ⬜ não iniciado | a criar |
+
+### Bloco 3 — Serverless e arquiteturas modernas
+
+| # | Galho | Notas | Estado | roadmap |
+|--:|-------|------:|--------|---------|
+| 11 | Serverless e FaaS — Lambda a fundo | — | ⬜ não iniciado | a criar |
+| 12 | Containers gerenciados | — | ⬜ não iniciado | a criar |
+| 13 | Mensageria e eventos gerenciados | — | ⬜ não iniciado | a criar |
+| 14 | API Gateway e edge de aplicação | — | ⬜ não iniciado | a criar |
+| 15 | Arquiteturas serverless e event-driven | — | ⬜ não iniciado | a criar |
+
+### Bloco 4 — Operar, sustentar, governar
+
+| # | Galho | Notas | Estado | roadmap |
+|--:|-------|------:|--------|---------|
+| 16 | Infrastructure as Code | — | ⬜ não iniciado | a criar |
+| 17 | Observabilidade na cloud | — | ⬜ não iniciado | a criar |
+| 18 | Segurança na cloud a fundo | — | ⬜ não iniciado | a criar |
+| 19 | FinOps — a economia da cloud | — | ⬜ não iniciado | a criar |
+| 20 | Resiliência e continuidade | — | ⬜ não iniciado | a criar |
+
+### Bloco 5 — Provedores e maestria
+
+| # | Galho | Notas | Estado | roadmap |
+|--:|-------|------:|--------|---------|
+| 21 | AWS a fundo — consolidação | — | ⬜ não iniciado | a criar |
+| 22 | DigitalOcean a fundo — consolidação | — | ⬜ não iniciado | a criar |
+| 23 | Panorama multi-cloud e portabilidade | — | ⬜ não iniciado | a criar |
+| 24 | Certificação — AWS Solutions Architect Associate | — | ⬜ não iniciado | a criar |
+
+### Capstone
+
+| # | Galho | Notas | Estado | roadmap |
+|--:|-------|------:|--------|---------|
+| — | Arquitetar um SaaS na cloud do zero | — | ⬜ não iniciado | — |
+
+## Tabela-resumo (agregado)
+
+| Métrica | Valor |
+|---------|-------|
+| Galhos | 0/24 escritos |
+| ✅ completos | 0 |
+| 🔶 parciais | 0 |
+| ⬜ não iniciados | 24 + capstone |
+| Notas escritas | 0 |
+| M1 (mídia) pendente | todo o domínio (nenhum galho escrito ainda) |
+
+---
+
+## Próximos passos
+
+1. **Task 0 (esta task):** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
+2. **Galho 1 em diante:** escrever nota a nota, bloco a bloco, seguindo o roster do design/plano.
+3. **Pendência registrada:** enriquecimento de mídia (M1) — só se aplica depois que cada galho for escrito; nenhuma ação necessária agora.
