@@ -3,7 +3,7 @@ title: "Capex, opex e a economia da elasticidade"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-21
 status: seedling
 publish: true
 tags:
@@ -44,6 +44,40 @@ flowchart LR
     end
 ```
 
+| Dimensão | Capex (comprar o ativo) | Opex (alugar a capacidade) |
+|---|---|---|
+| Quem aprova | Diretoria ou comitê de orçamento de capital | Gestor do time, dentro do orçamento operacional já existente |
+| Horizonte da decisão | Meses — ciclo de orçamento anual, lead time de compra | Minutos a horas — chamada de API |
+| Risco de errar a estimativa | Alto: ativo comprado fica ocioso (superestimou) ou insuficiente (subestimou) por anos | Baixo: ajusta a capacidade contratada a qualquer momento, sem penalidade de anos |
+| Efeito no balanço | Vira ativo no balanço patrimonial, deprecia em 3-5 anos | Não vira ativo; aparece como despesa na demonstração de resultado do mês |
+| Velocidade de decisão | Baixa — trâmite formal, múltiplas aprovações hierárquicas | Alta — decisão de um engenheiro sênior num cartão corporativo |
+
+O ciclo "sobe, testa, desliga" da história acima não é força de expressão — é um par de comandos, do mesmo jeito nos dois provedores:
+
+```bash
+# AWS — sobe a instância pra testar a hipótese...
+aws ec2 run-instances \
+  --image-id ami-0abcdef1234567890 \
+  --instance-type t3.micro \
+  --key-name minha-chave \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=teste-cache}]'
+# ...e quando a hipótese não vinga, desliga e para de pagar a capacidade:
+aws ec2 terminate-instances --instance-ids i-0123456789abcdef0
+```
+
+```bash
+# DigitalOcean — o mesmo ciclo, com doctl
+doctl compute droplet create teste-cache \
+  --size s-1vcpu-1gb \
+  --image ubuntu-22-04-x64 \
+  --region nyc1 \
+  --wait
+# id do droplet sai no retorno do create; destruir é uma chamada:
+doctl compute droplet delete teste-cache --force
+```
+
+Repare no que esse par de comandos **não** exige: nenhuma nota fiscal, nenhum comitê, nenhum ativo que sobra no inventário se o teste falhar. `terminate-instances`/`droplet delete` é o "desliga e para de pagar" do diagrama acima, executável.
+
 Vale registrar, para não simplificar demais: opex não é gratuito nem elimina a necessidade de controle. Uma empresa que deixa dezenas de times comprando recursos de nuvem livremente, sem nenhuma governança, descobre isso do jeito mais caro possível — na fatura do fim do mês. A disciplina que existia antes (aprovar antes de gastar) não desaparece; ela só muda de forma, de aprovação prévia obrigatória para monitoramento e alertas depois do fato. Esse é o assunto inteiro de **FinOps** — orçamentos, tags de custo, alertas, right-sizing, savings plans, análise de gasto por time — e fica de propósito fora desta nota; ele merece o **galho 19** completo desta trilha. Aqui, o ponto é só entender a lógica econômica por trás da mudança: por que opex é estruturalmente diferente de capex, não como otimizar o opex depois que ele já existe.
 
 ## O gráfico que qualquer engenheiro sênior já desenhou num quadro branco
@@ -81,6 +115,37 @@ xychart-beta
 
 A linha de capacidade agora acompanha a curva de demanda de perto, com uma margem pequena de segurança — porque o custo de errar para cima ficou baixo (você desliga o excesso em minutos) e o custo de corrigir um erro para baixo também ficou baixo (você sobe mais capacidade em minutos). As duas áreas de desperdício do primeiro gráfico praticamente somem, não porque a demanda ficou mais previsível, mas porque a **penalidade de errar a estimativa despencou**. Esse é o efeito, em forma de gráfico, do que a nota anterior descreveu como elasticidade rápida — só que agora conectado explicitamente a dinheiro, não só a tempo de provisionamento.
 
+A diferença entre os dois cenários fica mais concreta como conta de utilização — em ordens de grandeza, não em preço real de nenhum provedor:
+
+```text
+# Pseudo-cálculo: provisionar-pra-pico vs. escalar-sob-demanda
+# (ordens de grandeza ilustrativas — não são preços de nenhum provedor real)
+
+CAPACIDADE_PICO       = 100 unidades   # dimensionada para a sexta-feira de Black Friday
+CAPACIDADE_MEDIA_USO  =  35 unidades   # média real de uso ao longo da semana (ver gráfico acima)
+HORAS_SEMANA          = 168 horas
+
+# Cenário A — provisionar-pra-pico (capex, degrau fixo)
+custo_A = CAPACIDADE_PICO * HORAS_SEMANA * preco_unidade
+# paga por 100 unidades nas 168 horas da semana inteira,
+# mesmo usando ~35 na maior parte do tempo
+utilizacao_A = CAPACIDADE_MEDIA_USO / CAPACIDADE_PICO   # ~35% da capacidade contratada
+
+# Cenário B — escalar-sob-demanda (opex, elástico)
+custo_B = soma_por_hora(capacidade_alocada_na_hora * preco_unidade)
+# paga só pela capacidade realmente alocada a cada hora,
+# subindo perto de 100 na sexta e caindo perto de 15-20 no fim de semana
+utilizacao_B ≈ 90-100%   # capacidade contratada converge com capacidade usada
+
+# A vantagem de B não vem de "preço por unidade mais barato que o A" —
+# em muitos casos o preço por unidade da nuvem É MAIOR que o do hardware
+# amortizado (é exatamente o argumento da seção seguinte). A vantagem
+# vem de pagar pela área sob a curva de uso real, não pela área sob o
+# degrau dimensionado para o pico.
+```
+
+O ponto que a conta deixa explícito: elasticidade não reduz o preço por unidade de capacidade — ela reduz a **quantidade de unidades pagas e não usadas**. São mecanismos econômicos diferentes, e é comum confundi-los.
+
 ## Elasticidade não é sinônimo de escalabilidade
 
 Aqui mora uma distinção que separa quem estudou cloud a sério de quem só decorou o vocabulário — e que aparece com frequência em entrevista técnica sênior, justamente porque é fácil confundir os dois termos.
@@ -90,6 +155,16 @@ Aqui mora uma distinção que separa quem estudou cloud a sério de quem só dec
 **Elasticidade** é a propriedade adicional de essa capacidade **crescer e encolher automaticamente**, acompanhando a demanda real, sem intervenção manual em cada direção. Um sistema elástico não só aguenta o pico — ele devolve a capacidade sozinho quando o pico passa.
 
 A confusão comum é achar que os dois sempre andam juntos. Não andam. Pense num sistema com 40 instâncias fixas, provisionadas manualmente para aguentar o pior pico do ano, e que nunca são desligadas — nem quando o tráfego cai para 10% da capacidade instalada às 3h da manhã. Esse sistema **é escalável** (ele aguenta o pico, tem capacidade de sobra) e **não é elástico** (a capacidade não acompanha a curva de demanda para baixo; alguém teria que desligar instâncias manualmente, e provavelmente ninguém faz isso porque dá trabalho e risco). É exatamente o cenário descrito na armadilha da nota anterior — "achar que nuvem é sinônimo de elástico automaticamente" — só que agora nomeado com precisão: rodar em cloud não torna um sistema elástico por padrão; torna-o *elasticamente capaz*, no sentido de que a infraestrutura subjacente permite configurar elasticidade real (Auto Scaling Groups na AWS, autoscaling de pools de Droplets ou de um cluster gerenciado na DigitalOcean), mas essa configuração é trabalho adicional, não um brinde.
+
+| Dimensão | Escalabilidade | Elasticidade |
+|---|---|---|
+| Definição | Capacidade de crescer para atender mais carga, sem reescrever a arquitetura | Capacidade de crescer **e encolher** automaticamente, acompanhando a demanda |
+| Direção | Tipicamente uma via — para cima | Duas vias — sobe e desce sozinha |
+| Intervenção manual | Pode exigir (alguém aloca a capacidade extra) | Não deveria exigir — reage à métrica de demanda |
+| Exemplo de sistema que tem uma sem a outra | 40 instâncias fixas, dimensionadas pro pior pico do ano, nunca desligadas | Auto Scaling Group que sobe na sexta e desce no fim de semana sozinho |
+| Mecanismo na AWS | Adicionar instâncias/nós manualmente ou via script | Auto Scaling Groups |
+| Mecanismo na DigitalOcean | Criar mais Droplets/nós manualmente | Autoscaling de pools de Droplets ou de um cluster gerenciado |
+| Vem de graça por rodar em nuvem? | Não — a infraestrutura permite, mas alguém precisa provisionar | Não — precisa ser configurada explicitamente |
 
 O inverso também existe, embora seja mais raro: um sistema pode ter partes elásticas (a camada de compute escala para cima e para baixo sozinha) presas a um gargalo que não escala nem elasticamente nem de forma alguma — um banco de dados relacional único, sem réplicas, dimensionado para o pico e incapaz de crescer horizontalmente sem trabalho de engenharia significativo. Nesse caso, a elasticidade da camada de compute não compra escalabilidade de verdade para o sistema inteiro; o teto real é o do componente mais rígido.
 
@@ -117,6 +192,14 @@ Os números que a própria empresa publicou, em posts sucessivos no blog corpora
 >
 > Um detalhe que vale como lição de método: o valor do investimento em hardware **varia conforme a fonte** — a própria 37signals fala em ~US$ 600 mil, o *The Register* reporta US$ 700 mil e a BBC, US$ 800 mil. Provavelmente refletem recortes diferentes (só servidores vs. servidores mais rede, racks e instalação) ou momentos diferentes da compra. Quando um número de caso público te importa para uma decisão, vá até a **fonte primária** e entenda o que ele inclui — números de segunda mão sobre custo quase nunca medem a mesma coisa.
 
+| Item | Antes (nuvem) | Depois (hardware próprio) | Fonte |
+|---|---|---|---|
+| Gasto anual em infraestrutura | ~US$ 3,2 milhões/ano (AWS + Google Cloud) | ~US$ 1,3 milhão/ano (hardware amortizado + S3 remanescente) | basecamp.com/cloud-exit; DataCenterDynamics |
+| Investimento inicial em hardware | — | ~US$ 600 mil (fonte primária) / US$ 700 mil (The Register) / US$ 800 mil (BBC) | basecamp.com/cloud-exit; The Register |
+| Payback do investimento em hardware | — | Recuperado dentro do primeiro ano de operação | The Register |
+| Economia anual (ano cheio de 2024) | — | ~US$ 2 milhões/ano | The Register; DataCenterDynamics |
+| Projeção de economia em 5 anos | — | US$ 7 milhões (estimativa inicial, fev/2023) → US$ 10 milhões (revisão, out/2024) | basecamp.com/cloud-exit; The Register; Slashdot |
+
 O que torna o caso da 37signals didaticamente valioso não é o valor exato economizado — é o **perfil de carga** que tornou a decisão racional. Basecamp e HEY são produtos maduros, com base de usuários estabelecida e padrão de tráfego relativamente estável ao longo do tempo — o oposto de uma startup em crescimento explosivo ou de um sistema com picos sazonais extremos tipo Black Friday. Para esse perfil específico — carga previsível, volume alto e constante, pouca variação a monetizar via elasticidade —, a conta pendeu para hardware próprio. David Heinemeier Hansson (DHH, cofundador e CTO da 37signals) argumentou publicamente, nos mesmos posts, que a "nuvem faz sentido quando sua carga é imprevisível ou está crescendo rápido — não quando ela já é grande e estável". É praticamente a definição inversa do cenário de MVP e do cenário de Black Friday explorados na nota anterior: lá, a incerteza e a variabilidade da demanda é que tornavam a nuvem vantajosa; aqui, a ausência de incerteza é que torna hardware próprio competitivo.
 
 Vale registrar também o que o caso 37signals **não** prova: não prova que a nuvem "não vale a pena" em geral, nem que "repatriação é sempre a resposta certa". Prova que a economia da nuvem é uma função de **forma da curva de demanda**, não uma verdade universal — e que qualquer decisão de arquitetura de infraestrutura em escala precisa recalcular essa conta para o próprio perfil de carga, em vez de herdar a conclusão de outra empresa com um perfil diferente.
@@ -143,6 +226,66 @@ A **DigitalOcean** faz a aposta oposta, deliberadamente: cada Droplet tem um pre
 > [!info] Caducidade
 > O detalhe de "por segundo desde 1º de janeiro de 2026, com teto mensal" reflete a política de cobrança de Droplets vigente no momento em que esta nota foi escrita (2026-07-20). Confira a página de pricing oficial da DigitalOcean antes de basear qualquer decisão nesse detalhe — políticas de billing mudam.
 
+A diferença de granularidade aparece de forma bem literal quando se consulta preço pela CLI de cada provedor. Repare que já são fluxos de trabalho diferentes: a AWS não tem preço na mesma API que descreve a instância, e a DigitalOcean tem as duas coisas numa chamada só.
+
+```bash
+# AWS — a API de instâncias (EC2) não retorna preço; é preciso consultar
+# a API de Pricing separadamente, filtrando por tipo, região e SO
+aws pricing get-products \
+  --service-code AmazonEC2 \
+  --region us-east-1 \
+  --filters "Type=TERM_MATCH,Field=instanceType,Value=m5.large" \
+            "Type=TERM_MATCH,Field=location,Value=US East (N. Virginia)" \
+            "Type=TERM_MATCH,Field=operatingSystem,Value=Linux" \
+            "Type=TERM_MATCH,Field=preInstalledSw,Value=NA" \
+            "Type=TERM_MATCH,Field=tenancy,Value=Shared" \
+            "Type=TERM_MATCH,Field=capacitystatus,Value=Used"
+# retorna um JSON no formato "Price List" da AWS — a própria estrutura
+# da resposta (uma entrada por combinação de dimensão) já é a granularidade
+# de cobrança discutida acima, exposta como dado
+```
+
+```bash
+# DigitalOcean — uma chamada, uma tabela pronta, preço mensal e por hora
+# já resolvidos por tamanho de Droplet
+doctl compute size list --format Slug,Memory,VCPUs,Disk,PriceMonthly,PriceHourly
+# cada linha retorna: slug do tamanho, memória (MB), vCPUs, disco (GB),
+# preço mensal e preço por hora — um número fixo e público por linha,
+# não uma soma de múltiplas dimensões cobradas separadamente
+```
+
+Preço publicado é uma coisa; **saber quanto você já gastou** é outra — e também é dado consultável por API, não algo que só aparece numa fatura em PDF no fim do mês:
+
+```bash
+# AWS Cost Explorer — custo agrupado por serviço no mês corrente
+aws ce get-cost-and-usage \
+  --time-period Start=2026-07-01,End=2026-07-21 \
+  --granularity MONTHLY \
+  --metrics "UnblendedCost" \
+  --group-by Type=DIMENSION,Key=SERVICE
+# retorna, por serviço (EC2, S3, RDS...), o custo acumulado no período —
+# a mesma granularidade "múltiplas dimensões" discutida acima, exposta
+# como série de dados em vez de linha de fatura
+```
+
+```bash
+# DigitalOcean — saldo e uso do período de faturamento corrente, uma chamada
+doctl balance get --format MonthToDateBalance,MonthToDateUsage
+# retorna o saldo month-to-date e o uso month-to-date da conta —
+# o equivalente funcional, em modelo de teto fixo, ao Cost Explorer da AWS
+```
+
+O preço em si também é dado público, sem autenticação, para quem quer processá-lo fora da CLI:
+
+```bash
+# AWS Price List Bulk API — arquivo público, sem credenciais, com o
+# catálogo inteiro de preços de EC2 numa região
+curl -s https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/us-east-1/index.json \
+  | jq '.products | length'
+# o arquivo é grande (todo o catálogo de SKUs de EC2 na região) — na
+# prática se filtra com jq ou se baixa uma vez e se processa offline
+```
+
 O ponto didático aqui não é "um provedor é melhor que o outro" — é que **granularidade e previsibilidade são um trade-off genuíno, não um defeito de um dos dois lados**. A granularidade da AWS entrega precisão de cobrança (você paga exatamente pelo que consumiu, em cada dimensão separadamente) ao custo de previsibilidade (a fatura final é a soma de dezenas de variáveis, difícil de estimar sem ferramenta dedicada ou experiência acumulada). A simplicidade da DigitalOcean entrega previsibilidade (você sabe o teto antes de gastar um centavo) ao custo de granularidade (menos dimensões cobradas separadamente, menos controle fino sobre onde exatamente o dinheiro está indo dentro de um único recurso). Um time pequeno, sem tempo dedicado a observabilidade de custo, ganha mais com a previsibilidade do modelo DO. Uma operação grande, com um time de FinOps dedicado e ferramentas de análise de custo, consegue extrair vantagem real da granularidade da AWS — porque tem a capacidade de processar essa complexidade e converter em otimização fina. Nenhum dos dois modelos é "o certo"; cada um serve melhor a um perfil diferente de operação.
 
 | Conceito | AWS | Azure | GCP | DigitalOcean |
@@ -158,6 +301,25 @@ O ponto didático aqui não é "um provedor é melhor que o outro" — é que **
 **A migração que a área financeira aprovou em uma tarde.** Um time de plataforma quer trocar o banco relacional autogerenciado, rodando numa VM cuidada manualmente havia anos, por um serviço de banco gerenciado do provedor de nuvem. No modelo antigo de capex, essa troca seria irrelevante para orçamento (o hardware já existe, já foi comprado, já deprecia sozinho) — mas trocar de fornecedor de hardware físico, se fosse o caso, ainda exigiria negociação, contrato, e aprovação de compra. No modelo opex, a decisão inteira se resume a comparar duas linhas de custo mensal recorrente — o custo atual de operar a VM (incluindo o tempo de engenheiro gasto em backup manual, patch, monitoramento) contra o custo do serviço gerenciado (que embute esse trabalho operacional no preço) — e submeter essa comparação, já em formato de opex mensal, para aprovação de um gestor de nível médio, não de um comitê de capital. A decisão que antes exigiria trâmite de meses de compra de hardware vira uma reunião de uma tarde com uma planilha de duas colunas.
 
 **O job de fim de mês que só existe 40 horas por ano.** Uma fintech precisa rodar um processo de fechamento contábil pesado, uma vez por mês, por cerca de 40 horas corridas — um workload claramente elástico, não estável. Rodar esse processo em hardware próprio dedicado significaria manter capacidade cara ligada o ano inteiro para uso de menos de 5% do tempo — o oposto exato do perfil de carga que tornou a repatriação da 37signals racional. Aqui, a conta pende fortemente para a nuvem: a elasticidade paga por si mesma, porque o custo do restante do mês (quando a capacidade está desligada) é zero, não uma fração ociosa de um ativo já comprado.
+
+**O ambiente que só precisa existir em horário comercial.** Um time B2B mantém um ambiente de homologação usado só por analistas internos, das 9h às 18h, dias úteis — o mesmo padrão de pico previsível mencionado acima. Em capacidade fixa, esse ambiente fica ligado (e cobrando) 168 horas por semana para ser usado em pouco mais de 45. A economia mais simples que a elasticidade permite é literal: desligar fora do expediente, sem tocar em arquitetura nenhuma.
+
+```bash
+# cron do lado de fora, chamando a CLI de cada provedor — a mesma ideia,
+# duas implementações. Em produção isso normalmente vira uma Lambda
+# agendada (AWS) ou um App Platform Job/Function agendado (DigitalOcean),
+# mas o cron ilustra o mecanismo sem depender de infra extra.
+
+# /etc/cron.d/homolog-schedule (horário do servidor, ajustar fuso)
+0 9  * * 1-5  ops  aws ec2 start-instances --instance-ids i-0123456789abcdef0
+0 18 * * 1-5  ops  aws ec2 stop-instances  --instance-ids i-0123456789abcdef0
+
+# equivalente com Droplets — power-on/power-off em vez de start/stop
+0 9  * * 1-5  ops  doctl compute droplet-action power-on 123456789
+0 18 * * 1-5  ops  doctl compute droplet-action power-off 123456789
+```
+
+Instância parada (`stop`/`power-off`) não zera a fatura — armazenamento (EBS/volume do Droplet) continua sendo cobrado enquanto existir —, mas some a maior fatia do custo, que é a de compute rodando. Em 45 de 168 horas semanais, a diferença entre pagar o degrau inteiro e pagar só o horário comercial é a mesma lógica do gráfico de provisionar-pra-pico vs. escalar-sob-demanda, só que no eixo dos dias da semana em vez do eixo da sazonalidade anual.
 
 **A auditoria de custo que virou requisito de design.** Um time de arquitetura, ao desenhar um novo serviço, passa a incluir, no mesmo documento de design que descreve componentes e fluxos de dados, uma seção de estimativa de custo mensal projetado — calculada antes de qualquer linha de código, com base no volume esperado de requisições, armazenamento e transferência de dados. Numa revisão de design, um custo estimado muito acima do esperado para o valor de negócio entregue vira motivo legítimo de retrabalho na arquitetura, do mesmo jeito que um gargalo de performance ou uma falha de disponibilidade seria. É a virada de mentalidade descrita acima, aplicada em processo real de engenharia — custo como requisito não-funcional, revisado no design, não descoberto na fatura.
 
