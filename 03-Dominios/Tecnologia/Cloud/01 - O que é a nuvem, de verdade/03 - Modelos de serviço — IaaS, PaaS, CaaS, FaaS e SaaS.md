@@ -3,7 +3,7 @@ title: "Modelos de serviço — IaaS, PaaS, CaaS, FaaS e SaaS"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-21
 status: seedling
 publish: true
 tags:
@@ -135,6 +135,127 @@ Vale ver cada degrau encarnado nos dois provedores desta trilha, porque os nomes
 > [!info] Caducidade
 > Nomes de produto, modelos de suporte a linguagem e a forma exata de cobrança verificados em 2026-07-20. Confira a documentação oficial de cada serviço antes de decidir — nomes e ofertas mudam com frequência, principalmente em CaaS e FaaS, áreas onde os provedores lançam produtos novos com regularidade.
 
+## A mesma aplicação, em cada camada
+
+A melhor forma de sentir o espectro na pele é ver o **mesmo serviço web trivial** — um endpoint HTTP que responde `200 OK` — subindo em cada uma das quatro camadas que você de fato provisiona (SaaS fica de fora: não é você quem sobe código nela). Repare no que muda em cada degrau: não é o código da aplicação, é **quanto trabalho de infraestrutura você ainda precisa descrever**.
+
+**IaaS — você provisiona a VM e cuida do resto sozinho.** Depois de criada, você ainda entra por SSH, instala o runtime, sobe o processo, configura o proxy reverso e o TLS.
+
+```bash
+# AWS — instância EC2 crua
+aws ec2 run-instances \
+  --image-id ami-0c55b159cbfafe1f0 \
+  --instance-type t2.micro \
+  --key-name minha-chave \
+  --security-group-ids sg-0123456789abcdef0 \
+  --subnet-id subnet-0123456789abcdef0 \
+  --count 1
+```
+
+```bash
+# DigitalOcean — Droplet equivalente
+doctl compute droplet create meu-servico \
+  --size s-1vcpu-1gb \
+  --image ubuntu-24-04-x64 \
+  --region nyc1 \
+  --ssh-keys <fingerprint-da-sua-chave>
+```
+
+**CaaS — você empacota num container; o host some do seu radar.** O trabalho agora é escrever um Dockerfile e descrever CPU/memória — nenhum dos dois comandos abaixo escolhe um tipo de instância ou faz patch de sistema operacional.
+
+```dockerfile
+# Dockerfile — mesmo serviço, empacotado como container
+FROM node:22-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY . .
+EXPOSE 8080
+CMD ["node", "server.js"]
+```
+
+```bash
+# AWS — sobe o container num serviço ECS com launch type Fargate
+# (pressupõe um cluster e uma task definition já registrados)
+aws ecs create-service \
+  --cluster meu-cluster \
+  --service-name meu-servico \
+  --task-definition meu-servico:1 \
+  --desired-count 2 \
+  --launch-type FARGATE \
+  --network-configuration "awsvpcConfiguration={subnets=[subnet-0123456789abcdef0],securityGroups=[sg-0123456789abcdef0],assignPublicIp=ENABLED}"
+```
+
+```bash
+# DigitalOcean — App Platform recebendo uma imagem de container já publicada
+doctl apps create --spec app-container.yaml
+```
+
+```yaml
+# app-container.yaml — App Spec do App Platform, variante "container" (= uso CaaS)
+name: meu-servico
+services:
+  - name: api
+    image:
+      registry_type: DOCR
+      repository: meu-servico
+      tag: latest
+    http_port: 8080
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+```
+
+**PaaS — você entrega código-fonte; a plataforma decide como empacotar.** Não existe Dockerfile nenhum nos dois exemplos abaixo — a plataforma inspeciona o repositório e escolhe o runtime sozinha.
+
+```bash
+# AWS — Elastic Beanstalk a partir da EB CLI
+eb init meu-servico --platform node.js --region us-east-1
+eb create meu-servico-prod
+eb deploy
+```
+
+```yaml
+# app-git.yaml — mesmo App Spec do App Platform, variante "Git" (= uso PaaS)
+name: meu-servico
+services:
+  - name: api
+    github:
+      repo: minha-org/meu-servico
+      branch: main
+    run_command: npm start
+    http_port: 8080
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    envs:
+      - key: NODE_ENV
+        value: production
+        type: GENERAL
+```
+
+**FaaS — não existe mais "o serviço" de longa duração, só um handler disparado por evento.** O código encolhe para uma função; o deploy vira "publicar essa função", não "subir um processo".
+
+```javascript
+// AWS Lambda — index.mjs, handler mínimo (Node.js)
+export const handler = async (event, context) => {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ status: "ok" }),
+  };
+};
+```
+
+```javascript
+// DigitalOcean Functions — index.js, handler mínimo (Node.js)
+// por padrão a runtime procura uma função exportada chamada "main"
+function main(event) {
+  return { body: { status: "ok" } };
+}
+
+exports.main = main;
+```
+
+O padrão que os quatro degraus revelam: o **código de negócio não muda** — é sempre "responda 200 numa rota HTTP". O que muda, degrau a degrau, é a quantidade de metadado de infraestrutura que você precisa escrever ao lado dele: de "escolha uma AMI, uma subnet e um security group" (IaaS) até "não escreva nada sobre onde isso roda" (FaaS).
+
 ## Onde a régua borra: rótulo importa menos que a linha de responsabilidade
 
 Chegado até aqui, vale confessar uma coisa que a tabela anterior escondeu por simplicidade: a fronteira entre essas camadas **não é tão limpa na prática quanto no papel**, e discutir isso não é pedantismo — é entender de verdade o que cada produto entrega.
@@ -228,3 +349,11 @@ Esta nota respondeu *quanto* da pilha você quer gerenciar — o espectro de Iaa
 - [DigitalOcean — Kubernetes / DOKS (documentação oficial)](https://docs.digitalocean.com/products/kubernetes/) — control plane gerenciado pela DigitalOcean vs. worker nodes sob responsabilidade do usuário; acessado em 2026-07-20.
 - [DigitalOcean — Functions (documentação oficial)](https://docs.digitalocean.com/products/functions/) — descrição explícita como oferta FaaS, linguagens suportadas; acessado em 2026-07-20.
 - [Optimizely — Pizza as a Service analogy: On Prem, IaaS, PaaS & SaaS](https://www.optimizely.com/field-notes/articles/pizza-as-a-service) — origem da analogia "pizza as a service", atribuída a Albert Barron (IBM), usada aqui como ponto de partida e contraste para a analogia estendida desta nota; acessado em 2026-07-20. Atenção: esta página confirma a autoria, mas **não** data o post original — a datação em 2014 vem dos posts do próprio Barron no LinkedIn, e não desta fonte.
+- [AWS CLI — run-instances (documentação oficial)](https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html) — sintaxe e flags do comando usado no exemplo de IaaS; acessado em 2026-07-21.
+- [doctl — compute droplet create (documentação oficial)](https://docs.digitalocean.com/reference/doctl/reference/compute/droplet/create/) — sintaxe e flags do comando usado no exemplo de IaaS; acessado em 2026-07-21.
+- [AWS CLI — ecs create-service (documentação oficial)](https://docs.aws.amazon.com/cli/latest/reference/ecs/create-service.html) — sintaxe e flags do comando usado no exemplo de CaaS com Fargate; acessado em 2026-07-21.
+- [doctl — apps create (documentação oficial)](https://docs.digitalocean.com/reference/doctl/reference/apps/create/) — sintaxe do comando `--spec` usado nos exemplos de CaaS/PaaS via App Platform; acessado em 2026-07-21.
+- [DigitalOcean — App Platform App Spec Reference (documentação oficial)](https://docs.digitalocean.com/products/app-platform/reference/app-spec/) — campos do App Spec YAML (`services`, `github`, `image`, `run_command`, `envs`) usados nos exemplos de CaaS e PaaS; acessado em 2026-07-21.
+- [AWS — EB CLI Getting Started (documentação oficial)](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-getting-started.html) — comandos `eb init`, `eb create` e `eb deploy` usados no exemplo de PaaS; acessado em 2026-07-21.
+- [AWS Lambda — Building functions with Node.js (documentação oficial)](https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html) — formato do handler (`export const handler = async (event, context) => {...}`) usado no exemplo de FaaS; acessado em 2026-07-21.
+- [DigitalOcean Functions — Node.js runtime (documentação oficial)](https://docs.digitalocean.com/products/functions/reference/runtimes/node-js/) — convenção do handler `main` exportado, usada no exemplo de FaaS; acessado em 2026-07-21.
