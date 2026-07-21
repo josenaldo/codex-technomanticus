@@ -115,3 +115,45 @@ flowchart TB
         C1 -.->|"qualquer um<br/>dos dois basta"| R2["Disponibilidade efetiva:<br/>99,9999%"]
         C2 -.-> R2
     end
+```
+
+> [!info] Ponte com Arquitetura / System Design
+> A teoria por trás de replicação, consistência entre réplicas e o trade-off CAP — o que acontece quando os componentes redundantes desta seção precisam concordar sobre o estado dos dados durante uma partição de rede — é assunto da trilha [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura / System Design]]. Aqui, redundância aparece só como mecanismo de disponibilidade; a teoria de consistência distribuída mora lá.
+
+## Casos práticos
+
+**O sistema de checkout numa única instância.** Uma loja online roda o serviço de checkout numa única instância EC2 de porte generoso — rápida, bem dimensionada para o pico de tráfego esperado. Ela nunca teve problema de desempenho. O problema apareceu numa manutenção rotineira da AWS que exigiu retirar de operação, por alguns minutos, o hardware físico subjacente daquela instância específica — um evento raro, mas normal na operação de qualquer nuvem pública. Como existia só uma instância, o checkout inteiro ficou fora do ar durante a manutenção. A correção não foi "escolher uma instância ainda maior" — instância maior não resolve indisponibilidade de instância única, só adia o problema. A correção foi aplicar o terceiro princípio do pilar: trocar uma instância grande por três instâncias menores atrás de um load balancer, distribuídas em três Zonas de Disponibilidade diferentes. O custo total de compute ficou parecido; o raio de qualquer falha única caiu de "checkout inteiro fora do ar" para "um terço da capacidade, por segundos, enquanto o load balancer redireciona o tráfego restante".
+
+**O backup que nunca tinha sido restaurado.** Um time mantinha snapshots diários automatizados do banco de dados principal havia dois anos, com retenção de trinta dias — uma prática de backup que parecia, no papel, impecável. Quando um erro de operação corrompeu uma tabela crítica em produção, o time tentou restaurar o snapshot mais recente pela primeira vez em ambiente real — e descobriu, sob pressão, que o processo de restauração documentado estava desatualizado, referenciando um formato de exportação que a ferramenta de backup já não gerava havia meses. O dado, tecnicamente, sempre esteve durável — os snapshots existiam, íntegros, exatamente como o segundo princípio do pilar promete não ser suficiente sozinho. O que faltou foi testar o procedimento de recuperação de ponta a ponta, com regularidade, fora de um incidente real — a diferença entre "temos backup" e "sabemos restaurar do backup" só aparece quando alguém de fato tenta.
+
+**Um job de importação sem limite de capacidade.** Um pipeline de importação de dados, disparado manualmente por um analista sempre que um parceiro comercial enviava um arquivo novo, historicamente processava lotes pequenos, de forma previsível. Um dia, o parceiro enviou um arquivo cem vezes maior que o normal, sem aviso prévio. O pipeline, dimensionado com base numa estimativa manual de capacidade feita meses antes, saturou a fila de processamento e travou o restante do sistema que compartilhava a mesma infraestrutura. A correção que resolveu o problema de raiz — não só daquele incidente, mas da categoria inteira — foi parar de fixar capacidade com base em estimativa humana e passar a monitorar demanda em tempo real, com escalonamento automático da fila de processamento entre um piso e um teto configurados. É o quarto princípio do pilar em ação: parar de adivinhar, e deixar o sistema reagir à demanda real.
+
+## Armadilhas comuns
+
+> [!warning] Tratar durabilidade como se fosse disponibilidade
+> "Nossos dados estão no S3, então estamos protegidos" confunde duas garantias diferentes. Onze noves de durabilidade dizem que o dado sobrevive; não dizem nada sobre o serviço estar no ar no momento em que você precisa lê-lo, como o incidente de 2017 em `us-east-1` mostrou na prática. Projete disponibilidade — redundância de acesso, retry com backoff, um plano para quando o serviço de armazenamento em si estiver indisponível — separadamente da durabilidade do armazenamento.
+
+> [!warning] Achar que redundância dispensa teste de recuperação
+> Ter múltiplas réplicas, múltiplas AZs, backups automatizados, não é o mesmo que saber, com certeza testada, que a recuperação funciona. O segundo princípio do pilar existe exatamente porque a maioria das falhas de recuperação só aparece na hora H — quando já é tarde para corrigir com calma. Testar o failover, restaurar o backup, simular a perda de uma AZ, fora de um incidente real, é o que transforma "achamos que está protegido" em "sabemos que está protegido".
+
+> [!warning] Perseguir mais noves sem perguntar se a carga precisa deles
+> Cada nove adicional de disponibilidade custa desproporcionalmente mais — em automação, em testes, em dependências mais restritas — do que o anterior. Um job de processamento em lote noturno não precisa do mesmo desenho de um sistema de transações em caixa eletrônico. Definir o alvo de disponibilidade antes de desenhar a arquitetura, com base no impacto real de uma indisponibilidade daquela carga específica, evita pagar o preço de cinco noves para resolver um problema de duas.
+
+> [!info] Ponte com Operação (DevOps/SRE)
+> SLO como contrato mensurável, error budget como orçamento de risco, e a mecânica de resposta a incidente — runbooks, escalonamento, postmortem sem culpa — são o corpo da trilha [[03-Dominios/Engenharia/Operação/index|Operação (DevOps/SRE)]]. Este pilar dá o critério de arquitetura ("o sistema é confiável"); aquela trilha dá a operação do dia a dia que sustenta esse critério em produção.
+
+## O que vem a seguir
+
+Confiabilidade responde "o sistema continua correto quando algo falha". Mas existe uma segunda pergunta, quase oposta em espírito: dado que o sistema está de pé e respondendo, ele está usando os recursos certos, do jeito certo, para entregar a melhor experiência possível pelo menor esforço de engenharia? Um sistema pode ser perfeitamente confiável e, ainda assim, lento, superdimensionado, ou preso a uma escolha de tecnologia que já não é a mais adequada para a carga atual. Essa é a pergunta do próximo pilar, e da próxima nota desta trilha: **Eficiência de performance**.
+
+## Fontes
+
+- [AWS Well-Architected Framework — Reliability Pillar: Design Principles](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/design-principles.html) — os cinco princípios de design do pilar, texto oficial; acessado em 2026-07-20.
+- [AWS Well-Architected Framework — Reliability Pillar (página inicial do whitepaper)](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/reliability.html) — definição oficial de confiabilidade e estrutura de tópicos do pilar; acessado em 2026-07-20.
+- [AWS Well-Architected Framework — Reliability Pillar: Definitions](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/definitions.html) — as quatro áreas de prática (Foundations, Workload Architecture, Change Management, Failure Management); acessado em 2026-07-20.
+- [AWS Well-Architected Framework — Reliability Pillar: Availability](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/availability.html) — definição formal de disponibilidade, fórmula, tabela de níveis de disponibilidade, cálculo com dependências obrigatórias e componentes redundantes; acessado em 2026-07-20.
+- [AWS — Amazon EC2 Service Level Agreement](https://aws.amazon.com/compute/sla/) — SLA de 99,99% (multi-AZ, nível de região) vs. 99,5% (nível de instância única); acessado em 2026-07-20.
+- [AWS — Amazon S3 Storage Classes](https://aws.amazon.com/s3/storage-classes/) — durabilidade projetada de 99,999999999% (onze noves) do S3 Standard, replicação em no mínimo três Zonas de Disponibilidade; acessado em 2026-07-20.
+- [Summary of the Amazon S3 Service Disruption in the Northern Virginia (US-EAST-1) Region](https://aws.amazon.com/message/41926/) — relato oficial da AWS sobre o incidente de 28 de fevereiro de 2017, causa raiz (erro operacional num comando de remoção de servidores) e duração da indisponibilidade; acessado em 2026-07-20.
+- [DigitalOcean — CPU Droplets Service Level Agreement](https://www.digitalocean.com/sla/cpu-droplets) — SLA de 99,99% de uptime mensal por Droplet individual; acessado em 2026-07-20.
+- [DigitalOcean — Spaces Object Storage (documentação oficial)](https://docs.digitalocean.com/products/spaces/) — descrição de replicação entre racks físicos para resiliência de dados; acessado em 2026-07-20.
