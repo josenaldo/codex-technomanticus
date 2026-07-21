@@ -3,7 +3,7 @@ title: "O que é computação em nuvem"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-21
 status: seedling
 publish: true
 tags:
@@ -82,6 +82,16 @@ flowchart TB
     D --> E
 ```
 
+Antes de abrir cada característica em detalhe, aqui está o mapa de referência rápida — o que cada uma significa, como reconhecê-la num serviço real, e o sintoma de sua ausência:
+
+| Característica | O que significa | Como se observa na prática | Onde falha se ausente |
+|---|---|---|---|
+| Self-service sob demanda | Provisionar sem aprovação humana do lado do provedor | Você chama uma API e o recurso aparece, sem abrir ticket | Portal bonito, mas um humano ainda aprova o pedido manualmente |
+| Acesso amplo pela rede | Interface padronizada (HTTP/API) acessível por qualquer cliente heterogêneo | O mesmo endpoint atende CI, notebook e Terraform | Cliente proprietário obrigatório, ou VPN configurada caso a caso |
+| Pooling de recursos | Hardware físico compartilhado entre clientes, alocado dinamicamente | Sua VM divide a máquina física com dezenas de outros tenants, sem saber quem | Capacidade dedicada e fixa por cliente, sem folga compartilhada |
+| Elasticidade rápida | Escalar pra cima e pra baixo em minutos, sem compromisso de longo prazo | Redimensionar ou multiplicar réplicas via API; a tarifa acompanha quase em tempo real | Contrato fixo, sem forma de devolver capacidade ociosa |
+| Serviço medido | Consumo telemetrado automaticamente, usado pra cobrança e visibilidade | Fatura varia com o uso real; dashboards de custo por tag/projeto | Tarifa fixa mensal — escalar pra baixo não muda o que você paga |
+
 ### Self-service sob demanda
 
 Voltando ao cenário da Black Friday: o problema não era só o preço do servidor, era que **alguém precisava aprovar, alguém precisava entregar, alguém precisava instalar**. Existia um humano — ou vários — no caminho crítico entre "eu decidi que preciso de capacidade" e "eu tenho capacidade".
@@ -137,20 +147,30 @@ Existe uma piada cansada no setor: "a nuvem é só o computador de outra pessoa"
 
 O fato interessante é que a infraestrutura virou **API**. Antes da nuvem, mesmo alugando um servidor de terceiros, você ainda dependia de um humano do lado do provedor para provisionar, redimensionar ou desligar aquele servidor — um ticket, um telefonema, um SLA de horas ou dias. A nuvem move essa fronteira: rede, compute, armazenamento, banco de dados — tudo isso vira um **recurso que uma chamada de API cria, modifica e destrói em segundos**, e cujo estado você pode consultar programaticamente a qualquer momento.
 
-Para sentir a diferença na pele, compare o mesmo pedido — "preciso de mais um servidor até sexta" — passando pelos dois modelos:
+Para sentir a diferença na pele, compare o mesmo pedido — "preciso de mais um servidor até sexta" — passando pelos dois modelos, etapa por etapa:
 
-**Hosting tradicional, fluxo de ticket:**
-- Segunda, 9h — você abre um chamado no portal do provedor: "preciso de mais um servidor, especificação X".
-- Segunda, 15h — alguém do suporte responde pedindo confirmação de orçamento e detalhes técnicos adicionais.
-- Terça — o pedido é aprovado internamente pelo provedor e encaminhado para o time de operações dele.
-- Quarta ou quinta — a máquina é provisionada manualmente, testada, e as credenciais chegam por e-mail.
-- Sexta, se nada atrasar — você finalmente tem o servidor, bem na hora do prazo.
-
-**Nuvem, fluxo de API:**
-- Segunda, 9h03 — você chama `POST /v2/droplets` (ou `RunInstances`, na AWS) com as especificações.
-- Segunda, 9h04 — a máquina está `active`, com IP atribuído e acesso SSH liberado.
+| Etapa | Hosting tradicional (fluxo de ticket) | Nuvem (fluxo de API) | Unidade de tempo |
+|---|---|---|---|
+| Solicitar o recurso | Abre chamado no portal do provedor, descreve a especificação | Chama `POST /v2/droplets` (DigitalOcean) ou `RunInstances` (AWS) | Minutos vs. segundos |
+| Aprovação | Alguém do suporte confirma orçamento e detalhes técnicos | Nenhuma — a política já foi validada quando a conta foi criada | Horas/dias vs. inexistente |
+| Provisionamento | Time de operações do provedor aloca e testa a máquina manualmente | Sistema provisiona automaticamente, sem intervenção humana | Dias vs. segundos |
+| Entrega | Credenciais chegam por e-mail, depois de confirmação manual | IP e acesso SSH liberados na própria resposta da chamada | Dias vs. segundos |
+| Tempo total até "servidor pronto" | ~4-5 dias úteis, se nada atrasar | ~1 minuto, do pedido ao `active`/`running` | Dias vs. minutos |
 
 O ganho não é só velocidade — é que o primeiro fluxo tem, em cada etapa, um humano decidindo se sua solicitação é razoável, prioritária, dentro do escopo do contrato. O segundo fluxo não tem humano nenhum no caminho: a política já foi decidida uma vez, quando sua conta foi criada e seu método de pagamento validado; a partir daí, o sistema decide sozinho, seguindo regras já configuradas. É essa ausência de humano no meio do caminho — não a existência de um portal bonito — que separa hosting tradicional de nuvem, mesmo quando os dois oferecem "acesso pela web".
+
+Essa "chamada de API" da linha 1 da tabela não é metáfora — console web, CLI e um `curl` cru batem literalmente no mesmo endpoint HTTP. `doctl` (a CLI da DigitalOcean) é, por baixo, um cliente HTTP que autentica com um token e chama a API REST pública; qualquer ferramenta capaz de montar essa mesma requisição consegue o mesmo resultado, sem instalar CLI nenhuma:
+
+```bash
+# Listar Droplets — o mesmo endpoint que o painel web e o doctl usam por baixo
+curl -X GET \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" \
+  "https://api.digitalocean.com/v2/droplets"
+```
+
+> [!info] Caducidade
+> Base URL e formato de autenticação (Bearer token) da API v2 da DigitalOcean verificados pela referência oficial em 2026-07-20; a resposta exata dessa chamada não foi reconfirmada nesta revisão contra a doc mais recente — confira a API Reference oficial antes de automatizar algo em cima dela.
 
 Essa diferença — infraestrutura como software, não como ativo físico gerenciado por processo humano — é o que a lista de cinco características do NIST está, na prática, descrevendo. E é por isso que a nuvem muda a arquitetura que você ousa construir: se subir uma máquina, criar um banco ou apagar um ambiente inteiro de teste custa uma chamada de API e alguns segundos, você programa contra a infraestrutura do mesmo jeito que programa contra qualquer outro serviço. Infraestrutura como código (que volta com mais profundidade lá no bloco 4 desta trilha) só é possível porque essa API existe.
 
@@ -171,26 +191,53 @@ Em **DigitalOcean**, o fluxo é o mesmo ato com nomes diferentes: você cria um 
 
 Nos dois casos, as cinco características estão todas presentes: você mesmo provisionou (self-service), via chamada de rede padronizada (acesso amplo), numa máquina física que na verdade hospeda dezenas de outros clientes ao seu lado (pooling), que você pode multiplicar por dez ou apagar em minutos (elasticidade), e que só é cobrada enquanto existe, pelo tempo que existiu (serviço medido). A AWS tem um catálogo de tipos de instância e regiões ordens de grandeza maior; a DigitalOcean é deliberadamente mais simples, com menos opções e um preço mais previsível. Mas o **modelo mental é idêntico** — e é esse modelo, não o catálogo de um provedor específico, que esta trilha constrói primeiro.
 
-Se você já roda alguma coisa em DigitalOcean, provavelmente já executou o equivalente informal disto — pela CLI, o formato geral é próximo de:
+Se você já roda alguma coisa em DigitalOcean, provavelmente já executou o equivalente informal disto. Lado a lado, com a sintaxe verificada nas referências oficiais de cada CLI:
 
 ```bash
-# AWS — subir uma instância via CLI (forma ilustrativa, não copie e cole em produção)
+# AWS — subir uma instância via CLI (flags verificadas na AWS CLI Reference)
 aws ec2 run-instances \
-  --image-id ami-xxxxxxxx \
+  --image-id ami-0c55b159cbfafe1f0 \
   --instance-type t3.micro \
-  --key-name minha-chave
+  --count 1 \
+  --key-name minha-chave \
+  --security-group-ids sg-0123456789abcdef0 \
+  --subnet-id subnet-0123456789abcdef0
+```
 
-# DigitalOcean — subir um Droplet via doctl (forma ilustrativa)
+```json
+// Saída (resumida) — trecho relevante do JSON de resposta do run-instances
+{
+  "Instances": [
+    {
+      "InstanceId": "i-0123456789abcdef0",
+      "InstanceType": "t3.micro",
+      "State": { "Name": "pending" },
+      "PrivateIpAddress": "10.0.1.23"
+    }
+  ]
+}
+```
+
+```bash
+# DigitalOcean — subir um Droplet via doctl (flags verificadas na doctl Reference)
 doctl compute droplet create meu-droplet \
   --image ubuntu-24-04-x64 \
   --size s-1vcpu-1gb \
-  --region nyc3
+  --region nyc3 \
+  --ssh-keys 12345678 \
+  --wait
 ```
 
-O ponto de reparar não é a sintaxe — é que, nos dois comandos, você descreve *o que quer* (tamanho, imagem, região) e o provedor entrega um recurso pronto em segundos, sem que ninguém do lado de lá precise aprovar manualmente. Essa é a característica de self-service sob demanda, escrita em forma de comando de terminal.
+```text
+# Saída (resumida) — colunas retornadas depois do --wait, quando o Droplet fica "active"
+ID           Name          Public IPv4       Memory    VCPUs   Disk   Region   Status
+392704872    meu-droplet   164.90.XXX.XXX    1024      1       25     nyc3     active
+```
+
+O ponto de reparar não é decorar a sintaxe — é que, nos dois casos, você descreve *o que quer* (tamanho, imagem, região, chave de acesso) numa única chamada, e o provedor devolve um recurso identificável (`InstanceId` ou `ID`) já em estado de inicialização, sem que ninguém do lado de lá precise aprovar manualmente. Essa é a característica de self-service sob demanda, escrita em forma de comando de terminal — e o `--wait` do `doctl` é só conveniência de CLI: por baixo, é a mesma chamada de API assíncrona que o `curl` da seção anterior faz manualmente.
 
 > [!info] Caducidade
-> Os comandos acima são ilustrativos da forma geral da chamada, não uma referência de sintaxe atual — nomes de parâmetro, tipos de instância e imagens disponíveis mudam. Confira a CLI reference oficial de cada provedor antes de rodar qualquer comando real.
+> Flags e formato de saída verificados na AWS CLI Command Reference e na doctl Reference em 2026-07-20/21. IDs de imagem (`ami-...`), tipos de instância, slugs de tamanho e IDs de chave/grupo de segurança acima são ilustrativos — o seu ambiente terá valores diferentes. Confira a CLI reference oficial de cada provedor antes de rodar qualquer comando real.
 
 > [!info] Fronteira
 > Regiões, zonas de disponibilidade, a diferença entre console/CLI/SDK, e o modelo de responsabilidade compartilhada (o que é responsabilidade sua vs. do provedor) ficam para o **galho 2**. Aqui, EC2 e Droplet aparecem só como exemplo nomeado do conceito — não como algo a aprender a operar ainda.
