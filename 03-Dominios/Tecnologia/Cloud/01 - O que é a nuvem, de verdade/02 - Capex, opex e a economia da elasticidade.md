@@ -96,7 +96,7 @@ O inverso também existe, embora seja mais raro: um sistema pode ter partes elá
 > [!info] Fronteira
 > Estratégias concretas de escalar (horizontal vs. vertical, sharding, réplicas de leitura, particionamento) pertencem ao domínio de arquitetura, não a este galho — veja [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura / System Design]]. Aqui, o ponto é só a distinção conceitual entre "conseguir crescer" e "crescer e encolher sozinho, acompanhando a demanda".
 
-## Por que a AWS compra mais barato que você — e por que isso não garante que ela sai mais barata
+## Por que o provedor compra mais barato que você — e por que isso não garante que ele sai mais barato
 
 Existe uma razão estrutural, não apenas comercial, para a nuvem conseguir oferecer capacidade elástica a um preço que parece, à primeira vista, contraintuitivo: como é que alugar por hora pode competir com comprar uma vez?
 
@@ -114,6 +114,8 @@ Os números que a própria empresa publicou, em posts sucessivos no blog corpora
 
 > [!info] Caducidade
 > Os números da 37signals (US$ 3,2M/ano antes, ~US$ 600 mil de hardware, US$ 7-10M projetados em 5 anos, ~US$ 2M/ano de economia recente) vêm de posts públicos da própria empresa e de reportagens de 2023-2024, verificados em 2026-07-20. São específicos do workload, da escala e das negociações contratuais **daquela empresa** — não são uma regra geral de "hardware próprio é X% mais barato". Não extrapole esses percentuais para qualquer outro contexto sem refazer a conta.
+>
+> Um detalhe que vale como lição de método: o valor do investimento em hardware **varia conforme a fonte** — a própria 37signals fala em ~US$ 600 mil, o *The Register* reporta US$ 700 mil e a BBC, US$ 800 mil. Provavelmente refletem recortes diferentes (só servidores vs. servidores mais rede, racks e instalação) ou momentos diferentes da compra. Quando um número de caso público te importa para uma decisão, vá até a **fonte primária** e entenda o que ele inclui — números de segunda mão sobre custo quase nunca medem a mesma coisa.
 
 O que torna o caso da 37signals didaticamente valioso não é o valor exato economizado — é o **perfil de carga** que tornou a decisão racional. Basecamp e HEY são produtos maduros, com base de usuários estabelecida e padrão de tráfego relativamente estável ao longo do tempo — o oposto de uma startup em crescimento explosivo ou de um sistema com picos sazonais extremos tipo Black Friday. Para esse perfil específico — carga previsível, volume alto e constante, pouca variação a monetizar via elasticidade —, a conta pendeu para hardware próprio. David Heinemeier Hansson (DHH, cofundador e CTO da 37signals) argumentou publicamente, nos mesmos posts, que a "nuvem faz sentido quando sua carga é imprevisível ou está crescendo rápido — não quando ela já é grande e estável". É praticamente a definição inversa do cenário de MVP e do cenário de Black Friday explorados na nota anterior: lá, a incerteza e a variabilidade da demanda é que tornavam a nuvem vantajosa; aqui, a ausência de incerteza é que torna hardware próprio competitivo.
 
