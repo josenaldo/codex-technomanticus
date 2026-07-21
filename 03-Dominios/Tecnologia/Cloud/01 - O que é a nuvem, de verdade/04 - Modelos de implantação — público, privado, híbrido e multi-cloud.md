@@ -3,7 +3,7 @@ title: "Modelos de implantação — público, privado, híbrido e multi-cloud"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-21
 status: seedling
 publish: true
 tags:
@@ -53,6 +53,34 @@ flowchart TB
 
 Um exemplo concreto ancora a ortogonalidade: uma instância EC2 (IaaS) rodando numa região pública comum da AWS está num ponto do mapa; a mesma instância EC2, rodando dentro de um rack AWS Outposts instalado fisicamente no datacenter do cliente, está em outro ponto do mesmo eixo de serviço (ainda IaaS — você ainda administra o sistema operacional para cima), mas num ponto diferente do eixo de implantação (híbrida em vez de pública). O modelo de serviço não mudou. O modelo de implantação, sim.
 
+A matriz abaixo torna a ortogonalidade tangível: cada célula é uma combinação real, encontrável em produção, dos dois eixos.
+
+```mermaid
+quadrantChart
+    title Matriz de ortogonalidade — serviço × implantação
+    x-axis "Você gerencia mais" --> "Provedor gerencia mais"
+    y-axis "Implantação privada/dedicada" --> "Implantação pública/compartilhada"
+    quadrant-1 "PaaS/SaaS público"
+    quadrant-2 "PaaS privado (raro)"
+    quadrant-3 "IaaS privado / on-prem"
+    quadrant-4 "IaaS público"
+    "EC2 em região pública": [0.75, 0.85]
+    "EC2 em rack AWS Outposts": [0.75, 0.25]
+    "RDS gerenciado (AWS/DO)": [0.35, 0.85]
+    "PaaS instalado em datacenter próprio": [0.35, 0.25]
+```
+
+Leia a matriz assim: mover no eixo horizontal responde "quanto eu opero" (nota 03); mover no eixo vertical responde "de quem é a infraestrutura e quem mais a compartilha comigo" (esta nota). Uma mesma carga pode se mover em qualquer uma das duas direções sem depender da outra — é exatamente isso que "eixos ortogonais" quer dizer na prática, não só na definição.
+
+Antes de entrar em cada modelo em profundidade, a tabela abaixo serve de mapa de referência rápido — volte a ela sempre que precisar comparar dois modelos lado a lado:
+
+| Modelo | Quem é dono da infra | Elasticidade real | Quando faz sentido | Armadilha típica |
+|---|---|---|---|---|
+| Pública | Provedor (AWS, DigitalOcean etc.), multi-tenant | Plena — pool compartilhado entre milhares de clientes | Default: startups, produtos novos, cargas variáveis | Assumir que "nuvem" resolve sozinho requisitos de soberania ou latência a legado |
+| Privada | Organização (própria ou terceiro dedicado), single-tenant | Só se houver self-service + pool elástico interno de verdade | Regulação estrita, workload estável de larga escala, latência a sistema legado | Chamar de "nuvem privada" um datacenter virtualizado sem self-service nem elasticidade |
+| Híbrida | Dividida — parte provedor, parte organização, unidas por conectividade dedicada | Plena no lado público; fixa no lado privado | Legado que não migra + necessidade real de elasticidade em outra parte do sistema | Tratar híbrido como fase de transição quando, na prática, é o desenho final |
+| Multi-cloud | Múltiplos provedores públicos | Plena em cada provedor isoladamente; portabilidade entre eles é o que custa caro | Resiliência a fornecedor único, best-of-breed deliberado, ou herança de decisões de times diferentes | Adotar "estratégia multi-cloud" sem nomear qual dos três tipos, e pagar o custo sem ter escolhido conscientemente |
+
 ## Nuvem pública — o default desta trilha
 
 A definição formal, de novo, vem do mesmo documento que fundou a nota 01: o [[03-Dominios/Tecnologia/Cloud/01 - O que é a nuvem, de verdade/01 - O que é computação em nuvem|NIST SP 800-145]]. O texto descreve nuvem pública como infraestrutura "provisionada para uso aberto pelo público em geral", que "pode ser de propriedade, gerenciada e operada por uma organização de negócios, acadêmica ou governamental, ou alguma combinação delas", e que "existe nas instalações do provedor de nuvem".
@@ -60,6 +88,60 @@ A definição formal, de novo, vem do mesmo documento que fundou a nota 01: o [[
 Isso significa, em termos práticos: a infraestrutura física — os datacenters, os servidores, os switches de rede — pertence ao provedor (AWS, DigitalOcean, ou qualquer outro), não a você. Você é um de muitos clientes compartilhando essa infraestrutura, isolados uns dos outros por virtualização e controles de segurança, mas fisicamente no mesmo hardware, ou no mesmo conjunto de datacenters, que centenas de milhares de outras organizações. É o modelo **multi-tenant**: múltiplos inquilinos (*tenants*), um único prédio.
 
 É também o único modelo de implantação em que as cinco características do NIST — que a nota 01 já detalhou — aparecem na sua forma mais plena, sem ressalva. Self-service sob demanda funciona de verdade porque o provedor já tem a capacidade construída e ociosa, esperando ser alocada por qualquer cliente a qualquer momento — não depende de uma equipe interna aprovar compra de hardware. Elasticidade rápida funciona de verdade porque o pool de recursos compartilhado entre milhares de clientes absorve o pico de qualquer um deles sem que ninguém perceba — a escala agregada de todos os clientes do provedor é o que faz a elasticidade de cada cliente individual parecer infinita. Essa é a razão estrutural, não só histórica, de nuvem pública ser o *default* desta trilha: é o ponto do espectro onde a proposta de valor original da nuvem — pagar só pelo que usa, escalar sem esperar hardware novo — se realiza sem atenuação.
+
+"Multi-tenant" não é abstrato — dá pra ver, na prática, o efeito colateral mais visível dele: um mesmo recurso lógico (uma VM, um droplet) pertence sempre a exatamente uma região física do provedor, e ambos os provedores desta trilha expõem um jeito de listar quais regiões existem e qual é a configurada por padrão na sua sessão. Do lado AWS:
+
+```bash
+# Lista todas as regiões da conta, incluindo as que exigem opt-in
+aws ec2 describe-regions --all-regions --query "Regions[].{Nome:RegionName,Status:OptInStatus}" --output table
+```
+
+```
+-------------------------------------------
+|              DescribeRegions             |
++----------------+-------------------------+
+|   Nome         |   Status                |
++----------------+-------------------------+
+|  eu-north-1    |  opt-in-not-required    |
+|  us-east-1     |  opt-in-not-required    |
+|  sa-east-1     |  opt-in-not-required    |
+|  eu-south-2    |  opted-in               |
++----------------+-------------------------+
+```
+
+Do lado DigitalOcean, o equivalente é mais direto — não existe conceito de opt-in por região:
+
+```bash
+# Lista as regiões (datacenters) disponíveis, só com o slug
+doctl compute region list --format Slug,Name,Available
+```
+
+```
+Slug    Name              Available
+nyc1    New York 1        true
+sfo3    San Francisco 3   true
+ams3    Amsterdam 3       true
+fra1    Frankfurt 1       true
+```
+
+Nenhum dos dois comandos fixa uma região — só listam o que existe. Fixar qual região seu trabalho usa é uma decisão separada, tipicamente feita uma vez por sessão ou por projeto:
+
+```bash
+# AWS — grava a região default no profile local (~/.aws/config)
+aws configure set region eu-central-1
+
+# Confirma o que ficou gravado
+aws configure get region
+```
+
+```hcl
+# Terraform — fixa a região no provider, para todo o projeto, versionado no código
+provider "aws" {
+  region = "eu-central-1"
+}
+```
+
+A DigitalOcean não tem um "profile de região" global equivalente — a região é um parâmetro que cada comando de criação de recurso exige explicitamente, por exemplo `doctl compute droplet create meu-droplet --region fra1 --size s-1vcpu-1gb --image ubuntu-24-04-x64`. É uma escolha de produto coerente com a filosofia mais simples da DigitalOcean descrita mais adiante nesta nota: menos estado implícito para lembrar, mais explicitação no comando.
 
 ## Nuvem privada — quando o default não serve
 
@@ -90,13 +172,43 @@ Repare que a definição não fala em "empresa migrando de A para B" — fala em
 
 O que faz um híbrido funcionar, em nível conceitual — os detalhes técnicos de cada mecanismo pertencem a galhos posteriores desta trilha, mas vale nomear os três pilares aqui:
 
-**Conectividade dedicada ou privada.** Uma ligação entre a rede do datacenter próprio e a rede do provedor de nuvem que não passa pela internet pública — mais previsível em latência, mais segura por não estar exposta à internet aberta, e frequentemente mais barata em volume alto de tráfego do que pagar egress padrão. Existem produtos comerciais específicos para isso (AWS Direct Connect é o exemplo mais citado do lado AWS), mas o conceito — um "cabo dedicado" lógico entre dois ambientes — é o que importa aqui.
+**Conectividade dedicada ou privada.** Uma ligação entre a rede do datacenter próprio e a rede do provedor de nuvem que não passa pela internet pública — mais previsível em latência, mais segura por não estar exposta à internet aberta, e frequentemente mais barata em volume alto de tráfego do que pagar egress padrão. Existem produtos comerciais específicos para isso (AWS Direct Connect é o exemplo mais citado do lado AWS), mas o conceito — um "cabo dedicado" lógico entre dois ambientes — é o que importa aqui. As opções mais comuns, comparadas no nível de decisão (a mecânica de cada uma pertence ao galho 7):
+
+| Opção | Latência típica | Previsibilidade | Custo relativo | Quando usar |
+|---|---|---|---|---|
+| VPN sobre internet | Variável — sujeita ao congestionamento da internet pública | Baixa — sem SLA de latência, rota compartilhada com todo o resto do tráfego da internet | Baixo — usa o link de internet que já existe | Prova de conceito, volume baixo de tráfego, tolerância a variação de latência |
+| Conexão dedicada (ex.: AWS Direct Connect) | Baixa e estável | Alta — circuito físico dedicado, fora da internet pública | Alto — cobra por porta contratada + uso | Produção, workload sensível a latência (o caso do motor atuarial), alto volume constante |
+| Peering privado (VPC/VNet peering) | Baixa, dentro do mesmo provedor | Alta — tráfego nunca sai da rede do provedor | Médio — geralmente mais barato que egress público entre contas | Conectar duas redes dentro do **mesmo** provedor; não resolve a ligação a um datacenter próprio |
 
 **Identidade federada.** Um usuário ou serviço se autentica uma vez, e essa identidade é reconhecida tanto no lado privado quanto no lado público da infraestrutura, sem duplicar cadastro de usuário em dois sistemas separados que podem divergir com o tempo.
 
 **Dados atravessando a fronteira.** O mecanismo que replica, sincroniza ou consulta dados de um lado a partir do outro — seja em tempo real (a aplicação nova consultando o motor legado a cada chamada, como no caso da seguradora) ou em lote (um pipeline noturno que copia dados do sistema legado para um data warehouse na nuvem pública, para análise).
 
 O AWS Outposts, citado na seção de nuvem privada acima, é também o exemplo mais direto de híbrido encarnado em produto: um rack físico de hardware AWS, instalado dentro do datacenter do cliente, executando os mesmos serviços e a mesma API da nuvem pública AWS — mas fisicamente local, com conexão de volta à região AWS mais próxima para os serviços que precisam dela. É, literalmente, um pedaço da nuvem pública entregue para dentro das quatro paredes do cliente, unido ao resto por conectividade dedicada — a definição do NIST em forma de hardware.
+
+O detalhe que revela a ortogonalidade de novo, agora em comando real: um Outpost aparece na mesma API e no mesmo tipo de resposta que qualquer outro recurso AWS — ele só carrega, a mais, a `AvailabilityZone` da região pública à qual está associado, e um `OutpostArn` que o distingue de qualquer coisa rodando fora dele:
+
+```bash
+# Lista os Outposts da conta — cada um "pertence" a uma AZ de uma região pública
+aws outposts list-outposts
+```
+
+```json
+{
+    "Outposts": [
+        {
+            "OutpostId": "op-0ab23c4567EXAMPLE",
+            "OwnerId": "123456789012",
+            "OutpostArn": "arn:aws:outposts:us-west-2:123456789012:outpost/op-0ab23c4567EXAMPLE",
+            "Name": "datacenter-seguradora-sp",
+            "LifeCycleStatus": "ACTIVE",
+            "AvailabilityZone": "us-west-2a"
+        }
+    ]
+}
+```
+
+A instância EC2 que roda dentro desse Outpost aceita o mesmo `run-instances` de qualquer instância pública — a única diferença prática é o parâmetro que aponta para o hardware local em vez de para a nuvem pública: `aws ec2 run-instances --subnet-id <subnet-do-outpost> --instance-type m5.large ...`. O comando não muda de forma; só o destino muda.
 
 > [!info] Fronteira
 > Os mecanismos de VPN, VPC peering e conectividade dedicada entre redes, em profundidade técnica, pertencem ao **galho 7** desta trilha. Regions e availability zones — a mecânica de "onde fisicamente" um serviço roda dentro de um único provedor — pertencem ao **galho 2**. Aqui, os três pilares acima aparecem só como conceito, o suficiente para reconhecer um desenho híbrido quando você o encontrar.
@@ -110,6 +222,14 @@ O AWS Outposts, citado na seção de nuvem privada acima, é também o exemplo m
 **Multi-cloud de fato** é, disparado, o caso mais comum na prática — e o que menos parece com uma estratégia. Uma empresa não "decide" multi-cloud num comitê; ela *acumula* multi-cloud com o tempo, porque o time de dados escolheu GCP para um projeto de analytics há três anos, o time de infraestrutura core sempre usou AWS, e um time novo, formado por gente que veio de outra empresa, trouxe preferência por DigitalOcean ou Azure para o produto que está construindo agora. Nenhuma dessas escolhas foi errada isoladamente — cada time resolveu bem o problema que tinha na frente, com a ferramenta que conhecia. O resultado agregado, porém, é uma empresa operando em três provedores diferentes sem nenhuma estratégia deliberada de portabilidade unindo as peças — só um conjunto de decisões locais, cada uma racional, que se acumulou num todo que ninguém desenhou.
 
 **Best-of-breed** é a terceira variante: usar deliberadamente o melhor serviço específico de cada provedor para cada função — o serviço de machine learning mais maduro de um, o banco de dados gerenciado mais avançado de outro, o serviço de CDN mais barato de um terceiro — mesmo que isso signifique que nenhum workload individual é portátil entre eles. Diferente do multi-cloud deliberado (que otimiza para portabilidade), best-of-breed otimiza para capacidade — aceita o acoplamento a cada provedor específico em troca de usar o que cada um faz de melhor.
+
+A tabela abaixo resume as três variantes lado a lado — vale voltar a ela sempre que alguém disser "somos multi-cloud" sem qualificar qual das três:
+
+| Tipo | Como nasce | Otimiza para | Custo característico |
+|---|---|---|---|
+| Deliberado | Decisão de arquitetura consciente, com portabilidade como requisito desde o início | Resiliência a fornecedor único, poder de negociação, exigência regulatória | Denominador comum — abre mão dos serviços gerenciados mais avançados de cada provedor |
+| De fato | Acúmulo de decisões locais de times diferentes, ao longo do tempo, sem coordenação | Nada — é subproduto, não estratégia | Contas de faturamento e modelos de IAM duplicados, sem ninguém sabendo o custo total até auditar |
+| Best-of-breed | Decisão deliberada de usar o melhor serviço específico de cada provedor | Capacidade máxima por função | Acoplamento total a cada provedor — zero portabilidade entre workloads |
 
 As três variantes compartilham a mesma etiqueta e o mesmo custo real — e é aqui que vale ser honesto sobre o preço que raramente aparece na conversa inicial sobre "estratégia multi-cloud":
 
@@ -144,6 +264,42 @@ A LGPD brasileira segue uma lógica equivalente. O Artigo 33 da Lei nº 13.709/2
 
 O ponto que interessa a um arquiteto de sistemas, sem virar aula de direito, é este: **a localização física de um dado é, em muitos casos, uma restrição imposta de fora do desenho técnico — não uma preferência de performance ou de custo.** Uma decisão de arquitetura que ignora isso pode ser tecnicamente elegante e legalmente inviável ao mesmo tempo. Escolher a região onde um banco de dados roda não é só uma decisão de latência — é, com frequência, também uma decisão de conformidade regulatória, tomada em conjunto com jurídico e compliance, não isoladamente pela engenharia.
 
+A tabela abaixo resume os dois regimes citados nesta nota, lado a lado, no nível que importa para uma decisão de arquitetura — não como substituto de parecer jurídico:
+
+| Regime | O que restringe | Efeito prático no desenho |
+|---|---|---|
+| GDPR (UE), Art. 44 | Transferência de dados pessoais para país terceiro só com base legal específica (decisão de adequação, cláusulas contratuais padrão, ou outra salvaguarda do Capítulo V) | Escolher região fora da UE para dados de titulares europeus exige checar a base legal antes, não depois, de provisionar |
+| LGPD (Brasil), Art. 33 | Transferência internacional só nas hipóteses listadas (país com proteção adequada, garantias contratuais, consentimento destacado, entre outras) | Mesma lógica da UE, aplicada a dados de titulares no Brasil — região do provedor escolhida deve ter base legal documentada, não só menor latência |
+
+Restrição jurídica, no arquiteto sênior, costuma virar controle técnico enforçável — não só uma cláusula de contrato que ninguém audita. Do lado AWS, o mecanismo mais direto é uma *service control policy* (SCP) no nível da organização, negando qualquer ação fora das regiões aprovadas:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "NegaForaDaRegiaoUE",
+      "Effect": "Deny",
+      "NotAction": [
+        "iam:*",
+        "organizations:*",
+        "route53:*",
+        "cloudfront:*",
+        "support:*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": ["eu-central-1", "eu-west-1"]
+        }
+      }
+    }
+  ]
+}
+```
+
+A condição usa a chave global `aws:RequestedRegion` — qualquer chamada de API que peça um recurso fora de `eu-central-1` ou `eu-west-1` é negada antes de executar, para qualquer conta dentro da organização onde a SCP está anexada. Isso transforma "nossos dados ficam na Europa" de uma promessa em texto de contrato para uma barreira que o provedor impõe estruturalmente, no nível de política — o tipo de controle que auditoria de compliance sabe verificar de fato, em vez de confiar na palavra do time de engenharia.
+
 O mercado respondeu a essa pressão regulatória com um produto novo: **sovereign clouds** — nuvens fisicamente e logicamente isoladas do resto da infraestrutura global de um provedor, operadas sob a legislação e a governança de uma jurisdição específica. O exemplo mais recente e mais citado é a AWS European Sovereign Cloud, lançada com região principal em Brandenburgo, na Alemanha, desenhada para que os dados nunca saiam fisicamente da União Europeia, que os metadados de controle (identidade, faturamento, medição de uso) permaneçam inteiramente europeus, e que a operação da infraestrutura fique sob entidades legais e liderança europeias — uma resposta direta à preocupação, recorrente em discussões regulatórias europeias, de que leis extraterritoriais de outros países pudessem, em tese, alcançar dados armazenados por empresas americanas mesmo fora dos Estados Unidos.
 
 > [!info] Caducidade
@@ -171,6 +327,24 @@ O padrão vale a pena guardar, porque ele não é exclusivo deste eixo: cada pro
 
 > [!info] Caducidade
 > Nomes de produto e disponibilidade regional verificados em 2026-07-20 — esta é uma área onde os quatro provedores lançam e reposicionam ofertas de soberania e híbrido com regularidade, motivados por pressão regulatória em constante mudança. Confira a documentação oficial de cada provedor antes de decidir.
+
+## Qual modelo escolher, na prática
+
+Tudo o que esta nota cobriu até aqui — soberania, legado, custo de multi-cloud — converge nas mesmas três perguntas, feitas nesta ordem, sempre que uma carga de trabalho nova precisa de um lar:
+
+```mermaid
+flowchart TD
+    Q1{"Há exigência jurídica de<br/>residência de dados numa<br/>jurisdição específica?"}
+    Q1 -->|Sim| R1["Nuvem privada dedicada<br/>ou sovereign cloud regional"]
+    Q1 -->|Não| Q2{"Há sistema legado que<br/>não pode migrar<br/>(risco, custo, latência)?"}
+    Q2 -->|"Sim — e outras cargas<br/>se beneficiam de<br/>elasticidade pública"| R2["Híbrida —<br/>legado privado + novo público,<br/>unidos por conectividade dedicada"]
+    Q2 -->|"Sim — e nada mais<br/>precisa de elasticidade pública"| R3["Privada"]
+    Q2 -->|Não| Q3{"Há exigência contratual/regulatória<br/>de não depender de<br/>um único fornecedor?"}
+    Q3 -->|Sim| R4["Multi-cloud deliberado<br/>(aceite o custo de portabilidade)"]
+    Q3 -->|Não| R5["Pública — o default"]
+```
+
+A ordem importa: soberania vem primeiro porque é a única restrição desta lista que **não é negociável por engenharia** — nenhuma elasticidade ou economia de custo justifica ignorar uma exigência jurídica. Legado vem em seguida porque, como a seguradora do início desta nota mostrou, ele raramente desaparece com uma decisão de arquitetura melhor. Multi-fornecedor vem por último de propósito: é a única das três perguntas cuja resposta "sim" custa caro o suficiente (a tabela de custo do multi-cloud, mais atrás nesta nota, detalha exatamente onde) para merecer ser a última linha de defesa, não a primeira escolha por precaução.
 
 ## Casos práticos
 
