@@ -3,7 +3,7 @@ title: "A conta e a organização"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-22
 status: seedling
 publish: true
 tags:
@@ -57,6 +57,31 @@ Concretamente, uma conta AWS carrega, por padrão:
 
 A AWS documenta isso com uma frase direta: uma conta é "diferente de um usuário" — um usuário é uma identidade que você cria *dentro* de uma conta (tema do galho 4 desta trilha), enquanto a conta é o container que hospeda potencialmente muitos usuários e papéis. Confundir os dois é um erro comum de quem vem de sistemas onde "conta" e "usuário" são sinônimos — numa nuvem pública, não são.
 
+Um jeito rápido de nunca perder essa distinção de vista é perguntar, a qualquer momento, "em qual conta minhas credenciais atuais estão operando agora?" — os dois provedores respondem a essa pergunta com um comando de uma linha:
+
+```bash
+# AWS — identifica a conta e a identidade (usuário ou papel) por trás
+# das credenciais ativas no momento
+aws sts get-caller-identity
+```
+
+```json
+{
+    "UserId": "AIDAEXAMPLE123456789",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/josenaldo"
+}
+```
+
+```bash
+# DigitalOcean — mostra os detalhes do perfil da conta autenticada
+# (não existe um comando doctl equivalente a "quem eu sou dentro
+# de qual Team"; o token da API já está ligado a um Team específico)
+doctl account get
+```
+
+O `Account` da AWS (12 dígitos) e o e-mail retornado pelo `doctl account get` cumprem o mesmo papel: confirmar, antes de rodar qualquer coisa destrutiva, que você está apontando para a conta que pensa que está.
+
 ## O usuário raiz: todo-poderoso e, por isso, perigoso
 
 Quando você cria uma conta AWS nova, o primeiro identificador que existe dentro dela é o **root user** — o e-mail e a senha que você usou para se cadastrar. E aqui está o ponto que surpreende quem chega de fora: esse usuário raiz tem acesso irrestrito a absolutamente tudo dentro daquela conta, sem exceção, sem limite configurável, sem política que consiga restringi-lo. Não existe, dentro de uma conta standalone, nenhuma trava que impeça o root user de deletar qualquer recurso, fechar a conta inteira, ou mudar qualquer configuração.
@@ -76,17 +101,68 @@ O incidente do início desta nota ilustra um princípio que a própria AWS docum
 
 O termo que a indústria usa para descrever esse alcance potencial de dano é **blast radius** — literalmente, "raio da explosão": o quanto uma falha, um comprometimento ou um erro consegue alcançar antes de parar. Uma conta única, hospedando dev, staging, produção, dados sensíveis e experimentos de sandbox todos juntos, tem um blast radius do tamanho da conta inteira — qualquer coisa que dê errado em qualquer canto dela pode, em princípio, alcançar qualquer outro canto. Múltiplas contas, cada uma hospedando uma fatia menor e mais homogênea da operação, reduzem esse raio: um problema na conta de sandbox de um time de experimentação não tem *caminho técnico* para alcançar a conta onde vive o banco de dados de produção que processa pagamentos — porque, por padrão, as duas contas não se enxergam.
 
-Esse não é um argumento abstrato de manual — é o motivo prático por trás de padrões que aparecem repetidamente em organizações que operam nuvem em escala: uma conta (ou grupo de contas) para produção, separada de uma conta para não-produção; contas de sandbox isoladas para experimentação livre, sem acesso a dados internos; contas dedicadas para dados especialmente sensíveis, com o menor número possível de pessoas e processos com permissão de tocá-las. O objetivo comum a todos esses padrões não é burocracia — é fazer com que, quando (não *se*) algo der errado, o estrago fique pequeno o suficiente para ser absorvido sem virar incidente de manchete.
+Esse não é um argumento abstrato de manual — é o motivo prático por trás de padrões que aparecem repetidamente em organizações que operam nuvem em escala:
+
+- **Uma conta (ou grupo de contas) para produção**, separada de uma conta para não-produção — evita que um erro em ambiente de teste alcance o que está no ar.
+- **Contas de sandbox isoladas** para experimentação livre, sem acesso a dados internos ou a serviços corporativos.
+- **Contas dedicadas para dados especialmente sensíveis**, com o menor número possível de pessoas e processos com permissão de tocá-las.
+- **Contas por unidade de negócio ou por aquisição**, alinhando quem decide com quem sofre as consequências de uma decisão errada.
+
+O objetivo comum a todos esses padrões não é burocracia — é fazer com que, quando (não *se*) algo der errado, o estrago fique pequeno o suficiente para ser absorvido sem virar incidente de manchete. A tabela abaixo resume o critério de separação mais comum, o que cada um efetivamente isola, e a armadilha de quem aplica o critério errado:
+
+| Critério de separação | O que isola | Armadilha comum |
+|---|---|---|
+| Ambiente (prod / staging / dev) | Dados e configuração de produção contra erro de experimentação | Deixar staging "quase igual" a produção e esquecer que as credenciais também precisam ser diferentes |
+| Time / unidade de negócio | Decisão e responsabilidade — quem configura é quem sofre a consequência | Compartilhar uma conta entre times "por enquanto" e nunca migrar |
+| Sensibilidade do dado | Superfície de exposição de dado regulado ou confidencial | Misturar dado sensível com carga geral só porque "já tem uma conta pronta" |
+| Blast radius / criticidade | Alcance de um incidente de segurança ou de disponibilidade | Achar que uma tag ou um Project substitui a fronteira de conta (ver seção abaixo) |
+| Cobrança / centro de custo | Rastreabilidade de gasto por time ou por cliente | Depender de tags de custo em vez de conta separada, e perder rastreabilidade quando alguém esquece de taguear |
+| Cota de serviço (Service Quotas) | Limite de recursos simultâneos por conta — evita que uma carga esgote a cota de outra | Concentrar cargas de alto volume na mesma conta e descobrir o limite em produção |
 
 Vale uma ressalva de honestidade: multiplicar contas sem gerenciamento também tem custo — mais contas para monitorar, mais lugares para configurar corretamente, mais superfície para esquecer alguma coisa. É exatamente esse custo de gerenciamento que a próxima seção resolve.
 
 ## Organizando contas em hierarquia: AWS Organizations
 
-Se cada conta nova exigisse um método de pagamento próprio, um cadastro próprio e nenhuma visão consolidada do conjunto, multiplicar contas seria impraticável além de um punhado. A AWS resolve isso com o **AWS Organizations**: um serviço que agrupa contas numa estrutura hierárquica em árvore, com uma **conta de gerência** (management account) no topo e quantas **contas-membro** (member accounts) forem necessárias penduradas embaixo dela — organizadas, se fizer sentido, em **unidades organizacionais** (organizational units, ou OUs), que por sua vez podem conter outras OUs, até cinco níveis de profundidade.
+Se cada conta nova exigisse um método de pagamento próprio, um cadastro próprio e nenhuma visão consolidada do conjunto, multiplicar contas seria impraticável além de um punhado. A AWS resolve isso com o **AWS Organizations**: um serviço que agrupa contas numa estrutura hierárquica em árvore, com uma **conta de gerência** (management account) no topo e quantas **contas-membro** (member accounts) forem necessárias penduradas embaixo dela — organizadas, se fizer sentido, em **unidades organizacionais** (organizational units, ou OUs), que por sua vez podem conter outras OUs. A documentação oficial é precisa sobre o limite: contando o root e as contas nas OUs mais baixas, a hierarquia inteira pode ter até cinco níveis de profundidade.
+
+Criar e listar contas-membro são operações de API de primeira classe — é assim que empresas automatizam a criação de "uma conta nova por time" sem passar pelo console a cada vez:
+
+```bash
+# AWS — cria uma conta-membro nova dentro da organização
+# (só pode ser rodado a partir da conta de gerência)
+aws organizations create-account \
+  --email time-dados@example.com \
+  --account-name "prod-dados"
+```
+
+```json
+{
+    "CreateAccountStatus": {
+        "Id": "car-exampleaccountrequestid111",
+        "AccountName": "prod-dados",
+        "State": "IN_PROGRESS",
+        "RequestedTimestamp": "2026-07-20T14:03:00Z"
+    }
+}
+```
+
+```bash
+# AWS — lista todas as contas da organização, com status e método
+# de ingresso (CREATED direto pela Organizations, ou INVITED de
+# uma conta standalone que aceitou o convite)
+aws organizations list-accounts \
+  --query 'Accounts[].{Id:Id,Name:Name,Status:Status,Joined:JoinedMethod}'
+```
+
+O lado DigitalOcean da mesma operação — criar um Team novo, convidar alguém para ele — **não tem equivalente em `doctl`**: o `doctl` não expõe nenhum grupo de comando para Teams ou Organizations (a lista completa de grupos do `doctl` cobre contas, apps, compute, Kubernetes, bancos de dados etc., mas não gestão de Team). Criar um Team novo e convidar membros é, hoje, uma operação exclusiva do Control Panel web — uma diferença real de maturidade de automação entre os dois provedores, não um detalhe estético.
+
+A criação de conta pela API é assíncrona — a resposta chega com `"State": "IN_PROGRESS"` antes mesmo de a conta existir de fato, e o `Id` retornado serve para consultar o andamento com `describe-create-account-status` até o estado virar `SUCCEEDED` (ou `FAILED`, com um `FailureReason` explicando o motivo).
 
 A conta de gerência é a que cria a organização, convida ou cria contas-membro, e — ponto central para esta nota — é a **pagadora**: ela é responsável por toda a cobrança acumulada por todas as contas-membro, através de um mecanismo chamado **cobrança consolidada** (consolidated billing). Em vez de uma fatura por conta, a organização inteira recebe uma única fatura, emitida no nome da conta de gerência, com o detalhamento de gasto por conta-membro disponível para análise. Isso não é só conveniência financeira — muitos descontos por volume da AWS são calculados sobre o uso agregado de *toda* a organização, não conta por conta, o que significa que uma organização com dez contas pequenas pode qualificar para descontos que nenhuma delas sozinha alcançaria.
 
 A prática recomendada, aliás, é que a conta de gerência hospede o mínimo possível de recursos reais — ela deveria ser, majoritariamente, um ponto de controle administrativo e de cobrança, não um lugar onde produção roda. A razão é sutil, mas importante: mecanismos de política central que a Organizations oferece (como as *service control policies*, que ficam para o galho 4) não restringem identidades dentro da própria conta de gerência — então misturar cargas de produção com a conta de gerência tira dela justamente a camada de proteção que ela concede a todas as outras.
+
+Vale registrar um detalhe que pega muita gente de surpresa da primeira vez: **a conta de gerência não pode ser trocada depois**. Uma vez que uma conta cria a organização e assume esse papel, não existe operação que a "rebaixe" a conta-membro nem que promova outra conta a gerência no lugar dela — a decisão de qual conta funda a organização é, na prática, permanente. É mais um motivo para escolher com cuidado, desde o início, uma conta que sirva só para governança, em vez de reaproveitar a primeira conta AWS que a empresa já tinha, cheia de recursos de produção históricos.
 
 ```mermaid
 flowchart TB
@@ -100,7 +176,38 @@ flowchart TB
     OU2 --> ContaSandbox["Conta: sandbox"]
 ```
 
-As unidades organizacionais existem para aplicar controles em grupo em vez de conta por conta — uma política anexada a uma OU se aplica a todas as contas dentro dela, e a todas as OUs aninhadas embaixo. Isso é o mecanismo *técnico*; o *conteúdo* dessas políticas — quem pode fazer o quê, dentro de qual conta — é justamente o assunto de identidade e permissões que fica para o galho 4. Aqui, a OU importa só como a peça de organização que evita que uma empresa com cinquenta contas precise configurar cinquenta políticas idênticas manualmente.
+As unidades organizacionais existem para aplicar controles em grupo em vez de conta por conta — uma política anexada a uma OU se aplica a todas as contas dentro dela, e a todas as OUs aninhadas embaixo. O mecanismo mais comum para isso é a **service control policy (SCP)**: um documento JSON, anexado a uma OU, a uma conta ou à raiz da organização, que define o **teto** de permissão disponível para qualquer usuário ou papel nas contas afetadas — uma SCP nunca *concede* permissão por si só, ela só limita o que uma política de identidade dentro da conta pode conceder. Um exemplo adaptado da própria documentação da AWS, restringindo ações a duas regiões aprovadas:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "DenyOutsideApprovedRegions",
+            "Effect": "Deny",
+            "NotAction": [
+                "iam:*",
+                "organizations:*",
+                "support:*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEquals": {
+                    "aws:RequestedRegion": [
+                        "us-east-1",
+                        "sa-east-1"
+                    ]
+                }
+            }
+        }
+    ]
+}
+```
+
+Anexada a uma OU inteira, essa política vale para toda conta-membro dentro dela — inclusive contas criadas depois, sem precisar tocar em nada manualmente. Repare no detalhe que já apareceu nesta nota: SCPs **não afetam a conta de gerência**, só as contas-membro — mais um motivo para mantê-la vazia de recursos reais. O *conteúdo* completo dessas políticas — quem pode fazer o quê, dentro de qual conta, com que exceções — é o assunto de identidade e permissões que fica para o galho 4. Aqui, a OU e a SCP importam só como a peça de organização que evita que uma empresa com cinquenta contas precise configurar cinquenta políticas idênticas manualmente.
+
+> [!warning] Nunca anexar uma SCP nova direto na raiz da organização
+> A própria documentação da AWS recomenda fortemente não testar uma SCP nova anexando-a direto ao root — o alcance é a organização inteira de uma vez, e um erro de sintaxe ou de escopo pode travar acesso de serviços essenciais em todas as contas simultaneamente. A prática segura é criar uma OU de teste, mover uma conta não crítica para dentro dela, validar o comportamento, e só então propagar a política para OUs maiores.
 
 ## O mesmo problema, outro vocabulário: Teams e Organizations na DigitalOcean
 
@@ -108,9 +215,25 @@ A DigitalOcean resolve exatamente o mesmo problema — multiplicar unidades de i
 
 Ao se cadastrar na DigitalOcean, você automaticamente se torna membro de um Team padrão — pode trabalhar sozinho nele, ou convidar outras pessoas para colaborar, cada uma com um **papel** (role) que determina o nível de acesso aos recursos compartilhados, às informações de cobrança e às configurações daquele Team. Isso é conceitualmente equivalente a uma conta AWS: um espaço isolado de recursos com sua própria fatura.
 
-Onde a DigitalOcean diverge da AWS é na camada de agrupamento acima disso. Assim como a AWS agrupa contas dentro de uma Organizations, a DigitalOcean agrupa Teams dentro de uma **Organization**: a documentação oficial descreve isso como o mecanismo que permite "cobrança, pagamento e faturamento consolidados" (*consolidated billing, payment, and invoicing*) através de múltiplos Teams relacionados, com o detalhamento de gasto quebrado por Team — exatamente o mesmo papel que a conta de gerência cumpre para a AWS Organizations, só que sem o vocabulário de "unidade organizacional" ou hierarquia em árvore profunda: uma Organization DigitalOcean agrupa Teams num único nível, sem OUs aninhadas.
+Onde a DigitalOcean diverge da AWS é na camada de agrupamento acima disso. Assim como a AWS agrupa contas dentro de uma Organizations, a DigitalOcean agrupa Teams dentro de uma **Organization**: a documentação oficial descreve isso como o mecanismo que permite "cobrança, pagamento e faturamento consolidados" (*consolidated billing, payment, and invoicing*) através de múltiplos Teams relacionados, com o detalhamento de gasto quebrado por Team — exatamente o mesmo papel que a conta de gerência cumpre para a AWS Organizations, só que sem o vocabulário de "unidade organizacional" ou hierarquia em árvore profunda: uma Organization DigitalOcean agrupa Teams num único nível, sem OUs aninhadas. Assim como a AWS Organizations, criar uma Organization na DigitalOcean não tem custo adicional — a lógica dos dois provedores é a mesma: a estrutura de agrupamento em si não é o que se cobra, os recursos dentro das contas ou dos Teams é que são.
 
 Há também uma camada abaixo de tudo isso que não tem equivalente direto na AWS: a **Personal Account**. Ela não guarda recursos de infraestrutura nem cobrança própria — só gerencia sua identidade de login, seus dados pessoais e a lista de Teams dos quais você é membro. É o "você" que atravessa Teams diferentes, não um container de recursos.
+
+A tabela a seguir traduz o vocabulário de um lado para o outro, termo a termo — vale guardar como referência rápida antes de ler documentação de qualquer um dos dois provedores:
+
+| Conceito | AWS | DigitalOcean | Para que serve |
+|---|---|---|---|
+| Unidade de isolamento + cobrança própria | Conta (AWS account) | Team | Container de recursos com fatura separada |
+| Identidade que atravessa múltiplos containers | Usuário/papel IAM (por conta) | Personal Account | "Você", não um container de recursos |
+| Agrupador de múltiplas unidades | AWS Organizations | Organization | Cobrança consolidada + visão agregada |
+| Subgrupo hierárquico dentro do agrupador | Organizational Unit (OU), até 5 níveis | — (sem equivalente; Organization agrupa Teams num nível só) | Aplicar política a um subconjunto de contas de uma vez |
+| Container que paga por todo o agrupador | Conta de gerência (management account) | Organization (via seus owners) | Fatura única, detalhamento por unidade |
+| Identidade todo-poderosa de emergência | Root user | — (sem equivalente; o Owner do Team já é o papel cotidiano de maior privilégio) | Tarefas que exigem privilégio máximo |
+| Teto central de permissão | Service control policy (SCP) | — (controle fica nos papéis/roles do Team) | Limitar o que qualquer identidade pode fazer, mesmo com política permissiva local |
+| Organização visual de recursos (não isola) | Tags / Resource Groups | Project | Navegação e foco no painel — nunca fronteira de acesso |
+| Papel de maior privilégio para trabalho cotidiano | Identidade IAM com política administrativa ampla | Owner do Team | Fazer o trabalho do dia a dia sem depender da identidade de emergência |
+
+Duas linhas dessa tabela merecem destaque porque é onde a paridade *não* existe: a AWS separa root user de trabalho cotidiano de um jeito que a DigitalOcean não replica, e a AWS tem um mecanismo de política central (SCP) que restringe identidades em qualquer conta-membro — a DigitalOcean não tem um equivalente documentado de "teto de permissão aplicado de cima para baixo" sobre um Team inteiro; o controle fica concentrado nos papéis atribuídos a cada membro.
 
 ```mermaid
 flowchart TB
@@ -145,7 +268,11 @@ Isso significa que "separar produção e staging em Projects diferentes" dá **o
 
 **Uma startup migrando de "uma conta AWS para tudo" para múltiplas contas.** No começo, uma única conta AWS hospeda desenvolvimento, staging e produção — típico de fase inicial, quando o time é pequeno e a velocidade de entrega importa mais do que qualquer outra coisa. Ao crescer e contratar o primeiro engenheiro de segurança, a empresa cria uma AWS Organizations, migra a conta existente para virar a conta de produção, e cria contas novas para não-produção e para sandbox de experimentação. A partir desse ponto, um script de teste rodando na conta errada simplesmente não tem como alcançar dados de produção — o incidente do início desta nota deixa de ser possível por construção, não por disciplina.
 
-**Uma auditoria de segurança que encontra o root user sendo usado semanalmente.** Um time descobre, ao revisar logs de acesso, que alguém está entrando com as credenciais do root user da conta de produção toda sexta-feira para rodar uma tarefa de manutenção manual — porque, em algum momento, essa foi a forma mais rápida de resolver um problema pontual, e ninguém nunca voltou para consertar isso direito. A correção não é técnica complexa: criar uma identidade com a permissão específica necessária para aquela tarefa (assunto do galho 4), ativar múltiplos fatores de autenticação no root, e — se a conta já fizer parte de uma Organizations — remover as credenciais do root daquela conta-membro, deixando a recuperação centralizada na conta de gerência.
+**Uma auditoria de segurança que encontra o root user sendo usado semanalmente.** Um time descobre, ao revisar logs de acesso, que alguém está entrando com as credenciais do root user da conta de produção toda sexta-feira para rodar uma tarefa de manutenção manual — porque, em algum momento, essa foi a forma mais rápida de resolver um problema pontual, e ninguém nunca voltou para consertar isso direito. A correção não é técnica complexa:
+
+- Criar uma identidade com a permissão específica necessária para aquela tarefa (assunto do galho 4), em vez de root.
+- Ativar múltiplos fatores de autenticação no root — a AWS já torna o MFA obrigatório por padrão em contas novas, mas ainda exige que a pessoa efetivamente cadastre o segundo fator na criação da conta ou no primeiro login; contas antigas podem ter ficado para trás.
+- Se a conta já fizer parte de uma Organizations, remover as credenciais do root daquela conta-membro, deixando a recuperação centralizada na conta de gerência.
 
 ## Armadilhas comuns
 
@@ -171,3 +298,9 @@ Esta nota estabeleceu a conta como a unidade que isola e cobra — o container m
 - [DigitalOcean — Teams (documentação oficial)](https://docs.digitalocean.com/platform/teams/) — definição de Team, papéis, cobrança separada por Team; acessado em 2026-07-20.
 - [DigitalOcean — Organizations (documentação oficial)](https://docs.digitalocean.com/platform/organizations/) — agrupamento de Teams, cobrança consolidada, faturamento e detalhamento de gasto por Team; acessado em 2026-07-20.
 - [DigitalOcean — Projects (documentação oficial)](https://docs.digitalocean.com/products/projects/) — Projects como organização de recursos, não como fronteira de acesso ou cobrança; acessado em 2026-07-20.
+- [AWS CLI — organizations create-account (referência de comando)](https://docs.aws.amazon.com/cli/latest/reference/organizations/create-account.html) — sintaxe e saída de `aws organizations create-account`; acessado em 2026-07-22.
+- [AWS CLI — organizations list-accounts (referência de comando)](https://docs.aws.amazon.com/cli/latest/reference/organizations/list-accounts.html) — sintaxe e saída de `aws organizations list-accounts`; acessado em 2026-07-22.
+- [AWS CLI — sts get-caller-identity (referência de comando)](https://docs.aws.amazon.com/cli/latest/reference/sts/get-caller-identity.html) — sintaxe e saída de `aws sts get-caller-identity`; acessado em 2026-07-22.
+- [AWS Organizations — Service control policies (SCPs)](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html) — mecânica e escopo de SCPs, recomendação de não testar direto no root; acessado em 2026-07-22.
+- [AWS Organizations — SCP syntax](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_syntax.html) — estrutura JSON de uma SCP e exemplo de restrição por região, base do exemplo adaptado nesta nota; acessado em 2026-07-22.
+- [DigitalOcean — doctl reference](https://docs.digitalocean.com/reference/doctl/reference/) — lista de grupos de comando do `doctl`, confirma ausência de comandos para Teams/Organizations; acessado em 2026-07-22.
