@@ -3,7 +3,7 @@ title: "Geografia da nuvem — regions, zonas e edge"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-22
 status: seedling
 publish: true
 tags:
@@ -37,14 +37,50 @@ flowchart TB
     Edge --> User["Usuário final"]
 ```
 
+Antes de entrar em cada camada em detalhe, a tabela abaixo dá a visão de conjunto — o mapa que orienta o resto da nota:
+
+| Nível | O que é | Unidade de quê | AWS | DigitalOcean |
+|---|---|---|---|---|
+| 1 | Área geográfica com um conjunto de datacenters | Preço e catálogo de serviços | Region (`us-east-1`) | Region (`nyc`, `ams`) |
+| 2 | Datacenter(s) com energia/rede/refrigeração próprias | Falha física isolada | Availability Zone (`us-east-1a`) | Datacenter (`nyc1`, `nyc3`) |
+| 3 | Ponto de rede menor, sem capacidade de rodar aplicação | Latência até o usuário final | Edge location / POP | CDN do Spaces |
+
 ## Region: a unidade geográfica e de preço
 
 Uma **region** é uma área geográfica onde o provedor concentra um conjunto de datacenters — pense em "leste dos Estados Unidos" ou "Europa Ocidental", não numa cidade específica (o endereço físico exato dos datacenters costuma ser confidencial, por razões de segurança). Cada region é, na prática, uma instalação quase completa da nuvem inteira: tem seu próprio conjunto de serviços disponíveis (nem todo serviço existe em toda region, principalmente os mais novos), sua própria tabela de preços (o mesmo tipo de máquina pode custar de forma diferente em duas regions diferentes, porque energia, terreno e mão de obra local variam), e sua própria fronteira de dados — por padrão, o que você cria numa region fica ali, e não atravessa para outra sem uma ação explícita sua.
 
 A AWS opera hoje dezenas de regions espalhadas pelo mundo — o número exato muda com o tempo, porque a AWS abre regions novas com regularidade (confira a contagem atual na documentação oficial antes de decidir). Cada region tem um código curto que vira parte de praticamente todo identificador técnico que você vai encontrar: `us-east-1` (Norte da Virgínia), `eu-west-1` (Irlanda), `sa-east-1` (São Paulo) são exemplos. Esse código aparece na URL de endpoints de API, em nomes de recursos, em mensagens de erro — é vocabulário que qualquer engenheiro que trabalha com AWS internaliza rápido.
 
+Listar as regions disponíveis é o primeiro comando que vale rodar antes de provisionar qualquer coisa — na AWS, com a CLI oficial:
+
+```bash
+# AWS — lista só o nome de cada region habilitada na conta
+aws ec2 describe-regions \
+  --query "Regions[].RegionName" \
+  --output text
+```
+
+```
+eu-north-1  ap-south-1  us-east-1  us-east-2  us-west-1  us-west-2  sa-east-1  ...
+```
+
+Na DigitalOcean, o equivalente é `doctl` — só que, como não existe conceito de AZ, cada linha do resultado já é o menor nível geográfico disponível (um datacenter):
+
+```bash
+# DigitalOcean — lista slug, nome e disponibilidade de cada datacenter/region
+doctl compute region list --format Slug,Name,Available
+```
+
+```
+Slug    Name              Available
+nyc1    New York 1        true
+nyc3    New York 3        true
+ams3    Amsterdam 3       true
+sfo3    San Francisco 3   true
+```
+
 > [!info] Caducidade
-> Contagem exata de regions e nomes de códigos verificados em 2026-07-20. A AWS abre regions novas com regularidade — confira o número atual em [AWS Global Infrastructure](https://aws.amazon.com/about-aws/global-infrastructure/) antes de usar um número específico como referência.
+> Contagem exata de regions e nomes de códigos verificados em 2026-07-22. A AWS abre regions novas com regularidade — confira o número atual em [AWS Global Infrastructure](https://aws.amazon.com/about-aws/global-infrastructure/) antes de usar um número específico como referência.
 
 ## Availability zone: a unidade de falha isolada
 
@@ -81,7 +117,23 @@ Edge location não substitui region — ela complementa. A aplicação em si, co
 
 ## Region, AZ e edge na lente dupla
 
-Region e AZ, na AWS, são conceitos explícitos e nomeados: você escolhe `us-east-1` como region e `us-east-1a`, `us-east-1b`, `us-east-1c` como AZs específicas ao criar praticamente qualquer recurso — uma instância EC2, um bucket replicado, um banco RDS multi-AZ. A letra no final do nome da AZ (`a`, `b`, `c`) não é sequencial de forma consistente entre contas diferentes — a AWS embaralha a correspondência entre a letra visível e o datacenter físico real por conta, justamente para distribuir carga de forma mais uniforme entre AZs físicas ao longo de todos os clientes.
+Region e AZ, na AWS, são conceitos explícitos e nomeados: você escolhe `us-east-1` como region e `us-east-1a`, `us-east-1b`, `us-east-1c` como AZs específicas ao criar praticamente qualquer recurso — uma instância EC2, um bucket replicado, um banco RDS multi-AZ. A letra no final do nome da AZ (`a`, `b`, `c`) historicamente não correspondia ao mesmo datacenter físico em contas diferentes: para contas criadas antes de novembro de 2025, a AWS mapeia a letra visível ao datacenter real de forma independente por conta, justamente para distribuir carga de forma mais uniforme entre AZs físicas ao longo de todos os clientes — `us-east-1a` na sua conta pode não ser o mesmo local físico que `us-east-1a` na conta de outra empresa. Contas criadas a partir de novembro de 2025 já recebem o mesmo mapeamento consistente entre contas. Para identificar uma AZ física de forma inequívoca independente da conta — essencial ao compartilhar recursos entre contas — a AWS expõe o **AZ ID** (`use1-az6`, por exemplo), que é fixo e não muda:
+
+```bash
+aws ec2 describe-availability-zones \
+  --query 'AvailabilityZones[*].[ZoneName,ZoneId,State]' \
+  --output table
+```
+
+```
+-------------------------------------------
+|         DescribeAvailabilityZones        |
++---------------+-------------+-----------+
+|  us-east-1a   |  use1-az6   | available |
+|  us-east-1b   |  use1-az1   | available |
+|  us-east-1c   |  use1-az2   | available |
++---------------+-------------+-----------+
+```
 
 A DigitalOcean organiza o mundo de forma mais simples, e é aqui que a diferença de modelo mental fica mais visível: ela **não expõe availability zone como conceito de primeira classe**. O que existe é o **datacenter** — a documentação da DigitalOcean descreve hoje 15 datacenters espalhados por 12 regions geográficas (o número muda; confira a contagem atual antes de decidir). Uma region com mais de um datacenter, como Nova York — que tem NYC1, NYC2 e NYC3 — tem, na prática, múltiplos pontos físicos independentes, parecido em espírito com AZs da AWS. Mas a DigitalOcean não documenta, publicamente, as garantias de isolamento de energia/refrigeração/rede entre esses datacenters da mesma forma explícita que a AWS documenta para AZs — e não oferece, nativamente, o mesmo tipo de recurso "multi-AZ automático" (como o RDS Multi-AZ da AWS) que replica e faz failover entre zonas de forma gerenciada. Isso não significa que a DigitalOcean seja menos confiável — significa que a responsabilidade de desenhar redundância entre datacenters, quando ela existe, fica mais nas mãos de quem projeta a arquitetura, e menos automatizada pela plataforma.
 
@@ -94,7 +146,7 @@ Do lado de edge, a comparação também é assimétrica em escala, não em princ
 | Camada de borda/cache | CloudFront — 750+ pontos de presença, 100+ cidades | CDN do Spaces — 200+ servidores distribuídos |
 
 > [!info] Caducidade
-> Números de datacenters, regions e pontos de presença verificados em 2026-07-20 nas páginas oficiais de cada provedor. São os números que mais envelhecem rápido nesta nota — confira a contagem atual antes de citar um número específico em decisão de arquitetura ou entrevista.
+> Números de datacenters, regions e pontos de presença verificados em 2026-07-22 nas páginas oficiais de cada provedor. São os números que mais envelhecem rápido nesta nota — confira a contagem atual antes de citar um número específico em decisão de arquitetura ou entrevista.
 
 Azure e GCP seguem o mesmo padrão conceitual de region + zona isolada, com nomes próprios:
 
@@ -105,7 +157,47 @@ Azure e GCP seguem o mesmo padrão conceitual de region + zona isolada, com nome
 | Camada de borda/cache | CloudFront (edge location) | Azure Front Door / Azure CDN (edge site) | Cloud CDN (edge node/Google Global Cache) | CDN do Spaces |
 
 > [!info] Caducidade
-> Nomenclatura de Azure e GCP verificada em 2026-07-20 — confira a documentação oficial de cada provedor antes de tratar estes nomes como definitivos; a indústria reorganiza produtos de CDN e edge com frequência.
+> Nomenclatura de Azure e GCP verificada em 2026-07-22 — confira a documentação oficial de cada provedor antes de tratar estes nomes como definitivos; a indústria reorganiza produtos de CDN e edge com frequência.
+
+## Fixar e consultar: onde um recurso está
+
+Todo esse mapa só importa na prática quando vira decisão de provisionamento. Fixar a AZ manualmente não é o padrão recomendado para toda instância — vale entender quando faz sentido escolher explicitamente e quando é melhor deixar o provedor decidir:
+
+| Cenário | Fixar AZ/region manualmente | Deixar o provedor escolher |
+|---|---|---|
+| Primeira instância de um grupo redundante | Não costuma importar — qualquer AZ serve como ponto de partida | Recomendado: o provedor distribui por saúde e capacidade disponível |
+| Réplicas adicionais do mesmo grupo | Sim — forçar uma AZ diferente da primeira réplica é o que garante isolamento de falha | Arriscado: o provedor pode (raramente) repetir a mesma AZ |
+| Recurso com afinidade a outro (ex: instância perto de um volume) | Sim — mesma AZ do recurso relacionado, para evitar latência entre AZs | Não se aplica |
+
+Fixar a AZ de uma instância EC2 explicitamente, em vez de deixar a AWS escolher automaticamente:
+
+```bash
+aws ec2 run-instances \
+  --image-id ami-0c55b159cbfafe1f0 \
+  --instance-type t2.micro \
+  --placement AvailabilityZone=us-east-1a
+```
+
+O equivalente na DigitalOcean é escolher a region (que, sem conceito de AZ, já é o nível mais granular disponível) na criação do droplet:
+
+```bash
+doctl compute droplet create servidor-api \
+  --size s-2vcpu-2gb \
+  --image ubuntu-24-04-x64 \
+  --region nyc1
+```
+
+E, quando o recurso já existe, consultar em qual AZ ou region ele está — útil para auditar se réplicas de fato caíram em locais diferentes, o erro que abriu esta nota:
+
+```bash
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].{Instance:InstanceId,AZ:Placement.AvailabilityZone}" \
+  --output table
+```
+
+```bash
+doctl compute droplet get servidor-api --format Name,ID,Region
+```
 
 ## Como escolher uma region
 
@@ -119,7 +211,52 @@ Escolher region não é uma decisão técnica isolada — é, na prática, quatr
 
 **4. Restrição jurídica de residência de dados.** Esta é a que engenheiros sem histórico de compliance mais frequentemente esquecem, e a que tem a consequência mais séria: alguma legislação (GDPR na União Europeia é o exemplo mais citado, mas não o único — várias jurisdições têm regras próprias de residência de dados para setores como saúde e finanças) pode exigir que dados de cidadãos ou clientes de determinada região geográfica **fisicamente não saiam** dela. Guardar dado de usuário europeu numa region nos Estados Unidos, sem uma base legal específica para essa transferência, não é um problema de performance — é um problema jurídico, com multa possível, e a correção depois do fato (migrar dados de region) é trabalho caro e arriscado. A pergunta "esse dado pode legalmente estar nesta region?" precisa ser respondida antes de provisionar o primeiro recurso, não descoberta numa auditoria.
 
+Essa restrição não precisa depender só de disciplina da equipe — a AWS expõe a chave de condição global `aws:RequestedRegion`, que permite **bloquear tecnicamente** a criação de qualquer recurso fora de um conjunto de regions permitidas, seja numa Service Control Policy (SCP) no nível da organização, seja numa policy de IAM mais restrita:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "NegarForaDasRegionsPermitidas",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": ["eu-west-1", "eu-central-1"]
+        }
+      }
+    }
+  ]
+}
+```
+
+Uma policy assim transforma "a equipe lembrar de escolher a region certa" em "o provedor recusa a chamada de API se a region estiver errada" — a diferença entre confiar em processo e confiar em controle técnico. O escopo muda dependendo de onde ela é anexada:
+
+| Onde anexar | Alcance | Quando usar |
+|---|---|---|
+| Service Control Policy (SCP) | Todas as contas de uma AWS Organizations | Restrição jurídica vale para a empresa inteira |
+| Policy de IAM (usuário/grupo/role) | Só quem a policy alcança | Restrição vale para uma equipe ou carga de trabalho específica |
+
 Nenhuma dessas quatro perguntas, isolada, decide a region sozinha — elas competem entre si na prática. A region mais barata pode não ter o serviço necessário; a region mais próxima do usuário pode ter uma restrição legal que impede guardar aquele dado específico ali. A decisão sênior é responder as quatro perguntas explicitamente para a carga em questão, não escolher a region "padrão" do tutorial e seguir em frente sem revisar.
+
+| Critério | Pergunta a se fazer | Armadilha comum |
+|---|---|---|
+| Latência ao usuário | Onde está a maioria dos usuários, agora e nos próximos meses? | Otimizar para onde o time está, não para onde o usuário está |
+| Preço | O mesmo recurso custa o mesmo nas regions candidatas? | Comparar só o preço de compute e esquecer transferência de dados entre regions |
+| Disponibilidade do serviço | O serviço específico (e a versão dele) já existe nessa region? | Descobrir a ausência só na hora de provisionar em produção |
+| Residência jurídica de dados | Existe exigência legal de que o dado não saia de um território? | Tratar isso como decisão de performance, não como decisão jurídica |
+
+Medir a latência real até as regions candidatas, em vez de assumir pela distância no mapa, é rotina antes de decidir — um teste simples com `curl` contra um endpoint regional expõe o tempo de resposta:
+
+```bash
+curl -o /dev/null -s -w "us-east-1: %{time_total}s\n" \
+  https://s3.us-east-1.amazonaws.com
+
+curl -o /dev/null -s -w "eu-west-1: %{time_total}s\n" \
+  https://s3.eu-west-1.amazonaws.com
+```
 
 ```mermaid
 flowchart TD
@@ -157,10 +294,11 @@ Esta nota mapeou o **onde**: region, AZ e edge, e como escolher entre elas. Mas 
 
 ## Fontes
 
-- [AWS — Regions and Availability Zones (página oficial)](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/) — definição oficial de Region e AZ, número mínimo de AZs por region, distância e latência entre AZs; acessado em 2026-07-20.
-- [AWS Global Infrastructure (página oficial)](https://aws.amazon.com/about-aws/global-infrastructure/) — contagem atual de regions e AZs da AWS; acessado em 2026-07-20.
-- [AWS Whitepaper — AWS Fault Isolation Boundaries: Global Infrastructure](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-infrastructure.html) — modelo de isolamento de falha entre AZs e edge locations; acessado em 2026-07-20.
-- [AWS Whitepaper — AWS Overview: Global Infrastructure](https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html) — definição consolidada de region e AZ como unidades de disponibilidade e escalabilidade; acessado em 2026-07-20.
-- [AWS CloudFront — Features (página oficial)](https://aws.amazon.com/cloudfront/features/) — número de pontos de presença (POPs), regional edge caches, arquitetura de três camadas do CloudFront; acessado em 2026-07-20.
-- [DigitalOcean — Regional Availability (documentação oficial)](https://docs.digitalocean.com/platform/regional-availability/) — número de datacenters e regions da DigitalOcean, ausência de conceito explícito de availability zone, recomendação sobre datacenters legados vs. modernos; acessado em 2026-07-20.
-- [DigitalOcean Spaces — página de produto](https://www.digitalocean.com/products/spaces) — descrição do CDN do Spaces, número de servidores de cache distribuídos; acessado em 2026-07-20.
+- [AWS — Regions and Availability Zones (página oficial)](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/) — definição oficial de Region e AZ, número mínimo de AZs por region, distância e latência entre AZs; acessado em 2026-07-22.
+- [AWS Global Infrastructure (página oficial)](https://aws.amazon.com/about-aws/global-infrastructure/) — contagem atual de regions e AZs da AWS; acessado em 2026-07-22.
+- [AWS Whitepaper — AWS Fault Isolation Boundaries: Availability Zones](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/availability-zones.html) — modelo de isolamento de falha de AZs (distância física, latência de replicação síncrona); acessado em 2026-07-22.
+- [AWS — AZ IDs](https://docs.aws.amazon.com/global-infrastructure/latest/regions/az-ids.html) — identificador de AZ consistente entre contas, e a mudança no mapeamento de letras para contas criadas a partir de novembro de 2025; acessado em 2026-07-22.
+- [AWS Whitepaper — AWS Overview: Global Infrastructure](https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html) — definição consolidada de region e AZ como unidades de disponibilidade e escalabilidade; acessado em 2026-07-22.
+- [AWS CloudFront — Features (página oficial)](https://aws.amazon.com/cloudfront/features/) — número de pontos de presença (POPs), regional edge caches, arquitetura de três camadas do CloudFront; acessado em 2026-07-22.
+- [DigitalOcean — Regional Availability (documentação oficial)](https://docs.digitalocean.com/platform/regional-availability/) — número de datacenters e regions da DigitalOcean, ausência de conceito explícito de availability zone, recomendação sobre datacenters legados vs. modernos; acessado em 2026-07-22.
+- [DigitalOcean Spaces — página de produto](https://www.digitalocean.com/products/spaces) — descrição do CDN do Spaces, número de servidores de cache distribuídos; acessado em 2026-07-22.
