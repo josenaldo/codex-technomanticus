@@ -3,7 +3,7 @@ title: "Usuários, grupos e o problema da credencial de longa duração"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 status: seedling
 publish: true
 tags:
@@ -50,6 +50,48 @@ O grupo existe para resolver um problema de escala organizacional simples: se de
 
 Isso já é, em miniatura, o problema que a **nota seguinte desta trilha** vai tratar a fundo — como uma permissão é de fato avaliada. Por ora, o que importa é a peça anterior: quem é o usuário, e com que credencial ele prova que é quem diz ser.
 
+```mermaid
+flowchart LR
+    subgraph SemGrupo["Sem grupo — 10 concessões separadas"]
+        P1["Política de leitura<br/>no data warehouse"] --> U1["Usuário 1"]
+        P1 --> U2["Usuário 2"]
+        P1 --> U3["... Usuário 10"]
+    end
+    subgraph ComGrupo["Com grupo — 1 concessão, 10 heranças"]
+        G["Grupo: time-de-dados<br/>(política anexada uma vez)"] --> M1["Usuário 1"]
+        G --> M2["Usuário 2"]
+        G --> M3["... Usuário 10"]
+    end
+```
+
+Na prática, criar o usuário, criar o grupo e conceder a permissão uma única vez, no grupo, é uma sequência curta de chamadas de API. Todo comando abaixo segue a sintaxe documentada no AWS CLI Command Reference:
+
+```bash
+# Criar o usuário — nasce sem nenhuma permissão
+aws iam create-user --user-name maria.dados
+```
+
+```bash
+# Criar o grupo — uma vez só, não por pessoa
+aws iam create-group --group-name time-de-dados
+```
+
+```bash
+# Anexar a política ao grupo, não a cada usuário individualmente
+aws iam attach-group-policy \
+    --group-name time-de-dados \
+    --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+```
+
+```bash
+# Colocar o usuário no grupo — ele herda a política imediatamente
+aws iam add-user-to-group \
+    --user-name maria.dados \
+    --group-name time-de-dados
+```
+
+A décima primeira pessoa do time repete só o último comando — `add-user-to-group`. Nenhuma política nova, nenhuma configuração duplicada.
+
 ## As credenciais de um usuário
 
 Um usuário de nuvem pode ter mais de um tipo de credencial ao mesmo tempo, cada uma para um canal de acesso diferente:
@@ -60,18 +102,99 @@ Um usuário de nuvem pode ter mais de um tipo de credencial ao mesmo tempo, cada
 
 A senha de console e a chave de acesso protegem canais diferentes, mas compartilham a mesma propriedade estrutural que interessa aqui: são **credenciais de longa duração**. Uma vez criadas, continuam válidas indefinidamente até que alguém, manualmente, decida desativá-las ou apagá-las. Não existe um relógio embutido que as invalide sozinho depois de um dia, uma hora, ou uma sessão.
 
+Criar uma chave é uma única chamada — e é aí que o problema começa: nada na resposta da API avisa que aquele par de valores vai sobreviver para sempre.
+
+```bash
+# Cria a chave — o segredo só aparece nesta resposta, uma vez
+aws iam create-access-key --user-name maria.dados
+```
+
+```json
+{
+    "AccessKey": {
+        "UserName": "maria.dados",
+        "AccessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "Status": "Active",
+        "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY",
+        "CreateDate": "2026-07-20T18:39:23Z"
+    }
+}
+```
+
+Note o que **não** aparece nesse JSON: nenhum campo de expiração. `CreateDate` registra quando a chave nasceu, não quando ela morre — porque ela não morre sozinha. Para saber há quanto tempo uma chave existente está ativa e quando foi usada pela última vez:
+
+```bash
+# Lista as chaves do usuário e quando cada uma foi usada por último
+aws iam list-access-keys --user-name maria.dados
+```
+
 > [!info] Fronteira
 > Autenticação (provar quem você é) e autorização (o que você pode fazer depois de provar) já foram distinguidas na **nota 01** deste galho. Aqui, o assunto é só o primeiro lado — a credencial que carrega a prova de identidade. O que essa identidade pode fazer, uma vez autenticada, é o assunto da política — nota seguinte desta trilha.
 
 ## Por que a chave estática é a pior credencial que existe
 
-A documentação da própria AWS é direta sobre isso, num tom que raramente aparece em documentação técnica: "usuários IAM com chaves de acesso são um risco de segurança da conta". Não é um aviso genérico de boa prática — é um alerta específico sobre esse tipo particular de credencial. Vale desmontar por que, ponto a ponto.
+A documentação da própria AWS é direta sobre isso, num tom que raramente aparece em documentação técnica: "IAM users with access keys are an account security risk" — usuários IAM com chaves de acesso são um risco de segurança da conta. Não é um aviso genérico de boa prática — é um alerta específico sobre esse tipo particular de credencial. Vale desmontar por que, ponto a ponto.
+
+| Propriedade | Chave de acesso estática | Credencial temporária (nota 04) |
+|---|---|---|
+| Expiração | Nenhuma — vale até ser revogada à mão | Embutida na criação, minutos a horas |
+| Rastreabilidade | Uma string, copiável para qualquer lugar sem registro central | Emitida por sessão, atrelada ao papel assumido |
+| Raio de vazamento | Tudo que a política do usuário permitir, pelo tempo que ninguém perceber | Limitado à janela de validade da sessão |
+| Dono sai da empresa | Chave continua ativa até alguém procurar e revogar manualmente | Sessão expira sozinha; nada para esquecer |
 
 **Ela não expira sozinha.** Uma chave de acesso criada hoje continua funcionando daqui a um ano, cinco anos, dez anos — a menos que alguém, ativamente, entre no painel e a revogue. Comparado com uma credencial temporária (o assunto da nota 04 desta trilha), que carrega um prazo de validade embutido e simplesmente para de funcionar quando esse prazo acaba, a chave estática exige vigilância humana contínua para não virar um risco permanente. E vigilância humana contínua é exatamente o tipo de tarefa que, na prática, as organizações fazem mal — não por incompetência, mas porque "revisar chaves antigas" nunca compete de igual para igual, na fila de prioridades de um time, com uma entrega de produto com prazo.
 
 **Ela vaza em lugares banais.** A cena do começo desta nota — chave colada num script "só para teste", esquecida, commitada — não é folclore de segurança. É comportamento humano previsível sob pressão de prazo: copiar-colar é mais rápido que configurar um mecanismo de credencial adequado, e "eu tiro isso depois" é uma promessa que compete com todas as outras tarefas do dia. A própria AWS lista, em letras maiúsculas na documentação oficial, o que **não** fazer: não embutir chaves de acesso em código de aplicação, não incluir arquivos com chaves na área do projeto, não usar as credenciais da conta raiz para criar chaves. O fato de a documentação precisar dizer isso tão explicitamente é, por si, evidência de que a prática errada é comum o suficiente para merecer o aviso.
 
 **Ela sobrevive ao desligamento de quem a criou.** Uma chave de acesso não está amarrada ao emprego de ninguém — está amarrada ao usuário IAM ao qual foi anexada. Se um funcionário sai da empresa e o processo de desligamento cuida de desativar o login dele no provedor de identidade corporativo, mas esquece de revogar uma chave de acesso que ele havia criado meses antes para um script pessoal de automação, essa chave continua válida, silenciosamente, até que alguém a encontre numa auditoria — se é que alguém a encontra. Isso não é um cenário exótico: é exatamente o motivo pelo qual a AWS oferece uma ferramenta dedicada, o **relatório de credenciais** (*credential report*), que lista todo usuário IAM da conta e o status de cada senha e chave de acesso associada — incluindo há quanto tempo cada uma foi usada pela última vez. A existência dessa ferramenta é reconhecimento institucional de que "encontrar credenciais órfãs" é problema comum demais para depender de alguém lembrar manualmente.
+
+Uma varredura rápida em duas chamadas — a AWS armazena um único relatório por conta e o reaproveita se tiver menos de quatro horas:
+
+```bash
+# Pede a geração do relatório mais recente (CSV, um usuário por linha)
+aws iam generate-credential-report
+```
+
+```bash
+# Baixa o relatório — o conteúdo vem em base64, precisa decodificar
+aws iam get-credential-report --query 'Content' --output text | base64 -d > credential-report.csv
+```
+
+O CSV resultante tem colunas como `access_key_1_active`, `access_key_1_last_rotated` e `access_key_1_last_used_date` — exatamente o que uma auditoria de chaves esquecidas precisa cruzar. Para uma visão mais rápida e agregada, sem baixar o CSV inteiro:
+
+```bash
+# Retrato agregado da conta: quantos usuários, quantas chaves ativas, MFA habilitado
+aws iam get-account-summary
+```
+
+Quando o relatório aponta uma chave suspeita, o passo seguinte não é apagar direto — é desativar primeiro, confirmar que nada quebrou, e só então apagar:
+
+```bash
+# Desativa sem apagar — reversível se algo depender dela
+aws iam update-access-key \
+    --user-name maria.dados \
+    --access-key-id AKIAIOSFODNN7EXAMPLE \
+    --status Inactive
+```
+
+```bash
+# Confirmado que nada quebrou, agora sim revoga de vez
+aws iam delete-access-key \
+    --user-name maria.dados \
+    --access-key-id AKIAIOSFODNN7EXAMPLE
+```
+
+```mermaid
+flowchart TD
+    A["Chave criada<br/>(Active)"] --> B["Em uso normal"]
+    B --> C{"Relatório de credenciais<br/>aponta uso antigo?"}
+    C -->|Não| B
+    C -->|Sim| D["update-access-key<br/>--status Inactive"]
+    D --> E{"Algo quebrou<br/>em produção?"}
+    E -->|Sim| F["Reativa: --status Active<br/>investiga o dono real"]
+    E -->|Não, período seguro passou| G["delete-access-key<br/>— revogação definitiva"]
+    F --> C
+```
 
 **Ela é difícil de rastrear.** Uma chave de acesso é só duas strings. Ela não sabe, por si mesma, em qual laptop está salva, em quantos scripts foi copiada, ou se foi compartilhada num canal de chat "só dessa vez". Diferente de uma sessão de navegador, que tem um único ponto de uso ativo por vez, uma chave pode estar simultaneamente num arquivo de configuração local, num pipeline de CI, num script de automação esquecido num servidor antigo — e cada um desses lugares é uma superfície de vazamento independente, sem que exista, por padrão, um único lugar central onde alguém possa ver "todos os lugares onde essa chave está em uso agora".
 
@@ -88,7 +211,29 @@ MFA protege o **login interativo**: alguém tentando entrar no console pela senh
 
 MFA **não** protege uma chave de acesso comprometida. Quando alguém usa uma chave de acesso para autenticar uma chamada de API, a chamada não passa por tela de login nenhuma — não há segundo fator para apresentar, porque o fluxo inteiro é programático, sem interação humana no momento da chamada. Uma chave de acesso vazada continua plenamente funcional mesmo numa conta com MFA habilitado e bem configurado para login de console. São dois mecanismos de defesa cobrindo dois canais diferentes de acesso — e um deles, MFA, simplesmente não tem jurisdição sobre o canal onde a chave estática opera.
 
-Vale notar, também, que a AWS foi ampliando o tipo de fator recomendado ao longo do tempo: hoje a orientação prioriza mecanismos resistentes a phishing — passkeys e chaves de segurança físicas baseadas em FIDO — sobre aplicativos autenticadores baseados em código numérico (TOTP), que continuam suportados mas são tratados como alternativa intermediária. O suporte a MFA por SMS foi descontinuado pela AWS por ser o elo mais fraco da família — vulnerável a ataques de troca de SIM.
+Vale notar, também, que a AWS foi ampliando o tipo de fator recomendado ao longo do tempo: hoje a orientação prioriza mecanismos resistentes a phishing — passkeys e chaves de segurança físicas baseadas em FIDO — sobre aplicativos autenticadores baseados em código numérico (TOTP), que continuam suportados mas são tratados como alternativa intermediária ("enquanto o hardware não chega"). A AWS encerrou o suporte à habilitação de MFA por SMS — o motivo não é detalhado na documentação oficial, mas se alinha à razão conhecida do setor: mensagens de texto são vulneráveis a ataques de troca de SIM, o que faz do SMS o elo mais fraco entre os fatores disponíveis.
+
+Registrar um dispositivo MFA virtual e anexá-lo a um usuário são duas chamadas separadas — a primeira gera o QR code, a segunda exige dois códigos consecutivos do app autenticador, prova de que o dispositivo está de fato sincronizado:
+
+```bash
+# Gera o dispositivo virtual e salva o QR code para escanear no app
+aws iam create-virtual-mfa-device \
+    --virtual-mfa-device-name maria.dados-mfa \
+    --outfile QRCode.png \
+    --bootstrap-method QRCodePNG
+```
+
+```bash
+# Anexa o dispositivo ao usuário — exige dois códigos consecutivos do app,
+# para provar que o relógio do dispositivo está sincronizado com a AWS
+aws iam enable-mfa-device \
+    --user-name maria.dados \
+    --serial-number arn:aws:iam::210987654321:mfa/maria.dados-mfa \
+    --authentication-code1 123456 \
+    --authentication-code2 789012
+```
+
+Os dois códigos precisam ser enviados logo em seguida da geração — um TOTP expira em segundos, e esperar demais dessincroniza o dispositivo antes mesmo de ele entrar em uso.
 
 ## O usuário raiz: por que ele fica trancado
 
@@ -100,6 +245,11 @@ A razão é a mesma lógica de risco desta nota inteira, levada ao extremo: o us
 
 É por isso que a orientação da AWS vai além de "use MFA no raiz" — ela recomenda ativamente **não criar chave de acesso alguma para o usuário raiz**. Combinar a identidade mais poderosa da conta com o tipo de credencial mais fácil de vazar é a pior combinação possível dentro do espaço de risco que esta nota mapeou. A prática recomendada, para as raras tarefas que realmente exigem o raiz, é autenticar via login no console com senha forte e MFA obrigatório — nunca via chave de acesso programática.
 
+E se a tarefa exigir o raiz na linha de comando, não no console? A documentação oficial de boas práticas do raiz endereça exatamente essa lacuna: em vez de criar uma access key para o raiz, o comando `aws login` autentica a CLI e os SDKs com as credenciais do raiz e devolve credenciais temporárias, renovadas automaticamente — a mesma lógica de "sem chave persistente para vazar" que a nota 04 desta trilha vai generalizar para todo o resto da conta.
+
+> [!info] Fronteira
+> O funcionamento interno do `aws login` — o que ele assume por trás dos panos — é o mesmo mecanismo de credencial temporária que a nota 04 explica em detalhe. Aqui, o ponto é só que ele existe como alternativa à chave de acesso, mesmo para o raiz.
+
 ## A lente dupla: IAM users da AWS vs. Teams e tokens da DigitalOcean
 
 A AWS constrói identidade em torno do IAM user: uma entidade nomeada, com permissões concedidas por política, credenciais próprias (senha, chave de acesso), e um raiz separado e deliberadamente trancado atrás dele.
@@ -110,7 +260,36 @@ O ponto onde a DigitalOcean não tem equivalente direto ao IAM user é sutil e v
 
 E é exatamente aqui que a DigitalOcean, apesar do modelo mais simples, resolve uma fatia do problema que esta nota descreveu para chave de acesso estática de um jeito que a AWS, historicamente, não resolvia por padrão: **o token da DO tem expiração escolhida no momento da criação**. Você decide por quanto tempo aquele token vale, e passado esse intervalo ele simplesmente para de autenticar — sem exigir que alguém lembre de revogá-lo manualmente. Além disso, cada token pode receber escopos granulares baseados nas operações de criar, ler, atualizar e apagar (CRUD) que ele autoriza, em vez de herdar cegamente tudo que o dono do token pode fazer.
 
-Isso não apaga o restante do argumento desta nota — um token da DO ainda é uma string copiável, ainda pode vazar num commit, ainda funciona sem segundo fator no momento da chamada de API, e a própria documentação da DigitalOcean avisa, quase nas mesmas palavras da AWS: "trate seus tokens como senhas, mantenha-os em segredo". Mas o prazo de validade embutido, por padrão disponível na criação do token, é uma diferença estrutural real, não cosmética — é um passo a mais em direção ao que a nota 04 desta trilha vai chamar de "credencial de curta duração", ainda que a DigitalOcean chegue lá por um caminho mais simples e menos completo que o modelo de papéis assumíveis da AWS.
+Isso não apaga o restante do argumento desta nota — um token da DO ainda é uma string copiável, ainda pode vazar num commit, ainda funciona sem segundo fator no momento da chamada de API, e a própria documentação da DigitalOcean avisa, quase nas mesmas palavras da AWS: "keep your tokens secret — they function like passwords". Mas o prazo de validade embutido, por padrão disponível na criação do token, é uma diferença estrutural real, não cosmética — é um passo a mais em direção ao que a nota 04 desta trilha vai chamar de "credencial de curta duração", ainda que a DigitalOcean chegue lá por um caminho mais simples e menos completo que o modelo de papéis assumíveis da AWS.
+
+Há uma pegadinha que vale registrar: o token da DO **não pode ter o escopo editado depois de criado**. Se um pipeline de CI foi configurado com escopo `Full Access` e devia ter sido `Droplet: Create`, a correção não é editar — é gerar um token novo com o escopo certo e trocar em todo lugar que usava o antigo. Diferente de uma política IAM anexada a um grupo, que pode ser ajustada em produção sem tocar na credencial em si.
+
+Usar o token, na prática, é configurar o `doctl` uma vez e deixar a CLI cuidar do cabeçalho de autenticação daí em diante:
+
+```bash
+# Cola o token quando solicitado; nomeia esse contexto de autenticação
+doctl auth init --context producao
+```
+
+```bash
+# Confirma que a autenticação funcionou — retorna email, UUID, status da conta
+doctl account get
+```
+
+Sem `doctl`, o mesmo token vai direto no cabeçalho `Authorization` de qualquer chamada HTTP à API:
+
+```bash
+curl -X GET \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" \
+    "https://api.digitalocean.com/v2/account"
+```
+
+| Propriedade | AWS access key (IAM user) | DigitalOcean Personal Access Token |
+|---|---|---|
+| Expiração escolhida na criação | Não — é preciso desativar manualmente | Sim, intervalo definido no momento da criação |
+| Escopo editável depois de criado | Sim, via política anexada ao usuário/grupo | Não — exige gerar um token novo |
+| Máximo simultâneo por identidade | 2 chaves ativas por usuário IAM | Sem teto documentado da mesma forma |
 
 | Conceito | AWS | Azure | GCP | DigitalOcean |
 |---|---|---|---|---|
@@ -120,7 +299,7 @@ Isso não apaga o restante do argumento desta nota — um token da DO ainda é u
 | Identidade mais privilegiada | Usuário raiz (root user) | Conta de proprietário global do tenant | Proprietário do projeto/organização | Owner do Team |
 
 > [!info] Caducidade
-> Nomes de papel, tipos de MFA suportados e comportamento de expiração de token verificados em 2026-07-20. A lista de papéis predefinidos da DigitalOcean e as opções específicas de MFA da AWS são áreas que os provedores ajustam com alguma frequência — confira a documentação oficial antes de configurar uma conta real.
+> Nomes de papel, tipos de MFA suportados e comportamento de expiração de token verificados em 2026-07-23. A lista de papéis predefinidos da DigitalOcean e as opções específicas de MFA da AWS são áreas que os provedores ajustam com alguma frequência — confira a documentação oficial antes de configurar uma conta real.
 
 ## Casos práticos
 
@@ -147,11 +326,14 @@ Esta nota mapeou o problema, mas deixou uma pergunta em aberto de propósito: se
 
 ## Fontes
 
-- [AWS IAM — IAM users (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) — definição de IAM user, tipos de credencial associados, uso como service account; acessado em 2026-07-20.
-- [AWS IAM — Manage access keys for IAM users (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) — estrutura da access key, limite de duas chaves por usuário, avisos explícitos contra embutir chaves em código; acessado em 2026-07-20.
-- [AWS IAM — Root user best practices (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-best-practices.html) — por que não usar o usuário raiz no dia a dia, recomendação contra criar access key para o raiz, MFA obrigatório; acessado em 2026-07-20.
-- [AWS IAM — Multi-factor authentication in IAM (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html) — tipos de MFA suportados (passkeys/security keys, TOTP virtual, hardware TOTP), descontinuação de MFA por SMS; acessado em 2026-07-20.
-- [GitHub Docs — About secret scanning](https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning) — programa de parceria de secret scanning, notificação automática a provedores parceiros (incluindo AWS) sobre credenciais vazadas em repositórios públicos; acessado em 2026-07-20.
-- [DigitalOcean — Teams (documentação oficial)](https://docs.digitalocean.com/platform/teams/) — modelo de Team para infraestrutura e cobrança compartilhada, papéis predefinidos e customizados; acessado em 2026-07-20.
-- [DigitalOcean — Team roles (documentação oficial)](https://docs.digitalocean.com/platform/teams/roles/) — existência de seis papéis predefinidos e papéis customizados com permissões granulares; acessado em 2026-07-20.
-- [DigitalOcean API — How to Create a Personal Access Token (documentação oficial)](https://docs.digitalocean.com/reference/api/create-personal-access-token/) — funcionamento do token como bearer token, escolha de expiração na criação, escopos CRUD, impossibilidade de editar escopo após criação, orientação de tratar tokens como senhas; acessado em 2026-07-20.
+- [AWS IAM — IAM users (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) — definição de IAM user, tipos de credencial associados, uso como service account; acessado em 2026-07-23.
+- [AWS IAM — Manage access keys for IAM users (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) — estrutura da access key, limite de duas chaves por usuário, avisos explícitos contra embutir chaves em código; acessado em 2026-07-23.
+- [AWS IAM — Root user best practices (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-best-practices.html) — por que não usar o usuário raiz no dia a dia, recomendação contra criar access key para o raiz, MFA obrigatório; acessado em 2026-07-23.
+- [AWS IAM — Multi-factor authentication in IAM (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html) — tipos de MFA suportados (passkeys/security keys, TOTP virtual, hardware TOTP), descontinuação de MFA por SMS; acessado em 2026-07-23.
+- [GitHub Docs — About secret scanning](https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning) — programa de parceria de secret scanning, notificação automática a provedores parceiros sobre credenciais vazadas em repositórios públicos; acessado em 2026-07-23.
+- [GitHub Docs — Supported secret scanning patterns](https://docs.github.com/en/code-security/secret-scanning/introduction/supported-secret-scanning-patterns) — confirma a Amazon AWS Access Key ID como padrão coberto pelo programa parceiro; acessado em 2026-07-23.
+- [AWS CLI Command Reference — iam](https://docs.aws.amazon.com/cli/latest/reference/iam/) — sintaxe verificada dos comandos `create-user`, `create-group`, `add-user-to-group`, `attach-group-policy`, `create-access-key`, `list-access-keys`, `update-access-key`, `delete-access-key`, `generate-credential-report`, `get-credential-report`, `get-account-summary`, `create-virtual-mfa-device` e `enable-mfa-device`; acessado em 2026-07-23.
+- [DigitalOcean — doctl install and configure](https://docs.digitalocean.com/reference/doctl/how-to/install/) — sintaxe de `doctl auth init` e `doctl account get`; acessado em 2026-07-23.
+- [DigitalOcean — Teams (documentação oficial)](https://docs.digitalocean.com/platform/teams/) — modelo de Team para infraestrutura e cobrança compartilhada, papéis predefinidos e customizados; acessado em 2026-07-23.
+- [DigitalOcean — Team roles (documentação oficial)](https://docs.digitalocean.com/platform/teams/roles/) — existência de seis papéis predefinidos e papéis customizados com permissões granulares; acessado em 2026-07-23.
+- [DigitalOcean API — How to Create a Personal Access Token (documentação oficial)](https://docs.digitalocean.com/reference/api/create-personal-access-token/) — funcionamento do token como bearer token, escolha de expiração na criação, escopos CRUD, impossibilidade de editar escopo após criação, orientação de tratar tokens como senhas; acessado em 2026-07-23.
