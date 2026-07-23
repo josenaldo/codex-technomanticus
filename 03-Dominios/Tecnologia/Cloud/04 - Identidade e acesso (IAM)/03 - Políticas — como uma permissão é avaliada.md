@@ -3,7 +3,7 @@ title: "Políticas — como uma permissão é avaliada"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 status: seedling
 publish: true
 tags:
@@ -64,6 +64,21 @@ Cada `Statement` tem um punhado de elementos, e vale nomear o papel exato de cad
 - **`Condition`** (opcional) — restringe quando a declaração se aplica: um intervalo de IP de origem, a exigência de MFA ativo, uma tag específica no recurso, uma janela de horário. Uma política sem `Condition` vale sempre que `Action` e `Resource` batem; com `Condition`, ela só vale quando a condição também é satisfeita.
 - **`Principal`** — aparece só em políticas de recurso e políticas de confiança (trust policies), nunca numa política de identidade. Declara **quem** a regra afeta: um usuário, uma role, uma conta inteira, ou um serviço da AWS. Faz sentido perguntar "quem pode acessar este bucket" quando a política está anexada ao bucket; não faz sentido perguntar isso numa política anexada a um usuário — ali o principal já está implícito: é o próprio usuário.
 
+Em forma de tabela, para consulta rápida:
+
+| Elemento | Obrigatório? | O que faz | Exemplo |
+|---|---|---|---|
+| `Version` | Sim | Versão da linguagem de política — praticamente sempre a mais recente | `"2012-10-17"` |
+| `Statement` | Sim | Lista de declarações; cada uma é uma regra isolada | `[{ "Effect": "Allow", ... }]` |
+| `Sid` | Não | Identificador legível da declaração, útil para debugar | `"PermitirLeituraDeUmBucket"` |
+| `Effect` | Sim | `Allow` ou `Deny` — só existem esses dois valores, sensível a maiúsculas | `"Allow"` |
+| `Action` | Sim* | Operações de API cobertas, formato `serviço:Operação` | `"s3:GetObject"` |
+| `Resource` | Sim* | ARN do recurso afetado, ou `*` para qualquer recurso | `"arn:aws:s3:::relatorios-financeiros/*"` |
+| `Condition` | Não | Restringe quando a declaração vale (IP, MFA, tag, horário) | `{"IpAddress": {"aws:SourceIp": "203.0.113.0/24"}}` |
+| `Principal` | Só em política de recurso | Quem a regra afeta — nunca aparece em política de identidade | `{"AWS": "arn:aws:iam::123456789012:role/MyRole"}` |
+
+\* `Action` e `Resource` são mutuamente exclusivos com seus pares invertidos (`NotAction`, `NotResource`) — uma declaração usa um ou outro, nunca os dois.
+
 Essa distinção do `Principal` é o primeiro sinal de uma diferença maior que a próxima seção desenrola: política de identidade e política de recurso não são a mesma coisa com sintaxe levemente diferente — respondem perguntas diferentes.
 
 ## A lógica de avaliação: default nega, allow é necessário, deny é definitivo
@@ -76,7 +91,46 @@ O algoritmo, resumido em três regras, na ordem em que pesam:
 2. **Uma permissão precisa ser concedida de forma explícita.** Para a negação implícita virar um "sim", pelo menos uma política aplicável precisa ter uma declaração com `"Effect": "Allow"` cobrindo exatamente aquela ação, sobre exatamente aquele recurso (e satisfazendo qualquer condição anexada).
 3. **Uma negação explícita sempre vence, não importa quantos `Allow` existam.** Se qualquer política aplicável — de identidade, de recurso, limite de permissão, guarda-corpo de organização — tiver uma declaração `"Effect": "Deny"` cobrindo a mesma ação e recurso, o resultado final é negado, mesmo que dez outras políticas digam `Allow`.
 
-A documentação oficial da AWS resume essa hierarquia de forma direta: por padrão, todas as requisições são implicitamente negadas — exceção rara é a política raiz de conta, com acesso total por padrão. Uma política precisa declarar `Allow` explicitamente para conceder acesso. E qualquer `Deny` explícito, em qualquer política aplicável, sobrepõe qualquer `Allow`, sem exceção.
+A documentação oficial da AWS resume essa hierarquia de forma direta, quase nesses termos: por padrão, o acesso a um recurso é negado ("by default, access to resources is denied"); uma política precisa declarar `Allow` explicitamente para conceder acesso; e um `Deny` explícito, em qualquer política aplicável — de identidade ou de recurso —, sobrepõe qualquer `Allow` ("an explicit deny in either of these policies overrides the allow").
+
+Um exemplo mínimo fixa a regra 2: esta é a menor política de identidade capaz de conceder alguma coisa — um único `Allow`, sem `Condition`, sem `Sid`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::relatorios-financeiros/*"
+    }
+  ]
+}
+```
+
+E este exemplo fixa a regra 3 — a declaração 1 permite leitura de todo o bucket, mas a declaração 2, na mesma política, nega explicitamente leitura dentro de um prefixo específico:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PermitirLeituraGeral",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::relatorios-financeiros/*"
+    },
+    {
+      "Sid": "NegarPastaDeFolhaDePagamento",
+      "Effect": "Deny",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::relatorios-financeiros/folha-pagamento/*"
+    }
+  ]
+}
+```
+
+Mesmo que a declaração 1 cubra qualquer objeto do bucket, a declaração 2 nega explicitamente qualquer leitura dentro de `folha-pagamento/` — e, pela regra 3, essa negação vence para todo objeto naquele prefixo, mesmo estando coberto pelo `Allow` mais amplo. Não importa a ordem em que as declarações aparecem no JSON: o algoritmo sempre varre por `Deny` primeiro, em toda a política, antes de considerar qualquer `Allow`.
 
 ```mermaid
 flowchart TD
@@ -103,6 +157,42 @@ A distinção entre os dois tipos de política já apareceu de relance na anatom
 
 Dentro de uma única conta AWS, as duas se combinam por **união** (lógica OU), não por interseção: se a política de identidade permite a ação, **ou** a política de recurso permite, o resultado é permitido — não é preciso que as duas concordem. É exatamente esse mecanismo que faz um bucket S3 acessível por um usuário que nunca recebeu permissão de S3 na sua própria política de identidade, contanto que a política do bucket o autorize nominalmente por ARN. E é o mesmo mecanismo, do lado oposto, que explica o cenário de abertura desta nota: a política de identidade da role do pipeline concede tudo (`AdministratorAccess`), mas a política de recurso do segredo nega explicitamente para qualquer principal fora de uma lista — e, pela regra "negação explícita vence sempre", essa negação prevalece sobre o `Allow` mais amplo que existe na AWS.
 
+Um par concreto torna essa união visível. A política de identidade anexada a um usuário concede acesso só a EC2 — nada de S3:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+Sozinha, essa política não deixaria o usuário ler nada num bucket S3. Mas a política de recurso anexada ao bucket concede, nominalmente, leitura a esse mesmo usuário:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PermitirLeituraParaUmUsuarioEspecifico",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/mariana"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::relatorios-financeiros/*"
+    }
+  ]
+}
+```
+
+Pela regra da união, o usuário consegue ler o bucket — não porque a política de identidade dele mudou, mas porque a política de recurso, sozinha, já é suficiente dentro da mesma conta.
+
 Onde a combinação muda de figura é entre contas diferentes. Quando o principal que faz a chamada está numa conta e o recurso vive em outra, a lógica deixa de ser união e vira **interseção** (lógica E): o principal precisa ter uma política de identidade, na conta dele, que permita a ação — **e** o recurso, na conta de destino, precisa ter uma política de recurso que autorize aquele principal externo nominalmente. Falta qualquer um dos dois lados e o pedido falha, mesmo que o outro lado seja generoso. É o motivo pelo qual compartilhar um bucket S3 entre duas contas AWS sempre exige editar política nos dois lados — nunca só um.
 
 | | Dentro da mesma conta | Entre contas diferentes |
@@ -116,11 +206,69 @@ Onde a combinação muda de figura é entre contas diferentes. Quando o principa
 
 ## Casos práticos
 
-**O bucket que "some" para todo mundo, menos para quem devia enxergar.** Um time de dados cria um bucket S3 com dados sensíveis e, corretamente, nega por padrão qualquer acesso público. Depois, para permitir que um serviço analítico de outra conta leia os dados, adiciona uma política de recurso ao bucket concedendo `s3:GetObject` ao ARN da role daquela conta externa. O pedido continua falhando até alguém lembrar da metade que falta: a role na conta externa também precisa de uma política de identidade permitindo `s3:GetObject` sobre aquele bucket — porque acesso entre contas exige que os dois lados concordem, não só um.
+**O bucket que "some" para todo mundo, menos para quem devia enxergar.** Um time de dados cria um bucket S3 com dados sensíveis e, corretamente, nega por padrão qualquer acesso público. Depois, para permitir que um serviço analítico de outra conta leia os dados, adiciona uma política de recurso ao bucket concedendo `s3:GetObject` ao ARN da role daquela conta externa. O pedido continua falhando até alguém lembrar da metade que falta: a role na conta externa também precisa de uma política de identidade permitindo `s3:GetObject` sobre aquele bucket — porque acesso entre contas exige que os dois lados concordem, não só um. As duas metades, lado a lado — a política de identidade na conta `444455556666` (onde vive a role que faz a chamada):
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::relatorios-financeiros/*"
+    }
+  ]
+}
+```
+
+E a política de recurso na conta `123456789012` (dona do bucket), sem a qual a metade acima não basta:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PermitirLeituraParaContaAnalitica",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::444455556666:role/servico-analitico"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::relatorios-financeiros/*"
+    }
+  ]
+}
+```
+
+Faltando qualquer uma das duas, a regra de interseção entre contas barra o pedido — mesmo que a outra metade seja generosa.
 
 **A tag de ambiente que virou guarda-corpo.** Uma organização quer impedir, de forma estrutural, que qualquer engenheiro apague recursos marcados com a tag `Environment=production`, não importa quão ampla seja a política de identidade individual de cada um. A solução não é revisar política por política de cada usuário — é uma única declaração de `Deny`, anexada de forma central (uma política de identidade compartilhada por todo o time, ou um guarda-corpo de organização), condicionada à tag `Environment=production` no recurso-alvo. Porque negação explícita sempre vence, essa única regra blinda a produção contra qualquer permissão futura, mesmo permissões amplas concedidas sem pensar duas vezes.
 
-**O segredo que só o pipeline de produção pode ler.** Voltando ao cenário de abertura: a forma correta de restringir um segredo do Secrets Manager a um único pipeline não é depender só da política de identidade da role — é colocar, na própria política de recurso do segredo, uma declaração de `Allow` explícita para o ARN daquela role específica, e (opcionalmente) uma declaração de `Deny` para qualquer outro principal. Isso transforma "confiamos que ninguém mais vai anexar permissão de leitura por acidente" em uma garantia estrutural: mesmo que alguém, no futuro, conceda `SecretsManagerReadWrite` para uma role errada, a política do próprio segredo barra o acesso.
+**O segredo que só o pipeline de produção pode ler.** Voltando ao cenário de abertura: a forma correta de restringir um segredo do Secrets Manager a um único pipeline não é depender só da política de identidade da role — é colocar, na própria política de recurso do segredo, uma declaração de `Allow` explícita para o ARN daquela role específica, e (opcionalmente) uma declaração de `Deny` para qualquer outro principal. Isso transforma "confiamos que ninguém mais vai anexar permissão de leitura por acidente" em uma garantia estrutural: mesmo que alguém, no futuro, conceda `SecretsManagerReadWrite` para uma role errada, a política do próprio segredo barra o acesso. Na prática, essa política de recurso é curta:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "NegarQualquerPrincipalForaDaListaAutorizada",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:us-east-1:123456789012:secret:prod/db-password-*",
+      "Condition": {
+        "StringNotLike": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::123456789012:role/pipeline-producao"
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+`Principal: "*"` combinado com `Condition`/`StringNotLike` é o padrão-chave aqui: a declaração se aplica a **qualquer principal**, exceto os listados na condição — o efeito líquido é "negue todo mundo, menos esta role". É exatamente esse `Deny` que nenhum `AdministratorAccess` na política de identidade do pipeline consegue vencer.
 
 ## Lente dupla: o modelo mais simples da DigitalOcean
 
@@ -128,8 +276,17 @@ Vale nomear, sem rodeio, que essa camada inteira de complexidade — política d
 
 A DigitalOcean organiza permissão por **papel de membro de time** (roles predefinidas, com a opção de criar papéis personalizados combinando permissões específicas) e por **escopo de token de API** — desde os escopos amplos `api:read`/`api:write`, que valem para tudo que o papel do usuário já permite, até escopos personalizados que restringem um token a uma operação específica sobre um tipo de recurso (por exemplo, só criar Droplets, ou só atualizar firewalls de nuvem). É um modelo genuinamente mais simples: não existe política de recurso anexada individualmente a um Droplet ou a um Space dizendo "estes principais externos podem acessá-lo", e não existe conceito de negação explícita competindo com permissão concedida — o modelo é estritamente aditivo (**allow-only**), limitado pelo teto que o papel do time já define. Isso não é uma lacuna documental — é uma escolha de design real, coerente com uma plataforma que prioriza simplicidade operacional sobre o controle granular multi-conta que a AWS precisa suportar para clientes de porte corporativo com centenas de contas.
 
+| Conceito | AWS | DigitalOcean |
+|---|---|---|
+| Unidade de permissão | Statement dentro de uma política JSON | Escopo de token de API / permissão do papel de time |
+| Modelo de combinação | Default deny + `Allow` explícito, com `Deny` explícito sempre vencendo | Estritamente aditivo (allow-only) — sem conceito de negação |
+| Conceder acesso a um recurso específico para outro principal | Política de recurso (bucket policy, política do segredo, etc.) | Não existe — nenhuma política é anexada a um Droplet ou Space individualmente |
+| Restringir sem negar | `Effect: Deny` explícito, `Condition` | Escolher um escopo de token mais estreito (ex.: só `Create` para Droplets), não há como "proibir" dentro de um escopo mais amplo já concedido |
+| Papel/identidade | Política de identidade (usuário, grupo, role) | Papel de time — predefinido ou personalizado, combinando permissões específicas |
+| Depuração de "access denied" | `AccessDenied` com contexto (`explicit deny` / `no policy allows`), IAM Policy Simulator | Revisão manual do papel do membro e do escopo do token — sem ferramenta de simulação equivalente documentada |
+
 > [!info] Caducidade
-> Modelo de papéis e escopos de token da DigitalOcean, e a linguagem exata de avaliação de política da AWS, verificados em 2026-07-20. Ambos os provedores evoluem esse modelo com regularidade — confira a documentação oficial antes de desenhar um controle de acesso crítico.
+> Modelo de papéis e escopos de token da DigitalOcean, e a linguagem exata de avaliação de política da AWS, verificados em 2026-07-23. Ambos os provedores evoluem esse modelo com regularidade — confira a documentação oficial antes de desenhar um controle de acesso crítico.
 
 ## Exemplo trabalhado: depurando um "access denied"
 
@@ -137,7 +294,24 @@ O cenário mais comum — e mais frustrante — de depuração de permissão em 
 
 A causa quase nunca é aleatória — é sempre uma entre um punhado de diferenças estruturais entre a sessão do console e a sessão da aplicação, e o processo de depuração consiste em eliminar cada uma sistematicamente:
 
-**1. Ler a mensagem de erro com atenção — ela já aponta a política certa.** O formato padrão da AWS é `User: <ARN> is not authorized to perform: <ação> on resource: <recurso>`, seguido de um contexto adicional. Se o contexto disser `with an explicit deny in a <tipo> policy`, a busca já está resolvida: é preciso procurar uma declaração `Deny` naquele tipo específico de política (identidade, recurso, guarda-corpo de organização, limite de permissão, trust policy, política de sessão). Se disser `because no <tipo> policy allows the <ação> action`, é negação implícita — falta um `Allow`, não sobra um `Deny`.
+**1. Ler a mensagem de erro com atenção — ela já aponta a política certa.** O formato padrão da AWS é `User: <ARN> is not authorized to perform: <ação>`, com `on resource: <recurso>` quando aplicável, seguido de um contexto adicional. Se o contexto disser `with an explicit deny in a <tipo> policy`, a busca já está resolvida: é preciso procurar uma declaração `Deny` naquele tipo específico de política. Se disser `because no <tipo> policy allows the <ação> action`, é negação implícita — falta um `Allow`, não sobra um `Deny`.
+
+| Fragmento na mensagem | Tipo de negação | Onde procurar |
+|---|---|---|
+| `with an explicit deny in an identity-based policy` | Explícita | Política anexada ao usuário/role |
+| `with an explicit deny in a resource-based policy` | Explícita | Política do recurso (bucket, segredo, fila) |
+| `with an explicit deny in a service control policy` | Explícita | Guarda-corpo de organização (SCP) |
+| `with an explicit deny in a permissions boundary` | Explícita | Limite de permissão da identidade |
+| `because no identity-based policy allows the <ação> action` | Implícita | Falta `Allow` na política de identidade |
+| `because no resource-based policy allows the <ação> action` | Implícita | Falta `Allow` na política do recurso |
+
+Exemplo verbatim de negação explícita (política de recurso), do próprio formato documentado pela AWS:
+
+```
+User: arn:aws:iam::123456789012:role/pipeline-producao is not authorized to perform: secretsmanager:GetSecretValue
+on resource: arn:aws:secretsmanager:us-east-1:123456789012:secret:prod/db-password-AbCdEf
+with an explicit deny in a resource-based policy
+```
 
 **2. Confirmar que console e aplicação usam o mesmo principal.** Este é o suspeito número um. É comum que uma pessoa, logada no console com seu usuário IAM pessoal (que tem permissões amplas, herdadas de um grupo de administradores), teste uma ação com sucesso — e a aplicação, rodando com uma role de execução dedicada e deliberadamente restrita, falhe na mesma ação porque nunca teve aquela permissão específica concedida. Não é a mesma identidade fazendo o pedido nos dois casos, então não há motivo para esperar o mesmo resultado.
 
@@ -146,6 +320,44 @@ A causa quase nunca é aleatória — é sempre uma entre um punhado de diferen�
 **4. Checar se o alvo tem política de recurso, e se ela é o problema.** Se a ação envolve um serviço que suporta política de recurso (S3, SQS, SNS, KMS, Secrets Manager, entre outros), a política de recurso pode estar autorizando o usuário do console nominalmente (por ARN específico) sem autorizar a role da aplicação — ou, na direção oposta do cenário de abertura desta nota, negando explicitamente qualquer principal fora de uma lista curta que não inclui a role da aplicação.
 
 **5. Usar o IAM Policy Simulator ou o histórico de eventos do CloudTrail para confirmar, sem adivinhar.** Em vez de ler políticas manualmente tentando simular a lógica de avaliação na cabeça, o Policy Simulator da AWS testa uma ação específica contra um principal específico e devolve o resultado — permitido, negado implicitamente, ou negado explicitamente, com a política responsável nomeada. O CloudTrail, por sua vez, registra o evento real da chamada negada, incluindo o principal exato que fez o pedido, útil sobretudo quando não está claro qual credencial a aplicação de fato usou.
+
+Pela CLI, o mesmo simulador vira o comando `aws iam simulate-principal-policy`. Vale um cuidado: a versão do console não simula política de recurso automaticamente para IAM roles — só para usuários e grupos. A saída da CLI contorna isso quando o texto da política de recurso é passado explicitamente via `--resource-policy`:
+
+```bash
+aws iam simulate-principal-policy \
+  --policy-source-arn arn:aws:iam::123456789012:role/pipeline-producao \
+  --action-names secretsmanager:GetSecretValue \
+  --resource-arns arn:aws:secretsmanager:us-east-1:123456789012:secret:prod/db-password-AbCdEf \
+  --resource-policy file://secret-resource-policy.json
+```
+
+O campo relevante da saída (JSON completo omitido) mostra a decisão e qual declaração respondeu por ela:
+
+```
+"EvalActionName": "secretsmanager:GetSecretValue",
+"EvalDecision": "explicitDeny",
+"MatchedStatements": [
+  { "SourceType": "resource", "SourcePolicyId": "NegarQualquerPrincipalForaDaListaAutorizada" }
+]
+```
+
+`explicitDeny` na saída confirma exatamente o que a mensagem de erro já indicava — a causa está numa política de recurso, não na política de identidade da role. Para ler a política do próprio segredo sem depender do simulador, basta pedir o documento diretamente:
+
+```bash
+aws secretsmanager get-resource-policy --secret-id prod/db-password
+```
+
+E quando a suspeita recai sobre uma política gerenciada anexada à identidade — por exemplo, confirmar se `AdministratorAccess` realmente concede `Action: "*"` sobre `Resource: "*"` — os dois comandos que revelam o JSON completo são:
+
+```bash
+aws iam get-policy --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+# devolve metadados (DefaultVersionId, AttachmentCount) — não o documento em si
+
+aws iam get-policy-version \
+  --policy-arn arn:aws:iam::aws:policy/AdministratorAccess \
+  --version-id v1
+# devolve o documento da política, URL-encoded — decodificar antes de ler
+```
 
 ```mermaid
 flowchart TD
@@ -193,3 +405,8 @@ Esta nota explicou como uma permissão é avaliada — mas não respondeu a uma 
 - [AWS IAM — Troubleshoot IAM (índice de troubleshooting, documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_general.html) — recomendação de uso do AWS CloudTrail para rastrear chamadas de API negadas; acessado em 2026-07-20.
 - [DigitalOcean — Teams (documentação oficial)](https://docs.digitalocean.com/platform/teams/) — visão geral de papéis de time e seu efeito sobre permissões; acessado em 2026-07-20.
 - [DigitalOcean — Create a Personal Access Token (referência de API oficial)](https://docs.digitalocean.com/reference/api/create-personal-access-token/) — escopos amplos (`api:read`/`api:write`) versus escopos personalizados por recurso e operação, modelo estritamente aditivo (allow-only), ausência de linguagem de política JSON ou negação explícita; acessado em 2026-07-20.
+- [DigitalOcean — Team roles (documentação oficial)](https://docs.digitalocean.com/platform/teams/roles/) — confirma os seis papéis predefinidos e a opção de criar papéis personalizados combinando permissões específicas; acessado em 2026-07-23.
+- [AWS CLI — simulate-principal-policy (referência oficial)](https://docs.aws.amazon.com/cli/latest/reference/iam/simulate-principal-policy.html) — sintaxe e parâmetros do comando de simulação de política via CLI, incluindo `--resource-policy`; acessado em 2026-07-23.
+- [AWS IAM — IAM policy testing with the IAM policy simulator (documentação oficial)](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html) — confirma que o Policy Simulator segue ativo, e a limitação de que a simulação de política de recurso não é suportada para IAM roles no fluxo padrão; acessado em 2026-07-23.
+- [AWS CLI — get-policy e get-policy-version (referência oficial)](https://docs.aws.amazon.com/cli/latest/reference/iam/get-policy-version.html) — sintaxe dos comandos para recuperar metadados e o documento JSON de uma política gerenciada; acessado em 2026-07-23.
+- [AWS CLI — Secrets Manager get-resource-policy (referência oficial)](https://docs.aws.amazon.com/cli/latest/reference/secretsmanager/get-resource-policy.html) — sintaxe do comando para recuperar a política de recurso anexada a um segredo; acessado em 2026-07-23.
