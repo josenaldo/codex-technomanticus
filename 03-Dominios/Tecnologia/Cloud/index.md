@@ -32,7 +32,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 ### Bloco 2 — Os primitivos
 
-5. ⬜ Compute I — máquinas virtuais
+5. ✅ [[03-Dominios/Tecnologia/Cloud/05 - Compute I — máquinas virtuais/index|Compute I — máquinas virtuais]]
 6. ⬜ Compute II — elasticidade e balanceamento
 7. ⬜ Rede na nuvem (VPC)
 8. ⬜ Armazenamento — object, block e file
