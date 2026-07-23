@@ -46,7 +46,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | 5 | Compute I — máquinas virtuais | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/05 - Compute I — máquinas virtuais/roadmap|roadmap]] |
 | 6 | Compute II — elasticidade e balanceamento | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/06 - Compute II — elasticidade e balanceamento/roadmap|roadmap]] |
 | 7 | Rede na nuvem (VPC) | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/07 - Rede na nuvem (VPC)/roadmap|roadmap]] |
-| 8 | Armazenamento — object, block e file | — | ⬜ não iniciado | a criar |
+| 8 | Armazenamento — object, block e file | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/08 - Armazenamento (object, block e file)/roadmap|roadmap]] |
 | 9 | Bancos gerenciados | — | ⬜ não iniciado | a criar |
 | 10 | DNS, CDN e borda | — | ⬜ não iniciado | a criar |
 
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 7/24 escritos |
-| ✅ completos | 7 (Bloco 1 inteiro + galhos 5-7) |
+| Galhos | 8/24 escritos |
+| ✅ completos | 8 (Bloco 1 inteiro + galhos 5-8) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 17 + capstone |
-| Notas escritas | 43 |
-| M1 (mídia) pendente | galhos 1-7 (43 notas) + resto do domínio |
+| ⬜ não iniciados | 16 + capstone |
+| Notas escritas | 49 |
+| M1 (mídia) pendente | galhos 1-8 (49 notas) + resto do domínio |
 
 ---
 
@@ -102,6 +102,6 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 1. **Task 0:** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
 2. **Bloco 1 (galhos 1-4):** ✅ completo — 25 notas + index.md/roadmap.md de cada galho.
-3. **Bloco 2 — galhos 5-7 (Compute I, Compute II, Rede/VPC):** ✅ completos — 18 notas + index.md/roadmap.md de cada. Próximo: galho 8 (Armazenamento — object, block e file).
+3. **Bloco 2 — galhos 5-8 (Compute I, Compute II, Rede/VPC, Armazenamento):** ✅ completos — 24 notas + index.md/roadmap.md de cada. Próximo: galho 9 (Bancos gerenciados).
 4. **Galhos 8-24 + capstone:** escrever nota a nota, bloco a bloco, seguindo o roster do design/plano.
 4. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.

@@ -35,7 +35,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 5. ✅ [[03-Dominios/Tecnologia/Cloud/05 - Compute I — máquinas virtuais/index|Compute I — máquinas virtuais]]
 6. ✅ [[03-Dominios/Tecnologia/Cloud/06 - Compute II — elasticidade e balanceamento/index|Compute II — elasticidade e balanceamento]]
 7. ✅ [[03-Dominios/Tecnologia/Cloud/07 - Rede na nuvem (VPC)/index|Rede na nuvem (VPC)]]
-8. ⬜ Armazenamento — object, block e file
+8. ✅ [[03-Dominios/Tecnologia/Cloud/08 - Armazenamento (object, block e file)/index|Armazenamento — object, block e file]]
 9. ⬜ Bancos gerenciados
 10. ⬜ DNS, CDN e borda
 
