@@ -232,6 +232,14 @@ The real split was never loops versus graphs — it's grounded versus ungrounded
 
 ---
 
+> [!tip] Assista: What Makes Agency Actually Work?
+> **Canal:** Intuition Machine (Carlos E. Perez) | **Duração:** ~22min | **Idioma:** EN (legendas PT auto)
+>
+> Quase uma narração do argumento desta nota, pelo mesmo autor dos ensaios que a fundamentam: agência efetiva se assenta em contato direto com a realidade, antes de qualquer otimização. É "grounded" dito com outras palavras.
+> Trecho de destaque [00:02]: *"the foundation of all effective agency is being touched by reality before you do anything"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=53Y3SYR5vTU)
+
 ## O que vem a seguir
 
 Esta nota fechou o argumento técnico central do galho: o corte que separa um sistema confiável de um sistema que só parece confiável não é a forma que ele assume — loop, grafo, ou qualquer arquitetura que vier depois — é se ele continua tocando algo que não pode ajustar sozinho. Mas fechar o argumento técnico não fecha a pergunta editorial que abriu este capítulo: por que esse argumento específico, formulado exatamente agora, por essa pessoa, teve o alcance que teve? A última nota deste galho, [[08 - Hype, ceticismo e mercado — lendo o próximo ciclo]], sai do conteúdo técnico camada por camada e olha para o padrão inteiro de cima — como cada nome novo se comportou como ciclo de hype, o que sobreviveu de cada um depois que a atenção do dev Twitter foi embora, e o que isso ensina sobre como ler o próximo nome que vai aparecer depois deste.

@@ -259,6 +259,14 @@ Loop engineering is really just the four-stroke engine — pick a metric, set a 
 | as quatro traições | the four betrayals |
 | cegueira para cima | blind up |
 
+> [!tip] Assista: What's Next for AI Agentic Workflows — Andrew Ng
+> **Canal:** Sequoia Capital | **Duração:** ~14min | **Idioma:** EN
+>
+> O dado que justifica o loop: Ng mostra que GPT-3.5 embrulhado num workflow agêntico iterativo supera o GPT-4 em zero-shot. É o motor de 4 tempos aplicado a geração de código — o ganho vem do ciclo, não de trocar o modelo.
+> Trecho de destaque [01:30]: *"GPT-3.5 with an agentic [workflow] … [beats GPT-4 zero-shot]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=sal78ACtGTc)
+
 ## O que vem a seguir
 
 As quatro traições desta nota não têm solução dentro do próprio motor de 4 tempos — um loop, sozinho, estruturalmente não consegue questionar o próprio alvo, nem perceber que a métrica que ele otimiza está brigando com outra que ninguém instrumentou, nem auditar os próprios sensores. A resposta que a comunidade convergiu para esse limite, em julho de 2026, não foi "conserte o loop" — foi trocar a unidade de design de novo: em vez de um loop isolado, uma **rede de loops**, cada um vigiando o outro. Um loop que audita o critério de parada de outro. Um loop mais lento que redefine o alvo de um loop mais rápido — exatamente a relação que a discussão de Andrew Ng sobre timescales aninhados já antecipou nesta nota. A próxima nota, [[06 - Graph engineering — a confiabilidade mora nas arestas]], entra nesse território: o argumento de que a confiabilidade não mora mais dentro de nenhum nó individual — mora nas arestas que conectam um loop a outro.

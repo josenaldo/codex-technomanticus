@@ -358,6 +358,14 @@ If you're explaining this in an interview: every one of these "engineering" laye
 
 ---
 
+> [!tip] Assista: Andrej Karpathy — Software Is Changing (Again)
+> **Canal:** Y Combinator | **Duração:** ~40min | **Idioma:** EN (legendas PT auto)
+>
+> Karpathy conta a evolução do software em três eras — 1.0 (código à mão), 2.0 (redes neurais treinadas), 3.0 (LLM programado em linguagem natural). É uma escada diferente da desta nota, mas move o mesmo instinto: cada era não apaga a anterior, empilha sobre ela.
+> Trecho de destaque [10:15]: *"the LLM is a … operating system … the context windows are kind of like the [memory]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LCEmiRjPEtQ)
+
 ## O que vem a seguir
 
 A próxima nota começa pelo degrau mais baixo da escada e mais atacado publicamente: prompt engineering. É o caso de teste perfeito para o critério desta nota, porque a narrativa popular ("prompt engineering morreu") e o dado de mercado (a skill cresceu, o título caiu) contam duas histórias diferentes — e só uma delas sobrevive ao teste da unidade de design. → [[02 - Prompt engineering — o que morreu e o que sobrou]]

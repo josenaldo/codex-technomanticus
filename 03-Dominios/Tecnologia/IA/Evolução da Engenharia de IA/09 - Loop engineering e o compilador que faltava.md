@@ -308,6 +308,14 @@ Code is the rare domain where reality checks the work for you, every time you hi
 
 ---
 
+> [!tip] Assista: What Makes Agency Actually Work?
+> **Canal:** Intuition Machine (Carlos E. Perez) | **Duração:** ~22min | **Idioma:** EN (legendas PT auto)
+>
+> O vídeo que esta nota cita nas Fontes, em movimento: por que agência precisa de um "chão" externo — o mesmo papel que o compilador cumpre de graça em código, e que o loop tem de fabricar onde ele falta.
+> Trecho de destaque [00:02]: *"the foundation of all effective agency is being touched by reality before you do anything"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=53Y3SYR5vTU)
+
 ## O que vem a seguir
 
 Esta nota não abre uma camada nova na escada prompt→flow→context→harness→loop→graph que organiza o resto do galho — ela reabre, com uma lente diferente, a camada que a nota 05 já cobriu. As duas juntas dão a loop engineering o tratamento mais completo que este galho oferece: a nota 05 mostra como o motor de quatro tempos funciona e como ele trai quem o construiu; esta mostra por que o motor precisa existir para começo de conversa, e onde, estruturalmente, ele nunca vai conseguir chegar.

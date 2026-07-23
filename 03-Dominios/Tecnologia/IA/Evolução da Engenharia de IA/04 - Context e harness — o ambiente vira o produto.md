@@ -220,6 +220,14 @@ Context engineering and harness engineering split one problem into two orthogona
 | restrição de infraestrutura vs. instrução em prompt | infrastructure constraint vs. prompt instruction |
 | tese da restrição vinculante | binding constraint thesis |
 
+> [!tip] Assista: Andrej Karpathy — Software Is Changing (Again)
+> **Canal:** Y Combinator | **Duração:** ~40min | **Idioma:** EN (legendas PT auto)
+>
+> A fonte da metáfora que abre esta nota. Karpathy detalha por que o LLM se comporta como um sistema operacional e a janela de contexto como RAM — e por que isso desloca a pergunta de "qual a frase certa" para "qual o ambiente que o agente precisa".
+> Trecho de destaque [10:15]: *"the LLM is a … operating system … the context windows are kind of like the [memory]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LCEmiRjPEtQ)
+
 ## O que vem a seguir
 
 Contexto e harness resolvem, juntos, "o agente sabe a coisa certa" e "o agente pode fazer a coisa certa" — mas nenhum dos dois resolve uma terceira pergunta, que só aparece quando a primeira tentativa não é suficiente: **quando o agente deveria tentar de novo, o que deveria mudar entre uma tentativa e a seguinte, e quando ele deveria parar?** Essa pergunta é justamente uma das sete peças que esta nota listou dentro do harness — loop engineering —, mas ela ganhou peso e vocabulário próprios o suficiente, em junho de 2026, para merecer uma nota inteira dedicada ao seu próprio motor interno e às formas específicas como ele pode trair quem confia demais numa métrica. A próxima nota, [[05 - Loop engineering — o motor de 4 tempos e as 4 traições]], abre exatamente esse motor: PICK, SET, MEASURE, ACT — e as quatro traições que fazem um loop bem-sucedido, silenciosamente, deixar de servir ao objetivo que deveria perseguir.

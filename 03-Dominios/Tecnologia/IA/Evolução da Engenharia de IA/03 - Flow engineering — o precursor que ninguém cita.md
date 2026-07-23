@@ -355,6 +355,14 @@ If you're walking a colleague through this in English: flow engineering and loop
 
 ---
 
+> [!tip] Assista: AI Agent Flow Engineering — Itamar Friedman (CEO, Codium AI)
+> **Canal:** On The Frontier | **Duração:** ~46min | **Idioma:** EN
+>
+> O próprio autor do AlphaCodium explica por que gastou mais de 95% do tempo de pesquisa em flow engineering, não em prompt — e o que muda quando você projeta o fluxo em vez de caçar a frase certa.
+> Trecho de destaque [00:15]: *"it's the shift from prompt engineering [to flow engineering]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=IiIdEKbMym4)
+
 ## O que vem a seguir
 
 O flow do AlphaCodium resolvia um problema específico, fechado: gerar código que passa em testes de programação competitiva. Mas o mesmo período — 2025 e 2026 — viu a unidade de design deslocar-se de novo, desta vez para algo mais amplo do que qualquer pipeline fixo: a janela de contexto inteira, e depois o ambiente executável ao redor do modelo. A próxima nota, [[04 - Context e harness — o ambiente vira o produto]], segue esse deslocamento — de "qual é a sequência de etapas certa" para "qual é o ambiente informacional e operacional certo em que o modelo trabalha".
