@@ -3,7 +3,7 @@ title: "Cloud"
 type: moc
 publish: true
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 status: seedling
 tags:
   - moc
@@ -25,10 +25,10 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 ### Bloco 1 — Modelo mental e fundamentos
 
-1. ⬜ O que é a nuvem, de verdade
-2. ⬜ Anatomia de um provedor
-3. ⬜ Well-Architected Framework
-4. ⬜ Identidade e acesso (IAM)
+1. ✅ [[03-Dominios/Tecnologia/Cloud/01 - O que é a nuvem, de verdade/index|O que é a nuvem, de verdade]]
+2. ✅ [[03-Dominios/Tecnologia/Cloud/02 - Anatomia de um provedor/index|Anatomia de um provedor]]
+3. ✅ [[03-Dominios/Tecnologia/Cloud/03 - Well-Architected Framework/index|Well-Architected Framework]]
+4. ✅ [[03-Dominios/Tecnologia/Cloud/04 - Identidade e acesso (IAM)/index|Identidade e acesso (IAM)]]
 
 ### Bloco 2 — Os primitivos
 

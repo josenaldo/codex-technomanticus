@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — Cloud"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 type: meta
 publish: false
 tags:
@@ -34,10 +34,10 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | # | Galho | Notas | Estado | roadmap |
 |--:|-------|------:|--------|---------|
-| 1 | O que é a nuvem, de verdade | — | ⬜ não iniciado | a criar |
-| 2 | Anatomia de um provedor | — | ⬜ não iniciado | a criar |
-| 3 | Well-Architected Framework | — | ⬜ não iniciado | a criar |
-| 4 | Identidade e acesso (IAM) | — | ⬜ não iniciado | a criar |
+| 1 | O que é a nuvem, de verdade | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/01 - O que é a nuvem, de verdade/roadmap|roadmap]] |
+| 2 | Anatomia de um provedor | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/02 - Anatomia de um provedor/roadmap|roadmap]] |
+| 3 | Well-Architected Framework | 7 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/03 - Well-Architected Framework/roadmap|roadmap]] |
+| 4 | Identidade e acesso (IAM) | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/04 - Identidade e acesso (IAM)/roadmap|roadmap]] |
 
 ### Bloco 2 — Os primitivos
 
@@ -89,17 +89,18 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 0/24 escritos |
-| ✅ completos | 0 |
+| Galhos | 4/24 escritos |
+| ✅ completos | 4 (Bloco 1 inteiro) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 24 + capstone |
-| Notas escritas | 0 |
-| M1 (mídia) pendente | todo o domínio (nenhum galho escrito ainda) |
+| ⬜ não iniciados | 20 + capstone |
+| Notas escritas | 25 |
+| M1 (mídia) pendente | Bloco 1 (galhos 1-4, 25 notas) + resto do domínio |
 
 ---
 
 ## Próximos passos
 
-1. **Task 0 (esta task):** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
-2. **Galho 1 em diante:** escrever nota a nota, bloco a bloco, seguindo o roster do design/plano.
-3. **Pendência registrada:** enriquecimento de mídia (M1) — só se aplica depois que cada galho for escrito; nenhuma ação necessária agora.
+1. **Task 0:** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
+2. **Bloco 1 (galhos 1-4):** ✅ completo — 25 notas + index.md/roadmap.md de cada galho.
+3. **Bloco 2 em diante (galhos 5-24 + capstone):** escrever nota a nota, bloco a bloco, seguindo o roster do design/plano.
+4. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.
