@@ -44,7 +44,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | # | Galho | Notas | Estado | roadmap |
 |--:|-------|------:|--------|---------|
 | 5 | Compute I — máquinas virtuais | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/05 - Compute I — máquinas virtuais/roadmap|roadmap]] |
-| 6 | Compute II — elasticidade e balanceamento | — | ⬜ não iniciado | a criar |
+| 6 | Compute II — elasticidade e balanceamento | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/06 - Compute II — elasticidade e balanceamento/roadmap|roadmap]] |
 | 7 | Rede na nuvem (VPC) | — | ⬜ não iniciado | a criar |
 | 8 | Armazenamento — object, block e file | — | ⬜ não iniciado | a criar |
 | 9 | Bancos gerenciados | — | ⬜ não iniciado | a criar |
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 5/24 escritos |
-| ✅ completos | 5 (Bloco 1 inteiro + galho 5) |
+| Galhos | 6/24 escritos |
+| ✅ completos | 6 (Bloco 1 inteiro + galhos 5-6) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 19 + capstone |
-| Notas escritas | 31 |
-| M1 (mídia) pendente | galhos 1-5 (31 notas) + resto do domínio |
+| ⬜ não iniciados | 18 + capstone |
+| Notas escritas | 37 |
+| M1 (mídia) pendente | galhos 1-6 (37 notas) + resto do domínio |
 
 ---
 
@@ -102,6 +102,6 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 1. **Task 0:** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
 2. **Bloco 1 (galhos 1-4):** ✅ completo — 25 notas + index.md/roadmap.md de cada galho.
-3. **Bloco 2 — galho 5 (Compute I):** ✅ completo — 6 notas + index.md/roadmap.md. Próximo: galho 6 (Compute II — elasticidade e balanceamento).
-4. **Galhos 6-24 + capstone:** escrever nota a nota, bloco a bloco, seguindo o roster do design/plano.
+3. **Bloco 2 — galhos 5-6 (Compute I e II):** ✅ completos — 12 notas + index.md/roadmap.md de cada. Próximo: galho 7 (Rede na nuvem / VPC).
+4. **Galhos 7-24 + capstone:** escrever nota a nota, bloco a bloco, seguindo o roster do design/plano.
 4. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.
