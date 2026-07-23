@@ -1,7 +1,7 @@
 ---
 title: "Loop engineering e o compilador que faltava"
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Magus
@@ -291,6 +291,20 @@ Essa não é uma tensão que precisa de resolução — é o tipo de redundânci
 
 > [!abstract] Resumo da seção
 > Um loop engineer bom é um arqueólogo de verificação: escava o compilador que o domínio nunca shipou, constrói a réplica mais fiel possível, empilha escada acima até onde ela alcança, e marca com clareza onde para. As três âncoras da nota 07 e as três propriedades do compilador desta nota são a mesma intuição em vocabulários diferentes — grounding pergunta se o sistema toca algo externo; o compilador pergunta se algo tem autoridade para recusar. As duas perguntas normalmente andam juntas, mas não são idênticas, e vale manter as duas.
+
+---
+
+## Como explicar em inglês
+
+Code is the rare domain where reality checks the work for you, every time you hit run — that's the missing compiler. Loop engineering is what you build when a domain doesn't come with that for free: manufactured resistance, an unarguable judge, a public verdict. The sharpest failure mode is faking independence — a reviewer agent that shares the generator's blind spot isn't a verifier, it's an echo with a pass/fail label on it. And every verification ladder has a top floor: once the claim is "is this the right approach," there's no external referent left to compile against, so the move is to make judgment auditable, not to keep stacking checkers.
+
+| PT | EN |
+|----|----|
+| o compilador que faltava | the missing compiler |
+| resistência / juiz inarguável / veredito público | resistance / unarguable judge / public verdict |
+| verificador como amostrador, não oráculo | verifier as sampler, not oracle |
+| independência é fácil de falsificar | independence is easy to fake |
+| a torre tem um último andar | the tower has a top floor |
 
 ---
 

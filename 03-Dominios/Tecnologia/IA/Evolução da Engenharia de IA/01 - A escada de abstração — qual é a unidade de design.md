@@ -1,7 +1,7 @@
 ---
 title: "A escada de abstração — qual é a unidade de design"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Iniciado
@@ -326,6 +326,8 @@ O erro de quem só lê a primeira onda é achar que a camada nova substitui tudo
 
 A escada de abstração tem vocabulário técnico próprio em inglês, útil para acompanhar a discussão em tempo real (a maior parte acontece em posts e papers em inglês).
 
+If you're explaining this in an interview: every one of these "engineering" layers — prompt, flow, context, harness, loop, graph — encapsulates the one before it instead of replacing it, the same way module encapsulated function in classic software engineering. The real test for whether a new layer is genuine or just rebranding is the unit of design: the smallest thing it teaches you to deliberately design, version, and debug — if that unit doesn't strictly contain the previous layer's unit, you're looking at a new label on an old idea, not a new abstraction.
+
 **Descrevendo o conceito:**
 - "Each layer doesn't replace the previous one — it encapsulates it"
 - "The test for a real new layer, versus rebranding, is the unit of design: the smallest thing you deliberately design, version, and debug"
@@ -375,12 +377,13 @@ A próxima nota começa pelo degrau mais baixo da escada e mais atacado publicam
 
 ## Fontes
 
-- **Bookkeeping deste galho** — arXiv 2401.08500, "Code Generation with AlphaCodium: From Prompt Engineering to Flow Engineering" (jan/2024) — paper fundacional de flow engineering, base da nota 03.
+- **Ridnik, T. et al. (Codium AI)** — [*Code Generation with AlphaCodium: From Prompt Engineering to Flow Engineering*](https://arxiv.org/abs/2401.08500) (arXiv 2401.08500, jan/2024) — paper fundacional de flow engineering, base da nota 03.
 - **Karpathy, A.** — tweet sobre context engineering (jun/2025), popularizou a analogia LLM=CPU/contexto=RAM — citado e linkado em [[03-Dominios/Tecnologia/IA/Context Engineering/01 - De prompt engineering a context engineering|De prompt engineering a context engineering]].
 - **arXiv 2507.13334** — survey de context engineering (2025), base técnica da camada de contexto.
 - **Hashimoto, M.** (criador do Terraform) — articulação pública de harness engineering (2026); fonte primária a citar com link específico na nota 04.
 - **Osmani, A.** e **Steinberger, P. (@steipete)** — discussão pública sobre loop engineering (jun/2026), comentando fala de Boris Cherny; base da nota 05.
-- **Steinberger, P. (@steipete)** — "Are we still talking loops or did we shift to graphs yet?" (18/jul/2026, ~575K views) — marco de inflexão citado na nota 06.
+- **Steinberger, P. (@steipete)** — ["Are we still talking loops or did we shift to graphs yet?"](https://x.com/steipete/status/2078277297791189132) (18/jul/2026, ~575K views) — marco de inflexão citado na nota 06.
 - **Valdarrama, S. (@svpino)** — "Loop Engineering is dead. Long live Graph Engineering!" — citado na nota 06.
 - **Huntley, G.** — o padrão "Ralph Wiggum" de loop via bash (jul/2025) — elo da linhagem histórica do loop, detalhado na nota 05.
-- **explainx.ai (Thakker, Y.)** e **Perez, C. E. (@IntuitMachine)** — conteúdo técnico de graph engineering (org graph/work graph, advisor-orchestrator, zone defense), base das notas 06 e 07.
+- **explainx.ai (Thakker, Y.)** e **Perez, C. E. (@IntuitMachine)** — [*From Loop Engineering to Graph Engineering?*](https://x.com/IntuitMachine/status/2078419526354378975) — thread completo que desenvolve o argumento de loop-para-grafo (conteúdo técnico de org graph/work graph, advisor-orchestrator, zone defense); base das notas 06 e 07.
+- **ai-boost (comunidade)** — [*awesome-harness-engineering*](https://github.com/ai-boost/awesome-harness-engineering) — repositório curado que lista as sete disciplinas laterais sob o guarda-chuva harness (context, loop, tool design, verification, memory, permission, environment engineering), citado na seção "O que este galho não é".

@@ -1,7 +1,7 @@
 ---
 title: "Prompt engineering — o que morreu e o que sobrou"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Iniciado
@@ -135,6 +135,30 @@ A segunda versão não tem nenhuma bajulação — e é objetivamente mais fáci
 
 ---
 
+## Anatomia comparada: a gorjeta de $200 contra o few-shot
+
+A seção anterior separou truque de fundamento em abstrato — arbitragem sobre fragilidade versus engenharia de informação. Vale tornar essa separação concreta com um único par, lado a lado, porque é mais fácil sentir a diferença comparando um truque específico com um fundamento específico do que lendo a categoria em prosa.
+
+**O truque: "vou te dar $200 de gorjeta se fizer certo."**
+
+O mecanismo por trás dessa frase nunca foi claro nem para quem a usava — a teoria mais repetida era que o modelo, treinado sobre uma quantidade enorme de texto humano em que promessas de recompensa correlacionam com esforço maior, "aprenderia" a associar a menção de gorjeta a uma resposta mais cuidadosa. Repare no que essa teoria pressupõe: que existe uma variável interna equivalente a "esforço" que uma frase de superfície consegue mover, independente do conteúdo real da tarefa. Em 2023, havia relatos anedóticos — não replicados de forma controlada — de que a frase de fato mudava a qualidade da resposta em alguns casos. O problema é que "alguns casos" é exatamente a assinatura de arbitragem sobre instabilidade: um efeito que aparece quando o modelo está inconsistente entre execuções do mesmo pedido, e desaparece quando ele para de estar. Testar essa frase hoje contra o mesmo pedido sem ela produz, na prática, a mesma resposta — a gorjeta não move mais nada porque não havia "esforço" nenhum sendo comprado; havia ruído de amostragem sendo confundido com sinal.
+
+**O fundamento: few-shot prompting.**
+
+Compare com o mecanismo de mostrar dois ou três exemplos do padrão desejado antes de pedir a tarefa. Aqui não há teoria vaga sobre motivação simulada — o mecanismo é direto e verificável: cada exemplo é informação adicional sobre o formato, o tom e os limites da resposta esperada, informação que o modelo não tinha antes de ler o exemplo e passa a ter depois. Não é uma aposta sobre o estado emocional simulado do modelo; é literalmente aumentar os dados disponíveis no momento da inferência. Um exemplo bem escolhido reduz o espaço de respostas plausíveis do mesmo jeito que uma especificação mais detalhada reduz ambiguidade em qualquer sistema de engenharia — categoricamente diferente de tentar mover uma variável de "motivação" que talvez nem exista.
+
+| | Gorjeta de $200 (morto) | Few-shot (vivo) |
+|---|---|---|
+| O que a frase adiciona ao modelo | Nada verificável — nenhuma informação nova sobre a tarefa | Um exemplo concreto do padrão de entrada-saída esperado |
+| Mecanismo alegado | Simular "motivação", "esforço" | Reduzir ambiguidade fornecendo informação |
+| Efeito em 2023 | Relatos anedóticos, não controlados, de ganho ocasional | Ganho mensurável e reprodutível em papers |
+| Efeito em 2026 | Nenhum diferencial detectável | Continua reduzindo erro em tarefas de formato específico |
+| Por que sobreviveu ou não | Explorava instabilidade — a instabilidade fechou | Resolve um problema estrutural — o problema não desapareceu |
+
+O teste mais simples para replicar esse raciocínio em qualquer truque que você encontrar por aí: pergunte se a frase adiciona **informação** sobre a tarefa (sobrevive) ou se ela tenta mover uma variável de **motivação simulada** que não corresponde a nenhum mecanismo verificável dentro do modelo (morre assim que o modelo para de estar instável o bastante para a diferença aparecer). "Você é um especialista" não adiciona informação — o modelo já "sabe" o que um especialista em X sabe, ou não sabe, independente de ser chamado de especialista. Um exemplo de entrada-saída adiciona informação que literalmente não estava lá antes. Essa é a linha divisória inteira.
+
+---
+
 ## O que sobrou: fundação, não decoração
 
 Se o que morreu foi o verniz retórico, o que sobreviveu foi tudo aquilo que nunca dependeu de explorar instabilidade — porque endereçava um problema estrutural real, presente em qualquer sistema que precise transformar intenção humana em instrução para uma máquina que processa linguagem probabilisticamente. Cinco elementos, em particular, não morreram: foram absorvidos.
@@ -220,6 +244,25 @@ Vale uma ressalva sobre os dados de mercado citados nesta nota, para não usá-l
 > [!warning] Jogar fora prompt engineering ao subir de camada
 > O erro oposto, e hoje mais comum: achar que, porque a unidade de design subiu para o fluxo, a janela ou a rede, escrever bem cada instrução individual deixou de importar. Um nó de grafo com instrução vaga — "resolva o problema do usuário" sem decompor, sem exemplo, sem critério de sucesso — falha pela mesma razão que um prompt vago falhava em 2023: ambiguidade estrutural não some porque você reorganizou a arquitetura ao redor dela. Grafos sofisticados com nós mal instruídos falham de forma mais cara e mais difícil de depurar do que um prompt mal escrito falhava — porque o erro se propaga por uma rede em vez de ficar contido numa única resposta.
 
+> [!warning] Confundir "o título morreu" com "a competência morreu"
+> Uma terceira armadilha, mais sutil que as duas anteriores porque nasce de uma leitura apressada dos próprios números desta nota: um desenvolvedor vê a manchete "Prompt Engineer caiu 30%" e conclui que estudar prompt — decomposição, exemplo, critério de saída — deixou de valer o tempo, porque "isso já era coisa do passado". Ele para de investir na base exatamente na hora em que a skill (não o cargo) triplicou em demanda. O erro de leitura é confundir o desaparecimento de um *título de vaga* com o desaparecimento de uma *competência* — dois fenômenos que esta nota inteira mostrou serem quase opostos: o título caiu porque a skill deixou de ser rara o bastante para justificar um cargo próprio, não porque parou de ser necessária. Quem abandona os fundamentos por acreditar que "morreram" chega em context engineering, em harness engineering, em qualquer camada seguinte, sem a base que todas elas silenciosamente pressupõem — e reaprende, do jeito mais caro, a mesma lição que esta nota tentou entregar de graça.
+
+---
+
+## Como explicar em inglês
+
+If you're explaining this in an interview: the "Prompt Engineer" job title collapsed, but the underlying skill didn't die — it got absorbed as a baseline competency inside every layer built on top of it. What actually died were the tricks that exploited model instability — begging, threats, the $200 tip, the generic "world-class expert" persona; what survived were the parts that reduce structural ambiguity — task decomposition, few-shot examples, explicit output criteria — because that problem never went away just because the model got smarter.
+
+| PT | EN |
+|---|---|
+| Engenharia de prompt | Prompt engineering |
+| Truques de prompt / hacking | Prompt hacking / prompt tricks |
+| Decomposição de tarefa | Task decomposition |
+| Absorção, não extinção | Absorption, not extinction |
+| Arbitragem sobre fragilidade | Arbitrage on model fragility |
+| Ambiguidade estrutural | Structural ambiguity |
+| Exemplos (few-shot) | Few-shot examples |
+
 ---
 
 ## O que vem a seguir
@@ -235,3 +278,5 @@ Para o tratamento mais extenso e técnico de prompt engineering como disciplina 
 - Karpathy, Andrej — declarações públicas sobre a transição de prompt para context engineering (jun/2025) — citado no galho [[03-Dominios/Tecnologia/IA/Context Engineering/01 - De prompt engineering a context engineering|Context Engineering]]; ponto de referência para quando a robustez de interpretação dos modelos passou a ser tratada como consenso no discurso técnico.
 - Agregadores de vaga e pesquisas de mercado de trabalho em IA (2024-2026) — fonte dos números de queda de título, crescimento de skill, triplicação de vagas e faixas salariais citadas nesta nota; dados de agregador, não estatística oficial — tratados aqui como estimativa direcional, não valor exato.
 - Survey de líderes de TI/dados (2026) — origem do dado "82% dos líderes dizem que prompt sozinho não basta para produção multi-etapa", citado como evidência de que a skill continua exigida mesmo com o cargo dedicado em queda.
+- **Perez, C. E. (@IntuitMachine)** — [*From Loop Engineering to Graph Engineering?*](https://x.com/IntuitMachine/status/2078419526354378975) — o mesmo padrão de "absorção, não extinção" descrito nesta nota para prompt engineering reaparece, adiante no galho, como o argumento central sobre por que loops não substituem o que veio antes deles; leitura cruzada útil para quem quer ver o padrão se repetir camada a camada.
+- **Orosz, G. (Pragmatic Engineer)** — [*What Is Loop Engineering?*](https://newsletter.pragmaticengineer.com/p/what-is-loop-engineering) — cobre a mesma dinâmica de vocabulário de mercado (título de vaga vs. skill exigida) para a camada de loop engineering, contexto útil para comparar com os números de prompt engineering desta nota.

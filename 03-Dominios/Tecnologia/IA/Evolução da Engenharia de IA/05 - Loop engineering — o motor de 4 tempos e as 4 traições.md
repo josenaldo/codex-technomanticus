@@ -1,7 +1,7 @@
 ---
 title: "Loop engineering — o motor de 4 tempos e as 4 traições"
 created: 2026-07-20
-updated: 2026-07-21
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Adepto
@@ -246,6 +246,18 @@ Vale separar, com cuidado, as quatro traições (que são sobre a estrutura do m
 > Goodhart, blind up, conflict e decay não são falhas específicas de "loop engineering" como termo de 2026 — são limites estruturais de qualquer sistema de melhoria orientado a uma métrica única, com ou sem IA, com ou sem o nome da vez. Um KPI de vendas gamed por um time comercial em 2015 já sofria da mesma Lei de Goodhart. O que este capítulo específico do galho documenta é como esses limites antigos aparecem quando o "ACT" do motor de 4 tempos passa a ser executado por um modelo de linguagem, em vez de por uma pessoa ajustando manualmente.
 
 ---
+
+## Como explicar em inglês
+
+Loop engineering is really just the four-stroke engine — pick a metric, set a target, measure the gap, act to close it — dressed up in a new name for the agentic era; the ReAct-to-Ralph-Wiggum lineage proves the mechanism is four years older than the label. What actually matters isn't the loop itself, it's that any single-metric loop is structurally blind to its own failure modes: it will find a way to move the number even when moving it betrays the goal, because Goodhart's law isn't a bug, it's what happens when a metric becomes the target of optimization. That's why every loop needs an explicit stopping condition before it ships — without one, it's not autonomy, it's a runaway feedback loop burning budget with no guarantee of convergence.
+
+| PT | EN |
+|----|----|
+| motor de 4 tempos (PICK/SET/MEASURE/ACT) | four-stroke engine (pick/set/measure/act) |
+| Lei de Goodhart | Goodhart's law |
+| condição de parada | stopping condition |
+| as quatro traições | the four betrayals |
+| cegueira para cima | blind up |
 
 ## O que vem a seguir
 

@@ -1,7 +1,7 @@
 ---
 title: "Hype, ceticismo e mercado — lendo o próximo ciclo"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Magus
@@ -86,6 +86,11 @@ A crítica correta, portanto, **não é** "é só marketing, ignore". A crítica
 > [!warning] O erro simétrico
 > Rejeitar todo nome novo por princípio é o mesmo erro que aceitar todo nome novo por padrão — só que na direção contrária. As duas posturas evitam o trabalho real, que é aplicar um teste específico a cada anúncio. É isso que a Parte 2 entrega.
 
+> [!warning] Confundir "chegou primeiro no Twitter" com "é verdadeiro, ou maduro"
+> **O que acontece.** Um nome viraliza — 575 mil visualizações no thread de Steipete, 409 mil no de Codez — e a velocidade da viralização, sozinha, começa a funcionar como evidência de substância na cabeça de quem lê. "Se tanta gente está falando disso, deve ser real" é um raciocínio que se instala sem ninguém decidir conscientemente adotá-lo.
+> **Por quê.** Viralização mede alcance de rede e qualidade de frase de efeito — não mede se a técnica funciona em produção, se foi testada fora do time que a anunciou, ou se o número citado a favor dela (como o "92% da qualidade a 63% do preço" da nota 06, tratado ali explicitamente como claim de blog, não benchmark) resistiria a réplica independente. O nome pode nascer descrevendo um padrão real — a Parte 1 desta nota já mostrou isso — e mesmo assim viralizar dias ou semanas antes de qualquer evidência ter tido tempo de decantar. Velocidade de propagação e velocidade de validação são processos diferentes, e o primeiro sempre corre na frente do segundo.
+> **Como evitar.** Trate a métrica de visualizações como sinal de que vale a pena *investigar* a alegação, nunca como a validação em si. Aplique a pergunta 5 da Parte 2 antes de formar opinião forte: existe paper, benchmark ou pós-mortem — e, se há benchmark, o harness foi divulgado junto? Um número que "chegou primeiro" e um número que foi verificado são coisas diferentes, mesmo quando os dois circulam com a mesma confiança na sua timeline.
+
 > [!abstract] Resumo da seção
 > As seis camadas deste galho seguiram a mesma anatomia de seis etapas: prática real na margem → nomeação por figura com alcance → viralização com anúncio de morte da camada anterior → institucionalização em semanas (cursos, listas, vagas) → uso real se estabilizando num subconjunto modesto → camada seguinte anunciada. O nome em si não é vazio — cria vocabulário compartilhado, que é ganho real. O problema nunca foi nomear; foi nomear e afirmar substituição total antes de a evidência existir.
 
@@ -153,6 +158,11 @@ Vale esperar, com essa mesma lente, que o mesmo aconteça com "Loop Engineer" e 
 
 A consequência prática para carreira é a parte que realmente importa aqui, mais do que qualquer número isolado: **apostar num título é apostar no ciclo. Apostar no critério é apostar no que sobrevive aos ciclos.** Quem passou 2023 empilhando certificados de "Prompt Engineering" como identidade profissional ficou com uma credencial que perdeu o cargo que a justificava. Quem aprendeu por que ambiguidade estrutural atrapalha um sistema — o fundamento, não o rótulo — carrega essa competência intacta por context engineering, por harness, por qualquer nó de grafo que alguém vá escrever depois desta nota. As seis perguntas da Parte 2 são, no fundo, um jeito de blindar sua aposta de carreira contra apostar no título errado.
 
+> [!warning] Apostar a carreira no título, não no critério
+> **O que acontece.** Alguém investe meses aprendendo a fundo a técnica de uma camada — reescreve o portfólio, coleciona certificado, ajusta o LinkedIn — em torno do nome exato que estava viral naquele trimestre: "Prompt Engineer", depois "Loop Engineer", depois o que vier a seguir. Quando o nome sai de moda, a identidade profissional construída em cima dele sai de moda junto, mesmo que a competência técnica por trás continue tão relevante quanto sempre foi.
+> **Por quê.** Os quatro números desta nota mostram exatamente esse mecanismo em dados de mercado: o título "Prompt Engineer" caiu ~30%, enquanto a *skill* subjacente cresceu ~250% em menções de vaga. O título tem meia-vida de meses porque é vocabulário de ciclo — nasce na etapa 2 da anatomia (Parte 1) e é descartado assim que a etapa 6 (a camada seguinte) chega. A competência que o título nomeava não desaparece; ela só deixa de ter um cargo dedicado e vira pré-requisito invisível de um cargo mais amplo.
+> **Como evitar.** Aprenda a camada nova cedo — o mecanismo geralmente é real e transferível, mesmo quando o rótulo não sobrevive — mas ancore identidade e portfólio no *porquê* (por que ambiguidade estrutural quebra um sistema, por que uma métrica sozinha se deixa gamed) e não no nome do mês. O nome é etiqueta temporária; o critério é o que atravessa, intacto, para a próxima camada.
+
 > [!question]- Isso quer dizer que não vale a pena aprender a camada nova enquanto ela está quente?
 > Não é isso — vale aprender cedo, porque o conhecimento técnico por trás geralmente é real e transferível, mesmo quando o nome não sobrevive. O que não vale é ancorar identidade profissional ou portfólio no *nome*, porque o nome tem meia-vida de meses. Aprenda o mecanismo (por que um work graph roteia contexto entre zonas, por que um champion-challenger protege contra drift), guarde o nome como rótulo temporário, não como credencial permanente.
 
@@ -185,6 +195,19 @@ Quando esse dia chegar, as seis perguntas da Parte 2 são a ferramenta que você
 
 ---
 
+## Como explicar em inglês
+
+Every one of these "-engineering" names follows the same hype cycle: a real practice emerges quietly, someone with reach names it, it goes viral with a claim that the previous layer died, and then usage settles into something narrower and more useful than the headline promised. Nothing here actually went extinct — it got absorbed, rebranded as prerequisite skill inside a bigger role. The discipline isn't predicting the next name; it's a fixed set of triage questions you run against whatever gets announced next.
+
+| PT | EN |
+|----|----|
+| ciclo de hype | hype cycle |
+| rebranding vs camada nova | rebranding vs new layer |
+| absorção, não extinção | absorption, not extinction |
+| perguntas de triagem | triage questions |
+
+---
+
 ## O que vem a seguir
 
 Esta é a última nota da linha principal do galho — não porque o assunto se esgotou, mas porque este é o ponto natural de parada até que o próximo nome apareça. A nota imediatamente anterior, [[03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA/09 - Loop engineering e o compilador que faltava|09 - Loop engineering e o compilador que faltava]], acrescenta uma pergunta de triagem irmã das seis da Parte 2 — *existe um compilador para esta tarefa, e ele é genuinamente independente?* — que vale carregar junto para o próximo ciclo. Para retomar a visão de conjunto, volte ao [[03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA/index|índice do galho]], que tem a linha do tempo completa numa tela só e os três caminhos de leitura sugeridos.
@@ -201,20 +224,21 @@ Para as disciplinas laterais mencionadas na Parte 3 que ainda não têm galho pr
 - **Karpathy, Andrej** — "LLM = CPU, contexto = RAM, você é o sistema operacional", junho de 2025 — marco de nomeação de context engineering, citado nas notas 01 e 04.
 - **Hashimoto, Mitchell** (criador do Terraform) — nomeação de "harness engineering", 2026, e a formulação "toda vez que você descobre que um agente errou, você engenheira uma solução que impede a recorrência" — citado na nota 04.
 - **Osmani, Addy** — nomeação de "loop engineering" a partir de fala de Boris Cherny, junho de 2026, e a formulação "loop engineering é substituir a si mesmo como a pessoa que provoca o agente" — citado na nota 05.
-- **Steinberger, Peter (@steipete)** — "Are we still talking loops or did we shift to graphs yet?", 18 de julho de 2026, ~575 mil visualizações — marco de inflexão do discurso loop→graph, citado nas notas 05 e 06.
+- **Steinberger, Peter (@steipete)** — ["Are we still talking loops or did we shift to graphs yet?"](https://x.com/steipete/status/2078277297791189132), 18 de julho de 2026, ~575 mil visualizações — marco de inflexão do discurso loop→graph, citado nas notas 05 e 06.
 - **Valdarrama, Santiago (@svpino)** — "Loop Engineering is dead. Long live Graph Engineering!" — citado na nota 06 como exemplo mais nítido da etapa 3 da anatomia descrita nesta nota.
 - **Orosz, Gergely (Pragmatic Engineer)** — enquete informal com ~210 desenvolvedores sobre uso real de loops em produção (automação por evento e cron) — citada na nota 05.
 - **Kanat-Alexander, Max** (distinguished engineer) — hipótese de que o loop pode ser workaround temporário até o harness ganhar loop nativo — citado na nota 05.
-- **Husain, Hamel; Shankar, Shreya** — curso "AI Evals for Engineers & PMs" (Maven), referência em eval engineering.
+- **Husain, Hamel; Shankar, Shreya** — [*AI Evals for Engineers & PMs*](https://maven.com/parlance-labs/evals) (Maven) — curso de referência em eval engineering: workflow sistemático de error analysis, geração de dados sintéticos, LLM-as-judge e integração em CI/CD, citado na Parte 3.
 - **SiliconANGLE**, 17 de maio de 2026 — "eval engineering: the missing piece of agentic AI governance", cobertura da disciplina de eval engineering citada na Parte 3.
 - **arXiv 2401.08500** — "Code Generation with AlphaCodium: From Prompt Engineering to Flow Engineering" (jan/2024) — paper de flow engineering, tratado em detalhe na nota 03.
 - **arXiv 2507.13334** — survey de context engineering citado na nota 04.
 - **arXiv 2606.12191** — "Agentic Environment Engineering for LLMs" — survey de environment engineering citado na Parte 3.
 - **arXiv 2604.18292** — Agent-World, paper relacionado a environment engineering citado na Parte 3.
 - **arXiv 2604.06240** — "The Art of Building Verifiers for Computer Use Agents" — paper de verifier engineering citado na Parte 3.
-- **arXiv 2605.23950** — "Stop Comparing LLM Agents Without Disclosing the Harness" — paper citado na Parte 2 como argumento para exigir harness divulgado ao lado de qualquer benchmark de agente.
-- **github.com/ai-boost/awesome-harness-engineering** — repositório listando as sete disciplinas sob o guarda-chuva de harness engineering (context, loop, tool design, verification, memory, permission, environment), fonte da lista de disciplinas laterais na Parte 3; citado também na nota 04.
+- **arXiv 2605.23950** — [*Stop Comparing LLM Agents Without Disclosing the Harness*](https://arxiv.org/abs/2605.23950) — paper citado na Parte 2 (pergunta de triagem 5) como argumento para exigir harness divulgado ao lado de qualquer benchmark de agente — o mesmo paper citado na armadilha de "chegou primeiro no Twitter" acima.
+- **Perez, C. E. (@IntuitMachine)** — ["From Loop Engineering to Graph Engineering?"](https://x.com/IntuitMachine/status/2078419526354378975) — o ensaio cujo alcance viral (nota 06) é o próprio objeto de estudo da armadilha "chegou primeiro no Twitter ≠ é verdadeiro" desta nota; ver tratamento técnico completo nas notas 06 e 07.
+- **[github.com/ai-boost/awesome-harness-engineering](https://github.com/ai-boost/awesome-harness-engineering)** — repositório listando as sete disciplinas sob o guarda-chuva de harness engineering (context, loop, tool design, verification, memory, permission, environment), fonte da lista de disciplinas laterais na Parte 3; citado também na nota 04.
 - **aymenfurter.ch** — framing "platform engineering para agentes" para environment engineering, citado na Parte 3.
-- Agregadores de vaga e pesquisas de mercado de trabalho em IA (2024-2026) — fonte dos quatro números de mercado e das faixas salariais citadas na Parte 3; mesma ressalva da nota 02: dado de agregador, direção, não estatística oficial.
+- Agregadores de vaga e pesquisas de mercado de trabalho em IA (2024-2026) — fonte dos quatro números de mercado e das faixas salariais citadas na Parte 3. **Estimativa de agregador, não estatística oficial de mercado de trabalho** — mesma ressalva da nota 02: direção do dado, não medição precisa; nenhuma fonte única e citável foi consolidada para esses números.
 - Survey de líderes de TI/dados (2026) — origem do dado "82% dizem que prompt sozinho não basta", citado também na nota 02.
 - Ver também as fontes completas de todas as notas 01-07 deste galho para o detalhamento primário de cada camada e citação individual.

@@ -1,7 +1,7 @@
 ---
 title: "Graph engineering — a confiabilidade mora nas arestas"
 created: 2026-07-20
-updated: 2026-07-21
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Magus
@@ -232,6 +232,18 @@ E o efeito composto disso é o mais caro de todos: o grafo herda a explosão com
 > Os cinco custos concretos — overhead de design, superfície de falha, context leakage, compromisso arquitetural adiantado, infra de sistema distribuído — são reais e documentados. Mas a crítica que mais importa não é "isso já existe" (existe, desde 2014); é entender com seriedade o que muda quando os nós de um DAG são estocásticos: um nó pode passar errado, não só falhar; retry vira nova amostra, não repetição idempotente; e o grafo herda a explosão de estados de sistemas distribuídos sem herdar as garantias formais que tornam essa explosão administrável.
 
 ---
+
+## Como explicar em inglês
+
+The shift from loop to graph engineering is really an admission that a single loop can't watch itself — so you wire loops into a network where reliability lives in the edges, not the nodes. Each of the four betrayals from the previous layer gets a matching edge type: PAIR catches Goodharting by watching a second, adversarial metric; HIERARCHY says which loop owns the target of which; ARBITRATE makes silent trade-offs explicit; AUDIT is a loop that watches the watcher. And in production you're really running two overlapping graphs — a stable org graph of long-lived agents with fixed roles, and an ephemeral work graph of task nodes that spawn, merge, and die with each job — conflating the two is the most expensive design mistake in the pattern.
+
+| PT | EN |
+|----|----|
+| rede de loops | network of loops |
+| a confiabilidade mora nas arestas | reliability lives in the edges |
+| org graph vs. work graph | org graph vs. work graph |
+| pareamento / hierarquia / arbitragem / auditoria | pair / hierarchy / arbitrate / audit |
+| grafo direcionado acíclico (DAG) | directed acyclic graph (DAG) |
 
 ## O que vem a seguir
 

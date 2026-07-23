@@ -1,7 +1,7 @@
 ---
 title: "Context e harness — o ambiente vira o produto"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Adepto
@@ -207,6 +207,18 @@ Há ainda um terceiro ponto de ceticismo, mais estrutural, e que conecta diretam
 Nenhum desses três pontos é argumento contra construir harness — é argumento contra construí-lo sem medir o custo dele, e sem revisar periodicamente se as restrições ainda correspondem ao trabalho real que o agente faz, ou apenas ao medo que alguém tinha na primeira semana de desenho do sistema.
 
 ---
+
+## Como explicar em inglês
+
+Context engineering and harness engineering split one problem into two orthogonal questions: what does the agent see, and what can the agent actually do. Karpathy's framing — "the LLM is the CPU, the context window is RAM, and you're the operating system" — covers the first half, but it doesn't touch permissions, sandboxing, or tool design, which is why Hashimoto's harness layer had to show up separately, less than a year later, once agents stopped just answering and started acting on real systems. The two disciplines fail differently too: bad context makes an agent confidently wrong, but a bad harness lets a well-informed agent do real, sometimes irreversible, damage — which is exactly why you fix one in the prompt and the other in the environment, never the reverse.
+
+| PT | EN |
+|----|----|
+| engenharia de contexto | context engineering |
+| ambiente executável | executable environment / harness |
+| camada de ferramentas/permissões/verificação | tool / permission / verification layer |
+| restrição de infraestrutura vs. instrução em prompt | infrastructure constraint vs. prompt instruction |
+| tese da restrição vinculante | binding constraint thesis |
 
 ## O que vem a seguir
 

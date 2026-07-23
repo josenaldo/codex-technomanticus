@@ -1,7 +1,7 @@
 ---
 title: "Grounded vs ungrounded — tocar a realidade"
 created: 2026-07-20
-updated: 2026-07-21
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Magus
@@ -215,6 +215,20 @@ Essas três ressalvas não desmontam a regra de Perez — elas a tornam mais pre
 
 > [!abstract] Resumo da seção
 > A regra "toda máquina de melhoria precisa tocar a realidade" é correta e, ao mesmo tempo, incompleta sem essas ressalvas: ANCHOR pode chegar tarde, custar caro, ou simplesmente não existir; FROZEN protege contra overfitting ao custo de acumular drift silencioso contra o mundo real; e HUMAN, a âncora que mais parece grounding automático, é a mais fácil de perder para automation bias, viés compartilhado ou fadiga de revisão — nesses casos, o nó "humano" nunca sai do grafo, só parece que saiu.
+
+---
+
+## Como explicar em inglês
+
+The real split was never loops versus graphs — it's grounded versus ungrounded. A system can be perfectly self-consistent, every node agreeing with every other node, and still be completely wrong, because internal agreement isn't the same thing as external truth. What keeps a system honest is an anchor: some fact, frozen rule, or human judgment that no component inside the system can adjust to make itself look good.
+
+| PT | EN |
+|----|----|
+| grounded vs ungrounded | grounded vs ungrounded |
+| âncora | anchor |
+| held-out set congelado | frozen / held-out set |
+| julgamento humano vindo de fora | human judgment from outside |
+| alvos escolhidos, não computados | targets are chosen, not computed |
 
 ---
 

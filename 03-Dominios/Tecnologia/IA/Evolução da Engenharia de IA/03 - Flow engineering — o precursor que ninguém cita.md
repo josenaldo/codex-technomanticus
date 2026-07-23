@@ -1,7 +1,7 @@
 ---
 title: "Flow engineering — o precursor que ninguém cita"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 type: concept
 status: seedling
 fase: Adepto
@@ -336,6 +336,22 @@ Da próxima vez que uma thread anunciar a próxima "engineering" da vez — e es
 - [ ] Se for adotar o termo mesmo assim, documente a citação da origem — é o mínimo que este capítulo pede.
 
 Nenhum item dessa lista é sobre ser cético por esporte. É sobre gastar a atenção — sua e da sua equipe — em mudanças de arquitetura que valem a pena, e reconhecer rápido as que são só um nome novo para uma prática que vocês já rodam há dois anos.
+
+---
+
+## Como explicar em inglês
+
+If you're walking a colleague through this in English: flow engineering and loop engineering share the exact same skeleton — generate, test, correct, repeat — so the real distinction to name isn't the loop itself, it's who decides the next step. A flow is a fixed pipeline an engineer designed by hand, test-driven end to end; a loop hands that decision to the model at runtime, inside a budget instead of a diagram.
+
+| PT | EN |
+|---|---|
+| Fluxo (pipeline fixo) | Fixed pipeline / flow |
+| Ciclo autônomo | Autonomous loop |
+| Test-driven | Test-driven |
+| Quem decide a próxima etapa | Who decides the next step |
+| Etapa | Step / stage |
+| Critério de parada | Stopping criterion |
+| Auto-reflexão | Self-reflection |
 
 ---
 
