@@ -3,7 +3,7 @@ title: "Roles e credenciais temporárias"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-23
 status: seedling
 publish: true
 tags:
@@ -71,6 +71,74 @@ A duração dessa credencial não é fixa — é configurável dentro de limites
 
 Repare no que isso significa na prática: mesmo a credencial temporária *mais longa* que a AWS permite ainda expira em, no máximo, meio dia. Comparado a uma chave de usuário que fica válida por anos até alguém lembrar de revogá-la manualmente, a diferença não é de grau — é de categoria inteira de risco. Uma chave vazada de longa duração é um problema até alguém perceber e agir. Uma credencial temporária vazada é um problema, na pior das hipóteses, por algumas horas — e depois simplesmente para de ser um problema, sozinha, sem ninguém precisar fazer nada.
 
+### O fluxo em comandos: antes, durante e depois de assumir um papel
+
+A melhor forma de fixar essa mecânica é ver a identidade mudando de forma na frente dos olhos. `aws sts get-caller-identity` é o comando mais simples da AWS — não pede nenhuma permissão além de estar autenticado — e devolve exatamente quem a AWS acha que você é neste instante. Rode-o antes de assumir o papel:
+
+```bash
+$ aws sts get-caller-identity
+{
+    "UserId": "AIDACKCEVSQ6C2EXAMPLE",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/joana.dev"
+}
+```
+
+Um usuário IAM comum, com sua própria identidade permanente. Agora, a troca — `aws sts assume-role` pede as duas informações obrigatórias que a API `AssumeRole` exige: o ARN do papel (`--role-arn`) e um nome de sessão (`--role-session-name`), este último obrigatório e limitado a 2-64 caracteres alfanuméricos:
+
+```bash
+$ aws sts assume-role \
+    --role-arn arn:aws:iam::123456789012:role/app-s3-writer \
+    --role-session-name joana-debug-sessao
+```
+
+A resposta traz a credencial de três partes e o identificador da sessão assumida:
+
+```json
+{
+    "Credentials": {
+        "AccessKeyId": "ASIAJEXAMPLEXEG2JICEA",
+        "SecretAccessKey": "9drTJvcXLB89EXAMPLELB8923FB892xMFI",
+        "SessionToken": "AQoXdzELDDY...(token longo, truncado aqui)",
+        "Expiration": "2026-07-20T18:05:07Z"
+    },
+    "AssumedRoleUser": {
+        "AssumedRoleId": "AROA3XFRBF535PLBIFPI4:joana-debug-sessao",
+        "Arn": "arn:aws:sts::123456789012:assumed-role/app-s3-writer/joana-debug-sessao"
+    }
+}
+```
+
+Repare que a `Credentials` tem três campos, não dois — é o `SessionToken` que não existe em credencial estática nenhuma, e é ele que marca essa credencial como temporária perante qualquer serviço da AWS que a receba. Para usar essa credencial numa próxima chamada, os três valores viram variáveis de ambiente (o SDK e a CLI da AWS já sabem procurá-las):
+
+```bash
+export AWS_ACCESS_KEY_ID=ASIAJEXAMPLEXEG2JICEA
+export AWS_SECRET_ACCESS_KEY=9drTJvcXLB89EXAMPLELB8923FB892xMFI
+export AWS_SESSION_TOKEN=AQoXdzELDDY...
+```
+
+E rodando `get-caller-identity` de novo, agora dentro dessa sessão:
+
+```bash
+$ aws sts get-caller-identity
+{
+    "UserId": "AROA3XFRBF535PLBIFPI4:joana-debug-sessao",
+    "Account": "123456789012",
+    "Arn": "arn:aws:sts::123456789012:assumed-role/app-s3-writer/joana-debug-sessao"
+}
+```
+
+A identidade mudou de fato. Não é mais `user/joana.dev` — é `assumed-role/app-s3-writer/joana-debug-sessao`, com o nome da sessão embutido no próprio ARN. Todas as chamadas feitas com essas variáveis de ambiente carregam as permissões do papel `app-s3-writer`, não as de Joana, e param de funcionar sozinhas no horário marcado em `Expiration`.
+
+| | Chave de acesso estática (usuário IAM) | Credencial temporária (papel assumido) |
+|---|---|---|
+| Prazo de validade | Nenhum — vale até ser revogada manualmente | Minutos a horas (900s–43200s), sempre com `Expiration` |
+| Quem revoga | Uma pessoa precisa lembrar de agir | Ninguém — expira sozinha |
+| Rastreabilidade | Uma chave, usada por qualquer processo que a carregue | Uma sessão nova a cada `AssumeRole`, com `RoleSessionName` próprio nos logs |
+| Raio de vazamento se exposta | Ilimitado no tempo — vale até alguém perceber | Limitado à janela de `Expiration` restante |
+| Rotação | Manual, e frequentemente esquecida | Automática — cada chamada gera uma sessão nova |
+| Onde pode viver por engano | Variável de ambiente, `.env`, disco, repositório Git | Só em memória, durante a sessão — não há chave fixa para vazar |
+
 > [!info] Fronteira
 > A anatomia de uma política — efeito, ação, recurso, condição, e a lógica de avaliação (negação explícita sempre vence) — já foi coberta na **nota 03** desta trilha e se aplica igualmente à permissions policy de um papel. Esta nota assume esse conhecimento e foca no que é específico de papéis: a trust policy e a troca por credencial temporária.
 
@@ -95,11 +163,89 @@ A mecânica de assumir um papel é sempre a mesma — trust policy, STS, credenc
 }
 ```
 
-Note a peça nova nessa trust policy: o `Principal` não é um usuário nem uma conta — é um **service principal**, uma identidade que representa o próprio serviço da AWS (`lambda.amazonaws.com`). É a AWS confiando na AWS, formalizado do mesmo jeito que qualquer outra relação de confiança.
+Note a peça nova nessa trust policy: o `Principal` não é um usuário nem uma conta — é um **service principal**, uma identidade que representa o próprio serviço da AWS (`lambda.amazonaws.com`). É a AWS confiando na AWS, formalizado do mesmo jeito que qualquer outra relação de confiança. A própria documentação da AWS avisa para não chamar `sts:AssumeRole` manualmente dentro do código da função — Lambda já faz isso por você a cada invocação.
 
-**Papel para instância (instance role, via instance profile).** É como uma máquina virtual — uma instância EC2 — recebe uma identidade própria, sem que ninguém precise colocar uma chave de acesso dentro dela. O papel não é anexado diretamente à instância; ele passa por um contêiner intermediário chamado **instance profile**, que é o que de fato é associado à instância no momento do lançamento (quando você cria um papel para EC2 pelo console, a própria AWS cria o instance profile de mesmo nome automaticamente, então a distinção costuma ficar invisível — mas ela existe, e importa quando você opera por CLI ou API, onde os dois são recursos separados). Uma vez associada, a instância consegue pedir credenciais temporárias automaticamente a um endpoint de metadados local, sem qualquer chave gravada em disco — e a AWS renova essas credenciais sozinha, por trás da cena, antes que expirem, então o sistema operacional dentro da instância nunca vê uma credencial permanente, só uma sequência contínua de credenciais de curta duração se revezando. É exatamente o problema desta nota resolvido de forma automática: a aplicação que antes lia uma chave de uma variável de ambiente passa a simplesmente confiar na identidade da máquina.
+Criar esse papel pela CLI usa o comando `create-role`, passando a trust policy inline ou como arquivo:
 
-**Papel para função (o mesmo execution role, olhado do ângulo do FaaS).** Tecnicamente é o mesmo mecanismo do "papel para serviço" descrito acima — o execution role do Lambda — mas vale nomear separadamente porque, do ponto de vista de quem projeta o sistema, a pergunta muda de forma: não é "que serviço da AWS está agindo por mim", é "que permissões esta função específica, entre dezenas de funções do sistema, deveria ter". Uma arquitetura séria de FaaS não usa um único papel gigante compartilhado por todas as funções — dá a cada função seu próprio execution role, com a permissions policy mínima que aquela função específica precisa. Isso antecipa o assunto central da **próxima nota** desta trilha, sobre least privilege: papéis por função são o jeito mais natural de aplicar o princípio na prática, porque o papel já nasce isolado por unidade de trabalho.
+```bash
+aws iam create-role \
+  --role-name lambda-ex \
+  --assume-role-policy-document file://trust-policy.json
+
+aws iam attach-role-policy \
+  --role-name lambda-ex \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+```
+
+**Papel para instância (instance role, via instance profile).** É como uma máquina virtual — uma instância EC2 — recebe uma identidade própria, sem que ninguém precise colocar uma chave de acesso dentro dela. O papel não é anexado diretamente à instância; ele passa por um contêiner intermediário chamado **instance profile**, que é o que de fato é associado à instância no momento do lançamento (quando você cria um papel para EC2 pelo console, a própria AWS cria o instance profile de mesmo nome automaticamente, então a distinção costuma ficar invisível — mas ela existe, e importa quando você opera por CLI ou API, onde os dois são recursos separados). A trust policy, nesse caso, confia no service principal do EC2:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+Pela CLI, criar o papel e passar pelo instance profile são três passos separados — diferença que o console esconde, mas que existe de fato:
+
+```bash
+aws iam create-role \
+  --role-name app-ec2-role \
+  --assume-role-policy-document file://ec2-trust-policy.json
+
+aws iam create-instance-profile --instance-profile-name app-ec2-profile
+
+aws iam add-role-to-instance-profile \
+  --instance-profile-name app-ec2-profile \
+  --role-name app-ec2-role
+
+aws ec2 associate-iam-instance-profile \
+  --instance-id i-0abcd1234efgh5678 \
+  --iam-instance-profile Name=app-ec2-profile
+```
+
+Duas restrições da documentação oficial vale reter: **um instance profile só pode conter um único papel IAM** (o limite não pode ser aumentado — para trocar, você remove um papel e adiciona outro), e **uma instância só pode ter um instance profile por vez**, embora o mesmo papel possa ser reutilizado em instance profiles diferentes. Uma vez associada, a instância consegue pedir credenciais temporárias automaticamente a um endpoint de metadados local, sem qualquer chave gravada em disco — e a AWS renova essas credenciais sozinha, por trás da cena, antes que expirem, então o sistema operacional dentro da instância nunca vê uma credencial permanente, só uma sequência contínua de credenciais de curta duração se revezando. É exatamente o problema desta nota resolvido de forma automática: a aplicação que antes lia uma chave de uma variável de ambiente passa a simplesmente confiar na identidade da máquina.
+
+**Papel para função (o mesmo execution role, olhado do ângulo do FaaS).** Tecnicamente é o mesmo mecanismo do "papel para serviço" descrito acima — o execution role do Lambda — mas vale nomear separadamente porque, do ponto de vista de quem projeta o sistema, a pergunta muda de forma: não é "que serviço da AWS está agindo por mim", é "que permissões esta função específica, entre dezenas de funções do sistema, deveria ter". Uma arquitetura séria de FaaS não usa um único papel gigante compartilhado por todas as funções — dá a cada função seu próprio execution role, com a permissions policy mínima que aquela função específica precisa:
+
+```bash
+aws lambda create-function \
+  --function-name redimensiona-imagem \
+  --runtime python3.13 \
+  --handler app.handler \
+  --role arn:aws:iam::123456789012:role/redimensiona-imagem-role \
+  --zip-file fileb://function.zip
+```
+
+Isso antecipa o assunto central da **próxima nota** desta trilha, sobre least privilege: papéis por função são o jeito mais natural de aplicar o princípio na prática, porque o papel já nasce isolado por unidade de trabalho.
+
+| Tipo de papel | Quem assume | Quem inicia a troca | Caso de uso típico |
+|---|---|---|---|
+| Papel de serviço (service role) | Um serviço da AWS, agindo em seu nome | O próprio serviço, automaticamente | Execution role de uma função Lambda |
+| Papel de instância (instance role) | A instância EC2, via instance profile | A instância, no boot, junto ao serviço de metadados | Aplicação numa VM que precisa falar com S3, DynamoDB etc. |
+| Papel de função (execution role por função) | A função serverless específica | O runtime do FaaS, a cada invocação | Isolar permissões entre dezenas de funções de um mesmo sistema |
+| Papel entre contas (cross-account role) | Um principal de outra conta AWS | A pessoa ou processo da conta confiável, manualmente | Auditoria externa, contas separadas de produção/homologação |
+
+```mermaid
+flowchart TD
+    A["Quem precisa da identidade?"] --> B{"Onde o código roda?"}
+    B -->|"Serviço da AWS agindo por você"| C["Papel de serviço<br/>trust: Service principal<br/>ex.: lambda.amazonaws.com"]
+    B -->|"Máquina virtual (EC2)"| D["Papel de instância<br/>via instance profile<br/>1 papel por profile"]
+    B -->|"Função serverless"| E["Execution role por função<br/>1 papel por função"]
+    B -->|"Outra conta AWS"| F["Papel entre contas<br/>trust: conta/principal externo<br/>+ External ID"]
+    C --> G["STS AssumeRole automático<br/>a cada invocação"]
+    D --> H["Credenciais renovadas sozinhas<br/>via endpoint de metadados"]
+    E --> G
+    F --> I["AssumeRole manual<br/>com sts:ExternalId"]
+```
 
 ## A relação de confiança entre entidades
 
@@ -114,13 +260,76 @@ Segundo a documentação oficial da IAM, ao criar uma trust policy você define 
 
 Um caso particularmente importante é o **acesso entre contas**: quando a conta que possui o recurso (a *trusting account*) e a conta que contém quem precisa acessá-lo (a *trusted account*) são contas diferentes da AWS — cenário comum quando uma consultoria de auditoria externa precisa examinar recursos de um cliente, ou quando uma empresa organiza produção e homologação em contas separadas por segurança. Nesse caso, a trust policy do papel na conta que possui o recurso lista explicitamente a conta (ou um principal específico dentro dela) que pode assumi-lo — e, quando a relação envolve organizações diferentes que não controlam ambas as contas, existe ainda um parâmetro adicional chamado **External ID**: uma string que o administrador da conta que possui o recurso comunica, fora de banda, ao administrador da conta que vai assumir o papel, e que precisa ser incluída no pedido de `AssumeRole` para que ele funcione. O External ID existe especificamente para mitigar o **confused deputy problem** — o risco de um terceiro mal-intencionado convencer um intermediário confiável a assumir um papel em nome de outra vítima, sem que a vítima real tenha de fato autorizado aquele pedido específico.
 
+Uma trust policy entre contas, exigindo o External ID, tem esta forma — repare na condição extra que não aparece nas trust policies de serviço vistas acima:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:root"
+      },
+      "Action": "sts:AssumeRole",
+      "Condition": {
+        "StringEquals": {
+          "sts:ExternalId": "combinado-fora-de-banda-por-telefone"
+        }
+      }
+    }
+  ]
+}
+```
+
+E o pedido do lado de quem assume passa o mesmo valor, via `--external-id`:
+
+```bash
+aws sts assume-role \
+  --role-arn arn:aws:iam::999888777666:role/auditoria-leitura \
+  --role-session-name consultoria-auditoria-2026 \
+  --external-id combinado-fora-de-banda-por-telefone \
+  --duration-seconds 3600
+```
+
 ## A troca de token: sessão, não credencial permanente
 
 Vale nomear com precisão o que acontece no momento em que uma credencial temporária é devolvida, porque o vocabulário técnico distingue duas coisas que a intuição tende a misturar.
 
 Quando você assume um papel, a resposta da AWS inclui um `AssumedRoleUser` — um par de identificadores (o ARN da sessão e o `AssumedRoleId`) que referencia especificamente *aquela sessão*, não o papel em abstrato. O ARN de uma sessão assumida tem um formato próprio, incorporando o **nome da sessão** (`RoleSessionName`) que quem fez o pedido escolheu — um identificador arbitrário, mas obrigatório, que existe justamente para que seja possível distinguir, nos logs, duas sessões diferentes do mesmo papel assumidas por pessoas ou processos diferentes. Em cenários de auditoria, um administrador costuma exigir que o nome da sessão corresponda ao nome de usuário de quem está assumindo o papel — assim, mesmo que dez pessoas diferentes assumam o mesmo papel de "administrador de emergência" ao longo do mês, o CloudTrail (o serviço de auditoria da AWS) consegue mostrar exatamente quem fez o quê, em qual sessão.
 
-Existe ainda um padrão chamado **role chaining**: usar um papel já assumido para assumir um segundo papel — `RoleA` tem permissão de assumir `RoleB`, então uma identidade assume primeiro `RoleA`, e usa a credencial temporária resultante para pedir `RoleB`. A AWS impõe uma restrição deliberada aqui: uma sessão obtida por encadeamento de papéis fica limitada a **no máximo uma hora**, independentemente de qual seja o `maximum session duration` configurado em qualquer um dos papéis envolvidos. É uma proteção explícita contra cadeias longas de delegação virarem, na prática, um jeito de burlar o limite de 12 horas — cada elo da cadeia encurta a janela de validade, nunca alarga.
+Existe ainda um padrão chamado **role chaining**: usar um papel já assumido para assumir um segundo papel — `RoleA` tem permissão de assumir `RoleB`, então uma identidade assume primeiro `RoleA`, e usa a credencial temporária resultante para pedir `RoleB`:
+
+```bash
+# Passo 1 — assume RoleA com as credenciais de longo prazo do usuário
+aws sts assume-role \
+  --role-arn arn:aws:iam::123456789012:role/RoleA \
+  --role-session-name etapa-1 \
+  --duration-seconds 3600
+
+# Passo 2 — usando as credenciais de RoleA (exportadas como env vars),
+# assume RoleB. Mesmo pedindo mais, a sessão fica travada em 1h.
+aws sts assume-role \
+  --role-arn arn:aws:iam::123456789012:role/RoleB \
+  --role-session-name etapa-2 \
+  --duration-seconds 43200
+```
+
+A AWS impõe uma restrição deliberada aqui: uma sessão obtida por encadeamento de papéis fica limitada a **no máximo uma hora**, independentemente de qual seja o `maximum session duration` configurado em qualquer um dos papéis envolvidos — mesmo pedindo `--duration-seconds 43200` no passo 2 acima, a AWS aceita o pedido mas limita a sessão resultante a 1h. É uma proteção explícita contra cadeias longas de delegação virarem, na prática, um jeito de burlar o limite de 12 horas — cada elo da cadeia encurta a janela de validade, nunca alarga.
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário<br/>(credencial de longo prazo)
+    participant STS as AWS STS
+    participant A as RoleA
+    participant B as RoleB
+
+    U->>STS: AssumeRole(RoleA, DurationSeconds=3600)
+    STS-->>U: Credencial temporária de RoleA
+    U->>STS: AssumeRole(RoleB)<br/>usando a credencial de RoleA
+    STS-->>U: Credencial temporária de RoleB<br/>limitada a no máx. 1h
+    Note over U,B: Encadeamento nunca alarga a janela —<br/>só encurta em relação ao teto de 12h
+```
 
 O ponto central para reter: **uma credencial temporária nunca é "a mesma identidade, só que com prazo de validade" — ela é uma sessão nova, com seu próprio identificador, suas próprias permissões (as do papel, não as de quem o assumiu), e sua própria linha de auditoria.** Trocar de papel não é emprestar uma chave; é abrir uma sessão nova e efêmera, rastreável do início ao fim.
 
@@ -139,6 +348,25 @@ Vale ser direto sobre isso, porque não é uma lacuna a esconder — é uma esco
 O que a DigitalOcean oferece é o **Personal Access Token (PAT)**: um token de API criado manualmente no painel de controle, com um nome, um conjunto de escopos (as permissões que ele carrega) e, desde que a DigitalOcean passou a suportar isso, uma **data de expiração escolhida no momento da criação** — depois desse intervalo, o token simplesmente para de autenticar. Isso já é uma melhoria real sobre uma chave que nunca expira: o problema estrutural descrito na nota 02 desta trilha (a chave que sobrevive indefinidamente) tem, na DigitalOcean, uma mitigação direta.
 
 Mas a diferença central permanece, e vale nomeá-la com precisão. Um PAT da DigitalOcean é criado **uma vez, manualmente, por uma pessoa**, e continua sendo a mesma credencial estática até a data de expiração que essa pessoa escolheu. Não existe, na DigitalOcean, um mecanismo pelo qual um Droplet, um App Platform, ou uma DigitalOcean Function **assuma** automaticamente uma identidade própria e receba, sozinho, uma sessão nova de credencial de curta duração a cada execução — não existe instance profile, não existe execution role, não existe trust policy anexada a um recurso computacional, não existe uma chamada equivalente a `AssumeRole` que uma máquina faça por conta própria. Se uma aplicação rodando num Droplet precisa falar com a API da DigitalOcean, o caminho prático continua sendo colar um PAT numa variável de ambiente — exatamente o padrão que a nota 02 apontou como frágil, só que agora com uma data de expiração manual amenizando (não eliminando) o risco.
+
+O contraste fica direto quando se coloca o comando `doctl` ao lado do `aws sts` equivalente. Autenticar o `doctl` significa colar o PAT uma vez, e ele fica salvo localmente até você trocá-lo manualmente:
+
+```bash
+# AWS — a identidade muda a cada AssumeRole, sem token fixo
+$ aws sts get-caller-identity
+{
+  "Arn": "arn:aws:sts::123456789012:assumed-role/app-s3-writer/joana-debug-sessao"
+}
+
+# DigitalOcean — o PAT é colado uma vez (interativo) e fica salvo localmente
+$ doctl auth init
+# ou, sem salvar contexto, o token vai em cada chamada via flag global:
+$ doctl account get --access-token dop_v1_EXEMPLO_TOKEN_ESTATICO
+Email    Droplet Limit    Email Verified    UUID    Status
+joana@   25               true              ...     active
+```
+
+Não existe um `doctl sts assume-role` porque não existe um serviço equivalente ao STS na DigitalOcean — o `doctl account get` acima devolve os dados da conta dona do token, não de uma sessão temporária assumida.
 
 Isso não torna a DigitalOcean "pior" de forma genérica — é uma troca deliberada de complexidade por simplicidade, coerente com o público que a DigitalOcean atende. Só significa que, para quem constrói arquitetura pensando em identidade de carga de trabalho (workload identity) sem credencial permanente nenhuma no meio do caminho, é a AWS — ou provedores com um modelo equivalente de papéis — que oferece o mecanismo completo. É uma peça de vocabulário legítima para entrevista sênior: saber nomear precisamente **o que existe** e **o que falta**, em vez de assumir que "toda nuvem tem isso" ou, no outro extremo, descartar a DigitalOcean como incapaz de operar com segurança.
 
@@ -175,3 +403,7 @@ Esta nota resolveu o *quanto tempo* uma credencial deveria durar — a resposta 
 - [AWS IAM — Use instance profiles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html) — instance profile como contêiner do papel associado a uma instância EC2; um único papel por instance profile; acessado em 2026-07-20.
 - [AWS Lambda — Lambda execution role (documentação oficial)](https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html) — Lambda assume automaticamente o execution role a cada invocação; exemplo de trust policy com o service principal `lambda.amazonaws.com`; acessado em 2026-07-20.
 - [DigitalOcean — Create a Personal Access Token (API Reference)](https://docs.digitalocean.com/reference/api/create-personal-access-token/) — criação de PAT, escopos customizados, alias `api:read`/`api:write`, e o comportamento de expiração configurável na criação do token; acessado em 2026-07-20.
+- [AWS CLI — sts assume-role (Command Reference)](https://docs.aws.amazon.com/cli/latest/reference/sts/assume-role.html) — sintaxe de `--role-arn`/`--role-session-name`/`--duration-seconds`/`--external-id`, formato de saída JSON; acessado em 2026-07-23.
+- [AWS CLI — sts get-caller-identity (Command Reference)](https://docs.aws.amazon.com/cli/latest/reference/sts/get-caller-identity.html) — campos `UserId`/`Account`/`Arn` da identidade atual; acessado em 2026-07-23.
+- [AWS EC2 — IAM roles for Amazon EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html) — instance profile como contêiner de um único papel IAM, uma instância só pode ter um instance profile por vez; acessado em 2026-07-23.
+- [DigitalOcean — doctl auth init (CLI Reference)](https://docs.digitalocean.com/reference/doctl/reference/auth/init/) — fluxo interativo de autenticação e a flag global `--access-token` como alternativa não interativa; acessado em 2026-07-23.
