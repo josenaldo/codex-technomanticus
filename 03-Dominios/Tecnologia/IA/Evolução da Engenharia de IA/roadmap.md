@@ -28,24 +28,27 @@ Roadmap do galho-folha `03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA
 
 | # | Nota | Fase | Tam. | Estado | Pendência |
 |---|---|---|---|---|---|
-| 01 | A escada de abstração — qual é a unidade de design | Iniciado | 47 KB | 📋 | sem mídia externa; conferir que o mapa do galho cita a 09 |
-| 02 | Prompt engineering — o que morreu e o que sobrou | Iniciado | 29 KB | 📋 | menor nota do galho; candidata a enriquecimento (casos práticos) |
-| 03 | Flow engineering — o precursor que ninguém cita | Adepto | 48 KB | 📋 | — |
-| 04 | Context e harness — o ambiente vira o produto | Adepto | 32 KB | 📋 | verificar não-duplicação com o galho Context Engineering |
-| 05 | Loop engineering — o motor de 4 tempos e as 4 traições | Adepto | 35 KB | 📋 | fidelidade feita (PDCA, HVAC, "teatro"); 2 imagens ✅ no repo |
-| 06 | Graph engineering — a confiabilidade mora nas arestas | Magus | 41 KB | 📋 | fidelidade feita (MLOps, análogos, arrependimento de Perez); imagem ✅; conteúdo volátil — revisitar quando o discurso decantar |
-| 07 | Grounded vs ungrounded — tocar a realidade | Magus | 35 KB | 📋 | fidelidade feita (loops-só-relatórios, previsão de falha); imagem ✅ |
-| 08 | Hype, ceticismo e mercado — lendo o próximo ciclo | Magus | 34 KB | 📋 | dados de mercado com validade curta — revalidar ~jan/2027 |
-| 09 | Loop engineering e o compilador que faltava | Magus | 55 KB | 📋 | nota grande (no porte da 01/03); sem mídia; candidata a passe de simplificação |
+| 01 | A escada de abstração — qual é a unidade de design | Iniciado | 47 KB | ✅ | inglês+mídia (Karpathy) ✅ |
+| 02 | Prompt engineering — o que morreu e o que sobrou | Iniciado | 30 KB | ✅ | inglês ✅; exemplo gorjeta-vs-few-shot + 3ª armadilha ✅; sem mídia (tema sem vídeo canônico) |
+| 03 | Flow engineering — o precursor que ninguém cita | Adepto | 48 KB | ✅ | inglês+mídia (Itamar Friedman) ✅ |
+| 04 | Context e harness — o ambiente vira o produto | Adepto | 32 KB | ✅ | inglês+mídia (Karpathy) ✅; conferir não-duplicação com galho Context Engineering |
+| 05 | Loop engineering — o motor de 4 tempos e as 4 traições | Adepto | 35 KB | ✅ | fidelidade+inglês+mídia (Andrew Ng) ✅; 2 imagens ✅ |
+| 06 | Graph engineering — a confiabilidade mora nas arestas | Magus | 41 KB | ✅ | fidelidade+inglês ✅; imagem ✅; sem mídia (tema novo demais); conteúdo volátil — revisitar quando o discurso decantar |
+| 07 | Grounded vs ungrounded — tocar a realidade | Magus | 35 KB | ✅ | fidelidade+inglês+mídia (What Makes Agency) ✅; imagem ✅ |
+| 08 | Hype, ceticismo e mercado — lendo o próximo ciclo | Magus | 34 KB | ✅ | inglês+3 armadilhas+fontes ✅; sem mídia (tema meta); dados de mercado — revalidar ~jan/2027 |
+| 09 | Loop engineering e o compilador que faltava | Magus | 55 KB | ✅ | inglês+mídia (What Makes Agency, do próprio Perez) ✅; nota grande — candidata a passe de simplificação |
 
-**Progresso:** 0 ✅ / 9 · 9 📋 · 0 🔶
+**Progresso:** 9 ✅ / 9 · 0 📋 · 0 🔶
+
+> [!note] Enriquecimento de 2026-07-23
+> `/verificar-nota` rodou nas 9 (auditoria estrutural). Pass "cirúrgico + inglês": seção de inglês + tabela PT↔EN nas 9; conteúdo real na 02 e 08; URLs de fonte na 01/02/08; mídia (vídeo canônico + trecho-âncora) em 01/03/04/05/07/09. **Dispensados por ruído de gênero** (historiografia, não how-to): "Casos práticos" e piso de linhas (notas densas em bytes). **Sem mídia por design:** 02 (prompt-morreu), 06 (graph novo demais), 08 (hype-meta) — nenhum vídeo canônico, não forçado.
 
 ## Artefatos do galho
 
 | Artefato | Estado |
 |---|---|
 | `index.md` (MOC) | ✅ atualizado 2026-07-22 (inclui a 09) |
-| `roadmap.md` | ✅ este arquivo |
+| `roadmap.md` | ✅ este arquivo (atualizado 2026-07-23) |
 | 4 imagens (slides de Perez) | ✅ no repo, distribuídas 05/06/07 (commit b339ba6) |
 | Entrada no roadmap raiz de IA | ✅ galho #22 |
 | Entrada no `index.md` do domínio IA | ⬜ pendente |
@@ -56,7 +59,7 @@ Roadmap do galho-folha `03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA
 
 ## Próximas ações, em ordem
 
-1. Registrar o galho no `index.md` do domínio `IA/` (roadmap raiz já feito).
+1. Registrar o galho no `index.md` do domínio `IA/` (roadmap raiz já feito) — **única pendência estrutural**.
 2. Rodar `/verificar-nota` nas 9 notas para auditoria estrutural (não foi rodada na escrita).
 3. Nota 02 é a mais curta — primeira candidata a `/enriquecer-nota`; nota 09 é a maior — candidata a passe de simplificação.
 4. Enriquecimento de mídia (vídeos/podcasts) via `/adicionar-midia` — nenhuma nota tem callout de mídia; o vídeo "What Makes Agency Actually Work?" (citado na 09) é ponto de partida.
