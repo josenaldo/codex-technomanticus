@@ -3,7 +3,7 @@ title: "Segurança"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-22
 status: seedling
 publish: true
 tags:
@@ -49,6 +49,35 @@ Repare no que essa frase não diz: ela não diz "configure um IAM role com esta 
 > [!info] Fronteira
 > Como criar roles, escrever políticas de permissão, entender a lógica de avaliação de "allow vs. deny" quando múltiplas políticas se aplicam ao mesmo recurso — isso é o **galho 4**, "Identidade e acesso (IAM)". Aqui, o que importa é o princípio: **identidade é o novo perímetro**, e todo o resto do pilar de Segurança se apoia nessa ideia.
 
+Para deixar o princípio menos abstrato, vale ver a forma — não a mecânica — do que "menor privilégio" significa numa política de permissão. Os dois blocos abaixo são **ilustrativos**: a sintaxe exata de uma política JSON de IAM, os efeitos de `Allow` versus `Deny`, como anexar isso a um role — tudo isso é conteúdo do galho 4. O que importa aqui é o contraste de forma.
+
+Uma política larga demais, do tipo que a credencial compartilhada do incidente carregava:
+
+```json
+{
+  "Effect": "Allow",
+  "Action": "*",
+  "Resource": "*"
+}
+```
+
+Qualquer ação, sobre qualquer recurso da conta. Se essa credencial vazar, o raio de dano é a conta inteira — que foi exatamente o que aconteceu.
+
+A mesma necessidade de negócio (deploy de um serviço específico), expressa como menor privilégio:
+
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "ecs:UpdateService",
+    "ecs:DescribeServices"
+  ],
+  "Resource": "arn:aws:ecs:us-east-1:123456789012:service/prod-cluster/pagamentos-api"
+}
+```
+
+Só duas ações, só sobre um serviço nomeado, numa região nomeada. Se essa credencial vazar, o pior caso é alguém atualizar (ou tentar atualizar) aquele serviço específico — não criar instâncias em toda a conta. A diferença entre os dois blocos **é** o princípio "fundação de identidade forte" na prática: o escopo da permissão é o tamanho do dano possível.
+
 O incidente do commit da sexta-feira é um caso didático desse princípio falhando na prática: a "fundação de identidade" da equipe era uma única credencial compartilhada, sem separação de deveres, sem expiração — o oposto exato do que o princípio pede. Se o time tivesse, em vez disso, uma credencial de curta duração, atribuída especificamente ao processo de deploy, com permissão apenas para atualizar aquele serviço específico (não para criar instâncias em qualquer lugar da conta), o mesmo vazamento teria um raio de dano imensamente menor — talvez nenhum, se a credencial já tivesse expirado antes do repositório ficar público.
 
 ## Os sete princípios, um de cada vez
@@ -77,6 +106,19 @@ flowchart LR
 
 **4. Automatizar boas práticas de segurança.** Um controle de segurança que depende de um humano lembrar de aplicá-lo manualmente, toda vez, sem exceção, é um controle que eventualmente falha — não porque as pessoas são descuidadas, mas porque humanos são inconsistentes por natureza, especialmente sob pressão de prazo. A resposta madura é definir controles como código, versionado, testado, aplicado automaticamente toda vez que a infraestrutura muda — a mesma disciplina de infraestrutura como código que a nota 02 desta trilha já discutiu para o pilar de Excelência Operacional, aqui aplicada especificamente a regras de segurança (quem pode acessar o quê, que portas ficam abertas, que criptografia é obrigatória por padrão).
 
+Como forma, não como tutorial de ferramenta específica: um guardrail automatizado é uma regra que o sistema **verifica sozinho**, continuamente, em vez de esperar alguém lembrar de checar.
+
+```json
+{
+  "rule": "volumes-devem-ser-criptografados",
+  "avalia": "todo Volume/EBS criado ou modificado",
+  "condicao": "encrypted == true",
+  "acao_se_falhar": "marcar não-conforme e alertar o time de plataforma"
+}
+```
+
+Isso não é a sintaxe de nenhum produto específico — é a forma de um guardrail. A mecânica real (uma regra do AWS Config, uma policy do Open Policy Agent, um check de `terraform plan` no pipeline) é assunto de infraestrutura como código, já apontado pela nota 02, e da trilha [[03-Dominios/Engenharia/Operação/index|Operação (DevOps/SRE)]]. O que importa aqui é o princípio: a regra existe **fora** da memória de qualquer pessoa, e roda sozinha.
+
 **5. Proteger dados em trânsito e em repouso.** Classificar dados por nível de sensibilidade, e usar criptografia, tokenização e controle de acesso de forma proporcional a essa sensibilidade — dados de cartão de crédito não recebem o mesmo tratamento que um contador de visualizações de página pública. "Em trânsito" quer dizer enquanto o dado se move entre sistemas (uma requisição HTTP entre seu serviço e um banco de dados gerenciado, por exemplo); "em repouso" quer dizer enquanto o dado está armazenado (num disco, num bucket de objetos, num banco de dados). Os dois merecem proteção — um dado criptografado em repouso mas trafegando em texto claro ainda vaza para quem intercepta a rede.
 
 > [!info] Fronteira
@@ -89,9 +131,66 @@ flowchart LR
 > [!info] Fronteira
 > Processo de resposta a incidente, postmortem sem culpa, e a disciplina operacional de estar de plantão para esse tipo de evento têm casa própria na trilha [[03-Dominios/Engenharia/Operação/index|Operação (DevOps/SRE)]]. O pilar de Segurança levanta a exigência ("esteja preparado"); a mecânica de como se preparar é terreno daquela trilha.
 
+## Da pergunta ao sintoma: como usar os sete princípios numa review
+
+Os sete princípios só valem alguma coisa numa review de arquitetura se virarem pergunta — e se o revisor souber reconhecer, no desenho que tem na frente, o sintoma de cada um estar sendo ignorado. A tabela abaixo é o que uma review séria de segurança carrega na cabeça:
+
+| Princípio | A pergunta da review | Sintoma de violação |
+|---|---|---|
+| Fundação de identidade forte | Essa credencial/role precisa mesmo de todo esse escopo, para sempre? | Política com `Action: "*"` ou `Resource: "*"`; credencial de longa duração compartilhada entre pessoas |
+| Manter rastreabilidade | Se isso falhar às 3h da manhã, dá pra saber o quê, quando e quem, sem "investigar" do zero? | Log não centralizado; nenhum alerta configurado; provedor detecta a anomalia antes do time |
+| Segurança em todas as camadas | Se este controle específico falhar, o que mais segura o sistema? | Um único ponto de controle (só firewall, só IAM, só validação de input) protegendo um recurso sensível |
+| Automatizar boas práticas | Esse controle depende de alguém lembrar de aplicá-lo manualmente? | Checklist manual de segurança antes do deploy; regra de rede editada direto no console, sem versionamento |
+| Proteger dados em trânsito e repouso | Todo dado sensível está protegido nas duas formas — parado e em movimento? | Backup sem criptografia; tráfego interno entre serviços em texto claro "porque é rede privada" |
+| Manter pessoas longe dos dados | Alguém precisa mesmo tocar o dado bruto para resolver isso, ou dá pra resolver com dado mascarado? | Acesso direto e rotineiro de engenheiro a tabela de produção com dado de cliente, para depuração |
+| Preparar-se para eventos de segurança | Se isso acontecer amanhã, existe um processo escrito, ou vai ser improviso? | Ninguém no time sabe, de cabeça, os passos para revogar uma credencial comprometida |
+
+## Defesa em profundidade, camada por camada
+
+O terceiro princípio — "segurança em todas as camadas" — merece um desenho próprio, porque é o mais fácil de aplicar pela metade: um time reforça o controle de rede, sente que "já cuidou de segurança", e para por ali. Defesa em profundidade pede uma camada de controle independente em cada nível do sistema, de fora para dentro, de forma que a falha de uma camada não derrube as outras.
+
+```mermaid
+flowchart TD
+    subgraph L1["Borda de rede"]
+        subgraph L2["Rede virtual isolada (VPC/VPC-like)"]
+            subgraph L3["Balanceador de carga / gateway"]
+                subgraph L4["Instância / serviço de computação"]
+                    subgraph L5["Sistema operacional"]
+                        subgraph L6["Aplicação e código"]
+                            L7["Dado"]
+                        end
+                    end
+                end
+            end
+        end
+    end
+```
+
+Cada camada responde por um tipo diferente de falha, e por isso admite um controle exemplar diferente:
+
+| Camada | Controle exemplar | Pergunta a se fazer |
+|---|---|---|
+| Rede | Grupo de segurança / firewall restringindo porta e origem | Esta porta precisa mesmo estar acessível de fora, ou só de dentro da rede privada? |
+| Host / instância | Imagem endurecida (hardened), patch automático, sem SSH exposto por padrão | Se alguém alcançar esta instância, o que mais ela consegue alcançar a partir daqui? |
+| Aplicação | Validação de input, dependência com scan de vulnerabilidade, WAF na borda | Uma dependência de terceiros comprometida derruba só esta aplicação, ou a conta inteira? |
+| Dados | Criptografia em repouso com chave gerida separadamente do recurso | Se este dado vazar apesar de tudo, ele ainda é legível para quem não tem a chave? |
+| Identidade | Role com escopo mínimo, sem credencial de longa duração | Esta credencial, sozinha, consegue causar dano além do que ela precisa fazer? |
+
+Repare que "identidade" aparece como camada aqui **e** como princípio próprio (o primeiro) — não é contradição. Cada princípio olha o sistema de um ângulo; defesa em profundidade olha "quantas camadas independentes", fundação de identidade olha "quão apertado é o escopo de cada uma". Um sistema com identidade bem desenhada mas só uma camada de defesa ainda é frágil; um sistema com cinco camadas mas identidade com escopo de administrador em todas elas também é.
+
 ## As sete áreas de foco
 
-O whitepaper organiza o pilar não só em princípios de design, mas também em sete áreas de foco temáticas — fundações de segurança, gestão de identidade e acesso, detecção, proteção de infraestrutura, proteção de dados, resposta a incidentes, e segurança de aplicação. Vale notar a correspondência: os sete princípios de design são o "porquê" (o que uma arquitetura segura busca), e as sete áreas são o "onde" (em que parte do sistema cada busca se materializa). Gestão de identidade e acesso é onde o princípio 1 vira prática; detecção é onde o princípio 2 vira prática; proteção de infraestrutura é onde o princípio 3 (defesa em profundidade) vira prática; e assim por diante. Esta trilha não desenvolve cada área em detalhe aqui — cada uma tem, ou terá, seu próprio galho dedicado (identidade no galho 4, o restante ao longo dos galhos de segurança e produção mais adiante).
+O whitepaper organiza o pilar não só em princípios de design, mas também em sete áreas de foco temáticas. Os princípios são o "porquê" (o que uma arquitetura segura busca); as áreas são o "onde" (em que parte do sistema, ou em que fase do trabalho, cada busca se materializa). Esta trilha não desenvolve cada área em detalhe aqui — cada uma tem, ou terá, seu próprio galho dedicado.
+
+| Área de foco | Do que trata | Princípio(s) que ela operacionaliza |
+|---|---|---|
+| Fundações de segurança | A postura de segurança básica da conta/organização — a base sobre a qual as outras seis áreas se apoiam | Todos, em algum grau |
+| Gestão de identidade e acesso | Quem (pessoa ou serviço) pode agir sobre qual recurso, e com que escopo | 1 — fundação de identidade forte |
+| Detecção | Monitorar, logar e alertar sobre atividade e mudança no ambiente | 2 — manter rastreabilidade |
+| Proteção de infraestrutura | Controles em rede, host e serviço de computação, em múltiplas camadas | 3 — segurança em todas as camadas |
+| Proteção de dados | Classificação de sensibilidade, criptografia, controle de acesso ao dado em si | 5 — proteger dados em trânsito e repouso; 6 — manter pessoas longe dos dados |
+| Resposta a incidentes | Processo, automação e simulação para quando (não se) algo dá errado | 7 — preparar-se para eventos de segurança |
+| Segurança de aplicação | Práticas de segurança no ciclo de vida do software — do design ao código em produção | 4 — automatizar boas práticas; 3 — segurança em todas as camadas |
 
 ## Identidade também é sobre quem é uma pessoa, não só o que ela pode fazer
 
@@ -104,21 +203,35 @@ Vale uma distinção fina, fácil de perder de vista quando se fala em "identida
 
 Vale ancorar os sete princípios no vocabulário concreto dos dois provedores desta trilha — não como tutorial de configuração (isso é dos galhos seguintes), mas como reconhecimento de nome, o tipo de vocabulário que qualquer conversa técnica sênior sobre nuvem vai presumir que você conhece.
 
-**Fundação de identidade.** Em AWS, o serviço central é o **IAM** (Identity and Access Management) — usuários, grupos, roles e políticas que definem quem pode fazer o quê. Em DigitalOcean, o modelo é mais simples: **Teams**, com papéis (roles) atribuídos a cada membro, controlando acesso a recursos, billing e configurações compartilhadas da conta — um modelo bem mais enxuto que o IAM da AWS, refletindo o catálogo geral mais simples da DigitalOcean.
+**Fundação de identidade.** Em AWS, o serviço central é o **IAM** (Identity and Access Management) — usuários, grupos, roles e políticas em JSON que definem, com granularidade por ação e por recurso, quem pode fazer o quê. Em DigitalOcean, o modelo é mais simples: **Teams**, com seis papéis pré-definidos atribuídos a cada membro, sem política customizada por recurso — um modelo bem mais enxuto que o IAM da AWS, refletindo o catálogo geral mais simples da DigitalOcean.
 
-**Rastreabilidade.** Em AWS, **CloudTrail** registra toda chamada de API feita na conta — quem fez, quando, de onde — servindo de base para auditoria, investigação de incidente e detecção de anomalia; complementarmente, **GuardDuty** analisa esses eventos (e outras fontes) em busca de atividade maliciosa, sem exigir que você escreva a lógica de detecção. A documentação pública da DigitalOcean, no momento desta nota, não expõe um produto equivalente e dedicado de trilha de auditoria centralizada com a mesma profundidade — é uma lacuna real de maturidade entre os dois provedores nesta área específica, não uma escolha estilística; times que operam em DigitalOcean e precisam de rastreabilidade fina tendem a construir isso via logging da própria aplicação e monitoramento de infraestrutura, em vez de um serviço de auditoria de conta pronto.
+| Papel (DigitalOcean Teams) | Escopo | Aproximação em AWS |
+|---|---|---|
+| Owner | Acesso completo a recursos, billing e configurações do time | Administrator (política `AdministratorAccess`) |
+| Biller | Acesso completo só a informações de billing | Role restrita a `aws-portal:*Billing` |
+| Billing Viewer | Leitura, só de billing | Role restrita a `aws-portal:ViewBilling` |
+| Member | Acesso completo aos recursos compartilhados; leitura em configurações do time | Role com política de serviço ampla, sem `iam:*` |
+| Modifier | Atualiza recursos, mas não pode excluir; leitura em configurações do time | Política customizada negando `*:Delete*` |
+| Resource Viewer | Leitura de recursos e configurações; sem acesso a billing | `ReadOnlyAccess` gerenciada pela AWS |
+
+A comparação é aproximada, não uma equivalência formal — a DigitalOcean não oferece política JSON por recurso individual como o IAM, então "Modifier" e "Resource Viewer" são papéis de conta inteira, não escopos recortados por serviço específico como uma política de IAM permitiria.
+
+**Rastreabilidade.** Em AWS, **CloudTrail** registra toda chamada de API feita na conta — quem fez, quando, de onde — servindo de base para auditoria, investigação de incidente e detecção de anomalia; complementarmente, **GuardDuty** analisa esses eventos (e outras fontes) em busca de atividade maliciosa, sem exigir que você escreva a lógica de detecção. A DigitalOcean tem um equivalente, mais modesto: **Security History**, no painel de segurança do time, registra ações tomadas — criação e exclusão de recursos, geração de tokens de API — com usuário, endereço IP e timestamp por entrada. A diferença real de maturidade entre os dois provedores não é "existe ou não existe" — é profundidade: não há, na DigitalOcean, um serviço de detecção automatizada de anomalia equivalente ao GuardDuty, nem uma API de exportação contínua de eventos para um SIEM externo tão robusta quanto a do CloudTrail; times que operam em DigitalOcean e precisam de rastreabilidade fina tendem a complementar o Security History com logging da própria aplicação e monitoramento de infraestrutura, em vez de confiar só no registro nativo da conta.
 
 **Proteção de dados.** Em AWS, o **KMS** (Key Management Service) centraliza a criação e o controle de chaves de criptografia, usadas por praticamente todo outro serviço (S3, RDS, EBS) para criptografar dado em repouso; dado em trânsito é majoritariamente coberto por TLS, com certificados geridos via **ACM** (AWS Certificate Manager). Em DigitalOcean, criptografia em repouso é aplicada por padrão em produtos como Volumes e Spaces sem exigir configuração explícita — uma filosofia de "seguro por padrão" mais simples, com menos superfície de decisão, ao custo de menos controle fino sobre a gestão da chave em si.
 
+**Segurança de aplicação.** Em AWS, o **Inspector** faz varredura automatizada de vulnerabilidade em instâncias EC2, imagens de container e funções Lambda, além de repositórios de código, priorizando o que corrigir primeiro por score de risco. A DigitalOcean não tem um serviço nativo equivalente de varredura de vulnerabilidade — times que operam lá tipicamente integram um scanner de terceiros (SCA, análise de imagem de container) diretamente no pipeline de CI/CD, em vez de um produto de plataforma dedicado. É a mesma lacuna de maturidade já observada em detecção: a DigitalOcean tende a assumir que essa camada vem de fora do provedor.
+
 > [!info] Caducidade
-> Nomes de produto e o que cada um cobre por padrão verificados em 2026-07-20. Recursos de segurança evoluem com frequência incomum — confira a documentação oficial de cada provedor antes de tomar qualquer decisão de arquitetura baseada nesta nota.
+> Nomes de produto e o que cada um cobre por padrão verificados em 2026-07-22. Recursos de segurança evoluem com frequência incomum — confira a documentação oficial de cada provedor antes de tomar qualquer decisão de arquitetura baseada nesta nota.
 
 | Conceito | AWS | Azure | GCP | DigitalOcean |
 |---|---|---|---|---|
 | Gestão de identidade e acesso | IAM | Microsoft Entra ID | Cloud IAM | Teams (roles) |
-| Rastreabilidade / auditoria de conta | CloudTrail | Azure Monitor / Activity Log | Cloud Audit Logs | — (sem produto dedicado equivalente) |
+| Rastreabilidade / auditoria de conta | CloudTrail | Azure Monitor / Activity Log | Cloud Audit Logs | Security History (mais modesto, sem detecção automatizada) |
 | Detecção de ameaça | GuardDuty | Microsoft Defender for Cloud | Security Command Center | — (majoritariamente terceiros) |
 | Gestão de chaves de criptografia | KMS | Key Vault | Cloud KMS | Criptografia por padrão (sem gestão de chave própria exposta) |
+| Scan de vulnerabilidade / segurança de aplicação | Inspector | Defender for Cloud (proteção de workload) | Security Command Center (findings de vulnerabilidade) | — (majoritariamente terceiros no pipeline de CI/CD) |
 
 ## Casos práticos
 
@@ -127,6 +240,76 @@ Vale ancorar os sete princípios no vocabulário concreto dos dois provedores de
 **A rastreabilidade que transformou "não sabemos" em resposta em minutos.** Uma empresa de médio porte, depois de um susto de segurança sem gravidade real (uma tentativa de acesso não autorizado, bloqueada pelo controle de identidade, mas registrada), decide investir em centralizar logging de toda ação relevante da conta de nuvem, com alerta automático para padrões fora do comum — criação de recurso em região nunca usada, tentativa de acesso fora do horário comercial habitual do time, mudança de política de permissão fora de uma janela de deploy planejada. Seis meses depois, um alerta desses dispara de madrugada: uma credencial de serviço começa a fazer chamadas de API em um padrão totalmente diferente do seu uso normal. O time revoga a credencial em minutos, antes de qualquer dano real acontecer — porque a pergunta "algo está errado?" já tinha resposta automatizada, em vez de depender de alguém notar manualmente um comportamento estranho na fatura do mês seguinte.
 
 **A criptografia que não impediu o vazamento, mas impediu o dano.** Um bucket de armazenamento de objetos, configurado incorretamente, fica acessível publicamente por um período — um erro de configuração, não um ataque. Só que os arquivos daquele bucket específico continham dados sensíveis de clientes, protegidos por criptografia em repouso com uma chave gerida separadamente do próprio bucket. Um atacante que descobre o bucket público consegue listar e baixar os arquivos criptografados — mas sem a chave, separada e protegida por uma política de acesso independente, os arquivos baixados são, na prática, ruído ilegível. O erro de configuração ainda precisa ser corrigido e investigado — não é motivo para relaxar — mas a camada adicional de proteção de dados evitou que um erro de configuração de infraestrutura virasse um vazamento de dado real de cliente. É defesa em profundidade e proteção de dados trabalhando juntas: nenhum controle sozinho teria sido suficiente, mas a combinação dos dois reduziu um incidente sério a um incidente administrável.
+
+**O guardrail que pegou o erro antes de virar incidente.** Um time define, como parte do pipeline de infraestrutura como código, uma regra automatizada: nenhum recurso de armazenamento pode ser criado sem criptografia em repouso habilitada — a mesma forma de guardrail ilustrada mais acima, para o princípio de automação. Um engenheiro, sem perceber, escreve um módulo de infraestrutura para um novo ambiente de teste sem essa flag. O pipeline de deploy rejeita a mudança automaticamente, antes de qualquer recurso real ser criado, com uma mensagem clara sobre qual regra falhou. Não houve incidente para investigar depois — porque o controle rodou **antes** do problema existir, não depois. É a diferença prática entre automação de boas práticas como princípio de projeto e "confiar que alguém vai lembrar" como plano de segurança.
+
+## O pilar de Segurança aplicado — uma review
+
+Os sete princípios e as sete áreas de foco só ganham valor de verdade quando alguém os aplica sobre um sistema concreto, real o suficiente para ter falha real. O exercício abaixo é hipotético — nenhum sistema, cliente ou incidente aqui descrito é real — mas é o tipo exato de arquitetura que aparece numa review sênior, e o tipo de raciocínio que uma entrevista para vaga sênior/staff espera ver em voz alta.
+
+**O sistema.** Uma API B2B chamada, para este exercício, ContaCerta emite notas fiscais eletrônicas para empresas clientes através de uma API pública autenticada por chave de API por cliente. O backend roda em containers atrás de um load balancer; os dados fiscais (razão social, CNPJ, valores) ficam num banco relacional gerenciado; os PDFs das notas emitidas — que carregam os mesmos dados, mais o endereço do cliente final — são gravados num bucket de armazenamento de objetos. Para emitir cada nota, o serviço chama a API de um provedor terceiro de assinatura eletrônica, autenticando com uma chave de API própria daquele provedor.
+
+Por trás dessa descrição limpa, o estado real da conta acumulou os pequenos atalhos que toda arquitetura acumula com o tempo. A pipeline de deploy e o próprio backend em produção compartilham uma única role de serviço, criada no início do projeto e nunca revisada, com permissão de escrita no banco, no bucket, **e** de criar/alterar infraestrutura — "era mais rápido dar um escopo largo do que ajustar toda vez que algo novo precisava de permissão". A chave do provedor de assinatura eletrônica está gravada como variável de ambiente do container, com o mesmo valor em staging e em produção. Uma varredura de postura de segurança do próprio provedor de nuvem, rodada dois meses atrás, sinalizou que a porta do banco de dados está acessível para qualquer origem na internet — resquício de uma sessão de debug de performance, seis meses atrás, em que alguém liberou o acesso "só para testar uma query" e esqueceu de reverter. E quando um cliente abre um ticket relatando problema numa nota fiscal específica, o time de suporte entra direto no banco de produção com uma conta compartilhada de leitura e escrita para investigar, porque não existe outra ferramenta para isso.
+
+```mermaid
+flowchart LR
+    Cliente["Empresa cliente"] -->|chave de API| LB["Load balancer"]
+    LB --> Backend["Backend<br/>(containers)"]
+    Backend -->|role única<br/>deploy + runtime| DB[("Banco gerenciado<br/>dados fiscais")]
+    Backend -->|role única<br/>deploy + runtime| Bucket[("Bucket de uploads<br/>PDFs de notas")]
+    Backend -->|chave estática,<br/>igual em todo ambiente| Terceiro["Provedor terceiro<br/>assinatura eletrônica"]
+    Suporte["Time de suporte"] -->|conta compartilhada<br/>leitura + escrita| DB
+    Internet["Internet pública"] -.->|porta aberta<br/>para 0.0.0.0/0| DB
+```
+
+O desenho já entrega parte do diagnóstico visualmente: **três setas diferentes chegam ao banco sem controle independente entre si** — o backend, o suporte e, pela porta aberta, a internet pública inteira. Sobrepor as camadas de defesa em profundidade da seção anterior sobre este mesmo fluxo deixa a lacuna ainda mais nítida:
+
+```mermaid
+flowchart LR
+    subgraph Rede["Camada: rede"]
+        LB2["Load balancer"]
+    end
+    subgraph Identidade["Camada: identidade"]
+        Role["Role única,<br/>sem separação de deveres"]
+    end
+    subgraph Dados["Camada: dados"]
+        DB2[("Banco — só a<br/>regra de rede protege")]
+        Bucket2[("Bucket — sem<br/>segregação por sensibilidade")]
+    end
+    Cliente2["Cliente"] --> LB2 --> Role
+    Role --> DB2
+    Role --> Bucket2
+    Internet2["Internet pública"] -.->|nenhuma 2ª camada<br/>além da regra de rede| DB2
+```
+
+Note o que falta no diagrama: não existe uma camada de "host/instância" reforçando o banco, nem uma camada de identidade que distinga "o backend pode escrever nota fiscal" de "o backend pode apagar o banco inteiro". Uma única regra de rede é, hoje, a única coisa entre a internet pública e o dado fiscal de cada cliente — exatamente o oposto do que "segurança em todas as camadas" pede.
+
+Passando o pilar de Segurança sobre essa arquitetura, área por área:
+
+**Gestão de identidade e acesso.** *A pergunta:* essa credencial precisa mesmo de todo esse escopo, para sempre? *O que a review encontra:* uma única role cobre deploy e runtime, com permissão de infraestrutura somada a permissão de dado — não há separação entre "o pipeline pode alterar infra" e "o serviço pode ler/escrever no banco e no bucket". *O risco concreto:* se essa credencial vazar (num log, num commit, num container comprometido), o atacante não fica restrito a ler dados — ele pode recriar, apagar ou redirecionar infraestrutura inteira, porque a mesma credencial que roda o serviço também poderia, em tese, provisionar um banco novo em outra região.
+
+**Detecção.** *A pergunta:* se algo estiver errado, dá para saber sem esperar um cliente reclamar ou uma varredura periódica notar? *O que a review encontra:* a porta pública do banco ficou aberta por seis meses sem que ninguém do time notasse — só uma varredura de postura de segurança, rodada por iniciativa própria e não por alerta automático, encontrou o problema. Não há alerta configurado para exposição pública inesperada de um recurso que deveria ser privado. *O risco concreto:* o tempo entre "algo deu errado" e "alguém sabe que algo deu errado" é medido em meses, não em minutos — o mesmo padrão que, na abertura desta nota, transformou uma credencial vazada numa conta inteira comprometida antes que o time percebesse.
+
+**Proteção de infraestrutura.** *A pergunta:* se este controle específico falhar, o que mais segura o sistema? *O que a review encontra:* o único controle entre a internet pública e um banco com dado fiscal de cliente é a regra de rede — e essa regra, sozinha, falhou (ficou aberta para `0.0.0.0/0`). Não há uma segunda camada — autenticação de rede adicional, um proxy interno, segmentação — que teria limitado o dano quando a primeira camada cedeu. *O risco concreto:* qualquer scanner automatizado de porta aberta na internet, rodando de forma genérica e sem alvo específico, poderia ter encontrado esse banco nesses seis meses.
+
+**Proteção de dados.** *A pergunta:* todo dado sensível está protegido nas duas formas, e de forma proporcional à sua sensibilidade? *O que a review encontra:* o bucket de uploads mistura PDFs de teste com PDFs reais contendo CNPJ e endereço de cliente final, sob a mesma política de acesso — não há classificação nem segregação por sensibilidade dentro do bucket. *O risco concreto:* qualquer erro de configuração futuro no bucket (o mesmo tipo de erro do terceiro caso prático acima) expõe indistintamente dado de teste e dado real — sem segregação, o raio de dano de qualquer falha é sempre "tudo o que está ali", nunca um subconjunto controlado.
+
+**Resposta a incidentes.** *A pergunta:* se isso acontecer amanhã, existe processo escrito, ou vai ser improviso? *O que a review encontra:* quando a porta aberta foi finalmente descoberta, a correção foi "fechar e avisar no chat do time" — sem registro formal do achado, sem investigação de quem mais poderia ter se conectado àquele banco nos seis meses de exposição, sem revisão de que outras credenciais (a chave do provedor de assinatura, por exemplo) poderiam ter sido tocadas na mesma janela. *O risco concreto:* mesmo o incidente que **foi** encontrado não gerou aprendizado formal — o próximo atalho parecido (uma porta liberada "só por um minuto", uma credencial reaproveitada "só dessa vez") tem o mesmo caminho livre que este teve.
+
+Nenhum desses cinco achados, isolado, é necessariamente fatal — é exatamente por isso que uma review de segurança madura não para na primeira pergunta respondida "sim, temos isso". Ela soma os achados, e prioriza:
+
+| Risco | Severidade | Princípio violado | Remediação de alto nível |
+|---|---|---|---|
+| Porta do banco de dados acessível para `0.0.0.0/0` | Crítica | Segurança em todas as camadas | Restringir a regra de rede à sub-rede da aplicação; adicionar uma segunda camada (proxy interno ou exigência de rede privada) para que a falha de uma regra não baste sozinha |
+| Role única de deploy e runtime com escopo de infraestrutura + dado | Alta | Fundação de identidade forte | Separar a role de deploy da role de runtime, cada uma com o menor escopo necessário — mecânica em `[!info] Fronteira` do galho 4 |
+| Chave do provedor de assinatura reaproveitada entre staging e produção | Alta | Fundação de identidade forte / Proteger dados | Rotacionar e segregar por ambiente, geridas por um cofre de segredos dedicado — mecânica no galho 18 |
+| Nenhum alerta para exposição pública inesperada de recurso privado | Alta | Manter rastreabilidade | Centralizar log de mudança de configuração de rede e banco, com alerta automático para exposição pública fora do esperado |
+| Bucket sem segregação de dado real vs. dado de teste | Média | Proteger dados em trânsito e repouso | Separar por bucket ou prefixo com política de acesso própria por nível de sensibilidade — mecânica no galho 18 |
+| Suporte acessa produção com conta compartilhada de leitura/escrita | Média | Manter pessoas longe dos dados | Substituir por ferramenta de suporte com dado mascarado; se acesso direto for inevitável, exigir credencial individual e temporária |
+| Incidente da porta aberta resolvido sem investigação nem registro formal | Média | Preparar-se para eventos de segurança | Runbook de contenção/investigação por escrito, com pós-morte obrigatório mesmo para incidentes "pequenos" — disciplina operacional da trilha Operação (DevOps/SRE) |
+
+> [!info] Fronteira
+> A tabela aponta **onde** cada remediação mora — não como executá-la. Escrever a política de IAM que separa deploy de runtime é galho 4; configurar o cofre de segredos e a política de bucket por sensibilidade é galho 18; o runbook de resposta a incidente é a trilha Operação. Esta nota para na pergunta "o que está errado, e o quanto isso importa" — que já é o trabalho mais difícil de fazer bem numa review.
 
 ## Armadilhas comuns
 
@@ -151,4 +334,9 @@ Esta nota respondeu a pergunta "essa arquitetura resiste ao dia em que algo dá 
 - [AWS IAM — página oficial de produto](https://aws.amazon.com/iam/) — descrição oficial do serviço de gestão de identidade e acesso; acessado em 2026-07-20.
 - [AWS CloudTrail — página oficial de produto](https://aws.amazon.com/cloudtrail/) — governança, compliance e auditoria operacional da conta AWS; acessado em 2026-07-20.
 - [AWS KMS — página oficial de produto](https://aws.amazon.com/kms/) — gestão centralizada de chaves de criptografia; acessado em 2026-07-20.
+- [AWS GuardDuty — página oficial de produto](https://aws.amazon.com/guardduty/) — serviço gerenciado de detecção de ameaça, citado na comparação de rastreabilidade; acessado em 2026-07-22.
+- [Amazon Inspector — página oficial de produto](https://aws.amazon.com/inspector/) — varredura automatizada de vulnerabilidade, citada na comparação de segurança de aplicação; acessado em 2026-07-22.
+- [AWS Certificate Manager — página oficial de produto](https://aws.amazon.com/certificate-manager/) — gestão de certificados TLS/SSL, citada na proteção de dados em trânsito; acessado em 2026-07-22.
 - [DigitalOcean — Teams e gestão de acesso (documentação oficial)](https://docs.digitalocean.com/platform/teams/) — papéis (roles) e permissões de equipe na DigitalOcean; acessado em 2026-07-20.
+- [DigitalOcean — papéis pré-definidos de Teams (documentação oficial)](https://docs.digitalocean.com/platform/teams/roles/predefined/) — os seis papéis (Owner, Biller, Billing Viewer, Member, Modifier, Resource Viewer) e seu escopo, base da tabela de aproximação com IAM; acessado em 2026-07-22.
+- [DigitalOcean — como ver o histórico de segurança do time (documentação oficial)](https://docs.digitalocean.com/platform/teams/how-to/view-security-history/) — o recurso "Security History", equivalente mais modesto ao CloudTrail; acessado em 2026-07-22.
