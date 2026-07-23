@@ -38,6 +38,7 @@ Este galho é o mais prático da trilha — cada nota é um padrão aplicável n
 9. [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/09 - Prompting para Claude Code|09 - Prompting para Claude Code — comunicar tarefas com precisão]]
 10. [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/10 - Gestão de contexto|10 - Gestão de contexto em sessões longas]]
 11. [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/11 - Estratégias estruturais de contexto/index|11 - Estratégias estruturais de contexto]] — sub-galho com 4 notas: lazy-load de `.claude/`, sandboxing de tool output, indexação semântica externa, knowledge graph local com AST
+12. [[03-Dominios/Tecnologia/IA/Claude Code/Workflows/12 - Orquestração em grafo — fan-out, arestas e verificadores|12 - Orquestração em grafo — fan-out, arestas e verificadores]]
 
 ## Veja também
 

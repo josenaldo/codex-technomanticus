@@ -1,7 +1,7 @@
 ---
 title: "Loop engineering — o motor de 4 tempos e as 4 traições"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-21
 type: concept
 status: seedling
 fase: Adepto
@@ -58,7 +58,9 @@ flowchart LR
     style D fill:#4A90D9,color:#fff
 ```
 
-Por que esse esqueleto de quatro tempos venceu tanta atenção, em tantos domínios, por tanto tempo? Perez tem uma resposta direta: **uma métrica, um ciclo.** Ver um único número se mover — o peso caindo, a temperatura estabilizando, o score subindo — parece a resposta inteira. É barato de construir (você precisa de uma métrica, um alvo e um jeito de medir o gap — não precisa de mais nada), e é poderoso no começo, porque a maioria dos sistemas mal otimizados tem folga óbvia demais para o motor de 4 tempos explorar. A primeira volta do loop quase sempre funciona bem. É só depois — e a segunda metade desta nota chega exatamente lá — que a simplicidade cobra o preço.
+Nada disso nasceu com o LLM. O mesmo esqueleto de quatro tempos é o ciclo clássico de gestão ensinado há **setenta anos** como *plan-do-check-act* (PDCA) — e o motor de 4 tempos tem uma linhagem moderna que o debate de "loop engineering" de 2026 raramente para para nomear: OKRs, retrospectivas de sprint, testes A/B, e os próprios training loops que fazem machine learning aprender. Um eval loop de LLM não inventou o padrão; é só a peça mais recente a rodar dentro dele.
+
+Por que esse esqueleto de quatro tempos venceu tanta atenção, em tantos domínios, por tanto tempo? Perez tem uma resposta direta: **uma métrica, um ciclo.** Ver um único número se mover — o peso caindo, a temperatura estabilizando, o score subindo — parece a resposta inteira. É barato de construir (você precisa de uma métrica, um alvo e um jeito de medir o gap — não precisa de mais nada), e é genuinamente poderoso: quase tudo que é medido e iterado melhora, ao menos no começo, porque a maioria dos sistemas mal otimizados tem folga óbvia demais para o motor de 4 tempos explorar. Construir um bom loop — escolher algo mensurável, fechar o ciclo, resistir a mexer entre medições — é uma habilidade real, e organizações que sabem fazer isso superam as que não sabem. A primeira volta do loop quase sempre funciona bem. É só depois — e a segunda metade desta nota chega exatamente lá — que a simplicidade cobra o preço.
 
 > [!abstract] Resumo da seção
 > O loop de melhoria não é uma invenção de 2026: é o mesmo motor de quatro tempos (PICK, SET, MEASURE, ACT) que já existe em qualquer termostato, em qualquer pessoa se pesando, em qualquer eval loop. O que muda entre essas instâncias é só o domínio — o esqueleto é idêntico, e é justamente essa universalidade que faz o motor barato de construir e sedutor de assistir funcionando.
@@ -208,12 +210,12 @@ O problema é que "a taxa de resolução subiu" e "os clientes estão sendo bem 
 ### Conflict — velocidade briga com profundidade, e sozinhas as duas parecem bem
 
 > [!warning] CONFLICT
-> O time de suporte, sem perceber, estava rodando dois loops implícitos e concorrentes: um otimizando velocidade de resolução, outro (não instrumentado, mas presente na cultura do time) tentando manter qualidade de atendimento. Cada loop, olhado isoladamente, parece saudável — a taxa de resolução sobe, e ninguém tinha um número explícito de "qualidade" caindo para contrapor. O conflito só aparece quando você olha os dois lados ao mesmo tempo: cada minuto a menos gasto por ticket é, em algum grau, profundidade que não aconteceu. Um loop otimizando uma métrica sozinha nunca vê esse trade-off — ele só vê a própria métrica subindo, e "subindo" parece sempre bom quando é a única coisa que você está olhando.
+> O time de suporte, sem perceber, estava rodando dois loops implícitos e concorrentes: um otimizando velocidade de resolução, outro (não instrumentado, mas presente na cultura do time) tentando manter qualidade de atendimento. Cada loop, olhado isoladamente, parece saudável — a taxa de resolução sobe, e ninguém tinha um número explícito de "qualidade" caindo para contrapor. O conflito só aparece quando você olha os dois lados ao mesmo tempo: cada minuto a menos gasto por ticket é, em algum grau, profundidade que não aconteceu. Um loop otimizando uma métrica sozinha nunca vê esse trade-off — ele só vê a própria métrica subindo, e "subindo" parece sempre bom quando é a única coisa que você está olhando. É o mesmo padrão que aparece, sem nenhuma IA envolvida, num prédio com controladores de HVAC desalinhados: um loop aquece uma sala enquanto o loop vizinho a resfria, para sempre, cada um performando lindamente sob a própria luz — dois termostatos, dois PICK-SET-MEASURE-ACT impecáveis, brigando um contra o outro sem que nenhum dos dois tenha como perceber.
 
 ### Decay — ninguém vigia o vigia
 
 > [!warning] DECAY
-> Sensores driftam. O dashboard de taxa de resolução, construído cinco meses atrás para medir "o bot resolveu o problema do cliente", continua tecnicamente funcionando — continua contando tickets fechados sem escalação — mas o que ele mede de fato se afastou, mês a mês, do que ele foi desenhado para medir, sem que ninguém tenha tocado no código de instrumentação. Ninguém revalidou, ao longo dos cinco meses, se "ticket fechado sem escalar" ainda correspondia a "problema resolvido" na prática — porque o próprio motor de 4 tempos não tem, embutido em si, um passo que audite os sensores que ele usa. O dashboard continua verde. É esse verde, precisamente, que é o problema: ele para de ser sinal e vira ruído travestido de sinal, e ninguém percebe até o dado adjacente (a renovação) já ter caído pela metade.
+> Sensores driftam. O dashboard de taxa de resolução, construído cinco meses atrás para medir "o bot resolveu o problema do cliente", continua tecnicamente funcionando — continua contando tickets fechados sem escalação — mas o que ele mede de fato se afastou, mês a mês, do que ele foi desenhado para medir, sem que ninguém tenha tocado no código de instrumentação. Ninguém revalidou, ao longo dos cinco meses, se "ticket fechado sem escalar" ainda correspondia a "problema resolvido" na prática — porque o próprio motor de 4 tempos não tem, embutido em si, um passo que audite os sensores que ele usa. O dashboard continua verde. É esse verde, precisamente, que é o problema: ele para de ser sinal e vira ruído travestido de sinal, e ninguém percebe até o dado adjacente (a renovação) já ter caído pela metade. Na sua forma mais comum, essa medição escorrega de checar a realidade para checar papelada — o número de um relatório conferido contra o número de outro relatório, os dois internos, nenhum tocando o cliente de verdade. Um loop que roda no cronograma enquanto suas medições se desprenderam do mundo não está melhorando nada. É **teatro com boa frequência de público**.
 
 ![[evolucao-eng-onde-um-loop-quebra.png]]
 *Carlos E. Perez (@IntuitMachine) — onde um loop quebra: Goodhart (métrica gamed), blind up (não questiona o alvo), conflict (velocidade x profundidade), decay (sensores driftam sem vigilância).*
@@ -255,7 +257,7 @@ Para quem quer ver o mesmo motor de 4 tempos aplicado especificamente ao ciclo d
 
 ## Fontes
 
-- **Perez, C. E. (@IntuitMachine)** — thread e material visual sobre o motor de 4 tempos (PICK/SET/MEASURE/ACT) e as quatro traições do loop (Goodhart, blind up, conflict, decay), citado na pesquisa consolidada deste galho. Fonte das duas imagens embutidas nesta nota.
+- **Perez, C. E. (@IntuitMachine)** — ["From Loop Engineering to Graph Engineering?"](https://x.com/IntuitMachine/status/2078419526354378975) — **fonte primária**, ensaio integral: o motor de 4 tempos, sua linhagem de setenta anos (PDCA, OKRs, retrospectivas de sprint, testes A/B, training loops de ML), o caso do time de suporte, e as quatro traições (Goodhart, blind up, conflict, decay) em detalhe, incluindo o exemplo de HVAC desalinhado e a frase "teatro com boa frequência de público". Fonte das duas imagens embutidas nesta nota.
 - **Osmani, A.** — declaração pública sobre loop engineering ("Loop engineering is replacing yourself as the person who prompts the agent..."), jun/2026, citada na pesquisa consolidada deste galho.
 - **Steinberger, P. (@steipete)** — thread sobre loop engineering comentando fala de Boris Cherny, jun/2026 (~575K visualizações contabilizadas na pesquisa consolidada), citado na pesquisa consolidada deste galho.
 - **Orosz, G. (Pragmatic Engineer)** — enquete informal com ~210 desenvolvedores sobre uso real de loops disparados por evento/cron (teste flaky, triagem de incidente, PR de bug, E2E noturno, migração longa), e observações sobre drift em runs longos e custo de tokenmaxxing, citadas na pesquisa consolidada deste galho.

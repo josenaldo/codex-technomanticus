@@ -1,7 +1,7 @@
 ---
 title: "Grounded vs ungrounded — tocar a realidade"
 created: 2026-07-20
-updated: 2026-07-20
+updated: 2026-07-21
 type: concept
 status: seedling
 fase: Magus
@@ -31,6 +31,8 @@ Perez volta ao mesmo desenho um slide depois e faz uma pergunta desconfortável:
 Imagine um grafo com oito nós, A até H, todos conectados entre si. Cada nó valida os outros. A concorda com B, B concorda com C, C confirma A, e assim por diante — uma malha fechada onde toda aresta reporta "consistente" com toda aresta vizinha. Rode os checks e você vê sete sinais verdes. Não seis, não cinco com ressalvas — sete. O sistema inteiro concorda consigo mesmo.
 
 O rótulo que Perez dá a esse grafo é preciso e desconfortável: **"consistente, mútuo, verificado por nada".** E o veredito que ele anexa é o motivo desta nota inteira existir: um grafo assim **"falha mais tarde, e mais caro"**.
+
+Vale tornar isso concreto com o cenário completo que Perez usa para fechar seu ensaio — porque é mais afiado do que o exemplo abstrato de A a H, e é exatamente o tipo de armadilha que uma equipe que levou a sério a nota anterior pode cair. Imagine uma empresa que construiu o grafo inteiro, direito: métricas pareadas (PAIR), audit loops (AUDIT), meta-loops tunando os parâmetros dos loops de baixo (HIERARCHY) — e **cada um desses loops consome relatórios**. O audit loop confere os números de operações contra os números de finanças; os números de finanças vêm dos mesmos sistemas que operações alimenta; o meta-loop tuna thresholds usando dashboards construídos sobre tudo isso. Todo loop vigia outro loop, e **nenhum loop toca o chão**. Esse grafo é circular: uma rede elaborada de confirmação mútua na qual tudo é consistente e nada é verificado — e vai falhar exatamente como o loop único da nota 05 falhou, só que mais tarde e mais caro, com muito mais luzes verdes no caminho para baixo. A topologia da nota 06 comprou sofisticação. Não comprou contato com a realidade.
 
 > [!question]- Como um sistema pode estar "consistente" e "errado" ao mesmo tempo? Isso não é uma contradição?
 > Não é contradição porque consistência e correção são propriedades diferentes, medidas contra referências diferentes. Consistência mede se as partes do sistema concordam *entre si*. Correção mede se o sistema concorda com algo *fora dele* — o mundo, um fato, um resultado real. Um grupo de pessoas pode estar inteiramente de acordo sobre algo e estar todo inteiramente enganado; a unanimidade nunca foi evidência de verdade, só evidência de que ninguém no grupo discordou. Um grafo de agentes de IA tem exatamente o mesmo problema, só que automatizado e rodando em produção.
@@ -76,7 +78,7 @@ Se o problema é que nenhum nó do grafo toca algo de fora, a solução, no dese
 
 ### ANCHOR — fatos que aconteceram fora do sistema
 
-A âncora mais direta é o fato bruto: **receita que efetivamente entrou no banco, testes que efetivamente rodaram e passaram, clientes que efetivamente ficaram** (em vez de cancelaram). Não é uma métrica calculada por um componente do sistema sobre o próprio comportamento do sistema — é um evento que aconteceu no mundo, fora de qualquer pipeline de IA, e que pode ser checado independentemente de qualquer coisa que o grafo diga sobre si mesmo.
+A âncora mais direta é o fato bruto: **receita que caiu no banco, testes que de fato executaram, clientes que de fato ficaram** (em vez de cancelaram), **a contagem física que bate ou não bate**. Perez chama esse tipo de medição de "do tipo com que não se discute" — não porque seja infalível, mas porque não é uma métrica calculada por um componente do sistema sobre o próprio comportamento do sistema. É um evento que aconteceu no mundo, fora de qualquer pipeline de IA, e que pode ser checado independentemente de qualquer coisa que o grafo diga sobre si mesmo.
 
 A propriedade que faz de um fato uma âncora de verdade — e não só mais um número — é que ele **não pode ser produzido pelo próprio sistema que está sendo avaliado.** Um LLM pode gerar uma resposta que parece ótima; ele não pode fazer um cliente renovar um contrato. Pode gamed uma taxa de resolução (como o caso trabalhado da nota 05); não pode gamed diretamente a receita que chega numa conta bancária real, porque essa receita depende de uma decisão humana, de fora, tomada com informação que o sistema não controla por completo.
 
@@ -84,7 +86,7 @@ A propriedade que faz de um fato uma âncora de verdade — e não só mais um n
 
 A segunda âncora é sutil e é, na visão desta nota, a mais fácil de subestimar: **regras que nunca foram tunadas, um held-out set** — um conjunto de exemplos deliberadamente mantido fora de qualquer ciclo de ajuste, nunca usado para treinar, calibrar ou orientar prompt engineering, guardado justamente para servir de teste independente mais tarde.
 
-O mecanismo que dá valor ao FROZEN não é a qualidade dos exemplos em si — é o congelamento. Um held-out set que foi consultado, ainda que uma vez, durante o desenvolvimento deixa de medir generalização e passa a medir memorização: o sistema pode estar bom nele precisamente porque alguém, em algum momento, ajustou algo olhando para aquele conjunto. O valor da âncora **vem inteiramente de não poder ser ajustada** — no momento em que alguém a toca para "melhorar o número", ela deixa de ser âncora e vira só mais um alvo do motor PICK-SET-MEASURE-ACT, sujeito às mesmas quatro traições da nota 05, sobretudo Goodhart.
+O mecanismo que dá valor ao FROZEN não é a qualidade dos exemplos em si — é o congelamento. Um held-out set que foi consultado, ainda que uma vez, durante o desenvolvimento deixa de medir generalização e passa a medir memorização: o sistema pode estar bom nele precisamente porque alguém, em algum momento, ajustou algo olhando para aquele conjunto. O valor da âncora **vem inteiramente de não poder ser ajustada** — no momento em que alguém a toca para "melhorar o número", ela deixa de ser âncora e vira só mais um alvo do motor PICK-SET-MEASURE-ACT, sujeito às mesmas quatro traições da nota 05, sobretudo Goodhart. Nós FROZEN existem, na formulação de Perez, **precisamente porque são as regras que o otimizador seria tentado a enfraquecer** — a mesma lógica exata que já explica, na nota anterior, por que um training loop nunca tem permissão de ver o próprio held-out set: o congelamento não é conservadorismo burocrático, é a única forma de proteger uma regra do exato mecanismo que a nota 05 documentou destruindo métricas.
 
 > [!question]- Se o held-out set nunca pode ser ajustado, como ele continua útil à medida que o mundo muda?
 > Essa é exatamente a tensão que a parte de ceticismo desta nota trata com cuidado adiante — ela não tem resposta limpa. Um FROZEN protege contra um problema (overfitting no próprio processo de melhoria) criando outro (obsolescência silenciosa conforme a distribuição real do mundo se afasta do que o set congelado representa). A prática mais honesta que existe hoje não elimina esse trade-off — administra ele, por exemplo, criando held-out sets **versionados**, cada um congelado por um período definido e depois substituído por um novo — nunca ajustado, sempre trocado por inteiro, com o antigo preservado para comparação histórica. É mais disciplina de processo do que solução técnica definitiva.
@@ -161,6 +163,17 @@ O vermelho, no primeiro subgrafo, não marca um nó defeituoso — marca que **n
 
 ---
 
+## A previsão de Perez: grafos também vão falhar
+
+Vale fechar o argumento técnico com a previsão que o próprio Perez faz sobre o destino do padrão que ele mesmo documentou — porque ela é o antídoto mais direto contra ler esta nota como "e agora grounding resolveu tudo". A previsão segura, na leitura dele, é que arquitetura de loops vire ortodoxia do jeito que loops únicos viraram: os tutoriais mudam, "por que uma métrica nunca basta" vira cânone de palestra, todo sistema sério passa a shipar com métricas pareadas e ciclos de auditoria do jeito que hoje todo sistema sério shipa com controle de versão. Mas a previsão mais profunda segue do próprio padrão que o ensaio descobriu: **grafos de loops também vão falhar**, do jeito característico deles — circularmente, consistentemente, plausivelmente —, onde quer que sejam construídos sem âncoras. E quando isso acontecer, o discurso vai sacudir de novo na direção do que vier a seguir, exatamente como sacudiu de prompt para flow, de flow para context e harness, de loop para grafo.
+
+Essa previsão é o que mantém este capítulo alinhado com o resto do galho, e não uma exceção profética a ele: nenhuma camada documentada aqui — nem esta — é apresentada como destino final. O maquinário de melhoria, qualquer que seja sua forma futura, vai continuar precisando admitir que seus alvos mais profundos foram **escolhidos, não computados** — e é exatamente aí que a autoridade de qualquer arquitetura, por mais sofisticada que seja, para de ser técnica e passa a ser humana.
+
+> [!abstract] Resumo da seção
+> Perez não trata grounded vs ungrounded como resposta final: prevê que grafos de loops também vão falhar, do jeito circular e plausível que caracteriza sistemas sem âncora, e que o discurso vai se deslocar de novo para o que vier depois. O que não muda, em nenhuma camada futura, é que os alvos mais profundos de qualquer máquina de melhoria foram escolhidos por pessoas, não computados por ela.
+
+---
+
 ## Por que este capítulo é retroativo, não sucessor
 
 Todo capítulo anterior deste galho seguiu o mesmo formato historiográfico: uma unidade de design nova sucede a anterior, ocupa o lugar dela na conversa, e a linha do tempo avança — prompt engineering cede espaço a flow engineering, que cede a context e harness engineering, que cede a loop engineering, que cede a graph engineering. Cada capítulo tinha um "quando" claro e substituía o capítulo de trás.
@@ -215,5 +228,5 @@ Para quem quer aprofundar cada peça do mecanismo de autoconsistência descrito 
 
 ## Fontes
 
-- **Perez, C. E. (@IntuitMachine)** — thread e material visual sobre o grafo A–H "consistente, mútuo, verificado por nada", as três âncoras (ANCHOR, FROZEN, HUMAN) e a regra "toda máquina de melhoria precisa continuar tocando a realidade que diz melhorar", incluindo o fecho "o corte real nunca foi loops vs grafos, é grounded vs ungrounded" — citado na pesquisa consolidada deste galho. Fonte da imagem embutida nesta nota.
+- **Perez, C. E. (@IntuitMachine)** — ["From Loop Engineering to Graph Engineering?"](https://x.com/IntuitMachine/status/2078419526354378975) — **fonte primária**, ensaio integral: o grafo A–H "consistente, mútuo, verificado por nada", o cenário da empresa cujos loops só consomem relatórios uns dos outros, as três âncoras (ANCHOR, FROZEN, HUMAN), a regra "toda máquina de melhoria precisa continuar tocando a realidade que diz melhorar", o fecho "o corte real nunca foi loops vs grafos, é grounded vs ungrounded", a previsão de que grafos de loops também vão falhar sem âncoras, e o fecho sobre alvos "escolhidos, não computados". Fonte da imagem embutida nesta nota.
 - Ver também as fontes de [[05 - Loop engineering — o motor de 4 tempos e as 4 traições]] e [[06 - Graph engineering — a confiabilidade mora nas arestas]] para o contexto completo do debate loop-vs-grafo ao qual este argumento responde diretamente.

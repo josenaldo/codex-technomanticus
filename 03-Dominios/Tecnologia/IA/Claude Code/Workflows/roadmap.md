@@ -10,26 +10,27 @@ tags:
 
 # Roadmap — Workflows
 
-Roadmap **de galho-pai**: mapeia as **notas diretas** (10, sequência 01→10) e o **sub-galho**
-`11 - Estratégias estruturais de contexto`. Gerado por `/diagnosticar-galho`.
+Roadmap **de galho-pai**: mapeia as **notas diretas** (agora 11: sequência 01→10 + 12) e o
+**sub-galho** `11 - Estratégias estruturais de contexto`. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Tecnologia/IA/Claude Code/Workflows`
 **Nível:** galho-pai (contém sub-galho)
 **Diagnóstico:** 2026-07-02
 **Última execução:** 2026-07-08 (COMPLETO: 9/9 notas diretas acionáveis ✅ + sub-galho 11 4/4 ✅; 07 dispensada)
+**Nota 12 adicionada:** 2026-07-21 (fora do ciclo de `/enriquecer-galho`; ainda não passou por diagnóstico/auditoria)
 
-**Esquema de `fase:` detectado:** COM fase (Adepto nas 10 diretas; sub-galho 11 misto)
+**Esquema de `fase:` detectado:** COM fase (Adepto nas 10 diretas originais; nota 12 é Magus; sub-galho 11 misto)
 **Piso de linhas:** Iniciado ≥300 · Adepto ≥400 · Magus ≥500
 
 ## Tabela-resumo (notas diretas)
 
 | Métrica | Valor |
 |---------|-------|
-| Notas diretas | 10 |
-| ⬜ pendente | 0 |
+| Notas diretas | 11 |
+| ⬜ pendente (não auditada) | 1 (nota 12) |
 | ➖ não precisa | 1 |
 | ✅ feita | 9 |
-| Custo | 9 `[substantivo]` · 1 `[mecânico]` |
+| Custo | 9 `[substantivo]` · 1 `[mecânico]` · 1 `[não avaliado]` |
 
 ## Sub-galhos
 
@@ -142,3 +143,10 @@ Roadmap **de galho-pai**: mapeia as **notas diretas** (10, sequência 01→10) e
   - Expandir com ângulo adicional (ex: gestão de contexto multi-agent, ou métricas de quando o contexto está "cheio") para atingir o piso Adepto ≥400 linhas — cita piso de linhas
   - Adicionar callout `[!tip]` com vídeo/podcast sobre context management em agentes de IA — ativa M1
 - **Resultado:** Ângulo métricas (seção "quando o contexto está objetivamente cheio" — `/context`, limiares ~50%/~80%) + ângulo multi-agent (isolamento via sub-agents, dado 90,2% Anthropic, Mermaid, cross-links notas 07/08). M1 (vídeo Matt Pocock "Most devs don't understand how context windows work"). 316→401 linhas reais (piso Adepto ✓); podadas ~85 linhas de padding. Sem desvios.
+
+#### 12 - Orquestração em grafo — fan-out, arestas e verificadores   [não avaliado]
+- **Enriquecimento:** ⬜ pendente — nota escrita do zero em 2026-07-21, fora do ciclo de `/enriquecer-galho`; ainda não passou por `/diagnosticar-galho` nem por `/verificar-nota`
+- **Estado:** ~445 linhas reais · fase: Magus · status: seedling
+- **Núcleo/gaps:** cobre o que 07/08/10 não cobrem — topologia de grafo com dezenas/centenas de sub-agents (fan-out, diamante split→work→merge, roteamento em runtime, loop-until-dry, verificador na aresta, tiering de modelo por nó, barreira vs. fluxo sem barreira). Fonte primária é marketing técnico do X (não documentação); APIs concretas (`agent()`, `pipeline()`, `isolation:"worktree"`, `.claude/workflows/`, `/deep-research`, `ultracode`) verificadas contra `code.claude.com/docs/en/workflows` em 21/07/2026 — `parallel()` citado pela fonte primária NÃO foi localizado literalmente na doc oficial recuperada, marcado como não verificado na própria nota
+- **Plano de execução:** rodar `/verificar-nota` numa próxima passada; considerar M1 (vídeo/podcast sobre dynamic workflows) se aplicável
+- **Resultado:** —

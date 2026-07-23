@@ -52,7 +52,7 @@ Roadmap **raiz do domínio**: mapeia o **estado de cada galho** (não as notas d
 | 19 | [[Ferramentas de IA]] | 5 | 0 | 0 | 5 | 100% | ✅ completo (2026-07-01) | ✅ |
 | 20 | [[Claude Code]] | 55 (6 sub-galhos) | 0 | 1 | 54 | 100% | ✅ completo (2026-07-08, 6/6 sub-galhos enriquecidos via fan-out ≤3 verificado) | ✅ (galho-pai) |
 | 21 | [[O Lado Sombrio da IA]] | 1 + glosas | 0 | 0 | 1 | 100% | ✅ completo (2026-07-09) — nota Débito cognitivo enriquecida | ✅ |
-| 22 | [[Evolução da Engenharia de IA]] | 8 | 8 | 0 | 0 | 0% | 📋 escrito 2026-07-20 (galho novo, historiografia prompt→graph); **4 imagens pendentes** bloqueiam 05·06·07; enriquecimento não iniciado; galho aberto por design (próxima camada = nota 09) | ✅ |
+| 22 | [[Evolução da Engenharia de IA]] | 9 | 0 | 0 | 9 | 100% | 📋 escrito 2026-07-20, fidelidade + nota 09 em 2026-07-21 (historiografia prompt→graph); 4 imagens ✅ distribuídas 05·06·07; nota-satélite prática em Claude Code/Workflows/12; `/verificar-nota` pendente; galho aberto por design (próxima camada = nota 10) | ✅ |
 
 ## Notas soltas (logo abaixo de IA/)
 

@@ -57,7 +57,8 @@ Cada camada já tem galho próprio no vault, com a mecânica completa. Aqui o â
 
 - [[03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA/06 - Graph engineering — a confiabilidade mora nas arestas\|06 - Graph engineering]] — a rede de loops como resposta às quatro traições, o duplo grafo (org vs work), e a pergunta honesta: o que muda num DAG quando os nós são estocásticos?
 - [[03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA/07 - Grounded vs ungrounded — tocar a realidade\|07 - Grounded vs ungrounded]] — um grafo internamente perfeito e externamente falso. As três âncoras, e por que este é um corte **transversal** às camadas, não a camada seguinte.
-- [[03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA/08 - Hype, ceticismo e mercado — lendo o próximo ciclo\|08 - Hype, ceticismo e mercado]] — a anatomia do ciclo destilada, as perguntas de triagem para a próxima camada anunciada, e o que os dados de mercado realmente dizem.
+- [[03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA/09 - Loop engineering e o compilador que faltava\|09 - Loop engineering e o compilador que faltava]] — a segunda lente sobre o loop: por que código já vem com compilador de graça, por que agente-revisando-agente é um juiz falsificado, e onde a torre de verificadores tem um último andar que só um humano ocupa.
+- [[03-Dominios/Tecnologia/IA/Evolução da Engenharia de IA/08 - Hype, ceticismo e mercado — lendo o próximo ciclo\|08 - Hype, ceticismo e mercado]] — a anatomia do ciclo destilada, as perguntas de triagem para a próxima camada anunciada, e o que os dados de mercado realmente dizem. Fecha a linha principal do galho.
 
 ## A linha do tempo em uma tela
 
@@ -75,7 +76,7 @@ E, atravessando todas elas: **grounded vs ungrounded** — a máquina de melhori
 ## Como percorrer
 
 > [!tip] Três caminhos
-> - **Sequencial (01 → 08)** se quer a história inteira. As notas se referenciam em cadeia: as traições da 05 são respondidas pelas arestas da 06, que são questionadas pela 07.
+> - **Sequencial (01 → 07 → 09 → 08)** se quer a história inteira. As notas se referenciam em cadeia: as traições da 05 são respondidas pelas arestas da 06, que são questionadas pela 07; a 09 é uma segunda lente sobre o loop (leia depois da 07) e a 08 fecha. A numeração é cronológica de escrita, não de leitura — a 09 chegou depois mas mora antes da 08.
 > - **Direto na 05 e 06** se o que você precisa é decidir arquitetura de agentes agora. Volte para a 01 depois, pelo critério.
 > - **01 e 08** se o que você quer é só o método de leitura — como avaliar a próxima camada quando ela for anunciada. São as duas pontas do mesmo argumento.
 
