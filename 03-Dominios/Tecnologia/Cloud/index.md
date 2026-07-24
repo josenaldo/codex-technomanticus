@@ -43,7 +43,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 11. ✅ [[03-Dominios/Tecnologia/Cloud/11 - Serverless e FaaS — Lambda a fundo/index|Serverless e FaaS — Lambda a fundo]]
 12. ✅ [[03-Dominios/Tecnologia/Cloud/12 - Containers gerenciados/index|Containers gerenciados]]
-13. ⬜ Mensageria e eventos gerenciados
+13. ✅ [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/index|Mensageria e eventos gerenciados]]
 14. ⬜ API Gateway e edge de aplicação
 15. ⬜ Arquiteturas serverless e event-driven
 

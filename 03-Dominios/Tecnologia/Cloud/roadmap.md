@@ -56,7 +56,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 |--:|-------|------:|--------|---------|
 | 11 | Serverless e FaaS — Lambda a fundo | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/11 - Serverless e FaaS — Lambda a fundo/roadmap|roadmap]] |
 | 12 | Containers gerenciados | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/12 - Containers gerenciados/roadmap|roadmap]] |
-| 13 | Mensageria e eventos gerenciados | — | ⬜ não iniciado | a criar |
+| 13 | Mensageria e eventos gerenciados | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/roadmap|roadmap]] |
 | 14 | API Gateway e edge de aplicação | — | ⬜ não iniciado | a criar |
 | 15 | Arquiteturas serverless e event-driven | — | ⬜ não iniciado | a criar |
 
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 12/24 escritos |
-| ✅ completos | 12 (Blocos 1-2 inteiros + galhos 11-12 do Bloco 3) |
+| Galhos | 13/24 escritos |
+| ✅ completos | 13 (Blocos 1-2 inteiros + galhos 11-13 do Bloco 3) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 12 + capstone |
-| Notas escritas | 73 |
-| M1 (mídia) pendente | galhos 1-12 (73 notas) + resto do domínio |
+| ⬜ não iniciados | 11 + capstone |
+| Notas escritas | 79 |
+| M1 (mídia) pendente | galhos 1-13 (79 notas) + resto do domínio |
 
 ---
 
