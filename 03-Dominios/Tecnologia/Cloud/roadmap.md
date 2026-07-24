@@ -68,7 +68,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | 17 | Observabilidade na cloud | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/17 - Observabilidade na cloud/roadmap|roadmap]] |
 | 18 | Segurança na cloud a fundo | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/18 - Segurança na cloud a fundo/roadmap|roadmap]] |
 | 19 | FinOps — a economia da cloud | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/19 - FinOps — a economia da cloud/roadmap|roadmap]] |
-| 20 | Resiliência e continuidade | — | ⬜ não iniciado | a criar |
+| 20 | Resiliência e continuidade | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/20 - Resiliência e continuidade/roadmap|roadmap]] |
 
 ### Bloco 5 — Provedores e maestria
 
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 18/24 escritos |
-| ✅ completos | 18 (Blocos 1-3 + galhos 16-18 do Bloco 4) |
+| Galhos | 20/24 escritos |
+| ✅ completos | 20 (Blocos 1-4 inteiros) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 6 + capstone |
-| Notas escritas | 109 |
-| M1 (mídia) pendente | galhos 1-18 (109 notas) + resto do domínio |
+| ⬜ não iniciados | 4 + capstone |
+| Notas escritas | 121 |
+| M1 (mídia) pendente | galhos 1-20 (121 notas) + resto do domínio |
 
 ---
 
@@ -104,5 +104,6 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 2. **Bloco 1 (galhos 1-4):** ✅ completo — 25 notas + index.md/roadmap.md de cada galho.
 3. **Bloco 2 — galhos 5-10 (Compute I, Compute II, Rede/VPC, Armazenamento, Bancos gerenciados, DNS/CDN/borda):** ✅ **completo** — 36 notas + index.md/roadmap.md de cada. Galho 10 fechou o bloco em 2026-07-24.
 4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** ✅ **completo** — galhos 11-15 fechados 2026-07-24. Capstone do bloco (15) costura a arquitetura serverless de referência.
-5. **Bloco 4 (galhos 16-20, Operar/sustentar/governar):** próximo — IaC, Observabilidade, Segurança na cloud, FinOps, Resiliência. Ponte forte→Operação.
+5. **Bloco 4 (galhos 16-20, Operar/sustentar/governar):** ✅ **completo** — IaC, Observabilidade, Segurança, FinOps, Resiliência fechados 2026-07-24.
+6. **Bloco 5 (galhos 21-24, Provedores e maestria):** próximo — AWS a fundo, DigitalOcean a fundo, multi-cloud, Certificação SAA. Depois: capstone do domínio.
 5. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.
