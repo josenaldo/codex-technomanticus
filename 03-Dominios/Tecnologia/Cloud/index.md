@@ -45,7 +45,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 12. ✅ [[03-Dominios/Tecnologia/Cloud/12 - Containers gerenciados/index|Containers gerenciados]]
 13. ✅ [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/index|Mensageria e eventos gerenciados]]
 14. ✅ [[03-Dominios/Tecnologia/Cloud/14 - API Gateway e edge de aplicação/index|API Gateway e edge de aplicação]]
-15. ⬜ Arquiteturas serverless e event-driven
+15. ✅ [[03-Dominios/Tecnologia/Cloud/15 - Arquiteturas serverless e event-driven/index|Arquiteturas serverless e event-driven]]
 
 ### Bloco 4 — Operar, sustentar, governar
 

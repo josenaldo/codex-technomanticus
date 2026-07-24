@@ -58,7 +58,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | 12 | Containers gerenciados | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/12 - Containers gerenciados/roadmap|roadmap]] |
 | 13 | Mensageria e eventos gerenciados | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/roadmap|roadmap]] |
 | 14 | API Gateway e edge de aplicação | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/14 - API Gateway e edge de aplicação/roadmap|roadmap]] |
-| 15 | Arquiteturas serverless e event-driven | — | ⬜ não iniciado | a criar |
+| 15 | Arquiteturas serverless e event-driven | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/15 - Arquiteturas serverless e event-driven/roadmap|roadmap]] |
 
 ### Bloco 4 — Operar, sustentar, governar
 
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 14/24 escritos |
-| ✅ completos | 14 (Blocos 1-2 inteiros + galhos 11-14 do Bloco 3) |
+| Galhos | 15/24 escritos |
+| ✅ completos | 15 (Blocos 1-3 inteiros) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 10 + capstone |
-| Notas escritas | 85 |
-| M1 (mídia) pendente | galhos 1-14 (85 notas) + resto do domínio |
+| ⬜ não iniciados | 9 + capstone |
+| Notas escritas | 91 |
+| M1 (mídia) pendente | galhos 1-15 (91 notas) + resto do domínio |
 
 ---
 
@@ -103,5 +103,6 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 1. **Task 0:** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
 2. **Bloco 1 (galhos 1-4):** ✅ completo — 25 notas + index.md/roadmap.md de cada galho.
 3. **Bloco 2 — galhos 5-10 (Compute I, Compute II, Rede/VPC, Armazenamento, Bancos gerenciados, DNS/CDN/borda):** ✅ **completo** — 36 notas + index.md/roadmap.md de cada. Galho 10 fechou o bloco em 2026-07-24.
-4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** em curso — galhos 11-14 ✅ fechados 2026-07-24. Próximo: galho 15 (Arquiteturas serverless e event-driven — Step Functions, orquestração vs coreografia, pipeline serverless; capstone do Bloco 3).
+4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** ✅ **completo** — galhos 11-15 fechados 2026-07-24. Capstone do bloco (15) costura a arquitetura serverless de referência.
+5. **Bloco 4 (galhos 16-20, Operar/sustentar/governar):** próximo — IaC, Observabilidade, Segurança na cloud, FinOps, Resiliência. Ponte forte→Operação.
 5. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.
