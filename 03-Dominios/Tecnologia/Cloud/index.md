@@ -52,7 +52,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 16. ✅ [[03-Dominios/Tecnologia/Cloud/16 - Infrastructure as Code/index|Infrastructure as Code]]
 17. ✅ [[03-Dominios/Tecnologia/Cloud/17 - Observabilidade na cloud/index|Observabilidade na cloud]]
 18. ✅ [[03-Dominios/Tecnologia/Cloud/18 - Segurança na cloud a fundo/index|Segurança na cloud a fundo]]
-19. ⬜ FinOps — a economia da cloud
+19. ✅ [[03-Dominios/Tecnologia/Cloud/19 - FinOps — a economia da cloud/index|FinOps — a economia da cloud]]
 20. ⬜ Resiliência e continuidade
 
 ### Bloco 5 — Provedores e maestria

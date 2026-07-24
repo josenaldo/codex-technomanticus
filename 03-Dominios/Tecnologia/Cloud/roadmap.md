@@ -67,7 +67,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | 16 | Infrastructure as Code | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/16 - Infrastructure as Code/roadmap|roadmap]] |
 | 17 | Observabilidade na cloud | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/17 - Observabilidade na cloud/roadmap|roadmap]] |
 | 18 | Segurança na cloud a fundo | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/18 - Segurança na cloud a fundo/roadmap|roadmap]] |
-| 19 | FinOps — a economia da cloud | — | ⬜ não iniciado | a criar |
+| 19 | FinOps — a economia da cloud | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/19 - FinOps — a economia da cloud/roadmap|roadmap]] |
 | 20 | Resiliência e continuidade | — | ⬜ não iniciado | a criar |
 
 ### Bloco 5 — Provedores e maestria
