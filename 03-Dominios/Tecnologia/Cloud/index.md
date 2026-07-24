@@ -49,7 +49,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 ### Bloco 4 — Operar, sustentar, governar
 
-16. ⬜ Infrastructure as Code
+16. ✅ [[03-Dominios/Tecnologia/Cloud/16 - Infrastructure as Code/index|Infrastructure as Code]]
 17. ⬜ Observabilidade na cloud
 18. ⬜ Segurança na cloud a fundo
 19. ⬜ FinOps — a economia da cloud
