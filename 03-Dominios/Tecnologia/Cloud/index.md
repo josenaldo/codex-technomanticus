@@ -41,7 +41,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 ### Bloco 3 — Serverless e arquiteturas modernas
 
-11. ⬜ Serverless e FaaS — Lambda a fundo
+11. ✅ [[03-Dominios/Tecnologia/Cloud/11 - Serverless e FaaS — Lambda a fundo/index|Serverless e FaaS — Lambda a fundo]]
 12. ⬜ Containers gerenciados
 13. ⬜ Mensageria e eventos gerenciados
 14. ⬜ API Gateway e edge de aplicação

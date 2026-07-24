@@ -54,7 +54,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | # | Galho | Notas | Estado | roadmap |
 |--:|-------|------:|--------|---------|
-| 11 | Serverless e FaaS — Lambda a fundo | — | ⬜ não iniciado | a criar |
+| 11 | Serverless e FaaS — Lambda a fundo | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/11 - Serverless e FaaS — Lambda a fundo/roadmap|roadmap]] |
 | 12 | Containers gerenciados | — | ⬜ não iniciado | a criar |
 | 13 | Mensageria e eventos gerenciados | — | ⬜ não iniciado | a criar |
 | 14 | API Gateway e edge de aplicação | — | ⬜ não iniciado | a criar |
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 10/24 escritos |
-| ✅ completos | 10 (Bloco 1 inteiro + Bloco 2 inteiro, galhos 5-10) |
+| Galhos | 11/24 escritos |
+| ✅ completos | 11 (Blocos 1-2 inteiros + galho 11, primeiro do Bloco 3) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 14 + capstone |
-| Notas escritas | 61 |
-| M1 (mídia) pendente | galhos 1-10 (61 notas) + resto do domínio |
+| ⬜ não iniciados | 13 + capstone |
+| Notas escritas | 67 |
+| M1 (mídia) pendente | galhos 1-11 (67 notas) + resto do domínio |
 
 ---
 
@@ -103,5 +103,5 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 1. **Task 0:** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
 2. **Bloco 1 (galhos 1-4):** ✅ completo — 25 notas + index.md/roadmap.md de cada galho.
 3. **Bloco 2 — galhos 5-10 (Compute I, Compute II, Rede/VPC, Armazenamento, Bancos gerenciados, DNS/CDN/borda):** ✅ **completo** — 36 notas + index.md/roadmap.md de cada. Galho 10 fechou o bloco em 2026-07-24.
-4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** próximo — escrever nota a nota, bloco a bloco, seguindo o roster do design/plano. Bom ponto de /clear + nova sessão.
+4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** em curso — galho 11 (Serverless/FaaS) ✅ fechado 2026-07-24. Próximo: galho 12 (Containers gerenciados — ECS/Fargate, App Platform, quando container vs VM vs serverless; ponte→Operação K8s).
 5. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.
