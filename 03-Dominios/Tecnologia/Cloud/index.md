@@ -57,7 +57,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 ### Bloco 5 — Provedores e maestria
 
-21. ⬜ AWS a fundo — consolidação
+21. ✅ [[03-Dominios/Tecnologia/Cloud/21 - AWS a fundo/index|AWS a fundo — consolidação]]
 22. ⬜ DigitalOcean a fundo — consolidação
 23. ⬜ Panorama multi-cloud e portabilidade
 24. ⬜ Certificação — AWS Solutions Architect Associate
