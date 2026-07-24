@@ -83,18 +83,18 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | # | Galho | Notas | Estado | roadmap |
 |--:|-------|------:|--------|---------|
-| — | Arquitetar um SaaS na cloud do zero | — | ⬜ não iniciado | — |
+| — | [[03-Dominios/Tecnologia/Cloud/Capstone — Arquitetar um SaaS na cloud do zero\|Arquitetar um SaaS na cloud do zero]] | 1 | ✅ completo | — |
 
 ## Tabela-resumo (agregado)
 
 | Métrica | Valor |
 |---------|-------|
 | Galhos | 24/24 escritos |
-| ✅ completos | 24 (Blocos 1-5 inteiros) |
+| ✅ completos | 24 galhos + capstone do domínio — **TRILHA COMPLETA** |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | capstone do domínio |
-| Notas escritas | 145 |
-| M1 (mídia) pendente | galhos 1-24 (145 notas) + resto do domínio |
+| ⬜ não iniciados | 0 |
+| Notas escritas | 146 (145 de galho + 1 capstone do domínio) |
+| M1 (mídia) pendente | galhos 1-24 (145 notas) + capstone |
 
 ---
 
@@ -106,5 +106,6 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** ✅ **completo** — galhos 11-15 fechados 2026-07-24. Capstone do bloco (15) costura a arquitetura serverless de referência.
 5. **Bloco 4 (galhos 16-20, Operar/sustentar/governar):** ✅ **completo** — IaC, Observabilidade, Segurança, FinOps, Resiliência fechados 2026-07-24.
 6. **Bloco 5 (galhos 21-24, Provedores e maestria):** ✅ **completo** — galhos 21 (AWS a fundo), 22 (DigitalOcean a fundo), 23 (multi-cloud e portabilidade) e 24 (Certificação SAA-C03) fechados 2026-07-24. **Todos os 24 galhos escritos.**
-7. **Capstone do domínio — "Arquitetar um SaaS na cloud do zero":** próximo e último — nota Magus única que costura os 24 galhos aplicando os 6 pilares do Well-Architected com lente de entrevista.
+7. **Capstone do domínio — "Arquitetar um SaaS na cloud do zero":** ✅ **completo** 2026-07-24 — nota Magus única (encurtador de URL com analytics) que costura os 24 galhos aplicando os 6 pilares do Well-Architected com lente de entrevista, incluindo a variação DigitalOcean. **Domínio Cloud COMPLETO: 24 galhos + capstone, 146 notas.**
+8. **Único pendente:** enriquecimento de mídia (M1) — todo o domínio elegível, ainda não rodado.
 5. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.

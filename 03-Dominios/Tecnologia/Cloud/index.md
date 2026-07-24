@@ -64,7 +64,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 ### Capstone
 
-- ⬜ Arquitetar um SaaS na cloud do zero — costura os 24 galhos numa arquitetura completa
+- ✅ [[03-Dominios/Tecnologia/Cloud/Capstone — Arquitetar um SaaS na cloud do zero|Arquitetar um SaaS na cloud do zero]] — costura os 24 galhos numa arquitetura completa
 
 ## Como ler
 
