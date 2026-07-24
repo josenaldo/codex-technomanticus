@@ -76,7 +76,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 |--:|-------|------:|--------|---------|
 | 21 | AWS a fundo — consolidação | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/21 - AWS a fundo/roadmap|roadmap]] |
 | 22 | DigitalOcean a fundo — consolidação | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/22 - DigitalOcean a fundo/roadmap|roadmap]] |
-| 23 | Panorama multi-cloud e portabilidade | — | ⬜ não iniciado | a criar |
+| 23 | Panorama multi-cloud e portabilidade | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/23 - Panorama multi-cloud e portabilidade/roadmap|roadmap]] |
 | 24 | Certificação — AWS Solutions Architect Associate | — | ⬜ não iniciado | a criar |
 
 ### Capstone
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 22/24 escritos |
-| ✅ completos | 22 (Blocos 1-4 + galhos 21-22) |
+| Galhos | 23/24 escritos |
+| ✅ completos | 23 (Blocos 1-4 + galhos 21-23) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 2 + capstone |
-| Notas escritas | 133 |
-| M1 (mídia) pendente | galhos 1-22 (133 notas) + resto do domínio |
+| ⬜ não iniciados | 1 + capstone |
+| Notas escritas | 139 |
+| M1 (mídia) pendente | galhos 1-23 (139 notas) + resto do domínio |
 
 ---
 
@@ -105,5 +105,5 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 3. **Bloco 2 — galhos 5-10 (Compute I, Compute II, Rede/VPC, Armazenamento, Bancos gerenciados, DNS/CDN/borda):** ✅ **completo** — 36 notas + index.md/roadmap.md de cada. Galho 10 fechou o bloco em 2026-07-24.
 4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** ✅ **completo** — galhos 11-15 fechados 2026-07-24. Capstone do bloco (15) costura a arquitetura serverless de referência.
 5. **Bloco 4 (galhos 16-20, Operar/sustentar/governar):** ✅ **completo** — IaC, Observabilidade, Segurança, FinOps, Resiliência fechados 2026-07-24.
-6. **Bloco 5 (galhos 21-24, Provedores e maestria):** em andamento — galhos 21 (AWS a fundo) e 22 (DigitalOcean a fundo) ✅ fechados 2026-07-24. Faltam: 23 (multi-cloud), 24 (Certificação SAA). Depois: capstone do domínio.
+6. **Bloco 5 (galhos 21-24, Provedores e maestria):** em andamento — galhos 21 (AWS a fundo), 22 (DigitalOcean a fundo) e 23 (multi-cloud e portabilidade) ✅ fechados 2026-07-24. Falta: 24 (Certificação SAA — em escrita). Depois: capstone do domínio.
 5. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.

@@ -59,7 +59,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 21. ✅ [[03-Dominios/Tecnologia/Cloud/21 - AWS a fundo/index|AWS a fundo — consolidação]]
 22. ✅ [[03-Dominios/Tecnologia/Cloud/22 - DigitalOcean a fundo/index|DigitalOcean a fundo — consolidação]]
-23. ⬜ Panorama multi-cloud e portabilidade
+23. ✅ [[03-Dominios/Tecnologia/Cloud/23 - Panorama multi-cloud e portabilidade/index|Panorama multi-cloud e portabilidade]]
 24. ⬜ Certificação — AWS Solutions Architect Associate
 
 ### Capstone
