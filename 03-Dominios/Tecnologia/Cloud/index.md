@@ -3,7 +3,7 @@ title: "Cloud"
 type: moc
 publish: true
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-24
 status: seedling
 tags:
   - moc
@@ -37,7 +37,7 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 7. ✅ [[03-Dominios/Tecnologia/Cloud/07 - Rede na nuvem (VPC)/index|Rede na nuvem (VPC)]]
 8. ✅ [[03-Dominios/Tecnologia/Cloud/08 - Armazenamento (object, block e file)/index|Armazenamento — object, block e file]]
 9. ✅ [[03-Dominios/Tecnologia/Cloud/09 - Bancos gerenciados/index|Bancos gerenciados]]
-10. ⬜ DNS, CDN e borda
+10. ✅ [[03-Dominios/Tecnologia/Cloud/10 - DNS, CDN e borda/index|DNS, CDN e borda]]
 
 ### Bloco 3 — Serverless e arquiteturas modernas
 

@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — Cloud"
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-24
 type: meta
 publish: false
 tags:
@@ -48,7 +48,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | 7 | Rede na nuvem (VPC) | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/07 - Rede na nuvem (VPC)/roadmap|roadmap]] |
 | 8 | Armazenamento — object, block e file | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/08 - Armazenamento (object, block e file)/roadmap|roadmap]] |
 | 9 | Bancos gerenciados | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/09 - Bancos gerenciados/roadmap|roadmap]] |
-| 10 | DNS, CDN e borda | — | ⬜ não iniciado | a criar |
+| 10 | DNS, CDN e borda | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/10 - DNS, CDN e borda/roadmap|roadmap]] |
 
 ### Bloco 3 — Serverless e arquiteturas modernas
 
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 9/24 escritos |
-| ✅ completos | 9 (Bloco 1 inteiro + galhos 5-9) |
+| Galhos | 10/24 escritos |
+| ✅ completos | 10 (Bloco 1 inteiro + Bloco 2 inteiro, galhos 5-10) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 15 + capstone |
-| Notas escritas | 55 |
-| M1 (mídia) pendente | galhos 1-9 (55 notas) + resto do domínio |
+| ⬜ não iniciados | 14 + capstone |
+| Notas escritas | 61 |
+| M1 (mídia) pendente | galhos 1-10 (61 notas) + resto do domínio |
 
 ---
 
@@ -102,6 +102,6 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 1. **Task 0:** ✅ andaime do domínio — `index.md`, `roadmap.md`, `Dicionário.md`, `Biblioteca.md`, `Senda Cloud.md` reescrita.
 2. **Bloco 1 (galhos 1-4):** ✅ completo — 25 notas + index.md/roadmap.md de cada galho.
-3. **Bloco 2 — galhos 5-9 (Compute I, Compute II, Rede/VPC, Armazenamento, Bancos gerenciados):** ✅ completos — 30 notas + index.md/roadmap.md de cada. Falta o galho 10 (DNS, CDN e borda) para fechar o Bloco 2.
-4. **Galhos 8-24 + capstone:** escrever nota a nota, bloco a bloco, seguindo o roster do design/plano.
-4. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.
+3. **Bloco 2 — galhos 5-10 (Compute I, Compute II, Rede/VPC, Armazenamento, Bancos gerenciados, DNS/CDN/borda):** ✅ **completo** — 36 notas + index.md/roadmap.md de cada. Galho 10 fechou o bloco em 2026-07-24.
+4. **Bloco 3 (galhos 11-15, Serverless e arquiteturas modernas):** próximo — escrever nota a nota, bloco a bloco, seguindo o roster do design/plano. Bom ponto de /clear + nova sessão.
+5. **Pendência registrada:** enriquecimento de mídia (M1) — Bloco 1 já elegível, ainda não rodado; demais blocos entram na fila conforme forem escritos.
