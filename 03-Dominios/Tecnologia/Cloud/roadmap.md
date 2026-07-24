@@ -65,7 +65,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | # | Galho | Notas | Estado | roadmap |
 |--:|-------|------:|--------|---------|
 | 16 | Infrastructure as Code | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/16 - Infrastructure as Code/roadmap|roadmap]] |
-| 17 | Observabilidade na cloud | — | ⬜ não iniciado | a criar |
+| 17 | Observabilidade na cloud | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/17 - Observabilidade na cloud/roadmap|roadmap]] |
 | 18 | Segurança na cloud a fundo | 6 | ✅ completo | [[03-Dominios/Tecnologia/Cloud/18 - Segurança na cloud a fundo/roadmap|roadmap]] |
 | 19 | FinOps — a economia da cloud | — | ⬜ não iniciado | a criar |
 | 20 | Resiliência e continuidade | — | ⬜ não iniciado | a criar |
@@ -89,12 +89,12 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 
 | Métrica | Valor |
 |---------|-------|
-| Galhos | 16/24 escritos |
-| ✅ completos | 16 (Blocos 1-3 + galho 16 do Bloco 4) |
+| Galhos | 18/24 escritos |
+| ✅ completos | 18 (Blocos 1-3 + galhos 16-18 do Bloco 4) |
 | 🔶 parciais | 0 |
-| ⬜ não iniciados | 8 + capstone |
-| Notas escritas | 97 |
-| M1 (mídia) pendente | galhos 1-16 (97 notas) + resto do domínio |
+| ⬜ não iniciados | 6 + capstone |
+| Notas escritas | 109 |
+| M1 (mídia) pendente | galhos 1-18 (109 notas) + resto do domínio |
 
 ---
 
