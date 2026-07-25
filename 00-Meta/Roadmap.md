@@ -67,7 +67,8 @@ aliases:
 | ------ | ------ | ---- |
 | [[03-Dominios/Tecnologia/IA/index\|IA]] | 🟡 | 21 galhos; **diagnóstico nota-a-nota COMPLETO (30/06): 237 notas, ~84% no gate ≥9/12, 47 já fechadas** — plano detalhado em `guia/roadmap - ia`; ver [[#Enriquecimento do domínio IA]] |
 | [[03-Dominios/Tecnologia/Terminal/index\|Terminal]] | ✅ | 7 galhos, 78 notas |
-| [[03-Dominios/Tecnologia/Infraestrutura/index\|Infraestrutura]] | 🟡 | só galho Linux; falta Docker, Kubernetes, Nginx, Cloud |
+| [[03-Dominios/Tecnologia/Cloud/index\|Cloud]] | ✅ | **COMPLETA 2026-07-24**: 24 galhos + capstone do domínio, 146 notas, lente dupla AWS↔DigitalOcean. Blocos: modelo mental/fundamentos (1-4) · primitivos (5-10) · serverless (11-15) · operar/governar (16-20: IaC/Observabilidade/Segurança/FinOps/Resiliência) · provedores e maestria (21 AWS a fundo · 22 DigitalOcean a fundo · 23 multi-cloud/portabilidade · 24 Certificação SAA-C03) · capstone "Arquitetar um SaaS na cloud do zero". Galhos 12-24 via workflow de fan-out. Falta só M1 (mídia). |
+| [[03-Dominios/Tecnologia/Infraestrutura/index\|Infraestrutura]] | 🟡 | só galho Linux; falta Docker, Kubernetes, Nginx (a *prática* já vive na Operação; a *plataforma* na Cloud) |
 | [[03-Dominios/Tecnologia/RPA/index\|RPA]] | ⬜ | stub (6 notas) |
 
 #### Enriquecimento do domínio IA
@@ -152,7 +153,7 @@ aliases:
 
 **Tier 1 — construção nova (buracos reais 🚫)**
 - ~~**Go** — 3 notas stub~~ ✅ **Trilha completa (2026-07-18):** 21 galhos + capstone, 163 notas. Paridade de stack backend atingida (Java · Node · Python · Go). Fronteira nativa de gRPC em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação]] (galho 12). Resta só enriquecimento de mídia (M1).
-- **Cloud (AWS/GCP)** — sem domínio próprio construído (existe só a `Senda Cloud`). Alto valor para entrevista sênior remota; hoje coberto de raspão pela Operação.
+- ~~**Cloud (AWS/GCP)** — sem domínio próprio construído~~ ✅ **COMPLETA 2026-07-24**: `Tecnologia/Cloud`, 24 galhos + capstone, 146 notas, lente dupla AWS↔DigitalOcean. Alto valor para entrevista sênior remota — agora coberto a fundo (Well-Architected, primitivos, serverless, FinOps, SAA-C03). Resta só M1 (mídia).
 - **Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML. Merece foco próprio.
 
 **Tier 2 — consolidação de 🟡 (conteúdo existe, falta virar trilha atômica em 3 fases)**
@@ -168,7 +169,7 @@ aliases:
 
 **Tier 4 — enriquecimento, não tema novo**
 - **IA** (351 notas) — diagnóstico nota-a-nota pronto; falta *executar* correções (E2 abertura · E1 TL;DR · L2 URLs · ASCII→Mermaid · caducidade). Ver [[#Enriquecimento do domínio IA]].
-- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS.
+- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS, Go, **Cloud** (146 notas).
 - **RPA** (6 notas stub) — nicho, baixa prioridade.
 
 ### Onda A — Tripé Frontend (prioridade máxima)
@@ -193,7 +194,7 @@ aliases:
 13. 🟡 **Inglês** — articulação técnica (alimentado pela mentoria GCA).
 
 ### Coberturas ausentes a considerar (🚫 hoje sem trilha)
-- **Cloud** (AWS/GCP) — há `Senda Cloud`, mas sem domínio próprio construído.
+- ~~**Cloud** (AWS/GCP) — há `Senda Cloud`, mas sem domínio próprio construído.~~ → **domínio próprio COMPLETO em 2026-07-24** (✅): `Tecnologia/Cloud`, 24 galhos + capstone, 146 notas, lente dupla AWS↔DigitalOcean. Ver a tabela IA/Terminal/Infra/Cloud acima e o Tier 1.
 - ~~**Auth & Identidade** (OAuth2/OIDC/JWT/sessões) — espalhado em Segurança; merece foco.~~ → **trilha própria COMPLETA em 2026-07-11** (🟢): `Engenharia/Auth e Identidade`, 5 sub-galhos + capstone, 25 notas. Ver item 11 da Onda C.
 - ~~**Python** — só stubs rasos~~ → **COMPLETA em 2026-07-12** (✅): 19 galhos, 202 notas, 3 fases (escala Java). Ver Backend/Runtime acima.
 - ~~**Go** — segue stub em `Tecnologia/Go/`~~ → **COMPLETA em 2026-07-18** (🟢): 21 galhos + capstone, 163 notas, 3 fases (escala Java/Python). Stubs `Go.md`/`Go Backend.md` excluídos. Fecha o último backend sem trilha. Ver Backend/Runtime (Tier 1) acima.
