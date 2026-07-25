@@ -3,7 +3,7 @@ title: "Usuários, grupos e o problema da credencial de longa duração"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -101,6 +101,14 @@ Um usuário de nuvem pode ter mais de um tipo de credencial ao mesmo tempo, cada
 - Outras formas mais específicas — chave SSH para um serviço de versionamento de código gerenciado, certificado de servidor para TLS em cenários legados — que não fazem parte do escopo desta nota.
 
 A senha de console e a chave de acesso protegem canais diferentes, mas compartilham a mesma propriedade estrutural que interessa aqui: são **credenciais de longa duração**. Uma vez criadas, continuam válidas indefinidamente até que alguém, manualmente, decida desativá-las ou apagá-las. Não existe um relógio embutido que as invalide sozinho depois de um dia, uma hora, ou uma sessão.
+
+> [!tip] Assista: AWS IAM Users and Groups | Part 1 | AWS IAM Tutorials
+> **Canal:** BeSA Cloud Academy | **Duração:** ~17min | **Idioma:** EN
+>
+> O mesmo vídeo mostra, na prática, a troca de canal de autenticação que esta seção descreve: login por senha no console versus a chave de acesso alfanumérica exigida quando a mesma identidade precisa autenticar chamadas programáticas (CLI, SDK) em vez de uma sessão de navegador.
+> Trecho de destaque [02:48]: *"time I have to provide something else which is called access key and secret access key it's like alpha numeric"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=1leLe7qlkqA)
 
 Criar uma chave é uma única chamada — e é aí que o problema começa: nada na resposta da API avisa que aquele par de valores vai sobreviver para sempre.
 

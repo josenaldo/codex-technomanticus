@@ -3,7 +3,7 @@ title: "Identidade entre contas e federação"
 type: concept
 fase: Magus
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -274,6 +274,22 @@ sequenceDiagram
     CI->>Prod: Executa o deploy
     Note over CI,Prod: Nenhum secret estático de nuvem<br/>existiu no repositório
 ```
+
+> [!tip] Assista: GitHub Actions — Learn OpenID Connect (OIDC) and deploy securely to AWS
+> **Canal:** glich.stream | **Duração:** ~37min | **Idioma:** EN
+>
+> O vídeo é uma demonstração completa, ponta a ponta, do exato roteiro descrito nesta seção: eliminar secrets estáticos do GitHub configurando OIDC como provedor de identidade confiável para a AWS, com o passo a passo de criação do provedor e da trust policy.
+> Trecho de destaque [03:07]: *"using openid connect we will not need secrets at all so no more secrets and this is the beauty of open id connect"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=k2Tv-EJl7V4)
+
+> [!tip] Assista: Authenticate GitHub Actions with AWS Using OIDC — No Secrets Needed
+> **Canal:** Integrations Ninjas | **Duração:** ~17min | **Idioma:** EN
+>
+> Este vídeo detalha o mecanismo de validação que a trust policy do papel executa sobre o token OIDC recebido — o STS confere as *claims* do token contra as condições configuradas, exatamente o "o subject bate com a condição?" do diagrama acima.
+> Trecho de destaque [01:03]: *"token to AWS STS asking to assume a specific IM role. AWS STS validates the token against the trust policy of the IM role checking if the claim match"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Sdzd4N6L5Hg)
 
 ### Como isso fica configurado, ponta a ponta
 
