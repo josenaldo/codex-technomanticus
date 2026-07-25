@@ -3,7 +3,7 @@ title: "Padrões de uso e o caminho para a elasticidade"
 type: concept
 fase: Magus
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -135,6 +135,14 @@ DescribeLaunchTemplateVersions
   Versao=2  Default=True   Descricao="v2 - patch de segurança"
 ```
 
+> [!tip] Assista: EC2 Auto Scaling, launch configurations and templates
+> **Canal:** Digital Cloud Training | **Duração:** ~10min | **Idioma:** EN
+>
+> Mostra na prática, dentro do console, exatamente o mecanismo que os comandos acima fazem via CLI: editar um launch template não sobrescreve nada, cria uma versão nova — o vídeo reforça visualmente por que essa é a peça central do modelo imutável.
+> Trecho de destaque [03:45]: *"you can have multiple versions, so you can edit your launch templates and save them as a new version"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=km1EgYWKNf4)
+
 > [!info] Fronteira
 > A anatomia de uma AMI e o mecanismo de `user data` no boot (cloud-init, os três estágios de execução) já foram cobertos em profundidade na **nota 03** desta trilha. Esta nota assume esse conhecimento e foca no que muda quando esses dois elementos passam a ser versionados e tratados como imutáveis — nunca editados após o lançamento.
 
@@ -158,6 +166,14 @@ O comando `aws ec2 create-launch-template-version` usado à mão nesta nota tamb
 
 > [!info] Fronteira
 > Estratégias de rollout que decidem *como* uma frota migra de uma versão para outra sem downtime — rolling deployment, blue-green, canary — são um assunto de release e entrega, não específico de compute. **[[03-Dominios/Engenharia/Operação/index|Operação]]** desenvolve esses padrões em profundidade; esta nota se limita a mostrar de onde vem a versão nova que um desses rollouts vai consumir.
+
+> [!tip] Assista: Auto Scaling AWS EC2 Instances Made Easy | Autoscaling Groups & Launch Templates
+> **Canal:** Cameron McKenzie | **Duração:** ~13min | **Idioma:** EN
+>
+> Antecipa em vídeo o gancho que esta nota deixa em aberto (o próximo galho): mostra o launch template virando, na prática, o insumo de um grupo de auto scaling que nasce e morre instâncias sozinho a partir de um limiar de métrica — o "F" do diagrama acima ganhando vida.
+> Trecho de destaque [00:36]: *"I'll show you how to set up some metrics and some threshold so that if memory gets too consumed or there's too many clock cycles, boom, all of a sudden that AWS autoscaling group is going to take over"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=st4qpzz2FGc)
 
 ## Estado externalizado: por que o disco de boot não pode guardar o que importa
 

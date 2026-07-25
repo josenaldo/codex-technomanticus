@@ -3,7 +3,7 @@ title: "Ciclo de vida de uma instância"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -67,6 +67,14 @@ A DigitalOcean documenta um conjunto mais enxuto de valores para o campo `status
 > [!info] Fronteira
 > A nota 01 desta trilha já cobriu a anatomia básica (vCPU, RAM, disco de boot, interface de rede) e a distinção superficial `stop` vs `terminate`. Esta nota aprofunda: o ramo de hibernação, a diferença entre instance store e EBS, e o comportamento de IP/cobrança estado a estado — sem repetir a introdução ao hipervisor ou ao control plane.
 
+> [!tip] Assista: EC2 Instance States: Start, Stop & Terminate Explained
+> **Canal:** CodeLucky | **Duração:** ~4min | **Idioma:** EN
+>
+> Um resumo rápido e direto da diferença central entre parar (reversível, dado preservado) e terminar (irreversível) — útil como recapitulação de 4 minutos antes de entrar no detalhe estado a estado da tabela abaixo.
+> Trecho de destaque [02:19]: *"Stopping is a reversible action that preserves your data and allows you to restart the instance any time"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ei-jLrSvOKc)
+
 ## Stop vs hibernate vs terminate: três operações, três destinos para a RAM
 
 A AWS documenta com precisão o que cada uma dessas três operações — reboot, stop/start, hibernate, terminate — faz com quatro coisas: o host físico, o endereço IP, o volume EBS raiz, e o conteúdo da RAM. É a tabela mais densa desta nota, porque é exatamente onde as armadilhas de produção nascem:
@@ -97,6 +105,14 @@ flowchart TD
     ST1 -->|"start-instances"| RN1["running<br/>(processos reiniciam do zero)"]
     ST2 -->|"start-instances"| RN2["running<br/>(processos retomam de onde pararam)"]
 ```
+
+> [!tip] Assista: EC2 Instance Hibernation | Stopping | Use cases | Hands-On
+> **Canal:** Srce Cde | **Duração:** ~18min | **Idioma:** EN
+>
+> Usa a mesma analogia do notebook (hibernar vs. desligar) que a nota descreve, e demonstra ao vivo o que acontece com a instância store e a RAM ao comparar as duas operações — bom reforço visual do mermaid acima.
+> Trecho de destaque [00:23]: *"the basic difference between stop and hibernate — imagine you have a computer at [home]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Er9KE93r6Go)
 
 Na DigitalOcean, esse eixo simplesmente não existe como funcionalidade nomeada: não há um `doctl compute droplet-action hibernate`. O que existe são duas formas de desligar — `shutdown` (tenta um desligamento gracioso via ACPI, equivalente a rodar `shutdown` de dentro do sistema operacional) e `power-off` (desligamento forçado, equivalente a cortar a energia de um servidor físico, e a própria documentação recomenda usá-lo só se o `shutdown` gracioso falhar ou demorar demais) — e nenhuma delas salva o conteúdo da RAM em lugar nenhum. Um Droplet desligado por qualquer um dos dois comandos perde o conteúdo da memória exatamente como um stop comum na AWS; a única coisa que resta é o disco.
 

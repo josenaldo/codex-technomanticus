@@ -3,7 +3,7 @@ title: "Anatomia de uma máquina virtual na nuvem"
 type: concept
 fase: Iniciado
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -80,6 +80,14 @@ sequenceDiagram
     CP-->>Voce: ID da instância + IP<br/>(estado: pending → running)
     Note over Voce,VM: Daqui pra frente, você fala<br/>direto com a instância (SSH, API da app)<br/>— não mais com o control plane pra usá-la
 ```
+
+> [!tip] Assista: Introduction to Amazon EC2 | Virtual Machines, Instance for Beginners
+> **Canal:** CBT Nuggets | **Duração:** ~14min | **Idioma:** EN
+>
+> O vídeo reforça exatamente essa virada conceitual — VM como fatia alugável, não posse — usando a analogia de mover a carga entre máquinas físicas diferentes sem que o cliente perceba, o que ajuda a fixar por que a instância nunca deve ser tratada como "sua máquina".
+> Trecho de destaque [01:29]: *"the cool thing about virtual machines is that because they're not physical we can actually move them to other physical systems pretty easily"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=AdKfniGuWWc)
 
 ## A encarnação concreta: EC2 instance e Droplet
 
