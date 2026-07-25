@@ -3,7 +3,7 @@ title: "Modelos de serviço — IaaS, PaaS, CaaS, FaaS e SaaS"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-21
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -97,6 +97,14 @@ flowchart TB
 
 O padrão que a tabela revela é o mesmo em toda linha: **cada camada nova empurra a fronteira "provedor cuida disso" um degrau para cima**, e o que sobra abaixo da linha some do seu radar operacional — não porque deixou de existir, mas porque virou problema de outra pessoa, com um contrato (SLA) atrás dele em vez de um plantão seu.
 
+> [!tip] Assista: Introdução à Computação em Nuvem - IaaS, PaaS, SaaS
+> **Canal:** hcode | **Duração:** ~12min | **Idioma:** PT-BR
+>
+> O vídeo torna concreto o risco que "Servidores (hardware)" vira "Provedor" na tabela acima — o cenário do servidor físico numa sala que pode pegar fogo ou alagar, sem backup, é exatamente o tipo de responsabilidade que sai do seu radar ao subir para IaaS.
+> Trecho de destaque [08:46]: *"então no iaas infraestrutura como serviço eu não me preocupo com o hardware, os cloud providers eles vão cuidar do hardware para mim"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=I_bP06BSbPY)
+
 ## A analogia: como o jantar chega à sua mesa
 
 A comparação mais usada nesse assunto é a "pizza as a service" — cunhada em 2014 por Albert Barron, arquiteto da IBM, num post que virou referência do setor. Ela é boa o suficiente para ter sobrevivido dez anos, mas cobre só quatro degraus (on-premises, IaaS, PaaS, SaaS) e deixa CaaS e FaaS de fora — exatamente as duas camadas mais relevantes para quem trabalha com containers e serverless hoje. Então vale esticar a mesma ideia — comida chegando à sua mesa — para os seis degraus completos, e ver onde ela aguenta o esticão e onde ela quebra.
@@ -117,6 +125,14 @@ Onde a analogia quebra, e vale nomear com honestidade: comida não tem *concorr�
 
 > [!info] Fronteira
 > Cold start, concorrência, limites de execução, triggers e o funcionamento interno de funções sob demanda são o assunto do **galho 11** desta trilha. Aqui, FaaS aparece só como um degrau do espectro — a mecânica fica para lá.
+
+> [!tip] Assista: IaaS, PaaS, SaaS, CaaS, FaaS Explained in 7 minutes
+> **Canal:** Connected Cookie | **Duração:** ~8min | **Idioma:** EN
+>
+> A mesma ideia de "quem cozinha o quê" desta nota, só que com cookies em vez de jantar: um chef (Matthew) oferece ingredientes prontos, biscoitos prontos ou a experiência completa — e o vídeo mapeia isso, degrau por degrau, para IaaS/PaaS/SaaS.
+> Trecho de destaque [02:55]: *"infrastructure as a service corresponds to the infrastructure part of the cloud (...) the client takes care of installing configuring and updating the OS middlewares and applications"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=M--5UlkNAl0)
 
 ## Cada camada, na lente dupla
 

@@ -3,7 +3,7 @@ title: "Modelos de implantação — público, privado, híbrido e multi-cloud"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-21
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -243,6 +243,14 @@ E o custo mais silencioso de todos: **você frequentemente perde os serviços ge
 
 > [!info] Fronteira
 > Esta nota apresenta multi-cloud como modelo de implantação e nomeia seu custo real. Estratégia de portabilidade, abstração de provedor, containers e Kubernetes como camada de portabilidade, e a comparação de filosofia entre AWS, Azure e GCP a fundo são o assunto do **galho 23** desta trilha ("Panorama multi-cloud e portabilidade").
+
+> [!tip] Assista: Hybrid Cloud and MultiCloud | Why are companies adopting it?
+> **Canal:** TechWorld with Nana | **Duração:** ~14min | **Idioma:** EN
+>
+> Cobre exatamente os dois modelos desta e da seção anterior lado a lado — híbrido (privada + uma pública) versus multi-cloud (duas ou mais públicas) — com os mesmos dois motivos de multi-cloud que esta nota nomeia: replicar o mesmo workload em vários provedores, ou dividir workloads diferentes entre eles.
+> Trecho de destaque [06:07]: *"multi-cloud is essentially when you use two or more public clouds for your workloads and there are two main reasons why companies would want to use multi-cloud"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qkj5W98Xdvw)
 
 ```mermaid
 flowchart TD

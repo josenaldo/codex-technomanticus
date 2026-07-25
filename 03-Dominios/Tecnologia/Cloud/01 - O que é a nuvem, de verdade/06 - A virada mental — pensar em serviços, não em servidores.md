@@ -3,7 +3,7 @@ title: "A virada mental — pensar em serviços, não em servidores"
 type: concept
 fase: Magus
 created: 2026-07-20
-updated: 2026-07-21
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -105,6 +105,14 @@ Três perguntas rápidas funcionam como teste de bancada para qualquer máquina 
 | Teste do nome | Alguém no time sabe o hostname dessa máquina de cor? | Não — ela é identificada por tag, número de pool ou label, não por apelido |
 | Teste da morte súbita | Destruí-la agora, sem aviso a ninguém, causaria pânico? | Não — o sistema absorve a perda sem intervenção manual |
 | Teste do estado | Se ela sumir neste segundo, onde está o dado que importava? | Em outro lugar — banco gerenciado, object storage, volume anexável — nunca só no disco dela |
+
+> [!tip] Assista: Pets vs Cattle Architecture Explained | DevOps & Cloud Best Practices
+> **Canal:** soatmurot | **Duração:** ~6min | **Idioma:** EN
+>
+> O vídeo dramatiza o "servidor-pet" desta nota com o cenário clássico de disco rígido falhando — um dia inteiro perdido trocando disco, reinstalando o SO e tentando adivinhar as configurações — e conecta a mentalidade cattle a idempotência e pipelines de CI/CD como o mecanismo que a torna real, exatamente o gancho que esta nota faz para o galho 16.
+> Trecho de destaque [02:44]: *"Instead of trying to scale up one big fragile machine, you scale out with a massive resilient herd."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=g8eK6r_qRnk)
 
 ## Projetar para a falha, não contra ela
 

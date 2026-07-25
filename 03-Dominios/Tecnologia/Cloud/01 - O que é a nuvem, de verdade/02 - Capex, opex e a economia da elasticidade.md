@@ -3,7 +3,7 @@ title: "Capex, opex e a economia da elasticidade"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-21
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -79,6 +79,14 @@ doctl compute droplet delete teste-cache --force
 Repare no que esse par de comandos **não** exige: nenhuma nota fiscal, nenhum comitê, nenhum ativo que sobra no inventário se o teste falhar. `terminate-instances`/`droplet delete` é o "desliga e para de pagar" do diagrama acima, executável.
 
 Vale registrar, para não simplificar demais: opex não é gratuito nem elimina a necessidade de controle. Uma empresa que deixa dezenas de times comprando recursos de nuvem livremente, sem nenhuma governança, descobre isso do jeito mais caro possível — na fatura do fim do mês. A disciplina que existia antes (aprovar antes de gastar) não desaparece; ela só muda de forma, de aprovação prévia obrigatória para monitoramento e alertas depois do fato. Esse é o assunto inteiro de **FinOps** — orçamentos, tags de custo, alertas, right-sizing, savings plans, análise de gasto por time — e fica de propósito fora desta nota; ele merece o **galho 19** completo desta trilha. Aqui, o ponto é só entender a lógica econômica por trás da mudança: por que opex é estruturalmente diferente de capex, não como otimizar o opex depois que ele já existe.
+
+> [!tip] Assista: AWS Cloud Economics Explained in 3 Minutes
+> **Canal:** NextWork | **Duração:** ~3min | **Idioma:** EN
+>
+> Um resumo direto do mesmo par capex/opex desta seção — e ele já aponta para a frente, para o **galho 19** (FinOps) desta trilha: consumption-based pricing só compensa se alguém pratica right-sizing (monitorar uso, analisar tendência, ajustar o tamanho contratado), não é economia automática.
+> Trecho de destaque [00:51]: *"Cloud computing very clearly falls under OpEx because it is an operational ongoing cost. We call this the consumption-based pricing model."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LsiGN75t_rg)
 
 ## O gráfico que qualquer engenheiro sênior já desenhou num quadro branco
 
@@ -170,6 +178,14 @@ O inverso também existe, embora seja mais raro: um sistema pode ter partes elá
 
 > [!info] Fronteira
 > Estratégias concretas de escalar (horizontal vs. vertical, sharding, réplicas de leitura, particionamento) pertencem ao domínio de arquitetura, não a este galho — veja [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura / System Design]]. Aqui, o ponto é só a distinção conceitual entre "conseguir crescer" e "crescer e encolher sozinho, acompanhando a demanda".
+
+> [!tip] Assista: What is Scalability and Elasticity in Cloud Computing?
+> **Canal:** CBT Nuggets | **Duração:** ~6min | **Idioma:** EN
+>
+> O vídeo desenha exatamente essa mesma distinção com um exemplo de VMs atrás de um load balancer: escalar manualmente (subir/derrubar servidor 2, 3, 4...) é escalabilidade; o mesmo processo acontecendo sozinho, sem humano, é elasticidade.
+> Trecho de destaque [03:00]: *"scalability is the ability to meet the demand and elasticity is the concept of doing it in an automated fashion without a human getting involved"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qk_L-a3mCnA)
 
 ## Por que o provedor compra mais barato que você — e por que isso não garante que ele sai mais barato
 
