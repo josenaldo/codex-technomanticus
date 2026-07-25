@@ -21,7 +21,6 @@ Esta pasta agrupa as Sendas: percursos curados que atravessam os domínios pra f
 ## Conteúdo
 
 - [[Senda Backend]] — caminho pra desenvolvimento backend
-- [[Senda Cloud]] — caminho pra computação em nuvem
 - [[Senda Devops]] — caminho pra DevOps
 - [[Senda Entrevistas]] — caminho pra preparação de entrevistas
 - [[Senda Frontend]] — caminho pra desenvolvimento frontend

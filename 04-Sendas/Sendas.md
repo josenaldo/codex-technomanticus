@@ -16,7 +16,6 @@ Caminhos curatoriais que sequenciam notas de [[03-Dominios]] em trilhas de estud
 - [[Senda Frontend]]
 - [[Senda Fullstack Java-Spring + TS-React-Nextjs 15]]
 - [[Senda JS-TS]]
-- [[Senda Cloud]]
 - [[Senda Devops]]
 - [[Senda Go]]
 - [[Senda Python]]

@@ -14,7 +14,7 @@ publish: true
 
 # Biblioteca — Cloud
 
-> Recursos externos curados por provedor. Os 5 links da AWS vieram da antiga [[04-Sendas/Senda Cloud|Senda Cloud]] (que agora é ordem de leitura, não lista de links); DigitalOcean, Azure e GCP foram acrescentados na Task 0 do domínio.
+> Recursos externos curados por provedor. Os 5 links da AWS vieram da antiga Senda Cloud (eliminada; sua ordem de leitura migrou para o "Como ler" do [[03-Dominios/Tecnologia/Cloud/index|índice do domínio]] e os links viraram esta Biblioteca); DigitalOcean, Azure e GCP foram acrescentados na Task 0 do domínio.
 
 - [[#AWS]]
 - [[#DigitalOcean]]

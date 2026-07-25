@@ -41,5 +41,5 @@ Esta estante junta o que sustenta as aplicações depois que elas saem da máqui
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Terminal/index|Terminal]]
-- [[Senda Cloud]]
+- [[03-Dominios/Tecnologia/Cloud/index|Cloud]]
 - [[Senda Devops]]

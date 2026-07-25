@@ -169,7 +169,7 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
 
 - [[Sendas]] — MOC de todas as sendas
 - **Stacks:** [[Senda Java]] · [[Senda JS-TS]] · [[Senda Python]] · [[Senda Go]]
-- **Camadas:** [[Senda Backend]] · [[Senda Frontend]] · [[Senda Fullstack Java-Spring + TS-React-Nextjs 15]] · [[Senda Cloud]] · [[Senda Devops]]
+- **Camadas:** [[Senda Backend]] · [[Senda Frontend]] · [[Senda Fullstack Java-Spring + TS-React-Nextjs 15]] · [[Senda Devops]]
 - **Domínio:** [[Senda IA]] · [[Senda Entrevistas]]
 
 ## Mestres

@@ -70,6 +70,12 @@ Cloud aqui é a **plataforma e seus serviços gerenciados** — compute, rede, a
 
 A ordem numérica (1→24, blocos 1→5) é a recomendada: modelo mental primeiro, depois os primitivos, depois serverless, depois governança, e só no final a consolidação por provedor. Mas quem já usa DigitalOcean no dia a dia pode ler o **galho 22 (DigitalOcean a fundo)** cedo, como âncora — ele mapeia o que você já conhece na prática pro vocabulário formal que os galhos 1-20 constroem. Ainda assim, a ordem numérica cobre o terreno com menos buracos.
 
+Se preferir uma ordem de *leitura* mais grossa que a de construção, agrupe os 24 galhos em 3 etapas:
+
+1. **Fundamentos** (Bloco 1) — o modelo mental antes de qualquer serviço específico: o que é a nuvem, como um provedor é organizado, o Well-Architected Framework como bússola, IAM como base de tudo.
+2. **Primitivos + serverless** (Blocos 2 e 3) — compute, rede, armazenamento, bancos gerenciados, DNS/CDN, e depois a camada serverless/event-driven que se apoia neles.
+3. **Governança + maestria** (Blocos 4 e 5) — operar, sustentar e governar o que foi construído (IaC, observabilidade, segurança, FinOps, resiliência), fechando com a consolidação por provedor (AWS e DigitalOcean a fundo), a certificação e o [[03-Dominios/Tecnologia/Cloud/Capstone — Arquitetar um SaaS na cloud do zero|capstone do domínio]].
+
 ## Artefatos do domínio
 
 - [[03-Dominios/Tecnologia/Cloud/Dicionário|Dicionário]] — glossário provider-neutro dos termos do domínio.
@@ -82,4 +88,3 @@ A ordem numérica (1→24, blocos 1→5) é a recomendada: modelo mental primeir
 - [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura / System Design]] — Cloud fornece os primitivos; Arquitetura decide como compô-los num sistema.
 - [[03-Dominios/Engenharia/Comunicação entre Sistemas/index|Comunicação entre Sistemas]] — mensageria e APIs atravessam a fronteira entre os dois domínios.
 - [[03-Dominios/Engenharia/Auth e Identidade/index|Auth e Identidade]] — IAM (galho 4) é a aplicação, na nuvem, dos conceitos gerais desse domínio.
-- [[04-Sendas/Senda Cloud|Senda Cloud]] — ordem de leitura curatorial e recursos externos usados como pesquisa prévia.
