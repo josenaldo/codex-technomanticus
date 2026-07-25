@@ -3,7 +3,7 @@ title: "As quatro portas — console, CLI, SDK e API"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -80,6 +80,14 @@ Exemplos: `boto3` para Python na AWS, `aws-sdk-go` para Go na AWS, `godo` para G
 ### A API — a porta que todas as outras usam
 
 E, por fim, a própria **API** — você também pode falar com ela diretamente, sem console, sem CLI, sem SDK: montando a requisição HTTP você mesmo, com `curl` ou qualquer cliente HTTP, assinando-a manualmente (ou usando um token, dependendo do provedor), e interpretando a resposta JSON. Ninguém faz isso no dia a dia para tarefas comuns — é trabalho redundante quando a CLI e o SDK já fazem isso por você — mas é a prova mais direta de que as outras três portas não passam por nenhum caminho especial: elas fazem exatamente isso, com mais conveniência em cima.
+
+> [!tip] Assista: AWS APIs, AWS Management Console, CLI & SDKs in 7 Minutes
+> **Canal:** NextWork | **Duração:** ~7min | **Idioma:** EN
+>
+> Versão curta e direta da mesma ideia central desta seção — usando a analogia de um garçom de restaurante para explicar API, e depois mostrando console, CLI e SDK como três formas de chegar na mesma cozinha (a mesma API), sem reinventar o cardápio a cada porta.
+> Trecho de destaque [06:22]: *"you can either do it through the AWS Management console through the command line interface which goes through your terminal or through"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=9LUKktlsv1Y)
 
 > [!info] "Instância" e "droplet" são o mesmo conceito, com nomes diferentes
 > AWS chama uma máquina virtual de "instância" (EC2 *instance*); DigitalOcean chama a mesma coisa de "droplet". A ação de API por trás muda de nome entre provedores (`DescribeInstances` vs. `GET /v2/droplets`), mas a estrutura da tarefa — listar, filtrar, criar, consultar um recurso específico — é idêntica nas quatro portas, em qualquer um dos dois. Vocabulário muda; o padrão de interação, não.

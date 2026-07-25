@@ -3,7 +3,7 @@ title: "Limites, cotas e o contrato do provedor"
 type: concept
 fase: Magus
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -280,6 +280,14 @@ flowchart TD
     AcaoCota --> Errado["Retry imediato NÃO resolve"]
     AcaoThrottle --> Certo["Retry imediato só piora"]
 ```
+
+> [!tip] Assista: How to Implement Exponential Backoff & Retry Logic
+> **Canal:** SystemDR — Scalable System Design | **Duração:** ~6min | **Idioma:** EN
+>
+> Implementa, em código, exatamente o mecanismo desta seção — inclusive o motivo de adicionar jitter: sem ele, múltiplos clientes recusados ao mesmo tempo voltam a tentar no mesmo instante e recriam a rajada que causou o throttling original.
+> Trecho de destaque [03:29]: *"The solution is jitter addition. We add a small random delay to our calculated backoff, spreading out retries"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=zq97PFCftNA)
 
 > [!info] Fronteira
 > Infraestrutura como código — Terraform, e como ferramentas de IaC lidam (ou não) com rate limiting em aplicações de grande escala — é o assunto do **galho 16** desta trilha. Aqui a ideia é só o mecanismo: por que o plano de controle throttling existe e como reagir a ele com correção.

@@ -3,7 +3,7 @@ title: "Plano de controle e plano de dados"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -170,6 +170,14 @@ O trade-off é honesto e vale nomear: capacidade ociosa custa dinheiro o tempo t
 | Risco num evento amplo de indisponibilidade | Alto — é justamente quando o plano de controle tem mais chance de estar congestionado | Baixo — a recuperação inteira é uma operação de plano de dados |
 | Equivalente em Kubernetes | Cluster Autoscaler adicionando nós novos | Nós superprovisionados absorvendo pods sem esperar infraestrutura nova[^3] |
 | Recomendação do Well-Architected | Evitar como único mecanismo de recuperação num incidente[^3] | Preferir para os componentes mais críticos[^3] |
+
+> [!tip] Assista: Beyond five 9s — Lessons from our highest available data planes
+> **Canal:** AWS Events | **Duração:** ~48min | **Idioma:** EN
+>
+> Talk de re:Invent de um engenheiro que trabalha nos data planes mais críticos da AWS: mostra por que a fronteira control plane/data plane às vezes é "fuzzy" na prática, e detalha o conceito de estabilidade estática do ponto de vista de quem projeta esses sistemas — inclusive a redução de blast radius como ferramenta complementar.
+> Trecho de destaque [41:09]: *"static stability which just means if something were to fail if we turn it back on again it should just come to a working state"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=2L1S0zfnIzo)
 
 ## Por que um deploy pode travar com o site no ar
 

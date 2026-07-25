@@ -3,7 +3,7 @@ title: "O modelo de responsabilidade compartilhada"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -49,6 +49,14 @@ A própria AWS confirma isso na letra da documentação, dividindo os serviços 
 
 - **Serviços de infraestrutura (IaaS), como o EC2** — aqui, o cliente assume "a gestão do sistema operacional convidado (incluindo atualizações e patches de segurança), qualquer software de aplicação ou utilitário instalado pelo cliente nas instâncias, e a configuração do firewall fornecido pela AWS". A fatia de responsabilidade do cliente é grande: ele administra tudo do sistema operacional para cima.
 - **Serviços abstraídos, como o S3 e o DynamoDB** — aqui, "a AWS opera a camada de infraestrutura, o sistema operacional e as plataformas", e a responsabilidade do cliente encolhe para "gerenciar seus dados (incluindo opções de criptografia), classificar seus ativos, e usar ferramentas de IAM para aplicar as permissões apropriadas".
+
+> [!tip] Assista: AWS Shared Responsibility Model Explained
+> **Canal:** Go Cloud Architects | **Duração:** ~9min | **Idioma:** EN
+>
+> Percorre a mesma linha "of the cloud" vs. "in the cloud" com exemplos práticos por tipo de serviço (EC2, containers, Lambda), reforçando visualmente por que a fatia do cliente encolhe conforme o serviço fica mais gerenciado — sem nunca chegar a zero.
+> Trecho de destaque [00:53]: *"the cloud provider is responsible for their stuff"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=GseJ2wkhrs0)
 
 Essa é a mesma tabela "quem gerencia o quê" da nota anterior — só que aplicada especificamente ao eixo de segurança, e não ao eixo de operação em geral. Em EC2 (IaaS), você paga o preço de administrar mais, e também assume a responsabilidade de proteger mais: um patch de segurança do kernel que você não aplica é uma vulnerabilidade que só você deixou aberta. Em S3 ou DynamoDB (serviços abstraídos, mais próximos de PaaS na lógica da camada), a AWS tira de você a responsabilidade sobre o sistema operacional e o middleware — mas a fatia que sobra, dados e permissões, continua inteiramente sua, e é justamente aí que o incidente do bucket público do início desta nota aconteceu: um serviço de armazenamento gerenciado, onde a AWS cuidou de tudo que prometeu cuidar, e o cliente configurou mal a única coisa que sobrou para ele configurar.
 
