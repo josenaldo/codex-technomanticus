@@ -1,7 +1,7 @@
 ---
 title: FinOps na prática e cultura
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -56,6 +56,14 @@ O ciclo nunca "termina". A cada sprint, a cada trimestre, você reentra em Infor
 > [!info] Terminologia oficial (verificado 2026-07-24)
 > O framework "Inform / Optimize / Operate" é a formulação canônica da FinOps Foundation (parte da Linux Foundation desde 2019) no seu *FinOps Framework*. A fundação também define seis princípios (times colaboram, decisões guiadas por valor de negócio, todos são donos do próprio uso de cloud, relatórios acessíveis e em tempo, o time central de FinOps impulsiona vantagens de escala, e aproveitar o modelo variável de custo da cloud). Fonte: finops.org/framework — confira a versão vigente, o framework é revisado periodicamente (a versão atual é a "FinOps Framework" 2024+, com adição de camadas de IA/ML).
 
+> [!tip] Assista: The FinOps Framework
+> **Canal:** Eddy Says Hi (#EddySaysHi) | **Duração:** ~6min | **Idioma:** EN
+>
+> Percorre as três fases na mesma ordem desta nota e reforça o ponto central: FinOps não é uma ferramenta, é "the social contract for how your company operates" — a cultura é o produto final, não o dashboard.
+> Trecho de destaque [04:43]: *"First, you inform. This phase is (...) spending, you move on to optimize (...) operate. This is where you bake these"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=8Dz54waDj1Q)
+
 ## Modelo de maturidade: Crawl, Walk, Run
 
 Nenhuma organização nasce em Operate. A FinOps Foundation descreve a progressão em três estágios — **Crawl, Walk, Run** — e o ponto importante é que maturidade não é sobre ter mais ferramenta, é sobre a disciplina virar reflexo em vez de esforço consciente.
@@ -67,6 +75,14 @@ Nenhuma organização nasce em Operate. A FinOps Foundation descreve a progress�
 | **Run** | Unit economics em tempo quase real, anomaly detection automatizado | Otimização contínua integrada ao ciclo de deploy, forecast confiável | Guardrails automáticos (SCP, tag policy com enforcement), budget actions que bloqueiam gasto |
 
 Times pequenos geralmente vivem em Crawl ou Walk — e isso não é um fracasso, é proporcional ao tamanho da conta e ao risco. O erro é tentar pular direto para o aparato de Run (SCPs elaboradas, dashboards sofisticados) antes de ter a disciplina de Crawl consolidada: governança sem visibilidade prévia vira bloqueio arbitrário que a engenharia aprende a contornar, não a respeitar.
+
+> [!tip] Assista: Adotando FinOps
+> **Canal:** Jornada FinOps | **Duração:** ~9min | **Idioma:** PT-BR
+>
+> Reforça, em português, que o objetivo não é ferramenta nem relatório — é construir uma cultura de responsabilidade, e que o ciclo Inform/Optimize/Operate precisa ser adaptado à maturidade e à cultura de cada empresa, não aplicado como receita de bolo.
+> Trecho de destaque [05:45]: *"aquele modelo do Finops de informar, otimizar e operar não é uma receita de bolo, tem que adaptar pra realidade da sua empresa, pra maturidade, pra cultura"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=dLas0dHpKA0)
 
 ## Unit economics: a métrica que liga custo a valor
 

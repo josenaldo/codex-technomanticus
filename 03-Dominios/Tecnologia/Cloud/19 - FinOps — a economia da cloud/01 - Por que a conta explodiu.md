@@ -1,7 +1,7 @@
 ---
 title: Por que a conta explodiu
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -21,6 +21,14 @@ Ninguém provisionou dez vezes mais servidores. Ninguém aprovou um orçamento d
 Como isso acontece? A resposta curta é: **a nuvem foi desenhada para ser fácil de gastar e difícil de perceber que se está gastando**. Cada clique que cria um recurso — um volume, um load balancer, um banco gerenciado — é grátis de fazer e caro de esquecer. Não existe fricção de compra como existia no data center físico, onde comprar um servidor exigia PO, aprovação, prazo de entrega. Na nuvem, um `terraform apply` de madrugada já é gasto realizado.
 
 Esse é o paradoxo central da nuvem pública: o mesmo modelo que dá **elasticidade** — a capacidade de crescer e encolher sob demanda, tema que atravessou o Bloco 2 inteiro desta trilha — também tira o **freio de mão** que existia no modelo antigo de comprar hardware. Sem gente cuidando ativamente disso, o custo vira uma função crescente e monotônica do tempo. Ele só sobe.
+
+> [!tip] Assista: O que é FinOps com Marcelo Scharan, CEO da Pier Cloud
+> **Canal:** Papo Cloud | **Duração:** ~40min | **Idioma:** PT-BR
+>
+> Um bate-papo que ajuda a entender por que o desperdício em nuvem é tão mais visível — e tão mais constrangedor — do que era no data center: lá, capacidade ociosa nunca aparecia como linha de fatura; na nuvem, o "cartão de crédito" mostra cada centavo, mês a mês, sem esconderijo.
+> Trecho de destaque [16:57]: *"igual uma conta de cartão de crédito, você comprou, vai vir a conta no final do mês, o número vai aparecer, não tem como (...) ocultado"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=KgnIB_zAF3U)
 
 ## Os culpados de sempre (e os escondidos)
 
@@ -79,6 +87,14 @@ flowchart LR
 > As três fases Inform/Optimize/Operate são a formulação canônica publicada pela FinOps Foundation (`finops.org`). O fetch direto da página oficial retornou HTTP 403 nesta sessão (bloqueio de acesso automatizado); a descrição acima reflete o framework amplamente documentado e replicado por provedores de nuvem e consultorias. Vale conferir a versão mais recente do FinOps Framework diretamente em `finops.org/framework` antes de citar em contexto formal.
 
 Note que esse ciclo aprofunda, na prática, algo que já apareceu no [[03-Dominios/Tecnologia/Cloud/03 - Well-Architected Framework/index|Well-Architected Framework]]: o pilar de **Otimização de Custo** ali estabelece os *princípios* (matching de oferta/demanda, medir eficiência de ponta a ponta, parar de gastar dinheiro em undifferentiated heavy lifting). FinOps é a *prática* organizacional, com processo, papéis e cadência, que transforma esses princípios em hábito recorrente do time.
+
+> [!tip] Assista: AWS FinOps Explained in 5 Minutes
+> **Canal:** AWS With A Beer | **Duração:** ~5min | **Idioma:** EN
+>
+> Um resumo rápido pra quem quer a definição de FinOps sem rodeio: não é só "economizar", é o guardrail financeiro que faz engenharia, financeiro e liderança falarem a mesma língua sobre custo antes que a fatura vire surpresa.
+> Trecho de destaque [01:18]: *"finops is your financial guard rail ensuring every dollar spent on AWS delivers maximum value"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=6qqv9Ss3MaE)
 
 ## CapEx vira OpEx: a mudança de modelo mental
 

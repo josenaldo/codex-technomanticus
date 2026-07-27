@@ -1,7 +1,7 @@
 ---
 title: Otimização de custo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -96,6 +96,14 @@ Repare que Lambda está na lista — e ali "right-sizing" tem um sabor diferente
 
 Na DigitalOcean, o equivalente não existe como serviço dedicado. Não há um "Compute Optimizer da DO" analisando 14 dias de CloudWatch equivalente e recomendando trocar seu Droplet de tamanho. O que existe é o **resize manual de Droplets** — trocar CPU, RAM e opcionalmente disco, documentado como procedimento operacional, não como recomendação automatizada orientada por dados. Na prática: na AWS você recebe o palpite pronto; na DO você tem que olhar o próprio painel de monitoramento e decidir sozinho quando um Droplet está superdimensionado.
 
+> [!tip] Assista: Right-Sizing Cloud Resources — Match Capacity to Demand & Cut Costs
+> **Canal:** CodeLucky | **Duração:** ~5min | **Idioma:** EN
+>
+> Reforça por que "superdimensionar pra garantir" é o desperdício mais comum e mais invisível: recursos ociosos não aparecem como erro em lugar nenhum, só como dinheiro queimado no fim do mês.
+> Trecho de destaque [00:57]: *"leads to wasted money on idle resources"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=It2NcQUnqWs)
+
 ## Degrau 3 — Comprar melhor
 
 Depois de eliminar desperdício e ajustar tamanho, o que sobra é a carga de trabalho real — e aqui entra a decisão de *como pagar* por ela, já coberta em profundidade na [[03-Dominios/Tecnologia/Cloud/19 - FinOps — a economia da cloud/02 - Modelos de precificação|nota de Modelos de precificação]] deste galho: Savings Plans e Reserved Instances pra baseline estável e previsível, Spot pra carga tolerante a interrupção, on-demand pra tudo que é imprevisível ou transitório. A alavanca aqui não é técnica — é de compromisso financeiro, e o pré-requisito é ter dados confiáveis de utilização (que só existem depois de você ter feito os degraus 1 e 2; comprar Reserved Instance pra cobrir uma instância superdimensionada é comprometer dinheiro de longo prazo com o problema errado).
@@ -147,6 +155,14 @@ Na DigitalOcean, o modelo de data transfer é estruturalmente mais simples e mai
 
 > [!info] Verificado 2026-07-24 — via docs.digitalocean.com/products/droplets/details/pricing
 > Transferência de saída excedente na DO: $0,01 por GiB. Não há cobrança de "processamento por hora" equivalente a NAT Gateway — a DO não tem um serviço de tradução de endereço cobrado à parte; a simplicidade da topologia de rede da DO elimina essa categoria inteira de custo escondido, não apenas reduz o preço dela.
+
+> [!tip] Assista: AWS Cost Optimization Explained — Cut Your Bill with Free Tier, Right-Sizing & Spot
+> **Canal:** Viaan Cloud | **Duração:** ~9min | **Idioma:** EN
+>
+> Cobre a mesma escada de alavancas desta nota (right-sizing, Reserved/Savings Plans, Spot) e dedica um bloco inteiro a "watch your data transfer out" — o mesmo vilão escondido que o Degrau 4 descreve.
+> Trecho de destaque [06:12]: *"First, data transfer. Moving data (...) out. Work down (...) cost"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RKKBa9fDxGg)
 
 ## Degrau 5 — Serverless, managed e arquitetura consciente de custo
 

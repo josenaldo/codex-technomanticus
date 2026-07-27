@@ -1,7 +1,7 @@
 ---
 title: Modelos de precificação
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -67,6 +67,14 @@ Existem duas variantes: **Compute Savings Plans** (mais flexível — cobre EC2 
 
 Isso é o que torna Savings Plans o modelo preferido hoje: você reserva o **gasto de baseline**, e tudo que varia acima disso — picos, experimentos, novos serviços — continua pagando on-demand sem penalidade, sem precisar prever com precisão cirúrgica qual tipo de instância vai rodar daqui a 18 meses.
 
+> [!tip] Assista: O que é e como utilizar o Savings Plans na AWS?
+> **Canal:** Iago Ferreira TI - Aprenda Cloud e DevOps do ZERO | **Duração:** ~6min | **Idioma:** PT-BR
+>
+> Mostra na prática o efeito do compromisso de 1 vs 3 anos no desconto — o mesmo trade-off tempo-por-desconto que aparece em toda decisão de Savings Plan, só que com números reais na tela em vez de abstração.
+> Trecho de destaque [00:28]: *"compromisso de 3 anos você tem um desconto maior, se você fazer um de um ano você tem um desconto um pouco menor"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=K3q71A1exXE)
+
 ### Spot: comprar a capacidade que sobrou
 
 Spot Instances vendem capacidade ociosa da AWS com desconto de até 90% frente ao on-demand.
@@ -93,6 +101,14 @@ graph TD
     RI -->|"mais flexível, desconto similar"| SP
     OD -->|"tolerância a falha compra desconto"| SPOT
 ```
+
+> [!tip] Assista: Amazon/AWS EC2 Pricing Simply Explained — On-Demand, Spot, Reserved, Savings Plans
+> **Canal:** Tiny Technical Tutorials | **Duração:** ~9min | **Idioma:** EN
+>
+> Passa pelos quatro modelos em sequência com telas do console, fechando com a comparação direta Reserved vs. Savings Plans — útil pra visualizar de onde vem a flexibilidade extra do Savings Plan que o texto descreve.
+> Trecho de destaque [02:55]: *"the reserved instances versus savings plans"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-t148tYgnJU)
 
 ## O mix ótimo: quando usar cada um
 

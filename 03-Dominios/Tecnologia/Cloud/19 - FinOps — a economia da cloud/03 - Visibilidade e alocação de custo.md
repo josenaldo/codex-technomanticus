@@ -1,7 +1,7 @@
 ---
 title: Visibilidade e alocação de custo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -45,6 +45,22 @@ Na prática, você abre o Cost Explorer e agrupa custo por **serviço**, por **t
 O forecast do Cost Explorer usa modelos de séries temporais sobre seu histórico — não é uma promessa contratual, é uma projeção estatística. Ele fica pior quanto mais errático for seu padrão de consumo (picos de Black Friday, por exemplo, distorcem a curva).
 
 Um exercício concreto ajuda a fixar o fluxo. Imagine que a fatura veio US$ 4.200 acima do mês anterior. No Cost Explorer, você abre o gráfico, agrupa por **serviço** e olha as barras: RDS subiu pouco, EC2 estável, mas **Data Transfer** triplicou. Você refina o filtro para "Usage Type" e descobre que é `DataTransfer-Out-Bytes` numa região específica. Cruza isso com a tag `project`, e aparece: o time que subiu um novo pipeline de exportação de relatórios para clientes começou a mandar arquivos grandes direto do S3 para fora da AWS, sem CDN na frente. Achou o vilão em três cliques — sem isso, o mesmo diagnóstico exigiria vasculhar dashboards de cada serviço individualmente, ou esperar alguém "lembrar" do que mudou.
+
+> [!tip] Assista: AWS Cost Optimisation Series: Cost Explorer
+> **Canal:** Amazon Web Services (oficial) | **Duração:** ~3min | **Idioma:** EN
+>
+> Demo curta e direto ao ponto do console oficial, incluindo os relatórios de cobertura de Reserved Instances que ficam dentro do próprio Cost Explorer — útil pra ver na tela o mesmo forecast que o texto descreve.
+> Trecho de destaque [00:24]: *"cost Explorer RI reports you can use"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=oE8TNKGmc40)
+
+> [!tip] Assista: AWS Cost Explorer — Analyze & Forecast Cloud Spending
+> **Canal:** CodeLucky | **Duração:** ~4min | **Idioma:** EN
+>
+> Foca no motor de forecast (machine learning sobre o histórico) e amarra isso diretamente ao planejamento de budget e às cost allocation tags — a ponte exata entre esta seção e a próxima.
+> Trecho de destaque [03:08]: *"cost allocation tags to enable granular"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=M43YkRC8taU)
 
 ## AWS Budgets: a primeira linha de defesa contra o susto na fatura
 

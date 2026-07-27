@@ -1,7 +1,7 @@
 ---
 title: Otimizar o custo da arquitetura de referência
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -85,6 +85,14 @@ flowchart TB
 
 Repare no padrão: a maioria das peças serverless cobra por *uso* (Lambda, EventBridge, SQS/SNS, DynamoDB on-demand), mas duas peças — RDS e Kinesis provisioned — cobram por *capacidade reservada*, existindo ou não tráfego. Isso não é acidente de design da AWS: é a mesma tensão pagamento-por-uso-vs-capacidade-reservada da nota de Modelos de precificação, só que agora espalhada dentro de uma única arquitetura, peça por peça.
 
+> [!tip] Assista: AWS re:Invent 2023 — Optimize costs by going serverless (IMP212)
+> **Canal:** AWS Events | **Duração:** ~19min | **Idioma:** EN
+>
+> Um talk oficial de re:Invent que percorre exatamente a mesma pilha desta arquitetura — Lambda, Fargate, API Gateway, Step Functions — peça por peça, mostrando de onde vem o custo em cada uma antes de otimizar qualquer coisa.
+> Trecho de destaque [05:08]: *"compute with Lambda serous storage with"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=pjzluTJVEQM)
+
 ## A árvore de otimização: uma alavanca por peça
 
 Sabendo onde o dinheiro vai, a pergunta seguinte é qual alavanca da nota 04 deste galho se aplica a cada peça. Não é a mesma alavanca em todo lugar — puxar right-sizing numa peça que cobra por capacidade reservada (RDS) resolve; puxar a mesma alavanca numa peça que cobra por uso (Lambda) é a alavanca errada.
@@ -108,6 +116,14 @@ Duas notas sobre a árvore acima merecem destaque porque são específicas desta
 
 **EventBridge e o fan-out invisível.** Cada regra nova que um time cria pra assinar `PagamentoAprovado` é, ao mesmo tempo, um ganho de desacoplamento (nenhum código do pedido muda) e uma linha a mais na fatura de entregas. Uma auditoria trimestral de regras — igual à varredura de recursos órfãos do degrau 1 da nota 04 — costuma achar assinantes que ninguém mais consome, herdados de um experimento antigo, ainda sendo entregues e cobrados.
 
+> [!tip] Assista: Optimize AWS Costs — Developer Tools and Techniques (DEV318)
+> **Canal:** AWS Events | **Duração:** ~45min | **Idioma:** EN
+>
+> Traz um caso real de otimização de Lambda migrando pra Graviton — a mesma lógica de "puxar a alavanca certa pra cada peça" que a árvore de otimização desta nota descreve, só que com números de antes/depois em produção.
+> Trecho de destaque [19:00]: *"lambda was to change to graviton"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=vvdjlAHojY8)
+
 ## O trade-off: otimizar demais quebra coisa
 
 Aqui mora a armadilha mais cara desta nota inteira. Cada alavanca da árvore acima tem um preço em outra dimensão — performance, resiliência ou simplicidade — e ignorar isso transforma economia em incidente.
@@ -120,6 +136,14 @@ Aqui mora a armadilha mais cara desta nota inteira. Cada alavanca da árvore aci
 
 > [!warning] A régua certa não é "o mais barato", é "o mais barato que ainda cumpre o SLA"
 > Toda alavanca desta árvore tem um ponto além do qual ela para de ser otimização e vira degradação disfarçada de economia. FinOps maduro (nota 05 deste galho) trata isso como decisão de negócio compartilhada entre Engenharia e Finanças — nunca como corte unilateral decidido só pelo tamanho da fatura.
+
+> [!tip] Assista: The AWS Well-Architected Framework — Reliability, Performance, Cost & Sustainability Pillars
+> **Canal:** AWS Explainers | **Duração:** ~8min | **Idioma:** EN
+>
+> Nomeia diretamente o trade-off que fecha esta seção — custo contra confiabilidade — como uma tensão estrutural do Well-Architected Framework, não uma armadilha exclusiva desta arquitetura.
+> Trecho de destaque [06:06]: *"trade-off you will always face in the (...) cloud. Cost versus reliability"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=mSZumXun0fA)
 
 ## Serverless vs sempre-ligado: a decisão de arquitetura já era uma decisão de custo
 
