@@ -94,7 +94,7 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 | 🔶 parciais | 0 |
 | ⬜ não iniciados | 0 |
 | Notas escritas | 146 (145 de galho + 1 capstone do domínio) |
-| M1 (mídia) em curso | ✅ galhos 01, 02, 05 · 🔶 galho 04 (notas 02/06 feitas; 01/03/04/05 a refazer) · ⬜ galho 03 (revertido, refazer) · ⬜ galhos 06-24 + capstone |
+| M1 (mídia) | ✅ **COMPLETO 2026-07-25** — todos os 24 galhos + capstone do domínio enriquecidos (~215 vídeos YouTube com legenda verificada via yt-dlp) |
 
 ---
 
@@ -107,6 +107,5 @@ Roadmap-**raiz** da trilha `03-Dominios/Tecnologia/Cloud`. Mapeia o estado dos *
 5. **Bloco 4 (galhos 16-20, Operar/sustentar/governar):** ✅ **completo** — IaC, Observabilidade, Segurança, FinOps, Resiliência fechados 2026-07-24.
 6. **Bloco 5 (galhos 21-24, Provedores e maestria):** ✅ **completo** — galhos 21 (AWS a fundo), 22 (DigitalOcean a fundo), 23 (multi-cloud e portabilidade) e 24 (Certificação SAA-C03) fechados 2026-07-24. **Todos os 24 galhos escritos.**
 7. **Capstone do domínio — "Arquitetar um SaaS na cloud do zero":** ✅ **completo** 2026-07-24 — nota Magus única (encurtador de URL com analytics) que costura os 24 galhos aplicando os 6 pilares do Well-Architected com lente de entrevista, incluindo a variação DigitalOcean. **Domínio Cloud COMPLETO: 24 galhos + capstone, 146 notas.**
-8. **Enriquecimento de mídia (M1) — EM CURSO (iniciado 2026-07-25):** vídeos YouTube com legenda verificada via yt-dlp, embutidos como `[!tip]` (garantia anti-alucinação: só embute vídeo cuja legenda foi baixada). Motor: workflow `.claude/checkpoints/enriquecer-midia-cloud.mjs`.
-   - ✅ **galho 01** (9 vídeos) · ✅ **galho 02** (6) · ✅ **galho 05** (8) · 🔶 **galho 04** (notas 02/06 feitas; 01/03/04/05 pendentes) · ⬜ **galho 03** (revertido — mídia não-verificada, refazer) · ⬜ **galhos 06-24 + capstone**.
-   - **LIÇÃO:** rodar galhos concorrentes (4 de uma vez) disparou rate-limit/bot-detection do YouTube ("Sign in to confirm you're not a bot"/429) no IP inteiro, degradando galhos 03/04. **Rodar 1 galho por vez** (o piloto do galho 01 fez 12 downloads sem bloqueio) com cooldown entre eles.
+8. **Enriquecimento de mídia (M1) — ✅ COMPLETO 2026-07-25:** todos os 24 galhos + capstone do domínio enriquecidos com vídeos YouTube (legenda verificada via yt-dlp, embutidos como `[!tip]`; garantia anti-alucinação: só embute vídeo cuja legenda foi baixada e citada). ~215 vídeos no total. Motor: workflow `.claude/checkpoints/enriquecer-midia-cloud.mjs` (1 galho por vez + gate de QA anti-alucinação por galho). **Domínio Cloud 100% fechado (escrita + mídia).**
+   - **LIÇÕES:** (a) rodar galhos concorrentes (4 de uma vez) disparou rate-limit/bot-detection do YouTube ("Sign in to confirm you're not a bot"/429) no IP inteiro — **rodar 1 galho por vez** com cooldown resolveu. (b) o orçamento de WebSearch é por sessão (200) e esgota; o fallback `uvx yt-dlp "ytsearchN:<query>"` faz descoberta sem consumir WebSearch e virou o mecanismo primário. (c) sintaxe de nó Mermaid `X[[Label]]` é falso-positivo no gate de wikilinks — ignorar.
