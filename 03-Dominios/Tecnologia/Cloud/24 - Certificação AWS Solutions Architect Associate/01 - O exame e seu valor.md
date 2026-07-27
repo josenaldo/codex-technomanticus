@@ -1,7 +1,7 @@
 ---
 title: "O exame e seu valor — o que é o SAA-C03 e por que fazer"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -27,6 +27,14 @@ O valor, então, é duplo e precisa ser separado:
 
 > [!warning] O que a certificação NÃO é
 > Ela não é prova de experiência prática, não é prova de que você já operou um sistema em produção sob carga real, e não é substituto pra portfólio ou histórico de trabalho. Um SAA-C03 na mão de quem nunca debugou um incidente em produção vale menos numa entrevista técnica do que dois anos de experiência sem certificado nenhum. Trate-a como *acelerador de sinalização*, não como *substituto de competência*.
+
+> [!tip] Assista: Is the AWS Solutions Architect Certification ACTUALLY worth it?
+> **Canal:** Tech With Soleyman | **Duração:** ~9min | **Idioma:** EN
+>
+> O autor entrevista candidatos que têm o SAA-C03 mas travam quando pedem pra explicar um projeto real — a mesma advertência desta nota, vinda do lado de quem contrata. Complementa o "vale a pena" com o contraponto de "vale a pena pra quem".
+> Trecho de destaque [05:36]: *"think having this certification can also give you a false sense of expertise. I've interviewed so many candidates who have this certification, but when I asked them to talk me through a project that they've built (...) they freeze."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xkLuZpmn09s)
 
 ## Por que um pedaço de papel importa: a economia da sinalização
 
@@ -68,6 +76,14 @@ Dois pontos dessa tabela merecem nuance, porque a fonte oficial é deliberadamen
 **Passing score.** A AWS afirma, na própria FAQ de certificação, que "AWS Certification passing scores are set by using statistical analysis and are subject to change. AWS does not publish exam passing scores". Ou seja: a escala de 100-1000 é documentada, mas o corte exato de aprovação não é público — e pode variar entre formas diferentes do exame, porque a AWS recalibra estatisticamente com base na dificuldade real de cada conjunto de questões. O número "720" que circula amplamente em cursos preparatórios e comunidades é uma estimativa consolidada ao longo dos anos, não um valor oficial confirmado pela AWS.
 
 **Questões não pontuadas.** É prática comum da AWS incluir algumas questões experimentais (não pontuadas) misturadas às 65, usadas para calibrar futuras versões do exame — mas essa contagem específica também não está documentada nas fontes oficiais consultadas para esta nota. Se você ver materiais de terceiros citando "50 pontuadas + 15 não pontuadas", trate como estimativa de mercado, não como dado confirmado pela AWS.
+
+> [!tip] Assista: AWS Solutions Architect Associate (SAA-C03) – Guia Completo da Certificação Mais Procurada
+> **Canal:** Cloud For All | Democratizando Cloud, IA e Tech | **Duração:** ~12min | **Idioma:** PT-BR
+>
+> Confirma em PT-BR o mesmo formato desta nota (130 min, 65 questões, US$150, validade de 3 anos) e reforça por que essa é "uma das certificações que mais vão impactar no salário" — o mesmo argumento de sinalização de carreira desenvolvido acima.
+> Trecho de destaque [01:14]: *"A prova ela tem 130 minutos de duração, 65 questões. O investimento é de 150. A validade é de 3 anos."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=MNY9IP1hxwo)
 
 > [!info] Verificado em 2026-07-24 — passing score e contagem exata de questões não pontuadas não são divulgados oficialmente pela AWS; os números citados acima (~720, ~15 não pontuadas) circulam amplamente em cursos preparatórios mas não têm confirmação em fonte primária. Reconfira antes de se planejar em cima deles.
 

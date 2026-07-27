@@ -1,7 +1,7 @@
 ---
 title: "Capstone — um plano de estudo para o SAA-C03"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -118,6 +118,14 @@ Se o primeiro simulado da semana 4 já bateu 80%+ de forma consistente (o patama
 > [!warning] O plano é um esqueleto, não uma camisa de força
 > Se as semanas 1-3 revelarem que um galho inteiro está fraco na memória — não só uma lacuna pontual, mas o conceito de base esquecido —, é mais honesto voltar e reler o galho inteiro do que seguir o cronograma às cegas. O objetivo do plano é dar estrutura e evitar procrastinação difusa, não substituir julgamento sobre onde você realmente está fraco. Ajuste a duração de cada semana à sua realidade — alguém que já trabalha com AWS em produção todo dia pode comprimir isso em 2-3 semanas; alguém que fez a trilha há muitos meses e está enferrujado pode precisar do dobro.
 
+> [!tip] Assista: Pass AWS Certified Solutions Architect Associate - FAST and SIMPLE Study Plan for SAA-C03
+> **Canal:** Trevor Spires | **Duração:** ~8min | **Idioma:** EN
+>
+> Relato de quem seguiu praticamente o mesmo esqueleto desta nota (semanas de estudo + revisão + simulado antes de agendar) e reconheceu, depois, que uma janela mais curta bastava — reforça o aviso desta nota de que a duração é ajustável à sua realidade, não fixa.
+> Trecho de destaque [02:28]: *"first and foremost i spend about five weeks studying, five days per week, roughly two hours a day (...) i wish i would have probably just done four and got it over with"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=pmEqDqRn9V0)
+
 ## Recursos, além da própria trilha
 
 A trilha (galhos 1-23 mais estas seis notas de certificação) é a espinha dorsal do plano, mas três tipos de recurso externo completam a preparação:
@@ -129,6 +137,14 @@ A trilha (galhos 1-23 mais estas seis notas de certificação) é a espinha dors
 **AWS Skill Builder.** A própria AWS mantém uma plataforma de aprendizado oficial, o [AWS Skill Builder](https://skillbuilder.aws/), com cursos digitais gratuitos e pagos organizados por certificação, incluindo um plano de aprendizagem dedicado ao SAA-C03 e um exame oficial de prática pago (Official Practice Exam) que, ao contrário de simulados de terceiros, usa questões escritas pela própria AWS.
 
 > [!info] Verificado 2026-07-24 — AWS Skill Builder existe e oferece trilha dedicada ao SAA-C03 (confirmado via aws.amazon.com/certification, que referencia skillbuilder.aws como recurso oficial de preparação). Não foi possível confirmar via WebFetch nesta sessão o preço atual do Official Practice Exam pago dentro do Skill Builder — esse preço muda com alguma frequência e não está documentado nas páginas consultadas para esta nota. Confira o valor vigente em skillbuilder.aws antes de decidir se vale a pena além dos simulados de terceiros.
+
+> [!tip] Assista: How I passed AWS Solution Architect SAA-C03 in four weeks
+> **Canal:** Here Is Cloud | **Duração:** ~17min | **Idioma:** EN
+>
+> Detalha o mesmo funil de recursos desta nota — curso, simulados de terceiros (Tutorials Dojo) e o exame oficial de prática da AWS — com o mesmo limiar de "pontuação consistente acima de determinado patamar" antes de agendar, e reforça que o oficial pago (Skill Builder) é o mais próximo da prova real.
+> Trecho de destaque [10:31]: *"after that I highly recommend tutorial Dojo practice exam, that's a set of exams which you can definitely use for practice, and when you start getting 75 or more from the practice exams that means you're ready to schedule your real exam"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=nVrNAnWyUIo)
 
 ## Critério de "estou pronto"
 

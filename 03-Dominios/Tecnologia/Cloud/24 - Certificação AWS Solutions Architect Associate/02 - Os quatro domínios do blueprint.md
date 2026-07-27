@@ -1,7 +1,7 @@
 ---
 title: "Os quatro domínios do blueprint — o que o exame cobra e com que peso"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -61,6 +61,14 @@ flowchart LR
     P6 -.diluído em.-> D4
 ```
 
+> [!tip] Assista: 6 Pillars of the AWS Well Architected Framework (you should really know this)
+> **Canal:** Be A Better Dev | **Duração:** ~19min | **Idioma:** EN
+>
+> Percorre os seis pilares um a um, com comentário de experiência real — inclusive Excelência Operacional, o pilar "diluído" que esta nota menciona mas não detalha, porque ele não vira domínio próprio no exame.
+> Trecho de destaque [00:42]: *"we're going to talk about the first pillar which is in terms of operational excellence and operational excellence is the idea of running, monitoring and continuously improving your application"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5odtVlORq_w)
+
 A tradução direta funciona bem: Segurança vira Domain 1 quase sem perda, Confiabilidade vira Domain 2, Eficiência de performance vira Domain 3, Otimização de custo vira Domain 4. Excelência operacional (deploy seguro, observabilidade, runbooks) e Sustentabilidade (right-sizing, escolha de região) não desaparecem — elas se espalham como *sub-tema* dentro dos quatro domínios grandes, porque a prova testa decisão de design, não operação do dia a dia.
 
 Vale traduzir o peso percentual para algo mais tangível: número de questões. A AWS não divulga quantas das 65 questões são "não pontuadas" (questões-piloto testadas para futuras revisões, misturadas sem identificação — prática comum a certificações grandes) nem em qual domínio elas caem, então o candidato trata as 65 como valendo igual. Aplicando os percentuais de peso às 65 questões, dá para estimar quantas caem, aproximadamente, em cada domínio:
@@ -75,6 +83,14 @@ pie showData
 ```
 
 Vinte questões de segurança numa prova de 65 é quase um terço do exame inteiro dedicado a um único domínio — número grande o bastante para decidir, sozinho, se o candidato passa ou reprova. É esse peso concreto, e não a abstração "30%", que deveria orientar quanto tempo dedicar a cada revisão.
+
+> [!tip] Assista: SAA-C03 AWS Certified Solutions Architect Associate Exam Overview and Exam Domains
+> **Canal:** Tutorials Dojo | **Duração:** ~8min | **Idioma:** EN
+>
+> Percorre os quatro domínios oficiais na mesma ordem e com os mesmos pesos desta nota (30/26/24/20%), citando os task statements de cada um direto do Exam Guide — bom cross-check pra quem quer ouvir a fonte em vez de só ler a tabela.
+> Trecho de destaque [04:43]: *"the first domain covers the big chunk of the exam at 30 percent followed by the second domain which covers 26, the third is 24 while the last one covers 20 of the exam"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=6kJ0JhnptlQ)
 
 ### Domain 1 — Design Secure Architectures (~30%)
 

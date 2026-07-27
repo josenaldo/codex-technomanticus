@@ -1,7 +1,7 @@
 ---
 title: Mapa da trilha ao blueprint — o que você já sabe
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -140,11 +140,27 @@ A tabela-mestra resume cada lacuna numa frase. Vale abrir um pouco mais cada uma
 
 **Tipos de ELB** (galho 6, domínios High-Performing + Resilient) — o galho 6 ensinou *que* balanceamento de carga existe e *por que* ele é necessário pra elasticidade. O que falta é a árvore de decisão entre Application Load Balancer (camada 7, roteamento por path/host), Network Load Balancer (camada 4, latência ultra-baixa, IP estático) e Gateway Load Balancer (inserção transparente de appliances de terceiros).
 
+> [!tip] Assista: Which Type of Elastic Load Balancer Should I Use?
+> **Canal:** Digital Cloud Training | **Duração:** ~6min | **Idioma:** EN
+>
+> Fecha exatamente esta lacuna: percorre ALB (camada 7, roteamento por path/host/query string), NLB (camada 4, latência ultra-baixa, TLS offloading) e GWLB, na mesma lente de "qual usar em qual cenário de prova" que o exame cobra.
+> Trecho de destaque [01:48]: *"the NLB is really good for when you need ultra high performance and extremely low latency (...) so if you see exam questions asking for a very low latency load balancer it's likely to be the NLB"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VFwLffElIgc)
+
 **Route 53 routing policies** (galho 10, domínio High-Performing) — o galho 10 ensinou o que é DNS gerenciado e CDN. Falta o catálogo de routing policies: simple, weighted, latency-based, failover, geolocation, geoproximity, multivalue answer — cada uma resolvendo um cenário de distribuição de tráfego diferente.
 
 **RDS vs Aurora vs DynamoDB** (galho 9, domínios High-Performing + Resilient) — o galho 9 ensinou a diferença entre banco relacional gerenciado e banco NoSQL gerenciado. Falta a árvore de decisão prática: quando o padrão de acesso pede SQL relacional tradicional (RDS), quando pede a mesma interface relacional mas com replicação e failover mais agressivos (Aurora), e quando o padrão de acesso é chave-valor/documento com escala horizontal massiva (DynamoDB).
 
 **SQS vs SNS vs Kinesis** (galho 13, domínios Resilient + High-Performing) — o galho 13 ensinou fila e pub/sub como conceitos. Falta a decisão: SQS quando é fila ponto-a-ponto com um consumidor por mensagem, SNS quando é fan-out pra múltiplos assinantes, Kinesis quando é streaming ordenado de alto volume com múltiplos consumidores lendo o mesmo fluxo de forma independente.
+
+> [!tip] Assista: Amazon SQS vs Kinesis: Choosing the Right AWS messaging service
+> **Canal:** Cloud Explained | **Duração:** ~31min | **Idioma:** EN
+>
+> Compara os três lado a lado (event router vs event store) e nomeia o fan-out como o caso de uso clássico do SNS — a mesma distinção que esta nota pede pra fechar a lacuna. Vale assistir em trechos, não é preciso ver os 31 minutos inteiros.
+> Trecho de destaque [03:14]: *"the most famous use case is fan out event so that is the SNS (...) you send one event, there will be subscribers to that particular event and they can receive this"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VAQucLAAR8g)
 
 **Migração** (sem galho dedicado, domínios Secure + High-Performing) — este é o único item que não é "aprofundar o que já existe", é matéria genuinamente nova: Snowball/Snowcone/Snowmobile pra transferência física de grandes volumes quando a rede é o gargalo, DMS pra migração de banco de dados com replicação contínua durante a transição, e Migration Hub como painel de acompanhamento de migrações em andamento.
 

@@ -1,7 +1,7 @@
 ---
 title: "Serviços que o exame ama — e as pegadinhas recorrentes"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -93,9 +93,25 @@ flowchart TD
 
 A régua mental: **Multi-AZ existe pra você não perceber que algo quebrou** (é sobre disponibilidade — a réplica standby não aceita leitura direta, só assume em failover). **Read Replica existe pra você distribuir leitura** (é sobre performance — a réplica é assíncrona, pode ficar atrás em replicação, e você escolhe promovê-la manualmente se quiser).
 
+> [!tip] Assista: SAA-C03 Part 11: RDS, RDS Multi-AZ vs Read Replicas & Aurora AWS Solutions Architect Exam Prep
+> **Canal:** TechBytes by Sam | **Duração:** ~12min | **Idioma:** EN
+>
+> Resolve, no formato de questão-comentada, exatamente esta pegadinha-mãe — mesmo padrão de cenário "alta disponibilidade + escala de leitura" que a nota usa, com a explicação técnica do porquê (síncrono vs assíncrono).
+> Trecho de destaque [01:01]: *"Multi-AZ deployments provide synchronous replication to a standby instance in a different availability zone, ensuring high availability and automatic failover. Read replicas are designed for scaling read-heavy database workloads by providing asynchronous copies"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=VQ4rKQ08C3I)
+
 ### 2. Security Group (stateful) vs NACL (stateless)
 
 O segundo par mais confundido. A régua: SG lembra que deixou o tráfego sair, então libera a resposta de volta sem regra explícita. NACL não lembra nada — se você libera entrada na porta 443, precisa liberar *saída* também (geralmente numa porta efêmera alta, tipo 1024-65535), senão a resposta trava.
+
+> [!tip] Assista: Difference between NACL vs Security Group
+> **Canal:** Byte Novus | **Duração:** ~11min | **Idioma:** EN
+>
+> Reforça a mesma régua stateful/stateless desta nota com exemplo de IP específico — bom pra fixar por que "liberar entrada" numa NACL não libera a saída da resposta automaticamente, ao contrário do Security Group.
+> Trecho de destaque [06:43]: *"nacl is stateless where a security group is a stateful (...) in nacl, for a specific IP address, only inbound is allowed but the outbound is not allowed (...) whereas in security group it is stateful"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=32RRUEv-yt4)
 
 ### 3. "A resposta mais barata que atende o requisito" vs superdimensionar
 
