@@ -1,7 +1,7 @@
 ---
 title: O jeito AWS de arquitetar — os padrões que a plataforma empurra
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -168,6 +168,14 @@ Uma SCP típica de organização madura bloqueia, na raiz, ações que nenhuma c
 
 O detalhe conceitual que costuma confundir quem chega da IAM tradicional: uma SCP nunca *concede* permissão — ela só define o teto do que uma policy IAM dentro daquela conta pode conceder. Mesmo um usuário root numa conta membro não consegue `cloudtrail:StopLogging` se a SCP da OU bloqueia isso. É uma cerca em volta da cerca.
 
+> [!tip] Assista: Set Up a Multi-Account AWS Environment that Uses Best Practices for AWS Organizations
+> **Canal:** Amazon Web Services | **Duração:** ~6min | **Idioma:** EN
+>
+> Vídeo curto e oficial mostrando a criação da hierarquia de OUs (Security, Sandbox, Workloads) dentro do console do AWS Organizations — visualiza exatamente a estrutura em árvore que o diagrama desta seção descreve, com a "root" gerando automaticamente as contas e a organização.
+> Trecho de destaque [00:08]: *"With this service you can centrally manage multiple accounts, reduce organizational overhead, and adapt the structure of your organizational units, or OUs, to meet your business's needs."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uOrq8ZUuaAQ)
+
 ## Corrente 6 — Tags como espinha dorsal de custo e governança
 
 Uma vez que você tem dezenas de contas e centenas de recursos, como você sabe qual custo pertence a qual time, qual bucket pertence a qual projeto? A resposta idiomática da AWS é: tags.
@@ -264,6 +272,14 @@ flowchart LR
 ```
 
 Adicionar um quarto canal de notificação no futuro — SMS, por exemplo — não toca uma linha do serviço de pedidos. Só se inscreve mais um consumidor no mesmo tópico. Essa é a economia real do fan-out: o custo de adicionar um consumidor cai pra quase zero.
+
+> [!tip] Assista: Event Driven Architectures vs Workflows (with AWS Services!)
+> **Canal:** Be A Better Dev | **Duração:** ~16min | **Idioma:** EN
+>
+> Constrói, passo a passo, um pipeline de processamento de pedido em e-commerce quase idêntico ao segundo exemplo desta nota — Lambda grava no DynamoDB, o change stream dispara outra Lambda, que faz broadcast via SNS pra quem quiser escutar. Bom pra ver o fan-out event-driven sendo montado peça por peça, não só descrito.
+> Trecho de destaque [02:16]: *"That DynamoDB table may trigger another Lambda function as a result of change events, and it's going to broadcast the fact that an order was placed out to other services that may want to listen, using an SNS topic — we're done so far with the placing of the order."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Q_QCu6OP2mQ)
 
 ## A lente DigitalOcean: o jeito oposto — menos peças
 

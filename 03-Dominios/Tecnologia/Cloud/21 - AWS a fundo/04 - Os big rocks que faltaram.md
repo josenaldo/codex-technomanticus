@@ -1,7 +1,7 @@
 ---
 title: Os big rocks que faltaram — Cognito, Athena, Step Functions e cia
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -59,6 +59,14 @@ Se este tema te interessa de verdade — protocolos, OAuth 2.1, o "porquê" por 
 
 **DigitalOcean**: não tem um serviço equivalente a Cognito. Não existe um "DO Identity" gerenciado com user pools, MFA embutido e federação social pronta. Se você precisa disso na DO, você monta com uma ferramenta de terceiros (Auth0, Keycloak self-hosted, Supabase Auth) rodando em cima dos primitivos de compute da DO. É uma lacuna real de amplitude, não uma equivalência escondida.
 
+> [!tip] Assista: Amazon Cognito: User Pools vs. Identity Pools Explained
+> **Canal:** AWS Explainers | **Duração:** ~9min | **Idioma:** EN
+>
+> Fecha exatamente a distinção que esta seção traça — "quem é meu usuário" (user pool) vs. "o que meu usuário pode fazer dentro da AWS" (identity pool) — com a analogia de identity pool como uma "máquina de vender credenciais temporárias" que ajuda a fixar o modelo mental.
+> Trecho de destaque [03:19]: *"If user pools answer 'who is my user', identity pools answer a totally different question: what can my user do inside of AWS? ...Think of it more like a credential vending machine. You feed it a trusted token... and in return it spits out temporary AWS credentials."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Q65JhVBoV44)
+
 ## Step Functions — quando "chamar uma função depois da outra" vira um workflow de verdade
 
 O galho 15 (arquiteturas serverless e event-driven) já te apresentou Step Functions de raspão, na nota sobre orquestração vs coreografia, e tem uma nota inteira dedicada — "03 - Step Functions a fundo" — cobrindo estados, ASL, padrões de integração e error handling em detalhe. Não vou reexplicar aqui; o que importa nesta nota-mapa é você fixar *quando* esse nome aparece na sua cabeça.
@@ -78,6 +86,14 @@ Segundo a documentação oficial, existem dois tipos de workflow com trade-offs 
 Step Functions integra nativamente com mais de 200 serviços AWS via SDK integrations, e tem integrações "otimizadas" (com padrões de espera/callback prontos) para um conjunto menor — Lambda, Glue, Athena, SageMaker, ECS/EKS, DynamoDB, SNS/SQS, EventBridge, entre outros. É o cimento que conecta os big rocks desta nota entre si: um workflow típico de dados pode chamar Glue pra transformar, Athena pra consultar, e SageMaker pra inferir, tudo orquestrado por uma única máquina de estados.
 
 **DigitalOcean**: sem equivalente gerenciado. Orquestração de workflow na DO é "monte você mesmo" — um cron job, uma fila (o produto de mensageria gerenciada da DO é limitado comparado a SQS/EventBridge), ou uma ferramenta externa tipo Temporal ou Airflow rodando num Droplet ou App Platform.
+
+> [!tip] Assista: What are AWS Step Functions? (and why you should love them)
+> **Canal:** Be A Better Dev | **Duração:** ~14min | **Idioma:** EN
+>
+> Detalha o retry policy configurável (linear vs. exponential backoff) que a tabela Standard/Express desta nota só menciona por cima — útil pra visualizar por que Step Functions substitui a lógica de retry espalhada em código que esta nota descreve como o problema original.
+> Trecho de destaque [01:16]: *"It's almost as if Step Functions are an orchestration for an application — something that's really great about them... is that they have built-in retry functionality, and you can set this up however you want: retry three times, no retry policy, exponential back-off or linear."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=zCIpWFYDJ8s)
 
 ## Athena e Glue — SQL direto sobre o data lake, sem subir banco nenhum
 

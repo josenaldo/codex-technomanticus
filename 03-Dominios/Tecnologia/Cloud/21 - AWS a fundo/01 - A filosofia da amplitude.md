@@ -1,7 +1,7 @@
 ---
 title: A filosofia da amplitude — por que a AWS tem 240 serviços
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -97,6 +97,22 @@ flowchart TB
     Team --> Service["Novo serviço no catálogo<br/>(API primeiro, console depois)"]
     Service -.->|"multiplica"| Catalog["+200 serviços"]
 ```
+
+> [!tip] Assista: AWS re:Invent 2020: Working backwards: Amazon's approach to innovation
+> **Canal:** AWS Events | **Duração:** ~17min | **Idioma:** EN
+>
+> Dois executivos da Amazon (Richard e Rayford) detalham o mecanismo de working backwards passo a passo — inclusive por que o "documento central" é o PR/FAQ e não um roadmap técnico. Complementa a nota mostrando o processo de dentro, não só o resultado.
+> Trecho de destaque [06:58]: *"The central artifact of working backwards is what we call a working backwards document, commonly referred to as a PR FAQ. This document includes three elements: a press release, the PR, a frequently asked questions document, the FAQ, and the visual representation of what the customer experience looks like."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=aFdpBqmDpzM)
+
+> [!tip] Assista: AWS re:Invent 2020: Two-pizza teams: Organizing for innovation
+> **Canal:** AWS Events | **Duração:** ~29min | **Idioma:** EN
+>
+> Explica de onde vem o número "seis a oito pessoas" e por que a Amazon amarrou tamanho de equipe a autonomia de decisão — o pedaço que fecha o raciocínio de por que 200+ serviços não é acidente, é estrutura organizacional virando catálogo.
+> Trecho de destaque [08:47]: *"The name 'two-pizza team' comes from a meeting where we were heavily debating how big does a service team need to be, what's the optimal size, and someone very cleverly said, 'The team should be no bigger than what you can feed with two pizzas.'"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=XavPl5t9dS8)
 
 ## O mapa de camadas: onde cada peça mora
 

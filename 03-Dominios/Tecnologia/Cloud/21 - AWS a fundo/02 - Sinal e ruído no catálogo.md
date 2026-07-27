@@ -1,7 +1,7 @@
 ---
 title: Sinal e ruído — os serviços que importam vs o resto
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -21,6 +21,14 @@ Mas pense em como você realmente usa uma língua. O português tem mais de 300 
 A AWS funciona do mesmo jeito. Existe um "vocabulário ativo" — os serviços que aparecem em praticamente toda arquitetura séria, que este vault já ensinou nos vinte galhos anteriores — e existe um "vocabulário passivo", muito maior, que você aprende quando (e só quando) um problema específico o exigir. Esse desequilíbrio entre catálogo e uso real é justamente o que a primeira nota deste galho, sobre a filosofia da amplitude da AWS, deixou como pergunta em aberto: por que uma empresa constrói 240 serviços sabendo que a maioria dos clientes só vai usar uma fração pequena deles. O erro de quem está começando não é não conhecer os 240; é não saber **qual pergunta fazer** para descobrir, diante de um serviço novo, se ele pertence ao vocabulário ativo de qualquer arquiteto ou é jargão de nicho que só importa em um contexto muito específico.
 
 Essa é a habilidade que separa "conhecer a AWS" de "ter decorado a AWS": não é memorizar mais nomes, é ter um filtro confiável para o que memorizar.
+
+> [!tip] Assista: Top 50+ AWS Services Explained in 10 Minutes
+> **Canal:** Fireship | **Duração:** ~12min | **Idioma:** EN
+>
+> Um tour vertiginoso pelos cantos mais exóticos do catálogo — RoboMaker, Ground Station, Braket — no mesmo tom da "loja de departamentos gigante" desta nota, útil para calibrar visualmente o que é vocabulário passivo antes de decidir o que vale ignorar.
+> Trecho de destaque [00:08]: *"Amazon Web Services launched in 2006 with a total of three products... today it offers a mind-numbing 200 and something services, and what's most confusing is that many of them appear to do almost the exact same thing."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JIbIYCM48to)
 
 ## O núcleo: ~25 serviços, oito categorias
 
@@ -97,6 +105,14 @@ Repare que esse diagrama não tem nenhuma surpresa: é essencialmente o mapa dos
 | Secrets Manager | Operação | [[03-Dominios/Tecnologia/Cloud/18 - Segurança na cloud a fundo/03 - Segredos — Secrets Manager e Parameter Store\|Segurança]] | Credencial que precisa de rotação automática |
 
 Vinte e uma linhas, oito categorias. Some a isso mais três ou quatro que aparecem com frequência mas não ganharam galho dedicado por não terem primitivo próprio — CloudTrail (auditoria, tratado dentro do galho de Segurança), Systems Manager (operação de frota, tangencial ao galho de Compute I), X-Ray (tracing distribuído, tratado dentro do galho de Observabilidade) — e você chega perto de 25. Esse é o vocabulário ativo. Ele resolve o backend de um SaaS, o pipeline de dados de uma fintech, o site de conteúdo de uma mídia, o app mobile de um marketplace. A imensa maioria dos sistemas que você vai projetar na carreira usa uma combinação desses ~25 nomes — não um subconjunto exótico dos outros 215.
+
+> [!tip] Assista: The Most Important AWS Core Services That You NEED To Know About!
+> **Canal:** Be A Better Dev | **Duração:** ~18min | **Idioma:** EN
+>
+> Percorre exatamente o mesmo núcleo desta nota (EC2, S3, RDS, VPC e companhia) do ponto de vista de "por onde começar quando o catálogo assusta" — bom complemento prático à tabela de referência acima, com exemplos de composição real entre os serviços.
+> Trecho de destaque [00:06]: *"I'm going to be talking to you about the most important AWS services, and the motivation behind me making this video is that I've been talking to so many folks... they don't know which services they need to use."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=B08iQQhXG1Y)
 
 ## Os quatro sinais de ruído
 

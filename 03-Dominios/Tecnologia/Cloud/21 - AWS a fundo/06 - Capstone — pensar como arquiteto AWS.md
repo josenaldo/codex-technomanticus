@@ -1,7 +1,7 @@
 ---
 title: Capstone — pensar como arquiteto AWS
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -57,6 +57,14 @@ Diante de um problema novo — em produção, numa entrevista, num RFC — as se
 > [!info] Verificado 2026-07-24
 > Os seis pilares do AWS Well-Architected Framework são: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization e Sustainability — confirmados via `docs.aws.amazon.com/wellarchitected/latest/framework/the-pillars-of-the-framework.html` nesta data. O sexto pilar (Sustainability) foi adicionado ao framework em dezembro de 2021 — se você aprendeu "cinco pilares" há alguns anos, essa é a diferença.
 
+> [!tip] Assista: 6 Pillars of the AWS Well Architected Framework (you should really know this)
+> **Canal:** Be A Better Dev | **Duração:** ~19min | **Idioma:** EN
+>
+> Passa pelos seis pilares um a um com exemplos concretos de serviço AWS em cada — inclusive confirma, na fala, que Sustainability é "relativamente novo" no framework, o mesmo detalhe que o callout de verificação acima destaca.
+> Trecho de destaque [14:56]: *"Let's move on to the next pillar here, which is in terms of sustainability. This is a relatively new pillar, and it is in terms of being more sustainable, both in terms of cost and the environment."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5odtVlORq_w)
+
 ## Caso de entrevista, de ponta a ponta: "desenhe um encurtador de URL na AWS"
 
 Este é um clássico de loop de system design — e um bom teste do checklist acima, porque força você a passar pelas sete perguntas em quinze minutos, verbalizando cada escolha em voz alta como faria numa entrevista de verdade.
@@ -93,6 +101,14 @@ flowchart TB
 ```
 
 O ponto de verbalizar trade-offs num loop de entrevista não é "acertar" a arquitetura única correta — não existe uma. É mostrar que cada escolha foi feita conscientemente contra as alternativas descartadas: por que DynamoDB e não RDS (padrão de acesso não-relacional, escala de leitura); por que serverless e não Fargate fixo (tráfego disparado, não constante); por que CloudFront na frente do redirect (o hot path de um encurtador é dominado por poucos códigos muito clicados — cache resolve isso sem tocar o backend). Um bom entrevistador está avaliando o *raciocínio*, não decorando se você mencionou DynamoDB.
+
+> [!tip] Assista: System Design: How to Build a Scalable URL Shortener (Like Bitly)
+> **Canal:** Sandeep Vaid | **Duração:** ~12min | **Idioma:** EN
+>
+> Chega na mesma escolha de DynamoDB por um caminho quase idêntico ao das Perguntas 1 e 2 desta nota — nomeia explicitamente que o sistema é "read heavy" (muito mais leitura que escrita) antes de justificar por que um NoSQL de chave-valor com sharding automático vence uma alternativa relacional.
+> Trecho de destaque [05:24]: *"So if you think [about] some hashmap, obviously the... NoSQL DB, DynamoDB, is one of the best DB. There are some reasons for that: we can easily do sharding, and the system is very serverless and scalable. AWS DynamoDB automatically does this sharding."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Xb0J6MyDBtg)
 
 > [!tip] A variante "pipeline de processamento de imagens"
 > O mesmo checklist, aplicado a um problema de forma diferente, chega numa arquitetura de outra família: upload vai pro S3 (pergunta 1 — primitivo certo é object storage, não um servidor recebendo bytes), o evento `ObjectCreated` do S3 dispara Lambda direto ou via SQS se o processamento for mais pesado que o timeout do Lambda permite (pergunta 3 — aqui sim event-driven é o caminho natural, porque processamento de imagem é assíncrono por natureza — o usuário não espera o thumbnail na mesma requisição do upload), e o resultado processado volta pro S3 num prefixo separado. Vale o exercício mental de rodar as sete perguntas você mesmo nesse segundo caso — a resposta muda em quase todas.
