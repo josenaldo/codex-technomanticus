@@ -31,6 +31,9 @@ aliases:
 - [[03-Dominios/Tecnologia/HTML/07 - Acessibilidade I - fundamentos WCAG e navegação por teclado|07 — Acessibilidade I: fundamentos WCAG e navegação por teclado]]
 - [[03-Dominios/Tecnologia/HTML/08 - ARIA - roles, states, properties e live regions|08 — ARIA: roles, states, properties e live regions]]
 
+> [!info] A acessibilidade tem domínio próprio
+> As notas 07–08 são a **porta de entrada** de a11y (WCAG, teclado, ARIA). O ofício completo — construir componentes acessíveis, auditar com axe e leitor de tela, sustentar em CI e lidar com conformidade legal — vive em [[03-Dominios/Tecnologia/Acessibilidade/index|Acessibilidade]].
+
 ## 🔴 Magus — SEO, performance e APIs modernas
 
 - [[03-Dominios/Tecnologia/HTML/09 - SEO técnico e metadados|09 — SEO técnico e metadados]]
