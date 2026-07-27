@@ -1,7 +1,7 @@
 ---
 title: "O que é serverless, de verdade"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -39,6 +39,14 @@ Vale nomear com precisão os quatro elementos que, juntos, definem o modelo — 
 - **Escala automática, do zero ao pico, sem configuração prévia de capacidade.** Não existe "grupo mínimo de 2, máximo de 10" para configurar. Se zero requisições chegam, zero execuções acontecem (e zero é cobrado, além do free tier). Se mil requisições chegam ao mesmo tempo, o provedor sobe mil execuções concorrentes (até um limite de conta) sem que ninguém precise ter previsto esse pico com antecedência.
 
 **Serverless em uma frase:** você entrega código que reage a eventos, o provedor decide onde e como rodá-lo, e a fatura acompanha exatamente o uso — nada de servidor visível, nada de capacidade reservada, nada de custo parado.
+
+> [!tip] Assista: AWS Lambda explicado: O que é e como funciona
+> **Canal:** AWS Developers LATAM | **Duração:** ~10min | **Idioma:** PT-BR
+>
+> Um resumo direto ao ponto dos quatro elementos que definem serverless — sem servidor pra gerenciar, execução orientada a evento, pague só pelo uso — com exemplos de código lado a lado pra fixar a diferença de mentalidade.
+> Trecho de destaque [00:40]: *"preocupar com servidores é a base do... infraestrutura e nós podemos focar no [código]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=n31cF3iFCUs)
 
 ### FaaS é a forma mais pura de serverless — mas não é a única
 

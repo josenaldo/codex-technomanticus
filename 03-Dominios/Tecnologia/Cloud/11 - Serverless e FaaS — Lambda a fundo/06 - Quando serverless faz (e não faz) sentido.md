@@ -1,7 +1,7 @@
 ---
 title: "Quando serverless faz (e não faz) sentido"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -127,6 +127,14 @@ $ doctl serverless activations list --limit 100 \
 ```
 
 Um namespace onde as ativações concorrentes rotineiramente flertam com o teto é o sinal, na lente da DigitalOcean, de que a árvore da seção anterior já deveria estar apontando para App Platform, não para uma tentativa de contornar o limite.
+
+> [!tip] Assista: Containers or serverless functions: A path for cloud-native success (re:Invent 2024, SVS209)
+> **Canal:** AWS Events | **Duração:** ~56min | **Idioma:** EN
+>
+> Reforça, direto de arquitetos da AWS, o mesmo ponto central desta nota: a escolha entre container e função não é sobre o tipo de aplicação ("isto é uma web API, logo é container") — é sobre requisitos não-funcionais (padrão de escala, granularidade de billing, tolerância a cold start) que mudam ao longo da vida do workload.
+> Trecho de destaque [37:13]: *"the decision when to use containers or functions is mainly driven by nonfunctional requirements so you essentially cannot say that okay this is a web API I just need to use containers or this is that specific application and this is for functions"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=OUXZEg3qUKI)
 
 ## Onde serverless brilha
 

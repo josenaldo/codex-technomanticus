@@ -1,7 +1,7 @@
 ---
 title: "Cold start, concurrency e performance"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -25,6 +25,14 @@ Se você já testou uma API construída sobre Lambda, provavelmente notou um pad
 Esse ato de criar o ambiente do zero — baixar o código, preparar o sistema de arquivos, iniciar o runtime da linguagem, rodar qualquer inicialização que o seu código faça fora do handler — tem um custo real, medido em dezenas a centenas de milissegundos, às vezes mais. A AWS chama isso de **Init phase**, e entender exatamente o que acontece dentro dela é o que separa quem só "usa Lambda" de quem entende por que a função de produção às vezes trava numa fila de espera de 800 ms sem motivo aparente. Esta nota é sobre essa mecânica interna: o ciclo de vida do ambiente, o que fica quente e por quanto tempo, como o Lambda decide quantos ambientes criar em paralelo, e as duas ferramentas que existem para domar tudo isso — reserved e provisioned concurrency.
 
 Pense num restaurante que só abre a cozinha quando o primeiro pedido do dia chega. Ninguém está lá cortando legumes e pré-aquecendo o forno enquanto a sala está vazia — seria desperdício de gás e de gente parada. O primeiro cliente do dia espera mais: alguém precisa acender o fogão, abrir a geladeira, separar os ingredientes. O segundo cliente, que chega cinco minutos depois enquanto a cozinha ainda está quente, é atendido na velocidade normal, porque todo o trabalho de "ligar a cozinha" já foi pago pelo primeiro. É exatamente essa a troca que o Lambda faz por você, automaticamente, milhões de vezes por dia: a primeira requisição paga o preço de "acender a cozinha"; todas as seguintes, enquanto o fogão continuar aceso, só pagam o preço de fazer o prato.
+
+> [!tip] Assista: A serverless journey: AWS Lambda under the hood (re:Invent 2019, SVS405-R1)
+> **Canal:** AWS Events | **Duração:** ~51min | **Idioma:** EN
+>
+> Vai um nível abaixo do que esta nota cobre: mostra a arquitetura interna por trás do cold start — o *front-end* que autentica e checa a concorrência, o *worker manager* que rastreia sandboxes quentes, e o *placement service* acionado só quando não existe um ambiente pronto pra reaproveitar.
+> Trecho de destaque [05:48]: *"the front-end routes to the worker manager and the worker manager's responsibility is to track warm sandboxes that are ready for invocation... since this is a first time invoke... there is not a sandbox that's there and readily available"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xmacMfbrG28)
 
 ## O ciclo de vida do execution environment
 

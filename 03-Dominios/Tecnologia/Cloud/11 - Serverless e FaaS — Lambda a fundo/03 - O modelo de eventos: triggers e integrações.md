@@ -1,7 +1,7 @@
 ---
 title: "O modelo de eventos: triggers e integrações"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -229,6 +229,14 @@ aws lambda update-event-source-mapping \
   --batch-size 100 \
   --maximum-batching-window-in-seconds 10
 ```
+
+> [!tip] Assista: A serverless journey: AWS Lambda under the hood (re:Invent 2019, SVS405-R1)
+> **Canal:** AWS Events | **Duração:** ~51min | **Idioma:** EN
+>
+> Um mergulho na engenharia interna por trás do event source mapping: como o Lambda usa um *stream tracker* pra descobrir shards/partições de uma fonte como SQS ou Kinesis, decidir o `batch size` e invocar a função — o "quem faz o polling de verdade" por trás do recurso que você só declara com `create-event-source-mapping`.
+> Trecho de destaque [12:07]: *"for event sources such as sqs as an event source... you are providing the connection to the event source whether it's your sqs queue or one of the other event sources lambda supports and lambda does the rest"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xmacMfbrG28)
 
 ### Partial batch response — não jogue o lote inteiro fora
 

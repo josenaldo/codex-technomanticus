@@ -1,7 +1,7 @@
 ---
 title: "Pricing, limites e operação"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -159,6 +159,14 @@ economia de aproximadamente 19% no total, sem tocar em código de negócio)
 
 > [!info] Caducidade
 > O valor de US$ 0,0000133334/GB-s acima é **ilustrativo**, derivado do percentual de economia amplamente divulgado do Graviton2 em cargas Lambda comparáveis — não foi confirmado diretamente contra a tabela oficial nesta sessão (motivo já explicado no callout anterior). Trate a economia relatada (~19–20%) como ordem de grandeza para justificar o teste, não como número a colar num orçamento fechado sem conferência.
+
+> [!tip] Assista: Optimize Your AWS Lambda Function With Power Tuning
+> **Canal:** Be A Better Dev | **Duração:** ~11min | **Idioma:** EN
+>
+> Mostra o AWS Lambda Power Tuning citado acima em ação de verdade: roda a mesma função em várias configurações de memória, plota duração e custo lado a lado, e deixa visível — com números reais, não intuição — o ponto em que aumentar memória reduz custo total em vez de aumentar.
+> Trecho de destaque [09:32]: *"the more memory that you throw at the lambda function the more compute capacity it's going to have however there are diminishing returns... when you look at the cost increase it jumped by i would say a third of the cost"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=QUJ_Govd0CQ)
 
 ## Custos escondidos: a fatura não é só a função
 
