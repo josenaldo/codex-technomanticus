@@ -3,7 +3,7 @@ title: "Auto Scaling Groups"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -78,6 +78,14 @@ aws autoscaling set-desired-capacity \
   --desired-capacity 8 \
   --honor-cooldown
 ```
+
+> [!tip] Assista: Learn about AWS Auto Scaling Groups to scale in and out EC2 instances
+> **Canal:** CloudTech AWS & Azure & GCP for Everyone | **Duração:** ~37min | **Idioma:** EN
+>
+> Demonstra ao vivo a relação `minimum ≤ desired ≤ maximum` desta seção, criando um grupo, subindo o desired e observando o ASG lançar e derrubar instâncias em Availability Zones diferentes para convergir para o número pedido.
+> Trecho de destaque [20:31]: *"we have to specify the minimum size... if you specify minimum two instance..."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=949Gp217ucg)
 
 ## Self-healing: o ASG substitui o que falha, sem ninguém acionar nada
 

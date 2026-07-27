@@ -3,7 +3,7 @@ title: "Balanceamento de carga na nuvem"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -49,6 +49,14 @@ O NLB, operando em camada 4, nunca abre o payload da aplicação — ele vê ape
 Repare que a pergunta "qual devo usar" quase sempre se resolve sozinha ao perguntar "meu tráfego fala HTTP e eu quero rotear por conteúdo da aplicação, ou meu tráfego é TCP/UDP cru e eu preciso do throughput e do IP estático máximos que a AWS oferece?". A maioria das APIs web usa ALB. Cargas que exigem baixíssima latência, protocolos não-HTTP, ou IP fixo para whitelisting corporativo usam NLB — e nada impede as duas de coexistirem na mesma arquitetura, cada uma resolvendo uma fatia diferente do tráfego.
 
 Vale nomear, sem se aprofundar, que a AWS mantém ainda dois outros tipos sob o mesmo guarda-chuva do Elastic Load Balancing: o **Gateway Load Balancer**, usado para inserir appliances de rede de terceiros (firewalls, sistemas de detecção de intrusão) de forma transparente no caminho do tráfego, e o **Classic Load Balancer**, o produto original do ELB, hoje considerado legado — a própria documentação da AWS recomenda migrar para ALB ou NLB, listando explicitamente os ganhos (roteamento por conteúdo, IP estático, melhor desempenho, health checks por target group) que o Classic nunca ofereceu. Esta nota trata só de ALB e NLB porque são os dois que resolvem, hoje, a esmagadora maioria dos casos novos de arquitetura.
+
+> [!tip] Assista: AWS Load Balancers | ALB vs NLB vs GWLB | Detailed Comparison
+> **Canal:** Abhishek.Veeramalla | **Duração:** ~32min | **Idioma:** EN
+>
+> Compara os três tipos com exemplos de decisão de arquitetura, reforçando exatamente a distinção camada 7 (o balanceador lê a requisição) vs. camada 4 (o balanceador só encaminha pacotes) que esta seção acabou de estabelecer, e ainda cobre o Gateway Load Balancer que a nota só nomeia de passagem.
+> Trecho de destaque [23:02]: *"application load balancer acts on layer 7 whereas the network load balancer basically acts [on layer 4]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bCS9m5RVPyo)
 
 ```mermaid
 flowchart TD

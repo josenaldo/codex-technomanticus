@@ -3,7 +3,7 @@ title: "Arquitetura elástica de ponta a ponta"
 type: concept
 fase: Magus
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -75,6 +75,14 @@ flowchart TB
 ```
 
 Repare no que essa figura já entrega sozinha: nenhuma seta aponta de volta para dentro de uma instância individual como destino final de nada que precise sobreviver. Toda escrita que importa desce até `Estado`; toda instância acima dela é, estruturalmente, descartável.
+
+> [!tip] Assista: How to Deploy a 3-Tier Architecture on AWS — End-to-End AWS Project
+> **Canal:** Tech Tutorials with Piyush | **Duração:** ~1h10min | **Idioma:** EN
+>
+> Constrói ao vivo, camada por camada, praticamente a mesma pilha desta seção — LB, ASG, instâncias stateless, múltiplas AZs — o que ajuda a ver as camadas do diagrama acima virarem recursos reais criados em sequência, não só caixas num fluxograma.
+> Trecho de destaque [02:48]: *"load balancer so that we can distribute the traffic among multiple EC2 servers as the backend and these EC2 servers are part of the auto scaling group. If there is one EC2 server that is crashed, it will spin up a new EC2 server..."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=amiIcyt-J2A)
 
 ## Como as peças colaboram: um fluxo único de auto-cura e auto-ajuste
 
@@ -231,6 +239,14 @@ Uma equipe que precisa de redundância real entre datacenters na DigitalOcean �
 
 > [!info] Fronteira
 > Esta seção mostra **onde** a distribuição por zona acontece na camada de compute/LB. **Por que** uma AZ isola falha física — energia, refrigeração, rede independentes — e o vocabulário completo de region/AZ/datacenter já foi coberto na **nota 02 do galho 2** (Geografia da nuvem). O padrão de projetar resiliência entre zonas/regiões como estratégia de disponibilidade (failover, replicação síncrona vs. assíncrona) é assunto de **[[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]**; esta nota mostra a encarnação concreta dessa estratégia na camada de compute elástico.
+
+> [!tip] Assista: Operating highly available Multi-AZ applications (ARC329) — AWS re:Invent 2022
+> **Canal:** AWS re:Invent 2022 | **Duração:** ~58min | **Idioma:** EN
+>
+> Um talk oficial da AWS sobre a filosofia por trás desta seção: por que "sobreviver" não é sobre nunca falhar, é sobre quanto de capacidade sobra por zona quando uma delas cai — e por que manter capacidade equivalente em todas as AZs (não só distribuir instâncias) é o requisito que a maioria das equipes esquece.
+> Trecho de destaque [02:26]: *"It's about how hard you can get hit and keep moving forward. If you build a single system with a single point of failure in it, you as soon as that gets hit, you're in trouble."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=mwUV5skJJ0s)
 
 ## O trade-off custo vs. resiliência: o mínimo de instâncias por zona
 

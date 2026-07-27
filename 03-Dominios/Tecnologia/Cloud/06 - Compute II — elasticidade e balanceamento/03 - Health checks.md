@@ -3,7 +3,7 @@ title: "Health checks"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -102,6 +102,14 @@ Não existe um valor "certo" de fábrica para cada situação — mas existe uma
 | Frota muito grande (centenas de alvos) | Reduzir volume total de sondagem | 30s (default) ou mais | 2 | 60s+ |
 
 O eixo que a tabela não mostra, mas que pesa tanto quanto o `interval`, é o `healthy threshold`: subir esse número (o default AWS já é relativamente conservador, em 5) reduz o risco de reintegrar um alvo que só passou por sorte numa janela de instabilidade, ao custo direto de demorar mais para devolver capacidade a uma instância que já voltou a funcionar de verdade. Times que sofreram com "flapping" — um alvo entrando e saindo do rodízio repetidamente — quase sempre resolvem subindo o `healthy threshold`, não mexendo no `unhealthy threshold`.
+
+> [!tip] Assista: AWS Class: Explore Application Load Balancer and it's Functionalities
+> **Canal:** Me Tech Architect | **Duração:** ~34min | **Idioma:** EN
+>
+> Demonstra ao vivo, no console, exatamente os quatro parâmetros desta seção — healthy threshold, unhealthy threshold, timeout e interval — e mostra o efeito prático de um alvo saindo e voltando pro rodízio, o que ajuda a visualizar a "conta" que a nota acabou de fazer em prosa.
+> Trecho de destaque [14:39]: *"healthy threshold is after how much [interval]... consider that as healthy"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=smxGO_wcjOo)
 
 ## Health check do load balancer vs. health check do Auto Scaling Group
 
