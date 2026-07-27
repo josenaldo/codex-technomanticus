@@ -3,7 +3,7 @@ title: "Por que um banco gerenciado"
 type: concept
 fase: Iniciado
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -46,6 +46,14 @@ Vale nomear com precisão o que muda de mãos:
 - **Replicação**: réplicas de leitura, criadas com um comando, sem que o operador precise configurar manualmente `pg_basebackup`, slots de replicação e streaming replication à mão.
 
 O que **não** muda de mãos — porque nenhum provedor consegue fazer isso por você, dado que depende do seu domínio de negócio — é justamente o que fica dentro do banco: o **schema** (quais tabelas, quais colunas, quais tipos), as **queries** que a aplicação executa, os **índices** que aceleram (ou não) essas queries, e o **connection pooling** feito no lado da aplicação. A própria AWS é explícita sobre esse limite: o RDS é responsável por hospedar a infraestrutura e o software do banco, mas "você é responsável pelo tuning de query" — e tuning de query "depende muito do design do banco, do tamanho dos dados, da distribuição dos dados, da carga da aplicação e dos padrões de query", processos que a AWS chama de "altamente individualizados" e que continuam seus.
+
+> [!tip] Assista: RDS Overview: Understanding Amazon Relational Database Service (RDS)
+> **Canal:** AWS For Everyone | **Duração:** ~6min | **Idioma:** EN
+>
+> Um resumo rápido e direto do que o provedor assume ao ligar o RDS — útil como segunda voz confirmando a lista de responsabilidades que esta seção acabou de nomear, sem se alongar em nenhuma delas.
+> Trecho de destaque [01:54]: *"it has inbuilt failover capabilities it has automated backups (...) it provides multi-az support (...) another really cool functionality (...) called read replicas"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qelK_DMqJsc)
 
 ```mermaid
 flowchart LR

@@ -3,7 +3,7 @@ title: "Alta disponibilidade e réplicas"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -91,6 +91,14 @@ $ aws rds reboot-db-instance \
 ```
 
 A documentação da AWS CLI é explícita sobre a restrição: "você não pode habilitar force failover se a instância não estiver configurada para Multi-AZ" — o comando simplesmente recusa em qualquer instância single-AZ, porque não existe standby nenhuma para promover.
+
+> [!tip] Assista: Multi-AZ vs Read Replicas | Amazon RDS Tutorial for Beginners
+> **Canal:** BeSA Cloud Academy | **Duração:** ~7min | **Idioma:** EN
+>
+> Um desenho ao vivo, VPC por VPC, da mesma distinção que esta seção acabou de formalizar: Multi-AZ como réplica síncrona que só existe para assumir a escrita, versus read replica assíncrona que existe para tirar carga de leitura da primária.
+> Trecho de destaque [01:29]: *"they would have a syn replication means whatever data I am writing in [primary] it would also be available on [standby] (...) that's what we mean by a synchronous replication"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=fW_prKJR79Y)
 
 ### Testando o failover antes que ele aconteça de verdade
 

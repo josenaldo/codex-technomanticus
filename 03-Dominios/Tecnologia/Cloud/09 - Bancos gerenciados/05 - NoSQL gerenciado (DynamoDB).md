@@ -3,7 +3,7 @@ title: "NoSQL gerenciado (DynamoDB)"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -98,6 +98,14 @@ flowchart LR
 ```
 
 A documentação é explícita sobre a recomendação de design: escolher uma partition key com **muitos valores distintos em relação ao número de itens** da tabela, para que o DynamoDB consiga distribuir uniformemente. O erro clássico — a **hot partition** — acontece quando uma fração desproporcional das leituras/escritas mira o mesmo valor de partition key (por exemplo, usar `data_do_dia` como partition key para eventos de todos os usuários naquele dia): todo esse tráfego cai na mesma partição física, que tem um teto de throughput próprio, enquanto as outras partições ficam ociosas. O sintoma é *throttling* mesmo com capacidade sobrando na tabela como um todo — porque a capacidade agregada não ajuda uma partição individual sobrecarregada.
+
+> [!tip] Assista: DynamoDB Partitions - How they work - AWS Service Deep Dive
+> **Canal:** Complete Coding - Master AWS Serverless | **Duração:** ~9min | **Idioma:** EN
+>
+> Reforça exatamente esse ponto com um exemplo trabalhado — uma tabela de animais de estimação com partition key `animal` (baixa cardinalidade, gera hot partition em "dog"/"cat") redesenhada para `breed` (mais valores distintos, tráfego espalhado) — e nomeia o número concreto por trás do teto de throughput por partição.
+> Trecho de destaque [03:33]: *"we need to make sure that our partition key has a high cardinality, which means that the number of items grouped together doesn't get extremely large"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=WoxNmq5-E9o)
 
 Quando a tabela tem chave composta, itens com a mesma partition key ficam agrupados na mesma partição e ordenados pela sort key — formando a item collection já descrita. Não há limite superior de quantos valores distintos de sort key uma mesma partition key pode ter; o DynamoDB aloca armazenamento automaticamente conforme a coleção cresce.
 

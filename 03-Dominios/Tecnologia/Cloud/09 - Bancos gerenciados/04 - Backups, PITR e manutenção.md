@@ -3,7 +3,7 @@ title: "Backups, PITR e manutenção"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -118,6 +118,14 @@ sequenceDiagram
 ```
 
 A janela real de restauração tem dois limites que vale checar antes de prometer um RTO/RPO a alguém: o **earliest restorable time** (o início da retenção) e o **latest restorable time** — segundo a documentação, este último avança continuamente porque os logs sobem ao S3 a cada cinco minutos, o que dá um **RPO efetivo em torno de cinco minutos** na pior hipótese (o pior caso é perder o que ainda não subiu desde o último upload de log).
+
+> [!tip] Assista: How to Restore SQL Server RDS Database to Point-in-time
+> **Canal:** Redincs Technology | **Duração:** ~3min | **Idioma:** EN
+>
+> Curto e direto ao ponto: confirma, com o console na tela, exatamente o mecanismo que esta seção acabou de descrever — os transaction logs sobem para o S3 a cada cinco minutos, e o restore sempre cria uma instância nova, nunca sobrescreve a original. O exemplo usa SQL Server, mas a mecânica de PITR é a mesma para qualquer engine do RDS.
+> Trecho de destaque [00:43]: *"what RDS does is that it uploads these logs to S3 every 5 minutes"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=cwzvvCCCZ_Q)
 
 ```bash
 $ aws rds describe-db-instances \

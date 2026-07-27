@@ -3,7 +3,7 @@ title: "RDS e Managed Databases a fundo"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -110,6 +110,14 @@ $ aws rds modify-db-instance \
 
 > [!warning] Instância burstable sob carga sustentada é a armadilha clássica de dimensionamento
 > Uma classe `db.t` (burstable) parece barata na planilha de custo — e é, enquanto a carga fica abaixo do baseline de CPU a maior parte do tempo. Mas o mesmo modelo de crédito de burst do EC2 (galho 5) e do gp2 (galho 8) se aplica aqui: sob carga **sustentada** — não um pico curto, mas uso constante acima do baseline — os créditos se esgotam e a performance cai de volta ao baseline, exatamente no pior momento. `db.t` é a escolha certa para dev/test ou uma API de tráfego baixo e espaçado; para o banco de produção da loja, sob carga constante, uma classe `db.m` ou `db.r` evita a surpresa.
+
+> [!tip] Assista: Introduction to Amazon Relational Database Service (RDS) for beginners
+> **Canal:** Data Tech | **Duração:** ~17min | **Idioma:** EN
+>
+> Um passo a passo criando uma instância RDS no console — vale menos pela teoria (que esta nota já cobre mais fundo) e mais por ver, na prática, engine, template, classe de instância e storage sendo escolhidos na mesma tela, um depois do outro.
+> Trecho de destaque [13:45]: *"then the instance class as I mentioned initially (...) it's the size (...) depending on your use case (...) if it is production then you can choose the size accordingly"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-p0P12HboA0)
 
 ### Storage do RDS: o mesmo EBS do galho 8, com autoscaling embutido
 

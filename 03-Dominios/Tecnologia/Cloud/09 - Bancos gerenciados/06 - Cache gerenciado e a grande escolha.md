@@ -3,7 +3,7 @@ title: "Cache gerenciado e a grande escolha"
 type: concept
 fase: Magus
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -75,6 +75,14 @@ O ElastiCache não é um produto só — é um serviço que hospeda **dois engin
 
 > [!info] Caducidade — a transição Redis → Valkey
 > Em 2024 a Redis Ltd. mudou a licença do Redis OSS para um modelo não totalmente open-source (BSD deixou de cobrir versões futuras do projeto original). Em resposta, um grupo de mantenedores e provedores de nuvem (incluindo AWS, Google, Oracle, Ericsson e outros, sob a Linux Foundation) criou o **Valkey**, um fork do Redis sob licença BSD permissiva, mantendo compatibilidade de API. Verificado em 2026-07-23: a AWS já oferece **ElastiCache para Valkey** com versões próprias (8.0 até 9.0, com features exclusivas como full-text search, hash field expiration e durabilidade transacional que o Redis OSS legado no ElastiCache não recebe mais) e recomenda Valkey para clusters novos; a documentação da AWS já trata "Valkey ou Redis OSS" como opções irmãs, com Valkey recebendo o desenvolvimento mais ativo. A DigitalOcean já migrou de vez: o antigo "Managed Redis" foi descontinuado e substituído por **Managed Caching for Valkey**, com conversão automática das instâncias antigas. Ou seja, Valkey não é mais "uma alternativa emergente" — é, hoje, o destino padrão de quem cria cache novo tanto na AWS quanto na DO. Ainda assim, confira a documentação de cada provedor antes de assumir versão ou disponibilidade regional, porque essa transição continua avançando.
+
+> [!tip] Assista: AWS ElastiCache Tutorial: Redis vs Memcached In-Memory Caching Explained
+> **Canal:** CodeLucky | **Duração:** ~5min | **Idioma:** EN
+>
+> Passa rápido pelo mesmo contraste desta seção — estruturas de dados ricas e persistência opcional de um lado, simplicidade pura sem replicação do outro — útil como resumo em vídeo antes de ir para a tabela de critérios.
+> Trecho de destaque [02:20]: *"[Redis] includes master replica replication for high availability (...) [Memcached] offers no persistence, meaning data is lost (...) it also has no built-in replication or high availability"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tYk-ksdhkZ4)
 
 ### Cluster mode: uma decisão de escala que muda o que o cliente precisa saber
 
@@ -293,6 +301,14 @@ Uma frase por ramo: cache vence quando o dado é descartável e a exigência é 
 | Consistência | Forte, transacional (ACID) | Eventual por padrão, forte sob demanda | Nenhuma garantia de durabilidade | Forte por chave, após escrita |
 | Durabilidade | Fonte de verdade | Fonte de verdade | Volátil por design | Fonte de verdade (com versioning) |
 | Custo relativo | Médio-alto (I/O provisionado) | Pago por request/capacidade | Baixo por GB, alto por hora de nó | Muito baixo por GB |
+
+> [!tip] Assista: Polyglot Persistence: Choosing the Right Database for the Job!
+> **Canal:** CodeLucky | **Duração:** ~10min | **Idioma:** EN
+>
+> Nomeia o padrão que esta árvore de decisão está aplicando na prática — "polyglot persistence" — e traz um estudo de caso real de e-commerce (Postgres para pedidos, MongoDB para catálogo, Redis para sessão, Elasticsearch para busca) que é quase um espelho da loja web recorrente desta trilha, com números concretos de ganho de performance.
+> Trecho de destaque [07:23]: *"case studies. The first one is an e-commerce platform. A large online retailer implemented polyglot persistence (...) relational database for orders and inventory, document store for product catalogs, key value for sessions, and search engine for product discovery"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JAnQlGp2Z-s)
 
 ### Dois casos-limite que costumam aparecer numa entrevista
 
