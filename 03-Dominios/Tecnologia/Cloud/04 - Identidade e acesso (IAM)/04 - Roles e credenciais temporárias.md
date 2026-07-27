@@ -3,7 +3,7 @@ title: "Roles e credenciais temporárias"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -36,6 +36,14 @@ Um papel tem duas peças de política anexadas a ele, e é essencial não confun
 
 - A **permissions policy** (política de permissões) — a mesma coisa que a nota 03 desta trilha já cobriu em profundidade: define *o que* quem assumir o papel pode fazer. Efeito, ação, recurso, condição — a anatomia já conhecida.
 - A **trust policy** (política de confiança) — a peça nova desta nota. Define *quem* tem permissão para assumir esse papel. É um documento JSON anexado ao papel, e a AWS a trata como uma **política baseada em recurso**: ela vive no papel, não em quem vai usá-lo, e diz explicitamente qual identidade — usuário, outro papel, conta inteira, ou um serviço da própria AWS — está autorizada a pedir a troca.
+
+> [!tip] Assista: AWS AssumeRole Explained | IAM Roles, STS & Temporary Credentials Demo
+> **Canal:** Anything Cloud | **Duração:** ~13min | **Idioma:** EN
+>
+> O vídeo desenha lado a lado as duas peças que este trecho acabou de separar — permission policy e trust policy — e mostra, no console, como a trust policy é o pedaço que decide quem pode chamar `AssumeRole` antes mesmo de a permission policy importar.
+> Trecho de destaque [01:07]: *"And trust policy defines who can use this role"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xNYPZxd_m4M)
 
 Vale reter essa frase, porque ela resume a diferença entre papel e usuário melhor que qualquer definição formal: **um usuário carrega a chave da porta; um papel é a porta que decide, ela mesma, quem pode pedir a chave emprestada.**
 

@@ -3,7 +3,7 @@ title: "Políticas — como uma permissão é avaliada"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -143,6 +143,14 @@ flowchart TD
 ```
 
 Repare que o fluxo checa **deny antes de allow**. Isso não é um detalhe de implementação — é a garantia de que uma negação nunca pode ser "sobrescrita por acidente" por uma política de allow mais ampla anexada depois. Um administrador de segurança que precisa bloquear uma ação perigosa para toda a organização — desabilitar uma região, impedir a exclusão de um bucket de auditoria, proibir uma família de instância cara — pode fazer isso com uma única declaração de `Deny`, com a certeza matemática de que nenhuma política de `Allow`, existente ou futura, conseguirá reabrir aquele buraco sem que alguém remova o `Deny` explicitamente. É esse mecanismo que torna guarda-corpos organizacionais (Service Control Policies) confiáveis como controle de segurança: eles não competem com as permissões dos times, eles as sobrepõem.
+
+> [!tip] Assista: AWS re:Inforce 2022 — AWS Identity and Access Management (IAM) deep dive (IAM301)
+> **Canal:** AWS Events | **Duração:** ~58min | **Idioma:** EN
+>
+> A talk oficial da AWS caminha pela mesma árvore de decisão desta seção, statement por statement, até chegar exatamente na regra que fecha este parágrafo: um `Deny` numa única declaração aplicável já basta pra decidir o resultado, não importa quantos `Allow` concorram com ele.
+> Trecho de destaque [32:12]: *"you know the statement's gonna be denied, because anytime we hit a deny, it's over"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=YMj33ToS8cI)
 
 > [!info] Fronteira
 > Guarda-corpos de organização (Service Control Policies, Resource Control Policies) e limites de permissão (permissions boundaries) entram na mesma lógica de "negação explícita vence" — mas são ferramentas de governança que combinam múltiplas contas ou blindam uma identidade contra si mesma, e ficam fora do escopo desta nota. O essencial aqui é a lógica que se aplica mesmo no caso mais simples: uma política de identidade e uma política de recurso, dentro de uma única conta.

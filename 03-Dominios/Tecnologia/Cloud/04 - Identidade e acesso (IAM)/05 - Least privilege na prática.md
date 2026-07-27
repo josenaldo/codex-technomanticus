@@ -3,7 +3,7 @@ title: "Least privilege na prática"
 type: concept
 fase: Magus
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -63,6 +63,14 @@ Na AWS, esse ciclo tem ferramenta de primeira classe embutida: o **IAM Access An
 
 - **Service last accessed information** (a AWS documenta como "informações de último acesso") — mostra, por identidade, quais serviços foram acessados e quando. Útil para uma varredura rápida de "esse papel nunca tocou nesse serviço, por que ele tem permissão pra isso?".
 - **Geração de política a partir de atividade do CloudTrail** — mais granular: você aponta o Access Analyzer para o histórico de eventos de uma identidade específica, ele examina o que foi de fato chamado, e devolve um rascunho de política já escrito. Você revisa, ajusta os recursos (a ferramenta preenche placeholders de ARN que você precisa substituir por recursos reais), e só então anexa no lugar da política ampla original.
+
+> [!tip] Assista: How to use IAM Access Analyzer policy generation
+> **Canal:** Amazon Web Services | **Duração:** ~6min | **Idioma:** EN
+>
+> Um Solutions Architect da AWS mostra, em quatro passos rápidos, o mesmo ciclo que esta seção acabou de descrever em texto — política ampla no dia 1, Access Analyzer lendo os logs do CloudTrail, política estreita gerada a partir do que de fato foi chamado.
+> Trecho de destaque [00:38]: *"a feature that will create fine-grained policies based on access activity, it works by analyzing CloudTrail logs in your account"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=SJQSWeogUWs)
 
 > [!info] Caducidade
 > Detalhes de interface, limites de retenção de dados (a AWS documenta um período de rastreamento de pelo menos 400 dias para informação de serviço, variável por região) e a lista de serviços com suporte a granularidade de ação mudam com frequência. Confira a documentação oficial antes de desenhar o processo do seu time.
@@ -312,6 +320,14 @@ Existe ainda uma terceira ferramenta de guarda-corpo, mais granular que a SCP e 
 ```
 
 Um caso de uso comum para permission boundary é conter o que uma pipeline de automação pode conceder a si mesma: se um pipeline tem permissão para criar papéis IAM (para provisionar infraestrutura, por exemplo), um boundary anexado a esses papéis criados garante que nenhum deles, mesmo que a política de identidade seja escrita de forma ampla demais por engano no template de infraestrutura, ultrapasse o teto — o efeito final da chamada é sempre a interseção entre o boundary, a política de identidade, e qualquer SCP aplicável, exatamente como a documentação de SCP descreve para o caso em que os dois mecanismos coexistem.
+
+> [!tip] Assista: AWS IAM Permission Boundaries Explained | Restrict Maximum Permissions (Step-by-Step Demo)
+> **Canal:** Amitabh Soni | **Duração:** ~6min | **Idioma:** EN
+>
+> A demonstração no console fixa em voz alta a mesma regra que este parágrafo descreve em prosa: o que a identidade consegue fazer de fato é sempre a fatia comum entre a política de identidade e o boundary — nunca a soma das duas.
+> Trecho de destaque [01:18]: *"the common permission between permission boundary and the identity based policy that is attached to the user is the effective permission"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Dau-GJRcw6w)
 
 Vale fixar onde cada mecanismo age, porque a confusão mais comum é tratar os três como intercambiáveis:
 

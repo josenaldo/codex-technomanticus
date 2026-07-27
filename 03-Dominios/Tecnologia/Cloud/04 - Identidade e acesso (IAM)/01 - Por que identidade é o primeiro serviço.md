@@ -3,7 +3,7 @@ title: "Por que identidade é o primeiro serviço"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -69,6 +69,14 @@ flowchart TB
 Repare no detalhe que faz toda a diferença: **os dois portões existem para toda chamada, sem exceção, e sem atalho por "vir de dentro"**. Não existe uma sub-rede especial onde as chamadas passam sem autorização. A instância de computação que você acabou de criar, quando ela mesma precisa ler daquele banco de dados, também vai precisar provar quem é e ter permissão explícita — mesmo estando, topologicamente, "dentro" da mesma conta de nuvem. Rede ainda importa na nuvem — isolamento de sub-rede, grupos de segurança e regras de tráfego continuam sendo uma camada de defesa real, e são o assunto do galho 7 desta trilha —, mas rede deixou de ser **a** linha decisiva. Ela virou uma camada adicional de controle, não o portão principal. O portão principal, hoje, é sempre o mesmo par de perguntas: quem é você, e o que você pode fazer.
 
 Essa é a virada central desta nota, e vale reformular de um jeito difícil de esquecer: **no datacenter, o perímetro era um lugar. Na nuvem, o perímetro é uma prova.** Você não defende mais uma fronteira geográfica — você defende cada chamada de API, individualmente, o tempo todo, para sempre.
+
+> [!tip] Assista: Zero Trust Explained for Beginners!
+> **Canal:** howtonetwork | **Duração:** ~18min | **Idioma:** EN
+>
+> O vídeo nomeia, de fora do contexto de nuvem, a mesma virada que esta seção acabou de descrever: segurança para de ser "onde você está" e passa a ser "quem você prova ser, a cada chamada" — o pano de fundo conceitual que explica por que os dois portões da nuvem não têm atalho.
+> Trecho de destaque [00:46]: *"It shifts the focus from perimeter based security to robust identity verification"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tolxnxGshWk)
 
 ## Autenticação e autorização não são a mesma pergunta
 
