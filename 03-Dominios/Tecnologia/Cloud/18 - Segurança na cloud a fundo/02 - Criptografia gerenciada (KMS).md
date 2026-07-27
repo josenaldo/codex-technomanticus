@@ -1,7 +1,7 @@
 ---
 title: Criptografia gerenciada (KMS)
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -82,6 +82,14 @@ flowchart LR
     P1 -->|"E"| P2
     P2 -->|ambas true| Acesso["Acesso concedido"]
 ```
+
+> [!tip] Assista: AWS KMS Tutorial | AWS-managed and customer-managed keys | Encrypt & Decrypt | Key Policy Basics
+> **Canal:** KnoDAX | **Duração:** ~12min | **Idioma:** EN
+>
+> O vídeo mostra na prática, com CLI, a diferença entre chave AWS-managed e customer-managed, e chega exatamente na key policy — a "segunda porta" que esta nota descreve, mostrando a estrutura real do JSON sendo lida no console.
+> Trecho de destaque [08:17]: *"take a look at this KMS key policy"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-UPPfUqyGBs)
 
 **Aliases** são apelidos amigáveis (`alias/minha-chave-producao`) apontando para o ID real da chave (um UUID como `1234abcd-12ab-34cd-56ef-1234567890ab`) — úteis porque você pode trocar qual chave física um alias aponta sem reescrever configuração em dezenas de serviços consumidores.
 

@@ -1,7 +1,7 @@
 ---
 title: "Governança, auditoria e compliance"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -192,6 +192,14 @@ flowchart LR
 
 A diferença de fundo em relação a um checklist manual de auditoria: uma regra do Config não é lida uma vez por trimestre por um auditor — ela é avaliada a cada mudança, o tempo todo, e o painel de conformidade mostra, a qualquer momento, exatamente quais recursos, em quais contas, estão fora do padrão esperado agora mesmo. É a diferença entre compliance como evento (a auditoria anual) e compliance como estado contínuo (o painel que nunca para de checar).
 
+> [!tip] Assista: AWS Monitoring & Governance Explained | CloudWatch vs CloudTrail vs Config
+> **Canal:** Pawan Joshi | **Duração:** ~24min | **Idioma:** EN
+>
+> O vídeo separa exatamente a mesma dupla desta nota — "quem fez o quê" (CloudTrail) versus "o estado atual está correto" (Config) — e chega no conformance pack como forma de empacotar várias regras numa unidade só implantável em múltiplas contas.
+> Trecho de destaque [11:07]: *"conformance pack, which lets you deploy the entire collection of rules as a single template instead of configuring each rule one by [one]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=EHg7fhxKAD8)
+
 ## Detecção: GuardDuty, Security Hub e Inspector, de raspão
 
 As duas seções anteriores cobrem o que já aconteceu (CloudTrail) e o que está configurado incorretamente agora (Config) — ambos reativos ou baseados em regra explícita. **GuardDuty** cobre uma terceira categoria: comportamento que nenhuma regra estática antecipou, mas que se parece com um ataque em andamento. A documentação oficial descreve o serviço como monitoramento contínuo, usando *threat intelligence* (listas de IPs e domínios maliciosos conhecidos) e modelos de aprendizado de máquina sobre os mesmos dados que o CloudTrail já coleta — mais VPC Flow Logs e logs de DNS — para sinalizar padrões como credencial comprometida usada de uma geolocalização anômala, mineração de criptomoeda não autorizada numa instância EC2, ou exfiltração de dados que pode indicar um evento de ransomware em curso.
@@ -201,6 +209,14 @@ Dois serviços complementam o GuardDuty sem substituí-lo. **Security Hub** func
 > [!info] Lente dupla: detecção automatizada de ameaças
 > Na **AWS**, GuardDuty, Security Hub e Inspector formam um arsenal de detecção coeso, habilitável em minutos, cobrindo desde o comportamento anômalo até a vulnerabilidade conhecida de software.
 > Na **DigitalOcean**, não existe um equivalente nativo a nenhum dos três: sem motor de detecção de ameaças por ML, sem agregador central de postura de segurança, sem scanner de vulnerabilidade integrado à plataforma. Times na DO que precisam dessa capacidade tipicamente recorrem a ferramentas de terceiros operando sobre os próprios recursos (um agente de EDR na instância, um scanner de imagem de container no pipeline de CI) — funciona, mas exige montar e manter o arsenal por conta própria, em vez de ligar um serviço gerenciado.
+
+> [!tip] Assista: AWS GuardDuty Tutorial: Intelligent Threat Detection for Beginners | AWS Security
+> **Canal:** CodeLucky | **Duração:** ~7min | **Idioma:** EN
+>
+> O vídeo detalha como o GuardDuty combina machine learning e threat intelligence sobre CloudTrail/DNS/VPC Flow Logs pra sinalizar comportamento anômalo — incluindo o exemplo de mineração de criptomoeda numa instância comprometida, que esta nota também usa.
+> Trecho de destaque [00:40]: *"machine learning and threat intelligence to automatically identify potential security issues"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=pCwzcXyo61w)
 
 ## Compliance: a nuvem como facilitadora, não como certificado automático
 

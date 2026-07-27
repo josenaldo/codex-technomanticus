@@ -1,7 +1,7 @@
 ---
 title: "Segurança de rede e perímetro"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -152,6 +152,14 @@ Essa política, anexada ao endpoint (não ao bucket, não à role), garante que,
 > [!warning] Endpoint sem policy é um cheque em branco
 > Um Interface endpoint criado sem endpoint policy explícita usa a política padrão `Allow: *` — ou seja, deixa passar qualquer ação que a identidade do lado da instância já tenha permissão, sem trava adicional nenhuma. Criar o endpoint resolve o problema de "sair pela internet"; só a policy resolve o problema de "acesso amplo demais". As duas coisas são frequentemente confundidas em auditorias — alguém marca "usamos VPC endpoint, estamos seguros" sem checar se a policy restringe algo de fato.
 
+> [!tip] Assista: VPC Endpoints and AWS PrivateLink - AWS SCS-C03
+> **Canal:** Cybr | **Duração:** ~7min | **Idioma:** EN
+>
+> O vídeo mostra, passo a passo, a checagem de uma endpoint policy travando (ou liberando) uma chamada a um serviço gerenciado — a mesma dupla trava (endpoint policy + política do serviço) que esta nota descreve para o Interface endpoint.
+> Trecho de destaque [03:18]: *"make sure that the endpoint policy is allowing the request as well as [...] our KMS key policy"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bNUdCifl1sQ)
+
 Na DigitalOcean, esse recurso simplesmente não existe. Não há PrivateLink, não há VPC endpoint, não há equivalente. Falar com um bucket Spaces (o S3 da DO) a partir de um Droplet significa, sempre, sair para a internet pública — a DO não oferece um caminho de rede privado equivalente para serviços gerenciados próprios. Isso não é um detalhe menor para quem desenha arquitetura de conformidade (PCI-DSS, HIPAA) na DO: a mitigação, nesse caso, recai inteiramente sobre TLS em trânsito e IAM/token scoping, porque a camada de rede não ajuda aqui.
 
 ## Isolamento administrativo: matar o SSH exposto
@@ -201,6 +209,14 @@ Isso permite, por exemplo, dar acesso de sessão só ao engenheiro de plantão, 
 Vale reforçar, para não confundir camadas: usar o Session Manager por si só ainda usa a rede — ele pode inclusive rodar dentro de uma VPC Endpoint (Interface endpoint para `ssm`, `ssmmessages`, `ec2messages`), o que remove até a necessidade de a instância ter rota para a internet pública. Nesse desenho final, uma instância de produção não tem porta inbound de administração, não tem IP público, e não tem rota de saída para a internet geral — só um caminho privado e auditado até o Systems Manager.
 
 Na DigitalOcean, não existe um serviço equivalente gerenciado. A prática recomendada continua sendo bastion host com chave SSH, ou uma VPN própria (WireGuard/OpenVPN num Droplet dedicado) para acesso administrativo à VPC privada da DO — a plataforma não oferece um substituto sem-porta-aberta nativo.
+
+> [!tip] Assista: How to Securely Access Private EC2 Instances: SSM vs. Bastion Hosts
+> **Canal:** AWS Explainers | **Duração:** ~7min | **Idioma:** EN
+>
+> O vídeo compara os dois caminhos lado a lado — inclusive o custo de manter um bastion rodando e a exposição permanente da porta 22 — reforçando com números concretos exatamente o argumento estrutural que esta nota faz a favor do Session Manager.
+> Trecho de destaque [02:07]: *"This means keeping port 22 open, which is basically a giant welcome sign for automated bots just scanning for weaknesses."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=0oGNSzf_n0I)
 
 ## Egress control: a direção que costuma ser esquecida
 

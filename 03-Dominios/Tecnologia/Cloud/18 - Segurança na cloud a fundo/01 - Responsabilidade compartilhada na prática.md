@@ -1,7 +1,7 @@
 ---
 title: Responsabilidade compartilhada na prática
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -86,6 +86,14 @@ Vale destrinchar cada um, porque cada um tem nome e sobrenome de responsabilidad
 
 > [!warning] O mito do "hack sofisticado"
 > A cobertura de imprensa adora a narrativa do invasor genial que "quebrou" a nuvem. Na prática, a esmagadora maioria dos incidentes reportados publicamente é configuração incorreta — um bucket deixado público, uma credencial em um repositório, um firewall liberado por conveniência durante um debug e nunca fechado de novo. O provedor não falhou; a "porta do apartamento" ficou destrancada.
+
+> [!tip] Assista: AWS Shared Responsibility Model Explained | Customer vs AWS Responsibilities | CLF-C02
+> **Canal:** CloudExpert Solutions | **Duração:** ~10min | **Idioma:** EN
+>
+> O vídeo percorre exatamente os mesmos exemplos que esta nota usa pra desmontar a ilusão — patch de EC2, política de bucket S3 — mostrando na prática como a pergunta "de quem é a culpa?" muda cenário a cenário.
+> Trecho de destaque [06:44]: *"public S3 bucket. Whose responsibility [...] again customer's responsibility"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=yCiFwQmin_0)
 
 ## Defesa em profundidade: por que uma camada nunca basta
 
