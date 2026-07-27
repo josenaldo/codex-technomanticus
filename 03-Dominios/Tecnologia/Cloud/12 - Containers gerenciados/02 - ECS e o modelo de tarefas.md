@@ -1,7 +1,7 @@
 ---
 title: ECS e o modelo de tarefas
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -52,6 +52,14 @@ E o **cluster**? É só o agrupamento lógico onde tudo isso vive — uma fronte
 
 > [!info] Verificado em 2026-07-24
 > Segundo a documentação oficial da AWS, o `family` de uma task definition funciona como nome com versionamento: o primeiro registro ganha revisão 1, e cada registro subsequente na mesma família recebe um número sequencial (docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html).
+
+> [!tip] Assista: Amazon ECS: Core Components Overview - Cluster, Task, and Service
+> **Canal:** Amazon Web Services (AWS) | **Duração:** ~4min | **Idioma:** EN
+>
+> Vídeo oficial curtíssimo, direto da equipe de ECS, que mostra as mesmas três camadas desta nota — cluster, task e service — com um diagrama simples e a criação de um cluster ao vivo no console. Bom para fixar a relação de dependência antes de entrar na anatomia da task definition.
+> Trecho de destaque [01:00]: *"service maintains your desired number of tasks simultaneously in the ECS cluster"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=J81-EGhsbSQ)
 
 ## Anatomia de uma task definition
 

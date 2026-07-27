@@ -1,7 +1,7 @@
 ---
 title: "O que é um container gerenciado"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -80,6 +80,14 @@ $ docker push registry.digitalocean.com/minha-loja/app:v42
 ```
 
 A tag (`v42`, ou mais comumente o hash do commit) é o que amarra "esta imagem específica" a "esta versão do código" — é ela que o scheduler vai referenciar quando você disser "suba a versão nova". Sem um registry, essa amarração inteira teria que ser feita na mão, copiando arquivos de imagem entre servidores — o registry é o elo que faz o pipeline de deploy de container funcionar como um pipeline de verdade, não como cópia manual.
+
+> [!tip] Assista: AWS ECS Introduction: Clusters, Tasks & Fargate Explained
+> **Canal:** DheerajTechInsight | **Duração:** ~12min | **Idioma:** EN
+>
+> Um passeio rápido de console pela AWS que mostra exatamente essa peça na prática: o vídeo aponta o ECR como "onde você guarda suas imagens de container" e compara direto com o Docker Hub, antes de entrar no cluster, no scheduler e nos health checks que compõem a promessa de "gerenciado".
+> Trecho de destaque [01:33]: *"AWS ECR, that is Elastic Container Registry, where you store your container images. This is the same like Docker Hub."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=FALtq7CKehY)
 
 ## O espectro: de VM crua a container gerenciado
 

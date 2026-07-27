@@ -1,7 +1,7 @@
 ---
 title: Container vs VM vs serverless
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -67,6 +67,14 @@ Traduzindo os seis eixos que decidem essa árvore numa tabela só, agora com as 
 | Maturidade operacional exigida | Média — você administra o SO | Média a alta — depende do sabor (ver árvore abaixo) | Baixa para operar, alta para depurar em produção |
 
 O eixo que este capstone acrescenta — maturidade operacional do time — não é acessório. Um time de dois desenvolvedores sem SRE dedicado que escolhe EKS "porque é o padrão de mercado" contraiu uma dívida que a nota 05 deste galho já nomeou: alguém vai precisar entender upgrades de versão, IRSA, políticas de rede, mesmo que o control plane seja gerenciado. O mesmo time escolhendo App Platform ou ECS Express Mode entrega o mesmo app web sem contrair essa dívida — ao custo de um teto de customização mais baixo.
+
+> [!tip] Assista: AWS re:Invent 2022 - Build your application easily & efficiently with serverless containers (CON309)
+> **Canal:** AWS Events | **Duração:** ~44min | **Idioma:** EN
+>
+> Talk oficial que percorre exatamente os três nós da árvore acima do lado serverless/container — Lambda, App Runner e Fargate — comparando concorrência, escala e billing lado a lado, com números reais de latência e custo que complementam a tabela desta seção.
+> Trecho de destaque [09:41]: *"starting with AWS Lambda, think of AWS Lambda as a containerized event handling function in the cloud"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=MqPxzWqttJs)
 
 ## Abrindo a caixa: qual sabor de container gerenciado?
 

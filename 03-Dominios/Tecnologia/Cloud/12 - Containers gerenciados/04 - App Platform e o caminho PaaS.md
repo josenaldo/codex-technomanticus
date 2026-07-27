@@ -1,7 +1,7 @@
 ---
 title: App Platform e o caminho PaaS
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -91,6 +91,14 @@ databases:
 ```
 
 Repare que `api` e `email-worker` apontam pro **mesmo repositório**, mudando só o `run_command` (ou o Procfile-equivalente). Isso é comum: o mesmo código-base, dois processos diferentes — um serve HTTP, o outro consome fila.
+
+> [!tip] Assista: Building Production-Ready Apps With App Platform, DigitalOcean's Reimagined PaaS
+> **Canal:** DigitalOcean | **Duração:** ~21min | **Idioma:** EN
+>
+> Vídeo oficial da DigitalOcean mostrando a mesma peça central desta seção — os components — em uso real no painel: como adicionar um novo component vindo do GitHub, misturar múltiplas fontes num único app, e escalar sem tocar em infraestrutura.
+> Trecho de destaque [02:19]: *"we have various components available within that platform to make it easy for you to grow and adapt and scale"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ekn4nxH49mQ)
 
 ## Buildpacks vs Dockerfile: quem builda sua imagem?
 

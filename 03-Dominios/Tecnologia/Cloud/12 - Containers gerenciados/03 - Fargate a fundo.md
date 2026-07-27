@@ -1,7 +1,7 @@
 ---
 title: Fargate a fundo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -24,6 +24,14 @@ Fargate é a resposta da AWS pra essa pergunta especificamente para containers: 
 
 > [!info] Fonte oficial (verificado 2026-07-24)
 > "Cada task Fargate tem seu próprio limite de isolamento e não compartilha o kernel, os recursos de CPU, os recursos de memória, ou a interface de rede elástica com outra task" — [docs.aws.amazon.com/AmazonECS, Architect for AWS Fargate](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html).
+
+> [!tip] Assista: AWS Fargate Tutorial: Serverless Container Execution Explained for Beginners
+> **Canal:** CodeLucky | **Duração:** ~9min | **Idioma:** EN
+>
+> Introdução curta e direta que resume o que esta seção acabou de abrir: você define uma task definition, não vê nem gerencia o servidor por trás dela, e o billing acontece por segundo enquanto a task roda — um bom resumo de 9 minutos antes de entrar nos detalhes de pricing e IAM mais à frente na nota.
+> Trecho de destaque [04:06]: *"You never interact with or even see the underlying servers that run your containers."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=BRCQltXQEoU)
 
 ## Onde Fargate se encaixa na árvore da trilha
 
@@ -106,6 +114,14 @@ Assim como o EC2 tem instâncias Spot, o Fargate tem o **Fargate Spot** — um c
 > Fargate Spot oferece desconto de **até 70%** sobre o preço padrão do Fargate. Em troca, quando a AWS precisa da capacidade de volta, sua task recebe um aviso de interrupção de **2 minutos** antes de ser encerrada.
 
 Isso é ótimo pra workloads tolerantes a interrupção — processamento em lote, workers de fila que reprocessam a partir de checkpoint, ambientes de CI que só rodam job e morrem. É péssimo pra qualquer coisa que precise de disponibilidade garantida (uma API síncrona voltada pro usuário final não deveria rodar 100% em Spot). O padrão de uso maduro é misturar: um capacity provider strategy que mantém uma base pequena em Fargate on-demand e estoura em Fargate Spot quando o tráfego sobe — você declara os pesos na task definition ou no serviço, e o ECS distribui as tasks entre os dois automaticamente.
+
+> [!tip] Assista: AWS re:Invent 2020: AWS Fargate: Are serverless containers right for you?
+> **Canal:** AWS Events | **Duração:** ~31min | **Idioma:** EN
+>
+> Talk oficial da AWS que aprofunda exatamente o billing por segundo e o desconto do Fargate Spot que esta seção acabou de explicar, com números e casos de uso reais de quando vale a pena aceitar o aviso de interrupção de 2 minutos em troca do desconto.
+> Trecho de destaque [15:58]: *"another pricing option is Fargate Spot — if your application is fault tolerant, you can use Fargate Spot to avail a deep discount of 70 percent compared to your on-demand pricing"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Vtymod0nPBo)
 
 ## Duas identidades IAM, dois propósitos diferentes
 

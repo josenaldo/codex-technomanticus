@@ -1,7 +1,7 @@
 ---
 title: Kubernetes gerenciado de raspão
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -108,6 +108,14 @@ Duas peças de gestão continuam sob responsabilidade compartilhada e vale nomea
 
 > [!info] Fronteira forte com Operação
 > Esta nota mostra só até "o cluster existe e está pronto para receber workloads". Tudo que vem depois — desenhar Deployments e Services, entender Ingress controllers, escrever Helm charts, adotar operators, montar pipeline GitOps com Argo CD ou Flux — é conteúdo de Kubernetes a fundo, que vive no domínio [[03-Dominios/Engenharia/Operação/index|Operação]]. Cloud aqui só ensina "quem liga o control plane e quem administra os nós"; a arte de operar workloads dentro do cluster é outro capítulo do grimório, propositalmente fora deste galho.
+
+> [!tip] Assista: Amazon EKS Explained: Introduction to Managed Kubernetes on AWS
+> **Canal:** CodeLucky | **Duração:** ~6min | **Idioma:** EN
+>
+> Resumo rápido de exatamente a fronteira que esta nota traça: o que a AWS assume no control plane (disponibilidade, escala, patching dos componentes do master) versus o que fica com você nos node groups — sem entrar em Deployments ou manifests, só a divisão de responsabilidade.
+> Trecho de destaque [01:15]: *"you get a managed control plane where AWS automatically handles the availability, scaling, and patching of your Kubernetes master components"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=aGI_yUbmTFU)
 
 ## DigitalOcean Kubernetes (DOKS): o mesmo K8s, com menos discagem
 
