@@ -3,7 +3,7 @@ title: "Security groups e NACLs"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -82,6 +82,14 @@ $ aws ec2 create-security-group \
 ```
 
 Segundo a documentação oficial: "When you first create a security group, it has no inbound rules. Therefore, no inbound traffic is allowed until you add inbound rules to the security group. When you first create a security group, it has an outbound rule that allows all outbound traffic from the resource." Ou seja: **nenhuma entrada é aceita até você abrir uma regra**, mas **toda saída já é aceita desde a criação** — a menos que você remova essa regra padrão manualmente.
+
+> [!tip] Assista: Master AWS Security — Security Groups & NACLs Deep Dive
+> **Canal:** DheerajTechInsight | **Duração:** ~23min | **Idioma:** EN
+>
+> Cobre exatamente a dupla stateful/allow-only do SG contra a dupla stateless/allow-e-deny da NACL, com o mesmo exemplo mental desta nota — três instâncias na mesma subnet reagindo diferente a um SG (por instância) versus igual a uma NACL (por subnet inteira).
+> Trecho de destaque [02:11]: *"security groups are stateful which means if you allow inbound traffic say an HTTP request on port 80 the response traffic is automatically allowed back out even if you haven't written an explicit outbound rule (...) security group only allows traffic, they don't have any deny rules."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=eAFu5RxruhY)
 
 ## O padrão sério: SG referenciando outro SG
 

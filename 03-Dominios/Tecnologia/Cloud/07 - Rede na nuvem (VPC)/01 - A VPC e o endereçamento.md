@@ -3,7 +3,7 @@ title: "A VPC e o endereçamento"
 type: concept
 fase: Iniciado
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -90,6 +90,22 @@ flowchart TB
         Etc["... até 10.0.255.0/24<br/>(256 blocos /24 cabem<br/>dentro de um /16)"]
     end
 ```
+
+> [!tip] Assista: VPC | Entendendo tudo sobre redes na AWS
+> **Canal:** Kenerry Serain | DevOps na Nuvem | **Duração:** ~14min | **Idioma:** PT-BR
+>
+> Um passeio prático pela criação de uma VPC na AWS que amarra a definição de CIDR block à decisão de dimensionamento real — ajuda a fixar por que o número depois da barra parece "ao contrário" do que a intuição sugere.
+> Trecho de destaque [04:11]: *"algo chamado cider [CIDR], né? Sider significa classless interdomain routing, ou seja, roteamento entre domínios sem classe (...) nós podemos utilizar aqui o cider block, que nada mais é do que um range específico de IPs que eu quero ter dentro da minha VPC."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=r6dEHy-CnaE)
+
+> [!tip] Assista: What Is a CIDR in AWS? | VPC Part 2
+> **Canal:** Pythoholic | **Duração:** ~32min | **Idioma:** EN
+>
+> Complementa a nota indo devagar na aritmética binária por trás do CIDR block — de onde vêm os bits fixos e os bits livres que definem o tamanho da rede, o mesmo cálculo `2^(32-prefixo)` que a nota usa na tabela de prefixos.
+> Trecho de destaque [12:52]: *"16 to be an ipv4 address range that will make up for a vpc"* (explicando como o prefixo `/16` de um cidr block define o range de endereços da VPC).
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=N-BppnZ8AoQ)
 
 ## RFC 1918: por que o endereçamento é privado
 

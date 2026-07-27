@@ -3,7 +3,7 @@ title: "Subnets e roteamento"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -117,6 +117,14 @@ E a de uma subnet privada com saída via NAT, ao lado:
 | `0.0.0.0/0` | `nat-0f1e2d3c4b5a67890` | Manual — saída permitida, entrada não |
 
 Repare que a única diferença estrutural entre as duas tabelas é o alvo da segunda linha — `igw-` numa, `nat-` na outra. É literalmente essa troca de uma palavra que separa "pública" de "privada" no vocabulário da AWS.
+
+> [!tip] Assista: Como criar VPCs e Subnets na AWS
+> **Canal:** Fabricio Veronez | **Duração:** ~62min | **Idioma:** PT-BR
+>
+> Um passo a passo prático de criação de subnets públicas e privadas e das route tables associadas a cada uma — vale a pena assistir o trecho da associação de subrede pra ver, na tela real do console, o exato mecanismo que esta nota descreve em tabela.
+> Trecho de destaque [42:57]: *"Como essa tabela de rota, ela vai apontar pra internet, eu vou colocar ela associada só à minha rede pública. Se eu colocar ela na minha rede privada, já era. Minha rede privada vai virar rede pública, porque ela vai ter acesso à internet."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=HtHuPAz3B7I)
 
 ### Quando duas rotas competem: a rota mais específica vence
 

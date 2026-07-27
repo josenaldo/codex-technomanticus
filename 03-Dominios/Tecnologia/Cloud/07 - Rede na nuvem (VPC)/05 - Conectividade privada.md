@@ -3,7 +3,7 @@ title: "Conectividade privada"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -116,6 +116,14 @@ O erro de raciocínio de quem tromba nisso pela primeira vez é tratar A como se
 
 A própria documentação de "edge to edge routing" reforça o mesmo princípio em outro ângulo: se VPC A tem um internet gateway, um NAT device, uma conexão VPN, um Direct Connect, ou um gateway endpoint para S3, **VPC B não pode usar nenhum desses recursos de A como ponte** — cada um desses caminhos de saída é local à VPC que o possui, nunca repassável através de um peering. A regra é sempre a mesma: peering conecta duas redes diretamente; não transforma nenhuma das duas num hub para a terceira.
 
+> [!tip] Assista: AWS VPC Peering — Avoid Network Design Pitfalls (Transitive Routing Explained)
+> **Canal:** Network Ninja | **Duração:** ~11min | **Idioma:** EN
+>
+> Um diálogo curto que dramatiza exatamente essa armadilha — VPC A pareada com B e com C, sem que B e C consigam se falar através de A — e mostra a leitura da tabela de rotas confirmando que não existe entrada nenhuma apontando de B para C.
+> Trecho de destaque [01:21]: *"here's the critical part that AWS documents explicitly: VPC peering connections are non-transitive. That means if you have VPC A peered with VPC B and VPC B peered with VPC C, there is no automatic routing path from VPC A to VPC C through VPC B."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5CHAEnJVOsw)
+
 ## VPC endpoints, aprofundados: Gateway endpoint versus Interface endpoint
 
 A nota 03 desta trilha já apresentou o VPC endpoint como o atalho que evita o NAT Gateway para tráfego contra serviços da própria AWS. Vale aprofundar a diferença entre as duas variantes, porque a escolha errada tem impacto direto de custo e de arquitetura.
@@ -194,6 +202,14 @@ flowchart TD
 ```
 
 Diferente de peering, onde o próprio dono da VPC precisa criar a rota estática apontando para o `pcx-...`, um attachment de VPC ao Transit Gateway ainda exige uma rota estática na tabela de rotas *da VPC* apontando para o TGW — mas a tabela de rotas *do TGW* é quem decide, centralizadamente, quais VPCs podem alcançar quais outras, sem precisar de uma conexão dedicada por par. Isso é o que resolve, em escala, exatamente o problema que a não-transitividade de peering deixa em aberto: com um Transit Gateway, VPC B e VPC C — que nunca poderiam se falar através de um hub de peering comum — passam a se falar naturalmente, porque a rota entre elas vive na tabela de rotas do TGW, não numa conexão de peering ponto a ponto.
+
+> [!tip] Assista: Transit Gateway Explained
+> **Canal:** AWS Bites | **Duração:** ~19min | **Idioma:** EN
+>
+> Nomeia explicitamente o conceito de "rede transitiva" que esta nota descreve — tráfego de uma VPC atravessando uma segunda até chegar numa terceira — e explica por que peering nunca resolveu isso e o Transit Gateway resolve de origem.
+> Trecho de destaque [04:08]: *"what we mean by a transitive network is that where traffic in 1 VPC is going beyond a second VPC to a third VPC, so going through to autonomous networks (...) before Transit Gateway it was possible to implement transitive connections by creating a gateway with a [hub VPC]."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ltlVFnYDq64)
 
 A cobrança segue um modelo diferente de peering: há uma tarifa **por hora por anexo** e uma tarifa **por GB processado** no Transit Gateway — ao contrário do Gateway endpoint (grátis) e do peering (grátis para criar, só cobra transferência cross-AZ/Region), o Transit Gateway sempre tem custo de attachment mesmo sem tráfego algum passando.
 

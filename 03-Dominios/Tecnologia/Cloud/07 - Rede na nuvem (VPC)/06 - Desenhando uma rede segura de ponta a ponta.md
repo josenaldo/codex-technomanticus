@@ -3,7 +3,7 @@ title: "Desenhando uma rede segura de ponta a ponta"
 type: concept
 fase: Magus
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -48,6 +48,14 @@ Repare que a camada de aplicação recebe **um único tipo de subnet** para dois
 ## Camada 2 — subnets espalhadas em ≥2 AZs, público e privado
 
 Cada linha da tabela acima já nasce em duas zonas de disponibilidade — não por redundância decorativa, mas porque a nota 06 do galho 6 (arquitetura elástica) já estabeleceu o requisito duro: um Application Load Balancer **exige** subnets de pelo menos duas AZs diferentes na criação, e um Auto Scaling Group só entrega alta disponibilidade real se a capacidade dele estiver, de fato, distribuída pelas mesmas zonas que o load balancer alcança. Se as subnets desta nota vivessem numa AZ só, a arquitetura elástica inteira herdaria o ponto único de falha que o galho 6 already descreveu — só que agora com um nome de rede bonito escondendo o problema.
+
+> [!tip] Assista: How to Build a 3 Tier AWS Network VPC from Scratch
+> **Canal:** AOS Note | **Duração:** ~23min | **Idioma:** EN
+>
+> A mesma arquitetura de referência desta nota, construída do zero no console: subnet pública para NAT gateway/load balancer, subnet privada para os servidores de aplicação, subnet privada de dados para o banco — duplicadas em duas zonas de disponibilidade, exatamente a aritmética "três camadas × duas AZs" que a nota formaliza acima.
+> Trecho de destaque [00:13]: *"in a 3-tier VPC reference architecture your infrastructure is divided into three tiers: on the first tier we have the public subnets (...) on the second tier we have our private subnets (...) that is going to hold our web servers (...) on the third tier we have another private subnet and this subnet will hold our database."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RyCsssF5gOo)
 
 ```bash
 # Subnet pública A — só o ALB vive aqui
@@ -187,6 +195,14 @@ Vale nomear a consequência prática dessa cadeia: se um atacante compromete o w
 Uma cadeia de security groups bem desenhada já impede, na prática, que o web tier fale direto com o banco. Mas "bem desenhada" depende de alguém não errar uma regra — e security groups, por padrão, aceitam qualquer instância nova associada ao grupo certo sem perguntar duas vezes. A **network ACL (NACL)** entra aqui não para substituir o security group, mas para ser um segundo mecanismo, independente, na fronteira da subnet inteira — não da instância.
 
 A diferença central, e ela importa porque ataca exatamente o ponto cego que uma cadeia de SGs sozinha tem: NACLs são **sem estado** (stateless). A documentação oficial da AWS é explícita sobre isso — "informações sobre tráfego enviado ou recebido anteriormente não são salvas"; se uma regra de entrada permite um tráfego, a resposta a esse tráfego **não** é automaticamente permitida, precisa de uma regra de saída própria. Security groups, ao contrário, são *stateful*: uma resposta a uma conexão permitida sempre volta, não importa a regra de saída. É por isso que uma NACL mal configurada é um erro sutil e silencioso — esquecer a regra de saída para a porta efêmera de retorno quebra conexões que "deveriam" funcionar, sem nenhum log óbvio explicando por quê.
+
+> [!tip] Assista: AWS re:Invent 2024 — Design Well-Architected Networks on AWS (NET202)
+> **Canal:** AWS Events | **Duração:** ~60min | **Idioma:** EN
+>
+> Um Principal Solutions Architect da AWS nomeia explicitamente a mesma dupla desta seção — security groups como firewall stateful de instância e NACLs como firewall stateless de subnet — como uma "abordagem em camadas" de segurança de rede, o mesmo raciocínio de defesa em profundidade que amarra esta nota inteira.
+> Trecho de destaque [31:21]: *"let's take a look at network security on AWS and I want you to think about it as a layered approach (...) security groups are distributed stateful firewall which is present on most of the network interfaces, network ACLs in contrast are a stateless firewall between your subnets."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Pd5p-fzwsLA)
 
 Colocar uma NACL restritiva na subnet de dados, além do `db-sg` já existente, aplica exatamente o princípio de defesa em profundidade: mesmo que alguém, por engano, adicione uma regra solta demais no `db-sg` — um `0.0.0.0/0` na porta 5432 esquecido num deploy apressado — a NACL da subnet de dados, avaliada de forma totalmente independente, ainda barra qualquer origem que não seja a subnet de aplicação:
 

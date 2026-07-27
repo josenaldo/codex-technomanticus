@@ -3,7 +3,7 @@ title: "Gateways: internet e NAT"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -139,6 +139,14 @@ sequenceDiagram
     Note over Ext,Priv: Ext NUNCA consegue iniciar<br/>uma conexão nova com a instância privada
 ```
 
+> [!tip] Assista: AWS Networking — How NAT Gateways Work + Why They Replace NAT Instances
+> **Canal:** TrainerTests | **Duração:** ~7min | **Idioma:** EN
+>
+> Curto e direto ao ponto: mostra o pacote de saída de uma instância privada sendo de fato traduzido pelo NAT Gateway — a origem `10.1.1.23` (endereço interno) é trocada pelo Elastic IP do gateway antes de sair para a internet, o mecanismo concreto por trás do "endereço traduzido" que a nota descreve em prosa.
+> Trecho de destaque [02:15]: *"the router analyzes the route table and forwards the traffic to the NAT gateway and the NAT gateway performs a source NAT translation, it removes that IP address of 10.1.1.23 and it replaces it with an elastic IP."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5lTBkmRyjos)
+
 A criação, pela CLI, expõe essa exigência de subnet pública com clareza: o NAT Gateway precisa de um Elastic IP alocado antes, e do ID da subnet pública onde ele vai residir:
 
 ```bash
@@ -263,6 +271,14 @@ Segundo a página oficial de preços da AWS, o NAT Gateway cobra **duas métrica
 > A tarifa por hora é previsível e pequena — poucos dólares por mês, fácil de orçar. A tarifa por GB processado é a que pega desprevenido: um pipeline de dados, um job de backup, ou uma instância privada baixando imagens de container com frequência pode processar centenas de gigabytes por dia *sem que ninguém tenha decidido conscientemente pagar por isso* — o tráfego simplesmente atravessa o NAT Gateway a caminho da internet, e cada byte tem preço. Times que migram uma arquitetura pesada em transferência de dados para dentro de subnets privadas, sem revisar o volume esperado, costumam descobrir essa linha de fatura já alta demais para reverter rapidamente. **Múltiplos NAT Gateways por AZ** (um padrão de resiliência recomendado) multiplicam a tarifa horária por zona, o que agrava ainda mais a surpresa quando ninguém somou as zonas na estimativa original.
 
 Essa não é uma peculiaridade isolada — é o tipo de custo estrutural que só aparece claramente quando alguém olha a fatura com lente de FinOps, não de arquitetura. Decidir *se* vale a pena centralizar tráfego de saída por um NAT Gateway único, versus aceitar mais complexidade operacional por um custo por GB menor, é exatamente o tipo de decisão que methods de otimização de custo de nuvem (ver `[[03-Dominios/Engenharia/Operação/index]]` para a lente de operação que acompanha esse tipo de trade-off) tratam como rotina — esta nota só nomeia o fato de que a cobrança existe e tem essas duas dimensões; não repete aqui a disciplina inteira de otimização de custo.
+
+> [!tip] Assista: AWS NAT Gateway — Conectividade Segura e Escalável para Instâncias Privadas
+> **Canal:** Cloud Treinamentos, by UpperStack | **Duração:** ~13min | **Idioma:** PT-BR
+>
+> Reforça exatamente a pegadinha de custo desta nota — o vídeo chega na página de preços oficial da AWS e lê, em voz alta, a mesma dupla cobrança (por hora e por GB) antes de discutir quando vale a pena usar NAT Gateway.
+> Trecho de destaque [03:57]: *"até as definições de preço aqui da vpc, ela tem um custo por hora e por giga, tá, então para cada giga de dados que ela processa (...) sempre colocar na balança o custo-benefício."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=U6JB-DJRtOA)
 
 > [!info] Caducidade
 > Preço de referência: US$ 0,045/hora + US$ 0,045/GB processado (tarifa padrão, sujeita a variação por região), consultado na página oficial de preços de VPC da AWS em 2026-07-23. Preços da AWS mudam sem aviso — confirme na calculadora oficial antes de orçar.
