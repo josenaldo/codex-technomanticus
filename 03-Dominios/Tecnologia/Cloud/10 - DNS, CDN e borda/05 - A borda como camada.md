@@ -1,7 +1,7 @@
 ---
 title: "A borda como camada"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -161,6 +161,14 @@ A pergunta prática que qualquer arquiteto sênior precisa saber responder é: *
 
 > [!info] Fronteira
 > Os detalhes internos de como um ataque volumétrico é detectado e mitigado dentro da rede da AWS (algoritmos de detecção, thresholds de anomalia, engenharia de mitigação) não são território desta nota — o que importa aqui é onde essa defesa se encaixa na pilha (na borda, antes do origin) e o vocabulário para reconhecê-la numa conversa de arquitetura.
+
+> [!tip] Assista: AWS Shield Explained | DDoS Protection with Standard vs Advanced
+> **Canal:** conteúdo de preparação para certificação AWS | **Duração:** ~4min | **Idioma:** EN
+>
+> Um resumo curto e direto da divisão Standard/Advanced e das camadas 3/4 vs. 7 — bom para fixar rápido a distinção que esta seção explica em mais profundidade.
+> Trecho de destaque [03:09]: *"Shield standard operates on layers three and four only. Whereas shield advanced on one hand it includes shield standard, so it still gives you protection on layers three and four. But shield advanced also operates on layer 7."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jcE2gyVkhYo)
 
 ## Origin protection revisitado: o princípio por trás de tudo
 

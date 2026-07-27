@@ -1,7 +1,7 @@
 ---
 title: "Arquitetura ponta a ponta (capstone do Bloco 2)"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -161,6 +161,14 @@ O diagrama central desenhou dois AZs de propósito, e vale percorrer, camada por
 - **NAT Gateway:** este é o ponto onde a arquitetura de referência tem um trade-off explícito que a nota 03 do galho 7 já nomeou — um NAT Gateway por AZ custa o dobro da tarifa horária de um único NAT compartilhado, mas garante que a saída de internet das instâncias da AZ-B não depende de rotas cruzando pra uma AZ que acabou de cair. A arquitetura de referência desta nota assume um NAT por AZ; a versão "mais barata, mais frágil" com um NAT só é a economia que muitas equipes fazem cedo demais e revisitam depois do primeiro incidente real.
 
 O padrão geral, que atravessa todas as seis linhas acima: **cada galho do Bloco 2, isoladamente, já resolveu "e se esta peça específica cair" — o que esta nota mostra é que essas soluções se encaixam sem sobreposição nem lacuna**, porque foram desenhadas com a mesma unidade de falha (a AZ) em mente desde o início.
+
+> [!tip] Assista: AWS re:Invent 2022 - Multi-Region design patterns and best practices (ARC306)
+> **Canal:** AWS re:Invent | **Duração:** ~58min | **Idioma:** EN
+>
+> Vai um degrau acima do que esta seção cobre — de "sobreviver a uma AZ" para "sobreviver a uma região inteira" — usando o Route 53 failover routing como a mesma peça de DNS desta trilha, só que orquestrando um failover ativo-passivo entre regiões completas.
+> Trecho de destaque [15:34]: *"failover in one tool you know we have at AWS and I briefly called out is Route 53"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ilgpzlE7Hds)
 
 ## A tabela de decisão do Bloco 2
 

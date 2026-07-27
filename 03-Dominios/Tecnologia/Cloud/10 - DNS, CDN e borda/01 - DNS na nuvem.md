@@ -1,7 +1,7 @@
 ---
 title: "DNS na nuvem"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -162,7 +162,13 @@ flowchart TD
     D -->|"Não — é um IP fixo"| F["Registro A/AAAA direto"]
 ```
 
-
+> [!tip] Assista: Aprenda Domínios, DNS e HTTP: Tutorial Completo na AWS com Route 53, ACM, CloudFront
+> **Canal:** (tutorial em português) | **Duração:** ~36min | **Idioma:** PT-BR
+>
+> Um passo a passo dentro do próprio console do Route 53 mostrando, na prática, o momento em que se escolhe "Alias" em vez de CNAME para apontar um domínio — o mesmo dilema do apex explicado aqui, só que com o mouse na tela.
+> Trecho de destaque [19:35]: *"então viria aqui em Alias escolho aqui como um site do S3 escolho a região"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Os1AJhS2qvk)
 
 ## Lente dupla: Route 53 e DigitalOcean DNS
 

@@ -1,7 +1,7 @@
 ---
 title: "CDN e cache de borda"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -163,6 +163,14 @@ flowchart TD
 Existe uma terceira via, mais recente, além de invalidar por caminho exato ou por wildcard: **invalidação por cache tag**. Você anota objetos no origin com um header customizado (algo como `Cache-Tag: produto:1234`), e depois invalida todos os objetos que carregam aquela tag, num único pedido — útil quando um mesmo dado de origem (um produto que mudou de preço) aparece espalhado em dezenas de URLs diferentes (página do produto, página de categoria, resultado de busca), e você não quer — ou não consegue facilmente — enumerar cada caminho manualmente. A documentação da AWS é explícita: uma invalidação por tag conta como **um único caminho** para efeito de cobrança, exatamente como um wildcard, e soma para o mesmo limite de 1.000 gratuitos por mês — misturar invalidações por caminho e por tag no mesmo mês não dá dois orçamentos separados, dá um só.
 
 Vale nomear também que nem invalidação nem TTL curto são instantâneos na prática: pedir uma invalidação, ou reduzir o Maximum TTL de uma cache policy, dispara uma propagação da nova configuração para *todos* os edge locations da distribution — centenas deles, espalhados pelo planeta —, e isso leva tempo (tipicamente minutos, não segundos). Um engenheiro que espera efeito imediato ao rodar `create-invalidation` e testa a página um segundo depois, batendo por acaso num edge location que ainda não recebeu a invalidação, tende a concluir erroneamente que "não funcionou" — quando na verdade só ainda não terminou de propagar.
+
+> [!tip] Assista: Amazon CloudFront Caching Explained | TTL, Cache Control, Invalidation
+> **Canal:** SAA-C03 Module 7.7 | **Duração:** ~37min | **Idioma:** EN
+>
+> Cobre cache behaviors, os três níveis de TTL (min/max/default) e invalidação com o mesmo nível de detalhe desta nota, mas em vídeo — bom para quem prefere ver o console e as regras sendo montadas passo a passo.
+> Trecho de destaque [19:37]: *"cache invalidation is the process of manually telling CloudFront to remove specific cache[d] object[s] from all edge locations before their TTL expires"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bokPShSe8sw)
 
 ## Origin protection: OAC — o origin nunca fica exposto
 
