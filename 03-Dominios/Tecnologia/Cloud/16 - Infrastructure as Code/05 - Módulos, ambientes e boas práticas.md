@@ -3,7 +3,7 @@ title: "Módulos, ambientes e boas práticas"
 type: concept
 fase: Adepto
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -69,6 +69,14 @@ Módulos do Registry público aceitam um argumento `version` com [constraint de 
 
 > [!info] Módulo próprio primeiro, Registry depois
 > Para o par VPC/rede deste galho, o caminho mais comum é começar com um módulo local (`./modules/vpc`), específico da topologia do seu projeto, e só recorrer ao Registry público (como `terraform-aws-modules/vpc/aws`, um dos módulos mais usados do catálogo) quando o caso é genérico o bastante — uma VPC "padrão de mercado" — para justificar a dependência externa. Módulos de terceiros economizam código, mas também importam decisões de design que nem sempre casam com o que você precisa.
+
+> [!tip] Assista: Terraform Modules – deploying reusable code
+> **Canal:** DevOps Lab | **Duração:** ~12min | **Idioma:** EN
+>
+> Uma conversa em formato demo que responde direto a pergunta que costuma travar iniciante: "módulo é tipo uma função?" — e mostra ao vivo a estrutura de pastas `modules/<nome>/` com `main.tf`, `variables.tf` e `outputs.tf` sendo chamada de um root module.
+> Trecho de destaque [00:55]: *"So a module, would you say is kind of like a function when you're programming?"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=lwsuhO8tBvQ)
 
 ## Múltiplos ambientes: workspaces, diretórios ou Terragrunt
 

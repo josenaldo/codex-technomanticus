@@ -1,7 +1,7 @@
 ---
 title: Terraform a fundo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -98,6 +98,14 @@ resource "aws_instance" "web" {
 }
 ```
 
+> [!tip] Assista: Learn Terraform Block Types! - Terraform for Beginners Course
+> **Canal:** Cloud Vikings | **Duração:** ~12min | **Idioma:** EN
+>
+> Um passeio rápido pelos blocos que compõem o vocabulário HCL — `provider`, `resource`, `variable`, `data` — explicando o papel de cada um antes de você ver os exemplos completos. Bom pra fixar "o que cada palavra-chave faz" antes de ler configs reais.
+> Trecho de destaque [03:54]: *"these resource blocks define a resource type which defines the kind of infrastructure resource"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=AlDm9hUvIsA)
+
 ## O ciclo: init → plan → apply → destroy
 
 Esse é o coração operacional do Terraform, e a razão de ele ser mais seguro que clicar no console: toda mudança passa por uma etapa de "prévia" antes de acontecer de verdade.
@@ -155,6 +163,14 @@ Plan: 1 to add, 1 to change, 1 to destroy.
 
 > [!warning] `plan` não é garantia absoluta
 > O `plan` reflete o estado no momento em que você rodou. Se alguém aplicar outra mudança (via console, via outro pipeline) entre o seu `plan` e o seu `apply`, o Terraform detecta a divergência e recalcula — mas isso significa que um `apply` sem `plan` recente na tela pode surpreender. Em times, é comum rodar `plan` e `apply` na mesma execução de pipeline, sem gap manual no meio.
+
+> [!tip] Assista: Terraform explained in 15 mins | Terraform Tutorial for Beginners
+> **Canal:** TechWorld with Nana | **Duração:** ~18min | **Idioma:** EN
+>
+> Nana amarra o ciclo inteiro numa demo ao vivo: `plan` como prévia do que vai acontecer, `apply` executando de fato. Vale assistir pra ver a saída do `plan` na tela e associar visualmente ao `+`/`~`/`-` que a nota mostra em texto.
+> Trecho de destaque [17:03]: *"so we'd apply you can execute the plan so plan command is like a preview of what's gonna happen"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=l5k1ai_GBDE)
 
 ## Providers: o mesmo vocabulário, nuvens diferentes
 

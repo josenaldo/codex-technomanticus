@@ -1,7 +1,7 @@
 ---
 title: State, backends e colaboração
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -88,6 +88,14 @@ sequenceDiagram
     B->>L: tenta adquirir lock (retry)
     L-->>B: lock concedido
 ```
+
+> [!tip] Assista: Terraform backend using S3 and Dynamodb with state locking
+> **Canal:** Tech with Ajit | **Duração:** ~10min | **Idioma:** EN
+>
+> Uma demo curta que percorre exatamente a sequência que a nota descreve: por que externalizar o state não basta, e por que o lock é o que impede dois `apply` simultâneos de se pisarem.
+> Trecho de destaque [02:19]: *"locking is required if supported by your back end terraform will lock your state for all operations that could write state"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=q5-zsBY90j8)
 
 ## Lente dupla: backend S3 (AWS) e Spaces (DigitalOcean)
 
@@ -219,6 +227,14 @@ terraform import aws_s3_bucket.legado minha-empresa-bucket-legado
 Um ponto que costuma surpreender iniciantes: **`import` só popula o state — ele não escreve o bloco `resource` no seu `.tf`.** Você precisa já ter (ou escrever manualmente logo depois) um bloco de recurso correspondente no código; senão, o próximo `plan` vai ver "recurso no state mas não no código" e propor destruí-lo. A versão mais recente do Terraform introduziu os **`import` blocks** (declarativos, dentro do próprio `.tf`, rodados via `plan`/`apply` normal) como evolução recomendada sobre o comando imperativo — mas o comando `terraform import` continua funcionando e é o que você mais vai ver em bases de código existentes.
 
 > [!info] Verificado em 2026-07-24: `import` blocks são a via recomendada pela documentação oficial atual (`developer.hashicorp.com/terraform/cli/commands/import`), mas o comando `terraform import` segue suportado — não foi removido, apenas superado em recomendação.
+
+> [!tip] Assista: How to Use Terraform Import: CLI and Import Block Explained
+> **Canal:** Spacelift | **Duração:** ~8min | **Idioma:** EN
+>
+> Reforça exatamente o ponto que mais engana iniciante: `import` só atualiza o state, não escreve o `resource` no código. O vídeo também mostra o caso de usar `import` para reorganizar um state monolítico em vários menores.
+> Trecho de destaque [00:38]: *"Terraform import lets you bring an existing real-world [resource] under Terraform's control"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qkWUuB8uMN4)
 
 ## Reorganizando o state: `terraform state mv`
 

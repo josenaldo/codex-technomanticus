@@ -1,7 +1,7 @@
 ---
 title: Por que Infrastructure as Code
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -87,6 +87,14 @@ flowchart TB
 ```
 
 Essa propriedade de "rodar de novo não muda nada se já está no estado desejado" tem nome: **idempotência**. É o que torna seguro reexecutar um `terraform apply` sem medo — se nada mudou na configuração e nada fez drift na nuvem, o segundo `apply` não faz absolutamente nada. Terraform, CloudFormation e ferramentas semelhantes são declarativas por design; um script bash que chama a AWS CLI em sequência é imperativo, a menos que você mesmo escreva a lógica de "só crie se não existir" — o que, na prática, é reinventar (mal) o que a ferramenta declarativa já resolve.
+
+> [!tip] Assista: Terraform explained in 15 mins | Terraform Tutorial for Beginners
+> **Canal:** TechWorld with Nana | **Duração:** ~18min | **Idioma:** EN
+>
+> Nana usa uma analogia direta pra fixar a diferença: no imperativo você lista os passos ("remova dois servidores, adicione um firewall"); no declarativo você só declara o número final desejado e deixa a ferramenta calcular o diff.
+> Trecho de destaque [13:02]: *"instead of defining what steps to be executed... you define the end state you desire"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=l5k1ai_GBDE)
 
 ## Um exemplo concreto: a mesma fila, dois jeitos
 

@@ -1,7 +1,7 @@
 ---
 title: "Escolher e operar IaC"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -55,6 +55,14 @@ A segunda pergunta, dentro de cada ramo, é **declarativo estático versus lingu
 > [!info] Onde a DO simplifica a árvore
 > Para a DigitalOcean, o galho direito da árvore (CloudFormation/CDK) não existe — a nota 04 já documentou isso: a DO não tem ferramenta declarativa nativa com esse alcance. Isso significa que, sempre que a DigitalOcean está no jogo — sozinha ou ao lado da AWS — a árvore de decisão real colapsa para uma escolha única prática: **Terraform**, via o provider oficial `digitalocean/digitalocean`. Pulumi também tem um provider para DO, mas com adoção muito menor; na prática de mercado, "IaC na DO" e "Terraform na DO" são quase sinônimos.
 
+> [!tip] Assista: Terraform, AWS CloudFormation, CDK ou Crossplane?
+> **Canal:** Douglas Mugnos | **Duração:** ~13min | **Idioma:** PT-BR
+>
+> Um comparativo em português que passeia pelas mesmas quatro ferramentas do quadro acima (e ainda soma o Crossplane), discutindo curva de aprendizado, portabilidade e o quanto cada uma exige do time — a mesma pergunta estrutural que a árvore de decisão desta nota resolve, mas contada por quem já bateu cabeça com as quatro em produção.
+> Trecho de destaque [00:15]: *"É muito assunto para escrever aqui em um vídeo curto"* — abrindo a comparação Terraform / CloudFormation / CDK / Crossplane.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=agciBgF61-U)
+
 ## A tabela comparativa
 
 | Critério | Terraform | CloudFormation / SAM | CDK | Pulumi |
@@ -68,6 +76,14 @@ A segunda pergunta, dentro de cada ramo, é **declarativo estático versus lingu
 | Ecossistema / mercado | Maior do mercado — Registry público extenso, maioria das vagas pede Terraform | Grande dentro do universo AWS; suporte no dia 1 pra todo serviço novo | Cresce dentro do universo AWS | Bem menor — comunidade e exemplos escassos comparado a Terraform |
 
 A linha que mais separa as duas famílias é "State": Terraform e Pulumi trazem consigo o problema inteiro que a nota 03 deste galho dedicou a resolver (onde mora, quem trava, como criptografar) — um custo operacional real, mas o preço de ter uma ferramenta que fala com qualquer provedor. CloudFormation e CDK trocam esse custo por lock-in total: você nunca gerencia um state file, mas também nunca aponta essa mesma ferramenta para outra nuvem.
+
+> [!tip] Assista: AWS re:Invent 2024 — How to choose between AWS CloudFormation, Terraform, and AWS CDK (DEV309)
+> **Canal:** AWS Events | **Duração:** ~50min | **Idioma:** EN
+>
+> A palestra oficial da AWS sobre exatamente essa decisão — vale pelo contexto histórico (CloudFormation em 2011, Terraform logo depois, CDK em 2018) e por comparar os "níveis" de abstração (L1/L2/L3) nas três ferramentas lado a lado, não só dentro do CDK como a nota 04 fez.
+> Trecho de destaque [03:36]: *"Which kind of infrastructure as code tool... how can I choose the right one?"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=g37AVQM0eug)
 
 ## E a tabela de tradução (Azure, GCP)?
 

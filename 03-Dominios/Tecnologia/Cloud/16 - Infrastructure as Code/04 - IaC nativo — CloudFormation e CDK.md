@@ -1,7 +1,7 @@
 ---
 title: IaC nativo — CloudFormation e CDK
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -105,6 +105,14 @@ aws cloudformation execute-change-set \
 
 Isso é conceitualmente idêntico ao `terraform plan` seguido de `terraform apply` — a diferença é que o change set fica registrado como um objeto na AWS (você pode ter vários change sets pendentes pra uma mesma stack, compará-los, descartar um sem aplicar), enquanto o plano do Terraform normalmente é efêmero, um artefato de arquivo local ou de pipeline.
 
+> [!tip] Assista: AWS CloudFormation: Updating Stacks using Change Sets
+> **Canal:** Code with Gauri | **Duração:** ~6min | **Idioma:** EN
+>
+> Uma demo curta no console: cria um change set adicionando uma instância EC2 a uma stack existente, revisa a ação `ADD` antes de executar, e mostra que os recursos já existentes ficam intocados. Bom complemento visual pro fluxo de linha de comando que a nota mostra.
+> Trecho de destaque [04:42]: *"so basically we make use of chain sets to update your stack without touching the already created resources"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=lzRBioQ9DE4)
+
 ## Rollback automático e drift detection
 
 Aqui está uma diferença de filosofia que vale destacar: por padrão, se um `update-stack` falha no meio — digamos, o quinto de dez recursos dá erro de permissão — a CloudFormation **reverte automaticamente** os recursos já modificados pro estado anterior. Você não fica com uma stack pela metade; ela volta pro último estado consistente conhecido. O Terraform não tem esse comportamento embutido: se um `apply` falha no meio, o state reflete exatamente o que foi aplicado até ali, e cabe a você rodar de novo ou reverter manualmente.
@@ -202,6 +210,14 @@ O **Pulumi** ocupa o mesmo nicho conceitual — infra em linguagem de programaç
 
 > [!warning] CDK não elimina o CloudFormation, ele o esconde
 > É tentador tratar o CDK como uma ferramenta totalmente separada, mas todo `cdk deploy` ainda cria/atualiza uma stack CloudFormation de verdade, sujeita aos mesmos limites (tamanho de template, rollback automático, change sets por baixo dos panos). Quando algo dá errado, o erro que você vê é do CloudFormation, muitas vezes com nomes de recursos gerados automaticamente e difíceis de rastrear até a linha do seu código-fonte. Debugar CDK exige saber ler CloudFormation.
+
+> [!tip] Assista: AWS Cloud Development Kit (CDK) Explained in 5 mins
+> **Canal:** Master AWS with Yan | **Duração:** ~6min | **Idioma:** EN
+>
+> Um resumo rápido do conceito central de constructs (L1/L2/L3) e de como eles se compilam pra baixo, até virar stack CloudFormation — a mesma hierarquia que a nota menciona ao explicar `ApplicationLoadBalancedFargateService`.
+> Trecho de destaque [00:16]: *"at the heart of cdk are constructs which are the basic building blocks of an [AWS] cdk app"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uo-sJN5xDB4)
 
 ## Quando vale cada um
 
