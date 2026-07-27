@@ -1,7 +1,7 @@
 ---
 title: "App Platform — o PaaS que é a espinha do DO"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -192,6 +192,14 @@ A AWS *sabe* que esse modelo mental é valioso — é por isso que ela lançou o
 > "AWS App Runner is no longer open to new customers. Existing customers can continue to use the service as normal." A AWS fechou o App Runner para contas novas — o próprio fabricante do serviço mais parecido com o App Platform recuou da aposta. Isso reforça a tese do galho: coerência de plataforma git-connected não é o forte histórico da AWS, é o forte do DO.
 
 O Elastic Beanstalk (mais antigo, ainda ativo) é a outra tentativa da AWS nesse território — mas Beanstalk é mais "wrapper em cima de EC2 + Auto Scaling + ELB que você ainda pode abrir o capô e mexer" do que um PaaS opinativo fim-a-fim. Nenhum dos dois virou o caminho idiomático de deploy na AWS, ao contrário do App Platform no DO.
+
+> [!tip] Assista: A Heroku Alternative - DigitalOcean App Platform
+> **Canal:** DigitalOcean | **Duração:** ~16min | **Idioma:** EN
+>
+> Vídeo oficial do próprio DO nomeando a comparação que esta nota faz na cara: App Platform como sucessor espiritual do Heroku, mostrando na prática o fluxo de migrar um app Heroku pro App Platform sem reescrever a arquitetura.
+> Trecho de destaque [01:48]: *"deploy and migrate our existing Heroku apps to digital ocean's app platform"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=NPRT8LfAQ90)
 
 ## Tamanhos de instância e o que custam
 

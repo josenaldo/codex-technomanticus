@@ -1,7 +1,7 @@
 ---
 title: A filosofia da simplicidade — curadoria contra amplitude
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -78,6 +78,14 @@ Existe um fenômeno bem estudado em psicologia do consumidor, o *paradoxo da esc
 A AWS opera no regime de 30 geleias: profissionalmente sofisticado, tecnicamente correto, e cognitivamente caro. Cada escolha de arquitetura vira uma pesquisa: qual store, qual classe, qual limite de IOPS, qual tier de rede. Isso tem valor real — engenheiros seniores em times grandes *querem* esse controle fino, porque a diferença de custo ou desempenho entre as opções é dinheiro real em escala.
 
 A DigitalOcean aposta no oposto: **a restrição bem escolhida é, ela mesma, um produto**. Ao remover 29 das 30 geleias, ela não empobrece sua prateleira — ela elimina o custo cognitivo de decidir, e devolve esse tempo para o que realmente diferencia o seu produto (o código da sua aplicação, não a topologia da sua VPC). Isso não é "menos cloud" — é uma aposta de que, para a maioria dos times, a decisão de arquitetura mais cara não é qual serviço escolher, é *quanto tempo* se leva escolhendo.
+
+> [!tip] Assista: Interview With DigitalOcean
+> **Canal:** TFiR | **Duração:** ~21min | **Idioma:** EN
+>
+> Nessa entrevista, um executivo da própria DigitalOcean explica a curadoria não como limitação técnica, mas como decisão deliberada de foco: a empresa escolhe conscientemente NÃO perseguir contratos enterprise multimilionários pra manter o catálogo enxuto e alinhado às necessidades reais de startups e SMBs.
+> Trecho de destaque [07:40]: *"this allows us to stay focused and build those limited set of products but curate them to the needs of specific customers that we're trying to serve"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=t_2tz52vXIA)
 
 ## DX como diferencial competitivo, não como acessório
 

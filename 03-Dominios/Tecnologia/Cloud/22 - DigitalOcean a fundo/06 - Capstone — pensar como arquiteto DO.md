@@ -1,7 +1,7 @@
 ---
 title: Capstone — pensar como arquiteto DO
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -164,6 +164,14 @@ Um erro comum é tratar "o DO não basta mais" como sinônimo de "o produto cres
 | A aplicação cresce pra dezenas de componentes coordenados com dependência de deploy explícita | Esse é o teto real do App Platform (nota 04) — sinal de considerar DOKS *dentro do próprio DO*, não necessariamente migrar pra AWS |
 
 Repare que a última linha da tabela é o único caso que aproxima de um gatilho — e mesmo assim, o próximo passo natural é DOKS (Kubernetes gerenciado do DO), não um salto direto pra AWS. A migração pra AWS só entra em cena quando o sintoma bate especificamente em um dos quatro gatilhos estruturais da nota 05 (falta de serviço, geografia/escala, compliance, otimização agressiva) — não quando o produto simplesmente fica maior dentro da mesma forma.
+
+> [!tip] Assista: A Startup's Guide to Application Architecture
+> **Canal:** DigitalOcean | **Duração:** ~26min | **Idioma:** EN
+>
+> Um engenheiro do próprio DO desenha, do zero, uma arquitetura de referência pra um SaaS em estágio inicial — droplets separados, banco SQL, banco NoSQL, camada de dados — usando só peças do catálogo enxuto que este capstone também usa. É o mesmo exercício desta nota, contado por quem constrói a plataforma.
+> Trecho de destaque [18:26]: *"this entire sample architecture can be done on digitalocean"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=iyXCqFl_Fpc)
 
 ## O checklist mental do arquiteto DO
 

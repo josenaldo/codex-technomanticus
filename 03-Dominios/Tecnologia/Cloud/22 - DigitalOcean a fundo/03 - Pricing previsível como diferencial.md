@@ -1,7 +1,7 @@
 ---
 title: Pricing previsível — a lente onde o DO ganha
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -82,6 +82,14 @@ flowchart TD
 ```
 
 Nenhuma dessas linhas é cobrança "errada" ou abusiva — cada uma reflete um custo real de infraestrutura que a AWS está repassando de forma granular. O ponto não é que a AWS é desonesta, é que **granularidade de cobrança é o preço que você paga pela granularidade de controle**. Você pode, em tese, escolher exatamente quanto IOPS provisionar, exatamente qual classe de storage usar por objeto, exatamente que tier de NAT evitar. Essa liberdade de ajuste fino é real e valiosa — mas ela tem como contrapartida uma fatura que exige instrumentação para ser entendida.
+
+> [!tip] Assista: Comparing Cloud Egress Costs - Azure vs Digital Ocean vs Google Cloud vs Railway
+> **Canal:** HAMY LABS | **Duração:** ~3min | **Idioma:** EN
+>
+> Um teste prático e rápido: mesma carga de 100 GB de egress, quatro provedores, fatura lado a lado. O número fala sozinho — dá pra ver na prática por que a nota chama o egress previsível do DO de "diferencial", não só de discurso de marketing.
+> Trecho de destaque [02:06]: *"for digital ocean to be paying $1 their egress costs are quite low"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hx_bJiURsf8)
 
 ## O custo real da "otimização": FinOps não é grátis
 

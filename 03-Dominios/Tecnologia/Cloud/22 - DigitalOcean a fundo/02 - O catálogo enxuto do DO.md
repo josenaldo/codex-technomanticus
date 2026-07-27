@@ -1,7 +1,7 @@
 ---
 title: "O catálogo enxuto — o que o DO oferece, mapeado"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -19,6 +19,14 @@ Depois do galho 21 (AWS a fundo), você já sabe que a AWS tem mais de 200 servi
 O DigitalOcean resolve esse problema por eliminação. Não tem 12 opções de mensageria — tem zero serviço de mensageria gerenciado dedicado (você roda Kafka como Managed Database, ou publica webhooks, e ponto). Não tem 5 tipos de storage — tem dois: objeto (Spaces) e bloco (Volumes). A pergunta "qual serviço eu uso?" quase nunca aparece, porque quase sempre só existe um candidato.
 
 A tese desta nota é literal: você consegue segurar o catálogo inteiro do DO na cabeça, de memória, depois de uma tarde de leitura. Não existe isso pra AWS. E pra grande parte dos produtos que uma equipe pequena constrói, essa limitação é uma feature — ela elimina uma classe inteira de decisões de arquitetura que não agregam valor ao produto.
+
+> [!tip] Assista: Top 50+ AWS Services Explained in 10 Minutes
+> **Canal:** Fireship | **Duração:** ~12min | **Idioma:** EN
+>
+> Um voo rasante pelo catálogo da AWS — S3, EC2, Lambda, e dezenas de serviços que se sobrepõem em função. Serve de contraponto direto pra esta nota: veja a AWS categoria por categoria e sinta o "custo cognitivo" que o catálogo enxuto do DO elimina.
+> Trecho de destaque [00:11]: *"today it offers a mind-numbing 200 and something services"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JIbIYCM48to)
 
 ## O mapa por categoria
 
