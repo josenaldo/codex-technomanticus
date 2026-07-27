@@ -1,7 +1,7 @@
 ---
 title: SNS e pub/sub
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -68,6 +68,14 @@ flowchart TB
 Por que colocar uma fila SQS entre o tópico e o consumidor, em vez de o SNS entregar direto pra um endpoint HTTP do consumidor? Porque isso é o que dá **durabilidade** ao desenho. A nota [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/02 - SQS a fundo|SQS a fundo]] cobriu isso: se o consumidor de analytics estiver fora do ar por uma hora, a mensagem fica esperando na fila dele — os outros dois consumidores não são afetados, e quando o consumidor de analytics voltar, ele processa o que acumulou. Se o SNS entregasse via HTTP direto pro consumidor, uma indisponibilidade de alguns minutos poderia significar mensagem perdida (dependendo da política de retry) e, pior, o problema de um assinante nunca afeta o publisher nem os outros assinantes.
 
 Esse combo — **SNS pra distribuir, SQS pra amortecer e durar** — é tão comum que a AWS o chama explicitamente de "fanout to SQS queues for asynchronous processing" na própria documentação.
+
+> [!tip] Assista: AWS SNS Fanout Demo
+> **Canal:** Matthew Eddy | **Duração:** ~8min | **Idioma:** EN
+>
+> Uma demo curta e direta no console: um tópico SNS publicando pra Lambda como assinante, mostrando na prática como um único `publish` vira invocação automática do outro lado — o mecanismo de push que esta nota descreve, visto rodando de verdade.
+> Trecho de destaque [0:11]: *"the fanout architecture is a way for SNS to send messages to multiple sources — these sources can be things like Amazon SQS, Kinesis, Lambda, HTTP endpoints and more"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Gx27nUL7gn4)
 
 ### Message filtering: roteamento sem lógica no publisher
 

@@ -1,7 +1,7 @@
 ---
 title: Escolher o serviço de mensageria
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -61,6 +61,14 @@ flowchart TD
 
 Repare que a árvore tem quatro perguntas, não uma — e as três primeiras já foram respondidas em detalhe pelas notas [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/02 - SQS a fundo|SQS a fundo]], [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/03 - SNS e pub-sub|SNS e pub/sub]] e [[03-Dominios/Tecnologia/Cloud/13 - Mensageria e eventos gerenciados/04 - EventBridge e o event bus|EventBridge e o event bus]]. A quarta pergunta — streaming — é nova neste capstone, porque ela pertence a uma família de serviço com modelo mental diferente: não é fila (mensagem sai quando processada), é **log** (mensagem fica, cada leitor guarda sua própria posição de leitura).
 
+> [!tip] Assista: AWS SQS vs SNS vs EventBridge - When to Use What?
+> **Canal:** Be A Better Dev | **Duração:** ~22min | **Idioma:** EN
+>
+> Percorre os três serviços com exemplos e fecha com um resumo "quando usar o quê" quase palavra por palavra igual à régua desta nota — fila pra trabalho ponto a ponto com backpressure, tópico pra fan-out de alto throughput, cada um com seu ponto forte nomeado explicitamente.
+> Trecho de destaque [20:57]: *"sqs is great for reliable one-to-one asynchronous communication between microservices... in terms of sns, well, it's great for one-to-many fan out"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RoKAEzdcr7k)
+
 ## Fila vs. stream: o modelo mental que a árvore esconde
 
 A diferença entre "fila de trabalho" (SQS) e "stream" (Kinesis/MSK) não é só de throughput — é de **quem é dono do cursor de leitura**.
@@ -77,6 +85,14 @@ Num stream, **você** é dono do cursor. O dado fica no stream pelo período de 
 > Fonte: docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html
 
 Isso é o oposto do modelo de fila, e é por isso que "trocar SQS por Kinesis pra aguentar mais volume" é um erro conceitual comum: Kinesis não é "SQS mais rápido", é um serviço pra um problema diferente (múltiplos leitores independentes relendo um log ordenado), não pra distribuir trabalho entre workers concorrentes.
+
+> [!tip] Assista: WHAT IS THE DIFFERENCE? - SQS / SNS / EVENTBRIDGE / KINESIS
+> **Canal:** FooBar Serverless | **Duração:** ~21min | **Idioma:** EN
+>
+> Único vídeo da leva que cobre os quatro serviços desta árvore de decisão num só lugar, incluindo Kinesis como a peça de streaming — reforça exatamente a distinção fila/pub-sub/event-bus/stream que esta nota amarra, com exemplos de quando cada um "brilha".
+> Trecho de destaque [7:24]: *"Kinesis is the last service I want to talk about, and this service is amazing for ingesting into your AWS cloud millions of events... it can process the events in real time"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Id2IVs1f7S0)
 
 ## MSK: quando o ecossistema Kafka pesa mais que a conveniência
 

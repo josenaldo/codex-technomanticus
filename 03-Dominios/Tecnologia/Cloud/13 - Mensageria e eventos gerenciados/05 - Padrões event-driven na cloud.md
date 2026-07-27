@@ -1,7 +1,7 @@
 ---
 title: "Padrões event-driven na cloud"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -100,6 +100,14 @@ def processar_com_idempotencia(event_id, efeito_de_negocio):
 ```
 
 O TTL nativo do DynamoDB (expiração automática de itens, sem custo de escrita adicional) resolve um problema colateral que toda tabela de deduplicação enfrenta: sem TTL, a tabela cresce para sempre; com TTL calibrado para um pouco mais que a janela máxima de reentrega esperada, a tabela se autolimpa.
+
+> [!tip] Assista: Fix Duplicate Messages with the Idempotent Consumer Pattern
+> **Canal:** Milan Jovanović | **Duração:** ~14min | **Idioma:** EN
+>
+> Mesmo com Azure Service Bus em vez de SQS, o raciocínio é idêntico ao desta nota: exactly-once *delivery* não existe de verdade, então a defesa é exactly-once *processing* no consumer, via checagem de duplicata antes do efeito — o mesmo princípio da escrita condicional no DynamoDB, só que ilustrado com um exemplo de código completo do zero.
+> Trecho de destaque [2:38]: *"exactly once delivery isn't really possible in a real-world system — however, exactly once processing is, and that's what we're going to talk about in this video"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=GsZ_ZtlRCBg)
 
 > [!warning] Idempotência no handler Lambda, não fora dele
 > **O que acontece:** um time implementa a checagem de idempotência numa camada de infraestrutura — um decorator, um middleware genérico — sem garantir que a gravação da chave e a execução do efeito de negócio fiquem atomicamente juntas.

@@ -1,7 +1,7 @@
 ---
 title: Por que mensageria na nuvem
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -152,6 +152,14 @@ Só pra fixar o vocabulário — sem detalhamento hands-on, que foge do escopo d
 | Streaming de eventos (Kafka-like) | Amazon MSK | Event Hubs | Pub/Sub + Dataflow |
 
 Repare que o Azure, assim como a AWS, segmenta claramente fila (Storage Queues, mais simples) de pub/sub rico (Service Bus Topics) de roteamento por evento (Event Grid) — um desenho mais próximo do catálogo da AWS do que do minimalismo da DigitalOcean. O GCP concentra fila e pub/sub numa família só (Cloud Tasks pra fila ponto-a-ponto, Pub/Sub pra fan-out), com Eventarc cuidando do roteamento por evento entre serviços do Google Cloud.
+
+> [!tip] Assista: Synchronous and Asynchronous Communication between Microservices
+> **Canal:** Arpit Bhayani | **Duração:** ~40min | **Idioma:** EN
+>
+> Arpit Bhayani (educador de sistemas distribuídos) disseca por que uma cadeia de chamadas síncronas empilha tempo de bloqueio em cada nível e pode estourar timeout de rede — o mesmo mecanismo do cenário Checkout→E-mail desta nota, só que generalizado pra qualquer cadeia de serviços.
+> Trecho de destaque [10:03]: *"there are lots of problems when you have a large chain of synchronous communication and most of them arise because the call is blocking"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ewUw0sUxHI4)
 
 ## O que vem a seguir
 

@@ -1,7 +1,7 @@
 ---
 title: EventBridge e o event bus
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -63,6 +63,14 @@ flowchart LR
 ```
 
 Repare que o bus por si só não faz nada além de receber o evento e checá-lo contra as regras cadastradas nele. Toda a inteligência de roteamento mora na regra.
+
+> [!tip] Assista: Amazon EventBridge — Learning about rules
+> **Canal:** Serverless Land (AWS oficial) | **Duração:** ~7min | **Idioma:** EN
+>
+> Vídeo curto e oficial da AWS mostrando três regras diferentes casando o mesmo evento de exemplo (um caixa eletrônico fictício) — vê ao vivo o que acontece quando um evento casa com múltiplas regras ou com nenhuma, sem precisar montar o cenário você mesmo.
+> Trecho de destaque [0:07]: *"events flow through event buses but nothing happens until a rule is matched — a rule matches incoming events and sends them to targets for processing"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=S_LZ9yDNNAo)
 
 ## A regra: o coração do roteamento por conteúdo
 

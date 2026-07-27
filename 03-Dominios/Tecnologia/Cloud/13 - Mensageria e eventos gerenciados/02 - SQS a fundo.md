@@ -1,7 +1,7 @@
 ---
 title: SQS a fundo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -70,6 +70,14 @@ flowchart LR
 
 Se o processamento pode variar bastante (por exemplo, uma chamada a uma API externa com latência instável), o SQS oferece `ChangeMessageVisibility`: o próprio consumidor estende o timeout de uma mensagem específica enquanto ainda está trabalhando nela, em vez de você chutar um timeout fixo generoso demais pro caso comum. É o equivalente a avisar "ainda estou aqui, não me tire da mesa" no meio do atendimento.
 
+> [!tip] Assista: What is Amazon SQS Visibility Timeout? Easy Explanation
+> **Canal:** Ram N Java | **Duração:** ~7min | **Idioma:** EN
+>
+> Um passo a passo curto no console da AWS, com a mesma analogia do guichê de atendimento que esta nota usa — útil se você quer ver o timer do visibility timeout contando de verdade, mensagem por mensagem.
+> Trecho de destaque [5:27]: *"the visibility timeout is a timer that hides message from others while someone is working on it — if they finish in time the message is marked as done, if not the message becomes available again for someone else to pick it up"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Ca1SfIIFS4Y)
+
 ## Long polling vs short polling
 
 Quando um consumidor chama `ReceiveMessage` e a fila está vazia, o que acontece? Duas opções:
@@ -101,6 +109,14 @@ A fila **FIFO** garante ordem *dentro do mesmo* `MessageGroupId` — mensagens d
 Pense num sistema de e-commerce com uma fila `atualizacoes-estoque`. Cada evento é "produto X teve o estoque decrementado em N unidades". Se você usa **Standard**, dois eventos do mesmo produto podem ser processados fora de ordem — um consumidor aplica "decrementa 3" antes de "decrementa 5" que foi enviado primeiro, e o estoque final fica sujeito a *race* se os handlers não forem cuidadosos (ex.: usar incremento atômico no banco em vez de "ler, calcular, escrever"). Na prática, muita gente usa Standard aqui e absorve o risco porque os handlers já são idempotentes e comutativos (decrementos são comutativos entre si, desde que atômicos).
 
 Já numa fila `transicoes-pedido` — "pedido criado" → "pagamento aprovado" → "pedido enviado" — a ordem *importa de verdade*: processar "enviado" antes de "pagamento aprovado" é um bug de negócio, não só uma curiosidade. Aqui, FIFO com `MessageGroupId = pedidoId` é a escolha certa: garante que as transições de um mesmo pedido chegam na ordem em que foram enviadas, enquanto pedidos diferentes continuam sendo processados em paralelo (grupos diferentes, partições diferentes).
+
+> [!tip] Assista: AWS SQS Standard and FIFO Queue Intro
+> **Canal:** Funnel Garden | **Duração:** ~20min | **Idioma:** EN
+>
+> Demonstração lado a lado no console: o mesmo lote de mensagens processado numa fila standard (fora de ordem) e depois numa fila `.fifo` (ordem garantida) — vê o contraste acontecer na tela em vez de só ler sobre ele.
+> Trecho de destaque [3:26]: *"messages are guaranteed to be in order to be consumed in order in the way that [they were sent]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jI7vAF2jiWQ)
 
 ## Dead-letter queue: onde vão as mensagens venenosas
 
