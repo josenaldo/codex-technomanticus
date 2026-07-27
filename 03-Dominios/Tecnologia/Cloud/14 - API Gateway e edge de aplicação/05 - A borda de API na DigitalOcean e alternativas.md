@@ -1,7 +1,7 @@
 ---
 title: A borda de API na DigitalOcean e alternativas
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -144,6 +144,14 @@ Quando você precisa de algo mais próximo do que o API Gateway da AWS entrega �
 Na DO isso vira infraestrutura que você opera: um Droplet dedicado (ou um pequeno cluster de Droplets atrás de um Load Balancer da DO), ou — mais robusto — um deployment dentro do DOKS, o Kubernetes gerenciado da DO (veja [[03-Dominios/Tecnologia/Cloud/12 - Containers gerenciados/05 - Kubernetes gerenciado de raspão|Kubernetes gerenciado de raspão]] se quiser o pano de fundo desse produto). Kong e APISIX têm charts Helm oficiais, o que torna o caminho DOKS o mais natural pra quem já está nesse mundo.
 
 O trade-off é direto: você ganha controle total — o mesmo nível de sofisticação de authorizer, throttling e transformação que o API Gateway da AWS oferece gerenciado — mas perde o "gerenciado". Patches de segurança, upgrades de versão, HA do proxy em si, capacity planning: tudo isso é seu agora. É a mesma escolha de fundo entre PaaS e "eu mesmo administro o servidor" que atravessa o galho de Containers — só que aplicada à camada de borda de API em vez de à camada de compute.
+
+> [!tip] Assista: API Gateway e Kong na prática
+> **Canal:** Full Cycle | **Duração:** ~2h11min | **Idioma:** PT-BR
+>
+> Vídeo longo (curso completo), mas o trecho de destaque confirma exatamente o caminho descrito aqui: Kong não nasceu como API Gateway gerenciado — ele se popularizou como ingress controller de Kubernetes, o que explica por que o deployment via Helm no DOKS é o caminho mais natural pra quem já vive nesse mundo.
+> Trecho de destaque [34:39]: *"você pode usar ele ali com API Gateway, mas principalmente como ingress controller... a Full Cycle, que a gente utiliza Kubernetes, tem lá um Kong funcionando por debaixo dos panos pra fazer o nosso ingress."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uY_cp41E7SU)
 
 Pra fixar como fica um Kong configurado declarativamente na frente de uma API na DO — o pedaço que resolve o que nem App Platform nem Cloudflare cobrem sozinhos, como transformação de payload por rota —, um trecho de `kong.yml` (modo DB-less, comum quando você roda Kong em container no DOKS):
 

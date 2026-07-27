@@ -1,7 +1,7 @@
 ---
 title: "Compondo a borda de API"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -197,6 +197,22 @@ flowchart LR
         Orq --> Logistica[Serviço logística]
     end
 ```
+
+> [!tip] Assista: "Backends for Frontends": what is it?
+> **Canal:** Software Developer Diaries | **Duração:** ~8min | **Idioma:** EN
+>
+> Desenha o mesmo problema do zero: uma API genérica compartilhada entre web, mobile e TV força cada cliente a puxar (ou sofrer com) dados que não precisa, até quebrar em uma API dedicada por tipo de cliente — a mesma separação `/mobile/*` vs `/admin/*` do diagrama acima.
+> Trecho de destaque [03:24]: *"instead of having a general purpose API, we're going to create separate backends for every use case, or let's say user interface — we're going to call it BFF, which stands for backend for frontends."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tmGnpU8xOGE)
+
+> [!tip] Assista: API Composition Pattern in Microservices
+> **Canal:** Arpit Bhayani | **Duração:** ~26min | **Idioma:** EN
+>
+> Detalha o mesmo papel do Lambda orquestrador do código acima — um "composer" no meio que chama vários serviços e junta a resposta — e no restante do vídeo (fora do trecho citado) discute os trade-offs de latência e acoplamento que crescem quando a composição vira multi-nível.
+> Trecho de destaque [04:39]: *"a super simple implementation is API composition — what we do is we put a middleman, a composer sitting in between. The user makes a request to composer, this composer knows what to do [...] would talk to order service, would talk to payment service, would talk to logistics service."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5pYLlYsy6fQ)
 
 Nenhum dos dois padrões é exclusivo de serverless — BFF e API composition existem há muito mais tempo do que o API Gateway gerenciado, em qualquer arquitetura de microsserviços. O que muda aqui é só onde eles se encaixam nesta pilha: BFF vira uma decisão de quantas APIs (ou quantos conjuntos de rotas) você provisiona; composition vira uma decisão de onde a lógica de agregação mora — quase sempre num Lambda, nunca no Gateway em si.
 

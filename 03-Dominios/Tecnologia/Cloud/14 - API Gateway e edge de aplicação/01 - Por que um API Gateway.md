@@ -1,7 +1,7 @@
 ---
 title: Por que um API Gateway
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -26,6 +26,14 @@ Por quê? Porque agora o cliente precisa saber:
 E do lado de dentro, cada equipe de serviço reimplementa a mesma coisa: validação de token, contagem de requisições por cliente, logging estruturado, tratamento de CORS. É código de infraestrutura copiado e colado (ou pior, divergente) por todo o backend. Se você já leu a nota sobre o Load Balancer em [[03-Dominios/Tecnologia/Cloud/06 - Compute II — elasticidade e balanceamento/index|Compute II]], vai reconhecer o padrão: assim como o LB tirou da aplicação a responsabilidade de saber *quais instâncias* estão de pé, o API Gateway tira da aplicação a responsabilidade de saber *como* uma requisição de API deve ser tratada antes de chegar à lógica de negócio.
 
 A pergunta natural é: por que não resolver isso com um Load Balancer, que a essa altura você já conhece bem? Porque o LB e o API Gateway resolvem problemas em camadas diferentes — e entender essa diferença é o primeiro passo para saber quando você precisa de cada um.
+
+> [!tip] Assista: O que é API Gateway?
+> **Canal:** Full Cycle | **Duração:** ~6min | **Idioma:** PT-BR
+>
+> Explicação curta e direta do mesmo problema que abre esta nota: com dezenas (ou centenas) de microsserviços, o cliente não tem como saber o endereço de cada um, nem como padronizar autenticação e formato de resposta entre eles.
+> Trecho de destaque [01:55]: *"pensa que você pode ter até 300 microsserviços, como que você vai saber o endereço de cada microsserviço? Você vai separar por IP, por subdomínio... o outro ponto importante também é como que você vai fazer a autenticação de todos esses microsserviços."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=2YNelyDZBDM)
 
 ## O conceito: um proxy que entende API, não só tráfego
 
@@ -70,6 +78,14 @@ flowchart LR
 - A **borda de rede** — DNS, CDN, TLS na borda, WAF, vista em [[03-Dominios/Tecnologia/Cloud/10 - DNS, CDN e borda/index|DNS, CDN e borda]] — fica um passo *antes* de tudo isso, mais perto geograficamente do usuário. Ela decide "para qual região/edge location essa requisição vai" e filtra tráfego malicioso antes mesmo de saber qual API está sendo chamada. A CDN pode até cachear respostas estáticas sem nunca acionar o API Gateway.
 
 Uma forma de fixar a hierarquia: a borda de rede pergunta "de onde vem essa requisição e ela é segura?"; o API Gateway pergunta "quem é você, o que você quer fazer, e pode?"; o Load Balancer pergunta "qual das minhas réplicas saudáveis vai atender isso agora?".
+
+> [!tip] Assista: Entenda API Gateway DO ZERO
+> **Canal:** Full Cycle | **Duração:** ~43min | **Idioma:** PT-BR
+>
+> Vídeo longo e didático que dedica um trecho a desmontar exatamente essa confusão: um API Gateway é, por baixo, um proxy reverso "vitaminado" (com regras de roteamento, auth e throttling embutidas) — não uma categoria totalmente à parte do proxy reverso que você já conhece via nginx.
+> Trecho de destaque [08:54]: *"é como se ela fosse um proxy... na realidade proxy é uma das coisas que uma API Gateway ela é... uma API Gateway por ela como se fosse também um proxy reverso, tanto que a maioria das soluções que você encontra por aí hoje você vai ver que utilizam nginx, que nada mais é do que um sistema de proxy reverso."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=crMkXkLIGX8)
 
 ## O casamento com serverless
 

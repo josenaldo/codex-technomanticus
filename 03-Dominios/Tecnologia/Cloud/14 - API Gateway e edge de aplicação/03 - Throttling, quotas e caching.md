@@ -1,7 +1,7 @@
 ---
 title: Throttling, quotas e caching
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -75,6 +75,14 @@ Vale desmontar o que "rate 5, burst 10" realmente significa, porque a intuição
 - Um segundo depois, há 5 tokens novos disponíveis (limitado ao teto de 10) — o cliente pode fazer até 5 requisições extras.
 
 Isso significa que um cliente "bem comportado" que manda exatamente 5 req/s nunca esbarra no limite — o balde nunca esvazia. Já um cliente "rajado" (silêncio, depois uma explosão de chamadas) pode escoar o burst inteiro de uma vez, e só depois cair no ritmo do rate. É esse comportamento que faz do token bucket uma escolha melhor do que um contador fixo por janela: ele absorve picos legítimos (o usuário que dá refresh na página duas vezes seguidas) sem simplesmente rejeitar tudo que passa de N por segundo cravado.
+
+> [!tip] Assista: Como fazer throttling da minha API no Amazon API Gateway? Usage Plan e API Keys
+> **Canal:** Douglas Mugnos | **Duração:** ~7min | **Idioma:** PT-BR
+>
+> Cobre a mesma distinção rate/burst desta nota com outra analogia (o que "cabe correndo" versus "o que roda em paralelo"), e mostra como o usage plan identifica o cliente via header — a peça que a nota detalha a seguir com `x-api-key`.
+> Trecho de destaque [03:00]: *"o rate é o máximo de requests em um... que pode encaminhar em um segundo, já o burst é quantas requests eu tenho rodando em paralelo... uma coisa é quanto você pode inserir naquele segundo, e já o burst é quanto você pode estar rodando em paralelo naquele determinado tempo."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=mE8S1icgckY)
 
 ## Usage plans e API keys: throttling por identidade de cliente
 

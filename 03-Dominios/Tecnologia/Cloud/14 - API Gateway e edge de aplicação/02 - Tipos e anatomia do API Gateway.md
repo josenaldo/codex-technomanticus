@@ -1,7 +1,7 @@
 ---
 title: Tipos e anatomia do API Gateway
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -70,6 +70,14 @@ A anatomia de rotas é diferente: em vez de `GET /pedidos`, você tem rotas espe
 - Rotas customizadas (`sendMessage`, `joinRoom`) — você define o nome da rota olhando pra um campo do payload JSON recebido.
 
 Cada conexão ganha um `connectionId`, e o backend usa a API de "Management" do gateway pra mandar mensagens de volta pra uma conexão específica a qualquer momento — não só como resposta a uma mensagem recebida.
+
+> [!tip] Assista: AWS API Gateway Tutorial for Beginners — HTTP vs REST vs WebSocket APIs
+> **Canal:** AWS Made Easy | **Duração:** ~16min | **Idioma:** EN
+>
+> Passa pelos três produtos na mesma ordem desta nota e ainda amarra a diferença de deploy/stages: por que o HTTP API "publica sozinho" enquanto o REST API exige o passo manual de deploy pra stage.
+> Trecho de destaque [09:59]: *"firstly what is HTTP API — it's basically a RESTful API, you can build very simple RESTful API which has very lower latency and low cost than REST APIs [...] the REST API comes with additional features at the cost of extra cost and latency."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=e3YnsfkaEEU)
 
 ```mermaid
 flowchart TB
@@ -146,6 +154,14 @@ O method decide **qual verbo, em qual path**. A integration decide **o que roda 
   "ip_cliente": "$context.identity.sourceIp"
 }
 ```
+
+> [!tip] Assista: Mapping Templates in API Gateways
+> **Canal:** Binary Guy | **Duração:** ~6min | **Idioma:** EN
+>
+> Demonstração curta e prática de exatamente essa non-proxy integration: no console da AWS, criando o mapping template em VTL que reescreve o body do request antes dele chegar no backend — o mesmo mecanismo por trás do exemplo acima.
+> Trecho de destaque [01:29]: *"has to be written in VTL, virtual is a velocity template language developed by Apache — this is necessary because API Gateway only accepts these mapping templates in [VTL]."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-_nYddYkd7M)
 
 **HTTP integration** aponta o method direto pra um endpoint HTTP existente — um serviço em EC2, um container em ECS com IP público, ou até uma API de terceiros. O gateway vira um proxy reverso configurável na frente desse endpoint, com autenticação, throttling e cache do lado do gateway, sem tocar no código do backend.
 

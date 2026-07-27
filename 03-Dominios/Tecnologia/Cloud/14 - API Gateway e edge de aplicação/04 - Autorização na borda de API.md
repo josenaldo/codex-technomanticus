@@ -3,7 +3,7 @@ title: "Autorização na borda de API"
 type: concept
 fase: Adepto
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -91,6 +91,14 @@ Quando quem chama é um usuário final que fez login através de um **Amazon Cog
 Quando nenhum dos mecanismos prontos encaixa — um esquema de autenticação próprio, uma checagem que cruza múltiplas fontes, uma integração com um provedor SAML, uma regra de negócio tipo "só usuários do tier premium acessam este endpoint" — o **Lambda authorizer** (antigo *custom authorizer*) é a peça que devolve controle total pra você, em troca de você escrever e manter o código.
 
 O contrato é simples e rígido: o API Gateway invoca sua função Lambda passando a identidade do chamador; sua função devolve **uma política IAM completa** (`Effect: Allow` ou `Deny`, `Action: execute-api:Invoke`, `Resource` com o ARN do método) mais um `principalId` obrigatório e, opcionalmente, um objeto `context` livre — pares chave-valor de string, número ou boolean que o Gateway repassa para o backend sem interpretar.
+
+> [!tip] Assista: Secure your API Gateway with Lambda Authorizer
+> **Canal:** Be A Better Dev | **Duração:** ~25min | **Idioma:** EN
+>
+> Passo a passo no console do fluxo que o diagrama abaixo descreve: o cliente manda um token, o authorizer o inspeciona e devolve `Allow` ou `Deny`, e é essa decisão — não uma verificação feita pelo backend — que decide se a requisição segue adiante.
+> Trecho de destaque [01:11]: *"the first thing that's going to happen is that user is going to call an API [...] and we want to provide an authorization token [...] it's going to first go to an authorization token handler, and this is just called our authorizer."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=al5I9v5Y-kA)
 
 ```mermaid
 sequenceDiagram
@@ -230,6 +238,14 @@ Por baixo, o mecanismo é exatamente o que um Lambda authorizer bem escrito fari
 3. Valida a assinatura (só algoritmos baseados em RSA são suportados).
 4. Valida claims: `iss` deve bater com o `Issuer` configurado; `aud` (ou `client_id`, se `aud` estiver ausente) deve bater com uma das `Audience` configuradas; `exp` e `nbf` devem ser consistentes com o horário atual; e, se a rota exige escopos, o claim `scope` (ou `scp`) precisa conter ao menos um deles.
 5. Se tudo bate, as claims ficam disponíveis para o backend em `$event.requestContext.authorizer.jwt.claims`.
+
+> [!tip] Assista: Use JWT Authorizers with Amazon Cognito and API Gateway
+> **Canal:** Focus Otter | **Duração:** ~14min | **Idioma:** EN
+>
+> Configura no console exatamente esse par `Issuer`/`Audience` — usando um Cognito user pool como issuer — e mostra o momento em que você escolhe entre "JWT" e "Lambda" como tipo de authorizer, deixando concreta a fronteira entre os dois mecanismos.
+> Trecho de destaque [09:58]: *"it is with JWT — you can also do it with Lambda, which is cool, but JWT is really cool [...] the issuer, this is going to be the URL for our Cognito user pool."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=o7OHogUcRmI)
 
 A vantagem sobre o Lambda authorizer é dupla: menos código pra manter (zero, na verdade) e menos latência (a validação acontece no próprio Gateway, sem uma invocação de função extra). A limitação é o espelho da vantagem: só existe para **HTTP APIs**, não para REST APIs, e só cobre validação de JWT puro — se a lógica de autorização precisar de algo além de "este token é válido e tem este escopo" (consultar um banco, cruzar com uma feature flag), o Lambda authorizer volta a ser necessário.
 
