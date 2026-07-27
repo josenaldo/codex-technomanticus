@@ -1,7 +1,7 @@
 ---
 title: Orquestração vs coreografia
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -174,6 +174,14 @@ O padrão saga não pertence a orquestração nem a coreografia — ele pode ser
 
 > [!warning] A saga coreografada esconde a complexidade, não elimina
 > É tentador achar que a saga coreografada é "mais simples" porque tem menos código central. Na prática, ela move a complexidade da compensação para dentro de cada serviço — cada um precisa saber reagir corretamente a eventos de falha que talvez nem sejam "dele". Isso costuma ficar difícil de rastrear justamente quando mais precisa (produção, sob incidente). Para sagas com mais de três ou quatro passos, vale considerar orquestração mesmo perdendo um pouco de desacoplamento — a visibilidade de debugging compensa.
+
+> [!tip] Assista: The SAGA Design Pattern Explained in 6 MINUTES | Orchestration vs Choreography
+> **Canal:** CodeOpinion | **Duração:** ~6min | **Idioma:** EN
+>
+> Um resumo rápido e denso do mesmo dilema desta nota, com foco no padrão saga: por que a coreografia fica difícil de auditar quando a saga cresce, e por que a orquestração centraliza justamente a lógica de compensação que a coreografia espalha entre serviços.
+> Trecho de destaque [04:35]: *"we can implement orchestration where the execution flow control is centralized — a service is responsible for the invocation of all..."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hkQhqDmriKA)
 
 > [!warning] Orquestrador "feito em casa" na DigitalOcean vira dívida técnica silenciosa
 > Como a DO não tem um Step Functions gerenciado, é tentador escrever o orquestrador como "só mais uma function que chama as outras em sequência". Isso funciona até o dia em que uma chamada trava a meio caminho — sem `Retry`/`Catch` nativos e sem histórico de execução persistido pelo próprio serviço, você precisa construir essa auditoria à mão (tabela de estado no Postgres, idempotência por `pedido_id`, timeout explícito). Não é impossível, mas é fácil subestimar esse esforço achando que "é só um `for` chamando funções" — na prática é a reimplementação de uma fatia do Step Functions.

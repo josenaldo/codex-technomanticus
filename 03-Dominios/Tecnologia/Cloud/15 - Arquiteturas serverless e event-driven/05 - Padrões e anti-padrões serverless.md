@@ -1,7 +1,7 @@
 ---
 title: Padrões e anti-padrões serverless
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -99,6 +99,14 @@ Toda fila, todo destino assíncrono, toda integração de evento deveria ter uma
 > Segundo a documentação oficial da AWS, invocações assíncronas do Lambda são colocadas numa fila interna antes de serem entregues à função; você pode configurar como o Lambda trata erros e enviar "registros de invocação" a um destino downstream (SQS, SNS, EventBridge) para encadear componentes. Configurar um destino de falha (ou uma DLQ clássica anexada à função) é o mecanismo que evita perda silenciosa de eventos com erro. Fonte: docs.aws.amazon.com/lambda/latest/dg/invocation-async.html.
 
 Na AWS isso é: DLQ em toda fila SQS que alimenta Lambda, destino de falha (`on-failure destination`) em toda invocação assíncrona, e alarme de CloudWatch monitorando a profundidade da DLQ (uma DLQ que cresce e ninguém olha é a mesma coisa que não ter DLQ). Na DO, sem uma fila gerenciada nativa robusta o suficiente para esse padrão, o caminho comum é usar Redis (Managed Databases) como fila com um esquema de retry manual, ou trazer uma fila externa (RabbitMQ gerenciado por terceiro, ou uma instância própria) — mais responsabilidade operacional pra ter a mesma garantia.
+
+> [!tip] Assista: Writing scalable Lambda functions - best practices and anti-patterns to consider
+> **Canal:** AWS Developers | **Duração:** ~45min | **Idioma:** EN
+>
+> Aprofunda dois padrões desta nota com detalhe que não cabia aqui: o mecanismo exato de retry assíncrono do Lambda antes de cair no destino de falha/DLQ, e o comportamento de cold start no ciclo de vida do ambiente de execução — a raiz técnica por trás do anti-padrão "ignorar cold start no caminho crítico".
+> Trecho de destaque [28:53]: *"these two retries fail also, then you can send the event to an on-failure destination or a dead letter queue"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=vdBTJd_pYRI)
 
 ### 7. Backend-for-frontend (BFF)
 

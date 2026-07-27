@@ -1,7 +1,7 @@
 ---
 title: O paradigma event-driven completo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -41,6 +41,14 @@ Os três papéis de uma arquitetura event-driven são sempre os mesmos:
 - **Consumidor** — quem reage ao evento, um ou muitos, cada um fazendo sua própria coisa.
 
 Esse tripé já apareceu, disperso, nos galhos anteriores: o galho 13 mostrou os canais (SQS, SNS, EventBridge) que carregam o evento do produtor ao consumidor; o galho 11 mostrou o Lambda como um tipo comum de consumidor (e às vezes produtor). Este galho amarra o tripé numa arquitetura.
+
+> [!tip] Assista: Arquitetura Orientada a Eventos: Lidando com a complexidade
+> **Canal:** Full Cycle | **Duração:** ~35min | **Idioma:** PT-BR
+>
+> Complementa o tripé produtor/evento/consumidor desta nota com o ângulo de quem já sofreu na pele o acoplamento: a palestra mostra como um sistema cresce, ganha módulos, e só depois de sentir dor descobre que precisava desacoplar — o mesmo argumento que a nota faz, mas contado como história real de arquitetura, não como definição a priori.
+> Trecho de destaque [07:14]: *"em algum momento vai ter algum consumidor interessado que vai tirar proveito disso, vai consumir"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bBNK1VbaZ1I)
 
 ## Os building blocks, recapitulados e encaixados
 

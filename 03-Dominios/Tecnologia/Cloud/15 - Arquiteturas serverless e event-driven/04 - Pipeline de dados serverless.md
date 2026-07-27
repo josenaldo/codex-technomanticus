@@ -1,7 +1,7 @@
 ---
 title: Pipeline de dados serverless
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -200,6 +200,14 @@ sequenceDiagram
 Buffer curto (ex.: 60 segundos) = dado disponível para consulta quase em tempo real, mas gera muitos arquivos pequenos no lake. Buffer longo (ex.: 15 minutos, 128 MB) = arquivos maiores e mais baratos de consultar depois, mas o analista espera mais para ver o dado novo. Essa troca — latência de disponibilidade vs. eficiência de armazenamento — é a decisão de engenharia central de qualquer pipeline de streaming, e nenhuma configuração "certa" existe fora do contexto: um dashboard de fraude quer buffer curto; um relatório mensal de faturamento pode esperar.
 
 Firehose também pode invocar uma Lambda no meio do caminho (antes de gravar no destino) para transformar cada registro — descompactar, enriquecer, filtrar — sem você precisar gerenciar um consumidor separado do stream.
+
+> [!tip] Assista: AWS Kinesis Data Firehose Explained | Destinations, Transformations & Near Real-Time
+> **Canal:** CloudWolf | **Duração:** ~4min | **Idioma:** EN
+>
+> Reforça em formato bem curto e direto o mecanismo exato de buffer size/interval que esta nota detalha, além de mapear os três grupos de destino do Firehose (AWS, HTTP customizado, terceiros como Datadog/Splunk) — o quadro completo por trás do "S3 ou Redshift" que a nota já cobriu.
+> Trecho de destaque [03:12]: *"it will either wait for a batch of 1 megabyte of data before it writes or it'll wait for 60 seconds, whichever comes first"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=7XOFXob4bFM)
 
 ## Armadilhas comuns
 

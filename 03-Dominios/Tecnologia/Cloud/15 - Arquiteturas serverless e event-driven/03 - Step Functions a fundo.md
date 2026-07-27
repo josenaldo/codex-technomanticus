@@ -1,7 +1,7 @@
 ---
 title: Step Functions a fundo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -256,6 +256,14 @@ O estado `Map` "inline" roda um sub-workflow para cada item de um array pequeno 
 > Use Distributed Map quando o dataset excede 256 KiB, quando o histórico de execução ultrapassaria 25.000 entradas, ou quando a concorrência precisa passar de 40 iterações. Distributed Map só existe em workflows Standard (o `Mode: DISTRIBUTED` pode invocar sub-workflows Standard ou Express via `ExecutionType`).
 
 Esse mecanismo é a ponte direta para a próxima nota do galho, sobre pipelines de dados serverless: processar cada arquivo de um bucket S3, cada registro de um dump, cada linha de um CSV de milhões de linhas — sem escrever o loop de concorrência você mesmo.
+
+> [!tip] Assista: AWS Step Functions Distributed Map | Hands on Tutorial
+> **Canal:** be a Better Dev | **Duração:** ~15min | **Idioma:** EN
+>
+> Vê o Distributed Map saindo do papel: um tutorial hands-on que cria a state machine, distingue Map inline de Distributed Map na prática, e mostra os logs de execução das child executions rodando em paralelo — o complemento visual da explicação em ASL desta nota.
+> Trecho de destaque [00:53]: *"inline map is for smaller data sets and distributed map is for larger data sets"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=2odmnTlqVfk)
 
 ## Da declaração à execução: criar e disparar via CLI
 
