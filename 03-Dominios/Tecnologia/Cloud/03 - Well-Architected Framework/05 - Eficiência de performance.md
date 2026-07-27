@@ -3,7 +3,7 @@ title: "Eficiência de performance"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -76,6 +76,14 @@ Cada princípio, na prática de uma review de arquitetura, vira uma pergunta con
 
 > [!info] Caducidade
 > Os cinco princípios de design e as cinco áreas de foco foram verificados na versão do whitepaper *Performance Efficiency Pillar* publicada pela AWS (revisão de 6 de novembro de 2024), com a leitura conferida novamente em 2026-07-22. O framework é revisado periodicamente — confira a documentação oficial antes de citar a lista como referência formal, por exemplo numa entrevista.
+
+> [!tip] Assista: Understanding the Performance Efficiency Pillar of AWS Architecture
+> **Canal:** K21Academy | **Duração:** ~10min | **Idioma:** EN
+>
+> Percorre os cinco princípios de design um a um com exemplo concreto de serviço AWS para cada um — do CloudFront para "ir global em minutos" ao DynamoDB com auto scaling para "democratizar tecnologias avançadas" — útil como referência rápida de "qual serviço ilustra qual princípio".
+> Trecho de destaque [05:31]: *"go global in minutes like CloudFront... like S3, like DynamoDB — with DynamoDB you can create global tables"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rej46dgMmqM)
 
 Repare que os cinco princípios não são independentes — eles convergem no mesmo ponto. Democratizar tecnologia via serviço gerenciado, ir global via múltiplas regiões, usar serverless: todos são formas de trocar "eu opero isso do zero" por "eu consumo isso pronto". E "experimentar com frequência" mais "simpatia mecânica" são as duas metades da mesma disciplina: escolher com base em como o recurso *de fato* se comporta com o *seu* workload, não com base em qual recurso parece mais familiar ou mais impressionante no papel. É exatamente o padrão que a história do início desta nota ilustrou ao contrário — o time escolheu o recurso familiar (mais CPU no banco que já conhecia) em vez do recurso que casava com o formato real do problema (um índice de texto).
 
@@ -214,6 +222,14 @@ time ./processa-lote.sh --entrada imagens/ --saida resultados/
 ```
 
 A terceira linha é o ponto inteiro do exercício: o número que importa não é o preço por hora de cada instância — é o custo do job completo, tempo de execução vezes preço por hora. Uma instância mais cara por hora que termina o trabalho na metade do tempo pode custar menos no total, e só medir descobre isso; comparar preço por hora nas duas fichas técnicas, sozinho, aponta pro lado errado.
+
+> [!tip] Assista: AWS re:Invent 2017 - Optimizing Performance and Efficiency for Amazon EC2 and More (ARC329)
+> **Canal:** Amazon Web Services (oficial) | **Duração:** ~59min | **Idioma:** EN
+>
+> Vídeo mais antigo, mas o raciocínio continua valendo: o palestrante mostra por que escolher a instância certa é um problema de "matemática em seis dimensões" (CPU, memória, storage, rede, família de hardware e a relação entre elas) — e por que otimizar a felicidade do host, sem medir a experiência real da aplicação de ponta a ponta, é o erro clássico que o princípio de simpatia mecânica desta nota tenta evitar.
+> Trecho de destaque [16:40]: *"application quality of service and true measurement of end-to-end experience is what's important"*; e [21:04]: *"you have to be able to do six dimensional math"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=r2Hhg7pA-WU)
 
 Antes mesmo de formular a hipótese sobre qual família testar, o próprio sintoma do sistema em produção já dá uma pista de onde olhar primeiro — os painéis de métricas nativos de cada provedor (CloudWatch na AWS, Monitoring na DigitalOcean) mostram esses sinais sem esforço extra de instrumentação:
 

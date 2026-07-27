@@ -3,7 +3,7 @@ title: "Excelência operacional"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -122,6 +122,22 @@ Resumida em forma de tabela — útil como referência rápida durante uma revie
 | 6. Antecipar falha | O time sabe, com alguma confiança, o que acontece quando uma dependência cai? | Cenário de falha só é descoberto ao vivo, em produção |
 | 7. Aprender com eventos e métricas | O aprendizado de um incidente vira conhecimento compartilhado? | Só quem estava de plantão naquela noite sabe o que aconteceu |
 | 8. Usar serviços gerenciados | O time gasta esforço mantendo algo que o provedor já resolve? | Equipe de engenharia mantém patch de SO e replicação de banco à mão |
+
+> [!tip] Assista: AWS Well-Architected for Startups - Operational Excellence
+> **Canal:** Amazon Web Services (oficial) | **Duração:** ~6min | **Idioma:** EN
+>
+> Um arquiteto de soluções da AWS percorre os cinco princípios de design (dos oito) com um exemplo trabalhado de pipeline CI/CD (CodeCommit → CodeBuild → CodeDeploy → CodePipeline) mostrando, na prática, como automação reduz o "blast radius" de uma mudança — o mesmo raciocínio por trás do princípio 4 desta nota.
+> Trecho de destaque [02:10]: *"make frequent small reversible changes"* — e, sobre antecipar falha, [04:27]: *"everything fails all the time"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=m0iUkVYUYeY)
+
+> [!tip] Assista: AWS Supports You - Driving Operational Excellence using AWS Well-Architected
+> **Canal:** Amazon Web Services (oficial) | **Duração:** ~51min | **Idioma:** EN
+>
+> Deep dive oficial que detalha o princípio "operações como código" além do óbvio: não é só infraestrutura como código, é change management, incident management e patch management codificados — com exemplos usando AWS Systems Manager para automatizar runbooks em resposta a eventos, em vez de só disparar scripts manualmente.
+> Trecho de destaque [17:47]: *"it is not just automation either... with operations as code you can trigger your automated runbooks in response to events"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-rRF8V3zk6A)
 
 ## Como isso aparece numa review de arquitetura
 

@@ -3,7 +3,7 @@ title: "Por que existe um framework de arquitetura"
 type: concept
 fase: Iniciado
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -56,6 +56,14 @@ A data exata do anúncio no re:Invent 2015 varia entre fontes secundárias; a do
 
 Esse histórico importa porque explica uma decisão de design que, de outra forma, pareceria arbitrária: por que o framework é feito de **perguntas** — "como você opera o workload com segurança?", "como você recupera de falha?" — e não de uma lista de "faça X, não faça Y"? Porque uma pergunta força quem está revisando a pensar no contexto específico daquele sistema, enquanto uma regra fixa tenta empurrar todo sistema para a mesma resposta, mesmo quando o contexto não pede aquela resposta. A AWS documenta isso explicitamente: o framework é "premised on a set of design principles that influences architectural approach, and questions that verify that people don't neglect areas that often featured in Root Cause Analysis". Tradução prática: os princípios de design dizem a direção geral; as perguntas garantem que ninguém esqueça de olhar para uma área que, historicamente, é onde as coisas quebram.
 
+> [!tip] Assista: AWS re:Invent 2024 - Are you well-architected? (TNC206)
+> **Canal:** AWS Events | **Duração:** ~47min | **Idioma:** EN
+>
+> Uma facilitadora oficial da AWS conta a mesma origem que esta nota descreve — a prática nascida em 2012 entre os Solutions Architects — e depois passa boa parte da talk mostrando, na prática, por que a review usa perguntas abertas em vez de itens binários: "não queremos te dizer qual deve ser sua arquitetura, é seu sistema, você o conhece melhor".
+> Trecho de destaque [14:14]: *"it really is meant as not an audit"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jtjEWlGkwjQ)
+
 ## Um corpo de perguntas, não um checklist de conformidade
 
 Aqui está a distinção que separa quem usa o framework bem de quem o usa mal, e ela é sutil o suficiente para escapar de quem só ouviu falar dele de longe: **o Well-Architected Framework não é um checklist de conformidade**. Não existe uma pontuação de aprovação, não existe um "selo" que uma arquitetura ganha ao passar em todas as perguntas, e — isso é dito explicitamente na documentação oficial — o processo de revisão **não é um mecanismo de auditoria**.
@@ -91,6 +99,14 @@ Repare no que essa lista não é: não é uma lista de oito caixinhas que, marca
 Isso tem uma consequência direta sobre o que significa "bem-arquitetado": **a expressão é sempre relativa ao contexto e ao momento**, nunca um estado absoluto que um sistema atinge de uma vez por todas. Um sistema que estava bem-arquitetado há dois anos pode não estar mais — porque a carga cresceu dez vezes, porque um novo requisito regulatório apareceu, porque a equipe que o mantém mudou de três pessoas seniores para uma pessoa júnior sozinha, ou simplesmente porque a AWS lançou um serviço gerenciado novo que torna obsoleta a solução caseira que o time construiu em 2019. Um sistema "bem-arquitetado" em 2020 pode estar "mal-arquitetado" hoje sem que uma única linha de código nele tenha mudado — porque o contexto ao redor dele mudou, e a barra do que conta como bom se moveu junto.
 
 O contexto que muda a resposta certa não é só temporal — também é o tipo de sistema. Um mesmo workload pode passar pelas perguntas genéricas dos seis pilares e sair "bem-arquitetado" nesse nível, e ainda assim ter lacunas sérias que só aparecem sob um recorte mais específico: um SaaS multi-tenant que nunca foi avaliado pela SaaS Lens pode estar perfeitamente sólido em confiabilidade genérica e, mesmo assim, ter um problema de isolamento entre clientes que a pergunta genérica de Segurança nunca foi desenhada para capturar. A seção sobre a ferramenta, mais adiante nesta nota, retoma essa ideia de lens com mais detalhe.
+
+> [!tip] Assista: What is the AWS Well-Architected Framework? (and why you need to learn about it)
+> **Canal:** Tech With Lucy | **Duração:** ~9min | **Idioma:** EN
+>
+> Um vídeo patrocinado pela própria AWS, mas curto e direto no ponto que esta seção defende: o framework não entrega uma lista fechada de "faça isso, não faça aquilo" — entrega um roteiro de perguntas construído sobre anos de experiência real de arquitetos que já bateram a cabeça nos mesmos problemas.
+> Trecho de destaque [01:29]: *"this framework doesn't just provide you with a list of do's and don'ts"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=MpDJ6TCWKjk)
 
 ```mermaid
 flowchart TB

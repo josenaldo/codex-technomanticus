@@ -3,7 +3,7 @@ title: "Sustentabilidade e os trade-offs entre pilares"
 type: concept
 fase: Magus
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -75,6 +75,14 @@ Vale a honestidade sobre o estado da lente dupla aqui: a AWS publica, de forma r
 
 A ferramenta que a AWS oferece para essa medição própria (não a comparação entre regiões, mas o consumo da própria conta) é o serviço **AWS Sustainability** — o mesmo produto que a documentação ainda referencia, em algumas URLs legadas, pelo nome anterior, **Customer Carbon Footprint Tool**. Ele reporta emissão de carbono e consumo de água por conta, por região e por serviço, com granularidade mensal, direto no console de billing — mas mede o consumo já realizado, não decide de antemão qual região escolher; a decisão *a priori* continua dependendo do que a página de seleção de região publica sobre cada localidade. A DigitalOcean, coerente com a assimetria já registrada nesta nota, não tem um serviço equivalente de relatório de pegada de carbono por conta.
 
+> [!tip] Assista: AWS re:Invent 2022 - Architecting sustainably and reducing your AWS carbon footprint (SUS205)
+> **Canal:** AWS Events (oficial) | **Duração:** ~48min | **Idioma:** EN
+>
+> A líder técnica mundial de sustentabilidade da AWS detalha, ponto a ponto, o mesmo processo de duas decisões que esta seção descreve — primeiro os requisitos de negócio inegociáveis (soberania de dado, latência), depois a escolha entre as regiões restantes por proximidade de projeto de energia renovável ou menor intensidade de carbono da rede — junto com o funcionamento por trás da ferramenta de carbono da própria conta.
+> Trecho de destaque [13:04]: *"Great, but how do I pick a region?"* — a pergunta que a talk inteira responde.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=jsbamOLpCr8)
+
 > [!info] Caducidade
 > Compromissos de energia renovável, metas de neutralidade de carbono e disponibilidade de dado de intensidade de carbono por região mudam com frequência e são, em boa parte, autodeclarados pelos próprios provedores. Verificado em 2026-07-22 que a AWS publica compromissos públicos nesse sentido; não tome nenhum percentual específico como atual sem conferir a página de sustentabilidade vigente do provedor antes de citar em decisão real ou entrevista. O serviço de relatório de carbono da própria conta também mudou de nome — de "Customer Carbon Footprint Tool" para "AWS Sustainability" — confirme o nome vigente antes de citar em entrevista.
 
@@ -138,6 +146,14 @@ A lição prática, e é aqui que a diferença entre decorar o framework e usá-
 Tudo que este galho descreveu até aqui — da excelência operacional na **nota 02** até a sustentabilidade nesta nota — foi apresentado, pilar a pilar, como se fossem seis dimensões independentes de qualidade, cada uma melhorável sem custo para as outras cinco. É uma simplificação pedagógica necessária para ensinar cada pilar isoladamente — e é **falsa** no momento em que um arquiteto sênior precisa desenhar um sistema de verdade, com restrição de tempo e orçamento reais.
 
 A verdade desconfortável, e o motivo pelo qual esta nota fecha o galho em vez de ser mais uma nota de pilar entre outras, é que **os seis pilares competem pelos mesmos recursos escassos — dinheiro, tempo de engenharia, e às vezes energia física — e otimizar um, além de certo ponto, quase sempre custa terreno em pelo menos um outro**. Um framework que não admitisse isso não seria uma ferramenta de julgamento; seria uma lista de desejos. A pergunta que separa quem decorou os nomes dos seis pilares de quem sabe usá-los numa decisão real não é "quais são os pilares?" — é "quando dois deles brigam pelo mesmo orçamento, qual cede, e por quê?".
+
+> [!tip] Assista: Software Architecture: The Hard Parts
+> **Canal:** GOTO Conferences | **Duração:** ~43min | **Idioma:** EN
+>
+> Neal Ford e Mark Richards (autores do livro homônimo) nomeiam, fora do vocabulário específico da AWS, exatamente a mesma verdade que esta seção defende: a primeira das duas "leis" de arquitetura de software que eles cunharam é que **tudo em arquitetura de software é um trade-off** — não existe decisão sem lado que cede. É a mesma ideia desta nota, vista de fora do Well-Architected Framework, confirmando que o padrão não é peculiaridade da AWS, é estrutural à disciplina.
+> Trecho de destaque [41:38]: *"everything in software architecture is a tradeoff"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rhNWmiC-0sk)
 
 Quatro pares de conflito aparecem com tanta frequência em arquitetura real que vale examiná-los com exemplo trabalhado, não como lista abstrata de avisos.
 

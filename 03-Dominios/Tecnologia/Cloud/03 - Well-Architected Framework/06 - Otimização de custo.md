@@ -3,7 +3,7 @@ title: "Otimização de custo"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -63,6 +63,22 @@ flowchart TD
 
 > [!info] Fronteira — arquitetura vs. FinOps na prática
 > Este pilar dá o **critério**: os cinco princípios acima são perguntas que uma boa arquitetura precisa saber responder. A **execução** desses princípios no dia a dia — tags de cobrança, orçamentos e alertas, right-sizing operacional de instâncias já em produção, Savings Plans e Reserved Instances, uso de instâncias spot, ferramentas de análise de fatura como o AWS Cost Explorer — é o corpo inteiro do **galho 19** desta trilha, dedicado a FinOps na prática. Aqui, "atribuir despesa" é uma decisão de design (isolar recursos por fronteira de custo); lá, é o processo operacional contínuo de olhar a fatura, agir sobre ela e prestar contas.
+
+> [!tip] Assista: Introduction to Cloud FinOps - Cloud Financial Management Basics Explained
+> **Canal:** Cloud Economics | **Duração:** ~11min | **Idioma:** EN
+>
+> Apresentação de um profundo profissional da FinOps Foundation (o órgão que formaliza a disciplina que o princípio 1 desta nota nomeia). Explica por que FinOps trata custo como cultura de responsabilidade compartilhada entre engenharia, finanças e negócio — não como planilha isolada — e por que "custo por unidade de valor entregue" precisa virar métrica de engenharia, exatamente o que o princípio 3 desta nota (medir eficiência) exige.
+> Trecho de destaque [09:07]: *"engineers have to use cost as a new efficiency metric when managing the cloud workloads against their budgets"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=OJzFhWdT-fo)
+
+> [!tip] Assista: Understanding the Cost Optimization Pillar of AWS Architecture
+> **Canal:** K21Academy | **Duração:** ~21min | **Idioma:** EN
+>
+> Mostra, num console real da AWS, o exato movimento do princípio 3 (medir eficiência): abrir o CloudWatch de uma instância EC2, ver que a utilização de CPU nunca passou de 10% numa semana inteira, e usar esse dado — não intuição — para decidir se vale a pena redimensionar a família da instância.
+> Trecho de destaque [03:29]: *"you should uh you know keep on measuring the efficiency of the system"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=V0xqGVkflxM)
 
 ### Checklist de revisão: pergunta e sintoma, princípio por princípio
 

@@ -3,7 +3,7 @@ title: "Segurança"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -123,6 +123,14 @@ Isso não é a sintaxe de nenhum produto específico — é a forma de um guardr
 
 > [!info] Fronteira
 > Como escolher entre criptografia gerenciada pelo provedor e chaves próprias, como funciona um serviço de gestão de chaves (KMS), como armazenar segredos de aplicação com segurança, e como construir um threat model real para um sistema específico — isso é o **galho 18**, "segurança a fundo". Aqui, o que importa é o princípio de projeto: dado sensível **sempre** protegido, nas duas formas em que ele existe.
+
+> [!tip] Assista: AWS re:Invent 2022 - AWS Well-Architected Framework security pillar: Cloud security @ scale (SUP309)
+> **Canal:** AWS Events (oficial) | **Duração:** ~48min | **Idioma:** EN
+>
+> Um especialista da AWS percorre os sete princípios de design com foco em como aplicá-los em escala — inclui a citação do CTO Werner Vogels que resume o princípio 5 melhor do que qualquer definição formal, e detalha por que criptografia em trânsito não admite exceção, mesmo em rede "privada".
+> Trecho de destaque [18:15]: *"dance like no one is watching, but encrypt like everyone is"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=nMxqziAibKk)
 
 **6. Manter pessoas longe dos dados.** Este é, talvez, o princípio menos intuitivo para quem nunca trabalhou numa operação regulada — a ideia de que **reduzir o acesso humano direto aos dados**, mesmo de engenheiros bem-intencionados da própria equipe, é uma melhoria de segurança, não uma barreira burocrática. Um engenheiro que precisa depurar um problema em produção acessando diretamente uma tabela de banco de dados com dados de clientes está, mesmo com as melhores intenções, criando uma superfície de risco: erro humano (um `UPDATE` sem `WHERE`), exposição acidental (captura de tela com dado sensível visível), ou simplesmente mais um ponto onde um vazamento de credencial pessoal vira vazamento de dado de cliente. Ferramentas e automação que respondem à pergunta de depuração sem exigir acesso direto ao dado bruto — dashboards com dado mascarado, réplicas anonimizadas para teste, pipelines de log que já removem campo sensível antes de chegar a qualquer humano — reduzem essa superfície sem reduzir a capacidade de operar o sistema.
 

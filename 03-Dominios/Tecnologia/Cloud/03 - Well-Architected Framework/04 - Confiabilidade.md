@@ -3,7 +3,7 @@ title: "Confiabilidade"
 type: concept
 fase: Adepto
 created: 2026-07-20
-updated: 2026-07-22
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -86,6 +86,14 @@ aws fis start-experiment --experiment-template-id EXT12AbCdEfGhIjK
 ```
 
 De novo, isto é ilustração do princípio — "a falha pode ser simulada por código, não só sofrida de surpresa" — não um tutorial de chaos engineering. A DigitalOcean não tem, hoje, um serviço gerenciado equivalente ao FIS; testar recuperação lá significa orquestrar a falha manualmente (derrubar um Droplet, isolar uma região) ou trazer ferramenta de terceiro.
+
+> [!tip] Assista: AWS re:Invent 2022 - Building confidence through chaos engineering on AWS (ARC307)
+> **Canal:** AWS Events (oficial) | **Duração:** ~55min | **Idioma:** EN
+>
+> Detalha como organizar um Game Day de verdade — os papéis envolvidos (incluindo um "chaos champion" que defende o experimento dentro da empresa), como escolher o que testar, e como definir de antemão um critério claro de sucesso antes de rodar o experimento em produção. Mostra, na prática, o que separa "testar procedimento de recuperação" de só torcer para que ele funcione.
+> Trecho de destaque [24:25]: *"the various people that we want in the Game Day, like the chaos champion that will advocate the Game Day throughout the company"*.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=tm5GEePP1PY)
 
 **Escalar horizontalmente para aumentar a disponibilidade agregada da carga.** Este é o princípio que mais diretamente ataca o raio de uma falha. A formulação oficial é direta: substitua um recurso grande por múltiplos recursos pequenos, para reduzir o impacto de uma falha única sobre a carga como um todo — e distribua as requisições entre esses recursos menores, de forma que eles não compartilhem um ponto único de falha. Pense na diferença entre uma instância `r6g.4xlarge` sozinha atendendo 100% do tráfego e oito instâncias menores atrás de um load balancer, cada uma atendendo uma fatia. Se a instância grande cai, cai o sistema inteiro — 100% de impacto. Se uma das oito instâncias pequenas cai, o sistema perde um oitavo da capacidade momentaneamente, o load balancer redireciona o tráfego para as sete restantes, e a maioria dos usuários nem percebe que algo aconteceu. Não é que oito instâncias pequenas nunca falhem — é que quando uma delas falha, o raio da explosão é um oitavo do raio anterior. Esse é o mecanismo concreto por trás da frase "reduzir o blast radius" que qualquer discussão de arquitetura resiliente cedo ou tarde usa.
 
