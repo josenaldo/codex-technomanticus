@@ -1,7 +1,7 @@
 ---
 title: Azure em uma nota — a nuvem da Microsoft e do enterprise
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -48,6 +48,14 @@ flowchart TB
     end
     Entra -.->|"sem equivalente direto"| SSO
 ```
+
+> [!tip] Assista: Azure AD Is GONE, Entra ID Explained
+> **Canal:** Azure Academy | **Duração:** ~3min | **Idioma:** EN
+>
+> Vídeo curto e direto sobre a troca de nome Azure AD → Microsoft Entra ID: explica por que a Microsoft rebatizou o serviço (Entra virou uma família inteira de produtos de identidade, não só um diretório) e o que muda (ou não) pra quem já tinha ambiente configurado.
+> Trecho de destaque [00:00]: *"there's a new identity service in town, Microsoft Entra ID, and it's replacing Azure Active Directory"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ZVs9FWjXFMU)
 
 ## Híbrido é o nome do jogo: Azure Arc e Azure Stack
 
@@ -102,6 +110,14 @@ flowchart LR
         Acc --> R2[VPC / EC2 / S3...]
     end
 ```
+
+> [!tip] Assista: Azure Essentials — Microsoft Azure for AWS Professionals
+> **Canal:** Microsoft Mechanics | **Duração:** ~6min | **Idioma:** EN
+>
+> Vídeo oficial da Microsoft que percorre a mesma tradução AWS↔Azure feita na tabela acima — mas narrando, serviço por serviço (VM, storage, banco, container), com o vocabulário da própria Microsoft. Bom pra ouvir os nomes "Resource Manager", "Blob Storage" e "Cosmos DB" no contexto de quem já fala AWS fluentemente.
+> Trecho de destaque [01:01]: *"let's take a look at core services across compute, storage, and management — compute options are very similar between AWS and Azure"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=QT7d6gCYMCc)
 
 ## Três casos práticos, pra tirar do abstrato
 

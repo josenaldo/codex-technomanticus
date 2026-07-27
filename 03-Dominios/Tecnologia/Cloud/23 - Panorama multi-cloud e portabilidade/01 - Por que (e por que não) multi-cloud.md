@@ -1,7 +1,7 @@
 ---
 title: Por que (e por que não) multi-cloud
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -91,6 +91,22 @@ Dois pontos merecem destaque:
 
 > [!info] Verificado 2026-07-24
 > Ambos os provedores cobram por tráfego de saída (egress) da sua rede — os valores exatos por GB e as faixas gratuitas mudam com frequência e variam por região/produto em ambos, então não cravo números aqui: confira a página de pricing vigente de cada provedor (`aws.amazon.com/ec2/pricing/on-demand` para data transfer da AWS, e a página de pricing de bandwidth da DigitalOcean) antes de orçar uma arquitetura cross-cloud real.
+
+> [!tip] Assista: Why Your Multicloud Strategy Is Wrong
+> **Canal:** Cloud Computing Insider | **Duração:** ~13min | **Idioma:** EN
+>
+> David Linthicum (analista de cloud de longa data) destrincha os erros mais comuns de quem já está em multi-cloud: subestimar o custo de mover dados entre nuvens (data gravity) antes de escolher os provedores, e não calcular a fatura de egress na hora de migrar workloads.
+> Trecho de destaque [04:13]: *"if you don't do that, there's a hidden tax of moving data between clouds that can destroy your ROI"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=9k4DnFeSIsM)
+
+> [!tip] Assista: Why you're addicted to cloud computing
+> **Canal:** Fireship | **Duração:** ~5min | **Idioma:** EN
+>
+> Em ritmo acelerado, mostra como as nuvens usam egress fees como trava de saída de fato — com o caso real da 37signals (Basecamp/HEY), que enfrentou uma fatura de até $400 mil só para tirar os dados do S3 ao sair da AWS.
+> Trecho de destaque [02:21]: *"they were looking at [up] to $400,000 S3 bill just to move the data"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=4Wa5DivljOM)
 
 ## Onde a lente dupla ajuda a enxergar isso
 

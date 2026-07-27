@@ -1,7 +1,7 @@
 ---
 title: A tabela de tradução dos quatro provedores
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -105,6 +105,14 @@ Object storage é hoje o denominador comum de toda arquitetura cloud — do back
 | Object storage ([[03-Dominios/Tecnologia/Cloud/08 - Armazenamento (object, block e file)\|Armazenamento]]) | S3 | Azure Blob Storage | Cloud Storage | Spaces Object Storage (API compatível com S3) |
 | Block storage (disco de VM) | EBS (Elastic Block Store) | Azure Managed Disks | Persistent Disk | Volumes Block Storage |
 | File storage compartilhado (NFS/SMB) | EFS (Elastic File System) | Azure Files | Filestore | Network File Storage (NFS-based) |
+
+> [!tip] Assista: 4 Cloud Giants Compared in One Chart! AWS vs Azure vs GCP vs Oracle
+> **Canal:** TheCloudIO | **Duração:** ~9min | **Idioma:** EN
+>
+> Percorre em vídeo o mesmo exercício de tradução desta nota — compute, storage de objeto/bloco/arquivo, Kubernetes gerenciado — categoria por categoria, com os nomes de cada provedor lado a lado (aqui trocando DigitalOcean por Oracle, mas o método de leitura da tabela é idêntico).
+> Trecho de destaque [03:08]: *"[S3's] direct equivalent over on Azure is blob storage. For GCP, it's just called cloud storage."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=-gfbXDPTY0c)
 
 ## Bancos de dados relacionais gerenciados
 

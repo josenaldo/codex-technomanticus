@@ -1,7 +1,7 @@
 ---
 title: "GCP em uma nota — a nuvem de dados, rede e Kubernetes"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -68,6 +68,14 @@ Você já domina os primitivos (compute, storage, rede, bancos gerenciados) das 
 
 > [!info] Verificado 2026-07-24 em cloud.google.com/run: Cloud Run tem scale-to-zero, cold start tipicamente sub-segundo e tempo máximo de execução de 60 minutos por requisição. Limites específicos (CPU, memória, concorrência por instância) mudam com frequência — conferir a página oficial antes de dimensionar produção.
 
+> [!tip] Assista: GCP Cloud Run Explained | Serverless Containers & Use Cases
+> **Canal:** 3 Byte | **Duração:** ~13min | **Idioma:** EN
+>
+> Explica na prática o que essa nota descreve em teoria: o modelo de cold start do Cloud Run, o limite de 60 minutos por requisição, e por que ele ocupa o meio-termo entre container gerenciado tradicional e FaaS puro.
+> Trecho de destaque [10:34]: *"once it's something is running for 60 minutes and doesn't [get killed]..."* (sobre o limite de execução por requisição)
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=b4VYEuCWEp8)
+
 ### Storage
 
 | Conceito | AWS | GCP |
@@ -91,6 +99,14 @@ Mapeamento direto, sem grandes surpresas conceituais — os primitivos de object
 > [!info] Verificado 2026-07-24 (cloud.google.com/bigquery): BigQuery oferece precificação on-demand (por volume de dados escaneado por query, com nível gratuito mensal) e precificação por slots reservados (compromisso mensal/anual). O valor exato do preço por TB e do free tier muda ocasionalmente — o número usualmente citado é próximo de US$ 6,25/TB no modelo on-demand, mas esse dígito específico não pôde ser confirmado diretamente na página oficial neste momento (conteúdo truncado na busca); confira cloud.google.com/bigquery/pricing antes de orçar algo real.
 
 **Cloud Spanner** é outra peça sem equivalente direto fácil: um banco relacional com SQL e transações ACID que ao mesmo tempo escala horizontalmente e replica com **consistência externa** através de múltiplas regiões — usando uma tecnologia interna do Google chamada TrueTime (relógios atômicos sincronizados nos datacenters) para ordenar transações globalmente sem o trade-off clássico de "ou forte, ou distribuído" que você provavelmente já encontrou em teoria de sistemas distribuídos. A AWS tem produtos que se aproximam (Aurora Global Database para replicação multi-região, DynamoDB Global Tables para NoSQL), mas nenhum reproduz exatamente essa combinação de SQL relacional + consistência forte + escala global do Spanner.
+
+> [!tip] Assista: O que é BigQuery? Como utilizar o BigQuery na prática?
+> **Canal:** Letis Pires | **Duração:** ~12min | **Idioma:** PT-BR
+>
+> Demonstração prática em português do que essa nota descreve: BigQuery como data warehouse gerenciado, sem servidor, que escala pra petabytes e aceita SQL padrão direto — sem provisionar cluster nem dimensionar nó.
+> Trecho de destaque [01:31]: *"escala de petabytes... totalmente gerenciado e sem servidor"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=pMXk1-LHHQM)
 
 ### Rede: a VPC global
 

@@ -1,7 +1,7 @@
 ---
 title: Lock-in e portabilidade — Kubernetes como camada neutra
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -19,6 +19,14 @@ Todo arquiteto sênior já ouviu a frase "vamos evitar lock-in" numa reunião de
 O problema é que "evitar lock-in" tem um custo que raramente é contabilizado no mesmo fôlego em que a frase é dita. Se você recusa DynamoDB e monta seu próprio cluster de banco distribuído em Kubernetes para "manter a portabilidade", você não eliminou uma dependência — você trocou uma dependência de contrato (a API do DynamoDB) por uma dependência de capacidade operacional (seu time sabendo operar um banco distribuído, com todos os incidentes que isso implica). Portabilidade não é grátis. Ela se paga em engenharia de plataforma, em horas de operação, em complexidade que alguém no seu time carrega para sempre.
 
 A pergunta certa não é "isso me prende?". É: **"se eu precisar trocar, quanto vai doer — e qual é a chance real de eu precisar trocar?"** A resposta muda serviço por serviço, e é exatamente essa granularidade que a próxima seção tenta dar forma.
+
+> [!tip] Assista: Vendor Lock-In: Nobody Cares.
+> **Canal:** Theo - t3.gg | **Duração:** ~6min | **Idioma:** EN
+>
+> Reforça, de um ângulo provocador, a mesma virada de chave que esta nota propõe: a diferença entre lock-in (trabalho que você precisa *remover* pra sair) e built-in (trabalho que alguém já fez *por* você, e que você teria que *adicionar* de volta se saísse). Cita DynamoDB e Aurora como exemplos exatos de lock-in "de verdade" — o mesmo caso desta nota.
+> Trecho de destaque [02:45]: *"if you're using Dynamo DB or Aurora on AWS, good luck moving"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rtgjFEJaFI8)
 
 ## O espectro: de "tudo seu" a "tudo do provedor"
 
@@ -94,6 +102,14 @@ Repara no detalhe do diagrama: a caixa verde (seus manifests) é portável. As c
 Isso não invalida o valor de Kubernetes como camada de portabilidade — significa que a portabilidade que ele entrega é de **compute e orquestração**, não de infraestrutura completa. Se sua aplicação é majoritariamente stateless e fala com serviços gerenciados via rede (o padrão mais comum), migrar o compute entre nuvens costuma ser o passo mais fácil da migração inteira. O que dói é tudo em volta: banco de dados, fila, storage, DNS, certificados, secrets — cada um amarrado ao provedor de origem.
 
 Vale registrar também que Kubernetes em si tem um custo de entrada considerável: você está trocando o lock-in de provedor por uma complexidade operacional própria — quem gerencia o cluster ainda precisa entender scheduling, RBAC, networking (CNI), autoscaling, upgrades de versão. O domínio de Operação trata Kubernetes como disciplina própria, com seu contrato de produção (probes, graceful shutdown, resource requests/limits) — vale a nota [[03-Dominios/Engenharia/Operação/3 - Rodar em produção/02 - O contrato de produção do Kubernetes|O contrato de produção do Kubernetes]] para quem quiser esse aprofundamento operacional. Aqui na trilha Cloud, a primeira aproximação a Kubernetes gerenciado foi feita na nota "Kubernetes gerenciado de raspão", dentro do galho de Containers gerenciados.
+
+> [!tip] Assista: Kubernetes & The Myth of Multi-cloud
+> **Canal:** Devoxx | **Duração:** ~38min | **Idioma:** EN
+>
+> Talk de conferência que faz, ao vivo, o experimento que esta seção descreve: migra uma aplicação de EKS pra GKE e mostra exatamente onde o "Kubernetes é portável" quebra — a chamada de storage funciona até descobrir que "Google Cloud Storage não é S3-compatible", forçando escolher entre trazer dependências pra dentro do cluster (mais manutenção) ou trocar o endpoint (menos portabilidade real).
+> Trecho de destaque [16:55]: *"somebody said Google Cloud Storage is not S3 compatible"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=xS7wSUCrllA)
 
 ## Outras camadas neutras: IaC, padrões abertos, containers
 
