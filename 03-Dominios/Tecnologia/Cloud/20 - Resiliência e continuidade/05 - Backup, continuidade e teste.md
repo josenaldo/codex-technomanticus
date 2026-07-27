@@ -1,7 +1,7 @@
 ---
 title: "Backup, continuidade e teste"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -194,6 +194,14 @@ $ aws fis start-experiment --experiment-template-id EXT12ab34cd56ef
 ```
 
 Esse comando específico de failover forçado é, na prática, um teste automatizado do mesmo Multi-AZ tratado na nota 02 deste galho — a diferença é que em vez de esperar uma falha real acontecer para descobrir se o failover funciona dentro do tempo prometido, o time provoca essa falha de propósito, num horário controlado, com stop condition pronta para abortar se algo sair muito errado.
+
+> [!tip] Assista: Teste de Caos explicado em 10 minutos
+> **Canal:** Alan Void | **Duração:** ~10min | **Idioma:** PT-BR
+>
+> Explica o "porquê" por trás do comando FIS acima: teste de caos não é sobre quebrar produção por esporte, é sobre provar resiliência e confiabilidade de forma controlada, antes que uma falha real escolha o pior momento pra acontecer sozinha.
+> Trecho de destaque [0:57]: *"forma a resiliência e a confiabilidade"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=LLhXiYWQqdU)
 
 > [!info] Fronteira forte com Operação
 > Chaos engineering, game days e a disciplina de resposta a incidente (quem é acionado, como se comunica, como se conduz um post-mortem sem culpa) são práticas centrais de SRE — e vivem, como disciplina, no domínio Engenharia/Operação deste vault (ver [[03-Dominios/Engenharia/Operação/index|Operação]]). Esta nota cobre a ferramenta gerenciada que a AWS oferece para executar essa prática (FIS) — não a disciplina inteira de como um time de operação estrutura seu programa de resiliência ao longo do tempo.

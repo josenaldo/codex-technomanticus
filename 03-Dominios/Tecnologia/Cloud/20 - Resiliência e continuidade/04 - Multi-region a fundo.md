@@ -1,7 +1,7 @@
 ---
 title: Multi-region a fundo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -89,6 +89,14 @@ aws dynamodb update-table \
 # A tabela "Pedidos" agora aceita leitura/escrita tanto em us-east-1
 # quanto em sa-east-1, replicando de forma assíncrona multi-ativa.
 ```
+
+> [!tip] Assista: AWS DynamoDB Global Tables Demo — Active Active Model, Multi Regional
+> **Canal:** Soumil Shah | **Duração:** ~7min | **Idioma:** EN
+>
+> Demonstração prática de criar uma Global Table e escrever nos dois lados (duas regiões diferentes) pra ver a replicação multi-ativa acontecendo de verdade — bom complemento pro comando `update-table` acima, que mostra a sintaxe mas não o "e depois, o que eu vejo na outra região?".
+> Trecho de destaque [0:11]: *"when mission critical applications are involved which means they need sub second latency and the data has to be highly available"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=EvB--OgzKEU)
 
 ### Aurora Global Database — o meio-termo gerenciado
 
@@ -179,6 +187,14 @@ aws route53 change-resource-record-sets \
 ```
 
 Repare no `TTL: 30` — é a alavanca que você controla diretamente: TTL baixo (30-60s) encurta o tempo até que clientes com cache expirado passem a resolver pro secundário, mas aumenta o volume de queries de DNS (e, na AWS, o custo de Route 53 é por consulta). `FailureThreshold: 3` com `RequestInterval: 10` significa que o health check só declara a região não-saudável depois de 3 falhas consecutivas em janelas de 10s — ou seja, ~30s de detecção antes mesmo de começar a propagar o failover. Some isso ao TTL e você tem o RTO real de um failover DNS-based, tipicamente na casa de 1-2 minutos, nunca instantâneo.
+
+> [!tip] Assista: Amazon Route 53 — DNS, Routing Policies, Hybrid DNS e ARC (SOA-C03, Seção 21)
+> **Canal:** Jean Diogo | **Duração:** ~30min | **Idioma:** PT-BR
+>
+> Aula completa em português que passa pelos mesmos health checks e failover routing que o bloco de comandos acima materializa — útil pra ver o mesmo conceito explicado com outras palavras antes de aplicar a sintaxe da AWS CLI.
+> Trecho de destaque [17:52]: *"failover a passive, que é um destino... health check do primeiro passa, todo o [tráfego vai pra ele]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=bAqJhv6AkI4)
 
 ## Active-passive vs. active-active
 

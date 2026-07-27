@@ -3,7 +3,7 @@ title: "Alta disponibilidade"
 type: concept
 fase: Adepto
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -112,6 +112,14 @@ Três camadas, três granularidades: o **health check do load balancer** (já de
 
 > [!info] Verificado em 2026-07-24
 > A documentação da AWS confirma que o EC2 Auto Scaling recebe sinais de saúde de múltiplas fontes (EC2, Elastic Load Balancing, VPC Lattice, EBS, health checks customizados) e, ao marcar uma instância `InService` como unhealthy, a substitui automaticamente lançando uma nova com as configurações correntes do launch template/launch configuration do grupo — fonte: *Health checks for instances in an Auto Scaling group* (AWS Auto Scaling User Guide). O período de graça (health check grace period) por padrão dá tempo para a instância inicializar antes das checagens valerem — o valor exato configurado deve ser conferido por grupo, porque frequentemente é ajustado para o tempo de boot da aplicação. Route 53 confirma o modelo de *failover routing* com health checks endereçando recurso primário/secundário — fonte: *Creating Amazon Route 53 health checks* (Route 53 Developer Guide).
+
+> [!tip] Assista: AWS re:Invent 2025 - Global Resilient Apps: Guide to Multi-AZ/Region Architecture with ELB (NET311)
+> **Canal:** AWS Events | **Duração:** ~55min | **Idioma:** EN
+>
+> Talk oficial de re:Invent que detalha, na prática, como o Elastic Load Balancing decide quando tirar uma AZ de circulação — o mesmo mecanismo de "failover automático dentro da região" que esta nota descreve, só que com os bastidores do ELB abertos.
+> Trecho de destaque [4:46]: *"multi-AZ resiliency then and we are going to be focused on ELB here"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=_WFrt9ABrMM)
 
 ## Stateless design: por que a instância nova pode simplesmente assumir
 

@@ -1,7 +1,7 @@
 ---
 title: "Resiliência da arquitetura de referência"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -121,6 +121,22 @@ A decisão certa nunca é "o máximo de resiliência que dá pra comprar" — é
 
 > [!warning] A armadilha do "já que estamos migrando, vamos fazer active-active em tudo"
 > Um projeto de DR costuma nascer depois de um susto real — uma queda de região, uma auditoria de compliance, um cliente grande perguntando sobre RTO no contrato. A resposta de pânico é superdimensionar: active-active em toda a arquitetura, porque "nunca mais". Isso costuma dobrar o custo de infraestrutura permanentemente (galho 19) e adicionar uma superfície de complexidade operacional (dois ambientes vivos, resolução de conflito, dobro de superfície de IAM) que o time não tinha antes — trocando o risco de "região cair" pelo risco, maior no dia a dia, de "operar dois ambientes ativos mal entendidos". A árvore de decisão desta nota existe para conter esse impulso: workload por workload, não arquitetura inteira de uma vez.
+
+> [!tip] Assista: 6 Pillars of the AWS Well-Architected Framework (you should really know this)
+> **Canal:** Be A Better Dev | **Duração:** ~19min | **Idioma:** EN
+>
+> Situa o pilar de Reliability (o motor por trás do triângulo desta nota) ao lado do pilar de Cost Optimization — dá o pano de fundo do framework inteiro que justifica por que a AWS documenta resiliência e custo como forças competindo pelo mesmo orçamento, e não como dois assuntos separados.
+> Trecho de destaque [8:10]: *"all of application building is for nothing if we can't ensure their application remain stable"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=5odtVlORq_w)
+
+> [!tip] Assista: AWS Summit DC 2021 — Increase resiliency with cloud-based disaster recovery
+> **Canal:** AWS Events | **Duração:** ~42min | **Idioma:** EN
+>
+> Talk oficial da AWS que percorre o mesmo espectro de estratégias de DR desta trilha (backup simples até multi-site) sempre amarrando cada nível a seu overhead de custo — o mesmo raciocínio "quanto mais RTO/RPO agressivo, mais capacidade parada" que o triângulo desta nota formaliza em diagrama.
+> Trecho de destaque [4:04]: *"recover quickly but there's a trade-off, there's usually larger overhead costs"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=AdEncgHdHTM)
 
 ## Lente dupla: a resiliência completa da AWS vs a mais simples da DigitalOcean
 

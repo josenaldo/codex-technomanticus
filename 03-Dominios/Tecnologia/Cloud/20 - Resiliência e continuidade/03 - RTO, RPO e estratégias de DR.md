@@ -1,7 +1,7 @@
 ---
 title: "RTO, RPO e estratégias de DR"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -142,6 +142,14 @@ Pra sair da abstração, vale seguir uma empresa fictícia de e-commerce médio 
 **O painel de BI interno**, usado pelo time de operações para relatórios do dia anterior, é Tier 3: ninguém de fora percebe se ele cair por uma tarde inteira. Backup & Restore basta — snapshot diário do banco, template de CloudFormation guardado, e no desastre alguém aperta o botão de redeploy e espera as horas que levar.
 
 O ponto de reunir os quatro lado a lado: a mesma empresa, o mesmo desastre regional hipotético, e quatro respostas de custo e velocidade completamente diferentes — porque a pergunta nunca foi "qual é a melhor estratégia de DR", foi "quanto essa parte específica do negócio vale por minuto fora do ar".
+
+> [!tip] Assista: The Ultimate Guide to Disaster Recovery: RTO, RPO, & Failover!
+> **Canal:** ByteMonk | **Duração:** ~11min | **Idioma:** EN
+>
+> Percorre exatamente a escada RTO/RPO → Backup & Restore → Pilot Light → Warm Standby → Multi-Site Active/Active nessa ordem, com a mesma lógica de trade-off de custo x velocidade que esta nota usa — bom pra fixar a sequência antes de entrar nos detalhes de cada degrau.
+> Trecho de destaque [1:30]: *"recovery time objective. Think of RTO... as how fast can you get back on your feet"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=OmASCUJEVy8)
 
 ## Como a AWS materializa cada estratégia
 
