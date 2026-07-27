@@ -67,7 +67,7 @@ aliases:
 | ------ | ------ | ---- |
 | [[03-Dominios/Tecnologia/IA/index\|IA]] | 🟡 | 21 galhos; **diagnóstico nota-a-nota COMPLETO (30/06): 237 notas, ~84% no gate ≥9/12, 47 já fechadas** — plano detalhado em `guia/roadmap - ia`; ver [[#Enriquecimento do domínio IA]] |
 | [[03-Dominios/Tecnologia/Terminal/index\|Terminal]] | ✅ | 7 galhos, 78 notas |
-| [[03-Dominios/Tecnologia/Cloud/index\|Cloud]] | ✅ | **COMPLETA 2026-07-24**: 24 galhos + capstone do domínio, 146 notas, lente dupla AWS↔DigitalOcean. Blocos: modelo mental/fundamentos (1-4) · primitivos (5-10) · serverless (11-15) · operar/governar (16-20: IaC/Observabilidade/Segurança/FinOps/Resiliência) · provedores e maestria (21 AWS a fundo · 22 DigitalOcean a fundo · 23 multi-cloud/portabilidade · 24 Certificação SAA-C03) · capstone "Arquitetar um SaaS na cloud do zero". Galhos 12-24 via workflow de fan-out. Falta só M1 (mídia). |
+| [[03-Dominios/Tecnologia/Cloud/index\|Cloud]] | ✅ | **COMPLETA 2026-07-24**: 24 galhos + capstone do domínio, 146 notas, lente dupla AWS↔DigitalOcean. Blocos: modelo mental/fundamentos (1-4) · primitivos (5-10) · serverless (11-15) · operar/governar (16-20: IaC/Observabilidade/Segurança/FinOps/Resiliência) · provedores e maestria (21 AWS a fundo · 22 DigitalOcean a fundo · 23 multi-cloud/portabilidade · 24 Certificação SAA-C03) · capstone "Arquitetar um SaaS na cloud do zero". Galhos 12-24 via workflow de fan-out. **M1 (mídia) ✅ completo 2026-07-25 — 217 vídeos YouTube (legenda verificada) em 144 notas.** Domínio 100% fechado. |
 | [[03-Dominios/Tecnologia/Infraestrutura/index\|Infraestrutura]] | 🟡 | só galho Linux; falta Docker, Kubernetes, Nginx (a *prática* já vive na Operação; a *plataforma* na Cloud) |
 | [[03-Dominios/Tecnologia/RPA/index\|RPA]] | ⬜ | stub (6 notas) |
 
@@ -169,7 +169,7 @@ aliases:
 
 **Tier 4 — enriquecimento, não tema novo**
 - **IA** (351 notas) — diagnóstico nota-a-nota pronto; falta *executar* correções (E2 abertura · E1 TL;DR · L2 URLs · ASCII→Mermaid · caducidade). Ver [[#Enriquecimento do domínio IA]].
-- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS, Go, **Cloud** (146 notas).
+- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS, Go. (**Cloud** ✅ M1 completo 2026-07-25 — 217 vídeos em 144 notas.)
 - **RPA** (6 notas stub) — nicho, baixa prioridade.
 
 ### Onda A — Tripé Frontend (prioridade máxima)
