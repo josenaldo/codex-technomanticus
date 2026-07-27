@@ -1,7 +1,7 @@
 ---
 title: Observabilidade de serverless e o específico do provedor
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -91,6 +91,14 @@ A linha REPORT te dá memória e duração — mas não CPU, não disco, não re
 
 Ativar é literalmente anexar uma layer publicada pela AWS à função — não exige mudar código. O ganho é visibilidade de sistema operacional (útil pra achar função morrendo por falta de memória de verdade, não só o `Max Memory Used` da REPORT) e diagnóstico automático de cold start / shutdown do worker.
 
+> [!tip] Assista: Conhecendo o AWS Lambda Insights
+> **Canal:** Bruno Russi | **Duração:** ~10min | **Idioma:** PT-BR
+>
+> Uma demonstração ao vivo de ativar a layer do Lambda Insights e ler o painel resultante — mostra na prática o "ganho de visibilidade de sistema operacional" que esta seção descreve em teoria.
+> Trecho de destaque [00:46]: *"insights eu já consigo visualizar a [métrica de rede, memória, CPU...]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=yqmGdLNwlFc)
+
 ### Tracing: X-Ray, e o preço do lock-in
 
 O [[03-Dominios/Tecnologia/Cloud/17 - Observabilidade na cloud/03 - Tracing distribuído|Tracing distribuído]] já cobriu o conceito de trace/span; aqui o que importa é como ele chega em Lambda especificamente. Com **Active tracing** ligado (um toggle na configuração da função, ou `TracingConfig: Mode: Active` no CloudFormation), a Lambda cria automaticamente segmentos de trace pra cada invocação e manda pro X-Ray — cobrindo tanto o tempo gasto pela AWS preparando o ambiente de execução (`AWS::Lambda`) quanto o tempo do seu código (`AWS::Lambda::Function`) (WebFetch, docs.aws.amazon.com, verificado 2026-07-24). Sem Active tracing, a Lambda fica em modo `PassThrough` — só repassa o header de rastreamento adiante, sem gerar traço.
@@ -122,6 +130,14 @@ flowchart TD
     O --> O2[✅ um único painel pra toda a infra]
     O --> O3[❌ fricção de setup e manutenção da instrumentação]
 ```
+
+> [!tip] Assista: Using Open Source Observability with Lambda
+> **Canal:** GOTO Conferences (Mike Elsmore, GOTO 2020) | **Duração:** ~30min | **Idioma:** EN
+>
+> Uma talk de conferência que argumenta a favor do Caminho 2 (OTel + backend neutro) especificamente em Lambda, cobrindo as ferramentas open-source concorrentes ao X-Ray e os trade-offs reais de abandonar o caminho nativo — aprofunda exatamente a decisão que esta seção apresenta.
+> Trecho de destaque [13:27]: *"how do you avoid dangling traces, how do you get that end-to-end trace"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rv_fZWLd0Pw)
 
 O structured logging com correlation id é o ponto de entrada mais barato pro caminho portável, mesmo que você ainda mande tudo pro CloudWatch: emitir logs em JSON, com um campo `request_id`/`correlation_id` consistente entre serviços, deixa a *estrutura* pronta pra migrar de backend depois sem reescrever a instrumentação da aplicação — só troca pra onde os dados vão.
 

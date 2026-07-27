@@ -1,7 +1,7 @@
 ---
 title: Alarmes, SLO e resposta
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -72,11 +72,27 @@ flowchart TD
 > [!info] Verificado em 2026-07-24 na doc oficial AWS
 > A sintaxe de composite alarm (`AlarmRule` com `ALARM()`/`OK()`/`INSUFFICIENT_DATA()` e operadores `AND`/`OR`/`NOT`) e a possibilidade de disparar ação de SNS ou Lambda estão confirmadas em `docs.aws.amazon.com/AmazonCloudWatch/.../Create_Composite_Alarm.html`. Um detalhe curioso da doc: composite alarms podem formar ciclos de dependência entre si — nesse caso eles param de ser avaliados, e o jeito de destravar é forçar `AlarmRule` de um deles para `False`.
 
+> [!tip] Assista: Create Composite Alarms in Amazon CloudWatch
+> **Canal:** Amazon Web Services (oficial) | **Duração:** ~4min | **Idioma:** PT-BR (dublado/legendado)
+>
+> Vídeo curto e direto da própria AWS mostrando a criação de um alarme composto no console, reforçando visualmente por que agrupar alarmes filhos numa única condição reduz a sobrecarga de notificação que esta seção descreve.
+> Trecho de destaque [00:11]: *"que é acionado somente quando as condições especificadas são atendidas, ajudando a reduzir a sobrecarga de alarmes"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=0LMQ-Mu-ZCY)
+
 ## SLO, SLI e error budget — de raspão
 
 A disciplina completa de Service Level Objectives, Service Level Indicators e error budget é assunto do domínio [[03-Dominios/Engenharia/Operação/index|Operação]] — é lá que se discute como negociar um SLO com o negócio, como calcular burn rate corretamente, e como o error budget vira um mecanismo de decisão ("paramos features novas até recompor o budget?"). Aqui, o interesse é mais estreito: **como a cloud materializa esses conceitos em métrica e alarme configurável**.
 
 Em linhas gerais: um **SLI** é uma métrica observável ("percentual de requisições respondidas em menos de 300ms"), um **SLO** é o alvo pra esse SLI ("99,9% das requisições em menos de 300ms, medido em janela de 30 dias"), e o **error budget** é o quanto de folga isso te dá (0,1% de requisições "podem" falhar o alvo antes de estourar o orçamento).
+
+> [!tip] Assista: Aprenda de vez SLI, SLO e SLA
+> **Canal:** Fabricio Veronez | **Duração:** ~10min | **Idioma:** PT-BR
+>
+> Fixa o vocabulário de SLI/SLO/SLA com exemplos fora do contexto AWS, útil como base conceitual antes de ver como o CloudWatch materializa isso em metric math — o que esta nota faz na sequência.
+> Trecho de destaque [03:37]: *"então agora vamos falar do slo"* (após detalhar SLI com um exemplo de tempo de resposta)
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JQTaWPEE80w)
 
 No CloudWatch, isso não é um produto dedicado de SLO — é composição de métricas que já existem:
 

@@ -1,7 +1,7 @@
 ---
 title: Tracing distribuído
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -141,6 +141,22 @@ Volte ao caso de abertura desta nota — o pedido que "parou" entre pagamento e 
 O service map (visto acima) já denuncia o problema visualmente antes mesmo de você abrir o trace individual: o nó "estoque" aparece em vermelho, com taxa de erro elevada, e a aresta para "e-mail" simplesmente não existe no grafo agregado dos últimos períodos — nenhuma chamada foi observada nesse caminho. Isso é a resposta à pergunta original ("onde travou?") sem precisar correlacionar manualmente cinco log groups: o gráfico mostra que a falha está na fronteira entre estoque e e-mail, e o trace individual mostra a exceção exata (`Estoque insuficiente`, no exemplo de código acima) que impediu a próxima etapa de sequer começar.
 
 Sem tracing, essa mesma investigação exigiria: abrir cada log group, adivinhar a janela de tempo certa, procurar manualmente por algo que pareça o mesmo pedido (um ID de pedido embutido na mensagem de log, se alguém teve o cuidado de logar isso de forma consistente), e montar a timeline à mão. Com cinco serviços isso é tedioso; com vinte, é impraticável sob pressão de incidente.
+
+> [!tip] Assista: Conhecendo o AWS X-Ray — Service Map na AWS
+> **Canal:** Bruno Russi | **Duração:** ~11min | **Idioma:** PT-BR
+>
+> Uma demonstração ao vivo do console do X-Ray, mostrando o service map colorido e um trace individual sendo aberto pra achar exatamente onde um salto ficou lento — o mesmo fluxo de debug que esta nota descreve em prosa.
+> Trecho de destaque [02:24]: *"esse carinha aqui que teve um tempo aproximadamente de quatro segundos né e a gente consegue ver para esse Trace"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=RXxy7EMh7C8)
+
+> [!tip] Assista: Como utilizar o AWS X-Ray com Docker para tracing e identificar problemas de performance
+> **Canal:** Domine AWS com Henrylle Maia | **Duração:** ~30min | **Idioma:** PT-BR
+>
+> Complementa a seção de instrumentação com um passo a passo de configurar o daemon do X-Ray fora do Lambda (ECS/Docker) — o cenário que esta nota só descreve rapidamente como "sidecar container ou processo separado".
+> Trecho de destaque [02:27]: *"conseguir ter rastreabilidade do que está acontecendo na sua aplicação"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=PFU278j4c2A)
 
 ## Trace context: o header por baixo do capô
 

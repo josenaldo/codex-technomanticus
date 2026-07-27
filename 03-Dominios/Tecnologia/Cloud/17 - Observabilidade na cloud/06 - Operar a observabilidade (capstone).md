@@ -1,7 +1,7 @@
 ---
 title: Operar a observabilidade
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -187,6 +187,14 @@ A causa raiz aparece: o cliente cadastrou o pedido sem e-mail (campo opcional na
 
 Sem os três pilares correlacionados pelo mesmo `trace_id`, essa investigação vira arqueologia: grep manual em seis log groups, comparando timestamps na mão, torcendo pra bater o relógio dos serviços. Correlação não é luxo — é o que transforma "seis sistemas opacos" de volta em "um sistema".
 
+> [!tip] Assista: Observabilidade no mundo Serverless
+> **Canal:** AWS Developers LATAM | **Duração:** ~32min | **Idioma:** PT-BR
+>
+> Cobre os mesmos três pilares aplicados a uma arquitetura serverless real, com foco na questão de como organizar logs/métricas/traces em camadas distintas — reforça, com outra arquitetura de exemplo, o mesmo raciocínio que o caso do pedido perdido ilustra nesta nota.
+> Trecho de destaque [06:34]: *"pilares e os principais deles são as [métricas...]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=uaAmNSYqkpU)
+
 ## A decisão: nativo, OpenTelemetry, ou SaaS
 
 Toda equipe que opera em produção enfrenta esta escolha, e ela não tem resposta universal — tem trade-off.
@@ -194,6 +202,14 @@ Toda equipe que opera em produção enfrenta esta escolha, e ela não tem respos
 **Nativo (CloudWatch + X-Ray).** Zero fricção de integração — Lambda, API Gateway, DynamoDB e SQS já emitem métricas de infraestrutura sem nenhuma configuração, e ativar X-Ray é um parâmetro (`Tracing: Active`) no SAM/CloudFormation. O preço é lock-in: sua instrumentação, seus dashboards e seus alarmes vivem inteiramente dentro do ecossistema AWS. Migrar de provedor significa reconstruir a camada de observabilidade do zero.
 
 **OpenTelemetry (ADOT — AWS Distro for OpenTelemetry).** Você instrumenta o código com a API padrão do OpenTelemetry (spans, métricas, contexto de propagação) e o AWS Distro for OpenTelemetry faz a ponte para exportar esses dados tanto para X-Ray/CloudWatch quanto, simultaneamente ou no futuro, para qualquer backend compatível com OTLP (Datadog, Grafana Tempo, Honeycomb, Jaeger). O ganho é portabilidade: o código de instrumentação não muda se você trocar de backend. O custo é uma camada extra de configuração e, dependendo do runtime, overhead de cold start em Lambda por causa da camada (layer) do coletor.
+
+> [!tip] Assista: Observability — Best Practices for Modern Applications (AWS re:Invent 2022, COP344)
+> **Canal:** AWS Events | **Duração:** ~55min | **Idioma:** EN
+>
+> Uma talk oficial da AWS sobre como equipes de verdade decidem entre instrumentação nativa e vendor-neutra em produção, incluindo o problema específico de "dangling traces" quando a correlação entre métricas, logs e traces se perde — o mesmo problema que o caso do pedido perdido ilustrou nesta nota, visto agora em escala de re:Invent.
+> Trecho de destaque [13:27]: *"how do you avoid dangling traces, how do you get that end-to-end trace"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=YiegAlC_yyc)
 
 A diferença de código, entre instrumentar direto no SDK do X-Ray e instrumentar via OpenTelemetry, é pequena na superfície — mas decide onde seus dados podem ir depois:
 

@@ -1,7 +1,7 @@
 ---
 title: Por que observabilidade na cloud
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Iniciado
 status: seedling
@@ -67,6 +67,22 @@ Métricas respondem "como o sistema está se comportando, em agregado, e a tend�
 Um trace reconstrói a jornada completa de uma requisição específica através de múltiplos serviços, com o tempo gasto em cada salto. Se um log é uma foto de um instante e uma métrica é um gráfico agregado, um trace é o mapa de viagem de UM pedido: entrou na API Gateway às 14:32:07.100, chegou na Lambda de validação às 14:32:07.150, publicou no SNS às 14:32:07.310, e a próxima Lambda só foi invocada às 14:32:09.800 — dois segundos e meio de atraso, exatamente onde você precisa olhar.
 
 Traces respondem à pergunta que abriu esta nota: "por onde esse pedido específico passou, e onde ele travou ou demorou?". É o pilar mais caro de implementar corretamente, porque exige que cada serviço da cadeia propague um identificador comum (`trace_id`) para o próximo — e em arquiteturas serverless isso não acontece de graça, como você vai ver na nota seguinte deste galho.
+
+> [!tip] Assista: Monitoramento e Observabilidade (Logs, Métricas e Traces)
+> **Canal:** O Back Dev | **Duração:** ~19min | **Idioma:** PT-BR
+>
+> Um mergulho didático nos três pilares que complementa esta nota com exemplos de código e cenários de troubleshooting reais, mostrando como logs, métricas e traces se cruzam na prática do dia a dia.
+> Trecho de destaque [03:01]: *"resumida, os três pilares da observabilidade são: logs, métricas e traces"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=qffRr6b908w)
+
+> [!tip] Assista: Monitoramento vs Observabilidade — Explicado em 4 min
+> **Canal:** Lobinho Tech | **Duração:** ~4min | **Idioma:** PT-BR
+>
+> Uma síntese rápida e visual da diferença entre monitoramento e observabilidade, útil para revisar o vocabulário desta nota antes de seguir para o CloudWatch.
+> Trecho de destaque [01:14]: *"observabilidade é a capacidade de entender o estado interno de uma aplicação, infraestrutura ou serviço, a partir de dados que ele gera, como logs, métricas e trace"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=dgtuctf74SE)
 
 ```mermaid
 flowchart TB

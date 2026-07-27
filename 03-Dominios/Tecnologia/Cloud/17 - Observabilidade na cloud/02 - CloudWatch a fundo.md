@@ -1,7 +1,7 @@
 ---
 title: CloudWatch a fundo
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Adepto
 status: seedling
@@ -214,6 +214,14 @@ A ação típica é publicar num tópico **SNS**, que por sua vez distribui pra 
 
 **Contributor Insights** analisa dados de log (ou métricas) pra responder "quem são os top contribuidores desse comportamento" — por exemplo, "quais os 10 IPs que mais geraram erro 429 na última hora", sem você ter que escrever a query de agregação manualmente toda vez.
 
+> [!tip] Assista: Amazon CloudWatch — Comprehensive Monitoring
+> **Canal:** Notas de Arquitetura em Nuvem | **Duração:** ~7min | **Idioma:** PT-BR
+>
+> Mostra o fluxo completo métrica → dashboard → alarme na prática, complementando esta seção com a visão de "cockpit" que amarra os três mecanismos que a nota acabou de descrever separadamente.
+> Trecho de destaque [01:56]: *"entram os dashboards. Eles são a resposta. Os dashboards pegam essas métricas e montam uma visão única, fácil [de entender]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Y3RRhisk3J0)
+
 Um metric filter simples, criado via CLI, ilustra a diferença de esforço em relação ao EMF — aqui você não controla o *valor* da métrica, só conta ocorrências de um padrão de texto:
 
 ```bash
@@ -242,6 +250,14 @@ CloudWatch parece "grátis" porque as métricas básicas de cada serviço são g
 Onde isso morde na prática: uma aplicação com dimensions "criativas demais" (ex. um dimension por `requestId` único) explode o número de séries de métrica — cada combinação de dimension vira uma métrica nova e cobrada. Log verboso em produção (debug ligado por acidente) infla ingestão de log rapidamente. E um time que cria um alarme por microserviço, por ambiente, por métrica, sem consolidar em composite alarms, acumula uma fatura de "alarme-métrica" que ninguém rastreou.
 
 Um exemplo de ordem de grandeza ajuda a tornar isso concreto. Imagine um sistema com 20 microserviços, cada um publicando 15 métricas custom, em 3 ambientes (dev/staging/prod): são `20 × 15 × 3 = 900` séries de métrica. Nas faixas de preço citadas acima, isso fica na casa de baixas centenas de dólares por mês só de métrica — antes de contar log e alarme. Se um desenvolvedor, sem perceber, adiciona `UserId` como dimension numa métrica de latência (achando que vai ajudar a filtrar por usuário depois), e o sistema tem 50 mil usuários ativos, essa única métrica pode multiplicar por 50.000 o número de séries — o que costuma aparecer na fatura antes de aparecer em qualquer dashboard.
+
+> [!tip] Assista: AWS CloudWatch — Cost Control
+> **Canal:** Notas de Arquitetura em Nuvem | **Duração:** ~6min | **Idioma:** PT-BR
+>
+> Reforça exatamente o ângulo desta seção: como identificar qual log group ou qual métrica está inflando a fatura, cruzando dados de custo do CloudWatch com os recursos que os geraram — a pergunta prática de "quem é o culpado" antes que o valor apareça só na fatura.
+> Trecho de destaque [02:49]: *"exatamente qual log group ou qual métrica tá custando mais"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=rCffTTDZ1FI)
 
 ## Lente dupla: CloudWatch vs. DigitalOcean Monitoring
 
