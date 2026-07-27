@@ -1,7 +1,7 @@
 ---
 title: "Capstone — Arquitetar um SaaS na cloud do zero"
 created: 2026-07-24
-updated: 2026-07-24
+updated: 2026-07-25
 type: concept
 fase: Magus
 status: seedling
@@ -49,6 +49,14 @@ Um cálculo de guardanapo, do tipo que se faz em voz alta na entrevista: suponha
 
 Esse é o ponto onde já dá pra prever a forma do sistema: **leitura pesada e latência crítica no redirect, escrita leve na criação, e um rio de eventos separado para analytics.** As próximas seções constroem exatamente isso, camada por camada.
 
+> [!tip] Assista: System Design: Encurtador de URL - Desafio Real de Entrevista RESOLVIDO
+> **Canal:** Leonardo Zamariola | **Duração:** ~50min | **Idioma:** PT-BR
+>
+> Resolve exatamente esta pergunta de entrevista do zero, em português — vale assistir como companheiro deste capítulo pra ver a mesma sequência (requisitos → esquema de geração de slug → réplicas de leitura) sendo verbalizada em tempo real, com as hesitações e correções que uma entrevista de verdade tem.
+> Trecho de destaque [39:00]: *"Seria legal que tivéssemos réplica de leitura para questão de performance e eh o link longo ter índice."*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=JHavVCLQT4k)
+
 ## O desenho evolutivo
 
 ### Camada 0 — a versão ingênua (e por que ela quebra)
@@ -62,6 +70,14 @@ O núcleo é uma API que expõe três rotas: `POST /links` (cria), `GET /{slug}`
 O caminho de criação de link (F1, F4) é onde a lógica de negócio mora: gerar ou validar o slug, checar duplicidade, gravar. O caminho de redirect (F2) é deliberadamente burro — só lê o cache ou o banco, resolve a URL, dispara um evento assíncrono, e devolve um 302. Essa assimetria é a decisão de arquitetura mais importante da nota inteira: **o redirect nunca deve esperar por nada que não seja essencial ao redirect**.
 
 Para processamento assíncrono mais pesado (gerar relatórios agregados de analytics, expirar links por cron), [[03-Dominios/Tecnologia/Cloud/11 - Serverless e FaaS — Lambda a fundo/index|funções Lambda]] entram como o complemento certo: código que roda sob demanda, disparado por evento, sem servidor pra manter de pé o tempo todo. A mistura containers-para-API-síncrona + serverless-para-jobs-assíncronos é um padrão maduro, não uma indecisão — cada peça no lugar onde seu modelo de custo e escala faz sentido.
+
+> [!tip] Assista: Beginner System Design Interview: Design Bitly w/ a Ex-Meta Staff Engineer
+> **Canal:** Hello Interview | **Duração:** ~60min | **Idioma:** EN
+>
+> Um ex-staff engineer da Meta conduz a mesma entrevista de encurtador de URL do início ao fim, insistindo — como este capítulo — que o requisito não é "baixa latência" genérico, e sim baixa latência especificamente no redirect. Boa referência canônica em inglês pra comparar o vocabulário técnico com a versão PT-BR acima.
+> Trecho de destaque [07:37]: *"it's not just low latency it's specifically low latency on redirects and we want to quantify it too"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=iUU4O1sWtJA)
 
 ### Camada 2 — rede: onde tudo isso mora
 
@@ -190,6 +206,14 @@ Um exemplo do tipo de decisão que essa camada obriga: a política IAM que a tas
 ```
 
 Least privilege aplicado literalmente: a task de redirect só pode *enviar* mensagem para *essa* fila — não ler, não deletar, não tocar em nenhuma outra fila da conta. É o mesmo princípio de [[03-Dominios/Tecnologia/Cloud/04 - Identidade e acesso (IAM)/index|IAM]] que separa a role da API (que fala com o banco e a fila) da role do worker de analytics (que fala com a fila e a tabela de analytics, e nada mais).
+
+> [!tip] Assista: AWS re:Invent 2021 - Fundamentos de Arquitetura SaaS (Software as a Service)
+> **Canal:** AWS Events | **Duração:** ~28min | **Idioma:** PT-BR
+>
+> A palestra oficial da AWS sobre arquitetura SaaS multi-tenant, em português, aprofunda exatamente o requisito NF4 desta nota: isolamento de tenant não é só "filtrar por tenant_id na query" — é uma propriedade que a arquitetura inteira precisa garantir, camada por camada.
+> Trecho de destaque [04:56]: *"que tenha isolamento de tenant onde o tenant 1 não consiga ver dados do tenant 2"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=IurpNFR0Pds)
 
 ### Camada 6 — resiliência multi-AZ
 
