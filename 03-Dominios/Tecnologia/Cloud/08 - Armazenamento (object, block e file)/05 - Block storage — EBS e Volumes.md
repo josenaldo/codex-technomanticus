@@ -3,7 +3,7 @@ title: "Block storage — EBS e Volumes"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -122,6 +122,14 @@ $ aws ec2 modify-volume \
 
 > [!info] Migração implícita gp2 → gp3
 > Se você mudar o tipo sem especificar `--iops` ou `--throughput`, a AWS provisiona automaticamente **o maior valor entre** a performance equivalente do gp2 de origem e o baseline do gp3 — nunca menos do que o volume já tinha.
+
+> [!tip] Assista: AWS re:Invent 2022 — Optimize price and performance with Amazon EBS (STG204)
+> **Canal:** AWS Events | **Duração:** ~54min | **Idioma:** EN
+>
+> Talk oficial da AWS que narra a própria evolução dos tipos de volume EBS até o gp3 virar default, incluindo a motivação por trás do io2 Block Express e das camadas de arquivamento de snapshot — bom complemento histórico ao "porquê" que esta seção só explica do ponto de vista técnico.
+> Trecho de destaque [20:03]: *"gp3 which is actually it feeds fits most [workloads]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=sewKEuZZ1BA)
 
 ## IOPS e throughput: por que block storage cobra por performance, não só por espaço
 

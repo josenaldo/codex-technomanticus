@@ -3,7 +3,7 @@ title: "Classes de acesso e lifecycle"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -93,6 +93,14 @@ $ aws s3api put-bucket-intelligent-tiering-configuration \
         ]
     }'
 ```
+
+> [!tip] Assista: AWS re:Invent 2021 — Amazon S3 Lifecycle best practices to optimize your storage spend
+> **Canal:** AWS Events | **Duração:** ~51min | **Idioma:** EN
+>
+> Talk oficial da AWS inteiramente dedicada a lifecycle e classes de armazenamento — cobre o mesmo mapa de classes desta nota (Standard até Glacier Deep Archive) com exemplos de padrões de acesso reais que motivam cada transição. Vale assistir a primeira parte para ver o raciocínio por trás do Intelligent-Tiering antes de seguir pras lifecycle policies manuais.
+> Trecho de destaque [2:00]: *"so esri intelligent tiering is the only storage class in the cloud [that delivers automatic storage cost savings]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=yGNXn7jOytA)
 
 ## Lifecycle policies: transição automática por idade
 

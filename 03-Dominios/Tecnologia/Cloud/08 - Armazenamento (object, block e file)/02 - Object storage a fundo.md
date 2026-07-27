@@ -3,7 +3,7 @@ title: "Object storage a fundo"
 type: concept
 fase: Adepto
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -78,6 +78,14 @@ Cada bucket tem um endpoint HTTP próprio, derivado do nome e da região — é 
 ```
 https://minha-empresa-fotos-a1b2c3d4.s3.us-east-1.amazonaws.com/fotos/2026/praia.jpg
 ```
+
+> [!tip] Assista: Understand Key Concepts in Amazon S3 in 5 minutes (Buckets, Objects, Keys and Regions)
+> **Canal:** Code Java | **Duração:** ~6min | **Idioma:** EN
+>
+> Vídeo curto que amarra visualmente bucket, chave e região no console — útil pra fixar que "cada objeto tem exatamente uma chave" antes de seguir pra durabilidade.
+> Trecho de destaque [0:40]: *"a key is the unique identifier for objects within a bucket"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=9AIXjHF5irs)
 
 ## Durabilidade: o que os 11 noves realmente significam
 
@@ -230,6 +238,14 @@ $ aws s3api complete-multipart-upload \
 ```
 
 Um detalhe que costuma surpreender quem inspeciona o `ETag` de um objeto esperando um hash MD5 simples: para objetos enviados via `PUT` único, o `ETag` **é** o MD5 do conteúdo. Mas para objetos montados via multipart, o `ETag` deixa de ser um MD5 puro — vira o MD5 da concatenação dos MD5s de cada parte, seguido de um sufixo `-N` indicando quantas partes formaram o objeto (por exemplo, `"a1b2c3d4e5f6...-3"` para um objeto de três partes). Isso quebra qualquer código que assuma ingenuamente "`ETag` = MD5 do arquivo" para verificação de integridade — a forma correta e portável de verificar integridade de upload, hoje, é usar os checksums adicionais que o S3 suporta nativamente (SHA-256, CRC32C, entre outros), calculados e validados pelo próprio serviço no momento do upload, em vez de depender da forma exata do `ETag`.
+
+> [!tip] Assista: How Multi-Part Upload Works in S3 (AWS Tutorial)
+> **Canal:** CloudWolf AWS | **Duração:** ~2min | **Idioma:** EN
+>
+> Vídeo direto ao ponto sobre o mecanismo de dividir um upload em até 10.000 partes paralelas, com retry por parte — complementa a mecânica que o diagrama de sequência acima já mostrou.
+> Trecho de destaque [1:24]: *"different parts up to 10,000 little parts and upload them separately"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=_xMG-cODLXY)
 
 ## Limites que importam na prática
 

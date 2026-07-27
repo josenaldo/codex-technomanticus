@@ -3,7 +3,7 @@ title: "File storage e a escolha do armazenamento"
 type: concept
 fase: Magus
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-25
 status: seedling
 publish: true
 tags:
@@ -90,6 +90,14 @@ $ sudo mount -t nfs4 -o nfsvers=4.1 \
 ```
 
 O security group do mount target, referenciado no passo 2, é a mesma disciplina de "cadeia de security groups" que o galho 7 (Rede) já formalizou: só as instâncias do pipeline — identificadas pelo security group delas, não por CIDR aberto — conseguem alcançar a porta NFS (2049) do mount target.
+
+> [!tip] Assista: AWS EFS Tutorial for Beginners — NFS, Multi-AZ, Mount Targets, Storage Classes
+> **Canal:** Cloud Journey | **Duração:** ~7min | **Idioma:** EN
+>
+> Visão geral rápida que passeia pelos mesmos quatro pilares desta seção — protocolo NFS, replicação multi-AZ, um mount target por subnet, e as storage classes do EFS — reforçando a regra "um mount target por AZ" que o diagrama acima já ilustrou.
+> Trecho de destaque [1:54]: *"So best practice one mount target per [subnet]"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=whtpgiWG7Wc)
 
 ### Performance modes e throughput modes: duas escalas independentes
 
@@ -212,6 +220,14 @@ Nenhum dos dois substitui o EFS no caso comum; eles existem porque "filesystem d
 - **Home directories e perfis de usuário compartilhados.** O mesmo padrão que a documentação da Azure descreve para FSLogix — perfis de usuário centralizados, acessíveis de qualquer máquina virtual que o usuário efetivamente use numa sessão de desktop remoto — se aplica igualmente a um pool de instâncias de desenvolvimento ou de renderização: o usuário loga em qualquer máquina do pool e encontra o mesmo home directory, os mesmos dotfiles, o mesmo histórico.
 - **Dados compartilhados por frota de processamento.** O cenário do time C da nota 01, retomado nesta nota com profundidade real: uma frota de workers de processamento de imagem ou vídeo que precisa ler e escrever, todos ao mesmo tempo, no mesmo diretório de trabalho — arquivos intermediários que um worker produz e o próximo consome, sem que nenhum precise saber em qual outra instância o arquivo foi gerado.
 - **Lift-and-shift de aplicação legada.** Uma aplicação escrita anos atrás, para rodar num único servidor físico, frequentemente tem chamadas de arquivo comuns (`open`, `read`, `write` diretos no filesystem) espalhadas pelo código, sem nenhuma abstração de storage. Reescrever essa aplicação para falar com uma API HTTP de object storage antes de migrá-la para a nuvem pode ser um projeto de meses; montar um EFS no lugar do disco local que ela já espera é, muitas vezes, a diferença entre migrar em semanas ou não migrar de jeito nenhum no prazo disponível.
+
+> [!tip] Assista: AWS EFS Explained — Setup, Mount Targets & Backup with AWS Backup
+> **Canal:** DheerajTechInsight | **Duração:** ~23min | **Idioma:** EN
+>
+> Passo a passo hands-on de criar um EFS, montá-lo via cliente NFS numa instância, e sobretudo configurar o security group correto (regra NFS na porta certa, vinda só do SG das instâncias autorizadas) — o mesmo ponto de disciplina de segurança que a nota reforça no comando de verificação acima. Vale assistir antes de comparar com o NFS auto-operado da DigitalOcean logo abaixo.
+> Trecho de destaque [2:00]: *"It uses the NFS protocol for mounting"*
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=aAOC6oS445s)
 
 ### A DigitalOcean e a lacuna real: NFS auto-operado
 
