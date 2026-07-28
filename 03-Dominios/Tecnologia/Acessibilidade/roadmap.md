@@ -27,7 +27,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Acessibilidade` (raiz de domínio / 
 
 | # | Sub-galho | Notas | Escritas | % | Estado | roadmap |
 |---|-----------|------:|---------:|--:|--------|---------|
-| 1 | Fundamentos e Modelo Mental | 5 | 0 | 0% | 📋 desenhado, não iniciado | `Fundamentos e Modelo Mental/roadmap.md` *(a criar)* |
+| 1 | Fundamentos e Modelo Mental | 5 | 5 | 100% | 🔶 escrito (5/5), enriquecimento pendente | `Fundamentos e Modelo Mental/roadmap.md` *(a criar)* |
 | 2 | Construir Acessível | 7 | 0 | 0% | 📋 desenhado, não iniciado | `Construir Acessível/roadmap.md` *(a criar)* |
 | 3 | Auditar e Testar | 4 | 0 | 0% | 📋 desenhado, não iniciado | `Auditar e Testar/roadmap.md` *(a criar)* |
 | 4 | Sustentar e Conformidade | 4 | 0 | 0% | 📋 desenhado, não iniciado | `Sustentar e Conformidade/roadmap.md` *(a criar)* |
@@ -38,15 +38,16 @@ Roadmap do domínio `03-Dominios/Tecnologia/Acessibilidade` (raiz de domínio / 
 |---------|-------|
 | Sub-galhos | 4 |
 | ✅ completos | 0 |
-| 📋 desenhados, não iniciados | 4 |
+| 🔶 escritos (falta enriquecer) | 1 (SG1 — 5 notas) |
+| 📋 desenhados, não iniciados | 3 |
 | Notas totais previstas | 20 + capstone |
-| Notas escritas | 0 |
+| Notas escritas | 5 |
 
 ---
 
 ## Próximos passos
 
-1. 📋 **SG1 — Fundamentos e Modelo Mental:** semear 5 notas (Iniciado) → `/verificar-nota` → `/diagnosticar-galho` → `/enriquecer-galho` até ✅.
+1. 🔶 **SG1 — Fundamentos e Modelo Mental:** 5/5 escritas (2026-07-27). Falta `/diagnosticar-galho` → `/enriquecer-galho` até ✅.
 2. 📋 **SG2 — Construir Acessível:** 7 notas (Adepto).
 3. 📋 **SG3 — Auditar e Testar:** 4 notas (Adepto/Magus).
 4. 📋 **SG4 — Sustentar e Conformidade:** 4 notas (Magus).
