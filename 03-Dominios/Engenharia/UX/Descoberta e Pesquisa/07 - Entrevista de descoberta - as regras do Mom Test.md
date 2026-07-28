@@ -75,7 +75,7 @@ Uma entrevista de descoberta de 30 minutos, seguindo o espírito do Mom Test, te
 | Entrevistar 5-8 clientes/usuários ao longo de um projeto pequeno | Estudo com amostra estatisticamente representativa e segmentação validada |
 | Anotar (ou gravar, com consentimento) e revisar depois em busca de padrões repetidos | Síntese formal cruzada por múltiplos pesquisadores, tipo *mental model research* |
 
-A pergunta de segunda-feira: antes da próxima conversa com um cliente sobre uma feature nova, escreva 3 perguntas no formato "me conta a última vez que..." antes de entrar na call. Isso sozinho já elimina a maior parte do risco de cortesia.
+A pergunta de segunda-feira: antes da próxima conversa com um cliente sobre uma feature nova, escreva 3 perguntas no formato "me conta a última vez que..." antes de entrar na call. Isso sozinho já elimina a maior parte do risco de cortesia — e é exatamente o tipo de disciplina que substitui, numa escala de um, a pesquisa que um trio de produto inteiro faria (ver [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/01 - UX não é tela - o ofício e seus limites|nota 01]]).
 
 ## Casos práticos
 
