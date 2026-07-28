@@ -169,7 +169,7 @@ por trás de uma interface de domínio. Esse é o companheiro natural do Data Ma
 ## Veja também
 
 - [[03-Dominios/Tecnologia/Java/index|Java]] — Hibernate/JPA, o Data Mapper no seu habitat corporativo.
-- [[03-Dominios/Engenharia/Design de Software/SOLID/04 - DIP - Inversão de Dependências|DIP]] — a dependência que aponta para dentro (domínio ← persistência) é DIP aplicado ao acesso a dados.
+- [[03-Dominios/Engenharia/Design de Software/SOLID/06 - DIP - Inversão de Dependência|DIP]] — a dependência que aponta para dentro (domínio ← persistência) é DIP aplicado ao acesso a dados.
 
 ## Fontes
 

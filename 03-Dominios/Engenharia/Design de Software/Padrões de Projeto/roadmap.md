@@ -31,7 +31,7 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 | # | Família | Fonte canônica | Notas (est.) | Sobreposição | Estado | roadmap |
 |---|---------|----------------|-------------:|--------------|--------|---------|
 | 1 | **Clássicos (GoF)** | Gang of Four (1994) | 23 | baixa | ✅ **COMPLETA 23/23** (2026-07-28) | [[Padrões de Projeto/Clássicos (GoF)/roadmap\|folha]] |
-| 2 | **Acesso a Dados** | Fowler PoEAA + J2EE + NoSQL | 15 | média (Java/Dados) | 🔶 escrita em curso — Iniciado 6/6 (40%) | [[Padrões de Projeto/Acesso a Dados/roadmap\|folha]] |
+| 2 | **Acesso a Dados** | Fowler PoEAA + J2EE + NoSQL | 15 | média (Java/Dados) | ✅ **COMPLETA 15/15** (2026-07-28) | [[Padrões de Projeto/Acesso a Dados/roadmap\|folha]] |
 | 3 | **Integração Empresarial (EIP)** | Hohpe & Woolf | ~14 | baixa | ⬜ roster provisório abaixo | a criar |
 | 4 | **Aplicação Corporativa** | Fowler PoEAA (não-dados) | ~14 | baixa | ⬜ roster provisório abaixo | a criar |
 | 5 | **Arquitetura de Eventos** | EDA moderna | ~10 | **alta** (Comunicação) | ⬜ roster provisório abaixo | a criar |
@@ -43,8 +43,8 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 
 Sequência escolhida (valor pro ofício de legado primeiro, maior sobreposição por último):
 
-1. **Clássicos (GoF)** — aposenta o monólito `Design Patterns.md`, é a fundação, menor sobreposição. **← em foco.**
-2. **Acesso a Dados** → 3. **Integração Empresarial** → 4. **Aplicação Corporativa** (o coração do valor-legado; cobertura quase toda nova).
+1. **Clássicos (GoF)** — ✅ completa. 2. **Acesso a Dados** — ✅ completa.
+2. **Integração Empresarial (EIP)** ← **próxima** → 4. **Aplicação Corporativa** (o coração do valor-legado; cobertura quase toda nova).
 3. **Arquitetura de Eventos** → 6. **Nuvem e Resiliência** por último (maior sobreposição, menor valor marginal — entradas autocontidas + link).
 
 **Disciplina de custo:** escrita sequencial, uma nota por vez via `/escrever-nota`; `/checkpoint` entre blocos; **sem fan-out massivo** (regra pessoal do usuário). Cada família = seu próprio ciclo brainstorm→roadmap-folha→escrita quando chegar a vez dela.
@@ -96,6 +96,6 @@ Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface*
 3. ✅ Escrever a família **Clássicos (GoF)** — **COMPLETA 23/23 (2026-07-28)**; `index.md` da família criado, todas as fases linkadas.
 4. ✅ Monólito `Design Patterns.md` **podado** (2026-07-28, opção a): virou este `index.md` do galho-pai, com alias `Design Patterns`; 8 inbound links resolvem via alias; refs full-path do galho Python reapontadas p/ o index da GoF; índice do domínio atualizado.
 5. ✅ `index.md` deste galho-pai criado (MOC das 6 famílias).
-6. ⬜ Próxima família: **Acesso a Dados** — novo ciclo brainstorm + roadmap-folha.
-4. ⬜ Podar o monólito `Design Patterns.md` ao fechar GoF (preservar os 8 inbound links).
-5. ⬜ Ao concluir GoF: abrir ciclo da família 2 (Acesso a Dados) — brainstorm leve + roadmap-folha detalhado.
+6. ✅ Família **Acesso a Dados** — **COMPLETA 15/15 (2026-07-28)**; Iniciado 01-06, Adepto 07-13, Magus 14-15; `index.md` da família com todas as fases linkadas; roadmap-folha 100%.
+7. ⬜ **Próxima família: Integração Empresarial (EIP)** — novo ciclo brainstorm leve + roadmap-folha detalhado (roster provisório na seção acima).
+8. ⬜ **Capstone do galho-pai:** com 2 famílias fechadas, reavaliar graduar as notas 22-23 do GoF (frameworks / quando NÃO usar) a capstone que generaliza pras famílias — decisão em aberto na seção de pendências.

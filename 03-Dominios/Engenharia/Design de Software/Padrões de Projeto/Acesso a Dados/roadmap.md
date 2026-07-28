@@ -42,9 +42,9 @@ Estrutura: cenário → ideia (Mermaid) → **como os ORMs/ecossistemas o encarn
 | Iniciado | 6 |
 | Adepto | 7 |
 | Magus | 2 |
-| ✅ escritas | 13 |
-| ⬜ pendentes | 2 |
-| % concluído | 87% |
+| ✅ escritas | 15 |
+| ⬜ pendentes | 0 |
+| % concluído | 100% ✅ |
 | Scaffolding | index.md criado (2026-07-28) |
 
 ---
@@ -121,19 +121,19 @@ Estrutura: cenário → ideia (Mermaid) → **como os ORMs/ecossistemas o encarn
 ## Notas — Magus (NoSQL e nuvem remodelam o acesso)
 
 #### 14 - Modelagem por agregado e single-table design   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-28) · fase: magus · 189 linhas
 - **Escopo:** NoSQL inverte o design — **query-first**, desnormalização, agregado (DDD) como unidade de consistência. Single-table design no DynamoDB. **Armadilha central:** modelar NoSQL como relacional (normalizar, joins na aplicação); access patterns não pensados antes.
-- **Resultado:** —
+- **Resultado:** duas ordens opostas (normaliza-depois-consulta × access-pattern-primeiro); agregado=fronteira do documento (aggregate-oriented, Fowler); single-table DynamoDB (PK/SK sobrecarregadas, GSIs, Mermaid normalizado×1-doc); fundamento "o access pattern É o esquema"; 3 armadilhas (modelar como relacional, patterns não pensados, agregado grande demais/16MB/partição quente). Magus. Aprovada.
 
 #### 15 - Polyglot persistence e materialized views   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-28) · fase: magus · 181 linhas
 - **Escopo:** o banco certo para cada carga (relacional + documento + chave-valor + busca); read models / materialized views (encosta em CQRS — linka [[14 - Command]] e família 5 Eventos). **Armadilha:** complexidade operacional, consistência eventual mal gerida, "poliglota" prematuro.
-- **Resultado:** —
+- **Resultado:** banco-certo-por-carga (Fowler/Sadalage); materialized view/read model × cache; CQRS separa escrita×leitura (linka [[14 - Command]] GoF; Eventos citada em prosa, sem link quebrado); fundamento CAP→consistência eventual; Mermaid escrita→eventos→read models; 3 armadilhas (poliglota prematuro/Postgres-faz-tudo, consistência eventual mal gerida, sync frágil→read model descartável). **FECHA A FAMÍLIA 2** com mapa-de-escolha (mirror da GoF-23). Magus. Aprovada.
 
 ---
 
 ## Próximos passos
 
-1. ⬜ Escrever 01 → 15 na ordem, via `/escrever-nota`. `/checkpoint` a cada bloco de fase (após 06, após 13, após 15).
-2. ⬜ Criar `index.md` da família (MOC por fase + rotas + dataview) ao ter ≥ bloco Iniciado.
-3. ⬜ Ao fechar 15: atualizar roadmap-pai (família 2 ✅) + [[00-Meta/Roadmap]] central; abrir família 3 (Integração Empresarial / EIP).
+1. ✅ Escrever 01 → 15 na ordem, via `/escrever-nota`. Concluído 2026-07-28 (Iniciado 01-06, Adepto 07-13, Magus 14-15).
+2. ✅ `index.md` da família criado (MOC por fase + rotas).
+3. ⬜ Atualizar seção Adepto/Magus do `index.md` da família (notas 07-15). Atualizar roadmap-pai (família 2 ✅) + [[00-Meta/Roadmap]] central; abrir família 3 (Integração Empresarial / EIP).

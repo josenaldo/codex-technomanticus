@@ -3,7 +3,7 @@ title: "Acesso a Dados"
 created: 2026-07-28
 updated: 2026-07-28
 type: moc
-status: growing
+status: evergreen
 publish: true
 tags:
   - moc
@@ -48,11 +48,18 @@ Resiliência) e [[03-Dominios/Tecnologia/Cloud/index|Cloud]].
 
 ## Adepto — mapper, repository e maquinaria de ORM
 
-*Em construção.* Gateways · Data Mapper · Repository · Unit of Work · Identity Map · Lazy Load · Query Object.
+7. [[07 - Gateways]] — wrappers finos de linha e de tabela (Record Set); o encanamento que os ORMs absorveram.
+8. [[08 - Data Mapper]] — a camada que isola domínio e banco; a outra metade do eixo dorsal.
+9. [[09 - Repository]] — coleção-em-memória sobre o mapper; Repository × DAO revisitado.
+10. [[10 - Unit of Work]] — rastreia mudanças e persiste numa transação (Session/EntityManager/DbContext).
+11. [[11 - Identity Map]] — uma instância por linha na sessão; o cache L1; L1 × L2.
+12. [[12 - Lazy Load]] — carregar sob demanda via proxy; a origem do N+1 e da `LazyInitializationException`.
+13. [[13 - Query Object]] — a consulta como objeto componível e type-safe; a saída para a explosão de `findByXAndY`.
 
 ## Magus — NoSQL e nuvem remodelam
 
-*Em construção.* Modelagem por agregado / single-table design · Polyglot persistence + materialized views.
+14. [[14 - Modelagem por agregado e single-table design]] — o NoSQL inverte o design: *query-first*, agregado, single-table no DynamoDB.
+15. [[15 - Polyglot persistence e materialized views]] — o banco certo para cada carga; read models, CQRS e o mapa de escolha da família.
 
 ## Rotas alternativas
 
