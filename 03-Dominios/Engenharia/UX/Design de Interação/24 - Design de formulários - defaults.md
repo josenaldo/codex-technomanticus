@@ -53,11 +53,13 @@ A escolha depende de **dependência lógica** entre as partes do formulário, n�
 
 ## O que dá pra fazer sozinho, e o que não dá
 
-| Praticável sozinho | Exige time/orçamento |
-|---|---|
-| Auditar formulários existentes contra os seis princípios e corrigir layout (coluna única, label acima, placeholder correto) | Teste de usabilidade medindo taxa real de conclusão antes e depois das mudanças |
-| Trocar validação "a cada tecla" por validação no evento `blur` | Redesenho completo de um formulário grande com steps, incluindo lógica de dependência entre etapas |
-| Reescrever mensagens de erro genéricas para versões específicas e acionáveis | Pesquisa qualitativa entrevistando usuários que abandonaram o formulário no meio, para entender a causa real |
+Praticável sozinho, revisando o que já existe:
+
+- **Auditar formulários existentes contra os seis princípios** e corrigir layout (coluna única, label acima, placeholder correto) — é revisão de código e CSS, sem depender de mais ninguém para decidir ou aprovar.
+- **Trocar validação "a cada tecla" por validação no evento `blur`** — mudança pontual de evento no código de validação, que já existe; não exige redesenho nem nova infraestrutura.
+- **Reescrever mensagens de erro genéricas para versões específicas e acionáveis** — trabalho de texto, aplicando a heurística 9 de Nielsen mensagem por mensagem, sem esperar por rodada de pesquisa.
+
+Exige estrutura de time quando a mudança depende de medir comportamento real ou de reestruturar o fluxo inteiro: um **teste de usabilidade medindo taxa real de conclusão** antes e depois das mudanças precisa de participantes recrutados e de um roteiro de observação — sem isso, a melhoria de layout continua sendo aposta bem fundamentada, não fato validado com usuário real. Um **redesenho completo de um formulário grande com steps**, incluindo a lógica de dependência real entre etapas (qual campo depende de qual resposta anterior), é projeto de arquitetura de formulário que toca vários componentes ao mesmo tempo — trabalho substancial demais para encaixar como ajuste isolado. E uma **pesquisa qualitativa entrevistando usuários que abandonaram o formulário no meio** exige acesso a esses usuários e tempo de entrevista — o único jeito de saber a causa real do abandono, em vez de inferir a partir de métricas agregadas que mostram *onde* o abandono acontece, mas não *por quê*.
 
 ## Casos práticos
 
@@ -66,6 +68,9 @@ Um checkout de e-commerce valida o CEP a cada tecla digitada e, ao detectar form
 
 ### Cenário 2: formulário B2B com 30 campos, todos "obrigatórios" com asterisco
 Um formulário de cadastro de fornecedor tem 30 campos, dos quais 27 são obrigatórios. Marcar cada um dos 27 com asterisco (prática comum, mas contraintuitiva) produz uma tela onde quase todo label tem um símbolo repetido, sem ajudar ninguém a distinguir nada. Invertendo a marcação — deixando os 27 obrigatórios sem símbolo e marcando só os 3 opcionais com "(opcional)" — a tela fica visualmente mais limpa e comunica exatamente a mesma informação, com muito menos ruído repetido.
+
+### Cenário 3: formulário partido em steps sem nenhuma dependência real
+Um formulário de "criar perfil de fornecedor" foi dividido em quatro etapas sequenciais (dados básicos, endereço, contatos, documentos) sem que nenhuma etapa dependesse do resultado da anterior — nenhum cálculo, nenhuma opção condicional. A divisão em steps foi copiada de outro formulário do mesmo produto que tinha dependência real (endereço afetando frete calculado), sem checar se fazia sentido também aqui. O resultado: usuários que preencheriam tudo de uma vez, sem pausa, são forçados por quatro cliques de "Próximo" que não adicionam clareza nenhuma — só atraso. Reformular como página única com seções organizadas por espaçamento (sem accordion nem step, ver critério da seção anterior) resolve, porque a independência entre as seções nunca justificou o wizard.
 
 ## Armadilhas comuns
 
