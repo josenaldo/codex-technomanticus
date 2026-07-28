@@ -28,6 +28,11 @@ O problema apareceu depois. Ao longo dos anos 1990 e 2000, a comunidade de desig
 > [!question]- Por que não bastava usar "affordance" com mais cuidado?
 > Porque a confusão já estava embutida na palavra. "Affordance" descreve uma *relação* entre o objeto e quem o usa — a affordance de "sentar" existe numa cadeira mesmo que ninguém tenha jamais visto aquela cadeira, porque a relação física (superfície plana, altura, resistência) é real independentemente de comunicação. Um **signifier**, ao contrário, só existe para *comunicar*. Sem um termo separado, era impossível dizer "esse elemento tem a affordance certa mas o signifier errado" — que é exatamente o diagnóstico mais útil quando uma interface falha.
 
+> [!tip] Vídeo — Norman Doors, com o próprio Don Norman
+> [**Video: The Norman Door, with Vox**](https://www.youtube.com/watch?v=ABYSYQmEq1Q) (Vox × 99% Invisible, 5min32) mostra o próprio Don Norman explicando, ao vivo diante de portas reais que confundem todo mundo, por que um design precisa de placa "empurre/puxe" quando falha em sinalizar sozinho — o caso concreto que dá nome ao termo *Norman door*. Ele nomeia os dois princípios centrais desta nota em linguagem simples: *discoverability* ("olhando para o objeto, dá pra saber o que fazer com ele?") e *feedback* — a base do vocabulário affordance/signifier.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=ABYSYQmEq1Q)
+
 ## As duas perguntas que toda interface responde (ou não)
 
 Separar os dois conceitos dá ao designer — e ao engenheiro que faz esse papel sozinho — duas perguntas distintas para fazer sobre qualquer elemento de interface:

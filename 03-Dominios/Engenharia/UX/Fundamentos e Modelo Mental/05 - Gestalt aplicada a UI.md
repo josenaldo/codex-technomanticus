@@ -60,6 +60,11 @@ O olho tende a **seguir linhas e alinhamentos** continuamente, em vez de saltar 
 ### Figura-fundo
 A percepção de hierarquia visual depende do **contraste entre o elemento (figura) e o que está atrás dele (fundo)**. Um elemento só se destaca na medida em que se distingue do fundo — em cor, em tamanho, em nitidez. É o princípio que explica por que um modal precisa de um *overlay* escurecendo o fundo: sem o contraste figura-fundo reforçado, o olho não sabe imediatamente que o modal é a "figura" ativa e o resto da tela é "fundo" temporariamente inativo.
 
+> [!tip] Vídeo — os cinco princípios direto da NN/g
+> [**The Gestalt Principles for User Interface Design**](https://www.nngroup.com/videos/the-gestalt-principles-intro/) (Maria Rosala, NN/g, 3min) é a introdução em vídeo do próprio Nielsen Norman Group aos princípios de Gestalt aplicados a UI — proximidade, similaridade, fechamento, continuidade, figura-fundo, e mais dois que a página associada detalha (região comum e destino comum). Serve como reforço visual rápido do que esta nota já cobre em profundidade textual.
+>
+> 🎬 [Assistir no NN/g](https://www.nngroup.com/videos/the-gestalt-principles-intro/)
+
 ## A ponte para quem constrói: espaçamento é semântica
 
 Esta é a ideia mais acionável da nota inteira, e merece ser dita sem rodeio: **espaçamento não é decoração — é o mecanismo pelo qual a proximidade comunica agrupamento.** Um engenheiro que ajusta `margin` e `gap` "até ficar bonito", sem pensar em quais elementos deveriam parecer relacionados, está tomando uma decisão semântica sem saber que está tomando uma decisão. Errar o espaçamento não é um erro estético secundário — é literalmente comunicar, ao cérebro do usuário, uma estrutura de agrupamento diferente da que o código pretende representar.

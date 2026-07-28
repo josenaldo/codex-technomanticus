@@ -72,6 +72,11 @@ Formulada a partir do trabalho de Daniel Kahneman sobre julgamento retrospectivo
 
 A implicação para produto: **a tela de erro e a tela de sucesso merecem atenção desproporcional** ao tempo que o usuário passa nelas, porque são exatamente os pontos que ficam gravados na memória da experiência inteira. Um checkout tecnicamente perfeito em 9 de 10 passos, que termina numa tela de confirmação genérica e sem graça, deixa uma lembrança pior do que um checkout com pequenas fricções ao longo do caminho que termina numa confirmação memorável. O final pesa mais do que a média sugere.
 
+> [!tip] Vídeo — Jon Yablonski aprofunda Jakob, Hick e Peak-End
+> [**Laws of UX: Using Psychology to Design Better Products & Services**](https://www.youtube.com/watch?v=Qc5F07l1Fjs) (Proximity Lab, 57min) é o próprio Jon Yablonski, autor do livro/site que cura estas leis, apresentando a talk completa. Ele não passa pelas cinco em peso igual: aprofunda a **Lei de Jakob** (por que ir contra convenção custa caro), a **Lei de Hick** (com exemplo de menu longo) e a **Peak-End Rule** (jornada emocional e *journey mapping*) com estudos de caso reais — não cobre Fitts e Miller no mesmo detalhe, então vale como complemento a essas três, não substituto do quadro das cinco.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Qc5F07l1Fjs)
+
 ## As cinco, lado a lado
 
 | Lei | Ano / autor | Mecanismo | Aplicação prática |
