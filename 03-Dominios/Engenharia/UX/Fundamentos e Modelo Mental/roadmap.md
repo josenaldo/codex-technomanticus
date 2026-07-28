@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental`
 **Diagnóstico:** 2026-07-28
-**Última execução:** —
+**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (5/5 ✅/➖)**
 
 ## Régua de análise
 
@@ -36,10 +36,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 5 |
-| ⬜ pendente | 2 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 3 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 2 |
+| % concluído | 100% |
 
 > Gaps concentrados em **M1 (mídia — recomendado, não obrigatório em Iniciado)** nas 5
 > notas. Notas 01 e 03 ficam `⬜ pendente`: 01 por ser a nota-manifesto do domínio (M1
@@ -52,13 +52,13 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 ## Notas
 
 #### 01 - UX não é tela - o ofício e seus limites   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** 187 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** M1 (ausente — sem callout `[!tip]` com vídeo/podcast; recomendado, não obrigatório na fase Iniciado, mas esta é a nota-manifesto do domínio, o que pesa a favor de incluir)
 - **Score:** 11/12
 - **Plano de execução:**
   - Pesquisar e adicionar 1 callout `[!tip]` com link para vídeo ou podcast sobre "UX é ofício, não tela" / full-cycle engineer fazendo os três papéis do trio de produto sozinho — resolve M1
-- **Resultado:** —
+- **Resultado:** ✅ Callout `[!tip]` adicionado com o vídeo "Product & UX Partnerships" (Anna Kaley, NN/g) — https://www.nngroup.com/videos/product-ux-partnerships/ — logo após a seção do trio de produto. M1 resolvido; nenhuma outra alteração na nota.
 
 #### 02 - Affordances e signifiers   [mecânico]
 - **Enriquecimento:** ➖ não precisa
@@ -70,14 +70,14 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 - **Resultado:** —
 
 #### 03 - As 10 heurísticas de Nielsen   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** 156 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** M1 (ausente — sem callout `[!tip]` com vídeo/podcast; recomendado, não obrigatório na fase Iniciado) + atribuição da estatística ~35% (linhas 105 e 119, creditada em Fontes ao artigo NN/g das 10 heurísticas) a verificar/corrigir — provavelmente originária de Nielsen 2000 ("Why You Only Need to Test with 5 Users") ou Nielsen & Landauer 1993, não do artigo das 10 heurísticas
 - **Score:** 11/12
 - **Plano de execução:**
   - Verificar fonte real do dado ~35% (Nielsen 2000 "Why You Only Need to Test with 5 Users" ou Nielsen & Landauer 1993) e corrigir atribuição em Fontes; remover o número se não confirmável
   - Pesquisar e adicionar 1 callout `[!tip]` com link para vídeo ou podcast sobre avaliação heurística / as 10 heurísticas de Nielsen — resolve M1
-- **Resultado:** —
+- **Resultado:** ✅ Confirmado via WebFetch: o ~35% vem do artigo NN/g "The Theory Behind Heuristic Evaluations" (citando Nielsen & Landauer 1993, INTERCHI'93), não do artigo "10 Usability Heuristics" como estava creditado. Atribuição corrigida em Fontes com URL real; número mantido (confirmado, não removido). Callout `[!tip]` adicionado com vídeo "Heuristic Evaluation of User Interfaces" (Jakob Nielsen, NN/g) — https://www.nngroup.com/videos/heuristic-evaluation/. M1 resolvido.
 
 #### 04 - Leis de UX - Fitts, Hick, Jakob, Miller, Peak-End   [mecânico]
 - **Enriquecimento:** ➖ não precisa
