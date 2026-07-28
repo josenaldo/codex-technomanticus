@@ -104,6 +104,9 @@ Uma **avaliação heurística** — passar as dez heurísticas contra as telas d
 
 O que exige mais estrutura é uma avaliação heurística formal com múltiplos avaliadores independentes — o método original de Nielsen recomenda **3 a 5 avaliadores** cruzando achados, porque uma pessoa só, sozinha, tipicamente encontra apenas ~35% das violações que um grupo encontraria. Sozinho, você não vai atingir essa cobertura — e vale nomear essa lacuna honestamente em vez de apresentar uma avaliação solo como se fosse completa.
 
+> [!tip] Vídeo: Jakob Nielsen explicando a avaliação heurística
+> [*Heuristic Evaluation of User Interfaces*](https://www.nngroup.com/videos/heuristic-evaluation/) — o próprio Jakob Nielsen, em 3 minutos, explica o método de avaliação heurística contra as dez heurísticas. Bom ponto de partida antes de rodar a primeira avaliação sozinho.
+
 ## Casos práticos
 
 ### Cenário 1: o formulário que "trava" sem explicação
@@ -153,4 +156,5 @@ As heurísticas dão o vocabulário de *avaliação* — o que checar numa tela 
 ## Fontes
 
 - **Jakob Nielsen e Rolf Molich** — formulação original das heurísticas, 1990; refinamento por Nielsen em 1994.
-- **Nielsen Norman Group** — [*10 Usability Heuristics for User Interface Design*](https://www.nngroup.com/articles/ten-usability-heuristics/) — versão revisada (2020) da redação das dez heurísticas, conteúdo inalterado desde 1994; inclui a estatística de cobertura de avaliadores individuais vs. grupo de 3-5.
+- **Nielsen Norman Group** — [*10 Usability Heuristics for User Interface Design*](https://www.nngroup.com/articles/ten-usability-heuristics/) — versão revisada (2020) da redação das dez heurísticas, conteúdo inalterado desde 1994.
+- **Nielsen Norman Group** — [*The Theory Behind Heuristic Evaluations*](https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/theory-heuristic-evaluations/) — fonte da estatística de cobertura de avaliadores individuais vs. grupo (~35% para um único avaliador, média de seis projetos), citando Nielsen, J. e Landauer, T.K. (1993), *A Mathematical Model of the Finding of Usability Problems*, Proceedings of ACM INTERCHI'93.
