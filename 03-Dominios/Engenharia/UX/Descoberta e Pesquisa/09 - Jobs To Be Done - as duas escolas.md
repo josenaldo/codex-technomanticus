@@ -74,7 +74,7 @@ Para quem trabalha em escala de um, a vertente aplicável é a de Christensen/Mo
 3. **Pergunte o que quase impediu**: "o que quase te fez desistir de trocar?" — revela a *ansiedade*.
 4. **Pergunte o que te fez continuar com o antigo por mais tempo do que deveria**: revela o *hábito* que qualquer solução nova vai ter que vencer, não só convencer.
 
-O resultado não é uma persona nem um outcome statement — é uma narrativa causal de por que uma decisão real aconteceu, que serve de material bruto tanto para a [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/10 - Opportunity Solution Tree de bolso|Opportunity Solution Tree]] quanto para histórias concretas de entrevista de carreira.
+O resultado não é uma persona nem um outcome statement — é uma narrativa causal de por que uma decisão real aconteceu, que serve de material bruto tanto para a [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/10 - Opportunity Solution Tree de bolso|Opportunity Solution Tree]] quanto para histórias concretas de entrevista de carreira — o mesmo tipo de história sênior que a [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/01 - UX não é tela - o ofício e seus limites|nota 01]] usa como exemplo de resposta que soa sênior em vez de júnior.
 
 **O mecanismo em uma frase:** JTBD não pergunta o que a pessoa quer no produto, pergunta que progresso ela estava tentando fazer na vida — e as duas escolas só divergem em como capturar essa resposta: com número (Ulwick) ou com narrativa (Christensen/Moesta).
 
