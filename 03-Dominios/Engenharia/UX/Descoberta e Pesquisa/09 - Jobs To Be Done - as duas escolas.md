@@ -133,6 +133,9 @@ JTBD dá o vocabulário para nomear *por que* uma pessoa quer algo. A próxima n
 
 ## Fontes
 
-- **Tony Ulwick** — Outcome-Driven Innovation, desenvolvida a partir de 1990; termo "Jobs To Be Done" nomeado em 1999 — vertente quantitativa de outcome statements.
-- **Clayton Christensen e Michael Raynor** — *The Innovator's Solution* (2003) — popularização da vertente qualitativa, desenvolvida a partir do início dos anos 1990 em Harvard.
+- **Tony Ulwick** — Outcome-Driven Innovation, desenvolvida a partir de 1990; termo "Jobs To Be Done" nomeado em 1999 — vertente quantitativa de outcome statements. [Jobs to Be Done (JTBD): The Original Framework, by Tony Ulwick — Strategyn](https://strategyn.com/jobs-to-be-done/)
+- **Clayton Christensen e Michael Raynor** — *The Innovator's Solution* (2003) — popularização da vertente qualitativa, desenvolvida a partir do início dos anos 1990 em Harvard. [The Innovator's Solution — Harvard Business Review Press](https://books.google.com/books/about/The_Innovator_s_Solution.html?id=I5nBAgAAQBAJ)
 - **Bob Moesta** — desenvolvimento do método de switch interview e das quatro forças (push, pull, ansiedade, hábito) associado à vertente Christensen.
+
+> [!tip] Ouvir uma switch interview real
+> [The Jobs-to-be-Done Mattress Interview](https://jobstobedone.org/radio/the-mattress-interview-part-one/) — episódio do podcast Jobs-to-be-Done Radio em que Bob Moesta e Chris Spiek conduzem ao vivo uma switch interview completa sobre a compra de um colchão, demonstrando push, pull, ansiedade e hábito na prática.

@@ -56,6 +56,9 @@ Isso muda o que "escopo do projeto" significa: acesso a 3-5 conversas com usuár
 > **Por quê:** mesmo um gestor bem-intencionado e próximo do time reporta a própria interpretação do problema, filtrada pela posição dele — ele não sente a fricção do formulário de seis cliques porque nunca precisou preenchê-lo sob pressão de prazo, igual ao usuário real sente.
 > **Como evitar:** trate "eu represento o time" educadamente como um sinal, não como substituto — "ótimo, isso me dá contexto; ainda assim preciso de 15 minutos diretos com 2-3 pessoas do time para confirmar antes de fechar o fluxo".
 
+> [!tip] Buyer vs. end user não muda o método, muda a negociação de acesso
+> Teresa Torres e Petra Wille discutem por que a distinção entre quem compra e quem opera o produto em B2B não exige um método de pesquisa diferente — exige negociar acesso ao usuário real desde o início — [Product Discovery: B2B vs. B2C](https://www.producttalk.org/product-discovery-b2b-vs-b2c-all-things-product-podcast-with-teresa-torres-petra-wille/) (All Things Product Podcast).
+
 ## A ligação com pular a fase generativa
 
 O pedido pronto do cliente ("preciso de um dashboard", "quero um formulário de aprovação assim") é, na maioria das vezes, a solução que o próprio cliente já imaginou — não o problema dele descrito em aberto. Aceitar esse pedido sem investigar é pular a fase generativa por procuração (ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/06 - Generativa vs avaliativa|nota 06]]): você está fazendo pesquisa generativa com a pessoa errada — o cliente sabe o problema *dele*, de negócio, mas raramente sabe o problema de tarefa de quem vai operar o sistema, porque não é ele quem opera. A pergunta certa a devolver ao cliente não é "por que você quer isso" (ele vai responder com convicção, mas sobre o próprio problema) — é "quem vai preencher isso todo dia, e posso conversar com essa pessoa antes de desenhar o fluxo?".
