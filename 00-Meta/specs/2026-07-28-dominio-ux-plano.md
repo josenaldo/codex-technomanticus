@@ -45,6 +45,12 @@ disciplina, com a lente full-cycle aplicada dentro de cada nota.
   domínio ao seu público, não seção opcional.
 - **Toda nota responde "o que eu, sozinho, faço com isso na segunda-feira".** É a mitigação
   contra o eixo por disciplina virar enciclopédia.
+- **M1 (mídia verificada) é obrigatório em TODA nota** — decisão do usuário em 2026-07-28,
+  alinhando UX ao padrão do domínio Acessibilidade (21 vídeos verificados em 21 notas).
+  Sobrepõe-se à isenção parcial de M1 que a skill `verificar-nota` concede à fase Iniciado e
+  à regra de estado do `diagnosticar-galho` que fecharia a nota em `➖` por score. Uma nota
+  sem mídia verificada não fecha. Vale para as notas novas e, retroativamente, para as 14 já
+  escritas (ver Task 11).
 - **Não recopiar fronteira** — linkar. Ver a tabela de fronteiras da spec (9 entradas).
 - **Não inventar dados do usuário** (projetos/clientes/casos). Exemplos genéricos ou marcados.
 - **Não afirmar o não-verificado.** A spec lista 9 itens (seção "Rigor de fontes"); cada um
@@ -364,6 +370,34 @@ com Playwright MCP e visual regression.
 - [ ] **Passo 5:** atualizar memória (`project_*` de UX + linha no `MEMORY.md`).
 - [ ] **Passo 6:** commit de fechamento
   (`docs(ux): dominio UX COMPLETO — 49 notas + Ferramentas de Design 9/9`).
+
+---
+
+## Task 11: Retrofit de mídia (M1) nas 14 notas já escritas
+
+> Inserida em 2026-07-28, depois da decisão de tornar M1 obrigatório. Executa fora da ordem
+> numérica: roda logo após a Task 2, antes da Task 3, para que o padrão fique uniforme desde
+> cedo e não gere uma dívida crescente.
+
+**Files (Modify):**
+- `03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/01..05` (5 notas, SG1)
+- `03-Dominios/Engenharia/UX/Descoberta e Pesquisa/06..14` (9 notas, SG2)
+- os dois `roadmap.md` de sub-galho + `UX/roadmap.md` (reclassificar estados)
+
+**Estado atual:** 0 das 14 notas tem vídeo. O enriquecimento até aqui fechou 4 notas com
+podcast/URL de referência (08, 09 e duas do SG1); as outras 10 fecharam `➖` por score.
+
+**Critério de aceitação:** cada uma das 14 notas tem pelo menos uma mídia **verificada**
+(vídeo preferencialmente; podcast ou talk quando não houver vídeo bom). Verificada significa
+que a URL foi conferida e o conteúdo corresponde ao que a nota afirma — não basta plausível.
+Vale a constraint do domínio: não afirmar o não-verificado.
+
+- [ ] Para cada nota 01→14: buscar mídia pertinente, **verificar** a URL e o conteúdo,
+  inserir no padrão do vault (mesmo formato usado no domínio Acessibilidade), commitar.
+- [ ] Reclassificar os estados nos `roadmap.md` dos dois sub-galhos (`➖` por isenção de M1
+  deixa de ser válido).
+- [ ] Atualizar `UX/roadmap.md` e registrar a política de M1 obrigatório no `UX/index.md`,
+  para que quem retomar o domínio depois saiba a regra.
 
 ---
 
