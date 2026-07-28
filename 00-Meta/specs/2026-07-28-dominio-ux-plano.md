@@ -45,6 +45,15 @@ disciplina, com a lente full-cycle aplicada dentro de cada nota.
   domínio ao seu público, não seção opcional.
 - **Toda nota responde "o que eu, sozinho, faço com isso na segunda-feira".** É a mitigação
   contra o eixo por disciplina virar enciclopédia.
+- **Âncora de profundidade: o SG1, sempre — nunca o bloco anterior.** Descoberto na revisão
+  da Task 3 (2026-07-28): calibrar cada bloco pelo bloco imediatamente anterior faz a régua
+  descer sozinha, um degrau por vez (SG1: 138-187 linhas → SG2: 120-138 → SG4: 110-132, com
+  perda medível de substância). Toda nota nova se compara a
+  `Engenharia/UX/Fundamentos e Modelo Mental/02 - Affordances e signifiers.md`, o padrão
+  original aprovado. Em concreto, o piso qualitativo é: **3 casos práticos por nota** (cenário
+  · o que dá errado · correção específica) e a seção "praticável sozinho vs exige time" em
+  **prosa com justificativa**, não em tabela de frases curtas — o leitor precisa entender
+  *por que* algo exige time, não só *que* exige. O número de linhas não é meta; a densidade é.
 - **M1 (mídia verificada) é obrigatório em TODA nota** — decisão do usuário em 2026-07-28,
   alinhando UX ao padrão do domínio Acessibilidade (21 vídeos verificados em 21 notas).
   Sobrepõe-se à isenção parcial de M1 que a skill `verificar-nota` concede à fase Iniciado e
