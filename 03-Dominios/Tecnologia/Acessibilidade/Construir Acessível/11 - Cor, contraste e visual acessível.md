@@ -97,6 +97,79 @@ Dois pontos de fechamento sobre o visual:
 
 **Cor e contraste em uma frase:** contraste é o critério nº 1 em falhas e o mais "para todos" do WCAG — mire 4.5:1 no texto e 3:1 no resto, nunca comunique só por cor, e jamais apague o indicador de foco; tudo decidido nos design tokens, não por componente.
 
+> [!tip] Vídeo — Como checar cores acessíveis
+> [**How to check for accessible colors — A11ycasts #17**](https://www.youtube.com/watch?v=LBmLspdAtxM) (Chrome for Developers, 10 min) — Rob Dodson mostra, na prática, como usar o DevTools do Chrome para medir a razão de contraste de qualquer par de cores e ajustar até passar no 4.5:1/3:1 — o mesmo fluxo mental descrito nesta nota, só que com o mouse na mão.
+
+## Escala de contraste e a decisão "só cor?"
+
+A razão de contraste é uma reta contínua — 1:1 é invisível, 21:1 é o extremo teórico (preto puro sobre branco puro). Os limiares do WCAG marcam pontos nessa reta, e vale ter o mapa mental de onde cada um cai:
+
+```mermaid
+graph LR
+    A["1:1<br/>invisível<br/>(mesma cor)"] --> B["3:1<br/>mínimo AA<br/>texto grande / não-textual"]
+    B --> C["4.5:1<br/>mínimo AA<br/>texto normal"]
+    C --> D["7:1<br/>AAA<br/>texto normal"]
+    D --> E["21:1<br/>máximo<br/>preto puro / branco puro"]
+
+    style A fill:#D0021B,color:#fff
+    style B fill:#F5A623,color:#000
+    style C fill:#4A90D9,color:#fff
+    style D fill:#4A90D9,color:#fff
+    style E fill:#F5A623,color:#000
+```
+
+E antes mesmo de medir contraste, uma pergunta binária resolve boa parte dos casos do 1.4.1:
+
+```mermaid
+graph TD
+    Q["A cor é o único<br/>sinal da informação?"] -->|Sim| R["❌ Falha 1.4.1<br/>adicione texto, ícone,<br/>forma ou padrão"]
+    Q -->|Não, já tem<br/>outro sinal| S["✅ Verifique agora<br/>o contraste do sinal<br/>(1.4.3 / 1.4.11)"]
+
+    style Q fill:#4A90D9,color:#fff
+    style R fill:#D0021B,color:#fff
+    style S fill:#4A90D9,color:#fff
+```
+
+## Casos práticos
+
+**Dashboard com séries só por cor.** Um painel de métricas mostra três linhas num gráfico — receita, custo, margem — cada uma numa cor diferente, sem legenda direta no gráfico, só uma legenda lateral pareando cor a nome. Funciona para quem enxerga cor normalmente. Para 1 em 12 homens com daltonismo, duas das três linhas podem parecer a mesma cor, e a leitura do gráfico simplesmente quebra — não é que fique "mais difícil", é que a informação desaparece. A correção é a mesma regra do 1.4.1 aplicada a gráfico: rótulo direto na ponta de cada linha (sem precisar caçar na legenda), ou padrões de traço (sólido/tracejado/pontilhado) somados à cor, ou marcadores de forma diferente em cada série.
+
+**`outline: none` que cegou a navegação por teclado.** Um formulário de checkout teve o outline padrão do browser removido em um reset de CSS genérico (`* { outline: none; }`), porque "quebrava o visual" com o azul default do Chrome. Ninguém testou depois só com o teclado. Resultado: quem navega por Tab perde toda referência de onde está — clica errado, pula campos, ou trava sem saber usar mouse. A correção segue o padrão desta nota: trocar o reset cru por um `:focus-visible` desenhado (cor de marca, `outline-offset`, espessura de acordo com o 2.4.13), preservando o visual limpo no clique de mouse e devolvendo a bússola a quem usa teclado.
+
+## Armadilhas comuns
+
+> [!warning] `outline: none` sem substituto
+> **O que acontece:** o time remove o outline de foco porque "fica feio", e o usuário de teclado perde toda referência de onde está na página — navega apertando Tab no escuro.
+> **Por quê:** o outline é o *único* sinal visual de foco para quem não usa mouse. Removê-lo sem repor é apagar a única bússola do usuário de teclado.
+> **Como evitar:** nunca `outline: none` sozinho. Se o padrão do browser não agrada, desenhe um `:focus-visible` melhor — mais grosso, mais contrastado, com `outline-offset`. Remover é proibido; melhorar é bem-vindo.
+
+> [!warning] Texto secundário/placeholder cinza-claro demais
+> **O que acontece:** "texto de apoio" — placeholder de input, legenda de campo, texto desabilitado — recebe um cinza-claro "discreto" que passa longe do 4.5:1, porque a hierarquia visual (destacar o principal, apagar o secundário) é perseguida a qualquer custo de contraste.
+> **Por quê:** placeholder e texto secundário ainda são texto que carrega instrução ou contexto — o WCAG não abre exceção de contraste para eles só porque a intenção de design é "discreto". E placeholder tem um problema a mais: ele some quando o usuário digita, então também não pode ser a única fonte da instrução (conecta com o 1.3.1 da nota 07).
+> **Como evitar:** hierarquia visual se faz com peso de fonte, tamanho e espaçamento — não com contraste abaixo do mínimo. Meça o cinza "discreto" no mesmo checker que mede o texto principal; se falhar o 4.5:1, escureça.
+
+> [!warning] Branco puro sobre preto puro no dark mode
+> **O que acontece:** o tema escuro usa `#FFFFFF` de texto sobre `#000000` de fundo — no papel, 21:1, contraste máximo possível — mas para parte dos usuários (sobretudo com astigmatismo) o texto parece "vibrar" ou borrar, um efeito chamado *halation*.
+> **Por quê:** contraste máximo não é sinônimo de conforto de leitura; o WCAG mede legibilidade mínima, não confabilidade em pixels contíguos de luminância extrema — halation é um efeito óptico à parte, não capturado pela razão de contraste.
+> **Como evitar:** em dark mode, prefira quase-branco (algo como `#E8E8E8`–`#F0F0F0`) sobre quase-preto (`#121212`–`#1A1A1A`) em vez dos extremos puros. Ainda passa folgado no 4.5:1 e evita o efeito de vibração.
+
+## Como explicar em inglês
+
+In an interview, this is the kind of detail that signals you've actually shipped accessible UI, not just read about it: you'd say something like *"Color contrast is the single most common accessibility failure on the web, so we treat it as a design-token decision, not a per-component fix — every text and border color pair is checked against WCAG's 4.5:1 ratio for normal text and 3:1 for large text and non-text elements like form borders and icons. We also never encode meaning in color alone — error states get an icon and text, not just a red border — and we replace `outline: none` with a deliberate `:focus-visible` style instead of just deleting the browser default, so keyboard users never lose track of where they are."* That single sentence covers 1.4.3, 1.4.1, 1.4.11 and 2.4.7 — the four criteria this note is built on — in language a non-accessibility interviewer will still follow.
+
+| PT | EN |
+|----|----|
+| Razão de contraste | Contrast ratio |
+| Indicador de foco | Focus indicator |
+| Daltonismo | Color blindness / color vision deficiency |
+| Contraste não-textual | Non-text contrast |
+| Cor nunca sozinha | Color is never the only cue |
+| Baixa visão | Low vision |
+| Tema escuro | Dark mode |
+| Efeito de vibração (halation) | Halation |
+| Design tokens | Design tokens |
+| Texto grande / texto normal | Large text / normal text |
+
 ## O que vem a seguir
 
 Falta a última dimensão de construir: o conteúdo que não é texto nem widget — **vídeo, áudio e movimento**. Legendas para quem não ouve, alternativas para quem não pode ver a animação, e o respeito a quem sente mal-estar com movimento. Depois dela, o SG2 fecha e a trilha vira para *provar* que tudo isto funciona.

@@ -57,6 +57,38 @@ Uma biblioteca headless resolve, para cada componente, tudo o que é difícil e 
 
 E deixa por sua conta **exclusivamente o estilo** — você aplica suas classes, seu design system, seu Tailwind. Você fica com a aparência que quiser *e* com a acessibilidade que levaria dias para acertar. É o melhor dos dois mundos que a nota 05 (semântica) e a 09 (contratos) prometiam.
 
+O diagrama abaixo é a linha divisória que vale a pena gravar: tudo que fica à esquerda, a lib headless entrega pronto; tudo à direita continua sendo seu ofício, biblioteca nenhuma resolve por você.
+
+```mermaid
+flowchart LR
+    subgraph LIB["Biblioteca headless entrega"]
+        direction TB
+        A["Navegação por teclado<br/>(setas, Home/End, typeahead)"]
+        B["Gestão de foco<br/>(roving tabindex, focus trap, restauração)"]
+        C["Semântica ARIA<br/>(roles, states, properties do APG)"]
+        D["Estado e edge cases<br/>(controlado/não-controlado, RTL)"]
+    end
+
+    subgraph DEV["Continua sendo seu ofício"]
+        direction TB
+        E["Nome acessível<br/>(título, aria-label do conteúdo)"]
+        F["Composição e ordem de foco<br/>(entre widgets, troca de rota)"]
+        G["Não quebrar o que veio pronto<br/>(div no lugar de elemento focável, role sobrescrito)"]
+        H["Semântica das suas telas<br/>(headings, landmarks, formulários)"]
+    end
+
+    LIB -.->|"'headless' resolve o widget"| DEV
+
+    style A fill:#4A90D9,color:#fff
+    style B fill:#4A90D9,color:#fff
+    style C fill:#4A90D9,color:#fff
+    style D fill:#4A90D9,color:#fff
+    style E fill:#F5A623,color:#000
+    style F fill:#F5A623,color:#000
+    style G fill:#D0021B,color:#fff
+    style H fill:#F5A623,color:#000
+```
+
 ```jsx
 // exemplo com Radix: o contrato ARIA + teclado do "tabs" (nota 08) vem pronto
 import * as Tabs from '@radix-ui/react-tabs';
@@ -105,6 +137,32 @@ O erro mais caro que um time comete ao adotar essas libs é achar que instalou a
 Uma distinção que evita escolhas ruins: nem toda "component library" é headless. Kits **estilizados** (Material UI, Chakra, e afins) vêm com aparência pronta *e* com acessibilidade em graus variados — alguns muito bons, outros irregulares. Já os **headless** entregam só o comportamento. E há bibliotecas que são **só estilo** (coleções de CSS/componentes visuais) e não prometem a11y nenhuma — adotar uma dessas achando que resolve acessibilidade é como comprar um carro sem motor porque a lataria é bonita. Antes de adotar qualquer uma, a pergunta é direta: *esta biblioteca documenta e testa acessibilidade, ou só entrega pixels?*
 
 **A11y em React em uma frase:** o framework é neutro (e por isso tende ao inacessível); bibliotecas headless matam o custo dos widgets difíceis entregando lógica+teclado+foco+ARIA, mas nome acessível, composição, estrutura e "não quebrar" continuam sendo seu ofício.
+
+> [!tip] Vídeo — por que trocar componentes próprios por React Aria
+> [**Why You Should Use React Aria Components...**](https://www.youtube.com/watch?v=lTPh6NGLAmk) (Jolly Coding, 30 min) — percorre, na prática, exatamente a divisão desta nota: o que dói em construir um combobox/dropdown do zero em React e o que uma lib headless (React Aria, no caso) resolve de fato — versus o que continua sendo decisão de composição do seu app.
+
+## Casos práticos
+
+**Cenário 1 — o `<div onClick>` que passou no code review.** Um card de produto precisa ser clicável (abre a página de detalhe). Alguém escreve `<div className="card" onClick={abrirDetalhe}>…</div>` porque "visualmente já parece um card clicável" e o CSS de cursor `pointer` reforça a ilusão. Passa no review porque *funciona* com o mouse. Só que ninguém navegando por teclado chega até ali — o elemento não entra no tab order, não responde a `Enter`, e um leitor de tela o anuncia como texto solto, não como algo acionável. É o mesmo erro da nota 01, só que reencarnado em JSX: React não impediu, porque React não tem opinião sobre semântica — ele renderizou fielmente a `<div>` que foi pedida. A correção é trocar por `<button>` (ou, se precisa navegar, por um `<a>`/`<Link>`) e reaproveitar o estilo do card por cima do elemento certo.
+
+**Cenário 2 — "adotamos Radix, então terminou".** Um time troca seus modais e menus caseiros por primitivos do Radix e comemora: "agora estamos acessíveis". Três meses depois, uma auditoria (SG3) encontra: contraste de texto abaixo de 4.5:1 no tema escuro, headings pulando de `h1` para `h4` na página de configurações, e dois formulários sem `<label>` associado — nenhum desses problemas tem relação com o Radix, porque nenhum deles é sobre *widget*. O Radix garantiu foco e teclado corretos dentro dos componentes que ele controla; a cor, a estrutura de heading e o markup dos formulários sempre foram, e continuam sendo, decisão da aplicação. Isso é exatamente o `[!warning]` "Usamos Radix, então somos acessíveis" acima, só que acontecendo de verdade em produção.
+
+## Como explicar em inglês
+
+In an interview, this is a distinction worth being precise about: headless UI libraries in React — Radix, React Aria, Base UI — solve *component-level* accessibility. They ship the keyboard interaction, focus management, and ARIA semantics for hard widgets like comboboxes and menus, tested against the APG patterns. What they don't solve is *application-level* accessibility: the accessible name you give each instance, the focus order across your page composition, whether your own markup breaks the contract the library shipped, and the semantic structure of your screens — headings, landmarks, form labels. Adopting a headless library is necessary but not sufficient; teams that stop testing after adopting one are the most common accessibility regression I've seen in React codebases.
+
+| PT | EN |
+|----|----|
+| biblioteca headless | headless library |
+| biblioteca de componentes | component library |
+| nome acessível | accessible name |
+| semântica | semantics |
+| gestão de foco | focus management |
+| não quebrar (o contrato) | not breaking (the contract) |
+| composição | composition |
+| ordem de foco | focus order |
+| primitivos (unstyled) | (unstyled) primitives |
+| estrutura do documento | document structure |
 
 ## O que vem a seguir
 
