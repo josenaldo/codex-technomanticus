@@ -60,11 +60,13 @@ Nunca mais de um nível de modal aberto ao mesmo tempo. Um modal que abre outro 
 
 ## O que dá pra fazer sozinho, e o que não dá
 
-| Praticável sozinho | Exige time/orçamento |
-|---|---|
-| Aplicar a árvore de decisão desta nota a cada tarefa nova de UI antes de escolher o componente | Design system com componentes de modal/drawer/página já testados e acessíveis por padrão |
-| Implementar gestão de foco básica (foco ao abrir, restauração ao fechar) num modal simples | Auditoria de acessibilidade completa cobrindo todos os modais existentes do produto |
-| Refatorar um modal que cresceu demais para virar página, sincronizando estado com a URL | Migração de roteamento de larga escala quando muitos modais precisam virar páginas ao mesmo tempo |
+Praticável sozinho, com o mesmo raciocínio desta nota:
+
+- **Aplicar a árvore de decisão desta nota a cada tarefa nova de UI** antes de escolher o componente — o custo é só parar por um minuto e responder as duas perguntas do fluxograma, em vez de escolher por hábito ou pela opção mais rápida de implementar.
+- **Implementar gestão de foco básica** (foco ao abrir, restauração ao fechar) num modal simples — não exige biblioteca especial, só algumas linhas de JavaScript e a disciplina de testar com o teclado antes de considerar o modal pronto.
+- **Refatorar um modal que cresceu demais para virar página**, sincronizando estado com a URL — trabalho de engenharia real, mas que uma pessoa sozinha consegue planejar e executar, especialmente se pegar o problema cedo, como no Cenário 1 abaixo.
+
+Exige estrutura de time quando a consistência precisa valer para o produto inteiro, não só para uma tela: um **design system com componentes de modal/drawer/página já testados e acessíveis por padrão** só compensa o investimento de construção quando várias equipes vão reaproveitar os mesmos componentes — para uma tela isolada, implementar a gestão de foco à mão é mais barato do que montar (ou adotar) um sistema completo. Uma **auditoria de acessibilidade completa cobrindo todos os modais existentes do produto** exige varrer uma base de código inteira e, tipicamente, ferramentas ou especialistas de acessibilidade — uma pessoa sozinha consegue corrigir um modal por vez, mas não tem como garantir cobertura completa sem esse esforço coordenado. E uma **migração de roteamento de larga escala**, quando muitos modais de um produto maduro precisam virar páginas ao mesmo tempo, é projeto de várias sprints com risco de regressão em fluxos existentes — bem diferente de refatorar um único modal, que uma pessoa consegue isolar e testar sozinha.
 
 ## Casos práticos
 
@@ -73,6 +75,9 @@ Retomando o cenário de abertura: o modal de dois campos que virou dez campos, u
 
 ### Cenário 2: drawer de detalhe numa lista de pedidos
 Uma tela de "todos os pedidos" em formato de tabela precisa mostrar o detalhe de um pedido ao clicar numa linha. Um modal esconderia a tabela inteira atrás de uma sobreposição escura — perdendo o contexto de "qual linha eu cliquei" assim que o usuário olha para outro lugar da tela. Uma página nova exigiria um recarregamento completo de navegação para uma tarefa que, na prática, dura poucos segundos (ver o detalhe, fechar, olhar outro pedido). Um drawer lateral resolve os dois problemas: a tabela continua visível e destacada ao fundo, e o usuário pode abrir vários pedidos em sequência sem nunca perder a lista de vista.
+
+### Cenário 3: a suíte de teste que não consegue chegar direto no modal
+Um time de QA tenta escrever um teste automatizado para "usuário edita o nome do projeto" e descobre que não existe forma nenhuma de navegar direto para esse estado — porque "modal de edição aberto" só existe depois de simular, em memória de componente, o clique físico no botão que o abre; nunca aparece na URL. Cada teste da suíte precisa repetir a sequência inteira de cliques até chegar no modal, o que torna os testes mais lentos e mais frágeis a qualquer mudança de layout nas telas anteriores ao modal em si. Uma página própria, com sua rota, deixaria o teste navegar direto para o estado que importa — o mesmo custo de engenharia (estado que não mora na URL) que prejudica quem dá suporte tentando compartilhar um link prejudica também quem escreve os testes.
 
 ## Armadilhas comuns
 
