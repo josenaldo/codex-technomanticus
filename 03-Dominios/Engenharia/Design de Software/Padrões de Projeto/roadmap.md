@@ -31,7 +31,7 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 | # | Família | Fonte canônica | Notas (est.) | Sobreposição | Estado | roadmap |
 |---|---------|----------------|-------------:|--------------|--------|---------|
 | 1 | **Clássicos (GoF)** | Gang of Four (1994) | 23 | baixa | ✅ **COMPLETA 23/23** (2026-07-28) | [[Padrões de Projeto/Clássicos (GoF)/roadmap\|folha]] |
-| 2 | **Acesso a Dados** | Fowler PoEAA + J2EE + NoSQL/cloud | ~16 | média (Java/Dados) | ⬜ roster provisório abaixo | a criar |
+| 2 | **Acesso a Dados** | Fowler PoEAA + J2EE + NoSQL | 15 | média (Java/Dados) | 🔶 escrita em curso — Iniciado 6/6 (40%) | [[Padrões de Projeto/Acesso a Dados/roadmap\|folha]] |
 | 3 | **Integração Empresarial (EIP)** | Hohpe & Woolf | ~14 | baixa | ⬜ roster provisório abaixo | a criar |
 | 4 | **Aplicação Corporativa** | Fowler PoEAA (não-dados) | ~14 | baixa | ⬜ roster provisório abaixo | a criar |
 | 5 | **Arquitetura de Eventos** | EDA moderna | ~10 | **alta** (Comunicação) | ⬜ roster provisório abaixo | a criar |
@@ -55,11 +55,12 @@ Sequência escolhida (valor pro ofício de legado primeiro, maior sobreposição
 
 > Capturados agora para **evitar drift** na tarefa longa. São provisórios — cada família ganha roadmap-folha detalhado (fases, escopo por nota, custo) quando for a vez dela.
 
-### Família 2 — Acesso a Dados (~16)
-Design da lógica: **Transaction Script** · **Domain Model** · **Table Module** (o "objeto que representa a tabela") · **Service Layer**.
-Data source: **DAO** (J2EE) · **Active Record** · **Row Data Gateway** · **Table Data Gateway** · **Data Mapper** · **Repository** · **Unit of Work** · **Identity Map** · **Lazy Load** · **Query Object** · **Record Set** · Metadata Mapping / ORM sob o capô.
-NoSQL: modelagem por **agregado** · **single-table design** (DynamoDB) · **materialized view** · **polyglot persistence**.
-Cloud: **Cache-Aside** · read replicas · sharding (entradas curtas + link p/ Cloud).
+### Família 2 — Acesso a Dados (15) — **CORTE FECHADO 2026-07-28**, ver [[Padrões de Projeto/Acesso a Dados/roadmap|roadmap-folha]]
+Iniciado: 01 Panorama · 02 Transaction Script · 03 Domain Model · 04 Table Module (Service Layer como seção) · 05 DAO · 06 Active Record.
+Adepto: 07 Gateways (Row/Table Data Gateway + Record Set) · 08 Data Mapper · 09 Repository · 10 Unit of Work · 11 Identity Map · 12 Lazy Load · 13 Query Object.
+Magus: 14 agregado + single-table (DynamoDB) · 15 polyglot persistence + materialized views.
+**Lente adaptada:** cross-ORM (AR=Rails/Django/Eloquent; Data Mapper=Hibernate/SQLAlchemy/Doctrine; Repository=Spring Data), não cross-linguagem pura. Eixo dorsal: **Active Record × Data Mapper**.
+**Movidos p/ fora:** Cache-Aside · sharding · read-replicas → família 6 (Nuvem e Resiliência) / Cloud (não são acesso a dados).
 
 ### Família 3 — Integração Empresarial / EIP (~14)
 Subset curado dos 65 de Hohpe & Woolf: **Message Channel** · **Message** · **Pipes and Filters** · roteamento (**Content-Based Router**, **Message Filter**, **Recipient List**, **Splitter**, **Aggregator**, **Resequencer**) · **Message Translator/Normalizer** · **Canonical Data Model** · endpoints (**Polling vs Event-Driven Consumer**, **Competing Consumers**, **Idempotent Receiver**) · **Guaranteed Delivery** · **Dead Letter Channel** · **Message Bus vs Broker**. Alto valor legado (ESBs, MOM, Camel/MuleSoft).
