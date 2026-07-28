@@ -63,6 +63,11 @@ Uma entrevista de descoberta de 30 minutos, seguindo o espírito do Mom Test, te
 > [!question]- E se o entrevistado insistir em falar da minha ideia antes de eu perguntar?
 > Redirecione de volta para o concreto: "antes disso, me ajuda a entender melhor — como você resolve isso hoje?". Não é falta de educação interromper uma opinião hipotética; é a diferença entre coletar dado e coletar validação vazia.
 
+> [!tip] Vídeo — o próprio Rob Fitzpatrick explicando o Mom Test
+> [**The Mom Test with Rob Fitzpatrick**](https://www.youtube.com/watch?v=Az-KSGBECH8) (Brian Rhea, 56min) é uma entrevista longa com o autor do livro, cobrindo a "armadilha do elogio" (*compliment trap*), por que perguntas sobre o futuro produzem cortesia em vez de fato, e como reformular perguntas em torno do passado concreto — o mesmo mecanismo central desta nota, direto da fonte.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Az-KSGBECH8)
+
 ## Ensinado, e usado, fora do hype
 
 *The Mom Test* foi publicado em 2013 e segue em uso amplo mais de uma década depois — é o livro mais indicado como ponto de entrada para quem nunca fez entrevista de cliente, precisamente por ser curto e sem jargão de metodologia de pesquisa. É ensinado em programas de empreendedorismo de Harvard e do MIT, e empresas como Shopify e Skyscanner o citam como referência para entrevista de descoberta com cliente. Não é uma técnica de nicho: é o piso mínimo de rigor para qualquer conversa que vai informar uma decisão de produto.

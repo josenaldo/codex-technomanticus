@@ -62,6 +62,11 @@ No exemplo de abertura: "as pessoas confiam num resumo gerado automaticamente" t
 
 **O mecanismo em uma frase:** assumption mapping não pergunta "isso funciona?" de forma genérica — pergunta "qual das apostas escondidas nessa solução, se estiver errada, derruba tudo, e o quanto eu já sei sobre ela?", e testa essa primeiro.
 
+> [!tip] Vídeo — David Bland conduzindo um assumption mapping
+> [**Testing Business Ideas: Assumptions Mapping Webinar**](https://www.youtube.com/watch?v=Am598Cbq5gU) (David J Bland, 38min) é o próprio coautor de *Testing Business Ideas* explicando e conduzindo o exercício de assumption mapping — desejabilidade, viabilidade, factibilidade, e como posicionar cada premissa no quadrante de importância × evidência, na prática e com exemplos reais de time.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=Am598Cbq5gU)
+
 ## Facilitando sozinho
 
 O exercício cabe numa sessão de 30-60 minutos, sozinho ou com o cliente presente (o que ajuda a alinhar expectativa sobre o que ainda é incerto):

@@ -55,6 +55,11 @@ O leitor deste domínio não tem esse trio — a mesma constatação que abre o 
 > [!question]- Se eu não tenho entrevista semanal contínua, a OST ainda faz sentido?
 > Faz — só que como **ferramenta de organização pontual**, não como hábito contínuo no sentido literal do livro. Você monta a árvore uma vez, no início do projeto, com o que as entrevistas de descoberta já revelaram, e a revisita sempre que uma conversa nova (mesmo isolada) traz uma oportunidade nova. A disciplina que sobrevive à falta de cadência semanal é a de nunca pular direto de "conversa com cliente" para "solução construída" sem passar pelos nós de oportunidade no meio.
 
+> [!tip] Vídeo — Teresa Torres explica a OST em conversa ao vivo
+> [**Talking Methods: Driving better outcomes with Teresa Torres' OST**](https://www.youtube.com/watch?v=hHzsau3t_zY) (Mural, 14min52) é uma conversa ao vivo com a própria autora do método, explicando como a Opportunity Solution Tree ajuda times a equilibrar o que é bom para o negócio e o que é bom para o cliente — a origem do conceito de outcome/oportunidade/solução usado nesta nota, contada por quem o criou.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=hHzsau3t_zY)
+
 ## A versão de bolso: papel ou whiteboard
 
 A versão de bolso da OST não precisa de ferramenta digital nem de FigJam colaborativo — um papel grande, um whiteboard, ou até um documento de texto com indentação já cumprem a função, porque o valor está na estrutura, não na ferramenta:
