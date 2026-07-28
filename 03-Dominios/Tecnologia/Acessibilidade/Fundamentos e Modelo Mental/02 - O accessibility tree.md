@@ -93,7 +93,49 @@ O accessibility tree não é abstrato — você pode inspecioná-lo agora. No De
 > [!info] O hábito que separa o time-ofício
 > Times que tratam a11y como ofício abrem a aba Accessibility do jeito que abrem o Console: reflexo. Escreveu um componente interativo? Confere o role e o name na árvore antes de dar por pronto. É o equivalente a rodar o código antes de commitar — você não *supõe* que o name está certo, você *vê*. A auditoria manual completa (com esse hábito no centro) é assunto do [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|SG3, nota 15]].
 
+> [!tip] Vídeo — inspecionar a árvore no DevTools
+> [**How to use Chrome's accessibility tree**](https://www.youtube.com/watch?v=pJL6qtfYkBo) (Pope Tech, 6 min) faz o passeio prático que esta seção descreve: abrir a aba Accessibility, ler o role e o accessible name computados, e ver de qual fonte o nome veio. Assista com o seu próprio DevTools aberto ao lado.
+
 **Accessibility tree em uma frase:** é o "DOM que o leitor de tela lê" — uma árvore paralela onde cada nó vira role + name + state + value, e onde tudo que era só visual desaparece.
+
+## Casos práticos
+
+### Cenário 1: o ícone que não tinha nome
+Um botão de "favoritar" com um ícone de coração passa em toda revisão visual, mas o leitor de tela anuncia só "botão". Abrindo a aba Accessibility, o dev vê o *name* computado como string vazia: o `<svg>` não é texto, não há `aria-label`, não há `<label>`. A correção é uma linha — `aria-label="Adicionar aos favoritos"` no botão e `aria-hidden="true"` no ícone — e o name passa a computar corretamente. O diagnóstico saiu da adivinhação ("por que não fala?") para a mecânica (name vazio na cascata).
+
+### Cenário 2: o `<h2>` que virou aba e sumiu do sumário
+Um time transforma cabeçalhos em abas com `<h2 role="tab">`. Resultado na árvore: o role `tab` **substitui** o role `heading`, e aquele texto desaparece da navegação por cabeçalhos do leitor de tela. Na aba Accessibility, o nó agora aparece como `tab`, não `heading` — a estrutura de sumário que o usuário de leitor de tela usava para escanear a página foi apagada sem ninguém perceber visualmente.
+
+## Armadilhas comuns
+
+> [!warning] Presumir que "está na tela" significa "está na árvore"
+> **O que acontece:** informação transmitida só visualmente (uma cor de status, uma borda de erro, uma posição hierárquica) não chega ao leitor de tela.
+> **Por quê:** a árvore de acessibilidade só carrega o que é *estrutura*, não *aparência*. CSS não entra na árvore.
+> **Como evitar:** toda informação essencial precisa existir como estrutura (texto, role, estado ARIA), não apenas como estilo visual.
+
+> [!warning] `aria-hidden="true"` num elemento focável
+> **O que acontece:** você esconde da árvore um elemento que ainda recebe foco por teclado; o usuário tabula para um "buraco negro" que o leitor de tela não anuncia.
+> **Por quê:** `aria-hidden` remove o nó da árvore, mas não do tab order — as duas coisas ficam dessincronizadas.
+> **Como evitar:** nunca use `aria-hidden` em algo focável. Esconda o ícone decorativo (não-focável), não o controle.
+
+> [!warning] Confiar no `title` como nome acessível
+> **O que acontece:** um botão de ícone usa só `title="Excluir"` esperando que vire o nome — mas o `title` está no fim da cascata e tem suporte irregular entre leitores de tela.
+> **Por quê:** o algoritmo de cálculo do nome prioriza `aria-labelledby`, `aria-label` e conteúdo antes do `title`; muitos leitores nem o anunciam.
+> **Como evitar:** use `aria-label` (ou texto visível) para o nome; reserve o `title` para dicas complementares, nunca como rótulo principal.
+
+## Como explicar em inglês
+
+> "The browser builds a second tree alongside the DOM — the **accessibility tree** — and that's the only thing assistive technology sees. It reduces each node to four things: **role** (what it is), **name** (what it's called), **state** (its current condition), and **value**. Anything that's purely visual — a border, a color, a position — doesn't exist in that tree unless it's encoded as structure. When a screen reader 'won't announce something,' it's almost always the accessible **name** computing empty."
+
+| PT | EN |
+|----|-----|
+| árvore de acessibilidade | accessibility tree |
+| nome acessível | accessible name |
+| papel / estado / valor | role / state / value |
+| cálculo do nome acessível | accessible name computation |
+| DOM paralelo | parallel tree / second tree |
+| elemento decorativo | decorative element |
+| esconder da árvore | hide from the tree (`aria-hidden`) |
 
 ## O que vem a seguir
 

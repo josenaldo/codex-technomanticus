@@ -57,6 +57,19 @@ Pegue o eixo motor, "usar um único braço":
 
 A interface que funciona com um braço só serve às três. O mesmo vale para os outros eixos: alguém cego / alguém em recuperação de cirurgia ocular / alguém dirigindo ao sol com o parabrisa estourando de luz. Alguém surdo / alguém com uma otite / alguém num bar barulhento.
 
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+graph LR
+    P["Permanente<br/>um braço"] --> S["a mesma interface<br/>de um-braço-só"]
+    T["Temporário<br/>braço quebrado"] --> S
+    Si["Situacional<br/>bebê no colo"] --> S
+    S --> M["26 mil permanentes<br/>+20 milhões no total"]
+    style P fill:#4A90D9,color:#fff
+    style T fill:#F5A623,color:#000
+    style Si fill:#F5A623,color:#000
+    style M fill:#4A90D9,color:#fff
+```
+
 > [!info] "Solve for one, extend to many"
 > É o lema do Inclusive Design, e o número que o sustenta é eloquente. Nos EUA, cerca de **26 mil pessoas por ano** sofrem perda permanente de membro superior. Mas se você somar quem tem uma limitação **temporária ou situacional** do mesmo tipo, o número passa de **20 milhões**. Você desenha para os 26 mil; você entrega para os 20 milhões. A acessibilidade permanente é a *especificação de borda* que, uma vez atendida, cobre uma população enorme de casos transitórios que ninguém rotularia como "deficiência".
 
@@ -74,6 +87,9 @@ O mesmo padrão se repete o tempo todo no digital, e reconhecê-lo é o que tran
 - **HTML semântico** foi feito para leitores de tela — e é exatamente o que o Google lê para ranquear a página. Acessibilidade e SEO técnico são, em boa medida, a mesma disciplina vista de dois ângulos.
 
 Quando você entende o *curb-cut effect*, o argumento de negócio deixa de ser caridade e passa a ser engenharia: acessibilidade é robustez. Uma interface que sobrevive a "e se a pessoa não puder ver / ouvir / usar o mouse / ler rápido?" é uma interface que sobrevive a *contextos*, e contexto é onde o software real vive.
+
+> [!tip] Vídeo — a origem das rampas de meio-fio
+> [**Accessibility: The Curb Cut Effect**](https://www.youtube.com/watch?v=PJoax1Z1x4Y) (Extra Credits, 7 min) conta a história por trás do conceito e mostra, com exemplos de jogos e software, como projetar para a exclusão melhora o produto para todos. É a versão narrada do princípio desta seção.
 
 ## O caso de negócio, em três frentes
 
@@ -97,6 +113,46 @@ Nenhum dos dois times é mais inteligente que o outro. A diferença é **quando*
 Isso *não* significa abandonar ferramentas — axe, Lighthouse e testes automatizados são parte essencial do ofício, e o [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/index|SG3]] é dedicado a eles. Significa que a ferramenta é a *rede de segurança*, não o *método*. Ela pega os deslizes; ela não desenha a interface por você. Aliás, o próprio WebAIM Million mostra o limite de tratar a ferramenta como método: as páginas que *mais* usavam ARIA tinham **mais que o dobro** de erros das que não usavam — gente aplicando atributos de acessibilidade sem entender o ofício, e piorando as coisas. Sobre esse paradoxo, a nota [[03-Dominios/Tecnologia/Acessibilidade/Fundamentos e Modelo Mental/05 - Semântica primeiro, ARIA por último|05]] tem muito a dizer.
 
 **A11y em uma frase:** não é uma coisa que você *checa* no produto pronto — é uma forma de *construir* que pergunta, a cada componente, quem ficaria de fora e por quê.
+
+## Casos práticos
+
+### Cenário 1: o checkout que perde 5% em silêncio
+Um e-commerce percebe que a taxa de abandono no checkout é alta, mas o funil não mostra erro nenhum — nenhuma exceção, nenhum log. Uma auditoria descobre que o botão "Finalizar" é uma `<div>` com `onClick`: quem navega por teclado (por lesão, preferência ou tecnologia assistiva) **não consegue clicá-lo**. Não há "bug" registrável, mas uma fatia de clientes que chega até o fim simplesmente não completa a compra. O prejuízo é real e invisível — o retrato de por que a11y é decisão de construção, não verificação. (A remediação completa desse checkout é o [[03-Dominios/Tecnologia/Acessibilidade/21 - Capstone - auditar e remediar um produto do zero|capstone]].)
+
+### Cenário 2: a legenda que virou padrão do produto
+Um time adiciona legendas aos vídeos do onboarding "para conformidade". Meses depois, a analítica mostra que a **maioria** dos usuários assiste com legenda ligada — não por surdez, mas porque assistem no transporte, sem fone, ou porque leem mais rápido do que ouvem. A feature de acessibilidade virou a experiência preferida da base inteira: o *curb-cut effect* medido no próprio produto, transformando um "custo de conformidade" em melhoria de engajamento.
+
+## Armadilhas comuns
+
+> [!warning] Tratar a11y como fase de QA no fim do sprint
+> **O que acontece:** a acessibilidade vira um ticket aberto na sexta, depois de a feature estar "pronta"; ele entra no backlog e envelhece enquanto a exclusão vai pra produção.
+> **Por quê:** a arquitetura inacessível já cristalizou (a `<div>` no lugar do `<button>`, o foco não gerenciado). Corrigir depois é caro e feito às cegas; corrigir durante o código custa minutos.
+> **Como evitar:** pergunte "quem não consegue usar isto?" *enquanto* escreve cada componente, não depois. A11y é decisão de implementação, não etapa de verificação.
+
+> [!warning] Reduzir acessibilidade ao "usuário cego"
+> **O que acontece:** o time projeta só pensando em leitor de tela e ignora deficiência motora, auditiva e cognitiva — e a maior parte da baixa visão, que nem usa leitor de tela.
+> **Por quê:** a imagem mental do "usuário cego" é incompleta; a deficiência tem quatro eixos e um espectro (permanente/temporário/situacional) que atinge, em algum momento, quase todo mundo.
+> **Como evitar:** pense no espectro. A pessoa que se beneficia da sua interface acessível é, muitas vezes, você mesmo mês que vem — de pulso torcido, filho no colo ou tela ao sol.
+
+> [!warning] Enxergar a11y como caridade, não como robustez
+> **O que acontece:** acessibilidade é vendida internamente como "a coisa certa a fazer" e perde toda priorização frente a features.
+> **Por quê:** sem enquadramento de engenharia e negócio, a11y vira item moral opcional. Mas ela é robustez (sobrevive a contextos), mercado (16% da população), risco legal e SEO.
+> **Como evitar:** defenda a11y com os três eixos de negócio — mercado, risco jurídico, qualidade/SEO — e o *curb-cut effect*. É gestão de risco e qualidade, não filantropia.
+
+## Como explicar em inglês
+
+> "Accessibility isn't a checklist you run at the end — it's a **build-time decision** made in every component. The question to ask while coding is *who can't use this, and why?* And it's not just about blind users: disability is a **spectrum** — permanent, temporary, and situational — so the person who benefits from an accessible interface is often a sighted user with a broken wrist, a baby in their arms, or a screen in bright sunlight. That's the **curb-cut effect**: what you fix for the few improves the product for everyone."
+
+| PT | EN |
+|----|-----|
+| acessibilidade | accessibility (a11y) |
+| ofício, não checklist | a craft, not a checklist |
+| deficiência | disability |
+| espectro (permanente/temporário/situacional) | spectrum (permanent/temporary/situational) |
+| efeito rampa de meio-fio | curb-cut effect |
+| pessoas com deficiência | people with disabilities |
+| barreira | barrier |
+| tecnologia assistiva | assistive technology |
 
 ## O que vem a seguir
 

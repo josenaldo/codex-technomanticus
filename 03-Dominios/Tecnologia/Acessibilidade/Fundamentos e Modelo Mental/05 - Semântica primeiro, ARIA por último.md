@@ -85,7 +85,62 @@ Nada disto é "ARIA é ruim, nunca use". ARIA existe porque o HTML **não tem** 
 
 A regra de bolso: **ARIA para o que o HTML não tem; HTML para tudo o que ele já tem.** E o teste honesto antes de escrever qualquer atributo ARIA é a pergunta "existe um elemento HTML que já faz isto?". Na maioria das vezes, existe.
 
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+graph TD
+    Q{"Existe um elemento HTML<br/>que já faz isto?"}
+    Q -->|sim| N["Use o nativo<br/>role, foco, teclado de graça ✓"]
+    Q -->|não| A{"É widget novo, atualização<br/>dinâmica ou relação?"}
+    A -->|sim| U["Use ARIA — e cumpra o<br/>contrato INTEIRO (estado + teclado)"]
+    A -->|não| N
+    style N fill:#4A90D9,color:#fff
+    style U fill:#F5A623,color:#000
+```
+
 **Semântica primeiro em uma frase:** o HTML certo entrega role, name, foco e teclado de graça e sem bugs — ARIA é a exceção cara e sem rede que só se justifica quando o nativo genuinamente não alcança.
+
+> [!tip] Vídeo — a armadilha do ARIA em 2 minutos
+> [**The ARIA Trap: Are You Falling For It?**](https://www.youtube.com/watch?v=ldSW_zxqUC0) (Easy A11y Guide, 2 min) resume, curto e direto, por que "adicionar ARIA" costuma piorar a acessibilidade e por que a primeira regra é não usá-lo. Um bom lembrete para colar na parede do time.
+
+## Casos práticos
+
+### Cenário 1: a `<div>` "botão" que custou uma reescrita
+Um componente de botão do design system foi feito com `<div role="button" tabindex="0">` mais um listener de teclado — "para facilitar o CSS". Meses depois, descobre-se que o listener trata só `Enter`, não `Espaço`, e quebra a rolagem da página. Cada uso do componente herdou a falha. A correção definitiva foi trocar a base por `<button>` com `all: unset` no CSS: a semântica volta de graça, o CSS continua livre, e a dívida some de todas as telas de uma vez.
+
+### Cenário 2: o checkbox que mentia
+Um "checkbox" customizado usa `role="checkbox"` mas esquece de atualizar `aria-checked` no clique. Visualmente marca e desmarca; para o leitor de tela, anuncia sempre "não marcado". A árvore está *mentindo*. A lição: trocar pelo `<input type="checkbox">` nativo (que reporta o estado sozinho) ou, se ARIA for inevitável, mudar estado visual e `aria-checked` na mesma linha — nunca um sem o outro.
+
+## Armadilhas comuns
+
+> [!warning] Mudar a semântica nativa de um elemento
+> **O que acontece:** você escreve `<h2 role="tab">` e destrói o cabeçalho para fabricar uma aba — o texto some da navegação por cabeçalhos do leitor de tela.
+> **Por quê:** o role ARIA *substitui* o role nativo na árvore. Reaproveitar um elemento semântico apaga a semântica que ele já tinha.
+> **Como evitar:** use um elemento neutro (`<div>`/`<span>`) como base do widget ARIA, nunca um elemento com semântica própria que você precisa preservar.
+
+> [!warning] Dar role interativo sem implementar o teclado
+> **O que acontece:** você adiciona `role="button"` ou `role="tab"` mas o elemento não responde às teclas esperadas — o leitor de tela anuncia um controle que não funciona.
+> **Por quê:** ARIA muda o que a AT *anuncia*, não o que o elemento *faz*. Declarar um role é assinar um contrato de comportamento de teclado.
+> **Como evitar:** todo controle ARIA interativo precisa ser operável por teclado como o nativo equivalente. Se você não vai implementar o teclado, use o elemento nativo.
+
+> [!warning] Estado ARIA dessincronizado do estado visual
+> **O que acontece:** o `aria-expanded`/`aria-checked`/`aria-selected` não acompanha a mudança visual, e a AT anuncia o oposto do que está na tela.
+> **Por quê:** o browser não valida as promessas do ARIA; ele repassa o que você declarou, verdadeiro ou não.
+> **Como evitar:** mude o estado ARIA e o estado visual na **mesma** ação de código. Melhor ainda: use o elemento nativo, que reporta o estado sozinho.
+
+## Como explicar em inglês
+
+> "The **first rule of ARIA is: don't use ARIA**. Native HTML gives you the right role, focus, keyboard handling, and state for free and without bugs, while ARIA is a promise *you* have to keep by hand — and getting it wrong is worse than not making the promise. The data backs this: pages that use ARIA average more than **double** the accessibility errors of pages that don't. So: semantics first, ARIA only when the platform genuinely lacks the element — a combobox, a tabs widget — and then I honor the whole contract: role, state, and keyboard."
+
+| PT | EN |
+|----|-----|
+| semântica primeiro | semantics first |
+| semântica nativa | native semantics |
+| as cinco regras do ARIA | the five rules of ARIA |
+| nome acessível | accessible name |
+| operável por teclado | keyboard operable |
+| widget complexo | complex widget |
+| região dinâmica (live region) | live region |
+| "nenhum ARIA é melhor que ARIA ruim" | "no ARIA is better than bad ARIA" |
 
 ## O que vem a seguir
 

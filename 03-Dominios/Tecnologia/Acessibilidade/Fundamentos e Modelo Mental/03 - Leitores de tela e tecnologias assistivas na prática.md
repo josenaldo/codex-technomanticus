@@ -43,6 +43,19 @@ Aqui está o conceito que mais confunde quem nunca usou um leitor de tela — e 
 
 O leitor de tela tenta trocar de modo automaticamente com base no *role* do elemento em foco. Entrou num `<input>`? Vira modo de foco. Saiu? Volta pro modo de navegação. E é exatamente aí que ARIA mal-usado cobra o preço: se você constrói um widget complexo com roles errados, o leitor de tela troca de modo na hora errada — o usuário aperta a seta esperando navegar e a página faz outra coisa, ou digita e o texto não entra. O bug não está "no leitor de tela"; está no fato de que a árvore mentiu sobre o que aquele elemento era.
 
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+stateDiagram-v2
+    [*] --> Navegacao
+    Navegacao: Modo de navegação (browse)
+    Navegacao: teclas H/K/B e setas comandam o LEITOR
+    Foco: Modo de foco (forms)
+    Foco: teclas passam para a APLICAÇÃO (digitar, setas no widget)
+    Navegacao --> Foco: foco entra em input/widget<br/>(role interativo)
+    Foco --> Navegacao: foco sai do campo
+    note right of Foco: role errado = troca na hora errada = bug fantasma
+```
+
 ## O mundo é plural: não existe "o" leitor de tela
 
 Um erro caro é desenvolver testando com um único leitor de tela e presumir que os outros se comportam igual. Os dados da **pesquisa WebAIM com usuários de leitores de tela** (edição #10, virada de 2023 para 2024, mais de 1.500 respondentes) desenham um cenário fragmentado:
@@ -70,6 +83,49 @@ Leitor de tela é o exemplo mais citado, mas o guarda-chuva das *assistive techn
 O fio que costura todas: elas dependem da **mesma árvore de acessibilidade** e das mesmas propriedades (role, name, state, value). Construir bem para o leitor de tela quase sempre serve as outras — o *curb-cut effect* operando dentro do próprio universo da a11y.
 
 **Leitores de tela em uma frase:** não leem a tela linearmente — saltam pela estrutura (cabeçalhos, landmarks, links) e alternam entre um modo de ler e um modo de interagir, o que só funciona se a sua árvore de acessibilidade for honesta sobre o que cada elemento é.
+
+> [!tip] Vídeo — ver (e ouvir) um leitor de tela em uso
+> [**Screen Reader Demo — NVDA & TalkBack**](https://www.youtube.com/watch?v=ZYFd9t-omRY) (NCDIT) mostra pessoas reais navegando páginas por som — saltando por cabeçalhos, preenchendo formulários, atravessando um site sem ver a tela. Vale assistir aos primeiros minutos: é o jeito mais rápido de entender por que estrutura importa tanto. Se puder, feche os olhos enquanto ouve.
+
+## Casos práticos
+
+### Cenário 1: o portal de notícias sem cabeçalhos
+Um portal usa `<div class="titulo-grande">` para todos os "títulos". Visualmente perfeito. Mas o usuário de leitor de tela aperta `H` para saltar de manchete em manchete e **nada acontece** — não há `<h1>`–`<h6>` para saltar. Sem o sumário navegável, ele é obrigado a ouvir a página inteira em ordem linear, atravessando menu, banner e cookies antes da primeira notícia. A correção é trocar as `<div>` por headings reais em hierarquia coerente; o custo visual é zero (o CSS controla o tamanho).
+
+### Cenário 2: testar num leitor só e quebrar no outro
+Um time desenvolve testando apenas VoiceOver no Mac e entrega. Em produção, usuários de NVDA+Windows (a maior fatia combinada) relatam que um widget de abas não navega por setas. O comportamento **divergiu** entre leitores — exatamente o que os 72% de usuários multi-leitor da pesquisa preveem. A régua realista teria pego: testar ao menos NVDA+Chrome e VoiceOver+iOS.
+
+## Armadilhas comuns
+
+> [!warning] Presumir que o leitor de tela lê a página de cima a baixo
+> **O que acontece:** o time projeta assumindo leitura linear e não fornece estrutura de salto (cabeçalhos, landmarks), tornando a página exaustiva de navegar.
+> **Por quê:** usuários experientes escaneiam por saltos estruturais, não ouvem tudo. Sem estrutura, os saltos não têm em que se apoiar.
+> **Como evitar:** forneça hierarquia de cabeçalhos, landmarks (`<nav>`/`<main>`) e listas semânticas — os "atalhos" que o leitor de tela usa para escanear.
+
+> [!warning] Pular níveis de cabeçalho por tamanho de fonte
+> **O que acontece:** um `<h1>` é seguido por um `<h3>` porque "o `<h3>` tinha o tamanho visual certo", furando o sumário.
+> **Por quê:** nível de cabeçalho é *semântica* (a hierarquia), não *tamanho* (problema do CSS). Um degrau faltando confunde quem navega por `H`.
+> **Como evitar:** escolha o nível pela hierarquia lógica e ajuste o tamanho com CSS. Nunca use o número do heading para controlar aparência.
+
+> [!warning] Testar com um único leitor de tela
+> **O que acontece:** o produto funciona no leitor testado e quebra nos outros — sobretudo em widgets ARIA, onde o comportamento diverge mais.
+> **Por quê:** JAWS, NVDA e VoiceOver se comportam diferente, e a maioria dos usuários usa mais de um. Um só leitor não representa a base.
+> **Como evitar:** teste ao menos com NVDA+Chrome (maior fatia no Windows) e VoiceOver no iOS (cobre o mobile, quase universal).
+
+## Como explicar em inglês
+
+> "A screen reader doesn't read the page top to bottom like an audiobook. Experienced users **scan by jumping** — pressing `H` to move heading to heading, listing all links, jumping to landmarks. So structure isn't decoration; it's the navigation. Also, there isn't *one* screen reader: **JAWS, NVDA, and VoiceOver** coexist, most users use more than one, so I test with at least NVDA on Windows and VoiceOver on iOS — behavior diverges, especially in ARIA widgets."
+
+| PT | EN |
+|----|-----|
+| leitor de tela | screen reader |
+| modo de navegação / modo de foco | browse mode / focus (forms) mode |
+| saltar por cabeçalho | jump by heading |
+| navegar por landmark | navigate by landmark |
+| tecnologia assistiva | assistive technology |
+| ampliador de tela | screen magnifier |
+| controle por voz / por switch | voice control / switch control |
+| display de braille | braille display |
 
 ## O que vem a seguir
 

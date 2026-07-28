@@ -95,6 +95,48 @@ O medo de "86 critérios" some quando você usa a hierarquia a seu favor. Uma or
 
 **WCAG em uma frase:** não é uma lista para marcar no fim — é uma hierarquia de princípios a critérios testáveis, mirando o nível **AA**, onde cada critério é um problema humano conhecido transformado em régua verificável.
 
+> [!tip] Vídeo — o panorama do WCAG por um editor da spec
+> [**A WCAG Overview — WCAG 2.1 and 2.0 Explained**](https://www.youtube.com/watch?v=rIebSHUZz_w) (Eric Eggert, 14 min) percorre a estrutura princípios→diretrizes→critérios→níveis por quem trabalha na própria especificação. É a versão comentada do mapa desta nota; vale para fixar o POUR e a lógica dos níveis A/AA/AAA.
+
+## Casos práticos
+
+### Cenário 1: priorizar por severidade num backlog de 80 critérios
+Um time recebe um relatório com dezenas de violações e paralisa. Aplicando a hierarquia do WCAG, a ordem aparece: primeiro os critérios de **nível A** (bloqueios totais — sem `alt`, sem teclado), depois os **AA** mais furados na prática (contraste 1.4.3, nome/papel/valor 4.1.2), cruzando com a criticidade da tela (checkout antes de "Sobre"). Em vez de 80 tarefas soltas, um plano ordenado por "quanto bloqueia × onde".
+
+### Cenário 2: o novo critério 2.4.11 pego numa revisão de design
+Ao migrar para a régua 2.2, o time descobre que o menu *sticky* do topo cobre o elemento focado quando se tabula para uma seção — violação do novo **2.4.11 (Foco Não Obscurecido)**. É exatamente o bug do modal que perde o foco, agora com número de critério. A correção (ajustar `scroll-margin`/offset para o foco nunca ficar atrás do header) entra no design system, resolvendo em todas as telas de uma vez.
+
+## Armadilhas comuns
+
+> [!warning] Mirar AAA globalmente
+> **O que acontece:** o time promete "conformidade AAA" e trava, porque vários critérios AAA são incompatíveis com o produto (jargão inevitável, limites de tempo por segurança).
+> **Por quê:** o próprio W3C diz que AAA não é alcançável em todo conteúdo; é meta para *partes* críticas, não alvo global.
+> **Como evitar:** mire **AA** como padrão (é o alvo legal quase universal) e aplique AAA pontualmente onde faz sentido.
+
+> [!warning] Confundir nível de conformidade com prioridade de conserto
+> **O que acontece:** o time conserta todos os A antes de qualquer AA, mesmo quando um AA está no checkout e o A está no rodapé.
+> **Por quê:** o nível é um bom *proxy* inicial de severidade, mas o impacto no fluxo é o desempate. Uma falha AA no fluxo de receita dói mais que uma A numa página institucional.
+> **Como evitar:** ordene por nível **e** por criticidade da tela (severidade × onde), não só pelo nível.
+
+> [!warning] Tratar WCAG como lista de tarefas do fim
+> **O que acontece:** os 86 critérios viram um checklist rodado na véspera do release, gerando milhares de violações impossíveis de conferir a tempo.
+> **Por quê:** critérios como contraste e `alt` são triviais de checar isoladamente mas aparecem aos milhares — a conta só fecha se a decisão entra no momento em que cada elemento é escrito.
+> **Como evitar:** use WCAG como guia de decisão *durante* o código, não como auditoria de fim. Cada critério é um problema humano a evitar, não uma caixa a marcar.
+
+## Como explicar em inglês
+
+> "WCAG is a **hierarchy**, not a checklist: four **POUR** principles — Perceivable, Operable, Understandable, Robust — break down into guidelines and then into **86 testable success criteria**, each tagged **A, AA, or AAA**. The practical and legal target is **AA**. I read each criterion as the human problem it encodes — 1.4.3 is contrast for low vision, 2.1.1 is keyboard operability — so it drives decisions while I build, instead of being a form I fill at the end."
+
+| PT | EN |
+|----|-----|
+| critério de sucesso | success criterion |
+| nível de conformidade (A/AA/AAA) | conformance level |
+| perceptível/operável/compreensível/robusto | perceivable/operable/understandable/robust |
+| diretriz | guideline |
+| régua / alvo | benchmark / target |
+| foco não obscurecido | focus not obscured |
+| tamanho do alvo | target size |
+
 ## O que vem a seguir
 
 Você tem o *modelo* (árvore + ATs) e a *régua* (WCAG AA). Falta o **primeiro mandamento de execução**, aquele que faz mais critérios passarem com menos esforço: usar o elemento HTML certo antes de alcançar qualquer atributo ARIA. É contraintuitivo o quanto do WCAG se cumpre "de graça" só por escolher `<button>` em vez de `<div>` — e o quanto ARIA mal-usado ativamente *quebra* a conformidade.

@@ -16,7 +16,7 @@ recém-escritas, já em contexto; sem fan-out de subagentes).
 
 **Galho:** `03-Dominios/Tecnologia/Acessibilidade/Fundamentos e Modelo Mental`
 **Diagnóstico:** 2026-07-28
-**Última execução:** —
+**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (5/5 ✅)**
 
 ## Régua de análise
 
@@ -37,10 +37,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 5 |
-| ⬜ pendente | 5 |
+| ⬜ pendente | 0 |
 | ➖ não precisa | 0 |
-| ✅ feita | 0 |
-| % concluído | 0% |
+| ✅ feita | 5 |
+| % concluído | 100% |
 
 > Núcleo (E1·E2·E5·L2·P2) íntegro nas 5 notas. Gaps concentrados em **M1 (mídia — a 2ª fase), E6/E7 (inglês), E8 (armadilhas), E4 (casos práticos)** e Mermaid onde falta. Nenhuma nota abaixo do piso de conteúdo.
 
@@ -49,7 +49,7 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
 ## Notas
 
 #### 01 - A11y é ofício, não checklist   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** ~113 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E3, E4, E6, E7, E8, M1
 - **Score:** 6/12
@@ -58,10 +58,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar seção "Como explicar em inglês" + tabela PT↔EN (a11y/deficiência/inclusão) → ativa E6, E7
   - Converter as 3 frentes do "caso de negócio" ou o espectro em `## Casos práticos` (≥2 cenários) → ativa E4
   - Opcional: 1 diagrama Mermaid do espectro permanente/temporário/situacional → ativa E3
-- **Resultado:** —
+- **Resultado:** ✅ M1 (vídeo verificado via yt-dlp) + inglês (E6/E7) + armadilhas (E8) + casos práticos (E4) + Mermaid (E3) adicionados 2026-07-28
 
 #### 02 - O accessibility tree   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** ~110 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E4, E6, E7, E8, M1
 - **Score:** 7/12 (E3 presente)
@@ -70,10 +70,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar seção de inglês + tabela PT↔EN (accessibility tree/accessible name/role) → ativa E6, E7
   - Converter o exemplo do botão-lixeira num `## Casos práticos` com 2º cenário (ex.: link vs botão) → ativa E4
   - Considerar `[!warning]` para 2–3 armadilhas de name computation → ativa E8
-- **Resultado:** —
+- **Resultado:** ✅ M1 (vídeo verificado via yt-dlp) + inglês (E6/E7) + armadilhas (E8) + casos práticos (E4) + Mermaid (E3) adicionados 2026-07-28
 
 #### 03 - Leitores de tela e tecnologias assistivas na prática   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** ~86 linhas reais (parágrafos longos, sem hard-wrap; conteúdo denso ~1.660 palavras) · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E3, E4, E6, E7, E8, M1
 - **Score:** 6/12
@@ -82,10 +82,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar seção de inglês + tabela PT↔EN (screen reader/browse mode/focus mode) → ativa E6, E7
   - Diagrama Mermaid dos dois modos (navegação↔foco) e a transição → ativa E3
   - `## Casos práticos` (ex.: navegar por cabeçalhos vs. por landmarks num portal) → ativa E4
-- **Resultado:** —
+- **Resultado:** ✅ M1 (vídeo verificado via yt-dlp) + inglês (E6/E7) + armadilhas (E8) + casos práticos (E4) + Mermaid (E3) adicionados 2026-07-28
 
 #### 04 - WCAG 2.2 pelo ofício   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** ~110 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E4, E6, E7, E8, M1
 - **Score:** 7/12 (E3 presente)
@@ -94,10 +94,10 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Adicionar seção de inglês + tabela PT↔EN (success criterion/conformance level/POUR) → ativa E6, E7
   - `## Casos práticos`: aplicar POUR a 2 componentes reais (ex.: um form, um carrossel) → ativa E4
   - `[!warning]` para armadilhas de leitura de critério (mirar AAA global, confundir nível com prioridade) → ativa E8
-- **Resultado:** —
+- **Resultado:** ✅ M1 (vídeo verificado via yt-dlp) + inglês (E6/E7) + armadilhas (E8) + casos práticos (E4) + Mermaid (E3) adicionados 2026-07-28
 
 #### 05 - Semântica primeiro, ARIA por último   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** ~102 linhas reais · fase: Iniciado · status: seedling
 - **Núcleo/gaps:** E3, E4, E6, E7, M1 (E8 parcial: 1 [!warning], falta ≥3)
 - **Score:** 7/12
@@ -107,4 +107,4 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   - Ampliar armadilhas para ≥3 `[!warning]` (div-como-botão, role sem teclado, aria-hidden em focável) → ativa E8
   - `## Casos práticos`: div-botão vs button, e um widget onde ARIA é legítimo → ativa E4
   - Opcional: Mermaid da árvore de decisão "nativo resolve? → senão ARIA" → ativa E3
-- **Resultado:** —
+- **Resultado:** ✅ M1 (vídeo verificado via yt-dlp) + inglês (E6/E7) + armadilhas (E8) + casos práticos (E4) + Mermaid (E3) adicionados 2026-07-28
