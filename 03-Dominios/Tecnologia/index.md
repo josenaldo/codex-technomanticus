@@ -43,6 +43,7 @@ cuidam das particularidades de cada stack e linkam pras disciplinas neutras de
 - [[03-Dominios/Tecnologia/CSS/index|CSS]] — estilo, layout (Flexbox/Grid), responsividade
 - [[03-Dominios/Tecnologia/Tooling e Build/index|Tooling e Build]] — bundlers, transpilação, package managers, monorepos
 - [[03-Dominios/Tecnologia/Ferramentas/index|Ferramentas]] — ferramentas do dia a dia do dev
+- [[03-Dominios/Tecnologia/Ferramentas de Design/index|Ferramentas de Design]] — Figma, geradores de UI por IA, protótipo em código, pipeline de tokens (a metade volátil do domínio de [[03-Dominios/Engenharia/UX/index|UX]])
 - [[03-Dominios/Tecnologia/Terminal/index|Terminal]] — shell, dotfiles, CLI
 - [[03-Dominios/Tecnologia/RPA/index|RPA]] — automação de processos
 
