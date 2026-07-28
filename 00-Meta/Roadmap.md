@@ -3,7 +3,7 @@ title: "Roadmap de Trilhas"
 type: moc
 publish: true
 created: 2026-06-25
-updated: 2026-07-27
+updated: 2026-07-28
 status: growing
 tags:
   - moc
@@ -113,7 +113,7 @@ aliases:
 
 | Trilha                                                                                  | Estado | Nota                                                                                                                           |
 | --------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| [[03-Dominios/Engenharia/Design de Software/index\|Design de Software]]                 | 🟡     | 25 notas, 2 galhos (SOLID, OO, Patterns)                                                                                       |
+| [[03-Dominios/Engenharia/Design de Software/index\|Design de Software]]                 | 🟡     | OO ✅ (13) + SOLID ✅ (8). **Design Patterns escalou de "1 galho" para galho-pai [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap\|Padrões de Projeto]]** (catálogo de consulta p/ sênior/legado, lente cross-linguagem Java/TS/Python/Go, peso no "quando NÃO usar"): 6 famílias, ~90-100 notas, construção sequencial. **Família 1 (Clássicos/GoF, ~23) com roadmap-folha pronto, escrita a começar** (2026-07-28). Monólito `Design Patterns.md` a podar ao fechar GoF. |
 | [[03-Dominios/Engenharia/Segurança/index\|Segurança]]                                   | 🟡     | 23 notas; consolidar                                                                                                           |
 | [[03-Dominios/Engenharia/Testes/index\|Testes]]                                         | 🟡     | 17 notas (geral/conceitual) — **falta a vertente "Testes no ecossistema JS"** (Vitest, Jest, Testing Library, Playwright, MSW) |
 | [[03-Dominios/Engenharia/Complexidade de Software/index\|Complexidade de Software]]     | 🟡     | 17 notas                                                                                                                       |
@@ -157,7 +157,7 @@ aliases:
 - ~~**Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML~~ ✅ **domínio próprio 100% COMPLETO (escrito + enriquecido) 2026-07-28**: `Tecnologia/Acessibilidade`, 4 sub-galhos + capstone, **21 notas**, progressão *entender → construir → auditar → sustentar*, lente dupla WCAG↔ofício. Fecha o **último buraco de construção nova do Tier 1** (Go ✅ · Cloud ✅ · **a11y ✅**). Cada nota com vídeo YouTube verificado + inglês + armadilhas. Ver [[03-Dominios/Tecnologia/Acessibilidade/index|índice]].
 
 **Tier 2 — consolidação de 🟡 (conteúdo existe, falta virar trilha atômica em 3 fases)**
-- **Design de Software** (25 notas, só SOLID + OO) — falta galho de Design Patterns + atomização no padrão capítulo.
+- **Design de Software** — OO ✅ + SOLID ✅. **EM CURSO (2026-07-28):** o antigo "galho de Design Patterns" foi promovido a galho-pai **[[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|Padrões de Projeto]]** — um **catálogo de consulta** para o sênior (inclusive legado), com lente cross-linguagem (Java/TS/Python/Go) e peso no "quando NÃO usar". **6 famílias** (Clássicos/GoF · Acesso a Dados · Integração Empresarial/EIP · Aplicação Corporativa/PoEAA · Arquitetura de Eventos · Nuvem e Resiliência), ~90-100 notas, construção **sequencial**. Roadmaps montados; **família Clássicos (GoF) em curso — bloco Iniciado 6/6 escrito (26%), index criado (2026-07-28)**. Rosters das 6 famílias capturados no roadmap-pai (anti-drift).
 - **Segurança** (23 notas) — consolidar em trilha.
 - **Testes conceitual** (17 notas) — vertente JS já feita à parte ([[03-Dominios/Tecnologia/Testes JS/index\|Testes JS]]); falta atomizar o conceitual.
 - **Complexidade de Software** (17 notas) — consolidar.
