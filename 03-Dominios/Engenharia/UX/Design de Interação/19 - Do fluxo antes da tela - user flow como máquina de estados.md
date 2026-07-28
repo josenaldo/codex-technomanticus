@@ -61,11 +61,13 @@ Note que o diagrama acima tem **quatro estados de erro** e só **um** caminho fe
 
 ## O que dá pra fazer sozinho, e o que não dá
 
-| Praticável sozinho | Exige time/orçamento |
-|---|---|
-| Desenhar o fluxo de uma feature nova em papel, Excalidraw ou um bloco Mermaid no README antes de abrir o editor | Sessão de fluxo colaborativa com PM, design e stakeholders de negócio validando cada ramificação |
-| Listar sistematicamente "o que acontece se isso falhar?" para cada passo do fluxo feliz | Teste de usabilidade observando pessoas reais navegando o fluxo desenhado |
-| Versionar o fluxo como Mermaid no próprio repositório, ao lado do código que o implementa | Ferramenta dedicada de fluxo (FigJam, Whimsical) com biblioteca de componentes compartilhada pelo time |
+Praticável sozinho, sem esperar orçamento nem aprovação de ninguém:
+
+- **Desenhar o fluxo antes de abrir o editor** — papel, Excalidraw, ou um bloco Mermaid direto no README da feature. O custo é só o tempo de pensar antes de codar, e o retorno aparece na primeira vez que um branch de erro que teria sido esquecido aparece no papel em vez de aparecer como chamado de suporte em produção.
+- **Perguntar sistematicamente "e se isso falhar?" para cada passo do caminho feliz** — não exige ferramenta nenhuma, só a disciplina de tratar cada seta do diagrama como uma pergunta em aberto até ter uma resposta explícita, mesmo que a resposta seja "mostra uma mensagem de erro genérica por enquanto".
+- **Versionar o fluxo como Mermaid no próprio repositório**, ao lado do código que o implementa — o mesmo raciocínio de versionar um ADR: o artefato sobrevive à saída de quem o desenhou e fica revisável em code review, em vez de existir só na memória de quem participou da reunião.
+
+Já exige estrutura de time — não porque essas etapas sejam "melhores" em abstrato, mas porque dependem de recursos que uma pessoa sozinha não controla. Uma **sessão de fluxo colaborativa** com PM, design e stakeholders de negócio precisa da agenda de várias pessoas porque cada ramificação de negócio (o que conta como "e-mail existe na base", o que é considerado fraude, que exceção o jurídico exige) mora no conhecimento distribuído entre elas — uma pessoa sozinha, por mais cuidadosa, não tem acesso a esse conhecimento completo para validar o fluxo com segurança. Um **teste de usabilidade observando pessoas reais navegando o fluxo desenhado** exige recrutar participantes e conduzir um roteiro de observação: sem isso, o fluxo continua sendo uma hipótese bem desenhada, não um fato validado, por mais completo que pareça no diagrama. E uma **ferramenta dedicada de fluxo com biblioteca compartilhada** (FigJam, Whimsical) só paga seu custo de licença e curva de aprendizado quando várias pessoas do time precisam editar o mesmo fluxo ao mesmo tempo — para uma pessoa só, Mermaid versionado no repositório já resolve o mesmo problema sem nenhum custo adicional.
 
 ## Casos práticos
 
@@ -74,6 +76,9 @@ Um fractional engineer implementa um checkout de e-commerce a partir de um wiref
 
 ### Cenário 2: o fluxo de convite que nunca tinha "convite expirado"
 Uma feature de "convidar colega para o workspace" foi implementada com só duas telas: "enviar convite" e "aceitar convite". Em produção, usuários reportavam clicar num link de convite de duas semanas atrás e ver uma tela em branco — o componente quebrava silenciosamente porque o convite já tinha expirado e a resposta da API vinha em formato inesperado, não tratado. Redesenhando o fluxo como diagrama de estados, "convite expirado" vira um estado de primeira classe com sua própria tela e mensagem, em vez de um caso não modelado que produz um bug visual.
+
+### Cenário 3: duas portas de entrada tratadas como se fossem uma só
+Um produto tem dois pontos de entrada para criar conta: cadastro direto pela home, e aceite de convite recebido por e-mail de outro usuário do mesmo workspace. O time desenhou (e implementou) só o fluxo de cadastro direto; o fluxo de convite foi tratado informalmente como "a mesma coisa, só com o e-mail pré-preenchido", sem desenhar separadamente. Na prática, o convite tem estados que o cadastro direto nunca tem: convite já aceito antes por engano, convite para um workspace que foi excluído nesse meio-tempo, pessoa que já tem conta em outro workspace e recebe um convite novo. Cada um desses vira bug em produção precisamente porque nunca foi um estado desenhado — o gatilho diferente (nota 19, "gatilho" na abertura do fluxo) exige uma máquina de estados diferente, mesmo quando o destino final ("conta criada") parece o mesmo nos dois casos.
 
 ## Armadilhas comuns
 
