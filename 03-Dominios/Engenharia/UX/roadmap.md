@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — UX
 
-Roadmap do domínio `03-Dominios/Engenharia/UX` (raiz de domínio / galho-pai). Rastreia o **estado dos 8 sub-galhos + capstone**. Domínio recém-estruturado (scaffold) em 2026-07-28. Fonte do roster: `index.md` + [[00-Meta/specs/2026-07-28-dominio-ux-design|design 2026-07-28]] + plano em `.superpowers/sdd/2026-07-28-dominio-ux-plano/`. SG1 fechado (5/5 escritas + enriquecidas) em 2026-07-28. SG2 fechado (9/9 escritas + diagnosticadas + enriquecidas) em 2026-07-28.
+Roadmap do domínio `03-Dominios/Engenharia/UX` (raiz de domínio / galho-pai). Rastreia o **estado dos 8 sub-galhos + capstone**. Domínio recém-estruturado (scaffold) em 2026-07-28. Fonte do roster: `index.md` + [[00-Meta/specs/2026-07-28-dominio-ux-design|design 2026-07-28]] + plano em `.superpowers/sdd/2026-07-28-dominio-ux-plano/`. SG1 fechado (5/5 escritas + enriquecidas) em 2026-07-28. SG2 fechado (9/9 escritas + diagnosticadas + enriquecidas) em 2026-07-28. SG4 fechado (7/7 escritas + diagnosticadas, 0 gaps de núcleo) em 2026-07-28.
 
 **Nível:** raiz de domínio (contém sub-galhos).
 
@@ -42,7 +42,7 @@ Roadmap do domínio `03-Dominios/Engenharia/UX` (raiz de domínio / galho-pai). 
 | 1 | Fundamentos e Modelo Mental | 5 | 5 | 100% | Iniciado | ✅ completo |
 | 2 | Descoberta e Pesquisa | 9 | 9 | 100% | Iniciado/Adepto | ✅ completo |
 | 3 | Arquitetura de Informação | 4 | 0 | 0% | Adepto | 📋 desenhado, não iniciado |
-| 4 | Design de Interação | 7 | 0 | 0% | Adepto | 📋 desenhado, não iniciado |
+| 4 | Design de Interação | 7 | 7 | 100% | Adepto | ✅ completo |
 | 5 | Linguagem Visual e Design System | 7 | 0 | 0% | Adepto/Magus | 📋 desenhado, não iniciado |
 | 6 | UX Writing e Content Design | 5 | 0 | 0% | Adepto | 📋 desenhado, não iniciado |
 | 7 | Medir, Validar e Sustentar | 8 | 0 | 0% | Magus | 📋 desenhado, não iniciado |
@@ -76,11 +76,11 @@ Ao fechar um sub-galho (semear + enriquecer até ✅), abrir o próximo nesta or
 | Métrica | Valor |
 |---------|-------|
 | Sub-galhos | 8 |
-| ✅ completos | 2 |
+| ✅ completos | 3 |
 | 🔶 em construção | 0 |
-| 📋 desenhados, não iniciados | 6 |
+| 📋 desenhados, não iniciados | 5 |
 | Notas totais (8 sub-galhos + capstone) | 48 + 1 = **49** |
-| Notas escritas | 14 (29%) |
+| Notas escritas | 21 (43%) |
 
 ---
 
@@ -89,6 +89,7 @@ Ao fechar um sub-galho (semear + enriquecer até ✅), abrir o próximo nesta or
 1. ✅ Scaffold do domínio (este roadmap + `index.md` + 8 `index.md` de sub-galho + galho `Ferramentas de Design`) — Task 0, 2026-07-28.
 2. ✅ **SG1 — Fundamentos e Modelo Mental:** 5/5 notas escritas + enriquecidas (2 substantivo, 3 sem gap de núcleo). Ver [[03-Dominios/Engenharia/UX/Fundamentos e Modelo Mental/roadmap|roadmap do sub-galho]] — Task 1, 2026-07-28.
 3. ✅ **SG2 — Descoberta e Pesquisa:** 9/9 notas escritas + diagnosticadas + enriquecidas (2 substantivo — notas 08 e 09 —, 7 sem gap de núcleo). Ver [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/roadmap|roadmap do sub-galho]] — Task 2, 2026-07-28.
-4. ⬜ **SG4 — Design de Interação** (7 notas) — próximo da ordem de execução → 5. **SG6 — UX Writing e Content Design** (5) → 6. **SG5 — Linguagem Visual e Design System** (7) → 7. **SG3 — Arquitetura de Informação** (4) → 8. **SG7 — Medir, Validar e Sustentar** (8) → 9. **SG8 — Ética e Ofício** (3), nesta ordem.
-5. ⬜ [[03-Dominios/Tecnologia/Ferramentas de Design/roadmap|Ferramentas de Design]] (9 notas) — por último entre os galhos, por ser o mais perecível.
-6. ⬜ Capstone — **Do requisito ao produto validado** — fecha o domínio.
+4. ✅ **SG4 — Design de Interação:** 7/7 notas escritas + diagnosticadas (0 gaps de núcleo, 7 `➖ não precisa`, scores 11-12/12). Ver [[03-Dominios/Engenharia/UX/Design de Interação/roadmap|roadmap do sub-galho]] — Task 3, 2026-07-28.
+5. ⬜ **SG6 — UX Writing e Content Design** (5 notas) — próximo da ordem de execução → **SG5 — Linguagem Visual e Design System** (7) → **SG3 — Arquitetura de Informação** (4) → **SG7 — Medir, Validar e Sustentar** (8) → **SG8 — Ética e Ofício** (3), nesta ordem.
+6. ⬜ [[03-Dominios/Tecnologia/Ferramentas de Design/roadmap|Ferramentas de Design]] (9 notas) — por último entre os galhos, por ser o mais perecível.
+7. ⬜ Capstone — **Do requisito ao produto validado** — fecha o domínio.
