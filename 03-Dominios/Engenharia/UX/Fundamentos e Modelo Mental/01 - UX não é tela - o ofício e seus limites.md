@@ -74,6 +74,9 @@ O leitor deste domínio **é o trio inteiro**. Ele entrevista o cliente (papel d
 
 **A ideia em uma frase:** UX não é a tela porque é o processo — pesquisa, arquitetura, interação, linguagem visual, escrita e medição — que decide o que a tela deveria ser; e o engenheiro full-cycle exerce esse processo inteiro porque não tem quem divida com ele.
 
+> [!tip] Onde o PM e o UX se cruzam — e o que isso significa quando é a mesma pessoa
+> Anna Kaley, da Nielsen Norman Group, discute em vídeo curto onde as funções de product management e UX deveriam se sobrepor e onde deveriam se separar num time normal — o que ajuda a ver com clareza qual parte desse atrito o engenheiro fractional absorve sozinho. [Product & UX Partnerships (NN/g)](https://www.nngroup.com/videos/product-ux-partnerships/)
+
 ## O que dá pra fazer sozinho, e o que não dá
 
 Essa é a promessa central deste domínio, e ela se repete em cada nota das 48 que seguem: nunca fingir que dá pra fazer tudo sozinho só porque você é o trio inteiro. Tem coisa que **exige** estrutura — orçamento, tempo, uma amostra estatisticamente válida, ou um risco alto demais para uma pessoa decidir sem revisão externa. Fingir que dá é o erro mais caro que um engenheiro solo pode cometer nessa área, porque o preço não aparece no código — aparece meses depois, em decisão errada tomada com confiança de sobra.
