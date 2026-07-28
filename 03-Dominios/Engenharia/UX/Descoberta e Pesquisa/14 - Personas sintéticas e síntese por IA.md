@@ -54,6 +54,11 @@ A correspondência entre resposta sintética e tendência humana real é fraca e
 > **Por quê:** LLMs são otimizados para gerar texto fluente e verossímil, não para representar a distribuição real de opiniões de um grupo humano — as duas coisas parecem a mesma coisa de fora, mas não são.
 > **Como evitar:** trate qualquer resposta de persona sintética como hipótese de brainstorming, nunca como evidência — a mesma disciplina que a [[03-Dominios/Engenharia/UX/Descoberta e Pesquisa/12 - Proto-persona vs persona de verdade|nota 12]] já pede para proto-personas humanas, aplicada com ainda mais rigor aqui, porque o risco de confundir "soa real" com "é real" é maior.
 
+> [!tip] Vídeo — o outro lado, contado por quem usa a ferramenta na prática
+> [**Synthetic User Research Explained | How AI Is Changing UX**](https://www.youtube.com/watch?v=o3Ex5o8ewUM) (UX India, 22min) é uma entrevista com Sonal, lead product designer numa empresa B2B, sobre por que o time dela recorreu a personas sintéticas — falta de acesso a usuário real em B2B, orçamento, prazo — e as ressalvas éticas que ela mesma nomeia: "são usuários falsos", exige transparência, e não dispensa intervenção humana. Vale menos como endosso do método e mais como retrato honesto da pressão real que empurra times para esse atalho — o mesmo risco central desta nota, contado do lado de quem cedeu à tentação.
+>
+> 🎬 [Assistir no YouTube](https://www.youtube.com/watch?v=o3Ex5o8ewUM)
+
 ## Onde a ferramenta ajuda de verdade: ideação e pré-triagem
 
 A recomendação desta nota não é evitar completamente ferramentas de IA nessa área — é restringir o uso a onde o risco de errar é baixo e reversível: **gerar hipóteses para testar depois com gente real**, nunca como substituto de dado primário.

@@ -51,6 +51,11 @@ Esse processo — entrevista em volume, síntese qualitativa rigorosa, validaç�
 
 **O mecanismo em uma frase:** a diferença entre proto-persona e persona de verdade não é o formato do documento — é se cada afirmação nele tem uma entrevista real por trás, ou só a convicção de quem escreveu.
 
+> [!tip] Vídeo — proto-personas explicadas pela NN/g
+> [**Proto Personas**](https://www.nngroup.com/videos/proto-personas/) (Samhita Tankala, NN/g, 3min) explica que proto-personas capturam o conhecimento e as suposições que o time *já tem* sobre os usuários atuais — sem pesquisa nova — e por isso devem ser usadas com cautela. Reforço direto da distinção central desta nota: proto-persona é hipótese de time, não persona validada por pesquisa.
+>
+> 🎬 [Assistir no NN/g](https://www.nngroup.com/videos/proto-personas/)
+
 ## Quando um workshop de 1h basta, e quando não basta
 
 A proto-persona é praticável e legítima — não é "pesquisa de segunda categoria", é a ferramenta certa para o momento certo:

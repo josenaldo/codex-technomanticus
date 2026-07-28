@@ -54,6 +54,11 @@ O segundo erro, tão comum quanto o primeiro e presente no cenário de abertura 
 
 **O mecanismo em uma frase:** 5 usuários capturam ~85% dos problemas de um design — mas só se forem 5 usuários reais, e só na primeira de três rodadas; o número por si só não é a garantia, o processo completo é.
 
+> [!tip] Vídeo — Jakob Nielsen sobre teste com 5 usuários
+> [**Usability Testing w. 5 Users: Design Process**](https://www.nngroup.com/videos/usability-testing-w-5-users-design-process/) (Jakob Nielsen, NN/g, 4min) é o próprio autor da regra explicando por que o teste formativo com poucos participantes por rodada — em vez de um estudo único e caro — libera orçamento para testar mais iterações de design. Primeiro de uma série de 3 vídeos da NN/g sobre o método.
+>
+> 🎬 [Assistir no NN/g](https://www.nngroup.com/videos/usability-testing-w-5-users-design-process/)
+
 ## Steve Krug: o método DIY que envelheceu bem
 
 **Steve Krug**, em *Don't Make Me Think* (2000) e *Rocket Surgery Made Easy* (2010), desenhou o método de teste guerrilha especificamente para times **sem pesquisador dedicado** — o público exato deste domínio. O roteiro de Krug envelheceu bem apesar dos exemplos de interface datados: observar sem guiar, pedir para o usuário "pensar em voz alta" enquanto tenta completar uma tarefa real, e resistir ao impulso de ajudar quando ele trava — porque o travamento é exatamente o dado que você está coletando. O princípio central de Krug ("um usuário confuso não é seu problema pessoal, é dado") é atemporal porque descreve como observar comportamento humano, não como uma tela específica deveria se parecer.
