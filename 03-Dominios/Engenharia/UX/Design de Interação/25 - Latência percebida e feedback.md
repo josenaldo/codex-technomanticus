@@ -66,11 +66,13 @@ Um spinner sem timeout, sem fallback e sem mensagem é o pior dos três cenário
 
 ## O que dá pra fazer sozinho, e o que não dá
 
-| Praticável sozinho | Exige time/orçamento |
-|---|---|
-| Adicionar feedback imediato (mudança de estado do botão) a qualquer ação que hoje não dá nenhum sinal visual até a resposta do servidor | Medição real de performance de rede (INP, TTFB) para saber em qual dos três limiares uma ação específica realmente cai |
-| Trocar um spinner infinito por um spinner com timeout e mensagem de fallback | Pesquisa de usuário comparando percepção de skeleton vs. spinner especificamente no seu produto, para decidir com dado em vez de opinião |
-| Escolher entre skeleton, spinner e progress bar usando os critérios de contexto acima, em vez de copiar o que outro produto faz | Manter o skeleton sincronizado com mudanças futuras de layout ao longo do tempo (custo de manutenção contínuo) |
+Praticável sozinho, no código que já existe:
+
+- **Adicionar feedback imediato** (mudança de estado do botão) a qualquer ação que hoje não dá nenhum sinal visual até a resposta do servidor — quase sempre é uma mudança pequena e localizada (desabilitar o botão, trocar o texto), com efeito desproporcional na percepção de responsividade.
+- **Trocar um spinner infinito por um spinner com timeout e mensagem de fallback** — adicionar um `setTimeout` ou lógica equivalente que troca o estado depois de um tempo razoável não exige infraestrutura nova, só a disciplina de desenhar esse caminho.
+- **Escolher entre skeleton, spinner e progress bar usando os critérios de contexto desta nota**, em vez de copiar o que outro produto faz — decisão de julgamento que qualquer pessoa que já leu esta nota consegue aplicar tela por tela.
+
+Exige estrutura de time quando a decisão precisa se apoiar em medição real, não em julgamento: uma **medição real de performance de rede** (INP, TTFB) para saber em qual dos três limiares uma ação específica realmente cai depende de instrumentação de monitoramento em produção — sem isso, "essa ação demora ~1s" continua sendo estimativa, não fato medido. Uma **pesquisa de usuário comparando percepção de skeleton vs. spinner especificamente no seu produto** exige participantes e metodologia — o único jeito de decidir com dado, em vez de aplicar a heurística geral desta nota, quando a decisão for grande o suficiente para justificar o investimento. E **manter o skeleton sincronizado com mudanças futuras de layout ao longo do tempo** é custo de manutenção contínuo, não de implementação única — cada vez que a tela real muda de estrutura, alguém precisa lembrar de atualizar o esqueleto correspondente, o que só é sustentável com processo de time, não com boa vontade individual.
 
 ## Casos práticos
 
@@ -79,6 +81,9 @@ Retomando o cenário de abertura: um botão "Salvar" sem nenhum feedback visual 
 
 ### Cenário 2: dashboard com skeleton que prometeu o que não entregou
 Um dashboard usa skeleton screens fiéis ao layout de três cards fixos enquanto carrega. Numa atualização posterior do produto, um quarto card condicional foi adicionado (aparece só para usuários com uma feature habilitada), mas o skeleton nunca foi atualizado para refletir isso — ele continua mostrando três blocos fantasma. Para os usuários com a feature habilitada, a tela real "pula" ao carregar, adicionando um bloco que o skeleton nunca sugeriu, gerando exatamente o tipo de discrepância que a ressalva desta nota descreve: expectativa visual quebrada, mais notada do que se um spinner simples tivesse sido usado.
+
+### Cenário 3: upload longo com spinner genérico, sem noção de progresso
+Uma ferramenta de upload de vídeo mostra um spinner simples enquanto o arquivo sobe — para arquivos que podem levar de 30 segundos a 5 minutos, dependendo do tamanho e da conexão do usuário. Como o spinner não comunica progresso nem estimativa nenhuma, usuários com upload mais lento presumem, por volta do primeiro minuto, que o sistema travou, e fecham a aba — cancelando um upload que na verdade estava avançando normalmente. Trocar o spinner por uma barra de progresso real (porcentagem enviada, calculada a partir dos bytes já transmitidos) resolve sem mudar a velocidade real do upload — só torna visível que, passado o limiar de 10 segundos desta nota, o indicador certo é estimativa de progresso, não "algo está acontecendo".
 
 ## Armadilhas comuns
 
