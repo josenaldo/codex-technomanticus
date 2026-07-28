@@ -99,6 +99,84 @@ O motivo é a **epilepsia fotossensível**: flashes rápidos, sobretudo em verme
 
 **Mídia e movimento em uma frase:** toda mídia precisa de alternativa em texto (legenda, transcrição, audiodescrição), todo movimento automático precisa poder parar e respeitar `prefers-reduced-motion`, e nada — jamais — pode piscar mais de três vezes por segundo.
 
+> [!tip] Vídeo — Desenhando animação e movimento acessíveis
+> [**Designing accessible animation and movement on your website**](https://www.youtube.com/watch?v=r6W1hf7xcrs) (Pope Tech, 4 min) — curto e direto: por que movimento automático prejudica quem tem TDAH, dislexia ou desordem vestibular, e como aplicar `prefers-reduced-motion` na prática sem esvaziar a interface.
+
+## Qual alternativa para qual mídia
+
+O fluxo de decisão que evita o erro mais comum — escolher a alternativa errada (ou nenhuma) para o tipo de mídia:
+
+```mermaid
+flowchart TD
+    A[Que tipo de mídia é?] --> B{Tem vídeo com fala?}
+    B -->|Sim| C[Legendas sincronizadas via track]
+    B -->|Não| D{Tem informação só visual?}
+    D -->|Sim, ex: gráfico, ação em tela| E[Audiodescrição + transcrição]
+    D -->|Não| F{É só áudio, ex: podcast?}
+    F -->|Sim| G[Transcrição completa em texto]
+    F -->|Não| H{Tem movimento automático >5s?}
+    H -->|Sim| I{Pode ser pausado? 2.2.2}
+    I -->|Não| J[FALHA — adicionar pausar/parar]
+    I -->|Sim| K{Respeita prefers-reduced-motion?}
+    K -->|Não| L[FALHA — desordem vestibular em risco]
+    K -->|Sim| M{Pisca mais de 3x/s?}
+    M -->|Sim| N[PERIGO — risco de convulsão, remover]
+    M -->|Não| O[OK]
+
+    style C fill:#4A90D9,color:#fff
+    style E fill:#4A90D9,color:#fff
+    style G fill:#4A90D9,color:#fff
+    style O fill:#4A90D9,color:#fff
+    style J fill:#F5A623,color:#000
+    style L fill:#F5A623,color:#000
+    style N fill:#D0021B,color:#fff
+```
+
+## Casos práticos
+
+**Carrossel institucional sem botão de pausa.** Uma home trocava de banner a cada 4 segundos, automaticamente, sem controle visível. Quem lia o segundo banner via o conteúdo sumir no meio da frase; um usuário de leitor de tela relatou que o foco "pulava" porque o DOM do carrossel era reconstruído a cada troca. A correção não exigiu redesenho: um botão pausa/play discreto no canto do componente, que já existia na biblioteca de carrossel usada — só não estava exposto na UI. Depois de ativado, o critério 2.2.2 passou a ser cumprido sem tocar em uma linha de CSS de animação.
+
+**Transição *parallax* que virou motivo de reclamação.** Uma página de produto usava rolagem com camadas em velocidades diferentes (parallax) para dar profundidade. Um usuário reportou tontura e náusea ao navegar pela página no celular — um sintoma clássico de desordem vestibular reagindo a movimento visual desalinhado com o movimento físico esperado. A equipe não removeu o efeito (era decisão de marca), mas envolveu toda a lógica de parallax num bloco condicionado a `@media (prefers-reduced-motion: no-preference)`, deixando rolagem normal, sem camadas, para quem tem a preferência de sistema ativada. Zero reclamações depois — e zero retrabalho visual para quem não ativou a preferência.
+
+## Armadilhas comuns
+
+> [!warning] Legenda automática do YouTube tratada como entrega final
+> **O que acontece:** um vídeo institucional ou de curso é publicado só com a legenda automática (ASR) gerada pelo YouTube, sem revisão humana.
+> **Por quê:** a legenda automática erra nomes próprios, jargão técnico e pontuação, e não identifica quem fala nem sons não-verbais relevantes — ela é otimizada para "dar uma ideia", não para ser fiel. Para conteúdo essencial (treinamento, aula, comunicado oficial), uma legenda errada transmite informação falsa com aparência de confiável, o que é pior do que a ausência de legenda em alguns cenários.
+> **Como evitar:** trate a legenda automática como rascunho, não como entrega. Revise manualmente (ou contrate revisão) antes de publicar conteúdo crítico; reserve a automática pura para conteúdo casual e de baixo risco.
+
+> [!warning] Carrossel ou banner automático sem controle de pausa
+> **O que acontece:** um componente troca de slide sozinho a cada N segundos, sem nenhum botão visível para parar, pausar ou ocultar o movimento — o padrão mais comum de violação do critério 2.2.2.
+> **Por quê:** quem tem dificuldade de atenção é distraído pelo movimento contínuo; quem lê devagar nunca termina o slide antes da troca; e o conteúdo pode mudar sob o foco de quem navega por teclado ou leitor de tela, quebrando a previsibilidade da interface.
+> **Como evitar:** todo movimento automático que dura mais de 5 segundos precisa de um controle equivalente a pausa/play, visível e operável por teclado. Muitas bibliotecas de carrossel já têm essa API pronta — o problema costuma ser não expô-la na UI, não a ausência da funcionalidade.
+
+> [!warning] Conteúdo que pisca acima de 3 vezes por segundo
+> **O que acontece:** uma animação, GIF, vídeo ou efeito que pisca rápido (> 3 Hz) em área significativa da tela pode desencadear uma convulsão em quem tem epilepsia fotossensível.
+> **Por quê:** o cérebro fotossensível responde a estímulos luminosos rápidos e rítmicos com atividade elétrica anormal. É um risco físico real, não um desconforto.
+> **Como evitar:** não crie conteúdo que pisque acima de 3 vezes por segundo, ponto. Se receber mídia de terceiros (um anúncio, um GIF de usuário), teste com uma ferramenta como o **PEAT** (Photosensitive Epilepsy Analysis Tool) antes de publicar. Este é o critério onde "não sabíamos" não é desculpa aceitável.
+
+> [!warning] Animação sem fallback quando `prefers-reduced-motion` não é respeitado
+> **O que acontece:** o time implementa animações vistosas de transição de página, hover e scroll, mas nunca testa (nem trata) a preferência de sistema `prefers-reduced-motion` — a interface se move do mesmo jeito para quem pediu menos movimento.
+> **Por quê:** a preferência existe justamente porque parte dos usuários tem uma condição fisiológica (desordem vestibular) que responde ao movimento com náusea real, não só desconforto estético. Ignorá-la equivale a ignorar um requisito de acessibilidade ativo, não um "nice to have" de design.
+> **Como evitar:** trate `@media (prefers-reduced-motion: reduce)` como parte do sistema de design, não como afterthought — um bloco CSS global (como o do exemplo acima) que zera `animation-duration`/`transition-duration` cobre a maior parte dos casos com uma implementação só. Teste ativando a preferência no SO ou emulando pelo DevTools do navegador.
+
+## Como explicar em inglês
+
+*When you're asked how you handle accessible media in an interview, the key move is distinguishing three alternatives that non-specialists tend to conflate: captions are time-synced text overlaid on video, a transcript is the full text on its own — the only viable alternative for audio-only content — and audio description is a narration track that fills in visually-only information during natural pauses in dialogue. On the motion side, the two things to name are the WCAG 2.2.2 pause requirement for anything that moves automatically for more than five seconds, and honoring the user's `prefers-reduced-motion` system setting, because for people with vestibular disorders, unexpected motion isn't just annoying — it can trigger real vertigo and nausea. And if you only remember one number, make it three: nothing on the page should flash more than three times per second, because that's the threshold tied to photosensitive epilepsy.*
+
+| PT | EN |
+|----|----|
+| Legendas sincronizadas | Captions |
+| Legendas para surdos e ensurdecidos | SDH / closed captions |
+| Legendas de tradução | Translated subtitles |
+| Transcrição | Transcript |
+| Audiodescrição | Audio description |
+| Movimento reduzido (preferência) | Reduced motion (preference) |
+| Desordem vestibular | Vestibular disorder |
+| Epilepsia fotossensível | Photosensitive epilepsy |
+| Limiar de flashes | Flash threshold |
+| Pausar, parar, ocultar | Pause, stop, hide |
+
 ## O que vem a seguir
 
 Com esta nota, o SG2 fecha: você sabe construir foco, formulários, os padrões APG, a11y em React, cor/contraste e mídia. Sabe *fazer* acessível. Falta o rigor de *provar* que fez — porque "acho que está acessível" não é auditoria. O SG3 é dedicado a isso: as ferramentas automáticas e seus limites, os testes de a11y no código, e a auditoria manual que pega o que a máquina não vê.
