@@ -117,6 +117,75 @@ A validação nativa do HTML (assunto do [[03-Dominios/Tecnologia/HTML/06 - Form
 
 **Formulários acessíveis em uma frase:** label associado em todo campo, grupos com fieldset/legend, erros ligados ao campo por `aria-describedby`/`aria-invalid` e nunca só por cor, e `type`/`autocomplete` corretos para o navegador fazer o trabalho pesado.
 
+> [!tip] Vídeo — The art of labeling (A11ycasts #12)
+> [**The art of labeling -- A11ycasts #12**](https://www.youtube.com/watch?v=8dCUzOiMRy4) (Chrome for Developers, 14 min) — Rob Dodson mostra, no DevTools, exatamente o que muda na árvore de acessibilidade quando um `<label>` está associado versus quando é só um texto solto ou um placeholder. Ver o *accessible name* aparecer (ou ficar vazio) ao vivo fixa em segundos o que a seção acima explica em palavras.
+
+## Fluxo de erro: do submit ao foco no campo
+
+O texto acima descreve `aria-describedby`/`aria-invalid` campo a campo e o resumo de erros no topo (a resposta ao `[!question]`). O diagrama junta as duas camadas num fluxo só — do clique em "Enviar" até o usuário de leitor de tela pousar no campo certo:
+
+```mermaid
+flowchart TD
+    A["Usuário clica em Enviar"] --> B{"Validação passou?"}
+    B -->|"Sim"| C["Formulário processado"]
+    B -->|"Não"| D["Foco vai para o resumo de erros\n(Movimento 1, nota 06)"]
+    D --> E["Resumo anuncia:\n'3 erros encontrados'"]
+    E --> F["Usuário ativa o link\n'E-mail: formato inválido'"]
+    F --> G["Foco move para #email"]
+    G --> H["AT lê: label + aria-invalid + aria-describedby"]
+    H --> I["'E-mail, inválido,\nDigite um e-mail válido...'"]
+
+    classDef ok fill:#4A90D9,color:#fff,stroke:#2A5A8A
+    classDef atencao fill:#F5A623,color:#1a1a1a,stroke:#B67A10
+    classDef erro fill:#D0021B,color:#fff,stroke:#8A0112
+
+    class C ok
+    class D,E,F atencao
+    class B,G,H,I erro
+```
+
+O ponto do diagrama: **erro não é um evento visual, é um evento de foco**. Cada seta que sai de "não passou" move o foco de algum lugar — para o resumo, depois para o campo. Se seu formulário só troca cor de borda e mostra texto sem mexer no foco, metade dessas setas simplesmente não existe para quem usa teclado ou leitor de tela.
+
+## Casos práticos
+
+**1. O placeholder que sumia no meio do preenchimento.** Um formulário de cadastro usava `<input placeholder="Nome completo">` sem `<label>` — visualmente limpo, sem "poluição" de rótulos acima dos campos. No teste com leitor de tela, o campo era anunciado como "campo de edição, em branco": nenhuma pista do que preencher. Pior ainda para quem usa zoom de tela — ao ampliar 200%, o placeholder ficava cortado e o usuário via só um retângulo vazio depois de já ter digitado a primeira letra (o placeholder some ao digitar). A correção não mudou o visual: um `<label>` associado, posicionado via CSS para ficar compacto, resolveu os dois problemas ao mesmo tempo — a AT passou a anunciar o nome do campo, e o rótulo continuou visível depois que o usuário começava a digitar.
+
+**2. O formulário longo que o resumo de erros salvou.** Um cadastro com quinze campos (dados pessoais, endereço, pagamento) validava tudo só no submit final. Sem resumo de erros, um usuário de leitor de tela que errasse o campo 3 tinha que navegar linearmente pelos quinze campos de novo, um a um, tentando descobrir por onde a AT anunciava "inválido" — um exercício de paciência que muita gente simplesmente abandona (é a mesma lógica do dado de abandono de carrinho que abre a nota 01). Depois de implementar o resumo de erros no topo com foco automático (o `[!question]` acima) e os links do resumo apontando direto para cada campo com problema, o mesmo teste passou de "não consigo achar o erro" para "sei exatamente quais três campos revisar" — sem mudar uma linha da lógica de validação, só da experiência de reportar o erro.
+
+## Armadilhas comuns
+
+> [!warning] Erro indicado só pela cor da borda
+> **O que acontece:** o campo com problema fica com borda vermelha e o campo válido, cinza ou verde — nenhum texto, nenhum ícone, só a cor.
+> **Por quê:** viola o critério **1.4.1 (Use of Color)**. Quem tem daltonismo (cerca de 1 em 12 homens) não distingue vermelho de cinza com confiança, e a cor é totalmente invisível para quem usa leitor de tela — que não "vê" bordas.
+> **Como evitar:** sempre acompanhar a cor de um texto explícito (`aria-describedby`) e, se quiser reforço visual extra, um ícone. A cor é bônus, nunca o único canal.
+
+> [!warning] `<label>` sem `for`/`id` — associação só visual
+> **O que acontece:** o `<label>` existe no HTML, fica exatamente ao lado do campo, o layout parece perfeito — mas falta o par `for`/`id` (ou o envolvimento do input pelo label). Clicar no texto não foca o campo, e o leitor de tela não lê o rótulo ao entrar nele.
+> **Por quê:** a associação programática entre label e campo não é automática por proximidade no DOM — precisa ser declarada. É o erro mais comum de auditoria: "parece certo" no navegador, falha em qualquer teste com AT.
+> **Como evitar:** `for="id-do-campo"` no label + `id` correspondente no input, ou envolver o input pelo próprio `<label>` (associação implícita). Testar clicando no texto do rótulo: se o foco não vai para o campo, a associação está quebrada.
+
+> [!warning] Validação em JavaScript que descarta a acessível nativa
+> **O que acontece:** o time desliga `required`/`type="email"` e reimplementa toda a validação em JS puro para ter mensagens customizadas — e esquece de recriar `aria-invalid`, `aria-describedby` e o anúncio da mudança de estado.
+> **Por quê:** a validação nativa do HTML já é acessível por construção (os browsers anunciam suas mensagens à AT de graça); reescrevê-la em JS sem repor essas peças é trocar acessibilidade grátis por acessibilidade que ninguém implementou.
+> **Como evitar:** se precisar de validação customizada, mantenha o contrato: `aria-invalid="true"` no erro, `aria-describedby` apontando pro texto, e uma região com `aria-live` (ou o resumo com foco) anunciando que o estado mudou. Não é proibido sair do nativo — é proibido sair dele sem repor o que ele fazia.
+
+## Como explicar em inglês
+
+When I review a form for accessibility, I don't just check the visual polish — I check whether the label is *programmatically* associated with the input, whether related fields are grouped under a `fieldset` with a proper `legend`, and whether validation errors are actually wired to the field via `aria-describedby` and `aria-invalid`, not just painted red. A form that only looks right is worse than one that looks plain but works, because the "looks right" version passes every design review and still fails every screen reader user. My rule of thumb: never rely on a single channel — color alone, placeholder alone, visual proximity alone — to carry meaning; pair it with something the accessibility tree can pick up.
+
+| PT | EN |
+|---|---|
+| rótulo associado | associated label |
+| nome acessível | accessible name |
+| agrupar campos | group fields |
+| resumo de erros | error summary |
+| ligar o erro ao campo | wire the error to the field |
+| depender só da cor | rely on color alone |
+| validação nativa | native validation |
+| mover o foco | move focus |
+| leitor de tela | screen reader |
+| propósito do campo | input purpose |
+
 ## O que vem a seguir
 
 Com foco e formulários resolvidos, você tem o que o HTML nativo oferece. Mas há componentes que o HTML **não** tem — abas, acordeões, diálogos, comboboxes — e para eles a comunidade padronizou receitas prontas de ARIA + teclado: os padrões da APG. É onde "ARIA por último" (nota 05) finalmente chega, com mapa e tudo.

@@ -124,6 +124,49 @@ O que ainda cabe a você: dar um **nome acessível** ao diálogo (`aria-labelled
 
 **APG I em uma frase:** disclosure, accordion, tabs e dialog são contratos de role + estado + teclado que o APG já especificou — cumpra o contrato inteiro, e prefira o nativo (`<details>`, `<dialog>`) sempre que ele resolver.
 
+> [!tip] Vídeo — Modais acessíveis, na prática
+> [**Accessible Modal Dialogs -- A11ycasts #19**](https://www.youtube.com/watch?v=JS68faEUduk) (Chrome for Developers, 13 min) — Rob Dodson percorre exatamente o contrato desta nota: `role="dialog"`, `aria-labelledby`, mover foco ao abrir, prender o Tab dentro do modal e restaurar foco ao fechar. Foi gravado antes do `<dialog>` nativo amadurecer, o que é útil por outro motivo: mostra na veia *tudo* que `showModal()` hoje resolve de graça — dá pra sentir o tamanho do atalho.
+
+## Casos práticos
+
+**Cenário 1 — accordion de FAQ: `<details>` primeiro, ARIA só se precisar.** Uma página de FAQ com 8 perguntas precisa expandir/recolher cada resposta. A implementação mais rápida — e mais robusta — é uma sequência de `<details><summary>Pergunta</summary><p>Resposta</p></details>`: nenhuma linha de JavaScript, nenhuma linha de ARIA, e o navegador já entrega toggle, teclado (Enter/Espaço no `<summary>`) e semântica para leitores de tela. O padrão ARIA de accordion (com `<h3><button aria-expanded>`, roving entre cabeçalhos) só entra em cena quando o design pede algo que o `<details>` não faz — por exemplo "abrir uma seção fecha as outras" (comportamento *exclusivo*, que exige coordenar o `aria-expanded` de todos os botões a cada clique) ou navegação por setas entre cabeçalhos. Regra prática: comece com `<details>`; migre para o padrão ARIA só quando o `<details>` te impedir de fazer algo específico que o produto exige.
+
+**Cenário 2 — modal de edição com `<dialog>` nativo em vez de div + biblioteca.** Um formulário "Editar perfil" que antes era uma `<div class="modal">` posicionada com CSS, com um pacote de JS de terceiros só para gerenciar foco, ganha o mesmo comportamento trocando para `<dialog>` + `showModal()` (o código da seção anterior). O ganho não é só menos código: é que o focus trap, a inércia do fundo e o fechamento no `Esc` deixam de ser responsabilidade da sua lógica de aplicação e passam a ser contrato do navegador — uma classe inteira de bug ("Tab vazou para trás do modal", "Esc não fecha") deixa de existir porque a plataforma garante. O que sobra pra você fazer à mão é pouco e específico: `aria-labelledby` no título e restaurar o foco ao elemento que abriu o modal quando ele fecha.
+
+## Armadilhas comuns
+
+> [!warning] `aria-expanded` que não acompanha o estado visual
+> **O que acontece:** o clique alterna a classe CSS que mostra/esconde o painel, mas o `aria-expanded` do botão fica travado em `"false"` — ou pior, nem existe. Visualmente o conteúdo abriu; para quem usa leitor de tela, o botão continua anunciando "recolhido".
+> **Por quê:** os dois estados (visual e ARIA) são setados em lugares diferentes do código, e é fácil trocar um sem lembrar do outro — principalmente quando a lógica de toggle mexe direto no CSS/classList sem passar por uma função central.
+> **Como evitar:** centralize o toggle numa única função que sempre muda os dois juntos (`hidden`/classe **e** `aria-expanded`) na mesma linha de execução, nunca em handlers separados.
+
+> [!warning] Reimplementar accordion em ARIA quando `<details>` bastava
+> **O que acontece:** um accordion inteiro construído com `<button>`, `aria-expanded`, `aria-controls` e JavaScript de toggle — para um caso de uso que é só "expandir uma seção por vez, sem exclusividade, sem navegação por seta".
+> **Por quê:** o padrão ARIA parece "mais robusto" ou "mais profissional" por ter mais código, mas mais código com ARIA manual é mais superfície para o erro anterior (estado dessincronizado) acontecer. O `<details>` já resolve o caso simples sem essa superfície.
+> **Como evitar:** aplique o teste da nota 05 — "o nativo resolve?" — antes de escrever um único `aria-*`. Só migre para o padrão ARIA quando o requisito específico (exclusividade, roving, animação controlada) não couber no `<details>`.
+
+> [!warning] Tabs sem roving tabindex — todas as abas tabuláveis
+> **O que acontece:** um `role="tablist"` corretamente montado, mas cada `<button role="tab">` mantém seu `tabindex` padrão (0). O usuário de teclado tabula aba por aba, uma de cada vez, em vez de entrar na tablist, mover com as setas, e tabular para fora.
+> **Por quê:** o role `tab` promete ao leitor de tela um padrão de navegação por setas — é o comportamento que ele anuncia e que o usuário experiente de AT espera. Sem o roving tabindex (só a aba ativa com `tabindex="0"`, as demais `-1`, e as setas movendo entre elas), o widget tem a aparência de abas mas o comportamento de uma lista de botões comuns — quebra a expectativa que o próprio role criou.
+> **Como evitar:** implemente o roving tabindex da nota 06 por completo: `tabindex="0"` só na aba selecionada, `-1` nas demais, e um handler de `keydown` que responde a `ArrowLeft`/`ArrowRight` (ou `ArrowUp`/`ArrowDown` em tabs verticais) movendo o foco e atualizando os `tabindex` a cada mudança.
+
+## Como explicar em inglês
+
+In an interview, this is a good place to show you know *when* to reach for ARIA instead of just *how*. Say something like: "Whenever I need a widget HTML doesn't ship natively — tabs, an accordion, a modal — I don't improvise the markup. I go to the ARIA Authoring Practices Guide, the W3C's reference implementation for each pattern, and I treat it as a three-part contract: the *role* that declares what the widget is, the *state* that tracks what's currently true — expanded, selected, open — and the *keyboard* behavior users expect once they see that role. Half a contract is worse than none, because a `role="tab"` that doesn't respond to arrow keys sets an expectation it then breaks. And before I write any of that by hand, I check whether the native element already covers it — `<details>` for a simple disclosure, `<dialog>` with `showModal()` for a modal — because the platform's focus trap and `Escape` handling are just fewer bugs than mine."
+
+| PT | EN |
+|---|---|
+| APG (Guia de Práticas de Autoria) | Authoring Practices Guide (APG) |
+| disclosure | disclosure |
+| acordeão | accordion |
+| painel de abas | tabpanel |
+| lista de abas | tablist |
+| roving tabindex | roving tabindex |
+| diálogo modal | modal dialog |
+| prender o foco | trap focus |
+| tornar inerte | make inert |
+| restaurar o foco | restore focus |
+
 ## O que vem a seguir
 
 Estes quatro são os padrões de complexidade baixa a média. Faltam os pesos-pesados — os widgets com navegação bidimensional e edição, onde o teclado fica genuinamente intrincado: combobox com autocomplete, menu de aplicação, listbox, tree e grid. É o segundo volume do catálogo.
