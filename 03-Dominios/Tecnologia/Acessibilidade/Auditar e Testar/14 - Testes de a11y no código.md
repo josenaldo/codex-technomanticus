@@ -22,6 +22,9 @@ A nota 13 terminou com uma promessa: o valor real da automação é rodar *sempr
 
 Este território cruza com o galho de [[03-Dominios/Tecnologia/Testes JS/index|Testes JS]] — aqui o foco é a **lente de acessibilidade** sobre aquelas mesmas ferramentas.
 
+> [!tip] Vídeo — Automated Accessibility Testing with Playwright + Axe
+> [**Automated Accessibility Testing with Playwright + Axe (#218)**](https://www.youtube.com/watch?v=m2ouoDx8_wI) (ASP.NET Monsters, 15 min) — mostra na prática o `@axe-core/playwright` da terceira camada desta nota, plugando o axe num teste E2E real e lendo o relatório de violações que ele devolve.
+
 ## Testing Library: o teste que exige semântica
 
 A biblioteca **Testing Library** (React Testing Library e as irmãs) tem uma filosofia que casa perfeitamente com a11y: *teste como o usuário usa*. E o usuário — inclusive o de leitor de tela — encontra elementos pelo que eles **são** e como se **chamam**, não pela classe CSS. Por isso a query recomendada é `getByRole`:
@@ -102,6 +105,45 @@ Muitos testes de componente (baratos, rápidos, rodam a cada save), alguns teste
 > **Como evitar:** trate os testes de código como a **rede de regressão da metade mecânica** — valiosíssima, mas parcial. A cobertura só fecha com o teste manual da nota 15. Automação e manual são complementares, nunca substitutos.
 
 **Testes de a11y no código em uma frase:** Testing Library força semântica correta nos pontos que você testa, jest/vitest-axe varre cada componente, e Playwright+axe audita a página real em vários estados — juntos prendem a metade automatizável no CI, mas não dispensam o humano.
+
+## Casos práticos
+
+### Cenário 1: o teste que quebrou porque a semântica quebrou
+Um dev troca um `<button>` por uma `<div onClick>` "para estilizar mais fácil". Nenhuma linha de teste de a11y foi escrita — mas a suíte fica vermelha mesmo assim: o `screen.getByRole('button', { name: /salvar/i })` que já existia **não encontra mais** o elemento, porque a `<div>` não tem role `button`. O teste de comportamento, escrito com Testing Library, funcionou como um teste de acessibilidade sem que ninguém planejasse. O dev descobre a regressão no próprio commit, não em produção.
+
+### Cenário 2: o label perdido num refactor
+Uma refatoração de um formulário remove sem querer o `htmlFor`/`id` que ligava um `<label>` ao campo. Nenhum teste de comportamento nota — o campo ainda renderiza. Mas o `expect(await axe(container)).toHaveNoViolations()` do componente falha, listando "form element has no accessible name" com o seletor exato e o link da regra. A malha de `vitest-axe` sobre os componentes pegou o que a lógica não veria.
+
+## Armadilhas comuns
+
+> [!warning] `toHaveNoViolations` verde = componente acessível
+> **O que acontece:** o time confia que, se o `jest-axe`/`vitest-axe` passa, o componente está acessível, e para de testar com teclado e leitor de tela.
+> **Por quê:** esses matchers rodam o mesmo axe-core da nota 13, com o mesmo teto de ~metade das falhas. Não julgam qualidade de `alt`, lógica de foco nem fluxo de teclado.
+> **Como evitar:** trate os testes de código como a rede de regressão da metade mecânica — indispensável, mas parcial. A cobertura só fecha com a auditoria manual da [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|nota 15]].
+
+> [!warning] Buscar elementos por classe ou test-id em vez de role
+> **O que acontece:** os testes usam `container.querySelector('.btn')` ou `getByTestId('salvar')`, e continuam passando mesmo quando o elemento perde a semântica (vira `<div>`, perde o nome acessível).
+> **Por quê:** query por classe/test-id não toca a árvore de acessibilidade — ela acha o nó pela implementação, não pelo que a AT enxerga. Você perde o "teste de a11y de graça".
+> **Como evitar:** priorize `getByRole('...', { name })`. Se o teste não consegue achar o elemento por role+nome, é sinal de que a AT também não conseguiria.
+
+> [!warning] Testar só no jsdom e nunca na página real
+> **O que acontece:** toda a suíte roda em jsdom/happy-dom; contraste, layout sob zoom e comportamento real de foco nunca são exercitados.
+> **Por quê:** o DOM simulado não tem layout nem CSS computado de verdade — o axe ali não avalia contraste com precisão, e estados montados (modal aberto, erro exibido) podem não existir.
+> **Como evitar:** complemente com ao menos alguns testes E2E (Playwright + axe) nos fluxos críticos, auditando a página real em seus vários estados.
+
+## Como explicar em inglês
+
+> "I test accessibility in code in three layers. **Testing Library** queries by `role` and accessible name, so a test that finds the button proves the semantics are right — and it breaks the moment someone swaps a `<button>` for a `<div>`. **jest-axe / vitest-axe** run axe against each rendered component and fail the build listing every violation. And **Playwright + axe** audits the real page in the browser, across states like an open modal. Together they catch the automatable half in CI and stop regressions at the pull request — but they don't replace manual testing."
+
+| PT | EN |
+|----|-----|
+| teste de acessibilidade | accessibility test |
+| busca por papel/nome acessível | query by role / accessible name |
+| regressão | regression |
+| pirâmide de testes | test pyramid |
+| navegador headless / real | headless / real browser |
+| porta de qualidade no CI | CI quality gate |
+| DOM simulado | simulated DOM (jsdom) |
 
 ## O que vem a seguir
 

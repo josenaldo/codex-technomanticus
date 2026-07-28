@@ -85,6 +85,48 @@ O maior valor da auditoria automatizada não é o relatório pontual — é **ro
 
 **Auditoria automatizada em uma frase:** axe (e o Lighthouse/WAVE que o embutem) pega em segundos a metade mecânica das falhas — contraste, atributos, ARIA inválido — mas é cega para tudo que exige julgamento, então é o piso da auditoria, jamais o teto.
 
+> [!tip] Vídeo — Getting Started with the axe DevTools Browser Extension
+> [**Getting Started with the axe DevTools Browser Extension**](https://www.youtube.com/watch?v=iRGB40c_YJc) (Deque Systems, 2 min) — direto da criadora do axe-core: mostra o fluxo real de rodar a extensão numa página e ler o relatório, o mesmo relatório que embasa a tabela e os limites descritos acima.
+
+## Casos práticos
+
+**Cenário 1 — Lighthouse 100, produto inutilizável.** Um squad sobe um checkout novo. O Lighthouse relata `Accessibility: 100`. Ninguém investiga mais. Semanas depois, o time de suporte recebe uma reclamação: um usuário de leitor de tela não consegue completar a compra — o combobox de forma de pagamento não anuncia as opções ao navegar por teclado, e o botão "Finalizar" só tem um ícone, sem nome acessível *significativo* (tem `aria-label="botão"`, o que passa no axe, mas não diz nada). O score 100 media só o computável; o combobox quebrado e o rótulo vazio de sentido ficaram nos itens "a verificar manualmente" que o próprio relatório listava — e que ninguém abriu.
+
+**Cenário 2 — axe no CI pegando regressão de contraste.** Um PR muda a paleta de cores do design system: o cinza de texto secundário passa de `#595959` para `#8C8C8C` para "suavizar" a UI. O teste de acessibilidade automatizado no pipeline (nota [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/14 - Testes de a11y no código|14]]) roda o axe contra os componentes renderizados e falha: a nova cor caiu para 3.1:1 de contraste, abaixo do 4.5:1 mínimo (nota [[03-Dominios/Tecnologia/Acessibilidade/Construir Acessível/11 - Cor, contraste e visual acessível|11]]). O PR é bloqueado antes do merge — exatamente o caso de uso onde a automação vale mais: não achar um problema novo, mas impedir que um problema resolvido volte.
+
+## Armadilhas comuns
+
+> [!warning] Confundir "passou no axe" com "é acessível"
+> **O que acontece:** zero violações reportadas vira sinônimo de "está tudo certo" na cabeça do time.
+> **Por quê:** o axe só reporta o que consegue verificar por regra. Ausência de erro reportado não é ausência de erro — é ausência do que é *mecanicamente checável*. Um `alt` presente e sem sentido, uma ordem de foco absurda: zero violações, zero acessibilidade real.
+> **Como evitar:** trate "zero violações do axe" como um checkpoint, não como a linha de chegada. A linha de chegada inclui a auditoria manual da nota [[03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar/15 - Auditoria manual|15]].
+
+> [!warning] Rodar Lighthouse e axe DevTools achando que são duas opiniões independentes
+> **O que acontece:** o time roda os dois, os dois concordam, e isso é lido como "confirmação cruzada" — dupla checagem que aumenta a confiança.
+> **Por quê:** como a tabela acima mostra, a aba Accessibility do Lighthouse *é* axe-core por baixo. Rodar os dois é rodar o mesmo motor duas vezes com uma casca de UI diferente — não é redundância que aumenta cobertura, é a ilusão de cobertura.
+> **Como evitar:** para diversificar de verdade, combine axe com uma ferramenta de motor diferente (ex.: IBM Equal Access, ou a inspeção visual do WAVE) — ou, melhor ainda, com auditoria manual, que é onde a cobertura de fato aumenta.
+
+> [!warning] Ignorar os itens "a verificar manualmente" do relatório
+> **O que acontece:** o relatório do Lighthouse e do axe DevTools lista, separadamente das violações, uma seção de itens que a ferramenta **não conseguiu avaliar automaticamente** (ex.: "verifique se a ordem de leitura é lógica"). Times leem só o score e o contador de violações, e pulam essa seção.
+> **Por quê:** essa seção é literalmente a ferramenta admitindo seu próprio teto — é o mapa do que falta, escrito pela própria Deque/Google. Ignorá-la é jogar fora a informação mais honesta do relatório.
+> **Como evitar:** trate a seção "a verificar manualmente" como uma checklist obrigatória de revisão humana, não como rodapé opcional.
+
+## Como explicar em inglês
+
+In an interview, the sharpest way to frame automated accessibility testing is to name both its strength and its ceiling in the same breath. Something like: *"We run axe-core in CI as a regression gate — it catches contrast failures, missing labels, and invalid ARIA on every pull request, at scale, for free. But we don't treat a clean axe report as proof of accessibility. Deque's own research puts automated coverage at roughly a third to half of WCAG issues, and the gaps are exactly the ones that matter most to users: alt text that's present but meaningless, a focus order that technically exists but doesn't make sense. So automated testing is our floor, not our ceiling — it buys us confidence on the mechanical layer and frees up manual testing time for the judgment calls a machine can't make."* This framing signals seniority because it shows you understand *why* the ceiling exists (computable vs. meaningful), not just that a number exists.
+
+| PT | EN |
+|----|----|
+| teste automatizado | automated testing |
+| teto de cobertura | coverage ceiling |
+| falsa sensação de segurança | false sense of security |
+| motor (de auditoria) | engine |
+| regressão | regression |
+| checagem por regra | rule-based check |
+| julgamento humano | human judgment |
+| a verificar manualmente | needs manual review |
+| rede de segurança | safety net |
+
 ## O que vem a seguir
 
 A automação só entrega seu valor de regressão quando roda **sozinha, o tempo todo** — no seu pipeline de testes. A próxima nota leva o axe para dentro do código: testes de componente que falham quando a acessibilidade quebra, e testes E2E que auditam a página inteira.
