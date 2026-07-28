@@ -3,7 +3,7 @@ title: "Roadmap de Trilhas"
 type: moc
 publish: true
 created: 2026-06-25
-updated: 2026-07-18
+updated: 2026-07-27
 status: growing
 tags:
   - moc
@@ -154,7 +154,7 @@ aliases:
 **Tier 1 — construção nova (buracos reais 🚫)**
 - ~~**Go** — 3 notas stub~~ ✅ **Trilha completa (2026-07-18):** 21 galhos + capstone, 163 notas. Paridade de stack backend atingida (Java · Node · Python · Go). Fronteira nativa de gRPC em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação]] (galho 12). Resta só enriquecimento de mídia (M1).
 - ~~**Cloud (AWS/GCP)** — sem domínio próprio construído~~ ✅ **COMPLETA 2026-07-24**: `Tecnologia/Cloud`, 24 galhos + capstone, 146 notas, lente dupla AWS↔DigitalOcean. Alto valor para entrevista sênior remota — agora coberto a fundo (Well-Architected, primitivos, serverless, FinOps, SAA-C03). Resta só M1 (mídia).
-- **Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML. Merece foco próprio.
+- ~~**Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML~~ ✅ **domínio próprio, escrita COMPLETA 2026-07-27**: `Tecnologia/Acessibilidade`, 4 sub-galhos + capstone, **21 notas**, progressão *entender → construir → auditar → sustentar*, lente dupla WCAG↔ofício. Fecha o **último buraco de construção nova do Tier 1** (Go ✅ · Cloud ✅ · **a11y ✅**). Resta só M1 (mídia). Ver [[03-Dominios/Tecnologia/Acessibilidade/index|índice]].
 
 **Tier 2 — consolidação de 🟡 (conteúdo existe, falta virar trilha atômica em 3 fases)**
 - **Design de Software** (25 notas, só SOLID + OO) — falta galho de Design Patterns + atomização no padrão capítulo.
@@ -169,13 +169,13 @@ aliases:
 
 **Tier 4 — enriquecimento, não tema novo**
 - **IA** (351 notas) — diagnóstico nota-a-nota pronto; falta *executar* correções (E2 abertura · E1 TL;DR · L2 URLs · ASCII→Mermaid · caducidade). Ver [[#Enriquecimento do domínio IA]].
-- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS, Go. (**Cloud** ✅ M1 completo 2026-07-25 — 217 vídeos em 144 notas.)
+- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS, Go, **Acessibilidade** (21 notas, escrita 2026-07-27). (**Cloud** ✅ M1 completo 2026-07-25 — 217 vídeos em 144 notas.)
 - **RPA** (6 notas stub) — nicho, baixa prioridade.
 
 ### Onda A — Tripé Frontend (prioridade máxima)
 1. ✅ **JavaScript (core)** — **CONCLUÍDA 2026-06-25** (26 notas, 3 fases): closures, protótipos & `this`, coerção, async no nível da linguagem, iterators/generators, módulos, metaprogramação, ES2026. Base que o índice do TypeScript referencia.
 2. ✅ **React** — domínio multi-galho **COMPLETO 2026-06-27**: React core (26) + Design Patterns (12) + Next.js (16, baseline Next 15) + Ecossistema (13, server state/client state/forms/UI/tables/charts). TypeScript com React (15) e Charts já existiam.
-3. 🧱→✅ **HTML** — semântica, forms, acessibilidade (ARIA/a11y), SEO, metadados.
+3. 🧱→✅ **HTML** — semântica, forms, acessibilidade (ARIA/a11y), SEO, metadados. *(A a11y ganhou domínio próprio em 2026-07-27 — ver [[03-Dominios/Tecnologia/Acessibilidade/index|Acessibilidade]]; HTML/07-08 viram porta de entrada.)*
 4. 🧱→✅ **CSS** — box model, flex/grid, cascade & specificity, responsivo, design tokens.
 5. ✅ **Plataforma Web** — **CONCLUÍDA 2026-06-28**: 7 galhos (DOM/Eventos/Rendering/Web APIs/Storage/Workers/Networking), ~54 notas, 3 fases.
 
@@ -199,7 +199,7 @@ aliases:
 - ~~**Python** — só stubs rasos~~ → **COMPLETA em 2026-07-12** (✅): 19 galhos, 202 notas, 3 fases (escala Java). Ver Backend/Runtime acima.
 - ~~**Go** — segue stub em `Tecnologia/Go/`~~ → **COMPLETA em 2026-07-18** (🟢): 21 galhos + capstone, 163 notas, 3 fases (escala Java/Python). Stubs `Go.md`/`Go Backend.md` excluídos. Fecha o último backend sem trilha. Ver Backend/Runtime (Tier 1) acima.
 - ~~**Web Performance & Core Web Vitals**~~ → **domínio próprio iniciado em 2026-07-05** (🟡): `Tecnologia/Web Performance/`, 4 galhos (*medir → carregar → responder → sustentar*). **escrita COMPLETA — 4 galhos, 32/32 notas** (Medição & CWV · Carregamento · Runtime & Rendering · Produção), 3 fases, padrão capítulo (falta só a rodada de enriquecimento de mídia, M1). Ver [[03-Dominios/Tecnologia/Web Performance/index|índice do domínio]] e o [[03-Dominios/Tecnologia/Web Performance/roadmap|roadmap]].
-- **Acessibilidade (a11y)** — entra como fase do HTML, mas é tema de entrevista por si só.
+- ~~**Acessibilidade (a11y)** — entra como fase do HTML, mas é tema de entrevista por si só.~~ → **domínio próprio, escrita COMPLETA em 2026-07-27** (🟢): `Tecnologia/Acessibilidade`, 4 sub-galhos (Fundamentos/Construir/Auditar/Sustentar) + capstone, 21 notas, 3 fases. Último buraco de construção nova do Tier 1 fechado. Resta só M1 (mídia). Ver o Tier 1 acima.
 
 ---
 

@@ -38,7 +38,7 @@ O domínio segue a **progressão do ofício** — *entender → construir → au
 | 4 | [[03-Dominios/Tecnologia/Acessibilidade/Sustentar e Conformidade/index\|SG4 — Sustentar e Conformidade]] | a11y no CI/design system, cenário legal (ADA/EAA/EN 301 549), VPAT/ACR, a11y em entrevista | Magus |
 | — | [[03-Dominios/Tecnologia/Acessibilidade/21 - Capstone - auditar e remediar um produto do zero\|Capstone — auditar e remediar um produto do zero]] | audita → prioriza → remedia → documenta; costura os 4 sub-galhos | Magus |
 
-> **Estado (2026-07-27):** domínio **em construção**, ritmo galho a galho (fecha SG1 ponta a ponta antes de abrir SG2). Ver [[00-Meta/specs/2026-07-27-dominio-acessibilidade-design|design do domínio]], o [[00-Meta/specs/2026-07-27-dominio-acessibilidade-plano|plano]] e o [[03-Dominios/Tecnologia/Acessibilidade/roadmap|roadmap]].
+> **Estado (2026-07-27):** **escrita COMPLETA — 21/21 notas** (4 sub-galhos + capstone, padrão capítulo, 3 fases). Falta só o enriquecimento de mídia (M1), tratado como 2ª fase. Ver [[00-Meta/specs/2026-07-27-dominio-acessibilidade-design|design do domínio]], o [[00-Meta/specs/2026-07-27-dominio-acessibilidade-plano|plano]] e o [[03-Dominios/Tecnologia/Acessibilidade/roadmap|roadmap]].
 
 ---
 
