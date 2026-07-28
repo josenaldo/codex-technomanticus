@@ -57,11 +57,13 @@ Esta nota resolve *quantos* estados uma tela precisa e *quando* cada um aparece 
 
 ## O que dá pra fazer sozinho, e o que não dá
 
-| Praticável sozinho | Exige time/orçamento |
-|---|---|
-| Para cada tela nova, listar os cinco estados antes de escrever o primeiro componente | Pesquisa de usuário validando qual mensagem de estado vazio converte melhor por segmento |
-| Implementar os cinco estados como branches explícitos no componente (`switch` ou union type), não como `if/else` de dois ramos | Design system compartilhado com componentes de skeleton, empty state e erro já prontos e consistentes entre times |
-| Escrever manualmente o caso de teste "o que a tela mostra se a API retornar 500" antes de considerar a feature pronta | Monitoramento de produção que alerta quando o estado "parcial" acontece com frequência anormal |
+Praticável sozinho, sem depender de mais ninguém:
+
+- **Para cada tela nova, listar os cinco estados antes de escrever o primeiro componente** — o custo é uma lista de cinco linhas antes de abrir o editor, e o retorno é não descobrir o estado "parcial" só quando um cliente reclamar de dashboard travado.
+- **Implementar os cinco estados como branches explícitos** — um `switch` ou union type nomeado, não um `if/else` de dois ramos — porque um tipo explícito obriga o compilador (ou o linter, ou a revisão de código) a lembrar que os cinco casos existem, em vez de depender da memória de quem escreveu o componente.
+- **Escrever manualmente o caso de teste "o que a tela mostra se a API retornar 500"** antes de considerar a feature pronta — não exige framework de teste sofisticado, só a disciplina de simular a resposta de erro uma vez e olhar o que aparece na tela.
+
+Exige estrutura de time quando o objetivo passa de "a tela não quebra" para "a tela é a melhor possível para cada estado": uma **pesquisa de usuário validando qual mensagem de estado vazio converte melhor por segmento** depende de tráfego e de instrumentação de analytics que uma pessoa sozinha não tem como rodar de um dia para o outro — sem volume de usuários reais testando variações, a escolha de texto vira palpite, por melhor que seja o palpite. Um **design system compartilhado com componentes de skeleton, empty state e erro já prontos** só compensa o investimento de construção quando várias telas de vários times vão reaproveitar os mesmos componentes — para uma tela isolada, construir os cinco estados à mão é mais barato do que montar um sistema reutilizável para uso único. E um **monitoramento de produção que alerta quando o estado "parcial" acontece com frequência anormal** exige infraestrutura de observabilidade (métricas, alertas, dashboards de operação) que é investimento de plataforma, não de uma tela — sem isso, o estado parcial pode estar acontecendo silenciosamente sem que ninguém do time saiba.
 
 ## Casos práticos
 
@@ -70,6 +72,9 @@ Um dashboard interno mostra três widgets: receita, despesas e projeção. O com
 
 ### Cenário 2: a lista de tickets que parecia quebrada no primeiro dia
 Um novo cliente entra no produto e vê a tela "Meus Tickets" completamente vazia, sem nenhum texto — porque o desenvolvedor nunca desenhou o estado vazio, só o `if (tickets.length > 0)`. O cliente presume que o produto está com bug e abre um ticket de suporte perguntando "a lista de tickets não funciona" — ironia à parte, o produto perdeu a chance de ensinar, no exato momento em que o usuário mais precisava, como criar o primeiro ticket. Adicionar o estado vazio como tela própria, com uma frase de contexto e um botão "criar meu primeiro ticket", resolve o problema sem nenhuma mudança de backend.
+
+### Cenário 3: "sem conexão" disfarçado de "vazio de primeiro uso"
+Um app mobile de lista de tarefas, ao abrir sem conexão de internet, mostra exatamente a mesma tela de "vazio: você ainda não tem tarefas" que mostraria para um usuário genuinamente novo — porque o componente nunca distinguiu "zero itens de verdade" (empty legítimo) de "não consegui perguntar ao servidor se há itens" (erro de rede). Um usuário com dezenas de tarefas cadastradas, ao abrir o app no metrô sem sinal, vê a mensagem "comece criando sua primeira tarefa" e acha, por um instante de pânico, que perdeu todos os dados. O bug não é de conectividade, é de modelagem: um estado de "sem dados porque a rede falhou" foi colapsado dentro do estado de "vazio de primeiro uso", quando o diagrama desta nota já previa os dois como casos distintos.
 
 ## Armadilhas comuns
 
