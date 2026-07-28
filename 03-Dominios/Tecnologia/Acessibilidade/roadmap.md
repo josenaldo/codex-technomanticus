@@ -29,7 +29,7 @@ Roadmap do domínio `03-Dominios/Tecnologia/Acessibilidade` (raiz de domínio / 
 |---|-----------|------:|---------:|--:|--------|---------|
 | 1 | Fundamentos e Modelo Mental | 5 | 5 | 100% | ✅ **completo (escrito + enriquecido 2026-07-28)** | `Fundamentos e Modelo Mental/roadmap.md` |
 | 2 | Construir Acessível | 7 | 7 | 100% | ✅ **completo (escrito + enriquecido 2026-07-28)** | `Construir Acessível/roadmap.md` |
-| 3 | Auditar e Testar | 4 | 4 | 100% | 🔶 escrito (4/4), enriquecimento pendente | `Auditar e Testar/roadmap.md` *(a criar)* |
+| 3 | Auditar e Testar | 4 | 4 | 100% | ✅ **completo (escrito + enriquecido 2026-07-28)** | `Auditar e Testar/roadmap.md` |
 | 4 | Sustentar e Conformidade | 4 | 4 | 100% | 🔶 escrito (4/4), enriquecimento pendente | `Sustentar e Conformidade/roadmap.md` *(a criar)* |
 
 ## Tabela-resumo (agregado)

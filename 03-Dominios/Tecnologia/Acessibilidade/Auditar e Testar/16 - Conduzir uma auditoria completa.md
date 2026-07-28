@@ -93,6 +93,46 @@ Uma última distinção de maturidade. A auditoria completa deste capítulo é u
 
 **Conduzir uma auditoria em uma frase:** escopo → automático → manual → priorizar por severidade × esforço → relatar de forma acionável; o valor não está em achar problemas, mas em ordená-los e descrevê-los de um jeito que o time consiga consertar.
 
+> [!tip] Vídeo — How to Run an Accessibility WCAG Audit: Step-by-Step for Beginners
+> [**How to Run an Accessibility WCAG Audit: Step-by-Step for Beginners**](https://www.youtube.com/watch?v=L3qq69X0-6Y) (Stefany Newman — Accessibility Instructor, 50 min) — percorre na prática os mesmos passos deste capítulo: escolher o que avaliar, testar teclado e VoiceOver, e — o ponto mais raro em tutoriais — **como escrever o defeito** (22:53) e organizar o relatório numa planilha. Bom contraponto visual ao achado acionável de cinco campos descrito acima.
+
+## Casos práticos
+
+**Cenário 1 — o relatório que ninguém consegue usar.** Um freelancer roda o axe no site inteiro, exporta o CSV e entrega: 340 linhas, uma delas "vários botões sem `aria-label` em várias páginas". O time de dev abre o arquivo, não sabe por onde começar, não sabe quais botões, e o arquivo vira uma aba esquecida no navegador de alguém. Duas semanas depois, ninguém corrigiu nada — não porque o problema fosse difícil, mas porque o achado não dizia **onde**, **qual impacto** e **como corrigir**. Reescrito como achado acionável (like o exemplo do botão de excluir, passo 5), o mesmo problema vira um ticket de 20 minutos: "padrão de botão-ícone sem nome acessível, presente em 12 telas — componente `IconButton` compartilhado — adicionar prop `aria-label` obrigatória."
+
+**Cenário 2 — priorizar por facilidade em vez de por severidade × esforço.** Um time recebe os achados de uma auditoria e, sob pressão de prazo, ataca os itens mais fáceis de fechar primeiro: trocar `alt=""` genérico em 30 imagens decorativas, ajustar espaçamento de foco em componentes pouco usados. Fecham 25 tickets na sprint — métrica de velocidade ótima. Só que o checkout, marcado como **[Crítico] Bloqueio** desde o dia 1 (o teclado não consegue ativar o botão "Finalizar compra" por causa de um `div` com `onclick` sem `role`/`tabindex`), continua aberto porque está no quadrante "severidade alta, esforço alto" — exige refatorar o componente para um `<button>` de verdade. O time confunde *volume de tickets fechados* com *impacto removido*. É exatamente o erro que a matriz do passo 4 existe para prevenir: contar tickets fechados não é o mesmo que reduzir dano ao usuário.
+
+## Armadilhas comuns
+
+> [!warning] Priorizar por facilidade, não por severidade × impacto
+> Atacar primeiro o que é rápido de consertar (alts triviais, espaçamentos) e deixar bloqueios reais (checkout, login) para depois porque "são mais trabalhosos" inverte a lógica da matriz do passo 4. Volume de correções não é o mesmo que redução de dano — um quadrante ① pequeno vale mais que dez quadrantes ③ ou ④.
+
+> [!warning] Relatar sem propor solução
+> Um achado que só diagnostica ("o contraste está abaixo de 4.5:1") força o dev a pesquisar a correção do zero. Um achado acionável já traz a solução ("trocar `--text-secondary` de `#999` para `#767676`, esforço baixo") — você já estudou o SG2 inteiro; use-o na hora de escrever o relatório, não só na hora de codar.
+
+> [!warning] Listar por instância em vez de agrupar por padrão
+> Reportar "botão sem label na linha 12", "botão sem label na linha 45", "botão sem label na linha 78"... como 40 achados separados infla o relatório e esconde que o problema é **um só componente compartilhado**. Agrupe por padrão ("padrão de botão-ícone sem label, presente em 40 telas") — isso também sinaliza que a correção certa é no componente, não em cada tela.
+
+> [!warning] Tratar a auditoria pontual como suficiente
+> Auditar uma vez, arquivar o PDF e seguir desenvolvendo sem nenhum controle contínuo garante que a dívida de acessibilidade volta a crescer a partir do dia seguinte. A fotografia do passo 1-5 diagnostica o estado — mas só o processo contínuo (CI da nota 14, revisão em cada PR) impede que os mesmos problemas reapareçam a cada feature nova.
+
+## Como explicar em inglês
+
+> In an interview, don't describe an audit as "I ran a scanner and found some issues." Frame it as a method: *"I scope the audit to the critical user flows and one instance of each page template, run automated tools like axe to catch the mechanical violations, then do manual passes — keyboard-only, screen reader, zoom — because most real-world accessibility barriers are things a scanner can't detect. The step that actually makes the audit useful is prioritization: I score each finding by severity — does it block a task or just create friction — against remediation effort, and I always start with the high-severity, low-effort quadrant, because that's where you remove real pain for the least cost. And every finding in the report is actionable: where it is, what's broken, who it impacts, which WCAG criterion it violates, and how to fix it — never just 'several buttons are missing labels.'"* That last sentence is usually what separates a junior answer from a senior one — it shows you know the deliverable of an audit is a fixable plan, not a list of problems.
+
+| PT | EN |
+|---|---|
+| Escopo | Scope |
+| Severidade | Severity |
+| Esforço (de correção) | Remediation effort |
+| Achado acionável | Actionable finding |
+| Bloqueio | Blocker |
+| Atrito | Friction |
+| Agrupar por padrão | Group by pattern |
+| Auditoria pontual | One-off / point-in-time audit |
+| Auditoria contínua | Continuous auditing |
+| Priorizar | Prioritize / triage |
+
 ## O que vem a seguir
 
 Isto fecha o SG3: você sabe construir (SG2) e sabe provar (SG3). Falta o que impede a dívida de voltar e o que a organização precisa declarar ao mundo: acessibilidade no processo de desenvolvimento, o cenário legal que torna tudo isto obrigatório, e como comunicar conformidade. É o SG4, o salto do técnico para o organizacional.

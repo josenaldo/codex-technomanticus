@@ -15,7 +15,7 @@ Enriquecimento via subagentes ≤3 concorrentes.
 
 **Galho:** `03-Dominios/Tecnologia/Acessibilidade/Auditar e Testar`
 **Diagnóstico:** 2026-07-28
-**Última execução:** 2026-07-28 (em curso)
+**Última execução:** 2026-07-28 — **enriquecimento COMPLETO (4/4 ✅)**
 
 ## Régua
 
@@ -26,34 +26,34 @@ Checklist `verificar-nota` — 12 itens. **Esquema:** COM fase (Adepto/Magus). N
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 4 |
-| ⬜ pendente | — |
-| ✅ feita | — |
-| % concluído | (em execução) |
+| ⬜ pendente | 0 |
+| ✅ feita | 4 |
+| % concluído | 100% |
 
 ---
 
 ## Notas
 
 #### 13 - Auditoria automatizada   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** fase: Adepto · Mermaid + tabela + 1 [!warning]
 - **Plano:** vídeo axe/Lighthouse · casos · ≥3 armadilhas · inglês+tabela
-- **Resultado:** —
+- **Resultado:** ✅ vídeo (verificado yt-dlp) + inglês + armadilhas + casos 2026-07-28
 
 #### 14 - Testes de a11y no código   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** fase: Adepto · Mermaid + código + 1 [!warning]
 - **Plano:** vídeo jest-axe/Playwright · casos · ≥3 armadilhas · inglês+tabela
-- **Resultado:** —
+- **Resultado:** ✅ vídeo (verificado yt-dlp) + inglês + armadilhas + casos 2026-07-28
 
 #### 15 - Auditoria manual   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** fase: Magus · tabela + 1 [!warning] · sem Mermaid
 - **Plano:** Mermaid (3 passadas) · vídeo teste manual · casos · ≥3 armadilhas · inglês+tabela
-- **Resultado:** —
+- **Resultado:** ✅ vídeo (verificado yt-dlp) + inglês + armadilhas + casos 2026-07-28
 
 #### 16 - Conduzir uma auditoria completa   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-28)
 - **Estado:** fase: Magus · Mermaid + tabela + código
 - **Plano:** vídeo auditoria/relatório · casos · ≥3 armadilhas · inglês+tabela
-- **Resultado:** —
+- **Resultado:** ✅ vídeo (verificado yt-dlp) + inglês + armadilhas + casos 2026-07-28
