@@ -128,12 +128,12 @@ O texto acima descreve `aria-describedby`/`aria-invalid` campo a campo e o resum
 flowchart TD
     A["Usuário clica em Enviar"] --> B{"Validação passou?"}
     B -->|"Sim"| C["Formulário processado"]
-    B -->|"Não"| D["Foco vai para o resumo de erros\n(Movimento 1, nota 06)"]
-    D --> E["Resumo anuncia:\n'3 erros encontrados'"]
-    E --> F["Usuário ativa o link\n'E-mail: formato inválido'"]
+    B -->|"Não"| D["Foco vai para o resumo de erros<br/>(Movimento 1, nota 06)"]
+    D --> E["Resumo anuncia:<br/>'3 erros encontrados'"]
+    E --> F["Usuário ativa o link<br/>'E-mail: formato inválido'"]
     F --> G["Foco move para #email"]
     G --> H["AT lê: label + aria-invalid + aria-describedby"]
-    H --> I["'E-mail, inválido,\nDigite um e-mail válido...'"]
+    H --> I["'E-mail, inválido,<br/>Digite um e-mail válido...'"]
 
     classDef ok fill:#4A90D9,color:#fff,stroke:#2A5A8A
     classDef atencao fill:#F5A623,color:#1a1a1a,stroke:#B67A10

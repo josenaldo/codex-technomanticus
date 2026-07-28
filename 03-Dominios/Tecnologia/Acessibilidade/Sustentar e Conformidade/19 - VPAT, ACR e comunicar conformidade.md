@@ -53,6 +53,18 @@ A confusão de nomes é comum, então vale fixar: o **VPAT** é o **template vaz
 
 Produzir um ACR honesto **depende inteiramente do SG3**: você não consegue dizer "Partially Supports, falha no critério 2.1.1 no widget de calendário" sem ter feito a auditoria automática e manual que descobriu isso. O ACR é, literalmente, a auditoria da nota 16 traduzida para o formato que o comprador entende. Auditoria ruim gera ACR falso; auditoria boa gera ACR confiável.
 
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
+graph LR
+    T["VPAT<br/>(template vazio)"] --> A["Auditoria real do SG3<br/>(automática + manual)"]
+    A --> P["Preenche critério a critério<br/>Supports / Partially / Does Not / N/A"]
+    P --> R["ACR<br/>(entregável assinado)"]
+    R --> B["Abre porta B2B<br/>e licitação de governo"]
+    style T fill:#F5A623,color:#000
+    style R fill:#4A90D9,color:#fff
+    style B fill:#4A90D9,color:#fff
+```
+
 ## O accessibility statement: a versão pública
 
 O ACR é técnico, denso e voltado a compradores. Existe uma contraparte **pública e humana**: a **declaração de acessibilidade** (*accessibility statement*), uma página no seu site — geralmente linkada no rodapé — dirigida aos **usuários**, não a compradores. Um bom statement contém:
@@ -68,6 +80,49 @@ Em várias jurisdições (a Web Accessibility Directive europeia, por exemplo), 
 > É contraintuitivo, mas o oposto é verdade. Um statement (ou VPAT) que admite limitações **com um plano** demonstra que a organização *conhece* seu estado e o *gerencia* — exatamente o que um comprador ou regulador quer ver. O que gera risco jurídico não é admitir uma falha conhecida; é **afirmar conformidade que não existe** (o "Supports" mentiroso) ou fingir que está tudo perfeito e ser desmentido por uma auditoria externa. Transparência com plano é gestão de risco; silêncio ou falsidade é exposição. A honestidade, aqui, é literalmente a opção mais segura.
 
 **VPAT/ACR em uma frase:** o VPAT é o formulário-padrão da indústria para declarar conformidade WCAG critério a critério; preenchido honestamente (com "Partially Supports" reais, não "Supports" de fachada) vira o ACR que abre portas B2B e de governo — e o accessibility statement é sua versão pública e amigável para o usuário.
+
+> [!tip] Vídeo — preencher um VPAT e criar o ACR
+> [**How to Fill Out a VPAT (and Create an ACR)**](https://www.youtube.com/watch?v=_f9baY9eR4s) (The ADA Book / Accessible.org, 13 min) — passeio prático pelo template, critério a critério, mostrando como escolher entre "Supports / Partially Supports / Does Not Support" com honestidade e como o VPAT preenchido vira o ACR que o comprador lê.
+
+## Casos práticos
+
+### Cenário 1: o "Partially Supports" honesto que fechou a venda
+Um fornecedor de SaaS disputa um contrato com uma universidade, que exige um ACR. Em vez de marcar "Supports" em tudo, o time entrega um ACR com alguns "Partially Supports" bem explicados — qual critério falha, em qual tela, e o plano de correção com data. O comprador **escolhe esse fornecedor** justamente por isso: o ACR honesto sinaliza que a empresa conhece e gerencia seu estado de acessibilidade, enquanto um "Supports" perfeito demais levantaria suspeita. Transparência com plano venceu perfeição de fachada.
+
+### Cenário 2: o accessibility statement que deu voz ao usuário
+Uma pessoa que usa leitor de tela trava num fluxo de pagamento. Em vez de simplesmente abandonar (uma conversão perdida e invisível), ela encontra no rodapé a **declaração de acessibilidade**, que admite problemas conhecidos e oferece um **canal de contato**. Ela reporta a barreira; o time, que já a tinha no backlog priorizado, confirma a correção planejada. O statement transformou um abandono silencioso em feedback acionável e num usuário que se sentiu reconhecido.
+
+## Armadilhas comuns
+
+> [!warning] Marcar "Supports" em tudo para fechar a venda
+> **O que acontece:** o time preenche o VPAT afirmando conformidade que o produto não tem; o comprador descobre em uso ou numa auditoria, e há um documento assinado com declaração falsa.
+> **Por quê:** o VPAT/ACR tem peso contratual e de responsabilidade. Uma afirmação falsa é exposição legal e dano de reputação — muito pior que um "Partially Supports" honesto.
+> **Como evitar:** preencha com base na auditoria real do SG3. "Partially Supports" bem explicado é mais forte que "Supports" mentiroso; compradores maduros preferem transparência a perfeição de fachada.
+
+> [!warning] Confundir VPAT (template) com ACR (preenchido)
+> **O que acontece:** o time promete "temos um VPAT" mas entrega o formulário em branco, ou chama de ACR algo que nunca foi preenchido com dados reais do produto.
+> **Por quê:** VPAT é o template vazio; ACR é o VPAT preenchido, assinado e datado — o entregável. O comprador precisa do segundo, não do primeiro.
+> **Como evitar:** o entregável é sempre o ACR: produto + versão, método de avaliação, régua WCAG usada, e cada critério classificado com base em auditoria real.
+
+> [!warning] Accessibility statement sem canal de contato
+> **O que acontece:** a declaração de acessibilidade lista compromissos e conformidade, mas não diz como o usuário reporta uma barreira que encontrou.
+> **Por quê:** para o usuário com deficiência, o item mais valioso do statement é a saída — um jeito de pedir ajuda quando algo não funciona. Sem ele, o statement é só marketing.
+> **Como evitar:** inclua sempre um canal de contato acessível (e-mail/formulário), a data da última avaliação e os problemas conhecidos com plano.
+
+## Como explicar em inglês
+
+> "A **VPAT** is the industry-standard template for documenting your product's accessibility criterion by criterion, using four levels: **Supports, Partially Supports, Does Not Support, Not Applicable**. Filled in and signed, it becomes an **ACR** — an Accessibility Conformance Report — which is what enterprise and government buyers require in procurement. The key is honesty: a well-explained *Partially Supports* is stronger than a fake *Supports*, because a false claim is contractual exposure. And the public-facing counterpart is the **accessibility statement** — a page that states your target level, known issues, and, most importantly, a way for users to report barriers."
+
+| PT | EN |
+|----|-----|
+| VPAT (modelo de conformidade) | VPAT (accessibility template) |
+| relatório de conformidade (ACR) | Accessibility Conformance Report (ACR) |
+| declaração de acessibilidade | accessibility statement |
+| atende parcialmente | partially supports |
+| não se aplica | not applicable |
+| licitação / compras corporativas | procurement |
+| problemas conhecidos | known issues |
+| conformidade | conformance |
 
 ## O que vem a seguir
 

@@ -58,6 +58,47 @@ Volte ao caso de negócio da nota 01. Lá, "risco legal" era uma das três frent
 
 **Cenário legal em uma frase:** WCAG é o padrão técnico global; leis como a ADA (EUA) e a EAA (Europa, prazo desde jun/2025, atingindo o setor privado com multas pesadas) é que o tornam obrigatório — a régua costuma ser 2.1 AA, e as datas mudam, então reconfira sempre.
 
+> [!tip] Vídeo — What is the European Accessibility Act? Your Roadmap to EAA Compliance.
+> [**What is the European Accessibility Act? Your Roadmap to EAA Compliance.**](https://www.youtube.com/watch?v=mmqWzWmEeR8) (TPGi, a Vispero Company, 65 min) — webinar institucional que percorre exatamente o mesmo mapa desta nota (escopo, prazos, produtos/serviços cobertos, multas) com profundidade maior do que cabe aqui; útil para quem for levar o assunto para uma conversa com jurídico ou produto.
+
+## Casos práticos
+
+Duas situações onde este mapa legal vira munição de negócio, não trivia jurídica:
+
+**Cenário 1 — priorização numa reunião de roadmap.** Um dev sênior está numa reunião trimestral de priorização e o time de produto quer adiar acessibilidade "para depois das features novas". Em vez de argumentar só com princípios ("é o certo a fazer"), a pessoa sênior traz o mapa desta nota: "somos uma empresa de e-commerce que vende na União Europeia — a EAA já está em vigor desde junho de 2025 e as multas chegam a 4% do faturamento. Isso não é um nice-to-have no backlog, é um item de compliance com data vencida." O efeito não é decidir sozinho o que a empresa deve fazer — é dar ao jurídico e ao produto a informação que muda o enquadramento da conversa, deslocando a11y de "polimento" para "risco com prazo".
+
+**Cenário 2 — requisito de contrato B2B ou licitação.** Uma empresa está respondendo a uma licitação de um órgão público, ou a um contrato B2B com uma empresa maior, e o edital ou o cliente pede evidência de conformidade com WCAG ou cita explicitamente Seção 508 (fornecedores do governo federal americano) ou EN 301 549 (Europa). Um dev sênior que reconhece essas referências sabe imediatamente que isso não é burocracia isolada — é a mesma exigência técnica (WCAG AA) vestida com o nome da lei ou norma local, e que a organização vai precisar produzir uma declaração formal de conformidade (a nota seguinte, sobre VPAT/ACR) para avançar no processo.
+
+## Armadilhas comuns
+
+> [!warning] Tratar acessibilidade como "fazer a coisa certa" e perder a prioridade
+> Enquadrar a11y só como valor moral facilita ser atropelado por prazos de feature. O enquadramento que sobrevive a reuniões de priorização é **gestão de risco**: existe exposição legal com valor e data, igual a uma vulnerabilidade de segurança. Isso não torna o argumento ético menos verdadeiro — só o torna mais difícil de ignorar numa pauta de negócio.
+
+> [!warning] Presumir que WCAG é a lei
+> WCAG é um padrão técnico do W3C, sem força legal por si só. Quem confunde os dois arrisca declarar "estamos em conformidade com a lei" só porque passou num checador de WCAG — ignorando que a lei aplicável pode exigir processo, prazo ou documentação além do técnico (como um VPAT/ACR formal). A distinção da seção 1 desta nota não é acadêmica: é o que evita uma falsa sensação de segurança jurídica.
+
+> [!warning] Construir só para o que a lei cita, ignorando que o padrão técnico já avançou
+> A maioria das leis ainda referencia WCAG 2.1 AA porque normas jurídicas demoram a incorporar versões novas (callout acima). Construir estritamente para 2.1 e ignorar a 2.2 — que já existe desde 2023 e é superconjunto da 2.1 — é otimizar para o texto legal desatualizado, não para o usuário real nem para o retrabalho que vem quando a lei atualizar a referência.
+
+> [!warning] Remediar sob litígio em vez de construir certo desde o início
+> Corrigir acessibilidade depois de receber uma notificação, sob prazo judicial e escrutínio, custa ordens de grandeza mais caro — em tempo, dinheiro e reputação — do que aplicar o shift-left da nota anterior. O cenário legal não é só um argumento para *começar* a fazer a11y; é um argumento contra *adiar* até o pior momento possível para fazer.
+
+## Como explicar em inglês
+
+In an interview or a cross-functional conversation, the move is to separate the **standard** from the **law** clearly, then name the jurisdiction. Something like: *"WCAG is the technical standard — it's the same worldwide. What changes by country is the law that makes it mandatory: in the US, the ADA drives compliance mostly through litigation, plus a newer Title II rule with hard deadlines for state and local government sites; in Europe, the European Accessibility Act extends WCAG-based requirements into the private sector, with real fines attached."* This framing signals you understand accessibility isn't just an ethical stance — it's a compliance and business-risk topic, which is exactly the register a senior engineer is expected to bring to a conversation with legal or product.
+
+| PT | EN |
+|---|---|
+| conformidade | compliance |
+| padrão técnico vs. lei | standard vs. law |
+| processo judicial | lawsuit / litigation |
+| declaração de conformidade | conformance statement |
+| prazo de conformidade | compliance deadline |
+| multa | fine / penalty |
+| setor privado / setor público | private sector / public sector |
+| norma harmonizada | harmonized standard |
+| gestão de risco | risk management |
+
 ## O que vem a seguir
 
 Se a lei exige conformidade, a organização precisa saber **declará-la** — para clientes, para licitações, para o próprio jurídico. Existe um documento padrão para isso, e saber lê-lo e produzi-lo é a contraparte formal de tudo o que você auditou no SG3.

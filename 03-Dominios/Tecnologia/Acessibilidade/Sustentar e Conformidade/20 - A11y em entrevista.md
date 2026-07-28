@@ -29,6 +29,28 @@ Quando surge uma pergunta de a11y, raramente o objetivo é checar se você sabe 
 - **Empatia informada** — você pensa em usuários reais e no espectro (nota 01), ou recita "pessoas cegas"?
 - **Maturidade de processo** — você sabe que a11y se *sustenta* (nota 17), não só se *conserta*? Falar de CI, design system e Definition of Done mostra que você já operou isso em escala.
 
+```mermaid
+flowchart TD
+    Q["Pergunta de a11y<br/>na entrevista"] --> A["Modelo mental<br/>como a AT funciona?"]
+    Q --> B["Julgamento<br/>quando ARIA, quando não?"]
+    Q --> C["Empatia informada<br/>espectro, não só cegueira?"]
+    Q --> D["Maturidade de processo<br/>sustenta ou só conserta?"]
+
+    A --> R["Resposta sênior:<br/>três camadas —<br/>construir · testar · sustentar"]
+    B --> R
+    C --> R
+    D --> R
+
+    style Q fill:#4A90D9,color:#fff
+    style A fill:#4A90D9,color:#fff
+    style B fill:#4A90D9,color:#fff
+    style C fill:#4A90D9,color:#fff
+    style D fill:#4A90D9,color:#fff
+    style R fill:#F5A623,color:#000
+```
+
+O entrevistador não soma pontos por critério citado — ele testa se as quatro dimensões colapsam numa única resposta coerente. É exatamente a estrutura de três camadas (construir → testar → sustentar) que aparece na resposta-modelo abaixo.
+
 ## As perguntas que caem, e como respondê-las como sênior
 
 > [!example] "Como você garante que uma aplicação é acessível?"
@@ -87,6 +109,28 @@ Numa entrevista internacional, articular a11y em inglês natural é o que conver
 | deficiência (situacional/temporária) | (situational/temporary) disability |
 
 **A11y em entrevista em uma frase:** demonstre modelo mental (o accessibility tree, o porquê), julgamento (semântica antes de ARIA), o teto honesto da automação e maturidade de processo (shift-left) — e fuja dos clichês ("é só ARIA", "Lighthouse deu 100") que denunciam superfície.
+
+> [!tip] Vídeo — 50 Accessibility Interview Questions That Actually Get You HIRED
+> [**50 Accessibility Interview Questions That Actually Get You HIRED in 2026**](https://www.youtube.com/watch?v=K4VXa7OjpQE) (Skills Singh, 17 min) — bateria rápida de perguntas e respostas cobrindo WCAG, ARIA, leitores de tela, Axe/ANDI/NVDA e testes de a11y. Útil como simulado de múltipla-pergunta depois de internalizar o *porquê* desta nota: aqui você treina volume e velocidade de resposta, não profundidade.
+
+## Armadilhas comuns
+
+Além dos red flags de fala, há erros de **comportamento na entrevista** que denunciam superficialidade mesmo quando o candidato conhece o vocabulário certo:
+
+> [!warning] Recitar critérios WCAG sem explicar o mecanismo
+> **O que acontece:** o candidato cita "1.4.3 contraste mínimo" ou "4.1.2 nome, função, valor" de cabeça, mas trava quando perguntado *por que* aquele critério existe.
+> **Por quê:** decorar números é fácil de simular com flashcard; explicar o mecanismo (o que a tecnologia assistiva lê, o que quebra sem ele) exige ter operado o problema de verdade — é exatamente o que o entrevistador está testando (seção acima).
+> **Como evitar:** treine explicar o *efeito no usuário*, não o número do critério. Troque "1.4.3" por "sem contraste suficiente, quem tem baixa visão não distingue o texto do fundo — e isso nem sempre é achado pelo Lighthouse em elementos com opacidade ou gradiente."
+
+> [!warning] Tratar a pergunta de a11y como pergunta de ferramenta
+> **O que acontece:** a resposta vira uma lista de nomes — "uso axe, Lighthouse, WAVE, NVDA" — sem nunca chegar ao *processo* que decide quando cada uma entra.
+> **Por quê:** ferramentas são o `quê`, não o `como`; listar nomes é o mesmo clichê de "é só adicionar ARIA" com roupa nova, porque não mostra julgamento nem sustentação (notas 13, 17).
+> **Como evitar:** ancore a resposta na estrutura de três camadas (construir → testar → sustentar) e cite as ferramentas só como exemplo dentro de cada camada, nunca como a resposta inteira.
+
+> [!warning] Sobrecorrigir e recusar automação
+> **O que acontece:** para não soar como quem confia cegamente no Lighthouse, o candidato vai para o outro extremo e descarta a automação como "inútil" ou "não confio em ferramenta nenhuma".
+> **Por quê:** isso é tão raso quanto o excesso de confiança — ignora que a automação pega a metade mecânica dos problemas de graça e a um custo de CI desprezível (nota 13); rejeitar automação por completo sinaliza falta de pragmatismo operacional, não rigor.
+> **Como evitar:** posicione a automação como piso obrigatório e barato, não como solução — "eu rodo axe no CI porque pega metade dos problemas sem custo humano, e reservo o teste manual para a outra metade que só um humano percebe."
 
 ## O que vem a seguir
 

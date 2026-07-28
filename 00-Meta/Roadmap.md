@@ -154,7 +154,7 @@ aliases:
 **Tier 1 — construção nova (buracos reais 🚫)**
 - ~~**Go** — 3 notas stub~~ ✅ **Trilha completa (2026-07-18):** 21 galhos + capstone, 163 notas. Paridade de stack backend atingida (Java · Node · Python · Go). Fronteira nativa de gRPC em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação]] (galho 12). Resta só enriquecimento de mídia (M1).
 - ~~**Cloud (AWS/GCP)** — sem domínio próprio construído~~ ✅ **COMPLETA 2026-07-24**: `Tecnologia/Cloud`, 24 galhos + capstone, 146 notas, lente dupla AWS↔DigitalOcean. Alto valor para entrevista sênior remota — agora coberto a fundo (Well-Architected, primitivos, serverless, FinOps, SAA-C03). Resta só M1 (mídia).
-- ~~**Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML~~ ✅ **domínio próprio, escrita COMPLETA 2026-07-27**: `Tecnologia/Acessibilidade`, 4 sub-galhos + capstone, **21 notas**, progressão *entender → construir → auditar → sustentar*, lente dupla WCAG↔ofício. Fecha o **último buraco de construção nova do Tier 1** (Go ✅ · Cloud ✅ · **a11y ✅**). Resta só M1 (mídia). Ver [[03-Dominios/Tecnologia/Acessibilidade/index|índice]].
+- ~~**Acessibilidade (a11y)** — tema de entrevista por si só, hoje diluído como fase do HTML~~ ✅ **domínio próprio 100% COMPLETO (escrito + enriquecido) 2026-07-28**: `Tecnologia/Acessibilidade`, 4 sub-galhos + capstone, **21 notas**, progressão *entender → construir → auditar → sustentar*, lente dupla WCAG↔ofício. Fecha o **último buraco de construção nova do Tier 1** (Go ✅ · Cloud ✅ · **a11y ✅**). Cada nota com vídeo YouTube verificado + inglês + armadilhas. Ver [[03-Dominios/Tecnologia/Acessibilidade/index|índice]].
 
 **Tier 2 — consolidação de 🟡 (conteúdo existe, falta virar trilha atômica em 3 fases)**
 - **Design de Software** (25 notas, só SOLID + OO) — falta galho de Design Patterns + atomização no padrão capítulo.
@@ -169,7 +169,7 @@ aliases:
 
 **Tier 4 — enriquecimento, não tema novo**
 - **IA** (351 notas) — diagnóstico nota-a-nota pronto; falta *executar* correções (E2 abertura · E1 TL;DR · L2 URLs · ASCII→Mermaid · caducidade). Ver [[#Enriquecimento do domínio IA]].
-- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS, Go, **Acessibilidade** (21 notas, escrita 2026-07-27). (**Cloud** ✅ M1 completo 2026-07-25 — 217 vídeos em 144 notas.)
+- **Enriquecimento de mídia (M1)** dos galhos escritos-mas-não-enriquecidos: Arqueologia, Web Performance, Testes JS, Go. (**Cloud** ✅ M1 completo 2026-07-25 — 217 vídeos em 144 notas. **Acessibilidade** ✅ enriquecimento completo 2026-07-28 — 21 vídeos verificados + inglês + armadilhas.)
 - **RPA** (6 notas stub) — nicho, baixa prioridade.
 
 ### Onda A — Tripé Frontend (prioridade máxima)
