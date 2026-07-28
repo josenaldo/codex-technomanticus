@@ -104,7 +104,7 @@ Tudo num objeto só. Isso é conveniente — e é exatamente a raiz das fraqueza
 
 Fechamos o **bloco Iniciado** — onde a lógica mora (Transaction Script, Domain Model, Table Module) e as duas primeiras respostas de acesso (DAO, Active Record). O bloco **Adepto** entra nos padrões que fazem o outro lado do eixo — o Data Mapper — funcionar de verdade. Começamos pelos wrappers finos que os ORMs absorveram.
 
-- [[07 - Gateways (Row-Table Data Gateway + Record Set)]] — os wrappers de linha e de tabela do JDBC/ADO cru.
+- [[07 - Gateways]] — os wrappers de linha e de tabela do JDBC/ADO cru.
 - [[08 - Data Mapper]] — a outra metade do eixo dorsal: domínio ignorante do banco.
 
 ## Veja também

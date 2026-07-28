@@ -42,9 +42,9 @@ Estrutura: cenário → ideia (Mermaid) → **como os ORMs/ecossistemas o encarn
 | Iniciado | 6 |
 | Adepto | 7 |
 | Magus | 2 |
-| ✅ escritas | 6 |
-| ⬜ pendentes | 9 |
-| % concluído | 40% |
+| ✅ escritas | 13 |
+| ⬜ pendentes | 2 |
+| % concluído | 87% |
 | Scaffolding | index.md criado (2026-07-28) |
 
 ---
@@ -84,39 +84,39 @@ Estrutura: cenário → ideia (Mermaid) → **como os ORMs/ecossistemas o encarn
 ## Notas — Adepto (mapper, repository e maquinaria ORM)
 
 #### 07 - Gateways (Row/Table Data Gateway + Record Set)   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 207 linhas
 - **Escopo:** wrappers finos sobre **uma linha** (Row Data Gateway) ou **uma tabela** (Table Data Gateway); Record Set como resultado tabular. Legado, .NET/JDBC cru. Onde aparecem e por que minguaram (ORMs os absorveram).
-- **Resultado:** —
+- **Resultado:** objeto burro (só acesso); Row=1-obj-por-linha × Table=1-obj-por-tabela+Record Set (Mermaid); **AR = Row Gateway + lógica** (amarra eixo dorsal), Table Gateway ↔ Table Module; tabela cross-ORM (onde os gateways foram parar: .NET DataSet, Spring JDBC, Go database/sql); Record Set (DataSet/ResultSet); 3 armadilhas (lógica no gateway, reescrever o que o ORM gera, confundir Row×Table + N+1). Aprovada. **Abre o bloco Adepto.**
 
 #### 08 - Data Mapper   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 179 linhas
 - **Escopo:** camada que move dados entre objetos e banco **mantendo-os ignorantes um do outro**. Hibernate/JPA, SQLAlchemy, Doctrine, Ent. O rival do Active Record (domínio puro × produtividade). **Armadilha:** complexidade, leaky abstraction (o mapper vaza), N+1.
-- **Resultado:** —
+- **Resultado:** domínio ignorante do banco (Mermaid da seta-que-não-existe); pré-condição do Domain Model rico + testabilidade; dependência aponta pra dentro (DIP); tabela cross-ORM (Hibernate/SQLAlchemy/Doctrine/Ent × AR Rails/Django); Repository chama o mapper; 3 armadilhas (leaky abstraction/LazyInit, N+1 silencioso, over-eng em CRUD). **Fecha o eixo dorsal AR×DM.** Aprovada.
 
 #### 09 - Repository   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 176 linhas
 - **Escopo:** coleção-em-memória sobre o mapper; esconde a query atrás de uma interface tipo coleção. Spring Data, DDD. **Armadilha:** repository genérico que vaza `IQueryable`/`Criteria`; repository sobre Active Record (redundante); explosão de métodos `findByXAndY`.
-- **Resultado:** —
+- **Resultado:** fachada de coleção (Mermaid domínio→Repo→mapper→banco); tabela Repository×DAO revisitada (DDD×J2EE, Spring Data borra); por-agregado no DDD real; tabela cross-ORM (Spring Data/EF/Doctrine/TypeORM); 3 armadilhas (genérico que vaza query, sobre Active Record=redundante, explosão findByXAndY→Query Object). Aprovada.
 
 #### 10 - Unit of Work   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 165 linhas
 - **Escopo:** rastreia mudanças na operação de negócio e persiste tudo numa transação. Hibernate `Session`, JPA `EntityManager`, SQLAlchemy `Session`. **Armadilha:** sessão longa demais, `flush` em hora surpresa, `OSIV` (open-session-in-view).
-- **Resultado:** —
+- **Resultado:** novos/dirty/removidos→1 transação ordenada (Mermaid); dirty checking via snapshot; tabela cross-ORM (EntityManager/Session/DbContext SÃO UoW); 3 armadilhas (sessão longa, auto-flush surpresa, OSIV=anti-pattern ligado por padrão no Spring Boot). Aprovada.
 
 #### 11 - Identity Map   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 168 linhas
 - **Escopo:** garante **uma instância por linha** dentro da sessão (o cache de 1º nível do Hibernate). Evita objetos duplicados e inconsistentes. **Armadilha:** dado obsoleto (stale) na sessão, consumo de memória, surpresa em long-running.
-- **Resultado:** —
+- **Resultado:** uma-linha-um-objeto por chave (Mermaid 2×find→mesma instância); É o cache L1 (persistence context) sempre-ligado; L1(correção,por-sessão)×L2(perf,compartilhado); tabela cross-ORM (Rails DROPOU o identity map no 4); 3 armadilhas (stale, OOM em lote→clear/stateless, identidade entre sessões→equals de negócio). Aprovada.
 
 #### 12 - Lazy Load   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 158 linhas
 - **Escopo:** carregar sob demanda via **proxy** (linka [[10 - Proxy]] do GoF). Tipos (lazy initialization, virtual proxy, value holder, ghost). **Armadilha central:** o **N+1**, `LazyInitializationException` fora da sessão. Fetch join / batch como saída.
-- **Resultado:** —
+- **Resultado:** proxy que busca no 1º toque (Mermaid c/ caminho de erro vermelho→LazyInit); efeito-dominó do eager; tabela dos 4 sabores (Fowler); encarna [[10 - Proxy]] do GoF; 3 armadilhas (N+1, LazyInitException fora da sessão, EAGER como reação exagerada); fetch decidido POR CONSULTA. **Fecha a maquinaria de ORM.** Aprovada.
 
 #### 13 - Query Object   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 170 linhas
 - **Escopo:** query como **objeto** (não string SQL). JPA Criteria, QueryDSL, Spring Data Specifications, SQLAlchemy expression language. Componível, type-safe. **Armadilha:** over-abstração onde SQL direto/nomeado seria mais claro; queries ilegíveis.
-- **Resultado:** —
+- **Resultado:** inferno da query-por-string (SQL injection/1=1) vs critérios-como-objetos (Mermaid combina→SQL parametrizado); Query Object×Specification (predicado DDD que filtra E gera SQL); resposta à explosão findByXAndY do Repository; tabela cross-ORM (Criteria verboso vs QueryDSL vs LINQ ouro); 3 armadilhas (over-abstração, builder ilegível, vazar do repo). **Fecha o bloco Adepto (07-13).** Aprovada.
 
 ## Notas — Magus (NoSQL e nuvem remodelam o acesso)
 
