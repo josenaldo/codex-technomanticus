@@ -73,8 +73,11 @@ um padrão de empilhar cerimônia.
 
 ## Magus — situacionais e síntese
 
-*Em construção.* Mediator, Visitor, os padrões raros (Bridge/Flyweight/Memento/Interpreter),
-reconhecer GoF nos frameworks e a síntese "quando NÃO usar".
+19. [[19 - Mediator]] — coordenar interações entre colegas; teia N² → estrela.
+20. [[20 - Visitor]] — operações sem tocar os tipos; o caso-ouro que *pattern matching* aposenta.
+21. [[21 - Padrões raros (Bridge, Flyweight, Memento, Interpreter)]] — os quatro que a prática quase aposentou, e onde ainda vivem.
+22. [[22 - Reconhecer GoF nos frameworks]] — os padrões que você já usa sem perceber (Spring/JPA).
+23. [[23 - Quando NÃO usar - anti-patterns e discernimento sênior]] — a síntese: partir do problema, não do padrão.
 
 ## Rotas alternativas
 

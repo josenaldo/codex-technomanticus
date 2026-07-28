@@ -45,9 +45,9 @@ Padrão "capítulo de livro" (nota que pega o leitor pela mão; ~substancial com
 | Iniciado | 6 |
 | Adepto | 12 |
 | Magus | 5 |
-| ✅ escritas | 18 |
-| ⬜ pendentes | 5 |
-| % concluído | 78% |
+| ✅ escritas | 23 |
+| ⬜ pendentes | 0 |
+| % concluído | 100% |
 | Scaffolding | index.md criado (2026-07-28) |
 
 ---
@@ -149,34 +149,40 @@ Padrão "capítulo de livro" (nota que pega o leitor pela mão; ~substancial com
 ## Notas — Magus (situacionais + síntese sênior)
 
 #### 19 - Mediator   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-28) · fase: magus · 125 linhas
 - **Escopo:** encapsula interações N-para-N; reduz acoplamento direto. Command bus, MediatR (.NET), `ApplicationEventMulticaster`. **Armadilha:** o mediator vira **God Object** que sabe demais.
-- **Resultado:** —
+- **Resultado:** teia N²→estrela; command bus (CQRS/MediatR) como encarnação moderna; Mediator≠Observer≠Facade; Mermaid teia×estrela; 3 armadilhas (God Mediator). Aprovada. **Abre o bloco Magus.**
 
 #### 20 - Visitor   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-28) · fase: magus · 160 linhas
 - **Escopo:** **o caso-ouro da lente cross-linguagem.** Operações sobre estrutura sem tocar os tipos; double dispatch. **Pattern matching / sealed types matam o Visitor clássico**: Java 21+ `switch` sobre sealed, Kotlin `when`, Scala `match`, Python `singledispatch`/match, Go type switch. Onde sobrevive (AST/compiladores). **Armadilha:** Visitor cerimonioso onde o `switch` sobre tipo selado é mais claro.
-- **Resultado:** —
+- **Resultado:** nota-vitrine da tese; problema da expressão (Mermaid matriz tipos×operações); double dispatch; sealed+switch exaustivo mata+cobra exaustividade; JEP 441/Wadler nas fontes; onde ainda vive (compiladores); 3 armadilhas. Aprovada.
 
 #### 21 - Padrões raros (Bridge · Flyweight · Memento · Interpreter)   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-28) · fase: magus · 122 linhas · filename com parênteses (ok, sem `/`)
 - **Escopo:** os 4 do GoF que o monólito só citou. O que são, **por que são raros hoje**, e onde ainda aparecem: Flyweight (pools, string interning, sprites), Memento (undo/snapshots, event sourcing encosta), Interpreter (DSLs, engines de regex/regra), Bridge (drivers, abstração×implementação). Nota-catálogo honesta, sem padding.
-- **Resultado:** —
+- **Resultado:** 4 padrões compactos (o quê/por que raro/onde vive); Bridge=DI hoje; Flyweight=Integer cache/interning; Memento→snapshot imutável/ES; Interpreter→ANTLR/regex; Mermaid Bridge; 3 armadilhas. Aprovada.
 
 #### 22 - Reconhecer GoF nos frameworks   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-28) · fase: magus · 132 linhas
 - **Escopo:** a tabela "onde você já usa" — `@Transactional`=Proxy, `@Service`=Facade, `@EventListener`=Observer, `JpaRepository`=Repository, `JdbcTemplate`=Template Method, DI=IoC. **Reconhecer > reimplementar.** Vale pra debugar (saber que é proxy, não mágica). *Pode graduar a capstone do galho-pai quando houver outras famílias (ver roadmap-pai).*
-- **Resultado:** —
+- **Resultado:** o outro lado da lente; Mermaid anotação→padrão + tabela completa; 3 exemplos reconhecer-p/-debugar (@Transactional interno, N+1, listener na tx); contraste JVM-mágica × Go-explícito; 3 armadilhas. Aprovada.
 
 #### 23 - Quando NÃO usar: anti-patterns e discernimento sênior   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-28) · fase: magus · 132 linhas
 - **Escopo:** síntese do "quando não usar" espalhado pelo galho — Pattern mania, Golden Hammer, abstração prematura, Singleton pra tudo, reimplementar o que o framework faz, confundir padrão com arquitetura. + **inglês/entrevista** consolidado (frases prontas, vocabulário PT↔EN, o "premature abstraction is as bad as no abstraction"). *Candidata a capstone do galho-pai.*
-- **Resultado:** —
+- **Resultado:** capstone da família; Mermaid fluxo "preciso de padrão?" (default = não); 5 anti-patterns como `[!warning]`; frases prontas de entrevista; inglês consolidado. **Fecha a família GoF (23/23).**
 
 ---
 
-## Próximos passos
+## FAMÍLIA COMPLETA — 23/23 (2026-07-28)
 
-1. ⬜ Escrever 01 → 23 na ordem, via `/escrever-nota`. `/checkpoint` a cada bloco de fase (após 06, após 18, após 23).
-2. ⬜ Criar `index.md` da família (MOC com seções por fase + rotas + dataview) — ao ter ≥ bloco Iniciado escrito.
-3. ⬜ Ao fechar 23: podar o monólito [[Design Patterns]] (preservar 8 inbound links) e atualizar roadmap-pai + [[00-Meta/Roadmap]] central.
+Iniciado 6/6 · Adepto 12/12 · Magus 5/5. Todas verificadas (Mermaid válido, ≥3 armadilhas, 4 idiomas, inglês). Escrita sequencial via `/escrever-nota`, commits por bloco.
+
+## Próximos passos (rollup)
+
+1. ✅ Escrever 01 → 23 (2026-07-28).
+2. ✅ `index.md` da família criado + seções Iniciado/Adepto/Magus linkadas.
+3. ⬜ **Decisão pendente do usuário:** podar o monólito [[Design Patterns]] (631 ln, `publish:false`) — stub/redirect OU alias "Design Patterns" no `index.md` da família — preservando os **8 inbound links** (SOLID 01/03/index, OO 06/07/12/13/index).
+4. ⬜ Criar `index.md` do **galho-pai** `Padrões de Projeto/` (MOC das 6 famílias).
+5. ⬜ Próxima família: **Acesso a Dados** (novo ciclo brainstorm + roadmap-folha).
