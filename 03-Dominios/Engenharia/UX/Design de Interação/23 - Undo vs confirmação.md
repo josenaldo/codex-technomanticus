@@ -58,11 +58,13 @@ Confirmação, em contraste, não exige nenhuma dessas mudanças de modelagem �
 
 ## O que dá pra fazer sozinho, e o que não dá
 
-| Praticável sozinho | Exige time/orçamento |
-|---|---|
-| Auditar as ações destrutivas existentes no produto e classificar cada uma como "candidata a undo" ou "precisa de confirmação de verdade" | Migração de schema para adicionar soft delete em tabelas que hoje fazem exclusão física |
-| Implementar um toast simples de "Desfazer" para uma ação já reversível no código (ex: um campo `status` que já existe) | Construir uma fila de eventos reversível genérica para operações complexas de múltiplos passos |
-| Trocar um modal de confirmação existente por undo, quando a ação por trás dele já é (ou pode ser barata de tornar) reversível | Pesquisa medindo taxa real de erro de usuário antes e depois da mudança, para validar o ganho |
+Praticável sozinho, com o código que já existe:
+
+- **Auditar as ações destrutivas do produto** e classificar cada uma como "candidata a undo" ou "precisa de confirmação de verdade" — é trabalho de julgamento, aplicando a regra de reversibilidade desta nota ação por ação, sem depender de nenhuma ferramenta.
+- **Implementar um toast simples de "Desfazer"** para uma ação que já é reversível no código existente (por exemplo, um campo `status` que já existe e só precisa ser revertido) — quando a reversibilidade já está lá, o toast é pouco mais que uma chamada extra e um componente de UI.
+- **Trocar um modal de confirmação existente por undo**, quando a ação por trás dele já é — ou pode ser barata de tornar — reversível: o ganho de fricção reduzida vem sem precisar esperar por nenhum outro time.
+
+Exige estrutura de time quando a reversibilidade não existe ainda no sistema: uma **migração de schema para adicionar soft delete** em tabelas que hoje fazem exclusão física toca todas as queries existentes daquela tabela, exige plano de migração e, tipicamente, revisão de mais de uma pessoa — não é mudança que se faz isoladamente sem risco. **Construir uma fila de eventos reversível genérica** para operações complexas de múltiplos passos é decisão de arquitetura de dados que afeta o sistema inteiro, não uma ação isolada — o tipo de investimento que só se justifica quando várias features vão precisar de undo, não uma só. E uma **pesquisa medindo a taxa real de erro do usuário antes e depois da mudança** para validar se o ganho existe de verdade exige instrumentação e volume de uso — sem isso, a decisão de trocar confirmação por undo continua sendo bem fundamentada em princípio, mas não confirmada em dado real de produção.
 
 ## Casos práticos
 
@@ -71,6 +73,9 @@ Arquivar um e-mail no Gmail não pede confirmação — executa na hora, e um to
 
 ### Cenário 2: deletar conta, sem substituto de undo
 Um fluxo de exclusão de conta legitimamente não tem undo possível — depois de um certo prazo, os dados são apagados de verdade, inclusive de backups. Aqui a confirmação explícita é a escolha certa, não um excesso de zelo: o modal deveria pedir que o usuário digite o nome da conta ou "EXCLUIR" para confirmar, elevando a barreira de erro acidental de forma proporcional à irreversibilidade real da ação — bem diferente do "Tem certeza?" genérico do cenário de abertura desta nota.
+
+### Cenário 3: ação em lote sem undo, forçando confirmação pesada
+Uma ferramenta de gestão de tickets permite selecionar 50 tickets de uma vez e "arquivar em lote". Como o time nunca implementou undo para operações em lote — exigiria rastrear as 50 reversões individuais numa fila reversível, o custo de engenharia descrito acima — a única rede de segurança disponível é um modal de confirmação: "Tem certeza que deseja arquivar 50 tickets?". É uma escolha correta dado o custo real de implementar undo em lote, mas incompleta sozinha, porque um clique errado em "confirmar" continua sendo catastrófico sem chance de reverter. A melhoria de baixo custo, sem reescrever a fila de eventos: listar os 50 tickets afetados dentro do próprio modal antes de confirmar, para que o usuário veja de fato o que está prestes a arquivar, em vez de confiar cegamente num número.
 
 ## Armadilhas comuns
 
