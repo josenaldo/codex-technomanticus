@@ -55,8 +55,21 @@ um padrão de empilhar cerimônia.
 
 ## Adepto — estruturais e comportamentais de trabalho
 
-*Em construção.* Estruturais (Adapter, Decorator, Facade, Proxy, Composite) e comportamentais de uso
-diário (Strategy, Observer, Command, Template Method, State, Chain of Responsibility, Iterator).
+**Estruturais:**
+7. [[07 - Adapter]] — casar interfaces; tipagem estrutural (Go/TS) dissolve o adapter de declaração.
+8. [[08 - Decorator]] — comportamento empilhável por composição; o `@` da linguagem é primo, não o mesmo.
+9. [[09 - Facade]] — API simples sobre subsistema; o padrão que a linguagem *não* dissolve.
+10. [[10 - Proxy]] — controlar acesso; a base da AOP e a pegadinha do `@Transactional` interno.
+11. [[11 - Composite]] — árvore parte-todo; OO vs tipo-soma funcional.
+
+**Comportamentais:**
+12. [[12 - Strategy]] — algoritmos intercambiáveis; o caso-ouro de "vira função".
+13. [[13 - Observer]] — notificação um-para-muitos; base do event-driven.
+14. [[14 - Command]] — requisição como objeto; enfileirar, logar, desfazer.
+15. [[15 - Template Method]] — esqueleto por herança; Go funde com Strategy.
+16. [[16 - State]] — comportamento por estado interno; FSM vs enum/sealed.
+17. [[17 - Chain of Responsibility]] — cadeia de handlers; a base do middleware.
+18. [[18 - Iterator]] — percorrer sem expor; o padrão mais absorvido pelas linguagens.
 
 ## Magus — situacionais e síntese
 

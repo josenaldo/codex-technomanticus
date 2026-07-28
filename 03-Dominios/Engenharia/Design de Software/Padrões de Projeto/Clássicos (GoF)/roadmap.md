@@ -45,9 +45,9 @@ Padrão "capítulo de livro" (nota que pega o leitor pela mão; ~substancial com
 | Iniciado | 6 |
 | Adepto | 12 |
 | Magus | 5 |
-| ✅ escritas | 6 |
-| ⬜ pendentes | 17 |
-| % concluído | 26% |
+| ✅ escritas | 18 |
+| ⬜ pendentes | 5 |
+| % concluído | 78% |
 | Scaffolding | index.md criado (2026-07-28) |
 
 ---
@@ -87,64 +87,64 @@ Padrão "capítulo de livro" (nota que pega o leitor pela mão; ~substancial com
 ## Notas — Adepto (estruturais + comportamentais de trabalho)
 
 #### 07 - Adapter   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 164 linhas
 - **Escopo:** casar interfaces; ponte legado/terceiros; base de Ports & Adapters. **Structural typing** (Go/TS) muda a necessidade de declarar o adaptador. Exemplo: wrapper de SDK (Stripe). **Armadilha:** adapter que vaza o vocabulário que deveria esconder.
-- **Resultado:** —
+- **Resultado:** tese "declaração×tradução" (nominal Java obriga; estrutural Go/TS dissolve a declaração, tradução sobrevive); object adapter; Mermaid domínio→interface←adapter→SDK; 3 armadilhas. Aprovada.
 
 #### 08 - Decorator   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 148 linhas
 - **Escopo:** comportamento em runtime por composição (vs herança). **Decorators nativos**: Python `@`, TS (experimental/stage 3). Go: **embedding**. Java: I/O streams. **Armadilha:** pilha profunda ilegível; confundir decorator de linguagem com o padrão.
-- **Resultado:** —
+- **Resultado:** distingue Decorator-padrão (objeto/mesma interface/empilhável) do `@`-da-linguagem (função/classe); I/O streams Java + io.Reader Go; middleware=Decorator via Proxy; Mermaid pilha; 3 armadilhas. Aprovada.
 
 #### 09 - Facade   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 135 linhas
 - **Escopo:** API simplificada sobre subsistema; **todo `@Service` orquestrador é uma Facade** — o padrão mais usado sem se perceber. **Armadilha:** God Facade que vira God Object.
-- **Resultado:** —
+- **Resultado:** insight "a linguagem NÃO dissolve" (organização humana, não lacuna técnica); Facade≠Adapter≠Mediator; Mermaid cliente→facade→subsistemas; 3 armadilhas (God Facade, vazamento). Aprovada.
 
 #### 10 - Proxy   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 150 linhas
 - **Escopo:** controlar acesso (lazy/cache/log/remoto/segurança). AOP: `@Transactional`/`@Cacheable`; lazy JPA; JDK dynamic proxy vs CGLIB. Go: sem proxies dinâmicos → geração/wrappers explícitos. **Pegadinha clássica:** `@Transactional` em chamada interna (`this.m()`) não intercepta.
-- **Resultado:** —
+- **Resultado:** maior divergência do catálogo (JVM/dinâmicas interceptam runtime; JS Proxy nativo; Go explícito); pegadinha self-invocation destacada; N+1 lazy; Proxy≠Decorator; Mermaid antes/depois; 3 armadilhas. Aprovada.
 
 #### 11 - Composite   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 142 linhas
 - **Escopo:** árvore parte-todo; cliente trata folha e composto igual. Casos: filesystem, UI, AST, expressões. **Armadilha:** aplicar onde recursão simples/lista basta.
-- **Resultado:** —
+- **Resultado:** OO (polimorfismo) × funcional (tipo-soma+pattern matching), mesmo trade-off do Visitor; transparência×segurança (add na folha); Mermaid árvore FS; 3 armadilhas (ciclos/profundidade). Aprovada. **Fecha os 5 estruturais.**
 
 #### 12 - Strategy   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 159 linhas
 - **Escopo:** **o exemplo-ouro de "vira função"**. Java: interface ou lambda. Python/Go/TS: passar função de 1ª classe. Spring: `Map<String,Strategy>`. **Armadilha central:** interface Strategy com **uma só implementação** e nenhuma perspectiva de segunda = abstração prematura.
-- **Resultado:** —
+- **Resultado:** colapso p/ função nas 4 linguagens; exemplo frete; Spring Map; Mermaid contexto→interface; 3 armadilhas (abstração prematura destacada, estado compartilhado). Conecta ao desconto da nota 01. Aprovada.
 
 #### 13 - Observer   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 158 linhas
 - **Escopo:** dependência 1-para-N; base de event-driven. Spring Events, Node `EventEmitter`, DOM, Reactive (Reactor/RxJS). **Armadilha:** listener sem unsubscribe = memory leak; evento síncrono na thread da transação.
-- **Resultado:** —
+- **Resultado:** java.util.Observer deprecado→Spring Events; Go channels; reactive=Observer industrializado; Observer≠broker (linka Comunicação); Mermaid subject→evento→N; 3 armadilhas (leak, sync/tx, event spaghetti). Aprovada.
 
 #### 14 - Command   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 140 linhas
 - **Escopo:** requisição como objeto → enfileirar, logar, undo/redo. CQRS. Funções/closures encolhem em linguagens funcionais. **Armadilha:** cerimônia de Command onde um método direto basta.
-- **Resultado:** —
+- **Resultado:** dois usos (executar-depois=closure × desfazer/serializar=objeto); undo precisa capturar estado (linka Memento); Command≠Strategy; Mermaid invoker→command→receiver; 3 armadilhas. Aprovada.
 
 #### 15 - Template Method   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 138 linhas
 - **Escopo:** esqueleto + hooks via herança. **Go não tem herança** → embedding/funcs. Substituível por composição + lambdas no Java moderno. **Armadilha:** hierarquia rígida onde composição serviria melhor.
-- **Resultado:** —
+- **Resultado:** versão-herança do Strategy; Go funde os dois (sem herança→injeção); Hollywood principle; template final; Mermaid fluxo+ganchos; 3 armadilhas (fragile base class). Aprovada.
 
 #### 16 - State   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 144 linhas
 - **Escopo:** comportamento muda com estado interno. Vs máquina de estados com **enum**; **union types** (TS), **sealed** (Java 21). **Armadilha:** State pattern onde um enum + switch resolve; over-engineering de FSM simples.
-- **Resultado:** —
+- **Resultado:** FSM; objeto-por-estado × tipo-soma exaustivo (mesmo trade-off Composite/Visitor); State≠Strategy (interno×externo); Mermaid stateDiagram-v2; 3 armadilhas. Aprovada.
 
 #### 17 - Chain of Responsibility   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 141 linhas
 - **Escopo:** cadeia de handlers; **a base de todo pipeline HTTP** (servlet filters, Spring Security, Express/Nest middleware). **Armadilha:** cadeia onde ninguém trata (buraco silencioso); ordem implícita frágil.
-- **Resultado:** —
+- **Resultado:** middleware = CoR funcional (`(req,next)`); CoR≠Decorator (um pode parar × todos agem); Mermaid cadeia com barra; 3 armadilhas (cai no fim, ordem implícita). Aprovada.
 
 #### 18 - Iterator   [mecânico]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-28) · fase: adepto · 143 linhas
 - **Escopo:** acesso sem expor a interna; **nativo em toda linguagem moderna**: Java `Iterator`/`Iterable`, JS/TS `for...of`/`Symbol.iterator`, Python `__iter__`/generators, Go `range`-over-func (1.23). Raramente implementado à mão. **Armadilha:** reimplementar o que a linguagem já dá.
-- **Resultado:** —
+- **Resultado:** o padrão MAIS absorvido; generator(`yield`)=Iterator de graça; Go 1.23 cedeu; iteração preguiçosa/infinita; Mermaid cliente→iterator→coleção oculta; 3 armadilhas (modificação concorrente, uso único). Aprovada. **Fecha o bloco Adepto (07-18).**
 
 ## Notas — Magus (situacionais + síntese sênior)
 
