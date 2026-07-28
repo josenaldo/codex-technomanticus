@@ -82,6 +82,49 @@ O ponto não é criar burocracia — é tornar a a11y **parte do que significa t
 
 **A11y no ciclo em uma frase:** sustentar acessibilidade é embuti-la no design system (herança), no gate de CI (barra regressão) e na Definition of Done (parte de "pronto") — shift-left transformando o ofício individual da nota 01 em processo de organização.
 
+> [!tip] Vídeo — The ROI of shift left accessibility
+> [**The ROI of shift left accessibility**](https://www.youtube.com/watch?v=K8e4qAYg-Aw) (Deque, Kirstine Kennedy, 30 min) — a Deque é a mesma origem do axe (nota 14); o vídeo detalha, com números, por que corrigir cedo é mais barato que corrigir tarde — a curva de custo que abre esta nota, com o argumento de negócio por trás do shift-left.
+
+## Casos práticos
+
+**Cenário 1 — o `<Modal>` que quebrou o produto inteiro.** Um design system tinha um componente `<Modal>` amplamente adotado, mas sem gestão de foco: ao abrir, o foco não era movido para dentro do diálogo; ao fechar, não retornava ao elemento que o disparou (nota 06). Enquanto o modal era usado em uma ou duas telas, o impacto parecia pequeno. O problema é que o modal foi reaproveitado — como qualquer peça de design system deveria ser — em dezenas de fluxos: checkout, edição de perfil, confirmação de exclusão. Cada nova tela que adotou o componente **herdou a falha junto com a conveniência**. Quando a auditoria (SG3) finalmente pegou o problema, não havia "um modal quebrado" para consertar — havia um padrão sistêmico espalhado pelo produto inteiro. A correção, por outro lado, também foi sistêmica: um único ajuste no componente-base resolveu todas as instâncias de uma vez. É a mesma alavancagem em dois sentidos — o design system multiplica tanto o erro quanto o conserto (nota 16).
+
+**Cenário 2 — o gate de CI com baseline num produto legado.** Um time herdou uma base de código com centenas de violações de acessibilidade acumuladas ao longo de anos — o tipo de dívida que a nota 16 descreve. Rodar o axe (nota 14) em modo "zero violações" travaria todo PR novo desde o primeiro dia, inviabilizando qualquer entrega. Em vez disso, o time capturou um **baseline**: o conjunto de violações existentes na data X, registrado como "conhecido, aceito por ora". O gate de CI passou a comparar cada PR contra esse baseline, falhando apenas quando o número de violações **subia**. Na prática, isso significou: nenhuma tela nova entrava com problemas de acessibilidade, mesmo que o legado ao redor continuasse imperfeito. A dívida velha foi sendo paga em paralelo, em sprints dedicados (a matriz de priorização da nota 16) — mas, a partir do dia em que o gate entrou no ar, a dívida **parou de crescer**. É a diferença entre estancar uma hemorragia e esperar cicatrizar tudo de uma vez.
+
+## Armadilhas comuns
+
+> [!warning] Exigir zero-violações num legado trava tudo
+> **O que acontece:** o time ativa o gate de CI em modo estrito — qualquer violação de acessibilidade reprova o build — num produto que já tem centenas delas acumuladas. Todo PR passa a falhar, inclusive os que não tocam em nada relacionado a a11y.
+> **Por quê:** o gate não distingue dívida herdada de dívida nova; ele só vê "violação existe: sim/não". Sem baseline, o critério é impossível de cumprir e o time aprende a ignorar o gate (ou a desativá-lo) — o pior desfecho possível.
+> **Como evitar:** sempre fixar um baseline antes de ligar o modo bloqueante (ver Cenário 2). O gate deve travar **regressões**, não exigir perfeição instantânea.
+
+> [!warning] Achar que o CI dispensa a passada manual
+> **O que acontece:** o time vê o pipeline verde — "o axe não achou nada" — e conclui que a tela está acessível, pulando a passada de teclado (nota 15) e a checagem de nome acessível/contrato APG (SG2).
+> **Por quê:** ferramentas automatizadas como o axe cobrem uma fração conhecida das falhas — as mecânicas e sintáticas (nota 13). Ordem de tabulação ilógica, foco perdido num fluxo complexo, texto alternativo que existe mas não faz sentido: nada disso é pego por uma varredura automática, porque exige julgamento humano sobre a experiência.
+> **Como evitar:** tratar o gate de CI como piso, não teto. Verde no CI é pré-requisito para revisão manual, não substituto dela — os dois mecanismos (nota 15) continuam necessários.
+
+> [!warning] Depender de um único especialista gargalo
+> **O que acontece:** a organização contrata ou designa uma pessoa como "responsável pela acessibilidade" e passa a rotear toda dúvida, revisão e decisão de a11y por ela. O time para de desenvolver o próprio julgamento porque "isso é problema do especialista".
+> **Por quê:** uma pessoa não escala para revisar cada PR de um time (ou de uma organização) inteiro. O especialista vira fila, a fila vira atraso, e o atraso vira pressão para pular a revisão — a acessibilidade regride exatamente onde deveria ser mais forte.
+> **Como evitar:** distribuir o básico (a passada de teclado, o contraste, a DoD) para todo o time, e reservar o especialista — o *a11y champion* — para o avançado: curar o design system, definir o baseline, treinar, arbitrar os casos difíceis (ver a resposta ao `[!question]` acima).
+
+## Como explicar em inglês
+
+In an interview, this is the answer that signals you think about accessibility as an engineering process, not a one-off fix: "We treat accessibility as something the system enforces, not something a person remembers to do. Our design system components are accessible by construction, so any screen built with them inherits that — a broken `<Modal>` in the design system used to break focus management across the entire product, so we fixed it once, upstream. We also run an accessibility gate in CI: axe-core checks every PR, and on a legacy codebase we set a baseline so the gate only fails on **new** regressions, not the debt we inherited. Automated checks catch maybe half the issues, so accessibility is also part of our Definition of Done — every engineer does a keyboard pass before calling a ticket done. It's shift-left: catching problems in the design token or the PR is orders of magnitude cheaper than catching them in production."
+
+| PT | EN |
+|---|---|
+| deslocar para a esquerda (no ciclo) | shift-left |
+| porteiro / trava de qualidade no CI | CI gate |
+| Definição de Pronto | Definition of Done (DoD) |
+| sistema de design | design system |
+| campeão de acessibilidade | a11y champion |
+| linha de base (violações conhecidas) | baseline |
+| regressão (nova violação) | regression |
+| dívida (de acessibilidade) | (accessibility) debt |
+| acessível por construção | accessible by construction / built-in accessibility |
+| herdar (comportamento de um componente) | inherit |
+
 ## O que vem a seguir
 
 Você sabe manter a acessibilidade tecnicamente. Falta entender **por que a organização é obrigada** a mantê-la — o cenário legal que transforma tudo isto de "boa prática" em "requisito com consequência jurídica". É o que dá peso de negócio a todo o resto.
