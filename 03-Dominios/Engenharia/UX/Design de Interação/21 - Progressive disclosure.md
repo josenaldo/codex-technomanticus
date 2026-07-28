@@ -47,11 +47,13 @@ Existe um custo de engenharia embutido em toda decisão de progressive disclosur
 
 ## O que dá pra fazer sozinho, e o que não dá
 
-| Praticável sozinho | Exige time/orçamento |
-|---|---|
-| Auditar um formulário existente e identificar quais campos são preenchidos por <20% dos usuários — candidatos a "opções avançadas" | Instrumentação de analytics para medir de verdade a taxa de uso de cada campo, em vez de estimar por intuição |
-| Implementar um accordion ou toggle "mostrar mais" com CSS/JS simples, sem framework especial | Teste A/B comparando conversão com e sem disclosure para validar o ponto de corte certo |
-| Garantir que toda seção atrás de "mostrar mais" funcione de ponta a ponta antes de publicar o botão que a revela | Pesquisa qualitativa entrevistando os 10% que de fato usam as opções avançadas, para confirmar que não foram mal servidos pelo esconderijo |
+Praticável sozinho, sem depender de infraestrutura de medição:
+
+- **Auditar um formulário existente e estimar quais campos são raramente preenchidos** — candidatos naturais a "opções avançadas" — usando só o julgamento de quem conhece o domínio, sem precisar de dado instrumentado para dar o primeiro passo.
+- **Implementar um accordion ou toggle "mostrar mais" com CSS/JS simples**, sem framework especial — a técnica em si não exige nenhuma ferramenta sofisticada, só a disciplina de escondê-la atrás de uma ação explícita.
+- **Garantir que toda seção atrás de "mostrar mais" funcione de ponta a ponta** antes de publicar o botão que a revela — checar isso manualmente uma vez, mesmo sem suíte de teste automatizado, já evita a armadilha documentada desta nota.
+
+Exige estrutura de time quando a decisão precisa de confirmação além do julgamento pessoal: **instrumentação de analytics para medir de verdade a taxa de uso de cada campo** substitui a estimativa por dado real, mas depende de rastrear eventos em produção e de volume de usuários suficiente para o número significar alguma coisa — sem isso, "candidato a opção avançada" continua sendo palpite educado, não fato. Um **teste A/B comparando conversão com e sem disclosure** exige tráfego dividido em variantes e tempo de coleta suficiente para significância estatística, recurso que só times com escala real de usuários conseguem rodar. E uma **pesquisa qualitativa entrevistando os poucos usuários que de fato usam as opções avançadas** exige recrutamento e roteiro de entrevista — o único jeito confiável de saber se esconder aquelas opções não prejudicou justamente quem mais precisava delas, mas é investimento que uma pessoa sozinha, sem apoio de pesquisa, dificilmente consegue rodar a tempo de decidir sobre a feature em questão.
 
 ## Casos práticos
 
@@ -60,6 +62,9 @@ O diálogo de "Localizar e substituir" do Word mostra, por padrão, dois campos:
 
 ### Cenário 2: checkout em accordion por etapa
 Um checkout de e-commerce, em vez de mostrar endereço, frete e pagamento simultaneamente numa única tela longa, colapsa cada etapa num accordion: só a etapa atual fica expandida, as outras aparecem resumidas e fechadas. Isso é progressive disclosure aplicado a um fluxo de múltiplos passos, não só a um formulário único — o usuário nunca vê os campos de pagamento enquanto ainda está decidindo o endereço, reduzindo a carga visual de cada tela para o subconjunto relevante *daquele momento* da tarefa.
+
+### Cenário 3: a opção "avançada" que virou maioria, mas ninguém revisitou
+Uma ferramenta de API management esconde "rate limit customizado" atrás de "opções avançadas" — decisão razoável no lançamento, quando poucos clientes precisavam ajustar isso. Meses depois, o perfil de cliente muda: a maioria dos times que chega agora já sabe, desde o primeiro dia, que vai precisar de rate limit customizado. A disclosure que fazia sentido na origem virou fricção sistemática para a maioria atual dos usuários, mas ninguém revisitou a decisão porque "sempre foi assim" e o botão continuava funcionando. A correção não é técnica, é de acompanhamento: medir com que frequência a seção avançada é aberta, e promovê-la de volta à camada visível quando a maioria passa a precisar dela — a mesma armadilha de decisão nunca revisitada que aparece na escolha de container da [[03-Dominios/Engenharia/UX/Design de Interação/22 - Modal vs página vs drawer|nota 22]].
 
 ## Armadilhas comuns
 
