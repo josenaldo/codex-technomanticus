@@ -93,8 +93,8 @@ Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface*
 1. ✅ Roadmap do galho-pai (este arquivo) + roadmap-folha da família GoF criados (2026-07-28).
 2. ✅ [[00-Meta/Roadmap]] central atualizado com a decisão das 6 famílias (2026-07-28).
 3. ✅ Escrever a família **Clássicos (GoF)** — **COMPLETA 23/23 (2026-07-28)**; `index.md` da família criado, todas as fases linkadas.
-4. ⬜ **Decisão pendente:** podar o monólito `Design Patterns.md` (stub/redirect OU alias no index da GoF), preservando os 8 inbound links `[[Design Patterns]]`.
-5. ⬜ Criar `index.md` deste galho-pai (`Padrões de Projeto/`) — MOC das 6 famílias.
+4. ✅ Monólito `Design Patterns.md` **podado** (2026-07-28, opção a): virou este `index.md` do galho-pai, com alias `Design Patterns`; 8 inbound links resolvem via alias; refs full-path do galho Python reapontadas p/ o index da GoF; índice do domínio atualizado.
+5. ✅ `index.md` deste galho-pai criado (MOC das 6 famílias).
 6. ⬜ Próxima família: **Acesso a Dados** — novo ciclo brainstorm + roadmap-folha.
 4. ⬜ Podar o monólito `Design Patterns.md` ao fechar GoF (preservar os 8 inbound links).
 5. ⬜ Ao concluir GoF: abrir ciclo da família 2 (Acesso a Dados) — brainstorm leve + roadmap-folha detalhado.

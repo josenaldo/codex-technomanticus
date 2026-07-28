@@ -183,6 +183,6 @@ Iniciado 6/6 · Adepto 12/12 · Magus 5/5. Todas verificadas (Mermaid válido, �
 
 1. ✅ Escrever 01 → 23 (2026-07-28).
 2. ✅ `index.md` da família criado + seções Iniciado/Adepto/Magus linkadas.
-3. ⬜ **Decisão pendente do usuário:** podar o monólito [[Design Patterns]] (631 ln, `publish:false`) — stub/redirect OU alias "Design Patterns" no `index.md` da família — preservando os **8 inbound links** (SOLID 01/03/index, OO 06/07/12/13/index).
-4. ⬜ Criar `index.md` do **galho-pai** `Padrões de Projeto/` (MOC das 6 famílias).
+3. ✅ Monólito `Design Patterns.md` **podado** (2026-07-28): promovido a `Padrões de Projeto/index.md` (opção a) com alias `Design Patterns`; caso real MedEspecialista (Strategy) migrado p/ nota 12; Recursos p/ o index. 8 inbound `[[Design Patterns]]` resolvem via alias; full-path refs do galho Python/Arquitetura e Design Patterns reapontados p/ o index da GoF; índice do domínio atualizado.
+4. ✅ `index.md` do **galho-pai** `Padrões de Projeto/` criado (MOC das 6 famílias, alias `Design Patterns`).
 5. ⬜ Próxima família: **Acesso a Dados** (novo ciclo brainstorm + roadmap-folha).

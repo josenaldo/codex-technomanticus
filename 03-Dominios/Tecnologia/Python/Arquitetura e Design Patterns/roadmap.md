@@ -33,7 +33,7 @@ Roster **não pré-cravado no spec** (só a descrição de alto nível) — dese
 
 #### 01 - Por que GoF clássico é menos necessário em Python
 - **Estado:** ✅ feita (2026-07-12) · fase: Magus
-- **Escopo:** por que boa parte do catálogo GoF (Strategy, Command, Observer, Iterator, alguns casos de Factory) fica menos necessária quando a linguagem já tem first-class functions (uma função É um Strategy), duck typing (não precisa de interface explícita pra polimorfismo), decorators (substituem boa parte de Decorator/Proxy formal), e generators/protocolo iterator (Iterator já é built-in, coberto no Galho 4). Não desenvolve cada pattern do zero — referencia [[03-Dominios/Engenharia/Design de Software/Design Patterns|Design Patterns (GoF)]] pra quem quiser a versão clássica, e mostra o CONTRASTE: a mesma solução em Java com classe+interface vs. em Python com função/closure.
+- **Escopo:** por que boa parte do catálogo GoF (Strategy, Command, Observer, Iterator, alguns casos de Factory) fica menos necessária quando a linguagem já tem first-class functions (uma função É um Strategy), duck typing (não precisa de interface explícita pra polimorfismo), decorators (substituem boa parte de Decorator/Proxy formal), e generators/protocolo iterator (Iterator já é built-in, coberto no Galho 4). Não desenvolve cada pattern do zero — referencia [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Clássicos (GoF)/index|Design Patterns (GoF)]] pra quem quiser a versão clássica, e mostra o CONTRASTE: a mesma solução em Java com classe+interface vs. em Python com função/closure.
 - **Resultado:** 482 linhas / 4928 palavras. Abre com `DiscountStrategyFactory` java-like (interface+3 classes+factory) vs dict de lambdas de 7 linhas em Python; desenvolve Strategy/Command/Iterator/Decorator(GoF vs sintático, com desambiguação explícita)/Factory lado a lado, fecha com Adapter/Singleton ainda relevantes e tabela de decisão.
 
 #### 02 - Domain modeling — separando a lógica de negócio do framework
@@ -76,7 +76,7 @@ Roster **não pré-cravado no spec** (só a descrição de alto nível) — dese
 
 ## Decisões e fronteiras registradas
 
-- Padrões GoF clássicos (Strategy, Observer, Factory, Adapter, etc.) → [[03-Dominios/Engenharia/Design de Software/Design Patterns|Design Patterns (GoF)]]; aqui só o contraste de por que menos necessários em Python.
+- Padrões GoF clássicos (Strategy, Observer, Factory, Adapter, etc.) → [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Clássicos (GoF)/index|Design Patterns (GoF)]]; aqui só o contraste de por que menos necessários em Python.
 - SOLID → [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]]; referenciado, não repetido.
 - Arquitetura hexagonal/Ports and Adapters como estilo arquitetural teórico → [[03-Dominios/Engenharia/Arquitetura/index|Engenharia/Arquitetura]]; aqui é a aplicação Python concreta.
 - Mecânica de `Session`/`Engine`/transações → Galho 9; aqui formaliza o padrão (Repository/UoW) sem repetir a mecânica.

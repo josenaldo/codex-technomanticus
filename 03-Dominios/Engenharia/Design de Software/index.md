@@ -30,7 +30,7 @@ de aplicá-lo fica aqui (são reforço mútuo, linkam — não duplicam).
 
 - [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]] — OO como craft: encapsulamento, herança, polimorfismo, coesão, anti-patterns
 - [[03-Dominios/Engenharia/Design de Software/SOLID/index|SOLID]] — os cinco princípios de design OO
-- [[03-Dominios/Engenharia/Design de Software/Design Patterns|Design Patterns]] — catálogo de padrões de projeto
+- [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/index|Padrões de Projeto]] — catálogo de consulta de padrões (galho-pai, 6 famílias; Clássicos/GoF completa)
 
 ## Veja também
 

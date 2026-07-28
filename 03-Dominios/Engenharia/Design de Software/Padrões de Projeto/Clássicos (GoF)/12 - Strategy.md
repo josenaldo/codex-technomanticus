@@ -109,6 +109,14 @@ public class FreteService {
 }
 ```
 
+## Na prática (da minha experiência)
+
+> Em Spring Boot, os padrões que mais uso deliberadamente são **Strategy**, **Observer** (Spring Events), **Facade** (services orquestradores) e **Proxy** (via `@Transactional`/`@Cacheable`). Raramente implemento à mão — o framework faz — mas reconhecer o padrão é o que me deixa debugar quando algo quebra.
+>
+> Um caso concreto de Strategy: no **MedEspecialista**, o cálculo de comissão médica tinha cinco regras dependendo do tipo de convênio. A primeira versão era um `if-else-if` de 80 linhas dentro de um service. Refatorei para `ComissaoStrategy` + cinco implementações, injetadas via `Map<TipoConvenio, ComissaoStrategy>`. Adicionar um novo tipo de convênio virou criar uma classe — zero alteração no service.
+>
+> O oposto também me pegou: já cometi Strategy prematuro. Uma interface `EmailTemplateStrategy` com **uma única implementação**, que ficou assim por três anos. Em retrospecto, deveria ter sido só uma classe concreta. Não crie abstrações para o futuro hipotético — crie quando a segunda implementação aparecer.
+
 ## Armadilhas comuns
 
 > [!warning] Strategy com uma única implementação (abstração prematura)
