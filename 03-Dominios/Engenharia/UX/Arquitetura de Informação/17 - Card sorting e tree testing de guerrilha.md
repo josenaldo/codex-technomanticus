@@ -51,7 +51,7 @@ graph LR
 > [!tip] Vídeo — Card sorting e tree testing: como os dois se encaixam
 > **Optimal Workshop**, a mesma empresa que popularizou e ferramentizou os dois métodos, explica em vídeo curto a ordem correta entre os dois: card sorting para **gerar** ideias de estrutura (quando a AI está sendo desenhada do zero), tree testing para **testar** ideias já formadas — e por que, ao redesenhar um produto já existente, vale rodar um tree test na estrutura **atual** primeiro, para ter um número de referência antes de propor mudanças.
 >
-> 🎬 [Card sorting and tree testing: how do they work together?](https://www.youtube.com/watch?v=cSHiu_m6vCs) — Optimal Workshop, ~4min, EN.
+> 🎬 [Card sorting and tree testing: how do they work together?](https://www.youtube.com/watch?v=cSHiu_m6vCs) — Optimal Workshop, 2:31, EN.
 
 > [!question]- Card sorting e tree testing testam a mesma coisa? Por que os dois?
 > Não — e essa é a razão de precisar dos dois. Card sorting testa **agrupamento** (essas coisas fazem sentido juntas?); tree testing testa **achabilidade** (dado o agrupamento, alguém consegue chegar lá?). Uma estrutura pode ter agrupamento perfeitamente lógico e ainda ser difícil de navegar, se os rótulos dos níveis intermediários não comunicarem bem o caminho — e o oposto também acontece: agrupamento imperfeito, mas achável, porque os rótulos compensam. Rodar só um dos dois deixa a outra metade do problema sem cobertura.
