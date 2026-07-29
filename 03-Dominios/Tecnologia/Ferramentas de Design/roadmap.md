@@ -85,7 +85,8 @@ já registrado nos sub-galhos anteriores de `Engenharia/UX`.
 > exatamente 3 casos práticos em `### Cenário`, confirmado por amostragem nesta rodada.
 > Fronteiras preservadas (confirmadas por `test -f` nesta rodada): nota 01 →
 > [[03-Dominios/Engenharia/UX/Linguagem Visual e Design System/29 - Design tokens como sistema|nota 29 do SG5]];
-> nota 03 → skill local `handoff-design` (linkada e descrita sem duplicar o "como fazer") e
+> nota 03 → skill global do usuário `handoff-design` (`~/.claude/skills/handoff-design`, fora
+> do repositório; linkada e descrita sem duplicar o "como fazer") e
 > `Tecnologia/IA/Claude Code`; nota 05 →
 > [[03-Dominios/Tecnologia/IA/Image Prompting/index|Tecnologia/IA/Image Prompting]] (mesma
 > raiz de convergência estatística) e
@@ -214,7 +215,8 @@ nomeado, o que cumpre o espírito do item sem forçar uma citação que não exi
 - **Enriquecimento:** ➖ não precisa
 - **Estado:** 135 linhas · fase: Adepto · status: seedling
 - **Núcleo/gaps:** — (piso nominal não atingido — 135 vs. 400 — desvio aceito). Linka skill
-  local `handoff-design` (fronteira "linka, não duplica o como fazer", confirmada por
+  global do usuário `handoff-design` (`~/.claude/skills/handoff-design`, fora do repositório;
+  fronteira "linka, não duplica o como fazer", confirmada por
   leitura direta) e [[03-Dominios/Tecnologia/IA/Claude Code/index|Tecnologia/IA/Claude Code]]
   — confirmado `test -f`. Registra as duas mudanças de status mais quentes do galho
   (`/design-sync` confirmado; research preview → beta) — ver callout de caducidade acima.

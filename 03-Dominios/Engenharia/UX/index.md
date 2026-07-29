@@ -3,7 +3,7 @@ title: "UX"
 type: moc
 publish: true
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-07-29
 status: seedling
 tags:
   - moc
@@ -65,9 +65,9 @@ O domínio se organiza **por disciplina de UX** (pesquisa, arquitetura de inform
 | 6 | [[03-Dominios/Engenharia/UX/UX Writing e Content Design/index\|SG6 — UX Writing e Content Design]] | voz e tom, microcopy, erros e recuperação, estados vazios como conteúdo, i18n quebrando layout | Adepto |
 | 7 | [[03-Dominios/Engenharia/UX/Medir, Validar e Sustentar/index\|SG7 — Medir, Validar e Sustentar]] | HEART/GSM, SUS/UMUX-Lite/SUPR-Q/SEQ, NPS e North Star, event taxonomy, quando A/B não se aplica, session replay, UX debt, defender decisão com número | Magus |
 | 8 | [[03-Dominios/Engenharia/UX/Ética e Ofício/index\|SG8 — Ética e Ofício]] | dark patterns e regulação, UX no ciclo de dev, UX em entrevista sênior/staff | Magus |
-| — | **Capstone — Do requisito ao produto validado** *(a criar)* | ciclo completo: descobrir com o cliente, definir, desenhar, construir, instrumentar, medir, priorizar a dívida | Magus |
+| — | [[03-Dominios/Engenharia/UX/49 - Capstone - do requisito ao produto validado\|Capstone — Do requisito ao produto validado]] | ciclo completo: descobrir com o cliente, definir, desenhar, construir, instrumentar, medir, priorizar a dívida | Magus |
 
-> **Estado (2026-07-28):** domínio recém-estruturado (scaffold). 0/48 + capstone escritas. Ver [[00-Meta/specs/2026-07-28-dominio-ux-design|design do domínio]], o plano em `00-Meta/.superpowers/sdd/2026-07-28-dominio-ux-plano/` e o [[03-Dominios/Engenharia/UX/roadmap|roadmap]].
+> **Estado (2026-07-29):** domínio **COMPLETO**. 8/8 sub-galhos ✅ + capstone escrito, **49/49 notas**. Junto com o galho-irmão [[03-Dominios/Tecnologia/Ferramentas de Design/index|Ferramentas de Design]] (9/9), o par fecha em **58 notas**. Ver [[00-Meta/specs/2026-07-28-dominio-ux-design|design do domínio]], o plano em `.superpowers/sdd/2026-07-28-dominio-ux-plano/` e o [[03-Dominios/Engenharia/UX/roadmap|roadmap]].
 
 ---
 
