@@ -71,9 +71,9 @@ A pesquisa que precedeu esta nota levantou uma integração "bidirecional" Figma
 
 **Tratamento adotado aqui:** afirmo que a escrita no canvas existe e está em beta (fonte primária, Help Center do Figma), mas **não afirmo uma data de lançamento específica** — nem fevereiro nem março de 2026 — porque nenhuma das duas está confirmada em fonte primária consultada. Se a data importar para o seu contexto (ex: comparar maturidade de feature em decisão de adoção), confira o changelog oficial do Figma antes de citar um mês.
 
-## O que isso muda no dia a dia de quem trabalha sozinho
+## Praticável sozinho vs. exige mais estrutura
 
-Na prática de segunda-feira, o ganho do MCP Server + Code Connect não é "o agente desenha por você" — é reduzir o número de decisões erradas que o agente toma por falta de contexto. Sem esse contexto estruturado, um agente que implementa a partir de screenshot tende a: inventar espaçamento aproximado em vez de usar o valor real, criar um componente novo em vez de reutilizar um existente, e perder a relação entre um valor visual e o token que ele deveria representar — os três erros exatamente descritos nos Casos práticos da [[03-Dominios/Tecnologia/Ferramentas de Design/01 - Figma para o engenheiro|nota 01]]. Configurar o MCP Server e, quando fizer sentido, o Code Connect, é investimento de configuração único (uma tarde) que paga esse mesmo dividendo em toda tela implementada depois.
+O que isso muda no dia a dia de quem trabalha sozinho: na prática de segunda-feira, o ganho do MCP Server + Code Connect não é "o agente desenha por você" — é reduzir o número de decisões erradas que o agente toma por falta de contexto. Sem esse contexto estruturado, um agente que implementa a partir de screenshot tende a: inventar espaçamento aproximado em vez de usar o valor real, criar um componente novo em vez de reutilizar um existente, e perder a relação entre um valor visual e o token que ele deveria representar — os três erros exatamente descritos nos Casos práticos da [[03-Dominios/Tecnologia/Ferramentas de Design/01 - Figma para o engenheiro|nota 01]]. Configurar o MCP Server e, quando fizer sentido, o Code Connect, é investimento de configuração único (uma tarde) que paga esse mesmo dividendo em toda tela implementada depois.
 
 ## Casos práticos
 

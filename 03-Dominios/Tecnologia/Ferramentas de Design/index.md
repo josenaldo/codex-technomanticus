@@ -3,7 +3,7 @@ title: "Ferramentas de Design"
 type: moc
 publish: true
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-07-29
 status: seedling
 tags:
   - moc
@@ -39,7 +39,8 @@ Galho único, sem sub-pastas — 9 notas em sequência, sem fases (o eixo aqui n
 8. Pipeline de tokens — Figma Variables → Style Dictionary → CSS custom properties, com Git como fonte de verdade
 9. Loop visual com Playwright MCP e visual regression — accessibility tree como feedback estruturado
 
-> **Estado (2026-07-28):** domínio recém-estruturado (scaffold). 0/9 escritas. Ver [[00-Meta/specs/2026-07-28-dominio-ux-design|design do domínio]] e o [[03-Dominios/Tecnologia/Ferramentas de Design/roadmap|roadmap]].
+> **Estado (2026-07-29):** galho fechado. 9/9 escritas, mídia verificada em todas (0
+> buracos de M1), diagnosticado e sem gaps de núcleo. Ver [[00-Meta/specs/2026-07-28-dominio-ux-design|design do domínio]] e o [[03-Dominios/Tecnologia/Ferramentas de Design/roadmap|roadmap]] (inclui callout de caducidade com o que já mudou desde a pesquisa).
 
 ---
 

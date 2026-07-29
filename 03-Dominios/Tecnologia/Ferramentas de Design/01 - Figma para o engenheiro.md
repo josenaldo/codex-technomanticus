@@ -24,7 +24,9 @@ Você recebe um link de Figma do cliente com a mensagem "já tá tudo pronto, s�
 
 Esse é o problema que esta nota resolve. Não é "como desenhar no Figma" — é "como ler um arquivo Figma sem estragar a coisa mais importante que ele carrega: a relação entre os valores e o que eles significam".
 
-## O que vale aprender, e por quê
+## Praticável sozinho vs. exige mais estrutura
+
+### O que vale aprender, e por quê
 
 Um arquivo Figma moderno tem, no mínimo, quatro peças que interessam a quem implementa. Cada uma resolve um problema específico de comunicação entre design e código.
 
@@ -52,7 +54,7 @@ graph LR
 > [!question]- Preciso saber desenhar no Figma para fazer esse trabalho?
 > Não. O critério desta nota separa **ler e não quebrar** de **produzir e manter**. Você precisa reconhecer uma variable de um hex solto, um componente com props de um grupo de formas soltas, e um auto layout bem configurado de um mal configurado — o suficiente para tomar decisões de implementação corretas e para *não editar* algo no arquivo de um jeito que quebre o sistema para quem usa depois de você (por exemplo: desconectar acidentalmente uma instância do componente-mãe ao arrastar um filho para fora do auto layout). Desenhar do zero, criar bibliotecas, definir a árvore de variantes de um design system — isso é trabalho de quem tem esse cargo.
 
-## O que dá pra ignorar com segurança
+### O que dá pra ignorar com segurança
 
 Três áreas do Figma são território de design system owner dedicado, e um engenheiro full-cycle pode conscientemente não investir tempo nelas:
 
