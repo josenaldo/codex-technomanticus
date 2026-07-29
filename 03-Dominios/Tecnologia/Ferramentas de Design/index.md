@@ -27,11 +27,11 @@ Galho único, sem sub-pastas — 9 notas em sequência, sem fases (o eixo aqui n
 
 ---
 
-## Notas planejadas (9)
+## Notas (9/9 escritas)
 
 1. Figma para o engenheiro — Dev Mode, variables/modes, auto layout; o que é território de designer profissional e dá para ignorar
 2. Figma MCP Server + Code Connect — contexto de design estruturado para o agente, em vez de screenshot
-3. Claude Design e o handoff bundle — research preview da Anthropic Labs; linka a skill `handoff-design` em vez de duplicá-la
+3. Claude Design e o handoff bundle — produto beta da Anthropic Labs, com limites de uso compartilhados com chat/Cowork/Claude Code; linka a skill `handoff-design` em vez de duplicá-la
 4. Geradores de UI por IA — v0, Lovable, Bolt, Subframe: onde ajudam, onde produzem lixo, como avaliar a saída
 5. Estética genérica de IA e como escapar — o fingerprint reconhecível e a causa raiz
 6. Protótipo em código — quando o componente real é o protótipo mais barato
