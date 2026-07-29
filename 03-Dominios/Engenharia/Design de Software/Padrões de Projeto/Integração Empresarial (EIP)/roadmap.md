@@ -43,9 +43,9 @@ Estrutura: cenário → ideia (Mermaid) → **como as ferramentas de integraçã
 | Iniciado | 4 |
 | Adepto | 5 |
 | Magus | 5 |
-| ✅ escritas | 9 |
-| ⬜ pendentes | 5 |
-| % concluído | 64% |
+| ✅ escritas | 14 |
+| ⬜ pendentes | 0 |
+| % concluído | 100% ✅ |
 | Scaffolding | roadmap.md + index.md criados (2026-07-29) |
 
 ---
@@ -102,34 +102,34 @@ Estrutura: cenário → ideia (Mermaid) → **como as ferramentas de integraçã
 ## Notas — Magus (endpoints, confiabilidade e escala: produção enterprise)
 
 #### 10 - Consumers: Polling × Event-Driven   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-29) · fase: magus · 169 linhas · arquivo `10 - Consumers - Polling × Event-Driven.md`
 - **Escopo:** os dois modos de um endpoint receber. **Polling Consumer** (o consumidor puxa, controla o ritmo — bom pra throttling) × **Event-Driven Consumer** (o broker empurra, menor latência). Message Dispatcher, Selective Consumer, Durable Subscriber, Idempotent Receiver (ponte pra 12). **Armadilha:** polling agressivo que martela o broker; push sem backpressure que afoga o consumidor.
-- **Resultado:** —
+- **Resultado:** pull×push (Mermaid); polling=throttling natural/latência; event-driven=baixa latência/sem backpressure; Kafka é polling por baixo (poll() embrulhado em @KafkaListener); Selective/Durable Subscriber; 3 armadilhas (polling agressivo→long polling, push sem backpressure→prefetch, subscriber não-durável). **Abre o bloco Magus.**
 
 #### 11 - Competing Consumers   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-29) · fase: magus · 168 linhas
 - **Escopo:** escalar o consumo — **N consumidores** na mesma fila, o broker distribui, cada mensagem vai pra UM (concorrência horizontal). O oposto do pub-sub. Consumo paralelo × ordenação (o trade-off: competing consumers quebra ordem). Message Grouping/partition key como saída. **Armadilha central:** perder ordenação ao paralelizar; assumir exactly-once quando é at-least-once.
-- **Resultado:** —
+- **Resultado:** competir pela próxima msg (Mermaid); trade-off ordem×paralelismo é a lição; particionar por chave (Kafka consumer group = competing consumers no nível de partição); tabela cross-tool (Message Groups/prefetch/partition key/SQS FIFO); 3 armadilhas (perder ordem→particionar, assumir exactly-once, poison/partição quente).
 
 #### 12 - Idempotent Receiver   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-29) · fase: magus · 171 linhas
 - **Escopo:** a entrega **at-least-once** (o padrão realista) garante que a mensagem chega, mas pode chegar **duplicada** — então o receptor precisa ser **idempotente** (processar 2× = processar 1×). Estratégias: dedup por message id (inbox), operações naturalmente idempotentes, upsert. Ecoa Comunicação/4-04 (Outbox/inbox). **Armadilha central:** assumir exactly-once do broker; idempotência só na aplicação sem dedup persistente.
-- **Resultado:** —
+- **Resultado:** msg que chega 2× (Mermaid inbox por id); 3 estratégias (dedup/naturalmente idempotente/upsert); exactly-once É MITO na fronteira (EOS Kafka só interno; at-least-once+idempotência=efetivamente-once); 3 armadilhas (crer no exactly-once do broker, dedup só em memória, chave/janela fraca).
 
 #### 13 - Guaranteed Delivery + Dead Letter Channel   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-29) · fase: magus · 174 linhas
 - **Escopo:** **Guaranteed Delivery** (a mensagem sobrevive a falha do broker/consumidor — persistência em disco, ack) e **Dead Letter Channel** (para onde vai a mensagem que não pôde ser entregue/processada após N tentativas — o "necrotério" que evita perder ou travar). Retry × DLQ; poison message. Aprofunda na infra: cross-link Comunicação/4-03. **Armadilha central:** DLQ sem monitoramento (mensagens morrem em silêncio); retry infinito de poison message.
-- **Resultado:** —
+- **Resultado:** as 2 falhas opostas (perder × travar); Guaranteed Delivery = persistir-antes-do-ack (WAL, custo throughput); DLQ = retry(transitório)×dead-letter(permanente), Mermaid c/ caminho vermelho; DLC × Invalid Message Channel; tabela cross-tool (persistent/DLX/redrive; Kafka durável nativo); 3 armadilhas (DLQ sem monitoramento, retry infinito de poison, durabilidade errada por fluxo). Corrigido link journaling (está em SO, não BD).
 
 #### 14 - Message Bus × Message Broker   [substantivo]
-- **Estado:** ⬜ a escrever · fase: magus
+- **Estado:** ✅ escrita (2026-07-29) · fase: magus · 199 linhas
 - **Escopo:** a **topologia** da integração. **Message Broker** (hub-and-spoke: um mediador central roteia — desacopla, mas é ponto central) × **Message Bus** (um backbone comum com endpoints inteligentes). A ascensão e queda do **ESB** (a lição "smart endpoints, dumb pipes"); brokers leves (RabbitMQ) × logs distribuídos (Kafka). **FECHA A FAMÍLIA** com mapa-de-escolha. **Armadilha central:** broker centralizado que vira o ESB-gargalo de novo; lógica de negócio no barramento.
-- **Resultado:** —
+- **Resultado:** broker(hub-and-spoke)×bus(backbone), eixo = quanta inteligência no meio (Mermaid); ascensão/queda do ESB como lição-síntese (toda armadilha "God X" = inteligência no cano); Kafka puxa pro lado bus (log burro/consumidores espertos); tabela cross-tool; 3 armadilhas (broker→ESB, lógica no cano, topologia errada pra carga); **mapa-de-escolha dos 14 padrões** (mirror GoF-23). **FECHA A FAMÍLIA.**
 
 ---
 
 ## Próximos passos
 
-1. ⬜ Escrever 01 → 14 na ordem, via `/escrever-nota`. `/checkpoint` a cada bloco de fase (após 04, após 09, após 14).
-2. ⬜ Criar `index.md` da família (MOC por fase + rotas) ao ter ≥ bloco Iniciado.
-3. ⬜ Ao fechar 14: atualizar roadmap-pai (família 3 ✅) + index do galho-pai + [[00-Meta/Roadmap]] central; abrir família 4 (Aplicação Corporativa / PoEAA não-dados).
+1. ✅ Escrever 01 → 14. Concluído 2026-07-29 (Iniciado 01-04, Adepto 05-09, Magus 10-14).
+2. ✅ `index.md` da família criado (MOC por fase + rotas).
+3. ✅ Roadmap-pai (família 3 ✅) + index do galho-pai + [[00-Meta/Roadmap]] central atualizados. **Próxima: família 4 (Aplicação Corporativa / PoEAA não-dados).**

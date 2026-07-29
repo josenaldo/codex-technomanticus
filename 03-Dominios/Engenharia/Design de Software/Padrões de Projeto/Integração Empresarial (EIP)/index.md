@@ -3,7 +3,7 @@ title: "Integração Empresarial (EIP)"
 created: 2026-07-29
 updated: 2026-07-29
 type: moc
-status: growing
+status: evergreen
 publish: true
 tags:
   - moc
@@ -58,7 +58,11 @@ padrões de arquitetura de eventos (família 5 Eventos), fora desta.
 
 ## Magus — endpoints, confiabilidade e escala
 
-*Em construção.* Consumers (Polling × Event-Driven) · Competing Consumers · Idempotent Receiver · Guaranteed Delivery + Dead Letter Channel · Message Bus × Broker.
+10. [[10 - Consumers - Polling × Event-Driven]] — pull × push; os dois modos de receber e seus trade-offs.
+11. [[11 - Competing Consumers]] — N consumidores na fila; escala × ordem (particione por chave).
+12. [[12 - Idempotent Receiver]] — at-least-once traz duplicatas; processar 2× = 1×.
+13. [[13 - Guaranteed Delivery + Dead Letter Channel]] — não perder (persistir) e não travar (DLQ).
+14. [[14 - Message Bus × Message Broker]] — hub × backbone; a lição do ESB e o mapa-de-escolha da família.
 
 ## Todas as notas
 

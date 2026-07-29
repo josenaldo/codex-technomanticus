@@ -42,7 +42,7 @@ desejada: o catálogo não pode depender de galhos que evoluem em ritmo próprio
 | --- | --- | --- | --- |
 | 1 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Clássicos (GoF)/index\|Clássicos (GoF)]] | Gang of Four (1994) | ✅ **completa** — 23 notas |
 | 2 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Acesso a Dados/index\|Acesso a Dados]] | Fowler PoEAA + J2EE + NoSQL/cloud | ✅ **completa** — 15 notas |
-| 3 | **Integração Empresarial (EIP)** | Hohpe & Woolf | ⬜ planejada (~14) |
+| 3 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Integração Empresarial (EIP)/index\|Integração Empresarial (EIP)]] | Hohpe & Woolf | ✅ **completa** — 14 notas |
 | 4 | **Aplicação Corporativa** | Fowler PoEAA (não-dados) | ⬜ planejada (~14) |
 | 5 | **Arquitetura de Eventos** | EDA moderna | ⬜ planejada (~10) |
 | 6 | **Nuvem e Resiliência** | Azure/AWS Cloud Design Patterns | ⬜ planejada (~14) |
