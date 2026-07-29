@@ -120,10 +120,20 @@ Checklist `verificar-nota` — 12 itens (isenções por fase/tipo/broto aplicada
   desde 17/02/2024 (multa até 6% do faturamento global), DMA como lei separada sobre
   gatekeepers (teto 10%), DFA não vigente (consulta encerrada out/2025, proposta prevista
   Q4 2026), FTC vs. Amazon US$ 2,5 bi (set/2025, "Project Iliad") e FTC vs. Epic US$ 245 mi
-  (2023) — todos confirmados em fonte primária. **Correção aplicada nesta rodada:** a nota
-  afirmava três executivos nomeados pessoalmente pela FTC no caso Amazon; verificação
-  independente no acordo final publicado pela FTC (set/2025) confirma **dois** — Neil
-  Lindsay (SVP) e Jamil Ghani (VP) — corrigido nas 3 ocorrências (linhas ~56, 61, 63).
+  (2023) — todos confirmados em fonte primária, exceto o número de executivos (ver nota de
+  método abaixo). **Correção aplicada nesta rodada, em duas passadas:** a nota afirmava três
+  executivos nomeados pessoalmente pela FTC no caso Amazon; verificação independente no
+  acordo final publicado pela FTC (set/2025) confirma **dois** — Neil Lindsay (SVP) e Jamil
+  Ghani (VP). A primeira passada corrigiu 3 ocorrências (linhas ~56, 61, 63) mas deixou uma
+  4ª intocada no callout de mídia `[!tip] Assista:` (linha 136 à época); achado Critical da
+  revisão em 2026-07-29 pegou a inconsistência ("dois" no corpo vs. "três" no resumo do
+  vídeo) — corrigido na 2ª passada, junto com escopo explícito ("no acordo final de 2025",
+  para não conflitar com a queixa original de 2023, que nomeava também Russell Grandinetti)
+  e um callout `[!info]` de método reconhecendo que o número vem de fontes secundárias
+  convergentes, não de leitura direta do documento da FTC (`ftc.gov` retornou 403 nas duas
+  tentativas de verificação). Nova checagem por `grep -n "três\|3 executivos\|Grandinetti"`
+  confirma 0 ocorrências indevidas restantes (as únicas duas são "três telas" no Cenário 1,
+  sem relação, e "Grandinetti" no próprio callout de método, intencional).
   **Correção adicional:** "already" residual em português (linha 82) trocado por "já".
   Fronteira com [[03-Dominios/Engenharia/UX/Design de Interação/23 - Undo vs confirmação|nota 23]]
   presente e correta (fricção legítima vs. manipuladora), confirmada por leitura direta.
