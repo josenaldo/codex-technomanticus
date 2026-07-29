@@ -43,9 +43,9 @@ Estrutura: cenário → ideia (Mermaid) → **como as ferramentas de integraçã
 | Iniciado | 4 |
 | Adepto | 5 |
 | Magus | 5 |
-| ✅ escritas | 4 |
-| ⬜ pendentes | 10 |
-| % concluído | 29% |
+| ✅ escritas | 9 |
+| ⬜ pendentes | 5 |
+| % concluído | 64% |
 | Scaffolding | roadmap.md + index.md criados (2026-07-29) |
 
 ---
@@ -75,29 +75,29 @@ Estrutura: cenário → ideia (Mermaid) → **como as ferramentas de integraçã
 ## Notas — Adepto (roteamento e transformação: o coração do EIP)
 
 #### 05 - Content-Based Router + Message Filter   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-29) · fase: adepto · 166 linhas
 - **Escopo:** **Content-Based Router** (rotear pelo conteúdo/tipo da mensagem para o destino certo) + **Message Filter** (descartar mensagens que não interessam). O router escolhe UM destino; o filter é o router de 1 saída (passa ou descarta). Camel `choice().when()`. **Armadilha:** lógica de negócio inchando o router; router que vira God component (mover pra Routing Slip / Process Manager).
-- **Resultado:** —
+- **Resultado:** 1 entrada→1 de N saídas (Mermaid); filter = router de 1 saída (passa/descarta); distinção Message Filter × Selective Consumer × filter() de stream; RabbitMQ roteia por routing key não payload; 3 armadilhas (God Router/ESB-gargalo, regras espalhadas, destinos hard-coded→config). **Abre o bloco Adepto.**
 
 #### 06 - Splitter + Aggregator   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-29) · fase: adepto · 173 linhas
 - **Escopo:** o par **fan-out/fan-in** canônico. **Splitter** (quebra uma mensagem composta em várias — os itens de um pedido) e **Aggregator** (junta várias mensagens correlacionadas numa só — o padrão **stateful** que espera as partes, com estratégia de completude e timeout). **Armadilha central:** o Aggregator é stateful e precisa de completeness condition + timeout; sem isso, vaza memória ou trava esperando parte que nunca vem.
-- **Resultado:** —
+- **Resultado:** ciclo quebra-processa-junta (Mermaid); Splitter stateless × Aggregator stateful (as 4 decisões: correlação/completude/estratégia/timeout); Composed Message Processor; 3 estratégias de completude (contagem+sinal+timeout); onde o estado vive (MessageStore/janela Kafka); 3 armadilhas (sem completude+timeout=OOM/trava, splitter sem correlação, assumir ordem).
 
 #### 07 - Recipient List + Scatter-Gather + Resequencer   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-29) · fase: adepto · 173 linhas
 - **Escopo:** **Recipient List** (enviar a uma lista dinâmica de destinos — como o router, mas N destinos), **Scatter-Gather** (recipient list + aggregator: pergunta a vários, junta as respostas — ex. cotação de fornecedores), **Resequencer** (reordenar mensagens fora de ordem por sequence number). **Armadilha:** scatter-gather sem timeout; resequencer com buffer ilimitado.
-- **Resultado:** —
+- **Resultado:** Recipient List = lista dinâmica computada (× pub-sub: aqui o roteador conhece/decide); Scatter-Gather = RL+Aggregator (Mermaid licitação); distinção vs Splitter (partes do todo × mesma pergunta a vários); Resequencer stateful por sequence number; 3 armadilhas (SG sem timeout=refém do mais lento, resequencer buffer ilimitado=mensagem faltante trava, RL hard-coded).
 
 #### 08 - Message Translator + Normalizer   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-29) · fase: adepto · 176 linhas
 - **Escopo:** **Message Translator** (o [[07 - Adapter|Adapter]] da mensageria — traduz o formato entre sistemas que não se entendem) e **Normalizer** (traduz múltiplos formatos de entrada para um canônico). Níveis de tradução (transport, data representation, data types, data structure). Envelope Wrapper, Content Enricher, Content Filter, Claim Check como variantes. **Armadilha:** tradução espalhada; enricher que chama serviço síncrono e acopla.
-- **Resultado:** —
+- **Resultado:** o Adapter da mensageria; 4 níveis de tradução (Mermaid transporte→representação→tipos→estrutura); Normalizer = router+translator por formato→canônico; variantes (Content Enricher/Filter, Claim Check p/ payload gordo, Envelope Wrapper); DataWeave como DSL dedicada; 3 armadilhas (tradução espalhada→N×N, Content Enricher síncrono=RPC disfarçado, God Transformer).
 
 #### 09 - Canonical Data Model   [substantivo]
-- **Estado:** ⬜ a escrever · fase: adepto
+- **Estado:** ✅ escrita (2026-07-29) · fase: adepto · 177 linhas
 - **Escopo:** o **modelo comum** que evita o N×N de tradutores (cada sistema traduz só de/para o canônico — N tradutores, não N²). O contraponto: centralizar demais o modelo canônico vira **acoplamento e gargalo** (a lição do ESB; encosta na Comunicação/4-05). **Armadilha central:** canonical model que vira um god-schema versionado por comitê; acoplamento por baixo do desacoplamento aparente.
-- **Resultado:** —
+- **Resultado:** N×N→N (Mermaid malha×estrela); lado sombrio = god-schema/comitê (faca de 2 gumes; canônico mínimo+por-contexto = smart-endpoints no modelo de dados); lente DDD (Published Language + ACL evita canônico global); Schema Registry como canônico de tópicos; 3 armadilhas (god-schema, acoplamento escondido, canônico prematuro). **Fecha o bloco Adepto.**
 
 ## Notas — Magus (endpoints, confiabilidade e escala: produção enterprise)
 

@@ -50,7 +50,11 @@ padrões de arquitetura de eventos (família 5 Eventos), fora desta.
 
 ## Adepto — roteamento e transformação
 
-*Em construção.* Content-Based Router + Filter · Splitter + Aggregator · Recipient List + Scatter-Gather + Resequencer · Message Translator + Normalizer · Canonical Data Model.
+5. [[05 - Content-Based Router + Message Filter]] — rotear pelo conteúdo (1 de N); filtrar (passa/descarta).
+6. [[06 - Splitter + Aggregator]] — o par fan-out/fan-in; o Aggregator stateful e suas 4 decisões.
+7. [[07 - Recipient List + Scatter-Gather + Resequencer]] — enviar a N destinos, compor respostas, reordenar.
+8. [[08 - Message Translator + Normalizer]] — o Adapter da mensageria; os 4 níveis de tradução.
+9. [[09 - Canonical Data Model]] — o modelo comum que corta o N×N (e o god-schema que o arruína).
 
 ## Magus — endpoints, confiabilidade e escala
 
