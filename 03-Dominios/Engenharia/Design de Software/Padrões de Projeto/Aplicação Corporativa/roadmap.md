@@ -98,10 +98,10 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota.
 | Iniciado (Apresentação) | 5 |
 | Adepto (Distribuição, estado e concorrência) | 5 |
 | Magus (Base) | 4 |
-| ✅ escritas | 10 (Iniciado + Adepto) |
-| ⬜ pendentes | 4 (bloco Magus) |
-| % concluído | 71% |
-| Scaffolding | roadmap.md criado (2026-07-30); index.md ao fechar |
+| ✅ escritas | **14 — FAMÍLIA COMPLETA** |
+| ⬜ pendentes | 0 |
+| % concluído | **100% ✅** |
+| Scaffolding | roadmap.md + index.md criados (2026-07-30) |
 
 ---
 
@@ -152,19 +152,19 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota.
 ## Notas — Magus (Base: os padrões que você já usa sem saber o nome)
 
 #### 11 - Layer Supertype + Separated Interface   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-30) · fase: magus · 151 linhas
 - **Escopo:** **Layer Supertype** (a classe-base de uma camada que carrega o comportamento comum — `AbstractEntity`, `BaseController`) e **Separated Interface** (declarar a interface num pacote/módulo diferente da implementação, para inverter a direção da dependência). **Ressurreição forte:** Separated Interface é a mecânica de **Ports & Adapters / Hexagonal** — o padrão está no auge com outro nome, e reconhecê-lo desmistifica a arquitetura hexagonal. **Armadilhas:** Layer Supertype virando lixeira de utilitários e herança profunda; Separated Interface com uma implementação só (indireção sem inversão real). **Abre o bloco Magus.**
 
 #### 12 - Registry + Plugin + Service Stub   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-30) · fase: magus · 152 linhas
 - **Escopo:** os três padrões de **resolver quem é a implementação**. **Registry** (objeto global bem-conhecido onde se acha serviços — e sua má fama como Service Locator × injeção de dependência), **Plugin** (escolher a implementação em configuração, não em compilação), **Service Stub** (substituir um serviço externo por um dublê para testar). **Ressurreição forte nos três:** DI containers e service discovery (Consul/Eureka); arquitetura de plugins onipresente (Vite/esbuild, providers do Terraform); service virtualization como indústria (MSW, WireMock, LocalStack, Testcontainers). **Armadilhas:** Registry como singleton global que esconde dependências e quebra teste; plugin sem contrato versionado; stub que diverge do serviço real em silêncio.
 
 #### 13 - Value Object + Money   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-30) · fase: magus · 176 linhas
 - **Escopo:** **Value Object** (identidade pelo valor, não por referência — imutável, comparável por conteúdo) e **Money** como o caso canônico: por que representar dinheiro em `double` é bug garantido, arredondamento, alocação de resto na divisão, moeda como parte do valor. **Ressurreição (leitura):** records do Java, branded types do TS, newtype do Rust; o Valhalla ainda **não** entregou value classes, então esse pedaço é futuro, não presente — marcar. **Armadilhas:** Value Object mutável; `equals`/`hashCode` inconsistentes; centavos em ponto flutuante; misturar moedas sem tipo.
 
 #### 14 - Special Case + Null Object   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-30) · fase: magus · 203 linhas
 - **Escopo:** **Special Case** (uma subclasse que representa um caso especial — `UnknownCustomer`, `NullOrder`) e **Null Object** como o seu caso mais famoso: substituir a checagem de `null` espalhada por um objeto que responde com comportamento neutro. **Ressurreição forte:** `Optional`/`Maybe`, tipos `Result`, e pattern matching (que dá a alternativa estrutural ao polimorfismo do Special Case). **Armadilhas:** Null Object que esconde erro real (o caso "não encontrado" que deveria explodir); proliferação de casos especiais em vez de rever o modelo. **FECHA A FAMÍLIA** com um mapa-de-escolha dos 14 padrões e uma síntese da lente arqueológica (o que a nuvem ressuscitou e por quê).
 
 ---
@@ -173,8 +173,8 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota.
 
 1. ✅ Bloco **Iniciado** (01-05) escrito — 2026-07-30.
 2. ✅ Bloco **Adepto** (06-10) escrito — 2026-07-30. Nota 10 registra explicitamente a **ausência** de ressurreição do Coarse-Grained Lock (absorvido pelo agregado do DDD), em vez de inventar correspondência.
-3. ⬜ Escrever o bloco **Magus** (11-14) — a 14 fecha a família.
-4. ⬜ `index.md` da família (MOC por fase + rotas), no molde das famílias 1-3.
+3. ✅ Bloco **Magus** (11-14) escrito — 2026-07-30. A nota 14 fecha a família com o **mapa de reconhecimento** dos 14 padrões (do que se encontra no código → o padrão) e a síntese da lente arqueológica (as 3 premissas que mudaram e reabilitaram os padrões).
+4. ✅ `index.md` da família criado (MOC por fase + fronteiras + atalho para o mapa de reconhecimento).
 5. ⬜ Atualizar roadmap-pai (família 4 ✅) + `index.md` do galho-pai + [[00-Meta/Roadmap]] central. Abrir a **família 5 (Arquitetura de Eventos)**.
 6. ⬜ Reavaliar a pendência transversal do galho-pai: graduar as notas 22-23 da GoF a **capstone** que generaliza pras famílias.
 

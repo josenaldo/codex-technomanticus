@@ -33,7 +33,7 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 | 1 | **Clássicos (GoF)** | Gang of Four (1994) | 23 | baixa | ✅ **COMPLETA 23/23** (2026-07-28) | [[Padrões de Projeto/Clássicos (GoF)/roadmap\|folha]] |
 | 2 | **Acesso a Dados** | Fowler PoEAA + J2EE + NoSQL | 15 | média (Java/Dados) | ✅ **COMPLETA 15/15** (2026-07-28) | [[Padrões de Projeto/Acesso a Dados/roadmap\|folha]] |
 | 3 | **Integração Empresarial (EIP)** | Hohpe & Woolf | 14 | baixa | ✅ **COMPLETA 14/14** (2026-07-29) | [[Padrões de Projeto/Integração Empresarial (EIP)/roadmap\|folha]] |
-| 4 | **Aplicação Corporativa** | Fowler PoEAA (não-dados) | 14 | baixa | 📋 **roadmap-folha pronto** (2026-07-30), escrita 0/14 | [[Padrões de Projeto/Aplicação Corporativa/roadmap\|folha]] |
+| 4 | **Aplicação Corporativa** | Fowler PoEAA (não-dados) | 14 | baixa | ✅ **COMPLETA 14/14** (2026-07-30) | [[Padrões de Projeto/Aplicação Corporativa/roadmap\|folha]] |
 | 5 | **Arquitetura de Eventos** | EDA moderna | ~10 | **alta** (Comunicação) | ⬜ roster provisório abaixo | a criar |
 | 6 | **Nuvem e Resiliência** | Azure/AWS Cloud Design Patterns | ~14 | **alta** (Cloud/Operação) | ⬜ roster provisório abaixo | a criar |
 
@@ -43,9 +43,9 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 
 Sequência escolhida (valor pro ofício de legado primeiro, maior sobreposição por último):
 
-1. **Clássicos (GoF)** — ✅ completa. 2. **Acesso a Dados** — ✅ completa. 3. **Integração Empresarial (EIP)** — ✅ completa.
-2. **Aplicação Corporativa** ← **próxima** (PoEAA não-dados: MVC/Front Controller, Remote Facade/DTO, offline locks, base patterns).
-3. **Arquitetura de Eventos** → 6. **Nuvem e Resiliência** por último (maior sobreposição, menor valor marginal — entradas autocontidas + link).
+1. **Clássicos (GoF)** — ✅ completa. 2. **Acesso a Dados** — ✅ completa. 3. **Integração Empresarial (EIP)** — ✅ completa. 4. **Aplicação Corporativa** — ✅ completa.
+2. **Arquitetura de Eventos** ← **próxima** (Event Sourcing, CQRS, Saga, Outbox, Domain Events).
+3. **Nuvem e Resiliência** por último (maior sobreposição, menor valor marginal — entradas autocontidas + link).
 
 **Disciplina de custo:** escrita sequencial, uma nota por vez via `/escrever-nota`; `/checkpoint` entre blocos; **sem fan-out massivo** (regra pessoal do usuário). Cada família = seu próprio ciclo brainstorm→roadmap-folha→escrita quando chegar a vez dela.
 
@@ -98,5 +98,5 @@ Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface*
 5. ✅ `index.md` deste galho-pai criado (MOC das 6 famílias).
 6. ✅ Família **Acesso a Dados** — **COMPLETA 15/15 (2026-07-28)**; Iniciado 01-06, Adepto 07-13, Magus 14-15; `index.md` da família com todas as fases linkadas; roadmap-folha 100%.
 7. ✅ Família **Integração Empresarial (EIP)** — **COMPLETA 14/14 (2026-07-29)**; Iniciado 01-04 (Message/Channel/Pipes-and-Filters), Adepto 05-09 (roteamento+transformação), Magus 10-14 (endpoints/confiabilidade/topologia); lente Camel/Spring Integration; fio condutor "smart endpoints, dumb pipes"; fronteira com Comunicação entre Sistemas cravada; `index.md` + roadmap-folha 100%.
-8. 🔶 **Família Aplicação Corporativa (PoEAA não-dados)** — brainstorm feito e [[Padrões de Projeto/Aplicação Corporativa/roadmap|roadmap-folha]] gravado (2026-07-30): **lente arqueológica** (era × hoje, não cross-framework), estrutura por camada, seção obrigatória **"A ressurreição"** (onde o padrão voltou, marcando correspondência reconhecida × leitura), corte de 26 candidatos → **14 notas** (5 Iniciado / 5 Adepto / 4 Magus). Fronteira com a família 2 cravada: *Service Layer*, *Gateway* e *Mapper* ficam lá, aqui só em prosa + cross-link. **Escrita 0/14 — em andamento.**
-9. ⬜ **Capstone do galho-pai:** com 3 famílias fechadas, reavaliar graduar as notas 22-23 do GoF (frameworks / quando NÃO usar) a capstone que generaliza pras famílias — decisão em aberto na seção de pendências.
+8. ✅ Família **Aplicação Corporativa (PoEAA não-dados)** — **COMPLETA 14/14 (2026-07-30)**; Iniciado 01-05 (apresentação), Adepto 06-10 (distribuição, sessão, concorrência offline), Magus 11-14 (padrões-base). **Lente arqueológica** (era × hoje) em vez de cross-framework, com seção obrigatória **"A ressurreição"** marcando correspondência reconhecida × leitura do catálogo. Corte de 26 candidatos → 14 notas; fronteira com a família 2 cravada (Service Layer/Gateway/Mapper ficam lá). Nota 14 fecha com **mapa de reconhecimento** (código encontrado → padrão) e a síntese das 3 premissas que a nuvem inverteu. `index.md` + roadmap-folha 100%.
+9. ⬜ **Capstone do galho-pai:** com 4 famílias fechadas, reavaliar graduar as notas 22-23 do GoF (frameworks / quando NÃO usar) a capstone que generaliza pras famílias — decisão em aberto na seção de pendências.
