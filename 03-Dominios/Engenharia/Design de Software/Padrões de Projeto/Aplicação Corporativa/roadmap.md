@@ -98,9 +98,9 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota.
 | Iniciado (Apresentação) | 5 |
 | Adepto (Distribuição, estado e concorrência) | 5 |
 | Magus (Base) | 4 |
-| ✅ escritas | 5 (bloco Iniciado) |
-| ⬜ pendentes | 9 |
-| % concluído | 36% |
+| ✅ escritas | 10 (Iniciado + Adepto) |
+| ⬜ pendentes | 4 (bloco Magus) |
+| % concluído | 71% |
 | Scaffolding | roadmap.md criado (2026-07-30); index.md ao fechar |
 
 ---
@@ -130,23 +130,23 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota.
 ## Notas — Adepto (Distribuição, estado e concorrência offline)
 
 #### 06 - Remote Facade   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 157 linhas
 - **Escopo:** a interface **grossa** sobre objetos finos, para não pagar round-trip de rede por getter — a Primeira Lei da Distribuição de Objetos de Fowler ("não distribua seus objetos"). O contexto EJB/CORBA/RMI que a tornou necessária. **Ressurreição forte:** **BFF** (Backend for Frontend) e o aggregation pattern de API Gateway são Remote Facade sem renomear o conceito. **Armadilhas:** facade que vira God service; aplicar in-process (indireção sem ganho); confundir com Facade do GoF (motivação diferente: rede × complexidade). **Abre o bloco Adepto.**
 
 #### 07 - DTO — e por que virou pejorativo   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 164 linhas
 - **Escopo:** o **Data Transfer Object** — objeto burro que carrega dados através de uma fronteira de processo, criado para amortizar chamadas remotas. Por que ele é hoje o padrão mais aplicado sem motivo (DTO entre camadas do mesmo processo) e o mais atacado em revisão de arquitetura. O que é assembly/mapping e onde ele dói. **Ressurreição (leitura):** a mensagem protobuf do gRPC é um DTO gerado; o GraphQL resolve a chatty interface que motivou o DTO. **Armadilhas:** DTO sem fronteira de rede; anemia por DTO (o modelo vira DTO); explosão de mapeadores.
 
 #### 08 - Session State — Client × Server × Database   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 154 linhas
 - **Escopo:** onde guardar o estado de uma conversa entre requisições, dado que HTTP não tem memória. **Client** (cookie, hidden field, URL — Fowler lista as ressalvas: tamanho, segurança), **Server** (HttpSession em memória — exige afinidade ou replicação), **Database** (tabela de sessão — durável, mais lento). **A ressurreição mais interessante da família:** a nuvem **inverteu a recomendação** — serverless e autoescala mataram sticky sessions, JWT resolveu a objeção de segurança de 2002 por assinatura, e o session store em Redis/DynamoDB virou default. Server Session State volta pela porta dos fundos com Durable Objects/atores (leitura). **Armadilhas:** JWT gordo/sem revogação; sessão em memória atrás de load balancer; confundir sessão com cache.
 
 #### 09 - Optimistic × Pessimistic Offline Lock   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 175 linhas
 - **Escopo:** proteger dados numa **transação de negócio que atravessa várias requisições** — onde não se pode segurar transação de banco aberta. **Optimistic** (detecta conflito no commit, por versão/timestamp — assume que colisão é rara) × **Pessimistic** (evita conflito reservando o registro — assume que colisão é cara). Como escolher pelo custo do retrabalho. **Ressurreição forte:** optimistic virou o mecanismo padrão da nuvem (condition expressions, `If-Match`/ETag, `@Version`), porque lock distribuído é caro; pessimistic exige Redis/Zookeeper e vive só onde o conflito é intolerável. **Armadilhas:** lock pessimista sem timeout (usuário fecha o browser e trava o registro); otimista sem UX de conflito (o usuário perde o trabalho digitado); confundir com lock de banco.
 
 #### 10 - Coarse-Grained Lock   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 146 linhas
 - **Escopo:** travar um **grupo** de objetos com um único lock — porque travar item a item vaza inconsistência entre as partes de um todo (o pedido e suas linhas). Implementações: versão compartilhada, root lock. **Honestidade:** é o padrão do roster **sem ressurreição limpa** — sobrevive diluído no conceito de **agregado** do DDD (o agregado é a unidade de consistência, o que é a mesma ideia com outro nome e outra justificativa). A seção "A ressurreição" desta nota diz isso explicitamente em vez de inventar correspondência. **Armadilhas:** granularidade grossa demais (contenção); confundir a fronteira do lock com a fronteira da tela. **Fecha o bloco Adepto.**
 
 ## Notas — Magus (Base: os padrões que você já usa sem saber o nome)
@@ -171,8 +171,8 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota.
 
 ## Próximos passos
 
-1. ⬜ Escrever o bloco **Iniciado** (01-05) — **parar e perguntar** antes de emendar o Adepto (regra de ritmo do usuário).
-2. ⬜ Escrever o bloco **Adepto** (06-10) — parar e perguntar.
+1. ✅ Bloco **Iniciado** (01-05) escrito — 2026-07-30.
+2. ✅ Bloco **Adepto** (06-10) escrito — 2026-07-30. Nota 10 registra explicitamente a **ausência** de ressurreição do Coarse-Grained Lock (absorvido pelo agregado do DDD), em vez de inventar correspondência.
 3. ⬜ Escrever o bloco **Magus** (11-14) — a 14 fecha a família.
 4. ⬜ `index.md` da família (MOC por fase + rotas), no molde das famílias 1-3.
 5. ⬜ Atualizar roadmap-pai (família 4 ✅) + `index.md` do galho-pai + [[00-Meta/Roadmap]] central. Abrir a **família 5 (Arquitetura de Eventos)**.
