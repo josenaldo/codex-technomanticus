@@ -301,5 +301,5 @@ E os vizinhos de domínio:
 
 - [[Algoritmos]] — os algoritmos que rodam sobre estas estruturas
 - [[03-Dominios/Ciência/Banco de Dados/index|Banco de Dados]] — onde as árvores B viram índices
-- [[Coding Challenges Strategy]] — o método de reconhecer pattern e atacar o problema
+- [[03-Dominios/Carreira/Entrevistas/08 - A entrevista técnica - os três formatos|A entrevista técnica]] — o método de atacar o problema em live coding
 - [[Dicionário de Ciência da Computação]] — verbetes de cada estrutura e termo

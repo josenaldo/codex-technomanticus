@@ -68,7 +68,8 @@ aliases:
 | [[03-Dominios/Tecnologia/IA/index\|IA]] | 🟡 | 21 galhos; **diagnóstico nota-a-nota COMPLETO (30/06): 237 notas, ~84% no gate ≥9/12, 47 já fechadas** — plano detalhado em `guia/roadmap - ia`; ver [[#Enriquecimento do domínio IA]] |
 | [[03-Dominios/Tecnologia/Terminal/index\|Terminal]] | ✅ | 7 galhos, 78 notas |
 | [[03-Dominios/Tecnologia/Cloud/index\|Cloud]] | ✅ | **COMPLETA 2026-07-24**: 24 galhos + capstone do domínio, 146 notas, lente dupla AWS↔DigitalOcean. Blocos: modelo mental/fundamentos (1-4) · primitivos (5-10) · serverless (11-15) · operar/governar (16-20: IaC/Observabilidade/Segurança/FinOps/Resiliência) · provedores e maestria (21 AWS a fundo · 22 DigitalOcean a fundo · 23 multi-cloud/portabilidade · 24 Certificação SAA-C03) · capstone "Arquitetar um SaaS na cloud do zero". Galhos 12-24 via workflow de fan-out. **M1 (mídia) ✅ completo 2026-07-25 — 217 vídeos YouTube (legenda verificada) em 144 notas.** Domínio 100% fechado. |
-| [[03-Dominios/Tecnologia/Infraestrutura/index\|Infraestrutura]] | 🟡 | só galho Linux; falta Docker, Kubernetes, Nginx (a *prática* já vive na Operação; a *plataforma* na Cloud) |
+| [[03-Dominios/Tecnologia/Infraestrutura/index\|Infraestrutura]] | 🟡 | só galho Linux; falta Docker, Kubernetes, Nginx (a *prática* já vive na Operação; a *plataforma* na Cloud). **Escopo fechado em 2026-07-31** — ver Tier 2 |
+| [[03-Dominios/Tecnologia/Controle de Versão/index\|Controle de Versão]] | 🔶 | **domínio aberto 2026-07-31 (Tier 0)** — Git/GitHub saem de Infra e viram domínio próprio: 5 sub-galhos + capstone, 25 notas, 0 escritas |
 | [[03-Dominios/Tecnologia/RPA/index\|RPA]] | ⬜ | stub (6 notas) |
 
 #### Enriquecimento do domínio IA
@@ -152,6 +153,9 @@ aliases:
 > [!important] Fonte de verdade do que falta
 > As Ondas A–D abaixo são registro histórico (majoritariamente concluídas). Este bloco em tiers é a **visão forward-looking** do que resta, priorizada pelos objetivos: entrevistas internacionais + ofício de consultor de legado + completude do grimório.
 
+**Tier 0 — buraco crítico, em construção (aberto 2026-07-31)**
+- 🔶 **Controle de Versão** — [[03-Dominios/Tecnologia/Controle de Versão/index|Tecnologia/Controle de Versão]]. Git e GitHub não tinham casa: o material vivia espalhado em `Ferramentas/Versionamento.md` (9.8K), `Infraestrutura/GitHub CLI.md` (45K), `Terminal/TUIs` (Lazygit), `Tooling e Build/16` (git hooks) e `Operação/2-05` (GitOps) — sem nenhuma nota sobre o **modelo** do Git. Promovido a **Tier 0** por ser (a) tema de entrevista sênior por si só e (b) o **instrumento primário do ofício de consultor de legado**. **Lente única: o repositório como fonte de verdade e como testemunha.** 5 sub-galhos + capstone, **25 notas**, progressão *entender → operar → colaborar → escalar → investigar*. Ordem de construção: **SG1 (modelo) → SG5 (testemunha) → SG2 (operar) → SG3 (colaborar) → SG4 (repos reais) → capstone**, sequencial com validação a cada bloco. Ver [[00-Meta/specs/2026-07-31-dominio-controle-de-versao-design|design do domínio]] e o [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap]].
+
 **Tier 1 — construção nova (buracos reais 🚫)**
 - ~~**UX** — sem domínio, sem senda, sem tag sistemática antes de 2026-07-28.~~ ✅ **domínio COMPLETO (iniciado 2026-07-28, concluído 2026-07-29)**: [[03-Dominios/Engenharia/UX/index|Engenharia/UX]] (8 sub-galhos + capstone, **49 notas**) + [[03-Dominios/Tecnologia/Ferramentas de Design/index|Tecnologia/Ferramentas de Design]] (galho-irmão volátil, fechado, **9 notas**). **Total: 58 notas.** Fecha o **último buraco de construção nova do Tier 1** (Go ✅ · Cloud ✅ · Acessibilidade ✅ · **UX ✅**). Público-alvo: o fractional engineer full-cycle (cliente ≠ usuário; escala de um). Ordem de execução seguida: SG1 → SG2 → SG4 → SG6 → SG5 → SG3 → SG7 → SG8 → Ferramentas de Design → capstone. M1 (mídia verificada) obrigatório em toda nota, alinhado ao padrão de Acessibilidade — 4 buracos honestos + 1 pendência reabrível no capstone. Ver [[00-Meta/specs/2026-07-28-dominio-ux-design|design do domínio]] e o [[03-Dominios/Engenharia/UX/roadmap|roadmap]].
 - ~~**Go** — 3 notas stub~~ ✅ **Trilha completa (2026-07-18):** 21 galhos + capstone, 163 notas. Paridade de stack backend atingida (Java · Node · Python · Go). Fronteira nativa de gRPC em [[03-Dominios/Engenharia/Comunicação entre Sistemas/index\|Comunicação]] (galho 12). Resta só enriquecimento de mídia (M1).
@@ -163,10 +167,15 @@ aliases:
 - **Segurança** (23 notas) — consolidar em trilha.
 - **Testes conceitual** (17 notas) — vertente JS já feita à parte ([[03-Dominios/Tecnologia/Testes JS/index\|Testes JS]]); falta atomizar o conceitual.
 - **Complexidade de Software** (17 notas) — consolidar.
-- **Infraestrutura** (só galho Linux) — Docker/K8s/Nginx como *tecnologia* (a *prática* já vive na Operação).
+- **Infraestrutura** (só galho Linux) — **escopo fechado em 2026-07-31**: a estante é *"o que sustenta as aplicações depois que elas saem da máquina do dev"*. Portanto:
+    - **Entra:** Docker, Kubernetes e Nginx como *tecnologia* (galhos atômicos em 3 fases), somados ao galho Linux já existente. Os monólitos `Docker.md` (39K), `Kubernetes.md` (48K) e `Nginx.md` (34K) são as sementes.
+    - **Não entra — a *prática* já tem casa canônica:** `CI-CD.md` e `Observabilidade.md` seguem como troncos podados apontando pra [[03-Dominios/Engenharia/Operação/index|Engenharia/Operação]] (decisão de 2026-07-08, mantida).
+    - **Não entra — a *plataforma* já tem casa:** `Digital Ocean.md` aponta pra [[03-Dominios/Tecnologia/Cloud/index|Cloud]] (galho 22).
+    - **Sai da estante:** `GitHub CLI.md` (45K) migra pro novo domínio de **Controle de Versão** (nota 16 do SG3); Infra fica com callout de ponte. Git nunca foi infraestrutura — ver Tier 0.
+    - **Segue aqui, sem virar galho:** `Comandos Docker e WSL.md`, `Configurando Ambiente Linux no WSL.md`, `WSL, Docker e Kubernetes.md`, `Docker credential helpers.md` — material de ambiente local, absorvido pelos galhos ou mantido como referência solta.
 
 **Tier 3 — Carreira (contínuo, fecha a candidatura)**
-- **Entrevistas** (6 notas) — behavioral/STAR, system design practice, negociação. **Maior ROI imediato** para o objetivo de entrevistas internacionais (alimentado pela mentoria GCA).
+- ~~**Entrevistas** (6 notas)~~ → ✅ **GALHO RECONSTRUÍDO 2026-07-31**: [[03-Dominios/Carreira/Entrevistas/index|Carreira/Entrevistas]], **14 notas** em 3 fases (Iniciado: critério sênior · funil internacional · pitch · contratação remota · currículo; Adepto: STAR · taxonomia comportamental · entrevista técnica · ponte de system design · banco de histórias; Magus: trade-offs · red flags · entrevista reversa · negociação/capstone). Lente: **o que a etapa está realmente avaliando**. Escopo deliberado: **só teoria compartilhável** — material de preparação pessoal fica fora deste repositório, que é público. As 5 notas antigas foram aposentadas e os 7 inbound reapontados.
 - **Inglês** (4 notas + GCA) — articulação técnica em inglês.
 
 **Tier 4 — enriquecimento, não tema novo**

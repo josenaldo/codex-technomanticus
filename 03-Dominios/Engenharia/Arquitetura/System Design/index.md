@@ -74,5 +74,5 @@ Leia na ordem 1 → 2 → 3 → 4 se está começando: o framework dá o roteiro
 - [[Arquitetura de Software]] — patterns arquiteturais, microserviços, monolito
 - [[Event Storming]] — event sourcing, domain events
 - [[Spring Boot]] — troubleshooting Java em produção
-- [[System Design Practice]] — exercícios práticos
+- [[03-Dominios/Carreira/Entrevistas/index|Entrevistas]] — o processo em volta desta etapa (funil, comportamental, negociação)
 - [[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]] — o domínio

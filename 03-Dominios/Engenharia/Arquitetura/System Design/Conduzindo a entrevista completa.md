@@ -188,8 +188,8 @@ Cada frase toca um eixo da rubrica. É esse arco — não um diagrama perfeito �
 Esta é a última nota da trilha — o ponto onde as peças viram performance. Daqui, o caminho não é ler mais: é **praticar em voz alta**. Pegue um dos [[4 - Walkthroughs/index|walkthroughs]], feche a nota, e conduza os 45 minutos sozinho, cronometrando. Depois compare. O gap entre o que você desenhou e o que a nota traz é exatamente o que falta treinar.
 
 - [[System Design/index|System Design]] — volte ao mapa da trilha e escolha o próximo sistema para praticar
-- [[System Design Practice]] — exercícios práticos de design
-- [[Communicating Trade-offs]] — o músculo da comunicação, que esta nota inteira depende
+- [[03-Dominios/Carreira/Entrevistas/09 - System design em entrevista — a ponte|System design em entrevista]] — onde esta etapa se encaixa no funil
+- [[03-Dominios/Carreira/Entrevistas/11 - Comunicar trade-offs sob pressão|Comunicar trade-offs sob pressão]] — o músculo de comunicação de que esta nota inteira depende
 
 ## Veja também
 

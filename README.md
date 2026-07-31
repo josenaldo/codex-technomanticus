@@ -154,7 +154,7 @@ Cada Domínio em `03-Dominios/` tem um portal de entrada (MOC com mesmo nome da 
 ## Domínio de Entrevistas
 
 - **Senda guia:** [[Senda Entrevistas]]
-- **Notas de prep:** [[Behavioral Questions]] · [[STAR Method]] · [[Coding Challenges Strategy]] · [[System Design Practice]] · [[Communicating Trade-offs]]
+- **Notas de prep:** [[03-Dominios/Carreira/Entrevistas/index|Entrevistas]] — galho completo, 14 notas em 3 fases (funil · formatos · negociação)
 
 ## Domínio de RPA
 

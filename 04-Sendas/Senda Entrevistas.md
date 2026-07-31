@@ -95,13 +95,17 @@ Roteiro de preparação para entrevistas de Senior Fullstack Developer em vagas 
 
 > Como se vender em inglês e demonstrar senioridade.
 
-- [ ] [[Behavioral Questions]]
-- [ ] [[STAR Method]]
-- [ ] [[Communicating Trade-offs]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/07 - A taxonomia das perguntas comportamentais|Taxonomia das perguntas comportamentais]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/06 - STAR e suas variantes|STAR e suas variantes]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/10 - O banco de histórias|O banco de histórias]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/11 - Comunicar trade-offs sob pressão|Comunicar trade-offs sob pressão]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/12 - Red flags que sêniores produzem sem perceber|Red flags]]
 
 ## Fase 6 — Prática
 
 > Mock interviews e exercícios.
 
-- [ ] [[System Design Practice]]
-- [ ] [[Coding Challenges Strategy]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/08 - A entrevista técnica - os três formatos|A entrevista técnica — os três formatos]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/09 - System design em entrevista — a ponte|System design em entrevista]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/13 - A entrevista reversa|A entrevista reversa]]
+- [ ] [[03-Dominios/Carreira/Entrevistas/14 - Negociação de oferta (capstone)|Negociação de oferta]]

@@ -80,10 +80,10 @@ Ao fim: as 5 são **removidas** e os inbound (`README.md`, `index.md` da raiz, `
 | Iniciado | 5 |
 | Adepto | 5 |
 | Magus | 4 |
-| ✅ escritas | 10 (Iniciado + Adepto) |
-| ⬜ pendentes | 4 (bloco Magus) |
-| % concluído | 71% |
-| Scaffolding | roadmap.md criado (2026-07-31); index.md ao fechar |
+| ✅ escritas | **14 — GALHO COMPLETO** |
+| ⬜ pendentes | 0 |
+| % concluído | **100% ✅** |
+| Scaffolding | roadmap.md + index.md criados |
 
 ---
 
@@ -135,19 +135,19 @@ Ao fim: as 5 são **removidas** e os inbound (`README.md`, `index.md` da raiz, `
 ## Notas — Magus (o que decide no nível sênior)
 
 #### 11 - Comunicar trade-offs sob pressão   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 148 linhas
 - **Escopo:** a habilidade que mais separa sênior de pleno na avaliação. A estrutura: opções consideradas → critério de decisão → escolha → **o que se perdeu** → como o custo foi mitigado. Por que admitir o custo **aumenta** a credibilidade. **BLUF** (bottom line up front) como formato de abertura para audiência executiva. Adaptar profundidade à audiência (engenheiro × HM × executivo). **Armadilhas:** apresentar decisão sem alternativa; esconder o custo; profundidade errada para a audiência.
 
 #### 12 - Red flags que sêniores produzem sem perceber   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 135 linhas
 - **Escopo:** o inverso do resto do galho — não o que fazer, mas o que **desqualifica** alguém tecnicamente forte. Falar mal de empregador ou colega; "nós" que esconde a sua parte; não ter perguntas ao fim; rigidez tecnológica ("X é sempre melhor"); não saber dizer o que faria diferente; desprezar o produto ou os usuários; excesso de certeza sobre um sistema que não conhece. **Cada uma com o que o entrevistador infere daquilo.**
 
 #### 13 - A entrevista reversa   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 148 linhas
 - **Escopo:** as suas perguntas são avaliadas — e são a única parte do processo que você controla inteiramente. Perguntas que revelam senioridade (sobre processo de decisão técnica, dívida, on-call, o que mudou depois do último incidente) × perguntas que revelam desinteresse. Como ler as respostas: sinais de disfunção organizacional que aparecem quando se pergunta sobre release, postmortem e prioridade. Também: como avaliar **se você quer o emprego**.
 
 #### 14 - Negociação de oferta (capstone)   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 191 linhas
 - **Escopo:** **FECHA O GALHO.** Por que a negociação começa antes da oferta (a pergunta de expectativa salarial e como não ancorar contra si). **BATNA** e o poder real de ter alternativa. A estrutura da comp além do salário-base (bônus, equity, benefícios, orçamento de equipamento e de aprendizado, dias de férias). Ancoragem e a assimetria LATAM↔hemisfério norte. Como pedir tempo e como recusar sem queimar a ponte. Encerra com o **mapa do galho** — as 14 notas por etapa do funil — e a síntese da lente (o que cada etapa mede).
 
 ---
@@ -156,10 +156,10 @@ Ao fim: as 5 são **removidas** e os inbound (`README.md`, `index.md` da raiz, `
 
 1. ✅ Bloco **Iniciado** (01-05) escrito — 2026-07-31. Zero dado pessoal (verificado por grep). Seção-lente presente em todas. A nota 04 leva aviso explícito de que não é aconselhamento jurídico/fiscal.
 2. ✅ Bloco **Adepto** (06-10) escrito — 2026-07-31. A 09 é curta de propósito (89 linhas, sem Mermaid): situa a etapa e remete à trilha de System Design, sem competir. A 10 ensina o método do repertório sem conter nenhuma história — o banco de cada pessoa é material privado.
-3. ⬜ Escrever o bloco **Magus** (11-14) — a 14 fecha o galho.
-4. ⬜ `index.md` novo (MOC por fase + fronteiras).
-5. ⬜ **Aposentar as 5 notas antigas** e reapontar os 3 inbound (`README.md`, `index.md` da raiz, `04-Sendas/Senda Entrevistas.md`).
-6. ⬜ Atualizar [[00-Meta/Roadmap]] central (Tier 3).
+3. ✅ Bloco **Magus** (11-14) escrito — 2026-07-31. A 14 fecha com mapa por momento do funil + a síntese da lente (o que cada pergunta mede).
+4. ✅ `index.md` reescrito (MOC por fase + tabela de fronteiras).
+5. ✅ 5 notas antigas **removidas** e inbound reapontados. **Atenção:** eram **7**, não 3 — o levantamento inicial usou `head -3` e escondeu quatro (System Design/capstone ×2, System Design/index, Estruturas de Dados/13, skill process-community). Lição: contar inbound sem truncar a saída.
+6. ✅ [[00-Meta/Roadmap]] central atualizado (Tier 3).
 
 ## Disciplina
 

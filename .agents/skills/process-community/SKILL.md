@@ -116,7 +116,7 @@ Lê um PDF de Community Session na pasta `03-Domínios/Inglês/GCA/Community/` e
      ```
    - **Mentor notes globais (10):** observações coletivas extraídas do PDF. Se PDF tiver placeholder genérico ("!/ Document specific feedback..."), reproduzir o placeholder e marcar `_(observações específicas serão capturadas durante/após a sessão pelo usuário)_`.
    - **Seção extra opcional (11):** se PDF traz Voting/Schedule (caso Selling Seniority), preencher seção completa com options e checklists. Se não traz → **deixar cursor vazio e remover a linha `---` que o cerca** (skill faz cleanup).
-   - **Veja também (12):** wikilinks adicionais relevantes (ex: notas conceituais, [[Behavioral Questions]] se aplicável).
+   - **Veja também (12):** wikilinks adicionais relevantes (ex: notas conceituais, notas do galho Entrevistas se aplicável).
 
 10. **Resolver placeholders Templater do template Workbook (6 cursors):**
     - **Frontmatter (1-3):** community_session, theme, session_date.
