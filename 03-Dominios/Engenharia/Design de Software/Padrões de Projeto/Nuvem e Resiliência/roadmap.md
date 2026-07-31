@@ -74,9 +74,9 @@ Nenhum é gratuito, e o erro clássico é adotar vários sem somar os sacrifíci
 | Iniciado | 5 |
 | Adepto | 5 |
 | Magus | 4 |
-| ✅ escritas | 5 (bloco Iniciado) |
-| ⬜ pendentes | 9 |
-| % concluído | 36% |
+| ✅ escritas | 10 (Iniciado + Adepto) |
+| ⬜ pendentes | 4 (bloco Magus) |
+| % concluído | 71% |
 | Scaffolding | roadmap.md criado (2026-07-31); index.md ao fechar |
 
 ---
@@ -106,23 +106,23 @@ Nenhum é gratuito, e o erro clássico é adotar vários sem somar os sacrifíci
 ## Notas — Adepto (conter e degradar)
 
 #### 06 - Fallback e degradação graciosa   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 138 linhas
 - **Escopo:** o que responder quando a defesa disparou. Níveis: valor em cache, valor padrão, funcionalidade reduzida, mensagem honesta. **A armadilha-mãe:** o plano B **nunca exercitado** — que falha justamente no dia em que é acionado, transformando um incidente em dois. **Sacrifício:** correção — você serve algo *pior* de propósito, e alguém precisa decidir que isso é aceitável (decisão de produto, não técnica). **Armadilhas:** fallback silencioso que esconde a falha das métricas; fallback que chama outra dependência (nova cascata); dado velho servido como se fosse fresco.
 
 #### 07 - Rate Limiting e Load Shedding   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 134 linhas
 - **Escopo:** os dois modos de dizer não. **Rate limiting** rejeita por **cota** (contrato: você tem N/min) — algoritmos em uma passada (token bucket × leaky bucket × janela deslizante) e o essencial: comunicar limites por header e responder 429 com `Retry-After`. **Load shedding** rejeita por **pressão** (o sistema está no limite agora), priorizando o que importa. **Sacrifício:** clientes legítimos na cauda, e a assimetria de quem é sacrificado primeiro. **Armadilhas:** limitar por IP atrás de NAT/proxy; rejeitar sem indicar quando voltar; shedding que derruba justamente a requisição de health check ou de pagamento.
 
 #### 08 - Cache-Aside   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 143 linhas
 - **Escopo:** a aplicação consulta o cache, e em caso de falta busca na origem e popula. Como padrão de **resiliência** (não só de desempenho): o cache absorve a indisponibilidade da origem — e cria dependência nova. **Sacrifício:** frescor, e um segundo sistema que pode falhar. **Armadilhas:** *cache stampede* (a expiração simultânea derruba a origem — mitigar com jitter de TTL e *single-flight*); invalidação errada servindo dado velho indefinidamente; cache no caminho crítico sem *fail-open*.
 
 #### 09 - Health Endpoint Monitoring   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 136 linhas
 - **Escopo:** o serviço expõe um endpoint que declara sua saúde, e a plataforma age sobre a resposta (tirar do balanceador, reiniciar). A distinção que decide tudo: **liveness** (estou vivo? falha ⇒ reiniciar) × **readiness** (posso receber tráfego agora? falha ⇒ tirar do balanceador) × **startup**. **Sacrifício:** um check profundo dá diagnóstico melhor e **propaga falha** — se o liveness verifica o banco, uma queda do banco reinicia toda a frota. **Armadilhas:** liveness checando dependências (a cascata acima); health que só responde 200 sem verificar nada; readiness sem período de aquecimento.
 
 #### 10 - Leader Election   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 150 linhas
 - **Escopo:** quando exatamente **uma** instância deve executar algo (job agendado, compactação, reconciliação), elege-se um líder por *lease* com renovação. **Sacrifício:** disponibilidade da função durante a reeleição, e complexidade de coordenação. **Armadilhas:** **split-brain** (dois líderes por partição de rede ou pausa de GC — o líder precisa saber que perdeu a liderança); lease sem renovação (líder morto segura o cargo); implementar do zero em vez de usar o mecanismo existente (lease do K8s, etcd, Zookeeper).
 
 ## Notas — Magus (topologia, fronteira e migração)
@@ -148,7 +148,7 @@ Nenhum é gratuito, e o erro clássico é adotar vários sem somar os sacrifíci
 ## Próximos passos
 
 1. ✅ Bloco **Iniciado** (01-05) escrito — 2026-07-31. Callout de recorte presente em todas. A lente do sacrifício rendeu conteúdo próprio em cada nota: timeout=requisições que esperariam mais · retry=carga sobre quem já está fraco (único padrão em que o custo recai sobre a DEPENDÊNCIA) · breaker=aposta estatística com dois erros de custo oposto · bulkhead=utilização.
-2. ⬜ Escrever o bloco **Adepto** (06-10) — parar e perguntar.
+2. ✅ Bloco **Adepto** (06-10) escrito — 2026-07-31. A 06 crava que **nem toda funcionalidade deve ter fallback** (antifraude fora ⇒ falhar é o correto); a 08 mostra o cache como as duas faces (quente=defesa, frio=dívida que vence de uma vez) + fail-open; a 09 é a nota com o incidente mais didático da família (liveness checando o banco reinicia a frota).
 3. ⬜ Escrever o bloco **Magus** (11-14) — a 14 fecha a família **e o galho-pai**.
 4. ⬜ `index.md` da família, no molde das famílias 1-5.
 5. ⬜ Atualizar roadmap-pai + `index.md` do galho-pai + [[00-Meta/Roadmap]] central — **galho-pai COMPLETO, 6/6 famílias**.
