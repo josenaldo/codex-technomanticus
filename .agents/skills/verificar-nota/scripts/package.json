@@ -1,0 +1,10 @@
+{
+  "name": "validar-mermaid",
+  "private": true,
+  "type": "module",
+  "description": "Valida blocos mermaid do vault contra o parser real (apoio ao item S1 da skill verificar-nota)",
+  "dependencies": {
+    "jsdom": "^26.0.0",
+    "mermaid": "^11.16.0"
+  }
+}

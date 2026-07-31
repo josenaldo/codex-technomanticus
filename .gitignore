@@ -25,3 +25,7 @@ __pycache__/
 
 # Checkpoints de sessão do Claude Code (estado local, recuperação pós-/clear)
 .claude/checkpoints/
+
+# Deps do validador de Mermaid (skill verificar-nota) — reinstaláveis via npm install
+.agents/skills/*/scripts/node_modules/
+.agents/skills/*/scripts/package-lock.json

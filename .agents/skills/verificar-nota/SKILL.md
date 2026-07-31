@@ -1,6 +1,6 @@
 ---
 name: verificar-nota
-description: Constraint-skill: audita a qualidade estrutural de uma nota de domínio contra o padrão do vault (checklist ESTRUTURA/PROFUNDIDADE/TAMANHO/LINKS/MÍDIA). Serve de gate compartilhado entre /escrever-nota e /enriquecer-nota. Não edita — só reporta e sugere ação. Use quando o usuário pedir "verificar nota", "auditar qualidade", "checar se a nota está boa", ou após criar/enriquecer uma nota.
+description: Constraint-skill: audita a qualidade estrutural de uma nota de domínio contra o padrão do vault (checklist ESTRUTURA/SINTAXE/PROFUNDIDADE/TAMANHO/LINKS/MÍDIA). Serve de gate compartilhado entre /escrever-nota e /enriquecer-nota. Não edita — só reporta e sugere ação. Use quando o usuário pedir "verificar nota", "auditar qualidade", "checar se a nota está boa", ou após criar/enriquecer uma nota.
 ---
 
 # Skill: verificar-nota
@@ -36,6 +36,17 @@ está ok, o que está faltando, e sugere qual skill usar para corrigir cada item
 | E6 | Como explicar em inglês | Seção de inglês presente (nome exato ou variação equivalente) |
 | E7 | Tabela PT↔EN | Tabela de termos técnicos PT ↔ EN presente |
 | E8 | Armadilhas comuns | Seção `## Armadilhas comuns` com ≥3 callouts `[!warning]` individuais |
+
+### SINTAXE (bloqueante — fora do score)
+
+| # | Item | Critério de aprovação |
+|---|------|-----------------------|
+| S1 | Mermaid renderizável | Todo bloco ` ```mermaid ` passa no checklist de [references/mermaid-sintaxe.md](references/mermaid-sintaxe.md) |
+
+S1 **não conta pontos** — é um gate de bug, não de riqueza. Um diagrama com erro de sintaxe não
+degrada, ele simplesmente não renderiza (caixa de erro no Obsidian, bloco cru no Quartz). Nota com
+S1 reprovado **não é aprovada**, qualquer que seja o score. Se a nota não tem bloco Mermaid, S1 é
+N/A (a ausência já é cobrada por E3).
 
 ### PROFUNDIDADE
 
@@ -74,6 +85,10 @@ está ok, o que está faltando, e sugere qual skill usar para corrigir cada item
 2. Infere `fase:` do frontmatter (Iniciado/Adepto/Magus). Se ausente: aplica critério de Adepto.
 3. Conta linhas totais do arquivo.
 4. Verifica cada item da checklist por busca estrutural no conteúdo.
+   - Para **S1**: rode o validador — ele executa o parser do Mermaid e é objetivo.
+     `node .agents/skills/verificar-nota/scripts/validar-mermaid.mjs <path-da-nota>`
+     Só consulte [references/mermaid-sintaxe.md](references/mermaid-sintaxe.md) (regras R1–R13)
+     para *consertar* o que o validador acusar — não para auditar bloco a bloco no olho.
 5. Exibe relatório agrupado por seção:
 
 ```
@@ -88,6 +103,9 @@ ESTRUTURA
 ✗ E6 Como explicar em inglês — seção ausente
 ✗ E7 Tabela PT↔EN — ausente
 ⚠ E8 Armadilhas comuns — 2 [!warning] (mínimo: 3)
+
+SINTAXE (bloqueante)
+✗ S1 Mermaid renderizável — bloco 2, linha 118: subgraph "Camada de Domínio" sem ID (R2)
 
 PROFUNDIDADE
 ✓ P1 Código com falha
@@ -104,13 +122,14 @@ MÍDIA
 ✗ M1 Vídeo/podcast embutido — callout [!tip] com mídia ausente
 
 RESULTADO: 6/12 itens ✓   (fase: Adepto)
-Aprovado: NÃO — itens críticos faltando: E3, E6, E7, P2, L2, M1
+Aprovado: NÃO — S1 reprovado (bloqueante) + itens faltando: E3, E6, E7, P2, L2, M1
 ```
 
 6. Sugere ação para cada `✗`:
 
 | Item | Sugestão |
 |------|----------|
+| S1 | Reportar bloco + linha + regra violada (R1–R13) e mostrar o trecho já corrigido, pronto pra colar. É bug, não falta de conteúdo: não delega pra `/enriquecer-nota`. |
 | E3, E4, P1, P2 | `/enriquecer-nota` com lente Profundidade |
 | E6, E7 | `/enriquecer-nota` com instrução "adicionar seção de inglês e tabela PT↔EN" |
 | E8 | `/enriquecer-nota` com instrução "adicionar armadilhas comuns" |
@@ -134,7 +153,8 @@ Aprovado: NÃO — itens críticos faltando: E3, E6, E7, P2, L2, M1
 ## Convenções rígidas
 
 - **Não edita** — esta skill é read-only. Reporta; não conserta.
-- **Score de aprovação**: nota "aprovada" quando ≥9/12 itens ✓ (considerando isenções).
+- **Score de aprovação**: nota "aprovada" quando ≥9/12 itens ✓ (considerando isenções) **e** S1 ✓.
+- **S1 é veto**: sintaxe Mermaid quebrada reprova a nota mesmo com 12/12 no score.
 - **Score crítico**: <6/12 itens ✓ → informa que a nota precisa de Modo B (elevação estrutural) antes de enriquecimento de conteúdo.
 - **⚠ (aviso)**: item presente mas abaixo do mínimo quantitativo (ex: 2 armadilhas quando precisa 3).
 - **✗ (falha)**: item completamente ausente.
