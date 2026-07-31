@@ -60,6 +60,10 @@ sob a lente da IA — este galho trata sob a lente geral/atemporal, cross-linkad
 15. [[15 - Pensamento sistêmico]] — feedback, emergência, parte vs. todo.
 16. [[16 - Lei de Conway]] — complexidade organizacional ↔ arquitetural.
 
+## Capstone
+
+17. [[17 - Capstone - O diagnóstico diferencial da complexidade]] — as 16 lentes usadas juntas, sob pressão, num caso único: um sistema de faturamento cujo time quer reescrever. Nomeia a doença e encaminha o tratamento.
+
 ## Todas as notas
 
 ```dataview

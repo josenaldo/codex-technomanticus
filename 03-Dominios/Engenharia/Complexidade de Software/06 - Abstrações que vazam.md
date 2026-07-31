@@ -18,7 +18,7 @@ aliases:
   - Abstração vazada
   - Lei das Abstrações Vazadas
   - Law of Leaky Abstractions
-publish: false
+publish: true
 ---
 
 # Abstrações que vazam

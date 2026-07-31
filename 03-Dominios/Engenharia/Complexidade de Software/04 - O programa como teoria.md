@@ -17,7 +17,7 @@ aliases:
   - Theory building
   - Programming as Theory Building
   - Programação como construção de teoria
-publish: false
+publish: true
 ---
 
 # O programa como teoria

@@ -5,7 +5,7 @@ updated: 2026-06-16
 type: concept
 progress: backlog
 status: growing
-publish: false
+publish: true
 fase: magus
 tags:
   - engenharia
