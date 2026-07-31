@@ -34,7 +34,7 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 | 2 | **Acesso a Dados** | Fowler PoEAA + J2EE + NoSQL | 15 | média (Java/Dados) | ✅ **COMPLETA 15/15** (2026-07-28) | [[Padrões de Projeto/Acesso a Dados/roadmap\|folha]] |
 | 3 | **Integração Empresarial (EIP)** | Hohpe & Woolf | 14 | baixa | ✅ **COMPLETA 14/14** (2026-07-29) | [[Padrões de Projeto/Integração Empresarial (EIP)/roadmap\|folha]] |
 | 4 | **Aplicação Corporativa** | Fowler PoEAA (não-dados) | 14 | baixa | ✅ **COMPLETA 14/14** (2026-07-30) | [[Padrões de Projeto/Aplicação Corporativa/roadmap\|folha]] |
-| 5 | **Arquitetura de Eventos** | EDA moderna | ~10 | **alta** (Comunicação) | ⬜ roster provisório abaixo | a criar |
+| 5 | **Arquitetura de Eventos** | Fowler (4 estilos) + Richardson | 10 | **alta** (Comunicação/System Design) | ✅ **COMPLETA 10/10** (2026-07-31) | [[Padrões de Projeto/Arquitetura de Eventos/roadmap\|folha]] |
 | 6 | **Nuvem e Resiliência** | Azure/AWS Cloud Design Patterns | ~14 | **alta** (Cloud/Operação) | ⬜ roster provisório abaixo | a criar |
 
 **Total estimado:** ~90-100 notas de conteúdo + scaffolding (index/roadmap por família). Escala de domínio; **construção sequencial**, família a família.
@@ -43,9 +43,8 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 
 Sequência escolhida (valor pro ofício de legado primeiro, maior sobreposição por último):
 
-1. **Clássicos (GoF)** — ✅ completa. 2. **Acesso a Dados** — ✅ completa. 3. **Integração Empresarial (EIP)** — ✅ completa. 4. **Aplicação Corporativa** — ✅ completa.
-2. **Arquitetura de Eventos** ← **próxima** (Event Sourcing, CQRS, Saga, Outbox, Domain Events).
-3. **Nuvem e Resiliência** por último (maior sobreposição, menor valor marginal — entradas autocontidas + link).
+1. **Clássicos (GoF)** ✅ · 2. **Acesso a Dados** ✅ · 3. **Integração Empresarial (EIP)** ✅ · 4. **Aplicação Corporativa** ✅ · 5. **Arquitetura de Eventos** ✅.
+2. **Nuvem e Resiliência** ← **última**. ⚠️ Mesmo levantamento de fronteira da família 5 será necessário: *Circuit Breaker* e *API Gateway/BFF* já têm casa em System Design 3-05 e 3-06; *Strangler Fig* e *ACL* encostam na Arqueologia; *Cache-Aside* e *Rate Limiting* em Cloud/Operação.
 
 **Disciplina de custo:** escrita sequencial, uma nota por vez via `/escrever-nota`; `/checkpoint` entre blocos; **sem fan-out massivo** (regra pessoal do usuário). Cada família = seu próprio ciclo brainstorm→roadmap-folha→escrita quando chegar a vez dela.
 
@@ -99,4 +98,5 @@ Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface*
 6. ✅ Família **Acesso a Dados** — **COMPLETA 15/15 (2026-07-28)**; Iniciado 01-06, Adepto 07-13, Magus 14-15; `index.md` da família com todas as fases linkadas; roadmap-folha 100%.
 7. ✅ Família **Integração Empresarial (EIP)** — **COMPLETA 14/14 (2026-07-29)**; Iniciado 01-04 (Message/Channel/Pipes-and-Filters), Adepto 05-09 (roteamento+transformação), Magus 10-14 (endpoints/confiabilidade/topologia); lente Camel/Spring Integration; fio condutor "smart endpoints, dumb pipes"; fronteira com Comunicação entre Sistemas cravada; `index.md` + roadmap-folha 100%.
 8. ✅ Família **Aplicação Corporativa (PoEAA não-dados)** — **COMPLETA 14/14 (2026-07-30)**; Iniciado 01-05 (apresentação), Adepto 06-10 (distribuição, sessão, concorrência offline), Magus 11-14 (padrões-base). **Lente arqueológica** (era × hoje) em vez de cross-framework, com seção obrigatória **"A ressurreição"** marcando correspondência reconhecida × leitura do catálogo. Corte de 26 candidatos → 14 notas; fronteira com a família 2 cravada (Service Layer/Gateway/Mapper ficam lá). Nota 14 fecha com **mapa de reconhecimento** (código encontrado → padrão) e a síntese das 3 premissas que a nuvem inverteu. `index.md` + roadmap-folha 100%.
-9. ⬜ **Capstone do galho-pai:** com 4 famílias fechadas, reavaliar graduar as notas 22-23 do GoF (frameworks / quando NÃO usar) a capstone que generaliza pras famílias — decisão em aberto na seção de pendências.
+9. ✅ Família **Arquitetura de Eventos** — **COMPLETA 10/10 (2026-07-31)**; Iniciado 01-03 · Adepto 04-07 · Magus 08-10. Família com **maior sobreposição** do galho: levantamento mostrou que ES/CQRS/Saga/Outbox/pub-sub já tinham casa profunda em System Design e Comunicação, então a lente virou **o evento como decisão de acoplamento** ("o que carrega, a quem amarra"), com 8 fronteiras cravadas em tabela. Eixo dorsal Notification × ECST. Nota 10 fecha com mapa de escolha por sintoma + síntese do espectro. **Correção de fonte:** os 4 estilos de Fowler são Notification/ECST/Event Sourcing/**CQRS** — *Event Collaboration* é termo do eaaDev e não integra a taxonomia.
+10. ⬜ **Capstone do galho-pai:** com 4 famílias fechadas, reavaliar graduar as notas 22-23 do GoF (frameworks / quando NÃO usar) a capstone que generaliza pras famílias — decisão em aberto na seção de pendências.

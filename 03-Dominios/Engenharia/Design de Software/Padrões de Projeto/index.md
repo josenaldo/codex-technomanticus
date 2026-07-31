@@ -44,7 +44,7 @@ desejada: o catálogo não pode depender de galhos que evoluem em ritmo próprio
 | 2 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Acesso a Dados/index\|Acesso a Dados]] | Fowler PoEAA + J2EE + NoSQL/cloud | ✅ **completa** — 15 notas |
 | 3 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Integração Empresarial (EIP)/index\|Integração Empresarial (EIP)]] | Hohpe & Woolf | ✅ **completa** — 14 notas |
 | 4 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Aplicação Corporativa/index\|Aplicação Corporativa]] | Fowler PoEAA (não-dados) | ✅ **completa** — 14 notas |
-| 5 | **Arquitetura de Eventos** | EDA moderna | ⬜ planejada (~10) |
+| 5 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Arquitetura de Eventos/index\|Arquitetura de Eventos]] | Fowler (4 estilos) + Richardson | ✅ **completa** — 10 notas |
 | 6 | **Nuvem e Resiliência** | Azure/AWS Cloud Design Patterns | ⬜ planejada (~14) |
 
 Estado detalhado e rosters em [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|roadmap do galho-pai]].

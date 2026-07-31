@@ -76,10 +76,10 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota. Onde houver
 | Iniciado | 3 |
 | Adepto | 4 |
 | Magus | 3 |
-| ✅ escritas | 7 (Iniciado + Adepto) |
-| ⬜ pendentes | 3 (bloco Magus) |
-| % concluído | 70% |
-| Scaffolding | roadmap.md criado (2026-07-30); index.md ao fechar |
+| ✅ escritas | **10 — FAMÍLIA COMPLETA** |
+| ⬜ pendentes | 0 |
+| % concluído | **100% ✅** |
+| Scaffolding | roadmap.md + index.md criados |
 
 ---
 
@@ -118,15 +118,15 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota. Onde houver
 ## Notas — Magus (os estilos que reorganizam o sistema)
 
 #### 08 - Process Manager   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 145 linhas
 - **Escopo:** o coordenador **explícito e stateful** de um processo de várias etapas (Hohpe & Woolf): mantém o estado da instância do processo, decide o próximo passo, trata timeout. A relação com a **saga orquestrada** (o Process Manager é o orquestrador) e com o [[Padrões de Projeto/Aplicação Corporativa/04 - Application Controller|Application Controller]] da família 4 — o mesmo raciocínio de máquina de estados, agora distribuído e durável (Step Functions, Temporal, Durable Functions). **Armadilhas:** process manager acumulando regra de negócio dos serviços; estado do processo sem durabilidade; confundir com roteador stateless.
 
 #### 09 - Event Sourcing   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 151 linhas
 - **Escopo:** o evento deixa de notificar e vira a **fonte da verdade**: o estado é derivado do log, não armazenado. Ganha auditoria completa, *time travel* e a possibilidade de reinterpretar o passado; paga em complexidade de leitura (projeções), evolução de esquema de eventos e **irreversibilidade** (o log é imutável — inclusive o erro). **Recorte:** aqui o que ele acopla e quando não vale; **escala, snapshots e storage em System Design 3-03**. **Armadilhas:** aplicar ao sistema inteiro em vez do agregado que precisa; esquema de evento sem estratégia de versão/upcasting; confundir com log de auditoria; LGPD/direito ao esquecimento contra log imutável.
 
 #### 10 - CQRS   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 172 linhas
 - **Escopo:** separar o **modelo de escrita** do **modelo de leitura** — e a lição de Young/Fowler de que ele é uma ferramenta **cirúrgica**, não default. A ligação natural com Event Sourcing (as projeções são o lado de leitura) e por que os dois são frequentemente confundidos como um só. **Recorte:** aqui o acoplamento e o critério de aplicação; escala e réplicas em System Design 3-02. **Armadilhas:** CQRS no sistema inteiro; consistência eventual não comunicada à UI (o usuário salva e não vê); dois modelos mantidos à mão sem projeção automática. **FECHA A FAMÍLIA** com mapa-de-escolha dos 10 padrões e a síntese do espectro de acoplamento (magro → gordo → log).
 
 ---
@@ -135,8 +135,8 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota. Onde houver
 
 1. ✅ Bloco **Iniciado** (01-03) escrito — 2026-07-30. **Correção de fonte durante a escrita:** a taxonomia dos 4 estilos de Fowler é Event Notification · ECST · Event Sourcing · **CQRS** — *Event Collaboration* é termo anterior do eaaDev e NÃO integra os quatro (o roster inicial errava nisso). Os 4 estilos mapeiam exatamente nas notas 03, 04, 09 e 10.
 2. ✅ Bloco **Adepto** (04-07) escrito — 2026-07-30. Recortes honrados: 05 e 07 remetem a Comunicação 4-04 para implementação/isolamento; 06 se separa de EIP-12 pela **idempotência do efeito de negócio** (o efeito externo sem rollback → chave de idempotência).
-3. ⬜ Escrever o bloco **Magus** (08-10) — a 10 fecha a família.
-4. ⬜ `index.md` da família, no molde das famílias 1-4.
+3. ✅ Bloco **Magus** (08-10) escrito — 2026-07-31. A nota 10 fecha com **mapa de escolha por sintoma** (o problema que você tem → o padrão) e a **síntese do espectro de acoplamento** (notification → ECST → event sourcing → CQRS, cada um movendo a dependência de lugar).
+4. ✅ `index.md` da família criado (MOC por fase + divisão de trabalho entre os 3 galhos + atalho para o mapa de escolha).
 5. ⬜ Atualizar roadmap-pai + `index.md` do galho-pai + [[00-Meta/Roadmap]] central. Abrir a **família 6 (Nuvem e Resiliência)** — atenção: *Circuit Breaker* e *API Gateway/BFF* também já têm casa em System Design 3-05 e 3-06, mesmo levantamento de fronteira será necessário.
 6. ⬜ Reavaliar a pendência transversal: graduar as notas 22-23 da GoF a **capstone** do galho-pai.
 
