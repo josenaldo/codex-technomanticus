@@ -3,7 +3,7 @@ title: "Padrões de Projeto"
 created: 2026-07-28
 updated: 2026-07-28
 type: moc
-status: growing
+status: evergreen
 publish: true
 tags:
   - moc
@@ -28,8 +28,10 @@ aliases:
 
 ## Sobre este galho
 
-Os padrões estão organizados em **famílias**, por fonte e por escala. A primeira — os 23 clássicos do
-Gang of Four — está completa; as demais são construídas em sequência. Como é catálogo de consulta,
+Os padrões estão organizados em **famílias**, por fonte e por escala. **As seis estão completas — 90
+notas** (2026-07-28 a 31), cada uma com uma **lente própria**: cross-linguagem (GoF) · cross-ORM (Acesso
+a Dados) · cross-ferramenta (EIP) · arqueológica (Aplicação Corporativa) · acoplamento (Eventos) ·
+sacrifício (Resiliência). Como é catálogo de consulta,
 alguma **redundância** com outros galhos do vault (Comunicação, Cloud, Operação) é aceitável e
 desejada: o catálogo não pode depender de galhos que evoluem em ritmo próprio.
 
@@ -45,7 +47,7 @@ desejada: o catálogo não pode depender de galhos que evoluem em ritmo próprio
 | 3 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Integração Empresarial (EIP)/index\|Integração Empresarial (EIP)]] | Hohpe & Woolf | ✅ **completa** — 14 notas |
 | 4 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Aplicação Corporativa/index\|Aplicação Corporativa]] | Fowler PoEAA (não-dados) | ✅ **completa** — 14 notas |
 | 5 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Arquitetura de Eventos/index\|Arquitetura de Eventos]] | Fowler (4 estilos) + Richardson | ✅ **completa** — 10 notas |
-| 6 | **Nuvem e Resiliência** | Azure/AWS Cloud Design Patterns | ⬜ planejada (~14) |
+| 6 | [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/Nuvem e Resiliência/index\|Nuvem e Resiliência]] | Azure Cloud Design Patterns + Nygard | ✅ **completa** — 14 notas |
 
 Estado detalhado e rosters em [[03-Dominios/Engenharia/Design de Software/Padrões de Projeto/roadmap|roadmap do galho-pai]].
 

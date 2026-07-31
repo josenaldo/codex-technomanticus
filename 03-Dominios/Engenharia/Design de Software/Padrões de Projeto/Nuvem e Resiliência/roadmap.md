@@ -74,10 +74,10 @@ Nenhum é gratuito, e o erro clássico é adotar vários sem somar os sacrifíci
 | Iniciado | 5 |
 | Adepto | 5 |
 | Magus | 4 |
-| ✅ escritas | 10 (Iniciado + Adepto) |
-| ⬜ pendentes | 4 (bloco Magus) |
-| % concluído | 71% |
-| Scaffolding | roadmap.md criado (2026-07-31); index.md ao fechar |
+| ✅ escritas | **14 — FAMÍLIA COMPLETA** |
+| ⬜ pendentes | 0 |
+| % concluído | **100% ✅** |
+| Scaffolding | roadmap.md + index.md criados |
 
 ---
 
@@ -128,19 +128,19 @@ Nenhum é gratuito, e o erro clássico é adotar vários sem somar os sacrifíci
 ## Notas — Magus (topologia, fronteira e migração)
 
 #### 11 - Ambassador + Sidecar   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 134 linhas
 - **Escopo:** tirar a resiliência do código da aplicação e colocá-la num **processo acompanhante**. **Sidecar** = capacidade auxiliar no mesmo host/pod (proxy, log, métricas); **Ambassador** = o sidecar especializado em intermediar chamadas **de saída** (retry, timeout, circuit breaker, mTLS) — o modelo do service mesh. Valor central para poliglota e para **legado que não pode ser recompilado**. **Sacrifício:** um salto de rede, mais recursos por pod, e a resiliência sai do alcance do desenvolvedor (debugar fica mais difícil). **Armadilhas:** retry no mesh **e** na aplicação (multiplicação); mesh adotado pelo que ele promete e não pelo que se usa; sidecar que morre antes da app no encerramento.
 
 #### 12 - Gatekeeper + Valet Key   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 144 linhas
 - **Escopo:** os dois padrões de **borda de segurança** do catálogo Azure. **Gatekeeper** = uma instância intermediária valida e sanitiza antes de alcançar o serviço, que roda com privilégio menor. **Valet Key** = em vez de proxyar dados pesados, entregue ao cliente um **token de acesso limitado e temporário** para falar direto com o armazenamento (URL pré-assinada do S3) — descarrega a aplicação do caminho dos bytes. **Sacrifício:** Gatekeeper = latência e mais um salto; Valet Key = controle fino sobre o acesso, que passa a valer pelo escopo do token. **Armadilhas:** valet key com escopo largo ou validade longa; gatekeeper que vira God proxy; assumir que o token não vaza.
 
 #### 13 - Anti-Corruption Layer + Strangler Fig   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 138 linhas
 - **Escopo:** o par de **convivência com o legado**. **ACL** = camada de tradução na fronteira, para que o modelo do sistema antigo não contamine o novo. **Strangler Fig** = substituir por incremento, interceptando chamadas e desviando funcionalidade por funcionalidade, até o antigo morrer. **Recorte forte:** ambos têm nota dedicada na Arqueologia — aqui a entrada de catálogo (o que é, o que sacrifica); **o método de migração fica lá**. **Sacrifício:** ACL = código de tradução que não entrega valor de negócio e precisa ser mantido; Strangler = período longo com **dois sistemas vivos**, e o roteador de desvio como componente crítico. **Armadilhas:** estrangulamento que nunca termina (os dois sistemas viram permanentes); ACL que vaza o modelo antigo; desligar o antigo sem verificar quem ainda o chama.
 
 #### 14 - Escolher o padrão de resiliência (capstone)   [substantivo]
-- **Estado:** ⬜ pendente · fase: magus
+- **Estado:** ✅ escrita (2026-07-31) · fase: magus · 184 linhas
 - **Escopo:** **FECHA A FAMÍLIA E O GALHO-PAI.** Mapa de escolha por **sintoma** (a dependência está lenta / caiu / está sobrecarregada / o cliente abusa / preciso migrar). A **soma dos sacrifícios**: como os padrões interagem e a ordem em que se compõem (timeout dentro de retry dentro de breaker dentro de bulkhead), e por que empilhá-los sem somar produz falhas novas. A tabela final **padrão → o que sacrifica → quem paga**. E o fechamento do galho-pai: as seis famílias, as seis lentes, e o que o catálogo inteiro ensina.
 
 ---
@@ -149,10 +149,10 @@ Nenhum é gratuito, e o erro clássico é adotar vários sem somar os sacrifíci
 
 1. ✅ Bloco **Iniciado** (01-05) escrito — 2026-07-31. Callout de recorte presente em todas. A lente do sacrifício rendeu conteúdo próprio em cada nota: timeout=requisições que esperariam mais · retry=carga sobre quem já está fraco (único padrão em que o custo recai sobre a DEPENDÊNCIA) · breaker=aposta estatística com dois erros de custo oposto · bulkhead=utilização.
 2. ✅ Bloco **Adepto** (06-10) escrito — 2026-07-31. A 06 crava que **nem toda funcionalidade deve ter fallback** (antifraude fora ⇒ falhar é o correto); a 08 mostra o cache como as duas faces (quente=defesa, frio=dívida que vence de uma vez) + fail-open; a 09 é a nota com o incidente mais didático da família (liveness checando o banco reinicia a frota).
-3. ⬜ Escrever o bloco **Magus** (11-14) — a 14 fecha a família **e o galho-pai**.
-4. ⬜ `index.md` da família, no molde das famílias 1-5.
-5. ⬜ Atualizar roadmap-pai + `index.md` do galho-pai + [[00-Meta/Roadmap]] central — **galho-pai COMPLETO, 6/6 famílias**.
-6. ⬜ Decidir a pendência transversal: **capstone do galho-pai** — avaliar se a nota 14 desta família já cumpre o papel, ou se as notas 22-23 da GoF ainda devem ser graduadas.
+3. ✅ Bloco **Magus** (11-14) escrito — 2026-07-31. A 14 fecha a família (mapa por sintoma · quem paga cada conta · ordem de composição · as 3 somas que causam incidentes) **e o galho-pai** (6 famílias, 90 notas, 6 lentes; a síntese: um padrão nomeia um TRADE-OFF, não uma solução).
+4. ✅ `index.md` da família criado.
+5. ✅ Roadmap-pai, `index.md` do galho-pai e [[00-Meta/Roadmap]] central atualizados — **GALHO-PAI COMPLETO, 6/6 famílias, 90 notas**.
+6. ✅ **Pendência do capstone RESOLVIDA:** a nota 14 desta família assume o papel de capstone do galho-pai (Parte II: as 6 famílias, as 6 lentes e as 5 lições transversais). As notas 22-23 da GoF permanecem escopadas em GoF, sem graduação — não há mais duplicação a resolver.
 
 ## Disciplina
 

@@ -35,16 +35,17 @@ Roadmap do galho `03-Dominios/Engenharia/Design de Software/Padrões de Projeto`
 | 3 | **Integração Empresarial (EIP)** | Hohpe & Woolf | 14 | baixa | ✅ **COMPLETA 14/14** (2026-07-29) | [[Padrões de Projeto/Integração Empresarial (EIP)/roadmap\|folha]] |
 | 4 | **Aplicação Corporativa** | Fowler PoEAA (não-dados) | 14 | baixa | ✅ **COMPLETA 14/14** (2026-07-30) | [[Padrões de Projeto/Aplicação Corporativa/roadmap\|folha]] |
 | 5 | **Arquitetura de Eventos** | Fowler (4 estilos) + Richardson | 10 | **alta** (Comunicação/System Design) | ✅ **COMPLETA 10/10** (2026-07-31) | [[Padrões de Projeto/Arquitetura de Eventos/roadmap\|folha]] |
-| 6 | **Nuvem e Resiliência** | Azure/AWS Cloud Design Patterns | ~14 | **alta** (Cloud/Operação) | ⬜ roster provisório abaixo | a criar |
+| 6 | **Nuvem e Resiliência** | Azure Cloud Design Patterns + Nygard | 14 | **muito alta** (System Design/Operação/Cloud/Arqueologia) | ✅ **COMPLETA 14/14** (2026-07-31) | [[Padrões de Projeto/Nuvem e Resiliência/roadmap\|folha]] |
 
-**Total estimado:** ~90-100 notas de conteúdo + scaffolding (index/roadmap por família). Escala de domínio; **construção sequencial**, família a família.
+**Total realizado: 90 notas** de conteúdo + scaffolding (index/roadmap por família). **GALHO COMPLETO — 6/6 famílias (2026-07-28 a 31).** Construção sequencial, família a família, uma lente por família.
 
 ## Ordem de execução
 
 Sequência escolhida (valor pro ofício de legado primeiro, maior sobreposição por último):
 
-1. **Clássicos (GoF)** ✅ · 2. **Acesso a Dados** ✅ · 3. **Integração Empresarial (EIP)** ✅ · 4. **Aplicação Corporativa** ✅ · 5. **Arquitetura de Eventos** ✅.
-2. **Nuvem e Resiliência** ← **última**. ⚠️ Mesmo levantamento de fronteira da família 5 será necessário: *Circuit Breaker* e *API Gateway/BFF* já têm casa em System Design 3-05 e 3-06; *Strangler Fig* e *ACL* encostam na Arqueologia; *Cache-Aside* e *Rate Limiting* em Cloud/Operação.
+✅ **TODAS AS SEIS EXECUTADAS**, na ordem planejada: GoF · Acesso a Dados · EIP · Aplicação Corporativa · Arquitetura de Eventos · Nuvem e Resiliência.
+
+**A lição do método:** cada família recebeu uma **lente própria**, decidida em brainstorm, e nas duas últimas o passo decisivo foi o **levantamento de fronteira antes do roster** — na 5 ele evitou 5 notas redundantes e produziu a lente do acoplamento; na 6 revelou cobertura tripla e levou à lente do sacrifício. Repetir esse levantamento é a recomendação para qualquer galho novo de catálogo.
 
 **Disciplina de custo:** escrita sequencial, uma nota por vez via `/escrever-nota`; `/checkpoint` entre blocos; **sem fan-out massivo** (regra pessoal do usuário). Cada família = seu próprio ciclo brainstorm→roadmap-folha→escrita quando chegar a vez dela.
 
@@ -83,7 +84,7 @@ Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface*
 
 ## Pendências transversais / decisões em aberto
 
-- **Notas meta-catálogo do galho-pai (capstone):** "Reconhecer patterns nos frameworks" e "Quando NÃO usar: discernimento sênior" começam **escopadas em GoF** (família 1, notas 22-23). Quando ≥2 famílias existirem, avaliar graduá-las a **capstone do galho-pai** que generaliza pra todas as famílias, em vez de repetir por família.
+- ✅ **RESOLVIDO (2026-07-31) — Notas meta-catálogo do galho-pai (capstone):** "Reconhecer patterns nos frameworks" e "Quando NÃO usar: discernimento sênior" começam **escopadas em GoF** (família 1, notas 22-23). Quando ≥2 famílias existirem, avaliar graduá-las a **capstone do galho-pai** que generaliza pra todas as famílias, em vez de repetir por família.
 - **`fase:` vs sequência:** GoF adota fases (Iniciado/Adepto/Magus) por **centralidade/frequência** do padrão, não como gate de aprendizado — é catálogo. Famílias-referência (2-6) podem ser SEM fase (sequência). Decidir por família no roadmap-folha.
 - **Poda do monólito (no fim da família 1):** `Design Patterns.md` (631 ln, `publish:false`) é a matéria-prima da família GoF. Ao fechar GoF, podar em stub/redirect. **8 notas linkam `[[Design Patterns]]`** (SOLID 01/03/index, OO 06/07/12/13/index) — preservar a resolução: ou manter stub `Design Patterns.md` com callout → índice do galho-pai, ou dar alias "Design Patterns" ao `index.md` da família GoF (atenção à regra do Quartz: folder-link exige index.md; padrão tronco→galhos do vault).
 - **`index.md` do galho-pai + das famílias:** criar quando houver conteúdo (evitar links pendentes / quebra Quartz). Rastreado como passo.
@@ -99,4 +100,7 @@ Base: **Gateway** · **Mapper** · **Layer Supertype** · **Separated Interface*
 7. ✅ Família **Integração Empresarial (EIP)** — **COMPLETA 14/14 (2026-07-29)**; Iniciado 01-04 (Message/Channel/Pipes-and-Filters), Adepto 05-09 (roteamento+transformação), Magus 10-14 (endpoints/confiabilidade/topologia); lente Camel/Spring Integration; fio condutor "smart endpoints, dumb pipes"; fronteira com Comunicação entre Sistemas cravada; `index.md` + roadmap-folha 100%.
 8. ✅ Família **Aplicação Corporativa (PoEAA não-dados)** — **COMPLETA 14/14 (2026-07-30)**; Iniciado 01-05 (apresentação), Adepto 06-10 (distribuição, sessão, concorrência offline), Magus 11-14 (padrões-base). **Lente arqueológica** (era × hoje) em vez de cross-framework, com seção obrigatória **"A ressurreição"** marcando correspondência reconhecida × leitura do catálogo. Corte de 26 candidatos → 14 notas; fronteira com a família 2 cravada (Service Layer/Gateway/Mapper ficam lá). Nota 14 fecha com **mapa de reconhecimento** (código encontrado → padrão) e a síntese das 3 premissas que a nuvem inverteu. `index.md` + roadmap-folha 100%.
 9. ✅ Família **Arquitetura de Eventos** — **COMPLETA 10/10 (2026-07-31)**; Iniciado 01-03 · Adepto 04-07 · Magus 08-10. Família com **maior sobreposição** do galho: levantamento mostrou que ES/CQRS/Saga/Outbox/pub-sub já tinham casa profunda em System Design e Comunicação, então a lente virou **o evento como decisão de acoplamento** ("o que carrega, a quem amarra"), com 8 fronteiras cravadas em tabela. Eixo dorsal Notification × ECST. Nota 10 fecha com mapa de escolha por sintoma + síntese do espectro. **Correção de fonte:** os 4 estilos de Fowler são Notification/ECST/Event Sourcing/**CQRS** — *Event Collaboration* é termo do eaaDev e não integra a taxonomia.
-10. ⬜ **Capstone do galho-pai:** com 4 famílias fechadas, reavaliar graduar as notas 22-23 do GoF (frameworks / quando NÃO usar) a capstone que generaliza pras famílias — decisão em aberto na seção de pendências.
+10. ✅ Família **Nuvem e Resiliência** — **COMPLETA 14/14 (2026-07-31)**; Iniciado 01-05 (timeout/retry/breaker/bulkhead) · Adepto 06-10 (fallback/rate-limit/cache/health/leader) · Magus 11-14 (sidecar/gatekeeper/ACL+strangler/capstone). Família **mais coberta do vault** (cobertura tripla: System Design + Operação + Cloud, mais Arqueologia para Strangler/ACL); construída assim mesmo por decisão do usuário, pelo princípio de **autocontenção do catálogo**, com lente do **sacrifício** e callout de recorte obrigatório em toda nota.
+11. ✅ **Capstone do galho-pai RESOLVIDO** — a nota 14 da família 6 assume o papel (Parte I: mapa de resiliência; Parte II: as 6 famílias, as 6 lentes, as 5 lições transversais). As notas 22-23 da GoF permanecem escopadas em GoF, sem graduação.
+
+**🎉 GALHO-PAI COMPLETO: 6/6 famílias, 90 notas de conteúdo (2026-07-28 a 2026-07-31).** Daqui em diante o galho é material de **consulta e manutenção** — revisitar quando um padrão aparecer no trabalho, atualizar quando o contexto mudar um trade-off.
