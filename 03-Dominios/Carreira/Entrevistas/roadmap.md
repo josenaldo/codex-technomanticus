@@ -80,9 +80,9 @@ Ao fim: as 5 são **removidas** e os inbound (`README.md`, `index.md` da raiz, `
 | Iniciado | 5 |
 | Adepto | 5 |
 | Magus | 4 |
-| ✅ escritas | 5 (bloco Iniciado) |
-| ⬜ pendentes | 9 |
-| % concluído | 36% |
+| ✅ escritas | 10 (Iniciado + Adepto) |
+| ⬜ pendentes | 4 (bloco Magus) |
+| % concluído | 71% |
 | Scaffolding | roadmap.md criado (2026-07-31); index.md ao fechar |
 
 ---
@@ -113,23 +113,23 @@ Ao fim: as 5 são **removidas** e os inbound (`README.md`, `index.md` da raiz, `
 ## Notas — Adepto (os formatos e a estrutura da resposta)
 
 #### 06 - STAR e suas variantes   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 151 linhas
 - **Escopo:** o framework de resposta comportamental e o **time-box** que quase ninguém respeita: Situation 10% · Task 10% · **Action 60%** · Result 20%, alvo de 2 minutos. Por que a Action é o coração (é onde o julgamento aparece) e por que o Result sem número não fecha. Variantes: **STAR-L** (com *Learning*, obrigatória em pergunta de fracasso), PAR, CAR. Uso de "eu" × "nós". **Aproveita o método da nota antiga; exemplos refeitos genéricos.**
 
 #### 07 - A taxonomia das perguntas comportamentais   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 129 linhas
 - **Escopo:** as famílias — conflito/desacordo · fracasso e erro · liderança sem autoridade · priorização sob restrição · ambiguidade · influência de stakeholder · aprendizado. **O que cada família mede** (a de conflito não mede o conflito: mede como você fala de quem discordou de você). Como uma mesma história serve a várias famílias com ênfase diferente. **Armadilhas:** o fracasso que é humblebrag; culpar terceiros; a história sem sua decisão dentro.
 
-#### 08 - A entrevista técnica: os três formatos   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+#### 08 - A entrevista técnica - os três formatos   [substantivo]
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 145 linhas
 - **Escopo:** **live coding** (o que se avalia é o processo, não a solução — pensar em voz alta, clarificar antes de escrever, testar), **take-home** (o que realmente diferencia: README, decisões documentadas, escopo respeitado) e **pair programming/debugging ao vivo**. Como pedir ajuda sem parecer perdido. **Armadilhas:** silêncio prolongado; otimizar antes de funcionar; take-home com over-engineering; ignorar o time-box sugerido.
 
 #### 09 - System design em entrevista — a ponte   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 89 linhas
 - **Escopo:** **nota curta e deliberadamente incompleta.** O que a etapa de system design avalia num sênior (julgamento sob ambiguidade, trade-offs explícitos, saber o que **não** construir) e como ela se encaixa no funil — e então **remete à trilha completa**, que tem framework de 5 notas, building blocks, padrões, 8 walkthroughs e capstone. Existe para o galho não ter um buraco, não para competir.
 
 #### 10 - O banco de histórias   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-31) · fase: adepto · 160 linhas
 - **Escopo:** o **método** de construir e indexar um repertório de histórias — sem nenhuma história dentro. Como inventariar (varrer projetos por decisão tomada, não por tecnologia usada); como indexar por **família de pergunta** em vez de por projeto; a regra de cobertura (toda família precisa de ao menos uma); como manter (registrar enquanto acontece, não na véspera). Por que 6-8 histórias bem trabalhadas batem 30 rasas. Fecha o bloco Adepto.
 
 ## Notas — Magus (o que decide no nível sênior)
@@ -155,7 +155,7 @@ Ao fim: as 5 são **removidas** e os inbound (`README.md`, `index.md` da raiz, `
 ## Próximos passos
 
 1. ✅ Bloco **Iniciado** (01-05) escrito — 2026-07-31. Zero dado pessoal (verificado por grep). Seção-lente presente em todas. A nota 04 leva aviso explícito de que não é aconselhamento jurídico/fiscal.
-2. ⬜ Escrever o bloco **Adepto** (06-10) — parar e perguntar.
+2. ✅ Bloco **Adepto** (06-10) escrito — 2026-07-31. A 09 é curta de propósito (89 linhas, sem Mermaid): situa a etapa e remete à trilha de System Design, sem competir. A 10 ensina o método do repertório sem conter nenhuma história — o banco de cada pessoa é material privado.
 3. ⬜ Escrever o bloco **Magus** (11-14) — a 14 fecha o galho.
 4. ⬜ `index.md` novo (MOC por fase + fronteiras).
 5. ⬜ **Aposentar as 5 notas antigas** e reapontar os 3 inbound (`README.md`, `index.md` da raiz, `04-Sendas/Senda Entrevistas.md`).
