@@ -90,7 +90,7 @@ sequenceDiagram
     Cliente->>S3: PUT relatorio.pdf
     S3-->>Cliente: version-id: v1 (versão atual)
     Cliente->>S3: PUT relatorio.pdf (sobrescreve conteúdo)
-    S3-->>Cliente: version-id: v2 (nova versão atual; v1 vira não-corrente)
+    S3-->>Cliente: version-id: v2 (nova versão atual, v1 vira não-corrente)
     Cliente->>S3: DELETE relatorio.pdf (sem version-id — delete simples)
     S3-->>Cliente: delete-marker-id: dm1 (versão atual agora É o marcador)
     Note over S3: v1 e v2 continuam existindo,<br/>só não-correntes — nada foi apagado de fato

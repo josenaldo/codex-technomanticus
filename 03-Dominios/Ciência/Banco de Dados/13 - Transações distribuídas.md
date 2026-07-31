@@ -189,7 +189,7 @@ sequenceDiagram
     participant Relay as Relay
     participant MB as Broker (Kafka)
     Note over App,DB: UMA transação local ACID
-    App->>DB: BEGIN; INSERT pedido; INSERT outbox; COMMIT
+    App->>DB: BEGIN, INSERT pedido, INSERT outbox, COMMIT
     DB-->>App: OK
     Note over Relay,MB: assíncrono, fora da transação
     Relay->>DB: lê outbox onde publicado=false

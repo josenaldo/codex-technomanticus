@@ -73,10 +73,10 @@ sequenceDiagram
     A->>DB: SELECT ... lê version = 7
     B->>DB: SELECT ... lê version = 7
     B->>DB: UPDATE ... WHERE version = 7
-    Note over DB: casa &rarr; version = 8 (1 linha)
+    Note over DB: casa → version = 8 (1 linha)
     A->>DB: UPDATE ... WHERE version = 7
-    Note over DB: NÃO casa &rarr; 0 linhas
-    DB-->>A: conflito! &rarr; OptimisticLockException
+    Note over DB: NÃO casa → 0 linhas
+    DB-->>A: conflito! → OptimisticLockException
     A->>A: recarrega, reaplica, retry
 ```
 
@@ -249,8 +249,8 @@ graph TD
         J3["job 3"]
     end
     W1["Worker 1"] -->|FOR UPDATE SKIP LOCKED| J1
-    W2["Worker 2"] -->|job 1 travado &rarr; pula| J2
-    W3["Worker 3"] -->|jobs 1,2 travados &rarr; pula| J3
+    W2["Worker 2"] -->|job 1 travado → pula| J2
+    W3["Worker 3"] -->|jobs 1,2 travados → pula| J3
     J1 -.travado por.- W1
     J2 -.travado por.- W2
     J3 -.travado por.- W3
@@ -286,7 +286,7 @@ graph TD
     Q1 -->|baixa, leitura domina| Opt["Optimistic<br/>@Version + retry"]
     Q1 -->|alta, crítico financeiro| Pess["Pessimistic<br/>SELECT FOR UPDATE"]
     Q1 -->|fila de workers| Skip["FOR UPDATE SKIP LOCKED"]
-    Pess --> Order["Sempre travar em ordem<br/>consistente &rarr; sem deadlock"]
+    Pess --> Order["Sempre travar em ordem<br/>consistente → sem deadlock"]
 ```
 
 **Leitura do diagrama:** a primeira pergunta é se existe corrida de verdade — se duas transações podem fazer read-modify-write na mesma linha. Não havendo, não invente lock: o MVCC já isola leituras. Havendo, a segunda pergunta é o *grau* de contenção. Baixa contenção com leitura dominante pede otimista (barato no caminho feliz, retry no raro conflito). Alta contenção em ponto crítico pede pessimista (serialização garantida, ao custo de fila). Cenário de fila de trabalho pede `SKIP LOCKED` (paralelismo sem convoy). E *sempre* que você trava várias linhas pessimisticamente, a regra da ordem consistente é o que te salva do deadlock.

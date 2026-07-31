@@ -149,7 +149,7 @@ sequenceDiagram
     S->>R: buscar(id)
     R-->>S: pedido
     S->>P: aprovar()
-    Note over P: valida status == PENDENTE<br/>valida total &lt;= LIMITE<br/>muda o próprio estado
+    Note over P: valida status == PENDENTE<br/>valida total &lt,= LIMITE<br/>muda o próprio estado
     P-->>S: ok (ou lança exceção)
     S->>R: salvar(pedido)
     S-->>C: aprovado

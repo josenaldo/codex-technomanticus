@@ -235,7 +235,7 @@ sequenceDiagram
     participant B as Browser
     participant S as Servidor
     B->>S: POST /login (usuario + senha)
-    S-->>B: 200 OK + Set-Cookie: sid=abc; HttpOnly; Secure
+    S-->>B: 200 OK + Set-Cookie: sid=abc, HttpOnly, Secure
     Note over B: browser guarda o cookie
     B->>S: GET /perfil + Cookie: sid=abc
     S-->>B: 200 OK (servidor reconhece a sessão)

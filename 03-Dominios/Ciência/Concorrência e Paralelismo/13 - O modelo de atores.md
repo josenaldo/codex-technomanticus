@@ -83,12 +83,12 @@ sequenceDiagram
     participant Conta as Ator Conta (saldo privado)
     participant Log as Ator Log
     Cliente->>Conta: {sacar, 50}
-    Note over Conta: processa sozinho;<br/>saldo 100 -> 50
+    Note over Conta: processa sozinho,<br/>saldo 100 -> 50
     Conta-->>Log: {sacado, 50}
     Cliente->>Conta: {sacar, 30}
-    Note over Conta: processa sozinho;<br/>saldo 50 -> 20
+    Note over Conta: processa sozinho,<br/>saldo 50 -> 20
     Conta-->>Log: {sacado, 30}
-    Note over Cliente,Log: setas tracejadas = assíncrono;<br/>ninguém espera resposta
+    Note over Cliente,Log: setas tracejadas = assíncrono,<br/>ninguém espera resposta
 ```
 
 Leitura do diagrama: dois saques chegam ao ator Conta. Mesmo que o Cliente dispare os dois quase juntos, eles entram na fila e são processados em série — `100 → 50 → 20`, sem perder atualização. O saldo é privado: não há outra thread capaz de ler `100` e escrever `70` "por cima". As setas tracejadas marcam o envio assíncrono: o Cliente não bloqueia esperando, e o ator Log recebe os avisos quando der.

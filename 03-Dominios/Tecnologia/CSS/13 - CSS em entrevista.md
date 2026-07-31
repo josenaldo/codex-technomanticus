@@ -70,8 +70,8 @@ mindmap
         !important invertido
         isolamento de terceiros
     Seletores Modernos
-      :has() parent selector
-      :is() e :where()
+      n1[":has() parent selector"]
+      n2[":is() e :where()"]
       CSS Nesting
     Animações
       transition vs @keyframes

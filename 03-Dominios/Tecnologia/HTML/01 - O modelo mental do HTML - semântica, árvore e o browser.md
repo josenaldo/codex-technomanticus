@@ -350,7 +350,7 @@ sequenceDiagram
     participant JS
 
     Browser->>DOM: Inicia parsing do HTML
-    Browser->>DOM: Encontra &lt;script defer&gt;
+    Browser->>DOM: Encontra &lt,script defer&gt,
     Note over Browser: Download do script em paralelo
     Browser->>DOM: Constrói DOM completo
     DOM-->>JS: DOMContentLoaded 🔔

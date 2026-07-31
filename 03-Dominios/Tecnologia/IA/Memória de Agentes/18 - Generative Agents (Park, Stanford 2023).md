@@ -161,13 +161,11 @@ Quando uma observação inesperada invalida o plano (p.ex., um colega convida pa
 - **Believability.** O construto-chave da avaliação é "believability" — quão crível é o comportamento como o de uma pessoa. Não é uma métrica de tarefa convencional; é qualitativa, com inter-rater agreement reportado. Park et al. argumentam que esse é o framing certo para agents sociais, e o framing pegou na literatura subsequente.
 
 ```mermaid
-bar
-    title Ablation: believability relativa (valor ilustrativo baseado nos resultados do paper)
-    "Arquitetura completa" : 100
-    "Sem reflection" : 62
-    "Sem planning" : 71
-    "Sem memory stream" : 45
-    "Baseline (sem nenhum)" : 30
+xychart-beta
+    title "Ablation — believability relativa (ilustrativo, baseado no paper)"
+    x-axis ["Completa", "Sem reflection", "Sem planning", "Sem memory stream", "Baseline"]
+    y-axis "Believability relativa" 0 --> 100
+    bar [100, 62, 71, 45, 30]
 ```
 
 ## Limitações reconhecidas pelos autores

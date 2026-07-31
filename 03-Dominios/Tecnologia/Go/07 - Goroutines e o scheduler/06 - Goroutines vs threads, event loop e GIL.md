@@ -99,15 +99,15 @@ Node resolve o mesmo problema de "10 mil requisições simultâneas" sem nunca c
 ```mermaid
 sequenceDiagram
     participant App as Código JS (1 thread)
-    participant Loop as Event Loop
+    participant LoopP as Event LoopP
     participant IO as libuv / kernel (I/O assíncrono)
 
-    App->>Loop: registra callback (ex.: fs.readFile)
-    Loop->>IO: delega operação de I/O
-    App->>Loop: continua rodando outro código síncrono
-    IO-->>Loop: I/O terminou, callback pronto
-    Loop->>App: executa callback (na mesma thread única)
-    Note over App,Loop: Enquanto um callback roda,<br/>nenhum outro roda — sem paralelismo real
+    App->>LoopP: registra callback (ex.: fs.readFile)
+    LoopP->>IO: delega operação de I/O
+    App->>LoopP: continua rodando outro código síncrono
+    IO-->>LoopP: I/O terminou, callback pronto
+    LoopP->>App: executa callback (na mesma thread única)
+    Note over App,LoopP: Enquanto um callback roda,<br/>nenhum outro roda — sem paralelismo real
 ```
 
 O ganho do modelo de Node é real: para cargas dominadas por I/O (o caso comum de APIs web que passam a maior parte do tempo esperando banco/rede), uma única thread consegue atender milhares de conexões simultâneas sem pagar custo nenhum de troca de contexto entre "tarefas" — porque não há troca de contexto de verdade, só a fila do event loop decidindo a ordem. O preço é que **qualquer código JS que rode por muito tempo sem devolver o controle bloqueia tudo**: um `for` pesado, um `JSON.parse` de payload gigante, uma regex catastrófica — todos travam o processo inteiro, inclusive requisições de outros usuários que não têm nada a ver com aquele cálculo.

@@ -43,7 +43,7 @@ graph TB
     A["preciso do elemento"] --> B{ele já está lá?}
     B -->|sim, deve existir| C["getBy*<br/>falha se não achar"]
     B -->|quero afirmar AUSÊNCIA| D["queryBy*<br/>retorna null"]
-    B -->|aparece depois (async)| E["findBy*<br/>espera, retorna Promise"]
+    B -->|"aparece depois (async)"| E["findBy*<br/>espera, retorna Promise"]
     style C fill:#4A90D9,color:#fff
     style D fill:#4A90D9,color:#fff
     style E fill:#4A90D9,color:#fff

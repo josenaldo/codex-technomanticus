@@ -54,7 +54,7 @@ Não é "ou", é "qual problema você tem".
 graph TD
     A["Preciso que LLM<br/>'saiba' algo novo"] --> B{"Mudar conhecimento<br/>ou comportamento?"}
     B -->|conhecimento| C{"Corpus<br/>cabe na janela?"}
-    B -->|comportamento<br/>(tom, formato, vocabulário)| D["Fine-tuning<br/>(LoRA, DPO)"]
+    B -->|"comportamento<br/>(tom, formato, vocabulário)"| D["Fine-tuning<br/>(LoRA, DPO)"]
     C -->|"sim, estável"| E["Long context<br/>(joga no prompt)"]
     C -->|"não, ou volátil"| F{"Citação<br/>requerida?"}
     F -->|sim| G["RAG"]

@@ -124,8 +124,8 @@ sequenceDiagram
     participant A as Thread A
     participant M as Memória observada
     participant B as Thread B
-    Note over A: código: a=1; depois lê b
-    Note over B: código: b=1; depois lê a
+    Note over A: código: a=1, depois lê b
+    Note over B: código: b=1, depois lê a
     A->>M: escreve a=1 (mas pode atrasar)
     B->>M: escreve b=1 (mas pode atrasar)
     A->>M: lê b  -> vê 0

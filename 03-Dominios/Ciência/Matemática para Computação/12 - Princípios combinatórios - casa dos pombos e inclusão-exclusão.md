@@ -100,8 +100,8 @@ flowchart TD
     D --> C3["..."]
     D --> Cn["casa n"]
     C1 -. "no máximo 1 cada" .-> LIMITE["capacidade total = n"]
-    C2 -. .-> LIMITE
-    Cn -. .-> LIMITE
+    C2 -.-> LIMITE
+    Cn -.-> LIMITE
     LIMITE --> CONTRA["mas temos n + 1 pombos<br/>n + 1 maior que n"]
     CONTRA --> COL["logo: alguma casa tem 2 ou mais<br/>COLISAO GARANTIDA"]
     style COL fill:#fca,stroke:#c33

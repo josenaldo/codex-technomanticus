@@ -239,19 +239,19 @@ print(resultados)   # [2, 2, 2] — não [0, 1, 2]
 
 ```mermaid
 sequenceDiagram
-    participant Loop as Laço for i in range(3)
+    participant LoopP as Laço for i in range(3)
     participant Cell as cell de 'i' (compartilhada)
     participant F0 as funcoes[0]
     participant F1 as funcoes[1]
     participant F2 as funcoes[2]
 
-    Loop->>Cell: i = 0
-    Loop->>F0: cria lambda (aponta pra Cell)
-    Loop->>Cell: i = 1
-    Loop->>F1: cria lambda (aponta pra MESMA Cell)
-    Loop->>Cell: i = 2
-    Loop->>F2: cria lambda (aponta pra MESMA Cell)
-    Note over Loop,Cell: Laço termina — Cell fica com i = 2
+    LoopP->>Cell: i = 0
+    LoopP->>F0: cria lambda (aponta pra Cell)
+    LoopP->>Cell: i = 1
+    LoopP->>F1: cria lambda (aponta pra MESMA Cell)
+    LoopP->>Cell: i = 2
+    LoopP->>F2: cria lambda (aponta pra MESMA Cell)
+    Note over LoopP,Cell: Laço termina — Cell fica com i = 2
 
     F0->>Cell: lê i agora
     Cell-->>F0: 2

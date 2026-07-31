@@ -64,7 +64,7 @@ sequenceDiagram
     N-->>DB: Inicia fetches em paralelo (Revenue, Orders, Recomendações)
     DB-->>N: Revenue resolve (200 ms)
     N->>B: Chunk 1 — HTML de Revenue + script de swap
-    Note over B: Seção Revenue aparece; resto do skeleton intacto
+    Note over B: Seção Revenue aparece, resto do skeleton intacto
     DB-->>N: Orders resolve (700 ms)
     N->>B: Chunk 2 — HTML de Orders + script de swap
     Note over B: Seção Orders aparece

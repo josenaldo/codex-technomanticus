@@ -171,7 +171,7 @@ flowchart LR
     subgraph Borda_e_seguranca[Borda e segurança]
         WAF
         Shield
-        LambdaEdge[Lambda@Edge]
+        LambdaEdge["Lambda@Edge"]
     end
     subgraph Operacao[Operação]
         SSM[Systems Manager]

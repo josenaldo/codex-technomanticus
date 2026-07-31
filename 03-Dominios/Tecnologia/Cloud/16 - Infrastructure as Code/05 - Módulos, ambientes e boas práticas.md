@@ -35,7 +35,7 @@ Um módulo Terraform é, na essência, um diretório com arquivos `.tf` que voc�
 ```mermaid
 flowchart TB
     subgraph Root["Root module (ambiente prod)"]
-        Call["module \"vpc\" {\n  source = \"../../modules/vpc\"\n  cidr_block = \"10.0.0.0/16\"\n  az_count = 3\n}"]
+        Call["module 'vpc' {\n  source = '../../modules/vpc'\n  cidr_block = '10.0.0.0/16'\n  az_count = 3\n}"]
     end
     subgraph ModVPC["Módulo vpc/ (child module)"]
         direction TB

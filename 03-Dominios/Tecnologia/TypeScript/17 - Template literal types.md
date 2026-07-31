@@ -58,7 +58,7 @@ A lógica de matching é estrutural e literal: o TypeScript avalia se a string c
 
 ```mermaid
 flowchart LR
-    TL["`` `${Method} ${Path}` ``\n(template literal type)"]
+    TL["'${Method} ${Path}'\n(template literal type)"]
     EX["Expansão em\ntempo de compilação"]
     UN["Union de 12\nstring literals"]
     CHK["Checagem de\nassignability"]
@@ -146,11 +146,11 @@ O `string & K` é necessário porque `keyof T` pode incluir `symbol` e `number`,
 flowchart TD
     EM["EventMap\n{ click: MouseEvent, focus: FocusEvent }"]
     KY["keyof EventMap\n'click' | 'focus' | 'blur'"]
-    TL["`` `on${Capitalize<K>}` ``\n'onClick' | 'onFocus' | 'onBlur'"]
+    TL["'on${Capitalize<K>}'\n'onClick' | 'onFocus' | 'onBlur'"]
     MT["Mapped type sobre novas chaves\n{ onClick: ..., onFocus: ..., onBlur: ... }"]
 
     EM --> KY
-    KY -->|"key remapping\n(as `on${...}`)"| TL
+    KY -->|"key remapping\n(as 'on${...}')"| TL
     TL --> MT
 
     style TL fill:#4a3000,color:#fff
@@ -228,7 +228,7 @@ type E2 = ParseEndpoint<"DELETE /posts/1">;
 
 ```mermaid
 flowchart LR
-    IN["`` `${infer Event}:${infer Namespace}` ``\nEntrada: 'user:created'"]
+    IN["'${infer Event}:${infer Namespace}'\nEntrada: 'user:created'"]
     M1["Captura: Event = 'user'"]
     M2["Captura: Namespace = 'created'"]
     OUT["{ event: 'user'; namespace: 'created' }"]
@@ -340,24 +340,24 @@ type CSSColor = `#${string}` | `rgb(${string})` | `hsl(${string})`;
 ```mermaid
 mindmap
   root(("Template\nliteral types"))
-    ("Construir padrões")
-      ("`\`${Method} ${Path}\``")
-      ("`\`on${Capitalize<K>}\``")
-      ("`\`get${Capitalize<K>}\``")
-    ("Distribuir sobre unions")
-      ("Produto cartesiano automático")
-      ("'GET'|'POST' × '/a'|'/b' → 4 strings")
-    ("Intrinsics de capitalização")
-      ("Uppercase / Lowercase")
-      ("Capitalize / Uncapitalize")
-    ("Parsear com infer")
-      ("Extrair segmentos")
-      ("Capturar params de rota")
-      ("Separar prefixo/sufixo")
-    ("Combinar com mapped types")
-      ("Key remapping")
-      ("Derivar getters/setters")
-      ("Gerar handlers de evento")
+    n1["Construir padrões"]
+      n2["''${Method} ${Path}''"]
+      n3["''on${Capitalize<K>}''"]
+      n4["''get${Capitalize<K>}''"]
+    n5["Distribuir sobre unions"]
+      n6["Produto cartesiano automático"]
+      n7["'GET'|'POST' × '/a'|'/b' → 4 strings"]
+    n8["Intrinsics de capitalização"]
+      n9["Uppercase / Lowercase"]
+      n10["Capitalize / Uncapitalize"]
+    n11["Parsear com infer"]
+      n12["Extrair segmentos"]
+      n13["Capturar params de rota"]
+      n14["Separar prefixo/sufixo"]
+    n15["Combinar com mapped types"]
+      n16["Key remapping"]
+      n17["Derivar getters/setters"]
+      n18["Gerar handlers de evento"]
 ```
 
 ---

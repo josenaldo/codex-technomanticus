@@ -35,15 +35,15 @@ A AWS documenta seis estados nomeados para uma EC2 instance, cada um com um cód
 
 ```mermaid
 stateDiagram-v2
-    [*] --> pending: run-instances
+    [*] --> pending: run_instances
     pending --> running: boot completo
-    running --> stopping: stop-instances
+    running --> stopping: stop_instances
     stopping --> stopped: OS desligado
-    stopped --> pending: start-instances
-    running --> shutting-down: terminate-instances
-    stopping --> shutting-down: terminate-instances
-    stopped --> shutting-down: terminate-instances
-    shutting-down --> terminated
+    stopped --> pending: start_instances
+    running --> shutting_down: terminate_instances
+    stopping --> shutting_down: terminate_instances
+    stopped --> shutting_down: terminate_instances
+    shutting_down --> terminated
     terminated --> [*]
 
     note right of stopping

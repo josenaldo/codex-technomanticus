@@ -195,7 +195,7 @@ func main() {
 
 ```mermaid
 flowchart LR
-    LB["Load balancer /\nKubernetes readiness probe"] -->|"Check(service=\"\")"| HS["grpc.health.v1.Health"]
+    LB["Load balancer /\nKubernetes readiness probe"] -->|"Check(service='')"| HS["grpc.health.v1.Health"]
     HS -->|"SERVING / NOT_SERVING /\nUNKNOWN / SERVICE_UNKNOWN"| LB
     LB -->|"só roteia se SERVING"| APP["seu serviço gRPC"]
 

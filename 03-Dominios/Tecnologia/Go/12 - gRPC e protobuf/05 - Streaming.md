@@ -296,7 +296,7 @@ A parte nova é a regra de acesso ao *stream em si*, documentada explicitamente 
 ```mermaid
 flowchart LR
     subgraph Cliente["Cliente — 2 goroutines"]
-        GS["goroutine\nSend loop"] -->|escreve no stream| STStream HTTP/2
+        GS["goroutine\nSend loop"] -->|escreve no stream| ST["Stream HTTP/2"]
         ST -->|entrega ao| GR["goroutine\nRecv loop"]
     end
     GR -.->|"close(done)\nao ver io.EOF"| DONE(["channel done"])

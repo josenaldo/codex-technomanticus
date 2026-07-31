@@ -101,7 +101,6 @@ sequenceDiagram
 
     Note over Atk,C: Resultado: atacante E client legítimo<br/>ficam sem acesso — força reautenticação
 
-    style Atk fill:#D0021B,color:#fff
 ```
 
 O detalhe que costuma passar despercebido: **os dois lados perdem acesso**, atacante e vítima. Isso é intencional — o sistema não tem como distinguir quem é quem só olhando o reuse; a resposta segura é sempre forçar reautenticação completa, que reestabelece a cadeia de confiança do zero.

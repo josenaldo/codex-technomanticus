@@ -682,7 +682,7 @@ sequenceDiagram
     NPM->>OIDC: Verifica JWT (repositório + workflow permitidos)
     OIDC-->>NPM: Válido
     NPM-->>GHA: Autorizado — publica pacote
-    Note over NPM: JWT expira em minutos;<br/>nenhum token permanente existiu
+    Note over NPM: JWT expira em minutos,<br/>nenhum token permanente existiu
 ```
 
 Configuração no npmjs.com:

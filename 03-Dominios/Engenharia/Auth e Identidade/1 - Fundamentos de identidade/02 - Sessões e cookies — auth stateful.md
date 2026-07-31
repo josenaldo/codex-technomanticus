@@ -60,7 +60,7 @@ sequenceDiagram
     S->>S: valida credencial
     S->>R: cria sessão { user_id, criada_em }
     R-->>S: session_id = "f83a...c1"
-    S-->>U: Set-Cookie: sid=f83a...c1; HttpOnly; Secure; SameSite=Lax
+    S-->>U: Set-Cookie: sid=f83a...c1, HttpOnly, Secure, SameSite=Lax
     Note over U: cookie guardado pelo navegador
 
     U->>S: GET /perfil (Cookie: sid=f83a...c1)

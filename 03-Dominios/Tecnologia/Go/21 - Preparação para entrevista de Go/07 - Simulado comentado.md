@@ -211,7 +211,6 @@ sequenceDiagram
         S->>Cache: Lock + grava
     end
     S-->>C: 307 Redirect
-</br>
 ```
 
 > [!warning] Diagrama Mermaid: sequenceDiagram não aceita `</br>` — usei texto plano

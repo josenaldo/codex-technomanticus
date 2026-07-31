@@ -35,7 +35,7 @@ A diferença de simplesmente copiar e colar um prompt é que commands ficam vers
 ```mermaid
 flowchart LR
     User["/review no chat"]
-    FS["`.claude/commands/review.md`\ncarregado do disco"]
+    FS[".claude/commands/review.md\ncarregado do disco"]
     Expand["Conteúdo do arquivo\nvira o prompt"]
     Exec["Agente executa\ncomo se você tivesse\ndigitado tudo"]
 

@@ -259,12 +259,12 @@ class Servico:
 ```mermaid
 sequenceDiagram
     participant OS as Orquestrador (K8s/docker)
-    participant Loop as Event loop
+    participant LoopP as Event loop
     participant Serv as Servico
     participant Tasks as Tasks em andamento
 
-    OS->>Loop: SIGTERM
-    Loop->>Serv: _pedir_shutdown() (via add_signal_handler)
+    OS->>LoopP: SIGTERM
+    LoopP->>Serv: _pedir_shutdown() (via add_signal_handler)
     Serv->>Serv: _evento_shutdown.set()
 
     Note over Serv: await evento_shutdown.wait() retorna

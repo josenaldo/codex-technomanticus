@@ -135,9 +135,9 @@ flowchart TD
     changed["Arquivos modificados\n(tipicamente 5-30 em um commit)"]
     reparse["Re-parsear só os modificados\nTree-sitter ~100ms/arquivo"]
     update_nodes["Atualizar nodes\ne edges afetados"]
-    graph["Grafo atualizado\n(em <2s para commit típico)"]
+    grafo["Grafo atualizado\n(em <2s para commit típico)"]
 
-    trigger --> diff --> changed --> reparse --> update_nodes --> graph
+    trigger --> diff --> changed --> reparse --> update_nodes --> grafo
 ```
 
 Em monorepo de 2900 arquivos, atualização típica fica em <2s porque só re-parseia o delta.

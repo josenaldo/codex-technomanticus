@@ -122,7 +122,7 @@ sequenceDiagram
     A->>A: Assina o hash com Priv_A
     A->>NET: envia mensagem + assinatura
     NET->>B: mensagem + assinatura chegam
-    B->>B: Obtém Pub_A; verifica assinatura
+    B->>B: Obtém Pub_A, verifica assinatura
     Note over B: Só Alice poderia ter assinado — autenticidade
 ```
 
@@ -212,16 +212,16 @@ Chaves menores significam: menos banda em handshakes, menos memória, operaçõe
 ```mermaid
 graph LR
     subgraph RSA["RSA — dificuldade de fatoração"]
-        R1["n = p &times; q\nprimos com centenas de dígitos"]
-        R2["Multiplicar p &times; q: trivial\nFatorar n: inviável"]
+        R1["n = p × q\nprimos com centenas de dígitos"]
+        R2["Multiplicar p × q: trivial\nFatorar n: inviável"]
         R1 --> R2
     end
     subgraph ECC["ECC — logaritmo discreto em curva"]
-        E1["Q = k &times; P\nmultiplicação escalar na curva"]
+        E1["Q = k × P\nmultiplicação escalar na curva"]
         E2["Calcular Q dado k,P: trivial\nRecuperar k dado Q,P: inviável"]
         E1 --> E2
     end
-    RSA -->|"ECC-256 &asymp; RSA-3072\nchave 12&times; menor"| ECC
+    RSA -->|"ECC-256 &asymp; RSA-3072\nchave 12× menor"| ECC
     style RSA fill:#8e44ad,color:#fff
     style ECC fill:#16a085,color:#fff
 ```
@@ -285,7 +285,7 @@ sequenceDiagram
     NET->>S: dados cifrados chegam
     S->>S: Decifra com AES-GCM(K_sessão)
     S->>NET: resposta cifrada com AES-GCM(K_sessão)
-    NET->>C: resposta chega; C decifra com K_sessão
+    NET->>C: resposta chega, C decifra com K_sessão
 ```
 
 > [!info] Leitura do diagrama

@@ -144,10 +144,10 @@ coisas que mudaram juntas.
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 graph LR
-    subgraph Incremental - um major por vez, testado a cada passo
+    subgraph sg9025["Incremental - um major por vez, testado a cada passo"]
     A1[v1] --> A2[v2] --> A3[v3] --> A4[v4]
     end
-    subgraph Salto direto - todas as breaking changes de uma vez
+    subgraph sg1456["Salto direto - todas as breaking changes de uma vez"]
     B1[v1] -.-> B2[v4]
     end
     style A1 fill:#4A90D9

@@ -36,7 +36,7 @@ mindmap
       process.version
       process.pid
     Ciclo de vida
-      process.exit()
+      n1["process.exit()"]
       process.exitCode
       SIGTERM / SIGINT
       beforeExit / exit
@@ -45,12 +45,12 @@ mindmap
       process.stdout
       process.stderr
     Diagnóstico
-      process.memoryUsage()
-      process.cpuUsage()
-      process.hrtime.bigint()
-      process.uptime()
+      n2["process.memoryUsage()"]
+      n3["process.cpuUsage()"]
+      n4["process.hrtime.bigint()"]
+      n5["process.uptime()"]
     Microtarefas
-      process.nextTick()
+      n6["process.nextTick()"]
 ```
 
 ## Ambiente: `process.env` e `process.argv`

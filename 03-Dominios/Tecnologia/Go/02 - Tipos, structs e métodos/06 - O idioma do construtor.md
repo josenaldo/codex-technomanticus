@@ -222,7 +222,7 @@ flowchart LR
     end
     subgraph Obrigatorio["Construtor obrigatório"]
         direction TB
-        B1["var s Server"] --> B2["addr = \"\", timeout = 0\nestado inválido"]
+        B1["var s Server"] --> B2["addr = '', timeout = 0\nestado inválido"]
         B3["s := NewServer(addr)"] --> B4["addr preenchido, timeout = 5s\nestado válido"]
     end
 

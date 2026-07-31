@@ -239,7 +239,7 @@ sequenceDiagram
     F->>K: exit(status) — devolve código de saída
     Note over F,K: filho vira ZUMBI (defunct):<br/>código morto, mas o PCB persiste<br/>guardando o exit status
     K-->>P: envia sinal SIGCHLD
-    Note over P: pai "estava ocupado";<br/>enquanto não colher, o zumbi fica
+    Note over P: pai "estava ocupado",<br/>enquanto não colher, o zumbi fica
     P->>K: wait() / waitpid() — colhe o status
     K-->>P: entrega o exit status do filho
     K->>K: libera a entrada do PCB

@@ -761,8 +761,6 @@ sequenceDiagram
     S->>S: symbolica o stack trace<br/>usando os .map que foram uploaded
     S-->>D: stack trace LEGÍVEL<br/>(arquivo.ts, linha exata)
 
-    style S fill:#4A90D9,color:#fff
-    style CDN fill:#1a6b1a,color:#fff
 ```
 
 ---

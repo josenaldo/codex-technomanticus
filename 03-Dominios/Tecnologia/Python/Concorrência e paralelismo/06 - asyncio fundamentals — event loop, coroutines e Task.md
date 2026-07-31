@@ -119,38 +119,38 @@ Rodando isso, o log mostra `A: começando` e `B: começando` quase no mesmo inst
 ```mermaid
 sequenceDiagram
     participant Main as main()
-    participant Loop as Event Loop
+    participant LoopP as Event LoopP
     participant A as Task A
     participant B as Task B
 
-    Main->>Loop: create_task(tarefa("A", 2))
-    Note over Loop: A agendada, ainda não rodou
-    Main->>Loop: create_task(tarefa("B", 1))
-    Note over Loop: B agendada, ainda não rodou
+    Main->>LoopP: create_task(tarefa("A", 2))
+    Note over LoopP: A agendada, ainda não rodou
+    Main->>LoopP: create_task(tarefa("B", 1))
+    Note over LoopP: B agendada, ainda não rodou
 
     Main->>A: await t1 — main() pausa aqui
 
-    Loop->>A: dá controle para A
+    LoopP->>A: dá controle para A
     A->>A: print("A: começando")
-    A->>Loop: await asyncio.sleep(2) — CEDE o controle
+    A->>LoopP: await asyncio.sleep(2) — CEDE o controle
 
-    Loop->>B: dá controle para B (A está esperando)
+    LoopP->>B: dá controle para B (A está esperando)
     B->>B: print("B: começando")
-    B->>Loop: await asyncio.sleep(1) — CEDE o controle
+    B->>LoopP: await asyncio.sleep(1) — CEDE o controle
 
-    Note over Loop: nenhuma coroutine pronta —<br/>loop aguarda o relógio
+    Note over LoopP: nenhuma coroutine pronta —<br/>loop aguarda o relógio
 
-    Note over Loop: 1s se passa — sleep(1) de B termina
-    Loop->>B: retoma B exatamente onde parou
+    Note over LoopP: 1s se passa — sleep(1) de B termina
+    LoopP->>B: retoma B exatamente onde parou
     B->>B: print("B: terminando")
-    B-->>Loop: retorna "B concluída"
+    B-->>LoopP: retorna "B concluída"
 
-    Note over Loop: mais 1s se passa (total 2s) —<br/>sleep(2) de A termina
-    Loop->>A: retoma A exatamente onde parou
+    Note over LoopP: mais 1s se passa (total 2s) —<br/>sleep(2) de A termina
+    LoopP->>A: retoma A exatamente onde parou
     A->>A: print("A: terminando")
-    A-->>Loop: retorna "A concluída"
+    A-->>LoopP: retorna "A concluída"
 
-    Loop-->>Main: t1 e t2 resolvidos — main() retoma
+    LoopP-->>Main: t1 e t2 resolvidos — main() retoma
     Main->>Main: print(resultado_a, resultado_b)
 ```
 

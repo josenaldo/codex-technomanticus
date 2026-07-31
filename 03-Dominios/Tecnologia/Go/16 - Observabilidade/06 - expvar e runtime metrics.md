@@ -73,7 +73,7 @@ Repare em `cmdline` e `memstats`: eles aparecem sem você ter registrado nada �
 ```mermaid
 flowchart LR
     A["expvar.NewInt / NewFloat / NewString / NewMap"] --> B["Var registrada\nno expvar.Map global"]
-    C["import _ \"expvar\" (init automático)"] --> D["/debug/vars\nhttp.HandleFunc"]
+    C["import _ 'expvar' (init automático)"] --> D["/debug/vars\nhttp.HandleFunc"]
     B --> D
     E["runtime.ReadMemStats\n(automático)"] --> D
     D --> F["Resposta JSON\n(cliente HTTP, curl, browser)"]

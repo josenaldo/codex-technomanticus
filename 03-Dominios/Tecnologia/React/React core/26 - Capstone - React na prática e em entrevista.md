@@ -88,7 +88,7 @@ mindmap
     React 19 e Concorrência
       19 Suspense e data fetching
       20 Concurrent features
-      21 O hook use()
+      n1["21 O hook use()"]
       22 Actions no React 19
       23 Server Components RSC
 ```

@@ -78,7 +78,7 @@ flowchart TD
     Q3 -- Não --> Q4{Dado pode estar\nalgo desatualizado?}
     Q4 -- Sim --> ISR["✅ ISR\nexport const revalidate = N\nou revalidateTag sob demanda"]
     Q4 -- Não --> SSR["✅ SSR\nRenderiza por request\ncookies / headers / connection()"]
-    Q1 -- Não --> Q5{Tem partes estáticas\n(shell, nav, footer) e\npartes dinâmicas (feed, user)?}
+    Q1 -- Não --> Q5{"Tem partes estáticas\n(shell, nav, footer) e\npartes dinâmicas (feed, user)?"}
     Q5 -- Sim --> PPR["⚡ PPR — Partial Prerendering\nshell estático + Suspense\n(experimental no Next 15\nestável no Next 16)"]
     Q5 -- Não --> SSR
 

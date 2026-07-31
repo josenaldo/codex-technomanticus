@@ -115,13 +115,13 @@ sequenceDiagram
     participant I as init / systemd (PID 1)
     HW->>FW: power-on, CPU executa o firmware
     Note over FW: POST + detecta hardware + acha a ESP
-    FW->>BL: executa app de boot da ESP (shim &#8594; GRUB)
+    FW->>BL: executa app de boot da ESP (shim &#8594, GRUB)
     Note over BL: lê o disco, escolhe a entrada
     BL->>K: carrega kernel + initramfs na RAM, passa o bastão
     Note over K: detecta HW, carrega drivers,<br/>monta o filesystem raiz
-    K->>I: executa o 1&#186; processo de user space (PID 1)
+    K->>I: executa o 1&#186, processo de user space (PID 1)
     Note over I: sobe serviços, rede, login
-    I-->>HW: sistema no ar; kernel passa a reagir a eventos
+    I-->>HW: sistema no ar, kernel passa a reagir a eventos
 ```
 
 Leitura do diagrama: leia de cima pra baixo como uma corrida de revezamento. Cada participante recebe o bastão, faz seu trabalho e o passa adiante — firmware passa pro bootloader, bootloader pro kernel, kernel pro PID 1. Repare na assimetria de privilégio: os três primeiros estágios rodam com acesso total à máquina; o último handoff (kernel para PID 1) é o momento exato em que o sistema **cruza a barreira de modo** e começa a rodar código de user space. Depois desse ponto, o kernel não "termina" — ele fica residente, reativo, esperando ser chamado.

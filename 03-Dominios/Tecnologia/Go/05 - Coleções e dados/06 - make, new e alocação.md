@@ -129,7 +129,7 @@ A nota anterior explicou o mecanismo de `append`: quando `len` alcança `cap`, o
 
 ```mermaid
 sequenceDiagram
-    participant Loop as for i := 0; i < 10000; i++
+    participant Loop as for i := 0, i < 10000, i++
     participant Sem as append sem pré-alocação
     participant Com as append com make(..., 0, 10000)
 

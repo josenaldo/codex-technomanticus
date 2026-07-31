@@ -253,7 +253,7 @@ sequenceDiagram
 
     V->>Proxy: Acessa link de phishing
     Proxy->>IdP: Repassa requisição,<br/>forjando navegador "incompatível" com passkey
-    IdP-->>Proxy: Passkey indisponível;<br/>oferece fallback (SMS/TOTP)
+    IdP-->>Proxy: Passkey indisponível,<br/>oferece fallback (SMS/TOTP)
     Proxy-->>V: Mostra tela de fallback
     V->>Proxy: Digita senha + código do fallback
     Proxy->>IdP: Repassa credenciais em tempo real

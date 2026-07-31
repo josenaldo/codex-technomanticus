@@ -90,7 +90,7 @@ func main() {
 
 ```mermaid
 flowchart TB
-    subgraph main["main() — o \"container\" manual"]
+    subgraph main["main() — o 'container' manual"]
         direction TB
         DB["sql.Open(...)"] --> Repo["postgres.NewOrderRepository(db)"]
         SQS["newSQSClient()"] --> Notif["sqs.NewOrderNotifier(sqsClient)"]

@@ -193,7 +193,7 @@ classDiagram
     class Boleto {
         +pagar(valor)
     }
-    Pagavel <|.. Boleto : "implements EXPLÍCITO<br/>(Java: nominal)"
+    Pagavel <|.. Boleto : "implements EXPLÍCITO<br/>(Java — nominal)"
 
     class Falante {
         <<interface>>
@@ -202,7 +202,7 @@ classDiagram
     class Pato {
         +EmitirSom() string
     }
-    Falante <.. Pato : "satisfaz por FORMA<br/>(Go: estrutural, sem implements)"
+    Falante <.. Pato : "satisfaz por FORMA<br/>(Go — estrutural, sem implements)"
 ```
 
 Leitura do diagrama: nos dois pares, o tipo concreto tem o método que a interface exige. A diferença

@@ -181,11 +181,11 @@ preco + taxa === 30;   // true — inteiros são exatos
 graph LR
     subgraph Lexicográfico["Sem comparador (strings)"]
         direction TB
-        L1['"10"'] --> L2['"100"'] --> L3['"2"'] --> L4['"21"'] --> L5['"9"']
+        L1["10"] --> L2["100"] --> L3["2"] --> L4["21"] --> L5["9"]
     end
     subgraph Numérico["Com comparador numérico"]
         direction TB
-        N1['2'] --> N2['9'] --> N3['10'] --> N4['21'] --> N5['100']
+        N1["2"] --> N2["9"] --> N3["10"] --> N4["21"] --> N5["100"]
     end
     style Lexicográfico fill:#F5A623,color:#000
     style Numérico fill:#4A90D9,color:#fff

@@ -282,7 +282,7 @@ sequenceDiagram
     C->>M: sync: envia versão v2-celular<br/>(base era v1, igual à do laptop)
     M->>M: detecta: base declarada (v1) != versão atual (v2)<br/>→ conflito real, não pode aplicar como próxima versão linear
     M-->>C: aceito como "conflicted copy"<br/>(arquivo separado, não sobrescreve v2)
-    Note over M: v2 permanece a versão principal;<br/>usuário decide o que fazer com a cópia conflitante
+    Note over M: v2 permanece a versão principal,<br/>usuário decide o que fazer com a cópia conflitante
 ```
 
 Essa escolha de design — nunca perder dado silenciosamente, empurrar a decisão de merge para o usuário quando o merge automático não é seguro — é uma aplicação direta do RNF mais rígido desta nota: durabilidade acima de conveniência. Um merge automático errado que apaga parte do conteúdo de um dos lados violaria "nunca perder um arquivo do usuário" de um jeito muito pior do que pedir para o usuário escolher manualmente entre duas cópias.

@@ -145,7 +145,7 @@ A terceira fonte é o arquivo — `.yaml`, `.toml`, `.json` — útil quando a c
 
 ```mermaid
 flowchart TB
-    A["flag.Parse()\n(prioridade máxima)"] --> E["viper.Get(\"port\")"]
+    A["flag.Parse()\n(prioridade máxima)"] --> E["viper.Get('port')"]
     B["env var\nAPP_PORT"] --> E
     C["arquivo config.yaml\nport: 8080"] --> E
     D["viper.SetDefault\n(prioridade mínima)"] --> E

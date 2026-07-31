@@ -68,7 +68,7 @@ flowchart TD
     H1 -->|Sim| H2[AWS Secrets Manager\nHashiCorp Vault\nDoppler]
     H1 -->|Dev| H3[.env local\nnode --env-file=.env\nValidar com Zod na inicialização]
 
-    I --> I1[Helmet v7\napp.use(helmet())\nCSP com nonce para scripts inline]
+    I --> I1["Helmet v7\napp.use(helmet())\nCSP com nonce para scripts inline"]
 ```
 
 ### Tabela comparativa por categoria

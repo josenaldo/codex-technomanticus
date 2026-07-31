@@ -295,7 +295,7 @@ flowchart TD
     D --> E["proximo() executa"]
     E --> F["contador++ modifica a MESMA variável capturada"]
     F --> G["retorna o valor atual de contador"]
-    G -->|próxima chamada de proximo()| E
+    G -->|"próxima chamada de proximo()"| E
 
     style B fill:#4A90D9,color:#fff
     style C fill:#F5A623,color:#000

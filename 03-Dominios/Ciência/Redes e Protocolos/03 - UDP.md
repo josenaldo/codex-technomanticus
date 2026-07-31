@@ -57,14 +57,14 @@ sequenceDiagram
     participant CU as Cliente (UDP)
     participant SU as Servidor (UDP)
 
-    Note over CT,ST: TCP &mdash; handshake antes de qualquer dado
+    Note over CT,ST: TCP — handshake antes de qualquer dado
     CT->>ST: SYN
     ST->>CT: SYN-ACK
     CT->>ST: ACK
     CT->>ST: DADO
     ST->>CT: ACK (confirma)
 
-    Note over CU,SU: UDP &mdash; dispara e esquece
+    Note over CU,SU: UDP — dispara e esquece
     CU->>SU: DATAGRAMA
     CU->>SU: DATAGRAMA
     CU--xSU: DATAGRAMA (perdido, ninguem reclama)
@@ -200,15 +200,15 @@ sequenceDiagram
     participant C as Cliente (celular)
     participant S as Servidor QUIC
 
-    Note over C,S: No Wi-Fi &mdash; IP 192.0.2.10
+    Note over C,S: No Wi-Fi — IP 192.0.2.10
     C->>S: pacote [connection ID = X] dados
     S->>C: resposta [connection ID = X]
 
-    Note over C,S: Sai do Wi-Fi, entra no 4G &mdash; IP muda para 198.51.100.7
+    Note over C,S: Sai do Wi-Fi, entra no 4G — IP muda para 198.51.100.7
     C->>S: pacote [connection ID = X] dados
-    Note over S: "ID X conhecido &rArr; mesma conexao,<br/>so mudou o endereco"
+    Note over S: "ID X conhecido ⇒ mesma conexao,<br/>so mudou o endereco"
     S->>C: resposta [connection ID = X]
-    Note over C,S: Conexao sobrevive &mdash; nenhuma stream caiu
+    Note over C,S: Conexao sobrevive — nenhuma stream caiu
 ```
 
 **Leitura do diagrama:** no topo, cliente e servidor trocam pacotes pelo Wi-Fi, todos marcados com o mesmo connection ID `X`. No meio, o celular troca de rede e ganha um IP novo. Mas o próximo pacote ainda carrega o ID `X`: o servidor olha o identificador, não o endereço, e conclui que é a mesma conexão de sempre. Nenhuma stream caiu, nenhum handshake foi refeito. Compare com o TCP, onde a mudança de IP teria matado a conexão na hora — porque, no TCP, o endereço *é* a identidade.

@@ -80,12 +80,12 @@ O conteúdo entre as crases segue uma convenção — não uma regra imposta pel
 
 ```mermaid
 flowchart LR
-    A["campo do struct\nNome string"] --> B["tag literal\n`json:\"name,omitempty\" db:\"product_name\"`"]
+    A["campo do struct\nNome string"] --> B["tag literal\n`json:'name,omitempty' db:'product_name'`"]
     B --> C["reflect.TypeOf(x)\n.Field(i).Tag"]
-    C --> D["Tag.Get(\"json\")\n→ \"name,omitempty\""]
-    C --> E["Tag.Get(\"db\")\n→ \"product_name\""]
-    D --> F["encoding/json decide:\nchave = \"name\", omite se vazio"]
-    E --> G["biblioteca de ORM decide:\ncoluna = \"product_name\""]
+    C --> D["Tag.Get('json')\n→ 'name,omitempty'"]
+    C --> E["Tag.Get('db')\n→ 'product_name'"]
+    D --> F["encoding/json decide:\nchave = 'name', omite se vazio"]
+    E --> G["biblioteca de ORM decide:\ncoluna = 'product_name'"]
 
     style A fill:#4A90D9,color:#fff
     style B fill:#F5A623,color:#000
@@ -169,10 +169,10 @@ Dois tipos nomeados diferentes (`CodigoPostal`, `Telefone`) podem ter o mesmo `K
 flowchart TB
     A["any recebido em runtime\n(tipo concreto desconhecido em compile-time)"] --> B["reflect.TypeOf(x)\nreflect.Type"]
     A --> C["reflect.ValueOf(x)\nreflect.Value"]
-    B --> D["Name() → \"Produto\"\n(identidade nomeada)"]
+    B --> D["Name() → 'Produto'\n(identidade nomeada)"]
     B --> E["Kind() → struct\n(categoria estrutural)"]
     B --> F["NumField(), Field(i)\n(percorrer campos)"]
-    F --> G["Field(i).Tag.Get(\"json\")\n(ler a struct tag)"]
+    F --> G["Field(i).Tag.Get('json')\n(ler a struct tag)"]
     C --> H["Field(i).Interface()\n(ler o valor do campo)"]
 
     style A fill:#4A90D9,color:#fff

@@ -31,7 +31,7 @@ Go escolheu o caminho do JDBC: um pacote da biblioteca padrão, `database/sql`, 
 ```mermaid
 flowchart LR
     subgraph App["Seu código"]
-        A["sql.Open(\"postgres\", dsn)"] --> B["*sql.DB"]
+        A["sql.Open('postgres', dsn)"] --> B["*sql.DB"]
         B --> C["db.Query / db.Exec"]
     end
 

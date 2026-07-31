@@ -186,8 +186,6 @@ sequenceDiagram
     Go->>Sum: valida checksum de cada dependência baixada
     Go-->>Dev: binário (ou erro de checksum/versão)
 
-    style Mod fill:#4A90D9,color:#fff
-    style Sum fill:#F5A623,color:#000
 ```
 
 ## `go mod tidy`: mantendo o `go.mod` honesto

@@ -175,9 +175,6 @@ sequenceDiagram
     SM-->>S: "models" já está em sys.modules...<br/>mas Pedido ainda não foi definido!
     S--xM: ImportError: cannot import name 'Pedido'
 
-    style M fill:#4A90D9,color:#fff
-    style S fill:#4A90D9,color:#fff
-    style SM fill:#F5A623,color:#000
 ```
 
 ### Como o Python encontra um módulo: `sys.path`

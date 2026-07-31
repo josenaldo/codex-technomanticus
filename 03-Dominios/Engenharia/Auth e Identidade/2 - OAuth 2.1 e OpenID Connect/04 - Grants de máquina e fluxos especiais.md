@@ -136,7 +136,6 @@ sequenceDiagram
     Note over Atk: 6. Atacante está fazendo polling<br/>com o device_code correspondente
     AS-->>Atk: 7. access_token da VÍTIMA<br/>entregue ao atacante
 
-    style Atk fill:#D0021B,color:#fff
 ```
 
 ## Token exchange: delegação entre serviços sem re-autenticar o usuário

@@ -46,20 +46,20 @@ Internamente, `Readable` expõe `[Symbol.asyncIterator]()`, que é o contrato qu
 
 ```mermaid
 sequenceDiagram
-    participant Loop as for await...of (consumer)
+    participant LoopP as for await...of (consumer)
     participant Iter as AsyncIterator [Symbol.asyncIterator]
     participant Stream as Readable stream
 
-    Loop->>Iter: iterator.next()
+    LoopP->>Iter: iterator.next()
     Iter->>Stream: solicita próximo chunk (pull)
     Stream-->>Iter: { value: chunk, done: false }
-    Iter-->>Loop: chunk disponível
-    Note over Loop: executa body da iteração<br/>(pode ser await)
-    Loop->>Iter: iterator.next() (só após body terminar)
+    Iter-->>LoopP: chunk disponível
+    Note over LoopP: executa body da iteração<br/>(pode ser await)
+    LoopP->>Iter: iterator.next() (só após body terminar)
     Iter->>Stream: solicita próximo chunk
     Stream-->>Iter: { value: undefined, done: true }
-    Iter-->>Loop: fim do stream
-    Note over Loop: loop encerra
+    Iter-->>LoopP: fim do stream
+    Note over LoopP: loop encerra
 ```
 
 O ponto crítico está na última seta de cada ciclo: o loop só chama `iterator.next()` **após** o body terminar. Isso contrasta com o modo flowing (`'data'`), onde o stream empurra chunks independente da taxa de consumo. O protocolo de iterador transforma um stream push em consumo pull.

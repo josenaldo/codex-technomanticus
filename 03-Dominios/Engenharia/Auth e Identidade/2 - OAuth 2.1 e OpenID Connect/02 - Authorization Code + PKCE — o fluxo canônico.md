@@ -167,7 +167,6 @@ sequenceDiagram
     Atk->>AS: POST /token com code=XYZ<br/>(sem code_verifier — não tem como saber)
     AS-->>Atk: 400 invalid_grant<br/>(hash não bate)
 
-    style Atk fill:#D0021B,color:#fff
 ```
 
 ### Por que o OAuth 2.1 tornou PKCE obrigatório até para clientes confidenciais

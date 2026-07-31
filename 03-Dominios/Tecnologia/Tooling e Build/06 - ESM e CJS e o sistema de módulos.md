@@ -126,11 +126,11 @@ flowchart TD
     FILE["arquivo JavaScript"]
 
     EXT{Extensão?}
-    MJS["`.mjs` → sempre ESM"]
-    CJS_EXT["`.cjs` → sempre CJS"]
-    JS["`.js` — depende do package.json"]
+    MJS[".mjs → sempre ESM"]
+    CJS_EXT[".cjs → sempre CJS"]
+    JS[".js — depende do package.json"]
 
-    PKG{{"package.json mais próximo\ntem `type: module`?"}}
+    PKG{{"package.json mais próximo\ntem type: module?"}}
     ESM_FINAL["Tratado como ESM"]
     CJS_FINAL["Tratado como CJS\n(padrão quando ausente)"]
 

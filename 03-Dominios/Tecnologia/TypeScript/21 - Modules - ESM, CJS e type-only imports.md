@@ -318,7 +318,7 @@ flowchart TD
     USE -- sim --> EMIT
     USE -- não → tipo only --> REMOVE
     VM -- sim --> USE2{{"Foo é usado\ncomo valor?"}}
-    USE2 -- sim → EMIT2["Emite o import"]
+    USE2 -- sim --> EMIT2["Emite o import"]
     USE2 -- não --> ERROR
 
     style ERROR fill:#5a0000,color:#fff

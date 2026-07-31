@@ -47,7 +47,7 @@ flowchart TB
         direction TB
         O1["agir sobre uma cópia/snapshot"] --> O2{"validar:<br/>algo que li mudou?"}
         O2 -->|"não"| O3["commit"]
-        O2 -->|"sim"| O4["abort &rarr; retry"]
+        O2 -->|"sim"| O4["abort → retry"]
         O4 --> O1
     end
 ```
@@ -102,7 +102,7 @@ sequenceDiagram
     T2->>M: lê X (=100), registra no read set
     T2->>M: commit: X agora = 70
     T1->>M: commit: valida read set
-    M-->>T1: X mudou (70 != 100) &rarr; ABORT
+    M-->>T1: X mudou (70 != 100) → ABORT
     Note over T1: rollback, descarta log privado
     T1->>M: relê X (=70), refaz cálculo
     T1->>M: commit: validação OK
@@ -133,7 +133,7 @@ flowchart TB
     end
     BIG --> R{"commit do bloco externo"}
     R -->|"OK"| OK["transferência atômica;<br/>nenhum observador viu o meio"]
-    R -->|"conflito"| RT["rollback do bloco INTEIRO &rarr; retry"]
+    R -->|"conflito"| RT["rollback do bloco INTEIRO → retry"]
 ```
 
 Lead-in: o bloco externo é uma transação só, mesmo sendo feito de duas internas.

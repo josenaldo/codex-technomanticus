@@ -120,7 +120,7 @@ flowchart TB
     A --> C["type switch / type assertion\nem runtime"]
     A --> D["boxing: valor + tipo\nalocado no heap"]
 
-    B --> E["Max(3, \"oi\") só falha\nno panic, em produção"]
+    B --> E["Max(3, 'oi') só falha\nno panic, em produção"]
     C --> F["custo de CPU a cada chamada\npara descobrir o tipo real"]
     D --> G["custo de memória e GC\nque MaxInt nunca paga"]
 

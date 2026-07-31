@@ -165,26 +165,26 @@ if __name__ == "__main__":
 %%{init: {"theme": "base", "themeVariables": {"primaryColor": "#4A90D9"}}}%%
 sequenceDiagram
     participant Cliente as Cliente HTTP
-    participant Loop as Event loop (asyncio)
+    participant LoopP as Event loop (asyncio)
     participant Exec as run_in_executor
     participant Pool as ProcessPoolExecutor (4 workers)
 
-    Cliente->>Loop: POST /upload (imagem 1)
-    Loop->>Exec: await loop.run_in_executor(pool, redimensionar, dados)
+    Cliente->>LoopP: POST /upload (imagem 1)
+    LoopP->>Exec: await loop.run_in_executor(pool, redimensionar, dados)
     Exec->>Pool: pickle.dumps(dados) + IPC → processo-worker
-    Note over Loop: event loop LIVRE —\natende outras requisições\nenquanto o worker processa
+    Note over LoopP: event loop LIVRE —\natende outras requisições\nenquanto o worker processa
 
-    Cliente->>Loop: POST /upload (imagem 2, concorrente)
-    Loop->>Exec: await loop.run_in_executor(pool, redimensionar, dados)
+    Cliente->>LoopP: POST /upload (imagem 2, concorrente)
+    LoopP->>Exec: await loop.run_in_executor(pool, redimensionar, dados)
     Exec->>Pool: pickle.dumps(dados) + IPC → outro processo-worker
 
     Pool-->>Exec: pickle.loads(resultado) — imagem 1 pronta
-    Exec-->>Loop: Future resolvida → await retorna
-    Loop-->>Cliente: 200 OK (miniatura pronta)
+    Exec-->>LoopP: Future resolvida → await retorna
+    LoopP-->>Cliente: 200 OK (miniatura pronta)
 
     Pool-->>Exec: pickle.loads(resultado) — imagem 2 pronta
-    Exec-->>Loop: Future resolvida → await retorna
-    Loop-->>Cliente: 200 OK (miniatura pronta)
+    Exec-->>LoopP: Future resolvida → await retorna
+    LoopP-->>Cliente: 200 OK (miniatura pronta)
 ```
 
 Três dos quatro modelos do galho aparecem juntos, cada um fazendo exatamente o que sua nota de origem prometeu: `asyncio` (notas 06/07) segura a concorrência de I/O do servidor inteiro; `concurrent.futures` (nota 05) fornece a interface `Executor`/`Future` que `run_in_executor` usa por baixo; `multiprocessing` (nota 04), via `ProcessPoolExecutor`, entrega o paralelismo real de CPU sem o qual o cálculo de miniatura sufocaria o loop. `threading` não aparece neste cenário específico porque o trabalho descarregado é CPU-bound puro — mas se `redimensionar_imagem` fizesse, em vez disso, uma chamada de rede síncrona bloqueante para um serviço externo de processamento de imagem, a mesma chamada `run_in_executor(self._thread_pool, ...)` com um `ThreadPoolExecutor` resolveria igualmente bem, pelo motivo oposto: o GIL seria solto durante a espera de I/O, e várias threads bloqueadas custariam pouco.

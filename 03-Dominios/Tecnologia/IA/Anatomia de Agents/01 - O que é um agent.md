@@ -93,7 +93,7 @@ quadrantChart
     x-axis Baixa Autonomia --> Alta Autonomia
     y-axis Baixa Previsibilidade --> Alta Previsibilidade
     quadrant-1 Ideal para produção crítica
-    quadrant-2 Evitar (risco sem controle)
+    quadrant-2 Evitar — risco sem controle
     quadrant-3 Protótipos / exploração
     quadrant-4 Workflows bem definidos
     Chat: [0.1, 0.9]

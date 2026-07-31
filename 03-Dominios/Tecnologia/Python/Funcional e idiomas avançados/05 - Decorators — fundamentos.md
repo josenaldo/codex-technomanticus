@@ -317,8 +317,6 @@ sequenceDiagram
     Note over W1: imprime "[LOG] ... retornou"
     W1-->>Chamador: devolve o resultado final
 
-    style W1 fill:#4A90D9,color:#fff
-    style W2 fill:#F5A623,color:#000
 ```
 
 Inverter a ordem dos `@` (`@cronometrar` acima de `@com_log`) muda o resultado: o tempo medido por `cronometrar` passaria a incluir o tempo que `com_log` leva para imprimir suas duas linhas, porque `cronometrar` estaria envolvendo o `wrapper` de `com_log`, não mais a função original diretamente. Para os dois decorators simples desta nota, essa diferença costuma ser irrelevante na prática (imprimir duas linhas é rápido); mas o princípio — **a ordem de empilhamento importa, e é sempre baixo-para-cima na aplicação, topo-para-baixo na execução** — se torna crítico assim que decorators fazem algo com efeito colateral mais caro (abrir uma transação de banco, adquirir um lock), e é revisitado com mais profundidade na [[06 - Decorators com argumentos e functools.wraps|nota 06]], quando os decorators empilhados também recebem argumentos próprios.

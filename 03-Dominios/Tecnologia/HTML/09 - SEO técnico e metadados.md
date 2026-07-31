@@ -37,7 +37,7 @@ mindmap
       "`robots.txt`"
       "`sitemap.xml`"
     Aparência social
-      "`Open Graph (og:)`"
+      n1["`Open Graph (og:)`"]
       "`Twitter Card`"
     Internacionalização
       "`\<html lang\>`"

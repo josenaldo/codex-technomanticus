@@ -36,19 +36,19 @@ flowchart TD
     B --> B1["mutar lista/dict dentro de função"]
     B --> B2["argumento default mutável"]
 
-    C --> C1["UnboundLocalError sem `global`"]
+    C --> C1["UnboundLocalError sem global"]
     C --> C2["closure tardia em loop"]
 
     D --> D1["precedência aritmética/lógica/bitwise"]
-    D --> D2["`+=` em string dentro de loop"]
-    D --> D3["comparação encadeada `1 < x < 10`"]
+    D --> D2["+= em string dentro de loop"]
+    D --> D3["comparação encadeada 1 < x < 10"]
 
-    E --> E1["`lista[::-1]` — passo negativo"]
-    E --> E2["`lista[-3:-1]` — dois negativos"]
+    E --> E1["lista[::-1] — passo negativo"]
+    E --> E2["lista[-3:-1] — dois negativos"]
 
-    F --> F1["`is` vs `==` e o cache -5..256"]
+    F --> F1["is vs == e o cache -5..256"]
 
-    G --> G1["`type()` vs `isinstance()` com herança"]
+    G --> G1["type() vs isinstance() com herança"]
 
     style A fill:#4a5568,color:#fff
 ```

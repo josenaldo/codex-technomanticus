@@ -90,9 +90,9 @@ sequenceDiagram
     participant D as Disco (in-place)
     App->>FS: write() / criar arquivo
     FS->>J: 1. grava intenção (bitmap+inode+dados)
-    Note over J,D: CRASH aqui &rarr; no boot, sem commit &rarr; descarta
+    Note over J,D: CRASH aqui → no boot, sem commit → descarta
     FS->>J: 2. grava registro de COMMIT (atômico)
-    Note over J,D: CRASH aqui &rarr; no boot, há commit &rarr; REDO do journal
+    Note over J,D: CRASH aqui → no boot, há commit → REDO do journal
     FS->>D: 3. aplica in-place (checkpoint)
     FS->>J: 4. libera entrada do journal
     FS-->>App: pronto
@@ -163,11 +163,11 @@ sequenceDiagram
     participant T2 as Txn 2
     participant T3 as Txn 3
     participant D as Disco (fsync)
-    Note over T1,D: SEM group commit &mdash; 3 idas ao disco
+    Note over T1,D: SEM group commit — 3 idas ao disco
     T1->>D: fsync (ida 1)
     T2->>D: fsync (ida 2)
     T3->>D: fsync (ida 3)
-    Note over T1,D: COM group commit &mdash; 1 ida amortizada
+    Note over T1,D: COM group commit — 1 ida amortizada
     T1->>D: entra na janela
     T2->>D: entra na janela
     T3->>D: entra na janela

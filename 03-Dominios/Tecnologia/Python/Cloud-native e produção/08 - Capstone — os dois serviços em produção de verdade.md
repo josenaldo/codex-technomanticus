@@ -501,7 +501,7 @@ sequenceDiagram
     Fila->>Lambda: lotes de até 10 mensagens<br/>disparam invocações concorrentes
     Note over Lambda: primeira invocação de cada<br/>ambiente novo paga cold start —<br/>segundos, não minutos, de atraso
 
-    Note over Tarefas,Lambda: minutos depois: HPA estabilizou em<br/>6-7 réplicas; Lambda escalou concorrência<br/>e voltou a ambientes warm — ambos absorveram<br/>o pico, com mecanismos e latências diferentes
+    Note over Tarefas,Lambda: minutos depois: HPA estabilizou em<br/>6-7 réplicas, Lambda escalou concorrência<br/>e voltou a ambientes warm — ambos absorveram<br/>o pico, com mecanismos e latências diferentes
 ```
 
 A resposta dos dois modelos é estruturalmente diferente, e essa diferença é aceitável — na verdade, é o design funcionando exatamente como pretendido, não uma falha de consistência:

@@ -45,7 +45,7 @@ flowchart TD
     Q3 -->|Não| Q4{"É um STREAM: alto<br/>volume ordenado,<br/>múltiplos leitores<br/>relendo/replay,<br/>janelas de tempo?"}
 
     Q4 -->|Sim, nativo AWS,<br/>sem operar cluster| Kinesis["Kinesis Data Streams<br/>(streaming gerenciado, shard-based)"]
-    Q4 -->|Sim, preciso do<br/>ecossistema Kafka<br/>(Connect, Streams, ksqlDB)<br/>ou portabilidade| MSK["MSK<br/>(Kafka gerenciado,<br/>broker-based)"]
+    Q4 -->|"Sim, preciso do<br/>ecossistema Kafka<br/>(Connect, Streams, ksqlDB)<br/>ou portabilidade"| MSK["MSK<br/>(Kafka gerenciado,<br/>broker-based)"]
 
     Q4 -->|Não, é request-response<br/>síncrono disfarçado| Anti["🚫 Nenhum destes —<br/>use API síncrona<br/>(REST/gRPC)"]
 

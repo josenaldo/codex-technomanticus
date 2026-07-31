@@ -150,8 +150,8 @@ sequenceDiagram
     participant Aux as goroutine auxiliar
     participant W as workers (3x)
 
-    Main->>W: jobs <- 1..9; close(jobs)
-    Main->>Aux: go func() { wg.Wait(); close(results) }()
+    Main->>W: jobs <- 1..9, close(jobs)
+    Main->>Aux: go func() { wg.Wait(), close(results) }()
     Main->>Main: for r := range results (bloqueia lendo)
     W->>W: range jobs até fechar
     W->>Main: results <- job*job (cada worker)

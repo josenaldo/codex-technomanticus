@@ -179,7 +179,7 @@ flowchart LR
         V1["Chamada de API\nem runtime, sob demanda"] --> V2["HashiCorp Vault, AWS\nSecrets Manager — rotação\ne auditoria nativas"]
     end
 
-    Env -.->|"sofisticação crescente"--> Mount
+    Env -.->|"sofisticação crescente"| Mount
     Mount -.-> VaultBox
 
     style E2 fill:#F5A623,color:#000

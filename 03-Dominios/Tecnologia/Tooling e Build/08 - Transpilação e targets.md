@@ -261,8 +261,8 @@ graph LR
     end
 
     ES5 -->|"mais compilação,\nmais polyfills"| ES2017
-    ES2017 -->|""| ES2020
-    ES2020 -->|""| ESN
+    ES2017 --> ES2020
+    ES2020 --> ESN
 
     style ES5 fill:#5a0000,color:#fff
     style ESN fill:#004d20,color:#fff

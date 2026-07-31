@@ -46,8 +46,8 @@ A nota anterior já usou `http.ServeMux` sem se deter nele. Ele é o tipo que im
 ```mermaid
 flowchart LR
     Req["Requisição\nGET /users/42"] --> Mux["http.ServeMux"]
-    Mux -->|"casa \"GET /users/{id}\""| H1["userHandler"]
-    Mux -->|"casa \"/health\""| H2["healthHandler"]
+    Mux -->|"casa 'GET /users/{id}'"| H1["userHandler"]
+    Mux -->|"casa '/health'"| H2["healthHandler"]
     Mux -->|"nenhum padrão casa"| H3["404 Not Found"]
 
     style Mux fill:#4A90D9,color:#fff
@@ -92,7 +92,7 @@ Três mecanismos novos, todos na mesma sintaxe de string:
 
 ```mermaid
 flowchart TB
-    P["\"GET /users/{id}\""] --> M["GET"]
+    P["'GET /users/{id}'"] --> M["GET"]
     P --> Path["/users/{id}"]
     M -.->|"filtra por verbo\nHTTP"| M
     Path -.->|"{id} = wildcard\nde 1 segmento"| Path

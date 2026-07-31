@@ -82,7 +82,7 @@ flowchart TD
     C -->|Windows, padrão| E[ProactorEventLoop — usa IOCP]
     D --> F["selectors.DefaultSelector()"]
     F --> G{Mecanismo disponível?}
-    G -->|Linux| H[epoll — O(1) por evento]
+    G -->|Linux| H["epoll — O(1) por evento"]
     G -->|macOS/BSD| I[kqueue]
     G -->|fallback universal| J["select — O(n), limite de fds"]
 ```
@@ -132,26 +132,26 @@ O fluxo completo, do ponto de vista do event loop, para uma única iteração:
 ```mermaid
 sequenceDiagram
     participant App as Coroutine (via await)
-    participant Loop as Event Loop
+    participant LoopP as Event LoopP
     participant Sel as selectors (epoll)
     participant OS as Kernel / Socket
 
-    App->>Loop: await socket_recv() — internamente: add_reader + await Future
-    Loop->>Sel: add_reader(sock, callback)
+    App->>LoopP: await socket_recv() — internamente: add_reader + await Future
+    LoopP->>Sel: add_reader(sock, callback)
     Note over App: coroutine SUSPENSA aqui — devolveu o controle
 
     loop Ciclo do event loop
-        Loop->>Loop: roda callbacks já prontos em _ready
-        Loop->>Loop: calcula timeout (próximo call_later)
-        Loop->>Sel: select(timeout) — BLOQUEIA o thread aqui
+        LoopP->>LoopP: roda callbacks já prontos em _ready
+        LoopP->>LoopP: calcula timeout (próximo call_later)
+        LoopP->>Sel: select(timeout) — BLOQUEIA o thread aqui
         Sel->>OS: epoll_wait(timeout)
         OS-->>Sel: socket X está legível (ou timeout expirou)
-        Sel-->>Loop: [(sock, EVENT_READ)]
-        Loop->>Loop: call_soon(callback_do_sock) — enfileira p/ próximo giro
+        Sel-->>LoopP: [(sock, EVENT_READ)]
+        LoopP->>LoopP: call_soon(callback_do_sock) — enfileira p/ próximo giro
     end
 
-    Loop->>Loop: próximo giro: tira callback de _ready, executa
-    Loop->>App: callback chama future.set_result(dados)
+    LoopP->>LoopP: próximo giro: tira callback de _ready, executa
+    LoopP->>App: callback chama future.set_result(dados)
     Note over App: Future resolvido → Task retoma a coroutine daqui
 ```
 
@@ -218,11 +218,11 @@ flowchart TD
     end
 
     Loop[Event Loop] -->|call_soon: chama __step| Step
-    Step -->|coro.send(None)| Coro
+    Step -->|"coro.send(None)"| Coro
     Coro -->|roda até o próximo await X| Step
     Step -->|X é outro Future/Task?| Registra["registra Task como<br/>done_callback de X"]
     Registra -->|devolve controle| Loop
-    Loop -.espera X resolver.-> X[Future interno<br/>ex: I/O pendente]
+    Loop -.espera X resolver.-> X["Future interno<br/>ex: I/O pendente"]
     X -->|resolvido: dispara callback| Step2["__step() de novo<br/>via call_soon"]
     Step2 --> Coro
     Coro -->|coroutine termina| SetResult["self.set_result(valor)<br/>— a Task resolve A SI MESMA"]

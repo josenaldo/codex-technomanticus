@@ -169,17 +169,17 @@ Para tratamento integrado das críticas ao panorama (Mem0, Zep, MemPalace, Letta
 ```mermaid
 graph LR
     subgraph Local-first
-    MP[MemPalace<br/>SQLite + ChromaDB<br/>MCP-native]
-    BM[basic-memory<br/>SQLite + markdown<br/>Obsidian-first]
+    MP["MemPalace<br/>SQLite + ChromaDB<br/>MCP-native"]
+    BM["basic-memory<br/>SQLite + markdown<br/>Obsidian-first"]
     end
 
     subgraph Cloud-optional / Self-host
-    ZEP[Zep / Graphiti<br/>Neo4j<br/>Bi-temporal]
-    MEM0[Mem0<br/>Vector + KG<br/>Supabase/Qdrant]
+    ZEP["Zep / Graphiti<br/>Neo4j<br/>Bi-temporal"]
+    MEM0["Mem0<br/>Vector + KG<br/>Supabase/Qdrant"]
     end
 
     subgraph SaaS
-    LETTA[Letta (ex-MemGPT)<br/>Hierarchical<br/>Stateful agent]
+    LETTA["Letta (ex-MemGPT)<br/>Hierarchical<br/>Stateful agent"]
     end
 ```
 

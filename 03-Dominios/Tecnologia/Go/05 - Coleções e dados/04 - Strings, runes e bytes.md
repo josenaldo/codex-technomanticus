@@ -107,12 +107,12 @@ Repare no índice: `range` sobre uma string devolve o **offset em bytes** de ond
 
 ```mermaid
 sequenceDiagram
-    participant Loop as for i := 0; i < len(s)
+    participant Idx as "for i := 0, i menor que len(s)"
     participant Range as for i, r := range s
     participant Buf as bytes UTF-8 de "café"
 
-    Loop->>Buf: lê 1 byte por iteração
-    Note over Loop: 5 iterações (5 bytes)
+    Idx->>Buf: lê 1 byte por iteração
+    Note over Idx: 5 iterações (5 bytes)
     Range->>Buf: decodifica 1 rune por iteração
     Note over Range: 4 iterações (4 runes)
     Range-->>Range: índice = offset em bytes,<br/>não contador sequencial

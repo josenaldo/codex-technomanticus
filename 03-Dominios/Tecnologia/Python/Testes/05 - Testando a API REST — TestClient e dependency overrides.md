@@ -228,7 +228,7 @@ sequenceDiagram
     Note over DepAuth: app.dependency_overrides[get_current_user]<br/>→ override_get_current_user (usuário fixo)
     DepAuth-->>App: current_user (USUARIO_DE_TESTE)
     App->>Handler: criar_tarefa(dados, current_user, db)
-    Handler->>DepDB: db.add(tarefa); db.commit()
+    Handler->>DepDB: db.add(tarefa), db.commit()
     Handler-->>App: return tarefa
     App-->>TC: 201 {"id": 1, "usuario_id": 1, "titulo": "...", ...}
     TC-->>Teste: resposta.status_code, resposta.json()
