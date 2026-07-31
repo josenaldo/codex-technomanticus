@@ -76,9 +76,9 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota. Onde houver
 | Iniciado | 3 |
 | Adepto | 4 |
 | Magus | 3 |
-| ✅ escritas | 3 (bloco Iniciado) |
-| ⬜ pendentes | 7 |
-| % concluído | 30% |
+| ✅ escritas | 7 (Iniciado + Adepto) |
+| ⬜ pendentes | 3 (bloco Magus) |
+| % concluído | 70% |
 | Scaffolding | roadmap.md criado (2026-07-30); index.md ao fechar |
 
 ---
@@ -100,19 +100,19 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota. Onde houver
 ## Notas — Adepto (o que o evento carrega, e como coordenar)
 
 #### 04 - Event-Carried State Transfer   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 156 linhas
 - **Escopo:** o evento **gordo**: carrega o estado necessário para o consumidor agir sem voltar. Ganha **autonomia** (o consumidor sobrevive à queda do produtor) e paga em **réplica de dados** — o consumidor passa a manter uma cópia local, eventualmente inconsistente, e a versão do payload vira contrato. **O eixo dorsal da família:** tabela Notification × ECST (acoplamento, autonomia, tamanho, evolução, consistência). **Armadilhas:** payload gordo demais e versionamento; assumir ordem de chegada ao aplicar estado; cópia local sem política de reconciliação.
 
 #### 05 - Outbox   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 148 linhas
 - **Escopo:** o **dual-write problem** — gravar no banco e publicar no broker não é atômico, e qualquer ordem tem um caso de falha (evento sem dado, ou dado sem evento). O Outbox resolve gravando o evento **na mesma transação**, numa tabela, e publicando depois. **Recorte:** aqui o padrão como decisão de design (por que a atomicidade importa, o que ela garante e o que não garante); **a infra (Polling Publisher, CDC/log tailing) fica em Comunicação 4-04** — cross-link explícito. **Armadilhas:** achar que Outbox dá exactly-once (dá at-least-once ⇒ exige a nota 06); tabela de outbox sem expurgo; publicar o evento de domínio cru (liga com a 02).
 
 #### 06 - Idempotent Consumer (Inbox)   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 146 linhas
 - **Escopo:** o outro lado do at-least-once — a mensagem **vai** chegar duplicada, e o consumidor precisa que processar duas vezes tenha o efeito de uma. Estratégias: **inbox** (registrar o id processado na mesma transação do efeito), operação naturalmente idempotente, upsert por chave de negócio. **Recorte:** o dedup no nível do canal está em [[Padrões de Projeto/Integração Empresarial (EIP)/12 - Idempotent Receiver|EIP-12]]; aqui o foco é a **idempotência do efeito de negócio** (cobrar duas vezes é diferente de gravar duas vezes). **Armadilhas:** dedup em memória; janela de dedup curta demais; idempotência que não cobre o efeito externo (e-mail já enviado).
 
 #### 07 - Saga   [substantivo]
-- **Estado:** ⬜ pendente · fase: adepto
+- **Estado:** ✅ escrita (2026-07-30) · fase: adepto · 155 linhas
 - **Escopo:** a transação de negócio que atravessa serviços, onde **não existe** transação distribuída viável — sequência de passos locais, cada um com sua **compensação**. **Coreografia** (cada serviço reage a eventos; acoplamento distribuído, fluxo ilegível) × **orquestração** (um coordenador comanda; fluxo explícito, coordenador central). **Recorte:** aqui a escolha como decisão de acoplamento; o exemplo trabalhado e o isolamento estão em Comunicação 4-04. **Armadilhas:** compensação que não compensa (efeito irreversível); saga sem timeout; coreografia crescendo até ninguém saber o fluxo. Fecha o bloco Adepto.
 
 ## Notas — Magus (os estilos que reorganizam o sistema)
@@ -134,7 +134,7 @@ Registro Feynman. Escrever direto, sem gate de aprovação por nota. Onde houver
 ## Próximos passos
 
 1. ✅ Bloco **Iniciado** (01-03) escrito — 2026-07-30. **Correção de fonte durante a escrita:** a taxonomia dos 4 estilos de Fowler é Event Notification · ECST · Event Sourcing · **CQRS** — *Event Collaboration* é termo anterior do eaaDev e NÃO integra os quatro (o roster inicial errava nisso). Os 4 estilos mapeiam exatamente nas notas 03, 04, 09 e 10.
-2. ⬜ Escrever o bloco **Adepto** (04-07) — parar e perguntar.
+2. ✅ Bloco **Adepto** (04-07) escrito — 2026-07-30. Recortes honrados: 05 e 07 remetem a Comunicação 4-04 para implementação/isolamento; 06 se separa de EIP-12 pela **idempotência do efeito de negócio** (o efeito externo sem rollback → chave de idempotência).
 3. ⬜ Escrever o bloco **Magus** (08-10) — a 10 fecha a família.
 4. ⬜ `index.md` da família, no molde das famílias 1-4.
 5. ⬜ Atualizar roadmap-pai + `index.md` do galho-pai + [[00-Meta/Roadmap]] central. Abrir a **família 6 (Nuvem e Resiliência)** — atenção: *Circuit Breaker* e *API Gateway/BFF* também já têm casa em System Design 3-05 e 3-06, mesmo levantamento de fronteira será necessário.
