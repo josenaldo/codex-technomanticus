@@ -1,7 +1,7 @@
 ---
 title: "Abstrações que vazam"
 created: 2026-06-07
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 status: growing
 progress: backlog
@@ -88,7 +88,7 @@ TCP promete entrega confiável e ordenada — construída sobre IP, que não pro
 
 Em condições normais, a mágica funciona. Mas se um cabo é rompido ou a rede congestiona, a não-confiabilidade do IP **atravessa** a abstração: mensagens não chegam, tudo fica lento, conexões caem.
 
-TCP não consegue esconder a rede pra sempre — *"sometimes, the network leaks through the abstraction"*. Veja [[Redes e Protocolos]].
+TCP não consegue esconder a rede pra sempre — *"sometimes, the network leaks through the abstraction"*. Veja [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]].
 
 O diagrama mostra a promessa de TCP empilhada sobre a realidade de IP, e o ponto onde a realidade vence.
 
@@ -163,7 +163,7 @@ flowchart LR
     - Em *On the Criteria To Be Used in Decomposing Systems into Modules* (CACM 15(12), 1972; precursor no paper IFIP de 1971), David Parnas define que cada módulo deve **esconder uma decisão de design propensa a mudar** — não meramente "esconder dados".
     - Abstração que vaza é precisamente uma *falha de information hiding*: a decisão volátil escapou e o cliente passou a depender dela.
 - **Encapsulamento** — o mecanismo de linguagem (visibilidade, interfaces) que tenta implementar information hiding.
-    - Vazamento acontece *apesar* do encapsulamento: o compilador esconde o campo, mas não esconde o comportamento (latência, ordem, falha). Veja [[Orientação a Objetos]].
+    - Vazamento acontece *apesar* do encapsulamento: o compilador esconde o campo, mas não esconde o comportamento (latência, ordem, falha). Veja [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]].
 - **Lei de Hyrum** — o extremo lógico do vazamento: *"With a sufficient number of users of an API, it does not matter what you promise in the contract: all observable behaviors of your system will be depended on by somebody."*
     - Com usuários suficientes, **toda a implementação vira interface implícita** — alguém depende até dos seus bugs.
     - A própria página canônica (hyrumslaw.com) cita Spolsky como mecanismo: a lei de Hyrum é o que acontece quando os vazamentos ganham dependentes em escala (Google a registra em *Software Engineering at Google*, cap. 1).
@@ -295,11 +295,46 @@ Vazar é o estado normal; não há abstração não-trivial sem vazamento. O obj
 - **Resolver vazamento com mais uma camada** — embrulhar uma abstração vazada em outra abstração soma vazamentos em vez de eliminá-los.
 - **Depender do que vazou** — usar comportamento interno observável (interning de ints, ordem de iteração, SQL gerado) como se fosse contrato; é assim que se vira estatística da lei de Hyrum.
 
+> [!warning] Achar que "leitura madura" é jogar a lei fora
+> A crítica de Haufe ("abstração que vaza é abstração mal especificada") é um refinamento útil, não uma refutação. Na prática as duas coisas coexistem: parte do que se chama de vazamento é mesmo contrato mal escrito, e parte é vazamento de verdade (latência de rede, GC pausando) que nenhuma especificação, por melhor que fosse, eliminaria. Descartar a lei de Spolsky citando Haufe é trocar um exagero por outro.
+
+> [!warning] Empilhar mais uma camada pra "resolver" o vazamento
+> Cada framework, proxy ou wrapper novo soma os vazamentos das camadas de baixo — nunca os cancela. O sintoma é o "imposto de abstração" (ver [[#O custo de empilhar abstrações]]): nenhuma camada isolada é lenta, mas a pilha inteira é, e não há um único vilão pra apontar. Antes de empilhar, pergunte se a camada nova esconde mais do que adiciona; se a resposta for "não sei", ela provavelmente só está somando pedágio.
+
+> [!warning] Tratar o checklist de convivência como só teórico
+> "Conheça a camada de baixo", "documente o que não é prometido", "tenha escape hatches mapeados" (ver [[#Como conviver com vazamentos (checklist prático)]]) soam óbvios até faltarem às 3h da manhã, no meio de um incidente. O erro comum é deixar esse conhecimento implícito na cabeça de uma pessoa sênior em vez de documentado — daí vazamento previsível virar surpresa de novo a cada rotatividade de time.
+
+## Inglês
+
+**"Leak"** aqui é falso amigo perigoso: não é vazamento de dados (*data leak*) nem de memória (*memory leak*) — é o detalhe de implementação que atravessa a interface e se torna visível pra quem consome. Um sistema pode ter *leaky abstractions* em profusão sem vazar um byte de dado sensível ou reter um byte de memória a mais; são fenômenos ortogonais que só compartilham o verbo em português e em inglês.
+
+A **Hyrum's law** também merece cuidado de registro: não é *law* no sentido de teorema provado, é uma *observation* informal, batizada em homenagem a Hyrum Wright (engenheiro do Google) por colegas que notaram o padrão se repetindo. A citação mais reproduzida — *"with a sufficient number of users of an API, it does not matter what you promise in the contract: all observable behaviors of your system will be depended on by somebody"* — vale decorar em inglês, porque é assim que aparece em toda literatura de API design e em entrevista de sistema.
+
+O termo **abstraction tax** (imposto de abstração) e **ecosystem** (o conjunto de camadas/ferramentas que compõem uma stack) completam o vocabulário mínimo pra discutir o tema em inglês sem parafrasear.
+
+| Português | Inglês |
+|---|---|
+| Abstração que vaza | Leaky abstraction |
+| Lei das Abstrações Vazadas | Law of Leaky Abstractions |
+| Lei de Hyrum | Hyrum's Law |
+| Imposto de abstração | Abstraction tax |
+| Ecossistema (de ferramentas/camadas) | Ecosystem |
+
 ## Em entrevista
 
 - **"O que é uma abstração que vaza?"** — Não decore a frase de Spolsky; entregue o corolário: abstração poupa tempo de *trabalho*, não de *aprendizado*. Dê um exemplo da sua stack (N+1 do ORM, pausa de GC no p99) e mostre que você desceu pro nível de baixo pra resolver.
 - **Cuidado com o exagero** — se você disser "toda abstração é ruim", caiu na armadilha que Haufe denuncia. A resposta madura: vazar é inevitável, mas boa parte do que se chama de vazamento é contrato mal especificado. Saber distinguir os dois é o sinal de senioridade.
 - **Conecte com decisão de design** — entrevistas de sistema gostam de "quando você *não* abstrairia?". A resposta vem das três estratégias: se a abstração vira pedágio (todo mundo desce o tempo todo), removê-la é legítimo.
+
+## O que vem a seguir
+
+Se toda abstração não-trivial vaza, "abstrair ou não" é a pergunta errada — vazamento é preço de entrada, não defeito evitável. A pergunta que sobra é outra: **quanto** essa abstração precisa entregar pra valer o pedágio que cobra?
+
+Até aqui a lente foi qualitativa: onde vaza, por que vaza, o que fazer quando dói. Falta uma régua — uma forma de comparar duas abstrações e dizer qual é a "melhor negociação" entre o que ela esconde e o que ela expõe.
+
+John Ousterhout dá essa régua com o conceito de **profundidade**: quanta funcionalidade uma abstração esconde por unidade de interface que ela expõe. Uma interface pequena escondendo muita complexidade é um módulo profundo — o melhor tipo de trato, porque o vazamento potencial fica concentrado numa costura pequena. Uma interface grande escondendo pouco é um módulo raso, e frequentemente nem vale o custo de existir.
+
+[[07 - Módulos profundos e rasos]]
 
 ## Referências
 
@@ -320,8 +355,8 @@ Vazar é o estado normal; não há abstração não-trivial sem vazamento. O obj
 
 - [[05 - Abstração - a ferramenta central]] — a abstração e o information hiding que esta lei mostra vazando
 - [[07 - Módulos profundos e rasos]] — como dimensionar abstrações (interface simples, muita funcionalidade)
-- [[Redes e Protocolos]] — TCP/IP, o exemplo canônico da lei
-- [[Orientação a Objetos]] — encapsulamento, o mecanismo que o vazamento atravessa
+- [[03-Dominios/Ciência/Redes e Protocolos/index|Redes e Protocolos]] — TCP/IP, o exemplo canônico da lei
+- [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]] — encapsulamento, o mecanismo que o vazamento atravessa
 - [[03 - Garbage Collection — o conceito]] — a abstração de memória da JVM por dentro
 - [[07 - JIT — C1, C2 e tiered compilation]] — por que a performance "transparente" varia
 - [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria]] — outro fundamento sobre o que o código esconde: o entendimento mora nas pessoas

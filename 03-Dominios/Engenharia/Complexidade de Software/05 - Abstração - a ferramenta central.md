@@ -1,7 +1,7 @@
 ---
 title: "Abstração - a ferramenta central"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -475,10 +475,42 @@ flowchart TD
 > - **Astronautas da arquitetura.** Abstrair tão alto que a abstração não resolve mais nenhum problema concreto — generalidade sem caso de uso. Antídoto: toda abstração deve ter clientes reais *hoje*, não hipotéticos.
 > - **Sunk cost.** Manter a abstração errada porque "já investimos". Antídoto: *the fastest way forward is back*.
 
+## Inglês
+
+Os termos desta nota circulam quase sempre em inglês, mesmo em conversa em português — e duas traduções ingênuas escondem justamente a nuance que a nota inteira tentou construir.
+
+A primeira armadilha é **information hiding → "encapsulamento"**. Funciona como aproximação, mas perde a precisão de Parnas: *encapsulamento* (no sentido de `private`, getters/setters) é sobre **acesso** — quem pode tocar no dado. *Information hiding* é sobre **qual decisão de design está protegida** — o segredo pode estar perfeitamente encapsulado (tudo `private`) e ainda assim vazar pela forma da interface (nomes, assinaturas, ordem de chamadas). Um `getUserFromHashMap()` é `private`-limpo e, ainda assim, denuncia a decisão que deveria estar escondida. Tratar os dois termos como sinônimos é o mesmo erro que a nota chama de "esconder dados" em vez de "esconder decisão".
+
+A segunda é a que a seção *Abstração ≠ indireção* já nomeou em português: **indirection não é abstraction**. Em inglês a distinção é ainda mais comum de aparecer solta — "just add a layer of indirection" — como se layer e abstraction fossem a mesma coisa. Não são: indirection é só interpor algo entre chamador e trabalho; abstraction exige que o chamador precise saber *menos* depois da camada. Todo shallow module é indirection sem abstraction.
+
+| Português | Inglês |
+|---|---|
+| Ocultação de informação | Information hiding |
+| Encapsulamento | Encapsulation |
+| Módulo profundo | Deep module |
+| Módulo raso | Shallow module |
+| Interface | Interface |
+| Implementação | Implementation |
+| Indireção | Indirection |
+| Abstração | Abstraction |
+| Abstração que vaza | Leaky abstraction |
+
 ## Em entrevista
 
 > [!tip] Como sinalizar senioridade
 > Quase todo mundo diz "abstração esconde complexidade". O sinal de senioridade é citar o **custo** da abstração errada. Se perguntarem "quando você cria uma abstração?", a resposta forte não é "sempre que vejo duplicação" — é: *"espero a terceira ocorrência e confirmo que os trechos mudam pela mesma razão; duplicação acidental que eu unifico cedo vira a abstração errada, que custa mais caro que a própria duplicação (Metz)."* E ao desenhar um módulo, nomeie **o segredo** que ele esconde (Parnas): se você não consegue nomear a decisão volátil protegida, não há abstração ali — só código agrupado por acaso.
+
+## O que vem a seguir
+
+Esta nota inteira defendeu a abstração como a ferramenta central — a torre de níveis, as barreiras do SICP, o segredo de Parnas guardado atrás de uma interface pequena e estável.
+
+Tudo isso é verdade. E tudo isso tem um preço que ainda não foi cobrado.
+
+**Joel Spolsky** resume o preço numa frase que vira o título da próxima nota: *toda abstração não-trivial, até certo ponto, vaza*. A barreira que separa "número racional" de "par de inteiros" é real, mas não é hermética — o bug de overflow, a lentidão inesperada, o encoding errado atravessam a barreira e obrigam você a descer de nível bem no momento em que a abstração prometia que isso nunca seria preciso.
+
+Tem um segundo efeito, mais sutil, que a **Lei de Hyrum** nomeia: com usuários suficientes de uma interface, não importa o que a especificação promete — todo comportamento observável do sistema vira dependência de alguém. O segredo que Parnas mandou esconder pode estar perfeitamente escondido na sua documentação e, ainda assim, virar contrato de fato porque alguém, em algum lugar, passou a depender dele.
+
+Nenhuma das duas ideias refuta esta nota. Elas são o preço realista de levar a abstração a sério: [[06 - Abstrações que vazam]].
 
 ## Referências
 
@@ -505,6 +537,6 @@ flowchart TD
 - [[06 - Abstrações que vazam]] — os limites: onde e por que mesmo boas abstrações vazam
 - [[07 - Módulos profundos e rasos]] — como dimensionar um módulo pra que a abstração seja profunda
 - [[01 - A complexidade como problema central]] — o problema que a abstração existe pra combater
-- [[Orientação a Objetos]] — encapsulamento, o mecanismo de linguagem que implementa information hiding
+- [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]] — encapsulamento, o mecanismo de linguagem que implementa information hiding
 - [[Dicionário de Ciência da Computação#Abstração errada (the wrong abstraction)]] — o verbete do contraponto sênior
 - [[Dicionário de Ciência da Computação]] — verbetes do domínio

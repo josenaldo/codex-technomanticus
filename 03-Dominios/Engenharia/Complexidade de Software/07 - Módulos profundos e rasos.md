@@ -1,7 +1,7 @@
 ---
 title: "Módulos profundos e rasos"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -358,6 +358,40 @@ Profundidade é abstrata; os sintomas são concretos. Diante de um módulo suspe
 > [!tip] O teste de profundidade
 > Diante de um módulo, pergunte: *"quanto um chamador precisa saber pra usá-lo, comparado a quanto ele faz?"* Se a interface é pequena e a funcionalidade é grande, você tem um módulo profundo — guarde-o. Se a interface é quase do tamanho do que ele entrega, ou se ele só repassa chamadas, você tem um módulo raso — considere fundi-lo a um vizinho, ou empurrar mais complexidade pra dentro dele até a interface valer o salto.
 
+## Armadilhas comuns
+
+> [!warning] Confundir "muitas classes pequenas" com bom design
+> A cultura de engenharia recompensa quem "quebra a classe grande" — parece disciplina, parece limpeza. Mas classitis é exatamente isso disfarçado de virtude: fragmentar sem que cada fragmento ganhe uma interface própria e sustentável. O resultado passa em cada code review individual e ainda assim deixa o sistema mais difícil de entender, porque a soma das interfaces cresceu mais rápido que a funcionalidade.
+
+> [!warning] Medir módulo pelo tamanho, não pela profundidade
+> Contar linhas ou contar classes é tentador porque é objetivo — dá pra automatizar, dá pra virar métrica de linter. Mas tamanho não é o eixo que Ousterhout propõe. Um módulo de duas mil linhas pode ser profundo (interface minúscula, muito escondido); um de vinte pode ser raso (interface quase do tamanho da implementação). Otimizar pra "arquivo pequeno" sem checar a razão funcionalidade/interface produz exatamente a proliferação de módulos rasos que a classitis descreve.
+
+> [!warning] Empurrar complexidade pra cima em vez de pra baixo
+> Toda vez que uma decisão de borda vira "responsabilidade do chamador" — validar antes de chamar, tratar mais uma exceção, configurar mais um parâmetro — a complexidade não desapareceu: ela só migrou do implementador (um) para os chamadores (muitos). É a direção errada do "pull complexity downward". Se você se pega escrevendo `// o chamador deve garantir que...` no comentário de um método, é sinal de que a complexidade subiu quando deveria ter descido.
+
+> [!warning] Criar um método pass-through "pra separar camadas"
+> Introduzir uma camada nova é fácil de justificar em abstrato ("separação de responsabilidades", "testabilidade"), mas se o método novo só repassa os mesmos argumentos pro método de baixo, com a mesma assinatura, você não separou nada — só adicionou um salto. O teste rápido: se remover a camada não muda o que o chamador precisa saber, ela era rasa.
+
+## Inglês
+
+Boa parte do vocabulário desta nota é cunhagem própria de Ousterhout, não jargão já consagrado da indústria — o que muda como você deve tratá-lo em inglês.
+
+**Classitis** é o caso mais claro. Ousterhout monta a palavra do mesmo jeito que se monta o nome de uma doença: um substantivo (*class*) mais o sufixo médico "-itis", que em inglês denota inflamação (como em *bronchitis*, *appendicitis*). O efeito é intencionalmente jocoso — é um diagnóstico apresentado como se fosse clínico. Não existe tradução consagrada em português; a prática no vault (e a mais honesta) é manter o termo em inglês e explicar a piada, como a nota já faz.
+
+**"Define errors out of existence"** é outro caso em que tradução literal atrapalha mais do que ajuda. "Definir erros pra fora da existência" soa estranho em português porque a construção "X out of existence" (fazer X deixar de existir, apagar X do mapa) não tem equivalente idiomático direto. É mais claro explicar o que a técnica faz — redesenhar a API pra que a condição de erro deixe de ser um erro — do que forçar uma tradução palavra por palavra. Esta nota já usa essa estratégia ("Definir os erros para fora da existência", com a explicação logo abaixo).
+
+Os demais termos são mais diretos de transportar, mas vale fixar o par certo — principalmente **deep/shallow module**, que é o eixo central da nota, e **interface vs. implementation**, que é anterior a Ousterhout mas ele reaproveita com precisão.
+
+| Português | Inglês |
+|---|---|
+| módulo profundo | deep module |
+| módulo raso | shallow module |
+| classite (mantido em inglês, com explicação) | classitis |
+| vazamento de informação | information leakage |
+| definir erros pra fora da existência (explicar, não traduzir ao pé da letra) | define errors out of existence |
+| método de repasse | pass-through method |
+| interface vs. implementação | interface vs. implementation |
+
 ## Em entrevista
 
 Se cair "como você decide quebrar uma classe grande?", a resposta sênior é o critério de profundidade.
@@ -367,10 +401,20 @@ Se cair "como você decide quebrar uma classe grande?", a resposta sênior é o 
 - Dê a heurística construtiva: **pull complexity downward** — prefiro interface simples a implementação simples, porque o implementador é um e os chamadores são muitos.
 - Se quiser mostrar leitura: mencione que Ousterhout e Uncle Bob **debateram** isso publicamente (2024–2025) e convergiram num meio-termo — você reconhece o valor de separar responsabilidades *e* o risco de fragmentar demais.
 
+## O que vem a seguir
+
+Profundidade tem um preço, e esse preço é pago em um lugar específico: a cabeça de quem lê o código. Toda vez que esta nota falou em "o que o chamador precisa saber" ou "o custo de aprender a interface", ela estava, sem nomear, descrevendo *cognitive load* — a carga cognitiva.
+
+Módulos rasos, classitis, camadas empilhadas, exceções na assinatura: cada um desses sintomas é, no fundo, uma forma diferente de inflar quanto o leitor precisa segurar na cabeça ao mesmo tempo. Profundidade é o critério que *mede* o problema; carga cognitiva é a moeda em que ele é *pago*.
+
+A próxima nota abre essa moeda: de que ela é feita, por que memória de trabalho é o gargalo real, e como nomes e comentários — a parte informal da interface que esta nota só tocou de leve — entram na conta.
+
+Veja [[08 - Carga cognitiva e legibilidade]].
+
 ## Referências
 
-- **John Ousterhout** — *A Philosophy of Software Design* (1ª ed. 2018; 2ª ed. 2021, Yaknyam Press). Origem dos termos **deep module / shallow module**, da definição de profundidade como razão funcionalidade ÷ complexidade de interface, do método e da variável *pass-through*, do princípio *"different layer, different abstraction"*, do diagnóstico **classitis**, da crítica ao **I/O de streams do Java** (`FileInputStream`/`BufferedInputStream` como módulos rasos, com a proposta de bufferizar por padrão), da técnica **"define errors out of existence"** (exemplo `substring` Java × JavaScript), da divisão da interface em parte **formal e informal** (comentários), da tese *"complexity is incremental"* ("sweat the small stuff") e da heurística *"pull complexity downward"*. Exemplos do Unix file I/O e do garbage collector como módulos profundos são do livro.
-- **John Ousterhout & Robert C. Martin** — *A Philosophy of Software Design vs. Clean Code* (discussão pública, set/2024–fev/2025), repositório `github.com/johnousterhout/aposd-vs-clean-code`. Origem do debate **funções pequenas × módulos profundos**, do conceito de **entanglement** na decomposição, do estudo de caso do **`PrimeGenerator`** e da convergência em ~4 métodos.
+- **John Ousterhout** — *A Philosophy of Software Design* (1ª ed. 2018; 2ª ed. 2021, Yaknyam Press). Origem dos termos **deep module / shallow module**, da definição de profundidade como razão funcionalidade ÷ complexidade de interface, do método e da variável *pass-through*, do princípio *"different layer, different abstraction"*, do diagnóstico **classitis**, da crítica ao **I/O de streams do Java** (`FileInputStream`/`BufferedInputStream` como módulos rasos, com a proposta de bufferizar por padrão), da técnica **"define errors out of existence"** (exemplo `substring` Java × JavaScript), da divisão da interface em parte **formal e informal** (comentários), da tese *"complexity is incremental"* ("sweat the small stuff") e da heurística *"pull complexity downward"*. A 2ª edição inclui um capítulo novo comparando explicitamente a abordagem do livro com a de *Clean Code*. [Página oficial do livro (Stanford, John Ousterhout)](https://web.stanford.edu/~ouster/cgi-bin/aposd.php).
+- **John Ousterhout & Robert C. Martin** — *A Philosophy of Software Design vs. Clean Code* (discussão pública, set/2024–fev/2025). Origem do debate **funções pequenas × módulos profundos**, do conceito de **entanglement** na decomposição, do estudo de caso do **`PrimeGenerator`** e da convergência em ~4 métodos. [Repositório do debate no GitHub](https://github.com/johnousterhout/aposd-vs-clean-code).
 
 > [!note] Sobre o lastro
 > Os termos de Ousterhout (*deep/shallow module*, *classitis*, *pass-through method/variable*, *different layer different abstraction*, *define errors out of existence*, *complexity is incremental*, *pull complexity downward*, interface formal/informal) e os exemplos canônicos (Unix file I/O, garbage collector, Java I/O streams, `substring`) foram conferidos contra resumos, capítulos publicados, o repositório oficial do debate e fontes secundárias confiáveis na pesquisa que alimentou esta nota. **Ressalva honesta:** não consultei o texto integral do livro página a página. As citações marcadas *"(paráfrase fiel; ver Referências)"* reproduzem o argumento e o vocabulário do autor com alta fidelidade, mas podem diferir da redação literal em pontuação ou palavras exatas; a única citação verbatim do livro conferida diretamente é a primeira (*"The best modules are deep..."*). O debate Ousterhout × Martin (datas, repositório, `PrimeGenerator`, convergência em ~4 métodos) foi verificado contra o repositório oficial no GitHub. O padrão de marcação de incerteza segue o da nota vizinha [[06 - Abstrações que vazam]].
@@ -381,5 +425,5 @@ Se cair "como você decide quebrar uma classe grande?", a resposta sênior é o 
 - [[06 - Abstrações que vazam]] — o outro limite: mesmo módulos profundos vazam um pouco
 - [[08 - Carga cognitiva e legibilidade]] — o custo cognitivo que interfaces rasas impõem ao leitor, e o papel dos comentários
 - [[01 - A complexidade como problema central]] — a complexidade incremental e a change amplification que a profundidade combate
-- [[Orientação a Objetos]] — encapsulamento, o mecanismo de linguagem por trás de módulos profundos
+- [[03-Dominios/Engenharia/Design de Software/Orientação a Objetos/index|Orientação a Objetos]] — encapsulamento, o mecanismo de linguagem por trás de módulos profundos
 - [[Dicionário de Ciência da Computação]] — verbetes do domínio (ver *Classitis* e *Módulo profundo*)

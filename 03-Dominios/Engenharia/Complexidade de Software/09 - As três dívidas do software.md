@@ -1,7 +1,7 @@
 ---
 title: "As três dívidas do software"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -366,6 +366,43 @@ Diagnosticar é metade; a outra metade é não tratar a dívida errada do jeito 
 
 O fio comum dos três anti-padrões: confundir **atividade** com **pagamento**. Refatorar muito, ter um especialista dedicado, escrever muita documentação — tudo parece "cuidar do sistema", mas pode estar pagando a dívida errada, ou nenhuma. O modelo das três dívidas existe justamente pra forçar a pergunta: *qual* dívida isso quita?
 
+## Armadilhas comuns
+
+> [!warning] O refator heroico que nunca vem
+> Deixar a dívida técnica acumular na expectativa de um "grande refator" futuro é uma aposta perdida: o sistema só cresce, a janela nunca chega e o refator vira lenda de corredor. O antídoto é o pagamento incremental — mil melhorias minúsculas (a Regra do Escoteiro), não um evento messiânico.
+
+> [!warning] O herói insubstituível
+> Celebrar a pessoa que "sabe tudo" sobre uma área do sistema parece reconhecimento, mas é dívida cognitiva se acumulando em silêncio: quanto mais o time depende de um único portador da teoria, maior o risco, e ele só aparece no dia em que essa pessoa sai. Trate a concentração de conhecimento como bandeira vermelha, não como elogio — a gestão correta é dissolvê-la via rotação e pairing.
+
+> [!warning] A documentação que só descreve o "como"
+> Escrever mais documentação parece sempre certo, mas páginas que repetem o que o código já diz não pagam dívida de intenção — só inflam artefatos. O que quita essa dívida é o *porquê* nunca escrito em lugar nenhum: metas, restrições, não-objetivos, decisões e experimentos que falharam.
+
+> [!warning] O erro de diagnóstico mais caro
+> O instinto treinado de quase todo dev é traduzir qualquer problema pra "código ruim", porque é a única dívida com ferramenta e com cura conhecida (refatorar). É um viés de disponibilidade: você combate a dívida que sabe medir. O resultado é refatorar código que já estava limpo enquanto a dívida cognitiva ou de intenção — invisível ao linter — segue cobrando juros. Antes de refatorar, pergunte qual das três dívidas você está realmente pagando.
+
+## Inglês
+
+O vocabulário do Triple Debt Model é quase todo emprestado da metáfora financeira original de Cunningham, e vale destrinchar as armadilhas de tradução antes de usá-lo em entrevista ou em texto técnico.
+
+A primeira é o verbo que acompanha "dívida": em inglês diz-se **to pay down** a dívida — não *to pay off*. "Pay off" sugere quitação total, saldo zerado; "pay down" admite que você reduz o débito sem necessariamente chegar a zero. Dívida de software raramente se quita por completo — ela se maneja, se reduz, se mantém sob controle. Usar "pay off technical debt" em contexto sênior soa como quem não entendeu que a dívida é estrutural, não um boleto único.
+
+A segunda armadilha é **principal** — o "principal" da dívida, o valor original que se contraiu, distinto dos "juros" (*interest*) que se acumulam sobre ele. É falso amigo do português "principal" no sentido de "mais importante": aqui "principal" é um termo financeiro específico (o mesmo do inglês para "principal de um empréstimo"), não um adjetivo de relevância. Confundir os dois leva a frases sem sentido em inglês técnico.
+
+Por fim, **intent debt** ainda não tem tradução consagrada em português — "dívida de intenção" é a escolha desta nota (e do vault), mas o termo é recente (2026, era dos agentes de IA) e a comunidade brasileira ainda não convergiu num nome fixo. Em entrevista em inglês, prefira sempre o termo original "intent debt"; em português, "dívida de intenção" comunica bem, mas não espere que o interlocutor já o reconheça de imediato — vale uma frase de contexto.
+
+| Português | Inglês |
+| --- | --- |
+| dívida técnica | technical debt |
+| dívida cognitiva | cognitive debt |
+| dívida de intenção | intent debt |
+| modelo das três dívidas | triple debt model |
+| principal (da dívida) | principal |
+| juros | interest |
+| pagar (reduzir) a dívida | to pay down the debt |
+| quitar totalmente a dívida | to pay off the debt |
+| saúde do software | software health |
+| externalizar o rationale | to externalize the rationale |
+
 ## Em entrevista
 
 > [!tip] Como articular o Triple Debt Model
@@ -374,12 +411,23 @@ O fio comum dos três anti-padrões: confundir **atividade** com **pagamento**. 
 > [!tip] O diagnóstico como resposta de design
 > Se perguntarem "como você avalia a saúde de um codebase?", não responda só "olho a cobertura de testes e o lint". Use as três perguntas: *o código é mutável, o time o entende, a intenção está registrada?* Mostrar que você diagnostica em três frentes — e que sabe qual remédio cada "não" pede — distingue o sênior do pleno que só sabe falar de dívida técnica.
 
+## O que vem a seguir
+
+Das três dívidas, a técnica é a única com trinta anos de literatura, vocabulário consolidado e ferramenta de medida. Não é a mais grave — o próprio modelo insiste que as três são independentes, e o argumento de Storey é justamente que as outras duas foram subestimadas por tempo demais.
+
+Mas é por ela que se começa, e por um motivo prático: é a dívida que já tem nome que o negócio entende. "Precisamos refatorar" é uma frase que qualquer gestor já ouviu; "precisamos pagar dívida cognitiva" ainda soa estranho fora de um time de engenharia.
+
+Começar pela dívida técnica também aproveita o que a engenharia de software já sabe fazer bem: linters, métricas, o Quadrante de Fowler, a Regra do Escoteiro — um arsenal de trinta anos que as outras duas dívidas simplesmente não têm.
+
+A próxima nota mergulha nesse território conhecido, antes de seguir para as duas dívidas que o linter não alcança → [[10 - Dívida técnica]].
+
 ## Fontes
 
-- [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|From Technical Debt to Cognitive and Intent Debt — Margaret-Anne Storey (arXiv)]] — a **fonte primária** do Triple Debt Model
-- [[02-Glosas/2026-fowler-fragments-triple-debt-model|Fragments: April 2 — Martin Fowler]] — divulgação ("técnica → código, cognitiva → pessoas, intenção → artefatos") e o custo da verificação
-- [[02-Glosas/2026-the-intent-debt|The Intent Debt — Addy Osmani]] — a independência das dívidas e a economia da intenção
-- [[02-Glosas/2026-intent-debt-the-ai-era-debt-nobody-is-tracking|Intent Debt: The AI-Era Debt Nobody Is Tracking — Developers Digest]] — releitura operacional da dívida de intenção
+- **Ward Cunningham** — *The WyCash Portfolio Management System* (OOPSLA, 1992). O relato de experiência que cunha a metáfora original da dívida de software — a fonte de trinta anos atrás de onde todo o modelo deriva. [The WyCash Portfolio Management System](https://c2.com/doc/oopsla92.html).
+- **Margaret-Anne Storey** — *From Technical Debt to Cognitive and Intent Debt: Rethinking Software Health in the Age of AI* (arXiv, 2026). A fonte primária do Triple Debt Model: articula as três dívidas interagentes e o deslocamento de risco causado pela IA generativa. [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|From Technical Debt to Cognitive and Intent Debt]]. [arXiv:2603.22106](https://arxiv.org/abs/2603.22106).
+- **Martin Fowler** — *Fragments: April 2* (martinfowler.com, 2026). Divulga o modelo ("técnica → código, cognitiva → pessoas, intenção → artefatos"), a rendição cognitiva e o custo da verificação. [[02-Glosas/2026-fowler-fragments-triple-debt-model|Fragments: April 2]]. [martinfowler.com/fragments/2026-04-02.html](https://martinfowler.com/fragments/2026-04-02.html).
+- **Addy Osmani** — *The Intent Debt* (addyosmani.com, 2026). Sustenta a independência das dívidas e a economia da intenção não-escrita na era dos agentes. [[02-Glosas/2026-the-intent-debt|The Intent Debt]]. [addyosmani.com/blog/intent-debt](https://addyosmani.com/blog/intent-debt/).
+- **Developers Digest** — *Intent Debt: The AI-Era Debt Nobody Is Tracking* (2026). Releitura operacional da dívida de intenção, com testes de diagnóstico e práticas de pagamento. [[02-Glosas/2026-intent-debt-the-ai-era-debt-nobody-is-tracking|Intent Debt: The AI-Era Debt Nobody Is Tracking]]. [developersdigest.tech](https://www.developersdigest.tech/blog/intent-debt-the-ai-debt-nobody-is-tracking).
 
 > [!note] Sobre o lastro
 > O modelo é atribuído a **Margaret-Anne Storey** (paper no arXiv, 2026); **Fowler** e **Osmani** o popularizaram. Todas as citações em inglês são **verbatim** das seções "Citações" das glosas acima. **Ressalva honesta:** não li o paper de Storey página a página — as afirmações reproduzem o argumento e o vocabulário registrados nas glosas com alta fidelidade, mas detalhes de fraseado podem diferir do original. A genealogia (Cunningham, 1992, OOPSLA) e os limites da metáfora são síntese do autor a partir do contexto histórico consolidado, não citações das glosas. Padrão de marcação seguindo [[06 - Abstrações que vazam]].

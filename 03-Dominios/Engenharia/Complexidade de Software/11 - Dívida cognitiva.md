@@ -1,7 +1,7 @@
 ---
 title: "Dívida cognitiva"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: growing
 status: growing
@@ -308,6 +308,39 @@ Leitura do diagrama: a seta de volta é o coração — reconstruir a teoria *re
 > [!note] Por que prevenir é mais barato que reconstruir
 > Naur já alertava: reconstruir a teoria de um programa depois que ela se perdeu é caro e lento — às vezes mais caro do que reescrever. Manter o entendimento vivo enquanto a teoria *ainda existe* na cabeça das pessoas custa uma fração disso. A mitigação mais barata da dívida cognitiva é não deixá-la acumular.
 
+## Armadilhas comuns
+
+Os sintomas em [[#Sinais de alerta]] dizem *como perceber* a dívida acumulando. Esta seção é o complemento: os erros de raciocínio mais comuns sobre *o que fazer* a respeito dela — respostas que parecem ajuda e, na prática, não ajudam.
+
+> [!warning] Achar que código limpo e testes verdes provam que está tudo bem
+> É o erro mais caro porque parece racional: se o linter não reclama e o CI está verde, "deve estar saudável". Mas dívida cognitiva vive fora do artefato — no que as pessoas sabem, não no que o código diz. Um sistema pode estar impecável na superfície e afundado em dívida cognitiva por baixo, porque a teoria do conjunto já se dissolveu.
+
+> [!warning] Tentar consertar encarregando alguém de "documentar mais"
+> Encher o wiki dá a *ilusão* de subir o truck factor, não o efeito. A teoria de Naur é majoritariamente tácita — o documento captura o "o quê" e perde o "porquê" e o julgamento que só quem viveu a decisão carrega. O que eleva o truck factor de verdade é espalhar a teoria entre cabeças, não empilhar texto que ninguém vai reler no momento certo.
+
+> [!warning] Confundir com a carga cognitiva de time (Team Topologies)
+> "Carga cognitiva de time" é um orçamento de *agora* — quanta complexidade aquelas pessoas aguentam segurar na cabeça hoje. Dívida cognitiva é o vazamento *ao longo do tempo* do que o time já entendeu. Um time pode estar dentro do seu orçamento de carga e, mesmo assim, sangrando dívida cognitiva — são problemas diferentes, com remédios diferentes.
+
+> [!warning] Inventar um "índice de dívida cognitiva" pra colocar no dashboard
+> A tentação de governança é combinar os proxies (truck factor, tempo de onboarding, medo de mudar) num score único e tratá-lo como meta. Isso mede os *sintomas*, não a *causa* — e vira alvo gameável (Lei de Goodhart). É mais honesto usar os proxies como sinais de fumaça pra investigar do que fingir uma precisão que o fenômeno, por definição, não permite.
+
+## Inglês
+
+**Cognitive debt** ainda é termo em consolidação — mais novo que *technical debt*, que já é vocabulário corporativo assentado há décadas. Em conversa técnica em inglês, vale contextualizar rapidamente ("the erosion of a team's shared understanding of the system") em vez de assumir que o termo já é familiar pra quem ouve.
+
+**Bus factor** (ou *truck factor*, ou ainda *lottery factor*) é jargão informal, e a piada macabra por trás do nome — quantas pessoas precisariam ser atropeladas por um ônibus pra travar o projeto — costuma exigir uma explicação rápida em contexto profissional, principalmente pra quem não é nativo do jargão de engenharia. Não é linguagem de slide de diretoria; é linguagem de corredor.
+
+**Tribal knowledge** é expressão comum no inglês corporativo de engenharia e não tem tradução boa em português — "conhecimento tribal" é um decalque que funciona, mas soa mais formal do que o original, que carrega um tom quase irônico sobre como o conhecimento vive em "clãs" informais dentro do time.
+
+| Português | Inglês |
+| --- | --- |
+| Dívida cognitiva | Cognitive debt |
+| Entendimento compartilhado | Shared understanding |
+| Truck factor / fator caminhão | Bus factor (truck factor, lottery factor) |
+| Perda da teoria | Theory loss |
+| Conhecimento tribal | Tribal knowledge |
+| Integração de novos membros | Onboarding |
+
 ## A mesma ideia, sob a lente da IA
 
 > [!note] Fronteira: o tratamento geral × a manifestação na IA
@@ -322,9 +355,25 @@ Leitura do diagrama: a seta de volta é o coração — reconstruir a teoria *re
 - **Seja honesto sobre a medição.** Se perguntarem "como você mede?", a resposta forte é "não há métrica limpa — uso proxies como *truck factor*, tempo de onboarding e áreas que o time tem medo de tocar". Reconhecer a falta de número é mais maduro do que inventar um.
 - **Termine na ação.** O remédio é humano e contínuo: pairing, review como transferência de teoria, documentar o porquê, reduzir bus factor 1. "Trato entendimento como ativo a manter, igual a dívida técnica."
 
+## O que vem a seguir
+
+Há uma diferença que separa dívida cognitiva de sua vizinha mais nova.
+
+Perder o entendimento de um código que alguém *um dia teve* — e documentou, ainda que mal, ainda que só na cabeça de quem saiu — é doloroso, mas é reconstruível: alguém pode entrevistar quem ficou, ler commits antigos, remontar o raciocínio aos poucos, do jeito caro e lento que Naur descreve.
+
+Agora imagine o caso pior: a decisão nunca foi *registrada* em lugar nenhum, nem sequer na cabeça de uma pessoa que ainda está no time. Ninguém sabe por que aquele `if` esquisito existe porque **ninguém jamais soube** — a IA gerou o trecho numa sessão de prompt que já foi embora, ou um humano decidiu de improviso e seguiu em frente sem anotar o porquê.
+
+Aí não há teoria pra reconstruir, porque nunca houve teoria externalizada pra começo de conversa. É uma dívida diferente — não a erosão de algo que existiu, mas a ausência do que nunca foi criado.
+
+Essa é a dívida de intenção, a terceira peça do Triple Debt Model: [[12 - Dívida de intenção]].
+
 ## Fontes
 
-- [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|From Technical Debt to Cognitive and Intent Debt — Margaret-Anne Storey (arXiv)]] — a **fonte primária** do termo moderno: define a dívida cognitiva como "*the erosion of shared understanding across a team*", propriedade de nível de time/projeto.
+- **Margaret-Anne Storey** — *From Technical Debt to Cognitive and Intent Debt: Rethinking Software Health in the Age of AI* (arXiv, 2026). A fonte primária do termo moderno: define dívida cognitiva como "*the erosion of shared understanding across a team*", propriedade de nível de time/projeto. [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|Glosa]] · [arXiv:2603.22106](https://arxiv.org/abs/2603.22106).
+- **Margaret-Anne Storey** — *Cognitive debt: The hidden risk in AI-driven software development* (DX / Engineering Enablement, abr. 2026). O artigo original — anterior ao paper acadêmico — que cunha e desenvolve o termo em linguagem de praticante. [Ler no newsletter da DX](https://newsletter.getdx.com/p/cognitive-debt-the-hidden-risk-in).
+- **Peter Naur** — *Programming as Theory Building* (1985). A base teórica da nota inteira: o que exatamente uma equipe perde quando a dívida cognitiva se acumula. [PDF (gwern.net)](https://gwern.net/doc/cs/algorithm/1985-naur.pdf).
+- **Baldur Bjarnason** — *Theory-building and why employee churn is lethal to software companies* (2022). Sustenta o argumento das "gerações de teoria" — ter estado lá quando o código foi escrito é a forma mais confiável de ter a teoria dele. [baldurbjarnason.com](https://www.baldurbjarnason.com/2022/theory-building/).
+- **Bus factor** (truck/lottery factor) — sustenta a seção sobre a dívida cognitiva como número: quantas pessoas precisam sumir pra travar o projeto. [Wikipedia](https://en.wikipedia.org/wiki/Bus_factor).
 
 > [!note] Sobre o lastro
 > O **termo moderno** "dívida cognitiva" é atribuível a **Margaret-Anne Storey** (paper no arXiv, 2026), como peça do Triple Debt Model. O **fenômeno**, porém, é muito mais antigo que o nome — está na tese de [[04 - O programa como teoria|Naur]] (1985) sobre a morte do programa e na noção folclórica de *tribal knowledge* (e do *bus/truck factor*) que precede qualquer literatura formal. Toda citação em inglês é **verbatim** da seção "Citações" da glosa acima; não li o paper de Storey página a página — as afirmações reproduzem o argumento registrado na glosa com alta fidelidade, mas detalhes de fraseado podem diferir do original. Padrão de marcação seguindo [[06 - Abstrações que vazam]].

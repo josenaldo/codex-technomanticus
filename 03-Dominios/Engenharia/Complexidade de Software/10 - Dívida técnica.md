@@ -1,7 +1,7 @@
 ---
 title: "Dívida técnica"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -51,9 +51,6 @@ Você só descobre o que o sistema realmente precisa ser *usando-o* — então e
 O erro é **não pagar de volta**: deixar o "código não-quite-certo" acumular enquanto seu entendimento avança.
 
 Cada minuto trabalhando contra esse código desalinhado **é juro**.
-
-> [!warning] A metáfora que quase todo mundo cita errado
-> A leitura popular de "dívida técnica" virou *"escrevemos código porco pra entregar rápido, e isso é a dívida"*. **Não é o que Cunningham disse.** Em 2009 ele gravou um vídeo (*"Debt Metaphor"*) justamente pra corrigir o mal-entendido. O ponto dele era a **distância entre o entendimento e o código** — não o desleixo deliberado. Nas palavras dele, a dívida é *"writing code to reflect your current understanding of a problem even if that understanding is partial"*; e mais — toda a metáfora *"depends upon you writing code that is clean enough to be able to refactor as you come to understand your problem"*. Ou seja: o código precisa estar **limpo o bastante pra ser refatorado**. Quem usa "dívida técnica" como desculpa pra entregar lixo inverteu o sentido original.
 
 O que de fato corrói o sistema, segundo ele, é parar de devolver o aprendizado ao código:
 
@@ -301,15 +298,9 @@ Essa razão vira uma **nota de manutenibilidade** (a *Maintainability Rating*, h
 | **D** | 20% – 50% |
 | **E** | > 50% |
 
-> [!warning] O número é uma estimativa, não uma verdade
-> O *debt ratio* é útil *como tendência* — está subindo ou descendo? — mas é frágil como valor absoluto. Ele só captura o que a regra estática consegue ver (smells, complexidade ciclomática, duplicação); **não enxerga dívida de arquitetura nem de intenção** — justamente as mais caras. Um sistema com nota A no SonarQube ainda pode ter uma fronteira de módulo desastrosa. Use o número pra vigiar a curva, não pra declarar saúde.
-
 ## Como se gerencia
 
 O objetivo não é zerar a dívida — é mantê-la **sob controle**.
-
-> [!warning] Dívida zero é tão irracional quanto dívida descontrolada
-> O erro simétrico ao "ignorar a dívida" é querer **zerá-la** sempre. Pagar toda dívida o tempo todo é tão irracional quanto na vida financeira — há dívida que *vale a pena carregar*. A dívida deliberada/prudente do quadrante é literalmente isso: às vezes o juro de carregar um atalho por seis meses é mais barato que o custo de oportunidade de não entregar agora. A meta de um time sênior não é dívida zero — é saber qual dívida tem, quanto de juro ela cobra, e quitar a que está cara antes que componha.
 
 Três práticas, da mais barata à mais cara, formam o repertório de quem mantém a dívida sob controle.
 
@@ -349,9 +340,6 @@ O erro clássico é pedir "tempo pra refatorar" como se fosse um capricho estét
 - "essa área cobra +X% em cada feature; pagar agora libera o roadmap do Q3";
 - "sem quitar isto, o próximo incidente nesse módulo vai levar dias, não horas";
 - "esse atalho foi a entrega de outubro — combinamos pagar em novembro; é novembro."
-
-> [!warning] A dívida é invisível até virar crise
-> O perigo político da dívida técnica é que ela não tem sintoma visível pro negócio *até* explodir. Por meses, "tudo está um pouco mais lento" não aparece em nenhum gráfico — até o dia em que uma feature trivial leva três semanas, ou um incidente derruba produção. Quem só fala de dívida na hora da crise já perdeu a discussão. O *debt register* e as métricas do SonarQube existem justamente pra tornar o invisível *visível antes* — pra que a conversa aconteça quando o juro ainda é barato.
 
 > [!note] Por que isto é, no fundo, complexidade acidental
 > Dívida técnica e [[02 - Complexidade essencial vs. acidental|complexidade acidental]] são quase o mesmo fenômeno vistos por ângulos diferentes. Brooks distingue a complexidade que vem do *problema* (essencial, irredutível) da que vem da *forma como o representamos* (acidental, redutível). A dívida técnica é, em larga medida, **complexidade acidental que se acumulou no código** — emaranhado, duplicação, abstrações erradas que ninguém limpou. Refatorar é, em larga medida, **remover acidental**. A diferença de foco: "complexidade acidental" descreve o *estado* do código; "dívida técnica" acrescenta a *dimensão temporal e econômica* — o juro que esse estado cobra ao longo do tempo. E é por isso que ela vive **no código**, distinta da cognitiva (nas pessoas) e da de intenção (nos artefatos) — [[09 - As três dívidas do software]].
@@ -427,10 +415,61 @@ Na vida real, a falência às vezes é a saída racional: você zera as dívidas
 > [!tip] A alternativa ao rewrite
 > Em vez do *big rewrite*, a saída sã é a refatoração incremental — o "Strangler Fig" de Fowler: estrangular o sistema velho aos poucos, módulo a módulo, com o sistema rodando o tempo todo. Você redireciona uma fatia do tráfego pro código novo de cada vez, e o sistema antigo vai minguando até sumir. Você paga o principal em parcelas, sem o blackout de três anos. Rewrite total só se justifica quando a plataforma morreu de verdade (linguagem/runtime sem futuro), não porque o código "está feio".
 
+## Armadilhas comuns
+
+Quatro mal-entendidos recorrentes, reunidos aqui porque cada um custa caro na hora da conversa — com colega, com gestor ou com o próprio código.
+
+> [!warning] A metáfora que quase todo mundo cita errado
+> A leitura popular de "dívida técnica" virou *"escrevemos código porco pra entregar rápido, e isso é a dívida"*. **Não é o que Cunningham disse.** Em 2009 ele gravou um vídeo (*"Debt Metaphor"*) justamente pra corrigir o mal-entendido. O ponto dele era a **distância entre o entendimento e o código** — não o desleixo deliberado. Nas palavras dele, a dívida é *"writing code to reflect your current understanding of a problem even if that understanding is partial"*; e mais — toda a metáfora *"depends upon you writing code that is clean enough to be able to refactor as you come to understand your problem"*. Ou seja: o código precisa estar **limpo o bastante pra ser refatorado**. Quem usa "dívida técnica" como desculpa pra entregar lixo inverteu o sentido original.
+
+> [!warning] O número é uma estimativa, não uma verdade
+> O *debt ratio* é útil *como tendência* — está subindo ou descendo? — mas é frágil como valor absoluto. Ele só captura o que a regra estática consegue ver (smells, complexidade ciclomática, duplicação); **não enxerga dívida de arquitetura nem de intenção** — justamente as mais caras. Um sistema com nota A no SonarQube ainda pode ter uma fronteira de módulo desastrosa. Use o número pra vigiar a curva, não pra declarar saúde.
+
+> [!warning] Dívida zero é tão irracional quanto dívida descontrolada
+> O erro simétrico ao "ignorar a dívida" é querer **zerá-la** sempre. Pagar toda dívida o tempo todo é tão irracional quanto na vida financeira — há dívida que *vale a pena carregar*. A dívida deliberada/prudente do quadrante é literalmente isso: às vezes o juro de carregar um atalho por seis meses é mais barato que o custo de oportunidade de não entregar agora. A meta de um time sênior não é dívida zero — é saber qual dívida tem, quanto de juro ela cobra, e quitar a que está cara antes que componha.
+
+> [!warning] A dívida é invisível até virar crise
+> O perigo político da dívida técnica é que ela não tem sintoma visível pro negócio *até* explodir. Por meses, "tudo está um pouco mais lento" não aparece em nenhum gráfico — até o dia em que uma feature trivial leva três semanas, ou um incidente derruba produção. Quem só fala de dívida na hora da crise já perdeu a discussão. O *debt register* e as métricas do SonarQube existem justamente pra tornar o invisível *visível antes* — pra que a conversa aconteça quando o juro ainda é barato.
+
+## Inglês
+
+Em entrevista e em *code review* internacional, "technical debt" é vocabulário dado como certo — mas dois detalhes traem quem aprendeu só pela tradução.
+
+O primeiro é o falso amigo: **principal**, em inglês financeiro, não é "principal" no sentido de "main" ou "primary" — é o valor original emprestado, o mesmo "principal" que aparece num boleto de financiamento. Confundir os dois faz a frase soar estranha pra quem já domina o termo.
+
+O segundo é o verbo certo: quita-se dívida **paying down** the debt, não *paying off* — "pay off" soa mais a "quitar de uma vez, tudo", enquanto "pay down" carrega a ideia de reduzir aos poucos, que é como dívida técnica de fato se paga.
+
+E o Quadrante de Fowler é sempre citado pelos quatro rótulos originais em inglês — *reckless*, *prudent*, *deliberate*, *inadvertent* — sem tradução consagrada em PT-BR; vale memorizá-los na forma como aparecem na fonte, porque é assim que aparecem também na conversa técnica em inglês.
+
+| Português | Inglês |
+| --- | --- |
+| dívida técnica | technical debt |
+| principal (o atalho em si) | principal |
+| juros | interest |
+| pagar aos poucos / quitar | to pay down (the debt) |
+| deliberada | deliberate |
+| inadvertida | inadvertent |
+| prudente | prudent |
+| imprudente | reckless |
+| "isso não é dívida técnica, é bagunça" | "a mess is not a technical debt" |
+| falência técnica | (technical) bankruptcy |
+| reescrita do zero | rewrite |
+| entulho / código emaranhado | cruft |
+
 ## Em entrevista
 
 > [!tip] Como falar de dívida técnica sem clichê
 > O movimento que sinaliza senioridade é **separar principal de juros e citar o quadrante**. Frase de efeito: *"Technical debt isn't bad code — it's the gap between the code and our current understanding, and the interest is what we pay on every change until we close that gap."* Mostre que você sabe que a metáfora de Cunningham foi **mal-citada**: ela nunca defendeu escrever código ruim — ela *exige* código limpo o bastante pra ser refatorado. Use o quadrante de Fowler pra desarmar o falso dilema "refatorar tudo vs. nunca refatorar": *"Some debt is prudent and deliberate — we take it on purpose with a payback plan. The goal isn't zero debt, it's debt you've chosen and can service."* Se perguntarem "como você prioriza dívida técnica?", responda em termos de **juros**: ataque primeiro a dívida nas áreas que mais mudam. E se alguém propuser reescrever do zero, cite Spolsky: *"Old code isn't debt — it's knowledge. A rewrite throws away all the bugs you already paid to fix."*
+
+## O que vem a seguir
+
+Das três dívidas do software, a técnica é a única com trinta anos de literatura, vocabulário que o negócio já entende e ferramenta que a mede em número.
+
+Isso não é acaso: ela vive **no código**, e código é a coisa mais fácil de apontar, versionar e rodar uma ferramenta em cima. SQALE conta linhas; ninguém tem um SonarQube pra apontar pra cabeça de um dev.
+
+É justamente por isso que a dívida técnica monopoliza a conversa — ela é a dívida que dá pra colocar num slide.
+
+A próxima nota trata da dívida que ninguém consegue medir e que, quando cobra, cobra mais caro: o entendimento perdido quando a pessoa que sabia por que o código é assim sai da empresa. [[11 - Dívida cognitiva]].
 
 ## Referências
 

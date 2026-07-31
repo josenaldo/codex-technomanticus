@@ -1,7 +1,7 @@
 ---
 title: "Pensamento sistêmico"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -436,6 +436,40 @@ A moral, em uma frase: **pare de procurar a peça culpada e comece a olhar a con
 
 A complexidade que você combate é, quase sempre, emergente — e só uma lente que enxerga o todo consegue vê-la.
 
+## Armadilhas comuns
+
+> [!warning] Empurrar o ponto errado da escada
+> A armadilha mais comum é agir no ponto de alavancagem mais fraco só porque é o mais fácil de enxergar e de tocar. O time sofre com um serviço lento e a resposta vira "aumenta o timeout" ou "sobe mais réplica" — pontos 12 e 11, os mais baixos da lista de Meadows. Se o problema de verdade é a **estrutura** (um acoplamento que devia ter sido cortado), o **objetivo** do sistema (otimizar entrega em vez de qualidade) ou o **paradigma** da equipe (achar que "dá pra resolver depois"), mexer em números só compra tempo — e ainda dá a falsa sensação de que "algo foi feito".
+
+> [!warning] Confundir o sintoma correlacionado com o loop que o produz
+> Dois sintomas aparecerem juntos não significa que um seja a causa do outro — muitas vezes os dois são efeitos do mesmo loop escondido, e tratar um deles isoladamente não muda nada. Bugs subindo e moral caindo, por exemplo, correlacionam-se, mas "melhorar a moral" (um afterwork, um elogio) não fecha o loop de reforço entropia → atrito → mais atalhos → mais bugs → menos moral. Quem trata correlação como causa acaba investindo esforço num sintoma e vendo o outro voltar semanas depois — porque o loop real nunca foi tocado.
+
+> [!warning] A intervenção óbvia empurra o sistema na direção errada (*policy resistance*)
+> Meadows chama de **resistência política** (*policy resistance*) o fenômeno em que várias partes do sistema, cada uma perseguindo sua própria meta local, neutralizam ou até invertem o efeito de uma intervenção bem-intencionada. Você impõe um processo de revisão mais rígido pra frear bugs, e o time aprende a dividir PRs de um jeito que passa raspando pela regra sem passar pelo espírito dela. O sistema "resiste" não por malícia, mas porque cada ator continua otimizando o que sempre otimizou — e a régua nova vira só mais uma restrição a contornar. A lição de Meadows: antes de empurrar, mapeie quem mais tem meta própria dentro do sistema, porque é ali que a sua alavanca vai ser absorvida ou revertida.
+
+## Inglês
+
+A tradução direta funciona bem para a maioria dos termos desta nota, mas três merecem cuidado.
+
+**Reinforcing** e **balancing** são o vocabulário que Meadows escolheu de propósito, e a literatura mais antiga de cibernética usava *positive feedback* e *negative feedback* para a mesma distinção. Evite misturar os dois pares: "positive" não quer dizer "bom" — um loop *positivo* (reforçador) pode ser uma bola de neve destrutiva, e um loop *negativo* (de equilíbrio) pode ser exatamente o que o sistema precisa para não sair do controle. Meadows trocou os rótulos justamente para tirar essa carga moral do nome.
+
+**Stock**, na tradução "estoque", não carrega o sentido de inventário de almoxarifado nem de ação na bolsa — é qualquer quantidade acumulada e mensurável num instante: bugs abertos, dívida técnica, confiança do time, água numa banheira. Quando você ler *stock* num texto de *systems thinking*, resista à tentação de pensar em "estoque de produto".
+
+**Leverage point** quase sempre aparece em inglês mesmo em textos em português, porque é o termo de busca que leva direto ao ensaio original de Meadows e à lista canônica dos doze pontos — traduzir para "ponto de alavancagem" é correto e usado nesta nota, mas ao pesquisar ou citar a fonte, o termo em inglês é o que resolve.
+
+| Português | Inglês |
+|---|---|
+| Pensamento sistêmico | Systems thinking |
+| Emergência | Emergence |
+| Estoques e fluxos | Stocks and flows |
+| Loop de feedback | Feedback loop |
+| Loop de reforço | Reinforcing loop |
+| Loop de equilíbrio | Balancing loop |
+| Pontos de alavancagem | Leverage points |
+| Arquétipos de sistema | System archetypes |
+| Resistência política | Policy resistance |
+| Consequências não intencionais | Unintended consequences |
+
 ## Em entrevista
 
 Se cair "como você pensa sobre complexidade de sistemas?", o arco curto é:
@@ -448,6 +482,14 @@ Se cair "como você pensa sobre complexidade de sistemas?", o arco curto é:
 O sinal sênior é não procurar um culpado e sim mapear o loop.
 
 Se sobrar tempo, feche com a moral: o sistema não é só o código; é o código somado às pessoas e às regras — e é nas relações entre eles que a complexidade nasce.
+
+## O que vem a seguir
+
+Esta nota reenquadrou o sistema: não é o codebase, é codebase + time + processo. E se o sistema tem essa fronteira mais larga, uma consequência incômoda cai direto: **as pessoas que constroem o código também são parte do sistema** — não um ambiente externo que produz o software, mas um componente dele, sujeito às mesmas leis de estoque, fluxo e feedback que tudo o mais.
+
+E não é uma parte qualquer. É a parte cuja **estrutura de comunicação** — quem fala com quem, quem depende de quem, onde ficam os silos — tem o hábito de aparecer, praticamente copiada, na arquitetura que essas pessoas produzem. Não por acaso ou má vontade: é o mesmo tipo de acoplamento emergente que gerou o deadlock e o engarrafamento, só que entre a estrutura humana e a estrutura técnica.
+
+É um resultado antigo, testado à exaustão em empresas de software reais, e é onde este galho fecha o círculo entre "pensar em sistemas" e "pensar na organização que constrói o sistema": [[16 - Lei de Conway]].
 
 ## Referências
 

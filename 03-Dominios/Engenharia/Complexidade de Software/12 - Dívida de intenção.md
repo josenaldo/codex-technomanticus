@@ -1,7 +1,7 @@
 ---
 title: "Dívida de intenção"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -446,17 +446,65 @@ Agora o código é barato e abundante, e o que é raro — e portanto valioso �
 
 A dívida que ninguém rastreava virou a que mais custa não pagar.
 
+## Armadilhas comuns
+
+> [!warning] Documentar o *como* em vez do *porquê*
+> É fácil confundir "documentei a decisão" com "escrevi um README que descreve o que o código faz". Mas o código já diz o *como* — é legível, é a fonte de verdade da implementação. O que falta nunca é uma paráfrase do código em prosa; é o *porquê*: que restrição essa função respeita, que alternativa foi descartada e por quê. Um artefato que só reformula o código em português não paga dívida de intenção nenhuma — ele só duplica informação que já existe, e ainda corre o risco de divergir dela.
+
+> [!warning] Tratar o ADR como burocracia e abandoná-lo depois de três
+> O padrão clássico: a equipe adota ADRs num sprint de entusiasmo, escreve os primeiros dois ou três com capricho, e depois a prática murcha — porque parece papelada, e nenhuma decisão "pequena" parece merecer o ritual. O problema é que a dívida de intenção não se acumula nas decisões grandes e óbvias; se acumula nas pequenas e esquecidas, que são exatamente as que ninguém lembra de justificar seis meses depois. Um ADR abandonado na terceira entrada não é uma prática que falhou — é a régua de "todo commit material merece registro" que nunca foi levada a sério.
+
+> [!warning] Confiar que o histórico do versionador guarda a intenção
+> "Está tudo no `git log`" é a desculpa mais comum para não escrever nada à parte. Mas mensagens de commit tipicamente descrevem *a mudança* ("remove guard clause no endpoint X"), não *a razão* ("porque o caso de borda regulatório Y nunca foi coberto por teste"). O histórico de versionamento é um registro fiel do *o quê* e do *quando* — não do *porquê*. Tratá-lo como substituto do ADR é confundir rastreabilidade de mudança com rastreabilidade de intenção; são coisas diferentes, e só a segunda paga esta dívida.
+
+## Inglês
+
+A dívida de intenção nasceu em inglês e boa parte do vocabulário técnico ainda não tem tradução assentada em português — o que é, em si, um sintoma do quanto o tema é recente.
+
+**Rationale** é o caso mais traiçoeiro: parece cognato de "racional", mas não é isso — é a *justificativa registrada* de uma decisão, o "porquê" por escrito. Não existe uma palavra única em português que capture o sentido; usa-se o próprio termo em inglês ou uma perífrase como "justificativa da decisão". Traduzir "rationale" por "raciocínio" ou "lógica" perde a nuance de que é algo **registrado**, não apenas pensado.
+
+**ADR** (Architecture Decision Record) é sigla que se fala soletrada — "á-dê-érre" não pegou, diz-se "ei-di-ár" mesmo em contextos em português — e o termo virou padrão de fato desde o ensaio de Michael Nygard em 2011; não há um equivalente nacionalizado em uso.
+
+**Intent debt** também ainda não tem tradução consagrada fora deste vault: "dívida de intenção" é uma tradução direta e razoável, mas o termo é recente o bastante (2026) para que a literatura em português ainda não tenha se assentado em um nome único.
+
+| Português | Inglês |
+|---|---|
+| dívida de intenção | intent debt |
+| justificativa registrada / racional da decisão | rationale |
+| início frio, sessão sem memória | cold start |
+| registro de decisão arquitetural | ADR (Architecture Decision Record) |
+| deslocamento para a verificação | shift to verification |
+| conhecimento tácito | tacit knowledge |
+| conhecimento explícito / externalizado | explicit knowledge |
+| não-objetivos | non-goals |
+| erosão (do artefato) | erosion |
+| início frio do agente | agent starts cold |
+
 ## Em entrevista
 
 > [!tip] Como articular a dívida de intenção
 > O movimento que sinaliza senioridade é mostrar que você sabe que **as três dívidas são independentes**: dá pra ter código limpo (dívida técnica zero) *e* um time que entende o sistema (dívida cognitiva baixa) e, ainda assim, **dívida de intenção altíssima** — porque ninguém registrou o *porquê* em lugar nenhum. Frase de efeito: *"Intent is the one input an agent can't generate — it has to come from a human, so the why is becoming the most valuable thing you leave in the repo."* Se o entrevistador perguntar "como você documenta decisões?", não responda "a gente escreve docs"; responda em termos de **artefato de primeira classe**: ADRs baratos (formato Nygard), não-objetivos no README, e a regra de ouro — *atualizar a intenção no mesmo PR que muda o significado*. E mencione o teste dos 5 minutos como ferramenta de diagnóstico: "se eu não consigo dizer em cinco minutos pra que o sistema NÃO serve, a intenção não está externalizada". É um framework de 2026 (Storey); citar a fonte mostra que você acompanha a literatura.
 
+## O que vem a seguir
+
+As notas 09 a 12 descreveram um **estado**: as três dívidas, onde cada uma mora, e o que se deve para saldá-las. É uma fotografia — um corte no tempo que diz "aqui está o tamanho do buraco agora".
+
+Mas nenhum sistema fica parado. O bloco que começa na próxima nota introduz o ingrediente que faltava nesta fotografia: o **tempo**.
+
+O que acontece com um sistema em dívida quando ninguém paga nada e ninguém decide nada — quando ele simplesmente é deixado rodando? A intuição ingênua diria que ele permanece como está, um platô estável até que alguém intervenha.
+
+A resposta real é mais desconfortável: ele **piora sozinho**. Não por acidente, não por má vontade de ninguém em particular — por uma força estrutural que empurra todo sistema vivo na mesma direção, na ausência de trabalho contrário deliberado.
+
+Entender essa força é o que separa quem administra dívida de quem só a nomeia. A próxima nota nomeia essa força e mostra por que ela é tão previsível quanto a física que a inspira.
+
+Para isso, vá a [[13 - Entropia de software e decaimento]].
+
 ## Fontes
 
-- [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|From Technical Debt to Cognitive and Intent Debt — Margaret-Anne Storey (arXiv)]] — a **fonte primária**: a definição de dívida de intenção ("absence or erosion of explicit rationale, goals, and constraints")
-- [[02-Glosas/2026-the-intent-debt|The Intent Debt — Addy Osmani]] — a exposição mais clara: só humanos geram intenção e a economia do cold start
-- [[02-Glosas/2026-fowler-fragments-triple-debt-model|Fragments: April 2 — Martin Fowler]] — o substrato ("intent debt lives in artifacts") e o custo da verificação
-- [[02-Glosas/2026-intent-debt-the-ai-era-debt-nobody-is-tracking|Intent Debt: The AI-Era Debt Nobody Is Tracking — Developers Digest]] — os testes de diagnóstico e as práticas de pagamento
+- [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|From Technical Debt to Cognitive and Intent Debt — Margaret-Anne Storey (arXiv)]] — a **fonte primária**: a definição de dívida de intenção ("absence or erosion of explicit rationale, goals, and constraints"). URL: https://arxiv.org/abs/2603.22106
+- [[02-Glosas/2026-the-intent-debt|The Intent Debt — Addy Osmani]] — a exposição mais clara: só humanos geram intenção e a economia do cold start. URL: https://addyosmani.com/blog/intent-debt/
+- [[02-Glosas/2026-fowler-fragments-triple-debt-model|Fragments: April 2 — Martin Fowler]] — o substrato ("intent debt lives in artifacts") e o custo da verificação. URL: https://martinfowler.com/fragments/2026-04-02.html
+- [[02-Glosas/2026-intent-debt-the-ai-era-debt-nobody-is-tracking|Intent Debt: The AI-Era Debt Nobody Is Tracking — Developers Digest]] — os testes de diagnóstico e as práticas de pagamento. URL: https://www.developersdigest.tech/blog/intent-debt-the-ai-debt-nobody-is-tracking
 
 > [!note] Sobre o lastro
 > O termo e o modelo são atribuídos a **Margaret-Anne Storey** (paper no arXiv, 2026); **Osmani**, **Fowler** e a **Developers Digest** o afiaram e operacionalizaram. Todas as citações em inglês são **verbatim** das seções "Citações" das glosas acima. A origem do formato **ADR** (Michael Nygard, *Documenting Architecture Decisions*, novembro de 2011, Cognitect; quatro seções, Markdown no repo) foi conferida via fonte externa ([Fowler, bliki ADR](https://martinfowler.com/bliki/ArchitectureDecisionRecord.html)) e não vem das glosas. **Ressalva honesta:** não li o paper de Storey nem os posts de Osmani/Fowler/Developers Digest na íntegra — as afirmações reproduzem com alta fidelidade o argumento e o vocabulário registrados nas glosas, mas o fraseado de partes não-citadas pode diferir do original. A atribuição (Storey; afiado por Osmani/Fowler/Developers Digest) e os testes de diagnóstico estão confirmados nas glosas. Padrão de marcação seguindo [[06 - Abstrações que vazam]].

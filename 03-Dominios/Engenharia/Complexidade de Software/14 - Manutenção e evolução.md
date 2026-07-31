@@ -1,7 +1,7 @@
 ---
 title: "Manutenção e evolução"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -274,6 +274,40 @@ A complexidade não é domada num momento heroico de arquitetura; ela é **admin
 > [!warning] Saúde de software não é um estado que se alcança — é um fluxo que se mantém
 > Você nunca "termina" de gerir complexidade, do mesmo jeito que ninguém "termina" de estar saudável e pode parar de comer e dormir. A Lei II de Lehman ([[13 - Entropia de software e decaimento]]) garante que a complexidade *sobe por padrão*; manutenção e refatoração são o trabalho explícito que a empurra de volta. Pare de gastar essa energia e o sistema decai — não por um erro, mas por *ausência de cuidado contínuo*. Um sistema saudável não é um que foi bem projetado; é um onde **alguém continua, todo dia, pagando o custo de mantê-lo simples o bastante pra mudar**. Software não é uma obra que se entrega. É um jardim que se cuida.
 
+## Armadilhas comuns
+
+> [!warning] Tratar manutenção como trabalho de segunda classe
+> É comum ver "manutenção" na boca de gestores e devs júnior como sinônimo de trabalho menos nobre — o time "de verdade" constrói coisas novas; quem mantém "só" apaga incêndio. Os números desta nota dizem o contrário: manutenção consome 60–80% do custo do ciclo de vida, e a fatia dominante dentro dela é *perfectiva* — evolução, não reparo. Alocar os desenvolvedores mais experientes só pra "projetos novos" e deixar a manutenção pra quem está começando é otimizar pra a menor parte do trabalho e desguarnecer a maior. Manter *é* o trabalho; construir é só o prólogo.
+
+> [!warning] A regra do escoteiro sem rede de testes vira refatoração selvagem
+> "Deixe o código um pouco melhor a cada toque" pressupõe que você consegue *verificar* que a melhoria não mudou o comportamento — e essa verificação é o que os testes fazem. Sem eles, "melhorar de passagem" é reescrever um trecho que ninguém tem como confirmar que ainda funciona, no meio de um commit que devia ser só a feature pedida. É exatamente o pecado dos "dois chapéus" misturados: você some do modo *adicionar função* pro modo *refatorar* sem perceber, e quando algo quebra em produção não dá pra saber qual dos dois foi. A regra do escoteiro pressupõe testes verdes (ou, na ausência deles, characterization tests primeiro); sem essa rede, é oportunismo disfarçado de disciplina.
+
+> [!warning] Confundir "código legado" com "código velho"
+> O reflexo é rotular como legado tudo que tem alguns anos, foi escrito numa stack antiga, ou usa um estilo fora de moda. As duas definições que esta nota trouxe dizem outra coisa. Pra Feathers, legado é *código sem testes* — um microsserviço escrito ontem, em Kotlin, com a arquitetura mais elogiada do momento, já é legado se ninguém consegue mudá-lo com confiança. Pra Naur, legado é código cuja *teoria se perdeu* — um sistema de vinte anos cuja equipe original ainda está por perto, documentando e explicando cada decisão, não é legado nesse sentido, por mais datado que pareça por fora. Idade é uma correlação frouxa; medo de mudar (por falta de verificação ou de compreensão) é a causa real.
+
+> [!info] Fronteira com Arqueologia e Restauração de Software
+> Esta nota trata da **natureza** da manutenção: por que ela domina o custo, o que torna um código temido, e a postura (Beck, Fowler, a regra do escoteiro) diante da mudança contínua. O **ofício** de efetivamente intervir num sistema legado concreto — como erguer a rede de segurança com characterization tests, achar seams pra quebrar dependências, conduzir uma refatoração pelo Método Mikado, ou tocar um Strangler Fig do início ao fim — é o assunto do galho irmão [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia e Restauração de Software]]. Pense nesta nota como o *porquê* e aquele galho como o *como*.
+
+## Inglês
+
+Os quatro tipos de manutenção quase nunca circulam traduzidos — na boca de quem trabalha com o assunto, são sempre *corrective*, *adaptive*, *perfective* e *preventive maintenance*, mesmo em conversa em português. Vale destravar o mais contra-intuitivo dos quatro: **perfective** não significa "aperfeiçoar a qualidade interna" (isso seria mais perto de *preventive*). *Perfective maintenance* é acrescentar ou ajustar **funcionalidade**, a pedido de quem usa o sistema — é por isso que ela é a fatia que domina o custo: usuário pedindo mais e melhor nunca para.
+
+**Legacy**, em inglês corporativo, não carrega o mesmo desprezo automático que "código legado" carrega em português coloquial. *Legacy system* muitas vezes só quer dizer "sistema herdado" — e um sistema legado, na prática de qualquer empresa madura, costuma ser justamente o que **gera receita** hoje. O peso pejorativo que a palavra ganha vem das definições de Feathers e Naur (medo de mudar), não da palavra em si.
+
+**Refactoring** também sofre diluição no uso corrente: virou sinônimo frouxo de "mexer no código" ou até "reescrever um pedaço". A definição de Fowler é mais estrita — muda a estrutura interna **sem** alterar o comportamento observável. Se o comportamento muda, o termo certo é outro (reescrita, correção, nova feature), não *refactoring*. Manter essa distinção precisa é o que separa "refatorei" de "modifiquei e torci".
+
+| Português | Inglês |
+|---|---|
+| Manutenção corretiva | Corrective maintenance |
+| Manutenção adaptativa | Adaptive maintenance |
+| Manutenção perfectiva | Perfective maintenance |
+| Manutenção preventiva | Preventive maintenance |
+| Código legado | Legacy code |
+| Regra do escoteiro | Boy scout rule |
+| Refatoração | Refactoring |
+| "Torne a mudança fácil, depois faça a mudança fácil" | "Make the change easy, then make the easy change" |
+| Lixo acumulado (bagunça de baixo nível) | Cruft |
+
 ## Em entrevista
 
 Quando o tema aparece, o entrevistador quer ver se você entende manutenção como *trabalho de primeira classe*, não como tarefa de estagiário. Munição curta:
@@ -283,6 +317,14 @@ Quando o tema aparece, o entrevistador quer ver se você entende manutenção co
 - **"Antes de uma feature difícil, eu faço refatoração preparatória: make the change easy, then make the easy change."** Sinaliza postura sênior — você investe na estrutura antes de empurrar a mudança.
 - **"Pra modernizar um monólito legado, eu evito o big-bang rewrite e prefiro o Strangler Fig."** Demonstra que você conhece o risco da reescrita e tem uma alternativa incremental concreta.
 - **Se perguntarem como refatorar com segurança:** dois chapéus (nunca misturar feature e refatoração), testes verdes como rede, e characterization tests/seams pra domar o legado sem testes.
+
+## O que vem a seguir
+
+Repare no que esta nota inteira pressupõe: manter é agir, sem parar, sobre um sistema que **reage**. Cada correção, cada refatoração, cada feature entregue muda o organismo que você vai precisar corrigir de novo amanhã. E a experiência comum de quem mantém sistemas grandes é que o efeito de uma mudança raramente fica contido no lugar onde ela foi feita — mexe aqui, quebra ali, um comportamento novo emerge em produção sem que ninguém o tenha escrito de propósito.
+
+Até aqui o galho tratou a complexidade sobretudo como propriedade de uma coisa: um módulo, uma função, um arquivo, um sistema. Faltava a lente pra enxergar o que acontece **entre** as partes — como um efeito viaja, como um todo passa a se comportar de um jeito que nenhuma peça isolada explica, e por que "consertar" um ponto pode, com atraso, causar um problema em outro completamente distante.
+
+A próxima nota, [[15 - Pensamento sistêmico]], dá esse instrumental: feedback, emergência, e a diferença entre entender a parte e entender o todo.
 
 ## Referências
 

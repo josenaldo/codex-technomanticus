@@ -1,7 +1,7 @@
 ---
 title: "Simplicidade não é facilidade"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: growing
 status: growing
@@ -200,10 +200,7 @@ E ele dá um método de bolso: passe cada decisão pelo crivo de **who / what / 
 - *When/where* — desacoplado por filas, refs gerenciadas.
 - *Why* — as regras, reunidas, não espalhadas em conditionals.
 
-Cada aspecto que você consegue nomear e separar é uma trança a menos. (Essa é a porta de entrada pra [[05 - Abstração - a ferramenta central]], onde a abstração ganha nota própria.)
-
-> [!warning] "Incidental is Latin for your fault"
-> Hickey é cruel com a desculpa de que "a complexidade veio da ferramenta": *"It wasn't part of what the user asked us to do. We chose a tool. It had some inherent complexity in it... Incidental is Latin for your fault."* Complexidade acidental não é um acidente meteorológico — é uma **escolha** sua de construção. A ponte direta pro corte de Brooks em [[02 - Complexidade essencial vs. acidental]]: o acidental é exatamente o que você adicionou, e portanto o que você pode retirar.
+Cada aspecto que você consegue nomear e separar é uma trança a menos. (Essa é a porta de entrada pra [[05 - Abstração - a ferramenta central]], onde a abstração ganha nota própria.) E, como Hickey faz questão de cravar, essa trança nunca é culpa da ferramenta — é escolha de quem construiu.
 
 E ele aponta a raiz cultural de a gente cair nessa de novo e de novo: olhamos só pro lado bom.
 
@@ -250,12 +247,7 @@ flowchart LR
 
 E a ironia ácida sobre processo: trocar simplicidade por velocidade de partida é tratar a corrida como uma sequência de sprints curtos, em que a gente *"fire the starting pistol every hundred yards and call it a new sprint"* — comemorando o arranque de cada trecho e nunca olhando a maratona inteira, onde a complexidade acumulada é quem decide.
 
-> [!warning] Fácil de começar não é simples de manter
-> O viés é traiçoeiro porque os dois sentidos de "near" se reforçam: a ferramenta familiar (perto do entendimento) também costuma ser a já instalada (perto fisicamente). Tudo grita "use isto".
->
-> Mas familiaridade não é uma propriedade do *design* — é uma propriedade *sua*, e temporária: o que é estranho hoje vira familiar com prática. Já o entrelaçamento é do design, e é permanente até alguém destrançar.
->
-> Trocar simplicidade por facilidade é hipotecar a estrutura do sistema pra economizar na curva de aprendizado de quem escreve. Hickey: a gente acaba com sistemas que são fáceis de *escrever* e impossíveis de *raciocinar*.
+O viés é traiçoeiro porque os dois sentidos de "near" se reforçam: a ferramenta familiar (perto do entendimento) também costuma ser a já instalada (perto fisicamente). Tudo grita "use isto". Mas familiaridade não é uma propriedade do *design* — é uma propriedade *sua*, e temporária: o que é estranho hoje vira familiar com prática. Já o entrelaçamento é do design, e é permanente até alguém destrançar.
 
 > [!tip] A pergunta que desarma a armadilha
 > Antes de adotar algo, separe as duas perguntas que a gente costuma fundir:
@@ -416,8 +408,39 @@ A teoria fica mais nítida em exemplos. Os dois quadrantes perigosos do primeiro
 > [!example] O teste de bolso
 > Da próxima vez que uma ferramenta parecer "óbvia" de adotar, desconfie do conforto. Pergunte: *esse conforto é porque ela é simples (desentrelaçada) ou porque ela é familiar (perto de mim)?*. Se for só familiaridade, você está no quadrante laranja — fácil agora, caro depois.
 
+## Armadilhas comuns
+
+> [!warning] "Incidental is Latin for your fault"
+> Hickey é cruel com a desculpa de que "a complexidade veio da ferramenta": *"It wasn't part of what the user asked us to do. We chose a tool. It had some inherent complexity in it... Incidental is Latin for your fault."* Complexidade acidental não é um acidente meteorológico — é uma **escolha** sua de construção. A ponte direta pro corte de Brooks em [[02 - Complexidade essencial vs. acidental]]: o acidental é exatamente o que você adicionou, e portanto o que você pode retirar.
+
+> [!warning] Fácil de começar não é simples de manter
+> O viés é traiçoeiro porque os dois sentidos de "near" se reforçam: a ferramenta familiar (perto do entendimento) também costuma ser a já instalada (perto fisicamente). Tudo grita "use isto".
+>
+> Mas familiaridade não é uma propriedade do *design* — é uma propriedade *sua*, e temporária: o que é estranho hoje vira familiar com prática. Já o entrelaçamento é do design, e é permanente até alguém destrançar.
+>
+> Trocar simplicidade por facilidade é hipotecar a estrutura do sistema pra economizar na curva de aprendizado de quem escreve. Hickey: a gente acaba com sistemas que são fáceis de *escrever* e impossíveis de *raciocinar*.
+
 > [!warning] O quadrante traiçoeiro não é o difícil — é o confortável
 > Note que o perigo real não está em "complexo + difícil" (legado horrível): esse pelo menos *grita* que é problema, e ninguém o adota de bom grado. O perigo está em "complexo + fácil": a herança que você escreve em trinta segundos, o ORM que começa lindo, o framework que esconde a trança atrás de uma anotação. Eles **não doem na hora** — e por isso passam pela revisão de código sem resistência. A complexidade entra de fininho, vestida de produtividade. É por isso que Hickey insiste que simplicidade exige *vigilância ativa*: o atalho complexo é sempre o que parece mais amigável.
+
+## Inglês
+
+O vocabulário de *Simple Made Easy* não é ornamento — é a própria ferramenta de análise de Hickey. Boa parte da precisão da palestra desaparece na tradução, porque português tem menos réguas do que inglês pra essa distinção.
+
+O caso mais gritante é **simple vs. easy**. Em português, "simples" e "fácil" convivem como quase-sinônimos no uso comum — "deixa mais simples" e "facilita" apontam pra mesma sensação de alívio. Em inglês, a distinção também não é óbvia por padrão (é por isso que a palestra precisa existir); mas a língua pelo menos oferece duas palavras com raízes etimológicas separáveis (*simplex* vs. *adjacent*) que Hickey consegue puxar e opor. Em português, o par mais próximo seria "simples" vs. "cômodo/conveniente" — mas nenhum tradutor usa isso, porque soaria estranho, e a nota inteira existe justamente porque essa opacidade cobra um preço.
+
+**To complect** merece nota à parte: não é uma palavra do inglês corrente — é um arcaísmo que Hickey desenterrou do dicionário e ressuscitou pra ter um verbo técnico específico. Um falante nativo de inglês, fora do círculo de quem viu a palestra, provavelmente nunca ouviu o verbo. Por isso, em entrevista ou em code review, dizer "isso está complecting duas coisas que deveriam estar separadas" funciona como senha: sinaliza que você conhece a fonte, não é jargão genérico que qualquer um usaria por acaso.
+
+| Português | Inglês |
+|---|---|
+| simples (estrutural, objetivo) | simple |
+| fácil (relativo, subjetivo) | easy |
+| entrelaçar, trançar | to complect |
+| entrelaçamento, trança | interleaving / braid |
+| grades de proteção (testes/tipos que só apanham o erro) | guardrails |
+| acidental (a complexidade que você mesmo introduziu) | incidental |
+| cardinalidade (número de elementos) | cardinality |
+| afastar, tirar de perto (abstrair) | to abstract, to draw away |
 
 ## Em entrevista
 
@@ -427,6 +450,16 @@ Se cair "qual a diferença entre simples e fácil?", a resposta curta que mostra
 - **Fácil** é subjetivo e relativo — fala de *distância* (familiar, à mão, dentro das minhas capacidades).
 - A armadilha é decidir pelo fácil e pagar em complexidade: fácil otimiza o *começar*, simples otimiza o *continuar*.
 - Bônus de profundidade: cite **Worse is Better** (Gabriel) pra mostrar que "simplicidade" se bifurca em *interface* vs. *implementação*, e que a escolha entre elas é política, não técnica.
+
+## O que vem a seguir
+
+Recusar complect resolve metade do problema. A outra metade é saber, na hora de desfazer uma trança, *por que* ela foi feita — porque quase nenhum entrelaçamento nasce de acidente puro. Alguém amarrou estado a tempo, ou lógica de negócio a autenticação, tentando resolver um problema real, com as informações e pressões que tinha naquele momento.
+
+O problema é que essa razão raramente sobrevive no código. O commit que juntou as duas coisas não deixou um comentário explicando o porquê; o autor mudou de time, ou simplesmente esqueceu. O que resta é a trança — sem o mapa de por que ela foi amarrada assim.
+
+Peter Naur tem um nome pra esse "porquê" que evapora: a **teoria do programa**. Não é a documentação, nem os testes, nem o próprio texto do código — é o entendimento vivo, que existe só na cabeça de quem construiu (ou manteve) o sistema, do porquê ele é *desse jeito* e não de outro.
+
+É a peça que faltava nesta nota: complecting é o que se faz; a teoria é o que explica por que se fez, e é sobre ela que fala a próxima nota, [[04 - O programa como teoria]].
 
 ## Referências
 

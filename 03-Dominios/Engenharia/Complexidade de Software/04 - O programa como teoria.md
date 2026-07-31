@@ -1,7 +1,7 @@
 ---
 title: "O programa como teoria"
 created: 2026-05-26
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -371,6 +371,38 @@ Como a captura é parcial, vale capturar o máximo *do que dá* — e investir o
 > [!warning] Lastro / honestidade
 > A enumeração das três capacidades, a definição de morte e a frase sobre o renascimento são de Naur (1985). *Knowing-that*/*knowing-how* e o argumento da regressão são de Ryle (1949); "sabemos mais do que conseguimos dizer" é de Polanyi (1966). A leitura organizacional (*employee churn*) é de Bjarnason (2022); a frase do *rewrite* é de Spolsky (2000); "integridade conceitual" é de Brooks. O ângulo da IA é gancho — o desenvolvimento está nas notas linkadas, não aqui. Tudo conferido nas fontes da seção Referências.
 
+## Armadilhas comuns
+
+> [!warning] Confundir documentação com teoria
+> A nota inteira gira em torno disso, mas vale nomear o erro direto: documentação e ADRs são **externalizações parciais** da teoria, não a teoria em si. Uma equipe pode ter documentação impecável — como o grupo A deixou para o grupo B, no exemplo do compilador — e mesmo assim não conseguir transferir a capacidade de julgar o que "encaixa" no design. Documentar bem é necessário; tratá-lo como suficiente é o erro de categoria que Naur ataca desde a primeira página.
+
+> [!warning] Achar que onboarding é ler código e docs
+> Se a teoria é majoritariamente tácita (Polanyi) e é uma capacidade, não um texto (Ryle), então nenhum volume de leitura solitária a transfere. Naur é explícito: o melhor canal é trabalhar lado a lado com quem já tem a teoria. Um onboarding que só entrega um wiki e um repositório para o novato "se virar" está otimizando o canal errado — e vai produzir alguém que sabe *o quê*, mas não *por quê* nem *como julgar*.
+
+> [!warning] Tratar rotatividade como problema de RH
+> *Churn* alto não é só custo de recrutamento e ramp-up — é erosão direta da teoria do sistema, como argumenta Bjarnason. Cada saída sem sobreposição leva embora um pedaço do "porquê" que nenhum documento guardou. Encarar isso como métrica de retenção, e não como risco técnico ao próprio sistema, é subestimar o que realmente se perde quando a equipe se dispersa.
+
+## Inglês
+
+O ensaio de Naur é em inglês, e boa parte do vocabulário técnico não tem tradução direta em português sem perder nuance.
+
+*Theory building* é o termo do próprio Naur — "construção de teoria" funciona em português, mas "teoria", aqui, carrega o sentido de Gilbert Ryle: não é hipótese científica testável, é a capacidade viva de explicar, justificar e responder a situações novas. Mais perto de "domínio prático" do que de "modelo teórico".
+
+*Tacit knowledge* é o conceito de Polanyi — conhecimento que se possui, mas não se consegue verbalizar por inteiro. "Conhecimento tácito" é a tradução padrão e não perde muito.
+
+*Program revival* (e *program death*) são termos cunhados pelo próprio Naur no ensaio — não são jargão consagrado da indústria, o que vale marcar para quem for citar a fonte. "Reviver o programa" é uma tradução literal aceitável, desde que se preserve que "revival" ali é reconstrução da teoria por uma nova equipe, não recuperação de um sistema fora do ar.
+
+| Português | Inglês |
+|---|---|
+| construção de teoria | theory building |
+| conhecimento tácito | tacit knowledge |
+| renascimento do programa | program revival |
+| morte do programa | program death |
+| teoria no sentido de Ryle | Ryle's sense of theory |
+| saber proposicional | knowing-that |
+| saber-fazer / capacidade | knowing-how |
+| transferência de teoria | theory-sharing |
+
 ## Em entrevista
 
 Pergunta típica: *"Por que documentar mais não resolve o problema de conhecimento de um sistema legado?"*
@@ -382,6 +414,16 @@ A documentação captura o "o quê", não o "porquê" nem o julgamento de coerê
 Por isso pareamento, revisão e continuidade de pessoas importam mais que volume de docs — e por isso *bus factor* baixo é risco real, não burocracia.
 
 Se sobrar tempo, o gancho de profundidade é o exemplo do compilador de Naur (grupos A/B): a doc completa não impediu B de propor remendos, porque B não tinha a teoria.
+
+## O que vem a seguir
+
+Se a teoria é majoritariamente tácita, e o código só carrega um registro *com perda* dela, sobra uma pergunta prática: o que, exatamente, o texto do programa **consegue** carregar?
+
+Não tudo — já vimos isso. Mas não nada, também. Há um mecanismo específico com que uma equipe empacota parte da sua teoria dentro do próprio código, de um jeito que outras pessoas não precisam reconstruir a decisão inteira para usá-la com segurança.
+
+Esse mecanismo é a **abstração**: a unidade que esconde uma decisão atrás de uma interface simples, para que quem chama não precise carregar na cabeça tudo o que quem escreveu carregou. Parnas dá o critério de onde traçar essa linha — e é dele que parte a próxima nota.
+
+Ver [[05 - Abstração - a ferramenta central]].
 
 ## Referências
 

@@ -1,7 +1,7 @@
 ---
 title: "Carga cognitiva e legibilidade"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: growing
 status: growing
@@ -334,6 +334,38 @@ Isso conecta diretamente com a [[16 - Lei de Conway]]: se a estrutura social e a
 > [!note] Carga de time ≠ dívida cognitiva
 > Cuidado pra não embaralhar de novo. A "carga cognitiva de time" do *Team Topologies* ainda é **carga** — um orçamento *agora*, de quanta complexidade o time aguenta segurar. A **dívida cognitiva** ([[11 - Dívida cognitiva]]) é a erosão *ao longo do tempo* do entendimento que o time já teve. Uma é o teto de hoje; a outra é o vazamento lento de ontem pra amanhã.
 
+## Armadilhas comuns
+
+> [!warning] Usar complexidade ciclomática como proxy de legibilidade
+> A métrica de McCabe conta ramificação de fluxo — nada mais. Um código com ciclomática baixa pode ter nomes opacos, estado escondido e três níveis de aninhamento; um `switch` gigante e plano pode ter ciclomática alta e ser trivial de ler. Tratar "ciclomática < 10" como sinônimo de "fácil de entender" ignora tudo que a carga estranha realmente cobra do leitor.
+
+> [!warning] Confundir carga cognitiva com dívida cognitiva
+> São eixos diferentes: carga é individual e momentânea (o esforço que *você* gasta *agora*); dívida é coletiva e temporal (a erosão do entendimento do *time* ao longo de meses). Refatorar um nome ruim baixa a carga de quem lê amanhã, mas não devolve ao time a teoria do sistema que ele perdeu. Diagnosticar dívida como se fosse carga leva a prescrever o remédio errado — "é só refatorar os nomes" não resolve uma perda organizacional de entendimento.
+
+> [!warning] Atacar a carga intrínseca em vez da estranha
+> A carga intrínseca é a dificuldade do próprio problema — nenhuma refatoração a elimina, porque ela não mora no código, mora no domínio. Gastar esforço tentando "simplificar" um algoritmo de consenso distribuído até ele parecer trivial é ilusório: ou a simplificação é falsa (esconde um caso que volta como bug), ou o que baixou foi carga estranha disfarçada de intrínseca. O alvo certo é sempre a carga que a apresentação impõe, não a que o problema impõe.
+
+## Inglês
+
+Boa parte do vocabulário desta nota carrega falsos amigos ou traduções capengas que valem a pena destravar.
+
+**Germane** é o mais traiçoeiro dos três termos de Sweller. Não é "germânico" (falso cognato de aparência) nem "relevante" no sentido frouxo do dia a dia. No jargão da teoria, *germane load* é o esforço que efetivamente constrói esquema mental — a única das três cargas que você *quer* gastar, porque é ela que vira conhecimento durável.
+
+**Principle of least astonishment** é a forma canônica na literatura mais antiga de design de linguagens; hoje aparece com frequência igual como **principle of least surprise**. Os dois termos são intercambiáveis — "astonishment" soa mais formal e é o que aparece nas fontes originais dos anos 1970, "surprise" é a variante mais coloquial que se popularizou depois.
+
+**Obscurity**, no vocabulário de Ousterhout, não é "obscuridade" no sentido de "coisa rara" ou "pouco conhecida" — é informação importante que *deveria* estar visível e não está. E **chunking**, tomado emprestado direto da psicologia cognitiva, não tem tradução natural em português de uso corrente; "agrupamento" ou "fragmentação em blocos" perdem a precisão técnica do termo original.
+
+| Português | Inglês |
+| --- | --- |
+| carga cognitiva | cognitive load |
+| carga intrínseca | intrinsic load |
+| carga estranha | extraneous load |
+| carga germânica / produtiva | germane load |
+| fragmentação em pedaços (memória) | chunking |
+| princípio da menor surpresa | principle of least astonishment / least surprise |
+| obscuridade | obscurity |
+| legibilidade | readability |
+
 ## Em entrevista
 
 Esta é uma das ideias que mais rende em entrevista sênior, porque conecta código a pessoas.
@@ -345,11 +377,21 @@ Como usá-la sem soar decorado:
 - Se a conversa for de **arquitetura/times**, traga o orçamento de carga cognitiva do *Team Topologies* — é a ponte entre "código legível" e "organização que escala".
 - O erro a evitar: tratar legibilidade como questão de gosto. O argumento forte é sempre o mesmo — código é lido muito mais do que escrito, a memória de trabalho tem ~4 slots, e legibilidade é engenharia pra caber nesse limite.
 
+## O que vem a seguir
+
+Carga cognitiva alta é um custo que se paga toda vez que alguém abre o arquivo — um imposto momentâneo, cobrado leitura após leitura, de uma pessoa de cada vez.
+
+Mas o que acontece quando esse custo não é pago e amortizado, e sim adiado, sessão após sessão, review após review, até ninguém mais lembrar por que aquela decisão estranha existe?
+
+Aí o esforço individual e pontual vira outra coisa: uma erosão coletiva que se acumula com o tempo. Esta nota já separou esse fenômeno da carga cognitiva — é a **dívida cognitiva** ([[11 - Dívida cognitiva]]), e ela é só uma de três dívidas que o software acumula.
+
+A próxima nota abre o cofre: [[09 - As três dívidas do software]].
+
 ## Referências
 
 - **George A. Miller** — *The Magical Number Seven, Plus or Minus Two* (1956), origem da estimativa "7 ± 2" itens em memória de curto prazo. Confirmado; o próprio Miller tratava o número como recurso retórico.
 - **Nelson Cowan** — *The Magical Number 4 in Short-Term Memory: A Reconsideration of Mental Storage Capacity* (Behavioral and Brain Sciences, 2001). Refinamento moderno: controlado o ensaio e o apoio da LTM, a capacidade da memória de trabalho fica em ~4 chunks (faixa de 3 a 5), não 7. Confirmado por busca contra o paper e panoramas (Cambridge, ResearchGate).
-- **John Sweller** — *cognitive load theory* (final dos anos 1980), origem da tríade **intrinsic / extraneous / germane** e da tese de que a **memória de trabalho** é o gargalo, com as cargas aproximadamente aditivas. Verificado contra panoramas secundários; a aplicação ao **código** (intrínseca↔essencial, estranha↔acidental) é mapeamento desta nota, não afirmação literal de Sweller.
+- **John Sweller** — *Cognitive Load During Problem Solving: Effects on Learning* (Cognitive Science, 12(2), 257–285, 1988), origem da tríade **intrinsic / extraneous / germane** e da tese de que a **memória de trabalho** é o gargalo, com as cargas aproximadamente aditivas. [Cognitive Load During Problem Solving](https://doi.org/10.1207/s15516709cog1202_4). Verificado contra o registro do DOI e panoramas secundários; a aplicação ao **código** (intrínseca↔essencial, estranha↔acidental) é mapeamento desta nota, não afirmação literal de Sweller.
 - **Felienne Hermans** — *The Programmer's Brain* (Manning, 2021). Origem (no contexto de código) do **chunking** por especialistas e dos **três tipos de confusão**: falta de conhecimento (LTM), falta de informação (STM) e falta de poder de processamento (memória de trabalho). Confirmado contra a editora (Manning/O'Reilly), o sumário e resumos do livro.
 - **Thomas J. McCabe** — *A Complexity Measure* (IEEE TSE, 1976), origem da **complexidade ciclomática** como contagem de caminhos linearmente independentes no grafo de fluxo de controle (`M = E − N + 2P`). Confirmado.
 - **G. Ann Campbell / SonarSource** — *Cognitive Complexity: A new way of measuring understandability* (white paper, 2018; também no *International Conference on Technical Debt 2018*). Métrica que penaliza aninhamento (incremento extra por nível) e quebras do fluxo linear, motivada por *"testability != understandability"*. Confirmado — é um proxy de compreensibilidade, não medida direta de carga.
@@ -357,7 +399,8 @@ Como usá-la sem soar decorado:
 - **Princípio da menor surpresa** (*principle of least astonishment*, POLA) — formulado em publicação de design de linguagens de 1972; um componente deve se comportar como a maioria dos leitores espera, reduzindo carga cognitiva. Confirmado.
 - **"Código é lido mais do que escrito"** — a formulação mais citada ("*code is read much more often than it is written*") é atribuída a **Guido van Rossum** (espírito da PEP 8 de Python); **Robert C. Martin** popularizou a versão quantitativa no *Clean Code* (2008): "the ratio of time spent reading vs. writing is well over 10 to 1". Esta nota usa a ideia, não cita autor único no corpo. Atribuição conferida por busca.
 - **Lei de Goodhart** — *"When a measure becomes a target, it ceases to be a good measure"* — atribuída a Charles Goodhart; formulação canônica de Marilyn Strathern. Paráfrase fiel.
-- **Matthew Skelton & Manuel Pais** — *Team Topologies* (IT Revolution, 2019). Origem do uso organizacional de **carga cognitiva de time** como orçamento, e da recomendação de dimensionar bounded contexts pra caber na carga de um time. Confirmado contra resumos do livro.
+- **Matthew Skelton & Manuel Pais** — *Team Topologies: Organizing Business and Technology Teams for Fast Flow* (IT Revolution, 2019). Origem do uso organizacional de **carga cognitiva de time** como orçamento, e da recomendação de dimensionar bounded contexts pra caber na carga de um time. [Página oficial do livro](https://teamtopologies.com/book). Confirmado contra a página oficial e resumos do livro.
+- **Simone Scalabrino et al.** — *Automatically Assessing Code Understandability: How Far Are We?* (ASE 2017, IEEE/ACM). Evidência empírica de que nenhuma métrica testada — incluindo as de complexidade e legibilidade assumidas como mais próximas do conceito — captura bem a compreensibilidade real do código; reforça, com dados, o argumento desta nota contra tratar a ciclomática como proxy confiável de carga cognitiva. [Automatically Assessing Code Understandability](https://www.semanticscholar.org/paper/Automatically-Assessing-Code-Understandability-Scalabrino-Bavota/ae6496ec4c6d34fec0c044187cc07c91c923f848). Confirmado via busca acadêmica (autoria, veículo e achado central).
 
 > [!note] Sobre o lastro
 > A tríade de cargas e a aditividade (Sweller), o limite de ~4 chunks (Cowan, refinando Miller), o chunking e os três tipos de confusão (Hermans), a ciclomática (McCabe), a Cognitive Complexity (Campbell/SonarSource), o POLA e a carga de time (Team Topologies) foram conferidos por busca contra fontes primárias e panoramas confiáveis. **Ressalva honesta:** não li o white paper da SonarSource, *The Programmer's Brain* nem os papers de Sweller/Cowan página a página; as afirmações reproduzem o argumento e o vocabulário com alta fidelidade, mas detalhes de fórmula e fraseado podem diferir da redação original. O mapeamento intrínseca↔essencial / estranha↔acidental é construção desta nota. Padrão de marcação seguindo [[06 - Abstrações que vazam]].

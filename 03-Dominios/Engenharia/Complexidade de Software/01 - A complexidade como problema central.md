@@ -1,7 +1,7 @@
 ---
 title: "A complexidade como problema central"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -114,8 +114,7 @@ Nenhuma linguagem melhor, IDE melhor ou framework melhor faz esses quatro fatos 
 
 É exatamente por isso que Brooks não acredita em "balas de prata": nenhuma inovação isolada vai dar um ganho de uma ordem de magnitude, porque a parte mais dura do trabalho não está na implementação — está na **essência**.
 
-> [!warning] Cuidado com a falsa esperança
-> A história do software é cheia de promessas de que *a próxima tecnologia* vai acabar com a complexidade. Linguagens de alto nível, OO, frameworks, IA generativa — cada onda atacou (com sucesso real) a complexidade **acidental**. Nenhuma tocou na **essencial**, porque essa não é um problema de ferramenta. Manter essa distinção em mente é uma vacina contra hype. A separação cuidadosa entre essencial e acidental é o assunto inteiro da nota [[02 - Complexidade essencial vs. acidental]].
+Vale desconfiar, então, de toda promessa de que a próxima ferramenta vai fazer os quatro fatos acima desaparecerem — a seção [[#Armadilhas comuns]] volta a esse ponto.
 
 O diagrama abaixo organiza as quatro propriedades como as raízes da dificuldade do software.
 
@@ -290,8 +289,7 @@ Ele aceita pagar um pequeno custo agora — Ousterhout sugere reservar **~10–2
 
 (É a contraparte de postura do exemplo da moeda lá em cima: a `formatarMoeda` que ninguém escreveu "porque deu pra resolver com `"R$ "`" é exatamente o investimento que o tático pula e o estratégico faz.)
 
-> [!warning] O tactical tornado
-> Ousterhout dá um nome ao extremo da programação tática: o **tactical tornado** ("tornado tático"). É o desenvolvedor que despeja features numa velocidade que impressiona a gerência — e deixa um rastro de destruição que os colegas passarão meses limpando. Ironicamente, ele às vezes é *premiado* por ser produtivo, porque o custo da complexidade que ele criou só aparece no boleto de quem vem depois. Reconhecer o tactical tornado (e não se tornar um) é parte do julgamento sênior.
+Ousterhout dá um nome ao extremo da programação tática — e vale conhecê-lo antes de seguir adiante, porque reconhecê-lo é meio caminho pra não virar um (ver [[#Armadilhas comuns]]).
 
 O diagrama abaixo contrasta as duas posturas e mostra para onde cada uma leva ao longo do tempo.
 
@@ -401,6 +399,40 @@ Domar a complexidade começa por reconhecer que a sua cabeça é pequena.
 
 É essa humildade que torna a abstração, a modularidade e o bom nome não preciosismos — mas sobrevivência.
 
+## Armadilhas comuns
+
+> [!warning] Cuidado com a falsa esperança
+> A história do software é cheia de promessas de que *a próxima tecnologia* vai acabar com a complexidade. Linguagens de alto nível, OO, frameworks, IA generativa — cada onda atacou (com sucesso real) a complexidade **acidental**. Nenhuma tocou na **essencial**, porque essa não é um problema de ferramenta. Manter essa distinção em mente é uma vacina contra hype. A separação cuidadosa entre essencial e acidental é o assunto inteiro da nota [[02 - Complexidade essencial vs. acidental]].
+
+> [!warning] O tactical tornado
+> Ousterhout dá um nome ao extremo da programação tática: o **tactical tornado** ("tornado tático"). É o desenvolvedor que despeja features numa velocidade que impressiona a gerência — e deixa um rastro de destruição que os colegas passarão meses limpando. Ironicamente, ele às vezes é *premiado* por ser produtivo, porque o custo da complexidade que ele criou só aparece no boleto de quem vem depois. Reconhecer o tactical tornado (e não se tornar um) é parte do julgamento sênior.
+
+> [!warning] Não espere a crise para agir
+> Quando a complexidade fica óbvia o bastante pra justificar um "grande refator", ela já está espalhada por todo o sistema. Tratar complexidade como problema do futuro — *"quando ficar ruim de verdade, a gente para tudo e arruma"* — é adiar a conta pro momento em que ela já ficou cara demais de pagar. O combate eficaz não é o grande gesto heroico: é constante, pequeno e chato, recusando cada incremento de complexidade no instante em que ele tentaria entrar.
+
+## Inglês
+
+A literatura sobre complexidade de software é quase toda em inglês — Brooks, Ousterhout, Dijkstra, Weinberg escrevem (ou são citados) no original — e boa parte do vocabulário técnico não tem tradução natural em PT-BR. Vale conhecer os termos como eles circulam de fato numa conversa técnica.
+
+**Complexity** é usado solto em inglês com naturalidade ("this codebase has a lot of complexity"), mas em português "complexidade" já é palavra corrente — não soa estrangeirismo. Já **change amplification**, **cognitive load** e **unknown unknowns** tendem a aparecer em inglês mesmo em times brasileiros, porque são os termos-âncora do livro do Ousterhout; traduzir ("amplificação de mudança", "carga cognitiva", "incógnitas desconhecidas") funciona bem em texto escrito, mas numa reunião falada o inglês costuma vencer.
+
+**Tactical programming** e **strategic programming** quase sempre precisam de uma frase de explicação mesmo em inglês — não são termos que "todo mundo já ouviu", ao contrário de *technical debt*. Já **silver bullet**, na expressão "no silver bullet", é uma daquelas que funciona melhor citada por inteiro ("there's no silver bullet") do que traduzida ("não há bala de prata") — a tradução existe e é usada, mas perde o gancho com o título do ensaio de Brooks.
+
+| Português | Inglês |
+|---|---|
+| Complexidade | Complexity |
+| Amplificação de mudança | Change amplification |
+| Carga cognitiva | Cognitive load |
+| Incógnitas desconhecidas | Unknown unknowns |
+| Programação tática | Tactical programming |
+| Programação estratégica | Strategic programming |
+| Bala de prata | Silver bullet |
+| Tornado tático | Tactical tornado |
+| Dependências | Dependencies |
+| Obscuridade | Obscurity |
+| Complexidade essencial | Essential complexity |
+| Complexidade acidental | Accidental complexity |
+
 ## Em entrevista
 
 Este é o tipo de assunto que separa quem decorou padrões de quem entende *por que* eles existem.
@@ -417,6 +449,16 @@ Saber articular "complexidade como problema central" sinaliza maturidade — por
 
 > [!warning] O erro que entrega o júnior
 > Reduzir "complexidade" a "código feio" ou "muitas linhas". A complexidade que importa é a que cobra na **manutenção** — e um arquivo curto e "limpo" pode ser uma bomba de *unknown unknowns* se esconder uma dependência implícita. Medir complexidade pelo efeito sobre quem mantém, não pela aparência, é o salto de júnior pra sênior nessa conversa.
+
+## O que vem a seguir
+
+Esta nota estabeleceu o problema central: complexidade é o que torna um sistema difícil de entender e modificar, ela se manifesta em três sintomas concretos — change amplification, cognitive load, unknown unknowns —, e ela chega quase sempre em incrementos minúsculos, não de uma vez.
+
+Mas ficou uma tensão pendurada. Brooks disse que parte da complexidade é **essencial** — não sai por nenhuma ferramenta melhor. Se isso é verdade, uma pergunta óbvia nasce: então nada do que fazemos como profissão realmente ajuda? A resposta não pode ser "sim", porque na prática abstração, modularidade e bom design claramente tornam sistemas mais fáceis de mudar.
+
+A saída é que nem toda complexidade é essencial. Parte dela é **acidental** — subproduto de escolhas de ferramenta, de linguagem, de decisões de ontem que ninguém revisou — e essa parte, sim, dá pra cortar.
+
+Separar as duas com precisão é o que evita dois erros simétricos: gastar energia tentando eliminar o que é inerente à natureza do software, ou desistir cedo demais achando que tudo é essencial e imutável. Essa separação — o que dá pra cortar e o que não dá — é o assunto inteiro de [[02 - Complexidade essencial vs. acidental]].
 
 ## Referências
 

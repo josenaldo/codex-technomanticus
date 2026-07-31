@@ -1,7 +1,7 @@
 ---
 title: "Lei de Conway"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -379,6 +379,12 @@ A topologia de **revisão de código** e de **canais async** vira, na prática, 
 >
 > Nenhum é "certo"; cada um **materializa uma estrutura de comunicação diferente**. Times com ciclos de release e culturas de engenharia muito distintos raramente convivem bem num mesmo monorepo — a fricção que surge é a homomorfia protestando. Escolher o layout de repo sem pensar na topologia de times é, de novo, deixar a homomorfia decidir por você.
 
+> [!warning] Diagnosticar o monólito distribuído como problema de arquitetura
+> O erro de diagnóstico mais caro da lista: olhar para um monólito distribuído — deploys acoplados, banco compartilhado, cascata de falhas — e concluir que o remédio é *refatorar código*. Não é. Os sintomas são técnicos, mas a causa é organizacional: os serviços foram fatiados pela tecnologia ou pelo código legado, e o mesmo grupo de gente continua coordenando cada release. Refatorar sem remontar a comunicação (fronteiras por capacidade de negócio, um dono por serviço, banco próprio) só troca o lugar do acoplamento — a homomorfia puxa a arquitetura de volta ao formato do org chart assim que a poeira baixa.
+
+> [!warning] Tratar a lei como determinismo
+> O erro de quem leu só a frase de efeito: achar que a lei é uma **profecia inescapável**, sem exceção nem custo de resistência. Não é. Colfer & Baldwin acharam o espelhamento em ~**69%** dos 102 estudos — os outros ~31% são organizações que pagaram para "quebrar o espelho", seja produzindo tecnologia modular a partir de uma estrutura concentrada (partições internas rígidas), seja produzindo tecnologia integrada a partir de uma estrutura distribuída (contratos relacionais fortes). Citar a lei como se fosse física imutável, sem essa nuance, é o mesmo tipo de leitura rasa que o cargo cult do "modelo Spotify" — decorou a conclusão, pulou a letra miúda.
+
 ## Como aplicar na prática
 
 A lei deixa de ser curiosidade e vira ferramenta quando você a usa para *ler* e *projetar* uma organização. Um roteiro mínimo:
@@ -390,6 +396,27 @@ A lei deixa de ser curiosidade e vira ferramenta quando você a usa para *ler* e
 - **Garanta um único dono por área.** Ownership descobrível e congruente com as dependências técnicas; um diretório que exige aprovação de cinco times é um gargalo arquitetural anunciado.
 - **Diagnostique antes de refatorar.** Se a arquitetura resiste à refatoração, suspeite de problema *organizacional*: mude comunicação e código *juntos*, nunca só um.
 - **Quando for quebrar o espelho, orce o custo.** Organização concentrada querendo produto modular (ou vice-versa) exige investimento contínuo em regras de design, governança ou confiança — senão a gravidade de Conway puxa de volta.
+
+## Inglês
+
+Boa parte do vocabulário desta nota é citação — e citação errada em inglês soa pior do que citação nenhuma. **Mirroring hypothesis** é o nome acadêmico da mesma ideia que todo mundo chama, no dia a dia, de "Conway's law": saber os dois registros é o que separa quem leu MacCormack/Baldwin e Colfer/Baldwin de quem só ouviu a frase de efeito numa palestra.
+
+**Maneuver** é a grafia americana — *manoeuvre* é a britânica —, e vale saber que "**inverse Conway maneuver**" não é termo de Conway: foi popularizado pela **ThoughtWorks** (a variante "reverse Conway" circula com o mesmo sentido). Já **two-pizza team** é idiom específico da cultura da Amazon (times pequenos o bastante para duas pizzas americanas alimentarem todo mundo) e costuma precisar de uma glosa rápida fora dos Estados Unidos, porque a piada não viaja sozinha.
+
+Os termos de *Team Topologies* (stream-aligned, X-as-a-Service, cognitive load) tendem a ficar em inglês mesmo em conversa em português — são rótulos de um vocabulário de padrão, não frases a traduzir.
+
+| Português | Inglês |
+|---|---|
+| Lei de Conway | Conway's law |
+| Hipótese do espelhamento | Mirroring hypothesis |
+| Manobra inversa de Conway | Inverse Conway maneuver |
+| Congruência sócio-técnica | Socio-technical congruence |
+| Team Topologies (times e topologias) | Team topologies |
+| Time de duas pizzas | Two-pizza team |
+| Monólito distribuído | Distributed monolith |
+| Carga cognitiva (por time) | Cognitive load (per team) |
+| Time alinhado ao fluxo | Stream-aligned team |
+| X-como-serviço | X-as-a-Service |
 
 ## Em entrevista
 
@@ -410,6 +437,16 @@ Gerenciar complexidade, no fim, é gerenciar o todo sócio-técnico, não só os
 
 > [!quote] A síntese do galho em uma frase
 > Toda decisão de design é uma decisão sobre complexidade — e algumas das decisões de design mais importantes você toma quando desenha o **org chart**, não o código.
+
+## O que vem a seguir
+
+Dezesseis notas depois, o galho fechou o argumento — mas argumento fechado não é a mesma coisa que trabalho terminado. O que falta agora não é mais uma lente conceitual; é a prática de segurar todas as lentes na mão ao mesmo tempo, diante de um sistema real que não veio catalogado.
+
+É para isso que existe o **[[17 - Capstone - O diagnóstico diferencial da complexidade]]**: um caso único — um sistema de faturamento cujo time quer reescrever do zero — passado pelas dezesseis lentes deste galho, uma a uma, até virar diagnóstico. É o destino natural de quem chegou até aqui: a teoria que você acabou de acumular só prova seu valor quando decide, num caso concreto, se o problema é entropia, é abstração vazando, ou — como esta nota mostrou — é o org chart falando mais alto que o código.
+
+Duas saídas seguem o capstone, dependendo de qual pergunta o diagnóstico deixar em aberto. Se o veredito for "o sistema já está doente e precisa de intervenção", o passo seguinte é **[[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia e Restauração de Software]]** — o domínio que trata do *como agir* sobre um legado já diagnosticado, sem o luxo de reescrever do zero. Se o veredito for "ainda dá para prevenir", a rota é **[[03-Dominios/Engenharia/Arquitetura/index|Arquitetura]]** — as decisões de fronteira, tomadas cedo, que evitam que um sistema saudável chegue a precisar de arqueologia.
+
+Não são três destinos concorrentes; são três momentos do mesmo problema. O capstone ensina a reconhecer o estado do paciente; Arquitetura ensina a evitar que ele adoeça; Arqueologia e Restauração ensina a cuidar dele quando já adoeceu.
 
 ## Referências
 

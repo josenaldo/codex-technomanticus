@@ -1,7 +1,7 @@
 ---
 title: "Entropia de software e decaimento"
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-07-31
 type: concept
 progress: backlog
 status: growing
@@ -38,12 +38,7 @@ Um quarto arrumado vira bagunça sozinho. Bagunça nunca se arruma sozinha. Pra 
 
 Software se comporta assim. Hunt e Thomas chamam isso de **software entropy**: conforme um sistema é mudado ao longo do tempo, sua desordem tende a crescer, e revertê-la exige trabalho. O nome popular do fenômeno é **software rot** (ou *bit rot*, ou *code decay*) — o código "apodrece".
 
-> [!warning] O equívoco do "desgaste"
-> Software **não se desgasta como hardware**. Um parafuso fadiga porque sofre estresse físico; o seu `if` não. O código que você não toca por cinco anos roda hoje exatamente como rodava.
->
-> Então de onde vem o apodrecimento? Da **mudança** — não do uso. Cada alteração feita sob pressa, sem reentender o todo, deposita um pouco de desordem. O sistema não envelhece pelo tempo que passa; envelhece pelas *mãos que passam por ele* sem cuidado.
->
-> Confundir os dois leva à conclusão errada: "é velho, por isso é ruim". Não. É **mal-mantido**, e isso é uma escolha, não um destino.
+Software **não se desgasta como hardware**. Um parafuso fadiga porque sofre estresse físico; o seu `if` não. O código que você não toca por cinco anos roda hoje exatamente como rodava — o apodrecimento vem da **mudança**, não do uso (ver [[#Armadilhas comuns]] adiante).
 
 A diferença é libertadora e cruel ao mesmo tempo.
 
@@ -290,14 +285,7 @@ Junte as quatro peças e aparece um único princípio.
 
 Janelas quebradas mostram que a desordem **se realimenta socialmente**. A bola de lama mostra que ela tem **causas estruturais**, não morais. As leis de Lehman mostram que ela é uma **tendência empírica**, não um acidente. A erosão arquitetural mostra que ela ataca até o *desenho*, não só o código.
 
-A conclusão é dura e clarificadora:
-
-> [!warning] A segunda lei da termodinâmica do software
-> **O decaimento é o estado natural.** Deixe um sistema sozinho — sem refatoração, sem reentendimento, sem alguém pagando dívida — e ele *vai* virar bola de lama. Não é risco, é trajetória.
->
-> A pergunta certa nunca foi "como evitar que o sistema apodreça?" (não dá pra evitar a gravidade), e sim "**quanta energia estamos gastando pra mantê-lo de pé contra o apodrecimento?**".
->
-> Um sistema saudável não é um sistema que não decai — é um onde *alguém está pagando, continuamente, o custo de combater o decaimento*.
+A conclusão é dura e clarificadora: **o decaimento é o estado natural**. Deixe um sistema sozinho — sem refatoração, sem reentendimento, sem alguém pagando dívida — e ele *vai* virar bola de lama; não é risco, é trajetória. A pergunta certa nunca foi "como evitar que o sistema apodreça?", e sim "quanta energia estamos gastando pra mantê-lo de pé?" (ver [[#Armadilhas comuns]]).
 
 A imagem que amarra tudo é a da entropia ao longo do tempo. Sem energia injetada, a desordem só sobe. Com energia contínua, ela é mantida plana — não em zero, mas estável:
 
@@ -332,6 +320,54 @@ Pare de gastar essa energia e a segunda lei cobra a conta — devagar, sem racha
 
 É exatamente esse trabalho contínuo de combate à entropia que a próxima nota trata como disciplina: [[14 - Manutenção e evolução]]. E é a [[15 - Pensamento sistêmico|lente sistêmica]] que dá nome aos laços de reforço que vimos nos diagramas — janelas quebradas e leis de Lehman são, no fundo, *feedback loops*.
 
+## Armadilhas comuns
+
+> [!warning] O equívoco do "desgaste"
+> Software **não se desgasta como hardware**. Um parafuso fadiga porque sofre estresse físico; o seu `if` não. O código que você não toca por cinco anos roda hoje exatamente como rodava.
+>
+> Então de onde vem o apodrecimento? Da **mudança** — não do uso. Cada alteração feita sob pressa, sem reentender o todo, deposita um pouco de desordem. O sistema não envelhece pelo tempo que passa; envelhece pelas *mãos que passam por ele* sem cuidado.
+>
+> Confundir os dois leva à conclusão errada: "é velho, por isso é ruim". Não. É **mal-mantido**, e isso é uma escolha, não um destino.
+
+> [!warning] A segunda lei da termodinâmica do software
+> **O decaimento é o estado natural.** Deixe um sistema sozinho — sem refatoração, sem reentendimento, sem alguém pagando dívida — e ele *vai* virar bola de lama. Não é risco, é trajetória.
+>
+> A pergunta certa nunca foi "como evitar que o sistema apodreça?" (não dá pra evitar a gravidade), e sim "**quanta energia estamos gastando pra mantê-lo de pé contra o apodrecimento?**".
+>
+> Um sistema saudável não é um sistema que não decai — é um onde *alguém está pagando, continuamente, o custo de combater o decaimento*.
+
+> [!warning] Erosão não é deriva — e "legado" não é "velho"
+> É fácil embolar duas armadilhas distintas numa só frase: "esse código é uma bagunça arquitetural".
+>
+> **Erosão** é violar a regra que você conhece; **deriva** é nunca ter conhecido a regra (ou tê-la esquecido). Tratar as duas como sinônimos empasta o diagnóstico — e o remédio é oposto em cada caso. Erosão se combate com disciplina (fitness functions, revisão de arquitetura, *linters* de dependência); deriva se combate com transmissão de conhecimento (documentação viva, onboarding, [[11 - Dívida cognitiva|dívida cognitiva]] paga em dia). Prescrever disciplina pra quem nunca conheceu a regra não resolve nada; prescrever documentação pra quem a conhece e a ignora, tampouco.
+>
+> A mesma confusão de superfície aparece na palavra **"legado"**: não é sinônimo de "velho". Um sistema de dez anos bem mantido — janelas consertadas, dívida paga em dia, arquitetura íntegra — não decaiu; "legado" descreve *mal-mantido*, não "com muito tempo de vida". Julgar um sistema pela idade é medir a métrica errada; a métrica certa é quanta energia foi gasta pra segurá-lo.
+
+## Inglês
+
+O vocabulário desta nota é quase todo emprestado — de física, de criminologia, de dois papers seminais — e boa parte não tem tradução assentada em português técnico; usa-se o termo em inglês mesmo em conversa.
+
+**Bit rot** é o caso mais traiçoeiro: soa literal, mas é metáfora. Nenhum bit de fato apodrece — o arquivo é byte-a-byte idêntico anos depois. O que "apodrece" é o *entorno*: dependências que mudaram, APIs que sumiram, entendimento que evaporou. Traduzir por "apodrecimento de bits" preserva a imagem, mas sem o alerta de que é figura de linguagem, o termo engana quem não conhece a distinção.
+
+**Erosion** e **drift**, de Perry & Wolf, é uma distinção fina que se perde fácil na tradução. Verter as duas por "desgaste arquitetural" apaga exatamente o que o par distingue: intenção. *Erosion* é violação consciente da regra; *drift* é insensibilidade a ela. Em português, "erosão" e "deriva" mantêm a mesma nuance — mas só se as duas palavras forem usadas com esse cuidado, não como sinônimos.
+
+**Big Ball of Mud** não é só apelido pitoresco — é o *título* de um paper (Foote & Yoder, PLoP 1997) que virou termo técnico consagrado, ao ponto de aparecer em diagramas de arquitetura sem aspas nem crédito. Traduzir por "bola de lama" funciona em prosa, mas em contexto técnico o nome em inglês é o que se busca e se cita.
+
+| Português | Inglês |
+|---|---|
+| apodrecimento do software (metafórico) | bit rot / software rot |
+| apodrecimento do código | code decay |
+| janelas quebradas | broken windows |
+| bola de lama | big ball of mud |
+| leis de Lehman | Lehman's laws (of software evolution) |
+| erosão arquitetural | architectural erosion |
+| deriva arquitetural | architectural drift |
+| gravidade do software | software gravity |
+| entulho, resíduo acumulado | cruft |
+| amplificação de mudança | change amplification |
+| carga cognitiva | cognitive load |
+| entropia do software | software entropy |
+
 ## Em entrevista
 
 Se perguntarem "por que sistemas legados são ruins?", a resposta fraca é "porque são velhos". A resposta forte separa as ideias:
@@ -342,6 +378,14 @@ Se perguntarem "por que sistemas legados são ruins?", a resposta fraca é "porq
 - **Ataca até a arquitetura.** Erosão (violar a regra) e deriva (esquecer a regra), de Perry & Wolf, abrem a fenda entre o desenho pretendido e o real.
 
 A frase de efeito: *"a pergunta não é se o sistema vai decair, é quanta energia estamos gastando pra segurá-lo."*
+
+## O que vem a seguir
+
+Esta nota estabeleceu uma sentença incômoda: o sistema piora **sozinho**. Sem trabalho explícito, a Lei II de Lehman cobra a conta, a janela quebrada recruta a próxima, e a arquitetura pretendida se afasta da real — erosão ou deriva, tanto faz o caminho, o destino é o mesmo lodo.
+
+Falta a pergunta prática. Se o decaimento é o *default*, e mantê-lo à distância exige energia contínua, então: **que energia é essa**? Onde ela é gasta, contra o quê, exatamente, e com qual disciplina — todo dia, todo sprint, todo *release* — pra que a entropia fique plana em vez de subir?
+
+Essa é a pergunta que a próxima nota assume como ofício: [[14 - Manutenção e evolução]].
 
 ## Referências
 
