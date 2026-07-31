@@ -462,6 +462,10 @@ Separar as duas com precisão é o que evita dois erros simétricos: gastar ener
 
 ## Referências
 
+> [!tip] Assista — A Philosophy of Software Design — John Ousterhout
+> **Talks at Google** · 1h02 · [A Philosophy of Software Design — John Ousterhout](https://www.youtube.com/watch?v=bmSAYlu0NcY)
+> Ousterhout apresentando a tese do próprio livro. É a fonte direta de quase tudo que esta nota chama de sintoma — change amplification, carga cognitiva e unknown unknowns aparecem nomeados e exemplificados por quem cunhou o recorte.
+
 - **Frederick P. Brooks Jr.** — *No Silver Bullet — Essence and Accident in Software Engineering* (1986; reimpresso em *Computer*, vol. 20, n. 4, abril de 1987, p. 10-19; incluído na edição de aniversário de *The Mythical Man-Month*). Origem das **quatro propriedades essenciais** do software (complexidade, conformidade, mutabilidade, invisibilidade) e da tese essencial-vs-acidental. [PDF (worrydream.com)](https://worrydream.com/refs/Brooks_1986_-_No_Silver_Bullet.pdf) · [TR86-020 (UNC)](https://www.cs.unc.edu/techreports/86-020.pdf) · [Wikipedia](https://en.wikipedia.org/wiki/No_Silver_Bullet)
 - **John Ousterhout** — *A Philosophy of Software Design* (1ª ed. 2018; 2ª ed. 2021, Yaknyam Press). Definição operacional de complexidade; os três sintomas (*change amplification*, *cognitive load*, *unknown unknowns*); as duas causas (dependências e obscuridade); a natureza incremental da complexidade; e a distinção **tático vs. estratégico** (incl. o *tactical tornado* e a regra dos ~10–20% de investimento). [Amazon (2nd ed., ISBN 9781732102217)](https://www.amazon.com/Philosophy-Software-Design-2nd/dp/173210221X)
 - **Edsger W. Dijkstra** — *The Humble Programmer* (EWD340, 1972; ACM Turing Award Lecture): *"the competent programmer is fully aware of the strictly limited size of his own skull"*. [Arquivo EWD (UT Austin)](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html)

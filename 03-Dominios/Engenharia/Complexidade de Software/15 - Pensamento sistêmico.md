@@ -493,6 +493,10 @@ E não é uma parte qualquer. É a parte cuja **estrutura de comunicação** —
 
 ## Referências
 
+> [!tip] Assista — A Philosophical Look at System Dynamics
+> **Donella Meadows** · 53min · [A Philosophical Look at System Dynamics](https://www.youtube.com/watch?v=XL_lOoomRTA)
+> A própria Meadows falando sobre dinâmica de sistemas. Vale pelo que raramente aparece nos resumos do livro: a insistência de que o modelo mental do observador é parte do sistema, e que os pontos de alavancagem mais fortes são também os mais difíceis de aceitar.
+
 - **Donella H. Meadows** — *Thinking in Systems: A Primer* (Chelsea Green Publishing, 2008; editado por Diana Wright a partir de manuscrito da autora, falecida em 2001). Origem, nesta nota, dos conceitos de **estoques e fluxos**, **loops de feedback** (*reinforcing* vs *balancing*), **atrasos**, **emergência** e da lista de **pontos de alavancagem**. O ensaio *Leverage Points: Places to Intervene in a System* (1997/1999), incorporado ao livro, está no [Donella Meadows Project](https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/); a ordenação dos 12 pontos confere com a [Wikipedia — *Twelve leverage points*](https://en.wikipedia.org/wiki/Twelve_leverage_points).
 - **Peter M. Senge** — *The Fifth Discipline: The Art & Practice of the Learning Organization* (Doubleday/Currency, 1990). Origem dos **arquétipos de sistema** usados aqui: *Shifting the Burden*, *Fixes that Fail*, *Limits to Growth*, *Tragedy of the Commons*. Verificados em resumos do livro e em [Saybrook — *Eight System Archetypes*](https://www.saybrook.edu/unbound/systems-archetypes/).
 - **Ludwig von Bertalanffy** — *General System Theory: Foundations, Development, Applications* (George Braziller, 1968). Origem intelectual mais ampla do campo (anos 1940-50): sistemas de domínios distintos compartilham princípios comuns, com ênfase no **todo > soma das partes** e em **propriedades emergentes**. É essa linhagem que justifica os aliases "Teoria do sistema" / "Teoria dos sistemas" desta nota.

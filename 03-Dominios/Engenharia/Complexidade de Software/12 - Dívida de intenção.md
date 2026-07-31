@@ -501,6 +501,10 @@ Para isso, vá a [[13 - Entropia de software e decaimento]].
 
 ## Fontes
 
+> [!tip] Assista — Architecture Decision Records (ADR) as a LOG That Answers "WHY?"
+> **CodeOpinion** · 10min · [Architecture Decision Records (ADR) as a LOG That Answers "WHY?"](https://www.youtube.com/watch?v=6H6zfCNeqek)
+> O enquadramento é exatamente o desta nota: ADR não é documentação de arquitetura, é registro de *intenção* — o porquê que o código não consegue carregar. Curto e direto ao ponto que mais importa aqui.
+
 - [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|From Technical Debt to Cognitive and Intent Debt — Margaret-Anne Storey (arXiv)]] — a **fonte primária**: a definição de dívida de intenção ("absence or erosion of explicit rationale, goals, and constraints"). URL: https://arxiv.org/abs/2603.22106
 - [[02-Glosas/2026-the-intent-debt|The Intent Debt — Addy Osmani]] — a exposição mais clara: só humanos geram intenção e a economia do cold start. URL: https://addyosmani.com/blog/intent-debt/
 - [[02-Glosas/2026-fowler-fragments-triple-debt-model|Fragments: April 2 — Martin Fowler]] — o substrato ("intent debt lives in artifacts") e o custo da verificação. URL: https://martinfowler.com/fragments/2026-04-02.html

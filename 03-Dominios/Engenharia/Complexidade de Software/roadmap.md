@@ -15,7 +15,7 @@ de custo e plano de execução acionável. Gerado por `/diagnosticar-galho`.
 
 **Galho:** `03-Dominios/Engenharia/Complexidade de Software`
 **Diagnóstico:** 2026-07-31
-**Última execução:** —
+**Última execução:** 2026-07-31 — enriquecimento completo, 17/17
 
 ## Régua de análise
 
@@ -74,18 +74,28 @@ O que falta é **casca padronizada**, não conteúdo: o galho foi escrito antes 
 da nota. Três gaps são transversais (E5, E6, E7 em 16/16; M1 em 16/16) e dois são pontuais
 (L2 em 4 notas; E8 em 15).
 
-| Gap | Alcance | Natureza |
-|-----|---------|----------|
-| E5 ponte para frente | 16/16 | mecânico — o fio narrativo já existe, falta o fecho |
-| E6 seção de inglês | 16/16 | mecânico — o vocabulário EN já está inline, em itálico |
-| E7 tabela PT↔EN | 16/16 | mecânico — consolidar termos já usados |
-| E8 `## Armadilhas comuns` | 15/16 (só 05 passa) | mecânico — `[!warning]` existem, faltam seção e volume ≥3 |
-| M1 vídeo/podcast | 16/16 | **substantivo** — passe transversal de pesquisa |
-| L2 URL externa | 4/16 (07, 08, 09, 11) | **substantivo** — zero links externos nessas |
+| Gap | Alcance no diagnóstico | Natureza | Estado |
+|-----|------------------------|----------|--------|
+| E5 ponte para frente | 16/16 | mecânico — o fio narrativo já existe, falta o fecho | ✅ 2026-07-31 |
+| E6 seção de inglês | 16/16 | mecânico — o vocabulário EN já está inline, em itálico | ✅ 2026-07-31 |
+| E7 tabela PT↔EN | 16/16 | mecânico — consolidar termos já usados | ✅ 2026-07-31 |
+| E8 `## Armadilhas comuns` | 15/16 (só 05 passava) | mecânico — `[!warning]` existem, faltam seção e volume ≥3 | ✅ 2026-07-31 |
+| L2 URL externa | 4/16 (07, 08, 09, 11) | **substantivo** — zero links externos nessas | ✅ 2026-07-31 |
+| M1 vídeo/podcast | 17/17 | **substantivo** — passe transversal de pesquisa | ✅ 16/17 (ver abaixo) |
 
-> [!warning] Os `[!tip]` existentes não são mídia
-> Todas as notas têm callouts `[!tip]`, mas são do tipo *"Como isso aparece numa entrevista"*.
-> Nenhum linka vídeo ou podcast. M1 falha em 16/16 apesar da contagem de `[!tip]` ser alta.
+> [!warning] Os `[!tip]` que já existiam não eram mídia
+> Todas as notas tinham callouts `[!tip]`, mas do tipo *"Como isso aparece numa entrevista"*.
+> Nenhum linkava vídeo ou podcast — M1 falhava em 17/17 apesar da contagem alta de `[!tip]`.
+> Os callouts de mídia inseridos em 2026-07-31 usam o título `[!tip] Assista — <vídeo>`, o que
+> os distingue à vista e evita repetir o erro de contagem num diagnóstico futuro.
+
+> [!info] M1: 16/17, e a exceção é deliberada
+> A **nota 02 (Complexidade essencial vs. acidental) ficou sem vídeo**. Buscas por *No Silver
+> Bullet* e *Out of the Tar Pit* só devolveram canais pequenos de qualidade duvidosa, e o único
+> candidato de peso (uma sessão do Papers We Love) não teve o conteúdo confirmado. Vale o mesmo
+> critério do autor para casos práticos: **melhor a ausência declarada do que preencher pra
+> cumprir agenda.** Se aparecer uma palestra boa sobre Brooks ou a Tar Pit, é a única lacuna
+> de mídia do galho.
 
 ### Pendências de galho (fora do nota-a-nota)
 
@@ -98,32 +108,35 @@ da nota. Três gaps são transversais (E5, E6, E7 em 16/16; M1 em 16/16) e dois 
   e a volta agora existe.
 - ✅ **`publish`:** as 16 notas estavam `publish: false` (o `index.md` já era `true`).
   **Publicadas em 2026-07-31** (17/17, capstone incluído).
-- **Roadmap central:** `00-Meta/Roadmap.md` descreve este galho como "🟡 17 notas — consolidar",
-  o que está errado. Atualizar ao fechar.
+- ✅ **Roadmap central:** `00-Meta/Roadmap.md` descrevia este galho como "🟡 17 notas —
+  consolidar", o que estava errado. **Corrigido em 2026-07-31** (🟡 → 🟢), na tabela de
+  Engenharia e no item de Tier 2.
 
 ## Tabela-resumo
 
 | Métrica | Valor |
 |---------|-------|
 | Total de notas | 17 |
-| ⬜ pendente | 16 |
-| ➖ não precisa | 1 |
-| ✅ feita | 0 |
-| % concluído | 6% |
+| ⬜ pendente | 0 |
+| ➖ não precisa | 0 |
+| ✅ feita | 17 |
+| % concluído | **100%** |
 
-**Por custo:** 12 `[mecânico]` · 4 `[substantivo]` (07, 08, 09, 11 — as que também precisam de L2).
-**Passe transversal:** M1 (mídia) atinge as 16 e é substantivo em qualquer cenário — tratar como
-uma rodada própria, não diluído nota a nota.
-
-> Nenhuma nota atinge `➖` porque E5/E6/E7 falham em 16/16. São gaps baratos: o custo real
-> do galho está concentrado em **M1 (16 notas)** e **L2 (4 notas)**.
+> [!success] Galho fechado em 2026-07-31 — escrito e enriquecido
+> Diagnóstico, capstone, publicação e enriquecimento completo no mesmo dia. Execução em 6 blocos
+> de ≤3 subagentes Sonnet (nunca fan-out massivo), mais um passe transversal de mídia feito
+> centralmente para não deixar subagente inventar ID de YouTube.
+>
+> **Uma lacuna consciente:** M1 na nota 02 (ver callout acima). Nada mais pendente.
+>
+> Daqui em diante: consulta e manutenção.
 
 ---
 
 ## Notas
 
 #### 01 - A complexidade como problema central   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 441 linhas · fase: iniciado · status: growing
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (3 `[!warning]` existem, dispersos, sem seção) · M1. E4 N/A (conceitual)
 - **Score:** 6/10
@@ -132,10 +145,10 @@ uma rodada própria, não diluído nota a nota.
   - Consolida os 3 `[!warning]` (falsa esperança da bala de prata · tactical tornado · erro do júnior) sob `## Armadilhas comuns` → ativa E8
   - Cria seção de inglês + tabela PT↔EN com os termos já em itálico no corpo: *complexity · change amplification · cognitive load · unknown unknowns · tactical/strategic programming · silver bullet* → ativa E6, E7
   - Embute `[!tip]` com vídeo/palestra sobre o argumento de Brooks ou a tese de Ousterhout → ativa M1
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 02 - Complexidade essencial vs. acidental   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 418 linhas · fase: iniciado · status: growing
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (só 2 `[!warning]`, sem seção) · M1. E4 N/A (conceitual)
 - **Score:** 6/10
@@ -144,10 +157,10 @@ uma rodada própria, não diluído nota a nota.
   - Cria `## Armadilhas comuns` com os 2 `[!warning]` existentes (irredutibilidade do essencial · a linha não é régua absoluta) + um terceiro sobre confundir estado acidental de infraestrutura com estado essencial do negócio → ativa E8
   - Seção de inglês + tabela PT↔EN: *essential/accidental complexity · tar pit · mutable state · referential transparency · silver bullet* → ativa E6, E7
   - Embute vídeo sobre *No Silver Bullet* ou *Out of the Tar Pit* → ativa M1
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 03 - Simplicidade não é facilidade   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 457 linhas · fase: iniciado · status: growing
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (3 `[!warning]` dispersos, sem seção) · M1. E4 N/A (conceitual)
 - **Score:** 6/10
@@ -156,10 +169,10 @@ uma rodada própria, não diluído nota a nota.
   - Consolida os 3 `[!warning]` sob `## Armadilhas comuns` → ativa E8
   - Seção de inglês + tabela PT↔EN: *simple ≠ easy · to complect · interleaving · braid · guardrails · incidental* → ativa E6, E7
   - Embute a gravação de *Simple Made Easy* (Hickey) — é o vídeo canônico da nota → ativa M1
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 04 - O programa como teoria   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 410 linhas · fase: iniciado · status: growing
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (1 `[!warning]`, sem seção) · M1. E4 N/A (conceitual)
 - **Score:** 6/10
@@ -169,10 +182,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *theory building · tacit knowledge · program revival · ryle's sense of theory* → ativa E6, E7
   - Embute vídeo/podcast sobre Naur e *Programming as Theory Building* → ativa M1
   - Preserva os links já corretos para a glosa de débito cognitivo e para O Lado Sombrio da IA — verificados, resolvem
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 05 - Abstração - a ferramenta central   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 510 linhas · fase: adepto · status: growing · **melhor nota do galho**
 - **Núcleo/gaps:** E5 · E6 · E7 · M1. E4 N/A (conceitual). **E8 passa** (seção + 4 `[!warning]`)
 - **Score:** 8/11
@@ -181,10 +194,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *information hiding · deep/shallow module · interface vs. implementation · indirection · leaky abstraction* → ativa E6, E7
   - Embute vídeo de Ousterhout (*A Philosophy of Software Design*) ou palestra sobre Parnas → ativa M1
   - **Não mexer** em `## Armadilhas comuns`, `## Boas vs. más abstrações` nem nos exemplos de código — é a nota mais bem estruturada do galho e o modelo a seguir nas demais
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 06 - Abstrações que vazam   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 328 linhas · fase: adepto · status: growing · abaixo do piso nominal (ver ajuste 3 — não é gap)
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (tem a seção, mas só 1 `[!warning]`) · M1. **E4 passa** (`## Exemplos por ecossistema`: TCP, GC, JIT, ORM)
 - **Score:** 8/12
@@ -194,10 +207,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *leaky abstraction · law of leaky abstractions · Hyrum's law · abstraction tax* → ativa E6, E7
   - Embute vídeo/podcast sobre a Lei de Hyrum ou o ensaio de Spolsky → ativa M1
   - **12 URLs externas já presentes** — L2 sólido, não precisa pesquisa
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 07 - Módulos profundos e rasos   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 385 linhas · fase: adepto · status: growing · abaixo do piso nominal (não é gap)
 - **Núcleo/gaps:** **L2 (zero URLs externas — núcleo)** · E5 · E6 · E7 · E8 (nenhum `[!warning]`) · M1. E4 N/A
 - **Score:** 6/11
@@ -207,10 +220,10 @@ uma rodada própria, não diluído nota a nota.
   - Cria `## Armadilhas comuns` com ≥3 `[!warning]`: classitis · confundir "muitas classes pequenas" com bom design · empurrar complexidade para cima em vez de para baixo — todos já tratados no corpo → ativa E8
   - Seção de inglês + tabela PT↔EN: *deep/shallow module · classitis · information leakage · define errors out of existence · pass-through method* → ativa E6, E7
   - Embute palestra de Ousterhout → ativa M1
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 08 - Carga cognitiva e legibilidade   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 371 linhas · fase: adepto · status: growing · abaixo do piso nominal (não é gap)
 - **Núcleo/gaps:** **L2 (zero URLs externas — núcleo)** · E5 · E6 · E7 · E8 (nenhum `[!warning]`) · M1. E4 N/A
 - **Score:** 5/10
@@ -220,10 +233,10 @@ uma rodada própria, não diluído nota a nota.
   - Cria `## Armadilhas comuns` com ≥3 `[!warning]`, aproveitando `## A armadilha das métricas` (complexidade ciclomática como proxy ruim) e a confusão carga-vs-dívida que a nota já separa → ativa E8
   - Seção de inglês + tabela PT↔EN: *cognitive load (intrinsic/extraneous/germane) · chunking · principle of least astonishment · obscurity* → ativa E6, E7
   - Embute vídeo sobre carga cognitiva em engenharia (Team Topologies é o filão óbvio) → ativa M1
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 09 - As três dívidas do software   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 395 linhas · fase: adepto · status: growing · abaixo do piso nominal (não é gap) · **nota-eixo** (abre o bloco 09-12)
 - **Núcleo/gaps:** **L2 (zero URLs externas — núcleo; só há wikilinks para glosas)** · E5 · E6 · E7 · E8 (1 `[!warning]`) · M1. E4 N/A
 - **Score:** 5/10
@@ -234,10 +247,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *technical/cognitive/intent debt · triple debt model · debt interest · principal* → ativa E6, E7
   - Embute vídeo/podcast sobre o Triple Debt Model (Storey) → ativa M1
   - Verifica o embed de `triple-debt-model.jpg` — imagem presente na pasta
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 10 - Dívida técnica   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 460 linhas · fase: adepto · status: growing
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (4 `[!warning]`, mas sem seção dedicada) · M1. **E4 passa** (`## Como se reconhece` + `## Falência e o mito do rewrite`)
 - **Score:** 7/11
@@ -247,10 +260,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *technical debt · principal and interest · prudent/reckless × deliberate/inadvertent · a mess is not a technical debt · bankruptcy · rewrite* → ativa E6, E7
   - Embute vídeo de Fowler (quadrante de dívida técnica) ou de Cunningham explicando a metáfora original → ativa M1
   - **7 URLs já presentes** — L2 sólido
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 11 - Dívida cognitiva   [substantivo]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 342 linhas · fase: adepto · status: growing · abaixo do piso nominal (não é gap)
 - **Núcleo/gaps:** **L2 (zero URLs externas — núcleo)** · E5 · E6 · E7 · E8 (1 `[!warning]`) · M1. E4 N/A
 - **Score:** 5/10
@@ -261,10 +274,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *cognitive debt · shared understanding · bus factor · theory loss* → ativa E6, E7
   - Embute vídeo/podcast sobre erosão de entendimento em times → ativa M1
   - **Preserva** `## A mesma ideia, sob a lente da IA` e o cross-link para O Lado Sombrio da IA — é a fronteira declarada do galho
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 12 - Dívida de intenção   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 471 linhas · fase: adepto · status: growing
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (nenhum `[!warning]`) · M1. E4 N/A (conceitual). L2 magro (1 URL) mas passa
 - **Score:** 6/10
@@ -274,10 +287,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *intent debt · rationale · cold start · ADR (architecture decision record) · shift to verification* → ativa E6, E7
   - Reforça `## Fontes` com as URLs das 4 glosas já linkadas (só 1 URL hoje) → fortalece L2
   - Embute vídeo/podcast sobre ADRs ou registro de decisão → ativa M1
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 13 - Entropia de software e decaimento   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 367 linhas · fase: magus · status: growing · abaixo do piso nominal (não é gap) · abre o bloco Magus
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (2 `[!warning]`, sem seção) · M1. **E4 passa** (`## Como o decaimento se manifesta`)
 - **Score:** 7/11
@@ -287,10 +300,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *bit rot · broken windows · big ball of mud · Lehman's laws · architectural erosion/drift · software gravity* → ativa E6, E7
   - Embute vídeo sobre Big Ball of Mud (Foote & Yoder) ou as leis de Lehman → ativa M1
   - **`## Em entrevista` desta nota é exemplar** (separa desgaste × decaimento, traz Lehman II, fecha com frase de efeito) — usar como modelo, não mexer
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 14 - Manutenção e evolução   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 306 linhas · fase: magus · status: growing · **a menor do galho** (não é gap, mas é a candidata mais forte a crescer)
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (nenhum `[!warning]`) · M1. E4 N/A (conceitual)
 - **Score:** 6/10
@@ -300,10 +313,10 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *corrective/adaptive/perfective/preventive maintenance · legacy code · boy scout rule · make the change easy, then make the easy change · refactoring* → ativa E6, E7
   - Embute vídeo de Feathers (*Working Effectively with Legacy Code*) ou de Beck sobre a frase canônica → ativa M1
   - **Ponte de galho a criar:** esta nota é a fronteira natural com [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/index|Arqueologia e Restauração de Software]], cujo capstone **já linka de volta** para a nota 04 deste galho. A volta não existe — adicionar
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 15 - Pensamento sistêmico   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 473 linhas · fase: magus · status: growing
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (1 `[!warning]`) · M1. **E4 passa** (`## Arquétipos de sistema`)
 - **Score:** 7/11
@@ -312,10 +325,10 @@ uma rodada própria, não diluído nota a nota.
   - Cria `## Armadilhas comuns` com ≥3 `[!warning]` a partir de `## Pontos de alavancagem` (agir no ponto de baixa alavancagem) e dos arquétipos → ativa E8
   - Seção de inglês + tabela PT↔EN: *systems thinking · emergence · stocks and flows · feedback loop (reinforcing/balancing) · leverage points · system archetypes* → ativa E6, E7
   - Embute vídeo sobre Donella Meadows (*Thinking in Systems* / leverage points) → ativa M1
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 16 - Lei de Conway   [mecânico]
-- **Enriquecimento:** ⬜ pendente
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 443 linhas · fase: magus · status: growing · **nota de fecho conceitual do galho**
 - **Núcleo/gaps:** E5 · E6 · E7 · E8 (tem a seção, mas só 2 `[!warning]`) · M1. **E4 passa** (Vista, Mozilla, Amazon, Spotify)
 - **Score:** 7/11
@@ -325,13 +338,13 @@ uma rodada própria, não diluído nota a nota.
   - Seção de inglês + tabela PT↔EN: *Conway's law · mirroring hypothesis · inverse Conway maneuver · socio-technical congruence · team topologies · two-pizza team · distributed monolith* → ativa E6, E7
   - Embute vídeo sobre Team Topologies ou a manobra inversa de Conway → ativa M1
   - **Não tocar** no bloco de fecho (linhas ~405-412) nem em `## Em entrevista` — são o melhor material do galho
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada
 
 #### 17 - Capstone - O diagnóstico diferencial da complexidade   [mecânico]
-- **Enriquecimento:** ➖ não precisa
+- **Enriquecimento:** ✅ feita (2026-07-31)
 - **Estado:** 326 linhas · fase: magus · status: growing · **escrita em 2026-07-31, já no padrão atual**
 - **Núcleo/gaps:** — (só M1, o passe transversal de mídia). E4 N/A: a nota **inteira** é um caso trabalhado, extrair uma seção `## Casos práticos` seria redundante. P1 N/A (sem código)
 - **Score:** 10/11
 - **Plano de execução:**
   - — nenhuma. Nasce com E1, E2, E3 (3 Mermaid validados), E5, E6, E7, E8 (5 `[!warning]`), P2, L1, L2 e `## Em entrevista`. Entra no passe transversal de M1 junto com as demais
-- **Resultado:** —
+- **Resultado:** ✅ casca completa (E5/E6/E7/E8) + mídia verificada

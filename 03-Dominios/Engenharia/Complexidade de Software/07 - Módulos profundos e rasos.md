@@ -413,6 +413,10 @@ Veja [[08 - Carga cognitiva e legibilidade]].
 
 ## Referências
 
+> [!tip] Assista — Book Club: *A Philosophy of Software Design*, de John Ousterhout
+> **Internet of Bugs** · 19min · [Book Club: *A Philosophy of Software Design*, de John Ousterhout](https://www.youtube.com/watch?v=4xqkI953K6Y)
+> Discussão do livro em contraste explícito com o *Clean Code* — que é justamente o debate que esta nota trata na questão das funções pequenas. Bom complemento para ver os dois lados defendidos, não só resumidos.
+
 - **John Ousterhout** — *A Philosophy of Software Design* (1ª ed. 2018; 2ª ed. 2021, Yaknyam Press). Origem dos termos **deep module / shallow module**, da definição de profundidade como razão funcionalidade ÷ complexidade de interface, do método e da variável *pass-through*, do princípio *"different layer, different abstraction"*, do diagnóstico **classitis**, da crítica ao **I/O de streams do Java** (`FileInputStream`/`BufferedInputStream` como módulos rasos, com a proposta de bufferizar por padrão), da técnica **"define errors out of existence"** (exemplo `substring` Java × JavaScript), da divisão da interface em parte **formal e informal** (comentários), da tese *"complexity is incremental"* ("sweat the small stuff") e da heurística *"pull complexity downward"*. A 2ª edição inclui um capítulo novo comparando explicitamente a abordagem do livro com a de *Clean Code*. [Página oficial do livro (Stanford, John Ousterhout)](https://web.stanford.edu/~ouster/cgi-bin/aposd.php).
 - **John Ousterhout & Robert C. Martin** — *A Philosophy of Software Design vs. Clean Code* (discussão pública, set/2024–fev/2025). Origem do debate **funções pequenas × módulos profundos**, do conceito de **entanglement** na decomposição, do estudo de caso do **`PrimeGenerator`** e da convergência em ~4 métodos. [Repositório do debate no GitHub](https://github.com/johnousterhout/aposd-vs-clean-code).
 

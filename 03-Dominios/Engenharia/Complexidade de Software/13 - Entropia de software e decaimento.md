@@ -389,6 +389,10 @@ Essa é a pergunta que a próxima nota assume como ofício: [[14 - Manutenção 
 
 ## Referências
 
+> [!tip] Assista — Big Ball of Mud
+> **Google TechTalks** · 1h06 · [Big Ball of Mud](https://www.youtube.com/watch?v=LH_e8NfNV-c)
+> O artigo de Foote & Yoder apresentado e discutido. O ponto que mais interessa a esta nota é o que a palestra insiste: a bola de lama não vem de programadores ruins, vem de forças legítimas — prazo, rotatividade, crescimento incremental.
+
 - **Brian Foote & Joseph Yoder** — [Big Ball of Mud](https://www.laputan.org/mud/) (4ª conferência PLoP, Monticello, Illinois, set/1997; também em *Pattern Languages of Program Design 4*). A arquitetura *de-facto standard*: *"a haphazardly structured, sprawling, sloppy, duct-tape-and-baling-wire, spaghetti-code jungle."* Causas estruturais do lodo: *business pressures*, *developer turnover*, *piecemeal growth*, *software entropy*. Termo creditado a Brian Marick. ([PDF na hillside.net](https://hillside.net/plop/plop97/Proceedings/foote.pdf))
 - **Meir M. Lehman & László Belády** — *Laws of Software Evolution* (1974–1996). As oito leis e os tipos S/P/E de programa; em especial Lei I *Continuing Change* (*"An E-type system must be continually adapted or it becomes progressively less satisfactory"*), Lei II *Increasing Complexity* (*"its complexity increases unless explicit work is done to maintain or reduce it"*) e Lei VII *Declining Quality*. Sumarizadas em [Lehman's laws of software evolution](https://en.wikipedia.org/wiki/Lehman%27s_laws_of_software_evolution) (Wikipedia).
 - **Dewayne E. Perry & Alexander L. Wolf** — *Foundations for the Study of Software Architecture* (ACM SIGSOFT Software Engineering Notes, vol. 17, 1992). Distinção entre arquitetura pretendida e implementada; **erosão** (violações da arquitetura) vs. **deriva** (insensibilidade à arquitetura). Contexto em [Software architecture](https://en.wikipedia.org/wiki/Software_architecture) (Wikipedia) e no survey [Understanding Architecture Erosion](https://arxiv.org/pdf/2103.11392) (arXiv).

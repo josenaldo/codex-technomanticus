@@ -473,6 +473,10 @@ A próxima nota trata da dívida que ninguém consegue medir e que, quando cobra
 
 ## Referências
 
+> [!tip] Assista — Debt Metaphor
+> **Ward Cunningham** · 5min · [Debt Metaphor](https://www.youtube.com/watch?v=pqeJFYwnkjE)
+> Cunningham explicando, em cinco minutos, o que quis dizer com a metáfora que criou — e corrigindo o mal-entendido mais comum: dívida técnica nunca significou "escrever código ruim de propósito". É a leitura que sustenta o argumento do "a mess is not a technical debt".
+
 - **Ward Cunningham** — *The WyCash Portfolio Management System* (relatório de experiência, OOPSLA 1992). A cunhagem da metáfora: *"Shipping first time code is like going into debt... Every minute spent on not-quite-right code counts as interest on that debt."* [c2.com/doc/oopsla92.html](https://c2.com/doc/oopsla92.html)
 - **Ward Cunningham** — *Debt Metaphor* (vídeo, 2009). A correção do mal-entendido: a dívida é *"writing code to reflect your current understanding of a problem even if that understanding is partial"*, e a metáfora *"depends upon you writing code that is clean enough to be able to refactor as you come to understand your problem"*; mais o *"borrowing money thinking that you never had to pay it back"*. Transcrição em [cmdev.com/papers/debt-metaphor](https://cmdev.com/papers/debt-metaphor/).
 - **Martin Fowler** — *Technical Debt Quadrant* (bliki, 2009). Os dois eixos (deliberate × inadvertent, prudent × reckless) e os quatro exemplos canônicos (*"We don't have time for design"*, *"We must ship now..."*, *"Now we know how we should have done it"*, *"What's layering?"*). [martinfowler.com/bliki/TechnicalDebtQuadrant.html](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html)

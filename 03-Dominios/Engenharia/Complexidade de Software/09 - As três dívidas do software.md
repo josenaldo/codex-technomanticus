@@ -423,6 +423,10 @@ A próxima nota mergulha nesse território conhecido, antes de seguir para as du
 
 ## Fontes
 
+> [!tip] Assista — From Technical Debt to Triple Debt — Margaret-Anne Storey
+> **Tech Lead Journal** · 1h10 · [From Technical Debt to Triple Debt — Margaret-Anne Storey](https://www.youtube.com/watch?v=WJ-GMcvg1fs)
+> A própria autora do Triple Debt Model explicando o modelo que esta nota apresenta. É a fonte primária: por que uma dívida virou três, como elas interagem, e por que o modelo surge agora, na esteira do código gerado por IA.
+
 - **Ward Cunningham** — *The WyCash Portfolio Management System* (OOPSLA, 1992). O relato de experiência que cunha a metáfora original da dívida de software — a fonte de trinta anos atrás de onde todo o modelo deriva. [The WyCash Portfolio Management System](https://c2.com/doc/oopsla92.html).
 - **Margaret-Anne Storey** — *From Technical Debt to Cognitive and Intent Debt: Rethinking Software Health in the Age of AI* (arXiv, 2026). A fonte primária do Triple Debt Model: articula as três dívidas interagentes e o deslocamento de risco causado pela IA generativa. [[02-Glosas/2026-from-technical-debt-to-cognitive-and-intent-debt|From Technical Debt to Cognitive and Intent Debt]]. [arXiv:2603.22106](https://arxiv.org/abs/2603.22106).
 - **Martin Fowler** — *Fragments: April 2* (martinfowler.com, 2026). Divulga o modelo ("técnica → código, cognitiva → pessoas, intenção → artefatos"), a rendição cognitiva e o custo da verificação. [[02-Glosas/2026-fowler-fragments-triple-debt-model|Fragments: April 2]]. [martinfowler.com/fragments/2026-04-02.html](https://martinfowler.com/fragments/2026-04-02.html).
