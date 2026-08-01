@@ -63,6 +63,17 @@ O que é, então, o "comportamento observável"? São três coisas que o mundo d
 
 Tudo o que estiver entre a chamada e essas três coisas é **implementação**: métodos privados, ordem de operações internas, estruturas de dados intermediárias, qual colaborador foi chamado primeiro. Nada disso é assunto do seu teste.
 
+### O critério prático: para que serve essa API?
+
+A definição acima ("retorno, estado, efeito visível") é precisa, mas ainda deixa uma dúvida no fim do dia: diante de um método específico, como saber se ele é comportamento ou detalhe? Khorikov propõe um critério operacional: **uma API é comportamento observável se existe um cliente — outra classe, outro serviço, o usuário final — que a usa para atingir um objetivo de negócio.** Se a única razão para o método existir é permitir que o teste espie o meio do caminho, ele é implementação, não importa quão útil pareça verificá-lo.
+
+O sintoma mais concreto disso é um cheiro de código específico: **você precisou tornar um método `private` em `public` (ou anotá-lo `@VisibleForTesting`) só para o teste conseguir chamá-lo.** Isso é o teste forçando uma fresta na encapsulação — e o próprio ato de forçar já denuncia o problema: se nenhum cliente de produção jamais chamaria esse método diretamente, ele não tem negócio sendo parte da API pública, nem parte do vocabulário do teste.
+
+> [!tip] O que fazer quando a lógica privada é importante demais para ignorar
+> Khorikov é direto sobre a saída: se um método privado contém lógica complexa demais para ser coberta indiretamente através da API pública da classe, isso não é motivo para expor o método — é o sinal de que essa lógica merece **sua própria classe**, com sua própria API pública. A classe nova vira testável pelo comportamento; o método volta a ser privado (ou desaparece).
+
+Repare que esse critério é o mesmo que já apareceu nos "quatro pilares": abrir uma fresta em um método privado para testá-lo reduz a resistência à refatoração quase a zero — qualquer mudança na implementação interna passa a arriscar quebrar esse teste, mesmo que o comportamento público continue idêntico.
+
 ## State-based × interaction-based testing
 
 Há duas formas de escrever a asserção de um teste, e a escolha entre elas é o coração da fragilidade.
@@ -395,3 +406,4 @@ A regra "comportamento, não implementação" foi apresentada aqui com exemplos 
 - Martin Fowler, [**Mocks Aren't Stubs**](https://martinfowler.com/articles/mocksArentStubs.html) (2007) — a distinção canônica entre *state verification* e *behavior verification*, e entre o estilo "classicista" e o "mockista".
 - Kent C. Dodds, [**Testing Implementation Details**](https://kentcdodds.com/blog/testing-implementation-details) — por que testar detalhes de implementação quebra na refatoração e dá falsos positivos; foque no que o "usuário" do código observa.
 - Vladimir Khorikov, [**Unit Testing Principles, Practices, and Patterns**](https://www.manning.com/books/unit-testing) (Manning, 2020) — os quatro pilares, com destaque para *resistance to refactoring*; o excesso de mocking esconde defeitos e acopla o teste à implementação.
+- Vladimir Khorikov, [**Unit testing private methods is not only about encapsulation**](https://khorikov.org/posts/2020-03-26-private-methods-encapsulation/) — o critério prático de "comportamento observável" (cliente com um objetivo) e o sintoma de precisar tornar um método `private` em `public` só para testá-lo; quando a lógica privada é complexa demais, a saída é extrair uma classe nova, não expor o método.

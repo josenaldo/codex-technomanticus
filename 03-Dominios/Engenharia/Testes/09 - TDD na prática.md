@@ -271,6 +271,33 @@ flowchart LR
 
 **Leitura do diagrama:** o teste de aceitação no topo é lento e raro — um por feature — e fala a língua do negócio. Ele dispara muitas voltas do ciclo rápido de unidade embaixo. A seta de volta (`Refactor` para a verificação de aceite) mostra o momento de checar se já dá para fechar a feature: enquanto o aceite estiver vermelho, você volta ao loop interno. O verde do loop externo é o sinal de "entregável", não o verde de um único teste de unidade.
 
+## Test desiderata: as propriedades em tensão
+
+Tudo o que foi dito até aqui pressupõe que "escrever um bom teste" é um alvo único. Não é. Em *Test Desiderata*, Kent Beck lista doze propriedades que um teste ideal teria — e o ponto do texto não é a lista, é a advertência que a acompanha: **nenhuma propriedade deveria ser abandonada sem receber, em troca, uma propriedade de valor maior**. Testar bem é negociar entre essas doze, não colecioná-las todas de graça.
+
+| Propriedade | O que significa |
+| --- | --- |
+| Isolated | resultado não depende da ordem de execução |
+| Composable | rodar 1 ou 1 milhão dá o mesmo resultado |
+| Fast | roda rápido o bastante pra rodar sempre |
+| Inspiring | passar te dá confiança real no código |
+| Writable | custa pouco escrever, perto do custo do código testado |
+| Readable | comunica seu propósito sem arqueologia |
+| Behavioral | só quebra quando o *comportamento* muda |
+| Structure-insensitive | não quebra quando o *interior* muda |
+| Automated | roda sem intervenção manual |
+| Specific | a falha aponta a causa direto |
+| Deterministic | mesmo estado, mesmo resultado, sempre |
+| Predictive | verde aqui prevê verde em produção |
+
+Duas dessas doze já apareceram nesta nota disfarçadas de outro debate. **Specific** (a falha aponta a causa) e **Structure-insensitive** (não quebra quando o interior muda) são exatamente os dois lados da tensão classicista/mockista da seção [[#A crítica do test-induced design damage, com profundidade|test-induced design damage]]: o mockista compra *Specific* — sabe exatamente qual colaborador falhou — pagando com *Structure-insensitive* — o teste racha a cada refactor porque conhece o interior. O classicista faz a troca oposta. Nenhum dos dois "ganha" objetivamente; cada um está pagando o preço de Beck por uma propriedade diferente.
+
+O mesmo raciocínio explica por que o loop externo de [[#ATDD/BDD: o loop externo que guia a feature|ATDD/BDD]] convive com o loop interno em vez de substituí-lo: o teste de aceitação é forte em *Behavioral* e *Predictive* (fala a língua do negócio, prevê o valor entregue), mas fraco em *Fast* e *Specific* (lento, e um vermelho não diz qual peça quebrou). O teste de unidade inverte essa troca. Dois níveis coexistem porque nenhum teste isolado maximiza as doze propriedades ao mesmo tempo — e fingir que existe o teste perfeito é o mesmo dogmatismo que a seção [[#O debate honesto]] já desmontou para o TDD como um todo.
+
+O teste de caracterização de [[#TDD em código legado: você não pode começar pelo teste|TDD em código legado]] é outro ponto na mesma grade — só que negociado sob coação. Ele maximiza *Behavioral* e *Specific* na única direção que importa ali (capturar o que o sistema faz agora, ponto), mas abre mão deliberadamente de *Inspiring* e até de parte de *Predictive*: passar não inspira confiança no design, só documenta um comportamento que pode estar errado. Beck admite esse tipo de sacrifício explícito no próprio texto — a lista não é um checklist a cumprir integralmente, é um conjunto de trocas que o contexto força, e a caracterização é o caso-limite onde quase todas as propriedades "boas" cedem lugar para a única que a situação exige: registrar a realidade antes de julgá-la.
+
+Vale carregar essa lente para a entrevista: quando alguém questionar "por que esse teste não mocka o colaborador?" ou "por que você preferiu um teste de aceitação lento aqui?", a resposta que soa sênior nomeia a propriedade que está sendo protegida — *Specific*, *Fast*, *Behavioral* — em vez de apelar para gosto pessoal ou regra de estilo. É a mesma disciplina de julgamento contextual que a seção [[#A posição pragmática]] pede para a decisão de TDD ou não, agora aplicada um nível abaixo, à forma de cada teste individual.
+
 ## Adoção na prática: por que é difícil e qual o caminho realista
 
 Tudo isto soa limpo no quadro-branco e desmorona na primeira sprint real. Vale dizer por quê, sem romantismo.
@@ -344,6 +371,7 @@ Use TDD as a lens for judgment, not as a badge. The strongest signal you can sen
 - Steve Freeman & Nat Pryce — *Growing Object-Oriented Software, Guided by Tests* (2009): https://www.amazon.com/Growing-Object-Oriented-Software-Guided-Tests/dp/0321503627 — origem do *double-loop*: teste de aceitação no loop externo guiando TDD de unidade no loop interno.
 - Ian Cooper — *TDD, Where Did It All Go Wrong* (talk): https://www.youtube.com/watch?v=EZ05e7EMOLM — releitura da proposta original de Kent Beck; argumenta que boa parte do *test-induced design damage* vem de testar métodos em vez de comportamento (unidade = módulo, não classe), o que empurra para o over-mocking discutido acima.
 - Martin Fowler — *Mocks Aren't Stubs* (2007): https://martinfowler.com/articles/mocksArentStubs.html — origem da distinção classicista/mockista que explica por que a mesma crítica de over-mocking soa diferente dependendo da escola de teste do time.
+- Kent Beck — *Test Desiderata* (2019): https://medium.com/@kentbeck_7670/test-desiderata-94150638a4b3 — as doze propriedades de um teste ideal e o princípio de que nenhuma se abandona sem receber outra de valor maior em troca.
 
 ## O que vem a seguir
 

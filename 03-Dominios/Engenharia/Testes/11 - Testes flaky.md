@@ -97,6 +97,37 @@ sequenceDiagram
 
 Leitura do diagrama: o mesmo `sleep(500)` que dá folga no laptop é insuficiente no CI lento. O número 500 foi um chute calibrado para uma máquina específica. Como o tempo real da operação varia com carga, hardware e GC, **qualquer** valor fixo está errado em algum ambiente — alto demais (lento) ou baixo demais (flaky). O `sleep` não espera a condição; ele aposta num prazo.
 
+## Taxonomia empírica: o que a pesquisa mediu
+
+A lista acima é organizada por intuição — o que o dia a dia ensina. Existe uma versão medida. Luo, Hariri, Eloussi e Marinov vasculharam **201 commits que corrigiam testes flaky em 51 projetos open source em Java** e publicaram a taxonomia que virou referência do campo (FSE 2014, *An Empirical Analysis of Flaky Tests*). Encontraram dez categorias, mas três concentram a maioria dos casos:
+
+| Categoria | % dos commits | Mecanismo |
+|---|---|---|
+| **Async wait** | 45% | operação assíncrona verificada cedo demais |
+| **Concorrência** | 20% | corrida entre *threads*, *deadlock*, ordem de execução paralela |
+| **Dependência de ordem** | 12% | teste depende de estado deixado por outro |
+| Resource leak, rede, tempo, IO, aleatoriedade, ponto flutuante, coleção sem ordem | ~23% (soma) | as demais sete categorias, cada uma minoritária |
+| — *resource leak*, a maior das sete | — | conexão, *file handle* ou *thread pool* não liberado esgota o recurso após N execuções — por isso o teste passa sozinho e falha só no fim de uma bateria longa |
+
+O número que salta é a soma das duas primeiras: **65% dos flaky vêm de async wait + concorrência** — timing, no sentido amplo. Isso não é acaso nem exagero retórico deste capítulo: é o motivo pelo qual a regra de ouro logo abaixo (nunca `sleep`, sempre esperar a condição) resolve, sozinha, a fatia majoritária do problema antes mesmo de tocar nas outras causas.
+
+A taxonomia também serve de roteiro de triagem: quando um teste começa a piscar e a causa não é óbvia, essa é a ordem de suspeita que os números sustentam.
+
+```mermaid
+flowchart TD
+    A["Teste pisca (as vezes passa, as vezes falha)"] --> B{"Falha isolado, fora da suite?"}
+    B -->|"Sim, falha sozinho tambem"| C["Nao e dependencia de ordem -> ver tempo/rede/recurso"]
+    B -->|"Nao, so falha na suite completa"| D{"Ordem dos testes importa?"}
+    D -->|"Sim (randomizar muda o resultado)"| E["Dependencia de ordem -> achar victim/polluter"]
+    D -->|"Nao"| F{"So falha sob execucao paralela?"}
+    F -->|"Sim"| G["Concorrencia/paralelismo -> isolar recurso (porta/dir/schema)"]
+    F -->|"Nao"| H{"Envolve espera de algo assincrono?"}
+    H -->|"Sim"| I["Async wait -> trocar sleep por await-until"]
+    H -->|"Nao"| J["Suspeitar de tempo/relogio, rede real ou coletion sem ordem"]
+```
+
+Leitura do diagrama: a primeira pergunta (B) já separa metade dos casos — se o teste falha até sozinho, o problema não está na suíte, está no próprio teste (tempo, rede, recurso). As perguntas seguintes vão da causa mais fácil de confirmar (randomizar a ordem é barato) para a mais cara (medir sob paralelismo, depois inspecionar o *assert* assíncrono) — uma sequência de eliminação, não um ranking de probabilidade; async wait continua sendo a causa isolada mais comum (45%), só que é a última a confirmar porque as outras três perguntas são mais baratas de responder primeiro.
+
 ## A regra de ouro: nunca `sleep` em teste
 
 Um `sleep` não espera que algo aconteça — ele aposta que vai acontecer dentro de N milissegundos. Se você acertar o prazo, o teste fica lento à toa em todo ambiente rápido; se você errar, o teste fica flaky no ambiente lento. Não existe valor certo, porque o tempo real varia com carga, hardware e coletor de lixo. A alternativa correta é **esperar a condição**, não o relógio (o enunciado completo da regra, como callout, está em [[#Armadilhas comuns]]).
@@ -161,6 +192,64 @@ var service = new FaturaService(clockFixo);
 
 O `Clock` injetável transforma uma dependência incontrolável (o relógio do sistema) numa dependência que você fornece. É o mesmo movimento de mockar a rede: trocar o que varia por algo que você comanda.
 
+Mas o `Clock` só resolve o mecanismo — não elimina, sozinho, as armadilhas de calendário que só aparecem em datas raras, e que por isso escapam de qualquer suíte que roda todo dia com data real:
+
+- **Virada de dia, mês ou ano.** Um teste que compara `LocalDate.now()` sem congelar passa 364 dias e falha exatamente à meia-noite, ou no dia 1º quando o mês vira no meio do *assert*.
+- **Fuso horário e horário de verão.** `Instant.now()` convertido pro fuso local sem `ZoneId` explícito dá resultado diferente conforme onde o CI roda; em regiões com horário de verão, a mesma hora local pode não existir (o "buraco" da troca) ou existir duas vezes.
+- **Ano bissexto.** `29 de fevereiro` quebra qualquer lógica de data que assuma "mês + 1 dia" fixo, e só aparece a cada 4 anos — o tipo de flaky raro demais pra pegar em meses de suíte verde, mas certo de acontecer um dia.
+
+A cura continua sendo `Clock` fixo, mas agora escolhido *de propósito* pra cobrir a fronteira (`Clock.fixed` em 31/12 23:59, em 29/02, num instante dentro da janela de horário de verão) — não só pra travar "hoje" num dia qualquer.
+
+### Isolar recursos sob paralelismo
+
+A causa "paralelismo" da tabela acima fica mais concreta com os três recursos que mais colidem quando o *runner* despacha vários testes ao mesmo tempo:
+
+- **Porta de rede.** Um teste que sobe um servidor embutido numa porta fixa (`8080`) colide quando dois rodam em paralelo. Solução: pedir porta `0` ao sistema operacional (porta efêmera) e descobrir a porta real só depois de o servidor subir.
+- **Diretório temporário.** Dois testes escrevendo no mesmo `/tmp/export.csv` se pisam. `@TempDir` (JUnit 5) cria um diretório exclusivo por execução, sem coordenação manual.
+- **Schema ou banco.** Testes de integração compartilhando o mesmo *schema* de Postgres brigam por linhas e *sequences*. Um *schema* (ou banco, via Testcontainers) por *worker* de paralelismo evita a colisão sem sacrificar velocidade.
+
+O padrão é sempre o mesmo: qualquer recurso com nome ou endereço fixo é uma aposta de que só um teste vai usá-lo por vez. Sob paralelismo essa aposta perde.
+
+### Dependência de ordem: victim, polluter, cleaner
+
+A causa "dependência de ordem" (12% na taxonomia acima) merece anatomia própria porque, ao contrário do `sleep` — sintoma óbvio no código —, ela é traiçoeira: os dois testes envolvidos, rodados isolados, passam limpos. O problema só existe na combinação.
+
+O framework **iDFlakies** (Illinois, ICST 2019) cunhou o vocabulário que virou padrão para descrever o fenômeno:
+
+- **Polluter** — o teste que deixa resíduo (estado estático, linha no banco, arquivo em disco) sem limpar.
+- **Victim** — o teste que só passa (ou só falha) por causa do resíduo herdado do *polluter*.
+- **Cleaner** — um terceiro teste que, rodando entre o *polluter* e a *victim*, reseta o estado a tempo de salvar a *victim*.
+- **Brittle** — variante mais sutil: falha rodando sozinho, mas passa depois de um *state-setter* específico — o inverso do *polluter*, um pré-requisito escondido em vez de uma sujeira deixada para trás.
+
+```mermaid
+sequenceDiagram
+    participant P as Teste Polluter
+    participant Estado as Estado compartilhado
+    participant V as Teste Victim
+    P->>Estado: escreve/muta e nao limpa
+    Note over Estado: residuo fica
+    V->>Estado: le o estado
+    Estado-->>V: valor poluido
+    V->>V: assert falha (ou passa por engano)
+```
+
+A suíte inteira passando em ordem alfabética não prova nada — prova só que aquela ordem específica funciona. Duas técnicas expõem o problema de verdade:
+
+1. **Execução randômica.** Embaralhar a ordem a cada rodada do CI. Se um teste some às vezes, achou um candidato.
+2. **Bisecção da suíte.** Quando um teste falha isolado ou num subconjunto, bissecciona-se a suíte (metade/metade, como `git bisect`) até isolar o par *polluter*/*victim* exato.
+
+O iDFlakies automatiza os dois: roda a suíte em múltiplas ordens aleatórias e classifica automaticamente cada *order-dependent test* encontrado, incluindo o par que o causa.
+
+### Detectar sem rodar dez vezes
+
+A abordagem ingênua para separar bug real de flaky é rodar a suíte de novo (ou várias vezes) e ver se o vermelho se repete. Funciona, mas é caro: multiplica o tempo de CI pelo número de *reruns*, e ainda é incompleto — um teste pode levar dezenas de execuções para manifestar a instabilidade, se a taxa de *flakiness* dele for baixa.
+
+O **DeFlaker** (Bell et al., ICSE 2018) ataca o problema de outro ângulo: em vez de rodar de novo, ele olha a cobertura. A ideia: se um teste falhou mas **não executou nenhuma linha alterada** no commit atual — comparando com o *diff* do controle de versão —, a falha não pode ser causada pela mudança; é flaky por definição, sem precisar de segunda rodada. Na avaliação publicada, a técnica identificou 4.846 das 5.328 falhas flaky confirmadas (95,5%) com apenas 1,5% de falso positivo, rodando em produção em 96 projetos Java no TravisCI, e achou 87 flaky até então desconhecidos.
+
+O ganho é duplo: menos custo de CI (nada de multiplicar *reruns*) e cobertura melhor (pega flaky que só se manifestaria depois de várias tentativas). O limite: a técnica só separa "é a mudança atual" de "não é" — não substitui achar a causa raiz, que continua sendo o trabalho das seções anteriores.
+
+DeFlaker e iDFlakies resolvem perguntas diferentes e se complementam: o primeiro detecta que um teste é flaky sem precisar rodar de novo; o segundo, uma vez que você já sabe que é flaky por dependência de ordem, aponta qual par *polluter*/*victim* é o culpado.
+
 ### Banco limpo por teste: container descartável
 
 Para a causa "estado compartilhado" no banco, a resposta de `[[07 - Testes de integração]]` é o **Testcontainers**: um container de Postgres real, novo, por classe (ou por teste, quando você precisa de isolamento absoluto). Cada execução começa com um banco em estado conhecido, sem resíduo de execução anterior. Combine com transação-por-teste com *rollback* quando der, e o estado nunca vaza entre testes.
@@ -187,6 +276,12 @@ flowchart TD
 Leitura do diagrama: o primeiro losango (B) é o triagem essencial — distinguir bug consistente de flaky intermitente, normalmente rodando a falha algumas vezes. Bug vai consertar o código; flaky vai para quarentena *na hora*, saindo do *gate* para não envenenar o sinal verde dos outros. Mas o passo F é o que separa quarentena de abandono: **ticket, dono, prazo**. Sem isso, a quarentena vira um depósito de testes podres, e o problema só mudou de lugar.
 
 Fowler é explícito sobre o teto: a quarentena deve ter **limite rígido** — ele sugeria no máximo poucos testes (8) e prazo de uma semana. O limite é proposital: se a quarentena pode crescer sem freio, ela deixa de ser pressão para consertar e vira o tapete embaixo do qual se varre tudo (o custo real dessa negligência está detalhado em [[#Armadilhas comuns]]).
+
+### Quando deletar é a decisão certa
+
+A régua de "ticket, dono, prazo" não resolve sozinha uma pergunta desconfortável: o que fazer quando o prazo estoura e ninguém consertou? A tentação é estender indefinidamente — e é exatamente aí que a quarentena vira cemitério em vez de UTI. Fowler já apontava a saída difícil de engolir: se o teste está quarentenado há semanas sem dono nem progresso, **deletar é uma decisão legítima**, não uma derrota.
+
+Um teste flaky sem dono não protege ninguém contra regressão — ele só ocupa espaço na suíte e mantém viva a ideia de "aquele teste que sempre falha, ignora". Entre um teste morto (deletado, honesto sobre o que deixou de cobrir) e um teste zumbi (formalmente presente, informalmente ignorado por todo mundo), o morto é o menos perigoso: ele não finge dar uma garantia que não dá.
 
 O Google opera quarentena **automatizada**: um monitor mede a taxa de *flakiness* de cada teste e coloca em quarentena os que passam de um limiar, ao mesmo tempo em que detecta *mudanças* na flakiness para pegar regressões. Onde a esteira de `[[15 - Testes em CI-CD]]` aplica essa política, ela junta o melhor dos dois mundos: o gate fica confiável (flaky não bloqueia) e nenhum flaky some do radar (todo quarentenado tem dono e prazo).
 
@@ -273,6 +368,11 @@ A flaky test passes sometimes and fails sometimes against the same code, version
 | limpar o estado | tear down / clean up state |
 | serviço externo (mockar) | external service (to mock / stub) |
 | confiança na suíte | trust in the suite |
+| teste que suja o estado | polluter |
+| teste vítima do estado sujo | victim |
+| teste que limpa o estado | cleaner |
+| porta efêmera | ephemeral port |
+| cobertura diferencial (do diff) | differential coverage |
 
 ## Fontes
 
@@ -281,6 +381,9 @@ A flaky test passes sometimes and fails sometimes against the same code, version
 - [Awaitility — DSL Java para sincronizar operações assíncronas](https://github.com/awaitility/awaitility) — `await().atMost(...).until(...)`; timeout default 10s; `ConditionTimeoutException`
 - [Gradle Test Retry Plugin — README](https://github.com/gradle/test-retry-gradle-plugin) — `maxRetries`/`maxFailures`/`failOnPassedAfterRetry`; "retrying tests alone is not a viable flaky test mitigation strategy"
 - [Apache Maven Surefire — Rerun failing tests](https://maven.apache.org/surefire/maven-surefire-plugin/examples/rerun-failing-tests.html) — `rerunFailingTestsCount`; suporte JUnit 4.12+, JUnit 5.x, TestNG; relatório `flakyFailure`/`flakyError`
+- [Luo, Hariri, Eloussi, Marinov — *An Empirical Analysis of Flaky Tests* (FSE 2014)](https://www.cs.cornell.edu/courses/cs5154/2021sp/resources/LuoETAL14FlakyTestsAnalysis.pdf) — taxonomia de 10 categorias sobre 201 commits em 51 projetos; Async Wait 45%, Concorrência 20%, Dependência de ordem 12%
+- [iDFlakies — A Framework for Detecting and Partially Classifying Flaky Tests (ICST 2019)](https://taoxie.cs.illinois.edu/publications/icst19-idflakies.pdf) — vocabulário victim/polluter/cleaner/brittle; detecção via ordens randômicas
+- [DeFlaker — Automatically Detecting Flaky Tests (ICSE 2018)](https://www.cs.cornell.edu/~legunsen/pubs/BellETAL18DeFlaker.pdf) — detecção via cobertura diferencial do diff, sem *rerun*; 95,5% de acerto, 1,5% falso positivo em 96 projetos
 
 ## O que vem a seguir
 
