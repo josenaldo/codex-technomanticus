@@ -24,8 +24,7 @@ aliases:
 
 > [!abstract] TL;DR
 > A entrega confiável de mensagens é, na prática, **at-least-once**: o broker garante que a mensagem chega,
-> mas pode entregá-la **mais de uma vez** (reentrega após falha, [[11 - Competing Consumers|competing
-> consumers]]). Logo, o consumidor precisa ser **idempotente** — processar a **mesma** mensagem duas vezes
+> mas pode entregá-la **mais de uma vez** (reentrega após falha, [[11 - Competing Consumers|competing consumers]]). Logo, o consumidor precisa ser **idempotente** — processar a **mesma** mensagem duas vezes
 > deve ter o **mesmo** efeito que processá-la uma vez. Três estratégias: **deduplicar por message id** (o
 > *inbox pattern*: guardo os ids já processados e ignoro repetidos), usar **operações naturalmente
 > idempotentes** (`saldo = 100` em vez de `saldo += 100`), e **upsert** (inserir-ou-atualizar). O ponto que

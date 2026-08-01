@@ -78,8 +78,7 @@ o tempo de forma honesta, sem exigir que ele "entenda" o sistema como você ente
   brilha, como já apontado na nota 14.
 
 **Em uma frase:** a IA comprime o tempo de "não entendo nada" para "tenho um rascunho de mapa e um
-rascunho de rede" — o maior gargalo do consultor que entra de fora ([[03 - A lente do consultor|nota
-03]]). O que ela não compra é julgamento: decidir se o rascunho está certo continua seu.
+rascunho de rede" — o maior gargalo do consultor que entra de fora ([[03 - A lente do consultor|nota 03]]). O que ela não compra é julgamento: decidir se o rascunho está certo continua seu.
 
 > [!info] O funcionamento interno dos agentes de codificação não é o assunto desta nota
 > Como um agente de codificação decide qual arquivo abrir, que ferramentas chamar, como o loop

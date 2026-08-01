@@ -87,8 +87,7 @@ exige coordenar toda a empresa, e ele vira o gargalo organizacional que o ESB fo
 > (um canônico para o domínio de "pedidos", compartilhado por 4 serviços que realmente falam de pedidos), ele
 > corta o N×N e vale muito. Em **escala empresarial única** (um dicionário canônico para *toda* a companhia,
 > versionado por comitê), ele recria o acoplamento centralizado que deveria eliminar. A regra que reconcilia:
-> **canônico mínimo, por contexto, evoluível** — não um god-schema global. É [[01 - Panorama da integração|smart
-> endpoints, dumb pipes]] aplicado ao **modelo de dados**: a inteligência (o modelo rico) fica nos serviços;
+> **canônico mínimo, por contexto, evoluível** — não um god-schema global. É [[01 - Panorama da integração|smart endpoints, dumb pipes]] aplicado ao **modelo de dados**: a inteligência (o modelo rico) fica nos serviços;
 > o canônico compartilhado é o **mínimo** necessário para se entenderem.
 
 ## A lente cross-ferramenta

@@ -93,8 +93,7 @@ graph TD
 A quarta pergunta — "existem testes que rodam?" — reencontra a definição de Feathers da
 [[01 - O que é código legado|nota 01]]: código sem testes é código legado. Se a resposta for "não
 há testes", você acabou de confirmar, empiricamente, que herdou a primeira das duas ausências. A
-resposta não te desanima; te diz onde o trabalho começa (a [[10 - A rede de segurança primeiro|rede
-de segurança da nota 10]]).
+resposta não te desanima; te diz onde o trabalho começa (a [[10 - A rede de segurança primeiro|rede de segurança da nota 10]]).
 
 Uma prática que economiza sofrimento futuro: **enquanto você descobre o ritual do build, documente-o
 num artefato reprodutível** — um `Dockerfile`, um `devcontainer`, um script. Você está transformando
@@ -184,16 +183,14 @@ legenda do mapa.
 > **Por quê:** a doc é a fonte mais confortável (texto em português, não código), e por isso a mais
 > sedutora. Mas ela envelhece em silêncio, enquanto o código muda.
 > **Como evitar:** trate doc como estrato histórico, não como espelho do presente. Cruze toda
-> afirmação da doc com o sistema rodando ou com o `git log` ([[07 - Arqueologia do histórico|nota
-> 07]]). Quando divergirem, o código vivo ganha.
+> afirmação da doc com o sistema rodando ou com o `git log` ([[07 - Arqueologia do histórico|nota 07]]). Quando divergirem, o código vivo ganha.
 
 > [!warning] Ler o código antes de vê-lo rodar
 > **O que acontece:** você mergulha na leitura estática no dia 1, sem nunca ter executado o sistema —
 > e constrói uma teoria elegante que a primeira execução real desmente.
 > **Por quê:** ler parece produtivo e não depende de resolver o build chato. Mas código estático
 > esconde o fluxo real, os dados de verdade e o comportamento de borda.
-> **Como evitar:** priorize rodar. Mesmo um *skim* de uma hora ([[06 - Lendo código que você não
-> escreveu|Read the Code in One Hour]]) rende dez vezes mais depois que você viu o sistema executar
+> **Como evitar:** priorize rodar. Mesmo um *skim* de uma hora ([[06 - Lendo código que você não escreveu|Read the Code in One Hour]]) rende dez vezes mais depois que você viu o sistema executar
 > uma vez e sabe qual caminho o código realmente percorre.
 
 ## Como explicar em inglês

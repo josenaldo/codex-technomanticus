@@ -32,8 +32,7 @@ publish: true
 > compiler*), mudanças mecânicas que a própria linguagem garante seguras, sem exigir teste prévio.
 
 Você já sabe que `CalculadoraDeComissao` é o hotspot ([[09 - Forense de software|nota 09]]) e já
-decidiu que o primeiro passo é caracterizar o comportamento atual ([[10 - A rede de segurança
-primeiro|nota 10]]). Você abre o editor, cria `CalculadoraDeComissaoTest`, escreve:
+decidiu que o primeiro passo é caracterizar o comportamento atual ([[10 - A rede de segurança primeiro|nota 10]]). Você abre o editor, cria `CalculadoraDeComissaoTest`, escreve:
 
 ```java
 CalculadoraDeComissao calc = new CalculadoraDeComissao();
@@ -385,8 +384,7 @@ nos outros 39 pontos de chamada — o seam foi cirúrgico, proporcional ao risco
 > chegar ao passo 4 (escrever teste). Expandir o escopo vira exatamente o tipo de mudança grande, sem
 > teste que a cubra, que a nota 10 existe para evitar.
 > **Como evitar:** abra só o seam que bloqueia a instanciação/chamada do caminho que você precisa
-> caracterizar agora. Deixe o resto da arquitetura para quando a rede ([[13 - Técnicas cirúrgicas|nota
-> 13]], [[14 - Refactoring em terreno hostil|nota 14]]) já cobrir aquele território.
+> caracterizar agora. Deixe o resto da arquitetura para quando a rede ([[13 - Técnicas cirúrgicas|nota 13]], [[14 - Refactoring em terreno hostil|nota 14]]) já cobrir aquele território.
 
 > [!warning] Escolher uma técnica de quebra que exige julgamento humano em vez de garantia do compilador
 > **O que acontece:** em vez de Extract Interface (mecânico, verificado estaticamente), o engenheiro faz

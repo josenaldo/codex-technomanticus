@@ -20,8 +20,7 @@ publish: true
 > toda semana também não. O cruzamento das duas — **hotspots**, o método de Adam Tornhill (*Your Code
 > as a Crime Scene*, 2ª ed. 2024) — é o alvo. O histórico ([[07 - Arqueologia do histórico|nota 07]])
 > também revela **acoplamento temporal**: arquivos que mudam *juntos* nos commits sem nenhuma
-> dependência estática entre eles, o ponto cego do mapa da [[08 - Engenharia reversa e recuperação de
-> arquitetura|nota 08]]. E o `git log` tem um terceiro sinal: quem mexeu em cada módulo — o
+> dependência estática entre eles, o ponto cego do mapa da [[08 - Engenharia reversa e recuperação de arquitetura|nota 08]]. E o `git log` tem um terceiro sinal: quem mexeu em cada módulo — o
 > **bus factor**, o risco de conhecimento concentrado numa única cabeça. Juntos, os três transformam
 > o "faro" qualitativo em um **mapa de calor de risco** que você mostra ao cliente em vez de opinar.
 >
@@ -169,8 +168,7 @@ O terceiro sinal que o `git log` esconde é sobre **quem** — não *o quê* mud
 naquilo. Para cada módulo, o histórico de autoria revela a concentração de conhecimento: se 95% dos
 commits de `MotorLegadoCalculo.java` nos últimos três anos vieram de uma única pessoa, você tem um
 **bus factor de 1** naquele módulo — a metáfora sombria de "quantas pessoas precisam ser atropeladas
-por um ônibus até o conhecimento sumir". Esse é o risco organizacional que a [[03 - A lente do
-consultor|lente do consultor]] pede que você levante logo na due diligence: não é só código frágil,
+por um ônibus até o conhecimento sumir". Esse é o risco organizacional que a [[03 - A lente do consultor|lente do consultor]] pede que você levante logo na due diligence: não é só código frágil,
 é conhecimento tribal preso numa cabeça só.
 
 O cruzamento perigoso — e é aqui que a forense fecha o círculo com os hotspots — é **hotspot com bus
@@ -224,8 +222,7 @@ importante que a ferramenta.
 
 ### Cenário 1: due diligence — o mapa de calor que virou o orçamento
 
-No mesmo engajamento de due diligence da [[08 - Engenharia reversa e recuperação de arquitetura|nota
-08]] (o núcleo cíclico de 40% das classes), o fundo quer saber não só *se* dá para modernizar, mas
+No mesmo engajamento de due diligence da [[08 - Engenharia reversa e recuperação de arquitetura|nota 08]] (o núcleo cíclico de 40% das classes), o fundo quer saber não só *se* dá para modernizar, mas
 *quanto vai custar* e *por onde começar*. Você roda uma análise de hotspots sobre os últimos dois anos
 de commits. O resultado: dos 1.200 arquivos do sistema, apenas 14 caem no quadrante hotspot — e três
 deles estão *dentro* do núcleo cíclico que a nota 08 identificou estruturalmente. Você cruza os dois

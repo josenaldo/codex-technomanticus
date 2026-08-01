@@ -172,8 +172,7 @@ depois, na ordem certa, a partir de um estado limpo. Três razões concretas sus
    de dias ou semanas, vermelho, que ninguém pode integrar. Se o cliente perguntar amanhã "quanto já foi
    feito?", a resposta é sempre "isto aqui, commitado e testado" — nunca "estou no meio de algo que ainda
    não sei se vai fechar". É o mesmo princípio de sempre-entregável que reaparece, na escala de sistema
-   inteiro, no [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/18 - Strangler Fig|Strangler
-   Fig]] (nota 18, fase Magus): nunca aposte tudo num único corte grande.
+   inteiro, no [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/18 - Strangler Fig|Strangler Fig]] (nota 18, fase Magus): nunca aposte tudo num único corte grande.
 2. **Cada correção nasce isolada.** Ao consertar um pré-requisito a partir do verde, você sabe exatamente
    o que mudou naquele passo — a mesma disciplina de não misturar reestruturação com mudança de
    comportamento que a nota 14 já defendia, agora aplicada em escala maior. Se o pré-requisito, sozinho,
@@ -249,8 +248,9 @@ commit pequeno, quase anticlimático, porque todo o risco já foi drenado nas it
 > **O que acontece:** você trata "o código compila de novo depois de reverter" como sinal de verde
 > suficiente, sem rodar a rede de characterization tests.
 > **Por quê:** compilar prova só que a sintaxe está correta; não prova que o comportamento observável não
-> mudou — o mesmo risco que a [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/10 - A rede de
-> segurança primeiro|nota 10]] já descreveu para qualquer refatoração em terreno hostil.
+> mudou — o mesmo risco que a
+> [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/10 - A rede de segurança primeiro|nota 10]]
+> já descreveu para qualquer refatoração em terreno hostil.
 > **Como evitar:** "verde", no ciclo Mikado, significa compilação **e** rede de testes passando — nunca
 > só um dos dois. Cada commit de folha resolvida deve rodar a mesma rede que ampara o restante do trabalho
 > de reestruturação (notas 10-12).
@@ -294,8 +294,7 @@ acelerador — e o outro risco — que mudou o ofício nos últimos anos.
 - [[16 - IA como acelerador e seus riscos]] — fecha a fase Adepto: LLMs aplicados à engenharia reversa e à
   geração de código em terreno hostil, e a regra que os protege de piorar o emaranhado — characterization
   antes de deixar a IA mudar qualquer coisa.
-- [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/17 - Frameworks de decisão|17 - Frameworks
-  de decisão]] — fase Magus: os R's e o TIME (Gartner) que decidem *se* e *para onde* migrar; o Mikado é a
+- [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/17 - Frameworks de decisão|17 - Frameworks de decisão]] — fase Magus: os R's e o TIME (Gartner) que decidem *se* e *para onde* migrar; o Mikado é a
   técnica de execução que essa decisão, uma vez tomada, vai reutilizar.
 - [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/18 - Strangler Fig|18 - Strangler Fig]] —
   fase Magus: o mesmo princípio de sempre-entregável, na escala de sistema inteiro em vez de um módulo.

@@ -35,8 +35,7 @@ um comando. Um `git blame` naquela linha teria mostrado o commit que a introduzi
 código dizia *o quê* aquele `if` fazia (uma condição), mas escondia *por quê* existia. O histórico
 não escondia. A tragédia da nota 04 foi, no fundo, não ter feito arqueologia.
 
-Esta nota fecha o arco de orientação (a fase Iniciado do galho). O [[05 - First Contact|First
-Contact]] pôs o sistema pra rodar; a [[06 - Lendo código que você não escreveu|leitura do código]] te
+Esta nota fecha o arco de orientação (a fase Iniciado do galho). O [[05 - First Contact|First Contact]] pôs o sistema pra rodar; a [[06 - Lendo código que você não escreveu|leitura do código]] te
 deu o *estado atual*. O `git` te dá a dimensão que faltava: o **tempo** — a ordem em que o sistema foi
 construído e a razão de cada camada.
 
@@ -54,8 +53,7 @@ mensagem. O código sozinho te faria adivinhar (ou pior, "limpar"); o histórico
 
 > [!question]- Se a mensagem de commit é tão importante, e se ela for inútil ("fix", "wip", "ajustes")?
 > Aí você aprendeu duas coisas. Primeiro, sobre *aquela* linha: terá de recorrer a outras fontes (o PR
-> linkado, a issue, o ticket, ou o tracing reverso da [[06 - Lendo código que você não escreveu|nota
-> 06]]). Segundo, e mais valioso, sobre a **cultura** que produziu o sistema: um histórico de
+> linkado, a issue, o ticket, ou o tracing reverso da [[06 - Lendo código que você não escreveu|nota 06]]). Segundo, e mais valioso, sobre a **cultura** que produziu o sistema: um histórico de
 > mensagens vazias é um sinal de diagnóstico tão eloquente quanto um build quebrado — te diz que a
 > disciplina de registrar o *porquê* nunca existiu, e que a teoria se perdeu mais fundo do que o
 > normal. Isso, por sua vez, eleva a prioridade de você começar a registrar o porquê *agora* (os ADRs
@@ -173,8 +171,7 @@ inferir, se inferisse.
 > era incompetente — perdendo a chance de entender a *restrição* que o levou àquilo.
 > **Por quê:** o histórico registra decisões tomadas sob pressões que você não vê (um prazo, uma versão
 > antiga de framework, um bug de biblioteca da época). Julgar é confortável e improdutivo.
-> **Como evitar:** leia o histórico com a "humildade ativa" da [[02 - A mentalidade do restaurador|nota
-> 02]] — presuma uma boa razão sob restrições reais, e use a mensagem/data do commit para reconstruí-la
+> **Como evitar:** leia o histórico com a "humildade ativa" da [[02 - A mentalidade do restaurador|nota 02]] — presuma uma boa razão sob restrições reais, e use a mensagem/data do commit para reconstruí-la
 > em vez de condenar.
 
 ## Como explicar em inglês
@@ -204,8 +201,7 @@ Quando te perguntarem, em entrevista, como você descobre *por que* um código l
 
 ## O que vem a seguir
 
-Com o inventário técnico ([[05 - First Contact|05]]), a leitura do código ([[06 - Lendo código que
-você não escreveu|06]]) e a arqueologia do histórico (esta nota), você fecha o **arco de orientação**:
+Com o inventário técnico ([[05 - First Contact|05]]), a leitura do código ([[06 - Lendo código que você não escreveu|06]]) e a arqueologia do histórico (esta nota), você fecha o **arco de orientação**:
 tem um modelo mental do presente e do passado do sistema. Começa agora a fase **Adepto** — deixar de
 apenas *entender* e passar a *mudar com segurança*. O primeiro salto é elevar o que você aprendeu lendo
 a um mapa formal da arquitetura, e depois tornar quantitativo o faro que o histórico te deu sobre onde

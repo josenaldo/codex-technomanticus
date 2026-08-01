@@ -154,8 +154,7 @@ inconsistência. Ignorar isso é a origem das duas armadilhas seguintes.
 
 ## O que vem a seguir
 
-Isto **fecha a família Acesso a Dados** — do [[01 - Panorama do acesso a dados|descasamento
-objeto↔relacional]] até a persistência poliglota. Vale amarrar o mapa da escolha, que é a pergunta
+Isto **fecha a família Acesso a Dados** — do [[01 - Panorama do acesso a dados|descasamento objeto↔relacional]] até a persistência poliglota. Vale amarrar o mapa da escolha, que é a pergunta
 sênior de verdade:
 
 - **Onde mora a lógica?** Pouca e CRUD → [[02 - Transaction Script]]; rica e evolutiva → [[03 - Domain Model]].

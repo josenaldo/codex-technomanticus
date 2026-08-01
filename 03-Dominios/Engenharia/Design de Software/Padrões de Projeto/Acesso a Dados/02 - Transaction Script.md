@@ -66,7 +66,7 @@ Transaction Script não é "código ruim de júnior" — é uma escolha de arqui
 - O sistema é essencialmente **CRUD** ou relatórios sobre dados.
 - O time é pequeno, o prazo é curto, e a clareza imediata vale mais que a evolução de longo prazo.
 
-Combina naturalmente com os padrões de fonte de dados mais simples — um [[07 - Gateways (Row-Table Data Gateway + Record Set)|Table Data Gateway]] ou um [[05 - DAO (Data Access Object)|DAO]] — porque o script precisa apenas de um jeito direto de ler e gravar linhas.
+Combina naturalmente com os padrões de fonte de dados mais simples — um [[07 - Gateways|Table Data Gateway]] ou um [[05 - DAO (Data Access Object)|DAO]] — porque o script precisa apenas de um jeito direto de ler e gravar linhas.
 
 ## Armadilhas comuns
 

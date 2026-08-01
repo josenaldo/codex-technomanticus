@@ -27,8 +27,7 @@ publish: true
 > que o altere vai acusar. Esta é a nota-pivô do galho: fecha a fase de *entender* (Iniciado + 08-09) e
 > abre a fase de *mudar com segurança* — nada em 12-16 acontece sem a rede primeiro.
 
-Você acabou de rodar o reflexion model ([[08 - Engenharia reversa e recuperação de arquitetura|nota
-08]]) e a forense de Tornhill ([[09 - Forense de software|nota 09]]). Sabe exatamente qual classe é o
+Você acabou de rodar o reflexion model ([[08 - Engenharia reversa e recuperação de arquitetura|nota 08]]) e a forense de Tornhill ([[09 - Forense de software|nota 09]]). Sabe exatamente qual classe é o
 hotspot: `CalculadoraDeComissao`, 800 linhas, mudou em 60% dos últimos commits, e é a que mais gera
 incidente. O cliente quer que você conserte um bug ali — um valor de comissão levemente errado para
 vendedores com meta parcial. Você abre o arquivo. Zero testes. Zero. Você pensa: "fácil, eu vejo o erro,

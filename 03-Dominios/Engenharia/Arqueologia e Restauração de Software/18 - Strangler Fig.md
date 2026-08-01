@@ -119,8 +119,7 @@ requisição, ou os dados que ele lê e escreve?* Fowler nomeia as duas metades 
 estratégias complementares, e entendê-las separadas é o que evita as piores armadilhas do padrão.
 
 **Event interception** é a metade do *fluxo*. Você identifica os pontos de integração por onde as
-requisições e atualizações de estado entram no sistema — os *seams* de borda ([[12 - Seams e quebra de
-dependência|nota 12]], agora no nível da arquitetura, não da classe) — e intercepta esse fluxo, desviando
+requisições e atualizações de estado entram no sistema — os *seams* de borda ([[12 - Seams e quebra de dependência|nota 12]], agora no nível da arquitetura, não da classe) — e intercepta esse fluxo, desviando
 para o componente novo **apenas os eventos das funções já migradas**. O ponto crucial, que Fowler faz
 questão de sublinhar: você **não** intercepta todos os eventos, só os do subconjunto que está migrando. O
 resto flui direto para o velho, como sempre.

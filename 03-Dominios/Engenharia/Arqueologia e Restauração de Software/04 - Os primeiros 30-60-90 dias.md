@@ -136,8 +136,7 @@ raio de explosão.
 
 Por que isso importa tanto? Porque o *early win* tem uma função dupla. A óbvia é **técnica**: um bug
 irritante corrigido, uma dependência crítica atualizada, um endpoint lento acelerado. A menos óbvia,
-e mais importante no modo herança, é **política** (a [[23 - A dimensão política|dimensão que a nota
-23 aprofunda]]): cada entrega segura constrói o **capital de confiança** que você vai gastar depois,
+e mais importante no modo herança, é **política** (a [[23 - A dimensão política|dimensão que a nota 23 aprofunda]]): cada entrega segura constrói o **capital de confiança** que você vai gastar depois,
 quando propuser as mudanças estruturais que assustam o cliente. Um consultor que passou 60 dias sem
 entregar nada visível não tem crédito para dizer, no dia 90, "precisamos reescrever o módulo de
 pagamentos".
@@ -152,9 +151,7 @@ feio" é uma cova.
 
 No terceiro arco, a relação se inverte: você deixa de ser alguém que *pede contexto* e passa a ser
 alguém *a quem se pede contexto*. Você virou o dono da teoria. Agora as intervenções podem ser
-estruturais — instalar a rede de segurança onde ela falta ([[10 - A rede de segurança primeiro|
-characterization tests]]), abrir seams para quebrar dependências ([[12 - Seams e quebra de
-dependência|nota 12]]), conduzir a primeira restauração de verdade.
+estruturais — instalar a rede de segurança onde ela falta ([[10 - A rede de segurança primeiro| characterization tests]]), abrir seams para quebrar dependências ([[12 - Seams e quebra de dependência|nota 12]]), conduzir a primeira restauração de verdade.
 
 Este é o arco em que o protocolo de aterrissagem se dissolve no trabalho contínuo do galho. Os
 30-60-90 dias eram o *como aterrissar*; daqui pra frente é o *como restaurar* — e é isso que as fases
@@ -164,8 +161,7 @@ os [[17 - Frameworks de decisão|frameworks da nota 17]] estruturam.
 
 ## Como isto muda por modo
 
-O 30-60-90 é o plano do **modo herança**. Nos outros dois modos da [[03 - A lente do consultor|nota
-03]], ele se deforma — e reconhecer a deformação evita aplicar o protocolo errado:
+O 30-60-90 é o plano do **modo herança**. Nos outros dois modos da [[03 - A lente do consultor|nota 03]], ele se deforma — e reconhecer a deformação evita aplicar o protocolo errado:
 
 - No **resgate**, os três arcos colapsam em horas. Você não tem 30 dias para se orientar; estabiliza
   primeiro, e o "aprendizado" vira um mergulho cirúrgico só no ponto que sangra. O protocolo completo
@@ -205,8 +201,7 @@ legado, *early win* não é o problema mais impressionante; é o mais **seguro**
 > **O que acontece:** pressionado a "mostrar serviço", você faz uma mudança nas primeiras semanas e
 > quebra um comportamento sutil que ninguém sabia que dependia daquilo.
 > **Por quê:** a ansiedade de justificar a contratação atropela o arco de orientação. Mas mudar sem
-> teoria, no legado, é apostar contra a Cerca de Chesterton ([[02 - A mentalidade do restaurador|nota
-> 02]]).
+> teoria, no legado, é apostar contra a Cerca de Chesterton ([[02 - A mentalidade do restaurador|nota 02]]).
 > **Como evitar:** no arco 0-30, sua entrega **é** o entendimento — o mapa e a lista de riscos.
 > Venda isso ao cliente como o valor que é; segure o código para o arco 2.
 

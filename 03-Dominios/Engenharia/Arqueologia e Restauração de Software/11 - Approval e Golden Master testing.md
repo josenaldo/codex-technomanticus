@@ -28,8 +28,7 @@ publish: true
 
 Você herdou um módulo de emissão de nota fiscal: 1.100 linhas de Java, zero testes, produz um XML com
 147 campos, cálculos de impostos por estado, arredondamentos específicos por regime tributário. O
-gerente quer que você mude uma regra de ICMS antes de sexta. A [[10 - A rede de segurança primeiro|nota
-10]] te ensinou o caminho certo — caracterizar antes de tocar — mas quando você tenta escrever o
+gerente quer que você mude uma regra de ICMS antes de sexta. A [[10 - A rede de segurança primeiro|nota 10]] te ensinou o caminho certo — caracterizar antes de tocar — mas quando você tenta escrever o
 characterization test à mão, trava: a asserção que "define" a saída correta teria 147 linhas de
 `assertEquals`, uma para cada campo do XML, e você levaria dois dias só pra transcrever o output atual
 em código. Isso não é rede de segurança, é reescrever o sistema em forma de teste. Precisa de outro
@@ -215,8 +214,7 @@ escreve a nova API em Java e faz cada caso rodar via approval test contra o mast
 Nos primeiros dias, o diff aponta dúzias de discrepâncias de arredondamento — bugs reais na sua
 reimplementação, pegos em minutos, não em produção. Quando o último caso bate, você tem confiança
 objetiva (não uma sensação) de que a migração preserva o comportamento, para migrar com segurança
-usando [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/18 - Strangler Fig|Strangler
-Fig]] mais adiante no galho.
+usando [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/18 - Strangler Fig|Strangler Fig]] mais adiante no galho.
 
 ### Cenário 2: o approval test que vazava data e quase foi aprovado no automático
 
