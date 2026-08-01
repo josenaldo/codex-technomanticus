@@ -118,6 +118,9 @@ As consequências para quem cuida do repositório:
 
 **A CI vê um repositório amputado — raso, sem ramo, sem tags, sem config —, e o GitOps devolve o repositório ao centro, fazendo do histórico o registro auditável do que esteve no ar.**
 
+> [!tip] Vídeo — o repositório como fonte da verdade
+> [**What is GitOps, How GitOps works and Why it's so useful**](https://www.youtube.com/watch?v=f5EpcWp0THw) (TechWorld with Nana, 12 min) mostra o loop de reconciliação desenhado passo a passo, incluindo a parte que esta nota só menciona: o que o agente faz quando alguém altera o cluster **por fora** do repositório. É a resposta visual para "por que o histórico vira auditoria".
+
 > [!tip] Pratique
 > No seu projeto, adicione uma etapa que imprima o que a CI está vendo, e compare com a sua máquina:
 > ```bash

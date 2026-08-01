@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — N6 O repositório como testemunha"
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-01
 type: meta
 publish: false
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N6 O repositório como testemunha
 
-Roadmap do sub-galho `Controle de Versão/N6 - O repositório como testemunha` (galho-folha). **Escrita completa em 2026-07-31 — 3/3 notas.** O capstone (34) fica na raiz do domínio.
+Roadmap do sub-galho `Controle de Versão/N6 - O repositório como testemunha` (galho-folha). **Escrita completa em 2026-07-31 — 3/3 notas. M1 (mídia) completo em 2026-08-01.** O capstone (34) fica na raiz do domínio.
 
 **Nível:** folha. **Público:** técnico / consultor de legado. **Fase:** Magus nas 3.
 
@@ -24,10 +24,10 @@ Roadmap do sub-galho `Controle de Versão/N6 - O repositório como testemunha` (
 | # | Nota | Estado | Pendências |
 |---|------|--------|-----------|
 | — | `index.md` | ➖ MOC | — |
-| 31 | Ler história de verdade | 🔶 escrita | M1 |
-| 32 | `bisect` — achar o commit que quebrou | 🔶 escrita | M1 |
-| 33 | Forense de repositório | 🔶 escrita | M1 |
-| 34 | Capstone (na raiz do domínio) | 🔶 escrita | M1 |
+| 31 | Ler história de verdade | ✅ escrita + M1 | — |
+| 32 | `bisect` — achar o commit que quebrou | ✅ escrita + M1 | — |
+| 33 | Forense de repositório | ✅ escrita + M1 | — |
+| 34 | Capstone (na raiz do domínio) | ✅ escrita + M1 | — |
 
 ## Decisões de escrita registradas
 
@@ -51,7 +51,7 @@ Roadmap do sub-galho `Controle de Versão/N6 - O repositório como testemunha` (
 
 ## Próximos passos
 
-1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+1. ✅ **M1 — mídia**: completo — todas as notas deste nível têm vídeo embutido e verificado por `yt-dlp`. Estado consolidado do domínio no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]].
 2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ✅ **Ponte de volta**: callouts inseridos em Arqueologia (index + notas 07, 09 e 28) em 2026-07-31.
 4. ⬜ Avaliar broto sobre **code-maat / CodeScene na prática** (rodar as análises de verdade) se o assunto crescer.

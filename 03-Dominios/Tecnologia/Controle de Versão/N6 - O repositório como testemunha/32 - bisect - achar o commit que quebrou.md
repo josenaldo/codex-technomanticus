@@ -176,6 +176,9 @@ A terceira linha é o argumento mais forte a favor da disciplina de manter todo 
 
 **`bisect` transforma "quebrou em algum lugar dos últimos oito meses" em "foi este commit" com uma dezena de testes — e `bisect run` faz isso sem você.**
 
+> [!tip] Vídeo — do manual ao automático
+> [**Using git bisect to Help Find Which Commit Broke Something**](https://www.youtube.com/watch?v=3cwWssglZuQ) (Nick Janetakis, 14 min) faz a busca primeiro à mão e depois com `bisect run`, no mesmo bug. A comparação direta é o argumento desta nota em imagem: o ganho não está em achar o commit, está em não precisar ficar respondendo "bom"/"ruim".
+
 > [!tip] Pratique
 > Faça o exercício completo com um bug plantado, que é a única forma de sentir a velocidade:
 > ```bash

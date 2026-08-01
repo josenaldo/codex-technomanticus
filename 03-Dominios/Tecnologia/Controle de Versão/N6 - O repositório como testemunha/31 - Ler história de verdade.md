@@ -170,6 +170,9 @@ O último par é ouro em investigação de incidente: `git tag --contains` respo
 
 **`blame` responde "quem tocou por último", pickaxe responde "quando isto nasceu ou morreu", `-L` responde "como isto evoluiu" — e o caminho do commit até o PR é o que devolve o *porquê*.**
 
+> [!tip] Vídeo — `blame` do jeito que um mantenedor usa
+> [**how I use git blame**](https://www.youtube.com/watch?v=8uuueHkWy-E) (anthonywritescode, 6 min) mostra o gesto real: nunca é um `blame` só, é `blame` → pegar o hash → `show` → subir mais um nível quando o commit é de reformatação. Ver o encadeamento é o que separa "conhecer o comando" de usá-lo para investigar.
+
 > [!tip] Pratique
 > Pegue um repositório grande e antigo que você não conhece — o do próprio [Git](https://github.com/git/git) serve — e responda três perguntas usando só a linha de comando:
 > 1. Quando a opção `--force-with-lease` foi introduzida? (`git log -S"force-with-lease" --oneline | tail -3`)

@@ -196,6 +196,9 @@ E fecha a lente do domínio: o repositório é **fonte de verdade** (foi assim q
 
 **Quatro horas de perguntas ao repositório substituem semanas de tentativa e erro — e transformam a primeira reunião de "minhas impressões" em "o que a evidência mostra".**
 
+> [!tip] Vídeo — o mesmo problema, pelo lado do código
+> [**7 Techniques to understand Legacy Code**](https://www.youtube.com/watch?v=OzwQXGLWI0g) (Jonathan Boccara, 51 min) ataca a mesma situação deste capstone — chegar num sistema que ninguém explica — mas lendo o **código**, não o repositório. As duas leituras se completam: o roteiro daqui responde quem, quando e onde dói; as técnicas de Boccara respondem o que o código faz.
+
 > [!tip] Pratique
 > Faça o roteiro inteiro num repositório de código aberto grande e que você não conhece — [Django](https://github.com/django/django), [Rails](https://github.com/rails/rails) ou o próprio [Git](https://github.com/git/git) servem. Cronometre as quatro horas e produza o documento de uma página.
 >

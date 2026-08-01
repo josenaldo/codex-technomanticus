@@ -178,6 +178,9 @@ E o inverso: **nunca rode `git gc --prune=now` ou `git reflog expire --expire=no
 
 **O `reflog` é o diário local de onde suas refs estiveram — e enquanto um commit estiver nele, ele existe, mesmo que o `git log` jure que não.**
 
+> [!tip] Vídeo — o resgate acontecendo na tela
+> [**How to Recover Lost Commits with Git Reflog**](https://www.youtube.com/watch?v=fyhYSl-ACPc) (CodeLucky, 4 min) mostra o ciclo inteiro — perder o commit, achá-lo no `reflog`, trazê-lo de volta — em tempo real. Vale ver o resgate uma vez com os olhos antes de fazê-lo com as mãos, porque na hora real você vai estar com pressa.
+
 > [!tip] Pratique
 > Faça o resgate uma vez, com calma, antes de precisar dele com pressa:
 > ```bash

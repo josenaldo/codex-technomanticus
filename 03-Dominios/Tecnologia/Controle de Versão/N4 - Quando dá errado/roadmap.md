@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — N4 Quando dá errado"
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-01
 type: meta
 publish: false
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N4 Quando dá errado
 
-Roadmap do sub-galho `Controle de Versão/N4 - Quando dá errado` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Mídia (M1) parcial — ver roadmap do domínio.
+Roadmap do sub-galho `Controle de Versão/N4 - Quando dá errado` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** **M1 (mídia) completo em 2026-08-01.**
 
 **Nível:** folha (uma entrada por nota). **Público:** técnico. **Fase:** Magus nas 5.
 
@@ -24,11 +24,11 @@ Roadmap do sub-galho `Controle de Versão/N4 - Quando dá errado` (galho-folha).
 | # | Nota | Estado | Pendências |
 |---|------|--------|-----------|
 | — | `index.md` | ➖ MOC | — |
-| 22 | A árvore de decisão do desfazer | 🔶 escrita | M1 |
-| 23 | `reflog` — nada se perde de fato | 🔶 escrita | M1 |
-| 24 | Reescrever história com segurança | 🔶 escrita | M1 |
-| 25 | Segredos no histórico | 🔶 escrita | M1 |
-| 26 | Configurar o Git a seu favor | 🔶 escrita | M1 |
+| 22 | A árvore de decisão do desfazer | ✅ escrita + M1 | — |
+| 23 | `reflog` — nada se perde de fato | ✅ escrita + M1 | — |
+| 24 | Reescrever história com segurança | ✅ escrita + M1 | — |
+| 25 | Segredos no histórico | ✅ escrita + M1 | — |
+| 26 | Configurar o Git a seu favor | ✅ escrita + M1 | — |
 
 ## Decisões de escrita registradas
 
@@ -66,6 +66,6 @@ Roadmap do sub-galho `Controle de Versão/N4 - Quando dá errado` (galho-folha).
 
 ## Próximos passos
 
-1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+1. ✅ **M1 — mídia**: completo — todas as notas deste nível têm vídeo embutido e verificado por `yt-dlp`. Estado consolidado do domínio no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]].
 2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Avaliar um broto sobre **assinatura de commits** (GPG/SSH/Sigstore) — hoje aparece só de passagem na 24 e na 26.

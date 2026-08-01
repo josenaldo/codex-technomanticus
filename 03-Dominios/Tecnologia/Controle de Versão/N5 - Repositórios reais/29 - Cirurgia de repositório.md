@@ -170,6 +170,9 @@ O último item é o que separa uma cirurgia de uma bagunça: **quem herdar esse 
 
 **Cirurgia de repositório é sempre "copie, opere na cópia, valide, coordene a troca" — o comando é a parte fácil, a coordenação é a parte que dá errado.**
 
+> [!tip] Vídeo — a divisão feita sem cortes
+> [**splitting a monorepo with git filter-branch / filter-repo**](https://www.youtube.com/watch?v=kBMTLIWkYVQ) (anthonywritescode, 17 min) é uma sessão sem edição: o autor divide um repositório real, erra, volta e explica cada decisão. É exatamente a parte que um tutorial limpo esconde — e o que essa cirurgia parece quando não sai perfeita na primeira tentativa.
+
 > [!tip] Pratique
 > Faça a divisão e a fusão num par de repositórios de brinquedo, que é o exercício que ensina mais rápido:
 > ```bash

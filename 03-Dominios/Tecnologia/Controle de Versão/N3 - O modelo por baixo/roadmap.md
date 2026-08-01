@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — N3 O modelo por baixo"
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-01
 type: meta
 publish: false
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N3 O modelo por baixo
 
-Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Mídia (M1) parcial — ver roadmap do domínio.
+Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** **M1 (mídia) completo em 2026-08-01.**
 
 **Nível:** folha (uma entrada por nota).
 
@@ -26,11 +26,11 @@ Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha)
 | # | Nota | Fase | Estado | Pendências |
 |---|------|------|--------|-----------|
 | — | `index.md` | — | ➖ MOC | — |
-| 17 | Tudo tem hash — o modelo de objetos | Adepto | 🔶 escrita | — |
-| 18 | Commit é snapshot, não diff — o DAG | Adepto | 🔶 escrita | — |
-| 19 | Refs, HEAD e branch como ponteiro | Adepto | 🔶 escrita | — |
-| 20 | O index por dentro | Magus | 🔶 escrita | — |
-| 21 | Merge e rebase por dentro | Magus | 🔶 escrita | — |
+| 17 | Tudo tem hash — o modelo de objetos | Adepto | ✅ escrita + M1 | — |
+| 18 | Commit é snapshot, não diff — o DAG | Adepto | ✅ escrita + M1 | — |
+| 19 | Refs, HEAD e branch como ponteiro | Adepto | ✅ escrita + M1 | — |
+| 20 | O index por dentro | Magus | ✅ escrita + M1 | — |
+| 21 | Merge e rebase por dentro | Magus | ✅ escrita + M1 | — |
 
 ## Material próprio incorporado
 
@@ -75,6 +75,6 @@ Roadmap do sub-galho `Controle de Versão/N3 - O modelo por baixo` (galho-folha)
 
 ## Próximos passos
 
-1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+1. ✅ **M1 — mídia**: completo — todas as notas deste nível têm vídeo embutido e verificado por `yt-dlp`. Estado consolidado do domínio no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]].
 2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Considerar um broto sobre **packfiles e `git gc`** se o assunto crescer — hoje ele aparece como callout na 17 e na 18.

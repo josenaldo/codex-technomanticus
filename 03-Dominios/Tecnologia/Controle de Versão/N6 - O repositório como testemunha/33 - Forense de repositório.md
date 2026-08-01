@@ -143,6 +143,9 @@ A ligação prática entre os dois: uma análise de hotspots feita na primeira s
 
 **A frequência de mudança revela onde o design dói, quais arquivos estão acoplados de verdade e quem sabe o quê — informação que o código não tem e que nenhuma documentação registra.**
 
+> [!tip] Vídeo — a palestra que originou o método
+> [**Treat Your Code as a Crime Scene**](https://www.youtube.com/watch?v=7FApEq8wum4) (Adam Tornhill, GOTO 2016, 49 min) é a fonte desta nota apresentada pelo próprio autor, com os mapas de hotspot e acoplamento temporal de sistemas reais na tela. O que a palestra acrescenta ao texto é a dimensão social: Tornhill mostra como o mesmo dado revela a estrutura do time por trás do código.
+
 > [!tip] Pratique
 > Rode a análise de hotspots num projeto que você conhece bem e confira a intuição:
 > ```bash

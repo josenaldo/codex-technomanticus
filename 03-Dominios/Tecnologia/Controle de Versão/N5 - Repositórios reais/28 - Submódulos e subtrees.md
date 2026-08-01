@@ -155,6 +155,9 @@ E, se as duas primeiras condições valem o tempo todo, o que você quer provave
 
 **Submódulo guarda o endereço e cobra de quem clona; subtree copia o conteúdo e cobra de quem mantém — e um pacote versionado resolve melhor que os dois quando é possível.**
 
+> [!tip] Vídeo — por que a comunidade inteira reclama
+> [**Why everyone hates git submodules**](https://www.youtube.com/watch?v=JESI498HSMA) (Philomatics, 8 min) percorre as dores desta nota uma a uma, mas com um ângulo que o texto não dá: quais delas o Git já resolveu com configuração (`submodule.recurse`, `push --recurse-submodules`) e quais são inerentes ao modelo. Bom antídoto contra descartar submódulo por fama, não por análise.
+
 > [!tip] Pratique
 > Monte um pai e um filho de brinquedo e provoque a armadilha clássica de propósito: adicione o submódulo, commite no filho **sem publicar**, commite o ponteiro no pai, publique só o pai, e então clone o pai numa pasta nova com `--recurse-submodules`. Ver o erro acontecer, e entender que ele decorre do `gitlink` apontar para um commit inexistente, vale mais que qualquer aviso.
 >

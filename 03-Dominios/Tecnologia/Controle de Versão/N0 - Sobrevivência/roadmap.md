@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — N0 Sobrevivência"
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-01
 type: meta
 publish: false
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N0 Sobrevivência
 
-Roadmap do sub-galho `Controle de Versão/N0 - Sobrevivência` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Mídia (M1) parcial — ver roadmap do domínio.
+Roadmap do sub-galho `Controle de Versão/N0 - Sobrevivência` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** **M1 (mídia) completo em 2026-08-01.**
 
 **Nível:** folha (uma entrada por nota).
 
@@ -24,11 +24,11 @@ Roadmap do sub-galho `Controle de Versão/N0 - Sobrevivência` (galho-folha). **
 | # | Nota | Linhas | Estado | Pendências |
 |---|------|-------:|--------|-----------|
 | — | `index.md` | 40 | ➖ MOC | — |
-| 01 | O problema que o Git resolve | ~300 | 🔶 escrita | M1 (vídeo) |
-| 02 | Instalar e configurar o Git | ~200 | 🔶 escrita | M1 (vídeo) |
-| 03 | Seu primeiro repositório | ~215 | 🔶 escrita | M1 (vídeo) |
-| 04 | Desfazer sem susto | ~180 | 🔶 escrita | M1 (vídeo) |
-| 05 | GitHub — colocar o repositório na nuvem | ~210 | 🔶 escrita | M1 (vídeo) |
+| 01 | O problema que o Git resolve | ~300 | ✅ escrita + M1 | — |
+| 02 | Instalar e configurar o Git | ~200 | ✅ escrita + M1 | — |
+| 03 | Seu primeiro repositório | ~215 | ✅ escrita + M1 | — |
+| 04 | Desfazer sem susto | ~180 | ✅ escrita + M1 | — |
+| 05 | GitHub — colocar o repositório na nuvem | ~210 | ✅ escrita + M1 | — |
 
 ## Decisões de escrita registradas
 
@@ -41,6 +41,6 @@ Roadmap do sub-galho `Controle de Versão/N0 - Sobrevivência` (galho-folha). **
 
 ## Próximos passos
 
-1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+1. ✅ **M1 — mídia**: completo — todas as notas deste nível têm vídeo embutido e verificado por `yt-dlp`. Estado consolidado do domínio no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]].
 2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Passada de `/plantar-duvidas` + `/colher-duvidas` depois que o N1 existir — o teste real do N0 é ser lido por alguém que nunca usou Git.

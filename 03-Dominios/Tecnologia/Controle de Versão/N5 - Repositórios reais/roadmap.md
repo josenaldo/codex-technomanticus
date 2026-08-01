@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — N5 Repositórios reais"
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-01
 type: meta
 publish: false
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N5 Repositórios reais
 
-Roadmap do sub-galho `Controle de Versão/N5 - Repositórios reais` (galho-folha). **Escrita completa em 2026-07-31 — 4/4 notas.** Mídia (M1) parcial — ver roadmap do domínio.
+Roadmap do sub-galho `Controle de Versão/N5 - Repositórios reais` (galho-folha). **Escrita completa em 2026-07-31 — 4/4 notas.** **M1 (mídia) completo em 2026-08-01.**
 
 **Nível:** folha. **Público:** técnico. **Fase:** Magus nas 4.
 
@@ -24,10 +24,10 @@ Roadmap do sub-galho `Controle de Versão/N5 - Repositórios reais` (galho-folha
 | # | Nota | Estado | Pendências |
 |---|------|--------|-----------|
 | — | `index.md` | ➖ MOC | — |
-| 27 | Monorepo e polyrepo | 🔶 escrita | M1 |
-| 28 | Submódulos e subtrees | 🔶 escrita | M1 |
-| 29 | Cirurgia de repositório | 🔶 escrita | M1 |
-| 30 | Git no CI/CD e GitOps | 🔶 escrita | M1 |
+| 27 | Monorepo e polyrepo | ✅ escrita + M1 | — |
+| 28 | Submódulos e subtrees | ✅ escrita + M1 | — |
+| 29 | Cirurgia de repositório | ✅ escrita + M1 | — |
+| 30 | Git no CI/CD e GitOps | ✅ escrita + M1 | — |
 
 ## Decisões de escrita registradas
 
@@ -50,6 +50,6 @@ Roadmap do sub-galho `Controle de Versão/N5 - Repositórios reais` (galho-folha
 
 ## Próximos passos
 
-1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+1. ✅ **M1 — mídia**: completo — todas as notas deste nível têm vídeo embutido e verificado por `yt-dlp`. Estado consolidado do domínio no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]].
 2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Avaliar broto sobre **migração SVN→Git em repositório sem `stdlayout`** se o assunto voltar — hoje é um parágrafo na 29.

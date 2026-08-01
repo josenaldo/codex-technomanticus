@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — N1 O fluxo diário"
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-01
 type: meta
 publish: false
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N1 O fluxo diário
 
-Roadmap do sub-galho `Controle de Versão/N1 - O fluxo diário` (galho-folha). **Escrita completa em 2026-07-31 — 6/6 notas.** Mídia (M1) parcial — ver roadmap do domínio.
+Roadmap do sub-galho `Controle de Versão/N1 - O fluxo diário` (galho-folha). **Escrita completa em 2026-07-31 — 6/6 notas.** **M1 (mídia) completo em 2026-08-01.**
 
 **Nível:** folha (uma entrada por nota).
 
@@ -24,12 +24,12 @@ Roadmap do sub-galho `Controle de Versão/N1 - O fluxo diário` (galho-folha). *
 | # | Nota | Fase | Estado | Pendências |
 |---|------|------|--------|-----------|
 | — | `index.md` | — | ➖ MOC | — |
-| 06 | Ignorar arquivos — o `.gitignore` e suas regras | Iniciado | 🔶 escrita | — |
-| 07 | Ler o histórico — `log` e `diff` | Iniciado | 🔶 escrita | — |
-| 08 | Branches na prática | Iniciado | 🔶 escrita | — |
-| 09 | Conflito — por que acontece e como resolver | Iniciado | 🔶 escrita | — |
-| 10 | Guardar trabalho pela metade — stash e worktrees | Adepto | 🔶 escrita | — |
-| 11 | Sincronizar com o time | Adepto | 🔶 escrita | — |
+| 06 | Ignorar arquivos — o `.gitignore` e suas regras | Iniciado | ✅ escrita + M1 | — |
+| 07 | Ler o histórico — `log` e `diff` | Iniciado | ✅ escrita + M1 | — |
+| 08 | Branches na prática | Iniciado | ✅ escrita + M1 | — |
+| 09 | Conflito — por que acontece e como resolver | Iniciado | ✅ escrita + M1 | — |
+| 10 | Guardar trabalho pela metade — stash e worktrees | Adepto | ✅ escrita + M1 | — |
+| 11 | Sincronizar com o time | Adepto | ✅ escrita + M1 | — |
 
 ## Decisões de escrita registradas
 
@@ -55,6 +55,6 @@ Roadmap do sub-galho `Controle de Versão/N1 - O fluxo diário` (galho-folha). *
 
 ## Próximos passos
 
-1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+1. ✅ **M1 — mídia**: completo — todas as notas deste nível têm vídeo embutido e verificado por `yt-dlp`. Estado consolidado do domínio no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]].
 2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ `/plantar-duvidas` + `/colher-duvidas` no par N0+N1, que é a unidade compartilhável.

@@ -1,7 +1,7 @@
 ---
 title: "Roadmap — N2 Colaborar"
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-01
 type: meta
 publish: false
 tags:
@@ -11,7 +11,7 @@ tags:
 
 # Roadmap — N2 Colaborar
 
-Roadmap do sub-galho `Controle de Versão/N2 - Colaborar` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** Mídia (M1) parcial — ver roadmap do domínio.
+Roadmap do sub-galho `Controle de Versão/N2 - Colaborar` (galho-folha). **Escrita completa em 2026-07-31 — 5/5 notas.** **M1 (mídia) completo em 2026-08-01.**
 
 **Nível:** folha (uma entrada por nota).
 
@@ -24,11 +24,11 @@ Roadmap do sub-galho `Controle de Versão/N2 - Colaborar` (galho-folha). **Escri
 | # | Nota | Estado | Pendências |
 |---|------|--------|-----------|
 | — | `index.md` | ➖ MOC | — |
-| 12 | Pull requests e a cultura de code review | 🔶 escrita | — |
-| 13 | Estratégias de branching | 🔶 escrita | — |
-| 14 | Anatomia de um bom commit | 🔶 escrita | — |
-| 15 | GitHub como plataforma | 🔶 escrita | — |
-| 16 | `gh` CLI e automação do fluxo | 🔶 escrita | — |
+| 12 | Pull requests e a cultura de code review | ✅ escrita + M1 | — |
+| 13 | Estratégias de branching | ✅ escrita + M1 | — |
+| 14 | Anatomia de um bom commit | ✅ escrita + M1 | — |
+| 15 | GitHub como plataforma | ✅ escrita + M1 | — |
+| 16 | `gh` CLI e automação do fluxo | ✅ escrita + M1 | — |
 
 ## Monólitos consumidos neste bloco
 
@@ -57,6 +57,6 @@ Roadmap do sub-galho `Controle de Versão/N2 - Colaborar` (galho-folha). **Escri
 
 ## Próximos passos
 
-1. 🔶 **M1 — mídia**: ver o estado consolidado no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]] (25/34 embutidos e verificados em 2026-07-31).
+1. ✅ **M1 — mídia**: completo — todas as notas deste nível têm vídeo embutido e verificado por `yt-dlp`. Estado consolidado do domínio no [[03-Dominios/Tecnologia/Controle de Versão/roadmap|roadmap do domínio]].
 2. ✅ **Dicionário do domínio** — criado 2026-07-31; os termos deste nível já entraram.
 3. ⬜ Avaliar se a referência `GitHub CLI.md` merece uma passada de atualização (é de abril/2026 e o `gh` muda rápido).

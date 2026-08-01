@@ -153,6 +153,9 @@ Sem essas quatro coisas, um monorepo em crescimento vira exatamente o que as pes
 
 **Monorepo troca facilidade de mudança atômica por custo de ferramenta; e quando o tamanho aperta, clone parcial e sparse-checkout resolvem sem amputar a história — o que o clone raso faz.**
 
+> [!tip] Vídeo — clone parcial e sparse-checkout na prática
+> [**Optimize checkout and clone time for GitHub monorepos using sparse-checkout and filter**](https://www.youtube.com/watch?v=jOVWHIDvpe8) (Bryant Son, 10 min) é a demonstração ao vivo do que esta nota descreve: um monorepo de verdade sendo clonado com `--filter` e materializado por pasta. Ver os números do "antes e depois" ajuda a calibrar quando o custo de configurar isso se paga.
+
 > [!tip] Pratique
 > Clone um repositório grande e conhecido das duas formas, cronometrando:
 > ```bash
