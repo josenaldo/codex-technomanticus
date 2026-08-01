@@ -23,6 +23,10 @@ publish: true
 > de uma linha através de renames), e a leitura das **mensagens de commit** e PRs como narrativa. É
 > aqui que a Cerca de Chesterton ([[02 - A mentalidade do restaurador|nota 02]]) deixa de ser
 > metáfora: o histórico é *como você descobre por que a cerca foi construída* — antes de derrubá-la.
+>
+> [!info] O instrumento, a fundo
+> Esta nota ensina o **método**: que perguntas fazer ao histórico e como interpretar as respostas na cadeira do consultor. O **instrumento** — as flags que fazem `blame` funcionar em código refatorado (`-w -C -C`), a diferença entre `log -S` e `-G`, o `.git-blame-ignore-revs` para commits de reformatação em massa, e o caminho commit→merge→PR que devolve o *porquê* — está em [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/31 - Ler história de verdade|Controle de Versão 31 — Ler história de verdade]].
+> Para localizar o commit exato que mudou um comportamento, [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/32 - bisect - achar o commit que quebrou|CV 32 — bisect]].
 
 Lembra do `if` que o consultor apressado da [[04 - Os primeiros 30-60-90 dias|nota 04]] removeu, e que
 quebrou o faturamento de 3% dos clientes? Ele não precisava de sorte para evitar aquilo. Precisava de

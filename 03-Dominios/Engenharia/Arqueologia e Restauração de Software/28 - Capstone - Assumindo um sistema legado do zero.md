@@ -24,6 +24,9 @@ publish: true
 > caso inteiro: o que se restaura nunca foi o código, foi a
 > [[03-Dominios/Engenharia/Complexidade de Software/04 - O programa como teoria|teoria do sistema (Naur)]] — e o default, do primeiro dia ao último, é restaurar por incrementos
 > seguros, nunca o *"kill it with fire"*.
+>
+> [!info] O roteiro instrumental das primeiras horas
+> O par técnico deste capstone é [[03-Dominios/Tecnologia/Controle de Versão/34 - Capstone - assumir um repositório desconhecido|Controle de Versão 34 — Assumir um repositório desconhecido]]: quatro horas de comandos, hora a hora, extraindo do repositório o mapa de risco, autoria e hotspots que alimentam o método daqui.
 
 Três semanas atrás, um fundo de investimento ligou. Está avaliando comprar uma empresa de
 logística cujo diferencial competitivo é uma plataforma de rastreamento e faturamento que roda

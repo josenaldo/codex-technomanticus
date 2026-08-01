@@ -59,6 +59,11 @@ mudança, conhecimento tribal, compliance).
 - SRE, SLO/SLI, observabilidade e resposta a incidentes como disciplina: moram em
   [[03-Dominios/Engenharia/Operação/index|Operação]]. Aqui os pegamos emprestados **sob a lente do
   legado** — instrumentar e apagar incêndio num sistema que você ainda não entende.
+- O **instrumental de `git`** — as flags de `blame` que sobrevivem a refatoração, pickaxe (`log -S`/`-G`),
+  `bisect` automatizado, os comandos que produzem hotspots e acoplamento temporal, e o que esses dados
+  *não* dizem: mora em [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/index|Controle de Versão — N6, O repositório como testemunha]].
+  Aqui está o **método** (que perguntas fazer, como priorizar, como conversar com o cliente); lá está o
+  **instrumento**. As notas 07, 09 e 28 deste galho linkam as contrapartes diretas.
 
 ## Iniciado — o primeiro contato: entender antes de tocar
 

@@ -24,6 +24,9 @@ publish: true
 > arquitetura|nota 08]]. E o `git log` tem um terceiro sinal: quem mexeu em cada módulo — o
 > **bus factor**, o risco de conhecimento concentrado numa única cabeça. Juntos, os três transformam
 > o "faro" qualitativo em um **mapa de calor de risco** que você mostra ao cliente em vez de opinar.
+>
+> [!info] O instrumento, a fundo
+> Aqui está o **método** de priorização e a conversa com o cliente. Os **comandos** que produzem esses números — hotspots, acoplamento temporal e autoria a partir do `git log` puro, as ferramentas (code-maat, git-of-theseus) e, principalmente, **o que esses dados não dizem** — estão em [[03-Dominios/Tecnologia/Controle de Versão/N6 - O repositório como testemunha/33 - Forense de repositório|Controle de Versão 33 — Forense de repositório]].
 
 Você está na segunda semana de uma due diligence. O CTO do fundo comprador te pergunta: "onde você
 recomendaria a gente investir os primeiros três meses de refatoração?" Você já tem o mapa estático da
