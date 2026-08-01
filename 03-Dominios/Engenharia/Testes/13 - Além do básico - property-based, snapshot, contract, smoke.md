@@ -109,6 +109,71 @@ Leitura do diagrama: a entrada bruta que quebrou (`E`) quase nunca é a que voc�
 > [!info] QuickCheck, a origem
 > O property-based testing nasceu no Haskell com o **QuickCheck**. O **Hypothesis** (Python, desde 2015) popularizou a ideia fora do mundo funcional. Há uma diferença sutil entre eles: no QuickCheck o shrinking é definido **por tipo** (qualquer valor daquele tipo encolhe do mesmo jeito), enquanto o Hypothesis usa shrinking **integrado** à geração. Pra você usuário, o efeito é o mesmo: contraexemplo mínimo de graça.
 
+### Geradores e o tipo `Arbitrary`
+
+De onde vêm as centenas de entradas aleatórias? De um **gerador** — em jqwik chamado `Arbitrary<T>`, em Hypothesis `strategy`, em fast-check `Arbitrary` também. É um objeto que sabe produzir valores de um tipo, e cada framework já vem com geradores prontos pros tipos comuns (inteiro, string, lista, data). O trabalho de quem escreve o teste costuma ser **compor** geradores prontos, não escrevê-los do zero: "uma lista de inteiros entre 0 e 100", "uma string só de letras", "um objeto com estes três campos". Quando o domínio é mais estrito que os tipos primitivos — um CPF válido, um e-mail bem formado — você filtra ou mapeia o gerador base em vez de gerar às cegas e descartar o que não serve (descartar demais deixa o teste lento e a cobertura rala).
+
+Isso também explica por que a propriedade round-trip é o exemplo favorito de todo tutorial: ela não exige *nenhum* gerador customizado. Qualquer gerador do tipo de entrada já basta, porque a propriedade não impõe uma forma específica de dado — só que ida e volta preserve o valor.
+
+### Outras propriedades clássicas, além do round-trip
+
+Round-trip é a mais citada, mas não a única forma de propriedade que vale a pena conhecer:
+
+- **Invariante** — algo que permanece verdadeiro depois da operação, independente da entrada. "Depois de ordenar, o tamanho da lista não muda." Já apareceu nesta nota.
+- **Idempotência** — aplicar a operação duas vezes dá o mesmo resultado que aplicar uma vez: `f(f(x)) == f(x)`. O teste `sort_idempotente` do bloco Hypothesis acima é esse caso: ordenar uma lista já ordenada não faz nada.
+- **Metamórfica** — quando você não sabe o resultado exato, mas sabe como o resultado *deveria mudar* se a entrada mudar de um jeito controlado. Não dá pra prever o output de um mecanismo de busca pra uma query qualquer, mas dá pra afirmar que restringir a query nunca **aumenta** o número de resultados. A propriedade não descreve o valor — descreve a relação entre duas execuções.
+- **Oráculo** — comparar contra uma segunda implementação, mais lenta ou mais simples, que você já confia. Útil quando otimiza um algoritmo: a versão rápida e a versão ingênua (força bruta) devem concordar pra qualquer entrada, mesmo que nenhuma das duas seja a "propriedade" no sentido matemático.
+
+```python
+# Metamórfica: restringir a busca nunca aumenta o total de resultados
+@given(st.text(), st.text())
+def test_busca_restrita_nao_aumenta(termo, sufixo):
+    resultado_amplo = buscar(termo)
+    resultado_restrito = buscar(termo + sufixo)
+    assert len(resultado_restrito) <= len(resultado_amplo)
+```
+
+Não dá pra afirmar quantos resultados `buscar(termo)` devolve — depende do índice, do dia, dos dados. Mas dá pra afirmar a *relação* entre duas chamadas relacionadas, e é exatamente isso que a propriedade metamórfica declara. É a saída padrão quando round-trip e invariante simples não se aplicam: sistemas de ML, motores de busca, otimizadores — qualquer coisa onde o resultado exato é difícil de prever, mas a direção da mudança não é.
+
+> [!info] As quatro categorias, lado a lado
+> Round-trip é um caso particular de invariante (a "lei" é que a composição `decode ∘ encode` seja a identidade). Idempotência é outro caso particular (a lei é `f ∘ f == f`). Metamórfica e oráculo são as duas saídas quando você não consegue formular uma lei fechada sobre uma única execução — uma compara duas execuções relacionadas, a outra compara contra uma segunda implementação. Nomear qual categoria você está usando ajuda a comunicar a propriedade pro time revisando o PR.
+
+### Stateful testing: quando a ordem das operações importa
+
+Todo exemplo até aqui testa uma função pura: entrada vai, saída volta, fim. Mas e um `Stack`, um banco de dados, um sistema de arquivos — onde o que uma operação faz depende do que as operações *anteriores* deixaram? Property-based comum não alcança isso, porque cada chamada de `@given` é independente.
+
+A resposta é o **stateful testing** (também chamado *model-based testing*): em vez de gerar um valor, o framework gera uma **sequência de operações** — `push`, `pop`, `push`, `push`, `pop` — e depois de cada passo verifica um **invariante** que precisa segurar o tempo todo (a pilha nunca fica com tamanho negativo; um `pop` sempre devolve o último `push` que ainda não foi consumido). O Hypothesis chama isso de `RuleBasedStateMachine`: você declara `@rule` pra cada operação possível, `@invariant` pra cada checagem contínua, e opcionalmente `@precondition` pra dizer quando uma regra faz sentido ser tentada (não adianta gerar `pop` numa pilha vazia). Quando falha, o framework faz o mesmo shrinking de sempre — só que agora encolhendo a *sequência*, te entregando os três passos mínimos que reproduzem o bug, não os trezentos que ele gerou.
+
+```python
+# Hypothesis — stateful testing de uma pilha
+from hypothesis import strategies as st
+from hypothesis.stateful import RuleBasedStateMachine, rule, invariant, precondition
+
+class PilhaStateMachine(RuleBasedStateMachine):
+    def __init__(self):
+        super().__init__()
+        self.pilha = []
+        self.modelo = []   # a "pilha ingênua" que serve de oráculo
+
+    @rule(valor=st.integers())
+    def push(self, valor):
+        self.pilha.append(valor)
+        self.modelo.append(valor)
+
+    @precondition(lambda self: len(self.pilha) > 0)
+    @rule()
+    def pop(self):
+        assert self.pilha.pop() == self.modelo.pop()
+
+    @invariant()
+    def tamanhos_batem(self):
+        assert len(self.pilha) == len(self.modelo)
+
+TestPilha = PilhaStateMachine.TestCase
+```
+
+Repare que este exemplo já mistura duas ideias desta nota: `@precondition` evita gerar `pop` numa pilha vazia, e o `assert` dentro de `pop` é um **teste oráculo** — compara a pilha real contra `self.modelo`, uma implementação trivial (uma lista Python) que você já confia.
+
 ### Quando vale property-based
 
 Vale quando existe uma **invariante** que você consegue declarar sem reescrever a implementação:
@@ -148,6 +213,34 @@ Na primeira vez, o Jest grava a árvore renderizada num `.snap`. Mudou o compone
 Aqui está a armadilha senior — grave o suficiente pra ganhar seção própria em [[#Armadilhas comuns]].
 
 O agravante: capturar uma árvore de componente inteira gera snapshots de centenas de linhas. Ninguém revisa um diff de 500 linhas com atenção, e o snapshot muda por motivos não relacionados (renomeou uma classe CSS lá longe → metade dos snapshots viram vermelho).
+
+### Bom candidato, mau candidato
+
+Nem todo output merece virar snapshot. O teste de triagem é sempre o mesmo — "se isto mudar, eu vou ler o diff?" — mas vale nomear o que costuma passar e o que costuma falhar nesse teste:
+
+- **Bom candidato:** determinístico (mesma entrada sempre produz o mesmo output byte a byte), pequeno o bastante pra caber num diff que cabe na tela, e muda **raramente e de propósito** — a forma de um DTO serializado, a saída de um formatador, a árvore de um componente folha sem estado.
+- **Mau candidato:** qualquer coisa com dado volátil embutido (timestamp de agora, UUID gerado, ordem de iteração de um `Set`/`Map` sem `sort`), árvores de componente com dúzias de filhos, ou output que muda a cada refactor cosmético sem relação com o comportamento testado.
+
+### Normalizando o que muda sempre
+
+Quando o candidato é bom *menos* por um ou dois campos voláteis, a saída não é descartar o snapshot — é **normalizar** antes de comparar. Duas táticas cobrem a maioria dos casos:
+
+1. **Property matchers** (Jest/Vitest): você passa um objeto com o formato esperado pros campos voláteis — `expect(obj).toMatchSnapshot({ id: expect.any(String), createdAt: expect.any(Date) })` — o framework valida o *tipo* desses campos e ainda assim tira a foto normal do resto.
+2. **Serializer customizado**: uma função que roda antes de gravar, substituindo cada UUID por um placeholder fixo (`{{uuid}}`) e cada timestamp por outro (`{{now}}`). O `.snap` fica estável porque o que varia nunca chega a ser gravado.
+
+```javascript
+// Jest — normalizando timestamp e id antes do snapshot
+expect(pedido).toMatchSnapshot({
+  id: expect.any(String),
+  criadoEm: expect.any(String),
+});
+```
+
+Sem essa disciplina, um campo volátil transforma todo snapshot num teste flaky disfarçado — falha a cada execução, o time acostuma a apertar `u`, e você caiu direto na armadilha de [[#Armadilhas comuns|snapshot fatigue]].
+
+### Snapshot não é approval testing — mas é o mesmo gene
+
+Vale marcar a diferença com [[03-Dominios/Engenharia/Arqueologia e Restauração de Software/11 - Approval e Golden Master testing]], já linkada em [[#O que vem a seguir]]: as duas técnicas fotografam o output inteiro em vez de fazer asserção campo a campo, mas nascem em contextos opostos. Snapshot testing é uma ferramenta do dia a dia — você escreve o teste junto com o código novo, sabendo o que está gravando. Approval/Golden Master nasce em **legado sem cobertura**: você aprova o comportamento *atual*, bugs inclusos, só pra ter uma rede de segurança antes de refatorar. O mecanismo — gravar, comparar, revisar o diff — é o mesmo; a intenção por trás é que muda.
 
 ### Quando vale snapshot
 
@@ -203,6 +296,38 @@ Leitura do diagrama: o consumer roda primeiro e *gera* o contrato a partir das s
 > [!info] A definição de Fowler
 > Martin Fowler define contract test como "uma técnica para testar um ponto de integração checando cada aplicação em isolamento, garantindo que as mensagens que ela envia ou recebe conformam a um entendimento compartilhado documentado num contrato". O **Pact** é o padrão de fato pra consumer-driven contracts; no ecossistema Spring, o **Spring Cloud Contract** cumpre o mesmo papel.
 
+### Consumer-driven × provider-driven
+
+Tudo até aqui descreveu o fluxo **consumer-driven** — Pact, onde o consumer escreve a expectativa e o provider verifica contra ela. Existe uma segunda variante, **provider-driven**, onde é o **producer** quem escreve o contrato — o **Spring Cloud Contract** é o exemplo canônico no ecossistema JVM.
+
+O fluxo se inverte: o time do provider escreve os contratos numa DSL (Groovy, YAML ou Kotlin) descrevendo request/response, guarda isso junto do código do próprio provider, e o plugin gera automaticamente os testes de verificação que rodam contra uma `baseClassForTests` (uma classe base que sobe o sistema sob teste, normalmente com RestAssured MockMvc). O mesmo build empacota um **stub jar** a partir desses contratos; consumers baixam esse jar e rodam testes de integração reais contra o stub via `@AutoConfigureStubRunner`, sem precisar subir o provider de verdade.
+
+A diferença prática de decisão:
+
+- **Consumer-driven** (Pact) é melhor quando o provider tem **muitos** consumers com necessidades distintas — cada um define só o que usa, e o provider nunca precisa adivinhar o que ninguém consome de verdade.
+- **Provider-driven** (Spring Cloud Contract) é melhor quando o provider quer manter controle centralizado da própria API e publicar um contrato único que todo mundo consome — mais parecido com "aqui está minha API, aqui está o stub pra você testar contra ela".
+
+### O broker e a pergunta "posso fazer deploy?"
+
+O **broker** do diagrama acima não é só um repositório passivo de contratos — ele guarda também o **resultado** de cada verificação: qual versão do consumer foi testada contra qual versão do provider, e se passou. Essa matriz é o que responde, em CI, a pergunta que interessa de verdade antes de um deploy: *"a versão que eu quero subir é compatível com o que já está rodando no ambiente de destino?"*
+
+O comando que faz essa pergunta chama `can-i-deploy`:
+
+```
+pact-broker can-i-deploy \
+  --pacticipant servico-a \
+  --version a3f92c1 \
+  --to-environment production
+```
+
+Ele olha a matriz de verificações no broker e responde sim/não. Sim: o deploy prossegue. Não: o pipeline barra, porque em algum lugar consumer e provider divergem — antes que isso vire um 500 em produção. Depois do deploy bem-sucedido, um segundo comando (`record-deployment`) avisa o broker que aquela versão agora está no ar naquele ambiente, atualizando a matriz pra a próxima checagem.
+
+### Provider states: simulando a precondição, não só a request
+
+Um detalhe que o diagrama simplifica: o provider não recebe só "este request, esta resposta esperada" — ele recebe também uma **provider state**, um rótulo tipo `"existe um usuário com id 42"` ou `"o carrinho está vazio"`. É a precondição necessária pra aquele cenário fazer sentido. Do lado do consumer, o teste declara essa state no bloco `given(...)`; do lado do provider, durante a verificação, um setup correspondente prepara os dados reais antes de disparar o request gravado no contrato.
+
+Sem provider states, contract testing teria o mesmo problema de qualquer suite com dependência de dados pré-existentes: um teste que só passa se rodar depois de outro, ou que precisa de um banco populado numa ordem específica. Com elas, cada interação do contrato roda **isolada** — o provider monta exatamente o estado que aquele cenário pede e descarta depois — o que é a mesma disciplina de isolamento que já aparece em [[07 - Testes de integração]] pra fixtures de banco.
+
 ### Quando vale contract testing
 
 Vale quando você tem **vários serviços com evolução coordenada** e quer matar o medo de quebrar um consumer ao mudar um provider:
@@ -244,6 +369,16 @@ O ponto não é a riqueza das asserções — é a **velocidade** e o **posicion
 
 > [!warning] Smoke não é a suite, é o disjuntor
 > Um erro comum é inflar o smoke test até ele virar uma suite e2e completa. Não. Se passa de ~30s, deixou de ser smoke. O valor é justamente ser rápido o bastante pra rodar a cada deploy sem ninguém reclamar. Profundidade fica pros outros andares da pirâmide. Detalhe em [[#Armadilhas comuns]].
+
+### Três primos que se confundem: smoke, health check e synthetic monitoring
+
+Os três respondem "está funcionando?", mas em momentos e granularidades diferentes — vale distinguir pra não usar o nome errado numa entrevista:
+
+- **Health check** é o processo se auto-atestando: um endpoint (`/health`) que responde 200 se o processo subiu, conectou no banco, tem memória disponível. Roda *dentro* do sistema, continuamente, e é o que o orquestrador (Kubernetes, load balancer) consulta pra decidir se aquele pod recebe tráfego.
+- **Smoke test** é externo e pontual: dispara **uma vez**, logo depois de um deploy específico, fazendo um punhado de requests reais (não só bater no `/health` — também renderizar a home, talvez logar um usuário). Health check passando não é garantia de smoke passando: o processo pode estar de pé e saudável e ainda assim servir uma página quebrada.
+- **Synthetic monitoring** é o mesmo tipo de checagem do smoke, mas **contínua**: os mesmos scripts (login, busca, checkout) rodando em loop contra produção, minuto a minuto, não só no instante do deploy. Onde o smoke é o gate de entrada, o synthetic é o sensor permanente — [[15 - Testes em CI-CD]] aprofunda essa continuidade e cita a mesma origem.
+
+Os três moram na fronteira entre teste e observabilidade; o lado de operar esse pulso continuamente — SLIs, alerting, o que fazer quando o synthetic acusa degradação — é território de [[03-Dominios/Engenharia/Operação/4 - Observar e responder/01 - Observabilidade como prática]], não desta nota.
 
 ### Quando vale smoke
 
@@ -347,6 +482,11 @@ These four are "differentiator" answers — most candidates stop at unit, integr
 - [The Perils of Jest Snapshot Testing — Peter Hrynkow](https://peterhrynkow.com/testing/2019/01/07/the-perils-of-snapshot-testing.html) — snapshot fatigue e o carimbo automático de diffs.
 - [What is Consumer-Driven Contract Testing — Pactflow](https://pactflow.io/what-is-consumer-driven-contract-testing/) — o consumer expressa expectativas, o provider verifica; Pact como padrão de fato.
 - [Smoke testing (software) — Wikipedia](https://en.wikipedia.org/wiki/Smoke_testing_(software)) — origem do termo no hardware e papel de build verification.
+- [Hypothesis — Stateful testing](https://hypothesis.readthedocs.io/en/latest/stateful.html) — `RuleBasedStateMachine`, `@rule`, `@invariant` e `@precondition` pra testar sequências de operações.
+- [Jest — Snapshot Testing, Property Matchers](https://jestjs.io/docs/snapshot-testing#property-matchers) — normalizar campos voláteis (timestamp, id) antes de gravar o snapshot.
+- [Pact — Provider states](https://docs.pact.io/getting_started/provider_states) — a precondição necessária pra cada interação do contrato rodar isolada.
+- [Pact Broker — can-i-deploy](https://docs.pact.io/pact_broker/can_i_deploy) — a checagem de compatibilidade entre versões antes do deploy.
+- [Spring Cloud Contract — Verifier Setup](https://cloud.spring.io/spring-cloud-contract/2.0.x/multi/multi__spring_cloud_contract_verifier_setup.html) — `baseClassForTests`, stub jar e o fluxo provider-driven.
 
 ---
 
